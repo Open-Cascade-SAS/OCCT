@@ -456,12 +456,12 @@ TEST(BRepGraph_ChildExplorerTest, DirectChildren_ShellFaces_CountAndOrder)
   ASSERT_TRUE(aGraph.IsDone());
 
   const BRepGraph_ShellId aShellId(0);
-  const NCollection_Vector<BRepGraph_FaceRefId>& aFaceRefIds = aGraph.Refs().FaceRefIdsOf(aShellId);
+  const NCollection_Vector<BRepGraph_FaceRefId>& aFaceRefIds = aGraph.Refs().Faces().IdsOf(aShellId);
 
   NCollection_Vector<int> anExpectedFaceIds;
   for (int i = 0; i < aFaceRefIds.Length(); ++i)
   {
-    const BRepGraphInc::FaceRef& aRef = aGraph.Refs().Face(aFaceRefIds.Value(i));
+    const BRepGraphInc::FaceRef& aRef = aGraph.Refs().Faces().Entry(aFaceRefIds.Value(i));
     if (!aRef.IsRemoved)
       anExpectedFaceIds.Append(aRef.FaceDefId.Index);
   }
@@ -487,11 +487,11 @@ TEST(BRepGraph_ChildExplorerTest, DirectChildren_RemovedFaceRef_IsSkipped)
   ASSERT_TRUE(aGraph.IsDone());
 
   const BRepGraph_ShellId aShellId(0);
-  const NCollection_Vector<BRepGraph_FaceRefId>& aFaceRefIds = aGraph.Refs().FaceRefIdsOf(aShellId);
+  const NCollection_Vector<BRepGraph_FaceRefId>& aFaceRefIds = aGraph.Refs().Faces().IdsOf(aShellId);
   ASSERT_GT(aFaceRefIds.Length(), 0);
 
   const BRepGraph_FaceRefId aRemovedRef = aFaceRefIds.Value(0);
-  const BRepGraph_FaceId aRemovedFaceId = aGraph.Refs().Face(aRemovedRef).FaceDefId;
+  const BRepGraph_FaceId aRemovedFaceId = aGraph.Refs().Faces().Entry(aRemovedRef).FaceDefId;
 
   {
     BRepGraph_MutGuard<BRepGraphInc::FaceRef> aFaceRef = aGraph.Builder().MutFaceRef(aRemovedRef);
@@ -517,11 +517,11 @@ TEST(BRepGraph_ChildExplorerTest, DirectChildren_WireChildren_AreResolvedEdges)
   ASSERT_TRUE(aGraph.IsDone());
 
   const BRepGraph_FaceId aFaceId(0);
-  const NCollection_Vector<BRepGraph_WireRefId>& aWireRefs = aGraph.Refs().WireRefIdsOf(aFaceId);
+  const NCollection_Vector<BRepGraph_WireRefId>& aWireRefs = aGraph.Refs().Wires().IdsOf(aFaceId);
   ASSERT_GT(aWireRefs.Length(), 0);
 
-  const BRepGraph_WireId aWireId = aGraph.Refs().Wire(aWireRefs.Value(0)).WireDefId;
-  const NCollection_Vector<BRepGraph_CoEdgeRefId>& aCoEdgeRefs = aGraph.Refs().CoEdgeRefIdsOf(aWireId);
+  const BRepGraph_WireId aWireId = aGraph.Refs().Wires().Entry(aWireRefs.Value(0)).WireDefId;
+  const NCollection_Vector<BRepGraph_CoEdgeRefId>& aCoEdgeRefs = aGraph.Refs().CoEdges().IdsOf(aWireId);
 
   int aCount = 0;
   for (BRepGraph_ChildExplorer anIt =

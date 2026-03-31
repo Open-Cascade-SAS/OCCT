@@ -21,6 +21,22 @@ namespace
 
 //=================================================================================================
 
+void appendRefUIDReverseIndex(BRepGraph_Data&             theData,
+                              const BRepGraph_RefId::Kind theKind)
+{
+  const NCollection_Vector<BRepGraph_RefUID>& aUIDs = theData.myIncStorage.RefUIDs(theKind);
+  for (int anIdx = 0; anIdx < aUIDs.Length(); ++anIdx)
+  {
+    const BRepGraph_RefUID aUID = aUIDs.Value(anIdx);
+    if (aUID.IsValid())
+    {
+      theData.myRefUIDToRefId.Bind(aUID, BRepGraph_RefId(theKind, anIdx));
+    }
+  }
+}
+
+//=================================================================================================
+
 void appendUIDReverseIndex(BRepGraph_Data&               theData,
                            const BRepGraph_NodeId::Kind  theKind)
 {
@@ -70,6 +86,38 @@ void ensureUIDReverseIndex(BRepGraph_Data& theData)
   theData.myUIDToNodeIdDirty      = false;
 }
 
+//=================================================================================================
+
+void ensureRefUIDReverseIndex(BRepGraph_Data& theData)
+{
+  const uint32_t aGeneration = theData.myGeneration.load();
+  {
+    std::shared_lock<std::shared_mutex> aReadLock(theData.myRefUIDToRefIdMutex);
+    if (!theData.myRefUIDToRefIdDirty && theData.myRefUIDToRefIdGeneration == aGeneration)
+    {
+      return;
+    }
+  }
+
+  std::unique_lock<std::shared_mutex> aWriteLock(theData.myRefUIDToRefIdMutex);
+  if (!theData.myRefUIDToRefIdDirty && theData.myRefUIDToRefIdGeneration == aGeneration)
+  {
+    return;
+  }
+
+  theData.myRefUIDToRefId.Clear();
+  appendRefUIDReverseIndex(theData, BRepGraph_RefId::Kind::Shell);
+  appendRefUIDReverseIndex(theData, BRepGraph_RefId::Kind::Face);
+  appendRefUIDReverseIndex(theData, BRepGraph_RefId::Kind::Wire);
+  appendRefUIDReverseIndex(theData, BRepGraph_RefId::Kind::CoEdge);
+  appendRefUIDReverseIndex(theData, BRepGraph_RefId::Kind::Vertex);
+  appendRefUIDReverseIndex(theData, BRepGraph_RefId::Kind::Solid);
+  appendRefUIDReverseIndex(theData, BRepGraph_RefId::Kind::Child);
+  appendRefUIDReverseIndex(theData, BRepGraph_RefId::Kind::Occurrence);
+  theData.myRefUIDToRefIdGeneration = aGeneration;
+  theData.myRefUIDToRefIdDirty      = false;
+}
+
 } // namespace
 
 //=================================================================================================
@@ -84,6 +132,20 @@ BRepGraph_UID BRepGraph::UIDsView::Of(const BRepGraph_NodeId theNode) const
   if (theNode.Index >= aVec.Length())
     return BRepGraph_UID();
   return aVec.Value(theNode.Index);
+}
+
+//=================================================================================================
+
+BRepGraph_RefUID BRepGraph::UIDsView::Of(const BRepGraph_RefId theRefId) const
+{
+  if (!theRefId.IsValid())
+    return BRepGraph_RefUID();
+
+  const NCollection_Vector<BRepGraph_RefUID>& aVec =
+    myGraph->myData->myIncStorage.RefUIDs(theRefId.RefKind);
+  if (theRefId.Index >= aVec.Length())
+    return BRepGraph_RefUID();
+  return aVec.Value(theRefId.Index);
 }
 
 //=================================================================================================
@@ -105,6 +167,23 @@ BRepGraph_NodeId BRepGraph::UIDsView::NodeIdFrom(const BRepGraph_UID& theUID) co
 
 //=================================================================================================
 
+BRepGraph_RefId BRepGraph::UIDsView::RefIdFrom(const BRepGraph_RefUID& theUID) const
+{
+  if (!theUID.IsValid())
+    return BRepGraph_RefId();
+  if (theUID.Generation() != myGraph->myData->myGeneration.load())
+    return BRepGraph_RefId();
+
+  BRepGraph_Data& aData = *myGraph->myData;
+  ensureRefUIDReverseIndex(aData);
+
+  std::shared_lock<std::shared_mutex> aReadLock(aData.myRefUIDToRefIdMutex);
+  const BRepGraph_RefId*              aRefId = aData.myRefUIDToRefId.Seek(theUID);
+  return aRefId != nullptr ? *aRefId : BRepGraph_RefId();
+}
+
+//=================================================================================================
+
 bool BRepGraph::UIDsView::Has(const BRepGraph_UID& theUID) const
 {
   if (!theUID.IsValid())
@@ -117,6 +196,22 @@ bool BRepGraph::UIDsView::Has(const BRepGraph_UID& theUID) const
 
   std::shared_lock<std::shared_mutex> aReadLock(aData.myUIDToNodeIdMutex);
   return aData.myUIDToNodeId.Seek(theUID) != nullptr;
+}
+
+//=================================================================================================
+
+bool BRepGraph::UIDsView::Has(const BRepGraph_RefUID& theUID) const
+{
+  if (!theUID.IsValid())
+    return false;
+  if (theUID.Generation() != myGraph->myData->myGeneration.load())
+    return false;
+
+  BRepGraph_Data& aData = *myGraph->myData;
+  ensureRefUIDReverseIndex(aData);
+
+  std::shared_lock<std::shared_mutex> aReadLock(aData.myRefUIDToRefIdMutex);
+  return aData.myRefUIDToRefId.Seek(theUID) != nullptr;
 }
 
 //=================================================================================================
@@ -155,24 +250,60 @@ BRepGraph_VersionStamp BRepGraph::UIDsView::StampOf(const BRepGraph_NodeId theNo
 
 //=================================================================================================
 
+BRepGraph_VersionStamp BRepGraph::UIDsView::StampOf(const BRepGraph_RefId theRefId) const
+{
+  if (!theRefId.IsValid())
+    return BRepGraph_VersionStamp();
+
+  const NCollection_Vector<BRepGraph_RefUID>& aUIDs =
+    myGraph->myData->myIncStorage.RefUIDs(theRefId.RefKind);
+  if (theRefId.Index >= aUIDs.Length())
+    return BRepGraph_VersionStamp();
+
+  const BRepGraphInc::BaseRef& aBase = myGraph->myData->myIncStorage.BaseRef(theRefId);
+  if (aBase.IsRemoved)
+    return BRepGraph_VersionStamp();
+
+  return BRepGraph_VersionStamp(aUIDs.Value(theRefId.Index),
+                                aBase.OwnGen,
+                                myGraph->myData->myGeneration.load());
+}
+
+//=================================================================================================
+
 bool BRepGraph::UIDsView::IsStale(const BRepGraph_VersionStamp& theStamp) const
 {
   if (!theStamp.IsValid())
     return true;
 
-  if (!theStamp.IsEntityStamp())
-    return true;
-
   if (theStamp.myGeneration != myGraph->myData->myGeneration.load())
     return true;
 
-  const BRepGraph_NodeId aNodeId = NodeIdFrom(theStamp.myUID);
-  if (!aNodeId.IsValid())
-    return true;
+  if (theStamp.IsEntityStamp())
+  {
+    const BRepGraph_NodeId aNodeId = NodeIdFrom(theStamp.myUID);
+    if (!aNodeId.IsValid())
+      return true;
 
-  const BRepGraphInc::BaseDef* aDef = myGraph->topoEntity(aNodeId);
-  if (aDef == nullptr || aDef->IsRemoved)
-    return true;
+    const BRepGraphInc::BaseDef* aDef = myGraph->topoEntity(aNodeId);
+    if (aDef == nullptr || aDef->IsRemoved)
+      return true;
 
-  return aDef->OwnGen != theStamp.myMutationGen;
+    return aDef->OwnGen != theStamp.myMutationGen;
+  }
+
+  if (theStamp.IsRefStamp())
+  {
+    const BRepGraph_RefId aRefId = RefIdFrom(theStamp.myRefUID);
+    if (!aRefId.IsValid())
+      return true;
+
+    const BRepGraphInc::BaseRef& aRef = myGraph->myData->myIncStorage.BaseRef(aRefId);
+    if (aRef.IsRemoved)
+      return true;
+
+    return aRef.OwnGen != theStamp.myMutationGen;
+  }
+
+  return true;
 }

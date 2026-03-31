@@ -128,7 +128,7 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
     for (int aWireRefIter = 0; aWireRefIter < aFaceEnt.WireRefIds.Length(); ++aWireRefIter)
     {
       const BRepGraph_WireRefId    aWireRefId = aFaceEnt.WireRefIds.Value(aWireRefIter);
-      const BRepGraphInc::WireRef& aWR        = aRefs.Wire(aWireRefId);
+      const BRepGraphInc::WireRef& aWR        = aRefs.Wires().Entry(aWireRefId);
       if (aWR.IsRemoved || !aWR.WireDefId.IsValid(aDefs.Wires().Nb()))
       {
         continue;
@@ -140,7 +140,7 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
            ++aCoEdgeRefIter)
       {
         const BRepGraph_CoEdgeRefId    aCoEdgeRefId = aWireEnt.CoEdgeRefIds.Value(aCoEdgeRefIter);
-        const BRepGraphInc::CoEdgeRef& aCR          = aRefs.CoEdge(aCoEdgeRefId);
+        const BRepGraphInc::CoEdgeRef& aCR          = aRefs.CoEdges().Entry(aCoEdgeRefId);
         if (aCR.IsRemoved || !aCR.CoEdgeDefId.IsValid(aDefs.CoEdges().Nb()))
         {
           continue;
@@ -184,10 +184,10 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
 
           // Merge start/end vertices if they differ.
           const BRepGraph_VertexId aStartVtx = anEdge.StartVertexRefId.IsValid()
-                                                 ? aRefs.Vertex(anEdge.StartVertexRefId).VertexDefId
+                                                 ? aRefs.Vertices().Entry(anEdge.StartVertexRefId).VertexDefId
                                                  : BRepGraph_VertexId();
           const BRepGraph_VertexId aEndVtx   = anEdge.EndVertexRefId.IsValid()
-                                                 ? aRefs.Vertex(anEdge.EndVertexRefId).VertexDefId
+                                                 ? aRefs.Vertices().Entry(anEdge.EndVertexRefId).VertexDefId
                                                  : BRepGraph_VertexId();
           const int                aStartIdx = aStartVtx.Index;
           const int                aEndIdx   = aEndVtx.Index;
@@ -338,10 +338,10 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
       const BRepGraphInc::EdgeDef& anEdge      = aDefs.Edges().Definition(BRepGraph_EdgeId(anEdgeIdx));
       bool                         aNeedUpdate = false;
       int                          aNewStart   = anEdge.StartVertexRefId.IsValid()
-                                                   ? aRefs.Vertex(anEdge.StartVertexRefId).VertexDefId.Index
+                                                   ? aRefs.Vertices().Entry(anEdge.StartVertexRefId).VertexDefId.Index
                                                    : -1;
       int                          aNewEnd     = anEdge.EndVertexRefId.IsValid()
-                                                   ? aRefs.Vertex(anEdge.EndVertexRefId).VertexDefId.Index
+                                                   ? aRefs.Vertices().Entry(anEdge.EndVertexRefId).VertexDefId.Index
                                                    : -1;
 
       if (aNewStart >= 0)

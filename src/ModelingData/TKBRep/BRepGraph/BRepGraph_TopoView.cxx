@@ -996,7 +996,7 @@ int BRepGraph::TopoView::ProductOps::NbComponents(const BRepGraph_ProductId theP
   for (int anIdx = 0; anIdx < aProductDef.OccurrenceRefIds.Length(); ++anIdx)
   {
     const BRepGraph_OccurrenceRefId anOccRefId = aProductDef.OccurrenceRefIds.Value(anIdx);
-    if (!anOccRefId.IsValid(aStorage.NbOccurrenceRefs()))
+    if (!anOccRefId.IsValid(aStorage.NbOccurrences()))
     {
       continue;
     }
@@ -1037,7 +1037,7 @@ BRepGraph_OccurrenceId BRepGraph::TopoView::ProductOps::Component(
   for (int anIdx = 0; anIdx < aProductDef.OccurrenceRefIds.Length(); ++anIdx)
   {
     const BRepGraph_OccurrenceRefId anOccRefId = aProductDef.OccurrenceRefIds.Value(anIdx);
-    if (!anOccRefId.IsValid(aStorage.NbOccurrenceRefs()))
+    if (!anOccRefId.IsValid(aStorage.NbOccurrences()))
     {
       continue;
     }

@@ -51,10 +51,10 @@ NCollection_Vector<BRepGraph_CoEdgeRefId> coEdgeRefsOfWire(const BRepGraph&     
   NCollection_Vector<BRepGraph_CoEdgeRefId> aRefIds;
   const BRepGraph_NodeId                    aParentNode = BRepGraph_WireId(theWireId.Index);
   const BRepGraph::RefsView&                aRefs       = theGraph.Refs();
-  for (int aRefIdx = 0; aRefIdx < aRefs.NbCoEdgeRefs(); ++aRefIdx)
+  for (int aRefIdx = 0; aRefIdx < aRefs.CoEdges().Nb(); ++aRefIdx)
   {
     const BRepGraph_CoEdgeRefId    aRefId(aRefIdx);
-    const BRepGraphInc::CoEdgeRef& aRef = aRefs.CoEdge(aRefId);
+    const BRepGraphInc::CoEdgeRef& aRef = aRefs.CoEdges().Entry(aRefId);
     if (aRef.ParentId == aParentNode && !aRef.IsRemoved)
       aRefIds.Append(aRefId);
   }
@@ -181,7 +181,7 @@ TEST(BRepGraphAlgo_ValidateTest, WireConnectivity_DisconnectedEdges)
   const NCollection_Vector<BRepGraph_CoEdgeRefId> aWireRefIds =
     coEdgeRefsOfWire(aGraph, BRepGraph_WireId(aTargetWire));
   ASSERT_GE(aWireRefIds.Length(), 1);
-  const BRepGraphInc::CoEdgeRef& aFirstCR = aGraph.Refs().CoEdge(aWireRefIds.Value(0));
+  const BRepGraphInc::CoEdgeRef& aFirstCR = aGraph.Refs().CoEdges().Entry(aWireRefIds.Value(0));
   const BRepGraphInc::CoEdgeDef& aFirstCoEdge =
     aGraph.Topo().CoEdges().Definition(BRepGraph_CoEdgeId(aFirstCR.CoEdgeDefId));
   const BRepGraph_NodeId aFirstEdgeId(aFirstCoEdge.EdgeDefId);
@@ -192,9 +192,9 @@ TEST(BRepGraphAlgo_ValidateTest, WireConnectivity_DisconnectedEdges)
 
   // Find a vertex different from the current end vertex.
   const BRepGraph_VertexId anOrigEndVtx =
-    aGraph.Refs().Vertex(aFirstEdge->EndVertexRefId).VertexDefId;
+    aGraph.Refs().Vertices().Entry(aFirstEdge->EndVertexRefId).VertexDefId;
   const BRepGraph_VertexId anOrigStartVtx =
-    aGraph.Refs().Vertex(aFirstEdge->StartVertexRefId).VertexDefId;
+    aGraph.Refs().Vertices().Entry(aFirstEdge->StartVertexRefId).VertexDefId;
   const BRepGraph_NodeId anOrigEnd = BRepGraph_NodeId(anOrigEndVtx);
   for (int aVtxIdx = 0; aVtxIdx < aGraph.Topo().Vertices().Nb(); ++aVtxIdx)
   {
@@ -208,7 +208,7 @@ TEST(BRepGraphAlgo_ValidateTest, WireConnectivity_DisconnectedEdges)
     }
   }
 
-  ASSERT_NE(aGraph.Refs().Vertex(aFirstEdge->EndVertexRefId).VertexDefId, anOrigEndVtx);
+  ASSERT_NE(aGraph.Refs().Vertices().Entry(aFirstEdge->EndVertexRefId).VertexDefId, anOrigEndVtx);
 
   const BRepGraphAlgo_Validate::Result aResult =
     BRepGraphAlgo_Validate::Perform(aGraph, BRepGraphAlgo_Validate::Options::Audit());
@@ -414,7 +414,7 @@ TEST(BRepGraphAlgo_ValidateTest, Audit_ValidatesCoEdgeUIDsFromBuilderWireCreatio
     coEdgeRefsOfWire(aGraph, aWireId);
   ASSERT_EQ(aWireRefIds.Length(), 1);
   const BRepGraph_NodeId aCoEdgeId =
-    BRepGraph_CoEdgeId(aGraph.Refs().CoEdge(aWireRefIds.Value(0)).CoEdgeDefId.Index);
+    BRepGraph_CoEdgeId(aGraph.Refs().CoEdges().Entry(aWireRefIds.Value(0)).CoEdgeDefId.Index);
   EXPECT_TRUE(aGraph.UIDs().Of(aCoEdgeId).IsValid());
 
   const BRepGraphAlgo_Validate::Result anAuditResult =

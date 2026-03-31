@@ -23,8 +23,8 @@
 //! This view exposes reference-entry storage:
 //! - typed reference entry access (Shell, Face, ...)
 //! - reference counts
-//! - RefUID lookup and reverse lookup
-//! - stale tracking via BRepGraph_VersionStamp
+//! - RefUID lookup and reverse lookup through BRepGraph::UIDs()
+//! - stale tracking via BRepGraph_VersionStamp through BRepGraph::UIDs()
 //!
 //! Identity semantics:
 //! - RefId (kind + index) is graph-local and may change after Compact().
@@ -40,200 +40,258 @@
 //!
 //! ## Iterating over references
 //! Reference entries are primarily traversed in parent-owned context through
-//! the typed RefIdsOf accessors. When flat iteration is needed, iterate using
-//! a counted loop over the appropriate NbXxxRefs() or NbActiveXxxRefs() count:
+//! the typed grouped IdsOf accessors. When flat iteration is needed, iterate
+//! using a counted loop over the appropriate grouped Nb() or NbActive() count:
 //! @code
 //!   const BRepGraph::RefsView& aRefs = aGraph.Refs();
-//!   for (int i = 0; i < aRefs.NbFaceRefs(); ++i)
+//!   for (int i = 0; i < aRefs.Faces().Nb(); ++i)
 //!   {
-//!     const BRepGraphInc::FaceRef& aFR = aRefs.Face(BRepGraph_FaceRefId(i));
+//!     const BRepGraphInc::FaceRef& aFR = aRefs.Faces().Entry(BRepGraph_FaceRefId(i));
 //!     if (aFR.IsRemoved)
 //!       continue;
 //!     // use aFR.FaceDefId, aFR.Orientation, aFR.Location ...
 //!   }
 //! @endcode
 //!
-//! To iterate refs belonging to a specific parent, use the typed RefIdsOf
-//! accessors (e.g. FaceRefIdsOf, WireRefIdsOf):
+//! To iterate refs belonging to a specific parent, use the grouped IdsOf
+//! accessors:
 //! @code
-//!   for (const BRepGraph_WireRefId& aWireRefId : aRefs.WireRefIdsOf(aFaceId))
+//!   for (const BRepGraph_WireRefId& aWireRefId : aRefs.Wires().IdsOf(aFaceId))
 //!   {
-//!     const BRepGraphInc::WireRef& aWR = aRefs.Wire(aWireRefId);
+//!     const BRepGraphInc::WireRef& aWR = aRefs.Wires().Entry(aWireRefId);
 //!     // ...
 //!   }
 //! @endcode
 class BRepGraph::RefsView
 {
 public:
-  //! @name Reference counts
-  //! Return the total number of reference entries (including removed).
-  //! @{
+  //! @brief Shell reference queries.
+  class ShellOps
+  {
+  public:
+    [[nodiscard]] Standard_EXPORT int Nb() const;
+    [[nodiscard]] Standard_EXPORT int NbActive() const;
+    [[nodiscard]] Standard_EXPORT const BRepGraphInc::ShellRef& Entry(
+      const BRepGraph_ShellRefId theRefId) const;
+    [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_ShellRefId>& IdsOf(
+      const BRepGraph_SolidId theSolid) const;
 
-  //! Number of shell references.
-  [[nodiscard]] Standard_EXPORT int NbShellRefs() const;
-  //! Number of active shell references.
-  [[nodiscard]] Standard_EXPORT int NbActiveShellRefs() const;
-  //! Number of face references.
-  [[nodiscard]] Standard_EXPORT int NbFaceRefs() const;
-  //! Number of active face references.
-  [[nodiscard]] Standard_EXPORT int NbActiveFaceRefs() const;
-  //! Number of wire references.
-  [[nodiscard]] Standard_EXPORT int NbWireRefs() const;
-  //! Number of active wire references.
-  [[nodiscard]] Standard_EXPORT int NbActiveWireRefs() const;
-  //! Number of coedge references.
-  [[nodiscard]] Standard_EXPORT int NbCoEdgeRefs() const;
-  //! Number of active coedge references.
-  [[nodiscard]] Standard_EXPORT int NbActiveCoEdgeRefs() const;
-  //! Number of vertex references.
-  [[nodiscard]] Standard_EXPORT int NbVertexRefs() const;
-  //! Number of active vertex references.
-  [[nodiscard]] Standard_EXPORT int NbActiveVertexRefs() const;
-  //! Number of solid references.
-  [[nodiscard]] Standard_EXPORT int NbSolidRefs() const;
-  //! Number of active solid references.
-  [[nodiscard]] Standard_EXPORT int NbActiveSolidRefs() const;
-  //! Number of generic child references.
-  [[nodiscard]] Standard_EXPORT int NbChildRefs() const;
-  //! Number of active generic child references.
-  [[nodiscard]] Standard_EXPORT int NbActiveChildRefs() const;
-  //! Number of occurrence references.
-  [[nodiscard]] Standard_EXPORT int NbOccurrenceRefs() const;
-  //! Number of active occurrence references.
-  [[nodiscard]] Standard_EXPORT int NbActiveOccurrenceRefs() const;
+  private:
+    friend class RefsView;
 
-  //! @}
+    explicit ShellOps(const BRepGraph* theGraph)
+        : myGraph(theGraph)
+    {
+    }
 
-  //! @name Reference entry access
-  //! Access reference entries by typed identifier.
-  //! @{
+    const BRepGraph* myGraph;
+  };
 
-  //! Access shell reference by typed identifier.
-  //! @param[in] theRefId typed shell reference identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::ShellRef& Shell(
-    const BRepGraph_ShellRefId theRefId) const;
-  //! Access face reference by typed identifier.
-  //! @param[in] theRefId typed face reference identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::FaceRef& Face(
-    const BRepGraph_FaceRefId theRefId) const;
-  //! Access wire reference by typed identifier.
-  //! @param[in] theRefId typed wire reference identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::WireRef& Wire(
-    const BRepGraph_WireRefId theRefId) const;
-  //! Access coedge reference by typed identifier.
-  //! @param[in] theRefId typed coedge reference identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::CoEdgeRef& CoEdge(
-    const BRepGraph_CoEdgeRefId theRefId) const;
-  //! Access vertex reference by typed identifier.
-  //! @param[in] theRefId typed vertex reference identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::VertexRef& Vertex(
-    const BRepGraph_VertexRefId theRefId) const;
-  //! Access solid reference by typed identifier.
-  //! @param[in] theRefId typed solid reference identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::SolidRef& Solid(
-    const BRepGraph_SolidRefId theRefId) const;
-  //! Access child reference by typed identifier.
-  //! @param[in] theRefId typed child reference identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::ChildRef& Child(
-    const BRepGraph_ChildRefId theRefId) const;
-  //! Access occurrence reference by typed identifier.
-  //! @param[in] theRefId typed occurrence reference identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::OccurrenceRef& Occurrence(
-    const BRepGraph_OccurrenceRefId theRefId) const;
+  //! @brief Face reference queries.
+  class FaceOps
+  {
+  public:
+    [[nodiscard]] Standard_EXPORT int Nb() const;
+    [[nodiscard]] Standard_EXPORT int NbActive() const;
+    [[nodiscard]] Standard_EXPORT const BRepGraphInc::FaceRef& Entry(
+      const BRepGraph_FaceRefId theRefId) const;
+    [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_FaceRefId>& IdsOf(
+      const BRepGraph_ShellId theShell) const;
 
-  //! @}
+  private:
+    friend class RefsView;
 
-  //! @name RefUID operations
-  //! Bidirectional conversion between RefId and persistent RefUID.
-  //! @{
+    explicit FaceOps(const BRepGraph* theGraph)
+        : myGraph(theGraph)
+    {
+    }
 
-  //! Return the RefUID assigned to a reference.
-  //! @param[in] theRefId reference identifier
-  //! @return RefUID for the reference
-  [[nodiscard]] Standard_EXPORT BRepGraph_RefUID UIDOf(const BRepGraph_RefId theRefId) const;
-  //! Resolve a RefUID back to a RefId.
-  //! @param[in] theUID unique identifier to resolve
-  //! @return corresponding RefId, or invalid RefId if not found
-  [[nodiscard]] Standard_EXPORT BRepGraph_RefId  RefIdFrom(const BRepGraph_RefUID& theUID) const;
-  //! Check if a RefUID is valid and exists in this graph generation.
-  //! @param[in] theUID unique identifier to check
-  //! @return true if the RefUID belongs to this graph generation
-  [[nodiscard]] Standard_EXPORT bool             Has(const BRepGraph_RefUID& theUID) const;
+    const BRepGraph* myGraph;
+  };
 
-  //! @}
+  //! @brief Wire reference queries.
+  class WireOps
+  {
+  public:
+    [[nodiscard]] Standard_EXPORT int Nb() const;
+    [[nodiscard]] Standard_EXPORT int NbActive() const;
+    [[nodiscard]] Standard_EXPORT const BRepGraphInc::WireRef& Entry(
+      const BRepGraph_WireRefId theRefId) const;
+    [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_WireRefId>& IdsOf(
+      const BRepGraph_FaceId theFace) const;
 
-  //! @name Ref version stamping
-  //! Track reference staleness across graph mutations.
-  //! @{
+  private:
+    friend class RefsView;
 
-  //! Produce a version stamp for the given reference.
-  //! @param[in] theRefId reference identifier
-  //! @return version stamp, or invalid stamp if theRefId is invalid
-  [[nodiscard]] Standard_EXPORT BRepGraph_VersionStamp
-                                     StampOf(const BRepGraph_RefId theRefId) const;
-  //! Check if a previously-taken stamp is stale.
-  //! @param[in] theStamp version stamp to check
-  //! @return true if the stamp no longer matches the current reference state
-  [[nodiscard]] Standard_EXPORT bool IsStale(const BRepGraph_VersionStamp& theStamp) const;
+    explicit WireOps(const BRepGraph* theGraph)
+        : myGraph(theGraph)
+    {
+    }
 
-  //! @}
+    const BRepGraph* myGraph;
+  };
 
-  //! @name Parent-to-ref typed vector access
-  //! Return the typed RefId vector of refs belonging to a parent entity.
+  //! @brief Coedge reference queries.
+  class CoEdgeOps
+  {
+  public:
+    [[nodiscard]] Standard_EXPORT int Nb() const;
+    [[nodiscard]] Standard_EXPORT int NbActive() const;
+    [[nodiscard]] Standard_EXPORT const BRepGraphInc::CoEdgeRef& Entry(
+      const BRepGraph_CoEdgeRefId theRefId) const;
+    [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_CoEdgeRefId>& IdsOf(
+      const BRepGraph_WireId theWire) const;
 
-  //! @param[in] theShell shell entity identifier
-  //! @return face ref ids owned by this shell
-  [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_FaceRefId>& FaceRefIdsOf(
-    const BRepGraph_ShellId theShell) const;
+  private:
+    friend class RefsView;
 
-  //! @param[in] theFace face entity identifier
-  //! @return wire ref ids owned by this face
-  [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_WireRefId>& WireRefIdsOf(
-    const BRepGraph_FaceId theFace) const;
+    explicit CoEdgeOps(const BRepGraph* theGraph)
+        : myGraph(theGraph)
+    {
+    }
 
-  //! @param[in] theWire wire entity identifier
-  //! @return coedge ref ids owned by this wire
-  [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_CoEdgeRefId>& CoEdgeRefIdsOf(
-    const BRepGraph_WireId theWire) const;
+    const BRepGraph* myGraph;
+  };
 
-  //! @param[in] theSolid solid entity identifier
-  //! @return shell ref ids owned by this solid
-  [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_ShellRefId>& ShellRefIdsOf(
-    const BRepGraph_SolidId theSolid) const;
+  //! @brief Vertex reference queries.
+  class VertexOps
+  {
+  public:
+    [[nodiscard]] Standard_EXPORT int Nb() const;
+    [[nodiscard]] Standard_EXPORT int NbActive() const;
+    [[nodiscard]] Standard_EXPORT const BRepGraphInc::VertexRef& Entry(
+      const BRepGraph_VertexRefId theRefId) const;
+    [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_VertexRefId> IdsOf(
+      const BRepGraph_EdgeId                          theEdge,
+      const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
 
-  //! @param[in] theCompound compound entity identifier
-  //! @return child ref ids owned by this compound
-  [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_ChildRefId>& ChildRefIdsOf(
-    const BRepGraph_CompoundId theCompound) const;
+  private:
+    friend class RefsView;
 
-  //! @param[in] theProduct product entity identifier
-  //! @return occurrence ref ids owned by this product
-  [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_OccurrenceRefId>&
-    OccurrenceRefIdsOf(const BRepGraph_ProductId theProduct) const;
+    explicit VertexOps(const BRepGraph* theGraph)
+        : myGraph(theGraph)
+    {
+    }
 
-  //! @param[in] theCompSolid comp-solid entity identifier
-  //! @return solid ref ids owned by this comp-solid
-  [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_SolidRefId>& SolidRefIdsOf(
-    const BRepGraph_CompSolidId theCompSolid) const;
+    const BRepGraph* myGraph;
+  };
 
-  //! @param[in] theEdge edge entity identifier
-  //! @param[in] theAllocator allocator for the result vector
-  //! @return boundary and internal vertex ref ids referenced by this edge
-  //!         (start, end, then internals; duplicate ids removed)
-  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_VertexRefId> VertexRefIdsOf(
-    const BRepGraph_EdgeId                          theEdge,
-    const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
+  //! @brief Solid reference queries.
+  class SolidOps
+  {
+  public:
+    [[nodiscard]] Standard_EXPORT int Nb() const;
+    [[nodiscard]] Standard_EXPORT int NbActive() const;
+    [[nodiscard]] Standard_EXPORT const BRepGraphInc::SolidRef& Entry(
+      const BRepGraph_SolidRefId theRefId) const;
+    [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_SolidRefId>& IdsOf(
+      const BRepGraph_CompSolidId theCompSolid) const;
+
+  private:
+    friend class RefsView;
+
+    explicit SolidOps(const BRepGraph* theGraph)
+        : myGraph(theGraph)
+    {
+    }
+
+    const BRepGraph* myGraph;
+  };
+
+  //! @brief Generic child reference queries.
+  class ChildOps
+  {
+  public:
+    [[nodiscard]] Standard_EXPORT int Nb() const;
+    [[nodiscard]] Standard_EXPORT int NbActive() const;
+    [[nodiscard]] Standard_EXPORT const BRepGraphInc::ChildRef& Entry(
+      const BRepGraph_ChildRefId theRefId) const;
+    [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_ChildRefId>& IdsOf(
+      const BRepGraph_CompoundId theCompound) const;
+
+  private:
+    friend class RefsView;
+
+    explicit ChildOps(const BRepGraph* theGraph)
+        : myGraph(theGraph)
+    {
+    }
+
+    const BRepGraph* myGraph;
+  };
+
+  //! @brief Occurrence reference queries.
+  class OccurrenceOps
+  {
+  public:
+    [[nodiscard]] Standard_EXPORT int Nb() const;
+    [[nodiscard]] Standard_EXPORT int NbActive() const;
+    [[nodiscard]] Standard_EXPORT const BRepGraphInc::OccurrenceRef& Entry(
+      const BRepGraph_OccurrenceRefId theRefId) const;
+    [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_OccurrenceRefId>& IdsOf(
+      const BRepGraph_ProductId theProduct) const;
+
+  private:
+    friend class RefsView;
+
+    explicit OccurrenceOps(const BRepGraph* theGraph)
+        : myGraph(theGraph)
+    {
+    }
+
+    const BRepGraph* myGraph;
+  };
+
+  //! Grouped shell reference queries.
+  [[nodiscard]] const ShellOps& Shells() const { return myShells; }
+
+  //! Grouped face reference queries.
+  [[nodiscard]] const FaceOps& Faces() const { return myFaces; }
+
+  //! Grouped wire reference queries.
+  [[nodiscard]] const WireOps& Wires() const { return myWires; }
+
+  //! Grouped coedge reference queries.
+  [[nodiscard]] const CoEdgeOps& CoEdges() const { return myCoEdges; }
+
+  //! Grouped vertex reference queries.
+  [[nodiscard]] const VertexOps& Vertices() const { return myVertices; }
+
+  //! Grouped solid reference queries.
+  [[nodiscard]] const SolidOps& Solids() const { return mySolids; }
+
+  //! Grouped child reference queries.
+  [[nodiscard]] const ChildOps& Children() const { return myChildren; }
+
+  //! Grouped occurrence reference queries.
+  [[nodiscard]] const OccurrenceOps& Occurrences() const { return myOccurrences; }
 
 private:
   friend class BRepGraph;
   friend struct BRepGraph_Data;
 
   explicit RefsView(const BRepGraph* theGraph)
-      : myGraph(theGraph)
+      : myGraph(theGraph),
+        myShells(theGraph),
+        myFaces(theGraph),
+        myWires(theGraph),
+        myCoEdges(theGraph),
+        myVertices(theGraph),
+        mySolids(theGraph),
+        myChildren(theGraph),
+          myOccurrences(theGraph)
   {
   }
 
   const BRepGraph* myGraph;
+  ShellOps         myShells;
+  FaceOps          myFaces;
+  WireOps          myWires;
+  CoEdgeOps        myCoEdges;
+  VertexOps        myVertices;
+  SolidOps         mySolids;
+  ChildOps         myChildren;
+  OccurrenceOps    myOccurrences;
 };
 
 #endif // _BRepGraph_RefsView_HeaderFile

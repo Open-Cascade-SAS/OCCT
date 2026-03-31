@@ -24,7 +24,7 @@
 //!
 //! Combines a persistent UID (entity or reference entry) with
 //! OwnGen (own-data version counter) and graph Generation (Build cycle).
-//! Computed on demand via BRepGraph::UIDs().StampOf() or BRepGraph::Refs().StampOf().
+//! Computed on demand via BRepGraph::UIDs().StampOf().
 //!
 //! Usage pattern:
 //! @code

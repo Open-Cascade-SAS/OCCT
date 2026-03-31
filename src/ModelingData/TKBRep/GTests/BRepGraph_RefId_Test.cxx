@@ -141,19 +141,19 @@ TEST(BRepGraph_RefIdTest, RefsView_AfterBuild_HasFaceRefs)
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
-  const int aFaceRefCount = aGraph.Refs().NbFaceRefs();
+  const int aFaceRefCount = aGraph.Refs().Faces().Nb();
   EXPECT_GE(aFaceRefCount, 0);
 
   if (aFaceRefCount > 0)
   {
     const BRepGraph_FaceRefId    aFaceRefId(0);
-    const BRepGraphInc::FaceRef& anEntry = aGraph.Refs().Face(aFaceRefId);
+    const BRepGraphInc::FaceRef& anEntry = aGraph.Refs().Faces().Entry(aFaceRefId);
     (void)anEntry;
     EXPECT_TRUE(aFaceRefId.IsValid(aFaceRefCount));
   }
   else
   {
-    EXPECT_FALSE(aGraph.Refs().UIDOf(BRepGraph_FaceRefId(0)).IsValid());
+    EXPECT_FALSE(aGraph.UIDs().Of(BRepGraph_FaceRefId(0)).IsValid());
   }
 }
 
@@ -163,12 +163,12 @@ TEST(BRepGraph_RefIdTest, RefDomain_StampGUIDGeneration_IfSupported)
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  if (aGraph.Refs().NbFaceRefs() <= 0)
+  if (aGraph.Refs().Faces().Nb() <= 0)
   {
     GTEST_SKIP() << "Ref-domain entries are not populated at this phase";
   }
 
-  const BRepGraph_VersionStamp aStamp = aGraph.Refs().StampOf(BRepGraph_FaceRefId(0));
+  const BRepGraph_VersionStamp aStamp = aGraph.UIDs().StampOf(BRepGraph_FaceRefId(0));
   if (!aStamp.IsValid())
   {
     GTEST_SKIP() << "Ref-domain stamping/GUID generation not wired yet";
@@ -188,13 +188,13 @@ TEST(BRepGraph_RefIdTest, RefsView_AfterBuild_CountsMatchInlineStorage)
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  EXPECT_EQ(aGraph.Refs().NbFaceRefs(), countInlineFaceRefs(aGraph));
-  EXPECT_EQ(aGraph.Refs().NbWireRefs(), countInlineWireRefs(aGraph));
-  EXPECT_EQ(aGraph.Refs().NbCoEdgeRefs(), countInlineCoEdgeRefs(aGraph));
-  EXPECT_EQ(aGraph.Refs().NbVertexRefs(), countInlineVertexRefs(aGraph));
-  EXPECT_EQ(aGraph.Refs().NbShellRefs(), countInlineShellRefs(aGraph));
-  EXPECT_EQ(aGraph.Refs().NbSolidRefs(), countInlineSolidRefs(aGraph));
-  EXPECT_EQ(aGraph.Refs().NbChildRefs(), countInlineChildRefs(aGraph));
+  EXPECT_EQ(aGraph.Refs().Faces().Nb(), countInlineFaceRefs(aGraph));
+  EXPECT_EQ(aGraph.Refs().Wires().Nb(), countInlineWireRefs(aGraph));
+  EXPECT_EQ(aGraph.Refs().CoEdges().Nb(), countInlineCoEdgeRefs(aGraph));
+  EXPECT_EQ(aGraph.Refs().Vertices().Nb(), countInlineVertexRefs(aGraph));
+  EXPECT_EQ(aGraph.Refs().Shells().Nb(), countInlineShellRefs(aGraph));
+  EXPECT_EQ(aGraph.Refs().Solids().Nb(), countInlineSolidRefs(aGraph));
+  EXPECT_EQ(aGraph.Refs().Children().Nb(), countInlineChildRefs(aGraph));
 }
 
 TEST(BRepGraph_RefIdTest, RefsView_AfterBuild_UIDRoundtripAndParentKinds)
@@ -203,92 +203,92 @@ TEST(BRepGraph_RefIdTest, RefsView_AfterBuild_UIDRoundtripAndParentKinds)
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  for (int i = 0; i < aGraph.Refs().NbFaceRefs(); ++i)
+  for (int i = 0; i < aGraph.Refs().Faces().Nb(); ++i)
   {
     const BRepGraph_RefId        aRefId = BRepGraph_FaceRefId(i);
-    const BRepGraph_RefUID       aUID   = aGraph.Refs().UIDOf(aRefId);
-    const BRepGraph_VersionStamp aStamp = aGraph.Refs().StampOf(aRefId);
+    const BRepGraph_RefUID       aUID   = aGraph.UIDs().Of(aRefId);
+    const BRepGraph_VersionStamp aStamp = aGraph.UIDs().StampOf(aRefId);
     EXPECT_TRUE(aUID.IsValid());
-    EXPECT_EQ(aGraph.Refs().RefIdFrom(aUID), aRefId);
-    EXPECT_TRUE(aGraph.Refs().Has(aUID));
+    EXPECT_EQ(aGraph.UIDs().RefIdFrom(aUID), aRefId);
+    EXPECT_TRUE(aGraph.UIDs().Has(aUID));
     EXPECT_TRUE(aStamp.IsValid());
     EXPECT_TRUE(aStamp.IsRefStamp());
-    EXPECT_FALSE(aGraph.Refs().IsStale(aStamp));
+    EXPECT_FALSE(aGraph.UIDs().IsStale(aStamp));
 
-    const BRepGraphInc::FaceRef& anEntry = aGraph.Refs().Face(BRepGraph_FaceRefId(i));
+    const BRepGraphInc::FaceRef& anEntry = aGraph.Refs().Faces().Entry(BRepGraph_FaceRefId(i));
     EXPECT_EQ(anEntry.RefId, aRefId);
     EXPECT_EQ(anEntry.ParentId.NodeKind, BRepGraph_NodeId::Kind::Shell);
     EXPECT_TRUE(anEntry.FaceDefId.IsValid(aGraph.Topo().Faces().Nb()));
   }
 
-  for (int i = 0; i < aGraph.Refs().NbWireRefs(); ++i)
+  for (int i = 0; i < aGraph.Refs().Wires().Nb(); ++i)
   {
     const BRepGraph_RefId        aRefId  = BRepGraph_WireRefId(i);
-    const BRepGraph_RefUID       aUID    = aGraph.Refs().UIDOf(aRefId);
-    const BRepGraphInc::WireRef& anEntry = aGraph.Refs().Wire(BRepGraph_WireRefId(i));
+    const BRepGraph_RefUID       aUID    = aGraph.UIDs().Of(aRefId);
+    const BRepGraphInc::WireRef& anEntry = aGraph.Refs().Wires().Entry(BRepGraph_WireRefId(i));
     EXPECT_TRUE(aUID.IsValid());
-    EXPECT_EQ(aGraph.Refs().RefIdFrom(aUID), aRefId);
+    EXPECT_EQ(aGraph.UIDs().RefIdFrom(aUID), aRefId);
     EXPECT_EQ(anEntry.RefId, aRefId);
     EXPECT_EQ(anEntry.ParentId.NodeKind, BRepGraph_NodeId::Kind::Face);
     EXPECT_TRUE(anEntry.WireDefId.IsValid(aGraph.Topo().Wires().Nb()));
   }
 
-  for (int i = 0; i < aGraph.Refs().NbCoEdgeRefs(); ++i)
+  for (int i = 0; i < aGraph.Refs().CoEdges().Nb(); ++i)
   {
     const BRepGraph_RefId          aRefId  = BRepGraph_CoEdgeRefId(i);
-    const BRepGraph_RefUID         aUID    = aGraph.Refs().UIDOf(aRefId);
-    const BRepGraphInc::CoEdgeRef& anEntry = aGraph.Refs().CoEdge(BRepGraph_CoEdgeRefId(i));
+    const BRepGraph_RefUID         aUID    = aGraph.UIDs().Of(aRefId);
+    const BRepGraphInc::CoEdgeRef& anEntry = aGraph.Refs().CoEdges().Entry(BRepGraph_CoEdgeRefId(i));
     EXPECT_TRUE(aUID.IsValid());
-    EXPECT_EQ(aGraph.Refs().RefIdFrom(aUID), aRefId);
+    EXPECT_EQ(aGraph.UIDs().RefIdFrom(aUID), aRefId);
     EXPECT_EQ(anEntry.RefId, aRefId);
     EXPECT_EQ(anEntry.ParentId.NodeKind, BRepGraph_NodeId::Kind::Wire);
     EXPECT_TRUE(anEntry.CoEdgeDefId.IsValid(aGraph.Topo().CoEdges().Nb()));
   }
 
-  for (int i = 0; i < aGraph.Refs().NbShellRefs(); ++i)
+  for (int i = 0; i < aGraph.Refs().Shells().Nb(); ++i)
   {
     const BRepGraph_RefId         aRefId  = BRepGraph_ShellRefId(i);
-    const BRepGraph_RefUID        aUID    = aGraph.Refs().UIDOf(aRefId);
-    const BRepGraphInc::ShellRef& anEntry = aGraph.Refs().Shell(BRepGraph_ShellRefId(i));
+    const BRepGraph_RefUID        aUID    = aGraph.UIDs().Of(aRefId);
+    const BRepGraphInc::ShellRef& anEntry = aGraph.Refs().Shells().Entry(BRepGraph_ShellRefId(i));
     EXPECT_TRUE(aUID.IsValid());
-    EXPECT_EQ(aGraph.Refs().RefIdFrom(aUID), aRefId);
+    EXPECT_EQ(aGraph.UIDs().RefIdFrom(aUID), aRefId);
     EXPECT_EQ(anEntry.RefId, aRefId);
     EXPECT_EQ(anEntry.ParentId.NodeKind, BRepGraph_NodeId::Kind::Solid);
     EXPECT_TRUE(anEntry.ShellDefId.IsValid(aGraph.Topo().Shells().Nb()));
   }
 
-  for (int i = 0; i < aGraph.Refs().NbVertexRefs(); ++i)
+  for (int i = 0; i < aGraph.Refs().Vertices().Nb(); ++i)
   {
     const BRepGraph_RefId          aRefId  = BRepGraph_VertexRefId(i);
-    const BRepGraph_RefUID         aUID    = aGraph.Refs().UIDOf(aRefId);
-    const BRepGraphInc::VertexRef& anEntry = aGraph.Refs().Vertex(BRepGraph_VertexRefId(i));
+    const BRepGraph_RefUID         aUID    = aGraph.UIDs().Of(aRefId);
+    const BRepGraphInc::VertexRef& anEntry = aGraph.Refs().Vertices().Entry(BRepGraph_VertexRefId(i));
     EXPECT_TRUE(aUID.IsValid());
-    EXPECT_EQ(aGraph.Refs().RefIdFrom(aUID), aRefId);
+    EXPECT_EQ(aGraph.UIDs().RefIdFrom(aUID), aRefId);
     EXPECT_EQ(anEntry.RefId, aRefId);
     EXPECT_TRUE(anEntry.ParentId.NodeKind == BRepGraph_NodeId::Kind::Edge
                 || anEntry.ParentId.NodeKind == BRepGraph_NodeId::Kind::Face);
     EXPECT_TRUE(anEntry.VertexDefId.IsValid(aGraph.Topo().Vertices().Nb()));
   }
 
-  for (int i = 0; i < aGraph.Refs().NbSolidRefs(); ++i)
+  for (int i = 0; i < aGraph.Refs().Solids().Nb(); ++i)
   {
     const BRepGraph_RefId         aRefId  = BRepGraph_SolidRefId(i);
-    const BRepGraph_RefUID        aUID    = aGraph.Refs().UIDOf(aRefId);
-    const BRepGraphInc::SolidRef& anEntry = aGraph.Refs().Solid(BRepGraph_SolidRefId(i));
+    const BRepGraph_RefUID        aUID    = aGraph.UIDs().Of(aRefId);
+    const BRepGraphInc::SolidRef& anEntry = aGraph.Refs().Solids().Entry(BRepGraph_SolidRefId(i));
     EXPECT_TRUE(aUID.IsValid());
-    EXPECT_EQ(aGraph.Refs().RefIdFrom(aUID), aRefId);
+    EXPECT_EQ(aGraph.UIDs().RefIdFrom(aUID), aRefId);
     EXPECT_EQ(anEntry.RefId, aRefId);
     EXPECT_EQ(anEntry.ParentId.NodeKind, BRepGraph_NodeId::Kind::CompSolid);
     EXPECT_TRUE(anEntry.SolidDefId.IsValid(aGraph.Topo().Solids().Nb()));
   }
 
-  for (int i = 0; i < aGraph.Refs().NbChildRefs(); ++i)
+  for (int i = 0; i < aGraph.Refs().Children().Nb(); ++i)
   {
     const BRepGraph_RefId         aRefId  = BRepGraph_ChildRefId(i);
-    const BRepGraph_RefUID        aUID    = aGraph.Refs().UIDOf(aRefId);
-    const BRepGraphInc::ChildRef& anEntry = aGraph.Refs().Child(BRepGraph_ChildRefId(i));
+    const BRepGraph_RefUID        aUID    = aGraph.UIDs().Of(aRefId);
+    const BRepGraphInc::ChildRef& anEntry = aGraph.Refs().Children().Entry(BRepGraph_ChildRefId(i));
     EXPECT_TRUE(aUID.IsValid());
-    EXPECT_EQ(aGraph.Refs().RefIdFrom(aUID), aRefId);
+    EXPECT_EQ(aGraph.UIDs().RefIdFrom(aUID), aRefId);
     EXPECT_EQ(anEntry.RefId, aRefId);
     EXPECT_TRUE(anEntry.ParentId.NodeKind == BRepGraph_NodeId::Kind::Compound
                 || anEntry.ParentId.NodeKind == BRepGraph_NodeId::Kind::Shell
@@ -306,22 +306,22 @@ TEST(BRepGraph_RefIdTest, RefUIDReverseLookupStaysCurrentAfterProgrammaticAdd)
   (void)aGraph.Builder().AddEdge(aV0, aV1, occ::handle<Geom_Curve>(), 0.0, 1.0, 0.001);
 
   const BRepGraph_RefId  aFirstRefId = BRepGraph_VertexRefId(0);
-  const BRepGraph_RefUID aFirstUID   = aGraph.Refs().UIDOf(aFirstRefId);
+  const BRepGraph_RefUID aFirstUID   = aGraph.UIDs().Of(aFirstRefId);
   ASSERT_TRUE(aFirstUID.IsValid());
-  ASSERT_EQ(aGraph.Refs().RefIdFrom(aFirstUID), aFirstRefId);
+  ASSERT_EQ(aGraph.UIDs().RefIdFrom(aFirstUID), aFirstRefId);
 
   const BRepGraph_VertexId aV2 = aGraph.Builder().AddVertex(gp_Pnt(2.0, 0.0, 0.0), 0.001);
   const BRepGraph_VertexId aV3 = aGraph.Builder().AddVertex(gp_Pnt(3.0, 0.0, 0.0), 0.001);
   (void)aGraph.Builder().AddEdge(aV2, aV3, occ::handle<Geom_Curve>(), 0.0, 1.0, 0.001);
 
   const BRepGraph_RefId  aSecondRefId = BRepGraph_VertexRefId(2);
-  const BRepGraph_RefUID aSecondUID   = aGraph.Refs().UIDOf(aSecondRefId);
+  const BRepGraph_RefUID aSecondUID   = aGraph.UIDs().Of(aSecondRefId);
   ASSERT_TRUE(aSecondUID.IsValid());
 
-  EXPECT_EQ(aGraph.Refs().RefIdFrom(aFirstUID), aFirstRefId);
-  EXPECT_EQ(aGraph.Refs().RefIdFrom(aSecondUID), aSecondRefId);
-  EXPECT_TRUE(aGraph.Refs().Has(aFirstUID));
-  EXPECT_TRUE(aGraph.Refs().Has(aSecondUID));
+  EXPECT_EQ(aGraph.UIDs().RefIdFrom(aFirstUID), aFirstRefId);
+  EXPECT_EQ(aGraph.UIDs().RefIdFrom(aSecondUID), aSecondRefId);
+  EXPECT_TRUE(aGraph.UIDs().Has(aFirstUID));
+  EXPECT_TRUE(aGraph.UIDs().Has(aSecondUID));
 }
 
 TEST(BRepGraph_RefIdTest, StaleRefUID_HasReturnsFalseAndLookupBecomesInvalidAfterRebuild)
@@ -332,16 +332,16 @@ TEST(BRepGraph_RefIdTest, StaleRefUID_HasReturnsFalseAndLookupBecomesInvalidAfte
   BRepGraph aGraph;
   aGraph.Build(aBoxMaker1.Shape());
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GT(aGraph.Refs().NbFaceRefs(), 0);
+  ASSERT_GT(aGraph.Refs().Faces().Nb(), 0);
 
-  const BRepGraph_RefUID anOldUID = aGraph.Refs().UIDOf(BRepGraph_FaceRefId(0));
+  const BRepGraph_RefUID anOldUID = aGraph.UIDs().Of(BRepGraph_FaceRefId(0));
   ASSERT_TRUE(anOldUID.IsValid());
-  ASSERT_TRUE(aGraph.Refs().Has(anOldUID));
+  ASSERT_TRUE(aGraph.UIDs().Has(anOldUID));
 
   aGraph.Build(aBoxMaker2.Shape());
 
-  EXPECT_FALSE(aGraph.Refs().Has(anOldUID));
-  EXPECT_FALSE(aGraph.Refs().RefIdFrom(anOldUID).IsValid());
+  EXPECT_FALSE(aGraph.UIDs().Has(anOldUID));
+  EXPECT_FALSE(aGraph.UIDs().RefIdFrom(anOldUID).IsValid());
 }
 
 TEST(BRepGraph_RefIdTest, MutFaceRef_UpdatesRefStampAndParentModifiedFlag)
@@ -350,14 +350,14 @@ TEST(BRepGraph_RefIdTest, MutFaceRef_UpdatesRefStampAndParentModifiedFlag)
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  if (aGraph.Refs().NbFaceRefs() <= 0)
+  if (aGraph.Refs().Faces().Nb() <= 0)
   {
     GTEST_SKIP() << "No face references available";
   }
 
   const BRepGraph_FaceRefId    aFaceRefId(0);
-  const BRepGraphInc::FaceRef& aBeforeEntry = aGraph.Refs().Face(aFaceRefId);
-  const BRepGraph_VersionStamp aBeforeStamp = aGraph.Refs().StampOf(aFaceRefId);
+  const BRepGraphInc::FaceRef& aBeforeEntry = aGraph.Refs().Faces().Entry(aFaceRefId);
+  const BRepGraph_VersionStamp aBeforeStamp = aGraph.UIDs().StampOf(aFaceRefId);
   ASSERT_TRUE(aBeforeEntry.ParentId.IsValid());
   ASSERT_TRUE(aBeforeStamp.IsValid());
   ASSERT_TRUE(aBeforeStamp.IsRefStamp());
@@ -369,10 +369,10 @@ TEST(BRepGraph_RefIdTest, MutFaceRef_UpdatesRefStampAndParentModifiedFlag)
     aMut->Orientation = (anBeforeOri == TopAbs_FORWARD) ? TopAbs_REVERSED : TopAbs_FORWARD;
   }
 
-  const BRepGraphInc::FaceRef& aAfterEntry = aGraph.Refs().Face(aFaceRefId);
+  const BRepGraphInc::FaceRef& aAfterEntry = aGraph.Refs().Faces().Entry(aFaceRefId);
   EXPECT_NE(aAfterEntry.Orientation, anBeforeOri);
   EXPECT_GT(aAfterEntry.OwnGen, aBeforeOwnGen);
-  EXPECT_TRUE(aGraph.Refs().IsStale(aBeforeStamp));
+  EXPECT_TRUE(aGraph.UIDs().IsStale(aBeforeStamp));
 
   const BRepGraphInc::BaseDef* aParentDef = aGraph.Topo().Gen().TopoEntity(aAfterEntry.ParentId);
   ASSERT_NE(aParentDef, nullptr);
@@ -385,13 +385,13 @@ TEST(BRepGraph_RefIdTest, MutFaceRef_MarkRemoved_PersistsAndInvalidatesStamp)
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  if (aGraph.Refs().NbFaceRefs() <= 0)
+  if (aGraph.Refs().Faces().Nb() <= 0)
   {
     GTEST_SKIP() << "No face references available";
   }
 
   const BRepGraph_FaceRefId    aFaceRefId(0);
-  const BRepGraph_VersionStamp aBeforeStamp = aGraph.Refs().StampOf(aFaceRefId);
+  const BRepGraph_VersionStamp aBeforeStamp = aGraph.UIDs().StampOf(aFaceRefId);
   ASSERT_TRUE(aBeforeStamp.IsValid());
   ASSERT_TRUE(aBeforeStamp.IsRefStamp());
 
@@ -400,10 +400,10 @@ TEST(BRepGraph_RefIdTest, MutFaceRef_MarkRemoved_PersistsAndInvalidatesStamp)
     aMut->IsRemoved                                   = true;
   }
 
-  const BRepGraphInc::FaceRef& aAfterEntry = aGraph.Refs().Face(aFaceRefId);
+  const BRepGraphInc::FaceRef& aAfterEntry = aGraph.Refs().Faces().Entry(aFaceRefId);
   EXPECT_TRUE(aAfterEntry.IsRemoved);
-  EXPECT_TRUE(aGraph.Refs().IsStale(aBeforeStamp));
-  EXPECT_FALSE(aGraph.Refs().StampOf(aFaceRefId).IsValid());
+  EXPECT_TRUE(aGraph.UIDs().IsStale(aBeforeStamp));
+  EXPECT_FALSE(aGraph.UIDs().StampOf(aFaceRefId).IsValid());
 }
 
 TEST(BRepGraph_RefIdTest, ChildRefs_CompoundEntriesAreValid)
@@ -421,7 +421,7 @@ TEST(BRepGraph_RefIdTest, ChildRefs_CompoundEntriesAreValid)
       BRepGraph_TestTools::ChildRefsOfParent(aGraph, BRepGraph_CompoundId(aCompIdx));
     for (int aChildRefIdx = 0; aChildRefIdx < aChildRefs.Length(); ++aChildRefIdx)
     {
-      const BRepGraphInc::ChildRef& aRef = aRefs.Child(aChildRefs.Value(aChildRefIdx));
+      const BRepGraphInc::ChildRef& aRef = aRefs.Children().Entry(aChildRefs.Value(aChildRefIdx));
       EXPECT_EQ(aRef.ParentId, BRepGraph_CompoundId(aCompIdx));
       EXPECT_TRUE(aRef.ChildDefId.IsValid());
       EXPECT_FALSE(aRef.IsRemoved);

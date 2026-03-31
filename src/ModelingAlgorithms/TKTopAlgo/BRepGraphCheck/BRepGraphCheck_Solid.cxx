@@ -43,7 +43,7 @@ static NCollection_Vector<BRepGraphInc::ShellRef> collectSolidShellRefs(
   for (int aRefIter = 0; aRefIter < aSolidDef.ShellRefIds.Length(); ++aRefIter)
   {
     const BRepGraph_ShellRefId    aRefId = aSolidDef.ShellRefIds.Value(aRefIter);
-    const BRepGraphInc::ShellRef& aRef   = theRefs.Shell(aRefId);
+    const BRepGraphInc::ShellRef& aRef   = theRefs.Shells().Entry(aRefId);
     if (aRef.IsRemoved || !aRef.ShellDefId.IsValid(theDefs.Shells().Nb()))
     {
       continue;
@@ -65,7 +65,7 @@ static NCollection_Vector<BRepGraphInc::FaceRef> collectShellFaceRefs(
   for (int aRefIter = 0; aRefIter < aShellDef.FaceRefIds.Length(); ++aRefIter)
   {
     const BRepGraph_FaceRefId    aRefId = aShellDef.FaceRefIds.Value(aRefIter);
-    const BRepGraphInc::FaceRef& aRef   = theRefs.Face(aRefId);
+    const BRepGraphInc::FaceRef& aRef   = theRefs.Faces().Entry(aRefId);
     if (aRef.IsRemoved || !aRef.FaceDefId.IsValid(theDefs.Faces().Nb()))
     {
       continue;

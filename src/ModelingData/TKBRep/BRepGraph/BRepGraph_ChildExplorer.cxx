@@ -433,7 +433,7 @@ void BRepGraph_ChildExplorer::advance()
         int i = aIdx;
         for (; i < aComp.ChildRefIds.Length(); ++i)
         {
-          const BRepGraphInc::ChildRef& aRef = aRefs.Child(aComp.ChildRefIds.Value(i));
+          const BRepGraphInc::ChildRef& aRef = aRefs.Children().Entry(aComp.ChildRefIds.Value(i));
           if (!aRef.IsRemoved)
           {
             aChildNode = aRef.ChildDefId;
@@ -455,7 +455,7 @@ void BRepGraph_ChildExplorer::advance()
         int i = aIdx;
         for (; i < aCS.SolidRefIds.Length(); ++i)
         {
-          const BRepGraphInc::SolidRef& aRef = aRefs.Solid(aCS.SolidRefIds.Value(i));
+          const BRepGraphInc::SolidRef& aRef = aRefs.Solids().Entry(aCS.SolidRefIds.Value(i));
           if (!aRef.IsRemoved)
           {
             aChildNode = aRef.SolidDefId;
@@ -481,7 +481,7 @@ void BRepGraph_ChildExplorer::advance()
         {
           if (i < aNbShells)
           {
-            const BRepGraphInc::ShellRef& aRef = aRefs.Shell(aSolid.ShellRefIds.Value(i));
+            const BRepGraphInc::ShellRef& aRef = aRefs.Shells().Entry(aSolid.ShellRefIds.Value(i));
             if (!aRef.IsRemoved)
             {
               aChildNode = aRef.ShellDefId;
@@ -497,7 +497,7 @@ void BRepGraph_ChildExplorer::advance()
           {
             const int aFreeIdx = i - aNbShells;
             const BRepGraphInc::ChildRef& aRef =
-              aRefs.Child(aSolid.FreeChildRefIds.Value(aFreeIdx));
+              aRefs.Children().Entry(aSolid.FreeChildRefIds.Value(aFreeIdx));
             if (!aRef.IsRemoved)
             {
               aChildNode = aRef.ChildDefId;
@@ -524,7 +524,7 @@ void BRepGraph_ChildExplorer::advance()
         {
           if (i < aNbFaces)
           {
-            const BRepGraphInc::FaceRef& aRef = aRefs.Face(aShell.FaceRefIds.Value(i));
+            const BRepGraphInc::FaceRef& aRef = aRefs.Faces().Entry(aShell.FaceRefIds.Value(i));
             if (!aRef.IsRemoved)
             {
               aChildNode = aRef.FaceDefId;
@@ -540,7 +540,7 @@ void BRepGraph_ChildExplorer::advance()
           {
             const int aFreeIdx = i - aNbFaces;
             const BRepGraphInc::ChildRef& aRef =
-              aRefs.Child(aShell.FreeChildRefIds.Value(aFreeIdx));
+              aRefs.Children().Entry(aShell.FreeChildRefIds.Value(aFreeIdx));
             if (!aRef.IsRemoved)
             {
               aChildNode = aRef.ChildDefId;
@@ -567,7 +567,7 @@ void BRepGraph_ChildExplorer::advance()
         {
           if (i < aNbWires)
           {
-            const BRepGraphInc::WireRef& aRef = aRefs.Wire(aFace.WireRefIds.Value(i));
+            const BRepGraphInc::WireRef& aRef = aRefs.Wires().Entry(aFace.WireRefIds.Value(i));
             if (!aRef.IsRemoved)
             {
               aChildNode = aRef.WireDefId;
@@ -583,7 +583,7 @@ void BRepGraph_ChildExplorer::advance()
           {
             const int aVIdx = i - aNbWires;
             const BRepGraphInc::VertexRef& aVRef =
-              aRefs.Vertex(aFace.VertexRefIds.Value(aVIdx));
+              aRefs.Vertices().Entry(aFace.VertexRefIds.Value(aVIdx));
             if (!aVRef.IsRemoved)
             {
               aChildNode = aVRef.VertexDefId;
@@ -607,7 +607,7 @@ void BRepGraph_ChildExplorer::advance()
         for (; i < aWire.CoEdgeRefIds.Length(); ++i)
         {
           const BRepGraphInc::CoEdgeRef& aRef =
-            aRefs.CoEdge(aWire.CoEdgeRefIds.Value(i));
+            aRefs.CoEdges().Entry(aWire.CoEdgeRefIds.Value(i));
           if (!aRef.IsRemoved)
           {
             aChildNode = aRef.CoEdgeDefId;
@@ -643,7 +643,7 @@ void BRepGraph_ChildExplorer::advance()
           {
             continue;
           }
-          const BRepGraphInc::VertexRef& aVRef = aRefs.Vertex(aVRefId);
+          const BRepGraphInc::VertexRef& aVRef = aRefs.Vertices().Entry(aVRefId);
           if (!aVRef.IsRemoved)
           {
             aChildNode = aVRef.VertexDefId;

@@ -34,10 +34,10 @@ inline NCollection_Vector<BRepGraph_CoEdgeRefId> CoEdgeRefsOfWire(const BRepGrap
   NCollection_Vector<BRepGraph_CoEdgeRefId> aRefIds;
   const BRepGraph::RefsView&                aRefs       = theGraph.Refs();
   const BRepGraph_NodeId                    aParentNode = BRepGraph_WireId(theWireId.Index);
-  for (int aRefIdx = 0; aRefIdx < aRefs.NbCoEdgeRefs(); ++aRefIdx)
+  for (int aRefIdx = 0; aRefIdx < aRefs.CoEdges().Nb(); ++aRefIdx)
   {
     const BRepGraph_CoEdgeRefId    aRefId(aRefIdx);
-    const BRepGraphInc::CoEdgeRef& aRef = aRefs.CoEdge(aRefId);
+    const BRepGraphInc::CoEdgeRef& aRef = aRefs.CoEdges().Entry(aRefId);
     if (aRef.ParentId == aParentNode && !aRef.IsRemoved)
       aRefIds.Append(aRefId);
   }
@@ -59,10 +59,10 @@ inline NCollection_Vector<BRepGraph_WireRefId> WireRefsOfFace(const BRepGraph&  
   NCollection_Vector<BRepGraph_WireRefId> aRefIds;
   const BRepGraph::RefsView&              aRefs       = theGraph.Refs();
   const BRepGraph_NodeId                  aParentNode = BRepGraph_FaceId(theFaceId.Index);
-  for (int aRefIdx = 0; aRefIdx < aRefs.NbWireRefs(); ++aRefIdx)
+  for (int aRefIdx = 0; aRefIdx < aRefs.Wires().Nb(); ++aRefIdx)
   {
     const BRepGraph_WireRefId    aRefId(aRefIdx);
-    const BRepGraphInc::WireRef& aRef = aRefs.Wire(aRefId);
+    const BRepGraphInc::WireRef& aRef = aRefs.Wires().Entry(aRefId);
     if (aRef.ParentId == aParentNode && !aRef.IsRemoved)
       aRefIds.Append(aRefId);
   }
@@ -86,7 +86,7 @@ inline bool FaceUsesWire(const BRepGraph&       theGraph,
   const NCollection_Vector<BRepGraph_WireRefId> aWireRefs = WireRefsOfFace(theGraph, theFaceId);
   for (int aRefIdx = 0; aRefIdx < aWireRefs.Length(); ++aRefIdx)
   {
-    if (aRefs.Wire(aWireRefs.Value(aRefIdx)).WireDefId == theWireId)
+    if (aRefs.Wires().Entry(aWireRefs.Value(aRefIdx)).WireDefId == theWireId)
       return true;
   }
   return false;
@@ -100,10 +100,10 @@ inline NCollection_Vector<BRepGraph_FaceRefId> FaceRefsOfShell(const BRepGraph& 
   NCollection_Vector<BRepGraph_FaceRefId> aRefIds;
   const BRepGraph::RefsView&              aRefs       = theGraph.Refs();
   const BRepGraph_NodeId                  aParentNode = BRepGraph_ShellId(theShellId.Index);
-  for (int aRefIdx = 0; aRefIdx < aRefs.NbFaceRefs(); ++aRefIdx)
+  for (int aRefIdx = 0; aRefIdx < aRefs.Faces().Nb(); ++aRefIdx)
   {
     const BRepGraph_FaceRefId    aRefId(aRefIdx);
-    const BRepGraphInc::FaceRef& aRef = aRefs.Face(aRefId);
+    const BRepGraphInc::FaceRef& aRef = aRefs.Faces().Entry(aRefId);
     if (aRef.ParentId == aParentNode && !aRef.IsRemoved)
       aRefIds.Append(aRefId);
   }
@@ -125,10 +125,10 @@ inline NCollection_Vector<BRepGraph_ShellRefId> ShellRefsOfSolid(const BRepGraph
   NCollection_Vector<BRepGraph_ShellRefId> aRefIds;
   const BRepGraph::RefsView&               aRefs       = theGraph.Refs();
   const BRepGraph_NodeId                   aParentNode = BRepGraph_SolidId(theSolidId.Index);
-  for (int aRefIdx = 0; aRefIdx < aRefs.NbShellRefs(); ++aRefIdx)
+  for (int aRefIdx = 0; aRefIdx < aRefs.Shells().Nb(); ++aRefIdx)
   {
     const BRepGraph_ShellRefId    aRefId(aRefIdx);
-    const BRepGraphInc::ShellRef& aRef = aRefs.Shell(aRefId);
+    const BRepGraphInc::ShellRef& aRef = aRefs.Shells().Entry(aRefId);
     if (aRef.ParentId == aParentNode && !aRef.IsRemoved)
       aRefIds.Append(aRefId);
   }
@@ -151,10 +151,10 @@ inline NCollection_Vector<BRepGraph_SolidRefId> SolidRefsOfCompSolid(
   NCollection_Vector<BRepGraph_SolidRefId> aRefIds;
   const BRepGraph::RefsView&               aRefs = theGraph.Refs();
   const BRepGraph_NodeId aParentNode = BRepGraph_CompSolidId(theCompSolidId.Index);
-  for (int aRefIdx = 0; aRefIdx < aRefs.NbSolidRefs(); ++aRefIdx)
+  for (int aRefIdx = 0; aRefIdx < aRefs.Solids().Nb(); ++aRefIdx)
   {
     const BRepGraph_SolidRefId    aRefId(aRefIdx);
-    const BRepGraphInc::SolidRef& aRef = aRefs.Solid(aRefId);
+    const BRepGraphInc::SolidRef& aRef = aRefs.Solids().Entry(aRefId);
     if (aRef.ParentId == aParentNode && !aRef.IsRemoved)
       aRefIds.Append(aRefId);
   }
@@ -177,10 +177,10 @@ inline NCollection_Vector<BRepGraph_ChildRefId> ChildRefsOfParent(
 {
   NCollection_Vector<BRepGraph_ChildRefId> aRefIds;
   const BRepGraph::RefsView&               aRefs = theGraph.Refs();
-  for (int aRefIdx = 0; aRefIdx < aRefs.NbChildRefs(); ++aRefIdx)
+  for (int aRefIdx = 0; aRefIdx < aRefs.Children().Nb(); ++aRefIdx)
   {
     const BRepGraph_ChildRefId    aRefId(aRefIdx);
-    const BRepGraphInc::ChildRef& aRef = aRefs.Child(aRefId);
+    const BRepGraphInc::ChildRef& aRef = aRefs.Children().Entry(aRefId);
     if (aRef.ParentId == theParentId && !aRef.IsRemoved)
       aRefIds.Append(aRefId);
   }

@@ -701,19 +701,19 @@ struct ShellDef : public BaseDef
 
 ```cpp
 // BEFORE (inline refs):
-const ShellDef& shell = storage.Shell(shellId);
+const ShellDef& shell = storage.Shells().Entry(shellId);
 for (const FaceUsage& faceRef : shell.FaceRefs)
 {
-  const FaceDef& face = storage.Face(faceRef.FaceDefId);
+  const FaceDef& face = storage.Faces().Entry(faceRef.FaceDefId);
   TopAbs_Orientation orient = faceRef.Orientation;
 }
 
 // AFTER (RefId table — same ref name, just looked up by RefId):
-const ShellDef& shell = storage.Shell(shellId);
+const ShellDef& shell = storage.Shells().Entry(shellId);
 for (const BRepGraph_FaceRefId& refId : shell.FaceRefIds)
 {
-  const FaceUsage& faceRef = graph.Refs().Face(refId);    // same FaceUsage name
-  const FaceDef& face = storage.Face(faceRef.FaceDefId);
+  const FaceUsage& faceRef = graph.Refs().Faces().Entry(refId);    // same FaceUsage name
+  const FaceDef& face = storage.Faces().Entry(faceRef.FaceDefId);
   TopAbs_Orientation orient = faceRef.Orientation;
 }
 ```

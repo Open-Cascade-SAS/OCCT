@@ -136,7 +136,7 @@ bool BRepGraph_Tool::Edge::HasPolygon3D(const BRepGraph& theGraph, const BRepGra
 const BRepGraphInc::VertexRef& BRepGraph_Tool::Edge::StartVertex(const BRepGraph&       theGraph,
                                                                  const BRepGraph_EdgeId theEdge)
 {
-  return theGraph.Refs().Vertex(theGraph.Topo().Edges().Definition(theEdge).StartVertexRefId);
+  return theGraph.Refs().Vertices().Entry(theGraph.Topo().Edges().Definition(theEdge).StartVertexRefId);
 }
 
 //=================================================================================================
@@ -144,7 +144,7 @@ const BRepGraphInc::VertexRef& BRepGraph_Tool::Edge::StartVertex(const BRepGraph
 const BRepGraphInc::VertexRef& BRepGraph_Tool::Edge::EndVertex(const BRepGraph&       theGraph,
                                                                const BRepGraph_EdgeId theEdge)
 {
-  return theGraph.Refs().Vertex(theGraph.Topo().Edges().Definition(theEdge).EndVertexRefId);
+  return theGraph.Refs().Vertices().Entry(theGraph.Topo().Edges().Definition(theEdge).EndVertexRefId);
 }
 
 //=================================================================================================
@@ -527,7 +527,7 @@ const BRepGraphInc::WireRef* BRepGraph_Tool::Face::OuterWire(const BRepGraph&   
   const BRepGraph::RefsView&   aRefs = theGraph.Refs();
   for (int i = 0; i < aFace.WireRefIds.Length(); ++i)
   {
-    const BRepGraphInc::WireRef& aRef = aRefs.Wire(aFace.WireRefIds.Value(i));
+    const BRepGraphInc::WireRef& aRef = aRefs.Wires().Entry(aFace.WireRefIds.Value(i));
     if (!aRef.IsRemoved && aRef.IsOuter)
       return &aRef;
   }

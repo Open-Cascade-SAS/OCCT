@@ -163,16 +163,16 @@ static void addProductBoxLocal(const BRepGraph&         theGraph,
     }
 
     const NCollection_Vector<BRepGraph_OccurrenceRefId>& anOccurrenceRefIds =
-      theGraph.Refs().OccurrenceRefIdsOf(theProduct);
+      theGraph.Refs().Occurrences().IdsOf(theProduct);
     for (int anOccRefIdx = 0; anOccRefIdx < anOccurrenceRefIds.Length(); ++anOccRefIdx)
     {
       const BRepGraph_OccurrenceRefId anOccRefId = anOccurrenceRefIds.Value(anOccRefIdx);
-      if (!anOccRefId.IsValid(theGraph.Refs().NbOccurrenceRefs()))
+      if (!anOccRefId.IsValid(theGraph.Refs().Occurrences().Nb()))
       {
         continue;
       }
 
-      const BRepGraphInc::OccurrenceRef& anOccRef = theGraph.Refs().Occurrence(anOccRefId);
+      const BRepGraphInc::OccurrenceRef& anOccRef = theGraph.Refs().Occurrences().Entry(anOccRefId);
       if (anOccRef.IsRemoved || !anOccRef.OccurrenceDefId.IsValid(theGraph.Topo().Occurrences().Nb()))
       {
         continue;
@@ -216,16 +216,16 @@ static void addProductBoxOptimalLocal(const BRepGraph&         theGraph,
     }
 
     const NCollection_Vector<BRepGraph_OccurrenceRefId>& anOccurrenceRefIds =
-      theGraph.Refs().OccurrenceRefIdsOf(theProduct);
+      theGraph.Refs().Occurrences().IdsOf(theProduct);
     for (int anOccRefIdx = 0; anOccRefIdx < anOccurrenceRefIds.Length(); ++anOccRefIdx)
     {
       const BRepGraph_OccurrenceRefId anOccRefId = anOccurrenceRefIds.Value(anOccRefIdx);
-      if (!anOccRefId.IsValid(theGraph.Refs().NbOccurrenceRefs()))
+      if (!anOccRefId.IsValid(theGraph.Refs().Occurrences().Nb()))
       {
         continue;
       }
 
-      const BRepGraphInc::OccurrenceRef& anOccRef = theGraph.Refs().Occurrence(anOccRefId);
+      const BRepGraphInc::OccurrenceRef& anOccRef = theGraph.Refs().Occurrences().Entry(anOccRefId);
       if (anOccRef.IsRemoved || !anOccRef.OccurrenceDefId.IsValid(theGraph.Topo().Occurrences().Nb()))
       {
         continue;
@@ -261,7 +261,7 @@ static void forFaceWireRefEntries(const BRepGraph&       theGraph,
   for (int i = 0; i < aFaceEnt.WireRefIds.Length(); ++i)
   {
     const BRepGraph_WireRefId    aRefId = aFaceEnt.WireRefIds.Value(i);
-    const BRepGraphInc::WireRef& aWR    = aRefs.Wire(aRefId);
+    const BRepGraphInc::WireRef& aWR    = aRefs.Wires().Entry(aRefId);
     if (aWR.IsRemoved || !aWR.WireDefId.IsValid(theGraph.Topo().Wires().Nb()))
     {
       continue;
@@ -281,7 +281,7 @@ static void forWireCoEdgeRefEntries(const BRepGraph&       theGraph,
   for (int i = 0; i < aWireEnt.CoEdgeRefIds.Length(); ++i)
   {
     const BRepGraph_CoEdgeRefId    aRefId = aWireEnt.CoEdgeRefIds.Value(i);
-    const BRepGraphInc::CoEdgeRef& aCR    = aRefs.CoEdge(aRefId);
+    const BRepGraphInc::CoEdgeRef& aCR    = aRefs.CoEdges().Entry(aRefId);
     if (aCR.IsRemoved || !aCR.CoEdgeDefId.IsValid(theGraph.Topo().CoEdges().Nb()))
     {
       continue;
@@ -301,7 +301,7 @@ static void forSolidShellRefEntries(const BRepGraph&        theGraph,
   for (int i = 0; i < aSolidEnt.ShellRefIds.Length(); ++i)
   {
     const BRepGraph_ShellRefId    aRefId = aSolidEnt.ShellRefIds.Value(i);
-    const BRepGraphInc::ShellRef& aSR    = aRefs.Shell(aRefId);
+    const BRepGraphInc::ShellRef& aSR    = aRefs.Shells().Entry(aRefId);
     if (aSR.IsRemoved || !aSR.ShellDefId.IsValid(theGraph.Topo().Shells().Nb()))
     {
       continue;
@@ -322,7 +322,7 @@ static void forCompoundChildRefEntries(const BRepGraph&       theGraph,
   for (int i = 0; i < aCompEnt.ChildRefIds.Length(); ++i)
   {
     const BRepGraph_ChildRefId    aRefId = aCompEnt.ChildRefIds.Value(i);
-    const BRepGraphInc::ChildRef& aCR    = aRefs.Child(aRefId);
+    const BRepGraphInc::ChildRef& aCR    = aRefs.Children().Entry(aRefId);
     if (aCR.IsRemoved || !aCR.ChildDefId.IsValid())
     {
       continue;
@@ -342,7 +342,7 @@ static void forCompSolidSolidRefEntries(const BRepGraph&            theGraph,
   for (int i = 0; i < aCSEnt.SolidRefIds.Length(); ++i)
   {
     const BRepGraph_SolidRefId    aRefId = aCSEnt.SolidRefIds.Value(i);
-    const BRepGraphInc::SolidRef& aSR    = aRefs.Solid(aRefId);
+    const BRepGraphInc::SolidRef& aSR    = aRefs.Solids().Entry(aRefId);
     if (aSR.IsRemoved || !aSR.SolidDefId.IsValid(theGraph.Topo().Solids().Nb()))
     {
       continue;
@@ -869,10 +869,10 @@ static void addNodeBox(const BRepGraph&       theGraph,
     }
     case BRepGraph_NodeId::Kind::Shell: {
       const BRepGraph_ShellId aShellId(theNode.Index);
-      const NCollection_Vector<BRepGraph_FaceRefId>& aFaceRefIds = theGraph.Refs().FaceRefIdsOf(aShellId);
+      const NCollection_Vector<BRepGraph_FaceRefId>& aFaceRefIds = theGraph.Refs().Faces().IdsOf(aShellId);
       for (int i = 0; i < aFaceRefIds.Length(); ++i)
       {
-        const BRepGraphInc::FaceRef& aFaceRef = theGraph.Refs().Face(aFaceRefIds.Value(i));
+        const BRepGraphInc::FaceRef& aFaceRef = theGraph.Refs().Faces().Entry(aFaceRefIds.Value(i));
         if (aFaceRef.IsRemoved)
           continue;
         addFaceBox(theGraph, aFaceRef.FaceDefId, theBox, theUseTri);
@@ -996,10 +996,10 @@ static void addNodeBoxOptimal(const BRepGraph&       theGraph,
     }
     case BRepGraph_NodeId::Kind::Shell: {
       const BRepGraph_ShellId aShellId(theNode.Index);
-      const NCollection_Vector<BRepGraph_FaceRefId>& aFaceRefIds = theGraph.Refs().FaceRefIdsOf(aShellId);
+      const NCollection_Vector<BRepGraph_FaceRefId>& aFaceRefIds = theGraph.Refs().Faces().IdsOf(aShellId);
       for (int i = 0; i < aFaceRefIds.Length(); ++i)
       {
-        const BRepGraphInc::FaceRef& aFaceRef = theGraph.Refs().Face(aFaceRefIds.Value(i));
+        const BRepGraphInc::FaceRef& aFaceRef = theGraph.Refs().Faces().Entry(aFaceRefIds.Value(i));
         if (aFaceRef.IsRemoved)
           continue;
         addFaceBoxOptimal(theGraph, aFaceRef.FaceDefId, theBox, theUseTri, theUseShapeTol);

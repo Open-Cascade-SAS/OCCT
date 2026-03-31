@@ -244,8 +244,8 @@ TEST_F(BRepGraph_SharingTest, CompoundTwoIdenticalBoxes)
   const NCollection_Vector<BRepGraph_ChildRefId> aChildRefs =
     BRepGraph_TestTools::ChildRefsOfParent(aGraph, BRepGraph_CompoundId(0));
   ASSERT_EQ(aChildRefs.Length(), 2);
-  EXPECT_EQ(aGraph.Refs().Child(aChildRefs.Value(0)).ChildDefId.Index,
-            aGraph.Refs().Child(aChildRefs.Value(1)).ChildDefId.Index);
+  EXPECT_EQ(aGraph.Refs().Children().Entry(aChildRefs.Value(0)).ChildDefId.Index,
+            aGraph.Refs().Children().Entry(aChildRefs.Value(1)).ChildDefId.Index);
 }
 
 TEST_F(BRepGraph_SharingTest, CompoundTwoDistinctBoxes)

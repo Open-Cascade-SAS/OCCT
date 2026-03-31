@@ -214,7 +214,7 @@ TEST_F(BRepGraph_DiagnosticsTest, BoundingBox_Edge_SubsetOfOwningFace)
 
   for (int aCoEdgeIter = 0; aCoEdgeIter < aCoEdgeRefs.Length(); ++aCoEdgeIter)
   {
-    const BRepGraphInc::CoEdgeRef& aCR      = myGraph.Refs().CoEdge(aCoEdgeRefs.Value(aCoEdgeIter));
+    const BRepGraphInc::CoEdgeRef& aCR      = myGraph.Refs().CoEdges().Entry(aCoEdgeRefs.Value(aCoEdgeIter));
     const BRepGraphInc::CoEdgeDef& aCoEdge  = myGraph.Topo().CoEdges().Definition(aCR.CoEdgeDefId);
     const BRepGraph_NodeId         anEdgeId = aCoEdge.EdgeDefId;
     Bnd_Box                        anEdgeBox;

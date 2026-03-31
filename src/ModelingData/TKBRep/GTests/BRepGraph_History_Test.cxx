@@ -392,7 +392,7 @@ TEST_F(BRepGraph_HistoryTest, SplitEdge_RewritesAllContainingWires)
 
     for (int anIdx = 0; anIdx < aCoEdgeRefs.Length(); ++anIdx)
     {
-      const BRepGraphInc::CoEdgeRef& aCR     = myGraph.Refs().CoEdge(aCoEdgeRefs.Value(anIdx));
+      const BRepGraphInc::CoEdgeRef& aCR     = myGraph.Refs().CoEdges().Entry(aCoEdgeRefs.Value(anIdx));
       const BRepGraphInc::CoEdgeDef& aCoEdge =
         myGraph.Topo().CoEdges().Definition(aCR.CoEdgeDefId);
       const BRepGraph_NodeId         anId(aCoEdge.EdgeDefId);
@@ -444,7 +444,7 @@ TEST_F(BRepGraph_HistoryTest, SplitEdge_IgnoresRemovedCoEdgeRefEntries)
   for (int aRefOrd = 0; aRefOrd < aWireRefsBefore.Length(); ++aRefOrd)
   {
     const BRepGraph_CoEdgeRefId    aRefId  = aWireRefsBefore.Value(aRefOrd);
-    const BRepGraphInc::CoEdgeRef& aRef    = myGraph.Refs().CoEdge(aRefId);
+    const BRepGraphInc::CoEdgeRef& aRef    = myGraph.Refs().CoEdges().Entry(aRefId);
     const BRepGraphInc::CoEdgeDef& aCoEdge =
       myGraph.Topo().CoEdges().Definition(aRef.CoEdgeDefId);
     if (aCoEdge.EdgeDefId == BRepGraph_EdgeId(anEdgeId.Index))
@@ -454,7 +454,7 @@ TEST_F(BRepGraph_HistoryTest, SplitEdge_IgnoresRemovedCoEdgeRefEntries)
       break;
     }
   }
-  ASSERT_TRUE(aRefToRemove.IsValid(myGraph.Refs().NbCoEdgeRefs()));
+  ASSERT_TRUE(aRefToRemove.IsValid(myGraph.Refs().CoEdges().Nb()));
   ASSERT_GE(aRemovedOrd, 0);
 
   {
@@ -462,8 +462,8 @@ TEST_F(BRepGraph_HistoryTest, SplitEdge_IgnoresRemovedCoEdgeRefEntries)
       myGraph.Builder().MutCoEdgeRef(aRefToRemove);
     aMut->IsRemoved = true;
   }
-  ASSERT_TRUE(myGraph.Refs().CoEdge(aRefToRemove).IsRemoved);
-  const BRepGraph_CoEdgeId aRemovedCoEdgeId = myGraph.Refs().CoEdge(aRefToRemove).CoEdgeDefId;
+  ASSERT_TRUE(myGraph.Refs().CoEdges().Entry(aRefToRemove).IsRemoved);
+  const BRepGraph_CoEdgeId aRemovedCoEdgeId = myGraph.Refs().CoEdges().Entry(aRefToRemove).CoEdgeDefId;
 
   const int aRemovedWireNbActiveBefore =
     BRepGraph_TestTools::CountCoEdgeRefsOfWire(myGraph, aWireId);
@@ -477,7 +477,7 @@ TEST_F(BRepGraph_HistoryTest, SplitEdge_IgnoresRemovedCoEdgeRefEntries)
   ASSERT_TRUE(aSubA.IsValid());
   ASSERT_TRUE(aSubB.IsValid());
 
-  EXPECT_TRUE(myGraph.Refs().CoEdge(aRefToRemove).IsRemoved);
+  EXPECT_TRUE(myGraph.Refs().CoEdges().Entry(aRefToRemove).IsRemoved);
   EXPECT_EQ(BRepGraph_TestTools::CountCoEdgeRefsOfWire(myGraph, aWireId),
             aRemovedWireNbActiveBefore);
   const BRepGraphInc::CoEdgeDef& aRemovedCoEdgeAfter =
@@ -486,10 +486,10 @@ TEST_F(BRepGraph_HistoryTest, SplitEdge_IgnoresRemovedCoEdgeRefEntries)
 
   bool hasSubA = false;
   bool hasSubB = false;
-  for (int aRefIdx = 0; aRefIdx < myGraph.Refs().NbCoEdgeRefs(); ++aRefIdx)
+  for (int aRefIdx = 0; aRefIdx < myGraph.Refs().CoEdges().Nb(); ++aRefIdx)
   {
     const BRepGraph_CoEdgeRefId    aRefId(aRefIdx);
-    const BRepGraphInc::CoEdgeRef& aRef = myGraph.Refs().CoEdge(aRefId);
+    const BRepGraphInc::CoEdgeRef& aRef = myGraph.Refs().CoEdges().Entry(aRefId);
     if (aRef.IsRemoved || !aRef.CoEdgeDefId.IsValid(myGraph.Topo().CoEdges().Nb()))
       continue;
     const BRepGraph_NodeId anId(myGraph.Topo().CoEdges().Definition(aRef.CoEdgeDefId).EdgeDefId);

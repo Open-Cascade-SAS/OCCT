@@ -213,13 +213,13 @@ TEST(BRepGraph_ParentExplorerTest, CoEdgeParents_ImmediateWireIsVisible)
   aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  const NCollection_Vector<BRepGraph_WireRefId>& aWireRefIds = aGraph.Refs().WireRefIdsOf(BRepGraph_FaceId(0));
+  const NCollection_Vector<BRepGraph_WireRefId>& aWireRefIds = aGraph.Refs().Wires().IdsOf(BRepGraph_FaceId(0));
   ASSERT_GT(aWireRefIds.Length(), 0);
-  const BRepGraph_WireId aWireId = aGraph.Refs().Wire(aWireRefIds.Value(0)).WireDefId;
+  const BRepGraph_WireId aWireId = aGraph.Refs().Wires().Entry(aWireRefIds.Value(0)).WireDefId;
 
-  const NCollection_Vector<BRepGraph_CoEdgeRefId>& aCoEdgeRefIds = aGraph.Refs().CoEdgeRefIdsOf(aWireId);
+  const NCollection_Vector<BRepGraph_CoEdgeRefId>& aCoEdgeRefIds = aGraph.Refs().CoEdges().IdsOf(aWireId);
   ASSERT_GT(aCoEdgeRefIds.Length(), 0);
-  const BRepGraph_CoEdgeId aCoEdgeId = aGraph.Refs().CoEdge(aCoEdgeRefIds.Value(0)).CoEdgeDefId;
+  const BRepGraph_CoEdgeId aCoEdgeId = aGraph.Refs().CoEdges().Entry(aCoEdgeRefIds.Value(0)).CoEdgeDefId;
 
   BRepGraph_ParentExplorer anExp(aGraph, aCoEdgeId);
   ASSERT_TRUE(anExp.More());

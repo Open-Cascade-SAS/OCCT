@@ -100,7 +100,7 @@ void forWireCoEdgeRefEntries(const BRepGraph&       theGraph,
   for (int i = 0; i < aWireEnt.CoEdgeRefIds.Length(); ++i)
   {
     const BRepGraph_CoEdgeRefId    aRefId = aWireEnt.CoEdgeRefIds.Value(i);
-    const BRepGraphInc::CoEdgeRef& aCR    = aRefs.CoEdge(aRefId);
+    const BRepGraphInc::CoEdgeRef& aCR    = aRefs.CoEdges().Entry(aRefId);
     if (aCR.IsRemoved || !aCR.CoEdgeDefId.IsValid(theGraph.Topo().CoEdges().Nb()))
     {
       continue;
@@ -120,7 +120,7 @@ void forFaceWireRefEntries(const BRepGraph&       theGraph,
   for (int i = 0; i < aFaceEnt.WireRefIds.Length(); ++i)
   {
     const BRepGraph_WireRefId    aRefId = aFaceEnt.WireRefIds.Value(i);
-    const BRepGraphInc::WireRef& aWR    = aRefs.Wire(aRefId);
+    const BRepGraphInc::WireRef& aWR    = aRefs.Wires().Entry(aRefId);
     if (aWR.IsRemoved || !aWR.WireDefId.IsValid(theGraph.Topo().Wires().Nb()))
     {
       continue;
@@ -140,7 +140,7 @@ void forShellFaceRefEntries(const BRepGraph&        theGraph,
   for (int i = 0; i < aShellEnt.FaceRefIds.Length(); ++i)
   {
     const BRepGraph_FaceRefId    aRefId = aShellEnt.FaceRefIds.Value(i);
-    const BRepGraphInc::FaceRef& aFR    = aRefs.Face(aRefId);
+    const BRepGraphInc::FaceRef& aFR    = aRefs.Faces().Entry(aRefId);
     if (aFR.IsRemoved || !aFR.FaceDefId.IsValid(theGraph.Topo().Faces().Nb()))
     {
       continue;
@@ -160,7 +160,7 @@ void forSolidShellRefEntries(const BRepGraph&        theGraph,
   for (int i = 0; i < aSolidEnt.ShellRefIds.Length(); ++i)
   {
     const BRepGraph_ShellRefId    aRefId = aSolidEnt.ShellRefIds.Value(i);
-    const BRepGraphInc::ShellRef& aSR    = aRefs.Shell(aRefId);
+    const BRepGraphInc::ShellRef& aSR    = aRefs.Shells().Entry(aRefId);
     if (aSR.IsRemoved || !aSR.ShellDefId.IsValid(theGraph.Topo().Shells().Nb()))
     {
       continue;
@@ -180,7 +180,7 @@ void forCompoundChildRefEntries(const BRepGraph&           theGraph,
   for (int i = 0; i < aCompEnt.ChildRefIds.Length(); ++i)
   {
     const BRepGraph_ChildRefId    aRefId = aCompEnt.ChildRefIds.Value(i);
-    const BRepGraphInc::ChildRef& aCR    = aRefs.Child(aRefId);
+    const BRepGraphInc::ChildRef& aCR    = aRefs.Children().Entry(aRefId);
     if (aCR.IsRemoved || !aCR.ChildDefId.IsValid())
     {
       continue;
@@ -200,7 +200,7 @@ void forCompSolidSolidRefEntries(const BRepGraph&            theGraph,
   for (int i = 0; i < aCSEnt.SolidRefIds.Length(); ++i)
   {
     const BRepGraph_SolidRefId    aRefId = aCSEnt.SolidRefIds.Value(i);
-    const BRepGraphInc::SolidRef& aSR    = aRefs.Solid(aRefId);
+    const BRepGraphInc::SolidRef& aSR    = aRefs.Solids().Entry(aRefId);
     if (aSR.IsRemoved || !aSR.SolidDefId.IsValid(theGraph.Topo().Solids().Nb()))
     {
       continue;

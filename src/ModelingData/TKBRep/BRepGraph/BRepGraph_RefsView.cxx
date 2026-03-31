@@ -71,140 +71,143 @@ void ensureRefUIDReverseIndex(BRepGraph_Data& theData)
 
 //=================================================================================================
 
-int BRepGraph::RefsView::NbShellRefs() const
+int BRepGraph::RefsView::ShellOps::Nb() const
 {
   return myGraph->myData->myIncStorage.NbShellRefs();
 }
 
 //=================================================================================================
 
-int BRepGraph::RefsView::NbActiveShellRefs() const
+int BRepGraph::RefsView::ShellOps::NbActive() const
 {
   return myGraph->myData->myIncStorage.NbActiveShellRefs();
 }
 
 //=================================================================================================
 
-int BRepGraph::RefsView::NbFaceRefs() const
+int BRepGraph::RefsView::FaceOps::Nb() const
 {
   return myGraph->myData->myIncStorage.NbFaceRefs();
 }
 
 //=================================================================================================
 
-int BRepGraph::RefsView::NbActiveFaceRefs() const
+int BRepGraph::RefsView::FaceOps::NbActive() const
 {
   return myGraph->myData->myIncStorage.NbActiveFaceRefs();
 }
 
 //=================================================================================================
 
-int BRepGraph::RefsView::NbWireRefs() const
+int BRepGraph::RefsView::WireOps::Nb() const
 {
   return myGraph->myData->myIncStorage.NbWireRefs();
 }
 
 //=================================================================================================
 
-int BRepGraph::RefsView::NbActiveWireRefs() const
+int BRepGraph::RefsView::WireOps::NbActive() const
 {
   return myGraph->myData->myIncStorage.NbActiveWireRefs();
 }
 
 //=================================================================================================
 
-int BRepGraph::RefsView::NbCoEdgeRefs() const
+int BRepGraph::RefsView::CoEdgeOps::Nb() const
 {
   return myGraph->myData->myIncStorage.NbCoEdgeRefs();
 }
 
 //=================================================================================================
 
-int BRepGraph::RefsView::NbActiveCoEdgeRefs() const
+int BRepGraph::RefsView::CoEdgeOps::NbActive() const
 {
   return myGraph->myData->myIncStorage.NbActiveCoEdgeRefs();
 }
 
 //=================================================================================================
 
-int BRepGraph::RefsView::NbVertexRefs() const
+int BRepGraph::RefsView::VertexOps::Nb() const
 {
   return myGraph->myData->myIncStorage.NbVertexRefs();
 }
 
 //=================================================================================================
 
-int BRepGraph::RefsView::NbActiveVertexRefs() const
+int BRepGraph::RefsView::VertexOps::NbActive() const
 {
   return myGraph->myData->myIncStorage.NbActiveVertexRefs();
 }
 
 //=================================================================================================
 
-int BRepGraph::RefsView::NbSolidRefs() const
+int BRepGraph::RefsView::SolidOps::Nb() const
 {
   return myGraph->myData->myIncStorage.NbSolidRefs();
 }
 
 //=================================================================================================
 
-int BRepGraph::RefsView::NbActiveSolidRefs() const
+int BRepGraph::RefsView::SolidOps::NbActive() const
 {
   return myGraph->myData->myIncStorage.NbActiveSolidRefs();
 }
 
 //=================================================================================================
 
-int BRepGraph::RefsView::NbChildRefs() const
+int BRepGraph::RefsView::ChildOps::Nb() const
 {
   return myGraph->myData->myIncStorage.NbChildRefs();
 }
 
 //=================================================================================================
 
-int BRepGraph::RefsView::NbActiveChildRefs() const
+int BRepGraph::RefsView::ChildOps::NbActive() const
 {
   return myGraph->myData->myIncStorage.NbActiveChildRefs();
 }
 
 //=================================================================================================
 
-int BRepGraph::RefsView::NbOccurrenceRefs() const
+int BRepGraph::RefsView::OccurrenceOps::Nb() const
 {
   return myGraph->myData->myIncStorage.NbOccurrenceRefs();
 }
 
 //=================================================================================================
 
-int BRepGraph::RefsView::NbActiveOccurrenceRefs() const
+int BRepGraph::RefsView::OccurrenceOps::NbActive() const
 {
   return myGraph->myData->myIncStorage.NbActiveOccurrenceRefs();
 }
 
 //=================================================================================================
 
-const BRepGraphInc::ShellRef& BRepGraph::RefsView::Shell(const BRepGraph_ShellRefId theRefId) const
+const BRepGraphInc::ShellRef& BRepGraph::RefsView::ShellOps::Entry(
+  const BRepGraph_ShellRefId theRefId) const
 {
   return myGraph->myData->myIncStorage.ShellRef(theRefId);
 }
 
 //=================================================================================================
 
-const BRepGraphInc::FaceRef& BRepGraph::RefsView::Face(const BRepGraph_FaceRefId theRefId) const
+const BRepGraphInc::FaceRef& BRepGraph::RefsView::FaceOps::Entry(
+  const BRepGraph_FaceRefId theRefId) const
 {
   return myGraph->myData->myIncStorage.FaceRef(theRefId);
 }
 
 //=================================================================================================
 
-const BRepGraphInc::WireRef& BRepGraph::RefsView::Wire(const BRepGraph_WireRefId theRefId) const
+const BRepGraphInc::WireRef& BRepGraph::RefsView::WireOps::Entry(
+  const BRepGraph_WireRefId theRefId) const
 {
   return myGraph->myData->myIncStorage.WireRef(theRefId);
 }
 
 //=================================================================================================
 
-const BRepGraphInc::CoEdgeRef& BRepGraph::RefsView::CoEdge(
+const BRepGraphInc::CoEdgeRef& BRepGraph::RefsView::CoEdgeOps::Entry(
   const BRepGraph_CoEdgeRefId theRefId) const
 {
   return myGraph->myData->myIncStorage.CoEdgeRef(theRefId);
@@ -212,7 +215,7 @@ const BRepGraphInc::CoEdgeRef& BRepGraph::RefsView::CoEdge(
 
 //=================================================================================================
 
-const BRepGraphInc::VertexRef& BRepGraph::RefsView::Vertex(
+const BRepGraphInc::VertexRef& BRepGraph::RefsView::VertexOps::Entry(
   const BRepGraph_VertexRefId theRefId) const
 {
   return myGraph->myData->myIncStorage.VertexRef(theRefId);
@@ -220,21 +223,23 @@ const BRepGraphInc::VertexRef& BRepGraph::RefsView::Vertex(
 
 //=================================================================================================
 
-const BRepGraphInc::SolidRef& BRepGraph::RefsView::Solid(const BRepGraph_SolidRefId theRefId) const
+const BRepGraphInc::SolidRef& BRepGraph::RefsView::SolidOps::Entry(
+  const BRepGraph_SolidRefId theRefId) const
 {
   return myGraph->myData->myIncStorage.SolidRef(theRefId);
 }
 
 //=================================================================================================
 
-const BRepGraphInc::ChildRef& BRepGraph::RefsView::Child(const BRepGraph_ChildRefId theRefId) const
+const BRepGraphInc::ChildRef& BRepGraph::RefsView::ChildOps::Entry(
+  const BRepGraph_ChildRefId theRefId) const
 {
   return myGraph->myData->myIncStorage.ChildRef(theRefId);
 }
 
 //=================================================================================================
 
-const BRepGraphInc::OccurrenceRef& BRepGraph::RefsView::Occurrence(
+const BRepGraphInc::OccurrenceRef& BRepGraph::RefsView::OccurrenceOps::Entry(
   const BRepGraph_OccurrenceRefId theRefId) const
 {
   return myGraph->myData->myIncStorage.OccurrenceRef(theRefId);
@@ -242,99 +247,7 @@ const BRepGraphInc::OccurrenceRef& BRepGraph::RefsView::Occurrence(
 
 //=================================================================================================
 
-BRepGraph_RefUID BRepGraph::RefsView::UIDOf(const BRepGraph_RefId theRefId) const
-{
-  if (!theRefId.IsValid())
-    return BRepGraph_RefUID();
-
-  const NCollection_Vector<BRepGraph_RefUID>& aVec =
-    myGraph->myData->myIncStorage.RefUIDs(theRefId.RefKind);
-  if (theRefId.Index >= aVec.Length())
-    return BRepGraph_RefUID();
-  return aVec.Value(theRefId.Index);
-}
-
-//=================================================================================================
-
-BRepGraph_RefId BRepGraph::RefsView::RefIdFrom(const BRepGraph_RefUID& theUID) const
-{
-  if (!theUID.IsValid())
-    return BRepGraph_RefId();
-  if (theUID.Generation() != myGraph->myData->myGeneration.load())
-    return BRepGraph_RefId();
-
-  BRepGraph_Data& aData = *myGraph->myData;
-  ensureRefUIDReverseIndex(aData);
-
-  std::shared_lock<std::shared_mutex> aReadLock(aData.myRefUIDToRefIdMutex);
-  const BRepGraph_RefId*              aRefId = aData.myRefUIDToRefId.Seek(theUID);
-  return aRefId != nullptr ? *aRefId : BRepGraph_RefId();
-}
-
-//=================================================================================================
-
-bool BRepGraph::RefsView::Has(const BRepGraph_RefUID& theUID) const
-{
-  if (!theUID.IsValid())
-    return false;
-  if (theUID.Generation() != myGraph->myData->myGeneration.load())
-    return false;
-
-  BRepGraph_Data& aData = *myGraph->myData;
-  ensureRefUIDReverseIndex(aData);
-
-  std::shared_lock<std::shared_mutex> aReadLock(aData.myRefUIDToRefIdMutex);
-  return aData.myRefUIDToRefId.Seek(theUID) != nullptr;
-}
-
-//=================================================================================================
-
-BRepGraph_VersionStamp BRepGraph::RefsView::StampOf(const BRepGraph_RefId theRefId) const
-{
-  if (!theRefId.IsValid())
-    return BRepGraph_VersionStamp();
-
-  const NCollection_Vector<BRepGraph_RefUID>& aUIDs =
-    myGraph->myData->myIncStorage.RefUIDs(theRefId.RefKind);
-  if (theRefId.Index >= aUIDs.Length())
-    return BRepGraph_VersionStamp();
-
-  const BRepGraphInc::BaseRef& aBase = myGraph->myData->myIncStorage.BaseRef(theRefId);
-  if (aBase.IsRemoved)
-    return BRepGraph_VersionStamp();
-
-  return BRepGraph_VersionStamp(aUIDs.Value(theRefId.Index),
-                                aBase.OwnGen,
-                                myGraph->myData->myGeneration.load());
-}
-
-//=================================================================================================
-
-bool BRepGraph::RefsView::IsStale(const BRepGraph_VersionStamp& theStamp) const
-{
-  if (!theStamp.IsValid())
-    return true;
-
-  if (!theStamp.IsRefStamp())
-    return true;
-
-  if (theStamp.myGeneration != myGraph->myData->myGeneration.load())
-    return true;
-
-  const BRepGraph_RefId aRefId = RefIdFrom(theStamp.myRefUID);
-  if (!aRefId.IsValid())
-    return true;
-
-  const BRepGraph_VersionStamp aCurrent = StampOf(aRefId);
-  if (!aCurrent.IsValid())
-    return true;
-
-  return aCurrent.myMutationGen != theStamp.myMutationGen;
-}
-
-//=================================================================================================
-
-const NCollection_Vector<BRepGraph_FaceRefId>& BRepGraph::RefsView::FaceRefIdsOf(
+const NCollection_Vector<BRepGraph_FaceRefId>& BRepGraph::RefsView::FaceOps::IdsOf(
   const BRepGraph_ShellId theShell) const
 {
   static const NCollection_Vector<BRepGraph_FaceRefId> anEmpty;
@@ -345,7 +258,7 @@ const NCollection_Vector<BRepGraph_FaceRefId>& BRepGraph::RefsView::FaceRefIdsOf
 
 //=================================================================================================
 
-const NCollection_Vector<BRepGraph_WireRefId>& BRepGraph::RefsView::WireRefIdsOf(
+const NCollection_Vector<BRepGraph_WireRefId>& BRepGraph::RefsView::WireOps::IdsOf(
   const BRepGraph_FaceId theFace) const
 {
   static const NCollection_Vector<BRepGraph_WireRefId> anEmpty;
@@ -356,7 +269,7 @@ const NCollection_Vector<BRepGraph_WireRefId>& BRepGraph::RefsView::WireRefIdsOf
 
 //=================================================================================================
 
-const NCollection_Vector<BRepGraph_CoEdgeRefId>& BRepGraph::RefsView::CoEdgeRefIdsOf(
+const NCollection_Vector<BRepGraph_CoEdgeRefId>& BRepGraph::RefsView::CoEdgeOps::IdsOf(
   const BRepGraph_WireId theWire) const
 {
   static const NCollection_Vector<BRepGraph_CoEdgeRefId> anEmpty;
@@ -367,7 +280,7 @@ const NCollection_Vector<BRepGraph_CoEdgeRefId>& BRepGraph::RefsView::CoEdgeRefI
 
 //=================================================================================================
 
-const NCollection_Vector<BRepGraph_ShellRefId>& BRepGraph::RefsView::ShellRefIdsOf(
+const NCollection_Vector<BRepGraph_ShellRefId>& BRepGraph::RefsView::ShellOps::IdsOf(
   const BRepGraph_SolidId theSolid) const
 {
   static const NCollection_Vector<BRepGraph_ShellRefId> anEmpty;
@@ -378,7 +291,7 @@ const NCollection_Vector<BRepGraph_ShellRefId>& BRepGraph::RefsView::ShellRefIds
 
 //=================================================================================================
 
-const NCollection_Vector<BRepGraph_ChildRefId>& BRepGraph::RefsView::ChildRefIdsOf(
+const NCollection_Vector<BRepGraph_ChildRefId>& BRepGraph::RefsView::ChildOps::IdsOf(
   const BRepGraph_CompoundId theCompound) const
 {
   static const NCollection_Vector<BRepGraph_ChildRefId> anEmpty;
@@ -389,7 +302,7 @@ const NCollection_Vector<BRepGraph_ChildRefId>& BRepGraph::RefsView::ChildRefIds
 
 //=================================================================================================
 
-const NCollection_Vector<BRepGraph_OccurrenceRefId>& BRepGraph::RefsView::OccurrenceRefIdsOf(
+const NCollection_Vector<BRepGraph_OccurrenceRefId>& BRepGraph::RefsView::OccurrenceOps::IdsOf(
   const BRepGraph_ProductId theProduct) const
 {
   static const NCollection_Vector<BRepGraph_OccurrenceRefId> anEmpty;
@@ -400,7 +313,7 @@ const NCollection_Vector<BRepGraph_OccurrenceRefId>& BRepGraph::RefsView::Occurr
 
 //=================================================================================================
 
-const NCollection_Vector<BRepGraph_SolidRefId>& BRepGraph::RefsView::SolidRefIdsOf(
+const NCollection_Vector<BRepGraph_SolidRefId>& BRepGraph::RefsView::SolidOps::IdsOf(
   const BRepGraph_CompSolidId theCompSolid) const
 {
   static const NCollection_Vector<BRepGraph_SolidRefId> anEmpty;
@@ -411,7 +324,7 @@ const NCollection_Vector<BRepGraph_SolidRefId>& BRepGraph::RefsView::SolidRefIds
 
 //=================================================================================================
 
-NCollection_Vector<BRepGraph_VertexRefId> BRepGraph::RefsView::VertexRefIdsOf(
+NCollection_Vector<BRepGraph_VertexRefId> BRepGraph::RefsView::VertexOps::IdsOf(
   const BRepGraph_EdgeId                          theEdge,
   const occ::handle<NCollection_BaseAllocator>& theAllocator) const
 {

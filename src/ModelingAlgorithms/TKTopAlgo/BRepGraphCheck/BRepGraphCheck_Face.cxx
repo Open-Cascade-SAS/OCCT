@@ -46,7 +46,7 @@ static NCollection_Vector<BRepGraphInc::CoEdgeUsage> collectWireCoEdgeRefs(
   for (int aRefIter = 0; aRefIter < aWireDef.CoEdgeRefIds.Length(); ++aRefIter)
   {
     const BRepGraph_CoEdgeRefId    aRefId = aWireDef.CoEdgeRefIds.Value(aRefIter);
-    const BRepGraphInc::CoEdgeRef& aRef   = theRefs.CoEdge(aRefId);
+    const BRepGraphInc::CoEdgeRef& aRef   = theRefs.CoEdges().Entry(aRefId);
     if (aRef.IsRemoved || !aRef.CoEdgeDefId.IsValid(theDefs.CoEdges().Nb()))
     {
       continue;
@@ -72,7 +72,7 @@ static NCollection_Vector<BRepGraphInc::WireRef> collectFaceWireRefs(
   for (int aRefIter = 0; aRefIter < aFaceDef.WireRefIds.Length(); ++aRefIter)
   {
     const BRepGraph_WireRefId    aRefId = aFaceDef.WireRefIds.Value(aRefIter);
-    const BRepGraphInc::WireRef& aRef   = theRefs.Wire(aRefId);
+    const BRepGraphInc::WireRef& aRef   = theRefs.Wires().Entry(aRefId);
     if (aRef.IsRemoved || !aRef.WireDefId.IsValid(theDefs.Wires().Nb()))
     {
       continue;
@@ -105,7 +105,7 @@ static double computeWireSignedArea(
     return aDefs.CoEdges().Definition(BRepGraph_CoEdgeId(theIdx));
   };
   auto vtxRefLookup = [&theGraph](const BRepGraph_VertexRefId theRefId) -> BRepGraph_VertexId {
-    return theGraph.Refs().Vertex(theRefId).VertexDefId;
+    return theGraph.Refs().Vertices().Entry(theRefId).VertexDefId;
   };
   for (BRepGraph_WireExplorer anExp(theCoEdgeRefs, coedgeLookup, edgeLookup, vtxRefLookup);
        anExp.More();
@@ -179,7 +179,7 @@ static void collectWirePCurves(const BRepGraph&                                 
     return aDefs.CoEdges().Definition(BRepGraph_CoEdgeId(theIdx));
   };
   auto vtxRefLookup2 = [&theGraph](const BRepGraph_VertexRefId theRefId) -> BRepGraph_VertexId {
-    return theGraph.Refs().Vertex(theRefId).VertexDefId;
+    return theGraph.Refs().Vertices().Entry(theRefId).VertexDefId;
   };
   for (BRepGraph_WireExplorer anExp(theCoEdgeRefs, coedgeLookup, edgeLookup, vtxRefLookup2);
        anExp.More();
@@ -225,14 +225,14 @@ static void collectWirePCurves(const BRepGraph&                                 
                                                   : anEdgeDef.EndVertexRefId;
       aData.StartVtxId =
         aStartRefId.IsValid()
-          ? BRepGraph_VertexId(theGraph.Refs().Vertex(aStartRefId).VertexDefId.Index)
+          ? BRepGraph_VertexId(theGraph.Refs().Vertices().Entry(aStartRefId).VertexDefId.Index)
           : BRepGraph_NodeId();
       const BRepGraph_VertexRefId anEndRefId = (aCoEdgeDef.Sense == TopAbs_FORWARD)
                                                  ? anEdgeDef.EndVertexRefId
                                                  : anEdgeDef.StartVertexRefId;
       aData.EndVtxId =
         anEndRefId.IsValid()
-          ? BRepGraph_VertexId(theGraph.Refs().Vertex(anEndRefId).VertexDefId.Index)
+          ? BRepGraph_VertexId(theGraph.Refs().Vertices().Entry(anEndRefId).VertexDefId.Index)
           : BRepGraph_NodeId();
     }
 

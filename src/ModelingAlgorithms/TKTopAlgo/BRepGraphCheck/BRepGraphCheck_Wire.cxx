@@ -46,7 +46,7 @@ BRepGraph_NodeId resolveOrientedStartVertex(const BRepGraph&             theGrap
     (theSense == TopAbs_FORWARD) ? theEdge.StartVertexRefId : theEdge.EndVertexRefId;
   if (!aRefId.IsValid())
     return BRepGraph_NodeId();
-  return BRepGraph_VertexId(theGraph.Refs().Vertex(aRefId).VertexDefId.Index);
+  return BRepGraph_VertexId(theGraph.Refs().Vertices().Entry(aRefId).VertexDefId.Index);
 }
 
 //! Resolve oriented end vertex through ref entries.
@@ -58,7 +58,7 @@ BRepGraph_NodeId resolveOrientedEndVertex(const BRepGraph&             theGraph,
     (theSense == TopAbs_FORWARD) ? theEdge.EndVertexRefId : theEdge.StartVertexRefId;
   if (!aRefId.IsValid())
     return BRepGraph_NodeId();
-  return BRepGraph_VertexId(theGraph.Refs().Vertex(aRefId).VertexDefId.Index);
+  return BRepGraph_VertexId(theGraph.Refs().Vertices().Entry(aRefId).VertexDefId.Index);
 }
 
 //=================================================================================================
@@ -75,7 +75,7 @@ static NCollection_Vector<BRepGraphInc::CoEdgeUsage> collectWireCoEdgeRefs(
   for (int aRefIter = 0; aRefIter < aWireDef.CoEdgeRefIds.Length(); ++aRefIter)
   {
     const BRepGraph_CoEdgeRefId    aRefId = aWireDef.CoEdgeRefIds.Value(aRefIter);
-    const BRepGraphInc::CoEdgeRef& aRef   = aRefs.CoEdge(aRefId);
+    const BRepGraphInc::CoEdgeRef& aRef   = aRefs.CoEdges().Entry(aRefId);
     if (aRef.IsRemoved || !aRef.CoEdgeDefId.IsValid(aDefs.CoEdges().Nb()))
     {
       continue;
@@ -329,7 +329,7 @@ void BRepGraphCheck::CheckWireOnFace(const BRepGraph&                          t
       return aDefs.CoEdges().Definition(BRepGraph_CoEdgeId(theIdx));
     };
     auto vtxRefLookup = [&theGraph](const BRepGraph_VertexRefId theRefId) -> BRepGraph_VertexId {
-      return theGraph.Refs().Vertex(theRefId).VertexDefId;
+      return theGraph.Refs().Vertices().Entry(theRefId).VertexDefId;
     };
     BRepGraph_WireExplorer    aWireExp(aCoEdgeRefs, coedgeLookup, edgeLookup, vtxRefLookup);
     BRepGraphInc::CoEdgeUsage aFirstCR = aWireExp.CurrentRef();

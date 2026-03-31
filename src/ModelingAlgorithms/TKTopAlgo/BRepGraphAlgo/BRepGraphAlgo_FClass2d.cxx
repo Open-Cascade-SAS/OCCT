@@ -170,7 +170,7 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph&       theGraph,
   for (int aWRI = 0; aWRI < aFaceEnt.WireRefIds.Length(); ++aWRI)
   {
     const BRepGraph_WireRefId    aWireRefId = aFaceEnt.WireRefIds.Value(aWRI);
-    const BRepGraphInc::WireRef& aWR        = aRefs.Wire(aWireRefId);
+    const BRepGraphInc::WireRef& aWR        = aRefs.Wires().Entry(aWireRefId);
     if (aWR.IsRemoved || !aWR.WireDefId.IsValid(aTopoView.Wires().Nb()))
     {
       continue;
@@ -227,7 +227,7 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph&       theGraph,
       return theGraph.Topo().CoEdges().Definition(BRepGraph_CoEdgeId(theIdx));
     };
     auto vtxRefLookup = [&theGraph](const BRepGraph_VertexRefId theRefId) -> BRepGraph_VertexId {
-      return theGraph.Refs().Vertex(theRefId).VertexDefId;
+      return theGraph.Refs().Vertices().Entry(theRefId).VertexDefId;
     };
     NCollection_Vector<BRepGraphInc::CoEdgeUsage> aWireCoEdgeRefs;
     const BRepGraph_WireId                        aWireId(aWireDefIndices(aWireIdx));
@@ -235,7 +235,7 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph&       theGraph,
     for (int aCRI = 0; aCRI < aWireEnt.CoEdgeRefIds.Length(); ++aCRI)
     {
       const BRepGraph_CoEdgeRefId    aCERefId = aWireEnt.CoEdgeRefIds.Value(aCRI);
-      const BRepGraphInc::CoEdgeRef& aCRE     = aRefs.CoEdge(aCERefId);
+      const BRepGraphInc::CoEdgeRef& aCRE     = aRefs.CoEdges().Entry(aCERefId);
       if (aCRE.IsRemoved || !aCRE.CoEdgeDefId.IsValid(aTopoView.CoEdges().Nb()))
       {
         continue;

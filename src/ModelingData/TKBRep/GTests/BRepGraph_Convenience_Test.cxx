@@ -182,17 +182,17 @@ TEST_F(BRepGraph_ConvenienceTest, ShellFaceRefs_Box_SixFaces)
 {
   const BRepGraph::RefsView& aRefs = myGraph.Refs();
   ASSERT_EQ(myGraph.Topo().Shells().Nb(), 1);
-  EXPECT_EQ(aRefs.FaceRefIdsOf(BRepGraph_ShellId(0)).Length(), 6);
+  EXPECT_EQ(aRefs.Faces().IdsOf(BRepGraph_ShellId(0)).Length(), 6);
 }
 
 TEST_F(BRepGraph_ConvenienceTest, ShellFaceRefs_AllValid)
 {
   const BRepGraph::RefsView& aRefs       = myGraph.Refs();
   const NCollection_Vector<BRepGraph_FaceRefId>& aFaceRefIds =
-    aRefs.FaceRefIdsOf(BRepGraph_ShellId(0));
+    aRefs.Faces().IdsOf(BRepGraph_ShellId(0));
   for (int aFaceIter = 0; aFaceIter < aFaceRefIds.Length(); ++aFaceIter)
   {
-    const BRepGraphInc::FaceRef& aFaceRef = aRefs.Face(aFaceRefIds.Value(aFaceIter));
+    const BRepGraphInc::FaceRef& aFaceRef = aRefs.Faces().Entry(aFaceRefIds.Value(aFaceIter));
     EXPECT_TRUE(aFaceRef.FaceDefId.IsValid()) << "Shell face ref " << aFaceIter;
   }
 }
@@ -200,7 +200,7 @@ TEST_F(BRepGraph_ConvenienceTest, ShellFaceRefs_AllValid)
 TEST_F(BRepGraph_ConvenienceTest, ShellFaceRefs_InvalidShell_Empty)
 {
   const BRepGraph::RefsView& aRefs = myGraph.Refs();
-  EXPECT_EQ(aRefs.FaceRefIdsOf(BRepGraph_ShellId(100)).Length(), 0);
+  EXPECT_EQ(aRefs.Faces().IdsOf(BRepGraph_ShellId(100)).Length(), 0);
 }
 
 // ---------- Integration: Cylinder with seam edge ----------

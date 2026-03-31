@@ -286,10 +286,10 @@ TEST(BRepGraph_AssemblyTest, RemoveOccurrence_UpdatesParent)
 
   EXPECT_EQ(aGraph.Topo().Products().NbComponents(aAssemblyId), 1);
   const NCollection_Vector<BRepGraph_OccurrenceRefId>& aBeforeRefs =
-    aGraph.Refs().OccurrenceRefIdsOf(aAssemblyId);
+    aGraph.Refs().Occurrences().IdsOf(aAssemblyId);
   ASSERT_EQ(aBeforeRefs.Length(), 1);
   const BRepGraph_OccurrenceRefId anOccRefId = aBeforeRefs.Value(0);
-  EXPECT_FALSE(aGraph.Refs().Occurrence(anOccRefId).IsRemoved);
+  EXPECT_FALSE(aGraph.Refs().Occurrences().Entry(anOccRefId).IsRemoved);
 
   // Remove the occurrence - should update parent's OccurrenceRefs.
   aGraph.Builder().RemoveSubgraph(anOccId);
@@ -297,9 +297,9 @@ TEST(BRepGraph_AssemblyTest, RemoveOccurrence_UpdatesParent)
   EXPECT_TRUE(aGraph.Topo().Gen().IsRemoved(anOccId));
   EXPECT_EQ(aGraph.Topo().Products().NbComponents(aAssemblyId), 0);
   const NCollection_Vector<BRepGraph_OccurrenceRefId>& anAfterRefs =
-    aGraph.Refs().OccurrenceRefIdsOf(aAssemblyId);
+    aGraph.Refs().Occurrences().IdsOf(aAssemblyId);
   EXPECT_EQ(anAfterRefs.Length(), 0);
-  EXPECT_TRUE(aGraph.Refs().Occurrence(anOccRefId).IsRemoved);
+  EXPECT_TRUE(aGraph.Refs().Occurrences().Entry(anOccRefId).IsRemoved);
 }
 
 // =============================================================================

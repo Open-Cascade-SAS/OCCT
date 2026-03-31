@@ -48,7 +48,7 @@ void forWireCoEdgeRefEntries(const BRepGraph&       theGraph,
   for (int i = 0; i < aWireEnt.CoEdgeRefIds.Length(); ++i)
   {
     const BRepGraph_CoEdgeRefId    aRefId = aWireEnt.CoEdgeRefIds.Value(i);
-    const BRepGraphInc::CoEdgeRef& aCR    = aRefs.CoEdge(aRefId);
+    const BRepGraphInc::CoEdgeRef& aCR    = aRefs.CoEdges().Entry(aRefId);
     if (aCR.IsRemoved || !aCR.CoEdgeDefId.IsValid(theGraph.Topo().CoEdges().Nb()))
     {
       continue;
@@ -67,7 +67,7 @@ void forFaceWireRefEntries(const BRepGraph&       theGraph,
   for (int i = 0; i < aFaceEnt.WireRefIds.Length(); ++i)
   {
     const BRepGraph_WireRefId    aRefId = aFaceEnt.WireRefIds.Value(i);
-    const BRepGraphInc::WireRef& aWR    = aRefs.Wire(aRefId);
+    const BRepGraphInc::WireRef& aWR    = aRefs.Wires().Entry(aRefId);
     if (aWR.IsRemoved || !aWR.WireDefId.IsValid(theGraph.Topo().Wires().Nb()))
     {
       continue;
@@ -381,10 +381,10 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
       aKey.CurvePtr = BRepGraph_Tool::Edge::Curve(theGraph, anEdgeId).get();
       const BRepGraph_VertexId aStartVtxId =
         anEdge.StartVertexRefId.IsValid()
-          ? theGraph.Refs().Vertex(anEdge.StartVertexRefId).VertexDefId
+          ? theGraph.Refs().Vertices().Entry(anEdge.StartVertexRefId).VertexDefId
           : BRepGraph_VertexId();
       const BRepGraph_VertexId anEndVtxId =
-        anEdge.EndVertexRefId.IsValid() ? theGraph.Refs().Vertex(anEdge.EndVertexRefId).VertexDefId
+        anEdge.EndVertexRefId.IsValid() ? theGraph.Refs().Vertices().Entry(anEdge.EndVertexRefId).VertexDefId
                                         : BRepGraph_VertexId();
       aKey.StartVtx = aStartVtxId.IsValid() ? aStartVtxId.Index : -1;
       aKey.EndVtx   = anEndVtxId.IsValid() ? anEndVtxId.Index : -1;
@@ -448,22 +448,22 @@ BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& 
         const BRepGraph_NodeId aCanonStart =
           aCanonEdge.StartVertexRefId.IsValid()
             ? BRepGraph_VertexId(
-                theGraph.Refs().Vertex(aCanonEdge.StartVertexRefId).VertexDefId.Index)
+                theGraph.Refs().Vertices().Entry(aCanonEdge.StartVertexRefId).VertexDefId.Index)
             : BRepGraph_NodeId();
         const BRepGraph_NodeId aCanonEnd =
           aCanonEdge.EndVertexRefId.IsValid()
             ? BRepGraph_VertexId(
-                theGraph.Refs().Vertex(aCanonEdge.EndVertexRefId).VertexDefId.Index)
+                theGraph.Refs().Vertices().Entry(aCanonEdge.EndVertexRefId).VertexDefId.Index)
             : BRepGraph_NodeId();
         const BRepGraph_NodeId anOldStart =
           anOldEdge.StartVertexRefId.IsValid()
             ? BRepGraph_VertexId(
-                theGraph.Refs().Vertex(anOldEdge.StartVertexRefId).VertexDefId.Index)
+                theGraph.Refs().Vertices().Entry(anOldEdge.StartVertexRefId).VertexDefId.Index)
             : BRepGraph_NodeId();
         const BRepGraph_NodeId anOldEnd =
           anOldEdge.EndVertexRefId.IsValid()
             ? BRepGraph_VertexId(
-                theGraph.Refs().Vertex(anOldEdge.EndVertexRefId).VertexDefId.Index)
+                theGraph.Refs().Vertices().Entry(anOldEdge.EndVertexRefId).VertexDefId.Index)
             : BRepGraph_NodeId();
         const bool isReversed = (aCanonStart == anOldEnd && aCanonEnd == anOldStart);
 
