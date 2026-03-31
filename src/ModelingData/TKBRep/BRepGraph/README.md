@@ -254,10 +254,14 @@ Can also start from a Product to descend through assembly occurrences into topol
 
 - `RootProducts()` / `IsAssembly()` / `IsPart()` / `NbComponents()` / `Component()` - assembly-aware product traversal
 -- `GlobalLocation(path)` / `GlobalOrientation(path)` - composed transforms
+- `ForEachPathTo(node, alloc, callback)` / `ForEachPathFromTo(root, leaf, alloc, callback)` - lazy reverse path enumeration without result-vector materialization
+- `ForEachNodeLocation(node, alloc, callback)` - lazy occurrence enumeration with path, location, and orientation per branch
 -- `PathsTo(node)` - all paths from any root to a given entity (reverse lookup)
 -- `NodeLocations(node)` - all occurrence entries with paths, locations, orientations
 -- `CommonAncestor(path1, path2)` - longest common prefix
 -- `FilterByInclude` / `FilterByExclude` - path set filtering
+
+The vector-returning reverse lookup methods remain as convenience wrappers over the lazy enumeration layer.
 - `IsAncestorOf`, `AllNodesOnPath`, `DepthOfKind`
 
 ### SubGraph

@@ -15,6 +15,7 @@
 #define _BRepGraph_PathView_HeaderFile
 
 #include <BRepGraph.hxx>
+#include <BRepGraph_ParentExplorer.hxx>
 #include <BRepGraph_TopologyPath.hxx>
 #include <NCollection_BaseAllocator.hxx>
 #include <TopAbs_Orientation.hxx>
@@ -53,6 +54,26 @@ public:
     TopLoc_Location        Location;
     TopAbs_Orientation     Orientation;
   };
+
+  //! Lazily enumerate all root-to-node paths without materializing a result vector.
+  //! The callback is invoked once for each explicit branch root reaching the node.
+  template <typename TheCallback>
+  void ForEachPathTo(const BRepGraph_NodeId theNode,
+                     const occ::handle<NCollection_BaseAllocator>& theAllocator,
+                     TheCallback&& theCallback) const;
+
+  //! Lazily enumerate all paths from theRoot to theLeaf.
+  template <typename TheCallback>
+  void ForEachPathFromTo(const BRepGraph_NodeId theRoot,
+                         const BRepGraph_NodeId theLeaf,
+                         const occ::handle<NCollection_BaseAllocator>& theAllocator,
+                         TheCallback&& theCallback) const;
+
+  //! Lazily enumerate all occurrence entries for a node without materializing a result vector.
+  template <typename TheCallback>
+  void ForEachNodeLocation(const BRepGraph_NodeId theNode,
+                           const occ::handle<NCollection_BaseAllocator>& theAllocator,
+                           TheCallback&& theCallback) const;
 
   //! All occurrence entries for a node: paths, locations, orientations.
   //! @note Computed on demand via reverse index walk. No caching.
@@ -271,65 +292,81 @@ private:
   //! Child entity for a 1:1 transition.
   BRepGraph_NodeId transitChild(const BRepGraph_NodeId theNode) const;
 
-  //! Reverse walk to discover all paths to a node (no location composition).
-  //! @param[in] theNode target node
-  //! @param[out] theResult output paths; cleared at method entry
-  void reverseWalkPaths(const BRepGraph_NodeId                       theNode,
-                        NCollection_Vector<BRepGraph_TopologyPath>& theResult,
-                        const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
-
-  //! Depth-budgeted reverse walk (decrements budget on each recursive call).
-  //! Appends results to theResult.
-  void reverseWalkPaths(const BRepGraph_NodeId                       theNode,
-                        const int                                    theDepthBudget,
-                        NCollection_Vector<BRepGraph_TopologyPath>& theResult,
-                        const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
-
-  //! Reverse walk with location/orientation composition (for NodeLocations).
-  //! @param[in] theNode target node
-  //! @param[out] theResult output entries; cleared at method entry
-  void reverseWalkEntries(const BRepGraph_NodeId               theNode,
-                          NCollection_Vector<OccurrenceEntry>& theResult,
-                          const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
-
-  //! Append all parent paths and push one additional child step on appended range.
-  void appendParentPathsWithStep(const BRepGraph_NodeId                       theParent,
-                                 const int                                    theDepthBudget,
-                                 const int                                    theRefIdx,
-                                 NCollection_Vector<BRepGraph_TopologyPath>& theResult,
-                                 const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
-
-  //! Walk upward from an edge to all roots, collecting paths.
-  void reverseWalkFromEdge(const int                                   theEdgeIdx,
-                           NCollection_Vector<BRepGraph_TopologyPath>& theResult,
-                           const int                                   theDepthBudget,
-                           const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
-
-  //! Walk upward from a face to all roots.
-  void reverseWalkFromFace(const int                                   theFaceIdx,
-                           NCollection_Vector<BRepGraph_TopologyPath>& theResult,
-                           const int                                   theDepthBudget,
-                           const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
-
-  //! Walk upward from a shell to all roots.
-  void reverseWalkFromShell(const int                                   theShellIdx,
-                            NCollection_Vector<BRepGraph_TopologyPath>& theResult,
-                            const int                                   theDepthBudget,
-                            const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
-
-  //! Walk upward from a wire to all roots via faces.
-  void reverseWalkFromWire(const int                                   theWireIdx,
-                           NCollection_Vector<BRepGraph_TopologyPath>& theResult,
-                           const int                                   theDepthBudget,
-                           const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
-
-  //! Walk upward from a vertex to all roots via edges.
-  void reverseWalkFromVertex(const int                                   theVertexIdx,
-                             NCollection_Vector<BRepGraph_TopologyPath>& theResult,
-                             const int                                   theDepthBudget,
-                             const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
-
   const BRepGraph* myGraph;
 };
+
+template <typename TheCallback>
+void BRepGraph::PathView::ForEachPathTo(const BRepGraph_NodeId theNode,
+                                        const occ::handle<NCollection_BaseAllocator>& theAllocator,
+                                        TheCallback&& theCallback) const
+{
+  if (!theNode.IsValid())
+  {
+    return;
+  }
+
+  for (BRepGraph_ParentExplorer anExp(*myGraph, theNode); anExp.More(); anExp.Next())
+  {
+    if (!anExp.IsCurrentBranchRoot())
+    {
+      continue;
+    }
+    theCallback(anExp.CurrentLeafPath(theAllocator));
+  }
+}
+
+template <typename TheCallback>
+void BRepGraph::PathView::ForEachPathFromTo(
+  const BRepGraph_NodeId theRoot,
+  const BRepGraph_NodeId theLeaf,
+  const occ::handle<NCollection_BaseAllocator>& theAllocator,
+  TheCallback&& theCallback) const
+{
+  if (!theRoot.IsValid() || !theLeaf.IsValid())
+  {
+    return;
+  }
+
+  if (theRoot == theLeaf)
+  {
+    theCallback(BRepGraph_TopologyPath::FromRoot(theRoot, theAllocator));
+    return;
+  }
+
+  ForEachPathTo(theLeaf,
+                theAllocator,
+                [&](const BRepGraph_TopologyPath& thePath)
+                {
+                  if (thePath.Root() == theRoot)
+                  {
+                    theCallback(thePath);
+                  }
+                });
+}
+
+template <typename TheCallback>
+void BRepGraph::PathView::ForEachNodeLocation(
+  const BRepGraph_NodeId theNode,
+  const occ::handle<NCollection_BaseAllocator>& theAllocator,
+  TheCallback&& theCallback) const
+{
+  if (!theNode.IsValid())
+  {
+    return;
+  }
+
+  for (BRepGraph_ParentExplorer anExp(*myGraph, theNode); anExp.More(); anExp.Next())
+  {
+    if (!anExp.IsCurrentBranchRoot())
+    {
+      continue;
+    }
+
+    const OccurrenceEntry anEntry{anExp.CurrentLeafPath(theAllocator),
+                                  anExp.LeafLocation(),
+                                  anExp.LeafOrientation()};
+    theCallback(anEntry);
+  }
+}
 
 #endif // _BRepGraph_PathView_HeaderFile

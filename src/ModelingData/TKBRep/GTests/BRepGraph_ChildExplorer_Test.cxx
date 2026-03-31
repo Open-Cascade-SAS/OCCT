@@ -652,6 +652,43 @@ TEST(BRepGraph_ChildExplorerTest, PathsTo_MatchesExplorer)
   EXPECT_TRUE(aFound);
 }
 
+TEST(BRepGraph_ChildExplorerTest, ForEachPathTo_MatchesPathsTo)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  const occ::handle<NCollection_BaseAllocator> anAlloc = pathAllocator();
+  NCollection_Vector<BRepGraph_TopologyPath>   aEnumerated(8, anAlloc);
+  aGraph.Paths().ForEachPathTo(BRepGraph_EdgeId(0),
+                               anAlloc,
+                               [&](const BRepGraph_TopologyPath& thePath)
+                               { aEnumerated.Append(BRepGraph_TopologyPath(thePath, anAlloc)); });
+
+  const NCollection_Vector<BRepGraph_TopologyPath> aPaths =
+    aGraph.Paths().PathsTo(BRepGraph_EdgeId(0), anAlloc);
+  expectSameSequence(aEnumerated, aPaths);
+}
+
+TEST(BRepGraph_ChildExplorerTest, ForEachPathFromTo_MatchesPathsFromTo)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  const occ::handle<NCollection_BaseAllocator> anAlloc = pathAllocator();
+  NCollection_Vector<BRepGraph_TopologyPath>   aEnumerated(8, anAlloc);
+  aGraph.Paths().ForEachPathFromTo(BRepGraph_SolidId(0),
+                                   BRepGraph_EdgeId(0),
+                                   anAlloc,
+                                   [&](const BRepGraph_TopologyPath& thePath)
+                                   { aEnumerated.Append(BRepGraph_TopologyPath(thePath, anAlloc)); });
+
+  const NCollection_Vector<BRepGraph_TopologyPath> aPaths =
+    aGraph.Paths().PathsFromTo(BRepGraph_SolidId(0), BRepGraph_EdgeId(0), anAlloc);
+  expectSameSequence(aEnumerated, aPaths);
+}
+
 TEST(BRepGraph_ChildExplorerTest, PathsTo_MatchesExplorer_WhenEarlierCompoundRefRemoved)
 {
   // Build a compound of two boxes to get two child refs under one parent.
@@ -938,6 +975,31 @@ TEST(BRepGraph_ChildExplorerTest, NodeLocations_VertexMultipleOccurrences)
   const NCollection_Vector<BRepGraph::PathView::OccurrenceEntry> aEntries =
     aGraph.Paths().NodeLocations(BRepGraph_VertexId(0), pathAllocator());
   EXPECT_GT(aEntries.Length(), 0);
+}
+
+TEST(BRepGraph_ChildExplorerTest, ForEachNodeLocation_MatchesNodeLocations)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  const occ::handle<NCollection_BaseAllocator> anAlloc = pathAllocator();
+  NCollection_Vector<BRepGraph::PathView::OccurrenceEntry> aEnumerated(8, anAlloc);
+  aGraph.Paths().ForEachNodeLocation(BRepGraph_EdgeId(0),
+                                     anAlloc,
+                                     [&](const BRepGraph::PathView::OccurrenceEntry& theEntry)
+                                     {
+                                       aEnumerated.Append(
+                                         BRepGraph::PathView::OccurrenceEntry{BRepGraph_TopologyPath(
+                                                                                theEntry.Path,
+                                                                                anAlloc),
+                                                                              theEntry.Location,
+                                                                              theEntry.Orientation});
+                                     });
+
+  const NCollection_Vector<BRepGraph::PathView::OccurrenceEntry> aEntries =
+    aGraph.Paths().NodeLocations(BRepGraph_EdgeId(0), anAlloc);
+  expectSameOccurrenceEntries(aEnumerated, aEntries);
 }
 
 TEST(BRepGraph_ChildExplorerTest, PathsTo_InvalidNode_Empty)

@@ -199,6 +199,55 @@ BRepGraph_TopologyPath BRepGraph_ParentExplorer::CurrentPath(
 
 //=================================================================================================
 
+BRepGraph_TopologyPath BRepGraph_ParentExplorer::CurrentLeafPath(
+  const occ::handle<NCollection_BaseAllocator>& theAllocator) const
+{
+  if (!myHasMore || myStackTop < 0)
+  {
+    return BRepGraph_TopologyPath();
+  }
+
+  const int aRootFrame = branchRootFrame();
+  if (aRootFrame < 0)
+  {
+    return BRepGraph_TopologyPath();
+  }
+
+  BRepGraph_TopologyPath aPath(myStack[aRootFrame].Node, theAllocator);
+  for (int aFrameIdx = aRootFrame; aFrameIdx > 0; --aFrameIdx)
+  {
+    if (myStack[aFrameIdx].StepToChild >= 0)
+    {
+      aPath.pushStep(myStack[aFrameIdx].StepToChild);
+    }
+  }
+  return aPath;
+}
+
+//=================================================================================================
+
+const TopLoc_Location& BRepGraph_ParentExplorer::LeafLocation() const
+{
+  static const TopLoc_Location THE_EMPTY_LOCATION;
+  return myHasMore ? myStack[0].AccLocation : THE_EMPTY_LOCATION;
+}
+
+//=================================================================================================
+
+TopAbs_Orientation BRepGraph_ParentExplorer::LeafOrientation() const
+{
+  return myHasMore ? myStack[0].AccOrientation : TopAbs_FORWARD;
+}
+
+//=================================================================================================
+
+bool BRepGraph_ParentExplorer::IsCurrentBranchRoot() const
+{
+  return myHasMore && myCurrentFrame == branchRootFrame();
+}
+
+//=================================================================================================
+
 void BRepGraph_ParentExplorer::advance()
 {
   myHasMore = false;
@@ -890,6 +939,23 @@ void BRepGraph_ParentExplorer::applyTransition(const BRepGraph_NodeId theParent,
     default:
       return;
   }
+}
+
+//=================================================================================================
+
+int BRepGraph_ParentExplorer::branchRootFrame() const
+{
+  if (myStackTop < 0)
+  {
+    return -1;
+  }
+
+  int aFrameIdx = myStackTop;
+  while (aFrameIdx > 0 && myStack[aFrameIdx].StepToChild < 0)
+  {
+    --aFrameIdx;
+  }
+  return aFrameIdx;
 }
 
 //=================================================================================================

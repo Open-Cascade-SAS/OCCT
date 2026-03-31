@@ -103,6 +103,20 @@ public:
   [[nodiscard]] Standard_EXPORT BRepGraph_TopologyPath CurrentPath(
     const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
 
+  //! Full path of the current branch from its explicit root to the starting node.
+  //! Leading 1:1 wrappers are collapsed to preserve BRepGraph_TopologyPath semantics.
+  [[nodiscard]] Standard_EXPORT BRepGraph_TopologyPath CurrentLeafPath(
+    const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
+
+  //! Accumulated location at the starting node of the current branch.
+  [[nodiscard]] Standard_EXPORT const TopLoc_Location& LeafLocation() const;
+
+  //! Accumulated orientation at the starting node of the current branch.
+  [[nodiscard]] Standard_EXPORT TopAbs_Orientation LeafOrientation() const;
+
+  //! True if Current() is the explicit root node of the current branch.
+  [[nodiscard]] Standard_EXPORT bool IsCurrentBranchRoot() const;
+
 private:
   struct StackFrame
   {
@@ -123,6 +137,8 @@ private:
                                        const int              theStepToChild,
                                        TopLoc_Location&       theLocation,
                                        TopAbs_Orientation&    theOrientation) const;
+
+  [[nodiscard]] Standard_EXPORT int branchRootFrame() const;
 
   Standard_EXPORT bool findNthProductWrapper(const BRepGraph_NodeId theNode,
                                              const int              theOrdinal,
