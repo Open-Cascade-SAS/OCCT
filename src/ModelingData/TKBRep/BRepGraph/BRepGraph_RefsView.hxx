@@ -40,9 +40,8 @@
 //!
 //! ## Iterating over references
 //! Reference entries are primarily traversed in parent-owned context through
-//! the typed RefIdsOf accessors. When flat iteration is needed, there is no
-//! dedicated BRepGraph_Iterator for reference types; iterate using a counted
-//! loop over the appropriate NbXxxRefs() or NbActiveXxxRefs() count:
+//! the typed RefIdsOf accessors. When flat iteration is needed, iterate using
+//! a counted loop over the appropriate NbXxxRefs() or NbActiveXxxRefs() count:
 //! @code
 //!   const BRepGraph::RefsView& aRefs = aGraph.Refs();
 //!   for (int i = 0; i < aRefs.NbFaceRefs(); ++i)

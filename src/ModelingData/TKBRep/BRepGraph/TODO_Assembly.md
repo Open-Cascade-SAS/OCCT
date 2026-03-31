@@ -26,7 +26,8 @@ one root Product. `Build(aBox)` auto-creates a single root Product with
 - BuilderView: `AddProduct()`, `AddAssemblyProduct()`, `AddOccurrence()`, RemoveNode/RemoveSubgraph cascade
 - PathView: `OccurrenceLocation(occId)` via ParentOccurrenceDefId walk
 - MutRef: `MutProduct()`, `MutOccurrence()` RAII guards
-- Iterator: `BRepGraph_Iterator<ProductDef>`, `BRepGraph_Iterator<OccurrenceDef>`
+- Flat definition traversal via `Topo().NbProducts()` / `Topo().NbOccurrences()` with
+   `Topo().Products().Definition(id)` / `Topo().Occurrences().Definition(id)`
 - ReverseIndex: `OccurrencesOfProduct()`, `BuildProductOccurrences()`
 
 ### Assembly Reconstruction at ShapesView — DONE (2026-03-29)

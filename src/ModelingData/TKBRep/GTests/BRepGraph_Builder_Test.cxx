@@ -19,7 +19,6 @@
 #include <BRepGraphAlgo_BndLib.hxx>
 #include "BRepGraph_RefTestTools.hxx"
 #include <BRepGraph_TopoView.hxx>
-#include <BRepGraph_Iterator.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
@@ -652,7 +651,7 @@ TEST(BRepGraph_BuilderTest, MutableCompSolidDefinition)
 }
 
 // ============================================================
-// Item 3: Iterator Skips Removed Nodes
+// Item 3: Definition Traversal Skips Removed Nodes
 // ============================================================
 
 TEST(BRepGraph_BuilderTest, SkipsRemovedFaces)
@@ -670,9 +669,14 @@ TEST(BRepGraph_BuilderTest, SkipsRemovedFaces)
   aGraph.Builder().RemoveNode(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, 3));
 
   int aCount = 0;
-  for (BRepGraph_Iterator<BRepGraphInc::FaceDef> anIt(aGraph); anIt.More(); anIt.Next())
+  for (int aFaceIdx = 0; aFaceIdx < aGraph.Topo().NbFaces(); ++aFaceIdx)
   {
-    EXPECT_FALSE(anIt.Current().IsRemoved);
+    const BRepGraphInc::FaceDef& aFaceDef = aGraph.Topo().Faces().Definition(BRepGraph_FaceId(aFaceIdx));
+    if (aFaceDef.IsRemoved)
+    {
+      continue;
+    }
+    EXPECT_FALSE(aFaceDef.IsRemoved);
     ++aCount;
   }
   EXPECT_EQ(aCount, 4);
@@ -692,9 +696,14 @@ TEST(BRepGraph_BuilderTest, SkipsRemovedEdges)
   aGraph.Builder().RemoveNode(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, 0));
 
   int aCount = 0;
-  for (BRepGraph_Iterator<BRepGraphInc::EdgeDef> anIt(aGraph); anIt.More(); anIt.Next())
+  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
   {
-    EXPECT_FALSE(anIt.Current().IsRemoved);
+    const BRepGraphInc::EdgeDef& anEdgeDef = aGraph.Topo().Edges().Definition(BRepGraph_EdgeId(anEdgeIdx));
+    if (anEdgeDef.IsRemoved)
+    {
+      continue;
+    }
+    EXPECT_FALSE(anEdgeDef.IsRemoved);
     ++aCount;
   }
   EXPECT_EQ(aCount, aNbEdges - 1);
@@ -711,9 +720,14 @@ TEST(BRepGraph_BuilderTest, SkipsFirstNode)
   aGraph.Builder().RemoveNode(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Vertex, 0));
 
   int aCount = 0;
-  for (BRepGraph_Iterator<BRepGraphInc::VertexDef> anIt(aGraph); anIt.More(); anIt.Next())
+  for (int aVertexIdx = 0; aVertexIdx < aGraph.Topo().NbVertices(); ++aVertexIdx)
   {
-    EXPECT_FALSE(anIt.Current().IsRemoved);
+    const BRepGraphInc::VertexDef& aVertexDef = aGraph.Topo().Vertices().Definition(BRepGraph_VertexId(aVertexIdx));
+    if (aVertexDef.IsRemoved)
+    {
+      continue;
+    }
+    EXPECT_FALSE(aVertexDef.IsRemoved);
     ++aCount;
   }
   EXPECT_EQ(aCount, 2);

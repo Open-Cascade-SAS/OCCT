@@ -21,7 +21,6 @@ set(OCCT_BRepGraph_FILES
   BRepGraph_History.cxx
   BRepGraph_History.hxx
   BRepGraph_HistoryRecord.hxx
-  BRepGraph_Iterator.hxx
   BRepGraph_Layer.cxx
   BRepGraph_Layer.hxx
   BRepGraph_LayerRegistry.cxx

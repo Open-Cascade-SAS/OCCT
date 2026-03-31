@@ -14,7 +14,6 @@
 #include <BRepGraph.hxx>
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_TopoView.hxx>
-#include <BRepGraph_Iterator.hxx>
 #include <BRepGraph_PathView.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_ShapesView.hxx>
@@ -483,10 +482,10 @@ TEST(BRepGraph_AssemblyTest, OccurrencesOfProduct_ReverseIndex)
 }
 
 // =============================================================================
-// Iterator_Product
+// Product_Count
 // =============================================================================
 
-TEST(BRepGraph_AssemblyTest, Iterator_Product)
+TEST(BRepGraph_AssemblyTest, Product_Count)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
@@ -495,18 +494,22 @@ TEST(BRepGraph_AssemblyTest, Iterator_Product)
   (void)aGraph.Builder().AddAssemblyProduct();
 
   int aCount = 0;
-  for (BRepGraph_Iterator<BRepGraphInc::ProductDef> anIt(aGraph); anIt.More(); anIt.Next())
+  for (int aProductIdx = 0; aProductIdx < aGraph.Topo().NbProducts(); ++aProductIdx)
   {
+    if (aGraph.Topo().Products().Definition(BRepGraph_ProductId(aProductIdx)).IsRemoved)
+    {
+      continue;
+    }
     ++aCount;
   }
   EXPECT_EQ(aCount, 2); // auto root + added assembly
 }
 
 // =============================================================================
-// Iterator_Occurrence
+// Occurrence_Count
 // =============================================================================
 
-TEST(BRepGraph_AssemblyTest, Iterator_Occurrence)
+TEST(BRepGraph_AssemblyTest, Occurrence_Count)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
@@ -518,8 +521,12 @@ TEST(BRepGraph_AssemblyTest, Iterator_Occurrence)
   (void)aGraph.Builder().AddOccurrence(aAssemblyId, aPartId, TopLoc_Location());
 
   int aCount = 0;
-  for (BRepGraph_Iterator<BRepGraphInc::OccurrenceDef> anIt(aGraph); anIt.More(); anIt.Next())
+  for (int anOccurrenceIdx = 0; anOccurrenceIdx < aGraph.Topo().NbOccurrences(); ++anOccurrenceIdx)
   {
+    if (aGraph.Topo().Occurrences().Definition(BRepGraph_OccurrenceId(anOccurrenceIdx)).IsRemoved)
+    {
+      continue;
+    }
     ++aCount;
   }
   EXPECT_EQ(aCount, 2);

@@ -32,7 +32,7 @@
 //! orientation are composed incrementally during the walk, making Location()
 //! and Orientation() O(1) per call.
 //!
-//! Unlike the definition-only BRepGraph_Iterator, BRepGraph_ChildExplorer visits
+//! Unlike flat definition traversal by typed ids, BRepGraph_ChildExplorer visits
 //! each occurrence. If Edge[5] is reachable through Face[0] and Face[1],
 //! it is visited twice with different accumulated transforms.
 //!

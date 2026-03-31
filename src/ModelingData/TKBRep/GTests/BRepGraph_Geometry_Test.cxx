@@ -19,7 +19,6 @@
 #include <BRepGraphInc_Representation.hxx>
 #include <BRepGraph_Analyze.hxx>
 #include <BRepGraph_TopoView.hxx>
-#include <BRepGraph_Iterator.hxx>
 #include <BRepGraph_RepId.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_SubGraph.hxx>
@@ -291,7 +290,7 @@ TEST(BRepGraph_GeometryTest, FaceDef_Triangulation_NullForAnalyticNoCrash)
 }
 
 // ============================================================
-// Iterator tests
+// Definition traversal tests
 // ============================================================
 
 TEST(BRepGraph_GeometryTest, SolidDef_CountMatchesNb)
@@ -301,9 +300,9 @@ TEST(BRepGraph_GeometryTest, SolidDef_CountMatchesNb)
   ASSERT_TRUE(aGraph.IsDone());
 
   int aCount = 0;
-  for (BRepGraph_Iterator<BRepGraphInc::SolidDef> anIt(aGraph); anIt.More(); anIt.Next())
+  for (int aSolidIdx = 0; aSolidIdx < aGraph.Topo().NbSolids(); ++aSolidIdx)
   {
-    (void)anIt.Current();
+    (void)aGraph.Topo().Solids().Definition(BRepGraph_SolidId(aSolidIdx));
     ++aCount;
   }
   EXPECT_EQ(aCount, aGraph.Topo().NbSolids());
@@ -316,9 +315,9 @@ TEST(BRepGraph_GeometryTest, ShellDef_CountMatchesNb)
   ASSERT_TRUE(aGraph.IsDone());
 
   int aCount = 0;
-  for (BRepGraph_Iterator<BRepGraphInc::ShellDef> anIt(aGraph); anIt.More(); anIt.Next())
+  for (int aShellIdx = 0; aShellIdx < aGraph.Topo().NbShells(); ++aShellIdx)
   {
-    (void)anIt.Current();
+    (void)aGraph.Topo().Shells().Definition(BRepGraph_ShellId(aShellIdx));
     ++aCount;
   }
   EXPECT_EQ(aCount, aGraph.Topo().NbShells());
@@ -331,9 +330,9 @@ TEST(BRepGraph_GeometryTest, FaceDef_CountMatchesNb)
   ASSERT_TRUE(aGraph.IsDone());
 
   int aCount = 0;
-  for (BRepGraph_Iterator<BRepGraphInc::FaceDef> anIt(aGraph); anIt.More(); anIt.Next())
+  for (int aFaceIdx = 0; aFaceIdx < aGraph.Topo().NbFaces(); ++aFaceIdx)
   {
-    (void)anIt.Current();
+    (void)aGraph.Topo().Faces().Definition(BRepGraph_FaceId(aFaceIdx));
     ++aCount;
   }
   EXPECT_EQ(aCount, aGraph.Topo().NbFaces());
@@ -346,9 +345,9 @@ TEST(BRepGraph_GeometryTest, WireDef_CountMatchesNb)
   ASSERT_TRUE(aGraph.IsDone());
 
   int aCount = 0;
-  for (BRepGraph_Iterator<BRepGraphInc::WireDef> anIt(aGraph); anIt.More(); anIt.Next())
+  for (int aWireIdx = 0; aWireIdx < aGraph.Topo().NbWires(); ++aWireIdx)
   {
-    (void)anIt.Current();
+    (void)aGraph.Topo().Wires().Definition(BRepGraph_WireId(aWireIdx));
     ++aCount;
   }
   EXPECT_EQ(aCount, aGraph.Topo().NbWires());
@@ -361,9 +360,9 @@ TEST(BRepGraph_GeometryTest, EdgeDef_CountMatchesNb)
   ASSERT_TRUE(aGraph.IsDone());
 
   int aCount = 0;
-  for (BRepGraph_Iterator<BRepGraphInc::EdgeDef> anIt(aGraph); anIt.More(); anIt.Next())
+  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
   {
-    (void)anIt.Current();
+    (void)aGraph.Topo().Edges().Definition(BRepGraph_EdgeId(anEdgeIdx));
     ++aCount;
   }
   EXPECT_EQ(aCount, aGraph.Topo().NbEdges());
@@ -376,9 +375,9 @@ TEST(BRepGraph_GeometryTest, VertexDef_CountMatchesNb)
   ASSERT_TRUE(aGraph.IsDone());
 
   int aCount = 0;
-  for (BRepGraph_Iterator<BRepGraphInc::VertexDef> anIt(aGraph); anIt.More(); anIt.Next())
+  for (int aVertexIdx = 0; aVertexIdx < aGraph.Topo().NbVertices(); ++aVertexIdx)
   {
-    (void)anIt.Current();
+    (void)aGraph.Topo().Vertices().Definition(BRepGraph_VertexId(aVertexIdx));
     ++aCount;
   }
   EXPECT_EQ(aCount, aGraph.Topo().NbVertices());
@@ -391,9 +390,9 @@ TEST(BRepGraph_GeometryTest, FaceDef_CountViaIterator_MatchesNb)
   ASSERT_TRUE(aGraph.IsDone());
 
   int aCount = 0;
-  for (BRepGraph_Iterator<BRepGraphInc::FaceDef> anIt(aGraph); anIt.More(); anIt.Next())
+  for (int aFaceIdx = 0; aFaceIdx < aGraph.Topo().NbFaces(); ++aFaceIdx)
   {
-    (void)anIt.Current();
+    (void)aGraph.Topo().Faces().Definition(BRepGraph_FaceId(aFaceIdx));
     ++aCount;
   }
   EXPECT_EQ(aCount, aGraph.Topo().NbFaces());
@@ -406,9 +405,9 @@ TEST(BRepGraph_GeometryTest, FaceDef_AllSurfacesNonNull)
   ASSERT_TRUE(aGraph.IsDone());
 
   int aCount = 0;
-  for (BRepGraph_Iterator<BRepGraphInc::FaceDef> anIt(aGraph); anIt.More(); anIt.Next())
+  for (int aFaceIdx = 0; aFaceIdx < aGraph.Topo().NbFaces(); ++aFaceIdx)
   {
-    EXPECT_TRUE(BRepGraph_Tool::Face::HasSurface(aGraph, BRepGraph_FaceId(anIt.Index())));
+    EXPECT_TRUE(BRepGraph_Tool::Face::HasSurface(aGraph, BRepGraph_FaceId(aFaceIdx)));
     ++aCount;
   }
   EXPECT_EQ(aCount, aGraph.Topo().NbFaces());
@@ -421,11 +420,11 @@ TEST(BRepGraph_GeometryTest, EdgeDef_AllCurves3dNonNull)
   ASSERT_TRUE(aGraph.IsDone());
 
   int aCount = 0;
-  for (BRepGraph_Iterator<BRepGraphInc::EdgeDef> anIt(aGraph); anIt.More(); anIt.Next())
+  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
   {
-    if (!BRepGraph_Tool::Edge::Degenerated(aGraph, BRepGraph_EdgeId(anIt.Index())))
+    if (!BRepGraph_Tool::Edge::Degenerated(aGraph, BRepGraph_EdgeId(anEdgeIdx)))
     {
-      EXPECT_TRUE(BRepGraph_Tool::Edge::HasCurve(aGraph, BRepGraph_EdgeId(anIt.Index())));
+      EXPECT_TRUE(BRepGraph_Tool::Edge::HasCurve(aGraph, BRepGraph_EdgeId(anEdgeIdx)));
     }
     ++aCount;
   }

@@ -218,7 +218,7 @@ flowchart LR
 | **TopoView** | `NbProducts`, `NbOccurrences`, grouped helpers `Products()` / `Occurrences()` |
 | **PathView** | `RootProducts`, `IsAssembly`, `IsPart`, `NbComponents`, `Component`, `OccurrenceLocation(occId)` |
 | **BuilderView** | `AddProduct`, `AddAssemblyProduct`, `AddOccurrence` (with optional parent occurrence), `RemoveSubgraph` (cascades to child occurrences), `MutProduct(i)`, `MutOccurrence(i)` (RAII guards) |
-| **Iterator** | `BRepGraph_Iterator<ProductDef>`, `BRepGraph_Iterator<OccurrenceDef>` |
+| **Traversal** | Flat definition traversal via `NbProducts()` / `NbOccurrences()` and `Products().Definition(id)` / `Occurrences().Definition(id)` |
 
 ### Single-Shape Graph
 
@@ -449,7 +449,6 @@ if (!aResult.IsValid())
 | **Transient Cache** | `BRepGraph_TransientCache.hxx/.cxx` |
 | **Analysis** | `BRepGraph_Analyze.hxx/.cxx` |
 | **History** | `BRepGraph_History.hxx/.cxx`, `BRepGraph_HistoryRecord.hxx` |
-| **Iteration** | `BRepGraph_Iterator.hxx` |
 | **Build** | `BRepGraph_Builder.hxx/.cxx` |
 
 ## Documentation Map
