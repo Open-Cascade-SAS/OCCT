@@ -22,6 +22,8 @@
 #include <TopAbs_Orientation.hxx>
 #include <TopLoc_Location.hxx>
 
+#include <optional>
+
 //! @brief Stack-based lazy downward hierarchy walker for BRepGraph with inline
 //! location/orientation accumulation.
 //!
@@ -49,6 +51,20 @@ public:
   };
 
   Standard_EXPORT BRepGraph_ChildExplorer(const BRepGraph&       theGraph,
+                                          const BRepGraph_NodeId theRoot);
+
+  Standard_EXPORT BRepGraph_ChildExplorer(const BRepGraph&       theGraph,
+                                          const BRepGraph_NodeId theRoot,
+                                          TraversalMode          theMode);
+
+  Standard_EXPORT BRepGraph_ChildExplorer(
+    const BRepGraph&                        theGraph,
+    const BRepGraph_NodeId                  theRoot,
+    const std::optional<BRepGraph_NodeId::Kind>& theAvoidKind,
+    bool                                    theEmitAvoidKind,
+    TraversalMode                           theMode = TraversalMode::Recursive);
+
+  Standard_EXPORT BRepGraph_ChildExplorer(const BRepGraph&       theGraph,
                                           const BRepGraph_NodeId theRoot,
                                           BRepGraph_NodeId::Kind theTargetKind);
 
@@ -56,6 +72,13 @@ public:
                                           const BRepGraph_NodeId theRoot,
                                           BRepGraph_NodeId::Kind theTargetKind,
                                           TraversalMode          theMode);
+
+  Standard_EXPORT BRepGraph_ChildExplorer(const BRepGraph&                        theGraph,
+                                          const BRepGraph_NodeId                  theRoot,
+                                          BRepGraph_NodeId::Kind                  theTargetKind,
+                                          const std::optional<BRepGraph_NodeId::Kind>& theAvoidKind,
+                                          bool                                    theEmitAvoidKind,
+                                          TraversalMode                           theMode = TraversalMode::Recursive);
 
   Standard_EXPORT BRepGraph_ChildExplorer(const BRepGraph&          theGraph,
                                           const BRepGraph_ProductId theProduct,
@@ -109,36 +132,25 @@ public:
 
   [[nodiscard]] Standard_EXPORT BRepGraph_NodeId NodeAt(const int theLevel) const;
 
-  Standard_EXPORT void Init(const BRepGraph&       theGraph,
-                            const BRepGraph_NodeId theRoot,
-                            BRepGraph_NodeId::Kind theTargetKind);
-
-  Standard_EXPORT void Init(const BRepGraph&          theGraph,
-                            const BRepGraph_ProductId theProduct,
-                            BRepGraph_NodeId::Kind    theTargetKind);
-
-  Standard_EXPORT void Init(const BRepGraph&       theGraph,
-                            const BRepGraph_NodeId theRoot,
-                            BRepGraph_NodeId::Kind theTargetKind,
-                            bool                   theCumLoc,
-                            bool                   theCumOri,
-                            TraversalMode          theMode = TraversalMode::Recursive);
-
-  Standard_EXPORT void Init(const BRepGraph&          theGraph,
-                            const BRepGraph_ProductId theProduct,
-                            BRepGraph_NodeId::Kind    theTargetKind,
-                            bool                      theCumLoc,
-                            bool                      theCumOri,
-                            TraversalMode theMode = TraversalMode::Recursive);
-
-  Standard_EXPORT void Init(const BRepGraph&         theGraph,
-                            const BRepGraph_NodeId   theRoot,
-                            BRepGraph_NodeId::Kind   theTargetKind,
-                            const TopLoc_Location&   theStartLoc,
-                            TopAbs_Orientation       theStartOri,
-                            TraversalMode theMode = TraversalMode::DirectChildren);
-
 private:
+  Standard_EXPORT BRepGraph_ChildExplorer(const BRepGraph&                        theGraph,
+                                          const BRepGraph_NodeId                  theRoot,
+                                          const std::optional<BRepGraph_NodeId::Kind>& theTargetKind,
+                                          const std::optional<BRepGraph_NodeId::Kind>& theAvoidKind,
+                                          bool                                    theEmitAvoidKind,
+                                          bool                                    theCumLoc,
+                                          bool                                    theCumOri,
+                                          TraversalMode                           theMode);
+
+  Standard_EXPORT BRepGraph_ChildExplorer(const BRepGraph&                        theGraph,
+                                          const BRepGraph_NodeId                  theRoot,
+                                          const std::optional<BRepGraph_NodeId::Kind>& theTargetKind,
+                                          const std::optional<BRepGraph_NodeId::Kind>& theAvoidKind,
+                                          bool                                    theEmitAvoidKind,
+                                          const TopLoc_Location&                  theStartLoc,
+                                          TopAbs_Orientation                      theStartOri,
+                                          TraversalMode                           theMode);
+
   struct StackFrame
   {
     BRepGraph_NodeId   Node;
@@ -150,12 +162,38 @@ private:
 
   void advance();
 
+  void startTraversal(const TopLoc_Location& theStartLoc,
+                      TopAbs_Orientation     theStartOri);
+
   void resolve1to1(BRepGraph_NodeId&   theNode,
                    TopLoc_Location&    theLoc,
                    TopAbs_Orientation& theOri) const;
 
+  static std::optional<BRepGraph_NodeId::Kind> normalizeAvoidKind(
+    const std::optional<BRepGraph_NodeId::Kind>& theAvoidKind,
+    const std::optional<BRepGraph_NodeId::Kind>& theTargetKind);
+
   static bool canContainTarget(BRepGraph_NodeId::Kind theParentKind,
                                BRepGraph_NodeId::Kind theTargetKind);
+
+  static bool canHaveChildren(BRepGraph_NodeId::Kind theNodeKind);
+
+  [[nodiscard]] bool matchesTarget(const BRepGraph_NodeId theNode) const
+  {
+    return myTargetKind.has_value() && theNode.NodeKind == *myTargetKind;
+  }
+
+  [[nodiscard]] bool matchesAvoid(const BRepGraph_NodeId theNode) const
+  {
+    return myAvoidKind.has_value() && theNode.NodeKind == *myAvoidKind;
+  }
+
+  [[nodiscard]] bool shouldEmit(const BRepGraph_NodeId theNode) const
+  {
+    const bool isAvoid = matchesAvoid(theNode);
+    const bool isFind  = !myTargetKind.has_value() || theNode.NodeKind == *myTargetKind;
+    return myEmitAvoidKind ? (isFind || isAvoid) : (isFind && !isAvoid);
+  }
 
   void pushFrame(const StackFrame& theFrame);
 
@@ -167,17 +205,20 @@ private:
   static constexpr int THE_INLINE_STACK_SIZE = 16;
 
   const BRepGraph* myGraph = nullptr;
-  BRepGraph_NodeId::Kind myTargetKind = BRepGraph_NodeId::Kind::Vertex;
+  const std::optional<BRepGraph_NodeId::Kind>         myTargetKind;
+  const std::optional<BRepGraph_NodeId::Kind>         myAvoidKind;
+  const bool                                          myEmitAvoidKind;
   NCollection_LocalArray<StackFrame, THE_INLINE_STACK_SIZE> myStack;
   int                                                  myStackTop    = -1;
   BRepGraph_NodeId                                     myCurrent;
   int                                                  myMatchStep   = -1;
   TopLoc_Location                                      myLocation;
   TopAbs_Orientation                                   myOrientation = TopAbs_FORWARD;
+  std::optional<StackFrame>                            myPendingFrame;
   bool                                                 myHasMore     = false;
   bool                                                 myCumLoc      = true;
   bool                                                 myCumOri      = true;
-  TraversalMode                                        myMode        = TraversalMode::Recursive;
+  const TraversalMode                                  myMode;
   BRepGraph_NodeId                                     myRoot;
 };
 

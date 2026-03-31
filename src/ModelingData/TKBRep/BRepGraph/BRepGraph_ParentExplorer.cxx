@@ -20,12 +20,67 @@
 
 #include <algorithm>
 
+namespace
+{
+static int parentExplorerKindDepth(const BRepGraph_NodeId::Kind theKind)
+{
+  static constexpr int THE_DEPTH[] = {
+    2,  // Kind::Solid=0
+    3,  // Kind::Shell=1
+    4,  // Kind::Face=2
+    5,  // Kind::Wire=3
+    7,  // Kind::Edge=4
+    8,  // Kind::Vertex=5
+    0,  // Kind::Compound=6
+    1,  // Kind::CompSolid=7
+    6,  // Kind::CoEdge=8
+    99, // gap=9
+    0,  // Kind::Product=10
+    1,  // Kind::Occurrence=11
+  };
+  return THE_DEPTH[static_cast<int>(theKind)];
+}
+}
+
 //=================================================================================================
 
 BRepGraph_ParentExplorer::BRepGraph_ParentExplorer(const BRepGraph&       theGraph,
                                                    const BRepGraph_NodeId theNode)
+    : BRepGraph_ParentExplorer(theGraph, theNode, TraversalMode::Recursive)
 {
-  Init(theGraph, theNode);
+}
+
+//=================================================================================================
+
+BRepGraph_ParentExplorer::BRepGraph_ParentExplorer(const BRepGraph&       theGraph,
+                                                   const BRepGraph_NodeId theNode,
+                                                   const TraversalMode    theMode)
+    : myGraph(&theGraph),
+      myNode(theNode),
+      myTargetKind(std::nullopt),
+      myAvoidKind(std::nullopt),
+      myEmitAvoidKind(false),
+      myMode(theMode)
+{
+  startTraversal();
+}
+
+//=================================================================================================
+
+BRepGraph_ParentExplorer::BRepGraph_ParentExplorer(
+  const BRepGraph&                        theGraph,
+  const BRepGraph_NodeId                  theNode,
+  const std::optional<BRepGraph_NodeId::Kind>& theAvoidKind,
+  const bool                              theEmitAvoidKind,
+  const TraversalMode                     theMode)
+    : myGraph(&theGraph),
+      myNode(theNode),
+      myTargetKind(std::nullopt),
+      myAvoidKind(normalizeAvoidKind(theNode, std::nullopt, theAvoidKind)),
+      myEmitAvoidKind(theEmitAvoidKind),
+      myMode(theMode)
+{
+  startTraversal();
 }
 
 //=================================================================================================
@@ -33,18 +88,49 @@ BRepGraph_ParentExplorer::BRepGraph_ParentExplorer(const BRepGraph&       theGra
 BRepGraph_ParentExplorer::BRepGraph_ParentExplorer(const BRepGraph&       theGraph,
                                                    const BRepGraph_NodeId theNode,
                                                    BRepGraph_NodeId::Kind theTargetKind)
+    : BRepGraph_ParentExplorer(theGraph, theNode, theTargetKind, TraversalMode::Recursive)
 {
-  Init(theGraph, theNode, theTargetKind);
 }
 
 //=================================================================================================
 
-void BRepGraph_ParentExplorer::Init(const BRepGraph&       theGraph,
-                                    const BRepGraph_NodeId theNode)
+BRepGraph_ParentExplorer::BRepGraph_ParentExplorer(const BRepGraph&       theGraph,
+                                                   const BRepGraph_NodeId theNode,
+                                                   BRepGraph_NodeId::Kind theTargetKind,
+                                                   const TraversalMode    theMode)
+    : myGraph(&theGraph),
+      myNode(theNode),
+      myTargetKind(theTargetKind),
+      myAvoidKind(normalizeAvoidKind(theNode, theTargetKind, std::nullopt)),
+      myEmitAvoidKind(false),
+      myMode(theMode)
 {
-  myGraph        = &theGraph;
-  myNode         = theNode;
-  myFilterByKind = false;
+  startTraversal();
+}
+
+//=================================================================================================
+
+BRepGraph_ParentExplorer::BRepGraph_ParentExplorer(
+  const BRepGraph&                        theGraph,
+  const BRepGraph_NodeId                  theNode,
+  BRepGraph_NodeId::Kind                  theTargetKind,
+  const std::optional<BRepGraph_NodeId::Kind>& theAvoidKind,
+  const bool                              theEmitAvoidKind,
+  const TraversalMode                     theMode)
+    : myGraph(&theGraph),
+      myNode(theNode),
+      myTargetKind(theTargetKind),
+      myAvoidKind(normalizeAvoidKind(theNode, theTargetKind, theAvoidKind)),
+      myEmitAvoidKind(theEmitAvoidKind),
+      myMode(theMode)
+{
+  startTraversal();
+}
+
+//=================================================================================================
+
+void BRepGraph_ParentExplorer::startTraversal()
+{
   myStackTop     = -1;
   myEmitIndex    = -1;
   myCurrentFrame = -1;
@@ -52,36 +138,10 @@ void BRepGraph_ParentExplorer::Init(const BRepGraph&       theGraph,
   myLocation     = TopLoc_Location();
   myOrientation  = TopAbs_FORWARD;
   myHasMore      = false;
-  if (theNode.IsValid())
+  if (myNode.IsValid())
   {
     StackFrame aStartFrame;
-    aStartFrame.Node = theNode;
-    pushFrame(aStartFrame);
-  }
-  advance();
-}
-
-//=================================================================================================
-
-void BRepGraph_ParentExplorer::Init(const BRepGraph&       theGraph,
-                                    const BRepGraph_NodeId theNode,
-                                    BRepGraph_NodeId::Kind theTargetKind)
-{
-  myGraph        = &theGraph;
-  myNode         = theNode;
-  myFilterByKind = true;
-  myTargetKind   = theTargetKind;
-  myStackTop     = -1;
-  myEmitIndex    = -1;
-  myCurrentFrame = -1;
-  myCurrent      = BRepGraph_NodeId();
-  myLocation     = TopLoc_Location();
-  myOrientation  = TopAbs_FORWARD;
-  myHasMore      = false;
-  if (theNode.IsValid())
-  {
-    StackFrame aStartFrame;
-    aStartFrame.Node = theNode;
+    aStartFrame.Node = myNode;
     pushFrame(aStartFrame);
   }
   advance();
@@ -145,15 +205,48 @@ void BRepGraph_ParentExplorer::advance()
   myCurrent = BRepGraph_NodeId();
   myCurrentFrame = -1;
 
-  if (myEmitIndex > myStackTop && myStackTop > 0)
+  if (myMode == TraversalMode::DirectParents)
   {
-    popFrame();
-    myEmitIndex = -1;
+    if (myStackTop > 0)
+    {
+      popFrame();
+    }
+
+    while (myStackTop >= 0)
+    {
+      StackFrame aParentFrame;
+      if (!nextParentFrame(topFrame(), aParentFrame))
+      {
+        popFrame();
+        break;
+      }
+
+      pushFrame(aParentFrame);
+      prepareCurrentBranch();
+
+      if (!shouldEmit(topFrame().Node))
+      {
+        popFrame();
+        continue;
+      }
+
+      myCurrentFrame = myStackTop;
+      myCurrent      = topFrame().Node;
+      myLocation     = topFrame().AccLocation;
+      myOrientation  = topFrame().AccOrientation;
+      myHasMore      = true;
+      return;
+    }
+    return;
   }
 
-  if (myEmitIndex >= 1 && emitNextFromCurrentBranch())
+  if (myEmitIndex >= 1)
   {
-    return;
+    if (emitNextFromCurrentBranch())
+    {
+      return;
+    }
+    backtrackAfterBranchEmission();
   }
 
   while (myStackTop >= 0)
@@ -161,6 +254,20 @@ void BRepGraph_ParentExplorer::advance()
     StackFrame aParentFrame;
     if (nextParentFrame(topFrame(), aParentFrame))
     {
+      if (matchesAvoid(aParentFrame.Node))
+      {
+        pushFrame(aParentFrame);
+        prepareCurrentBranch();
+        myEmitIndex = 1;
+        if (emitNextFromCurrentBranch())
+        {
+          return;
+        }
+        popFrame();
+        myEmitIndex = -1;
+        continue;
+      }
+
       pushFrame(aParentFrame);
       continue;
     }
@@ -184,13 +291,35 @@ void BRepGraph_ParentExplorer::advance()
 
 //=================================================================================================
 
+void BRepGraph_ParentExplorer::backtrackAfterBranchEmission()
+{
+  myEmitIndex = -1;
+  while (myStackTop >= 0)
+  {
+    popFrame();
+    if (myStackTop < 0)
+    {
+      return;
+    }
+
+    StackFrame aProbe = topFrame();
+    StackFrame aNextFrame;
+    if (nextParentFrame(aProbe, aNextFrame))
+    {
+      return;
+    }
+  }
+}
+
+//=================================================================================================
+
 bool BRepGraph_ParentExplorer::emitNextFromCurrentBranch()
 {
   while (myEmitIndex >= 1 && myEmitIndex <= myStackTop)
   {
     const int         aFrameIdx = myEmitIndex++;
     const StackFrame& aFrame    = myStack[aFrameIdx];
-    if (!matchesFilter(aFrame.Node))
+    if (!shouldEmit(aFrame.Node))
     {
       continue;
     }
@@ -203,6 +332,41 @@ bool BRepGraph_ParentExplorer::emitNextFromCurrentBranch()
     return true;
   }
   return false;
+}
+
+//=================================================================================================
+
+std::optional<BRepGraph_NodeId::Kind> BRepGraph_ParentExplorer::normalizeAvoidKind(
+  const BRepGraph_NodeId                  theNode,
+  const std::optional<BRepGraph_NodeId::Kind>& theTargetKind,
+  const std::optional<BRepGraph_NodeId::Kind>& theAvoidKind)
+{
+  if (!theAvoidKind.has_value() || !theNode.IsValid())
+  {
+    return theAvoidKind;
+  }
+
+  if (!theTargetKind.has_value())
+  {
+    return theAvoidKind;
+  }
+
+  if (!canContainTarget(*theTargetKind, *theAvoidKind))
+  {
+    return std::nullopt;
+  }
+
+  return (theNode.NodeKind == *theAvoidKind || canContainTarget(*theAvoidKind, theNode.NodeKind))
+           ? theAvoidKind
+           : std::nullopt;
+}
+
+//=================================================================================================
+
+bool BRepGraph_ParentExplorer::canContainTarget(const BRepGraph_NodeId::Kind theParentKind,
+                                                const BRepGraph_NodeId::Kind theTargetKind)
+{
+  return parentExplorerKindDepth(theParentKind) < parentExplorerKindDepth(theTargetKind);
 }
 
 //=================================================================================================
@@ -741,20 +905,30 @@ bool BRepGraph_ParentExplorer::findNthProductWrapper(const BRepGraph_NodeId theN
 
   const BRepGraph::TopoView& aTopo = myGraph->Topo();
   int                        aCount = 0;
-  for (int aProdIdx = 0; aProdIdx < aTopo.NbProducts(); ++aProdIdx)
+  for (int aPass = 0; aPass < 2; ++aPass)
   {
-    const BRepGraph_ProductId       aProductId(aProdIdx);
-    const BRepGraphInc::ProductDef& aProductDef = aTopo.Products().Definition(aProductId);
-    if (aProductDef.IsRemoved || aProductDef.ShapeRootId != theNode)
+    for (int aProdIdx = 0; aProdIdx < aTopo.NbProducts(); ++aProdIdx)
     {
-      continue;
+      const BRepGraph_ProductId       aProductId(aProdIdx);
+      const BRepGraphInc::ProductDef& aProductDef = aTopo.Products().Definition(aProductId);
+      if (aProductDef.IsRemoved || aProductDef.ShapeRootId != theNode)
+      {
+        continue;
+      }
+
+      const bool hasInstances = !aTopo.Products().Instances(aProductId).IsEmpty();
+      if ((aPass == 0 && !hasInstances) || (aPass == 1 && hasInstances))
+      {
+        continue;
+      }
+
+      if (aCount == theOrdinal)
+      {
+        theProduct = aProductId;
+        return true;
+      }
+      ++aCount;
     }
-    if (aCount == theOrdinal)
-    {
-      theProduct = aProductId;
-      return true;
-    }
-    ++aCount;
   }
   return false;
 }
