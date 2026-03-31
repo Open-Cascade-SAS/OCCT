@@ -182,7 +182,7 @@ int TopExp_Explorer::Depth() const noexcept
 
 void TopExp_Explorer::Clear()
 {
-  // Shrink to 0 — NCollection_LocalArray destroys all live elements.
+  // Shrink to 0 - NCollection_LocalArray destroys all live elements.
   if (myStack.Size() > 0)
     myStack.Reallocate(0);
   myStackTop = -1;

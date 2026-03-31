@@ -247,7 +247,7 @@ public:
                            const uint32_t                           theCurrentSubtreeGen);
 
   //! Store a cached value using a pre-resolved kind slot index.
-  //! Bypasses BRepGraph_CacheKindRegistry lookup — use in hot parallel paths.
+  //! Bypasses BRepGraph_CacheKindRegistry lookup - use in hot parallel paths.
   //! @param[in] theKindSlot  slot from BRepGraph_CacheKindRegistry::Register()
   Standard_EXPORT void Set(const BRepGraph_NodeId                   theNode,
                            const int                                theKindSlot,
@@ -263,7 +263,7 @@ public:
     const uint32_t                          theCurrentSubtreeGen) const;
 
   //! Retrieve a cached value using a pre-resolved kind slot index.
-  //! Bypasses BRepGraph_CacheKindRegistry lookup — use in hot parallel paths.
+  //! Bypasses BRepGraph_CacheKindRegistry lookup - use in hot parallel paths.
   //! @param[in] theKindSlot  slot from BRepGraph_CacheKindRegistry::Register()
   [[nodiscard]] Standard_EXPORT occ::handle<BRepGraph_CacheValue> Get(
     const BRepGraph_NodeId theNode,

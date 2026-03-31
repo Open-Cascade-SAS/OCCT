@@ -358,37 +358,37 @@ public:
   };
 
   //! Grouped face-oriented queries.
-  [[nodiscard]] FaceOps Faces() const { return FaceOps(myGraph); }
+  [[nodiscard]] const FaceOps& Faces() const { return myFaces; }
 
   //! Grouped edge-oriented queries.
-  [[nodiscard]] EdgeOps Edges() const { return EdgeOps(myGraph); }
+  [[nodiscard]] const EdgeOps& Edges() const { return myEdges; }
 
   //! Grouped vertex-oriented queries.
-  [[nodiscard]] VertexOps Vertices() const { return VertexOps(myGraph); }
+  [[nodiscard]] const VertexOps& Vertices() const { return myVertices; }
 
   //! Grouped wire-oriented queries.
-  [[nodiscard]] WireOps Wires() const { return WireOps(myGraph); }
+  [[nodiscard]] const WireOps& Wires() const { return myWires; }
 
   //! Grouped shell-oriented queries.
-  [[nodiscard]] ShellOps Shells() const { return ShellOps(myGraph); }
+  [[nodiscard]] const ShellOps& Shells() const { return myShells; }
 
   //! Grouped solid-oriented queries.
-  [[nodiscard]] SolidOps Solids() const { return SolidOps(myGraph); }
+  [[nodiscard]] const SolidOps& Solids() const { return mySolids; }
 
   //! Grouped coedge-oriented queries.
-  [[nodiscard]] CoEdgeOps CoEdges() const { return CoEdgeOps(myGraph); }
+  [[nodiscard]] const CoEdgeOps& CoEdges() const { return myCoEdges; }
 
   //! Grouped compound-oriented queries.
-  [[nodiscard]] CompoundOps Compounds() const { return CompoundOps(myGraph); }
+  [[nodiscard]] const CompoundOps& Compounds() const { return myCompounds; }
 
   //! Grouped comp-solid oriented queries.
-  [[nodiscard]] CompSolidOps CompSolids() const { return CompSolidOps(myGraph); }
+  [[nodiscard]] const CompSolidOps& CompSolids() const { return myCompSolids; }
 
   //! Grouped product-oriented queries.
-  [[nodiscard]] ProductOps Products() const { return ProductOps(myGraph); }
+  [[nodiscard]] const ProductOps& Products() const { return myProducts; }
 
   //! Grouped occurrence-oriented queries.
-  [[nodiscard]] OccurrenceOps Occurrences() const { return OccurrenceOps(myGraph); }
+  [[nodiscard]] const OccurrenceOps& Occurrences() const { return myOccurrences; }
 
   //! @name Count accessors
 
@@ -560,11 +560,33 @@ private:
   friend class BRepGraph_Analyze;
 
   explicit TopoView(const BRepGraph* theGraph)
-      : myGraph(theGraph)
+      : myGraph(theGraph),
+        myFaces(theGraph),
+        myEdges(theGraph),
+        myVertices(theGraph),
+        myWires(theGraph),
+        myShells(theGraph),
+        mySolids(theGraph),
+        myCoEdges(theGraph),
+        myCompounds(theGraph),
+        myCompSolids(theGraph),
+        myProducts(theGraph),
+        myOccurrences(theGraph)
   {
   }
 
   const BRepGraph* myGraph;
+  FaceOps          myFaces;
+  EdgeOps          myEdges;
+  VertexOps        myVertices;
+  WireOps          myWires;
+  ShellOps         myShells;
+  SolidOps         mySolids;
+  CoEdgeOps        myCoEdges;
+  CompoundOps      myCompounds;
+  CompSolidOps     myCompSolids;
+  ProductOps       myProducts;
+  OccurrenceOps    myOccurrences;
 };
 
 #endif // _BRepGraph_TopoView_HeaderFile

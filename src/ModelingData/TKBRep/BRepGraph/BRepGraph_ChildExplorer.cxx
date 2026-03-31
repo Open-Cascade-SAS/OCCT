@@ -675,12 +675,12 @@ void BRepGraph_ChildExplorer::advance()
       }
 
       default:
-        // Vertex and other leaf kinds — no children to iterate.
+        // Vertex and other leaf kinds - no children to iterate.
         aFrame.NextChildIdx = 0;
         break;
     }
 
-    // If no child was found, this frame is exhausted — backtrack.
+    // If no child was found, this frame is exhausted - backtrack.
     if (!aChildNode.IsValid())
     {
       popFrame();
