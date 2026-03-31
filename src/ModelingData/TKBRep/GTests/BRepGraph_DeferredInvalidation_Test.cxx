@@ -14,9 +14,8 @@
 #include <BRepGraph.hxx>
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_DeferredScope.hxx>
-#include <BRepGraph_PathView.hxx>
-#include "BRepGraph_RefTestTools.hxx"
 #include <BRepGraph_TopoView.hxx>
+#include "BRepGraph_RefTestTools.hxx"
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <OSD_Parallel.hxx>

@@ -218,7 +218,7 @@ flowchart LR
 | **TopoView** | `NbProducts`, `NbOccurrences`, grouped helpers `Products()` / `Occurrences()` |
 | **PathView** | `RootProducts`, `IsAssembly`, `IsPart`, `NbComponents`, `Component`, `OccurrenceLocation(occId)` |
 | **BuilderView** | `AddProduct`, `AddAssemblyProduct`, `AddOccurrence` (with optional parent occurrence), `RemoveSubgraph` (cascades to child occurrences), `MutProduct(i)`, `MutOccurrence(i)` (RAII guards) |
-| **Traversal** | Flat definition traversal via `NbProducts()` / `NbOccurrences()` and `Products().Definition(id)` / `Occurrences().Definition(id)` |
+| **Traversal** | Flat definition traversal via `BRepGraph_ProductIterator` / `BRepGraph_OccurrenceIterator` (or explicit `NbProducts()` / `NbOccurrences()` scans when storage-level access is required) |
 
 ### Single-Shape Graph
 

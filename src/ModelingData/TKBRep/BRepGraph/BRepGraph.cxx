@@ -32,7 +32,6 @@ void BRepGraph::initViews()
   {
     myData->myTopoView    = TopoView(this);
     myData->myUIDsView    = UIDsView(this);
-    myData->myPathView    = PathView(this);
     myData->myCacheView   = CacheView(this);
     myData->myRefsView    = RefsView(this);
     myData->myShapesView  = ShapesView(this);
@@ -70,13 +69,6 @@ const BRepGraph::TopoView& BRepGraph::Topo() const
 const BRepGraph::UIDsView& BRepGraph::UIDs() const
 {
   return myData->myUIDsView;
-}
-
-//=================================================================================================
-
-const BRepGraph::PathView& BRepGraph::Paths() const
-{
-  return myData->myPathView;
 }
 
 //=================================================================================================

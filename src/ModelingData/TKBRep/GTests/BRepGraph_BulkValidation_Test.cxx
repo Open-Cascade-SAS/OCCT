@@ -20,7 +20,6 @@
 #include <BRepCheck_Result.hxx>
 #include <BRepCheck_Status.hxx>
 #include <BRepGraph.hxx>
-#include <BRepGraph_PathView.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepTools.hxx>

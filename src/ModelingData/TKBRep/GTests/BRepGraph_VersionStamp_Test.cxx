@@ -13,7 +13,6 @@
 
 #include <BRepGraph.hxx>
 #include <BRepGraph_BuilderView.hxx>
-#include <BRepGraph_PathView.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_UIDsView.hxx>
 #include <BRepGraph_VersionStamp.hxx>

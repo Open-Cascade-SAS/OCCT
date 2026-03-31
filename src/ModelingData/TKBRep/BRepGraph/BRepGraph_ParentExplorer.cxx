@@ -13,6 +13,7 @@
 
 #include <BRepGraph_ParentExplorer.hxx>
 
+#include <BRepGraph_Iterator.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_TopoView.hxx>
 
@@ -174,54 +175,6 @@ const TopLoc_Location& BRepGraph_ParentExplorer::Location() const
 TopAbs_Orientation BRepGraph_ParentExplorer::Orientation() const
 {
   return myHasMore ? myOrientation : TopAbs_FORWARD;
-}
-
-//=================================================================================================
-
-BRepGraph_TopologyPath BRepGraph_ParentExplorer::CurrentPath(
-  const occ::handle<NCollection_BaseAllocator>& theAllocator) const
-{
-  if (!myHasMore || myCurrentFrame < 0)
-  {
-    return BRepGraph_TopologyPath();
-  }
-
-  BRepGraph_TopologyPath aPath(myStack[myStackTop].Node, theAllocator);
-  for (int aFrameIdx = myStackTop; aFrameIdx > myCurrentFrame; --aFrameIdx)
-  {
-    if (myStack[aFrameIdx].StepToChild >= 0)
-    {
-      aPath.pushStep(myStack[aFrameIdx].StepToChild);
-    }
-  }
-  return aPath;
-}
-
-//=================================================================================================
-
-BRepGraph_TopologyPath BRepGraph_ParentExplorer::CurrentLeafPath(
-  const occ::handle<NCollection_BaseAllocator>& theAllocator) const
-{
-  if (!myHasMore || myStackTop < 0)
-  {
-    return BRepGraph_TopologyPath();
-  }
-
-  const int aRootFrame = branchRootFrame();
-  if (aRootFrame < 0)
-  {
-    return BRepGraph_TopologyPath();
-  }
-
-  BRepGraph_TopologyPath aPath(myStack[aRootFrame].Node, theAllocator);
-  for (int aFrameIdx = aRootFrame; aFrameIdx > 0; --aFrameIdx)
-  {
-    if (myStack[aFrameIdx].StepToChild >= 0)
-    {
-      aPath.pushStep(myStack[aFrameIdx].StepToChild);
-    }
-  }
-  return aPath;
 }
 
 //=================================================================================================
@@ -973,11 +926,11 @@ bool BRepGraph_ParentExplorer::findNthProductWrapper(const BRepGraph_NodeId theN
   int                        aCount = 0;
   for (int aPass = 0; aPass < 2; ++aPass)
   {
-    for (int aProdIdx = 0; aProdIdx < aTopo.NbProducts(); ++aProdIdx)
+    for (BRepGraph_ProductIterator aProdIt(*myGraph); aProdIt.More(); aProdIt.Next())
     {
-      const BRepGraph_ProductId       aProductId(aProdIdx);
-      const BRepGraphInc::ProductDef& aProductDef = aTopo.Products().Definition(aProductId);
-      if (aProductDef.IsRemoved || aProductDef.ShapeRootId != theNode)
+      const BRepGraph_ProductId       aProductId  = aProdIt.CurrentId();
+      const BRepGraphInc::ProductDef& aProductDef = aProdIt.Current();
+      if (aProductDef.ShapeRootId != theNode)
       {
         continue;
       }

@@ -26,7 +26,6 @@
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_History.hxx>
 #include <BRepGraph_Tool.hxx>
-#include <BRepGraph_PathView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_UIDsView.hxx>
 #include <BRepGraphInc_ReverseIndex.hxx>

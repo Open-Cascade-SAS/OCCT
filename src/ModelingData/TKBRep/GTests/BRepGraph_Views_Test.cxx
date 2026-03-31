@@ -18,7 +18,6 @@
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_History.hxx>
-#include <BRepGraph_PathView.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_UIDsView.hxx>
@@ -26,7 +25,6 @@
 
 #include <BRepGraph_Tool.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
-#include <NCollection_PackedMap.hxx>
 #include <Precision.hxx>
 #include <gp_Pnt.hxx>
 
@@ -181,52 +179,6 @@ TEST_F(BRepGraph_ViewsTest, DefsView_NbActiveFaces_ExcludeRemoved)
 
   EXPECT_EQ(myGraph.Topo().NbActiveFaces(), aFacesBefore - 1);
   EXPECT_TRUE(myGraph.Topo().IsRemoved(BRepGraph_FaceId(0)));
-}
-
-TEST_F(BRepGraph_ViewsTest, DefsView_ChildEntitiesOfCompound_BasicAndFiltered)
-{
-  NCollection_Vector<BRepGraph_NodeId> aChildren;
-  aChildren.Append(BRepGraph_SolidId(0));
-  const BRepGraph_CompoundId aCompound = myGraph.Builder().AddCompound(aChildren);
-  ASSERT_TRUE(aCompound.IsValid());
-
-  NCollection_Vector<BRepGraph_NodeId> aResolved =
-    myGraph.Topo().Compounds().Children(aCompound, myGraph.Allocator());
-  ASSERT_EQ(aResolved.Length(), 1);
-  EXPECT_EQ(aResolved.Value(0), BRepGraph_NodeId(BRepGraph_SolidId(0)));
-
-  const NCollection_Vector<BRepGraph_ChildRefId>& aChildRefs = myGraph.Refs().ChildRefIdsOf(aCompound);
-  ASSERT_EQ(aChildRefs.Length(), 1);
-  {
-    BRepGraph_MutGuard<BRepGraphInc::ChildRef> aChildRef = myGraph.Builder().MutChildRef(aChildRefs.Value(0));
-    aChildRef->IsRemoved                                 = true;
-  }
-
-  aResolved = myGraph.Topo().Compounds().Children(aCompound, myGraph.Allocator());
-  EXPECT_EQ(aResolved.Length(), 0);
-}
-
-TEST_F(BRepGraph_ViewsTest, DefsView_SolidsOfCompSolid_BasicAndFiltered)
-{
-  NCollection_Vector<BRepGraph_SolidId> aSolidIds;
-  aSolidIds.Append(BRepGraph_SolidId(0));
-  const BRepGraph_CompSolidId aCompSolid = myGraph.Builder().AddCompSolid(aSolidIds);
-  ASSERT_TRUE(aCompSolid.IsValid());
-
-  NCollection_Vector<BRepGraph_SolidId> aResolved =
-    myGraph.Topo().CompSolids().Solids(aCompSolid, myGraph.Allocator());
-  ASSERT_EQ(aResolved.Length(), 1);
-  EXPECT_EQ(aResolved.Value(0), BRepGraph_SolidId(0));
-
-  const NCollection_Vector<BRepGraph_SolidRefId>& aSolidRefs = myGraph.Refs().SolidRefIdsOf(aCompSolid);
-  ASSERT_EQ(aSolidRefs.Length(), 1);
-  {
-    BRepGraph_MutGuard<BRepGraphInc::SolidRef> aSolidRef = myGraph.Builder().MutSolidRef(aSolidRefs.Value(0));
-    aSolidRef->IsRemoved                                 = true;
-  }
-
-  aResolved = myGraph.Topo().CompSolids().Solids(aCompSolid, myGraph.Allocator());
-  EXPECT_EQ(aResolved.Length(), 0);
 }
 
 TEST_F(BRepGraph_ViewsTest, DefsView_FaceAccessor_Valid)
@@ -388,23 +340,10 @@ TEST_F(BRepGraph_ViewsTest, SpatialView_OutParam_Parity)
     myGraph.Topo().Faces().Adjacent(aFaceId, anAllocator);
   EXPECT_EQ(aAdjacentByValue.Length(), 4);
 
-  const NCollection_Vector<BRepGraph_EdgeId> anEdgesByValue =
-    myGraph.Topo().Faces().Edges(aFaceId, anAllocator);
-  EXPECT_EQ(anEdgesByValue.Length(), 4);
-
-  const NCollection_Vector<BRepGraph_VertexId> aVerticesByValue =
-    myGraph.Topo().Edges().Vertices(anEdgeId, anAllocator);
-  EXPECT_EQ(aVerticesByValue.Length(), 2);
-  EXPECT_TRUE(aVerticesByValue.Value(0).IsValid());
-  EXPECT_TRUE(aVerticesByValue.Value(1).IsValid());
-
   const NCollection_Vector<BRepGraph_EdgeId> anAdjEdgesByValue =
     myGraph.Topo().Edges().Adjacent(anEdgeId, anAllocator);
   EXPECT_GE(anAdjEdgesByValue.Length(), 4);
 
-  const NCollection_Vector<BRepGraph_FaceId> aFacesByValue =
-    myGraph.Topo().Vertices().Faces(aVertexId, anAllocator);
-  EXPECT_GT(aFacesByValue.Length(), 0);
 }
 
 TEST_F(BRepGraph_ViewsTest, TopoView_GroupedFaceOps_Parity)
@@ -420,7 +359,6 @@ TEST_F(BRepGraph_ViewsTest, TopoView_GroupedFaceOps_Parity)
   EXPECT_EQ(myGraph.Topo().Faces().OuterWire(aFaceId), BRepGraph_WireId(0));
 
   EXPECT_EQ(myGraph.Topo().Faces().Adjacent(aFaceId, anAllocator).Length(), 4);
-  EXPECT_EQ(myGraph.Topo().Faces().Edges(aFaceId, anAllocator).Length(), 4);
 }
 
 TEST_F(BRepGraph_ViewsTest, TopoView_GroupedEdgeAndVertexOps_Parity)
@@ -438,129 +376,15 @@ TEST_F(BRepGraph_ViewsTest, TopoView_GroupedEdgeAndVertexOps_Parity)
   EXPECT_GE(myGraph.Topo().Edges().Wires(anEdgeId).Length(), 1);
   EXPECT_GE(myGraph.Topo().Edges().CoEdges(anEdgeId).Length(), 1);
   EXPECT_EQ(myGraph.Topo().Edges().Faces(anEdgeId).Length(), 2);
-  EXPECT_EQ(myGraph.Topo().Edges().Vertices(anEdgeId, anAllocator).Length(), 2);
   EXPECT_GE(myGraph.Topo().Edges().Adjacent(anEdgeId, anAllocator).Length(), 4);
 
   EXPECT_EQ(myGraph.Topo().Vertices().Definition(aVertexId).Id, BRepGraph_NodeId(aVertexId));
   EXPECT_GE(myGraph.Topo().Vertices().Edges(aVertexId).Length(), 1);
-  EXPECT_GT(myGraph.Topo().Vertices().Faces(aVertexId, anAllocator).Length(), 0);
-}
-
-TEST_F(BRepGraph_ViewsTest, TopoView_GroupedWireOps_NodeQueries)
-{
-  const BRepGraph_WireId aWireId(0);
-  const occ::handle<NCollection_BaseAllocator>& anAllocator = myGraph.Allocator();
-
-  EXPECT_EQ(myGraph.Topo().Wires().Definition(aWireId).Id, BRepGraph_NodeId(aWireId));
-
-  NCollection_Vector<BRepGraph_CoEdgeId> aExpectedCoEdges;
-  NCollection_Vector<BRepGraph_EdgeId> aExpectedEdges;
-  NCollection_PackedMap<int> aSeenEdges;
-  const NCollection_Vector<BRepGraph_CoEdgeRefId>& aCoEdgeRefs = myGraph.Refs().CoEdgeRefIdsOf(aWireId);
-  for (int aRefIdx = 0; aRefIdx < aCoEdgeRefs.Length(); ++aRefIdx)
-  {
-    const BRepGraphInc::CoEdgeRef& aRef = myGraph.Refs().CoEdge(aCoEdgeRefs.Value(aRefIdx));
-    if (aRef.IsRemoved)
-    {
-      continue;
-    }
-
-    const BRepGraphInc::CoEdgeDef& aCoEdge = myGraph.Topo().CoEdges().Definition(aRef.CoEdgeDefId);
-    if (aCoEdge.IsRemoved)
-    {
-      continue;
-    }
-
-    aExpectedCoEdges.Append(aRef.CoEdgeDefId);
-    if (aSeenEdges.Add(aCoEdge.EdgeDefId.Index))
-    {
-      aExpectedEdges.Append(aCoEdge.EdgeDefId);
-    }
-  }
-
-  expectSameSequence(myGraph.Topo().Wires().CoEdges(aWireId, anAllocator), aExpectedCoEdges);
-  expectSameSequence(myGraph.Topo().Wires().Edges(aWireId, anAllocator), aExpectedEdges);
-}
-
-TEST_F(BRepGraph_ViewsTest, TopoView_GroupedShellAndSolidOps_NodeQueries)
-{
-  const BRepGraph_ShellId aShellId(0);
-  const BRepGraph_SolidId aSolidId(0);
-  const occ::handle<NCollection_BaseAllocator>& anAllocator = myGraph.Allocator();
-
-  EXPECT_EQ(myGraph.Topo().Shells().Definition(aShellId).Id, BRepGraph_NodeId(aShellId));
-  EXPECT_EQ(myGraph.Topo().Solids().Definition(aSolidId).Id, BRepGraph_NodeId(aSolidId));
-
-  NCollection_Vector<BRepGraph_FaceId> aExpectedFaces;
-  NCollection_PackedMap<int> aSeenFaces;
-  const NCollection_Vector<BRepGraph_FaceRefId>& aFaceRefs = myGraph.Refs().FaceRefIdsOf(aShellId);
-  for (int aRefIdx = 0; aRefIdx < aFaceRefs.Length(); ++aRefIdx)
-  {
-    const BRepGraphInc::FaceRef& aRef = myGraph.Refs().Face(aFaceRefs.Value(aRefIdx));
-    if (aRef.IsRemoved || myGraph.Topo().Faces().Definition(aRef.FaceDefId).IsRemoved)
-    {
-      continue;
-    }
-    if (aSeenFaces.Add(aRef.FaceDefId.Index))
-    {
-      aExpectedFaces.Append(aRef.FaceDefId);
-    }
-  }
-
-  NCollection_Vector<BRepGraph_ShellId> aExpectedShells;
-  NCollection_PackedMap<int> aSeenShells;
-  const NCollection_Vector<BRepGraph_ShellRefId>& aShellRefs = myGraph.Refs().ShellRefIdsOf(aSolidId);
-  for (int aRefIdx = 0; aRefIdx < aShellRefs.Length(); ++aRefIdx)
-  {
-    const BRepGraphInc::ShellRef& aRef = myGraph.Refs().Shell(aShellRefs.Value(aRefIdx));
-    if (aRef.IsRemoved || myGraph.Topo().Shells().Definition(aRef.ShellDefId).IsRemoved)
-    {
-      continue;
-    }
-    if (aSeenShells.Add(aRef.ShellDefId.Index))
-    {
-      aExpectedShells.Append(aRef.ShellDefId);
-    }
-  }
-
-  expectSameSequence(myGraph.Topo().Shells().Faces(aShellId, anAllocator), aExpectedFaces);
-  expectSameSequence(myGraph.Topo().Solids().Shells(aSolidId, anAllocator), aExpectedShells);
-  EXPECT_EQ(myGraph.Topo().Shells().FreeChildren(aShellId, anAllocator).Length(), 0);
-  EXPECT_EQ(myGraph.Topo().Solids().FreeChildren(aSolidId, anAllocator).Length(), 0);
-}
-
-TEST_F(BRepGraph_ViewsTest, TopoView_GroupedShellAndSolidOps_FilterRemovedRefs)
-{
-  const BRepGraph_ShellId aShellId(0);
-  const BRepGraph_SolidId aSolidId(0);
-  const occ::handle<NCollection_BaseAllocator>& anAllocator = myGraph.Allocator();
-
-  const NCollection_Vector<BRepGraph_FaceRefId>& aFaceRefs = myGraph.Refs().FaceRefIdsOf(aShellId);
-  ASSERT_GT(aFaceRefs.Length(), 0);
-  {
-    BRepGraph_MutGuard<BRepGraphInc::FaceRef> aFaceRef = myGraph.Builder().MutFaceRef(aFaceRefs.Value(0));
-    aFaceRef->IsRemoved                               = true;
-  }
-
-  const NCollection_Vector<BRepGraph_ShellRefId>& aShellRefs = myGraph.Refs().ShellRefIdsOf(aSolidId);
-  ASSERT_GT(aShellRefs.Length(), 0);
-  {
-    BRepGraph_MutGuard<BRepGraphInc::ShellRef> aShellRef = myGraph.Builder().MutShellRef(aShellRefs.Value(0));
-    aShellRef->IsRemoved                                 = true;
-  }
-
-  EXPECT_EQ(myGraph.Topo().Shells().Faces(aShellId, anAllocator).Length(), aFaceRefs.Length() - 1);
-  EXPECT_EQ(myGraph.Topo().Solids().Shells(aSolidId, anAllocator).Length(), 0);
 }
 
 TEST_F(BRepGraph_ViewsTest, TopoView_GroupedCoEdgeOps_Parity)
 {
-  const occ::handle<NCollection_BaseAllocator>& anAllocator = myGraph.Allocator();
-  const NCollection_Vector<BRepGraph_CoEdgeId> aCoEdges =
-    myGraph.Topo().Wires().CoEdges(BRepGraph_WireId(0), anAllocator);
-  ASSERT_GT(aCoEdges.Length(), 0);
-
-  const BRepGraph_CoEdgeId aCoEdgeId = aCoEdges.Value(0);
+  const BRepGraph_CoEdgeId aCoEdgeId(0);
   const BRepGraphInc::CoEdgeDef& aCoEdge = myGraph.Topo().CoEdges().Definition(aCoEdgeId);
 
   EXPECT_EQ(myGraph.Topo().CoEdges().Definition(aCoEdgeId).Id, aCoEdge.Id);
@@ -569,28 +393,6 @@ TEST_F(BRepGraph_ViewsTest, TopoView_GroupedCoEdgeOps_Parity)
   EXPECT_EQ(myGraph.Topo().CoEdges().Curve2DRepId(aCoEdgeId),
             myGraph.Topo().CoEdges().Definition(aCoEdgeId).Curve2DRepId);
   EXPECT_EQ(myGraph.Topo().CoEdges().Definition(aCoEdgeId).SeamPairId, aCoEdge.SeamPairId);
-}
-
-TEST_F(BRepGraph_ViewsTest, TopoView_GroupedCompoundAndCompSolidOps_Parity)
-{
-  NCollection_Vector<BRepGraph_NodeId> aChildren;
-  aChildren.Append(BRepGraph_NodeId(BRepGraph_SolidId(0)));
-  aChildren.Append(BRepGraph_NodeId(BRepGraph_FaceId(0)));
-  const BRepGraph_CompoundId aCompound = myGraph.Builder().AddCompound(aChildren);
-  ASSERT_TRUE(aCompound.IsValid());
-
-  NCollection_Vector<BRepGraph_SolidId> aSolidIds;
-  aSolidIds.Append(BRepGraph_SolidId(0));
-  const BRepGraph_CompSolidId aCompSolid = myGraph.Builder().AddCompSolid(aSolidIds);
-  ASSERT_TRUE(aCompSolid.IsValid());
-
-  EXPECT_EQ(myGraph.Topo().Compounds().Definition(aCompound).Id, BRepGraph_NodeId(aCompound));
-  EXPECT_EQ(myGraph.Topo().CompSolids().Definition(aCompSolid).Id, BRepGraph_NodeId(aCompSolid));
-
-  expectSameSequence(myGraph.Topo().Compounds().Children(aCompound, myGraph.Allocator()),
-                     aChildren);
-  expectSameSequence(myGraph.Topo().CompSolids().Solids(aCompSolid, myGraph.Allocator()),
-                     aSolidIds);
 }
 
 TEST_F(BRepGraph_ViewsTest, TopoView_GroupedProductAndOccurrenceOps_Parity)
@@ -633,7 +435,7 @@ TEST_F(BRepGraph_ViewsTest, TopoView_GroupedProductAndOccurrenceOps_Parity)
     anOccurrenceRef->IsRemoved = true;
   }
 
-  EXPECT_EQ(myGraph.Paths().NbComponents(aSubAssembly), 0);
+  EXPECT_EQ(myGraph.Topo().Products().NbComponents(aSubAssembly), 0);
 }
 
 TEST_F(BRepGraph_ViewsTest, SpatialView_OutParam_ClearAndInvalid)
@@ -645,25 +447,10 @@ TEST_F(BRepGraph_ViewsTest, SpatialView_OutParam_ClearAndInvalid)
   EXPECT_EQ(aFaceResult.Length(), 4);
   EXPECT_EQ(myGraph.Topo().Faces().Adjacent(BRepGraph_FaceId(999), anAllocator).Length(), 0);
 
-  const NCollection_Vector<BRepGraph_EdgeId> anEdgeResult =
-    myGraph.Topo().Faces().Edges(BRepGraph_FaceId(0), anAllocator);
-  EXPECT_EQ(anEdgeResult.Length(), 4);
-  EXPECT_EQ(myGraph.Topo().Faces().Edges(BRepGraph_FaceId(999), anAllocator).Length(), 0);
-
-  const NCollection_Vector<BRepGraph_VertexId> aVertexResult =
-    myGraph.Topo().Edges().Vertices(BRepGraph_EdgeId(0), anAllocator);
-  EXPECT_EQ(aVertexResult.Length(), 2);
-  EXPECT_EQ(myGraph.Topo().Edges().Vertices(BRepGraph_EdgeId(999), anAllocator).Length(), 0);
-
   const NCollection_Vector<BRepGraph_EdgeId> anAdjEdgeResult =
     myGraph.Topo().Edges().Adjacent(BRepGraph_EdgeId(0), anAllocator);
   EXPECT_GE(anAdjEdgeResult.Length(), 4);
   EXPECT_EQ(myGraph.Topo().Edges().Adjacent(BRepGraph_EdgeId(999), anAllocator).Length(), 0);
-
-  const NCollection_Vector<BRepGraph_FaceId> aFacesOfVertexResult =
-    myGraph.Topo().Vertices().Faces(BRepGraph_VertexId(0), anAllocator);
-  EXPECT_GT(aFacesOfVertexResult.Length(), 0);
-  EXPECT_EQ(myGraph.Topo().Vertices().Faces(BRepGraph_VertexId(999), anAllocator).Length(), 0);
 }
 
 // ---------- BndLib ----------
@@ -830,33 +617,6 @@ TEST_F(BRepGraph_ViewsTest, RefsView_VertexRefIdsOfEdge_ContainsBoundaryVertices
     const BRepGraphInc::VertexRef& aRef = myGraph.Refs().Vertex(aVertexRefs.Value(i));
     EXPECT_FALSE(aRef.IsRemoved);
     EXPECT_TRUE(aRef.VertexDefId.IsValid(myGraph.Topo().NbVertices()));
-  }
-}
-
-TEST_F(BRepGraph_ViewsTest, TopoView_VerticesOfEdge_FollowsActiveVertexRefs)
-{
-  const BRepGraph_EdgeId aEdgeId(0);
-  const occ::handle<NCollection_BaseAllocator>& anAllocator = myGraph.Allocator();
-  const NCollection_Vector<BRepGraph_VertexRefId> aVertexRefsBefore =
-    myGraph.Refs().VertexRefIdsOf(aEdgeId, anAllocator);
-  ASSERT_GE(aVertexRefsBefore.Length(), 2);
-
-  {
-    BRepGraph_MutGuard<BRepGraphInc::VertexRef> aVertexRef =
-      myGraph.Builder().MutVertexRef(aVertexRefsBefore.Value(0));
-    aVertexRef->IsRemoved = true;
-  }
-
-  const NCollection_Vector<BRepGraph_VertexRefId> aVertexRefsAfter =
-    myGraph.Refs().VertexRefIdsOf(aEdgeId, anAllocator);
-  const NCollection_Vector<BRepGraph_VertexId> aVertices =
-    myGraph.Topo().Edges().Vertices(aEdgeId, anAllocator);
-
-  ASSERT_EQ(aVertices.Length(), aVertexRefsAfter.Length());
-  ASSERT_EQ(aVertexRefsAfter.Length(), aVertexRefsBefore.Length() - 1);
-  for (int i = 0; i < aVertexRefsAfter.Length(); ++i)
-  {
-    EXPECT_EQ(aVertices.Value(i), myGraph.Refs().Vertex(aVertexRefsAfter.Value(i)).VertexDefId);
   }
 }
 

@@ -14,7 +14,6 @@
 #include <BRepBuilderAPI_Transform.hxx>
 #include <BRepGProp.hxx>
 #include <BRepGraph.hxx>
-#include <BRepGraph_PathView.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_Tool.hxx>

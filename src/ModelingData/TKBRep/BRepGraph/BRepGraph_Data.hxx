@@ -18,7 +18,6 @@
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_History.hxx>
 #include <BRepGraph_NodeId.hxx>
-#include <BRepGraph_PathView.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraphInc_Definition.hxx>
@@ -112,7 +111,6 @@ struct BRepGraph_Data
   //! Cached view objects (pointers set to owning BRepGraph in its constructor).
   BRepGraph::TopoView    myTopoView{nullptr};
   BRepGraph::UIDsView    myUIDsView{nullptr};
-  BRepGraph::PathView    myPathView{nullptr};
   BRepGraph::CacheView   myCacheView{nullptr};
   BRepGraph::RefsView    myRefsView{nullptr};
   BRepGraph::ShapesView  myShapesView{nullptr};

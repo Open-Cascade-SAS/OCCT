@@ -14,7 +14,9 @@
 #include <BRepGraph_Analyze.hxx>
 
 #include <BRepGraph.hxx>
+#include <BRepGraph_ChildExplorer.hxx>
 #include <BRepGraph_Data.hxx>
+#include <BRepGraph_Iterator.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraphInc_Definition.hxx>
@@ -43,11 +45,11 @@ NCollection_Vector<BRepGraph_EdgeId> BRepGraph_Analyze::FreeEdges(const BRepGrap
   const BRepGraph::TopoView& aDefs = theGraph.Topo();
   NCollection_Vector<BRepGraph_EdgeId> aResult(THE_ANALYZE_RESULT_BLOCK_SIZE);
 
-  for (int anEdgeIdx = 0; anEdgeIdx < aDefs.NbEdges(); ++anEdgeIdx)
+  for (BRepGraph_EdgeIterator anEdgeIt(theGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
-    const BRepGraph_EdgeId       anEdgeId(anEdgeIdx);
-    const BRepGraphInc::EdgeDef& anEdge = aDefs.Edges().Definition(anEdgeId);
-    if (anEdge.IsRemoved || anEdge.IsDegenerate)
+    const BRepGraph_EdgeId       anEdgeId = anEdgeIt.CurrentId();
+    const BRepGraphInc::EdgeDef& anEdge   = anEdgeIt.Current();
+    if (anEdge.IsDegenerate)
       continue;
 
     if (aDefs.Edges().NbFaces(anEdgeId) == 1)
@@ -65,16 +67,14 @@ NCollection_Vector<std::pair<BRepGraph_EdgeId, BRepGraph_FaceId>> BRepGraph_Anal
   NCollection_Vector<std::pair<BRepGraph_EdgeId, BRepGraph_FaceId>> aResult =
     NCollection_Vector<std::pair<BRepGraph_EdgeId, BRepGraph_FaceId>>(THE_ANALYZE_RESULT_BLOCK_SIZE);
 
-  const occ::handle<NCollection_BaseAllocator> anAllocator;
-
-  for (int aFaceDefIdx = 0; aFaceDefIdx < aDefs.NbFaces(); ++aFaceDefIdx)
+  for (BRepGraph_FaceIterator aFaceIt(theGraph); aFaceIt.More(); aFaceIt.Next())
   {
-    const BRepGraph_FaceId aFaceId(aFaceDefIdx);
+    const BRepGraph_FaceId aFaceId = aFaceIt.CurrentId();
 
-    const NCollection_Vector<BRepGraph_EdgeId> anEdges = aDefs.Faces().Edges(aFaceId, anAllocator);
-    for (int anEdgeIdx = 0; anEdgeIdx < anEdges.Length(); ++anEdgeIdx)
+    for (BRepGraph_ChildExplorer anExp(theGraph, aFaceId, BRepGraph_NodeId::Kind::Edge);
+         anExp.More(); anExp.Next())
     {
-      const BRepGraph_EdgeId       anEdgeDefId = anEdges.Value(anEdgeIdx);
+      const BRepGraph_EdgeId       anEdgeDefId(anExp.Current().Index);
       const BRepGraphInc::EdgeDef& anEdge      = aDefs.Edges().Definition(anEdgeDefId);
       if (anEdge.IsDegenerate)
         continue;
@@ -162,11 +162,11 @@ NCollection_Vector<BRepGraph_WireId> BRepGraph_Analyze::DegenerateWires(const BR
   aNbCoEdgesPerWire.Init(0);
   anIsOuterWire.Init(0);
 
-  for (int aWireDefIdx = 0; aWireDefIdx < aNbWires; ++aWireDefIdx)
+  for (BRepGraph_WireIterator aWireIt(theGraph); aWireIt.More(); aWireIt.Next())
   {
-    const BRepGraphInc::WireDef& aWireEnt = aStorage.Wire(BRepGraph_WireId(aWireDefIdx));
-    if (aWireEnt.IsRemoved)
-      continue;
+    const BRepGraph_WireId       aWireId  = aWireIt.CurrentId();
+    const BRepGraphInc::WireDef& aWireEnt = aWireIt.Current();
+    const int                    aWireDefIdx = aWireId.Index;
     for (int i = 0; i < aWireEnt.CoEdgeRefIds.Length(); ++i)
     {
       const BRepGraphInc::CoEdgeRef& aCoEdgeRef =
@@ -180,11 +180,9 @@ NCollection_Vector<BRepGraph_WireId> BRepGraph_Analyze::DegenerateWires(const BR
     }
   }
 
-  for (int aFaceDefIdx = 0; aFaceDefIdx < aDefs.NbFaces(); ++aFaceDefIdx)
+  for (BRepGraph_FaceIterator aFaceIt(theGraph); aFaceIt.More(); aFaceIt.Next())
   {
-    const BRepGraphInc::FaceDef& aFaceEnt = aStorage.Face(BRepGraph_FaceId(aFaceDefIdx));
-    if (aFaceEnt.IsRemoved)
-      continue;
+    const BRepGraphInc::FaceDef& aFaceEnt = aFaceIt.Current();
     for (int i = 0; i < aFaceEnt.WireRefIds.Length(); ++i)
     {
       const BRepGraphInc::WireRef& aWireRef = aStorage.WireRef(aFaceEnt.WireRefIds.Value(i));
@@ -194,9 +192,10 @@ NCollection_Vector<BRepGraph_WireId> BRepGraph_Analyze::DegenerateWires(const BR
     }
   }
 
-  for (int aWireDefIdx = 0; aWireDefIdx < aNbWires; ++aWireDefIdx)
+  for (BRepGraph_WireIterator aWireIt(theGraph); aWireIt.More(); aWireIt.Next())
   {
-    const BRepGraph_WireId aWireId(aWireDefIdx);
+    const BRepGraph_WireId aWireId = aWireIt.CurrentId();
+    const int              aWireDefIdx = aWireId.Index;
 
     if (aNbCoEdgesPerWire(aWireDefIdx) < 2)
     {
@@ -205,7 +204,7 @@ NCollection_Vector<BRepGraph_WireId> BRepGraph_Analyze::DegenerateWires(const BR
     }
 
     // Outer wire that is not closed.
-    const BRepGraphInc::WireDef& aWire = aDefs.Wires().Definition(aWireId);
+    const BRepGraphInc::WireDef& aWire = aWireIt.Current();
     if (!aWire.IsClosed && anIsOuterWire(aWireDefIdx) != 0)
       aResult.Append(aWireId);
   }

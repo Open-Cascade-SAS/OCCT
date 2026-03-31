@@ -15,7 +15,6 @@
 #define _BRepGraph_ParentExplorer_HeaderFile
 
 #include <BRepGraph.hxx>
-#include <BRepGraph_TopologyPath.hxx>
 
 #include <NCollection_BaseAllocator.hxx>
 #include <NCollection_LocalArray.hxx>
@@ -96,17 +95,6 @@ public:
 
   //! Accumulated orientation at the current ancestor occurrence.
   [[nodiscard]] TopAbs_Orientation Orientation() const;
-
-  //! Root-to-branch path corresponding to the current ancestor occurrence.
-  //! For explicit 1:1 nodes such as `Occurrence` and `CoEdge`, the returned path
-  //! identifies the current branch step that owns that node.
-  [[nodiscard]] Standard_EXPORT BRepGraph_TopologyPath CurrentPath(
-    const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
-
-  //! Full path of the current branch from its explicit root to the starting node.
-  //! Leading 1:1 wrappers are collapsed to preserve BRepGraph_TopologyPath semantics.
-  [[nodiscard]] Standard_EXPORT BRepGraph_TopologyPath CurrentLeafPath(
-    const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
 
   //! Accumulated location at the starting node of the current branch.
   [[nodiscard]] Standard_EXPORT const TopLoc_Location& LeafLocation() const;

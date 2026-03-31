@@ -142,7 +142,7 @@ static TopoDS_Shape reconstructShape(BRepGraph_ReconstructionContext& theContext
       TopoDS_Shape aShape = reconstructProductLocal(theContext, anOccurrenceDef.ProductDefId);
       if (!aShape.IsNull())
       {
-        const TopLoc_Location aGlobalLocation = theContext.Graph->Paths().OccurrenceLocation(anOccurrence);
+        const TopLoc_Location aGlobalLocation = theContext.Graph->Topo().Occurrences().OccurrenceLocation(anOccurrence);
         if (!aGlobalLocation.IsIdentity())
           aShape.Move(aGlobalLocation);
       }

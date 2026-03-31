@@ -16,8 +16,10 @@
 #include <BRepBuilderAPI_Copy.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraph_BuilderView.hxx>
+#include <BRepGraph_Iterator.hxx>
 #include <BRepGraphAlgo_BndLib.hxx>
 #include "BRepGraph_RefTestTools.hxx"
+#include <BRepGraph_ChildExplorer.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
@@ -669,13 +671,9 @@ TEST(BRepGraph_BuilderTest, SkipsRemovedFaces)
   aGraph.Builder().RemoveNode(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, 3));
 
   int aCount = 0;
-  for (int aFaceIdx = 0; aFaceIdx < aGraph.Topo().NbFaces(); ++aFaceIdx)
+  for (BRepGraph_FaceIterator aFaceIt(aGraph); aFaceIt.More(); aFaceIt.Next())
   {
-    const BRepGraphInc::FaceDef& aFaceDef = aGraph.Topo().Faces().Definition(BRepGraph_FaceId(aFaceIdx));
-    if (aFaceDef.IsRemoved)
-    {
-      continue;
-    }
+    const BRepGraphInc::FaceDef& aFaceDef = aFaceIt.Current();
     EXPECT_FALSE(aFaceDef.IsRemoved);
     ++aCount;
   }
@@ -696,13 +694,9 @@ TEST(BRepGraph_BuilderTest, SkipsRemovedEdges)
   aGraph.Builder().RemoveNode(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, 0));
 
   int aCount = 0;
-  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
+  for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
-    const BRepGraphInc::EdgeDef& anEdgeDef = aGraph.Topo().Edges().Definition(BRepGraph_EdgeId(anEdgeIdx));
-    if (anEdgeDef.IsRemoved)
-    {
-      continue;
-    }
+    const BRepGraphInc::EdgeDef& anEdgeDef = anEdgeIt.Current();
     EXPECT_FALSE(anEdgeDef.IsRemoved);
     ++aCount;
   }
@@ -720,13 +714,9 @@ TEST(BRepGraph_BuilderTest, SkipsFirstNode)
   aGraph.Builder().RemoveNode(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Vertex, 0));
 
   int aCount = 0;
-  for (int aVertexIdx = 0; aVertexIdx < aGraph.Topo().NbVertices(); ++aVertexIdx)
+  for (BRepGraph_VertexIterator aVertexIt(aGraph); aVertexIt.More(); aVertexIt.Next())
   {
-    const BRepGraphInc::VertexDef& aVertexDef = aGraph.Topo().Vertices().Definition(BRepGraph_VertexId(aVertexIdx));
-    if (aVertexDef.IsRemoved)
-    {
-      continue;
-    }
+    const BRepGraphInc::VertexDef& aVertexDef = aVertexIt.Current();
     EXPECT_FALSE(aVertexDef.IsRemoved);
     ++aCount;
   }
@@ -900,9 +890,11 @@ TEST(BRepGraph_BuilderTest, EdgesOfFace_Box_HasEdges)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Each box face has 4 edges (rectangular loop).
-  NCollection_Vector<BRepGraph_EdgeId> aEdges =
-    aGraph.Topo().Faces().Edges(BRepGraph_FaceId(0), aGraph.Allocator());
-  EXPECT_EQ(aEdges.Length(), 4);
+  int aNbEdges = 0;
+  for (BRepGraph_ChildExplorer anExp(aGraph, BRepGraph_FaceId(0), BRepGraph_NodeId::Kind::Edge);
+       anExp.More(); anExp.Next())
+    ++aNbEdges;
+  EXPECT_EQ(aNbEdges, 4);
 }
 
 TEST(BRepGraph_BuilderTest, VerticesOfEdge_Box_HasTwoVertices)
@@ -911,11 +903,11 @@ TEST(BRepGraph_BuilderTest, VerticesOfEdge_Box_HasTwoVertices)
   aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  NCollection_Vector<BRepGraph_VertexId> aVerts =
-    aGraph.Topo().Edges().Vertices(BRepGraph_EdgeId(0), aGraph.Allocator());
-  EXPECT_EQ(aVerts.Length(), 2);
-  EXPECT_TRUE(aVerts.Value(0).IsValid());
-  EXPECT_TRUE(aVerts.Value(1).IsValid());
+  int aNbVertices = 0;
+  for (BRepGraph_ChildExplorer anExp(aGraph, BRepGraph_EdgeId(0), BRepGraph_NodeId::Kind::Vertex);
+       anExp.More(); anExp.Next())
+    ++aNbVertices;
+  EXPECT_EQ(aNbVertices, 2);
 }
 
 TEST(BRepGraph_BuilderTest, EdgesOfVertex_Box_ThreeEdges)
@@ -970,8 +962,6 @@ TEST(BRepGraph_BuilderTest, InvalidInput_ReturnsEmpty)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Out-of-range typed ids return empty results.
-  EXPECT_EQ(aGraph.Topo().Faces().Edges(BRepGraph_FaceId(999), aGraph.Allocator()).Length(), 0);
   EXPECT_EQ(aGraph.Topo().Vertices().Edges(BRepGraph_VertexId(999)).Length(), 0);
-  EXPECT_EQ(aGraph.Topo().Edges().Vertices(BRepGraph_EdgeId(999), aGraph.Allocator()).Length(), 0);
   EXPECT_EQ(aGraph.Topo().Edges().Adjacent(BRepGraph_EdgeId(999), aGraph.Allocator()).Length(), 0);
 }

@@ -16,7 +16,7 @@
 #include <BRepGraphInc_Reference.hxx>
 #include <BRepGraphInc_Representation.hxx>
 
-#include <BRepGraph_PathView.hxx>
+#include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_BuilderView.hxx>
@@ -442,10 +442,10 @@ void checkCrossReferenceBounds(const BRepGraph&                                 
     }
 
     const BRepGraph_ProductId aProdId(aProductIdx);
-    const int                 aNbComponents = theGraph.Paths().NbComponents(aProdId);
+    const int                 aNbComponents = theGraph.Topo().Products().NbComponents(aProdId);
     for (int anOccRefIdx = 0; anOccRefIdx < aNbComponents; ++anOccRefIdx)
     {
-      const BRepGraph_OccurrenceId anOccId = theGraph.Paths().Component(aProdId, anOccRefIdx);
+      const BRepGraph_OccurrenceId anOccId = theGraph.Topo().Products().Component(aProdId, anOccRefIdx);
       if (anOccId.IsValid() && !isValidNodeId(theGraph, anOccId))
       {
         theIssues.Append(

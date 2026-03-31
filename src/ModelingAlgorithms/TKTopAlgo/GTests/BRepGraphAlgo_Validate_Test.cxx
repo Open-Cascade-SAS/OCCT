@@ -26,7 +26,6 @@
 #include <BRepGraph_UIDsView.hxx>
 #include <BRepGraphAlgo_Deduplicate.hxx>
 #include <BRepGraphAlgo_Validate.hxx>
-#include <BRepGraph_PathView.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <TopAbs_ShapeEnum.hxx>
@@ -451,10 +450,10 @@ TEST(BRepGraphAlgo_ValidateTest, AssemblyGraph_ValidProduct_NoIssuesInAudit)
   // Identify the auto-created part product.
   const occ::handle<NCollection_BaseAllocator> anAllocator = new NCollection_IncAllocator();
   const NCollection_Vector<BRepGraph_ProductId> aInitialRootProducts =
-    aGraph.Paths().RootProducts(anAllocator);
+    aGraph.Topo().Products().RootProducts(anAllocator);
   ASSERT_GT(aInitialRootProducts.Length(), 0);
   const BRepGraph_ProductId aPartProduct = aInitialRootProducts.Value(0);
-  ASSERT_TRUE(aGraph.Paths().IsPart(aPartProduct));
+  ASSERT_TRUE(aGraph.Topo().Products().IsPart(aPartProduct));
 
   // Explicitly create an assembly product and add two occurrences of the part.
   const BRepGraph_ProductId aAssemblyProduct = aGraph.Builder().AddAssemblyProduct();
@@ -470,8 +469,8 @@ TEST(BRepGraphAlgo_ValidateTest, AssemblyGraph_ValidProduct_NoIssuesInAudit)
   ASSERT_TRUE(anOcc2.IsValid());
 
   // Verify assembly structure.
-  EXPECT_TRUE(aGraph.Paths().IsAssembly(aAssemblyProduct));
-  EXPECT_EQ(aGraph.Paths().NbComponents(aAssemblyProduct), 2);
+  EXPECT_TRUE(aGraph.Topo().Products().IsAssembly(aAssemblyProduct));
+  EXPECT_EQ(aGraph.Topo().Products().NbComponents(aAssemblyProduct), 2);
 
   // Rebuild reverse index after assembly modifications.
   aGraph.Builder().CommitMutation();
@@ -541,12 +540,12 @@ TEST(BRepGraphAlgo_ValidateTest, AssemblyGraph_CorruptedOccurrenceProductDefId_D
   ASSERT_TRUE(aRootAssembly.IsValid());
 
   const occ::handle<NCollection_BaseAllocator> anAllocator = new NCollection_IncAllocator();
-  const NCollection_Vector<BRepGraph_ProductId> aRootProducts = aGraph.Paths().RootProducts(anAllocator);
+  const NCollection_Vector<BRepGraph_ProductId> aRootProducts = aGraph.Topo().Products().RootProducts(anAllocator);
   BRepGraph_ProductId                           aPartId;
   for (int i = 0; i < aRootProducts.Length(); ++i)
   {
     const BRepGraph_ProductId aProductId = aRootProducts.Value(i);
-    if (aGraph.Paths().IsPart(aProductId))
+    if (aGraph.Topo().Products().IsPart(aProductId))
     {
       aPartId = aRootProducts.Value(i);
       break;

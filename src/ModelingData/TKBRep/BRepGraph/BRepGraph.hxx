@@ -154,17 +154,12 @@ public:
   class RefsView;
   class ShapesView;
   class BuilderView;
-  class PathView;
 
   //! Access topology definitions, representation access, adjacency queries,
-  //! and raw Product/Occurrence definition storage.
-  //! For assembly-aware classification and path-based placement/orientation,
-  //! use Paths().
+  //! raw Product/Occurrence definition storage, and assembly classification.
   [[nodiscard]] Standard_EXPORT const TopoView& Topo() const;
   //! Access unique identifiers.
   [[nodiscard]] Standard_EXPORT const UIDsView& UIDs() const;
-  //! Access assembly structure, placement, and topology path resolution queries.
-  [[nodiscard]] Standard_EXPORT const PathView& Paths() const;
   //! Access transient cache values through the stable grouped-view API.
   //! This is the only public cache interface.
   [[nodiscard]] Standard_EXPORT CacheView& Cache();

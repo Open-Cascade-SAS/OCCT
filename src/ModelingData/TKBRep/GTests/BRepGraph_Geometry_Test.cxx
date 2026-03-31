@@ -18,6 +18,7 @@
 #include <BRepGraphInc_Reference.hxx>
 #include <BRepGraphInc_Representation.hxx>
 #include <BRepGraph_Analyze.hxx>
+#include <BRepGraph_Iterator.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_RepId.hxx>
 #include <BRepGraph_ShapesView.hxx>
@@ -54,10 +55,15 @@ TEST(BRepGraph_GeometryTest, Sphere_AllFaces_SameSurface)
   const occ::handle<Geom_Surface>& aFirstSurf =
     BRepGraph_Tool::Face::Surface(aGraph, BRepGraph_FaceId(0));
   EXPECT_FALSE(aFirstSurf.IsNull());
-  for (int i = 1; i < aGraph.Topo().NbFaces(); ++i)
+  for (BRepGraph_FaceIterator aFaceIt(aGraph); aFaceIt.More(); aFaceIt.Next())
   {
-    ASSERT_TRUE(BRepGraph_Tool::Face::HasSurface(aGraph, BRepGraph_FaceId(i)));
-    EXPECT_EQ(BRepGraph_Tool::Face::Surface(aGraph, BRepGraph_FaceId(i)).get(), aFirstSurf.get());
+    const BRepGraph_FaceId aFaceId = aFaceIt.CurrentId();
+    if (aFaceId.Index == 0)
+    {
+      continue;
+    }
+    ASSERT_TRUE(BRepGraph_Tool::Face::HasSurface(aGraph, aFaceId));
+    EXPECT_EQ(BRepGraph_Tool::Face::Surface(aGraph, aFaceId).get(), aFirstSurf.get());
   }
 }
 
@@ -73,10 +79,11 @@ TEST(BRepGraph_GeometryTest, Sphere_AllFacesShareSurface)
     BRepGraph_Tool::Face::Surface(aGraph, BRepGraph_FaceId(0));
   EXPECT_FALSE(aFirstSurf.IsNull());
   int aSameCount = 0;
-  for (int i = 0; i < aGraph.Topo().NbFaces(); ++i)
+  for (BRepGraph_FaceIterator aFaceIt(aGraph); aFaceIt.More(); aFaceIt.Next())
   {
-    if (BRepGraph_Tool::Face::HasSurface(aGraph, BRepGraph_FaceId(i))
-        && BRepGraph_Tool::Face::Surface(aGraph, BRepGraph_FaceId(i)).get() == aFirstSurf.get())
+    const BRepGraph_FaceId aFaceId = aFaceIt.CurrentId();
+    if (BRepGraph_Tool::Face::HasSurface(aGraph, aFaceId)
+        && BRepGraph_Tool::Face::Surface(aGraph, aFaceId).get() == aFirstSurf.get())
       ++aSameCount;
   }
   EXPECT_EQ(aSameCount, aGraph.Topo().NbFaces());
@@ -89,10 +96,11 @@ TEST(BRepGraph_GeometryTest, Box_Curve3d_ValidForAll12Edges)
   ASSERT_TRUE(aGraph.IsDone());
   EXPECT_EQ(aGraph.Topo().NbEdges(), 12);
 
-  for (int i = 0; i < aGraph.Topo().NbEdges(); ++i)
+  for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
-    EXPECT_TRUE(BRepGraph_Tool::Edge::HasCurve(aGraph, BRepGraph_EdgeId(i)))
-      << "Edge def " << i << " has no valid curve";
+    const BRepGraph_EdgeId anEdgeId = anEdgeIt.CurrentId();
+    EXPECT_TRUE(BRepGraph_Tool::Edge::HasCurve(aGraph, anEdgeId))
+      << "Edge def " << anEdgeId.Index << " has no valid curve";
   }
 }
 
@@ -102,10 +110,11 @@ TEST(BRepGraph_GeometryTest, Box_AllEdgesHaveCurve3d)
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  for (int i = 0; i < aGraph.Topo().NbEdges(); ++i)
+  for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
-    EXPECT_TRUE(BRepGraph_Tool::Edge::HasCurve(aGraph, BRepGraph_EdgeId(i)))
-      << "Edge " << i << " has no curve";
+    const BRepGraph_EdgeId anEdgeId = anEdgeIt.CurrentId();
+    EXPECT_TRUE(BRepGraph_Tool::Edge::HasCurve(aGraph, anEdgeId))
+      << "Edge " << anEdgeId.Index << " has no curve";
   }
 }
 
@@ -116,18 +125,18 @@ TEST(BRepGraph_GeometryTest, Box_FindPCurve_AllEdgeFacePairs_Valid)
   ASSERT_TRUE(aGraph.IsDone());
 
   int aPCurveCount = 0;
-  for (int i = 0; i < aGraph.Topo().NbEdges(); ++i)
+  for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
-    const BRepGraph_NodeId                        aEdgeDefId(BRepGraph_NodeId::Kind::Edge, i);
+    const BRepGraph_EdgeId                        anEdgeId = anEdgeIt.CurrentId();
     const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
-      aGraph.Topo().Edges().CoEdges(BRepGraph_EdgeId(i));
+      aGraph.Topo().Edges().CoEdges(anEdgeId);
     for (int j = 0; j < aCoEdgeIdxs.Length(); ++j)
     {
       const BRepGraphInc::CoEdgeDef& aCE =
         aGraph.Topo().CoEdges().Definition(aCoEdgeIdxs.Value(j));
       const BRepGraphInc::CoEdgeDef* aPCurveEntry =
         BRepGraph_Tool::Edge::FindPCurve(aGraph,
-                                         BRepGraph_EdgeId(i),
+                                         anEdgeId,
                                          BRepGraph_FaceId(aCE.FaceDefId.Index));
       EXPECT_NE(aPCurveEntry, nullptr);
       ++aPCurveCount;

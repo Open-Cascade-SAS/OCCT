@@ -12,7 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <BRepGraph_ChildExplorer.hxx>
-#include <BRepGraph_PathView.hxx>
+#include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_TopoView.hxx>
 
@@ -662,10 +662,10 @@ void BRepGraph_ChildExplorer::advance()
       case Kind::Product: {
         // Assembly product: step = active occurrence index.
         const BRepGraph_ProductId aProdId(aFrame.Node.Index);
-        const int aNbComps = myGraph->Paths().NbComponents(aProdId);
+        const int aNbComps = myGraph->Topo().Products().NbComponents(aProdId);
         if (aIdx < aNbComps)
         {
-          const BRepGraph_OccurrenceId anOccId = myGraph->Paths().Component(aProdId, aIdx);
+          const BRepGraph_OccurrenceId anOccId = myGraph->Topo().Products().Component(aProdId, aIdx);
           aChildNode = anOccId;
           aStepIdx = aIdx;
           // No location/orientation on assembly -> occurrence step.
@@ -942,18 +942,6 @@ void BRepGraph_ChildExplorer::popFrame()
 {
   if (myStackTop >= 0)
     --myStackTop;
-}
-
-//=================================================================================================
-
-BRepGraph_TopologyPath BRepGraph_ChildExplorer::CurrentPath(
-  const occ::handle<NCollection_BaseAllocator>& theAllocator) const
-{
-  BRepGraph_TopologyPath aPath(myRoot, theAllocator);
-  const int aMaxFrame = myCurrentFrame >= 0 ? myCurrentFrame : myStackTop;
-  for (int i = 1; i <= aMaxFrame; ++i)
-    aPath.pushStep(myStack[i].StepFromParent);
-  return aPath;
 }
 
 //=================================================================================================

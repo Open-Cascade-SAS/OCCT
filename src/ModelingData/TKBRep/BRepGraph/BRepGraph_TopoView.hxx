@@ -18,16 +18,15 @@
 #include <BRepGraph_RepId.hxx>
 #include <GeomAdaptor_TransformedCurve.hxx>
 #include <GeomAdaptor_TransformedSurface.hxx>
+#include <TopLoc_Location.hxx>
 
 class Adaptor3d_CurveOnSurface;
 
 //! @brief Unified read-only view over topology definitions, adjacency, and representations.
 //!
-//! Provides topology definition lookup, representation lookup, and read-only
-//! adjacency queries over the incidence-table model stored in BRepGraph.
-//! Product and Occurrence accessors in this view expose raw definition storage
-//! only. For assembly-aware classification, child-occurrence traversal, and
-//! path-based placement/orientation queries, use PathView.
+//! Provides topology definition lookup, representation lookup, read-only
+//! adjacency queries, and assembly classification over the incidence-table
+//! model stored in BRepGraph.
 //! Obtained via BRepGraph::Topo().
 //!
 //! ## Soft-deletion convention
@@ -73,9 +72,6 @@ public:
     [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_FaceId> Adjacent(
       const BRepGraph_FaceId                          theFace,
       const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
-    [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_EdgeId> Edges(
-      const BRepGraph_FaceId                          theFace,
-      const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
     [[nodiscard]] Standard_EXPORT BRepGraph_WireId OuterWire(const BRepGraph_FaceId theFace) const;
 
   private:
@@ -104,9 +100,6 @@ public:
       const BRepGraph_EdgeId theEdge) const;
     [[nodiscard]] Standard_EXPORT BRepGraph_Curve3DRepId Curve3DRepId(
       const BRepGraph_EdgeId theEdge) const;
-    [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_VertexId> Vertices(
-      const BRepGraph_EdgeId                          theEdge,
-      const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
     [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_EdgeId> Adjacent(
       const BRepGraph_EdgeId                          theEdge,
       const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
@@ -139,9 +132,6 @@ public:
       const BRepGraph_VertexId theVertex) const;
     [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_EdgeId>& Edges(
       const BRepGraph_VertexId theVertex) const;
-    [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_FaceId> Faces(
-      const BRepGraph_VertexId                        theVertex,
-      const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
 
   private:
     friend class TopoView;
@@ -162,12 +152,6 @@ public:
       const BRepGraph_WireId theWire) const;
     [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_FaceId>& Faces(
       const BRepGraph_WireId theWire) const;
-    [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_CoEdgeId> CoEdges(
-      const BRepGraph_WireId                          theWire,
-      const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
-    [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_EdgeId> Edges(
-      const BRepGraph_WireId                          theWire,
-      const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
 
   private:
     friend class TopoView;
@@ -190,12 +174,6 @@ public:
       const BRepGraph_ShellId theShell) const;
     [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_CompoundId>& Compounds(
       const BRepGraph_ShellId theShell) const;
-    [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_FaceId> Faces(
-      const BRepGraph_ShellId                         theShell,
-      const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
-    [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> FreeChildren(
-      const BRepGraph_ShellId                         theShell,
-      const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
 
   private:
     friend class TopoView;
@@ -218,12 +196,6 @@ public:
       const BRepGraph_SolidId theSolid) const;
     [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_CompoundId>& Compounds(
       const BRepGraph_SolidId theSolid) const;
-    [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_ShellId> Shells(
-      const BRepGraph_SolidId                         theSolid,
-      const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
-    [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> FreeChildren(
-      const BRepGraph_SolidId                         theSolid,
-      const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
 
   private:
     friend class TopoView;
@@ -270,9 +242,6 @@ public:
       const BRepGraph_CompoundId theCompound) const;
     [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_CompoundId>& ParentCompounds(
       const BRepGraph_CompoundId theCompound) const;
-    [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> Children(
-      const BRepGraph_CompoundId                      theCompound,
-      const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
 
   private:
     friend class TopoView;
@@ -293,9 +262,6 @@ public:
       const BRepGraph_CompSolidId theCompSolid) const;
     [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_CompoundId>& Compounds(
       const BRepGraph_CompSolidId theCompSolid) const;
-    [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_SolidId> Solids(
-      const BRepGraph_CompSolidId                     theCompSolid,
-      const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
 
   private:
     friend class TopoView;
@@ -318,9 +284,36 @@ public:
       const BRepGraph_ProductId theProduct) const;
     [[nodiscard]] Standard_EXPORT BRepGraph_NodeId ShapeRoot(
       const BRepGraph_ProductId theProduct) const;
-    [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_OccurrenceId> Occurrences(
-      const BRepGraph_ProductId                       theProduct,
+
+    //! Return typed identifiers of all root products (products not referenced by an active occurrence).
+    //! @param[in] theAllocator allocator for internal temporaries and the result vector
+    [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_ProductId> RootProducts(
       const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
+
+    //! True if the product is an assembly (has child occurrences, no topology root).
+    //! @param[in] theProduct typed product definition identifier
+    [[nodiscard]] Standard_EXPORT bool IsAssembly(const BRepGraph_ProductId theProduct) const;
+
+    //! True if the product is a part (has a valid topology root).
+    //! @param[in] theProduct typed product definition identifier
+    [[nodiscard]] Standard_EXPORT bool IsPart(const BRepGraph_ProductId theProduct) const;
+
+    //! Return the topology root NodeId for a part product.
+    //! For assemblies (no topology root) returns an invalid NodeId.
+    //! @param[in] theProduct typed product definition identifier
+    [[nodiscard]] Standard_EXPORT BRepGraph_NodeId
+      ShapeRootNode(const BRepGraph_ProductId theProduct) const;
+
+    //! Number of active child occurrences of a product.
+    //! @param[in] theProduct typed product definition identifier
+    [[nodiscard]] Standard_EXPORT int NbComponents(const BRepGraph_ProductId theProduct) const;
+
+    //! Return the i-th active child occurrence identifier of a product.
+    //! @param[in] theProduct typed product definition identifier
+    //! @param[in] theComponentIdx zero-based active occurrence index within the product
+    [[nodiscard]] Standard_EXPORT BRepGraph_OccurrenceId Component(
+      const BRepGraph_ProductId theProduct,
+      const int                theComponentIdx) const;
 
   private:
     friend class TopoView;
@@ -345,6 +338,14 @@ public:
       const BRepGraph_OccurrenceId theOccurrence) const;
     [[nodiscard]] Standard_EXPORT BRepGraph_OccurrenceId ParentOccurrence(
       const BRepGraph_OccurrenceId theOccurrence) const;
+
+    //! Compute the global placement of an occurrence by walking the parent chain.
+    //! Shared products can appear at multiple placements; the returned location is
+    //! specific to the supplied occurrence path through ParentOccurrenceDefId.
+    //! @param[in] theOccurrence typed occurrence identifier
+    //! @return composed TopLoc_Location from root to the occurrence
+    [[nodiscard]] Standard_EXPORT TopLoc_Location
+      OccurrenceLocation(const BRepGraph_OccurrenceId theOccurrence) const;
 
   private:
     friend class TopoView;
@@ -537,9 +538,8 @@ public:
   //! @name Assembly definition accessors
   //!
   //! Product and Occurrence definitions live in the incidence storage alongside
-  //! topology nodes. This view exposes only direct definition lookup and counts.
-  //! Use PathView for part-vs-assembly classification, root-product discovery,
-  //! active child-occurrence traversal, and placement/path queries.
+  //! topology nodes. This view exposes definition lookup, counts, assembly
+  //! classification, and active child-occurrence traversal.
 
   //! Number of product definitions.
   [[nodiscard]] Standard_EXPORT int NbProducts() const;

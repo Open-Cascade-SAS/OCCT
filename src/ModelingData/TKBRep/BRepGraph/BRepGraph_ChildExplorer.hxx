@@ -15,7 +15,6 @@
 #define _BRepGraph_ChildExplorer_HeaderFile
 
 #include <BRepGraph.hxx>
-#include <BRepGraph_TopologyPath.hxx>
 
 #include <NCollection_LocalArray.hxx>
 
@@ -113,9 +112,6 @@ public:
   [[nodiscard]] bool More() const { return myHasMore; }
 
   Standard_EXPORT void Next();
-
-  [[nodiscard]] Standard_EXPORT BRepGraph_TopologyPath
-    CurrentPath(const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
 
   [[nodiscard]] BRepGraph_NodeId Current() const { return myCurrent; }
 
