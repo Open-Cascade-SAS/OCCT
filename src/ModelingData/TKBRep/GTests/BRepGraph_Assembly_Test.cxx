@@ -39,17 +39,6 @@ static double translationX(const TopoDS_Shape& theShape)
 {
   return theShape.Location().Transformation().TranslationPart().X();
 }
-
-template <class theValueType>
-static void expectSameSequence(const NCollection_Vector<theValueType>& theLeft,
-                               const NCollection_Vector<theValueType>& theRight)
-{
-  ASSERT_EQ(theLeft.Length(), theRight.Length());
-  for (int i = 0; i < theLeft.Length(); ++i)
-  {
-    EXPECT_EQ(theLeft.Value(i), theRight.Value(i));
-  }
-}
 } // namespace
 
 // =============================================================================

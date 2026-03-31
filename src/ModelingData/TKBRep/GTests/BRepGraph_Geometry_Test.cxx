@@ -17,18 +17,18 @@
 #include <BRepGraphInc_Definition.hxx>
 #include <BRepGraphInc_Reference.hxx>
 #include <BRepGraphInc_Representation.hxx>
-#include <BRepGraph_Analyze.hxx>
 #include <BRepGraph_Iterator.hxx>
+#include <BRepGraph_ParentExplorer.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_RepId.hxx>
 #include <BRepGraph_ShapesView.hxx>
-#include <BRepGraph_SubGraph.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
+#include <NCollection_DataMap.hxx>
 #include <NCollection_Map.hxx>
 #include <Precision.hxx>
 #include <TopAbs_Orientation.hxx>
@@ -38,6 +38,49 @@
 #include <TopoDS_Compound.hxx>
 
 #include <gtest/gtest.h>
+
+namespace
+{
+
+static int componentKey(const BRepGraph_NodeId theNode)
+{
+  return theNode.Index * BRepGraph_NodeId::THE_KIND_COUNT + static_cast<int>(theNode.NodeKind);
+}
+
+static BRepGraph_NodeId componentRootOfFace(const BRepGraph&     theGraph,
+                                            const BRepGraph_FaceId theFaceId)
+{
+  for (BRepGraph_ParentExplorer aSolidExp(theGraph, theFaceId, BRepGraph_NodeId::Kind::Solid);
+       aSolidExp.More(); aSolidExp.Next())
+  {
+    return aSolidExp.Current();
+  }
+
+  for (BRepGraph_ParentExplorer aShellExp(theGraph, theFaceId, BRepGraph_NodeId::Kind::Shell);
+       aShellExp.More(); aShellExp.Next())
+  {
+    return aShellExp.Current();
+  }
+
+  return theFaceId;
+}
+
+static NCollection_DataMap<int, int> faceCountsByComponent(const BRepGraph& theGraph)
+{
+  NCollection_DataMap<int, int> aCounts;
+  for (BRepGraph_FaceIterator aFaceIt(theGraph); aFaceIt.More(); aFaceIt.Next())
+  {
+    const int aKey = componentKey(componentRootOfFace(theGraph, aFaceIt.CurrentId()));
+    if (!aCounts.IsBound(aKey))
+    {
+      aCounts.Bind(aKey, 0);
+    }
+    aCounts.ChangeFind(aKey) += 1;
+  }
+  return aCounts;
+}
+
+} // namespace
 
 // ============================================================
 // Geometry navigation tests
@@ -461,20 +504,26 @@ TEST(BRepGraph_GeometryTest, AllCoEdgesHaveCurve2d)
 }
 
 // ============================================================
-// SubGraph / Decompose tests
+// Connected component grouping via ParentExplorer
 // ============================================================
 
-TEST(BRepGraph_GeometryTest, Decompose_SingleBox_OneComponent)
+TEST(BRepGraph_GeometryTest, ConnectedComponents_SingleBox_OneComponent)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  const NCollection_Vector<BRepGraph_SubGraph> aSubs = BRepGraph_Analyze::Decompose(aGraph);
-  EXPECT_EQ(aSubs.Length(), 1);
+  const NCollection_DataMap<int, int> aFaceCounts = faceCountsByComponent(aGraph);
+  ASSERT_EQ(aFaceCounts.Extent(), 1);
+  int aComponentFaces = 0;
+  for (NCollection_DataMap<int, int>::Iterator anIt(aFaceCounts); anIt.More(); anIt.Next())
+  {
+    aComponentFaces = anIt.Value();
+  }
+  EXPECT_EQ(aComponentFaces, 6);
 }
 
-TEST(BRepGraph_GeometryTest, Decompose_TwoBoxCompound_TwoComponents)
+TEST(BRepGraph_GeometryTest, ConnectedComponents_TwoBoxCompound_TwoComponents)
 {
   const TopoDS_Shape aBox1 = BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape();
   const TopoDS_Shape aBox2 =
@@ -490,11 +539,11 @@ TEST(BRepGraph_GeometryTest, Decompose_TwoBoxCompound_TwoComponents)
   aGraph.Build(aCompound);
   ASSERT_TRUE(aGraph.IsDone());
 
-  const NCollection_Vector<BRepGraph_SubGraph> aSubs = BRepGraph_Analyze::Decompose(aGraph);
-  EXPECT_EQ(aSubs.Length(), 2);
+  const NCollection_DataMap<int, int> aFaceCounts = faceCountsByComponent(aGraph);
+  EXPECT_EQ(aFaceCounts.Extent(), 2);
 }
 
-TEST(BRepGraph_GeometryTest, SubGraph_IndicesDisjoint_BetweenComponents)
+TEST(BRepGraph_GeometryTest, ConnectedComponents_TwoBoxCompound_FacesGroupedPerRoot)
 {
   const TopoDS_Shape aBox1 = BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape();
   const TopoDS_Shape aBox2 =
@@ -510,26 +559,15 @@ TEST(BRepGraph_GeometryTest, SubGraph_IndicesDisjoint_BetweenComponents)
   aGraph.Build(aCompound);
   ASSERT_TRUE(aGraph.IsDone());
 
-  const NCollection_Vector<BRepGraph_SubGraph> aSubs = BRepGraph_Analyze::Decompose(aGraph);
-  ASSERT_EQ(aSubs.Length(), 2);
-
-  // Collect face def ids from both components and verify they are disjoint.
-  NCollection_Map<int>                        aFaceSet1;
-  const NCollection_Vector<BRepGraph_FaceId>& aFaces1 = aSubs.Value(0).FaceDefIds();
-  for (int i = 0; i < aFaces1.Length(); ++i)
+  const NCollection_DataMap<int, int> aFaceCounts = faceCountsByComponent(aGraph);
+  ASSERT_EQ(aFaceCounts.Extent(), 2);
+  for (NCollection_DataMap<int, int>::Iterator anIt(aFaceCounts); anIt.More(); anIt.Next())
   {
-    aFaceSet1.Add(aFaces1.Value(i).Index);
-  }
-
-  const NCollection_Vector<BRepGraph_FaceId>& aFaces2 = aSubs.Value(1).FaceDefIds();
-  for (int i = 0; i < aFaces2.Length(); ++i)
-  {
-    EXPECT_FALSE(aFaceSet1.Contains(aFaces2.Value(i).Index))
-      << "Face def index " << aFaces2.Value(i).Index << " found in both components";
+    EXPECT_EQ(anIt.Value(), 6);
   }
 }
 
-TEST(BRepGraph_GeometryTest, SubGraph_NbTopoNodes_SumEqualsTotal)
+TEST(BRepGraph_GeometryTest, ConnectedComponents_TwoBoxCompound_CoverAllFaces)
 {
   const TopoDS_Shape aBox1 = BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape();
   const TopoDS_Shape aBox2 =
@@ -545,23 +583,14 @@ TEST(BRepGraph_GeometryTest, SubGraph_NbTopoNodes_SumEqualsTotal)
   aGraph.Build(aCompound);
   ASSERT_TRUE(aGraph.IsDone());
 
-  const NCollection_Vector<BRepGraph_SubGraph> aSubs = BRepGraph_Analyze::Decompose(aGraph);
-
-  // SubGraph NbTopoNodes counts per-definition indices but may include duplicates
-  // (e.g., vertex defs counted multiple times across edges). Verify the sum is at least
-  // as large as the total unique def count and that each component contributes > 0.
-  int aTotalTopoNodes = 0;
-  for (int i = 0; i < aSubs.Length(); ++i)
+  const NCollection_DataMap<int, int> aFaceCounts = faceCountsByComponent(aGraph);
+  int                                 aTotalFaces = 0;
+  for (NCollection_DataMap<int, int>::Iterator anIt(aFaceCounts); anIt.More(); anIt.Next())
   {
-    EXPECT_GT(aSubs.Value(i).NbTopoNodes(), 0)
-      << "SubGraph component " << i << " has zero topo nodes";
-    aTotalTopoNodes += aSubs.Value(i).NbTopoNodes();
+    aTotalFaces += anIt.Value();
   }
 
-  const int aGraphTotal = aGraph.Topo().NbSolids() + aGraph.Topo().NbShells()
-                          + aGraph.Topo().NbFaces() + aGraph.Topo().NbWires()
-                          + aGraph.Topo().NbEdges() + aGraph.Topo().NbVertices();
-  EXPECT_GE(aTotalTopoNodes, aGraphTotal);
+  EXPECT_EQ(aTotalFaces, aGraph.Topo().NbFaces());
 }
 
 // ============================================================

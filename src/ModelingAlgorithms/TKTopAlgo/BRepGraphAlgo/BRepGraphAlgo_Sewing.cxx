@@ -49,9 +49,9 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
 
-#include <BRepGraph_Analyze.hxx>
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_History.hxx>
+#include <BRepGraph_Iterator.hxx>
 #include <BRepGraph_ParallelPolicy.hxx>
 #include <BRepGraph_DeferredScope.hxx>
 #include <BRepGraph_RefsView.hxx>
@@ -590,31 +590,35 @@ int findRoot(NCollection_OrderedDataMap<int, int>& theParent, int theIdx)
   return aRoot;
 }
 
+using FreeEdgeList = NCollection_Vector<BRepGraph_NodeId>;
+
 //! Collect boundary (free) edges - edges with exactly one adjacent face.
 //! Seam edges and removed edges are excluded. Optionally includes floating edges
 //! (zero adjacent faces) in a separate set.
 //! @param[in]  theGraph           source graph
 //! @param[in]  theIncludeFloating if true, include edges with zero faces
 //! @param[out] theFloatingEdges   set of floating edge indices (populated if theIncludeFloating)
-//! @return array of free edge NodeIds
-NCollection_Array1<BRepGraph_NodeId> findFreeEdges(const BRepGraph&      theGraph,
-                                                   bool                  theIncludeFloating,
-                                                   NCollection_Map<int>& theFloatingEdges)
+//! @param[in]  theAllocator       optional allocator for temporary storage
+//! @return ordered free-edge list following BRepGraph_EdgeIterator traversal order
+FreeEdgeList findFreeEdges(const BRepGraph&                        theGraph,
+                           bool                                    theIncludeFloating,
+                           NCollection_Map<int>&                   theFloatingEdges,
+                           const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
 {
-  const BRepGraph::TopoView&           aDefs = theGraph.Topo();
-  NCollection_Vector<BRepGraph_NodeId> aFreeVec;
+  const int  aCapacity  = std::max(1, theGraph.Topo().NbEdges());
+  FreeEdgeList aFreeEdges(aCapacity, theAllocator);
 
-  for (int anEdgeIdx = 0; anEdgeIdx < aDefs.NbEdges(); ++anEdgeIdx)
+  for (BRepGraph_EdgeIterator anEdgeIt(theGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
-    const BRepGraph_EdgeId       anEdgeId(anEdgeIdx);
-    const BRepGraphInc::EdgeDef& anEdge = aDefs.Edges().Definition(anEdgeId);
-    if (BRepGraph_Tool::Edge::Degenerated(theGraph, anEdgeId) || anEdge.IsRemoved)
+    const BRepGraph_EdgeId       anEdgeId = anEdgeIt.CurrentId();
+    const BRepGraphInc::EdgeDef& anEdge   = anEdgeIt.Current();
+    if (BRepGraph_Tool::Edge::Degenerated(theGraph, anEdgeId))
     {
       continue;
     }
 
     // Cached face count from reverse index - O(1).
-    const int aFaceCount = aDefs.Edges().NbFaces(anEdgeId);
+    const int aFaceCount = theGraph.Topo().Edges().NbFaces(anEdgeId);
 
     // Exclude seam edges: on a UV-closed surface (cylinder, sphere, torus) with
     // two PCurves on the same face. Surface closure is verified first via
@@ -627,26 +631,15 @@ NCollection_Array1<BRepGraph_NodeId> findFreeEdges(const BRepGraph&      theGrap
 
     if (aFaceCount == 1)
     {
-      aFreeVec.Append(anEdge.Id);
+      aFreeEdges.Append(anEdge.Id);
     }
     else if (aFaceCount == 0 && theIncludeFloating)
     {
-      aFreeVec.Append(anEdge.Id);
-      theFloatingEdges.Add(anEdgeIdx);
+      aFreeEdges.Append(anEdge.Id);
+      theFloatingEdges.Add(anEdgeId.Index);
     }
   }
-
-  const int aNbFree = aFreeVec.Length();
-  if (aNbFree == 0)
-  {
-    return NCollection_Array1<BRepGraph_NodeId>();
-  }
-  NCollection_Array1<BRepGraph_NodeId> anArray(1, aNbFree);
-  for (int anIdx = 0; anIdx < aNbFree; ++anIdx)
-  {
-    anArray.SetValue(anIdx + 1, aFreeVec.Value(anIdx));
-  }
-  return anArray;
+  return aFreeEdges;
 }
 
 //! Merge coincident vertices of free edges using KDTree range search
@@ -656,38 +649,31 @@ NCollection_Array1<BRepGraph_NodeId> findFreeEdges(const BRepGraph&      theGrap
 //! @param[in]     theTolerance  maximum merge distance
 //! @param[in,out] theResult     sewing result diagnostics
 void assembleVertices(BRepGraph&                                   theGraph,
-                      const NCollection_Array1<BRepGraph_NodeId>&  theFreeEdges,
+                      const FreeEdgeList&                          theFreeEdges,
                       double                                       theTolerance,
                       bool                                         theUseLightweightSearch,
                       const occ::handle<NCollection_IncAllocator>& theTmpAlloc)
 {
-  const int               aNbFreeEdges = theFreeEdges.Length();
-  NCollection_Vector<int> aFreeVertexIndices(THE_INIT_VECTOR_CAPACITY, theTmpAlloc);
-  NCollection_Map<int>    aFreeVertexSet(aNbFreeEdges, theTmpAlloc);
-  for (int aFreeEdgeIter = 1; aFreeEdgeIter <= aNbFreeEdges; ++aFreeEdgeIter)
+  const int aNbFreeEdges = theFreeEdges.Length();
+  NCollection_IndexedMap<int> aFreeVertexIndices(std::max(1, aNbFreeEdges * 2), theTmpAlloc);
+  for (const BRepGraph_NodeId& aFreeEdgeNodeId : theFreeEdges)
   {
     const BRepGraphInc::EdgeDef& anEdge =
-      theGraph.Topo().Edges().Definition(BRepGraph_EdgeId(theFreeEdges.Value(aFreeEdgeIter).Index));
+      theGraph.Topo().Edges().Definition(BRepGraph_EdgeId(aFreeEdgeNodeId.Index));
     const BRepGraph::RefsView& aRefs = theGraph.Refs();
     if (anEdge.StartVertexRefId.IsValid())
     {
       const int aStartVtxIdx = aRefs.Vertex(anEdge.StartVertexRefId).VertexDefId.Index;
-      if (aFreeVertexSet.Add(aStartVtxIdx))
-      {
-        aFreeVertexIndices.Append(aStartVtxIdx);
-      }
+      aFreeVertexIndices.Add(aStartVtxIdx);
     }
     if (anEdge.EndVertexRefId.IsValid())
     {
       const int aEndVtxIdx = aRefs.Vertex(anEdge.EndVertexRefId).VertexDefId.Index;
-      if (aFreeVertexSet.Add(aEndVtxIdx))
-      {
-        aFreeVertexIndices.Append(aEndVtxIdx);
-      }
+      aFreeVertexIndices.Add(aEndVtxIdx);
     }
   }
 
-  const int aNbVertices = aFreeVertexIndices.Length();
+  const int aNbVertices = aFreeVertexIndices.Extent();
   if (aNbVertices == 0)
   {
     return;
@@ -695,20 +681,18 @@ void assembleVertices(BRepGraph&                                   theGraph,
 
   NCollection_OrderedDataMap<int, int> aVertexMerge(aNbVertices, theTmpAlloc);
   NCollection_Array1<gp_Pnt> aVertexPoints(0, aNbVertices - 1);
-  NCollection_Array1<int>    aGraphIndices(0, aNbVertices - 1);
   for (int aVtxIter = 0; aVtxIter < aNbVertices; ++aVtxIter)
   {
-    const int anIdx = aFreeVertexIndices.Value(aVtxIter);
+    const int anIdx = aFreeVertexIndices.FindKey(aVtxIter + 1);
     aVertexPoints.SetValue(aVtxIter,
                            BRepGraph_Tool::Vertex::Pnt(theGraph, BRepGraph_VertexId(anIdx)));
-    aGraphIndices.SetValue(aVtxIter, anIdx);
   }
 
   if (theUseLightweightSearch)
   {
     for (int aVtxIter = 0; aVtxIter < aNbVertices; ++aVtxIter)
     {
-      const int anIdxI = aGraphIndices.Value(aVtxIter);
+      const int anIdxI = aFreeVertexIndices.FindKey(aVtxIter + 1);
       if (aVertexMerge.IsBound(anIdxI))
       {
         continue;
@@ -718,7 +702,7 @@ void assembleVertices(BRepGraph&                                   theGraph,
       bool          aMergedSelf = false;
       for (int aCandIter = aVtxIter + 1; aCandIter < aNbVertices && !aMergedSelf; ++aCandIter)
       {
-        const int anIdxJ = aGraphIndices.Value(aCandIter);
+        const int anIdxJ = aFreeVertexIndices.FindKey(aCandIter + 1);
         if (aVertexMerge.IsBound(anIdxJ) || aPntI.Distance(aVertexPoints.Value(aCandIter)) > theTolerance)
         {
           continue;
@@ -750,7 +734,7 @@ void assembleVertices(BRepGraph&                                   theGraph,
     // For each vertex (not already merged), find neighbors within tolerance.
     for (int aVtxIter = 0; aVtxIter < aNbVertices; ++aVtxIter)
     {
-      const int anIdxI = aGraphIndices.Value(aVtxIter);
+      const int anIdxI = aFreeVertexIndices.FindKey(aVtxIter + 1);
       if (aVertexMerge.IsBound(anIdxI))
       {
         continue;
@@ -769,7 +753,7 @@ void assembleVertices(BRepGraph&                                   theGraph,
           return;
         }
 
-        const int anIdxJ = aGraphIndices.Value(anArrayIdx);
+        const int anIdxJ = aFreeVertexIndices.FindKey(anArrayIdx + 1);
         if (aVertexMerge.IsBound(anIdxJ))
         {
           return;
@@ -803,10 +787,10 @@ void assembleVertices(BRepGraph&                                   theGraph,
 
   // Apply vertex merges to free edges.
   const BRepGraph::RefsView& aMergeRefs = theGraph.Refs();
-  for (int aFreeEdgeIter = 1; aFreeEdgeIter <= aNbFreeEdges; ++aFreeEdgeIter)
+  for (const BRepGraph_NodeId& aFreeEdgeNodeId : theFreeEdges)
   {
     const BRepGraphInc::EdgeDef& anEdge =
-      theGraph.Topo().Edges().Definition(BRepGraph_EdgeId(theFreeEdges.Value(aFreeEdgeIter).Index));
+      theGraph.Topo().Edges().Definition(BRepGraph_EdgeId(aFreeEdgeNodeId.Index));
     if (anEdge.StartVertexRefId.IsValid())
     {
       const int  aStartIdx    = aMergeRefs.Vertex(anEdge.StartVertexRefId).VertexDefId.Index;
@@ -832,13 +816,13 @@ void assembleVertices(BRepGraph&                                   theGraph,
 
 //! Split free edges at T-vertex intersections (vertices from other edges
 //! that project onto the edge within tolerance). Uses UBTree for spatial
-//! candidate detection. Updates theFreeEdges array in place.
+//! candidate detection. Updates theFreeEdges list in place.
 //! @param[in,out] theGraph      graph to modify
 //! @param[in,out] theFreeEdges  free edges (may grow due to splits)
 //! @param[in]     theOptions    sewing configuration
 //! @param[in,out] theResult     sewing result diagnostics
 void cutAtIntersections(BRepGraph&                                   theGraph,
-                        NCollection_Array1<BRepGraph_NodeId>&        theFreeEdges,
+                        FreeEdgeList&                                theFreeEdges,
                         const BRepGraphAlgo_Sewing::Options&         theOptions,
                         double                                       theMinTol,
                         const NCollection_Map<int>&                  theFloatingEdges,
@@ -852,9 +836,8 @@ void cutAtIntersections(BRepGraph&                                   theGraph,
   }
 
   // Step 1: Collect all unique free-edge endpoint vertex indices.
-  NCollection_Map<int>    aFreeVtxSet(aNbFreeEdges * 2, theTmpAlloc);
-  NCollection_Vector<int> aFreeVtxList(THE_INIT_VECTOR_CAPACITY, theTmpAlloc);
-  for (int aFreeEdgeIter = 1; aFreeEdgeIter <= aNbFreeEdges; ++aFreeEdgeIter)
+  NCollection_IndexedMap<int> aFreeVertexIndices(std::max(1, aNbFreeEdges * 2), theTmpAlloc);
+  for (int aFreeEdgeIter = 0; aFreeEdgeIter < aNbFreeEdges; ++aFreeEdgeIter)
   {
     const BRepGraphInc::EdgeDef& anEdge =
       theGraph.Topo().Edges().Definition(BRepGraph_EdgeId(theFreeEdges.Value(aFreeEdgeIter).Index));
@@ -862,22 +845,16 @@ void cutAtIntersections(BRepGraph&                                   theGraph,
     if (anEdge.StartVertexRefId.IsValid())
     {
       const int aStartVtxIdx = aCutRefs.Vertex(anEdge.StartVertexRefId).VertexDefId.Index;
-      if (aFreeVtxSet.Add(aStartVtxIdx))
-      {
-        aFreeVtxList.Append(aStartVtxIdx);
-      }
+      aFreeVertexIndices.Add(aStartVtxIdx);
     }
     if (anEdge.EndVertexRefId.IsValid())
     {
       const int aEndVtxIdx = aCutRefs.Vertex(anEdge.EndVertexRefId).VertexDefId.Index;
-      if (aFreeVtxSet.Add(aEndVtxIdx))
-      {
-        aFreeVtxList.Append(aEndVtxIdx);
-      }
+      aFreeVertexIndices.Add(aEndVtxIdx);
     }
   }
 
-  const int aNbVtx = aFreeVtxList.Length();
+  const int aNbVtx = aFreeVertexIndices.Extent();
   if (aNbVtx == 0)
   {
     return;
@@ -887,7 +864,7 @@ void cutAtIntersections(BRepGraph&                                   theGraph,
   NCollection_Array1<gp_Pnt> aVtxPoints(0, aNbVtx - 1);
   for (int aVtxIter = 0; aVtxIter < aNbVtx; ++aVtxIter)
   {
-    const int aVtxIdx = aFreeVtxList.Value(aVtxIter);
+    const int aVtxIdx = aFreeVertexIndices.FindKey(aVtxIter + 1);
     aVtxPoints.SetValue(aVtxIter,
                         BRepGraph_Tool::Vertex::Pnt(theGraph, BRepGraph_VertexId(aVtxIdx)));
   }
@@ -929,7 +906,7 @@ void cutAtIntersections(BRepGraph&                                   theGraph,
     0,
     aNbFreeEdges,
     [&](int theIdx) {
-      const int                    aFreeEdgeIter = theIdx + 1;
+      const int                    aFreeEdgeIter = theIdx;
       const BRepGraph_NodeId       anEdgeNodeId  = theFreeEdges.Value(aFreeEdgeIter);
       const BRepGraph_EdgeId       anEdgeId(anEdgeNodeId.Index);
       const BRepGraphInc::EdgeDef& anEdge = theGraph.Topo().Edges().Definition(anEdgeId);
@@ -992,7 +969,7 @@ void cutAtIntersections(BRepGraph&                                   theGraph,
       NCollection_Vector<SplitCandidate> aSplits;
 
       const auto aTryCandidate = [&](const int theVtxIter) {
-        const int aVtxIdx = aFreeVtxList.Value(theVtxIter);
+        const int aVtxIdx = aFreeVertexIndices.FindKey(theVtxIter + 1);
         if (aVtxIdx == aStartIdx || aVtxIdx == aEndIdx)
         {
           return;
@@ -1070,7 +1047,7 @@ void cutAtIntersections(BRepGraph&                                   theGraph,
                 });
 
       // Deduplicate: remove candidates with parameters too close together.
-      NCollection_Vector<SplitCandidate>& aUniqueSplits = aPerEdgeSplits.ChangeValue(aFreeEdgeIter);
+      NCollection_Vector<SplitCandidate>& aUniqueSplits = aPerEdgeSplits.ChangeValue(aFreeEdgeIter + 1);
       double                              aPrevParam    = aParamFirst - 1.0;
       for (int aSplitIter = 0; aSplitIter < aNbSplits; ++aSplitIter)
       {
@@ -1084,72 +1061,54 @@ void cutAtIntersections(BRepGraph&                                   theGraph,
     },
     !isParallelSplitSearch);
 
-  // Step 2b (sequential): Apply splits to graph.
-  NCollection_Array1<NCollection_Vector<BRepGraph_NodeId>> aSubEdgeChains(1, aNbFreeEdges);
-
-  bool anySplits = false;
-
+  bool hasAnySplits = false;
   for (int aFreeEdgeIter = 1; aFreeEdgeIter <= aNbFreeEdges; ++aFreeEdgeIter)
   {
-    const NCollection_Vector<SplitCandidate>& aUniqueSplits = aPerEdgeSplits.Value(aFreeEdgeIter);
-    if (aUniqueSplits.IsEmpty())
+    if (!aPerEdgeSplits.Value(aFreeEdgeIter).IsEmpty())
     {
-      continue;
+      hasAnySplits = true;
+      break;
     }
-
-    anySplits                                          = true;
-    const BRepGraph_NodeId                anEdgeId     = theFreeEdges.Value(aFreeEdgeIter);
-    NCollection_Vector<BRepGraph_NodeId>& aChain       = aSubEdgeChains.ChangeValue(aFreeEdgeIter);
-    BRepGraph_NodeId                      aCurrentEdge = anEdgeId;
-    for (int aSplitIter = 0; aSplitIter < aUniqueSplits.Length(); ++aSplitIter)
-    {
-      const SplitCandidate& aCand = aUniqueSplits.Value(aSplitIter);
-      const BRepGraph_VertexId aVtxNodeId(aCand.VtxIdx);
-      BRepGraph_EdgeId         aSubA, aSubB;
-      theGraph.Builder().SplitEdge(BRepGraph_EdgeId::FromNodeId(aCurrentEdge),
-                   aVtxNodeId,
-                   aCand.Param,
-                   aSubA,
-                   aSubB);
-      aChain.Append(aSubA);
-      aCurrentEdge = aSubB;
-    }
-    aChain.Append(aCurrentEdge);
-    // Invalidate cached bbox for the original edge since its geometry changed.
-    BRepGraphAlgo_BndLib::InvalidateCached(theGraph, anEdgeId);
   }
 
-  if (!anySplits)
+  if (!hasAnySplits)
   {
     return;
   }
 
-  // Step 3: Rebuild theFreeEdges with sub-edge chains replacing split edges.
-  NCollection_Vector<BRepGraph_NodeId> aNewFreeVec(THE_INIT_VECTOR_CAPACITY, theTmpAlloc);
+  // Step 2b (sequential): Apply splits directly while rebuilding the free-edge list.
+  FreeEdgeList aRebuiltFreeEdges(std::max(THE_INIT_VECTOR_CAPACITY, aNbFreeEdges));
   for (int aFreeEdgeIter = 1; aFreeEdgeIter <= aNbFreeEdges; ++aFreeEdgeIter)
   {
-    const NCollection_Vector<BRepGraph_NodeId>& aChain = aSubEdgeChains.Value(aFreeEdgeIter);
-    if (aChain.IsEmpty())
+    const BRepGraph_NodeId                anEdgeId      = theFreeEdges.Value(aFreeEdgeIter - 1);
+    const NCollection_Vector<SplitCandidate>& aUniqueSplits = aPerEdgeSplits.Value(aFreeEdgeIter);
+    if (aUniqueSplits.IsEmpty())
     {
-      aNewFreeVec.Append(theFreeEdges.Value(aFreeEdgeIter));
+      aRebuiltFreeEdges.Append(anEdgeId);
     }
     else
     {
-      for (int aSubIter = 0; aSubIter < aChain.Length(); ++aSubIter)
+      BRepGraph_NodeId aCurrentEdge = anEdgeId;
+      for (int aSplitIter = 0; aSplitIter < aUniqueSplits.Length(); ++aSplitIter)
       {
-        aNewFreeVec.Append(aChain.Value(aSubIter));
+        const SplitCandidate& aCand = aUniqueSplits.Value(aSplitIter);
+        const BRepGraph_VertexId aVtxNodeId(aCand.VtxIdx);
+        BRepGraph_EdgeId         aSubA, aSubB;
+        theGraph.Builder().SplitEdge(BRepGraph_EdgeId::FromNodeId(aCurrentEdge),
+                                     aVtxNodeId,
+                                     aCand.Param,
+                                     aSubA,
+                                     aSubB);
+        aRebuiltFreeEdges.Append(aSubA);
+        aCurrentEdge = aSubB;
       }
+      aRebuiltFreeEdges.Append(aCurrentEdge);
+      // Invalidate cached bbox for the original edge since its geometry changed.
+      BRepGraphAlgo_BndLib::InvalidateCached(theGraph, anEdgeId);
     }
   }
 
-  // Convert to Array1 for thread-safe random access.
-  const int                            aNbNewFree = aNewFreeVec.Length();
-  NCollection_Array1<BRepGraph_NodeId> aNewFreeArray(1, aNbNewFree);
-  for (int anIdx = 0; anIdx < aNbNewFree; ++anIdx)
-  {
-    aNewFreeArray.SetValue(anIdx + 1, aNewFreeVec.Value(anIdx));
-  }
-  theFreeEdges = std::move(aNewFreeArray);
+  theFreeEdges = std::move(aRebuiltFreeEdges);
 }
 
 //! Detect sewing candidates via bounding-box overlap using UBTree.
@@ -1163,7 +1122,7 @@ void cutAtIntersections(BRepGraph&                                   theGraph,
 //! @return per-edge adjacency lists of candidate indices
 NCollection_Array1<NCollection_Vector<int>> detectCandidates(
   BRepGraph&                                    theGraph,
-  const NCollection_Array1<BRepGraph_NodeId>&   theFreeEdges,
+  const FreeEdgeList&                           theFreeEdges,
   const NCollection_Array1<int>&                theFaceOfPos,
   const BRepGraphAlgo_Sewing::Options&          theOptions,
   int                                           theParallelWorkers,
@@ -1194,7 +1153,7 @@ NCollection_Array1<NCollection_Vector<int>> detectCandidates(
     0,
     aNbFreeEdges,
     [&](int theIdx) {
-      Bnd_Box aBox = BRepGraphAlgo_BndLib::AddCached(theGraph, theFreeEdges.Value(theIdx + 1));
+      Bnd_Box aBox = BRepGraphAlgo_BndLib::AddCached(theGraph, theFreeEdges.Value(theIdx));
       if (!aBox.IsVoid())
       {
         aBox.Enlarge(theOptions.Tolerance);
@@ -1254,8 +1213,8 @@ NCollection_Array1<NCollection_Vector<int>> detectCandidates(
         {
           const FaceClosureInfo* aClosure = aClosureCache.Seek(aFaceI);
           if (!canSewSameFaceEdges(theGraph,
-                                   BRepGraph_EdgeId(theFreeEdges.Value(aPosI).Index),
-                                   BRepGraph_EdgeId(theFreeEdges.Value(aPosJ).Index),
+                                   BRepGraph_EdgeId(theFreeEdges.Value(aPosI - 1).Index),
+                                   BRepGraph_EdgeId(theFreeEdges.Value(aPosJ - 1).Index),
                                    BRepGraph_FaceId(aFaceI),
                                    aClosure))
           {
@@ -1307,8 +1266,8 @@ NCollection_Array1<NCollection_Vector<int>> detectCandidates(
     {
       const FaceClosureInfo* aClosure = aClosureCache.Seek(aFaceI);
       return canSewSameFaceEdges(theGraph,
-                                 BRepGraph_EdgeId(theFreeEdges.Value(thePosI).Index),
-                                 BRepGraph_EdgeId(theFreeEdges.Value(thePosJ).Index),
+                                 BRepGraph_EdgeId(theFreeEdges.Value(thePosI - 1).Index),
+                                 BRepGraph_EdgeId(theFreeEdges.Value(thePosJ - 1).Index),
                                  BRepGraph_FaceId(aFaceI),
                                  aClosure);
     }
@@ -1403,7 +1362,7 @@ NCollection_Array1<NCollection_Vector<int>> detectCandidates(
 //! @return matched edge pairs ready for merging
 NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> matchFreeEdges(
   const BRepGraph&                                   theGraph,
-  const NCollection_Array1<BRepGraph_NodeId>&        theFreeEdges,
+  const FreeEdgeList&                                theFreeEdges,
   const NCollection_Array1<NCollection_Vector<int>>& theAdjacency,
   const BRepGraphAlgo_Sewing::Options&               theOptions,
   double                                             theMinTol,
@@ -1515,7 +1474,7 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> matchFreeEdges
   const BRepGraph::RefsView&            aRefs = theGraph.Refs();
   for (int aPos = 1; aPos <= aNbFreeEdges; ++aPos)
   {
-    const BRepGraph_EdgeId       anEdgeId(theFreeEdges.Value(aPos).Index);
+    const BRepGraph_EdgeId       anEdgeId(theFreeEdges.Value(aPos - 1).Index);
     const BRepGraphInc::EdgeDef& anEdgeNode = aTopo.Edges().Definition(anEdgeId);
     const gp_Pnt                 aStart =
       BRepGraph_Tool::Vertex::Pnt(theGraph, aRefs.Vertex(anEdgeNode.StartVertexRefId).VertexDefId);
@@ -1544,7 +1503,7 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> matchFreeEdges
 
     for (int anI = 1; anI <= aNbFreeEdges; ++anI)
     {
-      const BRepGraph_NodeId   anIdA       = theFreeEdges.Value(anI);
+      const BRepGraph_NodeId   anIdA       = theFreeEdges.Value(anI - 1);
       const BRepGraph_EdgeId   anEdgeA(anIdA.Index);
       const EdgeEndpointCache& anEndpointA = aEndpointByPos.Value(anI);
 
@@ -1581,7 +1540,7 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> matchFreeEdges
           continue;
         }
 
-        const BRepGraph_NodeId   anIdB       = theFreeEdges.Value(aPosB);
+        const BRepGraph_NodeId   anIdB       = theFreeEdges.Value(aPosB - 1);
         const EdgeEndpointCache& anEndpointB = aEndpointByPos.Value(aPosB);
 
         double aWorkTol = theOptions.Tolerance;
@@ -1666,7 +1625,7 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> matchFreeEdges
     aNbFreeEdges,
     [&](int theIdx) {
       const int              anI   = theIdx + 1;
-      const BRepGraph_NodeId anIdA = theFreeEdges.Value(anI);
+      const BRepGraph_NodeId anIdA = theFreeEdges.Value(anI - 1);
       const BRepGraph_EdgeId anEdgeA(anIdA.Index);
       const int              aComp = aCompByPos.Value(anI);
       if (aComp == 0)
@@ -1717,7 +1676,7 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> matchFreeEdges
         {
           continue;
         }
-        const BRepGraph_NodeId   anIdB       = theFreeEdges.Value(aPosB);
+        const BRepGraph_NodeId   anIdB       = theFreeEdges.Value(aPosB - 1);
         const EdgeEndpointCache& anEndpointB = aEndpointByPos.Value(aPosB);
 
         // LocalTolerancesMode: use adaptive work tolerance.
@@ -1768,7 +1727,7 @@ NCollection_Vector<std::pair<BRepGraph_NodeId, BRepGraph_NodeId>> matchFreeEdges
     }
 
     ScoredPair aPair;
-    aPair.EdgeA = theFreeEdges.Value(aEdgeIter);
+    aPair.EdgeA = theFreeEdges.Value(aEdgeIter - 1);
     aPair.EdgeB = aMatch.BestMatch;
     aPair.Score = aMatch.BestScore;
     aCompScoredPairs.ChangeValue(aComp).Append(aPair);
@@ -2118,10 +2077,12 @@ TopoDS_Shape reconstructFromGraph(const BRepGraph& theGraph)
 //! degenerate edges (collapsed to a point on surface).
 //! @param[in,out] theGraph  graph to modify
 //! @param[in,out] theResult sewing result diagnostics
-void convertDegenerateEdges(BRepGraph& theGraph, BRepGraphAlgo_Sewing::Result& theResult)
+void convertDegenerateEdges(BRepGraph&                                   theGraph,
+                            BRepGraphAlgo_Sewing::Result&                theResult,
+                            const occ::handle<NCollection_BaseAllocator>& theAllocator)
 {
-  // Collect remaining free edges after merging.
-  const NCollection_Vector<BRepGraph_EdgeId> aFreeEdges = BRepGraph_Analyze::FreeEdges(theGraph);
+  NCollection_Map<int> aFloatingEdges;
+  const FreeEdgeList   aFreeEdges = findFreeEdges(theGraph, false, aFloatingEdges, theAllocator);
   if (aFreeEdges.IsEmpty())
   {
     return;
@@ -2129,9 +2090,9 @@ void convertDegenerateEdges(BRepGraph& theGraph, BRepGraphAlgo_Sewing::Result& t
 
   // For each free edge, check if it forms a degenerate "wire" by itself:
   // edge chord length <= sum of vertex tolerances.
-  for (int aFreeIter = 0; aFreeIter < aFreeEdges.Length(); ++aFreeIter)
+  for (const BRepGraph_NodeId& aFreeEdgeNodeId : aFreeEdges)
   {
-    const BRepGraph_EdgeId       anEdgeId = aFreeEdges.Value(aFreeIter);
+    const BRepGraph_EdgeId       anEdgeId = BRepGraph_EdgeId::FromNodeId(aFreeEdgeNodeId);
     const BRepGraphInc::EdgeDef& anEdge   = theGraph.Topo().Edges().Definition(anEdgeId);
 
     if (BRepGraph_Tool::Edge::Degenerated(theGraph, anEdgeId)
@@ -2263,6 +2224,21 @@ BRepGraphAlgo_Sewing::Result BRepGraphAlgo_Sewing::Perform(BRepGraph&     theGra
   // Temporary allocator reused across sequential lifecycle phases.
   // Reset(false) is applied at safe boundaries once dependent containers are destroyed.
   occ::handle<NCollection_IncAllocator> aTmpAllocator = new NCollection_IncAllocator;
+  const auto fillRemainingFreeEdges = [&]() {
+    NCollection_Map<int> aNoFloatingEdges;
+    const FreeEdgeList   aRemainingFreeEdges = findFreeEdges(theGraph,
+                                                           false,
+                                                           aNoFloatingEdges,
+                                                           aTmpAllocator);
+    aResult.FreeEdges =
+      NCollection_Vector<BRepGraph_EdgeId>(std::max(THE_INIT_VECTOR_CAPACITY,
+                                                    aRemainingFreeEdges.Length()));
+    for (const BRepGraph_NodeId& aFreeEdgeNodeId : aRemainingFreeEdges)
+    {
+      aResult.FreeEdges.Append(BRepGraph_EdgeId::FromNodeId(aFreeEdgeNodeId));
+    }
+    aResult.NbFreeEdgesAfter = aResult.FreeEdges.Length();
+  };
   const int aParallelWorkers =
     theOptions.Parallel ? BRepGraph_ParallelPolicy::WorkerCount() : 1;
 
@@ -2281,9 +2257,10 @@ BRepGraphAlgo_Sewing::Result BRepGraphAlgo_Sewing::Perform(BRepGraph&     theGra
   }
 
   // Phase 1: Find free edges.
-  NCollection_Map<int>                 aFloatingEdges;
-  NCollection_Array1<BRepGraph_NodeId> aFreeEdges =
-    findFreeEdges(theGraph, theOptions.FloatingEdgesMode, aFloatingEdges);
+  NCollection_Map<int> aFloatingEdges;
+  FreeEdgeList         aFreeEdges = findFreeEdges(theGraph,
+                                                  theOptions.FloatingEdgesMode,
+                                                  aFloatingEdges);
   aResult.NbFreeEdgesBefore = aFreeEdges.Length();
 
   if (aFreeEdges.IsEmpty())
@@ -2335,7 +2312,7 @@ BRepGraphAlgo_Sewing::Result BRepGraphAlgo_Sewing::Perform(BRepGraph&     theGra
   NCollection_Array1<int> aFaceOfPos(1, aNbFreeEdgesForMap);
   for (int aFreeIdx = 1; aFreeIdx <= aNbFreeEdgesForMap; ++aFreeIdx)
   {
-    const int                                     anEdgeIdx = aFreeEdges.Value(aFreeIdx).Index;
+    const int                                     anEdgeIdx = aFreeEdges.Value(aFreeIdx - 1).Index;
     int                                           aFaceIdx  = -1;
     const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
       theGraph.Topo().Edges().CoEdges(BRepGraph_EdgeId(anEdgeIdx));
@@ -2374,8 +2351,7 @@ BRepGraphAlgo_Sewing::Result BRepGraphAlgo_Sewing::Perform(BRepGraph&     theGra
     if (aMatchedPairs.IsEmpty())
     {
       aResult.IsDone           = true;
-      aResult.NbFreeEdgesAfter = aResult.NbFreeEdgesBefore;
-      aResult.FreeEdges        = BRepGraph_Analyze::FreeEdges(theGraph);
+      fillRemainingFreeEdges();
       theGraph.History().SetEnabled(wasHistoryEnabled);
       return aResult;
     }
@@ -2392,7 +2368,7 @@ BRepGraphAlgo_Sewing::Result BRepGraphAlgo_Sewing::Perform(BRepGraph&     theGra
                                             aTmpAllocator);
 
     // Phase 7: Convert remaining free degenerate edges.
-    convertDegenerateEdges(theGraph, aResult);
+    convertDegenerateEdges(theGraph, aResult, aTmpAllocator);
 
     // Phase 8: Process sewn edges (tolerance consistency).
     processEdges(theGraph, aSewnEdgeIndices, aExecOptions);
@@ -2400,8 +2376,7 @@ BRepGraphAlgo_Sewing::Result BRepGraphAlgo_Sewing::Perform(BRepGraph&     theGra
   aTmpAllocator->Reset(false);
 
   // Phase 9: Populate result output.
-  aResult.FreeEdges        = BRepGraph_Analyze::FreeEdges(theGraph);
-  aResult.NbFreeEdgesAfter = aResult.FreeEdges.Length();
+  fillRemainingFreeEdges();
 
   // Detect multiple edges (shared by >2 faces).
   const BRepGraph::TopoView& aDefs = theGraph.Topo();

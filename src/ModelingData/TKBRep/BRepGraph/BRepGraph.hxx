@@ -24,7 +24,6 @@
 #include <BRepGraphInc_Representation.hxx>
 #include <BRepGraph_HistoryRecord.hxx>
 #include <BRepGraph_LayerRegistry.hxx>
-#include <BRepGraph_SubGraph.hxx>
 #include <BRepGraphInc_Populate.hxx>
 #include <BRepGraph_TransientCache.hxx>
 
@@ -49,7 +48,6 @@ class TCollection_AsciiString;
 
 class BRepGraph_Builder;
 class BRepGraph_History;
-class BRepGraph_Analyze;
 
 //! @brief Topology-geometry graph over TopoDS / BRep.
 //!
@@ -195,7 +193,6 @@ public:
 
 private:
   friend class BRepGraph_Builder;
-  friend class BRepGraph_Analyze;
   friend class BRepGraphAlgo_Compact;
   friend class BRepGraphAlgo_Copy;
   friend class BRepGraphAlgo_Transform;

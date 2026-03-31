@@ -77,9 +77,7 @@ Keep `Refs()` as the home for APIs returning `RefId` vectors and reference-entry
 
 ### Non-View Helpers
 
-| Class | Purpose |
-|-------|---------|
-| **BRepGraph_Analyze** | Static diagnostic functions: `FreeEdges`, `MissingPCurves`, `ToleranceConflicts`, `Decompose` |
+Use `BRepGraph_ChildExplorer` and `BRepGraph_ParentExplorer` directly for structural diagnostics and connected-component grouping. Lightweight one-off analysis helpers are expected to stay local to the consuming algorithm or test.
 
 ### Direct Subsystem Accessors
 
@@ -264,9 +262,9 @@ Can also start from a Product to descend through assembly occurrences into topol
 The vector-returning reverse lookup methods remain as convenience wrappers over the lazy enumeration layer.
 - `IsAncestorOf`, `AllNodesOnPath`, `DepthOfKind`
 
-### SubGraph
+### Connected Components
 
-`BRepGraph_SubGraph` is a non-owning view over a connected component, produced by `BRepGraph_Analyze::Decompose()`. Stores per-kind typed definition id sets for parallel processing.
+Disconnected topology is grouped on demand by walking from faces to their solid or shell roots with `BRepGraph_ParentExplorer`, or by descending from known roots with `BRepGraph_ChildExplorer`. There is no longer a packaged `SubGraph` container.
 
 ## Geometry Access (BRepGraph_Tool)
 
@@ -446,12 +444,11 @@ if (!aResult.IsValid())
 | **Core** | `BRepGraph.hxx/.cxx`, `BRepGraph_Data.hxx`, `BRepGraph_NodeId.hxx`, `BRepGraph_UID.hxx`, `BRepGraph_RefId.hxx`, `BRepGraph_RefUID.hxx`, `BRepGraph_RepId.hxx` |
 | **Views** | `BRepGraph_TopoView.hxx/.cxx`, `BRepGraph_UIDsView.hxx/.cxx`, `BRepGraph_RefsView.hxx/.cxx`, `BRepGraph_ShapesView.hxx/.cxx`, `BRepGraph_CacheView.hxx/.cxx`, `BRepGraph_BuilderView.hxx/.cxx`, `BRepGraph_PathView.hxx/.cxx` |
 | **Refs** | `BRepGraph_VersionStamp.hxx/.cxx` |
-| **Traversal** | `BRepGraph_ChildExplorer.hxx/.cxx`, `BRepGraph_ParentExplorer.hxx/.cxx`, `BRepGraph_TopologyPath.hxx`, `BRepGraph_SubGraph.hxx`, `BRepGraph_PCurveContext.hxx` |
+| **Traversal** | `BRepGraph_ChildExplorer.hxx/.cxx`, `BRepGraph_ParentExplorer.hxx/.cxx`, `BRepGraph_TopologyPath.hxx`, `BRepGraph_PCurveContext.hxx` |
 | **Geometry** | `BRepGraph_Tool.hxx/.cxx` |
 | **Mutation** | `BRepGraph_MutGuard.hxx`, `BRepGraph_DeferredScope.hxx` |
 | **Layers** | `BRepGraph_Layer.hxx/.cxx`, `BRepGraph_ParamLayer.hxx/.cxx`, `BRepGraph_RegularityLayer.hxx/.cxx` |
 | **Transient Cache** | `BRepGraph_TransientCache.hxx/.cxx` |
-| **Analysis** | `BRepGraph_Analyze.hxx/.cxx` |
 | **History** | `BRepGraph_History.hxx/.cxx`, `BRepGraph_HistoryRecord.hxx` |
 | **Build** | `BRepGraph_Builder.hxx/.cxx` |
 

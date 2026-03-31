@@ -13,7 +13,6 @@
 
 #include <Bnd_Box.hxx>
 #include <BRepGraph.hxx>
-#include <BRepGraph_Analyze.hxx>
 #include <BRepGraph_CacheView.hxx>
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_TopoView.hxx>
@@ -57,17 +56,6 @@ const occ::handle<BRepGraph_CacheKind>& testUserAttrKind()
   static const occ::handle<BRepGraph_CacheKind> THE_KIND =
     new BRepGraph_CacheKind(Standard_GUID("2f9b6a5c-1f2d-4a88-9c1c-7a0c16a10020"), "ViewsTestAttr");
   return THE_KIND;
-}
-
-template <class theIdType>
-static void expectSameSequence(const NCollection_Vector<theIdType>& theLeft,
-                               const NCollection_Vector<theIdType>& theRight)
-{
-  ASSERT_EQ(theLeft.Length(), theRight.Length());
-  for (int i = 0; i < theLeft.Length(); ++i)
-  {
-    EXPECT_EQ(theLeft.Value(i), theRight.Value(i));
-  }
 }
 
 template <class theRefIdType, class theRefFn>
@@ -702,26 +690,6 @@ TEST_F(BRepGraph_ViewsTest, BuilderView_RemoveRep_CurveAndPCurve_HideCurveQuerie
   EXPECT_FALSE(myGraph.Topo().CoEdges().Curve2DRepId(aCoEdgeId).IsValid());
   EXPECT_FALSE(BRepGraph_Tool::CoEdge::HasPCurve(myGraph, aCoEdgeId));
   EXPECT_TRUE(BRepGraph_Tool::CoEdge::PCurve(myGraph, aCoEdgeId).IsNull());
-}
-
-// ---------- Analyze static API ----------
-
-TEST_F(BRepGraph_ViewsTest, Analyze_FreeEdges_Static)
-{
-  NCollection_Vector<BRepGraph_EdgeId> aResult = BRepGraph_Analyze::FreeEdges(myGraph);
-  EXPECT_GE(aResult.Length(), 0);
-}
-
-TEST_F(BRepGraph_ViewsTest, Analyze_DegenerateWires_Static)
-{
-  NCollection_Vector<BRepGraph_WireId> aResult = BRepGraph_Analyze::DegenerateWires(myGraph);
-  EXPECT_GE(aResult.Length(), 0);
-}
-
-TEST_F(BRepGraph_ViewsTest, Analyze_Decompose_Static)
-{
-  NCollection_Vector<BRepGraph_SubGraph> aResult = BRepGraph_Analyze::Decompose(myGraph);
-  EXPECT_GE(aResult.Length(), 0);
 }
 
 // ---------- History() accessor ----------

@@ -19,10 +19,12 @@
 #include <BRepGraphInc_Reference.hxx>
 #include <BRepGraphInc_Representation.hxx>
 #include <BRepGraphAlgo_BndLib.hxx>
-#include <BRepGraph_Analyze.hxx>
 #include <BRepGraph_CacheView.hxx>
 #include <BRepGraph_BuilderView.hxx>
+#include <BRepGraph_ChildExplorer.hxx>
+#include <BRepGraph_Iterator.hxx>
 #include "BRepGraph_RefTestTools.hxx"
+#include <BRepGraph_ParentExplorer.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_History.hxx>
 #include <BRepGraph_Tool.hxx>
@@ -91,6 +93,70 @@ const occ::handle<BRepGraph_CacheKind>& testAuxAttrKind()
   static const occ::handle<BRepGraph_CacheKind> THE_KIND =
     new BRepGraph_CacheKind(Standard_GUID("2f9b6a5c-1f2d-4a88-9c1c-7a0c16a10023"), "TestAuxAttr");
   return THE_KIND;
+}
+
+static int componentKey(const BRepGraph_NodeId theNode)
+{
+  return theNode.Index * BRepGraph_NodeId::THE_KIND_COUNT + static_cast<int>(theNode.NodeKind);
+}
+
+static NCollection_Vector<BRepGraph_EdgeId> collectFreeEdges(const BRepGraph& theGraph)
+{
+  NCollection_Vector<BRepGraph_EdgeId> aResult(16);
+  for (BRepGraph_EdgeIterator anEdgeIt(theGraph); anEdgeIt.More(); anEdgeIt.Next())
+  {
+    const BRepGraph_EdgeId       anEdgeId = anEdgeIt.CurrentId();
+    const BRepGraphInc::EdgeDef& anEdge   = anEdgeIt.Current();
+    if (anEdge.IsDegenerate)
+    {
+      continue;
+    }
+
+    NCollection_Map<int> aOwningFaces;
+    for (BRepGraph_ParentExplorer aFaceExp(theGraph, anEdgeId, BRepGraph_NodeId::Kind::Face);
+         aFaceExp.More(); aFaceExp.Next())
+    {
+      aOwningFaces.Add(aFaceExp.Current().Index);
+      if (aOwningFaces.Extent() > 1)
+      {
+        break;
+      }
+    }
+
+    if (aOwningFaces.Extent() == 1)
+    {
+      aResult.Append(anEdgeId);
+    }
+  }
+  return aResult;
+}
+
+static BRepGraph_NodeId componentRootOfFace(const BRepGraph&      theGraph,
+                                            const BRepGraph_FaceId theFaceId)
+{
+  for (BRepGraph_ParentExplorer aSolidExp(theGraph, theFaceId, BRepGraph_NodeId::Kind::Solid);
+       aSolidExp.More(); aSolidExp.Next())
+  {
+    return aSolidExp.Current();
+  }
+
+  for (BRepGraph_ParentExplorer aShellExp(theGraph, theFaceId, BRepGraph_NodeId::Kind::Shell);
+       aShellExp.More(); aShellExp.Next())
+  {
+    return aShellExp.Current();
+  }
+
+  return theFaceId;
+}
+
+static int countFaceComponents(const BRepGraph& theGraph)
+{
+  NCollection_Map<int> aRoots;
+  for (BRepGraph_FaceIterator aFaceIt(theGraph); aFaceIt.More(); aFaceIt.Next())
+  {
+    aRoots.Add(componentKey(componentRootOfFace(theGraph, aFaceIt.CurrentId())));
+  }
+  return aRoots.Extent();
 }
 
 struct ReverseIndexInputData
@@ -719,8 +785,7 @@ TEST_F(BRepGraphTest, Decompose_TwoSeparateFaces)
   ASSERT_TRUE(aGraph.IsDone());
   EXPECT_EQ(aGraph.Topo().NbFaces(), 2);
 
-  NCollection_Vector<BRepGraph_SubGraph> aSubs = BRepGraph_Analyze::Decompose(aGraph);
-  EXPECT_EQ(aSubs.Length(), 2);
+  EXPECT_EQ(countFaceComponents(aGraph), 2);
 }
 
 TEST_F(BRepGraphTest, UserAttribute_SetGet)
@@ -775,15 +840,65 @@ TEST_F(BRepGraphTest, ReBuild_UIDMonotonic)
 
 TEST_F(BRepGraphTest, DetectMissingPCurves_ValidBox_Empty)
 {
-  const NCollection_Vector<std::pair<BRepGraph_EdgeId, BRepGraph_FaceId>> aMissing =
-    BRepGraph_Analyze::MissingPCurves(myGraph);
+  NCollection_Vector<std::pair<BRepGraph_EdgeId, BRepGraph_FaceId>> aMissing(16);
+  for (BRepGraph_FaceIterator aFaceIt(myGraph); aFaceIt.More(); aFaceIt.Next())
+  {
+    const BRepGraph_FaceId aFaceId = aFaceIt.CurrentId();
+    for (BRepGraph_ChildExplorer anEdgeExp(myGraph, aFaceId, BRepGraph_NodeId::Kind::Edge);
+         anEdgeExp.More(); anEdgeExp.Next())
+    {
+      const BRepGraph_EdgeId       anEdgeId = BRepGraph_EdgeId::FromNodeId(anEdgeExp.Current());
+      const BRepGraphInc::EdgeDef& anEdge   = myGraph.Topo().Edges().Definition(anEdgeId);
+      if (anEdge.IsDegenerate)
+      {
+        continue;
+      }
+
+      if (BRepGraph_Tool::Edge::FindPCurve(myGraph, anEdgeId, aFaceId) == nullptr)
+      {
+        aMissing.Append(std::make_pair(anEdgeId, aFaceId));
+      }
+    }
+  }
   EXPECT_EQ(aMissing.Length(), 0);
 }
 
 TEST_F(BRepGraphTest, DetectDegenerateWires_ValidBox_Empty)
 {
-  const NCollection_Vector<BRepGraph_WireId> aDegenerate =
-    BRepGraph_Analyze::DegenerateWires(myGraph);
+  NCollection_Vector<BRepGraph_WireId> aDegenerate(16);
+  for (BRepGraph_WireIterator aWireIt(myGraph); aWireIt.More(); aWireIt.Next())
+  {
+    const BRepGraph_WireId aWireId = aWireIt.CurrentId();
+    int                    aNbEdges = 0;
+    for (BRepGraph_ChildExplorer anEdgeExp(myGraph, aWireId, BRepGraph_NodeId::Kind::Edge);
+         anEdgeExp.More(); anEdgeExp.Next())
+    {
+      ++aNbEdges;
+    }
+
+    if (aNbEdges < 2)
+    {
+      aDegenerate.Append(aWireId);
+      continue;
+    }
+
+    bool isOuterWire = false;
+    for (BRepGraph_ParentExplorer aFaceExp(myGraph, aWireId, BRepGraph_NodeId::Kind::Face);
+         aFaceExp.More(); aFaceExp.Next())
+    {
+      const BRepGraph_FaceId aFaceId = BRepGraph_FaceId::FromNodeId(aFaceExp.Current());
+      if (myGraph.Topo().Faces().OuterWire(aFaceId) == aWireId)
+      {
+        isOuterWire = true;
+        break;
+      }
+    }
+
+    if (isOuterWire && !aWireIt.Current().IsClosed)
+    {
+      aDegenerate.Append(aWireId);
+    }
+  }
   EXPECT_EQ(aDegenerate.Length(), 0);
 }
 
@@ -812,7 +927,7 @@ TEST_F(BRepGraphTest, NbFacesOfEdge_SharedEdge)
 
 TEST_F(BRepGraphTest, FreeEdges_ClosedBox_Empty)
 {
-  NCollection_Vector<BRepGraph_EdgeId> aFree = BRepGraph_Analyze::FreeEdges(myGraph);
+  NCollection_Vector<BRepGraph_EdgeId> aFree = collectFreeEdges(myGraph);
   EXPECT_EQ(aFree.Length(), 0);
 }
 
@@ -1591,39 +1706,6 @@ TEST_F(BRepGraphTest, InvalidateSubgraph_Face_ConsistentAfter)
 }
 
 // ===================================================================
-// Group 6: Parallel Iteration
-// ===================================================================
-
-TEST_F(BRepGraphTest, ParallelForEachFace_AllFacesVisited)
-{
-  NCollection_Vector<BRepGraph_SubGraph> aSubs = BRepGraph_Analyze::Decompose(myGraph);
-  ASSERT_GE(aSubs.Length(), 1);
-
-  std::atomic<int> aCounter{0};
-  for (int aSubIdx = 0; aSubIdx < aSubs.Length(); ++aSubIdx)
-  {
-    BRepGraph_Analyze::ParallelForEachFace(
-      myGraph,
-      aSubs.Value(aSubIdx),
-      [&aCounter](const BRepGraph_FaceId) { aCounter.fetch_add(1, std::memory_order_relaxed); });
-  }
-  EXPECT_EQ(aCounter.load(), myGraph.Topo().NbFaces());
-}
-
-TEST_F(BRepGraphTest, ParallelForEachEdge_AllEdgesVisited)
-{
-  NCollection_Vector<BRepGraph_SubGraph> aSubs = BRepGraph_Analyze::Decompose(myGraph);
-  ASSERT_GE(aSubs.Length(), 1);
-
-  std::atomic<int>          aCounter{0};
-  const BRepGraph_SubGraph& aSub = aSubs.Value(0);
-  BRepGraph_Analyze::ParallelForEachEdge(myGraph, aSub, [&aCounter](const BRepGraph_EdgeId) {
-    aCounter.fetch_add(1, std::memory_order_relaxed);
-  });
-  EXPECT_EQ(aCounter.load(), aSub.EdgeDefIds().Length());
-}
-
-// ===================================================================
 // Group 7: Detection Methods
 // ===================================================================
 
@@ -1637,7 +1719,7 @@ TEST_F(BRepGraphTest, FreeEdges_SingleFace_AllEdgesFree)
   aGraph.Build(aFace);
   ASSERT_TRUE(aGraph.IsDone());
 
-  NCollection_Vector<BRepGraph_EdgeId> aFreeEdges = BRepGraph_Analyze::FreeEdges(aGraph);
+  NCollection_Vector<BRepGraph_EdgeId> aFreeEdges = collectFreeEdges(aGraph);
   EXPECT_EQ(aFreeEdges.Length(), 4);
 }
 
@@ -1663,8 +1745,7 @@ TEST_F(BRepGraphTest, Decompose_ThreeDisconnectedFaces_ThreeComponents)
   ASSERT_TRUE(aGraph.IsDone());
   EXPECT_EQ(aGraph.Topo().NbFaces(), 3);
 
-  NCollection_Vector<BRepGraph_SubGraph> aSubs = BRepGraph_Analyze::Decompose(aGraph);
-  EXPECT_EQ(aSubs.Length(), 3);
+  EXPECT_EQ(countFaceComponents(aGraph), 3);
 }
 
 TEST_F(BRepGraphTest, DetectToleranceConflicts_ManualConflict_Detected)
@@ -1697,8 +1778,50 @@ TEST_F(BRepGraphTest, DetectToleranceConflicts_ManualConflict_Detected)
 
   if (isConflictSetUp)
   {
-    NCollection_Vector<BRepGraph_EdgeId> aConflicts =
-      BRepGraph_Analyze::ToleranceConflicts(myGraph, 0.5);
+    NCollection_Vector<BRepGraph_EdgeId> aConflicts(16);
+    NCollection_Map<int>                 aConflictKeys;
+    for (BRepGraph_EdgeIterator anEdgeIt(myGraph); anEdgeIt.More(); anEdgeIt.Next())
+    {
+      const BRepGraph_EdgeId anEdgeId = anEdgeIt.CurrentId();
+      if (BRepGraph_Tool::Edge::Degenerated(myGraph, anEdgeId)
+          || !BRepGraph_Tool::Edge::HasCurve(myGraph, anEdgeId))
+      {
+        continue;
+      }
+
+      const occ::handle<Geom_Curve>& aCurve = BRepGraph_Tool::Edge::Curve(myGraph, anEdgeId);
+      double                         aMinTol = myGraph.Topo().Edges().Definition(anEdgeId).Tolerance;
+      double                         aMaxTol = aMinTol;
+      NCollection_Vector<BRepGraph_EdgeId> aCurveEdges(4);
+      aCurveEdges.Append(anEdgeId);
+      for (BRepGraph_EdgeIterator anOtherIt(myGraph); anOtherIt.More(); anOtherIt.Next())
+      {
+        const BRepGraph_EdgeId anOtherId = anOtherIt.CurrentId();
+        if (anOtherId == anEdgeId || BRepGraph_Tool::Edge::Degenerated(myGraph, anOtherId)
+            || !BRepGraph_Tool::Edge::HasCurve(myGraph, anOtherId)
+            || BRepGraph_Tool::Edge::Curve(myGraph, anOtherId).get() != aCurve.get())
+        {
+          continue;
+        }
+
+        const double aTol = myGraph.Topo().Edges().Definition(anOtherId).Tolerance;
+        aMinTol           = std::min(aMinTol, aTol);
+        aMaxTol           = std::max(aMaxTol, aTol);
+        aCurveEdges.Append(anOtherId);
+      }
+
+      if (aCurveEdges.Length() > 1 && aMaxTol - aMinTol > 0.5)
+      {
+        for (int anIdx = 0; anIdx < aCurveEdges.Length(); ++anIdx)
+        {
+          const BRepGraph_EdgeId aConflictId = aCurveEdges.Value(anIdx);
+          if (aConflictKeys.Add(aConflictId.Index))
+          {
+            aConflicts.Append(aConflictId);
+          }
+        }
+      }
+    }
     EXPECT_GE(aConflicts.Length(), 1);
   }
 }
@@ -1899,27 +2022,6 @@ TEST_F(BRepGraphTest, Face_ToleranceNonNegative)
     EXPECT_GE(BRepGraph_Tool::Face::Tolerance(myGraph, BRepGraph_FaceId(aFaceIdx)), 0.0)
       << "Face " << aFaceIdx << " has negative tolerance";
   }
-}
-
-// ===================================================================
-// Group 11: SubGraph
-// ===================================================================
-
-TEST_F(BRepGraphTest, SubGraph_BoxSolid_AllIndicesPresent)
-{
-  NCollection_Vector<BRepGraph_SubGraph> aSubs = BRepGraph_Analyze::Decompose(myGraph);
-  ASSERT_EQ(aSubs.Length(), 1);
-
-  const BRepGraph_SubGraph& aSub = aSubs.Value(0);
-  EXPECT_EQ(aSub.SolidDefIds().Length(), 1);
-  EXPECT_EQ(aSub.ShellDefIds().Length(), 1);
-  EXPECT_EQ(aSub.FaceDefIds().Length(), 6);
-  EXPECT_EQ(aSub.WireDefIds().Length(), 6);
-  // Edge/vertex ids may include per-wire-reference duplicates.
-  EXPECT_GE(aSub.EdgeDefIds().Length(), 12);
-  EXPECT_GE(aSub.VertexDefIds().Length(), 8);
-  EXPECT_GT(aSub.NbTopoNodes(), 0);
-  EXPECT_EQ(aSub.ParentGraph(), &myGraph);
 }
 
 // ===================================================================

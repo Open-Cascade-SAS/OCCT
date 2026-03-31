@@ -99,7 +99,6 @@ Legend: [Perf] = measurable performance gain, [Arch] = architectural improvement
 - `BRepGraph_ChildExplorer`: context-preserving downward walker visiting each occurrence (not just definitions)
 - `BRepGraph_ParentExplorer`: path-aware upward walker with accumulated context per ancestor occurrence
 - `PathView` via `Paths()`: GlobalLocation, GlobalOrientation, PathsTo, NodeLocations, CommonAncestor, FilterByInclude/Exclude, IsAncestorOf, AllNodesOnPath
-- `BRepGraph_SubGraph`: non-owning view over connected component for parallel processing
 - `BRepGraph_PCurveContext`: composite key (Edge, Face, Orientation) for PCurve identification
 
 ### O(1) UID reverse lookup [Perf] ★★★
@@ -223,7 +222,7 @@ Legend: [Perf] = measurable performance gain, [Arch] = architectural improvement
 ## Phase 4: Advanced
 
 ### Parallel Sewing Framework using SubGraphs [Perf] ★★★★
-- Decompose into independent subgraphs via `BRepGraph_Analyze::Decompose`
+- Partition disconnected components by grouping faces through `BRepGraph_ParentExplorer`
 - Sew each subgraph in parallel with independent IncAllocators
 - Merge results into parent graph
 - **Profile context**: Sewing is 49% of total time; parallelizing across components would be transformative for large assemblies

@@ -557,7 +557,6 @@ private:
   friend class BRepGraph;
   friend struct BRepGraph_Data;
   friend class BRepGraph_Tool;
-  friend class BRepGraph_Analyze;
 
   explicit TopoView(const BRepGraph* theGraph)
       : myGraph(theGraph),
