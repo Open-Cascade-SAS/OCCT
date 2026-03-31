@@ -18,9 +18,19 @@
 
 #include <BRepPrimAPI_MakeBox.hxx>
 
+#include <NCollection_IncAllocator.hxx>
+
 #include <Precision.hxx>
 
 #include <gtest/gtest.h>
+
+namespace
+{
+static occ::handle<NCollection_BaseAllocator> pathAllocator()
+{
+  return new NCollection_IncAllocator();
+}
+}
 
 TEST(BRepGraph_ParentExplorerTest, FaceParents_All_CountAndOrder)
 {
@@ -101,6 +111,32 @@ TEST(BRepGraph_ParentExplorerTest, SharedProduct_ProductParentsKeepDistinctConte
 
   ASSERT_EQ(aPartCount, 2);
   EXPECT_FALSE(aLoc1.IsEqual(aLoc2));
+}
+
+TEST(BRepGraph_ParentExplorerTest, SharedProduct_ProductParentCurrentPath_OwnsOccurrenceBranch)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  const BRepGraph_ProductId aPart = aGraph.Builder().AddProduct(BRepGraph_SolidId(0));
+  const BRepGraph_ProductId anAssembly = aGraph.Builder().AddAssemblyProduct();
+  ASSERT_TRUE(aPart.IsValid());
+  ASSERT_TRUE(anAssembly.IsValid());
+
+  gp_Trsf aT1;
+  aT1.SetTranslation(gp_Vec(10.0, 0.0, 0.0));
+  const BRepGraph_OccurrenceId anOcc =
+    aGraph.Builder().AddOccurrence(anAssembly, aPart, TopLoc_Location(aT1));
+  ASSERT_TRUE(anOcc.IsValid());
+
+  BRepGraph_ParentExplorer anExp(aGraph, BRepGraph_SolidId(0), BRepGraph_NodeId::Kind::Product);
+  ASSERT_TRUE(anExp.More());
+  EXPECT_EQ(anExp.Current(), BRepGraph_NodeId(aPart));
+
+  const BRepGraph_TopologyPath aPath = anExp.CurrentPath(pathAllocator());
+  EXPECT_EQ(aPath.Root(), BRepGraph_NodeId(anAssembly));
+  EXPECT_EQ(aPath.Depth(), 1);
 }
 
 TEST(BRepGraph_ParentExplorerTest, CoEdgeParents_ImmediateWireIsVisible)

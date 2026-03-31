@@ -595,7 +595,6 @@ TEST_F(BRepGraph_ViewsTest, TopoView_GroupedCompoundAndCompSolidOps_Parity)
 
 TEST_F(BRepGraph_ViewsTest, TopoView_GroupedProductAndOccurrenceOps_Parity)
 {
-  const occ::handle<NCollection_BaseAllocator>& anAllocator = myGraph.Allocator();
   const BRepGraph_ProductId aPartProduct = myGraph.Builder().AddProduct(BRepGraph_NodeId(BRepGraph_SolidId(0)));
   const BRepGraph_ProductId aSubAssembly = myGraph.Builder().AddAssemblyProduct();
   const BRepGraph_ProductId aRootAssembly = myGraph.Builder().AddAssemblyProduct();

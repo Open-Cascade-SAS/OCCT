@@ -45,6 +45,15 @@ constexpr int THE_TOPOVIEW_PRODUCT_OCCURRENCE_BLOCK_SIZE = 4;
 
 //=================================================================================================
 
+template <typename T>
+const NCollection_Vector<T>& emptyVector()
+{
+  static const NCollection_Vector<T> THE_EMPTY_VECTOR;
+  return THE_EMPTY_VECTOR;
+}
+
+//=================================================================================================
+
 NCollection_Vector<BRepGraph_NodeId> collectActiveChildNodes(
   const BRepGraph&                                theGraph,
   const NCollection_Vector<BRepGraph_ChildRefId>& theChildRefIds,
@@ -95,6 +104,24 @@ const BRepGraphInc::FaceDef& BRepGraph::TopoView::FaceOps::Definition(
   const BRepGraph_FaceId theFace) const
 {
   return myGraph->myData->myIncStorage.Face(theFace);
+}
+
+//=================================================================================================
+
+const NCollection_Vector<BRepGraph_ShellId>& BRepGraph::TopoView::FaceOps::Shells(
+  const BRepGraph_FaceId theFace) const
+{
+  return myGraph->myData->myIncStorage.ReverseIndex().ShellsOfFaceRef(theFace);
+}
+
+//=================================================================================================
+
+const NCollection_Vector<BRepGraph_CompoundId>& BRepGraph::TopoView::FaceOps::Compounds(
+  const BRepGraph_FaceId theFace) const
+{
+  const NCollection_Vector<BRepGraph_CompoundId>* aCompounds =
+    myGraph->myData->myIncStorage.ReverseIndex().CompoundsOfFace(theFace);
+  return aCompounds != nullptr ? *aCompounds : emptyVector<BRepGraph_CompoundId>();
 }
 
 //=================================================================================================
@@ -594,6 +621,14 @@ const BRepGraphInc::WireDef& BRepGraph::TopoView::WireOps::Definition(
 
 //=================================================================================================
 
+const NCollection_Vector<BRepGraph_FaceId>& BRepGraph::TopoView::WireOps::Faces(
+  const BRepGraph_WireId theWire) const
+{
+  return myGraph->myData->myIncStorage.ReverseIndex().FacesOfWireRef(theWire);
+}
+
+//=================================================================================================
+
 NCollection_Vector<BRepGraph_CoEdgeId> BRepGraph::TopoView::WireOps::CoEdges(
   const BRepGraph_WireId                          theWire,
   const occ::handle<NCollection_BaseAllocator>& theAllocator) const
@@ -678,6 +713,24 @@ const BRepGraphInc::ShellDef& BRepGraph::TopoView::ShellOps::Definition(
 
 //=================================================================================================
 
+const NCollection_Vector<BRepGraph_SolidId>& BRepGraph::TopoView::ShellOps::Solids(
+  const BRepGraph_ShellId theShell) const
+{
+  return myGraph->myData->myIncStorage.ReverseIndex().SolidsOfShellRef(theShell);
+}
+
+//=================================================================================================
+
+const NCollection_Vector<BRepGraph_CompoundId>& BRepGraph::TopoView::ShellOps::Compounds(
+  const BRepGraph_ShellId theShell) const
+{
+  const NCollection_Vector<BRepGraph_CompoundId>* aCompounds =
+    myGraph->myData->myIncStorage.ReverseIndex().CompoundsOfShell(theShell);
+  return aCompounds != nullptr ? *aCompounds : emptyVector<BRepGraph_CompoundId>();
+}
+
+//=================================================================================================
+
 NCollection_Vector<BRepGraph_FaceId> BRepGraph::TopoView::ShellOps::Faces(
   const BRepGraph_ShellId                         theShell,
   const occ::handle<NCollection_BaseAllocator>& theAllocator) const
@@ -740,6 +793,26 @@ const BRepGraphInc::SolidDef& BRepGraph::TopoView::SolidOps::Definition(
 
 //=================================================================================================
 
+const NCollection_Vector<BRepGraph_CompSolidId>& BRepGraph::TopoView::SolidOps::CompSolids(
+  const BRepGraph_SolidId theSolid) const
+{
+  const NCollection_Vector<BRepGraph_CompSolidId>* aCompSolids =
+    myGraph->myData->myIncStorage.ReverseIndex().CompSolidsOfSolid(theSolid);
+  return aCompSolids != nullptr ? *aCompSolids : emptyVector<BRepGraph_CompSolidId>();
+}
+
+//=================================================================================================
+
+const NCollection_Vector<BRepGraph_CompoundId>& BRepGraph::TopoView::SolidOps::Compounds(
+  const BRepGraph_SolidId theSolid) const
+{
+  const NCollection_Vector<BRepGraph_CompoundId>* aCompounds =
+    myGraph->myData->myIncStorage.ReverseIndex().CompoundsOfSolid(theSolid);
+  return aCompounds != nullptr ? *aCompounds : emptyVector<BRepGraph_CompoundId>();
+}
+
+//=================================================================================================
+
 NCollection_Vector<BRepGraph_ShellId> BRepGraph::TopoView::SolidOps::Shells(
   const BRepGraph_SolidId                         theSolid,
   const occ::handle<NCollection_BaseAllocator>& theAllocator) const
@@ -798,6 +871,16 @@ const BRepGraphInc::CoEdgeDef& BRepGraph::TopoView::CoEdgeOps::Definition(
   const BRepGraph_CoEdgeId theCoEdge) const
 {
   return myGraph->myData->myIncStorage.CoEdge(theCoEdge);
+}
+
+//=================================================================================================
+
+const NCollection_Vector<BRepGraph_WireId>& BRepGraph::TopoView::CoEdgeOps::Wires(
+  const BRepGraph_CoEdgeId theCoEdge) const
+{
+  const NCollection_Vector<BRepGraph_WireId>* aWires =
+    myGraph->myData->myIncStorage.ReverseIndex().WiresOfCoEdge(theCoEdge);
+  return aWires != nullptr ? *aWires : emptyVector<BRepGraph_WireId>();
 }
 
 //=================================================================================================
@@ -896,6 +979,16 @@ const BRepGraphInc::CompoundDef& BRepGraph::TopoView::CompoundOps::Definition(
 
 //=================================================================================================
 
+const NCollection_Vector<BRepGraph_CompoundId>& BRepGraph::TopoView::CompoundOps::ParentCompounds(
+  const BRepGraph_CompoundId theCompound) const
+{
+  const NCollection_Vector<BRepGraph_CompoundId>* aCompounds =
+    myGraph->myData->myIncStorage.ReverseIndex().CompoundsOfCompound(theCompound);
+  return aCompounds != nullptr ? *aCompounds : emptyVector<BRepGraph_CompoundId>();
+}
+
+//=================================================================================================
+
 NCollection_Vector<BRepGraph_NodeId> BRepGraph::TopoView::CompoundOps::Children(
   const BRepGraph_CompoundId                      theCompound,
   const occ::handle<NCollection_BaseAllocator>& theAllocator) const
@@ -917,6 +1010,16 @@ const BRepGraphInc::CompSolidDef& BRepGraph::TopoView::CompSolidOps::Definition(
   const BRepGraph_CompSolidId theCompSolid) const
 {
   return myGraph->myData->myIncStorage.CompSolid(theCompSolid);
+}
+
+//=================================================================================================
+
+const NCollection_Vector<BRepGraph_CompoundId>& BRepGraph::TopoView::CompSolidOps::Compounds(
+  const BRepGraph_CompSolidId theCompSolid) const
+{
+  const NCollection_Vector<BRepGraph_CompoundId>* aCompounds =
+    myGraph->myData->myIncStorage.ReverseIndex().CompoundsOfCompSolid(theCompSolid);
+  return aCompounds != nullptr ? *aCompounds : emptyVector<BRepGraph_CompoundId>();
 }
 
 //=================================================================================================
@@ -963,6 +1066,16 @@ const BRepGraphInc::ProductDef& BRepGraph::TopoView::ProductOps::Definition(
   const BRepGraph_ProductId theProduct) const
 {
   return myGraph->myData->myIncStorage.Product(theProduct);
+}
+
+//=================================================================================================
+
+const NCollection_Vector<BRepGraph_OccurrenceId>& BRepGraph::TopoView::ProductOps::Instances(
+  const BRepGraph_ProductId theProduct) const
+{
+  const NCollection_Vector<BRepGraph_OccurrenceId>* anOccurrences =
+    myGraph->myData->myIncStorage.ReverseIndex().OccurrencesOfProduct(theProduct);
+  return anOccurrences != nullptr ? *anOccurrences : emptyVector<BRepGraph_OccurrenceId>();
 }
 
 //=================================================================================================

@@ -18,7 +18,7 @@
 #include <BRepGraph_TopologyPath.hxx>
 
 #include <NCollection_BaseAllocator.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_LocalArray.hxx>
 
 #include <TopAbs_Orientation.hxx>
 #include <TopLoc_Location.hxx>
@@ -56,7 +56,7 @@ public:
                             BRepGraph_NodeId::Kind theTargetKind);
 
   //! True if another matching parent is available.
-  [[nodiscard]] bool More() const { return myMatchIndex < myMatches.Length(); }
+  [[nodiscard]] bool More() const { return myHasMore; }
 
   //! Advance to the next matching parent.
   Standard_EXPORT void Next();
@@ -77,55 +77,76 @@ public:
     const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
 
 private:
-  struct ExpandedState
+  struct StackFrame
   {
     BRepGraph_NodeId   Node;
-    TopLoc_Location    Location;
-    TopAbs_Orientation Orientation = TopAbs_FORWARD;
-    int                ExplicitDepth = 0;
+    int                NextParentIdx  = 0;
+    int                StepToChild    = -1;
+    TopLoc_Location    AccLocation;
+    TopAbs_Orientation AccOrientation = TopAbs_FORWARD;
   };
 
-  struct MatchRecord
+  Standard_EXPORT void advance();
+  Standard_EXPORT bool emitNextFromCurrentBranch();
+  Standard_EXPORT bool nextParentFrame(StackFrame& theChild, StackFrame& theParent) const;
+  Standard_EXPORT void prepareCurrentBranch();
+  Standard_EXPORT void applyTransition(const BRepGraph_NodeId theParent,
+                                       const int              theStepToChild,
+                                       TopLoc_Location&       theLocation,
+                                       TopAbs_Orientation&    theOrientation) const;
+
+  Standard_EXPORT bool findNthProductWrapper(const BRepGraph_NodeId theNode,
+                                             const int              theOrdinal,
+                                             BRepGraph_ProductId&   theProduct) const;
+
+  Standard_EXPORT int findOccurrenceStep(const BRepGraph_ProductId    theParentProduct,
+                                         const BRepGraph_OccurrenceId theOccurrence) const;
+  Standard_EXPORT int findCompoundChildStep(const BRepGraph_CompoundId theParent,
+                                            const BRepGraph_NodeId     theChild) const;
+  Standard_EXPORT int findCompSolidSolidStep(const BRepGraph_CompSolidId theParent,
+                                             const BRepGraph_SolidId     theChild) const;
+  Standard_EXPORT int findSolidChildStep(const BRepGraph_SolidId theParent,
+                                         const BRepGraph_NodeId  theChild) const;
+  Standard_EXPORT int findShellChildStep(const BRepGraph_ShellId theParent,
+                                         const BRepGraph_NodeId  theChild) const;
+  Standard_EXPORT int findFaceChildStep(const BRepGraph_FaceId theParent,
+                                        const BRepGraph_NodeId theChild) const;
+  Standard_EXPORT int findWireCoEdgeStep(const BRepGraph_WireId   theParent,
+                                         const BRepGraph_CoEdgeId theChild) const;
+  Standard_EXPORT int findEdgeVertexStep(const BRepGraph_EdgeId   theParent,
+                                         const BRepGraph_VertexId theChild) const;
+
+  Standard_EXPORT void pushFrame(const StackFrame& theFrame);
+  Standard_EXPORT void popFrame();
+
+  [[nodiscard]] bool matchesFilter(const BRepGraph_NodeId theNode) const
   {
-    BRepGraph_TopologyPath Path;
-    BRepGraph_NodeId       Node;
-    TopLoc_Location        Location;
-    TopAbs_Orientation     Orientation = TopAbs_FORWARD;
-    int                    ExplicitDepth = 0;
-  };
+    return !myFilterByKind || theNode.NodeKind == myTargetKind;
+  }
 
-  Standard_EXPORT void collectMatches();
-  Standard_EXPORT void collectPathsToNode(NCollection_Vector<BRepGraph_TopologyPath>& thePaths) const;
-  Standard_EXPORT void appendPathsToOccurrence(const BRepGraph_OccurrenceId                  theOccurrence,
-                                               NCollection_Vector<BRepGraph_TopologyPath>& thePaths) const;
-  Standard_EXPORT void appendPathsToProduct(const BRepGraph_ProductId                     theProduct,
-                                            NCollection_Vector<BRepGraph_TopologyPath>& thePaths) const;
-  Standard_EXPORT void appendPathsToCoEdge(const BRepGraph_CoEdgeId                      theCoEdge,
-                                           NCollection_Vector<BRepGraph_TopologyPath>& thePaths) const;
-
-  Standard_EXPORT void expandPathStates(const BRepGraph_TopologyPath&        thePath,
-                                        NCollection_Vector<ExpandedState>& theStates) const;
-
-  Standard_EXPORT bool appendOneToOneChild(BRepGraph_NodeId&                    theCurrent,
-                                           TopLoc_Location&                     theLocation,
-                                           TopAbs_Orientation&                  theOrientation,
-                                           const int                            theExplicitDepth,
-                                           NCollection_Vector<ExpandedState>& theStates) const;
+  StackFrame&       topFrame() { return myStack[myStackTop]; }
+  const StackFrame& topFrame() const { return myStack[myStackTop]; }
 
   Standard_EXPORT TopLoc_Location stepLocation(const BRepGraph_NodeId theParent,
                                                const int              theRefIdx) const;
   Standard_EXPORT TopAbs_Orientation stepOrientation(const BRepGraph_NodeId theParent,
                                                      const int              theRefIdx) const;
-  Standard_EXPORT BRepGraph_NodeId resolveChild(const BRepGraph_NodeId theParent,
-                                                const int              theRefIdx) const;
 
 private:
+  static constexpr int THE_INLINE_STACK_SIZE = 16;
+
   const BRepGraph*             myGraph         = nullptr;
   BRepGraph_NodeId             myNode;
   bool                         myFilterByKind  = false;
   BRepGraph_NodeId::Kind       myTargetKind    = BRepGraph_NodeId::Kind::Vertex;
-  NCollection_Vector<MatchRecord> myMatches{8};
-  int                          myMatchIndex    = 0;
+  NCollection_LocalArray<StackFrame, THE_INLINE_STACK_SIZE> myStack;
+  int                          myStackTop      = -1;
+  int                          myEmitIndex     = -1;
+  int                          myCurrentFrame  = -1;
+  BRepGraph_NodeId             myCurrent;
+  TopLoc_Location              myLocation;
+  TopAbs_Orientation           myOrientation   = TopAbs_FORWARD;
+  bool                         myHasMore       = false;
 };
 
 #endif // _BRepGraph_ParentExplorer_HeaderFile

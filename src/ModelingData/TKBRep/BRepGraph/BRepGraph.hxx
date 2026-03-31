@@ -50,6 +50,7 @@ class TCollection_AsciiString;
 class BRepGraph_Builder;
 class BRepGraph_History;
 class BRepGraph_Analyze;
+
 //! @brief Topology-geometry graph over TopoDS / BRep.
 //!
 //! Stores B-Rep topology as flat entity vectors (incidence-table model) with
