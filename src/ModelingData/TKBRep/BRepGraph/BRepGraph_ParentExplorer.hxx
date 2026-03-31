@@ -89,10 +89,10 @@ public:
   Standard_EXPORT void Next();
 
   //! Current matching ancestor node.
-  [[nodiscard]] BRepGraph_NodeId Current() const;
+  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId Current() const;
 
   //! Accumulated location at the current ancestor occurrence.
-  [[nodiscard]] const TopLoc_Location& Location() const;
+  [[nodiscard]] Standard_EXPORT const TopLoc_Location& Location() const;
 
   //! Accumulated orientation at the current ancestor occurrence.
   [[nodiscard]] TopAbs_Orientation Orientation() const;
