@@ -46,6 +46,200 @@
 namespace
 {
 
+static void addNodeBox(const BRepGraph&       theGraph,
+                       const BRepGraph_NodeId theNode,
+                       Bnd_Box&               theBox,
+                       const bool             theUseTri);
+
+static void addNodeBoxOptimal(const BRepGraph&       theGraph,
+                              const BRepGraph_NodeId theNode,
+                              Bnd_Box&               theBox,
+                              const bool             theUseTri,
+                              const bool             theUseShapeTol);
+
+static void addProductBoxLocal(const BRepGraph&        theGraph,
+                               const BRepGraph_ProductId theProduct,
+                               Bnd_Box&                  theBox,
+                               const bool                theUseTri);
+
+static void addProductBoxOptimalLocal(const BRepGraph&        theGraph,
+                                      const BRepGraph_ProductId theProduct,
+                                      Bnd_Box&                  theBox,
+                                      const bool                theUseTri,
+                                      const bool                theUseShapeTol);
+
+static void addOccurrenceBoxLocal(const BRepGraph&          theGraph,
+                                  const BRepGraph_OccurrenceId theOccurrence,
+                                  Bnd_Box&                  theBox,
+                                  const bool                theUseTri)
+{
+  if (!theOccurrence.IsValid(theGraph.Topo().NbOccurrences()))
+  {
+    return;
+  }
+
+  const BRepGraphInc::OccurrenceDef& anOccurrence =
+    theGraph.Topo().Occurrences().Definition(theOccurrence);
+  if (anOccurrence.IsRemoved || !anOccurrence.ProductDefId.IsValid(theGraph.Topo().NbProducts()))
+  {
+    return;
+  }
+
+  Bnd_Box aLocalBox;
+  addProductBoxLocal(theGraph, anOccurrence.ProductDefId, aLocalBox, theUseTri);
+  if (aLocalBox.IsVoid())
+  {
+    return;
+  }
+
+  if (!anOccurrence.Placement.IsIdentity())
+  {
+    aLocalBox = aLocalBox.Transformed(anOccurrence.Placement.Transformation());
+  }
+  theBox.Add(aLocalBox);
+}
+
+static void addOccurrenceBoxOptimalLocal(const BRepGraph&          theGraph,
+                                         const BRepGraph_OccurrenceId theOccurrence,
+                                         Bnd_Box&                  theBox,
+                                         const bool                theUseTri,
+                                         const bool                theUseShapeTol)
+{
+  if (!theOccurrence.IsValid(theGraph.Topo().NbOccurrences()))
+  {
+    return;
+  }
+
+  const BRepGraphInc::OccurrenceDef& anOccurrence =
+    theGraph.Topo().Occurrences().Definition(theOccurrence);
+  if (anOccurrence.IsRemoved || !anOccurrence.ProductDefId.IsValid(theGraph.Topo().NbProducts()))
+  {
+    return;
+  }
+
+  Bnd_Box aLocalBox;
+  addProductBoxOptimalLocal(theGraph,
+                            anOccurrence.ProductDefId,
+                            aLocalBox,
+                            theUseTri,
+                            theUseShapeTol);
+  if (aLocalBox.IsVoid())
+  {
+    return;
+  }
+
+  if (!anOccurrence.Placement.IsIdentity())
+  {
+    aLocalBox = aLocalBox.Transformed(anOccurrence.Placement.Transformation());
+  }
+  theBox.Add(aLocalBox);
+}
+
+static void addProductBoxLocal(const BRepGraph&         theGraph,
+                               const BRepGraph_ProductId theProduct,
+                               Bnd_Box&                 theBox,
+                               const bool               theUseTri)
+{
+  if (!theProduct.IsValid(theGraph.Topo().NbProducts()))
+  {
+    return;
+  }
+
+  const BRepGraphInc::ProductDef& aProduct = theGraph.Topo().Products().Definition(theProduct);
+  if (!aProduct.IsRemoved)
+  {
+    if (aProduct.ShapeRootId.IsValid())
+    {
+      Bnd_Box aShapeBox;
+      addNodeBox(theGraph, aProduct.ShapeRootId, aShapeBox, theUseTri);
+      if (!aShapeBox.IsVoid())
+      {
+        if (!aProduct.RootLocation.IsIdentity())
+        {
+          aShapeBox = aShapeBox.Transformed(aProduct.RootLocation.Transformation());
+        }
+        theBox.Add(aShapeBox);
+      }
+    }
+
+    const NCollection_Vector<BRepGraph_OccurrenceRefId>& anOccurrenceRefIds =
+      theGraph.Refs().OccurrenceRefIdsOf(theProduct);
+    for (int anOccRefIdx = 0; anOccRefIdx < anOccurrenceRefIds.Length(); ++anOccRefIdx)
+    {
+      const BRepGraph_OccurrenceRefId anOccRefId = anOccurrenceRefIds.Value(anOccRefIdx);
+      if (!anOccRefId.IsValid(theGraph.Refs().NbOccurrenceRefs()))
+      {
+        continue;
+      }
+
+      const BRepGraphInc::OccurrenceRef& anOccRef = theGraph.Refs().Occurrence(anOccRefId);
+      if (anOccRef.IsRemoved || !anOccRef.OccurrenceDefId.IsValid(theGraph.Topo().NbOccurrences()))
+      {
+        continue;
+      }
+
+      addOccurrenceBoxLocal(theGraph, anOccRef.OccurrenceDefId, theBox, theUseTri);
+    }
+  }
+}
+
+static void addProductBoxOptimalLocal(const BRepGraph&         theGraph,
+                                      const BRepGraph_ProductId theProduct,
+                                      Bnd_Box&                 theBox,
+                                      const bool               theUseTri,
+                                      const bool               theUseShapeTol)
+{
+  if (!theProduct.IsValid(theGraph.Topo().NbProducts()))
+  {
+    return;
+  }
+
+  const BRepGraphInc::ProductDef& aProduct = theGraph.Topo().Products().Definition(theProduct);
+  if (!aProduct.IsRemoved)
+  {
+    if (aProduct.ShapeRootId.IsValid())
+    {
+      Bnd_Box aShapeBox;
+      addNodeBoxOptimal(theGraph,
+                        aProduct.ShapeRootId,
+                        aShapeBox,
+                        theUseTri,
+                        theUseShapeTol);
+      if (!aShapeBox.IsVoid())
+      {
+        if (!aProduct.RootLocation.IsIdentity())
+        {
+          aShapeBox = aShapeBox.Transformed(aProduct.RootLocation.Transformation());
+        }
+        theBox.Add(aShapeBox);
+      }
+    }
+
+    const NCollection_Vector<BRepGraph_OccurrenceRefId>& anOccurrenceRefIds =
+      theGraph.Refs().OccurrenceRefIdsOf(theProduct);
+    for (int anOccRefIdx = 0; anOccRefIdx < anOccurrenceRefIds.Length(); ++anOccRefIdx)
+    {
+      const BRepGraph_OccurrenceRefId anOccRefId = anOccurrenceRefIds.Value(anOccRefIdx);
+      if (!anOccRefId.IsValid(theGraph.Refs().NbOccurrenceRefs()))
+      {
+        continue;
+      }
+
+      const BRepGraphInc::OccurrenceRef& anOccRef = theGraph.Refs().Occurrence(anOccRefId);
+      if (anOccRef.IsRemoved || !anOccRef.OccurrenceDefId.IsValid(theGraph.Topo().NbOccurrences()))
+      {
+        continue;
+      }
+
+      addOccurrenceBoxOptimalLocal(theGraph,
+                                   anOccRef.OccurrenceDefId,
+                                   theBox,
+                                   theUseTri,
+                                   theUseShapeTol);
+    }
+  }
+}
+
 // Forward declaration: defined below addFaceBox.
 static void findExactUVBounds(const BRepGraph&       theGraph,
                               const BRepGraph_FaceId theFaceId,
@@ -709,6 +903,37 @@ static void addNodeBox(const BRepGraph&       theGraph,
                                   });
       break;
     }
+    case BRepGraph_NodeId::Kind::Product: {
+      addProductBoxLocal(theGraph, BRepGraph_ProductId(theNode.Index), theBox, theUseTri);
+      break;
+    }
+    case BRepGraph_NodeId::Kind::Occurrence: {
+      const BRepGraph_OccurrenceId anOccurrenceId(theNode.Index);
+      if (!anOccurrenceId.IsValid(theGraph.Topo().NbOccurrences()))
+      {
+        break;
+      }
+      const BRepGraphInc::OccurrenceDef& anOccurrence =
+        theGraph.Topo().Occurrences().Definition(anOccurrenceId);
+      if (anOccurrence.IsRemoved
+          || !anOccurrence.ProductDefId.IsValid(theGraph.Topo().NbProducts()))
+      {
+        break;
+      }
+      // Use global placement (not local Placement) since this is a standalone node query.
+      Bnd_Box                      aLocalBox;
+      addProductBoxLocal(theGraph, anOccurrence.ProductDefId, aLocalBox, theUseTri);
+      if (!aLocalBox.IsVoid())
+      {
+        const TopLoc_Location aGlobalLoc = theGraph.Topo().Occurrences().OccurrenceLocation(anOccurrenceId);
+        if (!aGlobalLoc.IsIdentity())
+        {
+          aLocalBox = aLocalBox.Transformed(aGlobalLoc.Transformation());
+        }
+        theBox.Add(aLocalBox);
+      }
+      break;
+    }
     default:
       break;
   }
@@ -806,6 +1031,45 @@ static void addNodeBoxOptimal(const BRepGraph&       theGraph,
         [&](const BRepGraphInc::SolidRef& aSR) {
           addNodeBoxOptimal(theGraph, aSR.SolidDefId, theBox, theUseTri, theUseShapeTol);
         });
+      break;
+    }
+    case BRepGraph_NodeId::Kind::Product: {
+      addProductBoxOptimalLocal(theGraph,
+                                BRepGraph_ProductId(theNode.Index),
+                                theBox,
+                                theUseTri,
+                                theUseShapeTol);
+      break;
+    }
+    case BRepGraph_NodeId::Kind::Occurrence: {
+      const BRepGraph_OccurrenceId anOccurrenceId(theNode.Index);
+      if (!anOccurrenceId.IsValid(theGraph.Topo().NbOccurrences()))
+      {
+        break;
+      }
+      const BRepGraphInc::OccurrenceDef& anOccurrence =
+        theGraph.Topo().Occurrences().Definition(anOccurrenceId);
+      if (anOccurrence.IsRemoved
+          || !anOccurrence.ProductDefId.IsValid(theGraph.Topo().NbProducts()))
+      {
+        break;
+      }
+      // Use global placement (not local Placement) since this is a standalone node query.
+      Bnd_Box aLocalBox;
+      addProductBoxOptimalLocal(theGraph,
+                                anOccurrence.ProductDefId,
+                                aLocalBox,
+                                theUseTri,
+                                theUseShapeTol);
+      if (!aLocalBox.IsVoid())
+      {
+        const TopLoc_Location aGlobalLoc = theGraph.Topo().Occurrences().OccurrenceLocation(anOccurrenceId);
+        if (!aGlobalLoc.IsIdentity())
+        {
+          aLocalBox = aLocalBox.Transformed(aGlobalLoc.Transformation());
+        }
+        theBox.Add(aLocalBox);
+      }
       break;
     }
     default:

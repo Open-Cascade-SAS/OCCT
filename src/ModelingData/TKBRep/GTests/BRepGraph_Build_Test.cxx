@@ -17,6 +17,7 @@
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
+#include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraph_ParamLayer.hxx>
 #include <BRepGraph_RegularityLayer.hxx>
@@ -24,6 +25,7 @@
 #include <BRepGraphInc_Reference.hxx>
 #include <BRepGraphInc_Representation.hxx>
 #include <BRepGraph_BuilderView.hxx>
+#include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_UIDsView.hxx>
@@ -68,6 +70,12 @@ static void registerStandardLayers(BRepGraph& theGraph)
 {
   theGraph.LayerRegistry().RegisterLayer(new BRepGraph_ParamLayer());
   theGraph.LayerRegistry().RegisterLayer(new BRepGraph_RegularityLayer());
+}
+
+static TopoDS_Shape makeStandaloneWire()
+{
+  BRepBuilderAPI_MakeEdge aMkEdge(gp_Pnt(0.0, 0.0, 0.0), gp_Pnt(10.0, 0.0, 0.0));
+  return BRepBuilderAPI_MakeWire(TopoDS::Edge(aMkEdge.Shape())).Shape();
 }
 
 // =============================================================================
@@ -864,6 +872,85 @@ TEST(BRepGraph_BuildTest, AppendFlattenedShape_PreservesExistingUIDs)
   // Verify original edge UID is unchanged.
   const BRepGraph_UID aPostUID = aGraph.UIDs().Of(BRepGraph_EdgeId(0));
   EXPECT_EQ(anOrigUID, aPostUID);
+}
+
+TEST(BRepGraph_BuildTest, AppendFlattenedShape_StandaloneVertex_AppendsIntoNonEmptyGraph)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  const int aNbVerticesBefore = aGraph.Topo().NbVertices();
+  const int aNbRootsBefore    = aGraph.RootNodeIds().Length();
+  const TopoDS_Shape aVertexShape = BRepBuilderAPI_MakeVertex(gp_Pnt(100.0, 0.0, 0.0)).Shape();
+
+  aGraph.Builder().AppendFlattenedShape(aVertexShape);
+
+  ASSERT_TRUE(aGraph.IsDone());
+  EXPECT_EQ(aGraph.Topo().NbVertices(), aNbVerticesBefore + 1);
+  ASSERT_EQ(aGraph.RootNodeIds().Length(), aNbRootsBefore + 1);
+  EXPECT_EQ(aGraph.RootNodeIds().Last().NodeKind, BRepGraph_NodeId::Kind::Vertex);
+  EXPECT_TRUE(aGraph.Shapes().FindNode(aVertexShape).IsValid());
+  EXPECT_FALSE(aGraph.Shapes().Shape(aGraph.RootNodeIds().Last()).IsNull());
+}
+
+TEST(BRepGraph_BuildTest, AppendFlattenedShape_StandaloneEdge_AppendsIntoNonEmptyGraph)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  const int aNbEdgesBefore = aGraph.Topo().NbEdges();
+  const int aNbRootsBefore = aGraph.RootNodeIds().Length();
+  const TopoDS_Shape anEdgeShape =
+    BRepBuilderAPI_MakeEdge(gp_Pnt(100.0, 0.0, 0.0), gp_Pnt(120.0, 0.0, 0.0)).Shape();
+
+  aGraph.Builder().AppendFlattenedShape(anEdgeShape);
+
+  ASSERT_TRUE(aGraph.IsDone());
+  EXPECT_EQ(aGraph.Topo().NbEdges(), aNbEdgesBefore + 1);
+  ASSERT_EQ(aGraph.RootNodeIds().Length(), aNbRootsBefore + 1);
+  EXPECT_EQ(aGraph.RootNodeIds().Last().NodeKind, BRepGraph_NodeId::Kind::Edge);
+  EXPECT_TRUE(aGraph.Shapes().FindNode(anEdgeShape).IsValid());
+  EXPECT_FALSE(aGraph.Shapes().Shape(aGraph.RootNodeIds().Last()).IsNull());
+}
+
+TEST(BRepGraph_BuildTest, AppendFlattenedShape_StandaloneWire_AppendsIntoNonEmptyGraph)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  const int aNbWiresBefore = aGraph.Topo().NbWires();
+  const int aNbRootsBefore = aGraph.RootNodeIds().Length();
+  const TopoDS_Shape aWireShape = makeStandaloneWire();
+
+  aGraph.Builder().AppendFlattenedShape(aWireShape);
+
+  ASSERT_TRUE(aGraph.IsDone());
+  EXPECT_EQ(aGraph.Topo().NbWires(), aNbWiresBefore + 1);
+  ASSERT_EQ(aGraph.RootNodeIds().Length(), aNbRootsBefore + 1);
+  EXPECT_EQ(aGraph.RootNodeIds().Last().NodeKind, BRepGraph_NodeId::Kind::Wire);
+  EXPECT_TRUE(aGraph.Shapes().FindNode(aWireShape).IsValid());
+  EXPECT_FALSE(aGraph.Shapes().Shape(aGraph.RootNodeIds().Last()).IsNull());
+}
+
+TEST(BRepGraph_BuildTest, AppendFlattenedShape_CompoundWithStandaloneShapes)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  BRep_Builder aBuilder;
+  TopoDS_Compound aCompound;
+  aBuilder.MakeCompound(aCompound);
+  aBuilder.Add(aCompound, BRepBuilderAPI_MakeVertex(gp_Pnt(50.0, 0.0, 0.0)).Shape());
+  aBuilder.Add(aCompound, BRepBuilderAPI_MakeEdge(gp_Pnt(0.0, 0.0, 0.0), gp_Pnt(10.0, 0.0, 0.0)).Shape());
+
+  const int aNbRootsBefore = aGraph.RootNodeIds().Length();
+  aGraph.Builder().AppendFlattenedShape(aCompound);
+  ASSERT_TRUE(aGraph.IsDone());
+  EXPECT_GT(aGraph.RootNodeIds().Length(), aNbRootsBefore);
 }
 
 TEST(BRepGraph_BuildTest, Build_WithoutPostPasses_BasicQueriesWork)

@@ -14,6 +14,9 @@
 #include <Bnd_Box.hxx>
 #include <BRep_Builder.hxx>
 #include <BRepBndLib.hxx>
+#include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRepBuilderAPI_MakeVertex.hxx>
+#include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraphInc_Definition.hxx>
 #include <BRepGraphInc_Reference.hxx>
@@ -26,6 +29,7 @@
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <gp_Pnt.hxx>
+#include <gp_Trsf.hxx>
 #include <Precision.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp_Explorer.hxx>
@@ -46,6 +50,32 @@ static gp_Pnt bboxCenter(const BRepGraph& theGraph, BRepGraph_NodeId theNode)
   double xn, yn, zn, xx, yx, zx;
   aBox.Get(xn, yn, zn, xx, yx, zx);
   return gp_Pnt((xn + xx) * 0.5, (yn + yx) * 0.5, (zn + zx) * 0.5);
+}
+
+static TopoDS_Shape makeStandaloneWire()
+{
+  BRepBuilderAPI_MakeEdge aMkEdge(gp_Pnt(0.0, 0.0, 0.0), gp_Pnt(10.0, 0.0, 0.0));
+  return BRepBuilderAPI_MakeWire(TopoDS::Edge(aMkEdge.Shape())).Shape();
+}
+
+static void expectNonVoidProductBox(const TopoDS_Shape& theShape)
+{
+  BRepGraph aGraph;
+  aGraph.Build(theShape);
+  ASSERT_TRUE(aGraph.IsDone());
+  ASSERT_EQ(aGraph.Topo().NbProducts(), 1);
+
+  const BRepGraph_ProductId aProductId(0);
+  Bnd_Box                   aProductBox;
+  BRepGraphAlgo_BndLib::Add(aGraph, aProductId, aProductBox);
+  EXPECT_FALSE(aProductBox.IsVoid());
+
+  const BRepGraph_NodeId aRootNode = aGraph.Topo().Products().ShapeRootNode(aProductId);
+  ASSERT_TRUE(aRootNode.IsValid());
+
+  Bnd_Box aRootBox;
+  BRepGraphAlgo_BndLib::Add(aGraph, aRootNode, aRootBox);
+  EXPECT_FALSE(aRootBox.IsVoid());
 }
 
 } // namespace
@@ -274,6 +304,43 @@ TEST_F(BRepGraph_DiagnosticsTest, BoundingBox_AfterMutation_CacheInvalidated)
 
   // Verify OwnGen was incremented (vertex was directly mutated).
   EXPECT_GT(myGraph.Topo().Vertices().Definition(BRepGraph_VertexId(0)).OwnGen, 0u);
+}
+
+TEST_F(BRepGraph_DiagnosticsTest, BoundingBox_Product_NonVoidForStandaloneLowLevelRoots)
+{
+  expectNonVoidProductBox(BRepBuilderAPI_MakeVertex(gp_Pnt(1.0, 2.0, 3.0)).Shape());
+  expectNonVoidProductBox(BRepBuilderAPI_MakeEdge(gp_Pnt(0.0, 0.0, 0.0), gp_Pnt(5.0, 0.0, 0.0)).Shape());
+  expectNonVoidProductBox(makeStandaloneWire());
+}
+
+TEST_F(BRepGraph_DiagnosticsTest, BoundingBox_Occurrence_UsesPlacement)
+{
+  const BRepGraph_ProductId aPartId     = BRepGraph_ProductId(0);
+  const BRepGraph_ProductId aAssemblyId = myGraph.Builder().AddAssemblyProduct();
+
+  gp_Trsf aMove;
+  aMove.SetTranslation(gp_Vec(100.0, 50.0, 25.0));
+  const BRepGraph_OccurrenceId anOccurrenceId =
+    myGraph.Builder().AddOccurrence(aAssemblyId, aPartId, TopLoc_Location(aMove));
+  ASSERT_TRUE(anOccurrenceId.IsValid());
+
+  Bnd_Box aOccurrenceBox;
+  BRepGraphAlgo_BndLib::Add(myGraph, anOccurrenceId, aOccurrenceBox);
+  ASSERT_FALSE(aOccurrenceBox.IsVoid());
+
+  const gp_Pnt aSolidCenter = bboxCenter(myGraph, BRepGraph_SolidId(0));
+  const gp_Pnt aOccCenter   = bboxCenter(myGraph, anOccurrenceId);
+  EXPECT_NEAR(aOccCenter.X(), aSolidCenter.X() + 100.0, Precision::Confusion());
+  EXPECT_NEAR(aOccCenter.Y(), aSolidCenter.Y() + 50.0, Precision::Confusion());
+  EXPECT_NEAR(aOccCenter.Z(), aSolidCenter.Z() + 25.0, Precision::Confusion());
+}
+
+TEST_F(BRepGraph_DiagnosticsTest, BoundingBoxOptimal_Product_NonVoid)
+{
+  const BRepGraph_NodeId aProductNode(BRepGraph_NodeId::Kind::Product, 0);
+  Bnd_Box                aBox;
+  BRepGraphAlgo_BndLib::AddOptimal(myGraph, aProductNode, aBox, false, false);
+  EXPECT_FALSE(aBox.IsVoid());
 }
 
 TEST_F(BRepGraph_DiagnosticsTest, Invalidate_ThenRecompute_SameResult)

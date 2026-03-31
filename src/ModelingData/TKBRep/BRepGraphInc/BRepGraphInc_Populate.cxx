@@ -1673,10 +1673,14 @@ void traverseHierarchy(BRepGraphInc_Storage&              theStorage,
   }
 }
 
-//! Flatten hierarchy containers away for AppendFlattened() - no container registration.
-void flattenToFaces(NCollection_Vector<FaceLocalData>& theFaceData,
-                    const TopoDS_Shape&                theCurrentShape,
-                    const TopLoc_Location&             theParentGlobalLoc)
+//! Flatten hierarchy containers away for AppendFlattened().
+//! Face roots are collected for the parallel face pipeline; standalone
+//! wire/edge/vertex roots are registered directly through traverseHierarchy().
+void flattenForAppend(BRepGraphInc_Storage&              theStorage,
+                      NCollection_Vector<FaceLocalData>& theFaceData,
+                      RepDedup&                          theRepDedup,
+                      const TopoDS_Shape&                theCurrentShape,
+                      const TopLoc_Location&             theParentGlobalLoc)
 {
   if (theCurrentShape.IsNull())
     return;
@@ -1690,9 +1694,11 @@ void flattenToFaces(NCollection_Vector<FaceLocalData>& theFaceData,
       for (TopoDS_Iterator aChildIt(theCurrentShape, false, false); aChildIt.More();
            aChildIt.Next())
       {
-        flattenToFaces(theFaceData,
-                       aChildIt.Value(),
-                       theParentGlobalLoc * theCurrentShape.Location());
+        flattenForAppend(theStorage,
+                         theFaceData,
+                         theRepDedup,
+                         aChildIt.Value(),
+                         theParentGlobalLoc * theCurrentShape.Location());
       }
       break;
     }
@@ -1701,6 +1707,12 @@ void flattenToFaces(NCollection_Vector<FaceLocalData>& theFaceData,
       aData.Face            = TopoDS::Face(theCurrentShape);
       aData.ParentGlobalLoc = theParentGlobalLoc;
       aData.ParentShellIdx  = -1;
+      break;
+    }
+    case TopAbs_WIRE:
+    case TopAbs_EDGE:
+    case TopAbs_VERTEX: {
+      traverseHierarchy(theStorage, theFaceData, theRepDedup, theCurrentShape, theParentGlobalLoc);
       break;
     }
     default:
@@ -2078,8 +2090,9 @@ void BRepGraphInc_Populate::AppendFlattened(BRepGraphInc_Storage&               
 
   // Collect face contexts by flattening hierarchy.
   NCollection_Vector<FaceLocalData> aFaceData(256, aTmpAlloc);
+  RepDedup                          aRepDedup;
 
-  flattenToFaces(aFaceData, theShape, TopLoc_Location());
+  flattenForAppend(theStorage, aFaceData, aRepDedup, theShape, TopLoc_Location());
 
   // Parallel face extraction.
   BRepGraph_ParallelPolicy::Workload aFaceExtractWork;
@@ -2094,7 +2107,6 @@ void BRepGraphInc_Populate::AppendFlattened(BRepGraphInc_Storage&               
     !isParallelFaceExtraction);
 
   // Sequential registration (reuses existing dedup maps).
-  RepDedup aRepDedup;
   registerFaceData(theStorage, aFaceData, aRepDedup);
 
   populateOptionalLayers(theStorage,
