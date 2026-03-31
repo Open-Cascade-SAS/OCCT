@@ -80,7 +80,7 @@ static int countActiveNodes(const BRepGraph&              theGraph,
   int aCount = 0;
   for (int anIdx = 0; anIdx < theUpperBound; ++anIdx)
   {
-    if (!theGraph.Topo().IsRemoved(BRepGraph_NodeId(theKind, anIdx)))
+    if (!theGraph.Topo().Gen().IsRemoved(BRepGraph_NodeId(theKind, anIdx)))
     {
       ++aCount;
     }
@@ -106,72 +106,72 @@ protected:
 
 TEST_F(BRepGraph_ViewsTest, DefsView_NbFaces)
 {
-  EXPECT_EQ(myGraph.Topo().NbFaces(), 6);
+  EXPECT_EQ(myGraph.Topo().Faces().Nb(), 6);
 }
 
 TEST_F(BRepGraph_ViewsTest, DefsView_NbSolids)
 {
-  EXPECT_EQ(myGraph.Topo().NbSolids(), 1);
+  EXPECT_EQ(myGraph.Topo().Solids().Nb(), 1);
 }
 
 TEST_F(BRepGraph_ViewsTest, DefsView_NbShells)
 {
-  EXPECT_EQ(myGraph.Topo().NbShells(), 1);
+  EXPECT_EQ(myGraph.Topo().Shells().Nb(), 1);
 }
 
 TEST_F(BRepGraph_ViewsTest, DefsView_NbWires)
 {
-  EXPECT_EQ(myGraph.Topo().NbWires(), 6);
+  EXPECT_EQ(myGraph.Topo().Wires().Nb(), 6);
 }
 
 TEST_F(BRepGraph_ViewsTest, DefsView_NbEdges)
 {
-  EXPECT_EQ(myGraph.Topo().NbEdges(), 12);
+  EXPECT_EQ(myGraph.Topo().Edges().Nb(), 12);
 }
 
 TEST_F(BRepGraph_ViewsTest, DefsView_NbVertices)
 {
-  EXPECT_EQ(myGraph.Topo().NbVertices(), 8);
+  EXPECT_EQ(myGraph.Topo().Vertices().Nb(), 8);
 }
 
 TEST_F(BRepGraph_ViewsTest, DefsView_ActiveCounts_MatchStorageState)
 {
-  EXPECT_EQ(countActiveNodes(myGraph, BRepGraph_NodeId::Kind::Vertex, myGraph.Topo().NbVertices()),
-            myGraph.Topo().NbActiveVertices());
-  EXPECT_EQ(countActiveNodes(myGraph, BRepGraph_NodeId::Kind::Edge, myGraph.Topo().NbEdges()),
-            myGraph.Topo().NbActiveEdges());
-  EXPECT_EQ(countActiveNodes(myGraph, BRepGraph_NodeId::Kind::CoEdge, myGraph.Topo().NbCoEdges()),
-            myGraph.Topo().NbActiveCoEdges());
-  EXPECT_EQ(countActiveNodes(myGraph, BRepGraph_NodeId::Kind::Wire, myGraph.Topo().NbWires()),
-            myGraph.Topo().NbActiveWires());
-  EXPECT_EQ(countActiveNodes(myGraph, BRepGraph_NodeId::Kind::Face, myGraph.Topo().NbFaces()),
-            myGraph.Topo().NbActiveFaces());
-  EXPECT_EQ(countActiveNodes(myGraph, BRepGraph_NodeId::Kind::Shell, myGraph.Topo().NbShells()),
-            myGraph.Topo().NbActiveShells());
-  EXPECT_EQ(countActiveNodes(myGraph, BRepGraph_NodeId::Kind::Solid, myGraph.Topo().NbSolids()),
-            myGraph.Topo().NbActiveSolids());
-  EXPECT_EQ(countActiveNodes(myGraph, BRepGraph_NodeId::Kind::Compound, myGraph.Topo().NbCompounds()),
-            myGraph.Topo().NbActiveCompounds());
-  EXPECT_EQ(countActiveNodes(myGraph, BRepGraph_NodeId::Kind::CompSolid, myGraph.Topo().NbCompSolids()),
-            myGraph.Topo().NbActiveCompSolids());
-  EXPECT_EQ(countActiveNodes(myGraph, BRepGraph_NodeId::Kind::Product, myGraph.Topo().NbProducts()),
-            myGraph.Topo().NbActiveProducts());
-  EXPECT_EQ(countActiveNodes(myGraph, BRepGraph_NodeId::Kind::Occurrence, myGraph.Topo().NbOccurrences()),
-            myGraph.Topo().NbActiveOccurrences());
+  EXPECT_EQ(countActiveNodes(myGraph, BRepGraph_NodeId::Kind::Vertex, myGraph.Topo().Vertices().Nb()),
+            myGraph.Topo().Vertices().NbActive());
+  EXPECT_EQ(countActiveNodes(myGraph, BRepGraph_NodeId::Kind::Edge, myGraph.Topo().Edges().Nb()),
+            myGraph.Topo().Edges().NbActive());
+  EXPECT_EQ(countActiveNodes(myGraph, BRepGraph_NodeId::Kind::CoEdge, myGraph.Topo().CoEdges().Nb()),
+            myGraph.Topo().CoEdges().NbActive());
+  EXPECT_EQ(countActiveNodes(myGraph, BRepGraph_NodeId::Kind::Wire, myGraph.Topo().Wires().Nb()),
+            myGraph.Topo().Wires().NbActive());
+  EXPECT_EQ(countActiveNodes(myGraph, BRepGraph_NodeId::Kind::Face, myGraph.Topo().Faces().Nb()),
+            myGraph.Topo().Faces().NbActive());
+  EXPECT_EQ(countActiveNodes(myGraph, BRepGraph_NodeId::Kind::Shell, myGraph.Topo().Shells().Nb()),
+            myGraph.Topo().Shells().NbActive());
+  EXPECT_EQ(countActiveNodes(myGraph, BRepGraph_NodeId::Kind::Solid, myGraph.Topo().Solids().Nb()),
+            myGraph.Topo().Solids().NbActive());
+  EXPECT_EQ(countActiveNodes(myGraph, BRepGraph_NodeId::Kind::Compound, myGraph.Topo().Compounds().Nb()),
+            myGraph.Topo().Compounds().NbActive());
+  EXPECT_EQ(countActiveNodes(myGraph, BRepGraph_NodeId::Kind::CompSolid, myGraph.Topo().CompSolids().Nb()),
+            myGraph.Topo().CompSolids().NbActive());
+  EXPECT_EQ(countActiveNodes(myGraph, BRepGraph_NodeId::Kind::Product, myGraph.Topo().Products().Nb()),
+            myGraph.Topo().Products().NbActive());
+  EXPECT_EQ(countActiveNodes(myGraph, BRepGraph_NodeId::Kind::Occurrence, myGraph.Topo().Occurrences().Nb()),
+            myGraph.Topo().Occurrences().NbActive());
 }
 
 TEST_F(BRepGraph_ViewsTest, DefsView_NbActiveFaces_ExcludeRemoved)
 {
-  const int aFacesBefore = myGraph.Topo().NbActiveFaces();
+  const int aFacesBefore = myGraph.Topo().Faces().NbActive();
   myGraph.Builder().RemoveNode(BRepGraph_FaceId(0));
 
-  EXPECT_EQ(myGraph.Topo().NbActiveFaces(), aFacesBefore - 1);
-  EXPECT_TRUE(myGraph.Topo().IsRemoved(BRepGraph_FaceId(0)));
+  EXPECT_EQ(myGraph.Topo().Faces().NbActive(), aFacesBefore - 1);
+  EXPECT_TRUE(myGraph.Topo().Gen().IsRemoved(BRepGraph_FaceId(0)));
 }
 
 TEST_F(BRepGraph_ViewsTest, DefsView_FaceAccessor_Valid)
 {
-  for (int anIdx = 0; anIdx < myGraph.Topo().NbFaces(); ++anIdx)
+  for (int anIdx = 0; anIdx < myGraph.Topo().Faces().Nb(); ++anIdx)
   {
     const BRepGraphInc::FaceDef& aFace = myGraph.Topo().Faces().Definition(BRepGraph_FaceId(anIdx));
     EXPECT_TRUE(aFace.Id.IsValid()) << "Face " << anIdx << " has invalid Id";
@@ -181,21 +181,21 @@ TEST_F(BRepGraph_ViewsTest, DefsView_FaceAccessor_Valid)
 TEST_F(BRepGraph_ViewsTest, DefsView_TopoEntity_Valid)
 {
   BRepGraph_FaceId             aFaceId(0);
-  const BRepGraphInc::BaseDef* aBase = myGraph.Topo().TopoEntity(aFaceId);
+  const BRepGraphInc::BaseDef* aBase = myGraph.Topo().Gen().TopoEntity(aFaceId);
   ASSERT_NE(aBase, nullptr);
   EXPECT_EQ(aBase->Id, myGraph.Topo().Faces().Definition(BRepGraph_FaceId(0)).Id);
 }
 
 TEST_F(BRepGraph_ViewsTest, DefsView_NbNodes_Positive)
 {
-  EXPECT_GT(myGraph.Topo().NbNodes(), 0u);
+  EXPECT_GT(myGraph.Topo().Gen().NbNodes(), 0u);
 }
 
 // ---------- DefsView Geometry ----------
 
 TEST_F(BRepGraph_ViewsTest, DefsView_FaceSurface_NonNull)
 {
-  for (int anIdx = 0; anIdx < myGraph.Topo().NbFaces(); ++anIdx)
+  for (int anIdx = 0; anIdx < myGraph.Topo().Faces().Nb(); ++anIdx)
   {
     EXPECT_TRUE(BRepGraph_Tool::Face::HasSurface(myGraph, BRepGraph_FaceId(anIdx)))
       << "Face " << anIdx << " has no surface representation";
@@ -204,7 +204,7 @@ TEST_F(BRepGraph_ViewsTest, DefsView_FaceSurface_NonNull)
 
 TEST_F(BRepGraph_ViewsTest, DefsView_EdgeCurve3d_NonNull)
 {
-  for (int anIdx = 0; anIdx < myGraph.Topo().NbEdges(); ++anIdx)
+  for (int anIdx = 0; anIdx < myGraph.Topo().Edges().Nb(); ++anIdx)
   {
     EXPECT_TRUE(BRepGraph_Tool::Edge::HasCurve(myGraph, BRepGraph_EdgeId(anIdx)))
       << "Edge " << anIdx << " has no Curve3D representation";
@@ -239,9 +239,9 @@ TEST_F(BRepGraph_ViewsTest, DefsView_RepIdConvenienceAccessors_RoundTrip)
 
 TEST_F(BRepGraph_ViewsTest, DefsView_RepIdConvenienceAccessors_InvalidInput)
 {
-  const BRepGraph_FaceId aFaceOut(myGraph.Topo().NbFaces());
-  const BRepGraph_EdgeId anEdgeOut(myGraph.Topo().NbEdges());
-  const BRepGraph_CoEdgeId aCoEdgeOut(myGraph.Topo().NbCoEdges());
+  const BRepGraph_FaceId aFaceOut(myGraph.Topo().Faces().Nb());
+  const BRepGraph_EdgeId anEdgeOut(myGraph.Topo().Edges().Nb());
+  const BRepGraph_CoEdgeId aCoEdgeOut(myGraph.Topo().CoEdges().Nb());
 
   EXPECT_FALSE(myGraph.Topo().Faces().SurfaceRepId(aFaceOut).IsValid());
   EXPECT_FALSE(myGraph.Topo().Faces().ActiveTriangulationRepId(aFaceOut).IsValid());
@@ -530,7 +530,7 @@ TEST_F(BRepGraph_ViewsTest, AttrsView_RemoveNode_InvalidatesEntry)
 
   myGraph.Builder().RemoveNode(aFaceId);
 
-  EXPECT_TRUE(myGraph.Topo().IsRemoved(aFaceId));
+  EXPECT_TRUE(myGraph.Topo().Gen().IsRemoved(aFaceId));
   EXPECT_FALSE(myGraph.Cache().Has(aFaceId, testUserAttrKind()));
 }
 
@@ -604,7 +604,7 @@ TEST_F(BRepGraph_ViewsTest, RefsView_VertexRefIdsOfEdge_ContainsBoundaryVertices
   {
     const BRepGraphInc::VertexRef& aRef = myGraph.Refs().Vertex(aVertexRefs.Value(i));
     EXPECT_FALSE(aRef.IsRemoved);
-    EXPECT_TRUE(aRef.VertexDefId.IsValid(myGraph.Topo().NbVertices()));
+    EXPECT_TRUE(aRef.VertexDefId.IsValid(myGraph.Topo().Vertices().Nb()));
   }
 }
 
@@ -636,16 +636,16 @@ TEST_F(BRepGraph_ViewsTest, MutView_EdgeDef_IncrementsOwnGen)
 
 TEST_F(BRepGraph_ViewsTest, BuilderView_AddVertex_Works)
 {
-  const int        aNbBefore = myGraph.Topo().NbVertices();
+  const int        aNbBefore = myGraph.Topo().Vertices().Nb();
   BRepGraph_VertexId aVtx    = myGraph.Builder().AddVertex(gp_Pnt(1, 2, 3), 0.001);
   EXPECT_TRUE(aVtx.IsValid());
-  EXPECT_EQ(myGraph.Topo().NbVertices(), aNbBefore + 1);
+  EXPECT_EQ(myGraph.Topo().Vertices().Nb(), aNbBefore + 1);
 }
 
 TEST_F(BRepGraph_ViewsTest, BuilderView_IsRemoved_False)
 {
   BRepGraph_FaceId aFaceId(0);
-  EXPECT_FALSE(myGraph.Topo().IsRemoved(aFaceId));
+  EXPECT_FALSE(myGraph.Topo().Gen().IsRemoved(aFaceId));
 }
 
 TEST_F(BRepGraph_ViewsTest, BuilderView_RemoveRep_Surface_HidesSurfaceQueries)
@@ -657,7 +657,7 @@ TEST_F(BRepGraph_ViewsTest, BuilderView_RemoveRep_Surface_HidesSurfaceQueries)
 
   myGraph.Builder().RemoveRep(aSurfaceRepId);
 
-  EXPECT_TRUE(myGraph.Topo().SurfaceRep(aSurfaceRepId).IsRemoved);
+  EXPECT_TRUE(myGraph.Topo().Geometry().SurfaceRep(aSurfaceRepId).IsRemoved);
   EXPECT_FALSE(myGraph.Topo().Faces().SurfaceRepId(aFaceId).IsValid());
   EXPECT_FALSE(BRepGraph_Tool::Face::HasSurface(myGraph, aFaceId));
   EXPECT_TRUE(BRepGraph_Tool::Face::Surface(myGraph, aFaceId).IsNull());
@@ -672,7 +672,7 @@ TEST_F(BRepGraph_ViewsTest, BuilderView_RemoveRep_CurveAndPCurve_HideCurveQuerie
 
   myGraph.Builder().RemoveRep(aCurve3DRepId);
 
-  EXPECT_TRUE(myGraph.Topo().Curve3DRep(aCurve3DRepId).IsRemoved);
+  EXPECT_TRUE(myGraph.Topo().Geometry().Curve3DRep(aCurve3DRepId).IsRemoved);
   EXPECT_FALSE(myGraph.Topo().Edges().Curve3DRepId(anEdgeId).IsValid());
   EXPECT_FALSE(BRepGraph_Tool::Edge::HasCurve(myGraph, anEdgeId));
   EXPECT_TRUE(BRepGraph_Tool::Edge::Curve(myGraph, anEdgeId).IsNull());
@@ -686,7 +686,7 @@ TEST_F(BRepGraph_ViewsTest, BuilderView_RemoveRep_CurveAndPCurve_HideCurveQuerie
 
   myGraph.Builder().RemoveRep(aCurve2DRepId);
 
-  EXPECT_TRUE(myGraph.Topo().Curve2DRep(aCurve2DRepId).IsRemoved);
+  EXPECT_TRUE(myGraph.Topo().Geometry().Curve2DRep(aCurve2DRepId).IsRemoved);
   EXPECT_FALSE(myGraph.Topo().CoEdges().Curve2DRepId(aCoEdgeId).IsValid());
   EXPECT_FALSE(BRepGraph_Tool::CoEdge::HasPCurve(myGraph, aCoEdgeId));
   EXPECT_TRUE(BRepGraph_Tool::CoEdge::PCurve(myGraph, aCoEdgeId).IsNull());

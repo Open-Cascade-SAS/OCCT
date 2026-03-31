@@ -1147,10 +1147,10 @@ int BRepGraph_ParentExplorer::findEdgeVertexStep(const BRepGraph_EdgeId   thePar
 void BRepGraph_ParentExplorer::pushFrame(const StackFrame& theFrame)
 {
   const BRepGraph::TopoView& aTopo = myGraph->Topo();
-  const int aMaxDepth = aTopo.NbCompounds() + aTopo.NbCompSolids() + aTopo.NbSolids()
-                      + aTopo.NbShells() + aTopo.NbFaces() + aTopo.NbWires()
-                      + aTopo.NbEdges() + aTopo.NbVertices() + aTopo.NbProducts()
-                      + aTopo.NbOccurrences() + aTopo.NbCoEdges();
+  const int aMaxDepth = aTopo.Compounds().Nb() + aTopo.CompSolids().Nb() + aTopo.Solids().Nb()
+                      + aTopo.Shells().Nb() + aTopo.Faces().Nb() + aTopo.Wires().Nb()
+                      + aTopo.Edges().Nb() + aTopo.Vertices().Nb() + aTopo.Products().Nb()
+                      + aTopo.Occurrences().Nb() + aTopo.CoEdges().Nb();
   if (myStackTop >= aMaxDepth)
   {
     return;

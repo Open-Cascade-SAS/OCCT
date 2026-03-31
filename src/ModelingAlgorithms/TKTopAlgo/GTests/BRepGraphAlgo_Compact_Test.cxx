@@ -79,9 +79,9 @@ TEST(BRepGraphAlgo_CompactTest, NoRemovedNodes_Noop)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  const int aNbVerticesBefore = aGraph.Topo().NbVertices();
-  const int aNbEdgesBefore    = aGraph.Topo().NbEdges();
-  const int aNbFacesBefore    = aGraph.Topo().NbFaces();
+  const int aNbVerticesBefore = aGraph.Topo().Vertices().Nb();
+  const int aNbEdgesBefore    = aGraph.Topo().Edges().Nb();
+  const int aNbFacesBefore    = aGraph.Topo().Faces().Nb();
 
   const BRepGraphAlgo_Compact::Result aRes = BRepGraphAlgo_Compact::Perform(aGraph);
 
@@ -89,9 +89,9 @@ TEST(BRepGraphAlgo_CompactTest, NoRemovedNodes_Noop)
   EXPECT_EQ(aRes.NbRemovedEdges, 0);
   EXPECT_EQ(aRes.NbRemovedFaces, 0);
   EXPECT_EQ(aRes.NbNodesBefore, aRes.NbNodesAfter);
-  EXPECT_EQ(aGraph.Topo().NbVertices(), aNbVerticesBefore);
-  EXPECT_EQ(aGraph.Topo().NbEdges(), aNbEdgesBefore);
-  EXPECT_EQ(aGraph.Topo().NbFaces(), aNbFacesBefore);
+  EXPECT_EQ(aGraph.Topo().Vertices().Nb(), aNbVerticesBefore);
+  EXPECT_EQ(aGraph.Topo().Edges().Nb(), aNbEdgesBefore);
+  EXPECT_EQ(aGraph.Topo().Faces().Nb(), aNbFacesBefore);
 }
 
 TEST(BRepGraphAlgo_CompactTest, AfterDeduplicate_RemovesNodes)
@@ -124,13 +124,13 @@ TEST(BRepGraphAlgo_CompactTest, IndexDensity_NoGaps)
   (void)BRepGraphAlgo_Compact::Perform(aGraph);
 
   // After compaction, there should be no removed defs.
-  for (int anIdx = 0; anIdx < aGraph.Topo().NbVertices(); ++anIdx)
+  for (int anIdx = 0; anIdx < aGraph.Topo().Vertices().Nb(); ++anIdx)
     EXPECT_FALSE(aGraph.Topo().Vertices().Definition(BRepGraph_VertexId(anIdx)).IsRemoved);
-  for (int anIdx = 0; anIdx < aGraph.Topo().NbEdges(); ++anIdx)
+  for (int anIdx = 0; anIdx < aGraph.Topo().Edges().Nb(); ++anIdx)
     EXPECT_FALSE(aGraph.Topo().Edges().Definition(BRepGraph_EdgeId(anIdx)).IsRemoved);
-  for (int anIdx = 0; anIdx < aGraph.Topo().NbFaces(); ++anIdx)
+  for (int anIdx = 0; anIdx < aGraph.Topo().Faces().Nb(); ++anIdx)
     EXPECT_FALSE(aGraph.Topo().Faces().Definition(BRepGraph_FaceId(anIdx)).IsRemoved);
-  for (int anIdx = 0; anIdx < aGraph.Topo().NbWires(); ++anIdx)
+  for (int anIdx = 0; anIdx < aGraph.Topo().Wires().Nb(); ++anIdx)
     EXPECT_FALSE(aGraph.Topo().Wires().Definition(BRepGraph_WireId(anIdx)).IsRemoved);
 }
 
@@ -206,21 +206,21 @@ TEST(BRepGraphAlgo_CompactTest, Compact_PreservesTopologyUIDs)
   };
 
   const NCollection_Map<BRepGraph_UID> anOrigVertexUIDs =
-    collectUIDs(BRepGraph_NodeId::Kind::Vertex, aGraph.Topo().NbVertices());
+    collectUIDs(BRepGraph_NodeId::Kind::Vertex, aGraph.Topo().Vertices().Nb());
   const NCollection_Map<BRepGraph_UID> anOrigEdgeUIDs =
-    collectUIDs(BRepGraph_NodeId::Kind::Edge, aGraph.Topo().NbEdges());
+    collectUIDs(BRepGraph_NodeId::Kind::Edge, aGraph.Topo().Edges().Nb());
   const NCollection_Map<BRepGraph_UID> anOrigWireUIDs =
-    collectUIDs(BRepGraph_NodeId::Kind::Wire, aGraph.Topo().NbWires());
+    collectUIDs(BRepGraph_NodeId::Kind::Wire, aGraph.Topo().Wires().Nb());
   const NCollection_Map<BRepGraph_UID> anOrigFaceUIDs =
-    collectUIDs(BRepGraph_NodeId::Kind::Face, aGraph.Topo().NbFaces());
+    collectUIDs(BRepGraph_NodeId::Kind::Face, aGraph.Topo().Faces().Nb());
   const NCollection_Map<BRepGraph_UID> anOrigShellUIDs =
-    collectUIDs(BRepGraph_NodeId::Kind::Shell, aGraph.Topo().NbShells());
+    collectUIDs(BRepGraph_NodeId::Kind::Shell, aGraph.Topo().Shells().Nb());
   const NCollection_Map<BRepGraph_UID> anOrigSolidUIDs =
-    collectUIDs(BRepGraph_NodeId::Kind::Solid, aGraph.Topo().NbSolids());
+    collectUIDs(BRepGraph_NodeId::Kind::Solid, aGraph.Topo().Solids().Nb());
   const NCollection_Map<BRepGraph_UID> anOrigCompoundUIDs =
-    collectUIDs(BRepGraph_NodeId::Kind::Compound, aGraph.Topo().NbCompounds());
+    collectUIDs(BRepGraph_NodeId::Kind::Compound, aGraph.Topo().Compounds().Nb());
   const NCollection_Map<BRepGraph_UID> anOrigCompSolidUIDs =
-    collectUIDs(BRepGraph_NodeId::Kind::CompSolid, aGraph.Topo().NbCompSolids());
+    collectUIDs(BRepGraph_NodeId::Kind::CompSolid, aGraph.Topo().CompSolids().Nb());
   // Geometry is now stored inline on defs; no separate geometry UIDs to collect.
 
   const uint32_t aGenBefore = aGraph.UIDs().Generation();
@@ -250,20 +250,20 @@ TEST(BRepGraphAlgo_CompactTest, Compact_PreservesTopologyUIDs)
   };
 
   verifyUIDs(BRepGraph_NodeId::Kind::Vertex,
-             aGraph.Topo().NbVertices(),
+             aGraph.Topo().Vertices().Nb(),
              anOrigVertexUIDs,
              "Vertex");
-  verifyUIDs(BRepGraph_NodeId::Kind::Edge, aGraph.Topo().NbEdges(), anOrigEdgeUIDs, "Edge");
-  verifyUIDs(BRepGraph_NodeId::Kind::Wire, aGraph.Topo().NbWires(), anOrigWireUIDs, "Wire");
-  verifyUIDs(BRepGraph_NodeId::Kind::Face, aGraph.Topo().NbFaces(), anOrigFaceUIDs, "Face");
-  verifyUIDs(BRepGraph_NodeId::Kind::Shell, aGraph.Topo().NbShells(), anOrigShellUIDs, "Shell");
-  verifyUIDs(BRepGraph_NodeId::Kind::Solid, aGraph.Topo().NbSolids(), anOrigSolidUIDs, "Solid");
+  verifyUIDs(BRepGraph_NodeId::Kind::Edge, aGraph.Topo().Edges().Nb(), anOrigEdgeUIDs, "Edge");
+  verifyUIDs(BRepGraph_NodeId::Kind::Wire, aGraph.Topo().Wires().Nb(), anOrigWireUIDs, "Wire");
+  verifyUIDs(BRepGraph_NodeId::Kind::Face, aGraph.Topo().Faces().Nb(), anOrigFaceUIDs, "Face");
+  verifyUIDs(BRepGraph_NodeId::Kind::Shell, aGraph.Topo().Shells().Nb(), anOrigShellUIDs, "Shell");
+  verifyUIDs(BRepGraph_NodeId::Kind::Solid, aGraph.Topo().Solids().Nb(), anOrigSolidUIDs, "Solid");
   verifyUIDs(BRepGraph_NodeId::Kind::Compound,
-             aGraph.Topo().NbCompounds(),
+             aGraph.Topo().Compounds().Nb(),
              anOrigCompoundUIDs,
              "Compound");
   verifyUIDs(BRepGraph_NodeId::Kind::CompSolid,
-             aGraph.Topo().NbCompSolids(),
+             aGraph.Topo().CompSolids().Nb(),
              anOrigCompSolidUIDs,
              "CompSolid");
 
@@ -291,7 +291,7 @@ TEST(BRepGraphAlgo_CompactTest, OwnGen_SurvivesCompact)
   // Edge 0 may have been remapped. Find the edge that carries the mutated
   // tolerance and verify both the tolerance value and OwnGen are preserved.
   bool aFound = false;
-  for (int anIdx = 0; anIdx < aGraph.Topo().NbEdges(); ++anIdx)
+  for (int anIdx = 0; anIdx < aGraph.Topo().Edges().Nb(); ++anIdx)
   {
     const BRepGraphInc::EdgeDef& anEdge = aGraph.Topo().Edges().Definition(BRepGraph_EdgeId(anIdx));
     if (std::abs(anEdge.Tolerance - THE_MUTATED_EDGE_TOLERANCE) < Precision::Confusion())
@@ -313,8 +313,8 @@ TEST(BRepGraphAlgo_CompactTest, UIDRoundTrip_AfterCompaction)
   BRepGraph aGraph;
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GE(aGraph.Topo().NbFaces(), 3);
-  ASSERT_GE(aGraph.Topo().NbEdges(), 3);
+  ASSERT_GE(aGraph.Topo().Faces().Nb(), 3);
+  ASSERT_GE(aGraph.Topo().Edges().Nb(), 3);
 
   // Record UIDs for a few face and edge nodes.
   const BRepGraph_UID aFaceUID0 = aGraph.UIDs().Of(BRepGraph_FaceId(0));

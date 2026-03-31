@@ -66,7 +66,7 @@ NCollection_Vector<BRepGraph_NodeId> collectCompSolidChildren(
 {
   NCollection_Vector<BRepGraph_NodeId> aChildNodes;
   const BRepGraph::RefsView&           aRefs     = theGraph.Refs();
-  const int                            aNbSolids = theGraph.Topo().NbSolids();
+  const int                            aNbSolids = theGraph.Topo().Solids().Nb();
   for (int aRefIdx = 0; aRefIdx < aRefs.NbSolidRefs(); ++aRefIdx)
   {
     const BRepGraphInc::SolidRef& aRef = aRefs.Solid(BRepGraph_SolidRefId(aRefIdx));
@@ -84,7 +84,7 @@ NCollection_Vector<BRepGraph_NodeId> collectSolidChildren(const BRepGraph&      
 {
   NCollection_Vector<BRepGraph_NodeId> aChildNodes;
   const BRepGraph::RefsView&           aRefs     = theGraph.Refs();
-  const int                            aNbShells = theGraph.Topo().NbShells();
+  const int                            aNbShells = theGraph.Topo().Shells().Nb();
   for (int aRefIdx = 0; aRefIdx < aRefs.NbShellRefs(); ++aRefIdx)
   {
     const BRepGraphInc::ShellRef& aRef = aRefs.Shell(BRepGraph_ShellRefId(aRefIdx));
@@ -101,7 +101,7 @@ NCollection_Vector<BRepGraph_NodeId> collectShellChildren(const BRepGraph&      
 {
   NCollection_Vector<BRepGraph_NodeId> aChildNodes;
   const BRepGraph::RefsView&           aRefs    = theGraph.Refs();
-  const int                            aNbFaces = theGraph.Topo().NbFaces();
+  const int                            aNbFaces = theGraph.Topo().Faces().Nb();
   for (int aRefIdx = 0; aRefIdx < aRefs.NbFaceRefs(); ++aRefIdx)
   {
     const BRepGraphInc::FaceRef& aRef = aRefs.Face(BRepGraph_FaceRefId(aRefIdx));
@@ -118,7 +118,7 @@ NCollection_Vector<BRepGraph_NodeId> collectFaceChildren(const BRepGraph&       
 {
   NCollection_Vector<BRepGraph_NodeId> aChildNodes;
   const BRepGraph::RefsView&           aRefs    = theGraph.Refs();
-  const int                            aNbWires = theGraph.Topo().NbWires();
+  const int                            aNbWires = theGraph.Topo().Wires().Nb();
   for (int aRefIdx = 0; aRefIdx < aRefs.NbWireRefs(); ++aRefIdx)
   {
     const BRepGraphInc::WireRef& aRef = aRefs.Wire(BRepGraph_WireRefId(aRefIdx));
@@ -136,7 +136,7 @@ NCollection_Vector<BRepGraph_NodeId> collectWireChildren(const BRepGraph&       
   NCollection_Vector<BRepGraph_NodeId> aChildNodes;
   const BRepGraph::TopoView&           aTopo      = theGraph.Topo();
   const BRepGraph::RefsView&           aRefs      = theGraph.Refs();
-  const int                            aNbCoEdges = aTopo.NbCoEdges();
+  const int                            aNbCoEdges = aTopo.CoEdges().Nb();
   for (int aRefIdx = 0; aRefIdx < aRefs.NbCoEdgeRefs(); ++aRefIdx)
   {
     const BRepGraphInc::CoEdgeRef& aRef = aRefs.CoEdge(BRepGraph_CoEdgeRefId(aRefIdx));
@@ -144,7 +144,7 @@ NCollection_Vector<BRepGraph_NodeId> collectWireChildren(const BRepGraph&       
       continue;
 
     const BRepGraphInc::CoEdgeDef& aCoEdge = aTopo.CoEdges().Definition(aRef.CoEdgeDefId);
-    if (aCoEdge.EdgeDefId.IsValid(aTopo.NbEdges()))
+    if (aCoEdge.EdgeDefId.IsValid(aTopo.Edges().Nb()))
       aChildNodes.Append(BRepGraph_EdgeId(aCoEdge.EdgeDefId.Index));
   }
   return aChildNodes;

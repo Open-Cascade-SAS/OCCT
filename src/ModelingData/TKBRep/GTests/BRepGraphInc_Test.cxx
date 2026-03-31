@@ -86,12 +86,12 @@ TEST(BRepGraphIncTest, Box_EntityCounts_MatchDefCounts)
   ASSERT_TRUE(aStorage.GetIsDone());
 
   // Entity counts must match Def counts.
-  EXPECT_EQ(aStorage.NbVertices(), aGraph.Topo().NbVertices());
-  EXPECT_EQ(aStorage.NbEdges(), aGraph.Topo().NbEdges());
-  EXPECT_EQ(aStorage.NbWires(), aGraph.Topo().NbWires());
-  EXPECT_EQ(aStorage.NbFaces(), aGraph.Topo().NbFaces());
-  EXPECT_EQ(aStorage.NbShells(), aGraph.Topo().NbShells());
-  EXPECT_EQ(aStorage.NbSolids(), aGraph.Topo().NbSolids());
+  EXPECT_EQ(aStorage.NbVertices(), aGraph.Topo().Vertices().Nb());
+  EXPECT_EQ(aStorage.NbEdges(), aGraph.Topo().Edges().Nb());
+  EXPECT_EQ(aStorage.NbWires(), aGraph.Topo().Wires().Nb());
+  EXPECT_EQ(aStorage.NbFaces(), aGraph.Topo().Faces().Nb());
+  EXPECT_EQ(aStorage.NbShells(), aGraph.Topo().Shells().Nb());
+  EXPECT_EQ(aStorage.NbSolids(), aGraph.Topo().Solids().Nb());
 }
 
 TEST(BRepGraphIncTest, Cylinder_EntityCounts_MatchDefCounts)
@@ -107,12 +107,12 @@ TEST(BRepGraphIncTest, Cylinder_EntityCounts_MatchDefCounts)
   BRepGraphInc_Populate::Perform(aStorage, aCyl, false);
   ASSERT_TRUE(aStorage.GetIsDone());
 
-  EXPECT_EQ(aStorage.NbVertices(), aGraph.Topo().NbVertices());
-  EXPECT_EQ(aStorage.NbEdges(), aGraph.Topo().NbEdges());
-  EXPECT_EQ(aStorage.NbWires(), aGraph.Topo().NbWires());
-  EXPECT_EQ(aStorage.NbFaces(), aGraph.Topo().NbFaces());
-  EXPECT_EQ(aStorage.NbShells(), aGraph.Topo().NbShells());
-  EXPECT_EQ(aStorage.NbSolids(), aGraph.Topo().NbSolids());
+  EXPECT_EQ(aStorage.NbVertices(), aGraph.Topo().Vertices().Nb());
+  EXPECT_EQ(aStorage.NbEdges(), aGraph.Topo().Edges().Nb());
+  EXPECT_EQ(aStorage.NbWires(), aGraph.Topo().Wires().Nb());
+  EXPECT_EQ(aStorage.NbFaces(), aGraph.Topo().Faces().Nb());
+  EXPECT_EQ(aStorage.NbShells(), aGraph.Topo().Shells().Nb());
+  EXPECT_EQ(aStorage.NbSolids(), aGraph.Topo().Solids().Nb());
 }
 
 TEST(BRepGraphIncTest, Sphere_EntityCounts_MatchDefCounts)
@@ -128,10 +128,10 @@ TEST(BRepGraphIncTest, Sphere_EntityCounts_MatchDefCounts)
   BRepGraphInc_Populate::Perform(aStorage, aSph, false);
   ASSERT_TRUE(aStorage.GetIsDone());
 
-  EXPECT_EQ(aStorage.NbVertices(), aGraph.Topo().NbVertices());
-  EXPECT_EQ(aStorage.NbEdges(), aGraph.Topo().NbEdges());
-  EXPECT_EQ(aStorage.NbWires(), aGraph.Topo().NbWires());
-  EXPECT_EQ(aStorage.NbFaces(), aGraph.Topo().NbFaces());
+  EXPECT_EQ(aStorage.NbVertices(), aGraph.Topo().Vertices().Nb());
+  EXPECT_EQ(aStorage.NbEdges(), aGraph.Topo().Edges().Nb());
+  EXPECT_EQ(aStorage.NbWires(), aGraph.Topo().Wires().Nb());
+  EXPECT_EQ(aStorage.NbFaces(), aGraph.Topo().Faces().Nb());
 }
 
 TEST(BRepGraphIncTest, Storage_MarkRemovedRep_DecrementsActiveCountsAndIsIdempotent)

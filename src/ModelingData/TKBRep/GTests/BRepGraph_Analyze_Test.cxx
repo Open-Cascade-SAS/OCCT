@@ -108,7 +108,7 @@ TEST_F(BRepGraph_DiagnosticsTest, BoundingBox_Sphere_NonVoid)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Verify face-level bounding boxes are valid.
-  for (int aFaceIdx = 0; aFaceIdx < aGraph.Topo().NbFaces(); ++aFaceIdx)
+  for (int aFaceIdx = 0; aFaceIdx < aGraph.Topo().Faces().Nb(); ++aFaceIdx)
   {
     const BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, aFaceIdx);
     Bnd_Box                aFaceBox;
@@ -127,7 +127,7 @@ TEST_F(BRepGraph_DiagnosticsTest, BoundingBox_Cylinder_FacesNonVoid)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Verify all face-level bounding boxes are valid.
-  for (int aFaceIdx = 0; aFaceIdx < aGraph.Topo().NbFaces(); ++aFaceIdx)
+  for (int aFaceIdx = 0; aFaceIdx < aGraph.Topo().Faces().Nb(); ++aFaceIdx)
   {
     const BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, aFaceIdx);
     Bnd_Box                aFaceBox;
@@ -148,7 +148,7 @@ TEST_F(BRepGraph_DiagnosticsTest, BoundingBox_FaceSubsetOfShell)
 
   const double aTol = Precision::Confusion();
 
-  for (int aFaceIdx = 0; aFaceIdx < myGraph.Topo().NbFaces(); ++aFaceIdx)
+  for (int aFaceIdx = 0; aFaceIdx < myGraph.Topo().Faces().Nb(); ++aFaceIdx)
   {
     const BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, aFaceIdx);
     Bnd_Box                aFaceBox;
@@ -236,7 +236,7 @@ TEST_F(BRepGraph_DiagnosticsTest, BoundingBox_Edge_SubsetOfOwningFace)
 
 TEST_F(BRepGraph_DiagnosticsTest, BoundingBox_Vertex_SinglePoint)
 {
-  for (int aVertIdx = 0; aVertIdx < myGraph.Topo().NbVertices(); ++aVertIdx)
+  for (int aVertIdx = 0; aVertIdx < myGraph.Topo().Vertices().Nb(); ++aVertIdx)
   {
     const BRepGraph_NodeId aVertId(BRepGraph_NodeId::Kind::Vertex, aVertIdx);
     Bnd_Box                aVertBox;
@@ -370,7 +370,7 @@ TEST_F(BRepGraph_DiagnosticsTest, Centroid_Sphere_AtOrigin)
 
 TEST_F(BRepGraph_DiagnosticsTest, Centroid_Face_InsideFaceBBox)
 {
-  for (int aFaceIdx = 0; aFaceIdx < myGraph.Topo().NbFaces(); ++aFaceIdx)
+  for (int aFaceIdx = 0; aFaceIdx < myGraph.Topo().Faces().Nb(); ++aFaceIdx)
   {
     const BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, aFaceIdx);
     const gp_Pnt           aCentroid = bboxCenter(myGraph, aFaceId);

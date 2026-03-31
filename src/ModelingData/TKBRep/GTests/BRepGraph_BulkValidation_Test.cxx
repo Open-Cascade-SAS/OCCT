@@ -396,18 +396,18 @@ TEST_P(BRepGraphBulkValidation, RoundTrip)
 
   // Step 5: Verify graph entity counts match TopExp counts
   const BRepGraph::TopoView& aDefs = aGraph.Topo();
-  EXPECT_EQ(aDefs.NbVertices(), anOrigCounts.NbVertices) << aFilePath;
-  EXPECT_EQ(aDefs.NbEdges(), anOrigCounts.NbEdges) << aFilePath;
-  EXPECT_EQ(aDefs.NbWires(), anOrigCounts.NbWires) << aFilePath;
-  EXPECT_EQ(aDefs.NbFaces(), anOrigCounts.NbFaces) << aFilePath;
-  EXPECT_EQ(aDefs.NbShells(), anOrigCounts.NbShells) << aFilePath;
-  EXPECT_EQ(aDefs.NbSolids(), anOrigCounts.NbSolids) << aFilePath;
-  EXPECT_EQ(aDefs.NbCompSolids(), anOrigCounts.NbCompSolids) << aFilePath;
-  EXPECT_EQ(aDefs.NbCompounds(), anOrigCounts.NbCompounds) << aFilePath;
+  EXPECT_EQ(aDefs.Vertices().Nb(), anOrigCounts.NbVertices) << aFilePath;
+  EXPECT_EQ(aDefs.Edges().Nb(), anOrigCounts.NbEdges) << aFilePath;
+  EXPECT_EQ(aDefs.Wires().Nb(), anOrigCounts.NbWires) << aFilePath;
+  EXPECT_EQ(aDefs.Faces().Nb(), anOrigCounts.NbFaces) << aFilePath;
+  EXPECT_EQ(aDefs.Shells().Nb(), anOrigCounts.NbShells) << aFilePath;
+  EXPECT_EQ(aDefs.Solids().Nb(), anOrigCounts.NbSolids) << aFilePath;
+  EXPECT_EQ(aDefs.CompSolids().Nb(), anOrigCounts.NbCompSolids) << aFilePath;
+  EXPECT_EQ(aDefs.Compounds().Nb(), anOrigCounts.NbCompounds) << aFilePath;
 
   // Step 6: Get root NodeId from Product(0)
   const BRepGraph::TopoView& aTopo = aGraph.Topo();
-  ASSERT_GE(aTopo.NbProducts(), 1) << "No products: " << aFilePath;
+  ASSERT_GE(aTopo.Products().Nb(), 1) << "No products: " << aFilePath;
   const BRepGraph_NodeId aRootId = aTopo.Products().Definition(BRepGraph_ProductId(0)).ShapeRootId;
 
   // Step 7: Reconstruct and apply root orientation/location from Product

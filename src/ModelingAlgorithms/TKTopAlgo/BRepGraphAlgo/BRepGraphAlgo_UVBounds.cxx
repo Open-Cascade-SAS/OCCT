@@ -290,7 +290,7 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph&       theGraph,
     {
       const BRepGraph_WireRefId    aRefId = aFaceEnt.WireRefIds.Value(i);
       const BRepGraphInc::WireRef& aWR    = aRefs.Wire(aRefId);
-      if (!aWR.IsRemoved && aWR.WireDefId.IsValid(theGraph.Topo().NbWires()))
+      if (!aWR.IsRemoved && aWR.WireDefId.IsValid(theGraph.Topo().Wires().Nb()))
       {
         hasFaceWires = true;
         break;
@@ -318,7 +318,7 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph&       theGraph,
       {
         const BRepGraph_CoEdgeRefId    aCERefId = aWireEnt.CoEdgeRefIds.Value(aCRI);
         const BRepGraphInc::CoEdgeRef& aCR      = aRefs.CoEdge(aCERefId);
-        if (aCR.IsRemoved || !aCR.CoEdgeDefId.IsValid(theGraph.Topo().NbCoEdges()))
+        if (aCR.IsRemoved || !aCR.CoEdgeDefId.IsValid(theGraph.Topo().CoEdges().Nb()))
         {
           continue;
         }
@@ -412,7 +412,7 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph&       theGraph,
     {
       const BRepGraph_WireRefId    aWireRefId = aFaceEnt2.WireRefIds.Value(aWRI);
       const BRepGraphInc::WireRef& aWR        = aRefs.Wire(aWireRefId);
-      if (aWR.IsRemoved || !aWR.WireDefId.IsValid(theGraph.Topo().NbWires()))
+      if (aWR.IsRemoved || !aWR.WireDefId.IsValid(theGraph.Topo().Wires().Nb()))
       {
         continue;
       }
@@ -437,7 +437,7 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph&       theGraph,
   {
     const BRepGraph_WireRefId    aWireRefId = aFaceEnt3.WireRefIds.Value(aWRI);
     const BRepGraphInc::WireRef& aWR        = aRefs.Wire(aWireRefId);
-    if (aWR.IsRemoved || !aWR.WireDefId.IsValid(theGraph.Topo().NbWires()))
+    if (aWR.IsRemoved || !aWR.WireDefId.IsValid(theGraph.Topo().Wires().Nb()))
     {
       continue;
     }
@@ -446,7 +446,7 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph&       theGraph,
     {
       const BRepGraph_CoEdgeRefId    aCERefId = aWireEnt.CoEdgeRefIds.Value(aCRI);
       const BRepGraphInc::CoEdgeRef& aCR      = aRefs.CoEdge(aCERefId);
-      if (aCR.IsRemoved || !aCR.CoEdgeDefId.IsValid(theGraph.Topo().NbCoEdges()))
+      if (aCR.IsRemoved || !aCR.CoEdgeDefId.IsValid(theGraph.Topo().CoEdges().Nb()))
       {
         continue;
       }

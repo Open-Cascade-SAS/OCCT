@@ -55,12 +55,12 @@ TEST(BRepGraphAlgo_SameParameterTest, Enforce_BoxEdge_SetsSameParameter)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
+  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().Edges().Nb(); ++anEdgeIdx)
   {
     aGraph.Builder().MutEdge(BRepGraph_EdgeId(anEdgeIdx))->SameParameter = false;
   }
 
-  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
+  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().Edges().Nb(); ++anEdgeIdx)
   {
     const BRepGraph_EdgeId anEdgeId(anEdgeIdx);
     const bool             isOk = BRepGraphAlgo_SameParameter::Enforce(aGraph, anEdgeId, 1.0e-04);
@@ -78,12 +78,12 @@ TEST(BRepGraphAlgo_SameParameterTest, Enforce_CylinderEdge_ToleranceReasonable)
   aGraph.Build(aCyl);
   ASSERT_TRUE(aGraph.IsDone());
 
-  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
+  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().Edges().Nb(); ++anEdgeIdx)
   {
     aGraph.Builder().MutEdge(BRepGraph_EdgeId(anEdgeIdx))->SameParameter = false;
   }
 
-  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
+  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().Edges().Nb(); ++anEdgeIdx)
   {
     const BRepGraph_EdgeId anEdgeId(anEdgeIdx);
     (void)BRepGraphAlgo_SameParameter::Enforce(aGraph, anEdgeId, 1.0e-04);
@@ -100,13 +100,13 @@ TEST(BRepGraphAlgo_SameParameterTest, Perform_BatchSetsFlags)
   BRepGraph aGraph;
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
-  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
+  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().Edges().Nb(); ++anEdgeIdx)
   {
     aGraph.Builder().MutEdge(BRepGraph_EdgeId(anEdgeIdx))->SameParameter = false;
   }
 
   NCollection_IndexedMap<BRepGraph_EdgeId> anEdgeIndices;
-  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
+  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().Edges().Nb(); ++anEdgeIdx)
   {
     anEdgeIndices.Add(BRepGraph_EdgeId(anEdgeIdx));
   }
@@ -115,7 +115,7 @@ TEST(BRepGraphAlgo_SameParameterTest, Perform_BatchSetsFlags)
   const double aMaxTolerance = 1.0;
   (void)BRepGraphAlgo_SameParameter::Perform(aGraph, anEdgeIndices, aTolerance);
 
-  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
+  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().Edges().Nb(); ++anEdgeIdx)
   {
     const BRepGraph_EdgeId anEdgeId(anEdgeIdx);
     EXPECT_TRUE(BRepGraph_Tool::Edge::SameParameter(aGraph, anEdgeId))
@@ -134,7 +134,7 @@ TEST(BRepGraphAlgo_SameParameterTest, Enforce_NoCurve3d_SetsFlag)
   aGraph.Build(aSphere);
   ASSERT_TRUE(aGraph.IsDone());
 
-  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
+  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().Edges().Nb(); ++anEdgeIdx)
   {
     if (BRepGraph_Tool::Edge::Degenerated(aGraph, BRepGraph_EdgeId(anEdgeIdx))
         || !BRepGraph_Tool::Edge::HasCurve(aGraph, BRepGraph_EdgeId(anEdgeIdx)))
@@ -160,13 +160,13 @@ TEST(BRepGraphAlgo_SameParameterTest, FallbackCounters_DefaultZeroOnCleanShape)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Clear SameParameter flags so Perform actually processes each edge.
-  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
+  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().Edges().Nb(); ++anEdgeIdx)
   {
     aGraph.Builder().MutEdge(BRepGraph_EdgeId(anEdgeIdx))->SameParameter = false;
   }
 
   NCollection_IndexedMap<BRepGraph_EdgeId> anEdgeIds;
-  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
+  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().Edges().Nb(); ++anEdgeIdx)
   {
     anEdgeIds.Add(BRepGraph_EdgeId(anEdgeIdx));
   }
@@ -204,7 +204,7 @@ TEST(BRepGraphAlgo_SameParameterTest, Enforce_AfterSewing_SewnEdgesAreValid)
   EXPECT_EQ(aResult.NbSewnEdges, 12);
 
   int aNbSameParam = 0;
-  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
+  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().Edges().Nb(); ++anEdgeIdx)
   {
     const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
       aGraph.Topo().Edges().CoEdges(BRepGraph_EdgeId(anEdgeIdx));

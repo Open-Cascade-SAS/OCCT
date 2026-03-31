@@ -605,7 +605,7 @@ FreeEdgeList findFreeEdges(const BRepGraph&                        theGraph,
                            NCollection_Map<int>&                   theFloatingEdges,
                            const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
 {
-  const int  aCapacity  = std::max(1, theGraph.Topo().NbEdges());
+  const int  aCapacity  = std::max(1, theGraph.Topo().Edges().Nb());
   FreeEdgeList aFreeEdges(aCapacity, theAllocator);
 
   for (BRepGraph_EdgeIterator anEdgeIt(theGraph); anEdgeIt.More(); anEdgeIt.Next())
@@ -2040,19 +2040,19 @@ TopoDS_Shape reconstructFromGraph(const BRepGraph& theGraph)
 {
   const BRepGraph::TopoView& aDefs = theGraph.Topo();
 
-  if (aDefs.NbCompounds() > 0)
+  if (aDefs.Compounds().Nb() > 0)
   {
     return theGraph.Shapes().Reconstruct(BRepGraph_CompoundId(0));
   }
-  else if (aDefs.NbCompSolids() > 0)
+  else if (aDefs.CompSolids().Nb() > 0)
   {
     return theGraph.Shapes().Reconstruct(BRepGraph_CompSolidId(0));
   }
-  else if (aDefs.NbSolids() > 0)
+  else if (aDefs.Solids().Nb() > 0)
   {
     return theGraph.Shapes().Reconstruct(BRepGraph_SolidId(0));
   }
-  else if (aDefs.NbShells() > 0)
+  else if (aDefs.Shells().Nb() > 0)
   {
     return theGraph.Shapes().Reconstruct(BRepGraph_ShellId(0));
   }
@@ -2062,7 +2062,7 @@ TopoDS_Shape reconstructFromGraph(const BRepGraph& theGraph)
     BRep_Builder    aBB;
     TopoDS_Compound aResultCompound;
     aBB.MakeCompound(aResultCompound);
-    for (int aFaceIdx = 0; aFaceIdx < aDefs.NbFaces(); ++aFaceIdx)
+    for (int aFaceIdx = 0; aFaceIdx < aDefs.Faces().Nb(); ++aFaceIdx)
     {
       if (!aDefs.Faces().Definition(BRepGraph_FaceId(aFaceIdx)).IsRemoved)
       {
@@ -2380,7 +2380,7 @@ BRepGraphAlgo_Sewing::Result BRepGraphAlgo_Sewing::Perform(BRepGraph&     theGra
 
   // Detect multiple edges (shared by >2 faces).
   const BRepGraph::TopoView& aDefs = theGraph.Topo();
-  for (int anEdgeIdx = 0; anEdgeIdx < aDefs.NbEdges(); ++anEdgeIdx)
+  for (int anEdgeIdx = 0; anEdgeIdx < aDefs.Edges().Nb(); ++anEdgeIdx)
   {
     const BRepGraph_EdgeId       anEdgeId(anEdgeIdx);
     const BRepGraphInc::EdgeDef& anEdge = aDefs.Edges().Definition(anEdgeId);

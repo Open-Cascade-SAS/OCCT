@@ -50,6 +50,47 @@ static Standard_GUID generateRandomGUID()
   return Standard_GUID(aUUID);
 }
 
+//=================================================================================================
+
+void appendFlattenedRootNodes(const BRepGraph&                      theGraph,
+                              NCollection_Vector<BRepGraph_NodeId>& theRoots,
+                              const TopoDS_Shape&                   theShape)
+{
+  if (theShape.IsNull())
+    return;
+
+  switch (theShape.ShapeType())
+  {
+    case TopAbs_COMPOUND:
+    case TopAbs_COMPSOLID:
+    case TopAbs_SOLID:
+    case TopAbs_SHELL:
+      for (TopoDS_Iterator aChildIt(theShape, false, false); aChildIt.More(); aChildIt.Next())
+      {
+        appendFlattenedRootNodes(theGraph, theRoots, aChildIt.Value());
+      }
+      return;
+    case TopAbs_FACE:
+    case TopAbs_WIRE:
+    case TopAbs_EDGE:
+    case TopAbs_VERTEX:
+      break;
+    default:
+      return;
+  }
+
+  const BRepGraph_NodeId aNodeId = theGraph.Shapes().FindNode(theShape);
+  if (!aNodeId.IsValid())
+    return;
+
+  for (int aRootIdx = 0; aRootIdx < theRoots.Length(); ++aRootIdx)
+  {
+    if (theRoots.Value(aRootIdx) == aNodeId)
+      return;
+  }
+  theRoots.Append(aNodeId);
+}
+
 } // namespace
 
 //=================================================================================================
@@ -317,38 +358,7 @@ void BRepGraph_Builder::AppendFlattened(BRepGraph&          theGraph,
                           anOldSolidRef,
                           anOldChildRef);
 
-  switch (theShape.ShapeType())
-  {
-    case TopAbs_COMPOUND:
-    case TopAbs_COMPSOLID:
-    case TopAbs_SOLID:
-    case TopAbs_SHELL:
-      for (int aFaceIdx = anOldFace; aFaceIdx < aStorage.NbFaces(); ++aFaceIdx)
-      {
-        theGraph.myData->myRootNodeIds.Append(BRepGraph_FaceId(aFaceIdx));
-      }
-      break;
-    case TopAbs_FACE:
-      for (int aFaceIdx = anOldFace; aFaceIdx < aStorage.NbFaces(); ++aFaceIdx)
-      {
-        theGraph.myData->myRootNodeIds.Append(BRepGraph_FaceId(aFaceIdx));
-      }
-      break;
-    case TopAbs_WIRE:
-      if (aStorage.NbWires() > anOldWire)
-        theGraph.myData->myRootNodeIds.Append(BRepGraph_WireId(anOldWire));
-      break;
-    case TopAbs_EDGE:
-      if (aStorage.NbEdges() > anOldEdge)
-        theGraph.myData->myRootNodeIds.Append(BRepGraph_EdgeId(anOldEdge));
-      break;
-    case TopAbs_VERTEX:
-      if (aStorage.NbVertices() > anOldVtx)
-        theGraph.myData->myRootNodeIds.Append(BRepGraph_VertexId(anOldVtx));
-      break;
-    default:
-      break;
-  }
+  appendFlattenedRootNodes(theGraph, theGraph.myData->myRootNodeIds, theShape);
 
   theGraph.myData->myIsDone = true;
 }

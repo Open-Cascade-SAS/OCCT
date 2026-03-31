@@ -85,7 +85,7 @@ TEST_F(BRepGraph_ConvenienceTest, NodeId_Factories_EqualToConstructor)
 
 TEST_F(BRepGraph_ConvenienceTest, EdgeDef_StartVertex_Valid)
 {
-  ASSERT_GT(myGraph.Topo().NbEdges(), 0);
+  ASSERT_GT(myGraph.Topo().Edges().Nb(), 0);
   const BRepGraph_EdgeId         anEdgeId(0);
   const BRepGraphInc::VertexRef& aStart = BRepGraph_Tool::Edge::StartVertex(myGraph, anEdgeId);
   EXPECT_TRUE(aStart.VertexDefId.IsValid());
@@ -93,7 +93,7 @@ TEST_F(BRepGraph_ConvenienceTest, EdgeDef_StartVertex_Valid)
 
 TEST_F(BRepGraph_ConvenienceTest, EdgeDef_EndVertex_Valid)
 {
-  ASSERT_GT(myGraph.Topo().NbEdges(), 0);
+  ASSERT_GT(myGraph.Topo().Edges().Nb(), 0);
   const BRepGraph_EdgeId         anEdgeId(0);
   const BRepGraphInc::VertexRef& anEnd = BRepGraph_Tool::Edge::EndVertex(myGraph, anEdgeId);
   EXPECT_TRUE(anEnd.VertexDefId.IsValid());
@@ -101,7 +101,7 @@ TEST_F(BRepGraph_ConvenienceTest, EdgeDef_EndVertex_Valid)
 
 TEST_F(BRepGraph_ConvenienceTest, EdgeDef_StartEnd_DifferForNonClosed)
 {
-  ASSERT_GT(myGraph.Topo().NbEdges(), 0);
+  ASSERT_GT(myGraph.Topo().Edges().Nb(), 0);
   const BRepGraph_EdgeId       anEdgeId(0);
   const BRepGraphInc::EdgeDef& anEdge = myGraph.Topo().Edges().Definition(anEdgeId);
   if (!anEdge.IsClosed)
@@ -116,7 +116,7 @@ TEST_F(BRepGraph_ConvenienceTest, EdgeDef_StartEnd_DifferForNonClosed)
 
 TEST_F(BRepGraph_ConvenienceTest, EdgeDef_RefIds_AreValid)
 {
-  ASSERT_GT(myGraph.Topo().NbEdges(), 0);
+  ASSERT_GT(myGraph.Topo().Edges().Nb(), 0);
   const BRepGraph_EdgeId       anEdgeId(0);
   const BRepGraphInc::EdgeDef& anEdge = myGraph.Topo().Edges().Definition(anEdgeId);
   EXPECT_TRUE(anEdge.StartVertexRefId.IsValid());
@@ -128,14 +128,14 @@ TEST_F(BRepGraph_ConvenienceTest, EdgeDef_RefIds_AreValid)
 TEST_F(BRepGraph_ConvenienceTest, FaceSurface_Valid)
 {
   const BRepGraph::TopoView aDefs = myGraph.Topo();
-  ASSERT_GT(aDefs.NbFaces(), 0);
+  ASSERT_GT(aDefs.Faces().Nb(), 0);
   EXPECT_TRUE(aDefs.Faces().Definition(BRepGraph_FaceId(0)).SurfaceRepId.IsValid());
 }
 
 TEST_F(BRepGraph_ConvenienceTest, FaceSurface_AllBoxFaces)
 {
   const BRepGraph::TopoView aDefs = myGraph.Topo();
-  for (int aFaceIter = 0; aFaceIter < aDefs.NbFaces(); ++aFaceIter)
+  for (int aFaceIter = 0; aFaceIter < aDefs.Faces().Nb(); ++aFaceIter)
   {
     EXPECT_TRUE(aDefs.Faces().Definition(BRepGraph_FaceId(aFaceIter)).SurfaceRepId.IsValid())
       << "Face " << aFaceIter << " has no surface";
@@ -149,11 +149,11 @@ TEST_F(BRepGraph_ConvenienceTest, FindPCurve_ValidPair)
   const BRepGraph::TopoView aDefs = myGraph.Topo();
 
   // Find an edge/face pair that has a PCurve.
-  for (int aFaceIter = 0; aFaceIter < aDefs.NbFaces(); ++aFaceIter)
+  for (int aFaceIter = 0; aFaceIter < aDefs.Faces().Nb(); ++aFaceIter)
   {
     const BRepGraph_NodeId aFaceNodeId = BRepGraph_FaceId(aFaceIter);
 
-    for (int anEdgeIter = 0; anEdgeIter < aDefs.NbEdges(); ++anEdgeIter)
+    for (int anEdgeIter = 0; anEdgeIter < aDefs.Edges().Nb(); ++anEdgeIter)
     {
       const BRepGraphInc::EdgeDef&   anEdgeDef =
         aDefs.Edges().Definition(BRepGraph_EdgeId(anEdgeIter));
@@ -181,7 +181,7 @@ TEST_F(BRepGraph_ConvenienceTest, FindPCurve_InvalidPair_ReturnsNull)
 TEST_F(BRepGraph_ConvenienceTest, ShellFaceRefs_Box_SixFaces)
 {
   const BRepGraph::RefsView& aRefs = myGraph.Refs();
-  ASSERT_EQ(myGraph.Topo().NbShells(), 1);
+  ASSERT_EQ(myGraph.Topo().Shells().Nb(), 1);
   EXPECT_EQ(aRefs.FaceRefIdsOf(BRepGraph_ShellId(0)).Length(), 6);
 }
 
@@ -217,7 +217,7 @@ TEST_F(BRepGraph_ConvenienceTest, FindPCurve_WithOrientation_SeamEdge)
   const BRepGraph::TopoView aDefs = aGraph.Topo();
 
   // Look for seam edges (coedge with SeamPairId valid).
-  for (int anEdgeIter = 0; anEdgeIter < aDefs.NbEdges(); ++anEdgeIter)
+  for (int anEdgeIter = 0; anEdgeIter < aDefs.Edges().Nb(); ++anEdgeIter)
   {
     const BRepGraphInc::EdgeDef& anEdgeDef = aDefs.Edges().Definition(BRepGraph_EdgeId(anEdgeIter));
     const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =

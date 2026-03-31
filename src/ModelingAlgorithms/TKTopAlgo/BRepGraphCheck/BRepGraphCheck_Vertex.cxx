@@ -97,7 +97,7 @@ void BRepGraphCheck::CheckVertexOnFace(const BRepGraph&                         
 
   // Check vertex through PCurve evaluation: find an edge of this face
   // that has this vertex as endpoint.
-  const int aNbEdges = aDefs.NbEdges();
+  const int aNbEdges = aDefs.Edges().Nb();
   for (int anEdgeIter = 0; anEdgeIter < aNbEdges; ++anEdgeIter)
   {
     const BRepGraph_EdgeId       anEdgeId  = BRepGraph_EdgeId(anEdgeIter);

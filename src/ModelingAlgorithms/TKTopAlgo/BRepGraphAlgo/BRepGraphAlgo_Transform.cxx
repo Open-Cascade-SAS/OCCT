@@ -34,7 +34,7 @@ namespace
 void applyGeometryTransform(BRepGraph& theGraph, const gp_Trsf& theTrsf)
 {
   // Transform absolute vertex points.
-  for (int anIdx = 0; anIdx < theGraph.Topo().NbVertices(); ++anIdx)
+  for (int anIdx = 0; anIdx < theGraph.Topo().Vertices().Nb(); ++anIdx)
   {
     theGraph.Builder().MutVertex(BRepGraph_VertexId(anIdx))->Point.Transform(theTrsf);
   }
@@ -42,7 +42,7 @@ void applyGeometryTransform(BRepGraph& theGraph, const gp_Trsf& theTrsf)
   // Transform surface geometry handles directly on surface reps.
   // Use visited set to avoid transforming shared handles twice.
   NCollection_Map<int> aVisitedSurfReps;
-  for (int anIdx = 0; anIdx < theGraph.Topo().NbFaces(); ++anIdx)
+  for (int anIdx = 0; anIdx < theGraph.Topo().Faces().Nb(); ++anIdx)
   {
     BRepGraph_MutGuard<BRepGraphInc::FaceDef> aFace =
       theGraph.Builder().MutFace(BRepGraph_FaceId(anIdx));
@@ -61,7 +61,7 @@ void applyGeometryTransform(BRepGraph& theGraph, const gp_Trsf& theTrsf)
 
   // Transform curve geometry handles directly on curve reps.
   NCollection_Map<int> aVisitedCurveReps;
-  for (int anIdx = 0; anIdx < theGraph.Topo().NbEdges(); ++anIdx)
+  for (int anIdx = 0; anIdx < theGraph.Topo().Edges().Nb(); ++anIdx)
   {
     BRepGraph_MutGuard<BRepGraphInc::EdgeDef> anEdge =
       theGraph.Builder().MutEdge(BRepGraph_EdgeId(anIdx));
@@ -142,7 +142,7 @@ BRepGraph BRepGraphAlgo_Transform::TransformFace(const BRepGraph&       theGraph
                                                  const gp_Trsf&         theTrsf,
                                                  const bool             theCopyGeom)
 {
-  if (!theGraph.IsDone() || theFace.Index < 0 || theFace.Index >= theGraph.Topo().NbFaces())
+  if (!theGraph.IsDone() || theFace.Index < 0 || theFace.Index >= theGraph.Topo().Faces().Nb())
     return BRepGraph();
 
   const bool useGeomModif =

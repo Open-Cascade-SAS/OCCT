@@ -73,14 +73,14 @@ static void addOccurrenceBoxLocal(const BRepGraph&          theGraph,
                                   Bnd_Box&                  theBox,
                                   const bool                theUseTri)
 {
-  if (!theOccurrence.IsValid(theGraph.Topo().NbOccurrences()))
+  if (!theOccurrence.IsValid(theGraph.Topo().Occurrences().Nb()))
   {
     return;
   }
 
   const BRepGraphInc::OccurrenceDef& anOccurrence =
     theGraph.Topo().Occurrences().Definition(theOccurrence);
-  if (anOccurrence.IsRemoved || !anOccurrence.ProductDefId.IsValid(theGraph.Topo().NbProducts()))
+  if (anOccurrence.IsRemoved || !anOccurrence.ProductDefId.IsValid(theGraph.Topo().Products().Nb()))
   {
     return;
   }
@@ -105,14 +105,14 @@ static void addOccurrenceBoxOptimalLocal(const BRepGraph&          theGraph,
                                          const bool                theUseTri,
                                          const bool                theUseShapeTol)
 {
-  if (!theOccurrence.IsValid(theGraph.Topo().NbOccurrences()))
+  if (!theOccurrence.IsValid(theGraph.Topo().Occurrences().Nb()))
   {
     return;
   }
 
   const BRepGraphInc::OccurrenceDef& anOccurrence =
     theGraph.Topo().Occurrences().Definition(theOccurrence);
-  if (anOccurrence.IsRemoved || !anOccurrence.ProductDefId.IsValid(theGraph.Topo().NbProducts()))
+  if (anOccurrence.IsRemoved || !anOccurrence.ProductDefId.IsValid(theGraph.Topo().Products().Nb()))
   {
     return;
   }
@@ -140,7 +140,7 @@ static void addProductBoxLocal(const BRepGraph&         theGraph,
                                Bnd_Box&                 theBox,
                                const bool               theUseTri)
 {
-  if (!theProduct.IsValid(theGraph.Topo().NbProducts()))
+  if (!theProduct.IsValid(theGraph.Topo().Products().Nb()))
   {
     return;
   }
@@ -173,7 +173,7 @@ static void addProductBoxLocal(const BRepGraph&         theGraph,
       }
 
       const BRepGraphInc::OccurrenceRef& anOccRef = theGraph.Refs().Occurrence(anOccRefId);
-      if (anOccRef.IsRemoved || !anOccRef.OccurrenceDefId.IsValid(theGraph.Topo().NbOccurrences()))
+      if (anOccRef.IsRemoved || !anOccRef.OccurrenceDefId.IsValid(theGraph.Topo().Occurrences().Nb()))
       {
         continue;
       }
@@ -189,7 +189,7 @@ static void addProductBoxOptimalLocal(const BRepGraph&         theGraph,
                                       const bool               theUseTri,
                                       const bool               theUseShapeTol)
 {
-  if (!theProduct.IsValid(theGraph.Topo().NbProducts()))
+  if (!theProduct.IsValid(theGraph.Topo().Products().Nb()))
   {
     return;
   }
@@ -226,7 +226,7 @@ static void addProductBoxOptimalLocal(const BRepGraph&         theGraph,
       }
 
       const BRepGraphInc::OccurrenceRef& anOccRef = theGraph.Refs().Occurrence(anOccRefId);
-      if (anOccRef.IsRemoved || !anOccRef.OccurrenceDefId.IsValid(theGraph.Topo().NbOccurrences()))
+      if (anOccRef.IsRemoved || !anOccRef.OccurrenceDefId.IsValid(theGraph.Topo().Occurrences().Nb()))
       {
         continue;
       }
@@ -262,7 +262,7 @@ static void forFaceWireRefEntries(const BRepGraph&       theGraph,
   {
     const BRepGraph_WireRefId    aRefId = aFaceEnt.WireRefIds.Value(i);
     const BRepGraphInc::WireRef& aWR    = aRefs.Wire(aRefId);
-    if (aWR.IsRemoved || !aWR.WireDefId.IsValid(theGraph.Topo().NbWires()))
+    if (aWR.IsRemoved || !aWR.WireDefId.IsValid(theGraph.Topo().Wires().Nb()))
     {
       continue;
     }
@@ -282,7 +282,7 @@ static void forWireCoEdgeRefEntries(const BRepGraph&       theGraph,
   {
     const BRepGraph_CoEdgeRefId    aRefId = aWireEnt.CoEdgeRefIds.Value(i);
     const BRepGraphInc::CoEdgeRef& aCR    = aRefs.CoEdge(aRefId);
-    if (aCR.IsRemoved || !aCR.CoEdgeDefId.IsValid(theGraph.Topo().NbCoEdges()))
+    if (aCR.IsRemoved || !aCR.CoEdgeDefId.IsValid(theGraph.Topo().CoEdges().Nb()))
     {
       continue;
     }
@@ -302,7 +302,7 @@ static void forSolidShellRefEntries(const BRepGraph&        theGraph,
   {
     const BRepGraph_ShellRefId    aRefId = aSolidEnt.ShellRefIds.Value(i);
     const BRepGraphInc::ShellRef& aSR    = aRefs.Shell(aRefId);
-    if (aSR.IsRemoved || !aSR.ShellDefId.IsValid(theGraph.Topo().NbShells()))
+    if (aSR.IsRemoved || !aSR.ShellDefId.IsValid(theGraph.Topo().Shells().Nb()))
     {
       continue;
     }
@@ -343,7 +343,7 @@ static void forCompSolidSolidRefEntries(const BRepGraph&            theGraph,
   {
     const BRepGraph_SolidRefId    aRefId = aCSEnt.SolidRefIds.Value(i);
     const BRepGraphInc::SolidRef& aSR    = aRefs.Solid(aRefId);
-    if (aSR.IsRemoved || !aSR.SolidDefId.IsValid(theGraph.Topo().NbSolids()))
+    if (aSR.IsRemoved || !aSR.SolidDefId.IsValid(theGraph.Topo().Solids().Nb()))
     {
       continue;
     }
@@ -909,14 +909,14 @@ static void addNodeBox(const BRepGraph&       theGraph,
     }
     case BRepGraph_NodeId::Kind::Occurrence: {
       const BRepGraph_OccurrenceId anOccurrenceId(theNode.Index);
-      if (!anOccurrenceId.IsValid(theGraph.Topo().NbOccurrences()))
+      if (!anOccurrenceId.IsValid(theGraph.Topo().Occurrences().Nb()))
       {
         break;
       }
       const BRepGraphInc::OccurrenceDef& anOccurrence =
         theGraph.Topo().Occurrences().Definition(anOccurrenceId);
       if (anOccurrence.IsRemoved
-          || !anOccurrence.ProductDefId.IsValid(theGraph.Topo().NbProducts()))
+          || !anOccurrence.ProductDefId.IsValid(theGraph.Topo().Products().Nb()))
       {
         break;
       }
@@ -1043,14 +1043,14 @@ static void addNodeBoxOptimal(const BRepGraph&       theGraph,
     }
     case BRepGraph_NodeId::Kind::Occurrence: {
       const BRepGraph_OccurrenceId anOccurrenceId(theNode.Index);
-      if (!anOccurrenceId.IsValid(theGraph.Topo().NbOccurrences()))
+      if (!anOccurrenceId.IsValid(theGraph.Topo().Occurrences().Nb()))
       {
         break;
       }
       const BRepGraphInc::OccurrenceDef& anOccurrence =
         theGraph.Topo().Occurrences().Definition(anOccurrenceId);
       if (anOccurrence.IsRemoved
-          || !anOccurrence.ProductDefId.IsValid(theGraph.Topo().NbProducts()))
+          || !anOccurrence.ProductDefId.IsValid(theGraph.Topo().Products().Nb()))
       {
         break;
       }
@@ -1086,14 +1086,14 @@ void BRepGraphAlgo_BndLib::Add(const BRepGraph& theGraph,
                                const bool       theUseTriangulation)
 {
   // Add all faces.
-  const int aNbFaces = theGraph.Topo().NbFaces();
+  const int aNbFaces = theGraph.Topo().Faces().Nb();
   for (int i = 0; i < aNbFaces; ++i)
   {
     addFaceBox(theGraph, BRepGraph_FaceId(i), theBox, theUseTriangulation);
   }
 
   // Add free edges (edges not in any face, identified by having no CoEdges with a face).
-  const int aNbEdges = theGraph.Topo().NbEdges();
+  const int aNbEdges = theGraph.Topo().Edges().Nb();
   for (int i = 0; i < aNbEdges; ++i)
   {
     if (theGraph.Topo().Edges().NbFaces(BRepGraph_EdgeId(i)) == 0)
@@ -1104,7 +1104,7 @@ void BRepGraphAlgo_BndLib::Add(const BRepGraph& theGraph,
 
   // Add free vertices (vertices not in edges).
   // For simplicity, add all vertices - redundant additions are harmless.
-  const int aNbVerts = theGraph.Topo().NbVertices();
+  const int aNbVerts = theGraph.Topo().Vertices().Nb();
   for (int i = 0; i < aNbVerts; ++i)
   {
     addVertexBox(theGraph, BRepGraph_VertexId(i), theBox);
@@ -1129,7 +1129,7 @@ void BRepGraphAlgo_BndLib::AddOptimal(const BRepGraph& theGraph,
                                       const bool       theUseShapeTolerance)
 {
   // Add all faces (optimal).
-  const int aNbFaces = theGraph.Topo().NbFaces();
+  const int aNbFaces = theGraph.Topo().Faces().Nb();
   for (int i = 0; i < aNbFaces; ++i)
   {
     addFaceBoxOptimal(theGraph,
@@ -1140,7 +1140,7 @@ void BRepGraphAlgo_BndLib::AddOptimal(const BRepGraph& theGraph,
   }
 
   // Add free edges (edges not in any face).
-  const int aNbEdges = theGraph.Topo().NbEdges();
+  const int aNbEdges = theGraph.Topo().Edges().Nb();
   for (int i = 0; i < aNbEdges; ++i)
   {
     if (theGraph.Topo().Edges().NbFaces(BRepGraph_EdgeId(i)) == 0)
@@ -1157,7 +1157,7 @@ void BRepGraphAlgo_BndLib::AddOptimal(const BRepGraph& theGraph,
   }
 
   // Add free vertices.
-  const int aNbVerts = theGraph.Topo().NbVertices();
+  const int aNbVerts = theGraph.Topo().Vertices().Nb();
   for (int i = 0; i < aNbVerts; ++i)
   {
     Bnd_Box                  aLocBox;

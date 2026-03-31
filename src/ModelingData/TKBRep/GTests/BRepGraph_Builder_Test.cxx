@@ -118,7 +118,7 @@ TEST(BRepGraph_BuilderTest, SingleFace_MatchesVertices)
   BRepGraph aGraph;
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GT(aGraph.Topo().NbFaces(), 0);
+  ASSERT_GT(aGraph.Topo().Faces().Nb(), 0);
 
   BRepGraph_FaceId aFaceId(0);
   Bnd_Box          aGraphBox;
@@ -249,8 +249,8 @@ TEST(BRepGraph_BuilderTest, AddFace_WithSurface)
   BRepGraph_FaceId aFaceId = aGraph.Builder().AddFace(aPlane, aWireId, aInnerWires, 0.001);
 
   EXPECT_TRUE(aFaceId.IsValid());
-  EXPECT_EQ(aGraph.Topo().NbFaces(), 1);
-  EXPECT_EQ(aGraph.Topo().NbFaces(), 1);
+  EXPECT_EQ(aGraph.Topo().Faces().Nb(), 1);
+  EXPECT_EQ(aGraph.Topo().Faces().Nb(), 1);
 
   const BRepGraphInc::FaceDef& aFaceDef =
     aGraph.Topo().Faces().Definition(BRepGraph_FaceId(0));
@@ -270,7 +270,7 @@ TEST(BRepGraph_BuilderTest, AddEdge_InvalidVertex_ReturnsInvalidAndDoesNotAppend
                                                              0.001);
 
   EXPECT_FALSE(anEdgeId.IsValid());
-  EXPECT_EQ(aGraph.Topo().NbEdges(), 0);
+  EXPECT_EQ(aGraph.Topo().Edges().Nb(), 0);
 }
 
 TEST(BRepGraph_BuilderTest, AddWire_InvalidEdge_ReturnsInvalidAndDoesNotAppend)
@@ -282,8 +282,8 @@ TEST(BRepGraph_BuilderTest, AddWire_InvalidEdge_ReturnsInvalidAndDoesNotAppend)
 
   const BRepGraph_WireId aWireId = aGraph.Builder().AddWire(anEdges);
   EXPECT_FALSE(aWireId.IsValid());
-  EXPECT_EQ(aGraph.Topo().NbWires(), 0);
-  EXPECT_EQ(aGraph.Topo().NbCoEdges(), 0);
+  EXPECT_EQ(aGraph.Topo().Wires().Nb(), 0);
+  EXPECT_EQ(aGraph.Topo().CoEdges().Nb(), 0);
 }
 
 TEST(BRepGraph_BuilderTest, AddFace_InvalidOuterWire_ReturnsInvalidAndDoesNotAppend)
@@ -296,7 +296,7 @@ TEST(BRepGraph_BuilderTest, AddFace_InvalidOuterWire_ReturnsInvalidAndDoesNotApp
     aGraph.Builder().AddFace(aPlane, BRepGraph_WireId(9), anInnerWires, 0.001);
 
   EXPECT_FALSE(aFaceId.IsValid());
-  EXPECT_EQ(aGraph.Topo().NbFaces(), 0);
+  EXPECT_EQ(aGraph.Topo().Faces().Nb(), 0);
 }
 
 TEST(BRepGraph_BuilderTest, AddShellAndSolid)
@@ -331,11 +331,11 @@ TEST(BRepGraph_BuilderTest, AppendTwoBoxFaces)
   BRepGraph aGraph;
   aGraph.Build(aCopy1.Shape());
   ASSERT_TRUE(aGraph.IsDone());
-  EXPECT_EQ(aGraph.Topo().NbFaces(), 1);
+  EXPECT_EQ(aGraph.Topo().Faces().Nb(), 1);
 
   // Append second face.
   aGraph.Builder().AppendFlattenedShape(aCopy2.Shape());
-  EXPECT_EQ(aGraph.Topo().NbFaces(), 2);
+  EXPECT_EQ(aGraph.Topo().Faces().Nb(), 2);
   EXPECT_TRUE(aGraph.IsDone());
 }
 
@@ -347,10 +347,10 @@ TEST(BRepGraph_BuilderTest, RemoveVertex_IsRemoved)
 {
   BRepGraph          aGraph;
   BRepGraph_VertexId aVtxId = aGraph.Builder().AddVertex(gp_Pnt(1.0, 2.0, 3.0), 0.001);
-  EXPECT_FALSE(aGraph.Topo().IsRemoved(aVtxId));
+  EXPECT_FALSE(aGraph.Topo().Gen().IsRemoved(aVtxId));
 
   aGraph.Builder().RemoveNode(aVtxId);
-  EXPECT_TRUE(aGraph.Topo().IsRemoved(aVtxId));
+  EXPECT_TRUE(aGraph.Topo().Gen().IsRemoved(aVtxId));
 }
 
 TEST(BRepGraph_BuilderTest, RemoveFaceFromBox)
@@ -361,18 +361,18 @@ TEST(BRepGraph_BuilderTest, RemoveFaceFromBox)
   BRepGraph aGraph;
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_EQ(aGraph.Topo().NbFaces(), 6);
+  ASSERT_EQ(aGraph.Topo().Faces().Nb(), 6);
 
   BRepGraph_FaceId aFaceId(0);
-  EXPECT_FALSE(aGraph.Topo().IsRemoved(aFaceId));
+  EXPECT_FALSE(aGraph.Topo().Gen().IsRemoved(aFaceId));
 
   aGraph.Builder().RemoveNode(aFaceId);
-  EXPECT_TRUE(aGraph.Topo().IsRemoved(aFaceId));
+  EXPECT_TRUE(aGraph.Topo().Gen().IsRemoved(aFaceId));
 
   // Other faces should not be removed.
-  for (int aFaceIdx = 1; aFaceIdx < aGraph.Topo().NbFaces(); ++aFaceIdx)
+  for (int aFaceIdx = 1; aFaceIdx < aGraph.Topo().Faces().Nb(); ++aFaceIdx)
   {
-    EXPECT_FALSE(aGraph.Topo().IsRemoved(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, aFaceIdx)));
+    EXPECT_FALSE(aGraph.Topo().Gen().IsRemoved(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, aFaceIdx)));
   }
 }
 
@@ -380,7 +380,7 @@ TEST(BRepGraph_BuilderTest, RemoveInvalidNode_NoError)
 {
   BRepGraph        aGraph;
   BRepGraph_NodeId anInvalidId;
-  EXPECT_FALSE(aGraph.Topo().IsRemoved(anInvalidId));
+  EXPECT_FALSE(aGraph.Topo().Gen().IsRemoved(anInvalidId));
   aGraph.Builder().RemoveNode(anInvalidId); // Should not crash.
 }
 
@@ -392,10 +392,10 @@ TEST(BRepGraph_BuilderTest, RemoveAlreadyRemovedNode_NoError)
   ASSERT_TRUE(aVertexId.IsValid());
 
   aGraph.Builder().RemoveNode(aVertexId);
-  EXPECT_TRUE(aGraph.Topo().IsRemoved(aVertexId));
+  EXPECT_TRUE(aGraph.Topo().Gen().IsRemoved(aVertexId));
 
   EXPECT_NO_THROW(aGraph.Builder().RemoveNode(aVertexId));
-  EXPECT_TRUE(aGraph.Topo().IsRemoved(aVertexId));
+  EXPECT_TRUE(aGraph.Topo().Gen().IsRemoved(aVertexId));
 }
 
 // ============================================================
@@ -494,7 +494,7 @@ TEST(BRepGraph_BuilderTest, AddCompound_WithChildren)
 
   BRepGraph_CompoundId aCompId = aGraph.Builder().AddCompound(aChildren);
   EXPECT_TRUE(aCompId.IsValid());
-  EXPECT_EQ(aGraph.Topo().NbCompounds(), 1);
+  EXPECT_EQ(aGraph.Topo().Compounds().Nb(), 1);
 
   EXPECT_EQ(BRepGraph_TestTools::CountChildRefsOfParent(aGraph, BRepGraph_CompoundId(0)), 2);
 }
@@ -512,7 +512,7 @@ TEST(BRepGraph_BuilderTest, AddCompSolid_WithSolids)
 
   BRepGraph_CompSolidId aCSolId = aGraph.Builder().AddCompSolid(aSolids);
   EXPECT_TRUE(aCSolId.IsValid());
-  EXPECT_EQ(aGraph.Topo().NbCompSolids(), 1);
+  EXPECT_EQ(aGraph.Topo().CompSolids().Nb(), 1);
 
   const BRepGraphInc::CompSolidDef& aCSolDef =
     aGraph.Topo().CompSolids().Definition(BRepGraph_CompSolidId(0));
@@ -558,9 +558,9 @@ TEST(BRepGraph_BuilderTest, FullSolid_ProgrammaticConstruction)
   aGraph.Builder().AddShellToSolid(aSolidId, aShellId);
 
   // Verify the hierarchy.
-  EXPECT_EQ(aGraph.Topo().NbSolids(), 1);
-  EXPECT_EQ(aGraph.Topo().NbShells(), 1);
-  EXPECT_EQ(aGraph.Topo().NbFaces(), 1);
+  EXPECT_EQ(aGraph.Topo().Solids().Nb(), 1);
+  EXPECT_EQ(aGraph.Topo().Shells().Nb(), 1);
+  EXPECT_EQ(aGraph.Topo().Faces().Nb(), 1);
 
   EXPECT_EQ(BRepGraph_TestTools::CountShellRefsOfSolid(aGraph, BRepGraph_SolidId(0)), 1);
 }
@@ -577,7 +577,7 @@ TEST(BRepGraph_BuilderTest, MutableFaceDefinition_ChangesTolerance)
   BRepGraph aGraph;
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GT(aGraph.Topo().NbFaces(), 0);
+  ASSERT_GT(aGraph.Topo().Faces().Nb(), 0);
 
   const double anOrigTol = BRepGraph_Tool::Face::Tolerance(aGraph, BRepGraph_FaceId(0));
   {
@@ -598,7 +598,7 @@ TEST(BRepGraph_BuilderTest, MutableShellDefinition)
   BRepGraph aGraph;
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GT(aGraph.Topo().NbShells(), 0);
+  ASSERT_GT(aGraph.Topo().Shells().Nb(), 0);
 
   {
     BRepGraph_MutGuard<BRepGraphInc::ShellDef> aShellDef =
@@ -615,7 +615,7 @@ TEST(BRepGraph_BuilderTest, MutableSolidDefinition)
   BRepGraph aGraph;
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GT(aGraph.Topo().NbSolids(), 0);
+  ASSERT_GT(aGraph.Topo().Solids().Nb(), 0);
 
   {
     BRepGraph_MutGuard<BRepGraphInc::SolidDef> aSolidDef =
@@ -629,7 +629,7 @@ TEST(BRepGraph_BuilderTest, MutableCompoundDefinition)
   BRepGraph                            aGraph;
   NCollection_Vector<BRepGraph_NodeId> aChildren;
   (void)aGraph.Builder().AddCompound(aChildren);
-  ASSERT_EQ(aGraph.Topo().NbCompounds(), 1);
+  ASSERT_EQ(aGraph.Topo().Compounds().Nb(), 1);
 
   {
     BRepGraph_MutGuard<BRepGraphInc::CompoundDef> aCompDef =
@@ -643,7 +643,7 @@ TEST(BRepGraph_BuilderTest, MutableCompSolidDefinition)
   BRepGraph                            aGraph;
   NCollection_Vector<BRepGraph_SolidId> aSolids;
   (void)aGraph.Builder().AddCompSolid(aSolids);
-  ASSERT_EQ(aGraph.Topo().NbCompSolids(), 1);
+  ASSERT_EQ(aGraph.Topo().CompSolids().Nb(), 1);
 
   {
     BRepGraph_MutGuard<BRepGraphInc::CompSolidDef> aCSolDef =
@@ -664,7 +664,7 @@ TEST(BRepGraph_BuilderTest, SkipsRemovedFaces)
   BRepGraph aGraph;
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_EQ(aGraph.Topo().NbFaces(), 6);
+  ASSERT_EQ(aGraph.Topo().Faces().Nb(), 6);
 
   // Remove 2 faces.
   aGraph.Builder().RemoveNode(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, 0));
@@ -688,7 +688,7 @@ TEST(BRepGraph_BuilderTest, SkipsRemovedEdges)
   BRepGraph aGraph;
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
-  const int aNbEdges = aGraph.Topo().NbEdges();
+  const int aNbEdges = aGraph.Topo().Edges().Nb();
   ASSERT_GT(aNbEdges, 0);
 
   aGraph.Builder().RemoveNode(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, 0));
@@ -760,16 +760,16 @@ TEST(BRepGraph_BuilderTest, RemoveFace_RemovesWiresAndEdges)
   // Remove the face subgraph.
   aGraph.Builder().RemoveSubgraph(aFaceId);
 
-  EXPECT_TRUE(aGraph.Topo().IsRemoved(aFaceId));
-  EXPECT_TRUE(aGraph.Topo().IsRemoved(aWireId));
-  EXPECT_TRUE(aGraph.Topo().IsRemoved(aE0));
-  EXPECT_TRUE(aGraph.Topo().IsRemoved(aE1));
-  EXPECT_TRUE(aGraph.Topo().IsRemoved(aE2));
-  EXPECT_TRUE(aGraph.Topo().IsRemoved(aE3));
-  EXPECT_TRUE(aGraph.Topo().IsRemoved(aV0));
-  EXPECT_TRUE(aGraph.Topo().IsRemoved(aV1));
-  EXPECT_TRUE(aGraph.Topo().IsRemoved(aV2));
-  EXPECT_TRUE(aGraph.Topo().IsRemoved(aV3));
+  EXPECT_TRUE(aGraph.Topo().Gen().IsRemoved(aFaceId));
+  EXPECT_TRUE(aGraph.Topo().Gen().IsRemoved(aWireId));
+  EXPECT_TRUE(aGraph.Topo().Gen().IsRemoved(aE0));
+  EXPECT_TRUE(aGraph.Topo().Gen().IsRemoved(aE1));
+  EXPECT_TRUE(aGraph.Topo().Gen().IsRemoved(aE2));
+  EXPECT_TRUE(aGraph.Topo().Gen().IsRemoved(aE3));
+  EXPECT_TRUE(aGraph.Topo().Gen().IsRemoved(aV0));
+  EXPECT_TRUE(aGraph.Topo().Gen().IsRemoved(aV1));
+  EXPECT_TRUE(aGraph.Topo().Gen().IsRemoved(aV2));
+  EXPECT_TRUE(aGraph.Topo().Gen().IsRemoved(aV3));
 }
 
 TEST(BRepGraph_BuilderTest, RemoveSolid_CascadesToFaces)
@@ -784,15 +784,15 @@ TEST(BRepGraph_BuilderTest, RemoveSolid_CascadesToFaces)
   BRepGraph_SolidId aSolidId(0);
   aGraph.Builder().RemoveSubgraph(aSolidId);
 
-  EXPECT_TRUE(aGraph.Topo().IsRemoved(aSolidId));
+  EXPECT_TRUE(aGraph.Topo().Gen().IsRemoved(aSolidId));
 
   // All shells should be removed.
-  for (int aIdx = 0; aIdx < aGraph.Topo().NbShells(); ++aIdx)
-    EXPECT_TRUE(aGraph.Topo().IsRemoved(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Shell, aIdx)));
+  for (int aIdx = 0; aIdx < aGraph.Topo().Shells().Nb(); ++aIdx)
+    EXPECT_TRUE(aGraph.Topo().Gen().IsRemoved(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Shell, aIdx)));
 
   // All faces should be removed.
-  for (int aIdx = 0; aIdx < aGraph.Topo().NbFaces(); ++aIdx)
-    EXPECT_TRUE(aGraph.Topo().IsRemoved(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, aIdx)));
+  for (int aIdx = 0; aIdx < aGraph.Topo().Faces().Nb(); ++aIdx)
+    EXPECT_TRUE(aGraph.Topo().Gen().IsRemoved(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, aIdx)));
 }
 
 // ============================================================
@@ -809,7 +809,7 @@ TEST(BRepGraph_BuilderTest, FacesOfEdge_BoxSharedEdge)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Every edge in a box is shared by exactly 2 faces.
-  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
+  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().Edges().Nb(); ++anEdgeIdx)
   {
     BRepGraph_EdgeId                     anEdgeId(anEdgeIdx);
     NCollection_Vector<BRepGraph_FaceId> aFaces = aGraph.Topo().Edges().Faces(anEdgeId);
@@ -825,13 +825,13 @@ TEST(BRepGraph_BuilderTest, SharedEdges_AdjacentBoxFaces)
   BRepGraph aGraph;
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_EQ(aGraph.Topo().NbFaces(), 6);
+  ASSERT_EQ(aGraph.Topo().Faces().Nb(), 6);
 
   // Count total shared edge pairs across all face pairs.
   int aSharingPairs = 0;
-  for (int aFaceA = 0; aFaceA < aGraph.Topo().NbFaces(); ++aFaceA)
+  for (int aFaceA = 0; aFaceA < aGraph.Topo().Faces().Nb(); ++aFaceA)
   {
-    for (int aFaceB = aFaceA + 1; aFaceB < aGraph.Topo().NbFaces(); ++aFaceB)
+    for (int aFaceB = aFaceA + 1; aFaceB < aGraph.Topo().Faces().Nb(); ++aFaceB)
     {
       NCollection_Vector<BRepGraph_EdgeId> aShared =
         aGraph.Topo().Faces().SharedEdges(BRepGraph_FaceId(aFaceA),
@@ -853,10 +853,10 @@ TEST(BRepGraph_BuilderTest, AdjacentFaces_BoxFace)
   BRepGraph aGraph;
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_EQ(aGraph.Topo().NbFaces(), 6);
+  ASSERT_EQ(aGraph.Topo().Faces().Nb(), 6);
 
   // Each face of a box is adjacent to 4 other faces.
-  for (int aFaceIdx = 0; aFaceIdx < aGraph.Topo().NbFaces(); ++aFaceIdx)
+  for (int aFaceIdx = 0; aFaceIdx < aGraph.Topo().Faces().Nb(); ++aFaceIdx)
   {
     BRepGraph_FaceId                     aFaceId(aFaceIdx);
     NCollection_Vector<BRepGraph_FaceId> aAdj =

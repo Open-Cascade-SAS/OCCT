@@ -209,7 +209,7 @@ TEST(BRepGraph_ReconstructTest, Wire_EdgeCount_FourPerBoxFace)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Each wire of a box face should have exactly 4 edges.
-  for (int aWireIdx = 0; aWireIdx < aGraph.Topo().NbWires(); ++aWireIdx)
+  for (int aWireIdx = 0; aWireIdx < aGraph.Topo().Wires().Nb(); ++aWireIdx)
   {
     TopoDS_Shape aReconWire =
       aGraph.Shapes().Reconstruct(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Wire, aWireIdx));
@@ -227,7 +227,7 @@ TEST(BRepGraph_ReconstructTest, Edge_HasCurve_NonNull)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
+  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().Edges().Nb(); ++anEdgeIdx)
   {
     if (BRepGraph_Tool::Edge::Degenerated(aGraph, BRepGraph_EdgeId(anEdgeIdx)))
       continue;
@@ -252,7 +252,7 @@ TEST(BRepGraph_ReconstructTest, Edge_ParameterRange_Preserved)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
+  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().Edges().Nb(); ++anEdgeIdx)
   {
     if (BRepGraph_Tool::Edge::Degenerated(aGraph, BRepGraph_EdgeId(anEdgeIdx)))
       continue;
@@ -282,7 +282,7 @@ TEST(BRepGraph_ReconstructTest, Vertex_Point_MatchesDefPoint)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  for (int aVertIdx = 0; aVertIdx < aGraph.Topo().NbVertices(); ++aVertIdx)
+  for (int aVertIdx = 0; aVertIdx < aGraph.Topo().Vertices().Nb(); ++aVertIdx)
   {
     const gp_Pnt aDefPt = BRepGraph_Tool::Vertex::Pnt(aGraph, BRepGraph_VertexId(aVertIdx));
 
@@ -308,7 +308,7 @@ TEST(BRepGraph_ReconstructTest, Face_PCurvesPresent_OnAllEdges)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  for (int aFaceIdx = 0; aFaceIdx < aGraph.Topo().NbFaces(); ++aFaceIdx)
+  for (int aFaceIdx = 0; aFaceIdx < aGraph.Topo().Faces().Nb(); ++aFaceIdx)
   {
     TopoDS_Shape aReconFace = aGraph.Shapes().Reconstruct(BRepGraph_FaceId(aFaceIdx));
     ASSERT_FALSE(aReconFace.IsNull()) << "ReconstructFace returned null for face " << aFaceIdx;
@@ -338,7 +338,7 @@ TEST(BRepGraph_ReconstructTest, Face_OrientationPreserved)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Verify that reconstructed faces have valid orientations matching ref entries.
-  ASSERT_EQ(aGraph.Topo().NbShells(), 1);
+  ASSERT_EQ(aGraph.Topo().Shells().Nb(), 1);
   const NCollection_Vector<BRepGraph_FaceRefId> aFaceRefs =
     BRepGraph_TestTools::FaceRefsOfShell(aGraph, BRepGraph_ShellId(0));
   for (int aRefIdx = 0; aRefIdx < aFaceRefs.Length(); ++aRefIdx)
@@ -443,7 +443,7 @@ TEST(BRepGraph_ReconstructTest, Reconstruct_Face_ValidShape)
   BRepGraph aGraph;
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GT(aGraph.Topo().NbFaces(), 0);
+  ASSERT_GT(aGraph.Topo().Faces().Nb(), 0);
 
   TopoDS_Shape aRecon = aGraph.Shapes().Reconstruct(BRepGraph_FaceId(0));
   EXPECT_FALSE(aRecon.IsNull());
@@ -458,10 +458,10 @@ TEST(BRepGraph_ReconstructTest, Reconstruct_Edge_ValidShape)
   BRepGraph aGraph;
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GT(aGraph.Topo().NbEdges(), 0);
+  ASSERT_GT(aGraph.Topo().Edges().Nb(), 0);
 
   // Find a non-degenerate edge.
-  for (int anIdx = 0; anIdx < aGraph.Topo().NbEdges(); ++anIdx)
+  for (int anIdx = 0; anIdx < aGraph.Topo().Edges().Nb(); ++anIdx)
   {
     if (BRepGraph_Tool::Edge::Degenerated(aGraph, BRepGraph_EdgeId(anIdx)))
       continue;
@@ -483,7 +483,7 @@ TEST(BRepGraph_ReconstructTest, Reconstruct_Vertex_CorrectPoint)
   BRepGraph aGraph;
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GT(aGraph.Topo().NbVertices(), 0);
+  ASSERT_GT(aGraph.Topo().Vertices().Nb(), 0);
 
   const gp_Pnt anExpectedPt = BRepGraph_Tool::Vertex::Pnt(aGraph, BRepGraph_VertexId(0));
 
@@ -586,7 +586,7 @@ TEST(BRepGraph_ReconstructTest, CompoundRoot_TwoSolids_Preserved)
   BRepGraph aGraph;
   aGraph.Build(aCompound);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_EQ(aGraph.Topo().NbSolids(), 2);
+  ASSERT_EQ(aGraph.Topo().Solids().Nb(), 2);
 
   // Reconstruct each solid and verify volumes match originals.
   const double anOrigVol1 = computeVolume(aBox1);

@@ -45,14 +45,14 @@ TEST(BRepGraph_EdgeCasesTest, Build_EmptyCompound_IsDoneZeroCounts)
 
   // Whether IsDone is true or false for an empty compound is implementation-defined;
   // the key invariant is that all definition counts are zero.
-  EXPECT_EQ(aGraph.Topo().NbSolids(), 0);
-  EXPECT_EQ(aGraph.Topo().NbShells(), 0);
-  EXPECT_EQ(aGraph.Topo().NbFaces(), 0);
-  EXPECT_EQ(aGraph.Topo().NbWires(), 0);
-  EXPECT_EQ(aGraph.Topo().NbEdges(), 0);
-  EXPECT_EQ(aGraph.Topo().NbVertices(), 0);
-  EXPECT_EQ(aGraph.Topo().NbFaces(), 0);
-  EXPECT_EQ(aGraph.Topo().NbEdges(), 0);
+  EXPECT_EQ(aGraph.Topo().Solids().Nb(), 0);
+  EXPECT_EQ(aGraph.Topo().Shells().Nb(), 0);
+  EXPECT_EQ(aGraph.Topo().Faces().Nb(), 0);
+  EXPECT_EQ(aGraph.Topo().Wires().Nb(), 0);
+  EXPECT_EQ(aGraph.Topo().Edges().Nb(), 0);
+  EXPECT_EQ(aGraph.Topo().Vertices().Nb(), 0);
+  EXPECT_EQ(aGraph.Topo().Faces().Nb(), 0);
+  EXPECT_EQ(aGraph.Topo().Edges().Nb(), 0);
 }
 
 TEST(BRepGraph_EdgeCasesTest, Shape_InvalidNodeId_ReturnsNull)
@@ -87,14 +87,14 @@ TEST(BRepGraph_EdgeCasesTest, TopoEntity_InvalidNodeId_ReturnsNull)
   ASSERT_TRUE(aGraph.IsDone());
 
   const BRepGraph_NodeId       anInvalidId;
-  const BRepGraphInc::BaseDef* aDef = aGraph.Topo().TopoEntity(anInvalidId);
+  const BRepGraphInc::BaseDef* aDef = aGraph.Topo().Gen().TopoEntity(anInvalidId);
   EXPECT_EQ(aDef, nullptr);
 }
 
 TEST(BRepGraph_EdgeCasesTest, NbNodes_BeforeBuild_ReturnsZero)
 {
   BRepGraph aGraph;
-  EXPECT_EQ(aGraph.Topo().NbNodes(), 0u);
+  EXPECT_EQ(aGraph.Topo().Gen().NbNodes(), 0u);
 }
 
 // ============================================================
@@ -132,7 +132,7 @@ TEST(BRepGraph_EdgeCasesTest, Build_TwiceOnSameGraph_OldUIDsInvalidated)
   const uint32_t aFirstGen = aGraph.UIDs().Generation();
 
   // Record total node count from first build.
-  const size_t aTotalFirstBuild = aGraph.Topo().NbNodes();
+  const size_t aTotalFirstBuild = aGraph.Topo().Gen().NbNodes();
   ASSERT_GT(aTotalFirstBuild, 0u);
 
   // Second build.
@@ -158,27 +158,27 @@ TEST(BRepGraph_EdgeCasesTest, Build_TwiceOnSameGraph_CountsResetCorrectly)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  const int aSolids1 = aGraph.Topo().NbSolids();
-  const int aShells1 = aGraph.Topo().NbShells();
-  const int aFaces1  = aGraph.Topo().NbFaces();
-  const int aWires1  = aGraph.Topo().NbWires();
-  const int aEdges1  = aGraph.Topo().NbEdges();
-  const int aVerts1  = aGraph.Topo().NbVertices();
-  const int aSurfs1  = aGraph.Topo().NbFaces();
-  const int aCurves1 = aGraph.Topo().NbEdges();
+  const int aSolids1 = aGraph.Topo().Solids().Nb();
+  const int aShells1 = aGraph.Topo().Shells().Nb();
+  const int aFaces1  = aGraph.Topo().Faces().Nb();
+  const int aWires1  = aGraph.Topo().Wires().Nb();
+  const int aEdges1  = aGraph.Topo().Edges().Nb();
+  const int aVerts1  = aGraph.Topo().Vertices().Nb();
+  const int aSurfs1  = aGraph.Topo().Faces().Nb();
+  const int aCurves1 = aGraph.Topo().Edges().Nb();
 
   // Rebuild with same shape.
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  EXPECT_EQ(aGraph.Topo().NbSolids(), aSolids1);
-  EXPECT_EQ(aGraph.Topo().NbShells(), aShells1);
-  EXPECT_EQ(aGraph.Topo().NbFaces(), aFaces1);
-  EXPECT_EQ(aGraph.Topo().NbWires(), aWires1);
-  EXPECT_EQ(aGraph.Topo().NbEdges(), aEdges1);
-  EXPECT_EQ(aGraph.Topo().NbVertices(), aVerts1);
-  EXPECT_EQ(aGraph.Topo().NbFaces(), aSurfs1);
-  EXPECT_EQ(aGraph.Topo().NbEdges(), aCurves1);
+  EXPECT_EQ(aGraph.Topo().Solids().Nb(), aSolids1);
+  EXPECT_EQ(aGraph.Topo().Shells().Nb(), aShells1);
+  EXPECT_EQ(aGraph.Topo().Faces().Nb(), aFaces1);
+  EXPECT_EQ(aGraph.Topo().Wires().Nb(), aWires1);
+  EXPECT_EQ(aGraph.Topo().Edges().Nb(), aEdges1);
+  EXPECT_EQ(aGraph.Topo().Vertices().Nb(), aVerts1);
+  EXPECT_EQ(aGraph.Topo().Faces().Nb(), aSurfs1);
+  EXPECT_EQ(aGraph.Topo().Edges().Nb(), aCurves1);
 }
 
 // ============================================================
@@ -215,15 +215,15 @@ TEST(BRepGraph_EdgeCasesTest, ParallelBuild_Sphere_SameAsSequential)
   aParGraph.Build(aSphere, true);
   ASSERT_TRUE(aParGraph.IsDone());
 
-  EXPECT_EQ(aParGraph.Topo().NbSolids(), aSeqGraph.Topo().NbSolids());
-  EXPECT_EQ(aParGraph.Topo().NbShells(), aSeqGraph.Topo().NbShells());
-  EXPECT_EQ(aParGraph.Topo().NbFaces(), aSeqGraph.Topo().NbFaces());
-  EXPECT_EQ(aParGraph.Topo().NbWires(), aSeqGraph.Topo().NbWires());
-  EXPECT_EQ(aParGraph.Topo().NbEdges(), aSeqGraph.Topo().NbEdges());
-  EXPECT_EQ(aParGraph.Topo().NbVertices(), aSeqGraph.Topo().NbVertices());
-  EXPECT_EQ(aParGraph.Topo().NbFaces(), aSeqGraph.Topo().NbFaces());
-  EXPECT_EQ(aParGraph.Topo().NbEdges(), aSeqGraph.Topo().NbEdges());
-  EXPECT_EQ(aParGraph.Topo().NbNodes(), aSeqGraph.Topo().NbNodes());
+  EXPECT_EQ(aParGraph.Topo().Solids().Nb(), aSeqGraph.Topo().Solids().Nb());
+  EXPECT_EQ(aParGraph.Topo().Shells().Nb(), aSeqGraph.Topo().Shells().Nb());
+  EXPECT_EQ(aParGraph.Topo().Faces().Nb(), aSeqGraph.Topo().Faces().Nb());
+  EXPECT_EQ(aParGraph.Topo().Wires().Nb(), aSeqGraph.Topo().Wires().Nb());
+  EXPECT_EQ(aParGraph.Topo().Edges().Nb(), aSeqGraph.Topo().Edges().Nb());
+  EXPECT_EQ(aParGraph.Topo().Vertices().Nb(), aSeqGraph.Topo().Vertices().Nb());
+  EXPECT_EQ(aParGraph.Topo().Faces().Nb(), aSeqGraph.Topo().Faces().Nb());
+  EXPECT_EQ(aParGraph.Topo().Edges().Nb(), aSeqGraph.Topo().Edges().Nb());
+  EXPECT_EQ(aParGraph.Topo().Gen().NbNodes(), aSeqGraph.Topo().Gen().NbNodes());
 }
 
 TEST(BRepGraph_EdgeCasesTest, ParallelBuild_Compound_SameAsSequential)
@@ -248,13 +248,13 @@ TEST(BRepGraph_EdgeCasesTest, ParallelBuild_Compound_SameAsSequential)
   aParGraph.Build(aCompound, true);
   ASSERT_TRUE(aParGraph.IsDone());
 
-  EXPECT_EQ(aParGraph.Topo().NbSolids(), aSeqGraph.Topo().NbSolids());
-  EXPECT_EQ(aParGraph.Topo().NbShells(), aSeqGraph.Topo().NbShells());
-  EXPECT_EQ(aParGraph.Topo().NbFaces(), aSeqGraph.Topo().NbFaces());
-  EXPECT_EQ(aParGraph.Topo().NbWires(), aSeqGraph.Topo().NbWires());
-  EXPECT_EQ(aParGraph.Topo().NbEdges(), aSeqGraph.Topo().NbEdges());
-  EXPECT_EQ(aParGraph.Topo().NbVertices(), aSeqGraph.Topo().NbVertices());
-  EXPECT_EQ(aParGraph.Topo().NbFaces(), aSeqGraph.Topo().NbFaces());
-  EXPECT_EQ(aParGraph.Topo().NbEdges(), aSeqGraph.Topo().NbEdges());
-  EXPECT_EQ(aParGraph.Topo().NbNodes(), aSeqGraph.Topo().NbNodes());
+  EXPECT_EQ(aParGraph.Topo().Solids().Nb(), aSeqGraph.Topo().Solids().Nb());
+  EXPECT_EQ(aParGraph.Topo().Shells().Nb(), aSeqGraph.Topo().Shells().Nb());
+  EXPECT_EQ(aParGraph.Topo().Faces().Nb(), aSeqGraph.Topo().Faces().Nb());
+  EXPECT_EQ(aParGraph.Topo().Wires().Nb(), aSeqGraph.Topo().Wires().Nb());
+  EXPECT_EQ(aParGraph.Topo().Edges().Nb(), aSeqGraph.Topo().Edges().Nb());
+  EXPECT_EQ(aParGraph.Topo().Vertices().Nb(), aSeqGraph.Topo().Vertices().Nb());
+  EXPECT_EQ(aParGraph.Topo().Faces().Nb(), aSeqGraph.Topo().Faces().Nb());
+  EXPECT_EQ(aParGraph.Topo().Edges().Nb(), aSeqGraph.Topo().Edges().Nb());
+  EXPECT_EQ(aParGraph.Topo().Gen().NbNodes(), aSeqGraph.Topo().Gen().NbNodes());
 }

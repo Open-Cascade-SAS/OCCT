@@ -387,13 +387,13 @@ TEST_F(BRepGraph_EventBusTest, OnCompact_DispatchesRemapToRegisteredLayers)
   myGraph.LayerRegistry().RegisterLayer(aLayer);
 
   myGraph.Builder().RemoveNode(BRepGraph_FaceId(0));
-  const int aNbFacesBefore = myGraph.Topo().NbFaces();
+  const int aNbFacesBefore = myGraph.Topo().Faces().Nb();
 
   const BRepGraphAlgo_Compact::Result aResult = BRepGraphAlgo_Compact::Perform(myGraph);
   (void)aResult;
 
   EXPECT_EQ(aLayer->myCompactCallCount, 1);
-  EXPECT_EQ(myGraph.Topo().NbFaces(), aNbFacesBefore - 1);
+  EXPECT_EQ(myGraph.Topo().Faces().Nb(), aNbFacesBefore - 1);
 
   const BRepGraph_NodeId* aNewFaceId = aLayer->myLastRemapMap.Seek(BRepGraph_FaceId(1));
   ASSERT_NE(aNewFaceId, nullptr);

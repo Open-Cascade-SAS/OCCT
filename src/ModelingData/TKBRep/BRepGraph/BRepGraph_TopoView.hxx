@@ -30,10 +30,10 @@ class Adaptor3d_CurveOnSurface;
 //! Obtained via BRepGraph::Topo().
 //!
 //! ## Soft-deletion convention
-//! Count methods (NbFaces, NbEdges, etc.) return totals including soft-removed
-//! nodes. Prefer NbActive* variants for traversal and validation code that
-//! should ignore removed entities. Definition accessors (Face, Edge, etc.) do
-//! not filter removed nodes - callers should check
+//! Per-kind count methods (Faces().Nb(), Edges().Nb(), etc.) return totals
+//! including soft-removed nodes. Prefer per-kind NbActive() variants for
+//! traversal and validation code that should ignore removed entities.
+//! Definition accessors (Face, Edge, etc.) do not filter removed nodes - callers should check
 //! IsRemoved() if needed.
 //!
 //! ## TopoView vs RefsView naming
@@ -52,6 +52,8 @@ public:
   class FaceOps
   {
   public:
+    [[nodiscard]] Standard_EXPORT int Nb() const;
+    [[nodiscard]] Standard_EXPORT int NbActive() const;
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::FaceDef& Definition(
       const BRepGraph_FaceId theFace) const;
     [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_ShellId>& Shells(
@@ -89,6 +91,8 @@ public:
   class EdgeOps
   {
   public:
+    [[nodiscard]] Standard_EXPORT int Nb() const;
+    [[nodiscard]] Standard_EXPORT int NbActive() const;
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::EdgeDef& Definition(
       const BRepGraph_EdgeId theEdge) const;
     [[nodiscard]] Standard_EXPORT int NbFaces(const BRepGraph_EdgeId theEdge) const;
@@ -128,6 +132,8 @@ public:
   class VertexOps
   {
   public:
+    [[nodiscard]] Standard_EXPORT int Nb() const;
+    [[nodiscard]] Standard_EXPORT int NbActive() const;
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::VertexDef& Definition(
       const BRepGraph_VertexId theVertex) const;
     [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_EdgeId>& Edges(
@@ -148,6 +154,8 @@ public:
   class WireOps
   {
   public:
+    [[nodiscard]] Standard_EXPORT int Nb() const;
+    [[nodiscard]] Standard_EXPORT int NbActive() const;
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::WireDef& Definition(
       const BRepGraph_WireId theWire) const;
     [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_FaceId>& Faces(
@@ -168,6 +176,8 @@ public:
   class ShellOps
   {
   public:
+    [[nodiscard]] Standard_EXPORT int Nb() const;
+    [[nodiscard]] Standard_EXPORT int NbActive() const;
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::ShellDef& Definition(
       const BRepGraph_ShellId theShell) const;
     [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_SolidId>& Solids(
@@ -190,6 +200,8 @@ public:
   class SolidOps
   {
   public:
+    [[nodiscard]] Standard_EXPORT int Nb() const;
+    [[nodiscard]] Standard_EXPORT int NbActive() const;
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::SolidDef& Definition(
       const BRepGraph_SolidId theSolid) const;
     [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_CompSolidId>& CompSolids(
@@ -212,6 +224,8 @@ public:
   class CoEdgeOps
   {
   public:
+    [[nodiscard]] Standard_EXPORT int Nb() const;
+    [[nodiscard]] Standard_EXPORT int NbActive() const;
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::CoEdgeDef& Definition(
       const BRepGraph_CoEdgeId theCoEdge) const;
     [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_WireId>& Wires(
@@ -238,6 +252,8 @@ public:
   class CompoundOps
   {
   public:
+    [[nodiscard]] Standard_EXPORT int Nb() const;
+    [[nodiscard]] Standard_EXPORT int NbActive() const;
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::CompoundDef& Definition(
       const BRepGraph_CompoundId theCompound) const;
     [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_CompoundId>& ParentCompounds(
@@ -258,6 +274,8 @@ public:
   class CompSolidOps
   {
   public:
+    [[nodiscard]] Standard_EXPORT int Nb() const;
+    [[nodiscard]] Standard_EXPORT int NbActive() const;
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::CompSolidDef& Definition(
       const BRepGraph_CompSolidId theCompSolid) const;
     [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_CompoundId>& Compounds(
@@ -278,6 +296,8 @@ public:
   class ProductOps
   {
   public:
+    [[nodiscard]] Standard_EXPORT int Nb() const;
+    [[nodiscard]] Standard_EXPORT int NbActive() const;
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::ProductDef& Definition(
       const BRepGraph_ProductId theProduct) const;
     [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_OccurrenceId>& Instances(
@@ -330,6 +350,8 @@ public:
   class OccurrenceOps
   {
   public:
+    [[nodiscard]] Standard_EXPORT int Nb() const;
+    [[nodiscard]] Standard_EXPORT int NbActive() const;
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::OccurrenceDef& Definition(
       const BRepGraph_OccurrenceId theOccurrence) const;
     [[nodiscard]] Standard_EXPORT BRepGraph_ProductId Product(
@@ -351,6 +373,90 @@ public:
     friend class TopoView;
 
     explicit OccurrenceOps(const BRepGraph* theGraph)
+        : myGraph(theGraph)
+    {
+    }
+
+    const BRepGraph* myGraph;
+  };
+
+  //! @brief Generic topology and assembly count / meta queries.
+  class GenOps
+  {
+  public:
+    [[nodiscard]] Standard_EXPORT const BRepGraphInc::BaseDef* TopoEntity(
+      const BRepGraph_NodeId theId) const;
+    [[nodiscard]] Standard_EXPORT int NbNodes() const;
+    [[nodiscard]] Standard_EXPORT bool IsRemoved(const BRepGraph_NodeId theNode) const;
+
+  private:
+    friend class TopoView;
+
+    explicit GenOps(const BRepGraph* theGraph)
+        : myGraph(theGraph)
+    {
+    }
+
+    const BRepGraph* myGraph;
+  };
+
+  //! @brief Analytic geometry representation queries.
+  class GeometryOps
+  {
+  public:
+    [[nodiscard]] Standard_EXPORT int NbSurfaces() const;
+    [[nodiscard]] Standard_EXPORT int NbCurves3D() const;
+    [[nodiscard]] Standard_EXPORT int NbCurves2D() const;
+
+    [[nodiscard]] Standard_EXPORT int NbActiveSurfaces() const;
+    [[nodiscard]] Standard_EXPORT int NbActiveCurves3D() const;
+    [[nodiscard]] Standard_EXPORT int NbActiveCurves2D() const;
+
+    [[nodiscard]] Standard_EXPORT const BRepGraphInc::SurfaceRep& SurfaceRep(
+      const BRepGraph_SurfaceRepId theRep) const;
+    [[nodiscard]] Standard_EXPORT const BRepGraphInc::Curve3DRep& Curve3DRep(
+      const BRepGraph_Curve3DRepId theRep) const;
+    [[nodiscard]] Standard_EXPORT const BRepGraphInc::Curve2DRep& Curve2DRep(
+      const BRepGraph_Curve2DRepId theRep) const;
+
+  private:
+    friend class TopoView;
+
+    explicit GeometryOps(const BRepGraph* theGraph)
+        : myGraph(theGraph)
+    {
+    }
+
+    const BRepGraph* myGraph;
+  };
+
+  //! @brief Polygonal and triangulation representation queries.
+  class PolyOps
+  {
+  public:
+    [[nodiscard]] Standard_EXPORT int NbTriangulations() const;
+    [[nodiscard]] Standard_EXPORT int NbPolygons3D() const;
+    [[nodiscard]] Standard_EXPORT int NbPolygons2D() const;
+    [[nodiscard]] Standard_EXPORT int NbPolygonsOnTri() const;
+
+    [[nodiscard]] Standard_EXPORT int NbActiveTriangulations() const;
+    [[nodiscard]] Standard_EXPORT int NbActivePolygons3D() const;
+    [[nodiscard]] Standard_EXPORT int NbActivePolygons2D() const;
+    [[nodiscard]] Standard_EXPORT int NbActivePolygonsOnTri() const;
+
+    [[nodiscard]] Standard_EXPORT const BRepGraphInc::TriangulationRep& TriangulationRep(
+      const BRepGraph_TriangulationRepId theRep) const;
+    [[nodiscard]] Standard_EXPORT const BRepGraphInc::Polygon3DRep& Polygon3DRep(
+      const BRepGraph_Polygon3DRepId theRep) const;
+    [[nodiscard]] Standard_EXPORT const BRepGraphInc::Polygon2DRep& Polygon2DRep(
+      const BRepGraph_Polygon2DRepId theRep) const;
+    [[nodiscard]] Standard_EXPORT const BRepGraphInc::PolygonOnTriRep& PolygonOnTriRep(
+      const BRepGraph_PolygonOnTriRepId theRep) const;
+
+  private:
+    friend class TopoView;
+
+    explicit PolyOps(const BRepGraph* theGraph)
         : myGraph(theGraph)
     {
     }
@@ -391,167 +497,25 @@ public:
   //! Grouped occurrence-oriented queries.
   [[nodiscard]] const OccurrenceOps& Occurrences() const { return myOccurrences; }
 
-  //! @name Count accessors
+  //! Grouped generic topology and assembly counts / meta queries.
+  [[nodiscard]] const GenOps& Gen() const { return myGen; }
 
-  //! Number of solid definitions.
-  [[nodiscard]] Standard_EXPORT int NbSolids() const;
+  //! Grouped analytic geometry representation queries.
+  [[nodiscard]] const GeometryOps& Geometry() const { return myGeometry; }
 
-  //! Number of shell definitions.
-  [[nodiscard]] Standard_EXPORT int NbShells() const;
+  //! Grouped polygonal representation queries.
+  [[nodiscard]] const PolyOps& Poly() const { return myPoly; }
 
-  //! Number of face definitions.
-  [[nodiscard]] Standard_EXPORT int NbFaces() const;
-
-  //! Number of wire definitions.
-  [[nodiscard]] Standard_EXPORT int NbWires() const;
-
-  //! Number of edge definitions.
-  [[nodiscard]] Standard_EXPORT int NbEdges() const;
-
-  //! Number of vertex definitions.
-  [[nodiscard]] Standard_EXPORT int NbVertices() const;
-
-  //! Number of compound definitions.
-  [[nodiscard]] Standard_EXPORT int NbCompounds() const;
-
-  //! Number of compsolid definitions.
-  [[nodiscard]] Standard_EXPORT int NbCompSolids() const;
-
-  //! Number of coedge definitions.
-  [[nodiscard]] Standard_EXPORT int NbCoEdges() const;
-
-  //! Number of active (non-removed) definitions per kind.
-  [[nodiscard]] Standard_EXPORT int NbActiveVertices() const;
-  [[nodiscard]] Standard_EXPORT int NbActiveEdges() const;
-  [[nodiscard]] Standard_EXPORT int NbActiveCoEdges() const;
-  [[nodiscard]] Standard_EXPORT int NbActiveWires() const;
-  [[nodiscard]] Standard_EXPORT int NbActiveFaces() const;
-  [[nodiscard]] Standard_EXPORT int NbActiveShells() const;
-  [[nodiscard]] Standard_EXPORT int NbActiveSolids() const;
-  [[nodiscard]] Standard_EXPORT int NbActiveCompounds() const;
-  [[nodiscard]] Standard_EXPORT int NbActiveCompSolids() const;
-
-  //! Generic node-definition lookup by NodeId (topology or assembly).
-  //! @param[in] theId node identifier
-  //! @return pointer to BaseDef or nullptr if invalid
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::BaseDef* TopoEntity(
-    const BRepGraph_NodeId theId) const;
-
-  //! Total number of nodes in the graph (all topology + assembly kinds).
-  [[nodiscard]] Standard_EXPORT int NbNodes() const;
-
-  //! Check if a node has been soft-removed.
-  //! @param[in] theNode node to check
-  //! @return true if the node was marked as removed
-  [[nodiscard]] Standard_EXPORT bool IsRemoved(const BRepGraph_NodeId theNode) const;
-
-  //! @name Representation count accessors
+  //! @name Representation groups
   //!
-  //! Representations use dense 0-based indexing. Iterate with:
+  //! Representations use dense 0-based indexing. Iterate through grouped accessors:
   //! @code
-  //!   for (int i = 0; i < aGraph.Topo().NbSurfaces(); ++i)
+  //!   for (int i = 0; i < aGraph.Topo().Geometry().NbSurfaces(); ++i)
   //!   {
   //!     const BRepGraphInc::SurfaceRep& aRep =
-  //!       aGraph.Topo().SurfaceRep(BRepGraph_SurfaceRepId(i));
+  //!       aGraph.Topo().Geometry().SurfaceRep(BRepGraph_SurfaceRepId(i));
   //!   }
   //! @endcode
-
-  //! Number of surface representations.
-  [[nodiscard]] Standard_EXPORT int NbSurfaces() const;
-
-  //! Number of 3D curve representations.
-  [[nodiscard]] Standard_EXPORT int NbCurves3D() const;
-
-  //! Number of 2D curve (PCurve) representations.
-  [[nodiscard]] Standard_EXPORT int NbCurves2D() const;
-
-  //! Number of triangulation representations.
-  [[nodiscard]] Standard_EXPORT int NbTriangulations() const;
-
-  //! Number of 3D polygon representations.
-  [[nodiscard]] Standard_EXPORT int NbPolygons3D() const;
-
-  //! Number of 2D polygon representations.
-  [[nodiscard]] Standard_EXPORT int NbPolygons2D() const;
-
-  //! Number of polygon-on-triangulation representations.
-  [[nodiscard]] Standard_EXPORT int NbPolygonsOnTri() const;
-
-  //! Number of active (non-removed) surface representations.
-  [[nodiscard]] Standard_EXPORT int NbActiveSurfaces() const;
-
-  //! Number of active (non-removed) 3D curve representations.
-  [[nodiscard]] Standard_EXPORT int NbActiveCurves3D() const;
-
-  //! Number of active (non-removed) 2D curve representations.
-  [[nodiscard]] Standard_EXPORT int NbActiveCurves2D() const;
-
-  //! Number of active (non-removed) triangulation representations.
-  [[nodiscard]] Standard_EXPORT int NbActiveTriangulations() const;
-
-  //! Number of active (non-removed) 3D polygon representations.
-  [[nodiscard]] Standard_EXPORT int NbActivePolygons3D() const;
-
-  //! Number of active (non-removed) 2D polygon representations.
-  [[nodiscard]] Standard_EXPORT int NbActivePolygons2D() const;
-
-  //! Number of active (non-removed) polygon-on-triangulation representations.
-  [[nodiscard]] Standard_EXPORT int NbActivePolygonsOnTri() const;
-
-  //! @name Representation accessors
-
-  //! Access surface representation by typed identifier.
-  //! @param[in] theRep typed surface representation identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::SurfaceRep& SurfaceRep(
-    const BRepGraph_SurfaceRepId theRep) const;
-
-  //! Access 3D curve representation by typed identifier.
-  //! @param[in] theRep typed 3D curve representation identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::Curve3DRep& Curve3DRep(
-    const BRepGraph_Curve3DRepId theRep) const;
-
-  //! Access 2D curve representation by typed identifier.
-  //! @param[in] theRep typed 2D curve representation identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::Curve2DRep& Curve2DRep(
-    const BRepGraph_Curve2DRepId theRep) const;
-
-  //! Access triangulation representation by typed identifier.
-  //! @param[in] theRep typed triangulation representation identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::TriangulationRep& TriangulationRep(
-    const BRepGraph_TriangulationRepId theRep) const;
-
-  //! Access 3D polygon representation by typed identifier.
-  //! @param[in] theRep typed 3D polygon representation identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::Polygon3DRep& Polygon3DRep(
-    const BRepGraph_Polygon3DRepId theRep) const;
-
-  //! Access 2D polygon representation by typed identifier.
-  //! @param[in] theRep typed 2D polygon representation identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::Polygon2DRep& Polygon2DRep(
-    const BRepGraph_Polygon2DRepId theRep) const;
-
-  //! Access polygon-on-triangulation representation by typed identifier.
-  //! @param[in] theRep typed polygon-on-triangulation representation identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::PolygonOnTriRep& PolygonOnTriRep(
-    const BRepGraph_PolygonOnTriRepId theRep) const;
-
-  //! @name Assembly definition accessors
-  //!
-  //! Product and Occurrence definitions live in the incidence storage alongside
-  //! topology nodes. This view exposes definition lookup, counts, assembly
-  //! classification, and active child-occurrence traversal.
-
-  //! Number of product definitions.
-  [[nodiscard]] Standard_EXPORT int NbProducts() const;
-
-  //! Number of occurrence definitions.
-  [[nodiscard]] Standard_EXPORT int NbOccurrences() const;
-
-  //! Number of active (non-removed) product definitions.
-  [[nodiscard]] Standard_EXPORT int NbActiveProducts() const;
-
-  //! Number of active (non-removed) occurrence definitions.
-  [[nodiscard]] Standard_EXPORT int NbActiveOccurrences() const;
 
 private:
   friend class BRepGraph;
@@ -570,7 +534,10 @@ private:
         myCompounds(theGraph),
         myCompSolids(theGraph),
         myProducts(theGraph),
-        myOccurrences(theGraph)
+          myOccurrences(theGraph),
+          myGen(theGraph),
+          myGeometry(theGraph),
+          myPoly(theGraph)
   {
   }
 
@@ -586,6 +553,9 @@ private:
   CompSolidOps     myCompSolids;
   ProductOps       myProducts;
   OccurrenceOps    myOccurrences;
+  GenOps           myGen;
+  GeometryOps      myGeometry;
+  PolyOps          myPoly;
 };
 
 #endif // _BRepGraph_TopoView_HeaderFile

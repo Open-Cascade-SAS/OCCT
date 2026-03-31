@@ -321,21 +321,21 @@ GraphShapeMetrics collectGraphMetrics(const TopoDS_Shape& theShape)
   }
 
   const BRepGraph::TopoView& aTopo = aGraph.Topo();
-  for (int aFaceIdx = 0; aFaceIdx < aTopo.NbFaces(); ++aFaceIdx)
+  for (int aFaceIdx = 0; aFaceIdx < aTopo.Faces().Nb(); ++aFaceIdx)
   {
     if (!aTopo.Faces().Definition(BRepGraph_FaceId(aFaceIdx)).IsRemoved)
     {
       ++aMetrics.NbActiveFaces;
     }
   }
-  for (int aVtxIdx = 0; aVtxIdx < aTopo.NbVertices(); ++aVtxIdx)
+  for (int aVtxIdx = 0; aVtxIdx < aTopo.Vertices().Nb(); ++aVtxIdx)
   {
     if (!aTopo.Vertices().Definition(BRepGraph_VertexId(aVtxIdx)).IsRemoved)
     {
       ++aMetrics.NbActiveVertices;
     }
   }
-  for (int anEdgeIdx = 0; anEdgeIdx < aTopo.NbEdges(); ++anEdgeIdx)
+  for (int anEdgeIdx = 0; anEdgeIdx < aTopo.Edges().Nb(); ++anEdgeIdx)
   {
     const BRepGraph_EdgeId       anEdgeId(anEdgeIdx);
     const BRepGraphInc::EdgeDef& anEdge = aTopo.Edges().Definition(anEdgeId);
@@ -606,7 +606,7 @@ NCollection_Sequence<TopoDS_Shape> buildFaceGrid(int    theNx,
       gp_Trsf aTrsf;
       aTrsf.SetTranslation(gp_Vec(anIx * theSizeX, anIy * theSizeY, 0.0));
 
-      if (aTemplateGraph.IsDone() && aTemplateGraph.Topo().NbFaces() > 0)
+      if (aTemplateGraph.IsDone() && aTemplateGraph.Topo().Faces().Nb() > 0)
       {
         BRepGraph aTransGraph =
           BRepGraphAlgo_Transform::TransformFace(aTemplateGraph, BRepGraph_FaceId(0), aTrsf, true);
@@ -653,19 +653,19 @@ struct GraphSewingProfile
 TopoDS_Shape reconstructSewnShape(const BRepGraph& theGraph)
 {
   const BRepGraph::TopoView& aTopo = theGraph.Topo();
-  if (aTopo.NbCompounds() > 0)
+  if (aTopo.Compounds().Nb() > 0)
   {
     return theGraph.Shapes().Reconstruct(BRepGraph_CompoundId(0));
   }
-  if (aTopo.NbCompSolids() > 0)
+  if (aTopo.CompSolids().Nb() > 0)
   {
     return theGraph.Shapes().Reconstruct(BRepGraph_CompSolidId(0));
   }
-  if (aTopo.NbSolids() > 0)
+  if (aTopo.Solids().Nb() > 0)
   {
     return theGraph.Shapes().Reconstruct(BRepGraph_SolidId(0));
   }
-  if (aTopo.NbShells() > 0)
+  if (aTopo.Shells().Nb() > 0)
   {
     return theGraph.Shapes().Reconstruct(BRepGraph_ShellId(0));
   }
@@ -673,7 +673,7 @@ TopoDS_Shape reconstructSewnShape(const BRepGraph& theGraph)
   BRep_Builder    aBB;
   TopoDS_Compound aCompound;
   aBB.MakeCompound(aCompound);
-  for (int aFaceIdx = 0; aFaceIdx < aTopo.NbFaces(); ++aFaceIdx)
+  for (int aFaceIdx = 0; aFaceIdx < aTopo.Faces().Nb(); ++aFaceIdx)
   {
     aBB.Add(aCompound, theGraph.Shapes().Reconstruct(BRepGraph_FaceId(aFaceIdx)));
   }

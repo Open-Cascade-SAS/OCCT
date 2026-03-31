@@ -58,11 +58,11 @@ void BRepGraphCheck_Analyzer::Perform()
   myReport.Clear();
 
   const BRepGraph::TopoView& aDefs       = myGraph->Topo();
-  const int                  aNbEdges    = aDefs.NbEdges();
-  const int                  aNbFaces    = aDefs.NbFaces();
-  const int                  aNbVertices = aDefs.NbVertices();
-  const int                  aNbShells   = aDefs.NbShells();
-  const int                  aNbSolids   = aDefs.NbSolids();
+  const int                  aNbEdges    = aDefs.Edges().Nb();
+  const int                  aNbFaces    = aDefs.Faces().Nb();
+  const int                  aNbVertices = aDefs.Vertices().Nb();
+  const int                  aNbShells   = aDefs.Shells().Nb();
+  const int                  aNbSolids   = aDefs.Solids().Nb();
 
   // Phase 1: Per-edge minimum checks (embarrassingly parallel).
   if (aNbEdges > 0)
@@ -116,7 +116,7 @@ void BRepGraphCheck_Analyzer::Perform()
         {
           const BRepGraph_WireRefId    aWireRefId = aFaceDef.WireRefIds.Value(aWireRefIter);
           const BRepGraphInc::WireRef& aWireRef   = aLocalRefs.Wire(aWireRefId);
-          if (aWireRef.IsRemoved || !aWireRef.WireDefId.IsValid(aLocalDefs.NbWires()))
+          if (aWireRef.IsRemoved || !aWireRef.WireDefId.IsValid(aLocalDefs.Wires().Nb()))
           {
             continue;
           }
@@ -134,7 +134,7 @@ void BRepGraphCheck_Analyzer::Perform()
           {
             const BRepGraph_CoEdgeRefId aCoEdgeRefId  = aWireDef.CoEdgeRefIds.Value(aCoEdgeRefIter);
             const BRepGraphInc::CoEdgeRef& aCoEdgeRef = aLocalRefs.CoEdge(aCoEdgeRefId);
-            if (aCoEdgeRef.IsRemoved || !aCoEdgeRef.CoEdgeDefId.IsValid(aLocalDefs.NbCoEdges()))
+            if (aCoEdgeRef.IsRemoved || !aCoEdgeRef.CoEdgeDefId.IsValid(aLocalDefs.CoEdges().Nb()))
             {
               continue;
             }
@@ -222,7 +222,7 @@ void BRepGraphCheck_Analyzer::CheckVertex(const BRepGraph_VertexId theVertex)
 {
   // Check vertex against all edges that reference it.
   const BRepGraph::TopoView&               aDefs    = myGraph->Topo();
-  const int                                aNbEdges = aDefs.NbEdges();
+  const int                                aNbEdges = aDefs.Edges().Nb();
   NCollection_Vector<BRepGraphCheck_Issue> aLocal;
 
   for (int anEdgeIter = 0; anEdgeIter < aNbEdges; ++anEdgeIter)

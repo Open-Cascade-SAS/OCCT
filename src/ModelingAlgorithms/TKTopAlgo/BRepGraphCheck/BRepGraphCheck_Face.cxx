@@ -47,7 +47,7 @@ static NCollection_Vector<BRepGraphInc::CoEdgeUsage> collectWireCoEdgeRefs(
   {
     const BRepGraph_CoEdgeRefId    aRefId = aWireDef.CoEdgeRefIds.Value(aRefIter);
     const BRepGraphInc::CoEdgeRef& aRef   = theRefs.CoEdge(aRefId);
-    if (aRef.IsRemoved || !aRef.CoEdgeDefId.IsValid(theDefs.NbCoEdges()))
+    if (aRef.IsRemoved || !aRef.CoEdgeDefId.IsValid(theDefs.CoEdges().Nb()))
     {
       continue;
     }
@@ -73,7 +73,7 @@ static NCollection_Vector<BRepGraphInc::WireRef> collectFaceWireRefs(
   {
     const BRepGraph_WireRefId    aRefId = aFaceDef.WireRefIds.Value(aRefIter);
     const BRepGraphInc::WireRef& aRef   = theRefs.Wire(aRefId);
-    if (aRef.IsRemoved || !aRef.WireDefId.IsValid(theDefs.NbWires()))
+    if (aRef.IsRemoved || !aRef.WireDefId.IsValid(theDefs.Wires().Nb()))
     {
       continue;
     }

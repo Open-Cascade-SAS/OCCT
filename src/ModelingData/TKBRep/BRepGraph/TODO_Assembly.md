@@ -27,7 +27,7 @@ one root Product. `Build(aBox)` auto-creates a single root Product with
 - PathView: `OccurrenceLocation(occId)` via ParentOccurrenceDefId walk
 - MutRef: `MutProduct()`, `MutOccurrence()` RAII guards
 - Flat definition traversal via `BRepGraph_ProductIterator` / `BRepGraph_OccurrenceIterator`
-   (or `Topo().NbProducts()` / `Topo().NbOccurrences()` with explicit definition access when a
+   (or `Topo().Products().Nb()` / `Topo().Occurrences().Nb()` with explicit definition access when a
    storage-level loop is more appropriate)
 - ReverseIndex: `OccurrencesOfProduct()`, `BuildProductOccurrences()`
 

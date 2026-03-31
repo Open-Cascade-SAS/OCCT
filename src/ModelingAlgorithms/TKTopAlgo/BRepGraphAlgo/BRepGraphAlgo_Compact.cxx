@@ -101,7 +101,7 @@ void forWireCoEdgeRefEntries(const BRepGraph&       theGraph,
   {
     const BRepGraph_CoEdgeRefId    aRefId = aWireEnt.CoEdgeRefIds.Value(i);
     const BRepGraphInc::CoEdgeRef& aCR    = aRefs.CoEdge(aRefId);
-    if (aCR.IsRemoved || !aCR.CoEdgeDefId.IsValid(theGraph.Topo().NbCoEdges()))
+    if (aCR.IsRemoved || !aCR.CoEdgeDefId.IsValid(theGraph.Topo().CoEdges().Nb()))
     {
       continue;
     }
@@ -121,7 +121,7 @@ void forFaceWireRefEntries(const BRepGraph&       theGraph,
   {
     const BRepGraph_WireRefId    aRefId = aFaceEnt.WireRefIds.Value(i);
     const BRepGraphInc::WireRef& aWR    = aRefs.Wire(aRefId);
-    if (aWR.IsRemoved || !aWR.WireDefId.IsValid(theGraph.Topo().NbWires()))
+    if (aWR.IsRemoved || !aWR.WireDefId.IsValid(theGraph.Topo().Wires().Nb()))
     {
       continue;
     }
@@ -141,7 +141,7 @@ void forShellFaceRefEntries(const BRepGraph&        theGraph,
   {
     const BRepGraph_FaceRefId    aRefId = aShellEnt.FaceRefIds.Value(i);
     const BRepGraphInc::FaceRef& aFR    = aRefs.Face(aRefId);
-    if (aFR.IsRemoved || !aFR.FaceDefId.IsValid(theGraph.Topo().NbFaces()))
+    if (aFR.IsRemoved || !aFR.FaceDefId.IsValid(theGraph.Topo().Faces().Nb()))
     {
       continue;
     }
@@ -161,7 +161,7 @@ void forSolidShellRefEntries(const BRepGraph&        theGraph,
   {
     const BRepGraph_ShellRefId    aRefId = aSolidEnt.ShellRefIds.Value(i);
     const BRepGraphInc::ShellRef& aSR    = aRefs.Shell(aRefId);
-    if (aSR.IsRemoved || !aSR.ShellDefId.IsValid(theGraph.Topo().NbShells()))
+    if (aSR.IsRemoved || !aSR.ShellDefId.IsValid(theGraph.Topo().Shells().Nb()))
     {
       continue;
     }
@@ -201,7 +201,7 @@ void forCompSolidSolidRefEntries(const BRepGraph&            theGraph,
   {
     const BRepGraph_SolidRefId    aRefId = aCSEnt.SolidRefIds.Value(i);
     const BRepGraphInc::SolidRef& aSR    = aRefs.Solid(aRefId);
-    if (aSR.IsRemoved || !aSR.SolidDefId.IsValid(theGraph.Topo().NbSolids()))
+    if (aSR.IsRemoved || !aSR.SolidDefId.IsValid(theGraph.Topo().Solids().Nb()))
     {
       continue;
     }
@@ -230,28 +230,28 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
   }
 
   // Count removed nodes per kind.
-  for (int anIdx = 0; anIdx < theGraph.Topo().NbVertices(); ++anIdx)
+  for (int anIdx = 0; anIdx < theGraph.Topo().Vertices().Nb(); ++anIdx)
     if (theGraph.Topo().Vertices().Definition(BRepGraph_VertexId(anIdx)).IsRemoved)
       ++aResult.NbRemovedVertices;
-  for (int anIdx = 0; anIdx < theGraph.Topo().NbEdges(); ++anIdx)
+  for (int anIdx = 0; anIdx < theGraph.Topo().Edges().Nb(); ++anIdx)
     if (theGraph.Topo().Edges().Definition(BRepGraph_EdgeId(anIdx)).IsRemoved)
       ++aResult.NbRemovedEdges;
-  for (int anIdx = 0; anIdx < theGraph.Topo().NbWires(); ++anIdx)
+  for (int anIdx = 0; anIdx < theGraph.Topo().Wires().Nb(); ++anIdx)
     if (theGraph.Topo().Wires().Definition(BRepGraph_WireId(anIdx)).IsRemoved)
       ++aResult.NbRemovedWires;
-  for (int anIdx = 0; anIdx < theGraph.Topo().NbFaces(); ++anIdx)
+  for (int anIdx = 0; anIdx < theGraph.Topo().Faces().Nb(); ++anIdx)
     if (theGraph.Topo().Faces().Definition(BRepGraph_FaceId(anIdx)).IsRemoved)
       ++aResult.NbRemovedFaces;
-  for (int anIdx = 0; anIdx < theGraph.Topo().NbShells(); ++anIdx)
+  for (int anIdx = 0; anIdx < theGraph.Topo().Shells().Nb(); ++anIdx)
     if (theGraph.Topo().Shells().Definition(BRepGraph_ShellId(anIdx)).IsRemoved)
       ++aResult.NbRemovedShells;
-  for (int anIdx = 0; anIdx < theGraph.Topo().NbSolids(); ++anIdx)
+  for (int anIdx = 0; anIdx < theGraph.Topo().Solids().Nb(); ++anIdx)
     if (theGraph.Topo().Solids().Definition(BRepGraph_SolidId(anIdx)).IsRemoved)
       ++aResult.NbRemovedSolids;
-  for (int anIdx = 0; anIdx < theGraph.Topo().NbCompounds(); ++anIdx)
+  for (int anIdx = 0; anIdx < theGraph.Topo().Compounds().Nb(); ++anIdx)
     if (theGraph.Topo().Compounds().Definition(BRepGraph_CompoundId(anIdx)).IsRemoved)
       ++aResult.NbRemovedCompounds;
-  for (int anIdx = 0; anIdx < theGraph.Topo().NbCompSolids(); ++anIdx)
+  for (int anIdx = 0; anIdx < theGraph.Topo().CompSolids().Nb(); ++anIdx)
     if (theGraph.Topo().CompSolids().Definition(BRepGraph_CompSolidId(anIdx)).IsRemoved)
       ++aResult.NbRemovedCompSolids;
 
@@ -260,7 +260,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
                             + aResult.NbRemovedShells + aResult.NbRemovedSolids
                             + aResult.NbRemovedCompounds + aResult.NbRemovedCompSolids;
 
-  aResult.NbNodesBefore = static_cast<int>(theGraph.Topo().NbNodes());
+  aResult.NbNodesBefore = static_cast<int>(theGraph.Topo().Gen().NbNodes());
 
   // Short-circuit: nothing to compact.
   if (aTotalRemoved == 0)
@@ -274,35 +274,35 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
   NCollection_DataMap<int, int> aShellMap, aSolidMap, aCompoundMap, aCompSolidMap;
 
   int aNewIdx = 0;
-  for (int anIdx = 0; anIdx < theGraph.Topo().NbVertices(); ++anIdx)
+  for (int anIdx = 0; anIdx < theGraph.Topo().Vertices().Nb(); ++anIdx)
     if (!theGraph.Topo().Vertices().Definition(BRepGraph_VertexId(anIdx)).IsRemoved)
       aVertexMap.Bind(anIdx, aNewIdx++);
   aNewIdx = 0;
-  for (int anIdx = 0; anIdx < theGraph.Topo().NbEdges(); ++anIdx)
+  for (int anIdx = 0; anIdx < theGraph.Topo().Edges().Nb(); ++anIdx)
     if (!theGraph.Topo().Edges().Definition(BRepGraph_EdgeId(anIdx)).IsRemoved)
       anEdgeMap.Bind(anIdx, aNewIdx++);
   aNewIdx = 0;
-  for (int anIdx = 0; anIdx < theGraph.Topo().NbWires(); ++anIdx)
+  for (int anIdx = 0; anIdx < theGraph.Topo().Wires().Nb(); ++anIdx)
     if (!theGraph.Topo().Wires().Definition(BRepGraph_WireId(anIdx)).IsRemoved)
       aWireMap.Bind(anIdx, aNewIdx++);
   aNewIdx = 0;
-  for (int anIdx = 0; anIdx < theGraph.Topo().NbFaces(); ++anIdx)
+  for (int anIdx = 0; anIdx < theGraph.Topo().Faces().Nb(); ++anIdx)
     if (!theGraph.Topo().Faces().Definition(BRepGraph_FaceId(anIdx)).IsRemoved)
       aFaceMap.Bind(anIdx, aNewIdx++);
   aNewIdx = 0;
-  for (int anIdx = 0; anIdx < theGraph.Topo().NbShells(); ++anIdx)
+  for (int anIdx = 0; anIdx < theGraph.Topo().Shells().Nb(); ++anIdx)
     if (!theGraph.Topo().Shells().Definition(BRepGraph_ShellId(anIdx)).IsRemoved)
       aShellMap.Bind(anIdx, aNewIdx++);
   aNewIdx = 0;
-  for (int anIdx = 0; anIdx < theGraph.Topo().NbSolids(); ++anIdx)
+  for (int anIdx = 0; anIdx < theGraph.Topo().Solids().Nb(); ++anIdx)
     if (!theGraph.Topo().Solids().Definition(BRepGraph_SolidId(anIdx)).IsRemoved)
       aSolidMap.Bind(anIdx, aNewIdx++);
   aNewIdx = 0;
-  for (int anIdx = 0; anIdx < theGraph.Topo().NbCompounds(); ++anIdx)
+  for (int anIdx = 0; anIdx < theGraph.Topo().Compounds().Nb(); ++anIdx)
     if (!theGraph.Topo().Compounds().Definition(BRepGraph_CompoundId(anIdx)).IsRemoved)
       aCompoundMap.Bind(anIdx, aNewIdx++);
   aNewIdx = 0;
-  for (int anIdx = 0; anIdx < theGraph.Topo().NbCompSolids(); ++anIdx)
+  for (int anIdx = 0; anIdx < theGraph.Topo().CompSolids().Nb(); ++anIdx)
     if (!theGraph.Topo().CompSolids().Definition(BRepGraph_CompSolidId(anIdx)).IsRemoved)
       aCompSolidMap.Bind(anIdx, aNewIdx++);
 
@@ -370,7 +370,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
 
   // Add topology defs bottom-up (Vertex -> Edge -> Wire -> Face -> Shell -> Solid).
   // Vertices.
-  for (int anIdx = 0; anIdx < theGraph.Topo().NbVertices(); ++anIdx)
+  for (int anIdx = 0; anIdx < theGraph.Topo().Vertices().Nb(); ++anIdx)
   {
     if (!aVertexMap.IsBound(anIdx))
       continue;
@@ -379,7 +379,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
   }
 
   // Edges.
-  for (int anIdx = 0; anIdx < theGraph.Topo().NbEdges(); ++anIdx)
+  for (int anIdx = 0; anIdx < theGraph.Topo().Edges().Nb(); ++anIdx)
   {
     if (!anEdgeMap.IsBound(anIdx))
       continue;
@@ -419,7 +419,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
   // We need faces first, so do PCurves after face creation.
 
   // Wires.
-  for (int anIdx = 0; anIdx < theGraph.Topo().NbWires(); ++anIdx)
+  for (int anIdx = 0; anIdx < theGraph.Topo().Wires().Nb(); ++anIdx)
   {
     if (!aWireMap.IsBound(anIdx))
       continue;
@@ -439,7 +439,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
                                 anOldCoEdges.Append(aCR.CoEdgeDefId);
                               }
                             });
-    const int aNewFirstCoEdge = aNewGraph.Topo().NbCoEdges();
+    const int aNewFirstCoEdge = aNewGraph.Topo().CoEdges().Nb();
     (void)aNewGraph.Builder().AddWire(aNewEntries);
     for (int aCoEdgeIdx = 0; aCoEdgeIdx < anOldCoEdges.Length(); ++aCoEdgeIdx)
     {
@@ -448,7 +448,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
   }
 
   // Faces.
-  for (int anIdx = 0; anIdx < theGraph.Topo().NbFaces(); ++anIdx)
+  for (int anIdx = 0; anIdx < theGraph.Topo().Faces().Nb(); ++anIdx)
   {
     if (!aFaceMap.IsBound(anIdx))
       continue;
@@ -485,7 +485,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
   }
 
   // Add PCurves to edges in the new graph via CoEdge data.
-  for (int anIdx = 0; anIdx < theGraph.Topo().NbEdges(); ++anIdx)
+  for (int anIdx = 0; anIdx < theGraph.Topo().Edges().Nb(); ++anIdx)
   {
     if (!anEdgeMap.IsBound(anIdx))
       continue;
@@ -516,7 +516,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
   }
 
   // Shells.
-  for (int anIdx = 0; anIdx < theGraph.Topo().NbShells(); ++anIdx)
+  for (int anIdx = 0; anIdx < theGraph.Topo().Shells().Nb(); ++anIdx)
   {
     if (!aShellMap.IsBound(anIdx))
       continue;
@@ -535,7 +535,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
   }
 
   // Solids.
-  for (int anIdx = 0; anIdx < theGraph.Topo().NbSolids(); ++anIdx)
+  for (int anIdx = 0; anIdx < theGraph.Topo().Solids().Nb(); ++anIdx)
   {
     if (!aSolidMap.IsBound(anIdx))
       continue;
@@ -553,7 +553,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
   }
 
   // Compounds.
-  for (int anIdx = 0; anIdx < theGraph.Topo().NbCompounds(); ++anIdx)
+  for (int anIdx = 0; anIdx < theGraph.Topo().Compounds().Nb(); ++anIdx)
   {
     if (!aCompoundMap.IsBound(anIdx))
       continue;
@@ -570,7 +570,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
   }
 
   // CompSolids.
-  for (int anIdx = 0; anIdx < theGraph.Topo().NbCompSolids(); ++anIdx)
+  for (int anIdx = 0; anIdx < theGraph.Topo().CompSolids().Nb(); ++anIdx)
   {
     if (!aCompSolidMap.IsBound(anIdx))
       continue;
@@ -590,7 +590,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
   // Rebuild reverse index from final forward incidence to guarantee compact output consistency.
   aNewGraph.incStorage().BuildReverseIndex();
 
-  aResult.NbNodesAfter = static_cast<int>(aNewGraph.Topo().NbNodes());
+  aResult.NbNodesAfter = static_cast<int>(aNewGraph.Topo().Gen().NbNodes());
 
   // Transfer per-kind UID vectors from old graph to new graph using index remap maps.
   // Each new graph's UID vector[newIdx] = old graph's UID vector[oldIdx].

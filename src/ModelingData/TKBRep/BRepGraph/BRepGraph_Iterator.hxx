@@ -163,7 +163,7 @@ private:
 template <>
 inline BRepGraph_Iterator<BRepGraphInc::SolidDef>::BRepGraph_Iterator(const BRepGraph& theGraph)
     : myGraph(theGraph),
-      myLength(theGraph.Topo().NbSolids())
+      myLength(theGraph.Topo().Solids().Nb())
 {
   skipRemoved();
 }
@@ -171,7 +171,7 @@ inline BRepGraph_Iterator<BRepGraphInc::SolidDef>::BRepGraph_Iterator(const BRep
 template <>
 inline BRepGraph_Iterator<BRepGraphInc::ShellDef>::BRepGraph_Iterator(const BRepGraph& theGraph)
     : myGraph(theGraph),
-      myLength(theGraph.Topo().NbShells())
+      myLength(theGraph.Topo().Shells().Nb())
 {
   skipRemoved();
 }
@@ -179,7 +179,7 @@ inline BRepGraph_Iterator<BRepGraphInc::ShellDef>::BRepGraph_Iterator(const BRep
 template <>
 inline BRepGraph_Iterator<BRepGraphInc::FaceDef>::BRepGraph_Iterator(const BRepGraph& theGraph)
     : myGraph(theGraph),
-      myLength(theGraph.Topo().NbFaces())
+      myLength(theGraph.Topo().Faces().Nb())
 {
   skipRemoved();
 }
@@ -187,7 +187,7 @@ inline BRepGraph_Iterator<BRepGraphInc::FaceDef>::BRepGraph_Iterator(const BRepG
 template <>
 inline BRepGraph_Iterator<BRepGraphInc::WireDef>::BRepGraph_Iterator(const BRepGraph& theGraph)
     : myGraph(theGraph),
-      myLength(theGraph.Topo().NbWires())
+      myLength(theGraph.Topo().Wires().Nb())
 {
   skipRemoved();
 }
@@ -195,7 +195,7 @@ inline BRepGraph_Iterator<BRepGraphInc::WireDef>::BRepGraph_Iterator(const BRepG
 template <>
 inline BRepGraph_Iterator<BRepGraphInc::EdgeDef>::BRepGraph_Iterator(const BRepGraph& theGraph)
     : myGraph(theGraph),
-      myLength(theGraph.Topo().NbEdges())
+      myLength(theGraph.Topo().Edges().Nb())
 {
   skipRemoved();
 }
@@ -203,7 +203,7 @@ inline BRepGraph_Iterator<BRepGraphInc::EdgeDef>::BRepGraph_Iterator(const BRepG
 template <>
 inline BRepGraph_Iterator<BRepGraphInc::VertexDef>::BRepGraph_Iterator(const BRepGraph& theGraph)
     : myGraph(theGraph),
-      myLength(theGraph.Topo().NbVertices())
+      myLength(theGraph.Topo().Vertices().Nb())
 {
   skipRemoved();
 }
@@ -211,7 +211,7 @@ inline BRepGraph_Iterator<BRepGraphInc::VertexDef>::BRepGraph_Iterator(const BRe
 template <>
 inline BRepGraph_Iterator<BRepGraphInc::ProductDef>::BRepGraph_Iterator(const BRepGraph& theGraph)
     : myGraph(theGraph),
-      myLength(theGraph.Topo().NbProducts())
+      myLength(theGraph.Topo().Products().Nb())
 {
   skipRemoved();
 }
@@ -220,7 +220,7 @@ template <>
 inline BRepGraph_Iterator<BRepGraphInc::OccurrenceDef>::BRepGraph_Iterator(
   const BRepGraph& theGraph)
     : myGraph(theGraph),
-      myLength(theGraph.Topo().NbOccurrences())
+      myLength(theGraph.Topo().Occurrences().Nb())
 {
   skipRemoved();
 }
@@ -228,7 +228,7 @@ inline BRepGraph_Iterator<BRepGraphInc::OccurrenceDef>::BRepGraph_Iterator(
 template <>
 inline BRepGraph_Iterator<BRepGraphInc::CoEdgeDef>::BRepGraph_Iterator(const BRepGraph& theGraph)
     : myGraph(theGraph),
-      myLength(theGraph.Topo().NbCoEdges())
+      myLength(theGraph.Topo().CoEdges().Nb())
 {
   skipRemoved();
 }
@@ -236,7 +236,7 @@ inline BRepGraph_Iterator<BRepGraphInc::CoEdgeDef>::BRepGraph_Iterator(const BRe
 template <>
 inline BRepGraph_Iterator<BRepGraphInc::CompoundDef>::BRepGraph_Iterator(const BRepGraph& theGraph)
     : myGraph(theGraph),
-      myLength(theGraph.Topo().NbCompounds())
+      myLength(theGraph.Topo().Compounds().Nb())
 {
   skipRemoved();
 }
@@ -244,7 +244,7 @@ inline BRepGraph_Iterator<BRepGraphInc::CompoundDef>::BRepGraph_Iterator(const B
 template <>
 inline BRepGraph_Iterator<BRepGraphInc::CompSolidDef>::BRepGraph_Iterator(const BRepGraph& theGraph)
     : myGraph(theGraph),
-      myLength(theGraph.Topo().NbCompSolids())
+      myLength(theGraph.Topo().CompSolids().Nb())
 {
   skipRemoved();
 }

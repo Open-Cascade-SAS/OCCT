@@ -88,6 +88,20 @@ const NCollection_Vector<T>& emptyVector()
 
 //=================================================================================================
 
+int BRepGraph::TopoView::FaceOps::Nb() const
+{
+  return myGraph->myData->myIncStorage.NbFaces();
+}
+
+//=================================================================================================
+
+int BRepGraph::TopoView::FaceOps::NbActive() const
+{
+  return myGraph->myData->myIncStorage.NbActiveFaces();
+}
+
+//=================================================================================================
+
 const BRepGraphInc::FaceDef& BRepGraph::TopoView::FaceOps::Definition(
   const BRepGraph_FaceId theFace) const
 {
@@ -290,6 +304,20 @@ BRepGraph_WireId BRepGraph::TopoView::FaceOps::OuterWire(const BRepGraph_FaceId 
 
 //=================================================================================================
 
+int BRepGraph::TopoView::EdgeOps::Nb() const
+{
+  return myGraph->myData->myIncStorage.NbEdges();
+}
+
+//=================================================================================================
+
+int BRepGraph::TopoView::EdgeOps::NbActive() const
+{
+  return myGraph->myData->myIncStorage.NbActiveEdges();
+}
+
+//=================================================================================================
+
 const BRepGraphInc::EdgeDef& BRepGraph::TopoView::EdgeOps::Definition(
   const BRepGraph_EdgeId theEdge) const
 {
@@ -488,6 +516,20 @@ const BRepGraphInc::CoEdgeDef* BRepGraph::TopoView::EdgeOps::FindPCurve(
 
 //=================================================================================================
 
+int BRepGraph::TopoView::VertexOps::Nb() const
+{
+  return myGraph->myData->myIncStorage.NbVertices();
+}
+
+//=================================================================================================
+
+int BRepGraph::TopoView::VertexOps::NbActive() const
+{
+  return myGraph->myData->myIncStorage.NbActiveVertices();
+}
+
+//=================================================================================================
+
 const BRepGraphInc::VertexDef& BRepGraph::TopoView::VertexOps::Definition(
   const BRepGraph_VertexId theVertex) const
 {
@@ -504,6 +546,20 @@ const NCollection_Vector<BRepGraph_EdgeId>& BRepGraph::TopoView::VertexOps::Edge
 
 //=================================================================================================
 
+int BRepGraph::TopoView::WireOps::Nb() const
+{
+  return myGraph->myData->myIncStorage.NbWires();
+}
+
+//=================================================================================================
+
+int BRepGraph::TopoView::WireOps::NbActive() const
+{
+  return myGraph->myData->myIncStorage.NbActiveWires();
+}
+
+//=================================================================================================
+
 const BRepGraphInc::WireDef& BRepGraph::TopoView::WireOps::Definition(
   const BRepGraph_WireId theWire) const
 {
@@ -516,6 +572,20 @@ const NCollection_Vector<BRepGraph_FaceId>& BRepGraph::TopoView::WireOps::Faces(
   const BRepGraph_WireId theWire) const
 {
   return myGraph->myData->myIncStorage.ReverseIndex().FacesOfWireRef(theWire);
+}
+
+//=================================================================================================
+
+int BRepGraph::TopoView::ShellOps::Nb() const
+{
+  return myGraph->myData->myIncStorage.NbShells();
+}
+
+//=================================================================================================
+
+int BRepGraph::TopoView::ShellOps::NbActive() const
+{
+  return myGraph->myData->myIncStorage.NbActiveShells();
 }
 
 //=================================================================================================
@@ -546,6 +616,20 @@ const NCollection_Vector<BRepGraph_CompoundId>& BRepGraph::TopoView::ShellOps::C
 
 //=================================================================================================
 
+int BRepGraph::TopoView::SolidOps::Nb() const
+{
+  return myGraph->myData->myIncStorage.NbSolids();
+}
+
+//=================================================================================================
+
+int BRepGraph::TopoView::SolidOps::NbActive() const
+{
+  return myGraph->myData->myIncStorage.NbActiveSolids();
+}
+
+//=================================================================================================
+
 const BRepGraphInc::SolidDef& BRepGraph::TopoView::SolidOps::Definition(
   const BRepGraph_SolidId theSolid) const
 {
@@ -570,6 +654,20 @@ const NCollection_Vector<BRepGraph_CompoundId>& BRepGraph::TopoView::SolidOps::C
   const NCollection_Vector<BRepGraph_CompoundId>* aCompounds =
     myGraph->myData->myIncStorage.ReverseIndex().CompoundsOfSolid(theSolid);
   return aCompounds != nullptr ? *aCompounds : emptyVector<BRepGraph_CompoundId>();
+}
+
+//=================================================================================================
+
+int BRepGraph::TopoView::CoEdgeOps::Nb() const
+{
+  return myGraph->myData->myIncStorage.NbCoEdges();
+}
+
+//=================================================================================================
+
+int BRepGraph::TopoView::CoEdgeOps::NbActive() const
+{
+  return myGraph->myData->myIncStorage.NbActiveCoEdges();
 }
 
 //=================================================================================================
@@ -678,6 +776,20 @@ BRepGraph_CoEdgeId BRepGraph::TopoView::CoEdgeOps::SeamPair(
 
 //=================================================================================================
 
+int BRepGraph::TopoView::CompoundOps::Nb() const
+{
+  return myGraph->myData->myIncStorage.NbCompounds();
+}
+
+//=================================================================================================
+
+int BRepGraph::TopoView::CompoundOps::NbActive() const
+{
+  return myGraph->myData->myIncStorage.NbActiveCompounds();
+}
+
+//=================================================================================================
+
 const BRepGraphInc::CompoundDef& BRepGraph::TopoView::CompoundOps::Definition(
   const BRepGraph_CompoundId theCompound) const
 {
@@ -696,6 +808,20 @@ const NCollection_Vector<BRepGraph_CompoundId>& BRepGraph::TopoView::CompoundOps
 
 //=================================================================================================
 
+int BRepGraph::TopoView::CompSolidOps::Nb() const
+{
+  return myGraph->myData->myIncStorage.NbCompSolids();
+}
+
+//=================================================================================================
+
+int BRepGraph::TopoView::CompSolidOps::NbActive() const
+{
+  return myGraph->incStorage().NbActiveCompSolids();
+}
+
+//=================================================================================================
+
 const BRepGraphInc::CompSolidDef& BRepGraph::TopoView::CompSolidOps::Definition(
   const BRepGraph_CompSolidId theCompSolid) const
 {
@@ -710,6 +836,20 @@ const NCollection_Vector<BRepGraph_CompoundId>& BRepGraph::TopoView::CompSolidOp
   const NCollection_Vector<BRepGraph_CompoundId>* aCompounds =
     myGraph->myData->myIncStorage.ReverseIndex().CompoundsOfCompSolid(theCompSolid);
   return aCompounds != nullptr ? *aCompounds : emptyVector<BRepGraph_CompoundId>();
+}
+
+//=================================================================================================
+
+int BRepGraph::TopoView::ProductOps::Nb() const
+{
+  return myGraph->myData->myIncStorage.NbProducts();
+}
+
+//=================================================================================================
+
+int BRepGraph::TopoView::ProductOps::NbActive() const
+{
+  return myGraph->myData->myIncStorage.NbActiveProducts();
 }
 
 //=================================================================================================
@@ -746,7 +886,7 @@ BRepGraph_NodeId BRepGraph::TopoView::ProductOps::ShapeRoot(const BRepGraph_Prod
     return BRepGraph_NodeId();
   }
 
-  const BRepGraphInc::BaseDef* aRoot = myGraph->Topo().TopoEntity(aShapeRoot);
+  const BRepGraphInc::BaseDef* aRoot = myGraph->Topo().Gen().TopoEntity(aShapeRoot);
   if (aRoot == nullptr || aRoot->IsRemoved)
   {
     return BRepGraph_NodeId();
@@ -924,6 +1064,20 @@ BRepGraph_OccurrenceId BRepGraph::TopoView::ProductOps::Component(
 
 //=================================================================================================
 
+int BRepGraph::TopoView::OccurrenceOps::Nb() const
+{
+  return myGraph->myData->myIncStorage.NbOccurrences();
+}
+
+//=================================================================================================
+
+int BRepGraph::TopoView::OccurrenceOps::NbActive() const
+{
+  return myGraph->myData->myIncStorage.NbActiveOccurrences();
+}
+
+//=================================================================================================
+
 const BRepGraphInc::OccurrenceDef& BRepGraph::TopoView::OccurrenceOps::Definition(
   const BRepGraph_OccurrenceId theOccurrence) const
 {
@@ -1027,148 +1181,169 @@ TopLoc_Location BRepGraph::TopoView::OccurrenceOps::OccurrenceLocation(
   return aGlobal;
 }
 
-// ==========================================================================
-// Count methods read directly from incidence storage.
-// Both Build() and BuilderView::Add*() write to incidence, so counts are
-// always in sync.
-// ==========================================================================
-
 //=================================================================================================
 
-int BRepGraph::TopoView::NbSolids() const
+int BRepGraph::TopoView::GeometryOps::NbSurfaces() const
 {
-  return myGraph->myData->myIncStorage.NbSolids();
+  return myGraph->myData->myIncStorage.NbSurfaces();
 }
 
 //=================================================================================================
 
-int BRepGraph::TopoView::NbShells() const
+int BRepGraph::TopoView::GeometryOps::NbCurves3D() const
 {
-  return myGraph->myData->myIncStorage.NbShells();
+  return myGraph->myData->myIncStorage.NbCurves3D();
 }
 
 //=================================================================================================
 
-int BRepGraph::TopoView::NbFaces() const
+int BRepGraph::TopoView::GeometryOps::NbCurves2D() const
 {
-  return myGraph->myData->myIncStorage.NbFaces();
+  return myGraph->myData->myIncStorage.NbCurves2D();
 }
 
 //=================================================================================================
 
-int BRepGraph::TopoView::NbWires() const
+int BRepGraph::TopoView::GeometryOps::NbActiveSurfaces() const
 {
-  return myGraph->myData->myIncStorage.NbWires();
+  return myGraph->myData->myIncStorage.NbActiveSurfaces();
 }
 
 //=================================================================================================
 
-int BRepGraph::TopoView::NbEdges() const
+int BRepGraph::TopoView::GeometryOps::NbActiveCurves3D() const
 {
-  return myGraph->myData->myIncStorage.NbEdges();
+  return myGraph->myData->myIncStorage.NbActiveCurves3D();
 }
 
 //=================================================================================================
 
-int BRepGraph::TopoView::NbVertices() const
+int BRepGraph::TopoView::GeometryOps::NbActiveCurves2D() const
 {
-  return myGraph->myData->myIncStorage.NbVertices();
+  return myGraph->myData->myIncStorage.NbActiveCurves2D();
 }
 
 //=================================================================================================
 
-int BRepGraph::TopoView::NbCompounds() const
+const BRepGraphInc::SurfaceRep& BRepGraph::TopoView::GeometryOps::SurfaceRep(
+  const BRepGraph_SurfaceRepId theRep) const
 {
-  return myGraph->myData->myIncStorage.NbCompounds();
+  return myGraph->myData->myIncStorage.SurfaceRep(theRep);
 }
 
 //=================================================================================================
 
-int BRepGraph::TopoView::NbCompSolids() const
+const BRepGraphInc::Curve3DRep& BRepGraph::TopoView::GeometryOps::Curve3DRep(
+  const BRepGraph_Curve3DRepId theRep) const
 {
-  return myGraph->myData->myIncStorage.NbCompSolids();
+  return myGraph->myData->myIncStorage.Curve3DRep(theRep);
 }
 
 //=================================================================================================
 
-int BRepGraph::TopoView::NbCoEdges() const
+const BRepGraphInc::Curve2DRep& BRepGraph::TopoView::GeometryOps::Curve2DRep(
+  const BRepGraph_Curve2DRepId theRep) const
 {
-  return myGraph->myData->myIncStorage.NbCoEdges();
+  return myGraph->myData->myIncStorage.Curve2DRep(theRep);
 }
 
 //=================================================================================================
 
-int BRepGraph::TopoView::NbActiveVertices() const
+int BRepGraph::TopoView::PolyOps::NbTriangulations() const
 {
-  return myGraph->myData->myIncStorage.NbActiveVertices();
+  return myGraph->myData->myIncStorage.NbTriangulations();
 }
 
 //=================================================================================================
 
-int BRepGraph::TopoView::NbActiveEdges() const
+int BRepGraph::TopoView::PolyOps::NbPolygons3D() const
 {
-  return myGraph->myData->myIncStorage.NbActiveEdges();
+  return myGraph->myData->myIncStorage.NbPolygons3D();
 }
 
 //=================================================================================================
 
-int BRepGraph::TopoView::NbActiveCoEdges() const
+int BRepGraph::TopoView::PolyOps::NbPolygons2D() const
 {
-  return myGraph->myData->myIncStorage.NbActiveCoEdges();
+  return myGraph->myData->myIncStorage.NbPolygons2D();
 }
 
 //=================================================================================================
 
-int BRepGraph::TopoView::NbActiveWires() const
+int BRepGraph::TopoView::PolyOps::NbPolygonsOnTri() const
 {
-  return myGraph->myData->myIncStorage.NbActiveWires();
+  return myGraph->myData->myIncStorage.NbPolygonsOnTri();
 }
 
 //=================================================================================================
 
-int BRepGraph::TopoView::NbActiveFaces() const
+int BRepGraph::TopoView::PolyOps::NbActiveTriangulations() const
 {
-  return myGraph->myData->myIncStorage.NbActiveFaces();
+  return myGraph->myData->myIncStorage.NbActiveTriangulations();
 }
 
 //=================================================================================================
 
-int BRepGraph::TopoView::NbActiveShells() const
+int BRepGraph::TopoView::PolyOps::NbActivePolygons3D() const
 {
-  return myGraph->myData->myIncStorage.NbActiveShells();
+  return myGraph->myData->myIncStorage.NbActivePolygons3D();
 }
 
 //=================================================================================================
 
-int BRepGraph::TopoView::NbActiveSolids() const
+int BRepGraph::TopoView::PolyOps::NbActivePolygons2D() const
 {
-  return myGraph->myData->myIncStorage.NbActiveSolids();
+  return myGraph->myData->myIncStorage.NbActivePolygons2D();
 }
 
 //=================================================================================================
 
-int BRepGraph::TopoView::NbActiveCompounds() const
+int BRepGraph::TopoView::PolyOps::NbActivePolygonsOnTri() const
 {
-  return myGraph->myData->myIncStorage.NbActiveCompounds();
+  return myGraph->myData->myIncStorage.NbActivePolygonsOnTri();
 }
 
 //=================================================================================================
 
-int BRepGraph::TopoView::NbActiveCompSolids() const
+const BRepGraphInc::TriangulationRep& BRepGraph::TopoView::PolyOps::TriangulationRep(
+  const BRepGraph_TriangulationRepId theRep) const
 {
-  return myGraph->incStorage().NbActiveCompSolids();
+  return myGraph->myData->myIncStorage.TriangulationRep(theRep);
 }
 
 //=================================================================================================
 
-const BRepGraphInc::BaseDef* BRepGraph::TopoView::TopoEntity(const BRepGraph_NodeId theId) const
+const BRepGraphInc::Polygon3DRep& BRepGraph::TopoView::PolyOps::Polygon3DRep(
+  const BRepGraph_Polygon3DRepId theRep) const
+{
+  return myGraph->myData->myIncStorage.Polygon3DRep(theRep);
+}
+
+//=================================================================================================
+
+const BRepGraphInc::Polygon2DRep& BRepGraph::TopoView::PolyOps::Polygon2DRep(
+  const BRepGraph_Polygon2DRepId theRep) const
+{
+  return myGraph->myData->myIncStorage.Polygon2DRep(theRep);
+}
+
+//=================================================================================================
+
+const BRepGraphInc::PolygonOnTriRep& BRepGraph::TopoView::PolyOps::PolygonOnTriRep(
+  const BRepGraph_PolygonOnTriRepId theRep) const
+{
+  return myGraph->myData->myIncStorage.PolygonOnTriRep(theRep);
+}
+
+const BRepGraphInc::BaseDef* BRepGraph::TopoView::GenOps::TopoEntity(
+  const BRepGraph_NodeId theId) const
 {
   return myGraph->topoEntity(theId);
 }
 
 //=================================================================================================
 
-int BRepGraph::TopoView::NbNodes() const
+int BRepGraph::TopoView::GenOps::NbNodes() const
 {
   const BRepGraphInc_Storage& aS = myGraph->myData->myIncStorage;
   return aS.NbSolids() + aS.NbShells() + aS.NbFaces() + aS.NbWires() + aS.NbCoEdges()
@@ -1177,162 +1352,7 @@ int BRepGraph::TopoView::NbNodes() const
 }
 
 //=================================================================================================
-
-int BRepGraph::TopoView::NbSurfaces() const
-{
-  return myGraph->myData->myIncStorage.NbSurfaces();
-}
-
-//=================================================================================================
-
-int BRepGraph::TopoView::NbCurves3D() const
-{
-  return myGraph->myData->myIncStorage.NbCurves3D();
-}
-
-//=================================================================================================
-
-int BRepGraph::TopoView::NbCurves2D() const
-{
-  return myGraph->myData->myIncStorage.NbCurves2D();
-}
-
-//=================================================================================================
-
-int BRepGraph::TopoView::NbTriangulations() const
-{
-  return myGraph->myData->myIncStorage.NbTriangulations();
-}
-
-//=================================================================================================
-
-int BRepGraph::TopoView::NbPolygons3D() const
-{
-  return myGraph->myData->myIncStorage.NbPolygons3D();
-}
-
-//=================================================================================================
-
-const BRepGraphInc::SurfaceRep& BRepGraph::TopoView::SurfaceRep(
-  const BRepGraph_SurfaceRepId theRep) const
-{
-  return myGraph->myData->myIncStorage.SurfaceRep(theRep);
-}
-
-//=================================================================================================
-
-const BRepGraphInc::Curve3DRep& BRepGraph::TopoView::Curve3DRep(
-  const BRepGraph_Curve3DRepId theRep) const
-{
-  return myGraph->myData->myIncStorage.Curve3DRep(theRep);
-}
-
-//=================================================================================================
-
-const BRepGraphInc::Curve2DRep& BRepGraph::TopoView::Curve2DRep(
-  const BRepGraph_Curve2DRepId theRep) const
-{
-  return myGraph->myData->myIncStorage.Curve2DRep(theRep);
-}
-
-//=================================================================================================
-
-const BRepGraphInc::TriangulationRep& BRepGraph::TopoView::TriangulationRep(
-  const BRepGraph_TriangulationRepId theRep) const
-{
-  return myGraph->myData->myIncStorage.TriangulationRep(theRep);
-}
-
-//=================================================================================================
-
-const BRepGraphInc::Polygon3DRep& BRepGraph::TopoView::Polygon3DRep(
-  const BRepGraph_Polygon3DRepId theRep) const
-{
-  return myGraph->myData->myIncStorage.Polygon3DRep(theRep);
-}
-
-//=================================================================================================
-
-int BRepGraph::TopoView::NbPolygons2D() const
-{
-  return myGraph->myData->myIncStorage.NbPolygons2D();
-}
-
-//=================================================================================================
-
-int BRepGraph::TopoView::NbPolygonsOnTri() const
-{
-  return myGraph->myData->myIncStorage.NbPolygonsOnTri();
-}
-
-//=================================================================================================
-
-int BRepGraph::TopoView::NbActiveSurfaces() const
-{
-  return myGraph->myData->myIncStorage.NbActiveSurfaces();
-}
-
-//=================================================================================================
-
-int BRepGraph::TopoView::NbActiveCurves3D() const
-{
-  return myGraph->myData->myIncStorage.NbActiveCurves3D();
-}
-
-//=================================================================================================
-
-int BRepGraph::TopoView::NbActiveCurves2D() const
-{
-  return myGraph->myData->myIncStorage.NbActiveCurves2D();
-}
-
-//=================================================================================================
-
-int BRepGraph::TopoView::NbActiveTriangulations() const
-{
-  return myGraph->myData->myIncStorage.NbActiveTriangulations();
-}
-
-//=================================================================================================
-
-int BRepGraph::TopoView::NbActivePolygons3D() const
-{
-  return myGraph->myData->myIncStorage.NbActivePolygons3D();
-}
-
-//=================================================================================================
-
-int BRepGraph::TopoView::NbActivePolygons2D() const
-{
-  return myGraph->myData->myIncStorage.NbActivePolygons2D();
-}
-
-//=================================================================================================
-
-int BRepGraph::TopoView::NbActivePolygonsOnTri() const
-{
-  return myGraph->myData->myIncStorage.NbActivePolygonsOnTri();
-}
-
-//=================================================================================================
-
-const BRepGraphInc::Polygon2DRep& BRepGraph::TopoView::Polygon2DRep(
-  const BRepGraph_Polygon2DRepId theRep) const
-{
-  return myGraph->myData->myIncStorage.Polygon2DRep(theRep);
-}
-
-//=================================================================================================
-
-const BRepGraphInc::PolygonOnTriRep& BRepGraph::TopoView::PolygonOnTriRep(
-  const BRepGraph_PolygonOnTriRepId theRep) const
-{
-  return myGraph->myData->myIncStorage.PolygonOnTriRep(theRep);
-}
-
-//=================================================================================================
-
-bool BRepGraph::TopoView::IsRemoved(const BRepGraph_NodeId theNode) const
+bool BRepGraph::TopoView::GenOps::IsRemoved(const BRepGraph_NodeId theNode) const
 {
   const BRepGraphInc::BaseDef* aDef = myGraph->topoEntity(theNode);
   if (aDef == nullptr)
@@ -1340,34 +1360,3 @@ bool BRepGraph::TopoView::IsRemoved(const BRepGraph_NodeId theNode) const
   return aDef->IsRemoved;
 }
 
-// ==========================================================================
-// Assembly definition accessors
-// ==========================================================================
-
-//=================================================================================================
-
-int BRepGraph::TopoView::NbProducts() const
-{
-  return myGraph->myData->myIncStorage.NbProducts();
-}
-
-//=================================================================================================
-
-int BRepGraph::TopoView::NbOccurrences() const
-{
-  return myGraph->myData->myIncStorage.NbOccurrences();
-}
-
-//=================================================================================================
-
-int BRepGraph::TopoView::NbActiveProducts() const
-{
-  return myGraph->myData->myIncStorage.NbActiveProducts();
-}
-
-//=================================================================================================
-
-int BRepGraph::TopoView::NbActiveOccurrences() const
-{
-  return myGraph->myData->myIncStorage.NbActiveOccurrences();
-}

@@ -171,7 +171,7 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph&       theGraph,
   {
     const BRepGraph_WireRefId    aWireRefId = aFaceEnt.WireRefIds.Value(aWRI);
     const BRepGraphInc::WireRef& aWR        = aRefs.Wire(aWireRefId);
-    if (aWR.IsRemoved || !aWR.WireDefId.IsValid(aTopoView.NbWires()))
+    if (aWR.IsRemoved || !aWR.WireDefId.IsValid(aTopoView.Wires().Nb()))
     {
       continue;
     }
@@ -236,7 +236,7 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph&       theGraph,
     {
       const BRepGraph_CoEdgeRefId    aCERefId = aWireEnt.CoEdgeRefIds.Value(aCRI);
       const BRepGraphInc::CoEdgeRef& aCRE     = aRefs.CoEdge(aCERefId);
-      if (aCRE.IsRemoved || !aCRE.CoEdgeDefId.IsValid(aTopoView.NbCoEdges()))
+      if (aCRE.IsRemoved || !aCRE.CoEdgeDefId.IsValid(aTopoView.CoEdges().Nb()))
       {
         continue;
       }

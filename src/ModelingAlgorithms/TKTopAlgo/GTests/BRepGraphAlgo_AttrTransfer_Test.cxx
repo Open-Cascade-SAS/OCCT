@@ -483,7 +483,7 @@ TEST(BRepGraphAlgo_AttrTransferTest, Deduplicate_AffectedFaceDefs)
   BRepGraph aGraph;
   aGraph.Build(aCompound);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_EQ(aGraph.Topo().NbFaces(), 2);
+  ASSERT_EQ(aGraph.Topo().Faces().Nb(), 2);
 
   const BRepGraphAlgo_Deduplicate::Result aResult = BRepGraphAlgo_Deduplicate::Perform(aGraph);
 

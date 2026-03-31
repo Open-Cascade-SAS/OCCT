@@ -68,7 +68,7 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_PropagatesUpOnFlush)
   EXPECT_GT(myGraph.Topo().Wires().Definition(aWires.Value(0)).SubtreeGen, 0u);
 
   // Check propagation to face.
-  for (int aFI = 0; aFI < myGraph.Topo().NbFaces(); ++aFI)
+  for (int aFI = 0; aFI < myGraph.Topo().Faces().Nb(); ++aFI)
   {
     if (BRepGraph_TestTools::FaceUsesWire(myGraph, BRepGraph_FaceId(aFI), aWires.Value(0)))
     {
@@ -119,14 +119,14 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_MultipleEdges_BatchPropa
 {
   myGraph.Builder().BeginDeferredInvalidation();
 
-  const int aNbEdges = myGraph.Topo().NbEdges();
+  const int aNbEdges = myGraph.Topo().Edges().Nb();
   for (int anEdgeIdx = 0; anEdgeIdx < aNbEdges; ++anEdgeIdx)
   {
     myGraph.Builder().MutEdge(BRepGraph_EdgeId(anEdgeIdx))->Tolerance = 0.1;
   }
 
   // During deferred mode: all edges mutated, but no parent propagation yet.
-  for (int aWireIdx = 0; aWireIdx < myGraph.Topo().NbWires(); ++aWireIdx)
+  for (int aWireIdx = 0; aWireIdx < myGraph.Topo().Wires().Nb(); ++aWireIdx)
   {
     EXPECT_EQ(myGraph.Topo().Wires().Definition(BRepGraph_WireId(aWireIdx)).SubtreeGen, 0u);
   }
@@ -134,11 +134,11 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_MultipleEdges_BatchPropa
   myGraph.Builder().EndDeferredInvalidation();
 
   // After flush: all wires, faces, shells, solids should have SubtreeGen propagated.
-  for (int aWireIdx = 0; aWireIdx < myGraph.Topo().NbWires(); ++aWireIdx)
+  for (int aWireIdx = 0; aWireIdx < myGraph.Topo().Wires().Nb(); ++aWireIdx)
   {
     EXPECT_GT(myGraph.Topo().Wires().Definition(BRepGraph_WireId(aWireIdx)).SubtreeGen, 0u);
   }
-  for (int aFaceIdx = 0; aFaceIdx < myGraph.Topo().NbFaces(); ++aFaceIdx)
+  for (int aFaceIdx = 0; aFaceIdx < myGraph.Topo().Faces().Nb(); ++aFaceIdx)
   {
     EXPECT_GT(myGraph.Topo().Faces().Definition(BRepGraph_FaceId(aFaceIdx)).SubtreeGen, 0u);
   }
@@ -162,7 +162,7 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_ReconstructAfterFlush_Su
 
 TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_ParallelMutation_WithExternalSync)
 {
-  const int aNbEdges = myGraph.Topo().NbEdges();
+  const int aNbEdges = myGraph.Topo().Edges().Nb();
   ASSERT_GT(aNbEdges, 1);
 
   // Deferred mode is NOT internally thread-safe. Parallel callers must
@@ -287,7 +287,7 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_DirectWireMutation_Propa
 
   // After flush: face, shell, solid SubtreeGen should be propagated.
   bool aFacePropagated = false;
-  for (int aFI = 0; aFI < myGraph.Topo().NbFaces(); ++aFI)
+  for (int aFI = 0; aFI < myGraph.Topo().Faces().Nb(); ++aFI)
   {
     if (BRepGraph_TestTools::FaceUsesWire(myGraph, BRepGraph_FaceId(aFI), BRepGraph_WireId(0))
         && myGraph.Topo().Faces().Definition(BRepGraph_FaceId(aFI)).SubtreeGen > 0u)

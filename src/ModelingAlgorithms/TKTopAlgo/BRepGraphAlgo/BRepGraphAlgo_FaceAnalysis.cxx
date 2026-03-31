@@ -100,7 +100,7 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
   const double aMinTol =
     theOptions.MinTolerance > 0.0
       ? theOptions.MinTolerance
-      : std::max(Precision::Confusion(), theGraph.Topo().NbEdges() > 0 ? 1.0e-10 : 0.0);
+      : std::max(Precision::Confusion(), theGraph.Topo().Edges().Nb() > 0 ? 1.0e-10 : 0.0);
 
   const BRepGraph::TopoView& aDefs = theGraph.Topo();
   const BRepGraph::RefsView& aRefs = theGraph.Refs();
@@ -112,7 +112,7 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
   NCollection_DataMap<int, int> aVertexMerge;
 
   // Process each face.
-  for (int aFaceIdx = 0; aFaceIdx < aDefs.NbFaces(); ++aFaceIdx)
+  for (int aFaceIdx = 0; aFaceIdx < aDefs.Faces().Nb(); ++aFaceIdx)
   {
     const BRepGraphInc::FaceDef& aFace = aDefs.Faces().Definition(BRepGraph_FaceId(aFaceIdx));
     if (aFace.IsRemoved)
@@ -129,7 +129,7 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
     {
       const BRepGraph_WireRefId    aWireRefId = aFaceEnt.WireRefIds.Value(aWireRefIter);
       const BRepGraphInc::WireRef& aWR        = aRefs.Wire(aWireRefId);
-      if (aWR.IsRemoved || !aWR.WireDefId.IsValid(aDefs.NbWires()))
+      if (aWR.IsRemoved || !aWR.WireDefId.IsValid(aDefs.Wires().Nb()))
       {
         continue;
       }
@@ -141,14 +141,14 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
       {
         const BRepGraph_CoEdgeRefId    aCoEdgeRefId = aWireEnt.CoEdgeRefIds.Value(aCoEdgeRefIter);
         const BRepGraphInc::CoEdgeRef& aCR          = aRefs.CoEdge(aCoEdgeRefId);
-        if (aCR.IsRemoved || !aCR.CoEdgeDefId.IsValid(aDefs.NbCoEdges()))
+        if (aCR.IsRemoved || !aCR.CoEdgeDefId.IsValid(aDefs.CoEdges().Nb()))
         {
           continue;
         }
 
         const BRepGraphInc::CoEdgeDef& aCoEdge  = aDefs.CoEdges().Definition(aCR.CoEdgeDefId);
         const BRepGraph_EdgeId         anEdgeId = aCoEdge.EdgeDefId;
-        if (!anEdgeId.IsValid(aDefs.NbEdges()))
+        if (!anEdgeId.IsValid(aDefs.Edges().Nb()))
         {
           continue;
         }
@@ -333,7 +333,7 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
 
   if (!aFinalMerge.IsEmpty())
   {
-    for (int anEdgeIdx = 0; anEdgeIdx < aDefs.NbEdges(); ++anEdgeIdx)
+    for (int anEdgeIdx = 0; anEdgeIdx < aDefs.Edges().Nb(); ++anEdgeIdx)
     {
       const BRepGraphInc::EdgeDef& anEdge      = aDefs.Edges().Definition(BRepGraph_EdgeId(anEdgeIdx));
       bool                         aNeedUpdate = false;

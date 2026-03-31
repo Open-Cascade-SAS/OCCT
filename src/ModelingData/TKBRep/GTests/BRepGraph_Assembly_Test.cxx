@@ -51,8 +51,8 @@ TEST(BRepGraph_AssemblyTest, Build_SingleSolid_AutoCreatesRootProduct)
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  EXPECT_EQ(aGraph.Topo().NbProducts(), 1);
-  EXPECT_EQ(aGraph.Topo().NbOccurrences(), 0);
+  EXPECT_EQ(aGraph.Topo().Products().Nb(), 1);
+  EXPECT_EQ(aGraph.Topo().Occurrences().Nb(), 0);
 
   const BRepGraphInc::ProductDef& aProduct =
     aGraph.Topo().Products().Definition(BRepGraph_ProductId(0));
@@ -81,8 +81,8 @@ TEST(BRepGraph_AssemblyTest, Build_Compound_AutoCreatesRootProduct)
   aGraph.Build(aCompound);
   ASSERT_TRUE(aGraph.IsDone());
 
-  EXPECT_EQ(aGraph.Topo().NbProducts(), 1);
-  EXPECT_EQ(aGraph.Topo().NbOccurrences(), 0);
+  EXPECT_EQ(aGraph.Topo().Products().Nb(), 1);
+  EXPECT_EQ(aGraph.Topo().Occurrences().Nb(), 0);
 
   const BRepGraphInc::ProductDef& aProduct =
     aGraph.Topo().Products().Definition(BRepGraph_ProductId(0));
@@ -215,7 +215,7 @@ TEST(BRepGraph_AssemblyTest, AddOccurrence_ParentOccurrenceMustMatchParentProduc
     aGraph.Builder().AddOccurrence(anAssemblyB, aPartId, TopLoc_Location(), aParentOccId);
 
   EXPECT_FALSE(anInvalidOccId.IsValid());
-  EXPECT_EQ(aGraph.Topo().NbOccurrences(), 1);
+  EXPECT_EQ(aGraph.Topo().Occurrences().Nb(), 1);
   EXPECT_EQ(aGraph.Topo().Products().NbComponents(anAssemblyB), 0);
 }
 
@@ -294,7 +294,7 @@ TEST(BRepGraph_AssemblyTest, RemoveOccurrence_UpdatesParent)
   // Remove the occurrence - should update parent's OccurrenceRefs.
   aGraph.Builder().RemoveSubgraph(anOccId);
 
-  EXPECT_TRUE(aGraph.Topo().IsRemoved(anOccId));
+  EXPECT_TRUE(aGraph.Topo().Gen().IsRemoved(anOccId));
   EXPECT_EQ(aGraph.Topo().Products().NbComponents(aAssemblyId), 0);
   const NCollection_Vector<BRepGraph_OccurrenceRefId>& anAfterRefs =
     aGraph.Refs().OccurrenceRefIdsOf(aAssemblyId);
@@ -322,9 +322,9 @@ TEST(BRepGraph_AssemblyTest, RemoveProduct_CascadeOccurrences)
   // Remove the assembly product - cascades to its child occurrences.
   aGraph.Builder().RemoveSubgraph(aAssemblyId);
 
-  EXPECT_TRUE(aGraph.Topo().IsRemoved(aAssemblyId));
-  EXPECT_TRUE(aGraph.Topo().IsRemoved(anOcc1));
-  EXPECT_TRUE(aGraph.Topo().IsRemoved(anOcc2));
+  EXPECT_TRUE(aGraph.Topo().Gen().IsRemoved(aAssemblyId));
+  EXPECT_TRUE(aGraph.Topo().Gen().IsRemoved(anOcc1));
+  EXPECT_TRUE(aGraph.Topo().Gen().IsRemoved(anOcc2));
 }
 
 // =============================================================================
@@ -433,7 +433,7 @@ TEST(BRepGraph_AssemblyTest, NbNodes_IncludesAssembly)
   aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  const size_t aNbNodesAfterBuild = aGraph.Topo().NbNodes();
+  const size_t aNbNodesAfterBuild = aGraph.Topo().Gen().NbNodes();
   // Should include the auto-created root product.
   EXPECT_GE(aNbNodesAfterBuild, 1u);
 
@@ -443,7 +443,7 @@ TEST(BRepGraph_AssemblyTest, NbNodes_IncludesAssembly)
                                        BRepGraph_ProductId(0),
                                        TopLoc_Location());
 
-  const size_t aNbNodesAfterAssembly = aGraph.Topo().NbNodes();
+  const size_t aNbNodesAfterAssembly = aGraph.Topo().Gen().NbNodes();
   EXPECT_EQ(aNbNodesAfterAssembly, aNbNodesAfterBuild + 2); // +1 product, +1 occurrence
 }
 

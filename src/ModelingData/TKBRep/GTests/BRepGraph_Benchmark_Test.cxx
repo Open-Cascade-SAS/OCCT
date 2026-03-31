@@ -93,7 +93,7 @@ TEST(BRepGraph_BenchmarkTest, Smoke_BuildReconstructAndAdjacency)
   BRepGraph aGraph;
   aGraph.Build(aFaces);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GT(aGraph.Topo().NbFaces(), 0);
+  ASSERT_GT(aGraph.Topo().Faces().Nb(), 0);
 
   const BRepGraph_NodeId aFaceNodeId(BRepGraph_NodeId::Kind::Face, 0);
   const TopoDS_Shape     aFaceShape = aGraph.Shapes().Reconstruct(aFaceNodeId);
@@ -167,7 +167,7 @@ TEST(BRepGraph_BenchmarkTest, DISABLED_Reconstruct_RoundTrip)
   aGraph.Build(aFaces);
   ASSERT_TRUE(aGraph.IsDone());
 
-  const int aNbFaces = aGraph.Topo().NbFaces();
+  const int aNbFaces = aGraph.Topo().Faces().Nb();
   ASSERT_GT(aNbFaces, 0);
 
   const double aAvg = runBenchmark("Reconstruct 10000 faces", [&]() {
@@ -191,7 +191,7 @@ TEST(BRepGraph_BenchmarkTest, DISABLED_SpatialQuery_Throughput)
   aGraph.Build(aFaces);
   ASSERT_TRUE(aGraph.IsDone());
 
-  const int aNbFaces = aGraph.Topo().NbFaces();
+  const int aNbFaces = aGraph.Topo().Faces().Nb();
   ASSERT_GT(aNbFaces, 0);
 
   const double aAvg = runBenchmark("SpatialQuery 10000 faces", [&]() {

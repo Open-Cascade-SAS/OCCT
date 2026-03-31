@@ -40,8 +40,8 @@ TEST(BRepGraphAlgo_FaceAnalysisTest, NormalFace_Unaffected)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  const int aNbEdgesBefore = aGraph.Topo().NbEdges();
-  const int aNbFacesBefore = aGraph.Topo().NbFaces();
+  const int aNbEdgesBefore = aGraph.Topo().Edges().Nb();
+  const int aNbFacesBefore = aGraph.Topo().Faces().Nb();
 
   BRepGraphAlgo_FaceAnalysis::Options aOpts;
   aOpts.MinTolerance                         = 1.0e-8;
@@ -52,8 +52,8 @@ TEST(BRepGraphAlgo_FaceAnalysisTest, NormalFace_Unaffected)
   EXPECT_EQ(aResult.NbDeletedFaces, 0);
   EXPECT_EQ(aResult.DegeneratedEdges.Length(), 0);
   EXPECT_EQ(aResult.DeletedFaces.Length(), 0);
-  EXPECT_EQ(aGraph.Topo().NbEdges(), aNbEdgesBefore);
-  EXPECT_EQ(aGraph.Topo().NbFaces(), aNbFacesBefore);
+  EXPECT_EQ(aGraph.Topo().Edges().Nb(), aNbEdgesBefore);
+  EXPECT_EQ(aGraph.Topo().Faces().Nb(), aNbFacesBefore);
 }
 
 TEST(BRepGraphAlgo_FaceAnalysisTest, SmallEdge_Detection)
@@ -126,7 +126,7 @@ TEST(BRepGraphAlgo_FaceAnalysisTest, SmallFace_Removal)
   BRepGraph aGraph;
   aGraph.Build(aCompound);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_EQ(aGraph.Topo().NbActiveFaces(), 2);
+  ASSERT_EQ(aGraph.Topo().Faces().NbActive(), 2);
 
   BRepGraphAlgo_FaceAnalysis::Options aOpts;
   aOpts.MinTolerance                         = 1.0e-2;
@@ -136,11 +136,11 @@ TEST(BRepGraphAlgo_FaceAnalysisTest, SmallFace_Removal)
   EXPECT_EQ(aResult.NbDeletedFaces, 1);
   EXPECT_EQ(aResult.DeletedFaces.Length(), 1);
   EXPECT_EQ(aResult.NbSmallEdges, 4);
-  EXPECT_EQ(aGraph.Topo().NbActiveFaces(), 1);
+  EXPECT_EQ(aGraph.Topo().Faces().NbActive(), 1);
 
   // Verify the normal face is NOT removed.
   int aNbRemainingFaces = 0;
-  for (int aFaceIdx = 0; aFaceIdx < aGraph.Topo().NbFaces(); ++aFaceIdx)
+  for (int aFaceIdx = 0; aFaceIdx < aGraph.Topo().Faces().Nb(); ++aFaceIdx)
   {
     if (!aGraph.Topo().Faces().Definition(BRepGraph_FaceId(aFaceIdx)).IsRemoved)
     {
@@ -235,6 +235,6 @@ TEST(BRepGraphAlgo_FaceAnalysisTest, Perform_ParallelMatchesSerial)
   EXPECT_EQ(aParallelResult.DeletedFaces.Length(), aSerialResult.DeletedFaces.Length());
 
   // Verify the face and edge counts also match between the two graphs.
-  EXPECT_EQ(aGraphParallel.Topo().NbActiveFaces(), aGraphSerial.Topo().NbActiveFaces());
-  EXPECT_EQ(aGraphParallel.Topo().NbEdges(), aGraphSerial.Topo().NbEdges());
+  EXPECT_EQ(aGraphParallel.Topo().Faces().NbActive(), aGraphSerial.Topo().Faces().NbActive());
+  EXPECT_EQ(aGraphParallel.Topo().Edges().Nb(), aGraphSerial.Topo().Edges().Nb());
 }

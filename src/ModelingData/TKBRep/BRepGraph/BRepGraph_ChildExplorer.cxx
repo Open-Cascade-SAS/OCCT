@@ -296,7 +296,7 @@ void BRepGraph_ChildExplorer::startTraversal(const TopLoc_Location&   theStartLo
 
   if (matchesAvoid(myRoot))
   {
-    const BRepGraphInc::BaseDef* aRootDef = myGraph->Topo().TopoEntity(myRoot);
+    const BRepGraphInc::BaseDef* aRootDef = myGraph->Topo().Gen().TopoEntity(myRoot);
     if (myTargetKind.has_value() && myEmitAvoidKind && aRootDef != nullptr && !aRootDef->IsRemoved)
     {
       StackFrame aRootFrame;
@@ -314,7 +314,7 @@ void BRepGraph_ChildExplorer::startTraversal(const TopLoc_Location&   theStartLo
   // Check pre-resolution root match (for CoEdge, Occurrence targets) only in recursive mode.
   if (myMode == TraversalMode::Recursive && myTargetKind.has_value() && matchesTarget(myRoot))
   {
-    const BRepGraphInc::BaseDef* aRootDef = myGraph->Topo().TopoEntity(myRoot);
+    const BRepGraphInc::BaseDef* aRootDef = myGraph->Topo().Gen().TopoEntity(myRoot);
     if (aRootDef != nullptr && !aRootDef->IsRemoved)
     {
       StackFrame aRootFrame;
@@ -340,7 +340,7 @@ void BRepGraph_ChildExplorer::startTraversal(const TopLoc_Location&   theStartLo
 
   if (matchesAvoid(aResolved))
   {
-    const BRepGraphInc::BaseDef* anAvoidDef = myGraph->Topo().TopoEntity(aResolved);
+    const BRepGraphInc::BaseDef* anAvoidDef = myGraph->Topo().Gen().TopoEntity(aResolved);
     if (myTargetKind.has_value() && myEmitAvoidKind && anAvoidDef != nullptr && !anAvoidDef->IsRemoved)
     {
       StackFrame aRootFrame;
@@ -356,7 +356,7 @@ void BRepGraph_ChildExplorer::startTraversal(const TopLoc_Location&   theStartLo
   }
 
   // Check if resolved root is invalid or removed.
-  const BRepGraphInc::BaseDef* aBaseDef = myGraph->Topo().TopoEntity(aResolved);
+  const BRepGraphInc::BaseDef* aBaseDef = myGraph->Topo().Gen().TopoEntity(aResolved);
   if (aBaseDef == nullptr || aBaseDef->IsRemoved)
     return;
 
@@ -689,7 +689,7 @@ void BRepGraph_ChildExplorer::advance()
 
     if (matchesAvoid(aChildNode))
     {
-      const BRepGraphInc::BaseDef* aPreAvoidDef = aDefs.TopoEntity(aChildNode);
+      const BRepGraphInc::BaseDef* aPreAvoidDef = aDefs.Gen().TopoEntity(aChildNode);
       if (myEmitAvoidKind && aPreAvoidDef != nullptr && !aPreAvoidDef->IsRemoved)
       {
         StackFrame aChildFrame;
@@ -708,7 +708,7 @@ void BRepGraph_ChildExplorer::advance()
     // Pre-resolution target check: yield CoEdge, Occurrence, etc. before 1:1 collapse.
     if (myTargetKind.has_value() && matchesTarget(aChildNode))
     {
-      const BRepGraphInc::BaseDef* aPreDef = aDefs.TopoEntity(aChildNode);
+      const BRepGraphInc::BaseDef* aPreDef = aDefs.Gen().TopoEntity(aChildNode);
       if (aPreDef != nullptr && !aPreDef->IsRemoved)
       {
         StackFrame aChildFrame;
@@ -731,7 +731,7 @@ void BRepGraph_ChildExplorer::advance()
 
     if (matchesAvoid(aChildNode))
     {
-      const BRepGraphInc::BaseDef* aPostAvoidDef = aDefs.TopoEntity(aChildNode);
+      const BRepGraphInc::BaseDef* aPostAvoidDef = aDefs.Gen().TopoEntity(aChildNode);
       if (myEmitAvoidKind && aPostAvoidDef != nullptr && !aPostAvoidDef->IsRemoved)
       {
         StackFrame aChildFrame;
@@ -750,7 +750,7 @@ void BRepGraph_ChildExplorer::advance()
     // Post-resolution target check, or all-descendant emission when no target is configured.
     if (shouldEmit(aChildNode))
     {
-      const BRepGraphInc::BaseDef* aPostDef = aDefs.TopoEntity(aChildNode);
+      const BRepGraphInc::BaseDef* aPostDef = aDefs.Gen().TopoEntity(aChildNode);
       if (aPostDef == nullptr || aPostDef->IsRemoved)
         continue;
 
@@ -766,7 +766,7 @@ void BRepGraph_ChildExplorer::advance()
     }
 
     // Check if resolved child is valid and not removed before descending.
-    const BRepGraphInc::BaseDef* aBaseDef = aDefs.TopoEntity(aChildNode);
+    const BRepGraphInc::BaseDef* aBaseDef = aDefs.Gen().TopoEntity(aChildNode);
     if (aBaseDef == nullptr || aBaseDef->IsRemoved)
       continue;
 
@@ -923,7 +923,7 @@ void BRepGraph_ChildExplorer::pushFrame(const StackFrame& theFrame)
 {
   // Guard against pathological cycles (e.g., self-referencing compounds).
   // A valid DFS path cannot exceed the total node count in the graph.
-  if (myStackTop >= myGraph->Topo().NbNodes())
+  if (myStackTop >= myGraph->Topo().Gen().NbNodes())
     return;
 
   ++myStackTop;

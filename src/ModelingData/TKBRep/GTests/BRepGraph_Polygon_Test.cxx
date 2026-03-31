@@ -59,7 +59,7 @@ TEST(BRepGraph_PolygonTest, MultiTriangulation_Roundtrip_PreservesAll)
 
   // Verify triangulations were captured on face definitions.
   bool aHasTriangulations = false;
-  for (int aFaceDefIdx = 0; aFaceDefIdx < aGraph.Topo().NbFaces(); ++aFaceDefIdx)
+  for (int aFaceDefIdx = 0; aFaceDefIdx < aGraph.Topo().Faces().Nb(); ++aFaceDefIdx)
   {
     const BRepGraphInc::FaceDef& aFaceDef =
       aGraph.Topo().Faces().Definition(BRepGraph_FaceId(aFaceDefIdx));
@@ -78,7 +78,7 @@ TEST(BRepGraph_PolygonTest, MultiTriangulation_Roundtrip_PreservesAll)
   EXPECT_TRUE(aHasTriangulations) << "Meshed box should have triangulations";
 
   // Reconstruct and verify triangulations are preserved.
-  for (int aFaceIdx = 0; aFaceIdx < aGraph.Topo().NbFaces(); ++aFaceIdx)
+  for (int aFaceIdx = 0; aFaceIdx < aGraph.Topo().Faces().Nb(); ++aFaceIdx)
   {
     const BRepGraphInc::FaceDef& aFaceDef =
       aGraph.Topo().Faces().Definition(BRepGraph_FaceId(aFaceIdx));
@@ -112,7 +112,7 @@ TEST(BRepGraph_PolygonTest, Polygon3D_Captured_WhenPresent)
   // Count Polygon3D on edges - matches what BRep_Tool reports for the original shape.
   int aNbPoly3DGraph = 0;
   int aNbPoly3DOrig  = 0;
-  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
+  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().Edges().Nb(); ++anEdgeIdx)
   {
     if (BRepGraph_Tool::Edge::HasPolygon3D(aGraph, BRepGraph_EdgeId(anEdgeIdx)))
       ++aNbPoly3DGraph;
@@ -127,7 +127,7 @@ TEST(BRepGraph_PolygonTest, Polygon3D_Captured_WhenPresent)
     << "Graph Polygon3D count should match BRep_Tool::Polygon3D count";
 
   // Verify Polygon3D roundtrip if present.
-  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
+  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().Edges().Nb(); ++anEdgeIdx)
   {
     if (!BRepGraph_Tool::Edge::HasPolygon3D(aGraph, BRepGraph_EdgeId(anEdgeIdx)))
       continue;
@@ -156,7 +156,7 @@ TEST(BRepGraph_PolygonTest, PolyOnTri_Captured_AfterMesh)
 
   // Count PolygonOnTriangulation entries on coedges.
   int aNbPolyOnTri = 0;
-  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
+  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().Edges().Nb(); ++anEdgeIdx)
   {
     const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
       aGraph.Topo().Edges().CoEdges(BRepGraph_EdgeId(anEdgeIdx));
@@ -170,7 +170,7 @@ TEST(BRepGraph_PolygonTest, PolyOnTri_Captured_AfterMesh)
   EXPECT_GT(aNbPolyOnTri, 0) << "Meshed box edges should have PolygonOnTriangulation";
 
   // Verify PolyOnTri entries have valid context references.
-  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
+  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().Edges().Nb(); ++anEdgeIdx)
   {
     const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
       aGraph.Topo().Edges().CoEdges(BRepGraph_EdgeId(anEdgeIdx));
@@ -242,7 +242,7 @@ TEST(BRepGraph_PolygonTest, UVPoints_Captured_OnPCurves)
 
   // At least some CoEdge entries should have non-origin UV points.
   int aNbNonOriginUV = 0;
-  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
+  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().Edges().Nb(); ++anEdgeIdx)
   {
     const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
       aGraph.Topo().Edges().CoEdges(BRepGraph_EdgeId(anEdgeIdx));
@@ -350,7 +350,7 @@ TEST(BRepGraph_PolygonTest, VertexPointRepresentations_StructurallyValid)
   int aNbPointsOnCurve   = 0;
   int aNbPointsOnSurface = 0;
   int aNbPointsOnPCurve  = 0;
-  for (int aVtxIdx = 0; aVtxIdx < aGraph.Topo().NbVertices(); ++aVtxIdx)
+  for (int aVtxIdx = 0; aVtxIdx < aGraph.Topo().Vertices().Nb(); ++aVtxIdx)
   {
     const BRepGraph_VertexId                   aVertexId(aVtxIdx);
     const BRepGraph_ParamLayer::VertexParams* aParams = aParamLayer->FindVertexParams(aVertexId);
@@ -408,7 +408,7 @@ TEST(BRepGraph_PolygonTest, EdgeRegularity_MatchesOriginal)
 
   // Count captured regularity entries.
   int aNbGraphReg = 0;
-  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
+  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().Edges().Nb(); ++anEdgeIdx)
   {
     aNbGraphReg += aRegularityLayer->NbRegularities(BRepGraph_EdgeId(anEdgeIdx));
   }
@@ -432,7 +432,7 @@ TEST(BRepGraph_PolygonTest, SeamEdge_PolyOnTri_TwoEntries)
 
   // Find an edge with two PolyOnTri entries for the same face (seam edge pattern).
   bool aFoundSeam = false;
-  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
+  for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().Edges().Nb(); ++anEdgeIdx)
   {
     const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
       aGraph.Topo().Edges().CoEdges(BRepGraph_EdgeId(anEdgeIdx));

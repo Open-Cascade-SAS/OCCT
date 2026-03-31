@@ -54,7 +54,7 @@ TEST(BRepGraphAlgo_UVBoundsTest, Compute_Box_ValidBounds)
   int aFaceIdx = 0;
   for (TopExp_Explorer anExp(aBox, TopAbs_FACE); anExp.More(); anExp.Next(), ++aFaceIdx)
   {
-    if (aFaceIdx >= aGraph.Topo().NbFaces())
+    if (aFaceIdx >= aGraph.Topo().Faces().Nb())
     {
       break;
     }
@@ -88,7 +88,7 @@ TEST(BRepGraphAlgo_UVBoundsTest, Compute_Cylinder_MatchesLegacy)
   int aFaceIdx = 0;
   for (TopExp_Explorer anExp(aCyl, TopAbs_FACE); anExp.More(); anExp.Next(), ++aFaceIdx)
   {
-    if (aFaceIdx >= aGraph.Topo().NbFaces())
+    if (aFaceIdx >= aGraph.Topo().Faces().Nb())
     {
       break;
     }
@@ -115,10 +115,10 @@ TEST(BRepGraphAlgo_UVBoundsTest, Compute_Sphere_PeriodicClamping)
 
   BRepGraph aGraph = buildGraph(aSphere);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GE(aGraph.Topo().NbFaces(), 1);
+  ASSERT_GE(aGraph.Topo().Faces().Nb(), 1);
 
   // Sphere surface is U-periodic. Check UV bounds are within valid range.
-  for (int i = 0; i < aGraph.Topo().NbFaces(); ++i)
+  for (int i = 0; i < aGraph.Topo().Faces().Nb(); ++i)
   {
     BRepGraphAlgo_UVBounds::CachedData aData;
     BRepGraphAlgo_UVBounds::Compute(aGraph, BRepGraph_FaceId(i), aData);
@@ -133,7 +133,7 @@ TEST(BRepGraphAlgo_UVBoundsTest, Compute_Sphere_PeriodicClamping)
   int aFaceIdx = 0;
   for (TopExp_Explorer anExp(aSphere, TopAbs_FACE); anExp.More(); anExp.Next(), ++aFaceIdx)
   {
-    if (aFaceIdx >= aGraph.Topo().NbFaces())
+    if (aFaceIdx >= aGraph.Topo().Faces().Nb())
     {
       break;
     }
@@ -164,7 +164,7 @@ TEST(BRepGraphAlgo_UVBoundsTest, CachedAPI_AddGet_Consistent)
 
   BRepGraph aGraph = buildGraph(aBox);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GE(aGraph.Topo().NbFaces(), 1);
+  ASSERT_GE(aGraph.Topo().Faces().Nb(), 1);
 
   const BRepGraph_FaceId aFaceNode = BRepGraph_FaceId(0);
 
@@ -189,7 +189,7 @@ TEST(BRepGraphAlgo_UVBoundsTest, CachedAPI_Invalidate_ClearsCache)
 
   BRepGraph aGraph = buildGraph(aBox);
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GE(aGraph.Topo().NbFaces(), 1);
+  ASSERT_GE(aGraph.Topo().Faces().Nb(), 1);
 
   const BRepGraph_FaceId aFaceNode = BRepGraph_FaceId(0);
 

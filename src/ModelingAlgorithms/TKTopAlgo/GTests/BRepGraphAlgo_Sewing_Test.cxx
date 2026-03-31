@@ -241,9 +241,9 @@ TEST(BRepGraphAlgo_SewingTest, GraphAccessAfterSewing)
   ASSERT_TRUE(aResult.IsDone);
 
   EXPECT_TRUE(aGraph.IsDone());
-  EXPECT_EQ(aGraph.Topo().NbFaces(), 2);
-  EXPECT_GT(aGraph.Topo().NbEdges(), 0);
-  EXPECT_GT(aGraph.Topo().NbVertices(), 0);
+  EXPECT_EQ(aGraph.Topo().Faces().Nb(), 2);
+  EXPECT_GT(aGraph.Topo().Edges().Nb(), 0);
+  EXPECT_GT(aGraph.Topo().Vertices().Nb(), 0);
   // History should record the merge.
   EXPECT_GE(aGraph.History().NbRecords(), 1);
 }
@@ -748,8 +748,8 @@ TEST(BRepGraphAlgo_SewingTest, VertexMerging_SharedVerticesAfterSewing)
 
   // After sewing, the graph's vertex count should be less than the sum of
   // individual face vertices (because coincident vertices were merged).
-  EXPECT_LE(aGraph.Topo().NbVertices(), 8);
-  EXPECT_GE(aGraph.Topo().NbVertices(), 6);
+  EXPECT_LE(aGraph.Topo().Vertices().Nb(), 8);
+  EXPECT_GE(aGraph.Topo().Vertices().Nb(), 6);
 }
 
 TEST(BRepGraphAlgo_SewingTest, GraphEdgeCount_AfterSewing)
@@ -771,8 +771,8 @@ TEST(BRepGraphAlgo_SewingTest, GraphEdgeCount_AfterSewing)
   BRepGraphAlgo_Sewing::Result aResult = sewOnGraph(aShapes, aOpts, aGraph);
   ASSERT_TRUE(aResult.IsDone);
 
-  EXPECT_EQ(aGraph.Topo().NbFaces(), 6);
-  EXPECT_GE(aGraph.Topo().NbEdges(), 12);
+  EXPECT_EQ(aGraph.Topo().Faces().Nb(), 6);
+  EXPECT_GE(aGraph.Topo().Edges().Nb(), 12);
 }
 
 TEST(BRepGraphAlgo_SewingTest, SewAllSixFaces_AreaPerFace)
@@ -872,7 +872,7 @@ NCollection_Sequence<TopoDS_Shape> buildFaceGrid(int    theNx,
       gp_Trsf aTrsf;
       aTrsf.SetTranslation(gp_Vec(anIx * theSizeX, anIy * theSizeY, 0.0));
 
-      if (aTemplateGraph.IsDone() && aTemplateGraph.Topo().NbFaces() > 0)
+      if (aTemplateGraph.IsDone() && aTemplateGraph.Topo().Faces().Nb() > 0)
       {
         BRepGraph aTransGraph =
           BRepGraphAlgo_Transform::TransformFace(aTemplateGraph, BRepGraph_FaceId(0), aTrsf, true);
@@ -975,7 +975,7 @@ TEST(BRepGraphAlgo_SewingTest, Perform_PreBuiltGraph_ModifiesInPlace)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Snapshot edge count before sewing.
-  const int aNbEdgesBefore = aGraph.Topo().NbEdges();
+  const int aNbEdgesBefore = aGraph.Topo().Edges().Nb();
 
   BRepGraphAlgo_Sewing::Options aOpts;
   aOpts.Tolerance                      = 1.0e-04;
@@ -984,7 +984,7 @@ TEST(BRepGraphAlgo_SewingTest, Perform_PreBuiltGraph_ModifiesInPlace)
   EXPECT_EQ(aResult.NbSewnEdges, 12);
 
   // The graph was modified in-place; edge definitions still exist.
-  EXPECT_GE(aGraph.Topo().NbEdges(), aNbEdgesBefore);
+  EXPECT_GE(aGraph.Topo().Edges().Nb(), aNbEdgesBefore);
   // History records are present (batch recording creates fewer records).
   EXPECT_GE(aGraph.History().NbRecords(), 1);
 }
@@ -1197,9 +1197,9 @@ TEST(BRepGraphAlgo_SewingTest, DeepAndLightCopy_MatchNodeCounts)
   BRepGraph aLightCopy = BRepGraphAlgo_Copy::Perform(aGraph, false);
   ASSERT_TRUE(aLightCopy.IsDone());
 
-  EXPECT_EQ(aDeepCopy.Topo().NbFaces(), aLightCopy.Topo().NbFaces());
-  EXPECT_EQ(aDeepCopy.Topo().NbEdges(), aLightCopy.Topo().NbEdges());
-  EXPECT_EQ(aDeepCopy.Topo().NbVertices(), aLightCopy.Topo().NbVertices());
+  EXPECT_EQ(aDeepCopy.Topo().Faces().Nb(), aLightCopy.Topo().Faces().Nb());
+  EXPECT_EQ(aDeepCopy.Topo().Edges().Nb(), aLightCopy.Topo().Edges().Nb());
+  EXPECT_EQ(aDeepCopy.Topo().Vertices().Nb(), aLightCopy.Topo().Vertices().Nb());
 }
 
 // ============================================================
@@ -1459,7 +1459,7 @@ TEST(BRepGraphAlgo_SewingTest, SeamEdge_CorruptedDualPCurve_DetectedByValidator)
 
   // Find a CoEdge that is part of a seam pair.
   int aSeamCoEdgeIdx = -1;
-  for (int i = 0; i < aGraph.Topo().NbCoEdges(); ++i)
+  for (int i = 0; i < aGraph.Topo().CoEdges().Nb(); ++i)
   {
     const BRepGraphInc::CoEdgeDef& aCoEdge =
       aGraph.Topo().CoEdges().Definition(BRepGraph_CoEdgeId(i));
@@ -1477,7 +1477,7 @@ TEST(BRepGraphAlgo_SewingTest, SeamEdge_CorruptedDualPCurve_DetectedByValidator)
       aGraph.Topo().CoEdges().Definition(BRepGraph_CoEdgeId(aSeamCoEdgeIdx));
     ASSERT_TRUE(aSeamCoEdge.SeamPairId.IsValid())
       << "Seam CoEdge must have a valid SeamPairId before corruption.";
-    ASSERT_LT(aSeamCoEdge.SeamPairId.Index, aGraph.Topo().NbCoEdges())
+    ASSERT_LT(aSeamCoEdge.SeamPairId.Index, aGraph.Topo().CoEdges().Nb())
       << "SeamPairId must reference an in-bounds CoEdge.";
     ASSERT_TRUE(aSeamCoEdge.Curve2DRepId.IsValid())
       << "Seam CoEdge must have a valid Curve2DRepId before corruption.";
@@ -1486,7 +1486,7 @@ TEST(BRepGraphAlgo_SewingTest, SeamEdge_CorruptedDualPCurve_DetectedByValidator)
   // Corrupt its Curve2DRepId to an out-of-bounds index.
   BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef> aCoEdgeDef =
     aGraph.Builder().MutCoEdge(BRepGraph_CoEdgeId(aSeamCoEdgeIdx));
-  aCoEdgeDef->Curve2DRepId = BRepGraph_Curve2DRepId(aGraph.Topo().NbCurves2D() + 1);
+  aCoEdgeDef->Curve2DRepId = BRepGraph_Curve2DRepId(aGraph.Topo().Geometry().NbCurves2D() + 1);
 
   const BRepGraphAlgo_Validate::Result aAuditResult =
     BRepGraphAlgo_Validate::Perform(aGraph, BRepGraphAlgo_Validate::Options::Audit());
