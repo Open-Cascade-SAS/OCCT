@@ -7,10 +7,12 @@ set(OCCT_TKBRep_GTests_FILES
   BRepGraph_Diagnostics_Test.cxx
   BRepGraph_CacheKindRegistry_Test.cxx
   BRepGraph_Assembly_Test.cxx
+  BRepGraph_DefsIterator_Test.cxx
   BRepGraphInc_Test.cxx
   BRepGraph_Builder_Test.cxx
   BRepGraph_NodeId_Test.cxx
   BRepGraph_RefId_Test.cxx
+  BRepGraph_RefsIterator_Test.cxx
   BRepGraph_Benchmark_Test.cxx
   BRepGraph_Build_Test.cxx
   BRepGraph_BulkValidation_Test.cxx

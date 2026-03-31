@@ -9,6 +9,7 @@ set(OCCT_BRepGraph_FILES
   BRepGraph_Builder.hxx
   BRepGraph_BuilderView.cxx
   BRepGraph_BuilderView.hxx
+  BRepGraph_DefsIterator.hxx
   BRepGraph_ChildExplorer.cxx
   BRepGraph_ChildExplorer.hxx
   BRepGraph_Iterator.hxx
@@ -32,6 +33,7 @@ set(OCCT_BRepGraph_FILES
   BRepGraph_ParallelPolicy.hxx
   BRepGraph_RefId.hxx
   BRepGraph_RefUID.hxx
+  BRepGraph_RefsIterator.hxx
   BRepGraph_RefsView.cxx
   BRepGraph_RefsView.hxx
   BRepGraph_RegularityLayer.cxx
