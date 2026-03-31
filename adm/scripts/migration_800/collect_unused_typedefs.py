@@ -76,10 +76,10 @@ class UnusedTypedefCollector:
     """Collects information about unused typedef declarations."""
 
     # Extensions that require global usage check
-    GLOBAL_CHECK_EXTENSIONS = {'.hxx', '.lxx'}
+    GLOBAL_CHECK_EXTENSIONS = {'.h', '.hxx', '.hpp', '.lxx'}
 
     # Extensions that require local usage check only
-    LOCAL_CHECK_EXTENSIONS = {'.cxx', '.pxx', '.gxx', '.c', '.mm'}
+    LOCAL_CHECK_EXTENSIONS = {'.c', '.cpp', '.cxx', '.pxx'}
 
     SKIP_DIRS = {'build', 'install', '.git', '__pycache__', 'mac64', 'win64', 'lin64'}
 

@@ -41,7 +41,7 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 DRY_RUN: bool = False
 
 SKIP_DIRS = {'install', 'build', 'mac64', 'win64', 'lin64', '.git', '__pycache__'}
-SOURCE_EXTENSIONS = {'.hxx', '.cxx', '.lxx', '.pxx', '.gxx', '.h', '.c'}
+SOURCE_EXTENSIONS = {'.lxx', '.hxx', '.hpp', '.pxx', '.cxx', '.cpp', '.c', '.h'}
 
 # Access specifier pattern
 ACCESS_SPECIFIER = r'(?:public|protected|private)\s*:'

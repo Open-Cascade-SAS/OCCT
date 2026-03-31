@@ -2,19 +2,27 @@
 REM Copyright (c) 2025 OPEN CASCADE SAS
 REM
 REM OCCT 8.0.0 Modernization Script Runner
-REM This script runs the migration in the correct order
+REM External-project migration runner (reuses pre-generated JSON files)
 
 setlocal enabledelayedexpansion
 
 set "SCRIPT_DIR=%~dp0"
 set "SRC_DIR=%~1"
 if "%SRC_DIR%"=="" set "SRC_DIR=src"
+set "TYPEDEF_JSON=%SCRIPT_DIR%collected_typedefs.json"
 
 echo ==============================================
 echo OCCT 8.0.0 Modernization
 echo ==============================================
 echo Source directory: %SRC_DIR%
+echo Typedef JSON: %TYPEDEF_JSON%
 echo.
+
+if not exist "%TYPEDEF_JSON%" (
+    echo ERROR: Required JSON not found: %TYPEDEF_JSON%
+    echo Generate it in OCCT first, then reuse it for external projects.
+    exit /b 1
+)
 
 REM Check if dry-run
 set "DRY_RUN="
@@ -67,58 +75,26 @@ echo ==============================================
 python "%SCRIPT_DIR%cleanup_define_handle.py" %DRY_RUN% "%SRC_DIR%"
 if errorlevel 1 goto :error
 
-REM Phase 6: Cleanup deprecated typedef/using declarations
+REM Phase 6: Replace typedef usages with direct NCollection types (reuse pre-generated JSON)
 echo.
 echo ==============================================
-echo Phase 6: Deprecated Typedef/Using Cleanup
+echo Phase 6: Replace Typedef Usages ^(Reused JSON^)
 echo ==============================================
-python "%SCRIPT_DIR%cleanup_deprecated_typedefs.py" %DRY_RUN% "%SRC_DIR%"
+python "%SCRIPT_DIR%replace_typedefs.py" %DRY_RUN% "%SRC_DIR%" --input "%TYPEDEF_JSON%"
 if errorlevel 1 goto :error
 
-REM Phase 7: Collect NCollection typedefs
+REM Phase 7: Cleanup unused typedefs
 echo.
 echo ==============================================
-echo Phase 7: Collect NCollection Typedefs
-echo ==============================================
-python "%SCRIPT_DIR%collect_typedefs.py" "%SRC_DIR%" --output "%SCRIPT_DIR%collected_typedefs.json"
-if errorlevel 1 goto :error
-
-REM Phase 8: Replace typedef usages with direct NCollection types
-echo.
-echo ==============================================
-echo Phase 8: Replace Typedef Usages
-echo ==============================================
-python "%SCRIPT_DIR%replace_typedefs.py" %DRY_RUN% "%SRC_DIR%" --input "%SCRIPT_DIR%collected_typedefs.json"
-if errorlevel 1 goto :error
-
-REM Phase 9: Remove typedef-only headers
-echo.
-echo ==============================================
-echo Phase 9: Remove Typedef-Only Headers
-echo ==============================================
-python "%SCRIPT_DIR%remove_typedef_headers.py" %DRY_RUN% "%SRC_DIR%" --input "%SCRIPT_DIR%collected_typedefs.json"
-if errorlevel 1 goto :error
-
-REM Phase 10: Cleanup forwarding/include-only headers
-echo.
-echo ==============================================
-echo Phase 10: Cleanup Forwarding Headers
-echo ==============================================
-python "%SCRIPT_DIR%cleanup_forwarding_headers.py" %DRY_RUN% "%SRC_DIR%"
-if errorlevel 1 goto :error
-
-REM Phase 11: Cleanup unused typedefs
-echo.
-echo ==============================================
-echo Phase 11: Cleanup Unused Typedefs
+echo Phase 7: Cleanup Unused Typedefs
 echo ==============================================
 python "%SCRIPT_DIR%cleanup_unused_typedefs.py" %DRY_RUN% "%SRC_DIR%"
 if errorlevel 1 goto :error
 
-REM Phase 12: Cleanup redundant access specifiers
+REM Phase 8: Cleanup redundant access specifiers
 echo.
 echo ==============================================
-echo Phase 12: Cleanup Access Specifiers
+echo Phase 8: Cleanup Access Specifiers
 echo ==============================================
 python "%SCRIPT_DIR%cleanup_access_specifiers.py" %DRY_RUN% "%SRC_DIR%"
 if errorlevel 1 goto :error
@@ -134,6 +110,7 @@ echo.
 echo ==============================================
 echo Migration Complete
 echo ==============================================
+echo NOTE: File-removal phases are intentionally skipped for external projects.
 echo.
 echo Next steps:
 echo 1. Run CI/CD formatting (clang-format)

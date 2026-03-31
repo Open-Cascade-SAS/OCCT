@@ -108,7 +108,7 @@ class DefineHandleCleaner:
     def should_process_file(self, filepath: Path) -> bool:
         """Check if file should be processed."""
         # Check extension
-        if filepath.suffix not in ('.hxx', '.cxx', '.lxx', '.pxx', '.gxx', '.h', '.c', '.mm'):
+        if filepath.suffix not in ('.lxx', '.hxx', '.hpp', '.pxx', '.cxx', '.cpp', '.c', '.h'):
             return False
 
         # Check excluded files

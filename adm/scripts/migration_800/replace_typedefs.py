@@ -42,11 +42,13 @@ import multiprocessing
 TYPEDEF_MAP: Dict[str, Tuple[str, str]] = {}  # name -> (full_type, collection_type)
 TYPEDEF_PATTERN: re.Pattern = None
 TYPEDEF_ONLY_HEADERS: Set[str] = set()
+TYPEDEF_REQUIRED_INCLUDES: Dict[str, Tuple[str, ...]] = {}  # name -> include files
+INCLUDE_REPLACEMENTS: Dict[str, Tuple[str, ...]] = {}  # old include -> replacement includes
 DRY_RUN: bool = False
 SRC_DIR: str = ""
 
 SKIP_DIRS = {'install', 'build', 'mac64', 'win64', 'lin64', '.git', '__pycache__'}
-SOURCE_EXTENSIONS = {'.hxx', '.cxx', '.lxx', '.pxx', '.gxx', '.h', '.c', '.mm'}
+SOURCE_EXTENSIONS = {'.lxx', '.hxx', '.hpp', '.pxx', '.cxx', '.cpp', '.c', '.h'}
 
 
 def line_has_semicolon(line: str) -> bool:
@@ -57,7 +59,87 @@ def line_has_semicolon(line: str) -> bool:
     return ';' in line
 
 
-def process_typedef_line(typedef_text: str, result: Dict, used_collections: set) -> str:
+def extract_include_path(line: str) -> str:
+    """Extract include path from #include line, empty string if not an include."""
+    match = re.match(r'^\s*#include\s*[<"]([^>"]+)[>"]', line)
+    return match.group(1) if match else ""
+
+
+def make_include_line(include_path: str, use_quotes: bool) -> str:
+    """Create an #include line using the preferred delimiter style."""
+    if use_quotes:
+        return f'#include "{include_path}"'
+    return f'#include <{include_path}>'
+
+
+def replace_typedef_usages(line: str,
+                           result: Dict,
+                           used_collections: Set[str],
+                           required_includes: Set[str]) -> str:
+    """Replace typedef usages on one line and collect required includes."""
+    new_line = line
+    for match in TYPEDEF_PATTERN.finditer(line):
+        typedef_name = match.group(0)
+        if typedef_name in TYPEDEF_MAP:
+            full_type, col_type = TYPEDEF_MAP[typedef_name]
+            new_line = re.sub(r'\b' + re.escape(typedef_name) + r'\b', full_type, new_line)
+            result['replacements'][typedef_name] = result['replacements'].get(typedef_name, 0) + 1
+            used_collections.add(col_type)
+            required_includes.update(TYPEDEF_REQUIRED_INCLUDES.get(typedef_name, ()))
+    return new_line
+
+
+def update_includes(content: str, required_includes: Set[str], result: Dict) -> str:
+    """Replace typedef-only header includes and add missing required includes."""
+    lines = content.split('\n')
+    new_lines: List[str] = []
+    existing_includes: Set[str] = set()
+    include_style_quotes = False
+    last_include_idx = -1
+    include_changed = False
+
+    for line in lines:
+        stripped = line.strip()
+        include_path = extract_include_path(stripped)
+        if include_path:
+            include_style_quotes = '"' in stripped
+            replacement_headers = INCLUDE_REPLACEMENTS.get(include_path)
+            if replacement_headers:
+                for a_header in replacement_headers:
+                    if a_header not in existing_includes:
+                        new_lines.append(make_include_line(a_header, include_style_quotes))
+                        existing_includes.add(a_header)
+                        last_include_idx = len(new_lines) - 1
+                result['include_replacements'] = result.get('include_replacements', 0) + 1
+                include_changed = True
+                continue
+
+            new_lines.append(line)
+            existing_includes.add(include_path)
+            last_include_idx = len(new_lines) - 1
+            continue
+
+        new_lines.append(line)
+
+    missing_required = sorted(required_includes - existing_includes)
+    if missing_required:
+        include_changed = True
+        insert_pos = last_include_idx + 1 if last_include_idx >= 0 else 0
+        if insert_pos < len(new_lines) and new_lines[insert_pos].strip():
+            new_lines.insert(insert_pos, '')
+            insert_pos += 1
+        for a_header in missing_required:
+            new_lines.insert(insert_pos, make_include_line(a_header, include_style_quotes))
+            insert_pos += 1
+        result['includes_added'] = result.get('includes_added', 0) + len(missing_required)
+
+    return '\n'.join(new_lines) if include_changed else content
+
+
+def process_typedef_line(typedef_text: str,
+                         result: Dict,
+                         used_collections: Set[str],
+                         required_includes: Set[str]) -> str:
     """
     Process a typedef line, replacing source types but NOT the alias name.
 
@@ -95,16 +177,26 @@ def process_typedef_line(typedef_text: str, result: Dict, used_collections: set)
             new_text = re.sub(r'\b' + re.escape(typedef_name) + r'\b', full_type, new_text)
             result['replacements'][typedef_name] = result['replacements'].get(typedef_name, 0) + 1
             used_collections.add(col_type)
+            required_includes.update(TYPEDEF_REQUIRED_INCLUDES.get(typedef_name, ()))
 
     return new_text
 
 
-def init_worker(typedef_map, pattern_str, typedef_only_headers, dry_run, src_dir):
+def init_worker(typedef_map,
+                pattern_str,
+                typedef_only_headers,
+                typedef_required_includes,
+                include_replacements,
+                dry_run,
+                src_dir):
     """Initialize worker with shared data."""
-    global TYPEDEF_MAP, TYPEDEF_PATTERN, TYPEDEF_ONLY_HEADERS, DRY_RUN, SRC_DIR
+    global TYPEDEF_MAP, TYPEDEF_PATTERN, TYPEDEF_ONLY_HEADERS
+    global TYPEDEF_REQUIRED_INCLUDES, INCLUDE_REPLACEMENTS, DRY_RUN, SRC_DIR
     TYPEDEF_MAP = typedef_map
     TYPEDEF_PATTERN = re.compile(pattern_str)
     TYPEDEF_ONLY_HEADERS = typedef_only_headers
+    TYPEDEF_REQUIRED_INCLUDES = typedef_required_includes
+    INCLUDE_REPLACEMENTS = include_replacements
     DRY_RUN = dry_run
     SRC_DIR = src_dir
 
@@ -115,6 +207,8 @@ def process_file(file_path_str: str) -> Dict:
     result = {
         'file_path': file_path_str,
         'replacements': {},
+        'include_replacements': 0,
+        'includes_added': 0,
         'modified': False,
         'error': None
     }
@@ -137,6 +231,7 @@ def process_file(file_path_str: str) -> Dict:
 
     original = content
     used_collections: Set[str] = set()
+    required_includes: Set[str] = set()
 
     # Process content - multiple passes for typedef-on-typedef
     max_passes = 5
@@ -156,30 +251,18 @@ def process_file(file_path_str: str) -> Dict:
             if stripped.startswith('#define '):
                 in_macro = is_macro_continuation
                 # Still do replacements in #define lines
-                new_line = line
-                for match in TYPEDEF_PATTERN.finditer(line):
-                    typedef_name = match.group(0)
-                    if typedef_name in TYPEDEF_MAP:
-                        full_type, col_type = TYPEDEF_MAP[typedef_name]
-                        new_line = re.sub(r'\b' + re.escape(typedef_name) + r'\b', full_type, new_line)
-                        result['replacements'][typedef_name] = result['replacements'].get(typedef_name, 0) + 1
-                        used_collections.add(col_type)
-                        made_changes = True
+                new_line = replace_typedef_usages(line, result, used_collections, required_includes)
+                if new_line != line:
+                    made_changes = True
                 new_content.append(new_line)
                 continue
 
             if in_macro:
                 # Inside macro continuation - still do replacements
                 in_macro = is_macro_continuation
-                new_line = line
-                for match in TYPEDEF_PATTERN.finditer(line):
-                    typedef_name = match.group(0)
-                    if typedef_name in TYPEDEF_MAP:
-                        full_type, col_type = TYPEDEF_MAP[typedef_name]
-                        new_line = re.sub(r'\b' + re.escape(typedef_name) + r'\b', full_type, new_line)
-                        result['replacements'][typedef_name] = result['replacements'].get(typedef_name, 0) + 1
-                        used_collections.add(col_type)
-                        made_changes = True
+                new_line = replace_typedef_usages(line, result, used_collections, required_includes)
+                if new_line != line:
+                    made_changes = True
                 new_content.append(new_line)
                 continue
 
@@ -196,7 +279,9 @@ def process_file(file_path_str: str) -> Dict:
                 if line_has_semicolon(stripped):
                     # Single-line typedef - process it
                     processed_line = process_typedef_line(''.join(typedef_lines),
-                                                          result, used_collections)
+                                                          result,
+                                                          used_collections,
+                                                          required_includes)
                     if processed_line != ''.join(typedef_lines):
                         made_changes = True
                     new_content.append(processed_line)
@@ -211,7 +296,9 @@ def process_file(file_path_str: str) -> Dict:
                     # End of multi-line typedef - process it
                     full_typedef = ''.join(typedef_lines)
                     processed_typedef = process_typedef_line(full_typedef,
-                                                              result, used_collections)
+                                                             result,
+                                                             used_collections,
+                                                             required_includes)
                     if processed_typedef != full_typedef:
                         made_changes = True
                     new_content.append(processed_typedef)
@@ -220,21 +307,17 @@ def process_file(file_path_str: str) -> Dict:
                 continue
 
             # Find and replace all typedef usages in this line
-            new_line = line
-            for match in TYPEDEF_PATTERN.finditer(line):
-                typedef_name = match.group(0)
-                if typedef_name in TYPEDEF_MAP:
-                    full_type, col_type = TYPEDEF_MAP[typedef_name]
-                    new_line = re.sub(r'\b' + re.escape(typedef_name) + r'\b', full_type, new_line)
-                    result['replacements'][typedef_name] = result['replacements'].get(typedef_name, 0) + 1
-                    used_collections.add(col_type)
-                    made_changes = True
+            new_line = replace_typedef_usages(line, result, used_collections, required_includes)
+            if new_line != line:
+                made_changes = True
 
             new_content.append(new_line)
 
         content = '\n'.join(new_content)
         if not made_changes:
             break
+
+    content = update_includes(content, required_includes, result)
 
     if content != original:
         result['modified'] = True
@@ -276,13 +359,36 @@ def main():
 
     # Build optimized lookup
     typedef_map: Dict[str, Tuple[str, str]] = {}
+    typedef_required_includes: Dict[str, Tuple[str, ...]] = {}
+    include_replacements: Dict[str, Tuple[str, ...]] = {}
     typedef_names = []
+    headers_info = data.get('headers', {})
+
+    typedef_only_headers = set(data.get('typedef_only_headers', []))
+
+    # Build include replacement map for typedef-only headers.
+    # Match both full include path and unique basename.
+    basename_counts: Dict[str, int] = {}
+    for a_header in typedef_only_headers:
+        a_basename = Path(a_header).name
+        basename_counts[a_basename] = basename_counts.get(a_basename, 0) + 1
+
+    for a_header in typedef_only_headers:
+        header_data = headers_info.get(a_header, {})
+        header_includes = tuple(header_data.get('includes', []))
+        if not header_includes:
+            continue
+        include_replacements[a_header] = header_includes
+        a_basename = Path(a_header).name
+        if basename_counts.get(a_basename, 0) == 1:
+            include_replacements[a_basename] = header_includes
 
     for td in data.get('typedefs', []):
         name = td['typedef_name']
         full_type = td['full_type']
         col_type = td['collection_type']
         namespace = td.get('namespace', '')
+        header_file = td.get('header_file', '')
 
         # Skip typedefs without package prefix (no underscore)
         # These are typically local convenience typedefs that conflict with local definitions
@@ -292,21 +398,22 @@ def main():
             continue
 
         typedef_map[name] = (full_type, col_type)
+        typedef_required_includes[name] = tuple(headers_info.get(header_file, {}).get('includes', []))
         typedef_names.append(name)
 
         # Also add namespace-qualified version if typedef is in a namespace
         if namespace:
             qualified_name = f"{namespace}::{name}"
             typedef_map[qualified_name] = (full_type, col_type)
+            typedef_required_includes[qualified_name] = tuple(headers_info.get(header_file, {}).get('includes', []))
             typedef_names.append(qualified_name)
 
     # Create single combined pattern - sort by length (longest first) for correct matching
     typedef_names.sort(key=len, reverse=True)
     pattern_str = r'\b(' + '|'.join(re.escape(n) for n in typedef_names) + r')\b'
 
-    typedef_only_headers = set(data.get('typedef_only_headers', []))
-
     print(f"Loaded {len(typedef_map)} typedef replacements")
+    print(f"Loaded {len(include_replacements)} include replacement rules")
     print(f"Using {args.jobs} parallel workers")
     if args.dry_run:
         print("(DRY RUN)")
@@ -318,13 +425,21 @@ def main():
 
     # Process in parallel
     total_replacements: Dict[str, int] = {}
+    total_include_replacements = 0
+    total_includes_added = 0
     modified_count = 0
     processed = 0
 
     with ProcessPoolExecutor(
         max_workers=args.jobs,
         initializer=init_worker,
-        initargs=(typedef_map, pattern_str, typedef_only_headers, args.dry_run, str(src_dir))
+        initargs=(typedef_map,
+                  pattern_str,
+                  typedef_only_headers,
+                  typedef_required_includes,
+                  include_replacements,
+                  args.dry_run,
+                  str(src_dir))
     ) as executor:
         futures = {executor.submit(process_file, f): f for f in files}
 
@@ -343,6 +458,9 @@ def main():
                 for name, count in result.get('replacements', {}).items():
                     total_replacements[name] = total_replacements.get(name, 0) + count
 
+                total_include_replacements += result.get('include_replacements', 0)
+                total_includes_added += result.get('includes_added', 0)
+
             except Exception as e:
                 print(f"Error: {futures[future]}: {e}")
 
@@ -353,6 +471,8 @@ def main():
     print(f"Files processed: {len(files)}")
     print(f"Files modified: {modified_count}")
     print(f"Total replacements: {sum(total_replacements.values())}")
+    print(f"Include directives replaced: {total_include_replacements}")
+    print(f"Include directives added: {total_includes_added}")
 
     if total_replacements:
         print("\nTop 15 replaced typedefs:")
@@ -366,6 +486,8 @@ def main():
         json.dump({
             'files_modified': modified_count,
             'total_replacements': sum(total_replacements.values()),
+            'include_replacements': total_include_replacements,
+            'includes_added': total_includes_added,
             'by_typedef': total_replacements,
             'dry_run': args.dry_run
         }, f, indent=2)

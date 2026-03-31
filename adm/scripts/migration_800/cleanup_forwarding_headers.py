@@ -37,8 +37,8 @@ from typing import Dict, List, Set, Tuple
 class ForwardingHeaderCleaner:
     """Finds and removes forwarding headers."""
 
-    HEADER_EXTENSIONS = {'.hxx', '.h', '.lxx'}
-    SOURCE_EXTENSIONS = {'.cxx', '.hxx', '.pxx', '.lxx', '.gxx', '.h', '.cpp', '.c'}
+    HEADER_EXTENSIONS = {'.lxx', '.hxx', '.hpp', '.pxx', '.h'}
+    SOURCE_EXTENSIONS = {'.lxx', '.hxx', '.hpp', '.pxx', '.cxx', '.cpp', '.c', '.h'}
     SKIP_DIRS = {'build', 'install', '.git', '__pycache__', 'mac64', 'win64', 'lin64'}
 
     # Pattern to extract #include directives

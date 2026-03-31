@@ -45,8 +45,8 @@ TYPEDEF_PATTERN: Optional[re.Pattern] = None
 DRY_RUN: bool = False
 
 SKIP_DIRS = {'build', 'install', '.git', '__pycache__', 'mac64', 'win64', 'lin64'}
-SOURCE_EXTENSIONS = {'.cxx', '.hxx', '.pxx', '.lxx', '.gxx', '.h', '.cpp', '.c'}
-HEADER_EXTENSIONS = {'.hxx', '.h', '.pxx', '.lxx', '.gxx'}
+SOURCE_EXTENSIONS = {'.lxx', '.hxx', '.hpp', '.pxx', '.cxx', '.cpp', '.c', '.h'}
+HEADER_EXTENSIONS = {'.lxx', '.hxx', '.hpp', '.pxx', '.h'}
 
 # Core files to exclude from modification
 EXCLUDED_FILES = {
