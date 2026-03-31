@@ -114,7 +114,7 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
   // Process each face.
   for (int aFaceIdx = 0; aFaceIdx < aDefs.NbFaces(); ++aFaceIdx)
   {
-    const BRepGraphInc::FaceDef& aFace = aDefs.Face(BRepGraph_FaceId(aFaceIdx));
+    const BRepGraphInc::FaceDef& aFace = aDefs.Faces().Definition(BRepGraph_FaceId(aFaceIdx));
     if (aFace.IsRemoved)
     {
       continue;
@@ -124,7 +124,7 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
     int aNbSmall = 0;
 
     // Iterate over all wires of this face.
-    const BRepGraphInc::FaceDef& aFaceEnt = aDefs.Face(BRepGraph_FaceId(aFaceIdx));
+    const BRepGraphInc::FaceDef& aFaceEnt = aDefs.Faces().Definition(BRepGraph_FaceId(aFaceIdx));
     for (int aWireRefIter = 0; aWireRefIter < aFaceEnt.WireRefIds.Length(); ++aWireRefIter)
     {
       const BRepGraph_WireRefId    aWireRefId = aFaceEnt.WireRefIds.Value(aWireRefIter);
@@ -134,7 +134,7 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
         continue;
       }
 
-      const BRepGraphInc::WireDef& aWireEnt = aDefs.Wire(aWR.WireDefId);
+      const BRepGraphInc::WireDef& aWireEnt = aDefs.Wires().Definition(aWR.WireDefId);
 
       for (int aCoEdgeRefIter = 0; aCoEdgeRefIter < aWireEnt.CoEdgeRefIds.Length();
            ++aCoEdgeRefIter)
@@ -146,7 +146,7 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
           continue;
         }
 
-        const BRepGraphInc::CoEdgeDef& aCoEdge  = aDefs.CoEdge(aCR.CoEdgeDefId);
+        const BRepGraphInc::CoEdgeDef& aCoEdge  = aDefs.CoEdges().Definition(aCR.CoEdgeDefId);
         const BRepGraph_EdgeId         anEdgeId = aCoEdge.EdgeDefId;
         if (!anEdgeId.IsValid(aDefs.NbEdges()))
         {
@@ -154,7 +154,7 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
         }
 
         const int                    anEdgeIdx = anEdgeId.Index;
-        const BRepGraphInc::EdgeDef& anEdge    = aDefs.Edge(anEdgeId);
+        const BRepGraphInc::EdgeDef& anEdge    = aDefs.Edges().Definition(anEdgeId);
         ++aNbEdges;
 
         if (BRepGraph_Tool::Edge::Degenerated(theGraph, anEdgeId))
@@ -335,7 +335,7 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
   {
     for (int anEdgeIdx = 0; anEdgeIdx < aDefs.NbEdges(); ++anEdgeIdx)
     {
-      const BRepGraphInc::EdgeDef& anEdge      = aDefs.Edge(BRepGraph_EdgeId(anEdgeIdx));
+      const BRepGraphInc::EdgeDef& anEdge      = aDefs.Edges().Definition(BRepGraph_EdgeId(anEdgeIdx));
       bool                         aNeedUpdate = false;
       int                          aNewStart   = anEdge.StartVertexRefId.IsValid()
                                                    ? aRefs.Vertex(anEdge.StartVertexRefId).VertexDefId.Index
@@ -365,7 +365,7 @@ BRepGraphAlgo_FaceAnalysis::Result BRepGraphAlgo_FaceAnalysis::Perform(BRepGraph
 
       if (aNeedUpdate)
       {
-        const BRepGraphInc::EdgeDef& anEdgeRef = aDefs.Edge(BRepGraph_EdgeId(anEdgeIdx));
+        const BRepGraphInc::EdgeDef& anEdgeRef = aDefs.Edges().Definition(BRepGraph_EdgeId(anEdgeIdx));
         if (anEdgeRef.StartVertexRefId.IsValid() && aNewStart >= 0)
         {
           theGraph.Builder().MutVertexRef(anEdgeRef.StartVertexRefId)->VertexDefId =

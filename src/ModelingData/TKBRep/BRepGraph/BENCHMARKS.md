@@ -74,7 +74,7 @@ Config: RelWithDebInfo
   - Sewing uses `Builder().RemoveNode()` for replaced edges (proper active count maintenance)
   - `ReplaceEdgeInWire` binds new edge + unbinds old edge from faces in single loop
   - `FaceCountForEdge` simplified to direct O(1) delegation (removes PackedMap allocation per call)
-  - `FreeEdges` and multiple-edge detection switched to `Topo().NbFacesOfEdge()` with `IsRemoved` filter
+  - `FreeEdges` and multiple-edge detection switched to `Topo().Edges().NbFaces()` with `IsRemoved` filter
   - `UnbindEdgeFromFace` added to ReverseIndex (mirrors UnbindVertexFromEdge pattern)
   - `CommitMutation` guardrails: validates reverse index + active counts at end of Sewing, Compact, Deduplicate
   - CommitMutation assertions are debug-only (`Standard_ASSERT_VOID` is no-op in non-debug) — zero overhead

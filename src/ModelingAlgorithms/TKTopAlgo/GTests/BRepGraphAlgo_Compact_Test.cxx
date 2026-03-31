@@ -125,13 +125,13 @@ TEST(BRepGraphAlgo_CompactTest, IndexDensity_NoGaps)
 
   // After compaction, there should be no removed defs.
   for (int anIdx = 0; anIdx < aGraph.Topo().NbVertices(); ++anIdx)
-    EXPECT_FALSE(aGraph.Topo().Vertex(BRepGraph_VertexId(anIdx)).IsRemoved);
+    EXPECT_FALSE(aGraph.Topo().Vertices().Definition(BRepGraph_VertexId(anIdx)).IsRemoved);
   for (int anIdx = 0; anIdx < aGraph.Topo().NbEdges(); ++anIdx)
-    EXPECT_FALSE(aGraph.Topo().Edge(BRepGraph_EdgeId(anIdx)).IsRemoved);
+    EXPECT_FALSE(aGraph.Topo().Edges().Definition(BRepGraph_EdgeId(anIdx)).IsRemoved);
   for (int anIdx = 0; anIdx < aGraph.Topo().NbFaces(); ++anIdx)
-    EXPECT_FALSE(aGraph.Topo().Face(BRepGraph_FaceId(anIdx)).IsRemoved);
+    EXPECT_FALSE(aGraph.Topo().Faces().Definition(BRepGraph_FaceId(anIdx)).IsRemoved);
   for (int anIdx = 0; anIdx < aGraph.Topo().NbWires(); ++anIdx)
-    EXPECT_FALSE(aGraph.Topo().Wire(BRepGraph_WireId(anIdx)).IsRemoved);
+    EXPECT_FALSE(aGraph.Topo().Wires().Definition(BRepGraph_WireId(anIdx)).IsRemoved);
 }
 
 TEST(BRepGraphAlgo_CompactTest, CrossReferences_Valid)
@@ -282,7 +282,7 @@ TEST(BRepGraphAlgo_CompactTest, OwnGen_SurvivesCompact)
   // Mutate edge 0 twice so OwnGen == THE_EXPECTED_OWN_GEN.
   aGraph.Builder().MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.1;
   aGraph.Builder().MutEdge(BRepGraph_EdgeId(0))->Tolerance = THE_MUTATED_EDGE_TOLERANCE;
-  ASSERT_EQ(aGraph.Topo().Edge(BRepGraph_EdgeId(0)).OwnGen, THE_EXPECTED_OWN_GEN);
+  ASSERT_EQ(aGraph.Topo().Edges().Definition(BRepGraph_EdgeId(0)).OwnGen, THE_EXPECTED_OWN_GEN);
 
   // Run dedup + compact.
   (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
@@ -293,7 +293,7 @@ TEST(BRepGraphAlgo_CompactTest, OwnGen_SurvivesCompact)
   bool aFound = false;
   for (int anIdx = 0; anIdx < aGraph.Topo().NbEdges(); ++anIdx)
   {
-    const BRepGraphInc::EdgeDef& anEdge = aGraph.Topo().Edge(BRepGraph_EdgeId(anIdx));
+    const BRepGraphInc::EdgeDef& anEdge = aGraph.Topo().Edges().Definition(BRepGraph_EdgeId(anIdx));
     if (std::abs(anEdge.Tolerance - THE_MUTATED_EDGE_TOLERANCE) < Precision::Confusion())
     {
       EXPECT_EQ(anEdge.OwnGen, THE_EXPECTED_OWN_GEN)

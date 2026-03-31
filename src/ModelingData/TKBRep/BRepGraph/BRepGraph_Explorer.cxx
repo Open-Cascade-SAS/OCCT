@@ -191,7 +191,7 @@ void BRepGraph_Explorer::advance()
     {
       case Kind::Compound: {
         const BRepGraphInc::CompoundDef& aComp =
-          aDefs.Compound(BRepGraph_CompoundId(aFrame.Node.Index));
+          aDefs.Compounds().Definition(BRepGraph_CompoundId(aFrame.Node.Index));
         // Skip removed refs.
         int i = aIdx;
         for (; i < aComp.ChildRefIds.Length(); ++i)
@@ -214,7 +214,7 @@ void BRepGraph_Explorer::advance()
 
       case Kind::CompSolid: {
         const BRepGraphInc::CompSolidDef& aCS =
-          aDefs.CompSolid(BRepGraph_CompSolidId(aFrame.Node.Index));
+          aDefs.CompSolids().Definition(BRepGraph_CompSolidId(aFrame.Node.Index));
         int i = aIdx;
         for (; i < aCS.SolidRefIds.Length(); ++i)
         {
@@ -236,7 +236,7 @@ void BRepGraph_Explorer::advance()
 
       case Kind::Solid: {
         const BRepGraphInc::SolidDef& aSolid =
-          aDefs.Solid(BRepGraph_SolidId(aFrame.Node.Index));
+          aDefs.Solids().Definition(BRepGraph_SolidId(aFrame.Node.Index));
         const int aNbShells = aSolid.ShellRefIds.Length();
         const int aNbFree   = aSolid.FreeChildRefIds.Length();
         int i = aIdx;
@@ -279,7 +279,7 @@ void BRepGraph_Explorer::advance()
 
       case Kind::Shell: {
         const BRepGraphInc::ShellDef& aShell =
-          aDefs.Shell(BRepGraph_ShellId(aFrame.Node.Index));
+          aDefs.Shells().Definition(BRepGraph_ShellId(aFrame.Node.Index));
         const int aNbFaces = aShell.FaceRefIds.Length();
         const int aNbFree  = aShell.FreeChildRefIds.Length();
         int i = aIdx;
@@ -322,7 +322,7 @@ void BRepGraph_Explorer::advance()
 
       case Kind::Face: {
         const BRepGraphInc::FaceDef& aFace =
-          aDefs.Face(BRepGraph_FaceId(aFrame.Node.Index));
+          aDefs.Faces().Definition(BRepGraph_FaceId(aFrame.Node.Index));
         const int aNbWires = aFace.WireRefIds.Length();
         const int aNbVerts = aFace.VertexRefIds.Length();
         int i = aIdx;
@@ -365,7 +365,7 @@ void BRepGraph_Explorer::advance()
 
       case Kind::Wire: {
         const BRepGraphInc::WireDef& aWire =
-          aDefs.Wire(BRepGraph_WireId(aFrame.Node.Index));
+          aDefs.Wires().Definition(BRepGraph_WireId(aFrame.Node.Index));
         int i = aIdx;
         for (; i < aWire.CoEdgeRefIds.Length(); ++i)
         {
@@ -387,7 +387,7 @@ void BRepGraph_Explorer::advance()
 
       case Kind::Edge: {
         const BRepGraphInc::EdgeDef& anEdge =
-          aDefs.Edge(BRepGraph_EdgeId(aFrame.Node.Index));
+          aDefs.Edges().Definition(BRepGraph_EdgeId(aFrame.Node.Index));
         // Virtual concatenation: 0=Start, 1=End, 2+=Internal.
         const int aNbIntern = anEdge.InternalVertexRefIds.Length();
         const int aNbTotal  = 2 + aNbIntern;
@@ -525,7 +525,7 @@ void BRepGraph_Explorer::resolve1to1(BRepGraph_NodeId&   theNode,
     if (theNode.NodeKind == Kind::CoEdge)
     {
       const BRepGraphInc::CoEdgeDef& aCoEdge =
-        aDefs.CoEdge(BRepGraph_CoEdgeId(theNode.Index));
+        aDefs.CoEdges().Definition(BRepGraph_CoEdgeId(theNode.Index));
       if (aCoEdge.IsRemoved)
       {
         theNode = BRepGraph_NodeId();
@@ -540,7 +540,7 @@ void BRepGraph_Explorer::resolve1to1(BRepGraph_NodeId&   theNode,
     if (theNode.NodeKind == Kind::Occurrence)
     {
       const BRepGraphInc::OccurrenceDef& anOcc =
-        aDefs.Occurrence(BRepGraph_OccurrenceId(theNode.Index));
+        aDefs.Occurrences().Definition(BRepGraph_OccurrenceId(theNode.Index));
       if (anOcc.IsRemoved)
       {
         theNode = BRepGraph_NodeId();
@@ -555,7 +555,7 @@ void BRepGraph_Explorer::resolve1to1(BRepGraph_NodeId&   theNode,
     if (theNode.NodeKind == Kind::Product)
     {
       const BRepGraphInc::ProductDef& aProd =
-        aDefs.Product(BRepGraph_ProductId(theNode.Index));
+        aDefs.Products().Definition(BRepGraph_ProductId(theNode.Index));
       if (aProd.IsRemoved)
       {
         theNode = BRepGraph_NodeId();

@@ -184,7 +184,7 @@ TEST(BRepGraphAlgo_ValidateTest, WireConnectivity_DisconnectedEdges)
   ASSERT_GE(aWireRefIds.Length(), 1);
   const BRepGraphInc::CoEdgeRef& aFirstCR = aGraph.Refs().CoEdge(aWireRefIds.Value(0));
   const BRepGraphInc::CoEdgeDef& aFirstCoEdge =
-    aGraph.Topo().CoEdge(BRepGraph_CoEdgeId(aFirstCR.CoEdgeDefId));
+    aGraph.Topo().CoEdges().Definition(BRepGraph_CoEdgeId(aFirstCR.CoEdgeDefId));
   const BRepGraph_NodeId aFirstEdgeId(aFirstCoEdge.EdgeDefId);
   ASSERT_TRUE(aFirstEdgeId.IsValid());
 
@@ -269,7 +269,7 @@ TEST(BRepGraphAlgo_ValidateTest, AfterSplitEdge_ProducesSubEdges)
   for (int i = 0; i < aGraph.Topo().NbEdges(); ++i)
   {
     const BRepGraph_EdgeId       anCandEdgeId(i);
-    const BRepGraphInc::EdgeDef& anEdgeDef = aGraph.Topo().Edge(anCandEdgeId);
+    const BRepGraphInc::EdgeDef& anEdgeDef = aGraph.Topo().Edges().Definition(anCandEdgeId);
     if (!anEdgeDef.IsDegenerate && anEdgeDef.Curve3DRepId.IsValid()
         && BRepGraph_Tool::Edge::StartVertex(aGraph, anCandEdgeId).VertexDefId.IsValid()
         && BRepGraph_Tool::Edge::EndVertex(aGraph, anCandEdgeId).VertexDefId.IsValid())
@@ -297,7 +297,7 @@ TEST(BRepGraphAlgo_ValidateTest, AfterSplitEdge_ProducesSubEdges)
   EXPECT_TRUE(aSubB.IsValid());
 
   // Original edge should be marked removed.
-  EXPECT_TRUE(aGraph.Topo().Edge(anEdgeId).IsRemoved);
+  EXPECT_TRUE(aGraph.Topo().Edges().Definition(anEdgeId).IsRemoved);
 }
 
 TEST(BRepGraphAlgo_ValidateTest, CorruptedPCurve_FaceDefIdOutOfBounds)

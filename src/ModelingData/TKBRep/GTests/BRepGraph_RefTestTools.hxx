@@ -198,7 +198,7 @@ inline int CountChildRefsOfParent(const BRepGraph& theGraph, const BRepGraph_Nod
 
 inline BRepGraph_WireId OuterWireOfFace(const BRepGraph& theGraph, const BRepGraph_FaceId theFaceId)
 {
-  return theGraph.Topo().OuterWireOfFace(theFaceId);
+  return theGraph.Topo().Faces().OuterWire(theFaceId);
 }
 
 //=================================================================================================

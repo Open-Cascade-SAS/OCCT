@@ -224,7 +224,8 @@ TEST(BRepGraphAlgo_CopyTest, CopyBox_SameParameter_Preserved)
   // All edges in the copied graph must preserve SameParameter = true.
   for (int anIdx = 0; anIdx < aCopyGraph.Topo().NbEdges(); ++anIdx)
   {
-    const BRepGraphInc::EdgeDef& anEdge = aCopyGraph.Topo().Edge(BRepGraph_EdgeId(anIdx));
+    const BRepGraphInc::EdgeDef& anEdge =
+      aCopyGraph.Topo().Edges().Definition(BRepGraph_EdgeId(anIdx));
     EXPECT_TRUE(anEdge.SameParameter) << "Copied edge " << anIdx << " lost SameParameter flag";
     EXPECT_TRUE(anEdge.SameRange) << "Copied edge " << anIdx << " lost SameRange flag";
   }

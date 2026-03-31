@@ -121,10 +121,11 @@ TEST(BRepGraph_GeometryTest, Box_FindPCurve_AllEdgeFacePairs_Valid)
   {
     const BRepGraph_NodeId                        aEdgeDefId(BRepGraph_NodeId::Kind::Edge, i);
     const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
-      aGraph.Topo().CoEdgesOfEdge(BRepGraph_EdgeId(i));
+      aGraph.Topo().Edges().CoEdges(BRepGraph_EdgeId(i));
     for (int j = 0; j < aCoEdgeIdxs.Length(); ++j)
     {
-      const BRepGraphInc::CoEdgeDef& aCE = aGraph.Topo().CoEdge(aCoEdgeIdxs.Value(j));
+      const BRepGraphInc::CoEdgeDef& aCE =
+        aGraph.Topo().CoEdges().Definition(aCoEdgeIdxs.Value(j));
       const BRepGraphInc::CoEdgeDef* aPCurveEntry =
         BRepGraph_Tool::Edge::FindPCurve(aGraph,
                                          BRepGraph_EdgeId(i),
@@ -145,10 +146,11 @@ TEST(BRepGraph_GeometryTest, CoEdge_FaceDefIdValid)
   for (int i = 0; i < aGraph.Topo().NbEdges(); ++i)
   {
     const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
-      aGraph.Topo().CoEdgesOfEdge(BRepGraph_EdgeId(i));
+      aGraph.Topo().Edges().CoEdges(BRepGraph_EdgeId(i));
     for (int j = 0; j < aCoEdgeIdxs.Length(); ++j)
     {
-      const BRepGraphInc::CoEdgeDef& aCE = aGraph.Topo().CoEdge(aCoEdgeIdxs.Value(j));
+      const BRepGraphInc::CoEdgeDef& aCE =
+        aGraph.Topo().CoEdges().Definition(aCoEdgeIdxs.Value(j));
       EXPECT_TRUE(aCE.FaceDefId.IsValid())
         << "Edge " << i << " CoEdge " << j << " has invalid FaceDefId";
       EXPECT_EQ(BRepGraph_NodeId(aCE.FaceDefId).NodeKind, BRepGraph_NodeId::Kind::Face);
@@ -166,10 +168,11 @@ TEST(BRepGraph_GeometryTest, CoEdge_ParamRange_NonZero)
   for (int i = 0; i < aGraph.Topo().NbEdges(); ++i)
   {
     const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
-      aGraph.Topo().CoEdgesOfEdge(BRepGraph_EdgeId(i));
+      aGraph.Topo().Edges().CoEdges(BRepGraph_EdgeId(i));
     for (int j = 0; j < aCoEdgeIdxs.Length(); ++j)
     {
-      const BRepGraphInc::CoEdgeDef& aCE    = aGraph.Topo().CoEdge(aCoEdgeIdxs.Value(j));
+      const BRepGraphInc::CoEdgeDef& aCE =
+        aGraph.Topo().CoEdges().Definition(aCoEdgeIdxs.Value(j));
       const double                   aRange = aCE.ParamLast - aCE.ParamFirst;
       EXPECT_GT(std::abs(aRange), Precision::PConfusion())
         << "Edge " << i << " CoEdge " << j << " has zero parameter range";
@@ -191,10 +194,11 @@ TEST(BRepGraph_GeometryTest, CoEdge_Continuity_Valid)
   for (int i = 0; i < aGraph.Topo().NbEdges(); ++i)
   {
     const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
-      aGraph.Topo().CoEdgesOfEdge(BRepGraph_EdgeId(i));
+      aGraph.Topo().Edges().CoEdges(BRepGraph_EdgeId(i));
     for (int j = 0; j < aCoEdgeIdxs.Length(); ++j)
     {
-      const BRepGraphInc::CoEdgeDef& aCE = aGraph.Topo().CoEdge(aCoEdgeIdxs.Value(j));
+      const BRepGraphInc::CoEdgeDef& aCE =
+        aGraph.Topo().CoEdges().Definition(aCoEdgeIdxs.Value(j));
       if (aCE.Continuity > GeomAbs_C0)
       {
         hasNonC0Continuity = true;
@@ -242,7 +246,7 @@ TEST(BRepGraph_GeometryTest, SameDomainFaces_SimpleBox_Empty)
   {
     const BRepGraph_FaceId                     aFaceDefId(i);
     const NCollection_Vector<BRepGraph_FaceId> aSameDomain =
-      aGraph.Topo().SameDomainFaces(aFaceDefId, aGraph.Allocator());
+      aGraph.Topo().Faces().SameDomain(aFaceDefId, aGraph.Allocator());
     EXPECT_EQ(aSameDomain.Length(), 0) << "Face def " << i << " has unexpected same-domain faces";
   }
 }
@@ -438,7 +442,7 @@ TEST(BRepGraph_GeometryTest, AllCoEdgesHaveCurve2d)
   for (int i = 0; i < aGraph.Topo().NbEdges(); ++i)
   {
     const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
-      aGraph.Topo().CoEdgesOfEdge(BRepGraph_EdgeId(i));
+      aGraph.Topo().Edges().CoEdges(BRepGraph_EdgeId(i));
     for (int j = 0; j < aCoEdgeIdxs.Length(); ++j)
     {
       EXPECT_TRUE(BRepGraph_Tool::CoEdge::HasPCurve(aGraph, aCoEdgeIdxs.Value(j)));
@@ -601,14 +605,15 @@ TEST(BRepGraph_GeometryTest, Cylinder_SeamEdge_HasTwoCoEdges)
   for (int i = 0; i < aGraph.Topo().NbEdges() && !aFoundSeam; ++i)
   {
     const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
-      aGraph.Topo().CoEdgesOfEdge(BRepGraph_EdgeId(i));
+      aGraph.Topo().Edges().CoEdges(BRepGraph_EdgeId(i));
     for (int j = 0; j < aCoEdgeIdxs.Length() && !aFoundSeam; ++j)
     {
-      const BRepGraphInc::CoEdgeDef& aCE = aGraph.Topo().CoEdge(aCoEdgeIdxs.Value(j));
+      const BRepGraphInc::CoEdgeDef& aCE =
+        aGraph.Topo().CoEdges().Definition(aCoEdgeIdxs.Value(j));
       if (aCE.SeamPairId.IsValid())
       {
         // Verify the paired coedge has opposite orientation.
-        const BRepGraphInc::CoEdgeDef& aPair = aGraph.Topo().CoEdge(aCE.SeamPairId);
+        const BRepGraphInc::CoEdgeDef& aPair = aGraph.Topo().CoEdges().Definition(aCE.SeamPairId);
         EXPECT_NE(aCE.Sense, aPair.Sense) << "Seam coedges should have opposite orientations";
         EXPECT_EQ(aCE.FaceDefId, aPair.FaceDefId) << "Seam coedges should share the same face";
         aFoundSeam = true;
@@ -629,11 +634,12 @@ TEST(BRepGraph_GeometryTest, Cylinder_SeamEdge_FindPCurve_WithOrientation)
   {
     const BRepGraph_NodeId                        anEdgeDefId(BRepGraph_NodeId::Kind::Edge, i);
     const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
-      aGraph.Topo().CoEdgesOfEdge(BRepGraph_EdgeId(i));
+      aGraph.Topo().Edges().CoEdges(BRepGraph_EdgeId(i));
 
     for (int j = 0; j < aCoEdgeIdxs.Length(); ++j)
     {
-      const BRepGraphInc::CoEdgeDef& aCE = aGraph.Topo().CoEdge(aCoEdgeIdxs.Value(j));
+      const BRepGraphInc::CoEdgeDef& aCE =
+        aGraph.Topo().CoEdges().Definition(aCoEdgeIdxs.Value(j));
       if (!aCE.SeamPairId.IsValid())
         continue;
 
@@ -663,11 +669,12 @@ TEST(BRepGraph_GeometryTest, Box_FindPCurve_MatchesToolOverload)
   {
     const BRepGraph_NodeId                        anEdgeDefId(BRepGraph_NodeId::Kind::Edge, i);
     const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
-      aGraph.Topo().CoEdgesOfEdge(BRepGraph_EdgeId(i));
+      aGraph.Topo().Edges().CoEdges(BRepGraph_EdgeId(i));
 
     for (int j = 0; j < aCoEdgeIdxs.Length(); ++j)
     {
-      const BRepGraphInc::CoEdgeDef& aCE = aGraph.Topo().CoEdge(aCoEdgeIdxs.Value(j));
+      const BRepGraphInc::CoEdgeDef& aCE =
+        aGraph.Topo().CoEdges().Definition(aCoEdgeIdxs.Value(j));
       const BRepGraphInc::CoEdgeDef* aFromDefs =
         BRepGraph_Tool::Edge::FindPCurve(aGraph,
                                          BRepGraph_EdgeId(anEdgeDefId.Index),
@@ -694,11 +701,12 @@ TEST(BRepGraph_GeometryTest, Cylinder_SeamEdge_FindPCurve_DistinguishesOrientati
   for (int i = 0; i < aGraph.Topo().NbEdges(); ++i)
   {
     const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
-      aGraph.Topo().CoEdgesOfEdge(BRepGraph_EdgeId(i));
+      aGraph.Topo().Edges().CoEdges(BRepGraph_EdgeId(i));
 
     for (int j = 0; j < aCoEdgeIdxs.Length(); ++j)
     {
-      const BRepGraphInc::CoEdgeDef& aCE = aGraph.Topo().CoEdge(aCoEdgeIdxs.Value(j));
+      const BRepGraphInc::CoEdgeDef& aCE =
+        aGraph.Topo().CoEdges().Definition(aCoEdgeIdxs.Value(j));
       if (!aCE.SeamPairId.IsValid())
         continue;
 
@@ -755,7 +763,8 @@ TEST(BRepGraph_GeometryTest, Box_RepCounts_MatchTopology)
   // Every coedge with a PCurve has a valid Curve2DRepId.
   for (int i = 0; i < aGraph.Topo().NbCoEdges(); ++i)
   {
-    const BRepGraphInc::CoEdgeDef& aCoEdge = aGraph.Topo().CoEdge(BRepGraph_CoEdgeId(i));
+    const BRepGraphInc::CoEdgeDef& aCoEdge =
+      aGraph.Topo().CoEdges().Definition(BRepGraph_CoEdgeId(i));
     if (aCoEdge.Curve2DRepId.IsValid())
     {
       const occ::handle<Geom2d_Curve>& aPCurve =
@@ -792,7 +801,7 @@ TEST(BRepGraph_GeometryTest, Cylinder_TriangulationReps_Populated)
 
   for (int i = 0; i < aGraph.Topo().NbFaces(); ++i)
   {
-    const BRepGraphInc::FaceDef& aFace = aGraph.Topo().Face(BRepGraph_FaceId(i));
+    const BRepGraphInc::FaceDef& aFace = aGraph.Topo().Faces().Definition(BRepGraph_FaceId(i));
     if (!aFace.TriangulationRepIds.IsEmpty())
     {
       for (int j = 0; j < aFace.TriangulationRepIds.Length(); ++j)
@@ -868,7 +877,8 @@ TEST(BRepGraph_GeometryTest, Box_Polygon2DRep_MatchesInline)
   // Every coedge with a Polygon2DRepId has a valid polygon rep.
   for (int i = 0; i < aGraph.Topo().NbCoEdges(); ++i)
   {
-    const BRepGraphInc::CoEdgeDef& aCoEdge = aGraph.Topo().CoEdge(BRepGraph_CoEdgeId(i));
+    const BRepGraphInc::CoEdgeDef& aCoEdge =
+      aGraph.Topo().CoEdges().Definition(BRepGraph_CoEdgeId(i));
     if (aCoEdge.Polygon2DRepId.IsValid())
     {
       const occ::handle<Poly_Polygon2D>& aPoly =

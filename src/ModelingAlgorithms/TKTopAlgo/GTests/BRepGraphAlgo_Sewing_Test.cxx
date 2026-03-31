@@ -1422,13 +1422,14 @@ TEST(BRepGraphAlgo_SewingTest, NonManifoldMode_ThreeFacesShareEdge)
     {
       const int                                     aKeepIdx = aRes.SewnEdgePairs.Value(i).Index;
       const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
-        aGraph.Topo().CoEdgesOfEdge(BRepGraph_EdgeId(aKeepIdx));
+        aGraph.Topo().Edges().CoEdges(BRepGraph_EdgeId(aKeepIdx));
       EXPECT_GE(aCoEdgeIdxs.Length(), 2);
 
       NCollection_Map<int> aFaceIds;
       for (int j = 0; j < aCoEdgeIdxs.Length(); ++j)
       {
-        const BRepGraphInc::CoEdgeDef& aCE = aGraph.Topo().CoEdge(aCoEdgeIdxs.Value(j));
+        const BRepGraphInc::CoEdgeDef& aCE =
+          aGraph.Topo().CoEdges().Definition(aCoEdgeIdxs.Value(j));
         // PCurve may be stored (Curve2DRepId valid) or computed on-the-fly for planar faces.
         // Use PCurveAdaptor which handles both cases.
         const Geom2dAdaptor_Curve aPCAdaptor =
@@ -1460,7 +1461,8 @@ TEST(BRepGraphAlgo_SewingTest, SeamEdge_CorruptedDualPCurve_DetectedByValidator)
   int aSeamCoEdgeIdx = -1;
   for (int i = 0; i < aGraph.Topo().NbCoEdges(); ++i)
   {
-    const BRepGraphInc::CoEdgeDef& aCoEdge = aGraph.Topo().CoEdge(BRepGraph_CoEdgeId(i));
+    const BRepGraphInc::CoEdgeDef& aCoEdge =
+      aGraph.Topo().CoEdges().Definition(BRepGraph_CoEdgeId(i));
     if (aCoEdge.SeamPairId.IsValid() && !aCoEdge.IsRemoved)
     {
       aSeamCoEdgeIdx = i;
@@ -1472,7 +1474,7 @@ TEST(BRepGraphAlgo_SewingTest, SeamEdge_CorruptedDualPCurve_DetectedByValidator)
   // Verify seam detection: the found CoEdge must reference a valid paired CoEdge.
   {
     const BRepGraphInc::CoEdgeDef& aSeamCoEdge =
-      aGraph.Topo().CoEdge(BRepGraph_CoEdgeId(aSeamCoEdgeIdx));
+      aGraph.Topo().CoEdges().Definition(BRepGraph_CoEdgeId(aSeamCoEdgeIdx));
     ASSERT_TRUE(aSeamCoEdge.SeamPairId.IsValid())
       << "Seam CoEdge must have a valid SeamPairId before corruption.";
     ASSERT_LT(aSeamCoEdge.SeamPairId.Index, aGraph.Topo().NbCoEdges())

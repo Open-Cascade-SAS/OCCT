@@ -214,7 +214,8 @@ TEST(BRepGraphAlgo_LayerTest, Sewing_NameMigratesToKeptEdge)
   // Core invariant: no name should reference a removed edge.
   for (int i = 0; i < aGraph.Topo().NbEdges(); ++i)
   {
-    const BRepGraphInc::EdgeDef& anEdge = aGraph.Topo().Edge(BRepGraph_EdgeId(i));
+    const BRepGraphInc::EdgeDef& anEdge =
+      aGraph.Topo().Edges().Definition(BRepGraph_EdgeId(i));
     if (anEdge.IsRemoved)
     {
       EXPECT_EQ(aLayer->FindNodeName(BRepGraph_EdgeId(i)), nullptr)
@@ -226,7 +227,7 @@ TEST(BRepGraphAlgo_LayerTest, Sewing_NameMigratesToKeptEdge)
   int aNbNamedKept = 0;
   for (int i = 0; i < aGraph.Topo().NbEdges(); ++i)
   {
-    if (!aGraph.Topo().Edge(BRepGraph_EdgeId(i)).IsRemoved
+    if (!aGraph.Topo().Edges().Definition(BRepGraph_EdgeId(i)).IsRemoved
         && aLayer->FindNodeName(BRepGraph_EdgeId(i)) != nullptr)
       ++aNbNamedKept;
   }
@@ -320,7 +321,7 @@ TEST(BRepGraphAlgo_LayerTest, Deduplicate_NameMigratesToCanonical)
     // No name should reference a removed vertex.
     for (int i = 0; i < aGraph.Topo().NbVertices(); ++i)
     {
-      if (aGraph.Topo().Vertex(BRepGraph_VertexId(i)).IsRemoved)
+      if (aGraph.Topo().Vertices().Definition(BRepGraph_VertexId(i)).IsRemoved)
       {
         EXPECT_EQ(aLayer->FindNodeName(BRepGraph_VertexId(i)), nullptr)
           << "Removed vertex " << i << " still has a name";
@@ -480,7 +481,8 @@ TEST(BRepGraphAlgo_LayerTest, SplitEdge_OriginalEdgeRemoved)
   int aSplitEdgeIdx = -1;
   for (int i = 0; i < aGraph.Topo().NbEdges(); ++i)
   {
-    const BRepGraphInc::EdgeDef& anEdge = aGraph.Topo().Edge(BRepGraph_EdgeId(i));
+    const BRepGraphInc::EdgeDef& anEdge =
+      aGraph.Topo().Edges().Definition(BRepGraph_EdgeId(i));
     const BRepGraph_EdgeId       anEdgeId(i);
     if (!anEdge.IsDegenerate && anEdge.Curve3DRepId.IsValid()
         && BRepGraph_Tool::Edge::StartVertex(aGraph, anEdgeId).VertexDefId.IsValid()
@@ -509,7 +511,7 @@ TEST(BRepGraphAlgo_LayerTest, SplitEdge_OriginalEdgeRemoved)
   // so the layer callback is NOT triggered. Original name stays in the layer
   // but the edge is marked IsRemoved. This is a known limitation -
   // SplitEdge doesn't know the "replacement" (it creates 2 sub-edges).
-  EXPECT_TRUE(aGraph.Topo().Edge(aSplitEdgeId).IsRemoved);
+  EXPECT_TRUE(aGraph.Topo().Edges().Definition(aSplitEdgeId).IsRemoved);
 
   // Sub-edges should be valid.
   EXPECT_TRUE(aSubA.IsValid());
@@ -562,7 +564,7 @@ TEST(BRepGraphAlgo_LayerTest, FullPipeline_NamesTrackThroughAllStages)
   const int aNbFacesAfter = aGraph.Topo().NbFaces();
   for (int i = 0; i < aNbFacesAfter; ++i)
   {
-    EXPECT_FALSE(aGraph.Topo().Face(BRepGraph_FaceId(i)).IsRemoved)
+    EXPECT_FALSE(aGraph.Topo().Faces().Definition(BRepGraph_FaceId(i)).IsRemoved)
       << "Face " << i << " is removed after compact - should have been eliminated";
   }
 }
@@ -706,6 +708,6 @@ TEST(BRepGraphAlgo_LayerTest, TwoLayers_BothSurviveFullPipeline)
   const int aNbFaces = aGraph.Topo().NbFaces();
   for (int i = 0; i < aNbFaces; ++i)
   {
-    EXPECT_FALSE(aGraph.Topo().Face(BRepGraph_FaceId(i)).IsRemoved);
+    EXPECT_FALSE(aGraph.Topo().Faces().Definition(BRepGraph_FaceId(i)).IsRemoved);
   }
 }

@@ -55,7 +55,7 @@ TEST_F(BRepGraph_SharingTest, EdgeDef_EachSharedByTwoFaces)
   // In a box, each edge is shared by exactly 2 faces.
   for (int anIdx = 0; anIdx < myGraph.Topo().NbEdges(); ++anIdx)
   {
-    int aFaceCount = myGraph.Topo().NbFacesOfEdge(BRepGraph_EdgeId(anIdx));
+    int aFaceCount = myGraph.Topo().Edges().NbFaces(BRepGraph_EdgeId(anIdx));
     EXPECT_EQ(aFaceCount, 2) << "Edge def " << anIdx << " expected to be shared by 2 faces, got "
                              << aFaceCount;
   }
@@ -67,7 +67,7 @@ TEST_F(BRepGraph_SharingTest, FaceDef_EachHasValidSurface)
   EXPECT_EQ(myGraph.Topo().NbFaces(), 6);
   for (int anIdx = 0; anIdx < myGraph.Topo().NbFaces(); ++anIdx)
   {
-    const BRepGraphInc::FaceDef& aDef = myGraph.Topo().Face(BRepGraph_FaceId(anIdx));
+    const BRepGraphInc::FaceDef& aDef = myGraph.Topo().Faces().Definition(BRepGraph_FaceId(anIdx));
     EXPECT_TRUE(aDef.SurfaceRepId.IsValid()) << "Face def " << anIdx << " has no surface rep";
   }
 }
@@ -155,14 +155,15 @@ TEST_F(BRepGraph_SharingTest, SharedEdge_IncidenceRefs_DifferentOrientation)
   for (int anIdx = 0; anIdx < myGraph.Topo().NbEdges(); ++anIdx)
   {
     const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
-      myGraph.Topo().CoEdgesOfEdge(BRepGraph_EdgeId(anIdx));
+      myGraph.Topo().Edges().CoEdges(BRepGraph_EdgeId(anIdx));
     if (aCoEdgeIdxs.Length() < 2)
       continue;
     // Check if coedges reference different faces.
-    const BRepGraph_NodeId aFace0 = myGraph.Topo().CoEdge(aCoEdgeIdxs.Value(0)).FaceDefId;
+    const BRepGraph_NodeId aFace0 =
+      myGraph.Topo().CoEdges().Definition(aCoEdgeIdxs.Value(0)).FaceDefId;
     for (int aCEI = 1; aCEI < aCoEdgeIdxs.Length(); ++aCEI)
     {
-      if (myGraph.Topo().CoEdge(aCoEdgeIdxs.Value(aCEI)).FaceDefId != aFace0)
+      if (myGraph.Topo().CoEdges().Definition(aCoEdgeIdxs.Value(aCEI)).FaceDefId != aFace0)
       {
         ++aMultiFaceEdgeCount;
         break;
@@ -179,7 +180,7 @@ TEST_F(BRepGraph_SharingTest, NonClosedEdge_StartEnd_Different)
   for (int anIdx = 0; anIdx < myGraph.Topo().NbEdges(); ++anIdx)
   {
     const BRepGraph_EdgeId       anEdgeId(anIdx);
-    const BRepGraphInc::EdgeDef& aDef = myGraph.Topo().Edge(anEdgeId);
+    const BRepGraphInc::EdgeDef& aDef = myGraph.Topo().Edges().Definition(anEdgeId);
     if (aDef.IsDegenerate)
       continue;
     // Box edges are not closed, so start and end vertex defs must differ
@@ -199,7 +200,8 @@ TEST_F(BRepGraph_SharingTest, VertexDef_Points_MatchExpectedBoxCorners)
   EXPECT_EQ(myGraph.Topo().NbVertices(), 8);
   for (int anIdx = 0; anIdx < myGraph.Topo().NbVertices(); ++anIdx)
   {
-    const BRepGraphInc::VertexDef& aDef = myGraph.Topo().Vertex(BRepGraph_VertexId(anIdx));
+    const BRepGraphInc::VertexDef& aDef =
+      myGraph.Topo().Vertices().Definition(BRepGraph_VertexId(anIdx));
     // Verify coordinates are within the box bounds.
     EXPECT_GE(aDef.Point.X(), -Precision::Confusion());
     EXPECT_LE(aDef.Point.X(), 10.0 + Precision::Confusion());

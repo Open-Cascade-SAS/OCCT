@@ -111,13 +111,14 @@ int nbPCurveEntries(const BRepGraph& theGraph)
   int aCount = 0;
   for (int anEdgeIdx = 0; anEdgeIdx < theGraph.Topo().NbEdges(); ++anEdgeIdx)
   {
-    if (theGraph.Topo().Edge(BRepGraph_EdgeId(anEdgeIdx)).IsRemoved)
+    if (theGraph.Topo().Edges().Definition(BRepGraph_EdgeId(anEdgeIdx)).IsRemoved)
       continue;
     const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
-      theGraph.Topo().CoEdgesOfEdge(BRepGraph_EdgeId(anEdgeIdx));
+      theGraph.Topo().Edges().CoEdges(BRepGraph_EdgeId(anEdgeIdx));
     for (int i = 0; i < aCoEdgeIdxs.Length(); ++i)
     {
-      const BRepGraphInc::CoEdgeDef& aCE = theGraph.Topo().CoEdge(aCoEdgeIdxs.Value(i));
+      const BRepGraphInc::CoEdgeDef& aCE =
+        theGraph.Topo().CoEdges().Definition(aCoEdgeIdxs.Value(i));
       if (aCE.FaceDefId.IsValid())
         ++aCount;
     }
@@ -248,7 +249,7 @@ int nbUniquePCurveNodes(const BRepGraph& theGraph)
   for (int anEdgeIdx = 0; anEdgeIdx < theGraph.Topo().NbEdges(); ++anEdgeIdx)
   {
     const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
-      theGraph.Topo().CoEdgesOfEdge(BRepGraph_EdgeId(anEdgeIdx));
+      theGraph.Topo().Edges().CoEdges(BRepGraph_EdgeId(anEdgeIdx));
     aCount += aCoEdgeIdxs.Length();
   }
   return aCount;
@@ -260,13 +261,14 @@ int addDuplicatePCurvesToAllEdges(BRepGraph& theGraph)
   for (int anEdgeIdx = 0; anEdgeIdx < theGraph.Topo().NbEdges(); ++anEdgeIdx)
   {
     const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
-      theGraph.Topo().CoEdgesOfEdge(BRepGraph_EdgeId(anEdgeIdx));
+      theGraph.Topo().Edges().CoEdges(BRepGraph_EdgeId(anEdgeIdx));
     if (aCoEdgeIdxs.IsEmpty())
     {
       continue;
     }
 
-    const BRepGraphInc::CoEdgeDef& aCE = theGraph.Topo().CoEdge(aCoEdgeIdxs.Value(0));
+    const BRepGraphInc::CoEdgeDef& aCE =
+      theGraph.Topo().CoEdges().Definition(aCoEdgeIdxs.Value(0));
     if (!aCE.Curve2DRepId.IsValid())
     {
       continue;
@@ -967,7 +969,8 @@ TEST(BRepGraphAlgo_DeduplicateTest, AfterDedup_AllSurfacesValid)
 
   for (int aFaceIdx = 0; aFaceIdx < aGraph.Topo().NbFaces(); ++aFaceIdx)
   {
-    const BRepGraphInc::FaceDef& aFaceDef = aGraph.Topo().Face(BRepGraph_FaceId(aFaceIdx));
+    const BRepGraphInc::FaceDef& aFaceDef =
+      aGraph.Topo().Faces().Definition(BRepGraph_FaceId(aFaceIdx));
     EXPECT_TRUE(aFaceDef.SurfaceRepId.IsValid())
       << "Face " << aFaceIdx << " has null Surface after dedup";
   }
@@ -983,7 +986,8 @@ TEST(BRepGraphAlgo_DeduplicateTest, AfterDedup_AllCurve3dsValid)
 
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
   {
-    const BRepGraphInc::EdgeDef& anEdgeDef = aGraph.Topo().Edge(BRepGraph_EdgeId(anEdgeIdx));
+    const BRepGraphInc::EdgeDef& anEdgeDef =
+      aGraph.Topo().Edges().Definition(BRepGraph_EdgeId(anEdgeIdx));
     if (!anEdgeDef.IsDegenerate)
     {
       EXPECT_TRUE(anEdgeDef.Curve3DRepId.IsValid())
@@ -1008,10 +1012,11 @@ TEST(BRepGraphAlgo_DeduplicateTest, AfterDedup_AllInlinePCurvesHaveCurve2d)
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
   {
     const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
-      aGraph.Topo().CoEdgesOfEdge(BRepGraph_EdgeId(anEdgeIdx));
+      aGraph.Topo().Edges().CoEdges(BRepGraph_EdgeId(anEdgeIdx));
     for (int aCEIter = 0; aCEIter < aCoEdgeIdxs.Length(); ++aCEIter)
     {
-      const BRepGraphInc::CoEdgeDef& aCE = aGraph.Topo().CoEdge(aCoEdgeIdxs.Value(aCEIter));
+      const BRepGraphInc::CoEdgeDef& aCE =
+        aGraph.Topo().CoEdges().Definition(aCoEdgeIdxs.Value(aCEIter));
       EXPECT_TRUE(aCE.Curve2DRepId.IsValid())
         << "Edge " << anEdgeIdx << " CoEdge " << aCEIter << " has null Curve2d after dedup";
     }
@@ -1029,7 +1034,8 @@ TEST(BRepGraphAlgo_DeduplicateTest, AfterDedup_CanonicalSurfaceGeomNotNull)
   // All face defs should have a non-null surface after dedup.
   for (int aFaceIdx = 0; aFaceIdx < aGraph.Topo().NbFaces(); ++aFaceIdx)
   {
-    const BRepGraphInc::FaceDef& aFaceDef = aGraph.Topo().Face(BRepGraph_FaceId(aFaceIdx));
+    const BRepGraphInc::FaceDef& aFaceDef =
+      aGraph.Topo().Faces().Definition(BRepGraph_FaceId(aFaceIdx));
     EXPECT_TRUE(aFaceDef.SurfaceRepId.IsValid())
       << "Face " << aFaceIdx << " has null Surface after dedup";
   }
@@ -1045,7 +1051,8 @@ TEST(BRepGraphAlgo_DeduplicateTest, AfterDedup_CanonicalCurveGeomNotNull)
 
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges(); ++anEdgeIdx)
   {
-    const BRepGraphInc::EdgeDef& anEdgeDef = aGraph.Topo().Edge(BRepGraph_EdgeId(anEdgeIdx));
+    const BRepGraphInc::EdgeDef& anEdgeDef =
+      aGraph.Topo().Edges().Definition(BRepGraph_EdgeId(anEdgeIdx));
     if (!anEdgeDef.IsDegenerate)
     {
       EXPECT_TRUE(anEdgeDef.Curve3DRepId.IsValid())
@@ -2014,7 +2021,7 @@ TEST(BRepGraphAlgo_DeduplicateTest, MergeVertices_SharedVerticesReduced)
   int aNbActiveVertices = 0;
   for (int anIdx = 0; anIdx < aGraph.Topo().NbVertices(); ++anIdx)
   {
-    if (!aGraph.Topo().Vertex(BRepGraph_VertexId(anIdx)).IsRemoved)
+    if (!aGraph.Topo().Vertices().Definition(BRepGraph_VertexId(anIdx)).IsRemoved)
       ++aNbActiveVertices;
   }
   EXPECT_LT(aNbActiveVertices, aNbVerticesBefore);

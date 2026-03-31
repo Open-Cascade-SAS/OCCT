@@ -46,11 +46,11 @@ NCollection_Vector<BRepGraph_EdgeId> BRepGraph_Analyze::FreeEdges(const BRepGrap
   for (int anEdgeIdx = 0; anEdgeIdx < aDefs.NbEdges(); ++anEdgeIdx)
   {
     const BRepGraph_EdgeId       anEdgeId(anEdgeIdx);
-    const BRepGraphInc::EdgeDef& anEdge = aDefs.Edge(anEdgeId);
+    const BRepGraphInc::EdgeDef& anEdge = aDefs.Edges().Definition(anEdgeId);
     if (anEdge.IsRemoved || anEdge.IsDegenerate)
       continue;
 
-    if (aDefs.NbFacesOfEdge(anEdgeId) == 1)
+    if (aDefs.Edges().NbFaces(anEdgeId) == 1)
       aResult.Append(anEdgeId);
   }
   return aResult;
@@ -71,15 +71,15 @@ NCollection_Vector<std::pair<BRepGraph_EdgeId, BRepGraph_FaceId>> BRepGraph_Anal
   {
     const BRepGraph_FaceId aFaceId(aFaceDefIdx);
 
-    const NCollection_Vector<BRepGraph_EdgeId> anEdges = aDefs.EdgesOfFace(aFaceId, anAllocator);
+    const NCollection_Vector<BRepGraph_EdgeId> anEdges = aDefs.Faces().Edges(aFaceId, anAllocator);
     for (int anEdgeIdx = 0; anEdgeIdx < anEdges.Length(); ++anEdgeIdx)
     {
       const BRepGraph_EdgeId       anEdgeDefId = anEdges.Value(anEdgeIdx);
-      const BRepGraphInc::EdgeDef& anEdge      = aDefs.Edge(anEdgeDefId);
+      const BRepGraphInc::EdgeDef& anEdge      = aDefs.Edges().Definition(anEdgeDefId);
       if (anEdge.IsDegenerate)
         continue;
 
-      const BRepGraphInc::CoEdgeDef* aPCurve = aDefs.FindPCurve(anEdge.Id, aFaceId);
+      const BRepGraphInc::CoEdgeDef* aPCurve = aDefs.Edges().FindPCurve(anEdgeDefId, aFaceId);
       if (aPCurve == nullptr)
         aResult.Append(std::make_pair(anEdgeDefId, aFaceId));
     }
@@ -205,7 +205,7 @@ NCollection_Vector<BRepGraph_WireId> BRepGraph_Analyze::DegenerateWires(const BR
     }
 
     // Outer wire that is not closed.
-    const BRepGraphInc::WireDef& aWire = aDefs.Wire(aWireId);
+    const BRepGraphInc::WireDef& aWire = aDefs.Wires().Definition(aWireId);
     if (!aWire.IsClosed && anIsOuterWire(aWireDefIdx) != 0)
       aResult.Append(aWireId);
   }
@@ -252,7 +252,7 @@ NCollection_Vector<BRepGraph_SubGraph> BRepGraph_Analyze::Decompose(const BRepGr
         const BRepGraph_EdgeId anEdgeDefId = aCoEdge.EdgeDefId;
         theSub.myEdgeDefIds.Append(anEdgeDefId);
 
-        const BRepGraphInc::EdgeDef& anEdgeDef = aDefs.Edge(anEdgeDefId);
+        const BRepGraphInc::EdgeDef& anEdgeDef = aDefs.Edges().Definition(anEdgeDefId);
         if (anEdgeDef.StartVertexRefId.IsValid())
         {
           const BRepGraph_VertexId aStartVtxId =

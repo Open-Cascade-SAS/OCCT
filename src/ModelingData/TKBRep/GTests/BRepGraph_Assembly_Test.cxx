@@ -66,7 +66,8 @@ TEST(BRepGraph_AssemblyTest, Build_SingleSolid_AutoCreatesRootProduct)
   EXPECT_EQ(aGraph.Topo().NbProducts(), 1);
   EXPECT_EQ(aGraph.Topo().NbOccurrences(), 0);
 
-  const BRepGraphInc::ProductDef& aProduct = aGraph.Topo().Product(BRepGraph_ProductId(0));
+  const BRepGraphInc::ProductDef& aProduct =
+    aGraph.Topo().Products().Definition(BRepGraph_ProductId(0));
   EXPECT_TRUE(aProduct.ShapeRootId.IsValid());
   EXPECT_EQ(aProduct.Id.NodeKind, BRepGraph_NodeId::Kind::Product);
   EXPECT_EQ(aProduct.Id.Index, 0);
@@ -95,7 +96,8 @@ TEST(BRepGraph_AssemblyTest, Build_Compound_AutoCreatesRootProduct)
   EXPECT_EQ(aGraph.Topo().NbProducts(), 1);
   EXPECT_EQ(aGraph.Topo().NbOccurrences(), 0);
 
-  const BRepGraphInc::ProductDef& aProduct = aGraph.Topo().Product(BRepGraph_ProductId(0));
+  const BRepGraphInc::ProductDef& aProduct =
+    aGraph.Topo().Products().Definition(BRepGraph_ProductId(0));
   EXPECT_TRUE(aProduct.ShapeRootId.IsValid());
   EXPECT_EQ(aProduct.ShapeRootId.NodeKind, BRepGraph_NodeId::Kind::Compound);
 }
@@ -169,7 +171,7 @@ TEST(BRepGraph_AssemblyTest, AddOccurrence_LinksCorrectly)
 
   EXPECT_TRUE(anOccId.IsValid());
 
-  const BRepGraphInc::OccurrenceDef& anOcc = aGraph.Topo().Occurrence(anOccId);
+  const BRepGraphInc::OccurrenceDef& anOcc = aGraph.Topo().Occurrences().Definition(anOccId);
   EXPECT_EQ(anOcc.ProductDefId, aPartId);
   EXPECT_EQ(anOcc.ParentProductDefId, aAssemblyId);
 
@@ -202,7 +204,8 @@ TEST(BRepGraph_AssemblyTest, DAGSharing_MultipleOccurrencesSamePart)
     aGraph.Builder().AddOccurrence(aAssemblyId, aPartId, TopLoc_Location(aTrsf2));
 
   EXPECT_NE(anOcc1, anOcc2);
-  EXPECT_EQ(aGraph.Topo().Occurrence(anOcc1).ProductDefId, aGraph.Topo().Occurrence(anOcc2).ProductDefId);
+  EXPECT_EQ(aGraph.Topo().Occurrences().Definition(anOcc1).ProductDefId,
+            aGraph.Topo().Occurrences().Definition(anOcc2).ProductDefId);
 
   EXPECT_EQ(aGraph.Paths().NbComponents(aAssemblyId), 2);
 }
@@ -353,7 +356,7 @@ TEST(BRepGraph_AssemblyTest, MutProduct_RAII)
     aMutProd->ShapeRootId = BRepGraph_SolidId(0);
   } // markModified fires here
 
-  EXPECT_GT(aGraph.Topo().Product(BRepGraph_ProductId(0)).OwnGen, 0u);
+  EXPECT_GT(aGraph.Topo().Products().Definition(BRepGraph_ProductId(0)).OwnGen, 0u);
 }
 
 // =============================================================================
@@ -380,9 +383,9 @@ TEST(BRepGraph_AssemblyTest, MutOccurrence_Placement)
     aMutOcc->Placement = TopLoc_Location(aTrsf);
   } // markModified fires here
 
-  EXPECT_GT(aGraph.Topo().Occurrence(anOccId).OwnGen, 0u);
+  EXPECT_GT(aGraph.Topo().Occurrences().Definition(anOccId).OwnGen, 0u);
   const gp_Trsf& aStoredTrsf =
-    aGraph.Topo().Occurrence(anOccId).Placement.Transformation();
+    aGraph.Topo().Occurrences().Definition(anOccId).Placement.Transformation();
   EXPECT_NEAR(aStoredTrsf.TranslationPart().X(), 50.0, Precision::Confusion());
 }
 

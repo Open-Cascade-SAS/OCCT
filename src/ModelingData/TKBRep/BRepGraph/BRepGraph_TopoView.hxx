@@ -49,6 +49,325 @@ class Adaptor3d_CurveOnSurface;
 class BRepGraph::TopoView
 {
 public:
+  //! @brief Face-oriented topology queries.
+  class FaceOps
+  {
+  public:
+    [[nodiscard]] Standard_EXPORT const BRepGraphInc::FaceDef& Definition(
+      const BRepGraph_FaceId theFace) const;
+    [[nodiscard]] Standard_EXPORT BRepGraph_SurfaceRepId SurfaceRepId(
+      const BRepGraph_FaceId theFace) const;
+    [[nodiscard]] Standard_EXPORT BRepGraph_TriangulationRepId ActiveTriangulationRepId(
+      const BRepGraph_FaceId theFace) const;
+    [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_FaceId> SameDomain(
+      const BRepGraph_FaceId                          theFace,
+      const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
+    [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_EdgeId> SharedEdges(
+      const BRepGraph_FaceId                          theFaceA,
+      const BRepGraph_FaceId                          theFaceB,
+      const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
+    [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_FaceId> Adjacent(
+      const BRepGraph_FaceId                          theFace,
+      const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
+    [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_EdgeId> Edges(
+      const BRepGraph_FaceId                          theFace,
+      const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
+    [[nodiscard]] Standard_EXPORT BRepGraph_WireId OuterWire(const BRepGraph_FaceId theFace) const;
+
+  private:
+    friend class TopoView;
+
+    explicit FaceOps(const BRepGraph* theGraph)
+        : myGraph(theGraph)
+    {
+    }
+
+    const BRepGraph* myGraph;
+  };
+
+  //! @brief Edge-oriented topology queries.
+  class EdgeOps
+  {
+  public:
+    [[nodiscard]] Standard_EXPORT const BRepGraphInc::EdgeDef& Definition(
+      const BRepGraph_EdgeId theEdge) const;
+    [[nodiscard]] Standard_EXPORT int NbFaces(const BRepGraph_EdgeId theEdge) const;
+    [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_WireId>& Wires(
+      const BRepGraph_EdgeId theEdge) const;
+    [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_CoEdgeId>& CoEdges(
+      const BRepGraph_EdgeId theEdge) const;
+    [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_FaceId>& Faces(
+      const BRepGraph_EdgeId theEdge) const;
+    [[nodiscard]] Standard_EXPORT BRepGraph_Curve3DRepId Curve3DRepId(
+      const BRepGraph_EdgeId theEdge) const;
+    [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_VertexId> Vertices(
+      const BRepGraph_EdgeId                          theEdge,
+      const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
+    [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_EdgeId> Adjacent(
+      const BRepGraph_EdgeId                          theEdge,
+      const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
+    [[nodiscard]] Standard_EXPORT bool IsBoundary(const BRepGraph_EdgeId theEdge) const;
+    [[nodiscard]] Standard_EXPORT bool IsManifold(const BRepGraph_EdgeId theEdge) const;
+    [[nodiscard]] Standard_EXPORT const BRepGraphInc::CoEdgeDef* FindPCurve(
+      const BRepGraph_EdgeId theEdge,
+      const BRepGraph_FaceId theFace) const;
+    [[nodiscard]] Standard_EXPORT const BRepGraphInc::CoEdgeDef* FindPCurve(
+      const BRepGraph_EdgeId   theEdge,
+      const BRepGraph_FaceId   theFace,
+      const TopAbs_Orientation theOrientation) const;
+
+  private:
+    friend class TopoView;
+
+    explicit EdgeOps(const BRepGraph* theGraph)
+        : myGraph(theGraph)
+    {
+    }
+
+    const BRepGraph* myGraph;
+  };
+
+  //! @brief Vertex-oriented topology queries.
+  class VertexOps
+  {
+  public:
+    [[nodiscard]] Standard_EXPORT const BRepGraphInc::VertexDef& Definition(
+      const BRepGraph_VertexId theVertex) const;
+    [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_EdgeId>& Edges(
+      const BRepGraph_VertexId theVertex) const;
+    [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_FaceId> Faces(
+      const BRepGraph_VertexId                        theVertex,
+      const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
+
+  private:
+    friend class TopoView;
+
+    explicit VertexOps(const BRepGraph* theGraph)
+        : myGraph(theGraph)
+    {
+    }
+
+    const BRepGraph* myGraph;
+  };
+
+  //! @brief Wire-oriented topology queries.
+  class WireOps
+  {
+  public:
+    [[nodiscard]] Standard_EXPORT const BRepGraphInc::WireDef& Definition(
+      const BRepGraph_WireId theWire) const;
+    [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_CoEdgeId> CoEdges(
+      const BRepGraph_WireId                          theWire,
+      const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
+    [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_EdgeId> Edges(
+      const BRepGraph_WireId                          theWire,
+      const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
+
+  private:
+    friend class TopoView;
+
+    explicit WireOps(const BRepGraph* theGraph)
+        : myGraph(theGraph)
+    {
+    }
+
+    const BRepGraph* myGraph;
+  };
+
+  //! @brief Shell-oriented topology queries.
+  class ShellOps
+  {
+  public:
+    [[nodiscard]] Standard_EXPORT const BRepGraphInc::ShellDef& Definition(
+      const BRepGraph_ShellId theShell) const;
+    [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_FaceId> Faces(
+      const BRepGraph_ShellId                         theShell,
+      const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
+    [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> FreeChildren(
+      const BRepGraph_ShellId                         theShell,
+      const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
+
+  private:
+    friend class TopoView;
+
+    explicit ShellOps(const BRepGraph* theGraph)
+        : myGraph(theGraph)
+    {
+    }
+
+    const BRepGraph* myGraph;
+  };
+
+  //! @brief Solid-oriented topology queries.
+  class SolidOps
+  {
+  public:
+    [[nodiscard]] Standard_EXPORT const BRepGraphInc::SolidDef& Definition(
+      const BRepGraph_SolidId theSolid) const;
+    [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_ShellId> Shells(
+      const BRepGraph_SolidId                         theSolid,
+      const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
+    [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> FreeChildren(
+      const BRepGraph_SolidId                         theSolid,
+      const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
+
+  private:
+    friend class TopoView;
+
+    explicit SolidOps(const BRepGraph* theGraph)
+        : myGraph(theGraph)
+    {
+    }
+
+    const BRepGraph* myGraph;
+  };
+
+  //! @brief Coedge-oriented topology and representation queries.
+  class CoEdgeOps
+  {
+  public:
+    [[nodiscard]] Standard_EXPORT const BRepGraphInc::CoEdgeDef& Definition(
+      const BRepGraph_CoEdgeId theCoEdge) const;
+    [[nodiscard]] Standard_EXPORT BRepGraph_EdgeId Edge(const BRepGraph_CoEdgeId theCoEdge) const;
+    [[nodiscard]] Standard_EXPORT BRepGraph_FaceId Face(const BRepGraph_CoEdgeId theCoEdge) const;
+    [[nodiscard]] Standard_EXPORT BRepGraph_Curve2DRepId Curve2DRepId(
+      const BRepGraph_CoEdgeId theCoEdge) const;
+    [[nodiscard]] Standard_EXPORT BRepGraph_CoEdgeId SeamPair(
+      const BRepGraph_CoEdgeId theCoEdge) const;
+
+  private:
+    friend class TopoView;
+
+    explicit CoEdgeOps(const BRepGraph* theGraph)
+        : myGraph(theGraph)
+    {
+    }
+
+    const BRepGraph* myGraph;
+  };
+
+  //! @brief Compound-oriented topology queries.
+  class CompoundOps
+  {
+  public:
+    [[nodiscard]] Standard_EXPORT const BRepGraphInc::CompoundDef& Definition(
+      const BRepGraph_CompoundId theCompound) const;
+    [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> Children(
+      const BRepGraph_CompoundId                      theCompound,
+      const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
+
+  private:
+    friend class TopoView;
+
+    explicit CompoundOps(const BRepGraph* theGraph)
+        : myGraph(theGraph)
+    {
+    }
+
+    const BRepGraph* myGraph;
+  };
+
+  //! @brief Comp-solid oriented topology queries.
+  class CompSolidOps
+  {
+  public:
+    [[nodiscard]] Standard_EXPORT const BRepGraphInc::CompSolidDef& Definition(
+      const BRepGraph_CompSolidId theCompSolid) const;
+    [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_SolidId> Solids(
+      const BRepGraph_CompSolidId                     theCompSolid,
+      const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
+
+  private:
+    friend class TopoView;
+
+    explicit CompSolidOps(const BRepGraph* theGraph)
+        : myGraph(theGraph)
+    {
+    }
+
+    const BRepGraph* myGraph;
+  };
+
+  //! @brief Product-oriented raw assembly queries.
+  class ProductOps
+  {
+  public:
+    [[nodiscard]] Standard_EXPORT const BRepGraphInc::ProductDef& Definition(
+      const BRepGraph_ProductId theProduct) const;
+    [[nodiscard]] Standard_EXPORT BRepGraph_NodeId ShapeRoot(
+      const BRepGraph_ProductId theProduct) const;
+    [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_OccurrenceId> Occurrences(
+      const BRepGraph_ProductId                       theProduct,
+      const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
+
+  private:
+    friend class TopoView;
+
+    explicit ProductOps(const BRepGraph* theGraph)
+        : myGraph(theGraph)
+    {
+    }
+
+    const BRepGraph* myGraph;
+  };
+
+  //! @brief Occurrence-oriented raw assembly queries.
+  class OccurrenceOps
+  {
+  public:
+    [[nodiscard]] Standard_EXPORT const BRepGraphInc::OccurrenceDef& Definition(
+      const BRepGraph_OccurrenceId theOccurrence) const;
+    [[nodiscard]] Standard_EXPORT BRepGraph_ProductId Product(
+      const BRepGraph_OccurrenceId theOccurrence) const;
+    [[nodiscard]] Standard_EXPORT BRepGraph_ProductId ParentProduct(
+      const BRepGraph_OccurrenceId theOccurrence) const;
+    [[nodiscard]] Standard_EXPORT BRepGraph_OccurrenceId ParentOccurrence(
+      const BRepGraph_OccurrenceId theOccurrence) const;
+
+  private:
+    friend class TopoView;
+
+    explicit OccurrenceOps(const BRepGraph* theGraph)
+        : myGraph(theGraph)
+    {
+    }
+
+    const BRepGraph* myGraph;
+  };
+
+  //! Grouped face-oriented queries.
+  [[nodiscard]] FaceOps Faces() const { return FaceOps(myGraph); }
+
+  //! Grouped edge-oriented queries.
+  [[nodiscard]] EdgeOps Edges() const { return EdgeOps(myGraph); }
+
+  //! Grouped vertex-oriented queries.
+  [[nodiscard]] VertexOps Vertices() const { return VertexOps(myGraph); }
+
+  //! Grouped wire-oriented queries.
+  [[nodiscard]] WireOps Wires() const { return WireOps(myGraph); }
+
+  //! Grouped shell-oriented queries.
+  [[nodiscard]] ShellOps Shells() const { return ShellOps(myGraph); }
+
+  //! Grouped solid-oriented queries.
+  [[nodiscard]] SolidOps Solids() const { return SolidOps(myGraph); }
+
+  //! Grouped coedge-oriented queries.
+  [[nodiscard]] CoEdgeOps CoEdges() const { return CoEdgeOps(myGraph); }
+
+  //! Grouped compound-oriented queries.
+  [[nodiscard]] CompoundOps Compounds() const { return CompoundOps(myGraph); }
+
+  //! Grouped comp-solid oriented queries.
+  [[nodiscard]] CompSolidOps CompSolids() const { return CompSolidOps(myGraph); }
+
+  //! Grouped product-oriented queries.
+  [[nodiscard]] ProductOps Products() const { return ProductOps(myGraph); }
+
+  //! Grouped occurrence-oriented queries.
+  [[nodiscard]] OccurrenceOps Occurrences() const { return OccurrenceOps(myGraph); }
+
   //! @name Count accessors
 
   //! Number of solid definitions.
@@ -88,118 +407,6 @@ public:
   [[nodiscard]] Standard_EXPORT int NbActiveSolids() const;
   [[nodiscard]] Standard_EXPORT int NbActiveCompounds() const;
   [[nodiscard]] Standard_EXPORT int NbActiveCompSolids() const;
-
-  //! @name Reverse-index backed queries (O(1), zero allocation)
-
-  //! Return cached face count for an edge - O(1).
-  //! @param[in] theEdge typed edge definition identifier
-  [[nodiscard]] Standard_EXPORT int NbFacesOfEdge(const BRepGraph_EdgeId theEdge) const;
-
-  //! Return wire definition indices that contain a given edge.
-  //! @param[in] theEdge typed edge definition identifier
-  [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_WireId>& WiresOfEdge(
-    const BRepGraph_EdgeId theEdge) const;
-
-  //! Return coedge indices referencing the given edge.
-  //! @param[in] theEdge typed edge definition identifier
-  [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_CoEdgeId>& CoEdgesOfEdge(
-    const BRepGraph_EdgeId theEdge) const;
-
-  //! Return face indices containing the given edge.
-  //! Derived from CoEdge.FaceDefId links during Build()/BuildDelta().
-  //! @param[in] theEdge typed edge definition identifier
-  [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_FaceId>& FacesOfEdge(
-    const BRepGraph_EdgeId theEdge) const;
-
-  //! Return edge indices incident to the given vertex.
-  //! @param[in] theVertex typed vertex definition identifier
-  [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_EdgeId>& EdgesOfVertex(
-    const BRepGraph_VertexId theVertex) const;
-
-  //! Return active child definition ids of a compound.
-  //! Child refs marked removed, invalid child ids, and removed child definitions
-  //! are filtered out. Duplicate child definitions are returned once.
-  //! @param[in] theCompound typed compound definition identifier
-  //! @param[in] theAllocator allocator for the result vector and temporary dedupe map
-  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_NodeId> ChildEntitiesOfCompound(
-    const BRepGraph_CompoundId                     theCompound,
-    const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
-
-  //! Return active solid definition ids of a comp-solid.
-  //! Solid refs marked removed, invalid solid ids, and removed solid
-  //! definitions are filtered out. Duplicate solid definitions are returned once.
-  //! @param[in] theCompSolid typed comp-solid definition identifier
-  //! @param[in] theAllocator allocator for the result vector and temporary dedupe map
-  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_SolidId> SolidsOfCompSolid(
-    const BRepGraph_CompSolidId                    theCompSolid,
-    const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
-
-  //! @name Definition accessors
-
-  //! Access solid definition by typed identifier.
-  //! @param[in] theSolid typed solid definition identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::SolidDef& Solid(
-    const BRepGraph_SolidId theSolid) const;
-
-  //! Access shell definition by typed identifier.
-  //! @param[in] theShell typed shell definition identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::ShellDef& Shell(
-    const BRepGraph_ShellId theShell) const;
-
-  //! Access face definition by typed identifier.
-  //! @param[in] theFace typed face definition identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::FaceDef& Face(
-    const BRepGraph_FaceId theFace) const;
-
-  //! Access wire definition by typed identifier.
-  //! @param[in] theWire typed wire definition identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::WireDef& Wire(
-    const BRepGraph_WireId theWire) const;
-
-  //! Access edge definition by typed identifier.
-  //! @param[in] theEdge typed edge definition identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::EdgeDef& Edge(
-    const BRepGraph_EdgeId theEdge) const;
-
-  //! Access vertex definition by typed identifier.
-  //! @param[in] theVertex typed vertex definition identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::VertexDef& Vertex(
-    const BRepGraph_VertexId theVertex) const;
-
-  //! Access compound definition by typed identifier.
-  //! @param[in] theCompound typed compound definition identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::CompoundDef& Compound(
-    const BRepGraph_CompoundId theCompound) const;
-
-  //! Access compsolid definition by typed identifier.
-  //! @param[in] theCompSolid typed compsolid definition identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::CompSolidDef& CompSolid(
-    const BRepGraph_CompSolidId theCompSolid) const;
-
-  //! Access coedge definition by typed identifier.
-  //! @param[in] theCoEdge typed coedge definition identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::CoEdgeDef& CoEdge(
-    const BRepGraph_CoEdgeId theCoEdge) const;
-
-  //! Return the surface representation id referenced by a face definition.
-  //! Returns invalid id when theFace is out of range.
-  [[nodiscard]] Standard_EXPORT BRepGraph_SurfaceRepId SurfaceRepIdOfFace(
-    const BRepGraph_FaceId theFace) const;
-
-  //! Return the active triangulation representation id referenced by a face definition.
-  //! Returns invalid id when theFace is out of range or no active triangulation is set.
-  [[nodiscard]] Standard_EXPORT BRepGraph_TriangulationRepId ActiveTriangulationRepIdOfFace(
-    const BRepGraph_FaceId theFace) const;
-
-  //! Return the 3D-curve representation id referenced by an edge definition.
-  //! Returns invalid id when theEdge is out of range.
-  [[nodiscard]] Standard_EXPORT BRepGraph_Curve3DRepId Curve3DRepIdOfEdge(
-    const BRepGraph_EdgeId theEdge) const;
-
-  //! Return the 2D-curve representation id referenced by a coedge definition.
-  //! Returns invalid id when theCoEdge is out of range.
-  [[nodiscard]] Standard_EXPORT BRepGraph_Curve2DRepId Curve2DRepIdOfCoEdge(
-    const BRepGraph_CoEdgeId theCoEdge) const;
 
   //! Generic node-definition lookup by NodeId (topology or assembly).
   //! @param[in] theId node identifier
@@ -268,75 +475,6 @@ public:
   //! Number of active (non-removed) polygon-on-triangulation representations.
   [[nodiscard]] Standard_EXPORT int NbActivePolygonsOnTri() const;
 
-  //! @name Computed spatial adjacency queries (allocate result vector)
-
-  //! Return all face definitions sharing the same surface as the given face.
-  //! @param[in] theFace face definition identifier
-  //! @param[in] theAllocator allocator for the result vector
-  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_FaceId> SameDomainFaces(
-    const BRepGraph_FaceId                          theFace,
-    const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
-
-  //! Return all edges shared between two faces.
-  //! @param[in] theFaceA first face definition identifier
-  //! @param[in] theFaceB second face definition identifier
-  //! @param[in] theAllocator allocator for the result vector
-  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_EdgeId> SharedEdges(
-    const BRepGraph_FaceId                          theFaceA,
-    const BRepGraph_FaceId                          theFaceB,
-    const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
-
-  //! Return all faces adjacent to a face (sharing at least one edge).
-  //! @param[in] theFace face definition identifier
-  //! @param[in] theAllocator allocator for the result vector
-  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_FaceId> AdjacentFaces(
-    const BRepGraph_FaceId                          theFace,
-    const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
-
-  //! Return all edge definitions in a face (collected from all wires via coedges).
-  //! @param[in] theFace face definition identifier
-  //! @param[in] theAllocator allocator for the result vector
-  //! @return unique edge definition ids (deduplicated)
-  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_EdgeId> EdgesOfFace(
-    const BRepGraph_FaceId                          theFace,
-    const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
-
-  //! Return outer wire definition id of a face, or invalid if none.
-  //! @param[in] theFace typed face definition identifier
-  //! @return outer wire definition id
-  [[nodiscard]] Standard_EXPORT BRepGraph_WireId
-    OuterWireOfFace(const BRepGraph_FaceId theFace) const;
-
-  //! Return start, end, and internal vertex definitions for an edge.
-  //! @param[in] theEdge edge definition identifier
-  //! @param[in] theAllocator allocator for the result vector
-  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_VertexId> VerticesOfEdge(
-    const BRepGraph_EdgeId                          theEdge,
-    const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
-
-  //! Return all edges sharing a vertex with the given edge (excluding itself).
-  //! @param[in] theEdge edge definition identifier
-  //! @param[in] theAllocator allocator for the result vector
-  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_EdgeId> AdjacentEdges(
-    const BRepGraph_EdgeId                          theEdge,
-    const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
-
-  //! True if the edge is referenced by exactly one face (boundary edge).
-  //! @param[in] theEdge typed edge definition identifier
-  [[nodiscard]] Standard_EXPORT bool IsBoundaryEdge(const BRepGraph_EdgeId theEdge) const;
-
-  //! True if the edge is referenced by exactly two faces (manifold interior edge).
-  //! @param[in] theEdge typed edge definition identifier
-  [[nodiscard]] Standard_EXPORT bool IsManifoldEdge(const BRepGraph_EdgeId theEdge) const;
-
-  //! Return all face definitions that share at least one edge with the given vertex.
-  //! @param[in] theVertex vertex definition identifier
-  //! @param[in] theAllocator allocator for the result vector
-  //! @return unique face definition ids
-  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_FaceId> FacesOfVertex(
-    const BRepGraph_VertexId                        theVertex,
-    const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
-
   //! @name Representation accessors
 
   //! Access surface representation by typed identifier.
@@ -393,43 +531,11 @@ public:
   //! Number of active (non-removed) occurrence definitions.
   [[nodiscard]] Standard_EXPORT int NbActiveOccurrences() const;
 
-  //! Access product definition by typed identifier.
-  //! For part-vs-assembly classification, use PathView::IsPart()/IsAssembly().
-  //! @param[in] theProduct typed product definition identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::ProductDef& Product(
-    const BRepGraph_ProductId theProduct) const;
-
-  //! Access occurrence definition by typed identifier.
-  //! For composed placement, use PathView::OccurrenceLocation() or path-based queries.
-  //! @param[in] theOccurrence typed occurrence definition identifier
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::OccurrenceDef& Occurrence(
-    const BRepGraph_OccurrenceId theOccurrence) const;
-
 private:
   friend class BRepGraph;
   friend struct BRepGraph_Data;
   friend class BRepGraph_Tool;
   friend class BRepGraph_Analyze;
-
-  //! @name Private PCurve lookup (implementation detail)
-  //! Public callers should use BRepGraph_Tool::Edge::FindPCurve(), which
-  //! delegates to these helpers.
-
-  //! Find the CoEdge for an edge on a given face, or nullptr if none exists.
-  //! @param[in] theEdgeEntity edge definition NodeId
-  //! @param[in] theFaceEntity face definition NodeId
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::CoEdgeDef* FindPCurve(
-    const BRepGraph_NodeId theEdgeEntity,
-    const BRepGraph_NodeId theFaceEntity) const;
-
-  //! Find the CoEdge for an edge/face/orientation triple (seam edge support).
-  //! @param[in] theEdgeEntity           edge definition NodeId
-  //! @param[in] theFaceEntity           face definition NodeId
-  //! @param[in] theEdgeOrientation   edge orientation on the face
-  [[nodiscard]] Standard_EXPORT const BRepGraphInc::CoEdgeDef* FindPCurve(
-    const BRepGraph_NodeId   theEdgeEntity,
-    const BRepGraph_NodeId   theFaceEntity,
-    const TopAbs_Orientation theEdgeOrientation) const;
 
   explicit TopoView(const BRepGraph* theGraph)
       : myGraph(theGraph)

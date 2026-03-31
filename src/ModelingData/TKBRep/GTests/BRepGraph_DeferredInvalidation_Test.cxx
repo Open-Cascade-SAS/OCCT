@@ -43,12 +43,12 @@ protected:
 
 TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_EdgeMutation_IncrementsOwnGen)
 {
-  EXPECT_EQ(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).OwnGen, 0u);
+  EXPECT_EQ(myGraph.Topo().Edges().Definition(BRepGraph_EdgeId(0)).OwnGen, 0u);
 
   myGraph.Builder().BeginDeferredInvalidation();
   myGraph.Builder().MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
   // In deferred mode, the entity's OwnGen is incremented.
-  EXPECT_GT(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).OwnGen, 0u);
+  EXPECT_GT(myGraph.Topo().Edges().Definition(BRepGraph_EdgeId(0)).OwnGen, 0u);
   myGraph.Builder().EndDeferredInvalidation();
 }
 
@@ -59,28 +59,28 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_PropagatesUpOnFlush)
 
   // During deferred mode: edge is mutated, but parent wire/face are NOT yet.
   const NCollection_Vector<BRepGraph_WireId>& aWires =
-    myGraph.Topo().WiresOfEdge(BRepGraph_EdgeId(0));
+    myGraph.Topo().Edges().Wires(BRepGraph_EdgeId(0));
   ASSERT_GT(aWires.Length(), 0);
-  EXPECT_EQ(myGraph.Topo().Wire(aWires.Value(0)).SubtreeGen, 0u);
+  EXPECT_EQ(myGraph.Topo().Wires().Definition(aWires.Value(0)).SubtreeGen, 0u);
 
   myGraph.Builder().EndDeferredInvalidation();
 
   // After flush: wire and face SubtreeGen should be propagated.
-  EXPECT_GT(myGraph.Topo().Wire(aWires.Value(0)).SubtreeGen, 0u);
+  EXPECT_GT(myGraph.Topo().Wires().Definition(aWires.Value(0)).SubtreeGen, 0u);
 
   // Check propagation to face.
   for (int aFI = 0; aFI < myGraph.Topo().NbFaces(); ++aFI)
   {
     if (BRepGraph_TestTools::FaceUsesWire(myGraph, BRepGraph_FaceId(aFI), aWires.Value(0)))
     {
-      EXPECT_GT(myGraph.Topo().Face(BRepGraph_FaceId(aFI)).SubtreeGen, 0u);
+      EXPECT_GT(myGraph.Topo().Faces().Definition(BRepGraph_FaceId(aFI)).SubtreeGen, 0u);
       break;
     }
   }
 
   // Check propagation to shell and solid.
-  EXPECT_GT(myGraph.Topo().Shell(BRepGraph_ShellId(0)).SubtreeGen, 0u);
-  EXPECT_GT(myGraph.Topo().Solid(BRepGraph_SolidId(0)).SubtreeGen, 0u);
+  EXPECT_GT(myGraph.Topo().Shells().Definition(BRepGraph_ShellId(0)).SubtreeGen, 0u);
+  EXPECT_GT(myGraph.Topo().Solids().Definition(BRepGraph_SolidId(0)).SubtreeGen, 0u);
 }
 
 TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_DirectFaceMutation_PropagatesUp)
@@ -89,15 +89,15 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_DirectFaceMutation_Propa
   myGraph.Builder().MutFace(BRepGraph_FaceId(0));
 
   // Face was directly mutated: OwnGen incremented.
-  EXPECT_GT(myGraph.Topo().Face(BRepGraph_FaceId(0)).OwnGen, 0u);
+  EXPECT_GT(myGraph.Topo().Faces().Definition(BRepGraph_FaceId(0)).OwnGen, 0u);
   // Shell not yet propagated during deferred mode.
-  EXPECT_EQ(myGraph.Topo().Shell(BRepGraph_ShellId(0)).SubtreeGen, 0u);
+  EXPECT_EQ(myGraph.Topo().Shells().Definition(BRepGraph_ShellId(0)).SubtreeGen, 0u);
 
   myGraph.Builder().EndDeferredInvalidation();
 
   // After flush: shell and solid SubtreeGen should be propagated.
-  EXPECT_GT(myGraph.Topo().Shell(BRepGraph_ShellId(0)).SubtreeGen, 0u);
-  EXPECT_GT(myGraph.Topo().Solid(BRepGraph_SolidId(0)).SubtreeGen, 0u);
+  EXPECT_GT(myGraph.Topo().Shells().Definition(BRepGraph_ShellId(0)).SubtreeGen, 0u);
+  EXPECT_GT(myGraph.Topo().Solids().Definition(BRepGraph_SolidId(0)).SubtreeGen, 0u);
 }
 
 TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_DirectShellMutation_PropagatesUp)
@@ -106,14 +106,14 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_DirectShellMutation_Prop
   myGraph.Builder().MutShell(BRepGraph_ShellId(0));
 
   // Shell was directly mutated: OwnGen incremented.
-  EXPECT_GT(myGraph.Topo().Shell(BRepGraph_ShellId(0)).OwnGen, 0u);
+  EXPECT_GT(myGraph.Topo().Shells().Definition(BRepGraph_ShellId(0)).OwnGen, 0u);
   // Solid not yet propagated during deferred mode.
-  EXPECT_EQ(myGraph.Topo().Solid(BRepGraph_SolidId(0)).SubtreeGen, 0u);
+  EXPECT_EQ(myGraph.Topo().Solids().Definition(BRepGraph_SolidId(0)).SubtreeGen, 0u);
 
   myGraph.Builder().EndDeferredInvalidation();
 
   // After flush: solid SubtreeGen should be propagated.
-  EXPECT_GT(myGraph.Topo().Solid(BRepGraph_SolidId(0)).SubtreeGen, 0u);
+  EXPECT_GT(myGraph.Topo().Solids().Definition(BRepGraph_SolidId(0)).SubtreeGen, 0u);
 }
 
 TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_MultipleEdges_BatchPropagation)
@@ -129,7 +129,7 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_MultipleEdges_BatchPropa
   // During deferred mode: all edges mutated, but no parent propagation yet.
   for (int aWireIdx = 0; aWireIdx < myGraph.Topo().NbWires(); ++aWireIdx)
   {
-    EXPECT_EQ(myGraph.Topo().Wire(BRepGraph_WireId(aWireIdx)).SubtreeGen, 0u);
+    EXPECT_EQ(myGraph.Topo().Wires().Definition(BRepGraph_WireId(aWireIdx)).SubtreeGen, 0u);
   }
 
   myGraph.Builder().EndDeferredInvalidation();
@@ -137,14 +137,14 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_MultipleEdges_BatchPropa
   // After flush: all wires, faces, shells, solids should have SubtreeGen propagated.
   for (int aWireIdx = 0; aWireIdx < myGraph.Topo().NbWires(); ++aWireIdx)
   {
-    EXPECT_GT(myGraph.Topo().Wire(BRepGraph_WireId(aWireIdx)).SubtreeGen, 0u);
+    EXPECT_GT(myGraph.Topo().Wires().Definition(BRepGraph_WireId(aWireIdx)).SubtreeGen, 0u);
   }
   for (int aFaceIdx = 0; aFaceIdx < myGraph.Topo().NbFaces(); ++aFaceIdx)
   {
-    EXPECT_GT(myGraph.Topo().Face(BRepGraph_FaceId(aFaceIdx)).SubtreeGen, 0u);
+    EXPECT_GT(myGraph.Topo().Faces().Definition(BRepGraph_FaceId(aFaceIdx)).SubtreeGen, 0u);
   }
-  EXPECT_GT(myGraph.Topo().Shell(BRepGraph_ShellId(0)).SubtreeGen, 0u);
-  EXPECT_GT(myGraph.Topo().Solid(BRepGraph_SolidId(0)).SubtreeGen, 0u);
+  EXPECT_GT(myGraph.Topo().Shells().Definition(BRepGraph_ShellId(0)).SubtreeGen, 0u);
+  EXPECT_GT(myGraph.Topo().Solids().Definition(BRepGraph_SolidId(0)).SubtreeGen, 0u);
 }
 
 TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_ReconstructAfterFlush_Succeeds)
@@ -183,15 +183,15 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_ParallelMutation_WithExt
   // All edges should be mutated (directly: OwnGen).
   for (int anEdgeIdx = 0; anEdgeIdx < aNbEdges; ++anEdgeIdx)
   {
-    EXPECT_GT(myGraph.Topo().Edge(BRepGraph_EdgeId(anEdgeIdx)).OwnGen, 0u);
-    EXPECT_NEAR(myGraph.Topo().Edge(BRepGraph_EdgeId(anEdgeIdx)).Tolerance,
+    EXPECT_GT(myGraph.Topo().Edges().Definition(BRepGraph_EdgeId(anEdgeIdx)).OwnGen, 0u);
+    EXPECT_NEAR(myGraph.Topo().Edges().Definition(BRepGraph_EdgeId(anEdgeIdx)).Tolerance,
                 0.1 + anEdgeIdx * 0.01,
                 Precision::Confusion());
   }
 
   // Propagation should have happened on flush (parents: SubtreeGen).
-  EXPECT_GT(myGraph.Topo().Shell(BRepGraph_ShellId(0)).SubtreeGen, 0u);
-  EXPECT_GT(myGraph.Topo().Solid(BRepGraph_SolidId(0)).SubtreeGen, 0u);
+  EXPECT_GT(myGraph.Topo().Shells().Definition(BRepGraph_ShellId(0)).SubtreeGen, 0u);
+  EXPECT_GT(myGraph.Topo().Solids().Definition(BRepGraph_SolidId(0)).SubtreeGen, 0u);
 }
 
 TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_NoMutations_FlushIsSafe)
@@ -201,16 +201,16 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_NoMutations_FlushIsSafe)
   myGraph.Builder().EndDeferredInvalidation();
 
   // Nothing should be mutated.
-  EXPECT_EQ(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).OwnGen, 0u);
-  EXPECT_EQ(myGraph.Topo().Wire(BRepGraph_WireId(0)).OwnGen, 0u);
-  EXPECT_EQ(myGraph.Topo().Face(BRepGraph_FaceId(0)).OwnGen, 0u);
-  EXPECT_EQ(myGraph.Topo().Shell(BRepGraph_ShellId(0)).OwnGen, 0u);
-  EXPECT_EQ(myGraph.Topo().Solid(BRepGraph_SolidId(0)).OwnGen, 0u);
-  EXPECT_EQ(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).SubtreeGen, 0u);
-  EXPECT_EQ(myGraph.Topo().Wire(BRepGraph_WireId(0)).SubtreeGen, 0u);
-  EXPECT_EQ(myGraph.Topo().Face(BRepGraph_FaceId(0)).SubtreeGen, 0u);
-  EXPECT_EQ(myGraph.Topo().Shell(BRepGraph_ShellId(0)).SubtreeGen, 0u);
-  EXPECT_EQ(myGraph.Topo().Solid(BRepGraph_SolidId(0)).SubtreeGen, 0u);
+  EXPECT_EQ(myGraph.Topo().Edges().Definition(BRepGraph_EdgeId(0)).OwnGen, 0u);
+  EXPECT_EQ(myGraph.Topo().Wires().Definition(BRepGraph_WireId(0)).OwnGen, 0u);
+  EXPECT_EQ(myGraph.Topo().Faces().Definition(BRepGraph_FaceId(0)).OwnGen, 0u);
+  EXPECT_EQ(myGraph.Topo().Shells().Definition(BRepGraph_ShellId(0)).OwnGen, 0u);
+  EXPECT_EQ(myGraph.Topo().Solids().Definition(BRepGraph_SolidId(0)).OwnGen, 0u);
+  EXPECT_EQ(myGraph.Topo().Edges().Definition(BRepGraph_EdgeId(0)).SubtreeGen, 0u);
+  EXPECT_EQ(myGraph.Topo().Wires().Definition(BRepGraph_WireId(0)).SubtreeGen, 0u);
+  EXPECT_EQ(myGraph.Topo().Faces().Definition(BRepGraph_FaceId(0)).SubtreeGen, 0u);
+  EXPECT_EQ(myGraph.Topo().Shells().Definition(BRepGraph_ShellId(0)).SubtreeGen, 0u);
+  EXPECT_EQ(myGraph.Topo().Solids().Definition(BRepGraph_SolidId(0)).SubtreeGen, 0u);
 }
 
 TEST_F(BRepGraph_DeferredInvalidationTest, EndWithoutBegin_IsIdempotent)
@@ -219,13 +219,13 @@ TEST_F(BRepGraph_DeferredInvalidationTest, EndWithoutBegin_IsIdempotent)
   EXPECT_NO_THROW(myGraph.Builder().EndDeferredInvalidation());
 
   // Nothing should be mutated or cleared.
-  EXPECT_EQ(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).OwnGen, 0u);
-  EXPECT_EQ(myGraph.Topo().Solid(BRepGraph_SolidId(0)).OwnGen, 0u);
+  EXPECT_EQ(myGraph.Topo().Edges().Definition(BRepGraph_EdgeId(0)).OwnGen, 0u);
+  EXPECT_EQ(myGraph.Topo().Solids().Definition(BRepGraph_SolidId(0)).OwnGen, 0u);
 }
 
 TEST_F(BRepGraph_DeferredInvalidationTest, DeferredScope_NestedGuards_FlushOnlyOnOuterDestruction)
 {
-  const NCollection_Vector<BRepGraph_WireId>& aWires = myGraph.Topo().WiresOfEdge(BRepGraph_EdgeId(0));
+  const NCollection_Vector<BRepGraph_WireId>& aWires = myGraph.Topo().Edges().Wires(BRepGraph_EdgeId(0));
   ASSERT_GT(aWires.Length(), 0);
   const BRepGraph_WireId aWireId = aWires.Value(0);
 
@@ -240,11 +240,11 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredScope_NestedGuards_FlushOnlyO
     }
 
     EXPECT_TRUE(myGraph.Builder().IsDeferredMode());
-    EXPECT_EQ(myGraph.Topo().Wire(aWireId).SubtreeGen, 0u);
+    EXPECT_EQ(myGraph.Topo().Wires().Definition(aWireId).SubtreeGen, 0u);
   }
 
   EXPECT_FALSE(myGraph.Builder().IsDeferredMode());
-  EXPECT_GT(myGraph.Topo().Wire(aWireId).SubtreeGen, 0u);
+  EXPECT_GT(myGraph.Topo().Wires().Definition(aWireId).SubtreeGen, 0u);
 }
 
 TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_DoubleEnd_IsIdempotent)
@@ -255,7 +255,7 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_DoubleEnd_IsIdempotent)
 
   // Second End should be a safe no-op.
   EXPECT_NO_THROW(myGraph.Builder().EndDeferredInvalidation());
-  EXPECT_GT(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).OwnGen, 0u);
+  EXPECT_GT(myGraph.Topo().Edges().Definition(BRepGraph_EdgeId(0)).OwnGen, 0u);
 }
 
 TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_SameEdgeMutatedTwice)
@@ -266,10 +266,12 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_SameEdgeMutatedTwice)
   myGraph.Builder().EndDeferredInvalidation();
 
   // Last write wins.
-  EXPECT_NEAR(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).Tolerance, 0.5, Precision::Confusion());
-  EXPECT_GT(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).OwnGen, 0u);
-  EXPECT_GT(myGraph.Topo().Shell(BRepGraph_ShellId(0)).SubtreeGen, 0u);
-  EXPECT_GT(myGraph.Topo().Solid(BRepGraph_SolidId(0)).SubtreeGen, 0u);
+  EXPECT_NEAR(myGraph.Topo().Edges().Definition(BRepGraph_EdgeId(0)).Tolerance,
+              0.5,
+              Precision::Confusion());
+  EXPECT_GT(myGraph.Topo().Edges().Definition(BRepGraph_EdgeId(0)).OwnGen, 0u);
+  EXPECT_GT(myGraph.Topo().Shells().Definition(BRepGraph_ShellId(0)).SubtreeGen, 0u);
+  EXPECT_GT(myGraph.Topo().Solids().Definition(BRepGraph_SolidId(0)).SubtreeGen, 0u);
 }
 
 TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_DirectWireMutation_PropagatesUp)
@@ -278,9 +280,9 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_DirectWireMutation_Propa
   myGraph.Builder().MutWire(BRepGraph_WireId(0));
 
   // Wire was directly mutated: OwnGen incremented.
-  EXPECT_GT(myGraph.Topo().Wire(BRepGraph_WireId(0)).OwnGen, 0u);
+  EXPECT_GT(myGraph.Topo().Wires().Definition(BRepGraph_WireId(0)).OwnGen, 0u);
   // Face not yet propagated during deferred mode.
-  EXPECT_EQ(myGraph.Topo().Face(BRepGraph_FaceId(0)).SubtreeGen, 0u);
+  EXPECT_EQ(myGraph.Topo().Faces().Definition(BRepGraph_FaceId(0)).SubtreeGen, 0u);
 
   myGraph.Builder().EndDeferredInvalidation();
 
@@ -289,15 +291,15 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_DirectWireMutation_Propa
   for (int aFI = 0; aFI < myGraph.Topo().NbFaces(); ++aFI)
   {
     if (BRepGraph_TestTools::FaceUsesWire(myGraph, BRepGraph_FaceId(aFI), BRepGraph_WireId(0))
-        && myGraph.Topo().Face(BRepGraph_FaceId(aFI)).SubtreeGen > 0u)
+        && myGraph.Topo().Faces().Definition(BRepGraph_FaceId(aFI)).SubtreeGen > 0u)
     {
       aFacePropagated = true;
       break;
     }
   }
   EXPECT_TRUE(aFacePropagated);
-  EXPECT_GT(myGraph.Topo().Shell(BRepGraph_ShellId(0)).SubtreeGen, 0u);
-  EXPECT_GT(myGraph.Topo().Solid(BRepGraph_SolidId(0)).SubtreeGen, 0u);
+  EXPECT_GT(myGraph.Topo().Shells().Definition(BRepGraph_ShellId(0)).SubtreeGen, 0u);
+  EXPECT_GT(myGraph.Topo().Solids().Definition(BRepGraph_SolidId(0)).SubtreeGen, 0u);
 }
 
 TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_OccurrenceMutation_PropagatesSubtreeGenToProduct)
@@ -310,7 +312,7 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_OccurrenceMutation_Propa
   ASSERT_TRUE(anOccId.IsValid());
 
   // Verify parent product starts clean.
-  EXPECT_EQ(myGraph.Topo().Product(aAssemblyId).SubtreeGen, 0u);
+  EXPECT_EQ(myGraph.Topo().Products().Definition(aAssemblyId).SubtreeGen, 0u);
 
   // Mutate occurrence placement in deferred mode.
   myGraph.Builder().BeginDeferredInvalidation();
@@ -321,13 +323,13 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_OccurrenceMutation_Propa
   }
 
   // During deferred mode: occurrence OwnGen incremented, but parent product NOT yet.
-  EXPECT_GT(myGraph.Topo().Occurrence(anOccId).OwnGen, 0u);
-  EXPECT_EQ(myGraph.Topo().Product(aAssemblyId).SubtreeGen, 0u);
+  EXPECT_GT(myGraph.Topo().Occurrences().Definition(anOccId).OwnGen, 0u);
+  EXPECT_EQ(myGraph.Topo().Products().Definition(aAssemblyId).SubtreeGen, 0u);
 
   myGraph.Builder().EndDeferredInvalidation();
 
   // After flush: parent assembly product must have SubtreeGen incremented exactly once.
-  EXPECT_EQ(myGraph.Topo().Product(aAssemblyId).SubtreeGen, 1u);
+  EXPECT_EQ(myGraph.Topo().Products().Definition(aAssemblyId).SubtreeGen, 1u);
   // Parent's OwnGen must remain 0 - its own data didn't change.
-  EXPECT_EQ(myGraph.Topo().Product(aAssemblyId).OwnGen, 0u);
+  EXPECT_EQ(myGraph.Topo().Products().Definition(aAssemblyId).OwnGen, 0u);
 }

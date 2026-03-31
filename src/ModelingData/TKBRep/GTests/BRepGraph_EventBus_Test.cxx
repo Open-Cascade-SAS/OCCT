@@ -193,7 +193,7 @@ TEST_F(BRepGraph_EventBusTest, ZeroCost_NoSubscribers)
     BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut = myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
     aMut->Tolerance                              = 0.5;
   }
-  EXPECT_GT(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).OwnGen, 0u);
+  EXPECT_GT(myGraph.Topo().Edges().Definition(BRepGraph_EdgeId(0)).OwnGen, 0u);
 }
 
 TEST_F(BRepGraph_EventBusTest, ImmediateMode_SingleEdge)
@@ -242,8 +242,8 @@ TEST_F(BRepGraph_EventBusTest, ImmediateMode_UpwardPropagation)
   EXPECT_EQ(aLayer->CountImmediateEventsOfKind(BRepGraph_NodeId::Kind::Shell), 0);
   EXPECT_EQ(aLayer->CountImmediateEventsOfKind(BRepGraph_NodeId::Kind::Solid), 0);
   // Verify SubtreeGen was propagated upward despite no dispatch.
-  EXPECT_GT(myGraph.Topo().Wire(BRepGraph_WireId(0)).SubtreeGen, 0u);
-  EXPECT_GT(myGraph.Topo().Face(BRepGraph_FaceId(0)).SubtreeGen, 0u);
+  EXPECT_GT(myGraph.Topo().Wires().Definition(BRepGraph_WireId(0)).SubtreeGen, 0u);
+  EXPECT_GT(myGraph.Topo().Faces().Definition(BRepGraph_FaceId(0)).SubtreeGen, 0u);
 }
 
 TEST_F(BRepGraph_EventBusTest, ImmediateMode_KindFilter)
@@ -264,7 +264,7 @@ TEST_F(BRepGraph_EventBusTest, ImmediateMode_KindFilter)
   EXPECT_EQ(aLayer->CountImmediateEventsOfKind(BRepGraph_NodeId::Kind::Edge), 0);
   EXPECT_EQ(aLayer->CountImmediateEventsOfKind(BRepGraph_NodeId::Kind::Face), 0);
   // But SubtreeGen was propagated.
-  EXPECT_GT(myGraph.Topo().Face(BRepGraph_FaceId(0)).SubtreeGen, 0u);
+  EXPECT_GT(myGraph.Topo().Faces().Definition(BRepGraph_FaceId(0)).SubtreeGen, 0u);
 }
 
 TEST_F(BRepGraph_EventBusTest, DeferredMode_BatchDispatch)
@@ -443,7 +443,7 @@ TEST_F(BRepGraph_EventBusTest, DefaultSubscribedKinds_Zero)
     BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut = myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
     aMut->Tolerance                              = 0.5;
   }
-  EXPECT_GT(myGraph.Topo().Edge(BRepGraph_EdgeId(0)).OwnGen, 0u);
+  EXPECT_GT(myGraph.Topo().Edges().Definition(BRepGraph_EdgeId(0)).OwnGen, 0u);
 }
 
 TEST_F(BRepGraph_EventBusTest, DeferredScope_DispatchesOnDestruction)

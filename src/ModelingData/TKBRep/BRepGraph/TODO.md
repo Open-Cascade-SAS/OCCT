@@ -63,7 +63,7 @@ Legend: [Perf] = measurable performance gain, [Arch] = architectural improvement
 - `UnbindEdgeFromFace` added to ReverseIndex for edge-to-face maintenance
 - `ReplaceEdgeInWire` binds new edge + unbinds old edge from wire's faces in single loop
 - Sewing `mergeMatchedEdges` uses `Builder().RemoveNode()` for replaced edges
-- `FreeEdges` and multiple-edge detection switched to O(1) `Topo().NbFacesOfEdge()` with `IsRemoved` filter
+- `FreeEdges` and multiple-edge detection switched to O(1) `Topo().Edges().NbFaces()` with `IsRemoved` filter
 
 ### ~~DeferredScope RAII~~ - DONE (2026-03-20)
 - `BRepGraph_DeferredScope` RAII class: `BeginDeferredInvalidation()` on construct, `EndDeferredInvalidation()` + `CommitMutation()` on destruct

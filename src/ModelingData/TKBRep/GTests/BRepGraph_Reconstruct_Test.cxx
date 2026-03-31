@@ -519,7 +519,8 @@ TEST(BRepGraph_ReconstructTest, AfterVertexMutation_ModifiedFlagAndPointChanged)
   ASSERT_GT(aCoEdgeRefs.Length(), 0);
 
   const BRepGraphInc::CoEdgeRef& aFirstCR     = aGraph.Refs().CoEdge(aCoEdgeRefs.First());
-  const BRepGraphInc::CoEdgeDef& aFirstCoEdge = aGraph.Topo().CoEdge(aFirstCR.CoEdgeDefId);
+  const BRepGraphInc::CoEdgeDef& aFirstCoEdge =
+    aGraph.Topo().CoEdges().Definition(aFirstCR.CoEdgeDefId);
   const int                      aVertIdx =
     BRepGraph_Tool::Edge::StartVertex(aGraph, BRepGraph_EdgeId(aFirstCoEdge.EdgeDefId))
       .VertexDefId.Index;
@@ -534,7 +535,7 @@ TEST(BRepGraph_ReconstructTest, AfterVertexMutation_ModifiedFlagAndPointChanged)
   }
 
   // Verify the OwnGen is incremented on the vertex def (directly mutated).
-  EXPECT_GT(aGraph.Topo().Vertex(BRepGraph_VertexId(aVertIdx)).OwnGen, 0u)
+  EXPECT_GT(aGraph.Topo().Vertices().Definition(BRepGraph_VertexId(aVertIdx)).OwnGen, 0u)
     << "Vertex def should have OwnGen > 0 after mutation";
 
   // Verify the graph VertexDef.Point has actually changed.

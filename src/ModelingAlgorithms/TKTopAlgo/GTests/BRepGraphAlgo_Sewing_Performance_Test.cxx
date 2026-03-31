@@ -323,14 +323,14 @@ GraphShapeMetrics collectGraphMetrics(const TopoDS_Shape& theShape)
   const BRepGraph::TopoView& aTopo = aGraph.Topo();
   for (int aFaceIdx = 0; aFaceIdx < aTopo.NbFaces(); ++aFaceIdx)
   {
-    if (!aTopo.Face(BRepGraph_FaceId(aFaceIdx)).IsRemoved)
+    if (!aTopo.Faces().Definition(BRepGraph_FaceId(aFaceIdx)).IsRemoved)
     {
       ++aMetrics.NbActiveFaces;
     }
   }
   for (int aVtxIdx = 0; aVtxIdx < aTopo.NbVertices(); ++aVtxIdx)
   {
-    if (!aTopo.Vertex(BRepGraph_VertexId(aVtxIdx)).IsRemoved)
+    if (!aTopo.Vertices().Definition(BRepGraph_VertexId(aVtxIdx)).IsRemoved)
     {
       ++aMetrics.NbActiveVertices;
     }
@@ -338,7 +338,7 @@ GraphShapeMetrics collectGraphMetrics(const TopoDS_Shape& theShape)
   for (int anEdgeIdx = 0; anEdgeIdx < aTopo.NbEdges(); ++anEdgeIdx)
   {
     const BRepGraph_EdgeId       anEdgeId(anEdgeIdx);
-    const BRepGraphInc::EdgeDef& anEdge = aTopo.Edge(anEdgeId);
+    const BRepGraphInc::EdgeDef& anEdge = aTopo.Edges().Definition(anEdgeId);
     if (anEdge.IsRemoved)
     {
       continue;
@@ -349,7 +349,7 @@ GraphShapeMetrics collectGraphMetrics(const TopoDS_Shape& theShape)
       ++aMetrics.NbDegeneratedEdges;
       continue;
     }
-    const int aFaceCount = aTopo.CoEdgesOfEdge(anEdgeId).Length();
+    const int aFaceCount = aTopo.Edges().CoEdges(anEdgeId).Length();
     if (aFaceCount == 1)
     {
       ++aMetrics.NbFreeEdges;

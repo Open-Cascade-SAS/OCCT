@@ -66,6 +66,15 @@ All queries and mutations go through lightweight view objects obtained from a `B
 | **RefsView** | `Refs()` | Reference entry access, RefUID lookup, VersionStamp for refs |
 | **PathView** | `Paths()` | Assembly-aware queries (RootProducts, IsAssembly, IsPart, NbComponents, Component) and path traversal (GlobalLocation, GlobalOrientation, PathsTo, NodeLocations, CommonAncestor) |
 
+`TopoView` also exposes grouped node-oriented helpers for discoverable read queries:
+
+- `Topo().Faces()`, `Edges()`, `Vertices()`, `Wires()`
+- `Topo().Shells()`, `Solids()`, `CoEdges()`
+- `Topo().Compounds()`, `CompSolids()`
+- `Topo().Products()`, `Occurrences()`
+
+Keep `Refs()` as the home for APIs returning `RefId` vectors and reference-entry payloads.
+
 ### Non-View Helpers
 
 | Class | Purpose |
@@ -128,8 +137,8 @@ Reference entries are the typed edges of the incidence graph. Each ref kind has 
 - UID operations: `UIDOf(refId)`, `RefIdFrom(uid)`
 - Parent-to-ref vectors: `ShellRefIdsOf(solidId)`, `FaceRefIdsOf(shellId)`, etc.
 
-Face outer-wire convenience is available from `TopoView`:
-- `Topo().OuterWireOfFace(faceId)`
+Face outer-wire convenience is available from grouped `TopoView` helpers:
+- `Topo().Faces().OuterWire(faceId)`
 
 ## Core Pipelines
 
@@ -172,7 +181,7 @@ Kind::Product    = 10   // Reusable shape definition (part or assembly)
 Kind::Occurrence = 11   // Placed instance of a product within a parent product
 ```
 
-Helpers: `BRepGraph_NodeId::IsTopologyKind()`, `IsAssemblyKind()`, `Product(i)`, `Occurrence(i)`.
+Helpers: `BRepGraph_NodeId::IsTopologyKind()`, `IsAssemblyKind()`, `Products().Definition(id)`, `Occurrences().Definition(id)`.
 
 ### Data Model
 
@@ -206,7 +215,7 @@ flowchart LR
 
 | View | Methods |
 |------|---------|
-| **TopoView** | `NbProducts`, `NbOccurrences`, `Product(i)`, `Occurrence(i)` |
+| **TopoView** | `NbProducts`, `NbOccurrences`, grouped helpers `Products()` / `Occurrences()` |
 | **PathView** | `RootProducts`, `IsAssembly`, `IsPart`, `NbComponents`, `Component`, `OccurrenceLocation(occId)` |
 | **BuilderView** | `AddProduct`, `AddAssemblyProduct`, `AddOccurrence` (with optional parent occurrence), `RemoveSubgraph` (cascades to child occurrences), `MutProduct(i)`, `MutOccurrence(i)` (RAII guards) |
 | **Iterator** | `BRepGraph_Iterator<ProductDef>`, `BRepGraph_Iterator<OccurrenceDef>` |

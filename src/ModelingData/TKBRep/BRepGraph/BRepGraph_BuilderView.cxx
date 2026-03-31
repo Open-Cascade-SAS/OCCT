@@ -143,7 +143,7 @@ NCollection_Vector<BRepGraph_NodeId> collectWireChildren(const BRepGraph&       
     if (aRef.ParentId != theWireNodeId || aRef.IsRemoved || !aRef.CoEdgeDefId.IsValid(aNbCoEdges))
       continue;
 
-    const BRepGraphInc::CoEdgeDef& aCoEdge = aTopo.CoEdge(aRef.CoEdgeDefId);
+    const BRepGraphInc::CoEdgeDef& aCoEdge = aTopo.CoEdges().Definition(aRef.CoEdgeDefId);
     if (aCoEdge.EdgeDefId.IsValid(aTopo.NbEdges()))
       aChildNodes.Append(BRepGraph_EdgeId(aCoEdge.EdgeDefId.Index));
   }

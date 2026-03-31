@@ -64,7 +64,7 @@ int countInlineVertexRefs(const BRepGraph& theGraph)
   int                        aNb   = 0;
   for (int i = 0; i < aTopo.NbEdges(); ++i)
   {
-    const BRepGraphInc::EdgeDef& anEdge = aTopo.Edge(BRepGraph_EdgeId(i));
+    const BRepGraphInc::EdgeDef& anEdge = aTopo.Edges().Definition(BRepGraph_EdgeId(i));
     if (anEdge.StartVertexRefId.IsValid())
       ++aNb;
     if (anEdge.EndVertexRefId.IsValid())
@@ -72,7 +72,7 @@ int countInlineVertexRefs(const BRepGraph& theGraph)
     aNb += anEdge.InternalVertexRefIds.Length();
   }
   for (int i = 0; i < aTopo.NbFaces(); ++i)
-    aNb += aTopo.Face(BRepGraph_FaceId(i)).VertexRefIds.Length();
+    aNb += aTopo.Faces().Definition(BRepGraph_FaceId(i)).VertexRefIds.Length();
   return aNb;
 }
 

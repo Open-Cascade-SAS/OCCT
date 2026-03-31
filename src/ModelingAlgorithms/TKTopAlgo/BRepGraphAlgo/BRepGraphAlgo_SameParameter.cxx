@@ -234,7 +234,7 @@ bool enforceImpl(BRepGraph&       theGraph,
     theGraph.Builder().MutEdge(BRepGraph_EdgeId(theEdgeId.Index));
   const BRepGraphInc::EdgeDef&                  anEdge = *aMutEdge;
   const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
-    theGraph.Topo().CoEdgesOfEdge(BRepGraph_EdgeId(theEdgeId.Index));
+    theGraph.Topo().Edges().CoEdges(BRepGraph_EdgeId(theEdgeId.Index));
   if (!BRepGraph_Tool::Edge::HasCurve(theGraph, BRepGraph_EdgeId(theEdgeId.Index))
       || aCoEdgeIdxs.IsEmpty())
   {
@@ -298,7 +298,7 @@ bool enforceImpl(BRepGraph&       theGraph,
   for (int aCEIter = 0; aCEIter < aCoEdgeIdxs.Length(); ++aCEIter)
   {
     const BRepGraph_CoEdgeId       aCoEdgeIdx = aCoEdgeIdxs.Value(aCEIter);
-    const BRepGraphInc::CoEdgeDef& aCoEdge    = theGraph.Topo().CoEdge(aCoEdgeIdx);
+    const BRepGraphInc::CoEdgeDef& aCoEdge    = theGraph.Topo().CoEdges().Definition(aCoEdgeIdx);
     if (!aCoEdge.Curve2DRepId.IsValid())
     {
       continue;

@@ -516,7 +516,8 @@ TEST(BRepGraph_ExplorerTest, PathsTo_MatchesExplorer_WhenEarlierCompoundRefRemov
   aGraph.Build(aComp);
   ASSERT_TRUE(aGraph.IsDone());
 
-  const BRepGraphInc::CompoundDef& aRootComp = aGraph.Topo().Compound(BRepGraph_CompoundId(0));
+  const BRepGraphInc::CompoundDef& aRootComp =
+    aGraph.Topo().Compounds().Definition(BRepGraph_CompoundId(0));
   ASSERT_GE(aRootComp.ChildRefIds.Length(), 2);
 
   const BRepGraph_ChildRefId aRemovedRefId = aRootComp.ChildRefIds.Value(0);
@@ -591,7 +592,7 @@ TEST(BRepGraph_ExplorerTest, PathsTo_MatchesExplorer_WhenFirstShellRefRemoved)
   aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  const BRepGraphInc::SolidDef& aSolid = aGraph.Topo().Solid(BRepGraph_SolidId(0));
+  const BRepGraphInc::SolidDef& aSolid = aGraph.Topo().Solids().Definition(BRepGraph_SolidId(0));
   ASSERT_GT(aSolid.ShellRefIds.Length(), 0);
   const BRepGraph_ShellId aShellId = aGraph.Refs().Shell(aSolid.ShellRefIds.Value(0)).ShellDefId;
   ASSERT_TRUE(aShellId.IsValid(aGraph.Topo().NbShells()));
@@ -600,7 +601,8 @@ TEST(BRepGraph_ExplorerTest, PathsTo_MatchesExplorer_WhenFirstShellRefRemoved)
   aGraph.Builder().AddShellToSolid(BRepGraph_SolidId(0),
                                    BRepGraph_ShellId(aShellId.Index),
                                    TopAbs_FORWARD);
-  const BRepGraphInc::SolidDef& aSolidAfterDup = aGraph.Topo().Solid(BRepGraph_SolidId(0));
+  const BRepGraphInc::SolidDef& aSolidAfterDup =
+    aGraph.Topo().Solids().Definition(BRepGraph_SolidId(0));
   ASSERT_GE(aSolidAfterDup.ShellRefIds.Length(), 2);
 
   // Remove the first shell ref so the active one is not the first matching shell usage.

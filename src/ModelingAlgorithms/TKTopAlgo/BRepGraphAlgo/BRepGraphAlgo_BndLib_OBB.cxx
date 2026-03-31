@@ -142,7 +142,7 @@ static int pointsForOBB(const BRepGraph&            theGraph,
     {
       // Planar face: check if all edges are linear.
       bool                         hasNonLinearEdge = false;
-      const BRepGraphInc::FaceDef& aFaceEnt         = theGraph.Topo().Face(aFaceId);
+      const BRepGraphInc::FaceDef& aFaceEnt         = theGraph.Topo().Faces().Definition(aFaceId);
       for (int aWRI = 0; aWRI < aFaceEnt.WireRefIds.Length() && !hasNonLinearEdge; ++aWRI)
       {
         const BRepGraph_WireRefId    aWireRefId = aFaceEnt.WireRefIds.Value(aWRI);
@@ -152,7 +152,7 @@ static int pointsForOBB(const BRepGraph&            theGraph,
           continue;
         }
 
-        const BRepGraphInc::WireDef& aWireEnt = theGraph.Topo().Wire(aWR.WireDefId);
+        const BRepGraphInc::WireDef& aWireEnt = theGraph.Topo().Wires().Definition(aWR.WireDefId);
         for (int aCRI = 0; aCRI < aWireEnt.CoEdgeRefIds.Length(); ++aCRI)
         {
           const BRepGraph_CoEdgeRefId    aCERefId = aWireEnt.CoEdgeRefIds.Value(aCRI);
@@ -162,7 +162,7 @@ static int pointsForOBB(const BRepGraph&            theGraph,
             continue;
           }
 
-          const BRepGraphInc::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdge(aCR.CoEdgeDefId);
+          const BRepGraphInc::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdges().Definition(aCR.CoEdgeDefId);
           const BRepGraph_EdgeId         anEdgeId(aCoEdge.EdgeDefId);
           if (!anEdgeId.IsValid(theGraph.Topo().NbEdges()))
           {
@@ -227,7 +227,7 @@ static int pointsForOBB(const BRepGraph&            theGraph,
   for (int i = 0; i < aNbEdges; ++i)
   {
     const BRepGraph_EdgeId anEdgeId(i);
-    if (theGraph.Topo().NbFacesOfEdge(anEdgeId) > 0)
+    if (theGraph.Topo().Edges().NbFaces(anEdgeId) > 0)
     {
       continue; // Edge is in a face, already handled.
     }

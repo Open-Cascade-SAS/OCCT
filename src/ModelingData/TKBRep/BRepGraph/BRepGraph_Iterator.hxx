@@ -254,70 +254,70 @@ inline BRepGraph_Iterator<BRepGraphInc::CompSolidDef>::BRepGraph_Iterator(const 
 template <>
 inline const BRepGraphInc::SolidDef& BRepGraph_Iterator<BRepGraphInc::SolidDef>::Current() const
 {
-  return myGraph.Topo().Solid(CurrentId());
+  return myGraph.Topo().Solids().Definition(CurrentId());
 }
 
 template <>
 inline const BRepGraphInc::ShellDef& BRepGraph_Iterator<BRepGraphInc::ShellDef>::Current() const
 {
-  return myGraph.Topo().Shell(CurrentId());
+  return myGraph.Topo().Shells().Definition(CurrentId());
 }
 
 template <>
 inline const BRepGraphInc::FaceDef& BRepGraph_Iterator<BRepGraphInc::FaceDef>::Current() const
 {
-  return myGraph.Topo().Face(CurrentId());
+  return myGraph.Topo().Faces().Definition(CurrentId());
 }
 
 template <>
 inline const BRepGraphInc::WireDef& BRepGraph_Iterator<BRepGraphInc::WireDef>::Current() const
 {
-  return myGraph.Topo().Wire(CurrentId());
+  return myGraph.Topo().Wires().Definition(CurrentId());
 }
 
 template <>
 inline const BRepGraphInc::EdgeDef& BRepGraph_Iterator<BRepGraphInc::EdgeDef>::Current() const
 {
-  return myGraph.Topo().Edge(CurrentId());
+  return myGraph.Topo().Edges().Definition(CurrentId());
 }
 
 template <>
 inline const BRepGraphInc::VertexDef& BRepGraph_Iterator<BRepGraphInc::VertexDef>::Current() const
 {
-  return myGraph.Topo().Vertex(CurrentId());
+  return myGraph.Topo().Vertices().Definition(CurrentId());
 }
 
 template <>
 inline const BRepGraphInc::ProductDef& BRepGraph_Iterator<BRepGraphInc::ProductDef>::Current() const
 {
-  return myGraph.Topo().Product(CurrentId());
+  return myGraph.Topo().Products().Definition(CurrentId());
 }
 
 template <>
 inline const BRepGraphInc::OccurrenceDef& BRepGraph_Iterator<BRepGraphInc::OccurrenceDef>::Current()
   const
 {
-  return myGraph.Topo().Occurrence(CurrentId());
+  return myGraph.Topo().Occurrences().Definition(CurrentId());
 }
 
 template <>
 inline const BRepGraphInc::CoEdgeDef& BRepGraph_Iterator<BRepGraphInc::CoEdgeDef>::Current() const
 {
-  return myGraph.Topo().CoEdge(CurrentId());
+  return myGraph.Topo().CoEdges().Definition(CurrentId());
 }
 
 template <>
 inline const BRepGraphInc::CompoundDef& BRepGraph_Iterator<BRepGraphInc::CompoundDef>::Current()
   const
 {
-  return myGraph.Topo().Compound(CurrentId());
+  return myGraph.Topo().Compounds().Definition(CurrentId());
 }
 
 template <>
 inline const BRepGraphInc::CompSolidDef& BRepGraph_Iterator<BRepGraphInc::CompSolidDef>::Current()
   const
 {
-  return myGraph.Topo().CompSolid(CurrentId());
+  return myGraph.Topo().CompSolids().Definition(CurrentId());
 }
 
 // ---------------------------------------------------------------------------

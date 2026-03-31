@@ -110,7 +110,7 @@ void BRepGraphCheck_Analyzer::Perform()
         // Edge-in-face and vertex-in-face checks.
         const BRepGraph::TopoView&   aLocalDefs = myGraph->Topo();
         const BRepGraph::RefsView&   aLocalRefs = myGraph->Refs();
-        const BRepGraphInc::FaceDef& aFaceDef   = aLocalDefs.Face(aFaceId);
+        const BRepGraphInc::FaceDef& aFaceDef   = aLocalDefs.Faces().Definition(aFaceId);
 
         for (int aWireRefIter = 0; aWireRefIter < aFaceDef.WireRefIds.Length(); ++aWireRefIter)
         {
@@ -128,7 +128,7 @@ void BRepGraphCheck_Analyzer::Perform()
           // Wire-on-face check.
           BRepGraphCheck::CheckWireOnFace(*myGraph, aWireId, aFaceId, aGeomCtl, aLocal);
 
-          const BRepGraphInc::WireDef& aWireDef = aLocalDefs.Wire(aWireId);
+          const BRepGraphInc::WireDef& aWireDef = aLocalDefs.Wires().Definition(aWireId);
           for (int aCoEdgeRefIter = 0; aCoEdgeRefIter < aWireDef.CoEdgeRefIds.Length();
                ++aCoEdgeRefIter)
           {
@@ -138,13 +138,13 @@ void BRepGraphCheck_Analyzer::Perform()
             {
               continue;
             }
-            const BRepGraphInc::CoEdgeDef& aCoEdgeDef = aLocalDefs.CoEdge(aCoEdgeRef.CoEdgeDefId);
+            const BRepGraphInc::CoEdgeDef& aCoEdgeDef = aLocalDefs.CoEdges().Definition(aCoEdgeRef.CoEdgeDefId);
             const BRepGraph_EdgeId         anEdgeId   = aCoEdgeDef.EdgeDefId;
 
             BRepGraphCheck::CheckEdgeOnFace(*myGraph, anEdgeId, aFaceId, anIsExact, aLocal);
 
             // Vertex checks at edge endpoints.
-            const BRepGraphInc::EdgeDef& anEdgeDef = aLocalDefs.Edge(anEdgeId);
+            const BRepGraphInc::EdgeDef& anEdgeDef = aLocalDefs.Edges().Definition(anEdgeId);
             if (anEdgeDef.StartVertexRefId.IsValid())
             {
               const BRepGraph_VertexId aStartVtxId =
@@ -228,7 +228,7 @@ void BRepGraphCheck_Analyzer::CheckVertex(const BRepGraph_VertexId theVertex)
   for (int anEdgeIter = 0; anEdgeIter < aNbEdges; ++anEdgeIter)
   {
     const BRepGraph_EdgeId       anEdgeId(anEdgeIter);
-    const BRepGraphInc::EdgeDef& anEdgeDef = aDefs.Edge(anEdgeId);
+    const BRepGraphInc::EdgeDef& anEdgeDef = aDefs.Edges().Definition(anEdgeId);
     const BRepGraph_VertexId     aStartVtxId =
       anEdgeDef.StartVertexRefId.IsValid()
             ? BRepGraph_Tool::Edge::StartVertex(*myGraph, anEdgeId).VertexDefId

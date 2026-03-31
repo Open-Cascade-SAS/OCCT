@@ -187,84 +187,35 @@ public:
   [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_FaceRefId>& FaceRefIdsOf(
     const BRepGraph_ShellId theShell) const;
 
-  //! @param[in] theShell shell entity identifier
-  //! @param[in] theAllocator allocator for the result vector
-  //! @return active (non-removed) face ref ids owned by this shell
-  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_FaceRefId> ActiveFaceRefIdsOf(
-    const BRepGraph_ShellId                         theShell,
-    const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
-
   //! @param[in] theFace face entity identifier
   //! @return wire ref ids owned by this face
   [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_WireRefId>& WireRefIdsOf(
     const BRepGraph_FaceId theFace) const;
-
-  //! @param[in] theFace face entity identifier
-  //! @param[in] theAllocator allocator for the result vector
-  //! @return active (non-removed) wire ref ids owned by this face
-  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_WireRefId> ActiveWireRefIdsOf(
-    const BRepGraph_FaceId                          theFace,
-    const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
 
   //! @param[in] theWire wire entity identifier
   //! @return coedge ref ids owned by this wire
   [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_CoEdgeRefId>& CoEdgeRefIdsOf(
     const BRepGraph_WireId theWire) const;
 
-  //! @param[in] theWire wire entity identifier
-  //! @param[in] theAllocator allocator for the result vector
-  //! @return active (non-removed) coedge ref ids owned by this wire
-  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_CoEdgeRefId> ActiveCoEdgeRefIdsOf(
-    const BRepGraph_WireId                          theWire,
-    const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
-
   //! @param[in] theSolid solid entity identifier
   //! @return shell ref ids owned by this solid
   [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_ShellRefId>& ShellRefIdsOf(
     const BRepGraph_SolidId theSolid) const;
-
-  //! @param[in] theSolid solid entity identifier
-  //! @param[in] theAllocator allocator for the result vector
-  //! @return active (non-removed) shell ref ids owned by this solid
-  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_ShellRefId> ActiveShellRefIdsOf(
-    const BRepGraph_SolidId                         theSolid,
-    const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
 
   //! @param[in] theCompound compound entity identifier
   //! @return child ref ids owned by this compound
   [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_ChildRefId>& ChildRefIdsOf(
     const BRepGraph_CompoundId theCompound) const;
 
-  //! @param[in] theCompound compound entity identifier
-  //! @param[in] theAllocator allocator for the result vector
-  //! @return active (non-removed) child ref ids owned by this compound
-  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_ChildRefId> ActiveChildRefIdsOf(
-    const BRepGraph_CompoundId                      theCompound,
-    const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
-
   //! @param[in] theProduct product entity identifier
   //! @return occurrence ref ids owned by this product
   [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_OccurrenceRefId>&
     OccurrenceRefIdsOf(const BRepGraph_ProductId theProduct) const;
 
-  //! @param[in] theProduct product entity identifier
-  //! @param[in] theAllocator allocator for the result vector
-  //! @return active (non-removed) occurrence ref ids owned by this product
-  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_OccurrenceRefId>
-    ActiveOccurrenceRefIdsOf(const BRepGraph_ProductId                  theProduct,
-                             const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
-
   //! @param[in] theCompSolid comp-solid entity identifier
   //! @return solid ref ids owned by this comp-solid
   [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_SolidRefId>& SolidRefIdsOf(
     const BRepGraph_CompSolidId theCompSolid) const;
-
-  //! @param[in] theCompSolid comp-solid entity identifier
-  //! @param[in] theAllocator allocator for the result vector
-  //! @return active (non-removed) solid ref ids owned by this comp-solid
-  [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_SolidRefId> ActiveSolidRefIdsOf(
-    const BRepGraph_CompSolidId                     theCompSolid,
-    const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
 
   //! @param[in] theEdge edge entity identifier
   //! @param[in] theAllocator allocator for the result vector

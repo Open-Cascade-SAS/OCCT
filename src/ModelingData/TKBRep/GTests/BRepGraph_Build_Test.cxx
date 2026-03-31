@@ -758,7 +758,7 @@ TEST(BRepGraph_BuildTest, Box_EdgeParamRange_IsNonDegenerate)
 
   for (int anIdx = 0; anIdx < aGraph.Topo().NbEdges(); ++anIdx)
   {
-    const BRepGraphInc::EdgeDef& anEdge = aGraph.Topo().Edge(BRepGraph_EdgeId(anIdx));
+    const BRepGraphInc::EdgeDef& anEdge = aGraph.Topo().Edges().Definition(BRepGraph_EdgeId(anIdx));
     EXPECT_LT(anEdge.ParamFirst, anEdge.ParamLast)
       << "Edge " << anIdx << " has invalid parameter range [" << anEdge.ParamFirst << ", "
       << anEdge.ParamLast << "]";
@@ -989,12 +989,13 @@ TEST(BRepGraph_BuildTest, RegularityLayer_EdgeMutation_InvalidatesBindings)
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges() && !hasBinding; ++anEdgeIdx)
   {
     anEdgeId = BRepGraph_EdgeId(anEdgeIdx);
-    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdges = aGraph.Topo().CoEdgesOfEdge(anEdgeId);
+    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdges = aGraph.Topo().Edges().CoEdges(anEdgeId);
     BRepGraph_FaceId                              aFace1;
     BRepGraph_FaceId                              aFace2;
     for (int aCoEdgeIdx = 0; aCoEdgeIdx < aCoEdges.Length(); ++aCoEdgeIdx)
     {
-      const BRepGraph_FaceId aFace = aGraph.Topo().CoEdge(aCoEdges.Value(aCoEdgeIdx)).FaceDefId;
+      const BRepGraph_FaceId aFace =
+        aGraph.Topo().CoEdges().Definition(aCoEdges.Value(aCoEdgeIdx)).FaceDefId;
       if (!aFace.IsValid())
         continue;
       if (!aFace1.IsValid())
@@ -1040,12 +1041,13 @@ TEST(BRepGraph_BuildTest, RegularityLayer_FaceMutation_InvalidatesBindings)
   for (int anEdgeIdx = 0; anEdgeIdx < aGraph.Topo().NbEdges() && !hasBinding; ++anEdgeIdx)
   {
     anEdgeId = BRepGraph_EdgeId(anEdgeIdx);
-    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdges = aGraph.Topo().CoEdgesOfEdge(anEdgeId);
+    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdges = aGraph.Topo().Edges().CoEdges(anEdgeId);
     BRepGraph_FaceId                              aFace1;
     BRepGraph_FaceId                              aFace2;
     for (int aCoEdgeIdx = 0; aCoEdgeIdx < aCoEdges.Length(); ++aCoEdgeIdx)
     {
-      const BRepGraph_FaceId aFace = aGraph.Topo().CoEdge(aCoEdges.Value(aCoEdgeIdx)).FaceDefId;
+      const BRepGraph_FaceId aFace =
+        aGraph.Topo().CoEdges().Definition(aCoEdges.Value(aCoEdgeIdx)).FaceDefId;
       if (!aFace.IsValid())
         continue;
       if (!aFace1.IsValid())
