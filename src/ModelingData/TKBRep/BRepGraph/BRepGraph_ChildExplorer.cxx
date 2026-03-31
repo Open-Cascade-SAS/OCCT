@@ -190,13 +190,13 @@ BRepGraph_ChildExplorer::BRepGraph_ChildExplorer(
   const bool                              theCumOri,
   const TraversalMode                     theMode)
     : myGraph(&theGraph),
+      myRoot(theRoot),
+      myMode(theMode),
       myTargetKind(theTargetKind),
       myAvoidKind(normalizeAvoidKind(theAvoidKind, theTargetKind)),
       myEmitAvoidKind(theEmitAvoidKind),
       myCumLoc(theCumLoc),
-      myCumOri(theCumOri),
-      myMode(theMode),
-      myRoot(theRoot)
+      myCumOri(theCumOri)
 {
   startTraversal(TopLoc_Location(), TopAbs_FORWARD);
 }
@@ -251,11 +251,11 @@ BRepGraph_ChildExplorer::BRepGraph_ChildExplorer(
   const TopAbs_Orientation                theStartOri,
   const TraversalMode                     theMode)
     : myGraph(&theGraph),
+      myRoot(theRoot),
+      myMode(theMode),
       myTargetKind(theTargetKind),
       myAvoidKind(normalizeAvoidKind(theAvoidKind, theTargetKind)),
-      myEmitAvoidKind(theEmitAvoidKind),
-      myMode(theMode),
-      myRoot(theRoot)
+      myEmitAvoidKind(theEmitAvoidKind)
 {
   startTraversal(theStartLoc, theStartOri);
 }
@@ -287,10 +287,9 @@ void BRepGraph_ChildExplorer::startTraversal(const TopLoc_Location&   theStartLo
   myStackTop   = -1;
   myHasMore    = false;
   myCurrent    = BRepGraph_NodeId();
-  myMatchStep  = -1;
+  myCurrentFrame = -1;
   myLocation   = theStartLoc;
   myOrientation = theStartOri;
-  myPendingFrame.reset();
 
   if (!myRoot.IsValid())
     return;
@@ -300,11 +299,14 @@ void BRepGraph_ChildExplorer::startTraversal(const TopLoc_Location&   theStartLo
     const BRepGraphInc::BaseDef* aRootDef = myGraph->Topo().TopoEntity(myRoot);
     if (myTargetKind.has_value() && myEmitAvoidKind && aRootDef != nullptr && !aRootDef->IsRemoved)
     {
-      myCurrent     = myRoot;
-      myLocation    = theStartLoc;
-      myOrientation = theStartOri;
-      myMatchStep   = -1;
-      myHasMore     = true;
+      StackFrame aRootFrame;
+      aRootFrame.Node           = myRoot;
+      aRootFrame.NextChildIdx   = 0;
+      aRootFrame.StepFromParent = -1;
+      aRootFrame.AccLocation    = theStartLoc;
+      aRootFrame.AccOrientation = theStartOri;
+      pushFrame(aRootFrame);
+      setCurrentFromFrame(myStackTop);
     }
     return;
   }
@@ -315,11 +317,14 @@ void BRepGraph_ChildExplorer::startTraversal(const TopLoc_Location&   theStartLo
     const BRepGraphInc::BaseDef* aRootDef = myGraph->Topo().TopoEntity(myRoot);
     if (aRootDef != nullptr && !aRootDef->IsRemoved)
     {
-      myCurrent     = myRoot;
-      myLocation    = theStartLoc;
-      myOrientation = theStartOri;
-      myMatchStep   = -1;
-      myHasMore     = true;
+      StackFrame aRootFrame;
+      aRootFrame.Node           = myRoot;
+      aRootFrame.NextChildIdx   = 0;
+      aRootFrame.StepFromParent = -1;
+      aRootFrame.AccLocation    = theStartLoc;
+      aRootFrame.AccOrientation = theStartOri;
+      pushFrame(aRootFrame);
+      setCurrentFromFrame(myStackTop);
       return;
     }
   }
@@ -338,11 +343,14 @@ void BRepGraph_ChildExplorer::startTraversal(const TopLoc_Location&   theStartLo
     const BRepGraphInc::BaseDef* anAvoidDef = myGraph->Topo().TopoEntity(aResolved);
     if (myTargetKind.has_value() && myEmitAvoidKind && anAvoidDef != nullptr && !anAvoidDef->IsRemoved)
     {
-      myCurrent     = aResolved;
-      myLocation    = aRootLoc;
-      myOrientation = aRootOri;
-      myMatchStep   = -1;
-      myHasMore     = true;
+      StackFrame aRootFrame;
+      aRootFrame.Node           = aResolved;
+      aRootFrame.NextChildIdx   = 0;
+      aRootFrame.StepFromParent = -1;
+      aRootFrame.AccLocation    = aRootLoc;
+      aRootFrame.AccOrientation = aRootOri;
+      pushFrame(aRootFrame);
+      setCurrentFromFrame(myStackTop);
     }
     return;
   }
@@ -355,11 +363,14 @@ void BRepGraph_ChildExplorer::startTraversal(const TopLoc_Location&   theStartLo
   // Post-resolution root match (e.g., root=CoEdge, target=Edge).
   if (myMode == TraversalMode::Recursive && myTargetKind.has_value() && matchesTarget(aResolved))
   {
-    myCurrent     = aResolved;
-    myLocation    = aRootLoc;
-    myOrientation = aRootOri;
-    myMatchStep   = -1;
-    myHasMore     = true;
+    StackFrame aRootFrame;
+    aRootFrame.Node           = aResolved;
+    aRootFrame.NextChildIdx   = 0;
+    aRootFrame.StepFromParent = -1;
+    aRootFrame.AccLocation    = aRootLoc;
+    aRootFrame.AccOrientation = aRootOri;
+    pushFrame(aRootFrame);
+    setCurrentFromFrame(myStackTop);
     return;
   }
 
@@ -389,13 +400,16 @@ void BRepGraph_ChildExplorer::advance()
   const BRepGraph::TopoView& aDefs = myGraph->Topo();
   const BRepGraph::RefsView& aRefs = myGraph->Refs();
 
-  myHasMore = false;
-
-  if (myPendingFrame.has_value())
+  if (myCurrentFrame >= 0)
   {
-    pushFrame(*myPendingFrame);
-    myPendingFrame.reset();
+    if (myCurrentFrame == myStackTop && !shouldDescendFromCurrent())
+    {
+      popFrame();
+    }
+    myCurrentFrame = -1;
   }
+
+  myHasMore = false;
 
   while (myStackTop >= 0)
   {
@@ -678,11 +692,14 @@ void BRepGraph_ChildExplorer::advance()
       const BRepGraphInc::BaseDef* aPreAvoidDef = aDefs.TopoEntity(aChildNode);
       if (myEmitAvoidKind && aPreAvoidDef != nullptr && !aPreAvoidDef->IsRemoved)
       {
-        myCurrent     = aChildNode;
-        myLocation    = aChildLoc;
-        myOrientation = aChildOri;
-        myMatchStep   = aStepIdx;
-        myHasMore     = true;
+        StackFrame aChildFrame;
+        aChildFrame.Node           = aChildNode;
+        aChildFrame.NextChildIdx   = 0;
+        aChildFrame.StepFromParent = aStepIdx;
+        aChildFrame.AccLocation    = aChildLoc;
+        aChildFrame.AccOrientation = aChildOri;
+        pushFrame(aChildFrame);
+        setCurrentFromFrame(myStackTop);
         return;
       }
       continue;
@@ -694,11 +711,14 @@ void BRepGraph_ChildExplorer::advance()
       const BRepGraphInc::BaseDef* aPreDef = aDefs.TopoEntity(aChildNode);
       if (aPreDef != nullptr && !aPreDef->IsRemoved)
       {
-        myCurrent     = aChildNode;
-        myLocation    = aChildLoc;
-        myOrientation = aChildOri;
-        myMatchStep   = aStepIdx;
-        myHasMore     = true;
+        StackFrame aChildFrame;
+        aChildFrame.Node           = aChildNode;
+        aChildFrame.NextChildIdx   = 0;
+        aChildFrame.StepFromParent = aStepIdx;
+        aChildFrame.AccLocation    = aChildLoc;
+        aChildFrame.AccOrientation = aChildOri;
+        pushFrame(aChildFrame);
+        setCurrentFromFrame(myStackTop);
         return;
       }
       continue;
@@ -714,11 +734,14 @@ void BRepGraph_ChildExplorer::advance()
       const BRepGraphInc::BaseDef* aPostAvoidDef = aDefs.TopoEntity(aChildNode);
       if (myEmitAvoidKind && aPostAvoidDef != nullptr && !aPostAvoidDef->IsRemoved)
       {
-        myCurrent     = aChildNode;
-        myLocation    = aChildLoc;
-        myOrientation = aChildOri;
-        myMatchStep   = aStepIdx;
-        myHasMore     = true;
+        StackFrame aChildFrame;
+        aChildFrame.Node           = aChildNode;
+        aChildFrame.NextChildIdx   = 0;
+        aChildFrame.StepFromParent = aStepIdx;
+        aChildFrame.AccLocation    = aChildLoc;
+        aChildFrame.AccOrientation = aChildOri;
+        pushFrame(aChildFrame);
+        setCurrentFromFrame(myStackTop);
         return;
       }
       continue;
@@ -731,24 +754,14 @@ void BRepGraph_ChildExplorer::advance()
       if (aPostDef == nullptr || aPostDef->IsRemoved)
         continue;
 
-      if (!myTargetKind.has_value()
-          && myMode == TraversalMode::Recursive
-          && canHaveChildren(aChildNode.NodeKind))
-      {
-        StackFrame aChildFrame;
-        aChildFrame.Node           = aChildNode;
-        aChildFrame.NextChildIdx   = 0;
-        aChildFrame.StepFromParent = aStepIdx;
-        aChildFrame.AccLocation    = aChildLoc;
-        aChildFrame.AccOrientation = aChildOri;
-        myPendingFrame = aChildFrame;
-      }
-
-      myCurrent     = aChildNode;
-      myLocation    = aChildLoc;
-      myOrientation = aChildOri;
-      myMatchStep   = aStepIdx;
-      myHasMore     = true;
+      StackFrame aChildFrame;
+      aChildFrame.Node           = aChildNode;
+      aChildFrame.NextChildIdx   = 0;
+      aChildFrame.StepFromParent = aStepIdx;
+      aChildFrame.AccLocation    = aChildLoc;
+      aChildFrame.AccOrientation = aChildOri;
+      pushFrame(aChildFrame);
+      setCurrentFromFrame(myStackTop);
       return;
     }
 
@@ -772,6 +785,30 @@ void BRepGraph_ChildExplorer::advance()
     }
     // Otherwise skip this child (loop continues to next sibling or backtrack).
   }
+}
+
+//=================================================================================================
+
+void BRepGraph_ChildExplorer::setCurrentFromFrame(const int theFrameIndex)
+{
+  myCurrentFrame = theFrameIndex;
+  myCurrent      = myStack[theFrameIndex].Node;
+  myLocation     = myStack[theFrameIndex].AccLocation;
+  myOrientation  = myStack[theFrameIndex].AccOrientation;
+  myHasMore      = true;
+}
+
+//=================================================================================================
+
+bool BRepGraph_ChildExplorer::shouldDescendFromCurrent() const
+{
+  if (myMode != TraversalMode::Recursive || myCurrentFrame < 0)
+  {
+    return false;
+  }
+
+  const BRepGraph_NodeId aNode = myStack[myCurrentFrame].Node;
+  return !myTargetKind.has_value() && !matchesAvoid(aNode) && canHaveChildren(aNode.NodeKind);
 }
 
 //=================================================================================================
@@ -913,10 +950,9 @@ BRepGraph_TopologyPath BRepGraph_ChildExplorer::CurrentPath(
   const occ::handle<NCollection_BaseAllocator>& theAllocator) const
 {
   BRepGraph_TopologyPath aPath(myRoot, theAllocator);
-  for (int i = 1; i <= myStackTop; ++i)
+  const int aMaxFrame = myCurrentFrame >= 0 ? myCurrentFrame : myStackTop;
+  for (int i = 1; i <= aMaxFrame; ++i)
     aPath.pushStep(myStack[i].StepFromParent);
-  if (myHasMore && myMatchStep >= 0)
-    aPath.pushStep(myMatchStep);
   return aPath;
 }
 
@@ -925,7 +961,8 @@ BRepGraph_TopologyPath BRepGraph_ChildExplorer::CurrentPath(
 TopLoc_Location BRepGraph_ChildExplorer::LocationOf(const BRepGraph_NodeId::Kind theKind) const
 {
   // Scan step frames (skip root at index 0) to match "first step" contract.
-  for (int i = 1; i <= myStackTop; ++i)
+  const int aMaxFrame = myCurrentFrame >= 0 ? myCurrentFrame : myStackTop;
+  for (int i = 1; i <= aMaxFrame; ++i)
   {
     if (myStack[i].Node.NodeKind == theKind)
       return myStack[i].AccLocation;
@@ -941,7 +978,8 @@ TopLoc_Location BRepGraph_ChildExplorer::LocationOf(const BRepGraph_NodeId::Kind
 BRepGraph_NodeId BRepGraph_ChildExplorer::NodeOf(const BRepGraph_NodeId::Kind theKind) const
 {
   // Scan step frames (skip root at index 0) to match "first step" contract.
-  for (int i = 1; i <= myStackTop; ++i)
+  const int aMaxFrame = myCurrentFrame >= 0 ? myCurrentFrame : myStackTop;
+  for (int i = 1; i <= aMaxFrame; ++i)
   {
     if (myStack[i].Node.NodeKind == theKind)
       return myStack[i].Node;
@@ -957,10 +995,8 @@ TopLoc_Location BRepGraph_ChildExplorer::LocationAt(const int theLevel) const
 {
   // Level 0 = after first step = frame[1].
   const int aFrameIdx = theLevel + 1;
-  if (aFrameIdx <= myStackTop)
+  if (myCurrentFrame >= 0 && aFrameIdx <= myCurrentFrame)
     return myStack[aFrameIdx].AccLocation;
-  if (aFrameIdx == myStackTop + 1 && myHasMore)
-    return myLocation;
   return TopLoc_Location();
 }
 
@@ -969,9 +1005,7 @@ TopLoc_Location BRepGraph_ChildExplorer::LocationAt(const int theLevel) const
 BRepGraph_NodeId BRepGraph_ChildExplorer::NodeAt(const int theLevel) const
 {
   const int aFrameIdx = theLevel + 1;
-  if (aFrameIdx <= myStackTop)
+  if (myCurrentFrame >= 0 && aFrameIdx <= myCurrentFrame)
     return myStack[aFrameIdx].Node;
-  if (aFrameIdx == myStackTop + 1 && myHasMore)
-    return myCurrent;
   return BRepGraph_NodeId();
 }

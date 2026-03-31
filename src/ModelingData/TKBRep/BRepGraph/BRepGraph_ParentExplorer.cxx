@@ -57,10 +57,10 @@ BRepGraph_ParentExplorer::BRepGraph_ParentExplorer(const BRepGraph&       theGra
                                                    const TraversalMode    theMode)
     : myGraph(&theGraph),
       myNode(theNode),
+      myMode(theMode),
       myTargetKind(std::nullopt),
       myAvoidKind(std::nullopt),
-      myEmitAvoidKind(false),
-      myMode(theMode)
+      myEmitAvoidKind(false)
 {
   startTraversal();
 }
@@ -75,10 +75,10 @@ BRepGraph_ParentExplorer::BRepGraph_ParentExplorer(
   const TraversalMode                     theMode)
     : myGraph(&theGraph),
       myNode(theNode),
+      myMode(theMode),
       myTargetKind(std::nullopt),
       myAvoidKind(normalizeAvoidKind(theNode, std::nullopt, theAvoidKind)),
-      myEmitAvoidKind(theEmitAvoidKind),
-      myMode(theMode)
+      myEmitAvoidKind(theEmitAvoidKind)
 {
   startTraversal();
 }
@@ -100,10 +100,10 @@ BRepGraph_ParentExplorer::BRepGraph_ParentExplorer(const BRepGraph&       theGra
                                                    const TraversalMode    theMode)
     : myGraph(&theGraph),
       myNode(theNode),
+      myMode(theMode),
       myTargetKind(theTargetKind),
       myAvoidKind(normalizeAvoidKind(theNode, theTargetKind, std::nullopt)),
-      myEmitAvoidKind(false),
-      myMode(theMode)
+      myEmitAvoidKind(false)
 {
   startTraversal();
 }
@@ -119,10 +119,10 @@ BRepGraph_ParentExplorer::BRepGraph_ParentExplorer(
   const TraversalMode                     theMode)
     : myGraph(&theGraph),
       myNode(theNode),
+      myMode(theMode),
       myTargetKind(theTargetKind),
       myAvoidKind(normalizeAvoidKind(theNode, theTargetKind, theAvoidKind)),
-      myEmitAvoidKind(theEmitAvoidKind),
-      myMode(theMode)
+      myEmitAvoidKind(theEmitAvoidKind)
 {
   startTraversal();
 }

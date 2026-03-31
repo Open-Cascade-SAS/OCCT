@@ -178,6 +178,10 @@ private:
 
   static bool canHaveChildren(BRepGraph_NodeId::Kind theNodeKind);
 
+  void setCurrentFromFrame(const int theFrameIndex);
+
+  [[nodiscard]] bool shouldDescendFromCurrent() const;
+
   [[nodiscard]] bool matchesTarget(const BRepGraph_NodeId theNode) const
   {
     return myTargetKind.has_value() && theNode.NodeKind == *myTargetKind;
@@ -205,21 +209,22 @@ private:
   static constexpr int THE_INLINE_STACK_SIZE = 16;
 
   const BRepGraph* myGraph = nullptr;
+  BRepGraph_NodeId                                     myRoot;
+  const TraversalMode                                  myMode;
   const std::optional<BRepGraph_NodeId::Kind>         myTargetKind;
   const std::optional<BRepGraph_NodeId::Kind>         myAvoidKind;
   const bool                                          myEmitAvoidKind;
-  NCollection_LocalArray<StackFrame, THE_INLINE_STACK_SIZE> myStack;
-  int                                                  myStackTop    = -1;
-  BRepGraph_NodeId                                     myCurrent;
-  int                                                  myMatchStep   = -1;
-  TopLoc_Location                                      myLocation;
-  TopAbs_Orientation                                   myOrientation = TopAbs_FORWARD;
-  std::optional<StackFrame>                            myPendingFrame;
-  bool                                                 myHasMore     = false;
   bool                                                 myCumLoc      = true;
   bool                                                 myCumOri      = true;
-  const TraversalMode                                  myMode;
-  BRepGraph_NodeId                                     myRoot;
+
+  NCollection_LocalArray<StackFrame, THE_INLINE_STACK_SIZE> myStack;
+  int                                                  myStackTop    = -1;
+  int                                                  myCurrentFrame = -1;
+
+  BRepGraph_NodeId                                     myCurrent;
+  TopLoc_Location                                      myLocation;
+  TopAbs_Orientation                                   myOrientation = TopAbs_FORWARD;
+  bool                                                 myHasMore     = false;
 };
 
 #endif // _BRepGraph_ChildExplorer_HeaderFile

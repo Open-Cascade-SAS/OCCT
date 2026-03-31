@@ -181,14 +181,16 @@ private:
 
   const BRepGraph*                              myGraph         = nullptr;
   BRepGraph_NodeId                              myNode;
+  const TraversalMode                           myMode;
   const std::optional<BRepGraph_NodeId::Kind>  myTargetKind;
   const std::optional<BRepGraph_NodeId::Kind>  myAvoidKind;
   const bool                                    myEmitAvoidKind;
-  const TraversalMode                           myMode;
+
   NCollection_LocalArray<StackFrame, THE_INLINE_STACK_SIZE> myStack;
   int                          myStackTop      = -1;
   int                          myEmitIndex     = -1;
   int                          myCurrentFrame  = -1;
+
   BRepGraph_NodeId             myCurrent;
   TopLoc_Location              myLocation;
   TopAbs_Orientation           myOrientation   = TopAbs_FORWARD;
