@@ -24,17 +24,16 @@
 
 TEST(IntSurf_Quadric_Test, ConeApexGradientRemainsFinite)
 {
-  const gp_Cone      aCone(gp_Ax3(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0), gp_Dir(1.0, 0.0, 0.0)),
+  const gp_Cone aCone(gp_Ax3(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0), gp_Dir(1.0, 0.0, 0.0)),
                       0.5,
                       0.0);
   const IntSurf_Quadric aQuadric(aCone);
   const gp_Pnt          anApex = aCone.Apex();
 
-  EXPECT_NO_THROW(
-    {
-      const gp_Vec aGradient = aQuadric.Gradient(anApex);
-      EXPECT_LE(aGradient.SquareMagnitude(), Precision::SquareConfusion());
-    });
+  EXPECT_NO_THROW({
+    const gp_Vec aGradient = aQuadric.Gradient(anApex);
+    EXPECT_LE(aGradient.SquareMagnitude(), Precision::SquareConfusion());
+  });
 
   double aDist = 1.0;
   gp_Vec aGrad(1.0, 0.0, 0.0);

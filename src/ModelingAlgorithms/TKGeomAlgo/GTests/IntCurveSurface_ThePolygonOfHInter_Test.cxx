@@ -23,9 +23,9 @@
 
 TEST(IntCurveSurface_ThePolygonOfHInter_Test, ClosedFlagReflectsStoredState)
 {
-  occ::handle<Geom_Line>          aLine = new Geom_Line(gp_Ax1(gp_Pnt(0.0, 0.0, 0.0),
-                                                      gp_Dir(1.0, 0.0, 0.0)));
-  occ::handle<GeomAdaptor_Curve>  anAdaptor = new GeomAdaptor_Curve(aLine);
+  occ::handle<Geom_Line> aLine =
+    new Geom_Line(gp_Ax1(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0)));
+  occ::handle<GeomAdaptor_Curve>     anAdaptor = new GeomAdaptor_Curve(aLine);
   IntCurveSurface_ThePolygonOfHInter aPolygon(anAdaptor, 6);
 
   EXPECT_FALSE(aPolygon.Closed());

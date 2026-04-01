@@ -119,7 +119,7 @@ void GeomAPI_PointsToBSpline::Init(const NCollection_Array1<gp_Pnt>& Points,
                                    const GeomAbs_Shape               Continuity,
                                    const double                      Tol3D)
 {
-  myIsDone = false;
+  myIsDone     = false;
   double Tol2D = 0.; // dummy argument for BSplineCompute.
 
   int  nbit       = 2;
@@ -241,7 +241,7 @@ void GeomAPI_PointsToBSpline::Init(const NCollection_Array1<gp_Pnt>& Points,
                                    const GeomAbs_Shape               Continuity,
                                    const double                      Tol3D)
 {
-  myIsDone = false;
+  myIsDone    = false;
   int NbPoint = Points.Length(), i;
 
   int nbit = 2;

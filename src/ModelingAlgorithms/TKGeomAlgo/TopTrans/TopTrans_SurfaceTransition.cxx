@@ -307,24 +307,23 @@ void TopTrans_SurfaceTransition::Reset(const gp_Dir& Tgt, const gp_Dir& Norm)
   myIsDefined = true;
 }
 
-void TopTrans_SurfaceTransition::Compare
-  (const double             Tole,
-   const gp_Dir&            Norm,
-   const gp_Dir&            MaxD,
-   const gp_Dir&            MinD,
-   const double             MaxCurv,
-   const double             MinCurv,
-   const TopAbs_Orientation S,
-   const TopAbs_Orientation O)
+void TopTrans_SurfaceTransition::Compare(const double             Tole,
+                                         const gp_Dir&            Norm,
+                                         const gp_Dir&            MaxD,
+                                         const gp_Dir&            MinD,
+                                         const double             MaxCurv,
+                                         const double             MinCurv,
+                                         const TopAbs_Orientation S,
+                                         const TopAbs_Orientation O)
 {
   if (!myIsDefined)
     return;
 
   double Curv = 0.;
   // ------
-  const double      tola     = (Tole > 0.0) ? Tole : Precision::Angular();
-  bool             curismax = (std::abs(MaxD.Dot(myTgt)) < tola);
-  bool             curismin = (std::abs(MinD.Dot(myTgt)) < tola);
+  const double tola     = (Tole > 0.0) ? Tole : Precision::Angular();
+  bool         curismax = (std::abs(MaxD.Dot(myTgt)) < tola);
+  bool         curismin = (std::abs(MinD.Dot(myTgt)) < tola);
   if (!curismax && !curismin)
   {
     // In the plane normal to <myTgt>, we see the boundary face as
@@ -414,19 +413,18 @@ void TopTrans_SurfaceTransition::Compare
   } // k=1..kmax
 }
 
-void TopTrans_SurfaceTransition::Compare
-  (const double             Tole,
-   const gp_Dir&            Norm,
-   const TopAbs_Orientation S,
-   const TopAbs_Orientation O)
+void TopTrans_SurfaceTransition::Compare(const double             Tole,
+                                         const gp_Dir&            Norm,
+                                         const TopAbs_Orientation S,
+                                         const TopAbs_Orientation O)
 {
   if (!myIsDefined)
     return;
 
   // oriented Ang(beafter,dironF),
   // dironF normal to the curve, oriented INSIDE F, the added oriented support
-  double           Ang  = ::FUN_Ang(myNorm, beafter, myTgt, Norm, O);
-  const double     tola = (Tole > 0.0) ? Tole : Precision::Angular();
+  double       Ang  = ::FUN_Ang(myNorm, beafter, myTgt, Norm, O);
+  const double tola = (Tole > 0.0) ? Tole : Precision::Angular();
 
   // i = 0,1,2 : cos = 0,>0,<0
   // j = 0,1,2 : sin = 0,>0,<0

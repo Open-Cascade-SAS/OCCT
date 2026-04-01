@@ -680,7 +680,7 @@ void GeomAPI_PointsToBSplineSurface::Init(const NCollection_Array2<double>& ZPoi
                                           const GeomAbs_Shape               Continuity,
                                           const double                      Tol3D)
 {
-  myIsDone = false;
+  myIsDone    = false;
   int    Imin = ZPoints.LowerRow();
   int    Imax = ZPoints.UpperRow();
   int    Jmin = ZPoints.LowerCol();
@@ -799,7 +799,7 @@ void GeomAPI_PointsToBSplineSurface::Init(const NCollection_Array2<double>& ZPoi
   AppDef_MultiLine Line2(nbisosu);
   math_Vector      Param2(1, nbisosu);
   const int        aUSpan = nbisosu - 1;
-  length = dX * (Imax - Imin);
+  length                  = dX * (Imax - Imin);
 
   for (i = 1; i <= nbisosu; i++)
   {

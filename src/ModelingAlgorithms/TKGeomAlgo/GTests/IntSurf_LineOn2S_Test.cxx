@@ -20,11 +20,11 @@
 
 #include <gtest/gtest.h>
 
-static IntSurf_PntOn2S buildPoint(const gp_Pnt&   thePoint,
-                                  const double    theU1,
-                                  const double    theV1,
-                                  const double    theU2,
-                                  const double    theV2)
+static IntSurf_PntOn2S buildPoint(const gp_Pnt& thePoint,
+                                  const double  theU1,
+                                  const double  theV1,
+                                  const double  theU2,
+                                  const double  theV2)
 {
   IntSurf_PntOn2S aPnt;
   aPnt.SetValue(thePoint, theU1, theV1, theU2, theV2);

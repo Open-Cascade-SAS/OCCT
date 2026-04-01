@@ -122,7 +122,7 @@ void Geom2dAPI_PointsToBSpline::Init(const NCollection_Array1<gp_Pnt2d>& Points,
                                      const GeomAbs_Shape                 Continuity,
                                      const double                        Tol2D)
 {
-  myIsDone = false;
+  myIsDone     = false;
   double Tol3D = 0.; // dummy argument for BSplineCompute.
 
   int  nbit       = 2;
@@ -181,16 +181,16 @@ void Geom2dAPI_PointsToBSpline::Init(const NCollection_Array1<double>& YValues,
   double                       Tol3D = 0.; // dummy argument for BSplineCompute.
   NCollection_Array1<gp_Pnt2d> Points(YValues.Lower(), YValues.Upper());
   math_Vector                  Param(YValues.Lower(), YValues.Upper());
-  double                       length = DX * (YValues.Upper() - YValues.Lower());
+  double                       length       = DX * (YValues.Upper() - YValues.Lower());
   const double                 aDenominator = X0 + length;
-  const int                    aParamSpan = YValues.Upper() - YValues.Lower();
+  const int                    aParamSpan   = YValues.Upper() - YValues.Lower();
   int                          i;
 
   for (i = YValues.Lower(); i <= YValues.Upper(); i++)
   {
     if (hasMeaningfulSpan(aDenominator))
     {
-      Param(i) = (X0 + (i - 1) * DX) / aDenominator;
+      Param(i) = (X0 + (i - YValues.Lower()) * DX) / aDenominator;
     }
     else
     {
@@ -380,7 +380,7 @@ void Geom2dAPI_PointsToBSpline::Init(const NCollection_Array1<gp_Pnt2d>& Points,
                                      const GeomAbs_Shape                 Continuity,
                                      const double                        Tol2D)
 {
-  myIsDone = false;
+  myIsDone    = false;
   int NbPoint = Points.Length(), i;
 
   int nbit = 2;
