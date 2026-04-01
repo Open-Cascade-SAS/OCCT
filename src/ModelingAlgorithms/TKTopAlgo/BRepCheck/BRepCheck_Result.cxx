@@ -45,8 +45,11 @@ void BRepCheck_Result::Init(const TopoDS_Shape& S)
 
 void BRepCheck_Result::SetFailStatus(const TopoDS_Shape& S)
 {
-  std::unique_lock<std::mutex> aLock =
-    myMutex ? std::unique_lock<std::mutex>(*myMutex) : std::unique_lock<std::mutex>();
+  std::unique_lock<std::mutex> aLock(myMutex, std::defer_lock);
+  if (myIsParallel)
+  {
+    aLock.lock();
+  }
   occ::handle<NCollection_Shared<NCollection_List<BRepCheck_Status>>> aList;
   if (!myMap.Find(S, aList))
   {
@@ -80,12 +83,3 @@ void BRepCheck_Result::NextShapeInContext()
   }
 }
 
-//=================================================================================================
-
-void BRepCheck_Result::SetParallel(bool theIsParallel)
-{
-  if (theIsParallel && !myMutex)
-  {
-    myMutex = opencascade::make_unique<std::mutex>();
-  }
-}

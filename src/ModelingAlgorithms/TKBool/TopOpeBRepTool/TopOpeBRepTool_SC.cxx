@@ -23,7 +23,7 @@
 #include <TopOpeBRepTool_SC.hxx>
 
 // ----------------------------------------------------------------------
-static TopOpeBRepTool_PShapeClassifier TopOpeBRepTool_PSC = nullptr;
+static thread_local TopOpeBRepTool_PShapeClassifier TopOpeBRepTool_PSC = nullptr;
 
 Standard_EXPORT TopOpeBRepTool_ShapeClassifier& FSC_GetPSC()
 {

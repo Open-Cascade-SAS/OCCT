@@ -32,7 +32,7 @@
 #include <TopOpeBRepTool_ShapeTool.hxx>
 #include <TopOpeBRepTool_TOOL.hxx>
 
-static bool STATIC_TOREVERSE = false; // xpu150498
+static thread_local bool STATIC_TOREVERSE = false; // xpu150498
 #define M_FORWARD(ori) (ori == TopAbs_FORWARD)
 #define M_REVERSED(ori) (ori == TopAbs_REVERSED)
 

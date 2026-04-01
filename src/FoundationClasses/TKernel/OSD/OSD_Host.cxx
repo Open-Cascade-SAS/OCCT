@@ -219,30 +219,32 @@ int OSD_Host::Error() const
 
   #include <OSD_Host.hxx>
 
+  #include <mutex>
+
 void _osd_wnt_set_error(OSD_Error&, int, ...);
 
-static BOOL                    fInit = FALSE;
 static TCollection_AsciiString hostName;
 static TCollection_AsciiString version;
 static TCollection_AsciiString interAddr;
 static int                     memSize;
+static std::once_flag          THE_HOST_INIT_FLAG;
 
 OSD_Host ::OSD_Host()
 {
   #ifndef OCCT_UWP
-  DWORD          nSize;
-  char           szHostName[MAX_COMPUTERNAME_LENGTH + 1];
-  char*          hostAddr = 0;
-  MEMORYSTATUS   ms;
-  WSADATA        wd;
-  PHOSTENT       phe;
-  IN_ADDR        inAddr;
-  OSVERSIONINFOW osVerInfo;
+  static bool THE_HOST_INIT_SUCCESS = false;
 
-  if (!fInit)
+  std::call_once(THE_HOST_INIT_FLAG, [&]()
   {
+    DWORD          nSize = MAX_COMPUTERNAME_LENGTH + 1;
+    char           szHostName[MAX_COMPUTERNAME_LENGTH + 1];
+    char*          hostAddr = 0;
+    MEMORYSTATUS   ms;
+    WSADATA        wd;
+    PHOSTENT       phe;
+    IN_ADDR        inAddr;
+    OSVERSIONINFOW osVerInfo;
 
-    nSize = MAX_COMPUTERNAME_LENGTH + 1;
     ZeroMemory(&osVerInfo, sizeof(OSVERSIONINFOW));
     osVerInfo.dwOSVersionInfoSize = sizeof(OSVERSIONINFOW);
 
@@ -304,13 +306,12 @@ OSD_Host ::OSD_Host()
       }
       version = aVersion;
 
-      fInit = TRUE;
+      THE_HOST_INIT_SUCCESS = true;
 
     } // end if
+  }); // end call_once
 
-  } // end if
-
-  if (fInit)
+  if (THE_HOST_INIT_SUCCESS)
 
     myName = hostName;
   #endif

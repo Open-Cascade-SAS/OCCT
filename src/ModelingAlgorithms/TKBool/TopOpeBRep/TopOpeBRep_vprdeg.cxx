@@ -46,7 +46,7 @@
 // modified by NIZHNY-MKK  Tue Nov 21 17:30:23 2000.BEGIN
 static NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
                              aMapOfTreatedVertexListOfEdge;
-static TopOpeBRep_PLineInter localCurrentLine = nullptr;
+static thread_local TopOpeBRep_PLineInter localCurrentLine = nullptr;
 
 static bool local_FindTreatedEdgeOnVertex(const TopoDS_Edge&   theEdge,
                                           const TopoDS_Vertex& theVertex);

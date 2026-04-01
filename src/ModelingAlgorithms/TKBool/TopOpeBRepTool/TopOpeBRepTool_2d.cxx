@@ -41,18 +41,18 @@ Standard_EXPORT bool TopOpeBRepTool_GettraceC2D();
 #endif
 
 // structure e -> C2D/F
-static NCollection_DataMap<TopoDS_Shape,
+static thread_local NCollection_DataMap<TopoDS_Shape,
                            NCollection_List<TopOpeBRepTool_C2DF>,
                            TopTools_ShapeMapHasher>* GLOBAL_pmosloc2df = nullptr;
-static int                                           GLOBAL_C2D_i      = 0; // DEB
+static thread_local int                                           GLOBAL_C2D_i      = 0; // DEB
 
 // structure ancetre
-static NCollection_IndexedDataMap<TopoDS_Shape,
+static thread_local NCollection_IndexedDataMap<TopoDS_Shape,
                                   NCollection_List<TopoDS_Shape>,
                                   TopTools_ShapeMapHasher>* GLOBAL_pidmoslosc2df = nullptr;
-static TopoDS_Face*                                         GLOBAL_pFc2df        = nullptr;
-static TopoDS_Shape*                                        GLOBAL_pS1c2df       = nullptr;
-static TopoDS_Shape*                                        GLOBAL_pS2c2df       = nullptr;
+static thread_local TopoDS_Face*                                         GLOBAL_pFc2df        = nullptr;
+static thread_local TopoDS_Shape*                                        GLOBAL_pS1c2df       = nullptr;
+static thread_local TopoDS_Shape*                                        GLOBAL_pS2c2df       = nullptr;
 
 Standard_EXPORT occ::handle<Geom2d_Curve> MakePCurve(const ProjLib_ProjectedCurve& PC);
 

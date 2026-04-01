@@ -51,8 +51,8 @@ Standard_EXPORT void debffflo(const int i)
 }
 #endif
 
-static bool                  STATIC_motheropedef = false;
-static TopOpeBRepBuild_GTopo STATIC_Gmotherope;
+static thread_local bool                  STATIC_motheropedef = false;
+static thread_local TopOpeBRepBuild_GTopo STATIC_Gmotherope;
 
 Standard_EXPORT void FUN_setmotherope(const TopOpeBRepBuild_GTopo& G)
 {

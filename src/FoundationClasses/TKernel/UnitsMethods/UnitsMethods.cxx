@@ -15,7 +15,9 @@
 
 #include <TCollection_AsciiString.hxx>
 
-static double UnitsMethods_CascadeLengthUnit = 1.;
+#include <atomic>
+
+static std::atomic<double> UnitsMethods_CascadeLengthUnit{1.};
 
 //=================================================================================================
 

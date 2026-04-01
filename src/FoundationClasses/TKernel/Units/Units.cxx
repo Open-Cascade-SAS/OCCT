@@ -33,6 +33,7 @@
 #include <Units_Operators.hxx>
 
 #include <cstdlib>
+#include <mutex>
 
 static occ::handle<Units_Dimensions>      nulldimensions;
 static occ::handle<Units_UnitsLexicon>    lexiconunits;
@@ -46,10 +47,13 @@ static TCollection_AsciiString       lastunit;
 static occ::handle<Units_Dimensions> lastdimension;
 static double                        lastvalue, lastmove;
 
+static std::recursive_mutex THE_UNITS_MUTEX;
+
 //=================================================================================================
 
 void Units::UnitsFile(const char* const afile)
 {
+  std::lock_guard<std::recursive_mutex> aLock(THE_UNITS_MUTEX);
   unitsfile = TCollection_AsciiString(afile);
 }
 
@@ -57,6 +61,7 @@ void Units::UnitsFile(const char* const afile)
 
 void Units::LexiconFile(const char* const afile)
 {
+  std::lock_guard<std::recursive_mutex> aLock(THE_UNITS_MUTEX);
   lexiconfile = TCollection_AsciiString(afile);
 }
 
@@ -64,6 +69,7 @@ void Units::LexiconFile(const char* const afile)
 
 occ::handle<Units_UnitsDictionary> Units::DictionaryOfUnits(const bool amode)
 {
+  std::lock_guard<std::recursive_mutex> aLock(THE_UNITS_MUTEX);
   if (unitsdictionary.IsNull())
   {
     //      std::cout<<"Allocation du dictionnaire"<<std::endl;
@@ -83,6 +89,7 @@ occ::handle<Units_UnitsDictionary> Units::DictionaryOfUnits(const bool amode)
 
 occ::handle<Units_Quantity> Units::Quantity(const char* const aquantity)
 {
+  std::lock_guard<std::recursive_mutex> aLock(THE_UNITS_MUTEX);
   int                                                             index;
   occ::handle<Units_Quantity>                                     quantity;
   occ::handle<Units_Quantity>                                     nullquantity;
@@ -109,6 +116,7 @@ static TCollection_AsciiString symbol_string, quantity_string;
 
 const char* Units::FirstQuantity(const char* const aunit)
 {
+  std::lock_guard<std::recursive_mutex> aLock(THE_UNITS_MUTEX);
   int                                                                       i, j, k;
   occ::handle<Units_Quantity>                                               thequantity;
   occ::handle<NCollection_HSequence<occ::handle<Units_Quantity>>>           quantitiessequence;
@@ -151,6 +159,7 @@ const char* Units::FirstQuantity(const char* const aunit)
 
 occ::handle<Units_Lexicon> Units::LexiconUnits(const bool amode)
 {
+  std::lock_guard<std::recursive_mutex> aLock(THE_UNITS_MUTEX);
   if (lexiconunits.IsNull())
   {
     //      std::cout<<"Allocation du lexique d'unites"<<std::endl;
@@ -165,6 +174,7 @@ occ::handle<Units_Lexicon> Units::LexiconUnits(const bool amode)
 
 occ::handle<Units_Lexicon> Units::LexiconFormula()
 {
+  std::lock_guard<std::recursive_mutex> aLock(THE_UNITS_MUTEX);
   if (lexiconformula.IsNull())
   {
     //      std::cout<<"Allocation du lexique d'expression"<<std::endl;
@@ -179,6 +189,7 @@ occ::handle<Units_Lexicon> Units::LexiconFormula()
 
 occ::handle<Units_Dimensions> Units::NullDimensions()
 {
+  std::lock_guard<std::recursive_mutex> aLock(THE_UNITS_MUTEX);
   if (nulldimensions.IsNull())
     nulldimensions = new Units_Dimensions(0., 0., 0., 0., 0., 0., 0., 0., 0.);
   return nulldimensions;
@@ -190,6 +201,7 @@ double Units::Convert(const double      avalue,
                       const char* const afirstunit,
                       const char* const asecondunit)
 {
+  std::lock_guard<std::recursive_mutex> aLock(THE_UNITS_MUTEX);
   Units_Measurement measurement(avalue, afirstunit);
   measurement.Convert(asecondunit);
   return measurement.Measurement();
@@ -199,7 +211,7 @@ double Units::Convert(const double      avalue,
 
 double Units::ToSI(const double aData, const char* const aUnit)
 {
-
+  std::lock_guard<std::recursive_mutex> aLock(THE_UNITS_MUTEX);
   occ::handle<Units_Dimensions> aDimBid;
   return Units::ToSI(aData, aUnit, aDimBid);
 }
@@ -208,6 +220,7 @@ double Units::ToSI(const double aData, const char* const aUnit)
 
 double Units::ToSI(const double aData, const char* const aUnit, occ::handle<Units_Dimensions>& dim)
 {
+  std::lock_guard<std::recursive_mutex> aLock(THE_UNITS_MUTEX);
   if (lastunit != aUnit)
   {
     Units_UnitSentence unitsentence(aUnit);
@@ -237,6 +250,7 @@ double Units::ToSI(const double aData, const char* const aUnit, occ::handle<Unit
 
 double Units::FromSI(const double aData, const char* const aUnit)
 {
+  std::lock_guard<std::recursive_mutex> aLock(THE_UNITS_MUTEX);
   occ::handle<Units_Dimensions> aDimBid;
   return Units::FromSI(aData, aUnit, aDimBid);
 }
@@ -247,6 +261,7 @@ double Units::FromSI(const double                   aData,
                      const char* const              aUnit,
                      occ::handle<Units_Dimensions>& dim)
 {
+  std::lock_guard<std::recursive_mutex> aLock(THE_UNITS_MUTEX);
   if (lastunit != aUnit)
   {
     Units_UnitSentence unitsentence(aUnit);
@@ -276,6 +291,7 @@ double Units::FromSI(const double                   aData,
 
 occ::handle<Units_Dimensions> Units::Dimensions(const char* const aType)
 {
+  std::lock_guard<std::recursive_mutex> aLock(THE_UNITS_MUTEX);
   if (aType)
   {
     occ::handle<Units_UnitsDictionary> dico = Units::DictionaryOfUnits(false);

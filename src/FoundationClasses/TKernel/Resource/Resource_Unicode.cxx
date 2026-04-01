@@ -21,6 +21,9 @@
 #include <TCollection_ExtendedString.hxx>
 #include <NCollection_UtfString.hxx>
 #include <Standard_NotImplemented.hxx>
+
+#include <atomic>
+#include <mutex>
 #include "Resource_CodePages.pxx"
 #include "Resource_GBK.pxx"
 #include "Resource_Big5.pxx"
@@ -583,58 +586,67 @@ bool Resource_Unicode::ConvertUnicodeToANSI(const TCollection_ExtendedString& fr
   return true;
 }
 
-static bool AlreadyRead = false;
+static std::atomic<bool>   AlreadyRead{false};
+static Resource_FormatType TheFormat = Resource_ANSI;
+static std::mutex          TheFormatMutex;
 
-static Resource_FormatType& Resource_Current_Format()
+static void readFormatFromConfig()
 {
-  static Resource_FormatType theformat = Resource_ANSI;
-  if (!AlreadyRead)
+  occ::handle<Resource_Manager> mgr = new Resource_Manager("CharSet");
+  if (mgr->Find("FormatType"))
   {
-    AlreadyRead                       = true;
-    occ::handle<Resource_Manager> mgr = new Resource_Manager("CharSet");
-    if (mgr->Find("FormatType"))
+    TCollection_AsciiString form = mgr->Value("FormatType");
+    if (form.IsEqual("SJIS"))
     {
-      TCollection_AsciiString form = mgr->Value("FormatType");
-      if (form.IsEqual("SJIS"))
-      {
-        theformat = Resource_SJIS;
-      }
-      else if (form.IsEqual("EUC"))
-      {
-        theformat = Resource_EUC;
-      }
-      else if (form.IsEqual("GB"))
-      {
-        theformat = Resource_GB;
-      }
-      else
-      {
-        theformat = Resource_ANSI;
-      }
+      TheFormat = Resource_SJIS;
+    }
+    else if (form.IsEqual("EUC"))
+    {
+      TheFormat = Resource_EUC;
+    }
+    else if (form.IsEqual("GB"))
+    {
+      TheFormat = Resource_GB;
     }
     else
     {
-      theformat = Resource_ANSI;
+      TheFormat = Resource_ANSI;
     }
   }
-  return theformat;
+  else
+  {
+    TheFormat = Resource_ANSI;
+  }
 }
 
 void Resource_Unicode::SetFormat(const Resource_FormatType typecode)
 {
-  AlreadyRead               = true;
-  Resource_Current_Format() = typecode;
+  std::lock_guard<std::mutex> aLock(TheFormatMutex);
+  TheFormat = typecode;
+  AlreadyRead.store(true, std::memory_order_release);
 }
 
 Resource_FormatType Resource_Unicode::GetFormat()
 {
-  return Resource_Current_Format();
+  if (AlreadyRead.load(std::memory_order_acquire))
+  {
+    return TheFormat;
+  }
+  std::lock_guard<std::mutex> aLock(TheFormatMutex);
+  if (!AlreadyRead.load(std::memory_order_relaxed))
+  {
+    readFormatFromConfig();
+    AlreadyRead.store(true, std::memory_order_release);
+  }
+  return TheFormat;
 }
 
 void Resource_Unicode::ReadFormat()
 {
-  AlreadyRead = false;
-  Resource_Unicode::GetFormat();
+  std::lock_guard<std::mutex> aLock(TheFormatMutex);
+  AlreadyRead.store(false, std::memory_order_relaxed);
+  readFormatFromConfig();
+  AlreadyRead.store(true, std::memory_order_release);
 }
 
 void Resource_Unicode::ConvertFormatToUnicode(const Resource_FormatType   theFormat,
