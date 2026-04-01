@@ -14,7 +14,10 @@
 #ifndef _BRepGraphInc_Populate_HeaderFile
 #define _BRepGraphInc_Populate_HeaderFile
 
+#include <BRepGraph_NodeId.hxx>
+
 #include <NCollection_BaseAllocator.hxx>
+#include <NCollection_Vector.hxx>
 #include <Standard_DefineAlloc.hxx>
 
 class TopoDS_Shape;
@@ -85,6 +88,7 @@ public:
                                               const Options&                   theOptions = Options(),
                                               BRepGraph_ParamLayer*            theParamLayer = nullptr,
                                               BRepGraph_RegularityLayer*       theRegularityLayer = nullptr,
+                                              NCollection_Vector<BRepGraph_NodeId>* theAppendedRoots = nullptr,
                                               const occ::handle<NCollection_BaseAllocator>& theTmpAlloc =
                                                 occ::handle<NCollection_BaseAllocator>());
 

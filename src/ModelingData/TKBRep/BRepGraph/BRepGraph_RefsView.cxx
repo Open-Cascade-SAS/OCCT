@@ -21,52 +21,6 @@ namespace
 {
 constexpr int THE_REFSVIEW_EDGE_VERTEX_REF_BLOCK_SIZE = 4;
 
-void appendRefUIDReverseIndex(BRepGraph_Data&             theData,
-                              const BRepGraph_RefId::Kind theKind)
-{
-  const NCollection_Vector<BRepGraph_RefUID>& aUIDs = theData.myIncStorage.RefUIDs(theKind);
-  for (int anIdx = 0; anIdx < aUIDs.Length(); ++anIdx)
-  {
-    const BRepGraph_RefUID aUID = aUIDs.Value(anIdx);
-    if (aUID.IsValid())
-    {
-      theData.myRefUIDToRefId.Bind(aUID, BRepGraph_RefId(theKind, anIdx));
-    }
-  }
-}
-
-//=================================================================================================
-
-void ensureRefUIDReverseIndex(BRepGraph_Data& theData)
-{
-  const uint32_t aGeneration = theData.myGeneration.load();
-  {
-    std::shared_lock<std::shared_mutex> aReadLock(theData.myRefUIDToRefIdMutex);
-    if (!theData.myRefUIDToRefIdDirty && theData.myRefUIDToRefIdGeneration == aGeneration)
-    {
-      return;
-    }
-  }
-
-  std::unique_lock<std::shared_mutex> aWriteLock(theData.myRefUIDToRefIdMutex);
-  if (!theData.myRefUIDToRefIdDirty && theData.myRefUIDToRefIdGeneration == aGeneration)
-  {
-    return;
-  }
-
-  theData.myRefUIDToRefId.Clear();
-  appendRefUIDReverseIndex(theData, BRepGraph_RefId::Kind::Shell);
-  appendRefUIDReverseIndex(theData, BRepGraph_RefId::Kind::Face);
-  appendRefUIDReverseIndex(theData, BRepGraph_RefId::Kind::Wire);
-  appendRefUIDReverseIndex(theData, BRepGraph_RefId::Kind::CoEdge);
-  appendRefUIDReverseIndex(theData, BRepGraph_RefId::Kind::Vertex);
-  appendRefUIDReverseIndex(theData, BRepGraph_RefId::Kind::Solid);
-  appendRefUIDReverseIndex(theData, BRepGraph_RefId::Kind::Child);
-  appendRefUIDReverseIndex(theData, BRepGraph_RefId::Kind::Occurrence);
-  theData.myRefUIDToRefIdGeneration = aGeneration;
-  theData.myRefUIDToRefIdDirty      = false;
-}
-
 } // namespace
 
 //=================================================================================================

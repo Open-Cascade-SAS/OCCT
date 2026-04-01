@@ -1676,11 +1676,29 @@ void traverseHierarchy(BRepGraphInc_Storage&              theStorage,
 //! Flatten hierarchy containers away for AppendFlattened().
 //! Face roots are collected for the parallel face pipeline; standalone
 //! wire/edge/vertex roots are registered directly through traverseHierarchy().
+static void appendUniqueRootNode(NCollection_Vector<BRepGraph_NodeId>& theRoots,
+                                 const BRepGraph_NodeId&               theNodeId)
+{
+  if (!theNodeId.IsValid())
+    return;
+
+  for (int aRootIdx = 0; aRootIdx < theRoots.Length(); ++aRootIdx)
+  {
+    if (theRoots.Value(aRootIdx) == theNodeId)
+      return;
+  }
+  theRoots.Append(theNodeId);
+}
+
+//! Flatten hierarchy containers away for AppendFlattened().
+//! Face roots are collected for the parallel face pipeline; standalone
+//! wire/edge/vertex roots are registered directly through traverseHierarchy().
 void flattenForAppend(BRepGraphInc_Storage&              theStorage,
                       NCollection_Vector<FaceLocalData>& theFaceData,
                       RepDedup&                          theRepDedup,
                       const TopoDS_Shape&                theCurrentShape,
-                      const TopLoc_Location&             theParentGlobalLoc)
+                      const TopLoc_Location&             theParentGlobalLoc,
+                      NCollection_Vector<BRepGraph_NodeId>* theAppendedRoots)
 {
   if (theCurrentShape.IsNull())
     return;
@@ -1698,7 +1716,8 @@ void flattenForAppend(BRepGraphInc_Storage&              theStorage,
                          theFaceData,
                          theRepDedup,
                          aChildIt.Value(),
-                         theParentGlobalLoc * theCurrentShape.Location());
+                         theParentGlobalLoc * theCurrentShape.Location(),
+                         theAppendedRoots);
       }
       break;
     }
@@ -1713,6 +1732,14 @@ void flattenForAppend(BRepGraphInc_Storage&              theStorage,
     case TopAbs_EDGE:
     case TopAbs_VERTEX: {
       traverseHierarchy(theStorage, theFaceData, theRepDedup, theCurrentShape, theParentGlobalLoc);
+      if (theAppendedRoots != nullptr)
+      {
+        const BRepGraph_NodeId* aNodeId = theStorage.FindNodeByTShape(theCurrentShape.TShape().get());
+        if (aNodeId != nullptr)
+        {
+          appendUniqueRootNode(*theAppendedRoots, *aNodeId);
+        }
+      }
       break;
     }
     default:
@@ -2068,6 +2095,7 @@ void BRepGraphInc_Populate::AppendFlattened(BRepGraphInc_Storage&               
                                             const Options&                                theOptions,
                                             BRepGraph_ParamLayer*                         theParamLayer,
                                             BRepGraph_RegularityLayer*                    theRegularityLayer,
+                                            NCollection_Vector<BRepGraph_NodeId>*         theAppendedRoots,
                                             const occ::handle<NCollection_BaseAllocator>& theTmpAlloc)
 {
   if (theShape.IsNull())
@@ -2092,7 +2120,17 @@ void BRepGraphInc_Populate::AppendFlattened(BRepGraphInc_Storage&               
   NCollection_Vector<FaceLocalData> aFaceData(256, aTmpAlloc);
   RepDedup                          aRepDedup;
 
-  flattenForAppend(theStorage, aFaceData, aRepDedup, theShape, TopLoc_Location());
+  if (theAppendedRoots != nullptr)
+  {
+    theAppendedRoots->Clear();
+  }
+
+  flattenForAppend(theStorage,
+                   aFaceData,
+                   aRepDedup,
+                   theShape,
+                   TopLoc_Location(),
+                   theAppendedRoots);
 
   // Parallel face extraction.
   BRepGraph_ParallelPolicy::Workload aFaceExtractWork;
@@ -2108,6 +2146,19 @@ void BRepGraphInc_Populate::AppendFlattened(BRepGraphInc_Storage&               
 
   // Sequential registration (reuses existing dedup maps).
   registerFaceData(theStorage, aFaceData, aRepDedup);
+
+  if (theAppendedRoots != nullptr)
+  {
+    for (int aFaceDataIdx = 0; aFaceDataIdx < aFaceData.Length(); ++aFaceDataIdx)
+    {
+      const BRepGraph_NodeId* aFaceNodeId =
+        theStorage.FindNodeByTShape(aFaceData.Value(aFaceDataIdx).Face.TShape().get());
+      if (aFaceNodeId != nullptr)
+      {
+        appendUniqueRootNode(*theAppendedRoots, *aFaceNodeId);
+      }
+    }
+  }
 
   populateOptionalLayers(theStorage,
                          theParamLayer,

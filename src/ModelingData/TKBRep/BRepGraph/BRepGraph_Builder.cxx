@@ -50,47 +50,6 @@ static Standard_GUID generateRandomGUID()
   return Standard_GUID(aUUID);
 }
 
-//=================================================================================================
-
-void appendFlattenedRootNodes(const BRepGraph&                      theGraph,
-                              NCollection_Vector<BRepGraph_NodeId>& theRoots,
-                              const TopoDS_Shape&                   theShape)
-{
-  if (theShape.IsNull())
-    return;
-
-  switch (theShape.ShapeType())
-  {
-    case TopAbs_COMPOUND:
-    case TopAbs_COMPSOLID:
-    case TopAbs_SOLID:
-    case TopAbs_SHELL:
-      for (TopoDS_Iterator aChildIt(theShape, false, false); aChildIt.More(); aChildIt.Next())
-      {
-        appendFlattenedRootNodes(theGraph, theRoots, aChildIt.Value());
-      }
-      return;
-    case TopAbs_FACE:
-    case TopAbs_WIRE:
-    case TopAbs_EDGE:
-    case TopAbs_VERTEX:
-      break;
-    default:
-      return;
-  }
-
-  const BRepGraph_NodeId aNodeId = theGraph.Shapes().FindNode(theShape);
-  if (!aNodeId.IsValid())
-    return;
-
-  for (int aRootIdx = 0; aRootIdx < theRoots.Length(); ++aRootIdx)
-  {
-    if (theRoots.Value(aRootIdx) == aNodeId)
-      return;
-  }
-  theRoots.Append(aNodeId);
-}
-
 } // namespace
 
 //=================================================================================================
@@ -325,12 +284,14 @@ void BRepGraph_Builder::AppendFlattened(BRepGraph&          theGraph,
     theGraph.LayerRegistry().FindLayer<BRepGraph_ParamLayer>();
   const occ::handle<BRepGraph_RegularityLayer> aRegularityLayer =
     theGraph.LayerRegistry().FindLayer<BRepGraph_RegularityLayer>();
+  NCollection_Vector<BRepGraph_NodeId> aAppendedRoots(8, theGraph.Allocator());
   BRepGraphInc_Populate::AppendFlattened(aStorage,
                                          theShape,
                                          theParallel,
                                          BRepGraphInc_Populate::Options(),
                                          aParamLayer.get(),
                                          aRegularityLayer.get(),
+                                         &aAppendedRoots,
                                          aTmpAlloc);
 
   if (!aStorage.GetIsDone())
@@ -358,7 +319,10 @@ void BRepGraph_Builder::AppendFlattened(BRepGraph&          theGraph,
                           anOldSolidRef,
                           anOldChildRef);
 
-  appendFlattenedRootNodes(theGraph, theGraph.myData->myRootNodeIds, theShape);
+  for (int aRootIdx = 0; aRootIdx < aAppendedRoots.Length(); ++aRootIdx)
+  {
+    theGraph.myData->myRootNodeIds.Append(aAppendedRoots.Value(aRootIdx));
+  }
 
   theGraph.myData->myIsDone = true;
 }
