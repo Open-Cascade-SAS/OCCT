@@ -448,9 +448,9 @@ private:
       ensureSize(theIdx, theKey + 1);
 
     NCollection_Vector<T>& aVec = theIdx.ChangeValue(theKey);
-    for (int i = 0; i < aVec.Length(); ++i)
+    for (const T& anElem : aVec)
     {
-      if (aVec.Value(i) == theVal)
+      if (anElem == theVal)
         return;
     }
     aVec.Append(theVal);

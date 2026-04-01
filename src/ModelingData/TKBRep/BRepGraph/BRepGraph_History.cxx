@@ -67,9 +67,8 @@ void BRepGraph_History::Record(const TCollection_AsciiString&              theOp
   // prior chain links in the reverse map.
   NCollection_Vector<BRepGraph_NodeId> aFilteredReplacements(THE_HISTORY_FILTERED_BLOCK_SIZE,
                                                              myAllocator);
-  for (int anIdx = 0; anIdx < theReplacements.Length(); ++anIdx)
+  for (const BRepGraph_NodeId& aDerived : theReplacements)
   {
-    const BRepGraph_NodeId& aDerived = theReplacements.Value(anIdx);
     if (aDerived != theOriginal)
     {
       myDerivedToOriginal.Bind(aDerived, theOriginal);
@@ -83,9 +82,9 @@ void BRepGraph_History::Record(const TCollection_AsciiString&              theOp
   if (myOriginalToDerived.IsBound(theOriginal))
   {
     NCollection_Vector<BRepGraph_NodeId>& aDerivedVec = myOriginalToDerived.ChangeFind(theOriginal);
-    for (int anIdx = 0; anIdx < aFilteredReplacements.Length(); ++anIdx)
+    for (const BRepGraph_NodeId& aDerived : aFilteredReplacements)
     {
-      aDerivedVec.Append(aFilteredReplacements.Value(anIdx));
+      aDerivedVec.Append(aDerived);
     }
   }
   else
@@ -217,9 +216,8 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph_History::FindDerived(
     }
 
     const NCollection_Vector<BRepGraph_NodeId>& aDirectDerived = myOriginalToDerived.Find(aNode);
-    for (int anIdx = 0; anIdx < aDirectDerived.Length(); ++anIdx)
+    for (const BRepGraph_NodeId& aDerived : aDirectDerived)
     {
-      const BRepGraph_NodeId& aDerived = aDirectDerived.Value(anIdx);
       if (aVisited.Add(aDerived))
       {
         aQueue.Append(aDerived);
@@ -233,9 +231,9 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph_History::FindDerived(
   {
     const NCollection_Vector<BRepGraph_NodeId>& aDirectDerived =
       myOriginalToDerived.Find(theOriginal);
-    for (int anIdx = 0; anIdx < aDirectDerived.Length(); ++anIdx)
+    for (const BRepGraph_NodeId& aDerived : aDirectDerived)
     {
-      aResult.Append(aDirectDerived.Value(anIdx));
+      aResult.Append(aDerived);
     }
   }
 

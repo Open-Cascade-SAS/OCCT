@@ -17,6 +17,7 @@
 #include <BRepGraphInc_Reference.hxx>
 #include <BRepGraphInc_Representation.hxx>
 #include <BRepGraph_Copy.hxx>
+#include <BRepGraph_Iterator.hxx>
 #include <NCollection_IncAllocator.hxx>
 #include <NCollection_Map.hxx>
 #include <BRepGraph_BuilderView.hxx>
@@ -33,23 +34,22 @@ namespace
 void applyGeometryTransform(BRepGraph& theGraph, const gp_Trsf& theTrsf)
 {
   // Transform absolute vertex points.
-  for (int anIdx = 0; anIdx < theGraph.Topo().Vertices().Nb(); ++anIdx)
+  for (BRepGraph_VertexIterator aVertexIt(theGraph); aVertexIt.More(); aVertexIt.Next())
   {
-    theGraph.Builder().MutVertex(BRepGraph_VertexId(anIdx))->Point.Transform(theTrsf);
+    theGraph.Builder().MutVertex(aVertexIt.CurrentId())->Point.Transform(theTrsf);
   }
 
   // Transform surface geometry handles directly on surface reps.
   // Use visited set to avoid transforming shared handles twice.
   NCollection_Map<int> aVisitedSurfReps;
-  for (int anIdx = 0; anIdx < theGraph.Topo().Faces().Nb(); ++anIdx)
+  for (BRepGraph_FaceIterator aFaceIt(theGraph); aFaceIt.More(); aFaceIt.Next())
   {
-    BRepGraph_MutGuard<BRepGraphInc::FaceDef> aFace =
-      theGraph.Builder().MutFace(BRepGraph_FaceId(anIdx));
-    if (BRepGraph_Tool::Face::HasSurface(theGraph, BRepGraph_FaceId(anIdx))
+    const BRepGraph_FaceId                    aFaceId = aFaceIt.CurrentId();
+    BRepGraph_MutGuard<BRepGraphInc::FaceDef> aFace   = theGraph.Builder().MutFace(aFaceId);
+    if (BRepGraph_Tool::Face::HasSurface(theGraph, aFaceId)
         && aVisitedSurfReps.Add(aFace->SurfaceRepId.Index))
     {
-      const occ::handle<Geom_Surface>& aSurf =
-        BRepGraph_Tool::Face::Surface(theGraph, BRepGraph_FaceId(anIdx));
+      const occ::handle<Geom_Surface>& aSurf = BRepGraph_Tool::Face::Surface(theGraph, aFaceId);
       if (!aSurf.IsNull())
         aSurf->Transform(theTrsf);
     }
@@ -60,15 +60,14 @@ void applyGeometryTransform(BRepGraph& theGraph, const gp_Trsf& theTrsf)
 
   // Transform curve geometry handles directly on curve reps.
   NCollection_Map<int> aVisitedCurveReps;
-  for (int anIdx = 0; anIdx < theGraph.Topo().Edges().Nb(); ++anIdx)
+  for (BRepGraph_EdgeIterator anEdgeIt(theGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
-    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> anEdge =
-      theGraph.Builder().MutEdge(BRepGraph_EdgeId(anIdx));
-    if (BRepGraph_Tool::Edge::HasCurve(theGraph, BRepGraph_EdgeId(anIdx))
+    const BRepGraph_EdgeId                    anEdgeId = anEdgeIt.CurrentId();
+    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> anEdge   = theGraph.Builder().MutEdge(anEdgeId);
+    if (BRepGraph_Tool::Edge::HasCurve(theGraph, anEdgeId)
         && aVisitedCurveReps.Add(anEdge->Curve3DRepId.Index))
     {
-      const occ::handle<Geom_Curve>& aCurve3d =
-        BRepGraph_Tool::Edge::Curve(theGraph, BRepGraph_EdgeId(anIdx));
+      const occ::handle<Geom_Curve>& aCurve3d = BRepGraph_Tool::Edge::Curve(theGraph, anEdgeId);
       if (!aCurve3d.IsNull())
         aCurve3d->Transform(theTrsf);
     }
@@ -91,10 +90,10 @@ void BRepGraph_Transform::applyLocationTransform(BRepGraph& theGraph, const gp_T
   const occ::handle<NCollection_BaseAllocator>  anAllocator = new NCollection_IncAllocator();
   const NCollection_Vector<BRepGraph_ProductId> aRoots =
     theGraph.Topo().Products().RootProducts(anAllocator);
-  for (int anIdx = 0; anIdx < aRoots.Length(); ++anIdx)
+  for (const BRepGraph_ProductId& aRootId : aRoots)
   {
     BRepGraph_MutGuard<BRepGraphInc::ProductDef> aProduct =
-      theGraph.Builder().MutProduct(aRoots.Value(anIdx));
+      theGraph.Builder().MutProduct(aRootId);
     aProduct->RootLocation = aLoc * aProduct->RootLocation;
   }
 }

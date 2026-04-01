@@ -451,11 +451,12 @@ TEST(BRepGraphIncTest, Box_ReverseIndex_EdgesToWires)
   ASSERT_TRUE(aStorage.GetIsDone());
 
   // Every edge must appear in at least one wire.
-  for (int anEdgeIdx = 0; anEdgeIdx < aStorage.NbEdges(); ++anEdgeIdx)
+  const int aNbEdges = aStorage.NbEdges();
+  for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
   {
     const NCollection_Vector<BRepGraph_WireId>* aWires =
-      aStorage.ReverseIndex().WiresOfEdge(BRepGraph_EdgeId(anEdgeIdx));
-    EXPECT_TRUE(aWires != nullptr) << "Edge " << anEdgeIdx << " not in any wire";
+      aStorage.ReverseIndex().WiresOfEdge(anEdgeId);
+    EXPECT_TRUE(aWires != nullptr) << "Edge " << anEdgeId.Index << " not in any wire";
     if (aWires != nullptr)
     {
       EXPECT_GE(aWires->Length(), 1);
@@ -473,13 +474,14 @@ TEST(BRepGraphIncTest, Box_ReverseIndex_EdgesToFaces)
   ASSERT_TRUE(aStorage.GetIsDone());
 
   // Every edge must appear in at least one face (via EdgeFaceGeom).
-  for (int anEdgeIdx = 0; anEdgeIdx < aStorage.NbEdges(); ++anEdgeIdx)
+  const int aNbEdges = aStorage.NbEdges();
+  for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
   {
-    if (aStorage.Edge(BRepGraph_EdgeId(anEdgeIdx)).IsDegenerate)
+    if (aStorage.Edge(anEdgeId).IsDegenerate)
       continue;
     const NCollection_Vector<BRepGraph_FaceId>* aFaces =
-      aStorage.ReverseIndex().FacesOfEdge(BRepGraph_EdgeId(anEdgeIdx));
-    EXPECT_TRUE(aFaces != nullptr) << "Edge " << anEdgeIdx << " not in any face";
+      aStorage.ReverseIndex().FacesOfEdge(anEdgeId);
+    EXPECT_TRUE(aFaces != nullptr) << "Edge " << anEdgeId.Index << " not in any face";
     if (aFaces != nullptr)
     {
       EXPECT_GE(aFaces->Length(), 1);
@@ -574,10 +576,11 @@ TEST(BRepGraphIncTest, Box_CoEdgeCount)
   // A box has 12 edges, each shared by 2 faces => 24 CoEdge entries total.
   // (No seam edges on a box.)
   int aCoEdgeCount = 0;
-  for (int anEdgeIdx = 0; anEdgeIdx < aStorage.NbEdges(); ++anEdgeIdx)
+  const int aNbEdges = aStorage.NbEdges();
+  for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
   {
     const NCollection_Vector<BRepGraph_CoEdgeId>* aCoEdgeIdxs =
-      aStorage.ReverseIndex().CoEdgesOfEdge(BRepGraph_EdgeId(anEdgeIdx));
+      aStorage.ReverseIndex().CoEdgesOfEdge(anEdgeId);
     if (aCoEdgeIdxs != nullptr)
       aCoEdgeCount += aCoEdgeIdxs->Length();
   }
@@ -595,15 +598,16 @@ TEST(BRepGraphIncTest, Cylinder_HasSeamEdges)
 
   // A cylinder has seam edges: coedges with SeamPairId valid.
   int aSeamPairCount = 0;
-  for (int anEdgeIdx = 0; anEdgeIdx < aStorage.NbEdges(); ++anEdgeIdx)
+  const int aNbEdges = aStorage.NbEdges();
+  for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
   {
     const NCollection_Vector<BRepGraph_CoEdgeId>* aCoEdgeIdxs =
-      aStorage.ReverseIndex().CoEdgesOfEdge(BRepGraph_EdgeId(anEdgeIdx));
+      aStorage.ReverseIndex().CoEdgesOfEdge(anEdgeId);
     if (aCoEdgeIdxs == nullptr)
       continue;
-    for (int i = 0; i < aCoEdgeIdxs->Length(); ++i)
+    for (const BRepGraph_CoEdgeId& aCoEdgeId : *aCoEdgeIdxs)
     {
-      const BRepGraphInc::CoEdgeDef& aCE = aStorage.CoEdge(aCoEdgeIdxs->Value(i));
+      const BRepGraphInc::CoEdgeDef& aCE = aStorage.CoEdge(aCoEdgeId);
       if (aCE.Sense == TopAbs_FORWARD && aCE.SeamPairId.IsValid())
       {
         ++aSeamPairCount;
@@ -625,10 +629,11 @@ TEST(BRepGraphIncTest, Cylinder_SeamEdge_ReverseIndex_NoDuplicateFace)
 
   // For seam edges (two PCurve entries with the same FaceDefId but opposite
   // orientations), the reverse index must contain each face only once.
-  for (int anEdgeIdx = 0; anEdgeIdx < aStorage.NbEdges(); ++anEdgeIdx)
+  const int aNbEdges = aStorage.NbEdges();
+  for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
   {
     const NCollection_Vector<BRepGraph_FaceId>* aFaces =
-      aStorage.ReverseIndex().FacesOfEdge(BRepGraph_EdgeId(anEdgeIdx));
+      aStorage.ReverseIndex().FacesOfEdge(anEdgeId);
     if (aFaces == nullptr)
       continue;
     for (int i = 0; i < aFaces->Length(); ++i)
@@ -636,7 +641,8 @@ TEST(BRepGraphIncTest, Cylinder_SeamEdge_ReverseIndex_NoDuplicateFace)
       for (int j = i + 1; j < aFaces->Length(); ++j)
       {
         EXPECT_NE(aFaces->Value(i), aFaces->Value(j))
-          << "Duplicate face " << aFaces->Value(i).Index << " in FacesOfEdge(" << anEdgeIdx << ")";
+          << "Duplicate face " << aFaces->Value(i).Index << " in FacesOfEdge(" << anEdgeId.Index
+          << ")";
       }
     }
   }
@@ -657,14 +663,15 @@ TEST(BRepGraphIncTest, Sphere_DegenerateEdges_Preserved)
 
   // A sphere has degenerate edges at the poles (no 3D curve, collapsed to a point).
   int aDegenerateCount = 0;
-  for (int i = 0; i < aStorage.NbEdges(); ++i)
+  const int aNbEdges = aStorage.NbEdges();
+  for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
   {
-    const BRepGraphInc::EdgeDef& anEdge = aStorage.Edge(BRepGraph_EdgeId(i));
+    const BRepGraphInc::EdgeDef& anEdge = aStorage.Edge(anEdgeId);
     if (anEdge.IsDegenerate)
     {
       ++aDegenerateCount;
       EXPECT_FALSE(anEdge.Curve3DRepId.IsValid())
-        << "Degenerate edge " << i << " should have no 3D curve";
+        << "Degenerate edge " << anEdgeId.Index << " should have no 3D curve";
     }
   }
   EXPECT_GE(aDegenerateCount, 2) << "Sphere should have at least 2 degenerate edges (poles)";
@@ -809,9 +816,10 @@ TEST(BRepGraphIncTest, EdgeInternalVertex_Captured)
 
   // Find the edge entity and check InternalVertices.
   bool aFound = false;
-  for (int i = 0; i < aStorage.NbEdges(); ++i)
+  const int aNbEdges = aStorage.NbEdges();
+  for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
   {
-    const BRepGraphInc::EdgeDef& anEdgeEnt = aStorage.Edge(BRepGraph_EdgeId(i));
+    const BRepGraphInc::EdgeDef& anEdgeEnt = aStorage.Edge(anEdgeId);
     if (anEdgeEnt.InternalVertexRefIds.Length() == 1)
     {
       aFound = true;
@@ -820,8 +828,8 @@ TEST(BRepGraphIncTest, EdgeInternalVertex_Captured)
       EXPECT_GE(aIntVRef.VertexDefId.Index, 0);
       EXPECT_EQ(aIntVRef.Orientation, TopAbs_INTERNAL);
       // Verify the vertex point.
-      int                            aVtxIdx = aIntVRef.VertexDefId.Index;
-      const BRepGraphInc::VertexDef& aVtxEnt = aStorage.Vertex(BRepGraph_VertexId(aVtxIdx));
+      const BRepGraph_VertexId       aVtxId  = aIntVRef.VertexDefId;
+      const BRepGraphInc::VertexDef& aVtxEnt = aStorage.Vertex(aVtxId);
       EXPECT_NEAR(aVtxEnt.Point.X(), 5.0, Precision::Confusion());
       break;
     }
@@ -877,9 +885,10 @@ TEST(BRepGraphIncTest, EdgeExternalVertex_Captured)
   ASSERT_TRUE(aStorage.GetIsDone());
 
   bool aFound = false;
-  for (int i = 0; i < aStorage.NbEdges(); ++i)
+  const int aNbEdges = aStorage.NbEdges();
+  for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
   {
-    const BRepGraphInc::EdgeDef& anEdgeEnt = aStorage.Edge(BRepGraph_EdgeId(i));
+    const BRepGraphInc::EdgeDef& anEdgeEnt = aStorage.Edge(anEdgeId);
     if (anEdgeEnt.InternalVertexRefIds.Length() == 1)
     {
       aFound = true;
@@ -900,10 +909,11 @@ TEST(BRepGraphIncTest, EdgeNoInternalVertices_EmptyVector)
   BRepGraphInc_Populate::Perform(aStorage, aBox, false);
   ASSERT_TRUE(aStorage.GetIsDone());
 
-  for (int i = 0; i < aStorage.NbEdges(); ++i)
+  const int aNbEdges = aStorage.NbEdges();
+  for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
   {
-    EXPECT_EQ(aStorage.Edge(BRepGraph_EdgeId(i)).InternalVertexRefIds.Length(), 0)
-      << "Edge " << i << " should have no internal vertices";
+    EXPECT_EQ(aStorage.Edge(anEdgeId).InternalVertexRefIds.Length(), 0)
+      << "Edge " << anEdgeId.Index << " should have no internal vertices";
   }
 }
 
@@ -926,9 +936,10 @@ TEST(BRepGraphIncTest, EdgeMultipleInternalVertices_AllCaptured)
   ASSERT_TRUE(aStorage.GetIsDone());
 
   bool aFound = false;
-  for (int i = 0; i < aStorage.NbEdges(); ++i)
+  const int aNbEdges = aStorage.NbEdges();
+  for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
   {
-    const BRepGraphInc::EdgeDef& anEdgeEnt = aStorage.Edge(BRepGraph_EdgeId(i));
+    const BRepGraphInc::EdgeDef& anEdgeEnt = aStorage.Edge(anEdgeId);
     if (anEdgeEnt.InternalVertexRefIds.Length() == 2)
     {
       aFound = true;
@@ -1067,10 +1078,11 @@ TEST(BRepGraphIncTest, FaceNoDirectVertices_EmptyVector)
   BRepGraphInc_Populate::Perform(aStorage, aBox, false);
   ASSERT_TRUE(aStorage.GetIsDone());
 
-  for (int i = 0; i < aStorage.NbFaces(); ++i)
+  const int aNbFaces = aStorage.NbFaces();
+  for (BRepGraph_FaceId aFaceId(0); aFaceId.IsValid(aNbFaces); ++aFaceId)
   {
-    EXPECT_EQ(aStorage.Face(BRepGraph_FaceId(i)).VertexRefIds.Length(), 0)
-      << "Face " << i << " should have no direct vertex children";
+    EXPECT_EQ(aStorage.Face(aFaceId).VertexRefIds.Length(), 0)
+      << "Face " << aFaceId.Index << " should have no direct vertex children";
   }
 }
 
@@ -1224,16 +1236,18 @@ TEST(BRepGraphIncTest, ParallelBuild_InternalVertices_SameAsSequential)
   EXPECT_EQ(aParallel.NbFaces(), aSerial.NbFaces());
 
   // Check internal vertex counts match.
-  for (int i = 0; i < aSerial.NbEdges(); ++i)
+  const int aNbEdges = aSerial.NbEdges();
+  for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
   {
-    EXPECT_EQ(aParallel.Edge(BRepGraph_EdgeId(i)).InternalVertexRefIds.Length(),
-              aSerial.Edge(BRepGraph_EdgeId(i)).InternalVertexRefIds.Length())
-      << "Edge " << i << " internal vertex count mismatch";
+    EXPECT_EQ(aParallel.Edge(anEdgeId).InternalVertexRefIds.Length(),
+              aSerial.Edge(anEdgeId).InternalVertexRefIds.Length())
+      << "Edge " << anEdgeId.Index << " internal vertex count mismatch";
   }
-  for (int i = 0; i < aSerial.NbFaces(); ++i)
+  const int aNbFaces = aSerial.NbFaces();
+  for (BRepGraph_FaceId aFaceId(0); aFaceId.IsValid(aNbFaces); ++aFaceId)
   {
-    EXPECT_EQ(aParallel.Face(BRepGraph_FaceId(i)).VertexRefIds.Length(),
-              aSerial.Face(BRepGraph_FaceId(i)).VertexRefIds.Length())
-      << "Face " << i << " direct vertex count mismatch";
+    EXPECT_EQ(aParallel.Face(aFaceId).VertexRefIds.Length(),
+              aSerial.Face(aFaceId).VertexRefIds.Length())
+      << "Face " << aFaceId.Index << " direct vertex count mismatch";
   }
 }

@@ -15,6 +15,7 @@
 #include <BRepGraph.hxx>
 #include <BRepGraph_CacheView.hxx>
 #include <BRepGraph_BuilderView.hxx>
+#include <BRepGraph_Iterator.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_History.hxx>
 #include <BRepGraph_RefsView.hxx>
@@ -63,9 +64,9 @@ static int countActiveRefs(const NCollection_Vector<theRefIdType>& theRefIds,
                            const theRefFn&                         theRefAccess)
 {
   int aCount = 0;
-  for (int anIdx = 0; anIdx < theRefIds.Length(); ++anIdx)
+  for (const theRefIdType& aRefId : theRefIds)
   {
-    if (!theRefAccess(theRefIds.Value(anIdx)).IsRemoved)
+    if (!theRefAccess(aRefId).IsRemoved)
     {
       ++aCount;
     }
@@ -178,10 +179,10 @@ TEST_F(BRepGraph_ViewsTest, DefsView_NbActiveFaces_ExcludeRemoved)
 
 TEST_F(BRepGraph_ViewsTest, DefsView_FaceAccessor_Valid)
 {
-  for (int anIdx = 0; anIdx < myGraph.Topo().Faces().Nb(); ++anIdx)
+  for (BRepGraph_FaceIterator aFaceIt(myGraph); aFaceIt.More(); aFaceIt.Next())
   {
-    const BRepGraphInc::FaceDef& aFace = myGraph.Topo().Faces().Definition(BRepGraph_FaceId(anIdx));
-    EXPECT_TRUE(aFace.Id.IsValid()) << "Face " << anIdx << " has invalid Id";
+    EXPECT_TRUE(aFaceIt.Current().Id.IsValid())
+      << "Face " << aFaceIt.CurrentId().Index << " has invalid Id";
   }
 }
 
@@ -202,19 +203,19 @@ TEST_F(BRepGraph_ViewsTest, DefsView_NbNodes_Positive)
 
 TEST_F(BRepGraph_ViewsTest, DefsView_FaceSurface_NonNull)
 {
-  for (int anIdx = 0; anIdx < myGraph.Topo().Faces().Nb(); ++anIdx)
+  for (BRepGraph_FaceIterator aFaceIt(myGraph); aFaceIt.More(); aFaceIt.Next())
   {
-    EXPECT_TRUE(BRepGraph_Tool::Face::HasSurface(myGraph, BRepGraph_FaceId(anIdx)))
-      << "Face " << anIdx << " has no surface representation";
+    EXPECT_TRUE(BRepGraph_Tool::Face::HasSurface(myGraph, aFaceIt.CurrentId()))
+      << "Face " << aFaceIt.CurrentId().Index << " has no surface representation";
   }
 }
 
 TEST_F(BRepGraph_ViewsTest, DefsView_EdgeCurve3d_NonNull)
 {
-  for (int anIdx = 0; anIdx < myGraph.Topo().Edges().Nb(); ++anIdx)
+  for (BRepGraph_EdgeIterator anEdgeIt(myGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
-    EXPECT_TRUE(BRepGraph_Tool::Edge::HasCurve(myGraph, BRepGraph_EdgeId(anIdx)))
-      << "Edge " << anIdx << " has no Curve3D representation";
+    EXPECT_TRUE(BRepGraph_Tool::Edge::HasCurve(myGraph, anEdgeIt.CurrentId()))
+      << "Edge " << anEdgeIt.CurrentId().Index << " has no Curve3D representation";
   }
 }
 
@@ -612,9 +613,9 @@ TEST_F(BRepGraph_ViewsTest, RefsView_VertexRefIdsOfEdge_ContainsBoundaryVertices
     myGraph.Refs().Vertices().IdsOf(BRepGraph_EdgeId(0), anAllocator);
 
   EXPECT_GE(aVertexRefs.Length(), 2);
-  for (int i = 0; i < aVertexRefs.Length(); ++i)
+  for (const BRepGraph_VertexRefId& aVertexRefId : aVertexRefs)
   {
-    const BRepGraphInc::VertexRef& aRef = myGraph.Refs().Vertices().Entry(aVertexRefs.Value(i));
+    const BRepGraphInc::VertexRef& aRef = myGraph.Refs().Vertices().Entry(aVertexRefId);
     EXPECT_FALSE(aRef.IsRemoved);
     EXPECT_TRUE(aRef.VertexDefId.IsValid(myGraph.Topo().Vertices().Nb()));
   }

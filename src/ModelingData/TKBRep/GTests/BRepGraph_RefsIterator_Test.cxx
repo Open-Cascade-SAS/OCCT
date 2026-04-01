@@ -13,6 +13,7 @@
 
 #include <BRepGraph.hxx>
 #include <BRepGraph_BuilderView.hxx>
+#include <BRepGraph_Iterator.hxx>
 #include <BRepGraph_RefsIterator.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_TopoView.hxx>
@@ -126,12 +127,11 @@ TEST(BRepGraph_RefsIteratorTestStandalone, VertexOfEdge_ExposesInternalVertexRef
   aGraph.Build(wrapEdgeInFace(makeEdgeWithInternalVertex()));
 
   BRepGraph_EdgeId aEdgeWithInternal;
-  for (int anIdx = 0; anIdx < aGraph.Topo().Edges().Nb(); ++anIdx)
+  for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
-    const BRepGraphInc::EdgeDef& anEdge = aGraph.Topo().Edges().Definition(BRepGraph_EdgeId(anIdx));
-    if (anEdge.InternalVertexRefIds.Length() == 1)
+    if (anEdgeIt.Current().InternalVertexRefIds.Length() == 1)
     {
-      aEdgeWithInternal = BRepGraph_EdgeId(anIdx);
+      aEdgeWithInternal = anEdgeIt.CurrentId();
       break;
     }
   }

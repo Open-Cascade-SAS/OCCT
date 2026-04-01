@@ -149,9 +149,8 @@ bool BRepGraph_RegularityLayer::FindContinuity(const BRepGraph_EdgeId theEdge,
   if (aRegularities == nullptr)
     return false;
 
-  for (int anIdx = 0; anIdx < aRegularities->Entries.Length(); ++anIdx)
+  for (const RegularityEntry& anEntry : aRegularities->Entries)
   {
-    const RegularityEntry& anEntry = aRegularities->Entries.Value(anIdx);
     if (anEntry.FaceEntity1 != aFace1 || anEntry.FaceEntity2 != aFace2)
       continue;
     if (theContinuity != nullptr)
@@ -178,10 +177,10 @@ GeomAbs_Shape BRepGraph_RegularityLayer::MaxContinuity(const BRepGraph_EdgeId th
     return GeomAbs_C0;
 
   GeomAbs_Shape aMaxContinuity = GeomAbs_C0;
-  for (int anIdx = 0; anIdx < aRegularities->Entries.Length(); ++anIdx)
+  for (const RegularityEntry& anEntry : aRegularities->Entries)
   {
-    if (aRegularities->Entries.Value(anIdx).Continuity > aMaxContinuity)
-      aMaxContinuity = aRegularities->Entries.Value(anIdx).Continuity;
+    if (anEntry.Continuity > aMaxContinuity)
+      aMaxContinuity = anEntry.Continuity;
   }
   return aMaxContinuity;
 }
@@ -300,9 +299,8 @@ void BRepGraph_RegularityLayer::removeEdgeBindings(const BRepGraph_EdgeId theEdg
   if (aRegularities == nullptr)
     return;
 
-  for (int anIdx = 0; anIdx < aRegularities->Entries.Length(); ++anIdx)
+  for (const RegularityEntry& anEntry : aRegularities->Entries)
   {
-    const RegularityEntry& anEntry = aRegularities->Entries.Value(anIdx);
     unbindFaceFromEdge(anEntry.FaceEntity1, theEdge);
     unbindFaceFromEdge(anEntry.FaceEntity2, theEdge);
   }
@@ -344,9 +342,8 @@ void BRepGraph_RegularityLayer::migrateEdgeBindings(const BRepGraph_EdgeId theOl
 
   const EdgeRegularities anOldRegularities = *aRegularities;
   removeEdgeBindings(theOldEdge);
-  for (int anIdx = 0; anIdx < anOldRegularities.Entries.Length(); ++anIdx)
+  for (const RegularityEntry& anEntry : anOldRegularities.Entries)
   {
-    const RegularityEntry& anEntry = anOldRegularities.Entries.Value(anIdx);
     SetRegularity(theNewEdge, anEntry.FaceEntity1, anEntry.FaceEntity2, anEntry.Continuity);
   }
 }
@@ -404,8 +401,8 @@ void BRepGraph_RegularityLayer::OnNodeModified(const BRepGraph_NodeId theNode) n
 void BRepGraph_RegularityLayer::OnNodesModified(
   const NCollection_Vector<BRepGraph_NodeId>& theModifiedNodes) noexcept
 {
-  for (int anIdx = 0; anIdx < theModifiedNodes.Length(); ++anIdx)
-    OnNodeModified(theModifiedNodes.Value(anIdx));
+  for (const BRepGraph_NodeId& aModifiedNode : theModifiedNodes)
+    OnNodeModified(aModifiedNode);
 }
 
 //=================================================================================================
@@ -442,18 +439,13 @@ void BRepGraph_RegularityLayer::OnCompact(
   NCollection_DataMap<BRepGraph_EdgeId, EdgeRegularities>                     aNewEdgeRegs;
   NCollection_DataMap<BRepGraph_FaceId, NCollection_Vector<BRepGraph_EdgeId>> aNewFaceToEdges;
 
-  for (NCollection_DataMap<BRepGraph_EdgeId, EdgeRegularities>::Iterator anIter(myEdgeRegularities);
-       anIter.More();
-       anIter.Next())
+  for (const auto& [aOldEdge, aOldRegularities] : myEdgeRegularities.Items())
   {
-    const BRepGraph_EdgeId aNewEdge = remapEdge(theRemapMap, anIter.Key());
+    const BRepGraph_EdgeId aNewEdge = remapEdge(theRemapMap, aOldEdge);
     if (!aNewEdge.IsValid())
       continue;
-
-    const EdgeRegularities& aOldRegularities = anIter.Value();
-    for (int anIdx = 0; anIdx < aOldRegularities.Entries.Length(); ++anIdx)
+    for (const RegularityEntry& anOldEntry : aOldRegularities.Entries)
     {
-      const RegularityEntry& anOldEntry = aOldRegularities.Entries.Value(anIdx);
       BRepGraph_FaceId       aNewFace1  = remapFace(theRemapMap, anOldEntry.FaceEntity1);
       BRepGraph_FaceId       aNewFace2  = remapFace(theRemapMap, anOldEntry.FaceEntity2);
       if (!aNewFace1.IsValid() || !aNewFace2.IsValid())

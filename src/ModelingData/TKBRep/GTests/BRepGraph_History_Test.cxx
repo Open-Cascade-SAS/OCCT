@@ -107,11 +107,11 @@ TEST_F(BRepGraph_HistoryTest, FindDerived_ChainABC_ContainsBAndC)
   const NCollection_Vector<BRepGraph_NodeId> aDerived = myGraph.History().FindDerived(anEdge0);
   bool                                       hasEdge1 = false;
   bool                                       hasEdge2 = false;
-  for (int i = 0; i < aDerived.Length(); ++i)
+  for (const BRepGraph_NodeId& aDerivedId : aDerived)
   {
-    if (aDerived.Value(i) == anEdge1)
+    if (aDerivedId == anEdge1)
       hasEdge1 = true;
-    if (aDerived.Value(i) == anEdge2)
+    if (aDerivedId == anEdge2)
       hasEdge2 = true;
   }
   EXPECT_TRUE(hasEdge1);
@@ -220,11 +220,11 @@ TEST_F(BRepGraph_HistoryTest, ApplyModification_MultipleReplacements)
   const NCollection_Vector<BRepGraph_NodeId> aDerived = myGraph.History().FindDerived(anEdge0);
   bool                                       hasNew1  = false;
   bool                                       hasNew2  = false;
-  for (int i = 0; i < aDerived.Length(); ++i)
+  for (const BRepGraph_NodeId& aDerivedId : aDerived)
   {
-    if (aDerived.Value(i) == aNew1)
+    if (aDerivedId == aNew1)
       hasNew1 = true;
-    if (aDerived.Value(i) == aNew2)
+    if (aDerivedId == aNew2)
       hasNew2 = true;
   }
   EXPECT_TRUE(hasNew1);
@@ -378,9 +378,8 @@ TEST_F(BRepGraph_HistoryTest, SplitEdge_RewritesAllContainingWires)
   EXPECT_EQ(myGraph.Topo().Edges().Nb(), aNbEdgesBefore + 2);
   EXPECT_EQ(myGraph.Topo().Edges().NbActive(), aNbActiveEdgesBefore + 1);
 
-  for (int aWireIter = 0; aWireIter < aWireIndices.Length(); ++aWireIter)
+  for (const BRepGraph_WireId& aWireId : aWireIndices)
   {
-    const BRepGraph_WireId aWireId = BRepGraph_WireId(aWireIndices.Value(aWireIter));
     const NCollection_Vector<BRepGraph_CoEdgeRefId> aCoEdgeRefs =
       BRepGraph_TestTools::CoEdgeRefsOfWire(myGraph, aWireId);
 
@@ -483,11 +482,11 @@ TEST_F(BRepGraph_HistoryTest, SplitEdge_IgnoresRemovedCoEdgeRefEntries)
     myGraph.Topo().CoEdges().Definition(aRemovedCoEdgeId);
   EXPECT_EQ(aRemovedCoEdgeAfter.EdgeDefId, BRepGraph_EdgeId(anEdgeId.Index));
 
-  bool hasSubA = false;
-  bool hasSubB = false;
-  for (int aRefIdx = 0; aRefIdx < myGraph.Refs().CoEdges().Nb(); ++aRefIdx)
+  bool      hasSubA         = false;
+  bool      hasSubB         = false;
+  const int aNbCoEdgeRefs   = myGraph.Refs().CoEdges().Nb();
+  for (BRepGraph_CoEdgeRefId aRefId(0); aRefId.IsValid(aNbCoEdgeRefs); ++aRefId)
   {
-    const BRepGraph_CoEdgeRefId    aRefId(aRefIdx);
     const BRepGraphInc::CoEdgeRef& aRef = myGraph.Refs().CoEdges().Entry(aRefId);
     if (aRef.IsRemoved || !aRef.CoEdgeDefId.IsValid(myGraph.Topo().CoEdges().Nb()))
       continue;

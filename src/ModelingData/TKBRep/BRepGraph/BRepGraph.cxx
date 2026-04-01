@@ -439,8 +439,8 @@ void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
         {
           aPushChild(aChildIt.CurrentId(), aNextDepth);
         }
-        for (int i = 0; i < aSolidEnt.FreeChildRefIds.Length(); ++i)
-          aPushChild(aStorage.ChildRef(aSolidEnt.FreeChildRefIds.Value(i)).ChildDefId, aNextDepth);
+        for (const BRepGraph_ChildRefId& aChildRefId : aSolidEnt.FreeChildRefIds)
+          aPushChild(aStorage.ChildRef(aChildRefId).ChildDefId, aNextDepth);
         break;
       }
       case Kind::Shell: {
@@ -452,8 +452,8 @@ void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
         {
           aPushChild(aChildIt.CurrentId(), aNextDepth);
         }
-        for (int i = 0; i < aShellEnt.FreeChildRefIds.Length(); ++i)
-          aPushChild(aStorage.ChildRef(aShellEnt.FreeChildRefIds.Value(i)).ChildDefId, aNextDepth);
+        for (const BRepGraph_ChildRefId& aChildRefId : aShellEnt.FreeChildRefIds)
+          aPushChild(aStorage.ChildRef(aChildRefId).ChildDefId, aNextDepth);
         break;
       }
       case Kind::Face: {
@@ -607,32 +607,32 @@ void BRepGraph::propagateSubtreeGen(const BRepGraph_NodeId theNodeId) noexcept
       const NCollection_Vector<BRepGraph_WireId>* aWires =
         aRevIdx.WiresOfEdge(BRepGraph_EdgeId(theNodeId.Index));
       if (aWires != nullptr)
-        for (int i = 0; i < aWires->Length(); ++i)
-          markParentSubtreeGen(aWires->Value(i));
+        for (const BRepGraph_WireId& aWireId : *aWires)
+          markParentSubtreeGen(aWireId);
       break;
     }
     case BRepGraph_NodeId::Kind::Wire: {
       const NCollection_Vector<BRepGraph_FaceId>* aFaces =
         aRevIdx.FacesOfWire(BRepGraph_WireId(theNodeId.Index));
       if (aFaces != nullptr)
-        for (int i = 0; i < aFaces->Length(); ++i)
-          markParentSubtreeGen(aFaces->Value(i));
+        for (const BRepGraph_FaceId& aFaceId : *aFaces)
+          markParentSubtreeGen(aFaceId);
       break;
     }
     case BRepGraph_NodeId::Kind::Face: {
       const NCollection_Vector<BRepGraph_ShellId>* aShells =
         aRevIdx.ShellsOfFace(BRepGraph_FaceId(theNodeId.Index));
       if (aShells != nullptr)
-        for (int i = 0; i < aShells->Length(); ++i)
-          markParentSubtreeGen(aShells->Value(i));
+        for (const BRepGraph_ShellId& aShellId : *aShells)
+          markParentSubtreeGen(aShellId);
       break;
     }
     case BRepGraph_NodeId::Kind::Shell: {
       const NCollection_Vector<BRepGraph_SolidId>* aSolids =
         aRevIdx.SolidsOfShell(BRepGraph_ShellId(theNodeId.Index));
       if (aSolids != nullptr)
-        for (int i = 0; i < aSolids->Length(); ++i)
-          markParentSubtreeGen(aSolids->Value(i));
+        for (const BRepGraph_SolidId& aSolidId : *aSolids)
+          markParentSubtreeGen(aSolidId);
       break;
     }
     case BRepGraph_NodeId::Kind::Occurrence: {
@@ -719,8 +719,8 @@ void BRepGraph::markRepModified(const BRepGraph_RepId theRepId) noexcept
       for (BRepGraph_Iterator<BRepGraphInc::FaceDef> aFaceIt(*this); aFaceIt.More(); aFaceIt.Next())
       {
         const BRepGraphInc::FaceDef& aFace = aFaceIt.Current();
-        for (int j = 0; j < aFace.TriangulationRepIds.Length(); ++j)
-          if (aFace.TriangulationRepIds.Value(j).Index == anIdx)
+        for (const BRepGraph_TriangulationRepId& aTriRepId : aFace.TriangulationRepIds)
+          if (aTriRepId.Index == anIdx)
           {
             markModified(aFaceIt.CurrentId());
             break;
@@ -744,9 +744,9 @@ void BRepGraph::markRepModified(const BRepGraph_RepId theRepId) noexcept
            aCoEdgeIt.Next())
       {
         const BRepGraphInc::CoEdgeDef& aCoEdge = aCoEdgeIt.Current();
-        for (int j = 0; j < aCoEdge.PolygonOnTriRepIds.Length(); ++j)
+        for (const BRepGraph_PolygonOnTriRepId& aPolyRepId : aCoEdge.PolygonOnTriRepIds)
         {
-          if (aCoEdge.PolygonOnTriRepIds.Value(j).Index == anIdx)
+          if (aPolyRepId.Index == anIdx)
           {
             markModified(aCoEdgeIt.CurrentId());
             break;

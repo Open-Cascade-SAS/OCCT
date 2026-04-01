@@ -107,3 +107,67 @@ TEST(BRepGraph_NodeIdTest, Hash_ConsistentWithNodeId)
 
   EXPECT_EQ(aTypedHash(aFace), aNodeHash(aNodeId));
 }
+
+TEST(BRepGraph_NodeIdTest, UntypedArithmetic_PreservesKindAndIndex)
+{
+  BRepGraph_NodeId aNodeId(BRepGraph_NodeId::Kind::Face, 2);
+
+  const BRepGraph_NodeId aPrev = aNodeId++;
+  EXPECT_EQ(aPrev.NodeKind, BRepGraph_NodeId::Kind::Face);
+  EXPECT_EQ(aPrev.Index, 2);
+  EXPECT_EQ(aNodeId.Index, 3);
+
+  ++aNodeId;
+  EXPECT_EQ(aNodeId.Index, 4);
+
+  const BRepGraph_NodeId anAdvanced = aNodeId + 3;
+  EXPECT_EQ(anAdvanced.NodeKind, BRepGraph_NodeId::Kind::Face);
+  EXPECT_EQ(anAdvanced.Index, 7);
+
+  const BRepGraph_NodeId aRetreated = anAdvanced - 5;
+  EXPECT_EQ(aRetreated.NodeKind, BRepGraph_NodeId::Kind::Face);
+  EXPECT_EQ(aRetreated.Index, 2);
+}
+
+TEST(BRepGraph_NodeIdTest, TypedArithmetic_PreservesKindAndIndex)
+{
+  BRepGraph_FaceId aFaceId(2);
+
+  const BRepGraph_FaceId aPrev = aFaceId++;
+  EXPECT_EQ(aPrev.Index, 2);
+  EXPECT_EQ(aFaceId.Index, 3);
+
+  ++aFaceId;
+  EXPECT_EQ(aFaceId.Index, 4);
+
+  const BRepGraph_FaceId anAdvanced = aFaceId + 3;
+  EXPECT_EQ(anAdvanced.Index, 7);
+
+  const BRepGraph_FaceId aRetreated = anAdvanced - 5;
+  EXPECT_EQ(aRetreated.Index, 2);
+
+  // Verify kind is preserved through implicit conversion.
+  const BRepGraph_NodeId aNodeId = anAdvanced;
+  EXPECT_EQ(aNodeId.NodeKind, BRepGraph_NodeId::Kind::Face);
+  EXPECT_EQ(aNodeId.Index, 7);
+}
+
+TEST(BRepGraph_NodeIdTest, TypedArithmetic_IndexZeroBoundary)
+{
+  BRepGraph_EdgeId anEdge(0);
+  EXPECT_TRUE(anEdge.IsValid());
+
+  // Increment from zero.
+  ++anEdge;
+  EXPECT_EQ(anEdge.Index, 1);
+
+  // Retreat back to zero — still valid.
+  const BRepGraph_EdgeId aZero = anEdge - 1;
+  EXPECT_EQ(aZero.Index, 0);
+  EXPECT_TRUE(aZero.IsValid());
+
+  // Subtract to -1 — produces invalid id (allowed by constructor).
+  const BRepGraph_EdgeId anInvalid = aZero - 1;
+  EXPECT_EQ(anInvalid.Index, -1);
+  EXPECT_FALSE(anInvalid.IsValid());
+}

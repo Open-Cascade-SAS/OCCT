@@ -22,6 +22,7 @@
 #include <BRepGraphInc_Reference.hxx>
 #include <BRepGraphInc_Representation.hxx>
 #include <BRepGraph_BuilderView.hxx>
+#include <BRepGraph_Iterator.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraphAlgo_BndLib.hxx>
 #include "BRepGraph_RefTestTools.hxx"
@@ -138,12 +139,11 @@ TEST_F(BRepGraph_DiagnosticsTest, BoundingBox_Sphere_NonVoid)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Verify face-level bounding boxes are valid.
-  for (int aFaceIdx = 0; aFaceIdx < aGraph.Topo().Faces().Nb(); ++aFaceIdx)
+  for (BRepGraph_FaceIterator aFaceIt(aGraph); aFaceIt.More(); aFaceIt.Next())
   {
-    const BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, aFaceIdx);
-    Bnd_Box                aFaceBox;
-    BRepGraphAlgo_BndLib::Add(aGraph, aFaceId, aFaceBox);
-    EXPECT_FALSE(aFaceBox.IsVoid()) << "Face " << aFaceIdx << " bbox is void";
+    Bnd_Box aFaceBox;
+    BRepGraphAlgo_BndLib::Add(aGraph, aFaceIt.CurrentId(), aFaceBox);
+    EXPECT_FALSE(aFaceBox.IsVoid()) << "Face " << aFaceIt.Index() << " bbox is void";
   }
 }
 
@@ -157,12 +157,11 @@ TEST_F(BRepGraph_DiagnosticsTest, BoundingBox_Cylinder_FacesNonVoid)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Verify all face-level bounding boxes are valid.
-  for (int aFaceIdx = 0; aFaceIdx < aGraph.Topo().Faces().Nb(); ++aFaceIdx)
+  for (BRepGraph_FaceIterator aFaceIt(aGraph); aFaceIt.More(); aFaceIt.Next())
   {
-    const BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, aFaceIdx);
-    Bnd_Box                aFaceBox;
-    BRepGraphAlgo_BndLib::Add(aGraph, aFaceId, aFaceBox);
-    EXPECT_FALSE(aFaceBox.IsVoid()) << "Face " << aFaceIdx << " bbox is void";
+    Bnd_Box aFaceBox;
+    BRepGraphAlgo_BndLib::Add(aGraph, aFaceIt.CurrentId(), aFaceBox);
+    EXPECT_FALSE(aFaceBox.IsVoid()) << "Face " << aFaceIt.Index() << " bbox is void";
   }
 }
 
@@ -178,23 +177,22 @@ TEST_F(BRepGraph_DiagnosticsTest, BoundingBox_FaceSubsetOfShell)
 
   const double aTol = Precision::Confusion();
 
-  for (int aFaceIdx = 0; aFaceIdx < myGraph.Topo().Faces().Nb(); ++aFaceIdx)
+  for (BRepGraph_FaceIterator aFaceIt(myGraph); aFaceIt.More(); aFaceIt.Next())
   {
-    const BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, aFaceIdx);
-    Bnd_Box                aFaceBox;
-    BRepGraphAlgo_BndLib::Add(myGraph, aFaceId, aFaceBox);
+    Bnd_Box aFaceBox;
+    BRepGraphAlgo_BndLib::Add(myGraph, aFaceIt.CurrentId(), aFaceBox);
     if (aFaceBox.IsVoid())
       continue;
 
     double aFXmin, aFYmin, aFZmin, aFXmax, aFYmax, aFZmax;
     aFaceBox.Get(aFXmin, aFYmin, aFZmin, aFXmax, aFYmax, aFZmax);
 
-    EXPECT_GE(aFXmin, aSXmin - aTol) << "Face " << aFaceIdx << " Xmin outside shell";
-    EXPECT_GE(aFYmin, aSYmin - aTol) << "Face " << aFaceIdx << " Ymin outside shell";
-    EXPECT_GE(aFZmin, aSZmin - aTol) << "Face " << aFaceIdx << " Zmin outside shell";
-    EXPECT_LE(aFXmax, aSXmax + aTol) << "Face " << aFaceIdx << " Xmax outside shell";
-    EXPECT_LE(aFYmax, aSYmax + aTol) << "Face " << aFaceIdx << " Ymax outside shell";
-    EXPECT_LE(aFZmax, aSZmax + aTol) << "Face " << aFaceIdx << " Zmax outside shell";
+    EXPECT_GE(aFXmin, aSXmin - aTol) << "Face " << aFaceIt.Index() << " Xmin outside shell";
+    EXPECT_GE(aFYmin, aSYmin - aTol) << "Face " << aFaceIt.Index() << " Ymin outside shell";
+    EXPECT_GE(aFZmin, aSZmin - aTol) << "Face " << aFaceIt.Index() << " Zmin outside shell";
+    EXPECT_LE(aFXmax, aSXmax + aTol) << "Face " << aFaceIt.Index() << " Xmax outside shell";
+    EXPECT_LE(aFYmax, aSYmax + aTol) << "Face " << aFaceIt.Index() << " Ymax outside shell";
+    EXPECT_LE(aFZmax, aSZmax + aTol) << "Face " << aFaceIt.Index() << " Zmax outside shell";
   }
 }
 
@@ -242,10 +240,10 @@ TEST_F(BRepGraph_DiagnosticsTest, BoundingBox_Edge_SubsetOfOwningFace)
     BRepGraph_TestTools::CoEdgeRefsOfWire(myGraph, BRepGraph_WireId(0));
   const double aTol = Precision::Confusion();
 
-  for (int aCoEdgeIter = 0; aCoEdgeIter < aCoEdgeRefs.Length(); ++aCoEdgeIter)
+  for (const BRepGraph_CoEdgeRefId& aCoEdgeRefId : aCoEdgeRefs)
   {
     const BRepGraphInc::CoEdgeRef& aCR =
-      myGraph.Refs().CoEdges().Entry(aCoEdgeRefs.Value(aCoEdgeIter));
+      myGraph.Refs().CoEdges().Entry(aCoEdgeRefId);
     const BRepGraphInc::CoEdgeDef& aCoEdge  = myGraph.Topo().CoEdges().Definition(aCR.CoEdgeDefId);
     const BRepGraph_NodeId         anEdgeId = aCoEdge.EdgeDefId;
     Bnd_Box                        anEdgeBox;
@@ -267,21 +265,20 @@ TEST_F(BRepGraph_DiagnosticsTest, BoundingBox_Edge_SubsetOfOwningFace)
 
 TEST_F(BRepGraph_DiagnosticsTest, BoundingBox_Vertex_SinglePoint)
 {
-  for (int aVertIdx = 0; aVertIdx < myGraph.Topo().Vertices().Nb(); ++aVertIdx)
+  for (BRepGraph_VertexIterator aVertIt(myGraph); aVertIt.More(); aVertIt.Next())
   {
-    const BRepGraph_NodeId aVertId(BRepGraph_NodeId::Kind::Vertex, aVertIdx);
-    Bnd_Box                aVertBox;
-    BRepGraphAlgo_BndLib::Add(myGraph, aVertId, aVertBox);
-    ASSERT_FALSE(aVertBox.IsVoid()) << "Vertex " << aVertIdx << " has void bbox";
+    Bnd_Box aVertBox;
+    BRepGraphAlgo_BndLib::Add(myGraph, aVertIt.CurrentId(), aVertBox);
+    ASSERT_FALSE(aVertBox.IsVoid()) << "Vertex " << aVertIt.Index() << " has void bbox";
 
     double aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
     aVertBox.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
 
     // A vertex bounding box should be essentially a point (within tolerance gap).
     const double aMaxSpan = 2.0; // tolerance-expanded point
-    EXPECT_LE(aXmax - aXmin, aMaxSpan) << "Vertex " << aVertIdx << " X span too large";
-    EXPECT_LE(aYmax - aYmin, aMaxSpan) << "Vertex " << aVertIdx << " Y span too large";
-    EXPECT_LE(aZmax - aZmin, aMaxSpan) << "Vertex " << aVertIdx << " Z span too large";
+    EXPECT_LE(aXmax - aXmin, aMaxSpan) << "Vertex " << aVertIt.Index() << " X span too large";
+    EXPECT_LE(aYmax - aYmin, aMaxSpan) << "Vertex " << aVertIt.Index() << " Y span too large";
+    EXPECT_LE(aZmax - aZmin, aMaxSpan) << "Vertex " << aVertIt.Index() << " Z span too large";
   }
 }
 
@@ -439,12 +436,11 @@ TEST_F(BRepGraph_DiagnosticsTest, Centroid_Sphere_AtOrigin)
 
 TEST_F(BRepGraph_DiagnosticsTest, Centroid_Face_InsideFaceBBox)
 {
-  for (int aFaceIdx = 0; aFaceIdx < myGraph.Topo().Faces().Nb(); ++aFaceIdx)
+  for (BRepGraph_FaceIterator aFaceIt(myGraph); aFaceIt.More(); aFaceIt.Next())
   {
-    const BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, aFaceIdx);
-    const gp_Pnt           aCentroid = bboxCenter(myGraph, aFaceId);
-    Bnd_Box                aFaceBox;
-    BRepGraphAlgo_BndLib::Add(myGraph, aFaceId, aFaceBox);
+    const gp_Pnt aCentroid = bboxCenter(myGraph, aFaceIt.CurrentId());
+    Bnd_Box      aFaceBox;
+    BRepGraphAlgo_BndLib::Add(myGraph, aFaceIt.CurrentId(), aFaceBox);
 
     if (aFaceBox.IsVoid())
       continue;
@@ -453,12 +449,12 @@ TEST_F(BRepGraph_DiagnosticsTest, Centroid_Face_InsideFaceBBox)
     aFaceBox.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
 
     const double aTol = 1.0;
-    EXPECT_GE(aCentroid.X(), aXmin - aTol) << "Face " << aFaceIdx << " centroid X below min";
-    EXPECT_LE(aCentroid.X(), aXmax + aTol) << "Face " << aFaceIdx << " centroid X above max";
-    EXPECT_GE(aCentroid.Y(), aYmin - aTol) << "Face " << aFaceIdx << " centroid Y below min";
-    EXPECT_LE(aCentroid.Y(), aYmax + aTol) << "Face " << aFaceIdx << " centroid Y above max";
-    EXPECT_GE(aCentroid.Z(), aZmin - aTol) << "Face " << aFaceIdx << " centroid Z below min";
-    EXPECT_LE(aCentroid.Z(), aZmax + aTol) << "Face " << aFaceIdx << " centroid Z above max";
+    EXPECT_GE(aCentroid.X(), aXmin - aTol) << "Face " << aFaceIt.Index() << " centroid X below min";
+    EXPECT_LE(aCentroid.X(), aXmax + aTol) << "Face " << aFaceIt.Index() << " centroid X above max";
+    EXPECT_GE(aCentroid.Y(), aYmin - aTol) << "Face " << aFaceIt.Index() << " centroid Y below min";
+    EXPECT_LE(aCentroid.Y(), aYmax + aTol) << "Face " << aFaceIt.Index() << " centroid Y above max";
+    EXPECT_GE(aCentroid.Z(), aZmin - aTol) << "Face " << aFaceIt.Index() << " centroid Z below min";
+    EXPECT_LE(aCentroid.Z(), aZmax + aTol) << "Face " << aFaceIt.Index() << " centroid Z above max";
   }
 }
 

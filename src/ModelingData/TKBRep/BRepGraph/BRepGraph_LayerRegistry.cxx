@@ -90,9 +90,9 @@ const occ::handle<BRepGraph_Layer>& BRepGraph_LayerRegistry::Layer(const int the
 void BRepGraph_LayerRegistry::DispatchOnNodeRemoved(const BRepGraph_NodeId theNode,
                                                     const BRepGraph_NodeId theReplacement) noexcept
 {
-  for (int aLayerIdx = 0; aLayerIdx < myLayers.Length(); ++aLayerIdx)
+  for (const occ::handle<BRepGraph_Layer>& aLayer : myLayers)
   {
-    myLayers.Value(aLayerIdx)->OnNodeRemoved(theNode, theReplacement);
+    aLayer->OnNodeRemoved(theNode, theReplacement);
   }
 }
 
@@ -104,9 +104,8 @@ void BRepGraph_LayerRegistry::DispatchNodeModified(const BRepGraph_NodeId theNod
     return;
 
   const int aKindBit = BRepGraph_Layer::KindBit(theNode.NodeKind);
-  for (int aLayerIdx = 0; aLayerIdx < myLayers.Length(); ++aLayerIdx)
+  for (const occ::handle<BRepGraph_Layer>& aLayer : myLayers)
   {
-    const occ::handle<BRepGraph_Layer>& aLayer = myLayers.Value(aLayerIdx);
     if ((aLayer->SubscribedKinds() & aKindBit) != 0)
       aLayer->OnNodeModified(theNode);
   }
@@ -121,9 +120,8 @@ void BRepGraph_LayerRegistry::DispatchNodesModified(
   if (!HasModificationSubscribers() || theModifiedKindsMask == 0)
     return;
 
-  for (int aLayerIdx = 0; aLayerIdx < myLayers.Length(); ++aLayerIdx)
+  for (const occ::handle<BRepGraph_Layer>& aLayer : myLayers)
   {
-    const occ::handle<BRepGraph_Layer>& aLayer = myLayers.Value(aLayerIdx);
     if ((aLayer->SubscribedKinds() & theModifiedKindsMask) != 0)
       aLayer->OnNodesModified(theModifiedNodes);
   }
@@ -134,9 +132,9 @@ void BRepGraph_LayerRegistry::DispatchNodesModified(
 void BRepGraph_LayerRegistry::DispatchOnCompact(
   const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>& theRemapMap) noexcept
 {
-  for (int aLayerIdx = 0; aLayerIdx < myLayers.Length(); ++aLayerIdx)
+  for (const occ::handle<BRepGraph_Layer>& aLayer : myLayers)
   {
-    myLayers.Value(aLayerIdx)->OnCompact(theRemapMap);
+    aLayer->OnCompact(theRemapMap);
   }
 }
 
@@ -144,9 +142,9 @@ void BRepGraph_LayerRegistry::DispatchOnCompact(
 
 void BRepGraph_LayerRegistry::ClearAll() noexcept
 {
-  for (int aLayerIdx = 0; aLayerIdx < myLayers.Length(); ++aLayerIdx)
+  for (const occ::handle<BRepGraph_Layer>& aLayer : myLayers)
   {
-    myLayers.Value(aLayerIdx)->Clear();
+    aLayer->Clear();
   }
 }
 
@@ -154,9 +152,9 @@ void BRepGraph_LayerRegistry::ClearAll() noexcept
 
 void BRepGraph_LayerRegistry::InvalidateAll() noexcept
 {
-  for (int aLayerIdx = 0; aLayerIdx < myLayers.Length(); ++aLayerIdx)
+  for (const occ::handle<BRepGraph_Layer>& aLayer : myLayers)
   {
-    myLayers.Value(aLayerIdx)->InvalidateAll();
+    aLayer->InvalidateAll();
   }
 }
 
@@ -165,8 +163,8 @@ void BRepGraph_LayerRegistry::InvalidateAll() noexcept
 void BRepGraph_LayerRegistry::recomputeSubscribedKindsMask()
 {
   mySubscribedKindsMask = 0;
-  for (int aLayerIdx = 0; aLayerIdx < myLayers.Length(); ++aLayerIdx)
+  for (const occ::handle<BRepGraph_Layer>& aLayer : myLayers)
   {
-    mySubscribedKindsMask |= myLayers.Value(aLayerIdx)->SubscribedKinds();
+    mySubscribedKindsMask |= aLayer->SubscribedKinds();
   }
 }

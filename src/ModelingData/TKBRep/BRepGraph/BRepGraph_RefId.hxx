@@ -86,6 +86,29 @@ struct BRepGraph_RefId
 
     bool operator>=(const Typed& theOther) const { return Index >= theOther.Index; }
 
+    //! Pre-increment (++id).
+    Typed& operator++()
+    {
+      Standard_ASSERT_VOID(Index >= 0, "pre-increment on invalid id");
+      ++Index;
+      return *this;
+    }
+
+    //! Post-increment (id++).
+    Typed operator++(int)
+    {
+      Standard_ASSERT_VOID(Index >= 0, "post-increment on invalid id");
+      Typed aPrev = *this;
+      ++Index;
+      return aPrev;
+    }
+
+    //! Advance by offset.
+    [[nodiscard]] Typed operator+(const int theOffset) const { return Typed(Index + theOffset); }
+
+    //! Retreat by offset.
+    [[nodiscard]] Typed operator-(const int theOffset) const { return Typed(Index - theOffset); }
+
     bool operator==(const BRepGraph_RefId& theOther) const
     {
       return theOther.RefKind == TheKind && theOther.Index == Index;
@@ -146,6 +169,35 @@ struct BRepGraph_RefId
     if (RefKind != theOther.RefKind)
       return static_cast<int>(RefKind) < static_cast<int>(theOther.RefKind);
     return Index < theOther.Index;
+  }
+
+  //! Pre-increment (++id).
+  BRepGraph_RefId& operator++()
+  {
+    Standard_ASSERT_VOID(Index >= 0, "pre-increment on invalid id");
+    ++Index;
+    return *this;
+  }
+
+  //! Post-increment (id++).
+  BRepGraph_RefId operator++(int)
+  {
+    Standard_ASSERT_VOID(Index >= 0, "post-increment on invalid id");
+    BRepGraph_RefId aPrev = *this;
+    ++Index;
+    return aPrev;
+  }
+
+  //! Advance by offset.
+  [[nodiscard]] BRepGraph_RefId operator+(const int theOffset) const
+  {
+    return BRepGraph_RefId(RefKind, Index + theOffset);
+  }
+
+  //! Retreat by offset.
+  [[nodiscard]] BRepGraph_RefId operator-(const int theOffset) const
+  {
+    return BRepGraph_RefId(RefKind, Index - theOffset);
   }
 };
 

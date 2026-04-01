@@ -23,6 +23,8 @@
 //! @brief Type-safe, allocation-free iterator over BRepGraph definition nodes.
 //!
 //! Provides sequential read-only access to definitions stored in BRepGraph.
+//! By default nodes with IsRemoved flag are skipped; set TheFullTraverse
+//! to true to include them (types without IsRemoved are unaffected).
 //!
 //! ## Usage
 //! @code
@@ -44,85 +46,162 @@ template <typename T>
 struct HasIsRemoved<T, std::void_t<decltype(std::declval<T>().IsRemoved)>> : std::true_type
 {
 };
-//! Compile-time mapping from definition type to typed NodeId alias.
+
+//! Compile-time traits mapping from definition type to typed NodeId,
+//! count accessor, and definition accessor.
 template <typename T>
-struct NodeIdType;
+struct NodeTraits;
 
 template <>
-struct NodeIdType<BRepGraphInc::SolidDef>
+struct NodeTraits<BRepGraphInc::SolidDef>
 {
-  using type = BRepGraph_SolidId;
+  using TypedId = BRepGraph_SolidId;
+  static int Count(const BRepGraph& theGraph) { return theGraph.Topo().Solids().Nb(); }
+
+  static const BRepGraphInc::SolidDef& Get(const BRepGraph& theGraph, const TypedId theId)
+  {
+    return theGraph.Topo().Solids().Definition(theId);
+  }
 };
 
 template <>
-struct NodeIdType<BRepGraphInc::ShellDef>
+struct NodeTraits<BRepGraphInc::ShellDef>
 {
-  using type = BRepGraph_ShellId;
+  using TypedId = BRepGraph_ShellId;
+  static int Count(const BRepGraph& theGraph) { return theGraph.Topo().Shells().Nb(); }
+
+  static const BRepGraphInc::ShellDef& Get(const BRepGraph& theGraph, const TypedId theId)
+  {
+    return theGraph.Topo().Shells().Definition(theId);
+  }
 };
 
 template <>
-struct NodeIdType<BRepGraphInc::FaceDef>
+struct NodeTraits<BRepGraphInc::FaceDef>
 {
-  using type = BRepGraph_FaceId;
+  using TypedId = BRepGraph_FaceId;
+  static int Count(const BRepGraph& theGraph) { return theGraph.Topo().Faces().Nb(); }
+
+  static const BRepGraphInc::FaceDef& Get(const BRepGraph& theGraph, const TypedId theId)
+  {
+    return theGraph.Topo().Faces().Definition(theId);
+  }
 };
 
 template <>
-struct NodeIdType<BRepGraphInc::WireDef>
+struct NodeTraits<BRepGraphInc::WireDef>
 {
-  using type = BRepGraph_WireId;
+  using TypedId = BRepGraph_WireId;
+  static int Count(const BRepGraph& theGraph) { return theGraph.Topo().Wires().Nb(); }
+
+  static const BRepGraphInc::WireDef& Get(const BRepGraph& theGraph, const TypedId theId)
+  {
+    return theGraph.Topo().Wires().Definition(theId);
+  }
 };
 
 template <>
-struct NodeIdType<BRepGraphInc::EdgeDef>
+struct NodeTraits<BRepGraphInc::EdgeDef>
 {
-  using type = BRepGraph_EdgeId;
+  using TypedId = BRepGraph_EdgeId;
+  static int Count(const BRepGraph& theGraph) { return theGraph.Topo().Edges().Nb(); }
+
+  static const BRepGraphInc::EdgeDef& Get(const BRepGraph& theGraph, const TypedId theId)
+  {
+    return theGraph.Topo().Edges().Definition(theId);
+  }
 };
 
 template <>
-struct NodeIdType<BRepGraphInc::VertexDef>
+struct NodeTraits<BRepGraphInc::VertexDef>
 {
-  using type = BRepGraph_VertexId;
+  using TypedId = BRepGraph_VertexId;
+  static int Count(const BRepGraph& theGraph) { return theGraph.Topo().Vertices().Nb(); }
+
+  static const BRepGraphInc::VertexDef& Get(const BRepGraph& theGraph, const TypedId theId)
+  {
+    return theGraph.Topo().Vertices().Definition(theId);
+  }
 };
 
 template <>
-struct NodeIdType<BRepGraphInc::ProductDef>
+struct NodeTraits<BRepGraphInc::ProductDef>
 {
-  using type = BRepGraph_ProductId;
+  using TypedId = BRepGraph_ProductId;
+  static int Count(const BRepGraph& theGraph) { return theGraph.Topo().Products().Nb(); }
+
+  static const BRepGraphInc::ProductDef& Get(const BRepGraph& theGraph, const TypedId theId)
+  {
+    return theGraph.Topo().Products().Definition(theId);
+  }
 };
 
 template <>
-struct NodeIdType<BRepGraphInc::OccurrenceDef>
+struct NodeTraits<BRepGraphInc::OccurrenceDef>
 {
-  using type = BRepGraph_OccurrenceId;
+  using TypedId = BRepGraph_OccurrenceId;
+  static int Count(const BRepGraph& theGraph) { return theGraph.Topo().Occurrences().Nb(); }
+
+  static const BRepGraphInc::OccurrenceDef& Get(const BRepGraph& theGraph, const TypedId theId)
+  {
+    return theGraph.Topo().Occurrences().Definition(theId);
+  }
 };
 
 template <>
-struct NodeIdType<BRepGraphInc::CoEdgeDef>
+struct NodeTraits<BRepGraphInc::CoEdgeDef>
 {
-  using type = BRepGraph_CoEdgeId;
+  using TypedId = BRepGraph_CoEdgeId;
+  static int Count(const BRepGraph& theGraph) { return theGraph.Topo().CoEdges().Nb(); }
+
+  static const BRepGraphInc::CoEdgeDef& Get(const BRepGraph& theGraph, const TypedId theId)
+  {
+    return theGraph.Topo().CoEdges().Definition(theId);
+  }
 };
 
 template <>
-struct NodeIdType<BRepGraphInc::CompoundDef>
+struct NodeTraits<BRepGraphInc::CompoundDef>
 {
-  using type = BRepGraph_CompoundId;
+  using TypedId = BRepGraph_CompoundId;
+  static int Count(const BRepGraph& theGraph) { return theGraph.Topo().Compounds().Nb(); }
+
+  static const BRepGraphInc::CompoundDef& Get(const BRepGraph& theGraph, const TypedId theId)
+  {
+    return theGraph.Topo().Compounds().Definition(theId);
+  }
 };
 
 template <>
-struct NodeIdType<BRepGraphInc::CompSolidDef>
+struct NodeTraits<BRepGraphInc::CompSolidDef>
 {
-  using type = BRepGraph_CompSolidId;
+  using TypedId = BRepGraph_CompSolidId;
+  static int Count(const BRepGraph& theGraph) { return theGraph.Topo().CompSolids().Nb(); }
+
+  static const BRepGraphInc::CompSolidDef& Get(const BRepGraph& theGraph, const TypedId theId)
+  {
+    return theGraph.Topo().CompSolids().Definition(theId);
+  }
 };
 } // namespace BRepGraph_IteratorDetail
 
-template <typename NodeType>
+//! @brief Type-safe, allocation-free iterator over BRepGraph definition nodes.
+//!
+//! @tparam NodeType        Definition struct type (e.g. BRepGraphInc::FaceDef).
+//! @tparam TheFullTraverse When true, removed nodes are NOT skipped (for special cases).
+template <typename NodeType, bool TheFullTraverse = false>
 class BRepGraph_Iterator
 {
 public:
-  //! Typed id alias for this iterator's node kind.
-  using TypedId = typename BRepGraph_IteratorDetail::NodeIdType<NodeType>::type;
+  using Traits  = BRepGraph_IteratorDetail::NodeTraits<NodeType>;
+  using TypedId = typename Traits::TypedId;
 
-  BRepGraph_Iterator(const BRepGraph& theGraph);
+  BRepGraph_Iterator(const BRepGraph& theGraph)
+      : myGraph(theGraph),
+        myLength(Traits::Count(theGraph))
+  {
+    skipRemoved();
+  }
 
   [[nodiscard]] bool More() const { return myIndex < myLength; }
 
@@ -132,7 +211,7 @@ public:
     skipRemoved();
   }
 
-  [[nodiscard]] const NodeType& Current() const;
+  [[nodiscard]] const NodeType& Current() const { return Traits::Get(myGraph, CurrentId()); }
 
   //! Current definition index as a typed NodeId.
   [[nodiscard]] TypedId CurrentId() const { return TypedId(myIndex); }
@@ -143,7 +222,8 @@ private:
   //! Advance past any nodes marked as removed.
   void skipRemoved()
   {
-    if constexpr (BRepGraph_IteratorDetail::HasIsRemoved<NodeType>::value)
+    if constexpr (!TheFullTraverse
+                  && BRepGraph_IteratorDetail::HasIsRemoved<NodeType>::value)
     {
       while (myIndex < myLength && Current().IsRemoved)
         ++myIndex;
@@ -156,173 +236,7 @@ private:
 };
 
 // ---------------------------------------------------------------------------
-// Definition iterators: constructors
-// ---------------------------------------------------------------------------
-
-template <>
-inline BRepGraph_Iterator<BRepGraphInc::SolidDef>::BRepGraph_Iterator(const BRepGraph& theGraph)
-    : myGraph(theGraph),
-      myLength(theGraph.Topo().Solids().Nb())
-{
-  skipRemoved();
-}
-
-template <>
-inline BRepGraph_Iterator<BRepGraphInc::ShellDef>::BRepGraph_Iterator(const BRepGraph& theGraph)
-    : myGraph(theGraph),
-      myLength(theGraph.Topo().Shells().Nb())
-{
-  skipRemoved();
-}
-
-template <>
-inline BRepGraph_Iterator<BRepGraphInc::FaceDef>::BRepGraph_Iterator(const BRepGraph& theGraph)
-    : myGraph(theGraph),
-      myLength(theGraph.Topo().Faces().Nb())
-{
-  skipRemoved();
-}
-
-template <>
-inline BRepGraph_Iterator<BRepGraphInc::WireDef>::BRepGraph_Iterator(const BRepGraph& theGraph)
-    : myGraph(theGraph),
-      myLength(theGraph.Topo().Wires().Nb())
-{
-  skipRemoved();
-}
-
-template <>
-inline BRepGraph_Iterator<BRepGraphInc::EdgeDef>::BRepGraph_Iterator(const BRepGraph& theGraph)
-    : myGraph(theGraph),
-      myLength(theGraph.Topo().Edges().Nb())
-{
-  skipRemoved();
-}
-
-template <>
-inline BRepGraph_Iterator<BRepGraphInc::VertexDef>::BRepGraph_Iterator(const BRepGraph& theGraph)
-    : myGraph(theGraph),
-      myLength(theGraph.Topo().Vertices().Nb())
-{
-  skipRemoved();
-}
-
-template <>
-inline BRepGraph_Iterator<BRepGraphInc::ProductDef>::BRepGraph_Iterator(const BRepGraph& theGraph)
-    : myGraph(theGraph),
-      myLength(theGraph.Topo().Products().Nb())
-{
-  skipRemoved();
-}
-
-template <>
-inline BRepGraph_Iterator<BRepGraphInc::OccurrenceDef>::BRepGraph_Iterator(
-  const BRepGraph& theGraph)
-    : myGraph(theGraph),
-      myLength(theGraph.Topo().Occurrences().Nb())
-{
-  skipRemoved();
-}
-
-template <>
-inline BRepGraph_Iterator<BRepGraphInc::CoEdgeDef>::BRepGraph_Iterator(const BRepGraph& theGraph)
-    : myGraph(theGraph),
-      myLength(theGraph.Topo().CoEdges().Nb())
-{
-  skipRemoved();
-}
-
-template <>
-inline BRepGraph_Iterator<BRepGraphInc::CompoundDef>::BRepGraph_Iterator(const BRepGraph& theGraph)
-    : myGraph(theGraph),
-      myLength(theGraph.Topo().Compounds().Nb())
-{
-  skipRemoved();
-}
-
-template <>
-inline BRepGraph_Iterator<BRepGraphInc::CompSolidDef>::BRepGraph_Iterator(const BRepGraph& theGraph)
-    : myGraph(theGraph),
-      myLength(theGraph.Topo().CompSolids().Nb())
-{
-  skipRemoved();
-}
-
-// ---------------------------------------------------------------------------
-// Definition iterators: Current()
-// ---------------------------------------------------------------------------
-
-template <>
-inline const BRepGraphInc::SolidDef& BRepGraph_Iterator<BRepGraphInc::SolidDef>::Current() const
-{
-  return myGraph.Topo().Solids().Definition(CurrentId());
-}
-
-template <>
-inline const BRepGraphInc::ShellDef& BRepGraph_Iterator<BRepGraphInc::ShellDef>::Current() const
-{
-  return myGraph.Topo().Shells().Definition(CurrentId());
-}
-
-template <>
-inline const BRepGraphInc::FaceDef& BRepGraph_Iterator<BRepGraphInc::FaceDef>::Current() const
-{
-  return myGraph.Topo().Faces().Definition(CurrentId());
-}
-
-template <>
-inline const BRepGraphInc::WireDef& BRepGraph_Iterator<BRepGraphInc::WireDef>::Current() const
-{
-  return myGraph.Topo().Wires().Definition(CurrentId());
-}
-
-template <>
-inline const BRepGraphInc::EdgeDef& BRepGraph_Iterator<BRepGraphInc::EdgeDef>::Current() const
-{
-  return myGraph.Topo().Edges().Definition(CurrentId());
-}
-
-template <>
-inline const BRepGraphInc::VertexDef& BRepGraph_Iterator<BRepGraphInc::VertexDef>::Current() const
-{
-  return myGraph.Topo().Vertices().Definition(CurrentId());
-}
-
-template <>
-inline const BRepGraphInc::ProductDef& BRepGraph_Iterator<BRepGraphInc::ProductDef>::Current() const
-{
-  return myGraph.Topo().Products().Definition(CurrentId());
-}
-
-template <>
-inline const BRepGraphInc::OccurrenceDef& BRepGraph_Iterator<BRepGraphInc::OccurrenceDef>::Current()
-  const
-{
-  return myGraph.Topo().Occurrences().Definition(CurrentId());
-}
-
-template <>
-inline const BRepGraphInc::CoEdgeDef& BRepGraph_Iterator<BRepGraphInc::CoEdgeDef>::Current() const
-{
-  return myGraph.Topo().CoEdges().Definition(CurrentId());
-}
-
-template <>
-inline const BRepGraphInc::CompoundDef& BRepGraph_Iterator<BRepGraphInc::CompoundDef>::Current()
-  const
-{
-  return myGraph.Topo().Compounds().Definition(CurrentId());
-}
-
-template <>
-inline const BRepGraphInc::CompSolidDef& BRepGraph_Iterator<BRepGraphInc::CompSolidDef>::Current()
-  const
-{
-  return myGraph.Topo().CompSolids().Definition(CurrentId());
-}
-
-// ---------------------------------------------------------------------------
-// Convenience type aliases
+// Convenience type aliases (skip removed nodes — default)
 // ---------------------------------------------------------------------------
 
 using BRepGraph_SolidIterator      = BRepGraph_Iterator<BRepGraphInc::SolidDef>;
@@ -336,5 +250,22 @@ using BRepGraph_CompoundIterator   = BRepGraph_Iterator<BRepGraphInc::CompoundDe
 using BRepGraph_CompSolidIterator  = BRepGraph_Iterator<BRepGraphInc::CompSolidDef>;
 using BRepGraph_ProductIterator    = BRepGraph_Iterator<BRepGraphInc::ProductDef>;
 using BRepGraph_OccurrenceIterator = BRepGraph_Iterator<BRepGraphInc::OccurrenceDef>;
+
+// ---------------------------------------------------------------------------
+// Full-traverse aliases (include removed/invalidated nodes — use only
+// in special cases such as compaction, validation, or debugging)
+// ---------------------------------------------------------------------------
+
+using BRepGraph_FullSolidIterator      = BRepGraph_Iterator<BRepGraphInc::SolidDef, true>;
+using BRepGraph_FullShellIterator      = BRepGraph_Iterator<BRepGraphInc::ShellDef, true>;
+using BRepGraph_FullFaceIterator       = BRepGraph_Iterator<BRepGraphInc::FaceDef, true>;
+using BRepGraph_FullWireIterator       = BRepGraph_Iterator<BRepGraphInc::WireDef, true>;
+using BRepGraph_FullEdgeIterator       = BRepGraph_Iterator<BRepGraphInc::EdgeDef, true>;
+using BRepGraph_FullVertexIterator     = BRepGraph_Iterator<BRepGraphInc::VertexDef, true>;
+using BRepGraph_FullCoEdgeIterator     = BRepGraph_Iterator<BRepGraphInc::CoEdgeDef, true>;
+using BRepGraph_FullCompoundIterator   = BRepGraph_Iterator<BRepGraphInc::CompoundDef, true>;
+using BRepGraph_FullCompSolidIterator  = BRepGraph_Iterator<BRepGraphInc::CompSolidDef, true>;
+using BRepGraph_FullProductIterator    = BRepGraph_Iterator<BRepGraphInc::ProductDef, true>;
+using BRepGraph_FullOccurrenceIterator = BRepGraph_Iterator<BRepGraphInc::OccurrenceDef, true>;
 
 #endif // _BRepGraph_Iterator_HeaderFile

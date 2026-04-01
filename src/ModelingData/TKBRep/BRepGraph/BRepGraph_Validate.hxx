@@ -94,9 +94,9 @@ public:
     //! True if no Error-level issues were found.
     [[nodiscard]] bool IsValid() const
     {
-      for (int anIdx = 0; anIdx < Issues.Length(); ++anIdx)
+      for (const Issue& anIssue : Issues)
       {
-        if (Issues.Value(anIdx).Sev == Severity::Error)
+        if (anIssue.Sev == Severity::Error)
           return false;
       }
       return true;
@@ -106,9 +106,9 @@ public:
     [[nodiscard]] int NbIssues(const Severity theSev) const
     {
       int aCount = 0;
-      for (int anIdx = 0; anIdx < Issues.Length(); ++anIdx)
+      for (const Issue& anIssue : Issues)
       {
-        if (Issues.Value(anIdx).Sev == theSev)
+        if (anIssue.Sev == theSev)
           ++aCount;
       }
       return aCount;

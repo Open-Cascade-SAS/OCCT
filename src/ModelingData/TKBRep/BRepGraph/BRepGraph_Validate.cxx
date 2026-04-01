@@ -81,9 +81,8 @@ void appendMutationBoundaryIssues(
 {
   using Issue    = BRepGraph_Validate::Issue;
   using Severity = BRepGraph_Validate::Severity;
-  for (int anIdx = 0; anIdx < theBoundaryIssues.Length(); ++anIdx)
+  for (const BRepGraph::BuilderView::BoundaryIssue& aBoundaryIssue : theBoundaryIssues)
   {
-    const BRepGraph::BuilderView::BoundaryIssue& aBoundaryIssue = theBoundaryIssues.Value(anIdx);
     theIssues.Append(Issue{Severity::Error, aBoundaryIssue.NodeId, aBoundaryIssue.Description});
   }
 }
@@ -395,8 +394,8 @@ void checkReverseIndexConsistency(const BRepGraph&                              
 
     // Build a set from actual wires for comparison.
     NCollection_Map<int> anActualSet;
-    for (int aWIdx = 0; aWIdx < aActualWires.Length(); ++aWIdx)
-      anActualSet.Add(aActualWires.Value(aWIdx).Index);
+    for (const BRepGraph_WireId& aWireId : aActualWires)
+      anActualSet.Add(aWireId.Index);
 
     if (anActualSet.Extent() != anExpectedCount)
     {
@@ -407,9 +406,9 @@ void checkReverseIndexConsistency(const BRepGraph&                              
 
     if (anExpectedWires != nullptr)
     {
-      for (NCollection_Map<int>::Iterator anMapIt(*anExpectedWires); anMapIt.More(); anMapIt.Next())
+      for (const int aWireIdx : *anExpectedWires)
       {
-        if (!anActualSet.Contains(anMapIt.Value()))
+        if (!anActualSet.Contains(aWireIdx))
         {
           theIssues.Append(Issue{Severity::Error,
                                  anEdge.Id,
@@ -438,10 +437,9 @@ void checkReverseIndexFaceCountCache(const BRepGraph&                           
 
     NCollection_Map<int>                          aUniqueFaces;
     const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdges = aDefs.Edges().CoEdges(anEdgeId);
-    for (int aCoEdgeIdx = 0; aCoEdgeIdx < aCoEdges.Length(); ++aCoEdgeIdx)
+    for (const BRepGraph_CoEdgeId& aCoEdgeId : aCoEdges)
     {
-      const BRepGraphInc::CoEdgeDef& aCoEdge =
-        aDefs.CoEdges().Definition(aCoEdges.Value(aCoEdgeIdx));
+      const BRepGraphInc::CoEdgeDef& aCoEdge = aDefs.CoEdges().Definition(aCoEdgeId);
       if (aCoEdge.IsRemoved || !aCoEdge.FaceDefId.IsValid())
       {
         continue;
@@ -573,10 +571,9 @@ void checkGeometryReferences(const BRepGraph&                               theG
     {
       theIssues.Append(Issue{Severity::Error, aFace.Id, "FaceDef.SurfaceRepId out of bounds"});
     }
-    for (int aTriIdx = 0; aTriIdx < aFace.TriangulationRepIds.Length(); ++aTriIdx)
+    for (const BRepGraph_TriangulationRepId& aTriRepId : aFace.TriangulationRepIds)
     {
-      if (aFace.TriangulationRepIds.Value(aTriIdx).Index
-          >= theGraph.Topo().Poly().NbTriangulations())
+      if (aTriRepId.Index >= theGraph.Topo().Poly().NbTriangulations())
       {
         theIssues.Append(
           Issue{Severity::Error, aFace.Id, "FaceDef.TriangulationRepId out of bounds"});

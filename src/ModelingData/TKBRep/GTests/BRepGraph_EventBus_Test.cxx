@@ -66,11 +66,9 @@ public:
     const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>& theRemapMap) noexcept override
   {
     myLastRemapMap.Clear();
-    for (NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>::Iterator anIter(theRemapMap);
-         anIter.More();
-         anIter.Next())
+    for (const auto& [aOldNode, aNewNode] : theRemapMap.Items())
     {
-      myLastRemapMap.Bind(anIter.Key(), anIter.Value());
+      myLastRemapMap.Bind(aOldNode, aNewNode);
     }
     ++myCompactCallCount;
   }
@@ -91,16 +89,16 @@ public:
 
   bool HasImmediateEventFor(BRepGraph_NodeId theNode) const
   {
-    for (int i = 0; i < myImmediateEvents.Length(); ++i)
-      if (myImmediateEvents.Value(i) == theNode)
+    for (const BRepGraph_NodeId& anEvent : myImmediateEvents)
+      if (anEvent == theNode)
         return true;
     return false;
   }
 
   bool HasBatchEventFor(BRepGraph_NodeId theNode) const
   {
-    for (int i = 0; i < myBatchEvents.Length(); ++i)
-      if (myBatchEvents.Value(i) == theNode)
+    for (const BRepGraph_NodeId& anEvent : myBatchEvents)
+      if (anEvent == theNode)
         return true;
     return false;
   }
@@ -108,8 +106,8 @@ public:
   int CountImmediateEventsOfKind(BRepGraph_NodeId::Kind theKind) const
   {
     int aCount = 0;
-    for (int i = 0; i < myImmediateEvents.Length(); ++i)
-      if (myImmediateEvents.Value(i).NodeKind == theKind)
+    for (const BRepGraph_NodeId& anEvent : myImmediateEvents)
+      if (anEvent.NodeKind == theKind)
         ++aCount;
     return aCount;
   }

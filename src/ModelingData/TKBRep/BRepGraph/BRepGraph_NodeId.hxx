@@ -110,6 +110,29 @@ struct BRepGraph_NodeId
 
     bool operator>=(const Typed& theOther) const { return Index >= theOther.Index; }
 
+    //! Pre-increment (++id).
+    Typed& operator++()
+    {
+      Standard_ASSERT_VOID(Index >= 0, "pre-increment on invalid id");
+      ++Index;
+      return *this;
+    }
+
+    //! Post-increment (id++).
+    Typed operator++(int)
+    {
+      Standard_ASSERT_VOID(Index >= 0, "post-increment on invalid id");
+      Typed aPrev = *this;
+      ++Index;
+      return aPrev;
+    }
+
+    //! Advance by offset.
+    [[nodiscard]] Typed operator+(const int theOffset) const { return Typed(Index + theOffset); }
+
+    //! Retreat by offset.
+    [[nodiscard]] Typed operator-(const int theOffset) const { return Typed(Index - theOffset); }
+
     //! Comparison with untyped NodeId (checks both Kind and Index).
     bool operator==(const BRepGraph_NodeId& theOther) const
     {
@@ -183,6 +206,35 @@ struct BRepGraph_NodeId
     if (NodeKind != theOther.NodeKind)
       return static_cast<int>(NodeKind) < static_cast<int>(theOther.NodeKind);
     return Index < theOther.Index;
+  }
+
+  //! Pre-increment (++id).
+  BRepGraph_NodeId& operator++()
+  {
+    Standard_ASSERT_VOID(Index >= 0, "pre-increment on invalid id");
+    ++Index;
+    return *this;
+  }
+
+  //! Post-increment (id++).
+  BRepGraph_NodeId operator++(int)
+  {
+    Standard_ASSERT_VOID(Index >= 0, "post-increment on invalid id");
+    BRepGraph_NodeId aPrev = *this;
+    ++Index;
+    return aPrev;
+  }
+
+  //! Advance by offset.
+  [[nodiscard]] BRepGraph_NodeId operator+(const int theOffset) const
+  {
+    return BRepGraph_NodeId(NodeKind, Index + theOffset);
+  }
+
+  //! Retreat by offset.
+  [[nodiscard]] BRepGraph_NodeId operator-(const int theOffset) const
+  {
+    return BRepGraph_NodeId(NodeKind, Index - theOffset);
   }
 };
 

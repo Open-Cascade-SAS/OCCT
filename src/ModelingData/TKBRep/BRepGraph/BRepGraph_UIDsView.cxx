@@ -24,12 +24,13 @@ namespace
 void appendRefUIDReverseIndex(BRepGraph_Data& theData, const BRepGraph_RefId::Kind theKind)
 {
   const NCollection_Vector<BRepGraph_RefUID>& aUIDs = theData.myIncStorage.RefUIDs(theKind);
-  for (int anIdx = 0; anIdx < aUIDs.Length(); ++anIdx)
+  const int aNbUIDs = aUIDs.Length();
+  for (BRepGraph_RefId aRefId(theKind, 0); aRefId.IsValid(aNbUIDs); ++aRefId)
   {
-    const BRepGraph_RefUID aUID = aUIDs.Value(anIdx);
+    const BRepGraph_RefUID aUID = aUIDs.Value(aRefId.Index);
     if (aUID.IsValid())
     {
-      theData.myRefUIDToRefId.Bind(aUID, BRepGraph_RefId(theKind, anIdx));
+      theData.myRefUIDToRefId.Bind(aUID, aRefId);
     }
   }
 }
@@ -39,12 +40,13 @@ void appendRefUIDReverseIndex(BRepGraph_Data& theData, const BRepGraph_RefId::Ki
 void appendUIDReverseIndex(BRepGraph_Data& theData, const BRepGraph_NodeId::Kind theKind)
 {
   const NCollection_Vector<BRepGraph_UID>& aUIDs = theData.myIncStorage.UIDs(theKind);
-  for (int anIdx = 0; anIdx < aUIDs.Length(); ++anIdx)
+  const int aNbUIDs = aUIDs.Length();
+  for (BRepGraph_NodeId aNodeId(theKind, 0); aNodeId.IsValid(aNbUIDs); ++aNodeId)
   {
-    const BRepGraph_UID aUID = aUIDs.Value(anIdx);
+    const BRepGraph_UID aUID = aUIDs.Value(aNodeId.Index);
     if (aUID.IsValid())
     {
-      theData.myUIDToNodeId.Bind(aUID, BRepGraph_NodeId(theKind, anIdx));
+      theData.myUIDToNodeId.Bind(aUID, aNodeId);
     }
   }
 }

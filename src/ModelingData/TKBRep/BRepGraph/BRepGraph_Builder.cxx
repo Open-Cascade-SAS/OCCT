@@ -61,43 +61,65 @@ void BRepGraph_Builder::populateUIDs(BRepGraph& theGraph)
   if (!aStorage.GetIsDone())
     return;
 
-  for (int i = 0; i < aStorage.NbVertices(); ++i)
-    theGraph.allocateUID(aStorage.Vertex(BRepGraph_VertexId(i)).Id);
-  for (int i = 0; i < aStorage.NbEdges(); ++i)
-    theGraph.allocateUID(aStorage.Edge(BRepGraph_EdgeId(i)).Id);
-  for (int i = 0; i < aStorage.NbCoEdges(); ++i)
-    theGraph.allocateUID(aStorage.CoEdge(BRepGraph_CoEdgeId(i)).Id);
-  for (int i = 0; i < aStorage.NbWires(); ++i)
-    theGraph.allocateUID(aStorage.Wire(BRepGraph_WireId(i)).Id);
-  for (int i = 0; i < aStorage.NbFaces(); ++i)
-    theGraph.allocateUID(aStorage.Face(BRepGraph_FaceId(i)).Id);
-  for (int i = 0; i < aStorage.NbShells(); ++i)
-    theGraph.allocateUID(aStorage.Shell(BRepGraph_ShellId(i)).Id);
-  for (int i = 0; i < aStorage.NbSolids(); ++i)
-    theGraph.allocateUID(aStorage.Solid(BRepGraph_SolidId(i)).Id);
-  for (int i = 0; i < aStorage.NbCompounds(); ++i)
-    theGraph.allocateUID(aStorage.Compound(BRepGraph_CompoundId(i)).Id);
-  for (int i = 0; i < aStorage.NbCompSolids(); ++i)
-    theGraph.allocateUID(aStorage.CompSolid(BRepGraph_CompSolidId(i)).Id);
-  for (int i = 0; i < aStorage.NbProducts(); ++i)
-    theGraph.allocateUID(aStorage.Product(BRepGraph_ProductId(i)).Id);
-  for (int i = 0; i < aStorage.NbOccurrences(); ++i)
-    theGraph.allocateUID(aStorage.Occurrence(BRepGraph_OccurrenceId(i)).Id);
+  const int aNbVertices = aStorage.NbVertices();
+  for (BRepGraph_VertexId aVertexId(0); aVertexId.IsValid(aNbVertices); ++aVertexId)
+    theGraph.allocateUID(aStorage.Vertex(aVertexId).Id);
+  const int aNbEdges = aStorage.NbEdges();
+  for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
+    theGraph.allocateUID(aStorage.Edge(anEdgeId).Id);
+  const int aNbCoEdges = aStorage.NbCoEdges();
+  for (BRepGraph_CoEdgeId aCoEdgeId(0); aCoEdgeId.IsValid(aNbCoEdges); ++aCoEdgeId)
+    theGraph.allocateUID(aStorage.CoEdge(aCoEdgeId).Id);
+  const int aNbWires = aStorage.NbWires();
+  for (BRepGraph_WireId aWireId(0); aWireId.IsValid(aNbWires); ++aWireId)
+    theGraph.allocateUID(aStorage.Wire(aWireId).Id);
+  const int aNbFaces = aStorage.NbFaces();
+  for (BRepGraph_FaceId aFaceId(0); aFaceId.IsValid(aNbFaces); ++aFaceId)
+    theGraph.allocateUID(aStorage.Face(aFaceId).Id);
+  const int aNbShells = aStorage.NbShells();
+  for (BRepGraph_ShellId aShellId(0); aShellId.IsValid(aNbShells); ++aShellId)
+    theGraph.allocateUID(aStorage.Shell(aShellId).Id);
+  const int aNbSolids = aStorage.NbSolids();
+  for (BRepGraph_SolidId aSolidId(0); aSolidId.IsValid(aNbSolids); ++aSolidId)
+    theGraph.allocateUID(aStorage.Solid(aSolidId).Id);
+  const int aNbCompounds = aStorage.NbCompounds();
+  for (BRepGraph_CompoundId aCompoundId(0); aCompoundId.IsValid(aNbCompounds); ++aCompoundId)
+    theGraph.allocateUID(aStorage.Compound(aCompoundId).Id);
+  const int aNbCompSolids = aStorage.NbCompSolids();
+  for (BRepGraph_CompSolidId aCompSolidId(0); aCompSolidId.IsValid(aNbCompSolids); ++aCompSolidId)
+    theGraph.allocateUID(aStorage.CompSolid(aCompSolidId).Id);
+  const int aNbProducts = aStorage.NbProducts();
+  for (BRepGraph_ProductId aProductId(0); aProductId.IsValid(aNbProducts); ++aProductId)
+    theGraph.allocateUID(aStorage.Product(aProductId).Id);
+  const int aNbOccurrences = aStorage.NbOccurrences();
+  for (BRepGraph_OccurrenceId anOccurrenceId(0);
+       anOccurrenceId.IsValid(aNbOccurrences);
+       ++anOccurrenceId)
+    theGraph.allocateUID(aStorage.Occurrence(anOccurrenceId).Id);
 
-  for (int i = 0; i < aStorage.NbShellRefs(); ++i)
-    theGraph.allocateRefUID(BRepGraph_ShellRefId(i));
-  for (int i = 0; i < aStorage.NbFaceRefs(); ++i)
-    theGraph.allocateRefUID(BRepGraph_FaceRefId(i));
-  for (int i = 0; i < aStorage.NbWireRefs(); ++i)
-    theGraph.allocateRefUID(BRepGraph_WireRefId(i));
-  for (int i = 0; i < aStorage.NbCoEdgeRefs(); ++i)
-    theGraph.allocateRefUID(BRepGraph_CoEdgeRefId(i));
-  for (int i = 0; i < aStorage.NbVertexRefs(); ++i)
-    theGraph.allocateRefUID(BRepGraph_VertexRefId(i));
-  for (int i = 0; i < aStorage.NbSolidRefs(); ++i)
-    theGraph.allocateRefUID(BRepGraph_SolidRefId(i));
-  for (int i = 0; i < aStorage.NbChildRefs(); ++i)
-    theGraph.allocateRefUID(BRepGraph_ChildRefId(i));
+  const int aNbShellRefs = aStorage.NbShellRefs();
+  for (BRepGraph_ShellRefId aShellRefId(0); aShellRefId.IsValid(aNbShellRefs); ++aShellRefId)
+    theGraph.allocateRefUID(aShellRefId);
+  const int aNbFaceRefs = aStorage.NbFaceRefs();
+  for (BRepGraph_FaceRefId aFaceRefId(0); aFaceRefId.IsValid(aNbFaceRefs); ++aFaceRefId)
+    theGraph.allocateRefUID(aFaceRefId);
+  const int aNbWireRefs = aStorage.NbWireRefs();
+  for (BRepGraph_WireRefId aWireRefId(0); aWireRefId.IsValid(aNbWireRefs); ++aWireRefId)
+    theGraph.allocateRefUID(aWireRefId);
+  const int aNbCoEdgeRefs = aStorage.NbCoEdgeRefs();
+  for (BRepGraph_CoEdgeRefId aCoEdgeRefId(0); aCoEdgeRefId.IsValid(aNbCoEdgeRefs);
+       ++aCoEdgeRefId)
+    theGraph.allocateRefUID(aCoEdgeRefId);
+  const int aNbVertexRefs = aStorage.NbVertexRefs();
+  for (BRepGraph_VertexRefId aVertexRefId(0); aVertexRefId.IsValid(aNbVertexRefs);
+       ++aVertexRefId)
+    theGraph.allocateRefUID(aVertexRefId);
+  const int aNbSolidRefs = aStorage.NbSolidRefs();
+  for (BRepGraph_SolidRefId aSolidRefId(0); aSolidRefId.IsValid(aNbSolidRefs); ++aSolidRefId)
+    theGraph.allocateRefUID(aSolidRefId);
+  const int aNbChildRefs = aStorage.NbChildRefs();
+  for (BRepGraph_ChildRefId aChildRefId(0); aChildRefId.IsValid(aNbChildRefs); ++aChildRefId)
+    theGraph.allocateRefUID(aChildRefId);
 }
 
 //=================================================================================================
@@ -319,9 +341,9 @@ void BRepGraph_Builder::AppendFlattened(BRepGraph&          theGraph,
                           anOldSolidRef,
                           anOldChildRef);
 
-  for (int aRootIdx = 0; aRootIdx < aAppendedRoots.Length(); ++aRootIdx)
+  for (const BRepGraph_NodeId& aRootNode : aAppendedRoots)
   {
-    theGraph.myData->myRootNodeIds.Append(aAppendedRoots.Value(aRootIdx));
+    theGraph.myData->myRootNodeIds.Append(aRootNode);
   }
 
   theGraph.myData->myIsDone = true;
@@ -354,41 +376,73 @@ void BRepGraph_Builder::populateUIDsIncremental(BRepGraph& theGraph,
   if (!aStorage.GetIsDone())
     return;
 
-  for (int i = theOldVtx; i < aStorage.NbVertices(); ++i)
-    theGraph.allocateUID(aStorage.Vertex(BRepGraph_VertexId(i)).Id);
-  for (int i = theOldEdge; i < aStorage.NbEdges(); ++i)
-    theGraph.allocateUID(aStorage.Edge(BRepGraph_EdgeId(i)).Id);
-  for (int i = theOldCoEdge; i < aStorage.NbCoEdges(); ++i)
-    theGraph.allocateUID(aStorage.CoEdge(BRepGraph_CoEdgeId(i)).Id);
-  for (int i = theOldWire; i < aStorage.NbWires(); ++i)
-    theGraph.allocateUID(aStorage.Wire(BRepGraph_WireId(i)).Id);
-  for (int i = theOldFace; i < aStorage.NbFaces(); ++i)
-    theGraph.allocateUID(aStorage.Face(BRepGraph_FaceId(i)).Id);
-  for (int i = theOldShell; i < aStorage.NbShells(); ++i)
-    theGraph.allocateUID(aStorage.Shell(BRepGraph_ShellId(i)).Id);
-  for (int i = theOldSolid; i < aStorage.NbSolids(); ++i)
-    theGraph.allocateUID(aStorage.Solid(BRepGraph_SolidId(i)).Id);
-  for (int i = theOldComp; i < aStorage.NbCompounds(); ++i)
-    theGraph.allocateUID(aStorage.Compound(BRepGraph_CompoundId(i)).Id);
-  for (int i = theOldCS; i < aStorage.NbCompSolids(); ++i)
-    theGraph.allocateUID(aStorage.CompSolid(BRepGraph_CompSolidId(i)).Id);
-  for (int i = theOldProduct; i < aStorage.NbProducts(); ++i)
-    theGraph.allocateUID(aStorage.Product(BRepGraph_ProductId(i)).Id);
-  for (int i = theOldOccurrence; i < aStorage.NbOccurrences(); ++i)
-    theGraph.allocateUID(aStorage.Occurrence(BRepGraph_OccurrenceId(i)).Id);
+  const int aNbVertices = aStorage.NbVertices();
+  for (BRepGraph_VertexId aVertexId(theOldVtx); aVertexId.IsValid(aNbVertices); ++aVertexId)
+    theGraph.allocateUID(aStorage.Vertex(aVertexId).Id);
+  const int aNbEdges = aStorage.NbEdges();
+  for (BRepGraph_EdgeId anEdgeId(theOldEdge); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
+    theGraph.allocateUID(aStorage.Edge(anEdgeId).Id);
+  const int aNbCoEdges = aStorage.NbCoEdges();
+  for (BRepGraph_CoEdgeId aCoEdgeId(theOldCoEdge); aCoEdgeId.IsValid(aNbCoEdges); ++aCoEdgeId)
+    theGraph.allocateUID(aStorage.CoEdge(aCoEdgeId).Id);
+  const int aNbWires = aStorage.NbWires();
+  for (BRepGraph_WireId aWireId(theOldWire); aWireId.IsValid(aNbWires); ++aWireId)
+    theGraph.allocateUID(aStorage.Wire(aWireId).Id);
+  const int aNbFaces = aStorage.NbFaces();
+  for (BRepGraph_FaceId aFaceId(theOldFace); aFaceId.IsValid(aNbFaces); ++aFaceId)
+    theGraph.allocateUID(aStorage.Face(aFaceId).Id);
+  const int aNbShells = aStorage.NbShells();
+  for (BRepGraph_ShellId aShellId(theOldShell); aShellId.IsValid(aNbShells); ++aShellId)
+    theGraph.allocateUID(aStorage.Shell(aShellId).Id);
+  const int aNbSolids = aStorage.NbSolids();
+  for (BRepGraph_SolidId aSolidId(theOldSolid); aSolidId.IsValid(aNbSolids); ++aSolidId)
+    theGraph.allocateUID(aStorage.Solid(aSolidId).Id);
+  const int aNbCompounds = aStorage.NbCompounds();
+  for (BRepGraph_CompoundId aCompoundId(theOldComp); aCompoundId.IsValid(aNbCompounds);
+       ++aCompoundId)
+    theGraph.allocateUID(aStorage.Compound(aCompoundId).Id);
+  const int aNbCompSolids = aStorage.NbCompSolids();
+  for (BRepGraph_CompSolidId aCompSolidId(theOldCS); aCompSolidId.IsValid(aNbCompSolids);
+       ++aCompSolidId)
+    theGraph.allocateUID(aStorage.CompSolid(aCompSolidId).Id);
+  const int aNbProducts = aStorage.NbProducts();
+  for (BRepGraph_ProductId aProductId(theOldProduct); aProductId.IsValid(aNbProducts);
+       ++aProductId)
+    theGraph.allocateUID(aStorage.Product(aProductId).Id);
+  const int aNbOccurrences = aStorage.NbOccurrences();
+  for (BRepGraph_OccurrenceId anOccurrenceId(theOldOccurrence);
+       anOccurrenceId.IsValid(aNbOccurrences);
+       ++anOccurrenceId)
+    theGraph.allocateUID(aStorage.Occurrence(anOccurrenceId).Id);
 
-  for (int i = theOldShellRef; i < aStorage.NbShellRefs(); ++i)
-    theGraph.allocateRefUID(BRepGraph_ShellRefId(i));
-  for (int i = theOldFaceRef; i < aStorage.NbFaceRefs(); ++i)
-    theGraph.allocateRefUID(BRepGraph_FaceRefId(i));
-  for (int i = theOldWireRef; i < aStorage.NbWireRefs(); ++i)
-    theGraph.allocateRefUID(BRepGraph_WireRefId(i));
-  for (int i = theOldCoEdgeRef; i < aStorage.NbCoEdgeRefs(); ++i)
-    theGraph.allocateRefUID(BRepGraph_CoEdgeRefId(i));
-  for (int i = theOldVertexRef; i < aStorage.NbVertexRefs(); ++i)
-    theGraph.allocateRefUID(BRepGraph_VertexRefId(i));
-  for (int i = theOldSolidRef; i < aStorage.NbSolidRefs(); ++i)
-    theGraph.allocateRefUID(BRepGraph_SolidRefId(i));
-  for (int i = theOldChildRef; i < aStorage.NbChildRefs(); ++i)
-    theGraph.allocateRefUID(BRepGraph_ChildRefId(i));
+  const int aNbShellRefs = aStorage.NbShellRefs();
+  for (BRepGraph_ShellRefId aShellRefId(theOldShellRef); aShellRefId.IsValid(aNbShellRefs);
+       ++aShellRefId)
+    theGraph.allocateRefUID(aShellRefId);
+  const int aNbFaceRefs = aStorage.NbFaceRefs();
+  for (BRepGraph_FaceRefId aFaceRefId(theOldFaceRef); aFaceRefId.IsValid(aNbFaceRefs);
+       ++aFaceRefId)
+    theGraph.allocateRefUID(aFaceRefId);
+  const int aNbWireRefs = aStorage.NbWireRefs();
+  for (BRepGraph_WireRefId aWireRefId(theOldWireRef); aWireRefId.IsValid(aNbWireRefs);
+       ++aWireRefId)
+    theGraph.allocateRefUID(aWireRefId);
+  const int aNbCoEdgeRefs = aStorage.NbCoEdgeRefs();
+  for (BRepGraph_CoEdgeRefId aCoEdgeRefId(theOldCoEdgeRef);
+       aCoEdgeRefId.IsValid(aNbCoEdgeRefs);
+       ++aCoEdgeRefId)
+    theGraph.allocateRefUID(aCoEdgeRefId);
+  const int aNbVertexRefs = aStorage.NbVertexRefs();
+  for (BRepGraph_VertexRefId aVertexRefId(theOldVertexRef);
+       aVertexRefId.IsValid(aNbVertexRefs);
+       ++aVertexRefId)
+    theGraph.allocateRefUID(aVertexRefId);
+  const int aNbSolidRefs = aStorage.NbSolidRefs();
+  for (BRepGraph_SolidRefId aSolidRefId(theOldSolidRef); aSolidRefId.IsValid(aNbSolidRefs);
+       ++aSolidRefId)
+    theGraph.allocateRefUID(aSolidRefId);
+  const int aNbChildRefs = aStorage.NbChildRefs();
+  for (BRepGraph_ChildRefId aChildRefId(theOldChildRef); aChildRefId.IsValid(aNbChildRefs);
+       ++aChildRefId)
+    theGraph.allocateRefUID(aChildRefId);
 }

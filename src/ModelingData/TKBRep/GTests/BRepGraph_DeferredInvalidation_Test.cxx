@@ -14,6 +14,7 @@
 #include <BRepGraph.hxx>
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_DeferredScope.hxx>
+#include <BRepGraph_Iterator.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include "BRepGraph_RefTestTools.hxx"
 #include <BRepGraph_ShapesView.hxx>
@@ -68,11 +69,11 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_PropagatesUpOnFlush)
   EXPECT_GT(myGraph.Topo().Wires().Definition(aWires.Value(0)).SubtreeGen, 0u);
 
   // Check propagation to face.
-  for (int aFI = 0; aFI < myGraph.Topo().Faces().Nb(); ++aFI)
+  for (BRepGraph_FaceIterator aFaceIt(myGraph); aFaceIt.More(); aFaceIt.Next())
   {
-    if (BRepGraph_TestTools::FaceUsesWire(myGraph, BRepGraph_FaceId(aFI), aWires.Value(0)))
+    if (BRepGraph_TestTools::FaceUsesWire(myGraph, aFaceIt.CurrentId(), aWires.Value(0)))
     {
-      EXPECT_GT(myGraph.Topo().Faces().Definition(BRepGraph_FaceId(aFI)).SubtreeGen, 0u);
+      EXPECT_GT(aFaceIt.Current().SubtreeGen, 0u);
       break;
     }
   }
@@ -119,28 +120,27 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_MultipleEdges_BatchPropa
 {
   myGraph.Builder().BeginDeferredInvalidation();
 
-  const int aNbEdges = myGraph.Topo().Edges().Nb();
-  for (int anEdgeIdx = 0; anEdgeIdx < aNbEdges; ++anEdgeIdx)
+  for (BRepGraph_EdgeIterator anEdgeIt(myGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
-    myGraph.Builder().MutEdge(BRepGraph_EdgeId(anEdgeIdx))->Tolerance = 0.1;
+    myGraph.Builder().MutEdge(anEdgeIt.CurrentId())->Tolerance = 0.1;
   }
 
   // During deferred mode: all edges mutated, but no parent propagation yet.
-  for (int aWireIdx = 0; aWireIdx < myGraph.Topo().Wires().Nb(); ++aWireIdx)
+  for (BRepGraph_WireIterator aWireIt(myGraph); aWireIt.More(); aWireIt.Next())
   {
-    EXPECT_EQ(myGraph.Topo().Wires().Definition(BRepGraph_WireId(aWireIdx)).SubtreeGen, 0u);
+    EXPECT_EQ(aWireIt.Current().SubtreeGen, 0u);
   }
 
   myGraph.Builder().EndDeferredInvalidation();
 
   // After flush: all wires, faces, shells, solids should have SubtreeGen propagated.
-  for (int aWireIdx = 0; aWireIdx < myGraph.Topo().Wires().Nb(); ++aWireIdx)
+  for (BRepGraph_WireIterator aWireIt(myGraph); aWireIt.More(); aWireIt.Next())
   {
-    EXPECT_GT(myGraph.Topo().Wires().Definition(BRepGraph_WireId(aWireIdx)).SubtreeGen, 0u);
+    EXPECT_GT(aWireIt.Current().SubtreeGen, 0u);
   }
-  for (int aFaceIdx = 0; aFaceIdx < myGraph.Topo().Faces().Nb(); ++aFaceIdx)
+  for (BRepGraph_FaceIterator aFaceIt(myGraph); aFaceIt.More(); aFaceIt.Next())
   {
-    EXPECT_GT(myGraph.Topo().Faces().Definition(BRepGraph_FaceId(aFaceIdx)).SubtreeGen, 0u);
+    EXPECT_GT(aFaceIt.Current().SubtreeGen, 0u);
   }
   EXPECT_GT(myGraph.Topo().Shells().Definition(BRepGraph_ShellId(0)).SubtreeGen, 0u);
   EXPECT_GT(myGraph.Topo().Solids().Definition(BRepGraph_SolidId(0)).SubtreeGen, 0u);
@@ -180,11 +180,11 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_ParallelMutation_WithExt
   myGraph.Builder().EndDeferredInvalidation();
 
   // All edges should be mutated (directly: OwnGen).
-  for (int anEdgeIdx = 0; anEdgeIdx < aNbEdges; ++anEdgeIdx)
+  for (BRepGraph_EdgeIterator anEdgeIt(myGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
-    EXPECT_GT(myGraph.Topo().Edges().Definition(BRepGraph_EdgeId(anEdgeIdx)).OwnGen, 0u);
-    EXPECT_NEAR(myGraph.Topo().Edges().Definition(BRepGraph_EdgeId(anEdgeIdx)).Tolerance,
-                0.1 + anEdgeIdx * 0.01,
+    EXPECT_GT(anEdgeIt.Current().OwnGen, 0u);
+    EXPECT_NEAR(anEdgeIt.Current().Tolerance,
+                0.1 + anEdgeIt.CurrentId().Index * 0.01,
                 Precision::Confusion());
   }
 
@@ -288,10 +288,10 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_DirectWireMutation_Propa
 
   // After flush: face, shell, solid SubtreeGen should be propagated.
   bool aFacePropagated = false;
-  for (int aFI = 0; aFI < myGraph.Topo().Faces().Nb(); ++aFI)
+  for (BRepGraph_FaceIterator aFaceIt(myGraph); aFaceIt.More(); aFaceIt.Next())
   {
-    if (BRepGraph_TestTools::FaceUsesWire(myGraph, BRepGraph_FaceId(aFI), BRepGraph_WireId(0))
-        && myGraph.Topo().Faces().Definition(BRepGraph_FaceId(aFI)).SubtreeGen > 0u)
+    if (BRepGraph_TestTools::FaceUsesWire(myGraph, aFaceIt.CurrentId(), BRepGraph_WireId(0))
+        && aFaceIt.Current().SubtreeGen > 0u)
     {
       aFacePropagated = true;
       break;

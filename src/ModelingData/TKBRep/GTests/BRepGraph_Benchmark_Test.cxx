@@ -14,6 +14,7 @@
 #include <BRep_Builder.hxx>
 #include <BRepBuilderAPI_Copy.hxx>
 #include <BRepGraph.hxx>
+#include <BRepGraph_Iterator.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_NodeId.hxx>
 #include <BRepGraph_ShapesView.hxx>
@@ -171,10 +172,9 @@ TEST(BRepGraph_BenchmarkTest, DISABLED_Reconstruct_RoundTrip)
   ASSERT_GT(aNbFaces, 0);
 
   const double aAvg = runBenchmark("Reconstruct 10000 faces", [&]() {
-    for (int anIdx = 0; anIdx < aNbFaces; ++anIdx)
+    for (BRepGraph_FaceIterator aFaceIt(aGraph); aFaceIt.More(); aFaceIt.Next())
     {
-      const BRepGraph_NodeId aFaceId = BRepGraph_FaceId(anIdx);
-      const TopoDS_Shape     aShape  = aGraph.Shapes().Reconstruct(aFaceId);
+      const TopoDS_Shape aShape = aGraph.Shapes().Reconstruct(BRepGraph_NodeId(aFaceIt.CurrentId()));
       EXPECT_FALSE(aShape.IsNull());
     }
   });
@@ -195,11 +195,10 @@ TEST(BRepGraph_BenchmarkTest, DISABLED_SpatialQuery_Throughput)
   ASSERT_GT(aNbFaces, 0);
 
   const double aAvg = runBenchmark("SpatialQuery 10000 faces", [&]() {
-    for (int anIdx = 0; anIdx < aNbFaces; ++anIdx)
+    for (BRepGraph_FaceIterator aFaceIt(aGraph); aFaceIt.More(); aFaceIt.Next())
     {
-      const BRepGraph_FaceId                     aFaceId(anIdx);
       const NCollection_Vector<BRepGraph_FaceId> anAdj =
-        aGraph.Topo().Faces().Adjacent(aFaceId, aGraph.Allocator());
+        aGraph.Topo().Faces().Adjacent(aFaceIt.CurrentId(), aGraph.Allocator());
       EXPECT_GE(anAdj.Length(), 0);
     }
   });

@@ -15,6 +15,7 @@
 #include <BRepGraphInc_Definition.hxx>
 #include <BRepGraphInc_Reference.hxx>
 #include <BRepGraphInc_Representation.hxx>
+#include <BRepGraph_Iterator.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_TopoView.hxx>
@@ -134,11 +135,10 @@ TEST_F(BRepGraph_ConvenienceTest, FaceSurface_Valid)
 
 TEST_F(BRepGraph_ConvenienceTest, FaceSurface_AllBoxFaces)
 {
-  const BRepGraph::TopoView aDefs = myGraph.Topo();
-  for (int aFaceIter = 0; aFaceIter < aDefs.Faces().Nb(); ++aFaceIter)
+  for (BRepGraph_FaceIterator aFaceIt(myGraph); aFaceIt.More(); aFaceIt.Next())
   {
-    EXPECT_TRUE(aDefs.Faces().Definition(BRepGraph_FaceId(aFaceIter)).SurfaceRepId.IsValid())
-      << "Face " << aFaceIter << " has no surface";
+    EXPECT_TRUE(aFaceIt.Current().SurfaceRepId.IsValid())
+      << "Face " << aFaceIt.CurrentId().Index << " has no surface";
   }
 }
 
@@ -146,21 +146,15 @@ TEST_F(BRepGraph_ConvenienceTest, FaceSurface_AllBoxFaces)
 
 TEST_F(BRepGraph_ConvenienceTest, FindPCurve_ValidPair)
 {
-  const BRepGraph::TopoView aDefs = myGraph.Topo();
-
   // Find an edge/face pair that has a PCurve.
-  for (int aFaceIter = 0; aFaceIter < aDefs.Faces().Nb(); ++aFaceIter)
+  for (BRepGraph_FaceIterator aFaceIt(myGraph); aFaceIt.More(); aFaceIt.Next())
   {
-    const BRepGraph_NodeId aFaceNodeId = BRepGraph_FaceId(aFaceIter);
+    const BRepGraph_FaceId aFaceId = aFaceIt.CurrentId();
 
-    for (int anEdgeIter = 0; anEdgeIter < aDefs.Edges().Nb(); ++anEdgeIter)
+    for (BRepGraph_EdgeIterator anEdgeIt(myGraph); anEdgeIt.More(); anEdgeIt.Next())
     {
-      const BRepGraphInc::EdgeDef& anEdgeDef =
-        aDefs.Edges().Definition(BRepGraph_EdgeId(anEdgeIter));
       const BRepGraphInc::CoEdgeDef* aPCurve =
-        BRepGraph_Tool::Edge::FindPCurve(myGraph,
-                                         BRepGraph_EdgeId(anEdgeDef.Id.Index),
-                                         BRepGraph_FaceId(aFaceNodeId.Index));
+        BRepGraph_Tool::Edge::FindPCurve(myGraph, anEdgeIt.CurrentId(), aFaceId);
       if (aPCurve != nullptr)
       {
         EXPECT_TRUE(aPCurve->Curve2DRepId.IsValid());
@@ -217,28 +211,24 @@ TEST_F(BRepGraph_ConvenienceTest, FindPCurve_WithOrientation_SeamEdge)
   const BRepGraph::TopoView aDefs = aGraph.Topo();
 
   // Look for seam edges (coedge with SeamPairId valid).
-  for (int anEdgeIter = 0; anEdgeIter < aDefs.Edges().Nb(); ++anEdgeIter)
+  for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
-    const BRepGraphInc::EdgeDef& anEdgeDef = aDefs.Edges().Definition(BRepGraph_EdgeId(anEdgeIter));
     const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
-      aDefs.Edges().CoEdges(BRepGraph_EdgeId(anEdgeIter));
+      aDefs.Edges().CoEdges(anEdgeIt.CurrentId());
 
-    for (int aCEI = 0; aCEI < aCoEdgeIdxs.Length(); ++aCEI)
+    for (const BRepGraph_CoEdgeId& aCoEdgeId : aCoEdgeIdxs)
     {
-      const BRepGraphInc::CoEdgeDef& aCE = aDefs.CoEdges().Definition(aCoEdgeIdxs.Value(aCEI));
+      const BRepGraphInc::CoEdgeDef& aCE = aDefs.CoEdges().Definition(aCoEdgeId);
       if (!aCE.SeamPairId.IsValid())
         continue;
 
       // Found seam edge - verify FindPCurve returns distinct entries for each orientation.
       const BRepGraph_FaceId         aFaceDefId = aCE.FaceDefId;
       const BRepGraphInc::CoEdgeDef* aPCF =
-        BRepGraph_Tool::Edge::FindPCurve(aGraph,
-                                         BRepGraph_EdgeId(anEdgeDef.Id.Index),
-                                         aFaceDefId,
-                                         TopAbs_FORWARD);
+        BRepGraph_Tool::Edge::FindPCurve(aGraph, anEdgeIt.CurrentId(), aFaceDefId, TopAbs_FORWARD);
       const BRepGraphInc::CoEdgeDef* aPCR =
         BRepGraph_Tool::Edge::FindPCurve(aGraph,
-                                         BRepGraph_EdgeId(anEdgeDef.Id.Index),
+                                         anEdgeIt.CurrentId(),
                                          aFaceDefId,
                                          TopAbs_REVERSED);
       EXPECT_NE(aPCF, nullptr);

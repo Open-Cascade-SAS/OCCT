@@ -14,6 +14,7 @@
 #include <BRep_Builder.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraph_BuilderView.hxx>
+#include <BRepGraph_Iterator.hxx>
 #include "BRepGraph_RefTestTools.hxx"
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_TopoView.hxx>
@@ -53,11 +54,12 @@ TEST_F(BRepGraph_SharingTest, EdgeDef_EachSharedByTwoFaces)
   ASSERT_TRUE(myGraph.IsDone());
   EXPECT_EQ(myGraph.Topo().Edges().Nb(), 12);
   // In a box, each edge is shared by exactly 2 faces.
-  for (int anIdx = 0; anIdx < myGraph.Topo().Edges().Nb(); ++anIdx)
+  for (BRepGraph_EdgeIterator anEdgeIt(myGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
-    int aFaceCount = myGraph.Topo().Edges().NbFaces(BRepGraph_EdgeId(anIdx));
-    EXPECT_EQ(aFaceCount, 2) << "Edge def " << anIdx << " expected to be shared by 2 faces, got "
-                             << aFaceCount;
+    const BRepGraph_EdgeId anEdgeId    = anEdgeIt.CurrentId();
+    const int aFaceCount = myGraph.Topo().Edges().NbFaces(anEdgeId);
+    EXPECT_EQ(aFaceCount, 2) << "Edge def " << anEdgeId.Index
+                             << " expected to be shared by 2 faces, got " << aFaceCount;
   }
 }
 
@@ -65,10 +67,12 @@ TEST_F(BRepGraph_SharingTest, FaceDef_EachHasValidSurface)
 {
   ASSERT_TRUE(myGraph.IsDone());
   EXPECT_EQ(myGraph.Topo().Faces().Nb(), 6);
-  for (int anIdx = 0; anIdx < myGraph.Topo().Faces().Nb(); ++anIdx)
+  for (BRepGraph_FaceIterator aFaceIt(myGraph); aFaceIt.More(); aFaceIt.Next())
   {
-    const BRepGraphInc::FaceDef& aDef = myGraph.Topo().Faces().Definition(BRepGraph_FaceId(anIdx));
-    EXPECT_TRUE(aDef.SurfaceRepId.IsValid()) << "Face def " << anIdx << " has no surface rep";
+    const BRepGraph_FaceId       aFaceId = aFaceIt.CurrentId();
+    const BRepGraphInc::FaceDef& aDef    = aFaceIt.Current();
+    EXPECT_TRUE(aDef.SurfaceRepId.IsValid()) << "Face def " << aFaceId.Index
+                                             << " has no surface rep";
   }
 }
 
@@ -107,37 +111,38 @@ TEST_F(BRepGraph_SharingTest, ShellDef_ContainsSixFaceRefs)
 TEST_F(BRepGraph_SharingTest, FaceDef_OuterWireIdx_Valid)
 {
   ASSERT_TRUE(myGraph.IsDone());
-  for (int anIdx = 0; anIdx < myGraph.Topo().Faces().Nb(); ++anIdx)
+  for (BRepGraph_FaceIterator aFaceIt(myGraph); aFaceIt.More(); aFaceIt.Next())
   {
-    const BRepGraph_WireId anOuterWire =
-      BRepGraph_TestTools::OuterWireOfFace(myGraph, BRepGraph_FaceId(anIdx));
-    EXPECT_TRUE(anOuterWire.IsValid()) << "Face def " << anIdx << " has no outer wire";
+    const BRepGraph_FaceId aFaceId = aFaceIt.CurrentId();
+    const BRepGraph_WireId anOuterWire = BRepGraph_TestTools::OuterWireOfFace(myGraph, aFaceId);
+    EXPECT_TRUE(anOuterWire.IsValid()) << "Face def " << aFaceId.Index << " has no outer wire";
   }
 }
 
 TEST_F(BRepGraph_SharingTest, WireDef_CoEdgeRefsCount_FourPerBoxFace)
 {
   ASSERT_TRUE(myGraph.IsDone());
-  for (int anIdx = 0; anIdx < myGraph.Topo().Wires().Nb(); ++anIdx)
+  for (BRepGraph_WireIterator aWireIt(myGraph); aWireIt.More(); aWireIt.Next())
   {
-    const int aNbCoEdgeRefs =
-      BRepGraph_TestTools::CountCoEdgeRefsOfWire(myGraph, BRepGraph_WireId(anIdx));
-    EXPECT_GT(aNbCoEdgeRefs, 0) << "Wire def " << anIdx << " has no coedge refs";
+    const BRepGraph_WireId aWireId     = aWireIt.CurrentId();
+    const int aNbCoEdgeRefs = BRepGraph_TestTools::CountCoEdgeRefsOfWire(myGraph, aWireId);
+    EXPECT_GT(aNbCoEdgeRefs, 0) << "Wire def " << aWireId.Index << " has no coedge refs";
     // Box face wires have 4 edges
-    EXPECT_EQ(aNbCoEdgeRefs, 4) << "Wire def " << anIdx << " expected 4 coedge refs for box face";
+    EXPECT_EQ(aNbCoEdgeRefs, 4) << "Wire def " << aWireId.Index
+                                << " expected 4 coedge refs for box face";
   }
 }
 
 TEST_F(BRepGraph_SharingTest, EdgeDef_VertexDefs_BothValid)
 {
   ASSERT_TRUE(myGraph.IsDone());
-  for (int anIdx = 0; anIdx < myGraph.Topo().Edges().Nb(); ++anIdx)
+  for (BRepGraph_EdgeIterator anEdgeIt(myGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
-    const BRepGraph_EdgeId anEdgeId(anIdx);
+    const BRepGraph_EdgeId anEdgeId = anEdgeIt.CurrentId();
     EXPECT_TRUE(BRepGraph_Tool::Edge::StartVertex(myGraph, anEdgeId).VertexDefId.IsValid())
-      << "Edge def " << anIdx << " has invalid start vertex def";
+      << "Edge def " << anEdgeId.Index << " has invalid start vertex def";
     EXPECT_TRUE(BRepGraph_Tool::Edge::EndVertex(myGraph, anEdgeId).VertexDefId.IsValid())
-      << "Edge def " << anIdx << " has invalid end vertex def";
+      << "Edge def " << anEdgeId.Index << " has invalid end vertex def";
   }
 }
 
@@ -152,10 +157,11 @@ TEST_F(BRepGraph_SharingTest, SharedEdge_IncidenceRefs_DifferentOrientation)
   // different face definitions. Check that at least some edges have
   // coedges referencing more than one face.
   int aMultiFaceEdgeCount = 0;
-  for (int anIdx = 0; anIdx < myGraph.Topo().Edges().Nb(); ++anIdx)
+  for (BRepGraph_EdgeIterator anEdgeIt(myGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
+    const BRepGraph_EdgeId anEdgeId = anEdgeIt.CurrentId();
     const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
-      myGraph.Topo().Edges().CoEdges(BRepGraph_EdgeId(anIdx));
+      myGraph.Topo().Edges().CoEdges(anEdgeId);
     if (aCoEdgeIdxs.Length() < 2)
       continue;
     // Check if coedges reference different faces.
@@ -177,10 +183,10 @@ TEST_F(BRepGraph_SharingTest, SharedEdge_IncidenceRefs_DifferentOrientation)
 TEST_F(BRepGraph_SharingTest, NonClosedEdge_StartEnd_Different)
 {
   ASSERT_TRUE(myGraph.IsDone());
-  for (int anIdx = 0; anIdx < myGraph.Topo().Edges().Nb(); ++anIdx)
+  for (BRepGraph_EdgeIterator anEdgeIt(myGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
-    const BRepGraph_EdgeId       anEdgeId(anIdx);
-    const BRepGraphInc::EdgeDef& aDef = myGraph.Topo().Edges().Definition(anEdgeId);
+    const BRepGraph_EdgeId       anEdgeId = anEdgeIt.CurrentId();
+    const BRepGraphInc::EdgeDef& aDef     = anEdgeIt.Current();
     if (aDef.IsDegenerate)
       continue;
     // Box edges are not closed, so start and end vertex defs must differ
@@ -189,7 +195,8 @@ TEST_F(BRepGraph_SharingTest, NonClosedEdge_StartEnd_Different)
     const BRepGraph_VertexId anEndVtx =
       BRepGraph_Tool::Edge::EndVertex(myGraph, anEdgeId).VertexDefId;
     EXPECT_NE(aStartVtx, anEndVtx)
-      << "Non-degenerate edge def " << anIdx << " has identical start and end vertex def ids";
+      << "Non-degenerate edge def " << anEdgeId.Index
+      << " has identical start and end vertex def ids";
   }
 }
 
@@ -198,10 +205,9 @@ TEST_F(BRepGraph_SharingTest, VertexDef_Points_MatchExpectedBoxCorners)
   ASSERT_TRUE(myGraph.IsDone());
   // For a simple 10x20x30 box, all 8 vertex points should be valid.
   EXPECT_EQ(myGraph.Topo().Vertices().Nb(), 8);
-  for (int anIdx = 0; anIdx < myGraph.Topo().Vertices().Nb(); ++anIdx)
+  for (BRepGraph_VertexIterator aVertexIt(myGraph); aVertexIt.More(); aVertexIt.Next())
   {
-    const BRepGraphInc::VertexDef& aDef =
-      myGraph.Topo().Vertices().Definition(BRepGraph_VertexId(anIdx));
+    const BRepGraphInc::VertexDef& aDef = aVertexIt.Current();
     // Verify coordinates are within the box bounds.
     EXPECT_GE(aDef.Point.X(), -Precision::Confusion());
     EXPECT_LE(aDef.Point.X(), 10.0 + Precision::Confusion());

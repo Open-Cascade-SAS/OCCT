@@ -41,9 +41,9 @@ bool containsIndexInTable(const NCollection_Vector<NCollection_Vector<T>>& theId
   if (theKey < 0 || theKey >= theIdx.Length())
     return false;
   const NCollection_Vector<T>& aVec = theIdx.Value(theKey);
-  for (int i = 0; i < aVec.Length(); ++i)
+  for (const T& anElem : aVec)
   {
-    if (aVec.Value(i).Index == theVal)
+    if (anElem.Index == theVal)
       return true;
   }
   return false;
@@ -55,9 +55,9 @@ static bool hasActiveFaceForEdgeInCoEdges(
   const int                                          theEdgeIdx,
   const int                                          theFaceIdx)
 {
-  for (int aCoEdgeOrd = 0; aCoEdgeOrd < theCoEdgeIds.Length(); ++aCoEdgeOrd)
+  for (const BRepGraph_CoEdgeId& aCoEdgeId : theCoEdgeIds)
   {
-    const int aCoEdgeIdx = theCoEdgeIds.Value(aCoEdgeOrd).Index;
+    const int aCoEdgeIdx = aCoEdgeId.Index;
     if (aCoEdgeIdx < 0 || aCoEdgeIdx >= theCoEdges.Length())
     {
       continue;
@@ -142,9 +142,10 @@ void BRepGraphInc_ReverseIndex::Build(
 
   // Scan edges for max vertex index to pre-size myVertexToEdges.
   int aMaxVertexIdx = -1;
-  for (int anEdgeIdx = 0; anEdgeIdx < theEdges.Length(); ++anEdgeIdx)
+  const int aNbEdges = theEdges.Length();
+  for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
   {
-    const BRepGraphInc::EdgeDef& anEdge = theEdges.Value(anEdgeIdx);
+    const BRepGraphInc::EdgeDef& anEdge = theEdges.Value(anEdgeId.Index);
     if (anEdge.IsRemoved)
       continue;
     const BRepGraph_VertexId aStartVtx = resolveVertexDefId(theVertexRefs, anEdge.StartVertexRefId);
@@ -167,28 +168,29 @@ void BRepGraphInc_ReverseIndex::Build(
   // Vertex -> Edges: scan edge entities for start/end vertex indices.
   // Closed edges have StartVertexRefId and EndVertexRefId resolving to the same VertexDefId,
   // so skip duplicate.
-  for (int anEdgeIdx = 0; anEdgeIdx < theEdges.Length(); ++anEdgeIdx)
+  for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
   {
-    const BRepGraphInc::EdgeDef& anEdge = theEdges.Value(anEdgeIdx);
+    const BRepGraphInc::EdgeDef& anEdge = theEdges.Value(anEdgeId.Index);
     if (anEdge.IsRemoved)
       continue;
     const BRepGraph_VertexId aStartVtx = resolveVertexDefId(theVertexRefs, anEdge.StartVertexRefId);
     const BRepGraph_VertexId anEndVtx  = resolveVertexDefId(theVertexRefs, anEdge.EndVertexRefId);
     if (aStartVtx.IsValid())
-      appendDirect(myVertexToEdges, aStartVtx.Index, BRepGraph_EdgeId(anEdgeIdx));
+      appendDirect(myVertexToEdges, aStartVtx.Index, anEdgeId);
     if (anEndVtx.IsValid() && anEndVtx != aStartVtx)
-      appendDirect(myVertexToEdges, anEndVtx.Index, BRepGraph_EdgeId(anEdgeIdx));
+      appendDirect(myVertexToEdges, anEndVtx.Index, anEdgeId);
   }
 
   // Edge -> Wires: iterate wire entities and their CoEdgeRefIds for O(1) parent lookup.
-  for (int aWireIdx = 0; aWireIdx < theWires.Length(); ++aWireIdx)
+  const int aNbWires = theWires.Length();
+  for (BRepGraph_WireId aWireId(0); aWireId.IsValid(aNbWires); ++aWireId)
   {
-    const BRepGraphInc::WireDef& aWire = theWires.Value(aWireIdx);
+    const BRepGraphInc::WireDef& aWire = theWires.Value(aWireId.Index);
     if (aWire.IsRemoved)
       continue;
-    for (int aRefOrd = 0; aRefOrd < aWire.CoEdgeRefIds.Length(); ++aRefOrd)
+    for (const BRepGraph_CoEdgeRefId& aCoEdgeRefId : aWire.CoEdgeRefIds)
     {
-      const int aRefIdx = aWire.CoEdgeRefIds.Value(aRefOrd).Index;
+      const int aRefIdx = aCoEdgeRefId.Index;
       if (aRefIdx < 0 || aRefIdx >= theCoEdgeRefs.Length())
         continue;
       const BRepGraphInc::CoEdgeRef& aRef = theCoEdgeRefs.Value(aRefIdx);
@@ -198,30 +200,31 @@ void BRepGraphInc_ReverseIndex::Build(
       const BRepGraphInc::CoEdgeDef& aCoEdge = theCoEdges.Value(aRef.CoEdgeDefId.Index);
       if (aCoEdge.IsRemoved || !aCoEdge.EdgeDefId.IsValid())
         continue;
-      appendDirect(myEdgeToWires, aCoEdge.EdgeDefId.Index, BRepGraph_WireId(aWireIdx));
+      appendDirect(myEdgeToWires, aCoEdge.EdgeDefId.Index, aWireId);
     }
   }
 
   // Edge -> CoEdges: derive from CoEdge.EdgeDefId field.
   preSize(myEdgeToCoEdges, theEdges.Length(), myAllocator);
-  for (int aCoEdgeIdx = 0; aCoEdgeIdx < theCoEdges.Length(); ++aCoEdgeIdx)
+  const int aNbCoEdges = theCoEdges.Length();
+  for (BRepGraph_CoEdgeId aCoEdgeId(0); aCoEdgeId.IsValid(aNbCoEdges); ++aCoEdgeId)
   {
-    const BRepGraphInc::CoEdgeDef& aCoEdge = theCoEdges.Value(aCoEdgeIdx);
+    const BRepGraphInc::CoEdgeDef& aCoEdge = theCoEdges.Value(aCoEdgeId.Index);
     if (aCoEdge.IsRemoved)
       continue;
     if (aCoEdge.EdgeDefId.IsValid())
-      appendDirect(myEdgeToCoEdges, aCoEdge.EdgeDefId.Index, BRepGraph_CoEdgeId(aCoEdgeIdx));
+      appendDirect(myEdgeToCoEdges, aCoEdge.EdgeDefId.Index, aCoEdgeId);
   }
   myNbIndexedCoEdges = theCoEdges.Length();
 
   // Edge -> Faces: derive from CoEdge.FaceDefId (replaces legacy PCurve-based derivation).
   // Seam edges have two CoEdges with same FaceDefId but opposite Sense.
   // Deduplicate per edge using the edge->coedges index built above.
-  for (int anEdgeIdx = 0; anEdgeIdx < theEdges.Length(); ++anEdgeIdx)
+  for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
   {
-    if (theEdges.Value(anEdgeIdx).IsRemoved)
+    if (theEdges.Value(anEdgeId.Index).IsRemoved)
       continue;
-    const NCollection_Vector<BRepGraph_CoEdgeId>* aCoEdgeIdxs = seekVec(myEdgeToCoEdges, anEdgeIdx);
+    const NCollection_Vector<BRepGraph_CoEdgeId>* aCoEdgeIdxs = seekVec(myEdgeToCoEdges, anEdgeId.Index);
     if (aCoEdgeIdxs == nullptr)
       continue;
     const int aNbCE = aCoEdgeIdxs->Length();
@@ -257,7 +260,7 @@ void BRepGraphInc_ReverseIndex::Build(
     {
       if (aFaces[i] != aPrev)
       {
-        appendDirect(myEdgeToFaces, anEdgeIdx, BRepGraph_FaceId(aFaces[i]));
+        appendDirect(myEdgeToFaces, anEdgeId.Index, BRepGraph_FaceId(aFaces[i]));
         aPrev = aFaces[i];
       }
     }
@@ -265,21 +268,22 @@ void BRepGraphInc_ReverseIndex::Build(
 
   // Populate cached face counts from the edge-to-faces index.
   myEdgeFaceCount.Clear();
-  for (int i = 0; i < theEdges.Length(); ++i)
+  for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
   {
-    const NCollection_Vector<BRepGraph_FaceId>* aFaceVec = seekVec(myEdgeToFaces, i);
+    const NCollection_Vector<BRepGraph_FaceId>* aFaceVec = seekVec(myEdgeToFaces, anEdgeId.Index);
     myEdgeFaceCount.Append(aFaceVec != nullptr ? aFaceVec->Length() : 0);
   }
 
   // Wire -> Faces: iterate face entities and their WireRefIds for O(1) parent lookup.
-  for (int aFaceIdx = 0; aFaceIdx < theFaces.Length(); ++aFaceIdx)
+  const int aNbFaces = theFaces.Length();
+  for (BRepGraph_FaceId aFaceId(0); aFaceId.IsValid(aNbFaces); ++aFaceId)
   {
-    const BRepGraphInc::FaceDef& aFace = theFaces.Value(aFaceIdx);
+    const BRepGraphInc::FaceDef& aFace = theFaces.Value(aFaceId.Index);
     if (aFace.IsRemoved)
       continue;
-    for (int aRefOrd = 0; aRefOrd < aFace.WireRefIds.Length(); ++aRefOrd)
+    for (const BRepGraph_WireRefId& aWireRefId : aFace.WireRefIds)
     {
-      const int aRefIdx = aFace.WireRefIds.Value(aRefOrd).Index;
+      const int aRefIdx = aWireRefId.Index;
       if (aRefIdx < 0 || aRefIdx >= theWireRefs.Length())
         continue;
       const BRepGraphInc::WireRef& aRef = theWireRefs.Value(aRefIdx);
@@ -288,19 +292,20 @@ void BRepGraphInc_ReverseIndex::Build(
         continue;
       if (theWires.Value(aRef.WireDefId.Index).IsRemoved)
         continue;
-      appendDirect(myWireToFaces, aRef.WireDefId.Index, BRepGraph_FaceId(aFaceIdx));
+      appendDirect(myWireToFaces, aRef.WireDefId.Index, aFaceId);
     }
   }
 
   // Face -> Shells: iterate shell entities and their FaceRefIds for O(1) parent lookup.
-  for (int aShellIdx = 0; aShellIdx < theShells.Length(); ++aShellIdx)
+  const int aNbShells = theShells.Length();
+  for (BRepGraph_ShellId aShellId(0); aShellId.IsValid(aNbShells); ++aShellId)
   {
-    const BRepGraphInc::ShellDef& aShell = theShells.Value(aShellIdx);
+    const BRepGraphInc::ShellDef& aShell = theShells.Value(aShellId.Index);
     if (aShell.IsRemoved)
       continue;
-    for (int aRefOrd = 0; aRefOrd < aShell.FaceRefIds.Length(); ++aRefOrd)
+    for (const BRepGraph_FaceRefId& aFaceRefId : aShell.FaceRefIds)
     {
-      const int aRefIdx = aShell.FaceRefIds.Value(aRefOrd).Index;
+      const int aRefIdx = aFaceRefId.Index;
       if (aRefIdx < 0 || aRefIdx >= theFaceRefs.Length())
         continue;
       const BRepGraphInc::FaceRef& aRef = theFaceRefs.Value(aRefIdx);
@@ -309,19 +314,20 @@ void BRepGraphInc_ReverseIndex::Build(
         continue;
       if (theFaces.Value(aRef.FaceDefId.Index).IsRemoved)
         continue;
-      appendDirect(myFaceToShells, aRef.FaceDefId.Index, BRepGraph_ShellId(aShellIdx));
+      appendDirect(myFaceToShells, aRef.FaceDefId.Index, aShellId);
     }
   }
 
   // Shell -> Solids: iterate solid entities and their ShellRefIds for O(1) parent lookup.
-  for (int aSolidIdx = 0; aSolidIdx < theSolids.Length(); ++aSolidIdx)
+  const int aNbSolids = theSolids.Length();
+  for (BRepGraph_SolidId aSolidId(0); aSolidId.IsValid(aNbSolids); ++aSolidId)
   {
-    const BRepGraphInc::SolidDef& aSolid = theSolids.Value(aSolidIdx);
+    const BRepGraphInc::SolidDef& aSolid = theSolids.Value(aSolidId.Index);
     if (aSolid.IsRemoved)
       continue;
-    for (int aRefOrd = 0; aRefOrd < aSolid.ShellRefIds.Length(); ++aRefOrd)
+    for (const BRepGraph_ShellRefId& aShellRefId : aSolid.ShellRefIds)
     {
-      const int aRefIdx = aSolid.ShellRefIds.Value(aRefOrd).Index;
+      const int aRefIdx = aShellRefId.Index;
       if (aRefIdx < 0 || aRefIdx >= theShellRefs.Length())
         continue;
       const BRepGraphInc::ShellRef& aRef = theShellRefs.Value(aRefIdx);
@@ -330,7 +336,7 @@ void BRepGraphInc_ReverseIndex::Build(
         continue;
       if (theShells.Value(aRef.ShellDefId.Index).IsRemoved)
         continue;
-      appendDirect(myShellToSolids, aRef.ShellDefId.Index, BRepGraph_SolidId(aSolidIdx));
+      appendDirect(myShellToSolids, aRef.ShellDefId.Index, aSolidId);
     }
   }
 
@@ -340,14 +346,15 @@ void BRepGraphInc_ReverseIndex::Build(
   preSize(myCompoundsOfFace, theFaces.Length(), myAllocator);
   preSize(myCompoundsOfCompound, theCompounds.Length(), myAllocator);
   preSize(myCompoundsOfCompSolid, theCompSolids.Length(), myAllocator);
-  for (int aCompIdx = 0; aCompIdx < theCompounds.Length(); ++aCompIdx)
+  const int aNbCompounds = theCompounds.Length();
+  for (BRepGraph_CompoundId aCompoundId(0); aCompoundId.IsValid(aNbCompounds); ++aCompoundId)
   {
-    const BRepGraphInc::CompoundDef& aComp = theCompounds.Value(aCompIdx);
+    const BRepGraphInc::CompoundDef& aComp = theCompounds.Value(aCompoundId.Index);
     if (aComp.IsRemoved)
       continue;
-    for (int aRefOrd = 0; aRefOrd < aComp.ChildRefIds.Length(); ++aRefOrd)
+    for (const BRepGraph_ChildRefId& aChildRefId : aComp.ChildRefIds)
     {
-      const int aChildRefIdx = aComp.ChildRefIds.Value(aRefOrd).Index;
+      const int aChildRefIdx = aChildRefId.Index;
       if (aChildRefIdx < 0 || aChildRefIdx >= theChildRefs.Length())
         continue;
       const BRepGraphInc::ChildRef& aRef = theChildRefs.Value(aChildRefIdx);
@@ -355,32 +362,34 @@ void BRepGraphInc_ReverseIndex::Build(
         continue;
       if (aRef.ChildDefId.NodeKind == BRepGraph_NodeId::Kind::Solid && aRef.ChildDefId.Index >= 0
           && aRef.ChildDefId.Index < theSolids.Length())
-        appendDirect(myCompoundsOfSolid, aRef.ChildDefId.Index, BRepGraph_CompoundId(aCompIdx));
+        appendDirect(myCompoundsOfSolid, aRef.ChildDefId.Index, aCompoundId);
       else if (aRef.ChildDefId.NodeKind == BRepGraph_NodeId::Kind::Shell
                && aRef.ChildDefId.Index >= 0 && aRef.ChildDefId.Index < theShells.Length())
-        appendDirect(myCompoundsOfShell, aRef.ChildDefId.Index, BRepGraph_CompoundId(aCompIdx));
+        appendDirect(myCompoundsOfShell, aRef.ChildDefId.Index, aCompoundId);
       else if (aRef.ChildDefId.NodeKind == BRepGraph_NodeId::Kind::Face
                && aRef.ChildDefId.Index >= 0 && aRef.ChildDefId.Index < theFaces.Length())
-        appendDirect(myCompoundsOfFace, aRef.ChildDefId.Index, BRepGraph_CompoundId(aCompIdx));
+        appendDirect(myCompoundsOfFace, aRef.ChildDefId.Index, aCompoundId);
       else if (aRef.ChildDefId.NodeKind == BRepGraph_NodeId::Kind::Compound
                && aRef.ChildDefId.Index >= 0 && aRef.ChildDefId.Index < theCompounds.Length())
-        appendDirect(myCompoundsOfCompound, aRef.ChildDefId.Index, BRepGraph_CompoundId(aCompIdx));
+        appendDirect(myCompoundsOfCompound, aRef.ChildDefId.Index, aCompoundId);
       else if (aRef.ChildDefId.NodeKind == BRepGraph_NodeId::Kind::CompSolid
                && aRef.ChildDefId.Index >= 0 && aRef.ChildDefId.Index < theCompSolids.Length())
-        appendDirect(myCompoundsOfCompSolid, aRef.ChildDefId.Index, BRepGraph_CompoundId(aCompIdx));
+        appendDirect(myCompoundsOfCompSolid, aRef.ChildDefId.Index, aCompoundId);
     }
   }
 
   // CompSolid -> Solid reverse index: iterate comp-solid entities and their SolidRefIds.
   preSize(myCompSolidsOfSolid, theSolids.Length(), myAllocator);
-  for (int aCSIdx = 0; aCSIdx < theCompSolids.Length(); ++aCSIdx)
+  const int aNbCompSolids = theCompSolids.Length();
+  for (BRepGraph_CompSolidId aCompSolidId(0); aCompSolidId.IsValid(aNbCompSolids);
+       ++aCompSolidId)
   {
-    const BRepGraphInc::CompSolidDef& aCS = theCompSolids.Value(aCSIdx);
+    const BRepGraphInc::CompSolidDef& aCS = theCompSolids.Value(aCompSolidId.Index);
     if (aCS.IsRemoved)
       continue;
-    for (int aRefOrd = 0; aRefOrd < aCS.SolidRefIds.Length(); ++aRefOrd)
+    for (const BRepGraph_SolidRefId& aSolidRefId : aCS.SolidRefIds)
     {
-      const int aRefIdx = aCS.SolidRefIds.Value(aRefOrd).Index;
+      const int aRefIdx = aSolidRefId.Index;
       if (aRefIdx < 0 || aRefIdx >= theSolidRefs.Length())
         continue;
       const BRepGraphInc::SolidRef& aRef = theSolidRefs.Value(aRefIdx);
@@ -389,20 +398,20 @@ void BRepGraphInc_ReverseIndex::Build(
         continue;
       if (theSolids.Value(aRef.SolidDefId.Index).IsRemoved)
         continue;
-      appendDirect(myCompSolidsOfSolid, aRef.SolidDefId.Index, BRepGraph_CompSolidId(aCSIdx));
+      appendDirect(myCompSolidsOfSolid, aRef.SolidDefId.Index, aCompSolidId);
     }
   }
 
   // CoEdge -> Wires: iterate wire entities and their CoEdgeRefIds for O(1) parent lookup.
   preSize(myCoEdgeToWires, theCoEdges.Length(), myAllocator);
-  for (int aWireIdx = 0; aWireIdx < theWires.Length(); ++aWireIdx)
+  for (BRepGraph_WireId aWireId(0); aWireId.IsValid(aNbWires); ++aWireId)
   {
-    const BRepGraphInc::WireDef& aWire = theWires.Value(aWireIdx);
+    const BRepGraphInc::WireDef& aWire = theWires.Value(aWireId.Index);
     if (aWire.IsRemoved)
       continue;
-    for (int aRefOrd = 0; aRefOrd < aWire.CoEdgeRefIds.Length(); ++aRefOrd)
+    for (const BRepGraph_CoEdgeRefId& aCoEdgeRefId : aWire.CoEdgeRefIds)
     {
-      const int aRefIdx = aWire.CoEdgeRefIds.Value(aRefOrd).Index;
+      const int aRefIdx = aCoEdgeRefId.Index;
       if (aRefIdx < 0 || aRefIdx >= theCoEdgeRefs.Length())
         continue;
       const BRepGraphInc::CoEdgeRef& aRef = theCoEdgeRefs.Value(aRefIdx);
@@ -411,7 +420,7 @@ void BRepGraphInc_ReverseIndex::Build(
         continue;
       if (theCoEdges.Value(aRef.CoEdgeDefId.Index).IsRemoved)
         continue;
-      appendDirect(myCoEdgeToWires, aRef.CoEdgeDefId.Index, BRepGraph_WireId(aWireIdx));
+      appendDirect(myCoEdgeToWires, aRef.CoEdgeDefId.Index, aWireId);
     }
   }
 }
@@ -441,9 +450,10 @@ void BRepGraphInc_ReverseIndex::BuildDelta(
 
   // Scan new edges for max vertex index to possibly extend myVertexToEdges.
   int aMaxVertexIdx = myVertexToEdges.Length() - 1;
-  for (int anEdgeIdx = theOldNbEdges; anEdgeIdx < theEdges.Length(); ++anEdgeIdx)
+  const int aNbEdges = theEdges.Length();
+  for (BRepGraph_EdgeId anEdgeId(theOldNbEdges); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
   {
-    const BRepGraphInc::EdgeDef& anEdge = theEdges.Value(anEdgeIdx);
+    const BRepGraphInc::EdgeDef& anEdge = theEdges.Value(anEdgeId.Index);
     if (anEdge.IsRemoved)
       continue;
     const BRepGraph_VertexId aStartVtx = resolveVertexDefId(theVertexRefs, anEdge.StartVertexRefId);
@@ -465,28 +475,29 @@ void BRepGraphInc_ReverseIndex::BuildDelta(
   ensureSize(myEdgeFaceCount, theEdges.Length());
 
   // Vertex -> Edges: only new edges.
-  for (int anEdgeIdx = theOldNbEdges; anEdgeIdx < theEdges.Length(); ++anEdgeIdx)
+  for (BRepGraph_EdgeId anEdgeId(theOldNbEdges); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
   {
-    const BRepGraphInc::EdgeDef& anEdge = theEdges.Value(anEdgeIdx);
+    const BRepGraphInc::EdgeDef& anEdge = theEdges.Value(anEdgeId.Index);
     if (anEdge.IsRemoved)
       continue;
     const BRepGraph_VertexId aStartVtx = resolveVertexDefId(theVertexRefs, anEdge.StartVertexRefId);
     const BRepGraph_VertexId anEndVtx  = resolveVertexDefId(theVertexRefs, anEdge.EndVertexRefId);
     if (aStartVtx.IsValid())
-      appendUnique(myVertexToEdges, aStartVtx.Index, BRepGraph_EdgeId(anEdgeIdx));
+      appendUnique(myVertexToEdges, aStartVtx.Index, anEdgeId);
     if (anEndVtx.IsValid() && anEndVtx != aStartVtx)
-      appendUnique(myVertexToEdges, anEndVtx.Index, BRepGraph_EdgeId(anEdgeIdx));
+      appendUnique(myVertexToEdges, anEndVtx.Index, anEdgeId);
   }
 
   // Edge -> Wires: iterate only new wire entities and their CoEdgeRefIds.
-  for (int aWireIdx = theOldNbWires; aWireIdx < theWires.Length(); ++aWireIdx)
+  const int aNbWires = theWires.Length();
+  for (BRepGraph_WireId aWireId(theOldNbWires); aWireId.IsValid(aNbWires); ++aWireId)
   {
-    const BRepGraphInc::WireDef& aWire = theWires.Value(aWireIdx);
+    const BRepGraphInc::WireDef& aWire = theWires.Value(aWireId.Index);
     if (aWire.IsRemoved)
       continue;
-    for (int aRefOrd = 0; aRefOrd < aWire.CoEdgeRefIds.Length(); ++aRefOrd)
+    for (const BRepGraph_CoEdgeRefId& aCoEdgeRefId : aWire.CoEdgeRefIds)
     {
-      const int aRefIdx = aWire.CoEdgeRefIds.Value(aRefOrd).Index;
+      const int aRefIdx = aCoEdgeRefId.Index;
       if (aRefIdx < 0 || aRefIdx >= theCoEdgeRefs.Length())
         continue;
       const BRepGraphInc::CoEdgeRef& aRef = theCoEdgeRefs.Value(aRefIdx);
@@ -496,7 +507,7 @@ void BRepGraphInc_ReverseIndex::BuildDelta(
       const BRepGraphInc::CoEdgeDef& aCoEdge = theCoEdges.Value(aRef.CoEdgeDefId.Index);
       if (aCoEdge.IsRemoved || !aCoEdge.EdgeDefId.IsValid())
         continue;
-      appendUnique(myEdgeToWires, aCoEdge.EdgeDefId.Index, BRepGraph_WireId(aWireIdx));
+      appendUnique(myEdgeToWires, aCoEdge.EdgeDefId.Index, aWireId);
     }
   }
 
@@ -504,22 +515,24 @@ void BRepGraphInc_ReverseIndex::BuildDelta(
   int aOldNbIndexedCoEdges = myNbIndexedCoEdges;
   if (aOldNbIndexedCoEdges < 0 || aOldNbIndexedCoEdges > theCoEdges.Length())
     aOldNbIndexedCoEdges = 0;
-  for (int aCoEdgeIdx = aOldNbIndexedCoEdges; aCoEdgeIdx < theCoEdges.Length(); ++aCoEdgeIdx)
+  const int aNbCoEdges = theCoEdges.Length();
+  for (BRepGraph_CoEdgeId aCoEdgeId(aOldNbIndexedCoEdges); aCoEdgeId.IsValid(aNbCoEdges);
+       ++aCoEdgeId)
   {
-    const BRepGraphInc::CoEdgeDef& aCoEdge = theCoEdges.Value(aCoEdgeIdx);
+    const BRepGraphInc::CoEdgeDef& aCoEdge = theCoEdges.Value(aCoEdgeId.Index);
     if (aCoEdge.IsRemoved)
       continue;
     if (aCoEdge.EdgeDefId.IsValid())
-      appendUnique(myEdgeToCoEdges, aCoEdge.EdgeDefId.Index, BRepGraph_CoEdgeId(aCoEdgeIdx));
+      appendUnique(myEdgeToCoEdges, aCoEdge.EdgeDefId.Index, aCoEdgeId);
   }
   myNbIndexedCoEdges = theCoEdges.Length();
 
   // Edge -> Faces: derive from CoEdge.FaceDefId for new edges.
-  for (int anEdgeIdx = theOldNbEdges; anEdgeIdx < theEdges.Length(); ++anEdgeIdx)
+  for (BRepGraph_EdgeId anEdgeId(theOldNbEdges); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
   {
-    if (theEdges.Value(anEdgeIdx).IsRemoved)
+    if (theEdges.Value(anEdgeId.Index).IsRemoved)
       continue;
-    const NCollection_Vector<BRepGraph_CoEdgeId>* aCoEdgeIdxs = seekVec(myEdgeToCoEdges, anEdgeIdx);
+    const NCollection_Vector<BRepGraph_CoEdgeId>* aCoEdgeIdxs = seekVec(myEdgeToCoEdges, anEdgeId.Index);
     if (aCoEdgeIdxs == nullptr)
       continue;
     const int aNbCE = aCoEdgeIdxs->Length();
@@ -552,28 +565,29 @@ void BRepGraphInc_ReverseIndex::BuildDelta(
     {
       if (aFaces[i] != aPrev)
       {
-        appendDirect(myEdgeToFaces, anEdgeIdx, BRepGraph_FaceId(aFaces[i]));
+        appendDirect(myEdgeToFaces, anEdgeId.Index, BRepGraph_FaceId(aFaces[i]));
         aPrev = aFaces[i];
       }
     }
   }
 
   // Update cached face counts for new edges.
-  for (int anEdgeIdx = theOldNbEdges; anEdgeIdx < theEdges.Length(); ++anEdgeIdx)
+  for (BRepGraph_EdgeId anEdgeId(theOldNbEdges); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
   {
-    const NCollection_Vector<BRepGraph_FaceId>* aFaceVec = seekVec(myEdgeToFaces, anEdgeIdx);
-    myEdgeFaceCount.ChangeValue(anEdgeIdx) = (aFaceVec != nullptr ? aFaceVec->Length() : 0);
+    const NCollection_Vector<BRepGraph_FaceId>* aFaceVec = seekVec(myEdgeToFaces, anEdgeId.Index);
+    myEdgeFaceCount.ChangeValue(anEdgeId.Index) = (aFaceVec != nullptr ? aFaceVec->Length() : 0);
   }
 
   // Wire -> Faces: iterate only new face entities and their WireRefIds.
-  for (int aFaceIdx = theOldNbFaces; aFaceIdx < theFaces.Length(); ++aFaceIdx)
+  const int aNbFaces = theFaces.Length();
+  for (BRepGraph_FaceId aFaceId(theOldNbFaces); aFaceId.IsValid(aNbFaces); ++aFaceId)
   {
-    const BRepGraphInc::FaceDef& aFace = theFaces.Value(aFaceIdx);
+    const BRepGraphInc::FaceDef& aFace = theFaces.Value(aFaceId.Index);
     if (aFace.IsRemoved)
       continue;
-    for (int aRefOrd = 0; aRefOrd < aFace.WireRefIds.Length(); ++aRefOrd)
+    for (const BRepGraph_WireRefId& aWireRefId : aFace.WireRefIds)
     {
-      const int aRefIdx = aFace.WireRefIds.Value(aRefOrd).Index;
+      const int aRefIdx = aWireRefId.Index;
       if (aRefIdx < 0 || aRefIdx >= theWireRefs.Length())
         continue;
       const BRepGraphInc::WireRef& aRef = theWireRefs.Value(aRefIdx);
@@ -582,19 +596,20 @@ void BRepGraphInc_ReverseIndex::BuildDelta(
         continue;
       if (theWires.Value(aRef.WireDefId.Index).IsRemoved)
         continue;
-      appendUnique(myWireToFaces, aRef.WireDefId.Index, BRepGraph_FaceId(aFaceIdx));
+      appendUnique(myWireToFaces, aRef.WireDefId.Index, aFaceId);
     }
   }
 
   // Face -> Shells: iterate only new shell entities and their FaceRefIds.
-  for (int aShellIdx = theOldNbShells; aShellIdx < theShells.Length(); ++aShellIdx)
+  const int aNbShells = theShells.Length();
+  for (BRepGraph_ShellId aShellId(theOldNbShells); aShellId.IsValid(aNbShells); ++aShellId)
   {
-    const BRepGraphInc::ShellDef& aShell = theShells.Value(aShellIdx);
+    const BRepGraphInc::ShellDef& aShell = theShells.Value(aShellId.Index);
     if (aShell.IsRemoved)
       continue;
-    for (int aRefOrd = 0; aRefOrd < aShell.FaceRefIds.Length(); ++aRefOrd)
+    for (const BRepGraph_FaceRefId& aFaceRefId : aShell.FaceRefIds)
     {
-      const int aRefIdx = aShell.FaceRefIds.Value(aRefOrd).Index;
+      const int aRefIdx = aFaceRefId.Index;
       if (aRefIdx < 0 || aRefIdx >= theFaceRefs.Length())
         continue;
       const BRepGraphInc::FaceRef& aRef = theFaceRefs.Value(aRefIdx);
@@ -603,19 +618,20 @@ void BRepGraphInc_ReverseIndex::BuildDelta(
         continue;
       if (theFaces.Value(aRef.FaceDefId.Index).IsRemoved)
         continue;
-      appendUnique(myFaceToShells, aRef.FaceDefId.Index, BRepGraph_ShellId(aShellIdx));
+      appendUnique(myFaceToShells, aRef.FaceDefId.Index, aShellId);
     }
   }
 
   // Shell -> Solids: iterate only new solid entities and their ShellRefIds.
-  for (int aSolidIdx = theOldNbSolids; aSolidIdx < theSolids.Length(); ++aSolidIdx)
+  const int aNbSolids = theSolids.Length();
+  for (BRepGraph_SolidId aSolidId(theOldNbSolids); aSolidId.IsValid(aNbSolids); ++aSolidId)
   {
-    const BRepGraphInc::SolidDef& aSolid = theSolids.Value(aSolidIdx);
+    const BRepGraphInc::SolidDef& aSolid = theSolids.Value(aSolidId.Index);
     if (aSolid.IsRemoved)
       continue;
-    for (int aRefOrd = 0; aRefOrd < aSolid.ShellRefIds.Length(); ++aRefOrd)
+    for (const BRepGraph_ShellRefId& aShellRefId : aSolid.ShellRefIds)
     {
-      const int aRefIdx = aSolid.ShellRefIds.Value(aRefOrd).Index;
+      const int aRefIdx = aShellRefId.Index;
       if (aRefIdx < 0 || aRefIdx >= theShellRefs.Length())
         continue;
       const BRepGraphInc::ShellRef& aRef = theShellRefs.Value(aRefIdx);
@@ -624,7 +640,7 @@ void BRepGraphInc_ReverseIndex::BuildDelta(
         continue;
       if (theShells.Value(aRef.ShellDefId.Index).IsRemoved)
         continue;
-      appendUnique(myShellToSolids, aRef.ShellDefId.Index, BRepGraph_SolidId(aSolidIdx));
+      appendUnique(myShellToSolids, aRef.ShellDefId.Index, aSolidId);
     }
   }
 }
@@ -829,9 +845,9 @@ bool BRepGraphInc_ReverseIndex::Validate(
     {
       return false;
     }
-    for (int aRefOrd = 0; aRefOrd < aWire.CoEdgeRefIds.Length(); ++aRefOrd)
+    for (const BRepGraph_CoEdgeRefId& aCoEdgeRefId : aWire.CoEdgeRefIds)
     {
-      const int aRefIdx = aWire.CoEdgeRefIds.Value(aRefOrd).Index;
+      const int aRefIdx = aCoEdgeRefId.Index;
       if (aRefIdx < 0 || aRefIdx >= theCoEdgeRefs.Length())
       {
         continue;
@@ -875,9 +891,9 @@ bool BRepGraphInc_ReverseIndex::Validate(
     {
       return false;
     }
-    for (int aRefOrd = 0; aRefOrd < aFace.WireRefIds.Length(); ++aRefOrd)
+    for (const BRepGraph_WireRefId& aWireRefId : aFace.WireRefIds)
     {
-      const int aRefIdx = aFace.WireRefIds.Value(aRefOrd).Index;
+      const int aRefIdx = aWireRefId.Index;
       if (aRefIdx < 0 || aRefIdx >= theWireRefs.Length())
       {
         continue;
@@ -932,9 +948,9 @@ bool BRepGraphInc_ReverseIndex::Validate(
     {
       return false;
     }
-    for (int aRefOrd = 0; aRefOrd < aShell.FaceRefIds.Length(); ++aRefOrd)
+    for (const BRepGraph_FaceRefId& aFaceRefId : aShell.FaceRefIds)
     {
-      const int aRefIdx = aShell.FaceRefIds.Value(aRefOrd).Index;
+      const int aRefIdx = aFaceRefId.Index;
       if (aRefIdx < 0 || aRefIdx >= theFaceRefs.Length())
       {
         continue;
@@ -968,9 +984,9 @@ bool BRepGraphInc_ReverseIndex::Validate(
     {
       return false;
     }
-    for (int aRefOrd = 0; aRefOrd < aSolid.ShellRefIds.Length(); ++aRefOrd)
+    for (const BRepGraph_ShellRefId& aShellRefId : aSolid.ShellRefIds)
     {
-      const int aRefIdx = aSolid.ShellRefIds.Value(aRefOrd).Index;
+      const int aRefIdx = aShellRefId.Index;
       if (aRefIdx < 0 || aRefIdx >= theShellRefs.Length())
       {
         continue;
@@ -994,9 +1010,11 @@ bool BRepGraphInc_ReverseIndex::Validate(
   };
 
   // Check: for each coedge ref entry, edge->wire reverse entry must exist.
-  for (int aCoEdgeRefIdx = 0; aCoEdgeRefIdx < theCoEdgeRefs.Length(); ++aCoEdgeRefIdx)
+  const int aNbCoEdgeRefs = theCoEdgeRefs.Length();
+  for (BRepGraph_CoEdgeRefId aCoEdgeRefId(0); aCoEdgeRefId.IsValid(aNbCoEdgeRefs);
+       ++aCoEdgeRefId)
   {
-    const BRepGraphInc::CoEdgeRef& aRef = theCoEdgeRefs.Value(aCoEdgeRefIdx);
+    const BRepGraphInc::CoEdgeRef& aRef = theCoEdgeRefs.Value(aCoEdgeRefId.Index);
     if (aRef.IsRemoved || !aRef.ParentId.IsValid()
         || aRef.ParentId.NodeKind != BRepGraph_NodeId::Kind::Wire || !aRef.CoEdgeDefId.IsValid())
       continue;
@@ -1014,29 +1032,31 @@ bool BRepGraphInc_ReverseIndex::Validate(
   }
 
   // Check: for each edge's start/end vertex, vertex->edge reverse entry must exist.
-  for (int anEdgeIdx = 0; anEdgeIdx < theEdges.Length(); ++anEdgeIdx)
+  const int aNbEdges = theEdges.Length();
+  for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
   {
-    const BRepGraphInc::EdgeDef& anEdge = theEdges.Value(anEdgeIdx);
+    const BRepGraphInc::EdgeDef& anEdge = theEdges.Value(anEdgeId.Index);
     if (anEdge.IsRemoved)
       continue;
     const BRepGraph_VertexId aStartVtx = resolveVertexDefId(theVertexRefs, anEdge.StartVertexRefId);
     const BRepGraph_VertexId anEndVtx  = resolveVertexDefId(theVertexRefs, anEdge.EndVertexRefId);
     if (aStartVtx.IsValid())
     {
-      if (!containsIndexInTable(myVertexToEdges, aStartVtx.Index, anEdgeIdx))
+      if (!containsIndexInTable(myVertexToEdges, aStartVtx.Index, anEdgeId.Index))
         return false;
     }
     if (anEndVtx.IsValid() && anEndVtx != aStartVtx)
     {
-      if (!containsIndexInTable(myVertexToEdges, anEndVtx.Index, anEdgeIdx))
+      if (!containsIndexInTable(myVertexToEdges, anEndVtx.Index, anEdgeId.Index))
         return false;
     }
   }
 
   // Check: for each edge's CoEdges with valid FaceDefId, edge->face reverse entry must exist.
-  for (int aCoEdgeIdx = 0; aCoEdgeIdx < theCoEdges.Length(); ++aCoEdgeIdx)
+  const int aNbCoEdges = theCoEdges.Length();
+  for (BRepGraph_CoEdgeId aCoEdgeId(0); aCoEdgeId.IsValid(aNbCoEdges); ++aCoEdgeId)
   {
-    const BRepGraphInc::CoEdgeDef& aCoEdge = theCoEdges.Value(aCoEdgeIdx);
+    const BRepGraphInc::CoEdgeDef& aCoEdge = theCoEdges.Value(aCoEdgeId.Index);
     if (aCoEdge.IsRemoved || !aCoEdge.FaceDefId.IsValid())
       continue;
     if (!containsIndexInTable(myEdgeToFaces, aCoEdge.EdgeDefId.Index, aCoEdge.FaceDefId.Index))
@@ -1044,9 +1064,10 @@ bool BRepGraphInc_ReverseIndex::Validate(
   }
 
   // Check: for each wire ref entry, wire->face reverse entry must exist.
-  for (int aWireRefIdx = 0; aWireRefIdx < theWireRefs.Length(); ++aWireRefIdx)
+  const int aNbWireRefs = theWireRefs.Length();
+  for (BRepGraph_WireRefId aWireRefId(0); aWireRefId.IsValid(aNbWireRefs); ++aWireRefId)
   {
-    const BRepGraphInc::WireRef& aRef = theWireRefs.Value(aWireRefIdx);
+    const BRepGraphInc::WireRef& aRef = theWireRefs.Value(aWireRefId.Index);
     if (aRef.IsRemoved || !aRef.ParentId.IsValid()
         || aRef.ParentId.NodeKind != BRepGraph_NodeId::Kind::Face || !aRef.WireDefId.IsValid())
       continue;
@@ -1061,9 +1082,10 @@ bool BRepGraphInc_ReverseIndex::Validate(
   }
 
   // Check: for each face ref entry, face->shell reverse entry must exist.
-  for (int aFaceRefIdx = 0; aFaceRefIdx < theFaceRefs.Length(); ++aFaceRefIdx)
+  const int aNbFaceRefs = theFaceRefs.Length();
+  for (BRepGraph_FaceRefId aFaceRefId(0); aFaceRefId.IsValid(aNbFaceRefs); ++aFaceRefId)
   {
-    const BRepGraphInc::FaceRef& aRef = theFaceRefs.Value(aFaceRefIdx);
+    const BRepGraphInc::FaceRef& aRef = theFaceRefs.Value(aFaceRefId.Index);
     if (aRef.IsRemoved || !aRef.ParentId.IsValid()
         || aRef.ParentId.NodeKind != BRepGraph_NodeId::Kind::Shell || !aRef.FaceDefId.IsValid())
       continue;
@@ -1078,9 +1100,10 @@ bool BRepGraphInc_ReverseIndex::Validate(
   }
 
   // Check: for each shell ref entry, shell->solid reverse entry must exist.
-  for (int aShellRefIdx = 0; aShellRefIdx < theShellRefs.Length(); ++aShellRefIdx)
+  const int aNbShellRefs = theShellRefs.Length();
+  for (BRepGraph_ShellRefId aShellRefId(0); aShellRefId.IsValid(aNbShellRefs); ++aShellRefId)
   {
-    const BRepGraphInc::ShellRef& aRef = theShellRefs.Value(aShellRefIdx);
+    const BRepGraphInc::ShellRef& aRef = theShellRefs.Value(aShellRefId.Index);
     if (aRef.IsRemoved || !aRef.ParentId.IsValid()
         || aRef.ParentId.NodeKind != BRepGraph_NodeId::Kind::Solid || !aRef.ShellDefId.IsValid())
       continue;
@@ -1095,118 +1118,122 @@ bool BRepGraphInc_ReverseIndex::Validate(
   }
 
   // Check reverse tables for stale/extra entries not backed by active forward refs.
-  for (int anEdgeIdx = 0; anEdgeIdx < myEdgeToWires.Length(); ++anEdgeIdx)
+  const int aNbEdgeToWires = myEdgeToWires.Length();
+  for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdgeToWires); ++anEdgeId)
   {
-    const BRepGraph_EdgeId                      anEdgeId(anEdgeIdx);
     const NCollection_Vector<BRepGraph_WireId>& aWires = WiresOfEdgeRef(anEdgeId);
-    for (int aWireOrd = 0; aWireOrd < aWires.Length(); ++aWireOrd)
+    for (const BRepGraph_WireId& aWireId2 : aWires)
     {
-      const int aWireIdx = aWires.Value(aWireOrd).Index;
+      const int aWireIdx = aWireId2.Index;
       if (aWireIdx < 0 || aWireIdx >= theWires.Length())
       {
         return false;
       }
-      if (!hasActiveWireUsageOfEdge(aWireIdx, anEdgeIdx))
+      if (!hasActiveWireUsageOfEdge(aWireIdx, anEdgeId.Index))
       {
         return false;
       }
     }
   }
 
-  for (int anEdgeIdx = 0; anEdgeIdx < myEdgeToCoEdges.Length(); ++anEdgeIdx)
+  const int aNbEdgeToCoEdges = myEdgeToCoEdges.Length();
+  for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdgeToCoEdges); ++anEdgeId)
   {
-    const BRepGraph_EdgeId                        anEdgeId(anEdgeIdx);
     const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdges = CoEdgesOfEdgeRef(anEdgeId);
-    for (int aCoEdgeOrd = 0; aCoEdgeOrd < aCoEdges.Length(); ++aCoEdgeOrd)
+    for (const BRepGraph_CoEdgeId& aCoEdgeId2 : aCoEdges)
     {
-      const int aCoEdgeIdx = aCoEdges.Value(aCoEdgeOrd).Index;
+      const int aCoEdgeIdx = aCoEdgeId2.Index;
       if (aCoEdgeIdx < 0 || aCoEdgeIdx >= theCoEdges.Length())
       {
         return false;
       }
       const BRepGraphInc::CoEdgeDef& aCoEdge = theCoEdges.Value(aCoEdgeIdx);
-      if (aCoEdge.IsRemoved || !aCoEdge.EdgeDefId.IsValid() || aCoEdge.EdgeDefId.Index != anEdgeIdx)
+      if (aCoEdge.IsRemoved || !aCoEdge.EdgeDefId.IsValid()
+          || aCoEdge.EdgeDefId.Index != anEdgeId.Index)
       {
         return false;
       }
     }
   }
 
-  for (int aWireIdx = 0; aWireIdx < myWireToFaces.Length(); ++aWireIdx)
+  const int aNbWireToFaces = myWireToFaces.Length();
+  for (BRepGraph_WireId aWireId(0); aWireId.IsValid(aNbWireToFaces); ++aWireId)
   {
-    const BRepGraph_WireId                      aWireId(aWireIdx);
     const NCollection_Vector<BRepGraph_FaceId>& aFaces = FacesOfWireRef(aWireId);
-    for (int aFaceOrd = 0; aFaceOrd < aFaces.Length(); ++aFaceOrd)
+    for (const BRepGraph_FaceId& aFaceId2 : aFaces)
     {
-      const int aFaceIdx = aFaces.Value(aFaceOrd).Index;
+      const int aFaceIdx = aFaceId2.Index;
       if (aFaceIdx < 0 || aFaceIdx >= theFaces.Length())
       {
         return false;
       }
-      if (!hasActiveFaceRefForWire(aWireIdx, aFaceIdx))
+      if (!hasActiveFaceRefForWire(aWireId.Index, aFaceIdx))
       {
         return false;
       }
     }
   }
 
-  for (int anEdgeIdx = 0; anEdgeIdx < myEdgeToFaces.Length(); ++anEdgeIdx)
+  const int aNbEdgeToFaces = myEdgeToFaces.Length();
+  for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdgeToFaces); ++anEdgeId)
   {
-    const NCollection_Vector<BRepGraph_FaceId>* aFaces = seekVec(myEdgeToFaces, anEdgeIdx);
+    const NCollection_Vector<BRepGraph_FaceId>* aFaces = seekVec(myEdgeToFaces, anEdgeId.Index);
     if (aFaces == nullptr)
     {
       continue;
     }
-    for (int aFaceOrd = 0; aFaceOrd < aFaces->Length(); ++aFaceOrd)
+    for (const BRepGraph_FaceId& aFaceId2 : *aFaces)
     {
-      const int aFaceIdx = aFaces->Value(aFaceOrd).Index;
+      const int aFaceIdx = aFaceId2.Index;
       if (aFaceIdx < 0 || aFaceIdx >= theFaces.Length())
       {
         return false;
       }
-      if (!hasActiveFaceForEdge(anEdgeIdx, aFaceIdx))
+      if (!hasActiveFaceForEdge(anEdgeId.Index, aFaceIdx))
       {
         return false;
       }
     }
   }
 
-  for (int aFaceIdx = 0; aFaceIdx < myFaceToShells.Length(); ++aFaceIdx)
+  const int aNbFaceToShells = myFaceToShells.Length();
+  for (BRepGraph_FaceId aFaceId(0); aFaceId.IsValid(aNbFaceToShells); ++aFaceId)
   {
-    const NCollection_Vector<BRepGraph_ShellId>* aShellsVec = seekVec(myFaceToShells, aFaceIdx);
+    const NCollection_Vector<BRepGraph_ShellId>* aShellsVec = seekVec(myFaceToShells, aFaceId.Index);
     if (aShellsVec == nullptr)
     {
       continue;
     }
-    for (int aShellOrd = 0; aShellOrd < aShellsVec->Length(); ++aShellOrd)
+    for (const BRepGraph_ShellId& aShellId2 : *aShellsVec)
     {
-      const int aShellIdx = aShellsVec->Value(aShellOrd).Index;
+      const int aShellIdx = aShellId2.Index;
       if (aShellIdx < 0 || aShellIdx >= theShells.Length())
       {
         return false;
       }
-      if (!hasActiveFaceRef(aShellIdx, aFaceIdx))
+      if (!hasActiveFaceRef(aShellIdx, aFaceId.Index))
       {
         return false;
       }
     }
   }
 
-  for (int aShellIdx = 0; aShellIdx < myShellToSolids.Length(); ++aShellIdx)
+  const int aNbShellToSolids = myShellToSolids.Length();
+  for (BRepGraph_ShellId aShellId(0); aShellId.IsValid(aNbShellToSolids); ++aShellId)
   {
-    const NCollection_Vector<BRepGraph_SolidId>* aSolidsVec = seekVec(myShellToSolids, aShellIdx);
+    const NCollection_Vector<BRepGraph_SolidId>* aSolidsVec = seekVec(myShellToSolids, aShellId.Index);
     if (aSolidsVec == nullptr)
     {
       continue;
     }
-    for (int aSolidOrd = 0; aSolidOrd < aSolidsVec->Length(); ++aSolidOrd)
+    for (const BRepGraph_SolidId& aSolidId2 : *aSolidsVec)
     {
-      const int aSolidIdx = aSolidsVec->Value(aSolidOrd).Index;
+      const int aSolidIdx = aSolidId2.Index;
       if (aSolidIdx < 0 || aSolidIdx >= theSolids.Length())
       {
         return false;
       }
-      if (!hasActiveShellRef(aSolidIdx, aShellIdx))
+      if (!hasActiveShellRef(aSolidIdx, aShellId.Index))
       {
         return false;
       }
@@ -1225,14 +1252,14 @@ void BRepGraphInc_ReverseIndex::BuildProductOccurrences(
   myProductToOccurrences.Clear();
   preSize(myProductToOccurrences, theNbProducts, myAllocator);
 
-  for (int anOccIdx = 0; anOccIdx < theOccurrences.Length(); ++anOccIdx)
+  const int aNbOccurrences = theOccurrences.Length();
+  for (BRepGraph_OccurrenceId anOccurrenceId(0); anOccurrenceId.IsValid(aNbOccurrences);
+       ++anOccurrenceId)
   {
-    const BRepGraphInc::OccurrenceDef& anOcc = theOccurrences.Value(anOccIdx);
+    const BRepGraphInc::OccurrenceDef& anOcc = theOccurrences.Value(anOccurrenceId.Index);
     if (anOcc.IsRemoved)
       continue;
     if (anOcc.ProductDefId.IsValid())
-      appendDirect(myProductToOccurrences,
-                   anOcc.ProductDefId.Index,
-                   BRepGraph_OccurrenceId(anOccIdx));
+      appendDirect(myProductToOccurrences, anOcc.ProductDefId.Index, anOccurrenceId);
   }
 }

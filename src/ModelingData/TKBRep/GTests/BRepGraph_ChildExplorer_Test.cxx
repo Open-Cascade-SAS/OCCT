@@ -474,9 +474,9 @@ TEST(BRepGraph_ChildExplorerTest, DirectChildren_ShellFaces_CountAndOrder)
     aGraph.Refs().Faces().IdsOf(aShellId);
 
   NCollection_Vector<int> anExpectedFaceIds;
-  for (int i = 0; i < aFaceRefIds.Length(); ++i)
+  for (const BRepGraph_FaceRefId& aFaceRefId : aFaceRefIds)
   {
-    const BRepGraphInc::FaceRef& aRef = aGraph.Refs().Faces().Entry(aFaceRefIds.Value(i));
+    const BRepGraphInc::FaceRef& aRef = aGraph.Refs().Faces().Entry(aFaceRefId);
     if (!aRef.IsRemoved)
       anExpectedFaceIds.Append(aRef.FaceDefId.Index);
   }

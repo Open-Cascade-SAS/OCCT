@@ -207,14 +207,13 @@ NCollection_Vector<BRepGraph_EdgeId> BRepGraph::TopoView::FaceOps::SharedEdges(
   NCollection_PackedMap<int> aFaceAEdgeSet;
   NCollection_PackedMap<int> anAddedEdges;
 
-  for (int aFaceAIdx = 0; aFaceAIdx < aFaceAEdges.Length(); ++aFaceAIdx)
+  for (const BRepGraph_EdgeId& anEdgeId : aFaceAEdges)
   {
-    aFaceAEdgeSet.Add(aFaceAEdges.Value(aFaceAIdx).Index);
+    aFaceAEdgeSet.Add(anEdgeId.Index);
   }
 
-  for (int aFaceBIdx = 0; aFaceBIdx < aFaceBEdges.Length(); ++aFaceBIdx)
+  for (const BRepGraph_EdgeId& anEdgeId : aFaceBEdges)
   {
-    const BRepGraph_EdgeId anEdgeId = aFaceBEdges.Value(aFaceBIdx);
     if (aFaceAEdgeSet.Contains(anEdgeId.Index) && anAddedEdges.Add(anEdgeId.Index))
     {
       aResult.Append(anEdgeId);
@@ -241,18 +240,16 @@ NCollection_Vector<BRepGraph_FaceId> BRepGraph::TopoView::FaceOps::Adjacent(
   const NCollection_Vector<BRepGraph_EdgeId> anEdges =
     collectFaceEdges(*myGraph, theFace, theAllocator);
   const BRepGraphInc_ReverseIndex& aRevIdx = aStorage.ReverseIndex();
-  for (int anEdgeIdx = 0; anEdgeIdx < anEdges.Length(); ++anEdgeIdx)
+  for (const BRepGraph_EdgeId& anEdgeId : anEdges)
   {
-    const NCollection_Vector<BRepGraph_FaceId>* aFaces =
-      aRevIdx.FacesOfEdge(anEdges.Value(anEdgeIdx));
+    const NCollection_Vector<BRepGraph_FaceId>* aFaces = aRevIdx.FacesOfEdge(anEdgeId);
     if (aFaces == nullptr)
     {
       continue;
     }
 
-    for (int aFaceIdx = 0; aFaceIdx < aFaces->Length(); ++aFaceIdx)
+    for (const BRepGraph_FaceId& anAdjacentFaceId : *aFaces)
     {
-      const BRepGraph_FaceId anAdjacentFaceId = aFaces->Value(aFaceIdx);
       if (anAdjacentFaceId == theFace)
       {
         continue;
@@ -395,18 +392,16 @@ NCollection_Vector<BRepGraph_EdgeId> BRepGraph::TopoView::EdgeOps::Adjacent(
   // Find adjacent edges via shared vertices.
   const BRepGraphInc_ReverseIndex& aRevIdx = aStorage.ReverseIndex();
   NCollection_PackedMap<int>       anEdgeSet;
-  for (int aVertexIdx = 0; aVertexIdx < aVertices.Length(); ++aVertexIdx)
+  for (const BRepGraph_VertexId& aVertexId : aVertices)
   {
-    const NCollection_Vector<BRepGraph_EdgeId>* anEdges =
-      aRevIdx.EdgesOfVertex(aVertices.Value(aVertexIdx));
+    const NCollection_Vector<BRepGraph_EdgeId>* anEdges = aRevIdx.EdgesOfVertex(aVertexId);
     if (anEdges == nullptr)
     {
       continue;
     }
 
-    for (int anEdgeIdx = 0; anEdgeIdx < anEdges->Length(); ++anEdgeIdx)
+    for (const BRepGraph_EdgeId& anAdjacentEdgeId : *anEdges)
     {
-      const BRepGraph_EdgeId anAdjacentEdgeId = anEdges->Value(anEdgeIdx);
       if (anAdjacentEdgeId == theEdge)
       {
         continue;
@@ -455,9 +450,9 @@ const BRepGraphInc::CoEdgeDef* BRepGraph::TopoView::EdgeOps::FindPCurve(
 
   const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdges =
     aStorage.ReverseIndex().CoEdgesOfEdgeRef(theEdge);
-  for (int aCoEdgeIdx = 0; aCoEdgeIdx < aCoEdges.Length(); ++aCoEdgeIdx)
+  for (const BRepGraph_CoEdgeId& aCoEdgeId : aCoEdges)
   {
-    const BRepGraphInc::CoEdgeDef& aCoEdge = aStorage.CoEdge(aCoEdges.Value(aCoEdgeIdx));
+    const BRepGraphInc::CoEdgeDef& aCoEdge = aStorage.CoEdge(aCoEdgeId);
     if (aCoEdge.EdgeDefId == theEdge && aCoEdge.FaceDefId == theFace)
     {
       return &aCoEdge;
@@ -482,9 +477,9 @@ const BRepGraphInc::CoEdgeDef* BRepGraph::TopoView::EdgeOps::FindPCurve(
   const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdges =
     aStorage.ReverseIndex().CoEdgesOfEdgeRef(theEdge);
   const BRepGraphInc::CoEdgeDef* aFirstMatch = nullptr;
-  for (int aCoEdgeIdx = 0; aCoEdgeIdx < aCoEdges.Length(); ++aCoEdgeIdx)
+  for (const BRepGraph_CoEdgeId& aCoEdgeId : aCoEdges)
   {
-    const BRepGraphInc::CoEdgeDef& aCoEdge = aStorage.CoEdge(aCoEdges.Value(aCoEdgeIdx));
+    const BRepGraphInc::CoEdgeDef& aCoEdge = aStorage.CoEdge(aCoEdgeId);
     if (aCoEdge.EdgeDefId != theEdge || aCoEdge.FaceDefId != theFace)
     {
       continue;
