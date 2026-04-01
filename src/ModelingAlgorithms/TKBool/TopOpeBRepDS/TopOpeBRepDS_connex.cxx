@@ -19,14 +19,21 @@
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 
-static thread_local NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>*
-  GLOBAL_elf1 = nullptr; // NYI to CDLize as a tool of DS
-static thread_local NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>*
-  GLOBAL_elf2 = nullptr; // NYI to CDLize as a tool of DS
-static thread_local NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>*
-                                       GLOBAL_fle = nullptr; // NYI to CDLize as a tool of DS
-static thread_local NCollection_List<TopoDS_Shape>* GLOBAL_los = nullptr; // NYI to CDLize as a tool of DS
-static thread_local bool                            GLOBAL_FDSCNX_prepared = false;
+static thread_local NCollection_DataMap<TopoDS_Shape,
+                                        NCollection_List<TopoDS_Shape>,
+                                        TopTools_ShapeMapHasher>* GLOBAL_elf1 =
+  nullptr; // NYI to CDLize as a tool of DS
+static thread_local NCollection_DataMap<TopoDS_Shape,
+                                        NCollection_List<TopoDS_Shape>,
+                                        TopTools_ShapeMapHasher>* GLOBAL_elf2 =
+  nullptr; // NYI to CDLize as a tool of DS
+static thread_local NCollection_DataMap<TopoDS_Shape,
+                                        NCollection_List<TopoDS_Shape>,
+                                        TopTools_ShapeMapHasher>* GLOBAL_fle =
+  nullptr; // NYI to CDLize as a tool of DS
+static thread_local NCollection_List<TopoDS_Shape>* GLOBAL_los =
+  nullptr; // NYI to CDLize as a tool of DS
+static thread_local bool GLOBAL_FDSCNX_prepared = false;
 
 // modified by NIZNHY-PKV Sun Dec 15 17:41:43 2002 f
 //=================================================================================================

@@ -184,7 +184,10 @@ void BRepCheck_Shell::InContext(const TopoDS_Shape& S)
   occ::handle<NCollection_Shared<NCollection_List<BRepCheck_Status>>> aHList;
   {
     std::unique_lock<std::mutex> aLock(myMutex, std::defer_lock);
-    if (myIsParallel) { aLock.lock(); }
+    if (myIsParallel)
+    {
+      aLock.lock();
+    }
     if (myMap.IsBound(S))
     {
       return;
@@ -256,7 +259,10 @@ BRepCheck_Status BRepCheck_Shell::Closed(const bool Update)
   occ::handle<NCollection_Shared<NCollection_List<BRepCheck_Status>>> aHList;
   {
     std::unique_lock<std::mutex> aLock(myMutex, std::defer_lock);
-    if (myIsParallel) { aLock.lock(); }
+    if (myIsParallel)
+    {
+      aLock.lock();
+    }
     aHList = myMap(myShape);
   }
 
@@ -439,7 +445,10 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const bool Update)
   occ::handle<NCollection_Shared<NCollection_List<BRepCheck_Status>>> aHList;
   {
     std::unique_lock<std::mutex> aLock(myMutex, std::defer_lock);
-    if (myIsParallel) { aLock.lock(); }
+    if (myIsParallel)
+    {
+      aLock.lock();
+    }
     aHList = myMap(myShape);
   }
   NCollection_List<BRepCheck_Status>& aStatusList = *aHList;
@@ -838,7 +847,10 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const bool Update)
 void BRepCheck_Shell::SetUnorientable()
 {
   std::unique_lock<std::mutex> aLock(myMutex, std::defer_lock);
-  if (myIsParallel) { aLock.lock(); }
+  if (myIsParallel)
+  {
+    aLock.lock();
+  }
   BRepCheck::Add(*myMap(myShape), BRepCheck_UnorientableShape);
 }
 
@@ -854,7 +866,10 @@ bool BRepCheck_Shell::IsUnorientable() const
   occ::handle<NCollection_Shared<NCollection_List<BRepCheck_Status>>> aHList;
   {
     std::unique_lock<std::mutex> aLock(myMutex, std::defer_lock);
-    if (myIsParallel) { aLock.lock(); }
+    if (myIsParallel)
+    {
+      aLock.lock();
+    }
     aHList = myMap(myShape);
   }
   NCollection_List<BRepCheck_Status>& aStatusList = *aHList;

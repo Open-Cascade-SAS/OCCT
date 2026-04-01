@@ -139,7 +139,7 @@ void UnitsAPI::CheckLoading(const UnitsAPI_SystemUnits aSystemUnits)
 double UnitsAPI::CurrentToLS(const double aData, const char* const aQuantity)
 {
   std::lock_guard<std::recursive_mutex> aLock(THE_UNITS_API_MUTEX);
-  double                      aValue = aData;
+  double                                aValue = aData;
   CheckLoading(localSystem);
   if (CurrentUnits->Find(aQuantity))
   {
@@ -163,7 +163,7 @@ double UnitsAPI::CurrentToLS(const double aData, const char* const aQuantity)
 double UnitsAPI::CurrentToSI(const double aData, const char* const aQuantity)
 {
   std::lock_guard<std::recursive_mutex> aLock(THE_UNITS_API_MUTEX);
-  double                      aValue = aData;
+  double                                aValue = aData;
   CheckLoading(UnitsAPI_DEFAULT);
   if (CurrentUnits->Find(aQuantity))
   {
@@ -186,7 +186,7 @@ double UnitsAPI::CurrentToSI(const double aData, const char* const aQuantity)
 double UnitsAPI::CurrentFromLS(const double aData, const char* const aQuantity)
 {
   std::lock_guard<std::recursive_mutex> aLock(THE_UNITS_API_MUTEX);
-  double                      aValue = aData;
+  double                                aValue = aData;
   CheckLoading(localSystem);
   if (CurrentUnits->Find(aQuantity))
   {
@@ -210,7 +210,7 @@ double UnitsAPI::CurrentFromLS(const double aData, const char* const aQuantity)
 double UnitsAPI::CurrentFromSI(const double aData, const char* const aQuantity)
 {
   std::lock_guard<std::recursive_mutex> aLock(THE_UNITS_API_MUTEX);
-  double                      aValue = aData;
+  double                                aValue = aData;
   CheckLoading(UnitsAPI_DEFAULT);
   if (CurrentUnits->Find(aQuantity))
   {
@@ -235,7 +235,7 @@ double UnitsAPI::CurrentToAny(const double      aData,
                               const char* const aUnit)
 {
   std::lock_guard<std::recursive_mutex> aLock(THE_UNITS_API_MUTEX);
-  double                      aValue = aData;
+  double                                aValue = aData;
   CheckLoading(UnitsAPI_DEFAULT);
   if (CurrentUnits->Find(aQuantity))
   {
@@ -260,7 +260,7 @@ double UnitsAPI::CurrentFromAny(const double      aData,
                                 const char* const aUnit)
 {
   std::lock_guard<std::recursive_mutex> aLock(THE_UNITS_API_MUTEX);
-  double                      aValue = aData;
+  double                                aValue = aData;
   CheckLoading(UnitsAPI_DEFAULT);
   if (CurrentUnits->Find(aQuantity))
   {
@@ -283,7 +283,7 @@ double UnitsAPI::CurrentFromAny(const double      aData,
 double UnitsAPI::AnyToLS(const double aData, const char* const aUnit)
 {
   std::lock_guard<std::recursive_mutex> aLock(THE_UNITS_API_MUTEX);
-  double                      aValue = aData;
+  double                                aValue = aData;
   CheckLoading(localSystem);
   occ::handle<Units_Dimensions> aDim;
   aValue = Units::ToSI(aValue, aUnit, aDim);
@@ -309,7 +309,7 @@ double UnitsAPI::AnyToLS(const double                   aData,
                          occ::handle<Units_Dimensions>& aDim)
 {
   std::lock_guard<std::recursive_mutex> aLock(THE_UNITS_API_MUTEX);
-  double                      aValue = aData;
+  double                                aValue = aData;
   CheckLoading(localSystem);
   aValue               = Units::ToSI(aValue, aUnit, aDim);
   const char* quantity = aDim->Quantity();
@@ -332,7 +332,7 @@ double UnitsAPI::AnyToLS(const double                   aData,
 double UnitsAPI::AnyToSI(const double aData, const char* const aUnit)
 {
   std::lock_guard<std::recursive_mutex> aLock(THE_UNITS_API_MUTEX);
-  double                      aValue;
+  double                                aValue;
   CheckLoading(UnitsAPI_DEFAULT);
   aValue = Units::ToSI(aData, aUnit);
   return aValue;
@@ -345,7 +345,7 @@ double UnitsAPI::AnyToSI(const double                   aData,
                          occ::handle<Units_Dimensions>& aDim)
 {
   std::lock_guard<std::recursive_mutex> aLock(THE_UNITS_API_MUTEX);
-  double                      aValue;
+  double                                aValue;
   CheckLoading(UnitsAPI_DEFAULT);
   aValue = Units::ToSI(aData, aUnit, aDim);
   return aValue;
@@ -356,7 +356,7 @@ double UnitsAPI::AnyToSI(const double                   aData,
 double UnitsAPI::AnyFromLS(const double aData, const char* const aUnit)
 {
   std::lock_guard<std::recursive_mutex> aLock(THE_UNITS_API_MUTEX);
-  double                      aValue = aData;
+  double                                aValue = aData;
   CheckLoading(localSystem);
   occ::handle<Units_Dimensions> aDim;
   aValue               = Units::FromSI(aValue, aUnit, aDim);
@@ -379,7 +379,7 @@ double UnitsAPI::AnyFromLS(const double aData, const char* const aUnit)
 double UnitsAPI::AnyFromSI(const double aData, const char* const aUnit)
 {
   std::lock_guard<std::recursive_mutex> aLock(THE_UNITS_API_MUTEX);
-  double                      aValue;
+  double                                aValue;
   CheckLoading(UnitsAPI_DEFAULT);
   aValue = Units::FromSI(aData, aUnit);
   return aValue;
@@ -390,7 +390,7 @@ double UnitsAPI::AnyFromSI(const double aData, const char* const aUnit)
 double UnitsAPI::AnyToAny(const double aData, const char* const aUnit1, const char* const aUnit2)
 {
   std::lock_guard<std::recursive_mutex> aLock(THE_UNITS_API_MUTEX);
-  double                      aValue = aData;
+  double                                aValue = aData;
   CheckLoading(UnitsAPI_DEFAULT);
   aValue = Units::Convert(aValue, aUnit1, aUnit2);
   return aValue;
@@ -401,7 +401,7 @@ double UnitsAPI::AnyToAny(const double aData, const char* const aUnit1, const ch
 double UnitsAPI::LSToSI(const double aData, const char* const aQuantity)
 {
   std::lock_guard<std::recursive_mutex> aLock(THE_UNITS_API_MUTEX);
-  double                      aValue = aData;
+  double                                aValue = aData;
   CheckLoading(localSystem);
   if (CurrentUnits->Find(aQuantity))
   {
@@ -423,7 +423,7 @@ double UnitsAPI::LSToSI(const double aData, const char* const aQuantity)
 double UnitsAPI::SIToLS(const double aData, const char* const aQuantity)
 {
   std::lock_guard<std::recursive_mutex> aLock(THE_UNITS_API_MUTEX);
-  double                      aValue = aData;
+  double                                aValue = aData;
   CheckLoading(localSystem);
   if (CurrentUnits->Find(aQuantity))
   {
@@ -578,7 +578,7 @@ occ::handle<Units_Dimensions> UnitsAPI::DimensionSolidAngle()
 bool UnitsAPI::Check(const char* const aQuantity, const char* const /*aUnit*/)
 {
   std::lock_guard<std::recursive_mutex> aLock(THE_UNITS_API_MUTEX);
-  bool                        status = false;
+  bool                                  status = false;
   CheckLoading(UnitsAPI_DEFAULT);
   if (CurrentUnits->Find(aQuantity))
   {

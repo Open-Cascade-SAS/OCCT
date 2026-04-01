@@ -32,8 +32,8 @@
 
 occ::handle<Standard_Transient> Plugin::Load(const Standard_GUID& aGUID, const bool theVerbose)
 {
-  char                   aPluginIdBuf[1000];
-  Standard_PCharacter    aPluginId = aPluginIdBuf;
+  char                aPluginIdBuf[1000];
+  Standard_PCharacter aPluginId = aPluginIdBuf;
   aGUID.ToCString(aPluginId);
   TCollection_AsciiString pid(aPluginId);
 
@@ -48,8 +48,7 @@ occ::handle<Standard_Transient> Plugin::Load(const Standard_GUID& aGUID, const b
     {
       // Cast through void* to avoid -Wcast-function-type-mismatch warning.
       Standard_Transient* (*fp)(const Standard_GUID&) =
-        reinterpret_cast<Standard_Transient* (*)(const Standard_GUID&)>(
-          reinterpret_cast<void*>(f));
+        reinterpret_cast<Standard_Transient* (*)(const Standard_GUID&)>(reinterpret_cast<void*>(f));
       return (*fp)(aGUID);
     }
   }

@@ -225,10 +225,7 @@ public:
   Standard_EXPORT void SetCachedMinMax(const Bnd_Box& theBox);
 
   //! Returns TRUE if there is some cached min - max range of this triangulation.
-  bool HasCachedMinMax() const
-  {
-    return myCachedMinMax.load(std::memory_order_acquire) != nullptr;
-  }
+  bool HasCachedMinMax() const { return myCachedMinMax.load(std::memory_order_acquire) != nullptr; }
 
   //! Updates cached min - max range of this triangulation with bounding box of nodal data.
   void UpdateCachedMinMax()
@@ -392,9 +389,9 @@ protected:
   Standard_EXPORT virtual Bnd_Box computeBoundingBox(const gp_Trsf& theTrsf) const;
 
 protected:
-  mutable std::atomic<Bnd_Box*> myCachedMinMax{nullptr};
-  mutable std::mutex            myCachedMinMaxMutex;
-  double                        myDeflection;
+  mutable std::atomic<Bnd_Box*>               myCachedMinMax{nullptr};
+  mutable std::mutex                          myCachedMinMaxMutex;
+  double                                      myDeflection;
   Poly_ArrayOfNodes                           myNodes;
   NCollection_Array1<Poly_Triangle>           myTriangles;
   Poly_ArrayOfUVNodes                         myUVNodes;

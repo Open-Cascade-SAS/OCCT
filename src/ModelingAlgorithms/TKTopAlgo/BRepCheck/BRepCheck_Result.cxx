@@ -82,4 +82,3 @@ void BRepCheck_Result::NextShapeInContext()
     myIter.Next();
   }
 }
-

@@ -26,7 +26,7 @@
 #include <Standard_WarningDisableFunctionCast.hxx>
 
 static std::atomic<OSD_SignalMode> OSD_WasSetSignal{OSD_SignalMode_AsIs};
-static std::atomic<int>           OSD_SignalStackTraceLength{0};
+static std::atomic<int>            OSD_SignalStackTraceLength{0};
 
 //=================================================================================================
 

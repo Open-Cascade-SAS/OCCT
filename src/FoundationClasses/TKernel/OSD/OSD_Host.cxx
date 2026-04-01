@@ -234,8 +234,7 @@ OSD_Host ::OSD_Host()
   #ifndef OCCT_UWP
   static bool THE_HOST_INIT_SUCCESS = false;
 
-  std::call_once(THE_HOST_INIT_FLAG, [&]()
-  {
+  std::call_once(THE_HOST_INIT_FLAG, [&]() {
     DWORD          nSize = MAX_COMPUTERNAME_LENGTH + 1;
     char           szHostName[MAX_COMPUTERNAME_LENGTH + 1];
     char*          hostAddr = 0;

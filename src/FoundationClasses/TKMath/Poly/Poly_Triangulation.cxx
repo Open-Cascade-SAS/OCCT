@@ -354,7 +354,7 @@ void Poly_Triangulation::SetCachedMinMax(const Bnd_Box& theBox)
   Bnd_Box*                    aBox = myCachedMinMax.load(std::memory_order_relaxed);
   if (aBox == nullptr)
   {
-    aBox = new Bnd_Box();
+    aBox  = new Bnd_Box();
     *aBox = theBox;
     myCachedMinMax.store(aBox, std::memory_order_release);
   }
@@ -380,8 +380,8 @@ bool Poly_Triangulation::MinMax(Bnd_Box&       theBox,
                                 const gp_Trsf& theTrsf,
                                 const bool     theIsAccurate) const
 {
-  Bnd_Box          aBox;
-  const Bnd_Box*   aCachedBox = myCachedMinMax.load(std::memory_order_acquire);
+  Bnd_Box        aBox;
+  const Bnd_Box* aCachedBox = myCachedMinMax.load(std::memory_order_acquire);
   if (aCachedBox != nullptr
       && (!HasGeometry() || !theIsAccurate || theTrsf.Form() == gp_Identity
           || theTrsf.Form() == gp_Translation || theTrsf.Form() == gp_PntMirror

@@ -89,7 +89,7 @@ occ::handle<Units_UnitsDictionary> Units::DictionaryOfUnits(const bool amode)
 
 occ::handle<Units_Quantity> Units::Quantity(const char* const aquantity)
 {
-  std::lock_guard<std::recursive_mutex> aLock(THE_UNITS_MUTEX);
+  std::lock_guard<std::recursive_mutex>                           aLock(THE_UNITS_MUTEX);
   int                                                             index;
   occ::handle<Units_Quantity>                                     quantity;
   occ::handle<Units_Quantity>                                     nullquantity;
@@ -116,7 +116,7 @@ static TCollection_AsciiString symbol_string, quantity_string;
 
 const char* Units::FirstQuantity(const char* const aunit)
 {
-  std::lock_guard<std::recursive_mutex> aLock(THE_UNITS_MUTEX);
+  std::lock_guard<std::recursive_mutex>                                     aLock(THE_UNITS_MUTEX);
   int                                                                       i, j, k;
   occ::handle<Units_Quantity>                                               thequantity;
   occ::handle<NCollection_HSequence<occ::handle<Units_Quantity>>>           quantitiessequence;
@@ -202,7 +202,7 @@ double Units::Convert(const double      avalue,
                       const char* const asecondunit)
 {
   std::lock_guard<std::recursive_mutex> aLock(THE_UNITS_MUTEX);
-  Units_Measurement measurement(avalue, afirstunit);
+  Units_Measurement                     measurement(avalue, afirstunit);
   measurement.Convert(asecondunit);
   return measurement.Measurement();
 }
@@ -212,7 +212,7 @@ double Units::Convert(const double      avalue,
 double Units::ToSI(const double aData, const char* const aUnit)
 {
   std::lock_guard<std::recursive_mutex> aLock(THE_UNITS_MUTEX);
-  occ::handle<Units_Dimensions> aDimBid;
+  occ::handle<Units_Dimensions>         aDimBid;
   return Units::ToSI(aData, aUnit, aDimBid);
 }
 
@@ -251,7 +251,7 @@ double Units::ToSI(const double aData, const char* const aUnit, occ::handle<Unit
 double Units::FromSI(const double aData, const char* const aUnit)
 {
   std::lock_guard<std::recursive_mutex> aLock(THE_UNITS_MUTEX);
-  occ::handle<Units_Dimensions> aDimBid;
+  occ::handle<Units_Dimensions>         aDimBid;
   return Units::FromSI(aData, aUnit, aDimBid);
 }
 

@@ -171,7 +171,10 @@ public:
                 if (performwire)
                 {
                   std::unique_lock<std::mutex> aLock(aFaceEdgeRes->myMutex, std::defer_lock);
-                  if (aFaceEdgeRes->IsParallel()) { aLock.lock(); }
+                  if (aFaceEdgeRes->IsParallel())
+                  {
+                    aLock.lock();
+                  }
                   if (aFaceEdgeRes->IsStatusOnShape(aShape))
                   {
                     NCollection_List<BRepCheck_Status>::Iterator itl(
@@ -218,7 +221,10 @@ public:
               if (orientofwires)
               {
                 std::unique_lock<std::mutex> aLock(aFaceWireRes->myMutex, std::defer_lock);
-                if (aFaceWireRes->IsParallel()) { aLock.lock(); }
+                if (aFaceWireRes->IsParallel())
+                {
+                  aLock.lock();
+                }
                 if (aFaceWireRes->IsStatusOnShape(aShape))
                 {
                   const NCollection_List<BRepCheck_Status>& aStatusList =

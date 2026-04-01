@@ -265,7 +265,10 @@ void BRepCheck_Edge::InContext(const TopoDS_Shape& S)
   occ::handle<NCollection_Shared<NCollection_List<BRepCheck_Status>>> aHList;
   {
     std::unique_lock<std::mutex> aLock(myMutex, std::defer_lock);
-    if (myIsParallel) { aLock.lock(); }
+    if (myIsParallel)
+    {
+      aLock.lock();
+    }
     if (myMap.IsBound(S))
     {
       return;
@@ -579,7 +582,10 @@ bool BRepCheck_Edge::GeometricControls() const
 void BRepCheck_Edge::SetStatus(const BRepCheck_Status theStatus)
 {
   std::unique_lock<std::mutex> aLock(myMutex, std::defer_lock);
-  if (myIsParallel) { aLock.lock(); }
+  if (myIsParallel)
+  {
+    aLock.lock();
+  }
   BRepCheck::Add(*myMap(myShape), theStatus);
 }
 

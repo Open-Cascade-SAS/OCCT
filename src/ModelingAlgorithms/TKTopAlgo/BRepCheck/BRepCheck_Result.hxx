@@ -86,7 +86,7 @@ protected:
   NCollection_DataMap<TopoDS_Shape,
                       Handle(NCollection_Shared<NCollection_List<BRepCheck_Status>>),
                       TopTools_ShapeMapHasher>
-                  myMap;
+                     myMap;
   mutable std::mutex myMutex;
 
 private:

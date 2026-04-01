@@ -194,7 +194,10 @@ void BRepCheck_Wire::InContext(const TopoDS_Shape& S)
   occ::handle<NCollection_Shared<NCollection_List<BRepCheck_Status>>> aHList;
   {
     std::unique_lock<std::mutex> aLock(myMutex, std::defer_lock);
-    if (myIsParallel) { aLock.lock(); }
+    if (myIsParallel)
+    {
+      aLock.lock();
+    }
     if (myMap.IsBound(S))
     {
       return;
@@ -282,7 +285,10 @@ BRepCheck_Status BRepCheck_Wire::Closed(const bool Update)
   occ::handle<NCollection_Shared<NCollection_List<BRepCheck_Status>>> aHList;
   {
     std::unique_lock<std::mutex> aLock(myMutex, std::defer_lock);
-    if (myIsParallel) { aLock.lock(); }
+    if (myIsParallel)
+    {
+      aLock.lock();
+    }
     aHList = myMap(myShape);
   }
 
@@ -517,7 +523,10 @@ BRepCheck_Status BRepCheck_Wire::Closed2d(const TopoDS_Face& theFace, const bool
   occ::handle<NCollection_Shared<NCollection_List<BRepCheck_Status>>> aHList;
   {
     std::unique_lock<std::mutex> aLock(myMutex, std::defer_lock);
-    if (myIsParallel) { aLock.lock(); }
+    if (myIsParallel)
+    {
+      aLock.lock();
+    }
     aHList = myMap(myShape);
   }
   NCollection_List<BRepCheck_Status>& aStatusList = *aHList;
@@ -695,7 +704,10 @@ BRepCheck_Status BRepCheck_Wire::Orientation(const TopoDS_Face& F, const bool Up
   occ::handle<NCollection_Shared<NCollection_List<BRepCheck_Status>>> aHList;
   {
     std::unique_lock<std::mutex> aLock(myMutex, std::defer_lock);
-    if (myIsParallel) { aLock.lock(); }
+    if (myIsParallel)
+    {
+      aLock.lock();
+    }
     aHList = myMap(myShape);
   }
   NCollection_List<BRepCheck_Status>& aStatusList = *aHList;
@@ -1037,7 +1049,10 @@ BRepCheck_Status BRepCheck_Wire::SelfIntersect(const TopoDS_Face& F,
   occ::handle<NCollection_Shared<NCollection_List<BRepCheck_Status>>> aHList;
   {
     std::unique_lock<std::mutex> aLock(myMutex, std::defer_lock);
-    if (myIsParallel) { aLock.lock(); }
+    if (myIsParallel)
+    {
+      aLock.lock();
+    }
     aHList = myMap(myShape);
   }
   NCollection_List<BRepCheck_Status>& aStatusList = *aHList;
