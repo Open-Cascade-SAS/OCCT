@@ -71,9 +71,9 @@ void BRepGraph_Copy::reserveTransientCache(BRepGraph& theGraph)
   aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Face)]                 = aStorage.NbFaces();
   aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Shell)]                = aStorage.NbShells();
   aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Solid)]                = aStorage.NbSolids();
-  aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Compound)]   = aStorage.NbCompounds();
-  aCounts[static_cast<int>(BRepGraph_NodeId::Kind::CompSolid)]  = aStorage.NbCompSolids();
-  aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Product)]    = aStorage.NbProducts();
+  aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Compound)]             = aStorage.NbCompounds();
+  aCounts[static_cast<int>(BRepGraph_NodeId::Kind::CompSolid)]            = aStorage.NbCompSolids();
+  aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Product)]              = aStorage.NbProducts();
   aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Occurrence)] = aStorage.NbOccurrences();
   int       aReservedKindCount   = BRepGraph_TransientCache::THE_DEFAULT_RESERVED_KIND_COUNT;
   const int aRegisteredKindCount = BRepGraph_CacheKindRegistry::NbRegistered();

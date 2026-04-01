@@ -349,8 +349,8 @@ TEST(BRepGraph_CopyTest, Performance_VsLegacy)
   }
   aLegacyTimer.Stop();
 
-  std::cout << "[  PERF   ] BRepGraph_Copy: " << aGraphTimer.ElapsedTime() << " s ("
-            << THE_NB_ITERS << " iters)" << std::endl;
+  std::cout << "[  PERF   ] BRepGraph_Copy: " << aGraphTimer.ElapsedTime() << " s (" << THE_NB_ITERS
+            << " iters)" << std::endl;
   std::cout << "[  PERF   ] BRepBuilderAPI_Copy: " << aLegacyTimer.ElapsedTime() << " s ("
             << THE_NB_ITERS << " iters)" << std::endl;
   if (aGraphTimer.ElapsedTime() > 1.0e-9)

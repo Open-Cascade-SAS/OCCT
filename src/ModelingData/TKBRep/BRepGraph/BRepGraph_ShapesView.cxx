@@ -96,8 +96,7 @@ static TopoDS_Shape reconstructProductLocal(BRepGraph_ReconstructionContext& the
     TopoDS_Compound aCompound;
     aBuilder.MakeCompound(aCompound);
 
-    for (BRepGraph_RefsOccurrenceOfProduct anOccIt(*theContext.Graph, theProduct);
-         anOccIt.More();
+    for (BRepGraph_RefsOccurrenceOfProduct anOccIt(*theContext.Graph, theProduct); anOccIt.More();
          anOccIt.Next())
     {
       const BRepGraphInc::OccurrenceRef& anOccurrenceRef =

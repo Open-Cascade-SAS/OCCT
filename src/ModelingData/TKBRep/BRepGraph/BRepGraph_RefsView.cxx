@@ -289,7 +289,7 @@ NCollection_Vector<BRepGraph_VertexRefId> BRepGraph::RefsView::VertexOps::IdsOf(
   if (!theEdge.IsValid(aStorage.NbEdges()))
     return aResult;
 
-  NCollection_PackedMap<int>   aSeenRefIds;
+  NCollection_PackedMap<int> aSeenRefIds;
 
   for (BRepGraph_RefsVertexOfEdge aRefIt(*myGraph, theEdge); aRefIt.More(); aRefIt.Next())
   {

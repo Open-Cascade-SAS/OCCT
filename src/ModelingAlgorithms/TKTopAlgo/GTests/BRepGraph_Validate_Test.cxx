@@ -77,15 +77,13 @@ TEST(BRepGraph_ValidateTest, CleanGraph_NoIssues)
   EXPECT_EQ(aResult.NbIssues(BRepGraph_Validate::Severity::Error), 0);
   EXPECT_EQ(aResult.NbIssues(BRepGraph_Validate::Severity::Warning), 0);
 
-  const BRepGraph_Validate::Options anAuditOpts = BRepGraph_Validate::Options::Audit();
-  const BRepGraph_Validate::Result  anAuditResult =
-    BRepGraph_Validate::Perform(aGraph, anAuditOpts);
+  const BRepGraph_Validate::Options anAuditOpts  = BRepGraph_Validate::Options::Audit();
+  const BRepGraph_Validate::Result anAuditResult = BRepGraph_Validate::Perform(aGraph, anAuditOpts);
   EXPECT_TRUE(anAuditResult.IsValid());
   EXPECT_EQ(anAuditResult.NbIssues(BRepGraph_Validate::Severity::Error), 0);
 
-  const BRepGraph_Validate::Options aLightOpts = BRepGraph_Validate::Options::Lightweight();
-  const BRepGraph_Validate::Result  aLightResult =
-    BRepGraph_Validate::Perform(aGraph, aLightOpts);
+  const BRepGraph_Validate::Options aLightOpts   = BRepGraph_Validate::Options::Lightweight();
+  const BRepGraph_Validate::Result  aLightResult = BRepGraph_Validate::Perform(aGraph, aLightOpts);
   EXPECT_TRUE(aLightResult.IsValid());
   EXPECT_EQ(aLightResult.NbIssues(BRepGraph_Validate::Severity::Error), 0);
 }

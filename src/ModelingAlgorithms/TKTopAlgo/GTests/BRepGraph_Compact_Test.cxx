@@ -104,7 +104,7 @@ TEST(BRepGraph_CompactTest, AfterDeduplicate_RemovesNodes)
   (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
 
   BRepGraph_Compact::Options anOpts;
-  anOpts.HistoryMode                       = false;
+  anOpts.HistoryMode                   = false;
   const BRepGraph_Compact::Result aRes = BRepGraph_Compact::Perform(aGraph, anOpts);
 
   // No separate geometry nodes exist, so NbRemovedSurfaces/NbRemovedCurves is always 0.

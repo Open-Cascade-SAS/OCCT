@@ -38,7 +38,7 @@ constexpr int THE_TOPOVIEW_SHARED_EDGE_BLOCK_SIZE    = 4;
 
 //! Collect unique edge IDs reachable from a face through its wire/coedge refs.
 NCollection_Vector<BRepGraph_EdgeId> collectFaceEdges(
-  const BRepGraph&                             theGraph,
+  const BRepGraph&                              theGraph,
   const BRepGraph_FaceId                        theFace,
   const occ::handle<NCollection_BaseAllocator>& theAllocator)
 {

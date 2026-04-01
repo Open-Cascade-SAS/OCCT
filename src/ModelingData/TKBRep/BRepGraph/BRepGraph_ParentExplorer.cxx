@@ -44,7 +44,7 @@ static int parentExplorerKindDepth(const BRepGraph_NodeId::Kind theKind)
 }
 
 static BRepGraph_VertexRefId edgeVertexRefIdAt(const BRepGraphInc::EdgeDef& theEdge,
-                                               const int                     theRefIdx)
+                                               const int                    theRefIdx)
 {
   if (theRefIdx == 0)
   {
@@ -991,7 +991,8 @@ int BRepGraph_ParentExplorer::findOccurrenceStep(const BRepGraph_ProductId    th
   for (BRepGraph_RefsOccurrenceOfProduct aRefIt(*myGraph, theParentProduct); aRefIt.More();
        aRefIt.Next())
   {
-    const BRepGraphInc::OccurrenceRef& aRef = myGraph->Refs().Occurrences().Entry(aRefIt.CurrentId());
+    const BRepGraphInc::OccurrenceRef& aRef =
+      myGraph->Refs().Occurrences().Entry(aRefIt.CurrentId());
     if (aRef.OccurrenceDefId == theOccurrence)
     {
       return aRefIt.Index();

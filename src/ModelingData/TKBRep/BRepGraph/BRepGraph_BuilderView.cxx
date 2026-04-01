@@ -85,8 +85,7 @@ NCollection_Vector<BRepGraph_NodeId> collectSolidChildren(const BRepGraph&      
                                                           const BRepGraph_NodeId theSolidNodeId)
 {
   NCollection_Vector<BRepGraph_NodeId> aChildNodes;
-  for (BRepGraph_DefsShellOfSolid aChildIt(theGraph,
-                                           BRepGraph_SolidId::FromNodeId(theSolidNodeId));
+  for (BRepGraph_DefsShellOfSolid aChildIt(theGraph, BRepGraph_SolidId::FromNodeId(theSolidNodeId));
        aChildIt.More();
        aChildIt.Next())
   {
@@ -101,8 +100,7 @@ NCollection_Vector<BRepGraph_NodeId> collectShellChildren(const BRepGraph&      
                                                           const BRepGraph_NodeId theShellNodeId)
 {
   NCollection_Vector<BRepGraph_NodeId> aChildNodes;
-  for (BRepGraph_DefsFaceOfShell aChildIt(theGraph,
-                                          BRepGraph_ShellId::FromNodeId(theShellNodeId));
+  for (BRepGraph_DefsFaceOfShell aChildIt(theGraph, BRepGraph_ShellId::FromNodeId(theShellNodeId));
        aChildIt.More();
        aChildIt.Next())
   {
@@ -117,8 +115,7 @@ NCollection_Vector<BRepGraph_NodeId> collectFaceChildren(const BRepGraph&       
                                                          const BRepGraph_NodeId theFaceNodeId)
 {
   NCollection_Vector<BRepGraph_NodeId> aChildNodes;
-  for (BRepGraph_DefsWireOfFace aChildIt(theGraph,
-                                         BRepGraph_FaceId::FromNodeId(theFaceNodeId));
+  for (BRepGraph_DefsWireOfFace aChildIt(theGraph, BRepGraph_FaceId::FromNodeId(theFaceNodeId));
        aChildIt.More();
        aChildIt.Next())
   {
@@ -133,8 +130,7 @@ NCollection_Vector<BRepGraph_NodeId> collectWireChildren(const BRepGraph&       
                                                          const BRepGraph_NodeId theWireNodeId)
 {
   NCollection_Vector<BRepGraph_NodeId> aChildNodes;
-  for (BRepGraph_DefsEdgeOfWire aChildIt(theGraph,
-                                         BRepGraph_WireId::FromNodeId(theWireNodeId));
+  for (BRepGraph_DefsEdgeOfWire aChildIt(theGraph, BRepGraph_WireId::FromNodeId(theWireNodeId));
        aChildIt.More();
        aChildIt.Next())
   {
@@ -1209,14 +1205,12 @@ void BRepGraph::BuilderView::RemoveSubgraph(const BRepGraph_NodeId theNode)
         // Snapshot occurrence indices before iterating, because RemoveSubgraph(Occurrence)
         // modifies the parent's OccurrenceRefIds via swap-remove.
         NCollection_Vector<int> anOccIndices;
-        for (BRepGraph_RefsOccurrenceOfProduct anOccIt(
-               *myGraph,
-               BRepGraph_ProductId::FromNodeId(theNode));
+        for (BRepGraph_RefsOccurrenceOfProduct anOccIt(*myGraph,
+                                                       BRepGraph_ProductId::FromNodeId(theNode));
              anOccIt.More();
              anOccIt.Next())
         {
-          anOccIndices.Append(
-            aStorage.OccurrenceRef(anOccIt.CurrentId()).OccurrenceDefId.Index);
+          anOccIndices.Append(aStorage.OccurrenceRef(anOccIt.CurrentId()).OccurrenceDefId.Index);
         }
         for (int i = 0; i < anOccIndices.Length(); ++i)
           RemoveSubgraph(BRepGraph_OccurrenceId(anOccIndices.Value(i)));
@@ -1238,7 +1232,7 @@ void BRepGraph::BuilderView::RemoveSubgraph(const BRepGraph_NodeId theNode)
                aRefIt.More();
                aRefIt.Next())
           {
-            const int i = aRefIt.Index();
+            const int                    i = aRefIt.Index();
             BRepGraphInc::OccurrenceRef& aRef =
               myGraph->myData->myIncStorage.ChangeOccurrenceRef(aRefIt.CurrentId());
             if (aRef.OccurrenceDefId.Index == theNode.Index)
@@ -2082,14 +2076,13 @@ void BRepGraph::BuilderView::SplitEdge(const BRepGraph_EdgeId   theEdgeEntity,
         const int aWireIdx = aWireIndices->Value(aWIdx).Index;
         if (aWireIdx < 0 || aWireIdx >= aStorage.NbWires())
           continue;
-        for (BRepGraph_RefsCoEdgeOfWire aRefIt(*myGraph, BRepGraph_WireId(aWireIdx));
-             aRefIt.More();
+        for (BRepGraph_RefsCoEdgeOfWire aRefIt(*myGraph, BRepGraph_WireId(aWireIdx)); aRefIt.More();
              aRefIt.Next())
         {
-          const int                      aRefOrd = aRefIt.Index();
-          const BRepGraph_CoEdgeRefId    aRefId  = aRefIt.CurrentId();
-          const BRepGraphInc::CoEdgeRef& aRef   = aStorage.CoEdgeRef(aRefId);
-          const int aOldCoEdgeIdx = aRef.CoEdgeDefId.Index;
+          const int                      aRefOrd       = aRefIt.Index();
+          const BRepGraph_CoEdgeRefId    aRefId        = aRefIt.CurrentId();
+          const BRepGraphInc::CoEdgeRef& aRef          = aStorage.CoEdgeRef(aRefId);
+          const int                      aOldCoEdgeIdx = aRef.CoEdgeDefId.Index;
           if (aOldCoEdgeIdx < 0 || aOldCoEdgeIdx >= aStorage.NbCoEdges())
             continue;
 
@@ -2347,8 +2340,8 @@ void BRepGraph::BuilderView::ReplaceEdgeInWire(const BRepGraph_WireId theWireDef
   // Update incidence by scanning wire-owned coedge ref entries.
   for (BRepGraph_RefsCoEdgeOfWire aRefIt(*myGraph, theWireDefId); aRefIt.More(); aRefIt.Next())
   {
-    const BRepGraphInc::CoEdgeRef& aRef = aStorage.CoEdgeRef(aRefIt.CurrentId());
-    const int aCoEdgeEntIdx = aRef.CoEdgeDefId.Index;
+    const BRepGraphInc::CoEdgeRef& aRef          = aStorage.CoEdgeRef(aRefIt.CurrentId());
+    const int                      aCoEdgeEntIdx = aRef.CoEdgeDefId.Index;
     if (aCoEdgeEntIdx < 0 || aCoEdgeEntIdx >= aStorage.NbCoEdges())
       continue;
 
