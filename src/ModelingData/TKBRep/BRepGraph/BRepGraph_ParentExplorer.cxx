@@ -14,6 +14,7 @@
 #include <BRepGraph_ParentExplorer.hxx>
 
 #include <BRepGraph_Iterator.hxx>
+#include <BRepGraph_RefsIterator.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_TopoView.hxx>
 
@@ -40,6 +41,26 @@ static int parentExplorerKindDepth(const BRepGraph_NodeId::Kind theKind)
     1,  // Kind::Occurrence=11
   };
   return THE_DEPTH[static_cast<int>(theKind)];
+}
+
+static BRepGraph_VertexRefId edgeVertexRefIdAt(const BRepGraphInc::EdgeDef& theEdge,
+                                               const int                     theRefIdx)
+{
+  if (theRefIdx == 0)
+  {
+    return theEdge.StartVertexRefId;
+  }
+  if (theRefIdx == 1)
+  {
+    return theEdge.EndVertexRefId;
+  }
+
+  const int anInternalIdx = theRefIdx - 2;
+  if (anInternalIdx < 0 || anInternalIdx >= theEdge.InternalVertexRefIds.Length())
+  {
+    return BRepGraph_VertexRefId();
+  }
+  return theEdge.InternalVertexRefIds.Value(anInternalIdx);
 }
 } // namespace
 
@@ -967,15 +988,13 @@ bool BRepGraph_ParentExplorer::findNthProductWrapper(const BRepGraph_NodeId theN
 int BRepGraph_ParentExplorer::findOccurrenceStep(const BRepGraph_ProductId    theParentProduct,
                                                  const BRepGraph_OccurrenceId theOccurrence) const
 {
-  const BRepGraph::RefsView&                           aRefs = myGraph->Refs();
-  const NCollection_Vector<BRepGraph_OccurrenceRefId>& aRefIds =
-    aRefs.Occurrences().IdsOf(theParentProduct);
-  for (int aRefIdx = 0; aRefIdx < aRefIds.Length(); ++aRefIdx)
+  for (BRepGraph_RefsOccurrenceOfProduct aRefIt(*myGraph, theParentProduct); aRefIt.More();
+       aRefIt.Next())
   {
-    const BRepGraphInc::OccurrenceRef& aRef = aRefs.Occurrences().Entry(aRefIds.Value(aRefIdx));
-    if (!aRef.IsRemoved && aRef.OccurrenceDefId == theOccurrence)
+    const BRepGraphInc::OccurrenceRef& aRef = myGraph->Refs().Occurrences().Entry(aRefIt.CurrentId());
+    if (aRef.OccurrenceDefId == theOccurrence)
     {
-      return aRefIdx;
+      return aRefIt.Index();
     }
   }
   return -1;
@@ -986,14 +1005,12 @@ int BRepGraph_ParentExplorer::findOccurrenceStep(const BRepGraph_ProductId    th
 int BRepGraph_ParentExplorer::findCompoundChildStep(const BRepGraph_CompoundId theParent,
                                                     const BRepGraph_NodeId     theChild) const
 {
-  const BRepGraph::RefsView&                      aRefs   = myGraph->Refs();
-  const NCollection_Vector<BRepGraph_ChildRefId>& aRefIds = aRefs.Children().IdsOf(theParent);
-  for (int aRefIdx = 0; aRefIdx < aRefIds.Length(); ++aRefIdx)
+  for (BRepGraph_RefsChildOfCompound aRefIt(*myGraph, theParent); aRefIt.More(); aRefIt.Next())
   {
-    const BRepGraphInc::ChildRef& aRef = aRefs.Children().Entry(aRefIds.Value(aRefIdx));
-    if (!aRef.IsRemoved && aRef.ChildDefId == theChild)
+    const BRepGraphInc::ChildRef& aRef = myGraph->Refs().Children().Entry(aRefIt.CurrentId());
+    if (aRef.ChildDefId == theChild)
     {
-      return aRefIdx;
+      return aRefIt.Index();
     }
   }
   return -1;
@@ -1004,14 +1021,12 @@ int BRepGraph_ParentExplorer::findCompoundChildStep(const BRepGraph_CompoundId t
 int BRepGraph_ParentExplorer::findCompSolidSolidStep(const BRepGraph_CompSolidId theParent,
                                                      const BRepGraph_SolidId     theChild) const
 {
-  const BRepGraph::RefsView&                      aRefs   = myGraph->Refs();
-  const NCollection_Vector<BRepGraph_SolidRefId>& aRefIds = aRefs.Solids().IdsOf(theParent);
-  for (int aRefIdx = 0; aRefIdx < aRefIds.Length(); ++aRefIdx)
+  for (BRepGraph_RefsSolidOfCompSolid aRefIt(*myGraph, theParent); aRefIt.More(); aRefIt.Next())
   {
-    const BRepGraphInc::SolidRef& aRef = aRefs.Solids().Entry(aRefIds.Value(aRefIdx));
-    if (!aRef.IsRemoved && aRef.SolidDefId == theChild)
+    const BRepGraphInc::SolidRef& aRef = myGraph->Refs().Solids().Entry(aRefIt.CurrentId());
+    if (aRef.SolidDefId == theChild)
     {
-      return aRefIdx;
+      return aRefIt.Index();
     }
   }
   return -1;
@@ -1027,12 +1042,12 @@ int BRepGraph_ParentExplorer::findSolidChildStep(const BRepGraph_SolidId thePare
   const BRepGraphInc::SolidDef& aSolid = aTopo.Solids().Definition(theParent);
   if (theChild.NodeKind == BRepGraph_NodeId::Kind::Shell)
   {
-    for (int aRefIdx = 0; aRefIdx < aSolid.ShellRefIds.Length(); ++aRefIdx)
+    for (BRepGraph_RefsShellOfSolid aRefIt(*myGraph, theParent); aRefIt.More(); aRefIt.Next())
     {
-      const BRepGraphInc::ShellRef& aRef = aRefs.Shells().Entry(aSolid.ShellRefIds.Value(aRefIdx));
-      if (!aRef.IsRemoved && aRef.ShellDefId == BRepGraph_ShellId(theChild.Index))
+      const BRepGraphInc::ShellRef& aRef = aRefs.Shells().Entry(aRefIt.CurrentId());
+      if (aRef.ShellDefId == BRepGraph_ShellId(theChild.Index))
       {
-        return aRefIdx;
+        return aRefIt.Index();
       }
     }
     return -1;
@@ -1060,12 +1075,12 @@ int BRepGraph_ParentExplorer::findShellChildStep(const BRepGraph_ShellId thePare
   const BRepGraphInc::ShellDef& aShell = aTopo.Shells().Definition(theParent);
   if (theChild.NodeKind == BRepGraph_NodeId::Kind::Face)
   {
-    for (int aRefIdx = 0; aRefIdx < aShell.FaceRefIds.Length(); ++aRefIdx)
+    for (BRepGraph_RefsFaceOfShell aRefIt(*myGraph, theParent); aRefIt.More(); aRefIt.Next())
     {
-      const BRepGraphInc::FaceRef& aRef = aRefs.Faces().Entry(aShell.FaceRefIds.Value(aRefIdx));
-      if (!aRef.IsRemoved && aRef.FaceDefId == BRepGraph_FaceId(theChild.Index))
+      const BRepGraphInc::FaceRef& aRef = aRefs.Faces().Entry(aRefIt.CurrentId());
+      if (aRef.FaceDefId == BRepGraph_FaceId(theChild.Index))
       {
-        return aRefIdx;
+        return aRefIt.Index();
       }
     }
     return -1;
@@ -1093,12 +1108,12 @@ int BRepGraph_ParentExplorer::findFaceChildStep(const BRepGraph_FaceId theParent
   const BRepGraphInc::FaceDef& aFace = aTopo.Faces().Definition(theParent);
   if (theChild.NodeKind == BRepGraph_NodeId::Kind::Wire)
   {
-    for (int aRefIdx = 0; aRefIdx < aFace.WireRefIds.Length(); ++aRefIdx)
+    for (BRepGraph_RefsWireOfFace aRefIt(*myGraph, theParent); aRefIt.More(); aRefIt.Next())
     {
-      const BRepGraphInc::WireRef& aRef = aRefs.Wires().Entry(aFace.WireRefIds.Value(aRefIdx));
-      if (!aRef.IsRemoved && aRef.WireDefId == BRepGraph_WireId(theChild.Index))
+      const BRepGraphInc::WireRef& aRef = aRefs.Wires().Entry(aRefIt.CurrentId());
+      if (aRef.WireDefId == BRepGraph_WireId(theChild.Index))
       {
-        return aRefIdx;
+        return aRefIt.Index();
       }
     }
     return -1;
@@ -1106,13 +1121,12 @@ int BRepGraph_ParentExplorer::findFaceChildStep(const BRepGraph_FaceId theParent
 
   if (theChild.NodeKind == BRepGraph_NodeId::Kind::Vertex)
   {
-    for (int aRefIdx = 0; aRefIdx < aFace.VertexRefIds.Length(); ++aRefIdx)
+    for (BRepGraph_RefsVertexOfFace aRefIt(*myGraph, theParent); aRefIt.More(); aRefIt.Next())
     {
-      const BRepGraphInc::VertexRef& aRef =
-        aRefs.Vertices().Entry(aFace.VertexRefIds.Value(aRefIdx));
-      if (!aRef.IsRemoved && aRef.VertexDefId == BRepGraph_VertexId(theChild.Index))
+      const BRepGraphInc::VertexRef& aRef = aRefs.Vertices().Entry(aRefIt.CurrentId());
+      if (aRef.VertexDefId == BRepGraph_VertexId(theChild.Index))
       {
-        return aFace.WireRefIds.Length() + aRefIdx;
+        return aFace.WireRefIds.Length() + aRefIt.Index();
       }
     }
   }
@@ -1124,14 +1138,12 @@ int BRepGraph_ParentExplorer::findFaceChildStep(const BRepGraph_FaceId theParent
 int BRepGraph_ParentExplorer::findWireCoEdgeStep(const BRepGraph_WireId   theParent,
                                                  const BRepGraph_CoEdgeId theChild) const
 {
-  const BRepGraph::RefsView&                       aRefs   = myGraph->Refs();
-  const NCollection_Vector<BRepGraph_CoEdgeRefId>& aRefIds = aRefs.CoEdges().IdsOf(theParent);
-  for (int aRefIdx = 0; aRefIdx < aRefIds.Length(); ++aRefIdx)
+  for (BRepGraph_RefsCoEdgeOfWire aRefIt(*myGraph, theParent); aRefIt.More(); aRefIt.Next())
   {
-    const BRepGraphInc::CoEdgeRef& aRef = aRefs.CoEdges().Entry(aRefIds.Value(aRefIdx));
-    if (!aRef.IsRemoved && aRef.CoEdgeDefId == theChild)
+    const BRepGraphInc::CoEdgeRef& aRef = myGraph->Refs().CoEdges().Entry(aRefIt.CurrentId());
+    if (aRef.CoEdgeDefId == theChild)
     {
-      return aRefIdx;
+      return aRefIt.Index();
     }
   }
   return -1;
@@ -1142,14 +1154,12 @@ int BRepGraph_ParentExplorer::findWireCoEdgeStep(const BRepGraph_WireId   thePar
 int BRepGraph_ParentExplorer::findEdgeVertexStep(const BRepGraph_EdgeId   theParent,
                                                  const BRepGraph_VertexId theChild) const
 {
-  const NCollection_Vector<BRepGraph_VertexRefId> aRefIds =
-    myGraph->Refs().Vertices().IdsOf(theParent, myGraph->Allocator());
-  for (int aRefIdx = 0; aRefIdx < aRefIds.Length(); ++aRefIdx)
+  for (BRepGraph_RefsVertexOfEdge aRefIt(*myGraph, theParent); aRefIt.More(); aRefIt.Next())
   {
-    const BRepGraphInc::VertexRef& aRef = myGraph->Refs().Vertices().Entry(aRefIds.Value(aRefIdx));
-    if (!aRef.IsRemoved && aRef.VertexDefId == theChild)
+    const BRepGraphInc::VertexRef& aRef = myGraph->Refs().Vertices().Entry(aRefIt.CurrentId());
+    if (aRef.VertexDefId == theChild)
     {
-      return aRefIdx;
+      return aRefIt.Index();
     }
   }
   return -1;
@@ -1249,9 +1259,14 @@ TopLoc_Location BRepGraph_ParentExplorer::stepLocation(const BRepGraph_NodeId th
         .Entry(aRefs.CoEdges().IdsOf(BRepGraph_WireId(theParent.Index)).Value(theRefIdx))
         .LocalLocation;
     case BRepGraph_NodeId::Kind::Edge: {
-      NCollection_Vector<BRepGraph_VertexRefId> aVertexRefIds =
-        aRefs.Vertices().IdsOf(BRepGraph_EdgeId(theParent.Index), myGraph->Allocator());
-      return aRefs.Vertices().Entry(aVertexRefIds.Value(theRefIdx)).LocalLocation;
+      const BRepGraphInc::EdgeDef& anEdge =
+        aTopo.Edges().Definition(BRepGraph_EdgeId(theParent.Index));
+      const BRepGraph_VertexRefId aVertexRefId = edgeVertexRefIdAt(anEdge, theRefIdx);
+      if (!aVertexRefId.IsValid())
+      {
+        return TopLoc_Location();
+      }
+      return aRefs.Vertices().Entry(aVertexRefId).LocalLocation;
     }
     default:
       return TopLoc_Location();
@@ -1314,9 +1329,14 @@ TopAbs_Orientation BRepGraph_ParentExplorer::stepOrientation(const BRepGraph_Nod
     case BRepGraph_NodeId::Kind::Wire:
       return TopAbs_FORWARD;
     case BRepGraph_NodeId::Kind::Edge: {
-      NCollection_Vector<BRepGraph_VertexRefId> aVertexRefIds =
-        aRefs.Vertices().IdsOf(BRepGraph_EdgeId(theParent.Index), myGraph->Allocator());
-      return aRefs.Vertices().Entry(aVertexRefIds.Value(theRefIdx)).Orientation;
+      const BRepGraphInc::EdgeDef& anEdge =
+        aTopo.Edges().Definition(BRepGraph_EdgeId(theParent.Index));
+      const BRepGraph_VertexRefId aVertexRefId = edgeVertexRefIdAt(anEdge, theRefIdx);
+      if (!aVertexRefId.IsValid())
+      {
+        return TopAbs_FORWARD;
+      }
+      return aRefs.Vertices().Entry(aVertexRefId).Orientation;
     }
     default:
       return TopAbs_FORWARD;

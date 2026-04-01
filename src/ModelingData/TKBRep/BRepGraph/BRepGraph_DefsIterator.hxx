@@ -246,7 +246,13 @@ struct EdgeOfWireTraits : public BaseTraits<BRepGraph_WireId,
     {
       return ChildId();
     }
-    return theGraph.Topo().CoEdges().Definition(aCoEdgeId).EdgeDefId;
+
+    const BRepGraphInc::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdges().Definition(aCoEdgeId);
+    if (aCoEdge.IsRemoved)
+    {
+      return ChildId();
+    }
+    return aCoEdge.EdgeDefId;
   }
 
   static const ChildDef& Child(const BRepGraph& theGraph, const ChildId theChildId)

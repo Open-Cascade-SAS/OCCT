@@ -14,9 +14,12 @@
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_Data.hxx>
 #include <BRepGraph_Builder.hxx>
+#include <BRepGraph_DefsIterator.hxx>
+#include <BRepGraph_Iterator.hxx>
 #include <BRepGraph_Layer.hxx>
 #include <BRepGraph_ParamLayer.hxx>
 #include <BRepGraph_RegularityLayer.hxx>
+#include <BRepGraph_RefsIterator.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_TopoView.hxx>
@@ -48,12 +51,12 @@ NCollection_Vector<BRepGraph_NodeId> collectCompoundChildren(
   const BRepGraph_NodeId theCompoundNodeId)
 {
   NCollection_Vector<BRepGraph_NodeId> aChildNodes;
-  const BRepGraph::RefsView&           aRefs = theGraph.Refs();
-  for (int aRefIdx = 0; aRefIdx < aRefs.Children().Nb(); ++aRefIdx)
+  for (BRepGraph_DefsChildOfCompound aChildIt(theGraph,
+                                              BRepGraph_CompoundId::FromNodeId(theCompoundNodeId));
+       aChildIt.More();
+       aChildIt.Next())
   {
-    const BRepGraphInc::ChildRef& aRef = aRefs.Children().Entry(BRepGraph_ChildRefId(aRefIdx));
-    if (aRef.ParentId == theCompoundNodeId && !aRef.IsRemoved && aRef.ChildDefId.IsValid())
-      aChildNodes.Append(aRef.ChildDefId);
+    aChildNodes.Append(aChildIt.CurrentId());
   }
   return aChildNodes;
 }
@@ -65,14 +68,13 @@ NCollection_Vector<BRepGraph_NodeId> collectCompSolidChildren(
   const BRepGraph_NodeId theCompSolidNodeId)
 {
   NCollection_Vector<BRepGraph_NodeId> aChildNodes;
-  const BRepGraph::RefsView&           aRefs     = theGraph.Refs();
-  const int                            aNbSolids = theGraph.Topo().Solids().Nb();
-  for (int aRefIdx = 0; aRefIdx < aRefs.Solids().Nb(); ++aRefIdx)
+  for (BRepGraph_DefsSolidOfCompSolid aChildIt(
+         theGraph,
+         BRepGraph_CompSolidId::FromNodeId(theCompSolidNodeId));
+       aChildIt.More();
+       aChildIt.Next())
   {
-    const BRepGraphInc::SolidRef& aRef = aRefs.Solids().Entry(BRepGraph_SolidRefId(aRefIdx));
-    if (aRef.ParentId == theCompSolidNodeId && !aRef.IsRemoved
-        && aRef.SolidDefId.IsValid(aNbSolids))
-      aChildNodes.Append(BRepGraph_SolidId(aRef.SolidDefId.Index));
+    aChildNodes.Append(aChildIt.CurrentId());
   }
   return aChildNodes;
 }
@@ -83,13 +85,12 @@ NCollection_Vector<BRepGraph_NodeId> collectSolidChildren(const BRepGraph&      
                                                           const BRepGraph_NodeId theSolidNodeId)
 {
   NCollection_Vector<BRepGraph_NodeId> aChildNodes;
-  const BRepGraph::RefsView&           aRefs     = theGraph.Refs();
-  const int                            aNbShells = theGraph.Topo().Shells().Nb();
-  for (int aRefIdx = 0; aRefIdx < aRefs.Shells().Nb(); ++aRefIdx)
+  for (BRepGraph_DefsShellOfSolid aChildIt(theGraph,
+                                           BRepGraph_SolidId::FromNodeId(theSolidNodeId));
+       aChildIt.More();
+       aChildIt.Next())
   {
-    const BRepGraphInc::ShellRef& aRef = aRefs.Shells().Entry(BRepGraph_ShellRefId(aRefIdx));
-    if (aRef.ParentId == theSolidNodeId && !aRef.IsRemoved && aRef.ShellDefId.IsValid(aNbShells))
-      aChildNodes.Append(BRepGraph_ShellId(aRef.ShellDefId.Index));
+    aChildNodes.Append(aChildIt.CurrentId());
   }
   return aChildNodes;
 }
@@ -100,13 +101,12 @@ NCollection_Vector<BRepGraph_NodeId> collectShellChildren(const BRepGraph&      
                                                           const BRepGraph_NodeId theShellNodeId)
 {
   NCollection_Vector<BRepGraph_NodeId> aChildNodes;
-  const BRepGraph::RefsView&           aRefs    = theGraph.Refs();
-  const int                            aNbFaces = theGraph.Topo().Faces().Nb();
-  for (int aRefIdx = 0; aRefIdx < aRefs.Faces().Nb(); ++aRefIdx)
+  for (BRepGraph_DefsFaceOfShell aChildIt(theGraph,
+                                          BRepGraph_ShellId::FromNodeId(theShellNodeId));
+       aChildIt.More();
+       aChildIt.Next())
   {
-    const BRepGraphInc::FaceRef& aRef = aRefs.Faces().Entry(BRepGraph_FaceRefId(aRefIdx));
-    if (aRef.ParentId == theShellNodeId && !aRef.IsRemoved && aRef.FaceDefId.IsValid(aNbFaces))
-      aChildNodes.Append(BRepGraph_FaceId(aRef.FaceDefId.Index));
+    aChildNodes.Append(aChildIt.CurrentId());
   }
   return aChildNodes;
 }
@@ -117,13 +117,12 @@ NCollection_Vector<BRepGraph_NodeId> collectFaceChildren(const BRepGraph&       
                                                          const BRepGraph_NodeId theFaceNodeId)
 {
   NCollection_Vector<BRepGraph_NodeId> aChildNodes;
-  const BRepGraph::RefsView&           aRefs    = theGraph.Refs();
-  const int                            aNbWires = theGraph.Topo().Wires().Nb();
-  for (int aRefIdx = 0; aRefIdx < aRefs.Wires().Nb(); ++aRefIdx)
+  for (BRepGraph_DefsWireOfFace aChildIt(theGraph,
+                                         BRepGraph_FaceId::FromNodeId(theFaceNodeId));
+       aChildIt.More();
+       aChildIt.Next())
   {
-    const BRepGraphInc::WireRef& aRef = aRefs.Wires().Entry(BRepGraph_WireRefId(aRefIdx));
-    if (aRef.ParentId == theFaceNodeId && !aRef.IsRemoved && aRef.WireDefId.IsValid(aNbWires))
-      aChildNodes.Append(BRepGraph_WireId(aRef.WireDefId.Index));
+    aChildNodes.Append(aChildIt.CurrentId());
   }
   return aChildNodes;
 }
@@ -134,18 +133,12 @@ NCollection_Vector<BRepGraph_NodeId> collectWireChildren(const BRepGraph&       
                                                          const BRepGraph_NodeId theWireNodeId)
 {
   NCollection_Vector<BRepGraph_NodeId> aChildNodes;
-  const BRepGraph::TopoView&           aTopo      = theGraph.Topo();
-  const BRepGraph::RefsView&           aRefs      = theGraph.Refs();
-  const int                            aNbCoEdges = aTopo.CoEdges().Nb();
-  for (int aRefIdx = 0; aRefIdx < aRefs.CoEdges().Nb(); ++aRefIdx)
+  for (BRepGraph_DefsEdgeOfWire aChildIt(theGraph,
+                                         BRepGraph_WireId::FromNodeId(theWireNodeId));
+       aChildIt.More();
+       aChildIt.Next())
   {
-    const BRepGraphInc::CoEdgeRef& aRef = aRefs.CoEdges().Entry(BRepGraph_CoEdgeRefId(aRefIdx));
-    if (aRef.ParentId != theWireNodeId || aRef.IsRemoved || !aRef.CoEdgeDefId.IsValid(aNbCoEdges))
-      continue;
-
-    const BRepGraphInc::CoEdgeDef& aCoEdge = aTopo.CoEdges().Definition(aRef.CoEdgeDefId);
-    if (aCoEdge.EdgeDefId.IsValid(aTopo.Edges().Nb()))
-      aChildNodes.Append(BRepGraph_EdgeId(aCoEdge.EdgeDefId.Index));
+    aChildNodes.Append(aChildIt.CurrentId());
   }
   return aChildNodes;
 }
@@ -419,66 +412,41 @@ static void unbindCoEdgesOfRemovedEdge(BRepGraphInc_Storage&  theStorage,
 
 //=================================================================================================
 
-int countActiveByKind(const BRepGraphInc_Storage& theStorage, const BRepGraph_NodeId::Kind theKind)
+template <typename DefType>
+int countIterator(const BRepGraph& theGraph)
 {
   int aCount = 0;
+  for (BRepGraph_Iterator<DefType> anIt(theGraph); anIt.More(); anIt.Next())
+    ++aCount;
+  return aCount;
+}
+
+int countActiveByKind(const BRepGraph& theGraph, const BRepGraph_NodeId::Kind theKind)
+{
   switch (theKind)
   {
     case BRepGraph_NodeId::Kind::Vertex:
-      for (int i = 0; i < theStorage.NbVertices(); ++i)
-        if (!theStorage.Vertex(BRepGraph_VertexId(i)).IsRemoved)
-          ++aCount;
-      return aCount;
+      return countIterator<BRepGraphInc::VertexDef>(theGraph);
     case BRepGraph_NodeId::Kind::Edge:
-      for (int i = 0; i < theStorage.NbEdges(); ++i)
-        if (!theStorage.Edge(BRepGraph_EdgeId(i)).IsRemoved)
-          ++aCount;
-      return aCount;
+      return countIterator<BRepGraphInc::EdgeDef>(theGraph);
     case BRepGraph_NodeId::Kind::CoEdge:
-      for (int i = 0; i < theStorage.NbCoEdges(); ++i)
-        if (!theStorage.CoEdge(BRepGraph_CoEdgeId(i)).IsRemoved)
-          ++aCount;
-      return aCount;
+      return countIterator<BRepGraphInc::CoEdgeDef>(theGraph);
     case BRepGraph_NodeId::Kind::Wire:
-      for (int i = 0; i < theStorage.NbWires(); ++i)
-        if (!theStorage.Wire(BRepGraph_WireId(i)).IsRemoved)
-          ++aCount;
-      return aCount;
+      return countIterator<BRepGraphInc::WireDef>(theGraph);
     case BRepGraph_NodeId::Kind::Face:
-      for (int i = 0; i < theStorage.NbFaces(); ++i)
-        if (!theStorage.Face(BRepGraph_FaceId(i)).IsRemoved)
-          ++aCount;
-      return aCount;
+      return countIterator<BRepGraphInc::FaceDef>(theGraph);
     case BRepGraph_NodeId::Kind::Shell:
-      for (int i = 0; i < theStorage.NbShells(); ++i)
-        if (!theStorage.Shell(BRepGraph_ShellId(i)).IsRemoved)
-          ++aCount;
-      return aCount;
+      return countIterator<BRepGraphInc::ShellDef>(theGraph);
     case BRepGraph_NodeId::Kind::Solid:
-      for (int i = 0; i < theStorage.NbSolids(); ++i)
-        if (!theStorage.Solid(BRepGraph_SolidId(i)).IsRemoved)
-          ++aCount;
-      return aCount;
+      return countIterator<BRepGraphInc::SolidDef>(theGraph);
     case BRepGraph_NodeId::Kind::Compound:
-      for (int i = 0; i < theStorage.NbCompounds(); ++i)
-        if (!theStorage.Compound(BRepGraph_CompoundId(i)).IsRemoved)
-          ++aCount;
-      return aCount;
+      return countIterator<BRepGraphInc::CompoundDef>(theGraph);
     case BRepGraph_NodeId::Kind::CompSolid:
-      for (int i = 0; i < theStorage.NbCompSolids(); ++i)
-        if (!theStorage.CompSolid(BRepGraph_CompSolidId(i)).IsRemoved)
-          ++aCount;
-      return aCount;
+      return countIterator<BRepGraphInc::CompSolidDef>(theGraph);
     case BRepGraph_NodeId::Kind::Product:
-      for (int i = 0; i < theStorage.NbProducts(); ++i)
-        if (!theStorage.Product(BRepGraph_ProductId(i)).IsRemoved)
-          ++aCount;
-      return aCount;
+      return countIterator<BRepGraphInc::ProductDef>(theGraph);
     case BRepGraph_NodeId::Kind::Occurrence:
-      for (int i = 0; i < theStorage.NbOccurrences(); ++i)
-        if (!theStorage.Occurrence(BRepGraph_OccurrenceId(i)).IsRemoved)
-          ++aCount;
-      return aCount;
+      return countIterator<BRepGraphInc::OccurrenceDef>(theGraph);
   }
   return 0;
 }
@@ -513,7 +481,7 @@ int cachedActiveByKind(const BRepGraphInc_Storage& theStorage, const BRepGraph_N
   return 0;
 }
 
-const NCollection_Vector<BRepGraph_CoEdgeRefId>& wireCoEdgeRefIds(
+[[maybe_unused]] const NCollection_Vector<BRepGraph_CoEdgeRefId>& wireCoEdgeRefIds(
   const BRepGraphInc_Storage& theStorage,
   const BRepGraph_WireId      theWireId)
 {
@@ -1147,9 +1115,8 @@ void BRepGraph::BuilderView::RemoveNode(const BRepGraph_NodeId theNode,
 
 void BRepGraph::BuilderView::RemoveSubgraph(const BRepGraph_NodeId theNode)
 {
-  RemoveNode(theNode);
-
-  // Traverse children via reference-entry tables.
+  // Collect and recursively remove children BEFORE marking this node as removed,
+  // because iterators (DefsIterator, RefsIterator) skip removed parents/children.
   switch (theNode.NodeKind)
   {
     case BRepGraph_NodeId::Kind::Compound: {
@@ -1238,15 +1205,19 @@ void BRepGraph::BuilderView::RemoveSubgraph(const BRepGraph_NodeId theNode)
     case BRepGraph_NodeId::Kind::Product: {
       if (theNode.Index >= 0 && theNode.Index < myGraph->myData->myIncStorage.NbProducts())
       {
-        const BRepGraphInc_Storage&     aStorage = myGraph->myData->myIncStorage;
-        const BRepGraphInc::ProductDef& aProduct =
-          aStorage.Product(BRepGraph_ProductId(theNode.Index));
+        const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
         // Snapshot occurrence indices before iterating, because RemoveSubgraph(Occurrence)
         // modifies the parent's OccurrenceRefIds via swap-remove.
         NCollection_Vector<int> anOccIndices;
-        for (int i = 0; i < aProduct.OccurrenceRefIds.Length(); ++i)
+        for (BRepGraph_RefsOccurrenceOfProduct anOccIt(
+               *myGraph,
+               BRepGraph_ProductId::FromNodeId(theNode));
+             anOccIt.More();
+             anOccIt.Next())
+        {
           anOccIndices.Append(
-            aStorage.OccurrenceRef(aProduct.OccurrenceRefIds.Value(i)).OccurrenceDefId.Index);
+            aStorage.OccurrenceRef(anOccIt.CurrentId()).OccurrenceDefId.Index);
+        }
         for (int i = 0; i < anOccIndices.Length(); ++i)
           RemoveSubgraph(BRepGraph_OccurrenceId(anOccIndices.Value(i)));
       }
@@ -1263,10 +1234,13 @@ void BRepGraph::BuilderView::RemoveSubgraph(const BRepGraph_NodeId theNode)
         {
           NCollection_Vector<BRepGraph_OccurrenceRefId>& aRefIds =
             myGraph->myData->myIncStorage.ChangeProduct(anOcc.ParentProductDefId).OccurrenceRefIds;
-          for (int i = 0; i < aRefIds.Length(); ++i)
+          for (BRepGraph_RefsOccurrenceOfProduct aRefIt(*myGraph, anOcc.ParentProductDefId);
+               aRefIt.More();
+               aRefIt.Next())
           {
+            const int i = aRefIt.Index();
             BRepGraphInc::OccurrenceRef& aRef =
-              myGraph->myData->myIncStorage.ChangeOccurrenceRef(aRefIds.Value(i));
+              myGraph->myData->myIncStorage.ChangeOccurrenceRef(aRefIt.CurrentId());
             if (aRef.OccurrenceDefId.Index == theNode.Index)
             {
               if (!aRef.IsRemoved)
@@ -1287,6 +1261,10 @@ void BRepGraph::BuilderView::RemoveSubgraph(const BRepGraph_NodeId theNode)
     default:
       break;
   }
+
+  // Mark the node as removed AFTER children have been collected and processed,
+  // so that iterators can still see this node as a valid parent during traversal.
+  RemoveNode(theNode);
 }
 
 //=================================================================================================
@@ -2104,14 +2082,13 @@ void BRepGraph::BuilderView::SplitEdge(const BRepGraph_EdgeId   theEdgeEntity,
         const int aWireIdx = aWireIndices->Value(aWIdx).Index;
         if (aWireIdx < 0 || aWireIdx >= aStorage.NbWires())
           continue;
-        const NCollection_Vector<BRepGraph_CoEdgeRefId>& aWireRefIds =
-          wireCoEdgeRefIds(aStorage, BRepGraph_WireId(aWireIdx));
-        for (int aRefOrd = 0; aRefOrd < aWireRefIds.Length(); ++aRefOrd)
+        for (BRepGraph_RefsCoEdgeOfWire aRefIt(*myGraph, BRepGraph_WireId(aWireIdx));
+             aRefIt.More();
+             aRefIt.Next())
         {
-          const BRepGraph_CoEdgeRefId    aRefId = aWireRefIds.Value(aRefOrd);
+          const int                      aRefOrd = aRefIt.Index();
+          const BRepGraph_CoEdgeRefId    aRefId  = aRefIt.CurrentId();
           const BRepGraphInc::CoEdgeRef& aRef   = aStorage.CoEdgeRef(aRefId);
-          if (aRef.IsRemoved)
-            continue;
           const int aOldCoEdgeIdx = aRef.CoEdgeDefId.Index;
           if (aOldCoEdgeIdx < 0 || aOldCoEdgeIdx >= aStorage.NbCoEdges())
             continue;
@@ -2365,16 +2342,12 @@ void BRepGraph::BuilderView::ReplaceEdgeInWire(const BRepGraph_WireId theWireDef
                          "ReplaceEdgeInWire: replacement edge must be active",
                          Standard_VOID_RETURN);
 
-  BRepGraphInc_Storage&                            aStorage = myGraph->myData->myIncStorage;
-  const NCollection_Vector<BRepGraph_CoEdgeRefId>& aWireRefIds =
-    wireCoEdgeRefIds(aStorage, theWireDefId);
+  BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
 
   // Update incidence by scanning wire-owned coedge ref entries.
-  for (int aRefIdx = 0; aRefIdx < aWireRefIds.Length(); ++aRefIdx)
+  for (BRepGraph_RefsCoEdgeOfWire aRefIt(*myGraph, theWireDefId); aRefIt.More(); aRefIt.Next())
   {
-    const BRepGraphInc::CoEdgeRef& aRef = aStorage.CoEdgeRef(aWireRefIds.Value(aRefIdx));
-    if (aRef.IsRemoved)
-      continue;
+    const BRepGraphInc::CoEdgeRef& aRef = aStorage.CoEdgeRef(aRefIt.CurrentId());
     const int aCoEdgeEntIdx = aRef.CoEdgeDefId.Index;
     if (aCoEdgeEntIdx < 0 || aCoEdgeEntIdx >= aStorage.NbCoEdges())
       continue;
@@ -2465,7 +2438,7 @@ bool BRepGraph::BuilderView::ValidateMutationBoundary(
   {
     const BRepGraph_NodeId::Kind aKind       = THE_KINDS[aKindIdx];
     const int                    aCachedCnt  = cachedActiveByKind(aStorage, aKind);
-    const int                    anActualCnt = countActiveByKind(aStorage, aKind);
+    const int                    anActualCnt = countActiveByKind(*myGraph, aKind);
     if (aCachedCnt == anActualCnt)
       continue;
 

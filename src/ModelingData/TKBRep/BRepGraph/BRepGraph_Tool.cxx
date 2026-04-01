@@ -15,6 +15,7 @@
 
 #include <Adaptor3d_CurveOnSurface.hxx>
 #include <BRepGraph_ParamLayer.hxx>
+#include <BRepGraph_RefsIterator.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_RegularityLayer.hxx>
 #include <BRepGraph_TopoView.hxx>
@@ -540,11 +541,10 @@ bool BRepGraph_Tool::Face::HasTriangulation(const BRepGraph&       theGraph,
 const BRepGraphInc::WireRef* BRepGraph_Tool::Face::OuterWire(const BRepGraph&       theGraph,
                                                              const BRepGraph_FaceId theFace)
 {
-  const BRepGraphInc::FaceDef& aFace = theGraph.Topo().Faces().Definition(theFace);
-  const BRepGraph::RefsView&   aRefs = theGraph.Refs();
-  for (int i = 0; i < aFace.WireRefIds.Length(); ++i)
+  const BRepGraph::RefsView& aRefs = theGraph.Refs();
+  for (BRepGraph_RefsWireOfFace aWireIt(theGraph, theFace); aWireIt.More(); aWireIt.Next())
   {
-    const BRepGraphInc::WireRef& aRef = aRefs.Wires().Entry(aFace.WireRefIds.Value(i));
+    const BRepGraphInc::WireRef& aRef = aRefs.Wires().Entry(aWireIt.CurrentId());
     if (!aRef.IsRemoved && aRef.IsOuter)
       return &aRef;
   }

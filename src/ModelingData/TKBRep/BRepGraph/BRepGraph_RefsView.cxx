@@ -13,6 +13,7 @@
 
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_Data.hxx>
+#include <BRepGraph_RefsIterator.hxx>
 #include <NCollection_PackedMap.hxx>
 
 #include <shared_mutex>
@@ -288,28 +289,15 @@ NCollection_Vector<BRepGraph_VertexRefId> BRepGraph::RefsView::VertexOps::IdsOf(
   if (!theEdge.IsValid(aStorage.NbEdges()))
     return aResult;
 
-  const BRepGraphInc::EdgeDef& aDef          = aStorage.Edge(theEdge);
-  const int                    aNbVertexRefs = aStorage.NbVertexRefs();
   NCollection_PackedMap<int>   aSeenRefIds;
 
-  const auto aProcessRefId =
-    [&aStorage, &aSeenRefIds, aNbVertexRefs, &aResult](const BRepGraph_VertexRefId theRefId) {
-      if (!theRefId.IsValid(aNbVertexRefs))
-        return;
-      if (!aSeenRefIds.Add(theRefId.Index))
-        return;
-
-      const BRepGraphInc::VertexRef& aVertexRef = aStorage.VertexRef(theRefId);
-      if (aVertexRef.IsRemoved)
-        return;
-      aResult.Append(theRefId);
-    };
-
-  aProcessRefId(aDef.StartVertexRefId);
-  aProcessRefId(aDef.EndVertexRefId);
-  for (int i = 0; i < aDef.InternalVertexRefIds.Length(); ++i)
+  for (BRepGraph_RefsVertexOfEdge aRefIt(*myGraph, theEdge); aRefIt.More(); aRefIt.Next())
   {
-    aProcessRefId(aDef.InternalVertexRefIds.Value(i));
+    const BRepGraph_VertexRefId aRefId = aRefIt.CurrentId();
+    if (aSeenRefIds.Add(aRefId.Index))
+    {
+      aResult.Append(aRefId);
+    }
   }
   return aResult;
 }

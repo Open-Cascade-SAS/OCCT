@@ -14,6 +14,7 @@
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_Data.hxx>
 #include <BRepGraph_ParamLayer.hxx>
+#include <BRepGraph_RefsIterator.hxx>
 #include <BRepGraph_RegularityLayer.hxx>
 #include <BRepGraphInc_Reconstruct.hxx>
 
@@ -95,18 +96,12 @@ static TopoDS_Shape reconstructProductLocal(BRepGraph_ReconstructionContext& the
     TopoDS_Compound aCompound;
     aBuilder.MakeCompound(aCompound);
 
-    for (int anOccRefIdx = 0; anOccRefIdx < aProduct.OccurrenceRefIds.Length(); ++anOccRefIdx)
+    for (BRepGraph_RefsOccurrenceOfProduct anOccIt(*theContext.Graph, theProduct);
+         anOccIt.More();
+         anOccIt.Next())
     {
-      const BRepGraph_OccurrenceRefId anOccurrenceRefId =
-        aProduct.OccurrenceRefIds.Value(anOccRefIdx);
-      if (!anOccurrenceRefId.IsValid(aStorage.NbOccurrenceRefs()))
-        continue;
-
       const BRepGraphInc::OccurrenceRef& anOccurrenceRef =
-        aStorage.OccurrenceRef(anOccurrenceRefId);
-      if (anOccurrenceRef.IsRemoved
-          || !anOccurrenceRef.OccurrenceDefId.IsValid(aStorage.NbOccurrences()))
-        continue;
+        aStorage.OccurrenceRef(anOccIt.CurrentId());
 
       TopoDS_Shape aChild = reconstructOccurrenceLocal(theContext, anOccurrenceRef.OccurrenceDefId);
       if (!aChild.IsNull())
