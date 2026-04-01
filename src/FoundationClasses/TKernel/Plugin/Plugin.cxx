@@ -27,6 +27,7 @@
 #include <Standard_WarningDisableFunctionCast.hxx>
 
 #include <shared_mutex>
+#include <mutex>
 
 //=================================================================================================
 
