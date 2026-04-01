@@ -297,7 +297,8 @@ protected:
     const theItem* ptr() const noexcept { return reinterpret_cast<const theItem*>(myData); }
   };
 
-  using InlineStorage = std::conditional_t<IS_TRIVIAL, InlineStorageTrivial, InlineStorageNonTrivial>;
+  using InlineStorage =
+    std::conditional_t<IS_TRIVIAL, InlineStorageTrivial, InlineStorageNonTrivial>;
 
 protected:
   InlineStorage myStorage; //!< Inline buffer

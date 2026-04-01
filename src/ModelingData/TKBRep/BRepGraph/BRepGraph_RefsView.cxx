@@ -279,12 +279,12 @@ const NCollection_Vector<BRepGraph_SolidRefId>& BRepGraph::RefsView::SolidOps::I
 //=================================================================================================
 
 NCollection_Vector<BRepGraph_VertexRefId> BRepGraph::RefsView::VertexOps::IdsOf(
-  const BRepGraph_EdgeId                          theEdge,
+  const BRepGraph_EdgeId                        theEdge,
   const occ::handle<NCollection_BaseAllocator>& theAllocator) const
 {
   NCollection_Vector<BRepGraph_VertexRefId> aResult(THE_REFSVIEW_EDGE_VERTEX_REF_BLOCK_SIZE,
                                                     theAllocator);
-  const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
+  const BRepGraphInc_Storage&               aStorage = myGraph->myData->myIncStorage;
   if (!theEdge.IsValid(aStorage.NbEdges()))
     return aResult;
 
@@ -292,18 +292,18 @@ NCollection_Vector<BRepGraph_VertexRefId> BRepGraph::RefsView::VertexOps::IdsOf(
   const int                    aNbVertexRefs = aStorage.NbVertexRefs();
   NCollection_PackedMap<int>   aSeenRefIds;
 
-  const auto aProcessRefId = [&aStorage, &aSeenRefIds, aNbVertexRefs, &aResult](
-                               const BRepGraph_VertexRefId theRefId) {
-    if (!theRefId.IsValid(aNbVertexRefs))
-      return;
-    if (!aSeenRefIds.Add(theRefId.Index))
-      return;
+  const auto aProcessRefId =
+    [&aStorage, &aSeenRefIds, aNbVertexRefs, &aResult](const BRepGraph_VertexRefId theRefId) {
+      if (!theRefId.IsValid(aNbVertexRefs))
+        return;
+      if (!aSeenRefIds.Add(theRefId.Index))
+        return;
 
-    const BRepGraphInc::VertexRef& aVertexRef = aStorage.VertexRef(theRefId);
-    if (aVertexRef.IsRemoved)
-      return;
-    aResult.Append(theRefId);
-  };
+      const BRepGraphInc::VertexRef& aVertexRef = aStorage.VertexRef(theRefId);
+      if (aVertexRef.IsRemoved)
+        return;
+      aResult.Append(theRefId);
+    };
 
   aProcessRefId(aDef.StartVertexRefId);
   aProcessRefId(aDef.EndVertexRefId);

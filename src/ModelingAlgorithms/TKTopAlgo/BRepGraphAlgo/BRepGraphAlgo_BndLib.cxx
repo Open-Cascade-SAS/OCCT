@@ -57,21 +57,21 @@ static void addNodeBoxOptimal(const BRepGraph&       theGraph,
                               const bool             theUseTri,
                               const bool             theUseShapeTol);
 
-static void addProductBoxLocal(const BRepGraph&        theGraph,
+static void addProductBoxLocal(const BRepGraph&          theGraph,
                                const BRepGraph_ProductId theProduct,
                                Bnd_Box&                  theBox,
                                const bool                theUseTri);
 
-static void addProductBoxOptimalLocal(const BRepGraph&        theGraph,
+static void addProductBoxOptimalLocal(const BRepGraph&          theGraph,
                                       const BRepGraph_ProductId theProduct,
                                       Bnd_Box&                  theBox,
                                       const bool                theUseTri,
                                       const bool                theUseShapeTol);
 
-static void addOccurrenceBoxLocal(const BRepGraph&          theGraph,
+static void addOccurrenceBoxLocal(const BRepGraph&             theGraph,
                                   const BRepGraph_OccurrenceId theOccurrence,
-                                  Bnd_Box&                  theBox,
-                                  const bool                theUseTri)
+                                  Bnd_Box&                     theBox,
+                                  const bool                   theUseTri)
 {
   if (!theOccurrence.IsValid(theGraph.Topo().Occurrences().Nb()))
   {
@@ -99,11 +99,11 @@ static void addOccurrenceBoxLocal(const BRepGraph&          theGraph,
   theBox.Add(aLocalBox);
 }
 
-static void addOccurrenceBoxOptimalLocal(const BRepGraph&          theGraph,
+static void addOccurrenceBoxOptimalLocal(const BRepGraph&             theGraph,
                                          const BRepGraph_OccurrenceId theOccurrence,
-                                         Bnd_Box&                  theBox,
-                                         const bool                theUseTri,
-                                         const bool                theUseShapeTol)
+                                         Bnd_Box&                     theBox,
+                                         const bool                   theUseTri,
+                                         const bool                   theUseShapeTol)
 {
   if (!theOccurrence.IsValid(theGraph.Topo().Occurrences().Nb()))
   {
@@ -135,10 +135,10 @@ static void addOccurrenceBoxOptimalLocal(const BRepGraph&          theGraph,
   theBox.Add(aLocalBox);
 }
 
-static void addProductBoxLocal(const BRepGraph&         theGraph,
+static void addProductBoxLocal(const BRepGraph&          theGraph,
                                const BRepGraph_ProductId theProduct,
-                               Bnd_Box&                 theBox,
-                               const bool               theUseTri)
+                               Bnd_Box&                  theBox,
+                               const bool                theUseTri)
 {
   if (!theProduct.IsValid(theGraph.Topo().Products().Nb()))
   {
@@ -173,7 +173,8 @@ static void addProductBoxLocal(const BRepGraph&         theGraph,
       }
 
       const BRepGraphInc::OccurrenceRef& anOccRef = theGraph.Refs().Occurrences().Entry(anOccRefId);
-      if (anOccRef.IsRemoved || !anOccRef.OccurrenceDefId.IsValid(theGraph.Topo().Occurrences().Nb()))
+      if (anOccRef.IsRemoved
+          || !anOccRef.OccurrenceDefId.IsValid(theGraph.Topo().Occurrences().Nb()))
       {
         continue;
       }
@@ -183,11 +184,11 @@ static void addProductBoxLocal(const BRepGraph&         theGraph,
   }
 }
 
-static void addProductBoxOptimalLocal(const BRepGraph&         theGraph,
+static void addProductBoxOptimalLocal(const BRepGraph&          theGraph,
                                       const BRepGraph_ProductId theProduct,
-                                      Bnd_Box&                 theBox,
-                                      const bool               theUseTri,
-                                      const bool               theUseShapeTol)
+                                      Bnd_Box&                  theBox,
+                                      const bool                theUseTri,
+                                      const bool                theUseShapeTol)
 {
   if (!theProduct.IsValid(theGraph.Topo().Products().Nb()))
   {
@@ -200,11 +201,7 @@ static void addProductBoxOptimalLocal(const BRepGraph&         theGraph,
     if (aProduct.ShapeRootId.IsValid())
     {
       Bnd_Box aShapeBox;
-      addNodeBoxOptimal(theGraph,
-                        aProduct.ShapeRootId,
-                        aShapeBox,
-                        theUseTri,
-                        theUseShapeTol);
+      addNodeBoxOptimal(theGraph, aProduct.ShapeRootId, aShapeBox, theUseTri, theUseShapeTol);
       if (!aShapeBox.IsVoid())
       {
         if (!aProduct.RootLocation.IsIdentity())
@@ -226,7 +223,8 @@ static void addProductBoxOptimalLocal(const BRepGraph&         theGraph,
       }
 
       const BRepGraphInc::OccurrenceRef& anOccRef = theGraph.Refs().Occurrences().Entry(anOccRefId);
-      if (anOccRef.IsRemoved || !anOccRef.OccurrenceDefId.IsValid(theGraph.Topo().Occurrences().Nb()))
+      if (anOccRef.IsRemoved
+          || !anOccRef.OccurrenceDefId.IsValid(theGraph.Topo().Occurrences().Nb()))
       {
         continue;
       }
@@ -337,8 +335,9 @@ static void forCompSolidSolidRefEntries(const BRepGraph&            theGraph,
                                         const BRepGraph_CompSolidId theCompSolidId,
                                         FuncT&&                     theFunc)
 {
-  const BRepGraph::RefsView&        aRefs  = theGraph.Refs();
-  const BRepGraphInc::CompSolidDef& aCSEnt = theGraph.Topo().CompSolids().Definition(theCompSolidId);
+  const BRepGraph::RefsView&        aRefs = theGraph.Refs();
+  const BRepGraphInc::CompSolidDef& aCSEnt =
+    theGraph.Topo().CompSolids().Definition(theCompSolidId);
   for (int i = 0; i < aCSEnt.SolidRefIds.Length(); ++i)
   {
     const BRepGraph_SolidRefId    aRefId = aCSEnt.SolidRefIds.Value(i);
@@ -426,8 +425,9 @@ static void addFaceBox(const BRepGraph&       theGraph,
     bool hasEdges = false;
     forFaceWireRefEntries(theGraph, theFaceId, [&](const BRepGraphInc::WireRef& aWR) {
       forWireCoEdgeRefEntries(theGraph, aWR.WireDefId, [&](const BRepGraphInc::CoEdgeRef& aCR) {
-        const BRepGraphInc::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdges().Definition(aCR.CoEdgeDefId);
-        const BRepGraph_EdgeId         anEdgeId(aCoEdge.EdgeDefId);
+        const BRepGraphInc::CoEdgeDef& aCoEdge =
+          theGraph.Topo().CoEdges().Definition(aCR.CoEdgeDefId);
+        const BRepGraph_EdgeId anEdgeId(aCoEdge.EdgeDefId);
         if (BRepGraph_Tool::Edge::Degenerated(theGraph, anEdgeId)
             || !BRepGraph_Tool::Edge::HasCurve(theGraph, anEdgeId))
         {
@@ -755,8 +755,9 @@ static void addFaceBoxOptimal(const BRepGraph&       theGraph,
     bool hasEdges = false;
     forFaceWireRefEntries(theGraph, theFaceId, [&](const BRepGraphInc::WireRef& aWR) {
       forWireCoEdgeRefEntries(theGraph, aWR.WireDefId, [&](const BRepGraphInc::CoEdgeRef& aCR) {
-        const BRepGraphInc::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdges().Definition(aCR.CoEdgeDefId);
-        const BRepGraph_EdgeId         anEdgeId(aCoEdge.EdgeDefId);
+        const BRepGraphInc::CoEdgeDef& aCoEdge =
+          theGraph.Topo().CoEdges().Definition(aCR.CoEdgeDefId);
+        const BRepGraph_EdgeId anEdgeId(aCoEdge.EdgeDefId);
         if (BRepGraph_Tool::Edge::Degenerated(theGraph, anEdgeId)
             || !BRepGraph_Tool::Edge::HasCurve(theGraph, anEdgeId))
         {
@@ -795,8 +796,9 @@ static void addFaceBoxOptimal(const BRepGraph&       theGraph,
       Bnd_Box aEBox;
       forFaceWireRefEntries(theGraph, theFaceId, [&](const BRepGraphInc::WireRef& aWR) {
         forWireCoEdgeRefEntries(theGraph, aWR.WireDefId, [&](const BRepGraphInc::CoEdgeRef& aCR) {
-          const BRepGraphInc::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdges().Definition(aCR.CoEdgeDefId);
-          const BRepGraph_EdgeId         anEdgeId(aCoEdge.EdgeDefId);
+          const BRepGraphInc::CoEdgeDef& aCoEdge =
+            theGraph.Topo().CoEdges().Definition(aCR.CoEdgeDefId);
+          const BRepGraph_EdgeId anEdgeId(aCoEdge.EdgeDefId);
           if (BRepGraph_Tool::Edge::Degenerated(theGraph, anEdgeId)
               || !BRepGraph_Tool::Edge::HasCurve(theGraph, anEdgeId))
           {
@@ -868,8 +870,9 @@ static void addNodeBox(const BRepGraph&       theGraph,
       break;
     }
     case BRepGraph_NodeId::Kind::Shell: {
-      const BRepGraph_ShellId aShellId(theNode.Index);
-      const NCollection_Vector<BRepGraph_FaceRefId>& aFaceRefIds = theGraph.Refs().Faces().IdsOf(aShellId);
+      const BRepGraph_ShellId                        aShellId(theNode.Index);
+      const NCollection_Vector<BRepGraph_FaceRefId>& aFaceRefIds =
+        theGraph.Refs().Faces().IdsOf(aShellId);
       for (int i = 0; i < aFaceRefIds.Length(); ++i)
       {
         const BRepGraphInc::FaceRef& aFaceRef = theGraph.Refs().Faces().Entry(aFaceRefIds.Value(i));
@@ -921,11 +924,12 @@ static void addNodeBox(const BRepGraph&       theGraph,
         break;
       }
       // Use global placement (not local Placement) since this is a standalone node query.
-      Bnd_Box                      aLocalBox;
+      Bnd_Box aLocalBox;
       addProductBoxLocal(theGraph, anOccurrence.ProductDefId, aLocalBox, theUseTri);
       if (!aLocalBox.IsVoid())
       {
-        const TopLoc_Location aGlobalLoc = theGraph.Topo().Occurrences().OccurrenceLocation(anOccurrenceId);
+        const TopLoc_Location aGlobalLoc =
+          theGraph.Topo().Occurrences().OccurrenceLocation(anOccurrenceId);
         if (!aGlobalLoc.IsIdentity())
         {
           aLocalBox = aLocalBox.Transformed(aGlobalLoc.Transformation());
@@ -981,7 +985,8 @@ static void addNodeBoxOptimal(const BRepGraph&       theGraph,
         theGraph,
         BRepGraph_WireId(theNode.Index),
         [&](const BRepGraphInc::CoEdgeRef& aCR) {
-          const BRepGraphInc::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdges().Definition(aCR.CoEdgeDefId);
+          const BRepGraphInc::CoEdgeDef& aCoEdge =
+            theGraph.Topo().CoEdges().Definition(aCR.CoEdgeDefId);
           addNodeBoxOptimal(theGraph, aCoEdge.EdgeDefId, theBox, theUseTri, theUseShapeTol);
         });
       break;
@@ -995,8 +1000,9 @@ static void addNodeBoxOptimal(const BRepGraph&       theGraph,
       break;
     }
     case BRepGraph_NodeId::Kind::Shell: {
-      const BRepGraph_ShellId aShellId(theNode.Index);
-      const NCollection_Vector<BRepGraph_FaceRefId>& aFaceRefIds = theGraph.Refs().Faces().IdsOf(aShellId);
+      const BRepGraph_ShellId                        aShellId(theNode.Index);
+      const NCollection_Vector<BRepGraph_FaceRefId>& aFaceRefIds =
+        theGraph.Refs().Faces().IdsOf(aShellId);
       for (int i = 0; i < aFaceRefIds.Length(); ++i)
       {
         const BRepGraphInc::FaceRef& aFaceRef = theGraph.Refs().Faces().Entry(aFaceRefIds.Value(i));
@@ -1063,7 +1069,8 @@ static void addNodeBoxOptimal(const BRepGraph&       theGraph,
                                 theUseShapeTol);
       if (!aLocalBox.IsVoid())
       {
-        const TopLoc_Location aGlobalLoc = theGraph.Topo().Occurrences().OccurrenceLocation(anOccurrenceId);
+        const TopLoc_Location aGlobalLoc =
+          theGraph.Topo().Occurrences().OccurrenceLocation(anOccurrenceId);
         if (!aGlobalLoc.IsIdentity())
         {
           aLocalBox = aLocalBox.Transformed(aGlobalLoc.Transformation());
@@ -1256,7 +1263,8 @@ const occ::handle<BRepGraph_CacheKind>& BRepGraphAlgo_BndLib::CacheKind()
 //! Pre-resolved slot index for the BndBox cache kind.
 static int cacheKindSlot()
 {
-  static const int THE_SLOT = BRepGraph_CacheKindRegistry::Register(BRepGraphAlgo_BndLib::CacheKind());
+  static const int THE_SLOT =
+    BRepGraph_CacheKindRegistry::Register(BRepGraphAlgo_BndLib::CacheKind());
   return THE_SLOT;
 }
 
@@ -1289,7 +1297,7 @@ Bnd_Box BRepGraphAlgo_BndLib::AddCached(BRepGraph&                            th
                                         const BRepGraphAlgo_BndLib::Precision thePrecision,
                                         const bool                            theUseTriangulation)
 {
-  const int aKindSlot = cacheKindSlot();
+  const int                         aKindSlot       = cacheKindSlot();
   occ::handle<BRepGraph_CacheValue> anExistingValue = theGraph.Cache().Get(theNode, aKindSlot);
   if (anExistingValue)
   {
@@ -1356,7 +1364,7 @@ void BRepGraphAlgo_BndLib::SetCached(BRepGraph&             theGraph,
                                      const bool             theUsedTriangulation,
                                      const bool             theUsedShapeTolerance)
 {
-  const int aKindSlot = cacheKindSlot();
+  const int  aKindSlot = cacheKindSlot();
   CachedData aData;
   aData.Box                = theBox;
   aData.BoxPrecision       = thePrecision;

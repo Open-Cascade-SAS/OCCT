@@ -69,8 +69,8 @@ public:
   class ShellOps
   {
   public:
-    [[nodiscard]] Standard_EXPORT int Nb() const;
-    [[nodiscard]] Standard_EXPORT int NbActive() const;
+    [[nodiscard]] Standard_EXPORT int   Nb() const;
+    [[nodiscard]] Standard_EXPORT int   NbActive() const;
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::ShellRef& Entry(
       const BRepGraph_ShellRefId theRefId) const;
     [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_ShellRefId>& IdsOf(
@@ -91,8 +91,8 @@ public:
   class FaceOps
   {
   public:
-    [[nodiscard]] Standard_EXPORT int Nb() const;
-    [[nodiscard]] Standard_EXPORT int NbActive() const;
+    [[nodiscard]] Standard_EXPORT int   Nb() const;
+    [[nodiscard]] Standard_EXPORT int   NbActive() const;
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::FaceRef& Entry(
       const BRepGraph_FaceRefId theRefId) const;
     [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_FaceRefId>& IdsOf(
@@ -113,8 +113,8 @@ public:
   class WireOps
   {
   public:
-    [[nodiscard]] Standard_EXPORT int Nb() const;
-    [[nodiscard]] Standard_EXPORT int NbActive() const;
+    [[nodiscard]] Standard_EXPORT int   Nb() const;
+    [[nodiscard]] Standard_EXPORT int   NbActive() const;
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::WireRef& Entry(
       const BRepGraph_WireRefId theRefId) const;
     [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_WireRefId>& IdsOf(
@@ -135,8 +135,8 @@ public:
   class CoEdgeOps
   {
   public:
-    [[nodiscard]] Standard_EXPORT int Nb() const;
-    [[nodiscard]] Standard_EXPORT int NbActive() const;
+    [[nodiscard]] Standard_EXPORT int   Nb() const;
+    [[nodiscard]] Standard_EXPORT int   NbActive() const;
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::CoEdgeRef& Entry(
       const BRepGraph_CoEdgeRefId theRefId) const;
     [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_CoEdgeRefId>& IdsOf(
@@ -157,12 +157,12 @@ public:
   class VertexOps
   {
   public:
-    [[nodiscard]] Standard_EXPORT int Nb() const;
-    [[nodiscard]] Standard_EXPORT int NbActive() const;
+    [[nodiscard]] Standard_EXPORT int   Nb() const;
+    [[nodiscard]] Standard_EXPORT int   NbActive() const;
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::VertexRef& Entry(
       const BRepGraph_VertexRefId theRefId) const;
     [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_VertexRefId> IdsOf(
-      const BRepGraph_EdgeId                          theEdge,
+      const BRepGraph_EdgeId                        theEdge,
       const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
 
   private:
@@ -180,8 +180,8 @@ public:
   class SolidOps
   {
   public:
-    [[nodiscard]] Standard_EXPORT int Nb() const;
-    [[nodiscard]] Standard_EXPORT int NbActive() const;
+    [[nodiscard]] Standard_EXPORT int   Nb() const;
+    [[nodiscard]] Standard_EXPORT int   NbActive() const;
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::SolidRef& Entry(
       const BRepGraph_SolidRefId theRefId) const;
     [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_SolidRefId>& IdsOf(
@@ -202,8 +202,8 @@ public:
   class ChildOps
   {
   public:
-    [[nodiscard]] Standard_EXPORT int Nb() const;
-    [[nodiscard]] Standard_EXPORT int NbActive() const;
+    [[nodiscard]] Standard_EXPORT int   Nb() const;
+    [[nodiscard]] Standard_EXPORT int   NbActive() const;
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::ChildRef& Entry(
       const BRepGraph_ChildRefId theRefId) const;
     [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_ChildRefId>& IdsOf(
@@ -224,8 +224,8 @@ public:
   class OccurrenceOps
   {
   public:
-    [[nodiscard]] Standard_EXPORT int Nb() const;
-    [[nodiscard]] Standard_EXPORT int NbActive() const;
+    [[nodiscard]] Standard_EXPORT int   Nb() const;
+    [[nodiscard]] Standard_EXPORT int   NbActive() const;
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::OccurrenceRef& Entry(
       const BRepGraph_OccurrenceRefId theRefId) const;
     [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_OccurrenceRefId>& IdsOf(
@@ -279,7 +279,7 @@ private:
         myVertices(theGraph),
         mySolids(theGraph),
         myChildren(theGraph),
-          myOccurrences(theGraph)
+        myOccurrences(theGraph)
   {
   }
 

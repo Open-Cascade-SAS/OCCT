@@ -39,10 +39,10 @@ namespace BRepGraphInc
 //! Fields shared by every reference entry.
 struct BaseRef
 {
-  BRepGraph_RefId  RefId;               //!< Typed address (kind + per-kind index)
-  BRepGraph_NodeId ParentId;            //!< Parent topology node owning this reference usage
-  uint32_t         OwnGen      = 0;     //!< Per-reference mutation counter
-  bool             IsRemoved   = false; //!< Soft-removal flag
+  BRepGraph_RefId  RefId;             //!< Typed address (kind + per-kind index)
+  BRepGraph_NodeId ParentId;          //!< Parent topology node owning this reference usage
+  uint32_t         OwnGen    = 0;     //!< Per-reference mutation counter
+  bool             IsRemoved = false; //!< Soft-removal flag
 };
 
 //! Shell reference storage entry.
@@ -84,8 +84,9 @@ struct CoEdgeRef : public BaseRef
 struct VertexRef : public BaseRef
 {
   BRepGraph_VertexId VertexDefId;
-  TopAbs_Orientation Orientation = TopAbs_INTERNAL; //!< INTERNAL: B-Rep vertex classification convention
-  TopLoc_Location    LocalLocation;
+  TopAbs_Orientation Orientation =
+    TopAbs_INTERNAL; //!< INTERNAL: B-Rep vertex classification convention
+  TopLoc_Location LocalLocation;
 };
 
 //! Solid reference storage entry.

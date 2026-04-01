@@ -150,7 +150,7 @@ inline NCollection_Vector<BRepGraph_SolidRefId> SolidRefsOfCompSolid(
 {
   NCollection_Vector<BRepGraph_SolidRefId> aRefIds;
   const BRepGraph::RefsView&               aRefs = theGraph.Refs();
-  const BRepGraph_NodeId aParentNode = BRepGraph_CompSolidId(theCompSolidId.Index);
+  const BRepGraph_NodeId aParentNode             = BRepGraph_CompSolidId(theCompSolidId.Index);
   for (int aRefIdx = 0; aRefIdx < aRefs.Solids().Nb(); ++aRefIdx)
   {
     const BRepGraph_SolidRefId    aRefId(aRefIdx);

@@ -21,7 +21,6 @@
 #include <NCollection_Map.hxx>
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_TopoView.hxx>
-#include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_Tool.hxx>
 
 namespace
@@ -90,8 +89,9 @@ void BRepGraphAlgo_Transform::applyLocationTransform(BRepGraph& theGraph, const 
   // Product::RootLocation participates in path composition
   // Product::RootLocation participates in location composition,
   // so all descendant queries automatically include it.
-  const occ::handle<NCollection_BaseAllocator> anAllocator = new NCollection_IncAllocator();
-  const NCollection_Vector<BRepGraph_ProductId> aRoots = theGraph.Topo().Products().RootProducts(anAllocator);
+  const occ::handle<NCollection_BaseAllocator>  anAllocator = new NCollection_IncAllocator();
+  const NCollection_Vector<BRepGraph_ProductId> aRoots =
+    theGraph.Topo().Products().RootProducts(anAllocator);
   for (int anIdx = 0; anIdx < aRoots.Length(); ++anIdx)
   {
     BRepGraph_MutGuard<BRepGraphInc::ProductDef> aProduct =

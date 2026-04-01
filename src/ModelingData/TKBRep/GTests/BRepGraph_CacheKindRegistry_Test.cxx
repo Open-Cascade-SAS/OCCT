@@ -17,11 +17,11 @@
 
 TEST(BRepGraph_CacheKindRegistryTest, Register_SameGUID_SameSlot)
 {
-  const Standard_GUID                      aGUID("a1b2c3d4-1111-2222-3333-444455556666");
+  const Standard_GUID                    aGUID("a1b2c3d4-1111-2222-3333-444455556666");
   const occ::handle<BRepGraph_CacheKind> aKind1 = new BRepGraph_CacheKind(aGUID, "SameGUID");
   const occ::handle<BRepGraph_CacheKind> aKind2 = new BRepGraph_CacheKind(aGUID, "SameGUID");
-  const int                               aSlot1 = BRepGraph_CacheKindRegistry::Register(aKind1);
-  const int                               aSlot2 = BRepGraph_CacheKindRegistry::Register(aKind2);
+  const int                              aSlot1 = BRepGraph_CacheKindRegistry::Register(aKind1);
+  const int                              aSlot2 = BRepGraph_CacheKindRegistry::Register(aKind2);
   EXPECT_EQ(aSlot1, aSlot2);
 }
 

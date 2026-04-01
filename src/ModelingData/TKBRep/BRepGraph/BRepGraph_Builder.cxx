@@ -144,7 +144,7 @@ void BRepGraph_Builder::Perform(BRepGraph&                            theGraph,
     return;
 
   // Temporary allocator for populate scratch data, discarded after build.
-  occ::handle<NCollection_IncAllocator> aTmpAlloc = new NCollection_IncAllocator;
+  occ::handle<NCollection_IncAllocator>   aTmpAlloc = new NCollection_IncAllocator;
   const occ::handle<BRepGraph_ParamLayer> aParamLayer =
     theGraph.LayerRegistry().FindLayer<BRepGraph_ParamLayer>();
   const occ::handle<BRepGraph_RegularityLayer> aRegularityLayer =
@@ -227,19 +227,19 @@ void BRepGraph_Builder::Perform(BRepGraph&                            theGraph,
   // Get()/Set() skip the mutex for in-range indices.
   {
     BRepGraphInc_Storage& aStorage = theGraph.myData->myIncStorage;
-    int aCounts[BRepGraph_TransientCache::THE_KIND_COUNT] = {};
-    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Vertex)]    = aStorage.NbVertices();
-    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Edge)]      = aStorage.NbEdges();
-    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::CoEdge)]    = aStorage.NbCoEdges();
-    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Wire)]      = aStorage.NbWires();
-    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Face)]      = aStorage.NbFaces();
-    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Shell)]     = aStorage.NbShells();
-    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Solid)]     = aStorage.NbSolids();
-    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Compound)]  = aStorage.NbCompounds();
-    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::CompSolid)] = aStorage.NbCompSolids();
+    int                   aCounts[BRepGraph_TransientCache::THE_KIND_COUNT] = {};
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Vertex)]               = aStorage.NbVertices();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Edge)]                 = aStorage.NbEdges();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::CoEdge)]               = aStorage.NbCoEdges();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Wire)]                 = aStorage.NbWires();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Face)]                 = aStorage.NbFaces();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Shell)]                = aStorage.NbShells();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Solid)]                = aStorage.NbSolids();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Compound)]   = aStorage.NbCompounds();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::CompSolid)]  = aStorage.NbCompSolids();
     aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Product)]    = aStorage.NbProducts();
     aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Occurrence)] = aStorage.NbOccurrences();
-    int aReservedKindCount = BRepGraph_TransientCache::THE_DEFAULT_RESERVED_KIND_COUNT;
+    int       aReservedKindCount   = BRepGraph_TransientCache::THE_DEFAULT_RESERVED_KIND_COUNT;
     const int aRegisteredKindCount = BRepGraph_CacheKindRegistry::NbRegistered();
     if (aRegisteredKindCount > aReservedKindCount)
     {
@@ -279,7 +279,7 @@ void BRepGraph_Builder::AppendFlattened(BRepGraph&          theGraph,
   const int             anOldSolidRef   = aStorage.NbSolidRefs();
   const int             anOldChildRef   = aStorage.NbChildRefs();
 
-  occ::handle<NCollection_IncAllocator> aTmpAlloc = new NCollection_IncAllocator;
+  occ::handle<NCollection_IncAllocator>   aTmpAlloc = new NCollection_IncAllocator;
   const occ::handle<BRepGraph_ParamLayer> aParamLayer =
     theGraph.LayerRegistry().FindLayer<BRepGraph_ParamLayer>();
   const occ::handle<BRepGraph_RegularityLayer> aRegularityLayer =

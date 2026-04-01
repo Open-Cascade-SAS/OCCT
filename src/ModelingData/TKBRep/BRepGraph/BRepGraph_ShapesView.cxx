@@ -28,11 +28,11 @@ namespace
 {
 struct BRepGraph_ReconstructionContext
 {
-  const BRepGraph*                 Graph = nullptr;
-  const BRepGraphInc_Storage*      Storage = nullptr;
-  const BRepGraph_ParamLayer*      Params = nullptr;
+  const BRepGraph*                 Graph        = nullptr;
+  const BRepGraphInc_Storage*      Storage      = nullptr;
+  const BRepGraph_ParamLayer*      Params       = nullptr;
   const BRepGraph_RegularityLayer* Regularities = nullptr;
-  BRepGraphInc_Reconstruct::Cache Cache;
+  BRepGraphInc_Reconstruct::Cache  Cache;
   NCollection_Map<int>             ActiveProducts;
 };
 
@@ -97,12 +97,15 @@ static TopoDS_Shape reconstructProductLocal(BRepGraph_ReconstructionContext& the
 
     for (int anOccRefIdx = 0; anOccRefIdx < aProduct.OccurrenceRefIds.Length(); ++anOccRefIdx)
     {
-      const BRepGraph_OccurrenceRefId anOccurrenceRefId = aProduct.OccurrenceRefIds.Value(anOccRefIdx);
+      const BRepGraph_OccurrenceRefId anOccurrenceRefId =
+        aProduct.OccurrenceRefIds.Value(anOccRefIdx);
       if (!anOccurrenceRefId.IsValid(aStorage.NbOccurrenceRefs()))
         continue;
 
-      const BRepGraphInc::OccurrenceRef& anOccurrenceRef = aStorage.OccurrenceRef(anOccurrenceRefId);
-      if (anOccurrenceRef.IsRemoved || !anOccurrenceRef.OccurrenceDefId.IsValid(aStorage.NbOccurrences()))
+      const BRepGraphInc::OccurrenceRef& anOccurrenceRef =
+        aStorage.OccurrenceRef(anOccurrenceRefId);
+      if (anOccurrenceRef.IsRemoved
+          || !anOccurrenceRef.OccurrenceDefId.IsValid(aStorage.NbOccurrences()))
         continue;
 
       TopoDS_Shape aChild = reconstructOccurrenceLocal(theContext, anOccurrenceRef.OccurrenceDefId);
@@ -142,7 +145,8 @@ static TopoDS_Shape reconstructShape(BRepGraph_ReconstructionContext& theContext
       TopoDS_Shape aShape = reconstructProductLocal(theContext, anOccurrenceDef.ProductDefId);
       if (!aShape.IsNull())
       {
-        const TopLoc_Location aGlobalLocation = theContext.Graph->Topo().Occurrences().OccurrenceLocation(anOccurrence);
+        const TopLoc_Location aGlobalLocation =
+          theContext.Graph->Topo().Occurrences().OccurrenceLocation(anOccurrence);
         if (!aGlobalLocation.IsIdentity())
           aShape.Move(aGlobalLocation);
       }
@@ -157,14 +161,16 @@ static TopoDS_Shape reconstructShape(BRepGraph_ReconstructionContext& theContext
   }
 }
 
-static BRepGraph_ReconstructionContext makeReconstructionContext(const BRepGraph*          theGraph,
-                                                                const BRepGraphInc_Storage& theStorage)
+static BRepGraph_ReconstructionContext makeReconstructionContext(
+  const BRepGraph*            theGraph,
+  const BRepGraphInc_Storage& theStorage)
 {
   BRepGraph_ReconstructionContext aContext;
   aContext.Graph   = theGraph;
   aContext.Storage = &theStorage;
 
-  const occ::handle<BRepGraph_ParamLayer> aParamLayer = theGraph->LayerRegistry().FindLayer<BRepGraph_ParamLayer>();
+  const occ::handle<BRepGraph_ParamLayer> aParamLayer =
+    theGraph->LayerRegistry().FindLayer<BRepGraph_ParamLayer>();
   const occ::handle<BRepGraph_RegularityLayer> aRegularityLayer =
     theGraph->LayerRegistry().FindLayer<BRepGraph_RegularityLayer>();
   aContext.Params       = aParamLayer.get();
@@ -200,7 +206,7 @@ TopoDS_Shape BRepGraph::ShapesView::Shape(const BRepGraph_NodeId theNode) const
   // Reconstruct from incidence storage / assembly facade.
   BRepGraph_ReconstructionContext aContext =
     makeReconstructionContext(myGraph, myGraph->myData->myIncStorage);
-  TopoDS_Shape                    aReconstructed = reconstructShape(aContext, theNode);
+  TopoDS_Shape aReconstructed = reconstructShape(aContext, theNode);
 
   // Store under exclusive lock with double-check to avoid redundant writes
   // when multiple threads reconstruct the same parent node concurrently.
@@ -252,7 +258,6 @@ TopoDS_Shape BRepGraph::ShapesView::Reconstruct(const BRepGraph_NodeId theRoot) 
 }
 
 //=================================================================================================
-
 
 //=================================================================================================
 

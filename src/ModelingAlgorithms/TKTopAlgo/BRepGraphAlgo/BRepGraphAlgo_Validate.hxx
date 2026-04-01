@@ -50,8 +50,10 @@
 //!
 //! | Mode | What it checks | Cost | Recommended use |
 //! |------|----------------|------|-----------------|
-//! | `Lightweight` | Active entity count boundary only | Low | Hot-path release builds when the graph structure is already trusted |
-//! | `Audit` | Full structural audit from cross-reference bounds through assembly DAG cycle detection | Higher | Default validation mode for production pipelines, test gates, and API-boundary verification |
+//! | `Lightweight` | Active entity count boundary only | Low | Hot-path release builds when the
+//! graph structure is already trusted | | `Audit` | Full structural audit from cross-reference
+//! bounds through assembly DAG cycle detection | Higher | Default validation mode for production
+//! pipelines, test gates, and API-boundary verification |
 //!
 //! For production pipelines, prefer `Mode::Audit`; `Mode::Lightweight` is intended
 //! for hot-path release builds where the graph structure is already trusted.

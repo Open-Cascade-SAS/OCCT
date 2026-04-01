@@ -42,9 +42,10 @@ public:
   //! @param[in] theName          display-only name
   //! @param[in] theNodeKindsMask optional node-kind applicability mask;
   //!                             0 means "unspecified / unrestricted"
-  Standard_EXPORT BRepGraph_CacheKind(const Standard_GUID&           theID,
-                                      const TCollection_AsciiString& theName          = TCollection_AsciiString(),
-                                      const int                      theNodeKindsMask = 0);
+  Standard_EXPORT BRepGraph_CacheKind(
+    const Standard_GUID&           theID,
+    const TCollection_AsciiString& theName          = TCollection_AsciiString(),
+    const int                      theNodeKindsMask = 0);
 
   //! Stable public identity.
   [[nodiscard]] const Standard_GUID& ID() const { return myID; }
@@ -89,7 +90,8 @@ public:
   //! Idempotent: the same GUID always yields the same slot.
   //! Slot assignment is process-global and graph-instance independent.
   //! @return dense runtime slot, or -1 for null input
-  [[nodiscard]] Standard_EXPORT static int Register(const occ::handle<BRepGraph_CacheKind>& theKind);
+  [[nodiscard]] Standard_EXPORT static int Register(
+    const occ::handle<BRepGraph_CacheKind>& theKind);
 
   //! Find slot by GUID. Returns -1 if not found.
   [[nodiscard]] Standard_EXPORT static int FindSlot(const Standard_GUID& theGUID);
@@ -275,8 +277,7 @@ public:
                                             const occ::handle<BRepGraph_CacheKind>& theKind);
 
   //! Remove a cached value using a pre-resolved cache-kind slot.
-  [[nodiscard]] Standard_EXPORT bool Remove(const BRepGraph_NodeId theNode,
-                                            const int              theKindSlot);
+  [[nodiscard]] Standard_EXPORT bool Remove(const BRepGraph_NodeId theNode, const int theKindSlot);
 
   //! True if any cached values are stored for this node (any cache kind).
   [[nodiscard]] Standard_EXPORT bool HasCacheValues(const BRepGraph_NodeId theNode) const;
@@ -287,9 +288,9 @@ public:
 
   //! Transfer all cached values from a source cache to a destination node.
   Standard_EXPORT void TransferCacheValues(const BRepGraph_TransientCache& theSrcCache,
-                                         const BRepGraph_NodeId          theSrcNode,
-                                         const BRepGraph_NodeId          theDstNode,
-                                         const uint32_t                  theDstSubtreeGen);
+                                           const BRepGraph_NodeId          theSrcNode,
+                                           const BRepGraph_NodeId          theDstNode,
+                                           const uint32_t                  theDstSubtreeGen);
 
   //! Pre-allocate storage for lock-free parallel access.
   Standard_EXPORT void Reserve(const int theKindCount, const int theCounts[THE_KIND_COUNT]);

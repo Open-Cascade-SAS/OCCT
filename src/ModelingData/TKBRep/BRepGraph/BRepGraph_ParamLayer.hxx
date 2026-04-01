@@ -95,7 +95,7 @@ public:
                                         const double             theParameter);
 
   Standard_EXPORT const TCollection_AsciiString& Name() const override;
-  [[nodiscard]] Standard_EXPORT int SubscribedKinds() const override;
+  [[nodiscard]] Standard_EXPORT int              SubscribedKinds() const override;
   Standard_EXPORT void OnNodeModified(const BRepGraph_NodeId theNode) noexcept override;
   Standard_EXPORT void OnNodesModified(
     const NCollection_Vector<BRepGraph_NodeId>& theModifiedNodes) noexcept override;
@@ -125,11 +125,10 @@ private:
   VertexParams& changeVertexParams(const BRepGraph_VertexId theVertex);
   void bindEdgeToVertex(const BRepGraph_EdgeId theEdge, const BRepGraph_VertexId theVertex);
   void bindFaceToVertex(const BRepGraph_FaceId theFace, const BRepGraph_VertexId theVertex);
-  void bindCoEdgeToVertex(const BRepGraph_CoEdgeId theCoEdge,
-                          const BRepGraph_VertexId theVertex);
-  void unbindEdgeFromVertex(const BRepGraph_EdgeId theEdge,
+  void bindCoEdgeToVertex(const BRepGraph_CoEdgeId theCoEdge, const BRepGraph_VertexId theVertex);
+  void unbindEdgeFromVertex(const BRepGraph_EdgeId   theEdge,
                             const BRepGraph_VertexId theVertex) noexcept;
-  void unbindFaceFromVertex(const BRepGraph_FaceId theFace,
+  void unbindFaceFromVertex(const BRepGraph_FaceId   theFace,
                             const BRepGraph_VertexId theVertex) noexcept;
   void unbindCoEdgeFromVertex(const BRepGraph_CoEdgeId theCoEdge,
                               const BRepGraph_VertexId theVertex) noexcept;
@@ -141,10 +140,11 @@ private:
                            const BRepGraph_CoEdgeId theCoEdge) noexcept;
 
 private:
-  NCollection_DataMap<BRepGraph_VertexId, VertexParams>                    myVertexParams;
+  NCollection_DataMap<BRepGraph_VertexId, VertexParams>                         myVertexParams;
   NCollection_DataMap<BRepGraph_EdgeId, NCollection_Vector<BRepGraph_VertexId>> myEdgeToVertices;
   NCollection_DataMap<BRepGraph_FaceId, NCollection_Vector<BRepGraph_VertexId>> myFaceToVertices;
-  NCollection_DataMap<BRepGraph_CoEdgeId, NCollection_Vector<BRepGraph_VertexId>> myCoEdgeToVertices;
+  NCollection_DataMap<BRepGraph_CoEdgeId, NCollection_Vector<BRepGraph_VertexId>>
+    myCoEdgeToVertices;
 };
 
 #endif // _BRepGraph_ParamLayer_HeaderFile

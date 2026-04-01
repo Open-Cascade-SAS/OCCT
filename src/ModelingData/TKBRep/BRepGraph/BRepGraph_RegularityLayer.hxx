@@ -44,14 +44,15 @@ public:
     [[nodiscard]] bool IsEmpty() const { return Entries.IsEmpty(); }
   };
 
-  Standard_EXPORT const EdgeRegularities* FindEdgeRegularities(const BRepGraph_EdgeId theEdge) const;
+  Standard_EXPORT const EdgeRegularities* FindEdgeRegularities(
+    const BRepGraph_EdgeId theEdge) const;
 
   Standard_EXPORT bool FindContinuity(const BRepGraph_EdgeId theEdge,
                                       const BRepGraph_FaceId theFace1,
                                       const BRepGraph_FaceId theFace2,
                                       GeomAbs_Shape* const   theContinuity = nullptr) const;
 
-  Standard_EXPORT int NbRegularities(const BRepGraph_EdgeId theEdge) const;
+  Standard_EXPORT int           NbRegularities(const BRepGraph_EdgeId theEdge) const;
   Standard_EXPORT GeomAbs_Shape MaxContinuity(const BRepGraph_EdgeId theEdge) const;
 
   [[nodiscard]] bool HasBindings() const { return myEdgeRegularities.Extent() != 0; }
@@ -62,7 +63,7 @@ public:
                                      const GeomAbs_Shape    theContinuity);
 
   Standard_EXPORT const TCollection_AsciiString& Name() const override;
-  [[nodiscard]] Standard_EXPORT int SubscribedKinds() const override;
+  [[nodiscard]] Standard_EXPORT int              SubscribedKinds() const override;
   Standard_EXPORT void OnNodeModified(const BRepGraph_NodeId theNode) noexcept override;
   Standard_EXPORT void OnNodesModified(
     const NCollection_Vector<BRepGraph_NodeId>& theModifiedNodes) noexcept override;
@@ -76,12 +77,10 @@ public:
   DEFINE_STANDARD_RTTIEXT(BRepGraph_RegularityLayer, BRepGraph_Layer)
 
 private:
-  void normalizeFacePair(BRepGraph_FaceId& theFace1,
-                         BRepGraph_FaceId& theFace2) const noexcept;
+  void normalizeFacePair(BRepGraph_FaceId& theFace1, BRepGraph_FaceId& theFace2) const noexcept;
   EdgeRegularities& changeEdgeRegularities(const BRepGraph_EdgeId theEdge);
-  void bindFaceToEdge(const BRepGraph_FaceId theFace, const BRepGraph_EdgeId theEdge);
-  void unbindFaceFromEdge(const BRepGraph_FaceId theFace,
-                          const BRepGraph_EdgeId theEdge) noexcept;
+  void              bindFaceToEdge(const BRepGraph_FaceId theFace, const BRepGraph_EdgeId theEdge);
+  void unbindFaceFromEdge(const BRepGraph_FaceId theFace, const BRepGraph_EdgeId theEdge) noexcept;
   void removeRegularity(const BRepGraph_EdgeId theEdge,
                         const BRepGraph_FaceId theFace1,
                         const BRepGraph_FaceId theFace2) noexcept;
@@ -93,7 +92,7 @@ private:
                            const BRepGraph_FaceId theNewFace) noexcept;
 
 private:
-  NCollection_DataMap<BRepGraph_EdgeId, EdgeRegularities>                 myEdgeRegularities;
+  NCollection_DataMap<BRepGraph_EdgeId, EdgeRegularities>                     myEdgeRegularities;
   NCollection_DataMap<BRepGraph_FaceId, NCollection_Vector<BRepGraph_EdgeId>> myFaceToEdges;
 };
 

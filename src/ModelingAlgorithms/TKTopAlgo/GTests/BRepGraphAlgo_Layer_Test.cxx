@@ -95,10 +95,7 @@ public:
     return THE_LAYER_ID;
   }
 
-  [[nodiscard]] const Standard_GUID& ID() const override
-  {
-    return GetID();
-  }
+  [[nodiscard]] const Standard_GUID& ID() const override { return GetID(); }
 
   [[nodiscard]] const TCollection_AsciiString& Name() const override
   {
@@ -106,8 +103,7 @@ public:
     return THE_LAYER_NAME;
   }
 
-  void SetNodeName(const BRepGraph_NodeId            theNode,
-                   const TCollection_ExtendedString& theName)
+  void SetNodeName(const BRepGraph_NodeId theNode, const TCollection_ExtendedString& theName)
   {
     myNames.Bind(theNode, theName);
   }
@@ -117,15 +113,9 @@ public:
     return myNames.Seek(theNode);
   }
 
-  void RemoveNodeName(const BRepGraph_NodeId theNode)
-  {
-    myNames.UnBind(theNode);
-  }
+  void RemoveNodeName(const BRepGraph_NodeId theNode) { myNames.UnBind(theNode); }
 
-  int NbNames() const
-  {
-    return myNames.Extent();
-  }
+  int NbNames() const { return myNames.Extent(); }
 
   void OnNodeRemoved(const BRepGraph_NodeId theNode,
                      const BRepGraph_NodeId theReplacement) noexcept override
@@ -145,7 +135,8 @@ public:
     const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>& theRemapMap) noexcept override
   {
     NCollection_DataMap<BRepGraph_NodeId, TCollection_ExtendedString> aRemapped;
-    for (NCollection_DataMap<BRepGraph_NodeId, TCollection_ExtendedString>::Iterator anIter(myNames);
+    for (NCollection_DataMap<BRepGraph_NodeId, TCollection_ExtendedString>::Iterator anIter(
+           myNames);
          anIter.More();
          anIter.Next())
     {
@@ -158,14 +149,9 @@ public:
     myNames = std::move(aRemapped);
   }
 
-  void InvalidateAll() noexcept override
-  {
-  }
+  void InvalidateAll() noexcept override {}
 
-  void Clear() noexcept override
-  {
-    myNames.Clear();
-  }
+  void Clear() noexcept override { myNames.Clear(); }
 
   DEFINE_STANDARD_RTTIEXT(BRepGraphAlgo_NameLayer, BRepGraph_Layer)
 
@@ -214,8 +200,7 @@ TEST(BRepGraphAlgo_LayerTest, Sewing_NameMigratesToKeptEdge)
   // Core invariant: no name should reference a removed edge.
   for (int i = 0; i < aGraph.Topo().Edges().Nb(); ++i)
   {
-    const BRepGraphInc::EdgeDef& anEdge =
-      aGraph.Topo().Edges().Definition(BRepGraph_EdgeId(i));
+    const BRepGraphInc::EdgeDef& anEdge = aGraph.Topo().Edges().Definition(BRepGraph_EdgeId(i));
     if (anEdge.IsRemoved)
     {
       EXPECT_EQ(aLayer->FindNodeName(BRepGraph_EdgeId(i)), nullptr)
@@ -281,7 +266,8 @@ TEST(BRepGraphAlgo_LayerTest, Sewing_LayerStillRegisteredAfter)
   (void)BRepGraphAlgo_Sewing::Perform(aGraph);
 
   // Layer should still be registered after sewing.
-  occ::handle<BRepGraph_Layer> aFound = aGraph.LayerRegistry().FindLayer(BRepGraphAlgo_NameLayer::GetID());
+  occ::handle<BRepGraph_Layer> aFound =
+    aGraph.LayerRegistry().FindLayer(BRepGraphAlgo_NameLayer::GetID());
   ASSERT_FALSE(aFound.IsNull());
   EXPECT_EQ(aFound.get(), aLayer.get());
 }
@@ -384,11 +370,11 @@ TEST(BRepGraphAlgo_LayerTest, Compact_LayerSurvivesSwap)
   (void)BRepGraphAlgo_Compact::Perform(aGraph);
 
   // Layer should still be registered after compact.
-  occ::handle<BRepGraph_Layer> aFound = aGraph.LayerRegistry().FindLayer(BRepGraphAlgo_NameLayer::GetID());
+  occ::handle<BRepGraph_Layer> aFound =
+    aGraph.LayerRegistry().FindLayer(BRepGraphAlgo_NameLayer::GetID());
   ASSERT_FALSE(aFound.IsNull());
 
-  occ::handle<BRepGraphAlgo_NameLayer> aCast =
-    occ::down_cast<BRepGraphAlgo_NameLayer>(aFound);
+  occ::handle<BRepGraphAlgo_NameLayer> aCast = occ::down_cast<BRepGraphAlgo_NameLayer>(aFound);
   ASSERT_FALSE(aCast.IsNull());
 
   // Names should still exist (possibly remapped to new indices).
@@ -481,8 +467,7 @@ TEST(BRepGraphAlgo_LayerTest, SplitEdge_OriginalEdgeRemoved)
   int aSplitEdgeIdx = -1;
   for (int i = 0; i < aGraph.Topo().Edges().Nb(); ++i)
   {
-    const BRepGraphInc::EdgeDef& anEdge =
-      aGraph.Topo().Edges().Definition(BRepGraph_EdgeId(i));
+    const BRepGraphInc::EdgeDef& anEdge = aGraph.Topo().Edges().Definition(BRepGraph_EdgeId(i));
     const BRepGraph_EdgeId       anEdgeId(i);
     if (!anEdge.IsDegenerate && anEdge.Curve3DRepId.IsValid()
         && BRepGraph_Tool::Edge::StartVertex(aGraph, anEdgeId).VertexDefId.IsValid()
@@ -499,7 +484,7 @@ TEST(BRepGraphAlgo_LayerTest, SplitEdge_OriginalEdgeRemoved)
 
   // Create a split vertex.
   const auto [aEdgeFirst, aEdgeLast] = BRepGraph_Tool::Edge::Range(aGraph, aSplitEdgeId);
-  const double aMidParam = 0.5 * (aEdgeFirst + aEdgeLast);
+  const double aMidParam             = 0.5 * (aEdgeFirst + aEdgeLast);
   const gp_Pnt aMidPnt = BRepGraph_Tool::Edge::Curve(aGraph, aSplitEdgeId)->EvalD0(aMidParam);
   const BRepGraph_VertexId aSplitVtx = aGraph.Builder().AddVertex(aMidPnt, Precision::Confusion());
 
@@ -679,8 +664,8 @@ TEST(BRepGraphAlgo_LayerTest, TwoLayers_BothSurviveFullPipeline)
   aGraph.Build(aCompound);
   ASSERT_TRUE(aGraph.IsDone());
 
-  occ::handle<BRepGraphAlgo_NameLayer>      aNameLayer = new BRepGraphAlgo_NameLayer();
-  occ::handle<BRepGraphAlgo_IntCounterLayer> aIntLayer = new BRepGraphAlgo_IntCounterLayer();
+  occ::handle<BRepGraphAlgo_NameLayer>       aNameLayer = new BRepGraphAlgo_NameLayer();
+  occ::handle<BRepGraphAlgo_IntCounterLayer> aIntLayer  = new BRepGraphAlgo_IntCounterLayer();
   aGraph.LayerRegistry().RegisterLayer(aNameLayer);
   aGraph.LayerRegistry().RegisterLayer(aIntLayer);
 

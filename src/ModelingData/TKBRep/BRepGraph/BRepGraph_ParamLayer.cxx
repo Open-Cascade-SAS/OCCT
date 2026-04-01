@@ -45,7 +45,7 @@ void appendUnique(NCollection_DataMap<KeyT, NCollection_Vector<BRepGraph_VertexI
 template <typename KeyT>
 void removeVertex(NCollection_DataMap<KeyT, NCollection_Vector<BRepGraph_VertexId>>& theMap,
                   const KeyT                                                         theKey,
-                  const BRepGraph_VertexId                                           theVertex) noexcept
+                  const BRepGraph_VertexId theVertex) noexcept
 {
   if (!theMap.IsBound(theKey))
     return;
@@ -65,8 +65,9 @@ void removeVertex(NCollection_DataMap<KeyT, NCollection_Vector<BRepGraph_VertexI
     theMap.UnBind(theKey);
 }
 
-static BRepGraph_VertexId remapVertex(const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>& theRemapMap,
-                                      const BRepGraph_VertexId                                        theVertex)
+static BRepGraph_VertexId remapVertex(
+  const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>& theRemapMap,
+  const BRepGraph_VertexId                                       theVertex)
 {
   const BRepGraph_NodeId* aNewId = theRemapMap.Seek(BRepGraph_VertexId(theVertex.Index));
   if (aNewId == nullptr || aNewId->NodeKind != BRepGraph_NodeId::Kind::Vertex)
@@ -74,8 +75,9 @@ static BRepGraph_VertexId remapVertex(const NCollection_DataMap<BRepGraph_NodeId
   return BRepGraph_VertexId(aNewId->Index);
 }
 
-static BRepGraph_EdgeId remapEdge(const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>& theRemapMap,
-                                  const BRepGraph_EdgeId                                          theEdge)
+static BRepGraph_EdgeId remapEdge(
+  const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>& theRemapMap,
+  const BRepGraph_EdgeId                                         theEdge)
 {
   const BRepGraph_NodeId* aNewId = theRemapMap.Seek(BRepGraph_EdgeId(theEdge.Index));
   if (aNewId == nullptr || aNewId->NodeKind != BRepGraph_NodeId::Kind::Edge)
@@ -83,8 +85,9 @@ static BRepGraph_EdgeId remapEdge(const NCollection_DataMap<BRepGraph_NodeId, BR
   return BRepGraph_EdgeId(aNewId->Index);
 }
 
-static BRepGraph_FaceId remapFace(const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>& theRemapMap,
-                                  const BRepGraph_FaceId                                          theFace)
+static BRepGraph_FaceId remapFace(
+  const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>& theRemapMap,
+  const BRepGraph_FaceId                                         theFace)
 {
   const BRepGraph_NodeId* aNewId = theRemapMap.Seek(BRepGraph_FaceId(theFace.Index));
   if (aNewId == nullptr || aNewId->NodeKind != BRepGraph_NodeId::Kind::Face)
@@ -94,7 +97,7 @@ static BRepGraph_FaceId remapFace(const NCollection_DataMap<BRepGraph_NodeId, BR
 
 static BRepGraph_CoEdgeId remapCoEdge(
   const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>& theRemapMap,
-  const BRepGraph_CoEdgeId                                        theCoEdge)
+  const BRepGraph_CoEdgeId                                       theCoEdge)
 {
   const BRepGraph_NodeId* aNewId = theRemapMap.Seek(BRepGraph_CoEdgeId(theCoEdge.Index));
   if (aNewId == nullptr || aNewId->NodeKind != BRepGraph_NodeId::Kind::CoEdge)
@@ -244,7 +247,7 @@ BRepGraph_ParamLayer::VertexParams& BRepGraph_ParamLayer::changeVertexParams(
 
 //=================================================================================================
 
-void BRepGraph_ParamLayer::bindEdgeToVertex(const BRepGraph_EdgeId theEdge,
+void BRepGraph_ParamLayer::bindEdgeToVertex(const BRepGraph_EdgeId   theEdge,
                                             const BRepGraph_VertexId theVertex)
 {
   appendUnique(myEdgeToVertices, theEdge, theVertex);
@@ -252,7 +255,7 @@ void BRepGraph_ParamLayer::bindEdgeToVertex(const BRepGraph_EdgeId theEdge,
 
 //=================================================================================================
 
-void BRepGraph_ParamLayer::bindFaceToVertex(const BRepGraph_FaceId theFace,
+void BRepGraph_ParamLayer::bindFaceToVertex(const BRepGraph_FaceId   theFace,
                                             const BRepGraph_VertexId theVertex)
 {
   appendUnique(myFaceToVertices, theFace, theVertex);
@@ -268,7 +271,7 @@ void BRepGraph_ParamLayer::bindCoEdgeToVertex(const BRepGraph_CoEdgeId theCoEdge
 
 //=================================================================================================
 
-void BRepGraph_ParamLayer::unbindEdgeFromVertex(const BRepGraph_EdgeId theEdge,
+void BRepGraph_ParamLayer::unbindEdgeFromVertex(const BRepGraph_EdgeId   theEdge,
                                                 const BRepGraph_VertexId theVertex) noexcept
 {
   removeVertex(myEdgeToVertices, theEdge, theVertex);
@@ -276,7 +279,7 @@ void BRepGraph_ParamLayer::unbindEdgeFromVertex(const BRepGraph_EdgeId theEdge,
 
 //=================================================================================================
 
-void BRepGraph_ParamLayer::unbindFaceFromVertex(const BRepGraph_FaceId theFace,
+void BRepGraph_ParamLayer::unbindFaceFromVertex(const BRepGraph_FaceId   theFace,
                                                 const BRepGraph_VertexId theVertex) noexcept
 {
   removeVertex(myFaceToVertices, theFace, theVertex);
@@ -331,9 +334,9 @@ void BRepGraph_ParamLayer::SetPointOnSurface(const BRepGraph_VertexId theVertex,
   }
 
   PointOnSurfaceEntry& anEntry = aParams.PointsOnSurface.Appended();
-  anEntry.ParameterU          = theParameterU;
-  anEntry.ParameterV          = theParameterV;
-  anEntry.FaceDefId           = theFace;
+  anEntry.ParameterU           = theParameterU;
+  anEntry.ParameterV           = theParameterV;
+  anEntry.FaceDefId            = theFace;
   bindFaceToVertex(theFace, theVertex);
 }
 
@@ -354,8 +357,8 @@ void BRepGraph_ParamLayer::SetPointOnPCurve(const BRepGraph_VertexId theVertex,
   }
 
   PointOnPCurveEntry& anEntry = aParams.PointsOnPCurve.Appended();
-  anEntry.Parameter          = theParameter;
-  anEntry.CoEdgeDefId        = theCoEdge;
+  anEntry.Parameter           = theParameter;
+  anEntry.CoEdgeDefId         = theCoEdge;
   bindCoEdgeToVertex(theCoEdge, theVertex);
 }
 
@@ -373,7 +376,8 @@ void BRepGraph_ParamLayer::removePointOnCurve(const BRepGraph_VertexId theVertex
     if (aParams.PointsOnCurve.Value(anIdx).EdgeDefId != theEdge)
       continue;
     if (anIdx < aParams.PointsOnCurve.Length() - 1)
-      aParams.PointsOnCurve.ChangeValue(anIdx) = aParams.PointsOnCurve.Value(aParams.PointsOnCurve.Length() - 1);
+      aParams.PointsOnCurve.ChangeValue(anIdx) =
+        aParams.PointsOnCurve.Value(aParams.PointsOnCurve.Length() - 1);
     aParams.PointsOnCurve.EraseLast();
     unbindEdgeFromVertex(theEdge, theVertex);
     break;
@@ -623,19 +627,22 @@ void BRepGraph_ParamLayer::OnNodeRemoved(const BRepGraph_NodeId theNode,
   {
     case BRepGraph_NodeId::Kind::Vertex:
       if (theReplacement.NodeKind == BRepGraph_NodeId::Kind::Vertex && theReplacement.IsValid())
-        migrateVertexBindings(BRepGraph_VertexId(theNode.Index), BRepGraph_VertexId(theReplacement.Index));
+        migrateVertexBindings(BRepGraph_VertexId(theNode.Index),
+                              BRepGraph_VertexId(theReplacement.Index));
       else
         removeVertexBindings(BRepGraph_VertexId(theNode.Index));
       break;
     case BRepGraph_NodeId::Kind::Edge:
       if (theReplacement.NodeKind == BRepGraph_NodeId::Kind::Edge && theReplacement.IsValid())
-        migrateEdgeBindings(BRepGraph_EdgeId(theNode.Index), BRepGraph_EdgeId(theReplacement.Index));
+        migrateEdgeBindings(BRepGraph_EdgeId(theNode.Index),
+                            BRepGraph_EdgeId(theReplacement.Index));
       else
         invalidateEdgeBindings(BRepGraph_EdgeId(theNode.Index));
       break;
     case BRepGraph_NodeId::Kind::Face:
       if (theReplacement.NodeKind == BRepGraph_NodeId::Kind::Face && theReplacement.IsValid())
-        migrateFaceBindings(BRepGraph_FaceId(theNode.Index), BRepGraph_FaceId(theReplacement.Index));
+        migrateFaceBindings(BRepGraph_FaceId(theNode.Index),
+                            BRepGraph_FaceId(theReplacement.Index));
       else
         invalidateFaceBindings(BRepGraph_FaceId(theNode.Index));
       break;

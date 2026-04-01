@@ -262,9 +262,11 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph&       theGraph,
     for (int anEdgeIdx = 0; anEdgeIdx < aNbEdgeRefs; ++anEdgeIdx)
     {
       const BRepGraphInc::CoEdgeUsage& aCoEdgeRef = anOrderedRefs.Value(anEdgeIdx);
-      const BRepGraphInc::CoEdgeDef&   aCoEdgeDef = theGraph.Topo().CoEdges().Definition(aCoEdgeRef.CoEdgeDefId);
-      const BRepGraphInc::EdgeDef&     anEdgeDef  = theGraph.Topo().Edges().Definition(aCoEdgeDef.EdgeDefId);
-      const TopAbs_Orientation         anOri      = aCoEdgeDef.Sense;
+      const BRepGraphInc::CoEdgeDef&   aCoEdgeDef =
+        theGraph.Topo().CoEdges().Definition(aCoEdgeRef.CoEdgeDefId);
+      const BRepGraphInc::EdgeDef& anEdgeDef =
+        theGraph.Topo().Edges().Definition(aCoEdgeDef.EdgeDefId);
+      const TopAbs_Orientation anOri = aCoEdgeDef.Sense;
 
       if (anOri != TopAbs_FORWARD && anOri != TopAbs_REVERSED)
         continue;

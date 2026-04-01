@@ -107,9 +107,10 @@ public:
   //! @param[in] theFaceEntity   typed face definition identifier
   //! @param[in] theOri          orientation of the face in the shell
   //! @return typed face reference identifier, or invalid if inputs are not active
-  Standard_EXPORT BRepGraph_FaceRefId AddFaceToShell(const BRepGraph_ShellId  theShellEntity,
-                                                     const BRepGraph_FaceId   theFaceEntity,
-                                                     const TopAbs_Orientation theOri = TopAbs_FORWARD);
+  Standard_EXPORT BRepGraph_FaceRefId
+    AddFaceToShell(const BRepGraph_ShellId  theShellEntity,
+                   const BRepGraph_FaceId   theFaceEntity,
+                   const TopAbs_Orientation theOri = TopAbs_FORWARD);
 
   //! Link a shell to a solid.
   //! Appends ShellRef and stores its ShellRefId in solid ShellRefIds.
@@ -117,9 +118,10 @@ public:
   //! @param[in] theShellEntity  typed shell definition identifier
   //! @param[in] theOri          orientation of the shell in the solid
   //! @return typed shell reference identifier, or invalid if inputs are not active
-  Standard_EXPORT BRepGraph_ShellRefId AddShellToSolid(const BRepGraph_SolidId  theSolidEntity,
-                                                       const BRepGraph_ShellId  theShellEntity,
-                                                       const TopAbs_Orientation theOri = TopAbs_FORWARD);
+  Standard_EXPORT BRepGraph_ShellRefId
+    AddShellToSolid(const BRepGraph_SolidId  theSolidEntity,
+                    const BRepGraph_ShellId  theShellEntity,
+                    const TopAbs_Orientation theOri = TopAbs_FORWARD);
 
   //! Add a compound definition with child definitions.
   //! @param[in] theChildEntities child definition NodeIds
@@ -153,7 +155,7 @@ public:
   [[nodiscard]] Standard_EXPORT BRepGraph_OccurrenceId
     AddOccurrence(const BRepGraph_ProductId theParentProduct,
                   const BRepGraph_ProductId theReferencedProduct,
-                  const TopLoc_Location& thePlacement);
+                  const TopLoc_Location&    thePlacement);
 
   //! Add an occurrence with an explicit parent occurrence for nested assembly chains.
   //! This establishes a tree-structured placement path for unambiguous
@@ -166,9 +168,9 @@ public:
   //!         parent product, referenced product, and explicit parent occurrence
   //!         form a valid active assembly chain
   [[nodiscard]] Standard_EXPORT BRepGraph_OccurrenceId
-    AddOccurrence(const BRepGraph_ProductId theParentProduct,
-                  const BRepGraph_ProductId theReferencedProduct,
-                  const TopLoc_Location& thePlacement,
+    AddOccurrence(const BRepGraph_ProductId    theParentProduct,
+                  const BRepGraph_ProductId    theReferencedProduct,
+                  const TopLoc_Location&       thePlacement,
                   const BRepGraph_OccurrenceId theParentOccurrence);
 
   //! Append a shape to the existing graph without clearing.
@@ -455,10 +457,9 @@ private:
   friend class BRepGraph;
   friend struct BRepGraph_Data;
 
-  Standard_EXPORT void applyModificationImpl(
-    const BRepGraph_NodeId                 theTarget,
-    NCollection_Vector<BRepGraph_NodeId>&& theReplacements,
-    const TCollection_AsciiString&         theOpLabel);
+  Standard_EXPORT void applyModificationImpl(const BRepGraph_NodeId                 theTarget,
+                                             NCollection_Vector<BRepGraph_NodeId>&& theReplacements,
+                                             const TCollection_AsciiString&         theOpLabel);
 
   explicit BuilderView(BRepGraph* theGraph)
       : myGraph(theGraph)

@@ -138,8 +138,9 @@ void BRepGraphCheck_Analyzer::Perform()
             {
               continue;
             }
-            const BRepGraphInc::CoEdgeDef& aCoEdgeDef = aLocalDefs.CoEdges().Definition(aCoEdgeRef.CoEdgeDefId);
-            const BRepGraph_EdgeId         anEdgeId   = aCoEdgeDef.EdgeDefId;
+            const BRepGraphInc::CoEdgeDef& aCoEdgeDef =
+              aLocalDefs.CoEdges().Definition(aCoEdgeRef.CoEdgeDefId);
+            const BRepGraph_EdgeId anEdgeId = aCoEdgeDef.EdgeDefId;
 
             BRepGraphCheck::CheckEdgeOnFace(*myGraph, anEdgeId, aFaceId, anIsExact, aLocal);
 

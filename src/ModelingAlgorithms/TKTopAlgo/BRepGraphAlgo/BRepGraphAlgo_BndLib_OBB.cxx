@@ -162,8 +162,9 @@ static int pointsForOBB(const BRepGraph&            theGraph,
             continue;
           }
 
-          const BRepGraphInc::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdges().Definition(aCR.CoEdgeDefId);
-          const BRepGraph_EdgeId         anEdgeId(aCoEdge.EdgeDefId);
+          const BRepGraphInc::CoEdgeDef& aCoEdge =
+            theGraph.Topo().CoEdges().Definition(aCR.CoEdgeDefId);
+          const BRepGraph_EdgeId anEdgeId(aCoEdge.EdgeDefId);
           if (!anEdgeId.IsValid(theGraph.Topo().Edges().Nb()))
           {
             continue;

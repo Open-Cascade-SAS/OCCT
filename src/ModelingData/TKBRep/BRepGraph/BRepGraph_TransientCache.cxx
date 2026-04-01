@@ -23,9 +23,9 @@ namespace
 
 struct BRepGraph_CacheKindRegistryData
 {
-  NCollection_DataMap<Standard_GUID, int>            GuidToSlot;
+  NCollection_DataMap<Standard_GUID, int>              GuidToSlot;
   NCollection_Vector<occ::handle<BRepGraph_CacheKind>> Kinds;
-  std::shared_mutex                                  Mutex;
+  std::shared_mutex                                    Mutex;
 };
 
 BRepGraph_CacheKindRegistryData& cacheKindRegistryData()
@@ -83,7 +83,7 @@ int BRepGraph_CacheKindRegistry::Register(const occ::handle<BRepGraph_CacheKind>
 
 int BRepGraph_CacheKindRegistry::FindSlot(const Standard_GUID& theGUID)
 {
-  BRepGraph_CacheKindRegistryData& aData = cacheKindRegistryData();
+  BRepGraph_CacheKindRegistryData&    aData = cacheKindRegistryData();
   std::shared_lock<std::shared_mutex> aLock(aData.Mutex);
   const int*                          aSlot = aData.GuidToSlot.Seek(theGUID);
   return aSlot != nullptr ? *aSlot : -1;
@@ -109,7 +109,7 @@ occ::handle<BRepGraph_CacheKind> BRepGraph_CacheKindRegistry::FindKind(const Sta
 
 occ::handle<BRepGraph_CacheKind> BRepGraph_CacheKindRegistry::FindKind(const int theSlot)
 {
-  BRepGraph_CacheKindRegistryData& aData = cacheKindRegistryData();
+  BRepGraph_CacheKindRegistryData&    aData = cacheKindRegistryData();
   std::shared_lock<std::shared_mutex> aLock(aData.Mutex);
   if (theSlot < 0 || theSlot >= aData.Kinds.Length())
   {
@@ -129,7 +129,7 @@ bool BRepGraph_CacheKindRegistry::Contains(const Standard_GUID& theGUID)
 
 bool BRepGraph_CacheKindRegistry::Contains(const int theSlot)
 {
-  BRepGraph_CacheKindRegistryData& aData = cacheKindRegistryData();
+  BRepGraph_CacheKindRegistryData&    aData = cacheKindRegistryData();
   std::shared_lock<std::shared_mutex> aLock(aData.Mutex);
   return theSlot >= 0 && theSlot < aData.Kinds.Length() && !aData.Kinds.Value(theSlot).IsNull();
 }
@@ -138,7 +138,7 @@ bool BRepGraph_CacheKindRegistry::Contains(const int theSlot)
 
 int BRepGraph_CacheKindRegistry::NbRegistered()
 {
-  BRepGraph_CacheKindRegistryData& aData = cacheKindRegistryData();
+  BRepGraph_CacheKindRegistryData&    aData = cacheKindRegistryData();
   std::shared_lock<std::shared_mutex> aLock(aData.Mutex);
   return aData.Kinds.Length();
 }
@@ -161,7 +161,8 @@ BRepGraph_TransientCache::CacheSlot& BRepGraph_TransientCache::changeSlot(
 {
   ensureKind(theKindSlot);
   const int                      aKindIdx = static_cast<int>(theNode.NodeKind);
-  NCollection_Vector<CacheSlot>& aVec = myKinds.ChangeValue(theKindSlot).myNodeKinds[aKindIdx].mySlots;
+  NCollection_Vector<CacheSlot>& aVec =
+    myKinds.ChangeValue(theKindSlot).myNodeKinds[aKindIdx].mySlots;
   if (theNode.Index >= aVec.Length())
   {
     return aVec.SetValue(theNode.Index, CacheSlot());
@@ -181,7 +182,8 @@ const BRepGraph_TransientCache::CacheSlot* BRepGraph_TransientCache::seekSlot(
   }
 
   const int                            aKindIdx = static_cast<int>(theNode.NodeKind);
-  const NCollection_Vector<CacheSlot>& aVec = myKinds.Value(theKindSlot).myNodeKinds[aKindIdx].mySlots;
+  const NCollection_Vector<CacheSlot>& aVec =
+    myKinds.Value(theKindSlot).myNodeKinds[aKindIdx].mySlots;
   if (theNode.Index >= aVec.Length())
   {
     return nullptr;
@@ -253,7 +255,8 @@ void BRepGraph_TransientCache::Set(const BRepGraph_NodeId                   theN
   if (myIsReserved.load(std::memory_order_acquire) && theKindSlot < myKinds.Length())
   {
     const int                      aKindIdx = static_cast<int>(theNode.NodeKind);
-    NCollection_Vector<CacheSlot>& aVec = myKinds.ChangeValue(theKindSlot).myNodeKinds[aKindIdx].mySlots;
+    NCollection_Vector<CacheSlot>& aVec =
+      myKinds.ChangeValue(theKindSlot).myNodeKinds[aKindIdx].mySlots;
     if (theNode.Index < aVec.Length())
     {
       CacheSlot& aSlot       = aVec.ChangeValue(theNode.Index);
@@ -264,9 +267,9 @@ void BRepGraph_TransientCache::Set(const BRepGraph_NodeId                   theN
   }
 
   std::unique_lock<std::shared_mutex> aLock(myMutex);
-  CacheSlot& aSlot       = changeSlot(theNode, theKindSlot);
-  aSlot.Value            = theValue;
-  aSlot.StoredSubtreeGen = theCurrentSubtreeGen;
+  CacheSlot&                          aSlot = changeSlot(theNode, theKindSlot);
+  aSlot.Value                               = theValue;
+  aSlot.StoredSubtreeGen                    = theCurrentSubtreeGen;
 }
 
 //=================================================================================================
@@ -305,7 +308,8 @@ occ::handle<BRepGraph_CacheValue> BRepGraph_TransientCache::Get(
   if (myIsReserved.load(std::memory_order_acquire) && theKindSlot < myKinds.Length())
   {
     const int                            aKindIdx = static_cast<int>(theNode.NodeKind);
-    const NCollection_Vector<CacheSlot>& aVec = myKinds.Value(theKindSlot).myNodeKinds[aKindIdx].mySlots;
+    const NCollection_Vector<CacheSlot>& aVec =
+      myKinds.Value(theKindSlot).myNodeKinds[aKindIdx].mySlots;
     if (theNode.Index < aVec.Length())
     {
       const CacheSlot& aSlot = aVec.Value(theNode.Index);
@@ -336,7 +340,7 @@ occ::handle<BRepGraph_CacheValue> BRepGraph_TransientCache::Get(
 
 //=================================================================================================
 
-bool BRepGraph_TransientCache::Remove(const BRepGraph_NodeId theNode,
+bool BRepGraph_TransientCache::Remove(const BRepGraph_NodeId                  theNode,
                                       const occ::handle<BRepGraph_CacheKind>& theKind)
 {
   if (!theNode.IsValid() || theKind.IsNull())
@@ -369,7 +373,8 @@ bool BRepGraph_TransientCache::Remove(const BRepGraph_NodeId theNode, const int 
   }
 
   const int                      aKindIdx = static_cast<int>(theNode.NodeKind);
-  NCollection_Vector<CacheSlot>& aVec = myKinds.ChangeValue(theKindSlot).myNodeKinds[aKindIdx].mySlots;
+  NCollection_Vector<CacheSlot>& aVec =
+    myKinds.ChangeValue(theKindSlot).myNodeKinds[aKindIdx].mySlots;
   if (theNode.Index >= aVec.Length())
   {
     return false;
@@ -421,7 +426,8 @@ NCollection_Vector<occ::handle<BRepGraph_CacheKind>> BRepGraph_TransientCache::C
     const CacheSlot* aSlot = seekSlot(theNode, aKindSlot);
     if (aSlot != nullptr && !aSlot->Value.IsNull())
     {
-      const occ::handle<BRepGraph_CacheKind> aKind = BRepGraph_CacheKindRegistry::FindKind(aKindSlot);
+      const occ::handle<BRepGraph_CacheKind> aKind =
+        BRepGraph_CacheKindRegistry::FindKind(aKindSlot);
       if (!aKind.IsNull())
       {
         aKinds.Append(aKind);
@@ -434,9 +440,9 @@ NCollection_Vector<occ::handle<BRepGraph_CacheKind>> BRepGraph_TransientCache::C
 //=================================================================================================
 
 void BRepGraph_TransientCache::TransferCacheValues(const BRepGraph_TransientCache& theSrcCache,
-                                                  const BRepGraph_NodeId          theSrcNode,
-                                                  const BRepGraph_NodeId          theDstNode,
-                                                  const uint32_t                  theDstSubtreeGen)
+                                                   const BRepGraph_NodeId          theSrcNode,
+                                                   const BRepGraph_NodeId          theDstNode,
+                                                   const uint32_t                  theDstSubtreeGen)
 {
   if (!theSrcNode.IsValid() || !theDstNode.IsValid())
   {
@@ -453,8 +459,8 @@ void BRepGraph_TransientCache::TransferCacheValues(const BRepGraph_TransientCach
 
     std::unique_lock<std::shared_mutex> aLock(myMutex);
     CacheSlot&                          aDstSlot = changeSlot(theDstNode, aKindSlot);
-    aDstSlot.Value            = aSrcSlot->Value;
-    aDstSlot.StoredSubtreeGen = theDstSubtreeGen;
+    aDstSlot.Value                               = aSrcSlot->Value;
+    aDstSlot.StoredSubtreeGen                    = theDstSubtreeGen;
   }
 }
 

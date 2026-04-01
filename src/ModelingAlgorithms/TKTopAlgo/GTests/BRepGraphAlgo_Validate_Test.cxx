@@ -244,7 +244,7 @@ TEST(BRepGraphAlgo_ValidateTest, BoundsCheck_InvalidIndex)
 
   // Corrupt edge's Curve3d to null.
   BRepGraph_MutGuard<BRepGraphInc::EdgeDef> anEdge = aGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
-  anEdge->Curve3DRepId                           = BRepGraph_Curve3DRepId();
+  anEdge->Curve3DRepId                             = BRepGraph_Curve3DRepId();
 
   const BRepGraphAlgo_Validate::Result aResult =
     BRepGraphAlgo_Validate::Perform(aGraph, BRepGraphAlgo_Validate::Options::Audit());
@@ -283,9 +283,8 @@ TEST(BRepGraphAlgo_ValidateTest, AfterSplitEdge_ProducesSubEdges)
   // Create a split vertex at the midpoint.
   gp_Pnt aMidPt;
   BRepGraph_Tool::Edge::Curve(aGraph, anEdgeId)->D0(aSplitParam, aMidPt);
-  BRepGraph_VertexId aSplitVtx = aGraph.Builder().AddVertex(
-    aMidPt,
-    BRepGraph_Tool::Edge::Tolerance(aGraph, anEdgeId));
+  BRepGraph_VertexId aSplitVtx =
+    aGraph.Builder().AddVertex(aMidPt, BRepGraph_Tool::Edge::Tolerance(aGraph, anEdgeId));
 
   BRepGraph_EdgeId aSubA, aSubB;
   aGraph.Builder().SplitEdge(anEdgeId, aSplitVtx, aSplitParam, aSubA, aSubB);
@@ -337,8 +336,9 @@ TEST(BRepGraphAlgo_ValidateTest, LightweightAndAudit_DetectActiveCountDrift)
   ASSERT_GT(aNbActiveFacesBefore, 0);
 
   // Intentionally bypass RemoveNode() to simulate counter drift bug class.
-  BRepGraph_MutGuard<BRepGraphInc::FaceDef> aFaceDef = aGraph.Builder().MutFace(BRepGraph_FaceId(0));
-  aFaceDef->IsRemoved                              = true;
+  BRepGraph_MutGuard<BRepGraphInc::FaceDef> aFaceDef =
+    aGraph.Builder().MutFace(BRepGraph_FaceId(0));
+  aFaceDef->IsRemoved = true;
 
   const BRepGraphAlgo_Validate::Result aLightResult =
     BRepGraphAlgo_Validate::Perform(aGraph, BRepGraphAlgo_Validate::Options::Lightweight());
@@ -383,8 +383,9 @@ TEST(BRepGraphAlgo_ValidateTest, DeepDetectsIdDriftButLightweightSkipsIt)
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Topo().Faces().Nb(), 0);
 
-  BRepGraph_MutGuard<BRepGraphInc::FaceDef> aFaceDef = aGraph.Builder().MutFace(BRepGraph_FaceId(0));
-  aFaceDef->Id                                     = BRepGraph_FaceId(42);
+  BRepGraph_MutGuard<BRepGraphInc::FaceDef> aFaceDef =
+    aGraph.Builder().MutFace(BRepGraph_FaceId(0));
+  aFaceDef->Id = BRepGraph_FaceId(42);
 
   const BRepGraphAlgo_Validate::Result aLightResult =
     BRepGraphAlgo_Validate::Perform(aGraph, BRepGraphAlgo_Validate::Options::Lightweight());
@@ -410,8 +411,7 @@ TEST(BRepGraphAlgo_ValidateTest, Audit_ValidatesCoEdgeUIDsFromBuilderWireCreatio
   const BRepGraph_WireId aWireId = aGraph.Builder().AddWire(anEdges);
   ASSERT_TRUE(aWireId.IsValid());
 
-  const NCollection_Vector<BRepGraph_CoEdgeRefId> aWireRefIds =
-    coEdgeRefsOfWire(aGraph, aWireId);
+  const NCollection_Vector<BRepGraph_CoEdgeRefId> aWireRefIds = coEdgeRefsOfWire(aGraph, aWireId);
   ASSERT_EQ(aWireRefIds.Length(), 1);
   const BRepGraph_NodeId aCoEdgeId =
     BRepGraph_CoEdgeId(aGraph.Refs().CoEdges().Entry(aWireRefIds.Value(0)).CoEdgeDefId.Index);
@@ -448,7 +448,7 @@ TEST(BRepGraphAlgo_ValidateTest, AssemblyGraph_ValidProduct_NoIssuesInAudit)
   ASSERT_GE(aGraph.Topo().Products().Nb(), 1);
 
   // Identify the auto-created part product.
-  const occ::handle<NCollection_BaseAllocator> anAllocator = new NCollection_IncAllocator();
+  const occ::handle<NCollection_BaseAllocator>  anAllocator = new NCollection_IncAllocator();
   const NCollection_Vector<BRepGraph_ProductId> aInitialRootProducts =
     aGraph.Topo().Products().RootProducts(anAllocator);
   ASSERT_GT(aInitialRootProducts.Length(), 0);
@@ -523,8 +523,7 @@ TEST(BRepGraphAlgo_ValidateTest, AssemblyGraph_CorruptedProductShapeRootId_Detec
       break;
     }
   }
-  EXPECT_TRUE(aFoundExpectedError)
-    << "Audit should report 'ProductDef.ShapeRootId out of bounds'.";
+  EXPECT_TRUE(aFoundExpectedError) << "Audit should report 'ProductDef.ShapeRootId out of bounds'.";
 }
 
 TEST(BRepGraphAlgo_ValidateTest, AssemblyGraph_CorruptedOccurrenceProductDefId_DetectedByAudit)
@@ -539,9 +538,10 @@ TEST(BRepGraphAlgo_ValidateTest, AssemblyGraph_CorruptedOccurrenceProductDefId_D
   const BRepGraph_ProductId aRootAssembly = aGraph.Builder().AddAssemblyProduct();
   ASSERT_TRUE(aRootAssembly.IsValid());
 
-  const occ::handle<NCollection_BaseAllocator> anAllocator = new NCollection_IncAllocator();
-  const NCollection_Vector<BRepGraph_ProductId> aRootProducts = aGraph.Topo().Products().RootProducts(anAllocator);
-  BRepGraph_ProductId                           aPartId;
+  const occ::handle<NCollection_BaseAllocator>  anAllocator = new NCollection_IncAllocator();
+  const NCollection_Vector<BRepGraph_ProductId> aRootProducts =
+    aGraph.Topo().Products().RootProducts(anAllocator);
+  BRepGraph_ProductId aPartId;
   for (int i = 0; i < aRootProducts.Length(); ++i)
   {
     const BRepGraph_ProductId aProductId = aRootProducts.Value(i);
@@ -580,8 +580,7 @@ TEST(BRepGraphAlgo_ValidateTest, AssemblyGraph_CorruptedOccurrenceProductDefId_D
       break;
     }
   }
-  EXPECT_TRUE(aFoundExpectedError)
-    << "Audit should report 'OccurrenceDef.ProductDefId invalid'.";
+  EXPECT_TRUE(aFoundExpectedError) << "Audit should report 'OccurrenceDef.ProductDefId invalid'.";
 }
 
 TEST(BRepGraphAlgo_ValidateTest, LightweightVsAudit_RemovedVertexReference_Differential)
@@ -615,14 +614,12 @@ TEST(BRepGraphAlgo_ValidateTest, LightweightVsAudit_RemovedVertexReference_Diffe
   // Lightweight only checks active counts - should pass.
   const BRepGraphAlgo_Validate::Result aLightResult =
     BRepGraphAlgo_Validate::Perform(aGraph, BRepGraphAlgo_Validate::Options::Lightweight());
-  EXPECT_TRUE(aLightResult.IsValid())
-    << "Lightweight should not check removed-node isolation.";
+  EXPECT_TRUE(aLightResult.IsValid()) << "Lightweight should not check removed-node isolation.";
 
   // Audit runs checkRemovedNodeIsolation - should detect the dangling reference.
   const BRepGraphAlgo_Validate::Result aAuditResult =
     BRepGraphAlgo_Validate::Perform(aGraph, BRepGraphAlgo_Validate::Options::Audit());
-  EXPECT_FALSE(aAuditResult.IsValid())
-    << "Audit should detect edges referencing a removed vertex.";
+  EXPECT_FALSE(aAuditResult.IsValid()) << "Audit should detect edges referencing a removed vertex.";
   EXPECT_GT(aAuditResult.NbIssues(BRepGraphAlgo_Validate::Severity::Error), 0);
 
   // Verify the specific error message.
@@ -640,4 +637,3 @@ TEST(BRepGraphAlgo_ValidateTest, LightweightVsAudit_RemovedVertexReference_Diffe
   EXPECT_TRUE(aFoundExpectedError)
     << "Audit should report 'Non-removed EdgeDef references removed StartVertexEntity'.";
 }
-

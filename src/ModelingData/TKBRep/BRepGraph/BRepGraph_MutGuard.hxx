@@ -56,10 +56,11 @@ class BRepGraph_MutGuard
 
   //! ID type: BRepGraph_NodeId for definitions, BRepGraph_RefId for references,
   //! BRepGraph_RepId for representations.
-  using IdType = std::conditional_t<
-    std::is_base_of_v<BRepGraphInc::BaseDef, T>,
-    BRepGraph_NodeId,
-    std::conditional_t<std::is_base_of_v<BRepGraphInc::BaseRef, T>, BRepGraph_RefId, BRepGraph_RepId>>;
+  using IdType = std::conditional_t<std::is_base_of_v<BRepGraphInc::BaseDef, T>,
+                                    BRepGraph_NodeId,
+                                    std::conditional_t<std::is_base_of_v<BRepGraphInc::BaseRef, T>,
+                                                       BRepGraph_RefId,
+                                                       BRepGraph_RepId>>;
 
   //! Call the appropriate notification method on the graph.
   void notify() noexcept
@@ -97,7 +98,7 @@ public:
         myEntity(theOther.myEntity),
         myId(theOther.myId)
   {
-    theOther.myGraph = nullptr;
+    theOther.myGraph  = nullptr;
     theOther.myEntity = nullptr;
   }
 
@@ -108,10 +109,10 @@ public:
     {
       if (myGraph != nullptr)
         notify();
-      myGraph          = theOther.myGraph;
-      myEntity         = theOther.myEntity;
-      myId             = theOther.myId;
-      theOther.myGraph = nullptr;
+      myGraph           = theOther.myGraph;
+      myEntity          = theOther.myEntity;
+      myId              = theOther.myId;
+      theOther.myGraph  = nullptr;
       theOther.myEntity = nullptr;
     }
     return *this;
@@ -123,8 +124,9 @@ public:
   //! Access the entity via pointer syntax.
   [[nodiscard]] T* operator->()
   {
-    Standard_ProgramError_Raise_if(myEntity == nullptr,
-                                   "BRepGraph_MutGuard::operator->(): guard is empty or moved-from");
+    Standard_ProgramError_Raise_if(
+      myEntity == nullptr,
+      "BRepGraph_MutGuard::operator->(): guard is empty or moved-from");
     return myEntity;
   }
 

@@ -104,7 +104,7 @@ public:
   //! Destructor.
   Standard_EXPORT ~BRepGraph();
   //! Move constructor.
-  Standard_EXPORT            BRepGraph(BRepGraph&&) noexcept;
+  Standard_EXPORT BRepGraph(BRepGraph&&) noexcept;
   //! Move assignment operator.
   Standard_EXPORT BRepGraph& operator=(BRepGraph&&) noexcept;
 
@@ -179,7 +179,7 @@ public:
   //! because it is already a self-contained query and recording subsystem
   //! with no per-view cached state.
   //! @return history subsystem for tracking modifications
-  [[nodiscard]] Standard_EXPORT BRepGraph_History&       History();
+  [[nodiscard]] Standard_EXPORT BRepGraph_History& History();
   //! Access history subsystem directly (const).
   //! @return history subsystem for tracking modifications
   [[nodiscard]] Standard_EXPORT const BRepGraph_History& History() const;
@@ -204,19 +204,19 @@ private:
   //! @{
 
   //! Access the underlying storage.
-  [[nodiscard]] Standard_EXPORT BRepGraphInc_Storage& incStorage();
+  [[nodiscard]] Standard_EXPORT BRepGraphInc_Storage&       incStorage();
   [[nodiscard]] Standard_EXPORT const BRepGraphInc_Storage& incStorage() const;
 
   //! Access the graph data structure.
-  [[nodiscard]] Standard_EXPORT BRepGraph_Data* data();
+  [[nodiscard]] Standard_EXPORT BRepGraph_Data*       data();
   [[nodiscard]] Standard_EXPORT const BRepGraph_Data* data() const;
 
   //! Access the layer registry.
-  [[nodiscard]] Standard_EXPORT BRepGraph_LayerRegistry& layerRegistry();
+  [[nodiscard]] Standard_EXPORT BRepGraph_LayerRegistry&       layerRegistry();
   [[nodiscard]] Standard_EXPORT const BRepGraph_LayerRegistry& layerRegistry() const;
 
   //! Access the raw transient cache for friend algorithms and builders.
-  [[nodiscard]] Standard_EXPORT BRepGraph_TransientCache& transientCache();
+  [[nodiscard]] Standard_EXPORT BRepGraph_TransientCache&       transientCache();
   [[nodiscard]] Standard_EXPORT const BRepGraph_TransientCache& transientCache() const;
 
   //! @}
@@ -260,7 +260,7 @@ private:
   std::unique_ptr<BRepGraph_Data> myData;
 
   //! Registered layers are stored on BRepGraph, not BRepGraph_Data, to survive Compact swap.
-  BRepGraph_LayerRegistry myLayerRegistry;
+  BRepGraph_LayerRegistry  myLayerRegistry;
   BRepGraph_TransientCache myTransientCache; //!< Transient algorithm caches (BndBox, UVBounds)
 };
 

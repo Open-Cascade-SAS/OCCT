@@ -244,7 +244,8 @@ TEST_F(BRepGraph_DiagnosticsTest, BoundingBox_Edge_SubsetOfOwningFace)
 
   for (int aCoEdgeIter = 0; aCoEdgeIter < aCoEdgeRefs.Length(); ++aCoEdgeIter)
   {
-    const BRepGraphInc::CoEdgeRef& aCR      = myGraph.Refs().CoEdges().Entry(aCoEdgeRefs.Value(aCoEdgeIter));
+    const BRepGraphInc::CoEdgeRef& aCR =
+      myGraph.Refs().CoEdges().Entry(aCoEdgeRefs.Value(aCoEdgeIter));
     const BRepGraphInc::CoEdgeDef& aCoEdge  = myGraph.Topo().CoEdges().Definition(aCR.CoEdgeDefId);
     const BRepGraph_NodeId         anEdgeId = aCoEdge.EdgeDefId;
     Bnd_Box                        anEdgeBox;
@@ -309,7 +310,8 @@ TEST_F(BRepGraph_DiagnosticsTest, BoundingBox_AfterMutation_CacheInvalidated)
 TEST_F(BRepGraph_DiagnosticsTest, BoundingBox_Product_NonVoidForStandaloneLowLevelRoots)
 {
   expectNonVoidProductBox(BRepBuilderAPI_MakeVertex(gp_Pnt(1.0, 2.0, 3.0)).Shape());
-  expectNonVoidProductBox(BRepBuilderAPI_MakeEdge(gp_Pnt(0.0, 0.0, 0.0), gp_Pnt(5.0, 0.0, 0.0)).Shape());
+  expectNonVoidProductBox(
+    BRepBuilderAPI_MakeEdge(gp_Pnt(0.0, 0.0, 0.0), gp_Pnt(5.0, 0.0, 0.0)).Shape());
   expectNonVoidProductBox(makeStandaloneWire());
 }
 

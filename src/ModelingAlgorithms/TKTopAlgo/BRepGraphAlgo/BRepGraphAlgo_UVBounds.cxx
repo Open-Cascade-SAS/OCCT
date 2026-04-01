@@ -328,7 +328,8 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph&       theGraph,
           isAborted = true;
           return;
         }
-        const BRepGraphInc::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdges().Definition(aCR.CoEdgeDefId);
+        const BRepGraphInc::CoEdgeDef& aCoEdge =
+          theGraph.Topo().CoEdges().Definition(aCR.CoEdgeDefId);
         const BRepGraphInc::CoEdgeDef* aPCurve =
           BRepGraph_Tool::Edge::FindPCurve(theGraph, aCoEdge.EdgeDefId, theFace);
         if (aPCurve == nullptr || !aPCurve->Curve2DRepId.IsValid())
@@ -450,7 +451,8 @@ void BRepGraphAlgo_UVBounds::Compute(const BRepGraph&       theGraph,
       {
         continue;
       }
-      const BRepGraphInc::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdges().Definition(aCR.CoEdgeDefId);
+      const BRepGraphInc::CoEdgeDef& aCoEdge =
+        theGraph.Topo().CoEdges().Definition(aCR.CoEdgeDefId);
       const BRepGraphInc::CoEdgeDef* aPCurve =
         BRepGraph_Tool::Edge::FindPCurve(theGraph, aCoEdge.EdgeDefId, theFace);
       if (aPCurve == nullptr || !aPCurve->Curve2DRepId.IsValid())
@@ -549,7 +551,8 @@ const occ::handle<BRepGraph_CacheKind>& BRepGraphAlgo_UVBounds::CacheKind()
 //! Pre-resolved slot index for the UVBounds cache kind.
 static int cacheKindSlot()
 {
-  static const int THE_SLOT = BRepGraph_CacheKindRegistry::Register(BRepGraphAlgo_UVBounds::CacheKind());
+  static const int THE_SLOT =
+    BRepGraph_CacheKindRegistry::Register(BRepGraphAlgo_UVBounds::CacheKind());
   return THE_SLOT;
 }
 
@@ -576,7 +579,7 @@ bool BRepGraphAlgo_UVBounds::GetCached(const BRepGraph&       theGraph,
 
 //=================================================================================================
 
-BRepGraphAlgo_UVBounds::CachedData BRepGraphAlgo_UVBounds::AddCached(BRepGraph&             theGraph,
+BRepGraphAlgo_UVBounds::CachedData BRepGraphAlgo_UVBounds::AddCached(BRepGraph& theGraph,
                                                                      const BRepGraph_FaceId theFace)
 {
   if (!theFace.IsValid())
@@ -584,7 +587,7 @@ BRepGraphAlgo_UVBounds::CachedData BRepGraphAlgo_UVBounds::AddCached(BRepGraph& 
     return CachedData();
   }
 
-  const int aKindSlot = cacheKindSlot();
+  const int                         aKindSlot       = cacheKindSlot();
   occ::handle<BRepGraph_CacheValue> anExistingValue = theGraph.Cache().Get(theFace, aKindSlot);
   if (!anExistingValue.IsNull())
   {
@@ -615,7 +618,8 @@ BRepGraphAlgo_UVBounds::CachedData BRepGraphAlgo_UVBounds::AddCached(BRepGraph& 
         return aData;
       }
     }
-    occ::handle<BRepGraphAlgo_UVBoundsCacheValue> aNewValue = new BRepGraphAlgo_UVBoundsCacheValue();
+    occ::handle<BRepGraphAlgo_UVBoundsCacheValue> aNewValue =
+      new BRepGraphAlgo_UVBoundsCacheValue();
     aNewValue->SetData(aData);
     theGraph.Cache().Set(theFace, aKindSlot, aNewValue);
   }
@@ -634,7 +638,7 @@ void BRepGraphAlgo_UVBounds::SetCached(BRepGraph&             theGraph,
     return;
   }
 
-  const int aKindSlot = cacheKindSlot();
+  const int                         aKindSlot       = cacheKindSlot();
   occ::handle<BRepGraph_CacheValue> anExistingValue = theGraph.Cache().Get(theFace, aKindSlot);
   if (!anExistingValue.IsNull())
   {
@@ -654,8 +658,7 @@ void BRepGraphAlgo_UVBounds::SetCached(BRepGraph&             theGraph,
 
 //=================================================================================================
 
-void BRepGraphAlgo_UVBounds::InvalidateCached(BRepGraph&             theGraph,
-                                              const BRepGraph_FaceId theFace)
+void BRepGraphAlgo_UVBounds::InvalidateCached(BRepGraph& theGraph, const BRepGraph_FaceId theFace)
 {
   if (!theFace.IsValid())
   {

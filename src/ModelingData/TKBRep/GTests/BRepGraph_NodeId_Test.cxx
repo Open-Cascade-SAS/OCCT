@@ -62,7 +62,8 @@ TEST(BRepGraph_NodeIdTest, ImplicitConversion_PassToFunction)
 
   BRepGraph_FaceId aFace(0);
   // AdjacentFaces takes BRepGraph_FaceId - typed id works directly.
-  NCollection_Vector<BRepGraph_FaceId> aAdj = aGraph.Topo().Faces().Adjacent(aFace, aGraph.Allocator());
+  NCollection_Vector<BRepGraph_FaceId> aAdj =
+    aGraph.Topo().Faces().Adjacent(aFace, aGraph.Allocator());
   EXPECT_GT(aAdj.Length(), 0);
 }
 

@@ -347,15 +347,16 @@ TEST(NCollection_LocalArrayTest, ReallocateAsGrowableStack)
 // ============ Non-trivially-copyable type tests ============
 
 // Tracker for construction/destruction call counts.
-static int THE_CTOR_COUNT  = 0;
-static int THE_DTOR_COUNT  = 0;
-static int THE_MOVE_COUNT  = 0;
+static int THE_CTOR_COUNT = 0;
+static int THE_DTOR_COUNT = 0;
+static int THE_MOVE_COUNT = 0;
 
 struct NCollection_LocalArray_Tracked
 {
   int Value = 0;
 
   NCollection_LocalArray_Tracked() { ++THE_CTOR_COUNT; }
+
   ~NCollection_LocalArray_Tracked() { ++THE_DTOR_COUNT; }
 
   NCollection_LocalArray_Tracked(const NCollection_LocalArray_Tracked& theOther)

@@ -22,9 +22,10 @@ namespace
 
 static const TCollection_AsciiString THE_LAYER_NAME("Regularity");
 
-void appendUnique(NCollection_DataMap<BRepGraph_FaceId, NCollection_Vector<BRepGraph_EdgeId>>& theMap,
-                  const BRepGraph_FaceId                                                      theFace,
-                  const BRepGraph_EdgeId                                                      theEdge)
+void appendUnique(
+  NCollection_DataMap<BRepGraph_FaceId, NCollection_Vector<BRepGraph_EdgeId>>& theMap,
+  const BRepGraph_FaceId                                                       theFace,
+  const BRepGraph_EdgeId                                                       theEdge)
 {
   if (!theMap.IsBound(theFace))
   {
@@ -44,8 +45,8 @@ void appendUnique(NCollection_DataMap<BRepGraph_FaceId, NCollection_Vector<BRepG
 }
 
 void removeEdge(NCollection_DataMap<BRepGraph_FaceId, NCollection_Vector<BRepGraph_EdgeId>>& theMap,
-                const BRepGraph_FaceId                                                      theFace,
-                const BRepGraph_EdgeId                                                      theEdge) noexcept
+                const BRepGraph_FaceId theFace,
+                const BRepGraph_EdgeId theEdge) noexcept
 {
   if (!theMap.IsBound(theFace))
     return;
@@ -65,8 +66,9 @@ void removeEdge(NCollection_DataMap<BRepGraph_FaceId, NCollection_Vector<BRepGra
     theMap.UnBind(theFace);
 }
 
-static BRepGraph_EdgeId remapEdge(const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>& theRemapMap,
-                                  const BRepGraph_EdgeId                                          theEdge)
+static BRepGraph_EdgeId remapEdge(
+  const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>& theRemapMap,
+  const BRepGraph_EdgeId                                         theEdge)
 {
   const BRepGraph_NodeId* aNewId = theRemapMap.Seek(BRepGraph_EdgeId(theEdge.Index));
   if (aNewId == nullptr || aNewId->NodeKind != BRepGraph_NodeId::Kind::Edge)
@@ -74,8 +76,9 @@ static BRepGraph_EdgeId remapEdge(const NCollection_DataMap<BRepGraph_NodeId, BR
   return BRepGraph_EdgeId(aNewId->Index);
 }
 
-static BRepGraph_FaceId remapFace(const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>& theRemapMap,
-                                  const BRepGraph_FaceId                                          theFace)
+static BRepGraph_FaceId remapFace(
+  const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>& theRemapMap,
+  const BRepGraph_FaceId                                         theFace)
 {
   const BRepGraph_NodeId* aNewId = theRemapMap.Seek(BRepGraph_FaceId(theFace.Index));
   if (aNewId == nullptr || aNewId->NodeKind != BRepGraph_NodeId::Kind::Face)
@@ -259,7 +262,8 @@ void BRepGraph_RegularityLayer::removeRegularity(const BRepGraph_EdgeId theEdge,
     if (anEntry.FaceEntity1 != aFace1 || anEntry.FaceEntity2 != aFace2)
       continue;
     if (anIdx < aRegularities.Entries.Length() - 1)
-      aRegularities.Entries.ChangeValue(anIdx) = aRegularities.Entries.Value(aRegularities.Entries.Length() - 1);
+      aRegularities.Entries.ChangeValue(anIdx) =
+        aRegularities.Entries.Value(aRegularities.Entries.Length() - 1);
     aRegularities.Entries.EraseLast();
     aFound = true;
     break;
@@ -369,8 +373,10 @@ void BRepGraph_RegularityLayer::migrateFaceBindings(const BRepGraph_FaceId theOl
       if (anEntry.FaceEntity1 != theOldFace && anEntry.FaceEntity2 != theOldFace)
         continue;
       removeRegularity(aBoundEdges.Value(anIdx), anEntry.FaceEntity1, anEntry.FaceEntity2);
-      const BRepGraph_FaceId aFace1 = anEntry.FaceEntity1 == theOldFace ? theNewFace : anEntry.FaceEntity1;
-      const BRepGraph_FaceId aFace2 = anEntry.FaceEntity2 == theOldFace ? theNewFace : anEntry.FaceEntity2;
+      const BRepGraph_FaceId aFace1 =
+        anEntry.FaceEntity1 == theOldFace ? theNewFace : anEntry.FaceEntity1;
+      const BRepGraph_FaceId aFace2 =
+        anEntry.FaceEntity2 == theOldFace ? theNewFace : anEntry.FaceEntity2;
       SetRegularity(aBoundEdges.Value(anIdx), aFace1, aFace2, anEntry.Continuity);
     }
   }
@@ -411,13 +417,15 @@ void BRepGraph_RegularityLayer::OnNodeRemoved(const BRepGraph_NodeId theNode,
   {
     case BRepGraph_NodeId::Kind::Edge:
       if (theReplacement.NodeKind == BRepGraph_NodeId::Kind::Edge && theReplacement.IsValid())
-        migrateEdgeBindings(BRepGraph_EdgeId(theNode.Index), BRepGraph_EdgeId(theReplacement.Index));
+        migrateEdgeBindings(BRepGraph_EdgeId(theNode.Index),
+                            BRepGraph_EdgeId(theReplacement.Index));
       else
         removeEdgeBindings(BRepGraph_EdgeId(theNode.Index));
       break;
     case BRepGraph_NodeId::Kind::Face:
       if (theReplacement.NodeKind == BRepGraph_NodeId::Kind::Face && theReplacement.IsValid())
-        migrateFaceBindings(BRepGraph_FaceId(theNode.Index), BRepGraph_FaceId(theReplacement.Index));
+        migrateFaceBindings(BRepGraph_FaceId(theNode.Index),
+                            BRepGraph_FaceId(theReplacement.Index));
       else
         invalidateFaceBindings(BRepGraph_FaceId(theNode.Index));
       break;

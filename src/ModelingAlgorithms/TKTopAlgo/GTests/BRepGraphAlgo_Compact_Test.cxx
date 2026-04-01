@@ -317,9 +317,9 @@ TEST(BRepGraphAlgo_CompactTest, UIDRoundTrip_AfterCompaction)
   ASSERT_GE(aGraph.Topo().Edges().Nb(), 3);
 
   // Record UIDs for a few face and edge nodes.
-  const BRepGraph_UID aFaceUID0 = aGraph.UIDs().Of(BRepGraph_FaceId(0));
-  const BRepGraph_UID aFaceUID1 = aGraph.UIDs().Of(BRepGraph_FaceId(1));
-  const BRepGraph_UID aFaceUID2 = aGraph.UIDs().Of(BRepGraph_FaceId(2));
+  const BRepGraph_UID aFaceUID0  = aGraph.UIDs().Of(BRepGraph_FaceId(0));
+  const BRepGraph_UID aFaceUID1  = aGraph.UIDs().Of(BRepGraph_FaceId(1));
+  const BRepGraph_UID aFaceUID2  = aGraph.UIDs().Of(BRepGraph_FaceId(2));
   const BRepGraph_UID anEdgeUID0 = aGraph.UIDs().Of(BRepGraph_EdgeId(0));
   const BRepGraph_UID anEdgeUID1 = aGraph.UIDs().Of(BRepGraph_EdgeId(1));
   ASSERT_TRUE(aFaceUID0.IsValid());
@@ -339,8 +339,8 @@ TEST(BRepGraphAlgo_CompactTest, UIDRoundTrip_AfterCompaction)
   EXPECT_GE(aRes.NbRemovedFaces, 1);
 
   // Surviving UIDs should resolve to valid NodeIds.
-  const BRepGraph_NodeId aFace0After = aGraph.UIDs().NodeIdFrom(aFaceUID0);
-  const BRepGraph_NodeId aFace1After = aGraph.UIDs().NodeIdFrom(aFaceUID1);
+  const BRepGraph_NodeId aFace0After  = aGraph.UIDs().NodeIdFrom(aFaceUID0);
+  const BRepGraph_NodeId aFace1After  = aGraph.UIDs().NodeIdFrom(aFaceUID1);
   const BRepGraph_NodeId anEdge0After = aGraph.UIDs().NodeIdFrom(anEdgeUID0);
   const BRepGraph_NodeId anEdge1After = aGraph.UIDs().NodeIdFrom(anEdgeUID1);
   EXPECT_TRUE(aFace0After.IsValid()) << "Face 0 UID lost after compaction";

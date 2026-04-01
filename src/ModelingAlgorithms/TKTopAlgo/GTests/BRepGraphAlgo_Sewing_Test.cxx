@@ -1020,8 +1020,7 @@ TEST(BRepGraphAlgo_SewingTest, Sew_Convenience_MatchesPerform)
 
   // Count faces in both results.
   int aNbPerformFaces = 0;
-  for (TopExp_Explorer anExp(aGraph.Shapes().Reconstruct(BRepGraph_CompoundId(0)),
-                             TopAbs_FACE);
+  for (TopExp_Explorer anExp(aGraph.Shapes().Reconstruct(BRepGraph_CompoundId(0)), TopAbs_FACE);
        anExp.More();
        anExp.Next())
     ++aNbPerformFaces;
@@ -1490,8 +1489,7 @@ TEST(BRepGraphAlgo_SewingTest, SeamEdge_CorruptedDualPCurve_DetectedByValidator)
 
   const BRepGraphAlgo_Validate::Result aAuditResult =
     BRepGraphAlgo_Validate::Perform(aGraph, BRepGraphAlgo_Validate::Options::Audit());
-  EXPECT_FALSE(aAuditResult.IsValid())
-    << "Corrupted seam edge PCurve should be detected by audit.";
+  EXPECT_FALSE(aAuditResult.IsValid()) << "Corrupted seam edge PCurve should be detected by audit.";
   EXPECT_GT(aAuditResult.NbIssues(BRepGraphAlgo_Validate::Severity::Error), 0);
 
   // Verify the error specifically mentions geometry reference bounds.

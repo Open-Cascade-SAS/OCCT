@@ -617,24 +617,24 @@ void BRepGraphInc_Storage::BuildReverseIndex()
 
   // Recount active entities to sync counters after Build.
   // Populate may have set IsRemoved on some entities without going through RemoveNode.
-  myVertices.NbActive    = 0;
-  myEdges.NbActive       = 0;
-  myCoEdges.NbActive     = 0;
-  myWires.NbActive       = 0;
-  myFaces.NbActive       = 0;
-  myShells.NbActive      = 0;
-  mySolids.NbActive      = 0;
-  myCompounds.NbActive   = 0;
-  myCompSolids.NbActive  = 0;
-  myProducts.NbActive    = 0;
-  myOccurrences.NbActive = 0;
-  mySurfaces.NbActive    = 0;
-  myCurves3D.NbActive    = 0;
-  myCurves2D.NbActive    = 0;
+  myVertices.NbActive          = 0;
+  myEdges.NbActive             = 0;
+  myCoEdges.NbActive           = 0;
+  myWires.NbActive             = 0;
+  myFaces.NbActive             = 0;
+  myShells.NbActive            = 0;
+  mySolids.NbActive            = 0;
+  myCompounds.NbActive         = 0;
+  myCompSolids.NbActive        = 0;
+  myProducts.NbActive          = 0;
+  myOccurrences.NbActive       = 0;
+  mySurfaces.NbActive          = 0;
+  myCurves3D.NbActive          = 0;
+  myCurves2D.NbActive          = 0;
   myTriangulationsRep.NbActive = 0;
-  myPolygons3D.NbActive  = 0;
-  myPolygons2D.NbActive  = 0;
-  myPolygonsOnTri.NbActive = 0;
+  myPolygons3D.NbActive        = 0;
+  myPolygons2D.NbActive        = 0;
+  myPolygonsOnTri.NbActive     = 0;
   for (int i = 0; i < myVertices.Nb(); ++i)
     if (!myVertices.Get(i).IsRemoved)
       ++myVertices.NbActive;

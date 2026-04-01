@@ -21,8 +21,7 @@ namespace
 
 //=================================================================================================
 
-void appendRefUIDReverseIndex(BRepGraph_Data&             theData,
-                              const BRepGraph_RefId::Kind theKind)
+void appendRefUIDReverseIndex(BRepGraph_Data& theData, const BRepGraph_RefId::Kind theKind)
 {
   const NCollection_Vector<BRepGraph_RefUID>& aUIDs = theData.myIncStorage.RefUIDs(theKind);
   for (int anIdx = 0; anIdx < aUIDs.Length(); ++anIdx)
@@ -37,8 +36,7 @@ void appendRefUIDReverseIndex(BRepGraph_Data&             theData,
 
 //=================================================================================================
 
-void appendUIDReverseIndex(BRepGraph_Data&               theData,
-                           const BRepGraph_NodeId::Kind  theKind)
+void appendUIDReverseIndex(BRepGraph_Data& theData, const BRepGraph_NodeId::Kind theKind)
 {
   const NCollection_Vector<BRepGraph_UID>& aUIDs = theData.myIncStorage.UIDs(theKind);
   for (int anIdx = 0; anIdx < aUIDs.Length(); ++anIdx)

@@ -62,14 +62,14 @@ public:
   //! @return a new BRepGraph containing only the specified face and its dependencies
   [[nodiscard]] Standard_EXPORT static BRepGraph CopyFace(const BRepGraph&       theGraph,
                                                           const BRepGraph_FaceId theFace,
-                                                          const bool theCopyGeom     = true,
+                                                          const bool             theCopyGeom = true,
                                                           const bool theReserveCache = true);
 
 private:
-  Standard_EXPORT static void transferCacheValues(const BRepGraph&       theSrcGraph,
-                                                  BRepGraph_NodeId       theSrcNode,
-                                                  BRepGraph&             theDstGraph,
-                                                  BRepGraph_NodeId       theDstNode);
+  Standard_EXPORT static void transferCacheValues(const BRepGraph& theSrcGraph,
+                                                  BRepGraph_NodeId theSrcNode,
+                                                  BRepGraph&       theDstGraph,
+                                                  BRepGraph_NodeId theDstNode);
 
   BRepGraphAlgo_Copy() = delete;
 };

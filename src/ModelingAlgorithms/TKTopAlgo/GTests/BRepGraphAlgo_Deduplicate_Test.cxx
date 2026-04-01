@@ -267,8 +267,7 @@ int addDuplicatePCurvesToAllEdges(BRepGraph& theGraph)
       continue;
     }
 
-    const BRepGraphInc::CoEdgeDef& aCE =
-      theGraph.Topo().CoEdges().Definition(aCoEdgeIdxs.Value(0));
+    const BRepGraphInc::CoEdgeDef& aCE = theGraph.Topo().CoEdges().Definition(aCoEdgeIdxs.Value(0));
     if (!aCE.Curve2DRepId.IsValid())
     {
       continue;
@@ -1729,11 +1728,11 @@ TEST(BRepGraphAlgo_DeduplicateTest, Pump_FullDedup_BackRefsAndNullify)
   ASSERT_TRUE(aGraph2.IsDone());
 
   std::cout << "  === Graph from reconstructed shape ===\n"
-            << "  Faces: " << aGraph2.Topo().Faces().Nb() << ", Edges: " << aGraph2.Topo().Edges().Nb()
-            << "\n"
+            << "  Faces: " << aGraph2.Topo().Faces().Nb()
+            << ", Edges: " << aGraph2.Topo().Edges().Nb() << "\n"
             << "  Surfaces: " << aGraph2.Topo().Faces().Nb()
-            << ", Curves: " << aGraph2.Topo().Edges().Nb() << ", PCurves: " << nbPCurveEntries(aGraph2)
-            << "\n";
+            << ", Curves: " << aGraph2.Topo().Edges().Nb()
+            << ", PCurves: " << nbPCurveEntries(aGraph2) << "\n";
 
   // The new graph should have fewer geometry nodes (shared handles -> single node).
   EXPECT_EQ(aGraph2.Topo().Faces().Nb(), aNbFaces);

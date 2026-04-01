@@ -693,21 +693,19 @@ TEST(BRepGraphCheck_AnalyzerTest, ValidCompound_TwoBoxes_NoIssues)
   BRepGraphCheck_Analyzer anAnalyzer(aGraph);
   anAnalyzer.Perform();
 
-  EXPECT_TRUE(anAnalyzer.IsValid())
-    << "Compound of two valid boxes should have no errors. Found "
-    << anAnalyzer.Report().Issues().Length() << " issues.";
+  EXPECT_TRUE(anAnalyzer.IsValid()) << "Compound of two valid boxes should have no errors. Found "
+                                    << anAnalyzer.Report().Issues().Length() << " issues.";
 }
 
 TEST(BRepGraphCheck_AnalyzerTest, ValidCompSolid_NoIssues)
 {
   // Build two adjacent boxes placed side-by-side into a CompSolid.
   const TopoDS_Shape aBox1 = BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape();
-  const TopoDS_Shape aBox2 =
-    BRepPrimAPI_MakeBox(gp_Pnt(10.0, 0.0, 0.0), 10.0, 10.0, 10.0).Shape();
+  const TopoDS_Shape aBox2 = BRepPrimAPI_MakeBox(gp_Pnt(10.0, 0.0, 0.0), 10.0, 10.0, 10.0).Shape();
 
   // Build a CompSolid from the two solids.
-  BRep_Builder      aBB;
-  TopoDS_CompSolid  aCompSolid;
+  BRep_Builder     aBB;
+  TopoDS_CompSolid aCompSolid;
   aBB.MakeCompSolid(aCompSolid);
   aBB.Add(aCompSolid, aBox1);
   aBB.Add(aCompSolid, aBox2);
@@ -719,9 +717,8 @@ TEST(BRepGraphCheck_AnalyzerTest, ValidCompSolid_NoIssues)
   BRepGraphCheck_Analyzer anAnalyzer(aGraph);
   anAnalyzer.Perform();
 
-  EXPECT_TRUE(anAnalyzer.IsValid())
-    << "CompSolid of two valid boxes should have no errors. Found "
-    << anAnalyzer.Report().Issues().Length() << " issues.";
+  EXPECT_TRUE(anAnalyzer.IsValid()) << "CompSolid of two valid boxes should have no errors. Found "
+                                    << anAnalyzer.Report().Issues().Length() << " issues.";
 }
 
 // ---------------------------------------------------------------------------
@@ -740,9 +737,8 @@ TEST(BRepGraphCheck_AnalyzerTest, ExactMethod_ValidBox_NoIssues)
   anAnalyzer.SetExactMethod(true);
   anAnalyzer.Perform();
 
-  EXPECT_TRUE(anAnalyzer.IsValid())
-    << "Valid box with exact method should have no errors. Found "
-    << anAnalyzer.Report().Issues().Length() << " issues.";
+  EXPECT_TRUE(anAnalyzer.IsValid()) << "Valid box with exact method should have no errors. Found "
+                                    << anAnalyzer.Report().Issues().Length() << " issues.";
 }
 
 TEST(BRepGraphCheck_AnalyzerTest, ExactMethod_DisplacedVertex_StillDetectsError)

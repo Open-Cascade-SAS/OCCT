@@ -80,9 +80,8 @@ int BRepGraph_LayerRegistry::FindSlot(const Standard_GUID& theGUID) const
 
 const occ::handle<BRepGraph_Layer>& BRepGraph_LayerRegistry::Layer(const int theSlot) const
 {
-  Standard_OutOfRange_Raise_if(
-    theSlot < 0 || theSlot >= myLayers.Length(),
-    "BRepGraph_LayerRegistry::Layer() - invalid slot");
+  Standard_OutOfRange_Raise_if(theSlot < 0 || theSlot >= myLayers.Length(),
+                               "BRepGraph_LayerRegistry::Layer() - invalid slot");
   return myLayers.Value(theSlot);
 }
 

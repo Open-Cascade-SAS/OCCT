@@ -69,7 +69,7 @@ public:
   //! @param[in] theNode node to query
   //! @param[in] theKind cache kind descriptor identifying the slot
   //! @return true if a current value exists for this node and kind
-  [[nodiscard]] Standard_EXPORT bool Has(const BRepGraph_NodeId theNode,
+  [[nodiscard]] Standard_EXPORT bool Has(const BRepGraph_NodeId                  theNode,
                                          const occ::handle<BRepGraph_CacheKind>& theKind) const;
 
   //! Check if a non-stale cached value exists using a pre-resolved slot.
@@ -80,7 +80,7 @@ public:
   //! @param[in] theNode node to remove the value from
   //! @param[in] theKind cache kind descriptor identifying the slot
   //! @return true if a value was actually removed
-  Standard_EXPORT bool Remove(const BRepGraph_NodeId theNode,
+  Standard_EXPORT bool Remove(const BRepGraph_NodeId                  theNode,
                               const occ::handle<BRepGraph_CacheKind>& theKind);
 
   //! Remove a cached value using a pre-resolved cache-kind slot.
@@ -89,7 +89,7 @@ public:
   //! Invalidate (but do not remove) a cached value on a node.
   //! @param[in] theNode node whose cache entry to invalidate
   //! @param[in] theKind cache kind descriptor identifying the slot
-  Standard_EXPORT void Invalidate(const BRepGraph_NodeId theNode,
+  Standard_EXPORT void Invalidate(const BRepGraph_NodeId                  theNode,
                                   const occ::handle<BRepGraph_CacheKind>& theKind);
 
   //! Invalidate a cached value using a pre-resolved cache-kind slot.

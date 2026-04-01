@@ -52,27 +52,27 @@ public:
   class FaceOps
   {
   public:
-    [[nodiscard]] Standard_EXPORT int Nb() const;
-    [[nodiscard]] Standard_EXPORT int NbActive() const;
+    [[nodiscard]] Standard_EXPORT int   Nb() const;
+    [[nodiscard]] Standard_EXPORT int   NbActive() const;
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::FaceDef& Definition(
       const BRepGraph_FaceId theFace) const;
     [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_ShellId>& Shells(
       const BRepGraph_FaceId theFace) const;
     [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_CompoundId>& Compounds(
       const BRepGraph_FaceId theFace) const;
-    [[nodiscard]] Standard_EXPORT BRepGraph_SurfaceRepId SurfaceRepId(
-      const BRepGraph_FaceId theFace) const;
-    [[nodiscard]] Standard_EXPORT BRepGraph_TriangulationRepId ActiveTriangulationRepId(
-      const BRepGraph_FaceId theFace) const;
+    [[nodiscard]] Standard_EXPORT BRepGraph_SurfaceRepId
+      SurfaceRepId(const BRepGraph_FaceId theFace) const;
+    [[nodiscard]] Standard_EXPORT BRepGraph_TriangulationRepId
+                                  ActiveTriangulationRepId(const BRepGraph_FaceId theFace) const;
     [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_FaceId> SameDomain(
-      const BRepGraph_FaceId                          theFace,
+      const BRepGraph_FaceId                        theFace,
       const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
     [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_EdgeId> SharedEdges(
-      const BRepGraph_FaceId                          theFaceA,
-      const BRepGraph_FaceId                          theFaceB,
+      const BRepGraph_FaceId                        theFaceA,
+      const BRepGraph_FaceId                        theFaceB,
       const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
     [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_FaceId> Adjacent(
-      const BRepGraph_FaceId                          theFace,
+      const BRepGraph_FaceId                        theFace,
       const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
     [[nodiscard]] Standard_EXPORT BRepGraph_WireId OuterWire(const BRepGraph_FaceId theFace) const;
 
@@ -91,24 +91,24 @@ public:
   class EdgeOps
   {
   public:
-    [[nodiscard]] Standard_EXPORT int Nb() const;
-    [[nodiscard]] Standard_EXPORT int NbActive() const;
+    [[nodiscard]] Standard_EXPORT int   Nb() const;
+    [[nodiscard]] Standard_EXPORT int   NbActive() const;
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::EdgeDef& Definition(
       const BRepGraph_EdgeId theEdge) const;
-    [[nodiscard]] Standard_EXPORT int NbFaces(const BRepGraph_EdgeId theEdge) const;
+    [[nodiscard]] Standard_EXPORT int   NbFaces(const BRepGraph_EdgeId theEdge) const;
     [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_WireId>& Wires(
       const BRepGraph_EdgeId theEdge) const;
     [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_CoEdgeId>& CoEdges(
       const BRepGraph_EdgeId theEdge) const;
     [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_FaceId>& Faces(
       const BRepGraph_EdgeId theEdge) const;
-    [[nodiscard]] Standard_EXPORT BRepGraph_Curve3DRepId Curve3DRepId(
-      const BRepGraph_EdgeId theEdge) const;
+    [[nodiscard]] Standard_EXPORT BRepGraph_Curve3DRepId
+                                  Curve3DRepId(const BRepGraph_EdgeId theEdge) const;
     [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_EdgeId> Adjacent(
-      const BRepGraph_EdgeId                          theEdge,
+      const BRepGraph_EdgeId                        theEdge,
       const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
-    [[nodiscard]] Standard_EXPORT bool IsBoundary(const BRepGraph_EdgeId theEdge) const;
-    [[nodiscard]] Standard_EXPORT bool IsManifold(const BRepGraph_EdgeId theEdge) const;
+    [[nodiscard]] Standard_EXPORT bool  IsBoundary(const BRepGraph_EdgeId theEdge) const;
+    [[nodiscard]] Standard_EXPORT bool  IsManifold(const BRepGraph_EdgeId theEdge) const;
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::CoEdgeDef* FindPCurve(
       const BRepGraph_EdgeId theEdge,
       const BRepGraph_FaceId theFace) const;
@@ -132,8 +132,8 @@ public:
   class VertexOps
   {
   public:
-    [[nodiscard]] Standard_EXPORT int Nb() const;
-    [[nodiscard]] Standard_EXPORT int NbActive() const;
+    [[nodiscard]] Standard_EXPORT int   Nb() const;
+    [[nodiscard]] Standard_EXPORT int   NbActive() const;
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::VertexDef& Definition(
       const BRepGraph_VertexId theVertex) const;
     [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_EdgeId>& Edges(
@@ -154,8 +154,8 @@ public:
   class WireOps
   {
   public:
-    [[nodiscard]] Standard_EXPORT int Nb() const;
-    [[nodiscard]] Standard_EXPORT int NbActive() const;
+    [[nodiscard]] Standard_EXPORT int   Nb() const;
+    [[nodiscard]] Standard_EXPORT int   NbActive() const;
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::WireDef& Definition(
       const BRepGraph_WireId theWire) const;
     [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_FaceId>& Faces(
@@ -176,8 +176,8 @@ public:
   class ShellOps
   {
   public:
-    [[nodiscard]] Standard_EXPORT int Nb() const;
-    [[nodiscard]] Standard_EXPORT int NbActive() const;
+    [[nodiscard]] Standard_EXPORT int   Nb() const;
+    [[nodiscard]] Standard_EXPORT int   NbActive() const;
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::ShellDef& Definition(
       const BRepGraph_ShellId theShell) const;
     [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_SolidId>& Solids(
@@ -200,8 +200,8 @@ public:
   class SolidOps
   {
   public:
-    [[nodiscard]] Standard_EXPORT int Nb() const;
-    [[nodiscard]] Standard_EXPORT int NbActive() const;
+    [[nodiscard]] Standard_EXPORT int   Nb() const;
+    [[nodiscard]] Standard_EXPORT int   NbActive() const;
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::SolidDef& Definition(
       const BRepGraph_SolidId theSolid) const;
     [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_CompSolidId>& CompSolids(
@@ -224,18 +224,18 @@ public:
   class CoEdgeOps
   {
   public:
-    [[nodiscard]] Standard_EXPORT int Nb() const;
-    [[nodiscard]] Standard_EXPORT int NbActive() const;
+    [[nodiscard]] Standard_EXPORT int   Nb() const;
+    [[nodiscard]] Standard_EXPORT int   NbActive() const;
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::CoEdgeDef& Definition(
       const BRepGraph_CoEdgeId theCoEdge) const;
     [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_WireId>& Wires(
       const BRepGraph_CoEdgeId theCoEdge) const;
     [[nodiscard]] Standard_EXPORT BRepGraph_EdgeId Edge(const BRepGraph_CoEdgeId theCoEdge) const;
     [[nodiscard]] Standard_EXPORT BRepGraph_FaceId Face(const BRepGraph_CoEdgeId theCoEdge) const;
-    [[nodiscard]] Standard_EXPORT BRepGraph_Curve2DRepId Curve2DRepId(
-      const BRepGraph_CoEdgeId theCoEdge) const;
-    [[nodiscard]] Standard_EXPORT BRepGraph_CoEdgeId SeamPair(
-      const BRepGraph_CoEdgeId theCoEdge) const;
+    [[nodiscard]] Standard_EXPORT BRepGraph_Curve2DRepId
+      Curve2DRepId(const BRepGraph_CoEdgeId theCoEdge) const;
+    [[nodiscard]] Standard_EXPORT BRepGraph_CoEdgeId
+      SeamPair(const BRepGraph_CoEdgeId theCoEdge) const;
 
   private:
     friend class TopoView;
@@ -252,8 +252,8 @@ public:
   class CompoundOps
   {
   public:
-    [[nodiscard]] Standard_EXPORT int Nb() const;
-    [[nodiscard]] Standard_EXPORT int NbActive() const;
+    [[nodiscard]] Standard_EXPORT int   Nb() const;
+    [[nodiscard]] Standard_EXPORT int   NbActive() const;
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::CompoundDef& Definition(
       const BRepGraph_CompoundId theCompound) const;
     [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_CompoundId>& ParentCompounds(
@@ -274,8 +274,8 @@ public:
   class CompSolidOps
   {
   public:
-    [[nodiscard]] Standard_EXPORT int Nb() const;
-    [[nodiscard]] Standard_EXPORT int NbActive() const;
+    [[nodiscard]] Standard_EXPORT int   Nb() const;
+    [[nodiscard]] Standard_EXPORT int   NbActive() const;
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::CompSolidDef& Definition(
       const BRepGraph_CompSolidId theCompSolid) const;
     [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_CompoundId>& Compounds(
@@ -296,16 +296,17 @@ public:
   class ProductOps
   {
   public:
-    [[nodiscard]] Standard_EXPORT int Nb() const;
-    [[nodiscard]] Standard_EXPORT int NbActive() const;
+    [[nodiscard]] Standard_EXPORT int   Nb() const;
+    [[nodiscard]] Standard_EXPORT int   NbActive() const;
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::ProductDef& Definition(
       const BRepGraph_ProductId theProduct) const;
     [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_OccurrenceId>& Instances(
       const BRepGraph_ProductId theProduct) const;
-    [[nodiscard]] Standard_EXPORT BRepGraph_NodeId ShapeRoot(
-      const BRepGraph_ProductId theProduct) const;
+    [[nodiscard]] Standard_EXPORT BRepGraph_NodeId
+      ShapeRoot(const BRepGraph_ProductId theProduct) const;
 
-    //! Return typed identifiers of all root products (products not referenced by an active occurrence).
+    //! Return typed identifiers of all root products (products not referenced by an active
+    //! occurrence).
     //! @param[in] theAllocator allocator for internal temporaries and the result vector
     [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_ProductId> RootProducts(
       const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
@@ -331,9 +332,8 @@ public:
     //! Return the i-th active child occurrence identifier of a product.
     //! @param[in] theProduct typed product definition identifier
     //! @param[in] theComponentIdx zero-based active occurrence index within the product
-    [[nodiscard]] Standard_EXPORT BRepGraph_OccurrenceId Component(
-      const BRepGraph_ProductId theProduct,
-      const int                theComponentIdx) const;
+    [[nodiscard]] Standard_EXPORT BRepGraph_OccurrenceId
+      Component(const BRepGraph_ProductId theProduct, const int theComponentIdx) const;
 
   private:
     friend class TopoView;
@@ -350,16 +350,16 @@ public:
   class OccurrenceOps
   {
   public:
-    [[nodiscard]] Standard_EXPORT int Nb() const;
-    [[nodiscard]] Standard_EXPORT int NbActive() const;
+    [[nodiscard]] Standard_EXPORT int   Nb() const;
+    [[nodiscard]] Standard_EXPORT int   NbActive() const;
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::OccurrenceDef& Definition(
       const BRepGraph_OccurrenceId theOccurrence) const;
-    [[nodiscard]] Standard_EXPORT BRepGraph_ProductId Product(
-      const BRepGraph_OccurrenceId theOccurrence) const;
-    [[nodiscard]] Standard_EXPORT BRepGraph_ProductId ParentProduct(
-      const BRepGraph_OccurrenceId theOccurrence) const;
-    [[nodiscard]] Standard_EXPORT BRepGraph_OccurrenceId ParentOccurrence(
-      const BRepGraph_OccurrenceId theOccurrence) const;
+    [[nodiscard]] Standard_EXPORT BRepGraph_ProductId
+      Product(const BRepGraph_OccurrenceId theOccurrence) const;
+    [[nodiscard]] Standard_EXPORT BRepGraph_ProductId
+      ParentProduct(const BRepGraph_OccurrenceId theOccurrence) const;
+    [[nodiscard]] Standard_EXPORT BRepGraph_OccurrenceId
+      ParentOccurrence(const BRepGraph_OccurrenceId theOccurrence) const;
 
     //! Compute the global placement of an occurrence by walking the parent chain.
     //! Shared products can appear at multiple placements; the returned location is
@@ -386,7 +386,7 @@ public:
   public:
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::BaseDef* TopoEntity(
       const BRepGraph_NodeId theId) const;
-    [[nodiscard]] Standard_EXPORT int NbNodes() const;
+    [[nodiscard]] Standard_EXPORT int  NbNodes() const;
     [[nodiscard]] Standard_EXPORT bool IsRemoved(const BRepGraph_NodeId theNode) const;
 
   private:
@@ -534,10 +534,10 @@ private:
         myCompounds(theGraph),
         myCompSolids(theGraph),
         myProducts(theGraph),
-          myOccurrences(theGraph),
-          myGen(theGraph),
-          myGeometry(theGraph),
-          myPoly(theGraph)
+        myOccurrences(theGraph),
+        myGen(theGraph),
+        myGeometry(theGraph),
+        myPoly(theGraph)
   {
   }
 

@@ -1691,11 +1691,11 @@ static void appendUniqueRootNode(NCollection_Vector<BRepGraph_NodeId>& theRoots,
 //! Flatten hierarchy containers away for AppendFlattened().
 //! Face roots are collected for the parallel face pipeline; standalone
 //! wire/edge/vertex roots are registered directly through traverseHierarchy().
-void flattenForAppend(BRepGraphInc_Storage&              theStorage,
-                      NCollection_Vector<FaceLocalData>& theFaceData,
-                      RepDedup&                          theRepDedup,
-                      const TopoDS_Shape&                theCurrentShape,
-                      const TopLoc_Location&             theParentGlobalLoc,
+void flattenForAppend(BRepGraphInc_Storage&                 theStorage,
+                      NCollection_Vector<FaceLocalData>&    theFaceData,
+                      RepDedup&                             theRepDedup,
+                      const TopoDS_Shape&                   theCurrentShape,
+                      const TopLoc_Location&                theParentGlobalLoc,
                       NCollection_Vector<BRepGraph_NodeId>* theAppendedRoots)
 {
   if (theCurrentShape.IsNull())
@@ -1732,7 +1732,8 @@ void flattenForAppend(BRepGraphInc_Storage&              theStorage,
       traverseHierarchy(theStorage, theFaceData, theRepDedup, theCurrentShape, theParentGlobalLoc);
       if (theAppendedRoots != nullptr)
       {
-        const BRepGraph_NodeId* aNodeId = theStorage.FindNodeByTShape(theCurrentShape.TShape().get());
+        const BRepGraph_NodeId* aNodeId =
+          theStorage.FindNodeByTShape(theCurrentShape.TShape().get());
         if (aNodeId != nullptr)
         {
           appendUniqueRootNode(*theAppendedRoots, *aNodeId);
@@ -1744,7 +1745,6 @@ void flattenForAppend(BRepGraphInc_Storage&              theStorage,
       break;
   }
 }
-
 
 //=================================================================================================
 
@@ -1795,7 +1795,8 @@ void populateRegularityLayer(BRepGraphInc_Storage&                         theSt
       if (aCRep.IsNull())
         continue;
 
-      const occ::handle<BRep_CurveOn2Surfaces> aCon2S = occ::down_cast<BRep_CurveOn2Surfaces>(aCRep);
+      const occ::handle<BRep_CurveOn2Surfaces> aCon2S =
+        occ::down_cast<BRep_CurveOn2Surfaces>(aCRep);
       if (aCon2S.IsNull())
         continue;
 
@@ -1815,7 +1816,6 @@ void populateRegularityLayer(BRepGraphInc_Storage&                         theSt
                                         aCon2S->Continuity());
     }
   }
-
 }
 
 //=================================================================================================
@@ -1845,7 +1845,8 @@ void populateParamLayer(BRepGraphInc_Storage&                         theStorage
     double                  aFirst = 0.0;
     double                  aLast  = 0.0;
     TopLoc_Location         aLoc;
-    occ::handle<Geom_Curve> aRawCurve = BRep_Tool::Curve(TopoDS::Edge(*anOrigEdge), aLoc, aFirst, aLast);
+    occ::handle<Geom_Curve> aRawCurve =
+      BRep_Tool::Curve(TopoDS::Edge(*anOrigEdge), aLoc, aFirst, aLast);
     if (!aRawCurve.IsNull())
       aCurveToEdgeDef.TryBind(aRawCurve.get(), anEdgeEnt.Id);
   }
@@ -1992,12 +1993,12 @@ void populateOptionalLayers(BRepGraphInc_Storage&                         theSto
 
 //=================================================================================================
 
-void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage&                         theStorage,
-                                    const TopoDS_Shape&                           theShape,
-                                    const bool                                    theParallel,
-                                    const Options&                                theOptions,
-                                    BRepGraph_ParamLayer*                         theParamLayer,
-                                    BRepGraph_RegularityLayer*                    theRegularityLayer,
+void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage&      theStorage,
+                                    const TopoDS_Shape&        theShape,
+                                    const bool                 theParallel,
+                                    const Options&             theOptions,
+                                    BRepGraph_ParamLayer*      theParamLayer,
+                                    BRepGraph_RegularityLayer* theRegularityLayer,
                                     const occ::handle<NCollection_BaseAllocator>& theTmpAlloc)
 {
   theStorage.Clear();
@@ -2009,8 +2010,7 @@ void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage&                       
   // Must NOT use the storage's persistent allocator for scratch data.
   const occ::handle<NCollection_BaseAllocator>& aTmpAlloc =
     !theTmpAlloc.IsNull() ? theTmpAlloc : NCollection_BaseAllocator::CommonBaseAllocator();
-  const int aParallelWorkers =
-    theParallel ? BRepGraph_ParallelPolicy::WorkerCount() : 1;
+  const int aParallelWorkers = theParallel ? BRepGraph_ParallelPolicy::WorkerCount() : 1;
 
   // Phase 1 (sequential): Recursively explore hierarchy, collecting face contexts.
   NCollection_Vector<FaceLocalData> aFaceData(256, aTmpAlloc);
@@ -2021,9 +2021,8 @@ void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage&                       
   // Phase 2 (parallel): Extract per-face geometry/topology.
   BRepGraph_ParallelPolicy::Workload aFaceExtractWork;
   aFaceExtractWork.PrimaryItems = aFaceData.Length();
-  const bool isParallelFaceExtraction = BRepGraph_ParallelPolicy::ShouldRun(theParallel,
-                                                                            aParallelWorkers,
-                                                                            aFaceExtractWork);
+  const bool isParallelFaceExtraction =
+    BRepGraph_ParallelPolicy::ShouldRun(theParallel, aParallelWorkers, aFaceExtractWork);
   OSD_Parallel::For(
     0,
     aFaceData.Length(),
@@ -2077,7 +2076,13 @@ void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage&                       
     }
   }
 
-  populateOptionalLayers(theStorage, theParamLayer, theRegularityLayer, theOptions, 0, 0, aTmpAlloc);
+  populateOptionalLayers(theStorage,
+                         theParamLayer,
+                         theRegularityLayer,
+                         theOptions,
+                         0,
+                         0,
+                         aTmpAlloc);
 
   // Build reverse indices.
   theStorage.BuildReverseIndex();
@@ -2087,14 +2092,15 @@ void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage&                       
 
 //=================================================================================================
 
-void BRepGraphInc_Populate::AppendFlattened(BRepGraphInc_Storage&                         theStorage,
-                                            const TopoDS_Shape&                           theShape,
-                                            const bool                                    theParallel,
-                                            NCollection_Vector<BRepGraph_NodeId>&          theAppendedRoots,
-                                            const Options&                                theOptions,
-                                            BRepGraph_ParamLayer*                         theParamLayer,
-                                            BRepGraph_RegularityLayer*                    theRegularityLayer,
-                                            const occ::handle<NCollection_BaseAllocator>& theTmpAlloc)
+void BRepGraphInc_Populate::AppendFlattened(
+  BRepGraphInc_Storage&                         theStorage,
+  const TopoDS_Shape&                           theShape,
+  const bool                                    theParallel,
+  NCollection_Vector<BRepGraph_NodeId>&         theAppendedRoots,
+  const Options&                                theOptions,
+  BRepGraph_ParamLayer*                         theParamLayer,
+  BRepGraph_RegularityLayer*                    theRegularityLayer,
+  const occ::handle<NCollection_BaseAllocator>& theTmpAlloc)
 {
   if (theShape.IsNull())
     return;
@@ -2103,8 +2109,7 @@ void BRepGraphInc_Populate::AppendFlattened(BRepGraphInc_Storage&               
   // Must NOT use the storage's persistent allocator for scratch data.
   const occ::handle<NCollection_BaseAllocator>& aTmpAlloc =
     !theTmpAlloc.IsNull() ? theTmpAlloc : NCollection_BaseAllocator::CommonBaseAllocator();
-  const int aParallelWorkers =
-    theParallel ? BRepGraph_ParallelPolicy::WorkerCount() : 1;
+  const int aParallelWorkers = theParallel ? BRepGraph_ParallelPolicy::WorkerCount() : 1;
 
   // Snapshot entity counts before appending, for incremental updates.
   const int anOldNbEdges    = theStorage.NbEdges();
@@ -2128,9 +2133,8 @@ void BRepGraphInc_Populate::AppendFlattened(BRepGraphInc_Storage&               
   // Parallel face extraction.
   BRepGraph_ParallelPolicy::Workload aFaceExtractWork;
   aFaceExtractWork.PrimaryItems = aFaceData.Length();
-  const bool isParallelFaceExtraction = BRepGraph_ParallelPolicy::ShouldRun(theParallel,
-                                                                            aParallelWorkers,
-                                                                            aFaceExtractWork);
+  const bool isParallelFaceExtraction =
+    BRepGraph_ParallelPolicy::ShouldRun(theParallel, aParallelWorkers, aFaceExtractWork);
   OSD_Parallel::For(
     0,
     aFaceData.Length(),

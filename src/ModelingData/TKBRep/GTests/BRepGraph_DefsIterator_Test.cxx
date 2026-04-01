@@ -60,9 +60,9 @@ static TopoDS_Edge makeEdgeWithInternalVertex()
 
 static TopoDS_Face makeFaceWithDirectVertex()
 {
-  BRep_Builder            aBuilder;
+  BRep_Builder                  aBuilder;
   const occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pln());
-  TopoDS_Face             aFace;
+  TopoDS_Face                   aFace;
   aBuilder.MakeFace(aFace, aPlane, Precision::Confusion());
 
   BRepBuilderAPI_MakeEdge aMakeEdge(gp_Pnt(0, 0, 0), gp_Pnt(10, 0, 0));
@@ -79,9 +79,9 @@ static TopoDS_Face makeFaceWithDirectVertex()
 
 static TopoDS_Face wrapEdgeInFace(const TopoDS_Edge& theEdge)
 {
-  BRep_Builder            aBuilder;
+  BRep_Builder                  aBuilder;
   const occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pln());
-  TopoDS_Face             aFace;
+  TopoDS_Face                   aFace;
   aBuilder.MakeFace(aFace, aPlane, Precision::Confusion());
   TopoDS_Wire aWire;
   aBuilder.MakeWire(aWire);
@@ -215,7 +215,7 @@ TEST_F(BRepGraph_DefsIteratorTest, SolidOfCompSolid_EnumeratesDirectSolids)
 
 TEST_F(BRepGraph_DefsIteratorTest, OccurrenceOfProduct_EnumeratesDirectOccurrences)
 {
-  const BRepGraph_ProductId aPart     = myGraph.Builder().AddProduct(BRepGraph_SolidId(0));
+  const BRepGraph_ProductId aPart      = myGraph.Builder().AddProduct(BRepGraph_SolidId(0));
   const BRepGraph_ProductId anAssembly = myGraph.Builder().AddAssemblyProduct();
   ASSERT_TRUE(aPart.IsValid());
   ASSERT_TRUE(anAssembly.IsValid());
@@ -233,7 +233,8 @@ TEST_F(BRepGraph_DefsIteratorTest, RemovedWireRef_IsSkipped)
   ASSERT_EQ(aWireRefs.Length(), 1);
 
   {
-    BRepGraph_MutGuard<BRepGraphInc::WireRef> aWireRef = myGraph.Builder().MutWireRef(aWireRefs.Value(0));
+    BRepGraph_MutGuard<BRepGraphInc::WireRef> aWireRef =
+      myGraph.Builder().MutWireRef(aWireRefs.Value(0));
     aWireRef->IsRemoved = true;
   }
 

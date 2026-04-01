@@ -138,13 +138,13 @@ TEST(BRepGraphIncTest, Storage_MarkRemovedRep_DecrementsActiveCountsAndIsIdempot
 {
   BRepGraphInc_Storage aStorage;
 
-  aStorage.AppendSurfaceRep().Id             = BRepGraph_SurfaceRepId(0);
-  aStorage.AppendCurve3DRep().Id            = BRepGraph_Curve3DRepId(0);
-  aStorage.AppendCurve2DRep().Id            = BRepGraph_Curve2DRepId(0);
-  aStorage.AppendTriangulationRep().Id      = BRepGraph_TriangulationRepId(0);
-  aStorage.AppendPolygon3DRep().Id          = BRepGraph_Polygon3DRepId(0);
-  aStorage.AppendPolygon2DRep().Id          = BRepGraph_Polygon2DRepId(0);
-  aStorage.AppendPolygonOnTriRep().Id       = BRepGraph_PolygonOnTriRepId(0);
+  aStorage.AppendSurfaceRep().Id       = BRepGraph_SurfaceRepId(0);
+  aStorage.AppendCurve3DRep().Id       = BRepGraph_Curve3DRepId(0);
+  aStorage.AppendCurve2DRep().Id       = BRepGraph_Curve2DRepId(0);
+  aStorage.AppendTriangulationRep().Id = BRepGraph_TriangulationRepId(0);
+  aStorage.AppendPolygon3DRep().Id     = BRepGraph_Polygon3DRepId(0);
+  aStorage.AppendPolygon2DRep().Id     = BRepGraph_Polygon2DRepId(0);
+  aStorage.AppendPolygonOnTriRep().Id  = BRepGraph_PolygonOnTriRepId(0);
 
   EXPECT_EQ(aStorage.NbActiveSurfaces(), 1);
   EXPECT_EQ(aStorage.NbActiveCurves3D(), 1);

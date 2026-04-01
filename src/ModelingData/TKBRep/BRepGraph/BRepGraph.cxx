@@ -191,8 +191,8 @@ BRepGraph_RefUID BRepGraph::allocateRefUID(const BRepGraph_RefId theRefId)
 {
   // Load counter before append: if Append() throws, no counter is consumed.
   // Single-threaded precondition: see allocateUID() comment.
-  const size_t   aCounter    = myData->myNextUIDCounter.load(std::memory_order_relaxed);
-  const uint32_t aGeneration = myData->myGeneration.load(std::memory_order_relaxed);
+  const size_t           aCounter    = myData->myNextUIDCounter.load(std::memory_order_relaxed);
+  const uint32_t         aGeneration = myData->myGeneration.load(std::memory_order_relaxed);
   const BRepGraph_RefUID aUID(theRefId.RefKind, aCounter, aGeneration);
   myData->myIncStorage.ChangeRefUIDs(theRefId.RefKind).Append(aUID);
   {
@@ -542,7 +542,7 @@ void BRepGraph::markModified(const BRepGraph_NodeId theNodeId,
 {
   ++theEntity.OwnGen;
   ++theEntity.SubtreeGen;
-  const uint32_t aWave = myData->myPropagationWave.fetch_add(1, std::memory_order_relaxed) + 1;
+  const uint32_t aWave   = myData->myPropagationWave.fetch_add(1, std::memory_order_relaxed) + 1;
   theEntity.LastPropWave = aWave;
 
   // In deferred mode: accumulate for batch processing.
@@ -669,9 +669,9 @@ void BRepGraph::markRepModified(const BRepGraph_RepId theRepId) noexcept
   if (!theRepId.IsValid())
     return;
 
-  BRepGraphInc_Storage&   aStorage = myData->myIncStorage;
-  const BRepGraph_RepId::Kind aKind = theRepId.RepKind;
-  const int               anIdx    = theRepId.Index;
+  BRepGraphInc_Storage&       aStorage = myData->myIncStorage;
+  const BRepGraph_RepId::Kind aKind    = theRepId.RepKind;
+  const int                   anIdx    = theRepId.Index;
 
   // Increment OwnGen on the representation.
   switch (aKind)

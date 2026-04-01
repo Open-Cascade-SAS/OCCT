@@ -153,7 +153,7 @@ TEST(BRepGraphAlgo_AttrTransferTest, CacheKinds_Empty)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  const BRepGraph_NodeId                                       aFaceNode(BRepGraph_NodeId::Kind::Face, 0);
+  const BRepGraph_NodeId aFaceNode(BRepGraph_NodeId::Kind::Face, 0);
   const NCollection_Vector<occ::handle<BRepGraph_CacheKind>> aKinds =
     aGraph.Cache().CacheKinds(aFaceNode);
   EXPECT_TRUE(aKinds.IsEmpty());
@@ -201,7 +201,7 @@ TEST(BRepGraphAlgo_AttrTransferTest, CacheKinds_FreshNode_Empty)
   ASSERT_TRUE(aGraph.IsDone());
 
   // A node with no attributes set should return empty keys.
-  const BRepGraph_NodeId                                       aVertexNode(BRepGraph_NodeId::Kind::Vertex, 0);
+  const BRepGraph_NodeId aVertexNode(BRepGraph_NodeId::Kind::Vertex, 0);
   const NCollection_Vector<occ::handle<BRepGraph_CacheKind>> aKinds =
     aGraph.Cache().CacheKinds(aVertexNode);
   EXPECT_TRUE(aKinds.IsEmpty());
@@ -398,7 +398,8 @@ TEST(BRepGraphAlgo_AttrTransferTest, AttrTransfer_GeometryHistorySkipped)
 
   // The face still has its attribute.
   Handle(BRepGraph_TypedCacheValue<int>) aRetrieved =
-    Handle(BRepGraph_TypedCacheValue<int>)::DownCast(aGraph.Cache().Get(aFaceNode, colorCacheKind()));
+    Handle(BRepGraph_TypedCacheValue<int>)::DownCast(
+      aGraph.Cache().Get(aFaceNode, colorCacheKind()));
   ASSERT_FALSE(aRetrieved.IsNull());
   EXPECT_EQ(aRetrieved->UncheckedValue(), 42);
 }
@@ -547,7 +548,7 @@ TEST(BRepGraphAlgo_AttrTransferTest, OverwriteExisting_TransfersAttribute)
 
   // Sew the compound to merge shared edges and create history records.
   BRepGraphAlgo_Sewing::Options aSewOpts;
-  aSewOpts.Tolerance = 1.0e-04;
+  aSewOpts.Tolerance                      = 1.0e-04;
   BRepGraphAlgo_Sewing::Result aSewResult = BRepGraphAlgo_Sewing::Perform(aGraph, aSewOpts);
   ASSERT_TRUE(aSewResult.IsDone);
 

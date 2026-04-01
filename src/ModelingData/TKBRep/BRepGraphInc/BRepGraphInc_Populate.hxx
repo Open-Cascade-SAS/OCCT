@@ -49,7 +49,7 @@ public:
   //! Options controlling which post-passes are executed during population.
   struct Options
   {
-    bool ExtractRegularities; //!< Phase 3b: edge regularities
+    bool ExtractRegularities;    //!< Phase 3b: edge regularities
     bool ExtractVertexPointReps; //!< Phase 3c: vertex point representations
 
     Options()
@@ -64,11 +64,11 @@ public:
   //! @param[in]  theShape    root shape
   //! @param[in]  theParallel if true, face-level extraction runs in parallel
   //! @param[in]  theOptions  optional post-pass controls
-  static Standard_EXPORT void Perform(BRepGraphInc_Storage& theStorage,
-                                      const TopoDS_Shape&   theShape,
-                                      const bool            theParallel,
-                                      const Options&        theOptions = Options(),
-                                      BRepGraph_ParamLayer* theParamLayer = nullptr,
+  static Standard_EXPORT void Perform(BRepGraphInc_Storage&      theStorage,
+                                      const TopoDS_Shape&        theShape,
+                                      const bool                 theParallel,
+                                      const Options&             theOptions         = Options(),
+                                      BRepGraph_ParamLayer*      theParamLayer      = nullptr,
                                       BRepGraph_RegularityLayer* theRegularityLayer = nullptr,
                                       const occ::handle<NCollection_BaseAllocator>& theTmpAlloc =
                                         occ::handle<NCollection_BaseAllocator>());
@@ -83,15 +83,16 @@ public:
   //! @param[out]    theAppendedRoots collected root NodeIds for non-container shapes
   //! @param[in]     theOptions       optional post-pass controls
   //! @param[in]     theTmpAlloc      optional allocator for temporary scratch data
-  static Standard_EXPORT void AppendFlattened(BRepGraphInc_Storage&            theStorage,
-                                              const TopoDS_Shape&              theShape,
-                                              const bool                       theParallel,
-                                              NCollection_Vector<BRepGraph_NodeId>& theAppendedRoots,
-                                              const Options&                   theOptions = Options(),
-                                              BRepGraph_ParamLayer*            theParamLayer = nullptr,
-                                              BRepGraph_RegularityLayer*       theRegularityLayer = nullptr,
-                                              const occ::handle<NCollection_BaseAllocator>& theTmpAlloc =
-                                                occ::handle<NCollection_BaseAllocator>());
+  static Standard_EXPORT void AppendFlattened(
+    BRepGraphInc_Storage&                         theStorage,
+    const TopoDS_Shape&                           theShape,
+    const bool                                    theParallel,
+    NCollection_Vector<BRepGraph_NodeId>&         theAppendedRoots,
+    const Options&                                theOptions         = Options(),
+    BRepGraph_ParamLayer*                         theParamLayer      = nullptr,
+    BRepGraph_RegularityLayer*                    theRegularityLayer = nullptr,
+    const occ::handle<NCollection_BaseAllocator>& theTmpAlloc =
+      occ::handle<NCollection_BaseAllocator>());
 
 private:
   BRepGraphInc_Populate() = delete;

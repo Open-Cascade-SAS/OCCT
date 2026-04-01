@@ -343,7 +343,7 @@ TEST(BRepGraph_ReconstructTest, Face_OrientationPreserved)
     BRepGraph_TestTools::FaceRefsOfShell(aGraph, BRepGraph_ShellId(0));
   for (int aRefIdx = 0; aRefIdx < aFaceRefs.Length(); ++aRefIdx)
   {
-    const BRepGraphInc::FaceRef& aFaceRef      = aGraph.Refs().Faces().Entry(aFaceRefs.Value(aRefIdx));
+    const BRepGraphInc::FaceRef& aFaceRef = aGraph.Refs().Faces().Entry(aFaceRefs.Value(aRefIdx));
     const TopAbs_Orientation     anExpectedOri = aFaceRef.Orientation;
 
     TopoDS_Shape aReconFace = aGraph.Shapes().Reconstruct(aFaceRef.FaceDefId);
@@ -430,7 +430,7 @@ TEST(BRepGraph_ReconstructTest, FindNode_OriginalFace_RoundTrip)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  const BRepGraph_NodeId aFaceId = BRepGraph_FaceId(0);
+  const BRepGraph_NodeId aFaceId        = BRepGraph_FaceId(0);
   const TopoDS_Shape&    anOriginalFace = aGraph.Shapes().OriginalOf(aFaceId);
   EXPECT_EQ(aGraph.Shapes().FindNode(anOriginalFace), aFaceId);
 }
@@ -518,10 +518,10 @@ TEST(BRepGraph_ReconstructTest, AfterVertexMutation_ModifiedFlagAndPointChanged)
     BRepGraph_TestTools::CoEdgeRefsOfWire(aGraph, anOuterWire);
   ASSERT_GT(aCoEdgeRefs.Length(), 0);
 
-  const BRepGraphInc::CoEdgeRef& aFirstCR     = aGraph.Refs().CoEdges().Entry(aCoEdgeRefs.First());
+  const BRepGraphInc::CoEdgeRef& aFirstCR = aGraph.Refs().CoEdges().Entry(aCoEdgeRefs.First());
   const BRepGraphInc::CoEdgeDef& aFirstCoEdge =
     aGraph.Topo().CoEdges().Definition(aFirstCR.CoEdgeDefId);
-  const int                      aVertIdx =
+  const int aVertIdx =
     BRepGraph_Tool::Edge::StartVertex(aGraph, BRepGraph_EdgeId(aFirstCoEdge.EdgeDefId))
       .VertexDefId.Index;
   ASSERT_GE(aVertIdx, 0);

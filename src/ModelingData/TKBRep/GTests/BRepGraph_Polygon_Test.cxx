@@ -82,7 +82,7 @@ TEST(BRepGraph_PolygonTest, MultiTriangulation_Roundtrip_PreservesAll)
   {
     const BRepGraphInc::FaceDef& aFaceDef =
       aGraph.Topo().Faces().Definition(BRepGraph_FaceId(aFaceIdx));
-    TopoDS_Shape                 aReconFace = aGraph.Shapes().Reconstruct(aFaceDef.Id);
+    TopoDS_Shape aReconFace = aGraph.Shapes().Reconstruct(aFaceDef.Id);
     ASSERT_FALSE(aReconFace.IsNull());
 
     TopLoc_Location                       aLoc;
@@ -133,7 +133,7 @@ TEST(BRepGraph_PolygonTest, Polygon3D_Captured_WhenPresent)
       continue;
     const BRepGraphInc::EdgeDef& anEdge =
       aGraph.Topo().Edges().Definition(BRepGraph_EdgeId(anEdgeIdx));
-    TopoDS_Shape                 aReconEdge = aGraph.Shapes().Reconstruct(anEdge.Id);
+    TopoDS_Shape aReconEdge = aGraph.Shapes().Reconstruct(anEdge.Id);
     ASSERT_FALSE(aReconEdge.IsNull());
     TopLoc_Location             aPolyLoc;
     occ::handle<Poly_Polygon3D> aPoly = BRep_Tool::Polygon3D(TopoDS::Edge(aReconEdge), aPolyLoc);
@@ -272,7 +272,8 @@ TEST(BRepGraph_PolygonTest, VertexPointRepresentations_StructurallyValid)
   BRep_Builder aBuilder;
 
   bool hasPointOnCurve = false;
-  for (TopExp_Explorer anEdgeExp(aShape, TopAbs_EDGE); anEdgeExp.More() && !hasPointOnCurve; anEdgeExp.Next())
+  for (TopExp_Explorer anEdgeExp(aShape, TopAbs_EDGE); anEdgeExp.More() && !hasPointOnCurve;
+       anEdgeExp.Next())
   {
     const TopoDS_Edge& anEdge = TopoDS::Edge(anEdgeExp.Current());
     double             aFirst = 0.0;
@@ -283,9 +284,8 @@ TEST(BRepGraph_PolygonTest, VertexPointRepresentations_StructurallyValid)
 
     for (TopoDS_Iterator aVtxIt(anEdge, false, false); aVtxIt.More(); aVtxIt.Next())
     {
-      const TopoDS_Vertex& aVertex = TopoDS::Vertex(aVtxIt.Value());
-      const double aParameter =
-        aVertex.Orientation() == TopAbs_REVERSED ? aLast : aFirst;
+      const TopoDS_Vertex& aVertex    = TopoDS::Vertex(aVtxIt.Value());
+      const double         aParameter = aVertex.Orientation() == TopAbs_REVERSED ? aLast : aFirst;
       aBuilder.UpdateVertex(aVertex, aParameter, anEdge, BRep_Tool::Tolerance(aVertex));
       hasPointOnCurve = true;
       break;
@@ -293,7 +293,8 @@ TEST(BRepGraph_PolygonTest, VertexPointRepresentations_StructurallyValid)
   }
 
   bool hasPointOnSurface = false;
-  for (TopExp_Explorer aFaceExp(aShape, TopAbs_FACE); aFaceExp.More() && !hasPointOnSurface; aFaceExp.Next())
+  for (TopExp_Explorer aFaceExp(aShape, TopAbs_FACE); aFaceExp.More() && !hasPointOnSurface;
+       aFaceExp.Next())
   {
     const TopoDS_Face& aFace = TopoDS::Face(aFaceExp.Current());
     for (TopExp_Explorer aVtxExp(aFace, TopAbs_VERTEX); aVtxExp.More(); aVtxExp.Next())
@@ -307,15 +308,16 @@ TEST(BRepGraph_PolygonTest, VertexPointRepresentations_StructurallyValid)
   }
 
   bool hasPointOnPCurve = false;
-  for (TopExp_Explorer aFaceExp(aShape, TopAbs_FACE); aFaceExp.More() && !hasPointOnPCurve; aFaceExp.Next())
+  for (TopExp_Explorer aFaceExp(aShape, TopAbs_FACE); aFaceExp.More() && !hasPointOnPCurve;
+       aFaceExp.Next())
   {
     const TopoDS_Face& aFace = TopoDS::Face(aFaceExp.Current());
     for (TopExp_Explorer anEdgeExp(aFace, TopAbs_EDGE); anEdgeExp.More() && !hasPointOnPCurve;
          anEdgeExp.Next())
     {
-      const TopoDS_Edge& anEdge = TopoDS::Edge(anEdgeExp.Current());
-      double             aFirst = 0.0;
-      double             aLast  = 0.0;
+      const TopoDS_Edge&        anEdge  = TopoDS::Edge(anEdgeExp.Current());
+      double                    aFirst  = 0.0;
+      double                    aLast   = 0.0;
       occ::handle<Geom2d_Curve> aPCurve = BRep_Tool::CurveOnSurface(anEdge, aFace, aFirst, aLast);
       if (aPCurve.IsNull())
         continue;
@@ -325,9 +327,8 @@ TEST(BRepGraph_PolygonTest, VertexPointRepresentations_StructurallyValid)
 
       for (TopoDS_Iterator aVtxIt(anEdge, false, false); aVtxIt.More(); aVtxIt.Next())
       {
-        const TopoDS_Vertex& aVertex = TopoDS::Vertex(aVtxIt.Value());
-        const double aParameter =
-          aVertex.Orientation() == TopAbs_REVERSED ? aLast : aFirst;
+        const TopoDS_Vertex& aVertex    = TopoDS::Vertex(aVtxIt.Value());
+        const double         aParameter = aVertex.Orientation() == TopAbs_REVERSED ? aLast : aFirst;
         aBuilder.UpdateVertex(aVertex, aParameter, anEdge, aFace, BRep_Tool::Tolerance(aVertex));
         hasPointOnPCurve = true;
         break;
@@ -343,7 +344,8 @@ TEST(BRepGraph_PolygonTest, VertexPointRepresentations_StructurallyValid)
   registerStandardLayers(aGraph);
   aGraph.Build(aShape);
   ASSERT_TRUE(aGraph.IsDone());
-  const occ::handle<BRepGraph_ParamLayer> aParamLayer = aGraph.LayerRegistry().FindLayer<BRepGraph_ParamLayer>();
+  const occ::handle<BRepGraph_ParamLayer> aParamLayer =
+    aGraph.LayerRegistry().FindLayer<BRepGraph_ParamLayer>();
   ASSERT_FALSE(aParamLayer.IsNull());
 
   // Count all extracted vertex point representations.
@@ -352,7 +354,7 @@ TEST(BRepGraph_PolygonTest, VertexPointRepresentations_StructurallyValid)
   int aNbPointsOnPCurve  = 0;
   for (int aVtxIdx = 0; aVtxIdx < aGraph.Topo().Vertices().Nb(); ++aVtxIdx)
   {
-    const BRepGraph_VertexId                   aVertexId(aVtxIdx);
+    const BRepGraph_VertexId                  aVertexId(aVtxIdx);
     const BRepGraph_ParamLayer::VertexParams* aParams = aParamLayer->FindVertexParams(aVertexId);
     if (aParams == nullptr)
       continue;
@@ -442,7 +444,7 @@ TEST(BRepGraph_PolygonTest, SeamEdge_PolyOnTri_TwoEntries)
     {
       const BRepGraphInc::CoEdgeDef& aCE =
         aGraph.Topo().CoEdges().Definition(aCoEdgeIdxs.Value(aCEIdx));
-      const int                      aFaceIdx = aCE.FaceDefId.Index;
+      const int aFaceIdx = aCE.FaceDefId.Index;
       if (!aFaceCounts.IsBound(aFaceIdx))
         aFaceCounts.Bind(aFaceIdx, 0);
       aFaceCounts.ChangeFind(aFaceIdx) += 1;

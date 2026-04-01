@@ -27,10 +27,10 @@
 class BRepGraph_ModTrackingLayer : public BRepGraph_Layer
 {
 public:
-  BRepGraph_ModTrackingLayer(const TCollection_AsciiString& theName,
-                             const int                     theSubscribedKinds,
-                             const Standard_GUID&          theId = Standard_GUID(
-                               "2f9b6a5c-1f2d-4a88-9c1c-7a0c16a10004"))
+  BRepGraph_ModTrackingLayer(
+    const TCollection_AsciiString& theName,
+    const int                      theSubscribedKinds,
+    const Standard_GUID&           theId = Standard_GUID("2f9b6a5c-1f2d-4a88-9c1c-7a0c16a10004"))
       : myName(theName),
         mySubscribedKinds(theSubscribedKinds),
         myId(theId)
@@ -81,11 +81,11 @@ public:
   {
     myImmediateEvents.Clear();
     myBatchEvents.Clear();
-    myBatchCallCount = 0;
-    myRemoveCallCount = 0;
+    myBatchCallCount   = 0;
+    myRemoveCallCount  = 0;
     myCompactCallCount = 0;
-    myLastRemovedNode = BRepGraph_NodeId();
-    myLastReplacement = BRepGraph_NodeId();
+    myLastRemovedNode  = BRepGraph_NodeId();
+    myLastReplacement  = BRepGraph_NodeId();
     myLastRemapMap.Clear();
   }
 
@@ -114,13 +114,13 @@ public:
     return aCount;
   }
 
-  NCollection_Vector<BRepGraph_NodeId> myImmediateEvents;
-  NCollection_Vector<BRepGraph_NodeId> myBatchEvents;
-  int                                  myBatchCallCount = 0;
-  int                                  myRemoveCallCount = 0;
-  int                                  myCompactCallCount = 0;
-  BRepGraph_NodeId                     myLastRemovedNode;
-  BRepGraph_NodeId                     myLastReplacement;
+  NCollection_Vector<BRepGraph_NodeId>                    myImmediateEvents;
+  NCollection_Vector<BRepGraph_NodeId>                    myBatchEvents;
+  int                                                     myBatchCallCount   = 0;
+  int                                                     myRemoveCallCount  = 0;
+  int                                                     myCompactCallCount = 0;
+  BRepGraph_NodeId                                        myLastRemovedNode;
+  BRepGraph_NodeId                                        myLastReplacement;
   NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId> myLastRemapMap;
 
   DEFINE_STANDARD_RTTIEXT(BRepGraph_ModTrackingLayer, BRepGraph_Layer)
@@ -149,23 +149,15 @@ public:
     return THE_NAME;
   }
 
-  void OnNodeRemoved(const BRepGraph_NodeId,
-                     const BRepGraph_NodeId) noexcept override
+  void OnNodeRemoved(const BRepGraph_NodeId, const BRepGraph_NodeId) noexcept override {}
+
+  void OnCompact(const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>&) noexcept override
   {
   }
 
-  void OnCompact(
-    const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>&) noexcept override
-  {
-  }
+  void InvalidateAll() noexcept override {}
 
-  void InvalidateAll() noexcept override
-  {
-  }
-
-  void Clear() noexcept override
-  {
-  }
+  void Clear() noexcept override {}
 
   DEFINE_STANDARD_RTTIEXT(BRepGraph_DefaultLayer, BRepGraph_Layer)
 };
@@ -191,7 +183,7 @@ TEST_F(BRepGraph_EventBusTest, ZeroCost_NoSubscribers)
   // Mutate edge without any subscribing layer - verify no crash.
   {
     BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut = myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
-    aMut->Tolerance                              = 0.5;
+    aMut->Tolerance                                = 0.5;
   }
   EXPECT_GT(myGraph.Topo().Edges().Definition(BRepGraph_EdgeId(0)).OwnGen, 0u);
 }
@@ -209,7 +201,7 @@ TEST_F(BRepGraph_EventBusTest, ImmediateMode_SingleEdge)
 
   {
     BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut = myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
-    aMut->Tolerance                              = 0.5;
+    aMut->Tolerance                                = 0.5;
   }
 
   // Edge(0) should have an immediate event.
@@ -231,7 +223,7 @@ TEST_F(BRepGraph_EventBusTest, ImmediateMode_UpwardPropagation)
 
   {
     BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut = myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
-    aMut->Tolerance                              = 0.5;
+    aMut->Tolerance                                = 0.5;
   }
 
   // Only directly mutated node gets immediate dispatch.
@@ -256,7 +248,7 @@ TEST_F(BRepGraph_EventBusTest, ImmediateMode_KindFilter)
 
   {
     BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut = myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
-    aMut->Tolerance                              = 0.5;
+    aMut->Tolerance                                = 0.5;
   }
 
   // No face dispatch from upward propagation (mutex-free SubtreeGen only).
@@ -323,7 +315,7 @@ TEST_F(BRepGraph_EventBusTest, UnregisterLayer_FlagUpdate)
   // Mutate - should dispatch.
   {
     BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut = myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
-    aMut->Tolerance                              = 0.5;
+    aMut->Tolerance                                = 0.5;
   }
   EXPECT_GT(aLayer->myImmediateEvents.Length(), 0);
 
@@ -334,7 +326,7 @@ TEST_F(BRepGraph_EventBusTest, UnregisterLayer_FlagUpdate)
   // Mutate again - should NOT dispatch (layer unregistered).
   {
     BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut = myGraph.Builder().MutEdge(BRepGraph_EdgeId(1));
-    aMut->Tolerance                              = 0.6;
+    aMut->Tolerance                                = 0.6;
   }
   EXPECT_EQ(aLayer->myImmediateEvents.Length(), 0);
 }
@@ -353,8 +345,7 @@ TEST_F(BRepGraph_EventBusTest, FindLayer_ByGuid_ReturnsRegisteredLayer)
 
 TEST_F(BRepGraph_EventBusTest, OnNodeRemoved_DispatchesReplacement)
 {
-  occ::handle<BRepGraph_ModTrackingLayer> aLayer =
-    new BRepGraph_ModTrackingLayer("Tracker", 0);
+  occ::handle<BRepGraph_ModTrackingLayer> aLayer = new BRepGraph_ModTrackingLayer("Tracker", 0);
   myGraph.LayerRegistry().RegisterLayer(aLayer);
 
   const BRepGraph_NodeId anOldEdge = BRepGraph_EdgeId(0);
@@ -368,8 +359,7 @@ TEST_F(BRepGraph_EventBusTest, OnNodeRemoved_DispatchesReplacement)
 
 TEST_F(BRepGraph_EventBusTest, OnNodeRemoved_DispatchesInvalidReplacementForPureDeletion)
 {
-  occ::handle<BRepGraph_ModTrackingLayer> aLayer =
-    new BRepGraph_ModTrackingLayer("Tracker", 0);
+  occ::handle<BRepGraph_ModTrackingLayer> aLayer = new BRepGraph_ModTrackingLayer("Tracker", 0);
   myGraph.LayerRegistry().RegisterLayer(aLayer);
 
   const BRepGraph_NodeId aFaceId = BRepGraph_FaceId(0);
@@ -382,8 +372,7 @@ TEST_F(BRepGraph_EventBusTest, OnNodeRemoved_DispatchesInvalidReplacementForPure
 
 TEST_F(BRepGraph_EventBusTest, OnCompact_DispatchesRemapToRegisteredLayers)
 {
-  occ::handle<BRepGraph_ModTrackingLayer> aLayer =
-    new BRepGraph_ModTrackingLayer("Tracker", 0);
+  occ::handle<BRepGraph_ModTrackingLayer> aLayer = new BRepGraph_ModTrackingLayer("Tracker", 0);
   myGraph.LayerRegistry().RegisterLayer(aLayer);
 
   myGraph.Builder().RemoveNode(BRepGraph_FaceId(0));
@@ -417,7 +406,7 @@ TEST_F(BRepGraph_EventBusTest, MultipleSubscribers)
 
   {
     BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut = myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
-    aMut->Tolerance                              = 0.5;
+    aMut->Tolerance                                = 0.5;
   }
 
   // Edge layer gets edge events (directly mutated), no face events.
@@ -441,7 +430,7 @@ TEST_F(BRepGraph_EventBusTest, DefaultSubscribedKinds_Zero)
   // This just verifies the default no-subscription path remains a no-op.
   {
     BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut = myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
-    aMut->Tolerance                              = 0.5;
+    aMut->Tolerance                                = 0.5;
   }
   EXPECT_GT(myGraph.Topo().Edges().Definition(BRepGraph_EdgeId(0)).OwnGen, 0u);
 }
@@ -518,7 +507,7 @@ TEST_F(BRepGraph_EventBusTest, OverlappingSubscription_EdgeAndFace)
 
   {
     BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut = myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
-    aMut->Tolerance                              = 0.5;
+    aMut->Tolerance                                = 0.5;
   }
 
   // Edge events from direct mutation; NO face events (no parent dispatch).

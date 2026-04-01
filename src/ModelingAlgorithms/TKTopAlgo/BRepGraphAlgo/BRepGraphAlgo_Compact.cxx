@@ -195,8 +195,9 @@ void forCompSolidSolidRefEntries(const BRepGraph&            theGraph,
                                  const BRepGraph_CompSolidId theCompSolidId,
                                  FuncT&&                     theFunc)
 {
-  const BRepGraphInc::CompSolidDef& aCSEnt = theGraph.Topo().CompSolids().Definition(theCompSolidId);
-  const BRepGraph::RefsView&        aRefs  = theGraph.Refs();
+  const BRepGraphInc::CompSolidDef& aCSEnt =
+    theGraph.Topo().CompSolids().Definition(theCompSolidId);
+  const BRepGraph::RefsView& aRefs = theGraph.Refs();
   for (int i = 0; i < aCSEnt.SolidRefIds.Length(); ++i)
   {
     const BRepGraph_SolidRefId    aRefId = aCSEnt.SolidRefIds.Value(i);
@@ -308,8 +309,8 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
 
   const bool wasHistoryEnabled = theGraph.History().IsEnabled();
   theGraph.History().SetEnabled(theOptions.HistoryMode);
-  const BRepGraph_Data* aGraphData = theGraph.data();
-  const uint32_t aGeneration = aGraphData->myGeneration.load(std::memory_order_relaxed);
+  const BRepGraph_Data* aGraphData  = theGraph.data();
+  const uint32_t        aGeneration = aGraphData->myGeneration.load(std::memory_order_relaxed);
 
   // Record history before swap (remap entries for topology defs).
   if (theOptions.HistoryMode)
@@ -351,7 +352,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
 
   // Construct a fresh graph and rebuild bottom-up.
   // Geometry nodes (Surface, Curve) are automatically created through AddFace/AddEdge.
-  BRepGraph aNewGraph;
+  BRepGraph       aNewGraph;
   BRepGraph_Data* aNewGraphData = aNewGraph.data();
   aNewGraphData->myGeneration.store(aGeneration, std::memory_order_relaxed);
 
@@ -374,7 +375,8 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
   {
     if (!aVertexMap.IsBound(anIdx))
       continue;
-    const BRepGraphInc::VertexDef& anOldVtx = theGraph.Topo().Vertices().Definition(BRepGraph_VertexId(anIdx));
+    const BRepGraphInc::VertexDef& anOldVtx =
+      theGraph.Topo().Vertices().Definition(BRepGraph_VertexId(anIdx));
     (void)aNewGraph.Builder().AddVertex(anOldVtx.Point, anOldVtx.Tolerance);
   }
 
@@ -383,36 +385,36 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
   {
     if (!anEdgeMap.IsBound(anIdx))
       continue;
-    const BRepGraphInc::EdgeDef& anOldEdge = theGraph.Topo().Edges().Definition(BRepGraph_EdgeId(anIdx));
+    const BRepGraphInc::EdgeDef& anOldEdge =
+      theGraph.Topo().Edges().Definition(BRepGraph_EdgeId(anIdx));
 
     const BRepGraph_VertexId aNewStart =
       anOldEdge.StartVertexRefId.IsValid()
-      ? BRepGraph_VertexId::FromNodeId(
-        remapId(BRepGraph_Tool::Edge::StartVertex(theGraph, BRepGraph_EdgeId(anIdx)).VertexDefId))
-      : BRepGraph_VertexId();
+        ? BRepGraph_VertexId::FromNodeId(remapId(
+            BRepGraph_Tool::Edge::StartVertex(theGraph, BRepGraph_EdgeId(anIdx)).VertexDefId))
+        : BRepGraph_VertexId();
     const BRepGraph_VertexId aNewEnd =
       anOldEdge.EndVertexRefId.IsValid()
-      ? BRepGraph_VertexId::FromNodeId(
-        remapId(BRepGraph_Tool::Edge::EndVertex(theGraph, BRepGraph_EdgeId(anIdx)).VertexDefId))
-      : BRepGraph_VertexId();
+        ? BRepGraph_VertexId::FromNodeId(
+            remapId(BRepGraph_Tool::Edge::EndVertex(theGraph, BRepGraph_EdgeId(anIdx)).VertexDefId))
+        : BRepGraph_VertexId();
 
     // Get the curve handle if available.
     const occ::handle<Geom_Curve>& aCurve =
       BRepGraph_Tool::Edge::Curve(theGraph, BRepGraph_EdgeId(anIdx));
 
     const BRepGraph_EdgeId aNewEdgeId = aNewGraph.Builder().AddEdge(aNewStart,
-                                    aNewEnd,
-                                    aCurve,
-                                    anOldEdge.ParamFirst,
-                                    anOldEdge.ParamLast,
-                                    anOldEdge.Tolerance);
+                                                                    aNewEnd,
+                                                                    aCurve,
+                                                                    anOldEdge.ParamFirst,
+                                                                    anOldEdge.ParamLast,
+                                                                    anOldEdge.Tolerance);
 
     // Copy edge properties.
-    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aNewEdge =
-      aNewGraph.Builder().MutEdge(aNewEdgeId);
-    aNewEdge->IsDegenerate  = anOldEdge.IsDegenerate;
-    aNewEdge->SameParameter = anOldEdge.SameParameter;
-    aNewEdge->SameRange     = anOldEdge.SameRange;
+    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aNewEdge = aNewGraph.Builder().MutEdge(aNewEdgeId);
+    aNewEdge->IsDegenerate                             = anOldEdge.IsDegenerate;
+    aNewEdge->SameParameter                            = anOldEdge.SameParameter;
+    aNewEdge->SameRange                                = anOldEdge.SameRange;
   }
 
   // PCurves (added after edges and faces are known).
@@ -425,7 +427,7 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
       continue;
 
     NCollection_Vector<std::pair<BRepGraph_EdgeId, TopAbs_Orientation>> aNewEntries;
-    NCollection_Vector<BRepGraph_CoEdgeId>                             anOldCoEdges;
+    NCollection_Vector<BRepGraph_CoEdgeId>                              anOldCoEdges;
     forWireCoEdgeRefEntries(theGraph,
                             BRepGraph_WireId(anIdx),
                             [&](const BRepGraphInc::CoEdgeRef& aCR) {
@@ -452,7 +454,8 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
   {
     if (!aFaceMap.IsBound(anIdx))
       continue;
-    const BRepGraphInc::FaceDef& anOldFace = theGraph.Topo().Faces().Definition(BRepGraph_FaceId(anIdx));
+    const BRepGraphInc::FaceDef& anOldFace =
+      theGraph.Topo().Faces().Definition(BRepGraph_FaceId(anIdx));
 
     const occ::handle<Geom_Surface>& aSurf =
       BRepGraph_Tool::Face::Surface(theGraph, BRepGraph_FaceId(anIdx));
@@ -648,9 +651,8 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
   aNewGraphData->myNextUIDCounter.store(
     aGraphData->myNextUIDCounter.load(std::memory_order_relaxed),
     std::memory_order_relaxed);
-  aNewGraphData->myGeneration.store(
-    aGraphData->myGeneration.load(std::memory_order_relaxed),
-    std::memory_order_relaxed);
+  aNewGraphData->myGeneration.store(aGraphData->myGeneration.load(std::memory_order_relaxed),
+                                    std::memory_order_relaxed);
   aNewGraphData->myIsDone = true;
 
   // Save layers before swap (default move would transfer empty layers from aNewGraph).
@@ -666,20 +668,20 @@ BRepGraphAlgo_Compact::Result BRepGraphAlgo_Compact::Perform(BRepGraph&     theG
   // cache for the new compacted entity counts before later algorithm use.
   theGraph.transientCache().Clear();
   {
-    BRepGraphInc_Storage& aStr = theGraph.incStorage();
-    int aCounts[BRepGraph_TransientCache::THE_KIND_COUNT] = {};
-    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Vertex)]    = aStr.NbVertices();
-    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Edge)]      = aStr.NbEdges();
-    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::CoEdge)]    = aStr.NbCoEdges();
-    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Wire)]      = aStr.NbWires();
-    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Face)]      = aStr.NbFaces();
-    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Shell)]     = aStr.NbShells();
-    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Solid)]     = aStr.NbSolids();
-    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Compound)]  = aStr.NbCompounds();
-    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::CompSolid)] = aStr.NbCompSolids();
-    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Product)]    = aStr.NbProducts();
-    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Occurrence)] = aStr.NbOccurrences();
-    int aReservedKindCount = BRepGraph_TransientCache::THE_DEFAULT_RESERVED_KIND_COUNT;
+    BRepGraphInc_Storage& aStr                                              = theGraph.incStorage();
+    int                   aCounts[BRepGraph_TransientCache::THE_KIND_COUNT] = {};
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Vertex)]               = aStr.NbVertices();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Edge)]                 = aStr.NbEdges();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::CoEdge)]               = aStr.NbCoEdges();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Wire)]                 = aStr.NbWires();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Face)]                 = aStr.NbFaces();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Shell)]                = aStr.NbShells();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Solid)]                = aStr.NbSolids();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Compound)]             = aStr.NbCompounds();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::CompSolid)]            = aStr.NbCompSolids();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Product)]              = aStr.NbProducts();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Occurrence)]           = aStr.NbOccurrences();
+    int       aReservedKindCount   = BRepGraph_TransientCache::THE_DEFAULT_RESERVED_KIND_COUNT;
     const int aRegisteredKindCount = BRepGraph_CacheKindRegistry::NbRegistered();
     if (aRegisteredKindCount > aReservedKindCount)
     {

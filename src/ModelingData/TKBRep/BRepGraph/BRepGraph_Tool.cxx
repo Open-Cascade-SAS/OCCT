@@ -59,8 +59,9 @@ double BRepGraph_Tool::Vertex::Parameter(const BRepGraph&         theGraph,
                                          const BRepGraph_VertexId theVertex,
                                          const BRepGraph_EdgeId   theEdge)
 {
-  double aParameter = 0.0;
-  const occ::handle<BRepGraph_ParamLayer> aParamLayer = theGraph.LayerRegistry().FindLayer<BRepGraph_ParamLayer>();
+  double                                  aParameter = 0.0;
+  const occ::handle<BRepGraph_ParamLayer> aParamLayer =
+    theGraph.LayerRegistry().FindLayer<BRepGraph_ParamLayer>();
   if (!aParamLayer.IsNull() && aParamLayer->FindPointOnCurve(theVertex, theEdge, &aParameter))
     return aParameter;
   throw Standard_NoSuchObject("BRepGraph_Tool::Parameter - no PointOnCurve for this edge");
@@ -72,8 +73,9 @@ gp_Pnt2d BRepGraph_Tool::Vertex::Parameters(const BRepGraph&         theGraph,
                                             const BRepGraph_VertexId theVertex,
                                             const BRepGraph_FaceId   theFace)
 {
-  gp_Pnt2d aUV;
-  const occ::handle<BRepGraph_ParamLayer> aParamLayer = theGraph.LayerRegistry().FindLayer<BRepGraph_ParamLayer>();
+  gp_Pnt2d                                aUV;
+  const occ::handle<BRepGraph_ParamLayer> aParamLayer =
+    theGraph.LayerRegistry().FindLayer<BRepGraph_ParamLayer>();
   if (!aParamLayer.IsNull() && aParamLayer->FindPointOnSurface(theVertex, theFace, &aUV))
     return aUV;
   throw Standard_NoSuchObject("BRepGraph_Tool::Parameters - no PointOnSurface for this face");
@@ -128,7 +130,8 @@ bool BRepGraph_Tool::Edge::HasCurve(const BRepGraph& theGraph, const BRepGraph_E
 bool BRepGraph_Tool::Edge::HasPolygon3D(const BRepGraph& theGraph, const BRepGraph_EdgeId theEdge)
 {
   const BRepGraphInc::EdgeDef& anEdge = theGraph.Topo().Edges().Definition(theEdge);
-  return anEdge.Polygon3DRepId.IsValid() && !theGraph.Topo().Poly().Polygon3DRep(anEdge.Polygon3DRepId).IsRemoved;
+  return anEdge.Polygon3DRepId.IsValid()
+         && !theGraph.Topo().Poly().Polygon3DRep(anEdge.Polygon3DRepId).IsRemoved;
 }
 
 //=================================================================================================
@@ -136,7 +139,8 @@ bool BRepGraph_Tool::Edge::HasPolygon3D(const BRepGraph& theGraph, const BRepGra
 const BRepGraphInc::VertexRef& BRepGraph_Tool::Edge::StartVertex(const BRepGraph&       theGraph,
                                                                  const BRepGraph_EdgeId theEdge)
 {
-  return theGraph.Refs().Vertices().Entry(theGraph.Topo().Edges().Definition(theEdge).StartVertexRefId);
+  return theGraph.Refs().Vertices().Entry(
+    theGraph.Topo().Edges().Definition(theEdge).StartVertexRefId);
 }
 
 //=================================================================================================
@@ -144,7 +148,8 @@ const BRepGraphInc::VertexRef& BRepGraph_Tool::Edge::StartVertex(const BRepGraph
 const BRepGraphInc::VertexRef& BRepGraph_Tool::Edge::EndVertex(const BRepGraph&       theGraph,
                                                                const BRepGraph_EdgeId theEdge)
 {
-  return theGraph.Refs().Vertices().Entry(theGraph.Topo().Edges().Definition(theEdge).EndVertexRefId);
+  return theGraph.Refs().Vertices().Entry(
+    theGraph.Topo().Edges().Definition(theEdge).EndVertexRefId);
 }
 
 //=================================================================================================
@@ -161,7 +166,8 @@ GeomAdaptor_TransformedCurve BRepGraph_Tool::Edge::CurveAdaptor(
   // Prefer 3D curve when available.
   if (anEdge.Curve3DRepId.IsValid())
   {
-    const BRepGraphInc::Curve3DRep& aCurveRep = theGraph.Topo().Geometry().Curve3DRep(anEdge.Curve3DRepId);
+    const BRepGraphInc::Curve3DRep& aCurveRep =
+      theGraph.Topo().Geometry().Curve3DRep(anEdge.Curve3DRepId);
     if (aCurveRep.IsRemoved)
       return GeomAdaptor_TransformedCurve();
     const occ::handle<Geom_Curve>& aCurve = aCurveRep.Curve;
@@ -176,12 +182,14 @@ GeomAdaptor_TransformedCurve BRepGraph_Tool::Edge::CurveAdaptor(
       theGraph.Topo().Faces().Definition(BRepGraph_FaceId(aCoEdge.FaceDefId.Index));
     if (aFace.SurfaceRepId.IsValid())
     {
-      const BRepGraphInc::Curve2DRep& aPCurveRep = theGraph.Topo().Geometry().Curve2DRep(aCoEdge.Curve2DRepId);
-      const BRepGraphInc::SurfaceRep& aSurfaceRep = theGraph.Topo().Geometry().SurfaceRep(aFace.SurfaceRepId);
+      const BRepGraphInc::Curve2DRep& aPCurveRep =
+        theGraph.Topo().Geometry().Curve2DRep(aCoEdge.Curve2DRepId);
+      const BRepGraphInc::SurfaceRep& aSurfaceRep =
+        theGraph.Topo().Geometry().SurfaceRep(aFace.SurfaceRepId);
       if (aPCurveRep.IsRemoved || aSurfaceRep.IsRemoved)
         return GeomAdaptor_TransformedCurve();
       const occ::handle<Geom2d_Curve>& aPCurve = aPCurveRep.Curve;
-      const occ::handle<Geom_Surface>& aSurf = aSurfaceRep.Surface;
+      const occ::handle<Geom_Surface>& aSurf   = aSurfaceRep.Surface;
       if (!aPCurve.IsNull() && !aSurf.IsNull())
       {
         GeomAdaptor_TransformedCurve aResult;
@@ -206,7 +214,8 @@ GeomAdaptor_TransformedCurve BRepGraph_Tool::Edge::CurveAdaptor(const BRepGraph&
   const BRepGraphInc::EdgeDef& anEdge = theGraph.Topo().Edges().Definition(theEdge);
   if (!anEdge.Curve3DRepId.IsValid())
     return GeomAdaptor_TransformedCurve();
-  const BRepGraphInc::Curve3DRep& aCurveRep = theGraph.Topo().Geometry().Curve3DRep(anEdge.Curve3DRepId);
+  const BRepGraphInc::Curve3DRep& aCurveRep =
+    theGraph.Topo().Geometry().Curve3DRep(anEdge.Curve3DRepId);
   if (aCurveRep.IsRemoved)
     return GeomAdaptor_TransformedCurve();
   const occ::handle<Geom_Curve>& aCurve = aCurveRep.Curve;
@@ -237,7 +246,8 @@ occ::handle<Geom_Curve> BRepGraph_Tool::Edge::Curve(const BRepGraph&            
   const BRepGraphInc::EdgeDef&   anEdge  = theGraph.Topo().Edges().Definition(aCoEdge.EdgeDefId);
   if (!anEdge.Curve3DRepId.IsValid())
     return occ::handle<Geom_Curve>();
-  const BRepGraphInc::Curve3DRep& aCurveRep = theGraph.Topo().Geometry().Curve3DRep(anEdge.Curve3DRepId);
+  const BRepGraphInc::Curve3DRep& aCurveRep =
+    theGraph.Topo().Geometry().Curve3DRep(anEdge.Curve3DRepId);
   if (aCurveRep.IsRemoved)
     return occ::handle<Geom_Curve>();
   const occ::handle<Geom_Curve>& aCurve = aCurveRep.Curve;
@@ -256,7 +266,8 @@ const occ::handle<Poly_Polygon3D>& BRepGraph_Tool::Edge::Polygon3D(const BRepGra
   const BRepGraphInc::EdgeDef& anEdge = theGraph.Topo().Edges().Definition(theEdge);
   if (!anEdge.Polygon3DRepId.IsValid())
     return THE_NULL_POLYGON3D;
-  const BRepGraphInc::Polygon3DRep& aPolygonRep = theGraph.Topo().Poly().Polygon3DRep(anEdge.Polygon3DRepId);
+  const BRepGraphInc::Polygon3DRep& aPolygonRep =
+    theGraph.Topo().Poly().Polygon3DRep(anEdge.Polygon3DRepId);
   if (aPolygonRep.IsRemoved)
     return THE_NULL_POLYGON3D;
   return aPolygonRep.Polygon;
@@ -265,11 +276,12 @@ const occ::handle<Poly_Polygon3D>& BRepGraph_Tool::Edge::Polygon3D(const BRepGra
 //=================================================================================================
 
 double BRepGraph_Tool::Vertex::PCurveParameter(const BRepGraph&         theGraph,
-                                                const BRepGraph_VertexId theVertex,
-                                                const BRepGraph_CoEdgeId theCoEdge)
+                                               const BRepGraph_VertexId theVertex,
+                                               const BRepGraph_CoEdgeId theCoEdge)
 {
-  double aParameter = 0.0;
-  const occ::handle<BRepGraph_ParamLayer> aParamLayer = theGraph.LayerRegistry().FindLayer<BRepGraph_ParamLayer>();
+  double                                  aParameter = 0.0;
+  const occ::handle<BRepGraph_ParamLayer> aParamLayer =
+    theGraph.LayerRegistry().FindLayer<BRepGraph_ParamLayer>();
   if (!aParamLayer.IsNull() && aParamLayer->FindPointOnPCurve(theVertex, theCoEdge, &aParameter))
     return aParameter;
   throw Standard_NoSuchObject("BRepGraph_Tool::PCurveParameter - no PointOnPCurve for this coedge");
@@ -295,7 +307,7 @@ GeomAbs_Shape BRepGraph_Tool::Edge::Continuity(const BRepGraph&       theGraph,
                                                const BRepGraph_FaceId theFace1,
                                                const BRepGraph_FaceId theFace2)
 {
-  GeomAbs_Shape aContinuity = GeomAbs_C0;
+  GeomAbs_Shape                                aContinuity = GeomAbs_C0;
   const occ::handle<BRepGraph_RegularityLayer> aRegularityLayer =
     theGraph.LayerRegistry().FindLayer<BRepGraph_RegularityLayer>();
   if (!aRegularityLayer.IsNull()
@@ -330,7 +342,8 @@ Geom2dAdaptor_Curve BRepGraph_Tool::CoEdge::PCurveAdaptor(const BRepGraph&      
   const BRepGraphInc::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdges().Definition(theCoEdge);
   if (aCoEdge.Curve2DRepId.IsValid())
   {
-    const BRepGraphInc::Curve2DRep& aCurveRep = theGraph.Topo().Geometry().Curve2DRep(aCoEdge.Curve2DRepId);
+    const BRepGraphInc::Curve2DRep& aCurveRep =
+      theGraph.Topo().Geometry().Curve2DRep(aCoEdge.Curve2DRepId);
     if (aCurveRep.IsRemoved)
       return Geom2dAdaptor_Curve();
     const occ::handle<Geom2d_Curve>& aCurve = aCurveRep.Curve;
@@ -346,17 +359,19 @@ Geom2dAdaptor_Curve BRepGraph_Tool::CoEdge::PCurveAdaptor(const BRepGraph&      
     const BRepGraphInc::FaceDef& aFace = theGraph.Topo().Faces().Definition(aCoEdge.FaceDefId);
     if (aFace.SurfaceRepId.IsValid())
     {
-      const BRepGraphInc::SurfaceRep& aSurfaceRep = theGraph.Topo().Geometry().SurfaceRep(aFace.SurfaceRepId);
+      const BRepGraphInc::SurfaceRep& aSurfaceRep =
+        theGraph.Topo().Geometry().SurfaceRep(aFace.SurfaceRepId);
       if (aSurfaceRep.IsRemoved)
         return Geom2dAdaptor_Curve();
-      const occ::handle<Geom_Surface>& aSurf = aSurfaceRep.Surface;
-      const occ::handle<Geom_Plane> aPlane = occ::handle<Geom_Plane>::DownCast(aSurf);
+      const occ::handle<Geom_Surface>& aSurf  = aSurfaceRep.Surface;
+      const occ::handle<Geom_Plane>    aPlane = occ::handle<Geom_Plane>::DownCast(aSurf);
       if (!aPlane.IsNull())
       {
         const BRepGraphInc::EdgeDef& anEdge = theGraph.Topo().Edges().Definition(aCoEdge.EdgeDefId);
         if (anEdge.Curve3DRepId.IsValid())
         {
-          const BRepGraphInc::Curve3DRep& aCurveRep = theGraph.Topo().Geometry().Curve3DRep(anEdge.Curve3DRepId);
+          const BRepGraphInc::Curve3DRep& aCurveRep =
+            theGraph.Topo().Geometry().Curve3DRep(anEdge.Curve3DRepId);
           if (aCurveRep.IsRemoved)
             return Geom2dAdaptor_Curve();
           const occ::handle<Geom_Curve>& aCurve3d = aCurveRep.Curve;
@@ -400,7 +415,8 @@ const occ::handle<Geom2d_Curve>& BRepGraph_Tool::CoEdge::PCurve(
 {
   if (!theCoEdge.Curve2DRepId.IsValid())
     return THE_NULL_PCURVE;
-  const BRepGraphInc::Curve2DRep& aCurveRep = theGraph.Topo().Geometry().Curve2DRep(theCoEdge.Curve2DRepId);
+  const BRepGraphInc::Curve2DRep& aCurveRep =
+    theGraph.Topo().Geometry().Curve2DRep(theCoEdge.Curve2DRepId);
   if (aCurveRep.IsRemoved)
     return THE_NULL_PCURVE;
   return aCurveRep.Curve;
@@ -472,7 +488,8 @@ const occ::handle<Poly_Polygon2D>& BRepGraph_Tool::CoEdge::PolygonOnSurface(
   const BRepGraphInc::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdges().Definition(theCoEdge);
   if (!aCoEdge.Polygon2DRepId.IsValid())
     return THE_NULL_POLYGON2D;
-  const BRepGraphInc::Polygon2DRep& aPolygonRep = theGraph.Topo().Poly().Polygon2DRep(aCoEdge.Polygon2DRepId);
+  const BRepGraphInc::Polygon2DRep& aPolygonRep =
+    theGraph.Topo().Poly().Polygon2DRep(aCoEdge.Polygon2DRepId);
   if (aPolygonRep.IsRemoved)
     return THE_NULL_POLYGON2D;
   return aPolygonRep.Polygon;
@@ -587,7 +604,8 @@ const occ::handle<Poly_Triangulation>& BRepGraph_Tool::Face::Triangulation(
   const BRepGraph&       theGraph,
   const BRepGraph_FaceId theFace)
 {
-  const BRepGraph_TriangulationRepId aTriRepId = theGraph.Topo().Faces().ActiveTriangulationRepId(theFace);
+  const BRepGraph_TriangulationRepId aTriRepId =
+    theGraph.Topo().Faces().ActiveTriangulationRepId(theFace);
   if (!aTriRepId.IsValid())
     return THE_NULL_TRIANGULATION;
   return theGraph.Topo().Poly().TriangulationRep(aTriRepId).Triangulation;
@@ -606,8 +624,10 @@ occ::handle<Adaptor3d_CurveOnSurface> BRepGraph_Tool::Edge::CurveOnSurface(
   if (!aCoEdge.Curve2DRepId.IsValid() || !aFace.SurfaceRepId.IsValid())
     return occ::handle<Adaptor3d_CurveOnSurface>();
 
-  const BRepGraphInc::Curve2DRep& aPCurveRep = theGraph.Topo().Geometry().Curve2DRep(aCoEdge.Curve2DRepId);
-  const BRepGraphInc::SurfaceRep& aSurfaceRep = theGraph.Topo().Geometry().SurfaceRep(aFace.SurfaceRepId);
+  const BRepGraphInc::Curve2DRep& aPCurveRep =
+    theGraph.Topo().Geometry().Curve2DRep(aCoEdge.Curve2DRepId);
+  const BRepGraphInc::SurfaceRep& aSurfaceRep =
+    theGraph.Topo().Geometry().SurfaceRep(aFace.SurfaceRepId);
   if (aPCurveRep.IsRemoved || aSurfaceRep.IsRemoved)
     return occ::handle<Adaptor3d_CurveOnSurface>();
   const occ::handle<Geom2d_Curve>& aPCurve = aPCurveRep.Curve;

@@ -155,7 +155,7 @@ TEST_F(BRepGraph_ConvenienceTest, FindPCurve_ValidPair)
 
     for (int anEdgeIter = 0; anEdgeIter < aDefs.Edges().Nb(); ++anEdgeIter)
     {
-      const BRepGraphInc::EdgeDef&   anEdgeDef =
+      const BRepGraphInc::EdgeDef& anEdgeDef =
         aDefs.Edges().Definition(BRepGraph_EdgeId(anEdgeIter));
       const BRepGraphInc::CoEdgeDef* aPCurve =
         BRepGraph_Tool::Edge::FindPCurve(myGraph,
@@ -187,7 +187,7 @@ TEST_F(BRepGraph_ConvenienceTest, ShellFaceRefs_Box_SixFaces)
 
 TEST_F(BRepGraph_ConvenienceTest, ShellFaceRefs_AllValid)
 {
-  const BRepGraph::RefsView& aRefs       = myGraph.Refs();
+  const BRepGraph::RefsView&                     aRefs = myGraph.Refs();
   const NCollection_Vector<BRepGraph_FaceRefId>& aFaceRefIds =
     aRefs.Faces().IdsOf(BRepGraph_ShellId(0));
   for (int aFaceIter = 0; aFaceIter < aFaceRefIds.Length(); ++aFaceIter)

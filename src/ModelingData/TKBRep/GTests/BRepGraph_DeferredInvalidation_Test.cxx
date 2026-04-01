@@ -224,7 +224,8 @@ TEST_F(BRepGraph_DeferredInvalidationTest, EndWithoutBegin_IsIdempotent)
 
 TEST_F(BRepGraph_DeferredInvalidationTest, DeferredScope_NestedGuards_FlushOnlyOnOuterDestruction)
 {
-  const NCollection_Vector<BRepGraph_WireId>& aWires = myGraph.Topo().Edges().Wires(BRepGraph_EdgeId(0));
+  const NCollection_Vector<BRepGraph_WireId>& aWires =
+    myGraph.Topo().Edges().Wires(BRepGraph_EdgeId(0));
   ASSERT_GT(aWires.Length(), 0);
   const BRepGraph_WireId aWireId = aWires.Value(0);
 
@@ -301,11 +302,12 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_DirectWireMutation_Propa
   EXPECT_GT(myGraph.Topo().Solids().Definition(BRepGraph_SolidId(0)).SubtreeGen, 0u);
 }
 
-TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_OccurrenceMutation_PropagatesSubtreeGenToProduct)
+TEST_F(BRepGraph_DeferredInvalidationTest,
+       DeferredMode_OccurrenceMutation_PropagatesSubtreeGenToProduct)
 {
   // Build an assembly: root product + child occurrence referencing it.
-  const BRepGraph_ProductId aPartId     = BRepGraph_ProductId(0);
-  const BRepGraph_ProductId aAssemblyId = myGraph.Builder().AddAssemblyProduct();
+  const BRepGraph_ProductId    aPartId     = BRepGraph_ProductId(0);
+  const BRepGraph_ProductId    aAssemblyId = myGraph.Builder().AddAssemblyProduct();
   const BRepGraph_OccurrenceId anOccId =
     myGraph.Builder().AddOccurrence(aAssemblyId, aPartId, TopLoc_Location());
   ASSERT_TRUE(anOccId.IsValid());

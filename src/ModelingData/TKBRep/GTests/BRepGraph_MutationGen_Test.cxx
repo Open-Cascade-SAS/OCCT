@@ -129,10 +129,12 @@ TEST_F(BRepGraph_MutationGenTest, SubtreeGen_DeferredPropagatedParent_Incremente
   const uint32_t aEdgeOwnGenBefore = myGraph.Topo().Edges().Definition(BRepGraph_EdgeId(0)).OwnGen;
   NCollection_Vector<uint32_t> aWireSubtreeGensBefore;
   for (int i = 0; i < myGraph.Topo().Wires().Nb(); ++i)
-    aWireSubtreeGensBefore.Append(myGraph.Topo().Wires().Definition(BRepGraph_WireId(i)).SubtreeGen);
+    aWireSubtreeGensBefore.Append(
+      myGraph.Topo().Wires().Definition(BRepGraph_WireId(i)).SubtreeGen);
   NCollection_Vector<uint32_t> aFaceSubtreeGensBefore;
   for (int i = 0; i < myGraph.Topo().Faces().Nb(); ++i)
-    aFaceSubtreeGensBefore.Append(myGraph.Topo().Faces().Definition(BRepGraph_FaceId(i)).SubtreeGen);
+    aFaceSubtreeGensBefore.Append(
+      myGraph.Topo().Faces().Definition(BRepGraph_FaceId(i)).SubtreeGen);
 
   // Deferred mutation + flush.
   myGraph.Builder().BeginDeferredInvalidation();
@@ -140,8 +142,7 @@ TEST_F(BRepGraph_MutationGenTest, SubtreeGen_DeferredPropagatedParent_Incremente
   myGraph.Builder().EndDeferredInvalidation();
 
   // Directly mutated edge: OwnGen incremented by exactly 1.
-  EXPECT_EQ(myGraph.Topo().Edges().Definition(BRepGraph_EdgeId(0)).OwnGen,
-            aEdgeOwnGenBefore + 1);
+  EXPECT_EQ(myGraph.Topo().Edges().Definition(BRepGraph_EdgeId(0)).OwnGen, aEdgeOwnGenBefore + 1);
 
   // At least one parent wire must have SubtreeGen incremented vs its baseline.
   bool aAnyWireSubtreeIncremented = false;
@@ -162,7 +163,7 @@ TEST_F(BRepGraph_MutationGenTest, SubtreeGen_DeferredPropagatedParent_Incremente
 
 TEST_F(BRepGraph_MutationGenTest, RepMutation_SurfacePropagatesSubtreeGenToFace)
 {
-  const BRepGraph_FaceId aFaceId(0);
+  const BRepGraph_FaceId       aFaceId(0);
   const BRepGraph_SurfaceRepId aSurfId = myGraph.Topo().Faces().Definition(aFaceId).SurfaceRepId;
   ASSERT_TRUE(aSurfId.IsValid());
   EXPECT_EQ(myGraph.Topo().Faces().Definition(aFaceId).OwnGen, 0u);
@@ -180,7 +181,7 @@ TEST_F(BRepGraph_MutationGenTest, RepMutation_SurfacePropagatesSubtreeGenToFace)
 
 TEST_F(BRepGraph_MutationGenTest, RepMutation_Curve3DPropagatesSubtreeGenToEdge)
 {
-  const BRepGraph_EdgeId anEdgeId(0);
+  const BRepGraph_EdgeId       anEdgeId(0);
   const BRepGraph_Curve3DRepId aCurveId = myGraph.Topo().Edges().Definition(anEdgeId).Curve3DRepId;
   if (!aCurveId.IsValid())
     return; // Skip degenerate edges without 3D curves.
@@ -203,7 +204,7 @@ TEST_F(BRepGraph_MutationGenTest, RepMutation_Curve2DPropagatesSubtreeGenToCoEdg
   // Find a coedge with a valid PCurve.
   for (int i = 0; i < myGraph.Topo().CoEdges().Nb(); ++i)
   {
-    const BRepGraph_CoEdgeId aCoEdgeId(i);
+    const BRepGraph_CoEdgeId     aCoEdgeId(i);
     const BRepGraph_Curve2DRepId aCurveId =
       myGraph.Topo().CoEdges().Definition(aCoEdgeId).Curve2DRepId;
     if (!aCurveId.IsValid())
@@ -229,7 +230,7 @@ TEST_F(BRepGraph_MutationGenTest, RepMutation_TriangulationPropagatesSubtreeGenT
   // Find a face with a valid triangulation.
   for (int i = 0; i < myGraph.Topo().Faces().Nb(); ++i)
   {
-    const BRepGraph_FaceId aFaceId(i);
+    const BRepGraph_FaceId       aFaceId(i);
     const BRepGraphInc::FaceDef& aFace = myGraph.Topo().Faces().Definition(aFaceId);
     if (aFace.TriangulationRepIds.IsEmpty())
       continue;
@@ -239,7 +240,8 @@ TEST_F(BRepGraph_MutationGenTest, RepMutation_TriangulationPropagatesSubtreeGenT
     EXPECT_EQ(aFace.SubtreeGen, 0u);
 
     {
-      BRepGraph_MutGuard<BRepGraphInc::TriangulationRep> aGuard = myGraph.Builder().MutTriangulation(aTriId);
+      BRepGraph_MutGuard<BRepGraphInc::TriangulationRep> aGuard =
+        myGraph.Builder().MutTriangulation(aTriId);
       (void)aGuard;
     }
 
@@ -255,7 +257,7 @@ TEST_F(BRepGraph_MutationGenTest, RepMutation_Polygon3DPropagatesSubtreeGenToEdg
   // Find an edge with a valid Polygon3D.
   for (int i = 0; i < myGraph.Topo().Edges().Nb(); ++i)
   {
-    const BRepGraph_EdgeId anEdgeId(i);
+    const BRepGraph_EdgeId         anEdgeId(i);
     const BRepGraph_Polygon3DRepId aPolyId =
       myGraph.Topo().Edges().Definition(anEdgeId).Polygon3DRepId;
     if (!aPolyId.IsValid())
@@ -265,7 +267,8 @@ TEST_F(BRepGraph_MutationGenTest, RepMutation_Polygon3DPropagatesSubtreeGenToEdg
     EXPECT_EQ(myGraph.Topo().Edges().Definition(anEdgeId).SubtreeGen, 0u);
 
     {
-      BRepGraph_MutGuard<BRepGraphInc::Polygon3DRep> aGuard = myGraph.Builder().MutPolygon3D(aPolyId);
+      BRepGraph_MutGuard<BRepGraphInc::Polygon3DRep> aGuard =
+        myGraph.Builder().MutPolygon3D(aPolyId);
       (void)aGuard;
     }
 

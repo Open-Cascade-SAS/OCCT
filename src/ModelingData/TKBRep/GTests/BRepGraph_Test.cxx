@@ -77,7 +77,8 @@ static gp_Pnt bboxCenter(BRepGraph& theGraph, BRepGraph_NodeId theNode)
 const occ::handle<BRepGraph_CacheKind>& testDoubleAttrKind()
 {
   static const occ::handle<BRepGraph_CacheKind> THE_KIND =
-    new BRepGraph_CacheKind(Standard_GUID("2f9b6a5c-1f2d-4a88-9c1c-7a0c16a10021"), "TestDoubleAttr");
+    new BRepGraph_CacheKind(Standard_GUID("2f9b6a5c-1f2d-4a88-9c1c-7a0c16a10021"),
+                            "TestDoubleAttr");
   return THE_KIND;
 }
 
@@ -114,7 +115,8 @@ static NCollection_Vector<BRepGraph_EdgeId> collectFreeEdges(const BRepGraph& th
 
     NCollection_Map<int> aOwningFaces;
     for (BRepGraph_ParentExplorer aFaceExp(theGraph, anEdgeId, BRepGraph_NodeId::Kind::Face);
-         aFaceExp.More(); aFaceExp.Next())
+         aFaceExp.More();
+         aFaceExp.Next())
     {
       aOwningFaces.Add(aFaceExp.Current().Index);
       if (aOwningFaces.Extent() > 1)
@@ -131,17 +133,19 @@ static NCollection_Vector<BRepGraph_EdgeId> collectFreeEdges(const BRepGraph& th
   return aResult;
 }
 
-static BRepGraph_NodeId componentRootOfFace(const BRepGraph&      theGraph,
+static BRepGraph_NodeId componentRootOfFace(const BRepGraph&       theGraph,
                                             const BRepGraph_FaceId theFaceId)
 {
   for (BRepGraph_ParentExplorer aSolidExp(theGraph, theFaceId, BRepGraph_NodeId::Kind::Solid);
-       aSolidExp.More(); aSolidExp.Next())
+       aSolidExp.More();
+       aSolidExp.Next())
   {
     return aSolidExp.Current();
   }
 
   for (BRepGraph_ParentExplorer aShellExp(theGraph, theFaceId, BRepGraph_NodeId::Kind::Shell);
-       aShellExp.More(); aShellExp.Next())
+       aShellExp.More();
+       aShellExp.Next())
   {
     return aShellExp.Current();
   }
@@ -691,9 +695,9 @@ TEST_F(BRepGraphTest, FindPCurve_ValidPair)
       BRepGraph_TestTools::CoEdgeRefsOfWire(myGraph, anOuterWire);
     for (int aCoEdgeIter = 0; aCoEdgeIter < aCoEdgeRefs.Length(); ++aCoEdgeIter)
     {
-      const BRepGraphInc::CoEdgeRef& aCR = myGraph.Refs().CoEdges().Entry(aCoEdgeRefs.Value(aCoEdgeIter));
-      const BRepGraphInc::CoEdgeDef& aCoEdge =
-        myGraph.Topo().CoEdges().Definition(aCR.CoEdgeDefId);
+      const BRepGraphInc::CoEdgeRef& aCR =
+        myGraph.Refs().CoEdges().Entry(aCoEdgeRefs.Value(aCoEdgeIter));
+      const BRepGraphInc::CoEdgeDef& aCoEdge = myGraph.Topo().CoEdges().Definition(aCR.CoEdgeDefId);
       if (BRepGraph_Tool::Edge::Degenerated(myGraph, BRepGraph_EdgeId(aCoEdge.EdgeDefId)))
         continue;
       const BRepGraphInc::CoEdgeDef* aPCurveEntry =
@@ -845,7 +849,8 @@ TEST_F(BRepGraphTest, DetectMissingPCurves_ValidBox_Empty)
   {
     const BRepGraph_FaceId aFaceId = aFaceIt.CurrentId();
     for (BRepGraph_ChildExplorer anEdgeExp(myGraph, aFaceId, BRepGraph_NodeId::Kind::Edge);
-         anEdgeExp.More(); anEdgeExp.Next())
+         anEdgeExp.More();
+         anEdgeExp.Next())
     {
       const BRepGraph_EdgeId       anEdgeId = BRepGraph_EdgeId::FromNodeId(anEdgeExp.Current());
       const BRepGraphInc::EdgeDef& anEdge   = myGraph.Topo().Edges().Definition(anEdgeId);
@@ -868,10 +873,11 @@ TEST_F(BRepGraphTest, DetectDegenerateWires_ValidBox_Empty)
   NCollection_Vector<BRepGraph_WireId> aDegenerate(16);
   for (BRepGraph_WireIterator aWireIt(myGraph); aWireIt.More(); aWireIt.Next())
   {
-    const BRepGraph_WireId aWireId = aWireIt.CurrentId();
+    const BRepGraph_WireId aWireId  = aWireIt.CurrentId();
     int                    aNbEdges = 0;
     for (BRepGraph_ChildExplorer anEdgeExp(myGraph, aWireId, BRepGraph_NodeId::Kind::Edge);
-         anEdgeExp.More(); anEdgeExp.Next())
+         anEdgeExp.More();
+         anEdgeExp.Next())
     {
       ++aNbEdges;
     }
@@ -884,7 +890,8 @@ TEST_F(BRepGraphTest, DetectDegenerateWires_ValidBox_Empty)
 
     bool isOuterWire = false;
     for (BRepGraph_ParentExplorer aFaceExp(myGraph, aWireId, BRepGraph_NodeId::Kind::Face);
-         aFaceExp.More(); aFaceExp.Next())
+         aFaceExp.More();
+         aFaceExp.Next())
     {
       const BRepGraph_FaceId aFaceId = BRepGraph_FaceId::FromNodeId(aFaceExp.Current());
       if (myGraph.Topo().Faces().OuterWire(aFaceId) == aWireId)
@@ -906,7 +913,7 @@ TEST_F(BRepGraphTest, MutableEdge_ModifyTolerance)
 {
   double anOrigTol = BRepGraph_Tool::Edge::Tolerance(myGraph, BRepGraph_EdgeId(0));
   BRepGraph_MutGuard<BRepGraphInc::EdgeDef> anEdge = myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
-  anEdge->Tolerance                              = anOrigTol * 2.0;
+  anEdge->Tolerance                                = anOrigTol * 2.0;
   EXPECT_NEAR(BRepGraph_Tool::Edge::Tolerance(myGraph, BRepGraph_EdgeId(0)),
               anOrigTol * 2.0,
               1.0e-15);
@@ -949,24 +956,21 @@ TEST_F(BRepGraphTest, ReplaceEdgeInWire_Substitution)
   const NCollection_Vector<BRepGraph_CoEdgeRefId> aCoEdgeRefs =
     BRepGraph_TestTools::CoEdgeRefsOfWire(myGraph, BRepGraph_WireId(0));
   ASSERT_GE(aCoEdgeRefs.Length(), 1);
-  const BRepGraphInc::CoEdgeRef& aOldCR      = myGraph.Refs().CoEdges().Entry(aCoEdgeRefs.Value(0));
+  const BRepGraphInc::CoEdgeRef& aOldCR = myGraph.Refs().CoEdges().Entry(aCoEdgeRefs.Value(0));
   const BRepGraphInc::CoEdgeDef& anOldCoEdge =
     myGraph.Topo().CoEdges().Definition(aOldCR.CoEdgeDefId);
-  const BRepGraph_EdgeId         anOldEdgeId = anOldCoEdge.EdgeDefId;
+  const BRepGraph_EdgeId anOldEdgeId = anOldCoEdge.EdgeDefId;
 
   // Pick a different edge to substitute.
   const BRepGraph_EdgeId aNewEdgeId((anOldEdgeId.Index + 1) % myGraph.Topo().Edges().Nb());
 
-  myGraph.Builder().ReplaceEdgeInWire(BRepGraph_WireId(0),
-                                      anOldEdgeId,
-                                      aNewEdgeId,
-                                      false);
+  myGraph.Builder().ReplaceEdgeInWire(BRepGraph_WireId(0), anOldEdgeId, aNewEdgeId, false);
 
   // Verify the substitution via the updated incidence refs.
   const NCollection_Vector<BRepGraph_CoEdgeRefId> aCoEdgeRefsAfter =
     BRepGraph_TestTools::CoEdgeRefsOfWire(myGraph, BRepGraph_WireId(0));
   ASSERT_GE(aCoEdgeRefsAfter.Length(), 1);
-  const BRepGraphInc::CoEdgeRef& aNewCR     = myGraph.Refs().CoEdges().Entry(aCoEdgeRefsAfter.Value(0));
+  const BRepGraphInc::CoEdgeRef& aNewCR = myGraph.Refs().CoEdges().Entry(aCoEdgeRefsAfter.Value(0));
   const BRepGraphInc::CoEdgeDef& aNewCoEdge =
     myGraph.Topo().CoEdges().Definition(aNewCR.CoEdgeDefId);
   EXPECT_EQ(aNewCoEdge.EdgeDefId.Index, aNewEdgeId.Index);
@@ -1024,9 +1028,8 @@ TEST_F(BRepGraphTest, ReconstructFace_EachBoxFace_SameSubShapeCounts)
   for (int aFaceIdx = 0; aFaceIdx < myGraph.Topo().Faces().Nb(); ++aFaceIdx)
   {
     BRepGraph_NodeId    aFaceId(BRepGraph_NodeId::Kind::Face, aFaceIdx);
-    const TopoDS_Shape& anOrigFace = myGraph.Shapes().OriginalOf(aFaceId);
-    const TopoDS_Shape  aReconstructed =
-      myGraph.Shapes().Reconstruct(BRepGraph_FaceId(aFaceIdx));
+    const TopoDS_Shape& anOrigFace     = myGraph.Shapes().OriginalOf(aFaceId);
+    const TopoDS_Shape  aReconstructed = myGraph.Shapes().Reconstruct(BRepGraph_FaceId(aFaceIdx));
 
     NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> anOrigVerts, anOrigEdges,
       anOrigWires;
@@ -1062,7 +1065,7 @@ TEST_F(BRepGraphTest, ReconstructFace_AfterEdgeReplace_ContainsNewEdge)
   const NCollection_Vector<BRepGraph_CoEdgeRefId> aCoEdgeRefs =
     BRepGraph_TestTools::CoEdgeRefsOfWire(myGraph, BRepGraph_WireId(0));
   ASSERT_GE(aCoEdgeRefs.Length(), 1);
-  const BRepGraphInc::CoEdgeRef& aCR0        = myGraph.Refs().CoEdges().Entry(aCoEdgeRefs.Value(0));
+  const BRepGraphInc::CoEdgeRef& aCR0 = myGraph.Refs().CoEdges().Entry(aCoEdgeRefs.Value(0));
   const BRepGraph_EdgeId         anOldEdgeId =
     myGraph.Topo().CoEdges().Definition(aCR0.CoEdgeDefId).EdgeDefId;
 
@@ -1076,10 +1079,7 @@ TEST_F(BRepGraphTest, ReconstructFace_AfterEdgeReplace_ContainsNewEdge)
   occ::handle<Geom_Curve> anOldCurve =
     BRepGraph_Tool::Edge::Curve(myGraph, BRepGraph_EdgeId(anOldEdgeId.Index));
 
-  myGraph.Builder().ReplaceEdgeInWire(BRepGraph_WireId(0),
-                                      anOldEdgeId,
-                                      aNewEdgeId,
-                                      false);
+  myGraph.Builder().ReplaceEdgeInWire(BRepGraph_WireId(0), anOldEdgeId, aNewEdgeId, false);
 
   // Reconstruct face 0 (the face owning wire 0).
   const int aFaceIdx =
@@ -1144,16 +1144,13 @@ TEST_F(BRepGraphTest, Shape_AfterReplaceEdge_DiffersFromOriginal)
   const NCollection_Vector<BRepGraph_CoEdgeRefId> aCoEdgeRefs =
     BRepGraph_TestTools::CoEdgeRefsOfWire(myGraph, BRepGraph_WireId(0));
   ASSERT_GE(aCoEdgeRefs.Length(), 1);
-  const BRepGraphInc::CoEdgeRef& aCR0        = myGraph.Refs().CoEdges().Entry(aCoEdgeRefs.Value(0));
+  const BRepGraphInc::CoEdgeRef& aCR0 = myGraph.Refs().CoEdges().Entry(aCoEdgeRefs.Value(0));
   const BRepGraph_EdgeId         anOldEdgeId =
     myGraph.Topo().CoEdges().Definition(aCR0.CoEdgeDefId).EdgeDefId;
-  const int                      aNewIdx     = (anOldEdgeId.Index + 1) % myGraph.Topo().Edges().Nb();
-  const BRepGraph_EdgeId         aNewEdgeId(aNewIdx);
+  const int              aNewIdx = (anOldEdgeId.Index + 1) % myGraph.Topo().Edges().Nb();
+  const BRepGraph_EdgeId aNewEdgeId(aNewIdx);
 
-  myGraph.Builder().ReplaceEdgeInWire(BRepGraph_WireId(0),
-                                      anOldEdgeId,
-                                      aNewEdgeId,
-                                      false);
+  myGraph.Builder().ReplaceEdgeInWire(BRepGraph_WireId(0), anOldEdgeId, aNewEdgeId, false);
 
   // Find the face that owns wire 0.
   int aFaceDefIdx = -1;
@@ -1496,11 +1493,11 @@ TEST_F(BRepGraphTest, ReplaceEdgeInWire_Reversed_OrientationFlipped)
     BRepGraph_TestTools::CoEdgeRefsOfWire(myGraph, BRepGraph_WireId(0));
   ASSERT_GE(aCoEdgeRefs.Length(), 1);
 
-  const BRepGraphInc::CoEdgeRef& anOrigCR          = myGraph.Refs().CoEdges().Entry(aCoEdgeRefs.Value(0));
+  const BRepGraphInc::CoEdgeRef& anOrigCR = myGraph.Refs().CoEdges().Entry(aCoEdgeRefs.Value(0));
   const BRepGraphInc::CoEdgeDef& anOrigCoEdge =
     myGraph.Topo().CoEdges().Definition(anOrigCR.CoEdgeDefId);
-  const BRepGraph_EdgeId         anOldEdgeId       = anOrigCoEdge.EdgeDefId;
-  TopAbs_Orientation             anOrigOrientation = anOrigCoEdge.Sense;
+  const BRepGraph_EdgeId anOldEdgeId       = anOrigCoEdge.EdgeDefId;
+  TopAbs_Orientation     anOrigOrientation = anOrigCoEdge.Sense;
 
   // Pick a different edge.
   const int              aNewIdx = (anOldEdgeId.Index + 1) % myGraph.Topo().Edges().Nb();
@@ -1511,7 +1508,7 @@ TEST_F(BRepGraphTest, ReplaceEdgeInWire_Reversed_OrientationFlipped)
   const NCollection_Vector<BRepGraph_CoEdgeRefId> aCoEdgeRefsAfter =
     BRepGraph_TestTools::CoEdgeRefsOfWire(myGraph, BRepGraph_WireId(0));
   ASSERT_GE(aCoEdgeRefsAfter.Length(), 1);
-  const BRepGraphInc::CoEdgeRef& aNewCR     = myGraph.Refs().CoEdges().Entry(aCoEdgeRefsAfter.Value(0));
+  const BRepGraphInc::CoEdgeRef& aNewCR = myGraph.Refs().CoEdges().Entry(aCoEdgeRefsAfter.Value(0));
   const BRepGraphInc::CoEdgeDef& aNewCoEdge =
     myGraph.Topo().CoEdges().Definition(aNewCR.CoEdgeDefId);
   EXPECT_EQ(aNewCoEdge.EdgeDefId.Index, aNewEdgeId.Index);
@@ -1561,7 +1558,7 @@ TEST_F(BRepGraphTest, RemoveNode_EdgeWithReplacement_ReparentsAllCoEdges)
   ASSERT_GE(aCoEdgeRefs.Length(), 1);
 
   const BRepGraphInc::CoEdgeRef& aRef = myGraph.Refs().CoEdges().Entry(aCoEdgeRefs.Value(0));
-  const BRepGraph_EdgeId anOldEdgeId  =
+  const BRepGraph_EdgeId         anOldEdgeId =
     myGraph.Topo().CoEdges().Definition(aRef.CoEdgeDefId).EdgeDefId;
   const BRepGraph_EdgeId aNewEdgeId((anOldEdgeId.Index + 1) % myGraph.Topo().Edges().Nb());
 
@@ -1668,8 +1665,7 @@ TEST_F(BRepGraphTest, InvalidateSubgraph_Face_ConsistentAfter)
     BRepGraph_TestTools::CoEdgeRefsOfWire(myGraph, anOuterWire);
   ASSERT_GE(aCoEdgeRefs.Length(), 1);
   const BRepGraphInc::CoEdgeRef& aCRInv = myGraph.Refs().CoEdges().Entry(aCoEdgeRefs.Value(0));
-  BRepGraph_NodeId               anEdgeId(
-    myGraph.Topo().CoEdges().Definition(aCRInv.CoEdgeDefId).EdgeDefId);
+  BRepGraph_NodeId anEdgeId(myGraph.Topo().CoEdges().Definition(aCRInv.CoEdgeDefId).EdgeDefId);
 
   Bnd_Box anEdgeBox1 = BRepGraphAlgo_BndLib::AddCached(myGraph, anEdgeId);
   ASSERT_FALSE(anEdgeBox1.IsVoid());
@@ -1790,8 +1786,8 @@ TEST_F(BRepGraphTest, DetectToleranceConflicts_ManualConflict_Detected)
       }
 
       const occ::handle<Geom_Curve>& aCurve = BRepGraph_Tool::Edge::Curve(myGraph, anEdgeId);
-      double                         aMinTol = myGraph.Topo().Edges().Definition(anEdgeId).Tolerance;
-      double                         aMaxTol = aMinTol;
+      double aMinTol                        = myGraph.Topo().Edges().Definition(anEdgeId).Tolerance;
+      double aMaxTol                        = aMinTol;
       NCollection_Vector<BRepGraph_EdgeId> aCurveEdges(4);
       aCurveEdges.Append(anEdgeId);
       for (BRepGraph_EdgeIterator anOtherIt(myGraph); anOtherIt.More(); anOtherIt.Next())
@@ -1832,7 +1828,7 @@ TEST_F(BRepGraphTest, DetectToleranceConflicts_ManualConflict_Detected)
 
 TEST_F(BRepGraphTest, RemoveUserAttribute_AfterSet_ReturnsNull)
 {
-  BRepGraph_NodeId                     aFaceId(BRepGraph_NodeId::Kind::Face, 0);
+  BRepGraph_NodeId                  aFaceId(BRepGraph_NodeId::Kind::Face, 0);
   occ::handle<BRepGraph_CacheValue> anAttr = new BRepGraph_TypedCacheValue<int>(42);
 
   myGraph.Cache().Set(aFaceId, testIntAttrKind(), anAttr);
@@ -1879,12 +1875,12 @@ TEST_F(BRepGraphTest, TopoNode_GenericLookup_MatchesTypedAccess)
 TEST_F(BRepGraphTest, NbNodes_Box_TotalCount)
 {
   // NbNodes should equal sum of all per-kind counts (topology + assembly).
-  size_t anExpected = static_cast<size_t>(myGraph.Topo().Solids().Nb()) + myGraph.Topo().Shells().Nb()
-                      + myGraph.Topo().Faces().Nb() + myGraph.Topo().Wires().Nb()
-                      + myGraph.Topo().CoEdges().Nb() + myGraph.Topo().Edges().Nb()
-                      + myGraph.Topo().Vertices().Nb() + myGraph.Topo().Compounds().Nb()
-                      + myGraph.Topo().CompSolids().Nb() + myGraph.Topo().Products().Nb()
-                      + myGraph.Topo().Occurrences().Nb();
+  size_t anExpected = static_cast<size_t>(myGraph.Topo().Solids().Nb())
+                      + myGraph.Topo().Shells().Nb() + myGraph.Topo().Faces().Nb()
+                      + myGraph.Topo().Wires().Nb() + myGraph.Topo().CoEdges().Nb()
+                      + myGraph.Topo().Edges().Nb() + myGraph.Topo().Vertices().Nb()
+                      + myGraph.Topo().Compounds().Nb() + myGraph.Topo().CompSolids().Nb()
+                      + myGraph.Topo().Products().Nb() + myGraph.Topo().Occurrences().Nb();
   EXPECT_EQ(myGraph.Topo().Gen().NbNodes(), anExpected);
 }
 
@@ -2073,9 +2069,8 @@ TEST_F(BRepGraphTest, BoundingBox_Edge_SubsetOfFace)
   ASSERT_FALSE(aFaceBox.IsVoid());
 
   const BRepGraphInc::CoEdgeRef& aCRBBox = myGraph.Refs().CoEdges().Entry(aCoEdgeRefs.Value(0));
-  BRepGraph_NodeId               anEdgeId(
-    myGraph.Topo().CoEdges().Definition(aCRBBox.CoEdgeDefId).EdgeDefId);
-  Bnd_Box                        anEdgeBox;
+  BRepGraph_NodeId anEdgeId(myGraph.Topo().CoEdges().Definition(aCRBBox.CoEdgeDefId).EdgeDefId);
+  Bnd_Box          anEdgeBox;
   BRepGraphAlgo_BndLib::Add(myGraph, anEdgeId, anEdgeBox);
   ASSERT_FALSE(anEdgeBox.IsVoid());
 
@@ -2120,8 +2115,8 @@ TEST_F(BRepGraphTest, Centroid_Face_InsideBBox)
 TEST_F(BRepGraphTest, MutableWireDef_ModifyClosure_Verified)
 {
   BRepGraph_MutGuard<BRepGraphInc::WireDef> aMutWD = myGraph.Builder().MutWire(BRepGraph_WireId(0));
-  bool                                    anOrigClosed = aMutWD->IsClosed;
-  aMutWD->IsClosed                                     = !anOrigClosed;
+  bool                                      anOrigClosed = aMutWD->IsClosed;
+  aMutWD->IsClosed                                       = !anOrigClosed;
 
   EXPECT_EQ(myGraph.Topo().Wires().Definition(BRepGraph_WireId(0)).IsClosed, !anOrigClosed);
 
@@ -2141,9 +2136,11 @@ TEST_F(BRepGraphTest, MultipleUserAttributes_SameNode_Independent)
   myGraph.Cache().Set(aFaceId, testAuxAttrKind(), anAttr2);
 
   Handle(BRepGraph_TypedCacheValue<int>) aRetrieved1 =
-    Handle(BRepGraph_TypedCacheValue<int>)::DownCast(myGraph.Cache().Get(aFaceId, testIntAttrKind()));
+    Handle(BRepGraph_TypedCacheValue<int>)::DownCast(
+      myGraph.Cache().Get(aFaceId, testIntAttrKind()));
   Handle(BRepGraph_TypedCacheValue<double>) aRetrieved2 =
-    Handle(BRepGraph_TypedCacheValue<double>)::DownCast(myGraph.Cache().Get(aFaceId, testAuxAttrKind()));
+    Handle(BRepGraph_TypedCacheValue<double>)::DownCast(
+      myGraph.Cache().Get(aFaceId, testAuxAttrKind()));
 
   ASSERT_FALSE(aRetrieved1.IsNull());
   ASSERT_FALSE(aRetrieved2.IsNull());
@@ -2158,7 +2155,7 @@ TEST_F(BRepGraphTest, MultipleUserAttributes_SameNode_Independent)
 
 TEST_F(BRepGraphTest, InvalidateUserAttribute_SpecificKey)
 {
-  BRepGraph_NodeId                      aFaceId(BRepGraph_NodeId::Kind::Face, 0);
+  BRepGraph_NodeId                       aFaceId(BRepGraph_NodeId::Kind::Face, 0);
   Handle(BRepGraph_TypedCacheValue<int>) anAttr = new BRepGraph_TypedCacheValue<int>(42);
   myGraph.Cache().Set(aFaceId, testIntAttrKind(), anAttr);
 
@@ -2171,13 +2168,14 @@ TEST_F(BRepGraphTest, InvalidateUserAttribute_SpecificKey)
 
 TEST_F(BRepGraphTest, UserAttribute_OnEdgeNode)
 {
-  BRepGraph_NodeId                         anEdgeId(BRepGraph_NodeId::Kind::Edge, 0);
+  BRepGraph_NodeId                          anEdgeId(BRepGraph_NodeId::Kind::Edge, 0);
   Handle(BRepGraph_TypedCacheValue<double>) anAttr = new BRepGraph_TypedCacheValue<double>(1.5);
 
   myGraph.Cache().Set(anEdgeId, testDoubleAttrKind(), anAttr);
 
   Handle(BRepGraph_TypedCacheValue<double>) aRetrieved =
-    Handle(BRepGraph_TypedCacheValue<double>)::DownCast(myGraph.Cache().Get(anEdgeId, testDoubleAttrKind()));
+    Handle(BRepGraph_TypedCacheValue<double>)::DownCast(
+      myGraph.Cache().Get(anEdgeId, testDoubleAttrKind()));
   ASSERT_FALSE(aRetrieved.IsNull());
   EXPECT_NEAR(aRetrieved->UncheckedValue(), 1.5, 1.0e-10);
 }

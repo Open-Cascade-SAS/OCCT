@@ -50,7 +50,7 @@ bool containsIndexInTable(const NCollection_Vector<NCollection_Vector<T>>& theId
 }
 
 static bool hasActiveFaceForEdgeInCoEdges(
-  const NCollection_Vector<BRepGraph_CoEdgeId>&     theCoEdgeIds,
+  const NCollection_Vector<BRepGraph_CoEdgeId>&      theCoEdgeIds,
   const NCollection_Vector<BRepGraphInc::CoEdgeDef>& theCoEdges,
   const int                                          theEdgeIdx,
   const int                                          theFaceIdx)
@@ -841,7 +841,8 @@ bool BRepGraphInc_ReverseIndex::Validate(
       {
         continue;
       }
-      if (aRef.ParentId.NodeKind != BRepGraph_NodeId::Kind::Wire || aRef.ParentId.Index != theWireIdx)
+      if (aRef.ParentId.NodeKind != BRepGraph_NodeId::Kind::Wire
+          || aRef.ParentId.Index != theWireIdx)
       {
         continue;
       }
@@ -886,7 +887,8 @@ bool BRepGraphInc_ReverseIndex::Validate(
       {
         continue;
       }
-      if (aRef.ParentId.NodeKind != BRepGraph_NodeId::Kind::Face || aRef.ParentId.Index != theFaceIdx)
+      if (aRef.ParentId.NodeKind != BRepGraph_NodeId::Kind::Face
+          || aRef.ParentId.Index != theFaceIdx)
       {
         continue;
       }
@@ -942,7 +944,8 @@ bool BRepGraphInc_ReverseIndex::Validate(
       {
         continue;
       }
-      if (aRef.ParentId.NodeKind != BRepGraph_NodeId::Kind::Shell || aRef.ParentId.Index != theShellIdx)
+      if (aRef.ParentId.NodeKind != BRepGraph_NodeId::Kind::Shell
+          || aRef.ParentId.Index != theShellIdx)
       {
         continue;
       }
@@ -977,7 +980,8 @@ bool BRepGraphInc_ReverseIndex::Validate(
       {
         continue;
       }
-      if (aRef.ParentId.NodeKind != BRepGraph_NodeId::Kind::Solid || aRef.ParentId.Index != theSolidIdx)
+      if (aRef.ParentId.NodeKind != BRepGraph_NodeId::Kind::Solid
+          || aRef.ParentId.Index != theSolidIdx)
       {
         continue;
       }
@@ -988,7 +992,6 @@ bool BRepGraphInc_ReverseIndex::Validate(
     }
     return false;
   };
-
 
   // Check: for each coedge ref entry, edge->wire reverse entry must exist.
   for (int aCoEdgeRefIdx = 0; aCoEdgeRefIdx < theCoEdgeRefs.Length(); ++aCoEdgeRefIdx)
@@ -1094,7 +1097,7 @@ bool BRepGraphInc_ReverseIndex::Validate(
   // Check reverse tables for stale/extra entries not backed by active forward refs.
   for (int anEdgeIdx = 0; anEdgeIdx < myEdgeToWires.Length(); ++anEdgeIdx)
   {
-    const BRepGraph_EdgeId anEdgeId(anEdgeIdx);
+    const BRepGraph_EdgeId                      anEdgeId(anEdgeIdx);
     const NCollection_Vector<BRepGraph_WireId>& aWires = WiresOfEdgeRef(anEdgeId);
     for (int aWireOrd = 0; aWireOrd < aWires.Length(); ++aWireOrd)
     {
@@ -1112,7 +1115,7 @@ bool BRepGraphInc_ReverseIndex::Validate(
 
   for (int anEdgeIdx = 0; anEdgeIdx < myEdgeToCoEdges.Length(); ++anEdgeIdx)
   {
-    const BRepGraph_EdgeId anEdgeId(anEdgeIdx);
+    const BRepGraph_EdgeId                        anEdgeId(anEdgeIdx);
     const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdges = CoEdgesOfEdgeRef(anEdgeId);
     for (int aCoEdgeOrd = 0; aCoEdgeOrd < aCoEdges.Length(); ++aCoEdgeOrd)
     {
@@ -1131,7 +1134,7 @@ bool BRepGraphInc_ReverseIndex::Validate(
 
   for (int aWireIdx = 0; aWireIdx < myWireToFaces.Length(); ++aWireIdx)
   {
-    const BRepGraph_WireId aWireId(aWireIdx);
+    const BRepGraph_WireId                      aWireId(aWireIdx);
     const NCollection_Vector<BRepGraph_FaceId>& aFaces = FacesOfWireRef(aWireId);
     for (int aFaceOrd = 0; aFaceOrd < aFaces.Length(); ++aFaceOrd)
     {

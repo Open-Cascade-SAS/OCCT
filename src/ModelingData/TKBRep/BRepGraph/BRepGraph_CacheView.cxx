@@ -60,7 +60,7 @@ occ::handle<BRepGraph_CacheValue> BRepGraph::CacheView::Get(
 //=================================================================================================
 
 occ::handle<BRepGraph_CacheValue> BRepGraph::CacheView::Get(const BRepGraph_NodeId theNode,
-                                                            const int              theKindSlot) const
+                                                            const int theKindSlot) const
 {
   const BRepGraphInc::BaseDef* aDef = myGraph->topoEntity(theNode);
   if (aDef == nullptr)
@@ -72,7 +72,7 @@ occ::handle<BRepGraph_CacheValue> BRepGraph::CacheView::Get(const BRepGraph_Node
 
 //=================================================================================================
 
-bool BRepGraph::CacheView::Has(const BRepGraph_NodeId theNode,
+bool BRepGraph::CacheView::Has(const BRepGraph_NodeId                  theNode,
                                const occ::handle<BRepGraph_CacheKind>& theKind) const
 {
   return !Get(theNode, theKind).IsNull();
@@ -87,7 +87,7 @@ bool BRepGraph::CacheView::Has(const BRepGraph_NodeId theNode, const int theKind
 
 //=================================================================================================
 
-bool BRepGraph::CacheView::Remove(const BRepGraph_NodeId theNode,
+bool BRepGraph::CacheView::Remove(const BRepGraph_NodeId                  theNode,
                                   const occ::handle<BRepGraph_CacheKind>& theKind)
 {
   return myGraph->transientCache().Remove(theNode, theKind);
@@ -102,7 +102,7 @@ bool BRepGraph::CacheView::Remove(const BRepGraph_NodeId theNode, const int theK
 
 //=================================================================================================
 
-void BRepGraph::CacheView::Invalidate(const BRepGraph_NodeId theNode,
+void BRepGraph::CacheView::Invalidate(const BRepGraph_NodeId                  theNode,
                                       const occ::handle<BRepGraph_CacheKind>& theKind)
 {
   const BRepGraphInc::BaseDef* aDef = myGraph->topoEntity(theNode);
