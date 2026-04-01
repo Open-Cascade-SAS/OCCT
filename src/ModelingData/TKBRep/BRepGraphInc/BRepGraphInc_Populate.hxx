@@ -77,18 +77,19 @@ public:
   //! Flattens hierarchy containers away; Solid/Shell/Compound/CompSolid inputs
   //! contribute appended face roots instead of container entities.
   //! Recomputes the built-in metadata layers from the populated storage.
-  //! @param[in,out] theStorage  storage to extend
-  //! @param[in]     theShape    shape to append
-  //! @param[in]     theParallel if true, face-level extraction runs in parallel
-  //! @param[in]     theOptions  optional post-pass controls
-  //! @param[in]     theTmpAlloc optional allocator for temporary scratch data
+  //! @param[in,out] theStorage       storage to extend
+  //! @param[in]     theShape         shape to append
+  //! @param[in]     theParallel      if true, face-level extraction runs in parallel
+  //! @param[out]    theAppendedRoots collected root NodeIds for non-container shapes
+  //! @param[in]     theOptions       optional post-pass controls
+  //! @param[in]     theTmpAlloc      optional allocator for temporary scratch data
   static Standard_EXPORT void AppendFlattened(BRepGraphInc_Storage&            theStorage,
                                               const TopoDS_Shape&              theShape,
                                               const bool                       theParallel,
+                                              NCollection_Vector<BRepGraph_NodeId>& theAppendedRoots,
                                               const Options&                   theOptions = Options(),
                                               BRepGraph_ParamLayer*            theParamLayer = nullptr,
                                               BRepGraph_RegularityLayer*       theRegularityLayer = nullptr,
-                                              NCollection_Vector<BRepGraph_NodeId>* theAppendedRoots = nullptr,
                                               const occ::handle<NCollection_BaseAllocator>& theTmpAlloc =
                                                 occ::handle<NCollection_BaseAllocator>());
 

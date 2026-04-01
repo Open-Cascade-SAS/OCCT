@@ -1673,9 +1673,7 @@ void traverseHierarchy(BRepGraphInc_Storage&              theStorage,
   }
 }
 
-//! Flatten hierarchy containers away for AppendFlattened().
-//! Face roots are collected for the parallel face pipeline; standalone
-//! wire/edge/vertex roots are registered directly through traverseHierarchy().
+//! Append a root NodeId to the vector, skipping duplicates.
 static void appendUniqueRootNode(NCollection_Vector<BRepGraph_NodeId>& theRoots,
                                  const BRepGraph_NodeId&               theNodeId)
 {
@@ -2092,10 +2090,10 @@ void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage&                       
 void BRepGraphInc_Populate::AppendFlattened(BRepGraphInc_Storage&                         theStorage,
                                             const TopoDS_Shape&                           theShape,
                                             const bool                                    theParallel,
+                                            NCollection_Vector<BRepGraph_NodeId>&          theAppendedRoots,
                                             const Options&                                theOptions,
                                             BRepGraph_ParamLayer*                         theParamLayer,
                                             BRepGraph_RegularityLayer*                    theRegularityLayer,
-                                            NCollection_Vector<BRepGraph_NodeId>*         theAppendedRoots,
                                             const occ::handle<NCollection_BaseAllocator>& theTmpAlloc)
 {
   if (theShape.IsNull())
@@ -2120,17 +2118,12 @@ void BRepGraphInc_Populate::AppendFlattened(BRepGraphInc_Storage&               
   NCollection_Vector<FaceLocalData> aFaceData(256, aTmpAlloc);
   RepDedup                          aRepDedup;
 
-  if (theAppendedRoots != nullptr)
-  {
-    theAppendedRoots->Clear();
-  }
-
   flattenForAppend(theStorage,
                    aFaceData,
                    aRepDedup,
                    theShape,
                    TopLoc_Location(),
-                   theAppendedRoots);
+                   &theAppendedRoots);
 
   // Parallel face extraction.
   BRepGraph_ParallelPolicy::Workload aFaceExtractWork;
@@ -2147,16 +2140,13 @@ void BRepGraphInc_Populate::AppendFlattened(BRepGraphInc_Storage&               
   // Sequential registration (reuses existing dedup maps).
   registerFaceData(theStorage, aFaceData, aRepDedup);
 
-  if (theAppendedRoots != nullptr)
+  for (int aFaceDataIdx = 0; aFaceDataIdx < aFaceData.Length(); ++aFaceDataIdx)
   {
-    for (int aFaceDataIdx = 0; aFaceDataIdx < aFaceData.Length(); ++aFaceDataIdx)
+    const BRepGraph_NodeId* aFaceNodeId =
+      theStorage.FindNodeByTShape(aFaceData.Value(aFaceDataIdx).Face.TShape().get());
+    if (aFaceNodeId != nullptr)
     {
-      const BRepGraph_NodeId* aFaceNodeId =
-        theStorage.FindNodeByTShape(aFaceData.Value(aFaceDataIdx).Face.TShape().get());
-      if (aFaceNodeId != nullptr)
-      {
-        appendUniqueRootNode(*theAppendedRoots, *aFaceNodeId);
-      }
+      appendUniqueRootNode(theAppendedRoots, *aFaceNodeId);
     }
   }
 

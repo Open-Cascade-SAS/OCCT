@@ -288,10 +288,10 @@ void BRepGraph_Builder::AppendFlattened(BRepGraph&          theGraph,
   BRepGraphInc_Populate::AppendFlattened(aStorage,
                                          theShape,
                                          theParallel,
+                                         aAppendedRoots,
                                          BRepGraphInc_Populate::Options(),
                                          aParamLayer.get(),
                                          aRegularityLayer.get(),
-                                         &aAppendedRoots,
                                          aTmpAlloc);
 
   if (!aStorage.GetIsDone())
