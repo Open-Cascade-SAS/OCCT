@@ -44,7 +44,7 @@ HEADER_REPLACEMENTS: Dict[str, List[str]] = {}
 DRY_RUN: bool = False
 
 SKIP_DIRS = {'build', 'install', '.git', '__pycache__', 'mac64', 'win64', 'lin64'}
-SOURCE_EXTENSIONS = {'.cxx', '.hxx', '.pxx', '.lxx', '.gxx', '.h', '.cpp', '.c'}
+SOURCE_EXTENSIONS = {'.lxx', '.hxx', '.hpp', '.pxx', '.cxx', '.cpp', '.c', '.h'}
 
 
 def init_worker(header_replacements: Dict[str, List[str]], dry_run: bool):

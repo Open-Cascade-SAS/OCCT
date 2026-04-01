@@ -71,9 +71,9 @@ class TypedefCollector:
     # Directories to skip
     SKIP_DIRS = {'install', 'build', 'mac64', 'win64', 'lin64', '.git', '__pycache__'}
 
-    # File extensions to process for typedef collection (public headers only)
-    # NOTE: .cxx and .pxx files are excluded - their typedefs are internal/implementation details
-    HEADER_EXTENSIONS = {'.hxx', '.lxx', '.h'}
+    # File extensions to process for typedef collection (public headers + inline headers)
+    # NOTE: source files (.c, .cpp, .cxx) are excluded - typedefs there are implementation details
+    HEADER_EXTENSIONS = {'.lxx', '.hxx', '.hpp', '.pxx', '.h'}
 
     # Pattern for NCollection container typedef (handles nested templates like occ::handle<T>)
     # typedef NCollection_Map<BOPDS_Pair> BOPDS_MapOfPair;
@@ -146,7 +146,7 @@ class TypedefCollector:
         return any(skip in path.parts for skip in self.SKIP_DIRS)
 
     def get_source_files(self) -> List[Path]:
-        """Get all header files (excluding .cxx - internal typedefs)."""
+        """Get all header/inline files (excluding .c/.cpp/.cxx implementation files)."""
         files = []
         for ext in self.HEADER_EXTENSIONS:
             pattern = f'*{ext}'

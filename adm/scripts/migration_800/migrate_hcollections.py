@@ -48,6 +48,7 @@ SEQUENCE_TYPEDEF_PATTERN = re.compile(r'typedef\s+NCollection_Sequence\s*<\s*(.+
 
 # Cache for element type lookups
 element_type_cache: Dict[str, str] = {}
+HEADER_EXTENSIONS = ('.lxx', '.hxx', '.hpp', '.pxx', '.h')
 
 
 def find_element_type(underlying_type: str, collection_kind: str) -> Optional[str]:
@@ -74,10 +75,10 @@ def find_element_type(underlying_type: str, collection_kind: str) -> Optional[st
     else:
         pattern = SEQUENCE_TYPEDEF_PATTERN
 
-    # Walk through all .hxx files
+    # Walk through all supported header/inline files
     for root, dirs, files in os.walk(src_dir):
         for filename in files:
-            if filename.endswith('.hxx'):
+            if filename.endswith(HEADER_EXTENSIONS):
                 filepath = Path(root) / filename
                 try:
                     content = filepath.read_text(encoding='utf-8', errors='ignore')
@@ -251,7 +252,7 @@ def find_macro_files() -> List[Path]:
 
     for root, dirs, filenames in os.walk(src_dir):
         for filename in filenames:
-            if filename.endswith('.hxx'):
+            if filename.endswith(HEADER_EXTENSIONS):
                 filepath = Path(root) / filename
                 try:
                     content = filepath.read_text(encoding='utf-8', errors='ignore')
@@ -276,7 +277,7 @@ def build_element_type_cache():
 
     for root, dirs, files in os.walk(src_dir):
         for filename in files:
-            if filename.endswith('.hxx'):
+            if filename.endswith(HEADER_EXTENSIONS):
                 filepath = Path(root) / filename
                 try:
                     content = filepath.read_text(encoding='utf-8', errors='ignore')
