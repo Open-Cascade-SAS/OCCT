@@ -29,7 +29,7 @@
 #include <Standard_ShortReal.hxx>
 
 #include <atomic>
-#include <mutex>
+#include <shared_mutex>
 
 class OSD_FileSystem;
 class Poly_Triangulation;
@@ -390,7 +390,7 @@ protected:
 
 protected:
   mutable std::atomic<Bnd_Box*>               myCachedMinMax{nullptr};
-  mutable std::mutex                          myCachedMinMaxMutex;
+  mutable std::shared_mutex                   myCachedMinMaxMutex;
   double                                      myDeflection;
   Poly_ArrayOfNodes                           myNodes;
   NCollection_Array1<Poly_Triangle>           myTriangles;

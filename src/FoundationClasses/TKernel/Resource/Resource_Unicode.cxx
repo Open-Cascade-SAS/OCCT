@@ -586,43 +586,37 @@ bool Resource_Unicode::ConvertUnicodeToANSI(const TCollection_ExtendedString& fr
   return true;
 }
 
-static std::atomic<bool>   AlreadyRead{false};
-static Resource_FormatType TheFormat = Resource_ANSI;
-static std::mutex          TheFormatMutex;
+static std::atomic<bool>                AlreadyRead{false};
+static std::atomic<Resource_FormatType> TheFormat{Resource_ANSI};
+static std::mutex                       TheFormatMutex;
 
 static void readFormatFromConfig()
 {
-  occ::handle<Resource_Manager> mgr = new Resource_Manager("CharSet");
+  Resource_FormatType           aFormat = Resource_ANSI;
+  occ::handle<Resource_Manager> mgr     = new Resource_Manager("CharSet");
   if (mgr->Find("FormatType"))
   {
     TCollection_AsciiString form = mgr->Value("FormatType");
     if (form.IsEqual("SJIS"))
     {
-      TheFormat = Resource_SJIS;
+      aFormat = Resource_SJIS;
     }
     else if (form.IsEqual("EUC"))
     {
-      TheFormat = Resource_EUC;
+      aFormat = Resource_EUC;
     }
     else if (form.IsEqual("GB"))
     {
-      TheFormat = Resource_GB;
-    }
-    else
-    {
-      TheFormat = Resource_ANSI;
+      aFormat = Resource_GB;
     }
   }
-  else
-  {
-    TheFormat = Resource_ANSI;
-  }
+  TheFormat.store(aFormat, std::memory_order_relaxed);
 }
 
 void Resource_Unicode::SetFormat(const Resource_FormatType typecode)
 {
   std::lock_guard<std::mutex> aLock(TheFormatMutex);
-  TheFormat = typecode;
+  TheFormat.store(typecode, std::memory_order_relaxed);
   AlreadyRead.store(true, std::memory_order_release);
 }
 
@@ -630,7 +624,7 @@ Resource_FormatType Resource_Unicode::GetFormat()
 {
   if (AlreadyRead.load(std::memory_order_acquire))
   {
-    return TheFormat;
+    return TheFormat.load(std::memory_order_relaxed);
   }
   std::lock_guard<std::mutex> aLock(TheFormatMutex);
   if (!AlreadyRead.load(std::memory_order_relaxed))
@@ -638,7 +632,7 @@ Resource_FormatType Resource_Unicode::GetFormat()
     readFormatFromConfig();
     AlreadyRead.store(true, std::memory_order_release);
   }
-  return TheFormat;
+  return TheFormat.load(std::memory_order_relaxed);
 }
 
 void Resource_Unicode::ReadFormat()

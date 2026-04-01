@@ -336,8 +336,9 @@ void Poly_Triangulation::DumpJson(Standard_OStream& theOStream, int) const
 
 const Bnd_Box& Poly_Triangulation::CachedMinMax() const
 {
-  static const Bnd_Box anEmptyBox;
-  const Bnd_Box*       aBox = myCachedMinMax.load(std::memory_order_acquire);
+  static const Bnd_Box                anEmptyBox;
+  std::shared_lock<std::shared_mutex> aLock(myCachedMinMaxMutex);
+  const Bnd_Box*                      aBox = myCachedMinMax.load(std::memory_order_relaxed);
   return (aBox == nullptr) ? anEmptyBox : *aBox;
 }
 
@@ -350,8 +351,8 @@ void Poly_Triangulation::SetCachedMinMax(const Bnd_Box& theBox)
     unsetCachedMinMax();
     return;
   }
-  std::lock_guard<std::mutex> aLock(myCachedMinMaxMutex);
-  Bnd_Box*                    aBox = myCachedMinMax.load(std::memory_order_relaxed);
+  std::unique_lock<std::shared_mutex> aLock(myCachedMinMaxMutex);
+  Bnd_Box*                            aBox = myCachedMinMax.load(std::memory_order_relaxed);
   if (aBox == nullptr)
   {
     aBox  = new Bnd_Box();
@@ -368,8 +369,8 @@ void Poly_Triangulation::SetCachedMinMax(const Bnd_Box& theBox)
 
 void Poly_Triangulation::unsetCachedMinMax()
 {
-  std::lock_guard<std::mutex> aLock(myCachedMinMaxMutex);
-  Bnd_Box*                    aBox = myCachedMinMax.load(std::memory_order_relaxed);
+  std::unique_lock<std::shared_mutex> aLock(myCachedMinMaxMutex);
+  Bnd_Box*                            aBox = myCachedMinMax.load(std::memory_order_relaxed);
   myCachedMinMax.store(nullptr, std::memory_order_release);
   delete aBox;
 }
@@ -380,16 +381,21 @@ bool Poly_Triangulation::MinMax(Bnd_Box&       theBox,
                                 const gp_Trsf& theTrsf,
                                 const bool     theIsAccurate) const
 {
-  Bnd_Box        aBox;
-  const Bnd_Box* aCachedBox = myCachedMinMax.load(std::memory_order_acquire);
-  if (aCachedBox != nullptr
-      && (!HasGeometry() || !theIsAccurate || theTrsf.Form() == gp_Identity
-          || theTrsf.Form() == gp_Translation || theTrsf.Form() == gp_PntMirror
-          || theTrsf.Form() == gp_Scale))
+  Bnd_Box aBox;
+  bool    aUsedCache = false;
   {
-    aBox = aCachedBox->Transformed(theTrsf);
+    std::shared_lock<std::shared_mutex> aLock(myCachedMinMaxMutex);
+    const Bnd_Box*                      aCachedBox = myCachedMinMax.load(std::memory_order_relaxed);
+    if (aCachedBox != nullptr
+        && (!HasGeometry() || !theIsAccurate || theTrsf.Form() == gp_Identity
+            || theTrsf.Form() == gp_Translation || theTrsf.Form() == gp_PntMirror
+            || theTrsf.Form() == gp_Scale))
+    {
+      aBox       = aCachedBox->Transformed(theTrsf);
+      aUsedCache = true;
+    }
   }
-  else
+  if (!aUsedCache)
   {
     aBox = computeBoundingBox(theTrsf);
   }

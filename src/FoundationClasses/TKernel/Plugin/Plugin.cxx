@@ -46,7 +46,7 @@ occ::handle<Standard_Transient> Plugin::Load(const Standard_GUID& aGUID, const b
     std::shared_lock<std::shared_mutex> aReadLock(aMapMutex);
     if (theMapOfFunctions.Find(pid, f))
     {
-      // Cast through void* to avoid -Wcast-function-type-mismatch warning.
+      aReadLock.unlock();
       Standard_Transient* (*fp)(const Standard_GUID&) =
         reinterpret_cast<Standard_Transient* (*)(const Standard_GUID&)>(reinterpret_cast<void*>(f));
       return (*fp)(aGUID);
@@ -112,12 +112,14 @@ occ::handle<Standard_Transient> Plugin::Load(const Standard_GUID& aGUID, const b
     theMapOfFunctions.Bind(pid, f);
   }
   else
+  {
     f = theMapOfFunctions(pid);
+  }
+  aWriteLock.unlock();
 
   // Cast through void* to avoid -Wcast-function-type-mismatch warning.
   // This is safe for dynamically loaded plugin symbols.
   Standard_Transient* (*fp)(const Standard_GUID&) =
     reinterpret_cast<Standard_Transient* (*)(const Standard_GUID&)>(reinterpret_cast<void*>(f));
-  occ::handle<Standard_Transient> theServiceFactory = (*fp)(aGUID);
-  return theServiceFactory;
+  return (*fp)(aGUID);
 }
