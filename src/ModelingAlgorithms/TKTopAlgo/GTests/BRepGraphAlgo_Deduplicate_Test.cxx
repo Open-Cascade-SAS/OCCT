@@ -29,9 +29,9 @@
 #include <BRepGraph_HistoryRecord.hxx>
 #include <BRepGraph_NodeId.hxx>
 #include <BRepGraph_ShapesView.hxx>
-#include <BRepGraphAlgo_Compact.hxx>
+#include <BRepGraph_Compact.hxx>
 #include <BRepGraphAlgo_Deduplicate.hxx>
-#include <BRepGraphAlgo_Validate.hxx>
+#include <BRepGraph_Validate.hxx>
 #include <BRepTools.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCone.hxx>
@@ -2137,8 +2137,8 @@ TEST(BRepGraphAlgo_DeduplicateTest, AfterMerge_Validate_NoIssues)
   // After merge + compact, graph should be structurally valid.
   // Merge alone may leave stale back-references on geometry nodes
   // that are cleaned up by compaction.
-  (void)BRepGraphAlgo_Compact::Perform(aGraph);
+  (void)BRepGraph_Compact::Perform(aGraph);
 
-  const BRepGraphAlgo_Validate::Result aValResult = BRepGraphAlgo_Validate::Perform(aGraph);
+  const BRepGraph_Validate::Result aValResult = BRepGraph_Validate::Perform(aGraph);
   EXPECT_TRUE(aValResult.IsValid());
 }

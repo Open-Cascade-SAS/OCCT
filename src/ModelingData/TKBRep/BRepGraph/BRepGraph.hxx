@@ -193,9 +193,9 @@ public:
 
 private:
   friend class BRepGraph_Builder;
-  friend class BRepGraphAlgo_Compact;
-  friend class BRepGraphAlgo_Copy;
-  friend class BRepGraphAlgo_Transform;
+  friend class BRepGraph_Compact;
+  friend class BRepGraph_Copy;
+  friend class BRepGraph_Transform;
   template <typename>
   friend class BRepGraph_MutGuard;
 

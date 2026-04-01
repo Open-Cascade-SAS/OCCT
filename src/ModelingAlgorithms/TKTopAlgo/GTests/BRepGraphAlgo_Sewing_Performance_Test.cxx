@@ -24,10 +24,10 @@
 #include <BRepGraph_History.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_Tool.hxx>
-#include <BRepGraphAlgo_Copy.hxx>
+#include <BRepGraph_Copy.hxx>
 #include <BRepGraphAlgo_SameParameter.hxx>
 #include <BRepGraphAlgo_Sewing.hxx>
-#include <BRepGraphAlgo_Transform.hxx>
+#include <BRepGraph_Transform.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
@@ -609,7 +609,7 @@ NCollection_Sequence<TopoDS_Shape> buildFaceGrid(int    theNx,
       if (aTemplateGraph.IsDone() && aTemplateGraph.Topo().Faces().Nb() > 0)
       {
         BRepGraph aTransGraph =
-          BRepGraphAlgo_Transform::TransformFace(aTemplateGraph, BRepGraph_FaceId(0), aTrsf, true);
+          BRepGraph_Transform::TransformFace(aTemplateGraph, BRepGraph_FaceId(0), aTrsf, true);
         if (aTransGraph.IsDone())
         {
           aFaces.Append(aTransGraph.Shapes().Reconstruct(BRepGraph_FaceId(0)));

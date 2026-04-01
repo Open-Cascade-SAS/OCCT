@@ -19,7 +19,7 @@
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_UIDsView.hxx>
-#include <BRepGraphAlgo_Copy.hxx>
+#include <BRepGraph_Copy.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
@@ -36,7 +36,7 @@
 
 #include <gtest/gtest.h>
 
-TEST(BRepGraphAlgo_CopyTest, CopyBox_FaceCount)
+TEST(BRepGraph_CopyTest, CopyBox_FaceCount)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -45,7 +45,7 @@ TEST(BRepGraphAlgo_CopyTest, CopyBox_FaceCount)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  BRepGraph aCopyGraph = BRepGraphAlgo_Copy::Perform(aGraph, true);
+  BRepGraph aCopyGraph = BRepGraph_Copy::Perform(aGraph, true);
   ASSERT_TRUE(aCopyGraph.IsDone());
   EXPECT_EQ(aCopyGraph.Topo().Faces().Nb(), 6);
   EXPECT_EQ(aCopyGraph.Topo().Faces().Nb(), aGraph.Topo().Faces().Nb());
@@ -60,7 +60,7 @@ TEST(BRepGraphAlgo_CopyTest, CopyBox_FaceCount)
   EXPECT_EQ(aNbFaces, 6);
 }
 
-TEST(BRepGraphAlgo_CopyTest, CopyBox_AreaPreserved)
+TEST(BRepGraph_CopyTest, CopyBox_AreaPreserved)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -73,7 +73,7 @@ TEST(BRepGraphAlgo_CopyTest, CopyBox_AreaPreserved)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  BRepGraph aCopyGraph = BRepGraphAlgo_Copy::Perform(aGraph, true);
+  BRepGraph aCopyGraph = BRepGraph_Copy::Perform(aGraph, true);
   ASSERT_TRUE(aCopyGraph.IsDone());
 
   TopoDS_Shape aCopy = aCopyGraph.Shapes().Reconstruct(BRepGraph_SolidId(0));
@@ -91,7 +91,7 @@ TEST(BRepGraphAlgo_CopyTest, CopyBox_AreaPreserved)
   EXPECT_NEAR(aCopyArea, anOrigArea, anOrigArea * 0.01);
 }
 
-TEST(BRepGraphAlgo_CopyTest, CopyBox_GeometryIsIndependent)
+TEST(BRepGraph_CopyTest, CopyBox_GeometryIsIndependent)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -100,7 +100,7 @@ TEST(BRepGraphAlgo_CopyTest, CopyBox_GeometryIsIndependent)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  BRepGraph aCopyGraph = BRepGraphAlgo_Copy::Perform(aGraph, true);
+  BRepGraph aCopyGraph = BRepGraph_Copy::Perform(aGraph, true);
   ASSERT_TRUE(aCopyGraph.IsDone());
 
   // Deep copy: surface handles must be different objects.
@@ -110,7 +110,7 @@ TEST(BRepGraphAlgo_CopyTest, CopyBox_GeometryIsIndependent)
             BRepGraph_Tool::Face::Surface(aGraph, BRepGraph_FaceId(0)).get());
 }
 
-TEST(BRepGraphAlgo_CopyTest, CopyBox_SharedGeometry)
+TEST(BRepGraph_CopyTest, CopyBox_SharedGeometry)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -120,7 +120,7 @@ TEST(BRepGraphAlgo_CopyTest, CopyBox_SharedGeometry)
   ASSERT_TRUE(aGraph.IsDone());
 
   // theCopyGeom = false: geometry is shared.
-  BRepGraph aCopyGraph = BRepGraphAlgo_Copy::Perform(aGraph, false);
+  BRepGraph aCopyGraph = BRepGraph_Copy::Perform(aGraph, false);
   ASSERT_TRUE(aCopyGraph.IsDone());
   EXPECT_EQ(aCopyGraph.Topo().Faces().Nb(), 6);
 
@@ -131,7 +131,7 @@ TEST(BRepGraphAlgo_CopyTest, CopyBox_SharedGeometry)
             BRepGraph_Tool::Face::Surface(aGraph, BRepGraph_FaceId(0)).get());
 }
 
-TEST(BRepGraphAlgo_CopyTest, CopyCylinder_FaceCount)
+TEST(BRepGraph_CopyTest, CopyCylinder_FaceCount)
 {
   BRepPrimAPI_MakeCylinder aCylMaker(5.0, 20.0);
   const TopoDS_Shape&      aCyl = aCylMaker.Shape();
@@ -140,12 +140,12 @@ TEST(BRepGraphAlgo_CopyTest, CopyCylinder_FaceCount)
   aGraph.Build(aCyl);
   ASSERT_TRUE(aGraph.IsDone());
 
-  BRepGraph aCopyGraph = BRepGraphAlgo_Copy::Perform(aGraph, true);
+  BRepGraph aCopyGraph = BRepGraph_Copy::Perform(aGraph, true);
   ASSERT_TRUE(aCopyGraph.IsDone());
   EXPECT_EQ(aCopyGraph.Topo().Faces().Nb(), aGraph.Topo().Faces().Nb());
 }
 
-TEST(BRepGraphAlgo_CopyTest, CopySingleFace)
+TEST(BRepGraph_CopyTest, CopySingleFace)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -155,7 +155,7 @@ TEST(BRepGraphAlgo_CopyTest, CopySingleFace)
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Topo().Faces().Nb(), 0);
 
-  BRepGraph aCopyGraph = BRepGraphAlgo_Copy::CopyFace(aGraph, BRepGraph_FaceId(0), true);
+  BRepGraph aCopyGraph = BRepGraph_Copy::CopyFace(aGraph, BRepGraph_FaceId(0), true);
   ASSERT_TRUE(aCopyGraph.IsDone());
   EXPECT_EQ(aCopyGraph.Topo().Faces().Nb(), 1);
 
@@ -177,7 +177,7 @@ TEST(BRepGraphAlgo_CopyTest, CopySingleFace)
   EXPECT_GT(std::abs(aProps.Mass()), 1.0);
 }
 
-TEST(BRepGraphAlgo_CopyTest, CopyFacesOnly_Compound)
+TEST(BRepGraph_CopyTest, CopyFacesOnly_Compound)
 {
   // Build graph from individual faces (no shells/solids).
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
@@ -199,7 +199,7 @@ TEST(BRepGraphAlgo_CopyTest, CopyFacesOnly_Compound)
   ASSERT_EQ(aGraph.Topo().Solids().Nb(), 0);
   ASSERT_EQ(aGraph.Topo().Shells().Nb(), 0);
 
-  BRepGraph aCopyGraph = BRepGraphAlgo_Copy::Perform(aGraph, true);
+  BRepGraph aCopyGraph = BRepGraph_Copy::Perform(aGraph, true);
   ASSERT_TRUE(aCopyGraph.IsDone());
   EXPECT_EQ(aCopyGraph.Topo().Faces().Nb(), 6);
   EXPECT_EQ(aCopyGraph.Topo().Solids().Nb(), 0);
@@ -210,7 +210,7 @@ TEST(BRepGraphAlgo_CopyTest, CopyFacesOnly_Compound)
 // SameParameter / SameRange round-trip
 // ============================================================
 
-TEST(BRepGraphAlgo_CopyTest, CopyBox_SameParameter_Preserved)
+TEST(BRepGraph_CopyTest, CopyBox_SameParameter_Preserved)
 {
   const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
 
@@ -218,7 +218,7 @@ TEST(BRepGraphAlgo_CopyTest, CopyBox_SameParameter_Preserved)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  BRepGraph aCopyGraph = BRepGraphAlgo_Copy::Perform(aGraph, true);
+  BRepGraph aCopyGraph = BRepGraph_Copy::Perform(aGraph, true);
   ASSERT_TRUE(aCopyGraph.IsDone());
 
   // All edges in the copied graph must preserve SameParameter = true.
@@ -235,7 +235,7 @@ TEST(BRepGraphAlgo_CopyTest, CopyBox_SameParameter_Preserved)
 // Regularity (BRep_CurveOn2Surfaces) preserved via EncodeRegularity
 // ============================================================
 
-TEST(BRepGraphAlgo_CopyTest, FusedBoxes_Regularity_AreaPreserved)
+TEST(BRepGraph_CopyTest, FusedBoxes_Regularity_AreaPreserved)
 {
   // Fuse two adjacent boxes to produce a shape with regularity edges.
   // Verify that the copy preserves area (geometry integrity).
@@ -253,7 +253,7 @@ TEST(BRepGraphAlgo_CopyTest, FusedBoxes_Regularity_AreaPreserved)
   aGraph.Build(aFused);
   ASSERT_TRUE(aGraph.IsDone());
 
-  BRepGraph aCopyGraph = BRepGraphAlgo_Copy::Perform(aGraph, true);
+  BRepGraph aCopyGraph = BRepGraph_Copy::Perform(aGraph, true);
   ASSERT_TRUE(aCopyGraph.IsDone());
 
   // Verify node counts match.
@@ -276,7 +276,7 @@ TEST(BRepGraphAlgo_CopyTest, FusedBoxes_Regularity_AreaPreserved)
 // UID preservation
 // ============================================================
 
-TEST(BRepGraphAlgo_CopyTest, CopyBox_UIDsPreserved)
+TEST(BRepGraph_CopyTest, CopyBox_UIDsPreserved)
 {
   const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
 
@@ -284,7 +284,7 @@ TEST(BRepGraphAlgo_CopyTest, CopyBox_UIDsPreserved)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  BRepGraph aCopyGraph = BRepGraphAlgo_Copy::Perform(aGraph, true);
+  BRepGraph aCopyGraph = BRepGraph_Copy::Perform(aGraph, true);
   ASSERT_TRUE(aCopyGraph.IsDone());
 
   // Helper to check UIDs for a given node kind.
@@ -314,10 +314,10 @@ TEST(BRepGraphAlgo_CopyTest, CopyBox_UIDsPreserved)
 }
 
 // ============================================================
-// Performance comparison: BRepGraphAlgo_Copy vs BRepBuilderAPI_Copy.
+// Performance comparison: BRepGraph_Copy vs BRepBuilderAPI_Copy.
 // ============================================================
 
-TEST(BRepGraphAlgo_CopyTest, Performance_VsLegacy)
+TEST(BRepGraph_CopyTest, Performance_VsLegacy)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -333,7 +333,7 @@ TEST(BRepGraphAlgo_CopyTest, Performance_VsLegacy)
   aGraphTimer.Start();
   for (int anIter = 0; anIter < THE_NB_ITERS; ++anIter)
   {
-    BRepGraph aCopy = BRepGraphAlgo_Copy::Perform(aGraph, true);
+    BRepGraph aCopy = BRepGraph_Copy::Perform(aGraph, true);
     (void)aCopy;
   }
   aGraphTimer.Stop();
@@ -349,7 +349,7 @@ TEST(BRepGraphAlgo_CopyTest, Performance_VsLegacy)
   }
   aLegacyTimer.Stop();
 
-  std::cout << "[  PERF   ] BRepGraphAlgo_Copy: " << aGraphTimer.ElapsedTime() << " s ("
+  std::cout << "[  PERF   ] BRepGraph_Copy: " << aGraphTimer.ElapsedTime() << " s ("
             << THE_NB_ITERS << " iters)" << std::endl;
   std::cout << "[  PERF   ] BRepBuilderAPI_Copy: " << aLegacyTimer.ElapsedTime() << " s ("
             << THE_NB_ITERS << " iters)" << std::endl;

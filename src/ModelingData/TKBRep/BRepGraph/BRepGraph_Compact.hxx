@@ -11,8 +11,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _BRepGraphAlgo_Compact_HeaderFile
-#define _BRepGraphAlgo_Compact_HeaderFile
+#ifndef _BRepGraph_Compact_HeaderFile
+#define _BRepGraph_Compact_HeaderFile
 
 #include <BRepGraph.hxx>
 
@@ -27,7 +27,7 @@
 //! Strategy: rebuild-and-swap. A fresh BRepGraph is constructed from
 //! non-removed nodes with remapped indices, then move-assigned into
 //! the input graph.
-class BRepGraphAlgo_Compact
+class BRepGraph_Compact
 {
 public:
   DEFINE_STANDARD_ALLOC
@@ -68,7 +68,7 @@ public:
                                                       const Options& theOptions);
 
 private:
-  BRepGraphAlgo_Compact() = delete;
+  BRepGraph_Compact() = delete;
 };
 
-#endif // _BRepGraphAlgo_Compact_HeaderFile
+#endif // _BRepGraph_Compact_HeaderFile

@@ -11,8 +11,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _BRepGraphAlgo_Copy_HeaderFile
-#define _BRepGraphAlgo_Copy_HeaderFile
+#ifndef _BRepGraph_Copy_HeaderFile
+#define _BRepGraph_Copy_HeaderFile
 
 #include <BRepGraph.hxx>
 #include <BRepGraph_NodeId.hxx>
@@ -36,10 +36,10 @@
 //! @code
 //!   BRepGraph aGraph;
 //!   aGraph.Build(myShape);
-//!   BRepGraph aCopy = BRepGraphAlgo_Copy::Perform(aGraph);
+//!   BRepGraph aCopy = BRepGraph_Copy::Perform(aGraph);
 //!   TopoDS_Shape aShape = aCopy.Shapes().Shape();
 //! @endcode
-class BRepGraphAlgo_Copy
+class BRepGraph_Copy
 {
 public:
   DEFINE_STANDARD_ALLOC
@@ -51,7 +51,7 @@ public:
   //! @return a new BRepGraph with IsDone() == true on success,
   //!         or an empty graph with IsDone() == false on failure
   [[nodiscard]] Standard_EXPORT static BRepGraph Perform(const BRepGraph& theGraph,
-                                                         bool             theCopyGeom = true);
+                                                         const bool       theCopyGeom = true);
 
   //! Copy a single face sub-graph.
   //! @param[in] theGraph        a pre-built BRepGraph
@@ -71,7 +71,10 @@ private:
                                                   BRepGraph&       theDstGraph,
                                                   BRepGraph_NodeId theDstNode);
 
-  BRepGraphAlgo_Copy() = delete;
+  //! Pre-allocate transient cache for lock-free parallel access.
+  Standard_EXPORT static void reserveTransientCache(BRepGraph& theGraph);
+
+  BRepGraph_Copy() = delete;
 };
 
-#endif // _BRepGraphAlgo_Copy_HeaderFile
+#endif // _BRepGraph_Copy_HeaderFile

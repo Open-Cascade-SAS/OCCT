@@ -25,9 +25,9 @@
 #include <BRepGraph_UIDsView.hxx>
 #include <NCollection_Map.hxx>
 #include <Precision.hxx>
-#include <BRepGraphAlgo_Compact.hxx>
+#include <BRepGraph_Compact.hxx>
 #include <BRepGraphAlgo_Deduplicate.hxx>
-#include <BRepGraphAlgo_Validate.hxx>
+#include <BRepGraph_Validate.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
@@ -70,7 +70,7 @@ int countHistoryRecordsByOp(const BRepGraph& theGraph, const TCollection_AsciiSt
 
 } // namespace
 
-TEST(BRepGraphAlgo_CompactTest, NoRemovedNodes_Noop)
+TEST(BRepGraph_CompactTest, NoRemovedNodes_Noop)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -83,7 +83,7 @@ TEST(BRepGraphAlgo_CompactTest, NoRemovedNodes_Noop)
   const int aNbEdgesBefore    = aGraph.Topo().Edges().Nb();
   const int aNbFacesBefore    = aGraph.Topo().Faces().Nb();
 
-  const BRepGraphAlgo_Compact::Result aRes = BRepGraphAlgo_Compact::Perform(aGraph);
+  const BRepGraph_Compact::Result aRes = BRepGraph_Compact::Perform(aGraph);
 
   EXPECT_EQ(aRes.NbRemovedVertices, 0);
   EXPECT_EQ(aRes.NbRemovedEdges, 0);
@@ -94,7 +94,7 @@ TEST(BRepGraphAlgo_CompactTest, NoRemovedNodes_Noop)
   EXPECT_EQ(aGraph.Topo().Faces().Nb(), aNbFacesBefore);
 }
 
-TEST(BRepGraphAlgo_CompactTest, AfterDeduplicate_RemovesNodes)
+TEST(BRepGraph_CompactTest, AfterDeduplicate_RemovesNodes)
 {
   BRepGraph aGraph;
   aGraph.Build(makeTwoCopiedFaces());
@@ -103,9 +103,9 @@ TEST(BRepGraphAlgo_CompactTest, AfterDeduplicate_RemovesNodes)
   // Run geometry dedup which replaces duplicate surface/curve handles directly.
   (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
 
-  BRepGraphAlgo_Compact::Options anOpts;
+  BRepGraph_Compact::Options anOpts;
   anOpts.HistoryMode                       = false;
-  const BRepGraphAlgo_Compact::Result aRes = BRepGraphAlgo_Compact::Perform(aGraph, anOpts);
+  const BRepGraph_Compact::Result aRes = BRepGraph_Compact::Perform(aGraph, anOpts);
 
   // No separate geometry nodes exist, so NbRemovedSurfaces/NbRemovedCurves is always 0.
   EXPECT_EQ(aRes.NbRemovedSurfaces, 0);
@@ -114,14 +114,14 @@ TEST(BRepGraphAlgo_CompactTest, AfterDeduplicate_RemovesNodes)
   EXPECT_EQ(aRes.NbNodesAfter, aRes.NbNodesBefore);
 }
 
-TEST(BRepGraphAlgo_CompactTest, IndexDensity_NoGaps)
+TEST(BRepGraph_CompactTest, IndexDensity_NoGaps)
 {
   BRepGraph aGraph;
   aGraph.Build(makeTwoCopiedFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
-  (void)BRepGraphAlgo_Compact::Perform(aGraph);
+  (void)BRepGraph_Compact::Perform(aGraph);
 
   // After compaction, there should be no removed defs.
   for (int anIdx = 0; anIdx < aGraph.Topo().Vertices().Nb(); ++anIdx)
@@ -134,20 +134,20 @@ TEST(BRepGraphAlgo_CompactTest, IndexDensity_NoGaps)
     EXPECT_FALSE(aGraph.Topo().Wires().Definition(BRepGraph_WireId(anIdx)).IsRemoved);
 }
 
-TEST(BRepGraphAlgo_CompactTest, CrossReferences_Valid)
+TEST(BRepGraph_CompactTest, CrossReferences_Valid)
 {
   BRepGraph aGraph;
   aGraph.Build(makeTwoCopiedFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
-  (void)BRepGraphAlgo_Compact::Perform(aGraph);
+  (void)BRepGraph_Compact::Perform(aGraph);
 
-  const BRepGraphAlgo_Validate::Result aValResult = BRepGraphAlgo_Validate::Perform(aGraph);
+  const BRepGraph_Validate::Result aValResult = BRepGraph_Validate::Perform(aGraph);
   EXPECT_TRUE(aValResult.IsValid());
 }
 
-TEST(BRepGraphAlgo_CompactTest, HistoryMode_RecordsMapping)
+TEST(BRepGraph_CompactTest, HistoryMode_RecordsMapping)
 {
   BRepGraph aGraph;
   aGraph.Build(makeTwoCopiedFaces());
@@ -155,9 +155,9 @@ TEST(BRepGraphAlgo_CompactTest, HistoryMode_RecordsMapping)
 
   (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
 
-  BRepGraphAlgo_Compact::Options anOpts;
+  BRepGraph_Compact::Options anOpts;
   anOpts.HistoryMode = true;
-  (void)BRepGraphAlgo_Compact::Perform(aGraph, anOpts);
+  (void)BRepGraph_Compact::Perform(aGraph, anOpts);
 
   const int aNbRemapRecords =
     countHistoryRecordsByOp(aGraph, TCollection_AsciiString("Compact:Remap"));
@@ -167,7 +167,7 @@ TEST(BRepGraphAlgo_CompactTest, HistoryMode_RecordsMapping)
   EXPECT_GE(aNbRemapRecords, 0);
 }
 
-TEST(BRepGraphAlgo_CompactTest, FullPipeline_Deduplicate_Compact_Validate)
+TEST(BRepGraph_CompactTest, FullPipeline_Deduplicate_Compact_Validate)
 {
   BRepGraph aGraph;
   aGraph.Build(makeTwoCopiedFaces());
@@ -178,15 +178,15 @@ TEST(BRepGraphAlgo_CompactTest, FullPipeline_Deduplicate_Compact_Validate)
 
   // Compact. Without MergeEntitiesWhenSafe, no topology nodes are removed,
   // so NbNodesAfter == NbNodesBefore.
-  const BRepGraphAlgo_Compact::Result aCompactRes = BRepGraphAlgo_Compact::Perform(aGraph);
+  const BRepGraph_Compact::Result aCompactRes = BRepGraph_Compact::Perform(aGraph);
   EXPECT_EQ(aCompactRes.NbNodesAfter, aCompactRes.NbNodesBefore);
 
   // Validate.
-  const BRepGraphAlgo_Validate::Result aValResult = BRepGraphAlgo_Validate::Perform(aGraph);
+  const BRepGraph_Validate::Result aValResult = BRepGraph_Validate::Perform(aGraph);
   EXPECT_TRUE(aValResult.IsValid());
 }
 
-TEST(BRepGraphAlgo_CompactTest, Compact_PreservesTopologyUIDs)
+TEST(BRepGraph_CompactTest, Compact_PreservesTopologyUIDs)
 {
   BRepGraph aGraph;
   aGraph.Build(makeTwoCopiedFaces());
@@ -227,7 +227,7 @@ TEST(BRepGraphAlgo_CompactTest, Compact_PreservesTopologyUIDs)
 
   // Run dedup + compact.
   (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
-  (void)BRepGraphAlgo_Compact::Perform(aGraph);
+  (void)BRepGraph_Compact::Perform(aGraph);
 
   // Generation must be preserved across compact.
   EXPECT_EQ(aGraph.UIDs().Generation(), aGenBefore);
@@ -270,7 +270,7 @@ TEST(BRepGraphAlgo_CompactTest, Compact_PreservesTopologyUIDs)
   // Geometry is now stored inline on defs; no separate geometry UIDs to verify.
 }
 
-TEST(BRepGraphAlgo_CompactTest, OwnGen_SurvivesCompact)
+TEST(BRepGraph_CompactTest, OwnGen_SurvivesCompact)
 {
   constexpr double   THE_MUTATED_EDGE_TOLERANCE = 0.2;
   constexpr uint32_t THE_EXPECTED_OWN_GEN       = 2;
@@ -286,7 +286,7 @@ TEST(BRepGraphAlgo_CompactTest, OwnGen_SurvivesCompact)
 
   // Run dedup + compact.
   (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
-  (void)BRepGraphAlgo_Compact::Perform(aGraph);
+  (void)BRepGraph_Compact::Perform(aGraph);
 
   // Edge 0 may have been remapped. Find the edge that carries the mutated
   // tolerance and verify both the tolerance value and OwnGen are preserved.
@@ -305,7 +305,7 @@ TEST(BRepGraphAlgo_CompactTest, OwnGen_SurvivesCompact)
   EXPECT_TRUE(aFound) << "No edge with mutated tolerance found after compact";
 }
 
-TEST(BRepGraphAlgo_CompactTest, UIDRoundTrip_AfterCompaction)
+TEST(BRepGraph_CompactTest, UIDRoundTrip_AfterCompaction)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -335,7 +335,7 @@ TEST(BRepGraphAlgo_CompactTest, UIDRoundTrip_AfterCompaction)
   aGraph.Builder().RemoveNode(BRepGraph_FaceId(2));
 
   // Run compaction.
-  const BRepGraphAlgo_Compact::Result aRes = BRepGraphAlgo_Compact::Perform(aGraph);
+  const BRepGraph_Compact::Result aRes = BRepGraph_Compact::Perform(aGraph);
   EXPECT_GE(aRes.NbRemovedFaces, 1);
 
   // Surviving UIDs should resolve to valid NodeIds.

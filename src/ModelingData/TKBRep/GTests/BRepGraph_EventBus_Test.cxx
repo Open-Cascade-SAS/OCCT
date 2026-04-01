@@ -16,7 +16,7 @@
 #include <BRepGraph_Layer.hxx>
 #include <BRepGraph_DeferredScope.hxx>
 #include <BRepGraph_TopoView.hxx>
-#include <BRepGraphAlgo_Compact.hxx>
+#include <BRepGraph_Compact.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <Precision.hxx>
 #include <Standard_GUID.hxx>
@@ -378,7 +378,7 @@ TEST_F(BRepGraph_EventBusTest, OnCompact_DispatchesRemapToRegisteredLayers)
   myGraph.Builder().RemoveNode(BRepGraph_FaceId(0));
   const int aNbFacesBefore = myGraph.Topo().Faces().Nb();
 
-  const BRepGraphAlgo_Compact::Result aResult = BRepGraphAlgo_Compact::Perform(myGraph);
+  const BRepGraph_Compact::Result aResult = BRepGraph_Compact::Perform(myGraph);
   (void)aResult;
 
   EXPECT_EQ(aLayer->myCompactCallCount, 1);

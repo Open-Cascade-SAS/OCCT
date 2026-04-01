@@ -17,7 +17,7 @@
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_Tool.hxx>
-#include <BRepGraphAlgo_Transform.hxx>
+#include <BRepGraph_Transform.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <GProp_GProps.hxx>
 #include <OSD_Timer.hxx>
@@ -32,7 +32,7 @@
 
 #include <gtest/gtest.h>
 
-TEST(BRepGraphAlgo_TransformTest, TranslateBox_FaceCount)
+TEST(BRepGraph_TransformTest, TranslateBox_FaceCount)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -44,13 +44,13 @@ TEST(BRepGraphAlgo_TransformTest, TranslateBox_FaceCount)
   gp_Trsf aTrsf;
   aTrsf.SetTranslation(gp_Vec(100.0, 200.0, 300.0));
 
-  BRepGraph aResultGraph = BRepGraphAlgo_Transform::Perform(aGraph, aTrsf, true);
+  BRepGraph aResultGraph = BRepGraph_Transform::Perform(aGraph, aTrsf, true);
   ASSERT_TRUE(aResultGraph.IsDone());
   EXPECT_EQ(aResultGraph.Topo().Faces().Nb(), 6);
   EXPECT_EQ(aResultGraph.Topo().Faces().Nb(), aGraph.Topo().Faces().Nb());
 }
 
-TEST(BRepGraphAlgo_TransformTest, TranslateBox_AreaPreserved)
+TEST(BRepGraph_TransformTest, TranslateBox_AreaPreserved)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -66,7 +66,7 @@ TEST(BRepGraphAlgo_TransformTest, TranslateBox_AreaPreserved)
   gp_Trsf aTrsf;
   aTrsf.SetTranslation(gp_Vec(50.0, 0.0, 0.0));
 
-  BRepGraph aResultGraph = BRepGraphAlgo_Transform::Perform(aGraph, aTrsf, true);
+  BRepGraph aResultGraph = BRepGraph_Transform::Perform(aGraph, aTrsf, true);
   ASSERT_TRUE(aResultGraph.IsDone());
 
   // Verify area is preserved by summing individual face areas.
@@ -82,7 +82,7 @@ TEST(BRepGraphAlgo_TransformTest, TranslateBox_AreaPreserved)
   EXPECT_NEAR(aTransArea, anOrigArea, anOrigArea * 0.01);
 }
 
-TEST(BRepGraphAlgo_TransformTest, TranslateBox_VertexPointsShifted)
+TEST(BRepGraph_TransformTest, TranslateBox_VertexPointsShifted)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -96,7 +96,7 @@ TEST(BRepGraphAlgo_TransformTest, TranslateBox_VertexPointsShifted)
   gp_Trsf      aTrsf;
   aTrsf.SetTranslation(gp_Vec(aDx, aDy, aDz));
 
-  BRepGraph aResultGraph = BRepGraphAlgo_Transform::Perform(aGraph, aTrsf, true);
+  BRepGraph aResultGraph = BRepGraph_Transform::Perform(aGraph, aTrsf, true);
   ASSERT_TRUE(aResultGraph.IsDone());
   ASSERT_EQ(aResultGraph.Topo().Vertices().Nb(), aGraph.Topo().Vertices().Nb());
 
@@ -114,7 +114,7 @@ TEST(BRepGraphAlgo_TransformTest, TranslateBox_VertexPointsShifted)
   }
 }
 
-TEST(BRepGraphAlgo_TransformTest, LocationOnly_NoCopyGeom)
+TEST(BRepGraph_TransformTest, LocationOnly_NoCopyGeom)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -129,7 +129,7 @@ TEST(BRepGraphAlgo_TransformTest, LocationOnly_NoCopyGeom)
   aTrsf.SetTranslation(gp_Vec(aDx, 0.0, 0.0));
 
   // theCopyGeom = false: location-only, no geometry modification.
-  BRepGraph aResultGraph = BRepGraphAlgo_Transform::Perform(aGraph, aTrsf, false);
+  BRepGraph aResultGraph = BRepGraph_Transform::Perform(aGraph, aTrsf, false);
   ASSERT_TRUE(aResultGraph.IsDone());
   EXPECT_EQ(aResultGraph.Topo().Faces().Nb(), 6);
   EXPECT_EQ(aResultGraph.Topo().Vertices().Nb(), aGraph.Topo().Vertices().Nb());
@@ -167,7 +167,7 @@ TEST(BRepGraphAlgo_TransformTest, LocationOnly_NoCopyGeom)
   EXPECT_NEAR(aTransProps.CentreOfMass().X(), aOrigProps.CentreOfMass().X() + aDx, 1.0);
 }
 
-TEST(BRepGraphAlgo_TransformTest, TransformSingleFace)
+TEST(BRepGraph_TransformTest, TransformSingleFace)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -181,13 +181,13 @@ TEST(BRepGraphAlgo_TransformTest, TransformSingleFace)
   aTrsf.SetTranslation(gp_Vec(10.0, 20.0, 30.0));
 
   BRepGraph aResultGraph =
-    BRepGraphAlgo_Transform::TransformFace(aGraph, BRepGraph_FaceId(0), aTrsf, true);
+    BRepGraph_Transform::TransformFace(aGraph, BRepGraph_FaceId(0), aTrsf, true);
   ASSERT_TRUE(aResultGraph.IsDone());
   EXPECT_EQ(aResultGraph.Topo().Faces().Nb(), 1);
 }
 
-// Performance comparison: BRepGraphAlgo_Transform vs BRepBuilderAPI_Transform.
-TEST(BRepGraphAlgo_TransformTest, Performance_VsLegacy)
+// Performance comparison: BRepGraph_Transform vs BRepBuilderAPI_Transform.
+TEST(BRepGraph_TransformTest, Performance_VsLegacy)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
@@ -206,7 +206,7 @@ TEST(BRepGraphAlgo_TransformTest, Performance_VsLegacy)
   aGraphTimer.Start();
   for (int anIter = 0; anIter < THE_NB_ITERS; ++anIter)
   {
-    BRepGraph aResult = BRepGraphAlgo_Transform::Perform(aGraph, aTrsf, true);
+    BRepGraph aResult = BRepGraph_Transform::Perform(aGraph, aTrsf, true);
     (void)aResult;
   }
   aGraphTimer.Stop();
@@ -222,7 +222,7 @@ TEST(BRepGraphAlgo_TransformTest, Performance_VsLegacy)
   }
   aLegacyTimer.Stop();
 
-  std::cout << "[  PERF   ] BRepGraphAlgo_Transform: " << aGraphTimer.ElapsedTime() << " s ("
+  std::cout << "[  PERF   ] BRepGraph_Transform: " << aGraphTimer.ElapsedTime() << " s ("
             << THE_NB_ITERS << " iters)" << std::endl;
   std::cout << "[  PERF   ] BRepBuilderAPI_Transform: " << aLegacyTimer.ElapsedTime() << " s ("
             << THE_NB_ITERS << " iters)" << std::endl;

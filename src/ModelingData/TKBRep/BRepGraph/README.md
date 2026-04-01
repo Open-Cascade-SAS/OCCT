@@ -416,13 +416,13 @@ Use the explicit overload when the caller needs to override optional extraction 
 
 ### Validation Pipeline
 
-`BRepGraphAlgo_Validate` checks structural graph invariants, not geometric validity. Use `Mode::Lightweight` only for cheap boundary checks on graphs whose structure is created or mutated exclusively by internal algorithm code with already-tested invariants. For CI, integration tests, and production API boundaries, prefer `Mode::Audit`, which adds cross-reference, reverse-index, UID, and assembly-cycle checks.
+`BRepGraph_Validate` checks structural graph invariants, not geometric validity. Use `Mode::Lightweight` only for cheap boundary checks on graphs whose structure is created or mutated exclusively by internal algorithm code with already-tested invariants. For CI, integration tests, and production API boundaries, prefer `Mode::Audit`, which adds cross-reference, reverse-index, UID, and assembly-cycle checks.
 
-If the caller also needs geometric/topological validity of reconstructed shapes, run `BRepGraphAlgo_Validate` first for graph integrity, then run the shape-level validation stack separately.
+If the caller also needs geometric/topological validity of reconstructed shapes, run `BRepGraph_Validate` first for graph integrity, then run the shape-level validation stack separately.
 
 ```cpp
-const BRepGraphAlgo_Validate::Result aResult =
-  BRepGraphAlgo_Validate::Perform(aGraph, BRepGraphAlgo_Validate::Mode::Audit);
+const BRepGraph_Validate::Result aResult =
+  BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Mode::Audit);
 if (!aResult.IsValid())
 {
   // inspect aResult.Issues before continuing

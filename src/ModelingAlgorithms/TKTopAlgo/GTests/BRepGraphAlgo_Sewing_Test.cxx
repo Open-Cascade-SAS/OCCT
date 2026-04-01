@@ -26,12 +26,12 @@
 #include <BRepGraph_History.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_Tool.hxx>
-#include <BRepGraphAlgo_Copy.hxx>
+#include <BRepGraph_Copy.hxx>
 #include <BRepGraphAlgo_Sewing.hxx>
-#include <BRepGraphAlgo_Validate.hxx>
+#include <BRepGraph_Validate.hxx>
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_MutGuard.hxx>
-#include <BRepGraphAlgo_Transform.hxx>
+#include <BRepGraph_Transform.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
@@ -875,7 +875,7 @@ NCollection_Sequence<TopoDS_Shape> buildFaceGrid(int    theNx,
       if (aTemplateGraph.IsDone() && aTemplateGraph.Topo().Faces().Nb() > 0)
       {
         BRepGraph aTransGraph =
-          BRepGraphAlgo_Transform::TransformFace(aTemplateGraph, BRepGraph_FaceId(0), aTrsf, true);
+          BRepGraph_Transform::TransformFace(aTemplateGraph, BRepGraph_FaceId(0), aTrsf, true);
         if (aTransGraph.IsDone())
         {
           aFaces.Append(aTransGraph.Shapes().Reconstruct(BRepGraph_FaceId(0)));
@@ -1190,10 +1190,10 @@ TEST(BRepGraphAlgo_SewingTest, DeepAndLightCopy_MatchNodeCounts)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  BRepGraph aDeepCopy = BRepGraphAlgo_Copy::Perform(aGraph, true);
+  BRepGraph aDeepCopy = BRepGraph_Copy::Perform(aGraph, true);
   ASSERT_TRUE(aDeepCopy.IsDone());
 
-  BRepGraph aLightCopy = BRepGraphAlgo_Copy::Perform(aGraph, false);
+  BRepGraph aLightCopy = BRepGraph_Copy::Perform(aGraph, false);
   ASSERT_TRUE(aLightCopy.IsDone());
 
   EXPECT_EQ(aDeepCopy.Topo().Faces().Nb(), aLightCopy.Topo().Faces().Nb());
@@ -1487,17 +1487,17 @@ TEST(BRepGraphAlgo_SewingTest, SeamEdge_CorruptedDualPCurve_DetectedByValidator)
     aGraph.Builder().MutCoEdge(BRepGraph_CoEdgeId(aSeamCoEdgeIdx));
   aCoEdgeDef->Curve2DRepId = BRepGraph_Curve2DRepId(aGraph.Topo().Geometry().NbCurves2D() + 1);
 
-  const BRepGraphAlgo_Validate::Result aAuditResult =
-    BRepGraphAlgo_Validate::Perform(aGraph, BRepGraphAlgo_Validate::Options::Audit());
+  const BRepGraph_Validate::Result aAuditResult =
+    BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit());
   EXPECT_FALSE(aAuditResult.IsValid()) << "Corrupted seam edge PCurve should be detected by audit.";
-  EXPECT_GT(aAuditResult.NbIssues(BRepGraphAlgo_Validate::Severity::Error), 0);
+  EXPECT_GT(aAuditResult.NbIssues(BRepGraph_Validate::Severity::Error), 0);
 
   // Verify the error specifically mentions geometry reference bounds.
   bool aFoundGeomRefError = false;
   for (int anIdx = 0; anIdx < aAuditResult.Issues.Length(); ++anIdx)
   {
-    const BRepGraphAlgo_Validate::Issue& anIssue = aAuditResult.Issues.Value(anIdx);
-    if (anIssue.Sev == BRepGraphAlgo_Validate::Severity::Error
+    const BRepGraph_Validate::Issue& anIssue = aAuditResult.Issues.Value(anIdx);
+    if (anIssue.Sev == BRepGraph_Validate::Severity::Error
         && anIssue.Description.Search("CoEdgeDef.Curve2DRepId out of bounds") > 0)
     {
       aFoundGeomRefError = true;

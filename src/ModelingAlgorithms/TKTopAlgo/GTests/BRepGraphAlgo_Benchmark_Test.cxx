@@ -15,7 +15,7 @@
 #include <BRepBuilderAPI_Copy.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraph_TopoView.hxx>
-#include <BRepGraphAlgo_Compact.hxx>
+#include <BRepGraph_Compact.hxx>
 #include <BRepGraphAlgo_Deduplicate.hxx>
 #include <BRepGraphAlgo_Sewing.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
@@ -113,7 +113,7 @@ TEST(BRepGraphAlgo_BenchmarkTest, Smoke_DeduplicateCompactCycle)
   const BRepGraphAlgo_Deduplicate::Result aDedupRes = BRepGraphAlgo_Deduplicate::Perform(aGraph);
   EXPECT_GE(aDedupRes.NbSurfaceRewrites + aDedupRes.NbCurveRewrites, 0);
 
-  const BRepGraphAlgo_Compact::Result aCompactRes = BRepGraphAlgo_Compact::Perform(aGraph);
+  const BRepGraph_Compact::Result aCompactRes = BRepGraph_Compact::Perform(aGraph);
   EXPECT_GE(aCompactRes.NbNodesBefore, aCompactRes.NbNodesAfter);
 }
 
@@ -175,7 +175,7 @@ TEST(BRepGraphAlgo_BenchmarkTest, DISABLED_DeduplicateCompact_Throughput)
     const BRepGraphAlgo_Deduplicate::Result aDedupRes = BRepGraphAlgo_Deduplicate::Perform(aGraph);
     EXPECT_GE(aDedupRes.NbSurfaceRewrites + aDedupRes.NbCurveRewrites, 0);
 
-    const BRepGraphAlgo_Compact::Result aCompactRes = BRepGraphAlgo_Compact::Perform(aGraph);
+    const BRepGraph_Compact::Result aCompactRes = BRepGraph_Compact::Perform(aGraph);
     EXPECT_GE(aCompactRes.NbNodesBefore, aCompactRes.NbNodesAfter);
   });
 

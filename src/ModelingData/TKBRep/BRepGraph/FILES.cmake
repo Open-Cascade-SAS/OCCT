@@ -51,4 +51,12 @@ set(OCCT_BRepGraph_FILES
   BRepGraph_VersionStamp.cxx
   BRepGraph_VersionStamp.hxx
   BRepGraph_UIDsView.hxx
+  BRepGraph_Compact.hxx
+  BRepGraph_Compact.cxx
+  BRepGraph_Copy.hxx
+  BRepGraph_Copy.cxx
+  BRepGraph_Transform.hxx
+  BRepGraph_Transform.cxx
+  BRepGraph_Validate.hxx
+  BRepGraph_Validate.cxx
 )

@@ -11,8 +11,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _BRepGraphAlgo_Validate_HeaderFile
-#define _BRepGraphAlgo_Validate_HeaderFile
+#ifndef _BRepGraph_Validate_HeaderFile
+#define _BRepGraph_Validate_HeaderFile
 
 #include <BRepGraph.hxx>
 
@@ -57,7 +57,7 @@
 //!
 //! For production pipelines, prefer `Mode::Audit`; `Mode::Lightweight` is intended
 //! for hot-path release builds where the graph structure is already trusted.
-class BRepGraphAlgo_Validate
+class BRepGraph_Validate
 {
 public:
   DEFINE_STANDARD_ALLOC
@@ -159,7 +159,7 @@ public:
                                                       const Options&   theOptions);
 
 private:
-  BRepGraphAlgo_Validate() = delete;
+  BRepGraph_Validate() = delete;
 };
 
-#endif // _BRepGraphAlgo_Validate_HeaderFile
+#endif // _BRepGraph_Validate_HeaderFile

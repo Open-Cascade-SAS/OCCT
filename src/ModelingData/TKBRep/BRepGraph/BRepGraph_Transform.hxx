@@ -11,8 +11,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _BRepGraphAlgo_Transform_HeaderFile
-#define _BRepGraphAlgo_Transform_HeaderFile
+#ifndef _BRepGraph_Transform_HeaderFile
+#define _BRepGraph_Transform_HeaderFile
 
 #include <BRepGraph.hxx>
 #include <BRepGraph_NodeId.hxx>
@@ -41,10 +41,10 @@
 //!   aGraph.Build(myShape);
 //!   gp_Trsf aTrsf;
 //!   aTrsf.SetTranslation(gp_Vec(10.0, 0.0, 0.0));
-//!   BRepGraph aTransformed = BRepGraphAlgo_Transform::Perform(aGraph, aTrsf);
+//!   BRepGraph aTransformed = BRepGraph_Transform::Perform(aGraph, aTrsf);
 //!   TopoDS_Shape aShape = aTransformed.Shapes().Shape();
 //! @endcode
-class BRepGraphAlgo_Transform
+class BRepGraph_Transform
 {
 public:
   DEFINE_STANDARD_ALLOC
@@ -57,7 +57,7 @@ public:
   //! @return a new BRepGraph with the transformation applied
   [[nodiscard]] Standard_EXPORT static BRepGraph Perform(const BRepGraph& theGraph,
                                                          const gp_Trsf&   theTrsf,
-                                                         bool             theCopyGeom = true);
+                                                         const bool       theCopyGeom = true);
 
   //! Transform a single face sub-graph.
   //! @param[in] theGraph    a pre-built BRepGraph
@@ -74,7 +74,7 @@ private:
   //! Apply location-only transform by storing per-node locations.
   static void applyLocationTransform(BRepGraph& theGraph, const gp_Trsf& theTrsf);
 
-  BRepGraphAlgo_Transform() = delete;
+  BRepGraph_Transform() = delete;
 };
 
-#endif // _BRepGraphAlgo_Transform_HeaderFile
+#endif // _BRepGraph_Transform_HeaderFile

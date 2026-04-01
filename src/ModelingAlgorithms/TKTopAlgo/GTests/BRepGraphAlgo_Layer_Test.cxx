@@ -22,7 +22,7 @@
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_Layer.hxx>
 #include <BRepGraph_Tool.hxx>
-#include <BRepGraphAlgo_Compact.hxx>
+#include <BRepGraph_Compact.hxx>
 #include <BRepGraphAlgo_Deduplicate.hxx>
 #include <BRepGraphAlgo_Sewing.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
@@ -367,7 +367,7 @@ TEST(BRepGraphAlgo_LayerTest, Compact_LayerSurvivesSwap)
 
   // Deduplicate to create some removed nodes, then compact to rebuild indices.
   (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
-  (void)BRepGraphAlgo_Compact::Perform(aGraph);
+  (void)BRepGraph_Compact::Perform(aGraph);
 
   // Layer should still be registered after compact.
   occ::handle<BRepGraph_Layer> aFound =
@@ -403,7 +403,7 @@ TEST(BRepGraphAlgo_LayerTest, Compact_RemappedNamesAccessible)
 
   // Remove one face, then compact.
   aGraph.Builder().RemoveNode(BRepGraph_FaceId(0));
-  (void)BRepGraphAlgo_Compact::Perform(aGraph);
+  (void)BRepGraph_Compact::Perform(aGraph);
 
   // After compact, face count decreased by 1.
   const int aNbFacesAfter = aGraph.Topo().Faces().Nb();
@@ -441,7 +441,7 @@ TEST(BRepGraphAlgo_LayerTest, Compact_MultipleEntityKindsRemapped)
   aGraph.Builder().RemoveNode(BRepGraph_EdgeId(0));
   aGraph.Builder().RemoveNode(BRepGraph_FaceId(0));
 
-  (void)BRepGraphAlgo_Compact::Perform(aGraph);
+  (void)BRepGraph_Compact::Perform(aGraph);
 
   // All three names should have been removed (no remapping for removed nodes).
   EXPECT_EQ(aLayer->FindNodeName(BRepGraph_VertexId(0)), nullptr);
@@ -540,7 +540,7 @@ TEST(BRepGraphAlgo_LayerTest, FullPipeline_NamesTrackThroughAllStages)
   EXPECT_GT(aNamesAfterDedup, 0);
 
   // Stage 3: Compact.
-  (void)BRepGraphAlgo_Compact::Perform(aGraph);
+  (void)BRepGraph_Compact::Perform(aGraph);
   EXPECT_FALSE(aGraph.LayerRegistry().FindLayer(BRepGraphAlgo_NameLayer::GetID()).IsNull());
   const int aNamesAfterCompact = aLayer->NbNames();
   EXPECT_GT(aNamesAfterCompact, 0);
@@ -681,7 +681,7 @@ TEST(BRepGraphAlgo_LayerTest, TwoLayers_BothSurviveFullPipeline)
   // Full pipeline.
   (void)BRepGraphAlgo_Sewing::Perform(aGraph);
   (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
-  (void)BRepGraphAlgo_Compact::Perform(aGraph);
+  (void)BRepGraph_Compact::Perform(aGraph);
 
   // Both layers should survive.
   EXPECT_FALSE(aGraph.LayerRegistry().FindLayer(BRepGraphAlgo_NameLayer::GetID()).IsNull());

@@ -11,12 +11,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepGraphAlgo_Transform.hxx>
+#include <BRepGraph_Transform.hxx>
 
 #include <BRepGraphInc_Definition.hxx>
 #include <BRepGraphInc_Reference.hxx>
 #include <BRepGraphInc_Representation.hxx>
-#include <BRepGraphAlgo_Copy.hxx>
+#include <BRepGraph_Copy.hxx>
 #include <NCollection_IncAllocator.hxx>
 #include <NCollection_Map.hxx>
 #include <BRepGraph_BuilderView.hxx>
@@ -80,13 +80,12 @@ void applyGeometryTransform(BRepGraph& theGraph, const gp_Trsf& theTrsf)
 
 //=================================================================================================
 
-void BRepGraphAlgo_Transform::applyLocationTransform(BRepGraph& theGraph, const gp_Trsf& theTrsf)
+void BRepGraph_Transform::applyLocationTransform(BRepGraph& theGraph, const gp_Trsf& theTrsf)
 {
   const TopLoc_Location aLoc(theTrsf);
 
   // Compose the transform into root Product RootLocations.
   // RootProducts() returns products not referenced by any occurrence.
-  // Product::RootLocation participates in path composition
   // Product::RootLocation participates in location composition,
   // so all descendant queries automatically include it.
   const occ::handle<NCollection_BaseAllocator>  anAllocator = new NCollection_IncAllocator();
@@ -102,9 +101,9 @@ void BRepGraphAlgo_Transform::applyLocationTransform(BRepGraph& theGraph, const 
 
 //=================================================================================================
 
-BRepGraph BRepGraphAlgo_Transform::Perform(const BRepGraph& theGraph,
-                                           const gp_Trsf&   theTrsf,
-                                           bool             theCopyGeom)
+BRepGraph BRepGraph_Transform::Perform(const BRepGraph& theGraph,
+                                       const gp_Trsf&   theTrsf,
+                                       const bool       theCopyGeom)
 {
   if (!theGraph.IsDone())
     return BRepGraph();
@@ -117,7 +116,7 @@ BRepGraph BRepGraphAlgo_Transform::Perform(const BRepGraph& theGraph,
   if (useGeomModif)
   {
     // Geometry-level: deep-copy then transform geometry handles in-place.
-    BRepGraph aResult = BRepGraphAlgo_Copy::Perform(theGraph, true);
+    BRepGraph aResult = BRepGraph_Copy::Perform(theGraph, true);
     if (!aResult.IsDone())
       return aResult;
 
@@ -127,7 +126,7 @@ BRepGraph BRepGraphAlgo_Transform::Perform(const BRepGraph& theGraph,
 
   // Root-level (location-only): light-copy, multiply transform into node locations.
   // Matches BRepBuilderAPI_Transform with theCopyGeom=false (shape.Moved(trsf)).
-  BRepGraph aResult = BRepGraphAlgo_Copy::Perform(theGraph, false);
+  BRepGraph aResult = BRepGraph_Copy::Perform(theGraph, false);
   if (!aResult.IsDone())
     return aResult;
 
@@ -137,10 +136,10 @@ BRepGraph BRepGraphAlgo_Transform::Perform(const BRepGraph& theGraph,
 
 //=================================================================================================
 
-BRepGraph BRepGraphAlgo_Transform::TransformFace(const BRepGraph&       theGraph,
-                                                 const BRepGraph_FaceId theFace,
-                                                 const gp_Trsf&         theTrsf,
-                                                 const bool             theCopyGeom)
+BRepGraph BRepGraph_Transform::TransformFace(const BRepGraph&       theGraph,
+                                             const BRepGraph_FaceId theFace,
+                                             const gp_Trsf&         theTrsf,
+                                             const bool             theCopyGeom)
 {
   if (!theGraph.IsDone() || theFace.Index < 0 || theFace.Index >= theGraph.Topo().Faces().Nb())
     return BRepGraph();
@@ -155,7 +154,7 @@ BRepGraph BRepGraphAlgo_Transform::TransformFace(const BRepGraph&       theGraph
 
   if (useGeomModif)
   {
-    BRepGraph aResult = BRepGraphAlgo_Copy::CopyFace(theGraph, theFace, true, THE_RESERVE_CACHE);
+    BRepGraph aResult = BRepGraph_Copy::CopyFace(theGraph, theFace, true, THE_RESERVE_CACHE);
     if (!aResult.IsDone())
       return aResult;
 
@@ -163,7 +162,7 @@ BRepGraph BRepGraphAlgo_Transform::TransformFace(const BRepGraph&       theGraph
     return aResult;
   }
 
-  BRepGraph aResult = BRepGraphAlgo_Copy::CopyFace(theGraph, theFace, false, THE_RESERVE_CACHE);
+  BRepGraph aResult = BRepGraph_Copy::CopyFace(theGraph, theFace, false, THE_RESERVE_CACHE);
   if (!aResult.IsDone())
     return aResult;
 
