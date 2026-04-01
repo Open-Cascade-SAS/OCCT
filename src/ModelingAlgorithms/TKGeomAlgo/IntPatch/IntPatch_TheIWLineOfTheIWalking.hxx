@@ -291,7 +291,7 @@ inline void IntPatch_TheIWLineOfTheIWalking::SetTangentVector(const gp_Vec& V, c
 
 inline void IntPatch_TheIWLineOfTheIWalking::SetTangencyAtBegining(const bool IsTangent)
 {
-  istgtend = IsTangent;
+  istgtbeg = IsTangent;
 }
 
 inline void IntPatch_TheIWLineOfTheIWalking::SetTangencyAtEnd(const bool IsTangent)

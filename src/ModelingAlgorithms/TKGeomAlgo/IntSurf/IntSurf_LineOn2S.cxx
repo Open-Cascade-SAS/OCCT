@@ -77,6 +77,11 @@ void IntSurf_LineOn2S::RemovePoint(const int index)
 
 bool IntSurf_LineOn2S::IsOutBox(const gp_Pnt& Pxyz)
 {
+  if (NbPoints() == 0)
+  {
+    return false;
+  }
+
   if (myBxyz.IsWhole())
   {
     int n = NbPoints();
@@ -120,6 +125,11 @@ bool IntSurf_LineOn2S::IsOutBox(const gp_Pnt& Pxyz)
 
 bool IntSurf_LineOn2S::IsOutSurf1Box(const gp_Pnt2d& P1uv)
 {
+  if (NbPoints() == 0)
+  {
+    return false;
+  }
+
   if (myBuv1.IsWhole())
   {
     int    n = NbPoints();
@@ -148,6 +158,11 @@ bool IntSurf_LineOn2S::IsOutSurf1Box(const gp_Pnt2d& P1uv)
 
 bool IntSurf_LineOn2S::IsOutSurf2Box(const gp_Pnt2d& P2uv)
 {
+  if (NbPoints() == 0)
+  {
+    return false;
+  }
+
   if (myBuv2.IsWhole())
   {
     int    n = NbPoints();

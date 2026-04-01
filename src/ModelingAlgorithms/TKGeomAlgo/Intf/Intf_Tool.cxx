@@ -189,7 +189,7 @@ void Intf_Tool::Hypr2dBox(const gp_Hypr2d& theHypr2d, const Bnd_Box2d& domain, B
   {
     double Xmin, Xmax, Ymin, Ymax;
 
-    domain.Get(Xmax, Ymax, Xmin, Ymin);
+    domain.Get(Xmin, Ymin, Xmax, Ymax);
 
     int npi;
     for (npi = 0; npi < nbPi; npi++)
@@ -430,7 +430,7 @@ void Intf_Tool::Parab2dBox(const gp_Parab2d& theParab2d,
   {
     double Xmin, Xmax, Ymin, Ymax;
 
-    domain.Get(Xmax, Ymax, Xmin, Ymin);
+    domain.Get(Xmin, Ymin, Xmax, Ymax);
 
     int npi;
     for (npi = 0; npi < nbPi; npi++)
@@ -850,7 +850,7 @@ void Intf_Tool::HyprBox(const gp_Hypr& theHypr, const Bnd_Box& domain, Bnd_Box& 
       Ymin = std::min(Ymin, yint[npi]);
       Ymax = std::max(Ymax, yint[npi]);
       Zmin = std::min(Zmin, zint[npi]);
-      Zmax = std::max(Zmax, yint[npi]);
+      Zmax = std::max(Zmax, zint[npi]);
     }
     boxHypr.Update(Xmin, Ymin, Zmin, Xmax, Ymax, Zmax);
     //
@@ -1366,7 +1366,7 @@ void Intf_Tool::ParabBox(const gp_Parab& theParab, const Bnd_Box& domain, Bnd_Bo
       Ymin = std::min(Ymin, yint[npi]);
       Ymax = std::max(Ymax, yint[npi]);
       Zmin = std::min(Zmin, zint[npi]);
-      Zmax = std::max(Zmax, yint[npi]);
+      Zmax = std::max(Zmax, zint[npi]);
     }
 
     boxParab.Update(Xmin, Ymin, Zmin, Xmax, Ymax, Zmax);

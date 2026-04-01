@@ -74,10 +74,10 @@ IntPatch_Polyhedron::IntPatch_Polyhedron(const occ::handle<Adaptor3d_Surface>& S
       C_MyPnts(nullptr),
       C_MyU(nullptr),
       C_MyV(nullptr),
-      UMinSingular(IntPatch_HInterTool::SingularOnVMin(Surface)),
-      UMaxSingular(IntPatch_HInterTool::SingularOnVMin(Surface)),
+      UMinSingular(IntPatch_HInterTool::SingularOnUMin(Surface)),
+      UMaxSingular(IntPatch_HInterTool::SingularOnUMax(Surface)),
       VMinSingular(IntPatch_HInterTool::SingularOnVMin(Surface)),
-      VMaxSingular(IntPatch_HInterTool::SingularOnVMin(Surface))
+      VMaxSingular(IntPatch_HInterTool::SingularOnVMax(Surface))
 {
   const int t       = (nbdeltaU + 1) * (nbdeltaV + 1) + 1;
   gp_Pnt*   CMyPnts = new gp_Pnt[t];
@@ -144,10 +144,10 @@ IntPatch_Polyhedron::IntPatch_Polyhedron(const occ::handle<Adaptor3d_Surface>& S
       C_MyPnts(nullptr),
       C_MyU(nullptr),
       C_MyV(nullptr),
-      UMinSingular(IntPatch_HInterTool::SingularOnVMin(Surface)),
-      UMaxSingular(IntPatch_HInterTool::SingularOnVMin(Surface)),
+      UMinSingular(IntPatch_HInterTool::SingularOnUMin(Surface)),
+      UMaxSingular(IntPatch_HInterTool::SingularOnUMax(Surface)),
       VMinSingular(IntPatch_HInterTool::SingularOnVMin(Surface)),
-      VMaxSingular(IntPatch_HInterTool::SingularOnVMin(Surface))
+      VMaxSingular(IntPatch_HInterTool::SingularOnVMax(Surface))
 {
   const int t       = (nbdeltaU + 1) * (nbdeltaV + 1) + 1;
   gp_Pnt*   CMyPnts = new gp_Pnt[t];

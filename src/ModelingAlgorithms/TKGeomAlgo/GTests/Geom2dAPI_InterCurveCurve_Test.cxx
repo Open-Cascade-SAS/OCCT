@@ -19,6 +19,7 @@
 #include <gp_Dir2d.hxx>
 #include <math_NewtonFunctionRoot.hxx>
 #include <math_TrigonometricEquationFunction.hxx>
+#include <Standard_OutOfRange.hxx>
 
 #include <gtest/gtest.h>
 
@@ -63,4 +64,19 @@ TEST(Geom2dAPI_InterCurveCurve_Test, OCC29289_EllipseIntersectionNewtonRoot)
     double TetaNewton = Resol.Root();
     EXPECT_LE(std::abs(Teta - TetaNewton), 1.e-7) << "Error: Newton root is wrong for " << Teta;
   }
+}
+
+TEST(Geom2dAPI_InterCurveCurve_Test, PointRejectsZeroIndex)
+{
+  gp_Elips2d                  anEllipse1(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 2.0, 1.0);
+  occ::handle<Geom2d_Ellipse> aCurve1 = new Geom2d_Ellipse(anEllipse1);
+  gp_Elips2d                  anEllipse2(gp_Ax2d(gp_Pnt2d(0.5, 0.5), gp_Dir2d(1.0, 1.0)), 2.0, 1.0);
+  occ::handle<Geom2d_Ellipse> aCurve2 = new Geom2d_Ellipse(anEllipse2);
+
+  Geom2dAPI_InterCurveCurve anIntersector(aCurve1, aCurve2, 1.0e-7);
+  ASSERT_GT(anIntersector.NbPoints(), 0);
+
+#ifndef No_Exception
+  EXPECT_THROW((void)anIntersector.Point(0), Standard_OutOfRange);
+#endif
 }

@@ -91,7 +91,7 @@ int Geom2dAPI_InterCurveCurve::NbPoints() const
 
 gp_Pnt2d Geom2dAPI_InterCurveCurve::Point(const int Index) const
 {
-  Standard_OutOfRange_Raise_if(Index < 0 || Index > NbPoints(),
+  Standard_OutOfRange_Raise_if(Index < 1 || Index > NbPoints(),
                                "Geom2dAPI_InterCurveCurve::Points");
 
   return (myIntersector.Point(Index)).Value();
