@@ -8,6 +8,10 @@ inputs:
   compiler:
     description: 'Compiler (msvc, clang, gcc)'
     required: true
+  target-arch:
+    description: 'Target architecture (x64, arm64)'
+    required: false
+    default: 'x64'
   install-artifact-name:
     description: 'Name of the artifact containing the install directory'
     required: true
@@ -124,19 +128,26 @@ runs:
         path: install
 
     - name: Download and extract Mesa3D (Windows)
-      if: ${{ inputs.platform == 'windows' && steps.check_failures.outputs.failed_count > 0 }}
+      if: ${{ inputs.platform == 'windows' && inputs.target-arch == 'x64' && steps.check_failures.outputs.failed_count > 0 }}
       shell: pwsh
       run: |
         curl -L -o mesa3d.7z https://github.com/pal1000/mesa-dist-win/releases/download/24.3.2/mesa3d-24.3.2-release-mingw.7z
         7z x mesa3d.7z -omesa3d
 
     - name: Run system-wide deployment (Windows)
-      if: ${{ inputs.platform == 'windows' && steps.check_failures.outputs.failed_count > 0 }}
+      if: ${{ inputs.platform == 'windows' && inputs.target-arch == 'x64' && steps.check_failures.outputs.failed_count > 0 }}
       shell: cmd
       run: |
         cd mesa3d
         .\systemwidedeploy.cmd 1
         .\systemwidedeploy.cmd 5
+
+    - name: Download and extract Mesa3D (Windows arm64)
+      if: ${{ inputs.platform == 'windows' && inputs.target-arch == 'arm64' && steps.check_failures.outputs.failed_count > 0 }}
+      run: |
+        curl -L -o mesa3d-arm64.zip https://github.com/mmozeiko/build-mesa/releases/download/24.3.2/mesa-llvmpipe-arm64-24.3.2.zip
+        7z x mesa3d-arm64.zip -oinstall\win64\vc14\bin -y
+      shell: pwsh
 
     - name: Install CJK Fonts (Windows)
       if: ${{ inputs.platform == 'windows' && steps.check_failures.outputs.failed_count > 0 }}
@@ -291,11 +302,12 @@ runs:
               $failedCount = ($totalLine | ForEach-Object { $_.Line -replace '.*?(\d+) FAILED.*','$1' }) -as [int]
             }
           }
-          if ($failedCount -gt 0) {
-            Write-Error "Number of FAILED tests ($failedCount) exceeds threshold of 0"
-            echo "FAILED_COUNT=$failedCount" >> $env:GITHUB_ENV
-            exit 1
-          }
+        $threshold = if ("${{ inputs.target-arch }}" -eq "arm64") { 1 } else { 0 }
+              if ($failedCount -gt $threshold) {
+                Write-Error "Number of FAILED tests ($failedCount) exceeds threshold of $threshold"
+                echo "FAILED_COUNT=$failedCount" >> $env:GITHUB_ENV
+                exit 1
+              }
           Write-Output "Found $failedCount FAILED tests"
         }
 

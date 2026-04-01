@@ -538,6 +538,11 @@ Bnd_Box SelectMgr_SelectableObject::BndBoxOfSelected(
     }
   }
 
+  if (!aBnd.IsVoid() && HasTransformation())
+  {
+    aBnd = aBnd.Transformed(Transformation());
+  }
+
   return aBnd;
 }
 

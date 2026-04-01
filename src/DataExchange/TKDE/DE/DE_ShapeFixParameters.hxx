@@ -21,7 +21,7 @@
 struct DE_ShapeFixParameters
 {
   //! Enum, classifying a type of value for parameters
-  enum class FixMode : signed char
+  enum class FixMode
   {
     FixOrNot = -1, //!< Procedure will be executed or not (depending on the situation)
     NotFix   = 0,  //!< Procedure will be executed

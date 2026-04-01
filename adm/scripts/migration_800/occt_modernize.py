@@ -147,7 +147,7 @@ class OCCTModernizer:
     def should_process_file(self, file_path: Path) -> bool:
         """Check if a file should be processed."""
         # Check file extension
-        if file_path.suffix not in ('.hxx', '.cxx', '.lxx', '.pxx'):
+        if file_path.suffix not in ('.lxx', '.hxx', '.hpp', '.pxx', '.cxx', '.cpp', '.c', '.h'):
             return False
 
         # Check excluded files
@@ -166,7 +166,7 @@ class OCCTModernizer:
     def get_source_files(self) -> List[Path]:
         """Get all source files to process."""
         files = []
-        for ext in ('*.hxx', '*.cxx', '*.lxx', '*.pxx'):
+        for ext in ('*.lxx', '*.hxx', '*.hpp', '*.pxx', '*.cxx', '*.cpp', '*.c', '*.h'):
             files.extend(self.src_dir.rglob(ext))
         return sorted(files)
 

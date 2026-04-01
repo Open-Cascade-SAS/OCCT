@@ -39,6 +39,8 @@ SKIP_PATTERNS = [
     r'//.*Standard_\w+::Raise',           # Comments
 ]
 
+SOURCE_EXTENSIONS = ('.lxx', '.hxx', '.hpp', '.pxx', '.cxx', '.cpp', '.c', '.h')
+
 
 def find_occt_root():
     """Find OCCT root directory by looking for src/ directory."""
@@ -62,12 +64,12 @@ def should_skip_line(line):
 
 
 def find_files_with_raise(src_dir):
-    """Find all .cxx and .hxx files containing Standard_*::Raise calls."""
+    """Find all supported C/C++ files containing Standard_*::Raise calls."""
     files_to_process = []
 
     for root, dirs, files in os.walk(src_dir):
         for filename in files:
-            if filename.endswith(('.cxx', '.hxx', '.lex')):
+            if filename.endswith(SOURCE_EXTENSIONS):
                 filepath = os.path.join(root, filename)
                 try:
                     with open(filepath, 'r', encoding='utf-8', errors='replace') as f:

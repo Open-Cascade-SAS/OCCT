@@ -16,8 +16,8 @@
 OCCT 8.0.0 Unused Typedef Cleanup Script
 
 Removes unused typedef declarations from source files.
-- For .hxx, .lxx files: checks for global usage across all source files
-- For .cxx, .pxx, .gxx, .c, .mm files: checks for local usage within the same file
+- For .h, .hxx, .hpp, .lxx files: checks for global usage across all source files
+- For .c, .cpp, .cxx, .pxx files: checks for local usage within the same file
 
 Handles multi-line typedefs properly.
 
@@ -62,10 +62,10 @@ class UnusedTypedefCleaner:
     """Removes unused typedef declarations."""
 
     # Extensions that require global usage check
-    GLOBAL_CHECK_EXTENSIONS = {'.hxx', '.lxx'}
+    GLOBAL_CHECK_EXTENSIONS = {'.h', '.hxx', '.hpp', '.lxx'}
 
     # Extensions that require local usage check only
-    LOCAL_CHECK_EXTENSIONS = {'.cxx', '.pxx', '.gxx', '.c', '.mm'}
+    LOCAL_CHECK_EXTENSIONS = {'.c', '.cpp', '.cxx', '.pxx'}
 
     SKIP_DIRS = {'build', 'install', '.git', '__pycache__', 'mac64', 'win64', 'lin64'}
 

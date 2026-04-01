@@ -8,6 +8,10 @@ inputs:
   compiler:
     description: 'Compiler (msvc, clang, gcc)'
     required: true
+  target-arch:
+    description: 'Target architecture (x64, arm64)'
+    required: false
+    default: 'x64'
   install-artifact-name:
     description: 'Name of the artifact containing the installed files'
     required: true

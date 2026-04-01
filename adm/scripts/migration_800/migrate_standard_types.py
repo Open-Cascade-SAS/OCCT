@@ -478,7 +478,7 @@ class StandardTypeMigrator:
     def get_source_files(self) -> List[Path]:
         """Get all source files."""
         files = []
-        for ext in ('*.hxx', '*.cxx', '*.lxx', '*.pxx', '*.gxx', '*.h', '*.c', '*.mm'):
+        for ext in ('*.lxx', '*.hxx', '*.hpp', '*.pxx', '*.cxx', '*.cpp', '*.c', '*.h'):
             files.extend(self.src_dir.rglob(ext))
         return sorted(files)
 

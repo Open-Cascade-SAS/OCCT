@@ -2,18 +2,26 @@
 # Copyright (c) 2025 OPEN CASCADE SAS
 #
 # OCCT 8.0.0 Modernization Script Runner
-# This script runs the migration in the correct order
+# External-project migration runner (reuses pre-generated JSON files)
 
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SRC_DIR="${1:-src}"
+TYPEDEF_JSON="$SCRIPT_DIR/collected_typedefs.json"
 
 echo "=============================================="
 echo "OCCT 8.0.0 Modernization"
 echo "=============================================="
 echo "Source directory: $SRC_DIR"
+echo "Typedef JSON: $TYPEDEF_JSON"
 echo ""
+
+if [[ ! -f "$TYPEDEF_JSON" ]]; then
+    echo "ERROR: Required JSON not found: $TYPEDEF_JSON"
+    echo "Generate it in OCCT first, then reuse it for external projects."
+    exit 1
+fi
 
 # Check if dry-run
 DRY_RUN=""
@@ -63,52 +71,24 @@ echo "Phase 5: DEFINE_STANDARD_HANDLE Cleanup"
 echo "=============================================="
 python3 "$SCRIPT_DIR/cleanup_define_handle.py" $DRY_RUN "$SRC_DIR"
 
-# Phase 6: Cleanup deprecated typedef/using declarations
+# Phase 6: Replace typedef usages with direct NCollection types (reuse pre-generated JSON)
 echo ""
 echo "=============================================="
-echo "Phase 6: Deprecated Typedef/Using Cleanup"
+echo "Phase 6: Replace Typedef Usages (Reused JSON)"
 echo "=============================================="
-python3 "$SCRIPT_DIR/cleanup_deprecated_typedefs.py" $DRY_RUN "$SRC_DIR"
+python3 "$SCRIPT_DIR/replace_typedefs.py" $DRY_RUN "$SRC_DIR" --input "$TYPEDEF_JSON"
 
-# Phase 7: Collect NCollection typedefs
+# Phase 7: Cleanup unused typedefs
 echo ""
 echo "=============================================="
-echo "Phase 7: Collect NCollection Typedefs"
-echo "=============================================="
-python3 "$SCRIPT_DIR/collect_typedefs.py" "$SRC_DIR" --output "$SCRIPT_DIR/collected_typedefs.json"
-
-# Phase 8: Replace typedef usages with direct NCollection types
-echo ""
-echo "=============================================="
-echo "Phase 8: Replace Typedef Usages"
-echo "=============================================="
-python3 "$SCRIPT_DIR/replace_typedefs.py" $DRY_RUN "$SRC_DIR" --input "$SCRIPT_DIR/collected_typedefs.json"
-
-# Phase 9: Remove typedef-only headers
-echo ""
-echo "=============================================="
-echo "Phase 9: Remove Typedef-Only Headers"
-echo "=============================================="
-python3 "$SCRIPT_DIR/remove_typedef_headers.py" $DRY_RUN "$SRC_DIR" --input "$SCRIPT_DIR/collected_typedefs.json"
-
-# Phase 10: Cleanup forwarding/include-only headers
-echo ""
-echo "=============================================="
-echo "Phase 10: Cleanup Forwarding Headers"
-echo "=============================================="
-python3 "$SCRIPT_DIR/cleanup_forwarding_headers.py" $DRY_RUN "$SRC_DIR"
-
-# Phase 11: Cleanup unused typedefs
-echo ""
-echo "=============================================="
-echo "Phase 11: Cleanup Unused Typedefs"
+echo "Phase 7: Cleanup Unused Typedefs"
 echo "=============================================="
 python3 "$SCRIPT_DIR/cleanup_unused_typedefs.py" $DRY_RUN "$SRC_DIR"
 
-# Phase 12: Cleanup redundant access specifiers
+# Phase 8: Cleanup redundant access specifiers
 echo ""
 echo "=============================================="
-echo "Phase 12: Cleanup Access Specifiers"
+echo "Phase 8: Cleanup Access Specifiers"
 echo "=============================================="
 python3 "$SCRIPT_DIR/cleanup_access_specifiers.py" $DRY_RUN "$SRC_DIR"
 
@@ -123,6 +103,7 @@ echo ""
 echo "=============================================="
 echo "Migration Complete"
 echo "=============================================="
+echo "NOTE: File-removal phases are intentionally skipped for external projects."
 echo ""
 echo "Next steps:"
 echo "1. Run CI/CD formatting (clang-format)"
