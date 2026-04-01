@@ -343,3 +343,201 @@ TEST(NCollection_LocalArrayTest, ReallocateAsGrowableStack)
     EXPECT_EQ(i * 3, aStack[--aTop]);
   }
 }
+
+// ============ Non-trivially-copyable type tests ============
+
+// Tracker for construction/destruction call counts.
+static int THE_CTOR_COUNT = 0;
+static int THE_DTOR_COUNT = 0;
+static int THE_MOVE_COUNT = 0;
+
+struct NCollection_LocalArray_Tracked
+{
+  int Value = 0;
+
+  NCollection_LocalArray_Tracked() { ++THE_CTOR_COUNT; }
+
+  ~NCollection_LocalArray_Tracked() { ++THE_DTOR_COUNT; }
+
+  NCollection_LocalArray_Tracked(const NCollection_LocalArray_Tracked& theOther)
+      : Value(theOther.Value)
+  {
+    ++THE_CTOR_COUNT;
+  }
+
+  NCollection_LocalArray_Tracked(NCollection_LocalArray_Tracked&& theOther) noexcept
+      : Value(theOther.Value)
+  {
+    theOther.Value = -1;
+    ++THE_MOVE_COUNT;
+  }
+
+  NCollection_LocalArray_Tracked& operator=(NCollection_LocalArray_Tracked&& theOther) noexcept
+  {
+    Value          = theOther.Value;
+    theOther.Value = -1;
+    ++THE_MOVE_COUNT;
+    return *this;
+  }
+
+  NCollection_LocalArray_Tracked& operator=(const NCollection_LocalArray_Tracked&) = default;
+};
+
+static void resetTrackedCounters()
+{
+  THE_CTOR_COUNT = 0;
+  THE_DTOR_COUNT = 0;
+  THE_MOVE_COUNT = 0;
+}
+
+static_assert(!std::is_trivially_copyable_v<NCollection_LocalArray_Tracked>,
+              "Tracked type must be non-trivially copyable for these tests");
+
+TEST(NCollection_LocalArrayTest, NonTrivial_SmallAllocation)
+{
+  resetTrackedCounters();
+  {
+    NCollection_LocalArray<NCollection_LocalArray_Tracked, 8> anArr(4);
+    EXPECT_EQ(4u, anArr.Size());
+    EXPECT_EQ(4, THE_CTOR_COUNT);
+
+    anArr[0].Value = 10;
+    anArr[1].Value = 20;
+    anArr[2].Value = 30;
+    anArr[3].Value = 40;
+    EXPECT_EQ(30, anArr[2].Value);
+  }
+  // All 4 elements destroyed.
+  EXPECT_EQ(4, THE_DTOR_COUNT);
+}
+
+TEST(NCollection_LocalArrayTest, NonTrivial_HeapAllocation)
+{
+  resetTrackedCounters();
+  {
+    NCollection_LocalArray<NCollection_LocalArray_Tracked, 4> anArr(8);
+    EXPECT_EQ(8u, anArr.Size());
+
+    for (size_t i = 0; i < 8; ++i)
+      anArr[i].Value = static_cast<int>(i * 100);
+
+    for (size_t i = 0; i < 8; ++i)
+      EXPECT_EQ(static_cast<int>(i * 100), anArr[i].Value);
+  }
+  EXPECT_EQ(THE_CTOR_COUNT + THE_MOVE_COUNT, THE_DTOR_COUNT);
+}
+
+TEST(NCollection_LocalArrayTest, NonTrivial_ReallocateWithCopy_InlineToInline)
+{
+  NCollection_LocalArray<NCollection_LocalArray_Tracked, 16> anArr(4);
+  for (size_t i = 0; i < 4; ++i)
+    anArr[i].Value = static_cast<int>(i + 1);
+
+  anArr.Reallocate(8, true);
+  EXPECT_EQ(8u, anArr.Size());
+
+  // Original elements preserved.
+  for (size_t i = 0; i < 4; ++i)
+    EXPECT_EQ(static_cast<int>(i + 1), anArr[i].Value);
+}
+
+TEST(NCollection_LocalArrayTest, NonTrivial_ReallocateWithCopy_InlineToHeap)
+{
+  NCollection_LocalArray<NCollection_LocalArray_Tracked, 4> anArr(4);
+  for (size_t i = 0; i < 4; ++i)
+    anArr[i].Value = static_cast<int>(i * 10);
+
+  anArr.Reallocate(16, true);
+  EXPECT_EQ(16u, anArr.Size());
+
+  for (size_t i = 0; i < 4; ++i)
+    EXPECT_EQ(static_cast<int>(i * 10), anArr[i].Value);
+}
+
+TEST(NCollection_LocalArrayTest, NonTrivial_ReallocateWithCopy_HeapToHeap)
+{
+  NCollection_LocalArray<NCollection_LocalArray_Tracked, 4> anArr(8);
+  for (size_t i = 0; i < 8; ++i)
+    anArr[i].Value = static_cast<int>(i * 5);
+
+  anArr.Reallocate(16, true);
+  EXPECT_EQ(16u, anArr.Size());
+
+  for (size_t i = 0; i < 8; ++i)
+    EXPECT_EQ(static_cast<int>(i * 5), anArr[i].Value);
+}
+
+TEST(NCollection_LocalArrayTest, NonTrivial_Shrink_DestroysExcess)
+{
+  resetTrackedCounters();
+  {
+    NCollection_LocalArray<NCollection_LocalArray_Tracked, 8> anArr(8);
+    EXPECT_EQ(8, THE_CTOR_COUNT);
+
+    anArr.Reallocate(3, true);
+    EXPECT_EQ(3u, anArr.Size());
+    // 5 excess elements destroyed.
+    EXPECT_EQ(5, THE_DTOR_COUNT);
+  }
+  // Remaining 3 destroyed in destructor.
+  EXPECT_EQ(8, THE_DTOR_COUNT);
+}
+
+TEST(NCollection_LocalArrayTest, NonTrivial_MoveConstructor_FromInline)
+{
+  NCollection_LocalArray<NCollection_LocalArray_Tracked, 8> aSrc(4);
+  for (size_t i = 0; i < 4; ++i)
+    aSrc[i].Value = static_cast<int>(i * 7);
+
+  NCollection_LocalArray<NCollection_LocalArray_Tracked, 8> aDst(std::move(aSrc));
+
+  EXPECT_EQ(4u, aDst.Size());
+  for (size_t i = 0; i < 4; ++i)
+    EXPECT_EQ(static_cast<int>(i * 7), aDst[i].Value);
+
+  EXPECT_EQ(0u, aSrc.Size());
+}
+
+TEST(NCollection_LocalArrayTest, NonTrivial_MoveConstructor_FromHeap)
+{
+  NCollection_LocalArray<NCollection_LocalArray_Tracked, 4> aSrc(8);
+  for (size_t i = 0; i < 8; ++i)
+    aSrc[i].Value = static_cast<int>(i * 3);
+
+  NCollection_LocalArray<NCollection_LocalArray_Tracked, 4> aDst(std::move(aSrc));
+
+  EXPECT_EQ(8u, aDst.Size());
+  for (size_t i = 0; i < 8; ++i)
+    EXPECT_EQ(static_cast<int>(i * 3), aDst[i].Value);
+
+  EXPECT_EQ(0u, aSrc.Size());
+}
+
+TEST(NCollection_LocalArrayTest, NonTrivial_MoveAssignment)
+{
+  NCollection_LocalArray<NCollection_LocalArray_Tracked, 8> aSrc(4);
+  for (size_t i = 0; i < 4; ++i)
+    aSrc[i].Value = static_cast<int>(i + 100);
+
+  NCollection_LocalArray<NCollection_LocalArray_Tracked, 8> aDst(2);
+  aDst = std::move(aSrc);
+
+  EXPECT_EQ(4u, aDst.Size());
+  for (size_t i = 0; i < 4; ++i)
+    EXPECT_EQ(static_cast<int>(i + 100), aDst[i].Value);
+
+  EXPECT_EQ(0u, aSrc.Size());
+}
+
+TEST(NCollection_LocalArrayTest, NonTrivial_DestructorCallBalance)
+{
+  resetTrackedCounters();
+  {
+    NCollection_LocalArray<NCollection_LocalArray_Tracked, 4> anArr(4);
+    anArr.Reallocate(8, true);  // inline -> heap: 4 moves + 4 new + 4 destroy old
+    anArr.Reallocate(2, true);  // shrink: 6 destroyed
+    anArr.Reallocate(16, true); // heap -> bigger heap: 2 moves + 14 new + 2 destroy old
+  }
+  // Total constructions (ctor + move) must equal total destructions.
+  EXPECT_EQ(THE_CTOR_COUNT + THE_MOVE_COUNT, THE_DTOR_COUNT);
+}

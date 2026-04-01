@@ -17,7 +17,7 @@
 #ifndef _TopExp_Explorer_HeaderFile
 #define _TopExp_Explorer_HeaderFile
 
-#include <NCollection_Vector.hxx>
+#include <NCollection_LocalArray.hxx>
 #include <TopAbs.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
@@ -139,11 +139,22 @@ public:
   Standard_EXPORT ~TopExp_Explorer();
 
 private:
-  NCollection_Vector<TopoDS_Iterator> myStack;
-  TopoDS_Shape                        myShape;
-  TopAbs_ShapeEnum                    toFind;
-  TopAbs_ShapeEnum                    toAvoid;
-  bool                                hasMore;
+  //! Push a new iterator onto the stack (placement new on first use, assign on reuse).
+  void pushIterator(TopoDS_Iterator&& theIter);
+
+  //! Pop the top iterator (explicit destructor call).
+  void popIterator();
+
+  static constexpr int THE_INLINE_STACK_SIZE =
+    20; //!< Inline stack capacity (covers all topology depths)
+
+  NCollection_LocalArray<TopoDS_Iterator, THE_INLINE_STACK_SIZE>
+                   myStack;         //!< DFS stack (lazy allocation)
+  int              myStackTop = -1; //!< Top of stack index (-1 = empty)
+  TopoDS_Shape     myShape;
+  TopAbs_ShapeEnum toFind;
+  TopAbs_ShapeEnum toAvoid;
+  bool             hasMore;
 };
 
 #endif // _TopExp_Explorer_HeaderFile
