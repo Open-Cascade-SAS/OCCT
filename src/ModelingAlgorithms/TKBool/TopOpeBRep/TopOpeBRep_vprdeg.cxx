@@ -44,7 +44,9 @@
 #define M_REVERSED(st) (st == TopAbs_REVERSED)
 
 // modified by NIZHNY-MKK  Tue Nov 21 17:30:23 2000.BEGIN
-static NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+static thread_local NCollection_DataMap<TopoDS_Shape,
+                                        NCollection_List<TopoDS_Shape>,
+                                        TopTools_ShapeMapHasher>
                                           aMapOfTreatedVertexListOfEdge;
 static thread_local TopOpeBRep_PLineInter localCurrentLine = nullptr;
 
@@ -622,21 +624,21 @@ bool TopOpeBRep_FacesFiller::ProcessVPondgE(const TopOpeBRep_VPointInter&       
   bool        isT2d = false;
   TopoDS_Edge dgEd;
   int         makeI = FUN_putInterfonDegenEd(VP,
-                                     myF1,
-                                     myF2,
-                                     myDataforDegenEd,
-                                     myHDS,
-                                     rankdg,
-                                     dgEd,
-                                     Iiondg,
-                                     T1ondg,
-                                     par1ondg,
-                                     T2ondg,
-                                     par2ondg,
-                                     OOEi,
-                                     parOOEi,
-                                     hasOOEi,
-                                     isT2d);
+                                             myF1,
+                                             myF2,
+                                             myDataforDegenEd,
+                                             myHDS,
+                                             rankdg,
+                                             dgEd,
+                                             Iiondg,
+                                             T1ondg,
+                                             par1ondg,
+                                             T2ondg,
+                                             par2ondg,
+                                             OOEi,
+                                             parOOEi,
+                                             hasOOEi,
+                                             isT2d);
   if (makeI == NOI)
   {
     return false;
