@@ -146,14 +146,14 @@ TEST_F(BRepGraph_MutationGenTest, SubtreeGen_DeferredPropagatedParent_Incremente
   // At least one parent wire must have SubtreeGen incremented vs its baseline.
   bool aAnyWireSubtreeIncremented = false;
   for (BRepGraph_WireIterator aWireIt(myGraph); aWireIt.More(); aWireIt.Next())
-    if (aWireIt.Current().SubtreeGen > aWireSubtreeGensBefore.Value(aWireIt.Index()))
+    if (aWireIt.Current().SubtreeGen > aWireSubtreeGensBefore.Value(aWireIt.CurrentId().Index))
       aAnyWireSubtreeIncremented = true;
   EXPECT_TRUE(aAnyWireSubtreeIncremented);
 
   // At least one parent face must have SubtreeGen incremented vs its baseline.
   bool aAnyFaceSubtreeIncremented = false;
   for (BRepGraph_FaceIterator aFaceIt(myGraph); aFaceIt.More(); aFaceIt.Next())
-    if (aFaceIt.Current().SubtreeGen > aFaceSubtreeGensBefore.Value(aFaceIt.Index()))
+    if (aFaceIt.Current().SubtreeGen > aFaceSubtreeGensBefore.Value(aFaceIt.CurrentId().Index))
       aAnyFaceSubtreeIncremented = true;
   EXPECT_TRUE(aAnyFaceSubtreeIncremented);
 }

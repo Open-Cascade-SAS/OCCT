@@ -200,25 +200,26 @@ public:
 
   BRepGraph_Iterator(const BRepGraph& theGraph)
       : myGraph(theGraph),
-        myLength(Traits::Count(theGraph))
+        myLength(TypedId(Traits::Count(theGraph)))
   {
     skipRemoved();
   }
 
-  [[nodiscard]] bool More() const { return myIndex < myLength; }
+  [[nodiscard]] bool More() const { return myCurrent < myLength; }
 
   void Next()
   {
-    ++myIndex;
+    ++myCurrent;
     skipRemoved();
   }
 
-  [[nodiscard]] const NodeType& Current() const { return Traits::Get(myGraph, CurrentId()); }
+  [[nodiscard]] const NodeType& Current() const
+  {
+    return Traits::Get(myGraph, myCurrent);
+  }
 
   //! Current definition index as a typed NodeId.
-  [[nodiscard]] TypedId CurrentId() const { return TypedId(myIndex); }
-
-  [[nodiscard]] int Index() const { return myIndex; }
+  [[nodiscard]] TypedId CurrentId() const { return myCurrent; }
 
   //! Returns an STL-compatible iterator for range-based for loops.
   NCollection_ForwardRangeIterator<BRepGraph_Iterator> begin()
@@ -236,14 +237,14 @@ private:
     if constexpr (!TheFullTraverse
                   && BRepGraph_IteratorDetail::HasIsRemoved<NodeType>::value)
     {
-      while (myIndex < myLength && Current().IsRemoved)
-        ++myIndex;
+      while (myCurrent < myLength && Current().IsRemoved)
+        ++myCurrent;
     }
   }
 
   const BRepGraph& myGraph;
-  int              myIndex  = 0;
-  int              myLength = 0;
+  TypedId          myCurrent = TypedId(0);
+  TypedId          myLength;
 };
 
 // ---------------------------------------------------------------------------
