@@ -812,7 +812,7 @@ bool GeomFill_Sweep::BuildKPart()
       gp_Trsf  Tf2;
       Tf.SetVectorialPart(M);
       Tf.SetTranslationPart(V.XYZ());
-      // TODO: finding #9 — exception handling is commented out unlike the translation
+      // TODO: finding #9 - exception handling is commented out unlike the translation
       // branch (~600-619). Restoring try/catch caused blend regressions. Needs
       // investigation to understand why the catch was intentionally disabled.
       //      try { // Pas joli mais il n'y as pas d'autre moyens de tester SetValues
