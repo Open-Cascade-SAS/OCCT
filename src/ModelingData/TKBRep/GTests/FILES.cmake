@@ -4,7 +4,6 @@ set(OCCT_TKBRep_GTests_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 set(OCCT_TKBRep_GTests_FILES
   BRep_Tool_Test.cxx
   BRepAdaptor_CompCurve_Test.cxx
-  BRepGraph_Diagnostics_Test.cxx
   BRepGraph_CacheKindRegistry_Test.cxx
   BRepGraph_Assembly_Test.cxx
   BRepGraph_DefsIterator_Test.cxx
@@ -30,6 +29,11 @@ set(OCCT_TKBRep_GTests_FILES
   BRepGraph_Test.cxx
   BRepGraph_VersionStamp_Test.cxx
   BRepGraph_Views_Test.cxx
+  BRepGraph_Compact_Test.cxx
+  BRepGraph_Copy_Test.cxx
+  BRepGraph_Transform_Test.cxx
+  BRepGraph_Validate_Test.cxx
+  BRepGraph_Deduplicate_Test.cxx
   TopExp_Test.cxx
   TopoDS_Builder_Test.cxx
   TopoDS_Edge_Test.cxx

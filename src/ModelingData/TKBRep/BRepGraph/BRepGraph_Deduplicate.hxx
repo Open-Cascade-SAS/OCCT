@@ -11,8 +11,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _BRepGraphAlgo_Deduplicate_HeaderFile
-#define _BRepGraphAlgo_Deduplicate_HeaderFile
+#ifndef _BRepGraph_Deduplicate_HeaderFile
+#define _BRepGraph_Deduplicate_HeaderFile
 
 #include <BRepGraph.hxx>
 
@@ -28,7 +28,7 @@
 //! canonical geometry nodes and can record lineage in graph history.
 //!
 //! First implementation intentionally does not merge edge/face definitions yet.
-class BRepGraphAlgo_Deduplicate
+class BRepGraph_Deduplicate
 {
 public:
   DEFINE_STANDARD_ALLOC
@@ -78,7 +78,7 @@ public:
                                                       const Options& theOptions);
 
 private:
-  BRepGraphAlgo_Deduplicate() = delete;
+  BRepGraph_Deduplicate() = delete;
 };
 
-#endif // _BRepGraphAlgo_Deduplicate_HeaderFile
+#endif // _BRepGraph_Deduplicate_HeaderFile

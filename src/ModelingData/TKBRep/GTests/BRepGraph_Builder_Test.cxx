@@ -17,7 +17,6 @@
 #include <BRepGraph.hxx>
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_Iterator.hxx>
-#include <BRepGraphAlgo_BndLib.hxx>
 #include "BRepGraph_RefTestTools.hxx"
 #include <BRepGraph_ChildExplorer.hxx>
 #include <BRepGraph_TopoView.hxx>
@@ -37,112 +36,6 @@
 #include <utility>
 
 #include <gtest/gtest.h>
-
-static gp_Pnt bboxCenter(BRepGraph& theGraph, BRepGraph_NodeId theNode)
-{
-  Bnd_Box aBox;
-  BRepGraphAlgo_BndLib::Add(theGraph, theNode, aBox);
-  if (aBox.IsVoid())
-    return gp_Pnt();
-  double xn, yn, zn, xx, yx, zx;
-  aBox.Get(xn, yn, zn, xx, yx, zx);
-  return gp_Pnt((xn + xx) * 0.5, (yn + yx) * 0.5, (zn + zx) * 0.5);
-}
-
-// ============================================================
-// Task 1A: Graph-Native BoundingBox
-// ============================================================
-
-TEST(BRepGraph_BuilderTest, Box_MatchesTopoDSBox)
-{
-  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
-  const TopoDS_Shape& aBox = aBoxMaker.Shape();
-
-  BRepGraph aGraph;
-  aGraph.Build(aBox);
-  ASSERT_TRUE(aGraph.IsDone());
-
-  // Get bounding box from graph.
-  BRepGraph_SolidId aSolidId(0);
-  Bnd_Box           aGraphBox;
-  BRepGraphAlgo_BndLib::Add(aGraph, aSolidId, aGraphBox);
-  ASSERT_FALSE(aGraphBox.IsVoid());
-
-  double aGXmin, aGYmin, aGZmin, aGXmax, aGYmax, aGZmax;
-  aGraphBox.Get(aGXmin, aGYmin, aGZmin, aGXmax, aGYmax, aGZmax);
-
-  // Bounding box should cover the 10x20x30 box at origin.
-  EXPECT_LE(aGXmin, 0.0 + Precision::Confusion());
-  EXPECT_LE(aGYmin, 0.0 + Precision::Confusion());
-  EXPECT_LE(aGZmin, 0.0 + Precision::Confusion());
-  EXPECT_GE(aGXmax, 10.0 - Precision::Confusion());
-  EXPECT_GE(aGYmax, 20.0 - Precision::Confusion());
-  EXPECT_GE(aGZmax, 30.0 - Precision::Confusion());
-}
-
-TEST(BRepGraph_BuilderTest, Sphere_NonVoid)
-{
-  BRepPrimAPI_MakeSphere aSphereMaker(15.0);
-  const TopoDS_Shape&    aSphere = aSphereMaker.Shape();
-
-  BRepGraph aGraph;
-  aGraph.Build(aSphere);
-  ASSERT_TRUE(aGraph.IsDone());
-
-  BRepGraph_SolidId aSolidId(0);
-  Bnd_Box           aGraphBox;
-  BRepGraphAlgo_BndLib::Add(aGraph, aSolidId, aGraphBox);
-  EXPECT_FALSE(aGraphBox.IsVoid());
-}
-
-TEST(BRepGraph_BuilderTest, Cylinder_NonVoid)
-{
-  BRepPrimAPI_MakeCylinder aCylMaker(5.0, 20.0);
-  const TopoDS_Shape&      aCyl = aCylMaker.Shape();
-
-  BRepGraph aGraph;
-  aGraph.Build(aCyl);
-  ASSERT_TRUE(aGraph.IsDone());
-
-  BRepGraph_SolidId aSolidId(0);
-  Bnd_Box           aGraphBox;
-  BRepGraphAlgo_BndLib::Add(aGraph, aSolidId, aGraphBox);
-  EXPECT_FALSE(aGraphBox.IsVoid());
-}
-
-TEST(BRepGraph_BuilderTest, SingleFace_MatchesVertices)
-{
-  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
-  const TopoDS_Shape& aBox = aBoxMaker.Shape();
-
-  BRepGraph aGraph;
-  aGraph.Build(aBox);
-  ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GT(aGraph.Topo().Faces().Nb(), 0);
-
-  BRepGraph_FaceId aFaceId(0);
-  Bnd_Box          aGraphBox;
-  BRepGraphAlgo_BndLib::Add(aGraph, aFaceId, aGraphBox);
-  EXPECT_FALSE(aGraphBox.IsVoid());
-}
-
-TEST(BRepGraph_BuilderTest, Box_CentroidNearCenter)
-{
-  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
-  const TopoDS_Shape& aBox = aBoxMaker.Shape();
-
-  BRepGraph aGraph;
-  aGraph.Build(aBox);
-  ASSERT_TRUE(aGraph.IsDone());
-
-  BRepGraph_SolidId aSolidId(0);
-  gp_Pnt            aCentroid = bboxCenter(aGraph, aSolidId);
-
-  // Centroid should be near the center of the box.
-  EXPECT_NEAR(aCentroid.X(), 5.0, 1.0);
-  EXPECT_NEAR(aCentroid.Y(), 10.0, 1.0);
-  EXPECT_NEAR(aCentroid.Z(), 15.0, 1.0);
-}
 
 // ============================================================
 // Task 2A: Programmatic Node Addition API

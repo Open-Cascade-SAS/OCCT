@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepGraphAlgo_Deduplicate.hxx>
+#include <BRepGraph_Deduplicate.hxx>
 #include <BRepGraphInc_Definition.hxx>
 #include <BRepGraphInc_Reference.hxx>
 #include <BRepGraphInc_Representation.hxx>
@@ -79,15 +79,15 @@ void forFaceWireRefEntries(const BRepGraph&       theGraph,
 
 //=================================================================================================
 
-BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph& theGraph)
+BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph& theGraph)
 {
   return Perform(theGraph, Options());
 }
 
 //=================================================================================================
 
-BRepGraphAlgo_Deduplicate::Result BRepGraphAlgo_Deduplicate::Perform(BRepGraph&     theGraph,
-                                                                     const Options& theOptions)
+BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theGraph,
+                                                             const Options& theOptions)
 {
   Result aResult;
   if (!theGraph.IsDone())

@@ -21,7 +21,6 @@
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_UIDsView.hxx>
-#include <BRepGraphAlgo_BndLib.hxx>
 
 #include <BRepGraph_Tool.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
@@ -39,18 +38,6 @@ public:
   DEFINE_STANDARD_RTTI_INLINE(TestCacheValue, BRepGraph_CacheValue)
   TestCacheValue() = default;
 };
-
-//! Compute the center of a bounding box for the given node.
-static gp_Pnt bboxCenter(BRepGraph& theGraph, BRepGraph_NodeId theNode)
-{
-  Bnd_Box aBox;
-  BRepGraphAlgo_BndLib::Add(theGraph, theNode, aBox);
-  if (aBox.IsVoid())
-    return gp_Pnt();
-  double xn, yn, zn, xx, yx, zx;
-  aBox.Get(xn, yn, zn, xx, yx, zx);
-  return gp_Pnt((xn + xx) * 0.5, (yn + yx) * 0.5, (zn + zx) * 0.5);
-}
 
 const occ::handle<BRepGraph_CacheKind>& testUserAttrKind()
 {
@@ -445,33 +432,6 @@ TEST_F(BRepGraph_ViewsTest, SpatialView_OutParam_ClearAndInvalid)
     myGraph.Topo().Edges().Adjacent(BRepGraph_EdgeId(0), anAllocator);
   EXPECT_GE(anAdjEdgeResult.Length(), 4);
   EXPECT_EQ(myGraph.Topo().Edges().Adjacent(BRepGraph_EdgeId(999), anAllocator).Length(), 0);
-}
-
-// ---------- BndLib ----------
-
-TEST_F(BRepGraph_ViewsTest, BndLib_BoundingBox_NonVoid)
-{
-  BRepGraph_FaceId aFaceId(0);
-  Bnd_Box          aBox;
-  BRepGraphAlgo_BndLib::Add(myGraph, aFaceId, aBox);
-  EXPECT_FALSE(aBox.IsVoid());
-}
-
-TEST_F(BRepGraph_ViewsTest, BndLib_Centroid_InsideBBox)
-{
-  BRepGraph_FaceId aFaceId(0);
-  gp_Pnt           aCentroid = bboxCenter(myGraph, aFaceId);
-  Bnd_Box          aBox;
-  BRepGraphAlgo_BndLib::Add(myGraph, aFaceId, aBox);
-  ASSERT_FALSE(aBox.IsVoid());
-
-  double aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
-  aBox.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
-  const double aTol = 1.0;
-  EXPECT_GE(aCentroid.X(), aXmin - aTol);
-  EXPECT_LE(aCentroid.X(), aXmax + aTol);
-  EXPECT_GE(aCentroid.Y(), aYmin - aTol);
-  EXPECT_LE(aCentroid.Y(), aYmax + aTol);
 }
 
 // ---------- CacheView ----------

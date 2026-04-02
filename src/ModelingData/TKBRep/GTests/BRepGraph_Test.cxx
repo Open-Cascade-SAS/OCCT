@@ -18,7 +18,6 @@
 #include <BRepGraphInc_Definition.hxx>
 #include <BRepGraphInc_Reference.hxx>
 #include <BRepGraphInc_Representation.hxx>
-#include <BRepGraphAlgo_BndLib.hxx>
 #include <BRepGraph_CacheView.hxx>
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_ChildExplorer.hxx>
@@ -62,17 +61,6 @@ static_assert(std::is_convertible_v<BRepGraph_FaceId, BRepGraph_NodeId>);
 static_assert(!std::is_convertible_v<BRepGraph_SurfaceRepId, BRepGraph_Curve3DRepId>);
 static_assert(!std::is_constructible_v<BRepGraph_SurfaceRepId, BRepGraph_Curve3DRepId>);
 static_assert(std::is_convertible_v<BRepGraph_SurfaceRepId, BRepGraph_RepId>);
-
-static gp_Pnt bboxCenter(BRepGraph& theGraph, BRepGraph_NodeId theNode)
-{
-  Bnd_Box aBox;
-  BRepGraphAlgo_BndLib::Add(theGraph, theNode, aBox);
-  if (aBox.IsVoid())
-    return gp_Pnt();
-  double xn, yn, zn, xx, yx, zx;
-  aBox.Get(xn, yn, zn, xx, yx, zx);
-  return gp_Pnt((xn + xx) * 0.5, (yn + yx) * 0.5, (zn + zx) * 0.5);
-}
 
 const occ::handle<BRepGraph_CacheKind>& testDoubleAttrKind()
 {
@@ -734,17 +722,6 @@ TEST_F(BRepGraphTest, UID_NodeIdRoundTrip)
     const BRepGraph_UID& aUID      = myGraph.UIDs().Of(aFaceId);
     BRepGraph_NodeId     aResolved = myGraph.UIDs().NodeIdFrom(aUID);
     EXPECT_EQ(aResolved, aFaceId) << "Round trip failed for face " << aFaceIt.CurrentId().Index;
-  }
-}
-
-TEST_F(BRepGraphTest, BoundingBox_NonVoid)
-{
-  for (BRepGraph_FaceIterator aFaceIt(myGraph); aFaceIt.More(); aFaceIt.Next())
-  {
-    BRepGraph_NodeId aFaceId = BRepGraph_NodeId(aFaceIt.CurrentId());
-    Bnd_Box          aBox;
-    BRepGraphAlgo_BndLib::Add(myGraph, aFaceId, aBox);
-    EXPECT_FALSE(aBox.IsVoid()) << "BoundingBox is void for face " << aFaceIt.CurrentId().Index;
   }
 }
 
@@ -1592,17 +1569,6 @@ TEST_F(BRepGraphTest, MutableVertex_ChangePoint_Verified)
 // Group 4: Geometric Queries
 // ===================================================================
 
-TEST_F(BRepGraphTest, Centroid_Box_ApproximateCenter)
-{
-  BRepGraph_NodeId aSolidId(BRepGraph_NodeId::Kind::Solid, 0);
-  gp_Pnt           aCentroid = bboxCenter(myGraph, aSolidId);
-
-  // 10x20x30 box at origin: centroid approximately at (5, 10, 15).
-  EXPECT_NEAR(aCentroid.X(), 5.0, 0.5);
-  EXPECT_NEAR(aCentroid.Y(), 10.0, 0.5);
-  EXPECT_NEAR(aCentroid.Z(), 15.0, 0.5);
-}
-
 TEST_F(BRepGraphTest, EdgeDef_HasValidCurve3d)
 {
   for (BRepGraph_EdgeIterator anEdgeIt(myGraph); anEdgeIt.More(); anEdgeIt.Next())
@@ -1613,87 +1579,6 @@ TEST_F(BRepGraphTest, EdgeDef_HasValidCurve3d)
     EXPECT_TRUE(BRepGraph_Tool::Edge::HasCurve(myGraph, anEdgeIt.CurrentId()))
       << "Edge " << anEdgeIt.CurrentId().Index << " has no Curve3D rep";
   }
-}
-
-// ===================================================================
-// Group 5: Cache Invalidation
-// ===================================================================
-
-TEST_F(BRepGraphTest, Invalidate_BBox_RecomputesSameResult)
-{
-  BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, 0);
-
-  Bnd_Box aBox1 = BRepGraphAlgo_BndLib::AddCached(myGraph, aFaceId);
-  ASSERT_FALSE(aBox1.IsVoid());
-
-  BRepGraphAlgo_BndLib::InvalidateCached(myGraph, aFaceId);
-
-  Bnd_Box aBox2 = BRepGraphAlgo_BndLib::AddCached(myGraph, aFaceId);
-  ASSERT_FALSE(aBox2.IsVoid());
-
-  double aXmin1, aYmin1, aZmin1, aXmax1, aYmax1, aZmax1;
-  double aXmin2, aYmin2, aZmin2, aXmax2, aYmax2, aZmax2;
-  aBox1.Get(aXmin1, aYmin1, aZmin1, aXmax1, aYmax1, aZmax1);
-  aBox2.Get(aXmin2, aYmin2, aZmin2, aXmax2, aYmax2, aZmax2);
-
-  EXPECT_NEAR(aXmin1, aXmin2, Precision::Confusion());
-  EXPECT_NEAR(aYmin1, aYmin2, Precision::Confusion());
-  EXPECT_NEAR(aZmin1, aZmin2, Precision::Confusion());
-  EXPECT_NEAR(aXmax1, aXmax2, Precision::Confusion());
-  EXPECT_NEAR(aYmax1, aYmax2, Precision::Confusion());
-  EXPECT_NEAR(aZmax1, aZmax2, Precision::Confusion());
-}
-
-TEST_F(BRepGraphTest, InvalidateSubgraph_Face_ConsistentAfter)
-{
-  BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, 0);
-
-  // Compute initial values via AddCached.
-  Bnd_Box aFaceBox1 = BRepGraphAlgo_BndLib::AddCached(myGraph, aFaceId);
-  ASSERT_FALSE(aFaceBox1.IsVoid());
-
-  // Get an edge from this face's outer wire via incidence refs.
-  const BRepGraph_WireId anOuterWire =
-    BRepGraph_TestTools::OuterWireOfFace(myGraph, BRepGraph_FaceId(0));
-  ASSERT_TRUE(anOuterWire.IsValid());
-  const NCollection_Vector<BRepGraph_CoEdgeRefId> aCoEdgeRefs =
-    BRepGraph_TestTools::CoEdgeRefsOfWire(myGraph, anOuterWire);
-  ASSERT_GE(aCoEdgeRefs.Length(), 1);
-  const BRepGraphInc::CoEdgeRef& aCRInv = myGraph.Refs().CoEdges().Entry(aCoEdgeRefs.Value(0));
-  BRepGraph_NodeId anEdgeId(myGraph.Topo().CoEdges().Definition(aCRInv.CoEdgeDefId).EdgeDefId);
-
-  Bnd_Box anEdgeBox1 = BRepGraphAlgo_BndLib::AddCached(myGraph, anEdgeId);
-  ASSERT_FALSE(anEdgeBox1.IsVoid());
-
-  // Invalidate subgraph from face via a no-op mutation (triggers markModified).
-  {
-    BRepGraph_MutGuard<BRepGraphInc::FaceDef> aMut =
-      myGraph.Builder().MutFace(BRepGraph_FaceId(aFaceId.Index));
-  }
-
-  // Recompute: should not crash and should produce same values.
-  Bnd_Box aFaceBox2 = BRepGraphAlgo_BndLib::AddCached(myGraph, aFaceId);
-  ASSERT_FALSE(aFaceBox2.IsVoid());
-
-  Bnd_Box anEdgeBox2 = BRepGraphAlgo_BndLib::AddCached(myGraph, anEdgeId);
-  ASSERT_FALSE(anEdgeBox2.IsVoid());
-
-  double aXmin1, aYmin1, aZmin1, aXmax1, aYmax1, aZmax1;
-  double aXmin2, aYmin2, aZmin2, aXmax2, aYmax2, aZmax2;
-  aFaceBox1.Get(aXmin1, aYmin1, aZmin1, aXmax1, aYmax1, aZmax1);
-  aFaceBox2.Get(aXmin2, aYmin2, aZmin2, aXmax2, aYmax2, aZmax2);
-
-  EXPECT_NEAR(aXmin1, aXmin2, Precision::Confusion());
-  EXPECT_NEAR(aXmax1, aXmax2, Precision::Confusion());
-
-  // Also verify edge BBox consistency.
-  double aEXmin1, aEYmin1, aEZmin1, aEXmax1, aEYmax1, aEZmax1;
-  double aEXmin2, aEYmin2, aEZmin2, aEXmax2, aEYmax2, aEZmax2;
-  anEdgeBox1.Get(aEXmin1, aEYmin1, aEZmin1, aEXmax1, aEYmax1, aEZmax1);
-  anEdgeBox2.Get(aEXmin2, aEYmin2, aEZmin2, aEXmax2, aEYmax2, aEZmax2);
-
-  EXPECT_NEAR(aEXmin1, aEXmin2, Precision::Confusion());
-  EXPECT_NEAR(aEXmax1, aEXmax2, Precision::Confusion());
 }
 
 // ===================================================================
@@ -2014,98 +1899,6 @@ TEST_F(BRepGraphTest, Face_ToleranceNonNegative)
   {
     EXPECT_GE(BRepGraph_Tool::Face::Tolerance(myGraph, aFaceIt.CurrentId()), 0.0)
       << "Face " << aFaceIt.CurrentId().Index << " has negative tolerance";
-  }
-}
-
-// ===================================================================
-// Group 12: Geometric Queries (Extended)
-// ===================================================================
-
-TEST_F(BRepGraphTest, BoundingBox_Solid_ContainsAllFaces)
-{
-  BRepGraph_NodeId aSolidId(BRepGraph_NodeId::Kind::Solid, 0);
-  Bnd_Box          aSolidBox;
-  BRepGraphAlgo_BndLib::Add(myGraph, aSolidId, aSolidBox);
-  ASSERT_FALSE(aSolidBox.IsVoid());
-
-  for (BRepGraph_FaceIterator aFaceIt(myGraph); aFaceIt.More(); aFaceIt.Next())
-  {
-    BRepGraph_NodeId aFaceId(aFaceIt.CurrentId());
-    Bnd_Box          aFaceBox;
-    BRepGraphAlgo_BndLib::Add(myGraph, aFaceId, aFaceBox);
-    if (aFaceBox.IsVoid())
-      continue;
-
-    // Every face's BBox should be within the solid's BBox (with tolerance).
-    double aFXmin, aFYmin, aFZmin, aFXmax, aFYmax, aFZmax;
-    double aSXmin, aSYmin, aSZmin, aSXmax, aSYmax, aSZmax;
-    aFaceBox.Get(aFXmin, aFYmin, aFZmin, aFXmax, aFYmax, aFZmax);
-    aSolidBox.Get(aSXmin, aSYmin, aSZmin, aSXmax, aSYmax, aSZmax);
-
-    const double aTol = Precision::Confusion();
-    EXPECT_GE(aFXmin, aSXmin - aTol)
-      << "Face " << aFaceIt.CurrentId().Index << " outside solid BBox (Xmin)";
-    EXPECT_LE(aFXmax, aSXmax + aTol)
-      << "Face " << aFaceIt.CurrentId().Index << " outside solid BBox (Xmax)";
-    EXPECT_GE(aFYmin, aSYmin - aTol)
-      << "Face " << aFaceIt.CurrentId().Index << " outside solid BBox (Ymin)";
-    EXPECT_LE(aFYmax, aSYmax + aTol)
-      << "Face " << aFaceIt.CurrentId().Index << " outside solid BBox (Ymax)";
-  }
-}
-
-TEST_F(BRepGraphTest, BoundingBox_Edge_SubsetOfFace)
-{
-  // Each edge's BBox should be within the BBox of any face it belongs to.
-  const BRepGraph_WireId anOuterWire =
-    BRepGraph_TestTools::OuterWireOfFace(myGraph, BRepGraph_FaceId(0));
-  ASSERT_TRUE(anOuterWire.IsValid());
-  const NCollection_Vector<BRepGraph_CoEdgeRefId> aCoEdgeRefs =
-    BRepGraph_TestTools::CoEdgeRefsOfWire(myGraph, anOuterWire);
-  ASSERT_GE(aCoEdgeRefs.Length(), 1);
-
-  BRepGraph_NodeId aFaceId(BRepGraph_NodeId::Kind::Face, 0);
-  Bnd_Box          aFaceBox;
-  BRepGraphAlgo_BndLib::Add(myGraph, aFaceId, aFaceBox);
-  ASSERT_FALSE(aFaceBox.IsVoid());
-
-  const BRepGraphInc::CoEdgeRef& aCRBBox = myGraph.Refs().CoEdges().Entry(aCoEdgeRefs.Value(0));
-  BRepGraph_NodeId anEdgeId(myGraph.Topo().CoEdges().Definition(aCRBBox.CoEdgeDefId).EdgeDefId);
-  Bnd_Box          anEdgeBox;
-  BRepGraphAlgo_BndLib::Add(myGraph, anEdgeId, anEdgeBox);
-  ASSERT_FALSE(anEdgeBox.IsVoid());
-
-  double aEXmin, aEYmin, aEZmin, aEXmax, aEYmax, aEZmax;
-  double aFXmin, aFYmin, aFZmin, aFXmax, aFYmax, aFZmax;
-  anEdgeBox.Get(aEXmin, aEYmin, aEZmin, aEXmax, aEYmax, aEZmax);
-  aFaceBox.Get(aFXmin, aFYmin, aFZmin, aFXmax, aFYmax, aFZmax);
-
-  const double aTol = Precision::Confusion();
-  EXPECT_GE(aEXmin, aFXmin - aTol);
-  EXPECT_LE(aEXmax, aFXmax + aTol);
-}
-
-TEST_F(BRepGraphTest, Centroid_Face_InsideBBox)
-{
-  for (BRepGraph_FaceIterator aFaceIt(myGraph); aFaceIt.More(); aFaceIt.Next())
-  {
-    BRepGraph_NodeId aFaceId(aFaceIt.CurrentId());
-    gp_Pnt           aCentroid = bboxCenter(myGraph, aFaceId);
-    Bnd_Box          aBox;
-    BRepGraphAlgo_BndLib::Add(myGraph, aFaceId, aBox);
-    if (aBox.IsVoid())
-      continue;
-
-    double aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
-    aBox.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
-
-    const double aTol = 1.0; // generous tolerance for centroid approximation
-    EXPECT_GE(aCentroid.X(), aXmin - aTol) << "Face " << aFaceIt.CurrentId().Index;
-    EXPECT_LE(aCentroid.X(), aXmax + aTol) << "Face " << aFaceIt.CurrentId().Index;
-    EXPECT_GE(aCentroid.Y(), aYmin - aTol) << "Face " << aFaceIt.CurrentId().Index;
-    EXPECT_LE(aCentroid.Y(), aYmax + aTol) << "Face " << aFaceIt.CurrentId().Index;
-    EXPECT_GE(aCentroid.Z(), aZmin - aTol) << "Face " << aFaceIt.CurrentId().Index;
-    EXPECT_LE(aCentroid.Z(), aZmax + aTol) << "Face " << aFaceIt.CurrentId().Index;
   }
 }
 

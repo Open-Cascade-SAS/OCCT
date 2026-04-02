@@ -24,7 +24,7 @@
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_UIDsView.hxx>
-#include <BRepGraphAlgo_Deduplicate.hxx>
+#include <BRepGraph_Deduplicate.hxx>
 #include <BRepGraph_Validate.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
@@ -109,7 +109,7 @@ TEST(BRepGraph_ValidateTest, AfterGeomDeduplicate_NoIssues)
   aGraph.Build(aCompound);
   ASSERT_TRUE(aGraph.IsDone());
 
-  (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
+  (void)BRepGraph_Deduplicate::Perform(aGraph);
 
   const BRepGraph_Validate::Result aResult = BRepGraph_Validate::Perform(aGraph);
   EXPECT_TRUE(aResult.IsValid());

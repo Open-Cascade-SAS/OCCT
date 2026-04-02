@@ -26,7 +26,7 @@
 #include <NCollection_Map.hxx>
 #include <Precision.hxx>
 #include <BRepGraph_Compact.hxx>
-#include <BRepGraphAlgo_Deduplicate.hxx>
+#include <BRepGraph_Deduplicate.hxx>
 #include <BRepGraph_Validate.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <TopExp_Explorer.hxx>
@@ -101,7 +101,7 @@ TEST(BRepGraph_CompactTest, AfterDeduplicate_RemovesNodes)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Run geometry dedup which replaces duplicate surface/curve handles directly.
-  (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
+  (void)BRepGraph_Deduplicate::Perform(aGraph);
 
   BRepGraph_Compact::Options anOpts;
   anOpts.HistoryMode                   = false;
@@ -120,7 +120,7 @@ TEST(BRepGraph_CompactTest, IndexDensity_NoGaps)
   aGraph.Build(makeTwoCopiedFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
-  (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
+  (void)BRepGraph_Deduplicate::Perform(aGraph);
   (void)BRepGraph_Compact::Perform(aGraph);
 
   // After compaction, there should be no removed defs.
@@ -140,7 +140,7 @@ TEST(BRepGraph_CompactTest, CrossReferences_Valid)
   aGraph.Build(makeTwoCopiedFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
-  (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
+  (void)BRepGraph_Deduplicate::Perform(aGraph);
   (void)BRepGraph_Compact::Perform(aGraph);
 
   const BRepGraph_Validate::Result aValResult = BRepGraph_Validate::Perform(aGraph);
@@ -153,7 +153,7 @@ TEST(BRepGraph_CompactTest, HistoryMode_RecordsMapping)
   aGraph.Build(makeTwoCopiedFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
-  (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
+  (void)BRepGraph_Deduplicate::Perform(aGraph);
 
   BRepGraph_Compact::Options anOpts;
   anOpts.HistoryMode = true;
@@ -174,7 +174,7 @@ TEST(BRepGraph_CompactTest, FullPipeline_Deduplicate_Compact_Validate)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Full dedup (replaces duplicate handles directly on defs).
-  (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
+  (void)BRepGraph_Deduplicate::Perform(aGraph);
 
   // Compact. Without MergeEntitiesWhenSafe, no topology nodes are removed,
   // so NbNodesAfter == NbNodesBefore.
@@ -226,7 +226,7 @@ TEST(BRepGraph_CompactTest, Compact_PreservesTopologyUIDs)
   const uint32_t aGenBefore = aGraph.UIDs().Generation();
 
   // Run dedup + compact.
-  (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
+  (void)BRepGraph_Deduplicate::Perform(aGraph);
   (void)BRepGraph_Compact::Perform(aGraph);
 
   // Generation must be preserved across compact.
@@ -285,7 +285,7 @@ TEST(BRepGraph_CompactTest, OwnGen_SurvivesCompact)
   ASSERT_EQ(aGraph.Topo().Edges().Definition(BRepGraph_EdgeId(0)).OwnGen, THE_EXPECTED_OWN_GEN);
 
   // Run dedup + compact.
-  (void)BRepGraphAlgo_Deduplicate::Perform(aGraph);
+  (void)BRepGraph_Deduplicate::Perform(aGraph);
   (void)BRepGraph_Compact::Perform(aGraph);
 
   // Edge 0 may have been remapped. Find the edge that carries the mutated

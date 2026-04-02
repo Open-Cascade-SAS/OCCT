@@ -318,7 +318,6 @@ registered cache-kind descriptors with O(1) slot access. NOT a Layer - cleared o
 - **Freshness**: SubtreeGen-validated. Each slot stores `StoredSubtreeGen`; on read, if it differs from the entity's current `SubtreeGen`, the attribute is marked dirty and recomputed lazily.
 - **Thread safety**: `shared_mutex` (concurrent reads from `OSD_Parallel::For`, exclusive writes)
 - **Survives mutations**: yes (stale entries detected by SubtreeGen mismatch)
-- **Examples**: `BRepGraphAlgo_BndLib::CacheKind()`, `BRepGraphAlgo_UVBounds::CacheKind()`
 
 ### When to Use Which
 
@@ -456,5 +455,3 @@ if (!aResult.IsValid())
 
 - API facade and views: `src/ModelingData/TKBRep/BRepGraph/`
 - Backend storage and pipelines: `src/ModelingData/TKBRep/BRepGraphInc/`
-- Algorithms: `src/ModelingAlgorithms/TKTopAlgo/BRepGraphAlgo/`
-- Validation: `src/ModelingAlgorithms/TKTopAlgo/BRepGraphCheck/`
