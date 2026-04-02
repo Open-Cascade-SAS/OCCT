@@ -30,8 +30,8 @@
 //!
 //! Walks the graph hierarchy from a root node down to entities of a target kind,
 //! yielding one occurrence at a time via a depth-first stack. Location and
-//! orientation are composed incrementally during the walk, making Location()
-//! and Orientation() O(1) per call.
+//! orientation are composed incrementally during the walk, making
+//! Current().Location and Current().Orientation O(1) per call.
 //!
 //! Unlike flat definition traversal by typed ids, BRepGraph_ChildExplorer visits
 //! each occurrence. If Edge[5] is reachable through Face[0] and Face[1],

@@ -269,19 +269,21 @@ public:
   NCollection_ForwardRange& operator=(NCollection_ForwardRange&&) = default;
 
   //! Returns iterator to the current position of the host.
-  iterator begin() { return iterator(&myHost); }
+  //! Const-qualified: iteration advances the internal cursor (mutable),
+  //! not the logical state of the range.
+  [[nodiscard]] iterator begin() const { return iterator(&myHost); }
 
   //! Returns sentinel marking the end.
-  sentinel end() const { return sentinel{}; }
+  [[nodiscard]] sentinel end() const { return sentinel{}; }
 
-  //! Returns const-access iterator (same as begin; all accessors are const).
-  const_iterator cbegin() { return const_iterator(&myHost); }
+  //! Returns const-access iterator (same as begin).
+  [[nodiscard]] const_iterator cbegin() const { return const_iterator(&myHost); }
 
   //! Returns sentinel marking the end.
-  sentinel cend() const { return sentinel{}; }
+  [[nodiscard]] sentinel cend() const { return sentinel{}; }
 
 private:
-  HostType myHost; //!< Owned host iterator.
+  mutable HostType myHost; //!< Owned host iterator (mutable: iteration is cursor movement).
 };
 
 //! CTAD deduction guide: deduces HostType from the constructor argument.
