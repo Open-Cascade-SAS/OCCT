@@ -624,21 +624,21 @@ bool TopOpeBRep_FacesFiller::ProcessVPondgE(const TopOpeBRep_VPointInter&       
   bool        isT2d = false;
   TopoDS_Edge dgEd;
   int         makeI = FUN_putInterfonDegenEd(VP,
-                                             myF1,
-                                             myF2,
-                                             myDataforDegenEd,
-                                             myHDS,
-                                             rankdg,
-                                             dgEd,
-                                             Iiondg,
-                                             T1ondg,
-                                             par1ondg,
-                                             T2ondg,
-                                             par2ondg,
-                                             OOEi,
-                                             parOOEi,
-                                             hasOOEi,
-                                             isT2d);
+                                     myF1,
+                                     myF2,
+                                     myDataforDegenEd,
+                                     myHDS,
+                                     rankdg,
+                                     dgEd,
+                                     Iiondg,
+                                     T1ondg,
+                                     par1ondg,
+                                     T2ondg,
+                                     par2ondg,
+                                     OOEi,
+                                     parOOEi,
+                                     hasOOEi,
+                                     isT2d);
   if (makeI == NOI)
   {
     return false;
