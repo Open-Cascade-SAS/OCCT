@@ -159,6 +159,11 @@ inline double ComputeBorderDeflection(GeomGridEval_Surface& theEval,
                                       const bool            theIsUIso,
                                       const int             theNbSamples)
 {
+  if (theNbSamples <= 0)
+  {
+    return 0.0;
+  }
+
   // Build parameter array with both boundary points and midpoints
   // For N segments: boundary points at i*delta, midpoints at (i+0.5)*delta
   // Total: 2*N + 1 points (N+1 boundaries + N midpoints, interleaved)

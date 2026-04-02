@@ -31,6 +31,15 @@
 // Namespace alias for brevity
 namespace PolyUtils = IntCurveSurface_PolyhedronUtils;
 
+namespace
+{
+int nbDeltaFromParameters(const NCollection_Array1<double>& thePars, const char* theArgumentName)
+{
+  Standard_OutOfRange_Raise_if(thePars.Length() < 2, theArgumentName);
+  return thePars.Length() - 1;
+}
+} // namespace
+
 //=================================================================================================
 
 IntCurveSurface_ThePolyhedronOfHInter::IntCurveSurface_ThePolyhedronOfHInter(
@@ -63,8 +72,14 @@ IntCurveSurface_ThePolyhedronOfHInter::IntCurveSurface_ThePolyhedronOfHInter(
   const occ::handle<Adaptor3d_Surface>& Surface,
   const NCollection_Array1<double>&     Upars,
   const NCollection_Array1<double>&     Vpars)
-    : nbdeltaU(Upars.Length() > 1 ? Upars.Length() - 1 : 1),
-      nbdeltaV(Vpars.Length() > 1 ? Vpars.Length() - 1 : 1),
+    : nbdeltaU(
+        nbDeltaFromParameters(Upars,
+                              "IntCurveSurface_ThePolyhedronOfHInter::IntCurveSurface_"
+                              "ThePolyhedronOfHInter() - Upars must contain at least two values")),
+      nbdeltaV(
+        nbDeltaFromParameters(Vpars,
+                              "IntCurveSurface_ThePolyhedronOfHInter::IntCurveSurface_"
+                              "ThePolyhedronOfHInter() - Vpars must contain at least two values")),
       TheDeflection(Epsilon(100.)),
       C_MyPnts(nullptr),
       C_MyU(nullptr),

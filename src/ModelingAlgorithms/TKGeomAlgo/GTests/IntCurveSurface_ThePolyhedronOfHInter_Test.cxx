@@ -16,6 +16,7 @@
 #include <Geom_SphericalSurface.hxx>
 #include <IntCurveSurface_ThePolyhedronOfHInter.hxx>
 #include <NCollection_Array1.hxx>
+#include <Standard_OutOfRange.hxx>
 #include <gp_Ax3.hxx>
 
 #include <gtest/gtest.h>
@@ -89,6 +90,33 @@ TEST(IntCurveSurface_ThePolyhedronOfHInter, ParamArrayConstructor_MinimumSize)
   EXPECT_GE(nbU, 1);
   EXPECT_GE(nbV, 1);
   EXPECT_GT(aPoly.NbTriangles(), 0);
+}
+
+// Regression test for constructor validation added for invalid explicit parameter arrays.
+TEST(IntCurveSurface_ThePolyhedronOfHInter, ParamArrayConstructor_RejectsSingleValueArrays)
+{
+#ifndef No_Exception
+  occ::handle<GeomAdaptor_Surface> aSurf = makeTestPlane();
+
+  NCollection_Array1<double> aUpars(1, 1);
+  aUpars(1) = 0.0;
+
+  NCollection_Array1<double> aVpars(1, 2);
+  aVpars(1) = -1.0;
+  aVpars(2) = 1.0;
+
+  EXPECT_THROW(IntCurveSurface_ThePolyhedronOfHInter(aSurf, aUpars, aVpars), Standard_OutOfRange);
+
+  NCollection_Array1<double> aValidUpars(1, 2);
+  aValidUpars(1) = -1.0;
+  aValidUpars(2) = 1.0;
+
+  NCollection_Array1<double> aSingleVpars(1, 1);
+  aSingleVpars(1) = 0.0;
+
+  EXPECT_THROW(IntCurveSurface_ThePolyhedronOfHInter(aSurf, aValidUpars, aSingleVpars),
+               Standard_OutOfRange);
+#endif
 }
 
 // PlaneEquation for a valid triangle must produce finite results.
