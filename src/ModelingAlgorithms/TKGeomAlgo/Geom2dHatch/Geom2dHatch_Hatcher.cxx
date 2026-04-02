@@ -872,7 +872,7 @@ bool Geom2dHatch_Hatcher::GlobalTransition(HatchGen_PointOnHatching& Point)
 
     TopAbs_Orientation ElementOrientation = Element.Orientation();
     bool               ToReverse          = (ElementOrientation == TopAbs_REVERSED);
-    double             Param;
+    double             Param = PntE.Parameter();
     switch (PntE.Position())
     {
       case TopAbs_FORWARD:
@@ -890,15 +890,6 @@ bool Geom2dHatch_Hatcher::GlobalTransition(HatchGen_PointOnHatching& Point)
       default:
         break;
     }
-
-//--
-#if TRACE_HATCHER
-    printf("\n ******** ToReverse: %d Param : %g   ANParam : %g \n",
-           ToReverse,
-           Param,
-           PntE.Parameter());
-#endif
-    Param = PntE.Parameter();
 
     myIntersector.LocalGeometry(CurveE.Curve(), Param, Tangente2d, Normale2d, Courbure);
 

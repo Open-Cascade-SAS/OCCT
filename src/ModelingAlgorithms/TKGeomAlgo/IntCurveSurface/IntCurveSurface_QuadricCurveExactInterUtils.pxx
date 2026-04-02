@@ -56,6 +56,8 @@ void PerformIntersection(const SurfaceType&            theSurface,
 {
   theNbPnts = -1;
   theNbIntv = -1;
+  thePnts.Clear();
+  theIntv.Clear();
 
   GeomAbs_SurfaceType aQuadricType = SurfaceTool::GetType(theSurface);
   IntSurf_Quadric     aQuadric;
@@ -79,7 +81,7 @@ void PerformIntersection(const SurfaceType&            theSurface,
       break;
     }
     default: {
-      break;
+      return;
     }
   }
 

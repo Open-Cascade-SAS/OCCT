@@ -20,7 +20,8 @@
 IntCurveSurface_IntersectionPoint::IntCurveSurface_IntersectionPoint()
     : myUSurf(0.0),
       myVSurf(0.0),
-      myUCurv(0.0)
+      myUCurv(0.0),
+      myTrOnCurv(IntCurveSurface_Tangent)
 {
 }
 

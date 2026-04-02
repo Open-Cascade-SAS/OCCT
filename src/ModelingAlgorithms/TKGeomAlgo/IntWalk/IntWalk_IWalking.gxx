@@ -1537,7 +1537,11 @@ void IntWalk_IWalking::ComputeOpenLine(const NCollection_Sequence<double>& Umult
       // first step of advancement
       double d2dx = std::abs(previousd2d.X());
       double d2dy = std::abs(previousd2d.Y());
-      if (d2dx < tolerance(1))
+      if (d2dx < tolerance(1) && d2dy < tolerance(2))
+      {
+        PasC = pas;
+      }
+      else if (d2dx < tolerance(1))
       {
         PasC = pas * (VM - Vm) / d2dy;
       }
@@ -2128,7 +2132,11 @@ void IntWalk_IWalking::ComputeCloseLine(const NCollection_Sequence<double>& Umul
 
       double d2dx = std::abs(previousd2d.X());
       double d2dy = std::abs(previousd2d.Y());
-      if (d2dx < tolerance(1))
+      if (d2dx < tolerance(1) && d2dy < tolerance(2))
+      {
+        PasC = pas;
+      }
+      else if (d2dx < tolerance(1))
       {
         PasC = pas * (VM - Vm) / d2dy;
       }
@@ -2788,7 +2796,11 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection(
       double d2dx = std::abs(previousd2d.X());
       double d2dy = std::abs(previousd2d.Y());
 
-      if (d2dx < tolerance(1))
+      if (d2dx < tolerance(1) && d2dy < tolerance(2))
+      {
+        Step = pas;
+      }
+      else if (d2dx < tolerance(1))
       {
         Step = StepV / d2dy;
       }
@@ -2833,7 +2845,11 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection(
         double StepU = std::min(std::abs(1.5 * Du), pas * (UM - Um)),
                StepV = std::min(std::abs(1.5 * Dv), pas * (VM - Vm));
 
-        if (d2dx < tolerance(1))
+        if (d2dx < tolerance(1) && d2dy < tolerance(2))
+        {
+          Step = pas;
+        }
+        else if (d2dx < tolerance(1))
         {
           Step = StepV / d2dy;
         }
@@ -2867,7 +2883,11 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection(
           double StepU = std::min(std::abs(1.5 * Du), pas * (UM - Um)),
                  StepV = std::min(std::abs(1.5 * Dv), pas * (VM - Vm));
 
-          if (d2dx < tolerance(1))
+          if (d2dx < tolerance(1) && d2dy < tolerance(2))
+          {
+            Step = std::min(Step, pas);
+          }
+          else if (d2dx < tolerance(1))
           {
             Step = std::min(Step, StepV / d2dy);
           }

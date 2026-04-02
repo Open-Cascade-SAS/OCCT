@@ -39,6 +39,7 @@ Intf_Tool::Intf_Tool()
     : nbSeg(0)
 {
   memset(beginOnCurve, 0, sizeof(beginOnCurve));
+  memset(endOnCurve, 0, sizeof(endOnCurve));
   memset(bord, 0, sizeof(bord));
   memset(xint, 0, sizeof(xint));
   memset(yint, 0, sizeof(yint));
@@ -247,19 +248,25 @@ void Intf_Tool::Hypr2dBox(const gp_Hypr2d& theHypr2d, const Bnd_Box2d& domain, B
       {
         if (sinan > 0.)
         {
-          out                 = false;
-          beginOnCurve[nbSeg] = parint[npi];
-          nbSeg++;
+          if (nbSeg < 6)
+          {
+            out                 = false;
+            beginOnCurve[nbSeg] = parint[npi];
+            nbSeg++;
+          }
         }
         else
         {
-          if (out)
+          if (out && nbSeg < 6)
           {
             beginOnCurve[nbSeg] = -Precision::Infinite();
             nbSeg++;
           }
-          endOnCurve[nbSeg - 1] = parint[npi];
-          out                   = true;
+          if (nbSeg > 0)
+          {
+            endOnCurve[nbSeg - 1] = parint[npi];
+          }
+          out = true;
 
           int ipmin;
           if (beginOnCurve[nbSeg - 1] < -10.)
@@ -291,6 +298,8 @@ void Intf_Tool::Hypr2dBox(const gp_Hypr2d& theHypr2d, const Bnd_Box2d& domain, B
         }
       }
     }
+    if (!out && nbSeg > 0)
+      endOnCurve[nbSeg - 1] = Precision::Infinite();
   }
   else if (!domain.IsOut(ElCLib::Value(0., theHypr2d)))
   {
@@ -488,19 +497,25 @@ void Intf_Tool::Parab2dBox(const gp_Parab2d& theParab2d,
       {
         if (sinan > 0.)
         {
-          out                 = false;
-          beginOnCurve[nbSeg] = parint[npi];
-          nbSeg++;
+          if (nbSeg < 6)
+          {
+            out                 = false;
+            beginOnCurve[nbSeg] = parint[npi];
+            nbSeg++;
+          }
         }
         else
         {
-          if (out)
+          if (out && nbSeg < 6)
           {
             beginOnCurve[nbSeg] = -Precision::Infinite();
             nbSeg++;
           }
-          endOnCurve[nbSeg - 1] = parint[npi];
-          out                   = true;
+          if (nbSeg > 0)
+          {
+            endOnCurve[nbSeg - 1] = parint[npi];
+          }
+          out = true;
 
           int ipmin;
           if (beginOnCurve[nbSeg - 1] < -10.)
@@ -532,6 +547,8 @@ void Intf_Tool::Parab2dBox(const gp_Parab2d& theParab2d,
         }
       }
     }
+    if (!out && nbSeg > 0)
+      endOnCurve[nbSeg - 1] = Precision::Infinite();
   }
   else if (!domain.IsOut(ElCLib::Value(0., theParab2d)))
   {
@@ -1404,19 +1421,25 @@ void Intf_Tool::ParabBox(const gp_Parab& theParab, const Bnd_Box& domain, Bnd_Bo
       {
         if (sinan > 0.)
         {
-          out                 = false;
-          beginOnCurve[nbSeg] = parint[npi];
-          nbSeg++;
+          if (nbSeg < 6)
+          {
+            out                 = false;
+            beginOnCurve[nbSeg] = parint[npi];
+            nbSeg++;
+          }
         }
         else
         {
-          if (out)
+          if (out && nbSeg < 6)
           {
             beginOnCurve[nbSeg] = -Precision::Infinite();
             nbSeg++;
           }
-          endOnCurve[nbSeg - 1] = parint[npi];
-          out                   = true;
+          if (nbSeg > 0)
+          {
+            endOnCurve[nbSeg - 1] = parint[npi];
+          }
+          out = true;
 
           int ipmin;
           if (beginOnCurve[nbSeg - 1] < -10.)
@@ -1444,6 +1467,8 @@ void Intf_Tool::ParabBox(const gp_Parab& theParab, const Bnd_Box& domain, Bnd_Bo
         }
       }
     }
+    if (!out && nbSeg > 0)
+      endOnCurve[nbSeg - 1] = Precision::Infinite();
   }
   else if (!domain.IsOut(ElCLib::Value(0., theParab)))
   {

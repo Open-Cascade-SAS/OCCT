@@ -55,3 +55,22 @@ TEST(IntSurf_LineOn2S_Test, PointReplacementInvalidatesCachedBoxes)
   EXPECT_FALSE(aLine->IsOutSurf1Box(gp_Pnt2d(50.0, 50.0)));
   EXPECT_FALSE(aLine->IsOutSurf2Box(gp_Pnt2d(60.0, 60.0)));
 }
+
+// Split divides line at given index.
+TEST(IntSurf_LineOn2S_Test, Split_DividesCorrectly)
+{
+  occ::handle<IntSurf_LineOn2S> aLine = new IntSurf_LineOn2S();
+  aLine->Add(buildPoint(gp_Pnt(0, 0, 0), 0, 0, 0, 0));
+  aLine->Add(buildPoint(gp_Pnt(1, 0, 0), 1, 0, 1, 0));
+  aLine->Add(buildPoint(gp_Pnt(2, 0, 0), 2, 0, 2, 0));
+  aLine->Add(buildPoint(gp_Pnt(3, 0, 0), 3, 0, 3, 0));
+
+  // NCollection_Sequence::Split(Index, SS) moves items Index..N into SS,
+  // keeping 1..Index-1 in original.
+  occ::handle<IntSurf_LineOn2S> aSplit = aLine->Split(2);
+
+  EXPECT_EQ(aLine->NbPoints(), 1);
+  EXPECT_EQ(aSplit->NbPoints(), 3);
+  EXPECT_NEAR(aLine->Value(1).Value().X(), 0.0, 1e-15);
+  EXPECT_NEAR(aSplit->Value(1).Value().X(), 1.0, 1e-15);
+}

@@ -70,9 +70,14 @@ bool GeomFill_GuideTrihedronAC::D0(const double Param,
 
   gp_Vec n(P, PG); // vecteur definissant la normale
 
+  if (n.Magnitude() < Precision::Computational())
+    return false;
   Normal   = n.Normalized();
   B        = To.Crossed(Normal);
-  BiNormal = B / B.Magnitude();
+  double aMagB = B.Magnitude();
+  if (aMagB < Precision::Computational())
+    return false;
+  BiNormal = B / aMagB;
   Tangent  = Normal.Crossed(BiNormal);
   Tangent.Normalize();
 
@@ -119,7 +124,10 @@ bool GeomFill_GuideTrihedronAC::D1(const double Param,
 
   n /= Norm;
   // derivee de n par rapport a Param
-  dtg = (Orig2 - Orig1) * (To.Magnitude() / TG.Magnitude()) * (Lguide / L);
+  double aMagTG = TG.Magnitude();
+  if (aMagTG < Precision::Computational() || L < Precision::Computational())
+    return false;
+  dtg = (Orig2 - Orig1) * (To.Magnitude() / aMagTG) * (Lguide / L);
   dn.SetLinearForm(dtg, TG, -1, To);
   dn /= Norm;
 
@@ -127,6 +135,8 @@ bool GeomFill_GuideTrihedronAC::D1(const double Param,
   Normal       = n;
   B            = To.Crossed(Normal);
   double NormB = B.Magnitude();
+  if (NormB < Precision::Computational())
+    return false;
   B /= NormB;
 
   BiNormal = B;
@@ -253,8 +263,7 @@ bool GeomFill_GuideTrihedronAC::D2(const double Param,
                           DNormal.Crossed(DBiNormal),
                           Normal.Crossed(D2BiNormal));
 
-  //  return true;
-  return false;
+  return true;
 }
 
 //=================================================================================================

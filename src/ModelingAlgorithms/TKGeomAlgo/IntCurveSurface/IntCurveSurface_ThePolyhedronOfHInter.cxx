@@ -47,6 +47,10 @@ IntCurveSurface_ThePolyhedronOfHInter::IntCurveSurface_ThePolyhedronOfHInter(
       C_MyPnts(nullptr),
       C_MyU(nullptr),
       C_MyV(nullptr),
+      UMinSingular(false),
+      UMaxSingular(false),
+      VMinSingular(false),
+      VMaxSingular(false),
       C_MyIsOnBounds(nullptr)
 {
   PolyUtils::AllocateArrays(nbdeltaU, nbdeltaV, C_MyPnts, C_MyU, C_MyV, C_MyIsOnBounds);
@@ -59,12 +63,16 @@ IntCurveSurface_ThePolyhedronOfHInter::IntCurveSurface_ThePolyhedronOfHInter(
   const occ::handle<Adaptor3d_Surface>& Surface,
   const NCollection_Array1<double>&     Upars,
   const NCollection_Array1<double>&     Vpars)
-    : nbdeltaU(Upars.Length() - 1),
-      nbdeltaV(Vpars.Length() - 1),
+    : nbdeltaU(Upars.Length() > 1 ? Upars.Length() - 1 : 1),
+      nbdeltaV(Vpars.Length() > 1 ? Vpars.Length() - 1 : 1),
       TheDeflection(Epsilon(100.)),
       C_MyPnts(nullptr),
       C_MyU(nullptr),
       C_MyV(nullptr),
+      UMinSingular(false),
+      UMaxSingular(false),
+      VMinSingular(false),
+      VMaxSingular(false),
       C_MyIsOnBounds(nullptr)
 {
   PolyUtils::AllocateArrays(nbdeltaU, nbdeltaV, C_MyPnts, C_MyU, C_MyV, C_MyIsOnBounds);

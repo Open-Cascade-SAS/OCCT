@@ -2419,6 +2419,8 @@ bool IntWalk_PWalking::DistanceMinimizeByExtrema(const occ::handle<Adaptor3d_Sur
                  aDf2u = aDf1v, aDf2v = aD2Sv.Dot(aVec) + aD1Sv.Dot(aD1Sv);
 
     const double aDet = aDf1u * aDf2v - aDf1v * aDf2u;
+    if (std::abs(aDet) < Precision::SquareComputational())
+      break;
     aU -= aStep0[0] * (aDf2v * aF1 - aDf1v * aF2) / aDet;
     aV += aStep0[1] * (aDf2u * aF1 - aDf1u * aF2) / aDet;
   } while (aNbIter > 0);

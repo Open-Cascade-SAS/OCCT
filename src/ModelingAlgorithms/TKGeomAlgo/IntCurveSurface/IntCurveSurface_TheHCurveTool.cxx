@@ -15,6 +15,7 @@
 #include <IntCurveSurface_TheHCurveTool.hxx>
 
 #include <Adaptor3d_Curve.hxx>
+#include <Precision.hxx>
 #include <GeomAbs_CurveType.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Geom_BSplineCurve.hxx>
@@ -47,7 +48,9 @@ int IntCurveSurface_TheHCurveTool::NbSamples(const occ::handle<Adaptor3d_Curve>&
     nbs = C->NbKnots();
     nbs *= C->Degree();
     nbs *= C->LastParameter() - C->FirstParameter();
-    nbs /= U1 - U0;
+    double aRange = U1 - U0;
+    if (std::abs(aRange) > Precision::PConfusion())
+      nbs /= aRange;
     if (nbs < 2.0)
       nbs = 2;
   }

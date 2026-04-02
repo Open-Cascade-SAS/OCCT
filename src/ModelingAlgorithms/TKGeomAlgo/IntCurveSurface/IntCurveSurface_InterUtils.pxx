@@ -735,9 +735,16 @@ void SectionPointToParameters(const Intf_SectionPoint& Sp,
       cb   = (gp_Vec(PC, PA).Crossed(gp_Vec(PC, P))).Dot(Normale);
       cabc = ca + cb + cc;
 
-      ca /= cabc;
-      cb /= cabc;
-      cc /= cabc;
+      if (std::abs(cabc) > Precision::Computational())
+      {
+        ca /= cabc;
+        cb /= cabc;
+        cc /= cabc;
+      }
+      else
+      {
+        ca = cb = cc = 1.0 / 3.0;
+      }
 
       u1 = ca * ua + cb * ub + cc * uc;
       v1 = ca * va + cb * vb + cc * vc;
