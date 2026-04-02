@@ -54,14 +54,14 @@ static BRepGraph_NodeId componentRootOfFace(const BRepGraph&       theGraph,
        aSolidExp.More();
        aSolidExp.Next())
   {
-    return aSolidExp.Current();
+    return aSolidExp.Current().DefId;
   }
 
   for (BRepGraph_ParentExplorer aShellExp(theGraph, theFaceId, BRepGraph_NodeId::Kind::Shell);
        aShellExp.More();
        aShellExp.Next())
   {
-    return aShellExp.Current();
+    return aShellExp.Current().DefId;
   }
 
   return theFaceId;

@@ -18,6 +18,8 @@
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_TopoView.hxx>
 
+#include <NCollection_ForwardRange.hxx>
+
 //! @brief Single-level typed iterators over active child definitions.
 //!
 //! These iterators do not recurse and do not accumulate location/orientation.
@@ -399,6 +401,15 @@ public:
 
   [[nodiscard]] int Index() const { return myIndex; }
 
+  //! Returns an STL-compatible iterator for range-based for loops.
+  NCollection_ForwardRangeIterator<DefsOfParent> begin()
+  {
+    return NCollection_ForwardRangeIterator<DefsOfParent>(this);
+  }
+
+  //! Returns a sentinel marking the end of iteration.
+  NCollection_ForwardRangeSentinel end() const { return NCollection_ForwardRangeSentinel{}; }
+
 private:
   void skipRemoved()
   {
@@ -466,6 +477,15 @@ public:
   }
 
   [[nodiscard]] int Index() const { return myIndex; }
+
+  //! Returns an STL-compatible iterator for range-based for loops.
+  NCollection_ForwardRangeIterator<DefsVertexOfEdge> begin()
+  {
+    return NCollection_ForwardRangeIterator<DefsVertexOfEdge>(this);
+  }
+
+  //! Returns a sentinel marking the end of iteration.
+  NCollection_ForwardRangeSentinel end() const { return NCollection_ForwardRangeSentinel{}; }
 
 private:
   [[nodiscard]] BRepGraph_VertexRefId refIdAt(const int theIndex) const

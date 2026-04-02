@@ -242,8 +242,8 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph&       theGraph,
       }
 
       BRepGraphInc::CoEdgeUsage aCR;
-      aCR.CoEdgeDefId   = aCRE.CoEdgeDefId;
-      aCR.LocalLocation = aCRE.LocalLocation;
+      aCR.DefId    = aCRE.CoEdgeDefId;
+      aCR.Location = aCRE.LocalLocation;
       aWireCoEdgeRefs.Append(aCR);
     }
     BRepGraph_WireExplorer aWireExp(aWireCoEdgeRefs, coedgeLookup, edgeLookup, vtxRefLookup);
@@ -263,7 +263,7 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph&       theGraph,
     {
       const BRepGraphInc::CoEdgeUsage& aCoEdgeRef = anOrderedRefs.Value(anEdgeIdx);
       const BRepGraphInc::CoEdgeDef&   aCoEdgeDef =
-        theGraph.Topo().CoEdges().Definition(aCoEdgeRef.CoEdgeDefId);
+        theGraph.Topo().CoEdges().Definition(aCoEdgeRef.DefId);
       const BRepGraphInc::EdgeDef& anEdgeDef =
         theGraph.Topo().Edges().Definition(aCoEdgeDef.EdgeDefId);
       const TopAbs_Orientation anOri = aCoEdgeDef.Sense;
@@ -279,7 +279,7 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph&       theGraph,
       if (!aCoEdgeDef.Curve2DRepId.IsValid())
         return;
       const occ::handle<Geom2d_Curve>& aCurve2d =
-        BRepGraph_Tool::CoEdge::PCurve(theGraph, aCoEdgeRef.CoEdgeDefId);
+        BRepGraph_Tool::CoEdge::PCurve(theGraph, aCoEdgeRef.DefId);
 
       double aParamFirst = aCoEdgeDef.ParamFirst;
       double aParamLast  = aCoEdgeDef.ParamLast;
@@ -417,7 +417,7 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph&       theGraph,
           {
             const BRepGraphInc::CoEdgeUsage& aCoEdgeRef2 = anOrderedRefs.Value(anEdgeIdx);
             const BRepGraphInc::CoEdgeDef&   aCoEdgeDef2 =
-              theGraph.Topo().CoEdges().Definition(aCoEdgeRef2.CoEdgeDefId);
+              theGraph.Topo().CoEdges().Definition(aCoEdgeRef2.DefId);
             const TopAbs_Orientation anOri = aCoEdgeDef2.Sense;
 
             if (anOri != TopAbs_FORWARD && anOri != TopAbs_REVERSED)
@@ -427,7 +427,7 @@ BRepGraphAlgo_FClass2d::BRepGraphAlgo_FClass2d(const BRepGraph&       theGraph,
               continue;
 
             const occ::handle<Geom2d_Curve>& aCurve2d2 =
-              BRepGraph_Tool::CoEdge::PCurve(theGraph, aCoEdgeRef2.CoEdgeDefId);
+              BRepGraph_Tool::CoEdge::PCurve(theGraph, aCoEdgeRef2.DefId);
             double aParamFirst = aCoEdgeDef2.ParamFirst;
             double aParamLast  = aCoEdgeDef2.ParamLast;
             if (std::abs(aParamLast - aParamFirst) < 1.e-9)

@@ -30,15 +30,15 @@ TEST(BRepGraph_ParentExplorerTest, FaceParents_All_CountAndOrder)
 
   BRepGraph_ParentExplorer anExp(aGraph, BRepGraph_FaceId(0));
   ASSERT_TRUE(anExp.More());
-  EXPECT_EQ(anExp.Current(), BRepGraph_NodeId(BRepGraph_ShellId(0)));
+  EXPECT_EQ(anExp.Current().DefId, BRepGraph_NodeId(BRepGraph_ShellId(0)));
 
   anExp.Next();
   ASSERT_TRUE(anExp.More());
-  EXPECT_EQ(anExp.Current(), BRepGraph_NodeId(BRepGraph_SolidId(0)));
+  EXPECT_EQ(anExp.Current().DefId, BRepGraph_NodeId(BRepGraph_SolidId(0)));
 
   anExp.Next();
   ASSERT_TRUE(anExp.More());
-  EXPECT_EQ(anExp.Current().NodeKind, BRepGraph_NodeId::Kind::Product);
+  EXPECT_EQ(anExp.Current().DefId.NodeKind, BRepGraph_NodeId::Kind::Product);
 
   anExp.Next();
   EXPECT_FALSE(anExp.More());
@@ -52,7 +52,7 @@ TEST(BRepGraph_ParentExplorerTest, FaceParents_TypedSolid_OneResult)
 
   BRepGraph_ParentExplorer anExp(aGraph, BRepGraph_FaceId(0), BRepGraph_NodeId::Kind::Solid);
   ASSERT_TRUE(anExp.More());
-  EXPECT_EQ(anExp.Current(), BRepGraph_NodeId(BRepGraph_SolidId(0)));
+  EXPECT_EQ(anExp.Current().DefId, BRepGraph_NodeId(BRepGraph_SolidId(0)));
 
   anExp.Next();
   EXPECT_FALSE(anExp.More());
@@ -68,7 +68,7 @@ TEST(BRepGraph_ParentExplorerTest, FaceParents_DirectParents_StopsAtImmediateShe
                                  BRepGraph_FaceId(0),
                                  BRepGraph_ParentExplorer::TraversalMode::DirectParents);
   ASSERT_TRUE(anExp.More());
-  EXPECT_EQ(anExp.Current(), BRepGraph_NodeId(BRepGraph_ShellId(0)));
+  EXPECT_EQ(anExp.Current().DefId, BRepGraph_NodeId(BRepGraph_ShellId(0)));
 
   anExp.Next();
   EXPECT_FALSE(anExp.More());
@@ -100,7 +100,7 @@ TEST(BRepGraph_ParentExplorerTest, AvoidKind_EmitBoundary_ReturnsSolidInsteadOfP
                                  BRepGraph_NodeId::Kind::Solid,
                                  true);
   ASSERT_TRUE(anExp.More());
-  EXPECT_EQ(anExp.Current(), BRepGraph_NodeId(BRepGraph_SolidId(0)));
+  EXPECT_EQ(anExp.Current().DefId, BRepGraph_NodeId(BRepGraph_SolidId(0)));
 
   anExp.Next();
   EXPECT_FALSE(anExp.More());
@@ -118,7 +118,7 @@ TEST(BRepGraph_ParentExplorerTest, AvoidKind_SameAsTarget_IsIgnored)
                                  BRepGraph_NodeId::Kind::Solid,
                                  false);
   ASSERT_TRUE(anExp.More());
-  EXPECT_EQ(anExp.Current(), BRepGraph_NodeId(BRepGraph_SolidId(0)));
+  EXPECT_EQ(anExp.Current().DefId, BRepGraph_NodeId(BRepGraph_SolidId(0)));
 
   anExp.Next();
   EXPECT_FALSE(anExp.More());
@@ -132,7 +132,7 @@ TEST(BRepGraph_ParentExplorerTest, AllParents_AvoidSolid_PrunesProducts)
 
   BRepGraph_ParentExplorer anExp(aGraph, BRepGraph_FaceId(0), BRepGraph_NodeId::Kind::Solid, false);
   ASSERT_TRUE(anExp.More());
-  EXPECT_EQ(anExp.Current(), BRepGraph_NodeId(BRepGraph_ShellId(0)));
+  EXPECT_EQ(anExp.Current().DefId, BRepGraph_NodeId(BRepGraph_ShellId(0)));
 
   anExp.Next();
   EXPECT_FALSE(anExp.More());
@@ -146,11 +146,11 @@ TEST(BRepGraph_ParentExplorerTest, AllParents_AvoidSolidEmitBoundary_ReturnsShel
 
   BRepGraph_ParentExplorer anExp(aGraph, BRepGraph_FaceId(0), BRepGraph_NodeId::Kind::Solid, true);
   ASSERT_TRUE(anExp.More());
-  EXPECT_EQ(anExp.Current(), BRepGraph_NodeId(BRepGraph_ShellId(0)));
+  EXPECT_EQ(anExp.Current().DefId, BRepGraph_NodeId(BRepGraph_ShellId(0)));
 
   anExp.Next();
   ASSERT_TRUE(anExp.More());
-  EXPECT_EQ(anExp.Current(), BRepGraph_NodeId(BRepGraph_SolidId(0)));
+  EXPECT_EQ(anExp.Current().DefId, BRepGraph_NodeId(BRepGraph_SolidId(0)));
 
   anExp.Next();
   EXPECT_FALSE(anExp.More());
@@ -183,17 +183,17 @@ TEST(BRepGraph_ParentExplorerTest, SharedProduct_ProductParentsKeepDistinctConte
        anExp.More();
        anExp.Next())
   {
-    if (anExp.Current() != BRepGraph_NodeId(aPart))
+    if (anExp.Current().DefId != BRepGraph_NodeId(aPart))
     {
       continue;
     }
     if (aPartCount == 0)
     {
-      aLoc1 = anExp.Location();
+      aLoc1 = anExp.Current().Location;
     }
     else if (aPartCount == 1)
     {
-      aLoc2 = anExp.Location();
+      aLoc2 = anExp.Current().Location;
     }
     ++aPartCount;
   }
@@ -221,11 +221,11 @@ TEST(BRepGraph_ParentExplorerTest, CoEdgeParents_ImmediateWireIsVisible)
 
   BRepGraph_ParentExplorer anExp(aGraph, aCoEdgeId);
   ASSERT_TRUE(anExp.More());
-  EXPECT_EQ(anExp.Current(), BRepGraph_NodeId(aWireId));
+  EXPECT_EQ(anExp.Current().DefId, BRepGraph_NodeId(aWireId));
 
   anExp.Next();
   ASSERT_TRUE(anExp.More());
-  EXPECT_EQ(anExp.Current(), BRepGraph_NodeId(BRepGraph_FaceId(0)));
+  EXPECT_EQ(anExp.Current().DefId, BRepGraph_NodeId(BRepGraph_FaceId(0)));
 }
 
 TEST(BRepGraph_ParentExplorerTest, ProductRoot_HasNoParents)

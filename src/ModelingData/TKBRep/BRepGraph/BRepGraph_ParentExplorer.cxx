@@ -178,28 +178,6 @@ void BRepGraph_ParentExplorer::Next()
 
 //=================================================================================================
 
-BRepGraph_NodeId BRepGraph_ParentExplorer::Current() const
-{
-  return myHasMore ? myCurrent : BRepGraph_NodeId();
-}
-
-//=================================================================================================
-
-const TopLoc_Location& BRepGraph_ParentExplorer::Location() const
-{
-  static const TopLoc_Location THE_EMPTY_LOCATION;
-  return myHasMore ? myLocation : THE_EMPTY_LOCATION;
-}
-
-//=================================================================================================
-
-TopAbs_Orientation BRepGraph_ParentExplorer::Orientation() const
-{
-  return myHasMore ? myOrientation : TopAbs_FORWARD;
-}
-
-//=================================================================================================
-
 const TopLoc_Location& BRepGraph_ParentExplorer::LeafLocation() const
 {
   static const TopLoc_Location THE_EMPTY_LOCATION;

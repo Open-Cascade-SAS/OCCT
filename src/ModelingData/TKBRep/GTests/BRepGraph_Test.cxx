@@ -118,7 +118,7 @@ static NCollection_Vector<BRepGraph_EdgeId> collectFreeEdges(const BRepGraph& th
          aFaceExp.More();
          aFaceExp.Next())
     {
-      aOwningFaces.Add(aFaceExp.Current().Index);
+      aOwningFaces.Add(aFaceExp.Current().DefId.Index);
       if (aOwningFaces.Extent() > 1)
       {
         break;
@@ -140,14 +140,14 @@ static BRepGraph_NodeId componentRootOfFace(const BRepGraph&       theGraph,
        aSolidExp.More();
        aSolidExp.Next())
   {
-    return aSolidExp.Current();
+    return aSolidExp.Current().DefId;
   }
 
   for (BRepGraph_ParentExplorer aShellExp(theGraph, theFaceId, BRepGraph_NodeId::Kind::Shell);
        aShellExp.More();
        aShellExp.Next())
   {
-    return aShellExp.Current();
+    return aShellExp.Current().DefId;
   }
 
   return theFaceId;
@@ -847,7 +847,7 @@ TEST_F(BRepGraphTest, DetectMissingPCurves_ValidBox_Empty)
          anEdgeExp.More();
          anEdgeExp.Next())
     {
-      const BRepGraph_EdgeId       anEdgeId = BRepGraph_EdgeId::FromNodeId(anEdgeExp.Current());
+      const BRepGraph_EdgeId       anEdgeId = BRepGraph_EdgeId::FromNodeId(anEdgeExp.Current().DefId);
       const BRepGraphInc::EdgeDef& anEdge   = myGraph.Topo().Edges().Definition(anEdgeId);
       if (anEdge.IsDegenerate)
       {
@@ -888,7 +888,7 @@ TEST_F(BRepGraphTest, DetectDegenerateWires_ValidBox_Empty)
          aFaceExp.More();
          aFaceExp.Next())
     {
-      const BRepGraph_FaceId aFaceId = BRepGraph_FaceId::FromNodeId(aFaceExp.Current());
+      const BRepGraph_FaceId aFaceId = BRepGraph_FaceId::FromNodeId(aFaceExp.Current().DefId);
       if (myGraph.Topo().Faces().OuterWire(aFaceId) == aWireId)
       {
         isOuterWire = true;

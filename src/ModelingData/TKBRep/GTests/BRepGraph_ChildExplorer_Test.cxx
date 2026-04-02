@@ -102,7 +102,7 @@ TEST(BRepGraph_ChildExplorerTest, Box_VertexOccurrences)
        anExp.More();
        anExp.Next())
   {
-    aVisited.Add(anExp.Current().Index);
+    aVisited.Add(anExp.Current().DefId.Index);
     ++aCount;
   }
   EXPECT_GT(aCount, 0);
@@ -141,7 +141,7 @@ TEST(BRepGraph_ChildExplorerTest, RootEqualsTarget_ReturnsSelf)
 
   BRepGraph_ChildExplorer anExp(aGraph, BRepGraph_FaceId(0), BRepGraph_NodeId::Kind::Face);
   ASSERT_TRUE(anExp.More());
-  EXPECT_EQ(anExp.Current(), BRepGraph_FaceId(0));
+  EXPECT_EQ(anExp.Current().DefId, BRepGraph_FaceId(0));
   anExp.Next();
   EXPECT_FALSE(anExp.More());
 }
@@ -175,7 +175,7 @@ TEST(BRepGraph_ChildExplorerTest, AvoidKind_EmitBoundary_ReturnsFacesInsteadOfEd
        anExp.More();
        anExp.Next())
   {
-    EXPECT_EQ(anExp.Current().NodeKind, BRepGraph_NodeId::Kind::Face);
+    EXPECT_EQ(anExp.Current().DefId.NodeKind, BRepGraph_NodeId::Kind::Face);
     ++aFaceCount;
   }
   EXPECT_EQ(aFaceCount, 6);
@@ -196,7 +196,7 @@ TEST(BRepGraph_ChildExplorerTest, AvoidKind_SameAsTarget_IsIgnored)
        anExp.More();
        anExp.Next())
   {
-    EXPECT_EQ(anExp.Current().NodeKind, BRepGraph_NodeId::Kind::Face);
+    EXPECT_EQ(anExp.Current().DefId.NodeKind, BRepGraph_NodeId::Kind::Face);
     ++aFaceCount;
   }
   EXPECT_EQ(aFaceCount, 6);
@@ -215,7 +215,7 @@ TEST(BRepGraph_ChildExplorerTest, AllDescendants_Recursive_YieldsResolvedKinds)
   int aVertexCount = 0;
   for (BRepGraph_ChildExplorer anExp(aGraph, BRepGraph_SolidId(0)); anExp.More(); anExp.Next())
   {
-    switch (anExp.Current().NodeKind)
+    switch (anExp.Current().DefId.NodeKind)
     {
       case BRepGraph_NodeId::Kind::Shell:
         ++aShellCount;
@@ -260,13 +260,13 @@ TEST(BRepGraph_ChildExplorerTest, AllDescendants_AvoidFaceBoundary_StopsBelowFac
        anExp.More();
        anExp.Next())
   {
-    if (anExp.Current().NodeKind == BRepGraph_NodeId::Kind::Shell)
+    if (anExp.Current().DefId.NodeKind == BRepGraph_NodeId::Kind::Shell)
     {
       ++aShellCount;
       continue;
     }
 
-    EXPECT_EQ(anExp.Current().NodeKind, BRepGraph_NodeId::Kind::Face);
+    EXPECT_EQ(anExp.Current().DefId.NodeKind, BRepGraph_NodeId::Kind::Face);
     ++aFaceCount;
   }
 
@@ -287,7 +287,7 @@ TEST(BRepGraph_ChildExplorerTest, NoCumLoc_IdentityLocation)
        anExp.More();
        anExp.Next())
   {
-    EXPECT_TRUE(anExp.Location().IsIdentity());
+    EXPECT_TRUE(anExp.Current().Location.IsIdentity());
   }
 }
 
@@ -302,7 +302,7 @@ TEST(BRepGraph_ChildExplorerTest, NoCumOri_ForwardOrientation)
        anExp.More();
        anExp.Next())
   {
-    EXPECT_EQ(anExp.Orientation(), TopAbs_FORWARD);
+    EXPECT_EQ(anExp.Current().Orientation, TopAbs_FORWARD);
   }
 }
 
@@ -318,7 +318,7 @@ TEST(BRepGraph_ChildExplorerTest, GlobalLocation_Box_Identity)
   BRepGraph_ChildExplorer anExp(aGraph, BRepGraph_SolidId(0), BRepGraph_NodeId::Kind::Edge);
   for (; anExp.More(); anExp.Next())
   {
-    EXPECT_TRUE(anExp.Location().IsIdentity());
+    EXPECT_TRUE(anExp.Current().Location.IsIdentity());
   }
 }
 
@@ -331,7 +331,7 @@ TEST(BRepGraph_ChildExplorerTest, GlobalOrientation_BoxEdges_ForwardOrReversed)
   BRepGraph_ChildExplorer anExp(aGraph, BRepGraph_SolidId(0), BRepGraph_NodeId::Kind::Edge);
   for (; anExp.More(); anExp.Next())
   {
-    TopAbs_Orientation anOri = anExp.Orientation();
+    TopAbs_Orientation anOri = anExp.Current().Orientation;
     EXPECT_TRUE(anOri == TopAbs_FORWARD || anOri == TopAbs_REVERSED);
   }
 }
@@ -440,7 +440,7 @@ TEST(BRepGraph_ChildExplorerTest, CoEdgeTarget_Reachable)
        anExp.More();
        anExp.Next())
   {
-    EXPECT_EQ(anExp.Current().NodeKind, BRepGraph_NodeId::Kind::CoEdge);
+    EXPECT_EQ(anExp.Current().DefId.NodeKind, BRepGraph_NodeId::Kind::CoEdge);
     ++aCount;
   }
   EXPECT_EQ(aCount, 24);
@@ -457,7 +457,7 @@ TEST(BRepGraph_ChildExplorerTest, CoEdgeTarget_FromFace_Count4)
        anExp.More();
        anExp.Next())
   {
-    EXPECT_EQ(anExp.Current().NodeKind, BRepGraph_NodeId::Kind::CoEdge);
+    EXPECT_EQ(anExp.Current().DefId.NodeKind, BRepGraph_NodeId::Kind::CoEdge);
     ++aCount;
   }
   EXPECT_EQ(aCount, 4);
@@ -487,8 +487,8 @@ TEST(BRepGraph_ChildExplorerTest, DirectChildren_ShellFaces_CountAndOrder)
        anIt.More();
        anIt.Next())
   {
-    ASSERT_EQ(anIt.Current().NodeKind, BRepGraph_NodeId::Kind::Face);
-    anActualFaceIds.Append(anIt.Current().Index);
+    ASSERT_EQ(anIt.Current().DefId.NodeKind, BRepGraph_NodeId::Kind::Face);
+    anActualFaceIds.Append(anIt.Current().DefId.Index);
   }
 
   ASSERT_EQ(anActualFaceIds.Length(), anExpectedFaceIds.Length());
@@ -521,7 +521,7 @@ TEST(BRepGraph_ChildExplorerTest, DirectChildren_RemovedFaceRef_IsSkipped)
        anIt.More();
        anIt.Next())
   {
-    EXPECT_NE(anIt.Current(), BRepGraph_NodeId(aRemovedFaceId));
+    EXPECT_NE(anIt.Current().DefId, BRepGraph_NodeId(aRemovedFaceId));
     ++aCount;
   }
 
@@ -548,7 +548,7 @@ TEST(BRepGraph_ChildExplorerTest, DirectChildren_WireChildren_AreResolvedEdges)
        anIt.More();
        anIt.Next())
   {
-    EXPECT_EQ(anIt.Current().NodeKind, BRepGraph_NodeId::Kind::Edge);
+    EXPECT_EQ(anIt.Current().DefId.NodeKind, BRepGraph_NodeId::Kind::Edge);
     ++aCount;
   }
 
@@ -573,7 +573,7 @@ TEST(BRepGraph_ChildExplorerTest, DirectChildren_CompoundChildren_Basic)
        anIt.More();
        anIt.Next())
   {
-    EXPECT_TRUE(BRepGraph_NodeId::IsTopologyKind(anIt.Current().NodeKind));
+    EXPECT_TRUE(BRepGraph_NodeId::IsTopologyKind(anIt.Current().DefId.NodeKind));
     ++aCount;
   }
 
@@ -603,11 +603,11 @@ TEST(BRepGraph_ChildExplorerTest, DirectChildren_ChainedTraversal_ParityWithRecu
        anExp.More();
        anExp.Next())
   {
-    const int aFaceIdx = anExp.Current().Index;
+    const int aFaceIdx = anExp.Current().DefId.Index;
     if (!aExpectedLoc.IsBound(aFaceIdx))
     {
-      aExpectedLoc.Bind(aFaceIdx, anExp.Location());
-      aExpectedOri.Bind(aFaceIdx, anExp.Orientation());
+      aExpectedLoc.Bind(aFaceIdx, anExp.Current().Location);
+      aExpectedOri.Bind(aFaceIdx, anExp.Current().Orientation);
     }
   }
 
@@ -617,27 +617,30 @@ TEST(BRepGraph_ChildExplorerTest, DirectChildren_ChainedTraversal_ParityWithRecu
        aSolidIt.More();
        aSolidIt.Next())
   {
+    const BRepGraphInc::NodeUsage aSolidUsage = aSolidIt.Current();
     for (BRepGraph_ChildExplorer aShellIt = makeDirectChildExplorer(aGraph,
-                                                                    aSolidIt.Current(),
+                                                                    aSolidUsage.DefId,
                                                                     BRepGraph_NodeId::Kind::Shell,
-                                                                    aSolidIt.Location(),
-                                                                    aSolidIt.Orientation());
+                                                                    aSolidUsage.Location,
+                                                                    aSolidUsage.Orientation);
          aShellIt.More();
          aShellIt.Next())
     {
+      const BRepGraphInc::NodeUsage aShellUsage = aShellIt.Current();
       for (BRepGraph_ChildExplorer aFaceIt = makeDirectChildExplorer(aGraph,
-                                                                     aShellIt.Current(),
+                                                                     aShellUsage.DefId,
                                                                      BRepGraph_NodeId::Kind::Face,
-                                                                     aShellIt.Location(),
-                                                                     aShellIt.Orientation());
+                                                                     aShellUsage.Location,
+                                                                     aShellUsage.Orientation);
            aFaceIt.More();
            aFaceIt.Next())
       {
-        ASSERT_EQ(aFaceIt.Current().NodeKind, BRepGraph_NodeId::Kind::Face);
-        const int aFaceIdx = aFaceIt.Current().Index;
+        const BRepGraphInc::NodeUsage aFaceUsage = aFaceIt.Current();
+        ASSERT_EQ(aFaceUsage.DefId.NodeKind, BRepGraph_NodeId::Kind::Face);
+        const int aFaceIdx = aFaceUsage.DefId.Index;
         ASSERT_TRUE(aExpectedLoc.IsBound(aFaceIdx));
-        EXPECT_TRUE(aFaceIt.Location().IsEqual(aExpectedLoc.Find(aFaceIdx)));
-        EXPECT_EQ(aFaceIt.Orientation(), aExpectedOri.Find(aFaceIdx));
+        EXPECT_TRUE(aFaceUsage.Location.IsEqual(aExpectedLoc.Find(aFaceIdx)));
+        EXPECT_EQ(aFaceUsage.Orientation, aExpectedOri.Find(aFaceIdx));
         ++aVisited;
       }
     }
@@ -677,11 +680,11 @@ TEST(BRepGraph_ChildExplorerTest, DirectChildren_SharedProduct_ChildrenHaveDisti
        anIt.More();
        anIt.Next())
   {
-    ASSERT_EQ(anIt.Current(), BRepGraph_NodeId(BRepGraph_SolidId(0)));
+    ASSERT_EQ(anIt.Current().DefId, BRepGraph_NodeId(BRepGraph_SolidId(0)));
     if (aCount == 0)
-      aLoc1 = anIt.Location();
+      aLoc1 = anIt.Current().Location;
     else if (aCount == 1)
-      aLoc2 = anIt.Location();
+      aLoc2 = anIt.Current().Location;
     ++aCount;
   }
 
@@ -717,10 +720,11 @@ TEST(BRepGraph_ChildExplorerTest, DirectChildren_ProductPartRootContext_Composed
   BRepGraph_ChildExplorer anIt =
     makeDirectChildExplorer(aGraph, anAssembly, BRepGraph_NodeId::Kind::Solid);
   ASSERT_TRUE(anIt.More());
-  EXPECT_EQ(anIt.Current(), BRepGraph_NodeId(BRepGraph_SolidId(0)));
+  EXPECT_EQ(anIt.Current().DefId, BRepGraph_NodeId(BRepGraph_SolidId(0)));
 
+  const BRepGraphInc::NodeUsage aUsage = anIt.Current();
   const TopLoc_Location anExpectedLoc  = TopLoc_Location(aOccTrsf) * TopLoc_Location(aRootTrsf);
-  const gp_Trsf&        anActualTrsf   = anIt.Location().Transformation();
+  const gp_Trsf&        anActualTrsf   = aUsage.Location.Transformation();
   const gp_Trsf&        anExpectedTrsf = anExpectedLoc.Transformation();
   EXPECT_NEAR(anActualTrsf.TranslationPart().X(),
               anExpectedTrsf.TranslationPart().X(),
@@ -731,7 +735,7 @@ TEST(BRepGraph_ChildExplorerTest, DirectChildren_ProductPartRootContext_Composed
   EXPECT_NEAR(anActualTrsf.TranslationPart().Z(),
               anExpectedTrsf.TranslationPart().Z(),
               Precision::Confusion());
-  EXPECT_EQ(anIt.Orientation(), TopAbs_REVERSED);
+  EXPECT_EQ(aUsage.Orientation, TopAbs_REVERSED);
 
   anIt.Next();
   EXPECT_FALSE(anIt.More());
@@ -782,4 +786,51 @@ TEST(BRepGraph_ChildExplorerTest, HighFanout_CompletesAllChildren)
     ++aFaceCount;
   // Each box has 6 faces.
   EXPECT_EQ(aFaceCount, THE_NB_CHILDREN * 6);
+}
+
+TEST(BRepGraph_ChildExplorerTest, StructuredBindings_NodeUsage)
+{
+  gp_Trsf aTrsf;
+  aTrsf.SetTranslation(gp_Vec(100.0, 0.0, 0.0));
+
+  TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10, 20, 30).Shape();
+  aBox.Move(TopLoc_Location(aTrsf));
+
+  TopoDS_Compound aComp;
+  BRep_Builder    aBuilder;
+  aBuilder.MakeCompound(aComp);
+  aBuilder.Add(aComp, aBox);
+
+  BRepGraph aGraph;
+  aGraph.Build(aComp);
+  ASSERT_TRUE(aGraph.IsDone());
+
+  int aCount = 0;
+  for (BRepGraph_ChildExplorer anExp(aGraph, BRepGraph_CompoundId(0), BRepGraph_NodeId::Kind::Face);
+       anExp.More();
+       anExp.Next())
+  {
+    const auto [aNodeId, aLoc, anOri] = anExp.Current();
+    EXPECT_EQ(aNodeId.NodeKind, BRepGraph_NodeId::Kind::Face);
+    EXPECT_FALSE(aLoc.IsIdentity());
+    EXPECT_TRUE(anOri == TopAbs_FORWARD || anOri == TopAbs_REVERSED);
+    ++aCount;
+  }
+  EXPECT_EQ(aCount, 6);
+}
+
+TEST(BRepGraph_ChildExplorerTest, RangeFor_NodeUsage)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  int aCount = 0;
+  for (const BRepGraphInc::NodeUsage& aUsage :
+       BRepGraph_ChildExplorer(aGraph, BRepGraph_SolidId(0), BRepGraph_NodeId::Kind::Face))
+  {
+    EXPECT_EQ(aUsage.DefId.NodeKind, BRepGraph_NodeId::Kind::Face);
+    ++aCount;
+  }
+  EXPECT_EQ(aCount, 6);
 }

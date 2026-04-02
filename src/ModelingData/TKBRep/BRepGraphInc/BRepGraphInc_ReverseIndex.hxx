@@ -192,7 +192,7 @@ public:
     return seekVec(myShellToSolids, theShellId.Index);
   }
 
-  //! Return compound indices containing the given solid as a ChildUsage.
+  //! Return compound indices containing the given solid as a NodeUsage.
   [[nodiscard]] const NCollection_Vector<BRepGraph_CompoundId>* CompoundsOfSolid(
     const BRepGraph_SolidId theSolidId) const
   {
@@ -206,28 +206,28 @@ public:
     return seekVec(myCompSolidsOfSolid, theSolidId.Index);
   }
 
-  //! Return compound indices containing the given shell as a ChildUsage.
+  //! Return compound indices containing the given shell as a NodeUsage.
   [[nodiscard]] const NCollection_Vector<BRepGraph_CompoundId>* CompoundsOfShell(
     const BRepGraph_ShellId theShellId) const
   {
     return seekVec(myCompoundsOfShell, theShellId.Index);
   }
 
-  //! Return compound indices containing the given face as a ChildUsage.
+  //! Return compound indices containing the given face as a NodeUsage.
   [[nodiscard]] const NCollection_Vector<BRepGraph_CompoundId>* CompoundsOfFace(
     const BRepGraph_FaceId theFaceId) const
   {
     return seekVec(myCompoundsOfFace, theFaceId.Index);
   }
 
-  //! Return compound indices containing the given compound as a ChildUsage.
+  //! Return compound indices containing the given compound as a NodeUsage.
   [[nodiscard]] const NCollection_Vector<BRepGraph_CompoundId>* CompoundsOfCompound(
     const BRepGraph_CompoundId theCompoundId) const
   {
     return seekVec(myCompoundsOfCompound, theCompoundId.Index);
   }
 
-  //! Return compound indices containing the given compsolid as a ChildUsage.
+  //! Return compound indices containing the given compsolid as a NodeUsage.
   [[nodiscard]] const NCollection_Vector<BRepGraph_CompoundId>* CompoundsOfCompSolid(
     const BRepGraph_CompSolidId theCompSolidId) const
   {

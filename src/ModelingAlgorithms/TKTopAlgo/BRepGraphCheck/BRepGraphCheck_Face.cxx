@@ -54,8 +54,8 @@ static NCollection_Vector<BRepGraphInc::CoEdgeUsage> collectWireCoEdgeRefs(
     }
 
     BRepGraphInc::CoEdgeUsage aCoEdgeRef;
-    aCoEdgeRef.CoEdgeDefId   = aRef.CoEdgeDefId;
-    aCoEdgeRef.LocalLocation = aRef.LocalLocation;
+    aCoEdgeRef.DefId    = aRef.CoEdgeDefId;
+    aCoEdgeRef.Location = aRef.LocalLocation;
     aResult.Append(aCoEdgeRef);
   }
   return aResult;
@@ -114,7 +114,7 @@ static double computeWireSignedArea(
        anExp.Next())
   {
     const BRepGraphInc::CoEdgeUsage& aCoEdgeRef = anExp.CurrentRef();
-    const BRepGraphInc::CoEdgeDef& aCoEdgeDef = aDefs.CoEdges().Definition(aCoEdgeRef.CoEdgeDefId);
+    const BRepGraphInc::CoEdgeDef& aCoEdgeDef = aDefs.CoEdges().Definition(aCoEdgeRef.DefId);
 
     const BRepGraphInc::CoEdgeDef* aPCurve =
       BRepGraph_Tool::Edge::FindPCurve(theGraph, aCoEdgeDef.EdgeDefId, theFaceId);
@@ -188,7 +188,7 @@ static void collectWirePCurves(const BRepGraph&                                 
        anExp.Next())
   {
     const BRepGraphInc::CoEdgeUsage& aCoEdgeRef = anExp.CurrentRef();
-    const BRepGraphInc::CoEdgeDef& aCoEdgeDef = aDefs.CoEdges().Definition(aCoEdgeRef.CoEdgeDefId);
+    const BRepGraphInc::CoEdgeDef& aCoEdgeDef = aDefs.CoEdges().Definition(aCoEdgeRef.DefId);
     const BRepGraphInc::EdgeDef&   anEdgeDef  = aDefs.Edges().Definition(aCoEdgeDef.EdgeDefId);
 
     if (BRepGraph_Tool::Edge::Degenerated(theGraph, aCoEdgeDef.EdgeDefId))

@@ -73,7 +73,7 @@ public:
   const BRepGraphInc::CoEdgeUsage& CurrentRef() const { return myOrder.Value(myCurrent); }
 
   //! Current coedge typed identifier in storage.
-  BRepGraph_CoEdgeId CurrentCoEdgeId() const { return CurrentRef().CoEdgeDefId; }
+  BRepGraph_CoEdgeId CurrentCoEdgeId() const { return CurrentRef().DefId; }
 
   //! Number of coedges in the ordered sequence.
   int NbEdges() const { return myOrder.Length(); }
@@ -133,7 +133,7 @@ private:
     for (int aPlaced = 1; aPlaced < aNbEdges; ++aPlaced)
     {
       const BRepGraphInc::CoEdgeUsage& aPrevRef    = myOrder.Value(aPlaced - 1);
-      const BRepGraphInc::CoEdgeDef&   aPrevCoEdge = theCoEdgeLookup(aPrevRef.CoEdgeDefId.Index);
+      const BRepGraphInc::CoEdgeDef&   aPrevCoEdge = theCoEdgeLookup(aPrevRef.DefId.Index);
       const BRepGraph_NodeId           aPrevEnd =
         orientedEndVertex(theEdgeLookup(aPrevCoEdge.EdgeDefId.Index),
                           aPrevCoEdge.Sense,
@@ -145,7 +145,7 @@ private:
         if (aUsed(i))
           continue;
         const BRepGraphInc::CoEdgeUsage& aCandRef    = theCoEdgeRefs.Value(i);
-        const BRepGraphInc::CoEdgeDef&   aCandCoEdge = theCoEdgeLookup(aCandRef.CoEdgeDefId.Index);
+        const BRepGraphInc::CoEdgeDef&   aCandCoEdge = theCoEdgeLookup(aCandRef.DefId.Index);
         const BRepGraph_NodeId           aCandStart =
           orientedStartVertex(theEdgeLookup(aCandCoEdge.EdgeDefId.Index),
                               aCandCoEdge.Sense,

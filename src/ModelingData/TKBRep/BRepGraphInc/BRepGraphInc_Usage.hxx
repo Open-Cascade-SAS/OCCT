@@ -15,94 +15,78 @@
 #define _BRepGraphInc_Usage_HeaderFile
 
 #include <BRepGraph_NodeId.hxx>
+#include <Standard_HashUtils.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopLoc_Location.hxx>
 
-//! Lightweight usage structs for incidence-table topology.
+#include <functional>
+
+//! @file BRepGraphInc_Usage.hxx
+//! @brief Unified lightweight container binding a node identity with placement.
 //!
-//! Each struct encodes how a definition is used at a particular site,
-//! carrying the orientation and (where applicable) the local location
-//! of the child in the parent context.
+//! Usage<T> is the BRepGraph analogue of TopoDS_Shape: a lightweight value type
+//! that bundles a definition id with its location and orientation in context.
 //!
-//! Usage structs are lightweight projections of the managed Reference entries
-//! (see BRepGraphInc_Reference.hxx). They carry only the semantic payload
-//! (DefId + Orientation + Location) without lifecycle fields (RefId, ParentId,
-//! OwnGen, IsRemoved). Used in read-only iteration contexts (BRepGraph_Tool,
-//! BRepGraph_WireExplorer) where identity tracking is not needed.
+//! Supports C++17 structured bindings (aggregate type):
+//! @code
+//!   for (auto [aDefId, aLoc, anOri] : BRepGraph_ChildExplorer(aGraph, aRoot, Kind::Face))
+//!   {
+//!     // ...
+//!   }
+//! @endcode
 namespace BRepGraphInc
 {
 
-//! Reference to a vertex carrying Orientation and Location.
-//! Used for boundary vertices (FORWARD/REVERSED) on edges and
-//! direct INTERNAL/EXTERNAL vertex children on edges and faces.
-struct VertexUsage
-{
-  BRepGraph_VertexId VertexDefId;
-  TopAbs_Orientation Orientation = TopAbs_INTERNAL;
-  TopLoc_Location    LocalLocation;
-};
-
-//! Reference from a wire to one of its coedges.
+//! @brief Unified usage container template.
 //!
-//! Unlike other Ref types, CoEdgeUsage intentionally carries no Orientation field.
-//! Orientation (Sense) lives on CoEdgeDef because it is definitional, not
-//! referential: Sense is intrinsically bound to the CoEdge's PCurve, parametric
-//! range, and UV endpoints.  Seam edges rely on two CoEdgeDefs with opposite
-//! Sense sharing a SeamPairIdx, each owning its own PCurve - moving Sense here
-//! would break that coupling.
-struct CoEdgeUsage
+//! Bundles a typed definition id with location and orientation.
+//!
+//! @tparam TypedIdT typed definition id (e.g. BRepGraph_FaceId, BRepGraph_NodeId).
+template <typename TypedIdT>
+struct Usage
 {
-  BRepGraph_CoEdgeId CoEdgeDefId;
-  TopLoc_Location    LocalLocation;
-};
-
-//! Reference from a face to one of its wires.
-struct WireUsage
-{
-  BRepGraph_WireId   WireDefId;
-  bool               IsOuter     = false;
+  TypedIdT           DefId;
+  TopLoc_Location    Location;
   TopAbs_Orientation Orientation = TopAbs_FORWARD;
-  TopLoc_Location    LocalLocation;
 };
 
-//! Reference from a shell to one of its faces.
-struct FaceUsage
-{
-  BRepGraph_FaceId   FaceDefId;
-  TopAbs_Orientation Orientation = TopAbs_FORWARD;
-  TopLoc_Location    LocalLocation;
-};
+using VertexUsage     = Usage<BRepGraph_VertexId>;
+using CoEdgeUsage     = Usage<BRepGraph_CoEdgeId>;
+using FaceUsage       = Usage<BRepGraph_FaceId>;
+using ShellUsage      = Usage<BRepGraph_ShellId>;
+using SolidUsage      = Usage<BRepGraph_SolidId>;
+using OccurrenceUsage = Usage<BRepGraph_OccurrenceId>;
+using CompoundUsage   = Usage<BRepGraph_CompoundId>;
+using CompSolidUsage  = Usage<BRepGraph_CompSolidId>;
+using ProductUsage    = Usage<BRepGraph_ProductId>;
 
-//! Reference from a solid to one of its shells.
-struct ShellUsage
-{
-  BRepGraph_ShellId  ShellDefId;
-  TopAbs_Orientation Orientation = TopAbs_FORWARD;
-  TopLoc_Location    LocalLocation;
-};
+//! NodeUsage is Usage<BRepGraph_NodeId>.
+//! Returned by BRepGraph_ChildExplorer and BRepGraph_ParentExplorer
+//! with accumulated transforms from traversal root to the current node.
+//! Implicitly convertible from any typed Usage via BRepGraph_NodeId::Typed
+//! implicit conversion to BRepGraph_NodeId.
+using NodeUsage = Usage<BRepGraph_NodeId>;
 
-//! Reference from a comp-solid to one of its solids.
-struct SolidUsage
+//! Wire usage with an additional flag indicating whether this is the outer wire.
+struct WireUsage : Usage<BRepGraph_WireId>
 {
-  BRepGraph_SolidId  SolidDefId;
-  TopAbs_Orientation Orientation = TopAbs_FORWARD;
-  TopLoc_Location    LocalLocation;
-};
-
-//! Reference from a compound to a child of any kind.
-struct ChildUsage
-{
-  BRepGraph_NodeId   ChildDefId; //!< Typed child entity id.
-  TopAbs_Orientation Orientation = TopAbs_FORWARD;
-  TopLoc_Location    LocalLocation;
-};
-
-//! Reference from a product to one of its child occurrences.
-struct OccurrenceUsage
-{
-  BRepGraph_OccurrenceId OccurrenceDefId;
+  bool IsOuter = false;
 };
 
 } // namespace BRepGraphInc
+
+//! std::hash specialization for BRepGraphInc::Usage<T>.
+template <typename TypedIdT>
+struct std::hash<BRepGraphInc::Usage<TypedIdT>>
+{
+  size_t operator()(const BRepGraphInc::Usage<TypedIdT>& theUsage) const noexcept
+  {
+    size_t aCombination[3];
+    aCombination[0] = std::hash<TypedIdT>{}(theUsage.DefId);
+    aCombination[1] = theUsage.Location.HashCode();
+    aCombination[2] = opencascade::hash(static_cast<int>(theUsage.Orientation));
+    return opencascade::hashBytes(aCombination, sizeof(aCombination));
+  }
+};
 
 #endif // _BRepGraphInc_Usage_HeaderFile

@@ -91,8 +91,8 @@ static NCollection_Vector<BRepGraphInc::CoEdgeUsage> collectWireCoEdgeRefs(
     }
 
     BRepGraphInc::CoEdgeUsage aCoEdgeRef;
-    aCoEdgeRef.CoEdgeDefId   = aRef.CoEdgeDefId;
-    aCoEdgeRef.LocalLocation = aRef.LocalLocation;
+    aCoEdgeRef.DefId    = aRef.CoEdgeDefId;
+    aCoEdgeRef.Location = aRef.LocalLocation;
     aResult.Append(aCoEdgeRef);
   }
   return aResult;
@@ -228,7 +228,7 @@ void BRepGraphCheck::CheckShellClosed(const BRepGraph&                          
       for (int aCoEdgeIter = 0; aCoEdgeIter < aWireCoEdgeRefs.Length(); ++aCoEdgeIter)
       {
         const BRepGraphInc::CoEdgeUsage& aCR        = aWireCoEdgeRefs.Value(aCoEdgeIter);
-        const BRepGraphInc::CoEdgeDef&   aCoEdgeDef = aDefs.CoEdges().Definition(aCR.CoEdgeDefId);
+        const BRepGraphInc::CoEdgeDef&   aCoEdgeDef = aDefs.CoEdges().Definition(aCR.DefId);
         const int                        anEdgeIdx  = aCoEdgeDef.EdgeDefId.Index;
 
         // Skip degenerate edges.
@@ -313,7 +313,7 @@ void BRepGraphCheck::CheckShellOrientation(const BRepGraph&                     
       for (int aCoEdgeIter = 0; aCoEdgeIter < aWireCoEdgeRefs.Length(); ++aCoEdgeIter)
       {
         const BRepGraphInc::CoEdgeUsage& aCR        = aWireCoEdgeRefs.Value(aCoEdgeIter);
-        const BRepGraphInc::CoEdgeDef&   aCoEdgeDef = aDefs.CoEdges().Definition(aCR.CoEdgeDefId);
+        const BRepGraphInc::CoEdgeDef&   aCoEdgeDef = aDefs.CoEdges().Definition(aCR.DefId);
         const int                        anEdgeIdx  = aCoEdgeDef.EdgeDefId.Index;
 
         // Compose edge orientation: coedge sense x wire x face orientation.

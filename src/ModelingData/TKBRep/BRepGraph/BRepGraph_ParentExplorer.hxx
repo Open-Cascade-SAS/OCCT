@@ -15,8 +15,10 @@
 #define _BRepGraph_ParentExplorer_HeaderFile
 
 #include <BRepGraph.hxx>
+#include <BRepGraphInc_Usage.hxx>
 
 #include <NCollection_BaseAllocator.hxx>
+#include <NCollection_ForwardRange.hxx>
 #include <NCollection_LocalArray.hxx>
 
 #include <TopAbs_Orientation.hxx>
@@ -88,14 +90,15 @@ public:
   //! Advance to the next matching parent.
   Standard_EXPORT void Next();
 
-  //! Current matching ancestor node.
-  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId Current() const;
-
-  //! Accumulated location at the current ancestor occurrence.
-  [[nodiscard]] Standard_EXPORT const TopLoc_Location& Location() const;
-
-  //! Accumulated orientation at the current ancestor occurrence.
-  [[nodiscard]] TopAbs_Orientation Orientation() const;
+  //! Current matching ancestor node with accumulated location and orientation.
+  [[nodiscard]] BRepGraphInc::NodeUsage Current() const
+  {
+    if (myHasMore)
+    {
+      return {myCurrent, myLocation, myOrientation};
+    }
+    return {};
+  }
 
   //! Accumulated location at the starting node of the current branch.
   [[nodiscard]] Standard_EXPORT const TopLoc_Location& LeafLocation() const;
@@ -105,6 +108,15 @@ public:
 
   //! True if Current() is the explicit root node of the current branch.
   [[nodiscard]] Standard_EXPORT bool IsCurrentBranchRoot() const;
+
+  //! Returns an STL-compatible iterator for range-based for loops.
+  NCollection_ForwardRangeIterator<BRepGraph_ParentExplorer> begin()
+  {
+    return NCollection_ForwardRangeIterator<BRepGraph_ParentExplorer>(this);
+  }
+
+  //! Returns a sentinel marking the end of iteration.
+  NCollection_ForwardRangeSentinel end() const { return NCollection_ForwardRangeSentinel{}; }
 
 private:
   struct StackFrame

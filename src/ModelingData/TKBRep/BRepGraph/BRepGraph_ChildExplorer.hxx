@@ -15,7 +15,9 @@
 #define _BRepGraph_ChildExplorer_HeaderFile
 
 #include <BRepGraph.hxx>
+#include <BRepGraphInc_Usage.hxx>
 
+#include <NCollection_ForwardRange.hxx>
 #include <NCollection_LocalArray.hxx>
 
 #include <TopAbs_Orientation.hxx>
@@ -112,11 +114,10 @@ public:
 
   Standard_EXPORT void Next();
 
-  [[nodiscard]] BRepGraph_NodeId Current() const { return myCurrent; }
-
-  [[nodiscard]] const TopLoc_Location& Location() const { return myLocation; }
-
-  [[nodiscard]] TopAbs_Orientation Orientation() const { return myOrientation; }
+  [[nodiscard]] BRepGraphInc::NodeUsage Current() const
+  {
+    return {myCurrent, myLocation, myOrientation};
+  }
 
   [[nodiscard]] Standard_EXPORT TopLoc_Location
     LocationOf(const BRepGraph_NodeId::Kind theKind) const;
@@ -126,6 +127,15 @@ public:
   [[nodiscard]] Standard_EXPORT TopLoc_Location LocationAt(const int theLevel) const;
 
   [[nodiscard]] Standard_EXPORT BRepGraph_NodeId NodeAt(const int theLevel) const;
+
+  //! Returns an STL-compatible iterator for range-based for loops.
+  NCollection_ForwardRangeIterator<BRepGraph_ChildExplorer> begin()
+  {
+    return NCollection_ForwardRangeIterator<BRepGraph_ChildExplorer>(this);
+  }
+
+  //! Returns a sentinel marking the end of iteration.
+  NCollection_ForwardRangeSentinel end() const { return NCollection_ForwardRangeSentinel{}; }
 
 private:
   Standard_EXPORT BRepGraph_ChildExplorer(

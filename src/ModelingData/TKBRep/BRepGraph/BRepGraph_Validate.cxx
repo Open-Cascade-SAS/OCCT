@@ -692,8 +692,8 @@ void checkWireConnectivity(const BRepGraph&                               theGra
     {
       const BRepGraphInc::CoEdgeRef& aCRE = theGraph.Refs().CoEdges().Entry(anIt.CurrentId());
       BRepGraphInc::CoEdgeUsage      aCR;
-      aCR.CoEdgeDefId   = aCRE.CoEdgeDefId;
-      aCR.LocalLocation = aCRE.LocalLocation;
+      aCR.DefId    = aCRE.CoEdgeDefId;
+      aCR.Location = aCRE.LocalLocation;
       aWireCoEdgeRefs.Append(aCR);
     }
 
@@ -707,7 +707,7 @@ void checkWireConnectivity(const BRepGraph&                               theGra
     {
       const BRepGraphInc::CoEdgeUsage& aCR = aWireCoEdgeRefs.Value(anIdx);
       const BRepGraphInc::CoEdgeDef&   aCoEdge =
-        theGraph.Topo().CoEdges().Definition(aCR.CoEdgeDefId);
+        theGraph.Topo().CoEdges().Definition(aCR.DefId);
       const BRepGraph_NodeId anEdgeId = aCoEdge.EdgeDefId;
       if (!anEdgeId.IsValid() || !isValidNodeId(theGraph, anEdgeId))
       {
@@ -735,9 +735,9 @@ void checkWireConnectivity(const BRepGraph&                               theGra
       const BRepGraphInc::CoEdgeUsage& aNextCR = anOrdered.Value(anIdx + 1);
 
       const BRepGraphInc::CoEdgeDef& aCurrCoEdge =
-        theGraph.Topo().CoEdges().Definition(aCurrCR.CoEdgeDefId);
+        theGraph.Topo().CoEdges().Definition(aCurrCR.DefId);
       const BRepGraphInc::CoEdgeDef& aNextCoEdge =
-        theGraph.Topo().CoEdges().Definition(aNextCR.CoEdgeDefId);
+        theGraph.Topo().CoEdges().Definition(aNextCR.DefId);
 
       const BRepGraphInc::EdgeDef& aCurrEdge =
         theGraph.Topo().Edges().Definition(aCurrCoEdge.EdgeDefId);

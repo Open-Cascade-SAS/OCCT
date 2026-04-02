@@ -17,6 +17,8 @@
 #include <BRepGraph.hxx>
 #include <BRepGraph_TopoView.hxx>
 
+#include <NCollection_ForwardRange.hxx>
+
 #include <type_traits>
 #include <utility>
 
@@ -217,6 +219,15 @@ public:
   [[nodiscard]] TypedId CurrentId() const { return TypedId(myIndex); }
 
   [[nodiscard]] int Index() const { return myIndex; }
+
+  //! Returns an STL-compatible iterator for range-based for loops.
+  NCollection_ForwardRangeIterator<BRepGraph_Iterator> begin()
+  {
+    return NCollection_ForwardRangeIterator<BRepGraph_Iterator>(this);
+  }
+
+  //! Returns a sentinel marking the end of iteration.
+  NCollection_ForwardRangeSentinel end() const { return NCollection_ForwardRangeSentinel{}; }
 
 private:
   //! Advance past any nodes marked as removed.

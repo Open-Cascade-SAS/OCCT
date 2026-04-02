@@ -17,8 +17,9 @@
 #ifndef _TopoDS_Iterator_HeaderFile
 #define _TopoDS_Iterator_HeaderFile
 
-#include <Standard_NoSuchObject.hxx>
+#include <NCollection_ForwardRange.hxx>
 #include <NCollection_List.hxx>
+#include <Standard_NoSuchObject.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopLoc_Location.hxx>
@@ -82,6 +83,16 @@ public:
     Standard_NoSuchObject_Raise_if(!More(), "TopoDS_Iterator::Value");
     return myShape;
   }
+
+  //! Returns an STL-compatible iterator for range-based for loops.
+  //! @warning Do not call Next() or Initialize() externally during range-for iteration.
+  NCollection_ForwardRangeIterator<TopoDS_Iterator> begin()
+  {
+    return NCollection_ForwardRangeIterator<TopoDS_Iterator>(this);
+  }
+
+  //! Returns a sentinel marking the end of iteration.
+  NCollection_ForwardRangeSentinel end() const { return NCollection_ForwardRangeSentinel{}; }
 
 private:
   //! Updates myShape from the current iterator position.
