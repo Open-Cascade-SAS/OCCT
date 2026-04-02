@@ -134,6 +134,7 @@ private:
   NCollection_Array2<double>             myAng;
   NCollection_Array2<double>             myCurv;
   NCollection_Array2<TopAbs_Orientation> myOri;
+  bool                                   myIsDefined;
   bool                                   myTouchFlag;
 };
 

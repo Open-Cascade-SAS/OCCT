@@ -22,8 +22,6 @@
 #include <TopAbs_State.hxx>
 #include <TopTrans_SurfaceTransition.hxx>
 
-static bool STATIC_DEFINED = false;
-
 static gp_Dir FUN_nCinsideS(const gp_Dir& tgC, const gp_Dir& ngS)
 {
   // Give us a curve C on surface S, <parOnC>, a parameter
@@ -233,9 +231,9 @@ TopTrans_SurfaceTransition::TopTrans_SurfaceTransition()
       myAng(1, 2, 1, 2),
       myCurv(1, 2, 1, 2),
       myOri(1, 2, 1, 2),
+      myIsDefined(false),
       myTouchFlag(false)
 {
-  STATIC_DEFINED = false;
 }
 
 void TopTrans_SurfaceTransition::Reset(const gp_Dir& Tgt,
@@ -245,11 +243,15 @@ void TopTrans_SurfaceTransition::Reset(const gp_Dir& Tgt,
                                        const double  MaxCurv,
                                        const double  MinCurv)
 {
-  STATIC_DEFINED = true;
+  myIsDefined = false;
+
+  myNorm  = Norm;
+  myTgt   = Tgt;
+  beafter = Norm ^ Tgt;
 
   constexpr double tola     = Precision::Angular();
-  bool             curismax = (std::abs(MaxD.Dot(myTgt)) < tola);
-  bool             curismin = (std::abs(MinD.Dot(myTgt)) < tola);
+  bool             curismax = (std::abs(MaxD.Dot(Tgt)) < tola);
+  bool             curismin = (std::abs(MinD.Dot(Tgt)) < tola);
 
   if ((std::abs(MaxCurv) < tola) && (std::abs(MinCurv) < tola))
   {
@@ -263,8 +265,6 @@ void TopTrans_SurfaceTransition::Reset(const gp_Dir& Tgt,
     // a boundary curve.
     // NYIxpu : compute the curvature of the curve if not MaxCurv
     //          nor MinCurv.
-
-    STATIC_DEFINED = false;
     return;
   }
 
@@ -282,20 +282,17 @@ void TopTrans_SurfaceTransition::Reset(const gp_Dir& Tgt,
   //             referential (beafter,myNorm,myTgt)  -
   // ============================================================
 
-  // beafter oriented (before, after) the intersection on the reference surface.
-  myNorm  = Norm;
-  myTgt   = Tgt;
-  beafter = Norm ^ Tgt;
   for (int i = 1; i <= 2; i++)
     for (int j = 1; j <= 2; j++)
       myAng(i, j) = 100.;
 
   myTouchFlag = false; // eap Mar 25 2002
+  myIsDefined = true;
 }
 
 void TopTrans_SurfaceTransition::Reset(const gp_Dir& Tgt, const gp_Dir& Norm)
 {
-  STATIC_DEFINED = true;
+  myIsDefined = false;
 
   // beafter oriented (before, after) the intersection on the reference surface.
   myNorm  = Norm;
@@ -307,27 +304,26 @@ void TopTrans_SurfaceTransition::Reset(const gp_Dir& Tgt, const gp_Dir& Norm)
 
   myCurvRef   = 0.;
   myTouchFlag = false; // eap Mar 25 2002
+  myIsDefined = true;
 }
 
-void TopTrans_SurfaceTransition::Compare
-  //(const double Tole,
-  (const double,
-   const gp_Dir&            Norm,
-   const gp_Dir&            MaxD,
-   const gp_Dir&            MinD,
-   const double             MaxCurv,
-   const double             MinCurv,
-   const TopAbs_Orientation S,
-   const TopAbs_Orientation O)
+void TopTrans_SurfaceTransition::Compare(const double             Tole,
+                                         const gp_Dir&            Norm,
+                                         const gp_Dir&            MaxD,
+                                         const gp_Dir&            MinD,
+                                         const double             MaxCurv,
+                                         const double             MinCurv,
+                                         const TopAbs_Orientation S,
+                                         const TopAbs_Orientation O)
 {
-  if (!STATIC_DEFINED)
+  if (!myIsDefined)
     return;
 
   double Curv = 0.;
   // ------
-  constexpr double tola     = Precision::Angular();
-  bool             curismax = (std::abs(MaxD.Dot(myTgt)) < tola);
-  bool             curismin = (std::abs(MinD.Dot(myTgt)) < tola);
+  const double tola     = (Tole > 0.0) ? Tole : Precision::Angular();
+  bool         curismax = (std::abs(MaxD.Dot(myTgt)) < tola);
+  bool         curismin = (std::abs(MinD.Dot(myTgt)) < tola);
   if (!curismax && !curismin)
   {
     // In the plane normal to <myTgt>, we see the boundary face as
@@ -335,7 +331,7 @@ void TopTrans_SurfaceTransition::Compare
     // NYIxpu : compute the curvature of the curve if not MaxCurv
     //          nor MinCurv.
 
-    STATIC_DEFINED = false;
+    myIsDefined = false;
     return;
   }
   if (curismax)
@@ -404,7 +400,7 @@ void TopTrans_SurfaceTransition::Compare
                                   myTouchFlag); // eap Mar 25 2002
       if (refn == M_Unknown)
       {
-        STATIC_DEFINED = false;
+        myIsDefined = false;
         return;
       }
       if (refn > 0)
@@ -417,17 +413,18 @@ void TopTrans_SurfaceTransition::Compare
   } // k=1..kmax
 }
 
-void TopTrans_SurfaceTransition::Compare
-  //(const double Tole,
-  (const double, const gp_Dir& Norm, const TopAbs_Orientation S, const TopAbs_Orientation O)
+void TopTrans_SurfaceTransition::Compare(const double             Tole,
+                                         const gp_Dir&            Norm,
+                                         const TopAbs_Orientation S,
+                                         const TopAbs_Orientation O)
 {
-  if (!STATIC_DEFINED)
+  if (!myIsDefined)
     return;
 
   // oriented Ang(beafter,dironF),
   // dironF normal to the curve, oriented INSIDE F, the added oriented support
-  double           Ang  = ::FUN_Ang(myNorm, beafter, myTgt, Norm, O);
-  constexpr double tola = Precision::Angular(); // nyi in arg
+  double       Ang  = ::FUN_Ang(myNorm, beafter, myTgt, Norm, O);
+  const double tola = (Tole > 0.0) ? Tole : Precision::Angular();
 
   // i = 0,1,2 : cos = 0,>0,<0
   // j = 0,1,2 : sin = 0,>0,<0
@@ -456,7 +453,7 @@ void TopTrans_SurfaceTransition::Compare
       int refn = ::FUN_refnearest(myAng(i, j), myOri(i, j), Ang, /*O*/ S, tola); // eap
       if (refn == M_Unknown)
       {
-        STATIC_DEFINED = false;
+        myIsDefined = false;
         return;
       }
 
@@ -477,9 +474,6 @@ static TopAbs_State FUN_getstate(const NCollection_Array2<double>&             A
                                  const int                                     iSTA,
                                  const int                                     iINDEX)
 {
-  if (!STATIC_DEFINED)
-    return TopAbs_UNKNOWN;
-
   double a1 = Ang(iSTA, 1), a2 = Ang(iSTA, 2);
   bool   undef1 = (a1 == 100.), undef2 = (a2 == 100.);
   bool   undef = undef1 && undef2;
@@ -507,7 +501,7 @@ static TopAbs_State FUN_getstate(const NCollection_Array2<double>&             A
 
 TopAbs_State TopTrans_SurfaceTransition::StateBefore() const
 {
-  if (!STATIC_DEFINED)
+  if (!myIsDefined)
     return TopAbs_UNKNOWN;
 
   // we take the state before of before orientations
@@ -531,7 +525,7 @@ TopAbs_State TopTrans_SurfaceTransition::StateBefore() const
 
 TopAbs_State TopTrans_SurfaceTransition::StateAfter() const
 {
-  if (!STATIC_DEFINED)
+  if (!myIsDefined)
     return TopAbs_UNKNOWN;
 
   TopAbs_State after = ::FUN_getstate(myAng, myOri, AFTER, AFTER);
@@ -553,9 +547,6 @@ TopAbs_State TopTrans_SurfaceTransition::StateAfter() const
 
 TopAbs_State TopTrans_SurfaceTransition::GetBefore(const TopAbs_Orientation Tran)
 {
-  if (!STATIC_DEFINED)
-    return TopAbs_UNKNOWN;
-
   switch (Tran)
   {
     case TopAbs_FORWARD:
@@ -570,9 +561,6 @@ TopAbs_State TopTrans_SurfaceTransition::GetBefore(const TopAbs_Orientation Tran
 
 TopAbs_State TopTrans_SurfaceTransition::GetAfter(const TopAbs_Orientation Tran)
 {
-  if (!STATIC_DEFINED)
-    return TopAbs_UNKNOWN;
-
   switch (Tran)
   {
     case TopAbs_FORWARD:

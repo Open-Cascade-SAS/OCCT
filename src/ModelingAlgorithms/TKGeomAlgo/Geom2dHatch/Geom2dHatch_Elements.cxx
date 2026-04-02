@@ -111,11 +111,9 @@ bool Geom2dHatch_Elements::OtherSegment(const gp_Pnt2d& P, gp_Lin2d& L, double& 
     if (i < myCurEdge)
       continue;
 
-    void*                ptrmyMap = (void*)(&myMap);
-    Geom2dHatch_Element& Item =
-      ((NCollection_DataMap<int, Geom2dHatch_Element>*)ptrmyMap)->ChangeFind(Itertemp.Key());
-    Geom2dAdaptor_Curve& E  = Item.ChangeCurve();
-    TopAbs_Orientation   Or = Item.Orientation();
+    Geom2dHatch_Element& Item = myMap.ChangeFind(Itertemp.Key());
+    Geom2dAdaptor_Curve& E    = Item.ChangeCurve();
+    TopAbs_Orientation   Or   = Item.Orientation();
     if (Or == TopAbs_FORWARD || Or == TopAbs_REVERSED)
     {
       double aFPar = E.FirstParameter(), aLPar = E.LastParameter();
@@ -221,12 +219,9 @@ bool Geom2dHatch_Elements::RejectEdge(const gp_Lin2d&, const double) const
 
 void Geom2dHatch_Elements::CurrentEdge(Geom2dAdaptor_Curve& E, TopAbs_Orientation& Or) const
 {
-  void*                ptrmyMap = (void*)(&myMap);
-  Geom2dHatch_Element& Item =
-    ((NCollection_DataMap<int, Geom2dHatch_Element>*)ptrmyMap)->ChangeFind(Iter.Key());
-
-  E  = Item.ChangeCurve();
-  Or = Item.Orientation();
+  const Geom2dHatch_Element& anItem = myMap.Find(Iter.Key());
+  E                                 = anItem.Curve();
+  Or                                = anItem.Orientation();
 }
 
 //=================================================================================================

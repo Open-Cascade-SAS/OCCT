@@ -21,8 +21,6 @@
 #include <iomanip>
 #include <fstream>
 
-#define RAISE_IF_NOSUCHOBJECT 0
-
 //=================================================================================================
 
 HatchGen_PointOnHatching::HatchGen_PointOnHatching()
@@ -89,12 +87,7 @@ int HatchGen_PointOnHatching::NbPoints() const
 
 const HatchGen_PointOnElement& HatchGen_PointOnHatching::Point(const int Index) const
 {
-#if RAISE_IF_NOSUCHOBJECT
-  int NbPnt = myPoints.Length();
-  Standard_OutOfRange_Raise_if(Index < 1 || Index > NbPnt, "");
-#endif
-  const HatchGen_PointOnElement& Point = myPoints.Value(Index);
-  return Point;
+  return myPoints.Value(Index);
 }
 
 //=======================================================================
@@ -104,10 +97,6 @@ const HatchGen_PointOnElement& HatchGen_PointOnHatching::Point(const int Index) 
 
 void HatchGen_PointOnHatching::RemPoint(const int Index)
 {
-#if RAISE_IF_NOSUCHOBJECT
-  int NbPnt = myPoints.Length();
-  Standard_OutOfRange_Raise_if(Index < 1 || Index > NbPnt, "");
-#endif
   myPoints.Remove(Index);
 }
 

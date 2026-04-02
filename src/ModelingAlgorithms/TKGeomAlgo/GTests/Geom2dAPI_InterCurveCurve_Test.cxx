@@ -1,4 +1,4 @@
-// Copyright (c) 2025 OPEN CASCADE SAS
+// Copyright (c) 2026 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -19,6 +19,8 @@
 #include <gp_Dir2d.hxx>
 #include <math_NewtonFunctionRoot.hxx>
 #include <math_TrigonometricEquationFunction.hxx>
+#include <Standard_NullObject.hxx>
+#include <Standard_OutOfRange.hxx>
 
 #include <gtest/gtest.h>
 
@@ -63,4 +65,42 @@ TEST(Geom2dAPI_InterCurveCurve_Test, OCC29289_EllipseIntersectionNewtonRoot)
     double TetaNewton = Resol.Root();
     EXPECT_LE(std::abs(Teta - TetaNewton), 1.e-7) << "Error: Newton root is wrong for " << Teta;
   }
+}
+
+TEST(Geom2dAPI_InterCurveCurve_Test, PointRejectsZeroIndex)
+{
+  gp_Elips2d                  anEllipse1(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 2.0, 1.0);
+  occ::handle<Geom2d_Ellipse> aCurve1 = new Geom2d_Ellipse(anEllipse1);
+  gp_Elips2d                  anEllipse2(gp_Ax2d(gp_Pnt2d(0.5, 0.5), gp_Dir2d(1.0, 1.0)), 2.0, 1.0);
+  occ::handle<Geom2d_Ellipse> aCurve2 = new Geom2d_Ellipse(anEllipse2);
+
+  Geom2dAPI_InterCurveCurve anIntersector(aCurve1, aCurve2, 1.0e-7);
+  ASSERT_GT(anIntersector.NbPoints(), 0);
+
+#ifndef No_Exception
+  EXPECT_THROW((void)anIntersector.Point(0), Standard_OutOfRange);
+#endif
+}
+
+// Regression test for bug #11: Init with null handle must raise Standard_NullObject.
+TEST(Geom2dAPI_InterCurveCurve_Test, Init_NullHandle_RaisesException)
+{
+#ifndef No_Exception
+  occ::handle<Geom2d_Curve> aNullCurve;
+  gp_Elips2d                anEllipse(gp_Ax2d(gp_Pnt2d(0., 0.), gp_Dir2d(1., 0.)), 2., 1.);
+  occ::handle<Geom2d_Curve> aValidCurve = new Geom2d_Ellipse(anEllipse);
+
+  // Both null.
+  EXPECT_THROW(Geom2dAPI_InterCurveCurve(aNullCurve, aNullCurve, 1.0e-7), Standard_NullObject);
+
+  // First null.
+  EXPECT_THROW(Geom2dAPI_InterCurveCurve(aNullCurve, aValidCurve, 1.0e-7), Standard_NullObject);
+
+  // Second null.
+  EXPECT_THROW(Geom2dAPI_InterCurveCurve(aValidCurve, aNullCurve, 1.0e-7), Standard_NullObject);
+
+  // Single-curve Init with null.
+  Geom2dAPI_InterCurveCurve anInter;
+  EXPECT_THROW(anInter.Init(aNullCurve, 1.0e-7), Standard_NullObject);
+#endif
 }

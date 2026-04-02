@@ -39,6 +39,8 @@ static bool IsInSegment(const gp_Vec& P1P2,
                         double&       Param,
                         const double  Tolerance)
 {
+  if (NP1P2 < Precision::Computational())
+    return false;
   Param = P1P2.Dot(P1P);
   Param /= NP1P2;
   if (Param > (NP1P2 + Tolerance))
@@ -755,11 +757,9 @@ void Intf_InterferencePolygonPolyhedron::Intersect(const gp_Pnt&     BegO,
                       triNor,
                       triDp);
 
-  double dBegTri = (triNor * BegO.XYZ()) - triDp; // Distance <BegO> plan
-  double dEndTri = (triNor * EndO.XYZ()) - triDp; // Distance <EndO> plan
-  gp_XYZ segO    = EndO.XYZ() - BegO.XYZ();
-  segO.Normalize();
-  bool NoIntersectionWithTriangle = false;
+  double dBegTri                    = (triNor * BegO.XYZ()) - triDp; // Distance <BegO> plan
+  double dEndTri                    = (triNor * EndO.XYZ()) - triDp; // Distance <EndO> plan
+  bool   NoIntersectionWithTriangle = false;
 
   double param;
   t = dBegTri - dEndTri;
@@ -989,18 +989,22 @@ void Intf_InterferencePolygonPolyhedron::Intersect(const gp_Pnt&     BegO,
   {
     gp_Vec VecPol(BegO, EndO);
     double NVecPol = VecPol.Magnitude();
+    if (NVecPol < Precision::Computational())
+      return;
     gp_Dir DirPol(VecPol);
     gp_Lin LinPol(BegO, DirPol);
     double dist2, ParamOnO, ParamOnT;
 
     for (int i = 0; i < 3; i++)
     {
-      int            pTri_ip1pc3 = pTri[Pourcent3[i + 1]];
-      int            pTri_i      = pTri[i];
-      const gp_Pnt&  BegT        = ToolPolyh::Point(thePolyh, pTri_ip1pc3);
-      const gp_Pnt&  EndT        = ToolPolyh::Point(thePolyh, pTri_i);
-      gp_Vec         VecTri(BegT, EndT);
-      double         NVecTri = VecTri.Magnitude();
+      int           pTri_ip1pc3 = pTri[Pourcent3[i + 1]];
+      int           pTri_i      = pTri[i];
+      const gp_Pnt& BegT        = ToolPolyh::Point(thePolyh, pTri_ip1pc3);
+      const gp_Pnt& EndT        = ToolPolyh::Point(thePolyh, pTri_i);
+      gp_Vec        VecTri(BegT, EndT);
+      double        NVecTri = VecTri.Magnitude();
+      if (NVecTri < Precision::Computational())
+        continue;
       gp_Dir         DirTri(VecTri);
       gp_Lin         LinTri(BegT, DirTri);
       Extrema_ExtElC Extrema(LinPol, LinTri, 0.00000001);
@@ -1023,7 +1027,7 @@ void Intf_InterferencePolygonPolyhedron::Intersect(const gp_Pnt&     BegO,
                 if (IsInSegment(VecTri, gp_Vec(BegT, PT), NVecTri, ParamOnT, Tolerance))
                 {
                   //-- cout<<" * "<<endl;
-                  gp_XYZ spLieu = BegT.XYZ() + ((EndT.XYZ() - BegT.XYZ()) * param);
+                  gp_XYZ spLieu = BegT.XYZ() + ((EndT.XYZ() - BegT.XYZ()) * ParamOnT);
                   int    tmin, tmax;
                   if (pTri_i > pTri_ip1pc3)
                   {
@@ -1300,18 +1304,22 @@ void Intf_InterferencePolygonPolyhedron::Intersect(const gp_Pnt&     BegO,
   {
     gp_Vec VecPol(BegO, EndO);
     double NVecPol = VecPol.Magnitude();
+    if (NVecPol < Precision::Computational())
+      return;
     gp_Dir DirPol(VecPol);
     gp_Lin LinPol(BegO, DirPol);
     double dist2, ParamOnO, ParamOnT;
 
     for (int i = 0; i < 3; i++)
     {
-      int            pTri_ip1pc3 = pTri[Pourcent3[i + 1]];
-      int            pTri_i      = pTri[i];
-      const gp_Pnt&  BegT        = ToolPolyh::Point(thePolyh, pTri_ip1pc3);
-      const gp_Pnt&  EndT        = ToolPolyh::Point(thePolyh, pTri_i);
-      gp_Vec         VecTri(BegT, EndT);
-      double         NVecTri = VecTri.Magnitude();
+      int           pTri_ip1pc3 = pTri[Pourcent3[i + 1]];
+      int           pTri_i      = pTri[i];
+      const gp_Pnt& BegT        = ToolPolyh::Point(thePolyh, pTri_ip1pc3);
+      const gp_Pnt& EndT        = ToolPolyh::Point(thePolyh, pTri_i);
+      gp_Vec        VecTri(BegT, EndT);
+      double        NVecTri = VecTri.Magnitude();
+      if (NVecTri < Precision::Computational())
+        continue;
       gp_Dir         DirTri(VecTri);
       gp_Lin         LinTri(BegT, DirTri);
       Extrema_ExtElC Extrema(LinPol, LinTri, 0.00000001);
@@ -1334,7 +1342,7 @@ void Intf_InterferencePolygonPolyhedron::Intersect(const gp_Pnt&     BegO,
                 if (IsInSegment(VecTri, gp_Vec(BegT, PT), NVecTri, ParamOnT, Tolerance))
                 {
                   //-- cout<<" * "<<endl;
-                  gp_XYZ spLieu = BegT.XYZ() + ((EndT.XYZ() - BegT.XYZ()) * param);
+                  gp_XYZ spLieu = BegT.XYZ() + ((EndT.XYZ() - BegT.XYZ()) * ParamOnT);
                   int    tmin, tmax;
                   if (pTri_i > pTri_ip1pc3)
                   {

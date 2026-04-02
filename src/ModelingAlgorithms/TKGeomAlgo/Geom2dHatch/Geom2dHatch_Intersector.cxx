@@ -73,14 +73,19 @@ void Geom2dHatch_Intersector::LocalGeometry(const Geom2dAdaptor_Curve& E,
                                             gp_Dir2d&                  Norm,
                                             double&                    C) const
 {
-  // double f,l;
   GeomLProp_CLProps2d Prop(E.Curve(), U, 2, Precision::PConfusion());
 
-  if (!Prop.IsTangentDefined())
-    return;
+  C = 0.;
+  if (Prop.IsTangentDefined())
+  {
+    Prop.Tangent(Tang);
+    C = Prop.Curvature();
+  }
+  else
+  {
+    Tang = gp_Dir2d(1., 0.);
+  }
 
-  Prop.Tangent(Tang);
-  C = Prop.Curvature();
   if (C > Precision::PConfusion() && C < RealLast())
     Prop.Normal(Norm);
   else

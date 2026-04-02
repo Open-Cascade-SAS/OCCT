@@ -20,6 +20,7 @@
 #include <ElSLib.hxx>
 #include <IntPatch_SpecialPoints.hxx>
 #include <NCollection_IncAllocator.hxx>
+#include <Precision.hxx>
 #include <TopAbs_State.hxx>
 
 // It is pure empirical value.
@@ -348,8 +349,11 @@ static bool IsInsideIn2d(const gp_Pnt2d& aBasePnt,
   gp_Vec2d aVec2d(aBasePnt, aNextPnt);
 
   // d*d = (basevec^(nextpnt-basepnt))**2 / basevec**2
+  double aSqMag = aBaseVec.SquareMagnitude();
+  if (aSqMag < Precision::SquareComputational())
+    return false;
   double aCross      = aVec2d.Crossed(aBaseVec);
-  double aSquareDist = aCross * aCross / aBaseVec.SquareMagnitude();
+  double aSquareDist = aCross * aCross / aSqMag;
 
   return (aSquareDist <= aSquareMaxDist);
 }
@@ -367,7 +371,10 @@ static bool IsInsideIn3d(const gp_Pnt& aBasePnt,
   gp_Vec aVec(aBasePnt, aNextPnt);
 
   // d*d = (basevec^(nextpnt-basepnt))**2 / basevec**2
-  double aSquareDist = aVec.CrossSquareMagnitude(aBaseVec) / aBaseVec.SquareMagnitude();
+  double aSqMag = aBaseVec.SquareMagnitude();
+  if (aSqMag < Precision::SquareComputational())
+    return false;
+  double aSquareDist = aVec.CrossSquareMagnitude(aBaseVec) / aSqMag;
 
   return (aSquareDist <= aSquareMaxDist);
 }
@@ -472,8 +479,13 @@ static occ::handle<IntPatch_WLine> DeleteByTube(const occ::handle<IntPatch_WLine
       gp_XY aPntOnS2[2] = {gp_XY(UonS2[1] - UonS2[0], VonS2[1] - VonS2[0]),
                            gp_XY(UonS2[2] - UonS2[1], VonS2[2] - VonS2[1])};
 
-      double aStepOnS1 = aPntOnS1[0].SquareModulus() / aPntOnS1[1].SquareModulus();
-      double aStepOnS2 = aPntOnS2[0].SquareModulus() / aPntOnS2[1].SquareModulus();
+      double aSqModS1 = aPntOnS1[1].SquareModulus();
+      double aSqModS2 = aPntOnS2[1].SquareModulus();
+      if (aSqModS1 < Precision::SquareComputational()
+          || aSqModS2 < Precision::SquareComputational())
+        continue;
+      double aStepOnS1 = aPntOnS1[0].SquareModulus() / aSqModS1;
+      double aStepOnS2 = aPntOnS2[0].SquareModulus() / aSqModS2;
 
       // Check very rare case when wline fluctuates nearly one point and some of them may be equal.
       // Middle point will be deleted when such situation occurs.
@@ -485,7 +497,8 @@ static occ::handle<IntPatch_WLine> DeleteByTube(const occ::handle<IntPatch_WLine
         double aSqrRatio = 0.;
         if (!isPlanePlane)
         {
-          aSqrRatio = aPrevStep / aCurrStep;
+          aSqrRatio =
+            (aCurrStep > Precision::SquareComputational()) ? aPrevStep / aCurrStep : aMaxSqrRatio;
           if (aSqrRatio < 1.)
           {
             aSqrRatio = 1. / aSqrRatio;

@@ -57,7 +57,7 @@ public:
   void Closed(const bool flag) { ClosedPolygon = flag; }
 
   // clang-format off
-  bool Closed() const { return false; } // -- Voir si le cas Closed est traitable
+  bool Closed() const { return ClosedPolygon; } // -- Voir si le cas Closed est traitable
 
   // clang-format on
 

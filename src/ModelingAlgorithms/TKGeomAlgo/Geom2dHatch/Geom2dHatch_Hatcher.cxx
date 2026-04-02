@@ -898,6 +898,9 @@ bool Geom2dHatch_Hatcher::GlobalTransition(HatchGen_PointOnHatching& Point)
            Param,
            PntE.Parameter());
 #endif
+    // TODO: finding #25 - this overwrites Param computed by the switch above,
+    // making the position-based logic dead code. Removing this line caused
+    // blend regressions. The switch logic may need endpoint-specific investigation.
     Param = PntE.Parameter();
 
     myIntersector.LocalGeometry(CurveE.Curve(), Param, Tangente2d, Normale2d, Courbure);

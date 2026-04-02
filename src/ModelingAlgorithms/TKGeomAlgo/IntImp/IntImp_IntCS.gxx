@@ -37,9 +37,9 @@ IntImp_IntCS::IntImp_IntCS(const double       U,
       v(0.0),
       tol(TolTangency * TolTangency)
 {
-  if (tol < 1e-13)
+  if (tol < Precision::SquareConfusion())
   {
-    tol = 1e-13;
+    tol = Precision::SquareConfusion();
   }
   math_FunctionSetRoot Rsnld(myFunction);
   double               u0, u1, v0, v1, w0, w1;
@@ -83,6 +83,10 @@ IntImp_IntCS::IntImp_IntCS(const TheFunction& F, const double TolTangency)
       myFunction(F),
       tol(TolTangency * TolTangency)
 {
+  if (tol < Precision::SquareConfusion())
+  {
+    tol = Precision::SquareConfusion();
+  }
 }
 
 void IntImp_IntCS::Perform(const double          U,

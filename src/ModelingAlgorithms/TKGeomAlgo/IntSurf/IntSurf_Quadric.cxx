@@ -14,6 +14,7 @@
 
 #include <ElCLib.hxx>
 #include <ElSLib.hxx>
+#include <gp.hxx>
 #include <gp_Cone.hxx>
 #include <gp_Cylinder.hxx>
 #include <gp_Pln.hxx>
@@ -23,6 +24,15 @@
 #include <gp_Vec.hxx>
 #include <IntSurf_Quadric.hxx>
 #include <StdFail_NotDone.hxx>
+
+namespace
+{
+bool hasMagnitudeForNormalization(const gp_Vec& theVector)
+{
+  const double aResolution = gp::Resolution();
+  return theVector.SquareMagnitude() > aResolution * aResolution;
+}
+} // namespace
 
 // ============================================================
 IntSurf_Quadric::IntSurf_Quadric()
@@ -251,7 +261,14 @@ gp_Vec IntSurf_Quadric::Gradient(const gp_Pnt& P) const
       {
         grad.Reverse();
       }
-      grad.Normalize();
+      if (hasMagnitudeForNormalization(grad))
+      {
+        grad.Normalize();
+      }
+      else
+      {
+        grad.SetCoord(0.0, 0.0, 0.0);
+      }
     }
     break;
     case GeomAbs_Torus: // torus
@@ -345,9 +362,13 @@ void IntSurf_Quadric::ValAndGrad(const gp_Pnt& P, double& Dist, gp_Vec& Grad) co
       //-- Si le gardient est nul, on est sur l axe
       //-- et dans ce cas dist vaut 0
       //-- On peut donc renvoyer une valeur quelconque.
-      if (Grad.X() > 1e-13 || Grad.Y() > 1e-13 || Grad.Z() > 1e-13)
+      if (hasMagnitudeForNormalization(Grad))
       {
         Grad.Normalize();
+      }
+      else
+      {
+        Grad.SetCoord(0.0, 0.0, 0.0);
       }
     }
     break;

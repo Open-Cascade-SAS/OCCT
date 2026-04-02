@@ -735,12 +735,51 @@ void SectionPointToParameters(const Intf_SectionPoint& Sp,
       cb   = (gp_Vec(PC, PA).Crossed(gp_Vec(PC, P))).Dot(Normale);
       cabc = ca + cb + cc;
 
-      ca /= cabc;
-      cb /= cabc;
-      cc /= cabc;
+      if (std::abs(cabc) > Precision::Computational())
+      {
+        ca /= cabc;
+        cb /= cabc;
+        cc /= cabc;
 
-      u1 = ca * ua + cb * ub + cc * uc;
-      v1 = ca * va + cb * vb + cc * vc;
+        u1 = ca * ua + cb * ub + cc * uc;
+        v1 = ca * va + cb * vb + cc * vc;
+      }
+      else
+      {
+        const gp_Vec aAB(PA, PB);
+        const gp_Vec aBC(PB, PC);
+        const gp_Vec aCA(PC, PA);
+        const double aSqAB = aAB.SquareMagnitude();
+        const double aSqBC = aBC.SquareMagnitude();
+        const double aSqCA = aCA.SquareMagnitude();
+
+        if (aSqAB >= aSqBC && aSqAB >= aSqCA && aSqAB > Precision::SquareConfusion())
+        {
+          double aT = gp_Vec(PA, P).Dot(aAB) / aSqAB;
+          aT        = std::min(1.0, std::max(0.0, aT));
+          u1        = ua + aT * (ub - ua);
+          v1        = va + aT * (vb - va);
+        }
+        else if (aSqBC >= aSqCA && aSqBC > Precision::SquareConfusion())
+        {
+          double aT = gp_Vec(PB, P).Dot(aBC) / aSqBC;
+          aT        = std::min(1.0, std::max(0.0, aT));
+          u1        = ub + aT * (uc - ub);
+          v1        = vb + aT * (vc - vb);
+        }
+        else if (aSqCA > Precision::SquareConfusion())
+        {
+          double aT = gp_Vec(PC, P).Dot(aCA) / aSqCA;
+          aT        = std::min(1.0, std::max(0.0, aT));
+          u1        = uc + aT * (ua - uc);
+          v1        = vc + aT * (va - vc);
+        }
+        else
+        {
+          u1 = ua;
+          v1 = va;
+        }
+      }
       break;
     }
     default: {

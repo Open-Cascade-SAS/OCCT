@@ -56,6 +56,8 @@ void Geom2dAPI_InterCurveCurve::Init(const occ::handle<Geom2d_Curve>& C1,
                                      const occ::handle<Geom2d_Curve>& C2,
                                      const double                     Tol)
 {
+  Standard_NullObject_Raise_if(C1.IsNull(), "Geom2dAPI_InterCurveCurve::Init - C1 is null");
+  Standard_NullObject_Raise_if(C2.IsNull(), "Geom2dAPI_InterCurveCurve::Init - C2 is null");
   myCurve1 = occ::down_cast<Geom2d_Curve>(C1->Copy());
   myCurve2 = occ::down_cast<Geom2d_Curve>(C2->Copy());
 
@@ -69,6 +71,7 @@ void Geom2dAPI_InterCurveCurve::Init(const occ::handle<Geom2d_Curve>& C1,
 
 void Geom2dAPI_InterCurveCurve::Init(const occ::handle<Geom2d_Curve>& C1, const double Tol)
 {
+  Standard_NullObject_Raise_if(C1.IsNull(), "Geom2dAPI_InterCurveCurve::Init - C1 is null");
   myCurve1 = occ::down_cast<Geom2d_Curve>(C1->Copy());
   myCurve2.Nullify();
 
@@ -91,8 +94,7 @@ int Geom2dAPI_InterCurveCurve::NbPoints() const
 
 gp_Pnt2d Geom2dAPI_InterCurveCurve::Point(const int Index) const
 {
-  Standard_OutOfRange_Raise_if(Index < 0 || Index > NbPoints(),
-                               "Geom2dAPI_InterCurveCurve::Points");
+  Standard_OutOfRange_Raise_if(Index < 1 || Index > NbPoints(), "Geom2dAPI_InterCurveCurve::Point");
 
   return (myIntersector.Point(Index)).Value();
 }

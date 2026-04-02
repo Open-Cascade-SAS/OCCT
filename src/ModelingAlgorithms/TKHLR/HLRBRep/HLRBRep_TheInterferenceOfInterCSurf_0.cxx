@@ -22,6 +22,7 @@
 #include <HLRBRep_ThePolyhedronToolOfInterCSurf.hxx>
 #include <gp_Lin.hxx>
 #include <Bnd_BoundSortBox.hxx>
+#include <Precision.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_XYZ.hxx>
 

@@ -591,6 +591,10 @@ void PerformConicSurfLine(const gp_Lin&           theLine,
   {
     int nbsu = SurfaceTool::NbSamplesU(theSurface, theU1, theU2);
     int nbsv = SurfaceTool::NbSamplesV(theSurface, theV1, theV2);
+    if (nbsu < 1)
+      nbsu = 1;
+    if (nbsv < 1)
+      nbsv = 1;
 
     bool U1inf = Precision::IsInfinite(theU1);
     bool U2inf = Precision::IsInfinite(theU2);

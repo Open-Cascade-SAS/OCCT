@@ -417,6 +417,8 @@ void GeomPlate_BuildPlateSurface::Add(const occ::handle<GeomPlate_PointConstrain
 //---------------------------------------------------------
 void GeomPlate_BuildPlateSurface::Perform(const Message_ProgressRange& theProgress)
 {
+  myGeomPlateSurface.Nullify();
+
 #ifdef OCCT_DEBUG
   // Timing
   OSD_Chronometer Chrono;
