@@ -255,7 +255,7 @@ private:
 };
 
 // ---------------------------------------------------------------------------
-// Convenience type aliases (skip removed nodes — default)
+// Convenience type aliases (skip removed nodes  default)
 // ---------------------------------------------------------------------------
 
 using BRepGraph_SolidIterator      = BRepGraph_Iterator<BRepGraphInc::SolidDef>;
@@ -271,7 +271,7 @@ using BRepGraph_ProductIterator    = BRepGraph_Iterator<BRepGraphInc::ProductDef
 using BRepGraph_OccurrenceIterator = BRepGraph_Iterator<BRepGraphInc::OccurrenceDef>;
 
 // ---------------------------------------------------------------------------
-// Full-traverse aliases (include removed/invalidated nodes — use only
+// Full-traverse aliases (include removed/invalidated nodes  use only
 // in special cases such as compaction, validation, or debugging)
 // ---------------------------------------------------------------------------
 

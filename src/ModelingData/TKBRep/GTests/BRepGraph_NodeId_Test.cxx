@@ -161,12 +161,12 @@ TEST(BRepGraph_NodeIdTest, TypedArithmetic_IndexZeroBoundary)
   ++anEdge;
   EXPECT_EQ(anEdge.Index, 1);
 
-  // Retreat back to zero — still valid.
+  // Retreat back to zero  still valid.
   const BRepGraph_EdgeId aZero = anEdge - 1;
   EXPECT_EQ(aZero.Index, 0);
   EXPECT_TRUE(aZero.IsValid());
 
-  // Subtract to -1 — produces invalid id (allowed by constructor).
+  // Subtract to -1  produces invalid id (allowed by constructor).
   const BRepGraph_EdgeId anInvalid = aZero - 1;
   EXPECT_EQ(anInvalid.Index, -1);
   EXPECT_FALSE(anInvalid.IsValid());
