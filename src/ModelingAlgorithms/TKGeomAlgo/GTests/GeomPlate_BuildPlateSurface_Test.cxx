@@ -48,6 +48,5 @@ TEST(GeomPlate_BuildPlateSurface, Perform_ClearsStaleResult)
   aBuilder.Init();
   aBuilder.Perform();
   EXPECT_FALSE(aBuilder.IsDone());
-  EXPECT_TRUE(aBuilder.Surface().IsNull())
-    << "Surface must be null after Init() + empty Perform()";
+  EXPECT_TRUE(aBuilder.Surface().IsNull()) << "Surface must be null after Init() + empty Perform()";
 }

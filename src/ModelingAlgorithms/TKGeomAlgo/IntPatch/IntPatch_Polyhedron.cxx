@@ -533,8 +533,7 @@ int IntPatch_Polyhedron::TriConnex(const int Triang,
   //-- Alors on retourne OtherP a 0
   //-- et Tricon = Triangle
   //--
-  if (Pedge != 0
-      && Point(Pivot).SquareDistance(Point(Pedge)) <= LONGUEUR_MINI_EDGE_TRIANGLE)
+  if (Pedge != 0 && Point(Pivot).SquareDistance(Point(Pedge)) <= LONGUEUR_MINI_EDGE_TRIANGLE)
   {
     OtherP = 0;
     TriCon = Triang;
@@ -543,8 +542,7 @@ int IntPatch_Polyhedron::TriConnex(const int Triang,
 #endif
     return (TriCon);
   }
-  if (Pedge != 0
-      && Point(OtherP).SquareDistance(Point(Pedge)) <= LONGUEUR_MINI_EDGE_TRIANGLE)
+  if (Pedge != 0 && Point(OtherP).SquareDistance(Point(Pedge)) <= LONGUEUR_MINI_EDGE_TRIANGLE)
   {
 #if MSG_DEBUG
     std::cout << " Probleme ds IntCurveSurface_Polyhedron : OtherP et PEdge Confondus "

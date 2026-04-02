@@ -26,10 +26,10 @@
 
 static Geom2dHatch_Element makeCircleElement()
 {
-  gp_Ax2d                     anAxis(gp_Pnt2d(0, 0), gp_Dir2d(1, 0));
-  occ::handle<Geom2d_Circle>  aCircle = new Geom2d_Circle(anAxis, 1.0);
-  Geom2dAdaptor_Curve         aCurve(aCircle);
-  Geom2dHatch_Element         anElem(aCurve, TopAbs_FORWARD);
+  gp_Ax2d                    anAxis(gp_Pnt2d(0, 0), gp_Dir2d(1, 0));
+  occ::handle<Geom2d_Circle> aCircle = new Geom2d_Circle(anAxis, 1.0);
+  Geom2dAdaptor_Curve        aCurve(aCircle);
+  Geom2dHatch_Element        anElem(aCurve, TopAbs_FORWARD);
   return anElem;
 }
 

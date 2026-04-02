@@ -34,7 +34,7 @@ TEST(IntCurveSurface_IntersectionPoint, DefaultConstructor_TransitionInitialized
 // Value constructor initializes all fields correctly.
 TEST(IntCurveSurface_IntersectionPoint, ValueConstructor_AllFieldsSet)
 {
-  gp_Pnt                                  aP(1.0, 2.0, 3.0);
+  gp_Pnt                            aP(1.0, 2.0, 3.0);
   IntCurveSurface_IntersectionPoint aPt(aP, 0.5, 0.6, 0.7, IntCurveSurface_In);
 
   EXPECT_NEAR(aPt.Pnt().X(), 1.0, 1e-15);

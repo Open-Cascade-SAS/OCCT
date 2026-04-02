@@ -72,8 +72,8 @@ bool GeomFill_GuideTrihedronAC::D0(const double Param,
 
   if (n.Magnitude() < Precision::Computational())
     return false;
-  Normal   = n.Normalized();
-  B        = To.Crossed(Normal);
+  Normal       = n.Normalized();
+  B            = To.Crossed(Normal);
   double aMagB = B.Magnitude();
   if (aMagB < Precision::Computational())
     return false;

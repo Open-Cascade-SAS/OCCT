@@ -73,12 +73,12 @@ TEST(IntPolyh_Intersection, SphereCylinder_ValidUVCoordinates)
 {
   gp_Ax3 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
 
-  occ::handle<Geom_SphericalSurface>    aSphere = new Geom_SphericalSurface(anAxis, 2.0);
-  occ::handle<GeomAdaptor_Surface>      aSurfS  = new GeomAdaptor_Surface(aSphere);
+  occ::handle<Geom_SphericalSurface> aSphere = new Geom_SphericalSurface(anAxis, 2.0);
+  occ::handle<GeomAdaptor_Surface>   aSurfS  = new GeomAdaptor_Surface(aSphere);
 
-  gp_Ax3                                aCylAxis(gp_Pnt(1.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
-  occ::handle<Geom_CylindricalSurface>  aCyl = new Geom_CylindricalSurface(aCylAxis, 1.0);
-  occ::handle<GeomAdaptor_Surface>      aSurfC = new GeomAdaptor_Surface(aCyl);
+  gp_Ax3                               aCylAxis(gp_Pnt(1.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  occ::handle<Geom_CylindricalSurface> aCyl   = new Geom_CylindricalSurface(aCylAxis, 1.0);
+  occ::handle<GeomAdaptor_Surface>     aSurfC = new GeomAdaptor_Surface(aCyl);
 
   IntPolyh_Intersection anInter(aSurfS, aSurfC);
   EXPECT_TRUE(anInter.IsDone());
@@ -100,8 +100,8 @@ TEST(IntPolyh_Intersection, SphereCylinder_ValidUVCoordinates)
       // UV1 must not equal UV2 (different surfaces have different parametrization).
       const bool isSameUV = (std::abs(u1 - u2) < Precision::PConfusion()
                              && std::abs(v1 - v2) < Precision::PConfusion());
-      EXPECT_FALSE(isSameUV)
-        << "UV1 == UV2 at line=" << iL << " pt=" << iP << " (possible SetUV copy/paste bug)";
+      EXPECT_FALSE(isSameUV) << "UV1 == UV2 at line=" << iL << " pt=" << iP
+                             << " (possible SetUV copy/paste bug)";
     }
   }
 }

@@ -30,7 +30,7 @@ static occ::handle<GeomAdaptor_Surface> makeTestPlane()
 // Regression test for bug #55: singularity flags must be initialized to false.
 TEST(IntCurveSurface_ThePolyhedronOfHInter, SingularityFlags_InitializedFalse)
 {
-  occ::handle<GeomAdaptor_Surface>        aSurf = makeTestPlane();
+  occ::handle<GeomAdaptor_Surface>      aSurf = makeTestPlane();
   IntCurveSurface_ThePolyhedronOfHInter aPoly(aSurf, 3, 3, -1., -1., 1., 1.);
 
   EXPECT_FALSE(aPoly.HasUMinSingularity());
@@ -42,7 +42,7 @@ TEST(IntCurveSurface_ThePolyhedronOfHInter, SingularityFlags_InitializedFalse)
 // Singularity setters should update the flags.
 TEST(IntCurveSurface_ThePolyhedronOfHInter, SingularitySetters_UpdateFlags)
 {
-  occ::handle<GeomAdaptor_Surface>        aSurf = makeTestPlane();
+  occ::handle<GeomAdaptor_Surface>      aSurf = makeTestPlane();
   IntCurveSurface_ThePolyhedronOfHInter aPoly(aSurf, 3, 3, -1., -1., 1., 1.);
 
   aPoly.UMinSingularity(true);
@@ -57,7 +57,7 @@ TEST(IntCurveSurface_ThePolyhedronOfHInter, SingularitySetters_UpdateFlags)
 // Basic construction produces valid polyhedron.
 TEST(IntCurveSurface_ThePolyhedronOfHInter, BasicConstruction_ValidMesh)
 {
-  occ::handle<GeomAdaptor_Surface>        aSurf = makeTestPlane();
+  occ::handle<GeomAdaptor_Surface>      aSurf = makeTestPlane();
   IntCurveSurface_ThePolyhedronOfHInter aPoly(aSurf, 4, 4, -1., -1., 1., 1.);
 
   int nbU = 0, nbV = 0;
@@ -94,11 +94,11 @@ TEST(IntCurveSurface_ThePolyhedronOfHInter, ParamArrayConstructor_MinimumSize)
 // PlaneEquation for a valid triangle must produce finite results.
 TEST(IntCurveSurface_ThePolyhedronOfHInter, PlaneEquation_FiniteResults)
 {
-  occ::handle<GeomAdaptor_Surface>        aSurf = makeTestPlane();
+  occ::handle<GeomAdaptor_Surface>      aSurf = makeTestPlane();
   IntCurveSurface_ThePolyhedronOfHInter aPoly(aSurf, 3, 3, -1., -1., 1., 1.);
 
-  gp_XYZ  aNormal;
-  double  aPolarDist = 0.0;
+  gp_XYZ aNormal;
+  double aPolarDist = 0.0;
   aPoly.PlaneEquation(1, aNormal, aPolarDist);
 
   EXPECT_TRUE(std::isfinite(aNormal.X()));

@@ -203,7 +203,7 @@ bool FairCurve_MinimalVariation::Compute(const gp_Vec2d&         DeltaP1,
   {
     // rotation of the derivative premiereDeltaAngle1
     gp_Vec2d OldDerive(Poles->Value(Poles->Lower()), Poles->Value(Poles->Lower() + 1));
-    double aKnotGapL = Knots->Value(Knots->Lower() + 1) - Knots->Value(Knots->Lower());
+    double   aKnotGapL = Knots->Value(Knots->Lower() + 1) - Knots->Value(Knots->Lower());
     if (std::abs(aKnotGapL) > Precision::Computational())
       OldDerive *= Degree / aKnotGapL;
     ADelta(kk) = (OldDerive.Rotated(DAngle1) - OldDerive).XY();
@@ -214,7 +214,7 @@ bool FairCurve_MinimalVariation::Compute(const gp_Vec2d&         DeltaP1,
       // rotation of the second derivative + adding
       gp_Vec2d OldSeconde(Poles->Value(Poles->Lower()).XY() + Poles->Value(Poles->Lower() + 2).XY()
                           - 2 * Poles->Value(Poles->Lower() + 1).XY());
-      double aKnotGapLSq = aKnotGapL * aKnotGapL;
+      double   aKnotGapLSq = aKnotGapL * aKnotGapL;
       if (std::abs(aKnotGapLSq) > Precision::SquareComputational())
         OldSeconde *= Degree * (Degree - 1) / aKnotGapLSq;
       double CPrim = OldDerive.Magnitude();
@@ -229,7 +229,7 @@ bool FairCurve_MinimalVariation::Compute(const gp_Vec2d&         DeltaP1,
   if (NewConstraintOrder2 > 0)
   {
     gp_Vec2d OldDerive(Poles->Value(Poles->Upper() - 1), Poles->Value(Poles->Upper()));
-    double aKnotGapU = Knots->Value(Knots->Upper()) - Knots->Value(Knots->Upper() - 1);
+    double   aKnotGapU = Knots->Value(Knots->Upper()) - Knots->Value(Knots->Upper() - 1);
     if (std::abs(aKnotGapU) > Precision::Computational())
       OldDerive *= Degree / aKnotGapU;
     ADelta(kk) = (OldDerive.Rotated(DAngle2) - OldDerive).XY();
@@ -239,7 +239,7 @@ bool FairCurve_MinimalVariation::Compute(const gp_Vec2d&         DeltaP1,
       // rotation of the second derivative + adding
       gp_Vec2d OldSeconde(Poles->Value(Poles->Upper()).XY() + Poles->Value(Poles->Upper() - 2).XY()
                           - 2 * Poles->Value(Poles->Upper() - 1).XY());
-      double aKnotGapUSq = aKnotGapU * aKnotGapU;
+      double   aKnotGapUSq = aKnotGapU * aKnotGapU;
       if (std::abs(aKnotGapUSq) > Precision::SquareComputational())
         OldSeconde *= Degree * (Degree - 1) / aKnotGapUSq;
       double CPrim = OldDerive.Magnitude();

@@ -55,7 +55,7 @@ TEST(GeomFill_GuideTrihedronAC, D0_ReturnsTrue)
   GeomFill_GuideTrihedronAC aTrihedron(aGuide);
   aTrihedron.SetCurve(aPath);
 
-  gp_Vec aTangent, aNormal, aBiNormal;
+  gp_Vec     aTangent, aNormal, aBiNormal;
   const bool isOk = aTrihedron.D0(0.5, aTangent, aNormal, aBiNormal);
   EXPECT_TRUE(isOk);
   EXPECT_GT(aTangent.Magnitude(), Precision::Confusion());
@@ -73,7 +73,7 @@ TEST(GeomFill_GuideTrihedronAC, D1_ReturnsTrue)
   GeomFill_GuideTrihedronAC aTrihedron(aGuide);
   aTrihedron.SetCurve(aPath);
 
-  gp_Vec aTangent, aDTangent, aNormal, aDNormal, aBiNormal, aDBiNormal;
+  gp_Vec     aTangent, aDTangent, aNormal, aDNormal, aBiNormal, aDBiNormal;
   const bool isOk =
     aTrihedron.D1(0.5, aTangent, aDTangent, aNormal, aDNormal, aBiNormal, aDBiNormal);
   EXPECT_TRUE(isOk);

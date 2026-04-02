@@ -262,7 +262,7 @@ bool FairCurve_Batten::Compute(const gp_Vec2d&         DeltaP1,
   if (NewConstraintOrder1 > 0)
   {
     gp_Vec2d OldDerive(Poles->Value(Poles->Lower()), Poles->Value(Poles->Lower() + 1));
-    double aKnotGap1 = Knots->Value(2) - Knots->Value(1);
+    double   aKnotGap1 = Knots->Value(2) - Knots->Value(1);
     if (std::abs(aKnotGap1) > Precision::Computational())
       OldDerive *= Degree / aKnotGap1;
     ADelta(kk) = (OldDerive.Rotated(DeltaAngle1 - DAngleRef) - OldDerive).XY();

@@ -27,9 +27,9 @@
 // Verify LocalGeometry produces valid outputs on a circle (well-defined tangent).
 TEST(Geom2dHatch_Intersector, LocalGeometry_Circle_ValidOutputs)
 {
-  gp_Ax2d                   anAxis(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0));
+  gp_Ax2d                    anAxis(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0));
   occ::handle<Geom2d_Circle> aCircle = new Geom2d_Circle(anAxis, 1.0);
-  Geom2dAdaptor_Curve       aCurveAdaptor(aCircle);
+  Geom2dAdaptor_Curve        aCurveAdaptor(aCircle);
 
   Geom2dHatch_Intersector anIntersector(1.0e-7, 1.0e-7);
 
@@ -46,9 +46,9 @@ TEST(Geom2dHatch_Intersector, LocalGeometry_Circle_ValidOutputs)
 // Verify LocalGeometry produces valid outputs on a straight line (zero curvature).
 TEST(Geom2dHatch_Intersector, LocalGeometry_Line_ZeroCurvature)
 {
-  gp_Ax2d                 anAxis(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0));
+  gp_Ax2d                  anAxis(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0));
   occ::handle<Geom2d_Line> aLine = new Geom2d_Line(anAxis);
-  Geom2dAdaptor_Curve     aCurveAdaptor(aLine);
+  Geom2dAdaptor_Curve      aCurveAdaptor(aLine);
 
   Geom2dHatch_Intersector anIntersector(1.0e-7, 1.0e-7);
 

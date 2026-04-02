@@ -21,15 +21,15 @@
 
 static occ::handle<GeomAdaptor_Surface> makePlane()
 {
-  gp_Ax3                     anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
-  occ::handle<Geom_Plane>    aPlane = new Geom_Plane(anAxis);
+  gp_Ax3                  anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  occ::handle<Geom_Plane> aPlane = new Geom_Plane(anAxis);
   return new GeomAdaptor_Surface(aPlane, -1., 1., -1., 1.);
 }
 
 static occ::handle<GeomAdaptor_Surface> makeSphere()
 {
-  gp_Ax3                              anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
-  occ::handle<Geom_SphericalSurface>  aSphere = new Geom_SphericalSurface(anAxis, 1.0);
+  gp_Ax3                             anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  occ::handle<Geom_SphericalSurface> aSphere = new Geom_SphericalSurface(anAxis, 1.0);
   return new GeomAdaptor_Surface(aSphere);
 }
 

@@ -497,8 +497,8 @@ static occ::handle<IntPatch_WLine> DeleteByTube(const occ::handle<IntPatch_WLine
         double aSqrRatio = 0.;
         if (!isPlanePlane)
         {
-          aSqrRatio = (aCurrStep > Precision::SquareComputational()) ? aPrevStep / aCurrStep
-                                                                     : aMaxSqrRatio;
+          aSqrRatio =
+            (aCurrStep > Precision::SquareComputational()) ? aPrevStep / aCurrStep : aMaxSqrRatio;
           if (aSqrRatio < 1.)
           {
             aSqrRatio = 1. / aSqrRatio;

@@ -26,9 +26,9 @@
 // with finite begin/end parameters and not overflow fixed-size arrays.
 TEST(Intf_Tool, Hypr2dBox_ProducesValidSegments)
 {
-  gp_Ax2d    anAxis(gp_Pnt2d(0, 0), gp_Dir2d(1, 0));
-  gp_Hypr2d  aHypr(anAxis, 2.0, 1.0);
-  Bnd_Box2d  aDomain;
+  gp_Ax2d   anAxis(gp_Pnt2d(0, 0), gp_Dir2d(1, 0));
+  gp_Hypr2d aHypr(anAxis, 2.0, 1.0);
+  Bnd_Box2d aDomain;
   aDomain.Update(-5., -5., 5., 5.);
 
   Bnd_Box2d aResult;
@@ -121,9 +121,9 @@ TEST(Intf_Tool, HyprBox_ProducesValidSegments)
 // Small domain that doesn't intersect the curve should produce zero segments.
 TEST(Intf_Tool, Hypr2dBox_NoIntersection_ZeroSegments)
 {
-  gp_Ax2d    anAxis(gp_Pnt2d(100, 100), gp_Dir2d(1, 0));
-  gp_Hypr2d  aHypr(anAxis, 0.1, 0.05);
-  Bnd_Box2d  aDomain;
+  gp_Ax2d   anAxis(gp_Pnt2d(100, 100), gp_Dir2d(1, 0));
+  gp_Hypr2d aHypr(anAxis, 0.1, 0.05);
+  Bnd_Box2d aDomain;
   aDomain.Update(-1., -1., 1., 1.);
 
   Bnd_Box2d aResult;
