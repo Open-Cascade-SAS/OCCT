@@ -688,6 +688,47 @@ TEST(BRepGraph_BuilderTest, RemoveSolid_CascadesToFaces)
       aGraph.Topo().Gen().IsRemoved(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, aIdx)));
 }
 
+TEST(BRepGraph_BuilderTest, RemoveSubgraph_SharedFace_PreservesSharedEdgesAndVertices)
+{
+  // Build a box (6 faces). Remove one face. Shared edges and vertices must
+  // remain active because other faces still reference them.
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+
+  BRepGraph aGraph;
+  aGraph.Build(aBox);
+  ASSERT_TRUE(aGraph.IsDone());
+
+  const int aNbFaces    = aGraph.Topo().Faces().Nb();
+  const int aNbEdges    = aGraph.Topo().Edges().Nb();
+  const int aNbVertices = aGraph.Topo().Vertices().Nb();
+  ASSERT_EQ(aNbFaces, 6);
+  ASSERT_EQ(aNbEdges, 12);
+  ASSERT_EQ(aNbVertices, 8);
+
+  // Remove face 0.
+  const BRepGraph_FaceId aRemovedFace(0);
+  aGraph.Builder().RemoveSubgraph(aRemovedFace);
+
+  // The removed face must be removed.
+  EXPECT_TRUE(aGraph.Topo().Gen().IsRemoved(aRemovedFace));
+
+  // Other faces must remain active.
+  for (int aIdx = 1; aIdx < aNbFaces; ++aIdx)
+    EXPECT_FALSE(aGraph.Topo().Gen().IsRemoved(BRepGraph_FaceId(aIdx)));
+
+  // All 12 edges of a box are shared by exactly 2 faces.
+  // Removing 1 face leaves each shared edge with at least 1 active parent face.
+  // Therefore all edges must remain active.
+  for (int aIdx = 0; aIdx < aNbEdges; ++aIdx)
+    EXPECT_FALSE(aGraph.Topo().Gen().IsRemoved(BRepGraph_EdgeId(aIdx)));
+
+  // All 8 vertices of a box are shared by 3 edges. All edges are still active,
+  // so all vertices must remain active.
+  for (int aIdx = 0; aIdx < aNbVertices; ++aIdx)
+    EXPECT_FALSE(aGraph.Topo().Gen().IsRemoved(BRepGraph_VertexId(aIdx)));
+}
+
 // ============================================================
 // Item 5: Edge Adjacency Queries
 // ============================================================

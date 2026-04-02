@@ -331,6 +331,86 @@ TEST(BRepGraph_AssemblyTest, RemoveProduct_CascadeOccurrences)
 }
 
 // =============================================================================
+// RemoveProduct_CascadesToPartTopology
+// =============================================================================
+
+TEST(BRepGraph_AssemblyTest, RemoveProduct_CascadesToPartTopology)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  // Part product created by Build() owns topology via ShapeRootId.
+  const BRepGraph_ProductId aPartId = BRepGraph_ProductId(0);
+  EXPECT_TRUE(aGraph.Topo().Products().IsPart(aPartId));
+
+  const BRepGraph_NodeId aShapeRoot = aGraph.Topo().Products().Definition(aPartId).ShapeRootId;
+  ASSERT_TRUE(aShapeRoot.IsValid());
+  EXPECT_FALSE(aGraph.Topo().Gen().IsRemoved(aShapeRoot));
+
+  // Topology entities should be active before removal.
+  const int aNbFaces = aGraph.Topo().Faces().Nb();
+  ASSERT_GT(aNbFaces, 0);
+
+  // Remove the part product — should cascade to topology.
+  aGraph.Builder().RemoveSubgraph(aPartId);
+
+  EXPECT_TRUE(aGraph.Topo().Gen().IsRemoved(aPartId));
+  EXPECT_TRUE(aGraph.Topo().Gen().IsRemoved(aShapeRoot));
+
+  // All faces in the part should be removed.
+  for (int aIdx = 0; aIdx < aNbFaces; ++aIdx)
+    EXPECT_TRUE(aGraph.Topo().Gen().IsRemoved(BRepGraph_FaceId(aIdx)));
+}
+
+// =============================================================================
+// RemoveOccurrence_CascadesToNestedChildren
+// =============================================================================
+
+TEST(BRepGraph_AssemblyTest, RemoveOccurrence_CascadesToNestedChildren)
+{
+  // TopAsm -> MidAsm -> LeafPart, each level via occurrences.
+  // Removing the mid-level occurrence should also remove the leaf occurrence.
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  const BRepGraph_ProductId aLeafPart = BRepGraph_ProductId(0);
+  const BRepGraph_ProductId aMidAsm   = aGraph.Builder().AddAssemblyProduct();
+  const BRepGraph_ProductId aTopAsm   = aGraph.Builder().AddAssemblyProduct();
+
+  gp_Trsf aT1, aT2;
+  aT1.SetTranslation(gp_Vec(10.0, 0.0, 0.0));
+  aT2.SetTranslation(gp_Vec(0.0, 20.0, 0.0));
+
+  // TopAsm places MidAsm.
+  const BRepGraph_OccurrenceId anOccMid =
+    aGraph.Builder().AddOccurrence(aTopAsm, aMidAsm, TopLoc_Location(aT1));
+  // MidAsm places LeafPart, with parent occurrence = anOccMid.
+  const BRepGraph_OccurrenceId anOccLeaf =
+    aGraph.Builder().AddOccurrence(aMidAsm, aLeafPart, TopLoc_Location(aT2), anOccMid);
+
+  EXPECT_FALSE(aGraph.Topo().Gen().IsRemoved(anOccMid));
+  EXPECT_FALSE(aGraph.Topo().Gen().IsRemoved(anOccLeaf));
+
+  // Verify the parent chain: leaf's ParentOccurrenceDefId == mid occurrence.
+  const BRepGraphInc::OccurrenceDef& aLeafDef =
+    aGraph.Topo().Occurrences().Definition(anOccLeaf);
+  EXPECT_EQ(aLeafDef.ParentOccurrenceDefId.Index, anOccMid.Index);
+
+  // Remove the mid-level occurrence — leaf should cascade.
+  aGraph.Builder().RemoveSubgraph(anOccMid);
+
+  EXPECT_TRUE(aGraph.Topo().Gen().IsRemoved(anOccMid));
+  EXPECT_TRUE(aGraph.Topo().Gen().IsRemoved(anOccLeaf));
+
+  // Products themselves should NOT be removed (only occurrences).
+  EXPECT_FALSE(aGraph.Topo().Gen().IsRemoved(aLeafPart));
+  EXPECT_FALSE(aGraph.Topo().Gen().IsRemoved(aMidAsm));
+  EXPECT_FALSE(aGraph.Topo().Gen().IsRemoved(aTopAsm));
+}
+
+// =============================================================================
 // MutProduct_RAII
 // =============================================================================
 

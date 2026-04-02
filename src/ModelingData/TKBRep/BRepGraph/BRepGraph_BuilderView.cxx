@@ -12,12 +12,14 @@
 // commercial license or contractual agreement.
 
 #include <BRepGraph_BuilderView.hxx>
+#include <BRepGraph_ChildExplorer.hxx>
 #include <BRepGraph_Data.hxx>
 #include <BRepGraph_Builder.hxx>
 #include <BRepGraph_DefsIterator.hxx>
 #include <BRepGraph_Iterator.hxx>
 #include <BRepGraph_Layer.hxx>
 #include <BRepGraph_ParamLayer.hxx>
+#include <BRepGraph_ParentExplorer.hxx>
 #include <BRepGraph_RegularityLayer.hxx>
 #include <BRepGraph_RefsIterator.hxx>
 #include <BRepGraph_RefsView.hxx>
@@ -44,99 +46,22 @@
 namespace
 {
 
-//=================================================================================================
-
-NCollection_Vector<BRepGraph_NodeId> collectCompoundChildren(
-  const BRepGraph&       theGraph,
-  const BRepGraph_NodeId theCompoundNodeId)
+//! Check if a child node has any active parent besides theExcludedParent.
+//! Uses ParentExplorer(DirectParents) which automatically skips removed parents.
+bool hasOtherActiveParent(const BRepGraph&       theGraph,
+                          const BRepGraph_NodeId theChild,
+                          const BRepGraph_NodeId theExcludedParent)
 {
-  NCollection_Vector<BRepGraph_NodeId> aChildNodes;
-  for (BRepGraph_DefsChildOfCompound aChildIt(theGraph,
-                                              BRepGraph_CompoundId::FromNodeId(theCompoundNodeId));
-       aChildIt.More();
-       aChildIt.Next())
+  for (BRepGraph_ParentExplorer anExp(theGraph,
+                                      theChild,
+                                      BRepGraph_ParentExplorer::TraversalMode::DirectParents);
+       anExp.More();
+       anExp.Next())
   {
-    aChildNodes.Append(aChildIt.CurrentId());
+    if (anExp.Current().DefId != theExcludedParent)
+      return true;
   }
-  return aChildNodes;
-}
-
-//=================================================================================================
-
-NCollection_Vector<BRepGraph_NodeId> collectCompSolidChildren(
-  const BRepGraph&       theGraph,
-  const BRepGraph_NodeId theCompSolidNodeId)
-{
-  NCollection_Vector<BRepGraph_NodeId> aChildNodes;
-  for (BRepGraph_DefsSolidOfCompSolid aChildIt(
-         theGraph,
-         BRepGraph_CompSolidId::FromNodeId(theCompSolidNodeId));
-       aChildIt.More();
-       aChildIt.Next())
-  {
-    aChildNodes.Append(aChildIt.CurrentId());
-  }
-  return aChildNodes;
-}
-
-//=================================================================================================
-
-NCollection_Vector<BRepGraph_NodeId> collectSolidChildren(const BRepGraph&       theGraph,
-                                                          const BRepGraph_NodeId theSolidNodeId)
-{
-  NCollection_Vector<BRepGraph_NodeId> aChildNodes;
-  for (BRepGraph_DefsShellOfSolid aChildIt(theGraph, BRepGraph_SolidId::FromNodeId(theSolidNodeId));
-       aChildIt.More();
-       aChildIt.Next())
-  {
-    aChildNodes.Append(aChildIt.CurrentId());
-  }
-  return aChildNodes;
-}
-
-//=================================================================================================
-
-NCollection_Vector<BRepGraph_NodeId> collectShellChildren(const BRepGraph&       theGraph,
-                                                          const BRepGraph_NodeId theShellNodeId)
-{
-  NCollection_Vector<BRepGraph_NodeId> aChildNodes;
-  for (BRepGraph_DefsFaceOfShell aChildIt(theGraph, BRepGraph_ShellId::FromNodeId(theShellNodeId));
-       aChildIt.More();
-       aChildIt.Next())
-  {
-    aChildNodes.Append(aChildIt.CurrentId());
-  }
-  return aChildNodes;
-}
-
-//=================================================================================================
-
-NCollection_Vector<BRepGraph_NodeId> collectFaceChildren(const BRepGraph&       theGraph,
-                                                         const BRepGraph_NodeId theFaceNodeId)
-{
-  NCollection_Vector<BRepGraph_NodeId> aChildNodes;
-  for (BRepGraph_DefsWireOfFace aChildIt(theGraph, BRepGraph_FaceId::FromNodeId(theFaceNodeId));
-       aChildIt.More();
-       aChildIt.Next())
-  {
-    aChildNodes.Append(aChildIt.CurrentId());
-  }
-  return aChildNodes;
-}
-
-//=================================================================================================
-
-NCollection_Vector<BRepGraph_NodeId> collectWireChildren(const BRepGraph&       theGraph,
-                                                         const BRepGraph_NodeId theWireNodeId)
-{
-  NCollection_Vector<BRepGraph_NodeId> aChildNodes;
-  for (BRepGraph_DefsEdgeOfWire aChildIt(theGraph, BRepGraph_WireId::FromNodeId(theWireNodeId));
-       aChildIt.More();
-       aChildIt.Next())
-  {
-    aChildNodes.Append(aChildIt.CurrentId());
-  }
-  return aChildNodes;
+  return false;
 }
 
 const char* kindName(const BRepGraph_NodeId::Kind theKind)
@@ -1109,95 +1034,42 @@ void BRepGraph::BuilderView::RemoveSubgraph(const BRepGraph_NodeId theNode)
 {
   // Collect and recursively remove children BEFORE marking this node as removed,
   // because iterators (DefsIterator, RefsIterator) skip removed parents/children.
+  // Children that are shared with other active parents are NOT removed (ownership-aware).
+  const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
+
   switch (theNode.NodeKind)
   {
-    case BRepGraph_NodeId::Kind::Compound: {
-      if (theNode.Index >= 0 && theNode.Index < myGraph->myData->myIncStorage.NbCompounds())
-      {
-        const NCollection_Vector<BRepGraph_NodeId> aChildNodes =
-          collectCompoundChildren(*myGraph, theNode);
-        for (const BRepGraph_NodeId& aChild : aChildNodes)
-          RemoveSubgraph(aChild);
-      }
-      break;
-    }
-    case BRepGraph_NodeId::Kind::CompSolid: {
-      if (theNode.Index >= 0 && theNode.Index < myGraph->myData->myIncStorage.NbCompSolids())
-      {
-        const NCollection_Vector<BRepGraph_NodeId> aChildNodes =
-          collectCompSolidChildren(*myGraph, theNode);
-        for (const BRepGraph_NodeId& aChild : aChildNodes)
-          RemoveSubgraph(aChild);
-      }
-      break;
-    }
-    case BRepGraph_NodeId::Kind::Solid: {
-      if (theNode.Index >= 0 && theNode.Index < myGraph->myData->myIncStorage.NbSolids())
-      {
-        const NCollection_Vector<BRepGraph_NodeId> aChildNodes =
-          collectSolidChildren(*myGraph, theNode);
-        for (const BRepGraph_NodeId& aChild : aChildNodes)
-          RemoveSubgraph(aChild);
-      }
-      break;
-    }
-    case BRepGraph_NodeId::Kind::Shell: {
-      if (theNode.Index >= 0 && theNode.Index < myGraph->myData->myIncStorage.NbShells())
-      {
-        const NCollection_Vector<BRepGraph_NodeId> aChildNodes =
-          collectShellChildren(*myGraph, theNode);
-        for (const BRepGraph_NodeId& aChild : aChildNodes)
-          RemoveSubgraph(aChild);
-      }
-      break;
-    }
-    case BRepGraph_NodeId::Kind::Face: {
-      if (theNode.Index >= 0 && theNode.Index < myGraph->myData->myIncStorage.NbFaces())
-      {
-        const NCollection_Vector<BRepGraph_NodeId> aChildNodes =
-          collectFaceChildren(*myGraph, theNode);
-        for (const BRepGraph_NodeId& aChild : aChildNodes)
-          RemoveSubgraph(aChild);
-      }
-      break;
-    }
-    case BRepGraph_NodeId::Kind::Wire: {
-      if (theNode.Index >= 0 && theNode.Index < myGraph->myData->myIncStorage.NbWires())
-      {
-        const NCollection_Vector<BRepGraph_NodeId> aChildNodes =
-          collectWireChildren(*myGraph, theNode);
-        for (const BRepGraph_NodeId& aChild : aChildNodes)
-          RemoveSubgraph(aChild);
-      }
-      break;
-    }
+    // Generic topology cascade: collect direct children via ChildExplorer(DirectChildren),
+    // check sharing via ParentExplorer(DirectParents), recursively remove exclusively-owned
+    // children. DirectChildren mode exposes the actual graph structure without 1:1 collapse,
+    // so Wire→CoEdge→Edge→Vertex are all traversed as distinct graph nodes.
+    case BRepGraph_NodeId::Kind::Compound:
+    case BRepGraph_NodeId::Kind::CompSolid:
+    case BRepGraph_NodeId::Kind::Solid:
+    case BRepGraph_NodeId::Kind::Shell:
+    case BRepGraph_NodeId::Kind::Face:
+    case BRepGraph_NodeId::Kind::Wire:
+    case BRepGraph_NodeId::Kind::CoEdge:
     case BRepGraph_NodeId::Kind::Edge: {
-      if (theNode.Index >= 0 && theNode.Index < myGraph->myData->myIncStorage.NbEdges())
+      NCollection_Vector<BRepGraph_NodeId> aChildNodes;
+      for (BRepGraph_ChildExplorer anExp(*myGraph,
+                                         theNode,
+                                         BRepGraph_ChildExplorer::TraversalMode::DirectChildren);
+           anExp.More();
+           anExp.Next())
       {
-        const BRepGraphInc::EdgeDef& anEdge =
-          myGraph->myData->myIncStorage.Edge(BRepGraph_EdgeId(theNode.Index));
-        const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
-        if (anEdge.StartVertexRefId.IsValid())
-        {
-          const BRepGraph_VertexId aStartVtxId =
-            aStorage.VertexRef(anEdge.StartVertexRefId).VertexDefId;
-          if (aStartVtxId.IsValid())
-            RemoveNode(aStartVtxId);
-        }
-        if (anEdge.EndVertexRefId.IsValid())
-        {
-          const BRepGraph_VertexId anEndVtxId =
-            aStorage.VertexRef(anEdge.EndVertexRefId).VertexDefId;
-          if (anEndVtxId.IsValid())
-            RemoveNode(anEndVtxId);
-        }
+        aChildNodes.Append(anExp.Current().DefId);
+      }
+      for (const BRepGraph_NodeId& aChild : aChildNodes)
+      {
+        if (!hasOtherActiveParent(*myGraph, aChild, theNode))
+          RemoveSubgraph(aChild);
       }
       break;
     }
     case BRepGraph_NodeId::Kind::Product: {
-      if (theNode.Index >= 0 && theNode.Index < myGraph->myData->myIncStorage.NbProducts())
+      if (theNode.IsValid(aStorage.NbProducts()))
       {
-        const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
         // Snapshot occurrence indices before iterating, because RemoveSubgraph(Occurrence)
         // modifies the parent's OccurrenceRefIds via swap-remove.
         NCollection_Vector<int> anOccIndices;
@@ -1210,17 +1082,39 @@ void BRepGraph::BuilderView::RemoveSubgraph(const BRepGraph_NodeId theNode)
         }
         for (const int anOccIdx : anOccIndices)
           RemoveSubgraph(BRepGraph_OccurrenceId(anOccIdx));
+
+        // Cascade into the part topology owned via ShapeRootId.
+        const BRepGraphInc::ProductDef& aProd =
+          aStorage.Product(BRepGraph_ProductId(theNode.Index));
+        if (aProd.ShapeRootId.IsValid()
+            && !myGraph->Topo().Gen().IsRemoved(aProd.ShapeRootId))
+          RemoveSubgraph(aProd.ShapeRootId);
       }
       break;
     }
     case BRepGraph_NodeId::Kind::Occurrence: {
-      // Remove from parent product's OccurrenceRefIds.
-      if (theNode.Index >= 0 && theNode.Index < myGraph->myData->myIncStorage.NbOccurrences())
+      if (theNode.IsValid(aStorage.NbOccurrences()))
       {
+        // Cascade into child occurrences whose ParentOccurrenceDefId points to this one.
+        NCollection_Vector<int> aChildOccIndices;
+        for (int anOccIdx = 0; anOccIdx < aStorage.NbOccurrences(); ++anOccIdx)
+        {
+          const BRepGraphInc::OccurrenceDef& aCandidate =
+            aStorage.Occurrence(BRepGraph_OccurrenceId(anOccIdx));
+          if (!aCandidate.IsRemoved && aCandidate.ParentOccurrenceDefId.IsValid()
+              && aCandidate.ParentOccurrenceDefId.Index == theNode.Index)
+          {
+            aChildOccIndices.Append(anOccIdx);
+          }
+        }
+        for (const int aChildIdx : aChildOccIndices)
+          RemoveSubgraph(BRepGraph_OccurrenceId(aChildIdx));
+
+        // Remove from parent product's OccurrenceRefIds.
         const BRepGraphInc::OccurrenceDef& anOcc =
           myGraph->myData->myIncStorage.Occurrence(BRepGraph_OccurrenceId(theNode.Index));
         if (anOcc.ParentProductDefId.IsValid()
-            && anOcc.ParentProductDefId.Index < myGraph->myData->myIncStorage.NbProducts())
+            && anOcc.ParentProductDefId.Index < aStorage.NbProducts())
         {
           NCollection_Vector<BRepGraph_OccurrenceRefId>& aRefIds =
             myGraph->myData->myIncStorage.ChangeProduct(anOcc.ParentProductDefId).OccurrenceRefIds;

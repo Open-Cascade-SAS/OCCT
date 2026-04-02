@@ -329,10 +329,13 @@ void BRepGraph_ChildExplorer::startTraversal(const TopLoc_Location&   theStartLo
   }
 
   // Resolve 1:1 transitions from root.
+  // In DirectChildren mode without a target kind, skip resolution to expose
+  // the actual graph structure (CoEdge, Occurrence are treated as real nodes).
   BRepGraph_NodeId   aResolved = myRoot;
   TopLoc_Location    aRootLoc  = theStartLoc;
   TopAbs_Orientation aRootOri  = theStartOri;
-  resolve1to1(aResolved, aRootLoc, aRootOri);
+  if (myMode == TraversalMode::Recursive || myTargetKind.has_value())
+    resolve1to1(aResolved, aRootLoc, aRootOri);
 
   if (!aResolved.IsValid())
     return;
@@ -658,6 +661,24 @@ void BRepGraph_ChildExplorer::advance()
         break;
       }
 
+      case Kind::CoEdge: {
+        // CoEdge owns exactly one Edge child.
+        if (aIdx == 0)
+        {
+          const BRepGraphInc::CoEdgeDef& aCoEdge =
+            aDefs.CoEdges().Definition(BRepGraph_CoEdgeId(aFrame.Node.Index));
+          if (!aCoEdge.IsRemoved && aCoEdge.EdgeDefId.IsValid())
+          {
+            aChildNode = aCoEdge.EdgeDefId;
+            aStepIdx   = 0;
+            if (myCumOri)
+              aChildOri = TopAbs::Compose(aFrame.AccOrientation, aCoEdge.Sense);
+          }
+        }
+        aFrame.NextChildIdx = 1;
+        break;
+      }
+
       case Kind::Product: {
         // Assembly product: step = active occurrence index.
         const BRepGraph_ProductId aProdId(aFrame.Node.Index);
@@ -725,9 +746,15 @@ void BRepGraph_ChildExplorer::advance()
     }
 
     // Resolve 1:1 transitions (CoEdge->Edge, Occurrence->Product, Product(part)->ShapeRoot).
-    resolve1to1(aChildNode, aChildLoc, aChildOri);
-    if (!aChildNode.IsValid())
-      continue;
+    // In DirectChildren mode without a target kind, skip resolution to expose
+    // the actual graph structure (CoEdge, Occurrence are returned as-is).
+    // With a target kind, resolution is needed to reach the requested entity type.
+    if (myMode == TraversalMode::Recursive || myTargetKind.has_value())
+    {
+      resolve1to1(aChildNode, aChildLoc, aChildOri);
+      if (!aChildNode.IsValid())
+        continue;
+    }
 
     if (matchesAvoid(aChildNode))
     {
