@@ -2076,7 +2076,7 @@ void CalculPtsInterTriEdgeCoplanaires(const int                TriSurfID,
               SP2.SetUV1(PIE.U(), PIE.V());
               SP2.SetUV2(PT1.U() + Cote.U() * alpha, PT1.V() + Cote.V() * alpha);
               SP2.SetEdge2(Tri2.GetEdgeNumber(CoteIndex));
-              if (Tri2.GetEdgeOrientation(CoteIndex) > 0)
+              if (Tri1.GetEdgeOrientation(CoteIndex) > 0)
                 SP2.SetLambda2(alpha);
               else
                 SP2.SetLambda2(1.0 - alpha);
