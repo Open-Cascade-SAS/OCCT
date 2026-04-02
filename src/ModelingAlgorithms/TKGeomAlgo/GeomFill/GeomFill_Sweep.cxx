@@ -812,26 +812,27 @@ bool GeomFill_Sweep::BuildKPart()
       gp_Trsf  Tf2;
       Tf.SetVectorialPart(M);
       Tf.SetTranslationPart(V.XYZ());
-      try
-      {
-        OCC_CATCH_SIGNALS
-        Tf2.SetValues(Tf(1, 1),
-                      Tf(1, 2),
-                      Tf(1, 3),
-                      Tf(1, 4),
-                      Tf(2, 1),
-                      Tf(2, 2),
-                      Tf(2, 3),
-                      Tf(2, 4),
-                      Tf(3, 1),
-                      Tf(3, 2),
-                      Tf(3, 3),
-                      Tf(3, 4));
-      }
-      catch (Standard_ConstructionError const&)
-      {
-        IsTrsf = false;
-      }
+      // TODO: finding #9 — exception handling is commented out unlike the translation
+      // branch (~600-619). Restoring try/catch caused blend regressions. Needs
+      // investigation to understand why the catch was intentionally disabled.
+      //      try { // Pas joli mais il n'y as pas d'autre moyens de tester SetValues
+      //        OCC_CATCH_SIGNALS
+      Tf2.SetValues(Tf(1, 1),
+                    Tf(1, 2),
+                    Tf(1, 3),
+                    Tf(1, 4),
+                    Tf(2, 1),
+                    Tf(2, 2),
+                    Tf(2, 3),
+                    Tf(2, 4),
+                    Tf(3, 1),
+                    Tf(3, 2),
+                    Tf(3, 3),
+                    Tf(3, 4));
+      //      }
+      //      catch (Standard_ConstructionError) {
+      //        IsTrsf = false;
+      //      }
       // La section
       occ::handle<Geom_Curve> Section;
       Section = mySec->ConstantSection();

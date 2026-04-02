@@ -872,7 +872,7 @@ bool Geom2dHatch_Hatcher::GlobalTransition(HatchGen_PointOnHatching& Point)
 
     TopAbs_Orientation ElementOrientation = Element.Orientation();
     bool               ToReverse          = (ElementOrientation == TopAbs_REVERSED);
-    double             Param              = PntE.Parameter();
+    double             Param;
     switch (PntE.Position())
     {
       case TopAbs_FORWARD:
@@ -890,6 +890,18 @@ bool Geom2dHatch_Hatcher::GlobalTransition(HatchGen_PointOnHatching& Point)
       default:
         break;
     }
+
+//--
+#if TRACE_HATCHER
+    printf("\n ******** ToReverse: %d Param : %g   ANParam : %g \n",
+           ToReverse,
+           Param,
+           PntE.Parameter());
+#endif
+    // TODO: finding #25 — this overwrites Param computed by the switch above,
+    // making the position-based logic dead code. Removing this line caused
+    // blend regressions. The switch logic may need endpoint-specific investigation.
+    Param = PntE.Parameter();
 
     myIntersector.LocalGeometry(CurveE.Curve(), Param, Tangente2d, Normale2d, Courbure);
 

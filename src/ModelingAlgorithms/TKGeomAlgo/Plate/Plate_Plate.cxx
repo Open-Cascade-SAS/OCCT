@@ -1109,7 +1109,7 @@ void Plate_Plate::Init()
   order              = 0;
   n_el               = 0;
   n_dim              = 0;
-  OK                 = false;
+  OK                 = true;
   maxConstraintOrder = 0;
 }
 

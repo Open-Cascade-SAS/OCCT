@@ -581,6 +581,7 @@ inline void FillBounding(const gp_Pnt*                                    thePnt
           Boite.Add(p1);
           Boite.Add(p2);
           Boite.Add(p3);
+          Boite.Enlarge(theDeflection);
         }
       }
     }
