@@ -19,7 +19,7 @@
 #include <TopOpeBRepDS_DataStructure.hxx>
 
 #define MYDS (*((TopOpeBRepDS_DataStructure*)myDS))
-static TopOpeBRepDS_Curve* CEX_PEMPTY = nullptr;
+static thread_local TopOpeBRepDS_Curve* CEX_PEMPTY = nullptr;
 
 //=================================================================================================
 

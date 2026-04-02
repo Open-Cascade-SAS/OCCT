@@ -22,13 +22,14 @@
 #include <Standard_Dump.hxx>
 #include <Standard_Type.hxx>
 
+#include <mutex>
+
 IMPLEMENT_STANDARD_RTTIEXT(Poly_Triangulation, Standard_Transient)
 
 //=================================================================================================
 
 Poly_Triangulation::Poly_Triangulation()
-    : myCachedMinMax(nullptr),
-      myDeflection(0),
+    : myDeflection(0),
       myPurpose(Poly_MeshPurpose_NONE)
 {
 }
@@ -39,8 +40,7 @@ Poly_Triangulation::Poly_Triangulation(const int  theNbNodes,
                                        const int  theNbTriangles,
                                        const bool theHasUVNodes,
                                        const bool theHasNormals)
-    : myCachedMinMax(nullptr),
-      myDeflection(0),
+    : myDeflection(0),
       myNodes(theNbNodes),
       myTriangles(1, theNbTriangles),
       myPurpose(Poly_MeshPurpose_NONE)
@@ -59,8 +59,7 @@ Poly_Triangulation::Poly_Triangulation(const int  theNbNodes,
 
 Poly_Triangulation::Poly_Triangulation(const NCollection_Array1<gp_Pnt>&        theNodes,
                                        const NCollection_Array1<Poly_Triangle>& theTriangles)
-    : myCachedMinMax(nullptr),
-      myDeflection(0),
+    : myDeflection(0),
       myNodes(theNodes.Length()),
       myTriangles(1, theTriangles.Length()),
       myPurpose(Poly_MeshPurpose_NONE)
@@ -75,8 +74,7 @@ Poly_Triangulation::Poly_Triangulation(const NCollection_Array1<gp_Pnt>&        
 Poly_Triangulation::Poly_Triangulation(const NCollection_Array1<gp_Pnt>&        theNodes,
                                        const NCollection_Array1<gp_Pnt2d>&      theUVNodes,
                                        const NCollection_Array1<Poly_Triangle>& theTriangles)
-    : myCachedMinMax(nullptr),
-      myDeflection(0),
+    : myDeflection(0),
       myNodes(theNodes.Length()),
       myTriangles(1, theTriangles.Length()),
       myUVNodes(theNodes.Length()),
@@ -93,7 +91,7 @@ Poly_Triangulation::Poly_Triangulation(const NCollection_Array1<gp_Pnt>&        
 
 Poly_Triangulation::~Poly_Triangulation()
 {
-  delete myCachedMinMax;
+  delete myCachedMinMax.load(std::memory_order_acquire);
 }
 
 //=================================================================================================
@@ -106,8 +104,7 @@ occ::handle<Poly_Triangulation> Poly_Triangulation::Copy() const
 //=================================================================================================
 
 Poly_Triangulation::Poly_Triangulation(const occ::handle<Poly_Triangulation>& theTriangulation)
-    : myCachedMinMax(nullptr),
-      myDeflection(theTriangulation->myDeflection),
+    : myDeflection(theTriangulation->myDeflection),
       myNodes(theTriangulation->myNodes),
       myTriangles(theTriangulation->myTriangles),
       myUVNodes(theTriangulation->myUVNodes),
@@ -341,8 +338,10 @@ void Poly_Triangulation::DumpJson(Standard_OStream& theOStream, int) const
 
 const Bnd_Box& Poly_Triangulation::CachedMinMax() const
 {
-  static const Bnd_Box anEmptyBox;
-  return (myCachedMinMax == nullptr) ? anEmptyBox : *myCachedMinMax;
+  static const Bnd_Box                anEmptyBox;
+  std::shared_lock<std::shared_mutex> aLock(myCachedMinMaxMutex);
+  const Bnd_Box*                      aBox = myCachedMinMax.load(std::memory_order_relaxed);
+  return (aBox == nullptr) ? anEmptyBox : *aBox;
 }
 
 //=================================================================================================
@@ -354,19 +353,28 @@ void Poly_Triangulation::SetCachedMinMax(const Bnd_Box& theBox)
     unsetCachedMinMax();
     return;
   }
-  if (myCachedMinMax == nullptr)
+  std::unique_lock<std::shared_mutex> aLock(myCachedMinMaxMutex);
+  Bnd_Box*                            aBox = myCachedMinMax.load(std::memory_order_relaxed);
+  if (aBox == nullptr)
   {
-    myCachedMinMax = new Bnd_Box();
+    aBox  = new Bnd_Box();
+    *aBox = theBox;
+    myCachedMinMax.store(aBox, std::memory_order_release);
   }
-  *myCachedMinMax = theBox;
+  else
+  {
+    *aBox = theBox;
+  }
 }
 
 //=================================================================================================
 
 void Poly_Triangulation::unsetCachedMinMax()
 {
-  delete myCachedMinMax;
-  myCachedMinMax = nullptr;
+  std::unique_lock<std::shared_mutex> aLock(myCachedMinMaxMutex);
+  Bnd_Box*                            aBox = myCachedMinMax.load(std::memory_order_relaxed);
+  myCachedMinMax.store(nullptr, std::memory_order_release);
+  delete aBox;
 }
 
 //=================================================================================================
@@ -376,14 +384,20 @@ bool Poly_Triangulation::MinMax(Bnd_Box&       theBox,
                                 const bool     theIsAccurate) const
 {
   Bnd_Box aBox;
-  if (HasCachedMinMax()
-      && (!HasGeometry() || !theIsAccurate || theTrsf.Form() == gp_Identity
-          || theTrsf.Form() == gp_Translation || theTrsf.Form() == gp_PntMirror
-          || theTrsf.Form() == gp_Scale))
+  bool    aUsedCache = false;
   {
-    aBox = myCachedMinMax->Transformed(theTrsf);
+    std::shared_lock<std::shared_mutex> aLock(myCachedMinMaxMutex);
+    const Bnd_Box*                      aCachedBox = myCachedMinMax.load(std::memory_order_relaxed);
+    if (aCachedBox != nullptr
+        && (!HasGeometry() || !theIsAccurate || theTrsf.Form() == gp_Identity
+            || theTrsf.Form() == gp_Translation || theTrsf.Form() == gp_PntMirror
+            || theTrsf.Form() == gp_Scale))
+    {
+      aBox       = aCachedBox->Transformed(theTrsf);
+      aUsedCache = true;
+    }
   }
-  else
+  if (!aUsedCache)
   {
     aBox = computeBoundingBox(theTrsf);
   }

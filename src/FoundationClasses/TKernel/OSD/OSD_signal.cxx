@@ -19,13 +19,14 @@
 #include <Standard_Overflow.hxx>
 #include <Standard_Assert.hxx>
 
+#include <atomic>
 #include <mutex>
 #include <csignal>
 
 #include <Standard_WarningDisableFunctionCast.hxx>
 
-static OSD_SignalMode OSD_WasSetSignal           = OSD_SignalMode_AsIs;
-static int            OSD_SignalStackTraceLength = 0;
+static std::atomic<OSD_SignalMode> OSD_WasSetSignal{OSD_SignalMode_AsIs};
+static std::atomic<int>            OSD_SignalStackTraceLength{0};
 
 //=================================================================================================
 
@@ -753,7 +754,7 @@ static bool fCtrlBrk;
 // const OSD_WhoAmI Iam = OSD_WPackage;
 
 typedef void(ACT_SIGIO_HANDLER)();
-ACT_SIGIO_HANDLER* ADR_ACT_SIGIO_HANDLER = nullptr;
+std::atomic<ACT_SIGIO_HANDLER*> ADR_ACT_SIGIO_HANDLER{nullptr};
 
   #ifdef __GNUC__
     #include <cstdlib>
@@ -810,8 +811,9 @@ static void Handler(const int theSignal)
 
   // std::cout << "OSD::Handler: signal " << (int) theSignal << " occurred inside a try block " <<
   // std::endl ;
-  if (ADR_ACT_SIGIO_HANDLER != nullptr)
-    (*ADR_ACT_SIGIO_HANDLER)();
+  ACT_SIGIO_HANDLER* aSigHandler = ADR_ACT_SIGIO_HANDLER.load(std::memory_order_acquire);
+  if (aSigHandler != nullptr)
+    (*aSigHandler)();
 
   sigset_t set;
   sigemptyset(&set);

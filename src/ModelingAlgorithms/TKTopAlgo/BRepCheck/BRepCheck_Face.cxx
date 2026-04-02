@@ -117,8 +117,11 @@ void BRepCheck_Face::InContext(const TopoDS_Shape& S)
 {
   occ::handle<NCollection_Shared<NCollection_List<BRepCheck_Status>>> aHList;
   {
-    std::unique_lock<std::mutex> aLock =
-      myMutex ? std::unique_lock<std::mutex>(*myMutex) : std::unique_lock<std::mutex>();
+    std::unique_lock<std::mutex> aLock(myMutex, std::defer_lock);
+    if (myIsParallel)
+    {
+      aLock.lock();
+    }
     if (myMap.IsBound(S))
     {
       return;
@@ -167,8 +170,11 @@ BRepCheck_Status BRepCheck_Face::IntersectWires(const bool Update)
 {
   occ::handle<NCollection_Shared<NCollection_List<BRepCheck_Status>>> aHList;
   {
-    std::unique_lock<std::mutex> aLock =
-      myMutex ? std::unique_lock<std::mutex>(*myMutex) : std::unique_lock<std::mutex>();
+    std::unique_lock<std::mutex> aLock(myMutex, std::defer_lock);
+    if (myIsParallel)
+    {
+      aLock.lock();
+    }
     aHList = myMap(myShape);
   }
 
@@ -297,8 +303,11 @@ BRepCheck_Status BRepCheck_Face::ClassifyWires(const bool Update)
 {
   occ::handle<NCollection_Shared<NCollection_List<BRepCheck_Status>>> aHList;
   {
-    std::unique_lock<std::mutex> aLock =
-      myMutex ? std::unique_lock<std::mutex>(*myMutex) : std::unique_lock<std::mutex>();
+    std::unique_lock<std::mutex> aLock(myMutex, std::defer_lock);
+    if (myIsParallel)
+    {
+      aLock.lock();
+    }
     aHList = myMap(myShape);
   }
 
@@ -429,8 +438,11 @@ BRepCheck_Status BRepCheck_Face::OrientationOfWires(const bool Update)
 {
   occ::handle<NCollection_Shared<NCollection_List<BRepCheck_Status>>> aHList;
   {
-    std::unique_lock<std::mutex> aLock =
-      myMutex ? std::unique_lock<std::mutex>(*myMutex) : std::unique_lock<std::mutex>();
+    std::unique_lock<std::mutex> aLock(myMutex, std::defer_lock);
+    if (myIsParallel)
+    {
+      aLock.lock();
+    }
     aHList = myMap(myShape);
   }
 
@@ -546,8 +558,11 @@ BRepCheck_Status BRepCheck_Face::OrientationOfWires(const bool Update)
 
 void BRepCheck_Face::SetUnorientable()
 {
-  std::unique_lock<std::mutex> aLock =
-    myMutex ? std::unique_lock<std::mutex>(*myMutex) : std::unique_lock<std::mutex>();
+  std::unique_lock<std::mutex> aLock(myMutex, std::defer_lock);
+  if (myIsParallel)
+  {
+    aLock.lock();
+  }
   BRepCheck::Add(*myMap(myShape), BRepCheck_UnorientableShape);
 }
 
@@ -555,8 +570,11 @@ void BRepCheck_Face::SetUnorientable()
 
 void BRepCheck_Face::SetStatus(const BRepCheck_Status theStatus)
 {
-  std::unique_lock<std::mutex> aLock =
-    myMutex ? std::unique_lock<std::mutex>(*myMutex) : std::unique_lock<std::mutex>();
+  std::unique_lock<std::mutex> aLock(myMutex, std::defer_lock);
+  if (myIsParallel)
+  {
+    aLock.lock();
+  }
   BRepCheck::Add(*myMap(myShape), theStatus);
 }
 

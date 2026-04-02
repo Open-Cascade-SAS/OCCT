@@ -16,6 +16,8 @@
 
 #include <OSD_Parallel.hxx>
 
+#include <atomic>
+
 #ifdef _WIN32
   #include <windows.h>
   #include <process.h>
@@ -173,12 +175,13 @@ static uint32_t readCpuMask(const char* thePath)
 }
 #endif
 
-static bool OSD_Parallel_ToUseOcctThreads =
+static std::atomic<bool> OSD_Parallel_ToUseOcctThreads{
 #ifdef HAVE_TBB
-  false;
+  false
 #else
-  true;
+  true
 #endif
+};
 } // namespace
 
 //=================================================================================================

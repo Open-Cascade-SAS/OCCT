@@ -194,8 +194,8 @@ const NCollection_List<TopoDS_Shape>& TopOpeBRepBuild_HBuilder::Section()
   return L;
 }
 
-static NCollection_List<TopoDS_Shape>*           PLE   = nullptr;
-static NCollection_List<TopoDS_Shape>::Iterator* PITLE = nullptr;
+static thread_local NCollection_List<TopoDS_Shape>*           PLE   = nullptr;
+static thread_local NCollection_List<TopoDS_Shape>::Iterator* PITLE = nullptr;
 
 //=================================================================================================
 

@@ -26,8 +26,6 @@
 #include <NCollection_Shared.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
-#include <Standard_MemoryUtils.hxx>
-
 #include <mutex>
 
 class BRepCheck_Result : public Standard_Transient
@@ -60,7 +58,11 @@ public:
 
   Standard_EXPORT void NextShapeInContext();
 
-  Standard_EXPORT void SetParallel(bool theIsParallel);
+  //! Sets the parallel execution flag for sub-algorithms.
+  void SetParallel(const bool theIsParallel) { myIsParallel = theIsParallel; }
+
+  //! Returns TRUE if sub-algorithms should use parallel execution.
+  bool IsParallel() const { return myIsParallel; }
 
   bool IsStatusOnShape(const TopoDS_Shape& theShape) const { return myMap.IsBound(theShape); }
 
@@ -80,14 +82,12 @@ protected:
   TopoDS_Shape myShape;
   bool         myMin;
   bool         myBlind;
+  bool         myIsParallel = false;
   NCollection_DataMap<TopoDS_Shape,
                       Handle(NCollection_Shared<NCollection_List<BRepCheck_Status>>),
                       TopTools_ShapeMapHasher>
-                                      myMap;
-  mutable std::unique_ptr<std::mutex> myMutex;
-
-private:
-  std::unique_ptr<std::mutex>& GetMutex() { return myMutex; }
+                     myMap;
+  mutable std::mutex myMutex;
 
 private:
   NCollection_DataMap<TopoDS_Shape,
