@@ -310,80 +310,32 @@ void BRepGraph_ChildExplorer::startTraversal(const TopLoc_Location&   theStartLo
     return;
   }
 
-  // Check pre-resolution root match (for CoEdge, Occurrence targets) only in recursive mode.
-  if (myMode == TraversalMode::Recursive && myTargetKind.has_value() && matchesTarget(myRoot))
-  {
-    const BRepGraphInc::BaseDef* aRootDef = myGraph->Topo().Gen().TopoEntity(myRoot);
-    if (aRootDef != nullptr && !aRootDef->IsRemoved)
-    {
-      StackFrame aRootFrame;
-      aRootFrame.Node           = myRoot;
-      aRootFrame.NextChildIdx   = 0;
-      aRootFrame.StepFromParent = -1;
-      aRootFrame.AccLocation    = theStartLoc;
-      aRootFrame.AccOrientation = theStartOri;
-      pushFrame(aRootFrame);
-      setCurrentFromFrame(myStackTop);
-      return;
-    }
-  }
-
-  // Resolve 1:1 transitions from root.
-  // In DirectChildren mode without a target kind, skip resolution to expose
-  // the actual graph structure (CoEdge, Occurrence are treated as real nodes).
-  BRepGraph_NodeId   aResolved = myRoot;
-  TopLoc_Location    aRootLoc  = theStartLoc;
-  TopAbs_Orientation aRootOri  = theStartOri;
-  if (myMode == TraversalMode::Recursive || myTargetKind.has_value())
-    resolve1to1(aResolved, aRootLoc, aRootOri);
-
-  if (!aResolved.IsValid())
-    return;
-
-  if (matchesAvoid(aResolved))
-  {
-    const BRepGraphInc::BaseDef* anAvoidDef = myGraph->Topo().Gen().TopoEntity(aResolved);
-    if (myTargetKind.has_value() && myEmitAvoidKind && anAvoidDef != nullptr
-        && !anAvoidDef->IsRemoved)
-    {
-      StackFrame aRootFrame;
-      aRootFrame.Node           = aResolved;
-      aRootFrame.NextChildIdx   = 0;
-      aRootFrame.StepFromParent = -1;
-      aRootFrame.AccLocation    = aRootLoc;
-      aRootFrame.AccOrientation = aRootOri;
-      pushFrame(aRootFrame);
-      setCurrentFromFrame(myStackTop);
-    }
-    return;
-  }
-
-  // Check if resolved root is invalid or removed.
-  const BRepGraphInc::BaseDef* aBaseDef = myGraph->Topo().Gen().TopoEntity(aResolved);
+  // Check if root is valid and not removed.
+  const BRepGraphInc::BaseDef* aBaseDef = myGraph->Topo().Gen().TopoEntity(myRoot);
   if (aBaseDef == nullptr || aBaseDef->IsRemoved)
     return;
 
-  // Post-resolution root match (e.g., root=CoEdge, target=Edge).
-  if (myMode == TraversalMode::Recursive && myTargetKind.has_value() && matchesTarget(aResolved))
+  // Check if root itself matches the target kind (e.g., root=Edge, target=Edge).
+  if (myTargetKind.has_value() && matchesTarget(myRoot))
   {
     StackFrame aRootFrame;
-    aRootFrame.Node           = aResolved;
+    aRootFrame.Node           = myRoot;
     aRootFrame.NextChildIdx   = 0;
     aRootFrame.StepFromParent = -1;
-    aRootFrame.AccLocation    = aRootLoc;
-    aRootFrame.AccOrientation = aRootOri;
+    aRootFrame.AccLocation    = theStartLoc;
+    aRootFrame.AccOrientation = theStartOri;
     pushFrame(aRootFrame);
     setCurrentFromFrame(myStackTop);
     return;
   }
 
-  // Push root frame and find first match.
+  // Push root frame and find first matching descendant.
   StackFrame aRootFrame;
-  aRootFrame.Node           = aResolved;
+  aRootFrame.Node           = myRoot;
   aRootFrame.NextChildIdx   = 0;
   aRootFrame.StepFromParent = -1;
-  aRootFrame.AccLocation    = aRootLoc;
-  aRootFrame.AccOrientation = aRootOri;
+  aRootFrame.AccLocation    = theStartLoc;
+  aRootFrame.AccOrientation = theStartOri;
   pushFrame(aRootFrame);
   advance();
 }
@@ -679,19 +631,54 @@ void BRepGraph_ChildExplorer::advance()
         break;
       }
 
-      case Kind::Product: {
-        // Assembly product: step = active occurrence index.
-        const BRepGraph_ProductId aProdId(aFrame.Node.Index);
-        const int                 aNbComps = myGraph->Topo().Products().NbComponents(aProdId);
-        if (aIdx < aNbComps)
+      case Kind::Occurrence: {
+        // Occurrence references exactly one Product.
+        if (aIdx == 0)
         {
-          const BRepGraph_OccurrenceId anOccId =
-            myGraph->Topo().Products().Component(aProdId, aIdx);
-          aChildNode = anOccId;
-          aStepIdx   = aIdx;
-          // No location/orientation on assembly -> occurrence step.
+          const BRepGraphInc::OccurrenceDef& anOcc =
+            aDefs.Occurrences().Definition(BRepGraph_OccurrenceId(aFrame.Node.Index));
+          if (!anOcc.IsRemoved && anOcc.ProductDefId.IsValid())
+          {
+            aChildNode = anOcc.ProductDefId;
+            aStepIdx   = 0;
+            if (myCumLoc)
+              aChildLoc = aFrame.AccLocation * anOcc.Placement;
+          }
         }
-        aFrame.NextChildIdx = aIdx + 1;
+        aFrame.NextChildIdx = 1;
+        break;
+      }
+
+      case Kind::Product: {
+        const BRepGraph_ProductId       aProdId(aFrame.Node.Index);
+        const BRepGraphInc::ProductDef& aProd = aDefs.Products().Definition(aProdId);
+        if (aProd.ShapeRootId.IsValid())
+        {
+          // Part product: single child = shape root topology node.
+          if (aIdx == 0)
+          {
+            aChildNode = aProd.ShapeRootId;
+            aStepIdx   = 0;
+            if (myCumLoc)
+              aChildLoc = aFrame.AccLocation * aProd.RootLocation;
+            if (myCumOri)
+              aChildOri = TopAbs::Compose(aFrame.AccOrientation, aProd.RootOrientation);
+          }
+          aFrame.NextChildIdx = 1;
+        }
+        else
+        {
+          // Assembly product: children are occurrence instances.
+          const int aNbComps = myGraph->Topo().Products().NbComponents(aProdId);
+          if (aIdx < aNbComps)
+          {
+            const BRepGraph_OccurrenceId anOccId =
+              myGraph->Topo().Products().Component(aProdId, aIdx);
+            aChildNode = anOccId;
+            aStepIdx   = aIdx;
+          }
+          aFrame.NextChildIdx = aIdx + 1;
+        }
         break;
       }
 
@@ -710,8 +697,8 @@ void BRepGraph_ChildExplorer::advance()
 
     if (matchesAvoid(aChildNode))
     {
-      const BRepGraphInc::BaseDef* aPreAvoidDef = aDefs.Gen().TopoEntity(aChildNode);
-      if (myEmitAvoidKind && aPreAvoidDef != nullptr && !aPreAvoidDef->IsRemoved)
+      const BRepGraphInc::BaseDef* anAvoidDef = aDefs.Gen().TopoEntity(aChildNode);
+      if (myEmitAvoidKind && anAvoidDef != nullptr && !anAvoidDef->IsRemoved)
       {
         StackFrame aChildFrame;
         aChildFrame.Node           = aChildNode;
@@ -726,55 +713,7 @@ void BRepGraph_ChildExplorer::advance()
       continue;
     }
 
-    // Pre-resolution target check: yield CoEdge, Occurrence, etc. before 1:1 collapse.
-    if (myTargetKind.has_value() && matchesTarget(aChildNode))
-    {
-      const BRepGraphInc::BaseDef* aPreDef = aDefs.Gen().TopoEntity(aChildNode);
-      if (aPreDef != nullptr && !aPreDef->IsRemoved)
-      {
-        StackFrame aChildFrame;
-        aChildFrame.Node           = aChildNode;
-        aChildFrame.NextChildIdx   = 0;
-        aChildFrame.StepFromParent = aStepIdx;
-        aChildFrame.AccLocation    = aChildLoc;
-        aChildFrame.AccOrientation = aChildOri;
-        pushFrame(aChildFrame);
-        setCurrentFromFrame(myStackTop);
-        return;
-      }
-      continue;
-    }
-
-    // Resolve 1:1 transitions (CoEdge->Edge, Occurrence->Product, Product(part)->ShapeRoot).
-    // In DirectChildren mode without a target kind, skip resolution to expose
-    // the actual graph structure (CoEdge, Occurrence are returned as-is).
-    // With a target kind, resolution is needed to reach the requested entity type.
-    if (myMode == TraversalMode::Recursive || myTargetKind.has_value())
-    {
-      resolve1to1(aChildNode, aChildLoc, aChildOri);
-      if (!aChildNode.IsValid())
-        continue;
-    }
-
-    if (matchesAvoid(aChildNode))
-    {
-      const BRepGraphInc::BaseDef* aPostAvoidDef = aDefs.Gen().TopoEntity(aChildNode);
-      if (myEmitAvoidKind && aPostAvoidDef != nullptr && !aPostAvoidDef->IsRemoved)
-      {
-        StackFrame aChildFrame;
-        aChildFrame.Node           = aChildNode;
-        aChildFrame.NextChildIdx   = 0;
-        aChildFrame.StepFromParent = aStepIdx;
-        aChildFrame.AccLocation    = aChildLoc;
-        aChildFrame.AccOrientation = aChildOri;
-        pushFrame(aChildFrame);
-        setCurrentFromFrame(myStackTop);
-        return;
-      }
-      continue;
-    }
-
-    // Post-resolution target check, or all-descendant emission when no target is configured.
+    // Target check, or all-descendant emission when no target is configured.
     if (shouldEmit(aChildNode))
     {
       const BRepGraphInc::BaseDef* aPostDef = aDefs.Gen().TopoEntity(aChildNode);
@@ -836,81 +775,6 @@ bool BRepGraph_ChildExplorer::shouldDescendFromCurrent() const
 
   const BRepGraph_NodeId aNode = myStack[myCurrentFrame].Node;
   return !myTargetKind.has_value() && !matchesAvoid(aNode) && canHaveChildren(aNode.NodeKind);
-}
-
-//=================================================================================================
-
-void BRepGraph_ChildExplorer::resolve1to1(BRepGraph_NodeId&   theNode,
-                                          TopLoc_Location&    theLoc,
-                                          TopAbs_Orientation& theOri) const
-{
-  using Kind                       = BRepGraph_NodeId::Kind;
-  const BRepGraph::TopoView& aDefs = myGraph->Topo();
-
-  // Each transition changes the node kind to a structurally different one:
-  //   CoEdge -> Edge, Occurrence -> Product, Product(part) -> ShapeRoot (topology kind).
-  // The chain terminates in at most 2 transitions.
-  for (;;)
-  {
-    if (!theNode.IsValid())
-      return;
-
-    if (theNode.NodeKind == Kind::CoEdge)
-    {
-      const BRepGraphInc::CoEdgeDef& aCoEdge =
-        aDefs.CoEdges().Definition(BRepGraph_CoEdgeId(theNode.Index));
-      if (aCoEdge.IsRemoved)
-      {
-        theNode = BRepGraph_NodeId();
-        return;
-      }
-      if (myCumOri)
-        theOri = TopAbs::Compose(theOri, aCoEdge.Sense);
-      theNode = aCoEdge.EdgeDefId;
-      continue;
-    }
-
-    if (theNode.NodeKind == Kind::Occurrence)
-    {
-      const BRepGraphInc::OccurrenceDef& anOcc =
-        aDefs.Occurrences().Definition(BRepGraph_OccurrenceId(theNode.Index));
-      if (anOcc.IsRemoved)
-      {
-        theNode = BRepGraph_NodeId();
-        return;
-      }
-      if (myCumLoc)
-        theLoc = theLoc * anOcc.Placement;
-      theNode = anOcc.ProductDefId;
-      continue;
-    }
-
-    if (theNode.NodeKind == Kind::Product)
-    {
-      const BRepGraphInc::ProductDef& aProd =
-        aDefs.Products().Definition(BRepGraph_ProductId(theNode.Index));
-      if (aProd.IsRemoved)
-      {
-        theNode = BRepGraph_NodeId();
-        return;
-      }
-      // Part product: 1:1 transition to shape root.
-      if (aProd.ShapeRootId.IsValid())
-      {
-        if (myCumLoc)
-          theLoc = theLoc * aProd.RootLocation;
-        if (myCumOri)
-          theOri = TopAbs::Compose(theOri, aProd.RootOrientation);
-        theNode = aProd.ShapeRootId;
-        continue;
-      }
-      // Assembly product: not 1:1, has children.
-      return;
-    }
-
-    // No more 1:1 transitions.
-    return;
-  }
 }
 
 //=================================================================================================

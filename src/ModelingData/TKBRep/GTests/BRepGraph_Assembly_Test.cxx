@@ -352,7 +352,7 @@ TEST(BRepGraph_AssemblyTest, RemoveProduct_CascadesToPartTopology)
   const int aNbFaces = aGraph.Topo().Faces().Nb();
   ASSERT_GT(aNbFaces, 0);
 
-  // Remove the part product — should cascade to topology.
+  // Remove the part product - should cascade to topology.
   aGraph.Builder().RemoveSubgraph(aPartId);
 
   EXPECT_TRUE(aGraph.Topo().Gen().IsRemoved(aPartId));
@@ -394,11 +394,10 @@ TEST(BRepGraph_AssemblyTest, RemoveOccurrence_CascadesToNestedChildren)
   EXPECT_FALSE(aGraph.Topo().Gen().IsRemoved(anOccLeaf));
 
   // Verify the parent chain: leaf's ParentOccurrenceDefId == mid occurrence.
-  const BRepGraphInc::OccurrenceDef& aLeafDef =
-    aGraph.Topo().Occurrences().Definition(anOccLeaf);
+  const BRepGraphInc::OccurrenceDef& aLeafDef = aGraph.Topo().Occurrences().Definition(anOccLeaf);
   EXPECT_EQ(aLeafDef.ParentOccurrenceDefId.Index, anOccMid.Index);
 
-  // Remove the mid-level occurrence — leaf should cascade.
+  // Remove the mid-level occurrence - leaf should cascade.
   aGraph.Builder().RemoveSubgraph(anOccMid);
 
   EXPECT_TRUE(aGraph.Topo().Gen().IsRemoved(anOccMid));

@@ -33,12 +33,26 @@
 //! orientation are composed incrementally during the walk, making
 //! Current().Location and Current().Orientation O(1) per call.
 //!
+//! The traversal follows the actual graph structure transparently - every node
+//! kind is visited as a distinct entity (no hidden collapses):
+//!   Compound -> children,  CompSolid -> Solids,  Solid -> Shells,
+//!   Shell -> Faces,  Face -> Wires (+direct Vertices),  Wire -> CoEdges,
+//!   CoEdge -> Edge,  Edge -> Vertices,
+//!   Product(assembly) -> Occurrences,  Product(part) -> ShapeRoot,
+//!   Occurrence -> Product.
+//!
 //! Unlike flat definition traversal by typed ids, BRepGraph_ChildExplorer visits
 //! each occurrence. If Edge[5] is reachable through Face[0] and Face[1],
 //! it is visited twice with different accumulated transforms.
 //!
-//! The explorer handles all hierarchy levels uniformly: assembly occurrences,
-//! compound containers, topology entities, free children, and direct face vertices.
+//! ## Traversal modes
+//! - **Recursive**: depth-first walk through the full subgraph.
+//!   Without target kind, all descendant nodes are emitted.
+//!   With target kind, only matching nodes are emitted but intermediate
+//!   levels are traversed to reach them.
+//! - **DirectChildren**: yields only the immediate children of the root.
+//!   No descent into grandchildren.  With target kind, only children
+//!   matching the kind are returned.
 class BRepGraph_ChildExplorer
 {
 public:
@@ -47,8 +61,8 @@ public:
   //! Downward traversal strategy.
   enum class TraversalMode
   {
-    Recursive,
-    DirectChildren,
+    Recursive,      //!< Depth-first walk through the full subgraph.
+    DirectChildren, //!< Yields only the immediate children of the root.
   };
 
   Standard_EXPORT BRepGraph_ChildExplorer(const BRepGraph&       theGraph,
@@ -170,10 +184,6 @@ private:
   void advance();
 
   void startTraversal(const TopLoc_Location& theStartLoc, TopAbs_Orientation theStartOri);
-
-  void resolve1to1(BRepGraph_NodeId&   theNode,
-                   TopLoc_Location&    theLoc,
-                   TopAbs_Orientation& theOri) const;
 
   static std::optional<BRepGraph_NodeId::Kind> normalizeAvoidKind(
     const std::optional<BRepGraph_NodeId::Kind>& theAvoidKind,

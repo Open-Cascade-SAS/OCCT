@@ -202,7 +202,7 @@ TEST(BRepGraph_ChildExplorerTest, AvoidKind_SameAsTarget_IsIgnored)
   EXPECT_EQ(aFaceCount, 6);
 }
 
-TEST(BRepGraph_ChildExplorerTest, AllDescendants_Recursive_YieldsResolvedKinds)
+TEST(BRepGraph_ChildExplorerTest, AllDescendants_Recursive_YieldsAllKinds)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
@@ -211,6 +211,7 @@ TEST(BRepGraph_ChildExplorerTest, AllDescendants_Recursive_YieldsResolvedKinds)
   int aShellCount  = 0;
   int aFaceCount   = 0;
   int aWireCount   = 0;
+  int aCoEdgeCount = 0;
   int anEdgeCount  = 0;
   int aVertexCount = 0;
   for (BRepGraph_ChildExplorer anExp(aGraph, BRepGraph_SolidId(0)); anExp.More(); anExp.Next())
@@ -225,6 +226,9 @@ TEST(BRepGraph_ChildExplorerTest, AllDescendants_Recursive_YieldsResolvedKinds)
         break;
       case BRepGraph_NodeId::Kind::Wire:
         ++aWireCount;
+        break;
+      case BRepGraph_NodeId::Kind::CoEdge:
+        ++aCoEdgeCount;
         break;
       case BRepGraph_NodeId::Kind::Edge:
         ++anEdgeCount;
@@ -241,8 +245,9 @@ TEST(BRepGraph_ChildExplorerTest, AllDescendants_Recursive_YieldsResolvedKinds)
   EXPECT_EQ(aShellCount, 1);
   EXPECT_EQ(aFaceCount, 6);
   EXPECT_EQ(aWireCount, 6);
-  EXPECT_EQ(anEdgeCount, 24);
-  EXPECT_EQ(aVertexCount, 48);
+  EXPECT_EQ(aCoEdgeCount, 24); // 4 CoEdges per face, 6 faces
+  EXPECT_EQ(anEdgeCount, 24);  // Each CoEdge leads to one Edge (occurrence-based)
+  EXPECT_EQ(aVertexCount, 48); // Each Edge visited with 2 vertices
 }
 
 TEST(BRepGraph_ChildExplorerTest, AllDescendants_AvoidFaceBoundary_StopsBelowFaces)
@@ -528,7 +533,7 @@ TEST(BRepGraph_ChildExplorerTest, DirectChildren_RemovedFaceRef_IsSkipped)
   EXPECT_EQ(aCount, aFaceRefIds.Length() - 1);
 }
 
-TEST(BRepGraph_ChildExplorerTest, DirectChildren_WireChildren_AreResolvedEdges)
+TEST(BRepGraph_ChildExplorerTest, DirectChildren_WireChildren_AreCoEdges)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
@@ -542,13 +547,14 @@ TEST(BRepGraph_ChildExplorerTest, DirectChildren_WireChildren_AreResolvedEdges)
   const NCollection_Vector<BRepGraph_CoEdgeRefId>& aCoEdgeRefs =
     aGraph.Refs().CoEdges().IdsOf(aWireId);
 
+  // Wire's direct children are CoEdges (no 1:1 collapse).
   int aCount = 0;
   for (BRepGraph_ChildExplorer anIt =
-         makeDirectChildExplorer(aGraph, aWireId, BRepGraph_NodeId::Kind::Edge);
+         makeDirectChildExplorer(aGraph, aWireId, BRepGraph_NodeId::Kind::CoEdge);
        anIt.More();
        anIt.Next())
   {
-    EXPECT_EQ(anIt.Current().DefId.NodeKind, BRepGraph_NodeId::Kind::Edge);
+    EXPECT_EQ(anIt.Current().DefId.NodeKind, BRepGraph_NodeId::Kind::CoEdge);
     ++aCount;
   }
 
@@ -649,7 +655,7 @@ TEST(BRepGraph_ChildExplorerTest, DirectChildren_ChainedTraversal_ParityWithRecu
   EXPECT_EQ(aVisited, aExpectedLoc.Extent());
 }
 
-TEST(BRepGraph_ChildExplorerTest, DirectChildren_SharedProduct_ChildrenHaveDistinctContexts)
+TEST(BRepGraph_ChildExplorerTest, Recursive_SharedProduct_ChildrenHaveDistinctContexts)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
@@ -672,12 +678,11 @@ TEST(BRepGraph_ChildExplorerTest, DirectChildren_SharedProduct_ChildrenHaveDisti
   ASSERT_TRUE(anOcc1.IsValid());
   ASSERT_TRUE(anOcc2.IsValid());
 
+  // Recursive traversal through Assembly->Occurrence->Product(part)->Solid.
   int             aCount = 0;
   TopLoc_Location aLoc1;
   TopLoc_Location aLoc2;
-  for (BRepGraph_ChildExplorer anIt =
-         makeDirectChildExplorer(aGraph, anAssembly, BRepGraph_NodeId::Kind::Solid);
-       anIt.More();
+  for (BRepGraph_ChildExplorer anIt(aGraph, anAssembly, BRepGraph_NodeId::Kind::Solid); anIt.More();
        anIt.Next())
   {
     ASSERT_EQ(anIt.Current().DefId, BRepGraph_NodeId(BRepGraph_SolidId(0)));
@@ -692,7 +697,7 @@ TEST(BRepGraph_ChildExplorerTest, DirectChildren_SharedProduct_ChildrenHaveDisti
   EXPECT_FALSE(aLoc1.IsEqual(aLoc2));
 }
 
-TEST(BRepGraph_ChildExplorerTest, DirectChildren_ProductPartRootContext_ComposedWithOccurrence)
+TEST(BRepGraph_ChildExplorerTest, Recursive_ProductPartRootContext_ComposedWithOccurrence)
 {
   BRepGraph aGraph;
   aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
@@ -717,8 +722,8 @@ TEST(BRepGraph_ChildExplorerTest, DirectChildren_ProductPartRootContext_Composed
     aMutPart->RootOrientation                             = TopAbs_REVERSED;
   }
 
-  BRepGraph_ChildExplorer anIt =
-    makeDirectChildExplorer(aGraph, anAssembly, BRepGraph_NodeId::Kind::Solid);
+  // Recursive traversal through Assembly->Occurrence->Product(part)->Solid.
+  BRepGraph_ChildExplorer anIt(aGraph, anAssembly, BRepGraph_NodeId::Kind::Solid);
   ASSERT_TRUE(anIt.More());
   EXPECT_EQ(anIt.Current().DefId, BRepGraph_NodeId(BRepGraph_SolidId(0)));
 

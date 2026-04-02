@@ -1034,39 +1034,16 @@ void BRepGraph::BuilderView::RemoveSubgraph(const BRepGraph_NodeId theNode)
 {
   // Collect and recursively remove children BEFORE marking this node as removed,
   // because iterators (DefsIterator, RefsIterator) skip removed parents/children.
-  // Children that are shared with other active parents are NOT removed (ownership-aware).
+  // Children shared with other active parents are NOT removed (ownership-aware).
+  //
+  // Product and Occurrence require special handling:
+  //  - Product: shared ShapeRootId check across products.
+  //  - Occurrence: child occurrence cascade + parent product ref detachment.
+  // All other kinds use the generic ChildExplorer/ParentExplorer cascade.
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
 
   switch (theNode.NodeKind)
   {
-    // Generic topology cascade: collect direct children via ChildExplorer(DirectChildren),
-    // check sharing via ParentExplorer(DirectParents), recursively remove exclusively-owned
-    // children. DirectChildren mode exposes the actual graph structure without 1:1 collapse,
-    // so Wire→CoEdge→Edge→Vertex are all traversed as distinct graph nodes.
-    case BRepGraph_NodeId::Kind::Compound:
-    case BRepGraph_NodeId::Kind::CompSolid:
-    case BRepGraph_NodeId::Kind::Solid:
-    case BRepGraph_NodeId::Kind::Shell:
-    case BRepGraph_NodeId::Kind::Face:
-    case BRepGraph_NodeId::Kind::Wire:
-    case BRepGraph_NodeId::Kind::CoEdge:
-    case BRepGraph_NodeId::Kind::Edge: {
-      NCollection_Vector<BRepGraph_NodeId> aChildNodes;
-      for (BRepGraph_ChildExplorer anExp(*myGraph,
-                                         theNode,
-                                         BRepGraph_ChildExplorer::TraversalMode::DirectChildren);
-           anExp.More();
-           anExp.Next())
-      {
-        aChildNodes.Append(anExp.Current().DefId);
-      }
-      for (const BRepGraph_NodeId& aChild : aChildNodes)
-      {
-        if (!hasOtherActiveParent(*myGraph, aChild, theNode))
-          RemoveSubgraph(aChild);
-      }
-      break;
-    }
     case BRepGraph_NodeId::Kind::Product: {
       if (theNode.IsValid(aStorage.NbProducts()))
       {
@@ -1083,12 +1060,11 @@ void BRepGraph::BuilderView::RemoveSubgraph(const BRepGraph_NodeId theNode)
         for (const int anOccIdx : anOccIndices)
           RemoveSubgraph(BRepGraph_OccurrenceId(anOccIdx));
 
-        // Cascade into the part topology owned via ShapeRootId,
+        // Cascade into part topology owned via ShapeRootId,
         // but only if no other active product shares the same root.
         const BRepGraphInc::ProductDef& aProd =
           aStorage.Product(BRepGraph_ProductId(theNode.Index));
-        if (aProd.ShapeRootId.IsValid()
-            && !myGraph->Topo().Gen().IsRemoved(aProd.ShapeRootId))
+        if (aProd.ShapeRootId.IsValid() && !myGraph->Topo().Gen().IsRemoved(aProd.ShapeRootId))
         {
           bool aIsSharedRoot = false;
           for (int aProdIdx = 0; aProdIdx < aStorage.NbProducts(); ++aProdIdx)
@@ -1127,7 +1103,7 @@ void BRepGraph::BuilderView::RemoveSubgraph(const BRepGraph_NodeId theNode)
         for (const int aChildIdx : aChildOccIndices)
           RemoveSubgraph(BRepGraph_OccurrenceId(aChildIdx));
 
-        // Remove from parent product's OccurrenceRefIds.
+        // Detach from parent product's OccurrenceRefIds.
         const BRepGraphInc::OccurrenceDef& anOcc =
           myGraph->myData->myIncStorage.Occurrence(BRepGraph_OccurrenceId(theNode.Index));
         if (anOcc.ParentProductDefId.IsValid()
@@ -1159,8 +1135,25 @@ void BRepGraph::BuilderView::RemoveSubgraph(const BRepGraph_NodeId theNode)
       }
       break;
     }
-    default:
+    default: {
+      // Generic topology cascade via ChildExplorer(DirectChildren) + ParentExplorer(DirectParents).
+      // Covers Compound, CompSolid, Solid, Shell, Face, Wire, CoEdge, Edge, Vertex.
+      NCollection_Vector<BRepGraph_NodeId> aChildNodes;
+      for (BRepGraph_ChildExplorer anExp(*myGraph,
+                                         theNode,
+                                         BRepGraph_ChildExplorer::TraversalMode::DirectChildren);
+           anExp.More();
+           anExp.Next())
+      {
+        aChildNodes.Append(anExp.Current().DefId);
+      }
+      for (const BRepGraph_NodeId& aChild : aChildNodes)
+      {
+        if (!hasOtherActiveParent(*myGraph, aChild, theNode))
+          RemoveSubgraph(aChild);
+      }
       break;
+    }
   }
 
   // Mark the node as removed AFTER children have been collected and processed,

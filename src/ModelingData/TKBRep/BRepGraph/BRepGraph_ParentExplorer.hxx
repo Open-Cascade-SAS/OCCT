@@ -28,13 +28,25 @@
 
 //! @brief Upward occurrence-aware parent traversal for BRepGraph.
 //!
-//! Enumerates all ancestor occurrences reachable from a starting node.
+//! Enumerates all ancestor nodes reachable from a starting node.
 //! Traversal is path-aware: when the same definition is reached through multiple
 //! occurrence paths, each path contributes its own parent sequence with its own
 //! accumulated location and orientation.
 //!
-//! `CoEdge`, `Occurrence`, and part `Product` nodes are preserved explicitly in
-//! the upward walk rather than collapsed through their 1:1 transitions.
+//! The traversal follows the actual graph structure transparently - every node
+//! kind is visited as a distinct entity (no hidden collapses):
+//!   Vertex -> Edge,  Edge -> CoEdge,  CoEdge -> Wire,  Wire -> Face,
+//!   Face -> Shell,  Shell -> Solid,  Solid -> CompSolid/Compound,
+//!   Product -> Occurrence,  Occurrence -> Product (parent assembly).
+//!
+//! ## Traversal modes
+//! - **Recursive**: walks the full ancestor chain to the graph roots.
+//!   Without target kind, all ancestors are emitted.
+//!   With target kind, only matching ancestors are emitted but intermediate
+//!   levels are traversed to reach them.
+//! - **DirectParents**: yields only the immediate parents of the starting node.
+//!   No ascent into grandparents.  With target kind, only parents
+//!   matching the kind are returned.
 class BRepGraph_ParentExplorer
 {
 public:
@@ -43,8 +55,8 @@ public:
   //! Upward traversal strategy.
   enum class TraversalMode
   {
-    Recursive,
-    DirectParents,
+    Recursive,     //!< Walk the full ancestor chain to the graph roots.
+    DirectParents, //!< Yields only the immediate parents of the starting node.
   };
 
   //! Explore all parents of the starting node.
