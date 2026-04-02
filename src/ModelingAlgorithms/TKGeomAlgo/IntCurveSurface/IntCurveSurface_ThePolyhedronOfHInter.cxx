@@ -33,7 +33,8 @@ namespace PolyUtils = IntCurveSurface_PolyhedronUtils;
 
 namespace
 {
-int nbDeltaFromParameters(const NCollection_Array1<double>& thePars, const char* theArgumentName)
+int nbDeltaFromParameters(const NCollection_Array1<double>& thePars,
+                          [[maybe_unused]] const char*      theArgumentName)
 {
   Standard_OutOfRange_Raise_if(thePars.Length() < 2, theArgumentName);
   return thePars.Length() - 1;
