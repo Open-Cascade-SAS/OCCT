@@ -1083,12 +1083,29 @@ void BRepGraph::BuilderView::RemoveSubgraph(const BRepGraph_NodeId theNode)
         for (const int anOccIdx : anOccIndices)
           RemoveSubgraph(BRepGraph_OccurrenceId(anOccIdx));
 
-        // Cascade into the part topology owned via ShapeRootId.
+        // Cascade into the part topology owned via ShapeRootId,
+        // but only if no other active product shares the same root.
         const BRepGraphInc::ProductDef& aProd =
           aStorage.Product(BRepGraph_ProductId(theNode.Index));
         if (aProd.ShapeRootId.IsValid()
             && !myGraph->Topo().Gen().IsRemoved(aProd.ShapeRootId))
-          RemoveSubgraph(aProd.ShapeRootId);
+        {
+          bool aIsSharedRoot = false;
+          for (int aProdIdx = 0; aProdIdx < aStorage.NbProducts(); ++aProdIdx)
+          {
+            if (aProdIdx == theNode.Index)
+              continue;
+            const BRepGraphInc::ProductDef& anOther =
+              aStorage.Product(BRepGraph_ProductId(aProdIdx));
+            if (!anOther.IsRemoved && anOther.ShapeRootId == aProd.ShapeRootId)
+            {
+              aIsSharedRoot = true;
+              break;
+            }
+          }
+          if (!aIsSharedRoot)
+            RemoveSubgraph(aProd.ShapeRootId);
+        }
       }
       break;
     }
