@@ -16,7 +16,7 @@
 
 #include <IntPolyh_Point.hxx>
 
-#include <cstdio>
+#include <Precision.hxx>
 
 //=================================================================================================
 
@@ -67,7 +67,7 @@ IntPolyh_Point IntPolyh_Point::Sub(const IntPolyh_Point& P1) const
 IntPolyh_Point IntPolyh_Point::Divide(const double RR) const
 {
   IntPolyh_Point res;
-  if (std::abs(RR) > 10.0e-20)
+  if (std::abs(RR) > Precision::Computational())
   {
     res.SetX(myX / RR);
     res.SetY(myY / RR);
