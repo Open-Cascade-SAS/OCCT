@@ -58,6 +58,7 @@ template <>
 struct NodeTraits<BRepGraphInc::SolidDef>
 {
   using TypedId = BRepGraph_SolidId;
+
   static int Count(const BRepGraph& theGraph) { return theGraph.Topo().Solids().Nb(); }
 
   static const BRepGraphInc::SolidDef& Get(const BRepGraph& theGraph, const TypedId theId)
@@ -70,6 +71,7 @@ template <>
 struct NodeTraits<BRepGraphInc::ShellDef>
 {
   using TypedId = BRepGraph_ShellId;
+
   static int Count(const BRepGraph& theGraph) { return theGraph.Topo().Shells().Nb(); }
 
   static const BRepGraphInc::ShellDef& Get(const BRepGraph& theGraph, const TypedId theId)
@@ -82,6 +84,7 @@ template <>
 struct NodeTraits<BRepGraphInc::FaceDef>
 {
   using TypedId = BRepGraph_FaceId;
+
   static int Count(const BRepGraph& theGraph) { return theGraph.Topo().Faces().Nb(); }
 
   static const BRepGraphInc::FaceDef& Get(const BRepGraph& theGraph, const TypedId theId)
@@ -94,6 +97,7 @@ template <>
 struct NodeTraits<BRepGraphInc::WireDef>
 {
   using TypedId = BRepGraph_WireId;
+
   static int Count(const BRepGraph& theGraph) { return theGraph.Topo().Wires().Nb(); }
 
   static const BRepGraphInc::WireDef& Get(const BRepGraph& theGraph, const TypedId theId)
@@ -106,6 +110,7 @@ template <>
 struct NodeTraits<BRepGraphInc::EdgeDef>
 {
   using TypedId = BRepGraph_EdgeId;
+
   static int Count(const BRepGraph& theGraph) { return theGraph.Topo().Edges().Nb(); }
 
   static const BRepGraphInc::EdgeDef& Get(const BRepGraph& theGraph, const TypedId theId)
@@ -118,6 +123,7 @@ template <>
 struct NodeTraits<BRepGraphInc::VertexDef>
 {
   using TypedId = BRepGraph_VertexId;
+
   static int Count(const BRepGraph& theGraph) { return theGraph.Topo().Vertices().Nb(); }
 
   static const BRepGraphInc::VertexDef& Get(const BRepGraph& theGraph, const TypedId theId)
@@ -130,6 +136,7 @@ template <>
 struct NodeTraits<BRepGraphInc::ProductDef>
 {
   using TypedId = BRepGraph_ProductId;
+
   static int Count(const BRepGraph& theGraph) { return theGraph.Topo().Products().Nb(); }
 
   static const BRepGraphInc::ProductDef& Get(const BRepGraph& theGraph, const TypedId theId)
@@ -142,6 +149,7 @@ template <>
 struct NodeTraits<BRepGraphInc::OccurrenceDef>
 {
   using TypedId = BRepGraph_OccurrenceId;
+
   static int Count(const BRepGraph& theGraph) { return theGraph.Topo().Occurrences().Nb(); }
 
   static const BRepGraphInc::OccurrenceDef& Get(const BRepGraph& theGraph, const TypedId theId)
@@ -154,6 +162,7 @@ template <>
 struct NodeTraits<BRepGraphInc::CoEdgeDef>
 {
   using TypedId = BRepGraph_CoEdgeId;
+
   static int Count(const BRepGraph& theGraph) { return theGraph.Topo().CoEdges().Nb(); }
 
   static const BRepGraphInc::CoEdgeDef& Get(const BRepGraph& theGraph, const TypedId theId)
@@ -166,6 +175,7 @@ template <>
 struct NodeTraits<BRepGraphInc::CompoundDef>
 {
   using TypedId = BRepGraph_CompoundId;
+
   static int Count(const BRepGraph& theGraph) { return theGraph.Topo().Compounds().Nb(); }
 
   static const BRepGraphInc::CompoundDef& Get(const BRepGraph& theGraph, const TypedId theId)
@@ -178,6 +188,7 @@ template <>
 struct NodeTraits<BRepGraphInc::CompSolidDef>
 {
   using TypedId = BRepGraph_CompSolidId;
+
   static int Count(const BRepGraph& theGraph) { return theGraph.Topo().CompSolids().Nb(); }
 
   static const BRepGraphInc::CompSolidDef& Get(const BRepGraph& theGraph, const TypedId theId)
@@ -213,10 +224,7 @@ public:
     skipRemoved();
   }
 
-  [[nodiscard]] const NodeType& Current() const
-  {
-    return Traits::Get(myGraph, myCurrent);
-  }
+  [[nodiscard]] const NodeType& Current() const { return Traits::Get(myGraph, myCurrent); }
 
   //! Current definition index as a typed NodeId.
   [[nodiscard]] TypedId CurrentId() const { return myCurrent; }
@@ -234,8 +242,7 @@ private:
   //! Advance past any nodes marked as removed.
   void skipRemoved()
   {
-    if constexpr (!TheFullTraverse
-                  && BRepGraph_IteratorDetail::HasIsRemoved<NodeType>::value)
+    if constexpr (!TheFullTraverse && BRepGraph_IteratorDetail::HasIsRemoved<NodeType>::value)
     {
       while (myCurrent < myLength && Current().IsRemoved)
         ++myCurrent;

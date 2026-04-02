@@ -705,10 +705,9 @@ void checkWireConnectivity(const BRepGraph&                               theGra
     bool aAllValid = true;
     for (int anIdx = 0; anIdx < aNbCoEdges; ++anIdx)
     {
-      const BRepGraphInc::CoEdgeUsage& aCR = aWireCoEdgeRefs.Value(anIdx);
-      const BRepGraphInc::CoEdgeDef&   aCoEdge =
-        theGraph.Topo().CoEdges().Definition(aCR.DefId);
-      const BRepGraph_NodeId anEdgeId = aCoEdge.EdgeDefId;
+      const BRepGraphInc::CoEdgeUsage& aCR      = aWireCoEdgeRefs.Value(anIdx);
+      const BRepGraphInc::CoEdgeDef&   aCoEdge  = theGraph.Topo().CoEdges().Definition(aCR.DefId);
+      const BRepGraph_NodeId           anEdgeId = aCoEdge.EdgeDefId;
       if (!anEdgeId.IsValid() || !isValidNodeId(theGraph, anEdgeId))
       {
         aAllValid = false;

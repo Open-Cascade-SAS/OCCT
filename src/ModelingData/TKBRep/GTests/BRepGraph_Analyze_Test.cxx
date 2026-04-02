@@ -157,12 +157,18 @@ TEST_F(BRepGraph_DiagnosticsTest, BoundingBox_FaceSubsetOfShell)
     double aFXmin, aFYmin, aFZmin, aFXmax, aFYmax, aFZmax;
     aFaceBox.Get(aFXmin, aFYmin, aFZmin, aFXmax, aFYmax, aFZmax);
 
-    EXPECT_GE(aFXmin, aSXmin - aTol) << "Face " << aFaceIt.CurrentId().Index << " Xmin outside shell";
-    EXPECT_GE(aFYmin, aSYmin - aTol) << "Face " << aFaceIt.CurrentId().Index << " Ymin outside shell";
-    EXPECT_GE(aFZmin, aSZmin - aTol) << "Face " << aFaceIt.CurrentId().Index << " Zmin outside shell";
-    EXPECT_LE(aFXmax, aSXmax + aTol) << "Face " << aFaceIt.CurrentId().Index << " Xmax outside shell";
-    EXPECT_LE(aFYmax, aSYmax + aTol) << "Face " << aFaceIt.CurrentId().Index << " Ymax outside shell";
-    EXPECT_LE(aFZmax, aSZmax + aTol) << "Face " << aFaceIt.CurrentId().Index << " Zmax outside shell";
+    EXPECT_GE(aFXmin, aSXmin - aTol)
+      << "Face " << aFaceIt.CurrentId().Index << " Xmin outside shell";
+    EXPECT_GE(aFYmin, aSYmin - aTol)
+      << "Face " << aFaceIt.CurrentId().Index << " Ymin outside shell";
+    EXPECT_GE(aFZmin, aSZmin - aTol)
+      << "Face " << aFaceIt.CurrentId().Index << " Zmin outside shell";
+    EXPECT_LE(aFXmax, aSXmax + aTol)
+      << "Face " << aFaceIt.CurrentId().Index << " Xmax outside shell";
+    EXPECT_LE(aFYmax, aSYmax + aTol)
+      << "Face " << aFaceIt.CurrentId().Index << " Ymax outside shell";
+    EXPECT_LE(aFZmax, aSZmax + aTol)
+      << "Face " << aFaceIt.CurrentId().Index << " Zmax outside shell";
   }
 }
 
@@ -212,8 +218,7 @@ TEST_F(BRepGraph_DiagnosticsTest, BoundingBox_Edge_SubsetOfOwningFace)
 
   for (const BRepGraph_CoEdgeRefId& aCoEdgeRefId : aCoEdgeRefs)
   {
-    const BRepGraphInc::CoEdgeRef& aCR =
-      myGraph.Refs().CoEdges().Entry(aCoEdgeRefId);
+    const BRepGraphInc::CoEdgeRef& aCR      = myGraph.Refs().CoEdges().Entry(aCoEdgeRefId);
     const BRepGraphInc::CoEdgeDef& aCoEdge  = myGraph.Topo().CoEdges().Definition(aCR.CoEdgeDefId);
     const BRepGraph_NodeId         anEdgeId = aCoEdge.EdgeDefId;
     Bnd_Box                        anEdgeBox;
@@ -246,9 +251,12 @@ TEST_F(BRepGraph_DiagnosticsTest, BoundingBox_Vertex_SinglePoint)
 
     // A vertex bounding box should be essentially a point (within tolerance gap).
     const double aMaxSpan = 2.0; // tolerance-expanded point
-    EXPECT_LE(aXmax - aXmin, aMaxSpan) << "Vertex " << aVertIt.CurrentId().Index << " X span too large";
-    EXPECT_LE(aYmax - aYmin, aMaxSpan) << "Vertex " << aVertIt.CurrentId().Index << " Y span too large";
-    EXPECT_LE(aZmax - aZmin, aMaxSpan) << "Vertex " << aVertIt.CurrentId().Index << " Z span too large";
+    EXPECT_LE(aXmax - aXmin, aMaxSpan)
+      << "Vertex " << aVertIt.CurrentId().Index << " X span too large";
+    EXPECT_LE(aYmax - aYmin, aMaxSpan)
+      << "Vertex " << aVertIt.CurrentId().Index << " Y span too large";
+    EXPECT_LE(aZmax - aZmin, aMaxSpan)
+      << "Vertex " << aVertIt.CurrentId().Index << " Z span too large";
   }
 }
 
@@ -381,12 +389,18 @@ TEST_F(BRepGraph_DiagnosticsTest, Centroid_Face_InsideFaceBBox)
     aFaceBox.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
 
     const double aTol = 1.0;
-    EXPECT_GE(aCentroid.X(), aXmin - aTol) << "Face " << aFaceIt.CurrentId().Index << " centroid X below min";
-    EXPECT_LE(aCentroid.X(), aXmax + aTol) << "Face " << aFaceIt.CurrentId().Index << " centroid X above max";
-    EXPECT_GE(aCentroid.Y(), aYmin - aTol) << "Face " << aFaceIt.CurrentId().Index << " centroid Y below min";
-    EXPECT_LE(aCentroid.Y(), aYmax + aTol) << "Face " << aFaceIt.CurrentId().Index << " centroid Y above max";
-    EXPECT_GE(aCentroid.Z(), aZmin - aTol) << "Face " << aFaceIt.CurrentId().Index << " centroid Z below min";
-    EXPECT_LE(aCentroid.Z(), aZmax + aTol) << "Face " << aFaceIt.CurrentId().Index << " centroid Z above max";
+    EXPECT_GE(aCentroid.X(), aXmin - aTol)
+      << "Face " << aFaceIt.CurrentId().Index << " centroid X below min";
+    EXPECT_LE(aCentroid.X(), aXmax + aTol)
+      << "Face " << aFaceIt.CurrentId().Index << " centroid X above max";
+    EXPECT_GE(aCentroid.Y(), aYmin - aTol)
+      << "Face " << aFaceIt.CurrentId().Index << " centroid Y below min";
+    EXPECT_LE(aCentroid.Y(), aYmax + aTol)
+      << "Face " << aFaceIt.CurrentId().Index << " centroid Y above max";
+    EXPECT_GE(aCentroid.Z(), aZmin - aTol)
+      << "Face " << aFaceIt.CurrentId().Index << " centroid Z below min";
+    EXPECT_LE(aCentroid.Z(), aZmax + aTol)
+      << "Face " << aFaceIt.CurrentId().Index << " centroid Z above max";
   }
 }
 

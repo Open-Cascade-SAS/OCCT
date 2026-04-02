@@ -575,8 +575,8 @@ TEST(BRepGraphIncTest, Box_CoEdgeCount)
 
   // A box has 12 edges, each shared by 2 faces => 24 CoEdge entries total.
   // (No seam edges on a box.)
-  int aCoEdgeCount = 0;
-  const int aNbEdges = aStorage.NbEdges();
+  int       aCoEdgeCount = 0;
+  const int aNbEdges     = aStorage.NbEdges();
   for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
   {
     const NCollection_Vector<BRepGraph_CoEdgeId>* aCoEdgeIdxs =
@@ -597,8 +597,8 @@ TEST(BRepGraphIncTest, Cylinder_HasSeamEdges)
   ASSERT_TRUE(aStorage.GetIsDone());
 
   // A cylinder has seam edges: coedges with SeamPairId valid.
-  int aSeamPairCount = 0;
-  const int aNbEdges = aStorage.NbEdges();
+  int       aSeamPairCount = 0;
+  const int aNbEdges       = aStorage.NbEdges();
   for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
   {
     const NCollection_Vector<BRepGraph_CoEdgeId>* aCoEdgeIdxs =
@@ -662,8 +662,8 @@ TEST(BRepGraphIncTest, Sphere_DegenerateEdges_Preserved)
   ASSERT_TRUE(aStorage.GetIsDone());
 
   // A sphere has degenerate edges at the poles (no 3D curve, collapsed to a point).
-  int aDegenerateCount = 0;
-  const int aNbEdges = aStorage.NbEdges();
+  int       aDegenerateCount = 0;
+  const int aNbEdges         = aStorage.NbEdges();
   for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
   {
     const BRepGraphInc::EdgeDef& anEdge = aStorage.Edge(anEdgeId);
@@ -815,7 +815,7 @@ TEST(BRepGraphIncTest, EdgeInternalVertex_Captured)
   ASSERT_GE(aStorage.NbEdges(), 1);
 
   // Find the edge entity and check InternalVertices.
-  bool aFound = false;
+  bool      aFound   = false;
   const int aNbEdges = aStorage.NbEdges();
   for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
   {
@@ -884,7 +884,7 @@ TEST(BRepGraphIncTest, EdgeExternalVertex_Captured)
   BRepGraphInc_Populate::Perform(aStorage, aFace, false);
   ASSERT_TRUE(aStorage.GetIsDone());
 
-  bool aFound = false;
+  bool      aFound   = false;
   const int aNbEdges = aStorage.NbEdges();
   for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
   {
@@ -935,7 +935,7 @@ TEST(BRepGraphIncTest, EdgeMultipleInternalVertices_AllCaptured)
   BRepGraphInc_Populate::Perform(aStorage, aFace, false);
   ASSERT_TRUE(aStorage.GetIsDone());
 
-  bool aFound = false;
+  bool      aFound   = false;
   const int aNbEdges = aStorage.NbEdges();
   for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
   {

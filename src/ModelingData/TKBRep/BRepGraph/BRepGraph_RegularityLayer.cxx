@@ -446,8 +446,8 @@ void BRepGraph_RegularityLayer::OnCompact(
       continue;
     for (const RegularityEntry& anOldEntry : aOldRegularities.Entries)
     {
-      BRepGraph_FaceId       aNewFace1  = remapFace(theRemapMap, anOldEntry.FaceEntity1);
-      BRepGraph_FaceId       aNewFace2  = remapFace(theRemapMap, anOldEntry.FaceEntity2);
+      BRepGraph_FaceId aNewFace1 = remapFace(theRemapMap, anOldEntry.FaceEntity1);
+      BRepGraph_FaceId aNewFace2 = remapFace(theRemapMap, anOldEntry.FaceEntity2);
       if (!aNewFace1.IsValid() || !aNewFace2.IsValid())
         continue;
       if (aNewFace2.Index < aNewFace1.Index)

@@ -174,7 +174,8 @@ TEST(BRepGraph_BenchmarkTest, DISABLED_Reconstruct_RoundTrip)
   const double aAvg = runBenchmark("Reconstruct 10000 faces", [&]() {
     for (BRepGraph_FaceIterator aFaceIt(aGraph); aFaceIt.More(); aFaceIt.Next())
     {
-      const TopoDS_Shape aShape = aGraph.Shapes().Reconstruct(BRepGraph_NodeId(aFaceIt.CurrentId()));
+      const TopoDS_Shape aShape =
+        aGraph.Shapes().Reconstruct(BRepGraph_NodeId(aFaceIt.CurrentId()));
       EXPECT_FALSE(aShape.IsNull());
     }
   });

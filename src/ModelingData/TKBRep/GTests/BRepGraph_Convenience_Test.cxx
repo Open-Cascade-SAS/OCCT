@@ -227,10 +227,7 @@ TEST_F(BRepGraph_ConvenienceTest, FindPCurve_WithOrientation_SeamEdge)
       const BRepGraphInc::CoEdgeDef* aPCF =
         BRepGraph_Tool::Edge::FindPCurve(aGraph, anEdgeIt.CurrentId(), aFaceDefId, TopAbs_FORWARD);
       const BRepGraphInc::CoEdgeDef* aPCR =
-        BRepGraph_Tool::Edge::FindPCurve(aGraph,
-                                         anEdgeIt.CurrentId(),
-                                         aFaceDefId,
-                                         TopAbs_REVERSED);
+        BRepGraph_Tool::Edge::FindPCurve(aGraph, anEdgeIt.CurrentId(), aFaceDefId, TopAbs_REVERSED);
       EXPECT_NE(aPCF, nullptr);
       EXPECT_NE(aPCR, nullptr);
       if (aPCF != nullptr && aPCR != nullptr)

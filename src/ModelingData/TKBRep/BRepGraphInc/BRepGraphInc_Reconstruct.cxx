@@ -335,7 +335,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage&      the
       // Free children of the solid (edges, vertices).
       for (const BRepGraph_ChildRefId& aChildRefId : aSolid.FreeChildRefIds)
       {
-        const BRepGraphInc::ChildRef& aCR = theStorage.ChildRef(aChildRefId);
+        const BRepGraphInc::ChildRef& aCR    = theStorage.ChildRef(aChildRefId);
         TopoDS_Shape                  aChild = Node(theStorage, aCR.ChildDefId, theCache);
         if (!aChild.IsNull())
         {
@@ -539,8 +539,8 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(
     }
     for (const BRepGraph_VertexRefId& aVRefId : anEdge.InternalVertexRefIds)
     {
-      const BRepGraphInc::VertexRef& aVR = theStorage.VertexRef(aVRefId);
-      TopoDS_Shape aVtx = aGetOrBuildVertex(aVR.VertexDefId.Index);
+      const BRepGraphInc::VertexRef& aVR  = theStorage.VertexRef(aVRefId);
+      TopoDS_Shape                   aVtx = aGetOrBuildVertex(aVR.VertexDefId.Index);
       if (!aVtx.IsNull())
       {
         aVtx.Orientation(aVR.Orientation);

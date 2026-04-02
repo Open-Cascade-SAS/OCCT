@@ -79,8 +79,8 @@ TEST(BRepGraph_PolygonTest, MultiTriangulation_Roundtrip_PreservesAll)
   // Reconstruct and verify triangulations are preserved.
   for (BRepGraph_FaceIterator aFaceIt(aGraph); aFaceIt.More(); aFaceIt.Next())
   {
-    const BRepGraphInc::FaceDef& aFaceDef = aFaceIt.Current();
-    TopoDS_Shape aReconFace = aGraph.Shapes().Reconstruct(aFaceDef.Id);
+    const BRepGraphInc::FaceDef& aFaceDef   = aFaceIt.Current();
+    TopoDS_Shape                 aReconFace = aGraph.Shapes().Reconstruct(aFaceDef.Id);
     ASSERT_FALSE(aReconFace.IsNull());
 
     TopLoc_Location                       aLoc;
@@ -129,8 +129,8 @@ TEST(BRepGraph_PolygonTest, Polygon3D_Captured_WhenPresent)
   {
     if (!BRepGraph_Tool::Edge::HasPolygon3D(aGraph, anEdgeIt.CurrentId()))
       continue;
-    const BRepGraphInc::EdgeDef& anEdge = anEdgeIt.Current();
-    TopoDS_Shape aReconEdge = aGraph.Shapes().Reconstruct(anEdge.Id);
+    const BRepGraphInc::EdgeDef& anEdge     = anEdgeIt.Current();
+    TopoDS_Shape                 aReconEdge = aGraph.Shapes().Reconstruct(anEdge.Id);
     ASSERT_FALSE(aReconEdge.IsNull());
     TopLoc_Location             aPolyLoc;
     occ::handle<Poly_Polygon3D> aPoly = BRep_Tool::Polygon3D(TopoDS::Edge(aReconEdge), aPolyLoc);
@@ -160,8 +160,7 @@ TEST(BRepGraph_PolygonTest, PolyOnTri_Captured_AfterMesh)
       aGraph.Topo().Edges().CoEdges(anEdgeIt.CurrentId());
     for (const BRepGraph_CoEdgeId& aCoEdgeId : aCoEdgeIdxs)
     {
-      const BRepGraphInc::CoEdgeDef& aCE =
-        aGraph.Topo().CoEdges().Definition(aCoEdgeId);
+      const BRepGraphInc::CoEdgeDef& aCE = aGraph.Topo().CoEdges().Definition(aCoEdgeId);
       aNbPolyOnTri += aCE.PolygonOnTriRepIds.Length();
     }
   }
@@ -174,8 +173,7 @@ TEST(BRepGraph_PolygonTest, PolyOnTri_Captured_AfterMesh)
       aGraph.Topo().Edges().CoEdges(anEdgeIt.CurrentId());
     for (const BRepGraph_CoEdgeId& aCoEdgeId : aCoEdgeIdxs)
     {
-      const BRepGraphInc::CoEdgeDef& aCE =
-        aGraph.Topo().CoEdges().Definition(aCoEdgeId);
+      const BRepGraphInc::CoEdgeDef& aCE = aGraph.Topo().CoEdges().Definition(aCoEdgeId);
       for (const BRepGraph_PolygonOnTriRepId& aPolyOnTriRepId : aCE.PolygonOnTriRepIds)
       {
         EXPECT_TRUE(aPolyOnTriRepId.IsValid());
@@ -246,8 +244,7 @@ TEST(BRepGraph_PolygonTest, UVPoints_Captured_OnPCurves)
       aGraph.Topo().Edges().CoEdges(anEdgeIt.CurrentId());
     for (const BRepGraph_CoEdgeId& aCoEdgeId : aCoEdgeIdxs)
     {
-      const BRepGraphInc::CoEdgeDef& aCE =
-        aGraph.Topo().CoEdges().Definition(aCoEdgeId);
+      const BRepGraphInc::CoEdgeDef& aCE = aGraph.Topo().CoEdges().Definition(aCoEdgeId);
       if (aCE.UV1.Distance(gp_Pnt2d(0, 0)) > Precision::Confusion()
           || aCE.UV2.Distance(gp_Pnt2d(0, 0)) > Precision::Confusion())
       {
@@ -353,7 +350,7 @@ TEST(BRepGraph_PolygonTest, VertexPointRepresentations_StructurallyValid)
   for (BRepGraph_VertexIterator aVertexIt(aGraph); aVertexIt.More(); aVertexIt.Next())
   {
     const BRepGraph_VertexId                  aVertexId = aVertexIt.CurrentId();
-    const BRepGraph_ParamLayer::VertexParams* aParams = aParamLayer->FindVertexParams(aVertexId);
+    const BRepGraph_ParamLayer::VertexParams* aParams   = aParamLayer->FindVertexParams(aVertexId);
     if (aParams == nullptr)
       continue;
     aNbPointsOnCurve += aParams->PointsOnCurve.Length();
@@ -440,9 +437,8 @@ TEST(BRepGraph_PolygonTest, SeamEdge_PolyOnTri_TwoEntries)
     NCollection_DataMap<int, int> aFaceCounts;
     for (const BRepGraph_CoEdgeId& aCoEdgeId : aCoEdgeIdxs)
     {
-      const BRepGraphInc::CoEdgeDef& aCE =
-        aGraph.Topo().CoEdges().Definition(aCoEdgeId);
-      const int aFaceIdx = aCE.FaceDefId.Index;
+      const BRepGraphInc::CoEdgeDef& aCE      = aGraph.Topo().CoEdges().Definition(aCoEdgeId);
+      const int                      aFaceIdx = aCE.FaceDefId.Index;
       if (!aFaceCounts.IsBound(aFaceIdx))
         aFaceCounts.Bind(aFaceIdx, 0);
       aFaceCounts.ChangeFind(aFaceIdx) += 1;

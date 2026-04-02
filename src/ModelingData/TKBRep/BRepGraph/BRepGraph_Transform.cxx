@@ -92,9 +92,8 @@ void BRepGraph_Transform::applyLocationTransform(BRepGraph& theGraph, const gp_T
     theGraph.Topo().Products().RootProducts(anAllocator);
   for (const BRepGraph_ProductId& aRootId : aRoots)
   {
-    BRepGraph_MutGuard<BRepGraphInc::ProductDef> aProduct =
-      theGraph.Builder().MutProduct(aRootId);
-    aProduct->RootLocation = aLoc * aProduct->RootLocation;
+    BRepGraph_MutGuard<BRepGraphInc::ProductDef> aProduct = theGraph.Builder().MutProduct(aRootId);
+    aProduct->RootLocation                                = aLoc * aProduct->RootLocation;
   }
 }
 

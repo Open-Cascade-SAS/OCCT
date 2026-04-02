@@ -212,9 +212,8 @@ TEST(BRepGraph_ReconstructTest, Wire_EdgeCount_FourPerBoxFace)
   // Each wire of a box face should have exactly 4 edges.
   for (BRepGraph_WireIterator aWireIt(aGraph); aWireIt.More(); aWireIt.Next())
   {
-    TopoDS_Shape aReconWire =
-      aGraph.Shapes().Reconstruct(BRepGraph_NodeId(aWireIt.CurrentId()));
-    const int anEdgeCount = countSubShapes(aReconWire, TopAbs_EDGE);
+    TopoDS_Shape aReconWire  = aGraph.Shapes().Reconstruct(BRepGraph_NodeId(aWireIt.CurrentId()));
+    const int    anEdgeCount = countSubShapes(aReconWire, TopAbs_EDGE);
     EXPECT_EQ(anEdgeCount, 4) << "Wire " << aWireIt.CurrentId().Index << " has " << anEdgeCount
                               << " edges";
   }
@@ -234,8 +233,7 @@ TEST(BRepGraph_ReconstructTest, Edge_HasCurve_NonNull)
     if (BRepGraph_Tool::Edge::Degenerated(aGraph, anEdgeIt.CurrentId()))
       continue;
 
-    TopoDS_Shape aReconEdge =
-      aGraph.Shapes().Reconstruct(BRepGraph_NodeId(anEdgeIt.CurrentId()));
+    TopoDS_Shape aReconEdge = aGraph.Shapes().Reconstruct(BRepGraph_NodeId(anEdgeIt.CurrentId()));
     TopLoc_Location         aLoc;
     double                  aFirst = 0.0;
     double                  aLast  = 0.0;
@@ -259,15 +257,13 @@ TEST(BRepGraph_ReconstructTest, Edge_ParameterRange_Preserved)
     if (BRepGraph_Tool::Edge::Degenerated(aGraph, anEdgeIt.CurrentId()))
       continue;
 
-    TopoDS_Shape aReconEdge =
-      aGraph.Shapes().Reconstruct(BRepGraph_NodeId(anEdgeIt.CurrentId()));
+    TopoDS_Shape aReconEdge = aGraph.Shapes().Reconstruct(BRepGraph_NodeId(anEdgeIt.CurrentId()));
     TopLoc_Location aLoc;
     double          aFirst = 0.0;
     double          aLast  = 0.0;
     BRep_Tool::Curve(TopoDS::Edge(aReconEdge), aLoc, aFirst, aLast);
 
-    const auto [aDefFirst, aDefLast] =
-      BRepGraph_Tool::Edge::Range(aGraph, anEdgeIt.CurrentId());
+    const auto [aDefFirst, aDefLast] = BRepGraph_Tool::Edge::Range(aGraph, anEdgeIt.CurrentId());
     EXPECT_NEAR(aFirst, aDefFirst, Precision::Confusion())
       << "Edge " << anEdgeIt.CurrentId().Index << " ParamFirst mismatch";
     EXPECT_NEAR(aLast, aDefLast, Precision::Confusion())
@@ -288,9 +284,8 @@ TEST(BRepGraph_ReconstructTest, Vertex_Point_MatchesDefPoint)
   {
     const gp_Pnt aDefPt = BRepGraph_Tool::Vertex::Pnt(aGraph, aVertexIt.CurrentId());
 
-    TopoDS_Shape aReconVtx =
-      aGraph.Shapes().Reconstruct(BRepGraph_NodeId(aVertexIt.CurrentId()));
-    const gp_Pnt aReconPt = BRep_Tool::Pnt(TopoDS::Vertex(aReconVtx));
+    TopoDS_Shape aReconVtx = aGraph.Shapes().Reconstruct(BRepGraph_NodeId(aVertexIt.CurrentId()));
+    const gp_Pnt aReconPt  = BRep_Tool::Pnt(TopoDS::Vertex(aReconVtx));
 
     EXPECT_NEAR(aReconPt.X(), aDefPt.X(), Precision::Confusion())
       << "Vertex " << aVertexIt.CurrentId().Index << " X mismatch";
@@ -313,8 +308,8 @@ TEST(BRepGraph_ReconstructTest, Face_PCurvesPresent_OnAllEdges)
   for (BRepGraph_FaceIterator aFaceIt(aGraph); aFaceIt.More(); aFaceIt.Next())
   {
     TopoDS_Shape aReconFace = aGraph.Shapes().Reconstruct(aFaceIt.CurrentId());
-    ASSERT_FALSE(aReconFace.IsNull()) << "ReconstructFace returned null for face "
-                                      << aFaceIt.CurrentId().Index;
+    ASSERT_FALSE(aReconFace.IsNull())
+      << "ReconstructFace returned null for face " << aFaceIt.CurrentId().Index;
 
     const TopoDS_Face& aFace = TopoDS::Face(aReconFace);
     for (TopExp_Explorer anEdgeExp(aFace, TopAbs_EDGE); anEdgeExp.More(); anEdgeExp.Next())
@@ -326,8 +321,8 @@ TEST(BRepGraph_ReconstructTest, Face_PCurvesPresent_OnAllEdges)
       double                    aFirst  = 0.0;
       double                    aLast   = 0.0;
       occ::handle<Geom2d_Curve> aPCurve = BRep_Tool::CurveOnSurface(anEdge, aFace, aFirst, aLast);
-      EXPECT_FALSE(aPCurve.IsNull()) << "Edge on face " << aFaceIt.CurrentId().Index
-                                     << " is missing a pcurve";
+      EXPECT_FALSE(aPCurve.IsNull())
+        << "Edge on face " << aFaceIt.CurrentId().Index << " is missing a pcurve";
     }
   }
 }
@@ -347,7 +342,7 @@ TEST(BRepGraph_ReconstructTest, Face_OrientationPreserved)
     BRepGraph_TestTools::FaceRefsOfShell(aGraph, BRepGraph_ShellId(0));
   for (const BRepGraph_FaceRefId& aFaceRefId : aFaceRefs)
   {
-    const BRepGraphInc::FaceRef& aFaceRef = aGraph.Refs().Faces().Entry(aFaceRefId);
+    const BRepGraphInc::FaceRef& aFaceRef      = aGraph.Refs().Faces().Entry(aFaceRefId);
     const TopAbs_Orientation     anExpectedOri = aFaceRef.Orientation;
 
     TopoDS_Shape aReconFace = aGraph.Shapes().Reconstruct(aFaceRef.FaceDefId);
@@ -470,8 +465,7 @@ TEST(BRepGraph_ReconstructTest, Reconstruct_Edge_ValidShape)
     if (BRepGraph_Tool::Edge::Degenerated(aGraph, anEdgeIt.CurrentId()))
       continue;
 
-    TopoDS_Shape aRecon =
-      aGraph.Shapes().Reconstruct(BRepGraph_NodeId(anEdgeIt.CurrentId()));
+    TopoDS_Shape aRecon = aGraph.Shapes().Reconstruct(BRepGraph_NodeId(anEdgeIt.CurrentId()));
     EXPECT_FALSE(aRecon.IsNull());
     EXPECT_EQ(aRecon.ShapeType(), TopAbs_EDGE);
     return;

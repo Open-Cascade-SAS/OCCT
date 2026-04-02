@@ -602,9 +602,9 @@ TEST(BRepGraph_BuildTest, Box_VertexPoints_MatchBRepTool)
   // For each graph vertex, verify that a matching TopExp vertex exists.
   for (BRepGraph_VertexIterator aVertexIt(aGraph); aVertexIt.More(); aVertexIt.Next())
   {
-    const BRepGraph_VertexId aVertexId  = aVertexIt.CurrentId();
+    const BRepGraph_VertexId aVertexId = aVertexIt.CurrentId();
     const gp_Pnt             aGraphPnt = BRepGraph_Tool::Vertex::Pnt(aGraph, aVertexId);
-    bool         aFound    = false;
+    bool                     aFound    = false;
     for (int aMapIdx = 1; aMapIdx <= aVertexMap.Extent(); ++aMapIdx)
     {
       const TopoDS_Vertex& aVertex    = TopoDS::Vertex(aVertexMap(aMapIdx));
@@ -638,7 +638,7 @@ TEST(BRepGraph_BuildTest, Box_FaceTolerances_MatchBRepTool)
   {
     const BRepGraph_FaceId aFaceId   = aFaceIt.CurrentId();
     const double           aGraphTol = BRepGraph_Tool::Face::Tolerance(aGraph, aFaceId);
-    bool         aFound    = false;
+    bool                   aFound    = false;
     for (int aMapIdx = 1; aMapIdx <= aFaceMap.Extent(); ++aMapIdx)
     {
       const TopoDS_Face& aFace      = TopoDS::Face(aFaceMap(aMapIdx));
@@ -670,7 +670,7 @@ TEST(BRepGraph_BuildTest, Box_EdgeTolerances_MatchBRepTool)
   {
     const BRepGraph_EdgeId anEdgeId  = anEdgeIt.CurrentId();
     const double           aGraphTol = BRepGraph_Tool::Edge::Tolerance(aGraph, anEdgeId);
-    bool         aFound    = false;
+    bool                   aFound    = false;
     for (int aMapIdx = 1; aMapIdx <= anEdgeMap.Extent(); ++aMapIdx)
     {
       const TopoDS_Edge& anEdge     = TopoDS::Edge(anEdgeMap(aMapIdx));
@@ -736,10 +736,10 @@ TEST(BRepGraph_BuildTest, Box_EdgeVertexDefsAreValid)
     const BRepGraph_EdgeId         anEdgeId  = anEdgeIt.CurrentId();
     const BRepGraphInc::VertexRef& aStartRef = BRepGraph_Tool::Edge::StartVertex(aGraph, anEdgeId);
     const BRepGraphInc::VertexRef& anEndRef  = BRepGraph_Tool::Edge::EndVertex(aGraph, anEdgeId);
-    EXPECT_TRUE(aStartRef.VertexDefId.IsValid()) << "Edge " << anEdgeId.Index
-                                                 << " has invalid start vertex";
-    EXPECT_TRUE(anEndRef.VertexDefId.IsValid()) << "Edge " << anEdgeId.Index
-                                                << " has invalid end vertex";
+    EXPECT_TRUE(aStartRef.VertexDefId.IsValid())
+      << "Edge " << anEdgeId.Index << " has invalid start vertex";
+    EXPECT_TRUE(anEndRef.VertexDefId.IsValid())
+      << "Edge " << anEdgeId.Index << " has invalid end vertex";
     EXPECT_EQ(BRepGraph_NodeId(aStartRef.VertexDefId).NodeKind, BRepGraph_NodeId::Kind::Vertex);
     EXPECT_EQ(BRepGraph_NodeId(anEndRef.VertexDefId).NodeKind, BRepGraph_NodeId::Kind::Vertex);
   }
@@ -1095,8 +1095,7 @@ TEST(BRepGraph_BuildTest, RegularityLayer_EdgeMutation_InvalidatesBindings)
     BRepGraph_FaceId aFace2;
     for (const BRepGraph_CoEdgeId& aCoEdgeId : aCoEdges)
     {
-      const BRepGraph_FaceId aFace =
-        aGraph.Topo().CoEdges().Definition(aCoEdgeId).FaceDefId;
+      const BRepGraph_FaceId aFace = aGraph.Topo().CoEdges().Definition(aCoEdgeId).FaceDefId;
       if (!aFace.IsValid())
         continue;
       if (!aFace1.IsValid())
@@ -1148,8 +1147,7 @@ TEST(BRepGraph_BuildTest, RegularityLayer_FaceMutation_InvalidatesBindings)
     BRepGraph_FaceId aFace2;
     for (const BRepGraph_CoEdgeId& aCoEdgeId : aCoEdges)
     {
-      const BRepGraph_FaceId aFace =
-        aGraph.Topo().CoEdges().Definition(aCoEdgeId).FaceDefId;
+      const BRepGraph_FaceId aFace = aGraph.Topo().CoEdges().Definition(aCoEdgeId).FaceDefId;
       if (!aFace.IsValid())
         continue;
       if (!aFace1.IsValid())

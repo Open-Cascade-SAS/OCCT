@@ -296,10 +296,9 @@ TEST(BRepGraph_RefIdTest, RefsView_AfterBuild_UIDRoundtripAndParentKinds)
   const int aNbCoEdgeRefs = aGraph.Refs().CoEdges().Nb();
   for (BRepGraph_CoEdgeRefId aCoEdgeRefId(0); aCoEdgeRefId.IsValid(aNbCoEdgeRefs); ++aCoEdgeRefId)
   {
-    const BRepGraph_RefId          aRefId = aCoEdgeRefId;
-    const BRepGraph_RefUID         aUID   = aGraph.UIDs().Of(aRefId);
-    const BRepGraphInc::CoEdgeRef& anEntry =
-      aGraph.Refs().CoEdges().Entry(aCoEdgeRefId);
+    const BRepGraph_RefId          aRefId  = aCoEdgeRefId;
+    const BRepGraph_RefUID         aUID    = aGraph.UIDs().Of(aRefId);
+    const BRepGraphInc::CoEdgeRef& anEntry = aGraph.Refs().CoEdges().Entry(aCoEdgeRefId);
     EXPECT_TRUE(aUID.IsValid());
     EXPECT_EQ(aGraph.UIDs().RefIdFrom(aUID), aRefId);
     EXPECT_EQ(anEntry.RefId, aRefId);
@@ -323,10 +322,9 @@ TEST(BRepGraph_RefIdTest, RefsView_AfterBuild_UIDRoundtripAndParentKinds)
   const int aNbVertexRefs = aGraph.Refs().Vertices().Nb();
   for (BRepGraph_VertexRefId aVertexRefId(0); aVertexRefId.IsValid(aNbVertexRefs); ++aVertexRefId)
   {
-    const BRepGraph_RefId          aRefId = aVertexRefId;
-    const BRepGraph_RefUID         aUID   = aGraph.UIDs().Of(aRefId);
-    const BRepGraphInc::VertexRef& anEntry =
-      aGraph.Refs().Vertices().Entry(aVertexRefId);
+    const BRepGraph_RefId          aRefId  = aVertexRefId;
+    const BRepGraph_RefUID         aUID    = aGraph.UIDs().Of(aRefId);
+    const BRepGraphInc::VertexRef& anEntry = aGraph.Refs().Vertices().Entry(aVertexRefId);
     EXPECT_TRUE(aUID.IsValid());
     EXPECT_EQ(aGraph.UIDs().RefIdFrom(aUID), aRefId);
     EXPECT_EQ(anEntry.RefId, aRefId);

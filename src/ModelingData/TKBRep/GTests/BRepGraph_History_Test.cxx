@@ -482,9 +482,9 @@ TEST_F(BRepGraph_HistoryTest, SplitEdge_IgnoresRemovedCoEdgeRefEntries)
     myGraph.Topo().CoEdges().Definition(aRemovedCoEdgeId);
   EXPECT_EQ(aRemovedCoEdgeAfter.EdgeDefId, BRepGraph_EdgeId(anEdgeId.Index));
 
-  bool      hasSubA         = false;
-  bool      hasSubB         = false;
-  const int aNbCoEdgeRefs   = myGraph.Refs().CoEdges().Nb();
+  bool      hasSubA       = false;
+  bool      hasSubB       = false;
+  const int aNbCoEdgeRefs = myGraph.Refs().CoEdges().Nb();
   for (BRepGraph_CoEdgeRefId aRefId(0); aRefId.IsValid(aNbCoEdgeRefs); ++aRefId)
   {
     const BRepGraphInc::CoEdgeRef& aRef = myGraph.Refs().CoEdges().Entry(aRefId);

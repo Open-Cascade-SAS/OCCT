@@ -161,8 +161,7 @@ GeomAdaptor_TransformedCurve BRepGraph_Tool::Edge::CurveAdaptor(
 {
   const BRepGraphInc::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdges().Definition(theRef.DefId);
   const BRepGraphInc::EdgeDef&   anEdge  = theGraph.Topo().Edges().Definition(aCoEdge.EdgeDefId);
-  const gp_Trsf                  aTrsf =
-    theRef.Location.IsIdentity() ? gp_Trsf() : theRef.Location.Transformation();
+  const gp_Trsf aTrsf = theRef.Location.IsIdentity() ? gp_Trsf() : theRef.Location.Transformation();
 
   // Prefer 3D curve when available.
   if (anEdge.Curve3DRepId.IsValid())

@@ -294,8 +294,8 @@ TEST(BRepGraph_GeometryTest, SameDomainFaces_SimpleBox_Empty)
     const BRepGraph_FaceId                     aFaceDefId = aFaceIt.CurrentId();
     const NCollection_Vector<BRepGraph_FaceId> aSameDomain =
       aGraph.Topo().Faces().SameDomain(aFaceDefId, aGraph.Allocator());
-    EXPECT_EQ(aSameDomain.Length(), 0) << "Face def " << aFaceDefId.Index
-                                       << " has unexpected same-domain faces";
+    EXPECT_EQ(aSameDomain.Length(), 0)
+      << "Face def " << aFaceDefId.Index << " has unexpected same-domain faces";
   }
 }
 
@@ -709,10 +709,7 @@ TEST(BRepGraph_GeometryTest, Box_FindPCurve_MatchesToolOverload)
     {
       const BRepGraphInc::CoEdgeDef& aCE = aGraph.Topo().CoEdges().Definition(aCoEdgeId);
       const BRepGraphInc::CoEdgeDef* aFromDefs =
-        BRepGraph_Tool::Edge::FindPCurve(aGraph,
-                                         anEdgeId,
-                                         aCE.FaceDefId,
-                                         aCE.Sense);
+        BRepGraph_Tool::Edge::FindPCurve(aGraph, anEdgeId, aCE.FaceDefId, aCE.Sense);
       const BRepGraphInc::CoEdgeDef* aFromTool =
         BRepGraph_Tool::Edge::FindPCurve(aGraph,
                                          anEdgeId,
@@ -743,7 +740,7 @@ TEST(BRepGraph_GeometryTest, Cylinder_SeamEdge_FindPCurve_DistinguishesOrientati
         continue;
 
       // Seam edge: same face, two orientations.
-      const BRepGraph_FaceId aFaceId = aCE.FaceDefId;
+      const BRepGraph_FaceId aFaceId  = aCE.FaceDefId;
       const BRepGraph_EdgeId anEdgeId = anEdgeIt.CurrentId();
 
       const BRepGraphInc::CoEdgeDef* aPCFwd =
@@ -934,8 +931,8 @@ TEST(BRepGraph_GeometryTest, Box_Polygon2DRep_MatchesInline)
     {
       const occ::handle<Poly_Polygon2D>& aPoly =
         BRepGraph_Tool::CoEdge::PolygonOnSurface(aGraph, aCoEdgeIt.CurrentId());
-      EXPECT_FALSE(aPoly.IsNull()) << "CoEdge " << aCoEdgeIt.CurrentId().Index
-                                   << " has Polygon2DRepId but null polygon";
+      EXPECT_FALSE(aPoly.IsNull())
+        << "CoEdge " << aCoEdgeIt.CurrentId().Index << " has Polygon2DRepId but null polygon";
     }
     // PolygonOnTriRepIds should have valid rep entries.
     for (const BRepGraph_PolygonOnTriRepId& aPolyOnTriRepId : aCoEdge.PolygonOnTriRepIds)

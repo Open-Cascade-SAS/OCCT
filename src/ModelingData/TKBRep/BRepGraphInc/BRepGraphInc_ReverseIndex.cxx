@@ -141,8 +141,8 @@ void BRepGraphInc_ReverseIndex::Build(
   // Returns an invalid id if the ref id is invalid or out of range.
 
   // Scan edges for max vertex index to pre-size myVertexToEdges.
-  int aMaxVertexIdx = -1;
-  const int aNbEdges = theEdges.Length();
+  int       aMaxVertexIdx = -1;
+  const int aNbEdges      = theEdges.Length();
   for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
   {
     const BRepGraphInc::EdgeDef& anEdge = theEdges.Value(anEdgeId.Index);
@@ -224,7 +224,8 @@ void BRepGraphInc_ReverseIndex::Build(
   {
     if (theEdges.Value(anEdgeId.Index).IsRemoved)
       continue;
-    const NCollection_Vector<BRepGraph_CoEdgeId>* aCoEdgeIdxs = seekVec(myEdgeToCoEdges, anEdgeId.Index);
+    const NCollection_Vector<BRepGraph_CoEdgeId>* aCoEdgeIdxs =
+      seekVec(myEdgeToCoEdges, anEdgeId.Index);
     if (aCoEdgeIdxs == nullptr)
       continue;
     const int aNbCE = aCoEdgeIdxs->Length();
@@ -381,8 +382,7 @@ void BRepGraphInc_ReverseIndex::Build(
   // CompSolid -> Solid reverse index: iterate comp-solid entities and their SolidRefIds.
   preSize(myCompSolidsOfSolid, theSolids.Length(), myAllocator);
   const int aNbCompSolids = theCompSolids.Length();
-  for (BRepGraph_CompSolidId aCompSolidId(0); aCompSolidId.IsValid(aNbCompSolids);
-       ++aCompSolidId)
+  for (BRepGraph_CompSolidId aCompSolidId(0); aCompSolidId.IsValid(aNbCompSolids); ++aCompSolidId)
   {
     const BRepGraphInc::CompSolidDef& aCS = theCompSolids.Value(aCompSolidId.Index);
     if (aCS.IsRemoved)
@@ -449,8 +449,8 @@ void BRepGraphInc_ReverseIndex::BuildDelta(
   // Returns an invalid id if the ref id is invalid or out of range.
 
   // Scan new edges for max vertex index to possibly extend myVertexToEdges.
-  int aMaxVertexIdx = myVertexToEdges.Length() - 1;
-  const int aNbEdges = theEdges.Length();
+  int       aMaxVertexIdx = myVertexToEdges.Length() - 1;
+  const int aNbEdges      = theEdges.Length();
   for (BRepGraph_EdgeId anEdgeId(theOldNbEdges); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
   {
     const BRepGraphInc::EdgeDef& anEdge = theEdges.Value(anEdgeId.Index);
@@ -532,7 +532,8 @@ void BRepGraphInc_ReverseIndex::BuildDelta(
   {
     if (theEdges.Value(anEdgeId.Index).IsRemoved)
       continue;
-    const NCollection_Vector<BRepGraph_CoEdgeId>* aCoEdgeIdxs = seekVec(myEdgeToCoEdges, anEdgeId.Index);
+    const NCollection_Vector<BRepGraph_CoEdgeId>* aCoEdgeIdxs =
+      seekVec(myEdgeToCoEdges, anEdgeId.Index);
     if (aCoEdgeIdxs == nullptr)
       continue;
     const int aNbCE = aCoEdgeIdxs->Length();
@@ -1011,8 +1012,7 @@ bool BRepGraphInc_ReverseIndex::Validate(
 
   // Check: for each coedge ref entry, edge->wire reverse entry must exist.
   const int aNbCoEdgeRefs = theCoEdgeRefs.Length();
-  for (BRepGraph_CoEdgeRefId aCoEdgeRefId(0); aCoEdgeRefId.IsValid(aNbCoEdgeRefs);
-       ++aCoEdgeRefId)
+  for (BRepGraph_CoEdgeRefId aCoEdgeRefId(0); aCoEdgeRefId.IsValid(aNbCoEdgeRefs); ++aCoEdgeRefId)
   {
     const BRepGraphInc::CoEdgeRef& aRef = theCoEdgeRefs.Value(aCoEdgeRefId.Index);
     if (aRef.IsRemoved || !aRef.ParentId.IsValid()
@@ -1199,7 +1199,8 @@ bool BRepGraphInc_ReverseIndex::Validate(
   const int aNbFaceToShells = myFaceToShells.Length();
   for (BRepGraph_FaceId aFaceId(0); aFaceId.IsValid(aNbFaceToShells); ++aFaceId)
   {
-    const NCollection_Vector<BRepGraph_ShellId>* aShellsVec = seekVec(myFaceToShells, aFaceId.Index);
+    const NCollection_Vector<BRepGraph_ShellId>* aShellsVec =
+      seekVec(myFaceToShells, aFaceId.Index);
     if (aShellsVec == nullptr)
     {
       continue;
@@ -1221,7 +1222,8 @@ bool BRepGraphInc_ReverseIndex::Validate(
   const int aNbShellToSolids = myShellToSolids.Length();
   for (BRepGraph_ShellId aShellId(0); aShellId.IsValid(aNbShellToSolids); ++aShellId)
   {
-    const NCollection_Vector<BRepGraph_SolidId>* aSolidsVec = seekVec(myShellToSolids, aShellId.Index);
+    const NCollection_Vector<BRepGraph_SolidId>* aSolidsVec =
+      seekVec(myShellToSolids, aShellId.Index);
     if (aSolidsVec == nullptr)
     {
       continue;

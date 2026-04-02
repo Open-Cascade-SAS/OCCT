@@ -234,10 +234,10 @@ void BRepGraphCheck::CheckWireOnFace(const BRepGraph&                          t
     {
       const int aCurrIdx = aQueue(aQueueHead++);
 
-      const BRepGraphInc::CoEdgeUsage& aCurrCR   = aCoEdgeRefs.Value(aCurrIdx);
-      const BRepGraphInc::CoEdgeDef& aCurrCoEdge = aDefs.CoEdges().Definition(aCurrCR.DefId);
-      const BRepGraphInc::EdgeDef&   aCurrEdge   = aDefs.Edges().Definition(aCurrCoEdge.EdgeDefId);
-      const BRepGraph_NodeId         aStartVtx =
+      const BRepGraphInc::CoEdgeUsage& aCurrCR     = aCoEdgeRefs.Value(aCurrIdx);
+      const BRepGraphInc::CoEdgeDef&   aCurrCoEdge = aDefs.CoEdges().Definition(aCurrCR.DefId);
+      const BRepGraphInc::EdgeDef&     aCurrEdge = aDefs.Edges().Definition(aCurrCoEdge.EdgeDefId);
+      const BRepGraph_NodeId           aStartVtx =
         resolveOrientedStartVertex(theGraph, aCurrEdge, aCurrCoEdge.Sense);
       const BRepGraph_NodeId anEndVtx =
         resolveOrientedEndVertex(theGraph, aCurrEdge, aCurrCoEdge.Sense);
@@ -435,8 +435,7 @@ void BRepGraphCheck::CheckWireOnFace(const BRepGraph&                          t
     }
 
     // Get PCurve adaptor - uses stored PCurve, or computes via CurveOnPlane for planar faces.
-    Geom2dAdaptor_Curve aPCAdaptor =
-      BRepGraph_Tool::CoEdge::PCurveAdaptor(theGraph, aCR.DefId);
+    Geom2dAdaptor_Curve aPCAdaptor = BRepGraph_Tool::CoEdge::PCurveAdaptor(theGraph, aCR.DefId);
     if (aPCAdaptor.Curve().IsNull())
     {
       aPCurveData.Append(EdgePCurveData());

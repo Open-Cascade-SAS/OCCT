@@ -149,10 +149,10 @@ public:
   {
   }
 
-  MockNonCopyableIterator(const MockNonCopyableIterator&) = delete;
+  MockNonCopyableIterator(const MockNonCopyableIterator&)            = delete;
   MockNonCopyableIterator& operator=(const MockNonCopyableIterator&) = delete;
   MockNonCopyableIterator(MockNonCopyableIterator&&)                 = default;
-  MockNonCopyableIterator& operator=(MockNonCopyableIterator&&) = default;
+  MockNonCopyableIterator& operator=(MockNonCopyableIterator&&)      = default;
 
   bool More() const { return myIndex < mySize; }
 
@@ -359,8 +359,7 @@ TEST(NCollection_ForwardRangeTest, StandaloneRange_NonCopyable_Move)
 {
   const int aData[] = {5, 10, 15};
   int       aSum    = 0;
-  for (const int aVal :
-       NCollection_ForwardRange(MockNonCopyableIterator(aData, 3)))
+  for (const int aVal : NCollection_ForwardRange(MockNonCopyableIterator(aData, 3)))
   {
     aSum += aVal;
   }
@@ -426,8 +425,8 @@ TEST(NCollection_ForwardRangeTest, IteratorTraits_ValueReturn)
 
 TEST(NCollection_ForwardRangeTest, ArrowOperator_Reference)
 {
-  const Point aData[] = {{1, 2}, {3, 4}};
-  NCollection_ForwardRange aRange(MockPointIterator(aData, 2));
+  const Point                                         aData[] = {{1, 2}, {3, 4}};
+  NCollection_ForwardRange                            aRange(MockPointIterator(aData, 2));
   NCollection_ForwardRangeIterator<MockPointIterator> anIt = aRange.begin();
   EXPECT_EQ(anIt->X, 1);
   EXPECT_EQ(anIt->Y, 2);
@@ -438,7 +437,7 @@ TEST(NCollection_ForwardRangeTest, ArrowOperator_Reference)
 
 TEST(NCollection_ForwardRangeTest, ArrowOperator_ArrowProxy)
 {
-  const Point aData[] = {{10, 20}, {30, 40}};
+  const Point              aData[] = {{10, 20}, {30, 40}};
   NCollection_ForwardRange aRange(MockPointByValueIterator(aData, 2));
   NCollection_ForwardRangeIterator<MockPointByValueIterator> anIt = aRange.begin();
   EXPECT_EQ(anIt->X, 10);
@@ -454,9 +453,9 @@ TEST(NCollection_ForwardRangeTest, ArrowOperator_ArrowProxy)
 
 TEST(NCollection_ForwardRangeTest, PostfixIncrement)
 {
-  const int                                           aData[] = {100, 200, 300};
-  MockValueIterator                                   anIter(aData, 3);
-  NCollection_ForwardRangeIterator<MockValueIterator> anIt(&anIter);
+  const int                                                         aData[] = {100, 200, 300};
+  MockValueIterator                                                 anIter(aData, 3);
+  NCollection_ForwardRangeIterator<MockValueIterator>               anIt(&anIter);
   NCollection_ForwardRangeIterator<MockValueIterator>::PostfixProxy aProxy = anIt++;
   EXPECT_EQ(*aProxy, 100);
   EXPECT_EQ(*anIt, 200);

@@ -77,8 +77,7 @@ struct HasCurrentId : std::false_type
 };
 
 template <typename T>
-struct HasCurrentId<T, std::void_t<decltype(std::declval<const T&>().CurrentId())>>
-    : std::true_type
+struct HasCurrentId<T, std::void_t<decltype(std::declval<const T&>().CurrentId())>> : std::true_type
 {
 };
 
@@ -107,9 +106,9 @@ struct AccessorTraits<T, std::enable_if_t<!HasValue<T>::value && HasCurrent<T>::
 
 //! Priority 3: has CurrentId() but not Value() or Current()
 template <typename T>
-struct AccessorTraits<T,
-                      std::enable_if_t<!HasValue<T>::value && !HasCurrent<T>::value
-                                       && HasCurrentId<T>::value>>
+struct AccessorTraits<
+  T,
+  std::enable_if_t<!HasValue<T>::value && !HasCurrent<T>::value && HasCurrentId<T>::value>>
 {
   using ReturnType = decltype(std::declval<const T&>().CurrentId());
 
@@ -148,10 +147,10 @@ public:
   using value_type        = std::remove_cv_t<std::remove_reference_t<RawReturn>>;
   using difference_type   = std::ptrdiff_t;
   using iterator_category = std::input_iterator_tag;
-  using reference = RawReturn;
-  using pointer = std::conditional_t<std::is_reference_v<RawReturn>,
-                                     std::add_pointer_t<std::remove_reference_t<RawReturn>>,
-                                     NCollection_ForwardRangeDetail::ArrowProxy<value_type>>;
+  using reference         = RawReturn;
+  using pointer           = std::conditional_t<std::is_reference_v<RawReturn>,
+                                               std::add_pointer_t<std::remove_reference_t<RawReturn>>,
+                                               NCollection_ForwardRangeDetail::ArrowProxy<value_type>>;
 
   //! Construct from a pointer to the host iterator.
   explicit NCollection_ForwardRangeIterator(HostType* theHost)
@@ -200,25 +199,25 @@ public:
 
   //! Equality with sentinel: true when the host is exhausted.
   friend bool operator==(const NCollection_ForwardRangeIterator& theLhs,
-                          NCollection_ForwardRangeSentinel)
+                         NCollection_ForwardRangeSentinel)
   {
     return !theLhs.myHost->More();
   }
 
   friend bool operator!=(const NCollection_ForwardRangeIterator& theLhs,
-                          NCollection_ForwardRangeSentinel)
+                         NCollection_ForwardRangeSentinel)
   {
     return theLhs.myHost->More();
   }
 
   friend bool operator==(NCollection_ForwardRangeSentinel,
-                          const NCollection_ForwardRangeIterator& theRhs)
+                         const NCollection_ForwardRangeIterator& theRhs)
   {
     return !theRhs.myHost->More();
   }
 
   friend bool operator!=(NCollection_ForwardRangeSentinel,
-                          const NCollection_ForwardRangeIterator& theRhs)
+                         const NCollection_ForwardRangeIterator& theRhs)
   {
     return theRhs.myHost->More();
   }
@@ -263,10 +262,10 @@ public:
   {
   }
 
-  NCollection_ForwardRange(const NCollection_ForwardRange&) = delete;
+  NCollection_ForwardRange(const NCollection_ForwardRange&)            = delete;
   NCollection_ForwardRange& operator=(const NCollection_ForwardRange&) = delete;
   NCollection_ForwardRange(NCollection_ForwardRange&&)                 = default;
-  NCollection_ForwardRange& operator=(NCollection_ForwardRange&&) = default;
+  NCollection_ForwardRange& operator=(NCollection_ForwardRange&&)      = default;
 
   //! Returns iterator to the current position of the host.
   //! Const-qualified: iteration advances the internal cursor (mutable),

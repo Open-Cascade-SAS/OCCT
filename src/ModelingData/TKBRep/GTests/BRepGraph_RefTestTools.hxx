@@ -32,9 +32,9 @@ inline NCollection_Vector<BRepGraph_CoEdgeRefId> CoEdgeRefsOfWire(const BRepGrap
                                                                   const BRepGraph_WireId theWireId)
 {
   NCollection_Vector<BRepGraph_CoEdgeRefId> aRefIds;
-  const BRepGraph::RefsView& aRefs       = theGraph.Refs();
-  const BRepGraph_NodeId     aParentNode = BRepGraph_WireId(theWireId.Index);
-  const int                  aNbCoEdgeRefs = aRefs.CoEdges().Nb();
+  const BRepGraph::RefsView&                aRefs         = theGraph.Refs();
+  const BRepGraph_NodeId                    aParentNode   = BRepGraph_WireId(theWireId.Index);
+  const int                                 aNbCoEdgeRefs = aRefs.CoEdges().Nb();
   for (BRepGraph_CoEdgeRefId aRefId(0); aRefId.IsValid(aNbCoEdgeRefs); ++aRefId)
   {
     const BRepGraphInc::CoEdgeRef& aRef = aRefs.CoEdges().Entry(aRefId);
@@ -209,7 +209,7 @@ inline NCollection_Vector<BRepGraph_CoEdgeRefId> CoEdgeRefsOfWire(
 {
   NCollection_Vector<BRepGraph_CoEdgeRefId> aRefIds;
   const BRepGraph_NodeId                    aParentNode   = BRepGraph_WireId(theWireId.Index);
-  const int                                aNbCoEdgeRefs = theStorage.NbCoEdgeRefs();
+  const int                                 aNbCoEdgeRefs = theStorage.NbCoEdgeRefs();
   for (BRepGraph_CoEdgeRefId aRefId(0); aRefId.IsValid(aNbCoEdgeRefs); ++aRefId)
   {
     const BRepGraphInc::CoEdgeRef& aRef = theStorage.CoEdgeRef(aRefId);
