@@ -4,6 +4,36 @@ set(OCCT_TKBRep_GTests_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 set(OCCT_TKBRep_GTests_FILES
   BRep_Tool_Test.cxx
   BRepAdaptor_CompCurve_Test.cxx
+  BRepGraph_CacheKindRegistry_Test.cxx
+  BRepGraph_Assembly_Test.cxx
+  BRepGraph_DefsIterator_Test.cxx
+  BRepGraphInc_Test.cxx
+  BRepGraph_Builder_Test.cxx
+  BRepGraph_NodeId_Test.cxx
+  BRepGraph_RefId_Test.cxx
+  BRepGraph_RefsIterator_Test.cxx
+  BRepGraph_Benchmark_Test.cxx
+  BRepGraph_Build_Test.cxx
+  BRepGraph_DeferredInvalidation_Test.cxx
+  BRepGraph_MutationGen_Test.cxx
+  BRepGraph_Convenience_Test.cxx
+  BRepGraph_EdgeCases_Test.cxx
+  BRepGraph_ChildExplorer_Test.cxx
+  BRepGraph_ParentExplorer_Test.cxx
+  BRepGraph_EventBus_Test.cxx
+  BRepGraph_Geometry_Test.cxx
+  BRepGraph_History_Test.cxx
+  BRepGraph_Polygon_Test.cxx
+  BRepGraph_Reconstruct_Test.cxx
+  BRepGraph_Sharing_Test.cxx
+  BRepGraph_Test.cxx
+  BRepGraph_VersionStamp_Test.cxx
+  BRepGraph_Views_Test.cxx
+  BRepGraph_Compact_Test.cxx
+  BRepGraph_Copy_Test.cxx
+  BRepGraph_Transform_Test.cxx
+  BRepGraph_Validate_Test.cxx
+  BRepGraph_Deduplicate_Test.cxx
   TopExp_Test.cxx
   TopoDS_Builder_Test.cxx
   TopoDS_Edge_Test.cxx

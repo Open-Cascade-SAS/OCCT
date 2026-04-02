@@ -1,0 +1,165 @@
+// Copyright (c) 2026 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _BRepGraph_Validate_HeaderFile
+#define _BRepGraph_Validate_HeaderFile
+
+#include <BRepGraph.hxx>
+
+#include <BRepGraph_NodeId.hxx>
+#include <NCollection_Vector.hxx>
+#include <Standard_DefineAlloc.hxx>
+#include <TCollection_AsciiString.hxx>
+
+//! @brief Structural invariant checker for BRepGraph.
+//!
+//! Read-only algorithm that verifies the graph's internal consistency:
+//! cross-reference bounds, reverse index symmetry, incidence ref consistency,
+//! geometry reference validity, removed-node isolation, and wire connectivity.
+//!
+//! Distinct from BRepGraphCheck (geometric shape validity). This class
+//! checks the graph data structure itself.
+//!
+//! ### Validation Mode Check Matrix
+//!
+//! | Check                          | Lightweight | Audit |
+//! |--------------------------------|:-----------:|:-----:|
+//! | Active entity count boundary   |     YES     |  YES  |
+//! | Cross-reference bounds         |      -      |  YES  |
+//! | Reverse-index consistency      |      -      |  YES  |
+//! | Face-count cache consistency   |      -      |  YES  |
+//! | Incidence ref consistency      |      -      |  YES  |
+//! | Geometry representation refs   |      -      |  YES  |
+//! | Removed-node isolation         |      -      |  YES  |
+//! | Wire edge connectivity         |      -      |  YES  |
+//! | Entity ID positional integrity |      -      |  YES  |
+//! | UID round-trip integrity       |      -      |  YES  |
+//! | Assembly DAG cycle detection   |      -      |  YES  |
+//!
+//! ### Mode Guidance
+//!
+//! | Mode | What it checks | Cost | Recommended use |
+//! |------|----------------|------|-----------------|
+//! | `Lightweight` | Active entity count boundary only | Low | Hot-path release builds when the
+//! graph structure is already trusted | | `Audit` | Full structural audit from cross-reference
+//! bounds through assembly DAG cycle detection | Higher | Default validation mode for production
+//! pipelines, test gates, and API-boundary verification |
+//!
+//! For production pipelines, prefer `Mode::Audit`; `Mode::Lightweight` is intended
+//! for hot-path release builds where the graph structure is already trusted.
+class BRepGraph_Validate
+{
+public:
+  DEFINE_STANDARD_ALLOC
+
+  //! Severity level for reported issues.
+  enum class Severity
+  {
+    Warning,
+    Error
+  };
+
+  //! Validation mode controlling check depth/performance trade-off.
+  enum class Mode
+  {
+    //! Fast boundary-oriented checks for frequent validation points.
+    Lightweight,
+    //! Full structural audit (superset of Lightweight).
+    Audit
+  };
+
+  //! A single structural issue found in the graph.
+  struct Issue
+  {
+    Severity                Sev;
+    BRepGraph_NodeId        NodeId;
+    TCollection_AsciiString Description;
+  };
+
+  //! Aggregated validation result.
+  struct Result
+  {
+    NCollection_Vector<Issue> Issues;
+
+    //! True if no Error-level issues were found.
+    [[nodiscard]] bool IsValid() const
+    {
+      for (const Issue& anIssue : Issues)
+      {
+        if (anIssue.Sev == Severity::Error)
+          return false;
+      }
+      return true;
+    }
+
+    //! Count issues of a given severity.
+    [[nodiscard]] int NbIssues(const Severity theSev) const
+    {
+      int aCount = 0;
+      for (const Issue& anIssue : Issues)
+      {
+        if (anIssue.Sev == theSev)
+          ++aCount;
+      }
+      return aCount;
+    }
+  };
+
+  //! Validation options.
+  struct Options
+  {
+    //! Default mode for regular validation calls.
+    Mode ValidationMode = Mode::Lightweight;
+
+    //! Build options for lightweight validation.
+    static Options Lightweight()
+    {
+      Options anOptions;
+      anOptions.ValidationMode = Mode::Lightweight;
+      return anOptions;
+    }
+
+    //! Build options for full-audit validation.
+    static Options Audit()
+    {
+      Options anOptions;
+      anOptions.ValidationMode = Mode::Audit;
+      return anOptions;
+    }
+  };
+
+  //! Run default lightweight structural checks on a built graph.
+  //! Uses Mode::Lightweight; for full structural audit use Perform(theGraph, Mode::Audit).
+  //! @param[in] theGraph graph to validate (const, read-only)
+  //! @return validation result with all detected issues
+  [[nodiscard]] Standard_EXPORT static Result Perform(const BRepGraph& theGraph);
+
+  //! Run structural checks on a built graph with explicit mode.
+  //! @param[in] theGraph graph to validate (const, read-only)
+  //! @param[in] theMode validation mode
+  //! @return validation result with all detected issues
+  [[nodiscard]] Standard_EXPORT static Result Perform(const BRepGraph& theGraph,
+                                                      const Mode       theMode);
+
+  //! Run structural checks on a built graph with explicit options.
+  //! @param[in] theGraph graph to validate (const, read-only)
+  //! @param[in] theOptions validation profile/options
+  //! @return validation result with all detected issues
+  [[nodiscard]] Standard_EXPORT static Result Perform(const BRepGraph& theGraph,
+                                                      const Options&   theOptions);
+
+private:
+  BRepGraph_Validate() = delete;
+};
+
+#endif // _BRepGraph_Validate_HeaderFile

@@ -17,6 +17,7 @@
 #ifndef _TopExp_Explorer_HeaderFile
 #define _TopExp_Explorer_HeaderFile
 
+#include <NCollection_ForwardRange.hxx>
 #include <NCollection_LocalArray.hxx>
 #include <TopAbs.hxx>
 #include <TopoDS_Iterator.hxx>
@@ -137,6 +138,16 @@ public:
 
   //! Destructor.
   Standard_EXPORT ~TopExp_Explorer();
+
+  //! Returns an STL-compatible iterator for range-based for loops.
+  //! @warning Do not call Next() or Init() externally during range-for iteration.
+  NCollection_ForwardRangeIterator<TopExp_Explorer> begin()
+  {
+    return NCollection_ForwardRangeIterator<TopExp_Explorer>(this);
+  }
+
+  //! Returns a sentinel marking the end of iteration.
+  NCollection_ForwardRangeSentinel end() const { return NCollection_ForwardRangeSentinel{}; }
 
 private:
   //! Push a new iterator onto the stack (placement new on first use, assign on reuse).
