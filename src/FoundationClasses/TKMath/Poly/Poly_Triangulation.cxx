@@ -22,6 +22,8 @@
 #include <Standard_Dump.hxx>
 #include <Standard_Type.hxx>
 
+#include <mutex>
+
 IMPLEMENT_STANDARD_RTTIEXT(Poly_Triangulation, Standard_Transient)
 
 //=================================================================================================
