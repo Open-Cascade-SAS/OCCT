@@ -228,12 +228,12 @@ TEST(BRepFilletAPI_MakeChamferTest, SequentialChamferNoCrash)
     }
     catch (const Standard_ConstructionError&)
     {
-      // Null-guard from Fix 4 (Arcprolbis) — acceptable graceful failure.
+      // Null-guard from Fix 4 (Arcprolbis) - acceptable graceful failure.
       break;
     }
     catch (const StdFail_NotDone&)
     {
-      // Null-guard from Fix 3 (Arcprol) or existing Fv check — acceptable.
+      // Null-guard from Fix 3 (Arcprol) or existing Fv check - acceptable.
       break;
     }
   }
