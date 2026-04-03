@@ -2890,12 +2890,14 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const int Index)
     }
     TopOpeBRepDS_Curve tcurv3d(Cc, tolreached);
     indcurve[nb - 1] = DStr.AddCurve(tcurv3d);
-    Interfp1         = ChFi3d_FilPointInDS(TopAbs_FORWARD,
+
+    Interfp1 = ChFi3d_FilPointInDS(TopAbs_FORWARD,
                                    indcurve[nb - 1],
                                    indpoint1,
                                    Cc->FirstParameter(),
                                    Isvtx1);
-    Interfp2         = ChFi3d_FilPointInDS(TopAbs_REVERSED,
+
+    Interfp2 = ChFi3d_FilPointInDS(TopAbs_REVERSED,
                                    indcurve[nb - 1],
                                    indpoint2,
                                    Cc->LastParameter(),
@@ -4401,6 +4403,10 @@ void ChFi3d_Builder::IntersectMoreCorner(const int Index)
       }
     }
 
+    // Guard: Arcprol may be null if the loop above found no matching edge.
+    if (Arcprol.IsNull())
+      throw StdFail_NotDone("IntersectMoreCorner: edge to be extended is not found");
+
     // Fopbis is the face containing the trace of fillet CP.Arc() which of does not contain Vtx.
     // Normally Fobis is either the same as Fop (cylinder), or Fobis is G1 with Fop.
     Fopbis.Orientation(TopAbs_FORWARD);
@@ -4408,9 +4414,6 @@ void ChFi3d_Builder::IntersectMoreCorner(const int Index)
     // Fop calls the 4th face non-used for the vertex
     cherche_face(myVFMap(Vtx), Arcprol, Fad, Fv, Fv, Fopbis);
     Fop.Orientation(TopAbs_FORWARD);
-
-    if (Arcprol.IsNull())
-      throw StdFail_NotDone("OneCorner : edge to be extended is not found");
     for (ex.Init(Fopbis, TopAbs_EDGE); ex.More(); ex.Next())
     {
       if (Arcprol.IsSame(ex.Current()))
@@ -4769,6 +4772,15 @@ void ChFi3d_Builder::IntersectMoreCorner(const int Index)
       }
     }
     // end of modif
+
+    // Guard: Arcprolbis may be null if myVEMap(Vtx) contained only
+    // Arcprol, Arcspine, and Arcpiv (e.g. when topology maps carry stale
+    // data from shared TShape pointers after prior operations).
+    if (Arcprolbis.IsNull())
+    {
+      throw Standard_ConstructionError(
+        "IntersectMoreCorner: continuation edge (Arcprolbis) is not found");
+    }
 
     // Now the missing curves are constructed.
     for (ex.Init(Arcprolbis.Oriented(TopAbs_FORWARD), TopAbs_VERTEX); ex.More(); ex.Next())
