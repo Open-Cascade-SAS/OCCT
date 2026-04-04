@@ -79,6 +79,17 @@ public:
 
   Standard_EXPORT int NbGlobVar() const;
 
+  //! Returns the assembly table mapping element-local indices to global indices.
+  //! @return const reference to the assembly table
+  [[nodiscard]] const occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<int>>>>&
+    AssemblyTable() const
+  {
+    return myRefTable;
+  }
+
+  //! Returns the assembly table via output parameter.
+  //! @deprecated Use AssemblyTable() returning const reference instead.
+  Standard_DEPRECATED("Use AssemblyTable() returning const reference instead")
   Standard_EXPORT void GetAssemblyTable(
     occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<int>>>>& AssTable) const;
 

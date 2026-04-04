@@ -70,7 +70,21 @@ public:
   //! Initialize IntList by number of entities.
   Standard_EXPORT void Initialize(const int nbe);
 
+  //! Returns count of stored references.
+  //! @return number of references
+  Standard_EXPORT int NbReferences() const;
+
+  //! Returns entity headers used to describe the lists.
+  //! @return handle to the array of entity headers
+  Standard_EXPORT const occ::handle<NCollection_HArray1<int>>& Entities() const;
+
+  //! Returns the packed references storage.
+  //! @return handle to the array of packed references
+  Standard_EXPORT const occ::handle<NCollection_HArray1<int>>& References() const;
+
   //! Returns internal values, used for copying
+  //! @deprecated Use NbReferences(), Entities(), and References() instead.
+  Standard_DEPRECATED("Use NbReferences(), Entities(), and References() instead")
   Standard_EXPORT void Internals(int&                                   nbrefs,
                                  occ::handle<NCollection_HArray1<int>>& ents,
                                  occ::handle<NCollection_HArray1<int>>& refs) const;

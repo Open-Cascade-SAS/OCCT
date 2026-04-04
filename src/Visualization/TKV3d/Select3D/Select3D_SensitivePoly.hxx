@@ -73,14 +73,25 @@ public:
   Standard_EXPORT int NbSubElements() const override;
 
   //! Returns the 3D points of the array used at construction time.
-  void Points3D(occ::handle<NCollection_HArray1<gp_Pnt>>& theHArrayOfPnt)
+  //! @return handle to array of 3D points
+  [[nodiscard]] occ::handle<NCollection_HArray1<gp_Pnt>> Points3D() const
   {
-    int aSize      = myPolyg.Size();
-    theHArrayOfPnt = new NCollection_HArray1<gp_Pnt>(1, aSize);
+    int                                      aSize = myPolyg.Size();
+    occ::handle<NCollection_HArray1<gp_Pnt>> aHArrayOfPnt =
+      new NCollection_HArray1<gp_Pnt>(1, aSize);
     for (int anIndex = 1; anIndex <= aSize; anIndex++)
     {
-      theHArrayOfPnt->SetValue(anIndex, myPolyg.Pnt(anIndex - 1));
+      aHArrayOfPnt->SetValue(anIndex, myPolyg.Pnt(anIndex - 1));
     }
+    return aHArrayOfPnt;
+  }
+
+  //! Returns the 3D points of the array used at construction time via output parameter.
+  //! @deprecated Use Points3D() returning handle by value instead.
+  Standard_DEPRECATED("Use Points3D() returning handle by value instead")
+  void Points3D(occ::handle<NCollection_HArray1<gp_Pnt>>& aHArrayOfPnt)
+  {
+    aHArrayOfPnt = Points3D();
   }
 
   //! Return array bounds.

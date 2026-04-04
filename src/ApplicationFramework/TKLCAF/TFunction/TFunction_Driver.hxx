@@ -54,7 +54,7 @@ public:
   //! method even if the function is not executed.
   //! execution of function
   //! =====================
-  Standard_EXPORT virtual void Validate(occ::handle<TFunction_Logbook>& log) const;
+  Standard_EXPORT virtual void Validate(const occ::handle<TFunction_Logbook>& log) const;
 
   //! Analyzes the labels in the logbook log.
   //! Returns true if attributes have been modified.

@@ -118,6 +118,17 @@ public:
 
   //! This the first operation. It calls StandardCopy or OnTheSpot
   //! according the option
+  //! Performs the copy operation. Calls StandardCopy or OnTheSpot
+  //! according to the copy option.
+  //! @param[in] G the interface graph
+  //! @param[in,out] TC the copy tool
+  //! @return the new model produced by the copy
+  [[nodiscard]] Standard_EXPORT occ::handle<Interface_InterfaceModel> Copy(
+    const Interface_Graph& G,
+    Interface_CopyTool&    TC) const;
+
+  //! @deprecated Use Copy() returning handle by value instead.
+  Standard_DEPRECATED("Use Copy() returning handle by value instead")
   Standard_EXPORT void Copy(const Interface_Graph&                 G,
                             Interface_CopyTool&                    TC,
                             occ::handle<Interface_InterfaceModel>& newmod) const;
@@ -125,12 +136,33 @@ public:
   //! This is the standard action of Copy : its takes into account
   //! only the remaining entities (noted by Graph Status positive)
   //! and their proper dependences of course. Produces a new model.
+  //! Performs a standard copy of remaining entities and their dependencies.
+  //! @param[in] G the interface graph
+  //! @param[in,out] TC the copy tool
+  //! @return the new model with copied entities
+  [[nodiscard]] Standard_EXPORT occ::handle<Interface_InterfaceModel> StandardCopy(
+    const Interface_Graph& G,
+    Interface_CopyTool&    TC) const;
+
+  //! @deprecated Use StandardCopy() returning handle by value instead.
+  Standard_DEPRECATED("Use StandardCopy() returning handle by value instead")
   Standard_EXPORT void StandardCopy(const Interface_Graph&                 G,
                                     Interface_CopyTool&                    TC,
                                     occ::handle<Interface_InterfaceModel>& newmod) const;
 
   //! This is the OnTheSpot action : each entity is bound with ...
   //! itself. The produced model is the same as the starting one.
+  //! Performs the on-the-spot action: each entity is bound with itself.
+  //! The produced model is the same as the starting one.
+  //! @param[in] G the interface graph
+  //! @param[in,out] TC the copy tool
+  //! @return the starting model (same instance)
+  [[nodiscard]] Standard_EXPORT occ::handle<Interface_InterfaceModel> OnTheSpot(
+    const Interface_Graph& G,
+    Interface_CopyTool&    TC) const;
+
+  //! @deprecated Use OnTheSpot() returning handle by value instead.
+  Standard_DEPRECATED("Use OnTheSpot() returning handle by value instead")
   Standard_EXPORT void OnTheSpot(const Interface_Graph&                 G,
                                  Interface_CopyTool&                    TC,
                                  occ::handle<Interface_InterfaceModel>& newmod) const;

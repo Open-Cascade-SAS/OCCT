@@ -975,8 +975,7 @@ static int connectedges(Draw_Interpretor& di, int n, const char** a)
   TopExp_Explorer                                  aExpE(aSh1, TopAbs_EDGE);
   occ::handle<NCollection_HSequence<TopoDS_Shape>> aSeqEdges =
     new NCollection_HSequence<TopoDS_Shape>;
-  occ::handle<NCollection_HSequence<TopoDS_Shape>> aSeqWires =
-    new NCollection_HSequence<TopoDS_Shape>;
+  occ::handle<NCollection_HSequence<TopoDS_Shape>>              aSeqWires;
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aMapEdges;
   for (; aExpE.More(); aExpE.Next())
   {
@@ -984,7 +983,7 @@ static int connectedges(Draw_Interpretor& di, int n, const char** a)
     aMapEdges.Add(aExpE.Current());
   }
 
-  ShapeAnalysis_FreeBounds::ConnectEdgesToWires(aSeqEdges, aTol, shared, aSeqWires);
+  aSeqWires = ShapeAnalysis_FreeBounds::ConnectEdgesToWires(aSeqEdges, aTol, shared);
   TopoDS_Compound aComp;
   BRep_Builder    aB;
   aB.MakeCompound(aComp);

@@ -141,7 +141,7 @@ void BRepGProp::LinearProperties(const TopoDS_Shape& S,
     bool                                     IsGeom = BRep_Tool::IsGeometric(aE);
     if (UseTriangulation || !IsGeom)
     {
-      BRepGProp_MeshCinert::PreparePolygon(aE, theNodes);
+      theNodes = BRepGProp_MeshCinert::PreparePolygon(aE);
     }
     if (!theNodes.IsNull())
     {

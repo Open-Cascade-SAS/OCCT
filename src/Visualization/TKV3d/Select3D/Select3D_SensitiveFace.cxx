@@ -64,16 +64,19 @@ Select3D_SensitiveFace::Select3D_SensitiveFace(
 // purpose  : Initializes the given array theHArrayOfPnt by 3d
 //            coordinates of vertices of the face
 //=======================================================================
-void Select3D_SensitiveFace::GetPoints(occ::handle<NCollection_HArray1<gp_Pnt>>& theHArrayOfPnt)
+occ::handle<NCollection_HArray1<gp_Pnt>> Select3D_SensitiveFace::GetPoints() const
 {
   if (myFacePoints->IsKind(STANDARD_TYPE(Select3D_SensitivePoly)))
   {
-    occ::down_cast<Select3D_SensitivePoly>(myFacePoints)->Points3D(theHArrayOfPnt);
+    return occ::down_cast<Select3D_SensitivePoly>(myFacePoints)->Points3D();
   }
-  else
-  {
-    occ::down_cast<Select3D_InteriorSensitivePointSet>(myFacePoints)->GetPoints(theHArrayOfPnt);
-  }
+
+  return occ::down_cast<Select3D_InteriorSensitivePointSet>(myFacePoints)->GetPoints();
+}
+
+void Select3D_SensitiveFace::GetPoints(occ::handle<NCollection_HArray1<gp_Pnt>>& theHArrayOfPnt)
+{
+  theHArrayOfPnt = GetPoints();
 }
 
 //=================================================================================================
@@ -98,8 +101,7 @@ bool Select3D_SensitiveFace::Matches(SelectBasics_SelectingVolumeManager& theMgr
 occ::handle<Select3D_SensitiveEntity> Select3D_SensitiveFace::GetConnected()
 {
   // Create a copy of this
-  occ::handle<NCollection_HArray1<gp_Pnt>> aPoints;
-  GetPoints(aPoints);
+  const occ::handle<NCollection_HArray1<gp_Pnt>> aPoints = GetPoints();
 
   occ::handle<Select3D_SensitiveEntity> aNewEntity =
     new Select3D_SensitiveFace(myOwnerId, aPoints, mySensType);

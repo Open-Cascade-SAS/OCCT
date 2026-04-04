@@ -229,6 +229,16 @@ void TPrsStd_ConstraintTools::UpdateOnlyValue(const occ::handle<TDataXtd_Constra
 
 //=================================================================================================
 
+occ::handle<AIS_InteractiveObject> TPrsStd_ConstraintTools::ComputeDistance(
+  const occ::handle<TDataXtd_Constraint>& theConst)
+{
+  occ::handle<AIS_InteractiveObject> aResult;
+  ComputeDistance(theConst, aResult);
+  return aResult;
+}
+
+//=================================================================================================
+
 void TPrsStd_ConstraintTools::ComputeDistance(const occ::handle<TDataXtd_Constraint>& theConst,
                                               occ::handle<AIS_InteractiveObject>&     theAIS)
 {
@@ -458,6 +468,16 @@ void TPrsStd_ConstraintTools::ComputeDistance(const occ::handle<TDataXtd_Constra
 
 //=================================================================================================
 
+occ::handle<AIS_InteractiveObject> TPrsStd_ConstraintTools::ComputePerpendicular(
+  const occ::handle<TDataXtd_Constraint>& aConst)
+{
+  occ::handle<AIS_InteractiveObject> aResult;
+  ComputePerpendicular(aConst, aResult);
+  return aResult;
+}
+
+//=================================================================================================
+
 void TPrsStd_ConstraintTools::ComputePerpendicular(const occ::handle<TDataXtd_Constraint>& aConst,
                                                    occ::handle<AIS_InteractiveObject>&     anAIS)
 {
@@ -523,6 +543,16 @@ void TPrsStd_ConstraintTools::ComputePerpendicular(const occ::handle<TDataXtd_Co
     ais->SetPlane(aplane);
   }
   anAIS = ais;
+}
+
+//=================================================================================================
+
+occ::handle<AIS_InteractiveObject> TPrsStd_ConstraintTools::ComputeParallel(
+  const occ::handle<TDataXtd_Constraint>& aConst)
+{
+  occ::handle<AIS_InteractiveObject> aResult;
+  ComputeParallel(aConst, aResult);
+  return aResult;
 }
 
 //=================================================================================================
@@ -597,6 +627,16 @@ void TPrsStd_ConstraintTools::ComputeParallel(const occ::handle<TDataXtd_Constra
 
 //=================================================================================================
 
+occ::handle<AIS_InteractiveObject> TPrsStd_ConstraintTools::ComputeSymmetry(
+  const occ::handle<TDataXtd_Constraint>& aConst)
+{
+  occ::handle<AIS_InteractiveObject> aResult;
+  ComputeSymmetry(aConst, aResult);
+  return aResult;
+}
+
+//=================================================================================================
+
 void TPrsStd_ConstraintTools::ComputeSymmetry(const occ::handle<TDataXtd_Constraint>& aConst,
                                               occ::handle<AIS_InteractiveObject>&     anAIS)
 {
@@ -666,6 +706,16 @@ void TPrsStd_ConstraintTools::ComputeSymmetry(const occ::handle<TDataXtd_Constra
     }
   }
   anAIS = ais;
+}
+
+//=================================================================================================
+
+occ::handle<AIS_InteractiveObject> TPrsStd_ConstraintTools::ComputeMidPoint(
+  const occ::handle<TDataXtd_Constraint>& aConst)
+{
+  occ::handle<AIS_InteractiveObject> aResult;
+  ComputeMidPoint(aConst, aResult);
+  return aResult;
 }
 
 //=================================================================================================
@@ -745,6 +795,16 @@ void TPrsStd_ConstraintTools::ComputeMidPoint(const occ::handle<TDataXtd_Constra
 
 //=================================================================================================
 
+occ::handle<AIS_InteractiveObject> TPrsStd_ConstraintTools::ComputeTangent(
+  const occ::handle<TDataXtd_Constraint>& aConst)
+{
+  occ::handle<AIS_InteractiveObject> aResult;
+  ComputeTangent(aConst, aResult);
+  return aResult;
+}
+
+//=================================================================================================
+
 void TPrsStd_ConstraintTools::ComputeTangent(const occ::handle<TDataXtd_Constraint>& aConst,
                                              occ::handle<AIS_InteractiveObject>&     anAIS)
 {
@@ -818,6 +878,16 @@ void TPrsStd_ConstraintTools::ComputeTangent(const occ::handle<TDataXtd_Constrai
 
 //=================================================================================================
 
+occ::handle<AIS_InteractiveObject> TPrsStd_ConstraintTools::ComputeAngleForOneFace(
+  const occ::handle<TDataXtd_Constraint>& aConst)
+{
+  occ::handle<AIS_InteractiveObject> aResult;
+  ComputeAngleForOneFace(aConst, aResult);
+  return aResult;
+}
+
+//=================================================================================================
+
 void TPrsStd_ConstraintTools::ComputeAngleForOneFace(const occ::handle<TDataXtd_Constraint>& aConst,
                                                      occ::handle<AIS_InteractiveObject>&     anAIS)
 {
@@ -885,6 +955,16 @@ static bool CheckIsShapeCompound(TopoDS_Shape& shape, TopoDS_Face& aFace)
   std::cout << "TPrsStd::Compute angle : Shape is not Compound or is Null" << std::endl;
 #endif
   return (false);
+}
+
+//=================================================================================================
+
+occ::handle<AIS_InteractiveObject> TPrsStd_ConstraintTools::ComputeAngle(
+  const occ::handle<TDataXtd_Constraint>& aConst)
+{
+  occ::handle<AIS_InteractiveObject> aResult;
+  ComputeAngle(aConst, aResult);
+  return aResult;
 }
 
 //=================================================================================================
@@ -1157,6 +1237,16 @@ void TPrsStd_ConstraintTools::ComputeAngle(const occ::handle<TDataXtd_Constraint
 
 //=================================================================================================
 
+occ::handle<AIS_InteractiveObject> TPrsStd_ConstraintTools::ComputeConcentric(
+  const occ::handle<TDataXtd_Constraint>& aConst)
+{
+  occ::handle<AIS_InteractiveObject> aResult;
+  ComputeConcentric(aConst, aResult);
+  return aResult;
+}
+
+//=================================================================================================
+
 void TPrsStd_ConstraintTools::ComputeConcentric(const occ::handle<TDataXtd_Constraint>& aConst,
                                                 occ::handle<AIS_InteractiveObject>&     anAIS)
 {
@@ -1234,6 +1324,16 @@ void TPrsStd_ConstraintTools::ComputeConcentric(const occ::handle<TDataXtd_Const
   }
 
   anAIS = ais;
+}
+
+//=================================================================================================
+
+occ::handle<AIS_InteractiveObject> TPrsStd_ConstraintTools::ComputeRadius(
+  const occ::handle<TDataXtd_Constraint>& aConst)
+{
+  occ::handle<AIS_InteractiveObject> aResult;
+  ComputeRadius(aConst, aResult);
+  return aResult;
 }
 
 //=================================================================================================
@@ -1323,6 +1423,16 @@ void TPrsStd_ConstraintTools::ComputeRadius(const occ::handle<TDataXtd_Constrain
 // ota -- begin --
 //=================================================================================================
 
+occ::handle<AIS_InteractiveObject> TPrsStd_ConstraintTools::ComputeMinRadius(
+  const occ::handle<TDataXtd_Constraint>& aConst)
+{
+  occ::handle<AIS_InteractiveObject> aResult;
+  ComputeMinRadius(aConst, aResult);
+  return aResult;
+}
+
+//=================================================================================================
+
 void TPrsStd_ConstraintTools::ComputeMinRadius(const occ::handle<TDataXtd_Constraint>& aConst,
                                                occ::handle<AIS_InteractiveObject>&     anAIS)
 {
@@ -1409,6 +1519,16 @@ void TPrsStd_ConstraintTools::ComputeMinRadius(const occ::handle<TDataXtd_Constr
 
 //=================================================================================================
 
+occ::handle<AIS_InteractiveObject> TPrsStd_ConstraintTools::ComputeMaxRadius(
+  const occ::handle<TDataXtd_Constraint>& aConst)
+{
+  occ::handle<AIS_InteractiveObject> aResult;
+  ComputeMaxRadius(aConst, aResult);
+  return aResult;
+}
+
+//=================================================================================================
+
 void TPrsStd_ConstraintTools::ComputeMaxRadius(const occ::handle<TDataXtd_Constraint>& aConst,
                                                occ::handle<AIS_InteractiveObject>&     anAIS)
 {
@@ -1491,6 +1611,16 @@ void TPrsStd_ConstraintTools::ComputeMaxRadius(const occ::handle<TDataXtd_Constr
     ais->SetPlane(aplane);
   }
   anAIS = ais;
+}
+
+//=================================================================================================
+
+occ::handle<AIS_InteractiveObject> TPrsStd_ConstraintTools::ComputeEqualDistance(
+  const occ::handle<TDataXtd_Constraint>& aConst)
+{
+  occ::handle<AIS_InteractiveObject> aResult;
+  ComputeEqualDistance(aConst, aResult);
+  return aResult;
 }
 
 //=================================================================================================
@@ -1652,6 +1782,16 @@ static bool CheckShapesPair(const TopoDS_Shape& aShape1, const TopoDS_Shape& aSh
 
 //=================================================================================================
 
+occ::handle<AIS_InteractiveObject> TPrsStd_ConstraintTools::ComputeEqualRadius(
+  const occ::handle<TDataXtd_Constraint>& aConst)
+{
+  occ::handle<AIS_InteractiveObject> aResult;
+  ComputeEqualRadius(aConst, aResult);
+  return aResult;
+}
+
+//=================================================================================================
+
 void TPrsStd_ConstraintTools::ComputeEqualRadius(const occ::handle<TDataXtd_Constraint>& aConst,
                                                  occ::handle<AIS_InteractiveObject>&     anAIS)
 {
@@ -1753,6 +1893,16 @@ void TPrsStd_ConstraintTools::ComputeEqualRadius(const occ::handle<TDataXtd_Cons
 
 //=================================================================================================
 
+occ::handle<AIS_InteractiveObject> TPrsStd_ConstraintTools::ComputeDiameter(
+  const occ::handle<TDataXtd_Constraint>& aConst)
+{
+  occ::handle<AIS_InteractiveObject> aResult;
+  ComputeDiameter(aConst, aResult);
+  return aResult;
+}
+
+//=================================================================================================
+
 void TPrsStd_ConstraintTools::ComputeDiameter(const occ::handle<TDataXtd_Constraint>& aConst,
                                               occ::handle<AIS_InteractiveObject>&     anAIS)
 {
@@ -1821,6 +1971,16 @@ void TPrsStd_ConstraintTools::ComputeDiameter(const occ::handle<TDataXtd_Constra
 
 //=================================================================================================
 
+occ::handle<AIS_InteractiveObject> TPrsStd_ConstraintTools::ComputeFix(
+  const occ::handle<TDataXtd_Constraint>& aConst)
+{
+  occ::handle<AIS_InteractiveObject> aResult;
+  ComputeFix(aConst, aResult);
+  return aResult;
+}
+
+//=================================================================================================
+
 void TPrsStd_ConstraintTools::ComputeFix(const occ::handle<TDataXtd_Constraint>& aConst,
                                          occ::handle<AIS_InteractiveObject>&     anAIS)
 {
@@ -1885,6 +2045,16 @@ void TPrsStd_ConstraintTools::ComputeFix(const occ::handle<TDataXtd_Constraint>&
     ais = new PrsDim_FixRelation(shape1, aplane);
 
   anAIS = ais;
+}
+
+//=================================================================================================
+
+occ::handle<AIS_InteractiveObject> TPrsStd_ConstraintTools::ComputeOffset(
+  const occ::handle<TDataXtd_Constraint>& aConst)
+{
+  occ::handle<AIS_InteractiveObject> aResult;
+  ComputeOffset(aConst, aResult);
+  return aResult;
 }
 
 //=================================================================================================
@@ -2080,6 +2250,16 @@ void TPrsStd_ConstraintTools::ComputeOffset(const occ::handle<TDataXtd_Constrain
 
 //=================================================================================================
 
+occ::handle<AIS_InteractiveObject> TPrsStd_ConstraintTools::ComputePlacement(
+  const occ::handle<TDataXtd_Constraint>& aConst)
+{
+  occ::handle<AIS_InteractiveObject> aResult;
+  ComputePlacement(aConst, aResult);
+  return aResult;
+}
+
+//=================================================================================================
+
 void TPrsStd_ConstraintTools::ComputePlacement(const occ::handle<TDataXtd_Constraint>& aConst,
                                                occ::handle<AIS_InteractiveObject>&     anAIS)
 {
@@ -2132,6 +2312,16 @@ void TPrsStd_ConstraintTools::ComputePlacement(const occ::handle<TDataXtd_Constr
   if (GetFace(shape1).IsNull() || GetFace(shape2).IsNull())
     ais.Nullify();
   anAIS = ais;
+}
+
+//=================================================================================================
+
+occ::handle<AIS_InteractiveObject> TPrsStd_ConstraintTools::ComputeOthers(
+  const occ::handle<TDataXtd_Constraint>& aConst)
+{
+  occ::handle<AIS_InteractiveObject> aResult;
+  ComputeOthers(aConst, aResult);
+  return aResult;
 }
 
 //=================================================================================================
@@ -2212,6 +2402,16 @@ void TPrsStd_ConstraintTools::GetShapesAndGeom(const occ::handle<TDataXtd_Constr
 
 //=================================================================================================
 
+occ::handle<AIS_InteractiveObject> TPrsStd_ConstraintTools::ComputeCoincident(
+  const occ::handle<TDataXtd_Constraint>& aConst)
+{
+  occ::handle<AIS_InteractiveObject> aResult;
+  ComputeCoincident(aConst, aResult);
+  return aResult;
+}
+
+//=================================================================================================
+
 void TPrsStd_ConstraintTools::ComputeCoincident(const occ::handle<TDataXtd_Constraint>& aConst,
                                                 occ::handle<AIS_InteractiveObject>&     anAIS)
 {
@@ -2279,6 +2479,16 @@ void TPrsStd_ConstraintTools::ComputeCoincident(const occ::handle<TDataXtd_Const
     }
   }
   anAIS = ais;
+}
+
+//=================================================================================================
+
+occ::handle<AIS_InteractiveObject> TPrsStd_ConstraintTools::ComputeRound(
+  const occ::handle<TDataXtd_Constraint>& aConst)
+{
+  occ::handle<AIS_InteractiveObject> aResult;
+  ComputeRound(aConst, aResult);
+  return aResult;
 }
 
 //=================================================================================================

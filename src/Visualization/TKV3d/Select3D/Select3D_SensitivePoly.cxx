@@ -235,8 +235,7 @@ bool Select3D_SensitivePoly::Matches(SelectBasics_SelectingVolumeManager& theMgr
   }
   else if (mySensType == Select3D_TOS_INTERIOR)
   {
-    occ::handle<NCollection_HArray1<gp_Pnt>> anArrayOfPnt;
-    Points3D(anArrayOfPnt);
+    const occ::handle<NCollection_HArray1<gp_Pnt>> anArrayOfPnt = Points3D();
     if (!theMgr.IsOverlapAllowed())
     {
       if (theMgr.GetActiveSelectionType() == SelectMgr_SelectionType_Polyline)

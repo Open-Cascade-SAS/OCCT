@@ -154,18 +154,14 @@ public:
   //! returns the number of documents handled by the current applicative session.
   Standard_EXPORT int NbDocuments() const;
 
-  //! Constructs the new document aDoc.
-  //! aDoc is identified by the index index which is
-  //! any integer between 1 and n where n is the
-  //! number of documents returned by NbDocument.
-  //! Example
-  //! occ::handle<TDocStd_Application>
-  //! anApp;
-  //! if (!CafTest::Find(A)) return 1;
-  //! occ::handle<TDocStd> aDoc;
-  //! int nbdoc = anApp->NbDocuments();
-  //! for (int i = 1; i <= nbdoc; i++) {
-  //! aApp->GetDocument(i,aDoc);
+  //! Returns the document at the given 1-based index.
+  //! The index is any integer between 1 and NbDocuments().
+  //! @param[in] index 1-based document index
+  //! @return handle to the document
+  [[nodiscard]] Standard_EXPORT occ::handle<TDocStd_Document> GetDocument(const int index) const;
+
+  //! @deprecated Use GetDocument() returning handle by value instead.
+  Standard_DEPRECATED("Use GetDocument() returning handle by value instead")
   Standard_EXPORT void GetDocument(const int index, occ::handle<TDocStd_Document>& aDoc) const;
 
   //! Constructs the empty new document aDoc.

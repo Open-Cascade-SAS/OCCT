@@ -164,11 +164,10 @@ Select3D_InteriorSensitivePointSet::Select3D_InteriorSensitivePointSet(
 
 // =======================================================================
 // function : GetPoints
-// purpose  : Initializes the given array theHArrayOfPnt by 3d
+// purpose  : Initializes the given array aHArrayOfPnt by 3d
 //            coordinates of vertices of the whole point set
 // =======================================================================
-void Select3D_InteriorSensitivePointSet::GetPoints(
-  occ::handle<NCollection_HArray1<gp_Pnt>>& theHArrayOfPnt)
+occ::handle<NCollection_HArray1<gp_Pnt>> Select3D_InteriorSensitivePointSet::GetPoints() const
 {
   int aSize = 0;
   for (int anIdx = 0; anIdx < myPlanarPolygons.Length(); ++anIdx)
@@ -177,23 +176,28 @@ void Select3D_InteriorSensitivePointSet::GetPoints(
     aSize += aPolygon->NbSubElements();
   }
 
-  theHArrayOfPnt          = new NCollection_HArray1<gp_Pnt>(1, aSize);
-  int anOutputPntArrayIdx = 1;
+  occ::handle<NCollection_HArray1<gp_Pnt>> aHArrayOfPnt = new NCollection_HArray1<gp_Pnt>(1, aSize);
+  int                                      anOutputPntArrayIdx = 1;
 
   for (int aPolygIdx = 0; aPolygIdx < myPlanarPolygons.Length(); ++aPolygIdx)
   {
-    const occ::handle<Select3D_SensitivePoly>& aPolygon = myPlanarPolygons.Value(aPolygIdx);
-    occ::handle<NCollection_HArray1<gp_Pnt>>   aPoints;
-    aPolygon->Points3D(aPoints);
-    int anUpper =
+    const occ::handle<Select3D_SensitivePoly>&     aPolygon = myPlanarPolygons.Value(aPolygIdx);
+    const occ::handle<NCollection_HArray1<gp_Pnt>> aPoints  = aPolygon->Points3D();
+    int                                            anUpper =
       aPolygIdx < myPlanarPolygons.Length() - 1 ? aPoints->Upper() : aPoints->Upper() + 1;
     for (int aPntIter = 1; aPntIter < anUpper; ++aPntIter)
     {
-      theHArrayOfPnt->SetValue(anOutputPntArrayIdx, aPoints->Value(aPntIter));
+      aHArrayOfPnt->SetValue(anOutputPntArrayIdx, aPoints->Value(aPntIter));
       anOutputPntArrayIdx++;
     }
-    aPoints.Nullify();
   }
+  return aHArrayOfPnt;
+}
+
+void Select3D_InteriorSensitivePointSet::GetPoints(
+  occ::handle<NCollection_HArray1<gp_Pnt>>& aHArrayOfPnt)
+{
+  aHArrayOfPnt = GetPoints();
 }
 
 //=======================================================================
@@ -249,10 +253,9 @@ bool Select3D_InteriorSensitivePointSet::overlapsElement(
   int                                  theElemIdx,
   bool)
 {
-  int                                        aPolygIdx = myPolygonsIdxs->Value(theElemIdx);
-  const occ::handle<Select3D_SensitivePoly>& aPolygon  = myPlanarPolygons.Value(aPolygIdx);
-  occ::handle<NCollection_HArray1<gp_Pnt>>   aPoints;
-  aPolygon->Points3D(aPoints);
+  int                                            aPolygIdx = myPolygonsIdxs->Value(theElemIdx);
+  const occ::handle<Select3D_SensitivePoly>&     aPolygon  = myPlanarPolygons.Value(aPolygIdx);
+  const occ::handle<NCollection_HArray1<gp_Pnt>> aPoints   = aPolygon->Points3D();
   return theMgr.OverlapsPolygon(aPoints->Array1(), Select3D_TOS_INTERIOR, thePickResult);
 }
 

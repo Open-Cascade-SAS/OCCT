@@ -167,12 +167,21 @@ void VrmlAPI_Writer::SetRepresentation(const VrmlAPI_RepresentationOfShape aRep)
   myRepresentation = aRep;
 }
 
+VrmlAPI_RepresentationOfShape VrmlAPI_Writer::GetRepresentation() const
+{
+  return myRepresentation;
+}
+
+//=================================================================================================
+
 void VrmlAPI_Writer::SetTransparencyToMaterial(occ::handle<Vrml_Material>& aMaterial,
                                                const double                aTransparency)
 {
   occ::handle<NCollection_HArray1<double>> t = new NCollection_HArray1<double>(1, 1, aTransparency);
   aMaterial->SetTransparency(t);
 }
+
+//=================================================================================================
 
 void VrmlAPI_Writer::SetShininessToMaterial(occ::handle<Vrml_Material>& aMaterial,
                                             const double                aShininess)
@@ -181,12 +190,16 @@ void VrmlAPI_Writer::SetShininessToMaterial(occ::handle<Vrml_Material>& aMateria
   aMaterial->SetShininess(s);
 }
 
+//=================================================================================================
+
 void VrmlAPI_Writer::SetAmbientColorToMaterial(
   occ::handle<Vrml_Material>&                             aMaterial,
   const occ::handle<NCollection_HArray1<Quantity_Color>>& Color)
 {
   aMaterial->SetAmbientColor(Color);
 }
+
+//=================================================================================================
 
 void VrmlAPI_Writer::SetDiffuseColorToMaterial(
   occ::handle<Vrml_Material>&                             aMaterial,
@@ -195,6 +208,8 @@ void VrmlAPI_Writer::SetDiffuseColorToMaterial(
   aMaterial->SetDiffuseColor(Color);
 }
 
+//=================================================================================================
+
 void VrmlAPI_Writer::SetSpecularColorToMaterial(
   occ::handle<Vrml_Material>&                             aMaterial,
   const occ::handle<NCollection_HArray1<Quantity_Color>>& Color)
@@ -202,16 +217,13 @@ void VrmlAPI_Writer::SetSpecularColorToMaterial(
   aMaterial->SetSpecularColor(Color);
 }
 
+//=================================================================================================
+
 void VrmlAPI_Writer::SetEmissiveColorToMaterial(
   occ::handle<Vrml_Material>&                             aMaterial,
   const occ::handle<NCollection_HArray1<Quantity_Color>>& Color)
 {
   aMaterial->SetEmissiveColor(Color);
-}
-
-VrmlAPI_RepresentationOfShape VrmlAPI_Writer::GetRepresentation() const
-{
-  return myRepresentation;
 }
 
 occ::handle<Vrml_Material> VrmlAPI_Writer::GetFrontMaterial() const

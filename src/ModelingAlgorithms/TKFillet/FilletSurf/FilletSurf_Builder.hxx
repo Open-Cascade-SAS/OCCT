@@ -89,6 +89,20 @@ public:
   //! gives the number of NUBS surfaces of the Fillet.
   Standard_EXPORT int NbSurface() const;
 
+  //! Returns the arc of the section of index IndexSec of surface
+  //! of index IndexSurf. The basis curve of the trimmed curve is a Geom_Circle.
+  //! @param[in] IndexSurf 1-based surface index
+  //! @param[in] IndexSec 1-based section index
+  //! @return the section as a trimmed circular arc
+  [[nodiscard]] Standard_EXPORT occ::handle<Geom_TrimmedCurve> Section(const int IndexSurf,
+                                                                       const int IndexSec) const;
+
+  //! @deprecated Use Section() returning handle by value instead.
+  Standard_DEPRECATED("Use Section() returning handle by value instead")
+  Standard_EXPORT void Section(const int                       IndexSurf,
+                               const int                       IndexSec,
+                               occ::handle<Geom_TrimmedCurve>& Circ) const;
+
   //! gives the NUBS surface of index Index.
   Standard_EXPORT const occ::handle<Geom_Surface>& SurfaceFillet(const int Index) const;
 
@@ -131,10 +145,6 @@ public:
   Standard_EXPORT FilletSurf_StatusType EndSectionStatus() const;
 
   Standard_EXPORT int NbSection(const int IndexSurf) const;
-
-  Standard_EXPORT void Section(const int                       IndexSurf,
-                               const int                       IndexSec,
-                               occ::handle<Geom_TrimmedCurve>& Circ) const;
 
 private:
   FilletSurf_InternalBuilder myIntBuild;

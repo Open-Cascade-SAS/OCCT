@@ -98,6 +98,12 @@ public:
 
   Standard_EXPORT gp_XYZ EvaluateDerivative(const gp_XY& point2d, const int iu, const int iv) const;
 
+  //! Returns the coefficients of the polynomial part of the Plate function.
+  //! @return 2D array of polynomial coefficients as XYZ values
+  [[nodiscard]] Standard_EXPORT occ::handle<NCollection_HArray2<gp_XYZ>> CoefPol() const;
+
+  //! @deprecated Use CoefPol() returning handle by value instead.
+  Standard_DEPRECATED("Use CoefPol() returning handle by value instead")
   Standard_EXPORT void CoefPol(occ::handle<NCollection_HArray2<gp_XYZ>>& Coefs) const;
 
   Standard_EXPORT void SetPolynomialPartOnly(const bool PPOnly = true);

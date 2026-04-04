@@ -316,9 +316,8 @@ int FilletSurf_Builder::NbSection(const int IndexSurf) const
 // IndexSec  of  SurfaceFillet(IndexSurf)  (The   basis curve  of the
 // trimmed curve is a Geom_Circle)
 //=======================================================================
-void FilletSurf_Builder::Section(const int                       IndexSurf,
-                                 const int                       IndexSec,
-                                 occ::handle<Geom_TrimmedCurve>& Circ) const
+occ::handle<Geom_TrimmedCurve> FilletSurf_Builder::Section(const int IndexSurf,
+                                                           const int IndexSec) const
 {
   if ((IndexSurf < 1) || (IndexSurf > NbSurface()))
     throw Standard_OutOfRange("FilletSurf_Builder::Section NbSurface");
@@ -326,6 +325,12 @@ void FilletSurf_Builder::Section(const int                       IndexSurf,
   else if ((IndexSec < 1) || (IndexSec > NbSection(IndexSurf)))
     throw Standard_OutOfRange("FilletSurf_Builder::Section NbSection");
 
-  else
-    myIntBuild.Section(IndexSurf, IndexSec, Circ);
+  return myIntBuild.Section(IndexSurf, IndexSec);
+}
+
+void FilletSurf_Builder::Section(const int                       IndexSurf,
+                                 const int                       IndexSec,
+                                 occ::handle<Geom_TrimmedCurve>& Circ) const
+{
+  Circ = Section(IndexSurf, IndexSec);
 }

@@ -40,6 +40,15 @@ public:
 
   Standard_EXPORT virtual void SetCurve(const occ::handle<FEmTool_Curve>& C) = 0;
 
+  //! Returns the curve associated with this criterion.
+  //! @return handle to the FEmTool curve
+  [[nodiscard]] occ::handle<FEmTool_Curve> Curve() const
+  {
+    occ::handle<FEmTool_Curve> aCurve;
+    GetCurve(aCurve);
+    return aCurve;
+  }
+
   Standard_EXPORT virtual void GetCurve(occ::handle<FEmTool_Curve>& C) const = 0;
 
   Standard_EXPORT virtual void SetEstimation(const double E1, const double E2, const double E3) = 0;

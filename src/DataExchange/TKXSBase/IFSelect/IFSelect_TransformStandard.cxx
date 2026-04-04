@@ -114,7 +114,7 @@ bool IFSelect_TransformStandard::Perform(const Interface_Graph&                 
 {
   Interface_CopyTool TC(G.Model(), protocol);
   themap = TC.Control();
-  Copy(G, TC, newmod);
+  newmod = Copy(G, TC);
   return ApplyModifiers(G, protocol, TC, checks, newmod);
 }
 
@@ -122,18 +122,15 @@ void IFSelect_TransformStandard::Copy(const Interface_Graph&                 G,
                                       Interface_CopyTool&                    TC,
                                       occ::handle<Interface_InterfaceModel>& newmod) const
 {
-  if (CopyOption())
-    StandardCopy(G, TC, newmod);
-  else
-    OnTheSpot(G, TC, newmod);
+  newmod = Copy(G, TC);
 }
 
-void IFSelect_TransformStandard::StandardCopy(const Interface_Graph&                 G,
-                                              Interface_CopyTool&                    TC,
-                                              occ::handle<Interface_InterfaceModel>& newmod) const
+occ::handle<Interface_InterfaceModel> IFSelect_TransformStandard::StandardCopy(
+  const Interface_Graph& G,
+  Interface_CopyTool&    TC) const
 {
   const occ::handle<Interface_InterfaceModel>& original = G.Model();
-  newmod                                                = original->NewEmptyModel();
+  occ::handle<Interface_InterfaceModel>        newmod   = original->NewEmptyModel();
   TC.Clear();
   int                                   nb     = G.Size();
   occ::handle<NCollection_HArray1<int>> remain = new NCollection_HArray1<int>(0, nb + 1);
@@ -144,16 +141,37 @@ void IFSelect_TransformStandard::StandardCopy(const Interface_Graph&            
     TC.TransferEntity(original->Value(i));
   }
   TC.FillModel(newmod);
+  return newmod;
+}
+
+occ::handle<Interface_InterfaceModel> IFSelect_TransformStandard::Copy(const Interface_Graph& G,
+                                                                       Interface_CopyTool& TC) const
+{
+  return CopyOption() ? StandardCopy(G, TC) : OnTheSpot(G, TC);
+}
+
+void IFSelect_TransformStandard::StandardCopy(const Interface_Graph&                 G,
+                                              Interface_CopyTool&                    TC,
+                                              occ::handle<Interface_InterfaceModel>& newmod) const
+{
+  newmod = StandardCopy(G, TC);
+}
+
+occ::handle<Interface_InterfaceModel> IFSelect_TransformStandard::OnTheSpot(
+  const Interface_Graph& G,
+  Interface_CopyTool&    TC) const
+{
+  int nb = G.Size();
+  for (int i = 1; i <= nb; i++)
+    TC.Bind(G.Entity(i), G.Entity(i));
+  return G.Model();
 }
 
 void IFSelect_TransformStandard::OnTheSpot(const Interface_Graph&                 G,
                                            Interface_CopyTool&                    TC,
                                            occ::handle<Interface_InterfaceModel>& newmod) const
 {
-  int nb = G.Size();
-  for (int i = 1; i <= nb; i++)
-    TC.Bind(G.Entity(i), G.Entity(i));
-  newmod = G.Model();
+  newmod = OnTheSpot(G, TC);
 }
 
 bool IFSelect_TransformStandard::ApplyModifiers(const Interface_Graph&                 G,

@@ -142,6 +142,15 @@ int TDocStd_Application::NbDocuments() const
 
 //=================================================================================================
 
+occ::handle<TDocStd_Document> TDocStd_Application::GetDocument(const int index) const
+{
+  occ::handle<TDocStd_Document> aDoc;
+  GetDocument(index, aDoc);
+  return aDoc;
+}
+
+//=================================================================================================
+
 void TDocStd_Application::GetDocument(const int index, occ::handle<TDocStd_Document>& theDoc) const
 {
   CDF_DirectoryIterator it(myDirectory);
@@ -218,7 +227,7 @@ int TDocStd_Application::IsInSession(const TCollection_ExtendedString& path) con
   occ::handle<TDocStd_Document> D;
   for (int i = 1; i <= nbdoc; i++)
   {
-    GetDocument(i, D);
+    D = GetDocument(i);
     if (D->IsSaved())
     {
       TCollection_ExtendedString unifiedDocPath(D->GetPath());

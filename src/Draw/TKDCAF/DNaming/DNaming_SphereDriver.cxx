@@ -52,7 +52,7 @@ DNaming_SphereDriver::DNaming_SphereDriver() = default;
 // function : Validate
 // purpose  : Validates labels of a function in <theLog>
 //=======================================================================
-void DNaming_SphereDriver::Validate(occ::handle<TFunction_Logbook>&) const {}
+void DNaming_SphereDriver::Validate(const occ::handle<TFunction_Logbook>&) const {}
 
 //=======================================================================
 // function : MustExecute

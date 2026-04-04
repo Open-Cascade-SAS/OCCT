@@ -32,8 +32,14 @@ public:
     const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
     const NCollection_Array1<gp_Pnt>&         thePoints);
 
+  //! Returns 3d coordinates of vertices of the whole point set.
+  //! @return handle to array of 3D vertex coordinates
+  [[nodiscard]] Standard_EXPORT occ::handle<NCollection_HArray1<gp_Pnt>> GetPoints() const;
+
   //! Initializes the given array theHArrayOfPnt by 3d coordinates of vertices of the
   //! whole point set
+  //! @deprecated Use GetPoints() returning handle by value instead.
+  Standard_DEPRECATED("Use GetPoints() returning handle by value instead")
   Standard_EXPORT virtual void GetPoints(occ::handle<NCollection_HArray1<gp_Pnt>>& theHArrayOfPnt);
 
   //! Returns the length of vector of planar convex polygons

@@ -32,7 +32,7 @@ void TFunction_Driver::Init(const TDF_Label& L)
 
 //=================================================================================================
 
-void TFunction_Driver::Validate(occ::handle<TFunction_Logbook>& log) const
+void TFunction_Driver::Validate(const occ::handle<TFunction_Logbook>& log) const
 {
   NCollection_List<TDF_Label> res;
   Results(res);

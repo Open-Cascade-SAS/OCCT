@@ -354,10 +354,9 @@ double BRepGProp_VinertGK::PrivatePerform(BRepGProp_Face& theSurface,
     aTMax = theSurface.LastParameter();
 
     // Get the spans on the curve.
-    occ::handle<NCollection_HArray1<double>> aTKnots;
     BRepGProp_TFunction aTFunc(theSurface, loc, IsByPoint, theCoeffs, aUMin, aCrvTol);
 
-    theSurface.GetTKnots(aTMin, aTMax, aTKnots);
+    occ::handle<NCollection_HArray1<double>> aTKnots = theSurface.GetTKnots(aTMin, aTMax);
 
     int iU            = aTKnots->Upper();
     int aNbTIntervals = aTKnots->Length() - 1;

@@ -48,7 +48,7 @@ public:
   Standard_EXPORT void MakeSDR(const occ::handle<StepShape_ShapeRepresentation>& aShape,
                                const occ::handle<TCollection_HAsciiString>&      aName,
                                const occ::handle<StepBasic_ApplicationContext>&  AC,
-                               occ::handle<StepData_StepModel>&                  theStepModel);
+                               const occ::handle<StepData_StepModel>&            theStepModel);
 
   Standard_EXPORT void ReadSDR(const occ::handle<StepShape_ShapeDefinitionRepresentation>& aShape);
 

@@ -40,7 +40,7 @@ DNaming_SelectionDriver::DNaming_SelectionDriver() = default;
 // function : Validate
 // purpose  : Validates labels of a function in <theLog>.
 //=======================================================================
-void DNaming_SelectionDriver::Validate(occ::handle<TFunction_Logbook>&) const {}
+void DNaming_SelectionDriver::Validate(const occ::handle<TFunction_Logbook>&) const {}
 
 //=======================================================================
 // function : MustExecute

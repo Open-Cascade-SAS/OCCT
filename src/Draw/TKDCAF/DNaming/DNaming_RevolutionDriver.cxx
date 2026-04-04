@@ -59,7 +59,7 @@ DNaming_RevolutionDriver::DNaming_RevolutionDriver() = default;
 // function : Validate
 // purpose  : Validates labels of a function in <theLog>.
 //=======================================================================
-void DNaming_RevolutionDriver::Validate(occ::handle<TFunction_Logbook>&) const {}
+void DNaming_RevolutionDriver::Validate(const occ::handle<TFunction_Logbook>&) const {}
 
 //=======================================================================
 // function : MustExecute

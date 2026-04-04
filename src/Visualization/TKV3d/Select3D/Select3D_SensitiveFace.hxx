@@ -47,8 +47,14 @@ public:
                                          const occ::handle<NCollection_HArray1<gp_Pnt>>& thePoints,
                                          const Select3D_TypeOfSensitivity                theType);
 
+  //! Returns 3d coordinates of vertices of the face.
+  //! @return handle to array of 3D vertex coordinates
+  [[nodiscard]] Standard_EXPORT occ::handle<NCollection_HArray1<gp_Pnt>> GetPoints() const;
+
   //! Initializes the given array theHArrayOfPnt by 3d
   //! coordinates of vertices of the face
+  //! @deprecated Use GetPoints() returning handle by value instead.
+  Standard_DEPRECATED("Use GetPoints() returning handle by value instead")
   Standard_EXPORT void GetPoints(occ::handle<NCollection_HArray1<gp_Pnt>>& theHArrayOfPnt);
 
   //! Checks whether the face overlaps current selecting volume

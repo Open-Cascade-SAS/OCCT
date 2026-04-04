@@ -2115,9 +2115,9 @@ bool IFSelect_WorkSession::SetRemaining(const IFSelect_RemainMode mode)
   }
   else if (mode == IFSelect_RemainCompute)
   {
-    occ::handle<Interface_InterfaceModel> newmod;
     Interface_CopyTool                    TC(myModel, theprotocol);
-    thecopier->CopiedRemaining(thegraph->Graph(), thelibrary, TC, newmod);
+    occ::handle<Interface_InterfaceModel> newmod =
+      thecopier->CopiedRemaining(thegraph->Graph(), thelibrary, TC);
     if (newmod.IsNull())
     {
       sout << " No Remaining Data recorded" << std::endl;
