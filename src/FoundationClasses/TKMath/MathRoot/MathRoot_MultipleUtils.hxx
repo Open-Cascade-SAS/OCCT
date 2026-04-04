@@ -704,25 +704,25 @@ MultipleResult FindAllRootsWithDerivativeImpl(Function&             theFunc,
       }
     }
 
-    double           aXProbe1         = 0.0;
-    double           aXProbe2         = 0.0;
-    constexpr double THE_GOLDEN_RATIO = 0.61803399;
-    constexpr double THE_GOLDEN_COMP  = 1.0 - THE_GOLDEN_RATIO;
-    const double     aTolCR           = aEpsX * 10.0;
-    const double     aLocalTolX       = 0.001 * aEpsX;
-    double           aF0              = aValues(anIm1);
-    double           aF3              = aValues(anIp1);
-    const bool       isSearchMinimum  = (aF0 > 0.0);
+    double           aXProbe1             = 0.0;
+    double           aXProbe2             = 0.0;
+    constexpr double THE_GOLDEN_INV_RATIO = 1.0 / MathUtils::THE_GOLDEN_RATIO;
+    constexpr double THE_GOLDEN_INV_COMP  = 1.0 - THE_GOLDEN_INV_RATIO;
+    const double     aTolCR               = aEpsX * 10.0;
+    const double     aLocalTolX           = 0.001 * aEpsX;
+    double           aF0                  = aValues(anIm1);
+    double           aF3                  = aValues(anIp1);
+    const bool       isSearchMinimum      = (aF0 > 0.0);
 
     if (std::abs(aX3 - aMidX) > std::abs(aX0 - aMidX))
     {
       aXProbe1 = aMidX;
-      aXProbe2 = aMidX + THE_GOLDEN_COMP * (aX3 - aMidX);
+      aXProbe2 = aMidX + THE_GOLDEN_INV_COMP * (aX3 - aMidX);
     }
     else
     {
       aXProbe2 = aMidX;
-      aXProbe1 = aMidX - THE_GOLDEN_COMP * (aMidX - aX0);
+      aXProbe1 = aMidX - THE_GOLDEN_INV_COMP * (aMidX - aX0);
     }
 
     double aF1 = 0.0;
@@ -743,7 +743,7 @@ MultipleResult FindAllRootsWithDerivativeImpl(Function&             theFunc,
         {
           aX0      = aXProbe1;
           aXProbe1 = aXProbe2;
-          aXProbe2 = THE_GOLDEN_RATIO * aXProbe1 + THE_GOLDEN_COMP * aX3;
+          aXProbe2 = THE_GOLDEN_INV_RATIO * aXProbe1 + THE_GOLDEN_INV_COMP * aX3;
           aF0      = aF1;
           aF1      = aF2;
           if (!EvaluateShiftedValue(theFunc, aXProbe2, theConfig.Offset, aF2))
@@ -756,7 +756,7 @@ MultipleResult FindAllRootsWithDerivativeImpl(Function&             theFunc,
         {
           aX3      = aXProbe2;
           aXProbe2 = aXProbe1;
-          aXProbe1 = THE_GOLDEN_RATIO * aXProbe2 + THE_GOLDEN_COMP * aX0;
+          aXProbe1 = THE_GOLDEN_INV_RATIO * aXProbe2 + THE_GOLDEN_INV_COMP * aX0;
           aF3      = aF2;
           aF2      = aF1;
           if (!EvaluateShiftedValue(theFunc, aXProbe1, theConfig.Offset, aF1))
@@ -772,7 +772,7 @@ MultipleResult FindAllRootsWithDerivativeImpl(Function&             theFunc,
         {
           aX0      = aXProbe1;
           aXProbe1 = aXProbe2;
-          aXProbe2 = THE_GOLDEN_RATIO * aXProbe1 + THE_GOLDEN_COMP * aX3;
+          aXProbe2 = THE_GOLDEN_INV_RATIO * aXProbe1 + THE_GOLDEN_INV_COMP * aX3;
           aF0      = aF1;
           aF1      = aF2;
           if (!EvaluateShiftedValue(theFunc, aXProbe2, theConfig.Offset, aF2))
@@ -785,7 +785,7 @@ MultipleResult FindAllRootsWithDerivativeImpl(Function&             theFunc,
         {
           aX3      = aXProbe2;
           aXProbe2 = aXProbe1;
-          aXProbe1 = THE_GOLDEN_RATIO * aXProbe2 + THE_GOLDEN_COMP * aX0;
+          aXProbe1 = THE_GOLDEN_INV_RATIO * aXProbe2 + THE_GOLDEN_INV_COMP * aX0;
           aF3      = aF2;
           aF2      = aF1;
           if (!EvaluateShiftedValue(theFunc, aXProbe1, theConfig.Offset, aF1))

@@ -96,14 +96,26 @@ OpenGl_FrameBuffer::~OpenGl_FrameBuffer()
 
 int OpenGl_FrameBuffer::GetSizeX() const
 {
-  return !myColorTextures.IsEmpty() ? myColorTextures.First()->SizeX() : 0;
+  if (myColorTextures.IsEmpty())
+  {
+    return 0;
+  }
+
+  const occ::handle<OpenGl_Texture>& aTexture = myColorTextures.First();
+  return aTexture.IsNull() ? 0 : aTexture->SizeX();
 }
 
 //=================================================================================================
 
 int OpenGl_FrameBuffer::GetSizeY() const
 {
-  return !myColorTextures.IsEmpty() ? myColorTextures.First()->SizeY() : 0;
+  if (myColorTextures.IsEmpty())
+  {
+    return 0;
+  }
+
+  const occ::handle<OpenGl_Texture>& aTexture = myColorTextures.First();
+  return aTexture.IsNull() ? 0 : aTexture->SizeY();
 }
 
 //=================================================================================================

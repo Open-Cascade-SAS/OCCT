@@ -144,27 +144,23 @@ int TDocStd_Application::NbDocuments() const
 
 occ::handle<TDocStd_Document> TDocStd_Application::GetDocument(const int index) const
 {
-  occ::handle<TDocStd_Document> aDoc;
-  GetDocument(index, aDoc);
-  return aDoc;
+  int current = 0;
+  for (CDF_DirectoryIterator it(myDirectory); it.MoreDocument(); it.NextDocument())
+  {
+    current++;
+    if (index == current)
+    {
+      return occ::down_cast<TDocStd_Document>(it.Document());
+    }
+  }
+  return nullptr;
 }
 
 //=================================================================================================
 
 void TDocStd_Application::GetDocument(const int index, occ::handle<TDocStd_Document>& theDoc) const
 {
-  CDF_DirectoryIterator it(myDirectory);
-  int                   current = 0;
-  for (; it.MoreDocument(); it.NextDocument())
-  {
-    current++;
-    if (index == current)
-    {
-      occ::handle<TDocStd_Document> D = occ::down_cast<TDocStd_Document>(it.Document());
-      theDoc                          = D;
-      return;
-    }
-  }
+  theDoc = GetDocument(index);
 }
 
 //=================================================================================================

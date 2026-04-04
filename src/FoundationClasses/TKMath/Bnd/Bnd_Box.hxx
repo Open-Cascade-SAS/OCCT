@@ -78,17 +78,7 @@ public:
 
   //! Creates an empty Box.
   //! The constructed box is qualified Void. Its gap is null.
-  constexpr Bnd_Box()
-      : Xmin(RealLast()),
-        Xmax(-RealLast()),
-        Ymin(RealLast()),
-        Ymax(-RealLast()),
-        Zmin(RealLast()),
-        Zmax(-RealLast()),
-        Gap(0.0),
-        Flags(VoidMask)
-  {
-  }
+  constexpr Bnd_Box() noexcept = default;
 
   //! Creates a bounding box, it contains:
   //! -   minimum/maximum point of bounding box,
@@ -404,14 +394,14 @@ protected:
   };
 
 private:
-  double Xmin;
-  double Xmax;
-  double Ymin;
-  double Ymax;
-  double Zmin;
-  double Zmax;
-  double Gap;
-  int    Flags;
+  double Xmin  = RealLast();
+  double Xmax  = -RealLast();
+  double Ymin  = RealLast();
+  double Ymax  = -RealLast();
+  double Zmin  = RealLast();
+  double Zmax  = -RealLast();
+  double Gap   = 0.0;
+  int    Flags = VoidMask;
 };
 
 #endif // _Bnd_Box_HeaderFile

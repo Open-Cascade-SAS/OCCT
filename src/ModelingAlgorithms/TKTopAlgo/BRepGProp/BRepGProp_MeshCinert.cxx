@@ -135,17 +135,8 @@ occ::handle<NCollection_HArray1<gp_Pnt>> BRepGProp_MeshCinert::PreparePolygon(
   const TopoDS_Edge& theE)
 {
   occ::handle<NCollection_HArray1<gp_Pnt>> thePolyg;
-  PreparePolygon(theE, thePolyg);
-  return thePolyg;
-}
-
-//=================================================================================================
-
-void BRepGProp_MeshCinert::PreparePolygon(const TopoDS_Edge&                        theE,
-                                          occ::handle<NCollection_HArray1<gp_Pnt>>& thePolyg)
-{
-  TopLoc_Location                    aLoc;
-  const occ::handle<Poly_Polygon3D>& aPolyg = BRep_Tool::Polygon3D(theE, aLoc);
+  TopLoc_Location                          aLoc;
+  const occ::handle<Poly_Polygon3D>&       aPolyg = BRep_Tool::Polygon3D(theE, aLoc);
   if (!aPolyg.IsNull())
   {
     const NCollection_Array1<gp_Pnt>& aNodes = aPolyg->Nodes();
@@ -166,7 +157,7 @@ void BRepGProp_MeshCinert::PreparePolygon(const TopoDS_Edge&                    
         thePolyg->SetValue(i, aNodes.Value(i).Transformed(aTr));
       }
     }
-    return;
+    return thePolyg;
   }
 
   // Try to get PolygonOnTriangulation
@@ -194,9 +185,9 @@ void BRepGProp_MeshCinert::PreparePolygon(const TopoDS_Edge&                    
         thePolyg->SetValue(i, aTri->Node(aNodeInds(i)).Transformed(aTr));
       }
     }
-    return;
+    return thePolyg;
   }
-  //
+
   // Try to get Polygon2D on Surface
   occ::handle<Poly_Polygon2D> aPolyg2D;
   occ::handle<Geom_Surface>   aS;
@@ -227,6 +218,14 @@ void BRepGProp_MeshCinert::PreparePolygon(const TopoDS_Edge&                    
         thePolyg->SetValue(i, aP);
       }
     }
-    return;
   }
+  return thePolyg;
+}
+
+//=================================================================================================
+
+void BRepGProp_MeshCinert::PreparePolygon(const TopoDS_Edge&                        theE,
+                                          occ::handle<NCollection_HArray1<gp_Pnt>>& thePolyg)
+{
+  thePolyg = PreparePolygon(theE);
 }

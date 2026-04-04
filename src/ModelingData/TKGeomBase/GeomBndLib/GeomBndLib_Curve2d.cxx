@@ -206,11 +206,14 @@ Bnd_Box2d GeomBndLib_Curve2d::Box(double theTol) const
   return std::visit(
     [theTol](const auto& theEval) -> Bnd_Box2d {
       using T = std::decay_t<decltype(theEval)>;
-      if constexpr (!std::is_same_v<T, std::monostate>)
+      if constexpr (std::is_same_v<T, std::monostate>)
+      {
+        return Bnd_Box2d{};
+      }
+      else
       {
         return theEval.Box(theTol);
       }
-      return Bnd_Box2d{};
     },
     myEvaluator);
 }
@@ -222,11 +225,14 @@ Bnd_Box2d GeomBndLib_Curve2d::Box(double theU1, double theU2, double theTol) con
   return std::visit(
     [theU1, theU2, theTol](const auto& theEval) -> Bnd_Box2d {
       using T = std::decay_t<decltype(theEval)>;
-      if constexpr (!std::is_same_v<T, std::monostate>)
+      if constexpr (std::is_same_v<T, std::monostate>)
+      {
+        return Bnd_Box2d{};
+      }
+      else
       {
         return theEval.Box(theU1, theU2, theTol);
       }
-      return Bnd_Box2d{};
     },
     myEvaluator);
 }
@@ -268,11 +274,14 @@ Bnd_Box2d GeomBndLib_Curve2d::BoxOptimal(double theU1, double theU2, double theT
   return std::visit(
     [theU1, theU2, theTol](const auto& theEval) -> Bnd_Box2d {
       using T = std::decay_t<decltype(theEval)>;
-      if constexpr (!std::is_same_v<T, std::monostate>)
+      if constexpr (std::is_same_v<T, std::monostate>)
+      {
+        return Bnd_Box2d{};
+      }
+      else
       {
         return theEval.BoxOptimal(theU1, theU2, theTol);
       }
-      return Bnd_Box2d{};
     },
     myEvaluator);
 }
