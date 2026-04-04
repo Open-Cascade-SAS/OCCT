@@ -198,6 +198,54 @@ TEST(TCollection_ExtendedStringTest, Cat)
   EXPECT_STREQ("Hello!", asciiResult2.ToCString());
 }
 
+TEST(TCollection_ExtendedStringTest, AssignCat_IntegerAndReal)
+{
+  TCollection_ExtendedString anIntegerString("Value: ");
+  anIntegerString.AssignCat(42);
+  TCollection_AsciiString anAsciiInteger(anIntegerString);
+  EXPECT_STREQ("Value: 42", anAsciiInteger.ToCString());
+
+  TCollection_ExtendedString anOperatorString("Value: ");
+  anOperatorString += -7;
+  TCollection_AsciiString anAsciiOperator(anOperatorString);
+  EXPECT_STREQ("Value: -7", anAsciiOperator.ToCString());
+
+  TCollection_ExtendedString aZeroString("Value: ");
+  aZeroString += 0;
+  TCollection_AsciiString anAsciiZero(aZeroString);
+  EXPECT_STREQ("Value: 0", anAsciiZero.ToCString());
+
+  TCollection_ExtendedString aRealString("Pi is approximately ");
+  aRealString.AssignCat(3.14159);
+  TCollection_AsciiString anAsciiReal(aRealString);
+  EXPECT_TRUE(strstr(anAsciiReal.ToCString(), "3.14159") != nullptr);
+}
+
+TEST(TCollection_ExtendedStringTest, Cat_IntegerAndReal)
+{
+  TCollection_ExtendedString aString("Count: ");
+
+  TCollection_ExtendedString anIntegerResult = aString.Cat(42);
+  TCollection_AsciiString    anAsciiInteger(anIntegerResult);
+  EXPECT_STREQ("Count: 42", anAsciiInteger.ToCString());
+
+  TCollection_ExtendedString aNegativeResult = aString + (-100);
+  TCollection_AsciiString    anAsciiNegative(aNegativeResult);
+  EXPECT_STREQ("Count: -100", anAsciiNegative.ToCString());
+
+  TCollection_ExtendedString aZeroResult = aString.Cat(0);
+  TCollection_AsciiString    anAsciiZero(aZeroResult);
+  EXPECT_STREQ("Count: 0", anAsciiZero.ToCString());
+
+  TCollection_ExtendedString aRealSource("Value: ");
+  TCollection_ExtendedString aRealResult = aRealSource + 3.14;
+  TCollection_AsciiString    anAsciiReal(aRealResult);
+  EXPECT_TRUE(strstr(anAsciiReal.ToCString(), "3.14") != nullptr);
+
+  TCollection_AsciiString anAsciiOriginal(aString);
+  EXPECT_STREQ("Count: ", anAsciiOriginal.ToCString());
+}
+
 TEST(TCollection_ExtendedStringTest, ChangeAll)
 {
   TCollection_ExtendedString aString("Helloo Woorld");

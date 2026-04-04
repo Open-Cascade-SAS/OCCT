@@ -194,6 +194,18 @@ public:
 
   void operator+=(const TCollection_ExtendedString& theOther) { AssignCat(theOther); }
 
+  //! Appends the integer value to this extended string.
+  //! @param[in] theOther the integer to append
+  Standard_EXPORT void AssignCat(const int theOther);
+
+  void operator+=(const int theOther) { AssignCat(theOther); }
+
+  //! Appends the real value to this extended string.
+  //! @param[in] theOther the real value to append
+  Standard_EXPORT void AssignCat(const double theOther);
+
+  void operator+=(const double theOther) { AssignCat(theOther); }
+
   //! Appends the utf16 char to this extended string.
   //! @param[in] theChar the character to append
   Standard_EXPORT void AssignCat(const char16_t theChar);
@@ -280,6 +292,20 @@ public:
   {
     return Cat(theOther);
   }
+
+  //! Appends the integer value to this string and returns a new string.
+  //! @param[in] theOther the integer to append
+  //! @return new string with integer appended
+  Standard_EXPORT TCollection_ExtendedString Cat(const int theOther) const;
+
+  TCollection_ExtendedString operator+(const int theOther) const { return Cat(theOther); }
+
+  //! Appends the real value to this string and returns a new string.
+  //! @param[in] theOther the real value to append
+  //! @return new string with real value appended
+  Standard_EXPORT TCollection_ExtendedString Cat(const double theOther) const;
+
+  TCollection_ExtendedString operator+(const double theOther) const { return Cat(theOther); }
 
   //! Appends the other extended string to this string and returns a new string.
   //!

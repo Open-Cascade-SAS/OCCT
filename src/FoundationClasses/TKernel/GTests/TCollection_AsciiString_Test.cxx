@@ -438,6 +438,24 @@ TEST(TCollection_AsciiStringTest, AssignCat_IntegerAndReal)
   EXPECT_TRUE(strstr(aString2.ToCString(), "3.14159") != nullptr);
 }
 
+TEST(TCollection_AsciiStringTest, AssignCat_ExtendedStringAndWideChar)
+{
+  TCollection_AsciiString    anExtendedTarget("Value:");
+  TCollection_ExtendedString anExtendedSource(" OK");
+  anExtendedTarget += anExtendedSource;
+  EXPECT_STREQ("Value: OK", anExtendedTarget.ToCString());
+
+  const char16_t             aNonAsciiChars[] = {' ', 0x20AC, 0};
+  TCollection_ExtendedString aNonAsciiSource(aNonAsciiChars);
+  TCollection_AsciiString    aReplacedTarget("Value");
+  aReplacedTarget.AssignCat(aNonAsciiSource, '?');
+  EXPECT_STREQ("Value ?", aReplacedTarget.ToCString());
+
+  TCollection_AsciiString aWideTarget("Hello");
+  aWideTarget += L" World";
+  EXPECT_STREQ("Hello World", aWideTarget.ToCString());
+}
+
 TEST(TCollection_AsciiStringTest, AssignCat_LargeStrings)
 {
   TCollection_AsciiString aString(100, 'A');
@@ -725,6 +743,27 @@ TEST(TCollection_AsciiStringTest, Cat_IntegerAndReal)
   // Cat with zero
   TCollection_AsciiString aResult4 = aString.Cat(0);
   EXPECT_STREQ("Count: 0", aResult4.ToCString());
+}
+
+TEST(TCollection_AsciiStringTest, Cat_ExtendedStringAndWideChar)
+{
+  TCollection_AsciiString    aString("Value:");
+  TCollection_ExtendedString anExtendedSource(" OK");
+  TCollection_AsciiString    anExtendedResult = aString + anExtendedSource;
+  EXPECT_STREQ("Value: OK", anExtendedResult.ToCString());
+
+  const char16_t             anAccentChars[] = {' ', 0x00E9, 0};
+  TCollection_ExtendedString anAccentSource(anAccentChars);
+  TCollection_AsciiString    anUtf8Result = TCollection_AsciiString("Cafe").Cat(anAccentSource);
+  EXPECT_EQ(7, anUtf8Result.Length());
+  EXPECT_EQ(' ', anUtf8Result.ToCString()[4]);
+  EXPECT_EQ(static_cast<char>(0xC3), anUtf8Result.ToCString()[5]);
+  EXPECT_EQ(static_cast<char>(0xA9), anUtf8Result.ToCString()[6]);
+
+  TCollection_AsciiString aWideResult = aString.Cat(L" Wide");
+  EXPECT_STREQ("Value: Wide", aWideResult.ToCString());
+
+  EXPECT_STREQ("Value:", aString.ToCString());
 }
 
 TEST(TCollection_AsciiStringTest, Cat_EmptyStrings)
