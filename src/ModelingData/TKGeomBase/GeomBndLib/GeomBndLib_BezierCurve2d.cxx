@@ -38,7 +38,7 @@ Bnd_Box2d GeomBndLib_BezierCurve2d::Box(double theU1, double theU2, double theTo
   if (std::abs(aU1 - aTrim1) > anEps || std::abs(aU2 - aTrim2) > anEps)
   {
     const occ::handle<Geom2d_Geometry> aCopy = aCurve->Copy();
-    aCurve = occ::down_cast<Geom2d_BezierCurve>(aCopy);
+    aCurve                                   = occ::down_cast<Geom2d_BezierCurve>(aCopy);
     aCurve->Segment(aTrim1, aTrim2);
   }
 

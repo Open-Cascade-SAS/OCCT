@@ -30,15 +30,15 @@ Bnd_Box GeomBndLib_BSplineCurve::Box(double theTol) const
 
 Bnd_Box GeomBndLib_BSplineCurve::Box(double theU1, double theU2, double theTol) const
 {
-  constexpr double             aWeakness = 1.5;
-  occ::handle<Geom_BSplineCurve> aCurve  = myGeom;
-  double                       aU1       = theU1;
-  double                       aU2       = theU2;
+  constexpr double               aWeakness = 1.5;
+  occ::handle<Geom_BSplineCurve> aCurve    = myGeom;
+  double                         aU1       = theU1;
+  double                         aU2       = theU2;
 
   if (std::abs(aCurve->FirstParameter() - aU1) > Precision::Parametric(theTol)
       || std::abs(aCurve->LastParameter() - aU2) > Precision::Parametric(theTol))
   {
-    occ::handle<Geom_Geometry>     aGeometry = aCurve->Copy();
+    occ::handle<Geom_Geometry>     aGeometry       = aCurve->Copy();
     occ::handle<Geom_BSplineCurve> aSegmentedCurve = occ::down_cast<Geom_BSplineCurve>(aGeometry);
     if (aSegmentedCurve->IsPeriodic())
     {
@@ -63,7 +63,7 @@ Bnd_Box GeomBndLib_BSplineCurve::Box(double theU1, double theU2, double theTol) 
     double aSegmentTol = 2.0 * Precision::PConfusion();
     if (aSegmentedCurve->IsPeriodic())
     {
-      const double aPeriod           = aSegmentedCurve->LastParameter() - aSegmentedCurve->FirstParameter();
+      const double aPeriod = aSegmentedCurve->LastParameter() - aSegmentedCurve->FirstParameter();
       const double aDirectDiff       = std::abs(aU2 - aU1);
       const double aCrossPeriodDiff1 = std::abs(aU2 - aPeriod - aU1);
       const double aCrossPeriodDiff2 = std::abs(aU1 - aPeriod - aU2);
@@ -82,25 +82,24 @@ Bnd_Box GeomBndLib_BSplineCurve::Box(double theU1, double theU2, double theTol) 
     aCurve = aSegmentedCurve;
   }
 
-  Bnd_Box                         aSampledBox;
-  const int                       aKnotFirst = aCurve->FirstUKnotIndex();
-  const int                       aKnotLast  = aCurve->LastUKnotIndex();
-  const int                       aDegree    = aCurve->Degree();
-  const NCollection_Array1<double>& aKnots   = aCurve->Knots();
-  GeomAdaptor_Curve               aGACurve(aCurve);
-  double                          aMaxDeflection = 0.0;
-  double                          aFirst = aKnots(aKnotFirst);
+  Bnd_Box                           aSampledBox;
+  const int                         aKnotFirst = aCurve->FirstUKnotIndex();
+  const int                         aKnotLast  = aCurve->LastUKnotIndex();
+  const int                         aDegree    = aCurve->Degree();
+  const NCollection_Array1<double>& aKnots     = aCurve->Knots();
+  GeomAdaptor_Curve                 aGACurve(aCurve);
+  double                            aMaxDeflection = 0.0;
+  double                            aFirst         = aKnots(aKnotFirst);
   for (int aKnot = aKnotFirst + 1; aKnot <= aKnotLast; ++aKnot)
   {
     const double aLast = aKnots(aKnot);
-    aMaxDeflection = std::max(GeomBndLib_SplineHelpers::FillBox<Bnd_Box,
-                                                                GeomAdaptor_Curve,
-                                                                gp_Pnt>(aSampledBox,
-                                                                        aGACurve,
-                                                                        aFirst,
-                                                                        aLast,
-                                                                        aDegree),
-                              aMaxDeflection);
+    aMaxDeflection =
+      std::max(GeomBndLib_SplineHelpers::FillBox<Bnd_Box, GeomAdaptor_Curve, gp_Pnt>(aSampledBox,
+                                                                                     aGACurve,
+                                                                                     aFirst,
+                                                                                     aLast,
+                                                                                     aDegree),
+               aMaxDeflection);
     aFirst = aLast;
   }
 

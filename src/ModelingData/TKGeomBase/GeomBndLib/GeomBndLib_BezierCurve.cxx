@@ -28,16 +28,15 @@ Bnd_Box GeomBndLib_BezierCurve::Box(double theTol) const
 
 Bnd_Box GeomBndLib_BezierCurve::Box(double theU1, double theU2, double theTol) const
 {
-  constexpr double    aWeakness = 1.5;
-  GeomAdaptor_Curve   aGACurve(myGeom);
-  Bnd_Box             aSampledBox;
-  const double        aDeflection = GeomBndLib_SplineHelpers::FillBox<Bnd_Box,
-                                                                GeomAdaptor_Curve,
-                                                                gp_Pnt>(aSampledBox,
-                                                                        aGACurve,
-                                                                        theU1,
-                                                                        theU2,
-                                                                        myGeom->Degree());
+  constexpr double  aWeakness = 1.5;
+  GeomAdaptor_Curve aGACurve(myGeom);
+  Bnd_Box           aSampledBox;
+  const double      aDeflection =
+    GeomBndLib_SplineHelpers::FillBox<Bnd_Box, GeomAdaptor_Curve, gp_Pnt>(aSampledBox,
+                                                                          aGACurve,
+                                                                          theU1,
+                                                                          theU2,
+                                                                          myGeom->Degree());
   aSampledBox.Enlarge(aWeakness * aDeflection);
 
   Bnd_Box aBox;

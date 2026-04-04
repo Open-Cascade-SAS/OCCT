@@ -34,7 +34,7 @@ Bnd_Box GeomBndLib_Torus::Box(double theUMin,
                               double theVMax,
                               double theTol) const
 {
-  Bnd_Box        aBox;
+  Bnd_Box aBox;
   BndLib::Add(myGeom->Torus(), theUMin, theUMax, theVMin, theVMax, theTol, aBox);
   return aBox;
 }
