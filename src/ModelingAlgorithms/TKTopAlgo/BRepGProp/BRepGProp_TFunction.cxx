@@ -59,7 +59,6 @@ bool BRepGProp_TFunction::Value(const double X, double& F)
   gp_Pnt2d                                 aP2d;
   gp_Vec2d                                 aV2d;
   double                                   aUMax;
-  occ::handle<NCollection_HArray1<double>> anUKnots;
 
   mySurface.D12d(X, aP2d, aV2d);
   aUMax = aP2d.X();
@@ -70,13 +69,13 @@ bool BRepGProp_TFunction::Value(const double X, double& F)
     return true;
   }
 
-  mySurface.GetUKnots(myUMin, aUMax, anUKnots);
+  occ::handle<NCollection_HArray1<double>> aUKnots = mySurface.GetUKnots(myUMin, aUMax);
   myUFunction.SetVParam(aP2d.Y());
 
   // Compute the integral from myUMin to aUMax of myUFunction.
   int    i;
   double aCoeff = aV2d.Y();
-  // int aNbUIntervals = anUKnots->Length() - 1;
+  // int aNbUIntervals = aUKnots->Length() - 1;
   // double    aTol          = myTolerance/aNbUIntervals;
   double aTol = myTolerance;
 
@@ -116,23 +115,23 @@ bool BRepGProp_TFunction::Value(const double X, double& F)
   // else
   //   aTol = 0.1;
 
-  int                           iU = anUKnots->Upper();
+  int                           iU = aUKnots->Upper();
   int                           aNbPntsStart;
   int                           aNbMaxIter = 1000;
   math_KronrodSingleIntegration anIntegral;
   double                        aLocalErr = 0.;
 
-  i = anUKnots->Lower();
+  i = aUKnots->Lower();
   F = 0.;
 
   // Epmirical criterion
-  aNbPntsStart = std::min(15, mySurface.UIntegrationOrder() / (anUKnots->Length() - 1) + 1);
+  aNbPntsStart = std::min(15, mySurface.UIntegrationOrder() / (aUKnots->Length() - 1) + 1);
   aNbPntsStart = std::max(5, aNbPntsStart);
 
   while (i < iU)
   {
-    double aU1 = anUKnots->Value(i++);
-    double aU2 = anUKnots->Value(i);
+    double aU1 = aUKnots->Value(i++);
+    double aU2 = aUKnots->Value(i);
 
     if (aU2 - aU1 < tolU)
       continue;

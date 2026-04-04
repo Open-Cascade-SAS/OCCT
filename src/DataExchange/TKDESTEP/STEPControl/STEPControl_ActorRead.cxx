@@ -2127,8 +2127,8 @@ void STEPControl_ActorRead::PrepareUnits(const occ::handle<StepRepr_Representati
 
 //=================================================================================================
 
-void STEPControl_ActorRead::ResetUnits(occ::handle<StepData_StepModel>& theModel,
-                                       StepData_Factors&                theLocalFactors)
+void STEPControl_ActorRead::ResetUnits(const occ::handle<StepData_StepModel>& theModel,
+                                       StepData_Factors&                      theLocalFactors)
 {
   theLocalFactors.InitializeFactors(1, 1, 1);
   myPrecision = theModel->InternalParameters.ReadPrecisionVal;

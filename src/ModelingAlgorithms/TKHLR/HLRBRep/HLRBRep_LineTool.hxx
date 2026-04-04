@@ -153,6 +153,21 @@ public:
 
   static int NbSamples(const gp_Lin& C, const double U0, const double U1);
 
+  //! Returns sample parameters for the line within [U0, U1] range.
+  //! @param[in] C the line
+  //! @param[in] U0 start parameter
+  //! @param[in] U1 end parameter
+  //! @param[in] Defl deflection tolerance (unused for lines)
+  //! @param[in] NbMin minimum number of sample points (unused for lines)
+  //! @return array of 3 sample parameter values
+  [[nodiscard]] static occ::handle<NCollection_HArray1<double>> SamplePars(const gp_Lin& C,
+                                                                            const double  U0,
+                                                                            const double  U1,
+                                                                            const double  Defl,
+                                                                            const int     NbMin);
+
+  //! @deprecated Use SamplePars() returning handle by value instead.
+  Standard_DEPRECATED("Use SamplePars() returning handle by value instead")
   static void SamplePars(const gp_Lin&                             C,
                          const double                              U0,
                          const double                              U1,

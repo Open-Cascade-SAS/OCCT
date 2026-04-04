@@ -43,7 +43,7 @@ public:
   //! the valid label scope.
   //! execution of function
   //! ======================
-  Standard_EXPORT void Validate(occ::handle<TFunction_Logbook>& theLog) const override;
+  Standard_EXPORT void Validate(const occ::handle<TFunction_Logbook>& theLog) const override;
 
   //! Analyse in <log> if the loaded function must be executed
   //! (i.e.arguments are modified) or not.

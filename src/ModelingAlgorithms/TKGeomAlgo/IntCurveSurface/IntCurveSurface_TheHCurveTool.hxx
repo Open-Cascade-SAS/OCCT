@@ -165,6 +165,23 @@ public:
                                        const double                        U0,
                                        const double                        U1);
 
+  //! Returns sample parameters for the curve within [U0, U1] range,
+  //! computed based on deflection and minimum number of points.
+  //! @param[in] C the curve adaptor
+  //! @param[in] U0 start parameter
+  //! @param[in] U1 end parameter
+  //! @param[in] Defl deflection tolerance
+  //! @param[in] NbMin minimum number of sample points
+  //! @return array of sample parameter values
+  [[nodiscard]] Standard_EXPORT static occ::handle<NCollection_HArray1<double>> SamplePars(
+    const occ::handle<Adaptor3d_Curve>& C,
+    const double                        U0,
+    const double                        U1,
+    const double                        Defl,
+    const int                           NbMin);
+
+  //! @deprecated Use SamplePars() returning handle by value instead.
+  Standard_DEPRECATED("Use SamplePars() returning handle by value instead")
   Standard_EXPORT static void SamplePars(const occ::handle<Adaptor3d_Curve>&       C,
                                          const double                              U0,
                                          const double                              U1,

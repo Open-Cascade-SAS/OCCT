@@ -821,13 +821,19 @@ int FilletSurf_InternalBuilder::NbSection(const int IndexSurf) const
 //           IndexSec  of  SurfaceFillet(IndexSurf)  (The   basis curve  of the
 //           trimmed curve is a Geom_Circle)
 //=======================================================================
-void FilletSurf_InternalBuilder::Section(const int                       IndexSurf,
-                                         const int                       IndexSec,
-                                         occ::handle<Geom_TrimmedCurve>& Circ) const
+occ::handle<Geom_TrimmedCurve> FilletSurf_InternalBuilder::Section(const int IndexSurf,
+                                                                   const int IndexSec) const
 {
   gp_Circ c;
   double  deb, fin;
   Sect(1, IndexSurf)->Value(IndexSec).Get(c, deb, fin);
   occ::handle<Geom_Circle> Gc = new Geom_Circle(c);
-  Circ                        = new Geom_TrimmedCurve(Gc, deb, fin);
+  return new Geom_TrimmedCurve(Gc, deb, fin);
+}
+
+void FilletSurf_InternalBuilder::Section(const int                       IndexSurf,
+                                         const int                       IndexSec,
+                                         occ::handle<Geom_TrimmedCurve>& Circ) const
+{
+  Circ = Section(IndexSurf, IndexSec);
 }

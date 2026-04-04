@@ -49,7 +49,7 @@ public:
                             const occ::handle<StepBasic_LengthMeasureWithUnit>& theMaxTol,
                             const StepDimTol_GeometricToleranceType             theType);
 
-  inline void SetMaxTolerance(occ::handle<StepBasic_LengthMeasureWithUnit>& theMaxTol)
+  inline void SetMaxTolerance(const occ::handle<StepBasic_LengthMeasureWithUnit>& theMaxTol)
   {
     myMaxTol = theMaxTol;
   }

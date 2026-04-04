@@ -80,11 +80,11 @@ void TopOpeBRepDS_Curve::SetSCI(const occ::handle<TopOpeBRepDS_Interference>& SC
 
 //=================================================================================================
 
-void TopOpeBRepDS_Curve::GetSCI(occ::handle<TopOpeBRepDS_Interference>& SCI1,
-                                occ::handle<TopOpeBRepDS_Interference>& SCI2) const
+void TopOpeBRepDS_Curve::GetSCI(occ::handle<TopOpeBRepDS_Interference>& theI1,
+                                occ::handle<TopOpeBRepDS_Interference>& theI2) const
 {
-  SCI1 = mySCI1;
-  SCI2 = mySCI2;
+  theI1 = GetSCI1();
+  theI2 = GetSCI2();
 }
 
 //=================================================================================================

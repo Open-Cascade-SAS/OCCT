@@ -91,10 +91,10 @@ bool ShapeFix_FreeBounds::Perform()
   if (myCloseToler > mySewToler)
   {
     ShapeExtend_Explorer                             see;
-    occ::handle<NCollection_HSequence<TopoDS_Shape>> newwires,
-      open = see.SeqFromCompound(myEdges, false);
+    occ::handle<NCollection_HSequence<TopoDS_Shape>> open = see.SeqFromCompound(myEdges, false);
     NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> vertices;
-    ShapeAnalysis_FreeBounds::ConnectWiresToWires(open, myCloseToler, myShared, newwires, vertices);
+    occ::handle<NCollection_HSequence<TopoDS_Shape>> newwires =
+      ShapeAnalysis_FreeBounds::ConnectWiresToWires(open, myCloseToler, myShared, vertices);
     myEdges.Nullify();
     ShapeAnalysis_FreeBounds::DispatchWires(newwires, myWires, myEdges);
 

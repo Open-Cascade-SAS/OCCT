@@ -41,7 +41,7 @@ DNaming_BoxDriver::DNaming_BoxDriver() = default;
 // function : Validate
 // purpose  : Validates labels of a function in <log>.
 //=======================================================================
-void DNaming_BoxDriver::Validate(occ::handle<TFunction_Logbook>&) const {}
+void DNaming_BoxDriver::Validate(const occ::handle<TFunction_Logbook>&) const {}
 
 //=======================================================================
 // function : MustExecute

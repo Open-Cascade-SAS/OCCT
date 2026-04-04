@@ -25,10 +25,10 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
+#include <Vrml_Material.hxx>
 
 class VrmlConverter_Drawer;
 class VrmlConverter_Projector;
-class Vrml_Material;
 class TopoDS_Shape;
 class TDocStd_Document;
 
@@ -66,33 +66,44 @@ public:
   //! defined through the VrmlAPI_RepresentationOfShape enumeration.
   Standard_EXPORT void SetRepresentation(const VrmlAPI_RepresentationOfShape aRep);
 
-  //! Set transparency to given material
-  Standard_EXPORT void SetTransparencyToMaterial(occ::handle<Vrml_Material>& aMaterial,
-                                                 const double                aTransparency);
-
-  Standard_EXPORT void SetShininessToMaterial(occ::handle<Vrml_Material>& aMaterial,
-                                              const double                aShininess);
-
-  Standard_EXPORT void SetAmbientColorToMaterial(
-    occ::handle<Vrml_Material>&                             aMaterial,
-    const occ::handle<NCollection_HArray1<Quantity_Color>>& Color);
-
-  Standard_EXPORT void SetDiffuseColorToMaterial(
-    occ::handle<Vrml_Material>&                             aMaterial,
-    const occ::handle<NCollection_HArray1<Quantity_Color>>& Color);
-
-  Standard_EXPORT void SetSpecularColorToMaterial(
-    occ::handle<Vrml_Material>&                             aMaterial,
-    const occ::handle<NCollection_HArray1<Quantity_Color>>& Color);
-
-  Standard_EXPORT void SetEmissiveColorToMaterial(
-    occ::handle<Vrml_Material>&                             aMaterial,
-    const occ::handle<NCollection_HArray1<Quantity_Color>>& Color);
-
   //! Returns the representation of the shape which is
   //! written to the VRML file. Types of representation are set through the
   //! VrmlAPI_RepresentationOfShape enumeration.
   Standard_EXPORT VrmlAPI_RepresentationOfShape GetRepresentation() const;
+
+  //! @deprecated Call Vrml_Material::SetTransparency() directly instead.
+  Standard_DEPRECATED("Call Vrml_Material::SetTransparency() directly instead")
+  Standard_EXPORT void SetTransparencyToMaterial(occ::handle<Vrml_Material>& aMaterial,
+                                                 const double                aTransparency);
+
+  //! @deprecated Call Vrml_Material::SetShininess() directly instead.
+  Standard_DEPRECATED("Call Vrml_Material::SetShininess() directly instead")
+  Standard_EXPORT void SetShininessToMaterial(occ::handle<Vrml_Material>& aMaterial,
+                                              const double                aShininess);
+
+  //! @deprecated Call Vrml_Material::SetAmbientColor() directly instead.
+  Standard_DEPRECATED("Call Vrml_Material::SetAmbientColor() directly instead")
+  Standard_EXPORT void SetAmbientColorToMaterial(
+    occ::handle<Vrml_Material>&                             aMaterial,
+    const occ::handle<NCollection_HArray1<Quantity_Color>>& Color);
+
+  //! @deprecated Call Vrml_Material::SetDiffuseColor() directly instead.
+  Standard_DEPRECATED("Call Vrml_Material::SetDiffuseColor() directly instead")
+  Standard_EXPORT void SetDiffuseColorToMaterial(
+    occ::handle<Vrml_Material>&                             aMaterial,
+    const occ::handle<NCollection_HArray1<Quantity_Color>>& Color);
+
+  //! @deprecated Call Vrml_Material::SetSpecularColor() directly instead.
+  Standard_DEPRECATED("Call Vrml_Material::SetSpecularColor() directly instead")
+  Standard_EXPORT void SetSpecularColorToMaterial(
+    occ::handle<Vrml_Material>&                             aMaterial,
+    const occ::handle<NCollection_HArray1<Quantity_Color>>& Color);
+
+  //! @deprecated Call Vrml_Material::SetEmissiveColor() directly instead.
+  Standard_DEPRECATED("Call Vrml_Material::SetEmissiveColor() directly instead")
+  Standard_EXPORT void SetEmissiveColorToMaterial(
+    occ::handle<Vrml_Material>&                             aMaterial,
+    const occ::handle<NCollection_HArray1<Quantity_Color>>& Color);
 
   Standard_EXPORT occ::handle<Vrml_Material> GetFrontMaterial() const;
 

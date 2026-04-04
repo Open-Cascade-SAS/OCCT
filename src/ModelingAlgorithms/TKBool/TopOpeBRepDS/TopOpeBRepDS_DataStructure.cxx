@@ -135,8 +135,8 @@ void TopOpeBRepDS_DataStructure::RemoveCurve(const int I)
 
   TopoDS_Shape S1, S2;
   C.GetShapes(S1, S2);
-  occ::handle<TopOpeBRepDS_Interference> I1, I2;
-  C.GetSCI(I1, I2);
+  const occ::handle<TopOpeBRepDS_Interference>& I1 = C.GetSCI1();
+  const occ::handle<TopOpeBRepDS_Interference>& I2 = C.GetSCI2();
   if (!I1.IsNull())
     RemoveShapeInterference(S1, I1);
   if (!I2.IsNull())

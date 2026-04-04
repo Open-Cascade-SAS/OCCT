@@ -62,67 +62,67 @@ bool TPrsStd_ConstraintDriver::Update(const TDF_Label&                    aLabel
   switch (thetype)
   {
     case TDataXtd_DISTANCE: {
-      TPrsStd_ConstraintTools::ComputeDistance(apConstraint, anAIS);
+      anAIS = TPrsStd_ConstraintTools::ComputeDistance(apConstraint);
       break;
     }
     case TDataXtd_PARALLEL: {
-      TPrsStd_ConstraintTools::ComputeParallel(apConstraint, anAIS);
+      anAIS = TPrsStd_ConstraintTools::ComputeParallel(apConstraint);
       break;
     }
     case TDataXtd_PERPENDICULAR: {
-      TPrsStd_ConstraintTools::ComputePerpendicular(apConstraint, anAIS);
+      anAIS = TPrsStd_ConstraintTools::ComputePerpendicular(apConstraint);
       break;
     }
     case TDataXtd_CONCENTRIC: {
-      TPrsStd_ConstraintTools::ComputeConcentric(apConstraint, anAIS);
+      anAIS = TPrsStd_ConstraintTools::ComputeConcentric(apConstraint);
       break;
     }
     case TDataXtd_SYMMETRY: {
-      TPrsStd_ConstraintTools::ComputeSymmetry(apConstraint, anAIS);
+      anAIS = TPrsStd_ConstraintTools::ComputeSymmetry(apConstraint);
       break;
     }
     case TDataXtd_MIDPOINT: {
-      TPrsStd_ConstraintTools::ComputeMidPoint(apConstraint, anAIS);
+      anAIS = TPrsStd_ConstraintTools::ComputeMidPoint(apConstraint);
       break;
     }
     case TDataXtd_TANGENT: {
-      TPrsStd_ConstraintTools::ComputeTangent(apConstraint, anAIS);
+      anAIS = TPrsStd_ConstraintTools::ComputeTangent(apConstraint);
       break;
     }
     case TDataXtd_ANGLE: {
-      TPrsStd_ConstraintTools::ComputeAngle(apConstraint, anAIS);
+      anAIS = TPrsStd_ConstraintTools::ComputeAngle(apConstraint);
       break;
     }
     case TDataXtd_RADIUS: {
-      TPrsStd_ConstraintTools::ComputeRadius(apConstraint, anAIS);
+      anAIS = TPrsStd_ConstraintTools::ComputeRadius(apConstraint);
       break;
     }
     case TDataXtd_MINOR_RADIUS: {
-      TPrsStd_ConstraintTools::ComputeMinRadius(apConstraint, anAIS);
+      anAIS = TPrsStd_ConstraintTools::ComputeMinRadius(apConstraint);
       break;
     }
     case TDataXtd_MAJOR_RADIUS: {
-      TPrsStd_ConstraintTools::ComputeMaxRadius(apConstraint, anAIS);
+      anAIS = TPrsStd_ConstraintTools::ComputeMaxRadius(apConstraint);
       break;
     }
     case TDataXtd_DIAMETER: {
-      TPrsStd_ConstraintTools::ComputeDiameter(apConstraint, anAIS);
+      anAIS = TPrsStd_ConstraintTools::ComputeDiameter(apConstraint);
       break;
     }
     case TDataXtd_FIX: {
-      TPrsStd_ConstraintTools::ComputeFix(apConstraint, anAIS);
+      anAIS = TPrsStd_ConstraintTools::ComputeFix(apConstraint);
       break;
     }
     case TDataXtd_OFFSET: {
-      TPrsStd_ConstraintTools::ComputeOffset(apConstraint, anAIS);
+      anAIS = TPrsStd_ConstraintTools::ComputeOffset(apConstraint);
       break;
     }
     case TDataXtd_COINCIDENT: {
-      TPrsStd_ConstraintTools::ComputeCoincident(apConstraint, anAIS);
+      anAIS = TPrsStd_ConstraintTools::ComputeCoincident(apConstraint);
       break;
     }
     case TDataXtd_ROUND: {
-      TPrsStd_ConstraintTools::ComputeRound(apConstraint, anAIS);
+      anAIS = TPrsStd_ConstraintTools::ComputeRound(apConstraint);
       break;
     }
 
@@ -130,19 +130,19 @@ bool TPrsStd_ConstraintDriver::Update(const TDF_Label&                    aLabel
     case TDataXtd_ALIGN_FACES:
     case TDataXtd_ALIGN_AXES:
     case TDataXtd_AXES_ANGLE: {
-      TPrsStd_ConstraintTools::ComputePlacement(apConstraint, anAIS);
+      anAIS = TPrsStd_ConstraintTools::ComputePlacement(apConstraint);
       break;
     }
     case TDataXtd_EQUAL_DISTANCE: {
-      TPrsStd_ConstraintTools::ComputeEqualDistance(apConstraint, anAIS);
+      anAIS = TPrsStd_ConstraintTools::ComputeEqualDistance(apConstraint);
       break;
     }
     case TDataXtd_EQUAL_RADIUS: {
-      TPrsStd_ConstraintTools::ComputeEqualRadius(apConstraint, anAIS);
+      anAIS = TPrsStd_ConstraintTools::ComputeEqualRadius(apConstraint);
       break;
     }
     default: {
-      TPrsStd_ConstraintTools::ComputeOthers(apConstraint, anAIS);
+      anAIS = TPrsStd_ConstraintTools::ComputeOthers(apConstraint);
       break;
     }
   }

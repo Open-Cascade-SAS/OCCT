@@ -4066,7 +4066,7 @@ static bool IsInOut(BRepTopAdaptor_FClass2d&   FC,
 void BRepOffset_Tool::CorrectOrientation(
   const TopoDS_Shape&                                                  SI,
   const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& NewEdges,
-  occ::handle<BRepAlgo_AsDes>&                                         AsDes,
+  const occ::handle<BRepAlgo_AsDes>&                                   AsDes,
   BRepAlgo_Image&                                                      InitOffset,
   const double                                                         Offset)
 {

@@ -131,6 +131,16 @@ void BRepGProp_MeshCinert::Perform(const NCollection_Array1<gp_Pnt>& theNodes)
 
 //=================================================================================================
 
+occ::handle<NCollection_HArray1<gp_Pnt>> BRepGProp_MeshCinert::PreparePolygon(
+  const TopoDS_Edge& theE)
+{
+  occ::handle<NCollection_HArray1<gp_Pnt>> thePolyg;
+  PreparePolygon(theE, thePolyg);
+  return thePolyg;
+}
+
+//=================================================================================================
+
 void BRepGProp_MeshCinert::PreparePolygon(const TopoDS_Edge&                        theE,
                                           occ::handle<NCollection_HArray1<gp_Pnt>>& thePolyg)
 {

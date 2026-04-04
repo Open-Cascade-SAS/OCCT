@@ -644,6 +644,16 @@ static void GetCurveKnots(const double                              theMin,
 
 //=================================================================================================
 
+occ::handle<NCollection_HArray1<double>> BRepGProp_Face::GetUKnots(const double theUMin,
+                                                                   const double theUMax) const
+{
+  occ::handle<NCollection_HArray1<double>> theUKnots;
+  GetUKnots(theUMin, theUMax, theUKnots);
+  return theUKnots;
+}
+
+//=================================================================================================
+
 void BRepGProp_Face::GetUKnots(const double                              theUMin,
                                const double                              theUMax,
                                occ::handle<NCollection_HArray1<double>>& theUKnots) const
@@ -701,6 +711,16 @@ void BRepGProp_Face::GetUKnots(const double                              theUMin
     theUKnots->SetValue(1, theUMin);
     theUKnots->SetValue(2, theUMax);
   }
+}
+
+//=================================================================================================
+
+occ::handle<NCollection_HArray1<double>> BRepGProp_Face::GetTKnots(const double theTMin,
+                                                                   const double theTMax) const
+{
+  occ::handle<NCollection_HArray1<double>> theTKnots;
+  GetTKnots(theTMin, theTMax, theTKnots);
+  return theTKnots;
 }
 
 //=================================================================================================

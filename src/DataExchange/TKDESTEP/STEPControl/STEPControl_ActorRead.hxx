@@ -88,8 +88,8 @@ public:
 
   //! reset units and tolerances context to default
   //! (mm, radians, read.precision.val, etc.)
-  Standard_EXPORT void ResetUnits(occ::handle<StepData_StepModel>& theModel,
-                                  StepData_Factors&                theLocalFactors);
+  Standard_EXPORT void ResetUnits(const occ::handle<StepData_StepModel>& theModel,
+                                  StepData_Factors&                      theLocalFactors);
 
   //! Set model
   Standard_EXPORT void SetModel(const occ::handle<Interface_InterfaceModel>& theModel);

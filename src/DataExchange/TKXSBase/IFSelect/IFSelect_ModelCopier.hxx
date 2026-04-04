@@ -167,6 +167,18 @@ public:
   //! <WL> performs the copy by using <TC>
   //! <TC> is assumed to have been defined with the starting model
   //! same as defined by <G>.
+  //! Produces a model copied from the remaining list.
+  //! @param[in] G the interface graph
+  //! @param[in] WL the work library performing the copy
+  //! @param[in,out] TC the copy tool
+  //! @return the new model with remaining data, or null handle if empty
+  [[nodiscard]] Standard_EXPORT occ::handle<Interface_InterfaceModel> CopiedRemaining(
+    const Interface_Graph&                   G,
+    const occ::handle<IFSelect_WorkLibrary>& WL,
+    Interface_CopyTool&                      TC);
+
+  //! @deprecated Use CopiedRemaining() returning handle by value instead.
+  Standard_DEPRECATED("Use CopiedRemaining() returning handle by value instead")
   Standard_EXPORT void CopiedRemaining(const Interface_Graph&                   G,
                                        const occ::handle<IFSelect_WorkLibrary>& WL,
                                        Interface_CopyTool&                      TC,

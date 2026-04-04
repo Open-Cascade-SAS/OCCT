@@ -1180,18 +1180,25 @@ gp_XYZ Plate_Plate::EvaluateDerivative(const gp_XY& point2d, const int iu, const
 // the polynomial part of the Plate function
 //=======================================================================
 
-void Plate_Plate::CoefPol(occ::handle<NCollection_HArray2<gp_XYZ>>& Coefs) const
+occ::handle<NCollection_HArray2<gp_XYZ>> Plate_Plate::CoefPol() const
 {
-  Coefs = new NCollection_HArray2<gp_XYZ>(0, order - 1, 0, order - 1, gp_XYZ(0., 0., 0.));
+  occ::handle<NCollection_HArray2<gp_XYZ>> aCoefs =
+    new NCollection_HArray2<gp_XYZ>(0, order - 1, 0, order - 1, gp_XYZ(0., 0., 0.));
   int i = n_el;
   for (int iu = 0; iu < order; iu++)
     for (int iv = 0; iu + iv < order; iv++)
     {
-      Coefs->ChangeValue(iu, iv) = Solution(i) * ddu[iu] * ddv[iv];
+      aCoefs->ChangeValue(iu, iv) = Solution(i) * ddu[iu] * ddv[iv];
       // Coefs->ChangeValue(idu,idv) = Solution(i);
       //  it is necessary to reset this line if one remove factors in method Polm.
       i++;
     }
+  return aCoefs;
+}
+
+void Plate_Plate::CoefPol(occ::handle<NCollection_HArray2<gp_XYZ>>& Coefs) const
+{
+  Coefs = CoefPol();
 }
 
 //=======================================================================

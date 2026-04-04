@@ -440,7 +440,7 @@ int FEmTool_Assembly::NbGlobVar() const
 void FEmTool_Assembly::GetAssemblyTable(
   occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<int>>>>& AssTable) const
 {
-  AssTable = myRefTable;
+  AssTable = AssemblyTable();
 }
 
 void FEmTool_Assembly::ResetConstraint()

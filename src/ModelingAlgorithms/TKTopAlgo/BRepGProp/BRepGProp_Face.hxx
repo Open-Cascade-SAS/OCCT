@@ -134,6 +134,15 @@ public:
   //! then theUMin and lower then theUMax in increasing order.
   //! If the face is not a BSpline, the array initialized with
   //! theUMin and theUMax only.
+  //! @param[in] theUMin lower U bound
+  //! @param[in] theUMax upper U bound
+  //! @return array of U knot values
+  [[nodiscard]] Standard_EXPORT occ::handle<NCollection_HArray1<double>> GetUKnots(
+    const double theUMin,
+    const double theUMax) const;
+
+  //! @deprecated Use GetUKnots() returning handle by value instead.
+  Standard_DEPRECATED("Use GetUKnots() returning handle by value instead")
   Standard_EXPORT void GetUKnots(const double                              theUMin,
                                  const double                              theUMax,
                                  occ::handle<NCollection_HArray1<double>>& theUKnots) const;
@@ -147,6 +156,15 @@ public:
   //! theTMin and lower then theTMax in increasing order.
   //! If the face is not a BSpline, the array initialized with
   //! theTMin and theTMax only.
+  //! @param[in] theTMin lower T bound
+  //! @param[in] theTMax upper T bound
+  //! @return array of T knot values
+  [[nodiscard]] Standard_EXPORT occ::handle<NCollection_HArray1<double>> GetTKnots(
+    const double theTMin,
+    const double theTMax) const;
+
+  //! @deprecated Use GetTKnots() returning handle by value instead.
+  Standard_DEPRECATED("Use GetTKnots() returning handle by value instead")
   Standard_EXPORT void GetTKnots(const double                              theTMin,
                                  const double                              theTMax,
                                  occ::handle<NCollection_HArray1<double>>& theTKnots) const;

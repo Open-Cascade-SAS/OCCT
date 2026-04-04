@@ -58,7 +58,7 @@ DNaming_PrismDriver::DNaming_PrismDriver() = default;
 // function : Validate
 // purpose  : Validates labels of a function in <theLog>.
 //=======================================================================
-void DNaming_PrismDriver::Validate(occ::handle<TFunction_Logbook>&) const {}
+void DNaming_PrismDriver::Validate(const occ::handle<TFunction_Logbook>&) const {}
 
 //=======================================================================
 // function : MustExecute

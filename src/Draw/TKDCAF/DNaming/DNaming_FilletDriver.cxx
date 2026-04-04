@@ -47,7 +47,7 @@ DNaming_FilletDriver::DNaming_FilletDriver() = default;
 // function : Validate
 // purpose  : Validates labels of a function in <log>.
 //=======================================================================
-void DNaming_FilletDriver::Validate(occ::handle<TFunction_Logbook>&) const {}
+void DNaming_FilletDriver::Validate(const occ::handle<TFunction_Logbook>&) const {}
 
 //=======================================================================
 // function : MustExecute

@@ -50,12 +50,18 @@ public:
   Standard_EXPORT void SetSCI(const occ::handle<TopOpeBRepDS_Interference>& I1,
                               const occ::handle<TopOpeBRepDS_Interference>& I2);
 
+  //! Returns the first surface-curve interference.
+  //! @return handle to the first interference
   Standard_EXPORT const occ::handle<TopOpeBRepDS_Interference>& GetSCI1() const;
 
+  //! Returns the second surface-curve interference.
+  //! @return handle to the second interference
   Standard_EXPORT const occ::handle<TopOpeBRepDS_Interference>& GetSCI2() const;
 
-  Standard_EXPORT void GetSCI(occ::handle<TopOpeBRepDS_Interference>& I1,
-                              occ::handle<TopOpeBRepDS_Interference>& I2) const;
+  //! @deprecated Use GetSCI1() and GetSCI2() instead.
+  Standard_DEPRECATED("Use GetSCI1() and GetSCI2() instead")
+  Standard_EXPORT void GetSCI(occ::handle<TopOpeBRepDS_Interference>& theI1,
+                              occ::handle<TopOpeBRepDS_Interference>& theI2) const;
 
   Standard_EXPORT void SetShapes(const TopoDS_Shape& S1, const TopoDS_Shape& S2);
 

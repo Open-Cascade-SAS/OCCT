@@ -114,14 +114,38 @@ public:
   //! adjacent edges share the same vertex.
   //! If <shared> is False connection is performed only when
   //! ends of adjacent edges are at distance less than <toler>.
+  //! Connects edges from the given sequence into wires.
+  //! @param[in] edges the sequence of edges to connect
+  //! @param[in] toler distance tolerance for connection
+  //! @param[in] shared if true, connection uses shared vertices only
+  //! @return sequence of resulting wires
+  [[nodiscard]] Standard_EXPORT static occ::handle<NCollection_HSequence<TopoDS_Shape>>
+    ConnectEdgesToWires(const occ::handle<NCollection_HSequence<TopoDS_Shape>>& edges,
+                        const double                                      toler,
+                        const bool                                        shared);
+
+  //! @deprecated Use ConnectEdgesToWires() returning handle by value instead.
+  Standard_DEPRECATED("Use ConnectEdgesToWires() returning handle by value instead")
   Standard_EXPORT static void ConnectEdgesToWires(
-    occ::handle<NCollection_HSequence<TopoDS_Shape>>& edges,
+    const occ::handle<NCollection_HSequence<TopoDS_Shape>>& edges,
     const double                                      toler,
     const bool                                        shared,
     occ::handle<NCollection_HSequence<TopoDS_Shape>>& wires);
 
+  //! Connects wires from the given sequence into longer wires.
+  //! @param[in] iwires the sequence of input wires
+  //! @param[in] toler distance tolerance for connection
+  //! @param[in] shared if true, connection uses shared vertices only
+  //! @return sequence of resulting wires
+  [[nodiscard]] Standard_EXPORT static occ::handle<NCollection_HSequence<TopoDS_Shape>>
+    ConnectWiresToWires(const occ::handle<NCollection_HSequence<TopoDS_Shape>>& iwires,
+                        const double                                      toler,
+                        const bool                                        shared);
+
+  //! @deprecated Use ConnectWiresToWires() returning handle by value instead.
+  Standard_DEPRECATED("Use ConnectWiresToWires() returning handle by value instead")
   Standard_EXPORT static void ConnectWiresToWires(
-    occ::handle<NCollection_HSequence<TopoDS_Shape>>& iwires,
+    const occ::handle<NCollection_HSequence<TopoDS_Shape>>& iwires,
     const double                                      toler,
     const bool                                        shared,
     occ::handle<NCollection_HSequence<TopoDS_Shape>>& owires);
@@ -139,8 +163,24 @@ public:
   //! ends of adjacent wires are at distance less than <toler>.
   //! Map <vertices> stores the correspondence between original
   //! end vertices of the wires and new connecting vertices.
+  //! Connects wires from the given sequence into longer wires.
+  //! Also fills the map of original to new connecting vertices.
+  //! @param[in] iwires the sequence of input wires
+  //! @param[in] toler distance tolerance for connection
+  //! @param[in] shared if true, connection uses shared vertices only
+  //! @param[out] vertices map of original vertices to new connecting vertices
+  //! @return sequence of resulting wires
+  [[nodiscard]] Standard_EXPORT static occ::handle<NCollection_HSequence<TopoDS_Shape>>
+    ConnectWiresToWires(
+      const occ::handle<NCollection_HSequence<TopoDS_Shape>>&                   iwires,
+      const double                                                              toler,
+      const bool                                                                shared,
+      NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& vertices);
+
+  //! @deprecated Use ConnectWiresToWires() returning handle by value instead.
+  Standard_DEPRECATED("Use ConnectWiresToWires() returning handle by value instead")
   Standard_EXPORT static void ConnectWiresToWires(
-    occ::handle<NCollection_HSequence<TopoDS_Shape>>&                         iwires,
+    const occ::handle<NCollection_HSequence<TopoDS_Shape>>&                   iwires,
     const double                                                              toler,
     const bool                                                                shared,
     occ::handle<NCollection_HSequence<TopoDS_Shape>>&                         owires,

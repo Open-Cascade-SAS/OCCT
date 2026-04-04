@@ -513,14 +513,14 @@ void IFSelect_ModelCopier::CopiedModel(const Interface_Graph&                   
   }
 }
 
-void IFSelect_ModelCopier::CopiedRemaining(const Interface_Graph&                   G,
-                                           const occ::handle<IFSelect_WorkLibrary>& WL,
-                                           Interface_CopyTool&                      TC,
-                                           occ::handle<Interface_InterfaceModel>&   newmod)
+occ::handle<Interface_InterfaceModel> IFSelect_ModelCopier::CopiedRemaining(
+  const Interface_Graph&                   G,
+  const occ::handle<IFSelect_WorkLibrary>& WL,
+  Interface_CopyTool&                      TC)
 {
   const occ::handle<Interface_InterfaceModel>& original = G.Model();
   //  Interface_CopyTool TC(original,protocol);
-  newmod = original->NewEmptyModel();
+  occ::handle<Interface_InterfaceModel> newmod = original->NewEmptyModel();
   TC.Clear();
   Interface_EntityIterator tocopy;
   int                      nb = G.Size();
@@ -567,6 +567,16 @@ void IFSelect_ModelCopier::CopiedRemaining(const Interface_Graph&               
       std::cout << "  -- Remaining data complete" << std::endl;
 #endif
   }
+
+  return newmod;
+}
+
+void IFSelect_ModelCopier::CopiedRemaining(const Interface_Graph&                   G,
+                                           const occ::handle<IFSelect_WorkLibrary>& WL,
+                                           Interface_CopyTool&                      TC,
+                                           occ::handle<Interface_InterfaceModel>&   newmod)
+{
+  newmod = CopiedRemaining(G, WL, TC);
 }
 
 bool IFSelect_ModelCopier::SetRemaining(Interface_Graph& CG) const

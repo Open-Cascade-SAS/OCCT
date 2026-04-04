@@ -642,8 +642,7 @@ static int blend1(Draw_Interpretor& di, int narg, const char** a)
         int s = aRakk.NbSection(i);
         for (j = 1; j <= s; j++)
         {
-          occ::handle<Geom_TrimmedCurve> Sec;
-          aRakk.Section(i, j, Sec);
+          const occ::handle<Geom_TrimmedCurve> Sec = aRakk.Section(i, j);
           Sprintf(localname, "%s%d%d", "sec", i, j);
           temp = localname;
           DrawTrSurf::Set(temp, Sec);

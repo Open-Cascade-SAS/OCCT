@@ -46,22 +46,35 @@ public:
   //! Constructs an infinite line.
   const occ::handle<Geom_Line>& Line() const { return myComponent; }
 
+  //! Returns the starting point of the line set by SetPoints.
+  //! @return handle to the start point
+  const occ::handle<Geom_Point>& StartPoint() const { return myStartPoint; }
+
+  //! Returns the end point of the line set by SetPoints.
+  //! @return handle to the end point
+  const occ::handle<Geom_Point>& EndPoint() const { return myEndPoint; }
+
   //! Returns the starting point thePStart and the end point thePEnd of the line set by SetPoints.
+  //! @deprecated Use StartPoint() and EndPoint() instead.
+  Standard_DEPRECATED("Use StartPoint() and EndPoint() instead")
   void Points(occ::handle<Geom_Point>& thePStart, occ::handle<Geom_Point>& thePEnd) const
   {
-    thePStart = myStartPoint;
-    thePEnd   = myEndPoint;
+    thePStart = StartPoint();
+    thePEnd   = EndPoint();
   }
 
-  //! instantiates an infinite line.
+  //! Sets the infinite line.
+  //! @param[in] theLine the geometric line
   void SetLine(const occ::handle<Geom_Line>& theLine)
   {
     myComponent     = theLine;
     myLineIsSegment = false;
   }
 
-  //! Sets the starting point thePStart and ending point thePEnd of the
+  //! Sets the starting point and ending point of the
   //! infinite line to create a finite line segment.
+  //! @param[in] thePStart the starting point
+  //! @param[in] thePEnd the ending point
   void SetPoints(const occ::handle<Geom_Point>& thePStart, const occ::handle<Geom_Point>& thePEnd)
   {
     myStartPoint    = thePStart;

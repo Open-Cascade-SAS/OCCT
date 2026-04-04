@@ -1471,7 +1471,7 @@ void AppDef_Variational::Optimization(occ::handle<AppDef_SmoothCriterion>& J,
 
   int el, dim;
 
-  A.GetAssemblyTable(AssTable);
+  AssTable = A.AssemblyTable();
   int NbConstr = myNbPassPoints + myNbTangPoints + myNbCurvPoints;
 
   double CBLONG = J->EstLength();

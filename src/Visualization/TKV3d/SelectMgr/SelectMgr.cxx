@@ -220,8 +220,7 @@ void SelectMgr::ComputeSensitivePrs(const occ::handle<Graphic3d_Structure>&     
     else if (occ::handle<Select3D_SensitiveFace> aFace =
                occ::down_cast<Select3D_SensitiveFace>(anEnt))
     {
-      occ::handle<NCollection_HArray1<gp_Pnt>> aSensPnts;
-      aFace->GetPoints(aSensPnts);
+      const occ::handle<NCollection_HArray1<gp_Pnt>> aSensPnts = aFace->GetPoints();
       occ::handle<NCollection_HSequence<gp_Pnt>> aPoints = new NCollection_HSequence<gp_Pnt>();
       for (NCollection_HArray1<gp_Pnt>::Iterator aPntIter(*aSensPnts); aPntIter.More();
            aPntIter.Next())

@@ -43,7 +43,9 @@ Interface_IntList::Interface_IntList(const Interface_IntList& other, const bool 
 {
   thenbe = other.NbEntities();
   thenum = thecount = therank = 0; // szv#4:S4163:12Mar99 initialization needed
-  other.Internals(thenbr, theents, therefs);
+  thenbr  = other.NbReferences();
+  theents = other.Entities();
+  therefs = other.References();
   if (copied)
   {
     int                                   i;
@@ -67,6 +69,21 @@ void Interface_IntList::Initialize(const int nbe)
   thenbr = thenum = thecount = therank = 0;
   theents                              = new NCollection_HArray1<int>(0, nbe);
   theents->Init(0);
+}
+
+int Interface_IntList::NbReferences() const
+{
+  return thenbr;
+}
+
+const occ::handle<NCollection_HArray1<int>>& Interface_IntList::Entities() const
+{
+  return theents;
+}
+
+const occ::handle<NCollection_HArray1<int>>& Interface_IntList::References() const
+{
+  return therefs;
 }
 
 void Interface_IntList::Internals(int&                                   nbrefs,

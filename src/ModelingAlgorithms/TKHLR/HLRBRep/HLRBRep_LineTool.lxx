@@ -205,17 +205,25 @@ inline int HLRBRep_LineTool::NbSamples(const gp_Lin&, const double, const double
   return 3;
 }
 
-// modified by NIZHNY-MKK  Tue Nov  1 18:49:28 2005
-inline void HLRBRep_LineTool::SamplePars(const gp_Lin&,
-                                         const double U0,
-                                         const double U1,
-                                         const double,
-                                         const int,
+inline occ::handle<NCollection_HArray1<double>> HLRBRep_LineTool::SamplePars(const gp_Lin&,
+                                                                              const double U0,
+                                                                              const double U1,
+                                                                              const double,
+                                                                              const int)
+{
+  occ::handle<NCollection_HArray1<double>> aPars = new NCollection_HArray1<double>(1, 3);
+  aPars->SetValue(1, U0);
+  aPars->SetValue(2, (U0 + U1) * 0.5);
+  aPars->SetValue(3, U1);
+  return aPars;
+}
+
+inline void HLRBRep_LineTool::SamplePars(const gp_Lin&                             C,
+                                         const double                              U0,
+                                         const double                              U1,
+                                         const double                              Defl,
+                                         const int                                 NbMin,
                                          occ::handle<NCollection_HArray1<double>>& Pars)
 {
-
-  Pars = new NCollection_HArray1<double>(1, 3);
-  Pars->SetValue(1, U0);
-  Pars->SetValue(2, (U0 + U1) * 0.5);
-  Pars->SetValue(3, U1);
+  Pars = SamplePars(C, U0, U1, Defl, NbMin);
 }
