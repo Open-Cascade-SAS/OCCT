@@ -53,7 +53,7 @@ static int DDocStd_ListDocuments(Draw_Interpretor& di, int nb, const char** /*a*
     int                              nbdoc = A->NbDocuments();
     for (int i = 1; i <= nbdoc; i++)
     {
-      A->GetDocument(i, D);
+      D = A->GetDocument(i);
       di << "document " << i;
       if (D->IsSaved())
       {

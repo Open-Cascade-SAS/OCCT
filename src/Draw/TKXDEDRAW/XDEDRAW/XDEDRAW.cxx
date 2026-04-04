@@ -154,7 +154,7 @@ static int saveDoc(Draw_Interpretor& di, int argc, const char** argv)
   {
     if (A->NbDocuments() < 1)
       return 1;
-    A->GetDocument(1, D);
+    D = A->GetDocument(1);
   }
   else
   {

@@ -329,11 +329,14 @@ Bnd_Box GeomBndLib_Surface::Box(double theTol) const
   return std::visit(
     [theTol](const auto& theEval) -> Bnd_Box {
       using T = std::decay_t<decltype(theEval)>;
-      if constexpr (!std::is_same_v<T, std::monostate>)
+      if constexpr (std::is_same_v<T, std::monostate>)
+      {
+        return Bnd_Box{};
+      }
+      else
       {
         return theEval.Box(theTol);
       }
-      return Bnd_Box{};
     },
     myEvaluator);
 }
@@ -349,11 +352,14 @@ Bnd_Box GeomBndLib_Surface::Box(double theUMin,
   return std::visit(
     [theUMin, theUMax, theVMin, theVMax, theTol](const auto& theEval) -> Bnd_Box {
       using T = std::decay_t<decltype(theEval)>;
-      if constexpr (!std::is_same_v<T, std::monostate>)
+      if constexpr (std::is_same_v<T, std::monostate>)
+      {
+        return Bnd_Box{};
+      }
+      else
       {
         return theEval.Box(theUMin, theUMax, theVMin, theVMax, theTol);
       }
-      return Bnd_Box{};
     },
     myEvaluator);
 }
@@ -370,11 +376,14 @@ Bnd_Box GeomBndLib_Surface::BoxOptimal(double theTol) const
   return std::visit(
     [theTol](const auto& theEval) -> Bnd_Box {
       using T = std::decay_t<decltype(theEval)>;
-      if constexpr (!std::is_same_v<T, std::monostate>)
+      if constexpr (std::is_same_v<T, std::monostate>)
+      {
+        return Bnd_Box{};
+      }
+      else
       {
         return theEval.BoxOptimal(theTol);
       }
-      return Bnd_Box{};
     },
     myEvaluator);
 }
@@ -390,11 +399,14 @@ Bnd_Box GeomBndLib_Surface::BoxOptimal(double theUMin,
   return std::visit(
     [theUMin, theUMax, theVMin, theVMax, theTol](const auto& theEval) -> Bnd_Box {
       using T = std::decay_t<decltype(theEval)>;
-      if constexpr (!std::is_same_v<T, std::monostate>)
+      if constexpr (std::is_same_v<T, std::monostate>)
+      {
+        return Bnd_Box{};
+      }
+      else
       {
         return theEval.BoxOptimal(theUMin, theUMax, theVMin, theVMax, theTol);
       }
-      return Bnd_Box{};
     },
     myEvaluator);
 }

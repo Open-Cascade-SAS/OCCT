@@ -274,6 +274,72 @@ public:
                                                      occ::handle<AIS_InteractiveObject>&     anAIS);
 
 private:
+  Standard_EXPORT static void computeDistanceImpl(const occ::handle<TDataXtd_Constraint>& aConst,
+                                                  occ::handle<AIS_InteractiveObject>&     anAIS);
+
+  Standard_EXPORT static void computeParallelImpl(const occ::handle<TDataXtd_Constraint>& aConst,
+                                                  occ::handle<AIS_InteractiveObject>&     anAIS);
+
+  Standard_EXPORT static void computeTangentImpl(const occ::handle<TDataXtd_Constraint>& aConst,
+                                                 occ::handle<AIS_InteractiveObject>&     anAIS);
+
+  Standard_EXPORT static void computePerpendicularImpl(
+    const occ::handle<TDataXtd_Constraint>& aConst,
+    occ::handle<AIS_InteractiveObject>&     anAIS);
+
+  Standard_EXPORT static void computeConcentricImpl(const occ::handle<TDataXtd_Constraint>& aConst,
+                                                    occ::handle<AIS_InteractiveObject>&     anAIS);
+
+  Standard_EXPORT static void computeSymmetryImpl(const occ::handle<TDataXtd_Constraint>& aConst,
+                                                  occ::handle<AIS_InteractiveObject>&     anAIS);
+
+  Standard_EXPORT static void computeMidPointImpl(const occ::handle<TDataXtd_Constraint>& aConst,
+                                                  occ::handle<AIS_InteractiveObject>&     anAIS);
+
+  Standard_EXPORT static void computeAngleImpl(const occ::handle<TDataXtd_Constraint>& aConst,
+                                               occ::handle<AIS_InteractiveObject>&     anAIS);
+
+  Standard_EXPORT static void computeRadiusImpl(const occ::handle<TDataXtd_Constraint>& aConst,
+                                                occ::handle<AIS_InteractiveObject>&     anAIS);
+
+  Standard_EXPORT static void computeMinRadiusImpl(const occ::handle<TDataXtd_Constraint>& aConst,
+                                                   occ::handle<AIS_InteractiveObject>&     anAIS);
+
+  Standard_EXPORT static void computeMaxRadiusImpl(const occ::handle<TDataXtd_Constraint>& aConst,
+                                                   occ::handle<AIS_InteractiveObject>&     anAIS);
+
+  Standard_EXPORT static void computeEqualDistanceImpl(
+    const occ::handle<TDataXtd_Constraint>& aConst,
+    occ::handle<AIS_InteractiveObject>&     anAIS);
+
+  Standard_EXPORT static void computeEqualRadiusImpl(const occ::handle<TDataXtd_Constraint>& aConst,
+                                                     occ::handle<AIS_InteractiveObject>&     anAIS);
+
+  Standard_EXPORT static void computeFixImpl(const occ::handle<TDataXtd_Constraint>& aConst,
+                                             occ::handle<AIS_InteractiveObject>&     anAIS);
+
+  Standard_EXPORT static void computeDiameterImpl(const occ::handle<TDataXtd_Constraint>& aConst,
+                                                  occ::handle<AIS_InteractiveObject>&     anAIS);
+
+  Standard_EXPORT static void computeOffsetImpl(const occ::handle<TDataXtd_Constraint>& aConst,
+                                                occ::handle<AIS_InteractiveObject>&     anAIS);
+
+  Standard_EXPORT static void computePlacementImpl(const occ::handle<TDataXtd_Constraint>& aConst,
+                                                   occ::handle<AIS_InteractiveObject>&     anAIS);
+
+  Standard_EXPORT static void computeCoincidentImpl(const occ::handle<TDataXtd_Constraint>& aConst,
+                                                    occ::handle<AIS_InteractiveObject>&     anAIS);
+
+  Standard_EXPORT static void computeRoundImpl(const occ::handle<TDataXtd_Constraint>& aConst,
+                                               occ::handle<AIS_InteractiveObject>&     anAIS);
+
+  Standard_EXPORT static void computeOthersImpl(const occ::handle<TDataXtd_Constraint>& aConst,
+                                                occ::handle<AIS_InteractiveObject>&     anAIS);
+
+  Standard_EXPORT static void computeAngleForOneFaceImpl(
+    const occ::handle<TDataXtd_Constraint>& aConst,
+    occ::handle<AIS_InteractiveObject>&     anAIS);
+
   Standard_EXPORT static void GetOneShape(const occ::handle<TDataXtd_Constraint>& aConst,
                                           TopoDS_Shape&                           aShape);
 

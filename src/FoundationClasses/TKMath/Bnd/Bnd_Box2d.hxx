@@ -64,18 +64,6 @@ public:
     double Ymax; //!< Maximum Y coordinate
   };
 
-  //! Creates an empty 2D bounding box.
-  //! The constructed box is qualified Void. Its gap is null.
-  constexpr Bnd_Box2d()
-      : Xmin(RealLast()),
-        Xmax(-RealLast()),
-        Ymin(RealLast()),
-        Ymax(-RealLast()),
-        Gap(0.),
-        Flags(VoidMask)
-  {
-  }
-
   //! Sets this bounding box so that it covers the whole 2D
   //! space, i.e. it is infinite in all directions.
   void SetWhole() noexcept { Flags = WholeMask; }
@@ -291,12 +279,12 @@ protected:
   };
 
 private:
-  double Xmin;
-  double Xmax;
-  double Ymin;
-  double Ymax;
-  double Gap;
-  int    Flags;
+  double Xmin  = RealLast();
+  double Xmax  = -RealLast();
+  double Ymin  = RealLast();
+  double Ymax  = -RealLast();
+  double Gap   = 0.0;
+  int    Flags = VoidMask;
 };
 
 #endif // _Bnd_Box2d_HeaderFile

@@ -648,22 +648,11 @@ occ::handle<NCollection_HArray1<double>> BRepGProp_Face::GetUKnots(const double 
                                                                    const double theUMax) const
 {
   occ::handle<NCollection_HArray1<double>> theUKnots;
-  GetUKnots(theUMin, theUMax, theUKnots);
-  return theUKnots;
-}
-
-//=================================================================================================
-
-void BRepGProp_Face::GetUKnots(const double                              theUMin,
-                               const double                              theUMax,
-                               occ::handle<NCollection_HArray1<double>>& theUKnots) const
-{
-  bool isSBSpline = mySurface.GetType() == GeomAbs_BSplineSurface;
-  bool isCBSpline = false;
+  bool                                     isSBSpline = mySurface.GetType() == GeomAbs_BSplineSurface;
+  bool                                     isCBSpline = false;
 
   if (!isSBSpline)
   {
-    // Check the basis curve of the surface of linear extrusion.
     if (mySurface.GetType() == GeomAbs_SurfaceOfExtrusion)
     {
       GeomAdaptor_Curve         aCurve;
@@ -676,12 +665,10 @@ void BRepGProp_Face::GetUKnots(const double                              theUMin
 
   if (myIsUseSpan && (isSBSpline || isCBSpline))
   {
-    // Using span decomposition for BSpline.
     occ::handle<NCollection_HArray1<double>> aKnots;
 
     if (isSBSpline)
     {
-      // Get U knots of BSpline surface.
       occ::handle<Geom_Surface>        aSurf = mySurface.GeomSurfaceOriginal();
       occ::handle<Geom_BSplineSurface> aBSplSurf;
 
@@ -690,8 +677,6 @@ void BRepGProp_Face::GetUKnots(const double                              theUMin
     }
     else
     {
-      // Get U knots of BSpline curve - basis curve of
-      // the surface of linear extrusion.
       GeomAdaptor_Curve              aCurve;
       occ::handle<Geom_Surface>      aSurf = mySurface.GeomSurfaceOriginal();
       occ::handle<Geom_BSplineCurve> aBSplCurve;
@@ -701,16 +686,24 @@ void BRepGProp_Face::GetUKnots(const double                              theUMin
       aKnots     = new NCollection_HArray1<double>(aBSplCurve->Knots());
     }
 
-    // Compute number of knots inside theUMin and theUMax.
     GetRealKnots(theUMin, theUMax, aKnots, theUKnots);
   }
   else
   {
-    // No span decomposition.
     theUKnots = new NCollection_HArray1<double>(1, 2);
     theUKnots->SetValue(1, theUMin);
     theUKnots->SetValue(2, theUMax);
   }
+  return theUKnots;
+}
+
+//=================================================================================================
+
+void BRepGProp_Face::GetUKnots(const double                              theUMin,
+                               const double                              theUMax,
+                               occ::handle<NCollection_HArray1<double>>& theUKnots) const
+{
+  theUKnots = GetUKnots(theUMin, theUMax);
 }
 
 //=================================================================================================
@@ -719,7 +712,24 @@ occ::handle<NCollection_HArray1<double>> BRepGProp_Face::GetTKnots(const double 
                                                                    const double theTMax) const
 {
   occ::handle<NCollection_HArray1<double>> theTKnots;
-  GetTKnots(theTMin, theTMax, theTKnots);
+  bool                                     isBSpline = mySurface.GetType() == GeomAbs_BSplineSurface;
+
+  if (myIsUseSpan && isBSpline)
+  {
+    occ::handle<NCollection_HArray1<double>> aSurfKnots;
+    occ::handle<Geom_Surface>                aSurf = mySurface.GeomSurfaceOriginal();
+    occ::handle<Geom_BSplineSurface>         aBSplSurf;
+
+    aBSplSurf  = occ::down_cast<Geom_BSplineSurface>(aSurf);
+    aSurfKnots = new NCollection_HArray1<double>(aBSplSurf->VKnots());
+    GetCurveKnots(theTMin, theTMax, myCurve, theTKnots);
+  }
+  else
+  {
+    theTKnots = new NCollection_HArray1<double>(1, 2);
+    theTKnots->SetValue(1, theTMin);
+    theTKnots->SetValue(2, theTMax);
+  }
   return theTKnots;
 }
 
@@ -729,30 +739,5 @@ void BRepGProp_Face::GetTKnots(const double                              theTMin
                                const double                              theTMax,
                                occ::handle<NCollection_HArray1<double>>& theTKnots) const
 {
-  bool isBSpline = mySurface.GetType() == GeomAbs_BSplineSurface;
-
-  if (myIsUseSpan && isBSpline)
-  {
-    // Using span decomposition for BSpline.
-    occ::handle<NCollection_HArray1<double>> aSurfKnots;
-
-    // Get V knots of BSpline surface.
-    occ::handle<Geom_Surface>        aSurf = mySurface.GeomSurfaceOriginal();
-    occ::handle<Geom_BSplineSurface> aBSplSurf;
-
-    aBSplSurf  = occ::down_cast<Geom_BSplineSurface>(aSurf);
-    aSurfKnots = new NCollection_HArray1<double>(aBSplSurf->VKnots());
-
-    //     occ::handle<NCollection_HArray1<double>> aCurveKnots;
-
-    //     GetCurveKnots(theTMin, theTMax, myCurve, aCurveKnots);
-    //    GetRealCurveKnots(aCurveKnots, aSurfKnots, myCurve, theTKnots);
-    GetCurveKnots(theTMin, theTMax, myCurve, theTKnots);
-  }
-  else
-  {
-    theTKnots = new NCollection_HArray1<double>(1, 2);
-    theTKnots->SetValue(1, theTMin);
-    theTKnots->SetValue(2, theTMax);
-  }
+  theTKnots = GetTKnots(theTMin, theTMax);
 }
