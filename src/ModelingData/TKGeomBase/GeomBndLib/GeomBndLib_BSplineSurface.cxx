@@ -147,8 +147,8 @@ Bnd_Box GeomBndLib_BSplineSurface::Box(double theUMin,
 
   // Out of geometry bounds: fall back to grid sampling.
   GeomAdaptor_Surface aGASurf(myGeom);
-  const int aNbUSamples = GeomBndLib_SamplingHelpers::ComputeNbUSamples(aGASurf, theUMin, theUMax);
-  const int aNbVSamples = GeomBndLib_SamplingHelpers::ComputeNbVSamples(aGASurf, theVMin, theVMax);
+  const int aNbUSamples = GeomBndLib_SamplingHelpers::ComputeNbUSamples(aGASurf);
+  const int aNbVSamples = GeomBndLib_SamplingHelpers::ComputeNbVSamples(aGASurf);
 
   NCollection_Array1<double> aUParams(1, aNbUSamples);
   NCollection_Array1<double> aVParams(1, aNbVSamples);
