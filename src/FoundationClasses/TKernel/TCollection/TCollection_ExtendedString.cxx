@@ -450,6 +450,41 @@ TCollection_ExtendedString TCollection_ExtendedString::Cat(const double theOther
 
 //=================================================================================================
 
+TCollection_ExtendedString TCollection_ExtendedString::Cat(const char theChar) const
+{
+  if (theChar == '\0')
+  {
+    return TCollection_ExtendedString(*this);
+  }
+  const char16_t             anExt = ToExtCharacter(theChar);
+  TCollection_ExtendedString aResult(myLength + 1, 0);
+  if (myLength > 0)
+  {
+    memcpy(aResult.myString, myString, myLength * sizeof(char16_t));
+  }
+  aResult.myString[myLength] = anExt;
+  return aResult;
+}
+
+//=================================================================================================
+
+TCollection_ExtendedString TCollection_ExtendedString::Cat(const char16_t theChar) const
+{
+  if (theChar == u'\0')
+  {
+    return TCollection_ExtendedString(*this);
+  }
+  TCollection_ExtendedString aResult(myLength + 1, 0);
+  if (myLength > 0)
+  {
+    memcpy(aResult.myString, myString, myLength * sizeof(char16_t));
+  }
+  aResult.myString[myLength] = theChar;
+  return aResult;
+}
+
+//=================================================================================================
+
 void TCollection_ExtendedString::ChangeAll(const char16_t theChar, const char16_t theNewChar)
 {
   for (int i = 0; i < myLength; i++)

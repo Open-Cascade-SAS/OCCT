@@ -307,6 +307,18 @@ public:
 
   TCollection_ExtendedString operator+(const double theOther) const { return Cat(theOther); }
 
+  //! Appends a single ASCII character to this string and returns a new string.
+  //! @param[in] theChar the ASCII character to append
+  Standard_EXPORT TCollection_ExtendedString Cat(const char theChar) const;
+
+  TCollection_ExtendedString operator+(const char theChar) const { return Cat(theChar); }
+
+  //! Appends a single extended (char16_t) character to this string and returns a new string.
+  //! @param[in] theChar the extended character to append
+  Standard_EXPORT TCollection_ExtendedString Cat(const char16_t theChar) const;
+
+  TCollection_ExtendedString operator+(const char16_t theChar) const { return Cat(theChar); }
+
   //! Appends the other extended string to this string and returns a new string.
   //!
   //! Example:
