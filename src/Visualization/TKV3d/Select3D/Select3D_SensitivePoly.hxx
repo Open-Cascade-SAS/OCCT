@@ -76,7 +76,7 @@ public:
   //! @return handle to array of 3D points
   [[nodiscard]] occ::handle<NCollection_HArray1<gp_Pnt>> Points3D() const
   {
-    int aSize = myPolyg.Size();
+    int                                      aSize = myPolyg.Size();
     occ::handle<NCollection_HArray1<gp_Pnt>> aHArrayOfPnt =
       new NCollection_HArray1<gp_Pnt>(1, aSize);
     for (int anIndex = 1; anIndex <= aSize; anIndex++)

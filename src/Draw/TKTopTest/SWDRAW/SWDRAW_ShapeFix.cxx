@@ -975,7 +975,7 @@ static int connectedges(Draw_Interpretor& di, int n, const char** a)
   TopExp_Explorer                                  aExpE(aSh1, TopAbs_EDGE);
   occ::handle<NCollection_HSequence<TopoDS_Shape>> aSeqEdges =
     new NCollection_HSequence<TopoDS_Shape>;
-  occ::handle<NCollection_HSequence<TopoDS_Shape>> aSeqWires;
+  occ::handle<NCollection_HSequence<TopoDS_Shape>>              aSeqWires;
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aMapEdges;
   for (; aExpE.More(); aExpE.Next())
   {

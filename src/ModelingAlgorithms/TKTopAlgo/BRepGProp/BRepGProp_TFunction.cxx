@@ -56,9 +56,9 @@ bool BRepGProp_TFunction::Value(const double X, double& F)
 {
   const double tolU = 1.e-9;
 
-  gp_Pnt2d                                 aP2d;
-  gp_Vec2d                                 aV2d;
-  double                                   aUMax;
+  gp_Pnt2d aP2d;
+  gp_Vec2d aV2d;
+  double   aUMax;
 
   mySurface.D12d(X, aP2d, aV2d);
   aUMax = aP2d.X();

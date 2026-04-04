@@ -569,7 +569,7 @@ void BOPAlgo_PaveFiller::PerformEE(const Message_ProgressRange& theRange)
     int aNbV = aMVCPB.Extent();
     for (i = 1; i <= aNbV; ++i)
     {
-      const BOPDS_CoupleOfPaveBlocks& aCPB = aMVCPB.FindFromIndex(i);
+      const BOPDS_CoupleOfPaveBlocks&     aCPB = aMVCPB.FindFromIndex(i);
       const occ::handle<BOPDS_PaveBlock>& aPB1 = aCPB.PaveBlock1();
       const occ::handle<BOPDS_PaveBlock>& aPB2 = aCPB.PaveBlock2();
       //
@@ -661,8 +661,8 @@ void BOPAlgo_PaveFiller::PerformNewVertices(
     const BOPDS_CoupleOfPaveBlocks& aCPB = theMVCPB.FindFromIndex(i);
     int                             iV   = aCPB.Index();
     //
-    const occ::handle<BOPDS_PaveBlock>& aPB1 = aCPB.PaveBlock1();
-    const occ::handle<BOPDS_PaveBlock>& aPB2 = aCPB.PaveBlock2();
+    const occ::handle<BOPDS_PaveBlock>& aPB1  = aCPB.PaveBlock1();
+    const occ::handle<BOPDS_PaveBlock>& aPB2  = aCPB.PaveBlock2();
     const occ::handle<BOPDS_PaveBlock>  aPB[] = {aPB1, aPB2};
     for (int j = 0; j < 2; ++j)
     {

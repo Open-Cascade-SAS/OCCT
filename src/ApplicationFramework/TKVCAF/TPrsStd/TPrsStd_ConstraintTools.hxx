@@ -73,8 +73,8 @@ public:
   //! Computes a perpendicular relation presentation for the given constraint.
   //! @param[in] aConst the perpendicular constraint
   //! @return interactive object representing the relation, or null handle on failure
-  [[nodiscard]] Standard_EXPORT static occ::handle<AIS_InteractiveObject>
-    ComputePerpendicular(const occ::handle<TDataXtd_Constraint>& aConst);
+  [[nodiscard]] Standard_EXPORT static occ::handle<AIS_InteractiveObject> ComputePerpendicular(
+    const occ::handle<TDataXtd_Constraint>& aConst);
 
   //! @deprecated Use ComputePerpendicular() returning handle by value instead.
   Standard_DEPRECATED("Use ComputePerpendicular() returning handle by value instead")
@@ -161,8 +161,8 @@ public:
   //! Computes an equal distance relation presentation for the given constraint.
   //! @param[in] aConst the equal distance constraint
   //! @return interactive object representing the relation, or null handle on failure
-  [[nodiscard]] Standard_EXPORT static occ::handle<AIS_InteractiveObject>
-    ComputeEqualDistance(const occ::handle<TDataXtd_Constraint>& aConst);
+  [[nodiscard]] Standard_EXPORT static occ::handle<AIS_InteractiveObject> ComputeEqualDistance(
+    const occ::handle<TDataXtd_Constraint>& aConst);
 
   //! @deprecated Use ComputeEqualDistance() returning handle by value instead.
   Standard_DEPRECATED("Use ComputeEqualDistance() returning handle by value instead")
@@ -265,8 +265,8 @@ public:
   //! Computes an angle dimension presentation for a single-face constraint.
   //! @param[in] aConst the angle constraint on one face
   //! @return interactive object representing the angle, or null handle on failure
-  [[nodiscard]] Standard_EXPORT static occ::handle<AIS_InteractiveObject>
-    ComputeAngleForOneFace(const occ::handle<TDataXtd_Constraint>& aConst);
+  [[nodiscard]] Standard_EXPORT static occ::handle<AIS_InteractiveObject> ComputeAngleForOneFace(
+    const occ::handle<TDataXtd_Constraint>& aConst);
 
   //! @deprecated Use ComputeAngleForOneFace() returning handle by value instead.
   Standard_DEPRECATED("Use ComputeAngleForOneFace() returning handle by value instead")

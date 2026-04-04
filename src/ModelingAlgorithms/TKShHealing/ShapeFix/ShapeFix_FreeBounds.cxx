@@ -93,7 +93,7 @@ bool ShapeFix_FreeBounds::Perform()
     ShapeExtend_Explorer                             see;
     occ::handle<NCollection_HSequence<TopoDS_Shape>> open = see.SeqFromCompound(myEdges, false);
     NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> vertices;
-    occ::handle<NCollection_HSequence<TopoDS_Shape>> newwires =
+    occ::handle<NCollection_HSequence<TopoDS_Shape>>                         newwires =
       ShapeAnalysis_FreeBounds::ConnectWiresToWires(open, myCloseToler, myShared, vertices);
     myEdges.Nullify();
     ShapeAnalysis_FreeBounds::DispatchWires(newwires, myWires, myEdges);

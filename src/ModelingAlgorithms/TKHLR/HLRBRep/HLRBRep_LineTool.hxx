@@ -161,10 +161,10 @@ public:
   //! @param[in] NbMin minimum number of sample points (unused for lines)
   //! @return array of 3 sample parameter values
   [[nodiscard]] static occ::handle<NCollection_HArray1<double>> SamplePars(const gp_Lin& C,
-                                                                            const double  U0,
-                                                                            const double  U1,
-                                                                            const double  Defl,
-                                                                            const int     NbMin);
+                                                                           const double  U0,
+                                                                           const double  U1,
+                                                                           const double  Defl,
+                                                                           const int     NbMin);
 
   //! @deprecated Use SamplePars() returning handle by value instead.
   Standard_DEPRECATED("Use SamplePars() returning handle by value instead")

@@ -339,9 +339,10 @@ void Convert_CompPolynomialToPoles::Multiplicities(occ::handle<NCollection_HArra
 
 Standard_ENABLE_DEPRECATION_WARNINGS
 
-//=================================================================================================
+  //=================================================================================================
 
-bool Convert_CompPolynomialToPoles::IsDone() const
+  bool
+  Convert_CompPolynomialToPoles::IsDone() const
 {
   return myDone;
 }

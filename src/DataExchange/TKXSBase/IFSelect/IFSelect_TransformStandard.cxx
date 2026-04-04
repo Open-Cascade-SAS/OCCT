@@ -130,7 +130,7 @@ occ::handle<Interface_InterfaceModel> IFSelect_TransformStandard::StandardCopy(
   Interface_CopyTool&    TC) const
 {
   const occ::handle<Interface_InterfaceModel>& original = G.Model();
-  occ::handle<Interface_InterfaceModel>       newmod    = original->NewEmptyModel();
+  occ::handle<Interface_InterfaceModel>        newmod   = original->NewEmptyModel();
   TC.Clear();
   int                                   nb     = G.Size();
   occ::handle<NCollection_HArray1<int>> remain = new NCollection_HArray1<int>(0, nb + 1);
@@ -144,9 +144,8 @@ occ::handle<Interface_InterfaceModel> IFSelect_TransformStandard::StandardCopy(
   return newmod;
 }
 
-occ::handle<Interface_InterfaceModel> IFSelect_TransformStandard::Copy(
-  const Interface_Graph& G,
-  Interface_CopyTool&    TC) const
+occ::handle<Interface_InterfaceModel> IFSelect_TransformStandard::Copy(const Interface_Graph& G,
+                                                                       Interface_CopyTool& TC) const
 {
   return CopyOption() ? StandardCopy(G, TC) : OnTheSpot(G, TC);
 }

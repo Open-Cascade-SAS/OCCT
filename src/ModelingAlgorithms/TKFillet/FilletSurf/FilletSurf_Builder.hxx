@@ -95,7 +95,7 @@ public:
   //! @param[in] IndexSec 1-based section index
   //! @return the section as a trimmed circular arc
   [[nodiscard]] Standard_EXPORT occ::handle<Geom_TrimmedCurve> Section(const int IndexSurf,
-                                                                        const int IndexSec) const;
+                                                                       const int IndexSec) const;
 
   //! @deprecated Use Section() returning handle by value instead.
   Standard_DEPRECATED("Use Section() returning handle by value instead")

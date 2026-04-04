@@ -121,16 +121,16 @@ public:
   //! @return sequence of resulting wires
   [[nodiscard]] Standard_EXPORT static occ::handle<NCollection_HSequence<TopoDS_Shape>>
     ConnectEdgesToWires(const occ::handle<NCollection_HSequence<TopoDS_Shape>>& edges,
-                        const double                                      toler,
-                        const bool                                        shared);
+                        const double                                            toler,
+                        const bool                                              shared);
 
   //! @deprecated Use ConnectEdgesToWires() returning handle by value instead.
   Standard_DEPRECATED("Use ConnectEdgesToWires() returning handle by value instead")
   Standard_EXPORT static void ConnectEdgesToWires(
     const occ::handle<NCollection_HSequence<TopoDS_Shape>>& edges,
-    const double                                      toler,
-    const bool                                        shared,
-    occ::handle<NCollection_HSequence<TopoDS_Shape>>& wires);
+    const double                                            toler,
+    const bool                                              shared,
+    occ::handle<NCollection_HSequence<TopoDS_Shape>>&       wires);
 
   //! Connects wires from the given sequence into longer wires.
   //! @param[in] iwires the sequence of input wires
@@ -139,16 +139,16 @@ public:
   //! @return sequence of resulting wires
   [[nodiscard]] Standard_EXPORT static occ::handle<NCollection_HSequence<TopoDS_Shape>>
     ConnectWiresToWires(const occ::handle<NCollection_HSequence<TopoDS_Shape>>& iwires,
-                        const double                                      toler,
-                        const bool                                        shared);
+                        const double                                            toler,
+                        const bool                                              shared);
 
   //! @deprecated Use ConnectWiresToWires() returning handle by value instead.
   Standard_DEPRECATED("Use ConnectWiresToWires() returning handle by value instead")
   Standard_EXPORT static void ConnectWiresToWires(
     const occ::handle<NCollection_HSequence<TopoDS_Shape>>& iwires,
-    const double                                      toler,
-    const bool                                        shared,
-    occ::handle<NCollection_HSequence<TopoDS_Shape>>& owires);
+    const double                                            toler,
+    const bool                                              shared,
+    occ::handle<NCollection_HSequence<TopoDS_Shape>>&       owires);
 
   //! Builds sequence of <owires> out of sequence of not sorted
   //! <iwires>.

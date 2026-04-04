@@ -206,10 +206,10 @@ inline int HLRBRep_LineTool::NbSamples(const gp_Lin&, const double, const double
 }
 
 inline occ::handle<NCollection_HArray1<double>> HLRBRep_LineTool::SamplePars(const gp_Lin&,
-                                                                              const double U0,
-                                                                              const double U1,
-                                                                              const double,
-                                                                              const int)
+                                                                             const double U0,
+                                                                             const double U1,
+                                                                             const double,
+                                                                             const int)
 {
   occ::handle<NCollection_HArray1<double>> aPars = new NCollection_HArray1<double>(1, 3);
   aPars->SetValue(1, U0);

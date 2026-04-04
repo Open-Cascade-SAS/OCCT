@@ -130,8 +130,8 @@ ShapeAnalysis_FreeBounds::ShapeAnalysis_FreeBounds(const TopoDS_Shape& shape,
 
 occ::handle<NCollection_HSequence<TopoDS_Shape>> ShapeAnalysis_FreeBounds::ConnectEdgesToWires(
   const occ::handle<NCollection_HSequence<TopoDS_Shape>>& edges,
-  const double                                      toler,
-  const bool                                        shared)
+  const double                                            toler,
+  const bool                                              shared)
 {
   occ::handle<NCollection_HSequence<TopoDS_Shape>> iwires = new NCollection_HSequence<TopoDS_Shape>;
   BRep_Builder                                     B;
@@ -159,9 +159,9 @@ occ::handle<NCollection_HSequence<TopoDS_Shape>> ShapeAnalysis_FreeBounds::Conne
 
 void ShapeAnalysis_FreeBounds::ConnectEdgesToWires(
   const occ::handle<NCollection_HSequence<TopoDS_Shape>>& edges,
-  const double                                      toler,
-  const bool                                        shared,
-  occ::handle<NCollection_HSequence<TopoDS_Shape>>& wires)
+  const double                                            toler,
+  const bool                                              shared,
+  occ::handle<NCollection_HSequence<TopoDS_Shape>>&       wires)
 {
   wires = ConnectEdgesToWires(edges, toler, shared);
 }
@@ -170,8 +170,8 @@ void ShapeAnalysis_FreeBounds::ConnectEdgesToWires(
 
 occ::handle<NCollection_HSequence<TopoDS_Shape>> ShapeAnalysis_FreeBounds::ConnectWiresToWires(
   const occ::handle<NCollection_HSequence<TopoDS_Shape>>& iwires,
-  const double                                      toler,
-  const bool                                        shared)
+  const double                                            toler,
+  const bool                                              shared)
 {
   NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> map;
   return ConnectWiresToWires(iwires, toler, shared, map);
@@ -181,9 +181,9 @@ occ::handle<NCollection_HSequence<TopoDS_Shape>> ShapeAnalysis_FreeBounds::Conne
 
 void ShapeAnalysis_FreeBounds::ConnectWiresToWires(
   const occ::handle<NCollection_HSequence<TopoDS_Shape>>& iwires,
-  const double                                      toler,
-  const bool                                        shared,
-  occ::handle<NCollection_HSequence<TopoDS_Shape>>& owires)
+  const double                                            toler,
+  const bool                                              shared,
+  occ::handle<NCollection_HSequence<TopoDS_Shape>>&       owires)
 {
   owires = ConnectWiresToWires(iwires, toler, shared);
 }

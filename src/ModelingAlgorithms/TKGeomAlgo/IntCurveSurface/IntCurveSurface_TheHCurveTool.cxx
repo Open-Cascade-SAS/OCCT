@@ -67,9 +67,9 @@ occ::handle<NCollection_HArray1<double>> IntCurveSurface_TheHCurveTool::SamplePa
   const int                           NbMin)
 {
   occ::handle<NCollection_HArray1<double>> Pars;
-  GeomAbs_CurveType typC     = C->GetType();
-  const double      nbsOther = 10.0;
-  double            nbs      = nbsOther;
+  GeomAbs_CurveType                        typC     = C->GetType();
+  const double                             nbsOther = 10.0;
+  double                                   nbs      = nbsOther;
 
   if (typC == GeomAbs_Line)
     nbs = 2;

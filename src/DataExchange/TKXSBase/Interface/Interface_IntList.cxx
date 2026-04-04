@@ -43,9 +43,9 @@ Interface_IntList::Interface_IntList(const Interface_IntList& other, const bool 
 {
   thenbe = other.NbEntities();
   thenum = thecount = therank = 0; // szv#4:S4163:12Mar99 initialization needed
-  thenbr  = other.NbReferences();
-  theents = other.Entities();
-  therefs = other.References();
+  thenbr                      = other.NbReferences();
+  theents                     = other.Entities();
+  therefs                     = other.References();
   if (copied)
   {
     int                                   i;
