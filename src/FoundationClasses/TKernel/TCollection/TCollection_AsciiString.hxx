@@ -168,7 +168,7 @@ public:
   //! @param[in] theOther the extended string to append
   //! @param[in] theReplaceNonAscii replacement character for non-ASCII characters
   Standard_EXPORT void AssignCat(const TCollection_ExtendedString& theOther,
-                                 const char                       theReplaceNonAscii = 0);
+                                 const char                        theReplaceNonAscii = 0);
 
   void operator+=(const TCollection_ExtendedString& theOther) { AssignCat(theOther); }
 

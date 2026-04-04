@@ -262,7 +262,7 @@ TCollection_AsciiString::TCollection_AsciiString(const wchar_t* theStringUtf)
 //=================================================================================================
 
 void TCollection_AsciiString::AssignCat(const TCollection_ExtendedString& theOther,
-                                        const char                       theReplaceNonAscii)
+                                        const char                        theReplaceNonAscii)
 {
   if (theReplaceNonAscii != 0)
   {
@@ -276,7 +276,7 @@ void TCollection_AsciiString::AssignCat(const TCollection_ExtendedString& theOth
     reallocate(myLength + anOtherLength);
     for (int i = 0; i < anOtherLength; ++i)
     {
-      const char16_t aChar = theOther.Value(i + 1);
+      const char16_t aChar      = theOther.Value(i + 1);
       myString[anOldLength + i] = IsAnAscii(aChar) ? ToCharacter(aChar) : theReplaceNonAscii;
     }
     return;
@@ -413,7 +413,7 @@ TCollection_AsciiString TCollection_AsciiString::Cat(const TCollection_ExtendedS
 {
   if (theReplaceNonAscii != 0)
   {
-    const int anOtherLength = theOther.Length();
+    const int               anOtherLength = theOther.Length();
     TCollection_AsciiString aResult(myLength + anOtherLength, '\0');
     if (myLength > 0)
     {
@@ -421,13 +421,13 @@ TCollection_AsciiString TCollection_AsciiString::Cat(const TCollection_ExtendedS
     }
     for (int i = 0; i < anOtherLength; ++i)
     {
-      const char16_t aChar = theOther.Value(i + 1);
+      const char16_t aChar           = theOther.Value(i + 1);
       aResult.myString[myLength + i] = IsAnAscii(aChar) ? ToCharacter(aChar) : theReplaceNonAscii;
     }
     return aResult;
   }
 
-  const int anUtf8Length = theOther.LengthOfCString();
+  const int               anUtf8Length = theOther.LengthOfCString();
   TCollection_AsciiString aResult(myLength + anUtf8Length, '\0');
   if (myLength > 0)
   {
@@ -442,7 +442,7 @@ TCollection_AsciiString TCollection_AsciiString::Cat(const TCollection_ExtendedS
 
 TCollection_AsciiString TCollection_AsciiString::Cat(const wchar_t* theStringUtf) const
 {
-  const int aUtf8Length = utf8Length(theStringUtf);
+  const int               aUtf8Length = utf8Length(theStringUtf);
   TCollection_AsciiString aResult(myLength + aUtf8Length, '\0');
   if (myLength > 0)
   {

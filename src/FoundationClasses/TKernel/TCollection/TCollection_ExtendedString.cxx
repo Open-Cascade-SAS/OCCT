@@ -418,7 +418,7 @@ TCollection_ExtendedString TCollection_ExtendedString::Cat(const char16_t* theOt
 
 TCollection_ExtendedString TCollection_ExtendedString::Cat(const int theOther) const
 {
-  const FormattedInteger aFormatted(theOther);
+  const FormattedInteger     aFormatted(theOther);
   TCollection_ExtendedString aResult(myLength + aFormatted.Length, 0);
   if (myLength > 0)
   {
@@ -435,7 +435,7 @@ TCollection_ExtendedString TCollection_ExtendedString::Cat(const int theOther) c
 
 TCollection_ExtendedString TCollection_ExtendedString::Cat(const double theOther) const
 {
-  const FormattedReal aFormatted(theOther);
+  const FormattedReal        aFormatted(theOther);
   TCollection_ExtendedString aResult(myLength + aFormatted.Length, 0);
   if (myLength > 0)
   {
