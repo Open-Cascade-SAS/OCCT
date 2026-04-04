@@ -144,8 +144,8 @@ int TDocStd_Application::NbDocuments() const
 
 occ::handle<TDocStd_Document> TDocStd_Application::GetDocument(const int index) const
 {
-    int                   current = 0;
-  for ( CDF_DirectoryIterator it(myDirectory); it.MoreDocument(); it.NextDocument())
+  int current = 0;
+  for (CDF_DirectoryIterator it(myDirectory); it.MoreDocument(); it.NextDocument())
   {
     current++;
     if (index == current)

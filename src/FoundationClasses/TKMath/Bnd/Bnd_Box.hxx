@@ -394,13 +394,13 @@ protected:
   };
 
 private:
-  double Xmin = RealLast();
-  double Xmax = -RealLast();
-  double Ymin = RealLast();
-  double Ymax = -RealLast();
-  double Zmin = RealLast();
-  double Zmax = -RealLast();
-  double Gap = 0.0;
+  double Xmin  = RealLast();
+  double Xmax  = -RealLast();
+  double Ymin  = RealLast();
+  double Ymax  = -RealLast();
+  double Zmin  = RealLast();
+  double Zmax  = -RealLast();
+  double Gap   = 0.0;
   int    Flags = VoidMask;
 };
 

@@ -1523,9 +1523,8 @@ void TPrsStd_ConstraintTools::ComputeMinRadius(const occ::handle<TDataXtd_Constr
 
 //=================================================================================================
 
-void TPrsStd_ConstraintTools::computeMinRadiusImpl(
-  const occ::handle<TDataXtd_Constraint>& aConst,
-  occ::handle<AIS_InteractiveObject>&     anAIS)
+void TPrsStd_ConstraintTools::computeMinRadiusImpl(const occ::handle<TDataXtd_Constraint>& aConst,
+                                                   occ::handle<AIS_InteractiveObject>&     anAIS)
 {
   int nbgeom = aConst->NbGeometries();
   if (nbgeom < 1)
@@ -1628,9 +1627,8 @@ void TPrsStd_ConstraintTools::ComputeMaxRadius(const occ::handle<TDataXtd_Constr
 
 //=================================================================================================
 
-void TPrsStd_ConstraintTools::computeMaxRadiusImpl(
-  const occ::handle<TDataXtd_Constraint>& aConst,
-  occ::handle<AIS_InteractiveObject>&     anAIS)
+void TPrsStd_ConstraintTools::computeMaxRadiusImpl(const occ::handle<TDataXtd_Constraint>& aConst,
+                                                   occ::handle<AIS_InteractiveObject>&     anAIS)
 {
   int nbgeom = aConst->NbGeometries();
   if (nbgeom < 1)
@@ -1909,9 +1907,8 @@ void TPrsStd_ConstraintTools::ComputeEqualRadius(const occ::handle<TDataXtd_Cons
 
 //=================================================================================================
 
-void TPrsStd_ConstraintTools::computeEqualRadiusImpl(
-  const occ::handle<TDataXtd_Constraint>& aConst,
-  occ::handle<AIS_InteractiveObject>&     anAIS)
+void TPrsStd_ConstraintTools::computeEqualRadiusImpl(const occ::handle<TDataXtd_Constraint>& aConst,
+                                                     occ::handle<AIS_InteractiveObject>&     anAIS)
 {
   int nbgeom = aConst->NbGeometries();
   if (nbgeom < 2)
@@ -2410,9 +2407,8 @@ void TPrsStd_ConstraintTools::ComputePlacement(const occ::handle<TDataXtd_Constr
 
 //=================================================================================================
 
-void TPrsStd_ConstraintTools::computePlacementImpl(
-  const occ::handle<TDataXtd_Constraint>& aConst,
-  occ::handle<AIS_InteractiveObject>&     anAIS)
+void TPrsStd_ConstraintTools::computePlacementImpl(const occ::handle<TDataXtd_Constraint>& aConst,
+                                                   occ::handle<AIS_InteractiveObject>&     anAIS)
 {
   int nbgeom = aConst->NbGeometries();
   if (nbgeom < 2)
@@ -2579,9 +2575,8 @@ void TPrsStd_ConstraintTools::ComputeCoincident(const occ::handle<TDataXtd_Const
 
 //=================================================================================================
 
-void TPrsStd_ConstraintTools::computeCoincidentImpl(
-  const occ::handle<TDataXtd_Constraint>& aConst,
-  occ::handle<AIS_InteractiveObject>&     anAIS)
+void TPrsStd_ConstraintTools::computeCoincidentImpl(const occ::handle<TDataXtd_Constraint>& aConst,
+                                                    occ::handle<AIS_InteractiveObject>&     anAIS)
 {
   int nbgeom = aConst->NbGeometries();
   if (nbgeom < 2)

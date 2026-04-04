@@ -648,8 +648,8 @@ occ::handle<NCollection_HArray1<double>> BRepGProp_Face::GetUKnots(const double 
                                                                    const double theUMax) const
 {
   occ::handle<NCollection_HArray1<double>> theUKnots;
-  bool                                     isSBSpline = mySurface.GetType() == GeomAbs_BSplineSurface;
-  bool                                     isCBSpline = false;
+  bool isSBSpline = mySurface.GetType() == GeomAbs_BSplineSurface;
+  bool isCBSpline = false;
 
   if (!isSBSpline)
   {
@@ -712,7 +712,7 @@ occ::handle<NCollection_HArray1<double>> BRepGProp_Face::GetTKnots(const double 
                                                                    const double theTMax) const
 {
   occ::handle<NCollection_HArray1<double>> theTKnots;
-  bool                                     isBSpline = mySurface.GetType() == GeomAbs_BSplineSurface;
+  bool isBSpline = mySurface.GetType() == GeomAbs_BSplineSurface;
 
   if (myIsUseSpan && isBSpline)
   {

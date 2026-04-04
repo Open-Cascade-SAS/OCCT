@@ -150,8 +150,8 @@ void PerformBounds(const CurveType&           theCurve,
             double u1 = TabW.Value(i);
             double u2 = TabW.Value(i + 1);
 
-            double defl  = 0.1;
-            int    NbMin = 10;
+            double                                   defl  = 0.1;
+            int                                      NbMin = 10;
             occ::handle<NCollection_HArray1<double>> aPars =
               CurveTool::SamplePars(theCurve, u1, u2, defl, NbMin);
 
@@ -164,8 +164,8 @@ void PerformBounds(const CurveType&           theCurve,
           double u1 = CurveTool::FirstParameter(theCurve);
           double u2 = CurveTool::LastParameter(theCurve);
 
-          double defl  = 0.1;
-          int    NbMin = 10;
+          double                                   defl  = 0.1;
+          int                                      NbMin = 10;
           occ::handle<NCollection_HArray1<double>> aPars =
             CurveTool::SamplePars(theCurve, u1, u2, defl, NbMin);
 
