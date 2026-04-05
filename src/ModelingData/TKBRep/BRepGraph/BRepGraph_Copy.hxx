@@ -66,11 +66,6 @@ public:
                                                           const bool theReserveCache = true);
 
 private:
-  Standard_EXPORT static void transferCacheValues(const BRepGraph& theSrcGraph,
-                                                  BRepGraph_NodeId theSrcNode,
-                                                  BRepGraph&       theDstGraph,
-                                                  BRepGraph_NodeId theDstNode);
-
   //! Pre-allocate transient cache for lock-free parallel access.
   Standard_EXPORT static void reserveTransientCache(BRepGraph& theGraph);
 

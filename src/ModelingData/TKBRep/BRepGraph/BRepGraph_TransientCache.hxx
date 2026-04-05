@@ -279,18 +279,15 @@ public:
   //! Remove a cached value using a pre-resolved cache-kind slot.
   [[nodiscard]] Standard_EXPORT bool Remove(const BRepGraph_NodeId theNode, const int theKindSlot);
 
-  //! True if any cached values are stored for this node (any cache kind).
-  [[nodiscard]] Standard_EXPORT bool HasCacheValues(const BRepGraph_NodeId theNode) const;
-
-  //! Return all registered cache kinds that have non-null entries for this node.
-  [[nodiscard]] Standard_EXPORT NCollection_Vector<occ::handle<BRepGraph_CacheKind>> CacheKinds(
-    const BRepGraph_NodeId theNode) const;
-
-  //! Transfer all cached values from a source cache to a destination node.
-  Standard_EXPORT void TransferCacheValues(const BRepGraph_TransientCache& theSrcCache,
-                                           const BRepGraph_NodeId          theSrcNode,
-                                           const BRepGraph_NodeId          theDstNode,
-                                           const uint32_t                  theDstSubtreeGen);
+  //! Collect fresh cache-kind slot indices for a node (zero heap allocation).
+  //! Used internally by CacheView::CacheKindIterator.
+  //! @param[in]  theNode    node to query
+  //! @param[in]  theCurrentSubtreeGen freshness stamp to match
+  //! @param[out] theSlots   output array (caller-allocated, must hold THE_DEFAULT_RESERVED_KIND_COUNT)
+  //! @return number of populated slots written to theSlots
+  Standard_EXPORT int CollectCacheKindSlots(const BRepGraph_NodeId theNode,
+                                            const uint32_t         theCurrentSubtreeGen,
+                                            int                    theSlots[]) const;
 
   //! Pre-allocate storage for lock-free parallel access.
   Standard_EXPORT void Reserve(const int theKindCount, const int theCounts[THE_KIND_COUNT]);

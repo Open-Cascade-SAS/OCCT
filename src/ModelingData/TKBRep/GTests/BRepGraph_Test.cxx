@@ -1470,7 +1470,7 @@ TEST_F(BRepGraphTest, ReplaceEdgeInWire_Reversed_OrientationFlipped)
   const BRepGraphInc::CoEdgeDef& anOrigCoEdge =
     myGraph.Topo().CoEdges().Definition(anOrigCR.CoEdgeDefId);
   const BRepGraph_EdgeId anOldEdgeId       = anOrigCoEdge.EdgeDefId;
-  TopAbs_Orientation     anOrigOrientation = anOrigCoEdge.Sense;
+  TopAbs_Orientation     anOrigOrientation = anOrigCoEdge.Orientation;
 
   // Pick a different edge.
   const int              aNewIdx = (anOldEdgeId.Index + 1) % myGraph.Topo().Edges().Nb();
@@ -1489,7 +1489,7 @@ TEST_F(BRepGraphTest, ReplaceEdgeInWire_Reversed_OrientationFlipped)
   // Orientation should be flipped relative to original.
   TopAbs_Orientation anExpected =
     (anOrigOrientation == TopAbs_FORWARD) ? TopAbs_REVERSED : TopAbs_FORWARD;
-  EXPECT_EQ(aNewCoEdge.Sense, anExpected);
+  EXPECT_EQ(aNewCoEdge.Orientation, anExpected);
 }
 
 TEST_F(BRepGraphTest, ReplaceEdgeInWire_UpdatesEdgeToCoEdgeReverseIndex)

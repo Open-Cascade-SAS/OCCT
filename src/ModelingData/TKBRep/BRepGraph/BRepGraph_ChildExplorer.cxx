@@ -39,6 +39,56 @@ static int childExplorerKindDepth(const BRepGraph_NodeId::Kind theKind)
   };
   return THE_DEPTH[static_cast<int>(theKind)];
 }
+
+static BRepGraph_RefId childRefIdForStep(const BRepGraph&       theGraph,
+                                         const BRepGraph_NodeId theParent,
+                                         const int              theStep)
+{
+  if (!theParent.IsValid() || theStep < 0)
+  {
+    return BRepGraph_RefId();
+  }
+
+  const BRepGraph::RefsView& aRefs = theGraph.Refs();
+  if (theParent.NodeKind != BRepGraph_NodeId::Kind::Product)
+  {
+    return aRefs.RefAtStep(theParent, theStep);
+  }
+
+  const BRepGraph::TopoView& aTopo = theGraph.Topo();
+  const BRepGraph_ProductId       aProductId = BRepGraph_ProductId::FromNodeId(theParent);
+  const BRepGraphInc::ProductDef& aProduct   = aTopo.Products().Definition(aProductId);
+  if (aProduct.ShapeRootId.IsValid())
+  {
+    return BRepGraph_RefId();
+  }
+
+  int anActiveIndex = 0;
+  for (int anIndex = 0; anIndex < aProduct.OccurrenceRefIds.Length(); ++anIndex)
+  {
+    const BRepGraph_OccurrenceRefId anOccurrenceRefId = aProduct.OccurrenceRefIds.Value(anIndex);
+    const BRepGraphInc::OccurrenceRef& anOccurrenceRef = aRefs.Occurrences().Entry(anOccurrenceRefId);
+    if (anOccurrenceRef.IsRemoved)
+    {
+      continue;
+    }
+
+    const BRepGraphInc::OccurrenceDef& anOccurrence =
+      aTopo.Occurrences().Definition(anOccurrenceRef.OccurrenceDefId);
+    if (anOccurrence.IsRemoved)
+    {
+      continue;
+    }
+
+    if (anActiveIndex == theStep)
+    {
+      return anOccurrenceRefId;
+    }
+    ++anActiveIndex;
+  }
+
+  return BRepGraph_RefId();
+}
 } // namespace
 
 //=================================================================================================
@@ -388,15 +438,15 @@ void BRepGraph_ChildExplorer::advance()
         int i = aIdx;
         for (; i < aComp.ChildRefIds.Length(); ++i)
         {
-          const BRepGraphInc::ChildRef& aRef = aRefs.Children().Entry(aComp.ChildRefIds.Value(i));
-          if (!aRef.IsRemoved)
+          const BRepGraph_ChildRefId aRefId = aComp.ChildRefIds.Value(i);
+          if (!aRefs.IsRemoved(aRefId))
           {
-            aChildNode = aRef.ChildDefId;
+            aChildNode = aRefs.ChildNode(aRefId);
             aStepIdx   = i;
             if (myCumLoc)
-              aChildLoc = aFrame.AccLocation * aRef.LocalLocation;
+              aChildLoc = aFrame.AccLocation * aRefs.LocalLocation(aRefId);
             if (myCumOri)
-              aChildOri = TopAbs::Compose(aFrame.AccOrientation, aRef.Orientation);
+              aChildOri = TopAbs::Compose(aFrame.AccOrientation, aRefs.Orientation(aRefId));
             break;
           }
         }
@@ -410,15 +460,15 @@ void BRepGraph_ChildExplorer::advance()
         int i = aIdx;
         for (; i < aCS.SolidRefIds.Length(); ++i)
         {
-          const BRepGraphInc::SolidRef& aRef = aRefs.Solids().Entry(aCS.SolidRefIds.Value(i));
-          if (!aRef.IsRemoved)
+          const BRepGraph_SolidRefId aRefId = aCS.SolidRefIds.Value(i);
+          if (!aRefs.IsRemoved(aRefId))
           {
-            aChildNode = aRef.SolidDefId;
+            aChildNode = aRefs.ChildNode(aRefId);
             aStepIdx   = i;
             if (myCumLoc)
-              aChildLoc = aFrame.AccLocation * aRef.LocalLocation;
+              aChildLoc = aFrame.AccLocation * aRefs.LocalLocation(aRefId);
             if (myCumOri)
-              aChildOri = TopAbs::Compose(aFrame.AccOrientation, aRef.Orientation);
+              aChildOri = TopAbs::Compose(aFrame.AccOrientation, aRefs.Orientation(aRefId));
             break;
           }
         }
@@ -430,39 +480,30 @@ void BRepGraph_ChildExplorer::advance()
         const BRepGraphInc::SolidDef& aSolid =
           aDefs.Solids().Definition(BRepGraph_SolidId(aFrame.Node.Index));
         const int aNbShells = aSolid.ShellRefIds.Length();
-        const int aNbFree   = aSolid.FreeChildRefIds.Length();
+        const int aNbFree   = aSolid.AuxChildRefIds.Length();
         int       i         = aIdx;
         for (; i < aNbShells + aNbFree; ++i)
         {
+          BRepGraph_RefId aRefId;
           if (i < aNbShells)
           {
-            const BRepGraphInc::ShellRef& aRef = aRefs.Shells().Entry(aSolid.ShellRefIds.Value(i));
-            if (!aRef.IsRemoved)
-            {
-              aChildNode = aRef.ShellDefId;
-              aStepIdx   = i;
-              if (myCumLoc)
-                aChildLoc = aFrame.AccLocation * aRef.LocalLocation;
-              if (myCumOri)
-                aChildOri = TopAbs::Compose(aFrame.AccOrientation, aRef.Orientation);
-              break;
-            }
+            aRefId = aSolid.ShellRefIds.Value(i);
           }
           else
           {
-            const int                     aFreeIdx = i - aNbShells;
-            const BRepGraphInc::ChildRef& aRef =
-              aRefs.Children().Entry(aSolid.FreeChildRefIds.Value(aFreeIdx));
-            if (!aRef.IsRemoved)
-            {
-              aChildNode = aRef.ChildDefId;
-              aStepIdx   = i;
-              if (myCumLoc)
-                aChildLoc = aFrame.AccLocation * aRef.LocalLocation;
-              if (myCumOri)
-                aChildOri = TopAbs::Compose(aFrame.AccOrientation, aRef.Orientation);
-              break;
-            }
+            const int aFreeIdx = i - aNbShells;
+            aRefId             = aSolid.AuxChildRefIds.Value(aFreeIdx);
+          }
+
+          if (!aRefs.IsRemoved(aRefId))
+          {
+            aChildNode = aRefs.ChildNode(aRefId);
+            aStepIdx   = i;
+            if (myCumLoc)
+              aChildLoc = aFrame.AccLocation * aRefs.LocalLocation(aRefId);
+            if (myCumOri)
+              aChildOri = TopAbs::Compose(aFrame.AccOrientation, aRefs.Orientation(aRefId));
+            break;
           }
         }
         aFrame.NextChildIdx = i + 1;
@@ -473,39 +514,30 @@ void BRepGraph_ChildExplorer::advance()
         const BRepGraphInc::ShellDef& aShell =
           aDefs.Shells().Definition(BRepGraph_ShellId(aFrame.Node.Index));
         const int aNbFaces = aShell.FaceRefIds.Length();
-        const int aNbFree  = aShell.FreeChildRefIds.Length();
+        const int aNbFree  = aShell.AuxChildRefIds.Length();
         int       i        = aIdx;
         for (; i < aNbFaces + aNbFree; ++i)
         {
+          BRepGraph_RefId aRefId;
           if (i < aNbFaces)
           {
-            const BRepGraphInc::FaceRef& aRef = aRefs.Faces().Entry(aShell.FaceRefIds.Value(i));
-            if (!aRef.IsRemoved)
-            {
-              aChildNode = aRef.FaceDefId;
-              aStepIdx   = i;
-              if (myCumLoc)
-                aChildLoc = aFrame.AccLocation * aRef.LocalLocation;
-              if (myCumOri)
-                aChildOri = TopAbs::Compose(aFrame.AccOrientation, aRef.Orientation);
-              break;
-            }
+            aRefId = aShell.FaceRefIds.Value(i);
           }
           else
           {
-            const int                     aFreeIdx = i - aNbFaces;
-            const BRepGraphInc::ChildRef& aRef =
-              aRefs.Children().Entry(aShell.FreeChildRefIds.Value(aFreeIdx));
-            if (!aRef.IsRemoved)
-            {
-              aChildNode = aRef.ChildDefId;
-              aStepIdx   = i;
-              if (myCumLoc)
-                aChildLoc = aFrame.AccLocation * aRef.LocalLocation;
-              if (myCumOri)
-                aChildOri = TopAbs::Compose(aFrame.AccOrientation, aRef.Orientation);
-              break;
-            }
+            const int aFreeIdx = i - aNbFaces;
+            aRefId             = aShell.AuxChildRefIds.Value(aFreeIdx);
+          }
+
+          if (!aRefs.IsRemoved(aRefId))
+          {
+            aChildNode = aRefs.ChildNode(aRefId);
+            aStepIdx   = i;
+            if (myCumLoc)
+              aChildLoc = aFrame.AccLocation * aRefs.LocalLocation(aRefId);
+            if (myCumOri)
+              aChildOri = TopAbs::Compose(aFrame.AccOrientation, aRefs.Orientation(aRefId));
+            break;
           }
         }
         aFrame.NextChildIdx = i + 1;
@@ -520,35 +552,26 @@ void BRepGraph_ChildExplorer::advance()
         int       i        = aIdx;
         for (; i < aNbWires + aNbVerts; ++i)
         {
+          BRepGraph_RefId aRefId;
           if (i < aNbWires)
           {
-            const BRepGraphInc::WireRef& aRef = aRefs.Wires().Entry(aFace.WireRefIds.Value(i));
-            if (!aRef.IsRemoved)
-            {
-              aChildNode = aRef.WireDefId;
-              aStepIdx   = i;
-              if (myCumLoc)
-                aChildLoc = aFrame.AccLocation * aRef.LocalLocation;
-              if (myCumOri)
-                aChildOri = TopAbs::Compose(aFrame.AccOrientation, aRef.Orientation);
-              break;
-            }
+            aRefId = aFace.WireRefIds.Value(i);
           }
           else
           {
-            const int                      aVIdx = i - aNbWires;
-            const BRepGraphInc::VertexRef& aVRef =
-              aRefs.Vertices().Entry(aFace.VertexRefIds.Value(aVIdx));
-            if (!aVRef.IsRemoved)
-            {
-              aChildNode = aVRef.VertexDefId;
-              aStepIdx   = i;
-              if (myCumLoc)
-                aChildLoc = aFrame.AccLocation * aVRef.LocalLocation;
-              if (myCumOri)
-                aChildOri = TopAbs::Compose(aFrame.AccOrientation, aVRef.Orientation);
-              break;
-            }
+            const int aVIdx = i - aNbWires;
+            aRefId          = aFace.VertexRefIds.Value(aVIdx);
+          }
+
+          if (!aRefs.IsRemoved(aRefId))
+          {
+            aChildNode = aRefs.ChildNode(aRefId);
+            aStepIdx   = i;
+            if (myCumLoc)
+              aChildLoc = aFrame.AccLocation * aRefs.LocalLocation(aRefId);
+            if (myCumOri)
+              aChildOri = TopAbs::Compose(aFrame.AccOrientation, aRefs.Orientation(aRefId));
+            break;
           }
         }
         aFrame.NextChildIdx = i + 1;
@@ -561,14 +584,15 @@ void BRepGraph_ChildExplorer::advance()
         int i = aIdx;
         for (; i < aWire.CoEdgeRefIds.Length(); ++i)
         {
-          const BRepGraphInc::CoEdgeRef& aRef = aRefs.CoEdges().Entry(aWire.CoEdgeRefIds.Value(i));
-          if (!aRef.IsRemoved)
+          const BRepGraph_CoEdgeRefId aRefId = aWire.CoEdgeRefIds.Value(i);
+          if (!aRefs.IsRemoved(aRefId))
           {
-            aChildNode = aRef.CoEdgeDefId;
+            aChildNode = aRefs.ChildNode(aRefId);
             aStepIdx   = i;
             if (myCumLoc)
-              aChildLoc = aFrame.AccLocation * aRef.LocalLocation;
-            // CoEdgeRef has no Orientation field.
+              aChildLoc = aFrame.AccLocation * aRefs.LocalLocation(aRefId);
+            if (myCumOri)
+              aChildOri = TopAbs::Compose(aFrame.AccOrientation, aRefs.Orientation(aRefId));
             break;
           }
         }
@@ -597,15 +621,14 @@ void BRepGraph_ChildExplorer::advance()
           {
             continue;
           }
-          const BRepGraphInc::VertexRef& aVRef = aRefs.Vertices().Entry(aVRefId);
-          if (!aVRef.IsRemoved)
+          if (!aRefs.IsRemoved(aVRefId))
           {
-            aChildNode = aVRef.VertexDefId;
+            aChildNode = aRefs.ChildNode(aVRefId);
             aStepIdx   = i;
             if (myCumLoc)
-              aChildLoc = aFrame.AccLocation * aVRef.LocalLocation;
+              aChildLoc = aFrame.AccLocation * aRefs.LocalLocation(aVRefId);
             if (myCumOri)
-              aChildOri = TopAbs::Compose(aFrame.AccOrientation, aVRef.Orientation);
+              aChildOri = TopAbs::Compose(aFrame.AccOrientation, aRefs.Orientation(aVRefId));
             break;
           }
         }
@@ -614,7 +637,7 @@ void BRepGraph_ChildExplorer::advance()
       }
 
       case Kind::CoEdge: {
-        // CoEdge owns exactly one Edge child.
+        // CoEdge owns exactly one Edge child (structural, no RefId).
         if (aIdx == 0)
         {
           const BRepGraphInc::CoEdgeDef& aCoEdge =
@@ -622,9 +645,9 @@ void BRepGraph_ChildExplorer::advance()
           if (!aCoEdge.IsRemoved && aCoEdge.EdgeDefId.IsValid())
           {
             aChildNode = aCoEdge.EdgeDefId;
-            aStepIdx   = 0;
+            aStepIdx   = -1;
             if (myCumOri)
-              aChildOri = TopAbs::Compose(aFrame.AccOrientation, aCoEdge.Sense);
+              aChildOri = TopAbs::Compose(aFrame.AccOrientation, aCoEdge.Orientation);
           }
         }
         aFrame.NextChildIdx = 1;
@@ -632,7 +655,7 @@ void BRepGraph_ChildExplorer::advance()
       }
 
       case Kind::Occurrence: {
-        // Occurrence references exactly one Product.
+        // Occurrence references exactly one Product (structural, no RefId).
         if (aIdx == 0)
         {
           const BRepGraphInc::OccurrenceDef& anOcc =
@@ -640,7 +663,7 @@ void BRepGraph_ChildExplorer::advance()
           if (!anOcc.IsRemoved && anOcc.ProductDefId.IsValid())
           {
             aChildNode = anOcc.ProductDefId;
-            aStepIdx   = 0;
+            aStepIdx   = -1;
             if (myCumLoc)
               aChildLoc = aFrame.AccLocation * anOcc.Placement;
           }
@@ -654,11 +677,11 @@ void BRepGraph_ChildExplorer::advance()
         const BRepGraphInc::ProductDef& aProd = aDefs.Products().Definition(aProdId);
         if (aProd.ShapeRootId.IsValid())
         {
-          // Part product: single child = shape root topology node.
+          // Part product: single child = shape root topology node (structural, no RefId).
           if (aIdx == 0)
           {
             aChildNode = aProd.ShapeRootId;
-            aStepIdx   = 0;
+            aStepIdx   = -1;
             if (myCumLoc)
               aChildLoc = aFrame.AccLocation * aProd.RootLocation;
             if (myCumOri)
@@ -762,6 +785,43 @@ void BRepGraph_ChildExplorer::setCurrentFromFrame(const int theFrameIndex)
   myLocation     = myStack[theFrameIndex].AccLocation;
   myOrientation  = myStack[theFrameIndex].AccOrientation;
   myHasMore      = true;
+}
+
+//=================================================================================================
+
+BRepGraph_NodeId BRepGraph_ChildExplorer::CurrentParent() const
+{
+  if (!myHasMore || myCurrentFrame <= 0)
+  {
+    return BRepGraph_NodeId();
+  }
+
+  return myStack[myCurrentFrame - 1].Node;
+}
+
+//=================================================================================================
+
+BRepGraph_ChildExplorer::LinkKind BRepGraph_ChildExplorer::CurrentLinkKind() const
+{
+  if (!myHasMore || myCurrentFrame <= 0)
+  {
+    return LinkKind::None;
+  }
+
+  return myStack[myCurrentFrame].StepFromParent >= 0 ? LinkKind::Reference : LinkKind::Structural;
+}
+
+//=================================================================================================
+
+BRepGraph_RefId BRepGraph_ChildExplorer::CurrentRef() const
+{
+  if (!myHasMore || myCurrentFrame <= 0)
+  {
+    return BRepGraph_RefId();
+  }
+
+  const StackFrame& aCurrentFrame = myStack[myCurrentFrame];
+  return childRefIdForStep(*myGraph, myStack[myCurrentFrame - 1].Node, aCurrentFrame.StepFromParent);
 }
 
 //=================================================================================================

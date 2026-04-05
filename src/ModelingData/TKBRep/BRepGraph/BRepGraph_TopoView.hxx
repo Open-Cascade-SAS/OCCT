@@ -117,6 +117,25 @@ public:
       const BRepGraph_FaceId   theFace,
       const TopAbs_Orientation theOrientation) const;
 
+    //! Find the CoEdgeId for a given (edge, face) pair.
+    //! @param[in] theEdge edge to look up
+    //! @param[in] theFace face the edge belongs to
+    //! @return CoEdgeId, or invalid if no coedge binds this edge to this face
+    [[nodiscard]] Standard_EXPORT BRepGraph_CoEdgeId FindCoEdgeId(
+      const BRepGraph_EdgeId theEdge,
+      const BRepGraph_FaceId theFace) const;
+
+    //! Find the CoEdgeId for a given (edge, face, orientation) triple.
+    //! Useful for seam edges where two coedges share the same face.
+    //! @param[in] theEdge        edge to look up
+    //! @param[in] theFace        face the edge belongs to
+    //! @param[in] theOrientation orientation to match (FORWARD or REVERSED)
+    //! @return CoEdgeId, or invalid if no coedge matches
+    [[nodiscard]] Standard_EXPORT BRepGraph_CoEdgeId FindCoEdgeId(
+      const BRepGraph_EdgeId   theEdge,
+      const BRepGraph_FaceId   theFace,
+      const TopAbs_Orientation theOrientation) const;
+
   private:
     friend class TopoView;
 

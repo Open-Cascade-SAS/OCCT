@@ -15,6 +15,7 @@
 #define _BRepGraph_BuilderView_HeaderFile
 
 #include <BRepGraph.hxx>
+#include <BRepGraphInc_Populate.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopLoc_Location.hxx>
@@ -24,6 +25,9 @@
 class Geom_Surface;
 class Geom_Curve;
 class Geom2d_Curve;
+class Poly_Polygon3D;
+class Poly_PolygonOnTriangulation;
+class Poly_Triangulation;
 
 //! @brief Non-const view for programmatic graph construction and mutation.
 //!
@@ -177,8 +181,22 @@ public:
   //! Compound/CompSolid/Solid/Shell inputs are flattened to appended face roots.
   //! @param[in] theShape    shape to add
   //! @param[in] theParallel if true, per-face geometry extraction is parallel
-  Standard_EXPORT void AppendFlattenedShape(const TopoDS_Shape& theShape,
-                                            const bool          theParallel = false);
+  //! @param[in] theOptions  populate options (e.g. CreateAutoProduct)
+  Standard_EXPORT void AppendFlattenedShape(
+    const TopoDS_Shape&                   theShape,
+    const bool                            theParallel = false,
+    const BRepGraphInc_Populate::Options& theOptions  = BRepGraphInc_Populate::Options());
+
+  //! Append a shape to the graph preserving the full topology hierarchy.
+  //! Solid/Shell/Compound/CompSolid nodes are created alongside Face/Edge/Vertex nodes.
+  //! Shapes already in the graph (same TShape pointer) are deduplicated.
+  //! @param[in] theShape    shape to add
+  //! @param[in] theParallel if true, per-face geometry extraction is parallel
+  //! @param[in] theOptions  populate options (e.g. CreateAutoProduct)
+  Standard_EXPORT void AppendFullShape(
+    const TopoDS_Shape&                   theShape,
+    const bool                            theParallel = false,
+    const BRepGraphInc_Populate::Options& theOptions  = BRepGraphInc_Populate::Options());
 
   //! Create a new Curve2DRep in storage and return its typed identifier.
   //! Use this when assigning a new PCurve to an existing CoEdge entity
@@ -189,6 +207,45 @@ public:
   //! @return typed Curve2DRep identifier, or invalid if the curve is null
   [[nodiscard]] Standard_EXPORT BRepGraph_Curve2DRepId
     CreateCurve2DRep(const occ::handle<Geom2d_Curve>& theCurve2d);
+
+  //! Assign or clear the PCurve bound to an existing coedge.
+  //! Creates a new Curve2DRep for non-null curves and stores its id on the coedge.
+  //! Pass a null handle to clear the stored PCurve binding.
+  //! @param[in] theCoEdge  typed coedge identifier to update
+  //! @param[in] theCurve2d new 2D curve geometry, or null to clear
+  Standard_EXPORT void SetCoEdgePCurve(const BRepGraph_CoEdgeId           theCoEdge,
+                                       const occ::handle<Geom2d_Curve>& theCurve2d);
+
+  //! Create a new TriangulationRep in storage and return its typed identifier.
+  //! @param[in] theTriangulation the triangulation handle
+  //! @return typed TriangulationRep identifier, or invalid if the handle is null
+  [[nodiscard]] Standard_EXPORT BRepGraph_TriangulationRepId
+    CreateTriangulationRep(const occ::handle<Poly_Triangulation>& theTriangulation);
+
+  //! Create a new Polygon3DRep in storage and return its typed identifier.
+  //! @param[in] thePolygon the 3D polygon handle
+  //! @return typed Polygon3DRep identifier, or invalid if the handle is null
+  [[nodiscard]] Standard_EXPORT BRepGraph_Polygon3DRepId
+    CreatePolygon3DRep(const occ::handle<Poly_Polygon3D>& thePolygon);
+
+  //! Create a new PolygonOnTriRep in storage and return its typed identifier.
+  //! @param[in] thePolygon  the polygon-on-triangulation handle
+  //! @param[in] theTriRepId triangulation rep this polygon references
+  //! @return typed PolygonOnTriRep identifier, or invalid if polygon is null
+  //!         or theTriRepId is invalid
+  [[nodiscard]] Standard_EXPORT BRepGraph_PolygonOnTriRepId
+    CreatePolygonOnTriRep(const occ::handle<Poly_PolygonOnTriangulation>& thePolygon,
+                          const BRepGraph_TriangulationRepId              theTriRepId);
+
+  //! Clear all mesh representations for a face and its coedges.
+  //! Removes TriangulationReps from FaceDef and PolygonOnTriReps from all
+  //! CoEdges on the face's wires. Resets ActiveTriangulationIndex to -1.
+  //! @param[in] theFace typed face identifier
+  Standard_EXPORT void ClearFaceMesh(const BRepGraph_FaceId theFace);
+
+  //! Clear Polygon3D representation from an edge.
+  //! @param[in] theEdge typed edge identifier
+  Standard_EXPORT void ClearEdgePolygon3D(const BRepGraph_EdgeId theEdge);
 
   //! Attach a PCurve to an edge for a given face context.
   //! Creates a new CoEdge entity with Curve2DRep and updates reverse indices.
@@ -229,6 +286,29 @@ public:
   //! Mark a node and all its descendants as removed (cascading soft deletion).
   //! @param[in] theNode root node to remove
   Standard_EXPORT void RemoveSubgraph(const BRepGraph_NodeId theNode);
+
+  //! Mark a reference entry as removed (soft deletion).
+  //! This is the builder-level API for detaching a child usage from its parent
+  //! without removing the referenced definition itself.
+  //! Invalid or already-removed ids are ignored.
+  //! @param[in] theRef reference entry to remove
+  //! @return true if the reference transitioned from active to removed
+  Standard_EXPORT bool RemoveRef(const BRepGraph_RefId theRef);
+
+  //! Mark an exact parent-owned reference entry as removed (soft deletion).
+  //! This overload validates that the reference really belongs to the supplied
+  //! parent and can optionally prune the child subtree when the removed usage
+  //! was the last active parent usage of that child definition.
+  //! Use this overload for UI/path-driven detach operations where the parent
+  //! context is part of the user's selection.
+  //! @param[in] theParent expected owning parent of the reference usage
+  //! @param[in] theRef reference entry to remove
+  //! @param[in] theToPruneOrphanedChild if true, remove the referenced child
+  //!            subtree when no active parent usages remain after detachment
+  //! @return true if the reference transitioned from active to removed
+  Standard_EXPORT bool RemoveRef(const BRepGraph_NodeId theParent,
+                                 const BRepGraph_RefId  theRef,
+                                 const bool             theToPruneOrphanedChild);
 
   //! Mark a representation entry as removed (soft deletion).
   //! Invalid or already-removed ids are ignored.

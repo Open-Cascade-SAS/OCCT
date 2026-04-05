@@ -492,7 +492,7 @@ TEST(BRepGraphIncTest, Cylinder_HasSeamEdges)
     for (const BRepGraph_CoEdgeId& aCoEdgeId : *aCoEdgeIdxs)
     {
       const BRepGraphInc::CoEdgeDef& aCE = aStorage.CoEdge(aCoEdgeId);
-      if (aCE.Sense == TopAbs_FORWARD && aCE.SeamPairId.IsValid())
+      if (aCE.Orientation == TopAbs_FORWARD && aCE.SeamPairId.IsValid())
       {
         ++aSeamPairCount;
       }

@@ -439,7 +439,7 @@ void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
         {
           aPushChild(aChildIt.CurrentId(), aNextDepth);
         }
-        for (const BRepGraph_ChildRefId& aChildRefId : aSolidEnt.FreeChildRefIds)
+        for (const BRepGraph_ChildRefId& aChildRefId : aSolidEnt.AuxChildRefIds)
           aPushChild(aStorage.ChildRef(aChildRefId).ChildDefId, aNextDepth);
         break;
       }
@@ -452,7 +452,7 @@ void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
         {
           aPushChild(aChildIt.CurrentId(), aNextDepth);
         }
-        for (const BRepGraph_ChildRefId& aChildRefId : aShellEnt.FreeChildRefIds)
+        for (const BRepGraph_ChildRefId& aChildRefId : aShellEnt.AuxChildRefIds)
           aPushChild(aStorage.ChildRef(aChildRefId).ChildDefId, aNextDepth);
         break;
       }
@@ -560,11 +560,24 @@ void BRepGraph::markRefModified(const BRepGraph_RefId theRefId) noexcept
 
 //=================================================================================================
 
-void BRepGraph::markRefModified(const BRepGraph_RefId /*theRefId*/,
+void BRepGraph::markRefModified(const BRepGraph_RefId theRefId,
                                 BRepGraphInc::BaseRef& theRef) noexcept
 {
   ++theRef.OwnGen;
   myData->myPropagationWave.fetch_add(1, std::memory_order_relaxed);
+
+  // Only dispatch modification events for active (non-removed) refs.
+  if (!theRef.IsRemoved)
+  {
+    if (myData->myDeferredMode.load(std::memory_order_relaxed))
+    {
+      myData->myDeferredRefModified.Append(theRefId);
+    }
+    else if (myLayerRegistry.HasRefModificationSubscribers())
+    {
+      myLayerRegistry.DispatchRefModified(theRefId);
+    }
+  }
 
   if (!theRef.ParentId.IsValid())
     return;
@@ -860,4 +873,64 @@ BRepGraph_TransientCache& BRepGraph::transientCache()
 const BRepGraph_TransientCache& BRepGraph::transientCache() const
 {
   return myTransientCache;
+}
+
+//=================================================================================================
+
+BRepGraph_RefTransientCache& BRepGraph::refTransientCache()
+{
+  return myRefTransientCache;
+}
+
+//=================================================================================================
+
+const BRepGraph_RefTransientCache& BRepGraph::refTransientCache() const
+{
+  return myRefTransientCache;
+}
+
+//=================================================================================================
+
+const BRepGraphInc::BaseRef* BRepGraph::refEntity(const BRepGraph_RefId theId) const
+{
+  if (!theId.IsValid())
+    return nullptr;
+  const BRepGraphInc_Storage& aStorage = myData->myIncStorage;
+  switch (theId.RefKind)
+  {
+    case BRepGraph_RefId::Kind::Shell: {
+      const BRepGraph_ShellRefId anId(theId.Index);
+      return anId.IsValid(aStorage.NbShellRefs()) ? &aStorage.ShellRef(anId) : nullptr;
+    }
+    case BRepGraph_RefId::Kind::Face: {
+      const BRepGraph_FaceRefId anId(theId.Index);
+      return anId.IsValid(aStorage.NbFaceRefs()) ? &aStorage.FaceRef(anId) : nullptr;
+    }
+    case BRepGraph_RefId::Kind::Wire: {
+      const BRepGraph_WireRefId anId(theId.Index);
+      return anId.IsValid(aStorage.NbWireRefs()) ? &aStorage.WireRef(anId) : nullptr;
+    }
+    case BRepGraph_RefId::Kind::CoEdge: {
+      const BRepGraph_CoEdgeRefId anId(theId.Index);
+      return anId.IsValid(aStorage.NbCoEdgeRefs()) ? &aStorage.CoEdgeRef(anId) : nullptr;
+    }
+    case BRepGraph_RefId::Kind::Vertex: {
+      const BRepGraph_VertexRefId anId(theId.Index);
+      return anId.IsValid(aStorage.NbVertexRefs()) ? &aStorage.VertexRef(anId) : nullptr;
+    }
+    case BRepGraph_RefId::Kind::Solid: {
+      const BRepGraph_SolidRefId anId(theId.Index);
+      return anId.IsValid(aStorage.NbSolidRefs()) ? &aStorage.SolidRef(anId) : nullptr;
+    }
+    case BRepGraph_RefId::Kind::Child: {
+      const BRepGraph_ChildRefId anId(theId.Index);
+      return anId.IsValid(aStorage.NbChildRefs()) ? &aStorage.ChildRef(anId) : nullptr;
+    }
+    case BRepGraph_RefId::Kind::Occurrence: {
+      const BRepGraph_OccurrenceRefId anId(theId.Index);
+      return anId.IsValid(aStorage.NbOccurrenceRefs()) ? &aStorage.OccurrenceRef(anId) : nullptr;
+    }
+    default:
+      return nullptr;
+  }
 }

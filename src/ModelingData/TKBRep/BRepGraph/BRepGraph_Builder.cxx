@@ -12,6 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <BRepGraph_Builder.hxx>
+#include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraph_Data.hxx>
 #include <BRepGraph_Layer.hxx>
@@ -48,6 +49,16 @@ static Standard_GUID generateRandomGUID()
   for (int i = 0; i < 8; ++i)
     aUUID.Data4[i] = static_cast<uint8_t>(aRand2 >> (i * 8));
   return Standard_GUID(aUUID);
+}
+
+//=================================================================================================
+
+static void assertMutationBoundary(BRepGraph& theGraph, const char* theContext)
+{
+  (void)theContext;
+  const bool isValid = theGraph.Builder().ValidateMutationBoundary();
+  Standard_ASSERT_VOID(isValid, theContext);
+  (void)isValid;
 }
 
 } // namespace
@@ -184,8 +195,7 @@ void BRepGraph_Builder::Perform(BRepGraph&                            theGraph,
 
   populateUIDs(theGraph);
 
-  // Auto-create a single root Product pointing to the top-level topology node.
-  // aTopologyRoot defaults to invalid (Index = -1); set only if topology exists.
+  // Determine the top-level topology root node.
   {
     BRepGraphInc_Storage& aStorage = theGraph.myData->myIncStorage;
     BRepGraph_NodeId      aTopologyRoot; // default: invalid (Index = -1)
@@ -230,13 +240,18 @@ void BRepGraph_Builder::Perform(BRepGraph&                            theGraph,
     if (aTopologyRoot.IsValid())
       theGraph.myData->myRootNodeIds.Append(aTopologyRoot);
 
-    BRepGraphInc::ProductDef& aProduct    = aStorage.AppendProduct();
-    const int                 aProductIdx = aStorage.NbProducts() - 1;
-    aProduct.Id                           = BRepGraph_ProductId(aProductIdx);
-    aProduct.ShapeRootId                  = aTopologyRoot; // invalid if no topology matched
-    aProduct.RootOrientation              = theShape.Orientation();
-    aProduct.RootLocation                 = theShape.Location();
-    theGraph.allocateUID(aProduct.Id);
+    // Auto-create a single root Product pointing to the top-level topology node.
+    // Skipped when CreateAutoProduct is false (e.g. XCAF builder manages Products itself).
+    if (theOptions.CreateAutoProduct)
+    {
+      BRepGraphInc::ProductDef& aProduct    = aStorage.AppendProduct();
+      const int                 aProductIdx = aStorage.NbProducts() - 1;
+      aProduct.Id                           = BRepGraph_ProductId(aProductIdx);
+      aProduct.ShapeRootId                  = aTopologyRoot; // invalid if no topology matched
+      aProduct.RootOrientation              = theShape.Orientation();
+      aProduct.RootLocation                 = theShape.Location();
+      theGraph.allocateUID(aProduct.Id);
+    }
   }
 
   theGraph.myData->myIsDone = true;
@@ -266,13 +281,16 @@ void BRepGraph_Builder::Perform(BRepGraph&                            theGraph,
     }
     theGraph.myTransientCache.Reserve(aReservedKindCount, aCounts);
   }
+
+  assertMutationBoundary(theGraph, "Build: post-build mutation boundary inconsistency");
 }
 
 //=================================================================================================
 
-void BRepGraph_Builder::AppendFlattened(BRepGraph&          theGraph,
-                                        const TopoDS_Shape& theShape,
-                                        const bool          theParallel)
+void BRepGraph_Builder::AppendFlattened(BRepGraph&                            theGraph,
+                                        const TopoDS_Shape&                   theShape,
+                                        const bool                            theParallel,
+                                        const BRepGraphInc_Populate::Options& theOptions)
 {
   if (theShape.IsNull())
     return;
@@ -308,7 +326,7 @@ void BRepGraph_Builder::AppendFlattened(BRepGraph&          theGraph,
                                          theShape,
                                          theParallel,
                                          aAppendedRoots,
-                                         BRepGraphInc_Populate::Options(),
+                                         theOptions,
                                          aParamLayer.get(),
                                          aRegularityLayer.get(),
                                          aTmpAlloc);
@@ -344,6 +362,82 @@ void BRepGraph_Builder::AppendFlattened(BRepGraph&          theGraph,
   }
 
   theGraph.myData->myIsDone = true;
+
+  assertMutationBoundary(theGraph,
+                         "AppendFlattened: post-append mutation boundary inconsistency");
+}
+
+//=================================================================================================
+
+void BRepGraph_Builder::AppendFull(BRepGraph&                            theGraph,
+                                   const TopoDS_Shape&                   theShape,
+                                   const bool                            theParallel,
+                                   const BRepGraphInc_Populate::Options& theOptions)
+{
+  if (theShape.IsNull())
+    return;
+
+  BRepGraphInc_Storage& aStorage        = theGraph.myData->myIncStorage;
+  const int             anOldVtx        = aStorage.NbVertices();
+  const int             anOldEdge       = aStorage.NbEdges();
+  const int             anOldCoEdge     = aStorage.NbCoEdges();
+  const int             anOldWire       = aStorage.NbWires();
+  const int             anOldFace       = aStorage.NbFaces();
+  const int             anOldShell      = aStorage.NbShells();
+  const int             anOldSolid      = aStorage.NbSolids();
+  const int             anOldComp       = aStorage.NbCompounds();
+  const int             anOldCS         = aStorage.NbCompSolids();
+  const int             anOldProduct    = aStorage.NbProducts();
+  const int             anOldOccurrence = aStorage.NbOccurrences();
+  const int             anOldShellRef   = aStorage.NbShellRefs();
+  const int             anOldFaceRef    = aStorage.NbFaceRefs();
+  const int             anOldWireRef    = aStorage.NbWireRefs();
+  const int             anOldCoEdgeRef  = aStorage.NbCoEdgeRefs();
+  const int             anOldVertexRef  = aStorage.NbVertexRefs();
+  const int             anOldSolidRef   = aStorage.NbSolidRefs();
+  const int             anOldChildRef   = aStorage.NbChildRefs();
+
+  occ::handle<NCollection_IncAllocator>   aTmpAlloc = new NCollection_IncAllocator;
+  const occ::handle<BRepGraph_ParamLayer> aParamLayer =
+    theGraph.LayerRegistry().FindLayer<BRepGraph_ParamLayer>();
+  const occ::handle<BRepGraph_RegularityLayer> aRegularityLayer =
+    theGraph.LayerRegistry().FindLayer<BRepGraph_RegularityLayer>();
+  BRepGraphInc_Populate::Append(aStorage,
+                                theShape,
+                                theParallel,
+                                theOptions,
+                                aParamLayer.get(),
+                                aRegularityLayer.get(),
+                                aTmpAlloc);
+
+  if (!aStorage.GetIsDone())
+    return;
+
+  theGraph.myData->myCurrentShapes.Clear();
+
+  populateUIDsIncremental(theGraph,
+                          anOldVtx,
+                          anOldEdge,
+                          anOldCoEdge,
+                          anOldWire,
+                          anOldFace,
+                          anOldShell,
+                          anOldSolid,
+                          anOldComp,
+                          anOldCS,
+                          anOldProduct,
+                          anOldOccurrence,
+                          anOldShellRef,
+                          anOldFaceRef,
+                          anOldWireRef,
+                          anOldCoEdgeRef,
+                          anOldVertexRef,
+                          anOldSolidRef,
+                          anOldChildRef);
+
+  theGraph.myData->myIsDone = true;
+
+  assertMutationBoundary(theGraph, "AppendFull: post-append mutation boundary inconsistency");
 }
 
 //=================================================================================================

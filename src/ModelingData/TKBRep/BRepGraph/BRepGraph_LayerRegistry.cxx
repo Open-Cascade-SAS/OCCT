@@ -34,7 +34,8 @@ int BRepGraph_LayerRegistry::RegisterLayer(const occ::handle<BRepGraph_Layer>& t
   const int aNewSlot = myLayers.Length();
   myLayers.Append(theLayer);
   myGuidToSlot.Bind(aGUID, aNewSlot);
-  mySubscribedKindsMask |= theLayer->SubscribedKinds();
+  mySubscribedKindsMask    |= theLayer->SubscribedKinds();
+  mySubscribedRefKindsMask |= theLayer->SubscribedRefKinds();
   return aNewSlot;
 }
 
@@ -160,11 +161,54 @@ void BRepGraph_LayerRegistry::InvalidateAll() noexcept
 
 //=================================================================================================
 
-void BRepGraph_LayerRegistry::recomputeSubscribedKindsMask()
+void BRepGraph_LayerRegistry::DispatchOnRefRemoved(const BRepGraph_RefId theRef) noexcept
 {
-  mySubscribedKindsMask = 0;
   for (const occ::handle<BRepGraph_Layer>& aLayer : myLayers)
   {
-    mySubscribedKindsMask |= aLayer->SubscribedKinds();
+    aLayer->OnRefRemoved(theRef);
+  }
+}
+
+//=================================================================================================
+
+void BRepGraph_LayerRegistry::DispatchRefModified(const BRepGraph_RefId theRef) noexcept
+{
+  if (!HasRefModificationSubscribers())
+    return;
+
+  const int aRefKindBit = BRepGraph_Layer::RefKindBit(theRef.RefKind);
+  for (const occ::handle<BRepGraph_Layer>& aLayer : myLayers)
+  {
+    if ((aLayer->SubscribedRefKinds() & aRefKindBit) != 0)
+      aLayer->OnRefModified(theRef);
+  }
+}
+
+//=================================================================================================
+
+void BRepGraph_LayerRegistry::DispatchRefsModified(
+  const NCollection_Vector<BRepGraph_RefId>& theModifiedRefs,
+  const int                                  theModifiedRefKindsMask) noexcept
+{
+  if (!HasRefModificationSubscribers() || theModifiedRefKindsMask == 0)
+    return;
+
+  for (const occ::handle<BRepGraph_Layer>& aLayer : myLayers)
+  {
+    if ((aLayer->SubscribedRefKinds() & theModifiedRefKindsMask) != 0)
+      aLayer->OnRefsModified(theModifiedRefs, theModifiedRefKindsMask);
+  }
+}
+
+//=================================================================================================
+
+void BRepGraph_LayerRegistry::recomputeSubscribedKindsMask()
+{
+  mySubscribedKindsMask    = 0;
+  mySubscribedRefKindsMask = 0;
+  for (const occ::handle<BRepGraph_Layer>& aLayer : myLayers)
+  {
+    mySubscribedKindsMask    |= aLayer->SubscribedKinds();
+    mySubscribedRefKindsMask |= aLayer->SubscribedRefKinds();
   }
 }

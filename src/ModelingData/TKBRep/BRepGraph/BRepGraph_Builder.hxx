@@ -51,9 +51,26 @@ public:
   //! @param[in,out] theGraph   graph to extend
   //! @param[in] theShape       shape to add
   //! @param[in] theParallel    if true, per-face geometry extraction is parallel
-  static Standard_EXPORT void AppendFlattened(BRepGraph&          theGraph,
-                                              const TopoDS_Shape& theShape,
-                                              const bool          theParallel);
+  //! @param[in] theOptions     populate options (e.g. CreateAutoProduct)
+  static Standard_EXPORT void AppendFlattened(
+    BRepGraph&                            theGraph,
+    const TopoDS_Shape&                   theShape,
+    const bool                            theParallel,
+    const BRepGraphInc_Populate::Options& theOptions = BRepGraphInc_Populate::Options());
+
+  //! Append a shape to the existing graph without clearing.
+  //! Preserves the full shape hierarchy: Solid/Shell/Compound/CompSolid nodes
+  //! are created alongside Face/Edge/Vertex nodes. Shapes already present in
+  //! the graph (same TShape pointer) are deduplicated and not re-added.
+  //! @param[in,out] theGraph   graph to extend
+  //! @param[in] theShape       shape to add
+  //! @param[in] theParallel    if true, per-face geometry extraction is parallel
+  //! @param[in] theOptions     populate options (e.g. CreateAutoProduct)
+  static Standard_EXPORT void AppendFull(
+    BRepGraph&                            theGraph,
+    const TopoDS_Shape&                   theShape,
+    const bool                            theParallel,
+    const BRepGraphInc_Populate::Options& theOptions = BRepGraphInc_Populate::Options());
 
 private:
   //! Allocate UIDs for all incidence entities after BRepGraphInc_Populate

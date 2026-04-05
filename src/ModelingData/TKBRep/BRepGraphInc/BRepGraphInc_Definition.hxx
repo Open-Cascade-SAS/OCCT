@@ -132,13 +132,13 @@ struct EdgeDef : public BaseDef
 //!
 //! Each coedge represents one edge-face binding with its parametric curve.
 //! Wires reference coedges rather than edges directly.
-//! For seam edges, two coedges exist on the same face with opposite Sense,
+//! For seam edges, two coedges exist on the same face with opposite Orientation,
 //! linked by SeamPairIdx.
 struct CoEdgeDef : public BaseDef
 {
   BRepGraph_EdgeId   EdgeDefId; //!< Parent edge definition id
   BRepGraph_FaceId   FaceDefId; //!< Face this coedge belongs to (invalid for free wires)
-  TopAbs_Orientation Sense = TopAbs_FORWARD; //!< Orientation relative to parent edge
+  TopAbs_Orientation Orientation = TopAbs_FORWARD; //!< Orientation relative to parent edge
 
   //! Typed representation id into Storage::myCurves2D (invalid for free-wire coedges).
   BRepGraph_Curve2DRepId Curve2DRepId;
@@ -216,12 +216,12 @@ struct ShellDef : public BaseDef
 {
   bool IsClosed = false; //!< True if shell forms a watertight (closed) boundary.
   NCollection_Vector<BRepGraph_FaceRefId>  FaceRefIds;      //!< Face ref indices
-  NCollection_Vector<BRepGraph_ChildRefId> FreeChildRefIds; //!< Non-face children (wires, edges)
+  NCollection_Vector<BRepGraph_ChildRefId> AuxChildRefIds; //!< Non-face children (wires, edges)
 
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
     InitVec(FaceRefIds, theAlloc, 8);      // typically 4-8 faces per shell
-    InitVec(FreeChildRefIds, theAlloc, 2); // typically 0
+    InitVec(AuxChildRefIds, theAlloc, 2); // typically 0
   }
 };
 
@@ -230,12 +230,12 @@ struct SolidDef : public BaseDef
 {
   NCollection_Vector<BRepGraph_ShellRefId> ShellRefIds; //!< Shell ref indices
   NCollection_Vector<BRepGraph_ChildRefId>
-    FreeChildRefIds; //!< Non-shell children (edges, vertices)
+    AuxChildRefIds; //!< Non-shell children (edges, vertices)
 
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
     InitVec(ShellRefIds, theAlloc, 2);     // typically 1
-    InitVec(FreeChildRefIds, theAlloc, 2); // typically 0
+    InitVec(AuxChildRefIds, theAlloc, 2); // typically 0
   }
 };
 

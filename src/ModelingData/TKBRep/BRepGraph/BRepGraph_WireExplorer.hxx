@@ -86,11 +86,11 @@ private:
   //! the start vertex def id, for REVERSED returns the end vertex def id.
   template <typename VertexRefLookupT>
   static BRepGraph_NodeId orientedStartVertex(const BRepGraphInc::EdgeDef& theEdge,
-                                              const TopAbs_Orientation     theSense,
+                                              const TopAbs_Orientation     theOrientation,
                                               const VertexRefLookupT&      theVtxRefLookup)
   {
     const BRepGraph_VertexRefId aRefId =
-      (theSense == TopAbs_FORWARD) ? theEdge.StartVertexRefId : theEdge.EndVertexRefId;
+      (theOrientation == TopAbs_FORWARD) ? theEdge.StartVertexRefId : theEdge.EndVertexRefId;
     if (!aRefId.IsValid())
       return BRepGraph_NodeId();
     return theVtxRefLookup(aRefId);
@@ -100,11 +100,11 @@ private:
   //! the end vertex def id, for REVERSED returns the start vertex def id.
   template <typename VertexRefLookupT>
   static BRepGraph_NodeId orientedEndVertex(const BRepGraphInc::EdgeDef& theEdge,
-                                            const TopAbs_Orientation     theSense,
+                                            const TopAbs_Orientation     theOrientation,
                                             const VertexRefLookupT&      theVtxRefLookup)
   {
     const BRepGraph_VertexRefId aRefId =
-      (theSense == TopAbs_FORWARD) ? theEdge.EndVertexRefId : theEdge.StartVertexRefId;
+      (theOrientation == TopAbs_FORWARD) ? theEdge.EndVertexRefId : theEdge.StartVertexRefId;
     if (!aRefId.IsValid())
       return BRepGraph_NodeId();
     return theVtxRefLookup(aRefId);
@@ -136,7 +136,7 @@ private:
       const BRepGraphInc::CoEdgeDef&   aPrevCoEdge = theCoEdgeLookup(aPrevRef.DefId.Index);
       const BRepGraph_NodeId           aPrevEnd =
         orientedEndVertex(theEdgeLookup(aPrevCoEdge.EdgeDefId.Index),
-                          aPrevCoEdge.Sense,
+                          aPrevCoEdge.Orientation,
                           theVtxRefLookup);
 
       bool aFound = false;
@@ -148,7 +148,7 @@ private:
         const BRepGraphInc::CoEdgeDef&   aCandCoEdge = theCoEdgeLookup(aCandRef.DefId.Index);
         const BRepGraph_NodeId           aCandStart =
           orientedStartVertex(theEdgeLookup(aCandCoEdge.EdgeDefId.Index),
-                              aCandCoEdge.Sense,
+                              aCandCoEdge.Orientation,
                               theVtxRefLookup);
 
         if (aPrevEnd.IsValid() && aCandStart.IsValid() && aPrevEnd == aCandStart)

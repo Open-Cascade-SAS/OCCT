@@ -501,6 +501,96 @@ TEST(BRepGraph_ChildExplorerTest, DirectChildren_ShellFaces_CountAndOrder)
     EXPECT_EQ(anActualFaceIds.Value(i), anExpectedFaceIds.Value(i));
 }
 
+TEST(BRepGraph_ChildExplorerTest, DirectChildren_ShellFaces_ExposeParentAndRef)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  const BRepGraph_ShellId aShellId(0);
+  int                     anOrdinal = 0;
+  for (BRepGraph_ChildExplorer anIt =
+         makeDirectChildExplorer(aGraph, aShellId, BRepGraph_NodeId::Kind::Face);
+       anIt.More();
+       anIt.Next(), ++anOrdinal)
+  {
+    const BRepGraph_FaceRefId aFaceRefId = aGraph.Refs().Faces().IdsOf(aShellId).Value(anOrdinal);
+    EXPECT_EQ(anIt.CurrentParent(), BRepGraph_NodeId(aShellId));
+    EXPECT_EQ(anIt.CurrentLinkKind(), BRepGraph_ChildExplorer::LinkKind::Reference);
+    EXPECT_EQ(anIt.CurrentRef(), BRepGraph_RefId(aFaceRefId));
+  }
+}
+
+TEST(BRepGraph_ChildExplorerTest, DirectChildren_ProductShapeRoot_HasNoRef)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  const BRepGraph_ProductId aProductId = aGraph.Builder().AddProduct(BRepGraph_SolidId(0));
+  ASSERT_TRUE(aProductId.IsValid());
+
+  BRepGraph_ChildExplorer anIt(aGraph,
+                               aProductId,
+                               BRepGraph_ChildExplorer::TraversalMode::DirectChildren);
+  ASSERT_TRUE(anIt.More());
+  EXPECT_EQ(anIt.Current().DefId, BRepGraph_NodeId(BRepGraph_SolidId(0)));
+  EXPECT_EQ(anIt.CurrentParent(), BRepGraph_NodeId(aProductId));
+  EXPECT_EQ(anIt.CurrentLinkKind(), BRepGraph_ChildExplorer::LinkKind::Structural);
+  EXPECT_FALSE(anIt.CurrentRef().IsValid());
+
+  anIt.Next();
+  EXPECT_FALSE(anIt.More());
+}
+
+TEST(BRepGraph_ChildExplorerTest, RootEqualsTarget_LinkKindNone)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  BRepGraph_ChildExplorer anExp(aGraph, BRepGraph_FaceId(0), BRepGraph_NodeId::Kind::Face);
+  ASSERT_TRUE(anExp.More());
+  EXPECT_EQ(anExp.CurrentLinkKind(), BRepGraph_ChildExplorer::LinkKind::None);
+  EXPECT_FALSE(anExp.CurrentParent().IsValid());
+  EXPECT_FALSE(anExp.CurrentRef().IsValid());
+}
+
+TEST(BRepGraph_ChildExplorerTest, DirectChildren_ProductOccurrences_ExposeOccurrenceRefs)
+{
+  BRepGraph aGraph;
+  aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  const BRepGraph_ProductId aPart = aGraph.Builder().AddProduct(BRepGraph_SolidId(0));
+  const BRepGraph_ProductId anAssembly = aGraph.Builder().AddAssemblyProduct();
+  ASSERT_TRUE(aPart.IsValid());
+  ASSERT_TRUE(anAssembly.IsValid());
+
+  const BRepGraph_OccurrenceId anOcc0 =
+    aGraph.Builder().AddOccurrence(anAssembly, aPart, TopLoc_Location());
+  const BRepGraph_OccurrenceId anOcc1 =
+    aGraph.Builder().AddOccurrence(anAssembly, aPart, TopLoc_Location());
+  ASSERT_TRUE(anOcc0.IsValid());
+  ASSERT_TRUE(anOcc1.IsValid());
+
+  const NCollection_Vector<BRepGraph_OccurrenceRefId>& anOccurrenceRefs =
+    aGraph.Refs().Occurrences().IdsOf(anAssembly);
+  ASSERT_EQ(anOccurrenceRefs.Length(), 2);
+
+  int anOrdinal = 0;
+  for (BRepGraph_ChildExplorer anIt(aGraph,
+                                    anAssembly,
+                                    BRepGraph_ChildExplorer::TraversalMode::DirectChildren);
+       anIt.More();
+       anIt.Next(), ++anOrdinal)
+  {
+    EXPECT_EQ(anIt.CurrentParent(), BRepGraph_NodeId(anAssembly));
+    EXPECT_EQ(anIt.CurrentRef(), BRepGraph_RefId(anOccurrenceRefs.Value(anOrdinal)));
+  }
+  EXPECT_EQ(anOrdinal, 2);
+}
+
 TEST(BRepGraph_ChildExplorerTest, DirectChildren_RemovedFaceRef_IsSkipped)
 {
   BRepGraph aGraph;

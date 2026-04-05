@@ -25,6 +25,7 @@
 #include <BRepGraph_HistoryRecord.hxx>
 #include <BRepGraph_LayerRegistry.hxx>
 #include <BRepGraphInc_Populate.hxx>
+#include <BRepGraph_RefTransientCache.hxx>
 #include <BRepGraph_TransientCache.hxx>
 
 #include <Standard_DefineAlloc.hxx>
@@ -61,7 +62,7 @@ class BRepGraph_History;
 //! - **RepId** (Kind + Index): separate geometry/mesh addressing (Surface,
 //!   Curve3D, Curve2D, Triangulation, Polygon) decoupled from topology nodes.
 //! - **CoEdge**: half-edge entity owning PCurve data for each edge-face binding;
-//!   seam edges use paired CoEdges with opposite Sense (Parasolid convention).
+//!   seam edges use paired CoEdges with opposite Orientation (Parasolid convention).
 //! - **Lifecycle**: Build() populates from TopoDS_Shape; Builder().Mut*() guards
 //!   provide RAII-scoped mutation with automatic cache invalidation and upward
 //!   propagation.
@@ -219,6 +220,14 @@ private:
   [[nodiscard]] Standard_EXPORT BRepGraph_TransientCache&       transientCache();
   [[nodiscard]] Standard_EXPORT const BRepGraph_TransientCache& transientCache() const;
 
+  //! Access the raw reference transient cache.
+  [[nodiscard]] Standard_EXPORT BRepGraph_RefTransientCache&       refTransientCache();
+  [[nodiscard]] Standard_EXPORT const BRepGraph_RefTransientCache& refTransientCache() const;
+
+  //! Generic reference lookup by RefId (const).
+  //! Returns nullptr if the RefId is invalid or out of range.
+  Standard_EXPORT const BRepGraphInc::BaseRef* refEntity(const BRepGraph_RefId theId) const;
+
   //! @}
 
   Standard_EXPORT void             invalidateSubgraphImpl(const BRepGraph_NodeId theNode);
@@ -260,8 +269,9 @@ private:
   std::unique_ptr<BRepGraph_Data> myData;
 
   //! Registered layers are stored on BRepGraph, not BRepGraph_Data, to survive Compact swap.
-  BRepGraph_LayerRegistry  myLayerRegistry;
-  BRepGraph_TransientCache myTransientCache; //!< Transient algorithm caches (BndBox, UVBounds)
+  BRepGraph_LayerRegistry     myLayerRegistry;
+  BRepGraph_TransientCache    myTransientCache;    //!< Transient algorithm caches (BndBox, UVBounds)
+  BRepGraph_RefTransientCache myRefTransientCache; //!< Transient per-reference caches
 };
 
 // Included after BRepGraph is complete so the template body sees markModified().

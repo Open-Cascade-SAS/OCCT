@@ -15,11 +15,15 @@
 #include <BRepBuilderAPI_Copy.hxx>
 #include <BRepGProp.hxx>
 #include <BRepGraph.hxx>
+#include <BRepGraph_BuilderView.hxx>
+#include <BRepGraph_CacheView.hxx>
+#include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_UIDsView.hxx>
 #include <BRepGraph_Copy.hxx>
+#include <BRepGraph_TransientCache.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
@@ -35,6 +39,26 @@
 #include <iostream>
 
 #include <gtest/gtest.h>
+
+namespace
+{
+
+class CopyTestCacheValue : public BRepGraph_CacheValue
+{
+public:
+  DEFINE_STANDARD_RTTI_INLINE(CopyTestCacheValue, BRepGraph_CacheValue)
+  CopyTestCacheValue() = default;
+};
+
+const occ::handle<BRepGraph_CacheKind>& copyTestCacheKind()
+{
+  static const occ::handle<BRepGraph_CacheKind> THE_KIND =
+    new BRepGraph_CacheKind(Standard_GUID("2f9b6a5c-1f2d-4a88-9c1c-7a0c16a10026"),
+                            "CopyTestAttr");
+  return THE_KIND;
+}
+
+} // namespace
 
 TEST(BRepGraph_CopyTest, CopyBox_FaceCount)
 {
@@ -129,6 +153,107 @@ TEST(BRepGraph_CopyTest, CopyBox_SharedGeometry)
   ASSERT_GT(aCopyGraph.Topo().Faces().Nb(), 0);
   EXPECT_EQ(BRepGraph_Tool::Face::Surface(aCopyGraph, BRepGraph_FaceId(0)).get(),
             BRepGraph_Tool::Face::Surface(aGraph, BRepGraph_FaceId(0)).get());
+}
+
+TEST(BRepGraph_CopyTest, CopyBox_PreservesFreshNodeCache)
+{
+  const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
+
+  BRepGraph aGraph;
+  aGraph.Build(aBox);
+  ASSERT_TRUE(aGraph.IsDone());
+
+  const BRepGraph_FaceId aFaceId(0);
+  const occ::handle<BRepGraph_CacheValue> anAttr = new CopyTestCacheValue();
+  aGraph.Cache().Set(aFaceId, copyTestCacheKind(), anAttr);
+  ASSERT_TRUE(aGraph.Cache().Has(aFaceId, copyTestCacheKind()));
+
+  BRepGraph aCopyGraph = BRepGraph_Copy::Perform(aGraph, true);
+  ASSERT_TRUE(aCopyGraph.IsDone());
+
+  EXPECT_TRUE(aCopyGraph.Cache().Has(aFaceId, copyTestCacheKind()));
+  EXPECT_FALSE(aCopyGraph.Cache().Get(aFaceId, copyTestCacheKind()).IsNull());
+  EXPECT_TRUE(aCopyGraph.Cache().CacheKindIter(aFaceId).More());
+}
+
+TEST(BRepGraph_CopyTest, CopyBox_DoesNotPreserveStaleNodeCache)
+{
+  const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
+
+  BRepGraph aGraph;
+  aGraph.Build(aBox);
+  ASSERT_TRUE(aGraph.IsDone());
+
+  const BRepGraph_FaceId aFaceId(0);
+  aGraph.Cache().Set(aFaceId, copyTestCacheKind(), new CopyTestCacheValue());
+  ASSERT_TRUE(aGraph.Cache().Has(aFaceId, copyTestCacheKind()));
+
+  {
+    BRepGraph_MutGuard<BRepGraphInc::FaceDef> aFace = aGraph.Builder().MutFace(aFaceId);
+    aFace->Tolerance += 0.1;
+  }
+
+  ASSERT_FALSE(aGraph.Cache().Has(aFaceId, copyTestCacheKind()));
+  ASSERT_TRUE(aGraph.Cache().Get(aFaceId, copyTestCacheKind()).IsNull());
+  ASSERT_FALSE(aGraph.Cache().CacheKindIter(aFaceId).More());
+
+  BRepGraph aCopyGraph = BRepGraph_Copy::Perform(aGraph, true);
+  ASSERT_TRUE(aCopyGraph.IsDone());
+
+  EXPECT_FALSE(aCopyGraph.Cache().Has(aFaceId, copyTestCacheKind()));
+  EXPECT_TRUE(aCopyGraph.Cache().Get(aFaceId, copyTestCacheKind()).IsNull());
+  EXPECT_FALSE(aCopyGraph.Cache().CacheKindIter(aFaceId).More());
+}
+
+TEST(BRepGraph_CopyTest, CopyBox_PreservesFreshFaceRefCache)
+{
+  const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
+
+  BRepGraph aGraph;
+  aGraph.Build(aBox);
+  ASSERT_TRUE(aGraph.IsDone());
+  ASSERT_GT(aGraph.Refs().Faces().Nb(), 0);
+
+  const BRepGraph_FaceRefId aFaceRef(0);
+  aGraph.Cache().Set(aFaceRef, copyTestCacheKind(), new CopyTestCacheValue());
+  ASSERT_TRUE(aGraph.Cache().Has(aFaceRef, copyTestCacheKind()));
+
+  BRepGraph aCopyGraph = BRepGraph_Copy::Perform(aGraph, true);
+  ASSERT_TRUE(aCopyGraph.IsDone());
+
+  EXPECT_TRUE(aCopyGraph.Cache().Has(aFaceRef, copyTestCacheKind()));
+  EXPECT_FALSE(aCopyGraph.Cache().Get(aFaceRef, copyTestCacheKind()).IsNull());
+  EXPECT_TRUE(aCopyGraph.Cache().CacheKindIter(aFaceRef).More());
+}
+
+TEST(BRepGraph_CopyTest, CopyBox_DoesNotPreserveStaleFaceRefCache)
+{
+  const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
+
+  BRepGraph aGraph;
+  aGraph.Build(aBox);
+  ASSERT_TRUE(aGraph.IsDone());
+  ASSERT_GT(aGraph.Refs().Faces().Nb(), 0);
+
+  const BRepGraph_FaceRefId aFaceRef(0);
+  aGraph.Cache().Set(aFaceRef, copyTestCacheKind(), new CopyTestCacheValue());
+  ASSERT_TRUE(aGraph.Cache().Has(aFaceRef, copyTestCacheKind()));
+
+  {
+    BRepGraph_MutGuard<BRepGraphInc::FaceRef> aRef = aGraph.Builder().MutFaceRef(aFaceRef);
+    aRef->Orientation = TopAbs::Reverse(aRef->Orientation);
+  }
+
+  ASSERT_FALSE(aGraph.Cache().Has(aFaceRef, copyTestCacheKind()));
+  ASSERT_TRUE(aGraph.Cache().Get(aFaceRef, copyTestCacheKind()).IsNull());
+  ASSERT_FALSE(aGraph.Cache().CacheKindIter(aFaceRef).More());
+
+  BRepGraph aCopyGraph = BRepGraph_Copy::Perform(aGraph, true);
+  ASSERT_TRUE(aCopyGraph.IsDone());
+
+  EXPECT_FALSE(aCopyGraph.Cache().Has(aFaceRef, copyTestCacheKind()));
+  EXPECT_TRUE(aCopyGraph.Cache().Get(aFaceRef, copyTestCacheKind()).IsNull());
+  EXPECT_FALSE(aCopyGraph.Cache().CacheKindIter(aFaceRef).More());
 }
 
 TEST(BRepGraph_CopyTest, CopyCylinder_FaceCount)

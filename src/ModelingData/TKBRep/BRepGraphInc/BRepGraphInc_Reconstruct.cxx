@@ -257,7 +257,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage&      the
         TopoDS_Shape anEdge = Node(theStorage, aCoEdge.EdgeDefId, theCache);
         if (!anEdge.IsNull())
         {
-          anEdge.Orientation(aCoEdge.Sense);
+          anEdge.Orientation(aCoEdge.Orientation);
           if (!aCoEdgeRef.LocalLocation.IsIdentity())
             anEdge.Location(aCoEdgeRef.LocalLocation);
           aBB.Add(aNewWire, anEdge);
@@ -294,7 +294,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage&      the
         }
       }
       // Reconstruct free children (wires, edges) attached directly to the shell.
-      for (const BRepGraph_ChildRefId& aChildRefId : aShell.FreeChildRefIds)
+      for (const BRepGraph_ChildRefId& aChildRefId : aShell.AuxChildRefIds)
       {
         const BRepGraphInc::ChildRef& aRef = theStorage.ChildRef(aChildRefId);
         TopoDS_Shape                  aChild =
@@ -333,7 +333,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage&      the
         }
       }
       // Free children of the solid (edges, vertices).
-      for (const BRepGraph_ChildRefId& aChildRefId : aSolid.FreeChildRefIds)
+      for (const BRepGraph_ChildRefId& aChildRefId : aSolid.AuxChildRefIds)
       {
         const BRepGraphInc::ChildRef& aCR    = theStorage.ChildRef(aChildRefId);
         TopoDS_Shape                  aChild = Node(theStorage, aCR.ChildDefId, theCache);
@@ -598,7 +598,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(
         if (aCoEdge.IsRemoved || !aCoEdge.EdgeDefId.IsValid(theStorage.NbEdges()))
           continue;
         TopoDS_Edge anEdge = aGetOrBuildEdge(aCoEdge.EdgeDefId.Index);
-        anEdge.Orientation(aCoEdge.Sense);
+        anEdge.Orientation(aCoEdge.Orientation);
         if (!aCoEdgeRef.LocalLocation.IsIdentity())
           anEdge.Location(aCoEdgeRef.LocalLocation);
         aBB.Add(aNewWire, anEdge);

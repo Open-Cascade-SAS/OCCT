@@ -28,8 +28,6 @@
 #include <GeomProjLib.hxx>
 #include <Standard_NoSuchObject.hxx>
 
-//=================================================================================================
-
 gp_Pnt BRepGraph_Tool::Vertex::Pnt(const BRepGraph&                 theGraph,
                                    const BRepGraphInc::VertexUsage& theRef)
 {

@@ -71,7 +71,7 @@ struct WireRef : public BaseRef
 };
 
 //! CoEdge reference storage entry.
-//! No Orientation field: CoEdgeDef::Sense already owns the edge-on-face sense,
+//! No Orientation field: CoEdgeDef::Orientation already owns the edge-on-face sense,
 //! coupled with PCurve parametrization, so duplicating orientation here would
 //! create a second competing source of truth.
 struct CoEdgeRef : public BaseRef
