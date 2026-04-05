@@ -13,15 +13,18 @@
 
 #include <GeomBndLib_SurfaceOfRevolution.hxx>
 
+#include <GeomAdaptor_Surface.hxx>
 #include <GeomBndLib_Circle.hxx>
 #include <GeomBndLib_Curve.hxx>
 #include <GeomBndLib_InfiniteHelpers.pxx>
+#include <GeomBndLib_OtherSurface.hxx>
 #include <Geom_Curve.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
 #include <Precision.hxx>
+#include <Standard_Failure.hxx>
 
 namespace
 {
@@ -156,21 +159,54 @@ Bnd_Box GeomBndLib_SurfaceOfRevolution::Box(double theUMin,
                                             double theVMax,
                                             double theTol) const
 {
-  const occ::handle<Geom_Curve>& aBasisCurve = myGeom->BasisCurve();
-  const gp_Ax1                   anAxis      = myGeom->Axis();
-  const gp_Pnt&                  anOrigin    = anAxis.Location();
-  const gp_Dir&                  anAxisDir   = anAxis.Direction();
+  try
+  {
+    const occ::handle<Geom_Curve>& aBasisCurve = myGeom->BasisCurve();
+    const gp_Ax1                   anAxis      = myGeom->Axis();
+    const gp_Pnt&                  anOrigin    = anAxis.Location();
+    const gp_Dir&                  anAxisDir   = anAxis.Direction();
 
-  // Clamp V range to basis curve bounds.
-  const double aVFirst = aBasisCurve->FirstParameter();
-  const double aVLast  = aBasisCurve->LastParameter();
-  const double aVMin   = Precision::IsNegativeInfinite(theVMin) ? aVFirst : theVMin;
-  const double aVMax   = Precision::IsPositiveInfinite(theVMax) ? aVLast : theVMax;
+    // Clamp V range to basis curve bounds.
+    const double aVFirst = aBasisCurve->FirstParameter();
+    const double aVLast  = aBasisCurve->LastParameter();
+    double       aVMin   = Precision::IsNegativeInfinite(theVMin) ? aVFirst : theVMin;
+    double       aVMax   = Precision::IsPositiveInfinite(theVMax) ? aVLast : theVMax;
+    if (!aBasisCurve->IsPeriodic())
+    {
+      if (aVMin < aVFirst)
+        aVMin = aVFirst;
+      else if (aVMin > aVLast)
+        aVMin = aVLast;
+      if (aVMax < aVFirst)
+        aVMax = aVFirst;
+      else if (aVMax > aVLast)
+        aVMax = aVLast;
+      if (aVMin > aVMax)
+      {
+        const double aTmp = aVMin;
+        aVMin             = aVMax;
+        aVMax             = aTmp;
+      }
+    }
 
-  // Compute the basis curve bounding box, then revolve all 8 corners around the axis.
-  GeomBndLib_Curve aCurveEval(aBasisCurve);
-  const Bnd_Box    aCurveBox = aCurveEval.Box(aVMin, aVMax, 0.);
-  return buildRevolutionBox(aCurveBox, anOrigin, anAxisDir, theUMin, theUMax, theTol);
+    // Compute the basis curve bounding box, then revolve all 8 corners around the axis.
+    GeomBndLib_Curve aCurveEval(aBasisCurve);
+    const Bnd_Box    aCurveBox = aCurveEval.Box(aVMin, aVMax, 0.);
+    if (aCurveBox.IsVoid())
+    {
+      GeomAdaptor_Surface     anAdaptor(myGeom);
+      GeomBndLib_OtherSurface anOther(anAdaptor);
+      return anOther.Box(theUMin, theUMax, theVMin, theVMax, theTol);
+    }
+    return buildRevolutionBox(aCurveBox, anOrigin, anAxisDir, theUMin, theUMax, theTol);
+  }
+  catch (Standard_Failure const&)
+  {
+    // Fall back to robust generic sampling if basis-curve segmentation fails.
+    GeomAdaptor_Surface     anAdaptor(myGeom);
+    GeomBndLib_OtherSurface anOther(anAdaptor);
+    return anOther.Box(theUMin, theUMax, theVMin, theVMax, theTol);
+  }
 }
 
 //=================================================================================================
@@ -181,19 +217,52 @@ Bnd_Box GeomBndLib_SurfaceOfRevolution::BoxOptimal(double theUMin,
                                                    double theVMax,
                                                    double theTol) const
 {
-  const occ::handle<Geom_Curve>& aBasisCurve = myGeom->BasisCurve();
-  const gp_Ax1                   anAxis      = myGeom->Axis();
-  const gp_Pnt&                  anOrigin    = anAxis.Location();
-  const gp_Dir&                  anAxisDir   = anAxis.Direction();
+  try
+  {
+    const occ::handle<Geom_Curve>& aBasisCurve = myGeom->BasisCurve();
+    const gp_Ax1                   anAxis      = myGeom->Axis();
+    const gp_Pnt&                  anOrigin    = anAxis.Location();
+    const gp_Dir&                  anAxisDir   = anAxis.Direction();
 
-  // Clamp V range to basis curve bounds.
-  const double aVFirst = aBasisCurve->FirstParameter();
-  const double aVLast  = aBasisCurve->LastParameter();
-  const double aVMin   = Precision::IsNegativeInfinite(theVMin) ? aVFirst : theVMin;
-  const double aVMax   = Precision::IsPositiveInfinite(theVMax) ? aVLast : theVMax;
+    // Clamp V range to basis curve bounds.
+    const double aVFirst = aBasisCurve->FirstParameter();
+    const double aVLast  = aBasisCurve->LastParameter();
+    double       aVMin   = Precision::IsNegativeInfinite(theVMin) ? aVFirst : theVMin;
+    double       aVMax   = Precision::IsPositiveInfinite(theVMax) ? aVLast : theVMax;
+    if (!aBasisCurve->IsPeriodic())
+    {
+      if (aVMin < aVFirst)
+        aVMin = aVFirst;
+      else if (aVMin > aVLast)
+        aVMin = aVLast;
+      if (aVMax < aVFirst)
+        aVMax = aVFirst;
+      else if (aVMax > aVLast)
+        aVMax = aVLast;
+      if (aVMin > aVMax)
+      {
+        const double aTmp = aVMin;
+        aVMin             = aVMax;
+        aVMax             = aTmp;
+      }
+    }
 
-  // Use the tight basis curve box for a more precise result.
-  GeomBndLib_Curve aCurveEval(aBasisCurve);
-  const Bnd_Box    aCurveBox = aCurveEval.BoxOptimal(aVMin, aVMax, 0.);
-  return buildRevolutionBox(aCurveBox, anOrigin, anAxisDir, theUMin, theUMax, theTol);
+    // Use the tight basis curve box for a more precise result.
+    GeomBndLib_Curve aCurveEval(aBasisCurve);
+    const Bnd_Box    aCurveBox = aCurveEval.BoxOptimal(aVMin, aVMax, 0.);
+    if (aCurveBox.IsVoid())
+    {
+      GeomAdaptor_Surface     anAdaptor(myGeom);
+      GeomBndLib_OtherSurface anOther(anAdaptor);
+      return anOther.BoxOptimal(theUMin, theUMax, theVMin, theVMax, theTol);
+    }
+    return buildRevolutionBox(aCurveBox, anOrigin, anAxisDir, theUMin, theUMax, theTol);
+  }
+  catch (Standard_Failure const&)
+  {
+    // Fall back to robust generic sampling if basis-curve segmentation fails.
+    GeomAdaptor_Surface     anAdaptor(myGeom);
+    GeomBndLib_OtherSurface anOther(anAdaptor);
+    return anOther.BoxOptimal(theUMin, theUMax, theVMin, theVMax, theTol);
+  }
 }

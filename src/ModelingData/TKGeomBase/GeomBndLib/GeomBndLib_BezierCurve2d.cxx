@@ -13,7 +13,9 @@
 
 #include <GeomBndLib_BezierCurve2d.hxx>
 
+#include <Geom2d_Geometry.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
+#include <Precision.hxx>
 #include "GeomBndLib_SplineHelpers.pxx"
 
 //=================================================================================================
@@ -27,11 +29,26 @@ Bnd_Box2d GeomBndLib_BezierCurve2d::Box(double theTol) const
 
 Bnd_Box2d GeomBndLib_BezierCurve2d::Box(double theU1, double theU2, double theTol) const
 {
-  return GeomBndLib_SplineHelpers::
-    BezierCurveBox<Geom2d_BezierCurve, Geom2dAdaptor_Curve, Bnd_Box2d, gp_Pnt2d>(myGeom,
-                                                                                 theU1,
-                                                                                 theU2,
-                                                                                 theTol);
+  occ::handle<Geom2d_BezierCurve> aCurve = myGeom;
+  const double                    aU1    = aCurve->FirstParameter();
+  const double                    aU2    = aCurve->LastParameter();
+  const double                    aTrim1 = std::max(theU1, aU1);
+  const double                    aTrim2 = std::min(theU2, aU2);
+  constexpr double                anEps  = Precision::PConfusion();
+  if (std::abs(aU1 - aTrim1) > anEps || std::abs(aU2 - aTrim2) > anEps)
+  {
+    const occ::handle<Geom2d_Geometry> aCopy = aCurve->Copy();
+    aCurve                                   = occ::down_cast<Geom2d_BezierCurve>(aCopy);
+    aCurve->Segment(aTrim1, aTrim2);
+  }
+
+  Bnd_Box2d aBox;
+  for (int anIdx = 1; anIdx <= aCurve->NbPoles(); ++anIdx)
+  {
+    aBox.Add(aCurve->Pole(anIdx));
+  }
+  aBox.Enlarge(theTol);
+  return aBox;
 }
 
 //=================================================================================================

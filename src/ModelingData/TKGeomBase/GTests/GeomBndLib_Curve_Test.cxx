@@ -432,6 +432,46 @@ TEST(GeomBndLib_CurveTest, BSplineCurve_CompareWithBndLib)
   CompareBoxes(aNewBox, anOldBox, Precision::Confusion());
 }
 
+TEST(GeomBndLib_CurveTest, BSplineCurve_TrimmedRange_CompareWithBndLib)
+{
+  NCollection_Array1<gp_Pnt> aPoles(1, 7);
+  aPoles.SetValue(1, gp_Pnt(0.0, 0.0, 0.0));
+  aPoles.SetValue(2, gp_Pnt(10.0, 20.0, 0.0));
+  aPoles.SetValue(3, gp_Pnt(20.0, -10.0, 5.0));
+  aPoles.SetValue(4, gp_Pnt(30.0, 40.0, 0.0));
+  aPoles.SetValue(5, gp_Pnt(40.0, 5.0, -5.0));
+  aPoles.SetValue(6, gp_Pnt(50.0, 15.0, 0.0));
+  aPoles.SetValue(7, gp_Pnt(60.0, 0.0, 0.0));
+
+  NCollection_Array1<double> aKnots(1, 5);
+  aKnots.SetValue(1, 0.0);
+  aKnots.SetValue(2, 1.0);
+  aKnots.SetValue(3, 2.0);
+  aKnots.SetValue(4, 3.0);
+  aKnots.SetValue(5, 4.0);
+
+  NCollection_Array1<int> aMults(1, 5);
+  aMults.SetValue(1, 4);
+  aMults.SetValue(2, 1);
+  aMults.SetValue(3, 1);
+  aMults.SetValue(4, 1);
+  aMults.SetValue(5, 4);
+
+  occ::handle<Geom_BSplineCurve> aBSpl = new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
+  GeomAdaptor_Curve              anAdaptor(aBSpl);
+
+  constexpr double aU1 = 1.82;
+  constexpr double aU2 = 2.04;
+
+  Bnd_Box aNewBox;
+  GeomBndLib_Curve(aBSpl).Add(aU1, aU2, Precision::Confusion(), aNewBox);
+
+  Bnd_Box anOldBox;
+  BndLib_Add3dCurve::Add(anAdaptor, aU1, aU2, Precision::Confusion(), anOldBox);
+
+  CompareBoxes(aNewBox, anOldBox, Precision::Confusion());
+}
+
 // =========================================================================
 // Adaptor constructor
 // =========================================================================

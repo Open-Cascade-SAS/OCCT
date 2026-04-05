@@ -14,6 +14,7 @@
 #include <GeomBndLib_BezierCurve.hxx>
 
 #include <GeomAdaptor_Curve.hxx>
+#include <Precision.hxx>
 #include "GeomBndLib_SplineHelpers.pxx"
 
 //=================================================================================================
@@ -27,11 +28,21 @@ Bnd_Box GeomBndLib_BezierCurve::Box(double theTol) const
 
 Bnd_Box GeomBndLib_BezierCurve::Box(double theU1, double theU2, double theTol) const
 {
-  return GeomBndLib_SplineHelpers::
-    BezierCurveBox<Geom_BezierCurve, GeomAdaptor_Curve, Bnd_Box, gp_Pnt>(myGeom,
-                                                                         theU1,
-                                                                         theU2,
-                                                                         theTol);
+  constexpr double  aWeakness = 1.5;
+  GeomAdaptor_Curve aGACurve(myGeom);
+  Bnd_Box           aSampledBox;
+  const double      aDeflection =
+    GeomBndLib_SplineHelpers::FillBox<Bnd_Box, GeomAdaptor_Curve, gp_Pnt>(aSampledBox,
+                                                                          aGACurve,
+                                                                          theU1,
+                                                                          theU2,
+                                                                          myGeom->Degree());
+  aSampledBox.Enlarge(aWeakness * aDeflection);
+
+  Bnd_Box aBox;
+  GeomBndLib_SplineHelpers::ReduceSplineBox(myGeom->Poles(), aSampledBox, aBox);
+  aBox.Enlarge(theTol);
+  return aBox;
 }
 
 //=================================================================================================

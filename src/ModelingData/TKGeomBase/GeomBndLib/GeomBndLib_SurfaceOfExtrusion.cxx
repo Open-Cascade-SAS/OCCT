@@ -13,12 +13,15 @@
 
 #include <GeomBndLib_SurfaceOfExtrusion.hxx>
 
+#include <GeomAdaptor_Surface.hxx>
 #include <GeomBndLib_Curve.hxx>
 #include <GeomBndLib_InfiniteHelpers.pxx>
+#include <GeomBndLib_OtherSurface.hxx>
 #include <Geom_Curve.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
 #include <Precision.hxx>
+#include <Standard_Failure.hxx>
 
 namespace
 {
@@ -141,14 +144,52 @@ Bnd_Box GeomBndLib_SurfaceOfExtrusion::Box(double theUMin,
                                            double theVMax,
                                            double theTol) const
 {
-  // P(U, V) = BasisCurve(U) + V * Direction
-  const occ::handle<Geom_Curve>& aBasisCurve = myGeom->BasisCurve();
-  const gp_Dir&                  aDir        = myGeom->Direction();
-  const gp_XYZ&                  aDirXYZ     = aDir.XYZ();
+  try
+  {
+    // P(U, V) = BasisCurve(U) + V * Direction
+    const occ::handle<Geom_Curve>& aBasisCurve = myGeom->BasisCurve();
+    const gp_Dir&                  aDir        = myGeom->Direction();
+    const gp_XYZ&                  aDirXYZ     = aDir.XYZ();
 
-  GeomBndLib_Curve aCurveEval(aBasisCurve);
-  const Bnd_Box    aCurveBox = aCurveEval.Box(theUMin, theUMax, 0.);
-  return buildExtrusionBox(aCurveBox, aDir, aDirXYZ, theVMin, theVMax, theTol);
+    double aCurveU1 = theUMin;
+    double aCurveU2 = theUMax;
+    if (!aBasisCurve->IsPeriodic())
+    {
+      const double aFirst = aBasisCurve->FirstParameter();
+      const double aLast  = aBasisCurve->LastParameter();
+      if (aCurveU1 < aFirst)
+        aCurveU1 = aFirst;
+      else if (aCurveU1 > aLast)
+        aCurveU1 = aLast;
+      if (aCurveU2 < aFirst)
+        aCurveU2 = aFirst;
+      else if (aCurveU2 > aLast)
+        aCurveU2 = aLast;
+      if (aCurveU1 > aCurveU2)
+      {
+        const double aTmp = aCurveU1;
+        aCurveU1          = aCurveU2;
+        aCurveU2          = aTmp;
+      }
+    }
+
+    GeomBndLib_Curve aCurveEval(aBasisCurve);
+    const Bnd_Box    aCurveBox = aCurveEval.Box(aCurveU1, aCurveU2, 0.);
+    if (aCurveBox.IsVoid())
+    {
+      GeomAdaptor_Surface     anAdaptor(myGeom);
+      GeomBndLib_OtherSurface anOther(anAdaptor);
+      return anOther.Box(theUMin, theUMax, theVMin, theVMax, theTol);
+    }
+    return buildExtrusionBox(aCurveBox, aDir, aDirXYZ, theVMin, theVMax, theTol);
+  }
+  catch (Standard_Failure const&)
+  {
+    // Fall back to robust generic sampling if basis-curve segmentation fails.
+    GeomAdaptor_Surface     anAdaptor(myGeom);
+    GeomBndLib_OtherSurface anOther(anAdaptor);
+    return anOther.Box(theUMin, theUMax, theVMin, theVMax, theTol);
+  }
 }
 
 //=================================================================================================
@@ -159,12 +200,50 @@ Bnd_Box GeomBndLib_SurfaceOfExtrusion::BoxOptimal(double theUMin,
                                                   double theVMax,
                                                   double theTol) const
 {
-  // Use the tight basis curve box for a more precise result.
-  const occ::handle<Geom_Curve>& aBasisCurve = myGeom->BasisCurve();
-  const gp_Dir&                  aDir        = myGeom->Direction();
-  const gp_XYZ&                  aDirXYZ     = aDir.XYZ();
+  try
+  {
+    // Use the tight basis curve box for a more precise result.
+    const occ::handle<Geom_Curve>& aBasisCurve = myGeom->BasisCurve();
+    const gp_Dir&                  aDir        = myGeom->Direction();
+    const gp_XYZ&                  aDirXYZ     = aDir.XYZ();
 
-  GeomBndLib_Curve aCurveEval(aBasisCurve);
-  const Bnd_Box    aCurveBox = aCurveEval.BoxOptimal(theUMin, theUMax, 0.);
-  return buildExtrusionBox(aCurveBox, aDir, aDirXYZ, theVMin, theVMax, theTol);
+    double aCurveU1 = theUMin;
+    double aCurveU2 = theUMax;
+    if (!aBasisCurve->IsPeriodic())
+    {
+      const double aFirst = aBasisCurve->FirstParameter();
+      const double aLast  = aBasisCurve->LastParameter();
+      if (aCurveU1 < aFirst)
+        aCurveU1 = aFirst;
+      else if (aCurveU1 > aLast)
+        aCurveU1 = aLast;
+      if (aCurveU2 < aFirst)
+        aCurveU2 = aFirst;
+      else if (aCurveU2 > aLast)
+        aCurveU2 = aLast;
+      if (aCurveU1 > aCurveU2)
+      {
+        const double aTmp = aCurveU1;
+        aCurveU1          = aCurveU2;
+        aCurveU2          = aTmp;
+      }
+    }
+
+    GeomBndLib_Curve aCurveEval(aBasisCurve);
+    const Bnd_Box    aCurveBox = aCurveEval.BoxOptimal(aCurveU1, aCurveU2, 0.);
+    if (aCurveBox.IsVoid())
+    {
+      GeomAdaptor_Surface     anAdaptor(myGeom);
+      GeomBndLib_OtherSurface anOther(anAdaptor);
+      return anOther.BoxOptimal(theUMin, theUMax, theVMin, theVMax, theTol);
+    }
+    return buildExtrusionBox(aCurveBox, aDir, aDirXYZ, theVMin, theVMax, theTol);
+  }
+  catch (Standard_Failure const&)
+  {
+    // Fall back to robust generic sampling if basis-curve segmentation fails.
+    GeomAdaptor_Surface     anAdaptor(myGeom);
+    GeomBndLib_OtherSurface anOther(anAdaptor);
+    return anOther.BoxOptimal(theUMin, theUMax, theVMin, theVMax, theTol);
+  }
 }
