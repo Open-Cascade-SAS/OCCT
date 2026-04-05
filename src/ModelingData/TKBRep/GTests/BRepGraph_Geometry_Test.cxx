@@ -648,7 +648,8 @@ TEST(BRepGraph_GeometryTest, Cylinder_SeamEdge_HasTwoCoEdges)
       {
         // Verify the paired coedge has opposite orientation.
         const BRepGraphInc::CoEdgeDef& aPair = aGraph.Topo().CoEdges().Definition(aCE.SeamPairId);
-        EXPECT_NE(aCE.Orientation, aPair.Orientation) << "Seam coedges should have opposite orientations";
+        EXPECT_NE(aCE.Orientation, aPair.Orientation)
+          << "Seam coedges should have opposite orientations";
         EXPECT_EQ(aCE.FaceDefId, aPair.FaceDefId) << "Seam coedges should share the same face";
         aFoundSeam = true;
         break;

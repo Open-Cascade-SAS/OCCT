@@ -53,8 +53,7 @@ public:
 const occ::handle<BRepGraph_CacheKind>& copyTestCacheKind()
 {
   static const occ::handle<BRepGraph_CacheKind> THE_KIND =
-    new BRepGraph_CacheKind(Standard_GUID("2f9b6a5c-1f2d-4a88-9c1c-7a0c16a10026"),
-                            "CopyTestAttr");
+    new BRepGraph_CacheKind(Standard_GUID("2f9b6a5c-1f2d-4a88-9c1c-7a0c16a10026"), "CopyTestAttr");
   return THE_KIND;
 }
 
@@ -163,7 +162,7 @@ TEST(BRepGraph_CopyTest, CopyBox_PreservesFreshNodeCache)
   aGraph.Build(aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  const BRepGraph_FaceId aFaceId(0);
+  const BRepGraph_FaceId                  aFaceId(0);
   const occ::handle<BRepGraph_CacheValue> anAttr = new CopyTestCacheValue();
   aGraph.Cache().Set(aFaceId, copyTestCacheKind(), anAttr);
   ASSERT_TRUE(aGraph.Cache().Has(aFaceId, copyTestCacheKind()));
@@ -241,7 +240,7 @@ TEST(BRepGraph_CopyTest, CopyBox_DoesNotPreserveStaleFaceRefCache)
 
   {
     BRepGraph_MutGuard<BRepGraphInc::FaceRef> aRef = aGraph.Builder().MutFaceRef(aFaceRef);
-    aRef->Orientation = TopAbs::Reverse(aRef->Orientation);
+    aRef->Orientation                              = TopAbs::Reverse(aRef->Orientation);
   }
 
   ASSERT_FALSE(aGraph.Cache().Has(aFaceRef, copyTestCacheKind()));

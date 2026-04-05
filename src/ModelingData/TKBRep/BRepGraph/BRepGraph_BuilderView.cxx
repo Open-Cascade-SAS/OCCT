@@ -78,9 +78,9 @@ bool hasAnyActiveUsage(const BRepGraph& theGraph, const BRepGraph_NodeId theChil
     return false;
   }
 
-  const BRepGraph::RefsView&  aRefs    = theGraph.Refs();
-  const BRepGraph::TopoView&  aTopo    = theGraph.Topo();
-  const auto hasActiveRef = [&](const int theCount, const BRepGraph_RefId::Kind theKind) {
+  const BRepGraph::RefsView& aRefs = theGraph.Refs();
+  const BRepGraph::TopoView& aTopo = theGraph.Topo();
+  const auto hasActiveRef          = [&](const int theCount, const BRepGraph_RefId::Kind theKind) {
     for (int anIndex = 0; anIndex < theCount; ++anIndex)
     {
       const BRepGraph_RefId aRef(theKind, anIndex);
@@ -114,7 +114,8 @@ bool hasAnyActiveUsage(const BRepGraph& theGraph, const BRepGraph_NodeId theChil
     const BRepGraph_ProductId aProduct = BRepGraph_ProductId::FromNodeId(theChild);
     for (int anOccIdx = 0; anOccIdx < aTopo.Occurrences().Nb(); ++anOccIdx)
     {
-      const BRepGraphInc::OccurrenceDef& anOcc = aTopo.Occurrences().Definition(BRepGraph_OccurrenceId(anOccIdx));
+      const BRepGraphInc::OccurrenceDef& anOcc =
+        aTopo.Occurrences().Definition(BRepGraph_OccurrenceId(anOccIdx));
       if (!anOcc.IsRemoved && anOcc.ProductDefId == aProduct)
       {
         return true;
@@ -125,7 +126,8 @@ bool hasAnyActiveUsage(const BRepGraph& theGraph, const BRepGraph_NodeId theChil
   {
     for (int aProdIdx = 0; aProdIdx < aTopo.Products().Nb(); ++aProdIdx)
     {
-      const BRepGraphInc::ProductDef& aProduct = aTopo.Products().Definition(BRepGraph_ProductId(aProdIdx));
+      const BRepGraphInc::ProductDef& aProduct =
+        aTopo.Products().Definition(BRepGraph_ProductId(aProdIdx));
       if (!aProduct.IsRemoved && aProduct.ShapeRootId == theChild)
       {
         return true;
@@ -516,7 +518,7 @@ void initSubCoEdgeEntity(BRepGraphInc::CoEdgeDef&     theCE,
 {
   theCE.EdgeDefId    = theEdgeId;
   theCE.FaceDefId    = theFaceId;
-  theCE.Orientation        = theOrientation;
+  theCE.Orientation  = theOrientation;
   theCE.Curve2DRepId = theCurve2DRepId;
   theCE.ParamFirst   = theParamFirst;
   theCE.ParamLast    = theParamLast;
@@ -633,9 +635,9 @@ BRepGraph_WireId BRepGraph::BuilderView::AddWire(
     // Create CoEdge entity for this edge-wire binding.
     BRepGraphInc::CoEdgeDef& aCoEdge    = aStorage.AppendCoEdge();
     const int                aCoEdgeIdx = aStorage.NbCoEdges() - 1;
-    aCoEdge.Id        = BRepGraph_NodeId(BRepGraph_NodeId::Kind::CoEdge, aCoEdgeIdx);
-    aCoEdge.EdgeDefId = anEdgeDefId;
-    aCoEdge.Orientation     = anOri;
+    aCoEdge.Id          = BRepGraph_NodeId(BRepGraph_NodeId::Kind::CoEdge, aCoEdgeIdx);
+    aCoEdge.EdgeDefId   = anEdgeDefId;
+    aCoEdge.Orientation = anOri;
     myGraph->allocateUID(aCoEdge.Id);
 
     // CoEdgeRef in ref-table.
@@ -1274,9 +1276,7 @@ bool BRepGraph::BuilderView::RemoveRef(const BRepGraph_NodeId theParent,
   }
 
   const BRepGraphInc::BaseRef& aRef = myGraph->myData->myIncStorage.BaseRef(theRef);
-  Standard_ASSERT_RETURN(aRef.ParentId == theParent,
-                         "RemoveRef: reference parent mismatch",
-                         false);
+  Standard_ASSERT_RETURN(aRef.ParentId == theParent, "RemoveRef: reference parent mismatch", false);
 
   const BRepGraph_NodeId aChildNode = refChildNode(*myGraph, theRef);
   if (!RemoveRef(theRef))
@@ -1321,12 +1321,12 @@ BRepGraph_Curve2DRepId BRepGraph::BuilderView::CreateCurve2DRep(
 
 //=================================================================================================
 
-void BRepGraph::BuilderView::SetCoEdgePCurve(const BRepGraph_CoEdgeId           theCoEdge,
+void BRepGraph::BuilderView::SetCoEdgePCurve(const BRepGraph_CoEdgeId         theCoEdge,
                                              const occ::handle<Geom2d_Curve>& theCurve2d)
 {
   BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef> aCoEdge = MutCoEdge(theCoEdge);
-  aCoEdge->Curve2DRepId = theCurve2d.IsNull() ? BRepGraph_Curve2DRepId()
-                                               : CreateCurve2DRep(theCurve2d);
+  aCoEdge->Curve2DRepId =
+    theCurve2d.IsNull() ? BRepGraph_Curve2DRepId() : CreateCurve2DRep(theCurve2d);
 }
 
 //=================================================================================================
@@ -1467,7 +1467,7 @@ void BRepGraph::BuilderView::AddPCurveToEdge(const BRepGraph_EdgeId           th
   aCoEdge.Id                          = BRepGraph_CoEdgeId(aCoEdgeIdx);
   aCoEdge.EdgeDefId                   = theEdgeEntity;
   aCoEdge.FaceDefId                   = theFaceEntity;
-  aCoEdge.Orientation                       = theEdgeOrientation;
+  aCoEdge.Orientation                 = theEdgeOrientation;
   if (!theCurve2d.IsNull())
   {
     BRepGraphInc::Curve2DRep& aCurve2DRep    = aStorage.AppendCurve2DRep();
@@ -1698,8 +1698,7 @@ void BRepGraph::BuilderView::EndDeferredInvalidation() noexcept
   aDeferredList.Clear();
 
   // Dispatch deferred reference modification events to subscribing layers.
-  NCollection_Vector<BRepGraph_RefId>& aDeferredRefList =
-    myGraph->myData->myDeferredRefModified;
+  NCollection_Vector<BRepGraph_RefId>& aDeferredRefList = myGraph->myData->myDeferredRefModified;
   if (!aDeferredRefList.IsEmpty() && myGraph->myLayerRegistry.HasRefModificationSubscribers())
   {
     int aRefKindsMask = 0;
@@ -2271,7 +2270,7 @@ void BRepGraph::BuilderView::SplitEdge(const BRepGraph_EdgeId   theEdgeEntity,
             const int                aSubBCoEdgeIdx = aStorage.NbCoEdges() - 1;
             aSubBCoEdge.Id                          = BRepGraph_CoEdgeId(aSubBCoEdgeIdx);
             aSubBCoEdge.EdgeDefId                   = BRepGraph_EdgeId(aSubBIdx);
-            aSubBCoEdge.Orientation                       = aOrigOri;
+            aSubBCoEdge.Orientation                 = aOrigOri;
             aSubBCoEdge.FaceDefId                   = aFaceDef;
             myGraph->allocateUID(aSubBCoEdge.Id);
 

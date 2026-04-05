@@ -542,14 +542,11 @@ TEST_F(BRepGraph_EventBusTest, RefKindBit_Helpers)
   EXPECT_EQ(BRepGraph_Layer::RefKindBit(Kind::Occurrence), 1 << static_cast<int>(Kind::Occurrence));
 
   // 8 distinct bits.
-  const int aAll = BRepGraph_Layer::RefKindBit(Kind::Shell)
-                   | BRepGraph_Layer::RefKindBit(Kind::Face)
-                   | BRepGraph_Layer::RefKindBit(Kind::Wire)
-                   | BRepGraph_Layer::RefKindBit(Kind::CoEdge)
-                   | BRepGraph_Layer::RefKindBit(Kind::Vertex)
-                   | BRepGraph_Layer::RefKindBit(Kind::Solid)
-                   | BRepGraph_Layer::RefKindBit(Kind::Child)
-                   | BRepGraph_Layer::RefKindBit(Kind::Occurrence);
+  const int aAll =
+    BRepGraph_Layer::RefKindBit(Kind::Shell) | BRepGraph_Layer::RefKindBit(Kind::Face)
+    | BRepGraph_Layer::RefKindBit(Kind::Wire) | BRepGraph_Layer::RefKindBit(Kind::CoEdge)
+    | BRepGraph_Layer::RefKindBit(Kind::Vertex) | BRepGraph_Layer::RefKindBit(Kind::Solid)
+    | BRepGraph_Layer::RefKindBit(Kind::Child) | BRepGraph_Layer::RefKindBit(Kind::Occurrence);
   int aBitCount = 0;
   for (int v = aAll; v != 0; v >>= 1)
     aBitCount += (v & 1);
@@ -651,9 +648,9 @@ TEST_F(BRepGraph_EventBusTest, LayerIterator_RangeFor)
   myGraph.LayerRegistry().RegisterLayer(aLayer1);
   myGraph.LayerRegistry().RegisterLayer(aLayer2);
 
-  int aCount = 0;
-  bool hasL1 = false;
-  bool hasL2 = false;
+  int  aCount = 0;
+  bool hasL1  = false;
+  bool hasL2  = false;
   for (const occ::handle<BRepGraph_Layer>& aLayer :
        BRepGraph_LayerIterator(myGraph.LayerRegistry()))
   {

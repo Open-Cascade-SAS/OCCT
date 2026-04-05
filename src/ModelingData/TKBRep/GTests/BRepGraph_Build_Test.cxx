@@ -856,7 +856,7 @@ TEST(BRepGraph_BuildTest, AppendFlattenedShape_AfterBuild_DoesNotCreateNewSolidD
 
 TEST(BRepGraph_BuildTest, AppendFullShape_MutationBoundary_IsValid)
 {
-  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
+  BRepPrimAPI_MakeBox    aBoxMaker(10.0, 20.0, 30.0);
   BRepPrimAPI_MakeSphere aSphereMaker(5.0);
 
   BRepGraph aGraph;

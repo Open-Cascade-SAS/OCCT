@@ -300,7 +300,7 @@ BRepGraph_RefId BRepGraph::RefsView::RefAtStep(const BRepGraph_NodeId theParent,
 
       const int aFreeIdx = theStep - aSolid.ShellRefIds.Length();
       return aFreeIdx < aSolid.AuxChildRefIds.Length() ? aSolid.AuxChildRefIds.Value(aFreeIdx)
-                                                        : BRepGraph_RefId();
+                                                       : BRepGraph_RefId();
     }
     case BRepGraph_NodeId::Kind::Shell: {
       const BRepGraphInc::ShellDef& aShell =
@@ -312,7 +312,7 @@ BRepGraph_RefId BRepGraph::RefsView::RefAtStep(const BRepGraph_NodeId theParent,
 
       const int aFreeIdx = theStep - aShell.FaceRefIds.Length();
       return aFreeIdx < aShell.AuxChildRefIds.Length() ? aShell.AuxChildRefIds.Value(aFreeIdx)
-                                                        : BRepGraph_RefId();
+                                                       : BRepGraph_RefId();
     }
     case BRepGraph_NodeId::Kind::Face: {
       const BRepGraphInc::FaceDef& aFace =

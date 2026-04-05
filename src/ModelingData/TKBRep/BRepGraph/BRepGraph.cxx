@@ -560,7 +560,7 @@ void BRepGraph::markRefModified(const BRepGraph_RefId theRefId) noexcept
 
 //=================================================================================================
 
-void BRepGraph::markRefModified(const BRepGraph_RefId theRefId,
+void BRepGraph::markRefModified(const BRepGraph_RefId  theRefId,
                                 BRepGraphInc::BaseRef& theRef) noexcept
 {
   ++theRef.OwnGen;

@@ -45,7 +45,6 @@ static int parentExplorerKindDepth(const BRepGraph_NodeId::Kind theKind)
 
 } // namespace
 
-
 //=================================================================================================
 
 BRepGraph_ParentExplorer::BRepGraph_ParentExplorer(const BRepGraph&       theGraph,

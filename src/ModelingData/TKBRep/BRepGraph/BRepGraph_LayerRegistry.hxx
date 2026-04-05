@@ -91,15 +91,12 @@ public:
   // --- Reference dispatch ---
 
   //! True if any registered layer subscribes to reference modification events.
-  [[nodiscard]] bool HasRefModificationSubscribers() const
-  {
-    return mySubscribedRefKindsMask != 0;
-  }
+  [[nodiscard]] bool HasRefModificationSubscribers() const { return mySubscribedRefKindsMask != 0; }
 
   //! Bitwise OR of all registered layer reference subscription masks.
   [[nodiscard]] int SubscribedRefKindsMask() const { return mySubscribedRefKindsMask; }
 
-  //! Dispatch OnRefRemoved to all registered layers (unconditional — not filtered).
+  //! Dispatch OnRefRemoved to all registered layers (unconditional - not filtered).
   Standard_EXPORT void DispatchOnRefRemoved(const BRepGraph_RefId theRef) noexcept;
 
   //! Dispatch OnRefModified to subscribed layers (immediate mode).

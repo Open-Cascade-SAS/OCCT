@@ -363,8 +363,7 @@ void BRepGraph_Builder::AppendFlattened(BRepGraph&                            th
 
   theGraph.myData->myIsDone = true;
 
-  assertMutationBoundary(theGraph,
-                         "AppendFlattened: post-append mutation boundary inconsistency");
+  assertMutationBoundary(theGraph, "AppendFlattened: post-append mutation boundary inconsistency");
 }
 
 //=================================================================================================

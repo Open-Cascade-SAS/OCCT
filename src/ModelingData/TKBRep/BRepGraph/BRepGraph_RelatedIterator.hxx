@@ -59,8 +59,7 @@ public:
     Finished,
   };
 
-  BRepGraph_RelatedIterator(const BRepGraph&       theGraph,
-                            const BRepGraph_NodeId theNode)
+  BRepGraph_RelatedIterator(const BRepGraph& theGraph, const BRepGraph_NodeId theNode)
       : myGraph(&theGraph),
         myNode(theNode)
   {
@@ -83,8 +82,7 @@ public:
   [[nodiscard]] RelationKind CurrentRelation() const { return myRelation; }
 
 private:
-  [[nodiscard]] bool setCurrent(const BRepGraph_NodeId theNode,
-                                const RelationKind     theRelation)
+  [[nodiscard]] bool setCurrent(const BRepGraph_NodeId theNode, const RelationKind theRelation)
   {
     if (!theNode.IsValid() || myGraph->Topo().Gen().IsRemoved(theNode))
     {
@@ -98,8 +96,7 @@ private:
   }
 
   template <class IteratorT>
-  [[nodiscard]] bool advanceRefChildren(IteratorT theIterator,
-                                        const RelationKind theRelation)
+  [[nodiscard]] bool advanceRefChildren(IteratorT theIterator, const RelationKind theRelation)
   {
     for (; theIterator.More(); theIterator.Next())
     {
@@ -108,7 +105,7 @@ private:
         continue;
       }
 
-      myIndex = theIterator.Index() + 1;
+      myIndex                           = theIterator.Index() + 1;
       const BRepGraph_NodeId aChildNode = myGraph->Refs().ChildNode(theIterator.CurrentId());
       return setCurrent(aChildNode, theRelation);
     }
@@ -117,8 +114,7 @@ private:
   }
 
   template <class IteratorT>
-  [[nodiscard]] bool advanceDefChildren(IteratorT theIterator,
-                                        const RelationKind theRelation)
+  [[nodiscard]] bool advanceDefChildren(IteratorT theIterator, const RelationKind theRelation)
   {
     for (; theIterator.More(); theIterator.Next())
     {
@@ -144,7 +140,8 @@ private:
         continue;
       }
 
-      for (BRepGraph_DefsEdgeOfWire anEdgeIt(*myGraph, aWireIt.CurrentId()); anEdgeIt.More(); anEdgeIt.Next())
+      for (BRepGraph_DefsEdgeOfWire anEdgeIt(*myGraph, aWireIt.CurrentId()); anEdgeIt.More();
+           anEdgeIt.Next())
       {
         if (aWireIt.Index() == myIndex && anEdgeIt.Index() < myInnerIndex)
         {
@@ -209,9 +206,9 @@ private:
 
   [[nodiscard]] bool advanceEdgeVertex()
   {
-    return advanceDefChildren(BRepGraph_DefsVertexOfEdge(*myGraph,
-                                                         BRepGraph_EdgeId::FromNodeId(myNode)),
-                              RelationKind::IncidentVertex);
+    return advanceDefChildren(
+      BRepGraph_DefsVertexOfEdge(*myGraph, BRepGraph_EdgeId::FromNodeId(myNode)),
+      RelationKind::IncidentVertex);
   }
 
   void advance()
@@ -294,7 +291,8 @@ private:
           if (myStage == Stage::Third)
           {
             myStage = Stage::Finished;
-            return (void)setCurrent(BRepGraph_NodeId(myGraph->Topo().Faces().OuterWire(BRepGraph_FaceId::FromNodeId(myNode))),
+            return (void)setCurrent(BRepGraph_NodeId(myGraph->Topo().Faces().OuterWire(
+                                      BRepGraph_FaceId::FromNodeId(myNode))),
                                     RelationKind::OuterWire);
           }
           return;
@@ -326,9 +324,9 @@ private:
           return;
         }
         case BRepGraph_NodeId::Kind::Wire: {
-          if (advanceRefChildren(BRepGraph_RefsCoEdgeOfWire(*myGraph,
-                                                            BRepGraph_WireId::FromNodeId(myNode)),
-                                 RelationKind::WireCoEdge))
+          if (advanceRefChildren(
+                BRepGraph_RefsCoEdgeOfWire(*myGraph, BRepGraph_WireId::FromNodeId(myNode)),
+                RelationKind::WireCoEdge))
           {
             return;
           }
@@ -377,25 +375,26 @@ private:
           return;
         }
         case BRepGraph_NodeId::Kind::Compound:
-          if (advanceDefChildren(BRepGraph_DefsChildOfCompound(*myGraph,
-                                                               BRepGraph_CompoundId::FromNodeId(myNode)),
-                                 RelationKind::ChildEntity))
+          if (advanceDefChildren(
+                BRepGraph_DefsChildOfCompound(*myGraph, BRepGraph_CompoundId::FromNodeId(myNode)),
+                RelationKind::ChildEntity))
           {
             return;
           }
           return;
         case BRepGraph_NodeId::Kind::CompSolid:
-          if (advanceDefChildren(BRepGraph_DefsSolidOfCompSolid(*myGraph,
-                                                                BRepGraph_CompSolidId::FromNodeId(myNode)),
-                                 RelationKind::ChildSolid))
+          if (advanceDefChildren(
+                BRepGraph_DefsSolidOfCompSolid(*myGraph, BRepGraph_CompSolidId::FromNodeId(myNode)),
+                RelationKind::ChildSolid))
           {
             return;
           }
           return;
         case BRepGraph_NodeId::Kind::Product: {
-          if (advanceDefChildren(BRepGraph_DefsOccurrenceOfProduct(*myGraph,
-                                                                   BRepGraph_ProductId::FromNodeId(myNode)),
-                                 RelationKind::ChildOccurrence))
+          if (advanceDefChildren(
+                BRepGraph_DefsOccurrenceOfProduct(*myGraph,
+                                                  BRepGraph_ProductId::FromNodeId(myNode)),
+                RelationKind::ChildOccurrence))
           {
             return;
           }
@@ -415,8 +414,9 @@ private:
           if (myStage == Stage::Second)
           {
             myStage = Stage::Third;
-            if (setCurrent(BRepGraph_NodeId(myGraph->Topo().Occurrences().ParentProduct(anOccurrenceId)),
-                           RelationKind::ParentProduct))
+            if (setCurrent(
+                  BRepGraph_NodeId(myGraph->Topo().Occurrences().ParentProduct(anOccurrenceId)),
+                  RelationKind::ParentProduct))
             {
               return;
             }
@@ -424,8 +424,9 @@ private:
           if (myStage == Stage::Third)
           {
             myStage = Stage::Finished;
-            if (setCurrent(BRepGraph_NodeId(myGraph->Topo().Occurrences().ParentOccurrence(anOccurrenceId)),
-                           RelationKind::ParentOccurrence))
+            if (setCurrent(
+                  BRepGraph_NodeId(myGraph->Topo().Occurrences().ParentOccurrence(anOccurrenceId)),
+                  RelationKind::ParentOccurrence))
             {
               return;
             }
@@ -440,9 +441,9 @@ private:
   const BRepGraph* myGraph;
   BRepGraph_NodeId myNode;
   BRepGraph_NodeId myCurrent;
-  RelationKind     myRelation = RelationKind::ChildEntity;
-  Stage            myStage    = Stage::First;
-  int              myIndex    = 0;
+  RelationKind     myRelation   = RelationKind::ChildEntity;
+  Stage            myStage      = Stage::First;
+  int              myIndex      = 0;
   int              myInnerIndex = 0;
   int              myDeepIndex  = 0;
   bool             myHasCurrent = false;

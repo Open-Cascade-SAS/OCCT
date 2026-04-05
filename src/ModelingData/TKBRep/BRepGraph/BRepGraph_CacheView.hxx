@@ -128,17 +128,15 @@ public:
     const occ::handle<BRepGraph_CacheKind>& theKind) const;
 
   //! Retrieve a cached value from a reference using a pre-resolved cache-kind slot.
-  [[nodiscard]] Standard_EXPORT occ::handle<BRepGraph_CacheValue> Get(
-    const BRepGraph_RefId theRef,
-    const int             theKindSlot) const;
+  [[nodiscard]] Standard_EXPORT occ::handle<BRepGraph_CacheValue> Get(const BRepGraph_RefId theRef,
+                                                                      const int theKindSlot) const;
 
   //! Check if a non-stale cached value exists on a reference.
   [[nodiscard]] Standard_EXPORT bool Has(const BRepGraph_RefId                   theRef,
                                          const occ::handle<BRepGraph_CacheKind>& theKind) const;
 
   //! Check if a non-stale cached value exists on a reference using a pre-resolved slot.
-  [[nodiscard]] Standard_EXPORT bool Has(const BRepGraph_RefId theRef,
-                                         const int             theKindSlot) const;
+  [[nodiscard]] Standard_EXPORT bool Has(const BRepGraph_RefId theRef, const int theKindSlot) const;
 
   //! Remove a cached value from a reference.
   //! @return true if a value was actually removed
@@ -154,7 +152,6 @@ public:
 
   //! Invalidate a cached value on a reference using a pre-resolved cache-kind slot.
   Standard_EXPORT void Invalidate(const BRepGraph_RefId theRef, const int theKindSlot);
-
 
 private:
   friend class BRepGraph;

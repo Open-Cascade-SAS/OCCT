@@ -68,9 +68,9 @@ public:
 private:
   friend class BRepGraph::CacheView;
   static constexpr int THE_MAX_SLOTS = BRepGraph_TransientCache::THE_DEFAULT_RESERVED_KIND_COUNT;
-  int mySlots[THE_MAX_SLOTS];
-  int myCount   = 0;
-  int myCurrent = 0;
+  int                  mySlots[THE_MAX_SLOTS];
+  int                  myCount   = 0;
+  int                  myCurrent = 0;
 };
 
 #endif // _BRepGraph_CacheKindIterator_HeaderFile

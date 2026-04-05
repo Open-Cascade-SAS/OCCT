@@ -588,7 +588,8 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
           theGraph.Topo().CoEdges().Definition(aWireACoEdges.Value(anIdx));
         const BRepGraphInc::CoEdgeDef& aCoEdgeB =
           theGraph.Topo().CoEdges().Definition(aWireBCoEdges.Value(anIdx));
-        if (aCoEdgeA.EdgeDefId != aCoEdgeB.EdgeDefId || aCoEdgeA.Orientation != aCoEdgeB.Orientation)
+        if (aCoEdgeA.EdgeDefId != aCoEdgeB.EdgeDefId
+            || aCoEdgeA.Orientation != aCoEdgeB.Orientation)
           return false;
       }
       return true;

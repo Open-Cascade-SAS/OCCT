@@ -134,9 +134,9 @@ void BRepGraph_RefTransientCache::Set(const BRepGraph_RefId                    t
       myKinds.ChangeValue(theKindSlot).myRefKinds[aRefKindIdx].mySlots;
     if (theRef.Index < aVec.Length())
     {
-      CacheSlot& aSlot    = aVec.ChangeValue(theRef.Index);
-      aSlot.Value         = theValue;
-      aSlot.StoredOwnGen  = theCurrentOwnGen;
+      CacheSlot& aSlot   = aVec.ChangeValue(theRef.Index);
+      aSlot.Value        = theValue;
+      aSlot.StoredOwnGen = theCurrentOwnGen;
       return;
     }
   }

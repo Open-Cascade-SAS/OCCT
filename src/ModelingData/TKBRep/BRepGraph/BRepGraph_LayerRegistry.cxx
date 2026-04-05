@@ -34,7 +34,7 @@ int BRepGraph_LayerRegistry::RegisterLayer(const occ::handle<BRepGraph_Layer>& t
   const int aNewSlot = myLayers.Length();
   myLayers.Append(theLayer);
   myGuidToSlot.Bind(aGUID, aNewSlot);
-  mySubscribedKindsMask    |= theLayer->SubscribedKinds();
+  mySubscribedKindsMask |= theLayer->SubscribedKinds();
   mySubscribedRefKindsMask |= theLayer->SubscribedRefKinds();
   return aNewSlot;
 }
@@ -208,7 +208,7 @@ void BRepGraph_LayerRegistry::recomputeSubscribedKindsMask()
   mySubscribedRefKindsMask = 0;
   for (const occ::handle<BRepGraph_Layer>& aLayer : myLayers)
   {
-    mySubscribedKindsMask    |= aLayer->SubscribedKinds();
+    mySubscribedKindsMask |= aLayer->SubscribedKinds();
     mySubscribedRefKindsMask |= aLayer->SubscribedRefKinds();
   }
 }

@@ -562,7 +562,7 @@ TEST(BRepGraph_ChildExplorerTest, DirectChildren_ProductOccurrences_ExposeOccurr
   aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  const BRepGraph_ProductId aPart = aGraph.Builder().AddProduct(BRepGraph_SolidId(0));
+  const BRepGraph_ProductId aPart      = aGraph.Builder().AddProduct(BRepGraph_SolidId(0));
   const BRepGraph_ProductId anAssembly = aGraph.Builder().AddAssemblyProduct();
   ASSERT_TRUE(aPart.IsValid());
   ASSERT_TRUE(anAssembly.IsValid());

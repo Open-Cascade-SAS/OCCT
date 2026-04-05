@@ -55,7 +55,7 @@ static BRepGraph_RefId childRefIdForStep(const BRepGraph&       theGraph,
     return aRefs.RefAtStep(theParent, theStep);
   }
 
-  const BRepGraph::TopoView& aTopo = theGraph.Topo();
+  const BRepGraph::TopoView&      aTopo      = theGraph.Topo();
   const BRepGraph_ProductId       aProductId = BRepGraph_ProductId::FromNodeId(theParent);
   const BRepGraphInc::ProductDef& aProduct   = aTopo.Products().Definition(aProductId);
   if (aProduct.ShapeRootId.IsValid())
@@ -66,8 +66,9 @@ static BRepGraph_RefId childRefIdForStep(const BRepGraph&       theGraph,
   int anActiveIndex = 0;
   for (int anIndex = 0; anIndex < aProduct.OccurrenceRefIds.Length(); ++anIndex)
   {
-    const BRepGraph_OccurrenceRefId anOccurrenceRefId = aProduct.OccurrenceRefIds.Value(anIndex);
-    const BRepGraphInc::OccurrenceRef& anOccurrenceRef = aRefs.Occurrences().Entry(anOccurrenceRefId);
+    const BRepGraph_OccurrenceRefId    anOccurrenceRefId = aProduct.OccurrenceRefIds.Value(anIndex);
+    const BRepGraphInc::OccurrenceRef& anOccurrenceRef =
+      aRefs.Occurrences().Entry(anOccurrenceRefId);
     if (anOccurrenceRef.IsRemoved)
     {
       continue;
@@ -821,7 +822,9 @@ BRepGraph_RefId BRepGraph_ChildExplorer::CurrentRef() const
   }
 
   const StackFrame& aCurrentFrame = myStack[myCurrentFrame];
-  return childRefIdForStep(*myGraph, myStack[myCurrentFrame - 1].Node, aCurrentFrame.StepFromParent);
+  return childRefIdForStep(*myGraph,
+                           myStack[myCurrentFrame - 1].Node,
+                           aCurrentFrame.StepFromParent);
 }
 
 //=================================================================================================

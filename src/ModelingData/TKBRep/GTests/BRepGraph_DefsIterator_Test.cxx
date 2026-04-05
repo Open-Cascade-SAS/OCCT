@@ -235,8 +235,10 @@ TEST_F(BRepGraph_DefsIteratorTest, AuxChildrenOfShellAndSolid_EnumerateInjectedC
   ASSERT_TRUE(aShellSeed.IsValid());
 
   {
-    BRepGraph_MutGuard<BRepGraphInc::ShellDef> aShell = myGraph.Builder().MutShell(BRepGraph_ShellId(0));
-    for (const BRepGraph_ChildRefId& aRefId : myGraph.Topo().Compounds().Definition(aShellSeed).ChildRefIds)
+    BRepGraph_MutGuard<BRepGraphInc::ShellDef> aShell =
+      myGraph.Builder().MutShell(BRepGraph_ShellId(0));
+    for (const BRepGraph_ChildRefId& aRefId :
+         myGraph.Topo().Compounds().Definition(aShellSeed).ChildRefIds)
     {
       aShell->AuxChildRefIds.Append(aRefId);
     }
@@ -256,8 +258,10 @@ TEST_F(BRepGraph_DefsIteratorTest, AuxChildrenOfShellAndSolid_EnumerateInjectedC
   ASSERT_TRUE(aSolidSeed.IsValid());
 
   {
-    BRepGraph_MutGuard<BRepGraphInc::SolidDef> aSolid = myGraph.Builder().MutSolid(BRepGraph_SolidId(0));
-    for (const BRepGraph_ChildRefId& aRefId : myGraph.Topo().Compounds().Definition(aSolidSeed).ChildRefIds)
+    BRepGraph_MutGuard<BRepGraphInc::SolidDef> aSolid =
+      myGraph.Builder().MutSolid(BRepGraph_SolidId(0));
+    for (const BRepGraph_ChildRefId& aRefId :
+         myGraph.Topo().Compounds().Definition(aSolidSeed).ChildRefIds)
     {
       aSolid->AuxChildRefIds.Append(aRefId);
     }

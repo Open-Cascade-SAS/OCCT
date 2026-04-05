@@ -105,15 +105,14 @@ public:
   //! @param[in]     theParallel      if true, face-level extraction runs in parallel
   //! @param[in]     theOptions       optional post-pass controls
   //! @param[in]     theTmpAlloc      optional allocator for temporary scratch data
-  static Standard_EXPORT void Append(
-    BRepGraphInc_Storage&                         theStorage,
-    const TopoDS_Shape&                           theShape,
-    const bool                                    theParallel,
-    const Options&                                theOptions         = Options(),
-    BRepGraph_ParamLayer*                         theParamLayer      = nullptr,
-    BRepGraph_RegularityLayer*                    theRegularityLayer = nullptr,
-    const occ::handle<NCollection_BaseAllocator>& theTmpAlloc =
-      occ::handle<NCollection_BaseAllocator>());
+  static Standard_EXPORT void Append(BRepGraphInc_Storage&      theStorage,
+                                     const TopoDS_Shape&        theShape,
+                                     const bool                 theParallel,
+                                     const Options&             theOptions         = Options(),
+                                     BRepGraph_ParamLayer*      theParamLayer      = nullptr,
+                                     BRepGraph_RegularityLayer* theRegularityLayer = nullptr,
+                                     const occ::handle<NCollection_BaseAllocator>& theTmpAlloc =
+                                       occ::handle<NCollection_BaseAllocator>());
 
 private:
   BRepGraphInc_Populate() = delete;

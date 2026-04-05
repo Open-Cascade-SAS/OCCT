@@ -48,9 +48,8 @@ inline const BRepGraphInc::BaseDef* childBaseDef(const BRepGraph&       theGraph
   return theGraph.Topo().Gen().TopoEntity(theChildId);
 }
 
-struct ShellOfSolidTraits : public BaseTraits<BRepGraph_SolidId,
-                                              BRepGraph_ShellRefId,
-                                              BRepGraphInc::ShellRef>
+struct ShellOfSolidTraits
+    : public BaseTraits<BRepGraph_SolidId, BRepGraph_ShellRefId, BRepGraphInc::ShellRef>
 {
   static bool IsParentValid(const BRepGraph& theGraph, const ParentId theParent)
   {
@@ -75,9 +74,8 @@ struct ShellOfSolidTraits : public BaseTraits<BRepGraph_SolidId,
   }
 };
 
-struct FaceOfShellTraits : public BaseTraits<BRepGraph_ShellId,
-                                             BRepGraph_FaceRefId,
-                                             BRepGraphInc::FaceRef>
+struct FaceOfShellTraits
+    : public BaseTraits<BRepGraph_ShellId, BRepGraph_FaceRefId, BRepGraphInc::FaceRef>
 {
   static bool IsParentValid(const BRepGraph& theGraph, const ParentId theParent)
   {
@@ -102,9 +100,8 @@ struct FaceOfShellTraits : public BaseTraits<BRepGraph_ShellId,
   }
 };
 
-struct ChildOfShellTraits : public BaseTraits<BRepGraph_ShellId,
-                                              BRepGraph_ChildRefId,
-                                              BRepGraphInc::ChildRef>
+struct ChildOfShellTraits
+    : public BaseTraits<BRepGraph_ShellId, BRepGraph_ChildRefId, BRepGraphInc::ChildRef>
 {
   static bool IsParentValid(const BRepGraph& theGraph, const ParentId theParent)
   {
@@ -129,9 +126,8 @@ struct ChildOfShellTraits : public BaseTraits<BRepGraph_ShellId,
   }
 };
 
-struct WireOfFaceTraits : public BaseTraits<BRepGraph_FaceId,
-                                            BRepGraph_WireRefId,
-                                            BRepGraphInc::WireRef>
+struct WireOfFaceTraits
+    : public BaseTraits<BRepGraph_FaceId, BRepGraph_WireRefId, BRepGraphInc::WireRef>
 {
   static bool IsParentValid(const BRepGraph& theGraph, const ParentId theParent)
   {
@@ -156,9 +152,8 @@ struct WireOfFaceTraits : public BaseTraits<BRepGraph_FaceId,
   }
 };
 
-struct VertexOfFaceTraits : public BaseTraits<BRepGraph_FaceId,
-                                              BRepGraph_VertexRefId,
-                                              BRepGraphInc::VertexRef>
+struct VertexOfFaceTraits
+    : public BaseTraits<BRepGraph_FaceId, BRepGraph_VertexRefId, BRepGraphInc::VertexRef>
 {
   static bool IsParentValid(const BRepGraph& theGraph, const ParentId theParent)
   {
@@ -183,9 +178,8 @@ struct VertexOfFaceTraits : public BaseTraits<BRepGraph_FaceId,
   }
 };
 
-struct CoEdgeOfWireTraits : public BaseTraits<BRepGraph_WireId,
-                                              BRepGraph_CoEdgeRefId,
-                                              BRepGraphInc::CoEdgeRef>
+struct CoEdgeOfWireTraits
+    : public BaseTraits<BRepGraph_WireId, BRepGraph_CoEdgeRefId, BRepGraphInc::CoEdgeRef>
 {
   static bool IsParentValid(const BRepGraph& theGraph, const ParentId theParent)
   {
@@ -210,9 +204,8 @@ struct CoEdgeOfWireTraits : public BaseTraits<BRepGraph_WireId,
   }
 };
 
-struct SolidOfCompSolidTraits : public BaseTraits<BRepGraph_CompSolidId,
-                                                  BRepGraph_SolidRefId,
-                                                  BRepGraphInc::SolidRef>
+struct SolidOfCompSolidTraits
+    : public BaseTraits<BRepGraph_CompSolidId, BRepGraph_SolidRefId, BRepGraphInc::SolidRef>
 {
   static bool IsParentValid(const BRepGraph& theGraph, const ParentId theParent)
   {
@@ -237,9 +230,8 @@ struct SolidOfCompSolidTraits : public BaseTraits<BRepGraph_CompSolidId,
   }
 };
 
-struct ChildOfSolidTraits : public BaseTraits<BRepGraph_SolidId,
-                                              BRepGraph_ChildRefId,
-                                              BRepGraphInc::ChildRef>
+struct ChildOfSolidTraits
+    : public BaseTraits<BRepGraph_SolidId, BRepGraph_ChildRefId, BRepGraphInc::ChildRef>
 {
   static bool IsParentValid(const BRepGraph& theGraph, const ParentId theParent)
   {
@@ -264,9 +256,8 @@ struct ChildOfSolidTraits : public BaseTraits<BRepGraph_SolidId,
   }
 };
 
-struct ChildOfCompoundTraits : public BaseTraits<BRepGraph_CompoundId,
-                                                 BRepGraph_ChildRefId,
-                                                 BRepGraphInc::ChildRef>
+struct ChildOfCompoundTraits
+    : public BaseTraits<BRepGraph_CompoundId, BRepGraph_ChildRefId, BRepGraphInc::ChildRef>
 {
   static bool IsParentValid(const BRepGraph& theGraph, const ParentId theParent)
   {
@@ -291,9 +282,8 @@ struct ChildOfCompoundTraits : public BaseTraits<BRepGraph_CompoundId,
   }
 };
 
-struct OccurrenceOfProductTraits : public BaseTraits<BRepGraph_ProductId,
-                                                     BRepGraph_OccurrenceRefId,
-                                                     BRepGraphInc::OccurrenceRef>
+struct OccurrenceOfProductTraits
+    : public BaseTraits<BRepGraph_ProductId, BRepGraph_OccurrenceRefId, BRepGraphInc::OccurrenceRef>
 {
   static bool IsParentValid(const BRepGraph& theGraph, const ParentId theParent)
   {
@@ -312,7 +302,8 @@ struct OccurrenceOfProductTraits : public BaseTraits<BRepGraph_ProductId,
     return theGraph.Refs().Occurrences().Entry(theRefId);
   }
 
-  static BRepGraph_OccurrenceId ChildIdOf(const BRepGraph&, const BRepGraphInc::OccurrenceRef& theRef)
+  static BRepGraph_OccurrenceId ChildIdOf(const BRepGraph&,
+                                          const BRepGraphInc::OccurrenceRef& theRef)
   {
     return theRef.OccurrenceDefId;
   }
@@ -367,7 +358,8 @@ private:
       const typename TraitsT::RefEntry& aRef = TraitsT::Ref(myGraph, myRefIds->Value(myIndex));
       if (!aRef.IsRemoved)
       {
-        const BRepGraphInc::BaseDef* aChildDef = childBaseDef(myGraph, TraitsT::ChildIdOf(myGraph, aRef));
+        const BRepGraphInc::BaseDef* aChildDef =
+          childBaseDef(myGraph, TraitsT::ChildIdOf(myGraph, aRef));
         if (aChildDef != nullptr && !aChildDef->IsRemoved)
         {
           return;

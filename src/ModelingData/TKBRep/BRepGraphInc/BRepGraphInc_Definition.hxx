@@ -215,12 +215,12 @@ struct FaceDef : public BaseDef
 struct ShellDef : public BaseDef
 {
   bool IsClosed = false; //!< True if shell forms a watertight (closed) boundary.
-  NCollection_Vector<BRepGraph_FaceRefId>  FaceRefIds;      //!< Face ref indices
+  NCollection_Vector<BRepGraph_FaceRefId>  FaceRefIds;     //!< Face ref indices
   NCollection_Vector<BRepGraph_ChildRefId> AuxChildRefIds; //!< Non-face children (wires, edges)
 
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
-    InitVec(FaceRefIds, theAlloc, 8);      // typically 4-8 faces per shell
+    InitVec(FaceRefIds, theAlloc, 8);     // typically 4-8 faces per shell
     InitVec(AuxChildRefIds, theAlloc, 2); // typically 0
   }
 };
@@ -228,13 +228,12 @@ struct ShellDef : public BaseDef
 //! Solid entity: ordered shell references with local locations.
 struct SolidDef : public BaseDef
 {
-  NCollection_Vector<BRepGraph_ShellRefId> ShellRefIds; //!< Shell ref indices
-  NCollection_Vector<BRepGraph_ChildRefId>
-    AuxChildRefIds; //!< Non-shell children (edges, vertices)
+  NCollection_Vector<BRepGraph_ShellRefId> ShellRefIds;    //!< Shell ref indices
+  NCollection_Vector<BRepGraph_ChildRefId> AuxChildRefIds; //!< Non-shell children (edges, vertices)
 
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
-    InitVec(ShellRefIds, theAlloc, 2);     // typically 1
+    InitVec(ShellRefIds, theAlloc, 2);    // typically 1
     InitVec(AuxChildRefIds, theAlloc, 2); // typically 0
   }
 };

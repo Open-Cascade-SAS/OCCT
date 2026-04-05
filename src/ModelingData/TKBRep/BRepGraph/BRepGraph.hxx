@@ -270,7 +270,7 @@ private:
 
   //! Registered layers are stored on BRepGraph, not BRepGraph_Data, to survive Compact swap.
   BRepGraph_LayerRegistry     myLayerRegistry;
-  BRepGraph_TransientCache    myTransientCache;    //!< Transient algorithm caches (BndBox, UVBounds)
+  BRepGraph_TransientCache    myTransientCache; //!< Transient algorithm caches (BndBox, UVBounds)
   BRepGraph_RefTransientCache myRefTransientCache; //!< Transient per-reference caches
 };
 

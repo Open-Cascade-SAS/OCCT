@@ -32,7 +32,11 @@
 //! - removed child definitions
 namespace BRepGraph_DefsIterator
 {
-template <typename ParentIdT, typename RefIdT, typename RefEntryT, typename ChildIdT, typename ChildDefT>
+template <typename ParentIdT,
+          typename RefIdT,
+          typename RefEntryT,
+          typename ChildIdT,
+          typename ChildDefT>
 struct BaseTraits
 {
   using ParentId = ParentIdT;

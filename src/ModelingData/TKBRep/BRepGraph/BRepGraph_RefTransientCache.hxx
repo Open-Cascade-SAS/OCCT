@@ -36,7 +36,7 @@
 //! differs from the reference's current OwnGen the cached value is considered stale.
 //!
 //! ## Lifecycle
-//! NOT a Layer. Cleared on Build() and Compact(). No explicit removal callback —
+//! NOT a Layer. Cleared on Build() and Compact(). No explicit removal callback -
 //! stale data is auto-detected by OwnGen mismatch.
 //!
 //! ## Thread safety
@@ -98,7 +98,8 @@ public:
   //! Used internally by CacheView::CacheKindIterator.
   //! @param[in]  theRef     reference to query
   //! @param[in]  theCurrentOwnGen freshness stamp to match
-  //! @param[out] theSlots   output array (caller-allocated, must hold THE_DEFAULT_RESERVED_KIND_COUNT)
+  //! @param[out] theSlots   output array (caller-allocated, must hold
+  //! THE_DEFAULT_RESERVED_KIND_COUNT)
   //! @return number of populated slots written to theSlots
   Standard_EXPORT int CollectCacheKindSlots(const BRepGraph_RefId theRef,
                                             const uint32_t        theCurrentOwnGen,

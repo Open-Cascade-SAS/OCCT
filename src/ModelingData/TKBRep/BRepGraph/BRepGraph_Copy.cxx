@@ -63,9 +63,7 @@ void transferFreshCacheValues(const BRepGraph& theSrcGraph,
                               BRepGraph&       theDstGraph,
                               const TKeyId     theDstKey)
 {
-  for (auto aKindIt = theSrcGraph.Cache().CacheKindIter(theSrcKey);
-       aKindIt.More();
-       aKindIt.Next())
+  for (auto aKindIt = theSrcGraph.Cache().CacheKindIter(theSrcKey); aKindIt.More(); aKindIt.Next())
   {
     const occ::handle<BRepGraph_CacheKind>  aKind  = aKindIt.Value();
     const occ::handle<BRepGraph_CacheValue> aValue = theSrcGraph.Cache().Get(theSrcKey, aKind);
@@ -260,7 +258,7 @@ BRepGraph BRepGraph_Copy::Perform(const BRepGraph& theGraph, const bool theCopyG
       const BRepGraphInc::FaceRef& aFR = aRefs.Faces().Entry(aRefId);
       if (aFR.IsRemoved || !aFR.FaceDefId.IsValid(theGraph.Topo().Faces().Nb()))
         continue;
-      const BRepGraph_FaceId aFaceDefId = aFR.FaceDefId;
+      const BRepGraph_FaceId    aFaceDefId = aFR.FaceDefId;
       const BRepGraph_FaceRefId aNewFaceRefId =
         aResult.Builder().AddFaceToShell(aNewShellId, aFaceDefId, aFR.Orientation);
       transferFreshCacheValues(theGraph, aRefId, aResult, aNewFaceRefId);
@@ -281,7 +279,7 @@ BRepGraph BRepGraph_Copy::Perform(const BRepGraph& theGraph, const bool theCopyG
       const BRepGraphInc::ShellRef& aSR = aRefs.Shells().Entry(aRefId);
       if (aSR.IsRemoved || !aSR.ShellDefId.IsValid(theGraph.Topo().Shells().Nb()))
         continue;
-      const BRepGraph_ShellId aShellDefId = aSR.ShellDefId;
+      const BRepGraph_ShellId    aShellDefId = aSR.ShellDefId;
       const BRepGraph_ShellRefId aNewShellRefId =
         aResult.Builder().AddShellToSolid(aNewSolidId, aShellDefId, aSR.Orientation);
       transferFreshCacheValues(theGraph, aRefId, aResult, aNewShellRefId);

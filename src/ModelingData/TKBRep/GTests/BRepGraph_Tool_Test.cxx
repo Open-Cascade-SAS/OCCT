@@ -23,10 +23,11 @@
 namespace
 {
 static bool hasRelatedNode(const NCollection_Sequence<BRepGraph_Tool::RelatedEntity>& theItems,
-                           const BRepGraph_NodeId&                                     theNode,
-                           const char*                                                  theRelation)
+                           const BRepGraph_NodeId&                                    theNode,
+                           const char*                                                theRelation)
 {
-  for (NCollection_Sequence<BRepGraph_Tool::RelatedEntity>::Iterator anIt(theItems); anIt.More(); anIt.Next())
+  for (NCollection_Sequence<BRepGraph_Tool::RelatedEntity>::Iterator anIt(theItems); anIt.More();
+       anIt.Next())
   {
     if (anIt.Value().Node == theNode && anIt.Value().Relation == theRelation)
     {
@@ -58,9 +59,10 @@ TEST_F(BRepGraph_ToolTest, Related_FaceOfBox_ReturnsBoundaryEdgesAndOuterWire)
 
   EXPECT_TRUE(hasRelatedNode(aItems, BRepGraph_NodeId(BRepGraph_WireId(0)), "Outer wire"));
 
-  int aBoundaryEdgeCount = 0;
+  int aBoundaryEdgeCount  = 0;
   int anAdjacentFaceCount = 0;
-  for (NCollection_Sequence<BRepGraph_Tool::RelatedEntity>::Iterator anIt(aItems); anIt.More(); anIt.Next())
+  for (NCollection_Sequence<BRepGraph_Tool::RelatedEntity>::Iterator anIt(aItems); anIt.More();
+       anIt.Next())
   {
     if (anIt.Value().Relation == "Boundary edge")
     {
@@ -85,7 +87,8 @@ TEST_F(BRepGraph_ToolTest, Related_EdgeOfBox_ReturnsIncidentVerticesAndFaces)
 
   int aVertexCount = 0;
   int aFaceCount   = 0;
-  for (NCollection_Sequence<BRepGraph_Tool::RelatedEntity>::Iterator anIt(aItems); anIt.More(); anIt.Next())
+  for (NCollection_Sequence<BRepGraph_Tool::RelatedEntity>::Iterator anIt(aItems); anIt.More();
+       anIt.Next())
   {
     if (anIt.Value().Relation == "Incident vertex")
     {
@@ -117,18 +120,13 @@ TEST_F(BRepGraph_ToolTest, Related_ProductAndOccurrence_ReturnExpectedAssemblyLi
 
   const NCollection_Sequence<BRepGraph_Tool::RelatedEntity> aProductItems =
     BRepGraph_Tool::Related(myGraph, BRepGraph_NodeId(aRootAssembly));
-  EXPECT_TRUE(hasRelatedNode(aProductItems,
-                             BRepGraph_NodeId(anOccurrenceId),
-                             "Child occurrence"));
+  EXPECT_TRUE(hasRelatedNode(aProductItems, BRepGraph_NodeId(anOccurrenceId), "Child occurrence"));
 
   const NCollection_Sequence<BRepGraph_Tool::RelatedEntity> anOccurrenceItems =
     BRepGraph_Tool::Related(myGraph, BRepGraph_NodeId(anOccurrenceId));
-  EXPECT_TRUE(hasRelatedNode(anOccurrenceItems,
-                             BRepGraph_NodeId(aPartProduct),
-                             "Referenced product"));
-  EXPECT_TRUE(hasRelatedNode(anOccurrenceItems,
-                             BRepGraph_NodeId(aRootAssembly),
-                             "Parent product"));
+  EXPECT_TRUE(
+    hasRelatedNode(anOccurrenceItems, BRepGraph_NodeId(aPartProduct), "Referenced product"));
+  EXPECT_TRUE(hasRelatedNode(anOccurrenceItems, BRepGraph_NodeId(aRootAssembly), "Parent product"));
 }
 
 TEST_F(BRepGraph_ToolTest, Related_InvalidNode_ReturnsEmpty)

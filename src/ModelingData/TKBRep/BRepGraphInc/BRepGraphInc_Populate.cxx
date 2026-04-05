@@ -772,8 +772,8 @@ int registerExtractedEdge(BRepGraphInc_Storage& theStorage,
 //! Create a NodeUsage from a child shape, resolving its index via TShape lookup.
 //! Returns true if the ref was created successfully (child was found in storage).
 bool makeAuxChildRef(const BRepGraphInc_Storage& theStorage,
-                      const TopoDS_Shape&         theChild,
-                      BRepGraphInc::NodeUsage&    theRef)
+                     const TopoDS_Shape&         theChild,
+                     BRepGraphInc::NodeUsage&    theRef)
 {
   const BRepGraph_NodeId* aChildNodeId = theStorage.FindNodeByTShape(theChild.TShape().get());
   if (aChildNodeId == nullptr)
@@ -1185,7 +1185,7 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
           aCoEdge.Id                       = BRepGraph_CoEdgeId(aCoEdgeIdx);
           aCoEdge.EdgeDefId                = BRepGraph_EdgeId(anEdgeIdx);
           aCoEdge.FaceDefId                = BRepGraph_FaceId(aFaceIdx);
-          aCoEdge.Orientation                    = anEdgeData.OrientationInWire;
+          aCoEdge.Orientation              = anEdgeData.OrientationInWire;
 
           // Populate CoEdge with PCurve and polygon data for this face context.
           if (!anEdgeData.PCurve2d.IsNull())
@@ -1209,7 +1209,7 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
             aSeamCoEdge.Id                       = BRepGraph_CoEdgeId(aSeamCoEdgeIdx);
             aSeamCoEdge.EdgeDefId                = BRepGraph_EdgeId(anEdgeIdx);
             aSeamCoEdge.FaceDefId                = BRepGraph_FaceId(aFaceIdx);
-            aSeamCoEdge.Orientation                    = TopAbs_REVERSED;
+            aSeamCoEdge.Orientation              = TopAbs_REVERSED;
             aSeamCoEdge.Curve2DRepId             = BRepGraph_Curve2DRepId(
               getOrCreateCurve2DRep(theStorage, theRepDedup, anEdgeData.PCurve2dReversed));
             aSeamCoEdge.ParamFirst     = anEdgeData.PCFirstReversed;
@@ -1552,7 +1552,7 @@ void traverseHierarchy(BRepGraphInc_Storage&              theStorage,
           const int                aCoEdgeIdx = theStorage.NbCoEdges() - 1;
           aCoEdge.Id                          = BRepGraph_CoEdgeId(aCoEdgeIdx);
           aCoEdge.EdgeDefId                   = BRepGraph_EdgeId::FromNodeId(*anEdgeNodeId);
-          aCoEdge.Orientation                       = anEdge.Orientation();
+          aCoEdge.Orientation                 = anEdge.Orientation();
           // FaceDefId left invalid for free wires.
           // Curve2d left null for free wires.
 
@@ -2213,7 +2213,7 @@ void BRepGraphInc_Populate::Append(BRepGraphInc_Storage&                        
   registerFaceData(theStorage, aFaceData, aRepDedup);
 
   // Phase 3a: Fix compound ChildRef linkages in NEWLY APPENDED compounds only.
-  // Pre-existing compounds are not re-processed — Append assumes complete
+  // Pre-existing compounds are not re-processed - Append assumes complete
   // subgraph hierarchies with no cross-references to existing containers.
   const int aNbCompounds = theStorage.myCompounds.Nb();
   for (int aCompIdx = anOldNbCompounds; aCompIdx < aNbCompounds; ++aCompIdx)

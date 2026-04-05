@@ -128,7 +128,7 @@ public:
   [[nodiscard]] Standard_EXPORT virtual int SubscribedRefKinds() const;
 
   //! Called when a reference is soft-deleted via RemoveRef().
-  //! No replacement concept — refs are simply removed (unlike nodes which can have
+  //! No replacement concept - refs are simply removed (unlike nodes which can have
   //! a replacement during sewing or deduplication). Dispatched to all layers
   //! regardless of SubscribedRefKinds().
   //! Default: no-op.
@@ -144,7 +144,7 @@ public:
   //! Called after EndDeferredInvalidation() with all refs modified during
   //! the deferred scope. Only dispatched if at least one modified ref's kind
   //! matches SubscribedRefKinds(). The vector may contain refs of kinds not
-  //! subscribed to — layers should filter internally if needed.
+  //! subscribed to - layers should filter internally if needed.
   //! Default: no-op.
   //! @param[in] theModifiedRefs     all modified, non-removed refs
   //! @param[in] theModifiedRefKindsMask bitwise OR of all modified ref kinds

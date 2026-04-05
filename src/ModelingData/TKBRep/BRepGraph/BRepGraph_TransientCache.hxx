@@ -283,7 +283,8 @@ public:
   //! Used internally by CacheView::CacheKindIterator.
   //! @param[in]  theNode    node to query
   //! @param[in]  theCurrentSubtreeGen freshness stamp to match
-  //! @param[out] theSlots   output array (caller-allocated, must hold THE_DEFAULT_RESERVED_KIND_COUNT)
+  //! @param[out] theSlots   output array (caller-allocated, must hold
+  //! THE_DEFAULT_RESERVED_KIND_COUNT)
   //! @return number of populated slots written to theSlots
   Standard_EXPORT int CollectCacheKindSlots(const BRepGraph_NodeId theNode,
                                             const uint32_t         theCurrentSubtreeGen,

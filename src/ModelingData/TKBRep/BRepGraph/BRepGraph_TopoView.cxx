@@ -498,9 +498,8 @@ const BRepGraphInc::CoEdgeDef* BRepGraph::TopoView::EdgeOps::FindPCurve(
 
 //=================================================================================================
 
-BRepGraph_CoEdgeId BRepGraph::TopoView::EdgeOps::FindCoEdgeId(
-  const BRepGraph_EdgeId theEdge,
-  const BRepGraph_FaceId theFace) const
+BRepGraph_CoEdgeId BRepGraph::TopoView::EdgeOps::FindCoEdgeId(const BRepGraph_EdgeId theEdge,
+                                                              const BRepGraph_FaceId theFace) const
 {
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
   if (!theEdge.IsValid(aStorage.NbEdges()) || !theFace.IsValid(aStorage.NbFaces()))

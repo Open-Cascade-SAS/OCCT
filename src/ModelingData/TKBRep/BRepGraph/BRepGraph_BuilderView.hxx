@@ -213,7 +213,7 @@ public:
   //! Pass a null handle to clear the stored PCurve binding.
   //! @param[in] theCoEdge  typed coedge identifier to update
   //! @param[in] theCurve2d new 2D curve geometry, or null to clear
-  Standard_EXPORT void SetCoEdgePCurve(const BRepGraph_CoEdgeId           theCoEdge,
+  Standard_EXPORT void SetCoEdgePCurve(const BRepGraph_CoEdgeId         theCoEdge,
                                        const occ::handle<Geom2d_Curve>& theCurve2d);
 
   //! Create a new TriangulationRep in storage and return its typed identifier.

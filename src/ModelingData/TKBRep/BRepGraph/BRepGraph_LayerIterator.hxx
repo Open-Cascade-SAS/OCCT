@@ -24,7 +24,8 @@
 //!
 //! @code
 //!   // Range-for:
-//!   for (const occ::handle<BRepGraph_Layer>& aLayer : BRepGraph_LayerIterator(aGraph.LayerRegistry()))
+//!   for (const occ::handle<BRepGraph_Layer>& aLayer :
+//!   BRepGraph_LayerIterator(aGraph.LayerRegistry()))
 //!     doSomething(aLayer);
 //!
 //!   // Traditional:
