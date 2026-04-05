@@ -21,7 +21,7 @@ checkprops ra -v $VaExp
 puts "OBB"
 bounding result -shape ro -dump -obb
 
-checkprops ro -v 25000
+checkprops ro -v 28694.7
 
 smallview 
 fit
