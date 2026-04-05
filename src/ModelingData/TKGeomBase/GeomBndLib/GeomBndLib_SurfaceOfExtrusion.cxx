@@ -20,9 +20,9 @@
 
 Bnd_Box GeomBndLib_SurfaceOfExtrusion::Box(double theTol) const
 {
-  GeomAdaptor_Surface anAdaptor(myGeom);
-  GeomBndLib_OtherSurface anOther(anAdaptor);
-  return anOther.Box(theTol);
+  double aU1 = 0., aU2 = 0., aV1 = 0., aV2 = 0.;
+  myGeom->Bounds(aU1, aU2, aV1, aV2);
+  return Box(aU1, aU2, aV1, aV2, theTol);
 }
 
 //=================================================================================================
@@ -33,7 +33,7 @@ Bnd_Box GeomBndLib_SurfaceOfExtrusion::Box(double theUMin,
                                            double theVMax,
                                            double theTol) const
 {
-  GeomAdaptor_Surface anAdaptor(myGeom);
+  GeomAdaptor_Surface     anAdaptor(myGeom);
   GeomBndLib_OtherSurface anOther(anAdaptor);
   return anOther.Box(theUMin, theUMax, theVMin, theVMax, theTol);
 }
@@ -46,7 +46,7 @@ Bnd_Box GeomBndLib_SurfaceOfExtrusion::BoxOptimal(double theUMin,
                                                   double theVMax,
                                                   double theTol) const
 {
-  GeomAdaptor_Surface anAdaptor(myGeom);
+  GeomAdaptor_Surface     anAdaptor(myGeom);
   GeomBndLib_OtherSurface anOther(anAdaptor);
   return anOther.BoxOptimal(theUMin, theUMax, theVMin, theVMax, theTol);
 }

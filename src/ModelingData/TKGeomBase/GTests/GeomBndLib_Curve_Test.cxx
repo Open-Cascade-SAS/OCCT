@@ -453,7 +453,7 @@ TEST(GeomBndLib_CurveTest, BSplineCurve_TrimmedRange_CompareWithBndLib)
   NCollection_Array1<int> aMults(1, 5);
   aMults.SetValue(1, 4);
   aMults.SetValue(2, 1);
-  aMults.SetValue(3, 1);
+  aMults.SetValue(3, 2);
   aMults.SetValue(4, 1);
   aMults.SetValue(5, 4);
 

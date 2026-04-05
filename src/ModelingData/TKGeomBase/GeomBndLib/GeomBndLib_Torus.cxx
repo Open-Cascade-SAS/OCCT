@@ -21,9 +21,9 @@
 
 Bnd_Box GeomBndLib_Torus::Box(double theTol) const
 {
-  GeomAdaptor_Surface     anAdaptor(myGeom);
-  GeomBndLib_OtherSurface anOther(anAdaptor);
-  return anOther.BoxOptimal(theTol);
+  Bnd_Box aBox;
+  BndLib::Add(myGeom->Torus(), theTol, aBox);
+  return aBox;
 }
 
 //=================================================================================================
@@ -34,9 +34,9 @@ Bnd_Box GeomBndLib_Torus::Box(double theUMin,
                               double theVMax,
                               double theTol) const
 {
-  GeomAdaptor_Surface     anAdaptor(myGeom);
-  GeomBndLib_OtherSurface anOther(anAdaptor);
-  return anOther.BoxOptimal(theUMin, theUMax, theVMin, theVMax, theTol);
+  Bnd_Box aBox;
+  BndLib::Add(myGeom->Torus(), theUMin, theUMax, theVMin, theVMax, theTol, aBox);
+  return aBox;
 }
 
 //=================================================================================================
