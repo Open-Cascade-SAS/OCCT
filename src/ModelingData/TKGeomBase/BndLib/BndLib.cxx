@@ -1505,13 +1505,13 @@ void BndLib::Add(const gp_Torus& S,
   int Fi2;
   if (VMax < VMin)
   {
-    Fi1 = static_cast<int>(VMax / (M_PI / 4.));
-    Fi2 = static_cast<int>(VMin / (M_PI / 4.));
+    Fi1 = static_cast<int>(std::floor(VMax / (M_PI / 4.)));
+    Fi2 = static_cast<int>(std::floor(VMin / (M_PI / 4.)));
   }
   else
   {
-    Fi1 = static_cast<int>(VMin / (M_PI / 4.));
-    Fi2 = static_cast<int>(VMax / (M_PI / 4.));
+    Fi1 = static_cast<int>(std::floor(VMin / (M_PI / 4.)));
+    Fi2 = static_cast<int>(std::floor(VMax / (M_PI / 4.)));
   }
   Fi2++;
 
