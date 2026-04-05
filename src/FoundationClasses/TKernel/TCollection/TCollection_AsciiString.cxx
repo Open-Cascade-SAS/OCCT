@@ -59,6 +59,12 @@ int utf8Length(const T* theUtfString)
 template <typename T>
 void writeUtf8(char* theBuffer, const T* theUtfString)
 {
+  if (theUtfString == nullptr)
+  {
+    *theBuffer = '\0';
+    return;
+  }
+
   char* anIterWrite = theBuffer;
   for (NCollection_UtfIterator<T> anIterRead(theUtfString); *anIterRead != 0; ++anIterRead)
   {

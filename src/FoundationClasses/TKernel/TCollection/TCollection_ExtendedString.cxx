@@ -346,6 +346,13 @@ void TCollection_ExtendedString::AssignCat(const int theOther)
 
 //=================================================================================================
 
+void TCollection_ExtendedString::AssignCat(const char theChar)
+{
+  AssignCat(ToExtCharacter(theChar));
+}
+
+//=================================================================================================
+
 void TCollection_ExtendedString::AssignCat(const double theOther)
 {
   const FormattedReal aFormatted(theOther);

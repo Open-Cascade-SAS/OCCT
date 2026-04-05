@@ -196,6 +196,11 @@ TEST(TCollection_ExtendedStringTest, Cat)
   TCollection_ExtendedString result2 = aString.Cat('!');
   TCollection_AsciiString    asciiResult2(result2);
   EXPECT_STREQ("Hello!", asciiResult2.ToCString());
+
+  // Operator+ with ASCII character should append the character, not its numeric code
+  TCollection_ExtendedString result3 = aString + '!';
+  TCollection_AsciiString    asciiResult3(result3);
+  EXPECT_STREQ("Hello!", asciiResult3.ToCString());
 }
 
 TEST(TCollection_ExtendedStringTest, AssignCat_IntegerAndReal)
@@ -204,6 +209,11 @@ TEST(TCollection_ExtendedStringTest, AssignCat_IntegerAndReal)
   anIntegerString.AssignCat(42);
   TCollection_AsciiString anAsciiInteger(anIntegerString);
   EXPECT_STREQ("Value: 42", anAsciiInteger.ToCString());
+
+  TCollection_ExtendedString aCharString("Value: ");
+  aCharString += '!';
+  TCollection_AsciiString anAsciiChar(aCharString);
+  EXPECT_STREQ("Value: !", anAsciiChar.ToCString());
 
   TCollection_ExtendedString anOperatorString("Value: ");
   anOperatorString += -7;

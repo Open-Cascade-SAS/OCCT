@@ -451,9 +451,11 @@ TEST(TCollection_AsciiStringTest, AssignCat_ExtendedStringAndWideChar)
   aReplacedTarget.AssignCat(aNonAsciiSource, '?');
   EXPECT_STREQ("Value ?", aReplacedTarget.ToCString());
 
+#if !defined(_MSC_VER) || defined(_NATIVE_WCHAR_T_DEFINED)
   TCollection_AsciiString aWideTarget("Hello");
   aWideTarget += L" World";
   EXPECT_STREQ("Hello World", aWideTarget.ToCString());
+#endif
 }
 
 TEST(TCollection_AsciiStringTest, AssignCat_LargeStrings)
@@ -760,8 +762,10 @@ TEST(TCollection_AsciiStringTest, Cat_ExtendedStringAndWideChar)
   EXPECT_EQ(static_cast<char>(0xC3), anUtf8Result.ToCString()[5]);
   EXPECT_EQ(static_cast<char>(0xA9), anUtf8Result.ToCString()[6]);
 
+#if !defined(_MSC_VER) || defined(_NATIVE_WCHAR_T_DEFINED)
   TCollection_AsciiString aWideResult = aString.Cat(L" Wide");
   EXPECT_STREQ("Value: Wide", aWideResult.ToCString());
+#endif
 
   EXPECT_STREQ("Value:", aString.ToCString());
 }

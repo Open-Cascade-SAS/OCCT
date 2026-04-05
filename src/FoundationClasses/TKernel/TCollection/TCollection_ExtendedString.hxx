@@ -200,6 +200,12 @@ public:
 
   void operator+=(const int theOther) { AssignCat(theOther); }
 
+  //! Appends the ASCII character to this extended string.
+  //! @param[in] theChar the character to append
+  Standard_EXPORT void AssignCat(const char theChar);
+
+  void operator+=(const char theChar) { AssignCat(theChar); }
+
   //! Appends the real value to this extended string.
   //! @param[in] theOther the real value to append
   Standard_EXPORT void AssignCat(const double theOther);
