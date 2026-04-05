@@ -499,7 +499,7 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
           if (!aOldCE.Curve2DRepId.IsValid())
             continue;
 
-          TopAbs_Orientation aTransferOri = aOldCE.Sense;
+          TopAbs_Orientation aTransferOri = aOldCE.Orientation;
           if (isReversed)
           {
             if (aTransferOri == TopAbs_FORWARD)
@@ -514,7 +514,7 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
           {
             const BRepGraphInc::CoEdgeDef& aCanonCE =
               theGraph.Topo().CoEdges().Definition(aCanonCoEdges.Value(aCanonCEIdx));
-            if (aCanonCE.FaceDefId == aOldCE.FaceDefId && aCanonCE.Sense == aTransferOri)
+            if (aCanonCE.FaceDefId == aOldCE.FaceDefId && aCanonCE.Orientation == aTransferOri)
             {
               aAlreadyHas = true;
               break;
@@ -562,7 +562,7 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
             theGraph.Topo().CoEdges().Definition(aCR.CoEdgeDefId);
           size_t aEntryHash[2];
           aEntryHash[0] = opencascade::hash(aCoEdge.EdgeDefId);
-          aEntryHash[1] = opencascade::hash(static_cast<int>(aCoEdge.Sense));
+          aEntryHash[1] = opencascade::hash(static_cast<int>(aCoEdge.Orientation));
           aHash ^= opencascade::hashBytes(aEntryHash, sizeof(aEntryHash)) + 0x9e3779b9
                    + (aHash << 6) + (aHash >> 2);
         });
@@ -588,7 +588,8 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
           theGraph.Topo().CoEdges().Definition(aWireACoEdges.Value(anIdx));
         const BRepGraphInc::CoEdgeDef& aCoEdgeB =
           theGraph.Topo().CoEdges().Definition(aWireBCoEdges.Value(anIdx));
-        if (aCoEdgeA.EdgeDefId != aCoEdgeB.EdgeDefId || aCoEdgeA.Sense != aCoEdgeB.Sense)
+        if (aCoEdgeA.EdgeDefId != aCoEdgeB.EdgeDefId
+            || aCoEdgeA.Orientation != aCoEdgeB.Orientation)
           return false;
       }
       return true;

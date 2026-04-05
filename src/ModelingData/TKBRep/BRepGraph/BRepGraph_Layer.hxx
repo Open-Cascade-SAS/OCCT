@@ -15,6 +15,7 @@
 #define _BRepGraph_Layer_HeaderFile
 
 #include <BRepGraph_NodeId.hxx>
+#include <BRepGraph_RefId.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_Vector.hxx>
 #include <Standard_GUID.hxx>
@@ -23,27 +24,33 @@
 
 //! @brief Abstract base class for named attribute layers.
 //!
-//! A layer groups per-node metadata under a unique name with lifecycle callbacks.
-//! Layers are registered on BRepGraph and automatically notified when nodes are
-//! removed, replaced (sewing/deduplicate), remapped (compact), or modified.
+//! A layer groups per-node and per-reference metadata under a unique name with
+//! lifecycle callbacks. Layers are registered on BRepGraph and automatically
+//! notified when nodes or references are removed, remapped (compact), or modified.
 //!
 //! Derived layers store domain-specific data (names, colors, materials, etc.)
-//! in internal maps keyed by BRepGraph_NodeId. The lifecycle callbacks ensure
-//! data consistency across all graph mutations.
+//! in internal maps keyed by BRepGraph_NodeId or BRepGraph_RefId. The lifecycle
+//! callbacks ensure data consistency across all graph mutations.
 //!
-//! ## Modification Events
-//! Layers can subscribe to modification events by overriding SubscribedKinds()
+//! ## Node Modification Events
+//! Layers subscribe to node modification events by overriding SubscribedKinds()
 //! to return a non-zero bitmask of Kind values. When a subscribed node kind is
 //! modified, OnNodeModified() (immediate mode) or OnNodesModified() (deferred
 //! batch mode) is called. Layers with SubscribedKinds() == 0 (default) incur
 //! zero dispatch overhead.
 //!
+//! ## Reference Modification Events
+//! Layers subscribe to reference modification events by overriding
+//! SubscribedRefKinds() to return a non-zero bitmask of BRepGraph_RefId::Kind
+//! values. When a subscribed ref kind is mutated, OnRefModified() (immediate
+//! mode) or OnRefsModified() (deferred batch mode) is called. Removal is always
+//! dispatched via OnRefRemoved() regardless of subscription.
+//!
 //! ## Thread safety
 //! Callback dispatch is single-threaded (called from mutation paths).
 //! Layers that only provide read access can skip internal locking.
 //!
-//! @warning All lifecycle callbacks (OnNodeRemoved, OnCompact, InvalidateAll,
-//! Clear, OnNodeModified, OnNodesModified) are declared noexcept. Derived
+//! @warning All lifecycle callbacks are declared noexcept. Derived
 //! implementations that throw will cause std::terminate. This is enforced
 //! by C++ language semantics for noexcept virtual overrides.
 class BRepGraph_Layer : public Standard_Transient
@@ -109,6 +116,44 @@ public:
 
   //! Convenience: return bitmask bit for a given Kind.
   static int KindBit(const BRepGraph_NodeId::Kind theKind)
+  {
+    return 1 << static_cast<int>(theKind);
+  }
+
+  // --- Reference modification event subscription ---
+
+  //! Return a bitmask of BRepGraph_RefId::Kind values this layer subscribes to.
+  //! Only modification events matching subscribed ref kinds are dispatched.
+  //! Default: 0 (no subscription). Must be constant for the layer's lifetime.
+  [[nodiscard]] Standard_EXPORT virtual int SubscribedRefKinds() const;
+
+  //! Called when a reference is soft-deleted via RemoveRef().
+  //! No replacement concept - refs are simply removed (unlike nodes which can have
+  //! a replacement during sewing or deduplication). Dispatched to all layers
+  //! regardless of SubscribedRefKinds().
+  //! Default: no-op.
+  //! @param[in] theRef the removed reference
+  Standard_EXPORT virtual void OnRefRemoved(const BRepGraph_RefId theRef) noexcept;
+
+  //! Called in immediate (non-deferred) mode after a single ref is mutated.
+  //! Only dispatched if the ref's kind matches SubscribedRefKinds().
+  //! Default: no-op.
+  //! @param[in] theRef the modified reference
+  Standard_EXPORT virtual void OnRefModified(const BRepGraph_RefId theRef) noexcept;
+
+  //! Called after EndDeferredInvalidation() with all refs modified during
+  //! the deferred scope. Only dispatched if at least one modified ref's kind
+  //! matches SubscribedRefKinds(). The vector may contain refs of kinds not
+  //! subscribed to - layers should filter internally if needed.
+  //! Default: no-op.
+  //! @param[in] theModifiedRefs     all modified, non-removed refs
+  //! @param[in] theModifiedRefKindsMask bitwise OR of all modified ref kinds
+  Standard_EXPORT virtual void OnRefsModified(
+    const NCollection_Vector<BRepGraph_RefId>& theModifiedRefs,
+    const int                                  theModifiedRefKindsMask) noexcept;
+
+  //! Convenience: return bitmask bit for a given RefId::Kind.
+  static int RefKindBit(const BRepGraph_RefId::Kind theKind)
   {
     return 1 << static_cast<int>(theKind);
   }

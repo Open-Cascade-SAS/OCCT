@@ -52,6 +52,14 @@ class BRepGraph_ParentExplorer
 public:
   DEFINE_STANDARD_ALLOC
 
+  //! Relationship kind between Current() and CurrentChild().
+  enum class LinkKind
+  {
+    None,       //!< No current branch step.
+    Reference,  //!< Current() owns CurrentChild() through a RefId.
+    Structural, //!< Current() reaches CurrentChild() through a structural non-ref link.
+  };
+
   //! Upward traversal strategy.
   enum class TraversalMode
   {
@@ -111,6 +119,22 @@ public:
     }
     return {};
   }
+
+  //! Returns the immediate child of Current() on the currently emitted branch.
+  //! Returns invalid NodeId when no current ancestor is available.
+  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId CurrentChild() const;
+
+  //! Returns how Current() is linked to CurrentChild().
+  [[nodiscard]] Standard_EXPORT LinkKind CurrentLinkKind() const;
+
+  //! Returns the exact parent-owned RefId linking Current() to CurrentChild(),
+  //! when that branch step is represented by a reference entry.
+  //!
+  //! Some upward steps are structural and therefore have no parent-owned ref
+  //! entry even though the parent itself is still emitted by the explorer.
+  //! In those cases this method returns an invalid RefId, for example for
+  //! CoEdge->Edge, Product(part)->ShapeRoot and Occurrence->Product.
+  [[nodiscard]] Standard_EXPORT BRepGraph_RefId CurrentRef() const;
 
   //! Accumulated location at the starting node of the current branch.
   [[nodiscard]] Standard_EXPORT const TopLoc_Location& LeafLocation() const;

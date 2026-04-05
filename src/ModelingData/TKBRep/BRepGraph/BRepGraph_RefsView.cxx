@@ -268,6 +268,232 @@ const NCollection_Vector<BRepGraph_OccurrenceRefId>& BRepGraph::RefsView::Occurr
 
 //=================================================================================================
 
+BRepGraph_RefId BRepGraph::RefsView::RefAtStep(const BRepGraph_NodeId theParent,
+                                               const int              theStep) const
+{
+  if (!theParent.IsValid() || theStep < 0)
+  {
+    return BRepGraph_RefId();
+  }
+
+  switch (theParent.NodeKind)
+  {
+    case BRepGraph_NodeId::Kind::Compound: {
+      const BRepGraphInc::CompoundDef& aCompound =
+        myGraph->Topo().Compounds().Definition(BRepGraph_CompoundId::FromNodeId(theParent));
+      return theStep < aCompound.ChildRefIds.Length() ? aCompound.ChildRefIds.Value(theStep)
+                                                      : BRepGraph_RefId();
+    }
+    case BRepGraph_NodeId::Kind::CompSolid: {
+      const BRepGraphInc::CompSolidDef& aCompSolid =
+        myGraph->Topo().CompSolids().Definition(BRepGraph_CompSolidId::FromNodeId(theParent));
+      return theStep < aCompSolid.SolidRefIds.Length() ? aCompSolid.SolidRefIds.Value(theStep)
+                                                       : BRepGraph_RefId();
+    }
+    case BRepGraph_NodeId::Kind::Solid: {
+      const BRepGraphInc::SolidDef& aSolid =
+        myGraph->Topo().Solids().Definition(BRepGraph_SolidId::FromNodeId(theParent));
+      if (theStep < aSolid.ShellRefIds.Length())
+      {
+        return aSolid.ShellRefIds.Value(theStep);
+      }
+
+      const int aFreeIdx = theStep - aSolid.ShellRefIds.Length();
+      return aFreeIdx < aSolid.AuxChildRefIds.Length() ? aSolid.AuxChildRefIds.Value(aFreeIdx)
+                                                       : BRepGraph_RefId();
+    }
+    case BRepGraph_NodeId::Kind::Shell: {
+      const BRepGraphInc::ShellDef& aShell =
+        myGraph->Topo().Shells().Definition(BRepGraph_ShellId::FromNodeId(theParent));
+      if (theStep < aShell.FaceRefIds.Length())
+      {
+        return aShell.FaceRefIds.Value(theStep);
+      }
+
+      const int aFreeIdx = theStep - aShell.FaceRefIds.Length();
+      return aFreeIdx < aShell.AuxChildRefIds.Length() ? aShell.AuxChildRefIds.Value(aFreeIdx)
+                                                       : BRepGraph_RefId();
+    }
+    case BRepGraph_NodeId::Kind::Face: {
+      const BRepGraphInc::FaceDef& aFace =
+        myGraph->Topo().Faces().Definition(BRepGraph_FaceId::FromNodeId(theParent));
+      if (theStep < aFace.WireRefIds.Length())
+      {
+        return aFace.WireRefIds.Value(theStep);
+      }
+
+      const int aVertexIdx = theStep - aFace.WireRefIds.Length();
+      return aVertexIdx < aFace.VertexRefIds.Length() ? aFace.VertexRefIds.Value(aVertexIdx)
+                                                      : BRepGraph_RefId();
+    }
+    case BRepGraph_NodeId::Kind::Wire: {
+      const BRepGraphInc::WireDef& aWire =
+        myGraph->Topo().Wires().Definition(BRepGraph_WireId::FromNodeId(theParent));
+      return theStep < aWire.CoEdgeRefIds.Length() ? aWire.CoEdgeRefIds.Value(theStep)
+                                                   : BRepGraph_RefId();
+    }
+    case BRepGraph_NodeId::Kind::Edge: {
+      const BRepGraphInc::EdgeDef& anEdge =
+        myGraph->Topo().Edges().Definition(BRepGraph_EdgeId::FromNodeId(theParent));
+      if (theStep == 0)
+      {
+        return anEdge.StartVertexRefId;
+      }
+      if (theStep == 1)
+      {
+        return anEdge.EndVertexRefId;
+      }
+
+      const int anInternalIdx = theStep - 2;
+      return anInternalIdx < anEdge.InternalVertexRefIds.Length()
+               ? anEdge.InternalVertexRefIds.Value(anInternalIdx)
+               : BRepGraph_RefId();
+    }
+    case BRepGraph_NodeId::Kind::Product: {
+      const BRepGraphInc::ProductDef& aProduct =
+        myGraph->Topo().Products().Definition(BRepGraph_ProductId::FromNodeId(theParent));
+      return theStep < aProduct.OccurrenceRefIds.Length() ? aProduct.OccurrenceRefIds.Value(theStep)
+                                                          : BRepGraph_RefId();
+    }
+    case BRepGraph_NodeId::Kind::CoEdge:
+    case BRepGraph_NodeId::Kind::Occurrence:
+    case BRepGraph_NodeId::Kind::Vertex:
+      return BRepGraph_RefId();
+  }
+
+  return BRepGraph_RefId();
+}
+
+//=================================================================================================
+
+BRepGraph_NodeId BRepGraph::RefsView::ChildNode(const BRepGraph_RefId theRef) const
+{
+  if (!theRef.IsValid())
+  {
+    return BRepGraph_NodeId();
+  }
+
+  switch (theRef.RefKind)
+  {
+    case BRepGraph_RefId::Kind::Shell:
+      return Shells().Entry(BRepGraph_ShellRefId::FromRefId(theRef)).ShellDefId;
+    case BRepGraph_RefId::Kind::Face:
+      return Faces().Entry(BRepGraph_FaceRefId::FromRefId(theRef)).FaceDefId;
+    case BRepGraph_RefId::Kind::Wire:
+      return Wires().Entry(BRepGraph_WireRefId::FromRefId(theRef)).WireDefId;
+    case BRepGraph_RefId::Kind::CoEdge:
+      return CoEdges().Entry(BRepGraph_CoEdgeRefId::FromRefId(theRef)).CoEdgeDefId;
+    case BRepGraph_RefId::Kind::Vertex:
+      return Vertices().Entry(BRepGraph_VertexRefId::FromRefId(theRef)).VertexDefId;
+    case BRepGraph_RefId::Kind::Solid:
+      return Solids().Entry(BRepGraph_SolidRefId::FromRefId(theRef)).SolidDefId;
+    case BRepGraph_RefId::Kind::Child:
+      return Children().Entry(BRepGraph_ChildRefId::FromRefId(theRef)).ChildDefId;
+    case BRepGraph_RefId::Kind::Occurrence:
+      return Occurrences().Entry(BRepGraph_OccurrenceRefId::FromRefId(theRef)).OccurrenceDefId;
+  }
+
+  return BRepGraph_NodeId();
+}
+
+//=================================================================================================
+
+bool BRepGraph::RefsView::IsRemoved(const BRepGraph_RefId theRef) const
+{
+  if (!theRef.IsValid())
+  {
+    return true;
+  }
+
+  switch (theRef.RefKind)
+  {
+    case BRepGraph_RefId::Kind::Shell:
+      return Shells().Entry(BRepGraph_ShellRefId::FromRefId(theRef)).IsRemoved;
+    case BRepGraph_RefId::Kind::Face:
+      return Faces().Entry(BRepGraph_FaceRefId::FromRefId(theRef)).IsRemoved;
+    case BRepGraph_RefId::Kind::Wire:
+      return Wires().Entry(BRepGraph_WireRefId::FromRefId(theRef)).IsRemoved;
+    case BRepGraph_RefId::Kind::CoEdge:
+      return CoEdges().Entry(BRepGraph_CoEdgeRefId::FromRefId(theRef)).IsRemoved;
+    case BRepGraph_RefId::Kind::Vertex:
+      return Vertices().Entry(BRepGraph_VertexRefId::FromRefId(theRef)).IsRemoved;
+    case BRepGraph_RefId::Kind::Solid:
+      return Solids().Entry(BRepGraph_SolidRefId::FromRefId(theRef)).IsRemoved;
+    case BRepGraph_RefId::Kind::Child:
+      return Children().Entry(BRepGraph_ChildRefId::FromRefId(theRef)).IsRemoved;
+    case BRepGraph_RefId::Kind::Occurrence:
+      return Occurrences().Entry(BRepGraph_OccurrenceRefId::FromRefId(theRef)).IsRemoved;
+  }
+
+  return true;
+}
+
+//=================================================================================================
+
+TopLoc_Location BRepGraph::RefsView::LocalLocation(const BRepGraph_RefId theRef) const
+{
+  if (!theRef.IsValid())
+  {
+    return TopLoc_Location();
+  }
+
+  switch (theRef.RefKind)
+  {
+    case BRepGraph_RefId::Kind::Shell:
+      return Shells().Entry(BRepGraph_ShellRefId::FromRefId(theRef)).LocalLocation;
+    case BRepGraph_RefId::Kind::Face:
+      return Faces().Entry(BRepGraph_FaceRefId::FromRefId(theRef)).LocalLocation;
+    case BRepGraph_RefId::Kind::Wire:
+      return Wires().Entry(BRepGraph_WireRefId::FromRefId(theRef)).LocalLocation;
+    case BRepGraph_RefId::Kind::CoEdge:
+      return CoEdges().Entry(BRepGraph_CoEdgeRefId::FromRefId(theRef)).LocalLocation;
+    case BRepGraph_RefId::Kind::Vertex:
+      return Vertices().Entry(BRepGraph_VertexRefId::FromRefId(theRef)).LocalLocation;
+    case BRepGraph_RefId::Kind::Solid:
+      return Solids().Entry(BRepGraph_SolidRefId::FromRefId(theRef)).LocalLocation;
+    case BRepGraph_RefId::Kind::Child:
+      return Children().Entry(BRepGraph_ChildRefId::FromRefId(theRef)).LocalLocation;
+    case BRepGraph_RefId::Kind::Occurrence:
+      return TopLoc_Location();
+  }
+
+  return TopLoc_Location();
+}
+
+//=================================================================================================
+
+TopAbs_Orientation BRepGraph::RefsView::Orientation(const BRepGraph_RefId theRef) const
+{
+  if (!theRef.IsValid())
+  {
+    return TopAbs_FORWARD;
+  }
+
+  switch (theRef.RefKind)
+  {
+    case BRepGraph_RefId::Kind::Shell:
+      return Shells().Entry(BRepGraph_ShellRefId::FromRefId(theRef)).Orientation;
+    case BRepGraph_RefId::Kind::Face:
+      return Faces().Entry(BRepGraph_FaceRefId::FromRefId(theRef)).Orientation;
+    case BRepGraph_RefId::Kind::Wire:
+      return Wires().Entry(BRepGraph_WireRefId::FromRefId(theRef)).Orientation;
+    case BRepGraph_RefId::Kind::CoEdge:
+      return TopAbs_FORWARD;
+    case BRepGraph_RefId::Kind::Vertex:
+      return Vertices().Entry(BRepGraph_VertexRefId::FromRefId(theRef)).Orientation;
+    case BRepGraph_RefId::Kind::Solid:
+      return Solids().Entry(BRepGraph_SolidRefId::FromRefId(theRef)).Orientation;
+    case BRepGraph_RefId::Kind::Child:
+      return Children().Entry(BRepGraph_ChildRefId::FromRefId(theRef)).Orientation;
+    case BRepGraph_RefId::Kind::Occurrence:
+      return TopAbs_FORWARD;
+  }
+
+  return TopAbs_FORWARD;
+}
+
+//=================================================================================================
+
 const NCollection_Vector<BRepGraph_SolidRefId>& BRepGraph::RefsView::SolidOps::IdsOf(
   const BRepGraph_CompSolidId theCompSolid) const
 {

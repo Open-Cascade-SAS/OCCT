@@ -801,6 +801,19 @@ TEST(BRepGraph_BuildTest, AppendFlattenedShape_OnEmptyGraph_BuildsFlattenedGraph
     const BRepGraph_FaceId aFaceId(anIdx);
     EXPECT_EQ(aRoots.Value(anIdx), aFaceId);
   }
+
+  EXPECT_TRUE(aGraph.Builder().ValidateMutationBoundary());
+}
+
+TEST(BRepGraph_BuildTest, Build_MutationBoundary_IsValid)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
+
+  BRepGraph aGraph;
+  aGraph.Build(aBoxMaker.Shape());
+
+  ASSERT_TRUE(aGraph.IsDone());
+  EXPECT_TRUE(aGraph.Builder().ValidateMutationBoundary());
 }
 
 TEST(BRepGraph_BuildTest, AppendFlattenedShape_SameFaceTwice_DedupsDefinition)
@@ -838,6 +851,22 @@ TEST(BRepGraph_BuildTest, AppendFlattenedShape_AfterBuild_DoesNotCreateNewSolidD
   EXPECT_EQ(aGraph.Topo().Solids().Nb(), aNbSolidsBefore);
   EXPECT_EQ(aGraph.Topo().Faces().Nb(), aNbFacesBefore + 6);
   EXPECT_EQ(aGraph.RootNodeIds().Length(), 7);
+  EXPECT_TRUE(aGraph.Builder().ValidateMutationBoundary());
+}
+
+TEST(BRepGraph_BuildTest, AppendFullShape_MutationBoundary_IsValid)
+{
+  BRepPrimAPI_MakeBox    aBoxMaker(10.0, 20.0, 30.0);
+  BRepPrimAPI_MakeSphere aSphereMaker(5.0);
+
+  BRepGraph aGraph;
+  aGraph.Build(aBoxMaker.Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  aGraph.Builder().AppendFullShape(aSphereMaker.Shape());
+
+  ASSERT_TRUE(aGraph.IsDone());
+  EXPECT_TRUE(aGraph.Builder().ValidateMutationBoundary());
 }
 
 TEST(BRepGraph_BuildTest, AppendFlattenedShape_AppendedFaceHasNoParentShell)

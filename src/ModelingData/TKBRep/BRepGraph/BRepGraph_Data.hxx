@@ -83,6 +83,9 @@ struct BRepGraph_Data
   //! NodeIds accumulated during deferred mode. Processed by EndDeferredInvalidation().
   NCollection_Vector<BRepGraph_NodeId> myDeferredModified;
 
+  //! RefIds accumulated during deferred mode. Processed by EndDeferredInvalidation().
+  NCollection_Vector<BRepGraph_RefId> myDeferredRefModified;
+
   //! Gen-validated shape cache entry.
   struct CachedShape
   {

@@ -488,9 +488,68 @@ const BRepGraphInc::CoEdgeDef* BRepGraph::TopoView::EdgeOps::FindPCurve(
     {
       aFirstMatch = &aCoEdge;
     }
-    if (aCoEdge.Sense == theOrientation)
+    if (aCoEdge.Orientation == theOrientation)
     {
       return &aCoEdge;
+    }
+  }
+  return aFirstMatch;
+}
+
+//=================================================================================================
+
+BRepGraph_CoEdgeId BRepGraph::TopoView::EdgeOps::FindCoEdgeId(const BRepGraph_EdgeId theEdge,
+                                                              const BRepGraph_FaceId theFace) const
+{
+  const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
+  if (!theEdge.IsValid(aStorage.NbEdges()) || !theFace.IsValid(aStorage.NbFaces()))
+  {
+    return BRepGraph_CoEdgeId();
+  }
+
+  const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdges =
+    aStorage.ReverseIndex().CoEdgesOfEdgeRef(theEdge);
+  for (const BRepGraph_CoEdgeId& aCoEdgeId : aCoEdges)
+  {
+    const BRepGraphInc::CoEdgeDef& aCoEdge = aStorage.CoEdge(aCoEdgeId);
+    if (aCoEdge.EdgeDefId == theEdge && aCoEdge.FaceDefId == theFace)
+    {
+      return aCoEdgeId;
+    }
+  }
+  return BRepGraph_CoEdgeId();
+}
+
+//=================================================================================================
+
+BRepGraph_CoEdgeId BRepGraph::TopoView::EdgeOps::FindCoEdgeId(
+  const BRepGraph_EdgeId   theEdge,
+  const BRepGraph_FaceId   theFace,
+  const TopAbs_Orientation theOrientation) const
+{
+  const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
+  if (!theEdge.IsValid(aStorage.NbEdges()) || !theFace.IsValid(aStorage.NbFaces()))
+  {
+    return BRepGraph_CoEdgeId();
+  }
+
+  const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdges =
+    aStorage.ReverseIndex().CoEdgesOfEdgeRef(theEdge);
+  BRepGraph_CoEdgeId aFirstMatch;
+  for (const BRepGraph_CoEdgeId& aCoEdgeId : aCoEdges)
+  {
+    const BRepGraphInc::CoEdgeDef& aCoEdge = aStorage.CoEdge(aCoEdgeId);
+    if (aCoEdge.EdgeDefId != theEdge || aCoEdge.FaceDefId != theFace)
+    {
+      continue;
+    }
+    if (!aFirstMatch.IsValid())
+    {
+      aFirstMatch = aCoEdgeId;
+    }
+    if (aCoEdge.Orientation == theOrientation)
+    {
+      return aCoEdgeId;
     }
   }
   return aFirstMatch;

@@ -160,7 +160,9 @@ BRepGraph_TransientCache::CacheSlot& BRepGraph_TransientCache::changeSlot(
   const int              theKindSlot)
 {
   ensureKind(theKindSlot);
-  const int                      aKindIdx = static_cast<int>(theNode.NodeKind);
+  const int aKindIdx = static_cast<int>(theNode.NodeKind);
+  Standard_ASSERT_VOID(aKindIdx >= 0 && aKindIdx < THE_KIND_COUNT,
+                       "BRepGraph_TransientCache: NodeKind out of range");
   NCollection_Vector<CacheSlot>& aVec =
     myKinds.ChangeValue(theKindSlot).myNodeKinds[aKindIdx].mySlots;
   if (theNode.Index >= aVec.Length())
@@ -181,7 +183,9 @@ const BRepGraph_TransientCache::CacheSlot* BRepGraph_TransientCache::seekSlot(
     return nullptr;
   }
 
-  const int                            aKindIdx = static_cast<int>(theNode.NodeKind);
+  const int aKindIdx = static_cast<int>(theNode.NodeKind);
+  Standard_ASSERT_VOID(aKindIdx >= 0 && aKindIdx < THE_KIND_COUNT,
+                       "BRepGraph_TransientCache: NodeKind out of range");
   const NCollection_Vector<CacheSlot>& aVec =
     myKinds.Value(theKindSlot).myNodeKinds[aKindIdx].mySlots;
   if (theNode.Index >= aVec.Length())
@@ -392,76 +396,26 @@ bool BRepGraph_TransientCache::Remove(const BRepGraph_NodeId theNode, const int 
 
 //=================================================================================================
 
-bool BRepGraph_TransientCache::HasCacheValues(const BRepGraph_NodeId theNode) const
+int BRepGraph_TransientCache::CollectCacheKindSlots(const BRepGraph_NodeId theNode,
+                                                    const uint32_t         theCurrentSubtreeGen,
+                                                    int                    theSlots[]) const
 {
+  int aCount = 0;
   if (!theNode.IsValid())
   {
-    return false;
+    return aCount;
   }
 
   for (int aKindSlot = 0; aKindSlot < myKinds.Length(); ++aKindSlot)
   {
     const CacheSlot* aSlot = seekSlot(theNode, aKindSlot);
-    if (aSlot != nullptr && !aSlot->Value.IsNull())
+    if (aSlot != nullptr && !aSlot->Value.IsNull()
+        && aSlot->StoredSubtreeGen == theCurrentSubtreeGen)
     {
-      return true;
+      theSlots[aCount++] = aKindSlot;
     }
   }
-  return false;
-}
-
-//=================================================================================================
-
-NCollection_Vector<occ::handle<BRepGraph_CacheKind>> BRepGraph_TransientCache::CacheKinds(
-  const BRepGraph_NodeId theNode) const
-{
-  NCollection_Vector<occ::handle<BRepGraph_CacheKind>> aKinds;
-  if (!theNode.IsValid())
-  {
-    return aKinds;
-  }
-
-  for (int aKindSlot = 0; aKindSlot < myKinds.Length(); ++aKindSlot)
-  {
-    const CacheSlot* aSlot = seekSlot(theNode, aKindSlot);
-    if (aSlot != nullptr && !aSlot->Value.IsNull())
-    {
-      const occ::handle<BRepGraph_CacheKind> aKind =
-        BRepGraph_CacheKindRegistry::FindKind(aKindSlot);
-      if (!aKind.IsNull())
-      {
-        aKinds.Append(aKind);
-      }
-    }
-  }
-  return aKinds;
-}
-
-//=================================================================================================
-
-void BRepGraph_TransientCache::TransferCacheValues(const BRepGraph_TransientCache& theSrcCache,
-                                                   const BRepGraph_NodeId          theSrcNode,
-                                                   const BRepGraph_NodeId          theDstNode,
-                                                   const uint32_t                  theDstSubtreeGen)
-{
-  if (!theSrcNode.IsValid() || !theDstNode.IsValid())
-  {
-    return;
-  }
-
-  for (int aKindSlot = 0; aKindSlot < theSrcCache.myKinds.Length(); ++aKindSlot)
-  {
-    const CacheSlot* aSrcSlot = theSrcCache.seekSlot(theSrcNode, aKindSlot);
-    if (aSrcSlot == nullptr || aSrcSlot->Value.IsNull())
-    {
-      continue;
-    }
-
-    std::unique_lock<std::shared_mutex> aLock(myMutex);
-    CacheSlot&                          aDstSlot = changeSlot(theDstNode, aKindSlot);
-    aDstSlot.Value                               = aSrcSlot->Value;
-    aDstSlot.StoredSubtreeGen                    = theDstSubtreeGen;
-  }
+  return aCount;
 }
 
 //=================================================================================================

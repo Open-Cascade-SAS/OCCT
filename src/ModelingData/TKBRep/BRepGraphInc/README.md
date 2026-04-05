@@ -95,14 +95,14 @@ graph TD
 
     Compound["CompoundDef<br/><i>ChildRefIds[]</i>"]
     CompSolid["CompSolidDef<br/><i>SolidRefIds[]</i>"]
-    Solid["SolidDef<br/><i>ShellRefIds[], FreeChildRefIds[]</i>"]
-    Shell["ShellDef<br/><i>IsClosed, FaceRefIds[], FreeChildRefIds[]</i>"]
+    Solid["SolidDef<br/><i>ShellRefIds[], AuxChildRefIds[]</i>"]
+    Shell["ShellDef<br/><i>IsClosed, FaceRefIds[], AuxChildRefIds[]</i>"]
 
     Face["FaceDef<br/><i>SurfaceRepId, TriangulationRepIds,<br/>ActiveTriangulationIndex, WireRefIds[],<br/>VertexRefIds[], Tolerance, NaturalRestriction</i>"]
 
     Wire["WireDef<br/><i>CoEdgeRefIds[], IsClosed</i>"]
 
-    CoEdge["CoEdgeDef<br/><i>EdgeDefId, FaceDefId, Sense,<br/>Curve2DRepId, Polygon2DRepId,<br/>ParamFirst/Last, UV1/UV2,<br/>SeamPairId, SeamContinuity</i>"]
+    CoEdge["CoEdgeDef<br/><i>EdgeDefId, FaceDefId, Orientation,<br/>Curve2DRepId, Polygon2DRepId,<br/>ParamFirst/Last, UV1/UV2,<br/>SeamPairId, SeamContinuity</i>"]
 
     Edge["EdgeDef<br/><i>Curve3DRepId, Polygon3DRepId,<br/>StartVertexRefId, EndVertexRefId,<br/>InternalVertexRefIds[],<br/>ParamFirst/Last, Tolerance,<br/>SameParameter, SameRange,<br/>IsDegenerate, IsClosed,<br/>Regularities[]</i>"]
 
@@ -155,8 +155,8 @@ Concrete ref entry types extend BaseRef with context data:
 
 Entities store typed RefId vectors instead of inline ref arrays:
 
-- **SolidDef**: `ShellRefIds[]`, `FreeChildRefIds[]`
-- **ShellDef**: `FaceRefIds[]`, `FreeChildRefIds[]`
+- **SolidDef**: `ShellRefIds[]`, `AuxChildRefIds[]`
+- **ShellDef**: `FaceRefIds[]`, `AuxChildRefIds[]`
 - **FaceDef**: `WireRefIds[]`, `VertexRefIds[]`
 - **WireDef**: `CoEdgeRefIds[]`
 - **EdgeDef**: `StartVertexRefId`, `EndVertexRefId`, `InternalVertexRefIds[]`
@@ -193,6 +193,10 @@ flowchart LR
 | **Phase 4** | Sequential | Build reverse indices for O(1) upward navigation. |
 
 Backend entry point: `BRepGraphInc_Populate::Perform()`.
+
+`Options.CreateAutoProduct` (default true) controls whether a root Product is auto-created wrapping the top-level topology node. Set to false when a higher-level builder (e.g. XCAF) manages Products itself.
+
+`BRepGraphInc_Populate::Append()` supports incremental addition to an already-populated storage, with TShape dedup against existing entities. Used by `BRepGraph_Builder::AppendFlattened()` (face-only) and `AppendFull()` (full hierarchy).
 
 For normal graph construction, use `BRepGraph::Build()` instead. The facade owns the public lifecycle, view initialization, mutation boundary behavior, and cache coordination on top of this backend pipeline.
 
@@ -270,7 +274,7 @@ anEdge.Location(Identity);                     // Reset after attachment
 
 ### Special Cases
 
-- **Seam edges**: Two CoEdges with opposite Sense, linked by `SeamPairId`. Both PCurves attached via `UpdateEdge(E, PC1, PC2, S, L, tol)`.
+- **Seam edges**: Two CoEdges with opposite Orientation, linked by `SeamPairId`. Both PCurves attached via `UpdateEdge(E, PC1, PC2, S, L, tol)`.
 - **Degenerate edges**: `MakeEdge()` + `Degenerated(true)`, no 3D curve.
 - **IsClosed/NaturalRestriction**: Set AFTER sub-shapes are added (Add can reset flags).
 
@@ -302,7 +306,7 @@ anEdge.Location(Identity);                     // Reset after attachment
 3. **Reverse-index**: required reverse rows must exist for forward refs used by query paths
 4. **Removal**: IsRemoved entities must be filtered from normal traversals
 5. **Mutation boundary**: entities, reverse indices, cache invalidation, and history are coherent after each operation
-6. **Assembly**: every Build produces at least one root Product; occurrence cross-references valid; self-referencing rejected; ParentOccurrenceDefId forms a tree
+6. **Assembly**: Build produces a root Product when `CreateAutoProduct` is true (default); occurrence cross-references valid; self-referencing rejected; ParentOccurrenceDefId forms a tree
 
 ## Memory and Performance
 

@@ -14,6 +14,7 @@
 #include <BRepGraph.hxx>
 #include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_Layer.hxx>
+#include <BRepGraph_LayerIterator.hxx>
 #include <BRepGraph_DeferredScope.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_Compact.hxx>
@@ -30,9 +31,11 @@ public:
   BRepGraph_ModTrackingLayer(
     const TCollection_AsciiString& theName,
     const int                      theSubscribedKinds,
-    const Standard_GUID&           theId = Standard_GUID("2f9b6a5c-1f2d-4a88-9c1c-7a0c16a10004"))
+    const Standard_GUID&           theId = Standard_GUID("2f9b6a5c-1f2d-4a88-9c1c-7a0c16a10004"),
+    const int                      theSubscribedRefKinds = 0)
       : myName(theName),
         mySubscribedKinds(theSubscribedKinds),
+        mySubscribedRefKinds(theSubscribedRefKinds),
         myId(theId)
   {
   }
@@ -42,6 +45,26 @@ public:
   const TCollection_AsciiString& Name() const override { return myName; }
 
   int SubscribedKinds() const override { return mySubscribedKinds; }
+
+  int SubscribedRefKinds() const override { return mySubscribedRefKinds; }
+
+  void OnRefRemoved(const BRepGraph_RefId theRef) noexcept override
+  {
+    myRefRemovedEvents.Append(theRef);
+    ++myRefRemoveCallCount;
+  }
+
+  void OnRefModified(const BRepGraph_RefId theRef) noexcept override
+  {
+    myRefImmediateEvents.Append(theRef);
+  }
+
+  void OnRefsModified(const NCollection_Vector<BRepGraph_RefId>& theRefs,
+                      const int /*theModifiedRefKindsMask*/) noexcept override
+  {
+    myRefBatchEvents = theRefs;
+    ++myRefBatchCallCount;
+  }
 
   void OnNodeModified(const BRepGraph_NodeId theNode) noexcept override
   {
@@ -85,6 +108,11 @@ public:
     myLastRemovedNode  = BRepGraph_NodeId();
     myLastReplacement  = BRepGraph_NodeId();
     myLastRemapMap.Clear();
+    myRefRemovedEvents.Clear();
+    myRefImmediateEvents.Clear();
+    myRefBatchEvents.Clear();
+    myRefBatchCallCount  = 0;
+    myRefRemoveCallCount = 0;
   }
 
   bool HasImmediateEventFor(BRepGraph_NodeId theNode) const
@@ -121,11 +149,18 @@ public:
   BRepGraph_NodeId                                        myLastReplacement;
   NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId> myLastRemapMap;
 
+  NCollection_Vector<BRepGraph_RefId> myRefRemovedEvents;
+  NCollection_Vector<BRepGraph_RefId> myRefImmediateEvents;
+  NCollection_Vector<BRepGraph_RefId> myRefBatchEvents;
+  int                                 myRefBatchCallCount  = 0;
+  int                                 myRefRemoveCallCount = 0;
+
   DEFINE_STANDARD_RTTIEXT(BRepGraph_ModTrackingLayer, BRepGraph_Layer)
 
 private:
   TCollection_AsciiString myName;
   int                     mySubscribedKinds;
+  int                     mySubscribedRefKinds;
   Standard_GUID           myId;
 };
 
@@ -494,6 +529,76 @@ TEST_F(BRepGraph_EventBusTest, KindBit_Helpers)
   EXPECT_EQ(aBitCount, 8);
 }
 
+TEST_F(BRepGraph_EventBusTest, RefKindBit_Helpers)
+{
+  using Kind = BRepGraph_RefId::Kind;
+  EXPECT_EQ(BRepGraph_Layer::RefKindBit(Kind::Shell), 1 << static_cast<int>(Kind::Shell));
+  EXPECT_EQ(BRepGraph_Layer::RefKindBit(Kind::Face), 1 << static_cast<int>(Kind::Face));
+  EXPECT_EQ(BRepGraph_Layer::RefKindBit(Kind::Wire), 1 << static_cast<int>(Kind::Wire));
+  EXPECT_EQ(BRepGraph_Layer::RefKindBit(Kind::CoEdge), 1 << static_cast<int>(Kind::CoEdge));
+  EXPECT_EQ(BRepGraph_Layer::RefKindBit(Kind::Vertex), 1 << static_cast<int>(Kind::Vertex));
+  EXPECT_EQ(BRepGraph_Layer::RefKindBit(Kind::Solid), 1 << static_cast<int>(Kind::Solid));
+  EXPECT_EQ(BRepGraph_Layer::RefKindBit(Kind::Child), 1 << static_cast<int>(Kind::Child));
+  EXPECT_EQ(BRepGraph_Layer::RefKindBit(Kind::Occurrence), 1 << static_cast<int>(Kind::Occurrence));
+
+  // 8 distinct bits.
+  const int aAll =
+    BRepGraph_Layer::RefKindBit(Kind::Shell) | BRepGraph_Layer::RefKindBit(Kind::Face)
+    | BRepGraph_Layer::RefKindBit(Kind::Wire) | BRepGraph_Layer::RefKindBit(Kind::CoEdge)
+    | BRepGraph_Layer::RefKindBit(Kind::Vertex) | BRepGraph_Layer::RefKindBit(Kind::Solid)
+    | BRepGraph_Layer::RefKindBit(Kind::Child) | BRepGraph_Layer::RefKindBit(Kind::Occurrence);
+  int aBitCount = 0;
+  for (int v = aAll; v != 0; v >>= 1)
+    aBitCount += (v & 1);
+  EXPECT_EQ(aBitCount, 8);
+}
+
+TEST_F(BRepGraph_EventBusTest, DefaultSubscribedRefKinds_Zero)
+{
+  occ::handle<BRepGraph_DefaultLayer> aDefaultLayer = new BRepGraph_DefaultLayer;
+  EXPECT_EQ(aDefaultLayer->SubscribedRefKinds(), 0);
+}
+
+TEST_F(BRepGraph_EventBusTest, OnRefRemoved_DispatchedToAllLayers)
+{
+  occ::handle<BRepGraph_ModTrackingLayer> aLayer = new BRepGraph_ModTrackingLayer("Tracker", 0);
+  myGraph.LayerRegistry().RegisterLayer(aLayer);
+
+  // A box has FaceRef entries in its shell. Remove one.
+  const BRepGraph_FaceRefId aFaceRef(0);
+  ASSERT_TRUE(myGraph.Builder().RemoveRef(aFaceRef));
+
+  // OnRefRemoved must be dispatched regardless of SubscribedRefKinds.
+  EXPECT_EQ(aLayer->myRefRemoveCallCount, 1);
+  EXPECT_EQ(aLayer->myRefRemovedEvents.Length(), 1);
+  EXPECT_EQ(aLayer->myRefRemovedEvents.Value(0), BRepGraph_RefId(aFaceRef));
+}
+
+TEST_F(BRepGraph_EventBusTest, OnRefRemoved_MultipleRefs)
+{
+  occ::handle<BRepGraph_ModTrackingLayer> aLayer = new BRepGraph_ModTrackingLayer("Tracker", 0);
+  myGraph.LayerRegistry().RegisterLayer(aLayer);
+
+  ASSERT_TRUE(myGraph.Builder().RemoveRef(BRepGraph_FaceRefId(0)));
+  ASSERT_TRUE(myGraph.Builder().RemoveRef(BRepGraph_FaceRefId(1)));
+
+  EXPECT_EQ(aLayer->myRefRemoveCallCount, 2);
+  EXPECT_EQ(aLayer->myRefRemovedEvents.Length(), 2);
+}
+
+TEST_F(BRepGraph_EventBusTest, OnRefRemoved_AlreadyRemoved_NotDispatched)
+{
+  occ::handle<BRepGraph_ModTrackingLayer> aLayer = new BRepGraph_ModTrackingLayer("Tracker", 0);
+  myGraph.LayerRegistry().RegisterLayer(aLayer);
+
+  ASSERT_TRUE(myGraph.Builder().RemoveRef(BRepGraph_FaceRefId(0)));
+  EXPECT_EQ(aLayer->myRefRemoveCallCount, 1);
+
+  // Second removal returns false and must NOT dispatch again.
+  EXPECT_FALSE(myGraph.Builder().RemoveRef(BRepGraph_FaceRefId(0)));
+  EXPECT_EQ(aLayer->myRefRemoveCallCount, 1);
+}
+
 TEST_F(BRepGraph_EventBusTest, OverlappingSubscription_EdgeAndFace)
 {
   // Layer subscribes to both Edge and Face - should receive events for both kinds.
@@ -512,4 +617,62 @@ TEST_F(BRepGraph_EventBusTest, OverlappingSubscription_EdgeAndFace)
   EXPECT_GT(aLayer->CountImmediateEventsOfKind(BRepGraph_NodeId::Kind::Edge), 0);
   EXPECT_EQ(aLayer->CountImmediateEventsOfKind(BRepGraph_NodeId::Kind::Face), 0);
   EXPECT_EQ(aLayer->CountImmediateEventsOfKind(BRepGraph_NodeId::Kind::Wire), 0);
+}
+
+TEST_F(BRepGraph_EventBusTest, LayerIterator_TraditionalLoop)
+{
+  occ::handle<BRepGraph_ModTrackingLayer> aLayer1 =
+    new BRepGraph_ModTrackingLayer("L1", 0, Standard_GUID("2f9b6a5c-1f2d-4a88-9c1c-7a0c16a10030"));
+  occ::handle<BRepGraph_ModTrackingLayer> aLayer2 =
+    new BRepGraph_ModTrackingLayer("L2", 0, Standard_GUID("2f9b6a5c-1f2d-4a88-9c1c-7a0c16a10031"));
+  myGraph.LayerRegistry().RegisterLayer(aLayer1);
+  myGraph.LayerRegistry().RegisterLayer(aLayer2);
+
+  int aCount = 0;
+  for (BRepGraph_LayerIterator anIt(myGraph.LayerRegistry()); anIt.More(); anIt.Next())
+  {
+    EXPECT_FALSE(anIt.Value().IsNull());
+    // Slot() must match iteration index and Layer(slot) must return the same value.
+    EXPECT_EQ(myGraph.LayerRegistry().Layer(anIt.Slot()), anIt.Value());
+    ++aCount;
+  }
+  EXPECT_EQ(aCount, 2);
+}
+
+TEST_F(BRepGraph_EventBusTest, LayerIterator_RangeFor)
+{
+  occ::handle<BRepGraph_ModTrackingLayer> aLayer1 =
+    new BRepGraph_ModTrackingLayer("L1", 0, Standard_GUID("2f9b6a5c-1f2d-4a88-9c1c-7a0c16a10030"));
+  occ::handle<BRepGraph_ModTrackingLayer> aLayer2 =
+    new BRepGraph_ModTrackingLayer("L2", 0, Standard_GUID("2f9b6a5c-1f2d-4a88-9c1c-7a0c16a10031"));
+  myGraph.LayerRegistry().RegisterLayer(aLayer1);
+  myGraph.LayerRegistry().RegisterLayer(aLayer2);
+
+  int  aCount = 0;
+  bool hasL1  = false;
+  bool hasL2  = false;
+  for (const occ::handle<BRepGraph_Layer>& aLayer :
+       BRepGraph_LayerIterator(myGraph.LayerRegistry()))
+  {
+    if (aLayer == aLayer1)
+      hasL1 = true;
+    if (aLayer == aLayer2)
+      hasL2 = true;
+    ++aCount;
+  }
+  EXPECT_EQ(aCount, 2);
+  EXPECT_TRUE(hasL1);
+  EXPECT_TRUE(hasL2);
+}
+
+TEST_F(BRepGraph_EventBusTest, LayerIterator_RangeFor_Empty)
+{
+  int aCount = 0;
+  for (const occ::handle<BRepGraph_Layer>& aLayer :
+       BRepGraph_LayerIterator(myGraph.LayerRegistry()))
+  {
+    (void)aLayer;
+    ++aCount;
+  }
+  EXPECT_EQ(aCount, 0);
 }

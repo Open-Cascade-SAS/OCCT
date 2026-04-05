@@ -3,6 +3,7 @@ set(OCCT_BRepGraph_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 set(OCCT_BRepGraph_FILES
   BRepGraph.cxx
   BRepGraph.hxx
+  BRepGraph_CacheKindIterator.hxx
   BRepGraph_CacheView.cxx
   BRepGraph_CacheView.hxx
   BRepGraph_Builder.cxx
@@ -23,6 +24,7 @@ set(OCCT_BRepGraph_FILES
   BRepGraph_HistoryRecord.hxx
   BRepGraph_Layer.cxx
   BRepGraph_Layer.hxx
+  BRepGraph_LayerIterator.hxx
   BRepGraph_LayerRegistry.cxx
   BRepGraph_LayerRegistry.hxx
   BRepGraph_DeferredScope.hxx
@@ -33,6 +35,7 @@ set(OCCT_BRepGraph_FILES
   BRepGraph_ParallelPolicy.hxx
   BRepGraph_RefId.hxx
   BRepGraph_RefUID.hxx
+  BRepGraph_RelatedIterator.hxx
   BRepGraph_RefsIterator.hxx
   BRepGraph_RefsView.cxx
   BRepGraph_RefsView.hxx
@@ -43,6 +46,8 @@ set(OCCT_BRepGraph_FILES
   BRepGraph_ShapesView.hxx
   BRepGraph_Tool.cxx
   BRepGraph_Tool.hxx
+  BRepGraph_RefTransientCache.cxx
+  BRepGraph_RefTransientCache.hxx
   BRepGraph_TransientCache.cxx
   BRepGraph_TransientCache.hxx
   BRepGraph_WireExplorer.hxx

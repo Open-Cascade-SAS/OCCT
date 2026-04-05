@@ -201,6 +201,59 @@ TEST_F(BRepGraph_RefsIteratorTest, OccurrenceOfProduct_EnumeratesOccurrenceRefs)
   EXPECT_EQ(countIterator(BRepGraph_RefsOccurrenceOfProduct(myGraph, anAssembly)), 2);
 }
 
+TEST_F(BRepGraph_RefsIteratorTest, AuxChildRefsOfShellAndSolid_EnumerateInjectedChildRefs)
+{
+  NCollection_Vector<BRepGraph_NodeId> aShellChildren;
+  aShellChildren.Append(BRepGraph_WireId(0));
+  aShellChildren.Append(BRepGraph_EdgeId(0));
+  const BRepGraph_CompoundId aShellSeed = myGraph.Builder().AddCompound(aShellChildren);
+  ASSERT_TRUE(aShellSeed.IsValid());
+
+  {
+    BRepGraph_MutGuard<BRepGraphInc::ShellDef> aShell =
+      myGraph.Builder().MutShell(BRepGraph_ShellId(0));
+    for (const BRepGraph_ChildRefId& aRefId :
+         myGraph.Topo().Compounds().Definition(aShellSeed).ChildRefIds)
+    {
+      aShell->AuxChildRefIds.Append(aRefId);
+    }
+  }
+
+  BRepGraph_RefsChildOfShell aShellIt(myGraph, BRepGraph_ShellId(0));
+  ASSERT_TRUE(aShellIt.More());
+  EXPECT_EQ(myGraph.Refs().Children().Entry(aShellIt.CurrentId()).ChildDefId.NodeKind,
+            BRepGraph_NodeId::Kind::Wire);
+  aShellIt.Next();
+  ASSERT_TRUE(aShellIt.More());
+  EXPECT_EQ(myGraph.Refs().Children().Entry(aShellIt.CurrentId()).ChildDefId.NodeKind,
+            BRepGraph_NodeId::Kind::Edge);
+
+  NCollection_Vector<BRepGraph_NodeId> aSolidChildren;
+  aSolidChildren.Append(BRepGraph_EdgeId(1));
+  aSolidChildren.Append(BRepGraph_VertexId(0));
+  const BRepGraph_CompoundId aSolidSeed = myGraph.Builder().AddCompound(aSolidChildren);
+  ASSERT_TRUE(aSolidSeed.IsValid());
+
+  {
+    BRepGraph_MutGuard<BRepGraphInc::SolidDef> aSolid =
+      myGraph.Builder().MutSolid(BRepGraph_SolidId(0));
+    for (const BRepGraph_ChildRefId& aRefId :
+         myGraph.Topo().Compounds().Definition(aSolidSeed).ChildRefIds)
+    {
+      aSolid->AuxChildRefIds.Append(aRefId);
+    }
+  }
+
+  BRepGraph_RefsChildOfSolid aSolidIt(myGraph, BRepGraph_SolidId(0));
+  ASSERT_TRUE(aSolidIt.More());
+  EXPECT_EQ(myGraph.Refs().Children().Entry(aSolidIt.CurrentId()).ChildDefId.NodeKind,
+            BRepGraph_NodeId::Kind::Edge);
+  aSolidIt.Next();
+  ASSERT_TRUE(aSolidIt.More());
+  EXPECT_EQ(myGraph.Refs().Children().Entry(aSolidIt.CurrentId()).ChildDefId.NodeKind,
+            BRepGraph_NodeId::Kind::Vertex);
+}
+
 TEST_F(BRepGraph_RefsIteratorTest, RemovedWireRef_IsSkipped)
 {
   const NCollection_Vector<BRepGraph_WireRefId>& aWireRefs =

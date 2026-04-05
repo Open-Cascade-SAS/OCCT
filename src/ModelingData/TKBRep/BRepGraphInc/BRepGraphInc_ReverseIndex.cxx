@@ -218,7 +218,7 @@ void BRepGraphInc_ReverseIndex::Build(
   myNbIndexedCoEdges = theCoEdges.Length();
 
   // Edge -> Faces: derive from CoEdge.FaceDefId (replaces legacy PCurve-based derivation).
-  // Seam edges have two CoEdges with same FaceDefId but opposite Sense.
+  // Seam edges have two CoEdges with same FaceDefId but opposite Orientation.
   // Deduplicate per edge using the edge->coedges index built above.
   for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
   {
@@ -526,6 +526,28 @@ void BRepGraphInc_ReverseIndex::BuildDelta(
       appendUnique(myEdgeToCoEdges, aCoEdge.EdgeDefId.Index, aCoEdgeId);
   }
   myNbIndexedCoEdges = theCoEdges.Length();
+
+  // CoEdge -> Wires: iterate only new wire entities and their CoEdgeRefIds.
+  ensureSize(myCoEdgeToWires, theCoEdges.Length(), myAllocator);
+  for (BRepGraph_WireId aWireId(theOldNbWires); aWireId.IsValid(aNbWires); ++aWireId)
+  {
+    const BRepGraphInc::WireDef& aWire = theWires.Value(aWireId.Index);
+    if (aWire.IsRemoved)
+      continue;
+    for (const BRepGraph_CoEdgeRefId& aCoEdgeRefId : aWire.CoEdgeRefIds)
+    {
+      const int aRefIdx = aCoEdgeRefId.Index;
+      if (aRefIdx < 0 || aRefIdx >= theCoEdgeRefs.Length())
+        continue;
+      const BRepGraphInc::CoEdgeRef& aRef = theCoEdgeRefs.Value(aRefIdx);
+      if (aRef.IsRemoved || !aRef.CoEdgeDefId.IsValid() || aRef.CoEdgeDefId.Index < 0
+          || aRef.CoEdgeDefId.Index >= theCoEdges.Length())
+        continue;
+      if (theCoEdges.Value(aRef.CoEdgeDefId.Index).IsRemoved)
+        continue;
+      appendUnique(myCoEdgeToWires, aRef.CoEdgeDefId.Index, aWireId);
+    }
+  }
 
   // Edge -> Faces: derive from CoEdge.FaceDefId for new edges.
   for (BRepGraph_EdgeId anEdgeId(theOldNbEdges); anEdgeId.IsValid(aNbEdges); ++anEdgeId)

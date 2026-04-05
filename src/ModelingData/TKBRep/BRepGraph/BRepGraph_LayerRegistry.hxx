@@ -15,6 +15,7 @@
 #define _BRepGraph_LayerRegistry_HeaderFile
 
 #include <BRepGraph_Layer.hxx>
+#include <BRepGraph_RefId.hxx>
 
 #include <NCollection_DataMap.hxx>
 #include <NCollection_Vector.hxx>
@@ -65,10 +66,10 @@ public:
   //! Number of registered layers.
   [[nodiscard]] int NbLayers() const { return myLayers.Length(); }
 
-  //! True if any registered layer subscribes to modification events.
+  //! True if any registered layer subscribes to node modification events.
   [[nodiscard]] bool HasModificationSubscribers() const { return mySubscribedKindsMask != 0; }
 
-  //! Bitwise OR of all registered layer subscription masks.
+  //! Bitwise OR of all registered layer node subscription masks.
   [[nodiscard]] int SubscribedKindsMask() const { return mySubscribedKindsMask; }
 
   //! Dispatch OnNodeRemoved to all registered layers.
@@ -87,6 +88,25 @@ public:
   Standard_EXPORT void DispatchOnCompact(
     const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>& theRemapMap) noexcept;
 
+  // --- Reference dispatch ---
+
+  //! True if any registered layer subscribes to reference modification events.
+  [[nodiscard]] bool HasRefModificationSubscribers() const { return mySubscribedRefKindsMask != 0; }
+
+  //! Bitwise OR of all registered layer reference subscription masks.
+  [[nodiscard]] int SubscribedRefKindsMask() const { return mySubscribedRefKindsMask; }
+
+  //! Dispatch OnRefRemoved to all registered layers (unconditional - not filtered).
+  Standard_EXPORT void DispatchOnRefRemoved(const BRepGraph_RefId theRef) noexcept;
+
+  //! Dispatch OnRefModified to subscribed layers (immediate mode).
+  Standard_EXPORT void DispatchRefModified(const BRepGraph_RefId theRef) noexcept;
+
+  //! Dispatch OnRefsModified to subscribed layers (deferred/batch mode).
+  Standard_EXPORT void DispatchRefsModified(
+    const NCollection_Vector<BRepGraph_RefId>& theModifiedRefs,
+    const int                                  theModifiedRefKindsMask) noexcept;
+
   //! Clear all registered layer payloads without unregistering them.
   Standard_EXPORT void ClearAll() noexcept;
 
@@ -99,7 +119,8 @@ private:
 private:
   NCollection_Vector<occ::handle<BRepGraph_Layer>> myLayers;
   NCollection_DataMap<Standard_GUID, int>          myGuidToSlot;
-  int                                              mySubscribedKindsMask = 0;
+  int                                              mySubscribedKindsMask    = 0;
+  int                                              mySubscribedRefKindsMask = 0;
 };
 
 #endif // _BRepGraph_LayerRegistry_HeaderFile

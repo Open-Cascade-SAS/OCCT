@@ -278,7 +278,7 @@ int addDuplicatePCurvesToAllEdges(BRepGraph& theGraph)
                                        aDupPCurve,
                                        aCE.ParamFirst,
                                        aCE.ParamLast,
-                                       aCE.Sense);
+                                       aCE.Orientation);
     ++aDupCount;
   }
   return aDupCount;

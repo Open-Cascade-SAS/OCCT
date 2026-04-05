@@ -15,6 +15,7 @@
 #define _BRepGraph_CacheView_HeaderFile
 
 #include <BRepGraph.hxx>
+#include <BRepGraph_CacheKindIterator.hxx>
 
 //! @brief Non-const view for managing transient cache values on nodes.
 //!
@@ -95,11 +96,62 @@ public:
   //! Invalidate a cached value using a pre-resolved cache-kind slot.
   Standard_EXPORT void Invalidate(const BRepGraph_NodeId theNode, const int theKindSlot);
 
-  //! Return all cache kinds populated on a node.
+  //! Create a zero-allocation iterator over all cache kinds populated on a node.
   //! @param[in] theNode node to query
-  //! @return vector of cache kind descriptors that have stored values on this node
-  [[nodiscard]] Standard_EXPORT NCollection_Vector<occ::handle<BRepGraph_CacheKind>> CacheKinds(
+  Standard_EXPORT BRepGraph_CacheKindIterator<BRepGraph_NodeId> CacheKindIter(
     const BRepGraph_NodeId theNode) const;
+
+  //! Create a zero-allocation iterator over all cache kinds populated on a reference.
+  //! @param[in] theRef reference to query
+  Standard_EXPORT BRepGraph_CacheKindIterator<BRepGraph_RefId> CacheKindIter(
+    const BRepGraph_RefId theRef) const;
+
+  // --- Reference-level cache ---
+
+  //! Attach a cached value to a reference.
+  //! @param[in] theRef   reference to attach the value to
+  //! @param[in] theKind  cache kind descriptor identifying the slot
+  //! @param[in] theValue cached value to store
+  Standard_EXPORT void Set(const BRepGraph_RefId                    theRef,
+                           const occ::handle<BRepGraph_CacheKind>&  theKind,
+                           const occ::handle<BRepGraph_CacheValue>& theValue);
+
+  //! Attach a cached value to a reference using a pre-resolved cache-kind slot.
+  Standard_EXPORT void Set(const BRepGraph_RefId                    theRef,
+                           const int                                theKindSlot,
+                           const occ::handle<BRepGraph_CacheValue>& theValue);
+
+  //! Retrieve a cached value from a reference.
+  //! @return cached value, or null handle if not present or stale (OwnGen changed)
+  [[nodiscard]] Standard_EXPORT occ::handle<BRepGraph_CacheValue> Get(
+    const BRepGraph_RefId                   theRef,
+    const occ::handle<BRepGraph_CacheKind>& theKind) const;
+
+  //! Retrieve a cached value from a reference using a pre-resolved cache-kind slot.
+  [[nodiscard]] Standard_EXPORT occ::handle<BRepGraph_CacheValue> Get(const BRepGraph_RefId theRef,
+                                                                      const int theKindSlot) const;
+
+  //! Check if a non-stale cached value exists on a reference.
+  [[nodiscard]] Standard_EXPORT bool Has(const BRepGraph_RefId                   theRef,
+                                         const occ::handle<BRepGraph_CacheKind>& theKind) const;
+
+  //! Check if a non-stale cached value exists on a reference using a pre-resolved slot.
+  [[nodiscard]] Standard_EXPORT bool Has(const BRepGraph_RefId theRef, const int theKindSlot) const;
+
+  //! Remove a cached value from a reference.
+  //! @return true if a value was actually removed
+  Standard_EXPORT bool Remove(const BRepGraph_RefId                   theRef,
+                              const occ::handle<BRepGraph_CacheKind>& theKind);
+
+  //! Remove a cached value from a reference using a pre-resolved cache-kind slot.
+  Standard_EXPORT bool Remove(const BRepGraph_RefId theRef, const int theKindSlot);
+
+  //! Invalidate (but do not remove) a cached value on a reference.
+  Standard_EXPORT void Invalidate(const BRepGraph_RefId                   theRef,
+                                  const occ::handle<BRepGraph_CacheKind>& theKind);
+
+  //! Invalidate a cached value on a reference using a pre-resolved cache-kind slot.
+  Standard_EXPORT void Invalidate(const BRepGraph_RefId theRef, const int theKindSlot);
 
 private:
   friend class BRepGraph;

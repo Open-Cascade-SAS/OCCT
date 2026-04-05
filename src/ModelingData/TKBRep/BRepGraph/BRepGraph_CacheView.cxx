@@ -87,6 +87,8 @@ bool BRepGraph::CacheView::Has(const BRepGraph_NodeId theNode, const int theKind
 
 //=================================================================================================
 
+// Remove() intentionally skips IsRemoved checks - stale cache entries
+// for removed nodes must still be removable during cleanup.
 bool BRepGraph::CacheView::Remove(const BRepGraph_NodeId                  theNode,
                                   const occ::handle<BRepGraph_CacheKind>& theKind)
 {
@@ -132,8 +134,158 @@ void BRepGraph::CacheView::Invalidate(const BRepGraph_NodeId theNode, const int 
 
 //=================================================================================================
 
-NCollection_Vector<occ::handle<BRepGraph_CacheKind>> BRepGraph::CacheView::CacheKinds(
+BRepGraph_CacheKindIterator<BRepGraph_NodeId> BRepGraph::CacheView::CacheKindIter(
   const BRepGraph_NodeId theNode) const
 {
-  return myGraph->transientCache().CacheKinds(theNode);
+  BRepGraph_CacheKindIterator<BRepGraph_NodeId> anIt;
+  const BRepGraphInc::BaseDef*                  aDef = myGraph->topoEntity(theNode);
+  if (aDef == nullptr || aDef->IsRemoved)
+  {
+    return anIt;
+  }
+
+  anIt.myCount =
+    myGraph->transientCache().CollectCacheKindSlots(theNode, aDef->SubtreeGen, anIt.mySlots);
+  return anIt;
+}
+
+//=================================================================================================
+
+void BRepGraph::CacheView::Set(const BRepGraph_RefId                    theRef,
+                               const occ::handle<BRepGraph_CacheKind>&  theKind,
+                               const occ::handle<BRepGraph_CacheValue>& theValue)
+{
+  const BRepGraphInc::BaseRef* aRef = myGraph->refEntity(theRef);
+  if (aRef == nullptr || aRef->IsRemoved)
+  {
+    return;
+  }
+  myGraph->refTransientCache().Set(theRef, theKind, theValue, aRef->OwnGen);
+}
+
+//=================================================================================================
+
+void BRepGraph::CacheView::Set(const BRepGraph_RefId                    theRef,
+                               const int                                theKindSlot,
+                               const occ::handle<BRepGraph_CacheValue>& theValue)
+{
+  const BRepGraphInc::BaseRef* aRef = myGraph->refEntity(theRef);
+  if (aRef == nullptr || aRef->IsRemoved)
+  {
+    return;
+  }
+  myGraph->refTransientCache().Set(theRef, theKindSlot, theValue, aRef->OwnGen);
+}
+
+//=================================================================================================
+
+occ::handle<BRepGraph_CacheValue> BRepGraph::CacheView::Get(
+  const BRepGraph_RefId                   theRef,
+  const occ::handle<BRepGraph_CacheKind>& theKind) const
+{
+  const BRepGraphInc::BaseRef* aRef = myGraph->refEntity(theRef);
+  if (aRef == nullptr || aRef->IsRemoved)
+  {
+    return occ::handle<BRepGraph_CacheValue>();
+  }
+  return myGraph->refTransientCache().Get(theRef, theKind, aRef->OwnGen);
+}
+
+//=================================================================================================
+
+occ::handle<BRepGraph_CacheValue> BRepGraph::CacheView::Get(const BRepGraph_RefId theRef,
+                                                            const int             theKindSlot) const
+{
+  const BRepGraphInc::BaseRef* aRef = myGraph->refEntity(theRef);
+  if (aRef == nullptr || aRef->IsRemoved)
+  {
+    return occ::handle<BRepGraph_CacheValue>();
+  }
+  return myGraph->refTransientCache().Get(theRef, theKindSlot, aRef->OwnGen);
+}
+
+//=================================================================================================
+
+bool BRepGraph::CacheView::Has(const BRepGraph_RefId                   theRef,
+                               const occ::handle<BRepGraph_CacheKind>& theKind) const
+{
+  return !Get(theRef, theKind).IsNull();
+}
+
+//=================================================================================================
+
+bool BRepGraph::CacheView::Has(const BRepGraph_RefId theRef, const int theKindSlot) const
+{
+  return !Get(theRef, theKindSlot).IsNull();
+}
+
+//=================================================================================================
+
+// Remove() intentionally skips IsRemoved checks - stale cache entries
+// for removed refs must still be removable during cleanup.
+bool BRepGraph::CacheView::Remove(const BRepGraph_RefId                   theRef,
+                                  const occ::handle<BRepGraph_CacheKind>& theKind)
+{
+  return myGraph->refTransientCache().Remove(theRef, theKind);
+}
+
+//=================================================================================================
+
+bool BRepGraph::CacheView::Remove(const BRepGraph_RefId theRef, const int theKindSlot)
+{
+  return myGraph->refTransientCache().Remove(theRef, theKindSlot);
+}
+
+//=================================================================================================
+
+void BRepGraph::CacheView::Invalidate(const BRepGraph_RefId                   theRef,
+                                      const occ::handle<BRepGraph_CacheKind>& theKind)
+{
+  const BRepGraphInc::BaseRef* aRef = myGraph->refEntity(theRef);
+  if (aRef == nullptr || aRef->IsRemoved)
+  {
+    return;
+  }
+
+  occ::handle<BRepGraph_CacheValue> aValue =
+    myGraph->refTransientCache().Get(theRef, theKind, aRef->OwnGen);
+  if (!aValue.IsNull())
+  {
+    aValue->Invalidate();
+  }
+}
+
+//=================================================================================================
+
+void BRepGraph::CacheView::Invalidate(const BRepGraph_RefId theRef, const int theKindSlot)
+{
+  const BRepGraphInc::BaseRef* aRef = myGraph->refEntity(theRef);
+  if (aRef == nullptr || aRef->IsRemoved)
+  {
+    return;
+  }
+
+  occ::handle<BRepGraph_CacheValue> aValue =
+    myGraph->refTransientCache().Get(theRef, theKindSlot, aRef->OwnGen);
+  if (!aValue.IsNull())
+  {
+    aValue->Invalidate();
+  }
+}
+
+//=================================================================================================
+
+BRepGraph_CacheKindIterator<BRepGraph_RefId> BRepGraph::CacheView::CacheKindIter(
+  const BRepGraph_RefId theRef) const
+{
+  BRepGraph_CacheKindIterator<BRepGraph_RefId> anIt;
+  const BRepGraphInc::BaseRef*                 aRef = myGraph->refEntity(theRef);
+  if (aRef == nullptr || aRef->IsRemoved)
+  {
+    return anIt;
+  }
+
+  anIt.myCount =
+    myGraph->refTransientCache().CollectCacheKindSlots(theRef, aRef->OwnGen, anIt.mySlots);
+  return anIt;
 }

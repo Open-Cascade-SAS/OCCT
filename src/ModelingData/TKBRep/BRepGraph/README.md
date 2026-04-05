@@ -15,7 +15,7 @@ BRepGraph provides a stable algorithm-facing API for:
 
 The goal is to make workflows like sewing, healing, compact, and deduplicate easier to implement and optimize.
 
-## Current Model (March 2026)
+## Current Model (April 2026)
 
 The runtime model is incidence-first:
 
@@ -61,8 +61,8 @@ All queries and mutations go through lightweight view objects obtained from a `B
 | **TopoView** | `Topo()` | Const topology definition access, representation access, adjacency queries, and raw Product/Occurrence definition storage |
 | **UIDsView** | `UIDs()` | UID allocation, lookup, validity checking |
 | **ShapesView** | `Shapes()` | Cached `Shape()` access, fresh `Reconstruct()`, and FindNode/HasNode reverse lookup |
-| **CacheView** | `Cache()` | Stable public transient cache access (Set/Get/Has/Remove per-node cached values). Low-level reserve, transfer, and explicit generation-aware access remain on `TransientCache()` for algorithm code. |
-| **BuilderView** | `Builder()` | Mutations: AddProduct, AddOccurrence, RemoveNode, RemoveSubgraph, MutGuard accessors |
+| **CacheView** | `Cache()` | Stable public transient cache access (Set/Get/Has/Remove per-node and per-ref cached values). Supports `CacheKindIter()` for enumerating active cache kinds on a node or ref. Low-level reserve, transfer, and explicit generation-aware access remain on `TransientCache()` / `RefTransientCache()` for algorithm code. |
+| **BuilderView** | `Builder()` | Mutations: AddProduct, AddOccurrence, RemoveNode, RemoveSubgraph, RemoveRef (with orphan pruning), SetCoEdgePCurve, ClearFaceMesh, ClearEdgePolygon3D, AppendFlattenedShape, AppendFullShape, rep creation (CreateTriangulationRep, CreatePolygon3DRep, CreatePolygonOnTriRep), ValidateMutationBoundary, MutGuard accessors |
 | **RefsView** | `Refs()` | Reference entry access, RefUID lookup, VersionStamp for refs |
 | **PathView** | `Paths()` | Assembly-aware queries (RootProducts, IsAssembly, IsPart, NbComponents, Component) and path traversal (GlobalLocation, GlobalOrientation, PathsTo, NodeLocations, CommonAncestor) |
 
@@ -77,7 +77,7 @@ Keep `Refs()` as the home for APIs returning `RefId` vectors and reference-entry
 
 ### Non-View Helpers
 
-Use `BRepGraph_ChildExplorer` and `BRepGraph_ParentExplorer` directly for structural diagnostics and connected-component grouping. Lightweight one-off analysis helpers are expected to stay local to the consuming algorithm or test.
+Use `BRepGraph_ChildExplorer` and `BRepGraph_ParentExplorer` directly for structural diagnostics and connected-component grouping. `BRepGraph_RelatedIterator` provides single-level semantic traversal from any node, yielding immediate neighbours with a `RelationKind` tag (e.g. `AdjacentFace`, `BoundaryEdge`, `IncidentVertex`). `BRepGraph_LayerIterator` iterates over all registered layers in a `BRepGraph_LayerRegistry`. Lightweight one-off analysis helpers are expected to stay local to the consuming algorithm or test.
 
 ### Direct Subsystem Accessors
 
@@ -85,6 +85,7 @@ Use `BRepGraph_ChildExplorer` and `BRepGraph_ParentExplorer` directly for struct
 |----------|---------|
 | `History()` | Mutation history subsystem (lineage records) |
 | `TransientCache()` | Raw transient algorithm cache for low-level algorithms needing reserve, transfer, or explicit generation-aware access; public callers should prefer `Cache()` |
+| `RefTransientCache()` | Per-reference transient cache (symmetric to `TransientCache()`, keyed by `RefId`, freshness via `OwnGen`); public callers should prefer `Cache()` |
 | `LayerRegistry()` | Access the GUID-keyed runtime registry of registered layers |
 | `LayerRegistry().RegisterLayer(layer)` | Register a `BRepGraph_Layer` plugin explicitly |
 | `LayerRegistry().FindLayer(guid)` / `LayerRegistry().FindLayer<T>()` | Lookup a registered layer by GUID or layer type |
@@ -152,7 +153,7 @@ flowchart LR
   P5 --> D[IsDone]
 ```
 
-After topology population, `Build()` auto-creates a single root Product whose `ShapeRootId` points to the top-level topology node. This makes every BRepGraph intrinsically assembly-aware.
+After topology population, `Build()` auto-creates a single root Product whose `ShapeRootId` points to the top-level topology node (controlled by `CreateAutoProduct` option, default true). This makes every BRepGraph intrinsically assembly-aware. When `CreateAutoProduct` is false (e.g. XCAF builder manages Products itself), the caller is responsible for creating Products.
 
 ### Reconstruct
 
@@ -262,6 +263,21 @@ Can also start from a Product to descend through assembly occurrences into topol
 The vector-returning reverse lookup methods remain as convenience wrappers over the lazy enumeration layer.
 - `IsAncestorOf`, `AllNodesOnPath`, `DepthOfKind`
 
+### RelatedIterator
+
+`BRepGraph_RelatedIterator` provides single-level semantic traversal from any node, yielding immediate neighbours with a `RelationKind` tag. Unlike ChildExplorer (which descends to a target kind) or ParentExplorer (which ascends), RelatedIterator stays at one level and returns all semantically related nodes:
+
+```cpp
+for (BRepGraph_RelatedIterator anIt(aGraph, BRepGraph_NodeId(aFaceId)); anIt.More(); anIt.Next())
+{
+  BRepGraph_NodeId aNeighbour = anIt.Current();
+  BRepGraph_RelatedIterator::RelationKind aRel = anIt.CurrentRelation();
+  // e.g. BoundaryEdge, AdjacentFace, OuterWire
+}
+```
+
+Relation kinds include: `ChildShell`, `ChildFace`, `FreeChild`, `BoundaryEdge`, `AdjacentFace`, `OuterWire`, `ReferencedByFace`, `IncidentVertex`, `WireCoEdge`, `IncidentEdge`, `ParentEdge`, `OwningFace`, `SeamPair`, `ChildEntity`, `ChildSolid`, `ChildOccurrence`, `ReferencedProduct`, `ParentProduct`, `ParentOccurrence`.
+
 ### Connected Components
 
 Disconnected topology is grouped on demand by walking from faces to their solid or shell roots with `BRepGraph_ParentExplorer`, or by descending from known roots with `BRepGraph_ChildExplorer`. There is no longer a packaged `SubGraph` container.
@@ -291,7 +307,7 @@ layers are added explicitly via `LayerRegistry().RegisterLayer()`.
 - **Identity**: `Standard_GUID`, not display name
 - **Name**: display-only metadata returned by `BRepGraph_Layer::Name()`
 - **Storage**: internal maps keyed by NodeId, owned by the layer
-- **Lifecycle**: `OnNodeRemoved(old, replacement)` migrates data; `OnCompact(remapMap)` remaps; `OnNodeModified`/`OnNodesModified` for mutation tracking
+- **Lifecycle**: `OnNodeRemoved(old, replacement)` migrates data; `OnCompact(remapMap)` remaps; `OnNodeModified`/`OnNodesModified` for node mutation tracking; `OnRefRemoved`/`OnRefModified`/`OnRefsModified` for reference mutation tracking (subscribed via `SubscribedRefKinds()` bitmask)
 - **Survives mutations**: yes
 - **Examples**: `BRepGraph_ParamLayer`, `BRepGraph_RegularityLayer`
 
@@ -306,16 +322,15 @@ const occ::handle<BRepGraph_ParamLayer> aParamLayer =
   aGraph.LayerRegistry().FindLayer<BRepGraph_ParamLayer>();
 ```
 
-### TransientCache (`BRepGraph_TransientCache`)
+### TransientCache (`BRepGraph_TransientCache`) and RefTransientCache (`BRepGraph_RefTransientCache`)
 
-Centralized per-node cache for algorithm-computed attributes. Dense graph-local storage keyed by
-registered cache-kind descriptors with O(1) slot access. NOT a Layer - cleared on Build() and Compact().
+Centralized per-node (TransientCache) and per-reference (RefTransientCache) caches for algorithm-computed attributes. Dense graph-local storage keyed by registered cache-kind descriptors with O(1) slot access. NOT a Layer - cleared on Build() and Compact().
 
 - **Purpose**: ephemeral computed caches (bounding boxes, UV bounds, FClass2d results)
 - **Identity**: cache families are described by `BRepGraph_CacheKind` with stable `Standard_GUID` identity
 - **Storage**: dense `NCollection_Vector<CacheKindSlot>` per cache kind, then per node kind, then per entity index
 - **Granularity**: one cached value per `(node, cache kind)`
-- **Freshness**: SubtreeGen-validated. Each slot stores `StoredSubtreeGen`; on read, if it differs from the entity's current `SubtreeGen`, the attribute is marked dirty and recomputed lazily.
+- **Freshness**: SubtreeGen-validated for nodes (each slot stores `StoredSubtreeGen`); OwnGen-validated for refs (refs have no subtree). On read, if the stored generation differs from the entity's current generation, the attribute is marked dirty and recomputed lazily.
 - **Thread safety**: `shared_mutex` (concurrent reads from `OSD_Parallel::For`, exclusive writes)
 - **Survives mutations**: yes (stale entries detected by SubtreeGen mismatch)
 
@@ -406,6 +421,11 @@ Use the explicit overload when the caller needs to override optional extraction 
 
 - `ExtractRegularities` (default true): edge continuity across face pairs.
 - `ExtractVertexPointReps` (default true): vertex parameter representations on curves/surfaces.
+- `CreateAutoProduct` (default true): auto-create a root Product wrapping the top-level topology node. Set to false when a higher-level builder (e.g. XCAF) manages Products itself.
+
+### Incremental Append
+
+`Builder().AppendFlattenedShape(shape)` appends faces without container nodes. `Builder().AppendFullShape(shape)` preserves the full hierarchy (Solid/Shell/Compound/CompSolid). Both accept `BRepGraphInc_Populate::Options` for controlling auto-Product creation and extraction passes. `Builder::AppendFull()` is the lower-level static API.
 
 ## Debug Validation
 
@@ -443,11 +463,11 @@ if (!aResult.IsValid())
 | **Core** | `BRepGraph.hxx/.cxx`, `BRepGraph_Data.hxx`, `BRepGraph_NodeId.hxx`, `BRepGraph_UID.hxx`, `BRepGraph_RefId.hxx`, `BRepGraph_RefUID.hxx`, `BRepGraph_RepId.hxx` |
 | **Views** | `BRepGraph_TopoView.hxx/.cxx`, `BRepGraph_UIDsView.hxx/.cxx`, `BRepGraph_RefsView.hxx/.cxx`, `BRepGraph_ShapesView.hxx/.cxx`, `BRepGraph_CacheView.hxx/.cxx`, `BRepGraph_BuilderView.hxx/.cxx`, `BRepGraph_PathView.hxx/.cxx` |
 | **Refs** | `BRepGraph_VersionStamp.hxx/.cxx` |
-| **Traversal** | `BRepGraph_ChildExplorer.hxx/.cxx`, `BRepGraph_ParentExplorer.hxx/.cxx`, `BRepGraph_TopologyPath.hxx`, `BRepGraph_PCurveContext.hxx` |
+| **Traversal** | `BRepGraph_ChildExplorer.hxx/.cxx`, `BRepGraph_ParentExplorer.hxx/.cxx`, `BRepGraph_RelatedIterator.hxx`, `BRepGraph_TopologyPath.hxx`, `BRepGraph_PCurveContext.hxx` |
 | **Geometry** | `BRepGraph_Tool.hxx/.cxx` |
 | **Mutation** | `BRepGraph_MutGuard.hxx`, `BRepGraph_DeferredScope.hxx` |
-| **Layers** | `BRepGraph_Layer.hxx/.cxx`, `BRepGraph_ParamLayer.hxx/.cxx`, `BRepGraph_RegularityLayer.hxx/.cxx` |
-| **Transient Cache** | `BRepGraph_TransientCache.hxx/.cxx` |
+| **Layers** | `BRepGraph_Layer.hxx/.cxx`, `BRepGraph_LayerIterator.hxx`, `BRepGraph_LayerRegistry.hxx/.cxx`, `BRepGraph_ParamLayer.hxx/.cxx`, `BRepGraph_RegularityLayer.hxx/.cxx` |
+| **Transient Cache** | `BRepGraph_TransientCache.hxx/.cxx`, `BRepGraph_RefTransientCache.hxx/.cxx`, `BRepGraph_CacheKindIterator.hxx` |
 | **History** | `BRepGraph_History.hxx/.cxx`, `BRepGraph_HistoryRecord.hxx` |
 | **Build** | `BRepGraph_Builder.hxx/.cxx` |
 

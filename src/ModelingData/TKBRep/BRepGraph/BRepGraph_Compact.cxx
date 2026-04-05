@@ -354,7 +354,7 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
         BRepGraph_EdgeId::FromNodeId(remapId(aCoEdge.EdgeDefId));
       if (aNewEdgeDefId.IsValid())
       {
-        aNewEntries.Append(std::make_pair(aNewEdgeDefId, aCoEdge.Sense));
+        aNewEntries.Append(std::make_pair(aNewEdgeDefId, aCoEdge.Orientation));
         anOldCoEdges.Append(aCR.CoEdgeDefId);
       }
     }
@@ -428,7 +428,7 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
                                           aCompactPCurve,
                                           aCoEdge.ParamFirst,
                                           aCoEdge.ParamLast,
-                                          aCoEdge.Sense);
+                                          aCoEdge.Orientation);
     }
   }
 
