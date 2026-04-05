@@ -194,6 +194,24 @@ public:
 
   void operator+=(const TCollection_ExtendedString& theOther) { AssignCat(theOther); }
 
+  //! Appends the integer value to this extended string.
+  //! @param[in] theOther the integer to append
+  Standard_EXPORT void AssignCat(const int theOther);
+
+  void operator+=(const int theOther) { AssignCat(theOther); }
+
+  //! Appends the ASCII character to this extended string.
+  //! @param[in] theChar the character to append
+  Standard_EXPORT void AssignCat(const char theChar);
+
+  void operator+=(const char theChar) { AssignCat(theChar); }
+
+  //! Appends the real value to this extended string.
+  //! @param[in] theOther the real value to append
+  Standard_EXPORT void AssignCat(const double theOther);
+
+  void operator+=(const double theOther) { AssignCat(theOther); }
+
   //! Appends the utf16 char to this extended string.
   //! @param[in] theChar the character to append
   Standard_EXPORT void AssignCat(const char16_t theChar);
@@ -280,6 +298,32 @@ public:
   {
     return Cat(theOther);
   }
+
+  //! Appends the integer value to this string and returns a new string.
+  //! @param[in] theOther the integer to append
+  //! @return new string with integer appended
+  Standard_EXPORT TCollection_ExtendedString Cat(const int theOther) const;
+
+  TCollection_ExtendedString operator+(const int theOther) const { return Cat(theOther); }
+
+  //! Appends the real value to this string and returns a new string.
+  //! @param[in] theOther the real value to append
+  //! @return new string with real value appended
+  Standard_EXPORT TCollection_ExtendedString Cat(const double theOther) const;
+
+  TCollection_ExtendedString operator+(const double theOther) const { return Cat(theOther); }
+
+  //! Appends a single ASCII character to this string and returns a new string.
+  //! @param[in] theChar the ASCII character to append
+  Standard_EXPORT TCollection_ExtendedString Cat(const char theChar) const;
+
+  TCollection_ExtendedString operator+(const char theChar) const { return Cat(theChar); }
+
+  //! Appends a single extended (char16_t) character to this string and returns a new string.
+  //! @param[in] theChar the extended character to append
+  Standard_EXPORT TCollection_ExtendedString Cat(const char16_t theChar) const;
+
+  TCollection_ExtendedString operator+(const char16_t theChar) const { return Cat(theChar); }
 
   //! Appends the other extended string to this string and returns a new string.
   //!

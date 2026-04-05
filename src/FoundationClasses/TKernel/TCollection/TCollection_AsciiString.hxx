@@ -161,6 +161,25 @@ public:
 
   void operator+=(const double theOther) { AssignCat(theOther); }
 
+  //! Appends an extended string to this ASCII string.
+  //! If theReplaceNonAscii is non-null character, it will be used
+  //! in place of any non-ASCII character found in the source string.
+  //! Otherwise, appends UTF-8 representation of the source string.
+  //! @param[in] theOther the extended string to append
+  //! @param[in] theReplaceNonAscii replacement character for non-ASCII characters
+  Standard_EXPORT void AssignCat(const TCollection_ExtendedString& theOther,
+                                 const char                        theReplaceNonAscii = 0);
+
+  void operator+=(const TCollection_ExtendedString& theOther) { AssignCat(theOther); }
+
+#if !defined(_MSC_VER) || defined(_NATIVE_WCHAR_T_DEFINED)
+  //! Appends wide-char string converted to UTF-8 representation.
+  //! @param[in] theStringUtf the wide character string to append
+  Standard_EXPORT void AssignCat(const wchar_t* theStringUtf);
+
+  void operator+=(const wchar_t* theStringUtf) { AssignCat(theStringUtf); }
+#endif
+
   //! Core implementation: Appends string (pointer and length) to this ASCII string.
   //! This is the primary implementation that all other AssignCat overloads redirect to.
   //! @param[in] theString pointer to the string to append
@@ -277,6 +296,30 @@ public:
   Standard_EXPORT TCollection_AsciiString Cat(const double theOther) const;
 
   TCollection_AsciiString operator+(const double theOther) const { return Cat(theOther); }
+
+  //! Appends extended string to this string.
+  //! If theReplaceNonAscii is non-null character, it will be used
+  //! in place of any non-ASCII character found in the source string.
+  //! Otherwise, concatenates UTF-8 representation of the source string.
+  //! @param[in] theOther the extended string to append
+  //! @param[in] theReplaceNonAscii replacement character for non-ASCII characters
+  //! @return new string with extended string appended
+  Standard_EXPORT TCollection_AsciiString Cat(const TCollection_ExtendedString& theOther,
+                                              const char theReplaceNonAscii = 0) const;
+
+  TCollection_AsciiString operator+(const TCollection_ExtendedString& theOther) const
+  {
+    return Cat(theOther);
+  }
+
+#if !defined(_MSC_VER) || defined(_NATIVE_WCHAR_T_DEFINED)
+  //! Appends wide-char string converted to UTF-8 representation.
+  //! @param[in] theStringUtf the wide character string to append
+  //! @return new string with wide-char string appended
+  Standard_EXPORT TCollection_AsciiString Cat(const wchar_t* theStringUtf) const;
+
+  TCollection_AsciiString operator+(const wchar_t* theStringUtf) const { return Cat(theStringUtf); }
+#endif
 
   //! Appends other string to this string.
   //!

@@ -40,6 +40,39 @@ inline size_t calculatePaddedSize(const int theLength)
   return (theLength + 4) & ~0x3; // Always guarantees at least +1 byte, up to +4 bytes
 }
 
+template <typename T>
+int utf8Length(const T* theUtfString)
+{
+  if (theUtfString == nullptr)
+  {
+    return 0;
+  }
+
+  int aLength = 0;
+  for (NCollection_UtfIterator<T> anIter(theUtfString); *anIter != 0; ++anIter)
+  {
+    aLength += anIter.AdvanceBytesUtf8();
+  }
+  return aLength;
+}
+
+template <typename T>
+void writeUtf8(char* theBuffer, const T* theUtfString)
+{
+  if (theUtfString == nullptr)
+  {
+    *theBuffer = '\0';
+    return;
+  }
+
+  char* anIterWrite = theBuffer;
+  for (NCollection_UtfIterator<T> anIterRead(theUtfString); *anIterRead != 0; ++anIterRead)
+  {
+    anIterWrite = anIterRead.GetUtf(anIterWrite);
+  }
+  *anIterWrite = '\0';
+}
+
 //! Helper structure to hold formatted integer string with its length
 struct FormattedInteger
 {
@@ -227,17 +260,59 @@ TCollection_AsciiString::TCollection_AsciiString(
 
 TCollection_AsciiString::TCollection_AsciiString(const wchar_t* theStringUtf)
 {
-  int aLength = 0;
-  for (NCollection_UtfIterator<wchar_t> anIter(theStringUtf); *anIter != 0; ++anIter)
-  {
-    aLength += anIter.AdvanceBytesUtf8();
-  }
+  const int aLength = utf8Length(theStringUtf);
   allocate(aLength);
-  NCollection_UtfIterator<wchar_t> anIterRead(theStringUtf);
-  for (char* anIterWrite = myString; *anIterRead != 0; ++anIterRead)
+  writeUtf8(myString, theStringUtf);
+}
+
+//=================================================================================================
+
+void TCollection_AsciiString::AssignCat(const TCollection_ExtendedString& theOther,
+                                        const char                        theReplaceNonAscii)
+{
+  if (theReplaceNonAscii != 0)
   {
-    anIterWrite = anIterRead.GetUtf(anIterWrite);
+    const int anOtherLength = theOther.Length();
+    if (anOtherLength == 0)
+    {
+      return;
+    }
+
+    const int anOldLength = myLength;
+    reallocate(myLength + anOtherLength);
+    for (int i = 0; i < anOtherLength; ++i)
+    {
+      const char16_t aChar      = theOther.Value(i + 1);
+      myString[anOldLength + i] = IsAnAscii(aChar) ? ToCharacter(aChar) : theReplaceNonAscii;
+    }
+    return;
   }
+
+  const int anUtf8Length = theOther.LengthOfCString();
+  if (anUtf8Length == 0)
+  {
+    return;
+  }
+
+  const int anOldLength = myLength;
+  reallocate(myLength + anUtf8Length);
+  char* aWritePtr = myString + anOldLength;
+  theOther.ToUTF8CString(aWritePtr);
+}
+
+//=================================================================================================
+
+void TCollection_AsciiString::AssignCat(const wchar_t* theStringUtf)
+{
+  const int anUtf8Length = utf8Length(theStringUtf);
+  if (anUtf8Length == 0)
+  {
+    return;
+  }
+
+  const int anOldLength = myLength;
+  reallocate(myLength + anUtf8Length);
+  writeUtf8(myString + anOldLength, theStringUtf);
 }
 
 //=================================================================================================
@@ -335,6 +410,52 @@ TCollection_AsciiString TCollection_AsciiString::Cat(const double theOther) cons
 {
   const FormattedReal aFormatted(theOther);
   return Cat(aFormatted.Buffer, aFormatted.Length);
+}
+
+//=================================================================================================
+
+TCollection_AsciiString TCollection_AsciiString::Cat(const TCollection_ExtendedString& theOther,
+                                                     const char theReplaceNonAscii) const
+{
+  if (theReplaceNonAscii != 0)
+  {
+    const int               anOtherLength = theOther.Length();
+    TCollection_AsciiString aResult(myLength + anOtherLength, '\0');
+    if (myLength > 0)
+    {
+      memcpy(aResult.myString, myString, myLength);
+    }
+    for (int i = 0; i < anOtherLength; ++i)
+    {
+      const char16_t aChar           = theOther.Value(i + 1);
+      aResult.myString[myLength + i] = IsAnAscii(aChar) ? ToCharacter(aChar) : theReplaceNonAscii;
+    }
+    return aResult;
+  }
+
+  const int               anUtf8Length = theOther.LengthOfCString();
+  TCollection_AsciiString aResult(myLength + anUtf8Length, '\0');
+  if (myLength > 0)
+  {
+    memcpy(aResult.myString, myString, myLength);
+  }
+  char* aWritePtr = aResult.myString + myLength;
+  theOther.ToUTF8CString(aWritePtr);
+  return aResult;
+}
+
+//=================================================================================================
+
+TCollection_AsciiString TCollection_AsciiString::Cat(const wchar_t* theStringUtf) const
+{
+  const int               aUtf8Length = utf8Length(theStringUtf);
+  TCollection_AsciiString aResult(myLength + aUtf8Length, '\0');
+  if (myLength > 0)
+  {
+    memcpy(aResult.myString, myString, myLength);
+  }
+  writeUtf8(aResult.myString + myLength, theStringUtf);
+  return aResult;
 }
 
 //=================================================================================================

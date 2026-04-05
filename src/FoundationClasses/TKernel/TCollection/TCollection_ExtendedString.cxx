@@ -333,6 +333,39 @@ void TCollection_ExtendedString::AssignCat(const TCollection_ExtendedString& the
 
 //=================================================================================================
 
+void TCollection_ExtendedString::AssignCat(const int theOther)
+{
+  const FormattedInteger aFormatted(theOther);
+  const int              anOldLength = myLength;
+  reallocate(myLength + aFormatted.Length);
+  for (int i = 0; i < aFormatted.Length; ++i)
+  {
+    myString[anOldLength + i] = ToExtCharacter(aFormatted.Buffer[i]);
+  }
+}
+
+//=================================================================================================
+
+void TCollection_ExtendedString::AssignCat(const char theChar)
+{
+  AssignCat(ToExtCharacter(theChar));
+}
+
+//=================================================================================================
+
+void TCollection_ExtendedString::AssignCat(const double theOther)
+{
+  const FormattedReal aFormatted(theOther);
+  const int           anOldLength = myLength;
+  reallocate(myLength + aFormatted.Length);
+  for (int i = 0; i < aFormatted.Length; ++i)
+  {
+    myString[anOldLength + i] = ToExtCharacter(aFormatted.Buffer[i]);
+  }
+}
+
+//=================================================================================================
+
 void TCollection_ExtendedString::AssignCat(const char16_t theChar)
 {
   if (theChar != u'\0')
@@ -385,6 +418,75 @@ TCollection_ExtendedString TCollection_ExtendedString::Cat(const char16_t* theOt
   {
     memcpy(aResult.myString + myLength, theOther, theLength * sizeof(char16_t));
   }
+  return aResult;
+}
+
+//=================================================================================================
+
+TCollection_ExtendedString TCollection_ExtendedString::Cat(const int theOther) const
+{
+  const FormattedInteger     aFormatted(theOther);
+  TCollection_ExtendedString aResult(myLength + aFormatted.Length, 0);
+  if (myLength > 0)
+  {
+    memcpy(aResult.myString, myString, myLength * sizeof(char16_t));
+  }
+  for (int i = 0; i < aFormatted.Length; ++i)
+  {
+    aResult.myString[myLength + i] = ToExtCharacter(aFormatted.Buffer[i]);
+  }
+  return aResult;
+}
+
+//=================================================================================================
+
+TCollection_ExtendedString TCollection_ExtendedString::Cat(const double theOther) const
+{
+  const FormattedReal        aFormatted(theOther);
+  TCollection_ExtendedString aResult(myLength + aFormatted.Length, 0);
+  if (myLength > 0)
+  {
+    memcpy(aResult.myString, myString, myLength * sizeof(char16_t));
+  }
+  for (int i = 0; i < aFormatted.Length; ++i)
+  {
+    aResult.myString[myLength + i] = ToExtCharacter(aFormatted.Buffer[i]);
+  }
+  return aResult;
+}
+
+//=================================================================================================
+
+TCollection_ExtendedString TCollection_ExtendedString::Cat(const char theChar) const
+{
+  if (theChar == '\0')
+  {
+    return TCollection_ExtendedString(*this);
+  }
+  const char16_t             anExt = ToExtCharacter(theChar);
+  TCollection_ExtendedString aResult(myLength + 1, 0);
+  if (myLength > 0)
+  {
+    memcpy(aResult.myString, myString, myLength * sizeof(char16_t));
+  }
+  aResult.myString[myLength] = anExt;
+  return aResult;
+}
+
+//=================================================================================================
+
+TCollection_ExtendedString TCollection_ExtendedString::Cat(const char16_t theChar) const
+{
+  if (theChar == u'\0')
+  {
+    return TCollection_ExtendedString(*this);
+  }
+  TCollection_ExtendedString aResult(myLength + 1, 0);
+  if (myLength > 0)
+  {
+    memcpy(aResult.myString, myString, myLength * sizeof(char16_t));
+  }
+  aResult.myString[myLength] = theChar;
   return aResult;
 }
 
