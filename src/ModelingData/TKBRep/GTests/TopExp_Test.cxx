@@ -145,8 +145,7 @@ TEST(TopExp_Test, Explorer_NestedFaceEdge_Terminates)
   {
     ++aFaceCount;
     int anEdgeCount = 0;
-    for (TopExp_Explorer anEdgeExp(TopoDS::Face(aFaceExp.Current()), TopAbs_EDGE);
-         anEdgeExp.More();
+    for (TopExp_Explorer anEdgeExp(TopoDS::Face(aFaceExp.Current()), TopAbs_EDGE); anEdgeExp.More();
          anEdgeExp.Next())
     {
       ASSERT_FALSE(anEdgeExp.Current().IsNull());
