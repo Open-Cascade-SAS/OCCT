@@ -131,6 +131,57 @@ TEST(TopExp_Test, CommonVertex)
   EXPECT_TRUE(isFound) << "Should find at least one pair of adjacent edges in a box";
 }
 
+TEST(TopExp_Test, Explorer_NestedFaceEdge_Terminates)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  ASSERT_TRUE(aBoxMaker.IsDone());
+
+  // Reproduce the pattern from issue #1194: nested TopExp_Explorer
+  // iterating edges within faces must terminate.
+  int aTotalEdgeRefs = 0;
+  int aFaceCount     = 0;
+  for (TopExp_Explorer aFaceExp(aBox, TopAbs_FACE); aFaceExp.More(); aFaceExp.Next())
+  {
+    ++aFaceCount;
+    int anEdgeCount = 0;
+    for (TopExp_Explorer anEdgeExp(TopoDS::Face(aFaceExp.Current()), TopAbs_EDGE); anEdgeExp.More();
+         anEdgeExp.Next())
+    {
+      ASSERT_FALSE(anEdgeExp.Current().IsNull());
+      ++anEdgeCount;
+      // Guard against infinite loop
+      ASSERT_LT(anEdgeCount, 100) << "Edge iteration appears infinite on face " << aFaceCount;
+    }
+    EXPECT_EQ(anEdgeCount, 4) << "Each box face should reference exactly 4 edges";
+    aTotalEdgeRefs += anEdgeCount;
+  }
+  EXPECT_EQ(aFaceCount, 6);
+  EXPECT_EQ(aTotalEdgeRefs, 24) << "6 faces * 4 edges each = 24 edge references";
+}
+
+TEST(TopExp_Test, Explorer_ReInit_Terminates)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  ASSERT_TRUE(aBoxMaker.IsDone());
+
+  // Test that re-initializing an explorer (Clear + Init cycle) works correctly.
+  TopExp_Explorer anExp;
+  for (TopExp_Explorer aFaceExp(aBox, TopAbs_FACE); aFaceExp.More(); aFaceExp.Next())
+  {
+    const TopoDS_Face& aFace = TopoDS::Face(aFaceExp.Current());
+    anExp.Init(aFace, TopAbs_EDGE);
+    int anEdgeCount = 0;
+    for (; anExp.More(); anExp.Next())
+    {
+      ++anEdgeCount;
+      ASSERT_LT(anEdgeCount, 100) << "Edge iteration appears infinite (reused explorer)";
+    }
+    EXPECT_EQ(anEdgeCount, 4);
+  }
+}
+
 TEST(TopExp_Test, MapShapesAndAncestors)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
