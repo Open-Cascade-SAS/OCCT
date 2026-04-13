@@ -203,6 +203,14 @@ double Units::Convert(const double      avalue,
 {
   std::lock_guard<std::recursive_mutex> aLock(THE_UNITS_MUTEX);
   Units_Measurement                     measurement(avalue, afirstunit);
+  if (!measurement.HasToken())
+  {
+    // No token means that the unit is not correct, so we can not convert. We return the value
+    // without conversionv to preserve the original behavior, and print a warning.
+    std::cout << "Units_Measurement: can not convert - incorrect unit '" << afirstunit
+              << "' => result is not correct" << std::endl;
+    return avalue;
+  }
   measurement.Convert(asecondunit);
   return measurement.Measurement();
 }
