@@ -61,16 +61,16 @@ void Units_Measurement::Convert(const char* const aunit)
   occ::handle<Units_Token> oldtoken = myToken;
   if (oldtoken.IsNull())
   {
-    std::cout << "Units_Measurement: can not convert - incorrect unit => result is not correct"
-              << std::endl;
+    Message::SendWarning()
+      << "Units_Measurement: can not convert - incorrect unit => result is not correct";
     return;
   }
 
   Units_UnitSentence newunit(aunit);
   if (!newunit.IsDone())
   {
-    std::cout << "Units_Measurement: can not convert - incorrect unit '" << aunit
-              << "' => result is not correct" << std::endl;
+    Message::SendWarning() << "Units_Measurement: can not convert - incorrect unit '" << aunit
+                           << "' => result is not correct";
     return;
   }
   occ::handle<Units_Token>      newtoken   = newunit.Evaluate();
@@ -201,7 +201,7 @@ bool Units_Measurement::HasToken() const
 
 void Units_Measurement::Dump() const
 {
-  std::cout << " Measurement : " << themeasurement << std::endl;
+  Message::SendInfo() << " Measurement : " << themeasurement;
   myToken->Dump(1, 1);
 }
 
