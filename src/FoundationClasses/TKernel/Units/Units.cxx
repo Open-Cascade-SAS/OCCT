@@ -28,6 +28,7 @@
 #include <Units_ShiftedToken.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <TCollection_HAsciiString.hxx>
+#include <Message.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 #include <Units_Operators.hxx>
