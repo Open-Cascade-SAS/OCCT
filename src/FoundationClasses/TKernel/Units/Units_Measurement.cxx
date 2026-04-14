@@ -19,6 +19,7 @@
 #include <Units_Operators.hxx>
 #include <Units_Token.hxx>
 #include <Units_UnitSentence.hxx>
+#include <Message.hxx>
 
 //=================================================================================================
 
