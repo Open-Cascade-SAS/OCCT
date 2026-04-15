@@ -191,8 +191,8 @@ double Units::Convert(const double      avalue,
   if (!measurement.HasToken())
   {
     // No token means that the unit is not correct, so we can not convert. We return the value
-    // without conversionv to preserve the original behavior, and print a warning.
-    Message::SendWarning() << "Units_Measurement: can not convert - incorrect unit '" << afirstunit
+    // without conversion to preserve the original behavior, and print a warning.
+    Message::SendWarning() << "Units::Convert: can not convert - incorrect unit '" << afirstunit
                            << "' => result is not correct";
     return avalue;
   }
