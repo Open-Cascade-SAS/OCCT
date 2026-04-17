@@ -81,7 +81,7 @@ bool ShapeUpgrade_FaceDivide::Perform(const double theArea)
   myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
   if (myFace.IsNull())
     return false;
-  // Ensure context is initialized — SplitCurves() and SplitSurface()
+  // Ensure context is initialized - SplitCurves() and SplitSurface()
   // call Context()->Apply() which dereferences a null handle if no
   // context was set. ShapeUpgrade_ShapeDivide handles this in its own
   // Perform(), but FaceDivide inherits directly from ShapeUpgrade_Tool

@@ -4037,8 +4037,6 @@ static int QANullifyShape(Draw_Interpretor& di, int n, const char** a)
 #include <BRepCheck_Analyzer.hxx>
 #include <GCPnts_UniformDeflection.hxx>
 #include <ShapeUpgrade_FaceDivide.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopoDS.hxx>
 
 static int OCC32744(Draw_Interpretor& theDi, int theNbArgs, const char** theArgVec)
 {
@@ -4415,9 +4413,9 @@ static int OCC1179(Draw_Interpretor& theDI, int, const char**)
   // Without the fix, this crashes with null pointer dereference.
   for (int i = 0; i < 10; ++i)
   {
-    const double aSize = 10.0 + i * 0.5;
-    const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(aSize, aSize + 5, aSize + 10).Shape();
-    TopExp_Explorer anExp(aBox, TopAbs_FACE);
+    const double       aSize = 10.0 + i * 0.5;
+    const TopoDS_Shape aBox  = BRepPrimAPI_MakeBox(aSize, aSize + 5, aSize + 10).Shape();
+    TopExp_Explorer    anExp(aBox, TopAbs_FACE);
     if (!anExp.More())
     {
       theDI << "Error: no faces in box\n";
@@ -4431,9 +4429,9 @@ static int OCC1179(Draw_Interpretor& theDI, int, const char**)
   // Parallel test: run FaceDivide on independent faces concurrently.
   std::atomic<bool> anError{false};
   OSD_Parallel::For(0, 300, [&](int theIndex) {
-    const double aSize = 10.0 + theIndex * 0.03;
-    const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(aSize, aSize + 5, aSize + 10).Shape();
-    TopExp_Explorer anExp(aBox, TopAbs_FACE);
+    const double       aSize = 10.0 + theIndex * 0.03;
+    const TopoDS_Shape aBox  = BRepPrimAPI_MakeBox(aSize, aSize + 5, aSize + 10).Shape();
+    TopExp_Explorer    anExp(aBox, TopAbs_FACE);
     if (anExp.More())
     {
       try
@@ -4606,12 +4604,11 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands)
                   OCC33657_4,
                   group);
 
-  theCommands.Add(
-    "OCC1179",
-    "Test ShapeUpgrade_FaceDivide with no pre-set context (single and parallel).",
-    __FILE__,
-    OCC1179,
-    group);
+  theCommands.Add("OCC1179",
+                  "Test ShapeUpgrade_FaceDivide with no pre-set context (single and parallel).",
+                  __FILE__,
+                  OCC1179,
+                  group);
 
   return;
 }
