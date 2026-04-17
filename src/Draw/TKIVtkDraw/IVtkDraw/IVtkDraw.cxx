@@ -363,7 +363,7 @@ void IVtkDraw::ViewerInit(const IVtkWinParams& theParams)
 
     // Init picker
     GetPicker() = vtkSmartPointer<IVtkTools_ShapePicker>::New();
-    GetPicker()->SetTolerance(0.025f);
+    GetPicker()->SetPixelTolerance(2);
     GetPicker()->SetRenderer(GetRenderer());
 
     GetInteractor()->SetShapePicker(GetPicker());

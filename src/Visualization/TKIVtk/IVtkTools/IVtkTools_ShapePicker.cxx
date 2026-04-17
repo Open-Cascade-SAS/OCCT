@@ -54,22 +54,18 @@ vtkStandardNewMacro(IVtkTools_ShapePicker)
 
 IVtkTools_ShapePicker::~IVtkTools_ShapePicker() = default;
 
-//============================================================================
-//  Method: SetTolerance
-// Purpose: Setter for tolerance of picking.
-//============================================================================
-void IVtkTools_ShapePicker::SetTolerance(float theTolerance)
+//=================================================================================================
+
+void IVtkTools_ShapePicker::SetPixelTolerance(const int theTolerance)
 {
-  myTolerance = theTolerance;
+  myOccPickerAlgo->SetPixelTolerance(theTolerance);
 }
 
-//============================================================================
-//  Method: GetTolerance
-// Purpose: Getter for tolerance of picking.
-//============================================================================
-float IVtkTools_ShapePicker::GetTolerance() const
+//=================================================================================================
+
+int IVtkTools_ShapePicker::PixelTolerance() const
 {
-  return myTolerance;
+  return myOccPickerAlgo->PixelTolerance();
 }
 
 //============================================================================
