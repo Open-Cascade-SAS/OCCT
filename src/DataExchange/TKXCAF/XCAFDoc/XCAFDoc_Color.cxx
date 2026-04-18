@@ -130,7 +130,7 @@ void XCAFDoc_Color::Set(const double R, const double G, const double B, const do
   Quantity_Color aColor;
   aColor.SetValues(R, G, B, Quantity_TOC_RGB);
   myColor.SetRGB(aColor);
-  myColor.SetAlpha((float)alpha);
+  myColor.SetAlpha(static_cast<float>(alpha));
 }
 
 //=================================================================================================

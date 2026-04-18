@@ -46,14 +46,16 @@ void OpenGl_Structure::renderBoundingBox(const occ::handle<OpenGl_Workspace>& th
   {
     const NCollection_Vec3<double> aCenter = myBndBox.Center() + aMoveVec;
     const NCollection_Vec3<double> aSize   = myBndBox.Size();
-    aCtx->ActiveProgram()->SetUniform(
-      aCtx,
-      "occBBoxCenter",
-      NCollection_Vec3<float>((float)aCenter.x(), (float)aCenter.y(), (float)aCenter.z()));
-    aCtx->ActiveProgram()->SetUniform(
-      aCtx,
-      "occBBoxSize",
-      NCollection_Vec3<float>((float)aSize.x(), (float)aSize.y(), (float)aSize.z()));
+    aCtx->ActiveProgram()->SetUniform(aCtx,
+                                      "occBBoxCenter",
+                                      NCollection_Vec3<float>(static_cast<float>(aCenter.x()),
+                                                              static_cast<float>(aCenter.y()),
+                                                              static_cast<float>(aCenter.z())));
+    aCtx->ActiveProgram()->SetUniform(aCtx,
+                                      "occBBoxSize",
+                                      NCollection_Vec3<float>(static_cast<float>(aSize.x()),
+                                                              static_cast<float>(aSize.y()),
+                                                              static_cast<float>(aSize.z())));
     aCtx->SetColor4fv(theWorkspace->InteriorColor());
 
     const occ::handle<OpenGl_VertexBuffer>& aBoundBoxVertBuffer =
@@ -66,8 +68,12 @@ void OpenGl_Structure::renderBoundingBox(const occ::handle<OpenGl_Workspace>& th
   {
     const NCollection_Vec3<double> aMind = myBndBox.CornerMin() + aMoveVec;
     const NCollection_Vec3<double> aMaxd = myBndBox.CornerMax() + aMoveVec;
-    const NCollection_Vec3<float>  aMin((float)aMind.x(), (float)aMind.y(), (float)aMind.z());
-    const NCollection_Vec3<float>  aMax((float)aMaxd.x(), (float)aMaxd.y(), (float)aMaxd.z());
+    const NCollection_Vec3<float>  aMin(static_cast<float>(aMind.x()),
+                                       static_cast<float>(aMind.y()),
+                                       static_cast<float>(aMind.z()));
+    const NCollection_Vec3<float>  aMax(static_cast<float>(aMaxd.x()),
+                                       static_cast<float>(aMaxd.y()),
+                                       static_cast<float>(aMaxd.z()));
     const NCollection_Vec3<float>  aVerts[16] = {
       NCollection_Vec3<float>(aMin.x(), aMin.y(), aMin.z()),
       NCollection_Vec3<float>(aMin.x(), aMin.y(), aMax.z()),
@@ -675,13 +681,14 @@ void OpenGl_Structure::applyPersistence(const occ::handle<OpenGl_Context>&      
   {
     // move anchor point to presentation location
     theCtx->ModelWorldState.Push();
-    NCollection_Mat4<float>& aModelWorld   = theCtx->ModelWorldState.ChangeCurrent();
-    gp_Pnt                   aStartPnt     = theTrsfPers->AnchorPoint();
-    NCollection_Vec4<float>  anAnchorPoint = aModelWorld
-                                            * NCollection_Vec4<float>((float)aStartPnt.X(),
-                                                                      (float)aStartPnt.Y(),
-                                                                      (float)aStartPnt.Z(),
-                                                                      1.0f);
+    NCollection_Mat4<float>& aModelWorld = theCtx->ModelWorldState.ChangeCurrent();
+    gp_Pnt                   aStartPnt   = theTrsfPers->AnchorPoint();
+    NCollection_Vec4<float>  anAnchorPoint =
+      aModelWorld
+      * NCollection_Vec4<float>(static_cast<float>(aStartPnt.X()),
+                                static_cast<float>(aStartPnt.Y()),
+                                static_cast<float>(aStartPnt.Z()),
+                                1.0f);
     // clang-format off
     aModelWorld.SetColumn (3, NCollection_Vec4<float> (NCollection_Vec3<float> (0.0), 1.0)); // reset translation part
     // clang-format on

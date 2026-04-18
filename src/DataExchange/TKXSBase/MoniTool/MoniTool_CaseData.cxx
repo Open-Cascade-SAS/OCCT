@@ -451,7 +451,7 @@ bool MoniTool_CaseData::Integer(const int nd, int& val) const
   if (thekind(nd) != 11)
     return false;
   double rval = p->X();
-  val         = (int)rval;
+  val         = static_cast<int>(rval);
   return true;
 }
 

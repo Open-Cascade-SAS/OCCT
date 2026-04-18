@@ -43,7 +43,7 @@ int HLRBRep_BCurveTool::NbSamples(const BRepAdaptor_Curve& C, const double U0, c
   }
   if (nbs > 50)
     nbs = 50;
-  return ((int)nbs);
+  return (static_cast<int>(nbs));
 }
 
 //=================================================================================================

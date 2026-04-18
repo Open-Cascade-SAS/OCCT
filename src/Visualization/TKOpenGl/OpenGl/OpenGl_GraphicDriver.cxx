@@ -203,7 +203,7 @@ OpenGl_GraphicDriver::OpenGl_GraphicDriver(const occ::handle<Aspect_DisplayConne
     return;
   }
 
-  Display* aDisplay = (Display*)myDisplayConnection->GetDisplayAspect();
+  Display* aDisplay = reinterpret_cast<Display*>(myDisplayConnection->GetDisplayAspect());
   Bool     toSync = ::getenv("CSF_GraphicSync") != nullptr || ::getenv("CALL_SYNCHRO_X") != nullptr;
   XSynchronize(aDisplay, toSync);
 #endif
@@ -446,7 +446,7 @@ void OpenGl_GraphicDriver::chooseVisualInfo()
   }
 
 #if defined(HAVE_XLIB)
-  Display* aDisp = (Display*)myDisplayConnection->GetDisplayAspect();
+  Display* aDisp = reinterpret_cast<Display*>(myDisplayConnection->GetDisplayAspect());
 
   XVisualInfo*    aVisInfo   = nullptr;
   Aspect_FBConfig anFBConfig = nullptr;
@@ -507,7 +507,8 @@ void OpenGl_GraphicDriver::chooseVisualInfo()
   #endif
   if (aVisInfo != nullptr)
   {
-    myDisplayConnection->SetDefaultVisualInfo((Aspect_XVisualInfo*)aVisInfo, anFBConfig);
+    myDisplayConnection->SetDefaultVisualInfo(reinterpret_cast<Aspect_XVisualInfo*>(aVisInfo),
+                                              anFBConfig);
   }
   else
   {

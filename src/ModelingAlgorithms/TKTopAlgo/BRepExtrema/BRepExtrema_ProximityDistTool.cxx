@@ -104,7 +104,7 @@ void BRepExtrema_ProximityDistTool::LoadAdditionalPointsFirstSet(
 void BRepExtrema_ProximityDistTool::goThroughtSet1(const BVH_Array3d& theVertices1,
                                                    const bool         theIsAdditionalSet)
 {
-  int aVtxSize = (int)theVertices1.size();
+  int aVtxSize = static_cast<int>(theVertices1.size());
   int aVtxStep = std::max(myNbSamples1 <= 0 ? 1 : aVtxSize / myNbSamples1, 1);
   for (int aVtxIdx = 0; aVtxIdx < aVtxSize; aVtxIdx += aVtxStep)
   {
@@ -373,7 +373,7 @@ void BRepExtrema_ProximityDistTool::defineStatusProxPnt1()
   if (myShapeList1(aFaceID1).ShapeType() == TopAbs_EDGE)
   {
     const BVH_Array3d& aVertices1 = mySet1->GetVertices();
-    int                aVtxSize   = (int)aVertices1.size();
+    int                aVtxSize   = static_cast<int>(aVertices1.size());
     int                aLastIdx   = aVtxSize - 1;
 
     if ((aVertices1[0] - aVertices1[aLastIdx]).Modulus() < Precision::Confusion()) // if closed
@@ -428,7 +428,7 @@ void BRepExtrema_ProximityDistTool::defineStatusProxPnt2()
     else
     {
       const BVH_Array3d& aVertices2 = mySet2->GetVertices();
-      int                aVtxSize   = (int)aVertices2.size();
+      int                aVtxSize   = static_cast<int>(aVertices2.size());
       int                aLastIdx   = aVtxSize - 1;
 
       if ((aVertices2[0] - aVertices2[aLastIdx]).Modulus() < Precision::Confusion()) // if closed

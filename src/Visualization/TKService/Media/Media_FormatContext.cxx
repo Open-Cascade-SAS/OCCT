@@ -288,12 +288,12 @@ void Media_FormatContext::Close()
 TCollection_AsciiString Media_FormatContext::FormatTime(double theSeconds)
 {
   double       aSecIn = theSeconds;
-  unsigned int aHours = (unsigned int)(aSecIn * THE_SECOND_IN_HOUR);
-  aSecIn -= double(aHours) * THE_SECONDS_IN_HOUR;
-  unsigned int aMinutes = (unsigned int)(aSecIn * THE_SECOND_IN_MINUTE);
-  aSecIn -= double(aMinutes) * THE_SECONDS_IN_MINUTE;
-  unsigned int aSeconds = (unsigned int)aSecIn;
-  aSecIn -= double(aSeconds);
+  unsigned int aHours = static_cast<unsigned int>(aSecIn * THE_SECOND_IN_HOUR);
+  aSecIn -= static_cast<double>(aHours) * THE_SECONDS_IN_HOUR;
+  unsigned int aMinutes = static_cast<unsigned int>(aSecIn * THE_SECOND_IN_MINUTE);
+  aSecIn -= static_cast<double>(aMinutes) * THE_SECONDS_IN_MINUTE;
+  unsigned int aSeconds = static_cast<unsigned int>(aSecIn);
+  aSecIn -= static_cast<double>(aSeconds);
   double aMilliSeconds = 1000.0 * aSecIn;
 
   char aBuffer[64];
@@ -322,20 +322,20 @@ TCollection_AsciiString Media_FormatContext::FormatTimeProgress(double theProgre
                                                                 double theDuration)
 {
   double       aSecIn1 = theProgress;
-  unsigned int aHours1 = (unsigned int)(aSecIn1 * THE_SECOND_IN_HOUR);
-  aSecIn1 -= double(aHours1) * THE_SECONDS_IN_HOUR;
-  unsigned int aMinutes1 = (unsigned int)(aSecIn1 * THE_SECOND_IN_MINUTE);
-  aSecIn1 -= double(aMinutes1) * THE_SECONDS_IN_MINUTE;
-  unsigned int aSeconds1 = (unsigned int)aSecIn1;
-  aSecIn1 -= double(aSeconds1);
+  unsigned int aHours1 = static_cast<unsigned int>(aSecIn1 * THE_SECOND_IN_HOUR);
+  aSecIn1 -= static_cast<double>(aHours1) * THE_SECONDS_IN_HOUR;
+  unsigned int aMinutes1 = static_cast<unsigned int>(aSecIn1 * THE_SECOND_IN_MINUTE);
+  aSecIn1 -= static_cast<double>(aMinutes1) * THE_SECONDS_IN_MINUTE;
+  unsigned int aSeconds1 = static_cast<unsigned int>(aSecIn1);
+  aSecIn1 -= static_cast<double>(aSeconds1);
 
   double       aSecIn2 = theDuration;
-  unsigned int aHours2 = (unsigned int)(aSecIn2 * THE_SECOND_IN_HOUR);
-  aSecIn2 -= double(aHours2) * THE_SECONDS_IN_HOUR;
-  unsigned int aMinutes2 = (unsigned int)(aSecIn2 * THE_SECOND_IN_MINUTE);
-  aSecIn2 -= double(aMinutes2) * THE_SECONDS_IN_MINUTE;
-  unsigned int aSeconds2 = (unsigned int)aSecIn2;
-  aSecIn2 -= double(aSeconds2);
+  unsigned int aHours2 = static_cast<unsigned int>(aSecIn2 * THE_SECOND_IN_HOUR);
+  aSecIn2 -= static_cast<double>(aHours2) * THE_SECONDS_IN_HOUR;
+  unsigned int aMinutes2 = static_cast<unsigned int>(aSecIn2 * THE_SECOND_IN_MINUTE);
+  aSecIn2 -= static_cast<double>(aMinutes2) * THE_SECONDS_IN_MINUTE;
+  unsigned int aSeconds2 = static_cast<unsigned int>(aSecIn2);
+  aSecIn2 -= static_cast<double>(aSeconds2);
 
   char aBuffer[256];
   if (aHours1 > 0 || aHours2 > 0)

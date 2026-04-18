@@ -37,7 +37,7 @@ public:
   void Validate() override { myInvalidatedRange.Clear(); }
 
   //! Invalidate the entire buffer data.
-  void Invalidate() override { invalidate(Graphic3d_BufferRange(0, (int)mySize)); }
+  void Invalidate() override { invalidate(Graphic3d_BufferRange(0, static_cast<int>(mySize))); }
 
   //! Invalidate the given indexes (starting from 0)
   void Invalidate(int theIndexLower, int theIndexUpper)

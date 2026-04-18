@@ -152,12 +152,12 @@ void BinTools_LocationSet::Write(Standard_OStream& OS) const
       if (elementary)
       {
 
-        OS.put((uint8_t)1); // 1
+        OS.put(static_cast<uint8_t>(1)); // 1
         OS << L.Transformation();
       }
       else
       {
-        OS.put((uint8_t)2); // 2
+        OS.put(static_cast<uint8_t>(2)); // 2
         BinTools::PutInteger(OS, myMap.FindIndex(L1));
         BinTools::PutInteger(OS, p);
         while (!L2.IsIdentity())
@@ -212,7 +212,7 @@ void BinTools_LocationSet::Read(Standard_IStream& IS)
     for (i = 1; i <= nbLoc; i++)
     {
 
-      const uint8_t aTypLoc = (uint8_t)IS.get();
+      const uint8_t aTypLoc = static_cast<uint8_t>(IS.get());
       if (aTypLoc == 1)
       {
         IS >> T;

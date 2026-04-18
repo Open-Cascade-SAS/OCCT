@@ -501,7 +501,7 @@ void ChFi3d_FilBuilder::SimulKPart(const occ::handle<ChFiDS_SurfData>& SD) const
       double   ang  = (u2 - u1);
       gp_Torus To   = AS.Torus();
       double   majr = To.MajorRadius(), minr = To.MinorRadius();
-      int      n = (int)(36. * ang / M_PI + 1);
+      int      n = static_cast<int>(36. * ang / M_PI + 1);
       if (n < 2)
         n = 2;
       sec = new NCollection_HArray1<ChFiDS_CircSection>(1, n);
@@ -521,7 +521,7 @@ void ChFi3d_FilBuilder::SimulKPart(const occ::handle<ChFiDS_SurfData>& SD) const
       double    ang = (u2 - u1);
       gp_Sphere Sp  = AS.Sphere();
       double    rad = Sp.Radius();
-      int       n   = (int)(36. * ang / M_PI + 1);
+      int       n   = static_cast<int>(36. * ang / M_PI + 1);
       if (n < 2)
         n = 2;
       sec = new NCollection_HArray1<ChFiDS_CircSection>(1, n);

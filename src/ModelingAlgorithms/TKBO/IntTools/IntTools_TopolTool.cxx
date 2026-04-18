@@ -153,9 +153,9 @@ void IntTools_TopolTool::ComputeSamplePoints()
       }
       if (aMaxAngle > Precision::Angular())
       {
-        nbsu = int((usup - uinf) / aMaxAngle);
+        nbsu = static_cast<int>((usup - uinf) / aMaxAngle);
       }
-      nbsv = (int)(vsup - vinf);
+      nbsv = static_cast<int>(vsup - vinf);
       nbsv /= 10;
 
       if (nbsu < 2)
@@ -190,9 +190,9 @@ void IntTools_TopolTool::ComputeSamplePoints()
 
       if (aMaxAngle > Precision::Angular())
       {
-        nbsu = int((usup - uinf) / aMaxAngle);
+        nbsu = static_cast<int>((usup - uinf) / aMaxAngle);
       }
-      nbsv = (int)(vsup - vinf);
+      nbsv = static_cast<int>(vsup - vinf);
       nbsv /= 10;
 
       //     if(nbsu < 2) nbsu = 2;
@@ -246,7 +246,7 @@ void IntTools_TopolTool::ComputeSamplePoints()
 
       if (aMaxAngle > Precision::Angular())
       {
-        nbsu = int((usup - uinf) / aMaxAngle);
+        nbsu = static_cast<int>((usup - uinf) / aMaxAngle);
       }
       aMaxAngle = M_PI * 0.5;
 
@@ -257,7 +257,7 @@ void IntTools_TopolTool::ComputeSamplePoints()
 
       if (aMaxAngle > Precision::Angular())
       {
-        nbsv = int((vsup - vinf) / aMaxAngle);
+        nbsv = static_cast<int>((vsup - vinf) / aMaxAngle);
       }
       if (nbsu < 10)
         nbsu = 10;
@@ -322,7 +322,7 @@ void IntTools_TopolTool::ComputeSamplePoints()
     break;
     case GeomAbs_SurfaceOfExtrusion: {
       nbsu = 15;
-      nbsv = (int)(vsup - vinf);
+      nbsv = static_cast<int>(vsup - vinf);
       nbsv /= 10;
       if (nbsv < 15)
         nbsv = 15;

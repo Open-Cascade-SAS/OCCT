@@ -265,7 +265,7 @@ void GeomLib::RemovePointsFromArray(const int                                 Nu
 
   loc_num_points = std::max(0, NumPoints - 2);
   delta          = InParameters(InParameters.Upper()) - InParameters(InParameters.Lower());
-  delta /= (double)(loc_num_points + 1);
+  delta /= static_cast<double>(loc_num_points + 1);
   num_points        = 1;
   current_parameter = InParameters(InParameters.Lower()) + delta * 0.5e0;
   ii                = InParameters.Lower() + 1;
@@ -335,7 +335,7 @@ void GeomLib::DensifyArray1OfReal(const int                                 MinN
     {
       num_parameters_to_add = MinNumPoints - InParameters.Length();
       delta = InParameters(InParameters.Upper()) - InParameters(InParameters.Lower());
-      delta /= (double)(num_parameters_to_add + 1);
+      delta /= static_cast<double>(num_parameters_to_add + 1);
       num_points                           = MinNumPoints;
       OutParameters                        = new NCollection_HArray1<double>(1, num_points);
       index                                = 1;
@@ -1312,11 +1312,11 @@ void GeomLib::ExtendCurveToPoint(occ::handle<Geom_BoundedCurve>& Curve,
     dt = d1.Magnitude() / norm;
     if ((dt < 1.5) && (dt > 0.75))
     { // The edge is within the average, keep it
-      Lambda = ((double)1) / std::max(d1.Magnitude() / L1, Tol);
+      Lambda = (static_cast<double>(1)) / std::max(d1.Magnitude() / L1, Tol);
     }
     else
     {
-      Lambda = ((double)1) / std::max(norm / L1, Tol);
+      Lambda = (static_cast<double>(1)) / std::max(norm / L1, Tol);
     }
   }
   else
@@ -1581,7 +1581,7 @@ void GeomLib::ExtendSurfByLength(occ::handle<Geom_BoundedSurface>& Surface,
         }
       }
     }
-    Padr = (double*)&Poles->ChangeValue(1);
+    Padr = static_cast<double*>(&Poles->ChangeValue(1));
 
     //  calculation of the connection point and tangent
     Point  = new (NCollection_HArray1<double>)(1, Cdim);
@@ -1597,7 +1597,7 @@ void GeomLib::ExtendSurfByLength(occ::handle<Geom_BoundedSurface>& Surface,
     NCollection_Array1<double>& point = Point->ChangeArray1();
     NCollection_Array1<double>& lamb  = lambda->ChangeArray1();
 
-    double* Radr = (double*)&Result(1);
+    double* Radr = static_cast<double*>(&Result(1));
 
     BSplCLib::Eval(Tbord,
                    periodic_flag,

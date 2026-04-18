@@ -97,7 +97,7 @@ void TopOpeBRep_FaceEdgeIntersector::Perform(const TopoDS_Shape& SF, const TopoD
   const occ::handle<Geom_Curve> C = BRep_Tool::Curve(myEdge, loc, f, l);
 
   occ::handle<Geom_Geometry> GGao1  = C->Transformed(loc.Transformation());
-  occ::handle<Geom_Curve>*   PGCao1 = (occ::handle<Geom_Curve>*)&GGao1;
+  occ::handle<Geom_Curve>*   PGCao1 = reinterpret_cast<occ::handle<Geom_Curve>*>(&GGao1);
   myCurve.Load(*PGCao1, f, l);
 
 #ifdef OCCT_DEBUG

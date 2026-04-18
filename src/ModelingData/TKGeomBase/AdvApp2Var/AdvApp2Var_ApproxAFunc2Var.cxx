@@ -812,7 +812,7 @@ void AdvApp2Var_ApproxAFunc2Var::Compute3DErrors()
       my3DMaxError->SetValue(iesp, error_max);
       my3DUFrontError->SetValue(iesp, std::max(error_U0, error_U1));
       my3DVFrontError->SetValue(iesp, std::max(error_V0, error_V1));
-      error_moy /= (double)myResult.NbPatch();
+      error_moy /= static_cast<double>(myResult.NbPatch());
       my3DAverageError->SetValue(iesp, error_moy);
       if (error_max > Tol || error_U0 > F3Tol || error_U1 > F4Tol || error_V0 > F1Tol
           || error_V1 > F2Tol)

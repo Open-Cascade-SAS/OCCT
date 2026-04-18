@@ -340,7 +340,7 @@ occ::handle<XCAFDimTolObjects_DimensionObject> XCAFDoc_Dimension::GetObject() co
   occ::handle<TDataStd_Integer> aType;
   if (Label().FindChild(ChildLab_Type).FindAttribute(TDataStd_Integer::GetID(), aType))
   {
-    anObj->SetType((XCAFDimTolObjects_DimensionType)aType->Get());
+    anObj->SetType(static_cast<XCAFDimTolObjects_DimensionType>(aType->Get()));
   }
 
   occ::handle<TDataStd_RealArray> aVal;
@@ -353,7 +353,7 @@ occ::handle<XCAFDimTolObjects_DimensionObject> XCAFDoc_Dimension::GetObject() co
   occ::handle<TDataStd_Integer> aQualifier;
   if (Label().FindChild(ChildLab_Qualifier).FindAttribute(TDataStd_Integer::GetID(), aQualifier))
   {
-    anObj->SetQualifier((XCAFDimTolObjects_DimensionQualifier)aQualifier->Get());
+    anObj->SetQualifier(static_cast<XCAFDimTolObjects_DimensionQualifier>(aQualifier->Get()));
   }
 
   occ::handle<TDataStd_Integer> anAngularQualifier;
@@ -361,16 +361,18 @@ occ::handle<XCAFDimTolObjects_DimensionObject> XCAFDoc_Dimension::GetObject() co
         .FindChild(ChildLab_AngularQualifier)
         .FindAttribute(TDataStd_Integer::GetID(), anAngularQualifier))
   {
-    anObj->SetAngularQualifier((XCAFDimTolObjects_AngularQualifier)anAngularQualifier->Get());
+    anObj->SetAngularQualifier(
+      static_cast<XCAFDimTolObjects_AngularQualifier>(anAngularQualifier->Get()));
   }
 
   occ::handle<TDataStd_IntegerArray> aClass;
   if (Label().FindChild(ChildLab_Class).FindAttribute(TDataStd_IntegerArray::GetID(), aClass)
       && !aClass->Array().IsNull() && aClass->Array()->Length() > 0)
   {
-    anObj->SetClassOfTolerance(aClass->Array()->Value(1) != 0,
-                               (XCAFDimTolObjects_DimensionFormVariance)aClass->Array()->Value(2),
-                               (XCAFDimTolObjects_DimensionGrade)aClass->Array()->Value(3));
+    anObj->SetClassOfTolerance(
+      aClass->Array()->Value(1) != 0,
+      static_cast<XCAFDimTolObjects_DimensionFormVariance>(aClass->Array()->Value(2)),
+      static_cast<XCAFDimTolObjects_DimensionGrade>(aClass->Array()->Value(3)));
   }
 
   occ::handle<TDataStd_IntegerArray> aDec;
@@ -388,7 +390,7 @@ occ::handle<XCAFDimTolObjects_DimensionObject> XCAFDoc_Dimension::GetObject() co
   {
     NCollection_Sequence<XCAFDimTolObjects_DimensionModif> aM;
     for (int i = 1; i <= aModifiers->Array()->Length(); i++)
-      aM.Append((XCAFDimTolObjects_DimensionModif)aModifiers->Array()->Value(i));
+      aM.Append(static_cast<XCAFDimTolObjects_DimensionModif>(aModifiers->Array()->Value(i)));
     anObj->SetModifiers(aM);
   }
 

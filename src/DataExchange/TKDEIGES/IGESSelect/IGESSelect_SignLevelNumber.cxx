@@ -40,7 +40,7 @@ const char* IGESSelect_SignLevelNumber::Value(
   if (igesent.IsNull())
   {
     const char* astr;
-    astr = (const char*)(thecountmode ? " NO LEVEL" : "/0/");
+    astr = (thecountmode ? " NO LEVEL" : "/0/");
     return astr;
   }
   //  if (igesent.IsNull()) return (thecountmode ? " NO LEVEL" : "/0/");
@@ -53,7 +53,7 @@ const char* IGESSelect_SignLevelNumber::Value(
     if (level < 0)
     {
       const char* astr;
-      astr = (const char*)(thecountmode ? " NO LEVEL" : "/0/");
+      astr = (thecountmode ? " NO LEVEL" : "/0/");
       return astr;
     }
     //    if (level < 0) return (thecountmode ? " NO LEVEL" : "/0/");

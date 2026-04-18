@@ -56,7 +56,7 @@ double fallingFactorial(const int theN, const int theK)
   double aRes = 1.0;
   for (int i = 0; i < theK; ++i)
   {
-    aRes *= double(theN - i);
+    aRes *= static_cast<double>(theN - i);
   }
   return aRes;
 }
@@ -160,15 +160,17 @@ void evalMixedAHT(const NCollection_Array1<gp_Pnt2d>& thePoles,
     double       aB3   = 0.0;
     if constexpr (theMaxOrder >= 1)
     {
-      aB1 = (k >= 1) ? double(k) * aPowM1 : 0.0;
+      aB1 = (k >= 1) ? static_cast<double>(k) * aPowM1 : 0.0;
     }
     if constexpr (theMaxOrder >= 2)
     {
-      aB2 = (k >= 2) ? double(k) * double(k - 1) * aPowM2 : 0.0;
+      aB2 = (k >= 2) ? static_cast<double>(k) * static_cast<double>(k - 1) * aPowM2 : 0.0;
     }
     if constexpr (theMaxOrder >= 3)
     {
-      aB3 = (k >= 3) ? double(k) * double(k - 1) * double(k - 2) * aPowM3 : 0.0;
+      aB3 = (k >= 3) ? static_cast<double>(k) * static_cast<double>(k - 1)
+                         * static_cast<double>(k - 2) * aPowM3
+                     : 0.0;
     }
 
     if constexpr (theIsRational)
@@ -1047,7 +1049,7 @@ gp_Vec2d Geom2dEval_AHTBezierCurve::EvalDN(const double U, const int N) const
       double aBinom = 1.0;
       for (int j = 1; j <= d; ++j)
       {
-        aBinom = aBinom * double(d - j + 1) / double(j);
+        aBinom = aBinom * static_cast<double>(d - j + 1) / static_cast<double>(j);
         aSum -= aCDerivs[d - j] * (aBinom * aWDerivs[j]);
       }
       aCDerivs[d] = aSum * aInvW0;

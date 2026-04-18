@@ -60,10 +60,10 @@ inline const gp_Dir2d& IntImp_ZerImpFunc::Direction2d()
 
 inline const ThePSurface& IntImp_ZerImpFunc::PSurface() const
 {
-  return (*((ThePSurface*)(surf)));
+  return (*(static_cast<ThePSurface*>(surf)));
 }
 
 inline const TheISurface& IntImp_ZerImpFunc::ISurface() const
 {
-  return (*((TheISurface*)(func)));
+  return (*(static_cast<TheISurface*>(func)));
 }

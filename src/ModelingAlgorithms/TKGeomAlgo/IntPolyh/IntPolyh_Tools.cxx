@@ -110,9 +110,9 @@ void IntPolyh_Tools::MakeSampling(const occ::handle<Adaptor3d_Surface>& theSurf,
   int aNbSamplesV1 = theNbSV - 1;
 
   // U step
-  double dU = (u1 - u0) / double(aNbSamplesU1);
+  double dU = (u1 - u0) / static_cast<double>(aNbSamplesU1);
   // V step
-  double dV = (v1 - v0) / double(aNbSamplesV1);
+  double dV = (v1 - v0) / static_cast<double>(aNbSamplesV1);
 
   // Fill arrays
   for (int i = 0; i < theNbSU; ++i)

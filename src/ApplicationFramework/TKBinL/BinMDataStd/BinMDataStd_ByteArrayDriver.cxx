@@ -108,7 +108,7 @@ void BinMDataStd_ByteArrayDriver::Paste(
   }
   uint8_t* aPtr = &aSourceArray(lower);
   theTarget.PutByteArray(aPtr, bytes->Length());
-  theTarget << (uint8_t)(anAtt->GetDelta() ? 1 : 0);
+  theTarget << static_cast<uint8_t>(anAtt->GetDelta() ? 1 : 0);
 
   // process user defined guid
   if (anAtt->ID() != TDataStd_ByteArray::GetID())

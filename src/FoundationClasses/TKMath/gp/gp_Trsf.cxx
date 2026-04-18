@@ -958,7 +958,7 @@ bool gp_Trsf::InitFromJson(const Standard_SStream& theSStream, int& theStreamPos
 
   double ashape;
   OCCT_INIT_FIELD_VALUE_INTEGER(aStreamStr, aPos, ashape);
-  shape = (gp_TrsfForm)((int)ashape);
+  shape = static_cast<gp_TrsfForm>(static_cast<int>(ashape));
 
   OCCT_INIT_FIELD_VALUE_REAL(aStreamStr, aPos, scale);
 

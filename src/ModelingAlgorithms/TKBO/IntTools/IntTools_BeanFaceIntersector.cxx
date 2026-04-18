@@ -2065,7 +2065,7 @@ bool IntTools_BeanFaceIntersector::TestComputeCoinside()
 {
   double    cfp = myFirstParameter, clp = myLastParameter;
   const int nbSeg = 23;
-  double    cdp   = (clp - cfp) / (double)nbSeg;
+  double    cdp   = (clp - cfp) / static_cast<double>(nbSeg);
 
   int i = 0;
 
@@ -2095,7 +2095,7 @@ bool IntTools_BeanFaceIntersector::TestComputeCoinside()
 
   for (i = 1; i < nbSeg; i++)
   {
-    double aPar = (cfp + ((double)i) * cdp);
+    double aPar = (cfp + (static_cast<double>(i)) * cdp);
 
     if (Distance(aPar, U, V) > myCriteria)
       return false;
@@ -2500,26 +2500,30 @@ static void CheckSampling(const IntTools_CurveRangeSample&         theCurveRange
   int aSamplesNb = theCurveRange.GetDepth() == 0 ? 1 : theCurveData.GetNbSample();
 
   // check
-  if ((pow((double)theCurveData.GetNbSample(), (double)(theCurveRange.GetDepth() + 1)) > dLimit)
-      || ((DiffC / (double)aSamplesNb) < theCurveData.GetMinRange()))
+  if ((pow(static_cast<double>(theCurveData.GetNbSample()),
+           static_cast<double>(theCurveRange.GetDepth() + 1))
+       > dLimit)
+      || ((DiffC / static_cast<double>(aSamplesNb)) < theCurveData.GetMinRange()))
   {
     bAllowSamplingC = false;
   }
 
   aSamplesNb = theSurfaceRange.GetDepthU() == 0 ? 1 : theSurfaceData.GetNbSampleU();
 
-  if ((pow((double)theSurfaceData.GetNbSampleU(), (double)(theSurfaceRange.GetDepthU() + 1))
+  if ((pow(static_cast<double>(theSurfaceData.GetNbSampleU()),
+           static_cast<double>(theSurfaceRange.GetDepthU() + 1))
        > dLimit)
-      || ((DiffU / (double)aSamplesNb) < theSurfaceData.GetMinRangeU()))
+      || ((DiffU / static_cast<double>(aSamplesNb)) < theSurfaceData.GetMinRangeU()))
   {
     bAllowSamplingU = false;
   }
 
   aSamplesNb = theSurfaceRange.GetDepthV() == 0 ? 1 : theSurfaceData.GetNbSampleV();
 
-  if ((pow((double)theSurfaceData.GetNbSampleV(), (double)(theSurfaceRange.GetDepthV() + 1))
+  if ((pow(static_cast<double>(theSurfaceData.GetNbSampleV()),
+           static_cast<double>(theSurfaceRange.GetDepthV() + 1))
        > dLimit)
-      || ((DiffV / (double)aSamplesNb) < theSurfaceData.GetMinRangeV()))
+      || ((DiffV / static_cast<double>(aSamplesNb)) < theSurfaceData.GetMinRangeV()))
   {
     bAllowSamplingV = false;
   }

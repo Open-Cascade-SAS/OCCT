@@ -237,6 +237,9 @@ bool Quantity_ColorRGBA::InitFromJson(const Standard_SStream& theSStream, int& t
                          &aBlue,
                          &anAlpha)
 
-  SetValues((float)aRed, (float)aGreen, (float)aBlue, (float)anAlpha);
+  SetValues(static_cast<float>(aRed),
+            static_cast<float>(aGreen),
+            static_cast<float>(aBlue),
+            static_cast<float>(anAlpha));
   return true;
 }

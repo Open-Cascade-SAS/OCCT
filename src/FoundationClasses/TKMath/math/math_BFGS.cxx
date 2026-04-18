@@ -462,7 +462,7 @@ void math_BFGS::Dump(Standard_OStream& o) const
     o << " Number of iterations = " << NbIterations() << "\n";
   }
   else
-    o << " Status = not Done because " << (int)TheStatus << "\n";
+    o << " Status = not Done because " << static_cast<int>(TheStatus) << "\n";
 }
 
 //=============================================================================

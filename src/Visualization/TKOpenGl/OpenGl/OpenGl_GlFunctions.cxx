@@ -1687,7 +1687,7 @@ void OpenGl_GlFunctions::readGlVersion(int& theGlVerMajor, int& theGlVerMinor)
   // Following trash (after space) is vendor-specific.
   // New drivers also returns micro version of GL like '3.3.0' which has no meaning
   // and should be considered as vendor-specific too.
-  const char* aVerStr = (const char*)::glGetString(GL_VERSION);
+  const char* aVerStr = reinterpret_cast<const char*>(::glGetString(GL_VERSION));
   if (aVerStr == nullptr || *aVerStr == '\0')
   {
     // invalid GL context
@@ -2356,7 +2356,7 @@ void OpenGl_GlFunctions::load(OpenGl_Context& theCtx, bool theIsCoreProfile)
     }
   }
   #elif defined(HAVE_XLIB)
-  const char* aGlxExts = ::glXQueryExtensionsString((Display*)theCtx.myDisplay,
+  const char* aGlxExts = ::glXQueryExtensionsString(static_cast<Display*>(theCtx.myDisplay),
                                                     DefaultScreen((Display*)theCtx.myDisplay));
   if (checkExtensionShort(aGlxExts, "GLX_EXT_swap_control"))
   {
@@ -2476,7 +2476,8 @@ void OpenGl_GlFunctions::load(OpenGl_Context& theCtx, bool theIsCoreProfile)
           && FindProcShort(glVertexAttrib4usv) && FindProcShort(glVertexAttribPointer);
   if (has20)
   {
-    const char* aGlslVer = (const char*)::glGetString(GL_SHADING_LANGUAGE_VERSION);
+    const char* aGlslVer =
+      reinterpret_cast<const char*>(::glGetString(GL_SHADING_LANGUAGE_VERSION));
     if (aGlslVer == nullptr || *aGlslVer == '\0')
     {
       // broken context has been detected

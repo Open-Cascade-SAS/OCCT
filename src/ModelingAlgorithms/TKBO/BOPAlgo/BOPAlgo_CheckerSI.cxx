@@ -205,7 +205,8 @@ void BOPAlgo_CheckerSI::PostTreat()
   int        i, aNb, n1, n2;
   BOPDS_Pair aPK;
   //
-  NCollection_Map<BOPDS_Pair>& aMPK = *((NCollection_Map<BOPDS_Pair>*)&myDS->Interferences());
+  NCollection_Map<BOPDS_Pair>& aMPK =
+    *(const_cast<NCollection_Map<BOPDS_Pair>*>(&myDS->Interferences()));
 
   // 0
   NCollection_Vector<BOPDS_InterfVV>& aVVs = myDS->InterfVV();
@@ -407,7 +408,8 @@ void BOPAlgo_CheckerSI::CheckFaceSelfIntersection(const Message_ProgressRange& t
 
   BOPDS_Pair aPK;
 
-  NCollection_Map<BOPDS_Pair>& aMPK = *((NCollection_Map<BOPDS_Pair>*)&myDS->Interferences());
+  NCollection_Map<BOPDS_Pair>& aMPK =
+    *(const_cast<NCollection_Map<BOPDS_Pair>*>(&myDS->Interferences()));
   aMPK.Clear();
 
   BOPAlgo_VectorOfFaceSelfIntersect aVFace;

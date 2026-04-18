@@ -316,13 +316,13 @@ static void CurveHermite(const TopOpeBRepDS_DataStructure&                DStr,
   NCollection_Array1<gp_XYZ> Cont(1, size);
   PLib::HermiteCoefficients(0, 1, 1, 1, MatCoefs);
   double L1     = p01.Distance(p02);
-  double lambda = ((double)1) / std::max(d11.Magnitude() / L1, 1.e-6);
+  double lambda = (static_cast<double>(1)) / std::max(d11.Magnitude() / L1, 1.e-6);
   Cont(1)       = p01.XYZ();
   if (sensicmoins == 1)
     Cont(2) = d11.XYZ() * (-lambda);
   else
     Cont(2) = d11.XYZ() * (lambda);
-  lambda  = ((double)1) / std::max(d12.Magnitude() / L1, 1.e-6);
+  lambda  = (static_cast<double>(1)) / std::max(d12.Magnitude() / L1, 1.e-6);
   Cont(3) = p02.XYZ();
   if (sensicplus == 1)
     Cont(4) = d12.XYZ() * (lambda);

@@ -274,7 +274,7 @@ void TopOpeBRepBuild_GTopo::DumpSSB(Standard_OStream&  OS,
 
 void TopOpeBRepBuild_GTopo::Dump(Standard_OStream& OS, void* const a) const
 {
-  char* s = (char*)a;
+  char* s = static_cast<char*>(a);
 
   DumpType(OS);
   OS << " ";

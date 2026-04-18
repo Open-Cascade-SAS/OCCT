@@ -47,7 +47,7 @@ void BlendFunc::GetShape(const BlendFunc_SectionShape  SShape,
   switch (SShape)
   {
     case BlendFunc_Rational: {
-      int NbSpan = (int)(std::ceil(3. * std::abs(MaxAng) / 2. / M_PI));
+      int NbSpan = static_cast<int>(std::ceil(3. * std::abs(MaxAng) / 2. / M_PI));
       NbPoles    = 2 * NbSpan + 1;
       NbKnots    = NbSpan + 1;
       Degree     = 2;
@@ -184,7 +184,7 @@ bool BlendFunc::ComputeNormal(const occ::handle<Adaptor3d_Surface>& Surf,
   const double       Vmax = Surf->LastVParameter(); // szv: was FirstVParameter!
   CSLib::Normal(MaxOrder,
                 DerNUV,
-                double(1.e-9),
+                (1.e-9),
                 U,
                 V,
                 Umin,
@@ -238,7 +238,7 @@ bool BlendFunc::ComputeDNormal(const occ::handle<Adaptor3d_Surface>& Surf,
   const double       Vmax = Surf->LastVParameter(); // szv: was FirstVParameter!
   CSLib::Normal(MaxOrder,
                 DerNUV,
-                double(1.e-9),
+                (1.e-9),
                 U,
                 V,
                 Umin,

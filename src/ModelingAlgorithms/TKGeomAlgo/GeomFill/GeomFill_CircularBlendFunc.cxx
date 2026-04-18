@@ -176,7 +176,7 @@ void GeomFill_CircularBlendFunc::Discret()
 
   if (Samp.IsDone())
   {
-    Percent = ((double)1) / (2 * Samp.NbPoints());
+    Percent = (static_cast<double>(1)) / (2 * Samp.NbPoints());
     //    char name[100];
     for (ii = 1; ii <= Samp.NbPoints(); ii++)
     {
@@ -210,7 +210,7 @@ void GeomFill_CircularBlendFunc::Discret()
   else
   {
     double Delta = (TLast - TFirst) / 20;
-    Percent      = ((double)1) / 42;
+    Percent      = (static_cast<double>(1)) / 42;
     for (ii = 0, T = TFirst; ii <= 20; ii++, T += Delta)
     {
       myCurve1->D0(T, P1);
@@ -337,8 +337,8 @@ bool GeomFill_CircularBlendFunc::D1(const double Param,
   }
 
   // Normalisation
-  invnorm1 = ((double)1) / ns1.Magnitude();
-  invnorm2 = ((double)1) / ns2.Magnitude();
+  invnorm1 = (static_cast<double>(1)) / ns1.Magnitude();
+  invnorm2 = (static_cast<double>(1)) / ns2.Magnitude();
 
   ns1 *= invnorm1;
   Dns1.SetLinearForm(-Dns1.Dot(ns1), ns1, Dns1);
@@ -353,7 +353,7 @@ bool GeomFill_CircularBlendFunc::D1(const double Param,
   DCenter.SetLinearForm(myRadius, Dns1, myRadius, Dns2, 1, DP1, DP2);
   DCenter *= 0.5;
 
-  invnormp = ((double)1) / nplan.Magnitude();
+  invnormp = (static_cast<double>(1)) / nplan.Magnitude();
   nplan *= invnormp;
   dnplan.SetLinearForm(-dnplan.Dot(nplan), nplan, dnplan);
   dnplan *= invnormp;
@@ -435,8 +435,8 @@ bool GeomFill_CircularBlendFunc::D2(const double Param,
   }
 
   // Normalisation
-  invnorm1 = ((double)1) / ns1.Magnitude();
-  invnorm2 = ((double)1) / ns2.Magnitude();
+  invnorm1 = (static_cast<double>(1)) / ns1.Magnitude();
+  invnorm2 = (static_cast<double>(1)) / ns2.Magnitude();
 
   ns1 *= invnorm1;
   sc = Dns1.Dot(ns1);
@@ -467,7 +467,7 @@ bool GeomFill_CircularBlendFunc::D2(const double Param,
   D2Center.SetLinearForm(myRadius, D2ns1, myRadius, D2ns2, 1, D2P1, D2P2);
   D2Center *= 0.5;
 
-  invnormp = ((double)1) / nplan.Magnitude();
+  invnormp = (static_cast<double>(1)) / nplan.Magnitude();
   nplan *= invnormp;
   sc = dnplan.Dot(nplan);
   d2nplan.SetLinearForm(3 * sc * sc * invnormp - d2nplan.Dot(nplan)

@@ -288,7 +288,7 @@ bool BRepTools_GTrsfModification::NewTriangulation(
       aMat.SetDiagonal(1., 1., 1.);
       gp_Trsf aTrsf;
       aTrsf.SetForm(gp_Rotation);
-      (gp_Mat&)aTrsf.HVectorialPart() = aMat;
+      const_cast<gp_Mat&>(aTrsf.HVectorialPart()) = aMat;
       aNormal.Transform(aTrsf);
       theTriangulation->SetNormal(anInd, aNormal);
     }

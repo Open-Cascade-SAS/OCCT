@@ -966,7 +966,7 @@ void TopOpeBRepBuild_Builder1::SplitEdge(
         {
           NCollection_List<int>::Iterator it(anOriList);
           it.Next();
-          anOr1 = (TopAbs_Orientation)it.Value();
+          anOr1 = static_cast<TopAbs_Orientation>(it.Value());
         }
         anOriList.RemoveFirst();
         anOriList.RemoveFirst();
@@ -992,7 +992,7 @@ void TopOpeBRepBuild_Builder1::SplitEdge(
         {
           NCollection_List<int>::Iterator it(anOriList);
           it.Next();
-          anOr2 = (TopAbs_Orientation)it.Value();
+          anOr2 = static_cast<TopAbs_Orientation>(it.Value());
         }
       }
     }

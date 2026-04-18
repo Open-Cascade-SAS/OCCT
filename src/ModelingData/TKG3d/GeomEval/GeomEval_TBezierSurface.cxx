@@ -94,7 +94,7 @@ void evalTrigAxisDerivs(const double theT,
   int aIdx = 1;
   for (int k = 1; k <= theOrder; ++k, aIdx += 2)
   {
-    const double aFreq  = double(k) * theAlpha;
+    const double aFreq  = static_cast<double>(k) * theAlpha;
     const double anArg  = aFreq * theT;
     const double aSin   = std::sin(anArg);
     const double aCos   = std::cos(anArg);
@@ -133,7 +133,7 @@ void evalTrigAxisNthDeriv(const double theT,
     int aIdx = 1;
     for (int k = 1; k <= theOrder; ++k, aIdx += 2)
     {
-      const double anArg  = double(k) * theAlpha * theT;
+      const double anArg  = static_cast<double>(k) * theAlpha * theT;
       theDerivs[aIdx]     = std::sin(anArg);
       theDerivs[aIdx + 1] = std::cos(anArg);
     }
@@ -144,7 +144,7 @@ void evalTrigAxisNthDeriv(const double theT,
   int       aIdx       = 1;
   for (int k = 1; k <= theOrder; ++k, aIdx += 2)
   {
-    const double aFreq     = double(k) * theAlpha;
+    const double aFreq     = static_cast<double>(k) * theAlpha;
     const double anArg     = aFreq * theT;
     const double aSin      = std::sin(anArg);
     const double aCos      = std::cos(anArg);

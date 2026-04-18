@@ -88,8 +88,8 @@ void BinTObjDrivers_IntSparseArrayDriver::Paste(
       continue;
 
     // store ID and value
-    theTarget << (int)anIt.Index() << aValue;
+    theTarget << static_cast<int>(anIt.Index()) << aValue;
   }
   // zero indicates end of the entities
-  theTarget << (int)0;
+  theTarget << 0;
 }

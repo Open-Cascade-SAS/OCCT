@@ -85,7 +85,7 @@ void DsgPrs_FilletRadiusPresentation::Add(const occ::handle<Prs3d_Presentation>&
   if (!SpecCase)
   {
     const double Alpha      = std::abs(LastParCirc - FirstParCirc);
-    const int    NodeNumber = std::max(4, int(50. * Alpha / M_PI));
+    const int    NodeNumber = std::max(4, static_cast<int>(50. * Alpha / M_PI));
     const double delta      = Alpha / (NodeNumber - 1);
 
     occ::handle<Graphic3d_ArrayOfPolylines> aPrims = new Graphic3d_ArrayOfPolylines(NodeNumber);

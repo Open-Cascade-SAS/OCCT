@@ -998,9 +998,9 @@ static void propagateColorToParts(const occ::handle<XCAFDoc_ShapeTool>& theSTool
     TDF_Label aColorL, aDummyColorL;
     for (int aType = 1; aType <= 3; aType++)
     {
-      if (theCTool->GetColor(theRoot, (XCAFDoc_ColorType)aType, aColorL)
-          && !theCTool->GetColor(anOriginalL, (XCAFDoc_ColorType)aType, aDummyColorL))
-        theCTool->SetColor(anOriginalL, aColorL, (XCAFDoc_ColorType)aType);
+      if (theCTool->GetColor(theRoot, static_cast<XCAFDoc_ColorType>(aType), aColorL)
+          && !theCTool->GetColor(anOriginalL, static_cast<XCAFDoc_ColorType>(aType), aDummyColorL))
+        theCTool->SetColor(anOriginalL, aColorL, static_cast<XCAFDoc_ColorType>(aType));
     }
     if (!theCTool->IsVisible(theRoot))
       theCTool->SetVisibility(anOriginalL, false);
@@ -3334,16 +3334,12 @@ bool STEPCAFControl_Reader::readDatumsAP242(const occ::handle<Standard_Transient
               for (int m = aModif->Lower(); m <= aModif->Upper(); m++)
               {
                 if (aModif->Value(m).CaseNumber() == 2)
-                  aXCAFModifiers.Append((XCAFDimTolObjects_DatumSingleModif)aModif->Value(m)
-                                          .SimpleDatumReferenceModifierMember()
-                                          ->Value());
+                  aXCAFModifiers.Append(static_cast<XCAFDimTolObjects_DatumSingleModif>(
+                    aModif->Value(m).SimpleDatumReferenceModifierMember()->Value()));
                 else if (aModif->Value(m).CaseNumber() == 1)
                 {
-                  aXCAFModifWithVal =
-                    (XCAFDimTolObjects_DatumModifWithValue)(aModif->Value(m)
-                                                              .DatumReferenceModifierWithValue()
-                                                              ->ModifierType()
-                                                            + 1);
+                  aXCAFModifWithVal = static_cast<XCAFDimTolObjects_DatumModifWithValue>(
+                    aModif->Value(m).DatumReferenceModifierWithValue()->ModifierType() + 1);
                   double aVal = aModif->Value(m)
                                   .DatumReferenceModifierWithValue()
                                   ->ModifierValue()
@@ -3394,16 +3390,12 @@ bool STEPCAFControl_Reader::readDatumsAP242(const occ::handle<Standard_Transient
                   for (int k = aModifE->Lower(); k <= aModifE->Upper(); k++)
                   {
                     if (aModifE->Value(k).CaseNumber() == 2)
-                      aXCAFModifiers.Append((XCAFDimTolObjects_DatumSingleModif)aModifE->Value(k)
-                                              .SimpleDatumReferenceModifierMember()
-                                              ->Value());
+                      aXCAFModifiers.Append(static_cast<XCAFDimTolObjects_DatumSingleModif>(
+                        aModifE->Value(k).SimpleDatumReferenceModifierMember()->Value()));
                     else if (aModifE->Value(k).CaseNumber() == 1)
                     {
-                      aXCAFModifWithVal =
-                        (XCAFDimTolObjects_DatumModifWithValue)(aModifE->Value(k)
-                                                                  .DatumReferenceModifierWithValue()
-                                                                  ->ModifierType()
-                                                                + 1);
+                      aXCAFModifWithVal = static_cast<XCAFDimTolObjects_DatumModifWithValue>(
+                        aModifE->Value(k).DatumReferenceModifierWithValue()->ModifierType() + 1);
                       double aVal = aModifE->Value(k)
                                       .DatumReferenceModifierWithValue()
                                       ->ModifierValue()
@@ -4688,7 +4680,8 @@ static void setGeomTolObjectToXCAF(const occ::handle<Standard_Transient>&    the
       else if (aModifiers->Value(i) == StepDimTol_GTMMaximumMaterialRequirement)
         aTolObj->SetMaterialRequirementModifier(XCAFDimTolObjects_GeomToleranceMatReqModif_M);
       else
-        aTolObj->AddModifier((XCAFDimTolObjects_GeomToleranceModif)aModifiers->Value(i));
+        aTolObj->AddModifier(
+          static_cast<XCAFDimTolObjects_GeomToleranceModif>(aModifiers->Value(i)));
     }
   }
   double         aVal = 0;

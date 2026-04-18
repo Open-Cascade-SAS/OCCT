@@ -173,7 +173,7 @@ double Extrema_GFuncExtCC<TheCurve1,
     return THE_MIN_TOL;
   }
 
-  const double aStep = (anEndParam - aStartParam) / (double)NPoint;
+  const double aStep = (anEndParam - aStartParam) / static_cast<double>(NPoint);
 
   int    aNum = 0;
   double aMax = -Precision::Infinite();

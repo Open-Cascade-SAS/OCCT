@@ -275,7 +275,7 @@ bool Units_Token::IsEqual(const char* const astring) const
   unsigned int length = string.Length();
 #endif
   if (strlen(astring) == length)
-    return strncmp(string.ToCString(), astring, unsigned(length)) == 0;
+    return strncmp(string.ToCString(), astring, (length)) == 0;
   else
     return false;
 }

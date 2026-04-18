@@ -1617,8 +1617,8 @@ void Law_BSpline::MovePointAndTangent(const double U,
   delta = P - delta;
 
   delta_derivative = Tangent - delta_derivative;
-  poles_array      = (double*)&poles->Array1()(1);
-  new_poles_array  = (double*)&new_poles(1);
+  poles_array      = const_cast<double*>(&poles->Array1()(1));
+  new_poles_array  = static_cast<double*>(&new_poles(1));
   BSplCLib::MovePointAndTangent(U,
                                 dimension,
                                 delta,
@@ -1643,7 +1643,7 @@ void Law_BSpline::MovePointAndTangent(const double U,
 void Law_BSpline::Resolution(const double Tolerance3D, double& UTolerance) const
 {
   void*   bid  = (void*)(&(poles->Value(1)));
-  double* bidr = (double*)bid;
+  double* bidr = static_cast<double*>(bid);
   if (rational)
   {
     BSplCLib::Resolution(*bidr,

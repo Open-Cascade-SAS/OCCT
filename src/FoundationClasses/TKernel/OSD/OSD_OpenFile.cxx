@@ -126,7 +126,7 @@ std::time_t OSD_FileStatCTime(const char* theName)
   struct stat aStat;
   if (stat(theName, &aStat) == 0)
   {
-    aTime = (std::time_t)aStat.st_ctime;
+    aTime = static_cast<std::time_t>(aStat.st_ctime);
   }
 #endif
   return aTime;

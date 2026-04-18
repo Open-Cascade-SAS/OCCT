@@ -58,7 +58,7 @@ void Geom2dHatch_Intersector::Perform(const gp_Lin2d&            L,
 
   Geom2dInt_GInter Inter(CGA,
                          DL,
-                         *((Geom2dAdaptor_Curve*)ptrpoureviterlesproblemesdeconst),
+                         *(static_cast<Geom2dAdaptor_Curve*>(ptrpoureviterlesproblemesdeconst)),
                          DE,
                          Precision::PConfusion(),
                          Precision::PIntersection());

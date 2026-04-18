@@ -315,7 +315,8 @@ void LDOM_XmlWriter::Write(Standard_OStream& theOStream, const LDOM_Node& theNod
     }
     default:
 #ifndef _MSC_VER
-      std::cerr << "Unrecognized node type = " << (long)theNode.getNodeType() << std::endl
+      std::cerr << "Unrecognized node type = " << static_cast<long>(theNode.getNodeType())
+                << std::endl
 #endif
         ;
   }
@@ -408,7 +409,7 @@ void LDOM_XmlWriter::WriteAttribute(Standard_OStream& theOStream, const LDOM_Nod
     int anIntValue;
     aValueStr.GetInteger(anIntValue);
 
-    aLength = (int)(20 + strlen(aName));
+    aLength = static_cast<int>(20 + strlen(aName));
     if (aLength > myABufferLen)
     {
       delete[] myABuffer;
@@ -424,7 +425,7 @@ void LDOM_XmlWriter::WriteAttribute(Standard_OStream& theOStream, const LDOM_Nod
             chDoubleQuote,
             anIntValue,
             chDoubleQuote);
-    aLength = (int)strlen(myABuffer);
+    aLength = static_cast<int>(strlen(myABuffer));
   }
   else // String attribute value
   {
@@ -432,13 +433,13 @@ void LDOM_XmlWriter::WriteAttribute(Standard_OStream& theOStream, const LDOM_Nod
     const char* aValue = aValueStr.GetString();
     if (aValueStr.Type() == LDOMBasicString::LDOM_AsciiDocClear)
     {
-      encStr  = (char*)aValue;
-      aLength = (int)(4 + strlen(aValue) + strlen(aName));
+      encStr  = const_cast<char*>(aValue);
+      aLength = static_cast<int>(4 + strlen(aValue) + strlen(aName));
     }
     else
     {
       encStr = LDOM_CharReference::Encode(aValue, aLength, true);
-      aLength += (int)(4 + strlen(aName));
+      aLength += static_cast<int>(4 + strlen(aName));
     }
 
     if (aLength > myABufferLen)

@@ -434,7 +434,7 @@ void MeshVS_NodalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& P
 
   int anEdgeInt = Aspect_TOL_SOLID;
   if (aDrawer->GetInteger(MeshVS_DA_EdgeType, anEdgeInt))
-    anEdgeType = (Aspect_TypeOfLine)anEdgeInt;
+    anEdgeType = static_cast<Aspect_TypeOfLine>(anEdgeInt);
 
   if (myUseTexture)
   {
@@ -792,15 +792,15 @@ occ::handle<Graphic3d_Texture2D> MeshVS_NodalColorPrsBuilder::CreateTexture() co
 
   // create and fill image with colors
   occ::handle<Image_PixMap> anImage = new Image_PixMap();
-  if (!anImage->InitTrash(Image_Format_RGBA, size_t(getNearestPow2(aColorsNb)), 2))
+  if (!anImage->InitTrash(Image_Format_RGBA, static_cast<size_t>(getNearestPow2(aColorsNb)), 2))
   {
     return nullptr;
   }
 
   anImage->SetTopDown(false);
-  for (size_t aCol = 0; aCol < size_t(aColorsNb); ++aCol)
+  for (size_t aCol = 0; aCol < static_cast<size_t>(aColorsNb); ++aCol)
   {
-    const Quantity_Color& aSrcColor = myTextureColorMap.Value(int(aCol) + 1);
+    const Quantity_Color& aSrcColor = myTextureColorMap.Value(static_cast<int>(aCol) + 1);
     Image_ColorRGBA&      aColor    = anImage->ChangeValue<Image_ColorRGBA>(0, aCol);
     aColor.r()                      = static_cast<uint8_t>(255.0 * aSrcColor.Red());
     aColor.g()                      = static_cast<uint8_t>(255.0 * aSrcColor.Green());
@@ -816,7 +816,7 @@ occ::handle<Graphic3d_Texture2D> MeshVS_NodalColorPrsBuilder::CreateTexture() co
                                           0xFF}};
 
   // fill second row
-  for (size_t aCol = (size_t)aColorsNb; aCol < anImage->SizeX(); ++aCol)
+  for (size_t aCol = static_cast<size_t>(aColorsNb); aCol < anImage->SizeX(); ++aCol)
   {
     anImage->ChangeValue<Image_ColorRGBA>(0, aCol) = aLastColor;
   }

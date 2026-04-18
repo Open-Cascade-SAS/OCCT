@@ -106,7 +106,7 @@ void StepData_UndefinedEntity::ReadRecord(const occ::handle<StepData_StepReaderD
     else if (partyp == Interface_ParamText)
     {
       //    Return integre a supprimer silya
-      int lval = (int)strlen(val);
+      int lval = static_cast<int>(strlen(val));
       int mval = -1;
       for (int j = 0; j < lval; j++)
       {

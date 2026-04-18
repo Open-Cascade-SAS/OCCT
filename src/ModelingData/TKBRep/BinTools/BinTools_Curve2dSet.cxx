@@ -91,7 +91,7 @@ int BinTools_Curve2dSet::Index(const occ::handle<Geom2d_Curve>& S) const
 static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom2d_Line>& L)
 {
 
-  OS << (uint8_t)LINE;
+  OS << static_cast<uint8_t>(LINE);
   gp_Lin2d C2d = L->Lin2d();
   OS << C2d.Location();  // Pnt2d
   OS << C2d.Direction(); // Dir2d
@@ -105,7 +105,7 @@ static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom
 
 static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom2d_Circle>& C)
 {
-  OS << (uint8_t)CIRCLE;
+  OS << static_cast<uint8_t>(CIRCLE);
   gp_Circ2d C2d = C->Circ2d();
   OS << C2d.Location();
   OS << C2d.XAxis().Direction();
@@ -121,7 +121,7 @@ static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom
 
 static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom2d_Ellipse>& E)
 {
-  OS << (uint8_t)ELLIPSE;
+  OS << static_cast<uint8_t>(ELLIPSE);
   gp_Elips2d C2d = E->Elips2d();
   OS << C2d.Location();
   OS << C2d.XAxis().Direction();
@@ -138,7 +138,7 @@ static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom
 
 static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom2d_Parabola>& P)
 {
-  OS << (uint8_t)PARABOLA;
+  OS << static_cast<uint8_t>(PARABOLA);
   gp_Parab2d C2d = P->Parab2d();
   OS << C2d.Location();                 // Loc
   OS << C2d.Axis().XAxis().Direction(); // XDir
@@ -154,7 +154,7 @@ static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom
 
 static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom2d_Hyperbola>& H)
 {
-  OS << (uint8_t)HYPERBOLA;
+  OS << static_cast<uint8_t>(HYPERBOLA);
   gp_Hypr2d C2d = H->Hypr2d();
   OS << C2d.Location();          // Loc
   OS << C2d.XAxis().Direction(); // XDir
@@ -171,12 +171,12 @@ static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom
 
 static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom2d_BezierCurve>& B)
 {
-  OS << (uint8_t)BEZIER;
+  OS << static_cast<uint8_t>(BEZIER);
   bool aRational = B->IsRational();
   OS << aRational; // rational
   // poles and weights
   int i, aDegree = B->Degree();
-  OS << (char16_t)aDegree; // Degree
+  OS << static_cast<char16_t>(aDegree); // Degree
   for (i = 1; i <= aDegree + 1; i++)
   {
     OS << B->Pole(i); // Pnt2d
@@ -193,7 +193,7 @@ static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom
 
 static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom2d_BSplineCurve>& B)
 {
-  OS << (uint8_t)BSPLINE;
+  OS << static_cast<uint8_t>(BSPLINE);
   bool aRational = B->IsRational();
   OS << aRational; // rational
   bool aPeriodic = B->IsPeriodic();
@@ -203,7 +203,7 @@ static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom
   aDegree  = B->Degree();
   aNbPoles = B->NbPoles();
   aNbKnots = B->NbKnots();
-  OS << (char16_t)aDegree;
+  OS << static_cast<char16_t>(aDegree);
   OS << aNbPoles;
   OS << aNbKnots;
   for (i = 1; i <= aNbPoles; i++)
@@ -229,7 +229,7 @@ static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom
 
 static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom2d_TrimmedCurve>& C)
 {
-  OS << (uint8_t)TRIMMED;
+  OS << static_cast<uint8_t>(TRIMMED);
   OS << C->FirstParameter();
   OS << C->LastParameter();
   BinTools_Curve2dSet::WriteCurve2d(C->BasisCurve(), OS);
@@ -243,7 +243,7 @@ static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom
 
 static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom2d_OffsetCurve>& C)
 {
-  OS << (uint8_t)OFFSET;
+  OS << static_cast<uint8_t>(OFFSET);
   OS << C->Offset(); // Offset
   BinTools_Curve2dSet::WriteCurve2d(C->BasisCurve(), OS);
   return OS;
@@ -420,7 +420,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom2d_Bez
   // degree;
   char16_t aVal = '\0';
   BinTools::GetExtChar(IS, aVal);
-  degree = (int)aVal;
+  degree = static_cast<int>(aVal);
 
   NCollection_Array1<gp_Pnt2d> poles(1, degree + 1);
   NCollection_Array1<double>   weights(1, degree + 1);
@@ -453,7 +453,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom2d_BSp
   char16_t aVal = '\0';
 
   BinTools::GetExtChar(IS, aVal);
-  degree = (int)aVal;
+  degree = static_cast<int>(aVal);
 
   BinTools::GetInteger(IS, nbpoles);
 
@@ -519,7 +519,7 @@ Standard_IStream& BinTools_Curve2dSet::ReadCurve2d(Standard_IStream&          IS
   try
   {
     OCC_CATCH_SIGNALS
-    const uint8_t ctype = (uint8_t)IS.get();
+    const uint8_t ctype = static_cast<uint8_t>(IS.get());
     switch (ctype)
     {
 

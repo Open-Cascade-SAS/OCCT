@@ -2269,9 +2269,9 @@ void BSplSLib::BuildCache(const double                      U,
         P.SetZ(f * dc.poles[Index]);
         Index++;
         (*CacheWeights)(iii, jjj) = f * dc.poles[Index];
-        factor[1] *= min_degree_domain / (double)(jjj);
+        factor[1] *= min_degree_domain / static_cast<double>(jjj);
       }
-      factor[0] *= max_degree_domain / (double)(iii);
+      factor[0] *= max_degree_domain / static_cast<double>(iii);
     }
   }
   else
@@ -2309,9 +2309,9 @@ void BSplSLib::BuildCache(const double                      U,
         P.SetY(f * dc.poles[Index]);
         Index++;
         P.SetZ(f * dc.poles[Index]);
-        factor[1] *= min_degree_domain / (double)(jjj);
+        factor[1] *= min_degree_domain / static_cast<double>(jjj);
       }
-      factor[0] *= max_degree_domain / (double)(iii);
+      factor[0] *= max_degree_domain / static_cast<double>(iii);
     }
     if (Weights != nullptr)
     {
@@ -2405,7 +2405,8 @@ void BSplSLib::BuildCache(const double                      theU,
   for (int kk = 0; kk <= d1; kk++)
     BSplCLib::Bohm(u2, d2, d2, *dc.knots2, aDimension, *(dc.poles + kk * aDimension * d2p1));
 
-  double* aCache = (double*)&(theCacheArray(theCacheArray.LowerRow(), theCacheArray.LowerCol()));
+  double* aCache =
+    static_cast<double*>(&(theCacheArray(theCacheArray.LowerRow(), theCacheArray.LowerCol())));
 
   double aFactors[2];
   // aFactors[0] corresponds to variable with minimal degree
@@ -2431,7 +2432,8 @@ void BSplSLib::BuildCache(const double                      theU,
   // Fill the weights for the surface which is not locally polynomial
   if (aCacheShift > aDimension)
   {
-    aCache = (double*)&(theCacheArray(theCacheArray.LowerRow(), theCacheArray.LowerCol()));
+    aCache =
+      static_cast<double*>(&(theCacheArray(theCacheArray.LowerRow(), theCacheArray.LowerCol())));
     aCache += aCacheShift - 1;
     for (aRow = 0; aRow <= d2; aRow++)
       for (aCol = 0; aCol <= d1; aCol++)
@@ -2476,7 +2478,7 @@ void BSplSLib::CacheD0(const double                      UParameter,
   double new_parameter[2], inverse;
 
   double* PArray  = (double*)&(PolesArray(PolesArray.LowerCol(), PolesArray.LowerRow()));
-  double* myPoint = (double*)&aPoint;
+  double* myPoint = reinterpret_cast<double*>(&aPoint);
   if (UDegree <= VDegree)
   {
     min_degree       = UDegree;
@@ -2512,7 +2514,7 @@ void BSplSLib::CacheD0(const double                      UParameter,
   {
     dimension                                    = min_degree + 1;
     const NCollection_Array2<double>& refWeights = *WeightsArray;
-    double* WArray = (double*)&refWeights(refWeights.LowerCol(), refWeights.LowerRow());
+    double* WArray = const_cast<double*>(&refWeights(refWeights.LowerCol(), refWeights.LowerRow()));
     PLib::NoDerivativeEvalPolynomial(new_parameter[0],
                                      max_degree,
                                      dimension,
@@ -2572,7 +2574,7 @@ void BSplSLib::CacheD1(const double                      UParameter,
   double  local_poles_array[2][2][3], local_poles_and_weights_array[2][2][4],
     local_weights_array[2][2];
   double *my_vec_min, *my_vec_max, *my_point;
-  my_point = (double*)&aPoint;
+  my_point = reinterpret_cast<double*>(&aPoint);
   //
   // initialize in case of rational evaluation
   // because RationalDerivative will use all
@@ -2629,8 +2631,8 @@ void BSplSLib::CacheD1(const double                      UParameter,
     new_parameter[1] = (UParameter - UCacheParameter) * inverse_min;
 
     dimension  = 3 * (UDegree + 1);
-    my_vec_min = (double*)&aVecU;
-    my_vec_max = (double*)&aVecV;
+    my_vec_min = reinterpret_cast<double*>(&aVecU);
+    my_vec_max = reinterpret_cast<double*>(&aVecV);
   }
   else
   {
@@ -2641,8 +2643,8 @@ void BSplSLib::CacheD1(const double                      UParameter,
     new_parameter[0] = (UParameter - UCacheParameter) * inverse_max;
     new_parameter[1] = (VParameter - VCacheParameter) * inverse_min;
     dimension        = 3 * (VDegree + 1);
-    my_vec_min       = (double*)&aVecV;
-    my_vec_max       = (double*)&aVecU;
+    my_vec_min       = reinterpret_cast<double*>(&aVecV);
+    my_vec_max       = reinterpret_cast<double*>(&aVecU);
   }
 
   NCollection_LocalArray<double> locpoles(2 * dimension);
@@ -2661,7 +2663,7 @@ void BSplSLib::CacheD1(const double                      UParameter,
   {
     dimension                                    = min_degree + 1;
     const NCollection_Array2<double>& refWeights = *WeightsArray;
-    double* WArray = (double*)&refWeights(refWeights.LowerCol(), refWeights.LowerRow());
+    double* WArray = const_cast<double*>(&refWeights(refWeights.LowerCol(), refWeights.LowerRow()));
     PLib::EvalPolynomial(new_parameter[0], 1, max_degree, dimension, WArray[0], locpoles[0]);
 
     PLib::EvalPolynomial(new_parameter[1],
@@ -2756,7 +2758,7 @@ void BSplSLib::CacheD2(const double                      UParameter,
   double  local_poles_array[3][3][3], local_poles_and_weights_array[3][3][4],
     local_weights_array[3][3];
   double *my_vec_min, *my_vec_max, *my_vec_min_min, *my_vec_max_max, *my_vec_min_max, *my_point;
-  my_point = (double*)&aPoint;
+  my_point = reinterpret_cast<double*>(&aPoint);
 
   //
   // initialize in case the min and max degree are less than 2
@@ -2850,11 +2852,11 @@ void BSplSLib::CacheD2(const double                      UParameter,
     new_parameter[1] = (UParameter - UCacheParameter) * inverse_min;
 
     dimension      = 3 * (UDegree + 1);
-    my_vec_min     = (double*)&aVecU;
-    my_vec_max     = (double*)&aVecV;
-    my_vec_min_min = (double*)&aVecUU;
-    my_vec_min_max = (double*)&aVecUV;
-    my_vec_max_max = (double*)&aVecVV;
+    my_vec_min     = reinterpret_cast<double*>(&aVecU);
+    my_vec_max     = reinterpret_cast<double*>(&aVecV);
+    my_vec_min_min = reinterpret_cast<double*>(&aVecUU);
+    my_vec_min_max = reinterpret_cast<double*>(&aVecUV);
+    my_vec_max_max = reinterpret_cast<double*>(&aVecVV);
   }
   else
   {
@@ -2865,11 +2867,11 @@ void BSplSLib::CacheD2(const double                      UParameter,
     new_parameter[0] = (UParameter - UCacheParameter) * inverse_max;
     new_parameter[1] = (VParameter - VCacheParameter) * inverse_min;
     dimension        = 3 * (VDegree + 1);
-    my_vec_min       = (double*)&aVecV;
-    my_vec_max       = (double*)&aVecU;
-    my_vec_min_min   = (double*)&aVecVV;
-    my_vec_min_max   = (double*)&aVecUV;
-    my_vec_max_max   = (double*)&aVecUU;
+    my_vec_min       = reinterpret_cast<double*>(&aVecV);
+    my_vec_max       = reinterpret_cast<double*>(&aVecU);
+    my_vec_min_min   = reinterpret_cast<double*>(&aVecVV);
+    my_vec_min_max   = reinterpret_cast<double*>(&aVecUV);
+    my_vec_max_max   = reinterpret_cast<double*>(&aVecUU);
   }
 
   NCollection_LocalArray<double> locpoles(3 * dimension);
@@ -2922,7 +2924,7 @@ void BSplSLib::CacheD2(const double                      UParameter,
   {
     dimension                                    = min_degree + 1;
     const NCollection_Array2<double>& refWeights = *WeightsArray;
-    double* WArray = (double*)&refWeights(refWeights.LowerCol(), refWeights.LowerRow());
+    double* WArray = const_cast<double*>(&refWeights(refWeights.LowerCol(), refWeights.LowerRow()));
     PLib::EvalPolynomial(new_parameter[0],
                          MinIndMax,
                          max_degree,
@@ -3614,7 +3616,7 @@ void BSplSLib::Interpolate(const int                         UDegree,
   }
 
   // interpolation of iso u
-  poles_array = (double*)&Points.ChangeValue(1, 1);
+  poles_array = static_cast<double*>(&Points.ChangeValue(1, 1));
   BSplCLib::Interpolate(VDegree,
                         VFlatKnots,
                         VParameters,
@@ -3632,7 +3634,7 @@ void BSplSLib::Interpolate(const int                         UDegree,
 
   ContactOrder = new (NCollection_HArray1<int>)(1, ULength);
   ContactOrder->Init(0);
-  poles_array = (double*)&IsoPoles.ChangeValue(1, 1);
+  poles_array = static_cast<double*>(&IsoPoles.ChangeValue(1, 1));
 
   for (ii = 1, kk = 1; ii <= ULength; ii++, kk += 4)
   {
@@ -3703,7 +3705,7 @@ void BSplSLib::Interpolate(const int                         UDegree,
   }
 
   // interpolation of iso u
-  poles_array = (double*)&Points.ChangeValue(1, 1);
+  poles_array = static_cast<double*>(&Points.ChangeValue(1, 1));
   BSplCLib::Interpolate(VDegree,
                         VFlatKnots,
                         VParameters,
@@ -3721,7 +3723,7 @@ void BSplSLib::Interpolate(const int                         UDegree,
 
   ContactOrder = new (NCollection_HArray1<int>)(1, ULength);
   ContactOrder->Init(0);
-  poles_array = (double*)&IsoPoles.ChangeValue(1, 1);
+  poles_array = static_cast<double*>(&IsoPoles.ChangeValue(1, 1));
 
   for (ii = 1, kk = 1; ii <= ULength; ii++, kk += 3)
   {

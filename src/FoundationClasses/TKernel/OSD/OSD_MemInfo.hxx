@@ -116,7 +116,7 @@ protected:
   //! Return true if the counter is active and the value is valid
   bool hasValue(const OSD_MemInfo::Counter theCounter) const
   {
-    return IsActive(theCounter) && myCounters[theCounter] != size_t(-1);
+    return IsActive(theCounter) && myCounters[theCounter] != static_cast<size_t>(-1);
   }
 
 private:

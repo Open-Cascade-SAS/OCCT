@@ -98,7 +98,7 @@ Standard_CLocaleSentry::Standard_CLocaleSentry()
 Standard_CLocaleSentry::~Standard_CLocaleSentry()
 {
   #if defined(OCCT_CLOCALE_POSIX2008)
-  uselocale((locale_t)myPrevLocale);
+  uselocale(static_cast<locale_t>(myPrevLocale));
   #else
   if (myPrevLocale != NULL)
   {

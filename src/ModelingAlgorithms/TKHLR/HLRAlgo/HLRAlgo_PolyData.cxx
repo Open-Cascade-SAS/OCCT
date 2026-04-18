@@ -904,5 +904,10 @@ void HLRAlgo_PolyData::hideByOneTriangle(const HLRAlgo_BiPoint::PointsT& thePoin
   if (total)
     status.HideAll();
   else
-    status.Hide(psta, (float)theTriangle.TolParam, pend, (float)theTriangle.TolParam, false, false);
+    status.Hide(psta,
+                static_cast<float>(theTriangle.TolParam),
+                pend,
+                static_cast<float>(theTriangle.TolParam),
+                false,
+                false);
 }

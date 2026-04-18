@@ -115,7 +115,7 @@ void HLRBRep_Intersector::Perform(HLRBRep_EdgeData* theEdge1,
   myC1->D0(b, pb);
   a = myC1->Parameter2d(a);
   b = myC1->Parameter2d(b);
-  IntRes2d_Domain D1(pa, a, (double)ta, pb, b, (double)tb);
+  IntRes2d_Domain D1(pa, a, static_cast<double>(ta), pb, b, static_cast<double>(tb));
 
   // modified by jgv, 18.04.2016 for OCC27341
   // tol = (double)(((HLRBRep_EdgeData*) A1)->Tolerance());
@@ -252,11 +252,11 @@ void HLRBRep_Intersector::Perform(const int /*theNA*/,
     }
 
     if (ta > tol)
-      ta = (float)tol;
+      ta = static_cast<float>(tol);
     if (tb > tol)
-      tb = (float)tol;
+      tb = static_cast<float>(tol);
 
-    IntRes2d_Domain D1(pa1, a1, (double)ta, pb1, b1, (double)tb);
+    IntRes2d_Domain D1(pa1, a1, static_cast<double>(ta), pb1, b1, static_cast<double>(tb));
 
     theEdge2->Status().Bounds(a2, ta, b2, tb);
     mtol = tol;
@@ -335,11 +335,11 @@ void HLRBRep_Intersector::Perform(const int /*theNA*/,
     }
 
     if (ta > tol)
-      ta = (float)tol;
+      ta = static_cast<float>(tol);
     if (tb > tol)
-      tb = (float)tol;
+      tb = static_cast<float>(tol);
 
-    IntRes2d_Domain D2(pa2, a2, (double)ta, pb2, b2, (double)tb);
+    IntRes2d_Domain D2(pa2, a2, static_cast<double>(ta), pb2, b2, static_cast<double>(tb));
 
     if (theEnBout)
     {
@@ -574,10 +574,7 @@ void HLRBRep_Intersector::Perform(const gp_Lin& L, const double P)
           pmax = P + 0.0000001;
       }
       HLRBRep_ThePolygonOfInterCSurf Polygon(L, pmin, pmax, 3);
-      myCSIntersector.Perform(L,
-                              Polygon,
-                              mySurface,
-                              *((HLRBRep_ThePolyhedronOfInterCSurf*)myPolyhedron));
+      myCSIntersector.Perform(L, Polygon, mySurface, *(myPolyhedron));
 
       break;
     }

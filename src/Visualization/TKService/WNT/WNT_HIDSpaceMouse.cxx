@@ -262,7 +262,7 @@ NCollection_Vec3<double> WNT_HIDSpaceMouse::fromRawVec3(bool&          theIsIdle
 
   if (!theIsQuadric)
   {
-    return aVec / double(myValueRange);
+    return aVec / static_cast<double>(myValueRange);
   }
 
   for (int aCompIter = 0; aCompIter < 3; ++aCompIter)
@@ -270,7 +270,7 @@ NCollection_Vec3<double> WNT_HIDSpaceMouse::fromRawVec3(bool&          theIsIdle
     aVec[aCompIter] = aRaw16[aCompIter] > 0 ? aVec[aCompIter] * aVec[aCompIter]
                                             : -aVec[aCompIter] * aVec[aCompIter];
   }
-  return aVec / (double(myValueRange) * double(myValueRange));
+  return aVec / (static_cast<double>(myValueRange) * static_cast<double>(myValueRange));
 }
 
 //=================================================================================================
@@ -290,7 +290,7 @@ Aspect_VKey WNT_HIDSpaceMouse::HidToSpaceKey(unsigned short theKeyBit) const
     case SpaceVKey_8:
     case SpaceVKey_9:
     case SpaceVKey_10:
-      return (int(aKey) - int(SpaceVKey_1)) + Aspect_VKey_1;
+      return (static_cast<int>(aKey) - static_cast<int>(SpaceVKey_1)) + Aspect_VKey_1;
     case SpaceVKey_Esc:
       return Aspect_VKey_Escape;
     case SpaceVKey_Shift:

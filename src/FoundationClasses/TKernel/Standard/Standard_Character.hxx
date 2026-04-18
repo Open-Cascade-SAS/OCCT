@@ -47,7 +47,7 @@ constexpr bool IsEqual(const char One, const char Two)
 // ==================================================================
 inline bool IsAlphabetic(const char me)
 {
-  return std::isalpha((unsigned char)me) != 0;
+  return std::isalpha(static_cast<unsigned char>(me)) != 0;
 }
 
 // ==================================================================
@@ -55,7 +55,7 @@ inline bool IsAlphabetic(const char me)
 // ==================================================================
 inline bool IsDigit(const char me)
 {
-  return std::isdigit((unsigned char)me) != 0;
+  return std::isdigit(static_cast<unsigned char>(me)) != 0;
 }
 
 // ==================================================================
@@ -63,7 +63,7 @@ inline bool IsDigit(const char me)
 // ==================================================================
 inline bool IsXDigit(const char me)
 {
-  return std::isxdigit((unsigned char)me) != 0;
+  return std::isxdigit(static_cast<unsigned char>(me)) != 0;
 }
 
 // ==================================================================
@@ -79,7 +79,7 @@ inline bool IsAlphanumeric(const char me)
 // ==================================================================
 inline bool IsControl(const char me)
 {
-  return std::iscntrl((unsigned char)me) != 0;
+  return std::iscntrl(static_cast<unsigned char>(me)) != 0;
 }
 
 // ==================================================================
@@ -87,7 +87,7 @@ inline bool IsControl(const char me)
 // ==================================================================
 inline bool IsGraphic(const char me)
 {
-  return std::isgraph((unsigned char)me) != 0;
+  return std::isgraph(static_cast<unsigned char>(me)) != 0;
 }
 
 // ==================================================================
@@ -95,7 +95,7 @@ inline bool IsGraphic(const char me)
 // ==================================================================
 inline bool IsLowerCase(const char me)
 {
-  return std::islower((unsigned char)me) != 0;
+  return std::islower(static_cast<unsigned char>(me)) != 0;
 }
 
 // ==================================================================
@@ -103,7 +103,7 @@ inline bool IsLowerCase(const char me)
 // ==================================================================
 inline bool IsPrintable(const char me)
 {
-  return std::isprint((unsigned char)me) != 0;
+  return std::isprint(static_cast<unsigned char>(me)) != 0;
 }
 
 // ==================================================================
@@ -120,7 +120,7 @@ inline bool IsPunctuation(const char me)
 // ==================================================================
 inline bool IsSpace(const char me)
 {
-  return std::isspace((unsigned char)me) != 0;
+  return std::isspace(static_cast<unsigned char>(me)) != 0;
 }
 
 // ==================================================================
@@ -128,7 +128,7 @@ inline bool IsSpace(const char me)
 // ==================================================================
 inline bool IsUpperCase(const char me)
 {
-  return std::isupper((unsigned char)me) != 0;
+  return std::isupper(static_cast<unsigned char>(me)) != 0;
 }
 
 // ==================================================================
@@ -136,7 +136,8 @@ inline bool IsUpperCase(const char me)
 // ==================================================================
 inline char LowerCase(const char me)
 {
-  return (char)(unsigned char)std::tolower((unsigned char)me);
+  return static_cast<char>(
+    static_cast<unsigned char>(std::tolower(static_cast<unsigned char>(me))));
 }
 
 // ==================================================================
@@ -144,7 +145,8 @@ inline char LowerCase(const char me)
 // ==================================================================
 inline char UpperCase(const char me)
 {
-  return (char)(unsigned char)std::toupper((unsigned char)me);
+  return static_cast<char>(
+    static_cast<unsigned char>(std::toupper(static_cast<unsigned char>(me))));
 }
 
 #endif

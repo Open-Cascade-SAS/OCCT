@@ -1223,17 +1223,17 @@ static Bigint* Balloc(int k MTd)
     rv = (Bigint*)MALLOC(sizeof(Bigint) + (x - 1) * sizeof(ULong));
 #else
     len = (sizeof(Bigint) + (x - 1) * sizeof(ULong) + sizeof(double) - 1) / sizeof(double);
-    if (k <= Kmax && (unsigned long)(pmem_next - private_mem) + len <= PRIVATE_mem
+    if (k <= Kmax && static_cast<unsigned long>(pmem_next - private_mem) + len <= PRIVATE_mem
   #ifdef MULTIPLE_THREADS
         && TI == TI1
   #endif
     )
     {
-      rv = (Bigint*)pmem_next;
+      rv = reinterpret_cast<Bigint*>(pmem_next);
       pmem_next += len;
     }
     else
-      rv = (Bigint*)MALLOC(len * sizeof(double));
+      rv = static_cast<Bigint*>(MALLOC(len * sizeof(double)));
 #endif
     rv->k      = k;
     rv->maxwds = x;
@@ -1297,7 +1297,7 @@ static Bigint* multadd(Bigint* b, int m, int a MTd) /* multiply by m and add a *
   do
   {
 #ifdef ULLong
-    y     = *x * (ULLong)m + carry;
+    y     = *x * static_cast<ULLong>(m) + carry;
     carry = y >> 32;
     *x++  = y & FFFFFFFF;
 #else
@@ -1323,7 +1323,7 @@ static Bigint* multadd(Bigint* b, int m, int a MTd) /* multiply by m and add a *
       Bfree(b MTa);
       b = b1;
     }
-    b->x[wds++] = (ULong)carry;
+    b->x[wds++] = static_cast<ULong>(carry);
     b->wds      = wds;
   }
   return b;
@@ -1501,11 +1501,11 @@ static Bigint* mult(Bigint* a, Bigint* b MTd)
       carry = 0;
       do
       {
-        z     = *x++ * (ULLong)y + *xc + carry;
+        z     = *x++ * static_cast<ULLong>(y) + *xc + carry;
         carry = z >> 32;
         *xc++ = z & FFFFFFFF;
       } while (x < xae);
-      *xc = (ULong)carry;
+      *xc = static_cast<ULong>(carry);
     }
   }
 #else
@@ -1771,14 +1771,14 @@ static Bigint* diff(Bigint* a, Bigint* b MTd)
 #ifdef ULLong
   do
   {
-    y      = (ULLong)*xa++ - *xb++ - borrow;
-    borrow = y >> 32 & (ULong)1;
+    y      = static_cast<ULLong>(*xa++) - *xb++ - borrow;
+    borrow = y >> 32 & static_cast<ULong>(1);
     *xc++  = y & FFFFFFFF;
   } while (xb < xbe);
   while (xa < xae)
   {
     y      = *xa++ - borrow;
-    borrow = y >> 32 & (ULong)1;
+    borrow = y >> 32 & static_cast<ULong>(1);
     *xc++  = y & FFFFFFFF;
   }
 #else
@@ -1961,7 +1961,7 @@ static Bigint* d2b(U* d, int* e, int* bits MTd)
   z |= Exp_msk11;
   #endif
 #else
-  if ((de = (int)(d0 >> Exp_shift)))
+  if ((de = static_cast<int>(d0 >> Exp_shift)))
     z |= Exp_msk1;
 #endif
 #ifdef Pack_32
@@ -2234,11 +2234,11 @@ static void hexnan(U* rvp, const char** sp)
   udx0             = 1;
   s                = *sp;
   /* allow optional initial 0x or 0X */
-  while ((c = *(const unsigned char*)(s + 1)) && c <= ' ')
+  while ((c = *reinterpret_cast<const unsigned char*>(s + 1)) && c <= ' ')
     ++s;
   if (s[1] == '0' && (s[2] == 'x' || s[2] == 'X'))
     s += 2;
-  while ((c = *(const unsigned char*)++s))
+  while ((c = *reinterpret_cast<const unsigned char*>(++s)))
   {
     if ((c1 = hexdig[c]))
       c = c1 & 0xf;
@@ -2313,7 +2313,7 @@ static Bigint* increment(Bigint* b MTd)
   xe = x + b->wds;
   do
   {
-    if (*x < (ULong)0xffffffffL)
+    if (*x < static_cast<ULong>(0xffffffffL))
     {
       ++*x;
       return b;
@@ -2364,7 +2364,7 @@ static void rshift(Bigint* b, int k)
       while (x < xe)
         *x1++ = *x++;
   }
-  if ((b->wds = int(x1 - b->x)) == 0)
+  if ((b->wds = static_cast<int>(x1 - b->x)) == 0)
     b->x[0] = 0;
 }
 
@@ -2450,7 +2450,7 @@ void gethex(const char** sp, U* rvp, int rounding, int sign MTd)
 
   /**** if (!hexdig['0']) hexdig_init(); ****/
   havedig = 0;
-  s0      = *(const unsigned char**)sp + 2;
+  s0      = *reinterpret_cast<const unsigned char**>(sp) + 2;
   while (s0[havedig] == '0')
     havedig++;
   s0 += havedig;
@@ -2504,7 +2504,7 @@ void gethex(const char** sp, U* rvp, int rounding, int sign MTd)
       s++;
   } /*}*/
   if (decpt)
-    e = -(((Long)(s - decpt)) << 2);
+    e = -((static_cast<Long>(s - decpt)) << 2);
 pcheck:
   s1  = s;
   big = esign = 0;
@@ -2588,7 +2588,7 @@ pcheck:
     word1(rvp) = Big1;
     return;
   }
-  n = int(s1 - s0 - 1);
+  n = static_cast<int>(s1 - s0 - 1);
   for (k = 0; n > (1 << (kshift - 2)) - 1; n >>= 1)
     k++;
   b = Balloc(k MTa);
@@ -2621,7 +2621,7 @@ pcheck:
     n += 4;
   }
   *x++   = L;
-  b->wds = n = int(x - b->x);
+  b->wds = n = static_cast<int>(x - b->x);
   n          = ULbits * n - hi0bits(L);
   nbits      = Nbits;
   lostbits   = 0;
@@ -2844,10 +2844,10 @@ static int quorem(Bigint* b, Bigint* S)
     do
     {
 #ifdef ULLong
-      ys     = *sx++ * (ULLong)q + carry;
+      ys     = *sx++ * static_cast<ULLong>(q) + carry;
       carry  = ys >> 32;
       y      = *bx - (ys & FFFFFFFF) - borrow;
-      borrow = y >> 32 & (ULong)1;
+      borrow = y >> 32 & static_cast<ULong>(1);
       *bx++  = y & FFFFFFFF;
 #else
   #ifdef Pack_32
@@ -2890,7 +2890,7 @@ static int quorem(Bigint* b, Bigint* S)
       ys     = *sx++ + carry;
       carry  = ys >> 32;
       y      = *bx - (ys & FFFFFFFF) - borrow;
-      borrow = y >> 32 & (ULong)1;
+      borrow = y >> 32 & static_cast<ULong>(1);
       *bx++  = y & FFFFFFFF;
 #else
   #ifdef Pack_32
@@ -3282,7 +3282,7 @@ break2:
       z = 10 * z + c - '0';
 #endif
   nd0    = nd;
-  bc.dp0 = bc.dp1 = int(s - s0);
+  bc.dp0 = bc.dp1 = static_cast<int>(s - s0);
   for (s1 = s; s1 > s0 && *--s1 == '0';)
     ++nz1;
 #ifdef USE_LOCALE
@@ -3312,7 +3312,7 @@ break2:
   if (c == '.')
   {
     c        = *++s;
-    bc.dp1   = int(s - s0);
+    bc.dp1   = static_cast<int>(s - s0);
     bc.dplen = bc.dp1 - bc.dp0;
     if (!nd)
     {
@@ -3320,7 +3320,7 @@ break2:
         nz++;
       if (c > '0' && c <= '9')
       {
-        bc.dp0 = int(s0 - s);
+        bc.dp0 = static_cast<int>(s0 - s);
         bc.dp1 = bc.dp0 + bc.dplen;
         s0     = s;
         nf += nz;
@@ -3396,7 +3396,7 @@ dig_done:
            */
           e = 19999; /* safe for 16 bit ints */
         else
-          e = (int)L;
+          e = L;
         if (esign)
           e = -e;
       }
@@ -3940,15 +3940,15 @@ many_digits:
       yz /= 10;
       e1 += 1;
     }
-    y = ULong(yz / 100000000);
+    y = static_cast<ULong>(yz / 100000000);
   }
   else if (nd > 9)
   {
     i = nd - 9;
-    y = ULong((yz >> i) / pfive[i - 1]);
+    y = static_cast<ULong>((yz >> i) / pfive[i - 1]);
   }
   else
-    y = ULong(yz);
+    y = static_cast<ULong>(yz);
   dval(&rv) = yz;
 #endif /*}*/
 
@@ -4688,7 +4688,7 @@ for (;;)
       if (y == z)
       {
         /* Can we stop now? */
-        L = (Long)aadj;
+        L = static_cast<Long>(aadj);
         aadj -= L;
         /* The tolerances below are conservative. */
         if (bc.dsign || word1(&rv) || word0(&rv) & Bndry_mask)
@@ -4762,7 +4762,7 @@ ret:
 else if (!oldinexact) clear_inexact();
 #endif
 if (se)
-  *se = (char*)s;
+  *se = const_cast<char*>(s);
 return sign ? -dval(&rv) : dval(&rv);
 }
 

@@ -175,7 +175,7 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace, const
         //-- Attention to rational bsplines of degree 3. (ends of circles among others)
         if (nbs > 2)
           nbs *= 4;
-        double du = (plbid - pfbid) / (double)(nbs - 1);
+        double du = (plbid - pfbid) / static_cast<double>(nbs - 1);
         double u  = 0.0;
         if (Or == TopAbs_FORWARD)
           u = pfbid;

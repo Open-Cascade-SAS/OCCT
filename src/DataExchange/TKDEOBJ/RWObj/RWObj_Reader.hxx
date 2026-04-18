@@ -213,9 +213,9 @@ private:
   {
     char*                   aNext = nullptr;
     NCollection_Vec2<float> anUV;
-    anUV.x() = (float)Strtod(theUV, &aNext);
+    anUV.x() = static_cast<float>(Strtod(theUV, &aNext));
     theUV    = aNext;
-    anUV.y() = (float)Strtod(theUV, &aNext);
+    anUV.y() = static_cast<float>(Strtod(theUV, &aNext));
 
     myMemEstim += sizeof(NCollection_Vec2<float>);
     myObjVertsUV.Append(anUV);
@@ -339,8 +339,9 @@ protected:
     {
       if (myIsSinglePrecision)
       {
-        myVec3Vec->Append(
-          NCollection_Vec3<float>((float)thePnt.X(), (float)thePnt.Y(), (float)thePnt.Z()));
+        myVec3Vec->Append(NCollection_Vec3<float>(static_cast<float>(thePnt.X()),
+                                                  static_cast<float>(thePnt.Y()),
+                                                  static_cast<float>(thePnt.Z())));
       }
       else
       {

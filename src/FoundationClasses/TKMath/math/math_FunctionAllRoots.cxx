@@ -183,9 +183,9 @@ math_FunctionAllRoots::math_FunctionAllRoots(math_FunctionWithDerivative& F,
     { // Recherche des solutions entre S.GetParameter(1)
       // et le debut du 1er intervalle nul
 
-      Nbrpt = (int)std::trunc(
+      Nbrpt = static_cast<int>(std::trunc(
         std::abs((pdeb.Value(1) - S.GetParameter(1)) / (S.GetParameter(Nbp) - S.GetParameter(1)))
-        * Nbp);
+        * Nbp));
       math_FunctionRoots
         Res(F, S.GetParameter(1), pdeb.Value(1), std::max(Nbrpt, NbpMin), EpsX, EpsF, 0.0);
       Standard_NumericError_Raise_if((!Res.IsDone()) || (Res.IsAllNull()), " ");
@@ -198,9 +198,9 @@ math_FunctionAllRoots::math_FunctionAllRoots(math_FunctionWithDerivative& F,
     }
     for (int k = 2; k <= pdeb.Length(); k++)
     {
-      Nbrpt = (int)std::trunc(
+      Nbrpt = static_cast<int>(std::trunc(
         std::abs((pdeb.Value(k) - pfin.Value(k - 1)) / (S.GetParameter(Nbp) - S.GetParameter(1)))
-        * Nbp);
+        * Nbp));
       math_FunctionRoots
         Res(F, pfin.Value(k - 1), pdeb.Value(k), std::max(Nbrpt, NbpMin), EpsX, EpsF, 0.0);
       Standard_NumericError_Raise_if((!Res.IsDone()) || (Res.IsAllNull()), " ");
@@ -215,9 +215,9 @@ math_FunctionAllRoots::math_FunctionAllRoots(math_FunctionWithDerivative& F,
     { // Recherche des solutions entre la fin du
       // dernier intervalle nul et Value(Nbp).
 
-      Nbrpt = (int)std::trunc(std::abs((S.GetParameter(Nbp) - pfin.Value(pdeb.Length()))
-                                       / (S.GetParameter(Nbp) - S.GetParameter(1)))
-                              * Nbp);
+      Nbrpt = static_cast<int>(std::trunc(std::abs((S.GetParameter(Nbp) - pfin.Value(pdeb.Length()))
+                                                   / (S.GetParameter(Nbp) - S.GetParameter(1)))
+                                          * Nbp));
       math_FunctionRoots Res(F,
                              pfin.Value(pdeb.Length()),
                              S.GetParameter(Nbp),

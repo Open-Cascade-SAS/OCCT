@@ -26,7 +26,7 @@ TopOpeBRep_WPointInter::TopOpeBRep_WPointInter() = default;
 
 void TopOpeBRep_WPointInter::Set(const IntSurf_PntOn2S& P)
 {
-  myPP2S = (IntSurf_PntOn2S*)&P;
+  myPP2S = const_cast<IntSurf_PntOn2S*>(&P);
 }
 
 //=================================================================================================

@@ -93,7 +93,7 @@ void XmlTObjDrivers_IntSparseArrayDriver::Paste(const occ::handle<TDF_Attribute>
     TCollection_AsciiString anIdStr = TCollection_AsciiString(ITEM_ID) + TCollection_AsciiString(i);
     TCollection_AsciiString aStrIndex =
       TCollection_AsciiString(ITEM_VALUE) + TCollection_AsciiString(i);
-    theTarget.Element().setAttribute(anIdStr.ToCString(), (int)anIt.Index());
+    theTarget.Element().setAttribute(anIdStr.ToCString(), static_cast<int>(anIt.Index()));
     theTarget.Element().setAttribute(aStrIndex.ToCString(), anIt.Value());
     i++;
   }

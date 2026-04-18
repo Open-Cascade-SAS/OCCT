@@ -91,7 +91,7 @@ int BinTools_SurfaceSet::Index(const occ::handle<Geom_Surface>& S) const
 
 static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom_Plane>& S)
 {
-  OS << (uint8_t)PLANE;
+  OS << static_cast<uint8_t>(PLANE);
   gp_Pln P = S->Pln();
   OS << P.Location(); // Pnt
   OS << P.Axis().Direction();
@@ -108,7 +108,7 @@ static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom
 static BinTools_OStream& operator<<(BinTools_OStream&                           OS,
                                     const occ::handle<Geom_CylindricalSurface>& S)
 {
-  OS << (uint8_t)CYLINDER;
+  OS << static_cast<uint8_t>(CYLINDER);
   gp_Cylinder P = S->Cylinder();
   OS << P.Location(); // Pnt
   OS << P.Axis().Direction();
@@ -125,7 +125,7 @@ static BinTools_OStream& operator<<(BinTools_OStream&                           
 
 static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom_ConicalSurface>& S)
 {
-  OS << (uint8_t)CONE;
+  OS << static_cast<uint8_t>(CONE);
   gp_Cone P = S->Cone();
   OS << P.Location(); // Pnt
   OS << P.Axis().Direction();
@@ -144,7 +144,7 @@ static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom
 static BinTools_OStream& operator<<(BinTools_OStream&                         OS,
                                     const occ::handle<Geom_SphericalSurface>& S)
 {
-  OS << (uint8_t)SPHERE;
+  OS << static_cast<uint8_t>(SPHERE);
   gp_Sphere P = S->Sphere();
   OS << P.Location(); // Pnt
   OS << P.Position().Axis().Direction();
@@ -162,7 +162,7 @@ static BinTools_OStream& operator<<(BinTools_OStream&                         OS
 static BinTools_OStream& operator<<(BinTools_OStream&                        OS,
                                     const occ::handle<Geom_ToroidalSurface>& S)
 {
-  OS << (uint8_t)TORUS;
+  OS << static_cast<uint8_t>(TORUS);
   gp_Torus P = S->Torus();
   OS << P.Location(); // Pnt
   OS << P.Axis().Direction();
@@ -181,7 +181,7 @@ static BinTools_OStream& operator<<(BinTools_OStream&                        OS,
 static BinTools_OStream& operator<<(BinTools_OStream&                                 OS,
                                     const occ::handle<Geom_SurfaceOfLinearExtrusion>& S)
 {
-  OS << (uint8_t)LINEAREXTRUSION;
+  OS << static_cast<uint8_t>(LINEAREXTRUSION);
   OS << S->Direction();
   BinTools_CurveSet::WriteCurve(S->BasisCurve(), OS);
   return OS;
@@ -195,7 +195,7 @@ static BinTools_OStream& operator<<(BinTools_OStream&                           
 static BinTools_OStream& operator<<(BinTools_OStream&                            OS,
                                     const occ::handle<Geom_SurfaceOfRevolution>& S)
 {
-  OS << (uint8_t)REVOLUTION;
+  OS << static_cast<uint8_t>(REVOLUTION);
   OS << S->Location();
   OS << S->Direction();
   BinTools_CurveSet::WriteCurve(S->BasisCurve(), OS);
@@ -209,7 +209,7 @@ static BinTools_OStream& operator<<(BinTools_OStream&                           
 
 static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom_BezierSurface>& S)
 {
-  OS << (uint8_t)BEZIER;
+  OS << static_cast<uint8_t>(BEZIER);
   bool urational = S->IsURational();
   bool vrational = S->IsVRational();
   OS << urational; // rational
@@ -219,8 +219,8 @@ static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom
   int i, j, udegree, vdegree;
   udegree = S->UDegree();
   vdegree = S->VDegree();
-  OS << (char16_t)udegree;
-  OS << (char16_t)vdegree;
+  OS << static_cast<char16_t>(udegree);
+  OS << static_cast<char16_t>(vdegree);
   for (i = 1; i <= udegree + 1; i++)
   {
     for (j = 1; j <= vdegree + 1; j++)
@@ -242,7 +242,7 @@ static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom
 
 static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom_BSplineSurface>& S)
 {
-  OS << (uint8_t)BSPLINE;
+  OS << static_cast<uint8_t>(BSPLINE);
   bool urational = S->IsURational();
   bool vrational = S->IsVRational();
   bool uperiodic = S->IsUPeriodic();
@@ -260,8 +260,8 @@ static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom
   nbvpoles = S->NbVPoles();
   nbuknots = S->NbUKnots();
   nbvknots = S->NbVKnots();
-  OS << (char16_t)udegree;
-  OS << (char16_t)vdegree;
+  OS << static_cast<char16_t>(udegree);
+  OS << static_cast<char16_t>(vdegree);
   OS << nbupoles;
   OS << nbvpoles;
   OS << nbuknots;
@@ -298,7 +298,7 @@ static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom
 static BinTools_OStream& operator<<(BinTools_OStream&                                  OS,
                                     const occ::handle<Geom_RectangularTrimmedSurface>& S)
 {
-  OS << (uint8_t)RECTANGULAR;
+  OS << static_cast<uint8_t>(RECTANGULAR);
   double U1, U2, V1, V2;
   S->Bounds(U1, U2, V1, V2);
   OS << U1 << U2 << V1 << V2;
@@ -313,7 +313,7 @@ static BinTools_OStream& operator<<(BinTools_OStream&                           
 
 static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom_OffsetSurface>& S)
 {
-  OS << (uint8_t)OFFSET;
+  OS << static_cast<uint8_t>(OFFSET);
   OS << S->Offset();
   BinTools_SurfaceSet::WriteSurface(S->BasisSurface(), OS);
   return OS;
@@ -538,9 +538,9 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Bezie
   char16_t aVal = '\0';
   BinTools::GetExtChar(IS, aVal);
 
-  udegree = (int)aVal;
+  udegree = static_cast<int>(aVal);
   BinTools::GetExtChar(IS, aVal);
-  vdegree = (int)aVal;
+  vdegree = static_cast<int>(aVal);
   //  std::cout << "\ttudegree  = " << udegree << ", vdegree = " << vdegree << std::endl;
 
   NCollection_Array2<gp_Pnt> poles(1, udegree + 1, 1, vdegree + 1);
@@ -579,9 +579,9 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_BSpli
   int      udegree = 0, vdegree = 0, nbupoles = 0, nbvpoles = 0, nbuknots = 0, nbvknots = 0;
   char16_t aVal = '\0';
   BinTools::GetExtChar(IS, aVal);
-  udegree = (int)aVal;
+  udegree = static_cast<int>(aVal);
   BinTools::GetExtChar(IS, aVal);
-  vdegree = (int)aVal;
+  vdegree = static_cast<int>(aVal);
   BinTools::GetInteger(IS, nbupoles);
   BinTools::GetInteger(IS, nbvpoles);
   BinTools::GetInteger(IS, nbuknots);
@@ -677,7 +677,7 @@ Standard_IStream& BinTools_SurfaceSet::ReadSurface(Standard_IStream&          IS
   try
   {
     OCC_CATCH_SIGNALS
-    const uint8_t stype = (uint8_t)IS.get();
+    const uint8_t stype = static_cast<uint8_t>(IS.get());
     switch (stype)
     {
 

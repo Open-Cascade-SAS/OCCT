@@ -125,7 +125,7 @@ void IntTools_Tools::RejectLines(const NCollection_Sequence<IntTools_Curve>& aSI
     if (!aGTC.IsNull())
     {
       aC3D                = aGTC->BasisCurve();
-      IntTools_Curve* pIC = (IntTools_Curve*)&IC;
+      IntTools_Curve* pIC = const_cast<IntTools_Curve*>(&IC);
       pIC->SetCurve(aC3D);
     }
     //

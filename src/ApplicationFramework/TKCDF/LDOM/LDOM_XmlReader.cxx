@@ -97,7 +97,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
     //  Check if the current file buffer is exhausted
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  There should always be some bytes available in the buffer for analysis
-    int aBytesRest = (int)(myEndPtr - myPtr);
+    int aBytesRest = static_cast<int>(myEndPtr - myPtr);
     if (aBytesRest < XML_MIN_BUFFER)
     {
       if (myEOF)
@@ -140,7 +140,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
         {
           theIStream.read(&myBuffer[aBytesRest], XML_BUFFER_SIZE - aBytesRest);
         }
-        aNBytes = (size_t)theIStream.gcount();
+        aNBytes = static_cast<size_t>(theIStream.gcount());
 
         if (aNBytes == 0)
         {
@@ -311,8 +311,9 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
                   myPtr      = aNameEnd;
                   if (myPtr < myEndPtr)
                   {
-                    myElement =
-                      &LDOM_BasicElement::Create(aStartData, (int)(myPtr - aStartData), myDocument);
+                    myElement   = &LDOM_BasicElement::Create(aStartData,
+                                                           static_cast<int>(myPtr - aStartData),
+                                                           myDocument);
                     myLastChild = nullptr;
                     aState      = STATE_ATTRIBUTE_NAME;
                     aStartData  = nullptr;
@@ -331,7 +332,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
             [[fallthrough]];
           default:
             //      Limitation: we do not treat '&' as special character
-            aPtr = (const char*)memchr(myPtr, '<', myEndPtr - myPtr);
+            aPtr = static_cast<const char*>(memchr(myPtr, '<', myEndPtr - myPtr));
             if (aPtr)
             {
               // The end of text field reached
@@ -349,7 +350,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
         // Checking the characters in STATE_HEADER, seek for "?>" sequence
         // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       case STATE_HEADER:
-        aPtr = (const char*)memchr(aStartData, '?', (myEndPtr - 1) - aStartData);
+        aPtr = static_cast<const char*>(memchr(aStartData, '?', (myEndPtr - 1) - aStartData));
         if (aPtr)
         {
           // The end of XML declaration found
@@ -393,7 +394,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
 
       state_doctype_markup:
       case STATE_DOCTYPE_MARKUP:
-        aPtr = (const char*)memchr(aStartData, ']', (myEndPtr - 1) - aStartData);
+        aPtr = static_cast<const char*>(memchr(aStartData, ']', (myEndPtr - 1) - aStartData));
         if (aPtr)
         {
           // The end of DOCTYPE declaration found
@@ -417,7 +418,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
         aPtr = aStartData;
         for (;;)
         {
-          aPtr = (const char*)memchr(aPtr, '-', (myEndPtr - 2) - aPtr);
+          aPtr = static_cast<const char*>(memchr(aPtr, '-', (myEndPtr - 2) - aPtr));
           if (aPtr == nullptr)
             break;
           if (aPtr[1] != '-')
@@ -441,7 +442,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
         // Checking the characters in STATE_TEXT, seek for "<"
         // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       case STATE_TEXT:
-        aPtr = (const char*)memchr(aStartData, '<', myEndPtr - aStartData);
+        aPtr = static_cast<const char*>(memchr(aStartData, '<', myEndPtr - aStartData));
         if (aPtr)
         {
           // The end of text field reached
@@ -459,7 +460,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
         aPtr = aStartData;
         for (;;)
         {
-          aPtr = (const char*)memchr(aPtr, ']', (myEndPtr - 1) - aStartData);
+          aPtr = static_cast<const char*>(memchr(aPtr, ']', (myEndPtr - 1) - aStartData));
           if (aPtr == nullptr)
             break;
           if (aPtr[1] != ']')
@@ -486,7 +487,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
           }
         {
           theData.rdbuf()->sputn(aStartData, aNameEnd - aStartData);
-          char* aDataString = (char*)theData.str();
+          char* aDataString = const_cast<char*>(theData.str());
           myElement         = &LDOM_BasicElement::Create(aDataString, theData.Length(), myDocument);
           theData.Clear();
           myLastChild = nullptr;
@@ -548,12 +549,12 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
             else
             {
               if (theData.Length() == 0)
-                anAttrName = LDOMBasicString(myPtr, (int)(aNameEnd - myPtr), myDocument);
+                anAttrName = LDOMBasicString(myPtr, static_cast<int>(aNameEnd - myPtr), myDocument);
               else
               {
                 theData.rdbuf()->sputn(myPtr, aNameEnd - myPtr);
               attr_name:
-                char* aDataString = (char*)theData.str();
+                char* aDataString = const_cast<char*>(theData.str());
                 theData.Clear();
                 anAttrName = LDOMBasicString(aDataString, myDocument);
                 delete[] aDataString;
@@ -608,19 +609,20 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
             }
             //      Limitation: we do not take into account that '<' and '&'
             //      are not allowed in attribute values
-            aPtr = (const char*)memchr(aStartData, anAttDelimiter, myEndPtr - aStartData);
+            aPtr =
+              static_cast<const char*>(memchr(aStartData, anAttDelimiter, myEndPtr - aStartData));
             if (aPtr)
             {
-              (char&)aPtr[0]          = '\0';
-              anAttDelimiter          = '\0';
-              char*       aDataString = (char*)aStartData;
-              const char* ePtr        = aPtr;
+              const_cast<char&>(aPtr[0]) = '\0';
+              anAttDelimiter             = '\0';
+              char*       aDataString    = const_cast<char*>(aStartData);
+              const char* ePtr           = aPtr;
 
               //    Append the end of the string to previously taken data
               if (theData.Length() > 0)
               {
                 theData.rdbuf()->sputn(aStartData, aPtr - aStartData);
-                aDataString = (char*)theData.str();
+                aDataString = const_cast<char*>(theData.str());
                 ePtr        = strchr(aDataString, '\0');
               }
 
@@ -656,7 +658,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
         // Checking the characters in STATE_ELEMENT_END, seek for ">"
         // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       case STATE_ELEMENT_END:
-        aPtr = (const char*)memchr(aStartData, '>', myEndPtr - aStartData);
+        aPtr = static_cast<const char*>(memchr(aStartData, '>', myEndPtr - aStartData));
         if (aPtr)
         {
           // The end of the end-element markup
@@ -751,7 +753,7 @@ bool LDOM_XmlReader::getInteger(LDOMBasicString& theValue, const char* theStart,
     long aResult = strtol(theStart, &ptr, 10);
     if (ptr == theEnd && errno == 0)
     {
-      theValue = int(aResult);
+      theValue = static_cast<int>(aResult);
       return false;
     }
   }

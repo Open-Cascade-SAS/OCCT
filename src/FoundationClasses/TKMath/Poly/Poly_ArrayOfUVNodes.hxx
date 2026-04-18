@@ -25,14 +25,14 @@ class Poly_ArrayOfUVNodes : public NCollection_AliasedArray<>
 public:
   //! Empty constructor of double-precision array.
   Poly_ArrayOfUVNodes()
-      : NCollection_AliasedArray((int)sizeof(gp_Pnt2d))
+      : NCollection_AliasedArray(static_cast<int>(sizeof(gp_Pnt2d)))
   {
     //
   }
 
   //! Constructor of double-precision array.
   Poly_ArrayOfUVNodes(int theLength)
-      : NCollection_AliasedArray((int)sizeof(gp_Pnt2d), theLength)
+      : NCollection_AliasedArray(static_cast<int>(sizeof(gp_Pnt2d)), theLength)
   {
     //
   }
@@ -58,7 +58,7 @@ public:
   Standard_EXPORT ~Poly_ArrayOfUVNodes();
 
   //! Returns TRUE if array defines nodes with double precision.
-  bool IsDoublePrecision() const { return myStride == (int)sizeof(gp_Pnt2d); }
+  bool IsDoublePrecision() const { return myStride == static_cast<int>(sizeof(gp_Pnt2d)); }
 
   //! Sets if array should define nodes with double or single precision.
   //! Raises exception if array was already allocated.
@@ -69,7 +69,7 @@ public:
       throw Standard_ProgramError(
         "Poly_ArrayOfUVNodes::SetDoublePrecision() should be called before allocation");
     }
-    myStride = int(theIsDouble ? sizeof(gp_Pnt2d) : sizeof(NCollection_Vec2<float>));
+    myStride = static_cast<int>(theIsDouble ? sizeof(gp_Pnt2d) : sizeof(NCollection_Vec2<float>));
   }
 
   //! Copies data of theOther array to this.
@@ -113,7 +113,7 @@ public:
 
 inline gp_Pnt2d Poly_ArrayOfUVNodes::Value(int theIndex) const
 {
-  if (myStride == (int)sizeof(gp_Pnt2d))
+  if (myStride == static_cast<int>(sizeof(gp_Pnt2d)))
   {
     return NCollection_AliasedArray::Value<gp_Pnt2d>(theIndex);
   }
@@ -129,7 +129,7 @@ inline gp_Pnt2d Poly_ArrayOfUVNodes::Value(int theIndex) const
 
 inline void Poly_ArrayOfUVNodes::SetValue(int theIndex, const gp_Pnt2d& theValue)
 {
-  if (myStride == (int)sizeof(gp_Pnt2d))
+  if (myStride == static_cast<int>(sizeof(gp_Pnt2d)))
   {
     NCollection_AliasedArray::ChangeValue<gp_Pnt2d>(theIndex) = theValue;
   }
@@ -137,7 +137,7 @@ inline void Poly_ArrayOfUVNodes::SetValue(int theIndex, const gp_Pnt2d& theValue
   {
     NCollection_Vec2<float>& aVec2 =
       NCollection_AliasedArray::ChangeValue<NCollection_Vec2<float>>(theIndex);
-    aVec2.SetValues((float)theValue.X(), (float)theValue.Y());
+    aVec2.SetValues(static_cast<float>(theValue.X()), static_cast<float>(theValue.Y()));
   }
 }
 

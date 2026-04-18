@@ -763,8 +763,9 @@ void Approx_BSplComputeLine::Perform(const MultiLine& Line)
         for (i = 2; i <= nbknots - 1; i++)
         {
 
-          l           = (mylastpt - myfirstpt) * double(i - 1) / double(nbknots - 1);
-          int    ll   = (int)(l);
+          l =
+            (mylastpt - myfirstpt) * static_cast<double>(i - 1) / static_cast<double>(nbknots - 1);
+          int    ll   = static_cast<int>(l);
           double a    = l - ll;
           double p1   = TheParam(ll + myfirstpt);
           double p2   = TheParam(ll + 1 + myfirstpt);
@@ -888,7 +889,8 @@ void Approx_BSplComputeLine::Parameters(const MultiLine& Line,
   {
     for (i = firstP + 1; i <= lastP; i++)
     {
-      TheParameters(i) = (double(i) - firstP) / (double(lastP - double(firstP)));
+      TheParameters(i) =
+        (static_cast<double>(i) - firstP) / ((lastP - static_cast<double>(firstP)));
     }
   }
 }

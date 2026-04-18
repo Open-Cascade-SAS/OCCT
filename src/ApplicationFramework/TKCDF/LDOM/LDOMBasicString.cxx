@@ -55,7 +55,7 @@ LDOMBasicString::LDOMBasicString(const char* aValue, const occ::handle<LDOM_MemM
   else
   {
     myType    = LDOM_AsciiDoc;
-    int aLen  = (int)strlen(aValue) + 1;
+    int aLen  = static_cast<int>(strlen(aValue)) + 1;
     myVal.ptr = aDoc->Allocate(aLen);
     memcpy(myVal.ptr, aValue, aLen);
   }
@@ -80,7 +80,7 @@ LDOMBasicString::LDOMBasicString(const char*                         aValue,
     myType    = LDOM_AsciiDoc;
     myVal.ptr = aDoc->Allocate(aLen + 1);
     memcpy(myVal.ptr, aValue, aLen);
-    ((char*)myVal.ptr)[aLen] = '\0';
+    (static_cast<char*>(myVal.ptr))[aLen] = '\0';
   }
 }
 
@@ -94,7 +94,7 @@ LDOMBasicString::LDOMBasicString(const LDOMBasicString& anOther)
     case LDOM_AsciiFree:
       if (anOther.myVal.ptr)
       {
-        size_t aLen = strlen((const char*)anOther.myVal.ptr) + 1;
+        size_t aLen = strlen(static_cast<const char*>(anOther.myVal.ptr)) + 1;
         myVal.ptr   = new char[aLen];
         memcpy(myVal.ptr, anOther.myVal.ptr, aLen);
         break;
@@ -118,7 +118,7 @@ LDOMBasicString::~LDOMBasicString()
 {
   if (myType == LDOM_AsciiFree)
   {
-    delete[] (char*)myVal.ptr;
+    delete[] static_cast<char*>(myVal.ptr);
   }
 }
 
@@ -127,7 +127,7 @@ LDOMBasicString::~LDOMBasicString()
 LDOMBasicString& LDOMBasicString::operator=(const LDOM_NullPtr*)
 {
   if (myType == LDOM_AsciiFree)
-    delete[] (char*)myVal.ptr;
+    delete[] static_cast<char*>(myVal.ptr);
   myType    = LDOM_NULL;
   myVal.ptr = nullptr;
   return *this;
@@ -142,14 +142,14 @@ LDOMBasicString& LDOMBasicString::operator=(const LDOMBasicString& anOther)
     return *this;
   }
   if (myType == LDOM_AsciiFree)
-    delete[] (char*)myVal.ptr;
+    delete[] static_cast<char*>(myVal.ptr);
   myType = anOther.Type();
   switch (myType)
   {
     case LDOM_AsciiFree:
       if (anOther.myVal.ptr)
       {
-        size_t aLen = strlen((const char*)anOther.myVal.ptr) + 1;
+        size_t aLen = strlen(static_cast<const char*>(anOther.myVal.ptr)) + 1;
         myVal.ptr   = new char[aLen];
         memcpy(myVal.ptr, anOther.myVal.ptr, aLen);
         break;
@@ -191,8 +191,8 @@ bool LDOMBasicString::equals(const LDOMBasicString& anOther) const
         case LDOM_AsciiDocClear:
         case LDOM_AsciiHashed: {
           errno           = 0;
-          long aLongOther = strtol((const char*)anOther.myVal.ptr, nullptr, 10);
-          return (errno == 0 && aLongOther == long(myVal.i));
+          long aLongOther = strtol(static_cast<const char*>(anOther.myVal.ptr), nullptr, 10);
+          return (errno == 0 && aLongOther == static_cast<long>(myVal.i));
         }
         case LDOM_NULL:
         default:;
@@ -203,14 +203,16 @@ bool LDOMBasicString::equals(const LDOMBasicString& anOther) const
       {
         case LDOM_Integer: {
           errno      = 0;
-          long aLong = strtol((const char*)myVal.ptr, nullptr, 10);
-          return (errno == 0 && aLong == long(anOther.myVal.i));
+          long aLong = strtol(static_cast<const char*>(myVal.ptr), nullptr, 10);
+          return (errno == 0 && aLong == static_cast<long>(anOther.myVal.i));
         }
         case LDOM_AsciiFree:
         case LDOM_AsciiDoc:
         case LDOM_AsciiDocClear:
         case LDOM_AsciiHashed:
-          return (strcmp((const char*)myVal.ptr, (const char*)anOther.myVal.ptr) == 0);
+          return (
+            strcmp(static_cast<const char*>(myVal.ptr), static_cast<const char*>(anOther.myVal.ptr))
+            == 0);
         case LDOM_NULL:
         default:;
       }
@@ -274,7 +276,7 @@ LDOMBasicString::operator TCollection_ExtendedString() const
         buf[2]       = ptr[2];
         buf[3]       = ptr[3];
         errno        = 0;
-        aResult[j++] = char16_t(strtol(&buf[0], nullptr, 16));
+        aResult[j++] = static_cast<char16_t>(strtol(&buf[0], nullptr, 16));
         if (errno)
         {
           delete[] aResult;
@@ -306,10 +308,10 @@ bool LDOMBasicString::GetInteger(int& aResult) const
     case LDOM_AsciiHashed: {
       char* ptr;
       errno       = 0;
-      long aValue = strtol((const char*)myVal.ptr, &ptr, 10);
+      long aValue = strtol(static_cast<const char*>(myVal.ptr), &ptr, 10);
       if (ptr == myVal.ptr || errno == ERANGE || errno == EINVAL)
         return false;
-      aResult = int(aValue);
+      aResult = static_cast<int>(aValue);
       break;
     }
     default:

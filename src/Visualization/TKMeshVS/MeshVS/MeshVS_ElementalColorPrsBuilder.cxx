@@ -73,9 +73,9 @@ void MeshVS_ElementalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation
     return;
 
   NCollection_DataMap<int, Quantity_Color>* anElemColorMap =
-    (NCollection_DataMap<int, Quantity_Color>*)&myElemColorMap1;
+    const_cast<NCollection_DataMap<int, Quantity_Color>*>(&myElemColorMap1);
   NCollection_DataMap<int, MeshVS_TwoColors>* anElemTwoColorsMap =
-    (NCollection_DataMap<int, MeshVS_TwoColors>*)&myElemColorMap2;
+    const_cast<NCollection_DataMap<int, MeshVS_TwoColors>*>(&myElemColorMap2);
 
   NCollection_DataMap<Quantity_Color, NCollection_Map<int>>   aColorsOfElements;
   NCollection_DataMap<MeshVS_TwoColors, NCollection_Map<int>> aTwoColorsOfElements;
@@ -132,7 +132,7 @@ void MeshVS_ElementalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation
          anIterC.Next())
       if (anIterC.Key() == anIterM.Value())
       {
-        NCollection_Map<int>& aChangeValue = (NCollection_Map<int>&)anIterC.Value();
+        NCollection_Map<int>& aChangeValue = const_cast<NCollection_Map<int>&>(anIterC.Value());
         aChangeValue.Add(aMKey);
         IsExist = true;
       }
@@ -159,7 +159,7 @@ void MeshVS_ElementalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation
          anIterC2.Next())
       if (anIterC2.Key() == anIterM2.Value())
       {
-        NCollection_Map<int>& aChangeValue = (NCollection_Map<int>&)anIterC2.Value();
+        NCollection_Map<int>& aChangeValue = const_cast<NCollection_Map<int>&>(anIterC2.Value());
         aChangeValue.Add(aMKey);
         IsExist = true;
       }
@@ -193,11 +193,11 @@ void MeshVS_ElementalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation
 
   int anEdgeInt = Aspect_TOL_SOLID;
   if (aDrawer->GetInteger(MeshVS_DA_EdgeType, anEdgeInt))
-    anEdgeType = (Aspect_TypeOfLine)anEdgeInt;
+    anEdgeType = static_cast<Aspect_TypeOfLine>(anEdgeInt);
 
   int aLineInt = Aspect_TOL_SOLID;
   if (aDrawer->GetInteger(MeshVS_DA_BeamType, aLineInt))
-    aLineType = (Aspect_TypeOfLine)aLineInt;
+    aLineType = static_cast<Aspect_TypeOfLine>(aLineInt);
 
   occ::handle<NCollection_HArray1<NCollection_Sequence<int>>> aTopo;
   int                                  PolygonVerticesFor3D = 0, PolygonBoundsFor3D = 0;

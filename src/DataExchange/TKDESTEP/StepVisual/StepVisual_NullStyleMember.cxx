@@ -45,7 +45,7 @@ void StepVisual_NullStyleMember::SetEnumText(const int /*theValue*/, const char*
 
 void StepVisual_NullStyleMember::SetValue(const StepVisual_NullStyle theValue)
 {
-  SetInt(int(theValue));
+  SetInt(static_cast<int>(theValue));
 }
 
 //=================================================================================================

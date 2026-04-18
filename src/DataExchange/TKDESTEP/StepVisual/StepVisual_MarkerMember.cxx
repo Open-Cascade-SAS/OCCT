@@ -56,7 +56,7 @@ void StepVisual_MarkerMember::SetEnumText(const int /*val*/, const char* const t
 
 void StepVisual_MarkerMember::SetValue(const StepVisual_MarkerType val)
 {
-  SetInt(int(val));
+  SetInt(static_cast<int>(val));
 }
 
 StepVisual_MarkerType StepVisual_MarkerMember::Value() const

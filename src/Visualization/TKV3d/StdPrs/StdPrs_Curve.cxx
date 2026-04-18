@@ -167,7 +167,7 @@ static bool MatchCurve(const double           X,
       const double Radius = aCurve.Circle().Radius();
       const double DU     = std::sqrt(8.0 * TheDeflection / Radius);
       const double Er     = std::abs(U2 - U1) / DU;
-      const int    N      = std::max(2, (int)std::trunc(Er));
+      const int    N      = std::max(2, static_cast<int>(std::trunc(Er)));
       if (N > 0)
       {
         gp_Pnt p1, p2;

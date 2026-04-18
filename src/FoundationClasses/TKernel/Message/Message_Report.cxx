@@ -86,7 +86,7 @@ bool Message_Report::HasAlert(const occ::handle<Standard_Type>& theType)
 {
   for (int iGravity = Message_Trace; iGravity <= Message_Fail; ++iGravity)
   {
-    if (HasAlert(theType, (Message_Gravity)iGravity))
+    if (HasAlert(theType, static_cast<Message_Gravity>(iGravity)))
       return true;
   }
   return false;
@@ -296,7 +296,7 @@ void Message_Report::Dump(Standard_OStream& theOS)
 {
   for (int iGravity = Message_Trace; iGravity <= Message_Fail; ++iGravity)
   {
-    Dump(theOS, (Message_Gravity)iGravity);
+    Dump(theOS, static_cast<Message_Gravity>(iGravity));
   }
 }
 
@@ -323,7 +323,7 @@ void Message_Report::SendMessages(const occ::handle<Message_Messenger>& theMesse
 {
   for (int aGravIter = Message_Trace; aGravIter <= Message_Fail; ++aGravIter)
   {
-    SendMessages(theMessenger, (Message_Gravity)aGravIter);
+    SendMessages(theMessenger, static_cast<Message_Gravity>(aGravIter));
   }
 }
 
@@ -346,7 +346,7 @@ void Message_Report::Merge(const occ::handle<Message_Report>& theOther)
 {
   for (int aGravIter = Message_Trace; aGravIter <= Message_Fail; ++aGravIter)
   {
-    Merge(theOther, (Message_Gravity)aGravIter);
+    Merge(theOther, static_cast<Message_Gravity>(aGravIter));
   }
 }
 

@@ -45,7 +45,7 @@ bool XmlMDataStd_UAttributeDriver::Paste(const XmlObjMgt_Persistent&       theSo
                                          XmlObjMgt_RRelocationTable&) const
 {
   XmlObjMgt_DOMString aGuidDomStr = theSource.Element().getAttribute(::GuidString());
-  const char*         aGuidStr    = (const char*)aGuidDomStr.GetString();
+  const char*         aGuidStr    = aGuidDomStr.GetString();
   if (aGuidStr[0] == '\0')
   {
     myMessageDriver->Send("error retrieving GUID for type TDataStd_UAttribute", Message_Fail);

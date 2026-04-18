@@ -271,7 +271,7 @@ Standard_OStream& TFunction_Iterator::Dump(Standard_OStream& anOS) const
     occ::handle<TFunction_GraphNode> G;
     if (L.FindAttribute(TFunction_GraphNode::GetID(), G))
     {
-      saved_status.Bind(L, (int)G->GetStatus());
+      saved_status.Bind(L, static_cast<int>(G->GetStatus()));
       G->SetStatus(TFunction_ES_NotExecuted);
     }
   }
@@ -314,7 +314,7 @@ Standard_OStream& TFunction_Iterator::Dump(Standard_OStream& anOS) const
   for (; itrm.More(); itrm.Next())
   {
     const TDF_Label&          L      = itrm.Key();
-    TFunction_ExecutionStatus status = (TFunction_ExecutionStatus)itrm.Value();
+    TFunction_ExecutionStatus status = static_cast<TFunction_ExecutionStatus>(itrm.Value());
 
     occ::handle<TFunction_GraphNode> G;
     if (L.FindAttribute(TFunction_GraphNode::GetID(), G))

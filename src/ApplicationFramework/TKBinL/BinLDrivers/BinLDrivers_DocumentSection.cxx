@@ -105,7 +105,7 @@ void BinLDrivers_DocumentSection::WriteTOC(Standard_OStream&           theStream
 #ifdef DO_INVERSE
     aBufSz[0] = InverseInt((int)aBufSize);
 #else
-    aBufSz[0] = (int)aBufSize;
+    aBufSz[0] = static_cast<int>(aBufSize);
 #endif
     theStream.write(&aBuf[0], aBufSize + sizeof(int));
 
@@ -147,7 +147,9 @@ void BinLDrivers_DocumentSection::Write(Standard_OStream&           theStream,
         "BinLDrivers_DocumentSection::Write : file size is too big, needs int64.");
 
     // Old documents stored file position as 4-bytes values.
-    int32_t aValInt[3] = {int32_t(myValue[0]), int32_t(myValue[1]), int32_t(myIsPostRead ? 1 : 0)};
+    int32_t aValInt[3] = {static_cast<int32_t>(myValue[0]),
+                          static_cast<int32_t>(myValue[1]),
+                          static_cast<int32_t>(myIsPostRead ? 1 : 0)};
 #ifdef DO_INVERSE
     aValInt[0] = InverseInt(aValInt[0]);
     aValInt[1] = InverseInt(aValInt[1]);
@@ -157,7 +159,7 @@ void BinLDrivers_DocumentSection::Write(Standard_OStream&           theStream,
   }
   else
   {
-    uint64_t aVal[3] = {myValue[0], myValue[1], uint64_t(myIsPostRead ? 1 : 0)};
+    uint64_t aVal[3] = {myValue[0], myValue[1], static_cast<uint64_t>(myIsPostRead ? 1 : 0)};
 #ifdef DO_INVERSE
     aVal[0] = InverseUint64(aVal[0]);
     aVal[1] = InverseUint64(aVal[1]);

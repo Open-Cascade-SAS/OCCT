@@ -110,7 +110,7 @@ static void bindLight(const Graphic3d_CLight&        theLight,
                                   theLight.Concentration() * 128.0f);
       theCtx->core11ffp->glLightf(theLightGlId,
                                   GL_SPOT_CUTOFF,
-                                  (theLight.Angle() * 180.0f) / GLfloat(M_PI));
+                                  (theLight.Angle() * 180.0f) / static_cast<GLfloat>(M_PI));
       theCtx->core11ffp->glLightf(theLightGlId,
                                   GL_CONSTANT_ATTENUATION,
                                   theLight.ConstAttenuation());
@@ -589,9 +589,9 @@ void OpenGl_ShaderManager::pushLightSourceState(
     NCollection_Vec2<float> aSizeBias;
     if (myLightSourceState.HasShadowMaps())
     {
-      aSizeBias.SetValues(1.0f
-                            / (float)myLightSourceState.ShadowMaps()->First()->Texture()->SizeX(),
-                          myLightSourceState.ShadowMaps()->First()->ShadowMapBias());
+      aSizeBias.SetValues(
+        1.0f / static_cast<float>(myLightSourceState.ShadowMaps()->First()->Texture()->SizeX()),
+        myLightSourceState.ShadowMaps()->First()->ShadowMapBias());
       const int aNbShadows =
         std::min(theProgram->NbShadowMaps(), myLightSourceState.ShadowMaps()->Size());
       for (int aShadowIter = 0; aShadowIter < aNbShadows; ++aShadowIter)
@@ -1027,7 +1027,7 @@ void OpenGl_ShaderManager::pushOitState(const occ::handle<OpenGl_ShaderProgram>&
   if (const OpenGl_ShaderUniformLocation& aLocOutput =
         theProgram->GetStateLocation(OpenGl_OCCT_OIT_OUTPUT))
   {
-    theProgram->SetUniform(myContext, aLocOutput, (GLint)myOitState.ActiveMode());
+    theProgram->SetUniform(myContext, aLocOutput, static_cast<GLint>(myOitState.ActiveMode()));
   }
   if (const OpenGl_ShaderUniformLocation& aLocDepthFactor =
         theProgram->GetStateLocation(OpenGl_OCCT_OIT_DEPTH_FACTOR))
@@ -1103,10 +1103,10 @@ void OpenGl_ShaderManager::PushState(const occ::handle<OpenGl_ShaderProgram>& th
     {
       theProgram->SetUniform(myContext,
                              aLocViewPort,
-                             NCollection_Vec4<float>((float)myContext->Viewport()[0],
-                                                     (float)myContext->Viewport()[1],
-                                                     (float)myContext->Viewport()[2],
-                                                     (float)myContext->Viewport()[3]));
+                             NCollection_Vec4<float>(static_cast<float>(myContext->Viewport()[0]),
+                                                     static_cast<float>(myContext->Viewport()[1]),
+                                                     static_cast<float>(myContext->Viewport()[2]),
+                                                     static_cast<float>(myContext->Viewport()[3])));
     }
   }
   else if (myContext->core11ffp != nullptr)
@@ -1317,7 +1317,7 @@ bool OpenGl_ShaderManager::prepareStdProgramPhong(occ::handle<OpenGl_ShaderProgr
 
 bool OpenGl_ShaderManager::BindStereoProgram(Graphic3d_StereoMode theStereoMode)
 {
-  if (theStereoMode < 0 || (int)theStereoMode >= Graphic3d_StereoMode_NB)
+  if (theStereoMode < 0 || static_cast<int>(theStereoMode) >= Graphic3d_StereoMode_NB)
   {
     return false;
   }

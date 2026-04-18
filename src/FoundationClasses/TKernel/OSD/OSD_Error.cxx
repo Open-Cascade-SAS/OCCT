@@ -43,7 +43,7 @@ bool OSD_Error::Failed() const
 void OSD_Error::SetValue(const int errcode, const int from, const TCollection_AsciiString& message)
 {
   myErrno   = errcode;
-  myCode    = (OSD_WhoAmI)from;
+  myCode    = static_cast<OSD_WhoAmI>(from);
   myMessage = message;
 }
 

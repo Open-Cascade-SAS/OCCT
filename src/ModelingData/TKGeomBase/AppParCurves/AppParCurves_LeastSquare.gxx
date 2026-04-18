@@ -1403,7 +1403,7 @@ AppParCurves_MultiCurve AppParCurves_LeastSquare::BezierValue()
 {
   if (!myknots.IsNull())
     throw Standard_NoSuchObject();
-  return (AppParCurves_MultiCurve)(BSplineValue());
+  return AppParCurves_MultiCurve(BSplineValue());
 }
 
 const AppParCurves_MultiBSpCurve& AppParCurves_LeastSquare::BSplineValue()

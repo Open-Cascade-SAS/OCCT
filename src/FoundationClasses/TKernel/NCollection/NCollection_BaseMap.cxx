@@ -34,10 +34,12 @@ bool NCollection_BaseMap::BeginResize(const int               NbBuckets,
     else
       return false;
   }
-  data1 = (NCollection_ListNode**)Standard::Allocate((N + 1) * sizeof(NCollection_ListNode*));
+  data1 = static_cast<NCollection_ListNode**>(
+    Standard::Allocate((N + 1) * sizeof(NCollection_ListNode*)));
   if (isDouble)
   {
-    data2 = (NCollection_ListNode**)Standard::Allocate((N + 1) * sizeof(NCollection_ListNode*));
+    data2 = static_cast<NCollection_ListNode**>(
+      Standard::Allocate((N + 1) * sizeof(NCollection_ListNode*)));
   }
   else
     data2 = nullptr;
@@ -114,7 +116,7 @@ void NCollection_BaseMap::Statistics(Standard_OStream& S) const
   S << "\nStatistics for the first Key\n";
   for (i = 0; i <= mySize; i++)
     sizes[i] = 0;
-  data = (NCollection_ListNode**)myData1;
+  data = myData1;
   nb   = 0;
   for (i = 0; i <= myNbBuckets; i++)
   {
@@ -141,7 +143,7 @@ void NCollection_BaseMap::Statistics(Standard_OStream& S) const
     }
   }
 
-  double mean = ((double)l) / ((double)nb);
+  double mean = (static_cast<double>(l)) / (static_cast<double>(nb));
   S << "\n\nMean of length : " << mean << "\n";
 
   delete[] sizes;

@@ -74,12 +74,13 @@ inline T unaligned_load(const char* thePnt) noexcept
 
 inline uint64_t MurmurHash64A(const void* theKey, int theLen, uint64_t theSeed) noexcept
 {
-  static constexpr uint64_t aMul = (((uint64_t)0xc6a4a793UL) << 32UL) + (uint64_t)0x5bd1e995UL;
-  const char* const         aBuf = static_cast<const char*>(theKey);
+  static constexpr uint64_t aMul =
+    ((static_cast<uint64_t>(0xc6a4a793UL)) << 32UL) + static_cast<uint64_t>(0x5bd1e995UL);
+  const char* const aBuf = static_cast<const char*>(theKey);
 
   // Remove the bytes not divisible by the sizeof(uint64_t).  This
   // allows the main loop to process the data as 64-bit integers.
-  const uint64_t    aLenAligned = theLen & ~(uint64_t)0x7;
+  const uint64_t    aLenAligned = theLen & ~static_cast<uint64_t>(0x7);
   const char* const anEnd       = aBuf + aLenAligned;
   uint64_t          aHash       = theSeed ^ (theLen * aMul);
   for (const char* aPnt = aBuf; aPnt != anEnd; aPnt += 8)

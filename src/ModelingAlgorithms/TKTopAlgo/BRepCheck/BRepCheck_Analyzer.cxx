@@ -424,11 +424,11 @@ void BRepCheck_Analyzer::Perform()
   const occ::handle<OSD_ThreadPool>& aThreadPool  = OSD_ThreadPool::DefaultPool();
   const int                          aNbThreads   = aThreadPool->NbThreads();
   int                                aNbTasks     = aNbThreads * 10;
-  int                                aTaskSize    = (int)std::ceil((double)aMapSize / aNbTasks);
+  int aTaskSize = static_cast<int>(std::ceil(static_cast<double>(aMapSize) / aNbTasks));
   if (aTaskSize < aMinTaskSize)
   {
     aTaskSize = aMinTaskSize;
-    aNbTasks  = (int)std::ceil((double)aMapSize / aTaskSize);
+    aNbTasks  = static_cast<int>(std::ceil(static_cast<double>(aMapSize) / aTaskSize));
   }
 
   NCollection_Array1<NCollection_Array1<TopoDS_Shape>> aArrayOfArray(0, aNbTasks - 1);

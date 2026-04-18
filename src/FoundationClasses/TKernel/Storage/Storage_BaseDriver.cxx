@@ -39,7 +39,7 @@ TCollection_AsciiString Storage_BaseDriver::ReadMagicNumber(Standard_IStream& th
   while (theIStream.good() && (aReadCharNb < aMagicNumberLen))
   {
     theIStream.get(aChar);
-    aReadCharNb += (size_t)theIStream.gcount();
+    aReadCharNb += static_cast<size_t>(theIStream.gcount());
     aReadMagicNumber += aChar;
   }
 

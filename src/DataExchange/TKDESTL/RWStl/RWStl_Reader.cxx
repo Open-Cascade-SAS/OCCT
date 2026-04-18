@@ -206,7 +206,7 @@ bool RWStl_Reader::IsAscii(Standard_IStream& theStream, const bool isSeekgAvaila
   }
 
   // if file is shorter than size of binary file with 1 facet, it must be ascii
-  if (aNbRead < std::streamsize(THE_STL_MIN_FILE_SIZE))
+  if (aNbRead < static_cast<std::streamsize>(THE_STL_MIN_FILE_SIZE))
   {
     return true;
   }
@@ -215,7 +215,7 @@ bool RWStl_Reader::IsAscii(Standard_IStream& theStream, const bool isSeekgAvaila
   // (note that binary STL file may start with the same bytes "solid " as Ascii one)
   for (int aByteIter = 0; aByteIter < aNbRead; ++aByteIter)
   {
-    if ((unsigned char)aBuffer[aByteIter] > (unsigned char)'~')
+    if (static_cast<unsigned char>(aBuffer[aByteIter]) > static_cast<unsigned char>('~'))
     {
       return false;
     }
@@ -263,7 +263,7 @@ static bool ReadVertex(const char* theStr, double& theX, double& theY, double& t
   const char* aStr = theStr;
 
   // skip 'vertex'
-  while (isspace((unsigned char)*aStr) || isalpha((unsigned char)*aStr))
+  while (isspace(static_cast<unsigned char>(*aStr)) || isalpha(static_cast<unsigned char>(*aStr)))
     ++aStr;
 
   // read values
@@ -311,7 +311,7 @@ bool RWStl_Reader::ReadAscii(Standard_IStream&            theStream,
 
   // report progress every 1 MiB of read data
   const int             aStepB   = 1024 * 1024;
-  const int             aNbSteps = 1 + int((GETPOS(theUntilPos) - aStartPos) / aStepB);
+  const int             aNbSteps = 1 + static_cast<int>((GETPOS(theUntilPos) - aStartPos) / aStepB);
   Message_ProgressScope aPS(theProgress, "Reading text STL file", aNbSteps);
   int64_t               aProgressPos = aStartPos + aStepB;
   int                   aNbLine      = 1;
@@ -413,14 +413,15 @@ bool RWStl_Reader::ReadBinary(Standard_IStream& theStream, const Message_Progres
 
   // read file header at first
   char aHeader[THE_STL_HEADER_SIZE + 1];
-  if (theStream.read(aHeader, THE_STL_HEADER_SIZE).gcount() != std::streamsize(THE_STL_HEADER_SIZE))
+  if (theStream.read(aHeader, THE_STL_HEADER_SIZE).gcount()
+      != static_cast<std::streamsize>(THE_STL_HEADER_SIZE))
   {
     Message::SendFail("Error: Corrupted binary STL file");
     return false;
   }
 
   // number of facets is stored as 32-bit integer at position 80
-  const int aNbFacets = *(int32_t*)(aHeader + 80);
+  const int aNbFacets = *reinterpret_cast<int32_t*>(aHeader + 80);
 
   MergeNodeTool aMergeTool(this, aNbFacets);
   aMergeTool.SetMergeAngle(myMergeAngle);

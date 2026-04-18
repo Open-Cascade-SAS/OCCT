@@ -274,7 +274,7 @@ double BRepGProp_VinertGK::PrivatePerform(BRepGProp_Face& theSurface,
     aNbCurves = 1;
   else
   {
-    aPDomain = (BRepGProp_Domain*)thePtrDomain;
+    aPDomain = static_cast<BRepGProp_Domain*>(thePtrDomain);
 
     for (aPDomain->Init(); aPDomain->More(); aPDomain->Next())
       aNbCurves++;

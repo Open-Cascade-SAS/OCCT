@@ -379,7 +379,7 @@ void AIS_ColoredShape::Compute(const occ::handle<PrsMgr_PresentationManager>& th
   myShapeColors.Find(myshape, aBaseDrawer);
 
   // myShapeColors + anOpened --> array[TopAbs_ShapeEnum] of map of color-to-compound
-  DataMapOfDrawerCompd aDispatchedOpened[(size_t)TopAbs_SHAPE];
+  DataMapOfDrawerCompd aDispatchedOpened[static_cast<size_t>(TopAbs_SHAPE)];
   DataMapOfDrawerCompd aDispatchedClosed;
   dispatchColors(aBaseDrawer,
                  myshape,
@@ -576,7 +576,7 @@ void AIS_ColoredShape::addShapesWithCustomProps(
   const int                              theMode)
 {
   occ::handle<Graphic3d_Group> anOpenGroup, aClosedGroup, anEdgesGroup;
-  for (size_t aShType = 0; aShType <= (size_t)TopAbs_SHAPE; ++aShType)
+  for (size_t aShType = 0; aShType <= static_cast<size_t>(TopAbs_SHAPE); ++aShType)
   {
     const bool                    isClosed     = aShType == TopAbs_SHAPE;
     occ::handle<Graphic3d_Group>& aShadedGroup = isClosed ? aClosedGroup : anOpenGroup;
@@ -795,9 +795,10 @@ bool AIS_ColoredShape::dispatchColors(
           && !(isOverriden || isSubOverride))) // bind original shape to default color
   {
     TopoDS_Compound       aCompound;
-    DataMapOfDrawerCompd& aDrawerShapeMap = theIsParentClosed && aShapeType == TopAbs_FACE
-                                              ? theDrawerClosedFaces
-                                              : theDrawerOpenedShapePerType[(size_t)aShapeType];
+    DataMapOfDrawerCompd& aDrawerShapeMap =
+      theIsParentClosed && aShapeType == TopAbs_FACE
+        ? theDrawerClosedFaces
+        : theDrawerOpenedShapePerType[static_cast<size_t>(aShapeType)];
     if (!aDrawerShapeMap.FindFromKey(aDrawer, aCompound))
     {
       aBBuilder.MakeCompound(aCompound);

@@ -38,15 +38,16 @@ void HLRBRep_EdgeData::Set(const bool         Rg1L,
   RgNLine(RgNL);
   Used(false);
   ChangeGeometry().Curve(EG);
-  myTolerance = (float)(BRep_Tool::Tolerance(EG));
+  myTolerance = static_cast<float>(BRep_Tool::Tolerance(EG));
   VSta(V1);
   VEnd(V2);
   OutLVSta(Out1);
   OutLVEnd(Out2);
   CutAtSta(Cut1);
   CutAtEnd(Cut2);
-  Status().Initialize(Start,
-                      (float)(ChangeGeometry().Curve().Resolution((double)TolStart)),
-                      End,
-                      (float)(ChangeGeometry().Curve().Resolution((double)TolEnd)));
+  Status().Initialize(
+    Start,
+    static_cast<float>(ChangeGeometry().Curve().Resolution(static_cast<double>(TolStart))),
+    End,
+    static_cast<float>(ChangeGeometry().Curve().Resolution(static_cast<double>(TolEnd))));
 }

@@ -3740,5 +3740,5 @@ inline mmcmcnp_1_& AdvApp2Var_Data::Getmmcmcnp()
                              1.
 
   };
-  return *((mmcmcnp_1_*)&e_1);
+  return *(reinterpret_cast<mmcmcnp_1_*>(&e_1));
 }

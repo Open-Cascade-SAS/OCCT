@@ -70,7 +70,7 @@ XmlMNaming_Shape1::XmlMNaming_Shape1(const XmlObjMgt_Element& theEl)
         throw Standard_DomainError(
           "XmlMNaming_Shape1; orientation value without enum term equivalence");
     }
-    const char* anIntPtr = (const char*)&aPtr[1];
+    const char* anIntPtr = &aPtr[1];
     if (!XmlObjMgt::GetInteger(anIntPtr, myTShapeID))
       throw Standard_DomainError(
         "XmlMNaming_Shape1; tshape value cannot be initialised by integer");

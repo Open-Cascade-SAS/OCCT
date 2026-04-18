@@ -52,10 +52,10 @@ inline gp_Dir2d IntImp_ZerParFunc::DirectionOnS2() const
 
 inline const ThePSurface& IntImp_ZerParFunc::AuxillarSurface1() const
 {
-  return *((const ThePSurface*)surf1);
+  return *(static_cast<const ThePSurface*>(surf1));
 }
 
 inline const ThePSurface& IntImp_ZerParFunc::AuxillarSurface2() const
 {
-  return *((const ThePSurface*)surf2);
+  return *(static_cast<const ThePSurface*>(surf2));
 }

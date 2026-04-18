@@ -662,7 +662,7 @@ void STEPCAFControl_GDTProperty::GetDimClassOfTolerance(
   theG                                       = XCAFDimTolObjects_DimensionGrade_IT01;
   if (!aGrade.IsNull() && !aGrade->String().IsEqual("01") && aGrade->IsIntegerValue())
   {
-    theG = (XCAFDimTolObjects_DimensionGrade)(aGrade->IntegerValue() + 1);
+    theG = static_cast<XCAFDimTolObjects_DimensionGrade>(aGrade->IntegerValue() + 1);
   }
 }
 
@@ -1075,7 +1075,7 @@ occ::handle<StepShape_LimitsAndFits> STEPCAFControl_GDTProperty::GetLimitsAndFit
   if (theGrade == XCAFDimTolObjects_DimensionGrade_IT01)
     aGradeStr = new TCollection_HAsciiString("01");
   else
-    aGradeStr = new TCollection_HAsciiString((int)theGrade + 1);
+    aGradeStr = new TCollection_HAsciiString(static_cast<int>(theGrade) + 1);
 
   switch (theFormVariance)
   {

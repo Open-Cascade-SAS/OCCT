@@ -42,8 +42,8 @@ std::pair<double, double> BRepMesh_ConeRangeSplitter::GetSplitSteps(
   const double aDiffV = aRangeV.second - aRangeV.first;
   const double aScale = (Du * aRadius);
   const double aRatio = std::max(1., std::log(aDiffV / aScale));
-  const int    nbU    = (int)(aDiffU / Du);
-  const int    nbV    = (int)(aDiffV / aScale / aRatio);
+  const int    nbU    = static_cast<int>(aDiffU / Du);
+  const int    nbV    = static_cast<int>(aDiffV / aScale / aRatio);
 
   Du = aDiffU / (nbU + 1);
   Dv = aDiffV / (nbV + static_cast<int>(aRatio));

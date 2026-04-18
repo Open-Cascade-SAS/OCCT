@@ -40,15 +40,15 @@ static int logDelabella2Occ(void* theStream, const char* theFormat, ...)
   va_end(anArgList);
 
   Message_Gravity aGravity = Message_Warning;
-  switch ((int)theFormat[1])
+  switch (static_cast<int>(theFormat[1]))
   {
-    case int('E'):
+    case static_cast<int>('E'):
       aGravity = Message_Fail;
       break; // [ERR]
-    case int('W'):
+    case static_cast<int>('W'):
       aGravity = Message_Trace;
       break; // [WRN]
-    case int('N'):
+    case static_cast<int>('N'):
       aGravity = Message_Trace;
       break; // [NFO]
   }

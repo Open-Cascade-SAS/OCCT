@@ -122,7 +122,7 @@ bool BRepMesh_DataStructureOfDelaun::SubstituteLink(const int            theInde
 
 void BRepMesh_DataStructureOfDelaun::RemoveLink(const int theIndex, const bool isForce)
 {
-  BRepMesh_Edge& aLink = (BRepMesh_Edge&)GetLink(theIndex);
+  BRepMesh_Edge& aLink = const_cast<BRepMesh_Edge&>(GetLink(theIndex));
   if (aLink.Movability() == BRepMesh_Deleted || (!isForce && aLink.Movability() != BRepMesh_Free)
       || ElementsConnectedTo(theIndex).Extent() != 0)
   {
@@ -176,7 +176,7 @@ int BRepMesh_DataStructureOfDelaun::AddElement(const BRepMesh_Triangle& theEleme
 
 void BRepMesh_DataStructureOfDelaun::RemoveElement(const int theIndex)
 {
-  BRepMesh_Triangle& aElement = (BRepMesh_Triangle&)GetElement(theIndex);
+  BRepMesh_Triangle& aElement = const_cast<BRepMesh_Triangle&>(GetElement(theIndex));
   if (aElement.Movability() == BRepMesh_Deleted)
     return;
 
@@ -272,7 +272,7 @@ void BRepMesh_DataStructureOfDelaun::ClearDomain()
   for (; aElementIt.More(); aElementIt.Next())
   {
     const int          aElementId = aElementIt.Key();
-    BRepMesh_Triangle& aElement   = (BRepMesh_Triangle&)GetElement(aElementId);
+    BRepMesh_Triangle& aElement   = const_cast<BRepMesh_Triangle&>(GetElement(aElementId));
 
     const int (&e)[3] = aElement.myEdges;
 
@@ -364,7 +364,8 @@ void BRepMesh_DataStructureOfDelaun::clearDeletedLinks()
 
 void BRepMesh_DataStructureOfDelaun::clearDeletedNodes()
 {
-  IMeshData::ListOfInteger& aDelNodes = (IMeshData::ListOfInteger&)myNodes->GetListOfDelNodes();
+  IMeshData::ListOfInteger& aDelNodes =
+    const_cast<IMeshData::ListOfInteger&>(myNodes->GetListOfDelNodes());
 
   int aLastLiveItem = NbNodes();
   while (!aDelNodes.IsEmpty())
@@ -444,7 +445,7 @@ const char* BRepMesh_Dump(void* theMeshHandlePtr, const char* theFileNameStr)
   }
 
   occ::handle<BRepMesh_DataStructureOfDelaun> aMeshData =
-    *(occ::handle<BRepMesh_DataStructureOfDelaun>*)theMeshHandlePtr;
+    *static_cast<occ::handle<BRepMesh_DataStructureOfDelaun>*>(theMeshHandlePtr);
 
   if (aMeshData.IsNull())
     return "Error: mesh data is empty";

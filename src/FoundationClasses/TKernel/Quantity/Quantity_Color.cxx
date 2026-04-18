@@ -161,7 +161,7 @@ void Quantity_Color::SetEpsilon(const double theEpsilon) noexcept
 NCollection_Vec3<float> Quantity_Color::valuesOf(const Quantity_NameOfColor theName,
                                                  const Quantity_TypeOfColor theType)
 {
-  if ((int)theName < 0 || (int)theName > Quantity_NOC_WHITE)
+  if (static_cast<int>(theName) < 0 || static_cast<int>(theName) > Quantity_NOC_WHITE)
   {
     throw Standard_OutOfRange("Bad name");
   }
@@ -187,7 +187,7 @@ NCollection_Vec3<float> Quantity_Color::valuesOf(const Quantity_NameOfColor theN
 
 const char* Quantity_Color::StringName(const Quantity_NameOfColor theName) noexcept
 {
-  if ((int)theName < 0 || (int)theName > Quantity_NOC_WHITE)
+  if (static_cast<int>(theName) < 0 || static_cast<int>(theName) > Quantity_NOC_WHITE)
   {
     return "UNDEFINED";
   }
@@ -211,7 +211,7 @@ bool Quantity_Color::ColorFromName(const char* const     theName,
     const char* aColorName = THE_COLORS[anIter].StringName;
     if (aName == aColorName)
     {
-      theColor = (Quantity_NameOfColor)anIter;
+      theColor = static_cast<Quantity_NameOfColor>(anIter);
       return true;
     }
   }
@@ -309,7 +309,7 @@ Quantity_Color::Quantity_Color(const NCollection_Vec3<float>& theRgb)
 void Quantity_Color::ChangeContrast(const double theDelta)
 {
   NCollection_Vec3<float> aHls = Convert_LinearRGB_To_HLS(myRgb);
-  aHls[2] += aHls[2] * float(theDelta) / 100.0f; // saturation
+  aHls[2] += aHls[2] * static_cast<float>(theDelta) / 100.0f; // saturation
   if ((aHls[2] <= 1.0f) && (aHls[2] >= 0.0f))
   {
     myRgb = Convert_HLS_To_LinearRGB(aHls);
@@ -321,7 +321,7 @@ void Quantity_Color::ChangeContrast(const double theDelta)
 void Quantity_Color::ChangeIntensity(const double theDelta)
 {
   NCollection_Vec3<float> aHls = Convert_LinearRGB_To_HLS(myRgb);
-  aHls[1] += aHls[1] * float(theDelta) / 100.0f; // light
+  aHls[1] += aHls[1] * static_cast<float>(theDelta) / 100.0f; // light
   if ((aHls[1] <= 1.0f) && (aHls[1] >= 0.0f))
   {
     myRgb = Convert_HLS_To_LinearRGB(aHls);
@@ -339,32 +339,38 @@ void Quantity_Color::SetValues(const double               theC1,
   {
     case Quantity_TOC_RGB: {
       validateRgbRange(theC1, theC2, theC3);
-      myRgb.SetValues(float(theC1), float(theC2), float(theC3));
+      myRgb.SetValues(static_cast<float>(theC1),
+                      static_cast<float>(theC2),
+                      static_cast<float>(theC3));
       break;
     }
     case Quantity_TOC_sRGB: {
       validateRgbRange(theC1, theC2, theC3);
-      myRgb.SetValues((float)Convert_sRGB_To_LinearRGB(theC1),
-                      (float)Convert_sRGB_To_LinearRGB(theC2),
-                      (float)Convert_sRGB_To_LinearRGB(theC3));
+      myRgb.SetValues(static_cast<float>(Convert_sRGB_To_LinearRGB(theC1)),
+                      static_cast<float>(Convert_sRGB_To_LinearRGB(theC2)),
+                      static_cast<float>(Convert_sRGB_To_LinearRGB(theC3)));
       break;
     }
     case Quantity_TOC_HLS: {
       validateHlsRange(theC1, theC2, theC3);
-      myRgb =
-        Convert_HLS_To_LinearRGB(NCollection_Vec3<float>(float(theC1), float(theC2), float(theC3)));
+      myRgb = Convert_HLS_To_LinearRGB(NCollection_Vec3<float>(static_cast<float>(theC1),
+                                                               static_cast<float>(theC2),
+                                                               static_cast<float>(theC3)));
       break;
     }
     case Quantity_TOC_CIELab: {
       validateLabRange(theC1, theC2, theC3);
-      myRgb =
-        Convert_Lab_To_LinearRGB(NCollection_Vec3<float>(float(theC1), float(theC2), float(theC3)));
+      myRgb = Convert_Lab_To_LinearRGB(NCollection_Vec3<float>(static_cast<float>(theC1),
+                                                               static_cast<float>(theC2),
+                                                               static_cast<float>(theC3)));
       break;
     }
     case Quantity_TOC_CIELch: {
       validateLchRange(theC1, theC2, theC3);
       myRgb = Convert_Lab_To_LinearRGB(
-        Convert_Lch_To_Lab(NCollection_Vec3<float>(float(theC1), float(theC2), float(theC3))));
+        Convert_Lch_To_Lab(NCollection_Vec3<float>(static_cast<float>(theC1),
+                                                   static_cast<float>(theC2),
+                                                   static_cast<float>(theC3))));
       break;
     }
   }
@@ -376,8 +382,8 @@ void Quantity_Color::Delta(const Quantity_Color& theColor, double& theDC, double
 {
   const NCollection_Vec3<float> aHls1 = Convert_LinearRGB_To_HLS(myRgb);
   const NCollection_Vec3<float> aHls2 = Convert_LinearRGB_To_HLS(theColor.myRgb);
-  theDC                               = double(aHls1[2] - aHls2[2]); // saturation
-  theDI                               = double(aHls1[1] - aHls2[1]); // light
+  theDC                               = static_cast<double>(aHls1[2] - aHls2[2]); // saturation
+  theDI                               = static_cast<double>(aHls1[1] - aHls2[1]); // light
 }
 
 // =======================================================================
@@ -493,9 +499,9 @@ void Quantity_Color::Values(double&                    theR1,
       break;
     }
     case Quantity_TOC_sRGB: {
-      theR1 = Convert_LinearRGB_To_sRGB((double)myRgb.r());
-      theR2 = Convert_LinearRGB_To_sRGB((double)myRgb.g());
-      theR3 = Convert_LinearRGB_To_sRGB((double)myRgb.b());
+      theR1 = Convert_LinearRGB_To_sRGB(static_cast<double>(myRgb.r()));
+      theR2 = Convert_LinearRGB_To_sRGB(static_cast<double>(myRgb.g()));
+      theR3 = Convert_LinearRGB_To_sRGB(static_cast<double>(myRgb.b()));
       break;
     }
     case Quantity_TOC_HLS: {
@@ -546,7 +552,7 @@ NCollection_Vec3<float> Quantity_Color::Convert_HLS_To_sRGB(const NCollection_Ve
   else
   {
     aHue /= 60.0f;
-    aHueIndex = (int)aHue;
+    aHueIndex = static_cast<int>(aHue);
   }
 
   switch (aHueIndex)
@@ -666,7 +672,9 @@ NCollection_Vec3<float> Quantity_Color::Convert_LinearRGB_To_Lab(
   double aa = CIELAB_A_COEFF * (afX - afY);
   double ab = CIELAB_B_COEFF * (afY - afZ);
 
-  return NCollection_Vec3<float>((float)aL, (float)aa, (float)ab);
+  return NCollection_Vec3<float>(static_cast<float>(aL),
+                                 static_cast<float>(aa),
+                                 static_cast<float>(ab));
 }
 
 // =======================================================================
@@ -689,7 +697,7 @@ NCollection_Vec3<float> Quantity_Color::Convert_Lab_To_LinearRGB(
   const int NBSTEPS = 1000;
   for (int aRate = NBSTEPS;; aRate--)
   {
-    double aC = aRate / (double)NBSTEPS;
+    double aC = aRate / static_cast<double>(NBSTEPS);
 
     // convert to XYZ for D65 / 2 deg (CIE 1931) standard illuminant
     double afY = (aL + CIELAB_L_OFFSET) / CIELAB_L_COEFF;
@@ -709,7 +717,9 @@ NCollection_Vec3<float> Quantity_Color::Convert_Lab_To_LinearRGB(
     // exit if we are in range or at zero C
     if (aRate == 0 || (aR >= 0. && aR <= 1. && aG >= 0. && aG <= 1. && aB >= 0. && aB <= 1.))
     {
-      return NCollection_Vec3<float>((float)aR, (float)aG, (float)aB);
+      return NCollection_Vec3<float>(static_cast<float>(aR),
+                                     static_cast<float>(aG),
+                                     static_cast<float>(aB));
     }
   }
 }
@@ -731,7 +741,7 @@ NCollection_Vec3<float> Quantity_Color::Convert_Lab_To_Lch(
   if (aH < 0.)
     aH += 360.;
 
-  return NCollection_Vec3<float>(theLab[0], (float)aC, (float)aH);
+  return NCollection_Vec3<float>(theLab[0], static_cast<float>(aC), static_cast<float>(aH));
 }
 
 // =======================================================================
@@ -750,7 +760,7 @@ NCollection_Vec3<float> Quantity_Color::Convert_Lch_To_Lab(
   double aa = aC * std::cos(aH);
   double ab = aC * std::sin(aH);
 
-  return NCollection_Vec3<float>(theLch[0], (float)aa, (float)ab);
+  return NCollection_Vec3<float>(theLch[0], static_cast<float>(aa), static_cast<float>(ab));
 }
 
 //=================================================================================================
@@ -768,6 +778,9 @@ bool Quantity_Color::InitFromJson(const Standard_SStream& theSStream, int& theSt
   double aRed, aGreen, aBlue;
   OCCT_INIT_VECTOR_CLASS(Standard_Dump::Text(theSStream), "RGB", aPos, 3, &aRed, &aGreen, &aBlue)
 
-  SetValues((float)aRed, (float)aGreen, (float)aBlue, Quantity_TOC_RGB);
+  SetValues(static_cast<float>(aRed),
+            static_cast<float>(aGreen),
+            static_cast<float>(aBlue),
+            Quantity_TOC_RGB);
   return true;
 }

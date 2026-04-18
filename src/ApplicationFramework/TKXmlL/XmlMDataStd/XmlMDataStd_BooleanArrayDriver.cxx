@@ -115,7 +115,7 @@ bool XmlMDataStd_BooleanArrayDriver::Paste(const XmlObjMgt_Persistent&       the
       myMessageDriver->Send(aMessageString, Message_Warning);
       aValue = 0;
     }
-    arr.SetValue(i, (uint8_t)aValue);
+    arr.SetValue(i, static_cast<uint8_t>(aValue));
   }
   aBooleanArray->SetInternalArray(hArr);
 

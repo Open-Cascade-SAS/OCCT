@@ -122,18 +122,18 @@ public:
     StNbLect = StNbEcr = StNbMax = StNbMoy = 0;
 #endif
     N     = n;
-    UV    = (double**)malloc(N * sizeof(double*));
-    IndUV = (int**)malloc(N * sizeof(int*));
-    nbUV  = (int*)malloc(N * sizeof(int));
+    UV    = static_cast<double**>(malloc(N * sizeof(double*)));
+    IndUV = static_cast<int**>(malloc(N * sizeof(int*)));
+    nbUV  = static_cast<int*>(malloc(N * sizeof(int)));
     //    for(int i=0;i<N;i++) {
     int i;
     for (i = 0; i < N; i++)
     {
-      UV[i] = (double*)malloc(SIZEUV * sizeof(double));
+      UV[i] = static_cast<double*>(malloc(SIZEUV * sizeof(double)));
     }
     for (i = 0; i < N; i++)
     {
-      IndUV[i] = (int*)malloc(SIZEUV * sizeof(int));
+      IndUV[i] = static_cast<int*>(malloc(SIZEUV * sizeof(int)));
       for (int k = 0; k < SIZEUV; k++)
       {
         IndUV[i][k] = -1;
@@ -264,8 +264,8 @@ public:
 
       //-- std::cout<<" \n alloc nbUV["<<i0<<"]="<<nbUV[i0];
 
-      double* NvLigneUV  = (double*)malloc((nbUV[i0] + SIZEUV) * sizeof(double));
-      int*    NvLigneInd = (int*)malloc((nbUV[i0] + SIZEUV) * sizeof(int));
+      double* NvLigneUV  = static_cast<double*>(malloc((nbUV[i0] + SIZEUV) * sizeof(double)));
+      int*    NvLigneInd = static_cast<int*>(malloc((nbUV[i0] + SIZEUV) * sizeof(int)));
       //--
       //-- Recopie des anciennes valeurs ds la nouvelle ligne
       //--
@@ -388,13 +388,13 @@ public:
     {
       ResetTabBit(nTabBit);
     }
-    TabBit  = (long unsigned**)malloc((nbedgs) * sizeof(long unsigned*));
+    TabBit  = static_cast<long unsigned**>(malloc((nbedgs) * sizeof(long unsigned*)));
     nTabBit = nbedgs;
     int n   = 1 + (nbedgs >> 5);
 
     for (int i = 0; i < nbedgs; i++)
     {
-      TabBit[i] = (long unsigned*)malloc(n * sizeof(long unsigned));
+      TabBit[i] = static_cast<long unsigned*>(malloc(n * sizeof(long unsigned)));
       for (int j = 0; j < n; j++)
       {
         TabBit[i][j] = 0;
@@ -506,21 +506,21 @@ HLRBRep_Data::HLRBRep_Data(const int NV, const int NE, const int NF)
       myEData(0, NE),
       myFData(0, NF),
       myEdgeIndices(0, NE),
-      myToler((float)1e-5),
+      myToler(static_cast<float>(1e-5)),
       myLLProps(2, Epsilon(1.)),
       myFLProps(2, Epsilon(1.)),
       mySLProps(2, Epsilon(1.)),
       myHideCount(0)
 {
   myReject = new TableauRejection();
-  ((TableauRejection*)myReject)->SetDim(myNbEdges);
+  (myReject)->SetDim(myNbEdges);
 }
 
 void HLRBRep_Data::Destroy()
 {
   //-- std::cout<<"\n HLRBRep_Data::~HLRBRep_Data()"<<std::endl;
-  ((TableauRejection*)myReject)->Destroy();
-  delete ((TableauRejection*)myReject);
+  (myReject)->Destroy();
+  delete (myReject);
 }
 
 //=================================================================================================
@@ -648,45 +648,45 @@ void HLRBRep_Data::Update(const HLRAlgo_Projector& P)
     HLRBRep_Curve&    EC = ed.ChangeGeometry();
     HLRAlgo::InitMinMax(Precision::Infinite(), TotMin, TotMax);
     tolMinMax = EC.UpdateMinMax(TotMin, TotMax);
-    tol       = (double)(ed.Tolerance());
+    tol       = static_cast<double>(ed.Tolerance());
     ed.Vertical(TotMax[0] - TotMin[0] < tol && TotMax[1] - TotMin[1] < tol
                 && TotMax[2] - TotMin[2] < tol && TotMax[3] - TotMin[3] < tol
                 && TotMax[4] - TotMin[4] < tol && TotMax[5] - TotMin[5] < tol
                 && TotMax[6] - TotMin[6] < tol);
     HLRAlgo::EnlargeMinMax(tolMinMax, TotMin, TotMax);
     // Linux warning :  assignment to `int' from `double'. Cast has been added.
-    EdgeMin.Min[0] = (int)((myDeca[0] + TotMin[0]) * mySurD[0]);
-    EdgeMax.Min[0] = (int)((myDeca[0] + TotMax[0]) * mySurD[0]);
-    EdgeMin.Min[1] = (int)((myDeca[1] + TotMin[1]) * mySurD[1]);
-    EdgeMax.Min[1] = (int)((myDeca[1] + TotMax[1]) * mySurD[1]);
-    EdgeMin.Min[2] = (int)((myDeca[2] + TotMin[2]) * mySurD[2]);
-    EdgeMax.Min[2] = (int)((myDeca[2] + TotMax[2]) * mySurD[2]);
-    EdgeMin.Min[3] = (int)((myDeca[3] + TotMin[3]) * mySurD[3]);
-    EdgeMax.Min[3] = (int)((myDeca[3] + TotMax[3]) * mySurD[3]);
-    EdgeMin.Min[4] = (int)((myDeca[4] + TotMin[4]) * mySurD[4]);
-    EdgeMax.Min[4] = (int)((myDeca[4] + TotMax[4]) * mySurD[4]);
-    EdgeMin.Min[5] = (int)((myDeca[5] + TotMin[5]) * mySurD[5]);
-    EdgeMax.Min[5] = (int)((myDeca[5] + TotMax[5]) * mySurD[5]);
-    EdgeMin.Min[6] = (int)((myDeca[6] + TotMin[6]) * mySurD[6]);
-    EdgeMax.Min[6] = (int)((myDeca[6] + TotMax[6]) * mySurD[6]);
-    EdgeMin.Min[7] = (int)((myDeca[7] + TotMin[7]) * mySurD[7]);
-    EdgeMax.Min[7] = (int)((myDeca[7] + TotMax[7]) * mySurD[7]);
-    EdgeMin.Max[0] = (int)((myDeca[8] + TotMin[8]) * mySurD[8]);
-    EdgeMax.Max[0] = (int)((myDeca[8] + TotMax[8]) * mySurD[8]);
-    EdgeMin.Max[1] = (int)((myDeca[9] + TotMin[9]) * mySurD[9]);
-    EdgeMax.Max[1] = (int)((myDeca[9] + TotMax[9]) * mySurD[9]);
-    EdgeMin.Max[2] = (int)((myDeca[10] + TotMin[10]) * mySurD[10]);
-    EdgeMax.Max[2] = (int)((myDeca[10] + TotMax[10]) * mySurD[10]);
-    EdgeMin.Max[3] = (int)((myDeca[11] + TotMin[11]) * mySurD[11]);
-    EdgeMax.Max[3] = (int)((myDeca[11] + TotMax[11]) * mySurD[11]);
-    EdgeMin.Max[4] = (int)((myDeca[12] + TotMin[12]) * mySurD[12]);
-    EdgeMax.Max[4] = (int)((myDeca[12] + TotMax[12]) * mySurD[12]);
-    EdgeMin.Max[5] = (int)((myDeca[13] + TotMin[13]) * mySurD[13]);
-    EdgeMax.Max[5] = (int)((myDeca[13] + TotMax[13]) * mySurD[13]);
-    EdgeMin.Max[6] = (int)((myDeca[14] + TotMin[14]) * mySurD[14]);
-    EdgeMax.Max[6] = (int)((myDeca[14] + TotMax[14]) * mySurD[14]);
-    EdgeMin.Max[7] = (int)((myDeca[15] + TotMin[15]) * mySurD[15]);
-    EdgeMax.Max[7] = (int)((myDeca[15] + TotMax[15]) * mySurD[15]);
+    EdgeMin.Min[0] = static_cast<int>((myDeca[0] + TotMin[0]) * mySurD[0]);
+    EdgeMax.Min[0] = static_cast<int>((myDeca[0] + TotMax[0]) * mySurD[0]);
+    EdgeMin.Min[1] = static_cast<int>((myDeca[1] + TotMin[1]) * mySurD[1]);
+    EdgeMax.Min[1] = static_cast<int>((myDeca[1] + TotMax[1]) * mySurD[1]);
+    EdgeMin.Min[2] = static_cast<int>((myDeca[2] + TotMin[2]) * mySurD[2]);
+    EdgeMax.Min[2] = static_cast<int>((myDeca[2] + TotMax[2]) * mySurD[2]);
+    EdgeMin.Min[3] = static_cast<int>((myDeca[3] + TotMin[3]) * mySurD[3]);
+    EdgeMax.Min[3] = static_cast<int>((myDeca[3] + TotMax[3]) * mySurD[3]);
+    EdgeMin.Min[4] = static_cast<int>((myDeca[4] + TotMin[4]) * mySurD[4]);
+    EdgeMax.Min[4] = static_cast<int>((myDeca[4] + TotMax[4]) * mySurD[4]);
+    EdgeMin.Min[5] = static_cast<int>((myDeca[5] + TotMin[5]) * mySurD[5]);
+    EdgeMax.Min[5] = static_cast<int>((myDeca[5] + TotMax[5]) * mySurD[5]);
+    EdgeMin.Min[6] = static_cast<int>((myDeca[6] + TotMin[6]) * mySurD[6]);
+    EdgeMax.Min[6] = static_cast<int>((myDeca[6] + TotMax[6]) * mySurD[6]);
+    EdgeMin.Min[7] = static_cast<int>((myDeca[7] + TotMin[7]) * mySurD[7]);
+    EdgeMax.Min[7] = static_cast<int>((myDeca[7] + TotMax[7]) * mySurD[7]);
+    EdgeMin.Max[0] = static_cast<int>((myDeca[8] + TotMin[8]) * mySurD[8]);
+    EdgeMax.Max[0] = static_cast<int>((myDeca[8] + TotMax[8]) * mySurD[8]);
+    EdgeMin.Max[1] = static_cast<int>((myDeca[9] + TotMin[9]) * mySurD[9]);
+    EdgeMax.Max[1] = static_cast<int>((myDeca[9] + TotMax[9]) * mySurD[9]);
+    EdgeMin.Max[2] = static_cast<int>((myDeca[10] + TotMin[10]) * mySurD[10]);
+    EdgeMax.Max[2] = static_cast<int>((myDeca[10] + TotMax[10]) * mySurD[10]);
+    EdgeMin.Max[3] = static_cast<int>((myDeca[11] + TotMin[11]) * mySurD[11]);
+    EdgeMax.Max[3] = static_cast<int>((myDeca[11] + TotMax[11]) * mySurD[11]);
+    EdgeMin.Max[4] = static_cast<int>((myDeca[12] + TotMin[12]) * mySurD[12]);
+    EdgeMax.Max[4] = static_cast<int>((myDeca[12] + TotMax[12]) * mySurD[12]);
+    EdgeMin.Max[5] = static_cast<int>((myDeca[13] + TotMin[13]) * mySurD[13]);
+    EdgeMax.Max[5] = static_cast<int>((myDeca[13] + TotMax[13]) * mySurD[13]);
+    EdgeMin.Max[6] = static_cast<int>((myDeca[14] + TotMin[14]) * mySurD[14]);
+    EdgeMax.Max[6] = static_cast<int>((myDeca[14] + TotMax[14]) * mySurD[14]);
+    EdgeMin.Max[7] = static_cast<int>((myDeca[15] + TotMin[15]) * mySurD[15]);
+    EdgeMax.Max[7] = static_cast<int>((myDeca[15] + TotMax[15]) * mySurD[15]);
 
     HLRAlgo::EncodeMinMax(EdgeMin, EdgeMax, MinMaxEdge);
     ed.UpdateMinMax(MinMaxEdge);
@@ -795,7 +795,7 @@ void HLRBRep_Data::Update(const HLRAlgo_Projector& P)
     fd.Cone(iFaceType == GeomAbs_Cone);
     fd.Sphere(iFaceType == GeomAbs_Sphere);
     fd.Torus(iFaceType == GeomAbs_Torus);
-    tol = (double)(fd.Tolerance());
+    tol = static_cast<double>(fd.Tolerance());
     fd.Side(FS.IsSide(tol, myToler * 10));
     bool inverted = false;
     if (fd.WithOutL() && !fd.Side())
@@ -1081,10 +1081,9 @@ void HLRBRep_Data::NextEdge(const bool skip)
     myLEMinMax   = &myLEData->MinMax();
     myLETol      = myLEData->Tolerance();
     myLEType     = myLEGeom->GetType();
-    if (((HLRBRep_EdgeData*)myLEData)->Vertical()
-        || (myLEDouble && ((HLRBRep_EdgeData*)myLEData)->HideCount() == myHideCount - 1))
+    if ((myLEData)->Vertical() || (myLEDouble && (myLEData)->HideCount() == myHideCount - 1))
       NextEdge();
-    ((HLRBRep_EdgeData*)myLEData)->HideCount(myHideCount - 1);
+    (myLEData)->HideCount(myHideCount - 1);
     return;
   }
   else
@@ -1100,17 +1099,17 @@ void HLRBRep_Data::NextEdge(const bool skip)
     myLETol      = myLEData->Tolerance();
     myLEType     = myLEGeom->GetType();
   }
-  if (((HLRBRep_EdgeData*)myLEData)->Vertical())
+  if ((myLEData)->Vertical())
   {
     NextEdge();
     return;
   }
-  if (((HLRBRep_EdgeData*)myLEData)->HideCount() > myHideCount - 2)
+  if ((myLEData)->HideCount() > myHideCount - 2)
   {
     NextEdge();
     return;
   }
-  if (((HLRBRep_EdgeData*)myLEData)->Status().AllHidden())
+  if ((myLEData)->Status().AllHidden())
   {
     NextEdge();
     return;
@@ -1134,7 +1133,7 @@ void HLRBRep_Data::NextEdge(const bool skip)
     NextEdge();
     return;
   }
-  if (iFaceGeom->IsAbove(iFaceBack, myLEGeom, (double)myLETol))
+  if (iFaceGeom->IsAbove(iFaceBack, myLEGeom, static_cast<double>(myLETol)))
   {
     NextEdge();
     return;
@@ -1157,7 +1156,7 @@ int HLRBRep_Data::Edge() const
 void HLRBRep_Data::InitInterference()
 {
   myLLProps.SetCurve(myLEGeom);
-  myFaceItr1.InitEdge(*((HLRBRep_FaceData*)iFaceData));
+  myFaceItr1.InitEdge(*(iFaceData));
   myNbPoints = myNbSegments = iInterf = 0;
   NextInterference();
 }
@@ -1204,17 +1203,17 @@ void HLRBRep_Data::NextInterference()
     myFEInternal = myFaceItr1.Internal();
     myFEDouble   = myFaceItr1.Double();
     myFEData     = &myEData(myFE);
-    myFEGeom     = &(((HLRBRep_EdgeData*)myFEData)->ChangeGeometry());
-    myFETol      = ((HLRBRep_EdgeData*)myFEData)->Tolerance();
-    myFEType     = ((HLRBRep_Curve*)myFEGeom)->GetType();
+    myFEGeom     = &((myFEData)->ChangeGeometry());
+    myFETol      = (myFEData)->Tolerance();
+    myFEType     = (myFEGeom)->GetType();
 
     if (myFEOri == TopAbs_FORWARD || myFEOri == TopAbs_REVERSED)
     {
       // Edge from the boundary
-      if (!((HLRBRep_EdgeData*)myFEData)->Vertical() && (!myFEDouble || myFEOutLine))
+      if (!(myFEData)->Vertical() && (!myFEDouble || myFEOutLine))
       {
         // not a vertical edge and not a double Edge
-        HLRAlgo_EdgesBlock::MinMaxIndices* MinMaxFEdg = &((HLRBRep_EdgeData*)myFEData)->MinMax();
+        HLRAlgo_EdgesBlock::MinMaxIndices* MinMaxFEdg = &(myFEData)->MinMax();
         //-- -----------------------------------------------------------------------
         //-- Max - Min doit etre positif pour toutes les directions
         //--
@@ -1228,7 +1227,7 @@ void HLRBRep_Data::NextInterference()
         //--     LE Min ....   LE Max
         //-- ----------------------------------------------------------------------
 
-        if (!((TableauRejection*)myReject)->NoIntersection(myLE, myFE))
+        if (!(myReject)->NoIntersection(myLE, myFE))
         {
 
           if (((MinMaxFEdg->Max[0] - myLEMinMax->Min[0]) & 0x80008000) == 0
@@ -1251,10 +1250,10 @@ void HLRBRep_Data::NextInterference()
             bool rej = false;
             if (myLE == myFE)
             { // test if an auto-intersection is not useful
-              if (((HLRBRep_EdgeData*)myLEData)->AutoIntersectionDone())
+              if ((myLEData)->AutoIntersectionDone())
               {
-                ((HLRBRep_EdgeData*)myLEData)->AutoIntersectionDone(true);
-                if (((HLRBRep_EdgeData*)myLEData)->Simple())
+                (myLEData)->AutoIntersectionDone(true);
+                if ((myLEData)->Simple())
                 {
                   rej = true;
                 }
@@ -1334,7 +1333,7 @@ void HLRBRep_Data::NextInterference()
                 else
                 {
                   double su, sv;
-                  ((TableauRejection*)myReject)->GetSingleIntersection(myLE, myFE, su, sv);
+                  (myReject)->GetSingleIntersection(myLE, myFE, su, sv);
                   if (su != RealLast())
                   {
                     myIntersector.SimulateOnePoint(myLEData, su, myFEData, sv);
@@ -1348,8 +1347,7 @@ void HLRBRep_Data::NextInterference()
                     {
                       if (myIntersector.NbPoints() == 1 && myIntersector.NbSegments() == 0)
                       {
-                        ((TableauRejection*)myReject)
-                          ->SetIntersection(myLE, myFE, myIntersector.Point(1));
+                        (myReject)->SetIntersection(myLE, myFE, myIntersector.Point(1));
                       }
                     }
                   }
@@ -1371,7 +1369,7 @@ void HLRBRep_Data::NextInterference()
                     }
                     else
                     {
-                      ((TableauRejection*)myReject)->SetNoIntersection(myLE, myFE);
+                      (myReject)->SetNoIntersection(myLE, myFE);
                     }
                   }
                   else
@@ -1422,9 +1420,9 @@ bool HLRBRep_Data::RejectedInterference()
     int  nseg       = n >> 1;
     if (firstPoint)
       nseg++;
-    double pf = ((HLRBRep_Curve*)myLEGeom)
+    double pf = (const_cast<HLRBRep_Curve*>(myLEGeom))
                   ->Parameter3d(myIntersector.Segment(nseg).FirstPoint().ParamOnFirst());
-    double pl = ((HLRBRep_Curve*)myLEGeom)
+    double pl = (const_cast<HLRBRep_Curve*>(myLEGeom))
                   ->Parameter3d(myIntersector.Segment(nseg).LastPoint().ParamOnFirst());
     if (pf > pl)
       firstPoint = !firstPoint;
@@ -1506,7 +1504,7 @@ void HLRBRep_Data::EdgeState(const double  p1,
 
       gp_Pnt Pbid;
       gp_Vec TngEdge;
-      ((HLRBRep_Curve*)myLEGeom)->D1(p1, Pbid, TngEdge);
+      (const_cast<HLRBRep_Curve*>(myLEGeom))->D1(p1, Pbid, TngEdge);
 
       const gp_Trsf& TI = myProj.InvertedTransformation();
       gp_Dir         V;
@@ -1836,38 +1834,38 @@ static void REJECT1(const double                       theDeca[],
                     HLRAlgo_EdgesBlock::MinMaxIndices& theVertMin,
                     HLRAlgo_EdgesBlock::MinMaxIndices& theVertMax)
 {
-  theVertMin.Min[0] = (int)((theDeca[0] + theTotMin[0]) * theSurD[0]);
-  theVertMax.Min[0] = (int)((theDeca[0] + theTotMax[0]) * theSurD[0]);
-  theVertMin.Min[1] = (int)((theDeca[1] + theTotMin[1]) * theSurD[1]);
-  theVertMax.Min[1] = (int)((theDeca[1] + theTotMax[1]) * theSurD[1]);
-  theVertMin.Min[2] = (int)((theDeca[2] + theTotMin[2]) * theSurD[2]);
-  theVertMax.Min[2] = (int)((theDeca[2] + theTotMax[2]) * theSurD[2]);
-  theVertMin.Min[3] = (int)((theDeca[3] + theTotMin[3]) * theSurD[3]);
-  theVertMax.Min[3] = (int)((theDeca[3] + theTotMax[3]) * theSurD[3]);
-  theVertMin.Min[4] = (int)((theDeca[4] + theTotMin[4]) * theSurD[4]);
-  theVertMax.Min[4] = (int)((theDeca[4] + theTotMax[4]) * theSurD[4]);
-  theVertMin.Min[5] = (int)((theDeca[5] + theTotMin[5]) * theSurD[5]);
-  theVertMax.Min[5] = (int)((theDeca[5] + theTotMax[5]) * theSurD[5]);
-  theVertMin.Min[6] = (int)((theDeca[6] + theTotMin[6]) * theSurD[6]);
-  theVertMax.Min[6] = (int)((theDeca[6] + theTotMax[6]) * theSurD[6]);
-  theVertMin.Min[7] = (int)((theDeca[7] + theTotMin[7]) * theSurD[7]);
-  theVertMax.Min[7] = (int)((theDeca[7] + theTotMax[7]) * theSurD[7]);
-  theVertMin.Max[0] = (int)((theDeca[8] + theTotMin[8]) * theSurD[8]);
-  theVertMax.Max[0] = (int)((theDeca[8] + theTotMax[8]) * theSurD[8]);
-  theVertMin.Max[1] = (int)((theDeca[9] + theTotMin[9]) * theSurD[9]);
-  theVertMax.Max[1] = (int)((theDeca[9] + theTotMax[9]) * theSurD[9]);
-  theVertMin.Max[2] = (int)((theDeca[10] + theTotMin[10]) * theSurD[10]);
-  theVertMax.Max[2] = (int)((theDeca[10] + theTotMax[10]) * theSurD[10]);
-  theVertMin.Max[3] = (int)((theDeca[11] + theTotMin[11]) * theSurD[11]);
-  theVertMax.Max[3] = (int)((theDeca[11] + theTotMax[11]) * theSurD[11]);
-  theVertMin.Max[4] = (int)((theDeca[12] + theTotMin[12]) * theSurD[12]);
-  theVertMax.Max[4] = (int)((theDeca[12] + theTotMax[12]) * theSurD[12]);
-  theVertMin.Max[5] = (int)((theDeca[13] + theTotMin[13]) * theSurD[13]);
-  theVertMax.Max[5] = (int)((theDeca[13] + theTotMax[13]) * theSurD[13]);
-  theVertMin.Max[6] = (int)((theDeca[14] + theTotMin[14]) * theSurD[14]);
-  theVertMax.Max[6] = (int)((theDeca[14] + theTotMax[14]) * theSurD[14]);
-  theVertMin.Max[7] = (int)((theDeca[15] + theTotMin[15]) * theSurD[15]);
-  theVertMax.Max[7] = (int)((theDeca[15] + theTotMax[15]) * theSurD[15]);
+  theVertMin.Min[0] = static_cast<int>((theDeca[0] + theTotMin[0]) * theSurD[0]);
+  theVertMax.Min[0] = static_cast<int>((theDeca[0] + theTotMax[0]) * theSurD[0]);
+  theVertMin.Min[1] = static_cast<int>((theDeca[1] + theTotMin[1]) * theSurD[1]);
+  theVertMax.Min[1] = static_cast<int>((theDeca[1] + theTotMax[1]) * theSurD[1]);
+  theVertMin.Min[2] = static_cast<int>((theDeca[2] + theTotMin[2]) * theSurD[2]);
+  theVertMax.Min[2] = static_cast<int>((theDeca[2] + theTotMax[2]) * theSurD[2]);
+  theVertMin.Min[3] = static_cast<int>((theDeca[3] + theTotMin[3]) * theSurD[3]);
+  theVertMax.Min[3] = static_cast<int>((theDeca[3] + theTotMax[3]) * theSurD[3]);
+  theVertMin.Min[4] = static_cast<int>((theDeca[4] + theTotMin[4]) * theSurD[4]);
+  theVertMax.Min[4] = static_cast<int>((theDeca[4] + theTotMax[4]) * theSurD[4]);
+  theVertMin.Min[5] = static_cast<int>((theDeca[5] + theTotMin[5]) * theSurD[5]);
+  theVertMax.Min[5] = static_cast<int>((theDeca[5] + theTotMax[5]) * theSurD[5]);
+  theVertMin.Min[6] = static_cast<int>((theDeca[6] + theTotMin[6]) * theSurD[6]);
+  theVertMax.Min[6] = static_cast<int>((theDeca[6] + theTotMax[6]) * theSurD[6]);
+  theVertMin.Min[7] = static_cast<int>((theDeca[7] + theTotMin[7]) * theSurD[7]);
+  theVertMax.Min[7] = static_cast<int>((theDeca[7] + theTotMax[7]) * theSurD[7]);
+  theVertMin.Max[0] = static_cast<int>((theDeca[8] + theTotMin[8]) * theSurD[8]);
+  theVertMax.Max[0] = static_cast<int>((theDeca[8] + theTotMax[8]) * theSurD[8]);
+  theVertMin.Max[1] = static_cast<int>((theDeca[9] + theTotMin[9]) * theSurD[9]);
+  theVertMax.Max[1] = static_cast<int>((theDeca[9] + theTotMax[9]) * theSurD[9]);
+  theVertMin.Max[2] = static_cast<int>((theDeca[10] + theTotMin[10]) * theSurD[10]);
+  theVertMax.Max[2] = static_cast<int>((theDeca[10] + theTotMax[10]) * theSurD[10]);
+  theVertMin.Max[3] = static_cast<int>((theDeca[11] + theTotMin[11]) * theSurD[11]);
+  theVertMax.Max[3] = static_cast<int>((theDeca[11] + theTotMax[11]) * theSurD[11]);
+  theVertMin.Max[4] = static_cast<int>((theDeca[12] + theTotMin[12]) * theSurD[12]);
+  theVertMax.Max[4] = static_cast<int>((theDeca[12] + theTotMax[12]) * theSurD[12]);
+  theVertMin.Max[5] = static_cast<int>((theDeca[13] + theTotMin[13]) * theSurD[13]);
+  theVertMax.Max[5] = static_cast<int>((theDeca[13] + theTotMax[13]) * theSurD[13]);
+  theVertMin.Max[6] = static_cast<int>((theDeca[14] + theTotMin[14]) * theSurD[14]);
+  theVertMax.Max[6] = static_cast<int>((theDeca[14] + theTotMax[14]) * theSurD[14]);
+  theVertMin.Max[7] = static_cast<int>((theDeca[15] + theTotMin[15]) * theSurD[15]);
+  theVertMax.Max[7] = static_cast<int>((theDeca[15] + theTotMax[15]) * theSurD[15]);
 }
 
 } // namespace
@@ -1890,7 +1888,7 @@ TopAbs_State HLRBRep_Data::Classify(const int               E,
   //  bool rej = false;
   const HLRBRep_Curve& EC = ED.Geometry();
   double               sta, xsta, ysta, zsta, end, xend, yend, zend;
-  double               tol = (double)(ED.Tolerance());
+  double               tol = static_cast<double>(ED.Tolerance());
 
   if (LevelFlag)
   {
@@ -2154,7 +2152,7 @@ TopAbs_State HLRBRep_Data::SimplClassify(const int /*E*/,
   //  bool rej = false;
   const HLRBRep_Curve& EC = ED.Geometry();
   double               sta, xsta, ysta, zsta, dp;
-  double               tol = (double)(ED.Tolerance());
+  double               tol = static_cast<double>(ED.Tolerance());
 
   dp = (p2 - p1) / (Nbp + 1);
 
@@ -2213,9 +2211,9 @@ bool HLRBRep_Data::RejectedPoint(const IntRes2d_IntersectionPoint& PInter,
   const IntRes2d_Transition* Tr2;
   double                     TolZ = myBigSize * 0.00001;
 
-  p1 = ((HLRBRep_Curve*)myLEGeom)->Parameter3d(PInter.ParamOnFirst());
-  p2 = ((HLRBRep_Curve*)myFEGeom)->Parameter3d(PInter.ParamOnSecond());
-  dz = ((HLRBRep_Curve*)myLEGeom)->Z(p1) - ((HLRBRep_Curve*)myFEGeom)->Z(p2);
+  p1 = (const_cast<HLRBRep_Curve*>(myLEGeom))->Parameter3d(PInter.ParamOnFirst());
+  p2 = (myFEGeom)->Parameter3d(PInter.ParamOnSecond());
+  dz = (const_cast<HLRBRep_Curve*>(myLEGeom))->Z(p1) - (myFEGeom)->Z(p2);
 
   if (myLE == myFE)
   { // auto intersection can be inverted
@@ -2253,7 +2251,7 @@ bool HLRBRep_Data::RejectedPoint(const IntRes2d_IntersectionPoint& PInter,
     if (myLE == myFE)
     {
       if (st == TopAbs_IN)
-        ((HLRBRep_EdgeData*)myLEData)->Simple(false);
+        (myLEData)->Simple(false);
     }
     else
     {
@@ -2323,32 +2321,32 @@ bool HLRBRep_Data::RejectedPoint(const IntRes2d_IntersectionPoint& PInter,
       gp_Vec2d Tgsav, Nmsav;
       if (Tr2->PositionOnCurve() == IntRes2d_Head)
       {
-        Ind = ((HLRBRep_EdgeData*)myFEData)->VSta();
+        Ind = (myFEData)->VSta();
         Or2 = TopAbs_FORWARD;
-        AdjustParameter((HLRBRep_EdgeData*)myFEData, true, p2, t2);
-        if (((HLRBRep_EdgeData*)myFEData)->VerAtSta())
+        AdjustParameter(myFEData, true, p2, t2);
+        if ((myFEData)->VerAtSta())
         {
           douteux = true;
-          ((HLRBRep_Curve*)myFEGeom)->D2(psav, Ptsav, Tgsav, Nmsav);
+          (myFEGeom)->D2(psav, Ptsav, Tgsav, Nmsav);
           if (Tgsav.SquareMagnitude() <= DERIVEE_PREMIERE_NULLE)
             Tgsav = Nmsav;
         }
       }
       else
       {
-        Ind = ((HLRBRep_EdgeData*)myFEData)->VEnd();
+        Ind = (myFEData)->VEnd();
         Or2 = TopAbs_REVERSED;
-        AdjustParameter((HLRBRep_EdgeData*)myFEData, false, p2, t2);
-        if (((HLRBRep_EdgeData*)myFEData)->VerAtEnd())
+        AdjustParameter(myFEData, false, p2, t2);
+        if ((myFEData)->VerAtEnd())
         {
           douteux = true;
-          ((HLRBRep_Curve*)myFEGeom)->D2(psav, Ptsav, Tgsav, Nmsav);
+          (myFEGeom)->D2(psav, Ptsav, Tgsav, Nmsav);
           if (Tgsav.SquareMagnitude() <= DERIVEE_PREMIERE_NULLE)
             Tgsav = Nmsav;
         }
       }
       gp_Vec2d TgFE;
-      ((HLRBRep_Curve*)myFEGeom)->D1(p2, Ptsav, TgFE);
+      (myFEGeom)->D1(p2, Ptsav, TgFE);
       if (douteux)
       {
         if (TgFE.XY().Dot(Tgsav.XY()) < 0.0)
@@ -2369,22 +2367,22 @@ bool HLRBRep_Data::RejectedPoint(const IntRes2d_IntersectionPoint& PInter,
       gp_Vec2d Tgsav, Nmsav;
       if (Ori == TopAbs_FORWARD)
       {
-        AdjustParameter((HLRBRep_EdgeData*)myLEData, true, p1, t1);
-        if (((HLRBRep_EdgeData*)myLEData)->VerAtSta())
+        AdjustParameter(myLEData, true, p1, t1);
+        if ((myLEData)->VerAtSta())
         {
           douteux = true;
-          ((HLRBRep_Curve*)myLEGeom)->D2(psav, Ptsav, Tgsav, Nmsav);
+          (const_cast<HLRBRep_Curve*>(myLEGeom))->D2(psav, Ptsav, Tgsav, Nmsav);
           if (Tgsav.SquareMagnitude() <= DERIVEE_PREMIERE_NULLE)
             Tgsav = Nmsav;
         }
       }
       else
       {
-        AdjustParameter((HLRBRep_EdgeData*)myLEData, false, p1, t1);
-        if (((HLRBRep_EdgeData*)myLEData)->VerAtEnd())
+        AdjustParameter(myLEData, false, p1, t1);
+        if ((myLEData)->VerAtEnd())
         {
           douteux = true;
-          ((HLRBRep_Curve*)myLEGeom)->D2(psav, Ptsav, Tgsav, Nmsav);
+          (const_cast<HLRBRep_Curve*>(myLEGeom))->D2(psav, Ptsav, Tgsav, Nmsav);
           if (Tgsav.SquareMagnitude() <= DERIVEE_PREMIERE_NULLE)
             Tgsav = Nmsav;
         }
@@ -2392,7 +2390,7 @@ bool HLRBRep_Data::RejectedPoint(const IntRes2d_IntersectionPoint& PInter,
       if (douteux)
       {
         gp_Vec2d TgLE;
-        ((HLRBRep_Curve*)myLEGeom)->D1(p1, Ptsav, TgLE);
+        (const_cast<HLRBRep_Curve*>(myLEGeom))->D1(p1, Ptsav, TgLE);
         if (TgLE.XY().Dot(Tgsav.XY()) < 0.0)
         {
           if (Orie == TopAbs_FORWARD)
@@ -2441,13 +2439,13 @@ bool HLRBRep_Data::SameVertex(const bool h1, const bool h2)
 {
   int v1, v2;
   if (h1)
-    v1 = ((HLRBRep_EdgeData*)myLEData)->VSta();
+    v1 = (myLEData)->VSta();
   else
-    v1 = ((HLRBRep_EdgeData*)myLEData)->VEnd();
+    v1 = (myLEData)->VEnd();
   if (h2)
-    v2 = ((HLRBRep_EdgeData*)myFEData)->VSta();
+    v2 = (myFEData)->VSta();
   else
-    v2 = ((HLRBRep_EdgeData*)myFEData)->VEnd();
+    v2 = (myFEData)->VEnd();
   bool SameV = v1 == v2;
   if (SameV)
   {
@@ -2458,8 +2456,7 @@ bool HLRBRep_Data::SameVertex(const bool h1, const bool h2)
 
     bool otherCase = true;
 
-    if ((h1 && ((HLRBRep_EdgeData*)myLEData)->OutLVSta())
-        || (!h1 && ((HLRBRep_EdgeData*)myLEData)->OutLVEnd()))
+    if ((h1 && (myLEData)->OutLVSta()) || (!h1 && (myLEData)->OutLVEnd()))
     {
       if (iFaceTest || myLEInternal)
         otherCase = false;
@@ -2469,8 +2466,7 @@ bool HLRBRep_Data::SameVertex(const bool h1, const bool h2)
 
     if (otherCase)
     {
-      if ((h1 && ((HLRBRep_EdgeData*)myLEData)->CutAtSta())
-          || (!h1 && ((HLRBRep_EdgeData*)myLEData)->CutAtEnd()))
+      if ((h1 && (myLEData)->CutAtSta()) || (!h1 && (myLEData)->CutAtEnd()))
       {
         myIntersected = false; // two connected OutLines do not
       } // intersect themselves.

@@ -207,9 +207,9 @@ public:
     return AddVertex(RealToShortReal(theX),
                      RealToShortReal(theY),
                      RealToShortReal(theZ),
-                     float(theNX),
-                     float(theNY),
-                     float(theNZ));
+                     static_cast<float>(theNX),
+                     static_cast<float>(theNY),
+                     static_cast<float>(theNZ));
   }
 
   //! Adds a vertice and vertex normal in the vertex array.
@@ -273,8 +273,8 @@ public:
     return AddVertex(RealToShortReal(theX),
                      RealToShortReal(theY),
                      RealToShortReal(theZ),
-                     float(theTX),
-                     float(theTY));
+                     static_cast<float>(theTX),
+                     static_cast<float>(theTY));
   }
 
   //! Adds a vertice and vertex texture coordinates in the vertex array.
@@ -324,11 +324,11 @@ public:
     return AddVertex(RealToShortReal(theX),
                      RealToShortReal(theY),
                      RealToShortReal(theZ),
-                     float(theNX),
-                     float(theNY),
-                     float(theNZ),
-                     float(theTX),
-                     float(theTY));
+                     static_cast<float>(theNX),
+                     static_cast<float>(theNY),
+                     static_cast<float>(theNZ),
+                     static_cast<float>(theTX),
+                     static_cast<float>(theTY));
   }
 
   //! Adds a vertice,vertex normal and texture in the vertex array.
@@ -356,7 +356,10 @@ public:
   //! @param[in] theVertex 3D coordinates
   void SetVertice(const int theIndex, const gp_Pnt& theVertex)
   {
-    SetVertice(theIndex, float(theVertex.X()), float(theVertex.Y()), float(theVertex.Z()));
+    SetVertice(theIndex,
+               static_cast<float>(theVertex.X()),
+               static_cast<float>(theVertex.Y()),
+               static_cast<float>(theVertex.Z()));
   }
 
   //! Change the vertice in the array.
@@ -369,7 +372,7 @@ public:
     Standard_OutOfRange_Raise_if(theIndex < 1 || theIndex > myAttribs->NbMaxElements(),
                                  "BAD VERTEX index");
     NCollection_Vec3<float>& aVec = *reinterpret_cast<NCollection_Vec3<float>*>(
-      myAttribs->ChangeData() + myPosStride * ((size_t)theIndex - 1));
+      myAttribs->ChangeData() + myPosStride * (static_cast<size_t>(theIndex) - 1));
     aVec.x() = theX;
     aVec.y() = theY;
     aVec.z() = theZ;
@@ -399,7 +402,7 @@ public:
     if (myColData != nullptr)
     {
       NCollection_Vec4<uint8_t>* aColorPtr = reinterpret_cast<NCollection_Vec4<uint8_t>*>(
-        myColData + myColStride * ((size_t)theIndex - 1));
+        myColData + myColStride * (static_cast<size_t>(theIndex) - 1));
       aColorPtr->SetValues(static_cast<uint8_t>(theR * 255.0),
                            static_cast<uint8_t>(theG * 255.0),
                            static_cast<uint8_t>(theB * 255.0),
@@ -418,7 +421,7 @@ public:
     if (myColData != nullptr)
     {
       NCollection_Vec4<uint8_t>* aColorPtr = reinterpret_cast<NCollection_Vec4<uint8_t>*>(
-        myColData + myColStride * ((size_t)theIndex - 1));
+        myColData + myColStride * (static_cast<size_t>(theIndex) - 1));
       (*aColorPtr) = theColor;
     }
     myAttribs->NbElements = (std::max)(theIndex, myAttribs->NbElements);
@@ -436,7 +439,8 @@ public:
                                  "BAD VERTEX index");
     if (myColData != nullptr)
     {
-      *reinterpret_cast<int*>(myColData + myColStride * ((size_t)theIndex - 1)) = theColor32;
+      *reinterpret_cast<int*>(myColData + myColStride * (static_cast<size_t>(theIndex) - 1)) =
+        theColor32;
     }
   }
 
@@ -463,10 +467,10 @@ public:
     if (myNormData != nullptr)
     {
       NCollection_Vec3<float>& aVec = *reinterpret_cast<NCollection_Vec3<float>*>(
-        myNormData + myNormStride * ((size_t)theIndex - 1));
-      aVec.x() = float(theNX);
-      aVec.y() = float(theNY);
-      aVec.z() = float(theNZ);
+        myNormData + myNormStride * (static_cast<size_t>(theIndex) - 1));
+      aVec.x() = static_cast<float>(theNX);
+      aVec.y() = static_cast<float>(theNY);
+      aVec.z() = static_cast<float>(theNZ);
     }
     myAttribs->NbElements = (std::max)(theIndex, myAttribs->NbElements);
   }
@@ -490,9 +494,9 @@ public:
     if (myTexData != nullptr)
     {
       NCollection_Vec2<float>& aVec = *reinterpret_cast<NCollection_Vec2<float>*>(
-        myTexData + myTexStride * ((size_t)theIndex - 1));
-      aVec.x() = float(theTX);
-      aVec.y() = float(theTY);
+        myTexData + myTexStride * (static_cast<size_t>(theIndex) - 1));
+      aVec.x() = static_cast<float>(theTX);
+      aVec.y() = static_cast<float>(theTY);
     }
     myAttribs->NbElements = (std::max)(theIndex, myAttribs->NbElements);
   }
@@ -518,10 +522,10 @@ public:
     Standard_OutOfRange_Raise_if(theRank < 1 || theRank > myAttribs->NbElements,
                                  "BAD VERTEX index");
     const NCollection_Vec3<float>& aVec = *reinterpret_cast<const NCollection_Vec3<float>*>(
-      myAttribs->Data() + myPosStride * ((size_t)theRank - 1));
-    theX = double(aVec.x());
-    theY = double(aVec.y());
-    theZ = double(aVec.z());
+      myAttribs->Data() + myPosStride * (static_cast<size_t>(theRank) - 1));
+    theX = static_cast<double>(aVec.x());
+    theY = static_cast<double>(aVec.y());
+    theZ = static_cast<double>(aVec.z());
   }
 
   //! Returns the vertex color at rank theRank from the vertex table if defined.
@@ -543,7 +547,7 @@ public:
                                    || theIndex > myAttribs->NbElements,
                                  "BAD VERTEX index");
     theColor = *reinterpret_cast<const NCollection_Vec4<uint8_t>*>(
-      myColData + myColStride * ((size_t)theIndex - 1));
+      myColData + myColStride * (static_cast<size_t>(theIndex) - 1));
   }
 
   //! Returns the vertex color values from the vertex table if defined.
@@ -561,10 +565,10 @@ public:
       return;
     }
     const NCollection_Vec4<uint8_t>& aColor = *reinterpret_cast<const NCollection_Vec4<uint8_t>*>(
-      myColData + myColStride * ((size_t)theRank - 1));
-    theR = double(aColor.r()) / 255.0;
-    theG = double(aColor.g()) / 255.0;
-    theB = double(aColor.b()) / 255.0;
+      myColData + myColStride * (static_cast<size_t>(theRank) - 1));
+    theR = static_cast<double>(aColor.r()) / 255.0;
+    theG = static_cast<double>(aColor.g()) / 255.0;
+    theB = static_cast<double>(aColor.b()) / 255.0;
   }
 
   //! Returns the vertex color values from the vertex table if defined.
@@ -576,7 +580,8 @@ public:
                                  "BAD VERTEX index");
     if (myColData != nullptr)
     {
-      theColor = *reinterpret_cast<const int*>(myColData + myColStride * ((size_t)theRank - 1));
+      theColor =
+        *reinterpret_cast<const int*>(myColData + myColStride * (static_cast<size_t>(theRank) - 1));
     }
   }
 
@@ -603,10 +608,10 @@ public:
     if (myNormData != nullptr)
     {
       const NCollection_Vec3<float>& aVec = *reinterpret_cast<const NCollection_Vec3<float>*>(
-        myNormData + myNormStride * ((size_t)theRank - 1));
-      theNX = double(aVec.x());
-      theNY = double(aVec.y());
-      theNZ = double(aVec.z());
+        myNormData + myNormStride * (static_cast<size_t>(theRank) - 1));
+      theNX = static_cast<double>(aVec.x());
+      theNY = static_cast<double>(aVec.y());
+      theNZ = static_cast<double>(aVec.z());
     }
   }
 
@@ -632,9 +637,9 @@ public:
     if (myTexData != nullptr)
     {
       const NCollection_Vec2<float>& aVec = *reinterpret_cast<const NCollection_Vec2<float>*>(
-        myTexData + myTexStride * ((size_t)theRank - 1));
-      theTX = double(aVec.x());
-      theTY = double(aVec.y());
+        myTexData + myTexStride * (static_cast<size_t>(theRank) - 1));
+      theTX = static_cast<double>(aVec.x());
+      theTY = static_cast<double>(aVec.y());
     }
   }
 
@@ -654,7 +659,7 @@ public: //! @name optional array of Indices/Edges for using shared Vertex data
     Standard_OutOfRange_Raise_if(myIndices.IsNull() || theRank < 1
                                    || theRank > myIndices->NbElements,
                                  "BAD EDGE index");
-    return int(myIndices->Index(theRank - 1) + 1);
+    return (myIndices->Index(theRank - 1) + 1);
   }
 
   //! Adds an edge in the range [1,VertexNumber()] in the array.
@@ -821,9 +826,9 @@ public: //! @name optional array of Bounds/Subgroups within primitive array (e.g
                                    || theRank > myBounds->NbBounds,
                                  "BAD BOUND index");
     const NCollection_Vec4<float>& aVec = myBounds->Colors[theRank - 1];
-    theR                                = double(aVec.r());
-    theG                                = double(aVec.g());
-    theB                                = double(aVec.b());
+    theR                                = static_cast<double>(aVec.r());
+    theG                                = static_cast<double>(aVec.g());
+    theB                                = static_cast<double>(aVec.b());
   }
 
   //! Adds a bound of length theEdgeNumber in the bound array
@@ -863,9 +868,9 @@ public: //! @name optional array of Bounds/Subgroups within primitive array (e.g
                                    || theIndex > myBounds->NbMaxBounds,
                                  "BAD BOUND index");
     NCollection_Vec4<float>& aVec = myBounds->Colors[theIndex - 1];
-    aVec.r()                      = float(theR);
-    aVec.g()                      = float(theG);
-    aVec.b()                      = float(theB);
+    aVec.r()                      = static_cast<float>(theR);
+    aVec.g()                      = static_cast<float>(theG);
+    aVec.b()                      = static_cast<float>(theB);
     aVec.a()                      = 1.0f;
     myBounds->NbBounds            = (std::max)(theIndex, myBounds->NbBounds);
   }

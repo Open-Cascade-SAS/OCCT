@@ -68,16 +68,16 @@ char* LDOM_CharReference::Decode(char* theSrc, int& theLen)
       //        End of the loop
       aPtr = strchr(aSrcPtr, '\0');
       if (anIncrCount == 0)
-        theLen = (int)(aPtr - theSrc);
+        theLen = static_cast<int>(aPtr - theSrc);
       else
       {
-        int aByteCount = (int)(aPtr - aSrcPtr);
+        int aByteCount = static_cast<int>(aPtr - aSrcPtr);
         memmove(aDstPtr, aSrcPtr, aByteCount + 1);
-        theLen = (int)(aDstPtr - theSrc) + aByteCount;
+        theLen = static_cast<int>(aDstPtr - theSrc) + aByteCount;
       }
       break;
     }
-    int aByteCount = (int)(aPtr - aSrcPtr);
+    int aByteCount = static_cast<int>(aPtr - aSrcPtr);
     if (aByteCount > 0 && aDstPtr != aSrcPtr)
       memmove(aDstPtr, aSrcPtr, aByteCount);
     aSrcPtr = aPtr;
@@ -93,8 +93,8 @@ char* LDOM_CharReference::Decode(char* theSrc, int& theLen)
       if (aNewPtr[0] != ';' || aChar == 0 || aChar > 255UL)
         //      Error reading an XML string
         return nullptr;
-      aDstPtr[-1] = (char)aChar;
-      anIncrCount += (int)(aNewPtr - aSrcPtr);
+      aDstPtr[-1] = static_cast<char>(aChar);
+      anIncrCount += static_cast<int>(aNewPtr - aSrcPtr);
       aSrcPtr = &aNewPtr[1];
     }
     else if (IS_EQUAL(aSrcPtr + 1, "amp;"))
@@ -162,12 +162,13 @@ char* LDOM_CharReference::Encode(const char* theSrc, int& theLen, const bool isA
                                                  entityRef("&apos;", 6)};
 
   const char *endSrc, *ptrSrc = theSrc;
-  char*       aDest  = (char*)theSrc;
+  char*       aDest  = const_cast<char*>(theSrc);
   int         aCount = 0;
   //    Analyse if there is a non-standard character in the string
   for (;;)
   {
-    const unsigned int iSrc = (unsigned int)*(const unsigned char*)ptrSrc;
+    const unsigned int iSrc =
+      static_cast<unsigned int>(*reinterpret_cast<const unsigned char*>(ptrSrc));
     if (iSrc == 0)
     {
       endSrc = ptrSrc;
@@ -180,15 +181,16 @@ char* LDOM_CharReference::Encode(const char* theSrc, int& theLen, const bool isA
   }
   //    If there are such, copy the string with replacements
   if (!aCount)
-    theLen = (int)(endSrc - theSrc);
+    theLen = static_cast<int>(endSrc - theSrc);
   else
   {
     char* ptrDest = new char[(endSrc - theSrc) + aCount * 5 + 1];
     aDest         = ptrDest;
     for (ptrSrc = theSrc; ptrSrc < endSrc; ptrSrc++)
     {
-      const unsigned int iSrc  = (unsigned int)*(const unsigned char*)ptrSrc;
-      const int          aCode = myTab[iSrc];
+      const unsigned int iSrc =
+        static_cast<unsigned int>(*reinterpret_cast<const unsigned char*>(ptrSrc));
+      const int aCode = myTab[iSrc];
       if (aCode == NORMAL_C) // normal (regular) character
         *ptrDest++ = *ptrSrc;
       else if (aCode == CHAR_REF)
@@ -205,7 +207,7 @@ char* LDOM_CharReference::Encode(const char* theSrc, int& theLen, const bool isA
           ptrDest += entity_ref[aCode].length;
         }
     }
-    theLen   = (int)(ptrDest - aDest);
+    theLen   = static_cast<int>(ptrDest - aDest);
     *ptrDest = '\0';
   }
   return aDest;

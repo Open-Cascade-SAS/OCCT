@@ -128,7 +128,7 @@ static void TraceRevol(const double                                    t,
 static void InGoodPeriod(const double Prec, const double Period, double& Current)
 {
   double Diff = Current - Prec;
-  int    nb   = (int)std::trunc(Diff / Period);
+  int    nb   = static_cast<int>(std::trunc(Diff / Period));
   Current -= nb * Period;
   Diff = Current - Prec;
   if (Diff > Period / 2)
@@ -254,7 +254,7 @@ void GeomFill_LocationGuide::SetRotation(const double PrecAngle, double& LastAng
 
   for (ii = 1; ii <= myNbPts; ii++)
   {
-    t = double(myNbPts - ii) * f + double(ii - 1) * l;
+    t = static_cast<double>(myNbPts - ii) * f + static_cast<double>(ii - 1) * l;
     t /= (myNbPts - 1);
     myCurve->D0(t, P);
     Ok = myLaw->D0(t, T, N, B);
@@ -1419,7 +1419,7 @@ GeomFill_PipeError GeomFill_LocationGuide::ComputeAutomaticLaw(
   ParAndRad = new NCollection_HArray1<gp_Pnt2d>(1, myNbPts);
   for (ii = 1; ii <= myNbPts; ii++)
   {
-    t = double(myNbPts - ii) * f + double(ii - 1) * l;
+    t = static_cast<double>(myNbPts - ii) * f + static_cast<double>(ii - 1) * l;
     t /= (myNbPts - 1);
     myCurve->D0(t, P);
     bool Ok = myLaw->D0(t, T, N, B);

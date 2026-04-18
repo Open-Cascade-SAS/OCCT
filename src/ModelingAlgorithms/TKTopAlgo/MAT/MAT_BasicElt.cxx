@@ -36,14 +36,14 @@ MAT_BasicElt::MAT_BasicElt(const int anInteger)
 
 occ::handle<MAT_Arc> MAT_BasicElt::StartArc() const
 {
-  return (MAT_Arc*)startLeftArc;
+  return static_cast<MAT_Arc*>(startLeftArc);
 }
 
 //=================================================================================================
 
 occ::handle<MAT_Arc> MAT_BasicElt::EndArc() const
 {
-  return (MAT_Arc*)endLeftArc;
+  return static_cast<MAT_Arc*>(endLeftArc);
 }
 
 //=================================================================================================

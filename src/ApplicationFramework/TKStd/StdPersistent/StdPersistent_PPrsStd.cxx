@@ -25,7 +25,7 @@ void StdPersistent_PPrsStd::AISPresentation::Import(
     theAttribute->SetDriverGUID(Standard_GUID(aDriverGUID->String().ToExtString()));
 
   if (myColor != -1)
-    theAttribute->SetColor(static_cast<Quantity_NameOfColor>((int)myColor));
+    theAttribute->SetColor(static_cast<Quantity_NameOfColor>(myColor));
   else
     theAttribute->UnsetColor();
 

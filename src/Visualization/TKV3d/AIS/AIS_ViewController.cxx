@@ -87,7 +87,7 @@ AIS_ViewController::AIS_ViewController()
       myTouchToleranceScale(1.0f),
       myTouchClickThresholdPx(3.0f),
       myTouchRotationThresholdPx(6.0f),
-      myTouchZRotationThreshold(float(2.0 * M_PI / 180.0)),
+      myTouchZRotationThreshold(static_cast<float>(2.0 * M_PI / 180.0)),
       myTouchPanThresholdPx(4.0f),
       myTouchZoomThresholdPx(6.0f),
       myTouchZoomRatio(0.13f),
@@ -118,42 +118,45 @@ AIS_ViewController::AIS_ViewController()
   myRubberBand->SetDisplayMode(0);
   myRubberBand->SetMutable(true);
 
-  myMouseGestureMap.Bind((unsigned int)Aspect_VKeyMouse_LeftButton, AIS_MouseGesture_RotateOrbit);
-  myMouseGestureMap.Bind((unsigned int)Aspect_VKeyMouse_LeftButton
-                           | (unsigned int)Aspect_VKeyFlags_CTRL,
+  myMouseGestureMap.Bind(static_cast<unsigned int>(Aspect_VKeyMouse_LeftButton),
+                         AIS_MouseGesture_RotateOrbit);
+  myMouseGestureMap.Bind(static_cast<unsigned int>(Aspect_VKeyMouse_LeftButton)
+                           | static_cast<unsigned int>(Aspect_VKeyFlags_CTRL),
                          AIS_MouseGesture_Zoom);
-  myMouseGestureMap.Bind((unsigned int)Aspect_VKeyMouse_LeftButton
-                           | (unsigned int)Aspect_VKeyFlags_SHIFT,
+  myMouseGestureMap.Bind(static_cast<unsigned int>(Aspect_VKeyMouse_LeftButton)
+                           | static_cast<unsigned int>(Aspect_VKeyFlags_SHIFT),
                          AIS_MouseGesture_Pan);
-  myMouseGestureMap.Bind((unsigned int)Aspect_VKeyMouse_LeftButton
-                           | (unsigned int)Aspect_VKeyFlags_ALT,
+  myMouseGestureMap.Bind(static_cast<unsigned int>(Aspect_VKeyMouse_LeftButton)
+                           | static_cast<unsigned int>(Aspect_VKeyFlags_ALT),
                          AIS_MouseGesture_SelectRectangle);
-  myMouseGestureMap.Bind((unsigned int)Aspect_VKeyMouse_LeftButton
-                           | (unsigned int)Aspect_VKeyFlags_ALT
-                           | (unsigned int)Aspect_VKeyFlags_SHIFT,
+  myMouseGestureMap.Bind(static_cast<unsigned int>(Aspect_VKeyMouse_LeftButton)
+                           | static_cast<unsigned int>(Aspect_VKeyFlags_ALT)
+                           | static_cast<unsigned int>(Aspect_VKeyFlags_SHIFT),
                          AIS_MouseGesture_SelectRectangle);
 
-  myMouseSelectionSchemes.Bind((unsigned int)Aspect_VKeyMouse_LeftButton,
+  myMouseSelectionSchemes.Bind(static_cast<unsigned int>(Aspect_VKeyMouse_LeftButton),
                                AIS_SelectionScheme_Replace);
-  myMouseSelectionSchemes.Bind((unsigned int)Aspect_VKeyMouse_LeftButton
-                                 | (unsigned int)Aspect_VKeyFlags_ALT,
+  myMouseSelectionSchemes.Bind(static_cast<unsigned int>(Aspect_VKeyMouse_LeftButton)
+                                 | static_cast<unsigned int>(Aspect_VKeyFlags_ALT),
                                AIS_SelectionScheme_Replace);
-  myMouseSelectionSchemes.Bind((unsigned int)Aspect_VKeyMouse_LeftButton
-                                 | (unsigned int)Aspect_VKeyFlags_SHIFT,
+  myMouseSelectionSchemes.Bind(static_cast<unsigned int>(Aspect_VKeyMouse_LeftButton)
+                                 | static_cast<unsigned int>(Aspect_VKeyFlags_SHIFT),
                                AIS_SelectionScheme_XOR);
-  myMouseSelectionSchemes.Bind((unsigned int)Aspect_VKeyMouse_LeftButton
-                                 | (unsigned int)Aspect_VKeyFlags_ALT
-                                 | (unsigned int)Aspect_VKeyFlags_SHIFT,
+  myMouseSelectionSchemes.Bind(static_cast<unsigned int>(Aspect_VKeyMouse_LeftButton)
+                                 | static_cast<unsigned int>(Aspect_VKeyFlags_ALT)
+                                 | static_cast<unsigned int>(Aspect_VKeyFlags_SHIFT),
                                AIS_SelectionScheme_XOR);
 
-  myMouseGestureMap.Bind((unsigned int)Aspect_VKeyMouse_RightButton, AIS_MouseGesture_Zoom);
-  myMouseGestureMap.Bind((unsigned int)Aspect_VKeyMouse_RightButton
-                           | (unsigned int)Aspect_VKeyFlags_CTRL,
+  myMouseGestureMap.Bind(static_cast<unsigned int>(Aspect_VKeyMouse_RightButton),
+                         AIS_MouseGesture_Zoom);
+  myMouseGestureMap.Bind(static_cast<unsigned int>(Aspect_VKeyMouse_RightButton)
+                           | static_cast<unsigned int>(Aspect_VKeyFlags_CTRL),
                          AIS_MouseGesture_RotateOrbit);
 
-  myMouseGestureMap.Bind((unsigned int)Aspect_VKeyMouse_MiddleButton, AIS_MouseGesture_Pan);
-  myMouseGestureMap.Bind((unsigned int)Aspect_VKeyMouse_MiddleButton
-                           | (unsigned int)Aspect_VKeyFlags_CTRL,
+  myMouseGestureMap.Bind(static_cast<unsigned int>(Aspect_VKeyMouse_MiddleButton),
+                         AIS_MouseGesture_Pan);
+  myMouseGestureMap.Bind(static_cast<unsigned int>(Aspect_VKeyMouse_MiddleButton)
+                           | static_cast<unsigned int>(Aspect_VKeyFlags_CTRL),
                          AIS_MouseGesture_Pan);
 
   myMouseGestureMapDrag.Bind(Aspect_VKeyMouse_LeftButton, AIS_MouseGesture_Drag);
@@ -425,7 +428,8 @@ void AIS_ViewController::flushGestures(const occ::handle<AIS_InteractiveContext>
         myGL.OrbitRotation.ToRotate              = true;
         myGL.OrbitRotation.PointTo = myGL.OrbitRotation.PointStart + aRotDelta * aRotAccel;
         myGL.Dragging.ToMove       = true;
-        myGL.Dragging.PointTo.SetValues((int)aTouch.To.x(), (int)aTouch.To.y());
+        myGL.Dragging.PointTo.SetValues(static_cast<int>(aTouch.To.x()),
+                                        static_cast<int>(aTouch.To.y()));
       }
       else
       {
@@ -433,7 +437,8 @@ void AIS_ViewController::flushGestures(const occ::handle<AIS_InteractiveContext>
         myGL.ViewRotation.ToRotate               = true;
         myGL.ViewRotation.PointTo = myGL.ViewRotation.PointStart + aRotDelta * aRotAccel;
         myGL.Dragging.ToMove      = true;
-        myGL.Dragging.PointTo.SetValues((int)aTouch.To.x(), (int)aTouch.To.y());
+        myGL.Dragging.PointTo.SetValues(static_cast<int>(aTouch.To.x()),
+                                        static_cast<int>(aTouch.To.y()));
       }
 
       aTouch.From = aTouch.To;
@@ -483,7 +488,7 @@ void AIS_ViewController::flushGestures(const occ::handle<AIS_InteractiveContext>
         aRotAngle         = std::atan(aNumerator / aDenomenator);
       }
 
-      if (std::abs(aRotAngle) > double(myTouchZRotationThreshold))
+      if (std::abs(aRotAngle) > static_cast<double>(myTouchZRotationThreshold))
       {
         myGL.ZRotate.ToRotate = true;
         myGL.ZRotate.Angle    = aRotAngle;
@@ -494,7 +499,7 @@ void AIS_ViewController::flushGestures(const occ::handle<AIS_InteractiveContext>
     if (std::abs(aDeltaSize) > aTolScale * myTouchZoomThresholdPx)
     {
       // zoom
-      aDeltaSize *= double(myTouchZoomRatio);
+      aDeltaSize *= static_cast<double>(myTouchZoomRatio);
       Aspect_ScrollDelta aParams(NCollection_Vec2<int>(aPinchCenterStart), aDeltaSize);
       myGL.ZoomActions.Append(aParams);
       anIsClearDev = true;
@@ -514,8 +519,8 @@ void AIS_ViewController::flushGestures(const occ::handle<AIS_InteractiveContext>
       }
 
       myGL.Panning.ToPan     = true;
-      myGL.Panning.Delta.x() = int(aPinchCenterXDev);
-      myGL.Panning.Delta.y() = int(-aPinchCenterYDev);
+      myGL.Panning.Delta.x() = static_cast<int>(aPinchCenterXDev);
+      myGL.Panning.Delta.y() = static_cast<int>(-aPinchCenterYDev);
       anIsClearDev           = true;
     }
 
@@ -688,7 +693,7 @@ bool AIS_ViewController::UpdateMouseButtons(const NCollection_Vec2<int>& thePoin
   if (theButtons == Aspect_VKeyMouse_NONE && myMouseSingleButton > 0)
   {
     const NCollection_Vec2<int> aDelta = thePoint - myMousePressPoint;
-    if (double(aDelta.cwiseAbs().maxComp()) < aTolClick)
+    if (static_cast<double>(aDelta.cwiseAbs().maxComp()) < aTolClick)
     {
       ++myMouseClickCounter;
 
@@ -715,7 +720,7 @@ bool AIS_ViewController::UpdateMouseButtons(const NCollection_Vec2<int>& thePoin
         myMouseClickCounter = 0;
       }
       toUpdateView = UpdateMouseClick(thePoint,
-                                      (Aspect_VKeyMouse)myMouseSingleButton,
+                                      static_cast<Aspect_VKeyMouse>(myMouseSingleButton),
                                       theModifiers,
                                       isDoubleClick)
                      || toUpdateView;
@@ -763,7 +768,7 @@ bool AIS_ViewController::UpdateMouseButtons(const NCollection_Vec2<int>& thePoin
       if (myMouseClickCounter == 1)
       {
         const NCollection_Vec2<int> aDelta = thePoint - myMousePressPoint;
-        if (double(aDelta.cwiseAbs().maxComp()) >= aTolClick)
+        if (static_cast<double>(aDelta.cwiseAbs().maxComp()) >= aTolClick)
         {
           myMouseClickTimer.Stop();
           myMouseClickCounter = 0;
@@ -901,7 +906,7 @@ bool AIS_ViewController::UpdateMousePosition(const NCollection_Vec2<int>& thePoi
   {
     const double aTolClick = (theIsEmulated ? myTouchToleranceScale : 1.0) * myMouseClickThreshold;
     const NCollection_Vec2<int> aPressDelta = thePoint - myMousePressPoint;
-    if (double(aPressDelta.cwiseAbs().maxComp()) >= aTolClick)
+    if (static_cast<double>(aPressDelta.cwiseAbs().maxComp()) >= aTolClick)
     {
       myMouseClickTimer.Stop();
       myMouseClickCounter      = 0;
@@ -982,7 +987,8 @@ bool AIS_ViewController::UpdateMousePosition(const NCollection_Vec2<int>& thePoi
       }
 
       const double aRotTol =
-        theIsEmulated ? double(myTouchToleranceScale) * myTouchRotationThresholdPx : 0.0;
+        theIsEmulated ? static_cast<double>(myTouchToleranceScale) * myTouchRotationThresholdPx
+                      : 0.0;
       const NCollection_Vec2<double> aDeltaF(aDelta);
       if (std::abs(aDeltaF.x()) + std::abs(aDeltaF.y()) > aRotTol)
       {
@@ -1019,7 +1025,7 @@ bool AIS_ViewController::UpdateMousePosition(const NCollection_Vec2<int>& thePoi
         break;
       }
       const double aZoomTol =
-        theIsEmulated ? double(myTouchToleranceScale) * myTouchZoomThresholdPx : 0.0;
+        theIsEmulated ? static_cast<double>(myTouchToleranceScale) * myTouchZoomThresholdPx : 0.0;
       const double aScrollDelta =
         myMouseActiveGesture == AIS_MouseGesture_Zoom ? aDelta.x() : aDelta.y();
       if (std::abs(aScrollDelta) > aZoomTol)
@@ -1042,7 +1048,7 @@ bool AIS_ViewController::UpdateMousePosition(const NCollection_Vec2<int>& thePoi
         break;
       }
       const double aPanTol =
-        theIsEmulated ? double(myTouchToleranceScale) * myTouchPanThresholdPx : 0.0;
+        theIsEmulated ? static_cast<double>(myTouchToleranceScale) * myTouchPanThresholdPx : 0.0;
       const NCollection_Vec2<double> aDeltaF(aDelta);
       if (std::abs(aDeltaF.x()) + std::abs(aDeltaF.y()) > aPanTol)
       {
@@ -1080,8 +1086,9 @@ bool AIS_ViewController::UpdateMousePosition(const NCollection_Vec2<int>& thePoi
       }
 
       const double aDragTol =
-        theIsEmulated ? double(myTouchToleranceScale) * myTouchDraggingThresholdPx : 0.0;
-      if (double(std::abs(aDelta.x()) + std::abs(aDelta.y())) > aDragTol)
+        theIsEmulated ? static_cast<double>(myTouchToleranceScale) * myTouchDraggingThresholdPx
+                      : 0.0;
+      if (static_cast<double>(std::abs(aDelta.x()) + std::abs(aDelta.y())) > aDragTol)
       {
         const double aRotAccel =
           myNavigationMode == AIS_NavigationMode_FirstPersonWalk ? myMouseAccel : myOrbitAccel;
@@ -1131,7 +1138,8 @@ void AIS_ViewController::AddTouchPoint(size_t                          theId,
     if (myToAllowDragging)
     {
       myUI.Dragging.ToStart = true;
-      myUI.Dragging.PointStart.SetValues((int)thePnt.x(), (int)thePnt.y());
+      myUI.Dragging.PointStart.SetValues(static_cast<int>(thePnt.x()),
+                                         static_cast<int>(thePnt.y()));
     }
   }
   else if (myTouchPoints.Extent() == 2)
@@ -1176,7 +1184,7 @@ bool AIS_ViewController::RemoveTouchPoint(size_t theId, bool theClearSelectPnts)
 
     myUI.Dragging.ToStop = true;
 
-    if (theId == (size_t)-1)
+    if (theId == static_cast<size_t>(-1))
     {
       // abort clicking
       myTouchClick.From = NCollection_Vec2<double>(-1);
@@ -1213,7 +1221,8 @@ void AIS_ViewController::UpdateTouchPoint(size_t theId, const NCollection_Vec2<d
 {
   Aspect_WindowInputListener::UpdateTouchPoint(theId, thePnt);
 
-  const double aTouchTol = double(myTouchToleranceScale) * double(myTouchClickThresholdPx);
+  const double aTouchTol =
+    static_cast<double>(myTouchToleranceScale) * static_cast<double>(myTouchClickThresholdPx);
   if (myTouchPoints.Extent() == 1 && (myTouchClick.From - thePnt).cwiseAbs().maxComp() > aTouchTol)
   {
     myTouchClick.From.SetValues(-1.0, -1.0);
@@ -1456,8 +1465,8 @@ void AIS_ViewController::handlePanning(const occ::handle<V3d_View>& theView)
   const gp_Pnt aViewDims = aCam->ViewDimensions (anEyeToPnt.Dot (aCam->Direction().XYZ())); // view dimensions at 3D point
   // clang-format on
   const NCollection_Vec2<double> aDxy(
-    -aViewDims.X() * myGL.Panning.Delta.x() / double(aWinSize.x()),
-    -aViewDims.X() * myGL.Panning.Delta.y() / double(aWinSize.x()));
+    -aViewDims.X() * myGL.Panning.Delta.x() / static_cast<double>(aWinSize.x()),
+    -aViewDims.X() * myGL.Panning.Delta.y() / static_cast<double>(aWinSize.x()));
 
   // theView->Translate (aCam, aDxy.x(), aDxy.y());
   gp_Trsf      aPanTrsf;
@@ -1483,9 +1492,9 @@ void AIS_ViewController::handleZRotate(const occ::handle<V3d_View>& theView)
   NCollection_Vec2<int> aViewPort;
   theView->Window()->Size(aViewPort.x(), aViewPort.y());
   NCollection_Vec2<double> aRotPnt(0.99 * aViewPort.x(), 0.5 * aViewPort.y());
-  theView->StartRotation(int(aRotPnt.x()), int(aRotPnt.y()), 0.4);
+  theView->StartRotation(static_cast<int>(aRotPnt.x()), static_cast<int>(aRotPnt.y()), 0.4);
   aRotPnt.y() += myGL.ZRotate.Angle * aViewPort.y();
-  theView->Rotation(int(aRotPnt.x()), int(aRotPnt.y()));
+  theView->Rotation(static_cast<int>(aRotPnt.x()), static_cast<int>(aRotPnt.y()));
   theView->Invalidate();
   theView->View()->SynchronizeXRPosedToBaseCamera();
 }
@@ -1580,8 +1589,8 @@ void AIS_ViewController::handleZoom(const occ::handle<V3d_View>& theView,
     theView->Window()->Size(aWinSize.x(), aWinSize.y());
     const NCollection_Vec2<double> aWinSizeF(aWinSize);
     const NCollection_Vec2<double> aPanFromCenterPx(
-      double(theParams.Point.x()) - 0.5 * aWinSizeF.x(),
-      aWinSizeF.y() - double(theParams.Point.y()) - 1.0 - 0.5 * aWinSizeF.y());
+      static_cast<double>(theParams.Point.x()) - 0.5 * aWinSizeF.x(),
+      aWinSizeF.y() - static_cast<double>(theParams.Point.y()) - 1.0 - 0.5 * aWinSizeF.y());
     aDxy.x() += -aViewDims1.X() * aPanFromCenterPx.x() / aWinSizeF.x();
     aDxy.y() += -aViewDims1.Y() * aPanFromCenterPx.y() / aWinSizeF.y();
   }
@@ -1659,12 +1668,12 @@ void AIS_ViewController::handleOrbitRotation(const occ::handle<V3d_View>& theVie
     theView->Window()->Size(aWinXY.x(), aWinXY.y());
 
     // Calculate deltas exactly as in original
-    double aYawAngleDelta =
-      ((myGL.OrbitRotation.PointStart.x() - myGL.OrbitRotation.PointTo.x()) / double(aWinXY.x()))
-      * (M_PI * 0.5);
-    double aPitchAngleDelta =
-      ((myGL.OrbitRotation.PointTo.y() - myGL.OrbitRotation.PointStart.y()) / double(aWinXY.y()))
-      * (M_PI * 0.5);
+    double aYawAngleDelta = ((myGL.OrbitRotation.PointStart.x() - myGL.OrbitRotation.PointTo.x())
+                             / static_cast<double>(aWinXY.x()))
+                            * (M_PI * 0.5);
+    double aPitchAngleDelta = ((myGL.OrbitRotation.PointTo.y() - myGL.OrbitRotation.PointStart.y())
+                               / static_cast<double>(aWinXY.y()))
+                              * (M_PI * 0.5);
 
     // Z-up locking: clamp pitch to prevent camera flipping at top/bottom
     if (std::abs(aPitchAngleDelta) > gp::Resolution())
@@ -1733,8 +1742,8 @@ void AIS_ViewController::handleOrbitRotation(const occ::handle<V3d_View>& theVie
 
     NCollection_Vec2<double> aWinXY;
     theView->Size(aWinXY.x(), aWinXY.y());
-    const double rx = (double)theView->Convert(aWinXY.x());
-    const double ry = (double)theView->Convert(aWinXY.y());
+    const double rx = static_cast<double>(theView->Convert(aWinXY.x()));
+    const double ry = static_cast<double>(theView->Convert(aWinXY.y()));
 
     const double THE_2PI = M_PI * 2.0;
     double aDX = (myGL.OrbitRotation.PointTo.x() - myGL.OrbitRotation.PointStart.x()) * M_PI / rx;
@@ -1837,12 +1846,12 @@ void AIS_ViewController::handleViewRotation(const occ::handle<V3d_View>& theView
   // Calculate rotation deltas from mouse movement
   NCollection_Vec2<int> aWinXY;
   theView->Window()->Size(aWinXY.x(), aWinXY.y());
-  double aYawAngleDelta =
-    ((myGL.ViewRotation.PointStart.x() - myGL.ViewRotation.PointTo.x()) / double(aWinXY.x()))
-    * (M_PI * 0.5);
-  double aPitchAngleDelta =
-    -((myGL.ViewRotation.PointStart.y() - myGL.ViewRotation.PointTo.y()) / double(aWinXY.y()))
-    * (M_PI * 0.5);
+  double aYawAngleDelta = ((myGL.ViewRotation.PointStart.x() - myGL.ViewRotation.PointTo.x())
+                           / static_cast<double>(aWinXY.x()))
+                          * (M_PI * 0.5);
+  double aPitchAngleDelta = -((myGL.ViewRotation.PointStart.y() - myGL.ViewRotation.PointTo.y())
+                              / static_cast<double>(aWinXY.y()))
+                            * (M_PI * 0.5);
 
   // Add extra rotation from parameters
   aYawAngleDelta += theYawExtra;
@@ -1965,8 +1974,8 @@ gp_Pnt AIS_ViewController::GravityPoint(const occ::handle<AIS_InteractiveContext
   {
     case AIS_RotationMode_PickLast:
     case AIS_RotationMode_PickCenter: {
-      NCollection_Vec2<int> aCursor((int)myGL.OrbitRotation.PointStart.x(),
-                                    (int)myGL.OrbitRotation.PointStart.y());
+      NCollection_Vec2<int> aCursor(static_cast<int>(myGL.OrbitRotation.PointStart.x()),
+                                    static_cast<int>(myGL.OrbitRotation.PointStart.y()));
       if (myRotationMode == AIS_RotationMode_PickCenter)
       {
         NCollection_Vec2<int> aViewPort;
@@ -2064,9 +2073,9 @@ void AIS_ViewController::handleViewOrientationKeys(
     {Aspect_VKey_ViewBack, V3d_TypeOfOrientation_Zup_Back},
     {Aspect_VKey_ViewAxoLeftProj, V3d_TypeOfOrientation_Zup_AxoLeft},
     {Aspect_VKey_ViewAxoRightProj, V3d_TypeOfOrientation_Zup_AxoRight},
-    {Aspect_VKey_ViewRoll90CW, (V3d_TypeOfOrientation)-1},
-    {Aspect_VKey_ViewRoll90CCW, (V3d_TypeOfOrientation)-1},
-    {Aspect_VKey_ViewFitAll, (V3d_TypeOfOrientation)-1}};
+    {Aspect_VKey_ViewRoll90CW, static_cast<V3d_TypeOfOrientation>(-1)},
+    {Aspect_VKey_ViewRoll90CCW, static_cast<V3d_TypeOfOrientation>(-1)},
+    {Aspect_VKey_ViewFitAll, static_cast<V3d_TypeOfOrientation>(-1)}};
   {
     const size_t aNbKeys     = sizeof(THE_VIEW_KEYS) / sizeof(*THE_VIEW_KEYS);
     const double anEventTime = EventTime();
@@ -2084,7 +2093,7 @@ void AIS_ViewController::handleViewOrientationKeys(
         aCameraBack = theView->Camera();
         theView->SetCamera(new Graphic3d_Camera(aCameraBack));
       }
-      if (aKeyAction.Orientation != (V3d_TypeOfOrientation)-1)
+      if (aKeyAction.Orientation != static_cast<V3d_TypeOfOrientation>(-1))
       {
         theView->SetProj(aKeyAction.Orientation);
         FitAllAuto(theCtx, theView);
@@ -3393,7 +3402,8 @@ void AIS_ViewController::handleXRPresentations(const occ::handle<AIS_Interactive
       aRole = Aspect_XRTrackedDeviceRole_RightHand;
     }
 
-    if (!aPosePrs.IsNull() && aPosePrs->UnitFactor() != (float)theView->View()->UnitFactor())
+    if (!aPosePrs.IsNull()
+        && aPosePrs->UnitFactor() != static_cast<float>(theView->View()->UnitFactor()))
     {
       theCtx->Remove(aPosePrs, false);
       aPosePrs.Nullify();
@@ -3415,7 +3425,7 @@ void AIS_ViewController::handleXRPresentations(const occ::handle<AIS_Interactive
       {
         aPosePrs = new AIS_XRTrackedDevice();
       }
-      aPosePrs->SetUnitFactor((float)theView->View()->UnitFactor());
+      aPosePrs->SetUnitFactor(static_cast<float>(theView->View()->UnitFactor()));
       aPosePrs->SetMutable(true);
       aPosePrs->SetInfiniteState(true);
     }
@@ -3475,7 +3485,7 @@ void AIS_ViewController::handleXRPresentations(const occ::handle<AIS_Interactive
       }
       aPosePrs->SetLaserColor(myXRLaserTeleColor);
     }
-    aPosePrs->SetLaserLength((float)aLaserLen);
+    aPosePrs->SetLaserLength(static_cast<float>(aLaserLen));
   }
 }
 

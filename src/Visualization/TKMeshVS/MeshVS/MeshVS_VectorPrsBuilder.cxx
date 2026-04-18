@@ -260,9 +260,9 @@ void MeshVS_VectorPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& Prs,
             Y += aCoords(3 * i - 1);
             Z += aCoords(3 * i);
           }
-          X /= double(NbNodes);
-          Y /= double(NbNodes);
-          Z /= double(NbNodes);
+          X /= static_cast<double>(NbNodes);
+          Y /= static_cast<double>(NbNodes);
+          Z /= static_cast<double>(NbNodes);
         }
         else
         {

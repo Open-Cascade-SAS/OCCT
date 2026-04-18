@@ -6583,9 +6583,9 @@ static IntPatch_ImpImpIntersection::IntStatus CyCyNoGeometric(
     {
       double anAngle = 1.0e0 - aDeflection;
       anAngle        = 2.0e0 * std::acos(anAngle);
-      aNbP           = (int)(2. * M_PI / anAngle) + 1;
+      aNbP           = static_cast<int>(2. * M_PI / anAngle) + 1;
     }
-    anOptdu = 2. * M_PI_2 / (double)(aNbP - 1);
+    anOptdu = 2. * M_PI_2 / static_cast<double>(aNbP - 1);
     break;
   }
   //

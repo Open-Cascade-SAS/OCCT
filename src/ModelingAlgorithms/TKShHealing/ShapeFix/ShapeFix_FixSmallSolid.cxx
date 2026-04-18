@@ -468,7 +468,7 @@ TopoDS_Shape ShapeFix_FixSmallSolid::Merge(const TopoDS_Shape&                  
       // and corresponding small solids' shells
       const TopoDS_Shape&             aBaseShell = aShellIter.Key();
       NCollection_List<TopoDS_Shape>& aShellsToBeMerged =
-        (NCollection_List<TopoDS_Shape>&)aShellIter.Value();
+        const_cast<NCollection_List<TopoDS_Shape>&>(aShellIter.Value());
       NCollection_List<TopoDS_Shape>* aShellsToBeAddedPtr = aShellsToAdd.ChangeSeek(aBaseShell);
 
       // merge needed shells

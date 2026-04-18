@@ -1126,7 +1126,7 @@ bool StepAP209_Construct::CreateAddingEntities(
   smodel->AddEntity(CUTO);
   smodel->SetIdentLabel(CUTO, smodel->Number(CUTO));
   occ::handle<StepBasic_LocalTime> LT = new StepBasic_LocalTime;
-  LT->Init(date.Hour(), true, date.Minute(), true, (double)date.Second(), CUTO);
+  LT->Init(date.Hour(), true, date.Minute(), true, static_cast<double>(date.Second()), CUTO);
   smodel->AddWithRefs(LT);
   smodel->SetIdentLabel(LT, smodel->Number(LT));
   occ::handle<StepBasic_DateAndTime> DAT = new StepBasic_DateAndTime;

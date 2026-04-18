@@ -42,7 +42,7 @@ void IFSelect_DispPerSignature::SetSignCounter(const occ::handle<IFSelect_SignCo
 
 const char* IFSelect_DispPerSignature::SignName() const
 {
-  return (const char*)(thesign.IsNull() ? "???" : thesign->Name());
+  return (thesign.IsNull() ? "???" : thesign->Name());
 }
 
 TCollection_AsciiString IFSelect_DispPerSignature::Label() const

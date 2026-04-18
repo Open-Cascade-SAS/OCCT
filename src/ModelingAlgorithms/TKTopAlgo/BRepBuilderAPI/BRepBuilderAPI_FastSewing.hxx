@@ -109,7 +109,7 @@ protected:
   //! Sets status. Returns numeric value of the status set
   FS_VARStatuses SetStatus(FS_Statuses theStatus)
   {
-    const FS_VARStatuses aStatusID = (FS_VARStatuses)(theStatus);
+    const FS_VARStatuses aStatusID = static_cast<FS_VARStatuses>(theStatus);
     myStatusList |= aStatusID;
     return aStatusID;
   }

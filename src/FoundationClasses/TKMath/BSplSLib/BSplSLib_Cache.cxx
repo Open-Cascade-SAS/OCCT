@@ -31,7 +31,7 @@ namespace
 double* ConvertArray(const occ::handle<NCollection_HArray2<double>>& theHArray)
 {
   const NCollection_Array2<double>& anArray = theHArray->Array2();
-  return (double*)&(anArray(anArray.LowerRow(), anArray.LowerCol()));
+  return const_cast<double*>(&(anArray(anArray.LowerRow(), anArray.LowerCol())));
 }
 
 //=================================================================================================

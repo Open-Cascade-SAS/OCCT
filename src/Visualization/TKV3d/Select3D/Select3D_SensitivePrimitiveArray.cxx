@@ -175,7 +175,7 @@ Select3D_SensitivePrimitiveArray::Select3D_SensitivePrimitiveArray(
   const occ::handle<SelectMgr_EntityOwner>& theOwnerId)
     : Select3D_SensitiveSet(theOwnerId),
       myPosData(nullptr),
-      myPosStride(size_t(-1)),
+      myPosStride(static_cast<size_t>(-1)),
       myPrimType(Graphic3d_TOPA_UNDEFINED),
       myIndexLower(0),
       myIndexUpper(0),
@@ -256,7 +256,7 @@ bool Select3D_SensitivePrimitiveArray::InitTriangulation(
   myIndexLower = 0;
   myIndexUpper = 0;
   myPosData    = nullptr;
-  myPosStride  = size_t(-1);
+  myPosStride  = static_cast<size_t>(-1);
   myBvhIndices.release();
   myIs3d         = false;
   myInitLocation = theInitLoc;
@@ -391,7 +391,7 @@ bool Select3D_SensitivePrimitiveArray::InitTriangulation(
   {
     myBvhIndices.SetIndex(myBvhIndices.NbElements++, aTriFrom + aPatchFrom, aPatchSize);
   }
-  aCenter /= float(aNbTris);
+  aCenter /= static_cast<float>(aNbTris);
 
   myCDG3D = vecToPnt(aCenter);
   if (theToEvalMinMax)
@@ -421,7 +421,7 @@ bool Select3D_SensitivePrimitiveArray::InitPoints(
   myIndexLower = 0;
   myIndexUpper = 0;
   myPosData    = nullptr;
-  myPosStride  = size_t(-1);
+  myPosStride  = static_cast<size_t>(-1);
   myBvhIndices.release();
   myIs3d         = false;
   myInitLocation = theInitLoc;
@@ -567,7 +567,7 @@ bool Select3D_SensitivePrimitiveArray::InitPoints(
   {
     myBvhIndices.SetIndex(myBvhIndices.NbElements++, theIndexLower + aPatchFrom, aPatchSize);
   }
-  aCenter /= float(aNbPoints);
+  aCenter /= static_cast<float>(aNbPoints);
 
   myCDG3D = vecToPnt(aCenter);
   if (theToEvalMinMax)

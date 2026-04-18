@@ -146,7 +146,7 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const GccEnt_QualifiedLin& Qualifie
               cirsol(NbrSol) = gp_Circ2d(axe, Radius);
               //             ======================================
               gp_Dir2d dc1(origin1.XY() - Center.XY());
-              sign = (int)dc1.Dot(normL1);
+              sign = static_cast<int>(dc1.Dot(normL1));
               if (!Qualified1.IsUnqualified())
               {
                 qualifier1(NbrSol) = Qualified1.Qualifier();

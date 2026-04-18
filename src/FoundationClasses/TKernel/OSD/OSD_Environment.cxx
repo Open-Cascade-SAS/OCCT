@@ -147,7 +147,7 @@ void OSD_Environment::Build()
     // Allocation memoire. Surtout tout la heap!
     index = Ibuffer++;
     char** aTmp;
-    aTmp = (char**)realloc(buffer, Ibuffer * sizeof(char*));
+    aTmp = static_cast<char**>(realloc(buffer, Ibuffer * sizeof(char*)));
     if (aTmp)
     {
       buffer = aTmp;
@@ -160,7 +160,7 @@ void OSD_Environment::Build()
   }
 
   // create a new entry in the buffer and add it to environment
-  buffer[index] = (char*)malloc(len + myValue.Length() + 2);
+  buffer[index] = static_cast<char*>(malloc(len + myValue.Length() + 2));
   Sprintf(buffer[index], "%s=%s", myName.ToCString(), myValue.ToCString());
   putenv(buffer[index]);
 

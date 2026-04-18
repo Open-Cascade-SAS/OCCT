@@ -181,7 +181,7 @@ int NCollection_UBTreeFiller<TheObjType, TheBndType>::CheckTree(Standard_OStream
 {
   int          aNumber(0);
   const double aLen  = checkNode(myTree.Root(), 0, aNumber);
-  const double num   = (double)aNumber;
+  const double num   = static_cast<double>(aNumber);
   const double aLen1 = sqrt(aLen / num);
   const double aLen0 = log(num) / log(2.);
   char         buf[128];

@@ -724,12 +724,13 @@ void Graphic3d_Structure::getBox(Graphic3d_BndBox3d& theBox,
   Graphic3d_BndBox4f aBoxF = minMaxCoord();
   if (aBoxF.IsValid())
   {
-    theBox = Graphic3d_BndBox3d(NCollection_Vec3<double>((double)aBoxF.CornerMin().x(),
-                                                         (double)aBoxF.CornerMin().y(),
-                                                         (double)aBoxF.CornerMin().z()),
-                                NCollection_Vec3<double>((double)aBoxF.CornerMax().x(),
-                                                         (double)aBoxF.CornerMax().y(),
-                                                         (double)aBoxF.CornerMax().z()));
+    theBox =
+      Graphic3d_BndBox3d(NCollection_Vec3<double>(static_cast<double>(aBoxF.CornerMin().x()),
+                                                  static_cast<double>(aBoxF.CornerMin().y()),
+                                                  static_cast<double>(aBoxF.CornerMin().z())),
+                         NCollection_Vec3<double>(static_cast<double>(aBoxF.CornerMax().x()),
+                                                  static_cast<double>(aBoxF.CornerMax().y()),
+                                                  static_cast<double>(aBoxF.CornerMax().z())));
     if (IsInfinite() && !theToIgnoreInfiniteFlag)
     {
       const NCollection_Vec3<double> aDiagVec = theBox.CornerMax() - theBox.CornerMin();

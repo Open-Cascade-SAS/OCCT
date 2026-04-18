@@ -60,7 +60,7 @@ int BRepLib_PointCloudShape::NbPointsByDensity(const double theDensity)
   {
     double anArea = faceArea(aExpF.Current());
 
-    int aNbPnts = std::max((int)std::ceil(anArea / theDensity), 1);
+    int aNbPnts = std::max(static_cast<int>(std::ceil(anArea / theDensity)), 1);
     myFacePoints.Bind(aExpF.Current(), aNbPnts);
     aNbPoints += aNbPnts;
   }

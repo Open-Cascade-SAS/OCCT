@@ -82,7 +82,7 @@ inline TopoDS_Vertex& Vertex(TopoDS_Shape& theShape)
 {
   Standard_TypeMismatch_Raise_if(theShape.IsNull() ? false : theShape.ShapeType() != TopAbs_VERTEX,
                                  "TopoDS::Vertex");
-  return *(TopoDS_Vertex*)&theShape;
+  return *reinterpret_cast<TopoDS_Vertex*>(&theShape);
 }
 
 //! Casts shape theShape to the more specialized return type, Edge.
@@ -104,7 +104,7 @@ inline TopoDS_Edge& Edge(TopoDS_Shape& theShape)
 {
   Standard_TypeMismatch_Raise_if(theShape.IsNull() ? false : theShape.ShapeType() != TopAbs_EDGE,
                                  "TopoDS::Edge");
-  return *(TopoDS_Edge*)&theShape;
+  return *reinterpret_cast<TopoDS_Edge*>(&theShape);
 }
 
 //! Casts shape theShape to the more specialized return type, Wire.
@@ -126,7 +126,7 @@ inline TopoDS_Wire& Wire(TopoDS_Shape& theShape)
 {
   Standard_TypeMismatch_Raise_if(theShape.IsNull() ? false : theShape.ShapeType() != TopAbs_WIRE,
                                  "TopoDS::Wire");
-  return *(TopoDS_Wire*)&theShape;
+  return *reinterpret_cast<TopoDS_Wire*>(&theShape);
 }
 
 //! Casts shape theShape to the more specialized return type, Face.
@@ -148,7 +148,7 @@ inline TopoDS_Face& Face(TopoDS_Shape& theShape)
 {
   Standard_TypeMismatch_Raise_if(theShape.IsNull() ? false : theShape.ShapeType() != TopAbs_FACE,
                                  "TopoDS::Face");
-  return *(TopoDS_Face*)&theShape;
+  return *reinterpret_cast<TopoDS_Face*>(&theShape);
 }
 
 //! Casts shape theShape to the more specialized return type, Shell.
@@ -170,7 +170,7 @@ inline TopoDS_Shell& Shell(TopoDS_Shape& theShape)
 {
   Standard_TypeMismatch_Raise_if(theShape.IsNull() ? false : theShape.ShapeType() != TopAbs_SHELL,
                                  "TopoDS::Shell");
-  return *(TopoDS_Shell*)&theShape;
+  return *reinterpret_cast<TopoDS_Shell*>(&theShape);
 }
 
 //! Casts shape theShape to the more specialized return type, Solid.
@@ -192,7 +192,7 @@ inline TopoDS_Solid& Solid(TopoDS_Shape& theShape)
 {
   Standard_TypeMismatch_Raise_if(theShape.IsNull() ? false : theShape.ShapeType() != TopAbs_SOLID,
                                  "TopoDS::Solid");
-  return *(TopoDS_Solid*)&theShape;
+  return *reinterpret_cast<TopoDS_Solid*>(&theShape);
 }
 
 //! Casts shape theShape to the more specialized return type, CompSolid.
@@ -216,7 +216,7 @@ inline TopoDS_CompSolid& CompSolid(TopoDS_Shape& theShape)
   Standard_TypeMismatch_Raise_if(theShape.IsNull() ? false
                                                    : theShape.ShapeType() != TopAbs_COMPSOLID,
                                  "TopoDS::CompSolid");
-  return *(TopoDS_CompSolid*)&theShape;
+  return *reinterpret_cast<TopoDS_CompSolid*>(&theShape);
 }
 
 //! Casts shape theShape to the more specialized return type, Compound.
@@ -240,7 +240,7 @@ inline TopoDS_Compound& Compound(TopoDS_Shape& theShape)
   Standard_TypeMismatch_Raise_if(theShape.IsNull() ? false
                                                    : theShape.ShapeType() != TopAbs_COMPOUND,
                                  "TopoDS::Compound");
-  return *(TopoDS_Compound*)&theShape;
+  return *reinterpret_cast<TopoDS_Compound*>(&theShape);
 }
 } // namespace TopoDS
 

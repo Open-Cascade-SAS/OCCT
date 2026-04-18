@@ -38,14 +38,18 @@ unsigned int OpenGl_VertexBuffer::GetTarget() const
 void OpenGl_VertexBuffer::BindVertexAttrib(const occ::handle<OpenGl_Context>& theGlCtx,
                                            const unsigned int                 theAttribLoc) const
 {
-  if (!IsValid() || theAttribLoc == GLuint(-1))
+  if (!IsValid() || theAttribLoc == static_cast<GLuint>(-1))
   {
     return;
   }
   Bind(theGlCtx);
   theGlCtx->core20fwd->glEnableVertexAttribArray(theAttribLoc);
-  theGlCtx->core20fwd
-    ->glVertexAttribPointer(theAttribLoc, GLint(myComponentsNb), myDataType, GL_FALSE, 0, myOffset);
+  theGlCtx->core20fwd->glVertexAttribPointer(theAttribLoc,
+                                             static_cast<GLint>(myComponentsNb),
+                                             myDataType,
+                                             GL_FALSE,
+                                             0,
+                                             myOffset);
 }
 
 //=================================================================================================
@@ -53,7 +57,7 @@ void OpenGl_VertexBuffer::BindVertexAttrib(const occ::handle<OpenGl_Context>& th
 void OpenGl_VertexBuffer::UnbindVertexAttrib(const occ::handle<OpenGl_Context>& theGlCtx,
                                              const unsigned int                 theAttribLoc) const
 {
-  if (!IsValid() || theAttribLoc == GLuint(-1))
+  if (!IsValid() || theAttribLoc == static_cast<GLuint>(-1))
   {
     return;
   }

@@ -27,11 +27,11 @@ namespace RWObj_Tools
 inline bool ReadVec3(const char* thePos, char*& theNext, NCollection_Vec3<float>& theVec)
 {
   const char* aPos = thePos;
-  theVec.x()       = (float)Strtod(aPos, &theNext);
+  theVec.x()       = static_cast<float>(Strtod(aPos, &theNext));
   aPos             = theNext;
-  theVec.y()       = (float)Strtod(aPos, &theNext);
+  theVec.y()       = static_cast<float>(Strtod(aPos, &theNext));
   aPos             = theNext;
-  theVec.z()       = (float)Strtod(aPos, &theNext);
+  theVec.z()       = static_cast<float>(Strtod(aPos, &theNext));
   return aPos != theNext;
 }
 
@@ -51,7 +51,7 @@ inline bool ReadVec3(const char* thePos, char*& theNext, gp_XYZ& theVec)
 inline bool ReadName(const char* thePos, TCollection_AsciiString& theName)
 {
   int aFrom = 0;
-  int aTail = (int)std::strlen(thePos) - 1;
+  int aTail = static_cast<int>(std::strlen(thePos)) - 1;
   if (aTail >= 0 && thePos[aTail] == '\n')
   {
     --aTail;

@@ -188,7 +188,7 @@ void FUN_reduceEDGEgeometry1(NCollection_List<occ::handle<TopOpeBRepDS_Interfere
   else
     Ecpx = TopoDS::Edge(BDS.Shape(iEG));
 
-  TopOpeBRepDS_PDataStructure       pbds = (TopOpeBRepDS_PDataStructure)(void*)&BDS;
+  TopOpeBRepDS_PDataStructure       pbds = static_cast<TopOpeBRepDS_PDataStructure>((void*)&BDS);
   TopOpeBRepDS_FaceInterferenceTool FITool(pbds);
   gp_Pnt                            Pok;
   bool                              isPok = false;

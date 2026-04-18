@@ -56,20 +56,20 @@ inline double Plate_Plate::Polm(const gp_XY& point2d,
 
 inline int& Plate_Plate::Deru(const int index) const
 {
-  return ((int*)deru)[index];
+  return (static_cast<int*>(deru))[index];
 }
 
 inline int& Plate_Plate::Derv(const int index) const
 {
-  return ((int*)derv)[index];
+  return (static_cast<int*>(derv))[index];
 }
 
 inline gp_XYZ& Plate_Plate::Solution(const int index) const
 {
-  return ((gp_XYZ*)solution)[index];
+  return (static_cast<gp_XYZ*>(solution))[index];
 }
 
 inline gp_XY& Plate_Plate::Points(const int index) const
 {
-  return ((gp_XY*)points)[index];
+  return (static_cast<gp_XY*>(points))[index];
 }

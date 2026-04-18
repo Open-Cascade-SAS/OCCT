@@ -56,7 +56,7 @@ int IntCurveSurface_TheHCurveTool::NbSamples(const occ::handle<Adaptor3d_Curve>&
   }
   if (nbs > 50)
     nbs = 50;
-  return ((int)nbs);
+  return (static_cast<int>(nbs));
 }
 
 occ::handle<NCollection_HArray1<double>> IntCurveSurface_TheHCurveTool::SamplePars(
@@ -82,7 +82,7 @@ occ::handle<NCollection_HArray1<double>> IntCurveSurface_TheHCurveTool::SamplePa
   {
     if (nbs > 50)
       nbs = 50;
-    int nnbs = (int)nbs;
+    int nnbs = static_cast<int>(nbs);
 
     Pars      = new NCollection_HArray1<double>(1, nnbs);
     double du = (U1 - U0) / (nnbs - 1);

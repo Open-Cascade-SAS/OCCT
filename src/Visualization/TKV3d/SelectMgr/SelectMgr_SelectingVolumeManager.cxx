@@ -358,10 +358,11 @@ bool SelectMgr_SelectingVolumeManager::OverlapsPolygon(
     return false;
   }
 
-  return myActiveSelectingVolume->OverlapsPolygon(theArrayOfPnts,
-                                                  (Select3D_TypeOfSensitivity)theSensType,
-                                                  myViewClipRange,
-                                                  thePickResult);
+  return myActiveSelectingVolume->OverlapsPolygon(
+    theArrayOfPnts,
+    static_cast<Select3D_TypeOfSensitivity>(theSensType),
+    myViewClipRange,
+    thePickResult);
 }
 
 //=======================================================================
@@ -399,12 +400,13 @@ bool SelectMgr_SelectingVolumeManager::OverlapsTriangle(
     return false;
   }
 
-  return myActiveSelectingVolume->OverlapsTriangle(thePt1,
-                                                   thePt2,
-                                                   thePt3,
-                                                   (Select3D_TypeOfSensitivity)theSensType,
-                                                   myViewClipRange,
-                                                   thePickResult);
+  return myActiveSelectingVolume->OverlapsTriangle(
+    thePt1,
+    thePt2,
+    thePt3,
+    static_cast<Select3D_TypeOfSensitivity>(theSensType),
+    myViewClipRange,
+    thePickResult);
 }
 
 //=================================================================================================

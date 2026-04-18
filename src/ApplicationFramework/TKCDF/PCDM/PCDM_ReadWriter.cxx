@@ -62,7 +62,7 @@ void PCDM_ReadWriter::Open(const occ::handle<Storage_BaseDriver>& aDriver,
       default:
         break;
     }
-    aMsg << (char)0;
+    aMsg << static_cast<char>(0);
     throw Standard_Failure(aMsg.str().c_str());
   }
 }

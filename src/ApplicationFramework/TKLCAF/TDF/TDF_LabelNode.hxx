@@ -33,7 +33,7 @@ class TDF_Data;
 
 enum
 {
-  TDF_LabelNodeImportMsk = (int)0x80000000, // Because the sign bit (HP).
+  TDF_LabelNodeImportMsk = static_cast<int>(0x80000000), // Because the sign bit (HP).
   TDF_LabelNodeAttModMsk = 0x40000000,
   TDF_LabelNodeMayModMsk = 0x20000000,
   TDF_LabelNodeFlagsMsk = (TDF_LabelNodeImportMsk | TDF_LabelNodeAttModMsk | TDF_LabelNodeMayModMsk)

@@ -65,7 +65,7 @@ void StepElement_VolumeElementPurpose::SetEnumeratedVolumeElementPurpose(
   occ::handle<TCollection_HAsciiString> name =
     new TCollection_HAsciiString("EnumeratedVolumeElementPurpose");
   SelMem->SetName(name->ToCString());
-  SelMem->SetEnum((int)val);
+  SelMem->SetEnum(static_cast<int>(val));
 }
 
 //=================================================================================================

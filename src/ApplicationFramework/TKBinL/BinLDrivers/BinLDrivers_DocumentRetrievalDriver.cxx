@@ -264,7 +264,7 @@ void BinLDrivers_DocumentRetrievalDriver::Read(Standard_IStream&                
         BinLDrivers_DocumentSection& aCurSection = anIterS.ChangeValue();
         if (!aCurSection.IsPostRead())
         {
-          theIStream.seekg((std::streampos)aCurSection.Offset());
+          theIStream.seekg(std::streampos(aCurSection.Offset()));
           if (aCurSection.Name().IsEqual(SHAPESECTION_POS))
           {
             ReadShapeSection(aCurSection, theIStream, false, aPS.Next());
@@ -314,7 +314,7 @@ void BinLDrivers_DocumentRetrievalDriver::Read(Standard_IStream&                
       if (aShapeSectionPos)
       {
         aDocumentPos = theIStream.tellg();
-        theIStream.seekg((std::streampos)aShapeSectionPos);
+        theIStream.seekg(std::streampos(aShapeSectionPos));
 
         CheckShapeSection(aShapeSectionPos, theIStream);
         // Read Shapes
@@ -388,7 +388,7 @@ void BinLDrivers_DocumentRetrievalDriver::Read(Standard_IStream&                
       BinLDrivers_DocumentSection& aCurSection = aSectIter.ChangeValue();
       if (aCurSection.IsPostRead())
       {
-        theIStream.seekg((std::streampos)aCurSection.Offset());
+        theIStream.seekg(std::streampos(aCurSection.Offset()));
         ReadSection(aCurSection, theDoc, theIStream);
       }
     }

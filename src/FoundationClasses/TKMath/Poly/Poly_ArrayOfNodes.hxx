@@ -25,14 +25,14 @@ class Poly_ArrayOfNodes : public NCollection_AliasedArray<>
 public:
   //! Empty constructor of double-precision array.
   Poly_ArrayOfNodes()
-      : NCollection_AliasedArray((int)sizeof(gp_Pnt))
+      : NCollection_AliasedArray(static_cast<int>(sizeof(gp_Pnt)))
   {
     //
   }
 
   //! Constructor of double-precision array.
   Poly_ArrayOfNodes(int theLength)
-      : NCollection_AliasedArray((int)sizeof(gp_Pnt), theLength)
+      : NCollection_AliasedArray(static_cast<int>(sizeof(gp_Pnt)), theLength)
   {
     //
   }
@@ -58,7 +58,7 @@ public:
   Standard_EXPORT ~Poly_ArrayOfNodes();
 
   //! Returns TRUE if array defines nodes with double precision.
-  bool IsDoublePrecision() const { return myStride == (int)sizeof(gp_Pnt); }
+  bool IsDoublePrecision() const { return myStride == static_cast<int>(sizeof(gp_Pnt)); }
 
   //! Sets if array should define nodes with double or single precision.
   //! Raises exception if array was already allocated.
@@ -69,7 +69,7 @@ public:
       throw Standard_ProgramError(
         "Poly_ArrayOfNodes::SetDoublePrecision() should be called before allocation");
     }
-    myStride = int(theIsDouble ? sizeof(gp_Pnt) : sizeof(NCollection_Vec3<float>));
+    myStride = static_cast<int>(theIsDouble ? sizeof(gp_Pnt) : sizeof(NCollection_Vec3<float>));
   }
 
   //! Copies data of theOther array to this.
@@ -113,7 +113,7 @@ public:
 
 inline gp_Pnt Poly_ArrayOfNodes::Value(int theIndex) const
 {
-  if (myStride == (int)sizeof(gp_Pnt))
+  if (myStride == static_cast<int>(sizeof(gp_Pnt)))
   {
     return NCollection_AliasedArray::Value<gp_Pnt>(theIndex);
   }
@@ -129,7 +129,7 @@ inline gp_Pnt Poly_ArrayOfNodes::Value(int theIndex) const
 
 inline void Poly_ArrayOfNodes::SetValue(int theIndex, const gp_Pnt& theValue)
 {
-  if (myStride == (int)sizeof(gp_Pnt))
+  if (myStride == static_cast<int>(sizeof(gp_Pnt)))
   {
     NCollection_AliasedArray::ChangeValue<gp_Pnt>(theIndex) = theValue;
   }
@@ -137,7 +137,9 @@ inline void Poly_ArrayOfNodes::SetValue(int theIndex, const gp_Pnt& theValue)
   {
     NCollection_Vec3<float>& aVec3 =
       NCollection_AliasedArray::ChangeValue<NCollection_Vec3<float>>(theIndex);
-    aVec3.SetValues((float)theValue.X(), (float)theValue.Y(), (float)theValue.Z());
+    aVec3.SetValues(static_cast<float>(theValue.X()),
+                    static_cast<float>(theValue.Y()),
+                    static_cast<float>(theValue.Z()));
   }
 }
 

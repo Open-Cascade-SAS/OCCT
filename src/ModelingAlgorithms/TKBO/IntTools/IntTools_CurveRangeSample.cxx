@@ -40,9 +40,9 @@ IntTools_Range IntTools_CurveRangeSample::GetRange(const double theFirst,
   }
   else
   {
-    double tmp        = pow(double(theNbSample), double(GetDepth()));
-    double localdiffC = diffC / double(tmp);
-    double aFirstC    = theFirst + double(myIndex) * localdiffC;
+    double tmp        = pow(static_cast<double>(theNbSample), static_cast<double>(GetDepth()));
+    double localdiffC = diffC / (tmp);
+    double aFirstC    = theFirst + static_cast<double>(myIndex) * localdiffC;
     double aLastC     = aFirstC + localdiffC;
     aResult.SetFirst(aFirstC);
     aResult.SetLast(aLastC);

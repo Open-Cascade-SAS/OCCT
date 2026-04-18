@@ -156,7 +156,8 @@ void ApproxInt_Approx::Parameters(const ApproxInt_TheMultiLine&    Line,
   {
     for (i = firstP; i <= lastP; i++)
     {
-      TheParameters(i) = (double(i) - firstP) / (double(lastP) - double(firstP));
+      TheParameters(i) = (static_cast<double>(i) - firstP)
+                         / (static_cast<double>(lastP) - static_cast<double>(firstP));
     }
   }
 }

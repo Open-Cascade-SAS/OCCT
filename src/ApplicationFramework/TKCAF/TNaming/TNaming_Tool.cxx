@@ -606,7 +606,9 @@ void TNaming_Tool::FindShape(const NCollection_Map<TDF_Label>& Valid,
 
   // Looking for sub shapes of the result shape
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> subShapes;
-  TopExp_Explorer anExpl(Arg->Get(), (TopAbs_ShapeEnum)((int)(aNaming->GetName().ShapeType()) + 1));
+  TopExp_Explorer                                        anExpl(
+    Arg->Get(),
+    static_cast<TopAbs_ShapeEnum>(static_cast<int>(aNaming->GetName().ShapeType()) + 1));
   for (; anExpl.More(); anExpl.Next())
     subShapes.Add(anExpl.Current());
 #ifdef OCCT_DEBUG
@@ -676,8 +678,9 @@ void TNaming_Tool::FindShape(const NCollection_Map<TDF_Label>& Valid,
       int                                                    DoesCoincide   = 0;
       const TopoDS_Shape&                                    possibleResult = explC.Current();
       NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> subShapesOfResult;
-      for (explSubC.Init(possibleResult,
-                         (TopAbs_ShapeEnum)((int)(aNaming->GetName().ShapeType()) + 1));
+      for (explSubC.Init(
+             possibleResult,
+             static_cast<TopAbs_ShapeEnum>(static_cast<int>(aNaming->GetName().ShapeType()) + 1));
            explSubC.More();
            explSubC.Next())
       {

@@ -107,7 +107,7 @@ void BRepFeat::Barycenter(const TopoDS_Shape& S, gp_Pnt& B)
     }
   }
 
-  Bar.Divide((double)nbp);
+  Bar.Divide(static_cast<double>(nbp));
   B.SetXYZ(Bar);
 }
 
@@ -190,7 +190,7 @@ double BRepFeat::ParametricBarycenter(const TopoDS_Shape& S, const occ::handle<G
     }
   }
 
-  parbar /= ((double)nbp);
+  parbar /= (static_cast<double>(nbp));
   return parbar;
 }
 
@@ -376,11 +376,11 @@ static void PutInBoundsU(double                     umin,
   double du     = 0.;
   if (minC < umin - eps)
   {
-    du = (int((umin - minC) / period) + 1) * period;
+    du = (static_cast<int>((umin - minC) / period) + 1) * period;
   }
   if (minC > umax + eps)
   {
-    du = -(int((minC - umax) / period) + 1) * period;
+    du = -(static_cast<int>((minC - umax) / period) + 1) * period;
   }
   if (du != 0)
   {
@@ -430,11 +430,11 @@ static void PutInBoundsV(double                     vmin,
   double dv     = 0.;
   if (minC < vmin - eps)
   {
-    dv = (int((vmin - minC) / period) + 1) * period;
+    dv = (static_cast<int>((vmin - minC) / period) + 1) * period;
   }
   if (minC > vmax + eps)
   {
-    dv = -(int((minC - vmax) / period) + 1) * period;
+    dv = -(static_cast<int>((minC - vmax) / period) + 1) * period;
   }
   if (dv != 0)
   {

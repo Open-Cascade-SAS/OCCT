@@ -505,7 +505,7 @@ static IFSelect_ReturnStatus XSControl_fromshape(const occ::handle<IFSelect_Sess
     sout << "Give name of a DRAW Shape" << std::endl;
     return IFSelect_RetError;
   }
-  const char*  a1    = (char*)arg1;
+  const char*  a1    = const_cast<char*>(arg1);
   TopoDS_Shape Shape = XSControl::Vars(pilot)->GetShape(a1);
   if (Shape.IsNull())
   {
@@ -724,7 +724,7 @@ static IFSelect_ReturnStatus XSControl_trconnexentities(
     sout << "Give name of a DRAW Shape + optional shape type v-e-w-f(D)-s" << std::endl;
     return IFSelect_RetError;
   }
-  const char*  a1    = (const char*)arg1;
+  const char*  a1    = arg1;
   TopoDS_Shape Shape = XSControl::Vars(pilot)->GetShape(a1);
   if (Shape.IsNull())
   {
@@ -907,7 +907,7 @@ static IFSelect_ReturnStatus XSControl_twrite(const occ::handle<IFSelect_Session
   // Shape
   for (int i = 1; i < argc; i++)
   {
-    const char*  ai    = (const char*)pilot->Arg(i);
+    const char*  ai    = pilot->Arg(i);
     TopoDS_Shape Shape = XSControl::Vars(pilot)->GetShape(ai);
     if (Shape.IsNull())
     {
@@ -1072,7 +1072,7 @@ int XSControl_FuncShape::MoreShapes(const occ::handle<XSControl_WorkSession>&   
     sout << "  -> taken " << nbsh << " Shapes" << std::endl;
     return nbsh;
   }
-  const char*  a1    = (const char*)name;
+  const char*  a1    = name;
   TopoDS_Shape Shape = session->Vars()->GetShape(a1);
   if (Shape.IsNull())
   {

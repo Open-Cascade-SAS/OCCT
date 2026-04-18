@@ -195,7 +195,7 @@ public: // @name user-defined graphical attributes
   //! @return hatching style.
   Aspect_HatchStyle CappingHatch() const
   {
-    return (Aspect_HatchStyle)myAspect->HatchStyle()->HatchType();
+    return static_cast<Aspect_HatchStyle>(myAspect->HatchStyle()->HatchType());
   }
 
   //! Set custom hatch style (stipple) and turn hatching on.

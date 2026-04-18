@@ -207,7 +207,7 @@ void BRepMesh_MeshTool::EraseFreeLinks()
   {
     if (myStructure->ElementsConnectedTo(i).IsEmpty())
     {
-      BRepMesh_Edge& anEdge = (BRepMesh_Edge&)myStructure->GetLink(i);
+      BRepMesh_Edge& anEdge = const_cast<BRepMesh_Edge&>(myStructure->GetLink(i));
       if (anEdge.Movability() == BRepMesh_Deleted)
       {
         continue;

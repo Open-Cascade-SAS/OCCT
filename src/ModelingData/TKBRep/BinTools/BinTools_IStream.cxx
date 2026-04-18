@@ -51,32 +51,32 @@ uint64_t BinTools_IStream::ReadReference()
   switch (myLastType)
   {
     case BinTools_ObjectType_Reference8:
-      aDelta = uint64_t(myStream->get());
+      aDelta = static_cast<uint64_t>(myStream->get());
       myPosition++;
       break;
     case BinTools_ObjectType_Reference16: {
       uint16_t aDelta16 = 0;
-      myStream->read((char*)&aDelta16, sizeof(uint16_t));
+      myStream->read(reinterpret_cast<char*>(&aDelta16), sizeof(uint16_t));
       myPosition += 2;
 #if DO_INVERSE
       aDelta16 = (0 | ((aDelta16 & 0x00FF) << 8) | ((aDelta16 & 0xFF00) >> 8));
 #endif
-      aDelta = uint64_t(aDelta16);
+      aDelta = static_cast<uint64_t>(aDelta16);
       break;
     }
     case BinTools_ObjectType_Reference32: {
       uint32_t aDelta32 = 0;
-      myStream->read((char*)&aDelta32, sizeof(uint32_t));
+      myStream->read(reinterpret_cast<char*>(&aDelta32), sizeof(uint32_t));
       myPosition += 4;
 #if DO_INVERSE
       aDelta32 = (0 | ((aDelta32 & 0x000000ff) << 24) | ((aDelta32 & 0x0000ff00) << 8)
                   | ((aDelta32 & 0x00ff0000) >> 8) | ((aDelta32 >> 24) & 0x000000ff));
 #endif
-      aDelta = uint64_t(aDelta32);
+      aDelta = static_cast<uint64_t>(aDelta32);
       break;
     }
     case BinTools_ObjectType_Reference64:
-      myStream->read((char*)&aDelta, sizeof(uint64_t));
+      myStream->read(reinterpret_cast<char*>(&aDelta), sizeof(uint64_t));
       myPosition += 8;
 #if DO_INVERSE
       aDelta = InverseUint64(aDelta);
@@ -88,7 +88,8 @@ uint64_t BinTools_IStream::ReadReference()
   if (aDelta == 0)
   {
     Standard_SStream aMsg;
-    aMsg << "BinTools_IStream::ReadReference: invalid reference " << (char)myLastType << std::endl;
+    aMsg << "BinTools_IStream::ReadReference: invalid reference " << static_cast<char>(myLastType)
+         << std::endl;
     throw Standard_Failure(aMsg.str().c_str());
   }
   return aCurrentPos - aDelta - 1; // add a type-byte
@@ -131,7 +132,7 @@ BinTools_IStream::operator bool() const
 
 BinTools_IStream& BinTools_IStream::operator>>(double& theValue)
 {
-  if (!myStream->read((char*)&theValue, sizeof(double)))
+  if (!myStream->read(reinterpret_cast<char*>(&theValue), sizeof(double)))
     throw Storage_StreamTypeMismatchError();
   myPosition += sizeof(double);
 #if DO_INVERSE
@@ -144,7 +145,7 @@ BinTools_IStream& BinTools_IStream::operator>>(double& theValue)
 
 BinTools_IStream& BinTools_IStream::operator>>(int& theValue)
 {
-  if (!myStream->read((char*)&theValue, sizeof(int)))
+  if (!myStream->read(reinterpret_cast<char*>(&theValue), sizeof(int)))
     throw Storage_StreamTypeMismatchError();
   myPosition += sizeof(int);
 #if DO_INVERSE
@@ -160,7 +161,7 @@ BinTools_IStream& BinTools_IStream::operator>>(gp_Pnt& theValue)
   double aValue;
   for (int aCoord = 1; aCoord <= 3; aCoord++)
   {
-    if (!myStream->read((char*)&aValue, sizeof(double)))
+    if (!myStream->read(reinterpret_cast<char*>(&aValue), sizeof(double)))
       throw Storage_StreamTypeMismatchError();
 #if DO_INVERSE
     aValue = InverseReal(aValue);
@@ -175,7 +176,7 @@ BinTools_IStream& BinTools_IStream::operator>>(gp_Pnt& theValue)
 
 BinTools_IStream& BinTools_IStream::operator>>(uint8_t& theValue)
 {
-  myStream->read((char*)&theValue, sizeof(uint8_t));
+  myStream->read(reinterpret_cast<char*>(&theValue), sizeof(uint8_t));
   myPosition += sizeof(uint8_t);
   return *this;
 }
@@ -184,7 +185,7 @@ BinTools_IStream& BinTools_IStream::operator>>(uint8_t& theValue)
 
 BinTools_IStream& BinTools_IStream::operator>>(float& theValue)
 {
-  myStream->read((char*)&theValue, sizeof(float));
+  myStream->read(reinterpret_cast<char*>(&theValue), sizeof(float));
   myPosition += sizeof(float);
   return *this;
 }

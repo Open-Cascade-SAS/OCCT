@@ -295,7 +295,7 @@ void DsgPrs_AnglePresentation::Add(const occ::handle<Prs3d_Presentation>& aPrese
   }
 
   const double alpha = std::abs(ufin - udeb);
-  const int    nbp   = std::max(4, int(50. * alpha / M_PI));
+  const int    nbp   = std::max(4, static_cast<int>(50. * alpha / M_PI));
   const double dteta = alpha / (nbp - 1);
 
   occ::handle<Graphic3d_ArrayOfPolylines> aPrims = new Graphic3d_ArrayOfPolylines(nbp + 4, 3);
@@ -402,8 +402,8 @@ void DsgPrs_AnglePresentation::Add(const occ::handle<Prs3d_Presentation>& aPrese
   if (theval > Precision::Angular() && std::abs(M_PI - theval) > Precision::Angular())
   {
     const double Alpha      = std::abs(LastParAngleCirc - FirstParAngleCirc);
-    const int    NodeNumber = std::max(4, int(50. * Alpha / M_PI));
-    const double delta      = Alpha / (double)(NodeNumber - 1);
+    const int    NodeNumber = std::max(4, static_cast<int>(50. * Alpha / M_PI));
+    const double delta      = Alpha / static_cast<double>(NodeNumber - 1);
 
     aPrims = new Graphic3d_ArrayOfPolylines(NodeNumber + 4, 3);
     aPrims->AddBound(NodeNumber);
@@ -455,8 +455,8 @@ void DsgPrs_AnglePresentation::Add(const occ::handle<Prs3d_Presentation>& aPrese
     {
       // Creating the arc from AttachmentPoint2 to its projection
       const double Alpha      = std::abs(LastParAttachCirc - FirstParAttachCirc);
-      const int    NodeNumber = std::max(4, int(50. * Alpha / M_PI));
-      const double delta      = Alpha / (double)(NodeNumber - 1);
+      const int    NodeNumber = std::max(4, static_cast<int>(50. * Alpha / M_PI));
+      const double delta      = Alpha / static_cast<double>(NodeNumber - 1);
 
       aPrims = new Graphic3d_ArrayOfPolylines(NodeNumber);
       for (int i = 0; i < NodeNumber; i++, FirstParAttachCirc += delta)
@@ -542,7 +542,7 @@ void DsgPrs_AnglePresentation::Add(const occ::handle<Prs3d_Presentation>& aPrese
   }
 
   const double alpha = std::abs(ufin - udeb);
-  const int    nbp   = std::max(4, int(50. * alpha / M_PI));
+  const int    nbp   = std::max(4, static_cast<int>(50. * alpha / M_PI));
   const double dteta = alpha / (nbp - 1);
 
   occ::handle<Graphic3d_ArrayOfPolylines> aPrims = new Graphic3d_ArrayOfPolylines(nbp + 4, 3);
@@ -668,7 +668,7 @@ void DsgPrs_AnglePresentation::Add(const occ::handle<Prs3d_Presentation>& aPrese
   }
 
   const double alpha = std::abs(ufin - udeb);
-  const int    nbp   = std::max(4, int(50. * alpha / M_PI));
+  const int    nbp   = std::max(4, static_cast<int>(50. * alpha / M_PI));
   const double dteta = alpha / (nbp - 1);
 
   occ::handle<Graphic3d_ArrayOfPolylines> aPrims = new Graphic3d_ArrayOfPolylines(nbp + 4, 3);
@@ -787,7 +787,7 @@ void DsgPrs_AnglePresentation::Add(const occ::handle<Prs3d_Presentation>& aPrese
   }
 
   const double alpha = std::abs(ufin - udeb);
-  const int    nbp   = std::max(4, int(50. * alpha / M_PI));
+  const int    nbp   = std::max(4, static_cast<int>(50. * alpha / M_PI));
   const double dteta = alpha / (nbp - 1);
 
   occ::handle<Graphic3d_ArrayOfPolylines> aPrims = new Graphic3d_ArrayOfPolylines(nbp + 4, 3);
@@ -859,7 +859,7 @@ void DsgPrs_AnglePresentation::Add(const occ::handle<Prs3d_Presentation>& aPrese
   gp_Ax2  ax(CenterPoint, theAxe.Direction(), dir1);
   gp_Circ cer(ax, CenterPoint.Distance(AttachmentPoint1));
 
-  const int    nbp   = std::max(4, int(50. * theval / M_PI));
+  const int    nbp   = std::max(4, static_cast<int>(50. * theval / M_PI));
   const double dteta = theval / (nbp - 1);
 
   occ::handle<Graphic3d_ArrayOfPolylines> aPrims = new Graphic3d_ArrayOfPolylines(nbp);

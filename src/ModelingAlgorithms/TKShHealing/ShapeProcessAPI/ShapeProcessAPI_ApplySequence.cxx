@@ -152,9 +152,9 @@ void ShapeProcessAPI_ApplySequence::PrintPreparationResult() const
   Message_Msg PMSG200("PrResult.Print.MSG200"); // Preparation ratio:
   aMessenger->Send(PMSG200, Message_Info);
   Message_Msg PMSG205("PrResult.Print.MSG205"); //  Shells: %d per cent
-  PMSG205.Arg((int)(100 * SPR));
+  PMSG205.Arg(static_cast<int>(100 * SPR));
   aMessenger->Send(PMSG205, Message_Info);
   Message_Msg PMSG210("PrResult.Print.MSG210"); //  Faces : %d per cent
-  PMSG210.Arg((int)(100 * FPR));
+  PMSG210.Arg(static_cast<int>(100 * FPR));
   aMessenger->Send(PMSG210, Message_Info);
 }

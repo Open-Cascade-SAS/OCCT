@@ -616,7 +616,7 @@ bool ChFi3d_Builder::StoreData(occ::handle<ChFiDS_SurfData>&         Data,
   const NCollection_Array1<double>& ku   = approx.SurfUKnots();
   const NCollection_Array1<double>& kv   = approx.SurfVKnots();
   double                            larg = (kv(kv.Upper()) - kv(kv.Lower()));
-  NCollection_Array1<double>&       kku  = *((NCollection_Array1<double>*)((void*)&ku));
+  NCollection_Array1<double>&       kku  = *(static_cast<NCollection_Array1<double>*>((void*)&ku));
   BSplCLib::Reparametrize(0., larg, kku);
   occ::handle<Geom_BSplineSurface> Surf = new Geom_BSplineSurface(approx.SurfPoles(),
                                                                   approx.SurfWeights(),

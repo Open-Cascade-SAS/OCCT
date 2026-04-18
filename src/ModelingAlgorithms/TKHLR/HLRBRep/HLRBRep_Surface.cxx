@@ -75,7 +75,7 @@ bool HLRBRep_Surface::SideRowsOfPoles(const double                tol,
   int            iu, iv;
   double         x0, y0, x, y, z;
   bool           result;
-  double         tole = (double)tol;
+  double         tole = tol;
   const gp_Trsf& T    = myProj->Transformation();
 
   for (iu = 1; iu <= nbuPoles; iu++)

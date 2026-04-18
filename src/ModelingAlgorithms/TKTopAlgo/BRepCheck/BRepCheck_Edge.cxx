@@ -673,7 +673,7 @@ double BRepCheck_Edge::Tolerance()
   {
     prm  = ((NCONTROL - 1 - i) * First + i * Last) / (NCONTROL - 1);
     tol2 = dist2 = 0.;
-    center       = (*(occ::handle<Adaptor3d_Curve>*)&theRep(1))->Value(prm);
+    center       = (*reinterpret_cast<occ::handle<Adaptor3d_Curve>*>(&theRep(1)))->Value(prm);
     if (Precision::IsInfinite(center.X()) || Precision::IsInfinite(center.Y())
         || Precision::IsInfinite(center.Z()))
     {
@@ -681,7 +681,7 @@ double BRepCheck_Edge::Tolerance()
     }
     for (iRep = 2; iRep <= nbRep; iRep++)
     {
-      othP = (*(occ::handle<Adaptor3d_Curve>*)&theRep(iRep))->Value(prm);
+      othP = (*reinterpret_cast<occ::handle<Adaptor3d_Curve>*>(&theRep(iRep)))->Value(prm);
       if (Precision::IsInfinite(othP.X()) || Precision::IsInfinite(othP.Y())
           || Precision::IsInfinite(othP.Z()))
       {

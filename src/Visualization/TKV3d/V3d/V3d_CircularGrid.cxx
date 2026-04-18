@@ -228,7 +228,7 @@ void V3d_CircularGrid::DefineLines()
   myToComputePrs = false;
   myGroup->Clear();
 
-  const int Division = (int)((aDivision >= THE_DIVISION ? aDivision : THE_DIVISION));
+  const int Division = static_cast<int>((aDivision >= THE_DIVISION ? aDivision : THE_DIVISION));
 
   int nbpnts = 2 * Division;
   // diametres
@@ -292,7 +292,7 @@ void V3d_CircularGrid::DefineLines()
   }
 
   myGroup->SetMinMaxValues(-myRadius, -myRadius, -myOffSet, myRadius, myRadius, -myOffSet);
-  myCurStep = aStep, myCurDivi = (int)aDivision;
+  myCurStep = aStep, myCurDivi = static_cast<int>(aDivision);
 
   // update bounding box
   myStructure->CalculateBoundBox();
@@ -323,7 +323,7 @@ void V3d_CircularGrid::DefinePoints()
   MarkerAttrib->SetType(Aspect_TOM_POINT);
   MarkerAttrib->SetScale(3.);
 
-  const int nbpnts = int(2 * aDivision);
+  const int nbpnts = static_cast<int>(2 * aDivision);
   double    r, alpha = M_PI / aDivision;
 
   // diameters
@@ -349,7 +349,7 @@ void V3d_CircularGrid::DefinePoints()
   }
   myGroup->SetMinMaxValues(-myRadius, -myRadius, -myOffSet, myRadius, myRadius, -myOffSet);
 
-  myCurStep = aStep, myCurDivi = (int)aDivision;
+  myCurStep = aStep, myCurDivi = static_cast<int>(aDivision);
 
   // update bounding box
   myStructure->CalculateBoundBox();

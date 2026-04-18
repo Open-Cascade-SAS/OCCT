@@ -708,7 +708,7 @@ bool IntWalk_IWalking::TestArretPassage(const NCollection_Sequence<double>& Umul
           if (((Dup * UV1mUtest + Dvp * UV2mVtest) < 0)
               || (std::abs(UV1mUtest) < tolu && std::abs(UV2mVtest) < tolv))
           {
-            i_candidates.Append((int)i);
+            i_candidates.Append(static_cast<int>(i));
             SqDist_candidates.Append(Dup * Dup + Dvp * Dvp);
             /*
         Irang=i;
@@ -729,7 +729,7 @@ bool IntWalk_IWalking::TestArretPassage(const NCollection_Sequence<double>& Umul
               if (((Up - Umult(j)) * (UV(1) - Umult(j)) + (Vp - Vmult(j)) * (UV(2) - Vmult(j)) < 0)
                   || (std::abs(UV(1) - Umult(j)) < tolu && std::abs(UV(2) - Vmult(j)) < tolv))
               {
-                Irang  = (int)i;
+                Irang  = static_cast<int>(i);
                 Arrive = true;
                 UV(1)  = Utest;
                 UV(2)  = Vtest;
@@ -830,7 +830,7 @@ bool IntWalk_IWalking::TestArretPassage(const NCollection_Sequence<double>& Umul
   double tolv2 = tolv + tolv;
 
   double dPreviousCurrent = (Up - UV1) * (Up - UV1) + (Vp - UV2) * (Vp - UV2);
-  for (k = 1; k < (int)wd2.size(); k++)
+  for (k = 1; k < static_cast<int>(wd2.size()); k++)
   {
     if (wd2[k].etat > 0)
     {
@@ -919,7 +919,7 @@ bool IntWalk_IWalking::TestArretPassage(const NCollection_Sequence<double>& Umul
   // crossing test on crossing points.
 
   Irang = 0;
-  for (i = 1; i < (int)wd1.size(); i++)
+  for (i = 1; i < static_cast<int>(wd1.size()); i++)
   {
     if (wd1[i].etat > 0 && wd1[i].etat < 11)
     { // test of crossing points
@@ -1191,7 +1191,7 @@ void IntWalk_IWalking::TestArretCadre(const NCollection_Sequence<double>&   Umul
   bool   Found = false;
 
   Irang = 0;
-  for (int i = 1; i < (int)wd1.size(); i++)
+  for (int i = 1; i < static_cast<int>(wd1.size()); i++)
   {
     if (wd1[i].etat < 0)
     {
@@ -1930,7 +1930,7 @@ static bool TestPassedSolutionWithNegativeState(const IntWalk_VectorOfWalkingDat
   double tolu = tolerance(1);
   double tolv = tolerance(2);
   int    i, j, k, N;
-  for (i = 1; i < (int)wd.size(); i++)
+  for (i = 1; i < static_cast<int>(wd.size()); i++)
   {
     if (wd[i].etat < -11)
     {

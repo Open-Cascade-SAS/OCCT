@@ -1093,7 +1093,7 @@ int BSplCLib_SolveBandedSystem(const math_Matrix&          Matrix,
 {
   double *PArray, *WArray;
   PArray = (double*)&PolesArray(PolesArray.Lower());
-  WArray = (double*)&WeightsArray(WeightsArray.Lower());
+  WArray = static_cast<double*>(&WeightsArray(WeightsArray.Lower()));
   return BSplCLib::SolveBandedSystem(Matrix,
                                      UpperBandWidth,
                                      LowerBandWidth,
@@ -1129,7 +1129,7 @@ void BSplCLib_Eval(const double                      Parameter,
   double Inverse, P[Dimension], *PArray, *WArray;
   int    kk;
   PArray = (double*)&PolesArray(PolesArray.Lower());
-  WArray = (double*)&WeightsArray(WeightsArray.Lower());
+  WArray = const_cast<double*>(&WeightsArray(WeightsArray.Lower()));
   if (HomogeneousFlag)
   {
     BSplCLib::Eval(Parameter,
@@ -1208,7 +1208,7 @@ void BSplCLib_CacheD0(const double                      Parameter,
   if (WeightsArray != NULL)
   {
     const NCollection_Array1<double>& refWeights = *WeightsArray;
-    double*                           WArray     = (double*)&refWeights(refWeights.Lower());
+    double*                           WArray = const_cast<double*>(&refWeights(refWeights.Lower()));
     PLib::NoDerivativeEvalPolynomial(NewParameter, Degree, 1, Degree, WArray[0], Inverse);
 
     Inverse = 1.0e0 / Inverse;
@@ -1251,7 +1251,7 @@ void BSplCLib_CacheD1(const double                      Parameter,
   if (WeightsArray != NULL)
   {
     const NCollection_Array1<double>& refWeights = *WeightsArray;
-    double*                           WArray     = (double*)&refWeights(refWeights.Lower());
+    double*                           WArray = const_cast<double*>(&refWeights(refWeights.Lower()));
     PLib::EvalPolynomial(NewParameter, 1, Degree, 1, WArray[0], LocalWDerivatives[0]);
 
     LocalWDerivatives[1] /= SpanLenght;
@@ -1321,7 +1321,7 @@ void BSplCLib_CacheD2(const double                      Parameter,
   if (WeightsArray != NULL)
   {
     const NCollection_Array1<double>& refWeights = *WeightsArray;
-    double*                           WArray     = (double*)&refWeights(refWeights.Lower());
+    double*                           WArray = const_cast<double*>(&refWeights(refWeights.Lower()));
 
     PLib::EvalPolynomial(NewParameter, 2, Degree, 1, WArray[0], LocalWDerivatives[0]);
 
@@ -1406,7 +1406,7 @@ void BSplCLib_CacheD3(const double                      Parameter,
   if (WeightsArray != NULL)
   {
     const NCollection_Array1<double>& refWeights = *WeightsArray;
-    double*                           WArray     = (double*)&refWeights(refWeights.Lower());
+    double*                           WArray = const_cast<double*>(&refWeights(refWeights.Lower()));
 
     PLib::EvalPolynomial(NewParameter, 3, Degree, 1, WArray[0], LocalWDerivatives[0]);
 
@@ -1488,7 +1488,7 @@ void BSplCLib_BuildCache(const double                      U,
     {
       Traits::CoordsToPointMultiplied(CachePoles(ii), dc.poles + LocalIndex, LocalValue);
       LocalIndex += Dimension + 1;
-      LocalValue *= SpanDomain / (double)ii;
+      LocalValue *= SpanDomain / static_cast<double>(ii);
     }
 
     LocalIndex = Dimension;
@@ -1497,7 +1497,7 @@ void BSplCLib_BuildCache(const double                      U,
     {
       (*CacheWeights)(ii) = dc.poles[LocalIndex] * LocalValue;
       LocalIndex += Dimension + 1;
-      LocalValue *= SpanDomain / (double)ii;
+      LocalValue *= SpanDomain / static_cast<double>(ii);
     }
   }
   else
@@ -1507,7 +1507,7 @@ void BSplCLib_BuildCache(const double                      U,
     {
       Traits::CoordsToPointMultiplied(CachePoles(ii), dc.poles + LocalIndex, LocalValue);
       LocalIndex += Dimension;
-      LocalValue *= SpanDomain / (double)ii;
+      LocalValue *= SpanDomain / static_cast<double>(ii);
     }
 
     if (Weights != NULL)
@@ -1564,7 +1564,8 @@ void BSplCLib_BuildCache(const double                      theParameter,
   BSplCLib::Bohm(aParam, theDegree, theDegree, *dc.knots, aDimension, *dc.poles);
 
   double  aCoeff = 1.0;
-  double* aCache = (double*)&(theCacheArray(theCacheArray.LowerRow(), theCacheArray.LowerCol()));
+  double* aCache =
+    static_cast<double*>(&(theCacheArray(theCacheArray.LowerRow(), theCacheArray.LowerCol())));
   double* aPolyCoeffs = dc.poles;
 
   for (int i = 0; i <= theDegree; i++)
@@ -1635,7 +1636,7 @@ void BSplCLib_Interpolate(const int                         Degree,
 {
   double *PArray, *WArray;
   PArray = (double*)&Poles(Poles.Lower());
-  WArray = (double*)&Weights(Weights.Lower());
+  WArray = static_cast<double*>(&Weights(Weights.Lower()));
   BSplCLib::Interpolate(Degree,
                         FlatKnots,
                         Parameters,

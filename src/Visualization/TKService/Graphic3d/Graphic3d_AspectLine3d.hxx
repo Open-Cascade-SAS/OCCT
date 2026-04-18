@@ -52,7 +52,7 @@ public:
 
   //! Modifies the line thickness.
   //! Warning: Raises Standard_OutOfRange if the width is a negative value.
-  void SetWidth(const double theWidth) { SetWidth((float)theWidth); }
+  void SetWidth(const double theWidth) { SetWidth(static_cast<float>(theWidth)); }
 
   //! Modifies the line thickness.
   //! Warning: Raises Standard_OutOfRange if the width is a negative value.

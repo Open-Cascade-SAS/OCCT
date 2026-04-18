@@ -625,7 +625,7 @@ void IntPatch_WLine::ComputeVertexParameters(const double RTol)
     double        vTol = svtx.Value(i).Tolerance();
 
     indicevertex       = svtx.Value(i).ParameterOnLine();
-    indicevertexonline = (int)indicevertex;
+    indicevertexonline = static_cast<int>(indicevertex);
     //--------------------------------------------------
     //-- On Compare le vertex avec les points de la ligne
     //-- d indice   indicevertexOnLine-1
@@ -810,7 +810,7 @@ void IntPatch_WLine::ComputeVertexParameters(const double RTol)
           if (j != i)
           {
             double t = svtx.Value(j).ParameterOnLine();
-            if (t > (double)indicevertexonline)
+            if (t > static_cast<double>(indicevertexonline))
             {
               svtx.ChangeValue(j).SetParameter(t + 1.0);
             }

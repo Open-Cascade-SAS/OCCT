@@ -116,7 +116,7 @@ void PCDM_ReaderFilter::StartIteration()
       int aTag = aTagStr.IntegerValue();
       if (aMap->IsBound(aTag))
       {
-        aMap = (TagTree*)aMap->Find(aTag);
+        aMap = static_cast<TagTree*>(aMap->Find(aTag));
       }
       else
       {
@@ -133,7 +133,7 @@ void PCDM_ReaderFilter::StartIteration()
 void PCDM_ReaderFilter::Up()
 {
   if (myCurrentDepth == 0)
-    myCurrent = (TagTree*)myCurrent->Find(-1);
+    myCurrent = static_cast<TagTree*>(myCurrent->Find(-1));
   else
     myCurrentDepth--;
 }
@@ -143,7 +143,7 @@ void PCDM_ReaderFilter::Down(const int& theTag)
   if (myCurrentDepth == 0)
   {
     if (myCurrent->IsBound(theTag))
-      myCurrent = (TagTree*)myCurrent->Find(theTag);
+      myCurrent = static_cast<TagTree*>(myCurrent->Find(theTag));
     else
       ++myCurrentDepth;
   }
@@ -165,7 +165,7 @@ void PCDM_ReaderFilter::ClearSubTree(void* const theMap)
 {
   if (theMap)
   {
-    TagTree* aMap = (TagTree*)theMap;
+    TagTree* aMap = static_cast<TagTree*>(theMap);
     for (TagTree::Iterator aTagIter(*aMap); aTagIter.More(); aTagIter.Next())
       if (aTagIter.Key() != -1)
         ClearSubTree(aTagIter.Value());

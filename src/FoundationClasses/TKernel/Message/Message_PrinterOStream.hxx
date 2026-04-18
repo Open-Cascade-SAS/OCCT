@@ -60,7 +60,7 @@ public:
   ~Message_PrinterOStream() override { Close(); }
 
   //! Returns reference to the output stream
-  Standard_OStream& GetStream() const { return *(Standard_OStream*)myStream; }
+  Standard_OStream& GetStream() const { return *static_cast<Standard_OStream*>(myStream); }
 
   //! Returns TRUE if text output into console should be colorized depending on message gravity;
   //! TRUE by default.

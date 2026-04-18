@@ -123,7 +123,7 @@ public:
   //! @return metallicity within [0..1] range
   static float MetallicFromSpecular(const Quantity_Color& theSpecular)
   {
-    return ((NCollection_Vec3<float>)theSpecular).maxComp();
+    return (NCollection_Vec3<float>(theSpecular)).maxComp();
   }
 
 public:

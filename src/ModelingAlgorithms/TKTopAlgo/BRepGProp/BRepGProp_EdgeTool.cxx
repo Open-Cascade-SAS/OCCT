@@ -78,14 +78,14 @@ void BRepGProp_EdgeTool::D1(const BRepAdaptor_Curve& C, const double U, gp_Pnt& 
 int BRepGProp_EdgeTool::NbIntervals(const BRepAdaptor_Curve& C, const GeomAbs_Shape S)
 {
   // clang-format off
-  BRepAdaptor_Curve* pC = (BRepAdaptor_Curve*) &C; // at the moment actually NbIntervals() does not modify the 
+  BRepAdaptor_Curve* pC = const_cast<BRepAdaptor_Curve*>(&C); // at the moment actually NbIntervals() does not modify the 
                                                    // object "C". So it is safe to do such a cast.
   return pC->NbIntervals(S);
 }
 
 void BRepGProp_EdgeTool::Intervals(const BRepAdaptor_Curve& C,NCollection_Array1<double>& T,const GeomAbs_Shape S) 
 {
-  BRepAdaptor_Curve* pC = (BRepAdaptor_Curve*) &C; // at the moment actually Intervals() does not modify the
+  BRepAdaptor_Curve* pC = const_cast<BRepAdaptor_Curve*>(&C); // at the moment actually Intervals() does not modify the
                                                    // object "C". So it is safe to do such a cast.
   // clang-format on
   pC->Intervals(T, S);

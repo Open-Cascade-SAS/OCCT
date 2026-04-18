@@ -161,7 +161,7 @@ static void writeTexture(BinObjMgt_Persistent&             theTarget,
   theTarget.PutAsciiString(theImage->TextureId());
   theTarget.PutBoolean(true);
   theTarget.PutInteger(static_cast<int>(theImage->DataBuffer()->Size()));
-  theTarget.PutByteArray((uint8_t*)theImage->DataBuffer()->Data(),
+  theTarget.PutByteArray(const_cast<uint8_t*>(theImage->DataBuffer()->Data()),
                          static_cast<int>(theImage->DataBuffer()->Size()));
 }
 
@@ -231,9 +231,10 @@ bool BinMXCAFDoc_VisMaterialDriver::Paste(const BinObjMgt_Persistent&       theS
   if (aVerMaj < 1 || aVerMaj > MaterialVersionMajor)
   {
     myMessageDriver->Send(
-      TCollection_AsciiString("Skipping XCAFDoc_VisMaterial of unknown version ") + int(aVerMaj)
-      + "." + int(aVerMin) + " (supported version: " + int(MaterialVersionMajor) + "."
-      + int(MaterialVersionMinor) + ")");
+      TCollection_AsciiString("Skipping XCAFDoc_VisMaterial of unknown version ")
+      + static_cast<int>(aVerMaj) + "." + static_cast<int>(aVerMin)
+      + " (supported version: " + static_cast<int>(MaterialVersionMajor) + "."
+      + static_cast<int>(MaterialVersionMinor) + ")");
     return false;
   }
 

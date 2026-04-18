@@ -358,8 +358,8 @@ void DsgPrs_LengthPresentation::Add(const occ::handle<Prs3d_Presentation>& aPres
   Alpha = std::abs(deltaU);
   if (Alpha > Precision::Angular() && Alpha < Precision::Infinite())
   {
-    NodeNumber = std::max(4, int(50. * Alpha / M_PI));
-    delta      = deltaU / (double)(NodeNumber - 1);
+    NodeNumber = std::max(4, static_cast<int>(50. * Alpha / M_PI));
+    delta      = deltaU / static_cast<double>(NodeNumber - 1);
     aPrims     = new Graphic3d_ArrayOfPolylines(NodeNumber);
     for (int i = 1; i <= NodeNumber; i++, FirstU += delta)
       aPrims->AddVertex(VCurve->Value(FirstU));
@@ -368,8 +368,8 @@ void DsgPrs_LengthPresentation::Add(const occ::handle<Prs3d_Presentation>& aPres
   Alpha = std::abs(deltaV);
   if (Alpha > Precision::Angular() && Alpha < Precision::Infinite())
   {
-    NodeNumber = std::max(4, int(50. * Alpha / M_PI));
-    delta      = deltaV / (double)(NodeNumber - 1);
+    NodeNumber = std::max(4, static_cast<int>(50. * Alpha / M_PI));
+    delta      = deltaV / static_cast<double>(NodeNumber - 1);
     aPrims     = new Graphic3d_ArrayOfPolylines(NodeNumber);
     for (int i = 1; i <= NodeNumber; i++, FirstV += delta)
       aPrims->AddVertex(UCurve->Value(FirstV));

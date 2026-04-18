@@ -99,7 +99,7 @@ bool XmlMNaming_NamedShapeDriver::Paste(const XmlObjMgt_Persistent&       theSou
 
   TopoDS_Shape        anOldShape;
   TopoDS_Shape        aNewShape;
-  BRepTools_ShapeSet& aShapeSet = (BRepTools_ShapeSet&)myShapeSet;
+  BRepTools_ShapeSet& aShapeSet = const_cast<BRepTools_ShapeSet&>(myShapeSet);
 
   int lower = NewPShapes.Lower();
   if (OldPShapes.Lower() < lower)
@@ -186,7 +186,7 @@ void XmlMNaming_NamedShapeDriver::Paste(const occ::handle<TDF_Attribute>& theSou
     SItr.Next();
   }
 
-  BRepTools_ShapeSet& aShapeSet = (BRepTools_ShapeSet&)myShapeSet;
+  BRepTools_ShapeSet& aShapeSet = const_cast<BRepTools_ShapeSet&>(myShapeSet);
   XmlObjMgt_Array1    OldPShapes(1, NbShapes), NewPShapes(1, NbShapes);
 
   OldPShapes.CreateArrayElement(theTarget, ::OldsString());
@@ -373,7 +373,7 @@ void XmlMNaming_NamedShapeDriver::WriteShapeSection(XmlObjMgt_Element&    theEle
     //    aStream.rdbuf() -> freeze(0);                     // release the buffer
     anElement.appendChild(aText);
     // Clear the shape set to avoid appending to it on the next write
-    BRepTools_ShapeSet& aShapeSet = (BRepTools_ShapeSet&)myShapeSet;
+    BRepTools_ShapeSet& aShapeSet = const_cast<BRepTools_ShapeSet&>(myShapeSet);
     aShapeSet.Clear();
     if (!aPS.More())
       return;

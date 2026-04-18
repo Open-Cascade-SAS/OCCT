@@ -140,7 +140,7 @@ void Font_TextFormatter::Append(const NCollection_String& theString, Font_FTFont
     else if (aCharThis == '\t')
     {
       const int aSpacesNum = (myTabSize - (aSymbolsCounter - 1) % myTabSize);
-      anAdvanceX           = theFont.AdvanceX(' ', aCharNext) * float(aSpacesNum);
+      anAdvanceX           = theFont.AdvanceX(' ', aCharNext) * static_cast<float>(aSpacesNum);
       aSymbolsCounter += aSpacesNum;
     }
     else
@@ -299,7 +299,7 @@ void Font_TextFormatter::Format()
   }
   else if (myAlignY == Graphic3d_VTA_CENTER)
   {
-    myBndTop = 0.5f * (myLineSpacing * float(myLinesNb));
+    myBndTop = 0.5f * (myLineSpacing * static_cast<float>(myLinesNb));
   }
   else if (myAlignY == Graphic3d_VTA_TOPFIRSTLINE)
   {
@@ -414,7 +414,7 @@ int Font_TextFormatter::LineIndex(const int theIndex) const
     return 0;
   }
 
-  return (int)std::abs((BottomLeft(theIndex).y() + myAscender) / myLineSpacing);
+  return static_cast<int>(std::abs((BottomLeft(theIndex).y() + myAscender) / myLineSpacing));
 }
 
 //=================================================================================================

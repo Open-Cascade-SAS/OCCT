@@ -36,7 +36,7 @@ Standard_Failure::StringRef* Standard_Failure::StringRef::Allocate(const char* t
   }
 
   const size_t aLen    = std::strlen(theString);
-  StringRef*   aStrPtr = (StringRef*)Standard::AllocateOptimal(aLen + sizeof(int) + 1);
+  StringRef*   aStrPtr = static_cast<StringRef*>(Standard::AllocateOptimal(aLen + sizeof(int) + 1));
   if (aStrPtr != nullptr)
   {
     std::strcpy(&aStrPtr->Message[0], theString);
@@ -80,7 +80,7 @@ void Standard_Failure::captureStackTrace()
   {
     // Limit stack allocation to 64KB to prevent stack overflow
     const int aStackBufLen = std::clamp(aStackLength * 200, 2048, 65536);
-    char*     aStackBuffer = (char*)alloca(aStackBufLen);
+    char*     aStackBuffer = static_cast<char*>(alloca(aStackBufLen));
     if (aStackBuffer != nullptr)
     {
       std::memset(aStackBuffer, 0, aStackBufLen);

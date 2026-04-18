@@ -69,7 +69,9 @@ public:
   //! Returns window ratio equal to the physical width/height dimensions.
   double Ratio() const override
   {
-    return (myWidth != 0 && myHeight != 0) ? double(myWidth) / double(myHeight) : 1.0;
+    return (myWidth != 0 && myHeight != 0)
+             ? static_cast<double>(myWidth) / static_cast<double>(myHeight)
+             : 1.0;
   }
 
   //! Return the window position.

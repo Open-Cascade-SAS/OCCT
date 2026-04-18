@@ -177,7 +177,7 @@ static TopOpeBRepTool_C2DF* FC2D_PNewCurveOnSurface(const TopoDS_Edge& E, const 
     bool                       isf  = c2df.IsFace(F);
     if (isf)
     {
-      pc2df = (TopOpeBRepTool_C2DF*)&c2df;
+      pc2df = const_cast<TopOpeBRepTool_C2DF*>(&c2df);
       break;
     }
   }

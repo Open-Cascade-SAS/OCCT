@@ -109,10 +109,10 @@ void AIS_Shape::Compute(const occ::handle<PrsMgr_PresentationManager>&,
   if (myshape.ShapeType() >= TopAbs_WIRE && myshape.ShapeType() <= TopAbs_VERTEX)
   {
     // TopAbs_WIRE -> 7, TopAbs_EDGE -> 8, TopAbs_VERTEX -> 9 (Graphic3d_DisplayPriority_Highlight)
-    const int aPrior =
-      (int)Graphic3d_DisplayPriority_Above1 + (int)myshape.ShapeType() - TopAbs_WIRE;
+    const int aPrior = static_cast<int>(Graphic3d_DisplayPriority_Above1)
+                       + static_cast<int>(myshape.ShapeType()) - TopAbs_WIRE;
     thePrs->SetVisual(Graphic3d_TOS_ALL);
-    thePrs->SetDisplayPriority((Graphic3d_DisplayPriority)aPrior);
+    thePrs->SetDisplayPriority(static_cast<Graphic3d_DisplayPriority>(aPrior));
   }
 
   if (IsInfinite())
@@ -140,7 +140,7 @@ void AIS_Shape::Compute(const occ::handle<PrsMgr_PresentationManager>&,
     }
     case AIS_Shaded: {
       StdPrs_ToolTriangulatedShape::ClearOnOwnDeflectionChange(myshape, myDrawer, true);
-      if ((int)myshape.ShapeType() > 4)
+      if (static_cast<int>(myshape.ShapeType()) > 4)
       {
         StdPrs_WFShape::Add(thePrs, myshape, myDrawer);
       }
@@ -490,7 +490,7 @@ void AIS_Shape::UnsetColor()
     if (IsTransparent())
     {
       double aTransp = myDrawer->ShadingAspect()->Transparency(myCurrentFacingModel);
-      mat.SetTransparency(float(aTransp));
+      mat.SetTransparency(static_cast<float>(aTransp));
     }
     myDrawer->ShadingAspect()->SetMaterial(mat, myCurrentFacingModel);
     myDrawer->ShadingAspect()->Aspect()->SetInteriorColor(anInteriorColors[0]);
@@ -532,7 +532,7 @@ bool AIS_Shape::setWidth(const occ::handle<Prs3d_Drawer>& theDrawer,
 
 void AIS_Shape::SetWidth(const double theLineWidth)
 {
-  myOwnWidth = (float)theLineWidth;
+  myOwnWidth = static_cast<float>(theLineWidth);
 
   if (!setWidth(myDrawer, theLineWidth) || !myDrawer->HasLink())
   {
@@ -686,7 +686,7 @@ void AIS_Shape::SetTransparency(const double theValue)
 {
   const bool toRecompute = !myDrawer->HasOwnShadingAspect();
   setTransparency(myDrawer, theValue);
-  myDrawer->SetTransparency((float)theValue);
+  myDrawer->SetTransparency(static_cast<float>(theValue));
 
   if (!toRecompute || !myDrawer->HasLink())
   {

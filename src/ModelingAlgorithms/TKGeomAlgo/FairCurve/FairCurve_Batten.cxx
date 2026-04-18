@@ -467,7 +467,7 @@ bool FairCurve_Batten::Compute(const gp_Vec2d&         DeltaP1,
     occ::handle<NCollection_HArray1<double>> NKnots = new NCollection_HArray1<double>(1, NbKnots);
     for (ii = 1; ii <= NbKnots; ii++)
     {
-      NKnots->ChangeValue(ii) = (double)(ii - 1) / (NbKnots - 1);
+      NKnots->ChangeValue(ii) = static_cast<double>(ii - 1) / (NbKnots - 1);
     }
 
     NewBS->InsertKnots(NKnots->Array1(), NMults->Array1(), 1.e-10);

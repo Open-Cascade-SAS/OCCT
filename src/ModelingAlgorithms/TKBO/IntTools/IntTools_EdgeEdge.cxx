@@ -281,7 +281,7 @@ bool IntTools_EdgeEdge::IsCoincident()
     }
   }
   //
-  aCoeff = (double)iCnt / ((double)aNbSeg + 1);
+  aCoeff = static_cast<double>(iCnt) / (static_cast<double>(aNbSeg) + 1);
   return aCoeff > aTresh;
 }
 
@@ -1360,7 +1360,7 @@ int SplitRangeOnSegments(const double                          aT1,
   if (aDt < theResolution)
   {
     aSeg        = aDiff / theResolution;
-    aNbSegments = int(aSeg) + 1;
+    aNbSegments = static_cast<int>(aSeg) + 1;
     aDt         = aDiff / aNbSegments;
   }
   //

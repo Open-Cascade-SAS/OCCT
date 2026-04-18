@@ -59,7 +59,7 @@ inline static void convertDouble(const double theValue, char* theResult)
     char  c[4];
   } anUnion;
 
-  anUnion.i = (float)theValue;
+  anUnion.i = static_cast<float>(theValue);
 
   theResult[0] = anUnion.c[0];
   theResult[1] = anUnion.c[1];

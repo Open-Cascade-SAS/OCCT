@@ -75,10 +75,16 @@ void OpenGl_BackgroundArray::SetGradientParameters(const Quantity_Color&        
 
   double anR, aG, aB;
   theColor1.Values(anR, aG, aB, Quantity_TOC_RGB);
-  myGradientParams.color1 = NCollection_Vec4<float>((float)anR, (float)aG, (float)aB, 0.0f);
+  myGradientParams.color1 = NCollection_Vec4<float>(static_cast<float>(anR),
+                                                    static_cast<float>(aG),
+                                                    static_cast<float>(aB),
+                                                    0.0f);
 
   theColor2.Values(anR, aG, aB, Quantity_TOC_RGB);
-  myGradientParams.color2 = NCollection_Vec4<float>((float)anR, (float)aG, (float)aB, 0.0f);
+  myGradientParams.color2 = NCollection_Vec4<float>(static_cast<float>(anR),
+                                                    static_cast<float>(aG),
+                                                    static_cast<float>(aB),
+                                                    0.0f);
 
   myGradientParams.type = theType;
   invalidateData();
@@ -202,9 +208,9 @@ bool OpenGl_BackgroundArray::createGradientArray(const occ::handle<OpenGl_Contex
   }
 
   NCollection_Vec2<float> aVertices[4] = {
-    NCollection_Vec2<float>(float(myViewWidth), 0.0f),
-    NCollection_Vec2<float>(float(myViewWidth), float(myViewHeight)),
-    NCollection_Vec2<float>(0.0f, float(myViewHeight)),
+    NCollection_Vec2<float>(static_cast<float>(myViewWidth), 0.0f),
+    NCollection_Vec2<float>(static_cast<float>(myViewWidth), static_cast<float>(myViewHeight)),
+    NCollection_Vec2<float>(0.0f, static_cast<float>(myViewHeight)),
     NCollection_Vec2<float>(0.0f, 0.0f)};
 
   float* aCorners[4]     = {};
@@ -286,15 +292,16 @@ bool OpenGl_BackgroundArray::createGradientArray(const occ::handle<OpenGl_Contex
       }
 
       NCollection_Vec2<float> anEllipVerts[aSubdiv + 2];
-      anEllipVerts[0] =
-        NCollection_Vec2<float>(float(myViewWidth) / 2.0f, float(myViewHeight) / 2.0f);
-      double aTetta = (M_PI * 2.0) / aSubdiv;
-      double aParam = 0.0;
+      anEllipVerts[0] = NCollection_Vec2<float>(static_cast<float>(myViewWidth) / 2.0f,
+                                                static_cast<float>(myViewHeight) / 2.0f);
+      double aTetta   = (M_PI * 2.0) / aSubdiv;
+      double aParam   = 0.0;
       for (int anIt = 1; anIt < aSubdiv + 2; ++anIt)
       {
         anEllipVerts[anIt] = NCollection_Vec2<float>(
-          float(std::cos(aParam) * M_SQRT2 * myViewWidth / 2.0 + myViewWidth / 2.0f),
-          float(std::sin(aParam) * M_SQRT2 * myViewHeight / 2.0 + myViewHeight / 2.0f));
+          static_cast<float>(std::cos(aParam) * M_SQRT2 * myViewWidth / 2.0 + myViewWidth / 2.0f),
+          static_cast<float>(std::sin(aParam) * M_SQRT2 * myViewHeight / 2.0
+                             + myViewHeight / 2.0f));
 
         aParam += aTetta;
       }
@@ -366,8 +373,8 @@ bool OpenGl_BackgroundArray::createTextureArray(
   GLfloat aTexRangeY = 1.0f; // texture <t> coordinate
 
   // Set up for stretching or tiling
-  GLfloat anOffsetX = 0.5f * (float)myViewWidth;
-  GLfloat anOffsetY = 0.5f * (float)myViewHeight;
+  GLfloat anOffsetX = 0.5f * static_cast<float>(myViewWidth);
+  GLfloat anOffsetY = 0.5f * static_cast<float>(myViewHeight);
 
   // Setting this coefficient to -1.0f allows to tile textures relatively to the top-left corner of
   // the view (value 1.0f corresponds to the initial behavior - tiling from the bottom-left corner)
@@ -376,8 +383,8 @@ bool OpenGl_BackgroundArray::createTextureArray(
   // Get texture parameters
   const occ::handle<OpenGl_Context>& aCtx         = theWorkspace->GetGlContext();
   const OpenGl_Aspects*              anAspectFace = theWorkspace->Aspects();
-  GLfloat aTextureWidth  = (GLfloat)anAspectFace->TextureSet(aCtx)->First()->SizeX();
-  GLfloat aTextureHeight = (GLfloat)anAspectFace->TextureSet(aCtx)->First()->SizeY();
+  GLfloat aTextureWidth  = static_cast<GLfloat>(anAspectFace->TextureSet(aCtx)->First()->SizeX());
+  GLfloat aTextureHeight = static_cast<GLfloat>(anAspectFace->TextureSet(aCtx)->First()->SizeY());
 
   if (myFillMethod == Aspect_FM_CENTERED)
   {
@@ -386,8 +393,8 @@ bool OpenGl_BackgroundArray::createTextureArray(
   }
   else if (myFillMethod == Aspect_FM_TILED)
   {
-    aTexRangeX = (GLfloat)myViewWidth / aTextureWidth;
-    aTexRangeY = (GLfloat)myViewHeight / aTextureHeight;
+    aTexRangeX = static_cast<GLfloat>(myViewWidth) / aTextureWidth;
+    aTexRangeY = static_cast<GLfloat>(myViewHeight) / aTextureHeight;
   }
 
   // NOTE: texture is mapped using GL_REPEAT wrapping mode so integer part
@@ -558,11 +565,12 @@ void OpenGl_BackgroundArray::Render(const occ::handle<OpenGl_Workspace>& theWork
       {
         aWorldView.SetColumn(
           3,
-          NCollection_Vec4<float>(
-            -1.0f + (float)aViewSizeX / aTileSize.x() - 2.0f * aTileOffset.x() / aTileSize.x(),
-            -1.0f + (float)aViewSizeY / aTileSize.y() - 2.0f * aTileOffset.y() / aTileSize.y(),
-            0.0f,
-            1.0f));
+          NCollection_Vec4<float>(-1.0f + static_cast<float>(aViewSizeX) / aTileSize.x()
+                                    - 2.0f * aTileOffset.x() / aTileSize.x(),
+                                  -1.0f + static_cast<float>(aViewSizeY) / aTileSize.y()
+                                    - 2.0f * aTileOffset.y() / aTileSize.y(),
+                                  0.0f,
+                                  1.0f));
       }
     }
     else

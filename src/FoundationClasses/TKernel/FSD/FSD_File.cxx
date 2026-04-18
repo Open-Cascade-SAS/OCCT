@@ -210,10 +210,10 @@ void FSD_File::WriteExtendedLine(const TCollection_ExtendedString& buffer)
     c = (extBuffer[i] & 0x0000FF00) >> 8;
     d = extBuffer[i] & 0x000000FF;
 
-    myStream << (char)c << (char)d;
+    myStream << static_cast<char>(c) << static_cast<char>(d);
   }
 
-  myStream << (char)0 << "\n";
+  myStream << static_cast<char>(0) << "\n";
 }
 
 //=================================================================================================
@@ -237,7 +237,7 @@ void FSD_File::ReadExtendedLine(TCollection_ExtendedString& buffer)
       count = 0;
     if (count < SIZEOFNORMALEXTENDEDSECTION)
     {
-      i = (char16_t)c;
+      i = static_cast<char16_t>(c);
       if (c == '\0')
         fin = true;
       i = (i << 8);
@@ -252,8 +252,8 @@ void FSD_File::ReadExtendedLine(TCollection_ExtendedString& buffer)
         if (c != '\n')
         {
           fin = false;
-          i |= (0x00FF & (char16_t)c);
-          buffer += (char16_t)i;
+          i |= (0x00FF & static_cast<char16_t>(c));
+          buffer += i;
         }
       }
       else
@@ -433,7 +433,7 @@ Storage_BaseDriver& FSD_File::PutCharacter(const char aValue)
 
 Storage_BaseDriver& FSD_File::PutExtCharacter(const char16_t aValue)
 {
-  myStream << (short)aValue << " ";
+  myStream << static_cast<short>(aValue) << " ";
   if (myStream.bad())
     throw Storage_StreamWriteError();
   return *this;
@@ -453,7 +453,7 @@ Storage_BaseDriver& FSD_File::PutInteger(const int aValue)
 
 Storage_BaseDriver& FSD_File::PutBoolean(const bool aValue)
 {
-  myStream << ((int)aValue) << " ";
+  myStream << (static_cast<int>(aValue)) << " ";
   if (myStream.bad())
     throw Storage_StreamWriteError();
   return *this;
@@ -463,7 +463,7 @@ Storage_BaseDriver& FSD_File::PutBoolean(const bool aValue)
 
 Storage_BaseDriver& FSD_File::PutReal(const double aValue)
 {
-  myStream << ((double)aValue) << " ";
+  myStream << (aValue) << " ";
   if (myStream.bad())
     throw Storage_StreamWriteError();
   return *this;
@@ -506,7 +506,7 @@ Storage_BaseDriver& FSD_File::GetCharacter(char& aValue)
       throw Storage_StreamTypeMismatchError();
     myStream.clear(std::ios::goodbit); // .clear(0) is not portable
   }
-  aValue = (char)i;
+  aValue = static_cast<char>(i);
 
   return *this;
 }
@@ -578,7 +578,7 @@ Storage_BaseDriver& FSD_File::GetShortReal(float& aValue)
   if (!OSD::CStringToReal(realbuffer, r))
     throw Storage_StreamTypeMismatchError();
 
-  aValue = (float)r;
+  aValue = static_cast<float>(r);
 
   return *this;
 #else

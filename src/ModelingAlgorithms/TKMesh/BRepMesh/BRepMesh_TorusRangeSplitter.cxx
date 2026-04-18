@@ -39,7 +39,7 @@ Handle(IMeshData::ListOfPnt2d) BRepMesh_TorusRangeSplitter::GenerateSurfaceNodes
   double Dv = 0.9 * oldDv; // TWOTHIRD * oldDv;
   Dv        = oldDv;
 
-  const int nbV = std::max((int)(aDiffV / Dv), 2);
+  const int nbV = std::max(static_cast<int>(aDiffV / Dv), 2);
   Dv            = aDiffV / (nbV + 1);
 
   double       Du;
@@ -64,8 +64,8 @@ Handle(IMeshData::ListOfPnt2d) BRepMesh_TorusRangeSplitter::GenerateSurfaceNodes
     Du = Dv;
   }
 
-  int nbU = std::max((int)(aDiffU / Du), 2);
-  nbU     = std::max(nbU, (int)(nbV * aDiffU * R / (aDiffV * r) / 5.));
+  int nbU = std::max(static_cast<int>(aDiffU / Du), 2);
+  nbU     = std::max(nbU, static_cast<int>(nbV * aDiffU * R / (aDiffV * r) / 5.));
   Du      = aDiffU / (nbU + 1);
 
   const occ::handle<NCollection_IncAllocator> aTmpAlloc =
@@ -146,9 +146,9 @@ Handle(IMeshData::SequenceOfReal) BRepMesh_TorusRangeSplitter::fillParams(
   // Calculate DU, leave array of parameters
   const double aDiff = std::abs(theRange.second - theRange.first);
   double       aStep = FUN_CalcAverageDUV(aParamArray, aLength);
-  aStep              = std::max(aStep, aDiff / (double)theStepsNb / 2.);
+  aStep              = std::max(aStep, aDiff / static_cast<double>(theStepsNb) / 2.);
 
-  double aStdStep = aDiff / (double)aLength;
+  double aStdStep = aDiff / static_cast<double>(aLength);
   if (aStep > aStdStep)
   {
     aStdStep = aStep;
@@ -207,5 +207,5 @@ double BRepMesh_TorusRangeSplitter::FUN_CalcAverageDUV(NCollection_Array1<double
       }
     }
   }
-  return (n ? (result / (double)n) : -1.);
+  return (n ? (result / static_cast<double>(n)) : -1.);
 }

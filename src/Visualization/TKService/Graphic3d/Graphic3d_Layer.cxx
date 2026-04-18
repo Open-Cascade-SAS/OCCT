@@ -122,7 +122,7 @@ bool Graphic3d_Layer::Remove(const Graphic3d_CStructure* theStruct,
       }
     }
     --myNbStructures;
-    thePriority = (Graphic3d_DisplayPriority)aPriorityIter;
+    thePriority = static_cast<Graphic3d_DisplayPriority>(aPriorityIter);
     return true;
   }
 
@@ -708,7 +708,7 @@ bool Graphic3d_Layer::Append(const Graphic3d_Layer& theOther)
          aStructIter.More();
          aStructIter.Next())
     {
-      Add(aStructIter.Value(), (Graphic3d_DisplayPriority)aPriorityIter);
+      Add(aStructIter.Value(), static_cast<Graphic3d_DisplayPriority>(aPriorityIter));
     }
   }
 

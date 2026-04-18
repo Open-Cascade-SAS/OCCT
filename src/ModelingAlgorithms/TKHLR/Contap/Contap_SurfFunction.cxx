@@ -62,7 +62,7 @@ void Contap_SurfFunction::Set(const occ::handle<Adaptor3d_Surface>& S)
       Contap_SurfProps::Normale(S, U, V, solpt, norm);
       myMean = myMean + norm.Magnitude();
     }
-    myMean = myMean / ((double)nbs);
+    myMean = myMean / (static_cast<double>(nbs));
   }
   computed = false;
   derived  = false;

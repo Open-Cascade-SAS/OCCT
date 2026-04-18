@@ -134,10 +134,10 @@ static void SeveralWlinesProcessing(const occ::handle<Adaptor3d_Surface>& theSur
     {
       const occ::handle<IntPatch_Line>& aSLine = theSLin.Value(WLDMin);
       const occ::handle<IntPatch_WLine> aWLine = occ::down_cast<IntPatch_WLine>(aSLine);
-      int                               tiVpar = (int)aWLine->Vertex(VDMin).ParameterOnLine();
-      int                               ciVpar = (int)theWLline->Vertex(ciV).ParameterOnLine();
-      double                            u11 = 0., u12 = 0., v11 = 0., v12 = 0.;
-      double                            u21 = 0., u22 = 0., v21 = 0., v22 = 0.;
+      int    tiVpar = static_cast<int>(aWLine->Vertex(VDMin).ParameterOnLine());
+      int    ciVpar = static_cast<int>(theWLline->Vertex(ciV).ParameterOnLine());
+      double u11 = 0., u12 = 0., v11 = 0., v12 = 0.;
+      double u21 = 0., u22 = 0., v21 = 0., v22 = 0.;
       theWLline->Point(ciVpar).Parameters(u11, v11, u12, v12);
       aWLine->Point(tiVpar).Parameters(u21, v21, u22, v22);
 
@@ -150,7 +150,7 @@ static void SeveralWlinesProcessing(const occ::handle<Adaptor3d_Surface>& theSur
       for (iPo = 1; iPo <= cnbV; iPo++)
       {
         double Po  = theWLline->Vertex(iPo).ParameterOnLine();
-        int    IPo = (int)Po;
+        int    IPo = static_cast<int>(Po);
         VPold.Append(IPo);
       }
 
@@ -3227,12 +3227,12 @@ public:
   //---------------------------------------- D-tor
   ~IntPatch_InfoPD()
   {
-    delete[] (char*)myP1DS2;
-    delete[] (char*)myP2DS1;
-    delete[] (int*)myIP1;
-    delete[] (int*)myIP2;
-    delete[] (gp_Pnt*)myP1;
-    delete[] (gp_Pnt*)myP2;
+    delete[] myP1DS2;
+    delete[] myP2DS1;
+    delete[] myIP1;
+    delete[] myIP2;
+    delete[] myP1;
+    delete[] myP2;
   };
 
   //---------------------------------------- Index
@@ -3470,16 +3470,17 @@ void IntPatch_PrmPrmIntersection::PointDepart(occ::handle<IntSurf_LineOn2S>&    
   {
     for (j = 0; j < SV1; j++)
     {
-      aIPD.xIP1(i, j)   = -1;
-      const gp_Pnt& P   = aIPD.xP1(i, j);
-      aIPD.xP1DS2(i, j) = (char)CodeReject(x20, y20, z20, x21, y21, z21, P.X(), P.Y(), P.Z());
-      int ix            = (int)((P.X() - x0 + dx2) / dx);
+      aIPD.xIP1(i, j) = -1;
+      const gp_Pnt& P = aIPD.xP1(i, j);
+      aIPD.xP1DS2(i, j) =
+        static_cast<char>(CodeReject(x20, y20, z20, x21, y21, z21, P.X(), P.Y(), P.Z()));
+      int ix = static_cast<int>((P.X() - x0 + dx2) / dx);
       if (DansGrille(ix))
       {
-        int iy = (int)((P.Y() - y0 + dy2) / dy);
+        int iy = static_cast<int>((P.Y() - y0 + dy2) / dy);
         if (DansGrille(iy))
         {
-          int iz = (int)((P.Z() - z0 + dz2) / dz);
+          int iz = static_cast<int>((P.Z() - z0 + dz2) / dz);
           if (DansGrille(iz))
           {
             aIPD.xIP1(i, j) = GrilleInteger(ix, iy, iz);
@@ -3493,16 +3494,17 @@ void IntPatch_PrmPrmIntersection::PointDepart(occ::handle<IntSurf_LineOn2S>&    
   {
     for (j = 0; j < SV2; j++)
     {
-      aIPD.xIP2(i, j)   = -1;
-      const gp_Pnt& P   = aIPD.xP2(i, j);
-      aIPD.xP2DS1(i, j) = (char)CodeReject(x10, y10, z10, x11, y11, z11, P.X(), P.Y(), P.Z());
-      int ix            = (int)((P.X() - x0 + dx2) / dx);
+      aIPD.xIP2(i, j) = -1;
+      const gp_Pnt& P = aIPD.xP2(i, j);
+      aIPD.xP2DS1(i, j) =
+        static_cast<char>(CodeReject(x10, y10, z10, x11, y11, z11, P.X(), P.Y(), P.Z()));
+      int ix = static_cast<int>((P.X() - x0 + dx2) / dx);
       if (DansGrille(ix))
       {
-        int iy = (int)((P.Y() - y0 + dy2) / dy);
+        int iy = static_cast<int>((P.Y() - y0 + dy2) / dy);
         if (DansGrille(iy))
         {
-          int iz = (int)((P.Z() - z0 + dz2) / dz);
+          int iz = static_cast<int>((P.Z() - z0 + dz2) / dz);
           if (DansGrille(iz))
           {
             aIPD.xIP2(i, j) = GrilleInteger(ix, iy, iz);
@@ -3608,7 +3610,7 @@ void IntPatch_PrmPrmIntersection::PointDepart(occ::handle<IntSurf_LineOn2S>&    
       {
         for (nv = 0; nu1 < 0 && nv < SV1; nv++)
         {
-          if (aIPD.xIP1(nu, nv) == (int)newind)
+          if (aIPD.xIP1(nu, nv) == newind)
           {
             aIPD.xIP1(nu, nv) = indicepointtraite;
             nu1               = nu;
@@ -3622,7 +3624,7 @@ void IntPatch_PrmPrmIntersection::PointDepart(occ::handle<IntSurf_LineOn2S>&    
         {
           for (nv = 0; nu2 < 0 && nv < SV2; nv++)
           {
-            if (aIPD.xIP2(nu, nv) == (int)newind)
+            if (aIPD.xIP2(nu, nv) == newind)
             {
               aIPD.xIP2(nu, nv) = indicepointtraite;
               nu2               = nu;

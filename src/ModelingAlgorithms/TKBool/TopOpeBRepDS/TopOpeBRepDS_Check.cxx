@@ -398,7 +398,7 @@ bool CheckEdgeParameter(const occ::handle<TopOpeBRepDS_HDataStructure>& myHDS)
         occ::down_cast<TopOpeBRepDS_EdgeVertexInterference>(I1);
       if (!EVI.IsNull())
       {
-        int Param = (int)EVI->Parameter();
+        int Param = static_cast<int>(EVI->Parameter());
         if (Param > 1.e50)
         {
           IsOK = false;
@@ -421,7 +421,7 @@ bool CheckEdgeParameter(const occ::handle<TopOpeBRepDS_HDataStructure>& myHDS)
         occ::down_cast<TopOpeBRepDS_CurvePointInterference>(I1));
       if (!CPI.IsNull())
       {
-        int Param = (int)TopOpeBRepDS_InterferenceTool::Parameter(CPI);
+        int Param = static_cast<int>(TopOpeBRepDS_InterferenceTool::Parameter(CPI));
         if (Param > 1.e50)
         {
           IsOK = false;

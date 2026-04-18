@@ -411,7 +411,7 @@ void BOPAlgo_BOP::fillPIConstants(const double theWhole, BOPAlgo_PISteps& theSte
 void BOPAlgo_BOP::PerformInternal1(const BOPAlgo_PaveFiller&    theFiller,
                                    const Message_ProgressRange& theRange)
 {
-  myPaveFiller     = (BOPAlgo_PaveFiller*)&theFiller;
+  myPaveFiller     = const_cast<BOPAlgo_PaveFiller*>(&theFiller);
   myDS             = myPaveFiller->PDS();
   myContext        = myPaveFiller->Context();
   myFuzzyValue     = myPaveFiller->FuzzyValue();

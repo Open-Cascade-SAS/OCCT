@@ -1259,7 +1259,7 @@ public:
   //! Sets the ShapeBox structure
   void SetShapeBoxVector(const BOPAlgo_VectorOfShapeBox& theShapeBox)
   {
-    myVShapeBox = (BOPAlgo_VectorOfShapeBox*)&theShapeBox;
+    myVShapeBox = const_cast<BOPAlgo_VectorOfShapeBox*>(&theShapeBox);
   };
 
   //! Sets the context

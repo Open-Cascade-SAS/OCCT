@@ -115,7 +115,7 @@ occ::handle<Image_CompressedPixMap> Graphic3d_CubeMapSeparate::CompressedValue(
     return anImage;
   }
 
-  if (anImage->BaseFormat() == myFormat && anImage->SizeX() == (int)mySize)
+  if (anImage->BaseFormat() == myFormat && anImage->SizeX() == static_cast<int>(mySize))
   {
     return anImage;
   }

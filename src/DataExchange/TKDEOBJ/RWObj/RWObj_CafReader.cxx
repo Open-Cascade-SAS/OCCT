@@ -98,8 +98,9 @@ bool RWObj_CafReader::performMesh(std::istream&                  theStream,
   aCtx->SetCreateShapes(true);
   aCtx->SetShapeReceiver(this);
   aCtx->SetTransformation(myCoordSysConverter);
-  aCtx->SetMemoryLimit(myMemoryLimitMiB == -1 ? size_t(-1)
-                                              : size_t(myMemoryLimitMiB * 1024 * 1024));
+  aCtx->SetMemoryLimit(myMemoryLimitMiB == -1
+                         ? static_cast<size_t>(-1)
+                         : static_cast<size_t>(myMemoryLimitMiB * 1024 * 1024));
   bool isDone = false;
   if (theToProbe)
   {

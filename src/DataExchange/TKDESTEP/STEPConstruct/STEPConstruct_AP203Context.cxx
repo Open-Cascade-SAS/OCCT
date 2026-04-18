@@ -113,7 +113,7 @@ occ::handle<StepBasic_DateAndTime> STEPConstruct_AP203Context::DefaultDateAndTim
     long shift = 0;
     _get_timezone(&shift);
 #else
-    int shift = int(timezone);
+    int shift = static_cast<int>(timezone);
 #endif
     int                     shifth = abs(shift) / 3600;
     int                     shiftm = (abs(shift) - shifth * 3600) / 60;

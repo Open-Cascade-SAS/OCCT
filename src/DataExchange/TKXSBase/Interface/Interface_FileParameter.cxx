@@ -37,7 +37,8 @@ void Interface_FileParameter::Init(const TCollection_AsciiString& val,
 
 void Interface_FileParameter::Init(const char* const val, const Interface_ParamType typ)
 {
-  theval  = (Standard_PCharacter)val; // Principle: Allocation managed by container (ParamSet)
+  theval =
+    const_cast<Standard_PCharacter>(val); // Principle: Allocation managed by container (ParamSet)
   thetype = typ;
   thenum  = 0;
 }

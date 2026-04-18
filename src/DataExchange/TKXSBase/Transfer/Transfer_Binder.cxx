@@ -36,7 +36,7 @@ void Transfer_Binder::Merge(const occ::handle<Transfer_Binder>& other)
 {
   if (other.IsNull())
     return;
-  if ((int)theexecst < (int)other->StatusExec())
+  if (static_cast<int>(theexecst) < static_cast<int>(other->StatusExec()))
     theexecst = other->StatusExec();
   thecheck->GetMessages(other->Check());
 }

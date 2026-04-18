@@ -301,8 +301,9 @@ void TopOpeBRepBuild_HBuilder::MakeEdgeAncestorMap()
     re                         = DS.AncestorRank(ShaSpl);
     if (!re)
       continue;
-    TopOpeBRepDS_ListOfShapeOn1State& losos1s = (*(TopOpeBRepDS_ListOfShapeOn1State*)&it.Value());
-    NCollection_List<TopoDS_Shape>&   los     = losos1s.ChangeListOnState();
+    TopOpeBRepDS_ListOfShapeOn1State& losos1s =
+      (*const_cast<TopOpeBRepDS_ListOfShapeOn1State*>(&it.Value()));
+    NCollection_List<TopoDS_Shape>& los = losos1s.ChangeListOnState();
     its.Initialize(los);
     if (re == 1)
       for (; its.More(); its.Next())
@@ -441,7 +442,7 @@ void TopOpeBRepBuild_HBuilder::MakeCurveAncestorMap()
     itloe.Initialize(LOS);
     for (; itloe.More(); itloe.Next())
     {
-      TopoDS_Shape& E = *((TopoDS_Shape*)(&itloe.Value()));
+      TopoDS_Shape& E = *(static_cast<TopoDS_Shape*>(&itloe.Value()));
       mySectEdgeDSCurve.Bind(E, ic);
     }
   }

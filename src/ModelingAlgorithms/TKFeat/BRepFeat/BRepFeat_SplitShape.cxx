@@ -73,7 +73,7 @@ const NCollection_List<TopoDS_Shape>& BRepFeat_SplitShape::Right() const
 
 bool BRepFeat_SplitShape::IsDeleted(const TopoDS_Shape& F)
 {
-  NCollection_List<TopoDS_Shape>::Iterator itl(((LocOpe_Spliter*)&mySShape)->DescendantShapes(F));
+  NCollection_List<TopoDS_Shape>::Iterator itl((&mySShape)->DescendantShapes(F));
   // all that to swindle the constant
 
   return (!itl.More()); // a priori impossible

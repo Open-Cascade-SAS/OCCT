@@ -80,7 +80,7 @@ public:
     mySize = theSize;
     if (theSize != 0 || !myAllocator.IsNull())
     {
-      myData = (uint8_t*)myAllocator->Allocate(theSize);
+      myData = static_cast<uint8_t*>(myAllocator->Allocate(theSize));
     }
 
     if (myData == nullptr)

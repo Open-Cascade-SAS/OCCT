@@ -321,7 +321,7 @@ void TopOpeBRepBuild_Builder::GMergeFaces(const NCollection_List<TopoDS_Shape>& 
   if (LF1.IsEmpty())
     return;
   if (GLOBAL_DS2d == nullptr)
-    GLOBAL_DS2d = (TopOpeBRepDS_PDataStructure) new TopOpeBRepDS_DataStructure();
+    GLOBAL_DS2d = static_cast<TopOpeBRepDS_PDataStructure>(new TopOpeBRepDS_DataStructure());
   GLOBAL_DS2d->Init();
 
   TopAbs_State TB1, TB2;

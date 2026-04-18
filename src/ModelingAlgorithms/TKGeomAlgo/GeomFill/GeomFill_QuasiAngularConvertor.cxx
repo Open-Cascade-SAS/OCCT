@@ -165,8 +165,8 @@ void GeomFill_QuasiAngularConvertor::Section(const gp_Pnt&               FirstPn
     }
   }
   else
-    b = ((double)-1) / beta2;
-  c  = ((double)1) / 3 + b;
+    b = (static_cast<double>(-1)) / beta2;
+  c  = (static_cast<double>(1)) / 3 + b;
   b2 = b * b;
   c2 = c * c;
 
@@ -278,7 +278,7 @@ void GeomFill_QuasiAngularConvertor::Section(const gp_Pnt&               FirstPn
   }
   else
   {
-    b   = ((double)-1) / beta2;
+    b   = (static_cast<double>(-1)) / beta2;
     bpr = (2 * betaprim) / beta3;
     if ((M_PI / 2 - beta) > NullAngle)
     {
@@ -290,7 +290,7 @@ void GeomFill_QuasiAngularConvertor::Section(const gp_Pnt&               FirstPn
     }
   }
 
-  c  = ((double)1) / 3 + b;
+  c  = (static_cast<double>(1)) / 3 + b;
   b2 = b * b;
   c2 = c * c;
 
@@ -470,7 +470,7 @@ void GeomFill_QuasiAngularConvertor::Section(const gp_Pnt&               FirstPn
   }
   else
   {
-    b   = ((double)-1) / beta2;
+    b   = (static_cast<double>(-1)) / beta2;
     bpr = (2 * betaprim) / beta3;
     bsc = (2 * betasecn - 6 * betaprim * (betaprim / beta)) / beta3;
     if ((M_PI / 2 - beta) > NullAngle)
@@ -487,7 +487,7 @@ void GeomFill_QuasiAngularConvertor::Section(const gp_Pnt&               FirstPn
     }
   }
 
-  c    = ((double)1) / 3 + b;
+  c    = (static_cast<double>(1)) / 3 + b;
   b2   = b * b;
   c2   = c * c;
   bpr2 = bpr * bpr;

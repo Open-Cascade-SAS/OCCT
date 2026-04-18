@@ -93,7 +93,7 @@ static void renderCappingForStructure(StencilTestSentry&                      th
 {
   const int aPrevFilter = theWorkspace->RenderFilter();
   const int anAnyFilter =
-    aPrevFilter & ~(int)(OpenGl_RenderFilter_OpaqueOnly | OpenGl_RenderFilter_TransparentOnly);
+    aPrevFilter & ~(OpenGl_RenderFilter_OpaqueOnly | OpenGl_RenderFilter_TransparentOnly);
 
   const occ::handle<OpenGl_Context>&      aContext     = theWorkspace->GetGlContext();
   const occ::handle<Graphic3d_ClipPlane>& aRenderPlane = thePlane->Plane();

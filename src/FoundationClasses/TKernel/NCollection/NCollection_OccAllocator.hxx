@@ -163,7 +163,7 @@ public:
   }
 
   //! Estimate maximum array size
-  size_t max_size() const noexcept { return ((size_t)(-1) / sizeof(ItemType)); }
+  size_t max_size() const noexcept { return (static_cast<size_t>(-1) / sizeof(ItemType)); }
 
   bool operator==(const NCollection_OccAllocator& theOther) const noexcept
   {

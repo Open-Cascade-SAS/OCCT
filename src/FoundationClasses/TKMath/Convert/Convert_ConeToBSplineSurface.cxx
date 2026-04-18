@@ -45,7 +45,7 @@ static void ComputePoles(const double                R,
   int i;
 
   // Number of spans : maximum opening = 150 degrees ( = PI / 1.2 rds)
-  int    nbUSpans = (int)std::trunc(1.2 * deltaU / M_PI) + 1;
+  int    nbUSpans = static_cast<int>(std::trunc(1.2 * deltaU / M_PI)) + 1;
   double AlfaU    = deltaU / (nbUSpans * 2);
 
   std::array<double, TheNbVPoles> x;
@@ -102,7 +102,7 @@ Convert_ConeToBSplineSurface::Convert_ConeToBSplineSurface(const gp_Cone& C,
   // construction of cone in the reference mark xOy.
 
   // Number of spans : maximum opening = 150 degrees ( = PI / 1.2 rds)
-  int    nbUSpans = (int)std::trunc(1.2 * deltaU / M_PI) + 1;
+  int    nbUSpans = static_cast<int>(std::trunc(1.2 * deltaU / M_PI)) + 1;
   double AlfaU    = deltaU / (nbUSpans * 2);
 
   myNbUPoles = 2 * nbUSpans + 1;

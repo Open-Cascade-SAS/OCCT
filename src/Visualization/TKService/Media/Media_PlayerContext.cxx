@@ -187,12 +187,16 @@ bool Media_PlayerContext::DumpFirstFrame(const TCollection_AsciiString& theSrcVi
     if (aResSizeX > aResSizeY)
     {
       aResSizeX = theMaxSize;
-      aResSizeY = int((double(aFrame->SizeY()) / double(aFrame->SizeX())) * double(aResSizeX));
+      aResSizeY = static_cast<int>(
+        (static_cast<double>(aFrame->SizeY()) / static_cast<double>(aFrame->SizeX()))
+        * static_cast<double>(aResSizeX));
     }
     else
     {
       aResSizeY = theMaxSize;
-      aResSizeX = int((double(aFrame->SizeX()) / double(aFrame->SizeY())) * double(aResSizeY));
+      aResSizeX = static_cast<int>(
+        (static_cast<double>(aFrame->SizeX()) / static_cast<double>(aFrame->SizeY()))
+        * static_cast<double>(aResSizeY));
     }
   }
   if (!aPixMap->InitZero(Image_Format_RGB, aResSizeX, aResSizeY))
@@ -350,7 +354,7 @@ bool Media_PlayerContext::popPlayEvent(Media_PlayerEvent&                      t
 //! Returns nearest (greater or equal) aligned number.
 static int getAligned(size_t theNumber, size_t theAlignment = 32)
 {
-  return int(theNumber + theAlignment - 1 - (theNumber - 1) % theAlignment);
+  return static_cast<int>(theNumber + theAlignment - 1 - (theNumber - 1) % theAlignment);
 }
 
 //=================================================================================================

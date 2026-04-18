@@ -41,7 +41,7 @@ Prs3d_DatumAspect::Prs3d_DatumAspect()
   myArrowAspect = new Prs3d_ArrowAspect();
   for (int aPartIter = Prs3d_DatumParts_Origin; aPartIter <= Prs3d_DatumParts_XOZAxis; ++aPartIter)
   {
-    const Prs3d_DatumParts aPart = (Prs3d_DatumParts)aPartIter;
+    const Prs3d_DatumParts aPart = static_cast<Prs3d_DatumParts>(aPartIter);
 
     Quantity_Color aColor = aDefaultColor;
     if (aPart >= Prs3d_DatumParts_XArrow && aPart <= Prs3d_DatumParts_ZArrow)
@@ -151,7 +151,7 @@ void Prs3d_DatumAspect::CopyAspectsFrom(const occ::handle<Prs3d_DatumAspect>& th
     *theOther->myTextAspects[Prs3d_DatumParts_ZAxis]->Aspect();
   for (int aPartIter = Prs3d_DatumParts_Origin; aPartIter <= Prs3d_DatumParts_XOZAxis; ++aPartIter)
   {
-    const Prs3d_DatumParts aPart = (Prs3d_DatumParts)aPartIter;
+    const Prs3d_DatumParts aPart = static_cast<Prs3d_DatumParts>(aPartIter);
     if (!myLineAspects[aPart].IsNull())
     {
       *myLineAspects[aPart]->Aspect() = *theOther->myLineAspects[aPart]->Aspect();

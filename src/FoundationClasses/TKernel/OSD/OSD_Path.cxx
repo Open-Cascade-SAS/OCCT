@@ -212,7 +212,7 @@ static void UnixExtract(const TCollection_AsciiString& what,
   pos = trek.SearchFromEnd("|"); // Extract name
   if (pos != -1)
   {
-    p    = (Standard_PCharacter)trek.ToCString();
+    p    = const_cast<Standard_PCharacter>(trek.ToCString());
     name = &p[pos];
     if (name.Length())
       trek.Remove(pos + 1, name.Length());
@@ -287,7 +287,7 @@ static void DosExtract(const TCollection_AsciiString& what,
   pos = trek.SearchFromEnd("|"); // Extract name
   if (pos != -1)
   {
-    p    = (Standard_PCharacter)trek.ToCString();
+    p    = const_cast<Standard_PCharacter>(trek.ToCString());
     name = &p[pos];
     if (name.Length())
       trek.Remove(pos + 1, name.Length());
@@ -332,7 +332,7 @@ static void MacExtract(const TCollection_AsciiString& what,
   pos = trek.SearchFromEnd("|"); // Extract name
   if (pos != -1)
   {
-    p    = (Standard_PCharacter)trek.ToCString();
+    p    = const_cast<Standard_PCharacter>(trek.ToCString());
     name = &p[pos + 1];
     trek.Remove(trek.Search(name), name.Length());
   }
@@ -583,7 +583,7 @@ static void P2MAC(TCollection_AsciiString& Way)
   int i, l;
   Way.ChangeAll('|', ':');
 
-  l = (int)Way.Length();
+  l = Way.Length();
   for (i = 1; i <= l; i++) // Replace '^' by "::"
     if (Way.Value(i) == '^')
     {
@@ -609,7 +609,7 @@ static void P2UNIX(TCollection_AsciiString& Way)
 
   Way.ChangeAll('|', '/');
 
-  l = (int)Way.Length();
+  l = Way.Length();
   for (i = 1; i <= l; i++) // Replace '^' by "../"
     if (Way.Value(i) == '^')
     {
@@ -636,7 +636,7 @@ static void P2DOS(TCollection_AsciiString& Way)
 
   Way.ChangeAll('|', '\\');
 
-  l = (int)Way.Length();
+  l = Way.Length();
   for (i = 1; i <= l; i++) // Replace '^' by ".."
     if (Way.Value(i) == '^')
     {
@@ -717,7 +717,7 @@ void OSD_Path::SystemName(TCollection_AsciiString& FullName, const OSD_SysType a
     case OSD_OS2:
     case OSD_WindowsNT: // MSDOS-like syntax
     {
-      int length = (int)myDisk.Length();
+      int length = myDisk.Length();
 
       P2DOS(Way);
       if (length != 1)

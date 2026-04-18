@@ -129,8 +129,8 @@ static void BuildTangents(const NCollection_Array1<double>& PointsArray,
   }
   if (!TangentFlags.Value(1))
   {
-    point_array     = (double*)&PointsArray.Value(PointsArray.Lower());
-    parameter_array = (double*)&ParametersArray.Value(1);
+    point_array     = const_cast<double*>(&PointsArray.Value(PointsArray.Lower()));
+    parameter_array = const_cast<double*>(&ParametersArray.Value(1));
     TangentFlags.SetValue(1, true);
     PLib::EvalLagrange(ParametersArray.Value(1),
                        1,
@@ -143,10 +143,10 @@ static void BuildTangents(const NCollection_Array1<double>& PointsArray,
   }
   if (!TangentFlags.Value(TangentFlags.Upper()))
   {
-    point_array = (double*)&PointsArray.Value(PointsArray.Upper() - degree);
+    point_array = const_cast<double*>(&PointsArray.Value(PointsArray.Upper() - degree));
     TangentFlags.SetValue(TangentFlags.Upper(), true);
     int iup         = ParametersArray.Upper() - degree;
-    parameter_array = (double*)&ParametersArray.Value(iup);
+    parameter_array = const_cast<double*>(&ParametersArray.Value(iup));
     PLib::EvalLagrange(ParametersArray.Value(ParametersArray.Upper()),
                        1,
                        degree,

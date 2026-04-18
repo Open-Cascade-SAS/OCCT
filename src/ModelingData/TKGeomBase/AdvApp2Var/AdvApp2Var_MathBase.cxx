@@ -359,7 +359,7 @@ int mfac_(double* f, int* n)
   --f;
 
   /* Function Body */
-  f[1] = (float)1.;
+  f[1] = static_cast<float>(1.);
   i__1 = *n;
   for (i__ = 2; i__ <= i__1; ++i__)
   {
@@ -2488,7 +2488,7 @@ int AdvApp2Var_MathBase::mmcvctx_(int*    ndimen,
     for (ncf = 1; ncf <= i__2; ++ncf)
     {
       tabaux[ncf + ndv * tabaux_dim1] =
-        tabaux[ncf + (ndv - 1) * tabaux_dim1] * (double)((ncf << 1) - ndv);
+        tabaux[ncf + (ndv - 1) * tabaux_dim1] * static_cast<double>((ncf << 1) - ndv);
       /* L300: */
     }
     /* L200: */
@@ -2551,7 +2551,7 @@ int AdvApp2Var_MathBase::mmcvctx_(int*    ndimen,
     for (ncf = 1; ncf <= i__2; ++ncf)
     {
       tabaux[ncf + ndv * tabaux_dim1] =
-        tabaux[ncf + (ndv - 1) * tabaux_dim1] * (double)((ncf << 1) - ndv + 1);
+        tabaux[ncf + (ndv - 1) * tabaux_dim1] * static_cast<double>((ncf << 1) - ndv + 1);
       /* L1300: */
     }
     /* L1200: */
@@ -3168,7 +3168,7 @@ L200:
       i__3 = *ndim;
       for (nd = 1; nd <= i__3; ++nd)
       {
-        tabpnt[nd + i__ * tabpnt_dim1] = (double)j * tabpnt[nd + i__ * tabpnt_dim1];
+        tabpnt[nd + i__ * tabpnt_dim1] = static_cast<double>(j) * tabpnt[nd + i__ * tabpnt_dim1];
         /* L1200: */
       }
       /* L1100: */
@@ -4833,25 +4833,25 @@ int mmherm0_(double* debfin, int* iercod)
 
   /* Function Body */
   d1 = std::abs(debfin[1]);
-  if (d1 > (float)100.)
+  if (d1 > static_cast<float>(100.))
   {
     goto L9101;
   }
 
   d2 = std::abs(debfin[2]);
-  if (d2 > (float)100.)
+  if (d2 > static_cast<float>(100.))
   {
     goto L9101;
   }
 
   d2 = d1 + d2;
-  if (d2 < (float).01)
+  if (d2 < static_cast<float>(.01))
   {
     goto L9101;
   }
 
   d1 = (d__1 = debfin[2] - debfin[1], std::abs(d__1));
-  if (d1 / d2 < (float).01)
+  if (d1 / d2 < static_cast<float>(.01))
   {
     goto L9101;
   }
@@ -4949,7 +4949,7 @@ L100:
           i__2 = pp - 1;
           for (jj = 1; jj <= i__2; ++jj)
           {
-            mat[ii + jj * 6 - 7] = (float)0.;
+            mat[ii + jj * 6 - 7] = static_cast<float>(0.);
             /* L300: */
           }
 
@@ -6781,7 +6781,7 @@ int mmpojac_(double*                     tparam,
     i__2 = *iordre;
     for (jj = 1; jj <= i__2; ++jj)
     {
-      aux2 = aux2 * (double)(kk1 + *iordre + jj) / (double)(kk1 + jj);
+      aux2 = aux2 * static_cast<double>(kk1 + *iordre + jj) / static_cast<double>(kk1 + jj);
     }
     i__2          = (*iordre << 1) + 1;
     tnorm[ii - 1] = sqrt(aux2 * (kk1 * 2. + (*iordre << 1) + 1) / pow__ii(&c__2, &i__2));
@@ -6792,7 +6792,7 @@ int mmpojac_(double*                     tparam,
   /*  --- Trivial Positions ----- */
 
   valjac(1) = 1.;
-  aux1      = (double)(*iordre + 1);
+  aux1      = static_cast<double>(*iordre + 1);
   valjac(2) = aux1 * *tparam;
 
   if (*nderiv >= 1)
@@ -6821,7 +6821,7 @@ int mmpojac_(double*                     tparam,
 
     kk1   = ii - 1;
     kk2   = ii - 2;
-    aux1  = (double)(*iordre + kk2);
+    aux1  = static_cast<double>(*iordre + kk2);
     aux2  = aux1 * 2;
     cofa  = aux2 * (aux2 + 1) * (aux2 + 2);
     cofb  = (aux2 + 2) * -2. * aux1 * aux1;

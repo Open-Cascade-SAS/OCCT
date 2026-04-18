@@ -54,7 +54,7 @@ public:
   //! Sets the first set of indices <theLI> to process
   void SetSubSet1(const NCollection_List<int>& theLI)
   {
-    mySubSet1 = (NCollection_List<int>*)&theLI;
+    mySubSet1 = const_cast<NCollection_List<int>*>(&theLI);
   }
 
   //! Returns the first set of indices to process
@@ -63,7 +63,7 @@ public:
   //! Sets the second set of indices <theLI> to process
   void SetSubSet2(const NCollection_List<int>& theLI)
   {
-    mySubSet2 = (NCollection_List<int>*)&theLI;
+    mySubSet2 = const_cast<NCollection_List<int>*>(&theLI);
   }
 
   //! Returns the second set of indices to process

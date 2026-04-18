@@ -250,7 +250,7 @@ bool BlendFunc_EvolRad::ComputeValues(const math_Vector& X,
       case 1: {
         tcurv->D2(T, ptgui, d1gui, d2gui);
         nplan     = d1gui.Normalized();
-        invnormtg = ((double)1) / d1gui.Magnitude();
+        invnormtg = (static_cast<double>(1)) / d1gui.Magnitude();
         dnplan.SetLinearForm(invnormtg, d2gui, -invnormtg * (nplan.Dot(d2gui)), nplan);
 
         tevol->D1(T, ray, dray);
@@ -259,7 +259,7 @@ bool BlendFunc_EvolRad::ComputeValues(const math_Vector& X,
       case 2: {
         tcurv->D3(T, ptgui, d1gui, d2gui, d3gui);
         nplan     = d1gui.Normalized();
-        invnormtg = ((double)1) / d1gui.Magnitude();
+        invnormtg = (static_cast<double>(1)) / d1gui.Magnitude();
         dnplan.SetLinearForm(invnormtg, d2gui, -invnormtg * (nplan.Dot(d2gui)), nplan);
         dinvnormtg = -nplan.Dot(d2gui) * invnormtg * invnormtg;
         d2nplan.SetLinearForm(invnormtg, d3gui, dinvnormtg, d2gui);
@@ -352,7 +352,7 @@ bool BlendFunc_EvolRad::ComputeValues(const math_Vector& X,
   invnorm2  = ncrossns2.Magnitude();
 
   if (invnorm1 > Eps)
-    invnorm1 = ((double)1) / invnorm1;
+    invnorm1 = (static_cast<double>(1)) / invnorm1;
   else
   {
     invnorm1 = 1; // Unsatisfactory, but it is not necessary to stop
@@ -361,7 +361,7 @@ bool BlendFunc_EvolRad::ComputeValues(const math_Vector& X,
 #endif
   }
   if (invnorm2 > Eps)
-    invnorm2 = ((double)1) / invnorm2;
+    invnorm2 = (static_cast<double>(1)) / invnorm2;
   else
   {
     invnorm2 = 1; // Unsatisfactory, but it is not necessary to stop

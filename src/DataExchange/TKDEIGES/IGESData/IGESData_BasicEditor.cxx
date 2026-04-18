@@ -139,9 +139,9 @@ bool IGESData_BasicEditor::SetUnitName(const char* const name)
   IGESData_GlobalSection GS   = themodel->GlobalSection();
   if (GS.UnitFlag() == 3)
   {
-    char* nam = (char*)name;
+    char* nam = const_cast<char*>(name);
     if (name[1] == 'H')
-      nam = (char*)&name[2];
+      nam = const_cast<char*>(&name[2]);
     GS.SetUnitName(new TCollection_HAsciiString(nam));
     themodel->SetGlobalSection(GS);
     return true;
@@ -377,10 +377,10 @@ int IGESData_BasicEditor::AutoCorrectModel()
 
 int IGESData_BasicEditor::UnitNameFlag(const char* const name)
 {
-  char* nam = (char*)&name[0];
+  char* nam = const_cast<char*>(&name[0]);
   if (name[1] == 'H')
   {
-    nam = (char*)&name[2];
+    nam = const_cast<char*>(&name[2]);
   }
   if (!strcmp(nam, "INCH"))
     return 1;

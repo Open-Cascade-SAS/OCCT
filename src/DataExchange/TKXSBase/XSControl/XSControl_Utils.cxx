@@ -208,7 +208,7 @@ void XSControl_Utils::DateValues(const char* const text,
 const char* XSControl_Utils::ToCString(const occ::handle<TCollection_HAsciiString>& strval) const
 {
   // JR/Hp
-  const char* astr = (const char*)(strval.IsNull() ? "" : strval->ToCString());
+  const char* astr = (strval.IsNull() ? "" : strval->ToCString());
   return astr;
   //         return (strval.IsNull() ? "" : strval->ToCString());
 }
@@ -278,7 +278,7 @@ const char* XSControl_Utils::ExtendedToAscii(const char16_t* const str) const
   {
     int unext  = bufext.Value(i);
     unext      = unext & 127;
-    char uncar = char(unext);
+    char uncar = static_cast<char>(unext);
     bufasc.AssignCat(uncar);
   }
   return bufasc.ToCString();
@@ -293,7 +293,7 @@ const char* XSControl_Utils::CStrValue(const occ::handle<Standard_Transient>& li
   if (!linha.IsNull())
   {
     // JR/Hp
-    const char* astr = (const char*)(num > linha->Length() ? "" : linha->Value(num)->ToCString());
+    const char* astr = (num > linha->Length() ? "" : linha->Value(num)->ToCString());
     return astr;
     //    return (num > linha->Length() ? "" : linha->Value(num)->ToCString());
   }
@@ -302,7 +302,7 @@ const char* XSControl_Utils::CStrValue(const occ::handle<Standard_Transient>& li
   if (!lina.IsNull())
   {
     // JR/Hp
-    const char* astr = (const char*)(num > lina->Length() ? "" : lina->Value(num).ToCString());
+    const char* astr = (num > lina->Length() ? "" : lina->Value(num).ToCString());
     return astr;
     //    return (num > lina->Length() ? "" : lina->Value(num).ToCString());
   }
@@ -312,7 +312,7 @@ const char* XSControl_Utils::CStrValue(const occ::handle<Standard_Transient>& li
   {
     // JR/Hp
     const char* astr =
-      (const char*)(num > linhe->Length() ? "" : ExtendedToAscii(linhe->Value(num)->ToExtString()));
+      (num > linhe->Length() ? "" : ExtendedToAscii(linhe->Value(num)->ToExtString()));
     return astr;
     //   return (num > linhe->Length() ? "" : ExtendedToAscii(linhe->Value(num)->ToExtString()));
   }
@@ -322,7 +322,7 @@ const char* XSControl_Utils::CStrValue(const occ::handle<Standard_Transient>& li
   {
     // JR/Hp
     const char* astr =
-      (const char*)(num > linee->Length() ? "" : ExtendedToAscii(linee->Value(num).ToExtString()));
+      (num > linee->Length() ? "" : ExtendedToAscii(linee->Value(num).ToExtString()));
     return astr;
     //    return (num > linee->Length() ? "" : ExtendedToAscii(linee->Value(num).T
   }

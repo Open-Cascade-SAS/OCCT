@@ -79,7 +79,7 @@ void OSD_FileIterator::Initialize(const OSD_Path& where, const TCollection_Ascii
   myMask = Mask;
   if (myDescr)
   {
-    closedir((DIR*)myDescr);
+    closedir(static_cast<DIR*>(myDescr));
     myDescr = nullptr;
   }
   myInit = 1;
@@ -135,28 +135,29 @@ void OSD_FileIterator::Next()
 
   do
   {
-    myEntry = readdir((DIR*)myDescr);
+    myEntry = readdir(static_cast<DIR*>(myDescr));
 
     if (!myEntry)
-    {                          // No file found
-      myEntry = nullptr;       // Keep pointer clean
-      myFlag  = false;         // No more files/directory
-      closedir((DIR*)myDescr); // so close directory
+    {                                       // No file found
+      myEntry = nullptr;                    // Keep pointer clean
+      myFlag  = false;                      // No more files/directory
+      closedir(static_cast<DIR*>(myDescr)); // so close directory
       myDescr = nullptr;
       again   = 0;
     }
     else
     {
-      if (!strcmp(((struct dirent*)myEntry)->d_name, "."))
+      if (!strcmp((static_cast<struct dirent*>(myEntry))->d_name, "."))
         continue;
-      if (!strcmp(((struct dirent*)myEntry)->d_name, ".."))
+      if (!strcmp((static_cast<struct dirent*>(myEntry))->d_name, ".."))
         continue;
 
       // Is it a file ?
-      const TCollection_AsciiString aFullName = myPlace + "/" + ((struct dirent*)myEntry)->d_name;
+      const TCollection_AsciiString aFullName =
+        myPlace + "/" + (static_cast<struct dirent*>(myEntry))->d_name;
       stat(aFullName.ToCString(), &stat_buf);
       if (S_ISREG(stat_buf.st_mode)) // LD : Ensure me it's a regular file
-        if (strcmp_joker(myMask.ToCString(), ((struct dirent*)myEntry)->d_name))
+        if (strcmp_joker(myMask.ToCString(), (static_cast<struct dirent*>(myEntry))->d_name))
         {
           // Does it follow mask ?
           myFlag = true;
@@ -177,7 +178,7 @@ OSD_File OSD_FileIterator::Values()
   int                     position;
 
   if (myEntry)
-    Name = ((struct dirent*)myEntry)->d_name;
+    Name = (static_cast<struct dirent*>(myEntry))->d_name;
 
   position = Name.Search(".");
 

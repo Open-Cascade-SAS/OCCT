@@ -71,7 +71,7 @@ typedef int64_t  Signed62;		// 4xBITS + 6	dot(vect,norm)
 
 static Unsigned28 s14sqr(const Signed14& s)
 {
-  return (Unsigned28)((Signed29)s * s);
+  return static_cast<Unsigned28>(static_cast<Signed29>(s) * s);
 }
 
 struct Norm
@@ -89,9 +89,9 @@ struct Vect
   Norm cross(const Vect& v) const // cross prod
   {
     Norm n;
-    n.x = (Signed45)y * v.z - (Signed45)z * v.y;
-    n.y = (Signed45)z * v.x - (Signed45)x * v.z;
-    n.z = (Signed29)x * v.y - (Signed29)y * v.x;
+    n.x = static_cast<Signed45>(y) * v.z - static_cast<Signed45>(z) * v.y;
+    n.y = static_cast<Signed45>(z) * v.x - static_cast<Signed45>(x) * v.z;
+    n.z = static_cast<Signed29>(x) * v.y - static_cast<Signed29>(y) * v.x;
     return n;
   }
 };
@@ -108,9 +108,9 @@ struct CDelaBella : IDelaBella
     Vect operator-(const Vert& v) const // diff
     {
       Vect d;
-      d.x = (Signed15)x - (Signed15)v.x;
-      d.y = (Signed15)y - (Signed15)v.y;
-      d.z = (Signed29)z - (Signed29)v.z;
+      d.x = static_cast<Signed15>(x) - static_cast<Signed15>(v.x);
+      d.y = static_cast<Signed15>(y) - static_cast<Signed15>(v.y);
+      d.z = static_cast<Signed29>(z) - static_cast<Signed29>(v.z);
       return d;
     }
 
@@ -176,7 +176,8 @@ struct CDelaBella : IDelaBella
     Signed62 dot(const Vert& p) const // dot
     {
       Vect d = p - *(Vert*)v[0];
-      return (Signed62)n.x * d.x + (Signed62)n.y * d.y + (Signed62)n.z * d.z;
+      return static_cast<Signed62>(n.x) * d.x + static_cast<Signed62>(n.y) * d.y
+             + static_cast<Signed62>(n.z) * d.z;
     }
 
     Norm cross() const // cross of diffs
@@ -269,7 +270,7 @@ struct CDelaBella : IDelaBella
       if (max_faces)
         free(face_alloc);
       max_faces  = 0;
-      face_alloc = (Face*)malloc(sizeof(Face) * hull_faces);
+      face_alloc = static_cast<Face*>(malloc(sizeof(Face) * hull_faces));
       if (face_alloc)
         max_faces = hull_faces;
       else
@@ -744,13 +745,13 @@ struct CDelaBella : IDelaBella
       if (_f->n.z < 0)
       {
         *prev_dela = _f;
-        prev_dela  = (Face**)&_f->next;
+        prev_dela  = reinterpret_cast<Face**>(&_f->next);
         i++;
       }
       else
       {
         *prev_hull = _f;
-        prev_hull  = (Face**)&_f->next;
+        prev_hull  = reinterpret_cast<Face**>(&_f->next);
         if (((Face*)_f->f[0])->n.z < 0)
         {
           _f->v[1]->next         = _f->v[2];
@@ -798,7 +799,7 @@ struct CDelaBella : IDelaBella
         max_verts  = 0;
       }
 
-      vert_alloc = (Vert*)malloc(sizeof(Vert) * points);
+      vert_alloc = static_cast<Vert*>(malloc(sizeof(Vert) * points));
       if (vert_alloc)
         max_verts = points;
       else
@@ -833,9 +834,11 @@ struct CDelaBella : IDelaBella
     {
       Vert* v = vert_alloc + i;
       v->i    = i;
-      v->x    = (Signed14) * (const float*)((const char*)x + i * advance_bytes);
-      v->y    = (Signed14) * (const float*)((const char*)y + i * advance_bytes);
-      v->z    = s14sqr(v->x) + s14sqr(v->y);
+      v->x    = static_cast<Signed14>(
+        *reinterpret_cast<const float*>(reinterpret_cast<const char*>(x) + i * advance_bytes));
+      v->y = static_cast<Signed14>(
+        *reinterpret_cast<const float*>(reinterpret_cast<const char*>(y) + i * advance_bytes));
+      v->z = s14sqr(v->x) + s14sqr(v->y);
     }
 
     out_verts = Triangulate();
@@ -860,9 +863,11 @@ struct CDelaBella : IDelaBella
     {
       Vert* v = vert_alloc + i;
       v->i    = i;
-      v->x    = (Signed14) * (const double*)((const char*)x + i * advance_bytes);
-      v->y    = (Signed14) * (const double*)((const char*)y + i * advance_bytes);
-      v->z    = s14sqr(v->x) + s14sqr(v->y);
+      v->x    = static_cast<Signed14>(
+        *reinterpret_cast<const double*>(reinterpret_cast<const char*>(x) + i * advance_bytes));
+      v->y = static_cast<Signed14>(
+        *reinterpret_cast<const double*>(reinterpret_cast<const char*>(y) + i * advance_bytes));
+      v->z = s14sqr(v->x) + s14sqr(v->y);
     }
 
     out_verts = Triangulate();
@@ -928,47 +933,47 @@ void* DelaBella_Create()
 
 void DelaBella_Destroy(void* db)
 {
-  ((IDelaBella*)db)->Destroy();
+  (static_cast<IDelaBella*>(db))->Destroy();
 }
 
 void DelaBella_SetErrLog(void* db, int (*proc)(void* stream, const char* fmt, ...), void* stream)
 {
-  ((IDelaBella*)db)->SetErrLog(proc, stream);
+  (static_cast<IDelaBella*>(db))->SetErrLog(proc, stream);
 }
 
 int DelaBella_TriangulateFloat(void* db, int points, float* x, float* y, int advance_bytes)
 {
-  return ((IDelaBella*)db)->Triangulate(points, x, y, advance_bytes);
+  return (static_cast<IDelaBella*>(db))->Triangulate(points, x, y, advance_bytes);
 }
 
 int DelaBella_TriangulateDouble(void* db, int points, double* x, double* y, int advance_bytes)
 {
-  return ((IDelaBella*)db)->Triangulate(points, x, y, advance_bytes);
+  return (static_cast<IDelaBella*>(db))->Triangulate(points, x, y, advance_bytes);
 }
 
 int DelaBella_GetNumInputPoints(void* db)
 {
-  return ((IDelaBella*)db)->GetNumInputPoints();
+  return (static_cast<IDelaBella*>(db))->GetNumInputPoints();
 }
 
 int DelaBella_GetNumOutputVerts(void* db)
 {
-  return ((IDelaBella*)db)->GetNumOutputVerts();
+  return (static_cast<IDelaBella*>(db))->GetNumOutputVerts();
 }
 
 const DelaBella_Triangle* GetFirstDelaunayTriangle(void* db)
 {
-  return ((IDelaBella*)db)->GetFirstDelaunayTriangle();
+  return (static_cast<IDelaBella*>(db))->GetFirstDelaunayTriangle();
 }
 
 const DelaBella_Triangle* GetFirstHullTriangle(void* db)
 {
-  return ((IDelaBella*)db)->GetFirstHullTriangle();
+  return (static_cast<IDelaBella*>(db))->GetFirstHullTriangle();
 }
 
 const DelaBella_Vertex* GetFirstHullVertex(void* db)
 {
-  return ((IDelaBella*)db)->GetFirstHullVertex();
+  return (static_cast<IDelaBella*>(db))->GetFirstHullVertex();
 }
 
 // depreciated!

@@ -271,7 +271,7 @@ public:
       gp_Pnt(myParams.Params3d.PntX, myParams.Params3d.PntY, myParams.Params3d.PntZ));
     const double aFocus   = aVecToObj.Dot(aVecToEye);
     const gp_XYZ aViewDim = theCamera->ViewDimensions(aFocus);
-    return std::abs(aViewDim.Y()) / double(aVPSizeY);
+    return std::abs(aViewDim.Y()) / static_cast<double>(aVPSizeY);
   }
 
   //! Create orientation matrix based on camera and view dimensions.
@@ -395,19 +395,20 @@ public:
       const double aFocus = aProxyCamera->IsOrthographic()
                               ? aProxyCamera->Distance()
                               : (aProxyCamera->ZFocusType() == Graphic3d_Camera::FocusType_Relative
-                                   ? double(aProxyCamera->ZFocus() * aProxyCamera->Distance())
-                                   : double(aProxyCamera->ZFocus()));
+                                   ? (aProxyCamera->ZFocus() * aProxyCamera->Distance())
+                                   : (aProxyCamera->ZFocus()));
 
       // scale factor to pixels
       const gp_XYZ aViewDim = aProxyCamera->ViewDimensions(aFocus);
-      const double aScale   = std::abs(aViewDim.Y()) / double(aVPSizeY);
+      const double aScale   = std::abs(aViewDim.Y()) / static_cast<double>(aVPSizeY);
       const gp_Dir aForward = aProxyCamera->Direction();
       gp_XYZ       aCenter =
         aProxyCamera->Center().XYZ() + aForward.XYZ() * (aFocus - aProxyCamera->Distance());
       if ((myParams.Params2d.Corner & (Aspect_TOTP_LEFT | Aspect_TOTP_RIGHT)) != 0)
       {
-        const double anOffsetX = (double(myParams.Params2d.OffsetX) + aJitterComp) * aScale;
-        const gp_Dir aSide     = aForward.Crossed(aProxyCamera->Up());
+        const double anOffsetX =
+          (static_cast<double>(myParams.Params2d.OffsetX) + aJitterComp) * aScale;
+        const gp_Dir aSide = aForward.Crossed(aProxyCamera->Up());
         const gp_XYZ aDeltaX =
           aSide.XYZ() * (std::abs(aViewDim.X()) * aProxyCamera->NDC2dOffsetX() - anOffsetX);
         if ((myParams.Params2d.Corner & Aspect_TOTP_RIGHT) != 0)
@@ -421,7 +422,8 @@ public:
       }
       if ((myParams.Params2d.Corner & (Aspect_TOTP_TOP | Aspect_TOTP_BOTTOM)) != 0)
       {
-        const double anOffsetY = (double(myParams.Params2d.OffsetY) + aJitterComp) * aScale;
+        const double anOffsetY =
+          (static_cast<double>(myParams.Params2d.OffsetY) + aJitterComp) * aScale;
         const gp_XYZ aDeltaY =
           aProxyCamera->Up().XYZ()
           * (std::abs(aViewDim.Y()) * aProxyCamera->NDC2dOffsetY() - anOffsetY);
@@ -446,17 +448,17 @@ public:
       const double aFocus = aProxyCamera->IsOrthographic()
                               ? aProxyCamera->Distance()
                               : (aProxyCamera->ZFocusType() == Graphic3d_Camera::FocusType_Relative
-                                   ? double(aProxyCamera->ZFocus() * aProxyCamera->Distance())
-                                   : double(aProxyCamera->ZFocus()));
+                                   ? (aProxyCamera->ZFocus() * aProxyCamera->Distance())
+                                   : (aProxyCamera->ZFocus()));
 
       // scale factor to pixels
       const gp_XYZ aViewDim = aProxyCamera->ViewDimensions(aFocus);
-      const double aScale   = std::abs(aViewDim.Y()) / double(aVPSizeY);
+      const double aScale   = std::abs(aViewDim.Y()) / static_cast<double>(aVPSizeY);
       gp_XYZ       aCenter(0.0, 0.0, -aFocus);
       if ((myParams.Params2d.Corner & (Aspect_TOTP_LEFT | Aspect_TOTP_RIGHT)) != 0)
       {
         aCenter.SetX(-aViewDim.X() * aProxyCamera->NDC2dOffsetX()
-                     + (double(myParams.Params2d.OffsetX) + aJitterComp) * aScale);
+                     + (static_cast<double>(myParams.Params2d.OffsetX) + aJitterComp) * aScale);
         if ((myParams.Params2d.Corner & Aspect_TOTP_RIGHT) != 0)
         {
           aCenter.SetX(-aCenter.X());
@@ -465,7 +467,7 @@ public:
       if ((myParams.Params2d.Corner & (Aspect_TOTP_TOP | Aspect_TOTP_BOTTOM)) != 0)
       {
         aCenter.SetY(-aViewDim.Y() * aProxyCamera->NDC2dOffsetY()
-                     + (double(myParams.Params2d.OffsetY) + aJitterComp) * aScale);
+                     + (static_cast<double>(myParams.Params2d.OffsetY) + aJitterComp) * aScale);
         if ((myParams.Params2d.Corner & Aspect_TOTP_TOP) != 0)
         {
           aCenter.SetY(-aCenter.Y());

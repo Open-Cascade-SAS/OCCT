@@ -33,17 +33,17 @@ static std::ostream& formatCounter(std::ostream& theStream,
   theStream << std::setfill(' ') << std::setw(theWidth);
   if (theValue >= 1000000000)
   {
-    double aValM = double(theValue) / 1000000000.0;
+    double aValM = static_cast<double>(theValue) / 1000000000.0;
     theStream << std::fixed << std::setprecision(1) << aValM << "G";
   }
   else if (theValue >= 1000000)
   {
-    double aValM = double(theValue) / 1000000.0;
+    double aValM = static_cast<double>(theValue) / 1000000.0;
     theStream << std::fixed << std::setprecision(1) << aValM << "M";
   }
   else if (theValue >= 1000)
   {
-    double aValK = double(theValue) / 1000.0;
+    double aValK = static_cast<double>(theValue) / 1000.0;
     theStream << std::fixed << std::setprecision(1) << aValK << "k";
   }
   else
@@ -92,17 +92,17 @@ static std::ostream& formatBytes(std::ostream& theStream,
   theStream << std::setfill(' ') << std::setw(theWidth);
   if (theValue >= 1024 * 1024 * 1024)
   {
-    double aValM = double(theValue) / (1024.0 * 1024.0 * 1024.0);
+    double aValM = static_cast<double>(theValue) / (1024.0 * 1024.0 * 1024.0);
     theStream << std::fixed << std::setprecision(1) << aValM << " GiB";
   }
   else if (theValue >= 1024 * 1024)
   {
-    double aValM = double(theValue) / (1024.0 * 1024.0);
+    double aValM = static_cast<double>(theValue) / (1024.0 * 1024.0);
     theStream << std::fixed << std::setprecision(1) << aValM << " MiB";
   }
   else if (theValue >= 1024)
   {
-    double aValK = double(theValue) / 1024.0;
+    double aValK = static_cast<double>(theValue) / 1024.0;
     theStream << std::fixed << std::setprecision(1) << aValK << " KiB";
   }
   else
@@ -137,12 +137,12 @@ static std::ostream& formatTime(std::ostream& theStream,
   }
 
   double       aSecIn = theSeconds;
-  unsigned int aHours = (unsigned int)(aSecIn * THE_SECOND_IN_HOUR);
-  aSecIn -= double(aHours) * THE_SECONDS_IN_HOUR;
-  unsigned int aMinutes = (unsigned int)(aSecIn * THE_SECOND_IN_MINUTE);
-  aSecIn -= double(aMinutes) * THE_SECONDS_IN_MINUTE;
-  unsigned int aSeconds = (unsigned int)aSecIn;
-  aSecIn -= double(aSeconds);
+  unsigned int aHours = static_cast<unsigned int>(aSecIn * THE_SECOND_IN_HOUR);
+  aSecIn -= static_cast<double>(aHours) * THE_SECONDS_IN_HOUR;
+  unsigned int aMinutes = static_cast<unsigned int>(aSecIn * THE_SECOND_IN_MINUTE);
+  aSecIn -= static_cast<double>(aMinutes) * THE_SECONDS_IN_MINUTE;
+  unsigned int aSeconds = static_cast<unsigned int>(aSecIn);
+  aSecIn -= static_cast<double>(aSeconds);
   double aMilliSeconds = 1000.0 * aSecIn;
 
   char aBuffer[64];
@@ -213,12 +213,12 @@ static void addTimeInfo(
   double                                                                        theSeconds)
 {
   double       aSecIn = theSeconds;
-  unsigned int aHours = (unsigned int)(aSecIn * THE_SECOND_IN_HOUR);
-  aSecIn -= double(aHours) * THE_SECONDS_IN_HOUR;
-  unsigned int aMinutes = (unsigned int)(aSecIn * THE_SECOND_IN_MINUTE);
-  aSecIn -= double(aMinutes) * THE_SECONDS_IN_MINUTE;
-  unsigned int aSeconds = (unsigned int)aSecIn;
-  aSecIn -= double(aSeconds);
+  unsigned int aHours = static_cast<unsigned int>(aSecIn * THE_SECOND_IN_HOUR);
+  aSecIn -= static_cast<double>(aHours) * THE_SECONDS_IN_HOUR;
+  unsigned int aMinutes = static_cast<unsigned int>(aSecIn * THE_SECOND_IN_MINUTE);
+  aSecIn -= static_cast<double>(aMinutes) * THE_SECONDS_IN_MINUTE;
+  unsigned int aSeconds = static_cast<unsigned int>(aSecIn);
+  aSecIn -= static_cast<double>(aSeconds);
   double aMilliSeconds = 1000.0 * aSecIn;
 
   char aBuffer[64];
@@ -745,9 +745,9 @@ void Graphic3d_FrameStats::FrameEnd(const occ::handle<Graphic3d_CView>& theView,
 
     if (theIsImmediateOnly)
     {
-      myCountersTmp.ChangeImmediateFrameRate() = double(myFpsFrameCount) / aTime;
+      myCountersTmp.ChangeImmediateFrameRate() = static_cast<double>(myFpsFrameCount) / aTime;
       myCountersTmp.ChangeImmediateFrameRateCpu() =
-        aCpuSec > gp::Resolution() ? double(myFpsFrameCount) / aCpuSec : -1.0;
+        aCpuSec > gp::Resolution() ? static_cast<double>(myFpsFrameCount) / aCpuSec : -1.0;
       myCountersTmp.ChangeFrameRate()    = aPrevFrame.FrameRate();
       myCountersTmp.ChangeFrameRateCpu() = aPrevFrame.FrameRateCpu();
     }
@@ -755,9 +755,9 @@ void Graphic3d_FrameStats::FrameEnd(const occ::handle<Graphic3d_CView>& theView,
     {
       myCountersTmp.ChangeImmediateFrameRate()    = -1.0;
       myCountersTmp.ChangeImmediateFrameRateCpu() = -1.0;
-      myCountersTmp.ChangeFrameRate()             = double(myFpsFrameCount) / aTime;
+      myCountersTmp.ChangeFrameRate()             = static_cast<double>(myFpsFrameCount) / aTime;
       myCountersTmp.ChangeFrameRateCpu() =
-        aCpuSec > gp::Resolution() ? double(myFpsFrameCount) / aCpuSec : -1.0;
+        aCpuSec > gp::Resolution() ? static_cast<double>(myFpsFrameCount) / aCpuSec : -1.0;
     }
     myCountersTmp.FlushTimers(myFpsFrameCount, true);
     myCountersMax.FillMax(myCountersTmp);
@@ -794,8 +794,9 @@ void Graphic3d_FrameStats::FrameEnd(const occ::handle<Graphic3d_CView>& theView,
                                                                <= Graphic3d_FrameStatsCounter_RENDERED_UPPER;
                                                                ++aCntIter)
     {
-      myCountersTmp.ChangeCounterValue((Graphic3d_FrameStatsCounter)(aCntIter + anImmShift)) =
-        myCountersTmp.CounterValue((Graphic3d_FrameStatsCounter)aCntIter);
+      myCountersTmp.ChangeCounterValue(
+        static_cast<Graphic3d_FrameStatsCounter>(aCntIter + anImmShift)) =
+        myCountersTmp.CounterValue(static_cast<Graphic3d_FrameStatsCounter>(aCntIter));
     }
 
     // copy main rendered counters from previous non-immediate frame
@@ -803,8 +804,8 @@ void Graphic3d_FrameStats::FrameEnd(const occ::handle<Graphic3d_CView>& theView,
          aCntIter <= Graphic3d_FrameStatsCounter_RENDERED_UPPER;
          ++aCntIter)
     {
-      myCountersTmp.ChangeCounterValue((Graphic3d_FrameStatsCounter)aCntIter) =
-        aPrevFrame.CounterValue((Graphic3d_FrameStatsCounter)aCntIter);
+      myCountersTmp.ChangeCounterValue(static_cast<Graphic3d_FrameStatsCounter>(aCntIter)) =
+        aPrevFrame.CounterValue(static_cast<Graphic3d_FrameStatsCounter>(aCntIter));
     }
     myCountersTmp.ChangeCounterValue(Graphic3d_FrameStatsCounter_EstimatedBytesGeom) =
       aPrevFrame.CounterValue(Graphic3d_FrameStatsCounter_EstimatedBytesGeom);

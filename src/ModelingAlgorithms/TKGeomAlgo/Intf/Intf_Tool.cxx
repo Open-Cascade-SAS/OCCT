@@ -272,13 +272,13 @@ void Intf_Tool::Hypr2dBox(const gp_Hypr2d& theHypr2d, const Bnd_Box2d& domain, B
           if (beginOnCurve[nbSeg - 1] < -10.)
             ipmin = -10;
           else
-            ipmin = (int)(beginOnCurve[nbSeg - 1]);
+            ipmin = static_cast<int>(beginOnCurve[nbSeg - 1]);
 
           int ipmax;
           if (endOnCurve[nbSeg - 1] > 10.)
             ipmax = 10;
           else
-            ipmax = (int)(endOnCurve[nbSeg - 1]);
+            ipmax = static_cast<int>(endOnCurve[nbSeg - 1]);
 
           // int ipmin=Max((int)(beginOnCurve[nbSeg-1]),
           //		     -10);
@@ -289,7 +289,7 @@ void Intf_Tool::Hypr2dBox(const gp_Hypr2d& theHypr2d, const Bnd_Box2d& domain, B
           int ip, pas = 1;
           for (ip = ipmin; ip <= ipmax; ip += pas)
           {
-            boxHypr2d.Add(ElCLib::Value(double(ip) / 10., theHypr2d));
+            boxHypr2d.Add(ElCLib::Value(static_cast<double>(ip) / 10., theHypr2d));
             if (std::abs(ip) <= 10)
               pas = 1;
             else
@@ -521,13 +521,13 @@ void Intf_Tool::Parab2dBox(const gp_Parab2d& theParab2d,
           if (beginOnCurve[nbSeg - 1] < -10.)
             ipmin = -10;
           else
-            ipmin = (int)(beginOnCurve[nbSeg - 1]);
+            ipmin = static_cast<int>(beginOnCurve[nbSeg - 1]);
 
           int ipmax;
           if (endOnCurve[nbSeg - 1] > 10.)
             ipmax = 10;
           else
-            ipmax = (int)(endOnCurve[nbSeg - 1]);
+            ipmax = static_cast<int>(endOnCurve[nbSeg - 1]);
 
           // int ipmin=Max((int)(beginOnCurve[nbSeg-1]),
           //		     -10);
@@ -538,7 +538,7 @@ void Intf_Tool::Parab2dBox(const gp_Parab2d& theParab2d,
           int ip, pas = 1;
           for (ip = ipmin; ip <= ipmax; ip += pas)
           {
-            boxParab2d.Add(ElCLib::Value(double(ip) / 10., theParab2d));
+            boxParab2d.Add(ElCLib::Value(static_cast<double>(ip) / 10., theParab2d));
             if (std::abs(ip) <= 10)
               pas = 1;
             else
@@ -1445,20 +1445,20 @@ void Intf_Tool::ParabBox(const gp_Parab& theParab, const Bnd_Box& domain, Bnd_Bo
           if (beginOnCurve[nbSeg - 1] < -10.)
             ipmin = -10;
           else
-            ipmin = (int)(beginOnCurve[nbSeg - 1]);
+            ipmin = static_cast<int>(beginOnCurve[nbSeg - 1]);
 
           int ipmax;
           if (endOnCurve[nbSeg - 1] > 10.)
             ipmax = 10;
           else
-            ipmax = (int)(endOnCurve[nbSeg - 1]);
+            ipmax = static_cast<int>(endOnCurve[nbSeg - 1]);
 
           ipmin = ipmin * 10 + 1;
           ipmax = ipmax * 10 - 1;
           int ip, pas = 1;
           for (ip = ipmin; ip <= ipmax; ip += pas)
           {
-            boxParab.Add(ElCLib::Value(double(ip) / 10., theParab));
+            boxParab.Add(ElCLib::Value(static_cast<double>(ip) / 10., theParab));
             if (std::abs(ip) <= 10)
               pas = 1;
             else

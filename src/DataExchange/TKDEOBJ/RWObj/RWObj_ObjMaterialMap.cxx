@@ -96,7 +96,7 @@ void RWObj_ObjMaterialMap::DefineMaterial(const XCAFPrs_Style&           theStyl
   {
     hasMaterial = true;
     aDiffQ      = theStyle.GetColorSurf();
-    anAmbQ      = Quantity_Color((NCollection_Vec3<float>)theStyle.GetColorSurf() * 0.25f);
+    anAmbQ      = Quantity_Color(NCollection_Vec3<float>(theStyle.GetColorSurf()) * 0.25f);
     if (theStyle.GetColorSurfRGBA().Alpha() < 1.0f)
     {
       aTransp = 1.0f - theStyle.GetColorSurfRGBA().Alpha();

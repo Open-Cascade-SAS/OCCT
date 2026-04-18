@@ -36,7 +36,7 @@ AIS_ExclusionFilter::AIS_ExclusionFilter(const AIS_KindOfInteractive TypeToExclu
     : myIsExclusionFlagOn(ExclusionFlagOn)
 {
   NCollection_List<int> L;
-  myStoredTypes.Bind((int)TypeToExclude, L);
+  myStoredTypes.Bind(static_cast<int>(TypeToExclude), L);
 }
 
 AIS_ExclusionFilter::AIS_ExclusionFilter(const AIS_KindOfInteractive TypeToExclude,
@@ -46,7 +46,7 @@ AIS_ExclusionFilter::AIS_ExclusionFilter(const AIS_KindOfInteractive TypeToExclu
 {
   NCollection_List<int> L;
   L.Append(SignatureInType);
-  myStoredTypes.Bind((int)TypeToExclude, L);
+  myStoredTypes.Bind(static_cast<int>(TypeToExclude), L);
 }
 
 //=================================================================================================
@@ -56,7 +56,7 @@ bool AIS_ExclusionFilter::Add(const AIS_KindOfInteractive TypeToExclude)
   if (IsStored(TypeToExclude))
     return false;
   NCollection_List<int> L;
-  myStoredTypes.Bind((int)TypeToExclude, L);
+  myStoredTypes.Bind(static_cast<int>(TypeToExclude), L);
   return true;
 }
 
@@ -66,11 +66,11 @@ bool AIS_ExclusionFilter::Add(const AIS_KindOfInteractive TypeToExclude, const i
   {
     NCollection_List<int> L;
     L.Append(SignatureInType);
-    myStoredTypes.Bind((int)TypeToExclude, L);
+    myStoredTypes.Bind(static_cast<int>(TypeToExclude), L);
     return true;
   }
 
-  myStoredTypes((int)TypeToExclude).Append(SignatureInType);
+  myStoredTypes(static_cast<int>(TypeToExclude)).Append(SignatureInType);
   return true;
 }
 
@@ -80,8 +80,8 @@ bool AIS_ExclusionFilter::Remove(const AIS_KindOfInteractive TypeToExclude)
 {
   if (!IsStored(TypeToExclude))
     return false;
-  myStoredTypes((int)TypeToExclude).Clear();
-  myStoredTypes.UnBind((int)TypeToExclude);
+  myStoredTypes(static_cast<int>(TypeToExclude)).Clear();
+  myStoredTypes.UnBind(static_cast<int>(TypeToExclude));
   return true;
 }
 
@@ -90,7 +90,7 @@ bool AIS_ExclusionFilter::Remove(const AIS_KindOfInteractive TypeToExclude,
 {
   if (!IsStored(TypeToExclude))
     return false;
-  NCollection_List<int>& LL = myStoredTypes.ChangeFind((int)TypeToExclude);
+  NCollection_List<int>& LL = myStoredTypes.ChangeFind(static_cast<int>(TypeToExclude));
   for (NCollection_List<int>::Iterator it(LL); it.More(); it.Next())
   {
     if (it.Value() == SignatureInType)
@@ -116,7 +116,7 @@ void AIS_ExclusionFilter::Clear()
 
 bool AIS_ExclusionFilter::IsStored(const AIS_KindOfInteractive aType) const
 {
-  return myStoredTypes.IsBound(int(aType));
+  return myStoredTypes.IsBound(static_cast<int>(aType));
 }
 
 //=================================================================================================
@@ -126,7 +126,8 @@ bool AIS_ExclusionFilter::IsSignatureIn(const AIS_KindOfInteractive aType,
 {
   if (!myStoredTypes.IsBound(aType))
     return false;
-  for (NCollection_List<int>::Iterator Lit(myStoredTypes((int)aType)); Lit.More(); Lit.Next())
+  for (NCollection_List<int>::Iterator Lit(myStoredTypes(static_cast<int>(aType))); Lit.More();
+       Lit.Next())
   {
     if (Lit.Value() == SignatureInType)
       return true;

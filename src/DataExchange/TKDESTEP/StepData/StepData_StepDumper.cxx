@@ -213,7 +213,7 @@ bool StepData_StepDumper::Dump(Standard_OStream&                      S,
         if (ids.Value(i) <= 0 || ids.Value(i) == i)
           continue;
         Sprintf(unid, "%d:#%d", i, ids.Value(i));
-        nbc = (int)strlen(unid);
+        nbc = static_cast<int>(strlen(unid));
         nbr = ((80 - nbc) % 4) + 2;
         nbl += nbc;
         if (nbl + nbr0 > 79)

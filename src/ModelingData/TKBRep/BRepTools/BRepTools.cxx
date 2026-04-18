@@ -1393,7 +1393,7 @@ static bool removeInternals(
     }
     else
     {
-      if (removeInternals(*(TopoDS_Shape*)&aSS, theShapesToKeep))
+      if (removeInternals(*const_cast<TopoDS_Shape*>(&aSS), theShapesToKeep))
         aLRemove.Append(aSS);
     }
   }

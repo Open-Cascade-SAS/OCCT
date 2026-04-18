@@ -42,7 +42,7 @@ Plate_SampledCurveConstraint::Plate_SampledCurveConstraint(
   for (int index = 1; index <= m; index++)
     myLXYZC.SetPPC(index, SOPPC(index));
 
-  double ratio = double(n + 1) / double(m + 1);
+  double ratio = static_cast<double>(n + 1) / static_cast<double>(m + 1);
   for (int i = 1; i <= n; i++)
     for (int j = 1; j <= m; j++)
     {

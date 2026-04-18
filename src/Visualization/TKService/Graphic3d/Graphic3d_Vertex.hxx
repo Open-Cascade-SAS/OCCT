@@ -54,9 +54,9 @@ public:
   //! Modifies the coordinates.
   void SetCoord(const double theX, const double theY, const double theZ)
   {
-    xyz[0] = float(theX);
-    xyz[1] = float(theY);
-    xyz[2] = float(theZ);
+    xyz[0] = static_cast<float>(theX);
+    xyz[1] = static_cast<float>(theY);
+    xyz[2] = static_cast<float>(theZ);
   }
 
   //! Returns the coordinates.

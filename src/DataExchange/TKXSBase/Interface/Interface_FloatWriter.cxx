@@ -111,7 +111,7 @@ int Interface_FloatWriter::Convert(const double      val,
   for (int i = 0; i < anMasSize; ++i)
     lxp[i] = '\0';
 
-  pText = (char*)text;
+  pText = const_cast<char*>(text);
   //
   if ((val >= R1 && val < R2) || (val <= -R1 && val > -R2))
     Sprintf(pText, rangeform, val);
@@ -157,5 +157,5 @@ int Interface_FloatWriter::Convert(const double      val,
     pText[j0 + 5] = lxp[4];
     pText[j0 + 6] = '\0';
   }
-  return (int)strlen(text);
+  return static_cast<int>(strlen(text));
 }

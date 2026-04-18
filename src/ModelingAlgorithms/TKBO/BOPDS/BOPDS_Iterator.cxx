@@ -183,7 +183,7 @@ int BOPDS_Iterator::BlockLength() const
     return 1;
   }
   //
-  aNbIIs = (int)(aCfPredict * (double)aNbIIs);
+  aNbIIs = static_cast<int>(aCfPredict * static_cast<double>(aNbIIs));
   return aNbIIs;
 }
 
@@ -230,8 +230,8 @@ void BOPDS_Iterator::Value(int& theI1, int& theI2) const
   const BOPDS_Pair& aPair = myIterator.Value();
   aPair.Indices(n1, n2);
   //
-  iT1 = (int)(myDS->ShapeInfo(n1).ShapeType());
-  iT2 = (int)(myDS->ShapeInfo(n2).ShapeType());
+  iT1 = static_cast<int>(myDS->ShapeInfo(n1).ShapeType());
+  iT2 = static_cast<int>(myDS->ShapeInfo(n2).ShapeType());
   //
   theI1 = n1;
   theI2 = n2;

@@ -76,14 +76,14 @@ void Aspect_CircularGrid::Compute(const double X,
   double xo      = XOrigin();
   double yo      = YOrigin();
   double d       = std::sqrt((xo - X) * (xo - X) + (yo - Y) * (yo - Y));
-  int    n       = (int)(d / myRadiusStep + 0.5);
-  double radius  = double(n) * myRadiusStep;
+  int    n       = static_cast<int>(d / myRadiusStep + 0.5);
+  double radius  = static_cast<double>(n) * myRadiusStep;
   double cosinus = (X - xo) / d;
   double a       = std::acos(cosinus);
   double ra      = RotationAngle();
   if (Y < yo)
     a = 2 * M_PI - a;
-  n = (int)((a - ra) / myAlpha + std::copysign(0.5, a - ra));
+  n = static_cast<int>((a - ra) / myAlpha + std::copysign(0.5, a - ra));
 
   double cs = 0, sn = 0;
   bool   done = false;
@@ -145,7 +145,7 @@ void Aspect_CircularGrid::Compute(const double X,
 
   if (!done)
   {
-    double ang = ra + double(n) * myAlpha;
+    double ang = ra + static_cast<double>(n) * myAlpha;
     cs         = std::cos(ang);
     sn         = std::sin(ang);
   }
@@ -165,7 +165,7 @@ int Aspect_CircularGrid::DivisionNumber() const
 
 void Aspect_CircularGrid::Init()
 {
-  myAlpha = M_PI / double(myDivisionNumber);
+  myAlpha = M_PI / static_cast<double>(myDivisionNumber);
   myA1    = std::cos(myAlpha);
   myB1    = std::sin(myAlpha);
 }

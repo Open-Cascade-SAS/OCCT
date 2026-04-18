@@ -154,7 +154,7 @@ int Adaptor2d_OffsetCurve::NbIntervals(const GeomAbs_Shape S) const
   if (S >= GeomAbs_C2)
     Sh = GeomAbs_CN;
   else
-    Sh = (GeomAbs_Shape)((int)S + 2);
+    Sh = static_cast<GeomAbs_Shape>(static_cast<int>(S) + 2);
 
   int nbInter = myCurve->NbIntervals(Sh);
 
@@ -182,7 +182,7 @@ void Adaptor2d_OffsetCurve::Intervals(NCollection_Array1<double>& TI, const Geom
   if (S >= GeomAbs_C2)
     Sh = GeomAbs_CN;
   else
-    Sh = (GeomAbs_Shape)((int)S + 2);
+    Sh = static_cast<GeomAbs_Shape>(static_cast<int>(S) + 2);
 
   int nbInter = myCurve->NbIntervals(Sh);
 

@@ -438,7 +438,7 @@ void IntPatch_ALineToWLine::MakeWLine(
 
   while (aParameter < theLPar)
   {
-    double aStep = (theLPar - aParameter) / (double)(myNbPointsInWline - 1);
+    double aStep = (theLPar - aParameter) / static_cast<double>(myNbPointsInWline - 1);
     if (aStep < Epsilon(theLPar))
       break;
 
@@ -804,7 +804,7 @@ void IntPatch_ALineToWLine::MakeWLine(
       {
         isStepReduced = false;
 
-        aStep = (theLPar - aParameter) / (double)(myNbPointsInWline - 1);
+        aStep = (theLPar - aParameter) / static_cast<double>(myNbPointsInWline - 1);
         if (aStep < Epsilon(theLPar))
           break;
 

@@ -38,7 +38,7 @@ int Geom2dInt_Geom2dCurveTool::NbSamples(const Adaptor2d_Curve2d& C,
       nbs = C.NbKnots();
       nbs *= C.Degree();
       double anb = t1 / t * nbs;
-      nbs        = (int)anb;
+      nbs        = static_cast<int>(anb);
 
       int aMinPntNb = std::max(C.Degree() + 1, 4);
       if (nbs < aMinPntNb)

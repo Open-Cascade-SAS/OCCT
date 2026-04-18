@@ -65,8 +65,8 @@ void ShapeUpgrade_SplitSurfaceArea::Compute(const bool /*Segment*/)
     if (!anIsFixedUVnbSplits) //(myUnbSplit <= 0 || myVnbSplit <= 0)
     {
       double aSquareSize = std::sqrt(myArea / myNbParts);
-      myUnbSplit         = (int)(myUsize / aSquareSize);
-      myVnbSplit         = (int)(myVsize / aSquareSize);
+      myUnbSplit         = static_cast<int>(myUsize / aSquareSize);
+      myVnbSplit         = static_cast<int>(myVsize / aSquareSize);
       if (myUnbSplit == 0)
         myUnbSplit = 1;
       if (myVnbSplit == 0)
@@ -87,7 +87,10 @@ void ShapeUpgrade_SplitSurfaceArea::Compute(const bool /*Segment*/)
   else
   {
     nbSplitF = (aNbUV >= myNbParts ? myNbParts : RealToInt(ceil(sqrt(myNbParts * ceil(aNbUV)))));
-    nbSplitS = (aNbUV >= myNbParts ? 0 : RealToInt(ceil((double)myNbParts / (double)nbSplitF)));
+    nbSplitS =
+      (aNbUV >= myNbParts
+         ? 0
+         : RealToInt(ceil(static_cast<double>(myNbParts) / static_cast<double>(nbSplitF))));
   }
   if (nbSplitS == 1 && !anIsFixedUVnbSplits)
     nbSplitS++;

@@ -3128,7 +3128,7 @@ void BSplCLib::BuildSchoenbergPoints(const int                         Degree,
 {
   int    ii, jj;
   double Inverse;
-  Inverse = 1.0e0 / (double)Degree;
+  Inverse = 1.0e0 / static_cast<double>(Degree);
 
   for (ii = Parameters.Lower(); ii <= Parameters.Upper(); ii++)
   {
@@ -3387,7 +3387,7 @@ void BSplCLib::Eval(const double                      Parameter,
         LocalRealArray[Index + kk] *= Inverse;
       }
       Index += ArrayDimension;
-      Inverse /= (double)ii;
+      Inverse /= static_cast<double>(ii);
     }
     PLib::EvalPolynomial(Delta,
                          NewRequest,
@@ -3411,7 +3411,7 @@ void BSplCLib::Eval(const double                      Parameter,
       }
       LocalRealArray[Index] *= Inverse;
       Index += 1;
-      Inverse /= (double)ii;
+      Inverse /= static_cast<double>(ii);
     }
     PLib::EvalPolynomial(Delta, NewRequest, Degree, 1, LocalRealArray[0], WeightsResults);
   }
@@ -3565,7 +3565,7 @@ void BSplCLib::Eval(const double                      Parameter,
         LocalRealArray[Index + kk] *= Inverse;
       }
       Index += ArrayDimension;
-      Inverse /= (double)ii;
+      Inverse /= static_cast<double>(ii);
     }
     PLib::EvalPolynomial(Delta, NewRequest, Degree, ArrayDimension, LocalRealArray[0], Results);
   }

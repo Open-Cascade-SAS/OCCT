@@ -323,7 +323,7 @@ void TransferBRep::TransferResultInfo(
     for (int index = 1; index <= SeqLen; index++)
     {
       // JR/Hp :
-      TopAbs_ShapeEnum CurrentType = (TopAbs_ShapeEnum)ShapeTypes->Value(index);
+      TopAbs_ShapeEnum CurrentType = static_cast<TopAbs_ShapeEnum>(ShapeTypes->Value(index));
       //      TopAbs_ShapeEnum CurrentType = (TopAbs_ShapeEnum)ShapeTypes->Value (index);
       if (CurrentType == ShapeType || CurrentType == TopAbs_SHAPE)
       {

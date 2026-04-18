@@ -231,7 +231,7 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const double TolUV)
       {
         nbs *= 4;
       }
-      du = (plbid - pfbid) / (double)(nbs - 1);
+      du = (plbid - pfbid) / static_cast<double>(nbs - 1);
       //
       if (Or == TopAbs_FORWARD)
       {

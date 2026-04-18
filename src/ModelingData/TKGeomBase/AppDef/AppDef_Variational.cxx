@@ -1976,7 +1976,7 @@ void AppDef_Variational::InitSmoothCriterion()
     WQuality = std::max(myTolerance, Eps2 * Length);
 
   int NbConstr = myNbPassPoints + myNbTangPoints + myNbCurvPoints;
-  WQuadratic   = std::sqrt((double)(myNbPoints - NbConstr)) * WQuality;
+  WQuadratic   = std::sqrt(static_cast<double>(myNbPoints - NbConstr)) * WQuality;
   if (WQuadratic > Eps3)
     WQuadratic = 1. / WQuadratic;
 
@@ -2206,9 +2206,9 @@ void AppDef_Variational::EstTangent(const int ipnt, math_Vector& VTang) const
 
       int adr1 = 1, adr2 = adr1 + myDimension, adr3 = adr2 + myDimension;
 
-      math_Vector Pnt1((double*)&myTabPoints->Value(adr1), 1, myDimension);
-      math_Vector Pnt2((double*)&myTabPoints->Value(adr2), 1, myDimension);
-      math_Vector Pnt3((double*)&myTabPoints->Value(adr3), 1, myDimension);
+      math_Vector Pnt1(const_cast<double*>(&myTabPoints->Value(adr1)), 1, myDimension);
+      math_Vector Pnt2(const_cast<double*>(&myTabPoints->Value(adr2)), 1, myDimension);
+      math_Vector Pnt3(const_cast<double*>(&myTabPoints->Value(adr3)), 1, myDimension);
 
       // Parabolic interpolation
       // if we have parabolic interpolation: F(t) = A0 + A1*t + A2*t*t,
@@ -2244,9 +2244,9 @@ void AppDef_Variational::EstTangent(const int ipnt, math_Vector& VTang) const
       int adr1 = (myLastPoint - 3) * myDimension + 1, adr2 = adr1 + myDimension,
           adr3 = adr2 + myDimension;
 
-      math_Vector Pnt1((double*)&myTabPoints->Value(adr1), 1, myDimension);
-      math_Vector Pnt2((double*)&myTabPoints->Value(adr2), 1, myDimension);
-      math_Vector Pnt3((double*)&myTabPoints->Value(adr3), 1, myDimension);
+      math_Vector Pnt1(const_cast<double*>(&myTabPoints->Value(adr1)), 1, myDimension);
+      math_Vector Pnt2(const_cast<double*>(&myTabPoints->Value(adr2)), 1, myDimension);
+      math_Vector Pnt3(const_cast<double*>(&myTabPoints->Value(adr3)), 1, myDimension);
 
       // Parabolic interpolation
       // if we have parabolic interpolation: F(t) = A0 + A1*t + A2*t*t,
@@ -2276,8 +2276,8 @@ void AppDef_Variational::EstTangent(const int ipnt, math_Vector& VTang) const
 
     int adr1 = (ipnt - myFirstPoint - 1) * myDimension + 1, adr2 = adr1 + 2 * myDimension;
 
-    math_Vector Pnt1((double*)&myTabPoints->Value(adr1), 1, myDimension);
-    math_Vector Pnt2((double*)&myTabPoints->Value(adr2), 1, myDimension);
+    math_Vector Pnt1(const_cast<double*>(&myTabPoints->Value(adr1)), 1, myDimension);
+    math_Vector Pnt2(const_cast<double*>(&myTabPoints->Value(adr2)), 1, myDimension);
 
     VTang = Pnt2 - Pnt1;
   }
@@ -2716,8 +2716,8 @@ void AppDef_Variational::AssemblingConstraints(const occ::handle<FEmTool_Curve>&
   int MxDeg = Curve->Base().WorkDegree(), NbElm = Curve->NbElements(), NbDim = Curve->Dimension();
 
   NCollection_Array1<double> G0(0, MxDeg), G1(0, MxDeg), G2(0, MxDeg);
-  math_Vector                V0((double*)&G0(0), 0, MxDeg), V1((double*)&G1(0), 0, MxDeg),
-    V2((double*)&G2(0), 0, MxDeg);
+  math_Vector                V0(static_cast<double*>(&G0(0)), 0, MxDeg),
+    V1(static_cast<double*>(&G1(0)), 0, MxDeg), V2(static_cast<double*>(&G2(0)), 0, MxDeg);
 
   int IndexOfConstraint, Ng3d, Ng2d, NBeg2d, NPass, NgPC1, NTang3d, NTang2d, Point, TypOfConstr,
     p0 = Parameters.Lower() - myFirstPoint, curel = 1, el, i, ipnt, ityp, j, k, pnt, curdim, jt,

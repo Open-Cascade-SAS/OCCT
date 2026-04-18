@@ -52,26 +52,23 @@ bool DEVRML_ConfigurationNode::Load(const occ::handle<DE_ConfigurationContext>& 
 
   InternalParameters.ReadFileUnit =
     theResource->RealVal("read.file.unit", InternalParameters.ReadFileUnit, aScope);
-  InternalParameters.ReadFileCoordinateSys =
-    (RWMesh_CoordinateSystem)theResource->IntegerVal("read.file.coordinate.system",
-                                                     InternalParameters.ReadFileCoordinateSys,
-                                                     aScope);
-  InternalParameters.ReadSystemCoordinateSys =
-    (RWMesh_CoordinateSystem)theResource->IntegerVal("read.system.coordinate.system",
-                                                     InternalParameters.ReadSystemCoordinateSys,
-                                                     aScope);
+  InternalParameters.ReadFileCoordinateSys = static_cast<RWMesh_CoordinateSystem>(
+    theResource->IntegerVal("read.file.coordinate.system",
+                            InternalParameters.ReadFileCoordinateSys,
+                            aScope));
+  InternalParameters.ReadSystemCoordinateSys = static_cast<RWMesh_CoordinateSystem>(
+    theResource->IntegerVal("read.system.coordinate.system",
+                            InternalParameters.ReadSystemCoordinateSys,
+                            aScope));
   InternalParameters.ReadFillIncomplete =
     theResource->BooleanVal("read.fill.incomplete", InternalParameters.ReadFillIncomplete, aScope);
 
-  InternalParameters.WriterVersion =
-    (WriteMode_WriterVersion)theResource->IntegerVal("writer.version",
-                                                     InternalParameters.WriterVersion,
-                                                     aScope);
-  InternalParameters.WriteRepresentationType =
-    (WriteMode_RepresentationType)theResource->IntegerVal(
-      "write.representation.type",
-      InternalParameters.WriteRepresentationType,
-      aScope);
+  InternalParameters.WriterVersion = static_cast<WriteMode_WriterVersion>(
+    theResource->IntegerVal("writer.version", InternalParameters.WriterVersion, aScope));
+  InternalParameters.WriteRepresentationType = static_cast<WriteMode_RepresentationType>(
+    theResource->IntegerVal("write.representation.type",
+                            InternalParameters.WriteRepresentationType,
+                            aScope));
 
   return true;
 }

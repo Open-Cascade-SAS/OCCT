@@ -1892,7 +1892,7 @@ static bool DiscretPar(const double DU,
   if (Eps < EpsMin)
   {
     Eps = EpsMin;
-    Nb  = int(DU / EpsMin);
+    Nb  = static_cast<int>(DU / EpsMin);
   }
   else
   {

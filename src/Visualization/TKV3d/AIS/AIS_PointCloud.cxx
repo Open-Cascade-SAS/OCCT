@@ -292,7 +292,7 @@ void AIS_PointCloud::UnsetColor()
     if (IsTransparent())
     {
       double aTransp = myDrawer->ShadingAspect()->Transparency(myCurrentFacingModel);
-      aMat.SetTransparency(float(aTransp));
+      aMat.SetTransparency(static_cast<float>(aTransp));
     }
     myDrawer->ShadingAspect()->SetMaterial(aMat, myCurrentFacingModel);
     myDrawer->ShadingAspect()->Aspect()->SetInteriorColor(aColor);

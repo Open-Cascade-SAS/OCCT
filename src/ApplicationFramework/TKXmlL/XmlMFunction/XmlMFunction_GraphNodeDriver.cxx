@@ -152,7 +152,7 @@ bool XmlMFunction_GraphNodeDriver::Paste(const XmlObjMgt_Persistent&       theSo
     myMessageDriver->Send(aMessageString, Message_Fail);
     return false;
   }
-  G->SetStatus((TFunction_ExecutionStatus)exec);
+  G->SetStatus(static_cast<TFunction_ExecutionStatus>(exec));
 
   return true;
 }
@@ -201,5 +201,5 @@ void XmlMFunction_GraphNodeDriver::Paste(const occ::handle<TDF_Attribute>& theSo
   XmlObjMgt::SetStringValue(theTarget, aValueStr.ToCString(), true);
 
   // Execution status
-  theTarget.Element().setAttribute(::ExecutionStatus(), (int)G->GetStatus());
+  theTarget.Element().setAttribute(::ExecutionStatus(), static_cast<int>(G->GetStatus()));
 }

@@ -185,7 +185,7 @@ void OpenGl_AspectsSprite::build(const occ::handle<OpenGl_Context>&        theCt
     const OpenGl_PointSprite* aSprite = dynamic_cast<OpenGl_PointSprite*>(mySprite.get());
     if (!aSprite->IsDisplayList())
     {
-      theMarkerSize = float(std::max(aSprite->SizeX(), aSprite->SizeY()));
+      theMarkerSize = static_cast<float>(std::max(aSprite->SizeX(), aSprite->SizeY()));
     }
     return;
   }
@@ -213,7 +213,7 @@ void OpenGl_AspectsSprite::build(const occ::handle<OpenGl_Context>&        theCt
     // reuse shared resource
     if (!aSprite->IsDisplayList())
     {
-      theMarkerSize = float(std::max(aSprite->SizeX(), aSprite->SizeY()));
+      theMarkerSize = static_cast<float>(std::max(aSprite->SizeX(), aSprite->SizeY()));
     }
     return;
   }
@@ -252,7 +252,8 @@ void OpenGl_AspectsSprite::build(const occ::handle<OpenGl_Context>&        theCt
   {
     // Creating texture resource for using it with point sprites
     occ::handle<Image_PixMap> anImage = aNewMarkerImage->GetImage();
-    theMarkerSize                     = std::max((float)anImage->Width(), (float)anImage->Height());
+    theMarkerSize =
+      std::max(static_cast<float>(anImage->Width()), static_cast<float>(anImage->Height()));
 
     if (!hadAlreadyRGBA)
     {
@@ -288,21 +289,23 @@ void OpenGl_AspectsSprite::build(const occ::handle<OpenGl_Context>&        theCt
         Image_PixMap::FlipY(*anImageCopy);
         anImage = anImageCopy;
       }
-      const GLint anAligment = std::min((GLint)anImage->MaxRowAligmentBytes(), 8);
+      const GLint anAligment = std::min(static_cast<GLint>(anImage->MaxRowAligmentBytes()), 8);
       theCtx->core11fwd->glPixelStorei(GL_UNPACK_ALIGNMENT, anAligment);
 
-      const GLint anExtraBytes = GLint(anImage->RowExtraBytes());
-      const GLint aPixelsWidth = GLint(anImage->SizeRowBytes() / anImage->SizePixelBytes());
-      const GLint aRowLength   = (anExtraBytes >= anAligment) ? aPixelsWidth : 0;
+      const GLint anExtraBytes = static_cast<GLint>(anImage->RowExtraBytes());
+      const GLint aPixelsWidth =
+        static_cast<GLint>(anImage->SizeRowBytes() / anImage->SizePixelBytes());
+      const GLint aRowLength = (anExtraBytes >= anAligment) ? aPixelsWidth : 0;
       theCtx->core11fwd->glPixelStorei(GL_UNPACK_ROW_LENGTH, aRowLength);
 
       theCtx->core11ffp->glNewList(aBitmapList, GL_COMPILE);
-      const int aWidth = (int)anImage->Width(), aHeight = (int)anImage->Height();
+      const int aWidth  = static_cast<int>(anImage->Width()),
+                aHeight = static_cast<int>(anImage->Height());
       // clang-format off
-      theCtx->core11ffp->glBitmap (0, 0, 0, 0, GLfloat(-0.5f * aWidth), GLfloat(-0.5f * aHeight), nullptr); // make offsets that will be added to the current raster position
+      theCtx->core11ffp->glBitmap (0, 0, 0, 0, static_cast<GLfloat>(-0.5f * aWidth), static_cast<GLfloat>(-0.5f * aHeight), nullptr); // make offsets that will be added to the current raster position
       // clang-format on
-      theCtx->core11ffp->glDrawPixels(GLsizei(anImage->Width()),
-                                      GLsizei(anImage->Height()),
+      theCtx->core11ffp->glDrawPixels(static_cast<GLsizei>(anImage->Width()),
+                                      static_cast<GLsizei>(anImage->Height()),
                                       aFormat.PixelFormat(),
                                       aFormat.DataType(),
                                       anImage->Data());
@@ -324,13 +327,13 @@ void OpenGl_AspectsSprite::build(const occ::handle<OpenGl_Context>&        theCt
       if (occ::handle<NCollection_HArray1<uint8_t>> aBitMap = aNewMarkerImage->GetBitMapArray())
       {
         theCtx->core11ffp->glNewList(aBitmapList, GL_COMPILE);
-        theCtx->core11ffp->glBitmap((GLsizei)aWidth,
-                                    (GLsizei)aHeight,
-                                    (GLfloat)(0.5f * aWidth),
-                                    (GLfloat)(0.5f * aHeight),
+        theCtx->core11ffp->glBitmap(static_cast<GLsizei>(aWidth),
+                                    static_cast<GLsizei>(aHeight),
+                                    static_cast<GLfloat>(0.5f * aWidth),
+                                    static_cast<GLfloat>(0.5f * aHeight),
                                     0.f,
                                     0.f,
-                                    (const GLubyte*)&aBitMap->First());
+                                    static_cast<const GLubyte*>(&aBitMap->First()));
         theCtx->core11ffp->glEndList();
       }
     }
@@ -358,14 +361,14 @@ void OpenGl_AspectsSprite::spriteKeys(const occ::handle<Graphic3d_MarkerImage>& 
   else if (theType != Aspect_TOM_POINT && theType != Aspect_TOM_EMPTY)
   {
     // predefined markers are defined with 0.5 step
-    const int aScale = int(theScale * 10.0f + 0.5f);
+    const int aScale = static_cast<int>(theScale * 10.0f + 0.5f);
     theKey           = TCollection_AsciiString("OpenGl_AspectMarker") + theType + "_" + aScale;
     theKeyA          = theKey + "A";
     if (theType == Aspect_TOM_BALL)
     {
-      unsigned int aColor[3] = {(unsigned int)(255.0f * theColor.r()),
-                                (unsigned int)(255.0f * theColor.g()),
-                                (unsigned int)(255.0f * theColor.b())};
+      unsigned int aColor[3] = {static_cast<unsigned int>(255.0f * theColor.r()),
+                                static_cast<unsigned int>(255.0f * theColor.g()),
+                                static_cast<unsigned int>(255.0f * theColor.b())};
       char         aBytes[8];
       Sprintf(aBytes, "%02X%02X%02X", aColor[0], aColor[1], aColor[2]);
       theKey += aBytes;

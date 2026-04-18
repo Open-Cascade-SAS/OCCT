@@ -1725,7 +1725,7 @@ double V3d_View::Convert(const int Vp) const
   double aValue;
 
   gp_Pnt aViewDims = Camera()->ViewDimensions();
-  aValue           = aViewDims.X() * (double)Vp / (double)aDxw;
+  aValue           = aViewDims.X() * static_cast<double>(Vp) / static_cast<double>(aDxw);
 
   return aValue;
 }
@@ -2420,7 +2420,7 @@ void V3d_View::Zoom(const int theXp1, const int theYp1, const int theXp2, const 
   int aDy = theYp2 - theYp1;
   if (aDx != 0 || aDy != 0)
   {
-    double aCoeff = std::sqrt((double)(aDx * aDx + aDy * aDy)) / 100.0 + 1.0;
+    double aCoeff = std::sqrt(static_cast<double>(aDx * aDx + aDy * aDy)) / 100.0 + 1.0;
     aCoeff        = (aDx > 0) ? aCoeff : 1.0 / aCoeff;
     SetZoom(aCoeff, true);
   }
@@ -2444,7 +2444,8 @@ void V3d_View::ZoomAtPoint(const int theMouseStartX,
   bool wasUpdateEnabled = SetImmediateUpdate(false);
 
   // zoom
-  double aDxy   = double((theMouseEndX + theMouseEndY) - (theMouseStartX + theMouseStartY));
+  double aDxy =
+    static_cast<double>((theMouseEndX + theMouseEndY) - (theMouseStartX + theMouseStartY));
   double aDZoom = std::abs(aDxy) / 100.0 + 1.0;
   aDZoom        = (aDxy > 0.0) ? aDZoom : 1.0 / aDZoom;
 
@@ -2545,8 +2546,8 @@ void V3d_View::StartRotation(const int X, const int Y, const double zRotationThr
   sy = Y;
   double x, y;
   Size(x, y);
-  rx              = double(Convert(x));
-  ry              = double(Convert(y));
+  rx              = static_cast<double>(Convert(x));
+  ry              = static_cast<double>(Convert(y));
   myRotateGravity = GravityPoint();
   Rotate(0.0, 0.0, 0.0, myRotateGravity.X(), myRotateGravity.Y(), myRotateGravity.Z(), true);
   myZRotation = false;
@@ -2573,12 +2574,13 @@ void V3d_View::Rotation(const int X, const int Y)
   double dx = 0., dy = 0., dz = 0.;
   if (myZRotation)
   {
-    dz = atan2(double(X) - rx / 2., ry / 2. - double(Y)) - atan2(sx - rx / 2., ry / 2. - sy);
+    dz = atan2(static_cast<double>(X) - rx / 2., ry / 2. - static_cast<double>(Y))
+         - atan2(sx - rx / 2., ry / 2. - sy);
   }
   else
   {
-    dx = (double(X) - sx) * M_PI / rx;
-    dy = (sy - double(Y)) * M_PI / ry;
+    dx = (static_cast<double>(X) - sx) * M_PI / rx;
+    dy = (sy - static_cast<double>(Y)) * M_PI / ry;
   }
 
   Rotate(dx, dy, dz, myRotateGravity.X(), myRotateGravity.Y(), myRotateGravity.Z(), false);
@@ -2653,8 +2655,8 @@ bool V3d_View::ToPixMap(Image_PixMap& theImage, const V3d_ImageDumpOptions& theP
   if (aTargetSize.x() != 0 && aTargetSize.y() != 0)
   {
     // allocate image buffer for dumping
-    if (theImage.IsEmpty() || theImage.SizeX() != size_t(aTargetSize.x())
-        || theImage.SizeY() != size_t(aTargetSize.y()))
+    if (theImage.IsEmpty() || theImage.SizeX() != static_cast<size_t>(aTargetSize.x())
+        || theImage.SizeY() != static_cast<size_t>(aTargetSize.y()))
     {
       Image_Format aFormat = Image_Format_UNKNOWN;
       switch (theParams.BufferType)
@@ -2679,7 +2681,9 @@ bool V3d_View::ToPixMap(Image_PixMap& theImage, const V3d_ImageDumpOptions& theP
           break;
       }
 
-      if (!theImage.InitZero(aFormat, size_t(aTargetSize.x()), size_t(aTargetSize.y())))
+      if (!theImage.InitZero(aFormat,
+                             static_cast<size_t>(aTargetSize.x()),
+                             static_cast<size_t>(aTargetSize.y())))
       {
         Message::SendFail(TCollection_AsciiString("Fail to allocate an image ") + aTargetSize.x()
                           + "x" + aTargetSize.y() + " for view dump");
@@ -2692,8 +2696,8 @@ bool V3d_View::ToPixMap(Image_PixMap& theImage, const V3d_ImageDumpOptions& theP
     Message::SendFail("V3d_View::ToPixMap() has been called without image dimensions");
     return false;
   }
-  aTargetSize.x() = (int)theImage.SizeX();
-  aTargetSize.y() = (int)theImage.SizeY();
+  aTargetSize.x() = static_cast<int>(theImage.SizeX());
+  aTargetSize.y() = static_cast<int>(theImage.SizeY());
 
   occ::handle<Standard_Transient> aFBOPtr;
   occ::handle<Standard_Transient> aPrevFBOPtr = myView->FBO();
@@ -2800,7 +2804,7 @@ bool V3d_View::ToPixMap(Image_PixMap& theImage, const V3d_ImageDumpOptions& theP
   }
   if (theParams.ToAdjustAspect)
   {
-    aCamera->SetAspect(double(aTargetSize.x()) / double(aTargetSize.y()));
+    aCamera->SetAspect(static_cast<double>(aTargetSize.x()) / static_cast<double>(aTargetSize.y()));
   }
   // apply zlayer rendering parameters to view
   myView->SetZLayerTarget(theParams.TargetZLayerId);
@@ -3472,7 +3476,7 @@ Graphic3d_Vertex V3d_View::Compute(const Graphic3d_Vertex& theVertex) const
   else if (occ::handle<Aspect_CircularGrid> aCircleGrid =
              occ::down_cast<Aspect_CircularGrid>(MyGrid))
   {
-    const double anAlpha = M_PI / double(aCircleGrid->DivisionNumber());
+    const double anAlpha = M_PI / static_cast<double>(aCircleGrid->DivisionNumber());
 
     // project point on plane to grid local space
     const gp_Vec aToPoint(aPnt0, aPointOnPlane);

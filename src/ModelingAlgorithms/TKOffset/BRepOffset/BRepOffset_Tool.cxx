@@ -225,11 +225,11 @@ static void PutInBounds(const TopoDS_Face& F, const TopoDS_Edge& E, occ::handle<
     double du       = 0.;
     if (minC < umin - eps)
     {
-      du = (int((umin - minC) / period) + 1) * period;
+      du = (static_cast<int>((umin - minC) / period) + 1) * period;
     }
     if (minC > umax + eps)
     {
-      du = -(int((minC - umax) / period) + 1) * period;
+      du = -(static_cast<int>((minC - umax) / period) + 1) * period;
     }
     if (du != 0)
     {
@@ -269,11 +269,11 @@ static void PutInBounds(const TopoDS_Face& F, const TopoDS_Edge& E, occ::handle<
     double dv       = 0.;
     if (minC < vmin - eps)
     {
-      dv = (int((vmin - minC) / period) + 1) * period;
+      dv = (static_cast<int>((vmin - minC) / period) + 1) * period;
     }
     if (minC > vmax + eps)
     {
-      dv = -(int((minC - vmax) / period) + 1) * period;
+      dv = -(static_cast<int>((minC - vmax) / period) + 1) * period;
     }
     if (dv != 0)
     {

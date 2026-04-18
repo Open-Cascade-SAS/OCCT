@@ -317,7 +317,7 @@ const Bnd_Box& TopOpeBRepTool_BoxSort::Box(const TopoDS_Shape& S) const
 {
   if (myHBT.IsNull())
   {
-    *((MTOhbt*)&myHBT) = new TopOpeBRepTool_HBoxTool();
+    *(const_cast<MTOhbt*>(&myHBT)) = new TopOpeBRepTool_HBoxTool();
   }
 
   if (myHBT->HasBox(S))

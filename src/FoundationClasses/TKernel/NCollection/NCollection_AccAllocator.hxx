@@ -156,9 +156,15 @@ protected:
       SetFreeSize(theSize);
     }
 
-    void SetFreeSize(const size_t theSize) noexcept { allocStart = (uint8_t*)address + theSize; }
+    void SetFreeSize(const size_t theSize) noexcept
+    {
+      allocStart = static_cast<uint8_t*>(address) + theSize;
+    }
 
-    size_t FreeSize() const noexcept { return (uint8_t*)allocStart - (uint8_t*)address; }
+    size_t FreeSize() const noexcept
+    {
+      return (uint8_t*)allocStart - static_cast<uint8_t*>(address);
+    }
 
     AlignedPtr Allocate(const AlignedSize theSize) noexcept
     {

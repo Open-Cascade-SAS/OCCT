@@ -180,13 +180,13 @@ static void ResultEval(const occ::handle<Geom_BSplineSurface>& surf,
       ipole += gap;
     }
   }
-  double* Padr = (double*)&SPoles(1);
+  double* Padr = static_cast<double*>(&SPoles(1));
 
   bool periodic_flag = false;
   int  extrap_mode[2];
   extrap_mode[0] = extrap_mode[1] = Cdeg;
   NCollection_Array1<double> EvalBS(1, Cdim * (deriv + 1));
-  double*                    Eadr = (double*)&EvalBS(1);
+  double*                    Eadr = static_cast<double*>(&EvalBS(1));
   BSplCLib::Eval(V, periodic_flag, deriv, extrap_mode[0], Cdeg, FKnots, Cdim, *Padr, *Eadr);
 
   for (ii = 1; ii <= Cdim; ii++)

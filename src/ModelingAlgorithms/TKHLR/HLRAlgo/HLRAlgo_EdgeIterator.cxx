@@ -43,18 +43,18 @@ void HLRAlgo_EdgeIterator::InitHidden(HLRAlgo_EdgeStatus& status)
 {
   EHid = &status;
   iHid = 1;
-  if (((HLRAlgo_EdgeStatus*)EHid)->AllHidden())
+  if ((EHid)->AllHidden())
   {
-    ((HLRAlgo_EdgeStatus*)EHid)->Bounds(myHidStart, myHidTolStart, myHidEnd, myHidTolEnd);
+    (EHid)->Bounds(myHidStart, myHidTolStart, myHidEnd, myHidTolEnd);
     myNbHid = 0;
   }
   else
   {
-    myNbHid = ((HLRAlgo_EdgeStatus*)EHid)->NbVisiblePart();
+    myNbHid = (EHid)->NbVisiblePart();
     double B1;
     float  B2;
-    ((HLRAlgo_EdgeStatus*)EHid)->Bounds(myHidStart, myHidTolStart, B1, B2);
-    ((HLRAlgo_EdgeStatus*)EHid)->VisiblePart(iHid, myHidEnd, myHidTolEnd, B1, B2);
+    (EHid)->Bounds(myHidStart, myHidTolStart, B1, B2);
+    (EHid)->VisiblePart(iHid, myHidEnd, myHidTolEnd, B1, B2);
   }
   if (myHidStart + myHidTolStart >= myHidEnd - myHidTolEnd
       && myHidEnd + myHidTolEnd >= myHidStart - myHidTolStart)
@@ -71,16 +71,16 @@ void HLRAlgo_EdgeIterator::NextHidden()
   {
     double B1;
     float  B2;
-    ((HLRAlgo_EdgeStatus*)EHid)->VisiblePart(iHid, B1, B2, myHidStart, myHidTolStart);
+    (EHid)->VisiblePart(iHid, B1, B2, myHidStart, myHidTolStart);
     iHid++;
     if (iHid == myNbHid + 1)
     {
-      ((HLRAlgo_EdgeStatus*)EHid)->Bounds(B1, B2, myHidEnd, myHidTolEnd);
+      (EHid)->Bounds(B1, B2, myHidEnd, myHidTolEnd);
       if (myHidStart + myHidTolStart >= myHidEnd - myHidTolEnd
           && myHidEnd + myHidTolEnd >= myHidStart - myHidTolStart)
         iHid++;
     }
     else
-      ((HLRAlgo_EdgeStatus*)EHid)->VisiblePart(iHid, myHidEnd, myHidTolEnd, B1, B2);
+      (EHid)->VisiblePart(iHid, myHidEnd, myHidTolEnd, B1, B2);
   }
 }

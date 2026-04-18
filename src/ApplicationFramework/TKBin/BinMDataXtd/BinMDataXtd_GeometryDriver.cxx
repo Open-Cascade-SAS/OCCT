@@ -50,7 +50,7 @@ bool BinMDataXtd_GeometryDriver::Paste(const BinObjMgt_Persistent&       theSour
   int  aType;
   bool ok = theSource >> aType;
   if (ok)
-    aT->SetType((TDataXtd_GeometryEnum)aType);
+    aT->SetType(static_cast<TDataXtd_GeometryEnum>(aType));
 
   return ok;
 }
@@ -63,5 +63,5 @@ void BinMDataXtd_GeometryDriver::Paste(
   NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
   occ::handle<TDataXtd_Geometry> aG = occ::down_cast<TDataXtd_Geometry>(theSource);
-  theTarget << (int)aG->GetType();
+  theTarget << static_cast<int>(aG->GetType());
 }

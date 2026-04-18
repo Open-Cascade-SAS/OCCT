@@ -91,12 +91,12 @@ public:
   void Orientation(const int I, const TopAbs_Orientation Or)
   {
     myFlags(I) &= ~EMaskOrient;
-    myFlags(I) |= ((int)Or & (int)EMaskOrient);
+    myFlags(I) |= (static_cast<int>(Or) & static_cast<int>(EMaskOrient));
   }
 
   TopAbs_Orientation Orientation(const int I) const
   {
-    return ((TopAbs_Orientation)(myFlags(I) & EMaskOrient));
+    return (static_cast<TopAbs_Orientation>(myFlags(I) & EMaskOrient));
   }
 
   bool OutLine(const int I) const { return (myFlags(I) & EMaskOutLine) != 0; }

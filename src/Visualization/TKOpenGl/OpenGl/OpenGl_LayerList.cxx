@@ -672,7 +672,7 @@ void OpenGl_LayerList::renderLayer(const occ::handle<OpenGl_Workspace>& theWorks
        ++aPriorityIter)
   {
     const NCollection_IndexedMap<const Graphic3d_CStructure*>& aStructures =
-      theLayer.Structures((Graphic3d_DisplayPriority)aPriorityIter);
+      theLayer.Structures(static_cast<Graphic3d_DisplayPriority>(aPriorityIter));
     for (OpenGl_Structure::StructIterator aStructIter(aStructures); aStructIter.More();
          aStructIter.Next())
     {
@@ -750,9 +750,8 @@ void OpenGl_LayerList::Render(const occ::handle<OpenGl_Workspace>& theWorkspace,
   // was preallocated before going into this method and has enough space to keep
   // maximum number of references to layers, therefore it will not increase memory
   // fragmentation during regular rendering.
-  const int aPrevFilter =
-    theWorkspace->RenderFilter()
-    & ~(int)(OpenGl_RenderFilter_OpaqueOnly | OpenGl_RenderFilter_TransparentOnly);
+  const int aPrevFilter = theWorkspace->RenderFilter()
+                          & ~(OpenGl_RenderFilter_OpaqueOnly | OpenGl_RenderFilter_TransparentOnly);
   theWorkspace->SetRenderFilter(aPrevFilter | OpenGl_RenderFilter_OpaqueOnly);
 
   myTransparentToProcess.Clear();
@@ -923,9 +922,8 @@ void OpenGl_LayerList::renderTransparent(const occ::handle<OpenGl_Workspace>& th
   Graphic3d_RenderTransparentMethod anOitMode =
     aView != nullptr ? aView->RenderingParams().TransparencyMethod : Graphic3d_RTM_BLEND_UNORDERED;
 
-  const int aPrevFilter =
-    theWorkspace->RenderFilter()
-    & ~(int)(OpenGl_RenderFilter_OpaqueOnly | OpenGl_RenderFilter_TransparentOnly);
+  const int aPrevFilter = theWorkspace->RenderFilter()
+                          & ~(OpenGl_RenderFilter_OpaqueOnly | OpenGl_RenderFilter_TransparentOnly);
   theWorkspace->SetRenderFilter(aPrevFilter | OpenGl_RenderFilter_TransparentOnly);
   aCtx->core11fwd->glEnable(GL_BLEND);
 

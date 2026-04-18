@@ -95,7 +95,8 @@ inline void BOPDS_Curve::InitPaveBlock1()
 
 inline occ::handle<BOPDS_PaveBlock>& BOPDS_Curve::ChangePaveBlock1()
 {
-  occ::handle<BOPDS_PaveBlock>* pPB = (occ::handle<BOPDS_PaveBlock>*)&myPaveBlocks.First();
+  occ::handle<BOPDS_PaveBlock>* pPB =
+    static_cast<occ::handle<BOPDS_PaveBlock>*>(&myPaveBlocks.First());
   return *pPB;
 }
 

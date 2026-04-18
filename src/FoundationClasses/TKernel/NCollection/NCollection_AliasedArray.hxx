@@ -246,7 +246,7 @@ public:
   {
     Standard_OutOfRange_Raise_if(theIndex < 0 || theIndex >= mySize,
                                  "NCollection_AliasedArray::value(), out of range index");
-    return myData + size_t(myStride) * size_t(theIndex);
+    return myData + size_t(myStride) * static_cast<size_t>(theIndex);
   }
 
   //! Access raw bytes of specified element.
@@ -254,7 +254,7 @@ public:
   {
     Standard_OutOfRange_Raise_if(theIndex < 0 || theIndex >= mySize,
                                  "NCollection_AliasedArray::changeValue(), out of range index");
-    return myData + size_t(myStride) * size_t(theIndex);
+    return myData + size_t(myStride) * static_cast<size_t>(theIndex);
   }
 
   //! Initialize the items with theValue

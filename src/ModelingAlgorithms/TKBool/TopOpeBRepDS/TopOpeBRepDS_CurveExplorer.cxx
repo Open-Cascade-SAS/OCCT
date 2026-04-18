@@ -44,7 +44,7 @@ TopOpeBRepDS_CurveExplorer::TopOpeBRepDS_CurveExplorer(const TopOpeBRepDS_DataSt
 
 void TopOpeBRepDS_CurveExplorer::Init(const TopOpeBRepDS_DataStructure& DS, const bool FindKeep)
 {
-  myDS       = (TopOpeBRepDS_DataStructure*)&DS;
+  myDS       = const_cast<TopOpeBRepDS_DataStructure*>(&DS);
   myIndex    = 1;
   myMax      = DS.NbCurves();
   myFindKeep = FindKeep;

@@ -45,7 +45,7 @@ void TopOpeBRepDS_PointExplorer::Init(const TopOpeBRepDS_DataStructure& DS, cons
 {
   myIndex    = 1;
   myMax      = DS.NbPoints();
-  myDS       = (TopOpeBRepDS_DataStructure*)&DS;
+  myDS       = const_cast<TopOpeBRepDS_DataStructure*>(&DS);
   myFindKeep = FindKeep;
   Find();
 }

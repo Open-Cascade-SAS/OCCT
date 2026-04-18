@@ -182,22 +182,22 @@ void IntPatch_Point::Dump() const
 
   printf("P(%+10.20f,%+10.20f,%+10.20f) UV1(%+10.20f,%+10.20f)  UV2(%+10.20f,%+10.20f) "
          "(Para:%+10.20f)\n",
-         (double)(pt.Value().X()),
-         (double)(pt.Value().Y()),
-         (double)(pt.Value().Z()),
-         (double)u1,
-         (double)v1,
-         (double)u2,
-         (double)v2,
-         (double)para);
+         (pt.Value().X()),
+         (pt.Value().Y()),
+         (pt.Value().Z()),
+         u1,
+         v1,
+         u2,
+         v2,
+         para);
   if (onS1)
-    printf("*OnS1*  par=%+10.20f arc1=%10p", (double)prm1, (void*)arcS1.operator->());
+    printf("*OnS1*  par=%+10.20f arc1=%10p", prm1, (void*)arcS1.operator->());
   if (vtxonS1)
     printf(" *Vtx1*  vtx1=%10p", (void*)vS1.operator->());
   if (onS1 || vtxonS1)
     printf("\n");
   if (onS2)
-    printf("*OnS2*  par=%+10.20f arc2=%10p", (double)prm2, (void*)arcS2.operator->());
+    printf("*OnS2*  par=%+10.20f arc2=%10p", prm2, (void*)arcS2.operator->());
   if (vtxonS2)
     printf(" *Vtx2*  vtx2=%10p", (void*)vS2.operator->());
 

@@ -534,7 +534,7 @@ occ::handle<Geom_BSplineSurface> GeomConvert::SurfaceToBSplineSurface(
       else
       {
         // Number of spans: maximum opening = 150 degrees ( = PI / 1.2 rad)
-        const int nbUSpans = (int)std::trunc(1.2 * (ULast - UFirst) / M_PI) + 1;
+        const int nbUSpans = static_cast<int>(std::trunc(1.2 * (ULast - UFirst) / M_PI)) + 1;
         AlfaU              = (ULast - UFirst) / (nbUSpans * 2);
         NbUPoles           = 2 * nbUSpans + 1;
         NbUKnots           = nbUSpans + 1;

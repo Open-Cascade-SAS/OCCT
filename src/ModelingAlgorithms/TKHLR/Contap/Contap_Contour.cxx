@@ -298,8 +298,8 @@ static void LineConstructor(NCollection_Sequence<Contap_Line>&      slin,
     //-- std::cout<<" WLine -> "<<nbvtx<<" vtx"<<std::endl;
     for (int i = 1; i < nbvtx; i++)
     {
-      int firstp = (int)L.Vertex(i).ParameterOnLine();
-      int lastp  = (int)L.Vertex(i + 1).ParameterOnLine();
+      int firstp = static_cast<int>(L.Vertex(i).ParameterOnLine());
+      int lastp  = static_cast<int>(L.Vertex(i + 1).ParameterOnLine());
       if (firstp != lastp)
       {
         int                    pmid = (firstp + lastp) / 2; //-- entiers
@@ -1774,7 +1774,7 @@ void Contap_Contour::Perform(const occ::handle<Adaptor3d_TopolTool>& Domain)
           {
             PPoint.Parameters(themult, U, V);
             ptfin.SetValue(PPoint.Value(), U, V);
-            ptfin.SetParameter((double)(Nbpts));
+            ptfin.SetParameter(static_cast<double>(Nbpts));
             const Contap_ThePathPointOfTheSearch& PStart     = solrst.Point(i);
             const occ::handle<Adaptor2d_Curve2d>& currentarc = PStart.Arc();
             currentparam                                     = PStart.Parameter();
@@ -1814,7 +1814,7 @@ void Contap_Contour::Perform(const occ::handle<Adaptor3d_TopolTool>& Domain)
       {
         iwline->Value(Nbpts).ParametersOnS2(U, V);
         ptfin.SetValue(theline.Point(Nbpts).Value(), U, V);
-        ptfin.SetParameter((double)(Nbpts));
+        ptfin.SetParameter(static_cast<double>(Nbpts));
         theline.Add(ptfin);
       }
 
@@ -1916,7 +1916,7 @@ void Contap_Contour::Perform(const occ::handle<Adaptor3d_TopolTool>& Domain)
 
                     tgtrst = d2d.X() * d1u;
                     tgtrst.Add(d2d.Y() * d1v);
-                    int Paraml = (int)ptvt.ParameterOnLine();
+                    int Paraml = static_cast<int>(ptvt.ParameterOnLine());
 
                     if (Paraml == theli.NbPnts())
                     {

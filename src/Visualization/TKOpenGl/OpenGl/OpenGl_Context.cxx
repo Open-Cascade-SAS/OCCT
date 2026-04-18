@@ -405,10 +405,10 @@ void OpenGl_Context::ResizeViewport(const int* theRect)
   myViewport[3] = theRect[3];
   if (HasRenderScale())
   {
-    myViewportVirt[0] = int(theRect[0] * myRenderScaleInv);
-    myViewportVirt[1] = int(theRect[1] * myRenderScaleInv);
-    myViewportVirt[2] = int(theRect[2] * myRenderScaleInv);
-    myViewportVirt[3] = int(theRect[3] * myRenderScaleInv);
+    myViewportVirt[0] = static_cast<int>(theRect[0] * myRenderScaleInv);
+    myViewportVirt[1] = static_cast<int>(theRect[1] * myRenderScaleInv);
+    myViewportVirt[2] = static_cast<int>(theRect[2] * myRenderScaleInv);
+    myViewportVirt[3] = static_cast<int>(theRect[3] * myRenderScaleInv);
   }
   else
   {
@@ -503,7 +503,7 @@ void OpenGl_Context::SetDrawBuffers(const int theNb, const int* theDrawBuffers)
     arbFBO->glBindFramebuffer(GL_FRAMEBUFFER, OpenGl_FrameBuffer::NO_FRAMEBUFFER);
   }
 
-  myFuncs->glDrawBuffers(theNb, (const GLenum*)theDrawBuffers);
+  myFuncs->glDrawBuffers(theNb, reinterpret_cast<const GLenum*>(theDrawBuffers));
 }
 
 //=================================================================================================
@@ -643,9 +643,9 @@ bool OpenGl_Context::IsCurrent() const
     return false;
   }
 
-  return (((Display*)myDisplay == glXGetCurrentDisplay())
-          && ((GLXContext)myGContext == glXGetCurrentContext())
-          && ((GLXDrawable)myWindow == glXGetCurrentDrawable()));
+  return ((static_cast<Display*>(myDisplay) == glXGetCurrentDisplay())
+          && (static_cast<GLXContext>(myGContext) == glXGetCurrentContext())
+          && (static_cast<GLXDrawable>(myWindow) == glXGetCurrentDrawable()));
   #else
   return false;
   #endif
@@ -728,7 +728,9 @@ bool OpenGl_Context::MakeCurrent()
     return false;
   }
 
-  if (!glXMakeCurrent((Display*)myDisplay, (GLXDrawable)myWindow, (GLXContext)myGContext))
+  if (!glXMakeCurrent(static_cast<Display*>(myDisplay),
+                      static_cast<GLXDrawable>(myWindow),
+                      static_cast<GLXContext>(myGContext)))
   {
     // if there is no current context it might be impossible to use glGetError() correctly
     PushMessage(GL_DEBUG_SOURCE_WINDOW_SYSTEM,
@@ -766,9 +768,9 @@ void OpenGl_Context::SwapBuffers()
     core11fwd->glFlush();
   }
   #elif defined(HAVE_XLIB)
-  if ((Display*)myDisplay != nullptr)
+  if (static_cast<Display*>(myDisplay) != nullptr)
   {
-    glXSwapBuffers((Display*)myDisplay, (GLXDrawable)myWindow);
+    glXSwapBuffers(static_cast<Display*>(myDisplay), static_cast<GLXDrawable>(myWindow));
   }
   #else
     //
@@ -804,8 +806,9 @@ bool OpenGl_Context::SetSwapInterval(const int theInterval)
   {
     typedef int (
       *glXSwapIntervalEXT_t_x)(Display* theDisplay, GLXDrawable theDrawable, int theInterval);
-    glXSwapIntervalEXT_t_x aFuncPtr = (glXSwapIntervalEXT_t_x)myFuncs->glXSwapIntervalEXT;
-    aFuncPtr((Display*)myDisplay, (GLXDrawable)myWindow, theInterval);
+    glXSwapIntervalEXT_t_x aFuncPtr =
+      reinterpret_cast<glXSwapIntervalEXT_t_x>(myFuncs->glXSwapIntervalEXT);
+    aFuncPtr(static_cast<Display*>(myDisplay), static_cast<GLXDrawable>(myWindow), theInterval);
     return true;
   }
   else if (myFuncs->glXSwapIntervalSGI != nullptr)
@@ -828,7 +831,7 @@ void* OpenGl_Context::findProc(const char* theFuncName)
 #elif defined(_WIN32)
   return (void*)wglGetProcAddress(theFuncName);
 #elif defined(HAVE_XLIB)
-  return (void*)glXGetProcAddress((const GLubyte*)theFuncName);
+  return reinterpret_cast<void*>(glXGetProcAddress(reinterpret_cast<const GLubyte*>(theFuncName)));
 #elif defined(__APPLE__)
   return (myGlLibHandle != NULL) ? dlsym(myGlLibHandle, theFuncName) : NULL;
 #else
@@ -863,7 +866,8 @@ bool OpenGl_Context::CheckExtension(const char* theExtName) const
     const size_t anExtNameLen = strlen(theExtName);
     for (GLint anIter = 0; anIter < anExtNb; ++anIter)
     {
-      const char*  anExtension = (const char*)myFuncs->glGetStringi(GL_EXTENSIONS, (GLuint)anIter);
+      const char* anExtension = reinterpret_cast<const char*>(
+        myFuncs->glGetStringi(GL_EXTENSIONS, static_cast<GLuint>(anIter)));
       const size_t aTestExtNameLen = strlen(anExtension);
       if (aTestExtNameLen == anExtNameLen && strncmp(anExtension, theExtName, anExtNameLen) == 0)
       {
@@ -874,7 +878,7 @@ bool OpenGl_Context::CheckExtension(const char* theExtName) const
   }
 
   // use old way with huge string for all extensions
-  const char* anExtString = (const char*)core11fwd->glGetString(GL_EXTENSIONS);
+  const char* anExtString = reinterpret_cast<const char*>(core11fwd->glGetString(GL_EXTENSIONS));
   if (anExtString == nullptr)
   {
     Messenger()->Send("TKOpenGL: glGetString (GL_EXTENSIONS) has returned NULL! No GL context?",
@@ -914,7 +918,7 @@ bool OpenGl_Context::CheckExtension(const char* theExtString, const char* theExt
   // Search for theExtName in the extensions string.
   // Use of strstr() is not sufficient because extension names can be prefixes of other extension
   // names.
-  char*        aPtrIter     = (char*)theExtString;
+  char*        aPtrIter     = const_cast<char*>(theExtString);
   const char*  aPtrEnd      = aPtrIter + strlen(theExtString);
   const size_t anExtNameLen = strlen(theExtName);
   while (aPtrIter < aPtrEnd)
@@ -950,7 +954,7 @@ bool OpenGl_Context::Init(const bool theIsCoreProfile)
   #elif defined(HAVE_XLIB)
   myDisplay  = (Aspect_Display)glXGetCurrentDisplay();
   myGContext = (Aspect_RenderingContext)glXGetCurrentContext();
-  myWindow   = (Aspect_Drawable)glXGetCurrentDrawable();
+  myWindow   = static_cast<Aspect_Drawable>(glXGetCurrentDrawable());
   #else
     //
   #endif
@@ -994,7 +998,7 @@ TCollection_AsciiString OpenGl_Context::FormatGlEnumHex(int theGlEnum)
 {
   char aBuff[16];
   Sprintf(aBuff,
-          theGlEnum < (int)std::numeric_limits<uint16_t>::max() ? "0x%04X" : "0x%08X",
+          theGlEnum < static_cast<int>(std::numeric_limits<uint16_t>::max()) ? "0x%04X" : "0x%08X",
           theGlEnum);
   return aBuff;
 }
@@ -1004,7 +1008,7 @@ TCollection_AsciiString OpenGl_Context::FormatGlEnumHex(int theGlEnum)
 TCollection_AsciiString OpenGl_Context::FormatSize(size_t theSize)
 {
   char aBuff[32];
-  Sprintf(aBuff, "%" PRIu64, (uint64_t)theSize);
+  Sprintf(aBuff, "%" PRIu64, static_cast<uint64_t>(theSize));
   return aBuff;
 }
 
@@ -1147,7 +1151,7 @@ void OpenGl_Context::PushMessage(const unsigned int                theSource,
   aMsg += " | Type: ";
   aMsg += aType;
   aMsg += " | ID: ";
-  aMsg += (int)theId;
+  aMsg += static_cast<int>(theId);
   aMsg += " | Severity: ";
   aMsg += aSev;
   aMsg += " | Message:\n  ";
@@ -1302,9 +1306,9 @@ void OpenGl_Context::init(const bool theIsCoreProfile)
     caps->ffpEnable = true;
     TCollection_ExtendedString aMsg =
       TCollection_ExtendedString("OpenGL driver is too old! Context info:\n")
-      + "    Vendor:   " + (const char*)core11fwd->glGetString(GL_VENDOR) + "\n"
-      + "    Renderer: " + (const char*)core11fwd->glGetString(GL_RENDERER) + "\n"
-      + "    Version:  " + (const char*)core11fwd->glGetString(GL_VERSION) + "\n"
+      + "    Vendor:   " + reinterpret_cast<const char*>(core11fwd->glGetString(GL_VENDOR)) + "\n"
+      + "    Renderer: " + reinterpret_cast<const char*>(core11fwd->glGetString(GL_RENDERER)) + "\n"
+      + "    Version:  " + reinterpret_cast<const char*>(core11fwd->glGetString(GL_VERSION)) + "\n"
       + "  Fallback using deprecated fixed-function pipeline.\n"
       + "  Visualization might work incorrectly.\n"
         "  Consider upgrading the graphics driver.";
@@ -1315,7 +1319,7 @@ void OpenGl_Context::init(const bool theIsCoreProfile)
                 aMsg);
   }
 
-  myVendor = (const char*)core11fwd->glGetString(GL_VENDOR);
+  myVendor = reinterpret_cast<const char*>(core11fwd->glGetString(GL_VENDOR));
   myVendor.LowerCase();
   if (myVendor.Search("nvidia") != -1)
   {
@@ -1669,14 +1673,14 @@ size_t OpenGl_Context::AvailableMemory() const
 
     core11fwd->glGetIntegerv(GL_VBO_FREE_MEMORY_ATI, aMemInfo);
     // returned value is in KiB, however this maybe changed in future
-    return size_t(aMemInfo[0]) * 1024;
+    return static_cast<size_t>(aMemInfo[0]) * 1024;
   }
   else if (nvxMem)
   {
     // current available dedicated video memory (in KiB), currently unused GPU memory
     GLint aMemInfo = 0;
     core11fwd->glGetIntegerv(GL_GPU_MEMORY_INFO_CURRENT_AVAILABLE_VIDMEM_NVX, &aMemInfo);
-    return size_t(aMemInfo) * 1024;
+    return static_cast<size_t>(aMemInfo) * 1024;
   }
   return 0;
 }
@@ -1826,7 +1830,9 @@ void OpenGl_Context::MemoryInfo(
     unsigned int aVMemMiB = 0;
     if (myFuncs->glXQueryCurrentRendererIntegerMESA(GLX_RENDERER_VIDEO_MEMORY_MESA, &aVMemMiB) != 0)
     {
-      addInfo(theDict, "GPU memory", TCollection_AsciiString() + int(aVMemMiB) + " MiB");
+      addInfo(theDict,
+              "GPU memory",
+              TCollection_AsciiString() + static_cast<int>(aVMemMiB) + " MiB");
     }
   }
 #endif
@@ -1863,9 +1869,9 @@ void OpenGl_Context::WindowBufferBits(NCollection_Vec4<int>& theColorBits,
                            aFormat.cAlphaBits);
     theDepthStencilBits.SetValues(aFormat.cDepthBits, aFormat.cStencilBits);
 #elif defined(HAVE_XLIB)
-    Display*          aDisplay = (Display*)myDisplay;
+    Display*          aDisplay = static_cast<Display*>(myDisplay);
     XWindowAttributes aWinAttribs;
-    XGetWindowAttributes(aDisplay, (::Window)myWindow, &aWinAttribs);
+    XGetWindowAttributes(aDisplay, static_cast<::Window>(myWindow), &aWinAttribs);
     XVisualInfo aVisInfo;
     aVisInfo.visualid                                     = aWinAttribs.visual->visualid;
     aVisInfo.screen                                       = DefaultScreen(aDisplay);
@@ -1910,11 +1916,11 @@ void OpenGl_Context::DiagnosticInformation(
       addInfo(theDict, "WGLExtensions", aWglExts);
     }
 #elif defined(HAVE_XLIB)
-    Display*  aDisplay = (Display*)myDisplay;
+    Display*  aDisplay = static_cast<Display*>(myDisplay);
     const int aScreen  = DefaultScreen(aDisplay);
     addInfo(theDict,
             "GLXDirectRendering",
-            ::glXIsDirect(aDisplay, (GLXContext)myGContext) ? "Yes" : "No");
+            ::glXIsDirect(aDisplay, static_cast<GLXContext>(myGContext)) ? "Yes" : "No");
     addInfo(theDict, "GLXVendor", ::glXQueryServerString(aDisplay, aScreen, GLX_VENDOR));
     addInfo(theDict, "GLXVersion", ::glXQueryServerString(aDisplay, aScreen, GLX_VERSION));
     if ((theFlags & Graphic3d_DiagnosticInfo_Extensions) != 0)
@@ -1938,8 +1944,10 @@ void OpenGl_Context::DiagnosticInformation(
   {
     int aDriverVer[2] = {};
     OpenGl_GlFunctions::readGlVersion(aDriverVer[0], aDriverVer[1]);
-    addInfo(theDict, "GLvendor", (const char*)core11fwd->glGetString(GL_VENDOR));
-    addInfo(theDict, "GLdevice", (const char*)core11fwd->glGetString(GL_RENDERER));
+    addInfo(theDict, "GLvendor", reinterpret_cast<const char*>(core11fwd->glGetString(GL_VENDOR)));
+    addInfo(theDict,
+            "GLdevice",
+            reinterpret_cast<const char*>(core11fwd->glGetString(GL_RENDERER)));
 #ifdef __EMSCRIPTEN__
     if (CheckExtension("GL_WEBGL_debug_renderer_info"))
     {
@@ -1954,7 +1962,9 @@ void OpenGl_Context::DiagnosticInformation(
     }
 #endif
 
-    addInfo(theDict, "GLversion", (const char*)core11fwd->glGetString(GL_VERSION));
+    addInfo(theDict,
+            "GLversion",
+            reinterpret_cast<const char*>(core11fwd->glGetString(GL_VERSION)));
     if (myGlVerMajor != aDriverVer[0] || myGlVerMinor != aDriverVer[1])
     {
       addInfo(theDict,
@@ -1965,7 +1975,7 @@ void OpenGl_Context::DiagnosticInformation(
     {
       addInfo(theDict,
               "GLSLversion",
-              (const char*)core11fwd->glGetString(GL_SHADING_LANGUAGE_VERSION));
+              reinterpret_cast<const char*>(core11fwd->glGetString(GL_SHADING_LANGUAGE_VERSION)));
     }
     if (myIsGlDebugCtx)
     {
@@ -2013,7 +2023,8 @@ void OpenGl_Context::DiagnosticInformation(
       core11fwd->glGetIntegerv(GL_NUM_EXTENSIONS, &anExtNb);
       for (GLint anIter = 0; anIter < anExtNb; ++anIter)
       {
-        const char* anExtension = (const char*)myFuncs->glGetStringi(GL_EXTENSIONS, (GLuint)anIter);
+        const char* anExtension = reinterpret_cast<const char*>(
+          myFuncs->glGetStringi(GL_EXTENSIONS, static_cast<GLuint>(anIter)));
         if (!anExtList.IsEmpty())
         {
           anExtList += " ";
@@ -2024,7 +2035,9 @@ void OpenGl_Context::DiagnosticInformation(
     }
     else
     {
-      addInfo(theDict, "GLextensions", (const char*)core11fwd->glGetString(GL_EXTENSIONS));
+      addInfo(theDict,
+              "GLextensions",
+              reinterpret_cast<const char*>(core11fwd->glGetString(GL_EXTENSIONS)));
     }
   }
 }
@@ -2140,7 +2153,7 @@ occ::handle<OpenGl_TextureSet> OpenGl_Context::BindTextures(
     myTextureRgbaBlack = new OpenGl_Texture();
     myTextureRgbaWhite = new OpenGl_Texture();
     Image_PixMap anImage;
-    anImage.InitZero(Image_Format_RGBA, 2, 2, 0, (uint8_t)0);
+    anImage.InitZero(Image_Format_RGBA, 2, 2, 0, static_cast<uint8_t>(0));
     if (!myTextureRgbaBlack->Init(this,
                                   OpenGl_TextureFormat::Create<GLubyte, 4>(),
                                   NCollection_Vec2<int>(2, 2),
@@ -2153,7 +2166,7 @@ occ::handle<OpenGl_TextureSet> OpenGl_Context::BindTextures(
                   GL_DEBUG_SEVERITY_HIGH,
                   "Error: unable to create unit mock PBR texture map.");
     }
-    anImage.InitZero(Image_Format_RGBA, 2, 2, 0, (uint8_t)255);
+    anImage.InitZero(Image_Format_RGBA, 2, 2, 0, static_cast<uint8_t>(255));
     if (!myTextureRgbaWhite->Init(this,
                                   OpenGl_TextureFormat::Create<GLubyte, 4>(),
                                   NCollection_Vec2<int>(2, 2),
@@ -2465,14 +2478,14 @@ void OpenGl_Context::SetLineStipple(const float theFactor, const uint16_t thePat
     {
       if (hasGlslBitwiseOps != OpenGl_FeatureNotAvailable)
       {
-        myActiveProgram->SetUniform(this, aPatternLoc, (int)thePattern);
+        myActiveProgram->SetUniform(this, aPatternLoc, static_cast<int>(thePattern));
       }
       else
       {
         int aPatArr[16] = {};
         for (unsigned int aBit = 0; aBit < 16; ++aBit)
         {
-          aPatArr[aBit] = ((unsigned int)(thePattern) & (1U << aBit)) != 0 ? 1 : 0;
+          aPatArr[aBit] = (static_cast<unsigned int>(thePattern) & (1U << aBit)) != 0 ? 1 : 0;
         }
         myActiveProgram->SetUniform(this, aPatternLoc, 16, aPatArr);
       }
@@ -2673,7 +2686,7 @@ int OpenGl_Context::SetPolygonMode(const int theMode)
   myPolygonMode              = theMode;
   if (myGapi != Aspect_GraphicsLibrary_OpenGLES)
   {
-    core11fwd->glPolygonMode(GL_FRONT_AND_BACK, (GLenum)theMode);
+    core11fwd->glPolygonMode(GL_FRONT_AND_BACK, static_cast<GLenum>(theMode));
   }
   return anOldPolygonMode;
 }

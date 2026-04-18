@@ -223,13 +223,11 @@ void Message_AttributeMeter::SetAlertMetrics(const occ::handle<Message_AlertExte
 
     if (theStartValue)
     {
-      aMeterAttribute->SetStartValue(aMetricType,
-                                     (double)aMemInfo.ValuePreciseMiB(anIterator.Value()));
+      aMeterAttribute->SetStartValue(aMetricType, aMemInfo.ValuePreciseMiB(anIterator.Value()));
     }
     else
     {
-      aMeterAttribute->SetStopValue(aMetricType,
-                                    (double)aMemInfo.ValuePreciseMiB(anIterator.Value()));
+      aMeterAttribute->SetStopValue(aMetricType, aMemInfo.ValuePreciseMiB(anIterator.Value()));
     }
   }
 }

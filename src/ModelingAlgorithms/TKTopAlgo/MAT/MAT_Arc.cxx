@@ -128,16 +128,16 @@ occ::handle<MAT_Arc> MAT_Arc::Neighbour(const occ::handle<MAT_Node>& aNode,
   if (aSide == MAT_Left)
   {
     if (aNode == FirstNode())
-      return (MAT_Arc*)firstArcLeft;
+      return static_cast<MAT_Arc*>(firstArcLeft);
     if (aNode == SecondNode())
-      return (MAT_Arc*)secondArcLeft;
+      return static_cast<MAT_Arc*>(secondArcLeft);
   }
   else
   {
     if (aNode == FirstNode())
-      return (MAT_Arc*)firstArcRight;
+      return static_cast<MAT_Arc*>(firstArcRight);
     if (aNode == SecondNode())
-      return (MAT_Arc*)secondArcRight;
+      return static_cast<MAT_Arc*>(secondArcRight);
   }
   throw Standard_DomainError("MAT_Arc::Neighbour");
 }

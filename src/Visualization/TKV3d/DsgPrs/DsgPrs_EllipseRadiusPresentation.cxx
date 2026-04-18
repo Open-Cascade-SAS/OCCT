@@ -99,7 +99,7 @@ void DsgPrs_EllipseRadiusPresentation::Add(const occ::handle<Prs3d_Presentation>
     gp_Dir dir(Vpnt ^ Vapex);
     double parFirst =
       anEllipse.Position().Direction().IsOpposite(dir, Precision::Angular()) ? uLast : uFirst;
-    const int    NodeNumber = std::max(4, int(50. * Alpha / M_PI));
+    const int    NodeNumber = std::max(4, static_cast<int>(50. * Alpha / M_PI));
     const double delta      = Alpha / (NodeNumber - 1);
 
     occ::handle<Graphic3d_ArrayOfPolylines> aPrims = new Graphic3d_ArrayOfPolylines(NodeNumber);
@@ -154,7 +154,7 @@ void DsgPrs_EllipseRadiusPresentation::Add(const occ::handle<Prs3d_Presentation>
     gp_Vec    Vpnt(aCenter, p1);
     gp_Dir    dir(Vpnt ^ Vapex);
     double    parFirst = aCurve->Direction().IsOpposite(dir, Precision::Angular()) ? uLast : uFirst;
-    const int NodeNumber = std::max(4, int(50. * Alpha / M_PI));
+    const int NodeNumber = std::max(4, static_cast<int>(50. * Alpha / M_PI));
     const double delta   = Alpha / (NodeNumber - 1);
 
     occ::handle<Graphic3d_ArrayOfPolylines> aPrims = new Graphic3d_ArrayOfPolylines(NodeNumber);

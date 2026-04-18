@@ -65,8 +65,8 @@ void IntStart_SearchInside::Perform(TheFunction&                     Func,
 
   double du = Bsup(1) - Binf(1);
   double dv = Bsup(2) - Binf(2);
-  du /= (double)NbsampleU * 0.5;
-  dv /= (double)NbsampleV * 0.5;
+  du /= static_cast<double>(NbsampleU) * 0.5;
+  dv /= static_cast<double>(NbsampleV) * 0.5;
 
   double toler1 = toler(1) = ThePSurfaceTool::UResolution(PS, Precision::Confusion());
   double toler2 = toler(2) = ThePSurfaceTool::VResolution(PS, Precision::Confusion());

@@ -82,16 +82,17 @@ occ::handle<Image_CompressedPixMap> Image_DDSParser::Load(
   }
   if (theFileOffset != 0)
   {
-    aFile->seekg((std::streamoff)theFileOffset, std::ios::beg);
+    aFile->seekg(static_cast<std::streamoff>(theFileOffset), std::ios::beg);
   }
   aFile->read(aHeader, 128);
-  size_t aNbReadBytes = (size_t)aFile->gcount();
+  size_t aNbReadBytes = static_cast<size_t>(aFile->gcount());
   if (aNbReadBytes < 128 || ::memcmp(aHeader, "DDS ", 4) != 0)
   {
     return occ::handle<Image_CompressedPixMap>();
   }
 
-  occ::handle<Image_CompressedPixMap> aDef = parseHeader(*(const DDSFileHeader*)(aHeader + 4));
+  occ::handle<Image_CompressedPixMap> aDef =
+    parseHeader(*reinterpret_cast<const DDSFileHeader*>(aHeader + 4));
   if (aDef.IsNull())
   {
     return occ::handle<Image_CompressedPixMap>();
@@ -117,12 +118,12 @@ occ::handle<Image_CompressedPixMap> Image_DDSParser::Load(
   const size_t anOffset = aDef->FaceBytes() * theFaceIndex;
   if (anOffset != 0)
   {
-    aFile->seekg((std::streamoff)anOffset, std::ios::cur);
+    aFile->seekg(static_cast<std::streamoff>(anOffset), std::ios::cur);
   }
   occ::handle<NCollection_Buffer> aBuffer =
     new NCollection_Buffer(Image_PixMap::DefaultAllocator(), aDef->FaceBytes());
-  aFile->read((char*)aBuffer->ChangeData(), aDef->FaceBytes());
-  aNbReadBytes = (size_t)aFile->gcount();
+  aFile->read(reinterpret_cast<char*>(aBuffer->ChangeData()), aDef->FaceBytes());
+  aNbReadBytes = static_cast<size_t>(aFile->gcount());
   if (aNbReadBytes < aDef->FaceBytes())
   {
     Message::SendFail(TCollection_AsciiString("DDS Reader error - unable to read face #")
@@ -146,7 +147,7 @@ occ::handle<Image_CompressedPixMap> Image_DDSParser::Load(
   }
 
   occ::handle<Image_CompressedPixMap> aDef =
-    parseHeader(*(const DDSFileHeader*)(theBuffer->Data() + 4));
+    parseHeader(*reinterpret_cast<const DDSFileHeader*>(theBuffer->Data() + 4));
   if (aDef.IsNull())
   {
     return occ::handle<Image_CompressedPixMap>();
@@ -223,12 +224,12 @@ occ::handle<Image_CompressedPixMap> Image_DDSParser::parseHeader(const DDSFileHe
   }
 
   occ::handle<Image_CompressedPixMap> aDef = new Image_CompressedPixMap();
-  aDef->SetSize((int)theHeader.Width, (int)theHeader.Height);
+  aDef->SetSize(static_cast<int>(theHeader.Width), static_cast<int>(theHeader.Height));
   aDef->SetNbFaces(theHeader.IscompleteCubemap() != 0 ? 6 : 1);
   aDef->SetBaseFormat(aBaseFormat);
   aDef->SetCompressedFormat(aFormat);
 
-  const int aNbMipMaps = std::max((int)theHeader.MipMapCount, 1);
+  const int aNbMipMaps = std::max(static_cast<int>(theHeader.MipMapCount), 1);
   aDef->ChangeMipMaps().Resize(0, aNbMipMaps - 1, false);
   {
     size_t                aFaceSize = 0;

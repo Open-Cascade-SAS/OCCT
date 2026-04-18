@@ -42,7 +42,7 @@ void OpenGl_LineAttributes::Release(OpenGl_Context* theGlCtx)
          anIter.More();
          anIter.Next())
     {
-      theGlCtx->core11ffp->glDeleteLists((GLuint)anIter.Value(), 1);
+      theGlCtx->core11ffp->glDeleteLists(static_cast<GLuint>(anIter.Value()), 1);
     }
   }
   myStyles.Clear();
@@ -54,8 +54,8 @@ unsigned int OpenGl_LineAttributes::init(const OpenGl_Context*                  
                                          const occ::handle<Graphic3d_HatchStyle>& theStyle)
 {
   const unsigned int aListId = theGlCtx->core11ffp->glGenLists(1);
-  theGlCtx->core11ffp->glNewList((GLuint)aListId, GL_COMPILE);
-  theGlCtx->core11ffp->glPolygonStipple((const GLubyte*)theStyle->Pattern());
+  theGlCtx->core11ffp->glNewList(static_cast<GLuint>(aListId), GL_COMPILE);
+  theGlCtx->core11ffp->glPolygonStipple(static_cast<const GLubyte*>(theStyle->Pattern()));
   theGlCtx->core11ffp->glEndList();
   return aListId;
 }
@@ -78,6 +78,6 @@ bool OpenGl_LineAttributes::SetTypeOfHatch(const OpenGl_Context*                
     myStyles.Bind(theStyle, aGpuListId);
   }
 
-  theGlCtx->core11ffp->glCallList((GLuint)aGpuListId);
+  theGlCtx->core11ffp->glCallList(static_cast<GLuint>(aGpuListId));
   return true;
 }

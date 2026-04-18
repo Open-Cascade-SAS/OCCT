@@ -117,7 +117,7 @@ inline
 
 const TCollection_AsciiString& LDOMParser::GetError(TCollection_AsciiString& aData) const
 {
-  char* aStr = (char*)myCurrentData.str();
+  char* aStr = const_cast<char*>(myCurrentData.str());
   aData      = aStr;
   delete[] aStr;
   return myError;
@@ -333,7 +333,7 @@ bool LDOMParser::ParseElement(Standard_IStream& theIStream, bool& theDocStart)
         break;
       case LDOM_XmlReader::XML_END_ELEMENT: {
         const char* aParentName = static_cast<const char*>(aParent->GetTagName());
-        aTextStr                = (char*)myCurrentData.str();
+        aTextStr                = const_cast<char*>(myCurrentData.str());
         if (strcmp(aTextStr, aParentName) != 0)
         {
           myError = "Expected end tag \'";
@@ -353,7 +353,7 @@ bool LDOMParser::ParseElement(Standard_IStream& theIStream, bool& theDocStart)
         aLocType = LDOM_Node::TEXT_NODE;
         {
           int aTextLen;
-          aTextStr = LDOM_CharReference::Decode((char*)myCurrentData.str(), aTextLen);
+          aTextStr = LDOM_CharReference::Decode(const_cast<char*>(myCurrentData.str()), aTextLen);
           // try to convert to integer
           if (IsDigit(aTextStr[0]))
           {
@@ -368,13 +368,13 @@ bool LDOMParser::ParseElement(Standard_IStream& theIStream, bool& theDocStart)
         aLocType = LDOM_Node::COMMENT_NODE;
         {
           int aTextLen;
-          aTextStr   = LDOM_CharReference::Decode((char*)myCurrentData.str(), aTextLen);
+          aTextStr   = LDOM_CharReference::Decode(const_cast<char*>(myCurrentData.str()), aTextLen);
           aTextValue = LDOMBasicString(aTextStr, aTextLen, myDocument);
         }
         goto create_text_node;
       case LDOM_XmlReader::XML_CDATA:
         aLocType   = LDOM_Node::CDATA_SECTION_NODE;
-        aTextStr   = (char*)myCurrentData.str();
+        aTextStr   = const_cast<char*>(myCurrentData.str());
         aTextValue = LDOMBasicString(aTextStr, myCurrentData.Length(), myDocument);
       create_text_node: {
         LDOM_BasicNode& aTextNode = LDOM_BasicText::Create(aLocType, aTextValue, myDocument);

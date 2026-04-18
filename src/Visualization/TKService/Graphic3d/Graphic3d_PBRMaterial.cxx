@@ -32,7 +32,7 @@ float Graphic3d_PBRMaterial::RoughnessFromSpecular(const Quantity_Color& theSpec
     // low specular intensity should produce a rough material even if shininess is high
     aRoughnessFactor *= (1.0 - aSpecIntens);
   }
-  return (float)aRoughnessFactor;
+  return static_cast<float>(aRoughnessFactor);
 }
 
 //=================================================================================================
@@ -184,11 +184,11 @@ void Graphic3d_PBRMaterial::GenerateEnvLUT(const occ::handle<Image_PixMap>& theL
 
   for (unsigned int y = 0; y < theLUT->SizeY(); ++y)
   {
-    float aRoughness = Roughness(y / float(theLUT->SizeY() - 1));
+    float aRoughness = Roughness(y / static_cast<float>(theLUT->SizeY() - 1));
 
     for (unsigned int x = 0; x < theLUT->SizeX(); ++x)
     {
-      float                   aCosV   = x / float(theLUT->SizeX() - 1);
+      float                   aCosV   = x / static_cast<float>(theLUT->SizeX() - 1);
       NCollection_Vec3<float> aView   = lutGenView(aCosV);
       NCollection_Vec2<float> aResult = NCollection_Vec2<float>(0.f);
       for (unsigned int i = 0; i < theNbIntegralSamples; ++i)
@@ -210,7 +210,7 @@ void Graphic3d_PBRMaterial::GenerateEnvLUT(const occ::handle<Image_PixMap>& theL
         }
       }
 
-      aResult = aResult / float(theNbIntegralSamples);
+      aResult = aResult / static_cast<float>(theNbIntegralSamples);
       theLUT->ChangeValue<NCollection_Vec2<float>>(theLUT->SizeY() - 1 - y, x) = aResult;
     }
   }
@@ -220,7 +220,8 @@ void Graphic3d_PBRMaterial::GenerateEnvLUT(const occ::handle<Image_PixMap>& theL
 
 float Graphic3d_PBRMaterial::SpecIBLMapSamplesFactor(float theProbability, float theRoughness)
 {
-  return acosf(lutGenImportanceSampleCosTheta(theProbability, theRoughness)) * 2.f / float(M_PI);
+  return acosf(lutGenImportanceSampleCosTheta(theProbability, theRoughness)) * 2.f
+         / static_cast<float>(M_PI);
 }
 
 //=================================================================================================
@@ -248,10 +249,10 @@ NCollection_Vec2<float> Graphic3d_PBRMaterial::lutGenHammersley(unsigned int the
     {
       break;
     }
-    aPhi2 += ((theNumber >> i) & 1) / float(1 << (i + 1));
+    aPhi2 += ((theNumber >> i) & 1) / static_cast<float>(1 << (i + 1));
   }
 
-  return NCollection_Vec2<float>(theNumber / float(theCount), aPhi2);
+  return NCollection_Vec2<float>(theNumber / static_cast<float>(theCount), aPhi2);
 }
 
 //=================================================================================================
@@ -280,7 +281,7 @@ NCollection_Vec3<float> Graphic3d_PBRMaterial::lutGenImportanceSample(
   const NCollection_Vec2<float>& theHammerslayPoint,
   float                          theRoughness)
 {
-  float aPhi = 2.f * float(M_PI) * theHammerslayPoint.y();
+  float aPhi = 2.f * static_cast<float>(M_PI) * theHammerslayPoint.y();
 
   float aCosTheta = lutGenImportanceSampleCosTheta(theHammerslayPoint.x(), theRoughness);
   float aSinTheta = sqrtf(1.f - aCosTheta * aCosTheta);

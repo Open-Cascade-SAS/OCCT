@@ -80,7 +80,7 @@ Quantity_Date OSD_Process::SystemDate()
     myError.SetValue(errno, Iam, "GetSystem");
   else
   {
-    memcpy(&transfert, localtime((time_t*)&tval.tv_sec), sizeof(struct tm));
+    memcpy(&transfert, localtime(static_cast<time_t*>(&tval.tv_sec)), sizeof(struct tm));
     month = transfert.tm_mon + 1; // Add to January (month #1)
     day   = transfert.tm_mday;
     year  = transfert.tm_year;

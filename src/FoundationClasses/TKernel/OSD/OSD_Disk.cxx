@@ -176,7 +176,7 @@ int OSD_Disk::DiskSize()
   if (statvfs(myDiskName.ToCString(), &aBuffer) == 0)
   {
     unsigned long aBSize512 = aBuffer.f_frsize / 512;
-    return int(aBuffer.f_blocks * aBSize512);
+    return static_cast<int>(aBuffer.f_blocks * aBSize512);
   }
   myError.SetValue(errno, Iam, "OSD_Disk: statvfs failed.");
   return 0;
@@ -206,7 +206,7 @@ int OSD_Disk::DiskFree()
   if (statvfs(myDiskName.ToCString(), &aBuffer) == 0)
   {
     unsigned long aBSize512 = aBuffer.f_frsize / 512;
-    return int(aBuffer.f_bavail * aBSize512);
+    return static_cast<int>(aBuffer.f_bavail * aBSize512);
   }
   myError.SetValue(errno, Iam, "OSD_Disk: statvfs failed.");
   return 0;

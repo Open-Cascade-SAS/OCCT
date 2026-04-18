@@ -67,7 +67,7 @@ void Aspect_WindowInputListener::AddTouchPoint(size_t                          t
 {
   if (theClearBefore)
   {
-    RemoveTouchPoint((size_t)-1);
+    RemoveTouchPoint(static_cast<size_t>(-1));
   }
 
   myTouchPoints.Add(theId, Aspect_Touch(thePnt, false));
@@ -78,7 +78,7 @@ void Aspect_WindowInputListener::AddTouchPoint(size_t                          t
 bool Aspect_WindowInputListener::RemoveTouchPoint(size_t theId, bool theClearSelectPnts)
 {
   (void)theClearSelectPnts;
-  if (theId == (size_t)-1)
+  if (theId == static_cast<size_t>(-1))
   {
     myTouchPoints.Clear(false);
   }

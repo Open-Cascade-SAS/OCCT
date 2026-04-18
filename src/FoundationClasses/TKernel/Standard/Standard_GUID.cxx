@@ -54,7 +54,7 @@ Standard_PCharacter Standard_GUID_GetValue32(Standard_PCharacter tmpBuffer, int&
   {
     strncpy(strtmp, tmpBuffer, pos);
     strtmp[pos] = '\0';
-    my32b       = (int)strtoul(strtmp, (char**)nullptr, 16);
+    my32b       = static_cast<int>(strtoul(strtmp, (char**)nullptr, 16));
   }
   else
     return nullptr;
@@ -73,7 +73,7 @@ Standard_PCharacter Standard_GUID_GetValue16(Standard_PCharacter tmpBuffer, char
   {
     strncpy(strtmp, tmpBuffer, pos);
     strtmp[pos] = '\0';
-    my32b       = (char16_t)strtoul(strtmp, (char**)nullptr, 16);
+    my32b       = static_cast<char16_t>(strtoul(strtmp, (char**)nullptr, 16));
   }
   else
     return nullptr;
@@ -89,7 +89,7 @@ Standard_PCharacter Standard_GUID_GetValue8(Standard_PCharacter tmpBuffer, uint8
 
   strncpy(strtmp, tmpBuffer, 2);
   strtmp[2] = '\0';
-  my32b     = (uint8_t)strtoul(strtmp, (char**)nullptr, 16);
+  my32b     = static_cast<uint8_t>(strtoul(strtmp, (char**)nullptr, 16));
   //  std::cout << "V8 :" << hex(my32b) << std::endl;
   return &tmpBuffer[2];
 }
@@ -179,7 +179,7 @@ Standard_GUID::Standard_GUID(const char* const aGuid)
       my8b5(0),
       my8b6(0)
 {
-  char* tmpBuffer = (char*)aGuid;
+  char* tmpBuffer = const_cast<char*>(aGuid);
 
   if (!CheckGUIDFormat(tmpBuffer))
     throw Standard_RangeError("Invalid format of GUID");
@@ -217,7 +217,7 @@ Standard_GUID::Standard_GUID(const char16_t* const aGuid)
   int   i         = 0;
   while (i < Standard_GUID_SIZE)
   {
-    tmpBuffer[i] = (char)aGuid[i];
+    tmpBuffer[i] = static_cast<char>(aGuid[i]);
     i++;
   }
 
@@ -249,15 +249,15 @@ void Standard_GUID::ToCString(const Standard_PCharacter aStrGuid) const
   Sprintf(aStrGuid,
           "%.8x-%.4x-%.4x-%.4x-%.2x%.2x%.2x%.2x%.2x%.2x",
           my32b,
-          (unsigned short)my16b1,
-          (unsigned short)my16b2,
-          (unsigned short)my16b3,
-          (unsigned char)my8b1,
-          (unsigned char)my8b2,
-          (unsigned char)my8b3,
-          (unsigned char)my8b4,
-          (unsigned char)my8b5,
-          (unsigned char)my8b6);
+          static_cast<unsigned short>(my16b1),
+          static_cast<unsigned short>(my16b2),
+          static_cast<unsigned short>(my16b3),
+          static_cast<unsigned char>(my8b1),
+          static_cast<unsigned char>(my8b2),
+          static_cast<unsigned char>(my8b3),
+          static_cast<unsigned char>(my8b4),
+          static_cast<unsigned char>(my8b5),
+          static_cast<unsigned char>(my8b6));
 }
 
 //=================================================================================================
@@ -269,10 +269,10 @@ void Standard_GUID::ToExtString(const Standard_PExtCharacter aStrGuid) const
 
   for (int i = 0; i < Standard_GUID_SIZE; i++)
   {
-    aStrGuid[i] = (char16_t)sguid[i];
+    aStrGuid[i] = static_cast<char16_t>(sguid[i]);
   }
 
-  aStrGuid[Standard_GUID_SIZE] = (char16_t)0;
+  aStrGuid[Standard_GUID_SIZE] = static_cast<char16_t>(0);
 }
 
 //=================================================================================================

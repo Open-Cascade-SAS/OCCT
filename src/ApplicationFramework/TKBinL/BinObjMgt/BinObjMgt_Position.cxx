@@ -27,7 +27,7 @@ BinObjMgt_Position::BinObjMgt_Position(Standard_OStream& theStream)
 
 void BinObjMgt_Position::StoreSize(Standard_OStream& theStream)
 {
-  mySize = uint64_t(theStream.tellp() - myPosition);
+  mySize = static_cast<uint64_t>(theStream.tellp() - myPosition);
 }
 
 //=================================================================================================

@@ -511,7 +511,7 @@ public: //! @name simplified presentation properties API
 
   //! Allows you to provide the setting aValue for width.
   //! Only the Interactive Object knows which Drawer attribute is affected by the width setting.
-  virtual void SetWidth(const double theWidth) { myOwnWidth = (float)theWidth; }
+  virtual void SetWidth(const double theWidth) { myOwnWidth = static_cast<float>(theWidth); }
 
   //! Reset width to default value.
   virtual void UnsetWidth() { myOwnWidth = 0.0f; }

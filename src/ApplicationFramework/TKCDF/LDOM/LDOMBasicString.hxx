@@ -55,7 +55,7 @@ public:
 
   const char* GetString() const
   {
-    return myType == LDOM_Integer || myType == LDOM_NULL ? "" : (const char*)myVal.ptr;
+    return myType == LDOM_Integer || myType == LDOM_NULL ? "" : static_cast<const char*>(myVal.ptr);
   }
 
   //    Conversion to char * (only for LDOM_Ascii*)

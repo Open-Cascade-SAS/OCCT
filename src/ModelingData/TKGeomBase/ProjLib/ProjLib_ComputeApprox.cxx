@@ -1392,7 +1392,7 @@ void ProjLib_ComputeApprox::Perform(const occ::handle<Adaptor3d_Curve>&   C,
         v        = M_PI - v;
       }
       double newV = ElCLib::InPeriod(v, F.myV1, F.myV2);
-      number      = (int)(std::floor((newV - v) / (F.myV2 - F.myV1)));
+      number      = static_cast<int>(std::floor((newV - v) / (F.myV2 - F.myV1)));
       dv -= number * (F.myV2 - F.myV1);
     }
     if (F.UCouture || (F.VCouture && SType == GeomAbs_Sphere))
@@ -1402,7 +1402,7 @@ void ProjLib_ComputeApprox::Perform(const occ::handle<Adaptor3d_Curve>&   C,
       du           = u - P2d.X();
       du           = (du < 0) ? (du - Precision::PConfusion()) : (du + Precision::PConfusion());
       modf(du / M_PI, &aNbPer);
-      number = (int)aNbPer;
+      number = static_cast<int>(aNbPer);
       du     = number * M_PI;
     }
 

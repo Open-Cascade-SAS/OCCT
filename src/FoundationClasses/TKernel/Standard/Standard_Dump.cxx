@@ -442,7 +442,7 @@ bool Standard_Dump::SplitJson(
         if (!SplitJson(aSubStreamStr, theKeyToValues))
           return false;
 
-        aNextIndex = aClosePos + int(JsonKeyLength(Standard_JsonKey_CloseChild));
+        aNextIndex = aClosePos + (JsonKeyLength(Standard_JsonKey_CloseChild));
         break;
       }
       case Standard_JsonKey_SeparatorValueToValue: {
@@ -606,16 +606,16 @@ bool Standard_Dump::jsonKey(const TCollection_AsciiString& theStreamStr,
 {
   TCollection_AsciiString aSubStreamStr =
     theStreamStr.SubString(theStartIndex, theStreamStr.Length());
-  for (int aKeyId = (int)Standard_JsonKey_OpenChild;
+  for (int aKeyId = static_cast<int>(Standard_JsonKey_OpenChild);
        aKeyId <= Standard_JsonKey_SeparatorValueToValue;
        aKeyId++)
   {
-    Standard_JsonKey aKey      = (Standard_JsonKey)aKeyId;
+    Standard_JsonKey aKey      = static_cast<Standard_JsonKey>(aKeyId);
     const char*      aKeyToStr = JsonKeyToString(aKey);
     if (!aSubStreamStr.StartsWith(aKeyToStr))
       continue;
 
-    theNextIndex = theStartIndex + int(JsonKeyLength(aKey));
+    theNextIndex = theStartIndex + (JsonKeyLength(aKey));
     theKey       = aKey;
     return true;
   }
@@ -663,7 +663,7 @@ const char* Standard_Dump::JsonKeyToString(const Standard_JsonKey theKey)
 // =======================================================================
 int Standard_Dump::JsonKeyLength(const Standard_JsonKey theKey)
 {
-  return (int)strlen(JsonKeyToString(theKey));
+  return static_cast<int>(strlen(JsonKeyToString(theKey)));
 }
 
 // =======================================================================

@@ -446,7 +446,7 @@ static int GetPatchIndex(const double                                    Param,
   i--;
 
   double ish    = shift / period;
-  int    ishift = (int)(ish < 0 ? ish - 0.5 : ish + 0.5);
+  int    ishift = static_cast<int>(ish < 0 ? ish - 0.5 : ish + 0.5);
   return i - ishift * (NP - 1);
 }
 
@@ -1401,7 +1401,7 @@ bool ShapeFix_ComposeShell::SplitByLine(ShapeFix_WireSegment&               wire
         }
         double dUmax = umax + shift - x;
         shiftNext.SetX(dUmax > 0 ? -myUPeriod : myUPeriod);
-        nbIter = (int)(1 + std::abs(dUmax) / myUPeriod);
+        nbIter = static_cast<int>(1 + std::abs(dUmax) / myUPeriod);
         shift  = ShapeAnalysis::AdjustByPeriod(posf.X(), x, myUPeriod);
         posf.SetX(posf.X() + shift);
         shift = ShapeAnalysis::AdjustByPeriod(posl.X(), x, myUPeriod);
@@ -1421,7 +1421,7 @@ bool ShapeFix_ComposeShell::SplitByLine(ShapeFix_WireSegment&               wire
         }
         double dVmax = vmax + shift - y;
         shiftNext.SetY(dVmax > 0 ? -myVPeriod : myVPeriod);
-        nbIter = (int)(1 + std::abs(dVmax) / myVPeriod);
+        nbIter = static_cast<int>(1 + std::abs(dVmax) / myVPeriod);
         shift  = ShapeAnalysis::AdjustByPeriod(posf.Y(), y, myVPeriod);
         posf.SetY(posf.Y() + shift);
         shift = ShapeAnalysis::AdjustByPeriod(posl.Y(), y, myVPeriod);

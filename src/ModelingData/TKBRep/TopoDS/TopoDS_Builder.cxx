@@ -44,30 +44,36 @@ void TopoDS_Builder::Add(TopoDS_Shape& aShape, const TopoDS_Shape& aComponent) c
   // but aShape will be frozen when the Exception is raised
   if (aShape.Free())
   {
-    static const unsigned int aTb[9] = {
-      // COMPOUND to:
-      (1 << ((unsigned int)TopAbs_COMPOUND)),
-      // COMPSOLID to:
-      (1 << ((unsigned int)TopAbs_COMPOUND)),
-      // SOLID to:
-      (1 << ((unsigned int)TopAbs_COMPOUND)) | (1 << ((unsigned int)TopAbs_COMPSOLID)),
-      // SHELL to:
-      (1 << ((unsigned int)TopAbs_COMPOUND)) | (1 << ((unsigned int)TopAbs_SOLID)),
-      // FACE to:
-      (1 << ((unsigned int)TopAbs_COMPOUND)) | (1 << ((unsigned int)TopAbs_SHELL)),
-      // WIRE to:
-      (1 << ((unsigned int)TopAbs_COMPOUND)) | (1 << ((unsigned int)TopAbs_FACE)),
-      // EDGE to:
-      (1 << ((unsigned int)TopAbs_COMPOUND)) | (1 << ((unsigned int)TopAbs_SOLID))
-        | (1 << ((unsigned int)TopAbs_WIRE)),
-      // VERTEX to:
-      (1 << ((unsigned int)TopAbs_COMPOUND)) | (1 << ((unsigned int)TopAbs_SOLID))
-        | (1 << ((unsigned int)TopAbs_FACE)) | (1 << ((unsigned int)TopAbs_EDGE)),
-      // SHAPE to:
-      0};
+    static const unsigned int aTb[9] = {// COMPOUND to:
+                                        (1 << (static_cast<unsigned int>(TopAbs_COMPOUND))),
+                                        // COMPSOLID to:
+                                        (1 << (static_cast<unsigned int>(TopAbs_COMPOUND))),
+                                        // SOLID to:
+                                        (1 << (static_cast<unsigned int>(TopAbs_COMPOUND)))
+                                          | (1 << (static_cast<unsigned int>(TopAbs_COMPSOLID))),
+                                        // SHELL to:
+                                        (1 << (static_cast<unsigned int>(TopAbs_COMPOUND)))
+                                          | (1 << (static_cast<unsigned int>(TopAbs_SOLID))),
+                                        // FACE to:
+                                        (1 << (static_cast<unsigned int>(TopAbs_COMPOUND)))
+                                          | (1 << (static_cast<unsigned int>(TopAbs_SHELL))),
+                                        // WIRE to:
+                                        (1 << (static_cast<unsigned int>(TopAbs_COMPOUND)))
+                                          | (1 << (static_cast<unsigned int>(TopAbs_FACE))),
+                                        // EDGE to:
+                                        (1 << (static_cast<unsigned int>(TopAbs_COMPOUND)))
+                                          | (1 << (static_cast<unsigned int>(TopAbs_SOLID)))
+                                          | (1 << (static_cast<unsigned int>(TopAbs_WIRE))),
+                                        // VERTEX to:
+                                        (1 << (static_cast<unsigned int>(TopAbs_COMPOUND)))
+                                          | (1 << (static_cast<unsigned int>(TopAbs_SOLID)))
+                                          | (1 << (static_cast<unsigned int>(TopAbs_FACE)))
+                                          | (1 << (static_cast<unsigned int>(TopAbs_EDGE))),
+                                        // SHAPE to:
+                                        0};
 
-    const unsigned int iC = (unsigned int)aComponent.ShapeType();
-    const unsigned int iS = (unsigned int)aShape.ShapeType();
+    const unsigned int iC = static_cast<unsigned int>(aComponent.ShapeType());
+    const unsigned int iS = static_cast<unsigned int>(aShape.ShapeType());
 
     if ((aTb[iC] & (1 << iS)) != 0)
     {

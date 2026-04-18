@@ -110,7 +110,7 @@ protected:
 
   LDOM_Node(const LDOM_BasicNode& anOrig, const occ::handle<LDOM_MemManager>& aDoc)
       : myDocument(aDoc),
-        myOrigin((LDOM_BasicNode*)&anOrig),
+        myOrigin(const_cast<LDOM_BasicNode*>(&anOrig)),
         myLastChild(nullptr)
   {
   }

@@ -32,7 +32,7 @@ occ::handle<Graphic3d_Text> Prs3d_Text::Draw(const occ::handle<Graphic3d_Group>&
 {
   theGroup->SetPrimitivesAspect(theAspect->Aspect());
 
-  occ::handle<Graphic3d_Text> aText = new Graphic3d_Text((float)theAspect->Height());
+  occ::handle<Graphic3d_Text> aText = new Graphic3d_Text(static_cast<float>(theAspect->Height()));
   aText->SetText(theText.ToExtString());
   aText->SetPosition(theAttachmentPoint);
   aText->SetHorizontalAlignment(theAspect->HorizontalJustification());
@@ -51,7 +51,7 @@ occ::handle<Graphic3d_Text> Prs3d_Text::Draw(const occ::handle<Graphic3d_Group>&
 {
   theGroup->SetPrimitivesAspect(theAspect->Aspect());
 
-  occ::handle<Graphic3d_Text> aText = new Graphic3d_Text((float)theAspect->Height());
+  occ::handle<Graphic3d_Text> aText = new Graphic3d_Text(static_cast<float>(theAspect->Height()));
   aText->SetText(theText.ToExtString());
   aText->SetOrientation(theOrientation);
   aText->SetOwnAnchorPoint(theHasOwnAnchor);

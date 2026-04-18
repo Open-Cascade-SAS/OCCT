@@ -254,7 +254,7 @@ bool BRepClass3d_SolidExplorer::PointInTheFace(const TopoDS_Face&               
   int  NbPntCalc = 0;
   if (myMapOfInter.IsBound(Face))
   {
-    void* ptr      = (void*)(myMapOfInter.Find(Face));
+    void* ptr      = static_cast<void*>(myMapOfInter.Find(Face));
     bool  IsInside = true;
     if (IsNotUper)
     {
@@ -266,7 +266,8 @@ bool BRepClass3d_SolidExplorer::PointInTheFace(const TopoDS_Face&               
     }
     if (ptr)
     {
-      const IntCurvesFace_Intersector& TheIntersector = (*((IntCurvesFace_Intersector*)ptr));
+      const IntCurvesFace_Intersector& TheIntersector =
+        (*(static_cast<IntCurvesFace_Intersector*>(ptr)));
       // Check if the point is already in the face
       if (IsInside && (ClassifyUVPoint(TheIntersector, surf, gp_Pnt2d(u_, v_)) == TopAbs_IN))
       {
@@ -835,7 +836,7 @@ void BRepClass3d_SolidExplorer::Destroy()
   for (; iter.More(); iter.Next())
   {
     void*& aPtr = iter.ChangeValue();
-    delete (IntCurvesFace_Intersector*)aPtr;
+    delete static_cast<IntCurvesFace_Intersector*>(aPtr);
     aPtr = nullptr;
   }
   myMapOfInter.Clear();
@@ -857,7 +858,7 @@ void BRepClass3d_SolidExplorer::InitShape(const TopoDS_Shape& S)
   for (; iter.More(); iter.Next())
   {
     void*& aPtr = iter.ChangeValue();
-    delete (IntCurvesFace_Intersector*)aPtr;
+    delete static_cast<IntCurvesFace_Intersector*>(aPtr);
     aPtr = nullptr;
   }
 
@@ -1052,8 +1053,8 @@ int BRepClass3d_SolidExplorer::Segment(const gp_Pnt& P, gp_Lin& L, double& Par)
 
 IntCurvesFace_Intersector& BRepClass3d_SolidExplorer::Intersector(const TopoDS_Face& F) const
 {
-  void*                      ptr  = (void*)(myMapOfInter.Find(F));
-  IntCurvesFace_Intersector& curr = (*((IntCurvesFace_Intersector*)ptr));
+  void*                      ptr  = static_cast<void*>(myMapOfInter.Find(F));
+  IntCurvesFace_Intersector& curr = (*(static_cast<IntCurvesFace_Intersector*>(ptr)));
   return curr;
 }
 

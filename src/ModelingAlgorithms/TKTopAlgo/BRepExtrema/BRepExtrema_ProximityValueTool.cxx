@@ -86,7 +86,7 @@ static double calcEdgeRefinementStep(const TopoDS_Edge& theEdge, const int theNb
 
   BRepAdaptor_Curve aBAC(theEdge);
   double            aLen = GCPnts_AbscissaPoint::Length(aBAC);
-  return aLen / (double)(theNbNodes - 1);
+  return aLen / static_cast<double>(theNbNodes - 1);
 }
 
 //=======================================================================
@@ -102,7 +102,7 @@ static double calcFaceRefinementStep(const TopoDS_Face& theFace, const int theNb
   GProp_GProps props;
   BRepGProp::SurfaceProperties(theFace, props);
   double aArea = props.Mass();
-  return 2 * (aArea / (double)theNbTrg);
+  return 2 * (aArea / static_cast<double>(theNbTrg));
 }
 
 //=======================================================================
@@ -245,7 +245,7 @@ bool BRepExtrema_ProximityValueTool::getEdgeAdditionalVertices(
   }
 
   double aLen            = GCPnts_AbscissaPoint::Length(aBAC);
-  int    aNbSamplePoints = (int)(aLen / theStep) + 1;
+  int    aNbSamplePoints = static_cast<int>(aLen / theStep) + 1;
 
   GCPnts_QuasiUniformAbscissa aGCPnts(aBAC, std::max(3, aNbSamplePoints));
 

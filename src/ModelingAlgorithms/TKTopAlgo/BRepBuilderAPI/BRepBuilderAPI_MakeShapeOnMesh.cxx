@@ -89,7 +89,7 @@ void BRepBuilderAPI_MakeShapeOnMesh::Build(const Message_ProgressRange& theRange
   // over triangles of input mesh.
   Message_ProgressScope aPS(theRange,
                             "Per-facet shape construction",
-                            double(aNbNodes + 2 * aNbTriangles));
+                            static_cast<double>(aNbNodes + 2 * aNbTriangles));
 
   // Build shared vertices.
   NCollection_IndexedDataMap<int, TopoDS_Vertex> aPnt2VertexMap;

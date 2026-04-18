@@ -53,7 +53,7 @@ public:
   bool More() const { return myUnitCurrent <= myUnitUpper; }
 
   //! Return current texture unit.
-  Graphic3d_TextureUnit Unit() const { return (Graphic3d_TextureUnit)myUnitCurrent; }
+  Graphic3d_TextureUnit Unit() const { return static_cast<Graphic3d_TextureUnit>(myUnitCurrent); }
 
   //! Access texture from first texture set.
   const OpenGl_Texture* Texture1() const { return myTexture1; }

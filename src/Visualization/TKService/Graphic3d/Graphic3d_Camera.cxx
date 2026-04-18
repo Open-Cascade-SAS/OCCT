@@ -51,7 +51,7 @@ static double zEpsilon()
 static double zEpsilon(const double theValue)
 {
   double anAbsValue = std::abs(theValue);
-  if (anAbsValue <= (double)FLT_MIN)
+  if (anAbsValue <= static_cast<double>(FLT_MIN))
   {
     return FLT_MIN;
   }
@@ -588,7 +588,7 @@ gp_Pnt Graphic3d_Camera::Project(const gp_Pnt& thePnt) const
   aPnt = aViewMx * aPnt; // convert to view coordinate space
   aPnt = aProjMx * aPnt; // convert to projection coordinate space
 
-  const double aInvW = 1.0 / double(aPnt.w());
+  const double aInvW = 1.0 / static_cast<double>(aPnt.w());
 
   return gp_Pnt(aPnt.x() * aInvW, aPnt.y() * aInvW, aPnt.z() * aInvW);
 }
@@ -615,7 +615,7 @@ gp_Pnt Graphic3d_Camera::UnProject(const gp_Pnt& thePnt) const
   aPnt = aInvProj * aPnt; // convert to view coordinate space
   aPnt = aInvView * aPnt; // convert to world coordinate space
 
-  const double aInvW = 1.0 / double(aPnt.w());
+  const double aInvW = 1.0 / static_cast<double>(aPnt.w());
 
   return gp_Pnt(aPnt.x() * aInvW, aPnt.y() * aInvW, aPnt.z() * aInvW);
 }
@@ -631,7 +631,7 @@ gp_Pnt Graphic3d_Camera::ConvertView2Proj(const gp_Pnt& thePnt) const
 
   aPnt = aProjMx * aPnt; // convert to projection coordinate space
 
-  const double aInvW = 1.0 / double(aPnt.w());
+  const double aInvW = 1.0 / static_cast<double>(aPnt.w());
 
   return gp_Pnt(aPnt.x() * aInvW, aPnt.y() * aInvW, aPnt.z() * aInvW);
 }
@@ -655,7 +655,7 @@ gp_Pnt Graphic3d_Camera::ConvertProj2View(const gp_Pnt& thePnt) const
 
   aPnt = aInvProj * aPnt; // convert to view coordinate space
 
-  const double aInvW = 1.0 / double(aPnt.w());
+  const double aInvW = 1.0 / static_cast<double>(aPnt.w());
 
   return gp_Pnt(aPnt.x() * aInvW, aPnt.y() * aInvW, aPnt.z() * aInvW);
 }
@@ -671,7 +671,7 @@ gp_Pnt Graphic3d_Camera::ConvertWorld2View(const gp_Pnt& thePnt) const
 
   aPnt = aViewMx * aPnt; // convert to view coordinate space
 
-  const double aInvW = 1.0 / double(aPnt.w());
+  const double aInvW = 1.0 / static_cast<double>(aPnt.w());
 
   return gp_Pnt(aPnt.x() * aInvW, aPnt.y() * aInvW, aPnt.z() * aInvW);
 }
@@ -694,7 +694,7 @@ gp_Pnt Graphic3d_Camera::ConvertView2World(const gp_Pnt& thePnt) const
 
   aPnt = aInvView * aPnt; // convert to world coordinate space
 
-  const double aInvW = 1.0 / double(aPnt.w());
+  const double aInvW = 1.0 / static_cast<double>(aPnt.w());
 
   return gp_Pnt(aPnt.x() * aInvW, aPnt.y() * aInvW, aPnt.z() * aInvW);
 }

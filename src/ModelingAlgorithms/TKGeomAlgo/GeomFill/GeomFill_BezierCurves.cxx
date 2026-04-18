@@ -72,7 +72,7 @@ static void SetSameWeights(NCollection_Array1<double>& W1,
 
   if (std::abs(A - B) > Eps)
   {
-    double w = std::pow(W1(1) / W4(1), 1. / (double)(NV - 1));
+    double w = std::pow(W1(1) / W4(1), 1. / static_cast<double>(NV - 1));
     double x = w;
     for (i = NV - 1; i >= 1; i--)
     {

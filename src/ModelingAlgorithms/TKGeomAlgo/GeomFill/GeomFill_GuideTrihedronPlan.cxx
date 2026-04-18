@@ -51,7 +51,7 @@ static void TracePlan(const occ::handle<Geom_Surface>& /*Plan*/)
 static void InGoodPeriod(const double Prec, const double Period, double& Current)
 {
   double Diff = Current - Prec;
-  int    nb   = (int)std::trunc(Diff / Period);
+  int    nb   = static_cast<int>(std::trunc(Diff / Period));
   Current -= nb * Period;
   Diff = Current - Prec;
   if (Diff > Period / 2)
@@ -121,7 +121,7 @@ void GeomFill_GuideTrihedronPlan::Init()
   DeltaG /= 3;
   for (ii = 1; ii <= myNbPts; ii++)
   {
-    t = double(myNbPts - ii) * f + double(ii - 1) * l;
+    t = static_cast<double>(myNbPts - ii) * f + static_cast<double>(ii - 1) * l;
     t /= (myNbPts - 1);
     myCurve->D0(t, P);
     frenet->D0(t, Tangent, Normal, BiNormal);

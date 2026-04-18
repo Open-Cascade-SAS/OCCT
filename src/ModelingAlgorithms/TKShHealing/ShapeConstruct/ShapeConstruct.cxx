@@ -247,7 +247,7 @@ occ::handle<Geom_BSplineSurface> ShapeConstruct::ConvertSurfaceToBSpline(
     try
     {
       OCC_CATCH_SIGNALS
-      GeomAbs_Shape aCont = (GeomAbs_Shape)cnt;
+      GeomAbs_Shape aCont = static_cast<GeomAbs_Shape>(cnt);
       GeomConvert_ApproxSurface
            anApprox(aSurface, Tol3d / 2, aCont, aCont, MaxDegree, MaxDegree, MaxSegments, 0);
       bool Done = anApprox.IsDone();

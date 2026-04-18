@@ -41,10 +41,10 @@ Interface_ParamType Interface_TypedValue::Type() const
 
 MoniTool_ValueType Interface_TypedValue::ParamTypeToValueType(const Interface_ParamType type)
 {
-  return (MoniTool_ValueType)type;
+  return static_cast<MoniTool_ValueType>(type);
 } // same values
 
 Interface_ParamType Interface_TypedValue::ValueTypeToParamType(const MoniTool_ValueType type)
 {
-  return (Interface_ParamType)type;
+  return static_cast<Interface_ParamType>(type);
 } // same values

@@ -63,9 +63,9 @@ protected:
   //! Fills the given color as random.
   void nextRandomPastelColor(Quantity_Color& theColor)
   {
-    theColor = Quantity_Color(double(myBullardGenerator.NextInt() % 256) / 255.0,
-                              double(myBullardGenerator.NextInt() % 256) / 255.0,
-                              double(myBullardGenerator.NextInt() % 256) / 255.0,
+    theColor = Quantity_Color(static_cast<double>(myBullardGenerator.NextInt() % 256) / 255.0,
+                              static_cast<double>(myBullardGenerator.NextInt() % 256) / 255.0,
+                              static_cast<double>(myBullardGenerator.NextInt() % 256) / 255.0,
                               Quantity_TOC_sRGB);
   }
 

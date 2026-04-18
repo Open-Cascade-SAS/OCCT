@@ -227,7 +227,7 @@ void AppParCurves::SplineFunction(const int           nbpoles,
       locpoles(pp) *= (flatknots(kindex + pp) - U) * Inverse;
       locpoles(pp) += locqq;
       locqq        = Saved;
-      LocalInverse = (double)(deg)*Inverse;
+      LocalInverse = static_cast<double>(deg) * Inverse;
       Saved        = LocalInverse * locdpoles(pp);
       locdpoles(pp) *= -LocalInverse;
       locdpoles(pp) += locdqq;

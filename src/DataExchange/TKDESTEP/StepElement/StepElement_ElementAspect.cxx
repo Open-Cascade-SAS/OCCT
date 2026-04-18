@@ -79,7 +79,7 @@ void StepElement_ElementAspect::SetElementVolume(const StepElement_ElementVolume
     return;
   occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString("ELEMENT_VOLUME");
   SelMem->SetName(name->ToCString());
-  SelMem->SetEnum((int)val);
+  SelMem->SetEnum(static_cast<int>(val));
 }
 
 //=================================================================================================
@@ -359,7 +359,7 @@ void StepElement_ElementAspect::SetCurveEdge(const StepElement_CurveEdge val)
     return;
   occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString("CURVE_EDGE");
   SelMem->SetName(name->ToCString());
-  SelMem->SetEnum((int)val);
+  SelMem->SetEnum(static_cast<int>(val));
 }
 
 //=================================================================================================

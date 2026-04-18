@@ -101,12 +101,15 @@ public:
 
   //! Return number of initially allocated elements which can fit into this buffer,
   //! while NbElements can be overwritten to smaller value.
-  int NbMaxElements() const { return Stride != 0 ? int(mySize / size_t(Stride)) : 0; }
+  int NbMaxElements() const
+  {
+    return Stride != 0 ? static_cast<int>(mySize / static_cast<size_t>(Stride)) : 0;
+  }
 
   //! @return array of attributes definitions
   const Graphic3d_Attribute* AttributesArray() const
   {
-    return (Graphic3d_Attribute*)(myData + mySize);
+    return reinterpret_cast<Graphic3d_Attribute*>(myData + mySize);
   }
 
   //! @return attribute definition
@@ -118,7 +121,7 @@ public:
   //! @return attribute definition
   Graphic3d_Attribute& ChangeAttribute(const int theAttribIndex)
   {
-    return *((Graphic3d_Attribute*)(myData + mySize) + theAttribIndex);
+    return *(reinterpret_cast<Graphic3d_Attribute*>(myData + mySize) + theAttribIndex);
   }
 
   //! Find attribute index.
@@ -160,10 +163,16 @@ public:
   uint8_t* ChangeData(const int theAttribIndex) { return myData + AttributeOffset(theAttribIndex); }
 
   //! Access specified element.
-  inline const uint8_t* value(const int theElem) const { return myData + Stride * size_t(theElem); }
+  inline const uint8_t* value(const int theElem) const
+  {
+    return myData + Stride * static_cast<size_t>(theElem);
+  }
 
   //! Access specified element.
-  inline uint8_t* changeValue(const int theElem) { return myData + Stride * size_t(theElem); }
+  inline uint8_t* changeValue(const int theElem)
+  {
+    return myData + Stride * static_cast<size_t>(theElem);
+  }
 
   //! Access element with specified position and type.
   template <typename Type_t>
@@ -193,7 +202,7 @@ public:
                                int&                      theAttribIndex,
                                size_t&                   theAttribStride)
   {
-    return (uint8_t*)AttributeData(theAttrib, theAttribIndex, theAttribStride);
+    return const_cast<uint8_t*>(AttributeData(theAttrib, theAttribIndex, theAttribStride));
   }
 
   //! Return the attribute data with stride size specific to this attribute.
@@ -272,7 +281,7 @@ public:
     NbAttributes = theNbAttribs;
     if (NbElements != 0)
     {
-      const size_t aDataSize = size_t(Stride) * size_t(NbElements);
+      const size_t aDataSize = static_cast<size_t>(Stride) * static_cast<size_t>(NbElements);
       if (!Allocate(aDataSize + sizeof(Graphic3d_Attribute) * NbAttributes))
       {
         release();

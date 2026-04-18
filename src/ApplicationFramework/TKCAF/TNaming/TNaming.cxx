@@ -731,9 +731,9 @@ static void BuildMapIn(const TopoDS_Shape&                              Context,
   TopAbs_ShapeEnum aType;
   if ((Context.ShapeType() == TopAbs_SOLID || Context.ShapeType() == TopAbs_FACE)
       && (StopType - Context.ShapeType()) != 1)
-    aType = (TopAbs_ShapeEnum)(Context.ShapeType() + 2);
+    aType = static_cast<TopAbs_ShapeEnum>(Context.ShapeType() + 2);
   else
-    aType = (TopAbs_ShapeEnum)(Context.ShapeType() + 1);
+    aType = static_cast<TopAbs_ShapeEnum>(Context.ShapeType() + 1);
   for (TopExp_Explorer exp(Context, aType); exp.More(); exp.Next())
   {
 #ifdef OCCT_DEBUG

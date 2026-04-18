@@ -147,7 +147,7 @@ void Interface_UndefinedContent::AddLiteral(const Interface_ParamType           
                                             const occ::handle<TCollection_HAsciiString>& val)
 {
   Reservate(thenbparams + 1, thenbstr + 1);
-  int desc = int(ptype);
+  int desc = static_cast<int>(ptype);
   thenbstr++;
   thenbparams++;
   thevalues->SetValue(thenbstr, val);
@@ -159,7 +159,7 @@ void Interface_UndefinedContent::AddEntity(const Interface_ParamType            
                                            const occ::handle<Standard_Transient>& ent)
 {
   Reservate(thenbparams + 1, 0);
-  int desc = int(ptype);
+  int desc = static_cast<int>(ptype);
   theentities.Append(ent);
   desc += Content_LocalRef << Content_LocalShift; // "It is an Entity"
   thenbparams++;                                  // Rank:  thenbparams - thenbstr
@@ -231,7 +231,7 @@ void Interface_UndefinedContent::SetLiteral(const int                           
   }
   //  Put the new value in place and rebuild the Param descriptor
   thevalues->SetValue(rang, val);
-  desc = int(ptype) + (rang << Content_NumberShift);
+  desc = static_cast<int>(ptype) + (rang << Content_NumberShift);
   theparams->SetValue(num, desc);
 }
 
@@ -271,7 +271,8 @@ void Interface_UndefinedContent::SetEntity(const int                            
   else
     theentities.SetValue(rang, ent);
 
-  desc = int(ptype) + (Content_LocalRef << Content_LocalShift) + (rang << Content_NumberShift);
+  desc = static_cast<int>(ptype) + (Content_LocalRef << Content_LocalShift)
+         + (rang << Content_NumberShift);
   theparams->SetValue(num, desc);
 }
 

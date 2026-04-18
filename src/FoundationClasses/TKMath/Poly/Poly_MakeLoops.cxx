@@ -92,7 +92,7 @@ Poly_MakeLoops::LinkFlag Poly_MakeLoops::SetLinkOrientation(const Link&    theLi
   if (aInd > 0)
   {
     Link& aLink = const_cast<Link&>(myMapLink(aInd));
-    aOri        = (LinkFlag)(aLink.flags & LF_Both);
+    aOri        = static_cast<LinkFlag>(aLink.flags & LF_Both);
     aLink.flags = theOrient;
 #ifdef OCCT_DEBUG
     myHelper->OnAddLink(aInd, aLink);

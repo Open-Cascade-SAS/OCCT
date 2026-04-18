@@ -60,7 +60,7 @@ const occ::handle<TopoDS_TShape>& VrmlData_IndexedLineSet::TShape()
     // Create the Wire
     TopoDS_Wire aWire;
     aBuilder.MakeWire(aWire);
-    for (i = 0; i < (int)myNbPolygons; i++)
+    for (i = 0; i < static_cast<int>(myNbPolygons); i++)
     {
       const int*                 arrIndice;
       const int                  nNodes = Polygon(i, arrIndice);

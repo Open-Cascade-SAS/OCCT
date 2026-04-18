@@ -209,7 +209,7 @@ static void GetLinePoint2d(const occ::handle<IntPatch_Line>& L,
   int Nbptlin                      = (typL == IntPatch_Walking ? wlin->NbPnts() : rlin->NbPnts());
 
   double par   = std::trunc(param);
-  int    Irang = int(par);
+  int    Irang = static_cast<int>(par);
   if (Irang == Nbptlin)
   {
     Irang--;
@@ -367,7 +367,7 @@ static bool FindParameter(const occ::handle<IntPatch_Line>&     L,
         norm2 = v2.SquareMagnitude();
         if (v1.Dot(v2) < 0.)
         {
-          Param = (double)(i - 1) + 1. / (1. + std::sqrt(norm2 / norm1));
+          Param = static_cast<double>(i - 1) + 1. / (1. + std::sqrt(norm2 / norm1));
           Tgl   = gp_Vec(p1, p2);
           found = true;
         }
@@ -382,7 +382,7 @@ static bool FindParameter(const occ::handle<IntPatch_Line>&     L,
       }
       if (!found && ibest)
       {
-        Param = (double)ibest;
+        Param = static_cast<double>(ibest);
         found = true;
       }
     }
@@ -593,7 +593,7 @@ void IntPatch_RstInt::PutVertexOnLine(const occ::handle<IntPatch_Line>&       L,
         // arc->FirstParameter())/(PLast-PFirst);
         const double nbs = (arc->NbKnots() * arc->Degree()) * (PLast - PFirst)
                            / (arc->LastParameter() - arc->FirstParameter());
-        NbEchant = (nbs < 2.0 ? 2 : (int)nbs);
+        NbEchant = (nbs < 2.0 ? 2 : static_cast<int>(nbs));
         if (NbEchant < 10)
           NbEchant = 10;
         else if (NbEchant > 50)
@@ -672,7 +672,7 @@ void IntPatch_RstInt::PutVertexOnLine(const occ::handle<IntPatch_Line>&       L,
           GetLinePoint2d(L, aW1 + 1, !OnFirst, U, V);
 
           double par   = std::trunc(aW2);
-          int    Irang = int(par) + 1;
+          int    Irang = static_cast<int>(par) + 1;
           if (Irang == Brise.NbPoints())
           {
             Irang--;
@@ -736,7 +736,7 @@ void IntPatch_RstInt::PutVertexOnLine(const occ::handle<IntPatch_Line>&       L,
 
             if (!duplicate)
             {
-              int ParamApproxOnLine = int(aW1) + 1;
+              int ParamApproxOnLine = static_cast<int>(aW1) + 1;
 
               arc->D1(paramarc, p2d, d2d);
               U1 = p2d.X();
@@ -876,7 +876,7 @@ void IntPatch_RstInt::PutVertexOnLine(const occ::handle<IntPatch_Line>&       L,
               }
 
               if (typL == IntPatch_Walking)
-                VerifyTgline(wlin, (int)paramline, edgeTol, tgline);
+                VerifyTgline(wlin, static_cast<int>(paramline), edgeTol, tgline);
 
               Surf->D1(U1, V1, ptbid, d1u, d1v);
               tgrst.SetLinearForm(d2d.X(), d1u, d2d.Y(), d1v);

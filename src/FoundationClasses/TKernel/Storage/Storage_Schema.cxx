@@ -88,10 +88,11 @@ Storage_BucketOfPersistent::Storage_BucketOfPersistent(const int theBucketSize,
       myNumberOfBucketAllocated(theBucketNumber),
       myBucketSize(theBucketSize)
 {
-  myBuckets       = (Storage_Bucket**)Standard::Allocate(sizeof(Storage_Bucket*) * theBucketNumber);
-  myBuckets[0]    = new Storage_Bucket(myBucketSize);
-  myCurrentBucket = myBuckets[0];
-  myLength        = 0;
+  myBuckets =
+    static_cast<Storage_Bucket**>(Standard::Allocate(sizeof(Storage_Bucket*) * theBucketNumber));
+  myBuckets[0]          = new Storage_Bucket(myBucketSize);
+  myCurrentBucket       = myBuckets[0];
+  myLength              = 0;
   myCurrentBucketNumber = 0;
 }
 
@@ -152,7 +153,7 @@ void Storage_BucketOfPersistent::Append(const occ::handle<Standard_Persistent>& 
   if (myNumberOfBucket > myNumberOfBucketAllocated)
   {
     size_t e  = sizeof(Storage_Bucket*) * myNumberOfBucketAllocated;
-    myBuckets = (Storage_Bucket**)Standard::Reallocate(myBuckets, e * 2);
+    myBuckets = static_cast<Storage_Bucket**>(Standard::Reallocate(myBuckets, e * 2));
     myNumberOfBucketAllocated *= 2;
   }
 
@@ -802,7 +803,7 @@ TCollection_AsciiString Storage_Schema::ICreationDate()
   char       nowstr[SLENGTH];
   time_t     nowbin;
   struct tm* nowstruct;
-  if (time(&nowbin) == (time_t)-1)
+  if (time(&nowbin) == static_cast<time_t>(-1))
   {
 #ifdef OCCT_DEBUG
     std::cerr << "Storage ERROR : Could not get time of day from time()" << std::endl;
@@ -811,7 +812,7 @@ TCollection_AsciiString Storage_Schema::ICreationDate()
 
   nowstruct = localtime(&nowbin);
 
-  if (strftime(nowstr, SLENGTH, "%m/%d/%Y", nowstruct) == (size_t)0)
+  if (strftime(nowstr, SLENGTH, "%m/%d/%Y", nowstruct) == static_cast<size_t>(0))
   {
 #ifdef OCCT_DEBUG
     std::cerr << "Storage ERROR : Could not get string from strftime()" << std::endl;

@@ -62,7 +62,7 @@ void V3d_Plane::Display(const occ::handle<V3d_View>& theView, const Quantity_Col
   anAsp->SetHatchStyle(new Graphic3d_HatchStyle(Aspect_HS_GRID_DIAGONAL_WIDE));
   aGroup->SetGroupPrimitivesAspect(anAsp);
 
-  const float aSize    = (float)(0.5 * aViewer->DefaultViewSize());
+  const float aSize    = static_cast<float>(0.5 * aViewer->DefaultViewSize());
   const float anOffset = aSize / 5000.0f;
 
   occ::handle<Graphic3d_ArrayOfQuadrangles> aPrims = new Graphic3d_ArrayOfQuadrangles(4);

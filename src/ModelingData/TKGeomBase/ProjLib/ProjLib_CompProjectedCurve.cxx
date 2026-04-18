@@ -371,8 +371,8 @@ static bool ExactBound(gp_Pnt&                               Sol,
     gp_Pnt P;
     P = Seq.Last();
     Seq.Remove(Seq.Length());
-    ProjLib_PrjResolve aPrjPS(*Curve, *Surface, int(P.Z()));
-    if (int(P.Z()) == 2)
+    ProjLib_PrjResolve aPrjPS(*Curve, *Surface, static_cast<int>(P.Z()));
+    if (static_cast<int>(P.Z()) == 2)
     {
       aPrjPS.Perform(t,
                      P.X(),
@@ -2150,7 +2150,7 @@ void SplitOnDirection(SplitDS& theSplitDS)
 
   gp_Pnt2d aStartPnt(theSplitDS.mySurface->FirstUParameter(),
                      theSplitDS.mySurface->FirstVParameter());
-  gp_Dir2d aDir(theSplitDS.myPeriodicDir, (int)!theSplitDS.myPeriodicDir);
+  gp_Dir2d aDir(theSplitDS.myPeriodicDir, static_cast<int>(!theSplitDS.myPeriodicDir));
 
   theSplitDS.myPerMinParam = !theSplitDS.myPeriodicDir ? theSplitDS.mySurface->FirstUParameter()
                                                        : theSplitDS.mySurface->FirstVParameter();

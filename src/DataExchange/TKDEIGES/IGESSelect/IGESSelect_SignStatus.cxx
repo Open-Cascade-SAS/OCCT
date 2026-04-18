@@ -73,7 +73,7 @@ bool IGESSelect_SignStatus::Matches(const occ::handle<Standard_Transient>& ent,
       vir++;
       continue;
     }
-    val = int(car - 48);
+    val = (car - 48);
     if (car == 'V' && vir == 0)
       val = 0;
     if (car == 'B' && vir == 0)

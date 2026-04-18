@@ -230,7 +230,7 @@ bool ApproxInt_MultiLine::Tangency(const int Index, NCollection_Array1<gp_Vec>& 
   double                 u1 = 0.0, u2 = 0.0, v1 = 0.0, v2 = 0.0;
   POn2S.Parameters(u1, v1, u2, v2);
 
-  bool ret = ((TheSvSurfaces*)PtrOnmySvSurfaces)->Tangency(u1, v1, u2, v2, TabVec(1));
+  bool ret = (static_cast<TheSvSurfaces*>(PtrOnmySvSurfaces))->Tangency(u1, v1, u2, v2, TabVec(1));
   if (!ret)
   {
     TabVec(1).SetCoord(0.0, 0.0, 0.0);
@@ -255,23 +255,26 @@ bool ApproxInt_MultiLine::Tangency(const int Index, NCollection_Array1<gp_Vec2d>
   {
     if (p2donfirst)
     {
-      ret = ((TheSvSurfaces*)PtrOnmySvSurfaces)->TangencyOnSurf1(u1, v1, u2, v2, TabVec2d(1));
+      ret = (static_cast<TheSvSurfaces*>(PtrOnmySvSurfaces))
+              ->TangencyOnSurf1(u1, v1, u2, v2, TabVec2d(1));
     }
     else
     {
-      ret = ((TheSvSurfaces*)PtrOnmySvSurfaces)->TangencyOnSurf2(u1, v1, u2, v2, TabVec2d(1));
+      ret = (static_cast<TheSvSurfaces*>(PtrOnmySvSurfaces))
+              ->TangencyOnSurf2(u1, v1, u2, v2, TabVec2d(1));
     }
   }
   else
   {
-    ret = ((TheSvSurfaces*)PtrOnmySvSurfaces)->TangencyOnSurf1(u1, v1, u2, v2, TabVec2d(1));
+    ret = (static_cast<TheSvSurfaces*>(PtrOnmySvSurfaces))
+            ->TangencyOnSurf1(u1, v1, u2, v2, TabVec2d(1));
     if (ret)
     {
       if (TabVec2d.Length() >= 2)
       {
-        ret =
-          (ret
-           && ((TheSvSurfaces*)PtrOnmySvSurfaces)->TangencyOnSurf2(u1, v1, u2, v2, TabVec2d(2)));
+        ret = (ret
+               && (static_cast<TheSvSurfaces*>(PtrOnmySvSurfaces))
+                    ->TangencyOnSurf2(u1, v1, u2, v2, TabVec2d(2)));
       }
     }
   }
@@ -327,10 +330,10 @@ ApproxInt_MultiLine ApproxInt_MultiLine::MakeMLBetween(const int Low,
     //-- return(*this);
   }
 
-  bool aSaveUseSolver = ((TheSvSurfaces*)PtrOnmySvSurfaces)->GetUseSolver();
+  bool aSaveUseSolver = (static_cast<TheSvSurfaces*>(PtrOnmySvSurfaces))->GetUseSolver();
   if (!aSaveUseSolver)
   {
-    ((TheSvSurfaces*)PtrOnmySvSurfaces)->SetUseSolver(true);
+    (static_cast<TheSvSurfaces*>(PtrOnmySvSurfaces))->SetUseSolver(true);
   }
   int NbPntsToInsert = aNbPntsToInsert;
   if (NbPntsToInsert < (High - Low))
@@ -458,7 +461,7 @@ ApproxInt_MultiLine ApproxInt_MultiLine::MakeMLBetween(const int Low,
       u2 = (U2(Indice) * b + U2(Indice + 1) * a) * nab;
       v2 = (V2(Indice) * b + V2(Indice + 1) * a) * nab;
 
-      if (((TheSvSurfaces*)PtrOnmySvSurfaces)->Compute(u1, v1, u2, v2, P, T, TS1, TS2))
+      if ((static_cast<TheSvSurfaces*>(PtrOnmySvSurfaces))->Compute(u1, v1, u2, v2, P, T, TS1, TS2))
       {
         StartPOn2S.SetValue(P, u1, v1, u2, v2);
         //-- cout<<" Insertion du point calcule : "<<u1<<","<<v1<<","<<u2<<","<<v2<<",";
@@ -582,7 +585,7 @@ ApproxInt_MultiLine ApproxInt_MultiLine::MakeMLBetween(const int Low,
 
   if ((temp->NbPnts() >= NbPntsToInsert + High - Low + 1) && (CodeErreur == 0))
   {
-    ((TheSvSurfaces*)PtrOnmySvSurfaces)->SetUseSolver(aSaveUseSolver);
+    (static_cast<TheSvSurfaces*>(PtrOnmySvSurfaces))->SetUseSolver(aSaveUseSolver);
     return (ApproxInt_MultiLine(temp,
                                 (High - Low > 10) ? PtrOnmySvSurfaces : NULL,
                                 nbp3d,
@@ -604,7 +607,7 @@ ApproxInt_MultiLine ApproxInt_MultiLine::MakeMLBetween(const int Low,
   {
     //-- cout<<" ApproxInt_MultiLine "<<endl;
     //-- cout<<" Pas de Rajout de points ds1min =  "<<minds1<<" ds2min = "<<minds2<<endl;
-    ((TheSvSurfaces*)PtrOnmySvSurfaces)->SetUseSolver(aSaveUseSolver);
+    (static_cast<TheSvSurfaces*>(PtrOnmySvSurfaces))->SetUseSolver(aSaveUseSolver);
     occ::handle<IntSurf_LineOn2S> vide1 = new IntSurf_LineOn2S();
     occ::handle<TheLine>          vide  = new TheLine(vide1, false);
     return (ApproxInt_MultiLine(vide,
@@ -637,10 +640,10 @@ bool ApproxInt_MultiLine::MakeMLOneMorePoint(const int            theLow,
   if (PtrOnmySvSurfaces == NULL)
     return false;
 
-  bool aSaveUseSolver = ((TheSvSurfaces*)PtrOnmySvSurfaces)->GetUseSolver();
+  bool aSaveUseSolver = (static_cast<TheSvSurfaces*>(PtrOnmySvSurfaces))->GetUseSolver();
   if (!aSaveUseSolver)
   {
-    ((TheSvSurfaces*)PtrOnmySvSurfaces)->SetUseSolver(true);
+    (static_cast<TheSvSurfaces*>(PtrOnmySvSurfaces))->SetUseSolver(true);
   }
 
   constexpr double SqTol3d = Precision::SquareConfusion();
@@ -672,7 +675,8 @@ bool ApproxInt_MultiLine::MakeMLOneMorePoint(const int            theLow,
     IsNewPointInvalid = myApproxU2V2 && std::abs(ucur2 - umid2) <= tolerance(1)
                         && std::abs(vcur2 - vmid2) <= tolerance(2);
     if (!IsNewPointInvalid
-        && ((TheSvSurfaces*)PtrOnmySvSurfaces)->SeekPoint(umid1, vmid1, umid2, vmid2, MidPoint))
+        && (static_cast<TheSvSurfaces*>(PtrOnmySvSurfaces))
+             ->SeekPoint(umid1, vmid1, umid2, vmid2, MidPoint))
     {
       const gp_Pnt& NewPnt        = MidPoint.Value();
       double        SqDistNewPrev = NewPnt.SquareDistance(PrevPnt);
@@ -712,7 +716,7 @@ bool ApproxInt_MultiLine::MakeMLOneMorePoint(const int            theLow,
 
   if (!OtherLineMade)
   {
-    ((TheSvSurfaces*)PtrOnmySvSurfaces)->SetUseSolver(aSaveUseSolver);
+    (static_cast<TheSvSurfaces*>(PtrOnmySvSurfaces))->SetUseSolver(aSaveUseSolver);
     return false;
   }
 
@@ -732,7 +736,7 @@ bool ApproxInt_MultiLine::MakeMLOneMorePoint(const int            theLow,
   }
 #endif
   occ::handle<TheLine> temp = new TheLine(ResultPntOn2SLine, false);
-  ((TheSvSurfaces*)PtrOnmySvSurfaces)->SetUseSolver(aSaveUseSolver);
+  (static_cast<TheSvSurfaces*>(PtrOnmySvSurfaces))->SetUseSolver(aSaveUseSolver);
   theNewMultiLine = ApproxInt_MultiLine(temp,
                                         PtrOnmySvSurfaces,
                                         nbp3d,

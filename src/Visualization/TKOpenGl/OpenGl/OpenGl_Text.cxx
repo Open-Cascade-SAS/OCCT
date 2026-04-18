@@ -101,7 +101,7 @@ void OpenGl_Text::SetFontSize(const occ::handle<OpenGl_Context>& theCtx, const i
   {
     Release(theCtx.operator->());
   }
-  myText->SetHeight((float)theFontSize);
+  myText->SetHeight(static_cast<float>(theFontSize));
 }
 
 //=================================================================================================
@@ -239,9 +239,13 @@ void OpenGl_Text::StringSize(const occ::handle<OpenGl_Context>& theCtx,
   theAscent  = 0.0f;
   theDescent = 0.0f;
   const TCollection_AsciiString aFontKey =
-    FontKey(theTextAspect, (int)theHeight, theResolution, theFontHinting);
-  occ::handle<OpenGl_Font> aFont =
-    FindFont(theCtx, theTextAspect, (int)theHeight, theResolution, theFontHinting, aFontKey);
+    FontKey(theTextAspect, static_cast<int>(theHeight), theResolution, theFontHinting);
+  occ::handle<OpenGl_Font> aFont = FindFont(theCtx,
+                                            theTextAspect,
+                                            static_cast<int>(theHeight),
+                                            theResolution,
+                                            theFontHinting,
+                                            aFontKey);
   if (aFont.IsNull() || !aFont->IsValid())
   {
     return;
@@ -517,7 +521,7 @@ void OpenGl_Text::drawText(const occ::handle<OpenGl_Context>& theCtx,
     aVerts->BindAttribute(theCtx, Graphic3d_TOA_POS);
     aTCrds->BindAttribute(theCtx, Graphic3d_TOA_UV);
 
-    theCtx->core11fwd->glDrawArrays(GL_TRIANGLES, 0, GLsizei(aVerts->GetElemsNb()));
+    theCtx->core11fwd->glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(aVerts->GetElemsNb()));
 
     aTCrds->UnbindAttribute(theCtx, Graphic3d_TOA_UV);
     aVerts->UnbindAttribute(theCtx, Graphic3d_TOA_POS);
@@ -540,7 +544,12 @@ TCollection_AsciiString OpenGl_Text::FontKey(const OpenGl_Aspects& theAspect,
                                            : THE_DEFAULT_FONT;
 
   char aSuff[64];
-  Sprintf(aSuff, ":%d:%d:%d:%d", int(anAspect), int(theResolution), theHeight, int(theFontHinting));
+  Sprintf(aSuff,
+          ":%d:%d:%d:%d",
+          static_cast<int>(anAspect),
+          static_cast<int>(theResolution),
+          theHeight,
+          static_cast<int>(theFontHinting));
   return aFont + aSuff;
 }
 
@@ -669,7 +678,7 @@ void OpenGl_Text::render(const occ::handle<OpenGl_Context>& theCtx,
   // Note that using difference resolution in different Views in same Viewer
   // will lead to performance regression (for example, text will be recreated every time).
   const TCollection_AsciiString aFontKey =
-    FontKey(theTextAspect, (int)myText->Height(), theResolution, theFontHinting);
+    FontKey(theTextAspect, static_cast<int>(myText->Height()), theResolution, theFontHinting);
   if (!myFont.IsNull() && !myFont->ResourceKey().IsEqual(aFontKey))
   {
     // font changed
@@ -680,7 +689,7 @@ void OpenGl_Text::render(const occ::handle<OpenGl_Context>& theCtx,
   {
     myFont = FindFont(theCtx,
                       theTextAspect,
-                      (int)myText->Height(),
+                      static_cast<int>(myText->Height()),
                       theResolution,
                       theFontHinting,
                       aFontKey);
@@ -724,7 +733,7 @@ void OpenGl_Text::render(const occ::handle<OpenGl_Context>& theCtx,
   theCtx->WorldViewState.Push();
   myModelMatrix.Convert(theCtx->WorldViewState.Current() * theCtx->ModelWorldState.Current());
 
-  const GLdouble aPointSize = (GLdouble)myFont->FTFont()->PointSize();
+  const GLdouble aPointSize = static_cast<GLdouble>(myFont->FTFont()->PointSize());
   if (!myIs2d)
   {
     const gp_Pnt& aPoint = myText->Position();

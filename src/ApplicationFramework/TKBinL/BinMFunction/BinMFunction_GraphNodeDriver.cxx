@@ -59,7 +59,7 @@ bool BinMFunction_GraphNodeDriver::Paste(const BinObjMgt_Persistent&       theSo
     return false;
 
   // Execution status
-  GN->SetStatus((TFunction_ExecutionStatus)intStatus);
+  GN->SetStatus(static_cast<TFunction_ExecutionStatus>(intStatus));
 
   // Previous functions
   if (nb_previous)
@@ -101,7 +101,7 @@ void BinMFunction_GraphNodeDriver::Paste(
   occ::handle<TFunction_GraphNode> GN = occ::down_cast<TFunction_GraphNode>(theSource);
 
   // Execution status
-  theTarget << (int)GN->GetStatus();
+  theTarget << static_cast<int>(GN->GetStatus());
   // Number of previous functions
   theTarget << GN->GetPrevious().Extent();
   // Number of next functions

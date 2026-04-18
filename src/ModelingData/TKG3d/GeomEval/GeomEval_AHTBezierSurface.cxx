@@ -312,7 +312,7 @@ void evalAxisDerivs(const double theT,
     {
       if (k > 0)
       {
-        aFactK *= double(k);
+        aFactK *= static_cast<double>(k);
       }
       for (int d = 0; d <= theMaxOrder; ++d)
       {
@@ -333,7 +333,7 @@ void evalAxisDerivs(const double theT,
         axisVal(theDerivs, theDim, d, anIdx) = aVal;
         if (d < aMaxD)
         {
-          aVal *= double(k - d) / theT;
+          aVal *= static_cast<double>(k - d) / theT;
         }
       }
       for (int d = aMaxD + 1; d <= theMaxOrder; ++d)
@@ -481,7 +481,7 @@ void computeRationalDerivs(const gp_XYZ* theNDerivs,
         double aBinU = 1.0;
         for (int m = 0; m < p; ++m)
         {
-          aBinU = aBinU * double(du - m) / double(m + 1);
+          aBinU = aBinU * static_cast<double>(du - m) / static_cast<double>(m + 1);
         }
         for (int q = 0; q <= dv; ++q)
         {
@@ -492,7 +492,7 @@ void computeRationalDerivs(const gp_XYZ* theNDerivs,
           double aBinV = 1.0;
           for (int m = 0; m < q; ++m)
           {
-            aBinV = aBinV * double(dv - m) / double(m + 1);
+            aBinV = aBinV * static_cast<double>(dv - m) / static_cast<double>(m + 1);
           }
           const double aCoeff = aBinU * aBinV * theWDerivs[tensorIdx(p, q, theMaxV)];
           aSum -= theCDerivs[tensorIdx(du - p, dv - q, theMaxV)] * aCoeff;

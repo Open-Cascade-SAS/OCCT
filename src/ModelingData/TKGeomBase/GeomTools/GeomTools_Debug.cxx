@@ -38,7 +38,7 @@ const char* GeomTools_Dump(void* theHandlePtr)
   {
     OCC_CATCH_SIGNALS
     const occ::handle<Standard_Transient>& aHandle =
-      *(occ::handle<Standard_Transient>*)theHandlePtr;
+      *static_cast<occ::handle<Standard_Transient>*>(theHandlePtr);
 
     occ::handle<Geom_Surface> GS = occ::down_cast<Geom_Surface>(aHandle);
     if (!GS.IsNull())

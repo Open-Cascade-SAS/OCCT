@@ -491,7 +491,7 @@ void StepData_StepWriter::SendComment(const char* const text)
 {
   if (!thecomm)
     throw Interface_InterfaceMismatch("StepWriter : Comment");
-  AddString(text, (int)strlen(text));
+  AddString(text, static_cast<int>(strlen(text)));
 }
 
 //=================================================================================================
@@ -776,7 +776,7 @@ void StepData_StepWriter::OpenTypedSub(const char* const subtype)
 {
   AddParam();
   if (subtype[0] != '\0')
-    AddString(subtype, (int)strlen(subtype));
+    AddString(subtype, static_cast<int>(strlen(subtype)));
   AddString(textlist);
   thefirst = true;
   thelevel++;
@@ -807,7 +807,7 @@ void StepData_StepWriter::Send(const int val)
   char lval[12];
   AddParam();
   Sprintf(lval, "%d", val);
-  AddString(lval, (int)strlen(lval));
+  AddString(lval, static_cast<int>(strlen(lval)));
 }
 
 //=================================================================================================
@@ -951,7 +951,7 @@ void StepData_StepWriter::Send(const occ::handle<Standard_Transient>& val)
     else
       Sprintf(lident, "%d:#%d", idnum, idtrue);
     AddParam();
-    AddString(lident, (int)strlen(lident));
+    AddString(lident, static_cast<int>(strlen(lident)));
   }
 }
 
@@ -994,7 +994,7 @@ void StepData_StepWriter::SendString(const TCollection_AsciiString& val)
 void StepData_StepWriter::SendString(const char* const val)
 {
   AddParam();
-  AddString(val, (int)strlen(val));
+  AddString(val, static_cast<int>(strlen(val)));
 }
 
 //  SendEnum: note, we send an Enum label ... so between .  .

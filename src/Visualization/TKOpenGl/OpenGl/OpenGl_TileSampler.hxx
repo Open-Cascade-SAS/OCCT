@@ -46,13 +46,13 @@ public:
   float VarianceScaleFactor() const { return myScaleFactor; }
 
   //! Returns number of tiles in X dimension.
-  int NbTilesX() const { return (int)myTiles.SizeX; }
+  int NbTilesX() const { return static_cast<int>(myTiles.SizeX); }
 
   //! Returns number of tiles in Y dimension.
-  int NbTilesY() const { return (int)myTiles.SizeY; }
+  int NbTilesY() const { return static_cast<int>(myTiles.SizeY); }
 
   //! Returns total number of tiles in viewport.
-  int NbTiles() const { return int(myTiles.SizeX * myTiles.SizeY); }
+  int NbTiles() const { return static_cast<int>(myTiles.SizeX * myTiles.SizeY); }
 
   //! Returns ray-tracing viewport.
   const NCollection_Vec2<int>& ViewSize() const { return myViewSize; }
@@ -60,9 +60,10 @@ public:
   //! Number of tiles within offsets texture.
   NCollection_Vec2<int> NbOffsetTiles(bool theAdaptive) const
   {
-    return theAdaptive
-             ? NCollection_Vec2<int>((int)myOffsetsShrunk.SizeX, (int)myOffsetsShrunk.SizeY)
-             : NCollection_Vec2<int>((int)myOffsets.SizeX, (int)myOffsets.SizeY);
+    return theAdaptive ? NCollection_Vec2<int>(static_cast<int>(myOffsetsShrunk.SizeX),
+                                               static_cast<int>(myOffsetsShrunk.SizeY))
+                       : NCollection_Vec2<int>(static_cast<int>(myOffsets.SizeX),
+                                               static_cast<int>(myOffsets.SizeY));
   }
 
   //! Maximum number of tiles within offsets texture.

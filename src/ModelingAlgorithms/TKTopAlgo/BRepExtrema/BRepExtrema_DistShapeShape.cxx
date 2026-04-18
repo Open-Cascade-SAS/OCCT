@@ -171,7 +171,7 @@ struct VertexFunctor
     const int aLast         = BandArray->Value(theIndex).Last;
     Solution.Dist[theIndex] = StartDist;
 
-    Message_ProgressScope aScope(Ranges[theIndex], nullptr, (double)aLast - aFirst);
+    Message_ProgressScope aScope(Ranges[theIndex], nullptr, static_cast<double>(aLast) - aFirst);
 
     for (int anIdx1 = aFirst; anIdx1 <= aLast; ++anIdx1)
     {
@@ -240,11 +240,11 @@ bool BRepExtrema_DistShapeShape::DistanceVertVert(
   const occ::handle<OSD_ThreadPool>& aThreadPool  = OSD_ThreadPool::DefaultPool();
   const int                          aNbThreads   = aThreadPool->NbThreads();
   int                                aNbTasks     = aNbThreads;
-  int                                aTaskSize    = (int)std::ceil((double)aCount1 / aNbTasks);
+  int aTaskSize = static_cast<int>(std::ceil(static_cast<double>(aCount1) / aNbTasks));
   if (aTaskSize < aMinTaskSize)
   {
     aTaskSize = aMinTaskSize;
-    aNbTasks  = (int)std::ceil((double)aCount1 / aTaskSize);
+    aNbTasks  = static_cast<int>(std::ceil(static_cast<double>(aCount1) / aTaskSize));
   }
 
   int                           aFirstIndex(1);
@@ -412,7 +412,7 @@ struct DistancePairFunctor
     const int aFirst = BandArray->Value(theIndex).First;
     const int aLast  = BandArray->Value(theIndex).Last;
 
-    Message_ProgressScope aScope(Ranges[theIndex], nullptr, (double)aLast - aFirst);
+    Message_ProgressScope aScope(Ranges[theIndex], nullptr, static_cast<double>(aLast) - aFirst);
 
     for (int anIdx1 = aFirst; anIdx1 <= aLast; ++anIdx1)
     {
@@ -483,11 +483,11 @@ bool BRepExtrema_DistShapeShape::DistanceMapMap(
   const int                          aNbThreads       = aThreadPool->NbThreads();
   const int                          aMinPairTaskSize = aCount1 < 10 ? aCount1 : 10;
   int                                aNbPairTasks     = aNbThreads;
-  int                                aPairTaskSize = (int)std::ceil((double)aCount1 / aNbPairTasks);
+  int aPairTaskSize = static_cast<int>(std::ceil(static_cast<double>(aCount1) / aNbPairTasks));
   if (aPairTaskSize < aMinPairTaskSize)
   {
     aPairTaskSize = aMinPairTaskSize;
-    aNbPairTasks  = (int)std::ceil((double)aCount1 / aPairTaskSize);
+    aNbPairTasks  = static_cast<int>(std::ceil(static_cast<double>(aCount1) / aPairTaskSize));
   }
 
   int                           aFirstIndex(1);
@@ -535,7 +535,7 @@ bool BRepExtrema_DistShapeShape::DistanceMapMap(
 
   const int aMapSize  = aPairList.Size();
   int       aNbTasks  = aMapSize < aNbThreads ? aMapSize : aNbThreads;
-  int       aTaskSize = (int)std::ceil((double)aMapSize / aNbTasks);
+  int       aTaskSize = static_cast<int>(std::ceil(static_cast<double>(aMapSize) / aNbTasks));
 
   NCollection_Array1<NCollection_Array1<BRepExtrema_CheckPair>> anArrayOfArray(0, aNbTasks - 1);
   // Since aPairList is sorted in ascending order of distances between Bnd_Boxes,
@@ -767,11 +767,11 @@ bool BRepExtrema_DistShapeShape::SolidTreatment(
   const occ::handle<OSD_ThreadPool>& aThreadPool  = OSD_ThreadPool::DefaultPool();
   const int                          aNbThreads   = aThreadPool->NbThreads();
   int                                aNbTasks     = aNbThreads * 10;
-  int                                aTaskSize    = (int)std::ceil((double)aMapSize / aNbTasks);
+  int aTaskSize = static_cast<int>(std::ceil(static_cast<double>(aMapSize) / aNbTasks));
   if (aTaskSize < aMinTaskSize)
   {
     aTaskSize = aMinTaskSize;
-    aNbTasks  = (int)std::ceil((double)aMapSize / aTaskSize);
+    aNbTasks  = static_cast<int>(std::ceil(static_cast<double>(aMapSize) / aTaskSize));
   }
 
   NCollection_Array1<NCollection_Array1<TopoDS_Shape>> anArrayOfArray(0, aNbTasks - 1);
@@ -1090,10 +1090,10 @@ void BRepExtrema_DistShapeShape::Dump(Standard_OStream& o) const
   for (i = 1; i <= NbSolution(); i++)
   {
     o << "solution number " << i << ": " << std::endl;
-    o << "the type of the solution on the first shape is " << int(SupportTypeShape1(i))
+    o << "the type of the solution on the first shape is " << static_cast<int>(SupportTypeShape1(i))
       << std::endl;
-    o << "the type of the solution on the second shape is " << int(SupportTypeShape2(i))
-      << std::endl;
+    o << "the type of the solution on the second shape is "
+      << static_cast<int>(SupportTypeShape2(i)) << std::endl;
     o << "the coordinates of  the point on the first shape are: " << std::endl;
     o << "X=" << PointOnShape1(i).X() << " Y=" << PointOnShape1(i).Y()
       << " Z=" << PointOnShape1(i).Z() << std::endl;

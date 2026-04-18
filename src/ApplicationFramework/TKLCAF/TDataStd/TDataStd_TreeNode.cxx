@@ -238,7 +238,7 @@ int TDataStd_TreeNode::Depth() const
 {
   int depth = 0;
 
-  TDataStd_TreeNode* O = (TDataStd_TreeNode*)this;
+  TDataStd_TreeNode* O = const_cast<TDataStd_TreeNode*>(this);
   while (O->myFather != nullptr)
   {
     depth++;
@@ -284,7 +284,7 @@ bool TDataStd_TreeNode::IsAscendant(const occ::handle<TDataStd_TreeNode>& ofTN) 
 
 bool TDataStd_TreeNode::IsDescendant(const occ::handle<TDataStd_TreeNode>& ofTN) const
 {
-  TDataStd_TreeNode* O = (TDataStd_TreeNode*)this;
+  TDataStd_TreeNode* O = const_cast<TDataStd_TreeNode*>(this);
   while (O->myFather != nullptr)
   {
     if (O->myFather == ofTN)
@@ -327,7 +327,7 @@ bool TDataStd_TreeNode::IsRoot() const
 
 occ::handle<TDataStd_TreeNode> TDataStd_TreeNode::Root() const
 {
-  TDataStd_TreeNode* O = (TDataStd_TreeNode*)this;
+  TDataStd_TreeNode* O = const_cast<TDataStd_TreeNode*>(this);
   while (O->myFather != nullptr)
   {
     O = O->myFather;

@@ -1013,7 +1013,7 @@ static int evaluateMaxSegment(const Adaptor3d_CurveOnSurface& aCurveOnSurface)
   {
     aNbC2dKnots = aCurv2d->NbKnots();
   }
-  int aReturn = (int)(30 + std::max(aNbSKnots, aNbC2dKnots));
+  int aReturn = static_cast<int>(30 + std::max(aNbSKnots, aNbC2dKnots));
   return aReturn;
 }
 

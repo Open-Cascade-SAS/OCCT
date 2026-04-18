@@ -1732,7 +1732,7 @@ occ::handle<Geom_BSplineCurve> StepToGeom::MakePolyline(const occ::handle<StepGe
         Poles.SetValue(i, P->Pnt());
       else
         return nullptr;
-      Knots.SetValue(i, double(i - 1));
+      Knots.SetValue(i, static_cast<double>(i - 1));
       Mults.SetValue(i, 1);
     }
     Mults.SetValue(1, 2);
@@ -1767,7 +1767,7 @@ occ::handle<Geom2d_BSplineCurve> StepToGeom::MakePolyline2d(
         Poles.SetValue(i, P->Pnt2d());
       else
         return nullptr;
-      Knots.SetValue(i, double(i - 1));
+      Knots.SetValue(i, static_cast<double>(i - 1));
       Mults.SetValue(i, 1);
     }
     Mults.SetValue(1, 2);

@@ -188,7 +188,7 @@ static bool CheckPCurve(const occ::handle<Geom2d_Curve>& aPC, const TopoDS_Face&
   if (aSurf->IsUPeriodic())
   {
     double aPer   = aSurf->UPeriod();
-    int    nshift = (int)((u - umin) / aPer);
+    int    nshift = static_cast<int>((u - umin) / aPer);
     if (u < umin + aPer * nshift)
       nshift--;
     umin += aPer * nshift;
@@ -197,7 +197,7 @@ static bool CheckPCurve(const occ::handle<Geom2d_Curve>& aPC, const TopoDS_Face&
   if (aSurf->IsVPeriodic())
   {
     double aPer   = aSurf->VPeriod();
-    int    nshift = (int)((v - vmin) / aPer);
+    int    nshift = static_cast<int>((v - vmin) / aPer);
     if (v < vmin + aPer * nshift)
       nshift--;
     vmin += aPer * nshift;
@@ -331,8 +331,8 @@ bool TopOpeBRepTool_CurveTool::MakeCurves(const double                     parmi
   //*/
   //---------------------------------------------
 
-  int iparmin = (int)parmin;
-  int iparmax = (int)parmax;
+  int iparmin = static_cast<int>(parmin);
+  int iparmax = static_cast<int>(parmax);
 
   occ::handle<Geom_BSplineCurve>   HC3D(occ::down_cast<Geom_BSplineCurve>(C3D));
   occ::handle<Geom2d_BSplineCurve> HPC1(occ::down_cast<Geom2d_BSplineCurve>(PC1));
@@ -853,7 +853,7 @@ occ::handle<Geom_Curve> TopOpeBRepTool_CurveTool::MakeBSpline1fromPnt(
 
   // take point index as parameter : JYL 01/AUG/94
   for (i = 1; i <= nbknots; i++)
-    knots(i) = (double)i;
+    knots(i) = static_cast<double>(i);
   occ::handle<Geom_Curve> C = new Geom_BSplineCurve(Points, knots, mults, Degree);
   return C;
 }
@@ -890,7 +890,7 @@ occ::handle<Geom2d_Curve> TopOpeBRepTool_CurveTool::MakeBSpline1fromPnt2d(
 
   // take point index as parameter : JYL 01/AUG/94
   for (i = 1; i <= nbknots; i++)
-    knots(i) = (double)i;
+    knots(i) = static_cast<double>(i);
   occ::handle<Geom2d_Curve> C = new Geom2d_BSplineCurve(Points, knots, mults, Degree);
   return C;
 }

@@ -92,13 +92,13 @@ TCollection_AsciiString TopOpeBRepDS_Dumper::SPrintShape(const TopoDS_Shape& S) 
   const char* s2;
   if (BDS.KeepShape(IS))
   {
-    s1 = (const char*)((rankIS == 1) ? "*" : "");
-    s2 = (const char*)((rankIS == 2) ? "*" : "");
+    s1 = ((rankIS == 1) ? "*" : "");
+    s2 = ((rankIS == 2) ? "*" : "");
   }
   else
   {
-    s1 = (const char*)((rankIS == 1) ? "~" : "");
-    s2 = (const char*)((rankIS == 2) ? "~" : "");
+    s1 = ((rankIS == 1) ? "~" : "");
+    s2 = ((rankIS == 2) ? "~" : "");
   }
   TCollection_AsciiString sse =
     TopOpeBRepDS::SPrint(TopOpeBRepDS::ShapeToKind(S.ShapeType()), IS, s1, s2);

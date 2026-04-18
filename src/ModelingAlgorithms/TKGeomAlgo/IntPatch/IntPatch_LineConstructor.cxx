@@ -619,10 +619,10 @@ static void AddLine(const occ::handle<IntPatch_Line>& L,
     }
     case IntPatch_Walking: { //-- ****************************************
       occ::handle<IntPatch_WLine>          WLine(occ::down_cast<IntPatch_WLine>(L));
-      const occ::handle<IntSurf_LineOn2S>& Lori           = WLine->Curve();
-      occ::handle<IntSurf_LineOn2S>        LineOn2S       = new IntSurf_LineOn2S();
-      int                                  ParamMinOnLine = (int)WLine->Vertex(i).ParameterOnLine();
-      int                                  ParamMaxOnLine = (int)WLine->Vertex(j).ParameterOnLine();
+      const occ::handle<IntSurf_LineOn2S>& Lori     = WLine->Curve();
+      occ::handle<IntSurf_LineOn2S>        LineOn2S = new IntSurf_LineOn2S();
+      int ParamMinOnLine = static_cast<int>(WLine->Vertex(i).ParameterOnLine());
+      int ParamMaxOnLine = static_cast<int>(WLine->Vertex(j).ParameterOnLine());
       for (int k = ParamMinOnLine; k <= ParamMaxOnLine; k++)
       {
         LineOn2S->Add(Lori->Value(k));
@@ -854,8 +854,8 @@ static bool IsSegmentSmall(const occ::handle<IntPatch_WLine>& WLine,
 {
   const IntPatch_Point& vtxF = WLine->Vertex(ivFirst);
   const IntPatch_Point& vtxL = WLine->Vertex(ivLast);
-  int                   ipF  = (int)vtxF.ParameterOnLine();
-  int                   ipL  = (int)vtxL.ParameterOnLine();
+  int                   ipF  = static_cast<int>(vtxF.ParameterOnLine());
+  int                   ipL  = static_cast<int>(vtxL.ParameterOnLine());
   if (ipF >= ipL)
     return true;
 
@@ -1031,8 +1031,8 @@ static void TestWLineToRLine(const NCollection_Sequence<occ::handle<IntPatch_Lin
   int nbvtx = WLine->NbVertex();
   if (nbvtx < 2)
     return;
-  int ParamMinOnLine = (int)WLine->Vertex(1).ParameterOnLine();
-  int ParamMaxOnLine = (int)WLine->Vertex(nbvtx).ParameterOnLine();
+  int ParamMinOnLine = static_cast<int>(WLine->Vertex(1).ParameterOnLine());
+  int ParamMaxOnLine = static_cast<int>(WLine->Vertex(nbvtx).ParameterOnLine());
   if (ParamMinOnLine >= ParamMaxOnLine)
     return;
   int midInd = (ParamMaxOnLine + ParamMinOnLine) / 2;
@@ -1041,7 +1041,7 @@ static void TestWLineToRLine(const NCollection_Sequence<occ::handle<IntPatch_Lin
   int                       iv;
   for (iv = 1; iv <= nbvtx; iv++)
   {
-    int plin = (int)WLine->Vertex(iv).ParameterOnLine();
+    int plin = static_cast<int>(WLine->Vertex(iv).ParameterOnLine());
     if (plin == ParamMinOnLine)
       indicesV1.Append(iv);
     else if (plin == ParamMaxOnLine)
@@ -1096,7 +1096,7 @@ static void TestWLineToRLine(const NCollection_Sequence<occ::handle<IntPatch_Lin
       {
         if (!(WLine->Vertex(iv).*pIsOnDomS)())
         {
-          int ip = (int)WLine->Vertex(iv).ParameterOnLine();
+          int ip = static_cast<int>(WLine->Vertex(iv).ParameterOnLine());
           (WLine->Point(ip).*piParOnS)(utst, vtst);
           double distmin = RealLast();
           for (aDomain->Init(); aDomain->More(); aDomain->Next())
@@ -1407,9 +1407,9 @@ void IntPatch_LineConstructor::Perform(
       if (firstp != lastp && !IsSegmentSmall(WLine, i, i + 1 /*,TolArc*/))
       {
         int pmid;
-        pmid           = (int)((firstp + lastp) / 2);
-        int int_lastp  = (int)lastp;
-        int int_firstp = (int)firstp;
+        pmid           = static_cast<int>((firstp + lastp) / 2);
+        int int_lastp  = static_cast<int>(lastp);
+        int int_firstp = static_cast<int>(firstp);
         if (pmid == int_lastp)
           pmid = int_firstp;
         const IntSurf_PntOn2S& Pmid = WLine->Point(pmid);
@@ -1504,11 +1504,11 @@ void IntPatch_LineConstructor::Perform(
         {
           bool                   LignetropPetite = false;
           double                 u1a, v1a, u2a, v2a;
-          const IntSurf_PntOn2S& Pmid1 = WLine->Point((int)firstp);
+          const IntSurf_PntOn2S& Pmid1 = WLine->Point(static_cast<int>(firstp));
           Pmid1.Parameters(u1a, v1a, u2a, v2a);
           Recadre(mySurf1, mySurf2, u1a, v1a, u2a, v2a);
 
-          const IntSurf_PntOn2S& Pmid2 = WLine->Point((int)lastp);
+          const IntSurf_PntOn2S& Pmid2 = WLine->Point(static_cast<int>(lastp));
           double                 u1b, v1b, u2b, v2b;
           Pmid2.Parameters(u1b, v1b, u2b, v2b);
           Recadre(mySurf1, mySurf2, u1b, v1b, u2b, v2b);

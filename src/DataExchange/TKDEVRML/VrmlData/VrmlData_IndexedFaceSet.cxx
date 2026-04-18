@@ -92,14 +92,14 @@ const occ::handle<TopoDS_TShape>& VrmlData_IndexedFaceSet::TShape()
 
   // list of nodes:
   const gp_XYZ* arrNodes = myCoords->Values();
-  const int     nNodes   = (int)myCoords->Length();
+  const int     nNodes   = static_cast<int>(myCoords->Length());
 
   NCollection_Map<int>                        mapNodeId;
   NCollection_Map<int>                        mapPolyId;
   NCollection_List<NCollection_Sequence<int>> aPolygons;
   NCollection_List<gp_Dir>                    aNorms;
   int                                         i = 0;
-  for (; i < (int)myNbPolygons; i++)
+  for (; i < static_cast<int>(myNbPolygons); i++)
   {
     const int* arrIndice = myArrPolygons[i];
     int        nn        = arrIndice[0];
@@ -245,7 +245,7 @@ const occ::handle<TopoDS_TShape>& VrmlData_IndexedFaceSet::TShape()
       }
       else
       {
-        for (i = 0; i < (int)myNbPolygons; i++)
+        for (i = 0; i < static_cast<int>(myNbPolygons); i++)
         {
           if (mapPolyId.Contains(i)) // check to avoid previously skipped faces
           {

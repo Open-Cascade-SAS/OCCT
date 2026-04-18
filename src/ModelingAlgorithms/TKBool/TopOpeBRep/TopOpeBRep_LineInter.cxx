@@ -359,7 +359,7 @@ void TopOpeBRep_LineInter::VPBounds(int& f, int& l, int& n) const
 {
   if (!myVPBDefined)
   {
-    TopOpeBRep_LineInter* p = (TopOpeBRep_LineInter*)this; // NYI deconst
+    TopOpeBRep_LineInter* p = const_cast<TopOpeBRep_LineInter*>(this); // NYI deconst
     p->SetOK(false);
     f = l = n = 0;
     return;
@@ -491,7 +491,7 @@ occ::handle<Geom_Curve> TopOpeBRep_LineInter::Curve() const
       C3D = new Geom_Hyperbola(myILG->Hyperbola());
       break;
     default:
-      TopOpeBRep_LineInter* p = (TopOpeBRep_LineInter*)this; // NYI deconst
+      TopOpeBRep_LineInter* p = const_cast<TopOpeBRep_LineInter*>(this); // NYI deconst
       p->SetOK(false);
       break;
   }

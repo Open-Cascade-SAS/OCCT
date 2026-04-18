@@ -1909,5 +1909,5 @@ inline mlgdrtl_1_& AdvApp2Var_Data::Getmlgdrtl()
                                .0527980126219896053956592277024162,
                                .0510811194407819869756124378422272};
 
-  return *((mlgdrtl_1_*)&s_e_1);
+  return *(reinterpret_cast<mlgdrtl_1_*>(&s_e_1));
 }

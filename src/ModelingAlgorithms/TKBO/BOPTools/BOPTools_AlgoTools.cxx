@@ -1516,7 +1516,7 @@ bool BOPTools_AlgoTools::IsHole(const TopoDS_Shape& aW, const TopoDS_Shape& aFac
       aNbS *= 4;
     }
     //
-    dU  = (aT2 - aT1) / (double)(aNbS - 1);
+    dU  = (aT2 - aT1) / static_cast<double>(aNbS - 1);
     aU  = aT1;
     aU1 = aT1;
     if (aOr == TopAbs_REVERSED)

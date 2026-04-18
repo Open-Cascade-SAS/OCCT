@@ -233,7 +233,7 @@ public: //! @name advanced methods
                 theElemsNb,
                 theData,
                 theDataType,
-                int(theComponentsNb) * int(sizeOfGlType(theDataType)));
+                static_cast<int>(theComponentsNb) * static_cast<int>(sizeOfGlType(theDataType)));
   }
 
   //! Update part of the buffer with new data.

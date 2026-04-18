@@ -32,7 +32,7 @@ const TopoDS_Shape& BRepBuilderAPI_MakeShape::Shape()
   if (!IsDone())
   {
     // the following is const cast away
-    ((BRepBuilderAPI_MakeShape*)(void*)this)->Build();
+    (static_cast<BRepBuilderAPI_MakeShape*>((void*)this))->Build();
     Check();
   }
   return myShape;

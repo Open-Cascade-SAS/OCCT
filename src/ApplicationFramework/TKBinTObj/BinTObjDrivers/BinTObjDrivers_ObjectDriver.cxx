@@ -54,7 +54,7 @@ bool BinTObjDrivers_ObjectDriver::Paste(const BinObjMgt_Persistent&       theSou
   if (!(theSource >> anID))
     return false;
   occ::handle<TObj_Object> anObject;
-  if ((unsigned)anID > 0xffff)
+  if (static_cast<unsigned>(anID) > 0xffff)
   {
     // if we are here it means that the type was stored as an ascii string,
     // so rewind theSource and reget

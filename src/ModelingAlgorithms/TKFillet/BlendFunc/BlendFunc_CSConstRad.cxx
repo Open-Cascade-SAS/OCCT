@@ -643,7 +643,7 @@ bool BlendFunc_CSConstRad::GetSection(const double                Param,
 
     for (i = 2; i <= NbPoint - 1; i++)
     {
-      lambda = (double)(i - 1) / (double)(NbPoint - 1);
+      lambda = static_cast<double>(i - 1) / static_cast<double>(NbPoint - 1);
       Cosa   = std::cos(lambda * Angle);
       Sina   = std::sin(lambda * Angle);
       tabP(lowp + i - 1)

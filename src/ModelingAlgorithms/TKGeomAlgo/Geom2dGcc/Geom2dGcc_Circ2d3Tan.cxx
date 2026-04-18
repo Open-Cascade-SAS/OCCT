@@ -638,7 +638,7 @@ bool Geom2dGcc_Circ2d3Tan::IsDone() const
 
 int Geom2dGcc_Circ2d3Tan::NbSolutions() const
 {
-  return (int)NbrSol;
+  return static_cast<int>(NbrSol);
 }
 
 gp_Circ2d Geom2dGcc_Circ2d3Tan::ThisSolution(const int Index) const

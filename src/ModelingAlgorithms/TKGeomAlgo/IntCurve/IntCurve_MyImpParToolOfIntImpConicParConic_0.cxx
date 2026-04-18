@@ -32,8 +32,8 @@ IntCurve_MyImpParToolOfIntImpConicParConic::IntCurve_MyImpParToolOfIntImpConicPa
 
 bool IntCurve_MyImpParToolOfIntImpConicParConic::Value(const double Param, double& ApproxDistance)
 {
-  ApproxDistance =
-    TheImpTool.Distance(IntCurve_PConicTool::Value((*((IntCurve_PConic*)(TheParCurve))), Param));
+  ApproxDistance = TheImpTool.Distance(
+    IntCurve_PConicTool::Value((*(static_cast<IntCurve_PConic*>(TheParCurve))), Param));
   return (true);
 }
 
@@ -43,8 +43,8 @@ bool IntCurve_MyImpParToolOfIntImpConicParConic::Derivative(const double Param,
   gp_Pnt2d Pt;
   gp_Vec2d TanParCurve;
   gp_Vec2d Grad = TheImpTool.GradDistance(
-    IntCurve_PConicTool::Value((*((IntCurve_PConic*)(TheParCurve))), Param));
-  IntCurve_PConicTool::D1((*((IntCurve_PConic*)(TheParCurve))), Param, Pt, TanParCurve);
+    IntCurve_PConicTool::Value((*(static_cast<IntCurve_PConic*>(TheParCurve))), Param));
+  IntCurve_PConicTool::D1((*(static_cast<IntCurve_PConic*>(TheParCurve))), Param, Pt, TanParCurve);
   D_ApproxDistance_DV = Grad.Dot(TanParCurve);
   return (true);
 }

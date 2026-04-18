@@ -30,11 +30,11 @@ public:
 
   Standard_EXPORT ~IntPatch_PrmPrmIntersection_T3Bits();
 
-  void Add(const int t) { p[t >> 5] |= (1 << (((unsigned int)t) & 31)); }
+  void Add(const int t) { p[t >> 5] |= (1 << ((static_cast<unsigned int>(t)) & 31)); }
 
-  int Val(const int t) const { return (p[t >> 5] & (1 << (((unsigned int)t) & 31))); }
+  int Val(const int t) const { return (p[t >> 5] & (1 << ((static_cast<unsigned int>(t)) & 31))); }
 
-  void Raz(const int t) { p[t >> 5] &= ~(1 << (((unsigned int)t) & 31)); }
+  void Raz(const int t) { p[t >> 5] &= ~(1 << ((static_cast<unsigned int>(t)) & 31)); }
 
   Standard_EXPORT void ResetAnd();
 

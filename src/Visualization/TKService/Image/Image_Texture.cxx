@@ -145,14 +145,14 @@ occ::handle<Image_PixMap> Image_Texture::loadImageBuffer(
   {
     return occ::handle<Image_PixMap>();
   }
-  else if (theBuffer->Size() > (size_t)IntegerLast())
+  else if (theBuffer->Size() > static_cast<size_t>(IntegerLast()))
   {
     Message::SendFail(TCollection_AsciiString("Error: Image file size is too big '") + theId + "'");
     return occ::handle<Image_PixMap>();
   }
 
   occ::handle<Image_AlienPixMap> anImage = new Image_AlienPixMap();
-  if (!anImage->Load(theBuffer->Data(), (int)theBuffer->Size(), theId))
+  if (!anImage->Load(theBuffer->Data(), static_cast<int>(theBuffer->Size()), theId))
   {
     return occ::handle<Image_PixMap>();
   }
@@ -181,7 +181,7 @@ occ::handle<Image_PixMap> Image_Texture::loadImageOffset(const TCollection_Ascii
                       + "' cannot be opened");
     return occ::handle<Image_PixMap>();
   }
-  aFile->seekg((std::streamoff)theOffset, std::ios_base::beg);
+  aFile->seekg(static_cast<std::streamoff>(theOffset), std::ios_base::beg);
   if (!aFile->good())
   {
     Message::SendFail(TCollection_AsciiString("Error: Image is defined with invalid file offset '")
@@ -246,7 +246,7 @@ TCollection_AsciiString Image_Texture::ProbeImageFileFormat() const
     }
     if (myOffset >= 0)
     {
-      aFileIn->seekg((std::streamoff)myOffset, std::ios_base::beg);
+      aFileIn->seekg(static_cast<std::streamoff>(myOffset), std::ios_base::beg);
       if (!aFileIn->good())
       {
         Message::SendFail(
@@ -335,7 +335,7 @@ bool Image_Texture::WriteImage(std::ostream& theStream, const TCollection_AsciiS
 {
   if (!myBuffer.IsNull())
   {
-    theStream.write((const char*)myBuffer->Data(), myBuffer->Size());
+    theStream.write(reinterpret_cast<const char*>(myBuffer->Data()), myBuffer->Size());
     if (!theStream.good())
     {
       Message::SendFail(TCollection_AsciiString("File '") + theFile + "' cannot be written");
@@ -356,7 +356,7 @@ bool Image_Texture::WriteImage(std::ostream& theStream, const TCollection_AsciiS
   int64_t aLen = myLength;
   if (myOffset >= 0)
   {
-    aFileIn->seekg((std::streamoff)myOffset, std::ios_base::beg);
+    aFileIn->seekg(static_cast<std::streamoff>(myOffset), std::ios_base::beg);
     if (!aFileIn->good())
     {
       Message::SendFail(
@@ -378,15 +378,15 @@ bool Image_Texture::WriteImage(std::ostream& theStream, const TCollection_AsciiS
   {
     if (aChunkIter + aChunkSize >= aLen)
     {
-      aChunkSize = int(aLen - aChunkIter);
+      aChunkSize = static_cast<int>(aLen - aChunkIter);
     }
-    if (!aFileIn->read((char*)&aBuffer.ChangeFirst(), aChunkSize))
+    if (!aFileIn->read(reinterpret_cast<char*>(&aBuffer.ChangeFirst()), aChunkSize))
     {
       Message::SendFail(TCollection_AsciiString("Error: unable to read image file '") + myImagePath
                         + "'");
       return false;
     }
-    theStream.write((const char*)&aBuffer.First(), aChunkSize);
+    theStream.write(reinterpret_cast<const char*>(&aBuffer.First()), aChunkSize);
   }
   if (!theStream.good())
   {

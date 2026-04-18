@@ -267,13 +267,13 @@ int Interface_STAT::Percent(const bool phase)
                    TheStat.numitem * TheStat.stw;  // current step
                                                    //  proportion for this phase
   double prophase = enphase / (TheStat.nbitp * TheStat.otph);
-  int    res      = int(prophase * 100.);
+  int    res      = static_cast<int>(prophase * 100.);
   if (phase)
     return res;
 
   //  that's it for this phase
   //  counting in the phases
   double encours = (TheStat.oldph + TheStat.phw * prophase) / TheStat.otal;
-  res            = int(encours * 100.);
+  res            = static_cast<int>(encours * 100.);
   return res;
 }

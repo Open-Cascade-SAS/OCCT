@@ -107,15 +107,15 @@ inline int NCollection_UtfIterator<Type>::AdvanceBytesUtf8() const
     // UTF-16 surrogate values are illegal in UTF-32
     return 0;
   }
-  else if (myCharUtf32 < char32_t(0x80))
+  else if (myCharUtf32 < static_cast<char32_t>(0x80))
   {
     return 1;
   }
-  else if (myCharUtf32 < char32_t(0x800))
+  else if (myCharUtf32 < static_cast<char32_t>(0x800))
   {
     return 2;
   }
-  else if (myCharUtf32 < char32_t(0x10000))
+  else if (myCharUtf32 < static_cast<char32_t>(0x10000))
   {
     return 3;
   }
@@ -136,7 +136,7 @@ template <typename Type>
 inline char* NCollection_UtfIterator<Type>::GetUtf8(char* theBuffer) const
 {
   // unsigned arithmetic used
-  return (char*)GetUtf8((unsigned char*)theBuffer);
+  return (char*)GetUtf8(reinterpret_cast<unsigned char*>(theBuffer));
 }
 
 //=================================================================================================
@@ -150,19 +150,19 @@ inline unsigned char* NCollection_UtfIterator<Type>::GetUtf8(unsigned char* theB
     // UTF-16 surrogate values are illegal in UTF-32
     return theBuffer;
   }
-  else if (myCharUtf32 < char32_t(0x80))
+  else if (myCharUtf32 < static_cast<char32_t>(0x80))
   {
     *theBuffer++ = static_cast<unsigned char>(aChar | UTF8_FIRST_BYTE_MARK[1]);
     return theBuffer;
   }
-  else if (myCharUtf32 < char32_t(0x800))
+  else if (myCharUtf32 < static_cast<char32_t>(0x800))
   {
     *++theBuffer = static_cast<unsigned char>((aChar | UTF8_BYTE_MARK) & UTF8_BYTE_MASK);
     aChar >>= 6;
     *--theBuffer = static_cast<unsigned char>(aChar | UTF8_FIRST_BYTE_MARK[2]);
     return theBuffer + 2;
   }
-  else if (myCharUtf32 < char32_t(0x10000))
+  else if (myCharUtf32 < static_cast<char32_t>(0x10000))
   {
     theBuffer += 3;
     *--theBuffer = static_cast<unsigned char>((aChar | UTF8_BYTE_MARK) & UTF8_BYTE_MASK);
@@ -256,8 +256,10 @@ inline char16_t* NCollection_UtfIterator<Type>::GetUtf16(char16_t* theBuffer) co
   {
     // surrogate pair
     char32_t aChar = myCharUtf32 - UTF16_SURROGATE_LOW_BASE;
-    *theBuffer++   = char16_t((aChar >> UTF16_SURROGATE_HIGH_SHIFT) + UTF16_SURROGATE_HIGH_START);
-    *theBuffer++   = char16_t((aChar & UTF16_SURROGATE_LOW_MASK) + UTF16_SURROGATE_LOW_START);
+    *theBuffer++ =
+      static_cast<char16_t>((aChar >> UTF16_SURROGATE_HIGH_SHIFT) + UTF16_SURROGATE_HIGH_START);
+    *theBuffer++ =
+      static_cast<char16_t>((aChar & UTF16_SURROGATE_LOW_MASK) + UTF16_SURROGATE_LOW_START);
     return theBuffer;
   }
 }

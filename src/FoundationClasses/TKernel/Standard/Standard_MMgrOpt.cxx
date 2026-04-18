@@ -159,7 +159,7 @@ Standard_MMgrOpt::Standard_MMgrOpt(const bool   aClear,
 
   // initialize parameters
   myClear     = aClear;
-  myMMap      = (int)aMMap;
+  myMMap      = static_cast<int>(aMMap);
   myCellSize  = aCellSize;
   myNbPages   = aNbPages;
   myThreshold = aThreshold;
@@ -265,7 +265,7 @@ void Standard_MMgrOpt::Initialize()
   // clang-format off
   myFreeListMax = INDEX_CELL(ROUNDUP_CELL(myThreshold-BLOCK_SHIFT)); // all blocks less than myThreshold are to be recycled
   // clang-format on
-  myFreeList = (size_t**)calloc(myFreeListMax + 1, sizeof(size_t*));
+  myFreeList = static_cast<size_t**>(calloc(myFreeListMax + 1, sizeof(size_t*)));
   myCellSize = ROUNDUP16(myCellSize);
 }
 
@@ -321,7 +321,7 @@ void* Standard_MMgrOpt::Allocate(const size_t aSize)
       // of the memory block; use it to update list pointer
       // to point to next free block
       size_t* aBlock    = myFreeList[Index];
-      myFreeList[Index] = *(size_t**)aBlock;
+      myFreeList[Index] = *reinterpret_cast<size_t**>(aBlock);
 
       // unlock the mutex
       myMutex.unlock();
@@ -363,8 +363,8 @@ void* Standard_MMgrOpt::Allocate(const size_t aSize)
           if (aPIndex > 0 && aPIndex <= myFreeListMax)
           {
             myMutex.lock();
-            *(size_t**)myNextAddr = myFreeList[aPIndex];
-            myFreeList[aPIndex]   = myNextAddr;
+            *reinterpret_cast<size_t**>(myNextAddr) = myFreeList[aPIndex];
+            myFreeList[aPIndex]                     = myNextAddr;
             myMutex.unlock();
           }
         }
@@ -372,7 +372,7 @@ void* Standard_MMgrOpt::Allocate(const size_t aSize)
         // set end pointer to the end of the new pool
         myEndBlock = aBlock + Size / sizeof(size_t);
         // record in the first bytes of the pool the address of the previous one
-        *(size_t**)aBlock = myAllocList;
+        *reinterpret_cast<size_t**>(aBlock) = myAllocList;
         // and make new pool current (last)
         // and get pointer to the first memory block in the pool
         myAllocList = aBlock;
@@ -394,14 +394,15 @@ void* Standard_MMgrOpt::Allocate(const size_t aSize)
       myMutex.unlock();
 
       // we use operator ?: instead of if() since it is faster
-      size_t* aBlock = (size_t*)(myClear ? calloc(RoundSizeN + BLOCK_SHIFT, sizeof(size_t))
-                                         : malloc((RoundSizeN + BLOCK_SHIFT) * sizeof(size_t)));
+      size_t* aBlock =
+        static_cast<size_t*>(myClear ? calloc(RoundSizeN + BLOCK_SHIFT, sizeof(size_t))
+                                     : malloc((RoundSizeN + BLOCK_SHIFT) * sizeof(size_t)));
 
       // if allocation failed, try to free some memory by purging free lists, and retry
       if (!aBlock)
       {
         if (Purge(false))
-          aBlock = (size_t*)calloc(RoundSizeN + BLOCK_SHIFT, sizeof(size_t));
+          aBlock = static_cast<size_t*>(calloc(RoundSizeN + BLOCK_SHIFT, sizeof(size_t)));
         // if still not succeeded, raise exception
         if (!aBlock)
           throw Standard_OutOfMemory("Standard_MMgrOpt::Allocate(): malloc failed");
@@ -464,7 +465,7 @@ void Standard_MMgrOpt::Free(void* theStorage)
       std::lock_guard<std::mutex> aLock(myMutex);
 
       // in the memory block header, record address of the next free block
-      *(size_t**)aBlock = myFreeList[Index];
+      *reinterpret_cast<size_t**>(aBlock) = myFreeList[Index];
       // add new block to be first in the list
       myFreeList[Index] = aBlock;
     }
@@ -496,7 +497,7 @@ int Standard_MMgrOpt::Purge(bool)
     while (aFree)
     {
       size_t* anOther = aFree;
-      aFree           = *(size_t**)aFree;
+      aFree           = *reinterpret_cast<size_t**>(aFree);
       free(anOther);
       nbFreed++;
     }
@@ -538,7 +539,7 @@ int Standard_MMgrOpt::Purge(bool)
     {
       aPools[iPool]    = aNextPool;
       aFreeSize[iPool] = 0;
-      aNextPool        = *(size_t**)aNextPool; // get next pool
+      aNextPool        = *reinterpret_cast<size_t**>(aNextPool); // get next pool
     }
     const int iLast = iPool - 1;
 
@@ -561,7 +562,7 @@ int Standard_MMgrOpt::Purge(bool)
             break;
           }
         }
-        aFree = *(size_t**)aFree; // get next free block
+        aFree = *reinterpret_cast<size_t**>(aFree); // get next free block
       }
     }
 
@@ -598,9 +599,9 @@ int Standard_MMgrOpt::Purge(bool)
         if (j <= iLastFree)
         {
           // remove
-          aFree = *(size_t**)aFree;
+          aFree = *reinterpret_cast<size_t**>(aFree);
           if (aPrevFree)
-            *(size_t**)aPrevFree = aFree; // link to previous
+            *reinterpret_cast<size_t**>(aPrevFree) = aFree; // link to previous
           else
             myFreeList[i] = aFree;
           nbFreed++;
@@ -609,7 +610,7 @@ int Standard_MMgrOpt::Purge(bool)
         {
           // skip
           aPrevFree = aFree;
-          aFree     = *(size_t**)aFree;
+          aFree     = *reinterpret_cast<size_t**>(aFree);
         }
       }
     }
@@ -633,7 +634,7 @@ int Standard_MMgrOpt::Purge(bool)
         // and connect it to the list of pools that have been processed
         // and remain non-free
         if (aPrev)
-          *(size_t**)aPrev = aNext;
+          *reinterpret_cast<size_t**>(aPrev) = aNext;
         else
           myAllocList = aNext;
       }
@@ -665,7 +666,7 @@ void Standard_MMgrOpt::FreePools()
   {
     size_t* aBlock = aFree;
     // next pool address is stored in first 8 bytes of each pool
-    aFree = *(size_t**)aFree;
+    aFree = *reinterpret_cast<size_t**>(aFree);
     // free pool (note that its size is calculated rather than stored)
     FreeMemory(aBlock, myPageSize * myNbPages);
   }
@@ -700,7 +701,7 @@ void* Standard_MMgrOpt::Reallocate(void* theStorage, const size_t theNewSize)
     Free(theStorage);
     // clear newly added part of the block
     if (myClear)
-      memset(((char*)newStorage) + OldSize, 0, theNewSize - OldSize);
+      memset((static_cast<char*>(newStorage)) + OldSize, 0, theNewSize - OldSize);
   }
   return newStorage;
 }
@@ -728,8 +729,8 @@ retry:
 
     // allocate memory
     // note that on UNIX myMMap is file descriptor for /dev/null
-    aBlock = (size_t*)
-      mmap((char*)MMAP_BASE_ADDRESS, AlignedSize, PROT_READ | PROT_WRITE, MMAP_FLAGS, myMMap, 0);
+    aBlock = static_cast<size_t*>(
+      mmap((char*)MMAP_BASE_ADDRESS, AlignedSize, PROT_READ | PROT_WRITE, MMAP_FLAGS, myMMap, 0));
     if (aBlock == MAP_FAILED /* -1 */)
     {
       int errcode = errno;
@@ -798,7 +799,7 @@ retry:
   // else just allocate by malloc or calloc
   else
   {
-    aBlock = (size_t*)(myClear ? calloc(Size, sizeof(char)) : malloc(Size));
+    aBlock = static_cast<size_t*>(myClear ? calloc(Size, sizeof(char)) : malloc(Size));
     // check the result
     if (!aBlock)
     {
@@ -830,7 +831,7 @@ void Standard_MMgrOpt::FreeMemory(void* aBlock,
 #ifndef _WIN32
     // align size to page size, just the same as in AllocMemory()
     const size_t AlignedSize = PAGE_ALIGN(aSize, myPageSize);
-    munmap((char*)aBlock, AlignedSize);
+    munmap(static_cast<char*>(aBlock), AlignedSize);
 #else
     // recover handle to the memory mapping stored just before the block
     const HANDLE* aMBlock = (const HANDLE*)aBlock;

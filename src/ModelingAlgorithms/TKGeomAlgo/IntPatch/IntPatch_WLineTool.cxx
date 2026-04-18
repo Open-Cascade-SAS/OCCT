@@ -82,7 +82,7 @@ static void FillPointsHash(const occ::handle<IntPatch_WLine>& theWLine,
   for (v = 1; v <= theWLine->NbVertex(); v++)
   {
     IntPatch_Point aVertex      = theWLine->Vertex(v);
-    int            avertexindex = (int)aVertex.ParameterOnLine();
+    int            avertexindex = static_cast<int>(aVertex.ParameterOnLine());
     thePointsHash.SetValue(avertexindex, -1);
   }
 }
@@ -579,7 +579,7 @@ static occ::handle<IntPatch_WLine> DeleteByTube(const occ::handle<IntPatch_WLine
   {
     for (int anIdx = 1; anIdx <= 8; anIdx++)
     {
-      int aHashIdx = int(anIdx * theWLine->NbPnts() / 9);
+      int aHashIdx = (anIdx * theWLine->NbPnts() / 9);
 
       // Vertex must be stored as VERTEX (HASH = -1)
       if (aNewPointsHash(aHashIdx) != -1)
@@ -1455,7 +1455,7 @@ occ::handle<IntPatch_WLine> IntPatch_WLineTool::ComputePurgedWLine(
           for (v = 1; v <= aTmpWLine->NbVertex(); v++)
           {
             IntPatch_Point aVertex      = aTmpWLine->Vertex(v);
-            int            avertexindex = (int)aVertex.ParameterOnLine();
+            int            avertexindex = static_cast<int>(aVertex.ParameterOnLine());
 
             if (avertexindex >= k)
             {
@@ -1751,7 +1751,7 @@ static bool IsNeedSkipWL(const occ::handle<IntPatch_WLine>& theWL,
     aLastp  = theWL->Vertex(i + 1).ParameterOnLine();
 
     double                 aU1, aV1, aU2, aV2;
-    const int              pmid  = (int)((aFirstp + aLastp) / 2);
+    const int              pmid  = static_cast<int>((aFirstp + aLastp) / 2);
     const IntSurf_PntOn2S& aPmid = theWL->Point(pmid);
     aPmid.Parameters(aU1, aV1, aU2, aV2);
 

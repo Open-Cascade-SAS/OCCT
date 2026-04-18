@@ -812,10 +812,10 @@ void TopOpeBRepBuild_Builder::MergeKPartisdisj()
   TopExp_Explorer anExp(myShape1, TopAbs_SHELL, TopAbs_SOLID);
   for (int i = TopAbs_SHELL; i <= TopAbs_VERTEX && !hasnotsol1 && !hasnotsol2; i++)
   {
-    anExp.Init(myShape1, (TopAbs_ShapeEnum)i, TopAbs_SOLID);
+    anExp.Init(myShape1, static_cast<TopAbs_ShapeEnum>(i), TopAbs_SOLID);
     if (anExp.More())
       hasnotsol1 = true;
-    anExp.Init(myShape2, (TopAbs_ShapeEnum)i, TopAbs_SOLID);
+    anExp.Init(myShape2, static_cast<TopAbs_ShapeEnum>(i), TopAbs_SOLID);
     if (anExp.More())
       hasnotsol2 = true;
   }

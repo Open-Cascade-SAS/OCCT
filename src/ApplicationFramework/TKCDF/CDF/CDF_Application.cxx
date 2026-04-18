@@ -250,14 +250,14 @@ occ::handle<CDM_Document> CDF_Application::Retrieve(const occ::handle<CDM_MetaDa
     {
       case PCDM_RS_UnknownDocument:
         aMsg << "could not find the referenced document: " << aMetaData->Path() << "; not found."
-             << (char)0 << std::endl;
+             << static_cast<char>(0) << std::endl;
         break;
       case PCDM_RS_PermissionDenied:
         aMsg << "Could not find the referenced document: " << aMetaData->Path()
-             << "; permission denied. " << (char)0 << std::endl;
+             << "; permission denied. " << static_cast<char>(0) << std::endl;
         break;
       case PCDM_RS_NoDocument:
-        aMsg << "Document for appending is not defined." << (char)0 << std::endl;
+        aMsg << "Document for appending is not defined." << static_cast<char>(0) << std::endl;
         break;
       default:
         myRetrievableStatus = PCDM_RS_OK;
@@ -278,7 +278,8 @@ occ::handle<CDM_Document> CDF_Application::Retrieve(const occ::handle<CDM_MetaDa
     if (!Format(aMetaData->FileName(), aFormat))
     {
       Standard_SStream aMsg;
-      aMsg << "Could not determine format for the file " << aMetaData->FileName() << (char)0;
+      aMsg << "Could not determine format for the file " << aMetaData->FileName()
+           << static_cast<char>(0);
       throw Standard_NoSuchObject(aMsg.str().c_str());
     }
     occ::handle<PCDM_Reader> theReader = ReaderFromFormat(aFormat);
@@ -453,7 +454,7 @@ occ::handle<PCDM_Reader> CDF_Application::ReaderFromFormat(
   if (!UTL::Find(Resources(), aResourceName))
   {
     Standard_SStream aMsg;
-    aMsg << "Could not found the item:" << aResourceName << (char)0;
+    aMsg << "Could not found the item:" << aResourceName << static_cast<char>(0);
     myRetrievableStatus = PCDM_RS_WrongResource;
     throw Standard_NoSuchObject(aMsg.str().c_str());
   }
@@ -509,7 +510,7 @@ occ::handle<PCDM_StorageDriver> CDF_Application::WriterFromFormat(
   {
     myWriters.Add(theFormat, aDriver);
     Standard_SStream aMsg;
-    aMsg << "Could not found the resource definition:" << aResourceName << (char)0;
+    aMsg << "Could not found the resource definition:" << aResourceName << static_cast<char>(0);
     throw Standard_NoSuchObject(aMsg.str().c_str());
   }
 

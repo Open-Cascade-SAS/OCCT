@@ -37,7 +37,7 @@ struct Image_FormatInfo
       : Name(theName),
         Format(theFormat),
         NbComponents(theNbComponents),
-        PixelSize((unsigned int)thePixelSize)
+        PixelSize(static_cast<unsigned int>(thePixelSize))
   {
   }
 
@@ -48,7 +48,7 @@ struct Image_FormatInfo
       : Name(theName),
         Format(theFormat),
         NbComponents(theNbComponents),
-        PixelSize((unsigned int)thePixelSize)
+        PixelSize(static_cast<unsigned int>(thePixelSize))
   {
   }
 };
@@ -250,7 +250,7 @@ bool Image_PixMap::InitZero3D(Image_Format                    thePixelFormat,
       return false;
     }
   }
-  memset(myData.ChangeData(), (int)theValue, SizeBytes());
+  memset(myData.ChangeData(), static_cast<int>(theValue), SizeBytes());
   return true;
 }
 
@@ -361,94 +361,100 @@ Quantity_ColorRGBA Image_PixMap::ColorFromRawPixel(const uint8_t*     theRawValu
     }
     case Image_Format_RGBA: {
       const Image_ColorRGBA& aPixel = *reinterpret_cast<const Image_ColorRGBA*>(theRawValue);
-      return theToLinearize
-               ? Quantity_ColorRGBA(
-                   Quantity_Color::Convert_sRGB_To_LinearRGB(float(aPixel.r()) / 255.0f),
-                   Quantity_Color::Convert_sRGB_To_LinearRGB(float(aPixel.g()) / 255.0f),
-                   Quantity_Color::Convert_sRGB_To_LinearRGB(float(aPixel.b()) / 255.0f),
-                   float(aPixel.a()) / 255.0f)
-               : Quantity_ColorRGBA(float(aPixel.r()) / 255.0f,
-                                    float(aPixel.g()) / 255.0f,
-                                    float(aPixel.b()) / 255.0f,
-                                    float(aPixel.a()) / 255.0f);
+      return theToLinearize ? Quantity_ColorRGBA(Quantity_Color::Convert_sRGB_To_LinearRGB(
+                                                   static_cast<float>(aPixel.r()) / 255.0f),
+                                                 Quantity_Color::Convert_sRGB_To_LinearRGB(
+                                                   static_cast<float>(aPixel.g()) / 255.0f),
+                                                 Quantity_Color::Convert_sRGB_To_LinearRGB(
+                                                   static_cast<float>(aPixel.b()) / 255.0f),
+                                                 static_cast<float>(aPixel.a()) / 255.0f)
+                            : Quantity_ColorRGBA(static_cast<float>(aPixel.r()) / 255.0f,
+                                                 static_cast<float>(aPixel.g()) / 255.0f,
+                                                 static_cast<float>(aPixel.b()) / 255.0f,
+                                                 static_cast<float>(aPixel.a()) / 255.0f);
     }
     case Image_Format_BGRA: {
       const Image_ColorBGRA& aPixel = *reinterpret_cast<const Image_ColorBGRA*>(theRawValue);
-      return theToLinearize
-               ? Quantity_ColorRGBA(
-                   Quantity_Color::Convert_sRGB_To_LinearRGB(float(aPixel.r()) / 255.0f),
-                   Quantity_Color::Convert_sRGB_To_LinearRGB(float(aPixel.g()) / 255.0f),
-                   Quantity_Color::Convert_sRGB_To_LinearRGB(float(aPixel.b()) / 255.0f),
-                   float(aPixel.a()) / 255.0f)
-               : Quantity_ColorRGBA(float(aPixel.r()) / 255.0f,
-                                    float(aPixel.g()) / 255.0f,
-                                    float(aPixel.b()) / 255.0f,
-                                    float(aPixel.a()) / 255.0f);
+      return theToLinearize ? Quantity_ColorRGBA(Quantity_Color::Convert_sRGB_To_LinearRGB(
+                                                   static_cast<float>(aPixel.r()) / 255.0f),
+                                                 Quantity_Color::Convert_sRGB_To_LinearRGB(
+                                                   static_cast<float>(aPixel.g()) / 255.0f),
+                                                 Quantity_Color::Convert_sRGB_To_LinearRGB(
+                                                   static_cast<float>(aPixel.b()) / 255.0f),
+                                                 static_cast<float>(aPixel.a()) / 255.0f)
+                            : Quantity_ColorRGBA(static_cast<float>(aPixel.r()) / 255.0f,
+                                                 static_cast<float>(aPixel.g()) / 255.0f,
+                                                 static_cast<float>(aPixel.b()) / 255.0f,
+                                                 static_cast<float>(aPixel.a()) / 255.0f);
     }
     case Image_Format_RGB32: {
       const Image_ColorRGB32& aPixel = *reinterpret_cast<const Image_ColorRGB32*>(theRawValue);
-      return theToLinearize
-               ? Quantity_ColorRGBA(
-                   Quantity_Color::Convert_sRGB_To_LinearRGB(float(aPixel.r()) / 255.0f),
-                   Quantity_Color::Convert_sRGB_To_LinearRGB(float(aPixel.g()) / 255.0f),
-                   Quantity_Color::Convert_sRGB_To_LinearRGB(float(aPixel.b()) / 255.0f),
-                   1.0f)
-               : Quantity_ColorRGBA(float(aPixel.r()) / 255.0f,
-                                    float(aPixel.g()) / 255.0f,
-                                    float(aPixel.b()) / 255.0f,
-                                    1.0f);
+      return theToLinearize ? Quantity_ColorRGBA(Quantity_Color::Convert_sRGB_To_LinearRGB(
+                                                   static_cast<float>(aPixel.r()) / 255.0f),
+                                                 Quantity_Color::Convert_sRGB_To_LinearRGB(
+                                                   static_cast<float>(aPixel.g()) / 255.0f),
+                                                 Quantity_Color::Convert_sRGB_To_LinearRGB(
+                                                   static_cast<float>(aPixel.b()) / 255.0f),
+                                                 1.0f)
+                            : Quantity_ColorRGBA(static_cast<float>(aPixel.r()) / 255.0f,
+                                                 static_cast<float>(aPixel.g()) / 255.0f,
+                                                 static_cast<float>(aPixel.b()) / 255.0f,
+                                                 1.0f);
     }
     case Image_Format_BGR32: {
       const Image_ColorBGR32& aPixel = *reinterpret_cast<const Image_ColorBGR32*>(theRawValue);
-      return theToLinearize
-               ? Quantity_ColorRGBA(
-                   Quantity_Color::Convert_sRGB_To_LinearRGB(float(aPixel.r()) / 255.0f),
-                   Quantity_Color::Convert_sRGB_To_LinearRGB(float(aPixel.g()) / 255.0f),
-                   Quantity_Color::Convert_sRGB_To_LinearRGB(float(aPixel.b()) / 255.0f),
-                   1.0f)
-               : Quantity_ColorRGBA(float(aPixel.r()) / 255.0f,
-                                    float(aPixel.g()) / 255.0f,
-                                    float(aPixel.b()) / 255.0f,
-                                    1.0f);
+      return theToLinearize ? Quantity_ColorRGBA(Quantity_Color::Convert_sRGB_To_LinearRGB(
+                                                   static_cast<float>(aPixel.r()) / 255.0f),
+                                                 Quantity_Color::Convert_sRGB_To_LinearRGB(
+                                                   static_cast<float>(aPixel.g()) / 255.0f),
+                                                 Quantity_Color::Convert_sRGB_To_LinearRGB(
+                                                   static_cast<float>(aPixel.b()) / 255.0f),
+                                                 1.0f)
+                            : Quantity_ColorRGBA(static_cast<float>(aPixel.r()) / 255.0f,
+                                                 static_cast<float>(aPixel.g()) / 255.0f,
+                                                 static_cast<float>(aPixel.b()) / 255.0f,
+                                                 1.0f);
     }
     case Image_Format_RGB: {
       const Image_ColorRGB& aPixel = *reinterpret_cast<const Image_ColorRGB*>(theRawValue);
-      return theToLinearize
-               ? Quantity_ColorRGBA(
-                   Quantity_Color::Convert_sRGB_To_LinearRGB(float(aPixel.r()) / 255.0f),
-                   Quantity_Color::Convert_sRGB_To_LinearRGB(float(aPixel.g()) / 255.0f),
-                   Quantity_Color::Convert_sRGB_To_LinearRGB(float(aPixel.b()) / 255.0f),
-                   1.0f)
-               : Quantity_ColorRGBA(float(aPixel.r()) / 255.0f,
-                                    float(aPixel.g()) / 255.0f,
-                                    float(aPixel.b()) / 255.0f,
-                                    1.0f);
+      return theToLinearize ? Quantity_ColorRGBA(Quantity_Color::Convert_sRGB_To_LinearRGB(
+                                                   static_cast<float>(aPixel.r()) / 255.0f),
+                                                 Quantity_Color::Convert_sRGB_To_LinearRGB(
+                                                   static_cast<float>(aPixel.g()) / 255.0f),
+                                                 Quantity_Color::Convert_sRGB_To_LinearRGB(
+                                                   static_cast<float>(aPixel.b()) / 255.0f),
+                                                 1.0f)
+                            : Quantity_ColorRGBA(static_cast<float>(aPixel.r()) / 255.0f,
+                                                 static_cast<float>(aPixel.g()) / 255.0f,
+                                                 static_cast<float>(aPixel.b()) / 255.0f,
+                                                 1.0f);
     }
     case Image_Format_BGR: {
       const Image_ColorBGR& aPixel = *reinterpret_cast<const Image_ColorBGR*>(theRawValue);
-      return theToLinearize
-               ? Quantity_ColorRGBA(
-                   Quantity_Color::Convert_sRGB_To_LinearRGB(float(aPixel.r()) / 255.0f),
-                   Quantity_Color::Convert_sRGB_To_LinearRGB(float(aPixel.g()) / 255.0f),
-                   Quantity_Color::Convert_sRGB_To_LinearRGB(float(aPixel.b()) / 255.0f),
-                   1.0f)
-               : Quantity_ColorRGBA(float(aPixel.r()) / 255.0f,
-                                    float(aPixel.g()) / 255.0f,
-                                    float(aPixel.b()) / 255.0f,
-                                    1.0f);
+      return theToLinearize ? Quantity_ColorRGBA(Quantity_Color::Convert_sRGB_To_LinearRGB(
+                                                   static_cast<float>(aPixel.r()) / 255.0f),
+                                                 Quantity_Color::Convert_sRGB_To_LinearRGB(
+                                                   static_cast<float>(aPixel.g()) / 255.0f),
+                                                 Quantity_Color::Convert_sRGB_To_LinearRGB(
+                                                   static_cast<float>(aPixel.b()) / 255.0f),
+                                                 1.0f)
+                            : Quantity_ColorRGBA(static_cast<float>(aPixel.r()) / 255.0f,
+                                                 static_cast<float>(aPixel.g()) / 255.0f,
+                                                 static_cast<float>(aPixel.b()) / 255.0f,
+                                                 1.0f);
     }
     case Image_Format_Gray: {
       const uint8_t& aPixel      = *reinterpret_cast<const uint8_t*>(theRawValue);
-      const float    anIntensity = float(aPixel) / 255.0f;
+      const float    anIntensity = static_cast<float>(aPixel) / 255.0f;
       return Quantity_ColorRGBA(anIntensity, anIntensity, anIntensity, 1.0f); // opaque
     }
     case Image_Format_Alpha: {
       const uint8_t& aPixel = *reinterpret_cast<const uint8_t*>(theRawValue);
-      return Quantity_ColorRGBA(1.0f, 1.0f, 1.0f, float(aPixel) / 255.0f);
+      return Quantity_ColorRGBA(1.0f, 1.0f, 1.0f, static_cast<float>(aPixel) / 255.0f);
     }
     case Image_Format_Gray16: {
       const uint16_t& aPixel      = *reinterpret_cast<const uint16_t*>(theRawValue);
-      const float     anIntensity = float(aPixel) / 65535.0f;
+      const float     anIntensity = static_cast<float>(aPixel) / 65535.0f;
       return Quantity_ColorRGBA(anIntensity, anIntensity, anIntensity, 1.0f); // opaque
     }
     case Image_Format_UNKNOWN: {
@@ -662,7 +668,7 @@ void Image_PixMap::ColorToRawPixel(uint8_t*                  theRawValue,
       return;
     }
     case Image_Format_Gray16: {
-      *reinterpret_cast<uint16_t*>(theRawValue) = uint16_t(aColor.r() * 65535.0f);
+      *reinterpret_cast<uint16_t*>(theRawValue) = static_cast<uint16_t>(aColor.r() * 65535.0f);
       return;
     }
     case Image_Format_UNKNOWN: {

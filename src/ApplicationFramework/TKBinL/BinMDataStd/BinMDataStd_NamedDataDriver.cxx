@@ -121,7 +121,7 @@ bool BinMDataStd_NamedDataDriver::Paste(const BinObjMgt_Persistent&       theSou
       uint8_t                    aValue;
       if (!(theSource >> aKey >> aValue))
         return false;
-      aBytes.Bind(aKey, (uint8_t)aValue);
+      aBytes.Bind(aKey, aValue);
     }
     T->ChangeBytes(aBytes);
   }
@@ -260,7 +260,7 @@ void BinMDataStd_NamedDataDriver::Paste(
     NCollection_DataMap<TCollection_ExtendedString, uint8_t>::Iterator itr(S->GetBytesContainer());
     for (; itr.More(); itr.Next())
     {
-      theTarget << itr.Key() << (uint8_t)itr.Value();
+      theTarget << itr.Key() << static_cast<uint8_t>(itr.Value());
     }
   }
   else

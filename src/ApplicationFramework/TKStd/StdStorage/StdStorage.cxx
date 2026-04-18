@@ -205,7 +205,7 @@ static TCollection_AsciiString currentDate()
   char       nowstr[SLENGTH];
   time_t     nowbin;
   struct tm* nowstruct;
-  if (time(&nowbin) != (time_t)-1)
+  if (time(&nowbin) != static_cast<time_t>(-1))
   {
     nowstruct = localtime(&nowbin);
     strftime(nowstr, SLENGTH, "%m/%d/%Y", nowstruct);
