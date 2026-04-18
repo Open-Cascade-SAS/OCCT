@@ -45,7 +45,7 @@ public: //! @name public types
     int ID2;
   };
 
-  typedef typename BVH::VectorType<double, Dimension>::Type BVH_VecNd;
+  using BVH_VecNd = typename BVH::VectorType<double, Dimension>::Type;
 
 public: //! @name Constructor
   //! Empty constructor

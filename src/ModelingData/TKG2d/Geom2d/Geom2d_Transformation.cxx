@@ -23,11 +23,11 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Geom2d_Transformation, Standard_Transient)
 
-typedef Geom2d_Transformation Transformation;
-typedef gp_Ax2d               Ax2d;
-typedef gp_Pnt2d              Pnt2d;
-typedef gp_TrsfForm           TrsfForm;
-typedef gp_Vec2d              Vec2d;
+using Transformation = Geom2d_Transformation;
+using Ax2d = gp_Ax2d;
+using Pnt2d = gp_Pnt2d;
+using TrsfForm = gp_TrsfForm;
+using Vec2d = gp_Vec2d;
 
 occ::handle<Geom2d_Transformation> Geom2d_Transformation::Copy() const
 {

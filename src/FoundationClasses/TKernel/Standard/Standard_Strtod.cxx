@@ -234,7 +234,7 @@
   #define Long int
 #endif
 #ifndef ULong
-typedef unsigned Long ULong;
+using ULong = unsigned Long ;
 #endif
 
 #ifdef DEBUG
@@ -403,11 +403,11 @@ int dtoa_divmax = 2; /* Permit experimenting: on some systems, 64-bit integer */
                      /* dtoa_divmax <= 27.*/
     #endif
 
-typedef struct BF96
+using BF96 = struct BF96
 {                          /* Normalized 96-bit software floating point numbers */
   unsigned int b0, b1, b2; /* b0 = most significant, binary point just to its left */
   int          e;          /* number represented = b * 2^e, with .5 <= b < 1 */
-} BF96;
+};
 
 static BF96 pten[667] = {
   {0xeef453d6, 0x923bd65a, 0x113faa29, -1136}, {0x9558b466, 0x1b6565f8, 0x4ac7ca59, -1132},
@@ -915,13 +915,13 @@ static int pfivebits[25] = {3,  5,  7,  10, 12, 14, 17, 19, 21, 24, 26, 28, 31,
   #endif /*}*/
 #endif   /*}} NO_LONG_LONG */
 
-                                              typedef union {
+                                              using U = union {
   double d;
   ULong  L[2];
 #ifdef USE_BF96
   ULLong LL;
 #endif
-} U;
+};
 
 #ifdef IEEE_8087
   #define word0(x) (x)->L[1]
@@ -1102,7 +1102,7 @@ extern double rnd_prod(double, double), rnd_quot(double, double);
   #define Pack_32
 #endif
 
-typedef struct BCinfo BCinfo;
+using BCinfo = struct BCinfo;
 
 struct BCinfo
 {
@@ -1137,13 +1137,13 @@ struct Bigint
   ULong          x[1];
 };
 
-typedef struct Bigint Bigint;
+using Bigint = struct Bigint;
 
-typedef struct ThInfo
+using ThInfo = struct ThInfo
 {
   Bigint* Freelist[Kmax + 1];
   Bigint* P5s;
-} ThInfo;
+};
 
 static ThInfo TI0;
 

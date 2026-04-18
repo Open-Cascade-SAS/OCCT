@@ -24,12 +24,12 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Geom_VectorWithMagnitude, Geom_Vector)
 
-typedef Geom_VectorWithMagnitude VectorWithMagnitude;
-typedef Geom_Vector              Vector;
-typedef gp_Ax1                   Ax1;
-typedef gp_Ax2                   Ax2;
-typedef gp_Pnt                   Pnt;
-typedef gp_Trsf                  Trsf;
+using VectorWithMagnitude = Geom_VectorWithMagnitude;
+using Vector = Geom_Vector;
+using Ax1 = gp_Ax1;
+using Ax2 = gp_Ax2;
+using Pnt = gp_Pnt;
+using Trsf = gp_Trsf;
 
 //=================================================================================================
 

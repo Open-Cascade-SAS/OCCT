@@ -59,7 +59,7 @@ template <class Type>
 class IntPolyh_Array
 {
 public:
-  typedef NCollection_Vector<Type> IntPolyh_VectorOfType;
+  using IntPolyh_VectorOfType = NCollection_Vector<Type>;
 
   /**
    * Constructor.

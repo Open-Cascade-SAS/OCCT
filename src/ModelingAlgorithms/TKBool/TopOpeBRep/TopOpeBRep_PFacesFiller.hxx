@@ -18,6 +18,6 @@
 #define _TopOpeBRep_PFacesFiller_HeaderFile
 
 class TopOpeBRep_FacesFiller;
-typedef TopOpeBRep_FacesFiller* TopOpeBRep_PFacesFiller;
+using TopOpeBRep_PFacesFiller = TopOpeBRep_FacesFiller*;
 
 #endif // _TopOpeBRep_PFacesFiller_HeaderFile

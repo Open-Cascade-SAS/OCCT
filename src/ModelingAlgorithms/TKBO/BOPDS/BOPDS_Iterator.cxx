@@ -70,7 +70,7 @@ protected:
 
 //
 //=======================================================================
-typedef NCollection_Vector<BOPDS_TSR> BOPDS_VectorOfTSR;
+using BOPDS_VectorOfTSR = NCollection_Vector<BOPDS_TSR>;
 
 /////////////////////////////////////////////////////////////////////////
 

@@ -45,8 +45,7 @@
 #include <algorithm>
 #include <NCollection_IndexedDataMap.hxx>
 
-typedef NCollection_IndexedDataMap<int, NCollection_List<int>>
-  IntPolyh_IndexedDataMapOfIntegerListOfInteger;
+using IntPolyh_IndexedDataMapOfIntegerListOfInteger = NCollection_IndexedDataMap<int, NCollection_List<int>>;
 
 static double MyTolerance                = 10.0e-7;
 static double MyConfusionPrecision       = 10.0e-12;
@@ -116,14 +115,14 @@ static void DegeneratedIndex(const NCollection_Array1<double>&     Xpars,
 // class : IntPolyh_BoxBndTree
 // purpose  : BVH structure to contain the boxes of triangles
 //=======================================================================
-typedef BVH_BoxSet<double, 3, int> IntPolyh_BoxBndTree;
+using IntPolyh_BoxBndTree = BVH_BoxSet<double, 3, int>;
 
 //=================================================================================================
 
 class IntPolyh_BoxBndTreeSelector : public BVH_PairTraverse<double, 3, IntPolyh_BoxBndTree>
 {
 public:
-  typedef BVH_Box<double, 3>::BVH_VecNt BVH_Vec3d;
+  using BVH_Vec3d = BVH_Box<double, 3>::BVH_VecNt;
 
   //! Auxiliary structure to keep the pair of indices
   struct PairIDs

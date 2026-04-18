@@ -134,7 +134,7 @@ protected:
 };
 
 //=======================================================================
-typedef NCollection_Vector<BOPAlgo_VertexEdge> BOPAlgo_VectorOfVertexEdge;
+using BOPAlgo_VectorOfVertexEdge = NCollection_Vector<BOPAlgo_VertexEdge>;
 
 //=================================================================================================
 

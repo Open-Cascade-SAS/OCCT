@@ -16,6 +16,6 @@
 
 #include <Standard_TypeDef.hxx>
 
-typedef char* Standard_PCharacter;
+using Standard_PCharacter = char*;
 
 #endif

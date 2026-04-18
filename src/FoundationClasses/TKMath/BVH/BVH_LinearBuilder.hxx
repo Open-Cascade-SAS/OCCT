@@ -34,7 +34,7 @@ template <class T, int N>
 class BVH_LinearBuilder : public BVH_Builder<T, N>
 {
 public:
-  typedef typename BVH::VectorType<T, N>::Type BVH_VecNt;
+  using BVH_VecNt = typename BVH::VectorType<T, N>::Type;
 
 public:
   //! Creates binned LBVH builder.
@@ -50,7 +50,7 @@ public:
              const BVH_Box<T, N>& theBox) const override;
 
 protected:
-  typedef NCollection_Array1<BVH_EncodedLink>::iterator LinkIterator;
+  using LinkIterator = NCollection_Array1<BVH_EncodedLink>::iterator;
 
 protected:
   //! Emits hierarchy from sorted Morton codes.

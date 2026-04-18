@@ -19,7 +19,7 @@
 #include <TopOpeBRep_define.hxx>
 #include <TopOpeBRepDS_CurvePointInterference.hxx>
 
-typedef NCollection_List<occ::handle<TopOpeBRepDS_Interference>>* BOA_t;
+using BOA_t = NCollection_List<occ::handle<TopOpeBRepDS_Interference>>*;
 
 static int compll(const void* v1, const void* v2)
 {

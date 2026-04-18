@@ -18,6 +18,6 @@
 #define _TopOpeBRep_PPntOn2S_HeaderFile
 
 class IntSurf_PntOn2S;
-typedef IntSurf_PntOn2S* TopOpeBRep_PPntOn2S;
+using TopOpeBRep_PPntOn2S = IntSurf_PntOn2S*;
 
 #endif // _TopOpeBRep_PPntOn2S_HeaderFile

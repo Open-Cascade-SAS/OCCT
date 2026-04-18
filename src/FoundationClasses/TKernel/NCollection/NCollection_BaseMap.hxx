@@ -21,7 +21,7 @@
 #include <NCollection_DefineAlloc.hxx>
 #include <NCollection_ListNode.hxx>
 
-typedef void (*NCollection_DelMapNode)(NCollection_ListNode*,
+using NCollection_DelMapNode = void (*)(NCollection_ListNode*,
                                        occ::handle<NCollection_BaseAllocator>& theAl);
 
 /**

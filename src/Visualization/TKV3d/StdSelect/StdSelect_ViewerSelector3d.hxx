@@ -16,6 +16,6 @@
 
 #include <SelectMgr_ViewerSelector.hxx>
 
-typedef SelectMgr_ViewerSelector StdSelect_ViewerSelector3d;
+using StdSelect_ViewerSelector3d = SelectMgr_ViewerSelector;
 
 #endif // _StdSelect_ViewerSelector3d_HeaderFile

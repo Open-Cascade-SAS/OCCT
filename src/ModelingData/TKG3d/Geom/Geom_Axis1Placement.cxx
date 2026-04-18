@@ -24,12 +24,12 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Geom_Axis1Placement, Geom_AxisPlacement)
 
-typedef Geom_Axis1Placement Axis1Placement;
-typedef gp_Ax2              Ax2;
-typedef gp_Dir              Dir;
-typedef gp_Pnt              Pnt;
-typedef gp_Trsf             Trsf;
-typedef gp_Vec              Vec;
+using Axis1Placement = Geom_Axis1Placement;
+using Ax2 = gp_Ax2;
+using Dir = gp_Dir;
+using Pnt = gp_Pnt;
+using Trsf = gp_Trsf;
+using Vec = gp_Vec;
 
 //=================================================================================================
 

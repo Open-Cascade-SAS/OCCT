@@ -78,116 +78,116 @@ struct OpenGl_GlFunctions
   Standard_EXPORT void load(OpenGl_Context& theCtx, bool theIsCoreProfile);
 
 public: //! @name OpenGL 1.1
-  typedef void(APIENTRYP glClearColor_t)(GLclampf theRed,
+  using glClearColor_t = void(APIENTRYP )(GLclampf theRed,
                                          GLclampf theGreen,
                                          GLclampf theBlue,
                                          GLclampf theAlpha);
   glClearColor_t glClearColor;
 
-  typedef void(APIENTRYP glClear_t)(GLbitfield theMask);
+  using glClear_t = void(APIENTRYP )(GLbitfield theMask);
   glClear_t glClear;
 
-  typedef void(APIENTRYP glColorMask_t)(GLboolean theRed,
+  using glColorMask_t = void(APIENTRYP )(GLboolean theRed,
                                         GLboolean theGreen,
                                         GLboolean theBlue,
                                         GLboolean theAlpha);
   glColorMask_t glColorMask;
 
-  typedef void(APIENTRYP glBlendFunc_t)(GLenum sfactor, GLenum dfactor);
+  using glBlendFunc_t = void(APIENTRYP )(GLenum sfactor, GLenum dfactor);
   glBlendFunc_t glBlendFunc;
 
-  typedef void(APIENTRYP glCullFace_t)(GLenum theMode);
+  using glCullFace_t = void(APIENTRYP )(GLenum theMode);
   glCullFace_t glCullFace;
 
-  typedef void(APIENTRYP glFrontFace_t)(GLenum theMode);
+  using glFrontFace_t = void(APIENTRYP )(GLenum theMode);
   glFrontFace_t glFrontFace;
 
-  typedef void(APIENTRYP glLineWidth_t)(GLfloat theWidth);
+  using glLineWidth_t = void(APIENTRYP )(GLfloat theWidth);
   glLineWidth_t glLineWidth;
 
-  typedef void(APIENTRYP glPolygonOffset_t)(GLfloat theFactor, GLfloat theUnits);
+  using glPolygonOffset_t = void(APIENTRYP )(GLfloat theFactor, GLfloat theUnits);
   glPolygonOffset_t glPolygonOffset;
 
-  typedef void(APIENTRYP glScissor_t)(GLint theX, GLint theY, GLsizei theWidth, GLsizei theHeight);
+  using glScissor_t = void(APIENTRYP )(GLint theX, GLint theY, GLsizei theWidth, GLsizei theHeight);
   glScissor_t glScissor;
 
-  typedef void(APIENTRYP glEnable_t)(GLenum theCap);
+  using glEnable_t = void(APIENTRYP )(GLenum theCap);
   glEnable_t glEnable;
 
-  typedef void(APIENTRYP glDisable_t)(GLenum theCap);
+  using glDisable_t = void(APIENTRYP )(GLenum theCap);
   glDisable_t glDisable;
 
-  typedef GLboolean(APIENTRYP glIsEnabled_t)(GLenum theCap);
+  using glIsEnabled_t = GLboolean(APIENTRYP )(GLenum theCap);
   glIsEnabled_t glIsEnabled;
 
-  typedef void(APIENTRYP glGetBooleanv_t)(GLenum theParamName, GLboolean* theValues);
+  using glGetBooleanv_t = void(APIENTRYP )(GLenum theParamName, GLboolean* theValues);
   glGetBooleanv_t glGetBooleanv;
 
-  typedef void(APIENTRYP glGetFloatv_t)(GLenum theParamName, GLfloat* theValues);
+  using glGetFloatv_t = void(APIENTRYP )(GLenum theParamName, GLfloat* theValues);
   glGetFloatv_t glGetFloatv;
 
-  typedef void(APIENTRYP glGetIntegerv_t)(GLenum theParamName, GLint* theValues);
+  using glGetIntegerv_t = void(APIENTRYP )(GLenum theParamName, GLint* theValues);
   glGetIntegerv_t glGetIntegerv;
 
-  typedef GLenum(APIENTRYP glGetError_t)();
+  using glGetError_t = GLenum(APIENTRYP )();
   glGetError_t glGetError;
 
-  typedef const GLubyte*(APIENTRYP glGetString_t)(GLenum theName);
+  using glGetString_t = const GLubyte*(APIENTRYP)(GLenum theName);
   glGetString_t glGetString;
 
-  typedef void(APIENTRYP glFinish_t)();
+  using glFinish_t = void(APIENTRYP )();
   glFinish_t glFinish;
 
-  typedef void(APIENTRYP glFlush_t)();
+  using glFlush_t = void(APIENTRYP )();
   glFlush_t glFlush;
 
-  typedef void(APIENTRYP glHint_t)(GLenum theTarget, GLenum theMode);
+  using glHint_t = void(APIENTRYP )(GLenum theTarget, GLenum theMode);
   glHint_t glHint;
 
-  typedef void(APIENTRYP glGetPointerv_t)(GLenum pname, GLvoid** params);
+  using glGetPointerv_t = void(APIENTRYP )(GLenum pname, GLvoid** params);
   glGetPointerv_t glGetPointerv;
 
-  typedef void(APIENTRYP glReadBuffer_t)(GLenum src); // added to OpenGL ES 3.0
+  using glReadBuffer_t = void(APIENTRYP )(GLenum src); // added to OpenGL ES 3.0
   glReadBuffer_t glReadBuffer;
 
-  typedef void(APIENTRYP glDrawBuffer_t)(GLenum mode); // added to OpenGL ES 3.0
+  using glDrawBuffer_t = void(APIENTRYP )(GLenum mode); // added to OpenGL ES 3.0
   glDrawBuffer_t glDrawBuffer;
 
-  typedef void(APIENTRYP glPixelTransferi_t)(GLenum pname, GLint param);
+  using glPixelTransferi_t = void(APIENTRYP )(GLenum pname, GLint param);
   glPixelTransferi_t glPixelTransferi;
 
 public: //! @name Depth Buffer
-  typedef void(APIENTRYP glClearDepth_t)(GLclampd theDepth);
+  using glClearDepth_t = void(APIENTRYP )(GLclampd theDepth);
   glClearDepth_t glClearDepth;
 
-  typedef void(APIENTRYP glDepthFunc_t)(GLenum theFunc);
+  using glDepthFunc_t = void(APIENTRYP )(GLenum theFunc);
   glDepthFunc_t glDepthFunc;
 
-  typedef void(APIENTRYP glDepthMask_t)(GLboolean theFlag);
+  using glDepthMask_t = void(APIENTRYP )(GLboolean theFlag);
   glDepthMask_t glDepthMask;
 
-  typedef void(APIENTRYP glDepthRange_t)(GLclampd theNearValue, GLclampd theFarValue);
+  using glDepthRange_t = void(APIENTRYP )(GLclampd theNearValue, GLclampd theFarValue);
   glDepthRange_t glDepthRange;
 
 public: //! @name Transformation
-  typedef void(APIENTRYP glViewport_t)(GLint theX, GLint theY, GLsizei theWidth, GLsizei theHeight);
+  using glViewport_t = void(APIENTRYP )(GLint theX, GLint theY, GLsizei theWidth, GLsizei theHeight);
   glViewport_t glViewport;
 
 public: //! @name Vertex Arrays
-  typedef void(APIENTRYP glDrawArrays_t)(GLenum theMode, GLint theFirst, GLsizei theCount);
+  using glDrawArrays_t = void(APIENTRYP )(GLenum theMode, GLint theFirst, GLsizei theCount);
   glDrawArrays_t glDrawArrays;
 
-  typedef void(APIENTRYP glDrawElements_t)(GLenum        theMode,
+  using glDrawElements_t = void(APIENTRYP )(GLenum        theMode,
                                            GLsizei       theCount,
                                            GLenum        theType,
                                            const GLvoid* theIndices);
   glDrawElements_t glDrawElements;
 
 public: //! @name Raster functions
-  typedef void(APIENTRYP glPixelStorei_t)(GLenum theParamName, GLint theParam);
+  using glPixelStorei_t = void(APIENTRYP )(GLenum theParamName, GLint theParam);
   glPixelStorei_t glPixelStorei;
 
-  typedef void(APIENTRYP glReadPixels_t)(GLint   x,
+  using glReadPixels_t = void(APIENTRYP )(GLint   x,
                                          GLint   y,
                                          GLsizei width,
                                          GLsizei height,
@@ -197,38 +197,38 @@ public: //! @name Raster functions
   glReadPixels_t glReadPixels;
 
 public: //! @name Stenciling
-  typedef void(APIENTRYP glStencilFunc_t)(GLenum func, GLint ref, GLuint mask);
+  using glStencilFunc_t = void(APIENTRYP )(GLenum func, GLint ref, GLuint mask);
   glStencilFunc_t glStencilFunc;
 
-  typedef void(APIENTRYP glStencilMask_t)(GLuint mask);
+  using glStencilMask_t = void(APIENTRYP )(GLuint mask);
   glStencilMask_t glStencilMask;
 
-  typedef void(APIENTRYP glStencilOp_t)(GLenum fail, GLenum zfail, GLenum zpass);
+  using glStencilOp_t = void(APIENTRYP )(GLenum fail, GLenum zfail, GLenum zpass);
   glStencilOp_t glStencilOp;
 
-  typedef void(APIENTRYP glClearStencil_t)(GLint s);
+  using glClearStencil_t = void(APIENTRYP )(GLint s);
   glClearStencil_t glClearStencil;
 
 public: //! @name Texture mapping
-  typedef void(APIENTRYP glTexParameterf_t)(GLenum target, GLenum pname, GLfloat param);
+  using glTexParameterf_t = void(APIENTRYP )(GLenum target, GLenum pname, GLfloat param);
   glTexParameterf_t glTexParameterf;
 
-  typedef void(APIENTRYP glTexParameteri_t)(GLenum target, GLenum pname, GLint param);
+  using glTexParameteri_t = void(APIENTRYP )(GLenum target, GLenum pname, GLint param);
   glTexParameteri_t glTexParameteri;
 
-  typedef void(APIENTRYP glTexParameterfv_t)(GLenum target, GLenum pname, const GLfloat* params);
+  using glTexParameterfv_t = void(APIENTRYP )(GLenum target, GLenum pname, const GLfloat* params);
   glTexParameterfv_t glTexParameterfv;
 
-  typedef void(APIENTRYP glTexParameteriv_t)(GLenum target, GLenum pname, const GLint* params);
+  using glTexParameteriv_t = void(APIENTRYP )(GLenum target, GLenum pname, const GLint* params);
   glTexParameteriv_t glTexParameteriv;
 
-  typedef void(APIENTRYP glGetTexParameterfv_t)(GLenum target, GLenum pname, GLfloat* params);
+  using glGetTexParameterfv_t = void(APIENTRYP )(GLenum target, GLenum pname, GLfloat* params);
   glGetTexParameterfv_t glGetTexParameterfv;
 
-  typedef void(APIENTRYP glGetTexParameteriv_t)(GLenum target, GLenum pname, GLint* params);
+  using glGetTexParameteriv_t = void(APIENTRYP )(GLenum target, GLenum pname, GLint* params);
   glGetTexParameteriv_t glGetTexParameteriv;
 
-  typedef void(APIENTRYP glTexImage2D_t)(GLenum        target,
+  using glTexImage2D_t = void(APIENTRYP )(GLenum        target,
                                          GLint         level,
                                          GLint         internalFormat,
                                          GLsizei       width,
@@ -239,19 +239,19 @@ public: //! @name Texture mapping
                                          const GLvoid* pixels);
   glTexImage2D_t glTexImage2D;
 
-  typedef void(APIENTRYP glGenTextures_t)(GLsizei n, GLuint* textures);
+  using glGenTextures_t = void(APIENTRYP )(GLsizei n, GLuint* textures);
   glGenTextures_t glGenTextures;
 
-  typedef void(APIENTRYP glDeleteTextures_t)(GLsizei n, const GLuint* textures);
+  using glDeleteTextures_t = void(APIENTRYP )(GLsizei n, const GLuint* textures);
   glDeleteTextures_t glDeleteTextures;
 
-  typedef void(APIENTRYP glBindTexture_t)(GLenum target, GLuint texture);
+  using glBindTexture_t = void(APIENTRYP )(GLenum target, GLuint texture);
   glBindTexture_t glBindTexture;
 
-  typedef GLboolean(APIENTRYP glIsTexture_t)(GLuint texture);
+  using glIsTexture_t = GLboolean(APIENTRYP )(GLuint texture);
   glIsTexture_t glIsTexture;
 
-  typedef void(APIENTRYP glTexSubImage2D_t)(GLenum        target,
+  using glTexSubImage2D_t = void(APIENTRYP )(GLenum        target,
                                             GLint         level,
                                             GLint         xoffset,
                                             GLint         yoffset,
@@ -262,7 +262,7 @@ public: //! @name Texture mapping
                                             const GLvoid* pixels);
   glTexSubImage2D_t glTexSubImage2D;
 
-  typedef void(APIENTRYP glCopyTexImage2D_t)(GLenum  target,
+  using glCopyTexImage2D_t = void(APIENTRYP )(GLenum  target,
                                              GLint   level,
                                              GLenum  internalformat,
                                              GLint   x,
@@ -272,7 +272,7 @@ public: //! @name Texture mapping
                                              GLint   border);
   glCopyTexImage2D_t glCopyTexImage2D;
 
-  typedef void(APIENTRYP glCopyTexSubImage2D_t)(GLenum  target,
+  using glCopyTexSubImage2D_t = void(APIENTRYP )(GLenum  target,
                                                 GLint   level,
                                                 GLint   xoffset,
                                                 GLint   yoffset,
@@ -283,7 +283,7 @@ public: //! @name Texture mapping
   glCopyTexSubImage2D_t glCopyTexSubImage2D;
 
 public: // not part of OpenGL ES 2.0
-  typedef void(APIENTRYP glTexImage1D_t)(GLenum        target,
+  using glTexImage1D_t = void(APIENTRYP )(GLenum        target,
                                          GLint         level,
                                          GLint         internalFormat,
                                          GLsizei       width,
@@ -293,7 +293,7 @@ public: // not part of OpenGL ES 2.0
                                          const GLvoid* pixels);
   glTexImage1D_t glTexImage1D;
 
-  typedef void(APIENTRYP glTexSubImage1D_t)(GLenum        target,
+  using glTexSubImage1D_t = void(APIENTRYP )(GLenum        target,
                                             GLint         level,
                                             GLint         xoffset,
                                             GLsizei       width,
@@ -302,7 +302,7 @@ public: // not part of OpenGL ES 2.0
                                             const GLvoid* pixels);
   glTexSubImage1D_t glTexSubImage1D;
 
-  typedef void(APIENTRYP glCopyTexImage1D_t)(GLenum  target,
+  using glCopyTexImage1D_t = void(APIENTRYP )(GLenum  target,
                                              GLint   level,
                                              GLenum  internalformat,
                                              GLint   x,
@@ -311,7 +311,7 @@ public: // not part of OpenGL ES 2.0
                                              GLint   border);
   glCopyTexImage1D_t glCopyTexImage1D;
 
-  typedef void(APIENTRYP glCopyTexSubImage1D_t)(GLenum  target,
+  using glCopyTexSubImage1D_t = void(APIENTRYP )(GLenum  target,
                                                 GLint   level,
                                                 GLint   xoffset,
                                                 GLint   x,
@@ -319,128 +319,128 @@ public: // not part of OpenGL ES 2.0
                                                 GLsizei width);
   glCopyTexSubImage1D_t glCopyTexSubImage1D;
 
-  typedef void(APIENTRYP glGetTexImage_t)(GLenum  target,
+  using glGetTexImage_t = void(APIENTRYP )(GLenum  target,
                                           GLint   level,
                                           GLenum  format,
                                           GLenum  type,
                                           GLvoid* pixels);
   glGetTexImage_t glGetTexImage;
 
-  typedef void(APIENTRYP glAlphaFunc_t)(GLenum theFunc, GLclampf theRef);
+  using glAlphaFunc_t = void(APIENTRYP )(GLenum theFunc, GLclampf theRef);
   glAlphaFunc_t glAlphaFunc;
 
-  typedef void(APIENTRYP glPointSize_t)(GLfloat theSize);
+  using glPointSize_t = void(APIENTRYP )(GLfloat theSize);
   glPointSize_t glPointSize;
 
 public: //! @name OpenGL 1.1 FFP (obsolete, removed since 3.1)
-  typedef void(APIENTRYP glTexEnvi_t)(GLenum target, GLenum pname, GLint param);
+  using glTexEnvi_t = void(APIENTRYP )(GLenum target, GLenum pname, GLint param);
   glTexEnvi_t glTexEnvi;
 
-  typedef void(APIENTRYP glGetTexEnviv_t)(GLenum target, GLenum pname, GLint* params);
+  using glGetTexEnviv_t = void(APIENTRYP )(GLenum target, GLenum pname, GLint* params);
   glGetTexEnviv_t glGetTexEnviv;
 
-  typedef void(APIENTRYP glLogicOp_t)(GLenum opcode);
+  using glLogicOp_t = void(APIENTRYP )(GLenum opcode);
   glLogicOp_t glLogicOp;
 
 public: //! @name Begin/End primitive specification (removed since 3.1)
-  typedef void(APIENTRYP glColor4fv_t)(const GLfloat* theVec);
+  using glColor4fv_t = void(APIENTRYP )(const GLfloat* theVec);
   glColor4fv_t glColor4fv;
 
 public: //! @name Matrix operations (removed since 3.1)
-  typedef void(APIENTRYP glMatrixMode_t)(GLenum theMode);
+  using glMatrixMode_t = void(APIENTRYP )(GLenum theMode);
   glMatrixMode_t glMatrixMode;
 
-  typedef void(APIENTRYP glLoadIdentity_t)();
+  using glLoadIdentity_t = void(APIENTRYP )();
   glLoadIdentity_t glLoadIdentity;
 
-  typedef void(APIENTRYP glLoadMatrixf_t)(const GLfloat* theMatrix);
+  using glLoadMatrixf_t = void(APIENTRYP )(const GLfloat* theMatrix);
   glLoadMatrixf_t glLoadMatrixf;
 
 public: //! @name Line and Polygon stipple (removed since 3.1)
-  typedef void(APIENTRYP glLineStipple_t)(GLint theFactor, GLushort thePattern);
+  using glLineStipple_t = void(APIENTRYP )(GLint theFactor, GLushort thePattern);
   glLineStipple_t glLineStipple;
 
-  typedef void(APIENTRYP glPolygonStipple_t)(const GLubyte* theMask);
+  using glPolygonStipple_t = void(APIENTRYP )(const GLubyte* theMask);
   glPolygonStipple_t glPolygonStipple;
 
 public: //! @name Fixed pipeline lighting (removed since 3.1)
-  typedef void(APIENTRYP glShadeModel_t)(GLenum theMode);
+  using glShadeModel_t = void(APIENTRYP )(GLenum theMode);
   glShadeModel_t glShadeModel;
 
-  typedef void(APIENTRYP glLightf_t)(GLenum theLight, GLenum pname, GLfloat param);
+  using glLightf_t = void(APIENTRYP )(GLenum theLight, GLenum pname, GLfloat param);
   glLightf_t glLightf;
 
-  typedef void(APIENTRYP glLightfv_t)(GLenum theLight, GLenum pname, const GLfloat* params);
+  using glLightfv_t = void(APIENTRYP )(GLenum theLight, GLenum pname, const GLfloat* params);
   glLightfv_t glLightfv;
 
-  typedef void(APIENTRYP glLightModeli_t)(GLenum pname, GLint param);
+  using glLightModeli_t = void(APIENTRYP )(GLenum pname, GLint param);
   glLightModeli_t glLightModeli;
 
-  typedef void(APIENTRYP glLightModelfv_t)(GLenum pname, const GLfloat* params);
+  using glLightModelfv_t = void(APIENTRYP )(GLenum pname, const GLfloat* params);
   glLightModelfv_t glLightModelfv;
 
-  typedef void(APIENTRYP glMaterialf_t)(GLenum face, GLenum pname, GLfloat param);
+  using glMaterialf_t = void(APIENTRYP )(GLenum face, GLenum pname, GLfloat param);
   glMaterialf_t glMaterialf;
 
-  typedef void(APIENTRYP glMaterialfv_t)(GLenum face, GLenum pname, const GLfloat* params);
+  using glMaterialfv_t = void(APIENTRYP )(GLenum face, GLenum pname, const GLfloat* params);
   glMaterialfv_t glMaterialfv;
 
-  typedef void(APIENTRYP glColorMaterial_t)(GLenum face, GLenum mode);
+  using glColorMaterial_t = void(APIENTRYP )(GLenum face, GLenum mode);
   glColorMaterial_t glColorMaterial;
 
 public: //! @name clipping plane (removed since 3.1)
-  typedef void(APIENTRYP glClipPlane_t)(GLenum thePlane, const GLdouble* theEquation);
+  using glClipPlane_t = void(APIENTRYP )(GLenum thePlane, const GLdouble* theEquation);
   glClipPlane_t glClipPlane;
 
 public: //! @name Display lists (removed since 3.1)
-  typedef void(APIENTRYP glDeleteLists_t)(GLuint theList, GLsizei theRange);
+  using glDeleteLists_t = void(APIENTRYP )(GLuint theList, GLsizei theRange);
   glDeleteLists_t glDeleteLists;
 
-  typedef GLuint(APIENTRYP glGenLists_t)(GLsizei theRange);
+  using glGenLists_t = GLuint(APIENTRYP )(GLsizei theRange);
   glGenLists_t glGenLists;
 
-  typedef void(APIENTRYP glNewList_t)(GLuint theList, GLenum theMode);
+  using glNewList_t = void(APIENTRYP )(GLuint theList, GLenum theMode);
   glNewList_t glNewList;
 
-  typedef void(APIENTRYP glEndList_t)();
+  using glEndList_t = void(APIENTRYP )();
   glEndList_t glEndList;
 
-  typedef void(APIENTRYP glCallList_t)(GLuint theList);
+  using glCallList_t = void(APIENTRYP )(GLuint theList);
   glCallList_t glCallList;
 
-  typedef void(APIENTRYP glCallLists_t)(GLsizei theNb, GLenum theType, const GLvoid* theLists);
+  using glCallLists_t = void(APIENTRYP )(GLsizei theNb, GLenum theType, const GLvoid* theLists);
   glCallLists_t glCallLists;
 
-  typedef void(APIENTRYP glListBase_t)(GLuint theBase);
+  using glListBase_t = void(APIENTRYP )(GLuint theBase);
   glListBase_t glListBase;
 
 public: //! @name Current raster position and Rectangles (removed since 3.1)
-  typedef void(APIENTRYP glRasterPos2i_t)(GLint x, GLint y);
+  using glRasterPos2i_t = void(APIENTRYP )(GLint x, GLint y);
   glRasterPos2i_t glRasterPos2i;
 
-  typedef void(APIENTRYP glRasterPos3fv_t)(const GLfloat* theVec);
+  using glRasterPos3fv_t = void(APIENTRYP )(const GLfloat* theVec);
   glRasterPos3fv_t glRasterPos3fv;
 
 public: //! @name Texture mapping (removed since 3.1)
-  typedef void(APIENTRYP glTexGeni_t)(GLenum coord, GLenum pname, GLint param);
+  using glTexGeni_t = void(APIENTRYP )(GLenum coord, GLenum pname, GLint param);
   glTexGeni_t glTexGeni;
 
-  typedef void(APIENTRYP glTexGenfv_t)(GLenum coord, GLenum pname, const GLfloat* params);
+  using glTexGenfv_t = void(APIENTRYP )(GLenum coord, GLenum pname, const GLfloat* params);
   glTexGenfv_t glTexGenfv;
 
 public: //! @name Pixel copying (removed since 3.1)
-  typedef void(APIENTRYP glDrawPixels_t)(GLsizei       width,
+  using glDrawPixels_t = void(APIENTRYP )(GLsizei       width,
                                          GLsizei       height,
                                          GLenum        format,
                                          GLenum        type,
                                          const GLvoid* pixels);
   glDrawPixels_t glDrawPixels;
 
-  typedef void(
-    APIENTRYP glCopyPixels_t)(GLint x, GLint y, GLsizei width, GLsizei height, GLenum type);
+  using glCopyPixels_t = void(
+    APIENTRYP )(GLint x, GLint y, GLsizei width, GLsizei height, GLenum type);
   glCopyPixels_t glCopyPixels;
 
-  typedef void(APIENTRYP glBitmap_t)(GLsizei        width,
+  using glBitmap_t = void(APIENTRYP )(GLsizei        width,
                                      GLsizei        height,
                                      GLfloat        xorig,
                                      GLfloat        yorig,
@@ -450,58 +450,58 @@ public: //! @name Pixel copying (removed since 3.1)
   glBitmap_t glBitmap;
 
 public: //! @name Edge flags and fixed-function vertex processing (removed since 3.1)
-  typedef void(APIENTRYP glIndexPointer_t)(GLenum theType, GLsizei theStride, const GLvoid* thePtr);
+  using glIndexPointer_t = void(APIENTRYP )(GLenum theType, GLsizei theStride, const GLvoid* thePtr);
   glIndexPointer_t glIndexPointer;
 
-  typedef void(APIENTRYP glVertexPointer_t)(GLint         theSize,
+  using glVertexPointer_t = void(APIENTRYP )(GLint         theSize,
                                             GLenum        theType,
                                             GLsizei       theStride,
                                             const GLvoid* thePtr);
   glVertexPointer_t glVertexPointer;
 
-  typedef void(APIENTRYP glNormalPointer_t)(GLenum        theType,
+  using glNormalPointer_t = void(APIENTRYP )(GLenum        theType,
                                             GLsizei       theStride,
                                             const GLvoid* thePtr);
   glNormalPointer_t glNormalPointer;
 
-  typedef void(APIENTRYP glColorPointer_t)(GLint         theSize,
+  using glColorPointer_t = void(APIENTRYP )(GLint         theSize,
                                            GLenum        theType,
                                            GLsizei       theStride,
                                            const GLvoid* thePtr);
   glColorPointer_t glColorPointer;
 
-  typedef void(APIENTRYP glTexCoordPointer_t)(GLint         theSize,
+  using glTexCoordPointer_t = void(APIENTRYP )(GLint         theSize,
                                               GLenum        theType,
                                               GLsizei       theStride,
                                               const GLvoid* thePtr);
   glTexCoordPointer_t glTexCoordPointer;
 
-  typedef void(APIENTRYP glEnableClientState_t)(GLenum theCap);
+  using glEnableClientState_t = void(APIENTRYP )(GLenum theCap);
   glEnableClientState_t glEnableClientState;
 
-  typedef void(APIENTRYP glDisableClientState_t)(GLenum theCap);
+  using glDisableClientState_t = void(APIENTRYP )(GLenum theCap);
   glDisableClientState_t glDisableClientState;
 
-  typedef void(APIENTRYP glGetTexLevelParameterfv_t)(GLenum   target,
+  using glGetTexLevelParameterfv_t = void(APIENTRYP )(GLenum   target,
                                                      GLint    level,
                                                      GLenum   pname,
                                                      GLfloat* params);
   glGetTexLevelParameterfv_t glGetTexLevelParameterfv;
 
-  typedef void(APIENTRYP glGetTexLevelParameteriv_t)(GLenum target,
+  using glGetTexLevelParameteriv_t = void(APIENTRYP )(GLenum target,
                                                      GLint  level,
                                                      GLenum pname,
                                                      GLint* params);
   glGetTexLevelParameteriv_t glGetTexLevelParameteriv;
 
-  typedef void(APIENTRYP glPolygonMode_t)(GLenum face, GLenum mode);
+  using glPolygonMode_t = void(APIENTRYP )(GLenum face, GLenum mode);
   glPolygonMode_t glPolygonMode;
 
 public: //! @name OpenGL ES 3.2
-  typedef void(APIENTRYP glBlendBarrier_t)();
+  using glBlendBarrier_t = void(APIENTRYP )();
   glBlendBarrier_t glBlendBarrier;
 
-  typedef void(APIENTRYP glPrimitiveBoundingBox_t)(GLfloat minX,
+  using glPrimitiveBoundingBox_t = void(APIENTRYP )(GLfloat minX,
                                                    GLfloat minY,
                                                    GLfloat minZ,
                                                    GLfloat minW,
@@ -1223,7 +1223,7 @@ public: //! @name GL_ARB_bindless_texture
 
 #if defined(_WIN32)
 public: //! @name wgl extensions
-  typedef const char*(WINAPI* wglGetExtensionsStringARB_t)(HDC theDeviceContext);
+  using wglGetExtensionsStringARB_t = const char*(WINAPI*)(HDC theDeviceContext);
   wglGetExtensionsStringARB_t wglGetExtensionsStringARB;
 
   typedef BOOL(WINAPI* wglSwapIntervalEXT_t)(int theInterval);
@@ -1400,10 +1400,10 @@ public: //! @name glX extensions
   // GLX_EXT_swap_control
   // typedef int         (*glXSwapIntervalEXT_t)(Display* theDisplay, GLXDrawable theDrawable, int
   // theInterval);
-  typedef int (*glXSwapIntervalEXT_t)();
+  using glXSwapIntervalEXT_t = int (*)();
   glXSwapIntervalEXT_t glXSwapIntervalEXT;
 
-  typedef int (*glXSwapIntervalSGI_t)(int theInterval);
+  using glXSwapIntervalSGI_t = int (*)(int theInterval);
   glXSwapIntervalSGI_t glXSwapIntervalSGI;
 
     // GLX_MESA_query_renderer
@@ -1424,17 +1424,17 @@ public: //! @name glX extensions
     #define GLX_RENDERER_ID_MESA 0x818E
   #endif // GLX_RENDERER_VENDOR_ID_MESA
 
-  typedef int (*glXQueryRendererIntegerMESA_t)(Aspect_XDisplay* theDisplay,
+  using glXQueryRendererIntegerMESA_t = int (*)(Aspect_XDisplay* theDisplay,
                                                int              theScreen,
                                                int              theRenderer,
                                                int              theAttribute,
                                                unsigned int*    theValue);
-  typedef int (*glXQueryCurrentRendererIntegerMESA_t)(int theAttribute, unsigned int* theValue);
-  typedef const char* (*glXQueryRendererStringMESA_t)(Aspect_XDisplay* theDisplay,
-                                                      int              theScreen,
-                                                      int              theRenderer,
-                                                      int              theAttribute);
-  typedef const char* (*glXQueryCurrentRendererStringMESA_t)(int theAttribute);
+  using glXQueryCurrentRendererIntegerMESA_t = int (*)(int theAttribute, unsigned int* theValue);
+  using glXQueryRendererStringMESA_t        = const char* (*)(Aspect_XDisplay* theDisplay,
+                                                       int              theScreen,
+                                                       int              theRenderer,
+                                                       int              theAttribute);
+  using glXQueryCurrentRendererStringMESA_t = const char* (*)(int theAttribute);
 
   glXQueryRendererIntegerMESA_t        glXQueryRendererIntegerMESA;
   glXQueryCurrentRendererIntegerMESA_t glXQueryCurrentRendererIntegerMESA;

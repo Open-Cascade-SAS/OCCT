@@ -16,6 +16,6 @@
 
 #include <BVH_Builder.hxx>
 
-typedef BVH_Builder<double, 3> BVH_Builder3d;
+using BVH_Builder3d = BVH_Builder<double, 3>;
 
 #endif // _BVH_Builder3d_Header

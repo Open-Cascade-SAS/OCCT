@@ -20,7 +20,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Geom2d_Point, Geom2d_Geometry)
 
-typedef Geom2d_Point Point;
+using Point = Geom2d_Point;
 
 double Geom2d_Point::Distance(const occ::handle<Geom2d_Point>& Other) const
 {

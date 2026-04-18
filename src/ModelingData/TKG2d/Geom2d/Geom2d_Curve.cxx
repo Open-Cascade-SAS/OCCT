@@ -25,7 +25,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Geom2d_Curve, Geom2d_Geometry)
 
-typedef Geom2d_Curve Curve;
+using Curve = Geom2d_Curve;
 
 //=================================================================================================
 

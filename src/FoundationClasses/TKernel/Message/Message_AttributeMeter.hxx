@@ -92,7 +92,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(Message_AttributeMeter, Message_Attribute)
 
 private:
-  typedef std::pair<double, double> StartToStopValue;
+  using StartToStopValue = std::pair<double, double>;
   // clang-format off
   NCollection_IndexedDataMap<Message_MetricType, StartToStopValue> myMetrics; //!< computed metrics
   // clang-format on

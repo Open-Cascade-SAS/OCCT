@@ -23,7 +23,7 @@
 class Aspect_DisplayConnection;
 class Aspect_WindowInputListener;
 
-typedef union _XEvent XEvent;
+using XEvent = union _XEvent;
 
 //! This class defines XLib window intended for creation of OpenGL context.
 class Xw_Window : public Aspect_Window

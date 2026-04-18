@@ -414,7 +414,7 @@ void OpenGl_Window::Init(const occ::handle<OpenGl_GraphicDriver>& theDriver,
     {
       wglMakeCurrent(aDevCtxTmp, aRendCtxTmp);
 
-      typedef const char*(WINAPI * wglGetExtensionsStringARB_t)(HDC theDeviceContext);
+      using wglGetExtensionsStringARB_t = const char*(WINAPI*)(HDC theDeviceContext);
       wglGetExtensionsStringARB_t aGetExtensions =
         (wglGetExtensionsStringARB_t)wglGetProcAddress("wglGetExtensionsStringARB");
       const char* aWglExts = (aGetExtensions != nullptr) ? aGetExtensions(wglGetCurrentDC()) : nullptr;
@@ -636,10 +636,10 @@ void OpenGl_Window::Init(const occ::handle<OpenGl_GraphicDriver>& theDriver,
   {
     // Replace default XError handler to ignore errors.
     // Warning - this is global for all threads!
-    typedef int (*xerrorhandler_t)(Display*, XErrorEvent*);
+    using xerrorhandler_t = int (*)(Display*, XErrorEvent*);
     xerrorhandler_t anOldHandler = XSetErrorHandler(xErrorDummyHandler);
 
-    typedef GLXContext (*glXCreateContextAttribsARB_t)(Display*    dpy,
+    using glXCreateContextAttribsARB_t = GLXContext (*)(Display*    dpy,
                                                        GLXFBConfig config,
                                                        GLXContext  share_context,
                                                        Bool        direct,

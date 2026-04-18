@@ -19,7 +19,7 @@
 #include <OpenGl_VertexBuffer.hxx>
 #include <OpenGl_IndexBuffer.hxx>
 
-typedef OpenGl_BufferCompatT<OpenGl_VertexBuffer> OpenGl_VertexBufferCompat;
-typedef OpenGl_BufferCompatT<OpenGl_IndexBuffer>  OpenGl_IndexBufferCompat;
+using OpenGl_VertexBufferCompat = OpenGl_BufferCompatT<OpenGl_VertexBuffer>;
+using OpenGl_IndexBufferCompat = OpenGl_BufferCompatT<OpenGl_IndexBuffer>;
 
 #endif // _OpenGl_VertexBufferCompat_HeaderFile

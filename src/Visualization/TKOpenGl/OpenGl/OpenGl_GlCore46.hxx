@@ -20,7 +20,7 @@
 struct OpenGl_GlCore46 : public OpenGl_GlCore45
 {
 private:
-  typedef OpenGl_GlCore45 theBaseClass_t;
+  using theBaseClass_t = OpenGl_GlCore45;
 
 public: //! @name OpenGL 4.6 additives to 4.5
   using theBaseClass_t::glMultiDrawArraysIndirectCount;

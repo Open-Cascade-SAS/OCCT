@@ -22,7 +22,7 @@
 struct OpenGl_GlCore31 : public OpenGl_GlCore30
 {
 private:
-  typedef OpenGl_GlCore30 theBaseClass_t;
+  using theBaseClass_t = OpenGl_GlCore30;
 
 public: //! @name GL_ARB_uniform_buffer_object (added to OpenGL 3.1 core)
   using theBaseClass_t::glGetActiveUniformBlockiv;

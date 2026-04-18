@@ -23,6 +23,6 @@
 
 #include <fstream>
 
-typedef std::ostream Standard_OStream;
+using Standard_OStream = std::ostream;
 
 #endif

@@ -28,8 +28,8 @@ public:
   DEFINE_STANDARD_ALLOC
   DEFINE_NCOLLECTION_ALLOC
 
-  typedef NCollection_Array2<TheItemType> Array2Type;
-  typedef TheItemType                     value_type;
+  using Array2Type = NCollection_Array2<TheItemType>;
+  using value_type = TheItemType;
 
 public:
   //! Constructor with bounds.

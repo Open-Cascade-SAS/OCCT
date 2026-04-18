@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Font_TextFormatter, Standard_Transient)
 
 namespace
 {
-typedef NCollection_Vec2<float> Vec2f;
+using Vec2f = NCollection_Vec2<float>;
 
 //! Auxiliary function to translate corners by the vector.
 inline void move(NCollection_Vector<Vec2f>& theCorners,

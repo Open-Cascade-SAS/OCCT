@@ -56,8 +56,8 @@ public:
   };
 
   //! UBTree algorithm
-  typedef NCollection_UBTree<TheObjType, TheBndType> UBTree;
-  typedef typename UBTree::TreeNode                  UBTreeNode;
+  using UBTree = NCollection_UBTree<TheObjType, TheBndType>;
+  using UBTreeNode = typename UBTree::TreeNode;
 
   // ---------- PUBLIC METHODS ----------
 

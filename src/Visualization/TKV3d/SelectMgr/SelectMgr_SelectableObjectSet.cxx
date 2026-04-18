@@ -25,7 +25,7 @@
 namespace
 {
 //! Short-cut definition of indexed data map of selectable objects
-typedef NCollection_IndexedMap<occ::handle<SelectMgr_SelectableObject>> ObjectsMap;
+using ObjectsMap = NCollection_IndexedMap<occ::handle<SelectMgr_SelectableObject>>;
 
 //=================================================================================================
 
@@ -228,7 +228,7 @@ private:
 private:
   ObjectsMap&                                             myObjects;
   mutable Select3D_BndBox3d                               myBox;
-  typedef NCollection_Shared<Select3D_BndBox3d>           Select3D_HBndBox3d;
+  using Select3D_HBndBox3d = NCollection_Shared<Select3D_BndBox3d>;
   NCollection_IndexedMap<occ::handle<Select3D_HBndBox3d>> myBoundings;
 };
 

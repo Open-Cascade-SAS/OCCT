@@ -49,7 +49,7 @@ public:
   DEFINE_NCOLLECTION_ALLOC;
 
 public:
-  typedef NCollection_Allocator<TheItemType> allocator_type;
+  using allocator_type = NCollection_Allocator<TheItemType>;
 
 public:
   // Define various type aliases for convenience

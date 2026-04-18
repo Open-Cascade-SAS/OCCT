@@ -15,7 +15,7 @@
 #define _Aspect_VKeyFlags_HeaderFile
 
 //! Key modifier, for combining with general key from Aspect_VKey.
-typedef unsigned int Aspect_VKeyFlags;
+using Aspect_VKeyFlags = unsigned int;
 
 //! Key modifier, for combining with general key from Aspect_VKey.
 enum
@@ -33,7 +33,7 @@ enum
 };
 
 //! Mouse buttons, for combining with Aspect_VKey and Aspect_VKeyFlags.
-typedef unsigned int Aspect_VKeyMouse;
+using Aspect_VKeyMouse = unsigned int;
 
 //! Mouse button bitmask
 enum

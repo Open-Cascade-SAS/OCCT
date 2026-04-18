@@ -121,7 +121,7 @@ public:
   };
 
 public:
-  typedef void (*MinMaxValuesCallback)(Graphic3d_CView*);
+  using MinMaxValuesCallback = void (*)(Graphic3d_CView*);
 
 public:
   //! Default constructor

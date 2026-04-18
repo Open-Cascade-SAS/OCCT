@@ -177,7 +177,7 @@ int SplitPrimitives(BVH_Set<T, N>*       theSet,
 template <class T, int N>
 struct BVH_AxisSelector
 {
-  typedef typename BVH::VectorType<T, N>::Type BVH_VecNt;
+  using BVH_VecNt = typename BVH::VectorType<T, N>::Type;
 
   static int MainAxis(const BVH_VecNt& theSize)
   {
@@ -195,7 +195,7 @@ struct BVH_AxisSelector
 template <class T>
 struct BVH_AxisSelector<T, 2>
 {
-  typedef typename BVH::VectorType<T, 2>::Type BVH_VecNt;
+  using BVH_VecNt = typename BVH::VectorType<T, 2>::Type;
 
   static int MainAxis(const BVH_VecNt& theSize) { return theSize.x() > theSize.y() ? 0 : 1; }
 };
@@ -319,7 +319,7 @@ typename BVH_QueueBuilder<T, N>::BVH_ChildNodes BVH_BinnedBuilder<T, N, Bins>::b
                                          Bins);
   }
 
-  typedef typename BVH_QueueBuilder<T, N>::BVH_PrimitiveRange Range;
+  using Range = typename BVH_QueueBuilder<T, N>::BVH_PrimitiveRange;
   return typename BVH_QueueBuilder<T, N>::BVH_ChildNodes(aMinSplitBoxLft,
                                                          aMinSplitBoxRgh,
                                                          Range(aNodeBegPrimitive, aMiddle - 1),

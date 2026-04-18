@@ -269,6 +269,6 @@ inline void Standard_ErrorHandler::Callback::UnregisterCallback() {}
 #endif
 
 // Definition of the old name "Standard_ErrorHandlerCallback" was kept for compatibility
-typedef Standard_ErrorHandler::Callback Standard_ErrorHandlerCallback;
+using Standard_ErrorHandlerCallback = Standard_ErrorHandler::Callback;
 
 #endif // _Standard_ErrorHandler_HeaderFile

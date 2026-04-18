@@ -66,12 +66,10 @@ class ShapeUpgrade_UnifySameDomain : public Standard_Transient
 {
 
 public:
-  typedef NCollection_DataMap<TopoDS_Shape, occ::handle<Geom_Plane>, TopTools_ShapeMapHasher>
-    DataMapOfFacePlane;
-  typedef NCollection_DataMap<TopoDS_Shape,
+  using DataMapOfFacePlane = NCollection_DataMap<TopoDS_Shape, occ::handle<Geom_Plane>, TopTools_ShapeMapHasher>;
+  using DataMapOfShapeMapOfShape = NCollection_DataMap<TopoDS_Shape,
                               NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>,
-                              TopTools_ShapeMapHasher>
-    DataMapOfShapeMapOfShape;
+                              TopTools_ShapeMapHasher>;
 
   //! Empty constructor
   Standard_EXPORT ShapeUpgrade_UnifySameDomain();

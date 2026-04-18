@@ -28,36 +28,34 @@ namespace
 {
 struct DefaultBaseMeshAlgo
 {
-  typedef BRepMesh_DelaunayBaseMeshAlgo Type;
+  using Type = BRepMesh_DelaunayBaseMeshAlgo;
 };
 
 template <class RangeSplitter>
 struct DefaultNodeInsertionMeshAlgo
 {
-  typedef BRepMesh_DelaunayNodeInsertionMeshAlgo<RangeSplitter, BRepMesh_DelaunayBaseMeshAlgo> Type;
+  using Type = BRepMesh_DelaunayNodeInsertionMeshAlgo<RangeSplitter, BRepMesh_DelaunayBaseMeshAlgo>;
 };
 
 struct BaseMeshAlgo
 {
-  typedef BRepMesh_DelabellaBaseMeshAlgo Type;
+  using Type = BRepMesh_DelabellaBaseMeshAlgo;
 };
 
 template <class RangeSplitter>
 struct NodeInsertionMeshAlgo
 {
-  typedef BRepMesh_DelaunayNodeInsertionMeshAlgo<
+  using Type = BRepMesh_DelaunayNodeInsertionMeshAlgo<
     RangeSplitter,
-    BRepMesh_CustomDelaunayBaseMeshAlgo<BRepMesh_DelabellaBaseMeshAlgo>>
-    Type;
+    BRepMesh_CustomDelaunayBaseMeshAlgo<BRepMesh_DelabellaBaseMeshAlgo>>;
 };
 
 template <class RangeSplitter>
 struct DeflectionControlMeshAlgo
 {
-  typedef BRepMesh_DelaunayDeflectionControlMeshAlgo<
+  using Type = BRepMesh_DelaunayDeflectionControlMeshAlgo<
     RangeSplitter,
-    BRepMesh_CustomDelaunayBaseMeshAlgo<BRepMesh_DelabellaBaseMeshAlgo>>
-    Type;
+    BRepMesh_CustomDelaunayBaseMeshAlgo<BRepMesh_DelabellaBaseMeshAlgo>>;
 };
 } // namespace
 

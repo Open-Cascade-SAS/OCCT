@@ -304,7 +304,7 @@ typedef void(GL_APIENTRYP PFNGLCLEARBUFFERFIPROC)(GLenum  buffer,
                                                   GLint   drawbuffer,
                                                   GLfloat depth,
                                                   GLint   stencil);
-typedef const GLubyte*(GL_APIENTRYP PFNGLGETSTRINGIPROC)(GLenum name, GLuint index);
+using PFNGLGETSTRINGIPROC = const GLubyte*(GL_APIENTRYP)(GLenum name, GLuint index);
 typedef void(GL_APIENTRYP PFNGLCOPYBUFFERSUBDATAPROC)(GLenum     readTarget,
                                                       GLenum     writeTarget,
                                                       GLintptr   readOffset,

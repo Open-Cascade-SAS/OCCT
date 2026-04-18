@@ -136,7 +136,7 @@ protected:
 
 //
 //=======================================================================
-typedef NCollection_Vector<BOPTools_CPC> BOPTools_VectorOfCPC;
+using BOPTools_VectorOfCPC = NCollection_Vector<BOPTools_CPC>;
 
 //=================================================================================================
 
@@ -175,7 +175,7 @@ protected:
 };
 
 //=======================================================================
-typedef NCollection_Vector<BOPTools_CWT> BOPTools_VectorOfCWT;
+using BOPTools_VectorOfCWT = NCollection_Vector<BOPTools_CWT>;
 
 //=================================================================================================
 
@@ -223,7 +223,7 @@ protected:
 };
 
 //=======================================================================
-typedef NCollection_Vector<BOPTools_CDT> BOPTools_VectorOfCDT;
+using BOPTools_VectorOfCDT = NCollection_Vector<BOPTools_CDT>;
 
 //=================================================================================================
 
@@ -263,7 +263,7 @@ protected:
 
 //
 //=======================================================================
-typedef NCollection_Vector<BOPTools_CVT> BOPTools_VectorOfCVT;
+using BOPTools_VectorOfCVT = NCollection_Vector<BOPTools_CVT>;
 
 //=================================================================================================
 
@@ -302,7 +302,7 @@ protected:
 };
 
 //=======================================================================
-typedef NCollection_Vector<BOPTools_CET> BOPTools_VectorOfCET;
+using BOPTools_VectorOfCET = NCollection_Vector<BOPTools_CET>;
 
 //=================================================================================================
 

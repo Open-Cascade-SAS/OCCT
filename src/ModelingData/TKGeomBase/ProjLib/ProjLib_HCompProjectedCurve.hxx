@@ -20,6 +20,6 @@
 #include <ProjLib_CompProjectedCurve.hxx>
 
 // alias for porting old code
-typedef ProjLib_CompProjectedCurve ProjLib_HCompProjectedCurve;
+using ProjLib_HCompProjectedCurve = ProjLib_CompProjectedCurve;
 
 #endif // _ProjLib_HCompProjectedCurve_HeaderFile

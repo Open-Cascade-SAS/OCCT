@@ -802,8 +802,8 @@ bool OpenGl_Context::SetSwapInterval(const int theInterval)
 #elif defined(HAVE_XLIB)
   if (theInterval == -1 && myFuncs->glXSwapIntervalEXT != nullptr)
   {
-    typedef int (
-      *glXSwapIntervalEXT_t_x)(Display* theDisplay, GLXDrawable theDrawable, int theInterval);
+    using glXSwapIntervalEXT_t_x = int (
+      *)(Display* theDisplay, GLXDrawable theDrawable, int theInterval);
     glXSwapIntervalEXT_t_x aFuncPtr = (glXSwapIntervalEXT_t_x)myFuncs->glXSwapIntervalEXT;
     aFuncPtr((Display*)myDisplay, (GLXDrawable)myWindow, theInterval);
     return true;

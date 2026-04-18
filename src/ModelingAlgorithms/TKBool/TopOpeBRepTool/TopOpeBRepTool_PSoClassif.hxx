@@ -18,6 +18,6 @@
 #define _TopOpeBRepTool_PSoClassif_HeaderFile
 
 class BRepClass3d_SolidClassifier;
-typedef BRepClass3d_SolidClassifier* TopOpeBRepTool_PSoClassif;
+using TopOpeBRepTool_PSoClassif = BRepClass3d_SolidClassifier*;
 
 #endif // _TopOpeBRepTool_PSoClassif_HeaderFile

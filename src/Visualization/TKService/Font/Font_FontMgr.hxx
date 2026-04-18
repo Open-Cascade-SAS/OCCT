@@ -276,7 +276,7 @@ private:
   };
 
   //! Sequence of font aliases.
-  typedef NCollection_Shared<NCollection_Sequence<Font_FontAlias>> Font_FontAliasSequence;
+  using Font_FontAliasSequence = NCollection_Shared<NCollection_Sequence<Font_FontAlias>>;
 
   //! Register font alias.
   void addFontAlias(const TCollection_AsciiString&             theAliasName,

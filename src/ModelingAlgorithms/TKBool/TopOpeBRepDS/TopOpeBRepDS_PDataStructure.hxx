@@ -18,6 +18,6 @@
 #define _TopOpeBRepDS_PDataStructure_HeaderFile
 
 class TopOpeBRepDS_DataStructure;
-typedef TopOpeBRepDS_DataStructure* TopOpeBRepDS_PDataStructure;
+using TopOpeBRepDS_PDataStructure = TopOpeBRepDS_DataStructure*;
 
 #endif // _TopOpeBRepDS_PDataStructure_HeaderFile

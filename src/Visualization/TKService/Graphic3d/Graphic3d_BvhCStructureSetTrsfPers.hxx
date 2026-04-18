@@ -34,7 +34,7 @@ class Graphic3d_CStructure;
 class Graphic3d_BvhCStructureSetTrsfPers : public BVH_Set<double, 3>
 {
 private:
-  typedef NCollection_Shared<Graphic3d_BndBox3d> HBndBox3d;
+  using HBndBox3d = NCollection_Shared<Graphic3d_BndBox3d>;
 
 public:
   //! Creates an empty primitive set for BVH clipping.

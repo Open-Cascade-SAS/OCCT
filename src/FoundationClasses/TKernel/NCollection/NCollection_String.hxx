@@ -18,6 +18,6 @@
 
 #include <NCollection_UtfString.hxx>
 
-typedef NCollection_UtfString<char> NCollection_String;
+using NCollection_String = NCollection_UtfString<char>;
 
 #endif // _NCollection_String_H__

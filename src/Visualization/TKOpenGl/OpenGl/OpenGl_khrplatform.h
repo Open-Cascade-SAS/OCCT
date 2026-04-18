@@ -147,10 +147,10 @@
    * Using <stdint.h>
    */
   #include <stdint.h>
-typedef int32_t  khronos_int32_t;
-typedef uint32_t khronos_uint32_t;
-typedef int64_t  khronos_int64_t;
-typedef uint64_t khronos_uint64_t;
+using khronos_int32_t = int32_t;
+using khronos_uint32_t = uint32_t;
+using khronos_int64_t = int64_t;
+using khronos_uint64_t = uint64_t;
   #define KHRONOS_SUPPORT_INT64 1
   #define KHRONOS_SUPPORT_FLOAT 1
 
@@ -224,10 +224,10 @@ typedef uint64_t khronos_uint64_t;
 /*
  * Types that are (so far) the same on all platforms
  */
-typedef signed char        khronos_int8_t;
-typedef unsigned char      khronos_uint8_t;
-typedef signed short int   khronos_int16_t;
-typedef unsigned short int khronos_uint16_t;
+using khronos_int8_t = signed char;
+using khronos_uint8_t = unsigned char;
+using khronos_int16_t = signed short int;
+using khronos_uint16_t = unsigned short int;
 
 /*
  * Types that differ between LLP64 and LP64 architectures - in LLP64,
@@ -240,17 +240,17 @@ typedef unsigned long long int khronos_uintptr_t;
 typedef signed long long int   khronos_ssize_t;
 typedef unsigned long long int khronos_usize_t;
 #else
-typedef signed long int   khronos_intptr_t;
-typedef unsigned long int khronos_uintptr_t;
-typedef signed long int   khronos_ssize_t;
-typedef unsigned long int khronos_usize_t;
+using khronos_intptr_t = signed long int;
+using khronos_uintptr_t = unsigned long int;
+using khronos_ssize_t = signed long int;
+using khronos_usize_t = unsigned long int;
 #endif
 
 #if KHRONOS_SUPPORT_FLOAT
 /*
  * Float type
  */
-typedef float khronos_float_t;
+using khronos_float_t = float;
 #endif
 
 #if KHRONOS_SUPPORT_INT64
@@ -263,8 +263,8 @@ typedef float khronos_float_t;
  * 64 bit value that wraps back to 0 every 584 years.  Time intervals
  * may be either signed or unsigned.
  */
-typedef khronos_uint64_t khronos_utime_nanoseconds_t;
-typedef khronos_int64_t  khronos_stime_nanoseconds_t;
+using khronos_utime_nanoseconds_t = khronos_uint64_t;
+using khronos_stime_nanoseconds_t = khronos_int64_t;
 #endif
 
 /*
@@ -280,11 +280,11 @@ typedef khronos_int64_t  khronos_stime_nanoseconds_t;
  * Values other than zero should be considered to be true.  Therefore
  * comparisons should not be made against KHRONOS_TRUE.
  */
-typedef enum
+using khronos_boolean_enum_t = enum
 {
   KHRONOS_FALSE                   = 0,
   KHRONOS_TRUE                    = 1,
   KHRONOS_BOOLEAN_ENUM_FORCE_SIZE = KHRONOS_MAX_ENUM
-} khronos_boolean_enum_t;
+};
 
 #endif /* __khrplatform_h_ */

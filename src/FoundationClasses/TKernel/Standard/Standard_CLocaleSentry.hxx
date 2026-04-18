@@ -65,7 +65,7 @@ public:
 
 public:
   #ifdef OCCT_CLOCALE_POSIX2008
-  typedef locale_t clocale_t;
+  using clocale_t = locale_t;
   #elif defined(_MSC_VER)
   typedef _locale_t clocale_t;
   #else

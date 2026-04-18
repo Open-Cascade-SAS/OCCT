@@ -160,9 +160,8 @@ class OpenGl_Context : public Standard_Transient
   friend struct OpenGl_GlFunctions;
 
 public:
-  typedef NCollection_Shared<
-    NCollection_DataMap<TCollection_AsciiString, occ::handle<OpenGl_Resource>>>
-    OpenGl_ResourcesMap;
+  using OpenGl_ResourcesMap = NCollection_Shared<
+    NCollection_DataMap<TCollection_AsciiString, occ::handle<OpenGl_Resource>>>;
 
   //! Function for getting power of to number larger or equal to input number.
   //! @param theNumber    number to 'power of two'
@@ -1102,8 +1101,8 @@ private:                     // system-dependent fields
 
 private: // context info
 
-  typedef NCollection_Shared< NCollection_DataMap<TCollection_AsciiString, int> > OpenGl_DelayReleaseMap;
-  typedef NCollection_Shared< NCollection_List<occ::handle<OpenGl_Resource>> > OpenGl_ResourcesStack;
+  using OpenGl_DelayReleaseMap = NCollection_Shared< NCollection_DataMap<TCollection_AsciiString, int> >;
+  using OpenGl_ResourcesStack = NCollection_Shared< NCollection_List<occ::handle<OpenGl_Resource>> >;
 
   occ::handle<OpenGl_ResourcesMap>    mySharedResources; //!< shared resources with unique identification key
                        // clang-format on

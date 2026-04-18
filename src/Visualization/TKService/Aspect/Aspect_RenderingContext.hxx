@@ -43,7 +43,7 @@ Standard_DISABLE_DEPRECATION_WARNINGS typedef NSOpenGLContext* Aspect_RenderingC
 Standard_ENABLE_DEPRECATION_WARNINGS
   #endif
 #else
-typedef void* Aspect_RenderingContext; // GLXContext under UNIX
+using Aspect_RenderingContext = void*; // GLXContext under UNIX
 #endif
 
 #endif /* _Aspect_RenderingContext_HeaderFile */

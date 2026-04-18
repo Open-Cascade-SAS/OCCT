@@ -38,8 +38,8 @@ protected:
   std::shared_ptr<std::streambuf> myBuffer;
 };
 
-typedef OSD_StreamBuffer<std::istream>  OSD_IStreamBuffer;
-typedef OSD_StreamBuffer<std::ostream>  OSD_OStreamBuffer;
-typedef OSD_StreamBuffer<std::iostream> OSD_IOStreamBuffer;
+using OSD_IStreamBuffer = OSD_StreamBuffer<std::istream>;
+using OSD_OStreamBuffer = OSD_StreamBuffer<std::ostream>;
+using OSD_IOStreamBuffer = OSD_StreamBuffer<std::iostream>;
 
 #endif // _OSD_StreamBuffer_HeaderFile

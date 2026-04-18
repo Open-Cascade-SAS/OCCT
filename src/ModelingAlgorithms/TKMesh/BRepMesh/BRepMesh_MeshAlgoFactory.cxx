@@ -30,20 +30,19 @@ namespace
 {
 struct BaseMeshAlgo
 {
-  typedef BRepMesh_DelaunayBaseMeshAlgo Type;
+  using Type = BRepMesh_DelaunayBaseMeshAlgo;
 };
 
 template <class RangeSplitter>
 struct NodeInsertionMeshAlgo
 {
-  typedef BRepMesh_DelaunayNodeInsertionMeshAlgo<RangeSplitter, BRepMesh_DelaunayBaseMeshAlgo> Type;
+  using Type = BRepMesh_DelaunayNodeInsertionMeshAlgo<RangeSplitter, BRepMesh_DelaunayBaseMeshAlgo>;
 };
 
 template <class RangeSplitter>
 struct DeflectionControlMeshAlgo
 {
-  typedef BRepMesh_DelaunayDeflectionControlMeshAlgo<RangeSplitter, BRepMesh_DelaunayBaseMeshAlgo>
-    Type;
+  using Type = BRepMesh_DelaunayDeflectionControlMeshAlgo<RangeSplitter, BRepMesh_DelaunayBaseMeshAlgo>;
 };
 } // namespace
 

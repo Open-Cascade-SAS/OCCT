@@ -25,7 +25,7 @@
 typedef void*  HANDLE;
 typedef HANDLE Aspect_Handle;
 #else
-typedef unsigned long Aspect_Handle;
+using Aspect_Handle = unsigned long;
 #endif /* _WIN32 */
 
 #endif /* _Aspect_Handle_HeaderFile */

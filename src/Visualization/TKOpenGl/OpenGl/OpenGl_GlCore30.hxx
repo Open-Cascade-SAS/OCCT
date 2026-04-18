@@ -25,7 +25,7 @@
 struct OpenGl_GlCore30 : public OpenGl_GlCore21
 {
 private:
-  typedef OpenGl_GlCore21 theBaseClass_t;
+  using theBaseClass_t = OpenGl_GlCore21;
 
 public: //! @name GL_ARB_framebuffer_object (added to OpenGL 3.0 core)
   using theBaseClass_t::glBindFramebuffer;

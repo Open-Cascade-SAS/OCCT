@@ -18,6 +18,6 @@
 #define _TopOpeBRepBuild_PGTopo_HeaderFile
 
 class TopOpeBRepBuild_GTopo;
-typedef TopOpeBRepBuild_GTopo* TopOpeBRepBuild_PGTopo;
+using TopOpeBRepBuild_PGTopo = TopOpeBRepBuild_GTopo*;
 
 #endif // _TopOpeBRepBuild_PGTopo_HeaderFile

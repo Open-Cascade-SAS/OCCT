@@ -20,6 +20,6 @@
 #include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 
-typedef NCollection_List<TopoDS_Shape>* TopOpeBRepTool_Plos;
+using TopOpeBRepTool_Plos = NCollection_List<TopoDS_Shape>*;
 
 #endif // _TopOpeBRepTool_Plos_HeaderFile

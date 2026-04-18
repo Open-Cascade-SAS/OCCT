@@ -47,7 +47,7 @@ private:
   NCollection_SeqNode* myPrevious;
 };
 
-typedef void (*NCollection_DelSeqNode)(NCollection_SeqNode*,
+using NCollection_DelSeqNode = void (*)(NCollection_SeqNode*,
                                        occ::handle<NCollection_BaseAllocator>& theAl);
 
 /**

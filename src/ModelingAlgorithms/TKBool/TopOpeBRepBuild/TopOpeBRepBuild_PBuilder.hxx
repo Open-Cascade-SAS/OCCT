@@ -18,6 +18,6 @@
 #define _TopOpeBRepBuild_PBuilder_HeaderFile
 
 class TopOpeBRepBuild_Builder;
-typedef TopOpeBRepBuild_Builder* TopOpeBRepBuild_PBuilder;
+using TopOpeBRepBuild_PBuilder = TopOpeBRepBuild_Builder*;
 
 #endif // _TopOpeBRepBuild_PBuilder_HeaderFile

@@ -17,6 +17,6 @@
 
 #include <BlendFunc_ConstThroat.hxx>
 
-typedef BlendFunc_ConstThroat BRepBlend_ConstThroat;
+using BRepBlend_ConstThroat = BlendFunc_ConstThroat;
 
 #endif // _BRepBlend_ConstThroat_HeaderFile

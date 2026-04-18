@@ -753,7 +753,7 @@ static bool fCtrlBrk;
 
 // const OSD_WhoAmI Iam = OSD_WPackage;
 
-typedef void(ACT_SIGIO_HANDLER)();
+using ACT_SIGIO_HANDLER = void();
 std::atomic<ACT_SIGIO_HANDLER*> ADR_ACT_SIGIO_HANDLER{nullptr};
 
   #ifdef __GNUC__
@@ -763,7 +763,7 @@ std::atomic<ACT_SIGIO_HANDLER*> ADR_ACT_SIGIO_HANDLER{nullptr};
       #include <sys/siginfo.h>
     #endif
   #endif
-typedef void (*SIG_PFV)(int);
+using SIG_PFV = void (*)(int);
 
   #if !defined(__ANDROID__) && !defined(__QNX__) && !defined(__EMSCRIPTEN__) && defined(__GLIBC__)
     #include <sys/signal.h>

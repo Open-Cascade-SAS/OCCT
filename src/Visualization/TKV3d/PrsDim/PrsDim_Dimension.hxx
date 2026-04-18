@@ -571,11 +571,11 @@ protected: //! @name Selection geometry
       gp_Dir Direction;
     };
 
-    typedef NCollection_Sequence<gp_Pnt> Curve;
-    typedef NCollection_Handle<Curve>    HCurve;
-    typedef NCollection_Handle<Arrow>    HArrow;
-    typedef NCollection_Sequence<HCurve> SeqOfCurves;
-    typedef NCollection_Sequence<HArrow> SeqOfArrows;
+    using Curve = NCollection_Sequence<gp_Pnt>;
+    using HCurve = NCollection_Handle<Curve>;
+    using HArrow = NCollection_Handle<Arrow>;
+    using SeqOfCurves = NCollection_Sequence<HCurve>;
+    using SeqOfArrows = NCollection_Sequence<HArrow>;
 
     gp_Pnt TextPos;           //!< Center of text label.
     gp_Dir TextDir;           //!< Direction of text label.

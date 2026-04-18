@@ -21,6 +21,6 @@
 
 // Defines a dynamic vector of integer.
 
-typedef std::vector<int, NCollection_OccAllocator<int>> IntWalk_VectorOfInteger;
+using IntWalk_VectorOfInteger = std::vector<int, NCollection_OccAllocator<int>>;
 
 #endif

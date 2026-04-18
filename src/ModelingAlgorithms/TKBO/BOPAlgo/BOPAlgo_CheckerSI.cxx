@@ -95,7 +95,7 @@ protected:
 
 //=======================================================================
 
-typedef NCollection_Vector<BOPAlgo_FaceSelfIntersect> BOPAlgo_VectorOfFaceSelfIntersect;
+using BOPAlgo_VectorOfFaceSelfIntersect = NCollection_Vector<BOPAlgo_FaceSelfIntersect>;
 
 //=================================================================================================
 

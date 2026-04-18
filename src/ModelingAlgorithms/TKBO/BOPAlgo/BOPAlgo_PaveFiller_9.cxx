@@ -58,7 +58,7 @@ protected:
 
 //
 //=======================================================================
-typedef NCollection_Vector<BOPAlgo_ShrunkRange> BOPAlgo_VectorOfShrunkRange;
+using BOPAlgo_VectorOfShrunkRange = NCollection_Vector<BOPAlgo_ShrunkRange>;
 
 //=================================================================================================
 

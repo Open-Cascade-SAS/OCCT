@@ -14,8 +14,8 @@
 
 #include <GProp_PrincipalProps.hxx>
 
-typedef gp_Vec Vec;
-typedef gp_Pnt Pnt;
+using Vec = gp_Vec;
+using Pnt = gp_Pnt;
 
 GProp_PrincipalProps::GProp_PrincipalProps()
 {

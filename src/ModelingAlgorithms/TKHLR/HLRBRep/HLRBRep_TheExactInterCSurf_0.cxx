@@ -27,7 +27,7 @@
 #include <HLRBRep_Surface.hxx>
 
 // Use typedef instead of #define for correct const semantics with pointers
-typedef HLRBRep_Surface* ThePSurface;
+using ThePSurface = HLRBRep_Surface*;
 #define ThePSurface_hxx <HLRBRep_Surface.hxx>
 #define ThePSurfaceTool HLRBRep_SurfaceTool
 #define ThePSurfaceTool_hxx <HLRBRep_SurfaceTool.hxx>

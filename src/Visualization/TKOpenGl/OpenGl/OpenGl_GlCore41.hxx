@@ -22,7 +22,7 @@
 struct OpenGl_GlCore41 : public OpenGl_GlCore40
 {
 private:
-  typedef OpenGl_GlCore40 theBaseClass_t;
+  using theBaseClass_t = OpenGl_GlCore40;
 
 public: //! @name GL_ARB_ES2_compatibility (added to OpenGL 4.1 core)
   using theBaseClass_t::glClearDepthf;

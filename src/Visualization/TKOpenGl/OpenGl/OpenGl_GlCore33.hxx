@@ -22,7 +22,7 @@
 struct OpenGl_GlCore33 : public OpenGl_GlCore32
 {
 private:
-  typedef OpenGl_GlCore32 theBaseClass_t;
+  using theBaseClass_t = OpenGl_GlCore32;
 
 public: //! @name GL_ARB_blend_func_extended (added to OpenGL 3.3 core)
   using theBaseClass_t::glBindFragDataLocationIndexed;

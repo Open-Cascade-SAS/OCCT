@@ -24,7 +24,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Geom_Curve, Geom_Geometry)
 
-typedef Geom_Curve Curve;
+using Curve = Geom_Curve;
 
 //=================================================================================================
 

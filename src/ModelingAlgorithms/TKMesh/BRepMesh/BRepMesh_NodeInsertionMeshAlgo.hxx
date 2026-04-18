@@ -55,7 +55,7 @@ public:
   }
 
 protected:
-  typedef NCollection_Shared<NCollection_Sequence<const gp_Pnt2d*>> SequenceOfPnt2d;
+  using SequenceOfPnt2d = NCollection_Shared<NCollection_Sequence<const gp_Pnt2d*>>;
 
   //! Performs initialization of data structure using existing model data.
   bool initDataStructure() override

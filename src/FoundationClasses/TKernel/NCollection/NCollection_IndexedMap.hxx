@@ -45,7 +45,7 @@ class NCollection_IndexedMap : public NCollection_BaseMap
 {
 public:
   //! STL-compliant typedef for key type
-  typedef TheKeyType key_type;
+  using key_type = TheKeyType;
 
 protected:
   //! Adaptation of the TListNode to the INDEXEDmap
@@ -144,11 +144,10 @@ public:
   };
 
   //! Shorthand for a constant iterator type.
-  typedef NCollection_StlIterator<std::forward_iterator_tag, Iterator, TheKeyType, true>
-    const_iterator;
+  using const_iterator = NCollection_StlIterator<std::forward_iterator_tag, Iterator, TheKeyType, true>;
 
   //! Shorthand for iterator type (same as const_iterator for key-only maps).
-  typedef const_iterator iterator;
+  using iterator = const_iterator;
 
   //! Returns an iterator pointing to the first element in the map.
   iterator begin() const noexcept { return Iterator(*this); }

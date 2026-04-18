@@ -27,7 +27,7 @@ typedef HANDLE OSD_PThread;
 #else
 
   #include <pthread.h>
-typedef pthread_t OSD_PThread;
+using OSD_PThread = pthread_t;
   // NOLINTBEGIN(modernize-use-nullptr)
   #define OSD_PTHREAD_NULL 0
   // NOLINTEND(modernize-use-nullptr)

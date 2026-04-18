@@ -19,8 +19,8 @@
 #include <Law_BSplineKnotSplitting.hxx>
 #include <Standard_RangeError.hxx>
 
-typedef NCollection_Array1<int>  Array1OfInteger;
-typedef NCollection_HArray1<int> HArray1OfInteger;
+using Array1OfInteger = NCollection_Array1<int>;
+using HArray1OfInteger = NCollection_HArray1<int>;
 
 Law_BSplineKnotSplitting::Law_BSplineKnotSplitting(const occ::handle<Law_BSpline>& BasisCurve,
                                                    const int                       ContinuityRange)

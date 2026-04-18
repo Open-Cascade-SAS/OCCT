@@ -37,19 +37,19 @@ template <typename ItemType>
 class NCollection_OccAllocator
 {
 public:
-  typedef ItemType          value_type;
-  typedef value_type*       pointer;
-  typedef const value_type* const_pointer;
-  typedef value_type&       reference;
-  typedef const value_type& const_reference;
-  typedef size_t            size_type;
-  typedef ptrdiff_t         difference_type;
-  typedef std::false_type   propagate_on_container_move_assignment; // std::false_type
+  using value_type                             = ItemType;
+  using pointer                                = value_type*;
+  using const_pointer                          = const value_type*;
+  using reference                              = value_type&;
+  using const_reference                        = const value_type&;
+  using size_type                              = size_t;
+  using difference_type                        = ptrdiff_t;
+  using propagate_on_container_move_assignment = std::false_type; // std::false_type
 
   template <typename OtherType>
   struct rebind
   {
-    typedef NCollection_OccAllocator<OtherType> other;
+    using other = NCollection_OccAllocator<OtherType>;
   };
 
   //! Constructor.

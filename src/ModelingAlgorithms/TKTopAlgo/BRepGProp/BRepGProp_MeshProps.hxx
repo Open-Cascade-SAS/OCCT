@@ -33,11 +33,11 @@ public:
   //! - Vinert is 3D closed region of space delimited with
   //!   Point and surface mesh;
   //! - Sinert is surface mesh in 3D space.
-  typedef enum
+  enum BRepGProp_MeshObjType
   {
     Vinert = 0,
     Sinert
-  } BRepGProp_MeshObjType;
+  };
 
   //! Constructor takes the type of object.
   BRepGProp_MeshProps(const BRepGProp_MeshObjType theType)

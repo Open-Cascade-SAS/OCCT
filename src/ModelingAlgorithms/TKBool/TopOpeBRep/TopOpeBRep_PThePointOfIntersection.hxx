@@ -18,6 +18,6 @@
 #define _TopOpeBRep_PThePointOfIntersection_HeaderFile
 
 class IntPatch_Point;
-typedef IntPatch_Point* TopOpeBRep_PThePointOfIntersection;
+using TopOpeBRep_PThePointOfIntersection = IntPatch_Point*;
 
 #endif // _TopOpeBRep_PThePointOfIntersection_HeaderFile

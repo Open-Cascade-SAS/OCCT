@@ -23,6 +23,6 @@
 
 #include <fstream>
 
-typedef std::istream Standard_IStream;
+using Standard_IStream = std::istream;
 
 #endif

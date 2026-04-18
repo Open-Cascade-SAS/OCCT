@@ -16,7 +16,7 @@
 #ifndef MeshVS_SelectionModeFlags_HeaderFile
 #define MeshVS_SelectionModeFlags_HeaderFile
 
-typedef enum
+enum MeshVS_SelectionModeFlags
 {
   MeshVS_SMF_Mesh   = 0x0000,
   MeshVS_SMF_Node   = 0x0001,
@@ -30,6 +30,6 @@ typedef enum
 
   MeshVS_SMF_Group = 0x0100
 
-} MeshVS_SelectionModeFlags;
+};
 
 #endif

@@ -30,7 +30,7 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
-typedef NCollection_Array1<occ::handle<Adaptor3d_Curve>> Array1OfHCurve;
+using Array1OfHCurve = NCollection_Array1<occ::handle<Adaptor3d_Curve>>;
 
 class GeomLib_CheckCurveOnSurface_TargetFunc;
 

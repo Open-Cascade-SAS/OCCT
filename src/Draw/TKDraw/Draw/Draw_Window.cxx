@@ -53,7 +53,7 @@ EM_JS(bool, occJSModuleNoExitRuntime, (), { return Module.noExitRuntime == = tru
     // which *HAS* X11 headers in Tk.framework but doesn't install them appropriately
     #define _TK
 typedef struct Tk_Window_* Tk_Window;
-typedef const char*        Tk_Uid;
+using Tk_Uid = const char*;
 
 extern "C" int         Tk_Init(Tcl_Interp* interp);
 extern "C" void        Tk_MainLoop();

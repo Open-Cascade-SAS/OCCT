@@ -39,7 +39,7 @@ class Geom_BSplineSurface;
 class Geom_BezierSurface;
 class Geom_Surface;
 
-typedef class Adaptor2d_Curve2d Adaptor2d_Curve2d;
+using Adaptor2d_Curve2d = class Adaptor2d_Curve2d;
 
 //! Geom Library. This package provides an
 //! implementation of functions for basic computation

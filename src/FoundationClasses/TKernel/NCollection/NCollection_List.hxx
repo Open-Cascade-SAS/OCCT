@@ -33,18 +33,17 @@ class NCollection_List : public NCollection_BaseList
 {
 public:
   //! STL-compliant typedef for value type
-  typedef TheItemType value_type;
+  using value_type = TheItemType;
 
 public:
-  typedef NCollection_TListNode<TheItemType>     ListNode;
-  typedef NCollection_TListIterator<TheItemType> Iterator;
+  using ListNode = NCollection_TListNode<TheItemType>;
+  using Iterator = NCollection_TListIterator<TheItemType>;
 
   //! Shorthand for a regular iterator type.
-  typedef NCollection_StlIterator<std::forward_iterator_tag, Iterator, TheItemType, false> iterator;
+  using iterator = NCollection_StlIterator<std::forward_iterator_tag, Iterator, TheItemType, false>;
 
   //! Shorthand for a constant iterator type.
-  typedef NCollection_StlIterator<std::forward_iterator_tag, Iterator, TheItemType, true>
-    const_iterator;
+  using const_iterator = NCollection_StlIterator<std::forward_iterator_tag, Iterator, TheItemType, true>;
 
   //! Returns an iterator pointing to the first element in the list.
   iterator begin() noexcept { return Iterator(*this); }

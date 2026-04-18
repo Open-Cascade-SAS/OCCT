@@ -17,6 +17,6 @@
 #include <StdPrs_BRepTextBuilder.hxx>
 
 //! Alias for porting from old name.
-typedef StdPrs_BRepTextBuilder Font_BRepTextBuilder;
+using Font_BRepTextBuilder = StdPrs_BRepTextBuilder;
 
 #endif // Font_BRepTextBuilder_Header

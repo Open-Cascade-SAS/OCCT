@@ -63,10 +63,9 @@
   #include <BRepAlgoAPI_Check.hxx>
 #endif
 
-typedef NCollection_DataMap<TopoDS_Shape,
+using BRepOffset_DataMapOfShapeIndexedMapOfShape = NCollection_DataMap<TopoDS_Shape,
                             NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>,
-                            TopTools_ShapeMapHasher>
-  BRepOffset_DataMapOfShapeIndexedMapOfShape;
+                            TopTools_ShapeMapHasher>;
 
 namespace
 {

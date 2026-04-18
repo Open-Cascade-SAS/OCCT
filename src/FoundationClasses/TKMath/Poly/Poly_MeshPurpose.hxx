@@ -15,7 +15,7 @@
 #define _Poly_MeshPurpose_HeaderFile
 
 //! Purpose of triangulation using.
-typedef unsigned int Poly_MeshPurpose;
+using Poly_MeshPurpose = unsigned int;
 
 enum
 {

@@ -16,6 +16,6 @@
 #ifndef Storage_Position_HeaderFile
 #define Storage_Position_HeaderFile
 
-typedef long Storage_Position;
+using Storage_Position = long;
 
 #endif

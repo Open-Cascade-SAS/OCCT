@@ -17,6 +17,6 @@
 #define _MeshVS_MeshPtr_HeaderFile
 
 class MeshVS_Mesh;
-typedef MeshVS_Mesh* MeshVS_MeshPtr;
+using MeshVS_MeshPtr = MeshVS_Mesh*;
 
 #endif // _MeshVS_MeshPtr_HeaderFile

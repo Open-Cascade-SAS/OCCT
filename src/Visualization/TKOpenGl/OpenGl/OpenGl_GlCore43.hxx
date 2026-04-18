@@ -22,7 +22,7 @@
 struct OpenGl_GlCore43 : public OpenGl_GlCore42
 {
 private:
-  typedef OpenGl_GlCore42 theBaseClass_t;
+  using theBaseClass_t = OpenGl_GlCore42;
 
 public: //! @name OpenGL 4.3 additives to 4.2
   using theBaseClass_t::glBindVertexBuffer;

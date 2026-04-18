@@ -152,7 +152,7 @@ protected:
 };
 
 //
-typedef NCollection_Vector<BRepCheck_ToolSolid> BRepCheck_VectorOfToolSolid;
+using BRepCheck_VectorOfToolSolid = NCollection_Vector<BRepCheck_ToolSolid>;
 
 //
 

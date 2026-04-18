@@ -91,8 +91,8 @@ public:
 };
 
 //! Shared pointer to quad BVH (QBVH) tree.
-typedef opencascade::handle<BVH_Tree<float, 3, BVH_QuadTree>> QuadBvhHandle;
-typedef BVH_Triangulation<float, 3>                           OpenGl_BVHTriangulation3f;
+using QuadBvhHandle = opencascade::handle<BVH_Tree<float, 3, BVH_QuadTree>>;
+using OpenGl_BVHTriangulation3f = BVH_Triangulation<float, 3>;
 
 //! Triangulation of single OpenGL primitive array.
 class OpenGl_TriangleSet : public OpenGl_BVHTriangulation3f

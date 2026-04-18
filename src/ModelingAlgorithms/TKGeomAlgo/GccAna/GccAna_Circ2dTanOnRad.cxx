@@ -36,7 +36,7 @@
 #include <StdFail_NotDone.hxx>
 #include <NCollection_Array1.hxx>
 
-typedef math_DirectPolynomialRoots Roots;
+using Roots = math_DirectPolynomialRoots;
 
 //=========================================================================
 //  Circle tangent  :  to circle Qualified1 (C1).                         +

@@ -18,6 +18,6 @@
 #define _TopOpeBRep_PEdgesIntersector_HeaderFile
 
 class TopOpeBRep_EdgesIntersector;
-typedef TopOpeBRep_EdgesIntersector* TopOpeBRep_PEdgesIntersector;
+using TopOpeBRep_PEdgesIntersector = TopOpeBRep_EdgesIntersector*;
 
 #endif // _TopOpeBRep_PEdgesIntersector_HeaderFile

@@ -18,6 +18,6 @@
 #define _TopOpeBRepTool_PShapeClassifier_HeaderFile
 
 class TopOpeBRepTool_ShapeClassifier;
-typedef TopOpeBRepTool_ShapeClassifier* TopOpeBRepTool_PShapeClassifier;
+using TopOpeBRepTool_PShapeClassifier = TopOpeBRepTool_ShapeClassifier*;
 
 #endif // _TopOpeBRepTool_PShapeClassifier_HeaderFile

@@ -31,10 +31,10 @@ class OpenGl_Structure : public Graphic3d_CStructure
   DEFINE_STANDARD_RTTIEXT(OpenGl_Structure, Graphic3d_CStructure)
 public:
   //! Auxiliary wrapper to iterate OpenGl_Structure sequence.
-  typedef SubclassStructIterator<OpenGl_Structure> StructIterator;
+  using StructIterator = SubclassStructIterator<OpenGl_Structure>;
 
   //! Auxiliary wrapper to iterate OpenGl_Group sequence.
-  typedef SubclassGroupIterator<OpenGl_Group> GroupIterator;
+  using GroupIterator = SubclassGroupIterator<OpenGl_Group>;
 
 public:
   //! Create empty structure

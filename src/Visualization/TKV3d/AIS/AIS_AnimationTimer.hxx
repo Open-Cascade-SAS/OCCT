@@ -16,6 +16,6 @@
 #define _AIS_AnimationTimer_HeaderFile
 
 #include <Media_Timer.hxx>
-typedef Media_Timer AIS_AnimationTimer;
+using AIS_AnimationTimer = Media_Timer;
 
 #endif // _AIS_AnimationTimer_HeaderFile

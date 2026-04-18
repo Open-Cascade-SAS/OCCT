@@ -156,7 +156,7 @@ protected:
   Message_ProgressRange         myRange;
 };
 
-typedef NCollection_Vector<BOPAlgo_WS_ConnexityBlock> BOPAlgo_VectorOfConnexityBlock;
+using BOPAlgo_VectorOfConnexityBlock = NCollection_Vector<BOPAlgo_WS_ConnexityBlock>;
 
 //=================================================================================================
 

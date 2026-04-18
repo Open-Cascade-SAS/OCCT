@@ -27,7 +27,7 @@ template <class T, int N>
 class BVH_Tools
 {
 public: //! @name public types
-  typedef typename BVH::VectorType<T, N>::Type BVH_VecNt;
+  using BVH_VecNt = typename BVH::VectorType<T, N>::Type;
 
 public:
   enum BVH_PrjStateInTriangle

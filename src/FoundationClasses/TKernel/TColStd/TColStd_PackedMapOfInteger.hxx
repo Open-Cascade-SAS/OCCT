@@ -20,6 +20,6 @@
 #include <Standard_Macro.hxx>
 
 //! @deprecated Use NCollection_PackedMapOfInteger instead.
-typedef NCollection_PackedMap<int> TColStd_PackedMapOfInteger;
+using TColStd_PackedMapOfInteger = NCollection_PackedMap<int>;
 
 #endif // TColStd_PackedMapOfInteger_HeaderFile

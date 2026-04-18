@@ -20,7 +20,7 @@
 struct OpenGl_GlCore45 : public OpenGl_GlCore44
 {
 private:
-  typedef OpenGl_GlCore44 theBaseClass_t;
+  using theBaseClass_t = OpenGl_GlCore44;
 
 public: //! @name OpenGL 4.5 additives to 4.4
   using theBaseClass_t::glBindTextureUnit;

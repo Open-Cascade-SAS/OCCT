@@ -18,6 +18,6 @@
 #define _V3d_ViewerPointer_HeaderFile
 
 class V3d_Viewer;
-typedef V3d_Viewer* V3d_ViewerPointer;
+using V3d_ViewerPointer = V3d_Viewer*;
 
 #endif // _V3d_ViewerPointer_HeaderFile

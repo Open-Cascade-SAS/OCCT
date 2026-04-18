@@ -20,8 +20,8 @@
 #include <GeomConvert_BSplineCurveKnotSplitting.hxx>
 #include <Standard_RangeError.hxx>
 
-typedef NCollection_Array1<int>  Array1OfInteger;
-typedef NCollection_HArray1<int> HArray1OfInteger;
+using Array1OfInteger = NCollection_Array1<int>;
+using HArray1OfInteger = NCollection_HArray1<int>;
 
 GeomConvert_BSplineCurveKnotSplitting::GeomConvert_BSplineCurveKnotSplitting(
 

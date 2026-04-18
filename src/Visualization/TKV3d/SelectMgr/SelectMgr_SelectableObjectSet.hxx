@@ -68,8 +68,7 @@ public:
   class Iterator
   {
     //! Short-cut definition of map iterator type
-    typedef NCollection_IndexedMap<occ::handle<SelectMgr_SelectableObject>>::Iterator
-      ObjectMapIterator;
+    using ObjectMapIterator = NCollection_IndexedMap<occ::handle<SelectMgr_SelectableObject>>::Iterator;
 
   public:
     //! Default constructor without initialization.

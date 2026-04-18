@@ -22,7 +22,7 @@
 struct OpenGl_GlCore40 : public OpenGl_GlCore33
 {
 private:
-  typedef OpenGl_GlCore33 theBaseClass_t;
+  using theBaseClass_t = OpenGl_GlCore33;
 
 public: //! @name GL_ARB_draw_indirect (added to OpenGL 4.0 core)
   using theBaseClass_t::glDrawArraysIndirect;

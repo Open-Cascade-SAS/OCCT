@@ -122,7 +122,7 @@ protected:
 };
 
 //=======================================================================
-typedef NCollection_Vector<BOPAlgo_VertexSolid> BOPAlgo_VectorOfVertexSolid;
+using BOPAlgo_VectorOfVertexSolid = NCollection_Vector<BOPAlgo_VertexSolid>;
 
 /////////////////////////////////////////////////////////////////////////
 //=================================================================================================
@@ -193,7 +193,7 @@ protected:
 };
 
 //=======================================================================
-typedef NCollection_Vector<BOPAlgo_ShapeSolid> BOPAlgo_VectorOfShapeSolid;
+using BOPAlgo_VectorOfShapeSolid = NCollection_Vector<BOPAlgo_ShapeSolid>;
 
 /////////////////////////////////////////////////////////////////////////
 //=================================================================================================
@@ -230,7 +230,7 @@ public:
 };
 
 //=======================================================================
-typedef NCollection_Vector<BOPAlgo_SolidSolid> BOPAlgo_VectorOfSolidSolid;
+using BOPAlgo_VectorOfSolidSolid = NCollection_Vector<BOPAlgo_SolidSolid>;
 
 //=================================================================================================
 

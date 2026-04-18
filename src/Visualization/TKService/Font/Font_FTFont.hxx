@@ -28,9 +28,9 @@
 #include <TCollection_AsciiString.hxx>
 
 // forward declarations to avoid including of FreeType headers
-typedef struct FT_FaceRec_* FT_Face;
-typedef struct FT_Vector_   FT_Vector;
-typedef struct FT_Outline_  FT_Outline;
+using FT_Face = struct FT_FaceRec_*;
+using FT_Vector = struct FT_Vector_;
+using FT_Outline = struct FT_Outline_;
 class Font_FTLibrary;
 
 //! Font initialization parameters.

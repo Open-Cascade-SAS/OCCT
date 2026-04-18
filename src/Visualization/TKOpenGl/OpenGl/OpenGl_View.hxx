@@ -481,7 +481,7 @@ protected:
   size_t                       myCurrLightSourceState;
   size_t                       myLightsRevision;
 
-  typedef std::pair<size_t, size_t> StateInfo;
+  using StateInfo = std::pair<size_t, size_t>;
 
   StateInfo myLastOrientationState;
   StateInfo myLastViewMappingState;

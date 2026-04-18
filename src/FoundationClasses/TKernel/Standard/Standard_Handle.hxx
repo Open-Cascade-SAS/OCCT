@@ -54,7 +54,7 @@ class handle
 {
 public:
   //! STL-compliant typedef of contained type
-  typedef T element_type;
+  using element_type = T;
 
 public:
   //! Empty constructor

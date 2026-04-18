@@ -26,7 +26,7 @@ template <class T, int N>
 class BVH_Set
 {
 public:
-  typedef BVH_Box<T, N> BVH_BoxNt;
+  using BVH_BoxNt = BVH_Box<T, N>;
 
 public:
   //! Creates new abstract set of objects.

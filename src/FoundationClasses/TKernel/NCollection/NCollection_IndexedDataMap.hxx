@@ -54,10 +54,10 @@ class NCollection_IndexedDataMap : public NCollection_BaseMap
 {
 public:
   //! STL-compliant typedef for key type
-  typedef TheKeyType key_type;
+  using key_type = TheKeyType;
   //! STL-compliant typedef for value type
-  typedef TheItemType value_type;
-  typedef Hasher      hasher;
+  using value_type = TheItemType;
+  using hasher = Hasher;
 
 private:
   //!    Adaptation of the TListNode to the INDEXEDDatamap
@@ -203,11 +203,10 @@ public:
   };
 
   //! Shorthand for a regular iterator type.
-  typedef NCollection_StlIterator<std::forward_iterator_tag, Iterator, TheItemType, false> iterator;
+  using iterator = NCollection_StlIterator<std::forward_iterator_tag, Iterator, TheItemType, false>;
 
   //! Shorthand for a constant iterator type.
-  typedef NCollection_StlIterator<std::forward_iterator_tag, Iterator, TheItemType, true>
-    const_iterator;
+  using const_iterator = NCollection_StlIterator<std::forward_iterator_tag, Iterator, TheItemType, true>;
 
   //! Returns an iterator pointing to the first element in the map.
   iterator begin() const noexcept { return Iterator(*this); }

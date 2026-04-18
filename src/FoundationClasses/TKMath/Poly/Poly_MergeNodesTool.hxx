@@ -216,7 +216,7 @@ private:
   class MergedNodesMap : public NCollection_BaseMap
   {
   public:
-    typedef NCollection_Vec3<int64_t> CellVec3i;
+    using CellVec3i = NCollection_Vec3<int64_t>;
 
   public:
     //! Main constructor.

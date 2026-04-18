@@ -26,7 +26,7 @@ template <class T, int N>
 class BVH_Tree<T, N, BVH_BinaryTree> : public BVH_TreeBase<T, N>
 {
 public: //! @name custom data types
-  typedef typename BVH_TreeBase<T, N>::BVH_VecNt BVH_VecNt;
+  using BVH_VecNt = typename BVH_TreeBase<T, N>::BVH_VecNt;
 
 public: //! @name methods for accessing individual nodes
   //! Creates new empty BVH tree.

@@ -28,8 +28,8 @@ public:
   DEFINE_STANDARD_ALLOC
   DEFINE_NCOLLECTION_ALLOC
 
-  typedef NCollection_Array1<TheItemType> Array1Type;
-  typedef TheItemType                     value_type;
+  using Array1Type = NCollection_Array1<TheItemType>;
+  using value_type = TheItemType;
 
 public:
   //! Default constructor.

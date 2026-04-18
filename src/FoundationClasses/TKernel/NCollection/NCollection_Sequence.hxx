@@ -32,7 +32,7 @@ class NCollection_Sequence : public NCollection_BaseSequence
 {
 public:
   //! STL-compliant typedef for value type
-  typedef TheItemType value_type;
+  using value_type = TheItemType;
 
 public:
   //!   Class defining sequence node - for internal use by Sequence
@@ -112,12 +112,10 @@ public:
   }; // End of nested class Iterator
 
   //! Shorthand for a regular iterator type.
-  typedef NCollection_StlIterator<std::bidirectional_iterator_tag, Iterator, TheItemType, false>
-    iterator;
+  using iterator = NCollection_StlIterator<std::bidirectional_iterator_tag, Iterator, TheItemType, false>;
 
   //! Shorthand for a constant iterator type.
-  typedef NCollection_StlIterator<std::bidirectional_iterator_tag, Iterator, TheItemType, true>
-    const_iterator;
+  using const_iterator = NCollection_StlIterator<std::bidirectional_iterator_tag, Iterator, TheItemType, true>;
 
   //! Returns an iterator pointing to the first element in the sequence.
   iterator begin() const noexcept { return Iterator(*this, true); }

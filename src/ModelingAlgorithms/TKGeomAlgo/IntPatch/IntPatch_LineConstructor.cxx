@@ -1050,10 +1050,10 @@ static void TestWLineToRLine(const NCollection_Sequence<occ::handle<IntPatch_Lin
 
   bool isRLine = false;
 
-  typedef void (IntSurf_PntOn2S::*PiParOnS)(double&, double&) const;
-  typedef bool (IntPatch_Point::*PQuery)() const;
-  typedef const occ::handle<Adaptor2d_Curve2d>& (IntPatch_Point::*PArcOnS)() const;
-  typedef double (IntPatch_Point::*PParOnArc)() const;
+  using PiParOnS = void (IntSurf_PntOn2S::*)(double&, double&) const;
+  using PQuery = bool (IntPatch_Point::*)() const;
+  using PArcOnS = const occ::handle<Adaptor2d_Curve2d>& (IntPatch_Point::*)() const;
+  using PParOnArc = double (IntPatch_Point::*)() const;
 
   // cycle for both surfaces
   int is;

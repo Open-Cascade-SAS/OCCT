@@ -19,6 +19,6 @@
 #include <IntPolyh_Array.hxx>
 #include <IntPolyh_Point.hxx>
 
-typedef IntPolyh_Array<IntPolyh_Point> IntPolyh_ArrayOfPoints;
+using IntPolyh_ArrayOfPoints = IntPolyh_Array<IntPolyh_Point>;
 
 #endif

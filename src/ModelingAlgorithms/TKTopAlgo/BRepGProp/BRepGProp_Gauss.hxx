@@ -53,8 +53,8 @@ class BRepGProp_Gauss
     void Reset();
   };
 
-  typedef NCollection_Handle<NCollection_Array1<Inertia>> InertiaArray;
-  typedef double (*BRepGProp_GaussFunc)(const double, const double);
+  using InertiaArray = NCollection_Handle<NCollection_Array1<Inertia>>;
+  using BRepGProp_GaussFunc = double (*)(const double, const double);
 
 public: //! @name public API
   //! Describes types of geometric objects.
@@ -63,11 +63,11 @@ public: //! @name public API
   //! -- Point and Surface;
   //! -- Plane and Surface.
   //! - Sinert is face in 3D space.
-  typedef enum
+  enum BRepGProp_GaussType
   {
     Vinert = 0,
     Sinert
-  } BRepGProp_GaussType;
+  };
 
   //! Constructor
   Standard_EXPORT explicit BRepGProp_Gauss(const BRepGProp_GaussType theType);
