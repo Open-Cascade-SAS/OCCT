@@ -1835,7 +1835,8 @@ PSECURITY_DESCRIPTOR __fastcall _osd_wnt_protection_to_sd(const OSD_Protection& 
         {
           if (dwAccessGroup != 0)
           {
-            if ((pFileACE = (PFILE_ACE)AllocAccessAllowedAce(dwAccessGroup, 0, pSIDtemp)) != nullptr)
+            if ((pFileACE = (PFILE_ACE)AllocAccessAllowedAce(dwAccessGroup, 0, pSIDtemp))
+                != nullptr)
             {
               AddAce(pACL, ACL_REVISION, dwIndex++, pFileACE, pFileACE->header.AceSize);
               if (theIsDir)

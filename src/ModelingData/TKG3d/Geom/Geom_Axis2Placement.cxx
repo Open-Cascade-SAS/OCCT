@@ -25,11 +25,11 @@
 IMPLEMENT_STANDARD_RTTIEXT(Geom_Axis2Placement, Geom_AxisPlacement)
 
 using Axis2Placement = Geom_Axis2Placement;
-using Ax1 = gp_Ax1;
-using Dir = gp_Dir;
-using Pnt = gp_Pnt;
-using Trsf = gp_Trsf;
-using Vec = gp_Vec;
+using Ax1            = gp_Ax1;
+using Dir            = gp_Dir;
+using Pnt            = gp_Pnt;
+using Trsf           = gp_Trsf;
+using Vec            = gp_Vec;
 
 //=================================================================================================
 

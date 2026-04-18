@@ -99,9 +99,9 @@ public:
   //! @param theSize      the size of the block that was requested by application (this value is
   //! correct only if theIsAlloc is true)
   using TPCallBackFunc = void (*)(const bool   theIsAlloc,
-                                 void* const  theStorage,
-                                 const size_t theRoundSize,
-                                 const size_t theSize);
+                                  void* const  theStorage,
+                                  const size_t theRoundSize,
+                                  const size_t theSize);
 
   //! Set the callback function. You may pass 0 there to turn off the callback.
   //! The callback function, if set, will be automatically called from within

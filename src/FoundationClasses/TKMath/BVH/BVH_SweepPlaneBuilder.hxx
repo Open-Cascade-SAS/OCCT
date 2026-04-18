@@ -129,7 +129,7 @@ protected:
     }
 
     const int aMiddle = aNodeBegPrimitive + aMinSplitIndex;
-    using Range = typename BVH_QueueBuilder<T, N>::BVH_PrimitiveRange;
+    using Range       = typename BVH_QueueBuilder<T, N>::BVH_PrimitiveRange;
     return typename BVH_QueueBuilder<T, N>::BVH_ChildNodes(aMinSplitBoxLft,
                                                            aMinSplitBoxRgh,
                                                            Range(aNodeBegPrimitive, aMiddle - 1),

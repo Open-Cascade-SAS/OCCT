@@ -26,9 +26,9 @@
 IMPLEMENT_STANDARD_RTTIEXT(Geom2d_Direction, Geom2d_Vector)
 
 using Direction = Geom2d_Direction;
-using Ax2d = gp_Ax2d;
-using Pnt2d = gp_Pnt2d;
-using Trsf2d = gp_Trsf2d;
+using Ax2d      = gp_Ax2d;
+using Pnt2d     = gp_Pnt2d;
+using Trsf2d    = gp_Trsf2d;
 
 occ::handle<Geom2d_Geometry> Geom2d_Direction::Copy() const
 {

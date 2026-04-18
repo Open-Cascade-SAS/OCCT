@@ -162,11 +162,14 @@ public:
   bool IsAvoidBuildPCurve() const { return myAvoidBuildPCurve; }
 
 protected:
-  using BOPAlgo_DataMapOfPaveBlockBndBox = NCollection_DataMap<occ::handle<BOPDS_PaveBlock>, Bnd_Box>;
+  using BOPAlgo_DataMapOfPaveBlockBndBox =
+    NCollection_DataMap<occ::handle<BOPDS_PaveBlock>, Bnd_Box>;
 
-  using BOPAlgo_DataMapOfPaveBlockListOfInteger = NCollection_DataMap<occ::handle<BOPDS_PaveBlock>, NCollection_List<int>>;
+  using BOPAlgo_DataMapOfPaveBlockListOfInteger =
+    NCollection_DataMap<occ::handle<BOPDS_PaveBlock>, NCollection_List<int>>;
 
-  using BOPAlgo_DataMapOfIntegerMapOfPaveBlock = NCollection_DataMap<int, NCollection_Map<occ::handle<BOPDS_PaveBlock>>>;
+  using BOPAlgo_DataMapOfIntegerMapOfPaveBlock =
+    NCollection_DataMap<int, NCollection_Map<occ::handle<BOPDS_PaveBlock>>>;
 
   //! Sets non-destructive mode automatically if an argument
   //! contains a locked sub-shape (see TopoDS_Shape::Locked()).

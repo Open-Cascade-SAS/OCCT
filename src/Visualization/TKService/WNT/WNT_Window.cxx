@@ -929,7 +929,11 @@ bool WNT_Window::ProcessMessage(Aspect_WindowInputListener& theListener, MSG& th
     }
     case WM_INPUT: {
       UINT aSize = 0;
-      ::GetRawInputData((HRAWINPUT)theMsg.lParam, RID_INPUT, nullptr, &aSize, sizeof(RAWINPUTHEADER));
+      ::GetRawInputData((HRAWINPUT)theMsg.lParam,
+                        RID_INPUT,
+                        nullptr,
+                        &aSize,
+                        sizeof(RAWINPUTHEADER));
       NCollection_LocalArray<BYTE> aRawData(aSize);
       if (aSize == 0
           || ::GetRawInputData((HRAWINPUT)theMsg.lParam,

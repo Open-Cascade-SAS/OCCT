@@ -44,13 +44,13 @@ SOFTWARE.
 
 // assuming BITS is max(X_BITS,Y_BITS)
 
-using Signed14 = double;   // BITS			xy coords
-using Signed15 = double;   // BITS + 1		vect::xy
+using Signed14   = double;      // BITS			xy coords
+using Signed15   = double;      // BITS + 1		vect::xy
 using Unsigned28 = long double; // 2xBITS		z coord
-using Signed29 = long double;   // 2xBITS + 1	vect::z
-using Signed31 = long double;   // 2xBITS + 3	norm::z
-using Signed45 = long double;   // 3xBITS + 3	norm::xy
-using Signed62 = long double;   // 4xBITS + 6	dot(vect,norm)
+using Signed29   = long double; // 2xBITS + 1	vect::z
+using Signed31   = long double; // 2xBITS + 3	norm::z
+using Signed45   = long double; // 3xBITS + 3	norm::xy
+using Signed62   = long double; // 4xBITS + 6	dot(vect,norm)
 
 /*
 // above typedefs can be used to configure delabella arithmetic types

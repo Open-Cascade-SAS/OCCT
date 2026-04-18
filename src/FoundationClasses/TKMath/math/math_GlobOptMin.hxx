@@ -132,7 +132,7 @@ private:
   {
   public:
     //! Points and target type
-    using Point = math_Vector;
+    using Point  = math_Vector;
     using Target = math_Vector;
 
     NCollection_CellFilter_Inspector(const int theDim, const double theTol)

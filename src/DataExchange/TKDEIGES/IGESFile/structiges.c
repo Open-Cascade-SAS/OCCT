@@ -49,7 +49,7 @@ static struct dirpage {
   int used;
   struct dirpage *next;
   struct dirpart  parts[Maxparts];
-} *firstpage = nullptr;
+} *firstpage = NULL;
 
 #define Maxpar 20000
 static struct parpage {    /* a page of parameters; see AddParam */
@@ -78,7 +78,7 @@ static struct dirpage *curpage;
     char  cars[Maxcar+1];        /*  character page  */
   } *onecarpage;
 
-  static char* restext = nullptr ;  /* current text  (dynamic allocation) */
+  static char* restext = NULL ;  /* current text  (dynamic allocation) */
 /*  static int   resalloc = 0 ; */    /*   allocated (memory to free) or not   */
 
 /*    Utility: Character reservation
@@ -109,19 +109,19 @@ static char* iges_newchar (int lentext)
 void iges_initfile()
 {
   onecarpage = (struct carpage*) malloc ( sizeof(struct carpage) );
-  onecarpage->used = 0; onecarpage->next = nullptr;  restext = nullptr;
+  onecarpage->used = 0; onecarpage->next = NULL;  restext = NULL;
   oneparpage = (struct parpage*) malloc ( sizeof(struct parpage) );
-  oneparpage->used = 0; oneparpage->next = nullptr;
+  oneparpage->used = 0; oneparpage->next = NULL;
 
   starts = (struct parlist*) malloc ( sizeof(struct parlist) );
-  starts->first = starts->last = nullptr; starts->nbparam = 0;
+  starts->first = starts->last = NULL; starts->nbparam = 0;
   header = (struct parlist*) malloc ( sizeof(struct parlist) );
-  header->first = header->last = nullptr; header->nbparam = 0;
+  header->first = header->last = NULL; header->nbparam = 0;
 
   curlist = starts;    /* We start recording the start section */
   nbparts = nbparams = 0;
   firstpage = (struct dirpage*) malloc ( sizeof(struct dirpage) );
-  firstpage->next = nullptr; firstpage->used = 0;
+  firstpage->next = NULL; firstpage->used = 0;
   curpage = firstpage;
 }  
 
@@ -136,14 +136,14 @@ void iges_newpart(int numsec)
   if (curpage->used >= Maxparts) {
     struct dirpage* newpage;
     newpage = (struct dirpage*) malloc ( sizeof(struct dirpage) );
-    newpage->next = nullptr; newpage->used = 0;
+    newpage->next = NULL; newpage->used = 0;
     curpage->next = newpage; curpage = newpage;
   }
   curnumpart = curpage->used;
   curp = &(curpage->parts[curnumpart]);
   curlist = &(curp->list);
   curp->numpart = numsec; curlist->nbparam = 0;
-  curlist->first = curlist->last = nullptr;
+  curlist->first = curlist->last = NULL;
   curpage->used ++;  nbparts ++;
 }
 
@@ -151,11 +151,11 @@ void iges_newpart(int numsec)
 
 void iges_curpart (int dnum)
 {
-  if (curp == nullptr) return;
+  if (curp == NULL) return;
   if (dnum == curp->numpart) return;
   if (curnumpart < curpage->used - 1) curnumpart ++;
   else {
-    if (curpage->next == nullptr) curpage = firstpage;
+    if (curpage->next == NULL) curpage = firstpage;
     else curpage = curpage->next;
     curnumpart = 0;
   }
@@ -163,7 +163,7 @@ void iges_curpart (int dnum)
   curlist = &(curp->list);
   if (dnum == curp->numpart) return;
   curpage = firstpage;
-  while (curpage != nullptr) {
+  while (curpage != NULL) {
     int i; int nbp = curpage->used;
     for (i = 0; i < nbp; i ++) {
       if (curpage->parts[i].numpart == dnum) {
@@ -175,7 +175,7 @@ void iges_curpart (int dnum)
     }
     curpage = curpage->next;
   }
-  curp = nullptr;    /*  not found  */
+  curp = NULL;    /*  not found  */
 }
 
 /*     Definition of a new parameter    */
@@ -187,7 +187,7 @@ void iges_newparam (int typarg, int longval, char *parval)
   char *newval;
   int i;
 
-  if (curlist == nullptr) return;      /*  not defined: abort  */
+  if (curlist == NULL) return;      /*  not defined: abort  */
 
   newval = iges_newchar(longval);
   for (i = 0; i < longval; i++) newval[i] = parval[i];
@@ -203,8 +203,8 @@ void iges_newparam (int typarg, int longval, char *parval)
   oneparpage->used ++;
   curparam->typarg = typarg;
   curparam->parval = newval;
-  curparam->next = nullptr;
-  if (curlist->first == nullptr) curlist->first = curparam;
+  curparam->next = NULL;
+  if (curlist->first == NULL) curlist->first = curparam;
   else curlist->last->next = curparam;
   curlist->last = curparam;
   curlist->nbparam ++;
@@ -244,7 +244,7 @@ void iges_stats (int* nbpart, int* nbparam)
 /* \par res1 res2 nom num char: transmitted to part */
 int iges_lirpart (int* *tabval, char* *res1, char* *res2, char* *nom, char* *num, int *nbparam)
 {
-  if (curpage == nullptr) return 0;
+  if (curpage == NULL) return 0;
   curp = &(curpage->parts[curnumpart]);
   curlist = &(curp->list);
   *nbparam = curlist->nbparam;
@@ -268,7 +268,7 @@ void iges_nextpart()
 /*               Read parameter + move to next                   */
 int iges_lirparam (int *typarg, char* *parval)    /* returns 0 if end of list, 1 otherwise */
 {
-  if (curparam == nullptr) return 0;
+  if (curparam == NULL) return 0;
   *typarg = curparam->typarg;
   *parval = curparam->parval;
   curparam = curparam->next;
@@ -284,13 +284,13 @@ void iges_finfile (int mode)
 
   if (mode == 0 || mode == 1) {
     curpage = firstpage;
-    while (curpage != nullptr) {
+    while (curpage != NULL) {
       oldpage = curpage->next;
       free (curpage);
       curpage = oldpage;
     }
 
-    while (oneparpage != nullptr) {
+    while (oneparpage != NULL) {
       struct parpage* oldparpage;  oldparpage = oneparpage->next;
       free (oneparpage);
       oneparpage = oldparpage;
@@ -298,7 +298,7 @@ void iges_finfile (int mode)
   }
 
   if (mode == 0 || mode == 2) {
-    while (onecarpage != nullptr) {
+    while (onecarpage != NULL) {
       struct carpage* oldcarpage; oldcarpage = onecarpage->next;
       free (onecarpage);
       onecarpage = oldcarpage;

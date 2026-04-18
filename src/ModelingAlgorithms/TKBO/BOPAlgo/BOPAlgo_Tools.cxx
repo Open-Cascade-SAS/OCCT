@@ -60,8 +60,10 @@
 #include <algorithm>
 class BOPDS_PaveBlock;
 
-using BOPAlgo_IndexedDataMapOfShapeDir = NCollection_IndexedDataMap<TopoDS_Shape, gp_Dir, TopTools_ShapeMapHasher>;
-using BOPAlgo_IndexedDataMapOfShapePln = NCollection_IndexedDataMap<TopoDS_Shape, gp_Pln, TopTools_ShapeMapHasher>;
+using BOPAlgo_IndexedDataMapOfShapeDir =
+  NCollection_IndexedDataMap<TopoDS_Shape, gp_Dir, TopTools_ShapeMapHasher>;
+using BOPAlgo_IndexedDataMapOfShapePln =
+  NCollection_IndexedDataMap<TopoDS_Shape, gp_Pln, TopTools_ShapeMapHasher>;
 
 static void MakeWires(
   const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theEdges,

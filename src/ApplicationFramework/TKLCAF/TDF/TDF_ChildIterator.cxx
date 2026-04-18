@@ -29,7 +29,7 @@
     if (myNode && (myNode->Depth() > myFirstLevel) && myNode->Father())                            \
       myNode = myNode->Brother();                                                                  \
     else                                                                                           \
-      myNode = nullptr;                                                                               \
+      myNode = nullptr;                                                                            \
   }
 
 //=================================================================================================

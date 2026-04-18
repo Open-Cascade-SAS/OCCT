@@ -144,7 +144,8 @@ public:
   };
 
   //! Shorthand for a constant iterator type.
-  using const_iterator = NCollection_StlIterator<std::forward_iterator_tag, Iterator, TheKeyType, true>;
+  using const_iterator =
+    NCollection_StlIterator<std::forward_iterator_tag, Iterator, TheKeyType, true>;
 
   //! Shorthand for iterator type (same as const_iterator for key-only maps).
   using iterator = const_iterator;

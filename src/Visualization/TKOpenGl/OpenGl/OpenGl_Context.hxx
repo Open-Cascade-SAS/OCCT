@@ -160,8 +160,8 @@ class OpenGl_Context : public Standard_Transient
   friend struct OpenGl_GlFunctions;
 
 public:
-  using OpenGl_ResourcesMap = NCollection_Shared<
-    NCollection_DataMap<TCollection_AsciiString, occ::handle<OpenGl_Resource>>>;
+  using OpenGl_ResourcesMap =
+    NCollection_Shared<NCollection_DataMap<TCollection_AsciiString, occ::handle<OpenGl_Resource>>>;
 
   //! Function for getting power of to number larger or equal to input number.
   //! @param theNumber    number to 'power of two'

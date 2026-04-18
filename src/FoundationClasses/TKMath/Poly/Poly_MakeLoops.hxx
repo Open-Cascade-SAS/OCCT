@@ -98,7 +98,7 @@ public:
 
   // Define the Loop as a list of links
   using ListOfLink = NCollection_List<Link>;
-  using Loop = ListOfLink;
+  using Loop       = ListOfLink;
 
   //! The abstract helper class
   class Helper

@@ -53,15 +53,15 @@ IMPLEMENT_STANDARD_RTTIEXT(Geom_SurfaceOfRevolution, Geom_SweptSurface)
 #define FMULTS (BSplCLib::NoMults())
 
 using SurfaceOfRevolution = Geom_SurfaceOfRevolution;
-using Curve = Geom_Curve;
-using Ax1 = gp_Ax1;
-using Ax2 = gp_Ax2;
-using Dir = gp_Dir;
-using Lin = gp_Lin;
-using Pnt = gp_Pnt;
-using Trsf = gp_Trsf;
-using Vec = gp_Vec;
-using XYZ = gp_XYZ;
+using Curve               = Geom_Curve;
+using Ax1                 = gp_Ax1;
+using Ax2                 = gp_Ax2;
+using Dir                 = gp_Dir;
+using Lin                 = gp_Lin;
+using Pnt                 = gp_Pnt;
+using Trsf                = gp_Trsf;
+using Vec                 = gp_Vec;
+using XYZ                 = gp_XYZ;
 
 //=================================================================================================
 

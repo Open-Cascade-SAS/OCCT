@@ -47,8 +47,9 @@ static bool isWow64()
 
   HMODULE             aKern32Module = GetModuleHandleW(L"kernel32");
   LPFN_ISWOW64PROCESS aFunIsWow64 =
-    (aKern32Module == nullptr) ? (LPFN_ISWOW64PROCESS)nullptr
-                            : (LPFN_ISWOW64PROCESS)GetProcAddress(aKern32Module, "IsWow64Process");
+    (aKern32Module == nullptr)
+      ? (LPFN_ISWOW64PROCESS) nullptr
+      : (LPFN_ISWOW64PROCESS)GetProcAddress(aKern32Module, "IsWow64Process");
 
   return aFunIsWow64 != nullptr && aFunIsWow64(GetCurrentProcess(), &bIsWow64) && bIsWow64 != FALSE;
 }

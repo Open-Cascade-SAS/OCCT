@@ -226,8 +226,8 @@ private:
   BVHBuilderAdaptorPersistent& operator=(const BVHBuilderAdaptorPersistent&) { return *this; }
 
 private:
-  ObjectsMap&                                             myObjects;
-  mutable Select3D_BndBox3d                               myBox;
+  ObjectsMap&               myObjects;
+  mutable Select3D_BndBox3d myBox;
   using Select3D_HBndBox3d = NCollection_Shared<Select3D_BndBox3d>;
   NCollection_IndexedMap<occ::handle<Select3D_HBndBox3d>> myBoundings;
 };

@@ -30,7 +30,7 @@ class BRepExtrema_VertexInspector
 public:
   static constexpr int Dimension = 3;
 
-  using Point = gp_XYZ;
+  using Point  = gp_XYZ;
   using Target = int;
 
   static double Coord(int i, const Point& thePnt) { return thePnt.Coord(i + 1); }

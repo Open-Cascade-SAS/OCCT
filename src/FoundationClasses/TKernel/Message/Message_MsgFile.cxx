@@ -25,7 +25,8 @@
 #include <cstdio>
 #include <mutex>
 
-using Message_DataMapOfExtendedString = NCollection_DataMap<TCollection_AsciiString, TCollection_ExtendedString>;
+using Message_DataMapOfExtendedString =
+  NCollection_DataMap<TCollection_AsciiString, TCollection_ExtendedString>;
 
 static Message_DataMapOfExtendedString& msgsDataMap()
 {

@@ -48,10 +48,10 @@ namespace
 using AIS_MapOfObjectOwners = NCollection_DataMap<
   occ::handle<SelectMgr_SelectableObject>,
   occ::handle<NCollection_Shared<NCollection_IndexedMap<occ::handle<SelectMgr_EntityOwner>>>>>;
-using AIS_MapIteratorOfMapOfObjectOwners = NCollection_DataMap<
-  occ::handle<SelectMgr_SelectableObject>,
-  occ::handle<NCollection_Shared<NCollection_IndexedMap<occ::handle<SelectMgr_EntityOwner>>>>>::
-  Iterator;
+using AIS_MapIteratorOfMapOfObjectOwners =
+  NCollection_DataMap<occ::handle<SelectMgr_SelectableObject>,
+                      occ::handle<NCollection_Shared<
+                        NCollection_IndexedMap<occ::handle<SelectMgr_EntityOwner>>>>>::Iterator;
 
 //! Initialize default highlighting attributes.
 static void initDefaultHilightAttributes(const occ::handle<Prs3d_Drawer>& theDrawer,

@@ -165,7 +165,8 @@ public:
   using iterator = NCollection_StlIterator<std::forward_iterator_tag, Iterator, TheItemType, false>;
 
   //! Shorthand for a constant iterator type.
-  using const_iterator = NCollection_StlIterator<std::forward_iterator_tag, Iterator, TheItemType, true>;
+  using const_iterator =
+    NCollection_StlIterator<std::forward_iterator_tag, Iterator, TheItemType, true>;
 
   //! Returns an iterator pointing to the first element in the map.
   iterator begin() const noexcept { return Iterator(*this); }

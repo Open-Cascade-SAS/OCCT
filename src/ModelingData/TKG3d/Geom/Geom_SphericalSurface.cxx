@@ -33,16 +33,16 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Geom_SphericalSurface, Geom_ElementarySurface)
 
-using Circle = Geom_Circle;
+using Circle           = Geom_Circle;
 using SphericalSurface = Geom_SphericalSurface;
-using Ax2 = gp_Ax2;
-using Ax3 = gp_Ax3;
-using Circ = gp_Circ;
-using Dir = gp_Dir;
-using Pnt = gp_Pnt;
-using Trsf = gp_Trsf;
-using XYZ = gp_XYZ;
-using Vec = gp_Vec;
+using Ax2              = gp_Ax2;
+using Ax3              = gp_Ax3;
+using Circ             = gp_Circ;
+using Dir              = gp_Dir;
+using Pnt              = gp_Pnt;
+using Trsf             = gp_Trsf;
+using XYZ              = gp_XYZ;
+using Vec              = gp_Vec;
 
 //=================================================================================================
 

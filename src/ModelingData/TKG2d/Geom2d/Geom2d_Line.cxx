@@ -29,13 +29,13 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Geom2d_Line, Geom2d_Curve)
 
-using Line = Geom2d_Line;
-using Ax2d = gp_Ax2d;
-using Dir2d = gp_Dir2d;
-using Pnt2d = gp_Pnt2d;
-using Vec2d = gp_Vec2d;
+using Line   = Geom2d_Line;
+using Ax2d   = gp_Ax2d;
+using Dir2d  = gp_Dir2d;
+using Pnt2d  = gp_Pnt2d;
+using Vec2d  = gp_Vec2d;
 using Trsf2d = gp_Trsf2d;
-using XY = gp_XY;
+using XY     = gp_XY;
 
 //=================================================================================================
 

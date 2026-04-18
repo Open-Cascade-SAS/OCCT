@@ -28,11 +28,11 @@
 IMPLEMENT_STANDARD_RTTIEXT(Geom_Geometry, Standard_Transient)
 
 using Geometry = Geom_Geometry;
-using Pnt = gp_Pnt;
-using Vec = gp_Vec;
-using Ax1 = gp_Ax1;
-using Ax2 = gp_Ax2;
-using Trsf = gp_Trsf;
+using Pnt      = gp_Pnt;
+using Vec      = gp_Vec;
+using Ax1      = gp_Ax1;
+using Ax2      = gp_Ax2;
+using Trsf     = gp_Trsf;
 
 occ::handle<Geom_Geometry> Geom_Geometry::Copy() const
 {

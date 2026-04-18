@@ -140,7 +140,7 @@ protected:
   {
   public:
     using const_iterator = NCollection_Array1<const Graphic3d_Layer*>::const_iterator;
-    using iterator = NCollection_Array1<const Graphic3d_Layer*>::iterator;
+    using iterator       = NCollection_Array1<const Graphic3d_Layer*>::iterator;
 
     //! Reallocate internal buffer of the stack.
     void Allocate(int theSize)

@@ -40,9 +40,9 @@
 
 #include <algorithm>
 
-using Pnt = gp_Pnt;
-using Vec = gp_Vec;
-using Array1OfReal = NCollection_Array1<double>;
+using Pnt             = gp_Pnt;
+using Vec             = gp_Vec;
+using Array1OfReal    = NCollection_Array1<double>;
 using Array1OfInteger = NCollection_Array1<int>;
 
 //=======================================================================

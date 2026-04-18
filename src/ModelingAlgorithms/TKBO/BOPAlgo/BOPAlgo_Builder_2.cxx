@@ -549,7 +549,8 @@ void BOPAlgo_Builder::BuildSplitFaces(const Message_ProgressRange& theRange)
 
 //=================================================================================================
 
-using BOPAlgo_IndexedDataMapOfSetListOfShape = NCollection_IndexedDataMap<BOPTools_Set, NCollection_List<TopoDS_Shape>>;
+using BOPAlgo_IndexedDataMapOfSetListOfShape =
+  NCollection_IndexedDataMap<BOPTools_Set, NCollection_List<TopoDS_Shape>>;
 
 static void AddEdgeSet(const TopoDS_Shape&                           theS,
                        BOPAlgo_IndexedDataMapOfSetListOfShape&       theMap,

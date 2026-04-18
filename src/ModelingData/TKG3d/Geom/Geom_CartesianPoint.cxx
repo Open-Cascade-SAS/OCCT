@@ -23,10 +23,10 @@
 IMPLEMENT_STANDARD_RTTIEXT(Geom_CartesianPoint, Geom_Point)
 
 using CartesianPoint = Geom_CartesianPoint;
-using Ax1 = gp_Ax1;
-using Ax2 = gp_Ax2;
-using Vec = gp_Vec;
-using Trsf = gp_Trsf;
+using Ax1            = gp_Ax1;
+using Ax2            = gp_Ax2;
+using Vec            = gp_Vec;
+using Trsf           = gp_Trsf;
 
 //=================================================================================================
 

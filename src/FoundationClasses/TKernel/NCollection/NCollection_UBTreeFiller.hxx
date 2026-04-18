@@ -56,7 +56,7 @@ public:
   };
 
   //! UBTree algorithm
-  using UBTree = NCollection_UBTree<TheObjType, TheBndType>;
+  using UBTree     = NCollection_UBTree<TheObjType, TheBndType>;
   using UBTreeNode = typename UBTree::TreeNode;
 
   // ---------- PUBLIC METHODS ----------

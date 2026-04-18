@@ -30,11 +30,11 @@
 IMPLEMENT_STANDARD_RTTIEXT(Geom_Circle, Geom_Conic)
 
 using Circle = Geom_Circle;
-using Ax2 = gp_Ax2;
-using Pnt = gp_Pnt;
-using Trsf = gp_Trsf;
-using Vec = gp_Vec;
-using XYZ = gp_XYZ;
+using Ax2    = gp_Ax2;
+using Pnt    = gp_Pnt;
+using Trsf   = gp_Trsf;
+using Vec    = gp_Vec;
+using XYZ    = gp_XYZ;
 
 //=================================================================================================
 

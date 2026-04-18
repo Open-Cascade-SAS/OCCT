@@ -28,8 +28,8 @@
 #include <TCollection_AsciiString.hxx>
 
 // forward declarations to avoid including of FreeType headers
-using FT_Face = struct FT_FaceRec_*;
-using FT_Vector = struct FT_Vector_;
+using FT_Face    = struct FT_FaceRec_*;
+using FT_Vector  = struct FT_Vector_;
 using FT_Outline = struct FT_Outline_;
 class Font_FTLibrary;
 

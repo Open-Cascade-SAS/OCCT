@@ -34,16 +34,16 @@
 IMPLEMENT_STANDARD_RTTIEXT(Geom_Plane, Geom_ElementarySurface)
 
 using Plane = Geom_Plane;
-using Ax1 = gp_Ax1;
-using Ax2 = gp_Ax2;
-using Ax3 = gp_Ax3;
-using Dir = gp_Dir;
-using Lin = gp_Lin;
-using Pln = gp_Pln;
-using Pnt = gp_Pnt;
-using Trsf = gp_Trsf;
-using Vec = gp_Vec;
-using XYZ = gp_XYZ;
+using Ax1   = gp_Ax1;
+using Ax2   = gp_Ax2;
+using Ax3   = gp_Ax3;
+using Dir   = gp_Dir;
+using Lin   = gp_Lin;
+using Pln   = gp_Pln;
+using Pnt   = gp_Pnt;
+using Trsf  = gp_Trsf;
+using Vec   = gp_Vec;
+using XYZ   = gp_XYZ;
 
 //=================================================================================================
 

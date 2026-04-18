@@ -74,69 +74,74 @@ const size_t MEMORY_BLOCK_SIZE_HUGE = 512 * 1024;
 using IEdgePtr = IMeshData_Edge*;
 using IFacePtr = IMeshData_Face*;
 
-using IEdgeHandle = occ::handle<IMeshData_Edge>;
-using IWireHandle = occ::handle<IMeshData_Wire>;
-using IFaceHandle = occ::handle<IMeshData_Face>;
-using ICurveHandle = occ::handle<IMeshData_Curve>;
+using IEdgeHandle   = occ::handle<IMeshData_Edge>;
+using IWireHandle   = occ::handle<IMeshData_Wire>;
+using IFaceHandle   = occ::handle<IMeshData_Face>;
+using ICurveHandle  = occ::handle<IMeshData_Curve>;
 using IPCurveHandle = occ::handle<IMeshData_PCurve>;
 
-using ICurveArrayAdaptor = IMeshData_ParametersListArrayAdaptor<ICurveHandle>;
+using ICurveArrayAdaptor       = IMeshData_ParametersListArrayAdaptor<ICurveHandle>;
 using ICurveArrayAdaptorHandle = occ::handle<ICurveArrayAdaptor>;
 
-using BndBox2dTree = NCollection_Shared<NCollection_EBTree<int, Bnd_Box2d>>;
+using BndBox2dTree       = NCollection_Shared<NCollection_EBTree<int, Bnd_Box2d>>;
 using BndBox2dTreeFiller = NCollection_UBTreeFiller<int, Bnd_Box2d>;
 
 // Vectors
-using VectorOfIFaceHandles = NCollection_Shared<NCollection_Vector<IFaceHandle>>;
-using VectorOfIWireHandles = NCollection_Shared<NCollection_Vector<IWireHandle>>;
-using VectorOfIEdgeHandles = NCollection_Shared<NCollection_Vector<IEdgeHandle>>;
+using VectorOfIFaceHandles   = NCollection_Shared<NCollection_Vector<IFaceHandle>>;
+using VectorOfIWireHandles   = NCollection_Shared<NCollection_Vector<IWireHandle>>;
+using VectorOfIEdgeHandles   = NCollection_Shared<NCollection_Vector<IEdgeHandle>>;
 using VectorOfIPCurveHandles = NCollection_Shared<NCollection_Vector<IPCurveHandle>>;
-using VectorOfIEdgePtrs = NCollection_Shared<NCollection_Vector<IEdgePtr>>;
-using VectorOfBoolean = NCollection_Shared<NCollection_Vector<bool>>;
-using VectorOfInteger = NCollection_Shared<NCollection_Vector<int>>;
-using VectorOfOrientation = NCollection_Shared<NCollection_Vector<TopAbs_Orientation>>;
-using VectorOfElements = NCollection_Shared<NCollection_Vector<BRepMesh_Triangle>>;
-using VectorOfCircle = NCollection_Shared<NCollection_Vector<BRepMesh_Circle>>;
+using VectorOfIEdgePtrs      = NCollection_Shared<NCollection_Vector<IEdgePtr>>;
+using VectorOfBoolean        = NCollection_Shared<NCollection_Vector<bool>>;
+using VectorOfInteger        = NCollection_Shared<NCollection_Vector<int>>;
+using VectorOfOrientation    = NCollection_Shared<NCollection_Vector<TopAbs_Orientation>>;
+using VectorOfElements       = NCollection_Shared<NCollection_Vector<BRepMesh_Triangle>>;
+using VectorOfCircle         = NCollection_Shared<NCollection_Vector<BRepMesh_Circle>>;
 
 using Array1OfVertexOfDelaun = NCollection_Shared<NCollection_Array1<BRepMesh_Vertex>>;
-using VectorOfVertex = NCollection_Shared<NCollection_Vector<BRepMesh_Vertex>>;
+using VectorOfVertex         = NCollection_Shared<NCollection_Vector<BRepMesh_Vertex>>;
 
 // Sequences
-using SequenceOfBndB2d = NCollection_Shared<NCollection_Sequence<Bnd_B2d>>;
+using SequenceOfBndB2d  = NCollection_Shared<NCollection_Sequence<Bnd_B2d>>;
 using SequenceOfInteger = NCollection_Shared<NCollection_Sequence<int>>;
-using SequenceOfReal = NCollection_Shared<NCollection_Sequence<double>>;
+using SequenceOfReal    = NCollection_Shared<NCollection_Sequence<double>>;
 
 namespace Model
 {
-using SequenceOfPnt = std::deque<gp_Pnt, NCollection_OccAllocator<gp_Pnt>>;
-using SequenceOfPnt2d = std::deque<gp_Pnt2d, NCollection_OccAllocator<gp_Pnt2d>>;
-using SequenceOfReal = std::deque<double, NCollection_OccAllocator<double>>;
+using SequenceOfPnt     = std::deque<gp_Pnt, NCollection_OccAllocator<gp_Pnt>>;
+using SequenceOfPnt2d   = std::deque<gp_Pnt2d, NCollection_OccAllocator<gp_Pnt2d>>;
+using SequenceOfReal    = std::deque<double, NCollection_OccAllocator<double>>;
 using SequenceOfInteger = std::deque<int, NCollection_OccAllocator<int>>;
 } // namespace Model
 
 // Lists
-using ListOfInteger = NCollection_Shared<NCollection_List<int>>;
-using ListOfPnt2d = NCollection_Shared<NCollection_List<gp_Pnt2d>>;
+using ListOfInteger  = NCollection_Shared<NCollection_List<int>>;
+using ListOfPnt2d    = NCollection_Shared<NCollection_List<gp_Pnt2d>>;
 using ListOfIPCurves = NCollection_Shared<NCollection_List<IPCurveHandle>>;
 
-using MapOfInteger = NCollection_Shared<TColStd_PackedMapOfInteger>;
+using MapOfInteger           = NCollection_Shared<TColStd_PackedMapOfInteger>;
 using IteratorOfMapOfInteger = TColStd_PackedMapOfInteger::Iterator;
 
 using CircleCellFilter = NCollection_CellFilter<BRepMesh_CircleInspector>;
 using VertexCellFilter = NCollection_CellFilter<BRepMesh_VertexInspector>;
 
-using DMapOfShapeInteger = NCollection_Shared<NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>>;
-using DMapOfIFacePtrsListOfInteger = NCollection_Shared<NCollection_DataMap<IFacePtr, ListOfInteger>>;
-using MapOfIEdgePtr = NCollection_Shared<NCollection_Map<IEdgePtr>>;
-using MapOfIFacePtr = NCollection_Shared<NCollection_Map<IFacePtr>>;
+using DMapOfShapeInteger =
+  NCollection_Shared<NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>>;
+using DMapOfIFacePtrsListOfInteger =
+  NCollection_Shared<NCollection_DataMap<IFacePtr, ListOfInteger>>;
+using MapOfIEdgePtr      = NCollection_Shared<NCollection_Map<IEdgePtr>>;
+using MapOfIFacePtr      = NCollection_Shared<NCollection_Map<IFacePtr>>;
 using MapOfOrientedEdges = NCollection_Shared<NCollection_Map<BRepMesh_OrientedEdge>>;
-using MapOfReal = NCollection_Shared<NCollection_Map<double>>;
-using IDMapOfIFacePtrsListOfIPCurves = NCollection_Shared<NCollection_IndexedDataMap<IFacePtr, ListOfIPCurves>>;
-using DMapOfIFacePtrsMapOfIEdgePtrs = NCollection_Shared<NCollection_DataMap<IFacePtr, occ::handle<MapOfIEdgePtr>>>;
-using IDMapOfLink = NCollection_Shared<NCollection_IndexedDataMap<BRepMesh_Edge, BRepMesh_PairOfIndex>>;
+using MapOfReal          = NCollection_Shared<NCollection_Map<double>>;
+using IDMapOfIFacePtrsListOfIPCurves =
+  NCollection_Shared<NCollection_IndexedDataMap<IFacePtr, ListOfIPCurves>>;
+using DMapOfIFacePtrsMapOfIEdgePtrs =
+  NCollection_Shared<NCollection_DataMap<IFacePtr, occ::handle<MapOfIEdgePtr>>>;
+using IDMapOfLink =
+  NCollection_Shared<NCollection_IndexedDataMap<BRepMesh_Edge, BRepMesh_PairOfIndex>>;
 using DMapOfIntegerListOfInteger = NCollection_Shared<NCollection_DataMap<int, ListOfInteger>>;
-using MapOfIntegerInteger = NCollection_Shared<NCollection_DataMap<int, bool>>;
-using IMapOfReal = NCollection_Shared<NCollection_IndexedMap<double>>;
+using MapOfIntegerInteger        = NCollection_Shared<NCollection_DataMap<int, bool>>;
+using IMapOfReal                 = NCollection_Shared<NCollection_IndexedMap<double>>;
 
 using Array1OfInteger = NCollection_Shared<NCollection_Array1<int>>;
 } // namespace IMeshData

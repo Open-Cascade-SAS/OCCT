@@ -571,9 +571,9 @@ protected: //! @name Selection geometry
       gp_Dir Direction;
     };
 
-    using Curve = NCollection_Sequence<gp_Pnt>;
-    using HCurve = NCollection_Handle<Curve>;
-    using HArrow = NCollection_Handle<Arrow>;
+    using Curve       = NCollection_Sequence<gp_Pnt>;
+    using HCurve      = NCollection_Handle<Curve>;
+    using HArrow      = NCollection_Handle<Arrow>;
     using SeqOfCurves = NCollection_Sequence<HCurve>;
     using SeqOfArrows = NCollection_Sequence<HArrow>;
 

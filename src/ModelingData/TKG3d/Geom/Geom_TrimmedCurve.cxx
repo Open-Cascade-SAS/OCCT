@@ -34,11 +34,11 @@
 IMPLEMENT_STANDARD_RTTIEXT(Geom_TrimmedCurve, Geom_BoundedCurve)
 
 using TrimmedCurve = Geom_TrimmedCurve;
-using Ax1 = gp_Ax1;
-using Ax2 = gp_Ax2;
-using Pnt = gp_Pnt;
-using Trsf = gp_Trsf;
-using Vec = gp_Vec;
+using Ax1          = gp_Ax1;
+using Ax2          = gp_Ax2;
+using Pnt          = gp_Pnt;
+using Trsf         = gp_Trsf;
+using Vec          = gp_Vec;
 
 //=================================================================================================
 

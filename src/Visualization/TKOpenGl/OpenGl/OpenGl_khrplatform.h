@@ -147,9 +147,9 @@
    * Using <stdint.h>
    */
   #include <stdint.h>
-using khronos_int32_t = int32_t;
+using khronos_int32_t  = int32_t;
 using khronos_uint32_t = uint32_t;
-using khronos_int64_t = int64_t;
+using khronos_int64_t  = int64_t;
 using khronos_uint64_t = uint64_t;
   #define KHRONOS_SUPPORT_INT64 1
   #define KHRONOS_SUPPORT_FLOAT 1
@@ -224,9 +224,9 @@ typedef uint64_t khronos_uint64_t;
 /*
  * Types that are (so far) the same on all platforms
  */
-using khronos_int8_t = signed char;
-using khronos_uint8_t = unsigned char;
-using khronos_int16_t = signed short int;
+using khronos_int8_t   = signed char;
+using khronos_uint8_t  = unsigned char;
+using khronos_int16_t  = signed short int;
 using khronos_uint16_t = unsigned short int;
 
 /*
@@ -240,10 +240,10 @@ typedef unsigned long long int khronos_uintptr_t;
 typedef signed long long int   khronos_ssize_t;
 typedef unsigned long long int khronos_usize_t;
 #else
-using khronos_intptr_t = signed long int;
+using khronos_intptr_t  = signed long int;
 using khronos_uintptr_t = unsigned long int;
-using khronos_ssize_t = signed long int;
-using khronos_usize_t = unsigned long int;
+using khronos_ssize_t   = signed long int;
+using khronos_usize_t   = unsigned long int;
 #endif
 
 #if KHRONOS_SUPPORT_FLOAT

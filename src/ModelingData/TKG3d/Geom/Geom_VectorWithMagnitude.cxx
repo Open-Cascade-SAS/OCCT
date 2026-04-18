@@ -25,11 +25,11 @@
 IMPLEMENT_STANDARD_RTTIEXT(Geom_VectorWithMagnitude, Geom_Vector)
 
 using VectorWithMagnitude = Geom_VectorWithMagnitude;
-using Vector = Geom_Vector;
-using Ax1 = gp_Ax1;
-using Ax2 = gp_Ax2;
-using Pnt = gp_Pnt;
-using Trsf = gp_Trsf;
+using Vector              = Geom_Vector;
+using Ax1                 = gp_Ax1;
+using Ax2                 = gp_Ax2;
+using Pnt                 = gp_Pnt;
+using Trsf                = gp_Trsf;
 
 //=================================================================================================
 

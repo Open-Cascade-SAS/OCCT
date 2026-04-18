@@ -218,8 +218,8 @@ struct gp_EulerSequence_Parameters
 gp_EulerSequence_Parameters translateEulerSequence(const gp_EulerSequence theSeq)
 {
   using Params = gp_EulerSequence_Parameters;
-  const bool                          F = false;
-  const bool                          T = true;
+  const bool F = false;
+  const bool T = true;
 
   switch (theSeq)
   {

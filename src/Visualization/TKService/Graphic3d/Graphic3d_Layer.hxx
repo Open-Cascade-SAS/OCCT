@@ -28,8 +28,8 @@
 //! Defines index map of structures.
 
 //! Defines array of indexed maps of structures.
-using Graphic3d_ArrayOfIndexedMapOfStructure = std::array<NCollection_IndexedMap<const Graphic3d_CStructure*>,
-                   Graphic3d_DisplayPriority_NB>;
+using Graphic3d_ArrayOfIndexedMapOfStructure =
+  std::array<NCollection_IndexedMap<const Graphic3d_CStructure*>, Graphic3d_DisplayPriority_NB>;
 
 class Graphic3d_CullingTool;
 

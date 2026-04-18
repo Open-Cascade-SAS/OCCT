@@ -344,7 +344,8 @@ void D3DHost_View::d3dBeginRender()
   }
 
   // clear the back buffer
-  myD3dDevice->Clear(0, nullptr, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 0, 0), 1.0f, 0);
+  myD3dDevice
+    ->Clear(0, nullptr, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 0, 0), 1.0f, 0);
   myD3dDevice->BeginScene();
 }
 
@@ -434,7 +435,11 @@ void D3DHost_View::Redraw()
 
   IDirect3DSurface9* aBackbuffer = nullptr;
   myD3dDevice->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &aBackbuffer);
-  myD3dDevice->StretchRect(myD3dWglFbo->D3dColorSurface(), nullptr, aBackbuffer, nullptr, D3DTEXF_LINEAR);
+  myD3dDevice->StretchRect(myD3dWglFbo->D3dColorSurface(),
+                           nullptr,
+                           aBackbuffer,
+                           nullptr,
+                           D3DTEXF_LINEAR);
   aBackbuffer->Release();
 
   d3dEndRender();
@@ -482,7 +487,11 @@ void D3DHost_View::RedrawImmediate()
 
   IDirect3DSurface9* aBackbuffer = nullptr;
   myD3dDevice->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &aBackbuffer);
-  myD3dDevice->StretchRect(myD3dWglFbo->D3dColorSurface(), nullptr, aBackbuffer, nullptr, D3DTEXF_LINEAR);
+  myD3dDevice->StretchRect(myD3dWglFbo->D3dColorSurface(),
+                           nullptr,
+                           aBackbuffer,
+                           nullptr,
+                           D3DTEXF_LINEAR);
   aBackbuffer->Release();
 
   d3dEndRender();

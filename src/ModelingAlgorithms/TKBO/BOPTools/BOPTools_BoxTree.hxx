@@ -35,12 +35,12 @@ public: //! @name Constructors
 };
 
 //! 2D definitions
-using BOPTools_Box2dTree = BOPTools_BoxSet<double, 2, int>;
+using BOPTools_Box2dTree         = BOPTools_BoxSet<double, 2, int>;
 using BOPTools_Box2dTreeSelector = BOPTools_BoxSelector<2>;
 using BOPTools_Box2dPairSelector = BOPTools_PairSelector<2>;
 
 //! 3D definitions
-using BOPTools_BoxTree = BOPTools_BoxSet<double, 3, int>;
+using BOPTools_BoxTree         = BOPTools_BoxSet<double, 3, int>;
 using BOPTools_BoxTreeSelector = BOPTools_BoxSelector<3>;
 using BOPTools_BoxPairSelector = BOPTools_PairSelector<3>;
 

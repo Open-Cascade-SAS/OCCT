@@ -53,7 +53,7 @@ class BRepGProp_Gauss
     void Reset();
   };
 
-  using InertiaArray = NCollection_Handle<NCollection_Array1<Inertia>>;
+  using InertiaArray        = NCollection_Handle<NCollection_Array1<Inertia>>;
   using BRepGProp_GaussFunc = double (*)(const double, const double);
 
 public: //! @name public API

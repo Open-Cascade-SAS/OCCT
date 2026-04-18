@@ -25,10 +25,10 @@
 IMPLEMENT_STANDARD_RTTIEXT(Geom2d_AxisPlacement, Geom2d_Geometry)
 
 using AxisPlacement = Geom2d_AxisPlacement;
-using Dir2d = gp_Dir2d;
-using Pnt2d = gp_Pnt2d;
-using Trsf2d = gp_Trsf2d;
-using Vec2d = gp_Vec2d;
+using Dir2d         = gp_Dir2d;
+using Pnt2d         = gp_Pnt2d;
+using Trsf2d        = gp_Trsf2d;
+using Vec2d         = gp_Vec2d;
 
 occ::handle<Geom2d_Geometry> Geom2d_AxisPlacement::Copy() const
 {

@@ -39,16 +39,16 @@ IMPLEMENT_STANDARD_RTTIEXT(Geom_CylindricalSurface, Geom_ElementarySurface)
 
 using CylindricalSurface = Geom_CylindricalSurface;
 
-using Ax1 = gp_Ax1;
-using Ax2 = gp_Ax2;
-using Ax3 = gp_Ax3;
+using Ax1  = gp_Ax1;
+using Ax2  = gp_Ax2;
+using Ax3  = gp_Ax3;
 using Circ = gp_Circ;
-using Dir = gp_Dir;
-using Lin = gp_Lin;
-using Pnt = gp_Pnt;
+using Dir  = gp_Dir;
+using Lin  = gp_Lin;
+using Pnt  = gp_Pnt;
 using Trsf = gp_Trsf;
-using Vec = gp_Vec;
-using XYZ = gp_XYZ;
+using Vec  = gp_Vec;
+using XYZ  = gp_XYZ;
 
 //=================================================================================================
 

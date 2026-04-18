@@ -45,7 +45,7 @@ int  iges_lire (FILE* lefic, int *numsec, char line[100], int modefnes)
     line[0] = '\0'; 
     if(modefnes)
     {
-      if (fgets(line,99,lefic) == nullptr) /*for kept compatibility with fnes*/
+      if (fgets(line,99,lefic) == NULL) /*for kept compatibility with fnes*/
         return 0;
     }
     else
@@ -56,7 +56,7 @@ int  iges_lire (FILE* lefic, int *numsec, char line[100], int modefnes)
       {
       }
       
-      if (fgets(&line[1],80,lefic) == nullptr)
+      if (fgets(&line[1],80,lefic) == NULL)
         return 0;
     }
     
@@ -66,7 +66,7 @@ int  iges_lire (FILE* lefic, int *numsec, char line[100], int modefnes)
       
       if(modefnes)
       {
-        if (fgets(line,99,lefic) == nullptr) /*for kept compatibility with fnes*/
+        if (fgets(line,99,lefic) == NULL) /*for kept compatibility with fnes*/
           return 0;
       }
       else
@@ -74,7 +74,7 @@ int  iges_lire (FILE* lefic, int *numsec, char line[100], int modefnes)
         while ( fgets ( line, 2, lefic ) && ( line[0] == '\r' || line[0] == '\n' ) )
         {
         }
-        if (fgets(&line[1],80,lefic) == nullptr)
+        if (fgets(&line[1],80,lefic) == NULL)
           return 0;
       }
     }

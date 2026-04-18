@@ -219,7 +219,8 @@ private:
     TReplacementKind myKind;   //!< The kind of the replacement.
   };
 
-  using TShapeToReplacement = NCollection_DataMap<TopoDS_Shape, TReplacement, TopTools_ShapeMapHasher>;
+  using TShapeToReplacement =
+    NCollection_DataMap<TopoDS_Shape, TReplacement, TopTools_ShapeMapHasher>;
 
 private:
   //! Maps each shape to its replacement.

@@ -29,7 +29,6 @@ enum MeshVS_SelectionModeFlags
   MeshVS_SMF_All     = MeshVS_SMF_Element | MeshVS_SMF_Node,
 
   MeshVS_SMF_Group = 0x0100
-
 };
 
 #endif

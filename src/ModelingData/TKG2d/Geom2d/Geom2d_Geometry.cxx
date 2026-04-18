@@ -24,10 +24,10 @@
 IMPLEMENT_STANDARD_RTTIEXT(Geom2d_Geometry, Standard_Transient)
 
 using Geometry = Geom2d_Geometry;
-using Ax2d = gp_Ax2d;
-using Pnt2d = gp_Pnt2d;
-using Vec2d = gp_Vec2d;
-using Trsf2d = gp_Trsf2d;
+using Ax2d     = gp_Ax2d;
+using Pnt2d    = gp_Pnt2d;
+using Vec2d    = gp_Vec2d;
+using Trsf2d   = gp_Trsf2d;
 
 void Geom2d_Geometry::Mirror(const gp_Pnt2d& P)
 {

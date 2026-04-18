@@ -60,7 +60,7 @@ int igesread (char* nomfic, int lesect[6], int modefnes)
   lefic = stdin; i0 = numsec = 0;  numl = 0;
   if (nomfic[0] != '\0') 
     lefic = OSD_OpenFile(nomfic,"r");
-  if (lefic == nullptr) return -1;    /*  file could not be opened  */
+  if (lefic == NULL) return -1;    /*  file could not be opened  */
   for (i = 1; i < 6; i++) lesect[i] = 0;
   for (j = 0; j < 100; j++) ligne[j] = 0;
   for(;;) {

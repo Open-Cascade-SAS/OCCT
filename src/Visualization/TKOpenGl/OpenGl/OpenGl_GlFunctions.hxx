@@ -78,116 +78,116 @@ struct OpenGl_GlFunctions
   Standard_EXPORT void load(OpenGl_Context& theCtx, bool theIsCoreProfile);
 
 public: //! @name OpenGL 1.1
-  using glClearColor_t = void(APIENTRYP )(GLclampf theRed,
+  using glClearColor_t = void(APIENTRYP)(GLclampf theRed,
                                          GLclampf theGreen,
                                          GLclampf theBlue,
                                          GLclampf theAlpha);
   glClearColor_t glClearColor;
 
-  using glClear_t = void(APIENTRYP )(GLbitfield theMask);
+  using glClear_t = void(APIENTRYP)(GLbitfield theMask);
   glClear_t glClear;
 
-  using glColorMask_t = void(APIENTRYP )(GLboolean theRed,
+  using glColorMask_t = void(APIENTRYP)(GLboolean theRed,
                                         GLboolean theGreen,
                                         GLboolean theBlue,
                                         GLboolean theAlpha);
   glColorMask_t glColorMask;
 
-  using glBlendFunc_t = void(APIENTRYP )(GLenum sfactor, GLenum dfactor);
+  using glBlendFunc_t = void(APIENTRYP)(GLenum sfactor, GLenum dfactor);
   glBlendFunc_t glBlendFunc;
 
-  using glCullFace_t = void(APIENTRYP )(GLenum theMode);
+  using glCullFace_t = void(APIENTRYP)(GLenum theMode);
   glCullFace_t glCullFace;
 
-  using glFrontFace_t = void(APIENTRYP )(GLenum theMode);
+  using glFrontFace_t = void(APIENTRYP)(GLenum theMode);
   glFrontFace_t glFrontFace;
 
-  using glLineWidth_t = void(APIENTRYP )(GLfloat theWidth);
+  using glLineWidth_t = void(APIENTRYP)(GLfloat theWidth);
   glLineWidth_t glLineWidth;
 
-  using glPolygonOffset_t = void(APIENTRYP )(GLfloat theFactor, GLfloat theUnits);
+  using glPolygonOffset_t = void(APIENTRYP)(GLfloat theFactor, GLfloat theUnits);
   glPolygonOffset_t glPolygonOffset;
 
-  using glScissor_t = void(APIENTRYP )(GLint theX, GLint theY, GLsizei theWidth, GLsizei theHeight);
+  using glScissor_t = void(APIENTRYP)(GLint theX, GLint theY, GLsizei theWidth, GLsizei theHeight);
   glScissor_t glScissor;
 
-  using glEnable_t = void(APIENTRYP )(GLenum theCap);
+  using glEnable_t = void(APIENTRYP)(GLenum theCap);
   glEnable_t glEnable;
 
-  using glDisable_t = void(APIENTRYP )(GLenum theCap);
+  using glDisable_t = void(APIENTRYP)(GLenum theCap);
   glDisable_t glDisable;
 
-  using glIsEnabled_t = GLboolean(APIENTRYP )(GLenum theCap);
+  using glIsEnabled_t = GLboolean(APIENTRYP)(GLenum theCap);
   glIsEnabled_t glIsEnabled;
 
-  using glGetBooleanv_t = void(APIENTRYP )(GLenum theParamName, GLboolean* theValues);
+  using glGetBooleanv_t = void(APIENTRYP)(GLenum theParamName, GLboolean* theValues);
   glGetBooleanv_t glGetBooleanv;
 
-  using glGetFloatv_t = void(APIENTRYP )(GLenum theParamName, GLfloat* theValues);
+  using glGetFloatv_t = void(APIENTRYP)(GLenum theParamName, GLfloat* theValues);
   glGetFloatv_t glGetFloatv;
 
-  using glGetIntegerv_t = void(APIENTRYP )(GLenum theParamName, GLint* theValues);
+  using glGetIntegerv_t = void(APIENTRYP)(GLenum theParamName, GLint* theValues);
   glGetIntegerv_t glGetIntegerv;
 
-  using glGetError_t = GLenum(APIENTRYP )();
+  using glGetError_t = GLenum(APIENTRYP)();
   glGetError_t glGetError;
 
   using glGetString_t = const GLubyte*(APIENTRYP)(GLenum theName);
   glGetString_t glGetString;
 
-  using glFinish_t = void(APIENTRYP )();
+  using glFinish_t = void(APIENTRYP)();
   glFinish_t glFinish;
 
-  using glFlush_t = void(APIENTRYP )();
+  using glFlush_t = void(APIENTRYP)();
   glFlush_t glFlush;
 
-  using glHint_t = void(APIENTRYP )(GLenum theTarget, GLenum theMode);
+  using glHint_t = void(APIENTRYP)(GLenum theTarget, GLenum theMode);
   glHint_t glHint;
 
-  using glGetPointerv_t = void(APIENTRYP )(GLenum pname, GLvoid** params);
+  using glGetPointerv_t = void(APIENTRYP)(GLenum pname, GLvoid** params);
   glGetPointerv_t glGetPointerv;
 
-  using glReadBuffer_t = void(APIENTRYP )(GLenum src); // added to OpenGL ES 3.0
+  using glReadBuffer_t = void(APIENTRYP)(GLenum src); // added to OpenGL ES 3.0
   glReadBuffer_t glReadBuffer;
 
-  using glDrawBuffer_t = void(APIENTRYP )(GLenum mode); // added to OpenGL ES 3.0
+  using glDrawBuffer_t = void(APIENTRYP)(GLenum mode); // added to OpenGL ES 3.0
   glDrawBuffer_t glDrawBuffer;
 
-  using glPixelTransferi_t = void(APIENTRYP )(GLenum pname, GLint param);
+  using glPixelTransferi_t = void(APIENTRYP)(GLenum pname, GLint param);
   glPixelTransferi_t glPixelTransferi;
 
 public: //! @name Depth Buffer
-  using glClearDepth_t = void(APIENTRYP )(GLclampd theDepth);
+  using glClearDepth_t = void(APIENTRYP)(GLclampd theDepth);
   glClearDepth_t glClearDepth;
 
-  using glDepthFunc_t = void(APIENTRYP )(GLenum theFunc);
+  using glDepthFunc_t = void(APIENTRYP)(GLenum theFunc);
   glDepthFunc_t glDepthFunc;
 
-  using glDepthMask_t = void(APIENTRYP )(GLboolean theFlag);
+  using glDepthMask_t = void(APIENTRYP)(GLboolean theFlag);
   glDepthMask_t glDepthMask;
 
-  using glDepthRange_t = void(APIENTRYP )(GLclampd theNearValue, GLclampd theFarValue);
+  using glDepthRange_t = void(APIENTRYP)(GLclampd theNearValue, GLclampd theFarValue);
   glDepthRange_t glDepthRange;
 
 public: //! @name Transformation
-  using glViewport_t = void(APIENTRYP )(GLint theX, GLint theY, GLsizei theWidth, GLsizei theHeight);
+  using glViewport_t = void(APIENTRYP)(GLint theX, GLint theY, GLsizei theWidth, GLsizei theHeight);
   glViewport_t glViewport;
 
 public: //! @name Vertex Arrays
-  using glDrawArrays_t = void(APIENTRYP )(GLenum theMode, GLint theFirst, GLsizei theCount);
+  using glDrawArrays_t = void(APIENTRYP)(GLenum theMode, GLint theFirst, GLsizei theCount);
   glDrawArrays_t glDrawArrays;
 
-  using glDrawElements_t = void(APIENTRYP )(GLenum        theMode,
+  using glDrawElements_t = void(APIENTRYP)(GLenum        theMode,
                                            GLsizei       theCount,
                                            GLenum        theType,
                                            const GLvoid* theIndices);
   glDrawElements_t glDrawElements;
 
 public: //! @name Raster functions
-  using glPixelStorei_t = void(APIENTRYP )(GLenum theParamName, GLint theParam);
+  using glPixelStorei_t = void(APIENTRYP)(GLenum theParamName, GLint theParam);
   glPixelStorei_t glPixelStorei;
 
-  using glReadPixels_t = void(APIENTRYP )(GLint   x,
+  using glReadPixels_t = void(APIENTRYP)(GLint   x,
                                          GLint   y,
                                          GLsizei width,
                                          GLsizei height,
@@ -197,38 +197,38 @@ public: //! @name Raster functions
   glReadPixels_t glReadPixels;
 
 public: //! @name Stenciling
-  using glStencilFunc_t = void(APIENTRYP )(GLenum func, GLint ref, GLuint mask);
+  using glStencilFunc_t = void(APIENTRYP)(GLenum func, GLint ref, GLuint mask);
   glStencilFunc_t glStencilFunc;
 
-  using glStencilMask_t = void(APIENTRYP )(GLuint mask);
+  using glStencilMask_t = void(APIENTRYP)(GLuint mask);
   glStencilMask_t glStencilMask;
 
-  using glStencilOp_t = void(APIENTRYP )(GLenum fail, GLenum zfail, GLenum zpass);
+  using glStencilOp_t = void(APIENTRYP)(GLenum fail, GLenum zfail, GLenum zpass);
   glStencilOp_t glStencilOp;
 
-  using glClearStencil_t = void(APIENTRYP )(GLint s);
+  using glClearStencil_t = void(APIENTRYP)(GLint s);
   glClearStencil_t glClearStencil;
 
 public: //! @name Texture mapping
-  using glTexParameterf_t = void(APIENTRYP )(GLenum target, GLenum pname, GLfloat param);
+  using glTexParameterf_t = void(APIENTRYP)(GLenum target, GLenum pname, GLfloat param);
   glTexParameterf_t glTexParameterf;
 
-  using glTexParameteri_t = void(APIENTRYP )(GLenum target, GLenum pname, GLint param);
+  using glTexParameteri_t = void(APIENTRYP)(GLenum target, GLenum pname, GLint param);
   glTexParameteri_t glTexParameteri;
 
-  using glTexParameterfv_t = void(APIENTRYP )(GLenum target, GLenum pname, const GLfloat* params);
+  using glTexParameterfv_t = void(APIENTRYP)(GLenum target, GLenum pname, const GLfloat* params);
   glTexParameterfv_t glTexParameterfv;
 
-  using glTexParameteriv_t = void(APIENTRYP )(GLenum target, GLenum pname, const GLint* params);
+  using glTexParameteriv_t = void(APIENTRYP)(GLenum target, GLenum pname, const GLint* params);
   glTexParameteriv_t glTexParameteriv;
 
-  using glGetTexParameterfv_t = void(APIENTRYP )(GLenum target, GLenum pname, GLfloat* params);
+  using glGetTexParameterfv_t = void(APIENTRYP)(GLenum target, GLenum pname, GLfloat* params);
   glGetTexParameterfv_t glGetTexParameterfv;
 
-  using glGetTexParameteriv_t = void(APIENTRYP )(GLenum target, GLenum pname, GLint* params);
+  using glGetTexParameteriv_t = void(APIENTRYP)(GLenum target, GLenum pname, GLint* params);
   glGetTexParameteriv_t glGetTexParameteriv;
 
-  using glTexImage2D_t = void(APIENTRYP )(GLenum        target,
+  using glTexImage2D_t = void(APIENTRYP)(GLenum        target,
                                          GLint         level,
                                          GLint         internalFormat,
                                          GLsizei       width,
@@ -239,19 +239,19 @@ public: //! @name Texture mapping
                                          const GLvoid* pixels);
   glTexImage2D_t glTexImage2D;
 
-  using glGenTextures_t = void(APIENTRYP )(GLsizei n, GLuint* textures);
+  using glGenTextures_t = void(APIENTRYP)(GLsizei n, GLuint* textures);
   glGenTextures_t glGenTextures;
 
-  using glDeleteTextures_t = void(APIENTRYP )(GLsizei n, const GLuint* textures);
+  using glDeleteTextures_t = void(APIENTRYP)(GLsizei n, const GLuint* textures);
   glDeleteTextures_t glDeleteTextures;
 
-  using glBindTexture_t = void(APIENTRYP )(GLenum target, GLuint texture);
+  using glBindTexture_t = void(APIENTRYP)(GLenum target, GLuint texture);
   glBindTexture_t glBindTexture;
 
-  using glIsTexture_t = GLboolean(APIENTRYP )(GLuint texture);
+  using glIsTexture_t = GLboolean(APIENTRYP)(GLuint texture);
   glIsTexture_t glIsTexture;
 
-  using glTexSubImage2D_t = void(APIENTRYP )(GLenum        target,
+  using glTexSubImage2D_t = void(APIENTRYP)(GLenum        target,
                                             GLint         level,
                                             GLint         xoffset,
                                             GLint         yoffset,
@@ -262,7 +262,7 @@ public: //! @name Texture mapping
                                             const GLvoid* pixels);
   glTexSubImage2D_t glTexSubImage2D;
 
-  using glCopyTexImage2D_t = void(APIENTRYP )(GLenum  target,
+  using glCopyTexImage2D_t = void(APIENTRYP)(GLenum  target,
                                              GLint   level,
                                              GLenum  internalformat,
                                              GLint   x,
@@ -272,7 +272,7 @@ public: //! @name Texture mapping
                                              GLint   border);
   glCopyTexImage2D_t glCopyTexImage2D;
 
-  using glCopyTexSubImage2D_t = void(APIENTRYP )(GLenum  target,
+  using glCopyTexSubImage2D_t = void(APIENTRYP)(GLenum  target,
                                                 GLint   level,
                                                 GLint   xoffset,
                                                 GLint   yoffset,
@@ -283,7 +283,7 @@ public: //! @name Texture mapping
   glCopyTexSubImage2D_t glCopyTexSubImage2D;
 
 public: // not part of OpenGL ES 2.0
-  using glTexImage1D_t = void(APIENTRYP )(GLenum        target,
+  using glTexImage1D_t = void(APIENTRYP)(GLenum        target,
                                          GLint         level,
                                          GLint         internalFormat,
                                          GLsizei       width,
@@ -293,7 +293,7 @@ public: // not part of OpenGL ES 2.0
                                          const GLvoid* pixels);
   glTexImage1D_t glTexImage1D;
 
-  using glTexSubImage1D_t = void(APIENTRYP )(GLenum        target,
+  using glTexSubImage1D_t = void(APIENTRYP)(GLenum        target,
                                             GLint         level,
                                             GLint         xoffset,
                                             GLsizei       width,
@@ -302,7 +302,7 @@ public: // not part of OpenGL ES 2.0
                                             const GLvoid* pixels);
   glTexSubImage1D_t glTexSubImage1D;
 
-  using glCopyTexImage1D_t = void(APIENTRYP )(GLenum  target,
+  using glCopyTexImage1D_t = void(APIENTRYP)(GLenum  target,
                                              GLint   level,
                                              GLenum  internalformat,
                                              GLint   x,
@@ -311,136 +311,126 @@ public: // not part of OpenGL ES 2.0
                                              GLint   border);
   glCopyTexImage1D_t glCopyTexImage1D;
 
-  using glCopyTexSubImage1D_t = void(APIENTRYP )(GLenum  target,
-                                                GLint   level,
-                                                GLint   xoffset,
-                                                GLint   x,
-                                                GLint   y,
-                                                GLsizei width);
+  using glCopyTexSubImage1D_t =
+    void(APIENTRYP)(GLenum target, GLint level, GLint xoffset, GLint x, GLint y, GLsizei width);
   glCopyTexSubImage1D_t glCopyTexSubImage1D;
 
-  using glGetTexImage_t = void(APIENTRYP )(GLenum  target,
-                                          GLint   level,
-                                          GLenum  format,
-                                          GLenum  type,
-                                          GLvoid* pixels);
+  using glGetTexImage_t =
+    void(APIENTRYP)(GLenum target, GLint level, GLenum format, GLenum type, GLvoid* pixels);
   glGetTexImage_t glGetTexImage;
 
-  using glAlphaFunc_t = void(APIENTRYP )(GLenum theFunc, GLclampf theRef);
+  using glAlphaFunc_t = void(APIENTRYP)(GLenum theFunc, GLclampf theRef);
   glAlphaFunc_t glAlphaFunc;
 
-  using glPointSize_t = void(APIENTRYP )(GLfloat theSize);
+  using glPointSize_t = void(APIENTRYP)(GLfloat theSize);
   glPointSize_t glPointSize;
 
 public: //! @name OpenGL 1.1 FFP (obsolete, removed since 3.1)
-  using glTexEnvi_t = void(APIENTRYP )(GLenum target, GLenum pname, GLint param);
+  using glTexEnvi_t = void(APIENTRYP)(GLenum target, GLenum pname, GLint param);
   glTexEnvi_t glTexEnvi;
 
-  using glGetTexEnviv_t = void(APIENTRYP )(GLenum target, GLenum pname, GLint* params);
+  using glGetTexEnviv_t = void(APIENTRYP)(GLenum target, GLenum pname, GLint* params);
   glGetTexEnviv_t glGetTexEnviv;
 
-  using glLogicOp_t = void(APIENTRYP )(GLenum opcode);
+  using glLogicOp_t = void(APIENTRYP)(GLenum opcode);
   glLogicOp_t glLogicOp;
 
 public: //! @name Begin/End primitive specification (removed since 3.1)
-  using glColor4fv_t = void(APIENTRYP )(const GLfloat* theVec);
+  using glColor4fv_t = void(APIENTRYP)(const GLfloat* theVec);
   glColor4fv_t glColor4fv;
 
 public: //! @name Matrix operations (removed since 3.1)
-  using glMatrixMode_t = void(APIENTRYP )(GLenum theMode);
+  using glMatrixMode_t = void(APIENTRYP)(GLenum theMode);
   glMatrixMode_t glMatrixMode;
 
-  using glLoadIdentity_t = void(APIENTRYP )();
+  using glLoadIdentity_t = void(APIENTRYP)();
   glLoadIdentity_t glLoadIdentity;
 
-  using glLoadMatrixf_t = void(APIENTRYP )(const GLfloat* theMatrix);
+  using glLoadMatrixf_t = void(APIENTRYP)(const GLfloat* theMatrix);
   glLoadMatrixf_t glLoadMatrixf;
 
 public: //! @name Line and Polygon stipple (removed since 3.1)
-  using glLineStipple_t = void(APIENTRYP )(GLint theFactor, GLushort thePattern);
+  using glLineStipple_t = void(APIENTRYP)(GLint theFactor, GLushort thePattern);
   glLineStipple_t glLineStipple;
 
-  using glPolygonStipple_t = void(APIENTRYP )(const GLubyte* theMask);
+  using glPolygonStipple_t = void(APIENTRYP)(const GLubyte* theMask);
   glPolygonStipple_t glPolygonStipple;
 
 public: //! @name Fixed pipeline lighting (removed since 3.1)
-  using glShadeModel_t = void(APIENTRYP )(GLenum theMode);
+  using glShadeModel_t = void(APIENTRYP)(GLenum theMode);
   glShadeModel_t glShadeModel;
 
-  using glLightf_t = void(APIENTRYP )(GLenum theLight, GLenum pname, GLfloat param);
+  using glLightf_t = void(APIENTRYP)(GLenum theLight, GLenum pname, GLfloat param);
   glLightf_t glLightf;
 
-  using glLightfv_t = void(APIENTRYP )(GLenum theLight, GLenum pname, const GLfloat* params);
+  using glLightfv_t = void(APIENTRYP)(GLenum theLight, GLenum pname, const GLfloat* params);
   glLightfv_t glLightfv;
 
-  using glLightModeli_t = void(APIENTRYP )(GLenum pname, GLint param);
+  using glLightModeli_t = void(APIENTRYP)(GLenum pname, GLint param);
   glLightModeli_t glLightModeli;
 
-  using glLightModelfv_t = void(APIENTRYP )(GLenum pname, const GLfloat* params);
+  using glLightModelfv_t = void(APIENTRYP)(GLenum pname, const GLfloat* params);
   glLightModelfv_t glLightModelfv;
 
-  using glMaterialf_t = void(APIENTRYP )(GLenum face, GLenum pname, GLfloat param);
+  using glMaterialf_t = void(APIENTRYP)(GLenum face, GLenum pname, GLfloat param);
   glMaterialf_t glMaterialf;
 
-  using glMaterialfv_t = void(APIENTRYP )(GLenum face, GLenum pname, const GLfloat* params);
+  using glMaterialfv_t = void(APIENTRYP)(GLenum face, GLenum pname, const GLfloat* params);
   glMaterialfv_t glMaterialfv;
 
-  using glColorMaterial_t = void(APIENTRYP )(GLenum face, GLenum mode);
+  using glColorMaterial_t = void(APIENTRYP)(GLenum face, GLenum mode);
   glColorMaterial_t glColorMaterial;
 
 public: //! @name clipping plane (removed since 3.1)
-  using glClipPlane_t = void(APIENTRYP )(GLenum thePlane, const GLdouble* theEquation);
+  using glClipPlane_t = void(APIENTRYP)(GLenum thePlane, const GLdouble* theEquation);
   glClipPlane_t glClipPlane;
 
 public: //! @name Display lists (removed since 3.1)
-  using glDeleteLists_t = void(APIENTRYP )(GLuint theList, GLsizei theRange);
+  using glDeleteLists_t = void(APIENTRYP)(GLuint theList, GLsizei theRange);
   glDeleteLists_t glDeleteLists;
 
-  using glGenLists_t = GLuint(APIENTRYP )(GLsizei theRange);
+  using glGenLists_t = GLuint(APIENTRYP)(GLsizei theRange);
   glGenLists_t glGenLists;
 
-  using glNewList_t = void(APIENTRYP )(GLuint theList, GLenum theMode);
+  using glNewList_t = void(APIENTRYP)(GLuint theList, GLenum theMode);
   glNewList_t glNewList;
 
-  using glEndList_t = void(APIENTRYP )();
+  using glEndList_t = void(APIENTRYP)();
   glEndList_t glEndList;
 
-  using glCallList_t = void(APIENTRYP )(GLuint theList);
+  using glCallList_t = void(APIENTRYP)(GLuint theList);
   glCallList_t glCallList;
 
-  using glCallLists_t = void(APIENTRYP )(GLsizei theNb, GLenum theType, const GLvoid* theLists);
+  using glCallLists_t = void(APIENTRYP)(GLsizei theNb, GLenum theType, const GLvoid* theLists);
   glCallLists_t glCallLists;
 
-  using glListBase_t = void(APIENTRYP )(GLuint theBase);
+  using glListBase_t = void(APIENTRYP)(GLuint theBase);
   glListBase_t glListBase;
 
 public: //! @name Current raster position and Rectangles (removed since 3.1)
-  using glRasterPos2i_t = void(APIENTRYP )(GLint x, GLint y);
+  using glRasterPos2i_t = void(APIENTRYP)(GLint x, GLint y);
   glRasterPos2i_t glRasterPos2i;
 
-  using glRasterPos3fv_t = void(APIENTRYP )(const GLfloat* theVec);
+  using glRasterPos3fv_t = void(APIENTRYP)(const GLfloat* theVec);
   glRasterPos3fv_t glRasterPos3fv;
 
 public: //! @name Texture mapping (removed since 3.1)
-  using glTexGeni_t = void(APIENTRYP )(GLenum coord, GLenum pname, GLint param);
+  using glTexGeni_t = void(APIENTRYP)(GLenum coord, GLenum pname, GLint param);
   glTexGeni_t glTexGeni;
 
-  using glTexGenfv_t = void(APIENTRYP )(GLenum coord, GLenum pname, const GLfloat* params);
+  using glTexGenfv_t = void(APIENTRYP)(GLenum coord, GLenum pname, const GLfloat* params);
   glTexGenfv_t glTexGenfv;
 
 public: //! @name Pixel copying (removed since 3.1)
-  using glDrawPixels_t = void(APIENTRYP )(GLsizei       width,
-                                         GLsizei       height,
-                                         GLenum        format,
-                                         GLenum        type,
-                                         const GLvoid* pixels);
+  using glDrawPixels_t = void(
+    APIENTRYP)(GLsizei width, GLsizei height, GLenum format, GLenum type, const GLvoid* pixels);
   glDrawPixels_t glDrawPixels;
 
-  using glCopyPixels_t = void(
-    APIENTRYP )(GLint x, GLint y, GLsizei width, GLsizei height, GLenum type);
+  using glCopyPixels_t =
+    void(APIENTRYP)(GLint x, GLint y, GLsizei width, GLsizei height, GLenum type);
   glCopyPixels_t glCopyPixels;
 
-  using glBitmap_t = void(APIENTRYP )(GLsizei        width,
+  using glBitmap_t = void(APIENTRYP)(GLsizei        width,
                                      GLsizei        height,
                                      GLfloat        xorig,
                                      GLfloat        yorig,
@@ -450,58 +440,58 @@ public: //! @name Pixel copying (removed since 3.1)
   glBitmap_t glBitmap;
 
 public: //! @name Edge flags and fixed-function vertex processing (removed since 3.1)
-  using glIndexPointer_t = void(APIENTRYP )(GLenum theType, GLsizei theStride, const GLvoid* thePtr);
+  using glIndexPointer_t = void(APIENTRYP)(GLenum theType, GLsizei theStride, const GLvoid* thePtr);
   glIndexPointer_t glIndexPointer;
 
-  using glVertexPointer_t = void(APIENTRYP )(GLint         theSize,
+  using glVertexPointer_t = void(APIENTRYP)(GLint         theSize,
                                             GLenum        theType,
                                             GLsizei       theStride,
                                             const GLvoid* thePtr);
   glVertexPointer_t glVertexPointer;
 
-  using glNormalPointer_t = void(APIENTRYP )(GLenum        theType,
+  using glNormalPointer_t = void(APIENTRYP)(GLenum        theType,
                                             GLsizei       theStride,
                                             const GLvoid* thePtr);
   glNormalPointer_t glNormalPointer;
 
-  using glColorPointer_t = void(APIENTRYP )(GLint         theSize,
+  using glColorPointer_t = void(APIENTRYP)(GLint         theSize,
                                            GLenum        theType,
                                            GLsizei       theStride,
                                            const GLvoid* thePtr);
   glColorPointer_t glColorPointer;
 
-  using glTexCoordPointer_t = void(APIENTRYP )(GLint         theSize,
+  using glTexCoordPointer_t = void(APIENTRYP)(GLint         theSize,
                                               GLenum        theType,
                                               GLsizei       theStride,
                                               const GLvoid* thePtr);
   glTexCoordPointer_t glTexCoordPointer;
 
-  using glEnableClientState_t = void(APIENTRYP )(GLenum theCap);
+  using glEnableClientState_t = void(APIENTRYP)(GLenum theCap);
   glEnableClientState_t glEnableClientState;
 
-  using glDisableClientState_t = void(APIENTRYP )(GLenum theCap);
+  using glDisableClientState_t = void(APIENTRYP)(GLenum theCap);
   glDisableClientState_t glDisableClientState;
 
-  using glGetTexLevelParameterfv_t = void(APIENTRYP )(GLenum   target,
+  using glGetTexLevelParameterfv_t = void(APIENTRYP)(GLenum   target,
                                                      GLint    level,
                                                      GLenum   pname,
                                                      GLfloat* params);
   glGetTexLevelParameterfv_t glGetTexLevelParameterfv;
 
-  using glGetTexLevelParameteriv_t = void(APIENTRYP )(GLenum target,
+  using glGetTexLevelParameteriv_t = void(APIENTRYP)(GLenum target,
                                                      GLint  level,
                                                      GLenum pname,
                                                      GLint* params);
   glGetTexLevelParameteriv_t glGetTexLevelParameteriv;
 
-  using glPolygonMode_t = void(APIENTRYP )(GLenum face, GLenum mode);
+  using glPolygonMode_t = void(APIENTRYP)(GLenum face, GLenum mode);
   glPolygonMode_t glPolygonMode;
 
 public: //! @name OpenGL ES 3.2
-  using glBlendBarrier_t = void(APIENTRYP )();
+  using glBlendBarrier_t = void(APIENTRYP)();
   glBlendBarrier_t glBlendBarrier;
 
-  using glPrimitiveBoundingBox_t = void(APIENTRYP )(GLfloat minX,
+  using glPrimitiveBoundingBox_t = void(APIENTRYP)(GLfloat minX,
                                                    GLfloat minY,
                                                    GLfloat minZ,
                                                    GLfloat minW,
@@ -1424,17 +1414,17 @@ public: //! @name glX extensions
     #define GLX_RENDERER_ID_MESA 0x818E
   #endif // GLX_RENDERER_VENDOR_ID_MESA
 
-  using glXQueryRendererIntegerMESA_t = int (*)(Aspect_XDisplay* theDisplay,
-                                               int              theScreen,
-                                               int              theRenderer,
-                                               int              theAttribute,
-                                               unsigned int*    theValue);
+  using glXQueryRendererIntegerMESA_t        = int (*)(Aspect_XDisplay* theDisplay,
+                                                int              theScreen,
+                                                int              theRenderer,
+                                                int              theAttribute,
+                                                unsigned int*    theValue);
   using glXQueryCurrentRendererIntegerMESA_t = int (*)(int theAttribute, unsigned int* theValue);
-  using glXQueryRendererStringMESA_t        = const char* (*)(Aspect_XDisplay* theDisplay,
-                                                       int              theScreen,
-                                                       int              theRenderer,
-                                                       int              theAttribute);
-  using glXQueryCurrentRendererStringMESA_t = const char* (*)(int theAttribute);
+  using glXQueryRendererStringMESA_t         = const char* (*)(Aspect_XDisplay * theDisplay,
+                                                       int theScreen,
+                                                       int theRenderer,
+                                                       int theAttribute);
+  using glXQueryCurrentRendererStringMESA_t  = const char* (*)(int theAttribute);
 
   glXQueryRendererIntegerMESA_t        glXQueryRendererIntegerMESA;
   glXQueryCurrentRendererIntegerMESA_t glXQueryCurrentRendererIntegerMESA;

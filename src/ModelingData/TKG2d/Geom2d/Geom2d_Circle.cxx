@@ -31,12 +31,12 @@
 IMPLEMENT_STANDARD_RTTIEXT(Geom2d_Circle, Geom2d_Conic)
 
 using Circle = Geom2d_Circle;
-using Ax2d = gp_Ax2d;
-using Dir2d = gp_Dir2d;
-using Pnt2d = gp_Pnt2d;
+using Ax2d   = gp_Ax2d;
+using Dir2d  = gp_Dir2d;
+using Pnt2d  = gp_Pnt2d;
 using Trsf2d = gp_Trsf2d;
-using Vec2d = gp_Vec2d;
-using XY = gp_XY;
+using Vec2d  = gp_Vec2d;
+using XY     = gp_XY;
 
 //=================================================================================================
 

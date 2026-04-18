@@ -36,16 +36,16 @@
 IMPLEMENT_STANDARD_RTTIEXT(Geom_ToroidalSurface, Geom_ElementarySurface)
 
 using ToroidalSurface = Geom_ToroidalSurface;
-using Array1OfReal = NCollection_Array1<double>;
-using Ax1 = gp_Ax1;
-using Ax2 = gp_Ax2;
-using Ax3 = gp_Ax3;
-using Circ = gp_Circ;
-using Dir = gp_Dir;
-using Pnt = gp_Pnt;
-using Trsf = gp_Trsf;
-using Vec = gp_Vec;
-using XYZ = gp_XYZ;
+using Array1OfReal    = NCollection_Array1<double>;
+using Ax1             = gp_Ax1;
+using Ax2             = gp_Ax2;
+using Ax3             = gp_Ax3;
+using Circ            = gp_Circ;
+using Dir             = gp_Dir;
+using Pnt             = gp_Pnt;
+using Trsf            = gp_Trsf;
+using Vec             = gp_Vec;
+using XYZ             = gp_XYZ;
 
 //=================================================================================================
 

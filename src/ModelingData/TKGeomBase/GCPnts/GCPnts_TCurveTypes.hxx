@@ -33,10 +33,10 @@ struct GCPnts_TCurveTypes
 template <>
 struct GCPnts_TCurveTypes<Adaptor3d_Curve>
 {
-  using Point = gp_Pnt;
-  using BezierCurve = Geom_BezierCurve;
-  using BSplineCurve = Geom_BSplineCurve;
-  using DistFunction = GCPnts_DistFunction;
+  using Point          = gp_Pnt;
+  using BezierCurve    = Geom_BezierCurve;
+  using BSplineCurve   = Geom_BSplineCurve;
+  using DistFunction   = GCPnts_DistFunction;
   using DistFunctionMV = GCPnts_DistFunctionMV;
 };
 
@@ -44,10 +44,10 @@ struct GCPnts_TCurveTypes<Adaptor3d_Curve>
 template <>
 struct GCPnts_TCurveTypes<Adaptor2d_Curve2d>
 {
-  using Point = gp_Pnt2d;
-  using BezierCurve = Geom2d_BezierCurve;
-  using BSplineCurve = Geom2d_BSplineCurve;
-  using DistFunction = GCPnts_DistFunction2d;
+  using Point          = gp_Pnt2d;
+  using BezierCurve    = Geom2d_BezierCurve;
+  using BSplineCurve   = Geom2d_BSplineCurve;
+  using DistFunction   = GCPnts_DistFunction2d;
   using DistFunctionMV = GCPnts_DistFunction2dMV;
 };
 

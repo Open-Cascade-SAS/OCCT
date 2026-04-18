@@ -1621,11 +1621,11 @@ bool Init_Appli(HINSTANCE hInst, HINSTANCE hPrevInst, int nShow, HWND& hWndFrame
   dwMainThreadId = GetCurrentThreadId();
 
   // necessary for normal Tk operation
-  hThread = CreateThread(nullptr,   // no security attributes
-                         0,      // use default stack size
-                         tkLoop, // thread function
-                         nullptr,   // no thread function argument
-                         0,      // use default creation flags
+  hThread = CreateThread(nullptr, // no security attributes
+                         0,       // use default stack size
+                         tkLoop,  // thread function
+                         nullptr, // no thread function argument
+                         0,       // use default creation flags
                          &IDThread);
   if (!hThread)
   {
@@ -1805,7 +1805,7 @@ static Tcl_Channel TclpGetDefaultStdChannel(
 
   if ((handle == INVALID_HANDLE_VALUE) || (handle == 0))
   {
-    return (Tcl_Channel)nullptr;
+    return (Tcl_Channel) nullptr;
   }
 
   /*
@@ -1821,14 +1821,14 @@ static Tcl_Channel TclpGetDefaultStdChannel(
                        FALSE,
                        DUPLICATE_SAME_ACCESS))
   {
-    return (Tcl_Channel)nullptr;
+    return (Tcl_Channel) nullptr;
   }
 
   channel = Tcl_MakeFileChannel(handle, mode);
 
   if (channel == nullptr)
   {
-    return (Tcl_Channel)nullptr;
+    return (Tcl_Channel) nullptr;
   }
 
   /*
@@ -1840,7 +1840,7 @@ static Tcl_Channel TclpGetDefaultStdChannel(
       || Tcl_SetChannelOption(nullptr, channel, "-buffering", bufMode) != TCL_OK)
   {
     Tcl_Close(nullptr, channel);
-    return (Tcl_Channel)nullptr;
+    return (Tcl_Channel) nullptr;
   }
   return channel;
 }
@@ -2011,10 +2011,10 @@ void Run_Appli(HWND hWnd)
   HANDLE hThread;
   if (Draw_IsConsoleSubsystem)
   {
-    hThread = CreateThread(nullptr,                // no security attributes
+    hThread = CreateThread(nullptr,             // no security attributes
                            0,                   // use default stack size
                            readStdinThreadFunc, // thread function
-                           nullptr,                // no thread function argument
+                           nullptr,             // no thread function argument
                            0,                   // use default creation flags
                            &IDThread);          // returns thread identifier
     if (!hThread)

@@ -32,7 +32,7 @@
 #include <utility>
 
 using NCollection_DelListNode = void (*)(NCollection_ListNode*,
-                                        occ::handle<NCollection_BaseAllocator>& theAl);
+                                         occ::handle<NCollection_BaseAllocator>& theAl);
 
 // ********************************************************** BaseList class
 class NCollection_BaseList

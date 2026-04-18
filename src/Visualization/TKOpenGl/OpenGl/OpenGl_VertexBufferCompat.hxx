@@ -20,6 +20,6 @@
 #include <OpenGl_IndexBuffer.hxx>
 
 using OpenGl_VertexBufferCompat = OpenGl_BufferCompatT<OpenGl_VertexBuffer>;
-using OpenGl_IndexBufferCompat = OpenGl_BufferCompatT<OpenGl_IndexBuffer>;
+using OpenGl_IndexBufferCompat  = OpenGl_BufferCompatT<OpenGl_IndexBuffer>;
 
 #endif // _OpenGl_VertexBufferCompat_HeaderFile

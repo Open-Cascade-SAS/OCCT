@@ -234,7 +234,7 @@
   #define Long int
 #endif
 #ifndef ULong
-using ULong = unsigned Long ;
+using ULong = unsigned Long;
 #endif
 
 #ifdef DEBUG

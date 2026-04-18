@@ -111,7 +111,8 @@ private:
       return;
     }
 
-    if ((SymInitialize = (SYMINITIALIZEPROC)GetProcAddress(myDbgHelpLib, "SymInitialize")) == nullptr)
+    if ((SymInitialize = (SYMINITIALIZEPROC)GetProcAddress(myDbgHelpLib, "SymInitialize"))
+        == nullptr)
     {
       myError = "Standard_DbgHelper, Function not found in DbgHelp.dll: SymInitialize";
       unload();

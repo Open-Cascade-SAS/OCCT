@@ -22,7 +22,7 @@
 #include <NCollection_ListNode.hxx>
 
 using NCollection_DelMapNode = void (*)(NCollection_ListNode*,
-                                       occ::handle<NCollection_BaseAllocator>& theAl);
+                                        occ::handle<NCollection_BaseAllocator>& theAl);
 
 /**
  * Purpose:     This is a base class for all Maps:

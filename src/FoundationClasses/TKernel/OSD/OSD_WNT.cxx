@@ -808,8 +808,9 @@ static BOOL MoveDirectory(const wchar_t* oldDir, const wchar_t* newDir, DWORD& t
     {
       StringCchCopyW(pName, aNameLength, oldDir);
       StringCchCatW(pName, aNameLength, WILD_CARD);
-      retVal    = TRUE;
-      hFindFile = FindFirstFileExW(pName, FindExInfoStandard, pFD, FindExSearchNameMatch, nullptr, 0);
+      retVal = TRUE;
+      hFindFile =
+        FindFirstFileExW(pName, FindExInfoStandard, pFD, FindExSearchNameMatch, nullptr, 0);
       for (BOOL fFind = hFindFile != INVALID_HANDLE_VALUE; fFind;
            fFind      = FindNextFileW(hFindFile, pFD))
       {
@@ -973,8 +974,9 @@ BOOL CopyDirectory(const wchar_t* dirSrc, const wchar_t* dirDst)
       StringCchCopyW(pName, aNameLength, dirSrc);
       StringCchCatW(pName, aNameLength, WILD_CARD);
 
-      retVal    = TRUE;
-      hFindFile = FindFirstFileExW(pName, FindExInfoStandard, pFD, FindExSearchNameMatch, nullptr, 0);
+      retVal = TRUE;
+      hFindFile =
+        FindFirstFileExW(pName, FindExInfoStandard, pFD, FindExSearchNameMatch, nullptr, 0);
       for (BOOL fFind = hFindFile != INVALID_HANDLE_VALUE; fFind;
            fFind      = FindNextFileW(hFindFile, pFD))
       {

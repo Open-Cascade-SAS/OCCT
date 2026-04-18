@@ -42,7 +42,8 @@ struct NodeInsertionMeshAlgo
 template <class RangeSplitter>
 struct DeflectionControlMeshAlgo
 {
-  using Type = BRepMesh_DelaunayDeflectionControlMeshAlgo<RangeSplitter, BRepMesh_DelaunayBaseMeshAlgo>;
+  using Type =
+    BRepMesh_DelaunayDeflectionControlMeshAlgo<RangeSplitter, BRepMesh_DelaunayBaseMeshAlgo>;
 };
 } // namespace
 

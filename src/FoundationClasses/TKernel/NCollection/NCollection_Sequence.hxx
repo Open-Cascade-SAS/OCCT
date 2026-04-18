@@ -112,10 +112,12 @@ public:
   }; // End of nested class Iterator
 
   //! Shorthand for a regular iterator type.
-  using iterator = NCollection_StlIterator<std::bidirectional_iterator_tag, Iterator, TheItemType, false>;
+  using iterator =
+    NCollection_StlIterator<std::bidirectional_iterator_tag, Iterator, TheItemType, false>;
 
   //! Shorthand for a constant iterator type.
-  using const_iterator = NCollection_StlIterator<std::bidirectional_iterator_tag, Iterator, TheItemType, true>;
+  using const_iterator =
+    NCollection_StlIterator<std::bidirectional_iterator_tag, Iterator, TheItemType, true>;
 
   //! Returns an iterator pointing to the first element in the sequence.
   iterator begin() const noexcept { return Iterator(*this, true); }

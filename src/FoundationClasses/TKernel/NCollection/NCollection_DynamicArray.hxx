@@ -62,7 +62,7 @@ public:
 
 public:
   using allocator_type = NCollection_OccAllocator<TheItemType>;
-  using vector = NCollection_BasePointerVector;
+  using vector         = NCollection_BasePointerVector;
 
 public:
   // Define various type aliases for convenience

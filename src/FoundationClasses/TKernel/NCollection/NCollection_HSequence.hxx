@@ -29,7 +29,7 @@ public:
   DEFINE_NCOLLECTION_ALLOC
 
   using SequenceType = NCollection_Sequence<TheItemType>;
-  using value_type = TheItemType;
+  using value_type   = TheItemType;
 
 public:
   //! Default constructor.

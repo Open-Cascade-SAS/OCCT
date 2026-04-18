@@ -31,12 +31,12 @@
 IMPLEMENT_STANDARD_RTTIEXT(Geom_Parabola, Geom_Conic)
 
 using Parabola = Geom_Parabola;
-using Ax1 = gp_Ax1;
-using Ax2 = gp_Ax2;
-using Pnt = gp_Pnt;
-using Trsf = gp_Trsf;
-using Vec = gp_Vec;
-using XYZ = gp_XYZ;
+using Ax1      = gp_Ax1;
+using Ax2      = gp_Ax2;
+using Pnt      = gp_Pnt;
+using Trsf     = gp_Trsf;
+using Vec      = gp_Vec;
+using XYZ      = gp_XYZ;
 
 //=================================================================================================
 

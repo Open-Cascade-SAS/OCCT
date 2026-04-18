@@ -752,7 +752,8 @@ Quantity_Date OSD_FileNode::CreationMoment()
   if (_get_file_time(fNameW.ToWideString(), &stCreationSystemMoment, FALSE))
   {
     SYSTEMTIME* aSysTime = &stCreationMoment;
-    BOOL aFlag = SystemTimeToTzSpecificLocalTime(nullptr, &stCreationSystemMoment, &stCreationMoment);
+    BOOL        aFlag =
+      SystemTimeToTzSpecificLocalTime(nullptr, &stCreationSystemMoment, &stCreationMoment);
     if (aFlag == 0) // AGV: test for success (e.g., unsupported on Win95/98)
       aSysTime = &stCreationSystemMoment;
     retVal.SetValues(aSysTime->wMonth,

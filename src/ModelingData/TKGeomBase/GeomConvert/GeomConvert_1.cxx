@@ -49,7 +49,7 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
 
-using Surface = Geom_Surface;
+using Surface        = Geom_Surface;
 using BSplineSurface = Geom_BSplineSurface;
 
 //=================================================================================================

@@ -57,7 +57,7 @@ public:
   using key_type = TheKeyType;
   //! STL-compliant typedef for value type
   using value_type = TheItemType;
-  using hasher = Hasher;
+  using hasher     = Hasher;
 
 private:
   //!    Adaptation of the TListNode to the INDEXEDDatamap
@@ -206,7 +206,8 @@ public:
   using iterator = NCollection_StlIterator<std::forward_iterator_tag, Iterator, TheItemType, false>;
 
   //! Shorthand for a constant iterator type.
-  using const_iterator = NCollection_StlIterator<std::forward_iterator_tag, Iterator, TheItemType, true>;
+  using const_iterator =
+    NCollection_StlIterator<std::forward_iterator_tag, Iterator, TheItemType, true>;
 
   //! Returns an iterator pointing to the first element in the map.
   iterator begin() const noexcept { return Iterator(*this); }

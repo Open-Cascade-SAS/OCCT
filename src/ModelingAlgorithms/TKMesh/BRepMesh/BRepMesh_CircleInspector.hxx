@@ -27,7 +27,7 @@ class BRepMesh_CircleInspector
 public:
   static constexpr int Dimension = 2;
 
-  using Point = gp_XY;
+  using Point  = gp_XY;
   using Target = int;
 
   static double Coord(int i, const Point& thePnt) { return thePnt.Coord(i + 1); }

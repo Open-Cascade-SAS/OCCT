@@ -114,7 +114,7 @@ class NCollection_CellFilter
 {
 public:
   using Target = typename Inspector::Target;
-  using Point = typename Inspector::Point;
+  using Point  = typename Inspector::Point;
 
 public:
   //! Constructor; initialized by dimension count and cell size.
@@ -238,7 +238,7 @@ protected:
 
   //! Cell index type.
   using Cell_IndexType = int;
-  using CellIndex = NCollection_LocalArray<Cell_IndexType, 10>;
+  using CellIndex      = NCollection_LocalArray<Cell_IndexType, 10>;
 
   /**
    * Auxiliary structure representing a cell in the space.

@@ -39,11 +39,11 @@
 IMPLEMENT_STANDARD_RTTIEXT(Geom_RectangularTrimmedSurface, Geom_BoundedSurface)
 
 using RectangularTrimmedSurface = Geom_RectangularTrimmedSurface;
-using Ax1 = gp_Ax1;
-using Ax2 = gp_Ax2;
-using Pnt = gp_Pnt;
-using Trsf = gp_Trsf;
-using Vec = gp_Vec;
+using Ax1                       = gp_Ax1;
+using Ax2                       = gp_Ax2;
+using Pnt                       = gp_Pnt;
+using Trsf                      = gp_Trsf;
+using Vec                       = gp_Vec;
 
 //=================================================================================================
 

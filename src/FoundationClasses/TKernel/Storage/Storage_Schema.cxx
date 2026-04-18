@@ -43,7 +43,8 @@ IMPLEMENT_STANDARD_RTTIEXT(Storage_Schema, Standard_Transient)
   #include <OSD_Protection.hxx>
   #include <OSD_Environment.hxx>
 
-using DataMapOfAStringAString = NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>;
+using DataMapOfAStringAString =
+  NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>;
 
 #endif
 

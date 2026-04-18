@@ -30,12 +30,12 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Geom_Ellipse, Geom_Conic)
 
-using Ax1 = gp_Ax1;
-using Ax2 = gp_Ax2;
-using Pnt = gp_Pnt;
-using Vec = gp_Vec;
+using Ax1  = gp_Ax1;
+using Ax2  = gp_Ax2;
+using Pnt  = gp_Pnt;
+using Vec  = gp_Vec;
 using Trsf = gp_Trsf;
-using XYZ = gp_XYZ;
+using XYZ  = gp_XYZ;
 
 //=================================================================================================
 

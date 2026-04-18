@@ -45,7 +45,8 @@
 #include <algorithm>
 #include <NCollection_IndexedDataMap.hxx>
 
-using IntPolyh_IndexedDataMapOfIntegerListOfInteger = NCollection_IndexedDataMap<int, NCollection_List<int>>;
+using IntPolyh_IndexedDataMapOfIntegerListOfInteger =
+  NCollection_IndexedDataMap<int, NCollection_List<int>>;
 
 static double MyTolerance                = 10.0e-7;
 static double MyConfusionPrecision       = 10.0e-12;

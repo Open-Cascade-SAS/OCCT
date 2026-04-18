@@ -49,12 +49,12 @@ IMPLEMENT_STANDARD_RTTIEXT(Geom_SurfaceOfLinearExtrusion, Geom_SweptSurface)
 #define FMULTS (BSplCLib::NoMults())
 
 using SurfaceOfLinearExtrusion = Geom_SurfaceOfLinearExtrusion;
-using Curve = Geom_Curve;
-using Dir = gp_Dir;
-using Pnt = gp_Pnt;
-using Trsf = gp_Trsf;
-using Vec = gp_Vec;
-using XYZ = gp_XYZ;
+using Curve                    = Geom_Curve;
+using Dir                      = gp_Dir;
+using Pnt                      = gp_Pnt;
+using Trsf                     = gp_Trsf;
+using Vec                      = gp_Vec;
+using XYZ                      = gp_XYZ;
 
 //=================================================================================================
 

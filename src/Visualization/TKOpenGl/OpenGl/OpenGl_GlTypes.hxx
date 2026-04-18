@@ -48,26 +48,26 @@
 
 #include <OpenGl_khrplatform.h>
 
-using GLbyte = khronos_int8_t;
-using GLclampf = khronos_float_t;
-using GLfixed = khronos_int32_t;
-using GLshort = short;
-using GLushort = unsigned short;
-using GLvoid = void;
-using GLsync = struct __GLsync*;
-using GLint64 = khronos_int64_t;
-using GLuint64 = khronos_uint64_t;
-using GLenum = unsigned int;
-using GLuint = unsigned int;
-using GLchar = char;
-using GLfloat = khronos_float_t;
+using GLbyte     = khronos_int8_t;
+using GLclampf   = khronos_float_t;
+using GLfixed    = khronos_int32_t;
+using GLshort    = short;
+using GLushort   = unsigned short;
+using GLvoid     = void;
+using GLsync     = struct __GLsync*;
+using GLint64    = khronos_int64_t;
+using GLuint64   = khronos_uint64_t;
+using GLenum     = unsigned int;
+using GLuint     = unsigned int;
+using GLchar     = char;
+using GLfloat    = khronos_float_t;
 using GLsizeiptr = khronos_ssize_t;
-using GLintptr = khronos_intptr_t;
+using GLintptr   = khronos_intptr_t;
 using GLbitfield = unsigned int;
-using GLint = int;
-using GLboolean = unsigned char;
-using GLsizei = int;
-using GLubyte = khronos_uint8_t;
+using GLint      = int;
+using GLboolean  = unsigned char;
+using GLsizei    = int;
+using GLubyte    = khronos_uint8_t;
 
 using GLdouble = double;
 using GLclampd = double;

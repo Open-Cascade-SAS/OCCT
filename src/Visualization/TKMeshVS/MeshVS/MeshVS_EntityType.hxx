@@ -27,7 +27,6 @@ enum MeshVS_EntityType
 
   MeshVS_ET_Element = MeshVS_ET_0D | MeshVS_ET_Link | MeshVS_ET_Face | MeshVS_ET_Volume,
   MeshVS_ET_All     = MeshVS_ET_Element | MeshVS_ET_Node
-
 };
 
 #endif
