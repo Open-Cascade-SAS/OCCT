@@ -187,11 +187,11 @@ bool OSD_Thread::Run(void* const data,
   }
   else
   {
-#ifdef __APPLE__
+  #ifdef __APPLE__
     myThreadId = reinterpret_cast<Standard_ThreadId>(myThread);
-#else
+  #else
     myThreadId = static_cast<Standard_ThreadId>(myThread);
-#endif
+  #endif
   }
 #endif
   return myThread != OSD_PTHREAD_NULL;
