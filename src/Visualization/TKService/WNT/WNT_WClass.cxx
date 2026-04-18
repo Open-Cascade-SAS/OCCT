@@ -37,21 +37,21 @@ WNT_WClass::WNT_WClass(const TCollection_AsciiString& theClassName,
                        const Aspect_Handle            theIcon,
                        const TCollection_AsciiString& theMenuName)
     : myClassName(theClassName),
-      myAppInstance(GetModuleHandleW(NULL)),
-      myWndProc(NULL)
+      myAppInstance(GetModuleHandleW(nullptr)),
+      myWndProc(nullptr)
 {
   const TCollection_ExtendedString aClassNameW(theClassName);
   const TCollection_ExtendedString aMenuNameW(theMenuName);
   WNDCLASSW                        aWinClass;
   aWinClass.style         = (UINT)theStyle;
-  aWinClass.lpfnWndProc   = theWndProc != NULL ? (WNDPROC)theWndProc : DefWindowProcW;
+  aWinClass.lpfnWndProc   = theWndProc != nullptr ? (WNDPROC)theWndProc : DefWindowProcW;
   aWinClass.cbClsExtra    = theClassExtra;
   aWinClass.cbWndExtra    = theWindowExtra;
   aWinClass.hInstance     = (HINSTANCE)myAppInstance;
-  aWinClass.hIcon         = theIcon != NULL ? (HICON)theIcon : LoadIcon(NULL, IDI_APPLICATION);
-  aWinClass.hCursor       = theCursor != NULL ? (HCURSOR)theCursor : LoadCursor(NULL, IDC_NO);
+  aWinClass.hIcon         = theIcon != nullptr ? (HICON)theIcon : LoadIcon(nullptr, IDI_APPLICATION);
+  aWinClass.hCursor       = theCursor != nullptr ? (HCURSOR)theCursor : LoadCursor(nullptr, IDC_NO);
   aWinClass.hbrBackground = 0;
-  aWinClass.lpszMenuName  = !aMenuNameW.IsEmpty() ? aMenuNameW.ToWideString() : NULL;
+  aWinClass.lpszMenuName  = !aMenuNameW.IsEmpty() ? aMenuNameW.ToWideString() : nullptr;
   aWinClass.lpszClassName = aClassNameW.ToWideString();
   if (!RegisterClassW(&aWinClass))
   {
