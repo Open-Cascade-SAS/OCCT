@@ -267,8 +267,7 @@ bool BRepExtrema_TriangleSet::initFace(const TopoDS_Face& theFace, const int the
 
     aTriangulation->Triangle(aTriIdx).Get(aVertex1, aVertex2, aVertex3);
 
-    myTriangles.push_back(
-      BVH_Vec4i(aVertex1 + aVertOffset, aVertex2 + aVertOffset, aVertex3 + aVertOffset, theIndex));
+    myTriangles.emplace_back(aVertex1 + aVertOffset, aVertex2 + aVertOffset, aVertex3 + aVertOffset, theIndex);
   }
 
   myNumTrgInShapeVec.SetValue(theIndex, aTriangulation->NbTriangles());
@@ -295,10 +294,10 @@ bool BRepExtrema_TriangleSet::initEdge(const TopoDS_Edge& theEdge, const int the
   for (int aVertIdx = 1; aVertIdx < aPolygon->NbNodes(); ++aVertIdx)
   {
     // segment as degenerate triangle
-    myTriangles.push_back(BVH_Vec4i(aVertIdx + aVertOffset,
+    myTriangles.emplace_back(aVertIdx + aVertOffset,
                                     aVertIdx + aVertOffset + 1,
                                     aVertIdx + aVertOffset + 1,
-                                    theIndex));
+                                    theIndex);
   }
   return true;
 }
@@ -315,7 +314,7 @@ void BRepExtrema_TriangleSet::initNodes(const NCollection_Array1<gp_Pnt>& theNod
 
     aVertex.Transform(theTrsf);
 
-    myVertexArray.push_back(BVH_Vec3d(aVertex.X(), aVertex.Y(), aVertex.Z()));
+    myVertexArray.emplace_back(aVertex.X(), aVertex.Y(), aVertex.Z());
     myShapeIdxOfVtxVec.Append(theIndex);
   }
 

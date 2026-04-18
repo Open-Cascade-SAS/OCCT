@@ -1079,7 +1079,7 @@ public:
       double aD2 = aP1.SquareDistance(aP2);
       if (aD2 < aTolSum2)
       {
-        myPairs.push_back(PairIDs(anID1, anID2));
+        myPairs.emplace_back(anID1, anID2);
         return true;
       }
     }

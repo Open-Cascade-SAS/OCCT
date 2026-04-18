@@ -250,7 +250,7 @@ BRepExtrema_ElementFilter::FilterResult BRepExtrema_SelfIntersection::PreCheckEl
       if ((aTrng0Vtxs[aVertIdx1] - aTrng1Vtxs[aVertIdx2]).SquareModulus()
           < Precision::SquareConfusion())
       {
-        aSharedVtxs.push_back(std::pair<int, int>(aVertIdx1, aVertIdx2));
+        aSharedVtxs.emplace_back(aVertIdx1, aVertIdx2);
 
         break; // go to next vertex of the 1st triangle
       }
