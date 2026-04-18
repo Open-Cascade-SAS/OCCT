@@ -80,7 +80,7 @@ static Standard::AllocatorType& allocatorTypeInstance()
   // There is no support for environment variables in UWP
   // OSD_Environment could not be used here because of cyclic dependency
   #ifdef OCCT_UWP
-    #define getenv(x) NULL
+    #define getenv(x) nullptr
   #endif
 
   #ifndef OCCT_MMGT_OPT_DEFAULT
@@ -199,7 +199,7 @@ private:
 //=======================================================================
 
 Standard_MMgrFactory::Standard_MMgrFactory()
-    : myFMMgr(NULL)
+    : myFMMgr(nullptr)
 {
   /*#if defined(_MSC_VER) && (_MSC_VER > 1400)
     // Turn ON thread-safe C locale globally to avoid side effects by setlocale() calls between
@@ -269,7 +269,7 @@ Standard_MMgrFactory::Standard_MMgrFactory()
   // Environment variable MMGT_LFH can be used to switch off this action (if set to 0)
   #if defined(_MSC_VER)
   aVar = getenv("MMGT_LFH");
-  if (aVar == NULL || atoi(aVar) != 0)
+  if (aVar == nullptr || atoi(aVar) != 0)
   {
     ULONG  aHeapInfo = 2;
     HANDLE aCRTHeap  = (HANDLE)_get_heap_handle();

@@ -914,7 +914,7 @@ void Draw_Viewer::Select(int& theId, int& theX, int& theY, int& theButton, bool 
   Flush();
 
 #ifdef _WIN32
-  HANDLE hWnd = NULL;
+  HANDLE hWnd = nullptr;
 
   theId = MAXVIEW; //: abv 29.05.02: cycle for working in console mode
   while (theId >= MAXVIEW)
@@ -931,7 +931,7 @@ void Draw_Viewer::Select(int& theId, int& theX, int& theY, int& theButton, bool 
     // Recherche du numero de la vue grace au HANDLE
     for (int aViewIter = 0; aViewIter < MAXVIEW; ++aViewIter)
     {
-      if (myViews[aViewIter] != NULL && myViews[aViewIter]->IsEqualWindows(hWnd))
+      if (myViews[aViewIter] != nullptr && myViews[aViewIter]->IsEqualWindows(hWnd))
       {
         theId = aViewIter;
       }

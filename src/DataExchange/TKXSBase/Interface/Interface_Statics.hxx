@@ -67,10 +67,10 @@
   static struct type##_struc                                                                       \
   {                                                                                                \
     Handle(type) H;                                                                                \
-  }* var##_s = NULL
+  }* var##_s = nullptr
 
 //  Another declaration for an already declared type (with StaticHandle)
-#define StaticHandleA(type, var) static struct type##_struc* var##_s = NULL
+#define StaticHandleA(type, var) static struct type##_struc* var##_s = nullptr
 
 //  Using it (IT MUST HAVE BEEN FORMERLY INITIALIZED)
 #define UseHandle(type, var) Handle(type)& var = var##_s->H

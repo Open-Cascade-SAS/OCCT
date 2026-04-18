@@ -277,7 +277,7 @@ TCollection_AsciiString OSD_Environment::Value()
   // all) for setting value externally, considering msvc C-runtime implementation details.
   SetLastError(ERROR_SUCCESS);
   NCollection_UtfString<wchar_t> aNameWide(myName.ToCString());
-  DWORD                          aSize = GetEnvironmentVariableW(aNameWide.ToCString(), NULL, 0);
+  DWORD                          aSize = GetEnvironmentVariableW(aNameWide.ToCString(), nullptr, 0);
   if (aSize == 0 && GetLastError() != ERROR_SUCCESS)
   {
     _set_error(myError, ERROR_ENVVAR_NOT_FOUND);
@@ -372,7 +372,7 @@ static void __fastcall _set_error(OSD_Error& theErr, DWORD theCode)
                       MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL),
                       aBuffer,
                       2048,
-                      NULL))
+                      nullptr))
   {
     theErr.SetValue(anErrCode,
                     OSD_WEnvironment,

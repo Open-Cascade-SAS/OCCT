@@ -158,7 +158,7 @@ EM_JS(char*, occJSModuleCanvasId, (), {
 static TCollection_AsciiString getModuleCanvasId()
 {
   char*                   aRawId = occJSModuleCanvasId();
-  TCollection_AsciiString anId(aRawId != NULL ? aRawId : "");
+  TCollection_AsciiString anId(aRawId != nullptr ? aRawId : "");
   free(aRawId);
   return anId;
 }
@@ -253,7 +253,7 @@ const occ::handle<WNT_WClass>& ViewerTest::WClass()
                                CS_VREDRAW | CS_HREDRAW,
                                0,
                                0,
-                               ::LoadCursor(NULL, IDC_ARROW));
+                               ::LoadCursor(nullptr, IDC_ARROW));
   }
 #endif
   return theWClass;
@@ -1181,10 +1181,10 @@ static int VInit(Draw_Interpretor& theDi, int theArgsNb, const char** theArgVec)
       if (aDpiAware == 1)
       {
         // DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2
-        if (aSetDpiAware((void*)-4) == NULL)
+        if (aSetDpiAware((void*)-4) == nullptr)
         {
           // DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE for older systems
-          if (aSetDpiAware((void*)-3) == NULL)
+          if (aSetDpiAware((void*)-3) == nullptr)
           {
             Message::SendFail() << "Error: unable to enable DPI awareness";
           }
@@ -1193,7 +1193,7 @@ static int VInit(Draw_Interpretor& theDi, int theArgsNb, const char** theArgVec)
       else
       {
         // DPI_AWARENESS_CONTEXT_UNAWARE
-        if (aSetDpiAware((void*)-1) == NULL)
+        if (aSetDpiAware((void*)-1) == nullptr)
         {
           Message::SendFail() << "Error: unable to disable DPI awareness";
         }
@@ -2287,7 +2287,7 @@ int ViewerMainLoop(int theNbArgs, const char** theArgVec)
   while (aViewCtrl->ToPickPoint())
   {
     // Wait for a VT_ProcessButton1Press() to toggle pick to 1 or 0
-    if (GetMessageW(&aMsg, NULL, 0, 0))
+    if (GetMessageW(&aMsg, nullptr, 0, 0))
     {
       TranslateMessage(&aMsg);
       DispatchMessageW(&aMsg);

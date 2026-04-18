@@ -353,7 +353,7 @@ void TopOpeBRepBuild_Builder::GdumpSHAORI(const TopoDS_Shape& S, void* const str
   char* c = (char*)str;
   if (c)
     std::cout << c;
-  GdumpSHA(S, NULL);
+  GdumpSHA(S, nullptr);
   std::cout << ",";
   PrintOri(S);
   std::cout.flush();
@@ -369,7 +369,7 @@ void TopOpeBRepBuild_Builder::GdumpSHAORIGEO(const TopoDS_Shape& S, void* const 
   char* c = (char*)str;
   if (c)
     std::cout << c;
-  GdumpSHAORI(S, NULL);
+  GdumpSHAORI(S, nullptr);
   std::cout << ",";
   PrintGeo(S);
   std::cout.flush();
@@ -386,7 +386,7 @@ void TopOpeBRepBuild_Builder::GdumpSHASTA(const TopoDS_Shape&            S,
                                           const TCollection_AsciiString& b) const
 {
   std::cout << a;
-  GdumpSHAORIGEO(S, NULL);
+  GdumpSHAORIGEO(S, nullptr);
   std::cout << "," << StringState(T).ToCString();
   std::cout << b;
   std::cout.flush();
@@ -503,7 +503,7 @@ void TopOpeBRepBuild_Builder::GdumpSOBU(TopOpeBRepBuild_SolidBuilder& /*ME*/) co
 } // GdumpSOBU
 
 #ifdef OCCT_DEBUG
-void* GFABUMAKEFACEPWES_DEB = NULL;
+void* GFABUMAKEFACEPWES_DEB = nullptr;
 #endif
 
 //=================================================================================================

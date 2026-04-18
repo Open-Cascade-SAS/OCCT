@@ -313,7 +313,7 @@ void XmlMNaming_NamingDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
   anElem.setAttribute(::ContextLabelString(), aDOMString);
 #ifdef OCCT_DEBUG
   std::cout << "XmlMNaming_NamingDriver::Store: ContextLabel Entry = " << anEntry << std::endl;
-  if (aDOMString != NULL)
+  if (aDOMString != nullptr)
   {
     const char* aStr = static_cast<const char*>(aDOMString.GetString());
     std::cout << "XmlMNaming_NamingDriver::Store: ContextLabel DOMString = " << aStr << std::endl;

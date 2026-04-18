@@ -36,10 +36,10 @@ wchar_t* NCollection_UtfStringTool::FromLocale(const char* theString)
 
   #if defined(_WIN32)
   // use WinAPI
-  int aWideSize = MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, theString, -1, NULL, 0);
+  int aWideSize = MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, theString, -1, nullptr, 0);
   if (aWideSize <= 0)
   {
-    return NULL;
+    return nullptr;
   }
 
   myWideBuffer = new wchar_t[aWideSize + 1];
@@ -69,7 +69,7 @@ bool NCollection_UtfStringTool::ToLocale(const wchar_t* theWideString,
 {
   #if defined(_WIN32)
   int aMbBytes =
-    WideCharToMultiByte(CP_ACP, 0, theWideString, -1, theBuffer, theSizeBytes, NULL, NULL);
+    WideCharToMultiByte(CP_ACP, 0, theWideString, -1, theBuffer, theSizeBytes, nullptr, nullptr);
   #else
   std::size_t aMbBytes = std::wcstombs(theBuffer, theWideString, theSizeBytes);
   #endif

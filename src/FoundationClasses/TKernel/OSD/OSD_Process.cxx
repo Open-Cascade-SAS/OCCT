@@ -246,10 +246,10 @@ bool OSD_Process ::IsSuperUser()
   bool          retVal = FALSE;
   PSID          pSIDadmin;
   HANDLE        hProcessToken = INVALID_HANDLE_VALUE;
-  PTOKEN_GROUPS pTKgroups     = NULL;
+  PTOKEN_GROUPS pTKgroups     = nullptr;
 
   if (!OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hProcessToken)
-      || (pTKgroups = (PTOKEN_GROUPS)GetTokenInformationEx(hProcessToken, TokenGroups)) == NULL)
+      || (pTKgroups = (PTOKEN_GROUPS)GetTokenInformationEx(hProcessToken, TokenGroups)) == nullptr)
 
     _osd_wnt_set_error(myError, OSD_WProcess);
 
@@ -272,7 +272,7 @@ bool OSD_Process ::IsSuperUser()
 
   if (hProcessToken != INVALID_HANDLE_VALUE)
     CloseHandle(hProcessToken);
-  if (pTKgroups != NULL)
+  if (pTKgroups != nullptr)
     FreeTokenInformation(pTKgroups);
 
   return retVal;
@@ -294,7 +294,7 @@ OSD_Path OSD_Process::CurrentDirectory()
 {
   OSD_Path anCurrentDirectory;
   #ifndef OCCT_UWP
-  const DWORD aBuffLen = GetCurrentDirectoryW(0, NULL);
+  const DWORD aBuffLen = GetCurrentDirectoryW(0, nullptr);
   if (aBuffLen > 0)
   {
     wchar_t* aBuff = new wchar_t[aBuffLen + 1];
@@ -375,17 +375,17 @@ TCollection_AsciiString OSD_Process::ExecutablePath()
   }
 
   // buffer is not large enough (e.g. path uses \\?\ prefix)
-  wchar_t* aBuffDyn = NULL;
+  wchar_t* aBuffDyn = nullptr;
   for (int anIter = 2;; ++anIter)
   {
     size_t aBuffLen = MAX_PATH * anIter;
     aBuffDyn = reinterpret_cast<wchar_t*>(realloc(aBuffDyn, sizeof(wchar_t) * (aBuffLen + 1)));
-    if (aBuffDyn == NULL)
+    if (aBuffDyn == nullptr)
     {
       return TCollection_AsciiString();
     }
 
-    aLenFilled = GetModuleFileNameW(NULL, aBuffDyn, DWORD(aBuffLen));
+    aLenFilled = GetModuleFileNameW(nullptr, aBuffDyn, DWORD(aBuffLen));
     if (aLenFilled != aBuffLen)
     {
       aBuffDyn[aBuffLen] = L'\0';

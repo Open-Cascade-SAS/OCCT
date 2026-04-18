@@ -84,7 +84,7 @@ TCollection_AsciiString Media_FormatContext::FormatAVErrorDescription(int theErr
   #elif defined(_WIN32)
   // MinGW has only thread-unsafe variant
   char* anErrDesc = strerror(AVUNERROR(theErrCodeAV));
-  if (anErrDesc != NULL)
+  if (anErrDesc != nullptr)
   {
     return TCollection_AsciiString(anErrDesc);
   }

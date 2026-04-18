@@ -276,7 +276,7 @@ OSD_Host ::OSD_Host()
 
         _osd_wnt_set_error(myError, OSD_WHost);
       }
-      else if ((phe = gethostbyname(szHostName)) == NULL)
+      else if ((phe = gethostbyname(szHostName)) == nullptr)
       {
 
         _osd_wnt_set_error(myError, OSD_WHost);

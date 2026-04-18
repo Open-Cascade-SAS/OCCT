@@ -61,7 +61,7 @@ inline
 #endif
   const LDOM_XmlReader::RecordType aType = aReader.ReadRecord(theIStream, aData, theDocStart);
 #ifdef LDOM_PARSER_TRACE
-  static FILE*            ff = NULL;
+  static FILE*            ff = nullptr;
   TCollection_AsciiString aTraceFileName;
   #ifdef _WIN32
   aTraceFileName = TCollection_AsciiString(getenv("TEMP")) + "\\ldom.trace";

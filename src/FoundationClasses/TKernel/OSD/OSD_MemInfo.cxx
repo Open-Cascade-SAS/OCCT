@@ -128,7 +128,7 @@ void OSD_MemInfo::Update()
   {
     _HEAPINFO hinfo;
     int       heapstatus;
-    hinfo._pentry = NULL;
+    hinfo._pentry = nullptr;
 
     myCounters[MemHeapUsage] = 0;
     while ((heapstatus = _heapwalk(&hinfo)) == _HEAPOK)

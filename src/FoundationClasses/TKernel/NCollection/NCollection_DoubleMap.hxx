@@ -360,7 +360,7 @@ public:
         break;
       pNode1 = (DoubleMapNode*)pNode1->Next();
     }
-    if (pNode1 == NULL)
+    if (pNode1 == nullptr)
       return false;
     pNode2 = (DoubleMapNode*)myData2[iK2];
     while (pNode2)
@@ -369,7 +369,7 @@ public:
         break;
       pNode2 = (DoubleMapNode*)pNode2->Next();
     }
-    if (pNode2 == NULL)
+    if (pNode2 == nullptr)
       return false;
 
     return (pNode1 == pNode2);

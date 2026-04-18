@@ -632,7 +632,7 @@ bool OpenGl_Context::IsCurrent() const
           && ((EGLContext)myGContext == eglGetCurrentContext())
           && ((EGLSurface)myWindow == eglGetCurrentSurface(EGL_DRAW)));
   #elif defined(_WIN32)
-  if (myDisplay == NULL || myGContext == NULL)
+  if (myDisplay == nullptr || myGContext == nullptr)
   {
     return false;
   }
@@ -679,7 +679,7 @@ bool OpenGl_Context::MakeCurrent()
     return false;
   }
   #elif defined(_WIN32)
-  if (myDisplay == NULL || myGContext == NULL)
+  if (myDisplay == nullptr || myGContext == nullptr)
   {
     Standard_ProgramError_Raise_if(myIsInitialized,
                                    "OpenGl_Context::Init() should be called before!");
@@ -696,18 +696,18 @@ bool OpenGl_Context::MakeCurrent()
   else if (wglMakeCurrent((HDC)myDisplay, (HGLRC)myGContext) != TRUE)
   {
     // notice that glGetError() couldn't be used here!
-    wchar_t* aMsgBuff    = NULL;
+    wchar_t* aMsgBuff    = nullptr;
     DWORD    anErrorCode = GetLastError();
     FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM
                      | FORMAT_MESSAGE_IGNORE_INSERTS,
-                   NULL,
+                   nullptr,
                    anErrorCode,
                    MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
                    (wchar_t*)&aMsgBuff,
                    0,
-                   NULL);
+                   nullptr);
     TCollection_ExtendedString aMsg("wglMakeCurrent() has failed. ");
-    if (aMsgBuff != NULL)
+    if (aMsgBuff != nullptr)
     {
       aMsg += (const char16_t*)aMsgBuff;
       LocalFree(aMsgBuff);
@@ -760,7 +760,7 @@ void OpenGl_Context::SwapBuffers()
     eglSwapBuffers((EGLDisplay)myDisplay, (EGLSurface)myWindow);
   }
   #elif defined(_WIN32)
-  if ((HDC)myDisplay != NULL)
+  if ((HDC)myDisplay != nullptr)
   {
     ::SwapBuffers((HDC)myDisplay);
     core11fwd->glFlush();
@@ -787,7 +787,7 @@ bool OpenGl_Context::SetSwapInterval(const int theInterval)
     return true;
   }
 #elif defined(_WIN32)
-  if (myFuncs->wglSwapIntervalEXT != NULL)
+  if (myFuncs->wglSwapIntervalEXT != nullptr)
   {
     myFuncs->wglSwapIntervalEXT(theInterval);
     return true;
@@ -830,10 +830,10 @@ void* OpenGl_Context::findProc(const char* theFuncName)
 #elif defined(HAVE_XLIB)
   return (void*)glXGetProcAddress((const GLubyte*)theFuncName);
 #elif defined(__APPLE__)
-  return (myGlLibHandle != NULL) ? dlsym(myGlLibHandle, theFuncName) : NULL;
+  return (myGlLibHandle != nullptr) ? dlsym(myGlLibHandle, theFuncName) : nullptr;
 #else
   (void)theFuncName;
-  return NULL;
+  return nullptr;
 #endif
 }
 
@@ -1714,7 +1714,7 @@ void OpenGl_Context::MemoryInfo(
   GLint aGlRendId = 0;
   CGLGetParameter(CGLGetCurrentContext(), kCGLCPCurrentRendererID, &aGlRendId);
 
-  CGLRendererInfoObj  aRendObj  = NULL;
+  CGLRendererInfoObj  aRendObj  = nullptr;
   CGOpenGLDisplayMask aDispMask = CGDisplayIDToOpenGLDisplayMask(kCGDirectMainDisplay);
   GLint               aRendNb   = 0;
   CGLQueryRendererInfo(aDispMask, &aRendObj, &aRendNb);
@@ -1800,7 +1800,7 @@ void OpenGl_Context::MemoryInfo(
     }
   }
 #if defined(_WIN32)
-  else if (myFuncs->wglGetGPUInfoAMD != NULL && myFuncs->wglGetContextGPUIDAMD != NULL)
+  else if (myFuncs->wglGetGPUInfoAMD != nullptr && myFuncs->wglGetContextGPUIDAMD != nullptr)
   {
     GLuint aTotalMemMiB = 0;
     UINT   anAmdId      = myFuncs->wglGetContextGPUIDAMD((HGLRC)myGContext);
@@ -1904,7 +1904,7 @@ void OpenGl_Context::DiagnosticInformation(
     }
 #elif defined(_WIN32)
     if ((theFlags & Graphic3d_DiagnosticInfo_Extensions) != 0
-        && myFuncs->wglGetExtensionsStringARB != NULL)
+        && myFuncs->wglGetExtensionsStringARB != nullptr)
     {
       const char* aWglExts = myFuncs->wglGetExtensionsStringARB((HDC)myDisplay);
       addInfo(theDict, "WGLExtensions", aWglExts);

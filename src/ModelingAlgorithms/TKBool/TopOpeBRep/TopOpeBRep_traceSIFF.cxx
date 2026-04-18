@@ -34,7 +34,7 @@ void TopOpeBRep_traceSIFF::Reset()
 
 void TopOpeBRep_traceSIFF::Set(const bool b, int n, char** a)
 {
-  if (n < 3 || !b || a == NULL)
+  if (n < 3 || !b || a == nullptr)
   {
     Reset();
     return;

@@ -72,7 +72,7 @@ int Draw_Main(int /*argc*/, char* argv[], const FDraw_InitAppli fDraw_InitAppli)
 
   int       aNbArgs  = 0;
   wchar_t** anArgVec = CommandLineToArgvW(GetCommandLineW(), &aNbArgs);
-  Draw_Appli(::GetModuleHandleW(NULL), NULL, SW_SHOW, aNbArgs, anArgVec, fDraw_InitAppli);
+  Draw_Appli(::GetModuleHandleW(nullptr), nullptr, SW_SHOW, aNbArgs, anArgVec, fDraw_InitAppli);
   LocalFree(anArgVec);
   return 0;
 }

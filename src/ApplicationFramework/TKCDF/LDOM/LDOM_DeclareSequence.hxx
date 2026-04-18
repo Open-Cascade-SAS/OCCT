@@ -96,16 +96,16 @@
   };                                                                                               \
                                                                                                    \
   inline ClassName::ClassName()                                                                    \
-      : myFirst(NULL),                                                                             \
-        myLast(NULL),                                                                              \
-        myCurrent(NULL),                                                                           \
+      : myFirst(nullptr),                                                                             \
+        myLast(nullptr),                                                                              \
+        myCurrent(nullptr),                                                                           \
         myICur(0),                                                                                 \
         myLength(0)                                                                                \
   {                                                                                                \
   }                                                                                                \
                                                                                                    \
   inline ClassName::ClassName(const ClassName& anOther)                                            \
-      : myFirst(NULL)                                                                              \
+      : myFirst(nullptr)                                                                              \
   {                                                                                                \
     Assign(anOther);                                                                               \
   }                                                                                                \
@@ -161,11 +161,11 @@
   const void* ClassName::FindItem(const int anI) const                                             \
   {                                                                                                \
     if (anI < 1 || anI > myLength)                                                                 \
-      return NULL;                                                                                 \
+      return nullptr;                                                                                 \
     int   aCounter;                                                                                \
     Node* aCurrent = (Node*)myCurrent;                                                             \
     bool  aDir(false);                                                                             \
-    if (aCurrent == NULL)                                                                          \
+    if (aCurrent == nullptr)                                                                          \
     {                                                                                              \
       aCurrent = myFirst;                                                                          \
       aCounter = anI - 1;                                                                          \
@@ -206,7 +206,7 @@
                                                                                                    \
   void ClassName::Append(const Type& aVal)                                                         \
   {                                                                                                \
-    Node* anItem = new Node(aVal, myLast, NULL);                                                   \
+    Node* anItem = new Node(aVal, myLast, nullptr);                                                   \
     if (myLength == 0)                                                                             \
       myFirst = anItem;                                                                            \
     else                                                                                           \
@@ -217,7 +217,7 @@
                                                                                                    \
   void ClassName::Prepend(const Type& aVal)                                                        \
   {                                                                                                \
-    Node* anItem = new Node(aVal, NULL, myFirst);                                                  \
+    Node* anItem = new Node(aVal, nullptr, myFirst);                                                  \
     if (myLength == 0)                                                                             \
       myLast = anItem;                                                                             \
     else                                                                                           \
@@ -253,7 +253,7 @@
       delete myFirst;                                                                              \
       myFirst = aCurr;                                                                             \
     }                                                                                              \
-    myFirst = myLast = myCurrent = NULL;                                                           \
+    myFirst = myLast = myCurrent = nullptr;                                                           \
     myLength                     = 0;                                                              \
     myICur                       = 0;                                                              \
   }                                                                                                \
@@ -291,13 +291,13 @@
     Clear();                                                                                       \
     if (anOther.Length() == 0)                                                                     \
       return;                                                                                      \
-    myFirst         = new Node(anOther.First(), NULL, NULL);                                       \
+    myFirst         = new Node(anOther.First(), nullptr, nullptr);                                       \
     Node* aPrevious = myFirst;                                                                     \
     myLength        = 1;                                                                           \
     while (myLength < anOther.Length())                                                            \
     {                                                                                              \
       myLength++;                                                                                  \
-      Node* aCurrent = new Node(anOther.Value(myLength), aPrevious, NULL);                         \
+      Node* aCurrent = new Node(anOther.Value(myLength), aPrevious, nullptr);                         \
       aPrevious = aPrevious->myNext = aCurrent;                                                    \
     }                                                                                              \
     myLast = aPrevious;                                                                            \

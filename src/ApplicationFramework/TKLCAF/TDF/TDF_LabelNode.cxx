@@ -133,7 +133,7 @@ TDF_LabelNode* TDF_LabelNode::RootNode()
   return myData ? myData->myRoot : nullptr;
 #else
   TDF_LabelNode* lp = this;
-  while (lp->myFather != NULL)
+  while (lp->myFather != nullptr)
     lp = lp->myFather;
   return lp;
 #endif
@@ -147,7 +147,7 @@ const TDF_LabelNode* TDF_LabelNode::RootNode() const
   return myData ? myData->myRoot : nullptr;
 #else
   const TDF_LabelNode* lp = this;
-  while (lp->myFather != NULL)
+  while (lp->myFather != nullptr)
     lp = lp->myFather;
   return lp;
 #endif

@@ -47,10 +47,10 @@ static bool isWow64()
 
   HMODULE             aKern32Module = GetModuleHandleW(L"kernel32");
   LPFN_ISWOW64PROCESS aFunIsWow64 =
-    (aKern32Module == NULL) ? (LPFN_ISWOW64PROCESS)NULL
+    (aKern32Module == nullptr) ? (LPFN_ISWOW64PROCESS)nullptr
                             : (LPFN_ISWOW64PROCESS)GetProcAddress(aKern32Module, "IsWow64Process");
 
-  return aFunIsWow64 != NULL && aFunIsWow64(GetCurrentProcess(), &bIsWow64) && bIsWow64 != FALSE;
+  return aFunIsWow64 != nullptr && aFunIsWow64(GetCurrentProcess(), &bIsWow64) && bIsWow64 != FALSE;
 }
 
 #elif defined(__ANDROID__)
@@ -88,7 +88,7 @@ static const char* parseNumber(int&        theResult,
   }
   if (aCharIter == theInput)
   {
-    return NULL;
+    return nullptr;
   }
 
   theResult = aValue;
@@ -99,7 +99,7 @@ static const char* parseNumber(int&        theResult,
 static uint32_t readCpuMask(const char* thePath)
 {
   FILE* aFileHandle = fopen(thePath, "rb");
-  if (aFileHandle == NULL)
+  if (aFileHandle == nullptr)
   {
     return 0;
   }
@@ -113,7 +113,7 @@ static uint32_t readCpuMask(const char* thePath)
   }
 
   char* aBuffer = (char*)Standard::Allocate(aFileLen);
-  if (aBuffer == NULL)
+  if (aBuffer == nullptr)
   {
     return 0;
   }
@@ -128,7 +128,7 @@ static uint32_t readCpuMask(const char* thePath)
   for (const char* aCharIter = aBuffer; aCharIter < anEnd && *aCharIter != '\n';)
   {
     const char* aChunkEnd = (const char*)::memchr(aCharIter, ',', anEnd - aCharIter);
-    if (aChunkEnd == NULL)
+    if (aChunkEnd == nullptr)
     {
       aChunkEnd = anEnd;
     }
@@ -136,7 +136,7 @@ static uint32_t readCpuMask(const char* thePath)
     // get first value
     int anIndexLower = 0;
     aCharIter        = parseNumber(anIndexLower, aCharIter, aChunkEnd);
-    if (aCharIter == NULL)
+    if (aCharIter == nullptr)
     {
       Standard::Free(aBuffer);
       return aCpuMask;
@@ -147,7 +147,7 @@ static uint32_t readCpuMask(const char* thePath)
     if (aCharIter < aChunkEnd && *aCharIter == '-')
     {
       aCharIter = parseNumber(anIndexUpper, aCharIter + 1, aChunkEnd);
-      if (aCharIter == NULL)
+      if (aCharIter == nullptr)
       {
         Standard::Free(aBuffer);
         return aCpuMask;
@@ -226,7 +226,7 @@ int OSD_Parallel::NbLogicalProcessors()
     LPFN_GSI aFuncSysInfo = (LPFN_GSI)GetProcAddress(aKern32, "GetNativeSystemInfo");
 
     // So, they suggest 32-bit apps should call this instead of the other in WOW64
-    if (aFuncSysInfo != NULL)
+    if (aFuncSysInfo != nullptr)
     {
       aFuncSysInfo(&aSysInfo);
     }

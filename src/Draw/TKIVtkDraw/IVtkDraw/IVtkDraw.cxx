@@ -246,11 +246,11 @@ const occ::handle<WNT_WClass>& IVtkDraw::WClass()
   if (aWindowClass.IsNull())
   {
     aWindowClass = new WNT_WClass("GWVTK_Class",
-                                  NULL,
+                                  nullptr,
                                   CS_VREDRAW | CS_HREDRAW,
                                   0,
                                   0,
-                                  ::LoadCursorW(NULL, IDC_ARROW));
+                                  ::LoadCursorW(nullptr, IDC_ARROW));
   }
 #endif
   return aWindowClass;

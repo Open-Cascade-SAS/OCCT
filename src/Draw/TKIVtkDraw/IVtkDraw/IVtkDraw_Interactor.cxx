@@ -91,7 +91,7 @@ vtkStandardNewMacro(IVtkDraw_Interactor)
   IVtkDraw_Interactor::IVtkDraw_Interactor()
     :
 #ifdef _WIN32
-      myWindowId(NULL),
+      myWindowId(nullptr),
       myMouseInWindow(0)
 #else
       myIsLeftButtonPressed(false)
@@ -352,7 +352,7 @@ void IVtkDraw_Interactor::OnMouseMove(HWND theHWnd, UINT theNFlags, int theX, in
   if (!this->myMouseInWindow
       && (theX >= 0 && theX < this->Size[0] && theY >= 0 && theY < this->Size[1]))
   {
-    this->InvokeEvent(vtkCommand::EnterEvent, NULL);
+    this->InvokeEvent(vtkCommand::EnterEvent, nullptr);
     this->myMouseInWindow = 1;
     // request WM_MOUSELEAVE generation
     TRACKMOUSEEVENT aTme;
@@ -365,7 +365,7 @@ void IVtkDraw_Interactor::OnMouseMove(HWND theHWnd, UINT theNFlags, int theX, in
   if (!(theNFlags & MK_LBUTTON))
     this->MoveTo(theX, this->Size[1] - theY - 1);
 
-  this->InvokeEvent(vtkCommand::MouseMoveEvent, NULL);
+  this->InvokeEvent(vtkCommand::MouseMoveEvent, nullptr);
 }
 
 //=================================================================================================
@@ -380,7 +380,7 @@ void IVtkDraw_Interactor::OnMouseWheelForward(HWND, UINT theNFlags, int theX, in
   this->SetEventInformationFlipY(theX, theY, theNFlags & MK_CONTROL, theNFlags & MK_SHIFT);
 
   this->SetAltKey(GetKeyState(VK_MENU) & (~1));
-  this->InvokeEvent(vtkCommand::MouseWheelForwardEvent, NULL);
+  this->InvokeEvent(vtkCommand::MouseWheelForwardEvent, nullptr);
 }
 
 //=================================================================================================
@@ -395,7 +395,7 @@ void IVtkDraw_Interactor::OnMouseWheelBackward(HWND, UINT theNFlags, int theX, i
   this->SetEventInformationFlipY(theX, theY, theNFlags & MK_CONTROL, theNFlags & MK_SHIFT);
 
   this->SetAltKey(GetKeyState(VK_MENU) & (~1));
-  this->InvokeEvent(vtkCommand::MouseWheelBackwardEvent, NULL);
+  this->InvokeEvent(vtkCommand::MouseWheelBackwardEvent, nullptr);
 }
 
 //=================================================================================================
@@ -422,7 +422,7 @@ void IVtkDraw_Interactor::OnLButtonDown(HWND theHWnd,
 
   OnSelection();
 
-  this->InvokeEvent(vtkCommand::LeftButtonPressEvent, NULL);
+  this->InvokeEvent(vtkCommand::LeftButtonPressEvent, nullptr);
 }
 
 //=================================================================================================
@@ -437,7 +437,7 @@ void IVtkDraw_Interactor::OnLButtonUp(HWND, UINT theNFlags, int theX, int theY)
   this->SetEventInformationFlipY(theX, theY, theNFlags & MK_CONTROL, theNFlags & MK_SHIFT);
 
   this->SetAltKey(GetKeyState(VK_MENU) & (~1));
-  this->InvokeEvent(vtkCommand::LeftButtonReleaseEvent, NULL);
+  this->InvokeEvent(vtkCommand::LeftButtonReleaseEvent, nullptr);
   ReleaseCapture();
 }
 
@@ -463,7 +463,7 @@ void IVtkDraw_Interactor::OnMButtonDown(HWND theHWnd,
                                  0,
                                  theRepeat);
   this->SetAltKey(GetKeyState(VK_MENU) & (~1));
-  this->InvokeEvent(vtkCommand::MiddleButtonPressEvent, NULL);
+  this->InvokeEvent(vtkCommand::MiddleButtonPressEvent, nullptr);
 }
 
 //=================================================================================================
@@ -477,7 +477,7 @@ void IVtkDraw_Interactor::OnMButtonUp(HWND, UINT theNFlags, int theX, int theY)
   this->SetEventInformationFlipY(theX, theY, theNFlags & MK_CONTROL, theNFlags & MK_SHIFT);
 
   this->SetAltKey(GetKeyState(VK_MENU) & (~1));
-  this->InvokeEvent(vtkCommand::MiddleButtonReleaseEvent, NULL);
+  this->InvokeEvent(vtkCommand::MiddleButtonReleaseEvent, nullptr);
   ReleaseCapture();
 }
 
@@ -504,7 +504,7 @@ void IVtkDraw_Interactor::OnRButtonDown(HWND theHWnd,
                                  theRepeat);
 
   this->SetAltKey(GetKeyState(VK_MENU) & (~1));
-  this->InvokeEvent(vtkCommand::RightButtonPressEvent, NULL);
+  this->InvokeEvent(vtkCommand::RightButtonPressEvent, nullptr);
 }
 
 //=================================================================================================
@@ -518,7 +518,7 @@ void IVtkDraw_Interactor::OnRButtonUp(HWND, UINT theNFlags, int theX, int theY)
   this->SetEventInformationFlipY(theX, theY, theNFlags & MK_CONTROL, theNFlags & MK_SHIFT);
 
   this->SetAltKey(GetKeyState(VK_MENU) & (~1));
-  this->InvokeEvent(vtkCommand::RightButtonReleaseEvent, NULL);
+  this->InvokeEvent(vtkCommand::RightButtonReleaseEvent, nullptr);
   ReleaseCapture();
 }
 
@@ -529,7 +529,7 @@ void IVtkDraw_Interactor::OnSize(HWND, UINT, int theX, int theY)
   this->UpdateSize(theX, theY);
   if (this->Enabled)
   {
-    this->InvokeEvent(vtkCommand::ConfigureEvent, NULL);
+    this->InvokeEvent(vtkCommand::ConfigureEvent, nullptr);
   }
 }
 
@@ -651,7 +651,7 @@ LRESULT CALLBACK ViewerWindowProc(HWND                 theHWnd,
                                  MAKEPOINTS(theLParam).y);
       break;
     case WM_MOUSELEAVE: {
-      theInteractor->InvokeEvent(vtkCommand::LeaveEvent, NULL);
+      theInteractor->InvokeEvent(vtkCommand::LeaveEvent, nullptr);
       theInteractor->myMouseInWindow = 0;
     }
     break;

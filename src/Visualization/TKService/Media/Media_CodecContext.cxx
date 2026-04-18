@@ -212,7 +212,7 @@ void Media_CodecContext::Close()
   #else
     avcodec_close(myCodecCtx);
     av_free(myCodecCtx);
-    myCodecCtx = NULL;
+    myCodecCtx = nullptr;
   #endif
 #endif
   }

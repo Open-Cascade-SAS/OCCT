@@ -240,14 +240,14 @@ OSD_FileIterator ::OSD_FileIterator(const OSD_Path& where, const TCollection_Asc
     myPlace = ".";
 
   myMask = Mask;
-  myData = NULL;
+  myData = nullptr;
 
 } // end constructor
 
 void OSD_FileIterator ::Destroy()
 {
 
-  if (myData != NULL)
+  if (myData != nullptr)
     HeapFree(GetProcessHeap(), 0, myData);
 
   if (myHandle != INVALID_HANDLE_VALUE)
@@ -272,7 +272,7 @@ bool OSD_FileIterator ::More()
                                 FindExInfoStandard,
                                 (PWIN32_FIND_DATAW)myData,
                                 FindExSearchNameMatch,
-                                NULL,
+                                nullptr,
                                 0);
 
     if (myHandle == INVALID_HANDLE_VALUE)

@@ -40,7 +40,7 @@ BOOL RegisterAppClass(HINSTANCE theInstance)
   //-----
   wndClass.style      = CS_HREDRAW | CS_VREDRAW | CS_CLASSDC;
   wndClass.cbClsExtra = 0;
-  wndClass.hCursor    = LoadCursor(NULL, IDC_ARROW);
+  wndClass.hCursor    = LoadCursor(nullptr, IDC_ARROW);
   wndClass.hInstance  = theInstance;
 
   // Enregistrement de la fenetre principale
@@ -62,7 +62,7 @@ BOOL RegisterAppClass(HINSTANCE theInstance)
   wndClass.lpfnWndProc   = (WNDPROC)Draw_Window::DrawProc;
   wndClass.hIcon         = 0;
   wndClass.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
-  wndClass.lpszMenuName  = NULL;
+  wndClass.lpszMenuName  = nullptr;
   wndClass.lpszClassName = DRAWCLASS;
   if (!RegisterClassW(&wndClass))
   {
@@ -75,7 +75,7 @@ BOOL RegisterAppClass(HINSTANCE theInstance)
   wndClass.lpfnWndProc   = (WNDPROC)CommandProc;
   wndClass.hIcon         = 0;
   wndClass.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
-  wndClass.lpszMenuName  = NULL;
+  wndClass.lpszMenuName  = nullptr;
   wndClass.lpszClassName = COMMANDCLASS;
   if (!RegisterClassW(&wndClass))
   {
@@ -112,10 +112,10 @@ HWND CreateAppWindow(HINSTANCE theInstance)
                        0,
                        623,
                        767,
-                       NULL,
-                       NULL,
+                       nullptr,
+                       nullptr,
                        theInstance,
-                       NULL);
+                       nullptr);
 }
 
 /*--------------------------------------------------------*\
@@ -126,19 +126,19 @@ HWND CreateAppWindow(HINSTANCE theInstance)
 HWND CreateMDIClientWindow(HWND theWndFrame)
 {
   CLIENTCREATESTRUCT ccs;
-  ccs.hWindowMenu  = NULL;
+  ccs.hWindowMenu  = nullptr;
   ccs.idFirstChild = 0;
 
   HINSTANCE hInstance  = (HINSTANCE)GetWindowLongPtrW(theWndFrame, GWLP_HINSTANCE);
   HWND      hWndClient = CreateWindowW(L"MDICLIENT",
-                                  NULL,
+                                  nullptr,
                                   WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE | MDIS_ALLCHILDSTYLES,
                                   0,
                                   0,
                                   1,
                                   1,
                                   theWndFrame,
-                                  NULL,
+                                  nullptr,
                                   hInstance,
                                   (LPVOID)&ccs);
   return hWndClient;

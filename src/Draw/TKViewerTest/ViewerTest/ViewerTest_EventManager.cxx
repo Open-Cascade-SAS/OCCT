@@ -784,7 +784,7 @@ void ViewerTest_EventManager::SetupWindowCallbacks(const occ::handle<Aspect_Wind
 
   const char*   aTargetId    = aWindow->CanvasId().ToCString();
   const EM_BOOL toUseCapture = EM_TRUE;
-  void*         anOpaque     = NULL; // this; // unused
+  void*         anOpaque     = nullptr; // this; // unused
 
   // make sure to clear previously set listeners (e.g. created by another ViewerTest_EventManager
   // instance)

@@ -221,14 +221,14 @@ OSD_DirectoryIterator ::OSD_DirectoryIterator(const OSD_Path&                whe
     myPlace = ".";
 
   myMask = Mask;
-  myData = NULL;
+  myData = nullptr;
 
 } // end constructor
 
 void OSD_DirectoryIterator ::Destroy()
 {
 
-  if (myData != NULL)
+  if (myData != nullptr)
     HeapFree(GetProcessHeap(), 0, myData);
 
   if (myHandle != INVALID_HANDLE_VALUE)
@@ -253,7 +253,7 @@ bool OSD_DirectoryIterator ::More()
                                 FindExInfoStandard,
                                 (PWIN32_FIND_DATAW)myData,
                                 FindExSearchNameMatch,
-                                NULL,
+                                nullptr,
                                 0);
 
     if (myHandle == INVALID_HANDLE_VALUE)

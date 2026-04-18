@@ -70,7 +70,7 @@ static int OSD_File_getBuffer(HANDLE theChannel,
     }
     return (int)aBytesRead;
   }
-  else if (!ReadFile(theChannel, theBuffer, theSize, &aBytesRead, NULL))
+  else if (!ReadFile(theChannel, theBuffer, theSize, &aBytesRead, nullptr))
   {
     return -1;
   }
@@ -307,7 +307,7 @@ static int OSD_File_getLine(char* theBuffer, DWORD theBuffSize, LONG& theSeekPos
 static HANDLE OSD_File_openFile(const TCollection_AsciiString& theFileName,
                                 OSD_OpenMode                   theOpenMode,
                                 DWORD                          theOptions,
-                                bool*                          theIsNew = NULL)
+                                bool*                          theIsNew = nullptr)
 {
   DWORD dwDesiredAccess = 0;
   switch (theOpenMode)
@@ -331,16 +331,16 @@ static HANDLE OSD_File_openFile(const TCollection_AsciiString& theFileName,
   HANDLE aFileHandle = CreateFileW(aFileNameW.ToWideString(),
                                    dwDesiredAccess,
                                    FILE_SHARE_READ | FILE_SHARE_WRITE,
-                                   NULL,
+                                   nullptr,
                                    dwCreationDistribution,
                                    FILE_ATTRIBUTE_NORMAL,
-                                   NULL);
+                                   nullptr);
   #else
   CREATEFILE2_EXTENDED_PARAMETERS pCreateExParams = {};
   pCreateExParams.dwSize                          = sizeof(CREATEFILE2_EXTENDED_PARAMETERS);
   pCreateExParams.dwFileAttributes                = FILE_ATTRIBUTE_NORMAL;
-  pCreateExParams.lpSecurityAttributes            = NULL;
-  pCreateExParams.hTemplateFile                   = NULL;
+  pCreateExParams.lpSecurityAttributes            = nullptr;
+  pCreateExParams.hTemplateFile                   = nullptr;
   HANDLE aFileHandle                              = CreateFile2(aFileNameW.ToWideString(),
                                    dwDesiredAccess,
                                    FILE_SHARE_READ | FILE_SHARE_WRITE,
@@ -358,16 +358,16 @@ static HANDLE OSD_File_openFile(const TCollection_AsciiString& theFileName,
   aFileHandle = CreateFileW(aFileNameW.ToWideString(),
                             dwDesiredAccess,
                             FILE_SHARE_READ | FILE_SHARE_WRITE,
-                            NULL,
+                            nullptr,
                             dwCreationDistribution,
                             FILE_ATTRIBUTE_NORMAL,
-                            NULL);
+                            nullptr);
   #else
   CREATEFILE2_EXTENDED_PARAMETERS pCreateExParams2 = {};
   pCreateExParams2.dwSize                          = sizeof(CREATEFILE2_EXTENDED_PARAMETERS);
   pCreateExParams2.dwFileAttributes                = FILE_ATTRIBUTE_NORMAL;
-  pCreateExParams2.lpSecurityAttributes            = NULL;
-  pCreateExParams2.hTemplateFile                   = NULL;
+  pCreateExParams2.lpSecurityAttributes            = nullptr;
+  pCreateExParams2.hTemplateFile                   = nullptr;
   aFileHandle                                      = CreateFile2(aFileNameW.ToWideString(),
                             dwDesiredAccess,
                             FILE_SHARE_READ | FILE_SHARE_WRITE,
@@ -690,7 +690,7 @@ void OSD_File::BuildTemporary()
     {HKEY_USERS, L".DEFAULT\\Environment"}};
   for (int aKeyIter = 0; aKeyIter < 2; ++aKeyIter)
   {
-    HKEY aRegKey = NULL;
+    HKEY aRegKey = nullptr;
     if (RegOpenKeyExW(TheRegKeys[aKeyIter].hKey,
                       TheRegKeys[aKeyIter].keyPath,
                       0,
@@ -702,12 +702,12 @@ void OSD_File::BuildTemporary()
     }
 
     DWORD aKeyType = 0, aKeySize = 0;
-    if (RegQueryValueExW(aRegKey, L"TEMP", NULL, &aKeyType, NULL, &aKeySize) == ERROR_SUCCESS)
+    if (RegQueryValueExW(aRegKey, L"TEMP", nullptr, &aKeyType, nullptr, &aKeySize) == ERROR_SUCCESS)
     {
       NCollection_Array1<wchar_t> aKeyValW(0, aKeySize);
       RegQueryValueExW(aRegKey,
                        L"TEMP",
-                       NULL,
+                       nullptr,
                        &aKeyType,
                        (LPBYTE)&aKeyValW.ChangeFirst(),
                        &aKeySize);
@@ -868,7 +868,7 @@ void OSD_File::ReadLine(TCollection_AsciiString& theBuffer,
   NCollection_Array1<char> aBuffer(0, theNbBytes + 2);
   if (myIO & FLAG_FILE)
   {
-    if (!ReadFile(myFileHandle, &aBuffer.ChangeFirst(), theNbBytes, &aNbBytesRead, NULL))
+    if (!ReadFile(myFileHandle, &aBuffer.ChangeFirst(), theNbBytes, &aNbBytesRead, nullptr))
     {
       _osd_wnt_set_error(myError, OSD_WFile);
       theBuffer.Clear();
@@ -887,7 +887,7 @@ void OSD_File::ReadLine(TCollection_AsciiString& theBuffer,
       if (theNbBytesRead == -1) // last character in the buffer is <CR> -
       {                         // peek next character to see if it is a <LF>
         DWORD dwDummy = 0;
-        if (!ReadFile(myFileHandle, &aPeekChar, 1, &dwDummy, NULL))
+        if (!ReadFile(myFileHandle, &aPeekChar, 1, &dwDummy, nullptr))
         {
           _osd_wnt_set_error(myError, OSD_WFile);
         }
@@ -898,7 +898,7 @@ void OSD_File::ReadLine(TCollection_AsciiString& theBuffer,
             // adjust file position
             LARGE_INTEGER aDistanceToMove;
             aDistanceToMove.QuadPart = -1;
-            SetFilePointerEx(myFileHandle, aDistanceToMove, NULL, FILE_CURRENT);
+            SetFilePointerEx(myFileHandle, aDistanceToMove, nullptr, FILE_CURRENT);
           }
         }
         else
@@ -912,7 +912,7 @@ void OSD_File::ReadLine(TCollection_AsciiString& theBuffer,
       {
         LARGE_INTEGER aDistanceToMove;
         aDistanceToMove.QuadPart = aSeekPos;
-        SetFilePointerEx(myFileHandle, aDistanceToMove, NULL, FILE_CURRENT);
+        SetFilePointerEx(myFileHandle, aDistanceToMove, nullptr, FILE_CURRENT);
       }
     }
   }
@@ -1099,7 +1099,7 @@ void OSD_File::Read(void* const theBuffer, const int theNbBytes, int& theNbReadB
   }
 
   DWORD aNbReadBytes = 0;
-  if (!ReadFile(myFileHandle, theBuffer, (DWORD)theNbBytes, &aNbReadBytes, NULL))
+  if (!ReadFile(myFileHandle, theBuffer, (DWORD)theNbBytes, &aNbReadBytes, nullptr))
   {
     _osd_wnt_set_error(myError, OSD_WFile);
     aNbReadBytes = 0;
@@ -1159,7 +1159,7 @@ void OSD_File::Write(void* const theBuffer, const int theNbBytes)
   }
 
   DWORD aNbWritten = 0;
-  if (!WriteFile(myFileHandle, theBuffer, (DWORD)theNbBytes, &aNbWritten, NULL)
+  if (!WriteFile(myFileHandle, theBuffer, (DWORD)theNbBytes, &aNbWritten, nullptr)
       || aNbWritten != (DWORD)theNbBytes)
   {
     _osd_wnt_set_error(myError, OSD_WFile);
@@ -1547,7 +1547,7 @@ size_t OSD_File::Size()
   }
   return (size_t)aSize.QuadPart;
   #else
-  DWORD aSize = GetFileSize(myFileHandle, NULL);
+  DWORD aSize = GetFileSize(myFileHandle, nullptr);
   if (aSize == INVALID_FILE_SIZE)
   {
     _osd_wnt_set_error(myError, OSD_WFile);
@@ -1645,7 +1645,7 @@ void OSD_File::Rewind()
 #ifdef _WIN32
   LARGE_INTEGER aDistanceToMove;
   aDistanceToMove.QuadPart = 0;
-  SetFilePointerEx(myFileHandle, aDistanceToMove, NULL, FILE_BEGIN);
+  SetFilePointerEx(myFileHandle, aDistanceToMove, nullptr, FILE_BEGIN);
 #else
   rewind((FILE*)myFILE);
 #endif
@@ -1699,16 +1699,16 @@ PSECURITY_DESCRIPTOR __fastcall _osd_wnt_protection_to_sd(const OSD_Protection& 
                                                           const wchar_t*        theFileName)
 {
   BOOL                 fOK      = FALSE;
-  PACL                 pACL     = NULL;
-  HANDLE               hProcess = NULL;
+  PACL                 pACL     = nullptr;
+  HANDLE               hProcess = nullptr;
   PSID                 pSIDowner;
   DWORD                dwACLsize       = sizeof(ACL);
   DWORD                dwIndex         = 0;
-  PTOKEN_OWNER         pTkOwner        = NULL;
-  PTOKEN_GROUPS        pTkGroups       = NULL;
-  PTOKEN_PRIMARY_GROUP pTkPrimaryGroup = NULL;
-  PSECURITY_DESCRIPTOR retVal          = NULL;
-  PSECURITY_DESCRIPTOR pfSD            = NULL;
+  PTOKEN_OWNER         pTkOwner        = nullptr;
+  PTOKEN_GROUPS        pTkGroups       = nullptr;
+  PTOKEN_PRIMARY_GROUP pTkPrimaryGroup = nullptr;
+  PSECURITY_DESCRIPTOR retVal          = nullptr;
+  PSECURITY_DESCRIPTOR pfSD            = nullptr;
   BOOL                 fDummy;
   PFILE_ACE            pFileACE;
 
@@ -1719,31 +1719,31 @@ PSECURITY_DESCRIPTOR __fastcall _osd_wnt_protection_to_sd(const OSD_Protection& 
     {
       __leave;
     }
-    if ((pTkGroups = (PTOKEN_GROUPS)GetTokenInformationEx(hProcess, TokenGroups)) == NULL)
+    if ((pTkGroups = (PTOKEN_GROUPS)GetTokenInformationEx(hProcess, TokenGroups)) == nullptr)
     {
       __leave;
     }
-    if ((pTkOwner = (PTOKEN_OWNER)GetTokenInformationEx(hProcess, TokenOwner)) == NULL)
+    if ((pTkOwner = (PTOKEN_OWNER)GetTokenInformationEx(hProcess, TokenOwner)) == nullptr)
     {
       __leave;
     }
     if ((pTkPrimaryGroup = (PTOKEN_PRIMARY_GROUP)GetTokenInformationEx(hProcess, TokenPrimaryGroup))
-        == NULL)
+        == nullptr)
     {
       __leave;
     }
 
   retry:
-    if (theFileName == NULL)
+    if (theFileName == nullptr)
     {
       pSIDowner = pTkOwner->Owner;
     }
     else
     {
       pfSD = GetFileSecurityEx(theFileName, OWNER_SECURITY_INFORMATION);
-      if (pfSD == NULL || !GetSecurityDescriptorOwner(pfSD, &pSIDowner, &fDummy))
+      if (pfSD == nullptr || !GetSecurityDescriptorOwner(pfSD, &pSIDowner, &fDummy))
       {
-        theFileName = NULL;
+        theFileName = nullptr;
         goto retry;
       }
     }
@@ -1776,14 +1776,14 @@ PSECURITY_DESCRIPTOR __fastcall _osd_wnt_protection_to_sd(const OSD_Protection& 
     dwACLsize += (((GetLengthSid(pSIDowner) + ACE_HEADER_SIZE) << j)
                   + ((GetLengthSid(pSIDadmin) + ACE_HEADER_SIZE) << j)
                   + ((GetLengthSid(pSIDworld) + ACE_HEADER_SIZE) << j));
-    if ((pACL = CreateAcl(dwACLsize)) == NULL)
+    if ((pACL = CreateAcl(dwACLsize)) == nullptr)
     {
       __leave;
     }
 
     if (dwAccessAdmin != 0)
     {
-      if ((pFileACE = (PFILE_ACE)AllocAccessAllowedAce(dwAccessAdmin, 0, pSIDadmin)) != NULL)
+      if ((pFileACE = (PFILE_ACE)AllocAccessAllowedAce(dwAccessAdmin, 0, pSIDadmin)) != nullptr)
       {
         AddAce(pACL, ACL_REVISION, dwIndex++, pFileACE, pFileACE->header.AceSize);
         if (theIsDir)
@@ -1798,7 +1798,7 @@ PSECURITY_DESCRIPTOR __fastcall _osd_wnt_protection_to_sd(const OSD_Protection& 
 
     if (dwAccessOwner != 0)
     {
-      if ((pFileACE = (PFILE_ACE)AllocAccessAllowedAce(dwAccessOwner, 0, pSIDowner)) != NULL)
+      if ((pFileACE = (PFILE_ACE)AllocAccessAllowedAce(dwAccessOwner, 0, pSIDowner)) != nullptr)
       {
         AddAce(pACL, ACL_REVISION, dwIndex++, pFileACE, pFileACE->header.AceSize);
         if (theIsDir)
@@ -1813,7 +1813,7 @@ PSECURITY_DESCRIPTOR __fastcall _osd_wnt_protection_to_sd(const OSD_Protection& 
 
     if (dwAccessWorld != 0)
     {
-      if ((pFileACE = (PFILE_ACE)AllocAccessAllowedAce(dwAccessWorld, 0, pSIDworld)) != NULL)
+      if ((pFileACE = (PFILE_ACE)AllocAccessAllowedAce(dwAccessWorld, 0, pSIDworld)) != nullptr)
       {
         AddAce(pACL, ACL_REVISION, dwIndex++, pFileACE, pFileACE->header.AceSize);
         if (theIsDir)
@@ -1835,7 +1835,7 @@ PSECURITY_DESCRIPTOR __fastcall _osd_wnt_protection_to_sd(const OSD_Protection& 
         {
           if (dwAccessGroup != 0)
           {
-            if ((pFileACE = (PFILE_ACE)AllocAccessAllowedAce(dwAccessGroup, 0, pSIDtemp)) != NULL)
+            if ((pFileACE = (PFILE_ACE)AllocAccessAllowedAce(dwAccessGroup, 0, pSIDtemp)) != nullptr)
             {
               AddAce(pACL, ACL_REVISION, dwIndex++, pFileACE, pFileACE->header.AceSize);
               if (theIsDir)
@@ -1851,7 +1851,7 @@ PSECURITY_DESCRIPTOR __fastcall _osd_wnt_protection_to_sd(const OSD_Protection& 
       }
     }
 
-    if ((retVal = AllocSD()) == NULL)
+    if ((retVal = AllocSD()) == nullptr)
     {
       __leave;
     }
@@ -1867,34 +1867,34 @@ PSECURITY_DESCRIPTOR __fastcall _osd_wnt_protection_to_sd(const OSD_Protection& 
   {
     if (!fOK)
     {
-      if (retVal != NULL)
+      if (retVal != nullptr)
       {
         FreeSD(retVal);
       }
-      else if (pACL != NULL)
+      else if (pACL != nullptr)
       {
         FreeAcl(pACL);
       }
-      retVal = NULL;
+      retVal = nullptr;
     }
 
-    if (hProcess != NULL)
+    if (hProcess != nullptr)
     {
       CloseHandle(hProcess);
     }
-    if (pTkOwner != NULL)
+    if (pTkOwner != nullptr)
     {
       FreeTokenInformation(pTkOwner);
     }
-    if (pTkGroups != NULL)
+    if (pTkGroups != nullptr)
     {
       FreeTokenInformation(pTkGroups);
     }
-    if (pTkPrimaryGroup != NULL)
+    if (pTkPrimaryGroup != nullptr)
     {
       FreeTokenInformation(pTkPrimaryGroup);
     }
-    if (pfSD != NULL)
+    if (pfSD != nullptr)
     {
       FreeFileSecurity(pfSD);
     }
@@ -1922,7 +1922,7 @@ BOOL __fastcall _osd_wnt_sd_to_protection(PSECURITY_DESCRIPTOR pSD,
     {
       __leave;
     }
-    if (pSIDowner == NULL || pACL == NULL)
+    if (pSIDowner == nullptr || pACL == nullptr)
     {
       SetLastError(ERROR_NO_SECURITY_ON_OBJECT);
       __leave;

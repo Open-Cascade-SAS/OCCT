@@ -194,7 +194,7 @@ void OpenGl_Window::Init(const occ::handle<OpenGl_GraphicDriver>& theDriver,
   EGLContext anEglContext = (EGLContext)theDriver->getRawGlContext();
   EGLConfig  anEglConfig  = (EGLConfig)theDriver->getRawGlConfig();
   if (anEglDisplay == EGL_NO_DISPLAY || anEglContext == EGL_NO_CONTEXT
-      || (anEglConfig == NULL && (EGLContext)theGContext == EGL_NO_CONTEXT))
+      || (anEglConfig == nullptr && (EGLContext)theGContext == EGL_NO_CONTEXT))
   {
     throw Aspect_GraphicDeviceDefinitionError(
       "OpenGl_Window, EGL does not provide compatible configurations!");
@@ -215,7 +215,7 @@ void OpenGl_Window::Init(const occ::handle<OpenGl_GraphicDriver>& theDriver,
     anEglSurf = eglCreateWindowSurface(anEglDisplay,
                                        anEglConfig,
                                        (EGLNativeWindowType)myPlatformWindow->NativeHandle(),
-                                       NULL);
+                                       nullptr);
     if (anEglSurf == EGL_NO_SURFACE && myPlatformWindow->NativeHandle() != 0)
     {
       throw Aspect_GraphicDeviceDefinitionError(
@@ -226,7 +226,7 @@ void OpenGl_Window::Init(const occ::handle<OpenGl_GraphicDriver>& theDriver,
       // window-less EGL context (off-screen)
       // throw Aspect_GraphicDeviceDefinitionError("OpenGl_Window, EGL is unable to retrieve current
       // surface!");
-      if (anEglConfig != NULL)
+      if (anEglConfig != nullptr)
       {
     #if !defined(__EMSCRIPTEN__) // eglCreatePbufferSurface() is not implemented by Emscripten EGL
         const int aSurfAttribs[] = {EGL_WIDTH,
@@ -267,7 +267,7 @@ void OpenGl_Window::Init(const occ::handle<OpenGl_GraphicDriver>& theDriver,
       // window-less EGL context (off-screen)
       // throw Aspect_GraphicDeviceDefinitionError("OpenGl_Window, EGL is unable to retrieve current
       // surface!");
-      if (anEglConfig != NULL)
+      if (anEglConfig != nullptr)
       {
     #if !defined(__EMSCRIPTEN__) // eglCreatePbufferSurface() is not implemented by Emscripten EGL
         const int aSurfAttribs[] = {EGL_WIDTH,
@@ -353,27 +353,27 @@ void OpenGl_Window::Init(const occ::handle<OpenGl_GraphicDriver>& theDriver,
 
   DescribePixelFormat(aWindowDC, aPixelFrmtId, sizeof(aPixelFrmt), &aPixelFrmt);
 
-  HGLRC aSlaveCtx = !theShareCtx.IsNull() ? (HGLRC)theShareCtx->myGContext : NULL;
-  if (aGContext == NULL)
+  HGLRC aSlaveCtx = !theShareCtx.IsNull() ? (HGLRC)theShareCtx->myGContext : nullptr;
+  if (aGContext == nullptr)
   {
     // create temporary context to retrieve advanced context creation procedures
-    HMODULE   aModule = GetModuleHandleW(NULL);
+    HMODULE   aModule = GetModuleHandleW(nullptr);
     WNDCLASSW aClass;
     memset(&aClass, 0, sizeof(aClass));
     aClass.style         = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
     aClass.lpfnWndProc   = wndProcDummy;
     aClass.hInstance     = aModule;
     aClass.lpszClassName = L"OpenGl_WindowTmp";
-    HWND  aWinTmp        = NULL;
-    HDC   aDevCtxTmp     = NULL;
-    HGLRC aRendCtxTmp    = NULL;
+    HWND  aWinTmp        = nullptr;
+    HDC   aDevCtxTmp     = nullptr;
+    HGLRC aRendCtxTmp    = nullptr;
     if ((!theCaps->contextDebug && !theCaps->contextNoAccel && theCaps->contextCompatible
          && !theCaps->buffersDeepColor)
         || RegisterClassW(&aClass) == 0)
     {
-      aClass.lpszClassName = NULL;
+      aClass.lpszClassName = nullptr;
     }
-    if (aClass.lpszClassName != NULL)
+    if (aClass.lpszClassName != nullptr)
     {
       DWORD anExStyle = WS_EX_TOOLWINDOW | WS_EX_WINDOWEDGE;
     #if (_WIN32_WINNT >= 0x0500)
@@ -387,12 +387,12 @@ void OpenGl_Window::Init(const occ::handle<OpenGl_GraphicDriver>& theDriver,
                                 2,
                                 4,
                                 4,
-                                NULL,
-                                NULL,
+                                nullptr,
+                                nullptr,
                                 aModule,
-                                NULL);
+                                nullptr);
     }
-    if (aWinTmp != NULL)
+    if (aWinTmp != nullptr)
     {
       aDevCtxTmp = GetDC(aWinTmp);
       SetPixelFormat(aDevCtxTmp, aPixelFrmtId, &aPixelFrmt);
@@ -408,16 +408,16 @@ void OpenGl_Window::Init(const occ::handle<OpenGl_GraphicDriver>& theDriver,
     typedef HGLRC(WINAPI * wglCreateContextAttribsARB_t)(HDC        theDevCtx,
                                                          HGLRC      theShareContext,
                                                          const int* theAttribs);
-    wglChoosePixelFormatARB_t    aChoosePixProc = NULL;
-    wglCreateContextAttribsARB_t aCreateCtxProc = NULL;
-    if (aRendCtxTmp != NULL)
+    wglChoosePixelFormatARB_t    aChoosePixProc = nullptr;
+    wglCreateContextAttribsARB_t aCreateCtxProc = nullptr;
+    if (aRendCtxTmp != nullptr)
     {
       wglMakeCurrent(aDevCtxTmp, aRendCtxTmp);
 
       typedef const char*(WINAPI * wglGetExtensionsStringARB_t)(HDC theDeviceContext);
       wglGetExtensionsStringARB_t aGetExtensions =
         (wglGetExtensionsStringARB_t)wglGetProcAddress("wglGetExtensionsStringARB");
-      const char* aWglExts = (aGetExtensions != NULL) ? aGetExtensions(wglGetCurrentDC()) : NULL;
+      const char* aWglExts = (aGetExtensions != nullptr) ? aGetExtensions(wglGetCurrentDC()) : nullptr;
       if (OpenGl_Context::CheckExtension(aWglExts, "WGL_ARB_pixel_format"))
       {
         aChoosePixProc = (wglChoosePixelFormatARB_t)wglGetProcAddress("wglChoosePixelFormatARB");
@@ -430,7 +430,7 @@ void OpenGl_Window::Init(const occ::handle<OpenGl_GraphicDriver>& theDriver,
     }
 
     // choose extended pixel format
-    if (aChoosePixProc != NULL)
+    if (aChoosePixProc != nullptr)
     {
       const int aPixAttribs[] = {
         WGL_DRAW_TO_WINDOW_ARB,
@@ -470,7 +470,7 @@ void OpenGl_Window::Init(const occ::handle<OpenGl_GraphicDriver>& theDriver,
         0,
       };
       unsigned int aFrmtsNb = 0;
-      if (!aChoosePixProc(aWindowDC, aPixAttribs, NULL, 1, &aPixelFrmtId, &aFrmtsNb)
+      if (!aChoosePixProc(aWindowDC, aPixAttribs, nullptr, 1, &aPixelFrmtId, &aFrmtsNb)
           && theCaps->buffersDeepColor)
       {
         /// TODO
@@ -490,7 +490,7 @@ void OpenGl_Window::Init(const occ::handle<OpenGl_GraphicDriver>& theDriver,
     }
 
     // create GL context with extra options
-    if (aCreateCtxProc != NULL)
+    if (aCreateCtxProc != nullptr)
     {
       if (!theCaps->contextCompatible)
       {
@@ -509,22 +509,22 @@ void OpenGl_Window::Init(const occ::handle<OpenGl_GraphicDriver>& theDriver,
         // (this will be done automatically by some drivers when requesting 3.2,
         //  but some will not (e.g. AMD Catalyst) since WGL_ARB_create_context_profile specification
         //  allows both implementations).
-        for (int aLowVer4 = 6; aLowVer4 >= 0 && aGContext == NULL; --aLowVer4)
+        for (int aLowVer4 = 6; aLowVer4 >= 0 && aGContext == nullptr; --aLowVer4)
         {
           aCoreCtxAttribs[1] = 4;
           aCoreCtxAttribs[3] = aLowVer4;
           aGContext          = aCreateCtxProc(aWindowDC, aSlaveCtx, aCoreCtxAttribs);
         }
-        for (int aLowVer3 = 3; aLowVer3 >= 2 && aGContext == NULL; --aLowVer3)
+        for (int aLowVer3 = 3; aLowVer3 >= 2 && aGContext == nullptr; --aLowVer3)
         {
           aCoreCtxAttribs[1] = 3;
           aCoreCtxAttribs[3] = aLowVer3;
           aGContext          = aCreateCtxProc(aWindowDC, aSlaveCtx, aCoreCtxAttribs);
         }
-        isCoreProfile = aGContext != NULL;
+        isCoreProfile = aGContext != nullptr;
       }
 
-      if (aGContext == NULL)
+      if (aGContext == nullptr)
       {
         int aCtxAttribs[] = {
           // Beware! NVIDIA drivers reject context creation when WGL_CONTEXT_PROFILE_MASK_ARB are
@@ -537,7 +537,7 @@ void OpenGl_Window::Init(const occ::handle<OpenGl_GraphicDriver>& theDriver,
         isCoreProfile = false;
         aGContext     = aCreateCtxProc(aWindowDC, aSlaveCtx, aCtxAttribs);
 
-        if (aGContext != NULL && !theCaps->contextCompatible)
+        if (aGContext != nullptr && !theCaps->contextCompatible)
         {
           TCollection_ExtendedString aMsg(
             "OpenGl_Window::CreateWindow: core profile creation failed.");
@@ -549,35 +549,35 @@ void OpenGl_Window::Init(const occ::handle<OpenGl_GraphicDriver>& theDriver,
         }
       }
 
-      if (aGContext != NULL)
+      if (aGContext != nullptr)
       {
-        aSlaveCtx = NULL;
+        aSlaveCtx = nullptr;
       }
     }
 
-    if (aRendCtxTmp != NULL)
+    if (aRendCtxTmp != nullptr)
     {
       wglDeleteContext(aRendCtxTmp);
     }
-    if (aDevCtxTmp != NULL)
+    if (aDevCtxTmp != nullptr)
     {
       ReleaseDC(aWinTmp, aDevCtxTmp);
     }
-    if (aWinTmp != NULL)
+    if (aWinTmp != nullptr)
     {
       DestroyWindow(aWinTmp);
     }
-    if (aClass.lpszClassName != NULL)
+    if (aClass.lpszClassName != nullptr)
     {
       UnregisterClassW(aClass.lpszClassName, aModule);
     }
 
-    if (aGContext == NULL)
+    if (aGContext == nullptr)
     {
       // create context using obsolete functionality
       aGContext = wglCreateContext(aWindowDC);
     }
-    if (aGContext == NULL)
+    if (aGContext == nullptr)
     {
       ReleaseDC(aWindow, aWindowDC);
 
@@ -589,7 +589,7 @@ void OpenGl_Window::Init(const occ::handle<OpenGl_GraphicDriver>& theDriver,
   }
 
   // all GL context within one OpenGl_GraphicDriver should be shared!
-  if (aSlaveCtx != NULL && wglShareLists(aSlaveCtx, aGContext) != TRUE)
+  if (aSlaveCtx != nullptr && wglShareLists(aSlaveCtx, aGContext) != TRUE)
   {
     TCollection_AsciiString aMsg("OpenGl_Window::CreateWindow: wglShareLists failed. Error code: ");
     aMsg += (int)GetLastError();
@@ -783,11 +783,11 @@ OpenGl_Window::~OpenGl_Window()
   HGLRC aThreadGContext = wglGetCurrentContext();
   myGlContext.Nullify();
 
-  if (aThreadGContext != NULL)
+  if (aThreadGContext != nullptr)
   {
     if (aThreadGContext == aWindowGContext)
     {
-      wglMakeCurrent(NULL, NULL);
+      wglMakeCurrent(nullptr, nullptr);
     }
 
     wglDeleteContext(aWindowGContext);

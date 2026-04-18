@@ -100,7 +100,7 @@ bool TDF_Label::IsDescendant(const TDF_Label& aLabel) const
   const TDF_LabelNode* lp1 = aLabel.myLabelNode;
   TDF_LabelNode*       lp2 = myLabelNode;
 #ifdef OCCT_DEBUG
-  if ((lp1 == NULL) || (lp2 == NULL))
+  if ((lp1 == nullptr) || (lp2 == nullptr))
     throw Standard_NullObject("A null label has no ancestor nor descendant.");
 #endif
   if ((lp1 != nullptr) && (lp2 != nullptr))

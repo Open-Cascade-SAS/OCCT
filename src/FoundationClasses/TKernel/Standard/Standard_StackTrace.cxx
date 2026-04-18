@@ -88,7 +88,7 @@ public:
   SYMFROMADDRPROC                  SymFromAddr;
 
   //! Return TRUE if library has been loaded.
-  bool IsLoaded() const { return myDbgHelpLib != NULL; }
+  bool IsLoaded() const { return myDbgHelpLib != nullptr; }
 
   //! Return loading error message.
   const char* ErrorMessage() const { return myError; }
@@ -96,34 +96,34 @@ public:
 private:
   //! Main constructor.
   Standard_DbgHelper()
-      : SymInitialize(NULL),
-        SymCleanup(NULL),
-        StackWalk64(NULL),
-        SymFunctionTableAccess64(NULL),
-        SymGetModuleBase64(NULL),
-        SymFromAddr(NULL),
+      : SymInitialize(nullptr),
+        SymCleanup(nullptr),
+        StackWalk64(nullptr),
+        SymFunctionTableAccess64(nullptr),
+        SymGetModuleBase64(nullptr),
+        SymFromAddr(nullptr),
         myDbgHelpLib(LoadLibraryW(L"DbgHelp.dll")),
-        myError(NULL)
+        myError(nullptr)
   {
-    if (myDbgHelpLib == NULL)
+    if (myDbgHelpLib == nullptr)
     {
       myError = "Standard_DbgHelper, Failed to load DbgHelp.dll";
       return;
     }
 
-    if ((SymInitialize = (SYMINITIALIZEPROC)GetProcAddress(myDbgHelpLib, "SymInitialize")) == NULL)
+    if ((SymInitialize = (SYMINITIALIZEPROC)GetProcAddress(myDbgHelpLib, "SymInitialize")) == nullptr)
     {
       myError = "Standard_DbgHelper, Function not found in DbgHelp.dll: SymInitialize";
       unload();
       return;
     }
-    if ((SymCleanup = (SYMCLEANUPPROC)GetProcAddress(myDbgHelpLib, "SymCleanup")) == NULL)
+    if ((SymCleanup = (SYMCLEANUPPROC)GetProcAddress(myDbgHelpLib, "SymCleanup")) == nullptr)
     {
       myError = "Standard_DbgHelper, Function not found in DbgHelp.dll: SymCleanup";
       unload();
       return;
     }
-    if ((StackWalk64 = (STACKWALK64PROC)GetProcAddress(myDbgHelpLib, "StackWalk64")) == NULL)
+    if ((StackWalk64 = (STACKWALK64PROC)GetProcAddress(myDbgHelpLib, "StackWalk64")) == nullptr)
     {
       myError = "Standard_DbgHelper, Function not found in DbgHelp.dll: StackWalk64";
       unload();
@@ -132,7 +132,7 @@ private:
     if ((SymFunctionTableAccess64 =
            (PFUNCTION_TABLE_ACCESS_ROUTINE64)GetProcAddress(myDbgHelpLib,
                                                             "SymFunctionTableAccess64"))
-        == NULL)
+        == nullptr)
     {
       myError = "Standard_DbgHelper, Function not found in DbgHelp.dll: SymFunctionTableAccess64";
       unload();
@@ -140,13 +140,13 @@ private:
     }
     if ((SymGetModuleBase64 =
            (PGET_MODULE_BASE_ROUTINE64)GetProcAddress(myDbgHelpLib, "SymGetModuleBase64"))
-        == NULL)
+        == nullptr)
     {
       myError = "Standard_DbgHelper, Function not found in DbgHelp.dll: SymGetModuleBase64";
       unload();
       return;
     }
-    if ((SymFromAddr = (SYMFROMADDRPROC)GetProcAddress(myDbgHelpLib, "SymFromAddr")) == NULL)
+    if ((SymFromAddr = (SYMFROMADDRPROC)GetProcAddress(myDbgHelpLib, "SymFromAddr")) == nullptr)
     {
       myError = "Standard_DbgHelper, Function not found in DbgHelp.dll: SymFromAddr";
       unload();
@@ -164,10 +164,10 @@ private:
   //! Unload library.
   void unload()
   {
-    if (myDbgHelpLib != NULL)
+    if (myDbgHelpLib != nullptr)
     {
       FreeLibrary(myDbgHelpLib);
-      myDbgHelpLib = NULL;
+      myDbgHelpLib = nullptr;
     }
   }
 
@@ -223,7 +223,7 @@ bool Standard::StackTrace(char*     theBuffer,
   const HANDLE anHProcess = GetCurrentProcess();
   const HANDLE anHThread  = GetCurrentThread();
   CONTEXT      aCtx;
-  if (theContext != NULL)
+  if (theContext != nullptr)
   {
     memcpy(&aCtx, theContext, sizeof(aCtx));
   }
@@ -246,7 +246,7 @@ bool Standard::StackTrace(char*     theBuffer,
     return false;
   }
 
-  aDbgHelp.SymInitialize(anHProcess, NULL, TRUE);
+  aDbgHelp.SymInitialize(anHProcess, nullptr, TRUE);
 
   DWORD        anImage = 0;
   STACKFRAME64 aStackFrame;
@@ -275,16 +275,16 @@ bool Standard::StackTrace(char*     theBuffer,
                                      anHThread,
                                      &aStackFrame,
                                      &aCtx,
-                                     NULL,
+                                     nullptr,
                                      aDbgHelp.SymFunctionTableAccess64,
                                      aDbgHelp.SymGetModuleBase64,
-                                     NULL);
+                                     nullptr);
     if (!aRes)
     {
       break;
     }
 
-    if (theContext == NULL && aTopSkip > 0)
+    if (theContext == nullptr && aTopSkip > 0)
     {
       --aTopSkip;
       continue;

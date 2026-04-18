@@ -80,7 +80,7 @@ static const occ::handle<OpenGl_Context> TheNullGlCtx;
 //! Wrapper over eglChooseConfig() called with preferred defaults.
 static EGLConfig chooseEglSurfConfig(EGLDisplay theDisplay, const occ::handle<OpenGl_Caps>& theCaps)
 {
-  EGLConfig aCfg       = NULL;
+  EGLConfig aCfg       = nullptr;
   EGLint    aNbConfigs = 0;
   for (int aGlesVer = 3; aGlesVer >= 2; --aGlesVer)
   {
@@ -116,7 +116,7 @@ static EGLConfig chooseEglSurfConfig(EGLDisplay theDisplay, const occ::handle<Op
   #endif
 
     if (eglChooseConfig(theDisplay, aConfigAttribs, &aCfg, 1, &aNbConfigs) == EGL_TRUE
-        && aCfg != NULL)
+        && aCfg != nullptr)
     {
       return aCfg;
     }
@@ -129,7 +129,7 @@ static EGLConfig chooseEglSurfConfig(EGLDisplay theDisplay, const occ::handle<Op
       aConfigAttribs[1 * 2 + 1] = 8;
       aConfigAttribs[2 * 2 + 1] = 8;
       if (eglChooseConfig(theDisplay, aConfigAttribs, &aCfg, 1, &aNbConfigs) == EGL_TRUE
-          && aCfg != NULL)
+          && aCfg != nullptr)
       {
         return aCfg;
       }
@@ -140,7 +140,7 @@ static EGLConfig chooseEglSurfConfig(EGLDisplay theDisplay, const occ::handle<Op
       // try config with smaller depth buffer
       aConfigAttribs[4 * 2 + 1] = 16;
       if (eglChooseConfig(theDisplay, aConfigAttribs, &aCfg, 1, &aNbConfigs) == EGL_TRUE
-          && aCfg != NULL)
+          && aCfg != nullptr)
       {
         return aCfg;
       }
@@ -305,7 +305,7 @@ void OpenGl_GraphicDriver::ReleaseContext()
 
   myEglDisplay = (Aspect_Display)EGL_NO_DISPLAY;
   myEglContext = (Aspect_RenderingContext)EGL_NO_CONTEXT;
-  myEglConfig  = NULL;
+  myEglConfig  = nullptr;
 #endif
   myIsOwnContext = false;
 }
@@ -342,7 +342,7 @@ bool OpenGl_GraphicDriver::InitContext()
   }
 
   myEglConfig = chooseEglSurfConfig((EGLDisplay)myEglDisplay, myCaps);
-  if (myEglConfig == NULL)
+  if (myEglConfig == nullptr)
   {
     ::Message::SendFail("Error: EGL does not provide compatible configurations");
     return false;
@@ -367,7 +367,7 @@ bool OpenGl_GraphicDriver::InitContext()
       eglCreateContext((EGLDisplay)myEglDisplay, myEglConfig, EGL_NO_CONTEXT, anEglCtxAttribs2);
   }
   #else
-  EGLint* anEglCtxAttribs = NULL;
+  EGLint* anEglCtxAttribs = nullptr;
   if (eglBindAPI(EGL_OPENGL_API) != EGL_TRUE)
   {
     ::Message::SendFail("Error: EGL does not provide OpenGL client");
@@ -417,10 +417,10 @@ bool OpenGl_GraphicDriver::InitEglContext(Aspect_Display          theEglDisplay,
   myEglDisplay = theEglDisplay;
   myEglContext = theEglContext;
   myEglConfig  = theEglConfig;
-  if (theEglConfig == NULL)
+  if (theEglConfig == nullptr)
   {
     myEglConfig = chooseEglSurfConfig((EGLDisplay)myEglDisplay, myCaps);
-    if (myEglConfig == NULL)
+    if (myEglConfig == nullptr)
     {
       ::Message::SendFail("Error: EGL does not provide compatible configurations");
       return false;
@@ -454,7 +454,7 @@ void OpenGl_GraphicDriver::chooseVisualInfo()
   XVisualInfo aVisInfoTmp;
   memset(&aVisInfoTmp, 0, sizeof(aVisInfoTmp));
   aVisInfoTmp.screen = DefaultScreen(aDisp);
-  if (myEglDisplay != EGL_NO_DISPLAY && myEglConfig != NULL
+  if (myEglDisplay != EGL_NO_DISPLAY && myEglConfig != nullptr
       && eglGetConfigAttrib((EGLDisplay)myEglDisplay,
                             myEglConfig,
                             EGL_NATIVE_VISUAL_ID,

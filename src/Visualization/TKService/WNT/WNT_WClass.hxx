@@ -58,8 +58,8 @@ public:
     const unsigned int             theStyle,
     const int                      theClassExtra  = 0,
     const int                      theWindowExtra = 0,
-    const Aspect_Handle            theCursor      = NULL,
-    const Aspect_Handle            theIcon        = NULL,
+    const Aspect_Handle            theCursor      = nullptr,
+    const Aspect_Handle            theIcon        = nullptr,
     const TCollection_AsciiString& theMenuName    = TCollection_AsciiString::EmptyString());
 
   //! Destroys all resources attached to the class

@@ -119,7 +119,7 @@ static LONG _osd_debug(void);
 static LONG CallHandler(DWORD theExceptionCode, EXCEPTION_POINTERS* theExcPtr)
 {
   ptrdiff_t ExceptionInformation1 = 0, ExceptionInformation0 = 0;
-  if (theExcPtr != NULL)
+  if (theExcPtr != nullptr)
   {
     ExceptionInformation1 = theExcPtr->ExceptionRecord->ExceptionInformation[1];
     ExceptionInformation0 = theExcPtr->ExceptionRecord->ExceptionInformation[0];
@@ -184,7 +184,7 @@ static LONG CallHandler(DWORD theExceptionCode, EXCEPTION_POINTERS* theExcPtr)
     case STATUS_NO_MEMORY: {
       THROW_OR_JUMP(OSD_Exception_STATUS_NO_MEMORY,
                     "MEMORY ALLOCATION ERROR ( no room in the process heap )",
-                    NULL);
+                    nullptr);
       break;
     }
     case EXCEPTION_ACCESS_VIOLATION: {
@@ -270,8 +270,8 @@ static LONG CallHandler(DWORD theExceptionCode, EXCEPTION_POINTERS* theExcPtr)
 
   const int aStackLength = OSD_SignalStackTraceLength;
   const int aStackBufLen = std::max(aStackLength * 200, 2048);
-  char*     aStackBuffer = aStackLength != 0 ? (char*)alloca(aStackBufLen) : NULL;
-  if (aStackBuffer != NULL)
+  char*     aStackBuffer = aStackLength != 0 ? (char*)alloca(aStackBufLen) : nullptr;
+  if (aStackBuffer != nullptr)
   {
     memset(aStackBuffer, 0, aStackBufLen);
     Standard::StackTrace(aStackBuffer, aStackBufLen, aStackLength, theExcPtr->ContextRecord);
@@ -284,7 +284,7 @@ static LONG CallHandler(DWORD theExceptionCode, EXCEPTION_POINTERS* theExcPtr)
     MessageBeep(MB_ICONHAND);
     char aMsgBoxBuffer[2048];
     strcat_s(aMsgBoxBuffer, sizeof(aMsgBoxBuffer), aBuffer);
-    if (aStackBuffer != NULL)
+    if (aStackBuffer != nullptr)
     {
       strcat_s(aMsgBoxBuffer, sizeof(aMsgBoxBuffer), aStackBuffer);
     }
@@ -324,40 +324,40 @@ static void SIGWntHandler(int signum, int sub_code)
       switch (sub_code)
       {
         case _FPE_INVALID:
-          CallHandler(EXCEPTION_FLT_INVALID_OPERATION, NULL);
+          CallHandler(EXCEPTION_FLT_INVALID_OPERATION, nullptr);
           break;
         case _FPE_DENORMAL:
-          CallHandler(EXCEPTION_FLT_DENORMAL_OPERAND, NULL);
+          CallHandler(EXCEPTION_FLT_DENORMAL_OPERAND, nullptr);
           break;
         case _FPE_ZERODIVIDE:
-          CallHandler(EXCEPTION_FLT_DIVIDE_BY_ZERO, NULL);
+          CallHandler(EXCEPTION_FLT_DIVIDE_BY_ZERO, nullptr);
           break;
         case _FPE_OVERFLOW:
-          CallHandler(EXCEPTION_FLT_OVERFLOW, NULL);
+          CallHandler(EXCEPTION_FLT_OVERFLOW, nullptr);
           break;
         case _FPE_UNDERFLOW:
-          CallHandler(EXCEPTION_FLT_UNDERFLOW, NULL);
+          CallHandler(EXCEPTION_FLT_UNDERFLOW, nullptr);
           break;
         case _FPE_INEXACT:
-          CallHandler(EXCEPTION_FLT_INEXACT_RESULT, NULL);
+          CallHandler(EXCEPTION_FLT_INEXACT_RESULT, nullptr);
           break;
         default:
           std::cout
             << "SIGWntHandler(default) -> throw Standard_NumericError(\"Floating Point Error\");"
             << std::endl;
-          THROW_OR_JUMP(Standard_NumericError, "Floating Point Error", NULL);
+          THROW_OR_JUMP(Standard_NumericError, "Floating Point Error", nullptr);
           break;
       }
       break;
     case SIGSEGV:
       if (signal(signum, (void (*)(int))SIGWntHandler) == SIG_ERR)
         std::cout << "signal error" << std::endl;
-      CallHandler(EXCEPTION_ACCESS_VIOLATION, NULL);
+      CallHandler(EXCEPTION_ACCESS_VIOLATION, nullptr);
       break;
     case SIGILL:
       if (signal(signum, (void (*)(int))SIGWntHandler) == SIG_ERR)
         std::cout << "signal error" << std::endl;
-      CallHandler(EXCEPTION_ILLEGAL_INSTRUCTION, NULL);
+      CallHandler(EXCEPTION_ILLEGAL_INSTRUCTION, nullptr);
       break;
     default:
       std::cout << "SIGWntHandler unexpected signal : " << signum << std::endl;
@@ -425,11 +425,11 @@ bool OSD::ToCatchFloatingSignals()
 void OSD::SetThreadLocalSignal(OSD_SignalMode theSignalMode, bool theFloatingSignal)
 {
   #ifdef _MSC_VER
-  _se_translator_function aPreviousFunc = NULL;
+  _se_translator_function aPreviousFunc = nullptr;
   if (theSignalMode == OSD_SignalMode_Set || theSignalMode == OSD_SignalMode_SetUnhandled)
     aPreviousFunc = _set_se_translator(TranslateSE);
   if (theSignalMode == OSD_SignalMode_Unset
-      || (theSignalMode == OSD_SignalMode_SetUnhandled && aPreviousFunc != NULL))
+      || (theSignalMode == OSD_SignalMode_SetUnhandled && aPreviousFunc != nullptr))
     _set_se_translator(aPreviousFunc);
   #else
   (void)theSignalMode;
@@ -469,13 +469,13 @@ void OSD::SetSignal(OSD_SignalMode theSignalMode, bool theFloatingSignal)
   // Replaces the existing top-level exception filter for all existing and all future threads
   // in the calling process
   {
-    LPTOP_LEVEL_EXCEPTION_FILTER aPreviousFunc = NULL;
+    LPTOP_LEVEL_EXCEPTION_FILTER aPreviousFunc = nullptr;
     if (theSignalMode == OSD_SignalMode_Set || theSignalMode == OSD_SignalMode_SetUnhandled)
     {
       aPreviousFunc = ::SetUnhandledExceptionFilter(WntHandler);
     }
     if (theSignalMode == OSD_SignalMode_Unset
-        || (theSignalMode == OSD_SignalMode_SetUnhandled && aPreviousFunc != NULL))
+        || (theSignalMode == OSD_SignalMode_SetUnhandled && aPreviousFunc != nullptr))
     {
       ::SetUnhandledExceptionFilter(aPreviousFunc);
     }
@@ -631,7 +631,7 @@ LONG _osd_debug(void)
   if (!fDbgLoaded)
   {
 
-    HKEY                hKey   = NULL;
+    HKEY                hKey   = nullptr;
     HANDLE              hEvent = INVALID_HANDLE_VALUE;
     DWORD               dwKeyType;
     DWORD               dwValueLen;
@@ -654,7 +654,7 @@ LONG _osd_debug(void)
 
       if (RegQueryValueEx(hKey,
                           TEXT("Debugger"),
-                          NULL,
+                          nullptr,
                           &dwKeyType,
                           (unsigned char*)keyValue,
                           &dwValueLen)
@@ -662,10 +662,10 @@ LONG _osd_debug(void)
         __leave;
 
       sa.nLength              = sizeof(SECURITY_ATTRIBUTES);
-      sa.lpSecurityDescriptor = NULL;
+      sa.lpSecurityDescriptor = nullptr;
       sa.bInheritHandle       = TRUE;
 
-      if ((hEvent = CreateEvent(&sa, TRUE, FALSE, NULL)) == NULL)
+      if ((hEvent = CreateEvent(&sa, TRUE, FALSE, nullptr)) == nullptr)
         __leave;
 
       StringCchPrintf(cmdLine, _countof(cmdLine), keyValue, GetCurrentProcessId(), hEvent);
@@ -676,14 +676,14 @@ LONG _osd_debug(void)
       si.dwFlags = STARTF_FORCEONFEEDBACK;
 
       //   std::cout << "_osd_debug -> CreateProcess" << std::endl ;
-      if (!CreateProcess(NULL,
+      if (!CreateProcess(nullptr,
                          cmdLine,
-                         NULL,
-                         NULL,
+                         nullptr,
+                         nullptr,
                          TRUE,
                          CREATE_DEFAULT_ERROR_MODE,
-                         NULL,
-                         NULL,
+                         nullptr,
+                         nullptr,
                          &si,
                          &pi))
         __leave;
@@ -960,7 +960,7 @@ static void SegvHandler(const int theSignal, siginfo_t* theSigInfo, void* const 
 
 static void SegvHandler(const int theSignal, siginfo_t* theSigInfo, void* const theContext)
 {
-  if (theContext != NULL)
+  if (theContext != nullptr)
   {
     unsigned long aSpace   = ((struct sigcontext*)theContext)->sc_sl.sl_ss.ss_cr20;
     unsigned long anOffset = ((struct sigcontext*)theContext)->sc_sl.sl_ss.ss_cr21;
@@ -997,7 +997,7 @@ void OSD::SetFloatingSignal(bool theFloatingSignal)
   }
   #elif defined(__sun) || defined(SOLARIS)
   int                 aSunStat     = 0;
-  sigfpe_handler_type anFpeHandler = (theFloatingSignal ? (sigfpe_handler_type)Handler : NULL);
+  sigfpe_handler_type anFpeHandler = (theFloatingSignal ? (sigfpe_handler_type)Handler : nullptr);
   aSunStat                         = ieee_handler("set", "invalid", anFpeHandler);
   aSunStat                         = ieee_handler("set", "division", anFpeHandler) || aSunStat;
   aSunStat                         = ieee_handler("set", "overflow", anFpeHandler) || aSunStat;

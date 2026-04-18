@@ -119,10 +119,10 @@ Message_PrinterSystemLog::Message_PrinterSystemLog(
 {
   myTraceLevel = theTraceLevel;
 #if defined(OCCT_UWP)
-  myEventSource = NULL;
+  myEventSource = nullptr;
 #elif defined(_WIN32)
   const TCollection_ExtendedString aWideSrcName(theEventSourceName);
-  myEventSource = (void*)RegisterEventSourceW(NULL, aWideSrcName.ToWideString());
+  myEventSource = (void*)RegisterEventSourceW(nullptr, aWideSrcName.ToWideString());
 #elif defined(__ANDROID__)
   //
 #elif defined(__EMSCRIPTEN__)
@@ -137,7 +137,7 @@ Message_PrinterSystemLog::Message_PrinterSystemLog(
 Message_PrinterSystemLog::~Message_PrinterSystemLog()
 {
 #if defined(_WIN32)
-  if (myEventSource != NULL)
+  if (myEventSource != nullptr)
   {
   #if !defined(OCCT_UWP)
     DeregisterEventSource((HANDLE)myEventSource);
@@ -163,13 +163,13 @@ void Message_PrinterSystemLog::send(const TCollection_AsciiString& theString,
   }
 
 #if defined(_WIN32)
-  if (myEventSource != NULL)
+  if (myEventSource != nullptr)
   {
   #if !defined(OCCT_UWP)
     const TCollection_ExtendedString aWideString(theString);
     const WORD                       aLogType    = getEventLogPriority(theGravity);
     const wchar_t*                   aMessage[1] = {aWideString.ToWideString()};
-    ReportEventW((HANDLE)myEventSource, aLogType, 0, 0, NULL, 1, 0, aMessage, NULL);
+    ReportEventW((HANDLE)myEventSource, aLogType, 0, 0, nullptr, 1, 0, aMessage, nullptr);
   #else
     (void)theString;
   #endif

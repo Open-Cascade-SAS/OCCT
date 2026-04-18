@@ -101,7 +101,7 @@ extern "C"
 OSD_Disk::OSD_Disk()
 {
 #ifdef _WIN32
-  const DWORD                 aBuffLen = GetCurrentDirectoryW(0, NULL);
+  const DWORD                 aBuffLen = GetCurrentDirectoryW(0, nullptr);
   NCollection_Array1<wchar_t> aBuff(0, aBuffLen);
   GetCurrentDirectoryW(aBuffLen, &aBuff.ChangeFirst());
   aBuff.ChangeValue(aBuffLen - 1) = (aBuff.Value(aBuffLen - 2) == L'\\') ? L'\0' : L'\\';
