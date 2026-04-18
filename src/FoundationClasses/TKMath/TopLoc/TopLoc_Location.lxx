@@ -79,8 +79,8 @@ inline size_t TopLoc_Location::HashCode() const noexcept
 
 inline bool TopLoc_Location::IsEqual(const TopLoc_Location& theOther) const noexcept
 {
-  const void** p = (const void**)&myItems;
-  const void** q = (const void**)&theOther.myItems;
+  const void* const* p = reinterpret_cast<const void* const*>(&myItems);
+  const void* const* q = reinterpret_cast<const void* const*>(&theOther.myItems);
   if (*p == *q)
   {
     return true;

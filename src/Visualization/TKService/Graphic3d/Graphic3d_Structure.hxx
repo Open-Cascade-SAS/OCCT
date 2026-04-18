@@ -87,7 +87,7 @@ public:
                       "instead of integer number to SetDisplayPriority()")
   void SetDisplayPriority(const int thePriority)
   {
-    SetDisplayPriority((Graphic3d_DisplayPriority)thePriority);
+    SetDisplayPriority(static_cast<Graphic3d_DisplayPriority>(thePriority));
   }
 
   //! Reset the current priority of the structure to the previous priority.

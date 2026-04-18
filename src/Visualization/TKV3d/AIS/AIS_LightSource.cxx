@@ -99,7 +99,7 @@ void AIS_LightSourceOwner::HilightWithColor(const occ::handle<PrsMgr_Presentatio
     aGroup->AddPrimitiveArray(aPoints);
 
     const double               aRadius = aLightSource->Size() * 0.5;
-    const int                  aNbPnts = int(aLightSource->ArcSize() * 180 / (M_PI * aRadius));
+    const int                  aNbPnts = static_cast<int>(aLightSource->ArcSize() * 180 / (M_PI * aRadius));
     NCollection_Array1<gp_Pnt> aCircPoints(0, aNbPnts);
     const gp_Dir               aDirNorm(gp_Vec(gp::Origin(), aDetPnt));
     gp_Dir                     aDirNormToPln(gp::DY());
@@ -849,7 +849,7 @@ void AIS_LightSource::ComputeSelection(const occ::handle<SelectMgr_Selection>& t
     aSensPosition->SetSensitivityFactor(12);
     if (!myTransformPersistence.IsNull() && myTransformPersistence->IsTrihedronOr2d())
     {
-      aSensPosition->SetSensitivityFactor(std::max(12, int(mySize * 0.5)));
+      aSensPosition->SetSensitivityFactor(std::max(12, static_cast<int>(mySize * 0.5)));
     }
     theSel->Add(aSensPosition);
   }

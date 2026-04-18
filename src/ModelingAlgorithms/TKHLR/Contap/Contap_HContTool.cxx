@@ -182,8 +182,8 @@ void Contap_HContTool::SamplePoint(const occ::handle<Adaptor3d_Surface>& S,
       int indU = (Index - 1) / nbIntU;        //----   0 --> nbIntV
       int indV = (Index - 1) - indU * nbIntU; //----   0 --> nbIntU
 
-      U = uinf + ((usup - uinf) / ((double)(nbIntU + 1))) * (double)(indU + 1);
-      V = vinf + ((vsup - vinf) / ((double)(nbIntV + 2))) * (double)(indV + 1);
+      U = uinf + ((usup - uinf) / (static_cast<double>(nbIntU + 1))) * static_cast<double>(indU + 1);
+      V = vinf + ((vsup - vinf) / (static_cast<double>(nbIntV + 2))) * static_cast<double>(indV + 1);
 
       //-- std::cout<<"Index :"<<Index<<"  uinf:"<<uinf<<"  usup:"<<usup<<"  vinf:"<<vinf<<"
       // vsup:"<<vsup<<"  ";
@@ -245,7 +245,7 @@ int Contap_HContTool::NbSamplesOnArc(const occ::handle<Adaptor2d_Curve2d>& A)
     default:
       nbsOnC = 10;
   }
-  return (int)(nbsOnC);
+  return static_cast<int>(nbsOnC);
 }
 
 void Contap_HContTool::Bounds(const occ::handle<Adaptor2d_Curve2d>& A,

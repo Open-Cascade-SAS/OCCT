@@ -65,7 +65,7 @@ static void ProcessFace(const NCollection_Sequence<int>&                theFaceN
 {
   const int aNbPolyNodes = theFaceNodes.Length();
 
-  double* aPolyNodesBuf = (double*)alloca((3 * aNbPolyNodes + 1) * sizeof(double));
+  double* aPolyNodesBuf = static_cast<double*>(alloca((3 * aNbPolyNodes + 1) * sizeof(double)));
   NCollection_Array1<double> aPolyNodes(*aPolyNodesBuf, 0, 3 * aNbPolyNodes);
 
   for (int aNodeIdx = 0; aNodeIdx < aNbPolyNodes; ++aNodeIdx)
@@ -297,8 +297,8 @@ void MeshVS_MeshPrsBuilder::BuildElements(const occ::handle<Prs3d_Presentation>&
 
   showEdges = IsWireFrame || showEdges;
 
-  int*    aNodesBuf  = (int*)alloca(maxnodes * sizeof(int));
-  double* aCoordsBuf = (double*)alloca(3 * maxnodes * sizeof(double));
+  int*    aNodesBuf  = static_cast<int*>(alloca(maxnodes * sizeof(int)));
+  double* aCoordsBuf = static_cast<double*>(alloca(3 * maxnodes * sizeof(double)));
 
   NCollection_Array1<int>    aNodes(*aNodesBuf, 1, maxnodes);
   NCollection_Array1<double> aCoords(*aCoordsBuf, 1, 3 * maxnodes);
@@ -1171,9 +1171,9 @@ void MeshVS_MeshPrsBuilder::CalculateCenter(const NCollection_Array1<double>& th
       yG += theCoords(3 * k - 1);
       zG += theCoords(3 * k);
     }
-    xG /= double(NbNodes);
-    yG /= double(NbNodes);
-    zG /= double(NbNodes);
+    xG /= static_cast<double>(NbNodes);
+    yG /= static_cast<double>(NbNodes);
+    zG /= static_cast<double>(NbNodes);
   }
   else
   {

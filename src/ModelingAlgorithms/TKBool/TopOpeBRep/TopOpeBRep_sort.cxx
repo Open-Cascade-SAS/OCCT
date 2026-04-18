@@ -23,8 +23,8 @@ typedef NCollection_List<occ::handle<TopOpeBRepDS_Interference>>* BOA_t;
 
 static int compll(const void* v1, const void* v2)
 {
-  BOA_t l1 = *(BOA_t*)v1;
-  BOA_t l2 = *(BOA_t*)v2;
+  BOA_t l1 = *static_cast<const BOA_t*>(v1);
+  BOA_t l2 = *static_cast<const BOA_t*>(v2);
   if (l1->Extent() == 0)
     return (0);
   else if (l2->Extent() == 0)
@@ -54,9 +54,9 @@ static void BREP_sortonparameter2(NCollection_List<occ::handle<TopOpeBRepDS_Inte
   int ng = 0;
   for (tki.Init(); tki.More(); tki.Next())
     ng++;
-  size_t            sng = (size_t)ng;
+  size_t            sng = static_cast<size_t>(ng);
   size_t            sad = sizeof(BOA_t);
-  BOA_t*            T   = (BOA_t*)Standard::Allocate(sng * sad);
+  BOA_t*            T   = static_cast<BOA_t*>(Standard::Allocate(sng * sad));
   TopOpeBRepDS_Kind K;
   int               G, j = 0;
   for (tki.Init(); tki.More(); tki.Next(), j++)

@@ -145,7 +145,7 @@ int IGESToBRep_Reader::LoadFile(const char* const filename)
   OSD_Timer c;
   c.Reset();
   c.Start();
-  char* pfilename  = (char*)filename;
+  char* pfilename  = const_cast<char*>(filename);
   int   StatusFile = IGESFile_Read(pfilename, model, protocol);
   if (StatusFile != 0)
   {

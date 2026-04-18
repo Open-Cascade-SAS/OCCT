@@ -33,7 +33,7 @@ TCollection_AsciiString Interface_SignType::Text(
 
 const char* Interface_SignType::ClassName(const char* const typnam)
 {
-  char* tn = (char*)typnam;
+  char* tn = const_cast<char*>(typnam);
   for (int i = 0; tn[i] != '\0'; i++)
   {
     if (tn[i] == '_')

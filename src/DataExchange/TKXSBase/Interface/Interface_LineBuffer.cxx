@@ -181,7 +181,7 @@ occ::handle<TCollection_HAsciiString> Interface_LineBuffer::Moved()
 
 void Interface_LineBuffer::Add(const char* const theText)
 {
-  Add(theText, (int)strlen(theText));
+  Add(theText, static_cast<int>(strlen(theText)));
 }
 
 void Interface_LineBuffer::Add(const char* const text, const int lntext)

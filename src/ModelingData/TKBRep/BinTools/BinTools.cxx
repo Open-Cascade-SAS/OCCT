@@ -23,7 +23,7 @@
 
 Standard_OStream& BinTools::PutBool(Standard_OStream& OS, const bool aValue)
 {
-  OS.put((uint8_t)(aValue ? 1 : 0));
+  OS.put(static_cast<uint8_t>(aValue ? 1 : 0));
   return OS;
 }
 
@@ -35,7 +35,7 @@ Standard_OStream& BinTools::PutInteger(Standard_OStream& OS, const int aValue)
 #ifdef DO_INVERSE
   anIntValue = InverseInt(aValue);
 #endif
-  OS.write((char*)&anIntValue, sizeof(int));
+  OS.write(reinterpret_cast<char*>(&anIntValue), sizeof(int));
   return OS;
 }
 
@@ -73,7 +73,7 @@ Standard_OStream& BinTools::PutExtChar(Standard_OStream& OS, const char16_t aVal
 #ifdef DO_INVERSE
   aSValue = InverseExtChar(aValue);
 #endif
-  OS.write((char*)&aSValue, sizeof(char16_t));
+  OS.write(reinterpret_cast<char*>(&aSValue), sizeof(char16_t));
   return OS;
 }
 
@@ -81,7 +81,7 @@ Standard_OStream& BinTools::PutExtChar(Standard_OStream& OS, const char16_t aVal
 
 Standard_IStream& BinTools::GetReal(Standard_IStream& theIS, double& theValue)
 {
-  if (!theIS.read((char*)&theValue, sizeof(double)))
+  if (!theIS.read(reinterpret_cast<char*>(&theValue), sizeof(double)))
   {
     throw Storage_StreamTypeMismatchError();
   }
@@ -95,7 +95,7 @@ Standard_IStream& BinTools::GetReal(Standard_IStream& theIS, double& theValue)
 
 Standard_IStream& BinTools::GetShortReal(Standard_IStream& theIS, float& theValue)
 {
-  if (!theIS.read((char*)&theValue, sizeof(float)))
+  if (!theIS.read(reinterpret_cast<char*>(&theValue), sizeof(float)))
   {
     throw Storage_StreamTypeMismatchError();
   }
@@ -109,7 +109,7 @@ Standard_IStream& BinTools::GetShortReal(Standard_IStream& theIS, float& theValu
 
 Standard_IStream& BinTools::GetInteger(Standard_IStream& IS, int& aValue)
 {
-  if (!IS.read((char*)&aValue, sizeof(int)))
+  if (!IS.read(reinterpret_cast<char*>(&aValue), sizeof(int)))
     throw Storage_StreamTypeMismatchError();
 #ifdef DO_INVERSE
   aValue = InverseInt(aValue);
@@ -121,7 +121,7 @@ Standard_IStream& BinTools::GetInteger(Standard_IStream& IS, int& aValue)
 
 Standard_IStream& BinTools::GetExtChar(Standard_IStream& IS, char16_t& theValue)
 {
-  if (!IS.read((char*)&theValue, sizeof(char16_t)))
+  if (!IS.read(reinterpret_cast<char*>(&theValue), sizeof(char16_t)))
     throw Storage_StreamTypeMismatchError();
 #ifdef DO_INVERSE
   theValue = InverseExtChar(theValue);

@@ -86,7 +86,7 @@ void ShapeUpgrade_SplitSurfaceAngle::Compute(const bool /*Segment*/)
     double ULast      = myUSplitValues->Sequence().Last();
     double maxAngle   = myMaxAngle; // maximal u length of segment
     double uLength    = ULast - UFirst;
-    int    nbSegments = int((uLength - Precision::Angular()) / maxAngle) + 1;
+    int    nbSegments = static_cast<int>((uLength - Precision::Angular()) / maxAngle) + 1;
     if (nbSegments == 1)
       if (!isRect || !(uLength < maxAngle) || !((U2 - U1) < maxAngle))
         myStatus = ShapeExtend::EncodeStatus(ShapeExtend_DONE2);

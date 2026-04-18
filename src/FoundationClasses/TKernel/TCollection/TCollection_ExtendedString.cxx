@@ -132,11 +132,11 @@ TCollection_ExtendedString::TCollection_ExtendedString(const char* const theStri
     {
       return;
     }
-    reallocate((int)strlen(theString));
+    reallocate(static_cast<int>(strlen(theString)));
   }
   else
   {
-    allocate((int)strlen(theString));
+    allocate(static_cast<int>(strlen(theString)));
   }
   for (int aCharIter = 0; aCharIter < myLength; ++aCharIter)
   {
@@ -1172,7 +1172,7 @@ int TCollection_ExtendedString::ToUTF8CString(Standard_PCharacter& theCString) c
     anIterWrite = anIterRead.GetUtf(anIterWrite);
   }
   *anIterWrite = '\0';
-  return int(anIterWrite - theCString);
+  return static_cast<int>(anIterWrite - theCString);
 }
 
 //=================================================================================================

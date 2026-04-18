@@ -105,7 +105,7 @@ void NLPlate_NLPlate::IncrementalSolve(const int ord,
 
   for (int increment = 0; increment < NbIncrements; increment++)
   {
-    IncrementalLoad = 1. / double(NbIncrements - increment);
+    IncrementalLoad = 1. / static_cast<double>(NbIncrements - increment);
     //      for(int iterOrder=InitialConsraintOrder;iterOrder<=maxOrder;iterOrder++)
     int iterOrder = maxOrder;
     {

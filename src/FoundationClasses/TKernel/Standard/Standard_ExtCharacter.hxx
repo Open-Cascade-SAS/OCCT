@@ -35,7 +35,7 @@
 inline char16_t ToExtCharacter(const char achar)
 {
   //  extension a zero (partie haute-->octet de gauche) de achar
-  return (char16_t)((unsigned char)achar & 0x00ff);
+  return static_cast<char16_t>(static_cast<unsigned char>(achar) & 0x00ff);
 }
 
 // ------------------------------------------------------------------
@@ -44,7 +44,7 @@ inline char16_t ToExtCharacter(const char achar)
 inline char ToCharacter(const char16_t achar)
 {
   //  recuperer partie basse(octet de droite) de achar
-  return (char)(unsigned char)(achar & 0x00ff);
+  return static_cast<char>(static_cast<unsigned char>(achar & 0x00ff));
 }
 
 // ------------------------------------------------------------------

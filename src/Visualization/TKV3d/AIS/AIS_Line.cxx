@@ -161,7 +161,7 @@ void AIS_Line::UnsetColor()
 
 void AIS_Line::SetWidth(const double aValue)
 {
-  myOwnWidth = (float)aValue;
+  myOwnWidth = static_cast<float>(aValue);
 
   if (!myDrawer->HasOwnLineAspect())
   {
@@ -190,7 +190,7 @@ void AIS_Line::UnsetWidth()
   else
   {
     float WW = myDrawer->HasLink()
-                 ? (float)AIS_GraphicTool::GetLineWidth(myDrawer->Link(), AIS_TOA_Line)
+                 ? static_cast<float>(AIS_GraphicTool::GetLineWidth(myDrawer->Link(), AIS_TOA_Line))
                  : 1.0f;
     myDrawer->LineAspect()->SetWidth(WW);
     myOwnWidth = WW;

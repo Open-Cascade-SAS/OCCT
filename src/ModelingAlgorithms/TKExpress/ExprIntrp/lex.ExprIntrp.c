@@ -761,7 +761,7 @@ static YY_BUFFER_STATE ExprIntrp_bufstring;
 void ExprIntrp_start_string(const char* str)
 {
   // depending on configuration and generator, yyconst may be defined as const or empty
-  ExprIntrp_bufstring = ExprIntrp_scan_string((yyconst char*)str);
+  ExprIntrp_bufstring = ExprIntrp_scan_string(str);
 }
 
 void ExprIntrp_stop_string()
@@ -1449,7 +1449,7 @@ static int yy_get_next_buffer (void)
 		if ( ! YY_CURRENT_BUFFER_LVALUE->yy_ch_buf )
 			YY_FATAL_ERROR( "out of dynamic memory in yy_get_next_buffer()" );
 		/* "- 2" to take care of EOB's */
-		YY_CURRENT_BUFFER_LVALUE->yy_buf_size = (int) (new_size - 2);
+		YY_CURRENT_BUFFER_LVALUE->yy_buf_size = (new_size - 2);
 	}
 
 	(yy_n_chars) += number_to_move;
@@ -1544,7 +1544,7 @@ static int yy_get_next_buffer (void)
 		yy_cp += (int) (dest - source);
 		yy_bp += (int) (dest - source);
 		YY_CURRENT_BUFFER_LVALUE->yy_n_chars =
-			(yy_n_chars) = (int) YY_CURRENT_BUFFER_LVALUE->yy_buf_size;
+			(yy_n_chars) = YY_CURRENT_BUFFER_LVALUE->yy_buf_size;
 
 		if ( yy_cp < YY_CURRENT_BUFFER_LVALUE->yy_ch_buf + 2 )
 			YY_FATAL_ERROR( "flex scanner push-back overflow" );

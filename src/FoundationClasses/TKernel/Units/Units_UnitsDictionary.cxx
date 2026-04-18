@@ -82,7 +82,7 @@ static const char* readLine(TCollection_AsciiString& theLine, const char* theStr
 
     if (*aCharIter == '\n')
     {
-      const int aLineLen = int(aCharIter - theString);
+      const int aLineLen = static_cast<int>(aCharIter - theString);
       if (aLineLen != 0)
       {
         theLine = TCollection_AsciiString(theString, aLineLen);
@@ -259,7 +259,7 @@ void Units_UnitsDictionary::Creates()
       if (convert[0] == '[')
       {
         coeff          = 1.;
-        i              = (int)strlen(convert);
+        i              = static_cast<int>(strlen(convert));
         convert[i - 1] = 0;
         ismove         = true;
         charnumber     = 1;
@@ -293,7 +293,7 @@ void Units_UnitsDictionary::Creates()
 
       if (convert[charnumber] == '(')
       {
-        i              = (int)strlen(convert);
+        i              = static_cast<int>(strlen(convert));
         convert[i - 1] = 0;
         Units_MathSentence mathsentence(&convert[charnumber + 1]);
         if (ismove)

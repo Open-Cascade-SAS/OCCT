@@ -82,7 +82,7 @@ public:
   protected:
     void Init(const NCollection_BaseList& theList, NCollection_ListNode* const thePrev) noexcept
     {
-      myCurrent  = thePrev ? thePrev->Next() : (NCollection_ListNode*)theList.PLast();
+      myCurrent  = thePrev ? thePrev->Next() : const_cast<NCollection_ListNode*>(theList.PLast());
       myPrevious = thePrev;
     }
 

@@ -282,7 +282,7 @@ protected:
   //! @return true if reading was finished without errors.
   bool readStream(std::istream& theStream, size_t theLen, size_t& theReadLen)
   {
-    theReadLen = (size_t)theStream.read(&myReadBuffer.front(), theLen).gcount();
+    theReadLen = static_cast<size_t>(theStream.read(&myReadBuffer.front(), theLen).gcount());
     return !theStream.bad();
   }
 

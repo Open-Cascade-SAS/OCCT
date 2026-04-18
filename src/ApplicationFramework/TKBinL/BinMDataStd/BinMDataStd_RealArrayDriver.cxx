@@ -96,7 +96,7 @@ void BinMDataStd_RealArrayDriver::Paste(
   theTarget << aFirstInd << aLastInd;
   double* aPtr = const_cast<double*>(&aSourceArray(aFirstInd));
   theTarget.PutRealArray(aPtr, aLength);
-  theTarget << (uint8_t)(anAtt->GetDelta() ? 1 : 0);
+  theTarget << static_cast<uint8_t>(anAtt->GetDelta() ? 1 : 0);
   // process user defined guid
   if (anAtt->ID() != TDataStd_RealArray::GetID())
     theTarget << anAtt->ID();

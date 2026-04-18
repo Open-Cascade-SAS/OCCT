@@ -64,7 +64,7 @@ void HelixGeom_BuilderHelix::Perform()
 
   // Determine number of full turns for segmentation
   dT = myT2 - myT1;
-  aN = (int)(dT / aTwoPI);
+  aN = static_cast<int>(dT / aTwoPI);
   if (!aN)
   {
     aBHC.SetCurveParameters(myT1, myT2, myPitch, myRStart, myTaperAngle, myIsClockWise);

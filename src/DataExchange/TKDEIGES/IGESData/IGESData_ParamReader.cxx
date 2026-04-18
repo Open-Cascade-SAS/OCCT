@@ -97,7 +97,7 @@ IGESData_ReadStage IGESData_ParamReader::Stage() const
 void IGESData_ParamReader::NextStage()
 {
   if (thestage != IGESData_ReadEnd)
-    thestage = (IGESData_ReadStage)(((long)thestage) + 1);
+    thestage = static_cast<IGESData_ReadStage>((static_cast<long>(thestage)) + 1);
 }
 
 //=================================================================================================

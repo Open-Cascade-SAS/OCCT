@@ -673,7 +673,7 @@ void ChFi3d_ChBuilder::SimulKPart(const occ::handle<ChFiDS_SurfData>& SD) const
       double  ang = (u2 - u1);
       gp_Cone Co  = AS.Cone();
       double  rad = Co.RefRadius(), sang = Co.SemiAngle();
-      int     n = (int)(36. * ang / M_PI + 1);
+      int     n = static_cast<int>(36. * ang / M_PI + 1);
       if (n < 2)
         n = 2;
       sec = new NCollection_HArray1<ChFiDS_CircSection>(1, n);

@@ -251,7 +251,7 @@ static bool checkFont(NCollection_Sequence<occ::handle<Font_SystemFont>>& theFon
   }
 
   occ::handle<Font_SystemFont> aResult = new Font_SystemFont(aFamily);
-  aResult->SetFontPath(anAspect, theFontPath, (int)aFaceId);
+  aResult->SetFontPath(anAspect, theFontPath, static_cast<int>(aFaceId));
   // automatically identify some known single-line fonts
   aResult->SetSingleStrokeFont(aResult->FontKey().StartsWith("olf "));
   theFonts.Append(aResult);
@@ -582,20 +582,20 @@ bool Font_FontMgr::RegisterFont(const occ::handle<Font_SystemFont>& theFont,
   occ::handle<Font_SystemFont> anOldFont = myFontMap.FindKey(anOldIndex);
   for (int anAspectIter = 0; anAspectIter < Font_FontAspect_NB; ++anAspectIter)
   {
-    if (anOldFont->FontPath((Font_FontAspect)anAspectIter)
-          .IsEqual(theFont->FontPath((Font_FontAspect)anAspectIter))
-        && anOldFont->FontFaceId((Font_FontAspect)anAspectIter)
-             == theFont->FontFaceId((Font_FontAspect)anAspectIter))
+    if (anOldFont->FontPath(static_cast<Font_FontAspect>(anAspectIter))
+          .IsEqual(theFont->FontPath(static_cast<Font_FontAspect>(anAspectIter)))
+        && anOldFont->FontFaceId(static_cast<Font_FontAspect>(anAspectIter))
+             == theFont->FontFaceId(static_cast<Font_FontAspect>(anAspectIter)))
     {
       continue;
     }
-    else if (theToOverride || !anOldFont->HasFontAspect((Font_FontAspect)anAspectIter))
+    else if (theToOverride || !anOldFont->HasFontAspect(static_cast<Font_FontAspect>(anAspectIter)))
     {
-      anOldFont->SetFontPath((Font_FontAspect)anAspectIter,
-                             theFont->FontPath((Font_FontAspect)anAspectIter),
-                             theFont->FontFaceId((Font_FontAspect)anAspectIter));
+      anOldFont->SetFontPath(static_cast<Font_FontAspect>(anAspectIter),
+                             theFont->FontPath(static_cast<Font_FontAspect>(anAspectIter)),
+                             theFont->FontFaceId(static_cast<Font_FontAspect>(anAspectIter)));
     }
-    else if (theFont->HasFontAspect((Font_FontAspect)anAspectIter))
+    else if (theFont->HasFontAspect(static_cast<Font_FontAspect>(anAspectIter)))
     {
       return false;
     }
@@ -717,7 +717,7 @@ void Font_FontMgr::InitFontDataBase()
           break;
         }
 
-        TCollection_AsciiString aPathStr((const char*)aFcFolder);
+        TCollection_AsciiString aPathStr(reinterpret_cast<const char*>(aFcFolder));
         OSD_Path                aPath(aPathStr);
         addDirsRecursively(aPath, aMapOfFontsDirs);
       }

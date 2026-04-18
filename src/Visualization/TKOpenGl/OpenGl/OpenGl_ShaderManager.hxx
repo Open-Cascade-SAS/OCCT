@@ -769,13 +769,13 @@ protected:
   {
     myClipChainArray.SetValue(thePlaneId, theChainFwd);
     NCollection_Vec4<float>& aPlaneEq = myClipPlaneArray.ChangeValue(thePlaneId);
-    aPlaneEq.x()                      = float(theEq.x());
-    aPlaneEq.y()                      = float(theEq.y());
-    aPlaneEq.z()                      = float(theEq.z());
-    aPlaneEq.w()                      = float(theEq.w());
+    aPlaneEq.x()                      = static_cast<float>(theEq.x());
+    aPlaneEq.y()                      = static_cast<float>(theEq.y());
+    aPlaneEq.z()                      = static_cast<float>(theEq.z());
+    aPlaneEq.w()                      = static_cast<float>(theEq.w());
     if (myHasLocalOrigin)
     {
-      aPlaneEq.w() = float(LocalClippingPlaneW(thePlane));
+      aPlaneEq.w() = static_cast<float>(LocalClippingPlaneW(thePlane));
     }
     ++thePlaneId;
   }

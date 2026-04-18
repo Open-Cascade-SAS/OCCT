@@ -43,9 +43,9 @@ occ::handle<Graphic3d_AspectFillArea3d> MeshVS_Tool::CreateAspectFillArea3d(
   Aspect_HatchStyle        aHStyle     = Aspect_HS_HORIZONTAL;
   Graphic3d_MaterialAspect aFrMat = Mat, aBackMat = Mat;
 
-  int anIntStyleI = (int)Aspect_IS_EMPTY;
-  int anEdgeTypeI = (int)Aspect_TOL_SOLID;
-  int aHStyleI    = (int)Aspect_HS_HORIZONTAL;
+  int anIntStyleI = static_cast<int>(Aspect_IS_EMPTY);
+  int anEdgeTypeI = static_cast<int>(Aspect_TOL_SOLID);
+  int aHStyleI    = static_cast<int>(Aspect_HS_HORIZONTAL);
 
   if (!theDr->GetColor(MeshVS_DA_InteriorColor, anIntColor) && !UseDefaults)
     return anAsp;
@@ -63,17 +63,17 @@ occ::handle<Graphic3d_AspectFillArea3d> MeshVS_Tool::CreateAspectFillArea3d(
   if (!theDr->GetInteger(MeshVS_DA_InteriorStyle, anIntStyleI) && !UseDefaults)
     return anAsp;
   else
-    anIntStyle = (Aspect_InteriorStyle)anIntStyleI;
+    anIntStyle = static_cast<Aspect_InteriorStyle>(anIntStyleI);
 
   if (!theDr->GetInteger(MeshVS_DA_EdgeType, anEdgeTypeI) && !UseDefaults)
     return anAsp;
   else
-    anEdgeType = (Aspect_TypeOfLine)anEdgeTypeI;
+    anEdgeType = static_cast<Aspect_TypeOfLine>(anEdgeTypeI);
 
   if (!theDr->GetInteger(MeshVS_DA_HatchStyle, aHStyleI) && !UseDefaults)
     return anAsp;
   else
-    aHStyle = (Aspect_HatchStyle)aHStyleI;
+    aHStyle = static_cast<Aspect_HatchStyle>(aHStyleI);
 
   anAsp = new Graphic3d_AspectFillArea3d(anIntStyle,
                                          anIntColor,
@@ -96,18 +96,18 @@ occ::handle<Graphic3d_AspectFillArea3d> MeshVS_Tool::CreateAspectFillArea3d(
 {
   Graphic3d_MaterialAspect aFrMat    = Graphic3d_NameOfMaterial_Brass;
   Graphic3d_MaterialAspect aBackMat  = Graphic3d_NameOfMaterial_Brass;
-  int                      aFrMatI   = (int)Graphic3d_NameOfMaterial_Brass;
-  int                      aBackMatI = (int)Graphic3d_NameOfMaterial_Brass;
+  int                      aFrMatI   = static_cast<int>(Graphic3d_NameOfMaterial_Brass);
+  int                      aBackMatI = static_cast<int>(Graphic3d_NameOfMaterial_Brass);
 
   if (!theDr->GetInteger(MeshVS_DA_FrontMaterial, aFrMatI) && !UseDefaults)
     return nullptr;
   else
-    aFrMat = (Graphic3d_MaterialAspect)(Graphic3d_NameOfMaterial)aFrMatI;
+    aFrMat = Graphic3d_MaterialAspect(static_cast<Graphic3d_NameOfMaterial>(aFrMatI));
 
   if (!theDr->GetInteger(MeshVS_DA_BackMaterial, aBackMatI) && !UseDefaults)
     return nullptr;
   else
-    aBackMat = (Graphic3d_MaterialAspect)(Graphic3d_NameOfMaterial)aBackMatI;
+    aBackMat = Graphic3d_MaterialAspect(static_cast<Graphic3d_NameOfMaterial>(aBackMatI));
 
   occ::handle<Graphic3d_AspectFillArea3d> aFill =
     CreateAspectFillArea3d(theDr, aFrMat, UseDefaults);
@@ -129,7 +129,7 @@ occ::handle<Graphic3d_AspectLine3d> MeshVS_Tool::CreateAspectLine3d(
   Quantity_Color    aBeamColor = Quantity_NOC_YELLOW;
   Aspect_TypeOfLine aBeamType  = Aspect_TOL_SOLID;
   double            aBeamWidth = 1.0;
-  int               aBeamTypeI = (int)Aspect_TOL_SOLID;
+  int               aBeamTypeI = static_cast<int>(Aspect_TOL_SOLID);
 
   if (!theDr->GetColor(MeshVS_DA_BeamColor, aBeamColor) && !UseDefaults)
     return anAsp;
@@ -140,7 +140,7 @@ occ::handle<Graphic3d_AspectLine3d> MeshVS_Tool::CreateAspectLine3d(
   if (!theDr->GetInteger(MeshVS_DA_BeamType, aBeamTypeI) && !UseDefaults)
     return anAsp;
   else
-    aBeamType = (Aspect_TypeOfLine)aBeamTypeI;
+    aBeamType = static_cast<Aspect_TypeOfLine>(aBeamTypeI);
 
   anAsp = new Graphic3d_AspectLine3d(aBeamColor, aBeamType, aBeamWidth);
 
@@ -160,7 +160,7 @@ occ::handle<Graphic3d_AspectMarker3d> MeshVS_Tool::CreateAspectMarker3d(
   Quantity_Color      aMColor = Quantity_NOC_YELLOW;
   Aspect_TypeOfMarker aMType  = Aspect_TOM_X;
   double              aMScale = 1.0;
-  int                 aMTypeI = (int)Aspect_TOM_X;
+  int                 aMTypeI = static_cast<int>(Aspect_TOM_X);
 
   if (!theDr->GetColor(MeshVS_DA_MarkerColor, aMColor) && !UseDefaults)
     return anAsp;
@@ -171,7 +171,7 @@ occ::handle<Graphic3d_AspectMarker3d> MeshVS_Tool::CreateAspectMarker3d(
   if (!theDr->GetInteger(MeshVS_DA_MarkerType, aMTypeI) && !UseDefaults)
     return anAsp;
   else
-    aMType = (Aspect_TypeOfMarker)aMTypeI;
+    aMType = static_cast<Aspect_TypeOfMarker>(aMTypeI);
 
   anAsp = new Graphic3d_AspectMarker3d(aMType, aMColor, aMScale);
 
@@ -195,10 +195,10 @@ occ::handle<Graphic3d_AspectText3d> MeshVS_Tool::CreateAspectText3d(
   Aspect_TypeOfDisplayText aDispText   = Aspect_TODT_NORMAL;
   TCollection_AsciiString  aFontString = Font_NOF_ASCII_MONO;
   Font_FontAspect          aFontAspect = Font_FA_Regular;
-  int                      aStyleI     = (int)Aspect_TOST_NORMAL;
-  int                      aDispTextI  = (int)Aspect_TODT_NORMAL;
+  int                      aStyleI     = static_cast<int>(Aspect_TOST_NORMAL);
+  int                      aDispTextI  = static_cast<int>(Aspect_TODT_NORMAL);
   // Bold font is used by default for better text readability
-  int aFontAspectI = (int)Font_FA_Bold;
+  int aFontAspectI = static_cast<int>(Font_FA_Bold);
 
   if (!theDr->GetColor(MeshVS_DA_TextColor, aTColor) && !UseDefaults)
     return anAsp;
@@ -217,17 +217,17 @@ occ::handle<Graphic3d_AspectText3d> MeshVS_Tool::CreateAspectText3d(
   if (!theDr->GetInteger(MeshVS_DA_TextStyle, aStyleI) && !UseDefaults)
     return anAsp;
   else
-    aStyle = (Aspect_TypeOfStyleText)aStyleI;
+    aStyle = static_cast<Aspect_TypeOfStyleText>(aStyleI);
 
   if (!theDr->GetInteger(MeshVS_DA_TextDisplayType, aDispTextI) && !UseDefaults)
     return anAsp;
   else
-    aDispText = (Aspect_TypeOfDisplayText)aDispTextI;
+    aDispText = static_cast<Aspect_TypeOfDisplayText>(aDispTextI);
 
   if (!theDr->GetInteger(MeshVS_DA_TextFontAspect, aFontAspectI) && !UseDefaults)
     return anAsp;
   else
-    aFontAspect = (Font_FontAspect)aFontAspectI;
+    aFontAspect = static_cast<Font_FontAspect>(aFontAspectI);
 
   anAsp = new Graphic3d_AspectText3d(aTColor, aFont, anExpFactor, aSpace, aStyle, aDispText);
   anAsp->SetTextFontAspect(aFontAspect);
@@ -242,7 +242,7 @@ bool MeshVS_Tool::GetNormal(const NCollection_Array1<double>& Nodes, gp_Vec& Nor
   if (first == 0)
   {
     first = 1;
-    count = int(Nodes.Value(0));
+    count = static_cast<int>(Nodes.Value(0));
   }
 
   if (count < 3)
@@ -306,7 +306,7 @@ bool MeshVS_Tool::GetAverageNormal(const NCollection_Array1<double>& Nodes, gp_V
   if (first == 0)
   {
     first = 1;
-    count = int(Nodes.Value(0));
+    count = static_cast<int>(Nodes.Value(0));
   }
 
   if (count < 3)

@@ -148,10 +148,10 @@ TCollection_AsciiString OSD_Host::InternetAddress()
   memcpy(&internet_address, aHostByName, sizeof(struct hostent));
 
   // Gets each bytes into integers
-  a = (unsigned char)internet_address.h_addr_list[0][0];
-  b = (unsigned char)internet_address.h_addr_list[0][1];
-  c = (unsigned char)internet_address.h_addr_list[0][2];
-  d = (unsigned char)internet_address.h_addr_list[0][3];
+  a = static_cast<unsigned char>(internet_address.h_addr_list[0][0]);
+  b = static_cast<unsigned char>(internet_address.h_addr_list[0][1]);
+  c = static_cast<unsigned char>(internet_address.h_addr_list[0][2]);
+  d = static_cast<unsigned char>(internet_address.h_addr_list[0][3]);
   Sprintf(buffer, "%d.%d.%d.%d", a, b, c, d);
   result = buffer;
   return (result);

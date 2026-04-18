@@ -787,7 +787,7 @@ bool Geom_BSplineCurve::IsEqual(const occ::handle<Geom_BSplineCurve>& theOther,
 
   for (int aWeightIter = 1; aWeightIter <= myWeights.Length(); ++aWeightIter)
   {
-    if (fabs(double(myWeights(aWeightIter) - theOther->Weight(aWeightIter)))
+    if (fabs((myWeights(aWeightIter) - theOther->Weight(aWeightIter)))
         > Epsilon(myWeights(aWeightIter)))
     {
       return false;

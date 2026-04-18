@@ -58,7 +58,7 @@ void Standard_ErrorHandler::Unlink()
   myCallbackPtr = nullptr;
   while (aPtr)
   {
-    Standard_ErrorHandler::Callback* aCallback = (Standard_ErrorHandler::Callback*)aPtr;
+    Standard_ErrorHandler::Callback* aCallback = static_cast<Standard_ErrorHandler::Callback*>(aPtr);
     aPtr                                       = aCallback->myNext;
     // Call destructor explicitly, as we know that it will not be called automatically
     aCallback->DestroyCallback();
@@ -126,7 +126,7 @@ void Standard_ErrorHandler::Callback::RegisterCallback()
     myHandler = aHandler;
     myNext    = aHandler->myCallbackPtr;
     if (myNext)
-      ((Standard_ErrorHandler::Callback*)myNext)->myPrev = this;
+      (static_cast<Standard_ErrorHandler::Callback*>(myNext))->myPrev = this;
     aHandler->myCallbackPtr = this;
   }
 }
@@ -136,11 +136,11 @@ void Standard_ErrorHandler::Callback::UnregisterCallback()
   if (!myHandler)
     return;
   if (myNext)
-    ((Standard_ErrorHandler::Callback*)myNext)->myPrev = myPrev;
+    (static_cast<Standard_ErrorHandler::Callback*>(myNext))->myPrev = myPrev;
   if (myPrev)
-    ((Standard_ErrorHandler::Callback*)myPrev)->myNext = myNext;
-  else if (((Standard_ErrorHandler*)myHandler)->myCallbackPtr == this)
-    ((Standard_ErrorHandler*)myHandler)->myCallbackPtr = (Standard_ErrorHandler::Callback*)myNext;
+    (static_cast<Standard_ErrorHandler::Callback*>(myPrev))->myNext = myNext;
+  else if ((static_cast<Standard_ErrorHandler*>(myHandler))->myCallbackPtr == this)
+    (static_cast<Standard_ErrorHandler*>(myHandler))->myCallbackPtr = static_cast<Standard_ErrorHandler::Callback*>(myNext);
   myHandler = myNext = myPrev = nullptr;
 }
 #endif

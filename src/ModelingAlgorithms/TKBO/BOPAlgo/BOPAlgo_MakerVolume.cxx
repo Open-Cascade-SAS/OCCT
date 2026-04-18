@@ -103,7 +103,7 @@ void BOPAlgo_MakerVolume::PerformInternal1(const BOPAlgo_PaveFiller&    theFille
                                            const Message_ProgressRange& theRange)
 {
   Message_ProgressScope aPS(theRange, "Building volumes", 100);
-  myPaveFiller = (BOPAlgo_PaveFiller*)&theFiller;
+  myPaveFiller = const_cast<BOPAlgo_PaveFiller*>(&theFiller);
   myDS         = myPaveFiller->PDS();
   myContext    = myPaveFiller->Context();
   //

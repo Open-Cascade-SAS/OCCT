@@ -43,7 +43,7 @@ void TopOpeBRepDS_Marker::Set(const int ie, const bool b)
 
 void TopOpeBRepDS_Marker::Set(const bool b, const int na, void* const aa)
 {
-  char** a = (char**)aa;
+  char** a = static_cast<char**>(aa);
   //  int ia,ie;
   int ia;
   if (!na)

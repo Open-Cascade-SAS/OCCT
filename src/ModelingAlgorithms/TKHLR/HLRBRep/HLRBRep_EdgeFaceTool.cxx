@@ -33,7 +33,7 @@ double HLRBRep_EdgeFaceTool::CurvatureValue(const HLRBRep_SurfacePtr F,
 {
   gp_Pnt P;
   gp_Vec D1U, D1V, D2U, D2V, D2UV;
-  ((HLRBRep_Surface*)F)->D2(U, V, P, D1U, D1V, D2U, D2V, D2UV);
+  (static_cast<HLRBRep_Surface*>(F))->D2(U, V, P, D1U, D1V, D2U, D2V, D2UV);
   double d1ut   = D1U * Tg;
   double d1vt   = D1V * Tg;
   double d1ud1v = D1U * D1V;
@@ -65,14 +65,14 @@ bool HLRBRep_EdgeFaceTool::UVPoint(const double             Par,
                                    double&                  V)
 {
   double pfbid, plbid;
-  if (BRep_Tool::CurveOnSurface(((HLRBRep_Curve*)E)->Curve().Edge(),
-                                ((HLRBRep_Surface*)F)->Surface().Face(),
+  if (BRep_Tool::CurveOnSurface((static_cast<HLRBRep_Curve*>(E))->Curve().Edge(),
+                                (static_cast<HLRBRep_Surface*>(F))->Surface().Face(),
                                 pfbid,
                                 plbid)
         .IsNull())
   {
-    BRepExtrema_ExtPF proj(BRepLib_MakeVertex(((HLRBRep_Curve*)E)->Value3D(Par)),
-                           ((HLRBRep_Surface*)F)->Surface().Face());
+    BRepExtrema_ExtPF proj(BRepLib_MakeVertex((static_cast<HLRBRep_Curve*>(E))->Value3D(Par)),
+                           (static_cast<HLRBRep_Surface*>(F))->Surface().Face());
     int               i, index = 0;
     double            dist2 = RealLast();
     const int         n     = proj.NbExt();
@@ -92,8 +92,8 @@ bool HLRBRep_EdgeFaceTool::UVPoint(const double             Par,
   }
   else
   {
-    BRepAdaptor_Curve2d PC(((HLRBRep_Curve*)E)->Curve().Edge(),
-                           ((HLRBRep_Surface*)F)->Surface().Face());
+    BRepAdaptor_Curve2d PC((static_cast<HLRBRep_Curve*>(E))->Curve().Edge(),
+                           (static_cast<HLRBRep_Surface*>(F))->Surface().Face());
     gp_Pnt2d            P2d;
     PC.D0(Par, P2d);
     U = P2d.X();

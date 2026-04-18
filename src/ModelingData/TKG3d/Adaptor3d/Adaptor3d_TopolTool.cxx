@@ -1183,14 +1183,14 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const double theDefl,
     int aNb;
     if (nbsu < nbsv)
     {
-      aNb       = (int)(nbsv * ((double)theNUmin) / ((double)nbsu));
+      aNb       = static_cast<int>(nbsv * (static_cast<double>(theNUmin)) / (static_cast<double>(nbsu)));
       aNb       = std::min(aNb, 30);
       bVuniform = (aNb > nbsv) ? true : bVuniform;
       nbsv      = bVuniform ? aNb : nbsv;
     }
     else
     {
-      aNb       = (int)(nbsu * ((double)theNVmin) / ((double)nbsv));
+      aNb       = static_cast<int>(nbsu * (static_cast<double>(theNVmin)) / (static_cast<double>(nbsv)));
       aNb       = std::min(aNb, 30);
       bUuniform = (aNb > nbsu) ? true : bUuniform;
       nbsu      = bUuniform ? aNb : nbsu;

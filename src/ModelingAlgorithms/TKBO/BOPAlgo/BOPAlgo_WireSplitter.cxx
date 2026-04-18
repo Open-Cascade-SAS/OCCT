@@ -50,7 +50,7 @@ BOPAlgo_WireSplitter::~BOPAlgo_WireSplitter() = default;
 
 void BOPAlgo_WireSplitter::SetWES(const BOPAlgo_WireEdgeSet& theWES)
 {
-  myWES = (BOPAlgo_WireEdgeSet*)&theWES;
+  myWES = const_cast<BOPAlgo_WireEdgeSet*>(&theWES);
 }
 
 //=================================================================================================

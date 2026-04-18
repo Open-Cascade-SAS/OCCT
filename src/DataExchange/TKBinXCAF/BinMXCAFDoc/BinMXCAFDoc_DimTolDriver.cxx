@@ -97,7 +97,7 @@ void BinMXCAFDoc_DimTolDriver::Paste(
   {
     const int                         aLength = aLastInd - aFirstInd + 1;
     const NCollection_Array1<double>& anArr   = aHArr->Array1();
-    double*                           aPtr    = (double*)&anArr(aFirstInd);
+    double*                           aPtr    = const_cast<double*>(&anArr(aFirstInd));
     theTarget.PutRealArray(aPtr, aLength);
   }
 }

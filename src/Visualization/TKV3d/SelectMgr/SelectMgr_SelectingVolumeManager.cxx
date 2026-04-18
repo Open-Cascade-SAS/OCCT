@@ -359,7 +359,7 @@ bool SelectMgr_SelectingVolumeManager::OverlapsPolygon(
   }
 
   return myActiveSelectingVolume->OverlapsPolygon(theArrayOfPnts,
-                                                  (Select3D_TypeOfSensitivity)theSensType,
+                                                  static_cast<Select3D_TypeOfSensitivity>(theSensType),
                                                   myViewClipRange,
                                                   thePickResult);
 }
@@ -402,7 +402,7 @@ bool SelectMgr_SelectingVolumeManager::OverlapsTriangle(
   return myActiveSelectingVolume->OverlapsTriangle(thePt1,
                                                    thePt2,
                                                    thePt3,
-                                                   (Select3D_TypeOfSensitivity)theSensType,
+                                                   static_cast<Select3D_TypeOfSensitivity>(theSensType),
                                                    myViewClipRange,
                                                    thePickResult);
 }

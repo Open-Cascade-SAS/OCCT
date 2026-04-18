@@ -220,7 +220,7 @@ static bool MinimizeDirection(const math_Vector& P0,
   invnorme = Delta.Norm();
   if (invnorme <= Eps)
     return false;
-  invnorme = ((double)1) / invnorme;
+  invnorme = (static_cast<double>(1)) / invnorme;
 
   F.Initialize(P1, Delta);
 

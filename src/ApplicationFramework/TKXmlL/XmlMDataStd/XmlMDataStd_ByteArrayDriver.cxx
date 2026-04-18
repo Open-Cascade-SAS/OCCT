@@ -119,7 +119,7 @@ bool XmlMDataStd_ByteArrayDriver::Paste(const XmlObjMgt_Persistent&       theSou
       myMessageDriver->Send(aMessageString, Message_Warning);
       aValue = 0;
     }
-    arr.SetValue(i, (uint8_t)aValue);
+    arr.SetValue(i, static_cast<uint8_t>(aValue));
   }
   aByteArray->ChangeArray(hArr);
 

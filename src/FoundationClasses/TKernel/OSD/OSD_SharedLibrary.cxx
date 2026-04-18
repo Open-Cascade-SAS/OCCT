@@ -157,10 +157,10 @@ bool OSD_SharedLibrary::DlOpen(const OSD_LoadMode aMode)
 OSD_Function OSD_SharedLibrary::DlSymb(const char* const aName) const
 {
   void (*fp)();
-  fp = (void (*)())dlsym(myHandle, aName);
+  fp = reinterpret_cast<void (*)()>(dlsym(myHandle, aName));
   if (!BAD(fp))
   {
-    return (OSD_Function)fp;
+    return reinterpret_cast<OSD_Function>(fp);
   }
   else
   {
@@ -189,7 +189,7 @@ void OSD_SharedLibrary::DlClose() const
 // ----------------------------------------------------------------
 const char* OSD_SharedLibrary::DlError() const
 {
-  return (char*)dlerror();
+  return dlerror();
 }
 
 //=================================================================================================

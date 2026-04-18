@@ -206,7 +206,7 @@ void Convert_CompPolynomialToPoles::Perform(const int                         Nu
   index       = 2;
   Tindex      = TrueIntervals.Lower() + 1;
   Pindex      = PolynomialIntervals.LowerRow();
-  poles_array = (double*)&myPoles.ChangeValue(1, 1);
+  poles_array = static_cast<double*>(&myPoles.ChangeValue(1, 1));
 
   NCollection_Array1<int> contact_array(aContactBuf[0], 1, num_poles, num_poles <= THE_MAX_POLES);
 
@@ -232,7 +232,7 @@ void Convert_CompPolynomialToPoles::Perform(const int                         Nu
     coeff_index =
       ((index - 2) * Dimension * (std::max(MaxDegree, myDegree) + 1)) + Coefficients.Lower();
 
-    coefficient_array = (double*)&(Coefficients(coeff_index));
+    coefficient_array = const_cast<double*>(&(Coefficients(coeff_index)));
     int Deg           = NumCoeffPerCurve(NumCoeffPerCurve.Lower() + index - 2) - 1;
 
     PLib::NoDerivativeEvalPolynomial(normalized_value,

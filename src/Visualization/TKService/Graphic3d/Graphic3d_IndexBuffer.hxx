@@ -40,7 +40,7 @@ public:
 
     NbElements   = theNbElems;
     NbAttributes = 0;
-    if (NbElements != 0 && !Allocate(size_t(Stride) * size_t(NbElements)))
+    if (NbElements != 0 && !Allocate(static_cast<size_t>(Stride) * static_cast<size_t>(NbElements)))
     {
       release();
       return false;
@@ -54,8 +54,8 @@ public:
   //! Access index at specified position
   int Index(const int theIndex) const
   {
-    return Stride == sizeof(unsigned short) ? int(Value<unsigned short>(theIndex))
-                                            : int(Value<unsigned int>(theIndex));
+    return Stride == sizeof(unsigned short) ? static_cast<int>(Value<unsigned short>(theIndex))
+                                            : static_cast<int>(Value<unsigned int>(theIndex));
   }
 
   //! Change index at specified position
@@ -63,11 +63,11 @@ public:
   {
     if (Stride == sizeof(unsigned short))
     {
-      ChangeValue<unsigned short>(theIndex) = (unsigned short)theValue;
+      ChangeValue<unsigned short>(theIndex) = static_cast<unsigned short>(theValue);
     }
     else
     {
-      ChangeValue<unsigned int>(theIndex) = (unsigned int)theValue;
+      ChangeValue<unsigned int>(theIndex) = static_cast<unsigned int>(theValue);
     }
   }
 

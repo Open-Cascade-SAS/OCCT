@@ -224,12 +224,12 @@ void Message_AttributeMeter::SetAlertMetrics(const occ::handle<Message_AlertExte
     if (theStartValue)
     {
       aMeterAttribute->SetStartValue(aMetricType,
-                                     (double)aMemInfo.ValuePreciseMiB(anIterator.Value()));
+                                     aMemInfo.ValuePreciseMiB(anIterator.Value()));
     }
     else
     {
       aMeterAttribute->SetStopValue(aMetricType,
-                                    (double)aMemInfo.ValuePreciseMiB(anIterator.Value()));
+                                    aMemInfo.ValuePreciseMiB(anIterator.Value()));
     }
   }
 }

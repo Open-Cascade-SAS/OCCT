@@ -112,7 +112,7 @@ void BinMDataStd_ExtStringArrayDriver::Paste(
   for (int i = aFirstInd; i <= aLastInd; i++)
     theTarget << anAtt->Value(i);
 
-  theTarget << (uint8_t)(anAtt->GetDelta() ? 1 : 0);
+  theTarget << static_cast<uint8_t>(anAtt->GetDelta() ? 1 : 0);
 
   // process user defined guid
   if (anAtt->ID() != TDataStd_ExtStringArray::GetID())

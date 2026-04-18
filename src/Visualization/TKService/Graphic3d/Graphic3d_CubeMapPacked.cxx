@@ -59,7 +59,7 @@ occ::handle<Image_CompressedPixMap> Graphic3d_CubeMapPacked::CompressedValue(
   {
     const unsigned int                  aTileIndex = myOrder[myCurrentSide];
     occ::handle<Image_CompressedPixMap> anImage =
-      Image_DDSParser::Load(theSupported, aFilePath, (int)aTileIndex);
+      Image_DDSParser::Load(theSupported, aFilePath, static_cast<int>(aTileIndex));
     if (!anImage.IsNull() && anImage->NbFaces() == 6 && anImage->SizeX() == anImage->SizeY())
     {
       myIsTopDown = anImage->IsTopDown();

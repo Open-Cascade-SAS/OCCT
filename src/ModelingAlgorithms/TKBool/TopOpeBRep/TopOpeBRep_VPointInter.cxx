@@ -36,7 +36,7 @@ static TCollection_AsciiString PRODINP("dinp ");
 
 void TopOpeBRep_VPointInter::SetPoint(const IntPatch_Point& P)
 {
-  myPPOI = (IntPatch_Point*)&P;
+  myPPOI = const_cast<IntPatch_Point*>(&P);
 
   bool isOn1 = P.IsOnDomS1();
   bool isOn2 = P.IsOnDomS2();

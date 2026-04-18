@@ -672,7 +672,7 @@ void OpenGl_LayerList::renderLayer(const occ::handle<OpenGl_Workspace>& theWorks
        ++aPriorityIter)
   {
     const NCollection_IndexedMap<const Graphic3d_CStructure*>& aStructures =
-      theLayer.Structures((Graphic3d_DisplayPriority)aPriorityIter);
+      theLayer.Structures(static_cast<Graphic3d_DisplayPriority>(aPriorityIter));
     for (OpenGl_Structure::StructIterator aStructIter(aStructures); aStructIter.More();
          aStructIter.Next())
     {
@@ -752,7 +752,7 @@ void OpenGl_LayerList::Render(const occ::handle<OpenGl_Workspace>& theWorkspace,
   // fragmentation during regular rendering.
   const int aPrevFilter =
     theWorkspace->RenderFilter()
-    & ~(int)(OpenGl_RenderFilter_OpaqueOnly | OpenGl_RenderFilter_TransparentOnly);
+    & ~(OpenGl_RenderFilter_OpaqueOnly | OpenGl_RenderFilter_TransparentOnly);
   theWorkspace->SetRenderFilter(aPrevFilter | OpenGl_RenderFilter_OpaqueOnly);
 
   myTransparentToProcess.Clear();
@@ -925,7 +925,7 @@ void OpenGl_LayerList::renderTransparent(const occ::handle<OpenGl_Workspace>& th
 
   const int aPrevFilter =
     theWorkspace->RenderFilter()
-    & ~(int)(OpenGl_RenderFilter_OpaqueOnly | OpenGl_RenderFilter_TransparentOnly);
+    & ~(OpenGl_RenderFilter_OpaqueOnly | OpenGl_RenderFilter_TransparentOnly);
   theWorkspace->SetRenderFilter(aPrevFilter | OpenGl_RenderFilter_TransparentOnly);
   aCtx->core11fwd->glEnable(GL_BLEND);
 

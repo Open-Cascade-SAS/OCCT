@@ -1180,8 +1180,8 @@ reapprox:;
           else
           {
             myLConstruct.Part(i, fprm, lprm);
-            ifprm = (int)fprm;
-            ilprm = (int)lprm;
+            ifprm = static_cast<int>(fprm);
+            ilprm = static_cast<int>(lprm);
           }
           //
           if (myApprox1)
@@ -1286,8 +1286,8 @@ reapprox:;
             else
             {
               myLConstruct.Part(i, fprm, lprm);
-              ifprm = (int)fprm;
-              ilprm = (int)lprm;
+              ifprm = static_cast<int>(fprm);
+              ilprm = static_cast<int>(lprm);
             }
           }
 
@@ -2945,7 +2945,7 @@ bool CheckPCurve(const occ::handle<Geom2d_Curve>&     aPC,
   if (aSurf->IsUPeriodic())
   {
     double aPer   = aSurf->UPeriod();
-    int    nshift = (int)((u - umin) / aPer);
+    int    nshift = static_cast<int>((u - umin) / aPer);
     if (u < umin + aPer * nshift)
       nshift--;
     umin += aPer * nshift;
@@ -2954,7 +2954,7 @@ bool CheckPCurve(const occ::handle<Geom2d_Curve>&     aPC,
   if (aSurf->IsVPeriodic())
   {
     double aPer   = aSurf->VPeriod();
-    int    nshift = (int)((v - vmin) / aPer);
+    int    nshift = static_cast<int>((v - vmin) / aPer);
     if (v < vmin + aPer * nshift)
       nshift--;
     vmin += aPer * nshift;

@@ -45,8 +45,8 @@ static void ComputePoles(const double                R,
   int i, j;
 
   // Number of spans : maximum opening = 150 degrees ( = PI / 1.2 rds)
-  int    nbUSpans = (int)std::trunc(1.2 * deltaU / M_PI) + 1;
-  int    nbVSpans = (int)std::trunc(1.2 * deltaV / M_PI) + 1;
+  int    nbUSpans = static_cast<int>(std::trunc(1.2 * deltaU / M_PI)) + 1;
+  int    nbVSpans = static_cast<int>(std::trunc(1.2 * deltaV / M_PI)) + 1;
   double AlfaU    = deltaU / (nbUSpans * 2);
   double AlfaV    = deltaV / (nbVSpans * 2);
 
@@ -115,8 +115,8 @@ Convert_SphereToBSplineSurface::Convert_SphereToBSplineSurface(const gp_Sphere& 
   // construction of the sphere in the reference mark xOy.
 
   // Number of spans : maximum opening = 150 degrees ( = PI / 1.2 rds)
-  int    nbUSpans = (int)std::trunc(1.2 * deltaU / M_PI) + 1;
-  int    nbVSpans = (int)std::trunc(1.2 * deltaV / M_PI) + 1;
+  int    nbUSpans = static_cast<int>(std::trunc(1.2 * deltaU / M_PI)) + 1;
+  int    nbVSpans = static_cast<int>(std::trunc(1.2 * deltaV / M_PI)) + 1;
   double AlfaU    = deltaU / (nbUSpans * 2);
   double AlfaV    = deltaV / (nbVSpans * 2);
 
@@ -208,7 +208,7 @@ Convert_SphereToBSplineSurface::Convert_SphereToBSplineSurface(const gp_Sphere& 
     myNbUKnots = 4;
 
     deltaV          = Param2 - Param1;
-    int    nbVSpans = (int)std::trunc(1.2 * deltaV / M_PI) + 1;
+    int    nbVSpans = static_cast<int>(std::trunc(1.2 * deltaV / M_PI)) + 1;
     double AlfaV    = deltaV / (nbVSpans * 2);
     myNbVPoles      = 2 * nbVSpans + 1;
     myNbVKnots      = nbVSpans + 1;
@@ -237,7 +237,7 @@ Convert_SphereToBSplineSurface::Convert_SphereToBSplineSurface(const gp_Sphere& 
     myNbVKnots = 3;
 
     deltaU          = Param2 - Param1;
-    int    nbUSpans = (int)std::trunc(1.2 * deltaU / M_PI) + 1;
+    int    nbUSpans = static_cast<int>(std::trunc(1.2 * deltaU / M_PI)) + 1;
     double AlfaU    = deltaU / (nbUSpans * 2);
     myNbUPoles      = 2 * nbUSpans + 1;
     myNbUKnots      = nbUSpans + 1;

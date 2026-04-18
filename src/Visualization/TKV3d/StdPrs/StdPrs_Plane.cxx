@@ -41,8 +41,8 @@ void StdPrs_Plane::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
 
   gp_Pnt p1;
   double Xmax, Ymax;
-  Xmax = 0.5 * double(theaspect->PlaneXLength());
-  Ymax = 0.5 * double(theaspect->PlaneYLength());
+  Xmax = 0.5 * (theaspect->PlaneXLength());
+  Ymax = 0.5 * (theaspect->PlaneYLength());
   if (theaspect->DisplayEdges())
   {
     TheGroup->SetPrimitivesAspect(theaspect->EdgesAspect()->Aspect());
@@ -60,8 +60,8 @@ void StdPrs_Plane::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
   {
     TheGroup->SetPrimitivesAspect(theaspect->IsoAspect()->Aspect());
     const double                           dist   = theaspect->IsoDistance();
-    const int                              nbx    = int(std::abs(2. * Xmax) / dist) - 1;
-    const int                              nby    = int(std::abs(2. * Ymax) / dist) - 1;
+    const int                              nbx    = static_cast<int>(std::abs(2. * Xmax) / dist) - 1;
+    const int                              nby    = static_cast<int>(std::abs(2. * Ymax) / dist) - 1;
     occ::handle<Graphic3d_ArrayOfSegments> aPrims = new Graphic3d_ArrayOfSegments(2 * (nbx + nby));
     int                                    i;
     double                                 cur = -Xmax + dist;
@@ -85,7 +85,7 @@ void StdPrs_Plane::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
   double len = theaspect->ArrowsLength();
   double ang = theaspect->ArrowsAngle();
   gp_Vec trans(norm);
-  trans.Scale(double(siz));
+  trans.Scale((siz));
 
   TheGroup->SetPrimitivesAspect(theaspect->ArrowAspect()->Aspect());
   if (theaspect->DisplayCenterArrow())

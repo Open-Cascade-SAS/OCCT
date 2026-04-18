@@ -383,7 +383,7 @@ TCollection_ExtendedString Message_Algorithm::PrepareReport(
   int                        nb = 1;
   for (; nb <= theReportSeq.Length() && nb <= theMaxCount; nb++)
   {
-    aNewReport += (const char*)(nb > 1 ? ", \'" : "\'");
+    aNewReport += (nb > 1 ? ", \'" : "\'");
     aNewReport += theReportSeq.Value(nb)->String();
     aNewReport += "\'";
   }

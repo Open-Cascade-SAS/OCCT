@@ -157,7 +157,7 @@ static void DrawCurve(Adaptor3d_Curve&                         aCurve,
       if (!Precision::IsInfinite(Radius))
       {
         double DU = std::sqrt(8.0 * TheDeflection / Radius);
-        int    N  = int(std::abs(U2 - U1) / DU);
+        int    N  = static_cast<int>(std::abs(U2 - U1) / DU);
 
         if (N > 0)
         {

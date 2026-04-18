@@ -32,7 +32,7 @@ const char* BRepTools_Write(const char* theFileStr, void* theShapePtr)
   try
   {
     OCC_CATCH_SIGNALS
-    if (BRepTools::Write(*(TopoDS_Shape*)theShapePtr, theFileStr))
+    if (BRepTools::Write(*static_cast<TopoDS_Shape*>(theShapePtr), theFileStr))
       return theFileStr;
     else
       return "Error: write failed";
@@ -55,7 +55,7 @@ const char* BRepTools_Dump(void* theShapePtr)
     OCC_CATCH_SIGNALS
 
     std::cout << "\n\n";
-    BRepTools::Dump(*(TopoDS_Shape*)theShapePtr, std::cout);
+    BRepTools::Dump(*static_cast<TopoDS_Shape*>(theShapePtr), std::cout);
     std::cout << std::endl;
 
     return "Shape dumped to std::cout";
@@ -79,7 +79,7 @@ const char* BRepTools_DumpLoc(void* theLocationPtr)
 
     std::cout << "\n\n";
     TopTools_LocationSet LS;
-    LS.Add(*(TopLoc_Location*)theLocationPtr);
+    LS.Add(*static_cast<TopLoc_Location*>(theLocationPtr));
     LS.Dump(std::cout);
     std::cout << std::endl;
 

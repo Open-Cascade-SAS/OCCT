@@ -403,7 +403,7 @@ void TopOpeBRep_FacesFiller::VP_PositionOnL(TopOpeBRep_LineInter& L)
     const gp_Pnt&           P3D  = VP.Value();
 
     bool                         VPequalVPONRESTRICTION = false;
-    TopOpeBRep_FacesIntersector& FI  = *((TopOpeBRep_FacesIntersector*)((void*)myFacesIntersector));
+    TopOpeBRep_FacesIntersector& FI  = *(static_cast<TopOpeBRep_FacesIntersector*>((void*)myFacesIntersector));
     int                          iOL = 1, n = FI.NbLines();
     for (iOL = 1; iOL <= n; iOL++)
     {

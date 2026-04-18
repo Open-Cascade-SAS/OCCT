@@ -607,63 +607,63 @@ bool OpenGl_ShaderProgram::Initialize(
   if (const OpenGl_ShaderUniformLocation aLocSampler =
         GetUniformLocation(theCtx, "occActiveSampler"))
   {
-    SetUniform(theCtx, aLocSampler, GLint(Graphic3d_TextureUnit_0));
+    SetUniform(theCtx, aLocSampler, static_cast<GLint>(Graphic3d_TextureUnit_0));
   }
   if (const OpenGl_ShaderUniformLocation aLocSampler =
         GetUniformLocation(theCtx, "occSamplerBaseColor"))
   {
     myTextureSetBits |= Graphic3d_TextureSetBits_BaseColor;
-    SetUniform(theCtx, aLocSampler, GLint(Graphic3d_TextureUnit_BaseColor));
+    SetUniform(theCtx, aLocSampler, static_cast<GLint>(Graphic3d_TextureUnit_BaseColor));
   }
   if (const OpenGl_ShaderUniformLocation aLocSampler =
         GetUniformLocation(theCtx, "occSamplerPointSprite"))
   {
     // Graphic3d_TextureUnit_PointSprite
     // myTextureSetBits |= Graphic3d_TextureSetBits_PointSprite;
-    SetUniform(theCtx, aLocSampler, GLint(theCtx->SpriteTextureUnit()));
+    SetUniform(theCtx, aLocSampler, static_cast<GLint>(theCtx->SpriteTextureUnit()));
   }
   if (const OpenGl_ShaderUniformLocation aLocSampler =
         GetUniformLocation(theCtx, "occSamplerMetallicRoughness"))
   {
     myTextureSetBits |= Graphic3d_TextureSetBits_MetallicRoughness;
-    SetUniform(theCtx, aLocSampler, GLint(Graphic3d_TextureUnit_MetallicRoughness));
+    SetUniform(theCtx, aLocSampler, static_cast<GLint>(Graphic3d_TextureUnit_MetallicRoughness));
   }
   if (const OpenGl_ShaderUniformLocation aLocSampler =
         GetUniformLocation(theCtx, "occSamplerEmissive"))
   {
     myTextureSetBits |= Graphic3d_TextureSetBits_Emissive;
-    SetUniform(theCtx, aLocSampler, GLint(Graphic3d_TextureUnit_Emissive));
+    SetUniform(theCtx, aLocSampler, static_cast<GLint>(Graphic3d_TextureUnit_Emissive));
   }
   if (const OpenGl_ShaderUniformLocation aLocSampler =
         GetUniformLocation(theCtx, "occSamplerOcclusion"))
   {
     myTextureSetBits |= Graphic3d_TextureSetBits_Occlusion;
-    SetUniform(theCtx, aLocSampler, GLint(Graphic3d_TextureUnit_Occlusion));
+    SetUniform(theCtx, aLocSampler, static_cast<GLint>(Graphic3d_TextureUnit_Occlusion));
   }
   if (const OpenGl_ShaderUniformLocation aLocSampler =
         GetUniformLocation(theCtx, "occSamplerNormal"))
   {
     myTextureSetBits |= Graphic3d_TextureSetBits_Normal;
-    SetUniform(theCtx, aLocSampler, GLint(Graphic3d_TextureUnit_Normal));
+    SetUniform(theCtx, aLocSampler, static_cast<GLint>(Graphic3d_TextureUnit_Normal));
   }
   if (const OpenGl_ShaderUniformLocation aLocSampler =
         GetUniformLocation(theCtx, "occDiffIBLMapSHCoeffs"))
   {
-    SetUniform(theCtx, aLocSampler, GLint(theCtx->PBRDiffIBLMapSHTexUnit()));
+    SetUniform(theCtx, aLocSampler, static_cast<GLint>(theCtx->PBRDiffIBLMapSHTexUnit()));
   }
   if (const OpenGl_ShaderUniformLocation aLocSampler = GetUniformLocation(theCtx, "occSpecIBLMap"))
   {
-    SetUniform(theCtx, aLocSampler, GLint(theCtx->PBRSpecIBLMapTexUnit()));
+    SetUniform(theCtx, aLocSampler, static_cast<GLint>(theCtx->PBRSpecIBLMapTexUnit()));
   }
   if (const OpenGl_ShaderUniformLocation aLocSampler = GetUniformLocation(theCtx, "occEnvLUT"))
   {
-    SetUniform(theCtx, aLocSampler, GLint(theCtx->PBREnvLUTTexUnit()));
+    SetUniform(theCtx, aLocSampler, static_cast<GLint>(theCtx->PBREnvLUTTexUnit()));
   }
   if (const OpenGl_ShaderUniformLocation aLocSampler =
         GetUniformLocation(theCtx, "occShadowMapSamplers"))
   {
     std::vector<GLint> aShadowSamplers(myNbShadowMaps);
-    const GLint        aSamplFrom = GLint(theCtx->ShadowMapTexUnit()) - myNbShadowMaps + 1;
+    const GLint        aSamplFrom = static_cast<GLint>(theCtx->ShadowMapTexUnit()) - myNbShadowMaps + 1;
     for (int aSamplerIter = 0; aSamplerIter < myNbShadowMaps; ++aSamplerIter)
     {
       aShadowSamplers[aSamplerIter] = aSamplFrom + aSamplerIter;
@@ -674,12 +674,12 @@ bool OpenGl_ShaderProgram::Initialize(
   if (const OpenGl_ShaderUniformLocation aLocSampler =
         GetUniformLocation(theCtx, "occDepthPeelingDepth"))
   {
-    SetUniform(theCtx, aLocSampler, GLint(theCtx->DepthPeelingDepthTexUnit()));
+    SetUniform(theCtx, aLocSampler, static_cast<GLint>(theCtx->DepthPeelingDepthTexUnit()));
   }
   if (const OpenGl_ShaderUniformLocation aLocSampler =
         GetUniformLocation(theCtx, "occDepthPeelingFrontColor"))
   {
-    SetUniform(theCtx, aLocSampler, GLint(theCtx->DepthPeelingFrontColorTexUnit()));
+    SetUniform(theCtx, aLocSampler, static_cast<GLint>(theCtx->DepthPeelingFrontColorTexUnit()));
   }
 
   const TCollection_AsciiString aSamplerNamePrefix("occSampler");
@@ -852,7 +852,7 @@ bool OpenGl_ShaderProgram::FetchInfoLog(const occ::handle<OpenGl_Context>& theCt
   theCtx->core20fwd->glGetProgramiv(myProgramID, GL_INFO_LOG_LENGTH, &aLength);
   if (aLength > 0)
   {
-    GLchar* aLog = (GLchar*)alloca(aLength);
+    GLchar* aLog = static_cast<GLchar*>(alloca(aLength));
     memset(aLog, 0, aLength);
     theCtx->core20fwd->glGetProgramInfoLog(myProgramID, aLength, nullptr, aLog);
     theOutput = aLog;

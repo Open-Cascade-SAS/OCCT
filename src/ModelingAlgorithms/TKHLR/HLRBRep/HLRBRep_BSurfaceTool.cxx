@@ -112,7 +112,7 @@ int HLRBRep_BSurfaceTool::NbSamplesU(const BRepAdaptor_Surface& S, const double 
   {
     double uf = FirstUParameter(S);
     double ul = LastUParameter(S);
-    n *= (int)((u2 - u1) / (uf - ul));
+    n *= static_cast<int>((u2 - u1) / (uf - ul));
     if (n > nbs)
       n = nbs;
     if (n < 5)
@@ -131,7 +131,7 @@ int HLRBRep_BSurfaceTool::NbSamplesV(const BRepAdaptor_Surface& S, const double 
   {
     double vf = FirstVParameter(S);
     double vl = LastVParameter(S);
-    n *= (int)((v2 - v1) / (vf - vl));
+    n *= static_cast<int>((v2 - v1) / (vf - vl));
     if (n > nbs)
       n = nbs;
     if (n < 5)

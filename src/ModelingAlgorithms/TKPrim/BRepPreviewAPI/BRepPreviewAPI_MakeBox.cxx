@@ -35,7 +35,7 @@ void BRepPreviewAPI_MakeBox::Build(const Message_ProgressRange& /*theRange*/)
   bool aThinOnY = std::abs(aFirstPoint.Y() - aSecondPoint.Y()) < Precision::Confusion();
   bool aThinOnZ = std::abs(aFirstPoint.Z() - aSecondPoint.Z()) < Precision::Confusion();
 
-  int aPreviewType = (int)aThinOnX + (int)aThinOnY + (int)aThinOnZ;
+  int aPreviewType = static_cast<int>(aThinOnX) + static_cast<int>(aThinOnY) + static_cast<int>(aThinOnZ);
 
   if (aPreviewType == 3) // thin box in all directions is a point
   {

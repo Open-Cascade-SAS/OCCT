@@ -452,7 +452,7 @@ void Poly_Triangulation::ComputeNormals()
     const gp_XYZ                  aVec02   = aNode2.XYZ() - aNode0.XYZ();
     const gp_XYZ                  aTriNorm = aVec01 ^ aVec02;
     const NCollection_Vec3<float> aNorm3f =
-      NCollection_Vec3<float>(float(aTriNorm.X()), float(aTriNorm.Y()), float(aTriNorm.Z()));
+      NCollection_Vec3<float>(static_cast<float>(aTriNorm.X()), static_cast<float>(aTriNorm.Y()), static_cast<float>(aTriNorm.Z()));
     for (int aNodeIter = 0; aNodeIter < 3; ++aNodeIter)
     {
       myNormals.ChangeValue(anElem[aNodeIter] - 1) += aNorm3f;

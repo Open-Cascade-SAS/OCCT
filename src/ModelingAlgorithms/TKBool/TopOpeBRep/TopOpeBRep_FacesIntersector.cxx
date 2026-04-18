@@ -390,7 +390,7 @@ void TopOpeBRep_FacesIntersector::PrepareLines()
     int i;
     //    int nbl=0;
     IntPatch_LineConstructor** Ptr =
-      (IntPatch_LineConstructor**)malloc(n * sizeof(IntPatch_LineConstructor*));
+      static_cast<IntPatch_LineConstructor**>(malloc(n * sizeof(IntPatch_LineConstructor*)));
     for (i = 1; i <= n; i++)
     {
       Ptr[i - 1] = new IntPatch_LineConstructor(2);
@@ -943,8 +943,8 @@ static occ::handle<IntPatch_RLine> BuildRLine(
             trans2 = atmpWLine->TransitionOnS2();
           }
 
-          int ParamMinOnLine = (int)atmpWLine->Vertex(1).ParameterOnLine();
-          int ParamMaxOnLine = (int)atmpWLine->Vertex(atmpWLine->NbVertex()).ParameterOnLine();
+          int ParamMinOnLine = static_cast<int>(atmpWLine->Vertex(1).ParameterOnLine());
+          int ParamMaxOnLine = static_cast<int>(atmpWLine->Vertex(atmpWLine->NbVertex()).ParameterOnLine());
 
           for (int k = ParamMinOnLine; k <= ParamMaxOnLine; k++)
           {
@@ -1210,7 +1210,7 @@ static void MergeWLinesIfAllSegmentsAlongRestriction(
     return;
 
   double TolVrtx        = 1.e-5;
-  int    testPointIndex = (sqVertexPoints.Length() > 3) ? ((int)sqVertexPoints.Length() / 2) : 2;
+  int    testPointIndex = (sqVertexPoints.Length() > 3) ? (sqVertexPoints.Length() / 2) : 2;
   gp_Pnt testPoint      = sqVertexPoints.Value(testPointIndex);
   double Fp = 0., Lp = 0.;
 
@@ -1288,7 +1288,7 @@ static int GetArc(NCollection_Sequence<occ::handle<IntPatch_Line>>& theSlin,
     if (anEAddress == nullptr)
       continue;
 
-    TopoDS_Edge*            anE    = (TopoDS_Edge*)anEAddress;
+    TopoDS_Edge*            anE    = static_cast<TopoDS_Edge*>(anEAddress);
     occ::handle<Geom_Curve> aCEdge = BRep_Tool::Curve(*anE, firstES1, lastES1);
     if (aCEdge.IsNull()) // e.g. degenerated edge, see OCC21770
       continue;
@@ -1381,7 +1381,7 @@ static int GetArc(NCollection_Sequence<occ::handle<IntPatch_Line>>& theSlin,
     }
 
     void*         anEAddress = theDomainObj->Edge();
-    TopoDS_Edge*  anE        = (TopoDS_Edge*)anEAddress;
+    TopoDS_Edge*  anE        = static_cast<TopoDS_Edge*>(anEAddress);
     TopoDS_Vertex V1, V2;
     TopExp::Vertices(*anE, V1, V2);
     double MaxVertexTol            = std::max(BRep_Tool::Tolerance(V1), BRep_Tool::Tolerance(V2));

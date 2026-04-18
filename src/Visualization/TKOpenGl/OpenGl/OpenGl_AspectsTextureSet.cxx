@@ -259,7 +259,7 @@ void OpenGl_AspectsTextureSet::build(const occ::handle<OpenGl_Context>&     theC
         aPrevTextureUnit = aResIter0.Unit();
         if (aTexUnit >= Graphic3d_TextureUnit_0 && aTexUnit <= Graphic3d_TextureUnit_5)
         {
-          aTextureSetBits |= (1 << int(aTexUnit));
+          aTextureSetBits |= (1 << static_cast<int>(aTexUnit));
         }
       }
     }

@@ -126,8 +126,8 @@ bool Font_FTFont::Init(const occ::handle<NCollection_Buffer>& theData,
   {
     if (FT_New_Memory_Face(myFTLib->Instance(),
                            theData->Data(),
-                           (FT_Long)theData->Size(),
-                           (FT_Long)theFaceId,
+                           static_cast<FT_Long>(theData->Size()),
+                           static_cast<FT_Long>(theFaceId),
                            &myFTFace)
         != 0)
     {
@@ -139,7 +139,7 @@ bool Font_FTFont::Init(const occ::handle<NCollection_Buffer>& theData,
   }
   else
   {
-    if (FT_New_Face(myFTLib->Instance(), myFontPath.ToCString(), (FT_Long)theFaceId, &myFTFace)
+    if (FT_New_Face(myFTLib->Instance(), myFontPath.ToCString(), static_cast<FT_Long>(theFaceId), &myFTFace)
         != 0)
     {
       // Message::SendTrace (TCollection_AsciiString("Font '") + myFontPath + "' failed to load from
@@ -174,12 +174,12 @@ bool Font_FTFont::Init(const occ::handle<NCollection_Buffer>& theData,
     const double THE_SHEAR_ANGLE = 10.0 * M_PI / 180.0;
 
     FT_Matrix aMat;
-    aMat.xx = FT_Fixed(std::cos(-THE_SHEAR_ANGLE) * (1 << 16));
+    aMat.xx = static_cast<FT_Fixed>(std::cos(-THE_SHEAR_ANGLE) * (1 << 16));
     aMat.xy = 0;
     aMat.yx = 0;
     aMat.yy = aMat.xx;
 
-    FT_Fixed aFactor = FT_Fixed(std::tan(THE_SHEAR_ANGLE) * (1 << 16));
+    FT_Fixed aFactor = static_cast<FT_Fixed>(std::tan(THE_SHEAR_ANGLE) * (1 << 16));
     aMat.xy += FT_MulFix(aFactor, aMat.xx);
 
     FT_Set_Transform(myFTFace, &aMat, nullptr);
@@ -358,7 +358,7 @@ bool Font_FTFont::loadGlyph(const char32_t theUChar)
     }
   }
 
-  if (FT_Load_Char(myActiveFTFace, theUChar, FT_Int32(myLoadFlags)) != 0
+  if (FT_Load_Char(myActiveFTFace, theUChar, static_cast<FT_Int32>(myLoadFlags)) != 0
       || myActiveFTFace->glyph == nullptr)
   {
     return false;
@@ -391,7 +391,7 @@ bool Font_FTFont::RenderGlyph(const char32_t theUChar)
   }
 
   if (theUChar == 0
-      || FT_Load_Char(myActiveFTFace, theUChar, FT_Int32(myLoadFlags | FT_LOAD_RENDER)) != 0
+      || FT_Load_Char(myActiveFTFace, theUChar, static_cast<FT_Int32>(myLoadFlags | FT_LOAD_RENDER)) != 0
       || myActiveFTFace->glyph == nullptr
       || myActiveFTFace->glyph->format != FT_GLYPH_FORMAT_BITMAP)
   {
@@ -425,9 +425,9 @@ bool Font_FTFont::RenderGlyph(const char32_t theUChar)
 
     myGlyphImg.SetTopDown(aBitmap.pitch > 0);
     const int aNumOfBytesInRow = aBitmap.width / 8 + (aBitmap.width % 8 ? 1 : 0);
-    for (int aRow = 0; aRow < (int)aBitmap.rows; ++aRow)
+    for (int aRow = 0; aRow < static_cast<int>(aBitmap.rows); ++aRow)
     {
-      for (int aCol = 0; aCol < (int)aBitmap.width; ++aCol)
+      for (int aCol = 0; aCol < static_cast<int>(aBitmap.width); ++aCol)
       {
         const int aBitOn =
           aBitmap.buffer[aNumOfBytesInRow * aRow + aCol / 8] & (0x80 >> (aCol % 8));
@@ -456,10 +456,10 @@ unsigned int Font_FTFont::GlyphMaxSizeX(bool theToIncludeFallback) const
   if (!theToIncludeFallback)
   {
     float aWidth = (FT_IS_SCALABLE(myFTFace) != 0)
-                     ? float(myFTFace->bbox.xMax - myFTFace->bbox.xMin)
-                         * (float(myFTFace->size->metrics.x_ppem) / float(myFTFace->units_per_EM))
+                     ? static_cast<float>(myFTFace->bbox.xMax - myFTFace->bbox.xMin)
+                         * (static_cast<float>(myFTFace->size->metrics.x_ppem) / static_cast<float>(myFTFace->units_per_EM))
                      : fromFTPoints<float>(myFTFace->size->metrics.max_advance);
-    return (unsigned int)(aWidth + 0.5f);
+    return static_cast<unsigned int>(aWidth + 0.5f);
   }
 
   unsigned int aWidth = GlyphMaxSizeX(false);
@@ -488,10 +488,10 @@ unsigned int Font_FTFont::GlyphMaxSizeY(bool theToIncludeFallback) const
   if (!theToIncludeFallback)
   {
     float aHeight = (FT_IS_SCALABLE(myFTFace) != 0)
-                      ? float(myFTFace->bbox.yMax - myFTFace->bbox.yMin)
-                          * (float(myFTFace->size->metrics.y_ppem) / float(myFTFace->units_per_EM))
+                      ? static_cast<float>(myFTFace->bbox.yMax - myFTFace->bbox.yMin)
+                          * (static_cast<float>(myFTFace->size->metrics.y_ppem) / static_cast<float>(myFTFace->units_per_EM))
                       : fromFTPoints<float>(myFTFace->size->metrics.height);
-    return (unsigned int)(aHeight + 0.5f);
+    return static_cast<unsigned int>(aHeight + 0.5f);
   }
 
   unsigned int aHeight = GlyphMaxSizeY(false);
@@ -517,8 +517,8 @@ unsigned int Font_FTFont::GlyphMaxSizeY(bool theToIncludeFallback) const
 float Font_FTFont::Ascender() const
 {
 #ifdef HAVE_FREETYPE
-  return float(myFTFace->ascender)
-         * (float(myFTFace->size->metrics.y_ppem) / float(myFTFace->units_per_EM));
+  return static_cast<float>(myFTFace->ascender)
+         * (static_cast<float>(myFTFace->size->metrics.y_ppem) / static_cast<float>(myFTFace->units_per_EM));
 #else
   return 0.0f;
 #endif
@@ -529,8 +529,8 @@ float Font_FTFont::Ascender() const
 float Font_FTFont::Descender() const
 {
 #ifdef HAVE_FREETYPE
-  return float(myFTFace->descender)
-         * (float(myFTFace->size->metrics.y_ppem) / float(myFTFace->units_per_EM));
+  return static_cast<float>(myFTFace->descender)
+         * (static_cast<float>(myFTFace->size->metrics.y_ppem) / static_cast<float>(myFTFace->units_per_EM));
 #else
   return 0.0f;
 #endif
@@ -541,8 +541,8 @@ float Font_FTFont::Descender() const
 float Font_FTFont::LineSpacing() const
 {
 #ifdef HAVE_FREETYPE
-  return float(myFTFace->height)
-         * (float(myFTFace->size->metrics.y_ppem) / float(myFTFace->units_per_EM));
+  return static_cast<float>(myFTFace->height)
+         * (static_cast<float>(myFTFace->size->metrics.y_ppem) / static_cast<float>(myFTFace->units_per_EM));
 #else
   return 0.0f;
 #endif
@@ -638,7 +638,7 @@ float Font_FTFont::AdvanceY(char32_t theUCharNext) const
 int Font_FTFont::GlyphsNumber(bool theToIncludeFallback) const
 {
 #ifdef HAVE_FREETYPE
-  int aNbGlyphs = (int)myFTFace->num_glyphs;
+  int aNbGlyphs = static_cast<int>(myFTFace->num_glyphs);
   if (theToIncludeFallback)
   {
     for (int aFontIter = 0; aFontIter < Font_UnicodeSubset_NB; ++aFontIter)
@@ -662,10 +662,10 @@ void Font_FTFont::GlyphRect(Font_Rect& theRect) const
 {
 #ifdef HAVE_FREETYPE
   const FT_Bitmap& aBitmap = myActiveFTFace->glyph->bitmap;
-  theRect.Left             = float(myActiveFTFace->glyph->bitmap_left);
-  theRect.Top              = float(myActiveFTFace->glyph->bitmap_top);
-  theRect.Right            = float(myActiveFTFace->glyph->bitmap_left + (int)aBitmap.width);
-  theRect.Bottom           = float(myActiveFTFace->glyph->bitmap_top - (int)aBitmap.rows);
+  theRect.Left             = static_cast<float>(myActiveFTFace->glyph->bitmap_left);
+  theRect.Top              = static_cast<float>(myActiveFTFace->glyph->bitmap_top);
+  theRect.Right            = static_cast<float>(myActiveFTFace->glyph->bitmap_left + static_cast<int>(aBitmap.width));
+  theRect.Bottom           = static_cast<float>(myActiveFTFace->glyph->bitmap_top - static_cast<int>(aBitmap.rows));
 #else
   (void)theRect;
 #endif

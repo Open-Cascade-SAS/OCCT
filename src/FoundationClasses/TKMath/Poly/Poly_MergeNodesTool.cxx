@@ -75,11 +75,11 @@ Poly_MergeNodesTool::MergedNodesMap::MergedNodesMap(const int theNbBuckets)
 
 void Poly_MergeNodesTool::MergedNodesMap::SetMergeTolerance(double theTolerance)
 {
-  myTolerance = (float)theTolerance;
+  myTolerance = static_cast<float>(theTolerance);
   myInvTol    = 0.0f;
   if (myTolerance > 0.0f)
   {
-    myInvTol = float(1.0 / theTolerance);
+    myInvTol = static_cast<float>(1.0 / theTolerance);
   }
 }
 
@@ -110,7 +110,7 @@ inline size_t Poly_MergeNodesTool::MergedNodesMap::hashCode(const NCollection_Ve
     // compute DJB2 hash of a string
     const size_t aLength   = sizeof(NCollection_Vec3<float>);
     unsigned int aHashCode = 0;
-    const char*  c         = (const char*)&thePos;
+    const char*  c         = reinterpret_cast<const char*>(&thePos);
     for (size_t i = 0; i < aLength; ++i, ++c)
     {
       aHashCode = ((aHashCode << 5) + aHashCode) ^ (*c);
@@ -191,7 +191,7 @@ inline bool Poly_MergeNodesTool::MergedNodesMap::Bind(int&                      
     ReSize(Extent());
   }
 
-  DataMapNode** aData = (DataMapNode**)myData1;
+  DataMapNode** aData = reinterpret_cast<DataMapNode**>(myData1);
   const size_t  aHash = hashCode(thePos, theNorm, NbBuckets());
   for (DataMapNode* aNodeIter = aData[aHash]; aNodeIter != nullptr;
        aNodeIter              = (DataMapNode*)aNodeIter->Next())
@@ -243,7 +243,7 @@ inline void Poly_MergeNodesTool::MergedNodesMap::ReSize(const int theSize)
   int                    aNbNewBuck = 0;
   if (BeginResize(theSize, aNbNewBuck, aNewData, aDummy))
   {
-    if (DataMapNode** anOldData = (DataMapNode**)myData1)
+    if (DataMapNode** anOldData = reinterpret_cast<DataMapNode**>(myData1))
     {
       for (int anOldBuckIter = 0; anOldBuckIter <= NbBuckets(); ++anOldBuckIter)
       {

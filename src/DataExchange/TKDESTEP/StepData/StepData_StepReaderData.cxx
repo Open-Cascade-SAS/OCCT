@@ -149,7 +149,7 @@ void StepData_StepReaderData::cleanText(const occ::handle<TCollection_HAsciiStri
         const char aPageId = UpperCase(static_cast<char>(aResString.Value(aStringInd + 2) & 255));
         if (aPageId >= 'A' && aPageId <= 'I')
         {
-          aLocalFormatType = (Resource_FormatType)(Resource_FormatType_iso8859_1 + (aPageId - 'A'));
+          aLocalFormatType = static_cast<Resource_FormatType>(Resource_FormatType_iso8859_1 + (aPageId - 'A'));
         }
         else
         {
@@ -175,9 +175,9 @@ void StepData_StepReaderData::cleanText(const occ::handle<TCollection_HAsciiStri
       // converts followed two hexadecimal character.
       else if (aDirChar == 'X' && aStringInd <= aResStringSize - 4 && isSecSlash)
       {
-        char aResChar = (char)convertCharacterTo16bit(aResString.Value(aStringInd + 3));
+        char aResChar = static_cast<char>(convertCharacterTo16bit(aResString.Value(aStringInd + 3)));
         aResChar =
-          (aResChar << 4) | (char)convertCharacterTo16bit(aResString.Value(aStringInd + 4));
+          (aResChar << 4) | static_cast<char>(convertCharacterTo16bit(aResString.Value(aStringInd + 4)));
         const char aStrForConvert[2] = {aResChar, '\0'};
         // clang-format off
         aTempExtString = TCollection_ExtendedString(aStrForConvert, false); // pass through without conversion
@@ -465,7 +465,7 @@ void StepData_StepReaderData::AddStepParam(const int                 num,
     }
     else
     {
-      char* numlstchar = (char*)(aval + 1);
+      char* numlstchar = const_cast<char*>(aval + 1);
       numid            = (*numlstchar) - 48; // -48 ('0') -1 (adresse [] depuis 0)
       //      Interface_FileReaderData::AddParam (num,subl[numid].ToCString(),atype,numid);
       Interface_FileReaderData::AddParam(num, aval, atype, numid);

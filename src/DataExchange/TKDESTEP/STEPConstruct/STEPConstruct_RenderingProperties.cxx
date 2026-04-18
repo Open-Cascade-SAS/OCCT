@@ -345,7 +345,7 @@ XCAFDoc_VisMaterialCommon STEPConstruct_RenderingProperties::CreateXCAFMaterial(
     // Convert STEP specular exponent to XCAF shininess using fixed scale factor
     const double kScaleFactor = 128.0;
     const double aShininess   = mySpecularExponent.first / kScaleFactor;
-    aMaterial.Shininess       = (float)std::min(1.0, aShininess);
+    aMaterial.Shininess       = static_cast<float>(std::min(1.0, aShininess));
   }
 
   return aMaterial;

@@ -62,8 +62,8 @@ void OSD_Chronometer::GetProcessCPU(double& theUserSeconds, double& theSystemSec
   tms aCurrentTMS{};
   times(&aCurrentTMS);
 
-  theUserSeconds   = (double)aCurrentTMS.tms_utime / aCLK_TCK;
-  theSystemSeconds = (double)aCurrentTMS.tms_stime / aCLK_TCK;
+  theUserSeconds   = static_cast<double>(aCurrentTMS.tms_utime) / aCLK_TCK;
+  theSystemSeconds = static_cast<double>(aCurrentTMS.tms_stime) / aCLK_TCK;
 }
 
 //=================================================================================================

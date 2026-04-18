@@ -119,17 +119,17 @@ void GeomFill_LocFunction::DN(const double Param,
   {
     case 0: {
       B           = D0(Param, First, Last);
-      LocalResult = (double*)(&V(1));
+      LocalResult = reinterpret_cast<double*>(&V(1));
       break;
     }
     case 1: {
       B           = D1(Param, First, Last);
-      LocalResult = (double*)(&DV(1));
+      LocalResult = reinterpret_cast<double*>(&DV(1));
       break;
     }
     case 2: {
       B           = D2(Param, First, Last);
-      LocalResult = (double*)(&D2V(1));
+      LocalResult = reinterpret_cast<double*>(&D2V(1));
       break;
     }
     default: {

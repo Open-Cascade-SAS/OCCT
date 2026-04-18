@@ -36,7 +36,7 @@ Graphic3d_AspectMarker3d::Graphic3d_AspectMarker3d(const Aspect_TypeOfMarker the
   myShadingModel = Graphic3d_TypeOfShadingModel_Unlit;
   myInteriorColor.SetRGB(theColor);
   myMarkerType = theType;
-  SetMarkerScale((float)theScale);
+  SetMarkerScale(static_cast<float>(theScale));
 }
 
 //=================================================================================================

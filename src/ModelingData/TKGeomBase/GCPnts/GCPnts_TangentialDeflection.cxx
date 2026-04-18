@@ -361,7 +361,7 @@ void GCPnts_TangentialDeflection::PerformCircular(const TheCurve& theC)
 
   const double aDiff = myLastU - myFirstu;
   // Round up number of points to satisfy curvatureDeflection more precisely
-  int NbPoints = (int)std::min(std::ceil(aDiff / Du), 1.0e+6);
+  int NbPoints = static_cast<int>(std::min(std::ceil(aDiff / Du), 1.0e+6));
   NbPoints     = std::max(NbPoints, myMinNbPnts - 1);
   Du           = aDiff / NbPoints;
 

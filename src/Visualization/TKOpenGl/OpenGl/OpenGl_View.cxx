@@ -456,8 +456,8 @@ static void SetMinMaxValuesCallback(Graphic3d_CView* theView)
     gp_Pnt aMin = aBox.CornerMin();
     gp_Pnt aMax = aBox.CornerMax();
 
-    NCollection_Vec3<float> aMinVec((float)aMin.X(), (float)aMin.Y(), (float)aMin.Z());
-    NCollection_Vec3<float> aMaxVec((float)aMax.X(), (float)aMax.Y(), (float)aMax.Z());
+    NCollection_Vec3<float> aMinVec(static_cast<float>(aMin.X()), static_cast<float>(aMin.Y()), static_cast<float>(aMin.Z()));
+    NCollection_Vec3<float> aMaxVec(static_cast<float>(aMax.X()), static_cast<float>(aMax.Y()), static_cast<float>(aMax.Z()));
     aView->GraduatedTrihedronMinMaxValues(aMinVec, aMaxVec);
   }
 }
@@ -571,8 +571,8 @@ bool OpenGl_View::ShadowMapDump(Image_PixMap& theImage, const TCollection_AsciiS
       const occ::handle<OpenGl_FrameBuffer>& aShadowFbo = aShadow->FrameBuffer();
       if (aShadowFbo->GetVPSizeX() == myRenderParams.ShadowMapResolution)
       {
-        if ((int)theImage.Width() != aShadowFbo->GetVPSizeX()
-            || (int)theImage.Height() != aShadowFbo->GetVPSizeY())
+        if (static_cast<int>(theImage.Width()) != aShadowFbo->GetVPSizeX()
+            || static_cast<int>(theImage.Height()) != aShadowFbo->GetVPSizeY())
         {
           theImage.InitZero(Image_Format_GrayF, aShadowFbo->GetVPSizeX(), aShadowFbo->GetVPSizeY());
         }
@@ -591,14 +591,14 @@ bool OpenGl_View::ShadowMapDump(Image_PixMap& theImage, const TCollection_AsciiS
         }
         // Setup alignment.
         // clang-format off
-        const GLint anAligment = std::min(GLint(theImage.MaxRowAligmentBytes()), 8); // limit to 8 bytes for OpenGL.
+        const GLint anAligment = std::min(static_cast<GLint>(theImage.MaxRowAligmentBytes()), 8); // limit to 8 bytes for OpenGL.
         // clang-format on
         aGlCtx->core11fwd->glPixelStorei(GL_PACK_ALIGNMENT, anAligment);
         // Read data.
         aGlCtx->core11fwd->glReadPixels(0,
                                         0,
-                                        GLsizei(theImage.SizeX()),
-                                        GLsizei(theImage.SizeY()),
+                                        static_cast<GLsizei>(theImage.SizeX()),
+                                        static_cast<GLsizei>(theImage.SizeY()),
                                         GL_DEPTH_COMPONENT,
                                         GL_FLOAT,
                                         theImage.ChangeData());
@@ -873,8 +873,8 @@ Bnd_Box OpenGl_View::MinMaxValues(const bool theToIncludeAuxiliary) const
   if (theToIncludeAuxiliary && myRenderParams.ToShowStats
       && !myWorkspace->GetGlContext()->arbDepthClamp)
   {
-    Bnd_Box aStatsBox(gp_Pnt(float(myWindow->Width() / 2.0), float(myWindow->Height() / 2.0), 0.0),
-                      gp_Pnt(float(myWindow->Width() / 2.0), float(myWindow->Height() / 2.0), 0.0));
+    Bnd_Box aStatsBox(gp_Pnt(static_cast<float>(myWindow->Width() / 2.0), static_cast<float>(myWindow->Height() / 2.0), 0.0),
+                      gp_Pnt(static_cast<float>(myWindow->Width() / 2.0), static_cast<float>(myWindow->Height() / 2.0), 0.0));
     myRenderParams.StatsPosition->Apply(myCamera,
                                         myCamera->ProjectionMatrix(),
                                         myCamera->OrientationMatrix(),
@@ -1173,8 +1173,8 @@ bool OpenGl_View::prepareFrameBuffers(Graphic3d_Camera::Projection& theProj)
     aSizeY = myWindow->Height();
   }
 
-  const NCollection_Vec2<int> aRendSize(int(myRenderParams.RenderResolutionScale * aSizeX + 0.5f),
-                                        int(myRenderParams.RenderResolutionScale * aSizeY + 0.5f));
+  const NCollection_Vec2<int> aRendSize(static_cast<int>(myRenderParams.RenderResolutionScale * aSizeX + 0.5f),
+                                        static_cast<int>(myRenderParams.RenderResolutionScale * aSizeY + 0.5f));
   if (aSizeX < 1 || aSizeY < 1 || aRendSize.x() < 1 || aRendSize.y() < 1)
   {
     myBackBufferRestored = false;
@@ -1424,7 +1424,7 @@ bool OpenGl_View::prepareFrameBuffers(Graphic3d_Camera::Projection& theProj)
           if (anImgFormat == Image_Format_RGF)
           {
             aPixMap->InitWrapper(Image_Format_RGF,
-                                 (uint8_t*)Textures_EnvLUT,
+                                 reinterpret_cast<uint8_t*>(Textures_EnvLUT),
                                  Textures_EnvLUTSize,
                                  Textures_EnvLUTSize);
           }
@@ -1433,7 +1433,7 @@ bool OpenGl_View::prepareFrameBuffers(Graphic3d_Camera::Projection& theProj)
             aPixMap->InitZero(anImgFormat, Textures_EnvLUTSize, Textures_EnvLUTSize);
             Image_PixMap aPixMapRG;
             aPixMapRG.InitWrapper(Image_Format_RGF,
-                                  (uint8_t*)Textures_EnvLUT,
+                                  reinterpret_cast<uint8_t*>(Textures_EnvLUT),
                                   Textures_EnvLUTSize,
                                   Textures_EnvLUTSize);
             for (size_t aRowIter = 0; aRowIter < aPixMapRG.SizeY(); ++aRowIter)
@@ -1476,7 +1476,7 @@ bool OpenGl_View::prepareFrameBuffers(Graphic3d_Camera::Projection& theProj)
           if (!aTexFormat.IsValid()
               || !anEnvLUT->Init(aCtx,
                                  aTexFormat,
-                                 NCollection_Vec2<int>((int)Textures_EnvLUTSize),
+                                 NCollection_Vec2<int>(static_cast<int>(Textures_EnvLUTSize)),
                                  Graphic3d_TypeOfTexture_2D,
                                  aPixMap.get()))
           {
@@ -1655,7 +1655,7 @@ bool OpenGl_View::prepareFrameBuffers(Graphic3d_Camera::Projection& theProj)
       myShadowMaps->Resize(0, myLights->NbCastShadows() - 1, true);
     }
 
-    const GLint aSamplFrom = GLint(aCtx->ShadowMapTexUnit()) - myLights->NbCastShadows() + 1;
+    const GLint aSamplFrom = static_cast<GLint>(aCtx->ShadowMapTexUnit()) - myLights->NbCastShadows() + 1;
     for (int aShadowIter = 0; aShadowIter < myShadowMaps->Size(); ++aShadowIter)
     {
       occ::handle<OpenGl_ShadowMap>& aShadow = myShadowMaps->ChangeValue(aShadowIter);
@@ -1665,7 +1665,7 @@ bool OpenGl_View::prepareFrameBuffers(Graphic3d_Camera::Projection& theProj)
       }
       aShadow->SetShadowMapBias(myRenderParams.ShadowMapBias);
       aShadow->Texture()->Sampler()->Parameters()->SetTextureUnit(
-        (Graphic3d_TextureUnit)(aSamplFrom + aShadowIter));
+        static_cast<Graphic3d_TextureUnit>(aSamplFrom + aShadowIter));
 
       const occ::handle<OpenGl_FrameBuffer>& aShadowFbo = aShadow->FrameBuffer();
       if (aShadowFbo->GetVPSizeX() != myRenderParams.ShadowMapResolution && toUseShadowMap)
@@ -1858,7 +1858,7 @@ void OpenGl_View::Redraw()
         blitBuffers(aMainFbos[0], anXRFbo); // resize or resolve MSAA samples
       }
       const Aspect_GraphicsLibrary aGraphicsLib = aCtx->GraphicsLibrary();
-      myXRSession->SubmitEye((void*)(size_t)anXRFbo->ColorTexture()->TextureId(),
+      myXRSession->SubmitEye((void*)static_cast<size_t>(anXRFbo->ColorTexture()->TextureId()),
                              aGraphicsLib,
                              Aspect_ColorSpace_sRGB,
                              Aspect_Eye_Left);
@@ -1897,7 +1897,7 @@ void OpenGl_View::Redraw()
       }
 
       const Aspect_GraphicsLibrary aGraphicsLib = aCtx->GraphicsLibrary();
-      myXRSession->SubmitEye((void*)(size_t)anXRFbo->ColorTexture()->TextureId(),
+      myXRSession->SubmitEye((void*)static_cast<size_t>(anXRFbo->ColorTexture()->TextureId()),
                              aGraphicsLib,
                              Aspect_ColorSpace_sRGB,
                              Aspect_Eye_Right);
@@ -2415,7 +2415,7 @@ void OpenGl_View::renderShadowMap(const occ::handle<OpenGl_ShadowMap>& theShadow
                                | OpenGl_RenderFilter_SkipTrsfPersistence);
   renderScene(aProjection, aShadowBuffer.get(), nullptr, false);
   myWorkspace->SetRenderFilter(myWorkspace->RenderFilter()
-                               & ~(int)OpenGl_RenderFilter_SkipTrsfPersistence);
+                               & ~static_cast<int>(OpenGl_RenderFilter_SkipTrsfPersistence));
 
   aCtx->SetColorMask(true);
   myWorkspace->ResetAppliedAspect();
@@ -2671,7 +2671,7 @@ void OpenGl_View::renderStructs(Graphic3d_Camera::Projection theProjection,
                          theOitAccumFbo);
 
         const int aPrevFilter =
-          myWorkspace->RenderFilter() & ~(int)(OpenGl_RenderFilter_NonRaytraceableOnly);
+          myWorkspace->RenderFilter() & ~static_cast<int>(OpenGl_RenderFilter_NonRaytraceableOnly);
         myWorkspace->SetRenderFilter(aPrevFilter | OpenGl_RenderFilter_NonRaytraceableOnly);
         {
           if (theReadDrawFbo != nullptr)
@@ -3227,7 +3227,7 @@ void OpenGl_View::drawStereoPair(OpenGl_FrameBuffer* theDrawFbo)
     case Graphic3d_StereoMode_RowInterlaced: {
       NCollection_Vec2<float> aTexOffset =
         myRenderParams.ToSmoothInterlacing
-          ? NCollection_Vec2<float>(0.0f, -0.5f / float(aPair[0]->GetSizeY()))
+          ? NCollection_Vec2<float>(0.0f, -0.5f / static_cast<float>(aPair[0]->GetSizeY()))
           : NCollection_Vec2<float>();
       aCtx->ActiveProgram()->SetUniform(aCtx, "uTexOffset", aTexOffset);
       break;
@@ -3235,7 +3235,7 @@ void OpenGl_View::drawStereoPair(OpenGl_FrameBuffer* theDrawFbo)
     case Graphic3d_StereoMode_ColumnInterlaced: {
       NCollection_Vec2<float> aTexOffset =
         myRenderParams.ToSmoothInterlacing
-          ? NCollection_Vec2<float>(0.5f / float(aPair[0]->GetSizeX()), 0.0f)
+          ? NCollection_Vec2<float>(0.5f / static_cast<float>(aPair[0]->GetSizeX()), 0.0f)
           : NCollection_Vec2<float>();
       aCtx->ActiveProgram()->SetUniform(aCtx, "uTexOffset", aTexOffset);
       break;
@@ -3243,8 +3243,8 @@ void OpenGl_View::drawStereoPair(OpenGl_FrameBuffer* theDrawFbo)
     case Graphic3d_StereoMode_ChessBoard: {
       NCollection_Vec2<float> aTexOffset =
         myRenderParams.ToSmoothInterlacing
-          ? NCollection_Vec2<float>(0.5f / float(aPair[0]->GetSizeX()),
-                                    -0.5f / float(aPair[0]->GetSizeY()))
+          ? NCollection_Vec2<float>(0.5f / static_cast<float>(aPair[0]->GetSizeX()),
+                                    -0.5f / static_cast<float>(aPair[0]->GetSizeY()))
           : NCollection_Vec2<float>();
       aCtx->ActiveProgram()->SetUniform(aCtx, "uTexOffset", aTexOffset);
       break;
@@ -3257,7 +3257,7 @@ void OpenGl_View::drawStereoPair(OpenGl_FrameBuffer* theDrawFbo)
   {
     OpenGl_FrameBuffer* anEyeFbo = aPair[anEyeIter];
     anEyeFbo->ColorTexture()->Bind(aCtx,
-                                   (Graphic3d_TextureUnit)(Graphic3d_TextureUnit_0 + anEyeIter));
+                                   static_cast<Graphic3d_TextureUnit>(Graphic3d_TextureUnit_0 + anEyeIter));
     if (anEyeFbo->ColorTexture()->Sampler()->Parameters()->Filter() != Graphic3d_TOTF_BILINEAR)
     {
       // force filtering
@@ -3406,9 +3406,9 @@ void OpenGl_View::updateSkydomeBg(const occ::handle<OpenGl_Context>& theCtx)
   // Setup uniforms
   aProg->SetUniform(theCtx,
                     "uSunDir",
-                    NCollection_Vec3<float>((float)mySkydomeAspect.SunDirection().X(),
-                                            (float)mySkydomeAspect.SunDirection().Y(),
-                                            (float)mySkydomeAspect.SunDirection().Z()));
+                    NCollection_Vec3<float>(static_cast<float>(mySkydomeAspect.SunDirection().X()),
+                                            static_cast<float>(mySkydomeAspect.SunDirection().Y()),
+                                            static_cast<float>(mySkydomeAspect.SunDirection().Z())));
   aProg->SetUniform(theCtx, "uCloudy", mySkydomeAspect.Cloudiness());
   aProg->SetUniform(theCtx, "uTime", mySkydomeAspect.TimeParameter());
   aProg->SetUniform(theCtx, "uFog", mySkydomeAspect.Fogginess());

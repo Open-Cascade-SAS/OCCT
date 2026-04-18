@@ -124,7 +124,7 @@ bool OpenGl_Font::createTexture(const occ::handle<OpenGl_Context>& theCtx)
   const int aTextureSizeX = OpenGl_Context::GetPowerOfTwo(aGlyphsNb * aMaxTileSizeX, aMaxSize);
   const int aTilesPerRow  = aTextureSizeX / aMaxTileSizeX;
   const int aTextureSizeY =
-    OpenGl_Context::GetPowerOfTwo(GLint((aGlyphsNb / aTilesPerRow) + 1) * myTileSizeY, aMaxSize);
+    OpenGl_Context::GetPowerOfTwo(static_cast<GLint>((aGlyphsNb / aTilesPerRow) + 1) * myTileSizeY, aMaxSize);
 
   memset(&myLastTilePx, 0, sizeof(myLastTilePx));
   myLastTilePx.Bottom = myTileSizeY;
@@ -139,7 +139,7 @@ bool OpenGl_Font::createTexture(const occ::handle<OpenGl_Context>& theCtx)
   occ::handle<OpenGl_Texture>& aTexture = myTextures.ChangeLast();
 
   Image_PixMap aBlackImg;
-  if (!aBlackImg.InitZero(Image_Format_Alpha, size_t(aTextureSizeX), size_t(aTextureSizeY))
+  if (!aBlackImg.InitZero(Image_Format_Alpha, static_cast<size_t>(aTextureSizeX), static_cast<size_t>(aTextureSizeY))
       || !aTexture->Init(theCtx, aBlackImg, Graphic3d_TypeOfTexture_2D, true)) // myTextureFormat
   {
     theCtx->PushMessage(GL_DEBUG_SOURCE_APPLICATION,
@@ -172,13 +172,13 @@ bool OpenGl_Font::renderGlyph(const occ::handle<OpenGl_Context>& theCtx, const c
   const Image_PixMap& anImg   = myFont->GlyphImage();
   const int           aTileId = myLastTileId + 1;
   myLastTilePx.Left           = myLastTilePx.Right + 3;
-  myLastTilePx.Right          = myLastTilePx.Left + (int)anImg.SizeX();
-  if (myLastTilePx.Right > aTexture->SizeX() || (int)anImg.SizeY() > myTileSizeY)
+  myLastTilePx.Right          = myLastTilePx.Left + static_cast<int>(anImg.SizeX());
+  if (myLastTilePx.Right > aTexture->SizeX() || static_cast<int>(anImg.SizeY()) > myTileSizeY)
   {
     myTileSizeY = myFont->GlyphMaxSizeY(true);
 
     myLastTilePx.Left  = 0;
-    myLastTilePx.Right = (int)anImg.SizeX();
+    myLastTilePx.Right = static_cast<int>(anImg.SizeX());
     myLastTilePx.Top += myTileSizeY;
     myLastTilePx.Bottom += myTileSizeY;
 
@@ -207,17 +207,17 @@ bool OpenGl_Font::renderGlyph(const occ::handle<OpenGl_Context>& theCtx, const c
                                      0,
                                      myLastTilePx.Left,
                                      myLastTilePx.Top,
-                                     (GLsizei)anImg.SizeX(),
-                                     (GLsizei)anImg.SizeY(),
+                                     static_cast<GLsizei>(anImg.SizeX()),
+                                     static_cast<GLsizei>(anImg.SizeY()),
                                      aTexture->GetFormat(),
                                      GL_UNSIGNED_BYTE,
                                      anImg.Data());
 
   OpenGl_Font::Tile aTile;
-  aTile.uv.Left   = GLfloat(myLastTilePx.Left) / GLfloat(aTexture->SizeX());
-  aTile.uv.Right  = GLfloat(myLastTilePx.Right) / GLfloat(aTexture->SizeX());
-  aTile.uv.Top    = GLfloat(myLastTilePx.Top) / GLfloat(aTexture->SizeY());
-  aTile.uv.Bottom = GLfloat(myLastTilePx.Top + anImg.SizeY()) / GLfloat(aTexture->SizeY());
+  aTile.uv.Left   = static_cast<GLfloat>(myLastTilePx.Left) / static_cast<GLfloat>(aTexture->SizeX());
+  aTile.uv.Right  = static_cast<GLfloat>(myLastTilePx.Right) / static_cast<GLfloat>(aTexture->SizeX());
+  aTile.uv.Top    = static_cast<GLfloat>(myLastTilePx.Top) / static_cast<GLfloat>(aTexture->SizeY());
+  aTile.uv.Bottom = static_cast<GLfloat>(myLastTilePx.Top + anImg.SizeY()) / static_cast<GLfloat>(aTexture->SizeY());
   aTile.texture   = aTexture->TextureId();
   myFont->GlyphRect(aTile.px);
 

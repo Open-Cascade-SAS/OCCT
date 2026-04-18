@@ -580,7 +580,7 @@ bool IGESCAFControl_Writer::WriteNames(const NCollection_Sequence<TDF_Label>& th
       for (int aCharPos = 1; aNameLength < 8; aCharPos++, aNameLength++)
       {
         anAsciiName->SetValue(aNameLength + 1,
-                              IsAnAscii(aName.Value(aCharPos)) ? (char)aName.Value(aCharPos) : '?');
+                              IsAnAscii(aName.Value(aCharPos)) ? static_cast<char>(aName.Value(aCharPos)) : '?');
       }
       anIGESEntity->SetLabel(anAsciiName);
 

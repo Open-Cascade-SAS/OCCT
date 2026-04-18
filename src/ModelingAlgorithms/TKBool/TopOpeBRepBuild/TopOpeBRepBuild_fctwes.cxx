@@ -150,8 +150,8 @@ void TopOpeBRepBuild_Builder::GFillCurveTopologyWES(const TopOpeBRepDS_CurveIter
     //    else if (TB1 == TopAbs_IN ) TB = TopAbs_OUT;
   }
 
-  TopoDS_Face& WESF = *((TopoDS_Face*)((void*)&WES.Face()));
-  TopoDS_Face& FTF  = *((TopoDS_Face*)((void*)&myFaceToFill));
+  TopoDS_Face& WESF = *(static_cast<TopoDS_Face*>((void*)&WES.Face()));
+  TopoDS_Face& FTF  = *(static_cast<TopoDS_Face*>((void*)&myFaceToFill));
 #ifdef OCCT_DEBUG
 //  bool FTFeqWESF = myFaceReference.IsEqual(WESF);
 #endif

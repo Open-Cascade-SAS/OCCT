@@ -160,15 +160,15 @@ void MeshVS_TextPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& Prs,
 
   int AStyleInt = Aspect_TOST_ANNOTATION;
   if (aDrawer->GetInteger(MeshVS_DA_TextStyle, AStyleInt))
-    ATextStyle = (Aspect_TypeOfStyleText)AStyleInt;
+    ATextStyle = static_cast<Aspect_TypeOfStyleText>(AStyleInt);
 
   int ADispInt = Aspect_TODT_NORMAL;
   if (aDrawer->GetInteger(MeshVS_DA_TextDisplayType, ADispInt))
-    ADisplayType = (Aspect_TypeOfDisplayText)ADispInt;
+    ADisplayType = static_cast<Aspect_TypeOfDisplayText>(ADispInt);
 
   int AAspect = Font_FA_Bold;
   if (aDrawer->GetInteger(MeshVS_DA_TextFontAspect, AAspect))
-    AFontAspectType = (Font_FontAspect)AAspect;
+    AFontAspectType = static_cast<Font_FontAspect>(AAspect);
 
   occ::handle<Graphic3d_AspectText3d> aTextAspect =
     new Graphic3d_AspectText3d(AColor, AFont, AExpansionFactor, ASpace, ATextStyle, ADisplayType);
@@ -220,9 +220,9 @@ void MeshVS_TextPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& Prs,
             Y += aCoords(3 * i - 1);
             Z += aCoords(3 * i);
           }
-          X /= double(NbNodes);
-          Y /= double(NbNodes);
-          Z /= double(NbNodes);
+          X /= static_cast<double>(NbNodes);
+          Y /= static_cast<double>(NbNodes);
+          Z /= static_cast<double>(NbNodes);
         }
         else
         {
@@ -230,9 +230,9 @@ void MeshVS_TextPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& Prs,
           continue;
         }
 
-        aPnts.Append(NCollection_Vec3<float>((float)X, (float)Y, (float)Z));
+        aPnts.Append(NCollection_Vec3<float>(static_cast<float>(X), static_cast<float>(Y), static_cast<float>(Z)));
 
-        occ::handle<Graphic3d_Text> aText = new Graphic3d_Text((float)aHeight);
+        occ::handle<Graphic3d_Text> aText = new Graphic3d_Text(static_cast<float>(aHeight));
         aText->SetText(aStr);
         aText->SetPosition(gp_Pnt(X, Y, Z));
         aTextGroup->AddText(aText);

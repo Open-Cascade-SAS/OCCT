@@ -532,12 +532,12 @@ void DsgPrs_SymmetricPresentation::Add(const occ::handle<Prs3d_Presentation>& aP
     if (alpha > M_PI)
     {
       alpha  = (2. * M_PI) - alpha;
-      nbp    = (int)std::trunc(alpha / (alpha * .02));
+      nbp    = static_cast<int>(std::trunc(alpha / (alpha * .02)));
       Dalpha = alpha / (nbp - 1);
     }
     else
     {
-      nbp    = (int)std::trunc(alpha / (alpha * .02));
+      nbp    = static_cast<int>(std::trunc(alpha / (alpha * .02)));
       Dalpha = -alpha / (nbp - 1);
     }
   }
@@ -546,12 +546,12 @@ void DsgPrs_SymmetricPresentation::Add(const occ::handle<Prs3d_Presentation>& aP
     if (alpha > M_PI)
     {
       alpha  = (2. * M_PI) - alpha;
-      nbp    = (int)std::trunc(alpha / (alpha * .02));
+      nbp    = static_cast<int>(std::trunc(alpha / (alpha * .02)));
       Dalpha = -alpha / (nbp - 1);
     }
     else
     {
-      nbp    = (int)std::trunc(alpha / (alpha * .02));
+      nbp    = static_cast<int>(std::trunc(alpha / (alpha * .02)));
       Dalpha = alpha / (nbp - 1);
     }
   }
@@ -580,12 +580,12 @@ void DsgPrs_SymmetricPresentation::Add(const occ::handle<Prs3d_Presentation>& aP
     if (alpha > M_PI)
     {
       alpha  = (2 * M_PI) - alpha;
-      nbp    = (int)std::trunc(alpha / (alpha * .02));
+      nbp    = static_cast<int>(std::trunc(alpha / (alpha * .02)));
       Dalpha = alpha / (nbp - 1);
     }
     else
     {
-      nbp    = (int)std::trunc(alpha / (alpha * .02));
+      nbp    = static_cast<int>(std::trunc(alpha / (alpha * .02)));
       Dalpha = -alpha / (nbp - 1);
     }
   }
@@ -594,12 +594,12 @@ void DsgPrs_SymmetricPresentation::Add(const occ::handle<Prs3d_Presentation>& aP
     if (alpha > M_PI)
     {
       alpha  = (2 * M_PI) - alpha;
-      nbp    = (int)std::trunc(alpha / (alpha * .02));
+      nbp    = static_cast<int>(std::trunc(alpha / (alpha * .02)));
       Dalpha = -alpha / (nbp - 1);
     }
     else
     {
-      nbp    = (int)std::trunc(alpha / (alpha * .02));
+      nbp    = static_cast<int>(std::trunc(alpha / (alpha * .02)));
       Dalpha = alpha / (nbp - 1);
     }
   }

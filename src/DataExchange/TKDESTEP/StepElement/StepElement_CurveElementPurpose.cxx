@@ -65,7 +65,7 @@ void StepElement_CurveElementPurpose::SetEnumeratedCurveElementPurpose(
   occ::handle<TCollection_HAsciiString> name =
     new TCollection_HAsciiString("ENUMERATED_CURVE_ELEMENT_PURPOSE");
   SelMem->SetName(name->ToCString());
-  SelMem->SetEnum((int)val);
+  SelMem->SetEnum(static_cast<int>(val));
 }
 
 //=================================================================================================

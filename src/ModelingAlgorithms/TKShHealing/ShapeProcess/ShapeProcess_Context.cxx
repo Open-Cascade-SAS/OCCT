@@ -95,12 +95,12 @@ occ::handle<Resource_Manager> ShapeProcess_Context::LoadResourceManager(const ch
   if (!aPath.IsEmpty())
   {
     stat(aPath.ToCString(), &buf);
-    aMtime = (std::time_t)buf.st_mtime;
+    aMtime = static_cast<std::time_t>(buf.st_mtime);
   }
   if (!aUserPath.IsEmpty())
   {
     stat(aUserPath.ToCString(), &buf);
-    aUMtime = (std::time_t)buf.st_mtime;
+    aUMtime = static_cast<std::time_t>(buf.st_mtime);
   }
 
   bool isFileModified = false;

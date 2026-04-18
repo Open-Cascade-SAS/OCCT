@@ -43,7 +43,7 @@ BRepAlgoAPI_BuilderAlgo::BRepAlgoAPI_BuilderAlgo(const BOPAlgo_PaveFiller& aPF)
       myIsIntersectionNeeded(false),
       myBuilder(nullptr)
 {
-  myDSFiller = (BOPAlgo_PaveFiller*)&aPF;
+  myDSFiller = const_cast<BOPAlgo_PaveFiller*>(&aPF);
 }
 
 //=================================================================================================

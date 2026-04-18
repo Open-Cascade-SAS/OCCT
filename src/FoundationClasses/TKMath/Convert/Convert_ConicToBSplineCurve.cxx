@@ -372,7 +372,7 @@ void Convert_ConicToBSplineCurve::BuildCosAndSin(
   switch (Parameterisation)
   {
     case Convert_TgtThetaOver2:
-      num_spans = (int)std::trunc(1.2 * delta / M_PI) + 1;
+      num_spans = static_cast<int>(std::trunc(1.2 * delta / M_PI)) + 1;
 
       tgt_theta_flag = 1;
       break;

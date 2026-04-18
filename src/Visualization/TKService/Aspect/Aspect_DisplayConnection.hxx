@@ -91,29 +91,29 @@ public:
   //! WARNING! it is a responsibility of application to keep this pointer
   //! valid while Aspect_DisplayConnection is alive and to close Display when it is no more needed.
   Aspect_DisplayConnection(Display* theDisplay)
-      : Aspect_DisplayConnection((Aspect_XDisplay*)theDisplay)
+      : Aspect_DisplayConnection(reinterpret_cast<Aspect_XDisplay*>(theDisplay))
   {
   }
 
   //! @return pointer to Display structure that serves as the connection to the X server.
-  Display* GetDisplay() { return (Display*)myDisplay; }
+  Display* GetDisplay() { return reinterpret_cast<Display*>(myDisplay); }
 
   //! Return default window visual or NULL when undefined.
-  XVisualInfo* GetDefaultVisualInfoX() const { return (XVisualInfo*)myDefVisualInfo; }
+  XVisualInfo* GetDefaultVisualInfoX() const { return reinterpret_cast<XVisualInfo*>(myDefVisualInfo); }
 
   //! Set default window visual; the visual will be deallocated using XFree().
   void SetDefaultVisualInfo(XVisualInfo* theVisual, Aspect_FBConfig theFBConfig)
   {
-    SetDefaultVisualInfo((Aspect_XVisualInfo*)theVisual, theFBConfig);
+    SetDefaultVisualInfo(reinterpret_cast<Aspect_XVisualInfo*>(theVisual), theFBConfig);
   }
 
   //! @return identifier(atom) for custom named property associated with windows that use current
   //! connection to X server.
-  Atom GetAtomX(const Aspect_XAtom theAtom) const { return (Atom)GetAtom(theAtom); }
+  Atom GetAtomX(const Aspect_XAtom theAtom) const { return static_cast<Atom>(GetAtom(theAtom)); }
 
   //! Open connection with display specified in myDisplayName class field
   //! or takes theDisplay parameter when it is not NULL.
-  void Init(Display* theDisplay) { Init((Aspect_XDisplay*)theDisplay); }
+  void Init(Display* theDisplay) { Init(reinterpret_cast<Aspect_XDisplay*>(theDisplay)); }
 #endif
 
 private:

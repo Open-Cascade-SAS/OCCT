@@ -35,7 +35,7 @@ static bool theraise = false;
 
 static char blank[] =
   "                                                                            ";
-static int maxblank = (int)strlen(blank);
+static int maxblank = static_cast<int>(strlen(blank));
 
 Interface_MSG::Interface_MSG(const char* const key)
     : thekey(key),
@@ -415,7 +415,7 @@ void Interface_MSG::TDate(const char* const text,
       }
     }
   }
-  char* pText = (char*)text;
+  char* pText = const_cast<char*>(text);
   if (!format || format[0] == '\0')
     Sprintf(pText, "%4.4d-%2.2d-%2.2d:%2.2d-%2.2d-%2.2d", y2, m2, d2, h2, n2, s2);
   else if ((format[0] == 'c' || format[0] == 'C') && format[1] == ':')
@@ -525,7 +525,7 @@ const char* Interface_MSG::Blanks(const int val, const int max)
 
 const char* Interface_MSG::Blanks(const char* const val, const int max)
 {
-  int lng = (int)strlen(val);
+  int lng = static_cast<int>(strlen(val));
   if (lng > maxblank || lng > max)
     return "";
   return &blank[maxblank - max + lng];
@@ -547,7 +547,7 @@ void Interface_MSG::Print(Standard_OStream& S, const char* const val, const int 
     Print(S, val, maxblank, just);
     return;
   }
-  int lng = (int)strlen(val);
+  int lng = static_cast<int>(strlen(val));
   if (lng > max)
   {
     S << val;

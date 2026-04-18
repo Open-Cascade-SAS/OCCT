@@ -96,7 +96,7 @@ void Message_PrinterOStream::Close()
 {
   if (!myStream)
     return;
-  Standard_OStream* ostr = (Standard_OStream*)myStream;
+  Standard_OStream* ostr = static_cast<Standard_OStream*>(myStream);
   myStream               = nullptr;
 
   ostr->flush();
@@ -147,7 +147,7 @@ void Message_PrinterOStream::send(const TCollection_AsciiString& theString,
     }
   }
 
-  Standard_OStream* aStream = (Standard_OStream*)myStream;
+  Standard_OStream* aStream = static_cast<Standard_OStream*>(myStream);
   if (toIntense || aColor != Message_ConsoleColor_Default)
   {
     SetConsoleTextColor(aStream, aColor, toIntense);

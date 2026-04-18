@@ -1671,7 +1671,7 @@ int maoverf_(int* nbentr, double* dtable)
     /* Loop. The upper limit is the int value of the logarithm of base 2
      */
     /* of NBENTR/NLONGR. */
-    i__1 = (int)(std::log((float)(*nbentr) / (float)63.) / std::log((float)2.));
+    i__1 = static_cast<int>(std::log(static_cast<float>(*nbentr) / static_cast<float>(63.)) / std::log(static_cast<float>(2.)));
     for (ibid = 1; ibid <= i__1; ++ibid)
     {
 
@@ -2193,7 +2193,7 @@ L1100:
        initialization with goto*/
     /* assign max positive int to *iofset */
     const size_t shift = sizeof(*iofset) * 8 - 1;
-    *iofset            = (uintptr_t(1) << shift) - 1 /*2147483647 for 32bit*/;
+    *iofset            = (static_cast<uintptr_t>(1) << shift) - 1 /*2147483647 for 32bit*/;
   }
   goto L9900;
 
@@ -2744,11 +2744,11 @@ int AdvApp2Var_SysBase::mcrrqst_(int* iunit, int* isize, void* t, intptr_t* iofs
   /* RANGING OF PARAMETERS IN MCRGENE */
 
   mcrgene_.icore[mcrgene_.ncore].prot      = mcrgene_.lprot;
-  mcrgene_.icore[mcrgene_.ncore].unit      = (unsigned char)(*iunit);
+  mcrgene_.icore[mcrgene_.ncore].unit      = static_cast<unsigned char>(*iunit);
   mcrgene_.icore[mcrgene_.ncore].reqsize   = *isize;
   mcrgene_.icore[mcrgene_.ncore].loc       = loc;
   mcrgene_.icore[mcrgene_.ncore].offset    = *iofset;
-  mcrgene_.icore[mcrgene_.ncore].alloctype = (unsigned char)ksys;
+  mcrgene_.icore[mcrgene_.ncore].alloctype = static_cast<unsigned char>(ksys);
   mcrgene_.icore[mcrgene_.ncore].size      = ibyte;
   mcrgene_.icore[mcrgene_.ncore].addr      = iaddr;
   mcrgene_.icore[mcrgene_.ncore].userzone  = mcrgene_.ncore;

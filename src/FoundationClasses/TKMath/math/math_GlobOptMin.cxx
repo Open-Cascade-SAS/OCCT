@@ -97,7 +97,7 @@ math_GlobOptMin::math_GlobOptMin(math_MultipleVarFunction* theFunc,
   mySameTol = theSameTol;
 
   const int aMaxSquareSearchSol = 200;
-  int       aSolNb              = int(std::pow(3.0, double(myN)));
+  int       aSolNb              = static_cast<int>(std::pow(3.0, static_cast<double>(myN)));
   myMinCellFilterSol            = std::max(2 * aSolNb, aMaxSquareSearchSol);
   initCellSize();
   ComputeInitSol();

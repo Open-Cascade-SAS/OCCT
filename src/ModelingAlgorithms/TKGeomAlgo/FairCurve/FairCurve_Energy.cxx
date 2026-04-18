@@ -52,8 +52,8 @@ FairCurve_Energy::FairCurve_Energy(const occ::handle<NCollection_HArray1<gp_Pnt2
   MyLinearForm.SetValue(0, L0);
   MyLinearForm.SetValue(1, L1);
   gp_XY Q0(-std::sin(Angle1), std::cos(Angle1)), Q1(std::sin(Angle2), std::cos(Angle2));
-  MyQuadForm.SetValue(0, ((double)Degree) / (Degree - 1) * Curvature1 * Q0);
-  MyQuadForm.SetValue(1, ((double)Degree) / (Degree - 1) * Curvature2 * Q1);
+  MyQuadForm.SetValue(0, (static_cast<double>(Degree)) / (Degree - 1) * Curvature1 * Q0);
+  MyQuadForm.SetValue(1, (static_cast<double>(Degree)) / (Degree - 1) * Curvature2 * Q1);
 }
 
 //=======================================================================

@@ -194,7 +194,7 @@ void Geom2dAPI_PointsToBSpline::Init(const NCollection_Array1<double>& YValues,
     }
     else
     {
-      Param(i) = (aParamSpan > 0) ? double(i - YValues.Lower()) / double(aParamSpan) : 0.0;
+      Param(i) = (aParamSpan > 0) ? static_cast<double>(i - YValues.Lower()) / static_cast<double>(aParamSpan) : 0.0;
     }
     Points(i).SetCoord(0.0, YValues(i));
   }

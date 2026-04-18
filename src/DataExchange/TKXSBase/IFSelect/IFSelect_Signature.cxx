@@ -111,7 +111,7 @@ bool IFSelect_Signature::MatchValue(const char* const              val,
   char cardeb = text.Value(1);
   int  ln, lnt, i, j;
   ln  = text.Length();
-  lnt = (int)(strlen(val) - ln);
+  lnt = static_cast<int>(strlen(val) - ln);
   for (i = 0; i <= lnt; i++)
   {
     if (val[i] == cardeb)

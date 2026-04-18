@@ -832,9 +832,9 @@ bool OpenGl_FrameBuffer::InitWrapper(const occ::handle<OpenGl_Context>& theGlCtx
   // clean up previous state
   Release(theGlCtx.operator->());
 
-  GLint anFbo = GLint(NO_FRAMEBUFFER);
+  GLint anFbo = static_cast<GLint>(NO_FRAMEBUFFER);
   theGlCtx->core11fwd->glGetIntegerv(GL_FRAMEBUFFER_BINDING, &anFbo);
-  if (anFbo == GLint(NO_FRAMEBUFFER))
+  if (anFbo == static_cast<GLint>(NO_FRAMEBUFFER))
   {
     return false;
   }
@@ -852,7 +852,7 @@ bool OpenGl_FrameBuffer::InitWrapper(const occ::handle<OpenGl_Context>& theGlCtx
                                                           GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE,
                                                           &aDepthType);
 
-  myGlFBufferId = GLuint(anFbo);
+  myGlFBufferId = static_cast<GLuint>(anFbo);
   myIsOwnColor  = false;
   myIsOwnBuffer = false;
   myIsOwnDepth  = false;
@@ -1224,13 +1224,13 @@ bool OpenGl_FrameBuffer::BufferDump(const occ::handle<OpenGl_Context>&     theGl
 
   // setup alignment
   // clang-format off
-  const GLint anAligment = std::min(GLint(theImage.MaxRowAligmentBytes()), 8); // limit to 8 bytes for OpenGL
+  const GLint anAligment = std::min(static_cast<GLint>(theImage.MaxRowAligmentBytes()), 8); // limit to 8 bytes for OpenGL
   // clang-format on
   theGlCtx->core11fwd->glPixelStorei(GL_PACK_ALIGNMENT, anAligment);
   bool isBatchCopy = !theImage.IsTopDown();
 
-  const GLint anExtraBytes       = GLint(theImage.RowExtraBytes());
-  GLint       aPixelsWidth       = GLint(theImage.SizeRowBytes() / theImage.SizePixelBytes());
+  const GLint anExtraBytes       = static_cast<GLint>(theImage.RowExtraBytes());
+  GLint       aPixelsWidth       = static_cast<GLint>(theImage.SizeRowBytes() / theImage.SizePixelBytes());
   size_t      aSizeRowBytesEstim = getAligned(theImage.SizePixelBytes() * aPixelsWidth, anAligment);
   if (anExtraBytes < anAligment)
   {
@@ -1264,22 +1264,22 @@ bool OpenGl_FrameBuffer::BufferDump(const occ::handle<OpenGl_Context>&     theGl
       // Image_PixMap rows indexation always starts from the upper corner
       // while order in memory depends on the flag and processed by ChangeRow() method
       theGlCtx->core11fwd->glReadPixels(0,
-                                        GLint(theImage.SizeY() - aRow - 1),
-                                        GLsizei(theImage.SizeX()),
+                                        static_cast<GLint>(theImage.SizeY() - aRow - 1),
+                                        static_cast<GLsizei>(theImage.SizeX()),
                                         1,
                                         aFormat,
                                         aType,
                                         aRowBuffer.ChangeData());
-      const Image_ColorRGBA* aRowDataRgba = (const Image_ColorRGBA*)aRowBuffer.Data();
+      const Image_ColorRGBA* aRowDataRgba = reinterpret_cast<const Image_ColorRGBA*>(aRowBuffer.Data());
       if (theImage.Format() == Image_Format_BGR)
       {
-        convertRowFromRgba((Image_ColorBGR*)theImage.ChangeRow(aRow),
+        convertRowFromRgba(reinterpret_cast<Image_ColorBGR*>(theImage.ChangeRow(aRow)),
                            aRowDataRgba,
                            theImage.SizeX());
       }
       else
       {
-        convertRowFromRgba((Image_ColorRGB*)theImage.ChangeRow(aRow),
+        convertRowFromRgba(reinterpret_cast<Image_ColorRGB*>(theImage.ChangeRow(aRow)),
                            aRowDataRgba,
                            theImage.SizeX());
       }
@@ -1293,8 +1293,8 @@ bool OpenGl_FrameBuffer::BufferDump(const occ::handle<OpenGl_Context>&     theGl
       // Image_PixMap rows indexation always starts from the upper corner
       // while order in memory depends on the flag and processed by ChangeRow() method
       theGlCtx->core11fwd->glReadPixels(0,
-                                        GLint(theImage.SizeY() - aRow - 1),
-                                        GLsizei(theImage.SizeX()),
+                                        static_cast<GLint>(theImage.SizeY() - aRow - 1),
+                                        static_cast<GLsizei>(theImage.SizeX()),
                                         1,
                                         aFormat,
                                         aType,
@@ -1305,8 +1305,8 @@ bool OpenGl_FrameBuffer::BufferDump(const occ::handle<OpenGl_Context>&     theGl
   {
     theGlCtx->core11fwd->glReadPixels(0,
                                       0,
-                                      GLsizei(theImage.SizeX()),
-                                      GLsizei(theImage.SizeY()),
+                                      static_cast<GLsizei>(theImage.SizeX()),
+                                      static_cast<GLsizei>(theImage.SizeY()),
                                       aFormat,
                                       aType,
                                       theImage.ChangeData());

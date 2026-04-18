@@ -139,7 +139,7 @@ void Poly_Connect::Load(const occ::handle<Poly_Triangulation>& theTriangulation)
       if (ced == nullptr)
       {
         // create the edge if not found
-        ced                     = (polyedge*)anIncAlloc->Allocate(sizeof(polyedge));
+        ced                     = static_cast<polyedge*>(anIncAlloc->Allocate(sizeof(polyedge)));
         ced->next               = anEdges[anEdgeNodes[0]];
         anEdges[anEdgeNodes[0]] = ced;
         ced->nd                 = anEdgeNodes[1];

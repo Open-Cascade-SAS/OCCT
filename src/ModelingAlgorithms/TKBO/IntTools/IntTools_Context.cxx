@@ -200,7 +200,7 @@ Bnd_Box& IntTools_Context::BndBox(const TopoDS_Shape& aS)
   if (!myBndBoxDataMap.Find(aS, pBox))
   {
     //
-    pBox = (Bnd_Box*)myAllocator->Allocate(sizeof(Bnd_Box));
+    pBox = static_cast<Bnd_Box*>(myAllocator->Allocate(sizeof(Bnd_Box)));
     new (pBox) Bnd_Box();
     //
     Bnd_Box& aBox = *pBox;
@@ -234,7 +234,7 @@ IntTools_FClass2d& IntTools_Context::FClass2d(const TopoDS_Face& aF)
     aFF.Orientation(TopAbs_FORWARD);
     aTolF = BRep_Tool::Tolerance(aFF);
     //
-    pFClass2d = (IntTools_FClass2d*)myAllocator->Allocate(sizeof(IntTools_FClass2d));
+    pFClass2d = static_cast<IntTools_FClass2d*>(myAllocator->Allocate(sizeof(IntTools_FClass2d)));
     new (pFClass2d) IntTools_FClass2d(aFF, aTolF);
     //
     myFClass2dMap.Bind(aFF, pFClass2d);
@@ -254,7 +254,7 @@ GeomAPI_ProjectPointOnSurf& IntTools_Context::ProjPS(const TopoDS_Face& aF)
     const occ::handle<Geom_Surface>& aS = BRep_Tool::Surface(aF);
     //
     pProjPS =
-      (GeomAPI_ProjectPointOnSurf*)myAllocator->Allocate(sizeof(GeomAPI_ProjectPointOnSurf));
+      static_cast<GeomAPI_ProjectPointOnSurf*>(myAllocator->Allocate(sizeof(GeomAPI_ProjectPointOnSurf)));
     new (pProjPS) GeomAPI_ProjectPointOnSurf();
     pProjPS->Init(aS, Umin, Usup, Vmin, Vsup, myPOnSTolerance);
     pProjPS->SetExtremaFlag(Extrema_ExtFlag_MIN); ///
@@ -276,7 +276,7 @@ GeomAPI_ProjectPointOnCurve& IntTools_Context::ProjPC(const TopoDS_Edge& aE)
     occ::handle<Geom_Curve> aC3D = BRep_Tool::Curve(aE, f, l);
     //
     pProjPC =
-      (GeomAPI_ProjectPointOnCurve*)myAllocator->Allocate(sizeof(GeomAPI_ProjectPointOnCurve));
+      static_cast<GeomAPI_ProjectPointOnCurve*>(myAllocator->Allocate(sizeof(GeomAPI_ProjectPointOnCurve)));
     new (pProjPC) GeomAPI_ProjectPointOnCurve();
     pProjPC->Init(aC3D, f, l);
     //
@@ -298,7 +298,7 @@ GeomAPI_ProjectPointOnCurve& IntTools_Context::ProjPT(const occ::handle<Geom_Cur
     l = aC3D->LastParameter();
     //
     pProjPT =
-      (GeomAPI_ProjectPointOnCurve*)myAllocator->Allocate(sizeof(GeomAPI_ProjectPointOnCurve));
+      static_cast<GeomAPI_ProjectPointOnCurve*>(myAllocator->Allocate(sizeof(GeomAPI_ProjectPointOnCurve)));
     new (pProjPT) GeomAPI_ProjectPointOnCurve();
     pProjPT->Init(aC3D, f, l);
     //
@@ -314,7 +314,7 @@ BRepClass3d_SolidClassifier& IntTools_Context::SolidClassifier(const TopoDS_Soli
   BRepClass3d_SolidClassifier* pSC = nullptr;
   if (!mySClassMap.Find(aSolid, pSC))
   {
-    pSC = (BRepClass3d_SolidClassifier*)myAllocator->Allocate(sizeof(BRepClass3d_SolidClassifier));
+    pSC = static_cast<BRepClass3d_SolidClassifier*>(myAllocator->Allocate(sizeof(BRepClass3d_SolidClassifier)));
     new (pSC) BRepClass3d_SolidClassifier(aSolid);
     //
     mySClassMap.Bind(aSolid, pSC);
@@ -330,7 +330,7 @@ BRepAdaptor_Surface& IntTools_Context::SurfaceAdaptor(const TopoDS_Face& theFace
   if (!mySurfAdaptorMap.Find(theFace, pBAS))
   {
     //
-    pBAS = (BRepAdaptor_Surface*)myAllocator->Allocate(sizeof(BRepAdaptor_Surface));
+    pBAS = static_cast<BRepAdaptor_Surface*>(myAllocator->Allocate(sizeof(BRepAdaptor_Surface)));
     new (pBAS) BRepAdaptor_Surface(theFace, true);
     //
     mySurfAdaptorMap.Bind(theFace, pBAS);
@@ -361,7 +361,7 @@ Geom2dHatch_Hatcher& IntTools_Context::Hatcher(const TopoDS_Face& aF)
     aEpsT         = Precision::PConfusion();
     //
     Geom2dHatch_Intersector aIntr(aTolArcIntr, aTolTangfIntr);
-    pHatcher = (Geom2dHatch_Hatcher*)myAllocator->Allocate(sizeof(Geom2dHatch_Hatcher));
+    pHatcher = static_cast<Geom2dHatch_Hatcher*>(myAllocator->Allocate(sizeof(Geom2dHatch_Hatcher)));
     new (pHatcher) Geom2dHatch_Hatcher(aIntr, aTolHatch2D, aTolHatch3D, true, false);
     //
     aFF = aF;
@@ -401,7 +401,7 @@ Bnd_OBB& IntTools_Context::OBB(const TopoDS_Shape& aS, const double theGap)
   Bnd_OBB* pBox = nullptr;
   if (!myOBBMap.Find(aS, pBox))
   {
-    pBox = (Bnd_OBB*)myAllocator->Allocate(sizeof(Bnd_OBB));
+    pBox = static_cast<Bnd_OBB*>(myAllocator->Allocate(sizeof(Bnd_OBB)));
     new (pBox) Bnd_OBB();
     //
     Bnd_OBB& aBox = *pBox;
@@ -420,8 +420,8 @@ IntTools_SurfaceRangeLocalizeData& IntTools_Context::SurfaceData(const TopoDS_Fa
   IntTools_SurfaceRangeLocalizeData* pSData = nullptr;
   if (!myProjSDataMap.Find(aF, pSData))
   {
-    pSData = (IntTools_SurfaceRangeLocalizeData*)myAllocator->Allocate(
-      sizeof(IntTools_SurfaceRangeLocalizeData));
+    pSData = static_cast<IntTools_SurfaceRangeLocalizeData*>(myAllocator->Allocate(
+      sizeof(IntTools_SurfaceRangeLocalizeData)));
     new (pSData) IntTools_SurfaceRangeLocalizeData(3,
                                                    3,
                                                    10. * Precision::PConfusion(),

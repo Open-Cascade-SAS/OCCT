@@ -52,13 +52,13 @@ public:
   operator void*() { return myDynData ? myDynData : (void*)myAutoData; }
 
   //! Interpret the buffer as a reference to double
-  operator double&() { return *(myDynData ? (double*)myDynData : (double*)myAutoData); }
+  operator double&() { return *(myDynData ? static_cast<double*>(myDynData) : reinterpret_cast<double*>(myAutoData)); }
 
   //! Interpret the buffer as a reference to int
-  operator int&() { return *(myDynData ? (int*)myDynData : (int*)myAutoData); }
+  operator int&() { return *(myDynData ? static_cast<int*>(myDynData) : reinterpret_cast<int*>(myAutoData)); }
 
   //! Interpret the buffer as a reference to gp_Pnt
-  operator gp_Pnt&() { return *(myDynData ? (gp_Pnt*)myDynData : (gp_Pnt*)myAutoData); }
+  operator gp_Pnt&() { return *(myDynData ? static_cast<gp_Pnt*>(myDynData) : reinterpret_cast<gp_Pnt*>(myAutoData)); }
 
 private:
   //! Deprecate copy constructor

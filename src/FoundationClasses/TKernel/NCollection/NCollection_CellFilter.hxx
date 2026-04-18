@@ -260,8 +260,8 @@ protected:
         // INT_MAX it is decreased correspondingly for the value of INT_MAX. If the value
         // of index is less than INT_MIN it is increased correspondingly for the absolute
         // value of INT_MIN.
-        index[i] = Cell_IndexType((aVal > INT_MAX - 1)   ? fmod(aVal, (double)INT_MAX)
-                                  : (aVal < INT_MIN + 1) ? fmod(aVal, (double)INT_MIN)
+        index[i] = static_cast<Cell_IndexType>((aVal > INT_MAX - 1)   ? fmod(aVal, static_cast<double>(INT_MAX))
+                                  : (aVal < INT_MIN + 1) ? fmod(aVal, static_cast<double>INT_MIN)
                                                          : aVal);
       }
     }

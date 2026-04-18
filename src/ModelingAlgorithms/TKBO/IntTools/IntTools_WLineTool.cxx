@@ -1065,8 +1065,8 @@ bool IntTools_WLineTool::DecompositionOfWLine(
     else
     {
       theLConstructor.Part(j, fprm, lprm);
-      ifprm = (int)fprm;
-      ilprm = (int)lprm;
+      ifprm = static_cast<int>(fprm);
+      ilprm = static_cast<int>(lprm);
     }
 
     occ::handle<IntSurf_LineOn2S> aLineOn2S = new IntSurf_LineOn2S();

@@ -124,7 +124,7 @@ static int FUN_refnearest(const double             Angref,
     if (TopAbs::Complement(Ori) == Oriref)
       return M_Ointernal;
     else
-      return (int)M_Unknown; // nyi FUN_RAISE
+      return M_Unknown; // nyi FUN_RAISE
   }
   int updateref = (dcos > 0.) ? M_noupdate : M_updateREF;
   return updateref;
@@ -191,7 +191,7 @@ static int FUN_refnearest(const int                i,
       if (TopAbs::Complement(Ori) == Oriref)
         return M_Ointernal;
       else
-        return (int)M_Unknown; // nyi FUN_RAISE
+        return M_Unknown; // nyi FUN_RAISE
     }
 
     bool noupdate = false;

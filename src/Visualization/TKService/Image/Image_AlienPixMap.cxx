@@ -1026,7 +1026,7 @@ bool Image_AlienPixMap::savePPM(const TCollection_AsciiString& theFileName) cons
   }
 
   // Write header
-  fprintf(aFile, "P6\n%d %d\n255\n", (int)SizeX(), (int)SizeY());
+  fprintf(aFile, "P6\n%d %d\n255\n", static_cast<int>(SizeX()), static_cast<int>(SizeY()));
 
   // Write pixel data
   uint8_t aByte;
@@ -1035,7 +1035,7 @@ bool Image_AlienPixMap::savePPM(const TCollection_AsciiString& theFileName) cons
     for (size_t aCol = 0; aCol < SizeX(); ++aCol)
     {
       // extremely SLOW but universal (implemented for all supported pixel formats)
-      const Quantity_ColorRGBA aColor = PixelColor((int)aCol, (int)aRow);
+      const Quantity_ColorRGBA aColor = PixelColor(static_cast<int>(aCol), static_cast<int>(aRow));
       aByte                           = static_cast<uint8_t>(aColor.GetRGB().Red() * 255.0);
       fwrite(&aByte, 1, 1, aFile);
       aByte = static_cast<uint8_t>(aColor.GetRGB().Green() * 255.0);

@@ -65,7 +65,7 @@ void StepFEA_DegreeOfFreedom::SetEnumeratedDegreeOfFreedom(
   occ::handle<TCollection_HAsciiString> name =
     new TCollection_HAsciiString("ENUMERATED_DEGREE_OF_FREEDOM");
   SelMem->SetName(name->ToCString());
-  SelMem->SetEnum((int)val);
+  SelMem->SetEnum(static_cast<int>(val));
 }
 
 //=================================================================================================

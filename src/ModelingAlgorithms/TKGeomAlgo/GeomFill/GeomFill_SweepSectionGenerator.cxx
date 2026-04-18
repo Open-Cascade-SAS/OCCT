@@ -262,7 +262,7 @@ void GeomFill_SweepSectionGenerator::Perform(const bool Polynomial)
   }
   // the transformations are calculate on differents points of <myPath>
   // corresponding to the path parameter uniformly reparted.
-  double                     DeltaU = (U2 - U1) / (double)(myNbSections - 1);
+  double                     DeltaU = (U2 - U1) / static_cast<double>(myNbSections - 1);
   NCollection_Array1<double> Parameters(1, myNbSections);
   //  Parameters(1) = U1;
   //  for (int i = 2; i < myNbSections; i++) {
@@ -662,7 +662,7 @@ double GeomFill_SweepSectionGenerator::Parameter(const int P) const
   {
     double U1  = myPath->FirstParameter();
     double U2  = myPath->LastParameter();
-    double prm = ((myNbSections - P) * U1 + (P - 1) * U2) / (double)(myNbSections - 1);
+    double prm = ((myNbSections - P) * U1 + (P - 1) * U2) / static_cast<double>(myNbSections - 1);
     return prm;
   }
 }

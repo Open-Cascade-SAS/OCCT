@@ -502,7 +502,7 @@ void Resource_Manager::SetResource(const char* const aResource, const char16_t* 
     myExtStrMap(Resource) = ExtValue;
   }
   //
-  pStr = (Standard_PCharacter)FormatStr.ToCString();
+  pStr = const_cast<Standard_PCharacter>(FormatStr.ToCString());
   //
   Resource_Unicode::ConvertUnicodeToFormat(ExtValue,
                                            pStr, // FormatStr.ToCString(),

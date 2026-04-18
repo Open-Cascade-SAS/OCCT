@@ -51,7 +51,7 @@ void AIS_Triangulation::SetTransparency(const double theValue)
 
   // override transparency
   myDrawer->ShadingAspect()->SetTransparency(theValue, myCurrentFacingModel);
-  myDrawer->SetTransparency((float)theValue);
+  myDrawer->SetTransparency(static_cast<float>(theValue));
 
   updatePresentation();
 }
@@ -242,8 +242,8 @@ NCollection_Vec4<uint8_t> AIS_Triangulation::attenuateColor(const int    theColo
           255.0 - myDrawer->ShadingAspect()->Aspect()->FrontMaterial().Transparency() * 255.0)
       : 255;
 
-  return NCollection_Vec4<uint8_t>((uint8_t)(theComposition * anRgbx[0]),
-                                   (uint8_t)(theComposition * anRgbx[1]),
-                                   (uint8_t)(theComposition * anRgbx[2]),
+  return NCollection_Vec4<uint8_t>(static_cast<uint8_t>(theComposition * anRgbx[0]),
+                                   static_cast<uint8_t>(theComposition * anRgbx[1]),
+                                   static_cast<uint8_t>(theComposition * anRgbx[2]),
                                    anAlpha);
 }

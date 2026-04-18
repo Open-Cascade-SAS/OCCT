@@ -680,7 +680,7 @@ Standard_EXPORT bool FUN_tool_ClassifW(
 
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> mapdone;
   int                                                    nOw = noldW;
-  int nite = 0, nitemax = int(nOw * (nOw - 1) / 2);
+  int nite = 0, nitemax = (nOw * (nOw - 1) / 2);
   while (nite <= nitemax)
   {
     nOw = lOws.Extent();

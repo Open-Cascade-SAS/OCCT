@@ -668,7 +668,7 @@ TopoDS_Edge BRepAlgo::ConcatenateWireC0(const TopoDS_Wire& aWire)
     for (i = 1; i <= nb_curve; i++)
     {
       if (CurveSeq(i)->IsInstance(STANDARD_TYPE(Geom_TrimmedCurve)))
-        CurveSeq(i) = (*((occ::handle<Geom_TrimmedCurve>*)&(CurveSeq(i))))->BasisCurve();
+        CurveSeq(i) = (*(reinterpret_cast<occ::handle<Geom_TrimmedCurve>*>(&(CurveSeq(i)))))->BasisCurve();
 
       occ::handle<Geom_TrimmedCurve> aTrCurve =
         new Geom_TrimmedCurve(CurveSeq(i), FparSeq(i), LparSeq(i));
@@ -746,7 +746,7 @@ TopoDS_Edge BRepAlgo::ConcatenateWireC0(const TopoDS_Wire& aWire)
   else
   {
     if (CurveSeq(1)->IsInstance(STANDARD_TYPE(Geom_TrimmedCurve)))
-      CurveSeq(1) = (*((occ::handle<Geom_TrimmedCurve>*)&(CurveSeq(1))))->BasisCurve();
+      CurveSeq(1) = (*(reinterpret_cast<occ::handle<Geom_TrimmedCurve>*>(&(CurveSeq(1)))))->BasisCurve();
 
     occ::handle<Geom_Curve> aCopyCurve = occ::down_cast<Geom_Curve>(CurveSeq(1)->Copy());
 

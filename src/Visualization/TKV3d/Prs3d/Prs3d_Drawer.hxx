@@ -728,7 +728,7 @@ public:
   GeomAbs_Shape FaceBoundaryUpperContinuity() const
   {
     return HasOwnFaceBoundaryUpperContinuity()
-             ? (GeomAbs_Shape)myFaceBoundaryUpperContinuity
+             ? static_cast<GeomAbs_Shape>(myFaceBoundaryUpperContinuity)
              : (!myLink.IsNull() ? myLink->FaceBoundaryUpperContinuity() : GeomAbs_CN);
   }
 

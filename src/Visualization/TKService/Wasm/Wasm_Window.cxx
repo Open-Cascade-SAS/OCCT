@@ -98,7 +98,7 @@ double Wasm_Window::Ratio() const
   }
 
   return (aCanvasSize.x() != 0 && aCanvasSize.y() != 0)
-           ? double(aCanvasSize.x()) / double(aCanvasSize.y())
+           ? static_cast<double>(aCanvasSize.x()) / static_cast<double>(aCanvasSize.y())
            : 1.0;
 }
 

@@ -483,7 +483,7 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const bool Update)
 
   for (exp.Init(myShape, TopAbs_FACE); exp.More(); exp.Next())
   {
-    if (!MapOfShapeOrientation.Bind(exp.Current(), (int)(exp.Current().Orientation())))
+    if (!MapOfShapeOrientation.Bind(exp.Current(), static_cast<int>(exp.Current().Orientation())))
     {
       myOstat = BRepCheck_RedundantFace;
       if (Update)
@@ -549,7 +549,7 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const bool Update)
       {
         // JR/Hp :
         int iorf = MapOfShapeOrientation.Find(Fref);
-        orf      = (TopAbs_Orientation)iorf;
+        orf      = static_cast<TopAbs_Orientation>(iorf);
         // orf = (TopAbs_Orientation)MapOfShapeOrientation.Find(Fref);
         Fref.Orientation(orf);
 
@@ -578,7 +578,7 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const bool Update)
 
           // JR/Hp :
           int anOriFCur = MapOfShapeOrientation.Find(Fcur);
-          orf           = (TopAbs_Orientation)anOriFCur;
+          orf           = static_cast<TopAbs_Orientation>(anOriFCur);
           //	orf = (TopAbs_Orientation)MapOfShapeOrientation.Find(Fcur);
           Fcur.Orientation(orf);
 
@@ -642,7 +642,7 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const bool Update)
         }
 
         int iorf = MapOfShapeOrientation.Find(Fcur);
-        orf      = (TopAbs_Orientation)iorf;
+        orf      = static_cast<TopAbs_Orientation>(iorf);
         // orf = (TopAbs_Orientation)MapOfShapeOrientation.Find(Fcur);
         Fcur.Orientation(orf);
 
@@ -720,7 +720,7 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const bool Update)
           }
           // JR/Hp :
           int iorf = MapOfShapeOrientation.Find(Fref);
-          orf      = (TopAbs_Orientation)iorf;
+          orf      = static_cast<TopAbs_Orientation>(iorf);
           //        orf = (TopAbs_Orientation)MapOfShapeOrientation.Find(Fref);
           Fref.Orientation(orf);
 
@@ -770,7 +770,7 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const bool Update)
 
             // JR/Hp :
             int anOriFCur = MapOfShapeOrientation.Find(Fcur);
-            orf           = (TopAbs_Orientation)anOriFCur;
+            orf           = static_cast<TopAbs_Orientation>(anOriFCur);
             //          orf = (TopAbs_Orientation)MapOfShapeOrientation.Find(Fcur);
             Fcur.Orientation(orf);
 

@@ -690,7 +690,7 @@ protected:
       aRes          = aRes + (aRes >> 16);
       aRes          = aRes + (aRes >> 32);
       theMask       = (theMask & MASK_HIGH) | ((static_cast<IndexType>(aRes) - 1) & MASK_LOW);
-      return size_t(aRes & 0x7f);
+      return static_cast<size_t>(aRes & 0x7f);
     }
     else
     {
@@ -702,7 +702,7 @@ protected:
       aRes    = aRes + (aRes >> 8);
       aRes    = aRes + (aRes >> 16);
       theMask = (theMask & MASK_HIGH) | ((aRes - 1) & MASK_LOW);
-      return size_t(aRes & 0x3f);
+      return static_cast<size_t>(aRes & 0x3f);
     }
   }
 

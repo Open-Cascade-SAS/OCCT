@@ -43,7 +43,7 @@ void IFSelect_ModifReorder::Perform(IFSelect_ContextModif&                      
 
 TCollection_AsciiString IFSelect_ModifReorder::Label() const
 {
-  const char* astr = (const char*)(thertl ? "Reorder, Roots last" : "Reorder, Roots first");
+  const char* astr = (thertl ? "Reorder, Roots last" : "Reorder, Roots first");
   return TCollection_AsciiString(astr);
   //    ( thertl ? "Reorder, Roots last" : "Reorder, Roots first");
 }

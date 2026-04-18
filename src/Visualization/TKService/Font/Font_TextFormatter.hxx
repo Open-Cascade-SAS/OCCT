@@ -221,7 +221,7 @@ public:
   inline float ResultWidth() const { return myBndWidth; }
 
   //! @return height of formatted text.
-  inline float ResultHeight() const { return myLineSpacing * float(myLinesNb); }
+  inline float ResultHeight() const { return myLineSpacing * static_cast<float>(myLinesNb); }
 
   //! @return maximum width of the text symbol
   float MaximumSymbolWidth() const { return myMaxSymbolWidth; }
@@ -246,7 +246,7 @@ public:
       }
     }
     theBndBox.Top    = myBndTop;
-    theBndBox.Bottom = theBndBox.Top - myLineSpacing * float(myLinesNb);
+    theBndBox.Bottom = theBndBox.Top - myLineSpacing * static_cast<float>(myLinesNb);
   }
 
   //! Returns internal container of the top left corners of a formatted rectangles.

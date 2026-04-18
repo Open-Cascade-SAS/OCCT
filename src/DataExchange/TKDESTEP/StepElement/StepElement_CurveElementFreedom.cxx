@@ -68,7 +68,7 @@ void StepElement_CurveElementFreedom::SetEnumeratedCurveElementFreedom(
   occ::handle<TCollection_HAsciiString> name =
     new TCollection_HAsciiString("ENUMERATED_CURVE_ELEMENT_FREEDOM");
   SelMem->SetName(name->ToCString());
-  SelMem->SetEnum((int)val);
+  SelMem->SetEnum(static_cast<int>(val));
 }
 
 //=================================================================================================

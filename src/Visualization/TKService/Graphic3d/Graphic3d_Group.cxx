@@ -161,12 +161,12 @@ void Graphic3d_Group::MinMaxValues(double& theXMin,
   {
     const NCollection_Vec4<float>& aMinPt = myBounds.CornerMin();
     const NCollection_Vec4<float>& aMaxPt = myBounds.CornerMax();
-    theXMin                               = double(aMinPt.x());
-    theYMin                               = double(aMinPt.y());
-    theZMin                               = double(aMinPt.z());
-    theXMax                               = double(aMaxPt.x());
-    theYMax                               = double(aMaxPt.y());
-    theZMax                               = double(aMaxPt.z());
+    theXMin                               = static_cast<double>(aMinPt.x());
+    theYMin                               = static_cast<double>(aMinPt.y());
+    theZMin                               = static_cast<double>(aMinPt.z());
+    theXMax                               = static_cast<double>(aMaxPt.x());
+    theYMax                               = static_cast<double>(aMaxPt.y());
+    theZMax                               = static_cast<double>(aMaxPt.z());
   }
   else
   {
@@ -283,7 +283,7 @@ void Graphic3d_Group::Text(const char* const       theText,
                            const Graphic3d_VerticalTextAlignment   theVta,
                            const bool                              theToEvalMinMax)
 {
-  occ::handle<Graphic3d_Text> aText = new Graphic3d_Text((float)theHeight);
+  occ::handle<Graphic3d_Text> aText = new Graphic3d_Text(static_cast<float>(theHeight));
   aText->SetText(theText);
   aText->SetPosition(gp_Pnt(thePoint.X(), thePoint.Y(), thePoint.Z()));
   aText->SetHorizontalAlignment(theHta);
@@ -298,7 +298,7 @@ void Graphic3d_Group::Text(const char* const       theText,
                            const double            theHeight,
                            const bool              theToEvalMinMax)
 {
-  occ::handle<Graphic3d_Text> aText = new Graphic3d_Text((float)theHeight);
+  occ::handle<Graphic3d_Text> aText = new Graphic3d_Text(static_cast<float>(theHeight));
   aText->SetText(theText);
   aText->SetPosition(gp_Pnt(thePoint.X(), thePoint.Y(), thePoint.Z()));
   AddText(aText, theToEvalMinMax);
@@ -315,7 +315,7 @@ void Graphic3d_Group::Text(const TCollection_ExtendedString& theText,
                            const Graphic3d_VerticalTextAlignment   theVta,
                            const bool                              theToEvalMinMax)
 {
-  occ::handle<Graphic3d_Text> aText = new Graphic3d_Text((float)theHeight);
+  occ::handle<Graphic3d_Text> aText = new Graphic3d_Text(static_cast<float>(theHeight));
   aText->SetText(theText.ToExtString());
   aText->SetPosition(gp_Pnt(thePoint.X(), thePoint.Y(), thePoint.Z()));
   aText->SetHorizontalAlignment(theHta);
@@ -335,7 +335,7 @@ void Graphic3d_Group::Text(const TCollection_ExtendedString& theText,
                            const bool                              theToEvalMinMax,
                            const bool                              theHasOwnAnchor)
 {
-  occ::handle<Graphic3d_Text> aText = new Graphic3d_Text((float)theHeight);
+  occ::handle<Graphic3d_Text> aText = new Graphic3d_Text(static_cast<float>(theHeight));
   aText->SetText(theText.ToExtString());
   aText->SetOrientation(theOrientation);
   aText->SetOwnAnchorPoint(theHasOwnAnchor);
@@ -356,7 +356,7 @@ void Graphic3d_Group::Text(const char* const theText,
                            const bool                              theToEvalMinMax,
                            const bool                              theHasOwnAnchor)
 {
-  occ::handle<Graphic3d_Text> aText = new Graphic3d_Text((float)theHeight);
+  occ::handle<Graphic3d_Text> aText = new Graphic3d_Text(static_cast<float>(theHeight));
   aText->SetText(theText);
   aText->SetOrientation(theOrientation);
   aText->SetOwnAnchorPoint(theHasOwnAnchor);
@@ -372,7 +372,7 @@ void Graphic3d_Group::Text(const TCollection_ExtendedString& theText,
                            const double                      theHeight,
                            const bool                        theToEvalMinMax)
 {
-  occ::handle<Graphic3d_Text> aText = new Graphic3d_Text((float)theHeight);
+  occ::handle<Graphic3d_Text> aText = new Graphic3d_Text(static_cast<float>(theHeight));
   aText->SetText(theText.ToExtString());
   aText->SetPosition(gp_Pnt(thePoint.X(), thePoint.Y(), thePoint.Z()));
   AddText(aText, theToEvalMinMax);
@@ -393,9 +393,9 @@ void Graphic3d_Group::AddText(const occ::handle<Graphic3d_Text>& theTextParams,
     myStructure->CStructure()->Is2dText = !theTextParams->HasPlane();
 
     gp_Pnt aPosition = theTextParams->Position();
-    myBounds.Add(NCollection_Vec4<float>((float)aPosition.X(),
-                                         (float)aPosition.Y(),
-                                         (float)aPosition.Z(),
+    myBounds.Add(NCollection_Vec4<float>(static_cast<float>(aPosition.X()),
+                                         static_cast<float>(aPosition.Y()),
+                                         static_cast<float>(aPosition.Z()),
                                          1.0f));
   }
 

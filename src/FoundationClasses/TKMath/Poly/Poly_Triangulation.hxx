@@ -205,7 +205,7 @@ public:
   {
     SetNormal(
       theIndex,
-      NCollection_Vec3<float>(float(theNormal.X()), float(theNormal.Y()), float(theNormal.Z())));
+      NCollection_Vec3<float>(static_cast<float>(theNormal.X()), static_cast<float>(theNormal.Y()), static_cast<float>(theNormal.Z())));
   }
 
   //! Returns mesh purpose bits.

@@ -150,8 +150,8 @@ static void PrepareConvert(const int                         NumCurves,
   NCollection_Array1<double> Result(1, 2 * (ContinuityOrder + 1) * Dimension);
   NCollection_Array1<double> Prec(1, NbSpace), Suivant(1, NbSpace);
 
-  Res1 = (double*)&(Result.ChangeValue(1));
-  Res2 = (double*)&(Result.ChangeValue((ContinuityOrder + 1) * Dimension + 1));
+  Res1 = static_cast<double*>(&(Result.ChangeValue(1)));
+  Res2 = static_cast<double*>(&(Result.ChangeValue((ContinuityOrder + 1) * Dimension + 1)));
 
   // Init
   Continuity.Init(0);
@@ -163,7 +163,7 @@ static void PrepareConvert(const int                         NumCurves,
     // Init and positioning at the node
     isCi = true;
     Coef1 =
-      (double*)&(Coefficients.Value((icurve - 1) * Dimension * RealDegree + Coefficients.Lower()));
+      const_cast<double*>(&(Coefficients.Value((icurve - 1) * Dimension * RealDegree + Coefficients.Lower())));
     Coef2    = Coef1 + Dimension * RealDegree;
     int Deg1 = NumCoeffPerCurve(NumCoeffPerCurve.Lower() + icurve - 1) - 1;
     PLib::EvalPolynomial(PolynomialIntervals(icurve, 2),
@@ -393,7 +393,7 @@ void AdvApprox_ApproxAFunction::Approximation(
   bool isCut = false;
 
   // Definition of C arrays
-  double* TABINT = (double*)&IntervalsArray(1);
+  double* TABINT = static_cast<double*>(&IntervalsArray(1));
 
   ErrorCode = 0;
   CoefficientArray.Init(0);
@@ -739,7 +739,7 @@ void AdvApprox_ApproxAFunction::Perform(const int                Num1DSS,
                 LocalDimension,
                 myFirst,
                 myLast,
-                *(AdvApprox_EvaluatorFunction*)myEvaluator,
+                *static_cast<AdvApprox_EvaluatorFunction*>(myEvaluator),
                 CutTool,
                 ContinuityOrder,
                 NumMaxCoeffs,
@@ -831,7 +831,7 @@ void AdvApprox_ApproxAFunction::Perform(const int                Num1DSS,
             local_index = (ii - 1) * TotalNumSS;
             error_value += AverageError(local_index + jj);
           }
-          error_value /= (double)NumCurves;
+          error_value /= static_cast<double>(NumCurves);
           my1DAverageError->SetValue(jj, error_value);
         }
         index += myNumSubSpaces[0];
@@ -876,7 +876,7 @@ void AdvApprox_ApproxAFunction::Perform(const int                Num1DSS,
             local_index = (ii - 1) * TotalNumSS + index;
             error_value += AverageError(local_index + jj);
           }
-          error_value /= (double)NumCurves;
+          error_value /= static_cast<double>(NumCurves);
           my2DAverageError->SetValue(jj, error_value);
         }
         index += myNumSubSpaces[1];
@@ -921,7 +921,7 @@ void AdvApprox_ApproxAFunction::Perform(const int                Num1DSS,
             local_index = (ii - 1) * TotalNumSS + index;
             error_value += AverageError(local_index + jj);
           }
-          error_value /= (double)NumCurves;
+          error_value /= static_cast<double>(NumCurves);
           my3DAverageError->SetValue(jj, error_value);
         }
       }

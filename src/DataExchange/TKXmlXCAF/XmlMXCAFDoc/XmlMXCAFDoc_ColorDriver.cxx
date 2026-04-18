@@ -56,7 +56,7 @@ bool XmlMXCAFDoc_ColorDriver::Paste(const XmlObjMgt_Persistent&       theSource,
   }
 
   occ::handle<XCAFDoc_Color> anInt = occ::down_cast<XCAFDoc_Color>(theTarget);
-  anInt->Set((Quantity_NameOfColor)aValue);
+  anInt->Set(static_cast<Quantity_NameOfColor>(aValue));
 
   return true;
 }
@@ -70,5 +70,5 @@ void XmlMXCAFDoc_ColorDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                     XmlObjMgt_SRelocationTable&) const
 {
   occ::handle<XCAFDoc_Color> anInt = occ::down_cast<XCAFDoc_Color>(theSource);
-  XmlObjMgt::SetStringValue(theTarget, (int)anInt->GetNOC());
+  XmlObjMgt::SetStringValue(theTarget, static_cast<int>(anInt->GetNOC()));
 }

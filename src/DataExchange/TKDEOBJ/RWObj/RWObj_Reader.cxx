@@ -67,7 +67,7 @@ static bool isClockwisePolygon(const occ::handle<BRepMesh_DataStructureOfDelaun>
 //=================================================================================================
 
 RWObj_Reader::RWObj_Reader()
-    : myMemLimitBytes(size_t(-1)),
+    : myMemLimitBytes(static_cast<size_t>(-1)),
       myMemEstim(0),
       myNbLines(0),
       myNbProbeNodes(0),
@@ -124,7 +124,7 @@ bool RWObj_Reader::read(std::istream&                  theStream,
   Standard_ReadLineBuffer aBuffer(THE_BUFFER_SIZE);
   aBuffer.SetMultilineMode(true);
 
-  const int             aNbMiBTotal  = int(aFileLen / (1024 * 1024));
+  const int             aNbMiBTotal  = static_cast<int>(aFileLen / (1024 * 1024));
   int                   aNbMiBPassed = 0;
   Message_ProgressScope aPS(theProgress, "Reading text OBJ file", aNbMiBTotal);
   OSD_Timer             aTimer;
@@ -150,7 +150,7 @@ bool RWObj_Reader::read(std::istream&                  theStream,
         return false;
       }
 
-      const int aNbMiBRead = int(aPosition / (1024 * 1024));
+      const int aNbMiBRead = static_cast<int>(aPosition / (1024 * 1024));
       aPS.Next(aNbMiBRead - aNbMiBPassed);
       aNbMiBPassed = aNbMiBRead;
       aTimer.Reset();
@@ -289,7 +289,7 @@ void RWObj_Reader::pushIndices(const char* thePos)
   for (int aNode = 0;; ++aNode)
   {
     NCollection_Vec3<int> a3Indices(-1, -1, -1);
-    a3Indices[0] = int(strtol(thePos, &aNext, 10) - 1);
+    a3Indices[0] = static_cast<int>(strtol(thePos, &aNext, 10) - 1);
     if (aNext == thePos)
     {
       break;
@@ -302,7 +302,7 @@ void RWObj_Reader::pushIndices(const char* thePos)
       ++thePos;
       if (*thePos != '/')
       {
-        a3Indices[1] = int(strtol(thePos, &aNext, 10) - 1);
+        a3Indices[1] = static_cast<int>(strtol(thePos, &aNext, 10) - 1);
         thePos       = aNext;
       }
 
@@ -312,7 +312,7 @@ void RWObj_Reader::pushIndices(const char* thePos)
         ++thePos;
         if (!IsSpace(*thePos))
         {
-          a3Indices[2] = int(strtol(thePos, &aNext, 10) - 1);
+          a3Indices[2] = static_cast<int>(strtol(thePos, &aNext, 10) - 1);
           thePos       = aNext;
         }
       }
@@ -397,7 +397,7 @@ void RWObj_Reader::pushIndices(const char* thePos)
       }
     }
 
-    if (myCurrElem.size() < size_t(aNode))
+    if (myCurrElem.size() < static_cast<size_t>(aNode))
     {
       myCurrElem.resize(aNode * 2, -1);
     }
@@ -483,7 +483,7 @@ gp_XYZ RWObj_Reader::polygonCenter(const NCollection_Array1<int>& theIndices)
     aCenter += getNode(aPntIter.Value()).XYZ();
   }
 
-  aCenter /= (double)theIndices.Size();
+  aCenter /= static_cast<double>(theIndices.Size());
   return aCenter;
 }
 
@@ -724,7 +724,7 @@ bool RWObj_Reader::checkMemory()
   }
 
   Message::SendFail(TCollection_AsciiString("Error: OBJ file content does not fit into ")
-                    + int(myMemLimitBytes / (1024 * 1024)) + " MiB limit."
+                    + static_cast<int>(myMemLimitBytes / (1024 * 1024)) + " MiB limit."
                     + "\nMesh data will be truncated.");
   myToAbort = true;
   return false;

@@ -166,8 +166,8 @@ void Convert_GridPolynomialToPoles::Perform(
 
   NCollection_Array1<double> Patch(1, (myUDegree + 1) * dimension);
   NCollection_Array1<double> Point(1, 3);
-  double*                    Coeffs = (double*)&Patch.ChangeValue(1);
-  double*                    Digit  = (double*)&Point.ChangeValue(1);
+  double*                    Coeffs = static_cast<double*>(&Patch.ChangeValue(1));
+  double*                    Digit  = static_cast<double*>(&Point.ChangeValue(1));
 
   for (ii = 1, Uindex = 1; ii <= UParameters.Length(); ii++)
   {

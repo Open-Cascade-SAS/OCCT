@@ -229,8 +229,8 @@ void HLRTopoBRep_DSFiller::InsertFace(const int /*FI*/,
 
               case Contap_Walking: {
                 // copy the points
-                int ipF = int(parF);
-                int ipL = int(parL);
+                int ipF = static_cast<int>(parF);
+                int ipL = static_cast<int>(parL);
 
                 if (ipL - ipF < 1)
                 {
@@ -319,7 +319,7 @@ void HLRTopoBRep_DSFiller::InsertFace(const int /*FI*/,
 
                   for (int i = 1; i <= nbp; i++)
                   {
-                    knots.SetValue(i, (double)i);
+                    knots.SetValue(i, static_cast<double>(i));
                     mults.SetValue(i, 1);
                     Points.SetValue(i, Line.Point(i + ipF - 1).Value());
                   }
@@ -354,7 +354,7 @@ void HLRTopoBRep_DSFiller::InsertFace(const int /*FI*/,
 
                   for (int i = 1; i <= nbp; i++)
                   {
-                    knots.SetValue(i, (double)i);
+                    knots.SetValue(i, static_cast<double>(i));
                     mults.SetValue(i, 1);
                     const gp_Pnt& P = Line.Point(i + ipF - 1).Value();
                     if (P.X() < Minx)

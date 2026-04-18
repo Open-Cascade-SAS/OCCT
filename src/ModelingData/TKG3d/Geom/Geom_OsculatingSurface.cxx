@@ -507,8 +507,8 @@ bool Geom_OsculatingSurface::buildOsculatingSurface(double theParam,
   }
   else
   {
-    MinDegree = (int)std::min(udeg, vdeg);
-    MaxDegree = (int)std::max(udeg, vdeg);
+    MinDegree = static_cast<int>(std::min(udeg, vdeg));
+    MaxDegree = static_cast<int>(std::max(udeg, vdeg));
 
     NCollection_Array2<gp_Pnt> cachepoles(1, MaxDegree + 1, 1, MinDegree + 1);
     // end for cache
@@ -525,8 +525,8 @@ bool Geom_OsculatingSurface::buildOsculatingSurface(double theParam,
       new NCollection_HArray1<double>(1, 2);
     occ::handle<NCollection_HArray1<double>> TrueUIntervals = new NCollection_HArray1<double>(1, 2);
     occ::handle<NCollection_HArray1<double>> TrueVIntervals = new NCollection_HArray1<double>(1, 2);
-    MaxUDegree                                              = (int)udeg;
-    MaxVDegree                                              = (int)vdeg;
+    MaxUDegree                                              = static_cast<int>(udeg);
+    MaxVDegree                                              = static_cast<int>(vdeg);
 
     for (int i = 1; i <= 2; i++)
     {
@@ -542,16 +542,16 @@ bool Geom_OsculatingSurface::buildOsculatingSurface(double theParam,
 #ifdef OCCT_DEBUG
       std::cout << ">>>>>>>>>>> AlongU" << std::endl;
 #endif
-      OscUNumCoeff = (int)udeg + 1;
-      OscVNumCoeff = (int)vdeg;
+      OscUNumCoeff = static_cast<int>(udeg) + 1;
+      OscVNumCoeff = static_cast<int>(vdeg);
     }
     if (IsAlongV())
     {
 #ifdef OCCT_DEBUG
       std::cout << ">>>>>>>>>>> AlongV" << std::endl;
 #endif
-      OscUNumCoeff = (int)udeg;
-      OscVNumCoeff = (int)vdeg + 1;
+      OscUNumCoeff = static_cast<int>(udeg);
+      OscVNumCoeff = static_cast<int>(vdeg) + 1;
     }
     NumCoeffPerSurface->ChangeValue(1, 1) = OscUNumCoeff;
     NumCoeffPerSurface->ChangeValue(1, 2) = OscVNumCoeff;
@@ -614,22 +614,22 @@ bool Geom_OsculatingSurface::buildOsculatingSurface(double theParam,
     {
       if (udeg > vdeg)
       {
-        for (n = 1; n <= (int)udeg + 1; n++)
-          for (m = 1; m <= (int)vdeg; m++)
+        for (n = 1; n <= static_cast<int>(udeg) + 1; n++)
+          for (m = 1; m <= static_cast<int>(vdeg); m++)
             OscCoeff(n, m) = cachepoles(n, m + 1);
       }
       else
       {
-        for (n = 1; n <= (int)udeg + 1; n++)
-          for (m = 1; m <= (int)vdeg; m++)
+        for (n = 1; n <= static_cast<int>(udeg) + 1; n++)
+          for (m = 1; m <= static_cast<int>(vdeg); m++)
             OscCoeff(n, m) = cachepoles(m + 1, n);
       }
       if (IsVNegative)
         PLib::VTrimming(-1, 0, OscCoeff, PLib::NoWeights2());
 
       index = 1;
-      for (n = 1; n <= (int)udeg + 1; n++)
-        for (m = 1; m <= (int)vdeg; m++)
+      for (n = 1; n <= static_cast<int>(udeg) + 1; n++)
+        for (m = 1; m <= static_cast<int>(vdeg); m++)
         {
           Coefficients->ChangeValue(index++) = OscCoeff(n, m).X();
           Coefficients->ChangeValue(index++) = OscCoeff(n, m).Y();
@@ -641,21 +641,21 @@ bool Geom_OsculatingSurface::buildOsculatingSurface(double theParam,
     {
       if (udeg > vdeg)
       {
-        for (n = 1; n <= (int)udeg; n++)
-          for (m = 1; m <= (int)vdeg + 1; m++)
+        for (n = 1; n <= static_cast<int>(udeg); n++)
+          for (m = 1; m <= static_cast<int>(vdeg) + 1; m++)
             OscCoeff(n, m) = cachepoles(n + 1, m);
       }
       else
       {
-        for (n = 1; n <= (int)udeg; n++)
-          for (m = 1; m <= (int)vdeg + 1; m++)
+        for (n = 1; n <= static_cast<int>(udeg); n++)
+          for (m = 1; m <= static_cast<int>(vdeg) + 1; m++)
             OscCoeff(n, m) = cachepoles(m, n + 1);
       }
       if (IsUNegative)
         PLib::UTrimming(-1, 0, OscCoeff, PLib::NoWeights2());
       index = 1;
-      for (n = 1; n <= (int)udeg; n++)
-        for (m = 1; m <= (int)vdeg + 1; m++)
+      for (n = 1; n <= static_cast<int>(udeg); n++)
+        for (m = 1; m <= static_cast<int>(vdeg) + 1; m++)
         {
           Coefficients->ChangeValue(index++) = OscCoeff(n, m).X();
           Coefficients->ChangeValue(index++) = OscCoeff(n, m).Y();

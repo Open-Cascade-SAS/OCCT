@@ -44,5 +44,5 @@ int Contap_HCurve2dTool::NbSamples(const occ::handle<Adaptor2d_Curve2d>& C,
   }
   if (nbs > 50.)
     nbs = 50.;
-  return ((int)nbs);
+  return (static_cast<int>(nbs));
 }

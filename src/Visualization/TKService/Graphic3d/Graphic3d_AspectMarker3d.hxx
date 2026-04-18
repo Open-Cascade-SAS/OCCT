@@ -58,7 +58,7 @@ public:
   void SetScale(const float theScale) { SetMarkerScale(theScale); }
 
   //! Assign scale factor.
-  void SetScale(const double theScale) { SetScale((float)theScale); }
+  void SetScale(const double theScale) { SetScale(static_cast<float>(theScale)); }
 
   //! Return marker type.
   Aspect_TypeOfMarker Type() const { return myMarkerType; }

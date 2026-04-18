@@ -92,7 +92,7 @@ public:
     const gp_XYZ            aVec01 = myPlaces[1] - myPlaces[0];
     const gp_XYZ            aVec02 = myPlaces[2] - myPlaces[0];
     const gp_XYZ            aCross = aVec01 ^ aVec02;
-    NCollection_Vec3<float> aNorm((float)aCross.X(), (float)aCross.Y(), (float)aCross.Z());
+    NCollection_Vec3<float> aNorm(static_cast<float>(aCross.X()), static_cast<float>(aCross.Y()), static_cast<float>(aCross.Z()));
     return aNorm.Normalized();
   }
 
@@ -161,7 +161,7 @@ private:
   {
     int                           aNodeIndex = myNbNodes;
     const gp_XYZ&                 aPlace     = myPlaces[theTriNode];
-    const NCollection_Vec3<float> aVec3((float)aPlace.X(), (float)aPlace.Y(), (float)aPlace.Z());
+    const NCollection_Vec3<float> aVec3(static_cast<float>(aPlace.X()), static_cast<float>(aPlace.Y()), static_cast<float>(aPlace.Z()));
     if (myNodeIndexMap.Bind(aNodeIndex, theIsOpposite, aVec3, myTriNormal))
     {
       ++myNbNodes;
@@ -228,8 +228,8 @@ private:
     //! Set merge angle.
     void SetMergeAngle(double theAngleRad)
     {
-      myAngle    = (float)theAngleRad;
-      myAngleCos = (float)std::cos(theAngleRad);
+      myAngle    = static_cast<float>(theAngleRad);
+      myAngleCos = static_cast<float>(std::cos(theAngleRad));
     }
 
     //! Return TRUE if merge angle is non-zero.

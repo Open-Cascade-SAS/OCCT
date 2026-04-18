@@ -123,7 +123,7 @@ bool OpenGl_View::updateRaytraceGeometry(const RaytraceUpdateMode           theM
          ++aPriorityIter)
     {
       const NCollection_IndexedMap<const Graphic3d_CStructure*>& aStructures =
-        aLayer->Structures((Graphic3d_DisplayPriority)aPriorityIter);
+        aLayer->Structures(static_cast<Graphic3d_DisplayPriority>(aPriorityIter));
       for (OpenGl_Structure::StructIterator aStructIt(aStructures); aStructIt.More();
            aStructIt.Next())
       {
@@ -348,7 +348,7 @@ OpenGl_RaytraceMaterial OpenGl_View::convertMaterial(
 
   const Graphic3d_MaterialAspect& aSrcMat = theAspect->Aspect()->FrontMaterial();
   const NCollection_Vec3<float>&  aMatCol = theAspect->Aspect()->InteriorColor();
-  const float                     aShine  = 128.0f * float(aSrcMat.Shininess());
+  const float                     aShine  = 128.0f * (aSrcMat.Shininess());
 
   const NCollection_Vec3<float>& aSrcAmb = aSrcMat.AmbientColor();
   const NCollection_Vec3<float>& aSrcDif = aSrcMat.DiffuseColor();
@@ -380,7 +380,7 @@ OpenGl_RaytraceMaterial OpenGl_View::convertMaterial(
     aResMat.Reflection.SetValues(aSrcSpe * aReflectionScale, 0.0f);
   }
 
-  const float anIndex  = (float)aSrcMat.RefractionIndex();
+  const float anIndex  = aSrcMat.RefractionIndex();
   aResMat.Transparency = BVH_Vec4f(aSrcMat.Alpha(),
                                    aSrcMat.Transparency(),
                                    anIndex == 0 ? 1.0f : anIndex,
@@ -1096,7 +1096,7 @@ bool OpenGl_View::ShaderSource::LoadFromFiles(const TCollection_AsciiString* the
     }
 
     TCollection_AsciiString aSource;
-    aFile.Read(aSource, (int)aFile.Size());
+    aFile.Read(aSource, static_cast<int>(aFile.Size()));
     if (!aSource.IsEmpty())
     {
       mySource += TCollection_AsciiString("\n") + aSource;
@@ -2094,7 +2094,7 @@ void OpenGl_View::updateCamera(const NCollection_Mat4<float>& theOrientation,
   {
     for (int aX = -1; aX <= 1; aX += 2)
     {
-      NCollection_Vec4<float> aOrigin(GLfloat(aX), GLfloat(aY), -1.0f, 1.0f);
+      NCollection_Vec4<float> aOrigin(static_cast<GLfloat>(aX), static_cast<GLfloat>(aY), -1.0f, 1.0f);
 
       aOrigin = theUnview * aOrigin;
 
@@ -2102,7 +2102,7 @@ void OpenGl_View::updateCamera(const NCollection_Mat4<float>& theOrientation,
       aOrigin.y() = aOrigin.y() / aOrigin.w();
       aOrigin.z() = aOrigin.z() / aOrigin.w();
 
-      NCollection_Vec4<float> aDirect(GLfloat(aX), GLfloat(aY), 1.0f, 1.0f);
+      NCollection_Vec4<float> aDirect(static_cast<GLfloat>(aX), static_cast<GLfloat>(aY), 1.0f, 1.0f);
 
       aDirect = theUnview * aDirect;
 
@@ -2342,15 +2342,15 @@ bool OpenGl_View::uploadRaytraceData(const occ::handle<OpenGl_Context>& theGlCon
   {
     aResult &= mySceneNodeInfoTexture->Init(theGlContext,
                                             4,
-                                            GLsizei(aTotalBVHNodesNb),
+                                            static_cast<GLsizei>(aTotalBVHNodesNb),
                                             static_cast<const GLuint*>(nullptr));
     aResult &= mySceneMinPointTexture->Init(theGlContext,
                                             3,
-                                            GLsizei(aTotalBVHNodesNb),
+                                            static_cast<GLsizei>(aTotalBVHNodesNb),
                                             static_cast<const GLfloat*>(nullptr));
     aResult &= mySceneMaxPointTexture->Init(theGlContext,
                                             3,
-                                            GLsizei(aTotalBVHNodesNb),
+                                            static_cast<GLsizei>(aTotalBVHNodesNb),
                                             static_cast<const GLfloat*>(nullptr));
   }
 
@@ -2364,7 +2364,7 @@ bool OpenGl_View::uploadRaytraceData(const occ::handle<OpenGl_Context>& theGlCon
   {
     aResult &= myGeometryTriangTexture->Init(theGlContext,
                                              4,
-                                             GLsizei(aTotalElementsNb),
+                                             static_cast<GLsizei>(aTotalElementsNb),
                                              static_cast<const GLuint*>(nullptr));
   }
 
@@ -2372,15 +2372,15 @@ bool OpenGl_View::uploadRaytraceData(const occ::handle<OpenGl_Context>& theGlCon
   {
     aResult &= myGeometryVertexTexture->Init(theGlContext,
                                              3,
-                                             GLsizei(aTotalVerticesNb),
+                                             static_cast<GLsizei>(aTotalVerticesNb),
                                              static_cast<const GLfloat*>(nullptr));
     aResult &= myGeometryNormalTexture->Init(theGlContext,
                                              3,
-                                             GLsizei(aTotalVerticesNb),
+                                             static_cast<GLsizei>(aTotalVerticesNb),
                                              static_cast<const GLfloat*>(nullptr));
     aResult &= myGeometryTexCrdTexture->Init(theGlContext,
                                              2,
-                                             GLsizei(aTotalVerticesNb),
+                                             static_cast<GLsizei>(aTotalVerticesNb),
                                              static_cast<const GLfloat*>(nullptr));
   }
 
@@ -2467,17 +2467,17 @@ bool OpenGl_View::uploadRaytraceData(const occ::handle<OpenGl_Context>& theGlCon
       aResult &= myGeometryNormalTexture->SubData(
         theGlContext,
         aVerticesOffset,
-        GLsizei(aTriangleSet->Normals.size()),
+        static_cast<GLsizei>(aTriangleSet->Normals.size()),
         reinterpret_cast<const GLfloat*>(&aTriangleSet->Normals.front()));
       aResult &= myGeometryTexCrdTexture->SubData(
         theGlContext,
         aVerticesOffset,
-        GLsizei(aTriangleSet->TexCrds.size()),
+        static_cast<GLsizei>(aTriangleSet->TexCrds.size()),
         reinterpret_cast<const GLfloat*>(&aTriangleSet->TexCrds.front()));
       aResult &= myGeometryVertexTexture->SubData(
         theGlContext,
         aVerticesOffset,
-        GLsizei(aTriangleSet->Vertices.size()),
+        static_cast<GLsizei>(aTriangleSet->Vertices.size()),
         reinterpret_cast<const GLfloat*>(&aTriangleSet->Vertices.front()));
     }
 
@@ -2493,7 +2493,7 @@ bool OpenGl_View::uploadRaytraceData(const occ::handle<OpenGl_Context>& theGlCon
       aResult &= myGeometryTriangTexture->SubData(
         theGlContext,
         anElementsOffset,
-        GLsizei(aTriangleSet->Elements.size()),
+        static_cast<GLsizei>(aTriangleSet->Elements.size()),
         reinterpret_cast<const GLuint*>(&aTriangleSet->Elements.front()));
     }
 
@@ -2511,7 +2511,7 @@ bool OpenGl_View::uploadRaytraceData(const occ::handle<OpenGl_Context>& theGlCon
   {
     aResult &= myRaytraceMaterialTexture->Init(theGlContext,
                                                4,
-                                               GLsizei(myRaytraceGeometry.Materials.size() * 19),
+                                               static_cast<GLsizei>(myRaytraceGeometry.Materials.size() * 19),
                                                myRaytraceGeometry.Materials.front().Packed());
 
     if (!aResult)
@@ -2677,7 +2677,7 @@ bool OpenGl_View::updateRaytraceLightSources(const NCollection_Mat4<float>&     
     const GLfloat* aDataPtr = myRaytraceGeometry.Sources.front().Packed();
     if (!myRaytraceLightSrcTexture->Init(theGlContext,
                                          4,
-                                         GLsizei(myRaytraceGeometry.Sources.size() * 2),
+                                         static_cast<GLsizei>(myRaytraceGeometry.Sources.size() * 2),
                                          aDataPtr))
     {
       Message::SendTrace() << "Error: Failed to upload light source buffer";
@@ -2839,8 +2839,8 @@ bool OpenGl_View::setUniformState(const int                          theProgramI
       int                     aTileSize   = myCamera->Tile().TileSize.y();
       int                     aViewSize   = myCamera->Tile().TotalSize.y();
       NCollection_Vec4<float> aColorRange = aBackColorTop - aBackColorBot;
-      aBackColorBot = aBackColorBot + aColorRange * ((float)aTileOffset / aViewSize);
-      aBackColorTop = aBackColorBot + aColorRange * ((float)aTileSize / aViewSize);
+      aBackColorBot = aBackColorBot + aColorRange * (static_cast<float>(aTileOffset) / aViewSize);
+      aBackColorTop = aBackColorBot + aColorRange * (static_cast<float>(aTileSize) / aViewSize);
     }
   }
   aBackColorTop = theGlContext->Vec4FromQuantityColor(aBackColorTop);

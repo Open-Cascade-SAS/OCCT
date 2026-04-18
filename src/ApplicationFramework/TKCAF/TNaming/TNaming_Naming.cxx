@@ -507,7 +507,7 @@ static bool TestSolution(const TNaming_Scope&                   MDF,
         NCollection_Map<int>::Iterator aMapIter(aView);
         for (; aMapIter.More(); aMapIter.Next())
         {
-          TopAbs_ShapeEnum aCurType = (TopAbs_ShapeEnum)aMapIter.Key();
+          TopAbs_ShapeEnum aCurType = static_cast<TopAbs_ShapeEnum>(aMapIter.Key());
           for (TopExp_Explorer exp(Res, aCurType); exp.More(); exp.Next())
           {
             if (MS.Contains(exp.Current()))

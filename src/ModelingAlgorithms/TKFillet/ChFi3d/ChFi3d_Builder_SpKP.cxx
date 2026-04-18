@@ -549,9 +549,9 @@ static bool Tri(const Geom2dHatch_Hatcher& H,
 #endif
       return false;
     }
-    HatchGen_Domain*          Dom = ((HatchGen_Domain*)(void*)&H.Domain(iH, Ind(iSansFirst)));
+    HatchGen_Domain*          Dom = (static_cast<HatchGen_Domain*>((void*)&H.Domain(iH, Ind(iSansFirst))));
     HatchGen_PointOnHatching* PH =
-      ((HatchGen_PointOnHatching*)(void*)&H.Domain(iH, Ind(iSansLast)).FirstPoint());
+      (static_cast<HatchGen_PointOnHatching*>((void*)&H.Domain(iH, Ind(iSansLast)).FirstPoint()));
     double NewPar = H.HatchingCurve(iH).FirstParameter() - period
                     + H.Domain(iH, Ind(iSansLast)).FirstPoint().Parameter();
     PH->SetParameter(NewPar);

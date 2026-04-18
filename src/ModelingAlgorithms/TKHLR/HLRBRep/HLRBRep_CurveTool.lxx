@@ -33,21 +33,21 @@
 
 inline double HLRBRep_CurveTool::FirstParameter(const HLRBRep_CurvePtr C)
 {
-  return (((HLRBRep_Curve*)C)->FirstParameter());
+  return ((static_cast<HLRBRep_Curve*>(C))->FirstParameter());
 }
 
 //=================================================================================================
 
 inline double HLRBRep_CurveTool::LastParameter(const HLRBRep_CurvePtr C)
 {
-  return (((HLRBRep_Curve*)C)->LastParameter());
+  return ((static_cast<HLRBRep_Curve*>(C))->LastParameter());
 }
 
 //=================================================================================================
 
 inline GeomAbs_Shape HLRBRep_CurveTool::Continuity(const HLRBRep_CurvePtr C)
 {
-  return (((HLRBRep_Curve*)C)->Continuity());
+  return ((static_cast<HLRBRep_Curve*>(C))->Continuity());
 }
 
 //=================================================================================================
@@ -57,7 +57,7 @@ inline int HLRBRep_CurveTool::NbIntervals(const HLRBRep_CurvePtr C)
 #if IS_C2_COMPOSITE
   return (((HLRBRep_Curve*)C)->NbIntervals(GeomAbs_C2));
 #else
-  return (((HLRBRep_Curve*)C)->NbIntervals(GeomAbs_C1));
+  return ((static_cast<HLRBRep_Curve*>(C))->NbIntervals(GeomAbs_C1));
 #endif
 }
 
@@ -68,7 +68,7 @@ inline void HLRBRep_CurveTool::Intervals(const HLRBRep_CurvePtr C, NCollection_A
 #if IS_C2_COMPOSITE
   ((HLRBRep_Curve*)C)->Intervals(Tab, GeomAbs_C2);
 #else
-  ((HLRBRep_Curve*)C)->Intervals(Tab, GeomAbs_C1);
+  (static_cast<HLRBRep_Curve*>(C))->Intervals(Tab, GeomAbs_C1);
 #endif
 }
 
@@ -88,35 +88,35 @@ inline void HLRBRep_CurveTool::GetInterval(const HLRBRep_CurvePtr /*C*/,
 
 inline bool HLRBRep_CurveTool::IsClosed(const HLRBRep_CurvePtr C)
 {
-  return (((HLRBRep_Curve*)C)->IsClosed());
+  return ((static_cast<HLRBRep_Curve*>(C))->IsClosed());
 }
 
 //=================================================================================================
 
 inline bool HLRBRep_CurveTool::IsPeriodic(const HLRBRep_CurvePtr C)
 {
-  return (((HLRBRep_Curve*)C)->IsPeriodic());
+  return ((static_cast<HLRBRep_Curve*>(C))->IsPeriodic());
 }
 
 //=================================================================================================
 
 inline double HLRBRep_CurveTool::Period(const HLRBRep_CurvePtr C)
 {
-  return (((HLRBRep_Curve*)C)->Period());
+  return ((static_cast<HLRBRep_Curve*>(C))->Period());
 }
 
 //=================================================================================================
 
 inline gp_Pnt2d HLRBRep_CurveTool::Value(const HLRBRep_CurvePtr C, const double U)
 {
-  return (((HLRBRep_Curve*)C)->Value(U));
+  return ((static_cast<HLRBRep_Curve*>(C))->Value(U));
 }
 
 //=================================================================================================
 
 inline void HLRBRep_CurveTool::D0(const HLRBRep_CurvePtr C, const double U, gp_Pnt2d& P)
 {
-  ((HLRBRep_Curve*)C)->D0(U, P);
+  (static_cast<HLRBRep_Curve*>(C))->D0(U, P);
 }
 
 //=================================================================================================
@@ -126,7 +126,7 @@ inline void HLRBRep_CurveTool::D1(const HLRBRep_CurvePtr C,
                                   gp_Pnt2d&              P,
                                   gp_Vec2d&              T)
 {
-  ((HLRBRep_Curve*)C)->D1(U, P, T);
+  (static_cast<HLRBRep_Curve*>(C))->D1(U, P, T);
 }
 
 //=================================================================================================
@@ -137,7 +137,7 @@ inline void HLRBRep_CurveTool::D2(const HLRBRep_CurvePtr C,
                                   gp_Vec2d&              T,
                                   gp_Vec2d&              N)
 {
-  ((HLRBRep_Curve*)C)->D2(U, P, T, N);
+  (static_cast<HLRBRep_Curve*>(C))->D2(U, P, T, N);
 }
 
 //=================================================================================================
@@ -149,70 +149,70 @@ inline void HLRBRep_CurveTool::D3(const HLRBRep_CurvePtr C,
                                   gp_Vec2d&              V2,
                                   gp_Vec2d&              V3)
 {
-  ((HLRBRep_Curve*)C)->D3(U, P, V1, V2, V3);
+  (static_cast<HLRBRep_Curve*>(C))->D3(U, P, V1, V2, V3);
 }
 
 //=================================================================================================
 
 inline gp_Vec2d HLRBRep_CurveTool::DN(const HLRBRep_CurvePtr C, const double U, const int N)
 {
-  return (((HLRBRep_Curve*)C)->DN(U, N));
+  return ((static_cast<HLRBRep_Curve*>(C))->DN(U, N));
 }
 
 //=================================================================================================
 
 inline double HLRBRep_CurveTool::Resolution(const HLRBRep_CurvePtr C, const double R3d)
 {
-  return (((HLRBRep_Curve*)C)->Resolution(R3d));
+  return ((static_cast<HLRBRep_Curve*>(C))->Resolution(R3d));
 }
 
 //=================================================================================================
 
 inline GeomAbs_CurveType HLRBRep_CurveTool::GetType(const HLRBRep_CurvePtr C)
 {
-  return (((HLRBRep_Curve*)C)->GetType());
+  return ((static_cast<HLRBRep_Curve*>(C))->GetType());
 }
 
 //=================================================================================================
 
 inline GeomAbs_CurveType HLRBRep_CurveTool::TheType(const HLRBRep_CurvePtr C)
 {
-  return (((HLRBRep_Curve*)C)->GetType());
+  return ((static_cast<HLRBRep_Curve*>(C))->GetType());
 }
 
 //=================================================================================================
 
 inline gp_Lin2d HLRBRep_CurveTool::Line(const HLRBRep_CurvePtr C)
 {
-  return (((HLRBRep_Curve*)C)->Line());
+  return ((static_cast<HLRBRep_Curve*>(C))->Line());
 }
 
 //=================================================================================================
 
 inline gp_Circ2d HLRBRep_CurveTool::Circle(const HLRBRep_CurvePtr C)
 {
-  return (((HLRBRep_Curve*)C)->Circle());
+  return ((static_cast<HLRBRep_Curve*>(C))->Circle());
 }
 
 //=================================================================================================
 
 inline gp_Elips2d HLRBRep_CurveTool::Ellipse(const HLRBRep_CurvePtr C)
 {
-  return (((HLRBRep_Curve*)C)->Ellipse());
+  return ((static_cast<HLRBRep_Curve*>(C))->Ellipse());
 }
 
 //=================================================================================================
 
 inline gp_Parab2d HLRBRep_CurveTool::Parabola(const HLRBRep_CurvePtr C)
 {
-  return (((HLRBRep_Curve*)C)->Parabola());
+  return ((static_cast<HLRBRep_Curve*>(C))->Parabola());
 }
 
 //=================================================================================================
 
 inline gp_Hypr2d HLRBRep_CurveTool::Hyperbola(const HLRBRep_CurvePtr C)
 {
-  return (((HLRBRep_Curve*)C)->Hyperbola());
+  return ((static_cast<HLRBRep_Curve*>(C))->Hyperbola());
 }
 
 //=================================================================================================
@@ -248,5 +248,5 @@ inline double HLRBRep_CurveTool::EpsX(const HLRBRep_CurvePtr /*C*/)
 
 inline int HLRBRep_CurveTool::Degree(const HLRBRep_CurvePtr C)
 {
-  return (((HLRBRep_Curve*)C)->Degree());
+  return ((static_cast<HLRBRep_Curve*>(C))->Degree());
 }

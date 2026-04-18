@@ -47,7 +47,7 @@ public:
 
   occ::handle<HLRAlgo_EdgesBlock>& Wire(const int I)
   {
-    return *((occ::handle<HLRAlgo_EdgesBlock>*)&myWires(I));
+    return *(reinterpret_cast<occ::handle<HLRAlgo_EdgesBlock>*>(&myWires(I)));
   }
 
   void UpdateMinMax(const HLRAlgo_EdgesBlock::MinMaxIndices& theMinMaxes)

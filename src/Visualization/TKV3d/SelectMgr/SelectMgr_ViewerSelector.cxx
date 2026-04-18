@@ -693,7 +693,7 @@ void SelectMgr_ViewerSelector::TraverseSensitives(const int theViewId)
   for (int aBVHSetIt = 0; aBVHSetIt < SelectMgr_SelectableObjectSet::BVHSubsetNb; ++aBVHSetIt)
   {
     const SelectMgr_SelectableObjectSet::BVHSubset aBVHSubset =
-      (SelectMgr_SelectableObjectSet::BVHSubset)aBVHSetIt;
+      static_cast<SelectMgr_SelectableObjectSet::BVHSubset>(aBVHSetIt);
     if (mySelectableObjects.IsEmpty(aBVHSubset))
     {
       continue;

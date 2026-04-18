@@ -118,7 +118,7 @@ private:
   //! Thread creation callback.
   static void* doThreadWrapper(void* theData)
   {
-    Media_PlayerContext* aThis = (Media_PlayerContext*)theData;
+    Media_PlayerContext* aThis = static_cast<Media_PlayerContext*>(theData);
     aThis->doThreadLoop();
     return nullptr;
   }

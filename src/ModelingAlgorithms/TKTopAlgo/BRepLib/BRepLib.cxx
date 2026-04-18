@@ -288,7 +288,7 @@ static int evaluateMaxSegment(const int                       aMaxSegment,
   {
     aNbC2dKnots = aCurv2d->NbKnots();
   }
-  int aReturn = (int)(30 + std::max(aNbSKnots, aNbC2dKnots));
+  int aReturn = static_cast<int>(30 + std::max(aNbSKnots, aNbC2dKnots));
   return aReturn;
 }
 
@@ -2890,7 +2890,7 @@ void BRepLib::BoundingVertex(const NCollection_List<TopoDS_Shape>& theLV,
     {
       aXYZ += aPoints(i).XYZ();
     }
-    aXYZ.Divide((double)aNb);
+    aXYZ.Divide(static_cast<double>(aNb));
     //
     gp_Pnt aP(aXYZ);
     //

@@ -235,7 +235,7 @@ bool XmlMNaming_NamingDriver::Paste(const XmlObjMgt_Persistent&       theSource,
         myMessageDriver->Send(aMsgString, Message_Fail);
         return false;
       }
-      aNgName.Orientation((TopAbs_Orientation)aNb);
+      aNgName.Orientation(static_cast<TopAbs_Orientation>(aNb));
     }
     // or. end
   }
@@ -323,7 +323,7 @@ void XmlMNaming_NamingDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
 #endif
 
   // orientation
-  anElem.setAttribute(::OrientString(), (int)aNgName.Orientation());
+  anElem.setAttribute(::OrientString(), static_cast<int>(aNgName.Orientation()));
 }
 
 //=================================================================================================

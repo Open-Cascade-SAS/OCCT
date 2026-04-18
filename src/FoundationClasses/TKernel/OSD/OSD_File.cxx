@@ -805,7 +805,7 @@ void OSD_File::Read(TCollection_AsciiString& theBuffer, const int theNbBytes)
 #ifdef _WIN32
   Read(&aBuffer.ChangeFirst(), theNbBytes, aNbBytesRead);
 #else
-  aNbBytesRead = (int)read(myFileChannel, &aBuffer.ChangeFirst(), theNbBytes);
+  aNbBytesRead = static_cast<int>(read(myFileChannel, &aBuffer.ChangeFirst(), theNbBytes));
   if (aNbBytesRead == -1)
   {
     aNbBytesRead = 0;
@@ -989,10 +989,10 @@ void OSD_File::ReadLine(TCollection_AsciiString& theBuffer,
   }
 #else
   NCollection_Array1<char> aBuffer(0, theNbBytes);
-  char*                    aBufferGets = fgets(&aBuffer.ChangeFirst(), theNbBytes, (FILE*)myFILE);
+  char*                    aBufferGets = fgets(&aBuffer.ChangeFirst(), theNbBytes, static_cast<FILE*>(myFILE));
   if (aBufferGets == nullptr)
   {
-    if (!feof((FILE*)myFILE))
+    if (!feof(static_cast<FILE*>(myFILE)))
     {
       myError.SetValue(errno, Iam, "ReadLine");
       return;
@@ -1005,7 +1005,7 @@ void OSD_File::ReadLine(TCollection_AsciiString& theBuffer,
   else
   {
     aBuffer.ChangeLast() = '\0';
-    theNbBytesRead       = (int)strlen(aBufferGets);
+    theNbBytesRead       = static_cast<int>(strlen(aBufferGets));
     theBuffer.SetValue(1, aBufferGets);
     theBuffer.Trunc(theNbBytesRead);
   }
@@ -1116,7 +1116,7 @@ void OSD_File::Read(void* const theBuffer, const int theNbBytes, int& theNbReadB
   theNbReadBytes = (int)aNbReadBytes;
 #else
   theNbReadBytes   = 0;
-  int aNbReadBytes = (int)read(myFileChannel, (char*)theBuffer, theNbBytes);
+  int aNbReadBytes = static_cast<int>(read(myFileChannel, static_cast<char*>(theBuffer), theNbBytes));
   if (aNbReadBytes == -1)
   {
     myError.SetValue(errno, Iam, "Read");
@@ -1165,7 +1165,7 @@ void OSD_File::Write(void* const theBuffer, const int theNbBytes)
     _osd_wnt_set_error(myError, OSD_WFile);
   }
 #else
-  const int aNbWritten = (int)write(myFileChannel, (const char*)theBuffer, theNbBytes);
+  const int aNbWritten = static_cast<int>(write(myFileChannel, static_cast<const char*>(theBuffer), theNbBytes));
   if (aNbWritten == -1)
   {
     myError.SetValue(errno, Iam, "Write");
@@ -1267,7 +1267,7 @@ void OSD_File::Close()
   myFileChannel = -1;
   if (myFILE != nullptr)
   {
-    (void)fclose((FILE*)myFILE);
+    (void)fclose(static_cast<FILE*>(myFILE));
     myFILE = nullptr;
   }
 #endif
@@ -1570,7 +1570,7 @@ size_t OSD_File::Size()
     myError.SetValue(errno, Iam, "Size");
     return 0;
   }
-  return (size_t)aStatBuf.st_size;
+  return static_cast<size_t>(aStatBuf.st_size);
 #endif
 }
 
@@ -1647,7 +1647,7 @@ void OSD_File::Rewind()
   aDistanceToMove.QuadPart = 0;
   SetFilePointerEx(myFileHandle, aDistanceToMove, NULL, FILE_BEGIN);
 #else
-  rewind((FILE*)myFILE);
+  rewind(static_cast<FILE*>(myFILE));
 #endif
 }
 

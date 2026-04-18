@@ -151,7 +151,7 @@ LDOM_Node LDOM_Node::getLastChild() const
     if (myLastChild == nullptr)
     {
       const LDOM_BasicElement& anElement  = *(const LDOM_BasicElement*)myOrigin;
-      (const LDOM_BasicNode*&)myLastChild = anElement.GetLastChild();
+      const_cast<const LDOM_BasicNode*&>(myLastChild) = anElement.GetLastChild();
     }
     return LDOM_Node(*myLastChild, myDocument);
   }
@@ -195,7 +195,7 @@ void LDOM_Node::appendChild(const LDOM_Node& aChild)
     if (myLastChild)
     {
       aChild.myOrigin->SetSibling(myLastChild->mySibling);
-      (const LDOM_BasicNode*&)myLastChild->mySibling = aChild.myOrigin;
+      const_cast<const LDOM_BasicNode*&>(myLastChild->mySibling) = aChild.myOrigin;
     }
     else
     {
@@ -230,14 +230,14 @@ void LDOM_Node::SetValueClear() const
   {
     case ATTRIBUTE_NODE: {
       const LDOM_BasicAttribute& anAttr = *(const LDOM_BasicAttribute*)myOrigin;
-      aValue                            = (LDOMBasicString*)&anAttr.GetValue();
+      aValue                            = const_cast<LDOMBasicString*>(&anAttr.GetValue());
       break;
     }
     case TEXT_NODE:
     case CDATA_SECTION_NODE:
     case COMMENT_NODE: {
       const LDOM_BasicText& aText = *(const LDOM_BasicText*)myOrigin;
-      aValue                      = (LDOMBasicString*)&aText.GetData();
+      aValue                      = const_cast<LDOMBasicString*>(&aText.GetData());
       break;
     }
     default:

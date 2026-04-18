@@ -872,8 +872,8 @@ bool GeomInt_LineTool::DecompositionOfWLine(
   {
     double fprm = 0., lprm = 0.;
     theLConstructor.Part(j, fprm, lprm);
-    int ifprm = (int)fprm;
-    int ilprm = (int)lprm;
+    int ifprm = static_cast<int>(fprm);
+    int ilprm = static_cast<int>(lprm);
     //
     occ::handle<IntSurf_LineOn2S> aLineOn2S = new IntSurf_LineOn2S();
     //
@@ -1059,8 +1059,8 @@ bool GeomInt_LineTool::DecompositionOfWLine(
   for (j = 1; j <= aNbParts; j++)
   {
     theLConstructor.Part(j, fprm, lprm);
-    ifprm = (int)fprm;
-    ilprm = (int)lprm;
+    ifprm = static_cast<int>(fprm);
+    ilprm = static_cast<int>(lprm);
     //
     if ((ilprm - ifprm) == 1)
     {

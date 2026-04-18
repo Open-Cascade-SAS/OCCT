@@ -46,5 +46,5 @@ int BRepBlend_HCurveTool::NbSamples(const occ::handle<Adaptor3d_Curve>& C,
   }
   if (nbs > 50)
     nbs = 50;
-  return ((int)nbs);
+  return (static_cast<int>(nbs));
 }

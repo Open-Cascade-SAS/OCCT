@@ -95,7 +95,7 @@ static void BuildParameters(const AppDef_MultiLine&          theLine,
     {
       for (i = firstP; i <= lastP; i++)
       {
-        thePars(i) = (double(i) - firstP) / (double(lastP - firstP));
+        thePars(i) = (static_cast<double>(i) - firstP) / (static_cast<double>(lastP - firstP));
       }
     }
   }
@@ -103,7 +103,7 @@ static void BuildParameters(const AppDef_MultiLine&          theLine,
   {
     for (i = firstP; i <= lastP; i++)
     {
-      thePars(i) = (double(i) - firstP) / (double(lastP - double(firstP)));
+      thePars(i) = (static_cast<double>(i) - firstP) / ((lastP - static_cast<double>(firstP)));
     }
   }
 }
@@ -704,7 +704,7 @@ void GeomAPI_PointsToBSplineSurface::Init(const NCollection_Array2<double>& ZPoi
     {
       MP.SetPoint2d(i, gp_Pnt2d(0.0, ZPoints(i, j)));
     }
-    Param(j) = (aVSpan > 0) ? double(j - Jmin) / double(aVSpan) : 0.0;
+    Param(j) = (aVSpan > 0) ? static_cast<double>(j - Jmin) / static_cast<double>(aVSpan) : 0.0;
     Line.SetValue(j, MP);
   }
 
@@ -809,7 +809,7 @@ void GeomAPI_PointsToBSplineSurface::Init(const NCollection_Array2<double>& ZPoi
     {
       MP.SetPoint2d(j, gp_Pnt2d(0.0, Poles(j).Y()));
     }
-    Param2(i) = (aUSpan > 0) ? double(i - 1) / double(aUSpan) : 0.0;
+    Param2(i) = (aUSpan > 0) ? static_cast<double>(i - 1) / static_cast<double>(aUSpan) : 0.0;
     Line2.SetValue(i, MP);
   }
 

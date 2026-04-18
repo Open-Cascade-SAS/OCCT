@@ -357,7 +357,7 @@ void AIS_Manipulator::adjustSize(const Bnd_Box& theBox)
   double aYSize = aYmax - aYmin;
   double aZSize = aZmax - aZmin;
 
-  SetSize((float)(std::max(aXSize, std::max(aYSize, aZSize)) * 0.5));
+  SetSize(static_cast<float>(std::max(aXSize, std::max(aYSize, aZSize)) * 0.5));
 }
 
 //=================================================================================================
@@ -1412,7 +1412,7 @@ void AIS_Manipulator::ComputeSelection(const occ::handle<SelectMgr_Selection>& t
                                        const int                               theMode)
 {
   // Check mode
-  const AIS_ManipulatorMode aMode = (AIS_ManipulatorMode)theMode;
+  const AIS_ManipulatorMode aMode = static_cast<AIS_ManipulatorMode>(theMode);
   if (aMode == AIS_MM_None)
   {
     return;

@@ -42,7 +42,7 @@ inline void HLRAlgo_EdgeIterator::InitVisible(HLRAlgo_EdgeStatus& status)
 {
   EVis    = &status;
   iVis    = 1;
-  myNbVis = ((HLRAlgo_EdgeStatus*)EVis)->NbVisiblePart();
+  myNbVis = (EVis)->NbVisiblePart();
 }
 
 //=================================================================================================
@@ -66,5 +66,5 @@ inline void HLRAlgo_EdgeIterator::Visible(double& Start,
                                           double& End,
                                           float&  TolEnd)
 {
-  ((HLRAlgo_EdgeStatus*)EVis)->VisiblePart(iVis, Start, TolStart, End, TolEnd);
+  (EVis)->VisiblePart(iVis, Start, TolStart, End, TolEnd);
 }

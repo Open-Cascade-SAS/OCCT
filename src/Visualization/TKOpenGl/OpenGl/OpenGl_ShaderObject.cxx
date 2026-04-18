@@ -223,7 +223,7 @@ bool OpenGl_ShaderObject::FetchInfoLog(const occ::handle<OpenGl_Context>& theCtx
   theCtx->core20fwd->glGetShaderiv(myShaderID, GL_INFO_LOG_LENGTH, &aLength);
   if (aLength > 0)
   {
-    GLchar* aLog = (GLchar*)alloca(aLength);
+    GLchar* aLog = static_cast<GLchar*>(alloca(aLength));
     memset(aLog, 0, aLength);
     theCtx->core20fwd->glGetShaderInfoLog(myShaderID, aLength, nullptr, aLog);
     theLog = aLog;
@@ -348,7 +348,7 @@ static bool restoreShaderSource(TCollection_AsciiString&       theSource,
     return false;
   }
 
-  const int aSize = (int)aFile.Size();
+  const int aSize = static_cast<int>(aFile.Size());
   if (aSize > 0)
   {
     theSource = TCollection_AsciiString(aSize, '\0');
@@ -399,7 +399,7 @@ bool OpenGl_ShaderObject::updateDebugDump(const occ::handle<OpenGl_Context>& the
       theCtx->core20fwd->glGetShaderSource(myShaderID,
                                            aLength,
                                            nullptr,
-                                           (GLchar*)aSource.ToCString());
+                                           const_cast<GLchar*>(aSource.ToCString()));
       dumpShaderSource(aFileName, aSource, theToBeautify);
       isDumped = true;
     }

@@ -135,7 +135,7 @@ static void BuildPeriodicTangent(const NCollection_Array1<gp_Pnt2d>& PointsArray
       degree = 2;
     }
     point_array     = (double*)&PointsArray.Value(PointsArray.Lower());
-    parameter_array = (double*)&ParametersArray.Value(1);
+    parameter_array = const_cast<double*>(&ParametersArray.Value(1));
     TangentFlags.SetValue(1, true);
     PLib::EvalLagrange(ParametersArray.Value(1),
                        1,
@@ -178,7 +178,7 @@ static void BuildTangents(const NCollection_Array1<gp_Pnt2d>& PointsArray,
   if (!TangentFlags.Value(1))
   {
     point_array     = (double*)&PointsArray.Value(PointsArray.Lower());
-    parameter_array = (double*)&ParametersArray.Value(1);
+    parameter_array = const_cast<double*>(&ParametersArray.Value(1));
     TangentFlags.SetValue(1, true);
     PLib::EvalLagrange(ParametersArray.Value(1),
                        1,
@@ -197,7 +197,7 @@ static void BuildTangents(const NCollection_Array1<gp_Pnt2d>& PointsArray,
   {
     point_array = (double*)&PointsArray.Value(PointsArray.Upper() - degree);
     TangentFlags.SetValue(TangentFlags.Upper(), true);
-    parameter_array = (double*)&ParametersArray.Value(ParametersArray.Upper() - degree);
+    parameter_array = const_cast<double*>(&ParametersArray.Value(ParametersArray.Upper() - degree));
     PLib::EvalLagrange(ParametersArray.Value(ParametersArray.Upper()),
                        1,
                        degree,
@@ -246,7 +246,7 @@ static void ScaleTangents(const NCollection_Array1<gp_Pnt2d>& PointsArray,
     if (TangentFlags.Value(ii))
     {
       point_array     = (double*)&PointsArray.Value(index);
-      parameter_array = (double*)&ParametersArray.Value(index);
+      parameter_array = const_cast<double*>(&ParametersArray.Value(index));
       PLib::EvalLagrange(ParametersArray.Value(ii),
                          1,
                          degree,

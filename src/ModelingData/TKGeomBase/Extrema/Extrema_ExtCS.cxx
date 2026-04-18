@@ -431,7 +431,7 @@ void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C, const double Uinf, const d
     // Add sharp points
     int                        SolNumber   = mySqDist.Length();
     void*                      CopyC       = (void*)&C;
-    Adaptor3d_Curve&           aC          = *(Adaptor3d_Curve*)CopyC;
+    Adaptor3d_Curve&           aC          = *static_cast<Adaptor3d_Curve*>(CopyC);
     int                        NbIntervals = aC.NbIntervals(GeomAbs_C1);
     NCollection_Array1<double> SharpPoints(1, NbIntervals + 1);
     aC.Intervals(SharpPoints, GeomAbs_C1);

@@ -383,7 +383,7 @@ void ChFi3d_Builder::Compute()
       TopOpeBRepDS_CurveExplorer cex(DStr);
       for (; cex.More(); cex.Next())
       {
-        TopOpeBRepDS_Curve& c     = *((TopOpeBRepDS_Curve*)(void*)&(cex.Curve()));
+        TopOpeBRepDS_Curve& c     = *(static_cast<TopOpeBRepDS_Curve*>((void*)&(cex.Curve())));
         double              tolc  = 0.;
         bool                degen = c.Curve().IsNull();
         if (!degen)

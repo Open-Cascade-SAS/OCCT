@@ -134,7 +134,7 @@ void BRepAdaptor_CompCurve::Initialize(const TopoDS_Wire& W, const bool AC)
         myKnots->ChangeValue(ii + 1) += GCPnts_AbscissaPoint::Length(myCurves->ChangeValue(ii));
       }
       else
-        myKnots->SetValue(ii + 1, (double)ii);
+        myKnots->SetValue(ii + 1, static_cast<double>(ii));
     }
   }
 

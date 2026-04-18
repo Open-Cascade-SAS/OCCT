@@ -155,7 +155,7 @@ public:
     }
 
     const SelectMgr_SortCriterion& aSortCriterion    = myMainSel->PickedData(thePicked);
-    myUnnormImage.ChangeValue<float>(theRow, theCol) = float(aSortCriterion.Depth);
+    myUnnormImage.ChangeValue<float>(theRow, theCol) = static_cast<float>(aSortCriterion.Depth);
     myDepthMin                                       = std::min(myDepthMin, aSortCriterion.Depth);
     myDepthMax                                       = std::max(myDepthMax, aSortCriterion.Depth);
   }
@@ -167,8 +167,8 @@ public:
     float aDelta = 1.0f;
     if (myDepthMin <= myDepthMax)
     {
-      aFrom  = float(myDepthMin);
-      aDelta = float(myDepthMax) - float(myDepthMin);
+      aFrom  = static_cast<float>(myDepthMin);
+      aDelta = static_cast<float>(myDepthMax) - static_cast<float>(myDepthMin);
       if (aDelta <= ShortRealEpsilon())
       {
         aDelta = 1.0f;
@@ -181,8 +181,8 @@ public:
         float aDepth = myUnnormImage.Value<float>(aRowIter, aColIter);
         if (aDepth <= -ShortRealLast() || aDepth >= ShortRealLast())
         {
-          myImage->SetPixelColor(int(aColIter),
-                                 int(aRowIter),
+          myImage->SetPixelColor(static_cast<int>(aColIter),
+                                 static_cast<int>(aRowIter),
                                  Quantity_ColorRGBA(0.0f, 0.0f, 0.0f, 1.0f));
           continue;
         }
@@ -192,8 +192,8 @@ public:
         {
           aNormDepth = 1.0f - aNormDepth;
         }
-        myImage->SetPixelColor(int(aColIter),
-                               int(aRowIter),
+        myImage->SetPixelColor(static_cast<int>(aColIter),
+                               static_cast<int>(aRowIter),
                                Quantity_ColorRGBA(aNormDepth, aNormDepth, aNormDepth, 1.0f));
       }
     }
@@ -224,7 +224,7 @@ public:
     }
 
     const SelectMgr_SortCriterion& aSortCriterion = myMainSel->PickedData(thePicked);
-    const float                    aDepth         = float(aSortCriterion.Depth);
+    const float                    aDepth         = static_cast<float>(aSortCriterion.Depth);
     myImage->SetPixelColor(
       theCol,
       theRow,

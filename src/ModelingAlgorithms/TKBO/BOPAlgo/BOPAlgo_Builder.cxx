@@ -310,7 +310,7 @@ void BOPAlgo_Builder::fillPISteps(BOPAlgo_PISteps& theSteps) const
 void BOPAlgo_Builder::PerformInternal1(const BOPAlgo_PaveFiller&    theFiller,
                                        const Message_ProgressRange& theRange)
 {
-  myPaveFiller     = (BOPAlgo_PaveFiller*)&theFiller;
+  myPaveFiller     = const_cast<BOPAlgo_PaveFiller*>(&theFiller);
   myDS             = myPaveFiller->PDS();
   myContext        = myPaveFiller->Context();
   myFuzzyValue     = myPaveFiller->FuzzyValue();

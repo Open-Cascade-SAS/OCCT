@@ -152,7 +152,7 @@ Quantity_NameOfColor TDataXtd_Presentation::getColorNameFromOldEnum(int theOld)
   {
     return Quantity_NOC_WHITE;
   }
-  return (Quantity_NameOfColor)aNew;
+  return static_cast<Quantity_NameOfColor>(aNew);
 }
 
 //=================================================================================================

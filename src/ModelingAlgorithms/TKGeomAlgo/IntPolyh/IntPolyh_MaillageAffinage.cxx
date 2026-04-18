@@ -1250,7 +1250,7 @@ void IntPolyh_MaillageAffinage::TrianglesDeflectionsRefinementBSB()
   y0 -= y1;
   z0 -= z1;
   diag1                     = x0 * x0 + y0 * y0 + z0 * z0;
-  const double NbSamplesUV1 = double(NbSamplesU1) * double(NbSamplesV1);
+  const double NbSamplesUV1 = static_cast<double>(NbSamplesU1) * static_cast<double>(NbSamplesV1);
   diag1 /= NbSamplesUV1;
 
   MyBox2.Get(x0, y0, z0, x1, y1, z1);
@@ -1258,7 +1258,7 @@ void IntPolyh_MaillageAffinage::TrianglesDeflectionsRefinementBSB()
   y0 -= y1;
   z0 -= z1;
   diag2                     = x0 * x0 + y0 * y0 + z0 * z0;
-  const double NbSamplesUV2 = double(NbSamplesU2) * double(NbSamplesV2);
+  const double NbSamplesUV2 = static_cast<double>(NbSamplesU2) * static_cast<double>(NbSamplesV2);
   diag2 /= NbSamplesUV2;
 
   // The surface with the greatest bounding box is "discretized"

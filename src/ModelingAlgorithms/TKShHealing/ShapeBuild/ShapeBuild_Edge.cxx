@@ -142,7 +142,7 @@ static double AdjustByPeriod(const double Val, const double ToVal, const double 
     return 0.;
   if (P < 1e-100)
     return diff;
-  return (diff > 0 ? -P : P) * (int)(D / P + 0.5);
+  return (diff > 0 ? -P : P) * static_cast<int>(D / P + 0.5);
 }
 
 static bool IsPeriodic(const occ::handle<Geom_Curve>& theCurve)

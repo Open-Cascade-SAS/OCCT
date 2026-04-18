@@ -374,9 +374,9 @@ public: //! @name Setters/Getters
                                                            NCollection_List<TopoDS_Shape>,
                                                            TopTools_ShapeMapHasher>& theEFMap)
   {
-    myEFMap = (NCollection_IndexedDataMap<TopoDS_Shape,
+    myEFMap = const_cast<NCollection_IndexedDataMap<TopoDS_Shape,
                                           NCollection_List<TopoDS_Shape>,
-                                          TopTools_ShapeMapHasher>*)&theEFMap;
+                                          TopTools_ShapeMapHasher>*>(&theEFMap);
   }
 
   //! Sets the FS connection map
@@ -384,9 +384,9 @@ public: //! @name Setters/Getters
                                                            NCollection_List<TopoDS_Shape>,
                                                            TopTools_ShapeMapHasher>& theFSMap)
   {
-    myFSMap = (NCollection_IndexedDataMap<TopoDS_Shape,
+    myFSMap = const_cast<NCollection_IndexedDataMap<TopoDS_Shape,
                                           NCollection_List<TopoDS_Shape>,
-                                          TopTools_ShapeMapHasher>*)&theFSMap;
+                                          TopTools_ShapeMapHasher>*>(&theFSMap);
   }
 
   //! Defines the parallel processing mode

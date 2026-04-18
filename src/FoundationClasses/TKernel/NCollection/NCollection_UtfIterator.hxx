@@ -123,7 +123,7 @@ public:
 
   //! @return the advance in bytes to store current symbol in UTF-32.
   //! Always 4 bytes (method for consistency).
-  constexpr int AdvanceBytesUtf32() const noexcept { return int(sizeof(char32_t)); }
+  constexpr int AdvanceBytesUtf32() const noexcept { return static_cast<int>(sizeof(char32_t)); }
 
   //! Fill the UTF-8 buffer within current Unicode symbol.
   //! Use method AdvanceUtf8() to allocate buffer with enough size.

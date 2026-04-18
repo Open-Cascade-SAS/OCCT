@@ -713,7 +713,7 @@ bool Interface_InterfaceModel::SetCategoryNumber(const int num, const int val)
       c->SetValue(i, thecategory->Value(i));
     thecategory = c;
   }
-  char cval = (char)(val + 32);
+  char cval = static_cast<char>(val + 32);
   thecategory->SetValue(num, cval);
   return true;
 }

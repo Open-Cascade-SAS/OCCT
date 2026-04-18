@@ -183,7 +183,7 @@ AdvApp2Var_Context::AdvApp2Var_Context(const int                                
   // myJMaxU
   int                                      aSize = JDegU - 2 * iu - 1;
   occ::handle<NCollection_HArray1<double>> JMaxU = new NCollection_HArray1<double>(1, aSize);
-  double* JU_array                               = (double*)&JMaxU->ChangeArray1()(JMaxU->Lower());
+  double* JU_array                               = static_cast<double*>(&JMaxU->ChangeArray1()(JMaxU->Lower()));
   AdvApp2Var_ApproxF2var::mma2jmx_(&JDegU, &anOrderU, JU_array);
   myJMaxU = JMaxU;
 
@@ -203,15 +203,15 @@ AdvApp2Var_Context::AdvApp2Var_Context(const int                                
   // myJMaxV
   aSize                                          = JDegV - 2 * iv - 1;
   occ::handle<NCollection_HArray1<double>> JMaxV = new NCollection_HArray1<double>(1, aSize);
-  double* JV_array                               = (double*)&JMaxV->ChangeArray1()(JMaxV->Lower());
+  double* JV_array                               = static_cast<double*>(&JMaxV->ChangeArray1()(JMaxV->Lower()));
   AdvApp2Var_ApproxF2var::mma2jmx_(&JDegV, &anOrderV, JV_array);
   myJMaxV = JMaxV;
 
   // myURoots, myVRoots
   occ::handle<NCollection_HArray1<double>> URoots = new NCollection_HArray1<double>(1, myNbURoot);
-  double* U_array = (double*)&URoots->ChangeArray1()(URoots->Lower());
+  double* U_array = static_cast<double*>(&URoots->ChangeArray1()(URoots->Lower()));
   occ::handle<NCollection_HArray1<double>> VRoots = new NCollection_HArray1<double>(1, myNbVRoot);
-  double* V_array = (double*)&VRoots->ChangeArray1()(VRoots->Lower());
+  double* V_array = static_cast<double*>(&VRoots->ChangeArray1()(VRoots->Lower()));
   AdvApp2Var_ApproxF2var::mma2roo_(&NbPntU, &NbPntV, U_array, V_array);
   myURoots = URoots;
   myVRoots = VRoots;
@@ -219,7 +219,7 @@ AdvApp2Var_Context::AdvApp2Var_Context(const int                                
   // myUGauss
   aSize                                           = (NbPntU / 2 + 1) * (myJDegU - 2 * iu - 1);
   occ::handle<NCollection_HArray1<double>> UGauss = new NCollection_HArray1<double>(1, aSize);
-  double* UG_array = (double*)&UGauss->ChangeArray1()(UGauss->Lower());
+  double* UG_array = static_cast<double*>(&UGauss->ChangeArray1()(UGauss->Lower()));
   AdvApp2Var_ApproxF2var::mmapptt_(&JDegU, &NbPntU, &anOrderU, UG_array, &anErrorCode);
   if (anErrorCode != 0)
   {
@@ -230,7 +230,7 @@ AdvApp2Var_Context::AdvApp2Var_Context(const int                                
   // myVGauss
   aSize                                           = (NbPntV / 2 + 1) * (myJDegV - 2 * iv - 1);
   occ::handle<NCollection_HArray1<double>> VGauss = new NCollection_HArray1<double>(1, aSize);
-  double* VG_array = (double*)&VGauss->ChangeArray1()(VGauss->Lower());
+  double* VG_array = static_cast<double*>(&VGauss->ChangeArray1()(VGauss->Lower()));
   AdvApp2Var_ApproxF2var::mmapptt_(&JDegV, &NbPntV, &anOrderV, VG_array, &anErrorCode);
   if (anErrorCode != 0)
   {

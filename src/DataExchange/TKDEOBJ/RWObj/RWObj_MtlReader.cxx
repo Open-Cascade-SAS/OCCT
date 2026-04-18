@@ -205,7 +205,7 @@ bool RWObj_MtlReader::Read(const TCollection_AsciiString& theFolder,
       aPos             = aNext;
       if (aSpecular >= 0.0)
       {
-        aMat.Shininess = (float)std::min(aSpecular / 1000.0, 1.0);
+        aMat.Shininess = static_cast<float>(std::min(aSpecular / 1000.0, 1.0));
         hasAspect      = true;
       }
     }
@@ -217,7 +217,7 @@ bool RWObj_MtlReader::Read(const TCollection_AsciiString& theFolder,
       aPos           = aNext;
       if (validateScalar(aTransp) && aTransp <= 0.99)
       {
-        aMat.Transparency = (float)aTransp;
+        aMat.Transparency = static_cast<float>(aTransp);
         hasAspect         = true;
       }
     }
@@ -230,7 +230,7 @@ bool RWObj_MtlReader::Read(const TCollection_AsciiString& theFolder,
       aPos           = aNext;
       if (validateScalar(anAlpha) && anAlpha >= 0.01)
       {
-        aMat.Transparency = float(1.0 - anAlpha);
+        aMat.Transparency = static_cast<float>(1.0 - anAlpha);
         hasAspect         = true;
       }
     }

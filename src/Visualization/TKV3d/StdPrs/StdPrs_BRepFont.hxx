@@ -123,43 +123,43 @@ public:
 
 public:
   //! @return vertical distance from the horizontal baseline to the highest character coordinate.
-  double Ascender() const { return myScaleUnits * double(myFTFont->Ascender()); }
+  double Ascender() const { return myScaleUnits * static_cast<double>(myFTFont->Ascender()); }
 
   //! @return vertical distance from the horizontal baseline to the lowest character coordinate.
-  double Descender() const { return myScaleUnits * double(myFTFont->Descender()); }
+  double Descender() const { return myScaleUnits * static_cast<double>(myFTFont->Descender()); }
 
   //! @return default line spacing (the baseline-to-baseline distance).
-  double LineSpacing() const { return myScaleUnits * double(myFTFont->LineSpacing()); }
+  double LineSpacing() const { return myScaleUnits * static_cast<double>(myFTFont->LineSpacing()); }
 
   //! Configured point size
-  double PointSize() const { return myScaleUnits * double(myFTFont->PointSize()); }
+  double PointSize() const { return myScaleUnits * static_cast<double>(myFTFont->PointSize()); }
 
   //! Compute advance to the next character with kerning applied when applicable.
   //! Assuming text rendered horizontally.
   double AdvanceX(const char32_t theUCharNext)
   {
-    return myScaleUnits * double(myFTFont->AdvanceX(theUCharNext));
+    return myScaleUnits * static_cast<double>(myFTFont->AdvanceX(theUCharNext));
   }
 
   //! Compute advance to the next character with kerning applied when applicable.
   //! Assuming text rendered horizontally.
   double AdvanceX(const char32_t theUChar, const char32_t theUCharNext)
   {
-    return myScaleUnits * double(myFTFont->AdvanceX(theUChar, theUCharNext));
+    return myScaleUnits * static_cast<double>(myFTFont->AdvanceX(theUChar, theUCharNext));
   }
 
   //! Compute advance to the next character with kerning applied when applicable.
   //! Assuming text rendered vertically.
   double AdvanceY(const char32_t theUCharNext)
   {
-    return myScaleUnits * double(myFTFont->AdvanceY(theUCharNext));
+    return myScaleUnits * static_cast<double>(myFTFont->AdvanceY(theUCharNext));
   }
 
   //! Compute advance to the next character with kerning applied when applicable.
   //! Assuming text rendered vertically.
   double AdvanceY(const char32_t theUChar, const char32_t theUCharNext)
   {
-    return myScaleUnits * double(myFTFont->AdvanceY(theUChar, theUCharNext));
+    return myScaleUnits * static_cast<double>(myFTFont->AdvanceY(theUChar, theUCharNext));
   }
 
   //! Returns scaling factor for current font size.

@@ -450,7 +450,7 @@ bool isBSplineCurveInvalid(const occ::handle<Geom_Curve>&  theCurve,
         (aLastParam - aFirstParam) / (theBSpline->Knot(anIdx) - theBSpline->Knot(anIdx - 1));
       if (aLenRatio < aLenThres)
       {
-        aNbIntPnts = int(aLenRatio / aLenThres * aNbIntPnts);
+        aNbIntPnts = static_cast<int>(aLenRatio / aLenThres * aNbIntPnts);
         if (aNbIntPnts < 2)
           aNbIntPnts = 2;
       }

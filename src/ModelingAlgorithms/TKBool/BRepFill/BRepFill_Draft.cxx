@@ -153,7 +153,7 @@ static bool GoodOrientation(const Bnd_Box&                           B,
 
   int ii, Ind;
   // #ifndef OCCT_DEBUG
-  int Nb = (int)(4 + (10 * r));
+  int Nb = static_cast<int>(4 + (10 * r));
   // #else
   //   int Nb = 4+(10*r);
   // #endif

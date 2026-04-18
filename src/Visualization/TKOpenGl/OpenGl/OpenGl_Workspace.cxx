@@ -115,7 +115,7 @@ OpenGl_Workspace::OpenGl_Workspace(OpenGl_View*                      theView,
     if (myGlContext->core11ffp != nullptr)
     {
       // enable two-side lighting by default
-      myGlContext->core11ffp->glLightModeli((GLenum)GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+      myGlContext->core11ffp->glLightModeli(static_cast<GLenum>(GL_LIGHT_MODEL_TWO_SIDE), GL_TRUE);
       myGlContext->core11fwd->glHint(GL_POINT_SMOOTH_HINT, GL_FASTEST);
       if (myGlContext->caps->ffpEnable)
       {

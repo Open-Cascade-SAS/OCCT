@@ -59,7 +59,7 @@ void LocOpe_CSIntersector::Init(const TopoDS_Shape& S)
 {
   myDone  = false;
   myShape = S;
-  delete[] (NCollection_Sequence<LocOpe_PntFace>*)myPoints;
+  delete[] static_cast<NCollection_Sequence<LocOpe_PntFace>*>(myPoints);
   myPoints = nullptr;
   myNbelem = 0;
 }
@@ -75,9 +75,9 @@ void LocOpe_CSIntersector::Perform(const NCollection_Sequence<gp_Lin>& Slin)
   myDone = false;
 
   myNbelem = Slin.Length();
-  delete[] (NCollection_Sequence<LocOpe_PntFace>*)myPoints;
+  delete[] static_cast<NCollection_Sequence<LocOpe_PntFace>*>(myPoints);
   myPoints =
-    (NCollection_Sequence<LocOpe_PntFace>*)new NCollection_Sequence<LocOpe_PntFace>[myNbelem];
+    static_cast<NCollection_Sequence<LocOpe_PntFace>*>(new NCollection_Sequence<LocOpe_PntFace>[myNbelem]);
 
   constexpr double binf = RealFirst();
   constexpr double bsup = RealLast();
@@ -91,7 +91,7 @@ void LocOpe_CSIntersector::Perform(const NCollection_Sequence<gp_Lin>& Slin)
       theInt.Perform(Slin(i), binf, bsup);
       if (theInt.IsDone())
       {
-        AddPoints(theInt, (((NCollection_Sequence<LocOpe_PntFace>*)myPoints)[i - 1]), theface);
+        AddPoints(theInt, ((static_cast<NCollection_Sequence<LocOpe_PntFace>*>(myPoints))[i - 1]), theface);
       }
     }
   }
@@ -109,9 +109,9 @@ void LocOpe_CSIntersector::Perform(const NCollection_Sequence<gp_Circ>& Scir)
   myDone = false;
 
   myNbelem = Scir.Length();
-  delete[] (NCollection_Sequence<LocOpe_PntFace>*)myPoints;
+  delete[] static_cast<NCollection_Sequence<LocOpe_PntFace>*>(myPoints);
   myPoints =
-    (NCollection_Sequence<LocOpe_PntFace>*)new NCollection_Sequence<LocOpe_PntFace>[myNbelem];
+    static_cast<NCollection_Sequence<LocOpe_PntFace>*>(new NCollection_Sequence<LocOpe_PntFace>[myNbelem]);
 
   TopExp_Explorer                exp(myShape, TopAbs_FACE);
   occ::handle<GeomAdaptor_Curve> HC   = new GeomAdaptor_Curve();
@@ -129,7 +129,7 @@ void LocOpe_CSIntersector::Perform(const NCollection_Sequence<gp_Circ>& Scir)
       theInt.Perform(HC, binf, bsup);
       if (theInt.IsDone())
       {
-        AddPoints(theInt, (((NCollection_Sequence<LocOpe_PntFace>*)myPoints)[i - 1]), theface);
+        AddPoints(theInt, ((static_cast<NCollection_Sequence<LocOpe_PntFace>*>(myPoints))[i - 1]), theface);
       }
     }
   }
@@ -147,9 +147,9 @@ void LocOpe_CSIntersector::Perform(const NCollection_Sequence<occ::handle<Geom_C
   myDone = false;
 
   myNbelem = Scur.Length();
-  delete[] (NCollection_Sequence<LocOpe_PntFace>*)myPoints;
+  delete[] static_cast<NCollection_Sequence<LocOpe_PntFace>*>(myPoints);
   myPoints =
-    (NCollection_Sequence<LocOpe_PntFace>*)new NCollection_Sequence<LocOpe_PntFace>[myNbelem];
+    static_cast<NCollection_Sequence<LocOpe_PntFace>*>(new NCollection_Sequence<LocOpe_PntFace>[myNbelem]);
 
   TopExp_Explorer                exp(myShape, TopAbs_FACE);
   occ::handle<GeomAdaptor_Curve> HC = new GeomAdaptor_Curve();
@@ -169,7 +169,7 @@ void LocOpe_CSIntersector::Perform(const NCollection_Sequence<occ::handle<Geom_C
       theInt.Perform(HC, binf, bsup);
       if (theInt.IsDone())
       {
-        AddPoints(theInt, (((NCollection_Sequence<LocOpe_PntFace>*)myPoints)[i - 1]), theface);
+        AddPoints(theInt, ((static_cast<NCollection_Sequence<LocOpe_PntFace>*>(myPoints))[i - 1]), theface);
       }
     }
   }
@@ -188,7 +188,7 @@ int LocOpe_CSIntersector::NbPoints(const int I) const
   {
     throw Standard_OutOfRange();
   }
-  return ((NCollection_Sequence<LocOpe_PntFace>*)myPoints)[I - 1].Length();
+  return (static_cast<NCollection_Sequence<LocOpe_PntFace>*>(myPoints))[I - 1].Length();
 }
 
 //=================================================================================================
@@ -203,14 +203,14 @@ const LocOpe_PntFace& LocOpe_CSIntersector::Point(const int I, const int Index) 
   {
     throw Standard_OutOfRange();
   }
-  return ((NCollection_Sequence<LocOpe_PntFace>*)myPoints)[I - 1](Index);
+  return (static_cast<NCollection_Sequence<LocOpe_PntFace>*>(myPoints))[I - 1](Index);
 }
 
 //=================================================================================================
 
 void LocOpe_CSIntersector::Destroy()
 {
-  delete[] (NCollection_Sequence<LocOpe_PntFace>*)myPoints;
+  delete[] static_cast<NCollection_Sequence<LocOpe_PntFace>*>(myPoints);
   myPoints = nullptr;
 }
 
@@ -231,7 +231,7 @@ bool LocOpe_CSIntersector::LocalizeAfter(const int           I,
   {
     throw Standard_OutOfRange();
   }
-  return LocAfter((((NCollection_Sequence<LocOpe_PntFace>*)myPoints)[I - 1]),
+  return LocAfter(((static_cast<NCollection_Sequence<LocOpe_PntFace>*>(myPoints))[I - 1]),
                   From,
                   Tol,
                   Or,
@@ -256,7 +256,7 @@ bool LocOpe_CSIntersector::LocalizeBefore(const int           I,
   {
     throw Standard_OutOfRange();
   }
-  return LocBefore(((NCollection_Sequence<LocOpe_PntFace>*)myPoints)[I - 1],
+  return LocBefore((static_cast<NCollection_Sequence<LocOpe_PntFace>*>(myPoints))[I - 1],
                    From,
                    Tol,
                    Or,
@@ -281,7 +281,7 @@ bool LocOpe_CSIntersector::LocalizeAfter(const int           I,
   {
     throw Standard_OutOfRange();
   }
-  return LocAfter(((NCollection_Sequence<LocOpe_PntFace>*)myPoints)[I - 1],
+  return LocAfter((static_cast<NCollection_Sequence<LocOpe_PntFace>*>(myPoints))[I - 1],
                   FromInd,
                   Tol,
                   Or,
@@ -306,7 +306,7 @@ bool LocOpe_CSIntersector::LocalizeBefore(const int           I,
   {
     throw Standard_OutOfRange();
   }
-  return LocBefore(((NCollection_Sequence<LocOpe_PntFace>*)myPoints)[I - 1],
+  return LocBefore((static_cast<NCollection_Sequence<LocOpe_PntFace>*>(myPoints))[I - 1],
                    FromInd,
                    Tol,
                    Or,

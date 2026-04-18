@@ -193,7 +193,7 @@ void BRepOffsetAPI_MakePipeShell::SetForceApproxC1(const bool ForceApproxC1)
 
 void BRepOffsetAPI_MakePipeShell::SetTransitionMode(const BRepBuilderAPI_TransitionMode Mode)
 {
-  myPipe->SetTransition((BRepFill_TransitionStyle)Mode);
+  myPipe->SetTransition(static_cast<BRepFill_TransitionStyle>(Mode));
 }
 
 //=================================================================================================

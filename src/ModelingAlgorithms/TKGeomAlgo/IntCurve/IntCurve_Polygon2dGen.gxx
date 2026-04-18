@@ -59,7 +59,7 @@ IntCurve_Polygon2dGen::IntCurve_Polygon2dGen(const TheCurve&        C,
   //--
   double u  = Binf;
   double u1 = Bsup;
-  double du = (u1 - u) / (double)(NbPts - 1);
+  double du = (u1 - u) / static_cast<double>(NbPts - 1);
   //  int ip1,i=1;
   int i = 1;
 

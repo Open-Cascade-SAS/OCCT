@@ -198,7 +198,7 @@ void DsgPrs_MidPointPresentation::Add(const occ::handle<Prs3d_Presentation>& aPr
   double       alpha = pl - pf;
   if (alpha < 0)
     alpha += 2. * M_PI;
-  const int nb    = (int)(50.0 * alpha / M_PI);
+  const int nb    = static_cast<int>(50.0 * alpha / M_PI);
   int       nbp   = std::max(4, nb);
   double    dteta = alpha / (nbp - 1);
 
@@ -278,7 +278,7 @@ void DsgPrs_MidPointPresentation::Add(const occ::handle<Prs3d_Presentation>& aPr
   double       alpha = pl - pf;
   if (alpha < 0)
     alpha += 2 * M_PI;
-  const int nb    = (int)(50.0 * alpha / M_PI);
+  const int nb    = static_cast<int>(50.0 * alpha / M_PI);
   int       nbp   = std::max(4, nb);
   double    dteta = alpha / (nbp - 1);
 

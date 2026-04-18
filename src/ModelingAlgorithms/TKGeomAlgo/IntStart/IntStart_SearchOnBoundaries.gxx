@@ -1010,7 +1010,7 @@ bool IsRegularity(const TheArc& /*A*/, const occ::handle<TheTopolTool>& aDomain)
     return false;
   }
 
-  TopoDS_Edge* anE = (TopoDS_Edge*)anEAddress;
+  TopoDS_Edge* anE = static_cast<TopoDS_Edge*>(anEAddress);
 
   return (BRep_Tool::HasContinuity(*anE));
 }
@@ -1031,7 +1031,7 @@ int TreatLC(const TheArc&                    A,
     return anExitCode;
   }
 
-  TopoDS_Edge* anE = (TopoDS_Edge*)anEAddress;
+  TopoDS_Edge* anE = static_cast<TopoDS_Edge*>(anEAddress);
 
   if (BRep_Tool::Degenerated(*anE))
   {

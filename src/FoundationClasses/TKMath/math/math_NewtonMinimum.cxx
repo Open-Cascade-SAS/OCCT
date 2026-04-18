@@ -262,7 +262,7 @@ void math_NewtonMinimum::Dump(Standard_OStream& o) const
 {
   o << "math_Newton Optimisation: ";
   o << " Done   =" << Done << std::endl;
-  o << " Status = " << (int)TheStatus << std::endl;
+  o << " Status = " << static_cast<int>(TheStatus) << std::endl;
   o << " Location Vector = " << Location() << std::endl;
   o << " Minimum value = " << Minimum() << std::endl;
   o << " Previous value = " << PreviousMinimum << std::endl;

@@ -36,8 +36,8 @@ Intrv_Interval::Intrv_Interval()
     : myStart(RealFirst()),
       myEnd(RealLast())
 {
-  myTolStart = (float)Epsilon(RealFirst());
-  myTolEnd   = (float)Epsilon(RealLast());
+  myTolStart = static_cast<float>(Epsilon(RealFirst()));
+  myTolEnd   = static_cast<float>(Epsilon(RealLast()));
 }
 
 //=================================================================================================
@@ -46,8 +46,8 @@ Intrv_Interval::Intrv_Interval(const double Start, const double End)
     : myStart(Start),
       myEnd(End)
 {
-  myTolStart = (float)Epsilon(myStart);
-  myTolEnd   = (float)Epsilon(myEnd);
+  myTolStart = static_cast<float>(Epsilon(myStart));
+  myTolEnd   = static_cast<float>(Epsilon(myEnd));
 }
 
 //=================================================================================================
@@ -61,8 +61,8 @@ Intrv_Interval::Intrv_Interval(const double Start,
       myTolStart(TolStart),
       myTolEnd(TolEnd)
 {
-  float epsStart = (float)Epsilon(myStart);
-  float epsEnd   = (float)Epsilon(myEnd);
+  float epsStart = static_cast<float>(Epsilon(myStart));
+  float epsEnd   = static_cast<float>(Epsilon(myEnd));
   if (myTolStart < epsStart)
     myTolStart = epsStart;
   if (myTolEnd < epsEnd)

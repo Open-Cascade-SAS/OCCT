@@ -89,15 +89,15 @@ void BinMXCAFDoc_AssemblyItemRefDriver::Paste(
     theTarget << aThis->GetItem().ToString();
     if (aThis->IsGUID())
     {
-      theTarget << int(1);
+      theTarget << (1);
       theTarget << aThis->GetGUID();
     }
     else if (aThis->IsSubshapeIndex())
     {
-      theTarget << int(2);
+      theTarget << (2);
       theTarget << aThis->GetSubshapeIndex();
     }
     else
-      theTarget << int(0);
+      theTarget << (0);
   }
 }

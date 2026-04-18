@@ -677,7 +677,7 @@ void BOPAlgo_BuilderSolid::PerformInternalShapes(const Message_ProgressRange& th
       return;
     }
     const TopoDS_Shape& aSolid = aMSLF.FindKey(i);
-    TopoDS_Shape*       pSolid = (TopoDS_Shape*)&aSolid;
+    TopoDS_Shape*       pSolid = const_cast<TopoDS_Shape*>(&aSolid);
 
     const NCollection_List<TopoDS_Shape>& aLF = aMSLF(i);
     if (aLF.IsEmpty())

@@ -325,7 +325,7 @@ bool Standard::StackTrace(char*     theBuffer,
 #else
   const int aTopSkip  = theNbTopSkip + 1; // skip this function call and specified extra number
   int       aNbTraces = theNbTraces + aTopSkip;
-  void**    aStackArr = (void**)alloca(sizeof(void*) * aNbTraces);
+  void**    aStackArr = static_cast<void**>(alloca(sizeof(void*) * aNbTraces));
   if (aStackArr == nullptr)
   {
     return false;
@@ -345,7 +345,7 @@ bool Standard::StackTrace(char*     theBuffer,
   }
 
   const size_t aLenInit = strlen(theBuffer);
-  size_t       aLimit   = (size_t)theBufferSize - aLenInit - 1;
+  size_t       aLimit   = static_cast<size_t>(theBufferSize) - aLenInit - 1;
   if (aLimit > 14)
   {
     strcat(theBuffer, "\n==Backtrace==");

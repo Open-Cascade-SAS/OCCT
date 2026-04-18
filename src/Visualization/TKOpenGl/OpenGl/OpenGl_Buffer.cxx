@@ -180,8 +180,8 @@ void OpenGl_Buffer::BindBufferRange(const occ::handle<OpenGl_Context>& theGlCtx,
   theGlCtx->core30->glBindBufferRange(GetTarget(),
                                       theIndex,
                                       myBufferId,
-                                      (GLintptr)theOffset,
-                                      (GLsizeiptr)theSize);
+                                      static_cast<GLintptr>(theOffset),
+                                      static_cast<GLsizeiptr>(theSize));
 }
 
 //=================================================================================================
@@ -243,7 +243,7 @@ bool OpenGl_Buffer::init(const occ::handle<OpenGl_Context>& theGlCtx,
   myComponentsNb = theComponentsNb;
   myElemsNb      = theElemsNb;
   theGlCtx->core15fwd->glBufferData(GetTarget(),
-                                    GLsizeiptr(myElemsNb) * theStride,
+                                    static_cast<GLsizeiptr>(myElemsNb) * theStride,
                                     theData,
                                     GL_STATIC_DRAW);
   const int anErr = theGlCtx->core15fwd->glGetError();
@@ -256,8 +256,8 @@ bool OpenGl_Buffer::init(const occ::handle<OpenGl_Context>& theGlCtx,
                           GL_DEBUG_SEVERITY_HIGH,
                           TCollection_AsciiString("Error: glBufferData (")
                             + FormatTarget(GetTarget()) + ","
-                            + OpenGl_Context::FormatSize(GLsizeiptr(myElemsNb) * theStride) + ","
-                            + OpenGl_Context::FormatPointer(theData) + ") Id: " + (int)myBufferId
+                            + OpenGl_Context::FormatSize(static_cast<GLsizeiptr>(myElemsNb) * theStride) + ","
+                            + OpenGl_Context::FormatPointer(theData) + ") Id: " + static_cast<int>(myBufferId)
                             + " failed with " + OpenGl_Context::FormatGlError(anErr));
   }
   Unbind(theGlCtx);
@@ -322,8 +322,8 @@ bool OpenGl_Buffer::subData(const occ::handle<OpenGl_Context>& theGlCtx,
   const size_t aDataSize = sizeOfGlType(theDataType);
   theGlCtx->core15fwd->glBufferSubData(
     GetTarget(),
-    GLintptr(theElemFrom) * GLintptr(myComponentsNb) * aDataSize,    // offset in bytes
-    GLsizeiptr(theElemsNb) * GLsizeiptr(myComponentsNb) * aDataSize, // size   in bytes
+    static_cast<GLintptr>(theElemFrom) * static_cast<GLintptr>(myComponentsNb) * aDataSize,    // offset in bytes
+    static_cast<GLsizeiptr>(theElemsNb) * static_cast<GLsizeiptr>(myComponentsNb) * aDataSize, // size   in bytes
     theData);
   const int anErr = theGlCtx->core15fwd->glGetError();
   if (anErr != GL_NO_ERROR)
@@ -334,11 +334,11 @@ bool OpenGl_Buffer::subData(const occ::handle<OpenGl_Context>& theGlCtx,
       0,
       GL_DEBUG_SEVERITY_HIGH,
       TCollection_AsciiString("Error: glBufferSubData (") + FormatTarget(GetTarget()) + ","
-        + OpenGl_Context::FormatSize(GLintptr(theElemFrom) * GLintptr(myComponentsNb) * aDataSize)
+        + OpenGl_Context::FormatSize(static_cast<GLintptr>(theElemFrom) * static_cast<GLintptr>(myComponentsNb) * aDataSize)
         + ","
-        + OpenGl_Context::FormatSize(GLsizeiptr(theElemsNb) * GLsizeiptr(myComponentsNb)
+        + OpenGl_Context::FormatSize(static_cast<GLsizeiptr>(theElemsNb) * static_cast<GLsizeiptr>(myComponentsNb)
                                      * aDataSize)
-        + "," + OpenGl_Context::FormatPointer(theData) + ") Id: " + (int)myBufferId
+        + "," + OpenGl_Context::FormatPointer(theData) + ") Id: " + static_cast<int>(myBufferId)
         + " failed with " + OpenGl_Context::FormatGlError(anErr));
   }
   Unbind(theGlCtx);
@@ -401,8 +401,8 @@ bool OpenGl_Buffer::getSubData(const occ::handle<OpenGl_Context>& theGlCtx,
 
   Bind(theGlCtx);
   const size_t     aDataSize = sizeOfGlType(theDataType);
-  const GLintptr   anOffset  = GLintptr(theElemFrom) * GLintptr(myComponentsNb) * aDataSize;
-  const GLsizeiptr aSize     = GLsizeiptr(theElemsNb) * GLsizeiptr(myComponentsNb) * aDataSize;
+  const GLintptr   anOffset  = static_cast<GLintptr>(theElemFrom) * static_cast<GLintptr>(myComponentsNb) * aDataSize;
+  const GLsizeiptr aSize     = static_cast<GLsizeiptr>(theElemsNb) * static_cast<GLsizeiptr>(myComponentsNb) * aDataSize;
   bool             isDone    = theGlCtx->GetBufferSubData(GetTarget(), anOffset, aSize, theData);
   isDone                     = isDone && (theGlCtx->core15fwd->glGetError() == GL_NO_ERROR);
   Unbind(theGlCtx);

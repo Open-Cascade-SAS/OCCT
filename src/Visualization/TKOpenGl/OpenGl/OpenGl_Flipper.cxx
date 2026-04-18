@@ -24,21 +24,21 @@
 //=================================================================================================
 
 OpenGl_Flipper::OpenGl_Flipper(const gp_Ax2& theReferenceSystem)
-    : myReferenceOrigin((float)theReferenceSystem.Location().X(),
-                        (float)theReferenceSystem.Location().Y(),
-                        (float)theReferenceSystem.Location().Z(),
+    : myReferenceOrigin(static_cast<float>(theReferenceSystem.Location().X()),
+                        static_cast<float>(theReferenceSystem.Location().Y()),
+                        static_cast<float>(theReferenceSystem.Location().Z()),
                         1.0f),
-      myReferenceX((float)theReferenceSystem.XDirection().X(),
-                   (float)theReferenceSystem.XDirection().Y(),
-                   (float)theReferenceSystem.XDirection().Z(),
+      myReferenceX(static_cast<float>(theReferenceSystem.XDirection().X()),
+                   static_cast<float>(theReferenceSystem.XDirection().Y()),
+                   static_cast<float>(theReferenceSystem.XDirection().Z()),
                    1.0f),
-      myReferenceY((float)theReferenceSystem.YDirection().X(),
-                   (float)theReferenceSystem.YDirection().Y(),
-                   (float)theReferenceSystem.YDirection().Z(),
+      myReferenceY(static_cast<float>(theReferenceSystem.YDirection().X()),
+                   static_cast<float>(theReferenceSystem.YDirection().Y()),
+                   static_cast<float>(theReferenceSystem.YDirection().Z()),
                    1.0f),
-      myReferenceZ((float)theReferenceSystem.Axis().Direction().X(),
-                   (float)theReferenceSystem.Axis().Direction().Y(),
-                   (float)theReferenceSystem.Axis().Direction().Z(),
+      myReferenceZ(static_cast<float>(theReferenceSystem.Axis().Direction().X()),
+                   static_cast<float>(theReferenceSystem.Axis().Direction().Y()),
+                   static_cast<float>(theReferenceSystem.Axis().Direction().Z()),
                    1.0f),
       myIsEnabled(true)
 {

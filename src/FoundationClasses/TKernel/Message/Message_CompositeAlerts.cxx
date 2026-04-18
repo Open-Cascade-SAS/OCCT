@@ -89,7 +89,7 @@ bool Message_CompositeAlerts::HasAlert(const occ::handle<Message_Alert>& theAler
   for (int aGravIter = Message_Trace; aGravIter <= Message_Fail; ++aGravIter)
   {
     const NCollection_List<occ::handle<Message_Alert>>& anAlerts =
-      Alerts((Message_Gravity)aGravIter);
+      Alerts(static_cast<Message_Gravity>(aGravIter));
     if (anAlerts.Contains(theAlert))
     {
       return true;

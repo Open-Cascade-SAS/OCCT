@@ -299,7 +299,7 @@ bool OpenGl_PBREnvironment::initTextures(const occ::handle<OpenGl_Context>& theC
 
   if (!myIBLMaps[OpenGl_TypeOfIBLMap_Specular].InitCubeMap(theCtx,
                                                            occ::handle<Graphic3d_CubeMap>(),
-                                                           size_t(1) << myPow2Size,
+                                                           static_cast<size_t>(1) << myPow2Size,
                                                            Image_Format_RGB,
                                                            true,
                                                            false))
@@ -371,7 +371,7 @@ bool OpenGl_PBREnvironment::processDiffIBLMap(const occ::handle<OpenGl_Context>&
     aProg->SetSampler(theCtx, "uEnvMap", theCtx->PBRSpecIBLMapTexUnit());
     aProg->SetUniform(theCtx, "uZCoeff", theDrawParams->IsZInverted ? -1 : 1);
     aProg->SetUniform(theCtx, "uYCoeff", theDrawParams->IsTopDown ? 1 : -1);
-    aProg->SetUniform(theCtx, "uSamplesNum", int(theDrawParams->NbDiffSamples));
+    aProg->SetUniform(theCtx, "uSamplesNum", static_cast<int>(theDrawParams->NbDiffSamples));
 
     myVBO.BindAttribute(theCtx, Graphic3d_TOA_POS);
     theCtx->core11fwd->glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
@@ -476,11 +476,11 @@ bool OpenGl_PBREnvironment::processSpecIBLMap(const occ::handle<OpenGl_Context>&
 
     const occ::handle<OpenGl_ShaderProgram>& aProg = theCtx->ActiveProgram();
     const float                              aSolidAngleSource =
-      float(4.0 * M_PI / (6.0 * float(theDrawParams->EnvMapSize * theDrawParams->EnvMapSize)));
+      static_cast<float>(4.0 * M_PI / (6.0 * static_cast<float>(theDrawParams->EnvMapSize * theDrawParams->EnvMapSize)));
     aProg->SetSampler(theCtx, "uEnvMap", theCtx->PBRSpecIBLMapTexUnit());
     aProg->SetUniform(theCtx, "uZCoeff", theDrawParams->IsZInverted ? -1 : 1);
     aProg->SetUniform(theCtx, "uYCoeff", theDrawParams->IsTopDown ? 1 : -1);
-    aProg->SetUniform(theCtx, "occNbSpecIBLLevels", int(mySpecMapLevelsNumber));
+    aProg->SetUniform(theCtx, "occNbSpecIBLLevels", static_cast<int>(mySpecMapLevelsNumber));
     aProg->SetUniform(theCtx, "uEnvSolidAngleSource", aSolidAngleSource);
     myVBO.BindAttribute(theCtx, Graphic3d_TOA_POS);
   }
@@ -502,9 +502,9 @@ bool OpenGl_PBREnvironment::processSpecIBLMap(const occ::handle<OpenGl_Context>&
     theCtx->ResizeViewport(aViewport);
     if (theDrawParams != nullptr)
     {
-      const int aNbSamples = int(Graphic3d_PBRMaterial::SpecIBLMapSamplesFactor(
+      const int aNbSamples = static_cast<int>(Graphic3d_PBRMaterial::SpecIBLMapSamplesFactor(
                                    theDrawParams->Probability,
-                                   aLevelIter / float(mySpecMapLevelsNumber - 1))
+                                   aLevelIter / static_cast<float>(mySpecMapLevelsNumber - 1))
                                  * theDrawParams->NbSpecSamples);
       theCtx->ActiveProgram()->SetUniform(theCtx, "uSamplesNum", aNbSamples);
       theCtx->ActiveProgram()->SetUniform(theCtx, "uCurrentLevel", aLevelIter);
@@ -535,8 +535,8 @@ bool OpenGl_PBREnvironment::processSpecIBLMap(const occ::handle<OpenGl_Context>&
                                             anIntFormat,
                                             0,
                                             0,
-                                            (GLsizei)aSize,
-                                            (GLsizei)aSize,
+                                            static_cast<GLsizei>(aSize),
+                                            static_cast<GLsizei>(aSize),
                                             0);
         myIBLMaps[OpenGl_TypeOfIBLMap_Specular].Unbind(theCtx, Graphic3d_TextureUnit_1);
         const GLenum anErr = theCtx->core11fwd->glGetError();

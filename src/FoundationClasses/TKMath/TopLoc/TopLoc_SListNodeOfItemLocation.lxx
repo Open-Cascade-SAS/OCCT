@@ -24,10 +24,10 @@ inline TopLoc_SListNodeOfItemLocation::TopLoc_SListNodeOfItemLocation(
 
 inline TopLoc_SListOfItemLocation& TopLoc_SListNodeOfItemLocation::Tail() const
 {
-  return (TopLoc_SListOfItemLocation&)myTail;
+  return const_cast<TopLoc_SListOfItemLocation&>(myTail);
 }
 
 inline TopLoc_ItemLocation& TopLoc_SListNodeOfItemLocation::Value() const
 {
-  return (TopLoc_ItemLocation&)myValue;
+  return const_cast<TopLoc_ItemLocation&>(myValue);
 }

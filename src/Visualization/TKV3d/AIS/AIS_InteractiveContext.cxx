@@ -90,7 +90,7 @@ static void initDefaultHilightAttributes(const occ::handle<Prs3d_Drawer>& theDra
   for (int aPartIter = 0; aPartIter < Prs3d_DatumParts_None; ++aPartIter)
   {
     if (occ::handle<Prs3d_LineAspect> aLineAsp =
-          theDrawer->DatumAspect()->LineAspect((Prs3d_DatumParts)aPartIter))
+          theDrawer->DatumAspect()->LineAspect(static_cast<Prs3d_DatumParts>(aPartIter)))
     {
       aLineAsp->SetColor(theColor);
     }
@@ -2818,7 +2818,7 @@ AIS_StatusOfPick AIS_InteractiveContext::SelectDetected(const AIS_SelectionSchem
     gp_Pnt2d              aMouseRealPos = MainSelector()->GetManager().GetMousePosition();
     if (!Precision::IsInfinite(aMouseRealPos.X()) && !Precision::IsInfinite(aMouseRealPos.Y()))
     {
-      aMousePos.SetValues((int)aMouseRealPos.X(), (int)aMouseRealPos.Y());
+      aMousePos.SetValues(static_cast<int>(aMouseRealPos.X()), static_cast<int>(aMouseRealPos.Y()));
     }
     if (myLastPicked->HandleMouseClick(aMousePos,
                                        Aspect_VKeyMouse_LeftButton,

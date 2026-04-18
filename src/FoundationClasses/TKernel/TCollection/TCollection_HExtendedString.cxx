@@ -258,5 +258,5 @@ bool TCollection_HExtendedString::IsSameState(
 
 TCollection_ExtendedString& TCollection_HExtendedString::ChangeString() const
 {
-  return (TCollection_ExtendedString&)myString;
+  return const_cast<TCollection_ExtendedString&>(myString);
 }

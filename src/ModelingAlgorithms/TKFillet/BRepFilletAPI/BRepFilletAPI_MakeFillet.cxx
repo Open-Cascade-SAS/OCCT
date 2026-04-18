@@ -391,7 +391,7 @@ int BRepFilletAPI_MakeFillet::NbSurfaces() const
 
 const NCollection_List<TopoDS_Shape>& BRepFilletAPI_MakeFillet::NewFaces(const int I)
 {
-  return (*(NCollection_List<TopoDS_Shape>*)&(myBuilder.Builder()->NewFaces(I)));
+  return (*const_cast<NCollection_List<TopoDS_Shape>*>(&(myBuilder.Builder()->NewFaces(I))));
 }
 
 //=================================================================================================

@@ -65,8 +65,8 @@ void BOPDS_SubIterator::Value(int& theI1, int& theI2) const
   const BOPDS_Pair& aPKB = myIterator.Value();
   aPKB.Indices(n1, n2);
   //
-  iT1 = (int)(myDS->ShapeInfo(n1).ShapeType());
-  iT2 = (int)(myDS->ShapeInfo(n2).ShapeType());
+  iT1 = static_cast<int>(myDS->ShapeInfo(n1).ShapeType());
+  iT2 = static_cast<int>(myDS->ShapeInfo(n2).ShapeType());
   //
   theI1 = n1;
   theI2 = n2;

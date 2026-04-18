@@ -53,13 +53,13 @@ bool DEPLY_ConfigurationNode::Load(const occ::handle<DE_ConfigurationContext>& t
   InternalParameters.FileLengthUnit =
     theResource->RealVal("file.length.unit", InternalParameters.FileLengthUnit, aScope);
   InternalParameters.SystemCS =
-    (RWMesh_CoordinateSystem)(theResource->IntegerVal("system.cs",
-                                                      (int)InternalParameters.SystemCS,
+    static_cast<RWMesh_CoordinateSystem>(theResource->IntegerVal("system.cs",
+                                                      static_cast<int>(InternalParameters.SystemCS),
                                                       aScope)
                               % 2);
   InternalParameters.FileCS =
-    (RWMesh_CoordinateSystem)(theResource->IntegerVal("file.cs",
-                                                      (int)InternalParameters.FileCS,
+    static_cast<RWMesh_CoordinateSystem>(theResource->IntegerVal("file.cs",
+                                                      static_cast<int>(InternalParameters.FileCS),
                                                       aScope)
                               % 2);
 
@@ -225,6 +225,6 @@ bool DEPLY_ConfigurationNode::CheckContent(const occ::handle<NCollection_Buffer>
   {
     return false;
   }
-  const char* aBytes = (const char*)theBuffer->Data();
+  const char* aBytes = reinterpret_cast<const char*>(theBuffer->Data());
   return !::strncmp(aBytes, "ply", 3) && ::isspace(aBytes[3]);
 }

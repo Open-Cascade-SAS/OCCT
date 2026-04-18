@@ -148,7 +148,7 @@ void AdvApp2Var_Iso::MakeApprox(const AdvApp2Var_Context&           Conditions,
       NBROOT    = (Conditions.URoots())->Length();
       if (myExtremOrder > -1)
         NBROOT -= 2;
-      ROOTLG = (double*)&HUROOT->ChangeArray1()(HUROOT->Lower());
+      ROOTLG = static_cast<double*>(&HUROOT->ChangeArray1()(HUROOT->Lower()));
       NDGJAC = Conditions.UJacDeg();
       NCFLIM = Conditions.ULimit();
       break;
@@ -161,7 +161,7 @@ void AdvApp2Var_Iso::MakeApprox(const AdvApp2Var_Context&           Conditions,
       NBROOT    = (Conditions.VRoots())->Length();
       if (myExtremOrder > -1)
         NBROOT -= 2;
-      ROOTLG = (double*)&HVROOT->ChangeArray1()(HVROOT->Lower());
+      ROOTLG = static_cast<double*>(&HVROOT->ChangeArray1()(HVROOT->Lower()));
       NDGJAC = Conditions.VJacDeg();
       NCFLIM = Conditions.VLimit();
       break;
@@ -210,29 +210,29 @@ void AdvApp2Var_Iso::MakeApprox(const AdvApp2Var_Context&           Conditions,
       }
       break;
   }
-  double* EPSAPR = (double*)&HEPSAPR->ChangeArray1()(HEPSAPR->Lower());
+  double* EPSAPR = static_cast<double*>(&HEPSAPR->ChangeArray1()(HEPSAPR->Lower()));
 
   // the tables of approximations
   int                                      SZCRB = NDIMEN * NCFLIM;
   occ::handle<NCollection_HArray1<double>> HCOURBE =
     new NCollection_HArray1<double>(1, SZCRB * (IDERIV + 1));
-  double* COURBE = (double*)&HCOURBE->ChangeArray1()(HCOURBE->Lower());
+  double* COURBE = static_cast<double*>(&HCOURBE->ChangeArray1()(HCOURBE->Lower()));
   double* CRBAPP = COURBE;
   int     SZTAB  = (1 + NBROOT / 2) * NDIMEN;
   occ::handle<NCollection_HArray1<double>> HSOMTAB =
     new NCollection_HArray1<double>(1, SZTAB * (IDERIV + 1));
-  double* SOMTAB = (double*)&HSOMTAB->ChangeArray1()(HSOMTAB->Lower());
+  double* SOMTAB = static_cast<double*>(&HSOMTAB->ChangeArray1()(HSOMTAB->Lower()));
   double* SOMAPP = SOMTAB;
   occ::handle<NCollection_HArray1<double>> HDIFTAB =
     new NCollection_HArray1<double>(1, SZTAB * (IDERIV + 1));
-  double* DIFTAB = (double*)&HDIFTAB->ChangeArray1()(HDIFTAB->Lower());
+  double* DIFTAB = static_cast<double*>(&HDIFTAB->ChangeArray1()(HDIFTAB->Lower()));
   double* DIFAPP = DIFTAB;
   occ::handle<NCollection_HArray1<double>> HCONTR1 =
     new NCollection_HArray1<double>(1, (IORDRE + 2) * NDIMEN);
-  double* CONTR1 = (double*)&HCONTR1->ChangeArray1()(HCONTR1->Lower());
+  double* CONTR1 = static_cast<double*>(&HCONTR1->ChangeArray1()(HCONTR1->Lower()));
   occ::handle<NCollection_HArray1<double>> HCONTR2 =
     new NCollection_HArray1<double>(1, (IORDRE + 2) * NDIMEN);
-  double* CONTR2 = (double*)&HCONTR2->ChangeArray1()(HCONTR2->Lower());
+  double* CONTR2 = static_cast<double*>(&HCONTR2->ChangeArray1()(HCONTR2->Lower()));
   occ::handle<NCollection_HArray2<double>> HERRMAX =
     new NCollection_HArray2<double>(1, NBSESP, 1, IDERIV + 1);
   double*                                  EMXAPP = new double[NBSESP];

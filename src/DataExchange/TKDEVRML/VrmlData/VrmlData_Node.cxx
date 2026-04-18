@@ -85,7 +85,7 @@ void VrmlData_Node::setName(const char* theName, const char* theSuffix)
   size_t len[2] = {strlen(theName) + 1, 0};
   if (theSuffix)
     len[1] = strlen(theSuffix);
-  char* aName = (char*)Scene().Allocator()->Allocate(len[0] + len[1]);
+  char* aName = static_cast<char*>(Scene().Allocator()->Allocate(len[0] + len[1]));
   myName      = aName;
   memcpy(aName, theName, len[0]);
   if (len[1])
@@ -520,7 +520,7 @@ VrmlData_ImageTexture::VrmlData_ImageTexture(const VrmlData_Scene& theScene,
     : VrmlData_Texture(theScene, theName, theRepS, theRepT),
       myURL(theScene.Allocator())
 {
-  myURL.Append(theURL ? (const char*)theURL : "");
+  myURL.Append(theURL ? theURL : "");
 }
 
 //=================================================================================================

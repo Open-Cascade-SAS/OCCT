@@ -231,7 +231,7 @@ public:
                          const float theFactor = 1.0f,
                          const float theUnits  = 0.0f)
   {
-    myPolygonOffset.Mode   = (Aspect_PolygonOffsetMode)(theMode & Aspect_POM_Mask);
+    myPolygonOffset.Mode   = static_cast<Aspect_PolygonOffsetMode>(theMode & Aspect_POM_Mask);
     myPolygonOffset.Factor = theFactor;
     myPolygonOffset.Units  = theUnits;
   }
@@ -423,7 +423,7 @@ public:
   float TextAngle() const { return myTextAngle; }
 
   //! Turns usage of text rotated
-  void SetTextAngle(float theAngle) { myTextAngle = (float)theAngle; }
+  void SetTextAngle(float theAngle) { myTextAngle = theAngle; }
 
   //! @name parameters specific to Mesh Edges (of triangulation primitive) rendering
 public:
@@ -468,7 +468,7 @@ public:
   float EdgeWidth() const { return myLineWidth; }
 
   //! Modifies the edge thickness (same as SetLineWidth())
-  void SetEdgeWidth(double theWidth) { SetLineWidth((float)theWidth); }
+  void SetEdgeWidth(double theWidth) { SetLineWidth(static_cast<float>(theWidth)); }
 
   //! Returns TRUE if drawing element edges should discard first edge in triangle; FALSE by default.
   //! Graphics hardware works mostly with triangles, so that wireframe presentation will draw

@@ -236,10 +236,10 @@ bool RWPly_CafWriter::writeNodes(RWPly_PlyWriterContext&    theWriter,
     // NCollection_Vec4<float> aColorF = Quantity_ColorRGBA::Convert_LinearRGB_To_sRGB
     // (theFace.FaceColor());
     NCollection_Vec4<float> aColorF = theFace.FaceColor();
-    aColorVec.SetValues((unsigned char)int(aColorF.r() * 255.0f),
-                        (unsigned char)int(aColorF.g() * 255.0f),
-                        (unsigned char)int(aColorF.b() * 255.0f),
-                        (unsigned char)int(aColorF.a() * 255.0f));
+    aColorVec.SetValues(static_cast<unsigned char>(static_cast<int>(aColorF.r() * 255.0f)),
+                        static_cast<unsigned char>(static_cast<int>(aColorF.g() * 255.0f)),
+                        static_cast<unsigned char>(static_cast<int>(aColorF.b() * 255.0f)),
+                        static_cast<unsigned char>(static_cast<int>(aColorF.a() * 255.0f)));
   }
   for (int aNodeIter = theFace.NodeLower(); aNodeIter <= aNodeUpper && thePSentry.More();
        ++aNodeIter, thePSentry.Next())
@@ -249,13 +249,13 @@ bool RWPly_CafWriter::writeNodes(RWPly_PlyWriterContext&    theWriter,
     if (theFace.HasNormals())
     {
       gp_Dir aNorm = theFace.NormalTransformed(aNodeIter);
-      aNormVec.SetValues((float)aNorm.X(), (float)aNorm.Y(), (float)aNorm.Z());
+      aNormVec.SetValues(static_cast<float>(aNorm.X()), static_cast<float>(aNorm.Y()), static_cast<float>(aNorm.Z()));
       myCSTrsf.TransformNormal(aNormVec);
     }
     if (theFace.HasTexCoords())
     {
       const gp_Pnt2d aUV = theFace.NodeTexCoord(aNodeIter);
-      aTexVec.SetValues((float)aUV.X(), (float)aUV.Y());
+      aTexVec.SetValues(static_cast<float>(aUV.X()), static_cast<float>(aUV.Y()));
     }
 
     if (!theWriter.WriteVertex(aNode, aNormVec, aTexVec, aColorVec))

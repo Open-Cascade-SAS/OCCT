@@ -130,14 +130,14 @@ occ::handle<HLRBRep_Data> HLRBRep_ShapeToHLR::Load(
       o1 = false;
       c1 = false;
       pf = RealFirst();
-      tf = (float)Epsilon(pf);
+      tf = static_cast<float>(Epsilon(pf));
     }
     else
     {
       i1 = VerticesToEdges.FindIndex(VF);
       o1 = TopDS.IsOutV(VF);
       c1 = TopDS.IsIntV(VF);
-      tf = (float)BRep_Tool::Tolerance(VF);
+      tf = static_cast<float>(BRep_Tool::Tolerance(VF));
     }
 
     if (VL.IsNull())
@@ -146,14 +146,14 @@ occ::handle<HLRBRep_Data> HLRBRep_ShapeToHLR::Load(
       o2 = false;
       c2 = false;
       pl = RealLast();
-      tl = (float)Epsilon(pl);
+      tl = static_cast<float>(Epsilon(pl));
     }
     else
     {
       i2 = VerticesToEdges.FindIndex(VL);
       o2 = TopDS.IsOutV(VL);
       c2 = TopDS.IsIntV(VL);
-      tl = (float)BRep_Tool::Tolerance(VL);
+      tl = static_cast<float>(BRep_Tool::Tolerance(VL));
     }
 
     ed->Set(reg1, regn, Edg, i1, i2, o1, o2, c1, c2, pf, tf, pl, tl);

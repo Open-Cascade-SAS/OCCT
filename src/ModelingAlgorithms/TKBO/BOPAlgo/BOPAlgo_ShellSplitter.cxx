@@ -59,7 +59,7 @@ public:
   //
   void SetConnexityBlock(const BOPTools_ConnexityBlock& aCB)
   {
-    myPCB = (BOPTools_ConnexityBlock*)&aCB;
+    myPCB = const_cast<BOPTools_ConnexityBlock*>(&aCB);
   }
 
   //

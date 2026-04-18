@@ -67,7 +67,7 @@ TCollection_AsciiString Font_SystemFont::ToString() const
   aDesc += " [aspects: ";
   for (int anAspectIter = 0; anAspectIter < Font_FontAspect_NB; ++anAspectIter)
   {
-    if (!HasFontAspect((Font_FontAspect)anAspectIter))
+    if (!HasFontAspect(static_cast<Font_FontAspect>(anAspectIter)))
     {
       continue;
     }
@@ -80,7 +80,7 @@ TCollection_AsciiString Font_SystemFont::ToString() const
     {
       isFirstAspect = false;
     }
-    aDesc += Font_FontMgr::FontAspectToString((Font_FontAspect)anAspectIter);
+    aDesc += Font_FontMgr::FontAspectToString(static_cast<Font_FontAspect>(anAspectIter));
   }
   aDesc += "]";
 
@@ -88,7 +88,7 @@ TCollection_AsciiString Font_SystemFont::ToString() const
   aDesc += " [paths: ";
   for (int anAspectIter = 0; anAspectIter < Font_FontAspect_NB; ++anAspectIter)
   {
-    if (!HasFontAspect((Font_FontAspect)anAspectIter))
+    if (!HasFontAspect(static_cast<Font_FontAspect>(anAspectIter)))
     {
       continue;
     }
@@ -101,10 +101,10 @@ TCollection_AsciiString Font_SystemFont::ToString() const
     {
       isFirstAspect = false;
     }
-    aDesc += FontPath((Font_FontAspect)anAspectIter);
-    if (FontFaceId((Font_FontAspect)anAspectIter) != 0)
+    aDesc += FontPath(static_cast<Font_FontAspect>(anAspectIter));
+    if (FontFaceId(static_cast<Font_FontAspect>(anAspectIter)) != 0)
     {
-      aDesc = aDesc + "," + FontFaceId((Font_FontAspect)anAspectIter);
+      aDesc = aDesc + "," + FontFaceId(static_cast<Font_FontAspect>(anAspectIter));
     }
   }
   aDesc += "]";

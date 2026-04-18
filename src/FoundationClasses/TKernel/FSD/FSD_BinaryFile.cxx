@@ -258,7 +258,7 @@ int FSD_BinaryFile::PutInteger(Standard_OStream& theOStream,
 
   if (!theOnlyCount)
   {
-    theOStream.write((char*)&t, sizeof(int));
+    theOStream.write(reinterpret_cast<char*>(&t), sizeof(int));
     if (theOStream.fail())
     {
       throw Storage_StreamWriteError();
@@ -335,7 +335,7 @@ Storage_BaseDriver& FSD_BinaryFile::GetReference(int& aValue)
 //=======================================================================
 void FSD_BinaryFile::GetReference(Standard_IStream& theIStream, int& aValue)
 {
-  theIStream.read((char*)&aValue, sizeof(int));
+  theIStream.read(reinterpret_cast<char*>(&aValue), sizeof(int));
 
   if (theIStream.gcount() != sizeof(int))
   {
@@ -385,7 +385,7 @@ Storage_BaseDriver& FSD_BinaryFile::GetInteger(int& aValue)
 void FSD_BinaryFile::GetInteger(Standard_IStream& theIStream, int& theValue)
 {
 
-  theIStream.read((char*)&theValue, sizeof(int));
+  theIStream.read(reinterpret_cast<char*>(&theValue), sizeof(int));
 
   if (theIStream.gcount() != sizeof(int))
   {
@@ -467,7 +467,7 @@ Storage_Error FSD_BinaryFile::BeginWriteInfoSection()
   if (!fwrite(FSD_BinaryFile::MagicNumber(), strlen(FSD_BinaryFile::MagicNumber()), 1, myStream))
     throw Storage_StreamWriteError();
 
-  myHeader.binfo = (int)ftell(myStream);
+  myHeader.binfo = static_cast<int>(ftell(myStream));
   WriteHeader();
 
   return Storage_VSOk;
@@ -544,7 +544,7 @@ int FSD_BinaryFile::WriteInfo(Standard_OStream&                                 
 
 Storage_Error FSD_BinaryFile::EndWriteInfoSection()
 {
-  myHeader.einfo = (int)ftell(myStream);
+  myHeader.einfo = static_cast<int>(ftell(myStream));
   return Storage_VSOk;
 }
 
@@ -747,7 +747,7 @@ Storage_Error FSD_BinaryFile::EndReadInfoSection()
 
 Storage_Error FSD_BinaryFile::BeginWriteCommentSection()
 {
-  myHeader.bcomment = (int)ftell(myStream);
+  myHeader.bcomment = static_cast<int>(ftell(myStream));
   return Storage_VSOk;
 }
 
@@ -797,7 +797,7 @@ int FSD_BinaryFile::WriteComment(
 
 Storage_Error FSD_BinaryFile::EndWriteCommentSection()
 {
-  myHeader.ecomment = (int)ftell(myStream);
+  myHeader.ecomment = static_cast<int>(ftell(myStream));
   return Storage_VSOk;
 }
 
@@ -871,7 +871,7 @@ Storage_Error FSD_BinaryFile::EndReadCommentSection()
 
 Storage_Error FSD_BinaryFile::BeginWriteTypeSection()
 {
-  myHeader.btype = (int)ftell(myStream);
+  myHeader.btype = static_cast<int>(ftell(myStream));
   return Storage_VSOk;
 }
 
@@ -895,7 +895,7 @@ void FSD_BinaryFile::WriteTypeInformations(const int                      typeNu
 
 Storage_Error FSD_BinaryFile::EndWriteTypeSection()
 {
-  myHeader.etype = (int)ftell(myStream);
+  myHeader.etype = static_cast<int>(ftell(myStream));
   return Storage_VSOk;
 }
 
@@ -971,7 +971,7 @@ Storage_Error FSD_BinaryFile::EndReadTypeSection()
 
 Storage_Error FSD_BinaryFile::BeginWriteRootSection()
 {
-  myHeader.broot = (int)ftell(myStream);
+  myHeader.broot = static_cast<int>(ftell(myStream));
   return Storage_VSOk;
 }
 
@@ -997,7 +997,7 @@ void FSD_BinaryFile::WriteRoot(const TCollection_AsciiString& rootName,
 
 Storage_Error FSD_BinaryFile::EndWriteRootSection()
 {
-  myHeader.eroot = (int)ftell(myStream);
+  myHeader.eroot = static_cast<int>(ftell(myStream));
   return Storage_VSOk;
 }
 
@@ -1078,7 +1078,7 @@ Storage_Error FSD_BinaryFile::EndReadRootSection()
 
 Storage_Error FSD_BinaryFile::BeginWriteRefSection()
 {
-  myHeader.bref = (int)ftell(myStream);
+  myHeader.bref = static_cast<int>(ftell(myStream));
   return Storage_VSOk;
 }
 
@@ -1101,7 +1101,7 @@ void FSD_BinaryFile::WriteReferenceType(const int reference, const int typeNum)
 
 Storage_Error FSD_BinaryFile::EndWriteRefSection()
 {
-  myHeader.eref = (int)ftell(myStream);
+  myHeader.eref = static_cast<int>(ftell(myStream));
   return Storage_VSOk;
 }
 
@@ -1175,7 +1175,7 @@ Storage_Error FSD_BinaryFile::EndReadRefSection()
 
 Storage_Error FSD_BinaryFile::BeginWriteDataSection()
 {
-  myHeader.bdata = (int)ftell(myStream);
+  myHeader.bdata = static_cast<int>(ftell(myStream));
   return Storage_VSOk;
 }
 
@@ -1207,7 +1207,7 @@ void FSD_BinaryFile::EndWritePersistentObjectData() {}
 
 Storage_Error FSD_BinaryFile::EndWriteDataSection()
 {
-  myHeader.edata = (int)ftell(myStream);
+  myHeader.edata = static_cast<int>(ftell(myStream));
 
   fseek(myStream, myHeader.binfo, SEEK_SET);
   WriteHeader();
@@ -1319,7 +1319,7 @@ void FSD_BinaryFile::ReadString(TCollection_AsciiString& aString)
   GetInteger(size);
   if (size > 0)
   {
-    char* c = (char*)Standard::Allocate((size + 1) * sizeof(char));
+    char* c = static_cast<char*>(Standard::Allocate((size + 1) * sizeof(char)));
     if (!fread(c, size, 1, myStream))
       throw Storage_StreamWriteError();
     c[size] = '\0';
@@ -1344,7 +1344,7 @@ void FSD_BinaryFile::ReadString(Standard_IStream& theIStream, TCollection_AsciiS
 
   if (size > 0)
   {
-    char* c = (char*)Standard::Allocate((size + 1) * sizeof(char));
+    char* c = static_cast<char*>(Standard::Allocate((size + 1) * sizeof(char)));
 
     if (!theIStream.good())
     {
@@ -1459,7 +1459,7 @@ void FSD_BinaryFile::ReadExtendedString(TCollection_ExtendedString& aString)
   GetInteger(size);
   if (size > 0)
   {
-    char16_t* c = (char16_t*)Standard::Allocate((size + 1) * sizeof(char16_t));
+    char16_t* c = static_cast<char16_t*>(Standard::Allocate((size + 1) * sizeof(char16_t)));
     if (!fread(c, size * sizeof(char16_t), 1, myStream))
       throw Storage_StreamWriteError();
     c[size] = '\0';
@@ -1489,15 +1489,15 @@ void FSD_BinaryFile::ReadExtendedString(Standard_IStream&           theIStream,
 
   if (size > 0)
   {
-    char16_t* c = (char16_t*)Standard::Allocate((size + 1) * sizeof(char16_t));
+    char16_t* c = static_cast<char16_t*>(Standard::Allocate((size + 1) * sizeof(char16_t)));
 
     if (!theIStream.good())
     {
       throw Storage_StreamReadError();
     }
 
-    const std::streamsize aNbBytes = std::streamsize(sizeof(char16_t) * size);
-    theIStream.read((char*)c, aNbBytes);
+    const std::streamsize aNbBytes = static_cast<std::streamsize>(sizeof(char16_t) * size);
+    theIStream.read(reinterpret_cast<char*>(c), aNbBytes);
     if (theIStream.gcount() != aNbBytes)
     {
       throw Storage_StreamReadError();
@@ -1656,7 +1656,7 @@ void FSD_BinaryFile::ReadHeaderData(Standard_IStream&                      theIS
 
 Storage_Position FSD_BinaryFile::Tell()
 {
-  return (Storage_Position)ftell(myStream);
+  return static_cast<Storage_Position>(ftell(myStream));
 }
 
 //=======================================================================
@@ -1735,7 +1735,7 @@ inline uint64_t OCCT_InverseSizeSpecialized<8>(const uint64_t theValue, int)
 
 size_t FSD_BinaryFile::InverseSize(const size_t theValue)
 {
-  return (size_t)OCCT_InverseSizeSpecialized<sizeof(size_t)>(theValue, 0);
+  return static_cast<size_t>(OCCT_InverseSizeSpecialized<sizeof(size_t)>(theValue, 0));
 }
 
 uint64_t FSD_BinaryFile::InverseUint64(const uint64_t theValue)

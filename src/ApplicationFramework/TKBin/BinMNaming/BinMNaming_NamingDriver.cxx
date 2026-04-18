@@ -347,7 +347,7 @@ bool BinMNaming_NamingDriver::Paste(const BinObjMgt_Persistent&       theSource,
           TopAbs_Orientation OrientationToApply(TopAbs_FORWARD);
           if (ok)
           {
-            OrientationToApply = (TopAbs_Orientation)anIndx;
+            OrientationToApply = static_cast<TopAbs_Orientation>(anIndx);
             aName.Orientation(OrientationToApply);
 #ifdef OCCT_DEBUG
             std::cout << "NamingDriver:: Retrieved Orientation = " << OrientationToApply
@@ -415,7 +415,7 @@ void BinMNaming_NamingDriver::Paste(
       anArray.SetValue(i, anIndx);
     }
 
-    theTarget.PutIntArray((BinObjMgt_PInteger)&anArray.Value(1), aNbArgs); // keep Array
+    theTarget.PutIntArray(const_cast<BinObjMgt_PInteger>(&anArray.Value(1)), aNbArgs); // keep Array
   }
 
   // 4. keep StopNS
@@ -440,5 +440,5 @@ void BinMNaming_NamingDriver::Paste(
   theTarget << entry;
 
   // 7. keep Orientation
-  theTarget << (int)aName.Orientation();
+  theTarget << static_cast<int>(aName.Orientation());
 }

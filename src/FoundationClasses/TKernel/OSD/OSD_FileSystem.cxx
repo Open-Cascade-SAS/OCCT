@@ -86,7 +86,7 @@ std::shared_ptr<std::istream> OSD_FileSystem::OpenIStream(
     aNewStream = anOldStream;
     if (theOffset >= 0)
     {
-      aNewStream->seekg((std::streamoff)theOffset, std::ios_base::beg);
+      aNewStream->seekg(static_cast<std::streamoff>(theOffset), std::ios_base::beg);
     }
   }
   if (aNewStream.get() == nullptr)
@@ -101,7 +101,7 @@ std::shared_ptr<std::istream> OSD_FileSystem::OpenIStream(
     aNewStream.reset(new OSD_IStreamBuffer(theUrl.ToCString(), aFileBuf));
     if (theOffset > 0)
     {
-      aNewStream->seekg((std::streamoff)theOffset, std::ios_base::beg);
+      aNewStream->seekg(static_cast<std::streamoff>(theOffset), std::ios_base::beg);
     }
   }
   return aNewStream;

@@ -55,20 +55,19 @@ bool DESTEP_ConfigurationNode::Load(const occ::handle<DE_ConfigurationContext>& 
     THE_CONFIGURATION_SCOPE() + "." + GetFormat() + "." + GetVendor();
 
   InternalParameters.ReadBSplineContinuity =
-    (DESTEP_Parameters::ReadMode_BSplineContinuity)theResource->IntegerVal(
+    static_cast<DESTEP_Parameters::ReadMode_BSplineContinuity>(theResource->IntegerVal(
       "read.iges.bspline.continuity",
       InternalParameters.ReadBSplineContinuity,
-      aScope);
+      aScope));
   InternalParameters.ReadPrecisionMode =
-    (DESTEP_Parameters::ReadMode_Precision)
-      theResource->IntegerVal("read.precision.mode", InternalParameters.ReadPrecisionMode, aScope);
+    static_cast<DESTEP_Parameters::ReadMode_Precision>(theResource->IntegerVal("read.precision.mode", InternalParameters.ReadPrecisionMode, aScope));
   InternalParameters.ReadPrecisionVal =
     theResource->RealVal("read.precision.val", InternalParameters.ReadPrecisionVal, aScope);
   InternalParameters.ReadMaxPrecisionMode =
-    (DESTEP_Parameters::ReadMode_MaxPrecision)theResource->IntegerVal(
+    static_cast<DESTEP_Parameters::ReadMode_MaxPrecision>(theResource->IntegerVal(
       "read.maxprecision.mode",
       InternalParameters.ReadMaxPrecisionMode,
-      aScope);
+      aScope));
   InternalParameters.ReadMaxPrecisionVal =
     theResource->RealVal("read.maxprecision.val", InternalParameters.ReadMaxPrecisionVal, aScope);
   InternalParameters.ReadSameParamMode =
@@ -76,34 +75,32 @@ bool DESTEP_ConfigurationNode::Load(const occ::handle<DE_ConfigurationContext>& 
                             InternalParameters.ReadSameParamMode,
                             aScope);
   InternalParameters.ReadSurfaceCurveMode =
-    (DESTEP_Parameters::ReadMode_SurfaceCurve)theResource->IntegerVal(
+    static_cast<DESTEP_Parameters::ReadMode_SurfaceCurve>(theResource->IntegerVal(
       "read.surfacecurve.mode",
       InternalParameters.ReadSurfaceCurveMode,
-      aScope);
+      aScope));
   InternalParameters.EncodeRegAngle =
     theResource->RealVal("read.encoderegularity.angle", InternalParameters.EncodeRegAngle, aScope);
   InternalParameters.AngleUnit =
-    (DESTEP_Parameters::AngleUnitMode)theResource->IntegerVal("angleunit.mode",
+    static_cast<DESTEP_Parameters::AngleUnitMode>(theResource->IntegerVal("angleunit.mode",
                                                               InternalParameters.AngleUnit,
-                                                              aScope);
+                                                              aScope));
 
   InternalParameters.ReadProductMode =
     theResource->BooleanVal("read.product.mode", InternalParameters.ReadProductMode, aScope);
   InternalParameters.ReadProductContext =
-    (DESTEP_Parameters::ReadMode_ProductContext)theResource->IntegerVal(
+    static_cast<DESTEP_Parameters::ReadMode_ProductContext>(theResource->IntegerVal(
       "read.product.context",
       InternalParameters.ReadProductContext,
-      aScope);
+      aScope));
   InternalParameters.ReadShapeRepr =
-    (DESTEP_Parameters::ReadMode_ShapeRepr)theResource->IntegerVal("read.shape.repr",
+    static_cast<DESTEP_Parameters::ReadMode_ShapeRepr>(theResource->IntegerVal("read.shape.repr",
                                                                    InternalParameters.ReadShapeRepr,
-                                                                   aScope);
+                                                                   aScope));
   InternalParameters.ReadTessellated =
-    (DESTEP_Parameters::RWMode_Tessellated)
-      theResource->IntegerVal("read.tessellated", InternalParameters.ReadTessellated, aScope);
+    static_cast<DESTEP_Parameters::RWMode_Tessellated>(theResource->IntegerVal("read.tessellated", InternalParameters.ReadTessellated, aScope));
   InternalParameters.ReadAssemblyLevel =
-    (DESTEP_Parameters::ReadMode_AssemblyLevel)
-      theResource->IntegerVal("read.assembly.level", InternalParameters.ReadAssemblyLevel, aScope);
+    static_cast<DESTEP_Parameters::ReadMode_AssemblyLevel>(theResource->IntegerVal("read.assembly.level", InternalParameters.ReadAssemblyLevel, aScope));
   InternalParameters.ReadRelationship =
     theResource->BooleanVal("read.shape.relationship", InternalParameters.ReadRelationship, aScope);
   InternalParameters.ReadShapeAspect =
@@ -117,9 +114,9 @@ bool DESTEP_ConfigurationNode::Load(const occ::handle<DE_ConfigurationContext>& 
                             InternalParameters.ReadSubshapeNames,
                             aScope);
   InternalParameters.ReadCodePage =
-    (Resource_FormatType)theResource->IntegerVal("read.codepage",
+    static_cast<Resource_FormatType>(theResource->IntegerVal("read.codepage",
                                                  InternalParameters.ReadCodePage,
-                                                 aScope);
+                                                 aScope));
   InternalParameters.ReadNonmanifold =
     theResource->BooleanVal("read.nonmanifold", InternalParameters.ReadNonmanifold, aScope);
   InternalParameters.ReadIdeas =
@@ -144,23 +141,22 @@ bool DESTEP_ConfigurationNode::Load(const occ::handle<DE_ConfigurationContext>& 
     theResource->BooleanVal("read.productmetadata", InternalParameters.ReadProductMetadata, aScope);
 
   InternalParameters.WritePrecisionMode =
-    (DESTEP_Parameters::WriteMode_PrecisionMode)theResource->IntegerVal(
+    static_cast<DESTEP_Parameters::WriteMode_PrecisionMode>(theResource->IntegerVal(
       "write.precision.mode",
       InternalParameters.WritePrecisionMode,
-      aScope);
+      aScope));
   InternalParameters.WritePrecisionVal =
     theResource->RealVal("write.precision.val", InternalParameters.WritePrecisionVal, aScope);
   InternalParameters.WriteAssembly =
-    (DESTEP_Parameters::WriteMode_Assembly)theResource->IntegerVal("write.assembly",
+    static_cast<DESTEP_Parameters::WriteMode_Assembly>(theResource->IntegerVal("write.assembly",
                                                                    InternalParameters.WriteAssembly,
-                                                                   aScope);
+                                                                   aScope));
   InternalParameters.WriteSchema =
-    (DESTEP_Parameters::WriteMode_StepSchema)theResource->IntegerVal("write.schema",
+    static_cast<DESTEP_Parameters::WriteMode_StepSchema>(theResource->IntegerVal("write.schema",
                                                                      InternalParameters.WriteSchema,
-                                                                     aScope);
+                                                                     aScope));
   InternalParameters.WriteTessellated =
-    (DESTEP_Parameters::RWMode_Tessellated)
-      theResource->IntegerVal("write.tessellated", InternalParameters.WriteTessellated, aScope);
+    static_cast<DESTEP_Parameters::RWMode_Tessellated>(theResource->IntegerVal("write.tessellated", InternalParameters.WriteTessellated, aScope));
   InternalParameters.WriteProductName =
     theResource->StringVal("write.product.name", InternalParameters.WriteProductName, aScope);
   InternalParameters.WriteSurfaceCurMode =
@@ -168,12 +164,11 @@ bool DESTEP_ConfigurationNode::Load(const occ::handle<DE_ConfigurationContext>& 
                             InternalParameters.WriteSurfaceCurMode,
                             aScope);
   InternalParameters.WriteUnit =
-    (UnitsMethods_LengthUnit)theResource->IntegerVal("write.unit",
+    static_cast<UnitsMethods_LengthUnit>(theResource->IntegerVal("write.unit",
                                                      InternalParameters.WriteUnit,
-                                                     aScope);
+                                                     aScope));
   InternalParameters.WriteVertexMode =
-    (DESTEP_Parameters::WriteMode_VertexMode)
-      theResource->IntegerVal("write.vertex.mode", InternalParameters.WriteVertexMode, aScope);
+    static_cast<DESTEP_Parameters::WriteMode_VertexMode>(theResource->IntegerVal("write.vertex.mode", InternalParameters.WriteVertexMode, aScope));
   InternalParameters.WriteSubshapeNames =
     theResource->BooleanVal("write.stepcaf.subshapes.name",
                             InternalParameters.WriteSubshapeNames,
@@ -195,9 +190,9 @@ bool DESTEP_ConfigurationNode::Load(const occ::handle<DE_ConfigurationContext>& 
   InternalParameters.WriteVisMaterial =
     theResource->BooleanVal("write.vismaterial", InternalParameters.WriteVisMaterial, aScope);
   InternalParameters.WriteModelType =
-    (STEPControl_StepModelType)theResource->IntegerVal("write.model.type",
+    static_cast<STEPControl_StepModelType>(theResource->IntegerVal("write.model.type",
                                                        InternalParameters.WriteModelType,
-                                                       aScope);
+                                                       aScope));
   InternalParameters.CleanDuplicates =
     theResource->BooleanVal("write.cleanduplicates", InternalParameters.CleanDuplicates, aScope);
   InternalParameters.WriteScalingTrsf =
@@ -680,7 +675,7 @@ bool DESTEP_ConfigurationNode::CheckContent(const occ::handle<NCollection_Buffer
   {
     return false;
   }
-  const char* aBytes = (const char*)theBuffer->Data();
+  const char* aBytes = reinterpret_cast<const char*>(theBuffer->Data());
   if (::strstr(aBytes, "IFC"))
   {
     return false;

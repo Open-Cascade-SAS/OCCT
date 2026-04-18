@@ -1184,7 +1184,7 @@ bool ShapeAnalysis_Curve::GetSamplePoints(const occ::handle<Geom_Curve>& curve,
   if (!adelta)
     return false;
 
-  int aK  = (int)ceil((last - first) / adelta);
+  int aK  = static_cast<int>(ceil((last - first) / adelta));
   int nbp = 100 * aK;
   if (curve->IsKind(STANDARD_TYPE(Geom_Line)))
     nbp = 2;
@@ -1216,7 +1216,7 @@ bool ShapeAnalysis_Curve::GetSamplePoints(const occ::handle<Geom_Curve>& curve,
   }
 
   GeomAdaptor_Curve GAC(curve);
-  double            step = (last - first) / (double)(nbp - 1);
+  double            step = (last - first) / static_cast<double>(nbp - 1);
   for (int i = 0; i < nbp - 1; ++i)
     seq.Append(GAC.Value(first + step * i));
   seq.Append(GAC.Value(last));
@@ -1237,7 +1237,7 @@ bool ShapeAnalysis_Curve::GetSamplePoints(const occ::handle<Geom2d_Curve>& curve
   //-- Attention aux bsplines rationnelles de degree 3. (bouts de cercles entre autres)
   if (nbs > 2)
     nbs *= 4;
-  double step = (last - first) / (double)(nbs - 1);
+  double step = (last - first) / static_cast<double>(nbs - 1);
   for (int i = 0; i < nbs - 1; ++i)
     seq.Append(C.Value(first + step * i));
   seq.Append(C.Value(last));

@@ -191,9 +191,9 @@ static bool PerformCircular(const TheCurve&               theC,
   gp_Pnt aPoint;
   double anAngle = std::max(1.0 - (theDeflection / theC.Circle().Radius()), 0.0);
   anAngle        = 2.0e0 * std::acos(anAngle);
-  int aNbPoints  = (int)((theU2 - theU1) / anAngle);
+  int aNbPoints  = static_cast<int>((theU2 - theU1) / anAngle);
   aNbPoints += 2;
-  anAngle   = (theU2 - theU1) / (double)(aNbPoints - 1);
+  anAngle   = (theU2 - theU1) / static_cast<double>(aNbPoints - 1);
   double aU = theU1;
   for (int i = 1; i <= aNbPoints; ++i)
   {

@@ -49,26 +49,26 @@
 
 static inline void D03d(void* const C, const double U, gp_Pnt& P)
 {
-  ((Adaptor3d_Curve*)C)->D0(U, P);
+  (static_cast<Adaptor3d_Curve*>(C))->D0(U, P);
 }
 
 static void D02d(void* const C, const double U, gp_Pnt& PP)
 {
   gp_Pnt2d P;
-  ((Adaptor2d_Curve2d*)C)->D0(U, P);
+  (static_cast<Adaptor2d_Curve2d*>(C))->D0(U, P);
   PP.SetCoord(P.X(), P.Y(), 0.);
 }
 
 static inline void D23d(void* const C, const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2)
 {
-  ((Adaptor3d_Curve*)C)->D2(U, P, V1, V2);
+  (static_cast<Adaptor3d_Curve*>(C))->D2(U, P, V1, V2);
 }
 
 static void D22d(void* const C, const double U, gp_Pnt& PP, gp_Vec& VV1, gp_Vec& VV2)
 {
   gp_Pnt2d P;
   gp_Vec2d V1, V2;
-  ((Adaptor2d_Curve2d*)C)->D2(U, P, V1, V2);
+  (static_cast<Adaptor2d_Curve2d*>(C))->D2(U, P, V1, V2);
   PP.SetCoord(P.X(), P.Y(), 0.);
   VV1.SetCoord(V1.X(), V1.Y(), 0.);
   VV2.SetCoord(V2.X(), V2.Y(), 0.);

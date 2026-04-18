@@ -147,13 +147,13 @@ const char* IGESSelect_SignColor::Value(const occ::handle<Standard_Transient>&  
     if (!color.IsNull())
       color->RGBIntensity(red, green, blue);
     if (red >= 0)
-      valbuf.AssignCat(IFSelect_Signature::IntValue(int(red)));
+      valbuf.AssignCat(IFSelect_Signature::IntValue(static_cast<int>(red)));
     valbuf.AssignCat(",");
     if (green >= 0)
-      valbuf.AssignCat(IFSelect_Signature::IntValue(int(green)));
+      valbuf.AssignCat(IFSelect_Signature::IntValue(static_cast<int>(green)));
     valbuf.AssignCat(",");
     if (blue >= 0)
-      valbuf.AssignCat(IFSelect_Signature::IntValue(int(blue)));
+      valbuf.AssignCat(IFSelect_Signature::IntValue(static_cast<int>(blue)));
 
     //  RED value
   }
@@ -186,7 +186,7 @@ const char* IGESSelect_SignColor::Value(const occ::handle<Standard_Transient>&  
     if (!color.IsNull())
       color->RGBIntensity(red, green, blue);
     if (red >= 0)
-      return IFSelect_Signature::IntValue(int(red));
+      return IFSelect_Signature::IntValue(static_cast<int>(red));
 
     //  GREEN Value
   }
@@ -219,7 +219,7 @@ const char* IGESSelect_SignColor::Value(const occ::handle<Standard_Transient>&  
     if (!color.IsNull())
       color->RGBIntensity(red, green, blue);
     if (green >= 0)
-      return IFSelect_Signature::IntValue(int(green));
+      return IFSelect_Signature::IntValue(static_cast<int>(green));
 
     //  BLUE Value
   }
@@ -252,7 +252,7 @@ const char* IGESSelect_SignColor::Value(const occ::handle<Standard_Transient>&  
     if (!color.IsNull())
       color->RGBIntensity(red, green, blue);
     if (blue >= 0)
-      return IFSelect_Signature::IntValue(int(blue));
+      return IFSelect_Signature::IntValue(static_cast<int>(blue));
   }
 
   return valbuf.ToCString();

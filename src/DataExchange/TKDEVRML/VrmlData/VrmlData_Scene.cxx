@@ -164,7 +164,7 @@ void VrmlData_Scene::SetVrmlDir(const TCollection_ExtendedString& theDir)
     return;
   }
   const char16_t aTerminator = aDir.Value(aDir.Length());
-  if (aTerminator != char16_t('\\') && aTerminator != char16_t('/'))
+  if (aTerminator != static_cast<char16_t>('\\') && aTerminator != static_cast<char16_t>('/'))
 #ifdef _WIN32
     aDir += TCollection_ExtendedString("\\");
 #else
@@ -443,7 +443,7 @@ VrmlData_ErrorStatus VrmlData_Scene::ReadWord(VrmlData_InBuffer&       theBuffer
     while (*ptr != '\0' && *ptr != '\n' && *ptr != '\r' && *ptr != ' ' && *ptr != '\t'
            && *ptr != '{' && *ptr != '}' && *ptr != ',' && *ptr != '[' && *ptr != ']')
       ptr++;
-    const int aLen = int(ptr - theBuffer.LinePtr);
+    const int aLen = static_cast<int>(ptr - theBuffer.LinePtr);
     if (aLen <= 0)
       aStatus = VrmlData_StringInputError;
     else
@@ -892,7 +892,7 @@ VrmlData_ErrorStatus VrmlData_Scene::ReadArrIndex(VrmlData_InBuffer& theBuffer,
           else
           {
             for (size_t i = 0; i < aNbBlocks; i++)
-              anArray[i] = vecIndice((int)i);
+              anArray[i] = vecIndice(static_cast<int>(i));
             theNBlocks = aNbBlocks;
             theArray   = anArray;
           }
@@ -944,7 +944,7 @@ VrmlData_ErrorStatus VrmlData_Scene::WriteArrIndex(const char*  thePrefix,
                 if (i == nVal - 1)
                   break;
                 ptr = strchr(ptr, ',') + 1;
-                if ((ptr - &buf[0]) > (ptrdiff_t)aLineLimit)
+                if ((ptr - &buf[0]) > static_cast<ptrdiff_t>(aLineLimit))
                 {
                   WriteLine(buf);
                   ptr = &buf[0];

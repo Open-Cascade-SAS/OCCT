@@ -69,7 +69,7 @@ void StepDimTol_SimpleDatumReferenceModifierMember::SetEnumText(const int /*theV
 void StepDimTol_SimpleDatumReferenceModifierMember::SetValue(
   const StepDimTol_SimpleDatumReferenceModifier theValue)
 {
-  SetInt(int(theValue));
+  SetInt(static_cast<int>(theValue));
 }
 
 //=================================================================================================

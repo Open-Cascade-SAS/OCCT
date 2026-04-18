@@ -20,7 +20,7 @@
 
 inline void BinObjMgt_Persistent::SetId(const int theId)
 {
-  ((int*)myData(1))[1] = theId;
+  (static_cast<int*>(myData(1)))[1] = theId;
 }
 
 //=======================================================================
@@ -30,7 +30,7 @@ inline void BinObjMgt_Persistent::SetId(const int theId)
 
 inline void BinObjMgt_Persistent::SetTypeId(const int theTypeId)
 {
-  ((int*)myData(1))[0] = theTypeId;
+  (static_cast<int*>(myData(1)))[0] = theTypeId;
   myStreamStart.Nullify();
 }
 
@@ -38,7 +38,7 @@ inline void BinObjMgt_Persistent::SetTypeId(const int theTypeId)
 
 inline int BinObjMgt_Persistent::Id() const
 {
-  return ((int*)myData(1))[1];
+  return (static_cast<int*>(myData(1)))[1];
 }
 
 //=======================================================================
@@ -48,7 +48,7 @@ inline int BinObjMgt_Persistent::Id() const
 
 inline int BinObjMgt_Persistent::TypeId() const
 {
-  return ((int*)myData(1))[0];
+  return (static_cast<int*>(myData(1)))[0];
 }
 
 //=================================================================================================
@@ -91,9 +91,9 @@ inline int BinObjMgt_Persistent::Position() const
 
 inline bool BinObjMgt_Persistent::SetPosition(const int thePos) const
 {
-  ((BinObjMgt_Persistent*)this)->myIndex   = thePos / BP_PIECESIZE + 1;
-  ((BinObjMgt_Persistent*)this)->myOffset  = thePos % BP_PIECESIZE;
-  ((BinObjMgt_Persistent*)this)->myIsError = thePos > mySize || thePos < BP_HEADSIZE;
+  (const_cast<BinObjMgt_Persistent*>(this))->myIndex   = thePos / BP_PIECESIZE + 1;
+  (const_cast<BinObjMgt_Persistent*>(this))->myOffset  = thePos % BP_PIECESIZE;
+  (const_cast<BinObjMgt_Persistent*>(this))->myIsError = thePos > mySize || thePos < BP_HEADSIZE;
   return !myIsError;
 }
 
@@ -143,15 +143,15 @@ inline void BinObjMgt_Persistent::alignOffset(const int theSize, const bool toCl
   if (anOffset > myOffset)
   {
     if (toClear && anOffset <= BP_PIECESIZE)
-      memset(((char*)myData(myIndex)) + myOffset, 0, anOffset - myOffset);
-    ((BinObjMgt_Persistent*)this)->myOffset = anOffset;
+      memset((static_cast<char*>(myData(myIndex))) + myOffset, 0, anOffset - myOffset);
+    (const_cast<BinObjMgt_Persistent*>(this))->myOffset = anOffset;
   }
 
   // ensure there is a room for at least one item in the current piece
   if (myOffset >= BP_PIECESIZE)
   {
-    ((BinObjMgt_Persistent*)this)->myIndex++;
-    ((BinObjMgt_Persistent*)this)->myOffset = 0;
+    (const_cast<BinObjMgt_Persistent*>(this))->myIndex++;
+    (const_cast<BinObjMgt_Persistent*>(this))->myOffset = 0;
   }
 }
 
@@ -183,7 +183,7 @@ inline int BinObjMgt_Persistent::prepareForPut(const int theSize)
 
 inline bool BinObjMgt_Persistent::noMoreData(const int theSize) const
 {
-  ((BinObjMgt_Persistent*)this)->myIsError = Position() + theSize > mySize;
+  (const_cast<BinObjMgt_Persistent*>(this))->myIsError = Position() + theSize > mySize;
   return myIsError;
 }
 
@@ -191,7 +191,7 @@ inline bool BinObjMgt_Persistent::noMoreData(const int theSize) const
 
 inline BinObjMgt_Persistent& BinObjMgt_Persistent::PutBoolean(const bool theValue)
 {
-  return PutInteger((int)theValue);
+  return PutInteger(static_cast<int>(theValue));
 }
 
 //=================================================================================================

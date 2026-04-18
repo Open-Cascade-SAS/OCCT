@@ -32,7 +32,7 @@ void NCollection_SparseArrayBase::allocData(const size_t iBlock)
   while (iBlock >= newNbBlocks)
     newNbBlocks *= 2;
 
-  void** newData = (void**)Standard::AllocateOptimal(newNbBlocks * sizeof(void*));
+  void** newData = static_cast<void**>(Standard::AllocateOptimal(newNbBlocks * sizeof(void*)));
   if (myNbBlocks > 0)
     memcpy(newData, myData, myNbBlocks * sizeof(void*));
   memset(newData + myNbBlocks, 0, (newNbBlocks - myNbBlocks) * sizeof(void*));
@@ -271,7 +271,7 @@ bool NCollection_SparseArrayBase::unsetValue(const size_t theIndex, DestroyItemF
 //=================================================================================================
 
 NCollection_SparseArrayBase::Iterator::Iterator(const NCollection_SparseArrayBase* theArray)
-    : myArr((NCollection_SparseArrayBase*)theArray),
+    : myArr(const_cast<NCollection_SparseArrayBase*>(theArray)),
       myHasMore(false),
       myIBlock(0),
       myInd(0),
@@ -318,7 +318,7 @@ void NCollection_SparseArrayBase::Iterator::Next()
 
 void NCollection_SparseArrayBase::Iterator::init(const NCollection_SparseArrayBase* theArray)
 {
-  myArr     = (NCollection_SparseArrayBase*)theArray;
+  myArr     = const_cast<NCollection_SparseArrayBase*>(theArray);
   myHasMore = false;
   if (myArr)
   {

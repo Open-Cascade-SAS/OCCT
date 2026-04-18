@@ -53,8 +53,8 @@ OpenGl_CappingPlaneResource::OpenGl_CappingPlaneResource(
       myOrientation(NCollection_Mat4<float>::Identity()),
       myAspect(nullptr),
       myPlaneRoot(thePlane),
-      myEquationMod((unsigned int)-1),
-      myAspectMod((unsigned int)-1)
+      myEquationMod(static_cast<unsigned int>(-1)),
+      myAspectMod(static_cast<unsigned int>(-1))
 {
   occ::handle<Graphic3d_Buffer> anAttribs =
     new Graphic3d_Buffer(Graphic3d_Buffer::DefaultAllocator());
@@ -90,8 +90,8 @@ void OpenGl_CappingPlaneResource::Release(OpenGl_Context* theContext)
 {
   OpenGl_Element::Destroy(theContext, myAspect);
   myPrimitives.Release(theContext);
-  myEquationMod = (unsigned int)-1;
-  myAspectMod   = (unsigned int)-1;
+  myEquationMod = static_cast<unsigned int>(-1);
+  myAspectMod   = static_cast<unsigned int>(-1);
 }
 
 //=================================================================================================
@@ -170,7 +170,7 @@ void OpenGl_CappingPlaneResource::updateTransform(const occ::handle<OpenGl_Conte
   const NCollection_Vec3<float> T(anEq.xyz() * -anEqW);
 
   // project plane normal onto OX to find left vector
-  const float             aProjLen = sqrt((float)anEq.xz().SquareModulus());
+  const float             aProjLen = sqrt(static_cast<float>(anEq.xz().SquareModulus()));
   NCollection_Vec3<float> aLeft;
   if (aProjLen < ShortRealSmall())
   {

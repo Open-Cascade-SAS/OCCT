@@ -155,7 +155,7 @@ void StepFile_ReadData::CreateNewText(const char* theNewText, int theLenText)
     return;
   }
   //  If error argument exists - prepare size to new text value and old result text
-  const int aLength = (myErrorArg) ? theLenText + (int)strlen(myResText) : theLenText;
+  const int aLength = (myErrorArg) ? theLenText + static_cast<int>(strlen(myResText)) : theLenText;
 
   char* anOldResText = myResText;
 
@@ -166,7 +166,7 @@ void StepFile_ReadData::CreateNewText(const char* theNewText, int theLenText)
   if (myErrorArg)
   {
     strcpy(myResText, anOldResText);
-    strcpy(myResText + (int)strlen(anOldResText), theNewText);
+    strcpy(myResText + static_cast<int>(strlen(anOldResText)), theNewText);
     return;
   }
   strcpy(myResText, theNewText);
@@ -235,7 +235,7 @@ void StepFile_ReadData::RecordListStart()
         else
         {
           aBufSub[0] = '$';
-          aBufSub[1] = (char)(myNumSub + 48);
+          aBufSub[1] = static_cast<char>(myNumSub + 48);
           aBufSub[2] = '\0';
         }
         aSubRec->myIdent = RecordNewText(aBufSub);
@@ -525,7 +525,7 @@ char* StepFile_ReadData::RecordNewText(char* theText)
   char* aSavResText;
   char* aNewText;
   aSavResText = myResText;
-  CreateNewText(theText, (int)strlen(theText));
+  CreateNewText(theText, static_cast<int>(strlen(theText)));
   aNewText  = myResText;
   myResText = aSavResText;
   return aNewText;
@@ -579,7 +579,7 @@ void StepFile_ReadData::PrintRecord(Record* theRecord)
   while (myCurrArg != nullptr)
   {
     aNumArg++;
-    anArgLen = (int)strlen(myCurrArg->myValue) + 18;
+    anArgLen = static_cast<int>(strlen(myCurrArg->myValue)) + 18;
     aNumLen += anArgLen;
     if (aNumLen > 132)
     {

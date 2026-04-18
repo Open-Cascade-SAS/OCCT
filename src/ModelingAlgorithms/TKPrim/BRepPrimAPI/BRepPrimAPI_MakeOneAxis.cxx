@@ -26,7 +26,7 @@
 const TopoDS_Face& BRepPrimAPI_MakeOneAxis::Face()
 {
   Build();
-  return ((BRepPrim_OneAxis*)OneAxis())->LateralFace();
+  return (static_cast<BRepPrim_OneAxis*>(OneAxis()))->LateralFace();
 }
 
 //=================================================================================================
@@ -34,7 +34,7 @@ const TopoDS_Face& BRepPrimAPI_MakeOneAxis::Face()
 const TopoDS_Shell& BRepPrimAPI_MakeOneAxis::Shell()
 {
   Build();
-  return ((BRepPrim_OneAxis*)OneAxis())->Shell();
+  return (static_cast<BRepPrim_OneAxis*>(OneAxis()))->Shell();
 }
 
 //=================================================================================================
@@ -43,7 +43,7 @@ void BRepPrimAPI_MakeOneAxis::Build(const Message_ProgressRange& /*theRange*/)
 {
   BRep_Builder B;
   B.MakeSolid(TopoDS::Solid(myShape));
-  B.Add(myShape, ((BRepPrim_OneAxis*)OneAxis())->Shell());
+  B.Add(myShape, (static_cast<BRepPrim_OneAxis*>(OneAxis()))->Shell());
   Done();
 }
 

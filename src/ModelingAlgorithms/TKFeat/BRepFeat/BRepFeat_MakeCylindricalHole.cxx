@@ -712,7 +712,7 @@ void Baryc(const TopoDS_Shape& S, gp_Pnt& B)
       }
     }
   }
-  Bar.Divide((double)nbp);
+  Bar.Divide(static_cast<double>(nbp));
   B.SetXYZ(Bar);
 }
 

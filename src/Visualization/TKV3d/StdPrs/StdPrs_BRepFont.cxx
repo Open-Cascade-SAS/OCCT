@@ -63,7 +63,7 @@ static const Font_FTFontParams THE_FONT_PARAMS(THE_FONT_SIZE, THE_RESOLUTION_DPI
 // compute scaling factor for specified font size
 inline double getScale(const double theSize)
 {
-  return theSize / double(THE_FONT_SIZE) * 72.0 / double(THE_RESOLUTION_DPI);
+  return theSize / static_cast<double>(THE_FONT_SIZE) * 72.0 / static_cast<double>(THE_RESOLUTION_DPI);
 }
 
 #ifdef HAVE_FREETYPE
@@ -72,8 +72,8 @@ static gp_XY readFTVec(const FT_Vector& theVec,
                        const double     theScaleUnits,
                        const double     theWidthScaling = 1.0)
 {
-  return gp_XY(theScaleUnits * double(theVec.x) * theWidthScaling / 64.0,
-               theScaleUnits * double(theVec.y) / 64.0);
+  return gp_XY(theScaleUnits * static_cast<double>(theVec.x) * theWidthScaling / 64.0,
+               theScaleUnits * static_cast<double>(theVec.y) / 64.0);
 }
 
 //! Auxiliary method for classification wire theW2 with respect to wire theW1

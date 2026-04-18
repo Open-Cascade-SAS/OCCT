@@ -78,7 +78,7 @@ int IGESSelect_WorkLibrary::ReadFile(const char* const                      name
   occ::handle<IGESData_IGESModel> igesmod = new IGESData_IGESModel;
   DeclareAndCast(IGESData_Protocol, prot, protocol);
 
-  char* pname  = (char*)name;
+  char* pname  = const_cast<char*>(name);
   int   status = IGESFile_Read(pname, igesmod, prot);
 
   if (status < 0)

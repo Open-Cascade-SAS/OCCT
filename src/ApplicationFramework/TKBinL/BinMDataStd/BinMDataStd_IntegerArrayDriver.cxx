@@ -100,7 +100,7 @@ void BinMDataStd_IntegerArrayDriver::Paste(
   theTarget << aFirstInd << aLastInd;
   int* aPtr = const_cast<int*>(&aSourceArray(aFirstInd));
   theTarget.PutIntArray(aPtr, aLength);
-  theTarget << (uint8_t)(anAtt->GetDelta() ? 1 : 0);
+  theTarget << static_cast<uint8_t>(anAtt->GetDelta() ? 1 : 0);
 
   // process user defined guid
   if (anAtt->ID() != TDataStd_IntegerArray::GetID())

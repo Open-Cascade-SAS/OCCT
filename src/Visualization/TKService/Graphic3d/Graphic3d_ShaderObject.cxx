@@ -57,7 +57,7 @@ occ::handle<Graphic3d_ShaderObject> Graphic3d_ShaderObject::CreateFromFile(
   }
 
   aFile.Open(OSD_ReadOnly, OSD_Protection());
-  aFile.Read(aShader->mySource, (int)aFile.Size());
+  aFile.Read(aShader->mySource, static_cast<int>(aFile.Size()));
   aFile.Close();
 
   return aShader;
@@ -122,7 +122,7 @@ occ::handle<Graphic3d_ShaderObject> Graphic3d_ShaderObject::CreateFromSource(
   {
     const ShaderVariable& aVar        = aVarListIter.Value();
     int                   aStageLower = IntegerLast(), aStageUpper = IntegerFirst();
-    for (int aStageIter = Graphic3d_TOS_VERTEX; aStageIter <= (int)Graphic3d_TOS_COMPUTE;
+    for (int aStageIter = Graphic3d_TOS_VERTEX; aStageIter <= static_cast<int>(Graphic3d_TOS_COMPUTE);
          aStageIter     = aStageIter << 1)
     {
       if ((aVar.Stages & aStageIter) != 0)
@@ -131,7 +131,7 @@ occ::handle<Graphic3d_ShaderObject> Graphic3d_ShaderObject::CreateFromSource(
         aStageUpper = std::max(aStageUpper, aStageIter);
       }
     }
-    if ((int)theType < aStageLower || (int)theType > aStageUpper)
+    if (static_cast<int>(theType) < aStageLower || static_cast<int>(theType) > aStageUpper)
     {
       continue;
     }

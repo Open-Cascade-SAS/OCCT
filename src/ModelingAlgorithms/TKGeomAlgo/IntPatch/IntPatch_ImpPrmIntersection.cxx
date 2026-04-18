@@ -2267,10 +2267,10 @@ static void ToSmooth(const occ::handle<IntSurf_LineOn2S>& Line,
     }
   }
 
-  DDU /= (double)NbTestPnts + 1;
+  DDU /= static_cast<double>(NbTestPnts) + 1;
   // DDV /= (double) NbTestPnts + 1;
 
-  D3D /= (double)NbTestPnts + 1;
+  D3D /= static_cast<double>(NbTestPnts) + 1;
 
   int Index1 = (IsFirst) ? 1 : (Line->NbPoints());
   int Index2 = (IsFirst) ? 2 : (Line->NbPoints() - 1);
@@ -2665,7 +2665,7 @@ static void PutIntVertices(const occ::handle<IntPatch_PointLine>& Line,
         thePnt.SetValue(aPnt, ArcTol, false);
         thePnt.SetParameters(U1, V1, U2, V2);
 
-        double aParam = (double)ip;
+        double aParam = static_cast<double>(ip);
 
         if (!aRLine.IsNull())
         {
@@ -2762,7 +2762,7 @@ static occ::handle<IntPatch_WLine> MakeSplitWLine(occ::handle<IntPatch_WLine>& W
   sline->Value(sline->NbPoints()).ParametersOnS2(uu2, vv2);
   TPntL.SetValue(aSPnt, ArcTol, false);
   TPntL.SetParameters(uu1, vv1, uu2, vv2);
-  TPntL.SetParameter((double)sline->NbPoints());
+  TPntL.SetParameter(static_cast<double>(sline->NbPoints()));
   wline->AddVertex(TPntL);
   wline->SetLastPoint(wline->NbVertex());
 
@@ -2785,8 +2785,8 @@ static bool SplitOnSegments(occ::handle<IntPatch_WLine>&                      WL
     int iv = 0;
     for (iv = 1; iv < nbv; iv++)
     {
-      int firstPar = (int)WLine->Vertex(iv).ParameterOnLine();
-      int lastPar  = (int)WLine->Vertex(iv + 1).ParameterOnLine();
+      int firstPar = static_cast<int>(WLine->Vertex(iv).ParameterOnLine());
+      int lastPar  = static_cast<int>(WLine->Vertex(iv + 1).ParameterOnLine());
       if ((lastPar - firstPar) <= 1)
         continue;
       else

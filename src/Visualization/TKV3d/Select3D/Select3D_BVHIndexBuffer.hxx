@@ -44,7 +44,7 @@ public:
 
     NbElements   = theNbElems;
     NbAttributes = 0;
-    if (NbElements != 0 && !Allocate(size_t(Stride) * size_t(NbElements)))
+    if (NbElements != 0 && !Allocate(static_cast<size_t>(Stride) * static_cast<size_t>(NbElements)))
     {
       release();
       return false;
@@ -55,29 +55,29 @@ public:
   //! Access index at specified position
   int Index(const int theIndex) const
   {
-    return int(*reinterpret_cast<const unsigned int*>(value(theIndex)));
+    return static_cast<int>(*reinterpret_cast<const unsigned int*>(value(theIndex)));
   }
 
   //! Access index at specified position
   int PatchSize(const int theIndex) const
   {
     return myHasPatches
-             ? int(*reinterpret_cast<const unsigned int*>(value(theIndex) + sizeof(unsigned int)))
+             ? static_cast<int>(*reinterpret_cast<const unsigned int*>(value(theIndex) + sizeof(unsigned int)))
              : 1;
   }
 
   //! Change index at specified position
   void SetIndex(const int theIndex, const int theValue)
   {
-    *reinterpret_cast<unsigned int*>(changeValue(theIndex)) = (unsigned int)theValue;
+    *reinterpret_cast<unsigned int*>(changeValue(theIndex)) = static_cast<unsigned int>(theValue);
   }
 
   //! Change index at specified position
   void SetIndex(const int theIndex, const int theValue, const int thePatchSize)
   {
-    *reinterpret_cast<unsigned int*>(changeValue(theIndex)) = (unsigned int)theValue;
+    *reinterpret_cast<unsigned int*>(changeValue(theIndex)) = static_cast<unsigned int>(theValue);
     *reinterpret_cast<unsigned int*>(changeValue(theIndex) + sizeof(unsigned int)) =
-      (unsigned int)thePatchSize;
+      static_cast<unsigned int>(thePatchSize);
   }
 
 private:

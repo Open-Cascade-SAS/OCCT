@@ -58,7 +58,7 @@ double HLRBRep_Curve::Parameter2d(const double P3d) const
   switch (myType)
   {
     case GeomAbs_Line:
-      if (((HLRAlgo_Projector*)myProj)->Perspective())
+      if ((const_cast<HLRAlgo_Projector*>(myProj))->Perspective())
       {
         const double FmOZ = myOF - myOZ;
         return myOF * P3d * (myVX * FmOZ + myOX * myVZ) / (FmOZ * (FmOZ - P3d * myVZ));
@@ -87,7 +87,7 @@ double HLRBRep_Curve::Parameter3d(const double P2d) const
 
   if (myType == GeomAbs_Line)
   {
-    if (((HLRAlgo_Projector*)myProj)->Perspective())
+    if ((const_cast<HLRAlgo_Projector*>(myProj))->Perspective())
     {
       const double FmOZ = myOF - myOZ;
       return P2d * FmOZ * FmOZ / (FmOZ * (myOF * myVX + P2d * myVZ) + myOF * myOX * myVZ);
@@ -118,10 +118,10 @@ double HLRBRep_Curve::Update(double TotMin[16], double TotMax[16])
       break;
 
     case GeomAbs_Circle:
-      if (!((HLRAlgo_Projector*)myProj)->Perspective())
+      if (!(const_cast<HLRAlgo_Projector*>(myProj))->Perspective())
       {
         gp_Dir D1 = HLRBRep_BCurveTool::Circle(myCurve).Axis().Direction();
-        D1.Transform(((HLRAlgo_Projector*)myProj)->Transformation());
+        D1.Transform((const_cast<HLRAlgo_Projector*>(myProj))->Transformation());
         if (D1.IsParallel(gp::DZ(), Precision::Angular()))
           myType = GeomAbs_Circle;
         else if (std::abs(D1.Dot(gp::DZ()))
@@ -134,17 +134,17 @@ double HLRBRep_Curve::Update(double TotMin[16], double TotMax[16])
           // compute the angle offset
           gp_Dir D3 = D1.Crossed(gp::DZ());
           gp_Dir D2 = HLRBRep_BCurveTool::Circle(myCurve).XAxis().Direction();
-          D2.Transform(((HLRAlgo_Projector*)myProj)->Transformation());
+          D2.Transform((const_cast<HLRAlgo_Projector*>(myProj))->Transformation());
           myOX = D3.AngleWithRef(D2, D1);
         }
       }
       break;
 
     case GeomAbs_Ellipse:
-      if (!((HLRAlgo_Projector*)myProj)->Perspective())
+      if (!(const_cast<HLRAlgo_Projector*>(myProj))->Perspective())
       {
         gp_Dir D1 = HLRBRep_BCurveTool::Ellipse(myCurve).Axis().Direction();
-        D1.Transform(((HLRAlgo_Projector*)myProj)->Transformation());
+        D1.Transform((const_cast<HLRAlgo_Projector*>(myProj))->Transformation());
         if (D1.IsParallel(gp::DZ(), Precision::Angular()))
         {
           myOX   = 0.; // no offset on the angle
@@ -156,12 +156,12 @@ double HLRBRep_Curve::Update(double TotMin[16], double TotMax[16])
     case GeomAbs_BezierCurve:
       if (HLRBRep_BCurveTool::Degree(myCurve) == 1)
         myType = GeomAbs_Line;
-      else if (!((HLRAlgo_Projector*)myProj)->Perspective())
+      else if (!(const_cast<HLRAlgo_Projector*>(myProj))->Perspective())
         myType = typ;
       break;
 
     case GeomAbs_BSplineCurve:
-      if (!((HLRAlgo_Projector*)myProj)->Perspective())
+      if (!(const_cast<HLRAlgo_Projector*>(myProj))->Perspective())
         myType = typ;
       break;
 
@@ -188,9 +188,9 @@ double HLRBRep_Curve::Update(double TotMin[16], double TotMax[16])
     }
     gp_Pnt P = L.Location();
     gp_Vec V = L.Direction();
-    P.Transform(((HLRAlgo_Projector*)myProj)->Transformation());
-    V.Transform(((HLRAlgo_Projector*)myProj)->Transformation());
-    if (((HLRAlgo_Projector*)myProj)->Perspective())
+    P.Transform((const_cast<HLRAlgo_Projector*>(myProj))->Transformation());
+    V.Transform((const_cast<HLRAlgo_Projector*>(myProj))->Transformation());
+    if ((const_cast<HLRAlgo_Projector*>(myProj))->Perspective())
     {
       gp_Pnt2d F;
       gp_Vec2d VFX;
@@ -200,7 +200,7 @@ double HLRBRep_Curve::Update(double TotMin[16], double TotMax[16])
       double l = -(VFX.X() * F.X() + VFX.Y() * F.Y());
       F.SetCoord(F.X() + VFX.X() * l, F.Y() + VFX.Y() * l);
       myOX = VFX.X() * (P.X() - F.X()) + VFX.Y() * (P.Y() - F.Y());
-      gp_Vec VFZ(-F.X(), -F.Y(), ((HLRAlgo_Projector*)myProj)->Focus());
+      gp_Vec VFZ(-F.X(), -F.Y(), (const_cast<HLRAlgo_Projector*>(myProj))->Focus());
       myOF = VFZ.Magnitude();
       VFZ /= myOF;
       myVZ = VFZ * V;
@@ -220,7 +220,7 @@ double HLRBRep_Curve::UpdateMinMax(double TotMin[16], double TotMax[16])
   double a = HLRBRep_BCurveTool::FirstParameter(myCurve);
   double b = HLRBRep_BCurveTool::LastParameter(myCurve);
   double x, y, z, tolMinMax = 0;
-  ((HLRAlgo_Projector*)myProj)->Project(Value3D(a), x, y, z);
+  (const_cast<HLRAlgo_Projector*>(myProj))->Project(Value3D(a), x, y, z);
   HLRAlgo::UpdateMinMax(x, y, z, TotMin, TotMax);
 
   if (myType != GeomAbs_Line)
@@ -241,7 +241,7 @@ double HLRBRep_Curve::UpdateMinMax(double TotMin[16], double TotMax[16])
       xb = x;
       yb = y;
       zb = z;
-      ((HLRAlgo_Projector*)myProj)->Project(Value3D(a), x, y, z);
+      (const_cast<HLRAlgo_Projector*>(myProj))->Project(Value3D(a), x, y, z);
       HLRAlgo::UpdateMinMax(x, y, z, TotMin, TotMax);
       if (i >= 2)
       {
@@ -269,7 +269,7 @@ double HLRBRep_Curve::UpdateMinMax(double TotMin[16], double TotMax[16])
       }
     }
   }
-  ((HLRAlgo_Projector*)myProj)->Project(Value3D(b), x, y, z);
+  (const_cast<HLRAlgo_Projector*>(myProj))->Project(Value3D(b), x, y, z);
   HLRAlgo::UpdateMinMax(x, y, z, TotMin, TotMax);
   return tolMinMax;
 }
@@ -280,7 +280,7 @@ double HLRBRep_Curve::Z(const double U) const
 {
   gp_Pnt P3d;
   HLRBRep_BCurveTool::D0(myCurve, U, P3d);
-  P3d.Transform(((HLRAlgo_Projector*)myProj)->Transformation());
+  P3d.Transform((const_cast<HLRAlgo_Projector*>(myProj))->Transformation());
   return P3d.Z();
 }
 
@@ -314,7 +314,7 @@ void HLRBRep_Curve::D0(const double U, gp_Pnt2d& P) const
   else P.SetCoord(P3d.X(),P3d.Y()); */
   gp_Pnt P3d;
   HLRBRep_BCurveTool::D0(myCurve, U, P3d);
-  ((HLRAlgo_Projector*)myProj)->Project(P3d, P);
+  (const_cast<HLRAlgo_Projector*>(myProj))->Project(P3d, P);
 }
 
 //=================================================================================================
@@ -502,7 +502,7 @@ void HLRBRep_Curve::Poles(const occ::handle<Geom_BSplineCurve>& aCurve,
 
   for (int i = i1; i <= i2; i++)
   {
-    ((HLRAlgo_Projector*)myProj)->Transform(TP3(i));
+    (const_cast<HLRAlgo_Projector*>(myProj))->Transform(TP3(i));
     TP(i).SetCoord(TP3(i).X(), TP3(i).Y());
   }
 }
@@ -539,7 +539,7 @@ void HLRBRep_Curve::PolesAndWeights(NCollection_Array1<gp_Pnt2d>& TP,
   }
   for (int i = i1; i <= i2; i++)
   {
-    ((HLRAlgo_Projector*)myProj)->Transform(TP3(i));
+    (const_cast<HLRAlgo_Projector*>(myProj))->Transform(TP3(i));
     TP(i).SetCoord(TP3(i).X(), TP3(i).Y());
   }
 }
@@ -564,7 +564,7 @@ void HLRBRep_Curve::PolesAndWeights(const occ::handle<Geom_BSplineCurve>& aCurve
 
   for (int i = i1; i <= i2; i++)
   {
-    ((HLRAlgo_Projector*)myProj)->Transform(TP3(i));
+    (const_cast<HLRAlgo_Projector*>(myProj))->Transform(TP3(i));
     TP(i).SetCoord(TP3(i).X(), TP3(i).Y());
   }
 }

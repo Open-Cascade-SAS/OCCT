@@ -413,53 +413,53 @@ occ::handle<Interface_ParamSet> IGESData_GlobalSection::Params() const
   res->Append(text, lt, Interface_ParamText, 0);
 
   Sprintf(nombre, "%d", theIntegerBits);
-  res->Append(nombre, (int)strlen(nombre), Interface_ParamInteger, 0);
+  res->Append(nombre, static_cast<int>(strlen(nombre)), Interface_ParamInteger, 0);
 
   Sprintf(nombre, "%d", theMaxPower10Single);
-  res->Append(nombre, (int)strlen(nombre), Interface_ParamInteger, 0);
+  res->Append(nombre, static_cast<int>(strlen(nombre)), Interface_ParamInteger, 0);
 
   Sprintf(nombre, "%d", theMaxDigitsSingle);
-  res->Append(nombre, (int)strlen(nombre), Interface_ParamInteger, 0);
+  res->Append(nombre, static_cast<int>(strlen(nombre)), Interface_ParamInteger, 0);
 
   Sprintf(nombre, "%d", theMaxPower10Double);
-  res->Append(nombre, (int)strlen(nombre), Interface_ParamInteger, 0);
+  res->Append(nombre, static_cast<int>(strlen(nombre)), Interface_ParamInteger, 0);
 
   Sprintf(nombre, "%d", theMaxDigitsDouble);
-  res->Append(nombre, (int)strlen(nombre), Interface_ParamInteger, 0);
+  res->Append(nombre, static_cast<int>(strlen(nombre)), Interface_ParamInteger, 0);
 
   MakeHollerith(theReceiveName, text, lt);
   res->Append(text, lt, Interface_ParamText, 0);
 
   Interface_FloatWriter::Convert(theScale, nombre, true, 0., 0., "%f", "%f");
   //  Sprintf(nombre,"%f",theScale);
-  res->Append(nombre, (int)strlen(nombre), Interface_ParamReal, 0);
+  res->Append(nombre, static_cast<int>(strlen(nombre)), Interface_ParamReal, 0);
 
   Sprintf(nombre, "%d", theUnitFlag);
-  res->Append(nombre, (int)strlen(nombre), Interface_ParamInteger, 0);
+  res->Append(nombre, static_cast<int>(strlen(nombre)), Interface_ParamInteger, 0);
 
   MakeHollerith(theUnitName, text, lt);
   res->Append(text, lt, Interface_ParamText, 0);
 
   Sprintf(nombre, "%d", theLineWeightGrad);
-  res->Append(nombre, (int)strlen(nombre), Interface_ParamInteger, 0);
+  res->Append(nombre, static_cast<int>(strlen(nombre)), Interface_ParamInteger, 0);
 
   Interface_FloatWriter::Convert(theMaxLineWeight, nombre, true, 0., 0., "%f", "%f");
   //  Sprintf(nombre,"%f",theMaxLineWeight);
-  res->Append(nombre, (int)strlen(nombre), Interface_ParamReal, 0);
+  res->Append(nombre, static_cast<int>(strlen(nombre)), Interface_ParamReal, 0);
 
   MakeHollerith(theDate, text, lt);
   res->Append(text, lt, Interface_ParamText, 0);
 
   Interface_FloatWriter::Convert(theResolution, nombre, true, 0., 0., "%g", "%g");
   //  Sprintf(nombre,"%f",theResolution);
-  res->Append(nombre, (int)strlen(nombre), Interface_ParamReal, 0);
+  res->Append(nombre, static_cast<int>(strlen(nombre)), Interface_ParamReal, 0);
 
   if (hasMaxCoord)
     Interface_FloatWriter::Convert(theMaxCoord, nombre, true, 0., 0., "%f", "%f");
   //  Sprintf(nombre,"%f",theMaxCoord);
   else
     nombre[0] = '\0';
-  res->Append(nombre, (int)strlen(nombre), Interface_ParamReal, 0);
+  res->Append(nombre, static_cast<int>(strlen(nombre)), Interface_ParamReal, 0);
 
   MakeHollerith(theAuthorName, text, lt);
   res->Append(text, lt, Interface_ParamText, 0);
@@ -468,10 +468,10 @@ occ::handle<Interface_ParamSet> IGESData_GlobalSection::Params() const
   res->Append(text, lt, Interface_ParamText, 0);
 
   Sprintf(nombre, "%d", theIGESVersion);
-  res->Append(nombre, (int)strlen(nombre), Interface_ParamInteger, 0);
+  res->Append(nombre, static_cast<int>(strlen(nombre)), Interface_ParamInteger, 0);
 
   Sprintf(nombre, "%d", theDraftingStandard);
-  res->Append(nombre, (int)strlen(nombre), Interface_ParamInteger, 0);
+  res->Append(nombre, static_cast<int>(strlen(nombre)), Interface_ParamInteger, 0);
 
   if (!theLastChangeDate.IsNull())
   {

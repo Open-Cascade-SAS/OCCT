@@ -144,7 +144,7 @@ bool IntTools_EdgeFace::IsCoincident()
       isClassified = true;
   }
   //
-  const double aCoeff = (double)iCnt / ((double)aNbSeg + 1);
+  const double aCoeff = static_cast<double>(iCnt) / (static_cast<double>(aNbSeg) + 1);
   return (aCoeff > aTresh);
 }
 
@@ -844,7 +844,7 @@ int AdaptiveDiscret(const int                  iDiscret,
     aRadius               = aCylinder.Radius();
     dLR                   = 2 * aRadius;
 
-    iDiscretNew = (int)(aELength / dLR);
+    iDiscretNew = static_cast<int>(aELength / dLR);
 
     if (iDiscretNew < iDiscret)
     {

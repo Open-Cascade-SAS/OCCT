@@ -141,12 +141,12 @@ void HLRAlgo_PolyAlgo::Update()
         zSegmnMin = aPoints.PntP2.Z();
         zSegmnMax = aPoints.PntP1.Z();
       }
-      nxMin             = (int)((DecaX + xSegmnMin) * SurDX);
-      nyMin             = (int)((DecaY + ySegmnMin) * SurDY);
-      nzMin             = (int)((DecaZ + zSegmnMin) * SurDZ);
-      nxMax             = (int)((DecaX + xSegmnMax) * SurDX);
-      nyMax             = (int)((DecaY + ySegmnMax) * SurDY);
-      nzMax             = (int)((DecaZ + zSegmnMax) * SurDZ);
+      nxMin             = static_cast<int>((DecaX + xSegmnMin) * SurDX);
+      nyMin             = static_cast<int>((DecaY + ySegmnMin) * SurDY);
+      nzMin             = static_cast<int>((DecaZ + zSegmnMin) * SurDZ);
+      nxMax             = static_cast<int>((DecaX + xSegmnMax) * SurDX);
+      nyMax             = static_cast<int>((DecaY + ySegmnMax) * SurDY);
+      nzMax             = static_cast<int>((DecaZ + zSegmnMax) * SurDZ);
       theIndices.MinSeg = nyMin + (nxMin << 11);
       theIndices.MinSeg <<= 10;
       theIndices.MinSeg += nzMin;
@@ -236,12 +236,12 @@ void HLRAlgo_PolyAlgo::Update()
               zTrianMin = Z3;
             else if (zTrianMax < Z3)
               zTrianMax = Z3;
-            nxMin = (int)((DecaX + xTrianMin) * SurDX);
-            nyMin = (int)((DecaY + yTrianMin) * SurDY);
-            nzMin = (int)((DecaZ + zTrianMin) * SurDZ);
-            nxMax = (int)((DecaX + xTrianMax) * SurDX);
-            nyMax = (int)((DecaY + yTrianMax) * SurDY);
-            nzMax = (int)((DecaZ + zTrianMax) * SurDZ);
+            nxMin = static_cast<int>((DecaX + xTrianMin) * SurDX);
+            nyMin = static_cast<int>((DecaY + yTrianMin) * SurDY);
+            nzMin = static_cast<int>((DecaZ + zTrianMin) * SurDZ);
+            nxMax = static_cast<int>((DecaX + xTrianMax) * SurDX);
+            nyMax = static_cast<int>((DecaY + yTrianMax) * SurDY);
+            nzMax = static_cast<int>((DecaZ + zTrianMax) * SurDZ);
             int MinTrian, MaxTrian;
             MinTrian = nyMin + (nxMin << 11);
             MinTrian <<= 10;
@@ -314,12 +314,12 @@ void HLRAlgo_PolyAlgo::Update()
               zPolyTMax = zTrianMax;
           }
         }
-        nxMin            = (int)((DecaX + xPolyTMin) * SurDX);
-        nyMin            = (int)((DecaY + yPolyTMin) * SurDY);
-        nzMin            = (int)((DecaZ + zPolyTMin) * SurDZ);
-        nxMax            = (int)((DecaX + xPolyTMax) * SurDX);
-        nyMax            = (int)((DecaY + yPolyTMax) * SurDY);
-        nzMax            = (int)((DecaZ + zPolyTMax) * SurDZ);
+        nxMin            = static_cast<int>((DecaX + xPolyTMin) * SurDX);
+        nyMin            = static_cast<int>((DecaY + yPolyTMin) * SurDY);
+        nzMin            = static_cast<int>((DecaZ + zPolyTMin) * SurDZ);
+        nxMax            = static_cast<int>((DecaX + xPolyTMax) * SurDX);
+        nyMax            = static_cast<int>((DecaY + yPolyTMax) * SurDY);
+        nzMax            = static_cast<int>((DecaZ + zPolyTMax) * SurDZ);
         PolyTIndices.Min = nyMin + (nxMin << 11);
         PolyTIndices.Min <<= 10;
         PolyTIndices.Min += nzMin - 0x00000200;
@@ -342,12 +342,12 @@ void HLRAlgo_PolyAlgo::Update()
     }
     if (nbFaHi > 0)
     {
-      nxMin             = (int)((DecaX + xShellMin) * SurDX);
-      nyMin             = (int)((DecaY + yShellMin) * SurDY);
-      nzMin             = (int)((DecaZ + zShellMin) * SurDZ);
-      nxMax             = (int)((DecaX + xShellMax) * SurDX);
-      nyMax             = (int)((DecaY + yShellMax) * SurDY);
-      nzMax             = (int)((DecaZ + zShellMax) * SurDZ);
+      nxMin             = static_cast<int>((DecaX + xShellMin) * SurDX);
+      nyMin             = static_cast<int>((DecaY + yShellMin) * SurDY);
+      nzMin             = static_cast<int>((DecaZ + zShellMin) * SurDZ);
+      nxMax             = static_cast<int>((DecaX + xShellMax) * SurDX);
+      nyMax             = static_cast<int>((DecaY + yShellMax) * SurDY);
+      nzMax             = static_cast<int>((DecaZ + zShellMax) * SurDZ);
       aShellIndices.Min = nyMin + (nxMin << 11);
       aShellIndices.Min <<= 10;
       aShellIndices.Min += nzMin - 0x00000200;
@@ -418,7 +418,7 @@ HLRAlgo_BiPoint::PointsT& HLRAlgo_PolyAlgo::Hide(HLRAlgo_EdgeStatus& theStatus,
   HLRAlgo_BiPoint&           aBP       = mySegListIt.ChangeValue();
   HLRAlgo_BiPoint::PointsT&  aPoints   = aBP.Points();
   HLRAlgo_BiPoint::IndicesT& anIndices = aBP.Indices();
-  theStatus = HLRAlgo_EdgeStatus(0.0, (float)myTriangle.TolParam, 1.0, (float)myTriangle.TolParam);
+  theStatus = HLRAlgo_EdgeStatus(0.0, static_cast<float>(myTriangle.TolParam), 1.0, static_cast<float>(myTriangle.TolParam));
   theIndex  = anIndices.ShapeIndex;
   theReg1   = aBP.Rg1Line();
   theRegn   = aBP.RgNLine();

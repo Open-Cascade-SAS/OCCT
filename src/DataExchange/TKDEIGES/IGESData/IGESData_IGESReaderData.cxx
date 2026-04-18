@@ -49,7 +49,7 @@ occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> IGESDa
 
 void IGESData_IGESReaderData::AddGlobal(const Interface_ParamType atype, const char* const aval)
 {
-  theparh->Append(aval, (int)strlen(aval), atype, 0);
+  theparh->Append(aval, static_cast<int>(strlen(aval)), atype, 0);
 }
 
 void IGESData_IGESReaderData::SetGlobalSection()

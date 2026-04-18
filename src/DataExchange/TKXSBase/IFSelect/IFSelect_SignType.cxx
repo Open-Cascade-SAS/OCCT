@@ -22,7 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SignType, IFSelect_Signature)
 static const char* nulsign = "";
 
 IFSelect_SignType::IFSelect_SignType(const bool nopk)
-    : IFSelect_Signature((const char*)(nopk ? "Class Type" : "Dynamic Type")),
+    : IFSelect_Signature((nopk ? "Class Type" : "Dynamic Type")),
       thenopk(nopk)
 {
 }

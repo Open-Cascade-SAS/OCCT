@@ -122,8 +122,8 @@ float OpenGl_GraduatedTrihedron::getNormal(const occ::handle<OpenGl_Context>& th
   aProjMatrix.Convert(theContext->ProjectionState.Current());
 
   NCollection_Vec3<float> aPoint1, aPoint2, aPoint3;
-  Graphic3d_TransformUtils::UnProject<float>((float)aViewport[0],
-                                             (float)aViewport[1],
+  Graphic3d_TransformUtils::UnProject<float>(static_cast<float>(aViewport[0]),
+                                             static_cast<float>(aViewport[1]),
                                              0.0f,
                                              aModelMatrix,
                                              aProjMatrix,
@@ -132,8 +132,8 @@ float OpenGl_GraduatedTrihedron::getNormal(const occ::handle<OpenGl_Context>& th
                                              aPoint1.y(),
                                              aPoint1.z());
 
-  Graphic3d_TransformUtils::UnProject<float>((float)(aViewport[0] + aViewport[2]),
-                                             (float)aViewport[1],
+  Graphic3d_TransformUtils::UnProject<float>(static_cast<float>(aViewport[0] + aViewport[2]),
+                                             static_cast<float>(aViewport[1]),
                                              0.0f,
                                              aModelMatrix,
                                              aProjMatrix,
@@ -142,8 +142,8 @@ float OpenGl_GraduatedTrihedron::getNormal(const occ::handle<OpenGl_Context>& th
                                              aPoint2.y(),
                                              aPoint2.z());
 
-  Graphic3d_TransformUtils::UnProject<float>((float)aViewport[0],
-                                             (float)(aViewport[1] + aViewport[3]),
+  Graphic3d_TransformUtils::UnProject<float>(static_cast<float>(aViewport[0]),
+                                             static_cast<float>(aViewport[1] + aViewport[3]),
                                              0.0f,
                                              aModelMatrix,
                                              aProjMatrix,
@@ -157,7 +157,7 @@ float OpenGl_GraduatedTrihedron::getNormal(const occ::handle<OpenGl_Context>& th
   theNormal                         = NCollection_Vec3<float>::Cross(aD1, aD2);
 
   // Distance corresponding to 1 pixel
-  return aD2.Modulus() / (float)aViewport[2];
+  return aD2.Modulus() / static_cast<float>(aViewport[2]);
 }
 
 //=================================================================================================
@@ -385,7 +385,7 @@ void OpenGl_GraduatedTrihedron::renderAxis(const occ::handle<OpenGl_Workspace>& 
 
   Graphic3d_TransformPers aTransMode(
     Graphic3d_TMF_ZoomPers,
-    gp_Pnt(double(anArrowVec.x()), double(anArrowVec.y()), double(anArrowVec.z())));
+    gp_Pnt(static_cast<double>(anArrowVec.x()), static_cast<double>(anArrowVec.y()), static_cast<double>(anArrowVec.z())));
   const NCollection_Mat4<float>& aProjection = aContext->ProjectionState.Current();
   const NCollection_Mat4<float>& aWorldView  = aContext->WorldViewState.Current();
   const int                      aWidth      = theWorkspace->Width();
@@ -477,7 +477,7 @@ void OpenGl_GraduatedTrihedron::renderTickmarkLabels(
 
     NCollection_Mat4<float> aModelMat(theMat);
 
-    anAxis.InitTickmark(aContext, aDir * (float)aCurAspect.TickmarksLength() * theDpix);
+    anAxis.InitTickmark(aContext, aDir * static_cast<float>(aCurAspect.TickmarksLength()) * theDpix);
     Graphic3d_TransformUtils::Translate(aModelMat,
                                         theGridAxes.Ticks[theIndex].x(),
                                         theGridAxes.Ticks[theIndex].y(),
@@ -504,7 +504,7 @@ void OpenGl_GraduatedTrihedron::renderTickmarkLabels(
 
     NCollection_Vec3<float> aMiddle(theGridAxes.Ticks[theIndex]
                                     + aSizeVec * theGridAxes.Axes[theIndex] * 0.5f
-                                    + aDir * (float)(theDpix * anOffset));
+                                    + aDir * static_cast<float>(theDpix * anOffset));
 
     myAspectLabels.Aspect()->SetColor(anAxis.NameColor);
     theWorkspace->SetAspects(&myAspectLabels);
@@ -522,8 +522,8 @@ void OpenGl_GraduatedTrihedron::renderTickmarkLabels(
     {
       Sprintf(aTextValue, "%g", theGridAxes.Ticks[theIndex].GetData()[theIndex] + anIt * aStep);
       NCollection_Vec3<float> aPos(theGridAxes.Ticks[theIndex]
-                                   + anAxis.Direction * (float)(anIt * aStep)
-                                   + aDir * (float)(theDpix * anOffset));
+                                   + anAxis.Direction * (anIt * aStep)
+                                   + aDir * static_cast<float>(theDpix * anOffset));
 
       occ::handle<Graphic3d_Text> aText = myLabelValues.Text();
       aText->SetText(aTextValue);
@@ -708,7 +708,7 @@ OpenGl_GraduatedTrihedron::Axis::Axis(const Graphic3d_GraduatedTrihedron::AxisAs
       Arrow(nullptr)
 {
   occ::handle<Graphic3d_Text> aText = new Graphic3d_Text(THE_LABEL_HEIGHT);
-  aText->SetText((char16_t*)theAspect.Name().ToExtString());
+  aText->SetText(const_cast<char16_t*>(theAspect.Name().ToExtString()));
   aText->SetPosition(gp_Pnt(theDirection.x(), theDirection.y(), theDirection.z()));
   aText->SetHorizontalAlignment(THE_LABEL_HALIGH);
   aText->SetVerticalAlignment(THE_LABEL_VALIGH);
@@ -759,7 +759,7 @@ void OpenGl_GraduatedTrihedron::Axis::InitArrow(const occ::handle<OpenGl_Context
 
   // Radial direction to the arrow
   NCollection_Vec3<float> aRadial = NCollection_Vec3<float>::Cross(this->Direction, theNormal);
-  if (aRadial.Modulus() < (float)Precision::Confusion())
+  if (aRadial.Modulus() < static_cast<float>(Precision::Confusion()))
   {
     return;
   }

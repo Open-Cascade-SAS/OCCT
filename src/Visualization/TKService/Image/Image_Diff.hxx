@@ -119,17 +119,17 @@ protected:
   //! Map two pixel coordinates to 32-bit integer
   static int PackXY(uint16_t theX, uint16_t theY)
   {
-    return int((unsigned int)theY | ((unsigned int)theX << 16));
+    return static_cast<int>(static_cast<unsigned int>(theY) | (static_cast<unsigned int>(theX) << 16));
   }
 
   //! Get pixel X coordinate from 32-bit packed integer
   static uint16_t UnpackX(int theXY)
   {
-    return (uint16_t)(((unsigned int)theXY & 0xffff0000) >> 16);
+    return static_cast<uint16_t>((static_cast<unsigned int>(theXY) & 0xffff0000) >> 16);
   }
 
   //! Get pixel Y coordinate from 32-bit packed integer
-  static uint16_t UnpackY(int theXY) { return (uint16_t)((unsigned int)theXY & 0xffff); }
+  static uint16_t UnpackY(int theXY) { return static_cast<uint16_t>(static_cast<unsigned int>(theXY) & 0xffff); }
 
 protected:
   occ::handle<Image_PixMap> myImageRef; //!< reference image to compare (from)

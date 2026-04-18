@@ -81,7 +81,7 @@ const char* LDOM_SBuffer::str() const
 //=======================================================================
 int LDOM_SBuffer::overflow(int c)
 {
-  char cc = (char)c;
+  char cc = static_cast<char>(c);
   xsputn(&cc, 1);
   return c;
 }

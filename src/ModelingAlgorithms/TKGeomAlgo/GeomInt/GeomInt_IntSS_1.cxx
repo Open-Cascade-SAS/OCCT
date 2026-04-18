@@ -616,8 +616,8 @@ void GeomInt_IntSS::MakeCurve(const int                               Index,
         for (i = 1; i <= aNbParts; i++)
         {
           myLConstruct.Part(i, fprm, lprm);
-          ifprm = (int)fprm;
-          ilprm = (int)lprm;
+          ifprm = static_cast<int>(fprm);
+          ilprm = static_cast<int>(lprm);
           //
           occ::handle<Geom2d_BSplineCurve> aH1, aH2;
 
@@ -669,8 +669,8 @@ void GeomInt_IntSS::MakeCurve(const int                               Index,
           else
           {
             myLConstruct.Part(i, fprm, lprm);
-            ifprm = (int)fprm;
-            ilprm = (int)lprm;
+            ifprm = static_cast<int>(fprm);
+            ilprm = static_cast<int>(lprm);
           }
 
           bool                anApprox  = myApprox;

@@ -51,7 +51,7 @@ occ::handle<TObj_Object> TObj_Persistence::CreateNewObject(const char* const the
 {
   if (getMapOfTypes().IsBound(theType))
   {
-    TObj_Persistence* tool = (TObj_Persistence*)getMapOfTypes().Find(theType);
+    TObj_Persistence* tool = static_cast<TObj_Persistence*>(getMapOfTypes().Find(theType));
     if (tool)
       return tool->New(theLabel);
   }

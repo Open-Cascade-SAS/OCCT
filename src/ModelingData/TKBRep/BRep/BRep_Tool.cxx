@@ -1214,7 +1214,7 @@ GeomAbs_Shape BRep_Tool::MaxContinuity(const TopoDS_Edge& theEdge)
     if (aRepr->IsRegularity())
     {
       const GeomAbs_Shape aCont = aRepr->Continuity();
-      if ((int)aCont > (int)aMaxCont)
+      if (static_cast<int>(aCont) > static_cast<int>(aMaxCont))
       {
         aMaxCont = aCont;
       }

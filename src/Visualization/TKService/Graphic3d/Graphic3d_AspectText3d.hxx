@@ -105,7 +105,7 @@ public:
   float GetTextAngle() const { return myTextAngle; }
 
   //! Turns usage of text rotated
-  void SetTextAngle(const double theAngle) { myTextAngle = (float)theAngle; }
+  void SetTextAngle(const double theAngle) { myTextAngle = static_cast<float>(theAngle); }
 
   //! Returns text FontAspect
   Font_FontAspect GetTextFontAspect() const { return myTextFontAspect; }

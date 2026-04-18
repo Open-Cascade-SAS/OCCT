@@ -78,7 +78,7 @@ void BRepTopAdaptor_TopolTool::Initialize(const occ::handle<Adaptor3d_Surface>& 
   TopoDS_Shape s_wnt = brhs->Face();
   s_wnt.Orientation(TopAbs_FORWARD);
   myFace = TopoDS::Face(s_wnt);
-  delete (BRepTopAdaptor_FClass2d*)myFClass2d;
+  delete static_cast<BRepTopAdaptor_FClass2d*>(myFClass2d);
   myFClass2d   = nullptr;
   myNbSamplesU = -1;
   myS          = S;
@@ -181,7 +181,7 @@ TopAbs_State BRepTopAdaptor_TopolTool::Classify(const gp_Pnt2d& P,
   {
     myFClass2d = (void*)new BRepTopAdaptor_FClass2d(myFace, Tol);
   }
-  return (((BRepTopAdaptor_FClass2d*)myFClass2d)->Perform(P, RecadreOnPeriodic));
+  return ((static_cast<BRepTopAdaptor_FClass2d*>(myFClass2d))->Perform(P, RecadreOnPeriodic));
 }
 
 //=================================================================================================
@@ -195,14 +195,14 @@ bool BRepTopAdaptor_TopolTool::IsThePointOn(const gp_Pnt2d& P,
     myFClass2d = (void*)new BRepTopAdaptor_FClass2d(myFace, Tol);
   }
   return (TopAbs_ON
-          == ((BRepTopAdaptor_FClass2d*)myFClass2d)->TestOnRestriction(P, Tol, RecadreOnPeriodic));
+          == (static_cast<BRepTopAdaptor_FClass2d*>(myFClass2d))->TestOnRestriction(P, Tol, RecadreOnPeriodic));
 }
 
 //=================================================================================================
 
 void BRepTopAdaptor_TopolTool::Destroy()
 {
-  delete (BRepTopAdaptor_FClass2d*)myFClass2d;
+  delete static_cast<BRepTopAdaptor_FClass2d*>(myFClass2d);
   myFClass2d = nullptr;
 }
 
@@ -416,8 +416,8 @@ void BRepTopAdaptor_TopolTool::ComputeSamplePoints()
     case GeomAbs_Torus: {
       //-- Set 15 for 2pi
       //-- Not enough ->25 for 2pi
-      nbsu = (int)(8 * (usup - uinf));
-      nbsv = (int)(7 * (vsup - vinf));
+      nbsu = static_cast<int>(8 * (usup - uinf));
+      nbsv = static_cast<int>(7 * (vsup - vinf));
       if (nbsu < 5)
         nbsu = 5;
       if (nbsv < 5)

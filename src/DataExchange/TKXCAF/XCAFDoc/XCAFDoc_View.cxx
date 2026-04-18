@@ -160,7 +160,7 @@ occ::handle<XCAFView_Object> XCAFDoc_View::GetObject() const
   occ::handle<TDataStd_Integer> aType;
   if (Label().FindChild(ChildLab_Type).FindAttribute(TDataStd_Integer::GetID(), aType))
   {
-    anObj->SetType((XCAFView_ProjectionType)aType->Get());
+    anObj->SetType(static_cast<XCAFView_ProjectionType>(aType->Get()));
   }
 
   // Projection point

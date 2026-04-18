@@ -101,7 +101,7 @@ void BOPAlgo_Section::PerformInternal1(const BOPAlgo_PaveFiller&    theFiller,
                                        const Message_ProgressRange& theRange)
 {
   Message_ProgressScope aPS(theRange, "Building result of SECTION operation", 100);
-  myPaveFiller = (BOPAlgo_PaveFiller*)&theFiller;
+  myPaveFiller = const_cast<BOPAlgo_PaveFiller*>(&theFiller);
   myDS         = myPaveFiller->PDS();
   myContext    = myPaveFiller->Context();
   //

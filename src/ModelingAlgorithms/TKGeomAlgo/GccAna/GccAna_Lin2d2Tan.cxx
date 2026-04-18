@@ -118,7 +118,7 @@ GccAna_Lin2d2Tan::GccAna_Lin2d2Tan(const GccEnt_QualifiedCirc& Qualified1,
   else if (std::abs(ThePoint.Distance(C1.Location()) - R1) <= Tol)
   {
     gp_Dir2d dir(gp_Vec2d(C1.Location(), ThePoint));
-    linsol(1) = gp_Lin2d(ThePoint, gp_Dir2d(double(-dir.Y()), double(dir.X())));
+    linsol(1) = gp_Lin2d(ThePoint, gp_Dir2d((-dir.Y()), (dir.X())));
     //   =====================================================================
     qualifier1(1) = Qualified1.Qualifier();
     qualifier2(1) = GccEnt_noqualifier;

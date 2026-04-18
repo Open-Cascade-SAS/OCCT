@@ -111,7 +111,7 @@ bool OpenGl_BufferCompatT<BaseBufferT>::Create(const occ::handle<OpenGl_Context>
 {
   if (BaseBufferT::myBufferId == OpenGl_Buffer::NO_BUFFER)
   {
-    BaseBufferT::myBufferId = (unsigned int)-1; // dummy identifier...
+    BaseBufferT::myBufferId = static_cast<unsigned int>(-1); // dummy identifier...
     myData                  = new NCollection_Buffer(Graphic3d_Buffer::DefaultAllocator());
   }
   return BaseBufferT::myBufferId != OpenGl_Buffer::NO_BUFFER;
@@ -148,7 +148,7 @@ bool OpenGl_BufferCompatT<BaseBufferT>::initLink(const occ::handle<NCollection_B
 
   if (BaseBufferT::myBufferId == OpenGl_Buffer::NO_BUFFER)
   {
-    BaseBufferT::myBufferId = (unsigned int)-1; // dummy identifier...
+    BaseBufferT::myBufferId = static_cast<unsigned int>(-1); // dummy identifier...
   }
   myData                      = theData;
   BaseBufferT::myDataType     = theDataType;
@@ -213,8 +213,8 @@ bool OpenGl_BufferCompatT<BaseBufferT>::subData(const occ::handle<OpenGl_Context
   }
 
   const size_t aDataSize = BaseBufferT::sizeOfGlType(theDataType);
-  const size_t anOffset  = size_t(theElemFrom) * size_t(BaseBufferT::myComponentsNb) * aDataSize;
-  const size_t aNbBytes  = size_t(theElemsNb) * size_t(BaseBufferT::myComponentsNb) * aDataSize;
+  const size_t anOffset  = static_cast<size_t>(theElemFrom) * size_t(BaseBufferT::myComponentsNb) * aDataSize;
+  const size_t aNbBytes  = static_cast<size_t>(theElemsNb) * size_t(BaseBufferT::myComponentsNb) * aDataSize;
   memcpy(myData->ChangeData() + anOffset, theData, aNbBytes);
   return true;
 }
@@ -235,8 +235,8 @@ bool OpenGl_BufferCompatT<BaseBufferT>::getSubData(const occ::handle<OpenGl_Cont
   }
 
   const size_t aDataSize = BaseBufferT::sizeOfGlType(theDataType);
-  const size_t anOffset  = size_t(theElemFrom) * size_t(BaseBufferT::myComponentsNb) * aDataSize;
-  const size_t aNbBytes  = size_t(theElemsNb) * size_t(BaseBufferT::myComponentsNb) * aDataSize;
+  const size_t anOffset  = static_cast<size_t>(theElemFrom) * size_t(BaseBufferT::myComponentsNb) * aDataSize;
+  const size_t aNbBytes  = static_cast<size_t>(theElemsNb) * size_t(BaseBufferT::myComponentsNb) * aDataSize;
   memcpy(theData, myData->Data() + anOffset, aNbBytes);
   return true;
 }

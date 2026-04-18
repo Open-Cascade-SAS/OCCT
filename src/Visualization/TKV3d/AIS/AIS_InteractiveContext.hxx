@@ -319,7 +319,7 @@ public: //! @name object presence management (View affinity, Layer, Priority)
                       "instead of integer number to SetDisplayPriority()")
   void SetDisplayPriority(const occ::handle<AIS_InteractiveObject>& theIObj, const int thePriority)
   {
-    SetDisplayPriority(theIObj, (Graphic3d_DisplayPriority)thePriority);
+    SetDisplayPriority(theIObj, static_cast<Graphic3d_DisplayPriority>(thePriority));
   }
 
   //! Get Z layer id set for displayed interactive object.

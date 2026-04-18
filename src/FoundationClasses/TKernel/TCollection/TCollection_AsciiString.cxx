@@ -204,7 +204,7 @@ TCollection_AsciiString::TCollection_AsciiString(const TCollection_AsciiString& 
 TCollection_AsciiString::TCollection_AsciiString(const TCollection_AsciiString& theString1,
                                                  const char* const              theString2)
 {
-  const int aStr2Len = int(theString2 ? strlen(theString2) : 0);
+  const int aStr2Len = static_cast<int>(theString2 ? strlen(theString2) : 0);
   allocate(theString1.myLength + aStr2Len);
   if (theString1.myLength != 0)
   {
@@ -793,7 +793,7 @@ bool TCollection_AsciiString::EndsWith(const char* const theEndString, const int
 int TCollection_AsciiString::IntegerValue() const
 {
   char* ptr;
-  int   value = (int)strtol(myString, &ptr, 10);
+  int   value = static_cast<int>(strtol(myString, &ptr, 10));
   if (ptr != myString)
     return value;
 
@@ -809,7 +809,7 @@ bool TCollection_AsciiString::IsIntegerValue() const
 
   if (ptr != myString)
   {
-    for (int i = int(ptr - myString); i < myLength; i++)
+    for (int i = static_cast<int>(ptr - myString); i < myLength; i++)
     {
       if (myString[i] == '.')
         return false; // what about 'e','x',etc ???
@@ -977,7 +977,7 @@ void TCollection_AsciiString::Read(Standard_IStream& theStream)
   theStream.width(oldWidth);
 
   // put to string
-  reallocate(int(strlen(buffer)));
+  reallocate(static_cast<int>(strlen(buffer)));
   memcpy(myString, buffer, myLength);
 }
 
@@ -1271,9 +1271,9 @@ int TCollection_AsciiString::UsefullLength() const
   for (NCollection_UtfIterator<char> anIter(myString); *anIter != 0; ++anIter)
   {
     const char32_t aChar = *anIter;
-    if (aChar > char32_t(0x7F) || std::isgraph(static_cast<int>(aChar)) != 0)
+    if (aChar > static_cast<char32_t>(0x7F) || std::isgraph(static_cast<int>(aChar)) != 0)
     {
-      aLastGraphicEnd = int(anIter.BufferNext() - myString);
+      aLastGraphicEnd = static_cast<int>(anIter.BufferNext() - myString);
     }
   }
   return aLastGraphicEnd;

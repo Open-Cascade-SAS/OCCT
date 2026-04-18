@@ -54,13 +54,13 @@ bool DEBREP_ConfigurationNode::Load(const occ::handle<DE_ConfigurationContext>& 
   InternalParameters.WriteBinary =
     theResource->BooleanVal("write.binary", InternalParameters.WriteBinary, aScope);
   InternalParameters.WriteVersionBin =
-    (BinTools_FormatVersion)theResource->IntegerVal("write.version.binary",
+    static_cast<BinTools_FormatVersion>(theResource->IntegerVal("write.version.binary",
                                                     InternalParameters.WriteVersionBin,
-                                                    aScope);
+                                                    aScope));
   InternalParameters.WriteVersionAscii =
-    (TopTools_FormatVersion)theResource->IntegerVal("write.version.ascii",
+    static_cast<TopTools_FormatVersion>(theResource->IntegerVal("write.version.ascii",
                                                     InternalParameters.WriteVersionAscii,
-                                                    aScope);
+                                                    aScope));
   InternalParameters.WriteTriangles =
     theResource->BooleanVal("write.triangles", InternalParameters.WriteTriangles, aScope);
   InternalParameters.WriteNormals =
@@ -176,7 +176,7 @@ bool DEBREP_ConfigurationNode::CheckContent(const occ::handle<NCollection_Buffer
   {
     return false;
   }
-  const char* aBytes = (const char*)theBuffer->Data();
+  const char* aBytes = reinterpret_cast<const char*>(theBuffer->Data());
   return ::strstr(aBytes, "DBRep_DrawableShape") || ::strstr(aBytes, "CASCADE Topology V1")
          || ::strstr(aBytes, "CASCADE Topology V3");
 }

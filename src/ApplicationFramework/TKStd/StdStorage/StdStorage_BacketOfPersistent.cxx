@@ -52,7 +52,7 @@ StdStorage_BucketOfPersistent::StdStorage_BucketOfPersistent(const int theBucket
       myNumberOfBucketAllocated(theBucketNumber),
       myBucketSize(theBucketSize)
 {
-  myBuckets = (StdStorage_Bucket**)Standard::Allocate(sizeof(StdStorage_Bucket*) * theBucketNumber);
+  myBuckets = static_cast<StdStorage_Bucket**>(Standard::Allocate(sizeof(StdStorage_Bucket*) * theBucketNumber));
   myBuckets[0]          = new StdStorage_Bucket(myBucketSize);
   myCurrentBucket       = myBuckets[0];
   myLength              = 0;
@@ -116,7 +116,7 @@ void StdStorage_BucketOfPersistent::Append(const occ::handle<StdObjMgt_Persisten
   if (myNumberOfBucket > myNumberOfBucketAllocated)
   {
     size_t e  = sizeof(StdStorage_Bucket*) * myNumberOfBucketAllocated;
-    myBuckets = (StdStorage_Bucket**)Standard::Reallocate(myBuckets, e * 2);
+    myBuckets = static_cast<StdStorage_Bucket**>(Standard::Reallocate(myBuckets, e * 2));
     myNumberOfBucketAllocated *= 2;
   }
 

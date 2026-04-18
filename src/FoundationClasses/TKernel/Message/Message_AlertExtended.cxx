@@ -70,7 +70,7 @@ bool Message_AlertExtended::SupportsMerge() const
   // hierarchical alerts can not be merged
   for (int aGravIter = Message_Trace; aGravIter <= Message_Fail; ++aGravIter)
   {
-    if (!myCompositAlerts->Alerts((Message_Gravity)aGravIter).IsEmpty())
+    if (!myCompositAlerts->Alerts(static_cast<Message_Gravity>(aGravIter)).IsEmpty())
     {
       return false;
     }

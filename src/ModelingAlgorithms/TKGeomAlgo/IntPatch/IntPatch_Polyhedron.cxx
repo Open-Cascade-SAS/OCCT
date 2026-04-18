@@ -56,11 +56,11 @@ static int NbPOnV(const occ::handle<Adaptor3d_Surface>& S)
 
 void IntPatch_Polyhedron::Destroy()
 {
-  gp_Pnt* CMyPnts = (gp_Pnt*)C_MyPnts;
+  gp_Pnt* CMyPnts = static_cast<gp_Pnt*>(C_MyPnts);
   delete[] CMyPnts;
-  double* CMyU = (double*)C_MyU;
+  double* CMyU = static_cast<double*>(C_MyU);
   delete[] CMyU;
-  double* CMyV = (double*)C_MyV;
+  double* CMyV = static_cast<double*>(C_MyV);
   delete[] CMyV;
   C_MyPnts = C_MyU = C_MyV = nullptr;
 }
@@ -95,8 +95,8 @@ IntPatch_Polyhedron::IntPatch_Polyhedron(const occ::handle<Adaptor3d_Surface>& S
   // Build UV parameter arrays
   NCollection_Array1<double> aUParams(0, nbdeltaU);
   NCollection_Array1<double> aVParams(0, nbdeltaV);
-  const double               U1mU0sNbdeltaU = (u1 - u0) / (double)nbdeltaU;
-  const double               V1mV0sNbdeltaV = (v1 - v0) / (double)nbdeltaV;
+  const double               U1mU0sNbdeltaU = (u1 - u0) / static_cast<double>(nbdeltaU);
+  const double               V1mV0sNbdeltaV = (v1 - v0) / static_cast<double>(nbdeltaV);
 
   for (int i = 0; i <= nbdeltaU; ++i)
   {
@@ -165,8 +165,8 @@ IntPatch_Polyhedron::IntPatch_Polyhedron(const occ::handle<Adaptor3d_Surface>& S
   // Build UV parameter arrays
   NCollection_Array1<double> aUParams(0, nbdeltaU);
   NCollection_Array1<double> aVParams(0, nbdeltaV);
-  const double               U1mU0sNbdeltaU = (u1 - u0) / (double)nbdeltaU;
-  const double               V1mV0sNbdeltaV = (v1 - v0) / (double)nbdeltaV;
+  const double               U1mU0sNbdeltaU = (u1 - u0) / static_cast<double>(nbdeltaU);
+  const double               V1mV0sNbdeltaV = (v1 - v0) / static_cast<double>(nbdeltaV);
 
   for (int i = 0; i <= nbdeltaU; ++i)
   {
@@ -207,8 +207,8 @@ IntPatch_Polyhedron::IntPatch_Polyhedron(const occ::handle<Adaptor3d_Surface>& S
 
 void IntPatch_Polyhedron::Parameters(const int Index, double& U, double& V) const
 {
-  U = ((double*)C_MyU)[Index];
-  V = ((double*)C_MyV)[Index];
+  U = (static_cast<double*>(C_MyU))[Index];
+  V = (static_cast<double*>(C_MyV))[Index];
 }
 
 //=================================================================================================
@@ -657,9 +657,9 @@ void IntPatch_Polyhedron::Triangle(const int Index, int& P1, int& P2, int& P3) c
 //=======================================================================
 const gp_Pnt& IntPatch_Polyhedron::Point(const int Index, double& U, double& V) const
 {
-  gp_Pnt* CMyPnts = (gp_Pnt*)C_MyPnts;
-  double* CMyU    = (double*)C_MyU;
-  double* CMyV    = (double*)C_MyV;
+  gp_Pnt* CMyPnts = static_cast<gp_Pnt*>(C_MyPnts);
+  double* CMyU    = static_cast<double*>(C_MyU);
+  double* CMyV    = static_cast<double*>(C_MyV);
   U               = CMyU[Index];
   V               = CMyV[Index];
   return CMyPnts[Index];
@@ -670,7 +670,7 @@ const gp_Pnt& IntPatch_Polyhedron::Point(const int Index, double& U, double& V) 
 //=======================================================================
 const gp_Pnt& IntPatch_Polyhedron::Point(const int Index) const
 {
-  gp_Pnt* CMyPnts = (gp_Pnt*)C_MyPnts;
+  gp_Pnt* CMyPnts = static_cast<gp_Pnt*>(C_MyPnts);
   return CMyPnts[Index];
 }
 
@@ -691,7 +691,7 @@ void IntPatch_Polyhedron::Point(const gp_Pnt& /*p*/,
 //=======================================================================
 void IntPatch_Polyhedron::Point(const int Index, gp_Pnt& P) const
 {
-  gp_Pnt* CMyPnts = (gp_Pnt*)C_MyPnts;
+  gp_Pnt* CMyPnts = static_cast<gp_Pnt*>(C_MyPnts);
   P               = CMyPnts[Index];
 }
 

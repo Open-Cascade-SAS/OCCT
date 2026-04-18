@@ -238,11 +238,11 @@ static int getSubViewOffset(double theOffset, int theWinSize)
 {
   if (theOffset >= 1.0)
   {
-    return int(theOffset);
+    return static_cast<int>(theOffset);
   }
   else
   {
-    return int(theOffset * theWinSize);
+    return static_cast<int>(theOffset * theWinSize);
   }
 }
 
@@ -259,11 +259,11 @@ void Graphic3d_CView::SubviewResized(const occ::handle<Aspect_NeutralWindow>& th
   NCollection_Vec2<int>       aViewSize(NCollection_Vec2<double>(aWinSize) * mySubviewSize);
   if (mySubviewSize.x() > 1.0)
   {
-    aViewSize.x() = (int)mySubviewSize.x();
+    aViewSize.x() = static_cast<int>(mySubviewSize.x());
   }
   if (mySubviewSize.y() > 1.0)
   {
-    aViewSize.y() = (int)mySubviewSize.y();
+    aViewSize.y() = static_cast<int>(mySubviewSize.y());
   }
 
   NCollection_Vec2<int> anOffset(getSubViewOffset(mySubviewOffset.x(), aWinSize.x()),
@@ -1455,8 +1455,8 @@ void Graphic3d_CView::DiagnosticInformation(
     TCollection_AsciiString aDisplay =
       TCollection_AsciiString() + myXRSession->RecommendedViewport().x() + "x"
       + myXRSession->RecommendedViewport().y() + "@"
-      + (int)std::round(myXRSession->DisplayFrequency())
-      + " [FOVy: " + (int)std::round(myXRSession->FieldOfView()) + "]";
+      + static_cast<int>(std::round(myXRSession->DisplayFrequency()))
+      + " [FOVy: " + static_cast<int>(std::round(myXRSession->FieldOfView())) + "]";
 
     theDict.ChangeFromIndex(theDict.Add("VRvendor", aVendor))   = aVendor;
     theDict.ChangeFromIndex(theDict.Add("VRdevice", aDevice))   = aDevice;

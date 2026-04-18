@@ -18,7 +18,7 @@
 
 inline bool HLRBRep_FaceData::Selected() const
 {
-  return (myFlags & (int)FMaskSelected) != 0;
+  return (myFlags & static_cast<int>(FMaskSelected)) != 0;
 }
 
 //=================================================================================================
@@ -26,16 +26,16 @@ inline bool HLRBRep_FaceData::Selected() const
 inline void HLRBRep_FaceData::Selected(const bool B)
 {
   if (B)
-    myFlags |= (int)FMaskSelected;
+    myFlags |= static_cast<int>(FMaskSelected);
   else
-    myFlags &= ~((int)FMaskSelected);
+    myFlags &= ~(static_cast<int>(FMaskSelected));
 }
 
 //=================================================================================================
 
 inline bool HLRBRep_FaceData::Back() const
 {
-  return (myFlags & (int)FMaskBack) != 0;
+  return (myFlags & static_cast<int>(FMaskBack)) != 0;
 }
 
 //=================================================================================================
@@ -43,16 +43,16 @@ inline bool HLRBRep_FaceData::Back() const
 inline void HLRBRep_FaceData::Back(const bool B)
 {
   if (B)
-    myFlags |= (int)FMaskBack;
+    myFlags |= static_cast<int>(FMaskBack);
   else
-    myFlags &= ~((int)FMaskBack);
+    myFlags &= ~(static_cast<int>(FMaskBack));
 }
 
 //=================================================================================================
 
 inline bool HLRBRep_FaceData::Side() const
 {
-  return (myFlags & (int)FMaskSide) != 0;
+  return (myFlags & static_cast<int>(FMaskSide)) != 0;
 }
 
 //=================================================================================================
@@ -60,16 +60,16 @@ inline bool HLRBRep_FaceData::Side() const
 inline void HLRBRep_FaceData::Side(const bool B)
 {
   if (B)
-    myFlags |= (int)FMaskSide;
+    myFlags |= static_cast<int>(FMaskSide);
   else
-    myFlags &= ~((int)FMaskSide);
+    myFlags &= ~(static_cast<int>(FMaskSide));
 }
 
 //=================================================================================================
 
 inline bool HLRBRep_FaceData::Closed() const
 {
-  return (myFlags & (int)FMaskClosed) != 0;
+  return (myFlags & static_cast<int>(FMaskClosed)) != 0;
 }
 
 //=================================================================================================
@@ -77,16 +77,16 @@ inline bool HLRBRep_FaceData::Closed() const
 inline void HLRBRep_FaceData::Closed(const bool B)
 {
   if (B)
-    myFlags |= (int)FMaskClosed;
+    myFlags |= static_cast<int>(FMaskClosed);
   else
-    myFlags &= ~((int)FMaskClosed);
+    myFlags &= ~(static_cast<int>(FMaskClosed));
 }
 
 //=================================================================================================
 
 inline bool HLRBRep_FaceData::Hiding() const
 {
-  return (myFlags & (int)FMaskHiding) != 0;
+  return (myFlags & static_cast<int>(FMaskHiding)) != 0;
 }
 
 //=================================================================================================
@@ -94,16 +94,16 @@ inline bool HLRBRep_FaceData::Hiding() const
 inline void HLRBRep_FaceData::Hiding(const bool B)
 {
   if (B)
-    myFlags |= (int)FMaskHiding;
+    myFlags |= static_cast<int>(FMaskHiding);
   else
-    myFlags &= ~((int)FMaskHiding);
+    myFlags &= ~(static_cast<int>(FMaskHiding));
 }
 
 //=================================================================================================
 
 inline bool HLRBRep_FaceData::Simple() const
 {
-  return (myFlags & (int)FMaskSimple) != 0;
+  return (myFlags & static_cast<int>(FMaskSimple)) != 0;
 }
 
 //=================================================================================================
@@ -111,16 +111,16 @@ inline bool HLRBRep_FaceData::Simple() const
 inline void HLRBRep_FaceData::Simple(const bool B)
 {
   if (B)
-    myFlags |= (int)FMaskSimple;
+    myFlags |= static_cast<int>(FMaskSimple);
   else
-    myFlags &= ~((int)FMaskSimple);
+    myFlags &= ~(static_cast<int>(FMaskSimple));
 }
 
 //=================================================================================================
 
 inline bool HLRBRep_FaceData::Cut() const
 {
-  return (myFlags & (int)FMaskCut) != 0;
+  return (myFlags & static_cast<int>(FMaskCut)) != 0;
 }
 
 //=================================================================================================
@@ -128,16 +128,16 @@ inline bool HLRBRep_FaceData::Cut() const
 inline void HLRBRep_FaceData::Cut(const bool B)
 {
   if (B)
-    myFlags |= (int)FMaskCut;
+    myFlags |= static_cast<int>(FMaskCut);
   else
-    myFlags &= ~((int)FMaskCut);
+    myFlags &= ~(static_cast<int>(FMaskCut));
 }
 
 //=================================================================================================
 
 inline bool HLRBRep_FaceData::WithOutL() const
 {
-  return (myFlags & (int)FMaskWithOutL) != 0;
+  return (myFlags & static_cast<int>(FMaskWithOutL)) != 0;
 }
 
 //=================================================================================================
@@ -145,16 +145,16 @@ inline bool HLRBRep_FaceData::WithOutL() const
 inline void HLRBRep_FaceData::WithOutL(const bool B)
 {
   if (B)
-    myFlags |= (int)FMaskWithOutL;
+    myFlags |= static_cast<int>(FMaskWithOutL);
   else
-    myFlags &= ~((int)FMaskWithOutL);
+    myFlags &= ~(static_cast<int>(FMaskWithOutL));
 }
 
 //=================================================================================================
 
 inline bool HLRBRep_FaceData::Plane() const
 {
-  return (myFlags & (int)FMaskPlane) != 0;
+  return (myFlags & static_cast<int>(FMaskPlane)) != 0;
 }
 
 //=================================================================================================
@@ -162,16 +162,16 @@ inline bool HLRBRep_FaceData::Plane() const
 inline void HLRBRep_FaceData::Plane(const bool B)
 {
   if (B)
-    myFlags |= (int)FMaskPlane;
+    myFlags |= static_cast<int>(FMaskPlane);
   else
-    myFlags &= ~((int)FMaskPlane);
+    myFlags &= ~(static_cast<int>(FMaskPlane));
 }
 
 //=================================================================================================
 
 inline bool HLRBRep_FaceData::Cylinder() const
 {
-  return (myFlags & (int)FMaskCylinder) != 0;
+  return (myFlags & static_cast<int>(FMaskCylinder)) != 0;
 }
 
 //=================================================================================================
@@ -179,16 +179,16 @@ inline bool HLRBRep_FaceData::Cylinder() const
 inline void HLRBRep_FaceData::Cylinder(const bool B)
 {
   if (B)
-    myFlags |= (int)FMaskCylinder;
+    myFlags |= static_cast<int>(FMaskCylinder);
   else
-    myFlags &= ~((int)FMaskCylinder);
+    myFlags &= ~(static_cast<int>(FMaskCylinder));
 }
 
 //=================================================================================================
 
 inline bool HLRBRep_FaceData::Cone() const
 {
-  return (myFlags & (int)FMaskCone) != 0;
+  return (myFlags & static_cast<int>(FMaskCone)) != 0;
 }
 
 //=================================================================================================
@@ -196,16 +196,16 @@ inline bool HLRBRep_FaceData::Cone() const
 inline void HLRBRep_FaceData::Cone(const bool B)
 {
   if (B)
-    myFlags |= (int)FMaskCone;
+    myFlags |= static_cast<int>(FMaskCone);
   else
-    myFlags &= ~((int)FMaskCone);
+    myFlags &= ~(static_cast<int>(FMaskCone));
 }
 
 //=================================================================================================
 
 inline bool HLRBRep_FaceData::Sphere() const
 {
-  return (myFlags & (int)FMaskSphere) != 0;
+  return (myFlags & static_cast<int>(FMaskSphere)) != 0;
 }
 
 //=================================================================================================
@@ -213,16 +213,16 @@ inline bool HLRBRep_FaceData::Sphere() const
 inline void HLRBRep_FaceData::Sphere(const bool B)
 {
   if (B)
-    myFlags |= (int)FMaskSphere;
+    myFlags |= static_cast<int>(FMaskSphere);
   else
-    myFlags &= ~((int)FMaskSphere);
+    myFlags &= ~(static_cast<int>(FMaskSphere));
 }
 
 //=================================================================================================
 
 inline bool HLRBRep_FaceData::Torus() const
 {
-  return (myFlags & (int)FMaskTorus) != 0;
+  return (myFlags & static_cast<int>(FMaskTorus)) != 0;
 }
 
 //=================================================================================================
@@ -230,9 +230,9 @@ inline bool HLRBRep_FaceData::Torus() const
 inline void HLRBRep_FaceData::Torus(const bool B)
 {
   if (B)
-    myFlags |= (int)FMaskTorus;
+    myFlags |= static_cast<int>(FMaskTorus);
   else
-    myFlags &= ~((int)FMaskTorus);
+    myFlags &= ~(static_cast<int>(FMaskTorus));
 }
 
 //=================================================================================================
@@ -253,15 +253,15 @@ inline void HLRBRep_FaceData::Size(const double S)
 
 inline TopAbs_Orientation HLRBRep_FaceData::Orientation() const
 {
-  return ((TopAbs_Orientation)(myFlags & (int)EMaskOrient));
+  return (static_cast<TopAbs_Orientation>(myFlags & static_cast<int>(EMaskOrient)));
 }
 
 //=================================================================================================
 
 inline void HLRBRep_FaceData::Orientation(const TopAbs_Orientation O)
 {
-  myFlags &= ~(int)EMaskOrient;
-  myFlags |= ((int)O & (int)EMaskOrient);
+  myFlags &= ~static_cast<int>(EMaskOrient);
+  myFlags |= (static_cast<int>(O) & static_cast<int>(EMaskOrient));
 }
 
 //=================================================================================================

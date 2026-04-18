@@ -218,8 +218,8 @@ void AIS_Plane::Compute(const occ::handle<PrsMgr_PresentationManager>&,
         occ::handle<Graphic3d_Group>   aGroup   = thePrs->CurrentGroup();
         aGroup->SetPrimitivesAspect(myDrawer->ShadingAspect()->Aspect());
         gp_Pnt       p1;
-        const double Xmax = 0.5 * double(anAspect->PlaneXLength());
-        const double Ymax = 0.5 * double(anAspect->PlaneYLength());
+        const double Xmax = 0.5 * (anAspect->PlaneXLength());
+        const double Ymax = 0.5 * (anAspect->PlaneYLength());
 
         occ::handle<Graphic3d_ArrayOfQuadrangles> aQuads = new Graphic3d_ArrayOfQuadrangles(4);
 

@@ -178,7 +178,7 @@ void HLRTopoBRep_FaceIsoLiner::Perform(const int          FI,
   // Courbes Iso U.
   //-----------------------------------------------------------------------
 
-  double StepU = DeltaU / (double)nbIsos;
+  double StepU = DeltaU / static_cast<double>(nbIsos);
   if (StepU > Confusion)
   {
     double   UPrm = UMin + StepU / 2.;
@@ -281,7 +281,7 @@ void HLRTopoBRep_FaceIsoLiner::Perform(const int          FI,
   // Courbes Iso V.
   //-----------------------------------------------------------------------
 
-  double StepV = DeltaV / (double)nbIsos;
+  double StepV = DeltaV / static_cast<double>(nbIsos);
   if (StepV > Confusion)
   {
     double   VPrm = VMin + StepV / 2.;

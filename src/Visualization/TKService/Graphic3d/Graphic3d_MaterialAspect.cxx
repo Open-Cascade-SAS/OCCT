@@ -556,8 +556,8 @@ void Graphic3d_MaterialAspect::SetColor(const Quantity_Color& theColor)
   myPBRMaterial.SetColor(theColor);
 
   const RawMaterial&   aSrcMat = THE_MATERIALS[myRequestedMaterialName];
-  const Quantity_Color anAmbient((NCollection_Vec3<float>)theColor * aSrcMat.AmbientCoef);
-  const Quantity_Color aDiffuse((NCollection_Vec3<float>)theColor * aSrcMat.DiffuseCoef);
+  const Quantity_Color anAmbient(NCollection_Vec3<float>(theColor) * aSrcMat.AmbientCoef);
+  const Quantity_Color aDiffuse(NCollection_Vec3<float>(theColor) * aSrcMat.DiffuseCoef);
   if (myMaterialName != Graphic3d_NameOfMaterial_UserDefined
       && (!myColors[Graphic3d_TOR_AMBIENT].IsEqual(anAmbient)
           || !myColors[Graphic3d_TOR_DIFFUSE].IsEqual(aDiffuse)))

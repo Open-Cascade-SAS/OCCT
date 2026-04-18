@@ -334,18 +334,18 @@ void Plate_Plate::SolveTI1(const int IterationNumber, const Message_ProgressRang
   n_dim = n_el + order * (order + 1) / 2;
   math_Matrix mat(0, n_dim - 1, 0, n_dim - 1, 0.);
 
-  delete[] (gp_XY*)points;
+  delete[] static_cast<gp_XY*>(points);
   points = new gp_XY[n_el];
   int i;
   for (i = 0; i < n_el; i++)
     Points(i) = myConstraints(i + 1).Pnt2d();
 
-  delete[] (int*)deru;
+  delete[] static_cast<int*>(deru);
   deru = new int[n_el];
   for (i = 0; i < n_el; i++)
     Deru(i) = myConstraints(i + 1).Idu();
 
-  delete[] (int*)derv;
+  delete[] static_cast<int*>(derv);
   derv = new int[n_el];
   for (i = 0; i < n_el; i++)
     Derv(i) = myConstraints(i + 1).Idv();
@@ -425,7 +425,7 @@ void Plate_Plate::SolveTI1(const int IterationNumber, const Message_ProgressRang
     math_Vector sec_member(0, n_dim - 1, 0.);
     math_Vector sol(0, n_dim - 1);
 
-    delete[] (gp_XYZ*)solution;
+    delete[] static_cast<gp_XYZ*>(solution);
     solution = new gp_XYZ[n_dim];
 
     for (int icoor = 1; icoor <= 3; icoor++)
@@ -474,11 +474,11 @@ void Plate_Plate::SolveTI2(const int IterationNumber, const Message_ProgressRang
 
   int n_dimat = nCC1 + nCC2 + order * (order + 1) / 2;
 
-  delete[] (gp_XY*)points;
+  delete[] static_cast<gp_XY*>(points);
   points = new gp_XY[n_el];
-  delete[] (int*)deru;
+  delete[] static_cast<int*>(deru);
   deru = new int[n_el];
-  delete[] (int*)derv;
+  delete[] static_cast<int*>(derv);
   derv = new int[n_el];
 
   for (i = 0; i < nCC1; i++)
@@ -540,7 +540,7 @@ void Plate_Plate::SolveTI2(const int IterationNumber, const Message_ProgressRang
     math_Vector sec_member(0, n_dimat - 1, 0.);
     math_Vector sol(0, n_dimat - 1);
 
-    delete[] (gp_XYZ*)solution;
+    delete[] static_cast<gp_XYZ*>(solution);
     n_dim    = n_el + order * (order + 1) / 2;
     solution = new gp_XYZ[n_dim];
 
@@ -628,11 +628,11 @@ void Plate_Plate::SolveTI3(const int IterationNumber, const Message_ProgressRang
   int n_dimsousmat = nCC1 + nCC2 + nbm;
   int n_dimat      = 3 * n_dimsousmat + nCC3;
 
-  delete[] (gp_XY*)points;
+  delete[] static_cast<gp_XY*>(points);
   points = new gp_XY[n_el];
-  delete[] (int*)deru;
+  delete[] static_cast<int*>(deru);
   deru = new int[n_el];
-  delete[] (int*)derv;
+  delete[] static_cast<int*>(derv);
   derv = new int[n_el];
 
   for (i = 0; i < nCC1; i++)
@@ -851,7 +851,7 @@ void Plate_Plate::SolveTI3(const int IterationNumber, const Message_ProgressRang
     math_Vector sec_member(0, n_dimat - 1, 0.);
     math_Vector sol(0, n_dimat - 1);
 
-    delete[] (gp_XYZ*)solution;
+    delete[] static_cast<gp_XYZ*>(solution);
     n_dim    = n_el + order * (order + 1) / 2;
     solution = new gp_XYZ[n_dim];
 
@@ -1094,16 +1094,16 @@ void Plate_Plate::Init()
   myLXYZConstraints.Clear();
   myLScalarConstraints.Clear();
 
-  delete[] (gp_XYZ*)solution;
+  delete[] static_cast<gp_XYZ*>(solution);
   solution = nullptr;
 
-  delete[] (gp_XY*)points;
+  delete[] static_cast<gp_XY*>(points);
   points = nullptr;
 
-  delete[] (int*)deru;
+  delete[] static_cast<int*>(deru);
   deru = nullptr;
 
-  delete[] (int*)derv;
+  delete[] static_cast<int*>(derv);
   derv = nullptr;
 
   order              = 0;

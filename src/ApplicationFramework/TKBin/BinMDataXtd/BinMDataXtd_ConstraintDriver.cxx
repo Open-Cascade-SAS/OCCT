@@ -110,7 +110,7 @@ bool BinMDataXtd_ConstraintDriver::Paste(const BinObjMgt_Persistent&       theSo
   int aType;
   if (!(theSource >> aType))
     return false;
-  aC->SetType((TDataXtd_ConstraintEnum)aType);
+  aC->SetType(static_cast<TDataXtd_ConstraintEnum>(aType));
 
   // flags
   int flags;
@@ -165,7 +165,7 @@ void BinMDataXtd_ConstraintDriver::Paste(
   theTarget << aNb;
 
   // constraint type
-  theTarget << (int)aC->GetType();
+  theTarget << static_cast<int>(aC->GetType());
 
   // flags
   int flags = 0;

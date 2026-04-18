@@ -344,7 +344,7 @@ occ::handle<XCAFDimTolObjects_DatumObject> XCAFDoc_Datum::GetObject() const
   {
     NCollection_Sequence<XCAFDimTolObjects_DatumSingleModif> aModifiers;
     for (int i = 1; i <= anArr->Length(); i++)
-      aModifiers.Append((XCAFDimTolObjects_DatumSingleModif)anArr->Value(i));
+      aModifiers.Append(static_cast<XCAFDimTolObjects_DatumSingleModif>(anArr->Value(i)));
     anObj->SetModifiers(aModifiers);
   }
 
@@ -358,7 +358,7 @@ occ::handle<XCAFDimTolObjects_DatumObject> XCAFDoc_Datum::GetObject() const
           .FindChild(ChildLab_ModifierWithValue)
           .FindAttribute(TDataStd_Real::GetID(), aModifierWithValueV))
     {
-      anObj->SetModifierWithValue((XCAFDimTolObjects_DatumModifWithValue)aModifierWithValueM->Get(),
+      anObj->SetModifierWithValue(static_cast<XCAFDimTolObjects_DatumModifWithValue>(aModifierWithValueM->Get()),
                                   aModifierWithValueV->Get());
     }
   }
@@ -423,7 +423,7 @@ occ::handle<XCAFDimTolObjects_DatumObject> XCAFDoc_Datum::GetObject() const
           .FindChild(ChildLab_DTargetType)
           .FindAttribute(TDataStd_Integer::GetID(), aDTargetType))
     {
-      anObj->SetDatumTargetType((XCAFDimTolObjects_DatumTargetType)aDTargetType->Get());
+      anObj->SetDatumTargetType(static_cast<XCAFDimTolObjects_DatumTargetType>(aDTargetType->Get()));
       if (anObj->GetDatumTargetType() == XCAFDimTolObjects_DatumTargetType_Area)
       {
         occ::handle<TNaming_NamedShape> aDatumTarget;

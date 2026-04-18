@@ -47,7 +47,7 @@ LDOMString LDOM_Element::getAttribute(const LDOMString& aName) const
           return LDOMString();
         if (aSibling->getNodeType() == LDOM_Node::ATTRIBUTE_NODE)
         {
-          (const LDOM_BasicNode*&)myLastChild = aNode;
+          const_cast<const LDOM_BasicNode*&>(myLastChild) = aNode;
           break;
         }
         aNode = aSibling;
@@ -77,7 +77,7 @@ LDOM_Attr LDOM_Element::getAttributeNode(const LDOMString& aName) const
           return LDOM_Attr();
         if (aSibling->getNodeType() == LDOM_Node::ATTRIBUTE_NODE)
         {
-          (const LDOM_BasicNode*&)myLastChild = aSibling;
+          const_cast<const LDOM_BasicNode*&>(myLastChild) = aSibling;
           break;
         }
         aNode = aSibling;
@@ -209,12 +209,12 @@ void LDOM_Element::ReplaceElement(const LDOM_Element& anOther)
     anElem.myTagName                    = anOtherElem.myTagName;
     anElem.myAttributeMask              = anOtherElem.myAttributeMask;
     anElem.myFirstChild                 = anOtherElem.myFirstChild;
-    (const LDOM_BasicNode*&)myLastChild = anOther.myLastChild;
+    const_cast<const LDOM_BasicNode*&>(myLastChild) = anOther.myLastChild;
   }
   else
   {
     anElem.ReplaceElement(anOtherElem, myDocument);
-    (const LDOM_BasicNode*&)myLastChild = nullptr;
+    const_cast<const LDOM_BasicNode*&>(myLastChild) = nullptr;
   }
 }
 

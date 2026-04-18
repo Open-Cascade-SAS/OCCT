@@ -347,7 +347,7 @@ void StepData_Field::SetList2(const int siz1, const int siz2, const int f1, cons
   //  WARNING: we don't handle expansion...
 
   theint  = siz1;
-  thereal = double(siz2);
+  thereal = static_cast<double>(siz2);
   theany.Nullify();
   int kind = thekind;
   if (thekind == KindSelect)
@@ -442,7 +442,7 @@ void StepData_Field::Set(const occ::handle<Standard_Transient>& val)
       kind = KindInteger;
     thekind = kind | KindList2;
     theint  = hi2->ColLength();
-    thereal = double(hi2->RowLength());
+    thereal = static_cast<double>(hi2->RowLength());
     return;
   }
   DeclareAndCast(NCollection_HArray2<double>, hr2, val);
@@ -450,7 +450,7 @@ void StepData_Field::Set(const occ::handle<Standard_Transient>& val)
   {
     thekind = KindInteger | KindList2;
     theint  = hr2->ColLength();
-    thereal = double(hi2->RowLength());
+    thereal = static_cast<double>(hi2->RowLength());
     return;
   }
   DeclareAndCast(NCollection_HArray2<occ::handle<Standard_Transient>>, ht2, val);
@@ -460,7 +460,7 @@ void StepData_Field::Set(const occ::handle<Standard_Transient>& val)
       kind = KindAny;
     thekind = kind | KindList2;
     theint  = ht2->ColLength();
-    thereal = double(hi2->RowLength());
+    thereal = static_cast<double>(hi2->RowLength());
     return;
   }
 }
@@ -733,7 +733,7 @@ int StepData_Field::Length(const int index) const
   if ((thekind & KindArity) == KindList2)
   {
     if (index == 2)
-      return int(thereal);
+      return static_cast<int>(thereal);
     else
       return theint;
   }

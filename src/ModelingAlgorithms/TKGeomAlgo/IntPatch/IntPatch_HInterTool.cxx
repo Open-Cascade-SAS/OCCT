@@ -168,8 +168,8 @@ void IntPatch_HInterTool::SamplePoint(const occ::handle<Adaptor3d_Surface>& S,
 
     int    NV = (Index - 1) / nbIntU;
     int    NU = (Index - 1) - NV * nbIntU;
-    double du = ((usup - uinf) / ((double)(nbIntU + 1)));
-    double dv = ((vsup - vinf) / ((double)(nbIntV + 1)));
+    double du = ((usup - uinf) / (static_cast<double>(nbIntU + 1)));
+    double dv = ((vsup - vinf) / (static_cast<double>(nbIntV + 1)));
 
     int perturb = (NU + NV) & 3;
 
@@ -192,8 +192,8 @@ void IntPatch_HInterTool::SamplePoint(const occ::handle<Adaptor3d_Surface>& S,
         break;
     }
 
-    U = uinf + du * (double)(NU + 1);
-    V = vinf + dv * (double)(NV + 1);
+    U = uinf + du * static_cast<double>(NU + 1);
+    V = vinf + dv * static_cast<double>(NV + 1);
     return;
   }
 

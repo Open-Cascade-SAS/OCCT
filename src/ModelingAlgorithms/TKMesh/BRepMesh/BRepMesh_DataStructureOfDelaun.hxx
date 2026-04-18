@@ -194,7 +194,7 @@ private:
   //! @return list of links attached to the node.
   IMeshData::ListOfInteger& linksConnectedTo(const int theIndex) const
   {
-    return (IMeshData::ListOfInteger&)myNodeLinks.Find(theIndex);
+    return const_cast<IMeshData::ListOfInteger&>(myNodeLinks.Find(theIndex));
   }
 
   //! Substitutes deleted links by the last one from corresponding map

@@ -145,7 +145,7 @@ void GeomFill_LocationDraft::Prepare()
 
   for (ii = 1; ii <= myNbPts; ii++)
   {
-    t = double(myNbPts - ii) * f + double(ii - 1) * l;
+    t = static_cast<double>(myNbPts - ii) * f + static_cast<double>(ii - 1) * l;
     t /= (myNbPts - 1);
 
     myCurve->D0(t, P);

@@ -2570,7 +2570,7 @@ void BRepFeat_RibSlot::UpdateDescendants(const BRepAlgoAPI_BooleanOperation& aBO
       }
       if (!exp.More())
       {
-        BRepAlgoAPI_BooleanOperation*         pBOP = (BRepAlgoAPI_BooleanOperation*)&aBOP;
+        BRepAlgoAPI_BooleanOperation*         pBOP = const_cast<BRepAlgoAPI_BooleanOperation*>(&aBOP);
         const NCollection_List<TopoDS_Shape>& aLM  = pBOP->Modified(fdsc);
         it2.Initialize(aLM);
         for (; it2.More(); it2.Next())

@@ -107,7 +107,7 @@ void XmlMXCAFDoc_NoteBinDataDriver::Paste(const occ::handle<TDF_Attribute>& theS
       anOSS << std::hex << aData->Value(i);
     }
     // clang-format off
-    char* dump = (char*)anOSS.str(); // copying! Don't forget to delete it.
+    char* dump = const_cast<char*>(anOSS.str()); // copying! Don't forget to delete it.
     // clang-format on
     XmlObjMgt::SetStringValue(theTarget, dump, true);
     delete[] dump;

@@ -952,7 +952,7 @@ void Approx_ComputeLine::Perform(const MultiLine& Line)
                 }
               }
             }
-            mylastpt = int((myfirstpt + mylastpt) / 2);
+            mylastpt = ((myfirstpt + mylastpt) / 2);
           }
         }
         GoUp = false;
@@ -1316,7 +1316,7 @@ void Approx_ComputeLine::Parameters(const MultiLine& Line,
   {
     for (i = firstP; i <= lastP; i++)
     {
-      TheParameters(i) = (double(i) - firstP) / (double(lastP) - double(firstP));
+      TheParameters(i) = (static_cast<double>(i) - firstP) / (static_cast<double>(lastP) - static_cast<double>(firstP));
     }
   }
 }

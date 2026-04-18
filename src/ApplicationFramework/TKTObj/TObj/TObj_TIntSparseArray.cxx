@@ -198,7 +198,7 @@ occ::handle<TDF_Attribute> TObj_TIntSparseArray::BackupCopy() const
 
   // save delta data in a copy
   if (!myOldMap.IsEmpty())
-    aCopy->myOldMap.Exchange((NCollection_SparseArray<int>&)myOldMap);
+    aCopy->myOldMap.Exchange(const_cast<NCollection_SparseArray<int>&>(myOldMap));
 
   return aCopy;
 }

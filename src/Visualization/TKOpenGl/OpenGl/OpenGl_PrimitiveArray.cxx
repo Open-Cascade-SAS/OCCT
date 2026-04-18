@@ -573,7 +573,7 @@ void OpenGl_PrimitiveArray::drawEdges(const occ::handle<OpenGl_Workspace>& theWo
   aGlContext->SetColor4fv(theWorkspace->EdgeColor().a() >= 0.1f
                             ? theWorkspace->EdgeColor()
                             : theWorkspace->View()->BackgroundColor());
-  aGlContext->SetLineStipple((float)anAspect->Aspect()->LineStippleFactor(),
+  aGlContext->SetLineStipple(static_cast<float>(anAspect->Aspect()->LineStippleFactor()),
                              anAspect->Aspect()->LinePattern());
   aGlContext->SetLineWidth(anAspect->Aspect()->EdgeWidth());
 
@@ -1039,7 +1039,7 @@ void OpenGl_PrimitiveArray::Render(const occ::handle<OpenGl_Workspace>& theWorks
     {
       if (myDrawMode == GL_LINES || myDrawMode == GL_LINE_STRIP)
       {
-        aCtx->SetLineStipple((float)anAspectFace->Aspect()->LineStippleFactor(),
+        aCtx->SetLineStipple(static_cast<float>(anAspectFace->Aspect()->LineStippleFactor()),
                              anAspectFace->Aspect()->LinePattern());
         aCtx->SetLineWidth(anAspectFace->Aspect()->LineWidth());
       }
@@ -1061,9 +1061,9 @@ void OpenGl_PrimitiveArray::Render(const occ::handle<OpenGl_Workspace>& theWorks
       const NCollection_Vec2<int> aViewSize(aCtx->Viewport()[2], aCtx->Viewport()[3]);
       const int                   aMin = aViewSize.minComp();
       const GLfloat               anEdgeWidth =
-        (GLfloat)anAspectFace->Aspect()->EdgeWidth() * aCtx->LineWidthScale() / (GLfloat)aMin;
+        static_cast<GLfloat>(anAspectFace->Aspect()->EdgeWidth()) * aCtx->LineWidthScale() / static_cast<GLfloat>(aMin);
       const GLfloat anOrthoScale =
-        aCtx->Camera()->IsOrthographic() ? (GLfloat)aCtx->Camera()->Scale() : -1.0f;
+        aCtx->Camera()->IsOrthographic() ? static_cast<GLfloat>(aCtx->Camera()->Scale()) : -1.0f;
 
       const occ::handle<OpenGl_ShaderProgram>& anOutlineProgram = aCtx->ActiveProgram();
       anOutlineProgram->SetUniform(

@@ -299,7 +299,7 @@ TCollection_ExtendedString PrsDim_Dimension::GetValueString(double& theWidth) co
     Font_FTFontParams                aFontParams;
     const Graphic3d_RenderingParams& aRendParams =
       GetContext()->CurrentViewer()->DefaultRenderingParams();
-    aFontParams.PointSize   = (unsigned int)aTextAspect->Height();
+    aFontParams.PointSize   = static_cast<unsigned int>(aTextAspect->Height());
     aFontParams.Resolution  = aRendParams.Resolution;
     aFontParams.FontHinting = aRendParams.FontHinting;
     if (occ::handle<Font_FTFont> aFont =
@@ -312,7 +312,7 @@ TCollection_ExtendedString PrsDim_Dimension::GetValueString(double& theWidth) co
       {
         char32_t aCurrChar = *anIter;
         char32_t aNextChar = *(++anIter);
-        theWidth += (double)aFont->AdvanceX(aCurrChar, aNextChar);
+        theWidth += static_cast<double>(aFont->AdvanceX(aCurrChar, aNextChar));
       }
     }
   }
@@ -1266,7 +1266,7 @@ void PrsDim_Dimension::ComputeSelection(const occ::handle<SelectMgr_Selection>& 
     return;
   }
 
-  PrsDim_DimensionSelectionMode aSelectionMode = (PrsDim_DimensionSelectionMode)theMode;
+  PrsDim_DimensionSelectionMode aSelectionMode = static_cast<PrsDim_DimensionSelectionMode>(theMode);
 
   // init appropriate entity owner
   occ::handle<SelectMgr_EntityOwner> aSensitiveOwner;

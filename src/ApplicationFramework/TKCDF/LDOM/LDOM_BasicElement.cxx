@@ -172,26 +172,26 @@ const LDOM_BasicAttribute* LDOM_BasicElement::GetFirstAttribute(
   if (theLastCh)
   {
     aFirstAttr = theLastCh->mySibling;
-    aPrevNode  = (const LDOM_BasicNode**)&(theLastCh->mySibling);
+    aPrevNode  = const_cast<const LDOM_BasicNode**>(&(theLastCh->mySibling));
     while (aFirstAttr)
     {
       if (aFirstAttr->getNodeType() == LDOM_Node::ATTRIBUTE_NODE)
         break;
-      aPrevNode  = (const LDOM_BasicNode**)&(aFirstAttr->mySibling);
+      aPrevNode  = const_cast<const LDOM_BasicNode**>(&(aFirstAttr->mySibling));
       aFirstAttr = aFirstAttr->mySibling;
     }
   }
   else
   {
     aFirstAttr = myFirstChild;
-    aPrevNode  = (const LDOM_BasicNode**)&myFirstChild;
+    aPrevNode  = const_cast<const LDOM_BasicNode**>(&myFirstChild);
     while (aFirstAttr)
     {
       if (aFirstAttr->getNodeType() == LDOM_Node::ATTRIBUTE_NODE)
         break;
       if (!aFirstAttr->isNull())
         theLastCh = aFirstAttr;
-      aPrevNode  = (const LDOM_BasicNode**)&(aFirstAttr->mySibling);
+      aPrevNode  = const_cast<const LDOM_BasicNode**>(&(aFirstAttr->mySibling));
       aFirstAttr = aFirstAttr->mySibling;
     }
   }
@@ -232,7 +232,7 @@ const LDOM_BasicNode* LDOM_BasicElement::AddAttribute(const LDOMBasicString& anA
   else
   {
     // this attribute may have already been installed
-    LDOM_BasicAttribute* aCurrentAttr = (LDOM_BasicAttribute*)aFirstAttr;
+    LDOM_BasicAttribute* aCurrentAttr = const_cast<LDOM_BasicAttribute*>(aFirstAttr);
     while (aCurrentAttr)
     {
       if (aCurrentAttr->getNodeType() == LDOM_Node::ATTRIBUTE_NODE)
@@ -263,7 +263,7 @@ const LDOM_BasicNode* LDOM_BasicElement::RemoveAttribute(const LDOMBasicString& 
 {
   //  Check attribute hash value against the current mask
   const char* const   aNameStr        = aName.GetString();
-  const int           aHash           = LDOM_MemManager::Hash(aNameStr, (int)strlen(aNameStr));
+  const int           aHash           = LDOM_MemManager::Hash(aNameStr, static_cast<int>(strlen(aNameStr)));
   const unsigned int  anAttrMaskValue = aHash & (8 * sizeof(myAttributeMask) - 1);
   const unsigned long anAttributeMask = (1 << anAttrMaskValue);
 #ifdef OCCT_DEBUG_MASK
@@ -296,7 +296,7 @@ const LDOM_BasicNode* LDOM_BasicElement::RemoveAttribute(const LDOMBasicString& 
 void LDOM_BasicElement::RemoveChild(const LDOM_BasicNode* aChild) const
 {
   const LDOM_BasicNode*  aNode     = myFirstChild;
-  const LDOM_BasicNode** aPrevNode = (const LDOM_BasicNode**)&myFirstChild;
+  const LDOM_BasicNode** aPrevNode = const_cast<const LDOM_BasicNode**>(&myFirstChild);
   while (aNode)
   {
     if (aNode->getNodeType() == LDOM_Node::ATTRIBUTE_NODE)
@@ -304,10 +304,10 @@ void LDOM_BasicElement::RemoveChild(const LDOM_BasicNode* aChild) const
     if (aNode == aChild)
     {
       *aPrevNode               = aNode->GetSibling();
-      *(LDOM_BasicNode*)aChild = nullptr;
+      *const_cast<LDOM_BasicNode*>(aChild) = nullptr;
       break;
     }
-    aPrevNode = (const LDOM_BasicNode**)&(aNode->mySibling);
+    aPrevNode = const_cast<const LDOM_BasicNode**>(&(aNode->mySibling));
     aNode     = aNode->GetSibling();
   }
   // here may be the cause to throw an exception
@@ -320,21 +320,21 @@ void LDOM_BasicElement::AppendChild(const LDOM_BasicNode*  aChild,
 {
   if (aLastChild)
   {
-    (const LDOM_BasicNode*&)aChild->mySibling     = aLastChild->mySibling;
-    (const LDOM_BasicNode*&)aLastChild->mySibling = aChild;
+    const_cast<const LDOM_BasicNode*&>(aChild->mySibling)     = aLastChild->mySibling;
+    const_cast<const LDOM_BasicNode*&>(aLastChild->mySibling) = aChild;
   }
   else
   {
     const LDOM_BasicNode*  aNode     = myFirstChild;
-    const LDOM_BasicNode** aPrevNode = (const LDOM_BasicNode**)&myFirstChild;
+    const LDOM_BasicNode** aPrevNode = const_cast<const LDOM_BasicNode**>(&myFirstChild);
     while (aNode)
     {
       if (aNode->getNodeType() == LDOM_Node::ATTRIBUTE_NODE)
       {
-        (const LDOM_BasicNode*&)aChild->mySibling = aNode;
+        const_cast<const LDOM_BasicNode*&>(aChild->mySibling) = aNode;
         break;
       }
-      aPrevNode = (const LDOM_BasicNode**)&(aNode->mySibling);
+      aPrevNode = const_cast<const LDOM_BasicNode**>(&(aNode->mySibling));
       aNode     = aNode->mySibling;
     }
     *aPrevNode = aChild;
@@ -413,7 +413,7 @@ void LDOM_BasicElement::ReplaceElement(const LDOM_BasicElement&            anOth
         const LDOM_BasicElement& aBNodeElem = *(const LDOM_BasicElement*)aBNode;
         const char*              aTagString = aBNodeElem.GetTagName();
         LDOM_BasicElement&       aNewBNodeElem =
-          LDOM_BasicElement::Create(aTagString, (int)strlen(aTagString), aDocument);
+          LDOM_BasicElement::Create(aTagString, static_cast<int>(strlen(aTagString)), aDocument);
         aNewBNodeElem.ReplaceElement(aBNodeElem, aDocument); // reccur
         aNewBNode = &aNewBNodeElem;
         break;
@@ -433,15 +433,15 @@ void LDOM_BasicElement::ReplaceElement(const LDOM_BasicElement&            anOth
         continue;
     }
     if (GetFirstChild())
-      (const LDOM_BasicNode*&)aLastChild->mySibling = aNewBNode;
+      const_cast<const LDOM_BasicNode*&>(aLastChild->mySibling) = aNewBNode;
     else
       (const LDOM_BasicNode*&)myFirstChild = aNewBNode;
-    (const LDOM_BasicNode*&)aLastChild = aNewBNode;
+    const_cast<const LDOM_BasicNode*&>(aLastChild) = aNewBNode;
   }
 
   // Loop on attributes (in the end of the list of children)
 loop_attr:
-  LDOM_BasicNode* aLastAttr = (LDOM_BasicNode*)aLastChild;
+  LDOM_BasicNode* aLastAttr = const_cast<LDOM_BasicNode*>(aLastChild);
   for (; aBNode != nullptr; aBNode = aBNode->GetSibling())
   {
     int aHash;

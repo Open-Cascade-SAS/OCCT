@@ -42,7 +42,7 @@ static double f3d(const double X, void* const C)
 {
   gp_Pnt P;
   gp_Vec V;
-  ((Adaptor3d_Curve*)C)->D1(X, P, V);
+  (static_cast<Adaptor3d_Curve*>(C))->D1(X, P, V);
   return V.Magnitude();
 }
 
@@ -50,7 +50,7 @@ static double f2d(const double X, void* const C)
 {
   gp_Pnt2d P;
   gp_Vec2d V;
-  ((Adaptor2d_Curve2d*)C)->D1(X, P, V);
+  (static_cast<Adaptor2d_Curve2d*>(C))->D1(X, P, V);
   return V.Magnitude();
 }
 

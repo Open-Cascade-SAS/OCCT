@@ -136,25 +136,25 @@ bool AIS_MediaPlayer::updateSize(const NCollection_Vec2<int>& theLeftCorner,
   NCollection_Vec2<int>       aNewSize   = myFrameSize;
   if (aFrameSize.x() > 0 && aFrameSize.y() > 0)
   {
-    const double anAspect   = double(theMaxSize.x()) / double(theMaxSize.y());
-    const double aFitAspect = double(aFrameSize.x()) / double(aFrameSize.y());
+    const double anAspect   = static_cast<double>(theMaxSize.x()) / static_cast<double>(theMaxSize.y());
+    const double aFitAspect = static_cast<double>(aFrameSize.x()) / static_cast<double>(aFrameSize.y());
     aNewSize                = aFrameSize;
     if (aFitAspect >= anAspect)
     {
-      aNewSize.y() = int(double(aFrameSize.x()) / aFitAspect);
+      aNewSize.y() = static_cast<int>(static_cast<double>(aFrameSize.x()) / aFitAspect);
     }
     else
     {
-      aNewSize.x() = int(double(aFrameSize.y()) * aFitAspect);
+      aNewSize.x() = static_cast<int>(static_cast<double>(aFrameSize.y()) * aFitAspect);
     }
 
     for (int aCoord = 0; aCoord < 2; ++aCoord)
     {
       if (aNewSize[aCoord] > theMaxSize[aCoord])
       {
-        const double aScale = double(theMaxSize[aCoord]) / double(aNewSize[aCoord]);
-        aNewSize.x()        = int(double(aNewSize.x()) * aScale);
-        aNewSize.y()        = int(double(aNewSize.y()) * aScale);
+        const double aScale = static_cast<double>(theMaxSize[aCoord]) / static_cast<double>(aNewSize[aCoord]);
+        aNewSize.x()        = static_cast<int>(static_cast<double>(aNewSize.x()) * aScale);
+        aNewSize.y()        = static_cast<int>(static_cast<double>(aNewSize.y()) * aScale);
       }
     }
 

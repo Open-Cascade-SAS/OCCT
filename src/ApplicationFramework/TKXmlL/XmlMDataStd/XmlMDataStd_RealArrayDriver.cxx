@@ -105,7 +105,7 @@ bool XmlMDataStd_RealArrayDriver::Paste(const XmlObjMgt_Persistent&       theSou
     {
       int anIntValue;
       if (aString.GetInteger(anIntValue))
-        aRealArray->SetValue(aFirstInd, double(anIntValue));
+        aRealArray->SetValue(aFirstInd, static_cast<double>(anIntValue));
     }
     else
     {

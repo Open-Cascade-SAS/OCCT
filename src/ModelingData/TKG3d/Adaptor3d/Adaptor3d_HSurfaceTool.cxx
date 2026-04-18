@@ -79,7 +79,7 @@ int Adaptor3d_HSurfaceTool::NbSamplesU(const occ::handle<Adaptor3d_Surface>& S,
   {
     const double uf = FirstUParameter(S);
     const double ul = LastUParameter(S);
-    n *= (int)((u2 - u1) / (ul - uf));
+    n *= static_cast<int>((u2 - u1) / (ul - uf));
     if (n > nbs || n > 50)
       n = nbs;
     if (n < 5)
@@ -98,7 +98,7 @@ int Adaptor3d_HSurfaceTool::NbSamplesV(const occ::handle<Adaptor3d_Surface>& S,
   {
     const double vf = FirstVParameter(S);
     const double vl = LastVParameter(S);
-    n *= (int)((v2 - v1) / (vl - vf));
+    n *= static_cast<int>((v2 - v1) / (vl - vf));
     if (n > nbs || n > 50)
       n = nbs;
     if (n < 5)

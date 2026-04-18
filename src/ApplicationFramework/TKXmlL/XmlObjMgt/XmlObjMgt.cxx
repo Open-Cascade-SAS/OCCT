@@ -78,12 +78,12 @@ void SprintfExtStr(char* out, const TCollection_ExtendedString& theString)
     for (int j = 0, k = 3; j < 4; j++, k--)
     {
       unsigned short v = *(p + i) & mask[j]; // x000
-      v                = (unsigned short)(v >> (4 * k));
+      v                = static_cast<unsigned short>(v >> (4 * k));
       if (v < 10)
         v |= 0x30;
       else
         v += 87;
-      out[4 * i + j] = (char)v;
+      out[4 * i + j] = static_cast<char>(v);
     }
     i++;
     len--;
@@ -149,7 +149,7 @@ bool XmlObjMgt::GetTagEntryString(const XmlObjMgt_DOMString& theSource,
     return false;
 
   //    Begin aTagEntry string
-  char* aTagEntry    = (char*)Standard::Allocate(strlen(aSource) / 2); // quite enough to hold it
+  char* aTagEntry    = static_cast<char*>(Standard::Allocate(strlen(aSource) / 2)); // quite enough to hold it
   char* aTagEntryPtr = aTagEntry + 1;
   *aTagEntry         = '0';
   aSource += aPrefixSize;
@@ -171,7 +171,7 @@ bool XmlObjMgt::GetTagEntryString(const XmlObjMgt_DOMString& theSource,
     errno = 0;
     char* aPtr;
     long  aTagValue = strtol(&aSource[1], &aPtr, 10);
-    int   aLen      = (int)(aPtr - &aSource[1]);
+    int   aLen      = static_cast<int>(aPtr - &aSource[1]);
     if (aTagValue < 0 || aLen == 0 || aPtr[0] != aQuote || errno == ERANGE || errno == EINVAL)
       return false;
     aTagEntryPtr[0] = ':';
@@ -195,7 +195,7 @@ void XmlObjMgt::SetTagEntryString(XmlObjMgt_DOMString&           theTarget,
                                   const TCollection_AsciiString& theTagEntry)
 {
   //    Begin parsing theTagEntry
-  const char* aTagEntry = (const char*)theTagEntry.ToCString() + 1;
+  const char* aTagEntry = theTagEntry.ToCString() + 1;
   if (aTagEntry[-1] != '0')
     return;
 
@@ -210,7 +210,7 @@ void XmlObjMgt::SetTagEntryString(XmlObjMgt_DOMString&           theTarget,
   const size_t anElem1Size = sizeof(aRefElem1) - 1;
   const size_t anElem2Size = sizeof(aRefElem2) - 1;
   char*        aTarget =
-    (char*)Standard::Allocate(sizeof(aRefPrefix) + aTagCount * (anElem1Size + anElem2Size + 12));
+    static_cast<char*>(Standard::Allocate(sizeof(aRefPrefix) + aTagCount * (anElem1Size + anElem2Size + 12)));
   memcpy(aTarget, aRefPrefix, sizeof(aRefPrefix) - 1);
   char* aTargetPtr = aTarget + (sizeof(aRefPrefix) - 1);
 
@@ -226,7 +226,7 @@ void XmlObjMgt::SetTagEntryString(XmlObjMgt_DOMString&           theTarget,
     errno = 0;
     char* ptr;
     long  aTagValue = strtol(aTagEntry, &ptr, 10);
-    int   aTagSize  = (int)(ptr - aTagEntry);
+    int   aTagSize  = static_cast<int>(ptr - aTagEntry);
     if (aTagValue < 0 || aTagSize == 0 || errno == ERANGE || errno == EINVAL)
       return; // error
 
@@ -295,7 +295,7 @@ bool XmlObjMgt::GetInteger(const char*& theString, int& theValue)
   long aValue = strtol(theString, &ptr, 10);
   if (ptr == theString || errno == ERANGE || errno == EINVAL)
     return false;
-  theValue  = int(aValue);
+  theValue  = static_cast<int>(aValue);
   theString = ptr;
   return true;
 }
@@ -352,7 +352,7 @@ bool XmlObjMgt::GetReal(const XmlObjMgt_DOMString& theString, double& theValue)
     case LDOMBasicString::LDOM_Integer: {
       int anIntValue;
       theString.GetInteger(anIntValue);
-      theValue = double(anIntValue);
+      theValue = static_cast<double>(anIntValue);
       break;
     }
     default: // LDOM_Ascii*

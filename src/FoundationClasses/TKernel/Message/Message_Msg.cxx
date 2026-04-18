@@ -43,7 +43,7 @@ Message_Msg::Message_Msg(const Message_Msg& theMsg)
 
 Message_Msg::Message_Msg(const char* const theMsgCode)
 {
-  TCollection_AsciiString aKey((char*)theMsgCode);
+  TCollection_AsciiString aKey(const_cast<char*>(theMsgCode));
   Set(Message_MsgFile::Msg(aKey));
 }
 
@@ -58,7 +58,7 @@ Message_Msg::Message_Msg(const TCollection_ExtendedString& theMsgCode)
 
 void Message_Msg::Set(const char* const theMsg)
 {
-  TCollection_AsciiString aMsg((char*)theMsg);
+  TCollection_AsciiString aMsg(const_cast<char*>(theMsg));
   Set(aMsg);
 }
 
@@ -124,7 +124,7 @@ void Message_Msg::Set(const TCollection_ExtendedString& theMsg)
         default:
           continue;
       }
-      mySeqOfFormats.Append(int(aFormatType)); // type
+      mySeqOfFormats.Append(static_cast<int>(aFormatType)); // type
       mySeqOfFormats.Append(aStart);           // beginning pos
       mySeqOfFormats.Append(i + 1 - aStart);   // length
     }
@@ -260,7 +260,7 @@ int Message_Msg::getFormat(const int theType, TCollection_AsciiString& theFormat
       theFormat  = TCollection_AsciiString(aLen, ' ');
       for (int j = 1; j <= aLen; j++)
         if (IsAnAscii(myMessageBody.Value(aFirst + j)))
-          theFormat.SetValue(j, (char)myMessageBody.Value(aFirst + j));
+          theFormat.SetValue(j, static_cast<char>(myMessageBody.Value(aFirst + j)));
       // delete information on this placeholder
       mySeqOfFormats.Remove(i, i + 2);
       // return start position

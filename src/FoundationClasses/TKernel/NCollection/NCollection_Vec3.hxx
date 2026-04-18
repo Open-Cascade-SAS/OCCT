@@ -79,7 +79,7 @@ public:
 
   //! Constructor from 2-components vector + optional 3rd value.
   explicit constexpr NCollection_Vec3(const NCollection_Vec2<Element_t>& theVec2,
-                                      Element_t theZ = Element_t(0)) noexcept
+                                      Element_t theZ = static_cast<Element_t>(0)) noexcept
       : v{theVec2[0], theVec2[1], theZ}
   {
   }

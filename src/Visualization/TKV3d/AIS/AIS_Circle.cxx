@@ -138,7 +138,7 @@ void AIS_Circle::SetColor(const Quantity_Color& aCol)
 
 void AIS_Circle::SetWidth(const double aValue)
 {
-  myOwnWidth = (float)aValue;
+  myOwnWidth = static_cast<float>(aValue);
 
   if (!myDrawer->HasOwnLineAspect())
   {
@@ -190,7 +190,7 @@ void AIS_Circle::UnsetWidth()
   else
   {
     float WW = myDrawer->HasLink()
-                 ? (float)AIS_GraphicTool::GetLineWidth(myDrawer->Link(), AIS_TOA_Line)
+                 ? static_cast<float>(AIS_GraphicTool::GetLineWidth(myDrawer->Link(), AIS_TOA_Line))
                  : 1.0f;
     myDrawer->LineAspect()->SetWidth(WW);
     myOwnWidth = WW;

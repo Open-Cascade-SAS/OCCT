@@ -141,10 +141,10 @@ bool BinMXCAFDoc_LocationDriver::Translate(const BinObjMgt_Persistent& theSource
 
       int aForm;
       theSource >> aForm;
-      aTrsf.SetForm((gp_TrsfForm)aForm);
+      aTrsf.SetForm(static_cast<gp_TrsfForm>(aForm));
 
       int     R, C;
-      gp_Mat& aMat = (gp_Mat&)aTrsf.HVectorialPart();
+      gp_Mat& aMat = const_cast<gp_Mat&>(aTrsf.HVectorialPart());
       for (R = 1; R <= 3; R++)
         for (C = 1; C <= 3; C++)
         {
@@ -155,7 +155,7 @@ bool BinMXCAFDoc_LocationDriver::Translate(const BinObjMgt_Persistent& theSource
 
       double x, y, z;
       theSource >> x >> y >> z;
-      gp_XYZ& aLoc = (gp_XYZ&)aTrsf.TranslationPart();
+      gp_XYZ& aLoc = const_cast<gp_XYZ&>(aTrsf.TranslationPart());
       aLoc.SetX(x);
       aLoc.SetY(y);
       aLoc.SetZ(z);

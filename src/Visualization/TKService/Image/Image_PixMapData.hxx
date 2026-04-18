@@ -34,7 +34,7 @@ public:
         SizeZ(0),
         SizeRowBytes(0),
         SizeSliceBytes(0),
-        TopToDown(size_t(-1))
+        TopToDown(static_cast<size_t>(-1))
   {
     //
   }
@@ -92,75 +92,75 @@ public:
   //! Return data pointer to requested row (first column).
   const uint8_t* Row(const size_t theRow) const
   {
-    return myTopRowPtr + ptrdiff_t(SizeRowBytes * theRow * TopToDown);
+    return myTopRowPtr + static_cast<ptrdiff_t>(SizeRowBytes * theRow * TopToDown);
   }
 
   //! Return data pointer to requested row (first column).
   uint8_t* ChangeRow(const size_t theRow)
   {
-    return myTopRowPtr + ptrdiff_t(SizeRowBytes * theRow * TopToDown);
+    return myTopRowPtr + static_cast<ptrdiff_t>(SizeRowBytes * theRow * TopToDown);
   }
 
   //! Return data pointer to requested position.
   const uint8_t* Value(const size_t theRow, const size_t theCol) const
   {
-    return myTopRowPtr + ptrdiff_t(SizeRowBytes * theRow * TopToDown) + SizeBPP * theCol;
+    return myTopRowPtr + static_cast<ptrdiff_t>(SizeRowBytes * theRow * TopToDown) + SizeBPP * theCol;
   }
 
   //! Return data pointer to requested position.
   uint8_t* ChangeValue(size_t theRow, size_t theCol)
   {
-    return myTopRowPtr + ptrdiff_t(SizeRowBytes * theRow * TopToDown) + SizeBPP * theCol;
+    return myTopRowPtr + static_cast<ptrdiff_t>(SizeRowBytes * theRow * TopToDown) + SizeBPP * theCol;
   }
 
   //! Return data pointer to requested position.
   const uint8_t* ValueXY(size_t theX, size_t theY) const
   {
-    return myTopRowPtr + ptrdiff_t(SizeRowBytes * theY * TopToDown) + SizeBPP * theX;
+    return myTopRowPtr + static_cast<ptrdiff_t>(SizeRowBytes * theY * TopToDown) + SizeBPP * theX;
   }
 
   //! Return data pointer to requested position.
   uint8_t* ChangeValueXY(size_t theX, size_t theY)
   {
-    return myTopRowPtr + ptrdiff_t(SizeRowBytes * theY * TopToDown) + SizeBPP * theX;
+    return myTopRowPtr + static_cast<ptrdiff_t>(SizeRowBytes * theY * TopToDown) + SizeBPP * theX;
   }
 
 public:
   //! Return data pointer to requested 2D slice.
   const uint8_t* Slice(size_t theSlice) const
   {
-    return myData + ptrdiff_t(SizeSliceBytes * theSlice);
+    return myData + static_cast<ptrdiff_t>(SizeSliceBytes * theSlice);
   }
 
   //! Return data pointer to requested 2D slice.
-  uint8_t* ChangeSlice(size_t theSlice) { return myData + ptrdiff_t(SizeSliceBytes * theSlice); }
+  uint8_t* ChangeSlice(size_t theSlice) { return myData + static_cast<ptrdiff_t>(SizeSliceBytes * theSlice); }
 
   //! Return data pointer to requested row (first column).
   const uint8_t* SliceRow(size_t theSlice, size_t theRow) const
   {
-    return myTopRowPtr + ptrdiff_t(SizeRowBytes * theRow * TopToDown)
-           + ptrdiff_t(SizeSliceBytes * theSlice);
+    return myTopRowPtr + static_cast<ptrdiff_t>(SizeRowBytes * theRow * TopToDown)
+           + static_cast<ptrdiff_t>(SizeSliceBytes * theSlice);
   }
 
   //! Return data pointer to requested row (first column).
   uint8_t* ChangeSliceRow(size_t theSlice, size_t theRow)
   {
-    return myTopRowPtr + ptrdiff_t(SizeRowBytes * theRow * TopToDown)
-           + ptrdiff_t(SizeSliceBytes * theSlice);
+    return myTopRowPtr + static_cast<ptrdiff_t>(SizeRowBytes * theRow * TopToDown)
+           + static_cast<ptrdiff_t>(SizeSliceBytes * theSlice);
   }
 
   //! Return data pointer to requested position.
   const uint8_t* ValueXYZ(size_t theX, size_t theY, size_t theZ) const
   {
-    return myTopRowPtr + ptrdiff_t(SizeRowBytes * theY * TopToDown) + SizeBPP * theX
-           + ptrdiff_t(SizeSliceBytes * theZ);
+    return myTopRowPtr + static_cast<ptrdiff_t>(SizeRowBytes * theY * TopToDown) + SizeBPP * theX
+           + static_cast<ptrdiff_t>(SizeSliceBytes * theZ);
   }
 
   //! Return data pointer to requested position.
   uint8_t* ChangeValueXYZ(size_t theX, size_t theY, size_t theZ)
   {
-    return myTopRowPtr + ptrdiff_t(SizeRowBytes * theY * TopToDown) + SizeBPP * theX
-           + ptrdiff_t(SizeSliceBytes * theZ);
+    return myTopRowPtr + static_cast<ptrdiff_t>(SizeRowBytes * theY * TopToDown) + SizeBPP * theX
+           + static_cast<ptrdiff_t>(SizeSliceBytes * theZ);
   }
 
   //! Compute the maximal row alignment for current row size.
@@ -183,7 +183,7 @@ public:
   //! @param theIsTopDown top-down flag
   void SetTopDown(const bool theIsTopDown)
   {
-    TopToDown = (theIsTopDown ? 1 : size_t(-1));
+    TopToDown = (theIsTopDown ? 1 : static_cast<size_t>(-1));
     myTopRowPtr =
       ((TopToDown == 1 || myData == nullptr) ? myData : (myData + SizeRowBytes * (SizeY - 1)));
   }

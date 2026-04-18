@@ -96,7 +96,7 @@ bool XmlMDataStd_RealListDriver::Paste(const XmlObjMgt_Persistent&       theSour
     {
       int anIntValue;
       if (aString.GetInteger(anIntValue))
-        aRealList->Append(double(anIntValue));
+        aRealList->Append(static_cast<double>(anIntValue));
     }
     else
     {

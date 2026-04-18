@@ -112,6 +112,6 @@ void Select3D_SensitiveSegment::DumpJson(Standard_OStream& theOStream, int theDe
   OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &myStart)
   OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &myEnd)
 
-  Select3D_BndBox3d aBoundingBox = ((Select3D_SensitiveSegment*)this)->BoundingBox();
+  Select3D_BndBox3d aBoundingBox = (const_cast<Select3D_SensitiveSegment*>(this))->BoundingBox();
   OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &aBoundingBox)
 }

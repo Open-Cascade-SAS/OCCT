@@ -62,7 +62,7 @@ bool ShapeUpgrade_FixSmallBezierCurves::Approx(occ::handle<Geom_Curve>&   Curve3
     if (Last > l)
       Last = l;
     occ::handle<Geom_Curve> trc   = new Geom_TrimmedCurve(c3d, First, Last);
-    GeomAbs_Shape           aCont = (GeomAbs_Shape)trc->Continuity();
+    GeomAbs_Shape           aCont = trc->Continuity();
     if (aCont == GeomAbs_C3 || aCont == GeomAbs_CN)
       aCont = GeomAbs_C2;
     try
@@ -110,7 +110,7 @@ bool ShapeUpgrade_FixSmallBezierCurves::Approx(occ::handle<Geom_Curve>&   Curve3
     if (Last > l)
       Last = l;
     occ::handle<Geom2d_Curve> trc2d = new Geom2d_TrimmedCurve(c2d, First, Last);
-    GeomAbs_Shape             aCont = (GeomAbs_Shape)trc2d->Continuity();
+    GeomAbs_Shape             aCont = trc2d->Continuity();
     try
     {
       OCC_CATCH_SIGNALS

@@ -122,7 +122,7 @@ void XSControl_WorkSession::SetController(const occ::handle<XSControl_Controller
 const char* XSControl_WorkSession::SelectedNorm(const bool rsc) const
 {
   // JR/Hp :
-  const char* astr = (const char*)(myController.IsNull() ? "" : myController->Name(rsc));
+  const char* astr = (myController.IsNull() ? "" : myController->Name(rsc));
   return astr;
 }
 

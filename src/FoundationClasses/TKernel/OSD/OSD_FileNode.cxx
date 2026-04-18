@@ -175,7 +175,7 @@ int static copy_file(const char* src, const char* trg)
   const int BUFSIZE = 4096;
   char      buf[BUFSIZE];
   int       n = 0;
-  while ((n = (int)read(fds, buf, BUFSIZE)) > 0)
+  while ((n = static_cast<int>(read(fds, buf, BUFSIZE))) > 0)
   {
     if (write(fdo, buf, n) != n)
     {
@@ -263,10 +263,10 @@ OSD_Protection OSD_FileNode::Protection()
     w |= OSD_X;
 
   s = g;
-  thisProt.SetValues((OSD_SingleProtection)s,
-                     (OSD_SingleProtection)u,
-                     (OSD_SingleProtection)g,
-                     (OSD_SingleProtection)w);
+  thisProt.SetValues(static_cast<OSD_SingleProtection>(s),
+                     static_cast<OSD_SingleProtection>(u),
+                     static_cast<OSD_SingleProtection>(g),
+                     static_cast<OSD_SingleProtection>(w));
 
   return (thisProt);
 }
@@ -284,7 +284,7 @@ void OSD_FileNode::SetProtection(const OSD_Protection& Prot)
 
   TCollection_AsciiString aBuffer;
   myPath.SystemName(aBuffer);
-  status = chmod(aBuffer.ToCString(), (mode_t)Prot.Internal());
+  status = chmod(aBuffer.ToCString(), static_cast<mode_t>(Prot.Internal()));
   if (status == -1)
     myError.SetValue(errno, Iam, "SetProtection");
 }
@@ -309,7 +309,7 @@ Quantity_Date OSD_FileNode::CreationMoment()
   myPath.SystemName(aBuffer);
   if (!stat(aBuffer.ToCString(), &buffer))
   {
-    time_t aTime = (time_t)buffer.st_ctime;
+    time_t aTime = static_cast<time_t>(buffer.st_ctime);
     decode       = localtime(&aTime);
     result.SetValues(decode->tm_mon + 1,
                      decode->tm_mday,
@@ -345,7 +345,7 @@ Quantity_Date OSD_FileNode::AccessMoment()
   myPath.SystemName(aBuffer);
   if (!stat(aBuffer.ToCString(), &buffer))
   {
-    time_t aTime = (time_t)buffer.st_ctime;
+    time_t aTime = static_cast<time_t>(buffer.st_ctime);
     decode       = localtime(&aTime);
     result.SetValues(decode->tm_mon + 1,
                      decode->tm_mday,

@@ -59,22 +59,22 @@ void Resource_Unicode::ConvertSJISToUnicode(const char* const           fromstr,
     if (issjis1(*currentstr))
     {
 
-      ph = ((unsigned int)*currentstr);
+      ph = (static_cast<unsigned int>(*currentstr));
       // Be Careful with first and second !!
 
       currentstr++;
 
-      pl = ((unsigned int)*currentstr);
+      pl = (static_cast<unsigned int>(*currentstr));
       currentstr++;
 
       Resource_sjis_to_unicode(&ph, &pl);
-      char16_t                   curcar = ((char16_t)((ph << 8) | pl));
+      char16_t                   curcar = (static_cast<char16_t>((ph << 8) | pl));
       TCollection_ExtendedString curext(curcar);
       tostr.AssignCat(curext);
     }
     else
     {
-      TCollection_ExtendedString curext(((char)*currentstr));
+      TCollection_ExtendedString curext((static_cast<char>(*currentstr)));
       currentstr++;
       tostr.AssignCat(curext);
     }
@@ -94,22 +94,22 @@ void Resource_Unicode::ConvertEUCToUnicode(const char* const           fromstr,
     if (iseuc(*currentstr))
     {
 
-      ph = ((unsigned int)*currentstr);
+      ph = (static_cast<unsigned int>(*currentstr));
       // Be Careful with first and second !!
 
       currentstr++;
 
-      pl = ((unsigned int)*currentstr);
+      pl = (static_cast<unsigned int>(*currentstr));
       currentstr++;
 
       Resource_euc_to_unicode(&ph, &pl);
-      char16_t                   curcar = ((char16_t)((ph << 8) | pl));
+      char16_t                   curcar = (static_cast<char16_t>((ph << 8) | pl));
       TCollection_ExtendedString curext(curcar);
       tostr.AssignCat(curext);
     }
     else
     {
-      TCollection_ExtendedString curext(((char)*currentstr));
+      TCollection_ExtendedString curext((static_cast<char>(*currentstr)));
       currentstr++;
       tostr.AssignCat(curext);
     }
@@ -129,22 +129,22 @@ void Resource_Unicode::ConvertGBToUnicode(const char* const           fromstr,
     if (isshift(*currentstr))
     {
 
-      ph = ((unsigned int)*currentstr);
+      ph = (static_cast<unsigned int>(*currentstr));
       // Be Careful with first and second !!
 
       currentstr++;
 
-      pl = ((unsigned int)*currentstr);
+      pl = (static_cast<unsigned int>(*currentstr));
       currentstr++;
 
       Resource_gb_to_unicode(&ph, &pl);
-      char16_t                   curcar = ((char16_t)((ph << 8) | pl));
+      char16_t                   curcar = (static_cast<char16_t>((ph << 8) | pl));
       TCollection_ExtendedString curext(curcar);
       tostr.AssignCat(curext);
     }
     else
     {
-      TCollection_ExtendedString curext(((char)*currentstr));
+      TCollection_ExtendedString curext((static_cast<char>(*currentstr)));
       currentstr++;
       tostr.AssignCat(curext);
     }
@@ -165,9 +165,9 @@ bool Resource_Unicode::ConvertGBKToUnicode(const char* const           fromstr,
     {
       if (*currentch < 0x30 || *currentch > 0x39)
       {
-        TCollection_ExtendedString curext3(((char)*currentch));
-        TCollection_ExtendedString curext2(((char)gb3));
-        TCollection_ExtendedString curext1(((char)gb2));
+        TCollection_ExtendedString curext3((static_cast<char>(*currentch)));
+        TCollection_ExtendedString curext2((static_cast<char>(gb3)));
+        TCollection_ExtendedString curext1((static_cast<char>(gb2)));
         tostr.Insert(0, curext3);
         tostr.Insert(0, curext2);
         tostr.Insert(0, curext1);
@@ -179,7 +179,7 @@ bool Resource_Unicode::ConvertGBKToUnicode(const char* const           fromstr,
       if (codepnt < 23940)
       {
         unsigned short             uni    = gbkuni[codepnt];
-        char16_t                   curcar = ((char16_t)uni);
+        char16_t                   curcar = (static_cast<char16_t>(uni));
         TCollection_ExtendedString curext(curcar);
         tostr.AssignCat(curext);
         currentch++;
@@ -192,12 +192,12 @@ bool Resource_Unicode::ConvertGBKToUnicode(const char* const           fromstr,
     {
       if (*currentch >= 0x81 && *currentch <= 0xFE)
       {
-        gb3 = (unsigned int)(*currentch);
+        gb3 = static_cast<unsigned int>(*currentch);
         currentch++;
         continue;
       }
-      TCollection_ExtendedString curext2(((char)*currentch));
-      TCollection_ExtendedString curext1(((char)gb2));
+      TCollection_ExtendedString curext2((static_cast<char>(*currentch)));
+      TCollection_ExtendedString curext1((static_cast<char>(gb2)));
       tostr.Insert(0, curext2);
       tostr.Insert(0, curext1);
       return false;
@@ -206,7 +206,7 @@ bool Resource_Unicode::ConvertGBKToUnicode(const char* const           fromstr,
     {
       if (*currentch >= 0x30 && *currentch <= 0x39)
       {
-        gb2 = (unsigned int)(*currentch);
+        gb2 = static_cast<unsigned int>(*currentch);
         currentch++;
         continue;
       }
@@ -223,7 +223,7 @@ bool Resource_Unicode::ConvertGBKToUnicode(const char* const           fromstr,
         if (pointer < 23940)
         {
           unsigned short             uni    = gbkuni[pointer];
-          char16_t                   curcar = ((char16_t)uni);
+          char16_t                   curcar = (static_cast<char16_t>(uni));
           TCollection_ExtendedString curext(curcar);
           tostr.AssignCat(curext);
           currentch++;
@@ -233,7 +233,7 @@ bool Resource_Unicode::ConvertGBKToUnicode(const char* const           fromstr,
       if (*currentch <= 0x7F)
       {
         // ASCII symbol
-        TCollection_ExtendedString curext(((char)*currentch));
+        TCollection_ExtendedString curext((static_cast<char>(*currentch)));
         currentch++;
         tostr.Insert(0, curext);
         continue;
@@ -245,14 +245,14 @@ bool Resource_Unicode::ConvertGBKToUnicode(const char* const           fromstr,
       if (*currentch <= 0x7F)
       {
         // ASCII symbol
-        TCollection_ExtendedString curext(((char)*currentch));
+        TCollection_ExtendedString curext((static_cast<char>(*currentch)));
         currentch++;
         tostr.AssignCat(curext);
       }
       else if (*currentch == 0x80)
       {
         // Special symbol
-        char16_t                   curcar = ((char16_t)((0x20 << 8) | 0xAC));
+        char16_t                   curcar = (static_cast<char16_t>((0x20 << 8) | 0xAC));
         TCollection_ExtendedString curext(curcar);
         tostr.AssignCat(curext);
         currentch++;
@@ -260,7 +260,7 @@ bool Resource_Unicode::ConvertGBKToUnicode(const char* const           fromstr,
       else if (*currentch >= 0x81 && *currentch <= 0xFE)
       {
         // Chinese symbol
-        gb1 = (unsigned int)(*currentch);
+        gb1 = static_cast<unsigned int>(*currentch);
         currentch++;
       }
       else
@@ -295,26 +295,26 @@ bool Resource_Unicode::ConvertBig5ToUnicode(const char* const           fromstr,
         switch (pointer)
         {
           case 1133: {
-            tostr.Insert(aLength + 1, (char16_t)0x00CA);
-            tostr.Insert(aLength + 2, (char16_t)0x0304);
+            tostr.Insert(aLength + 1, static_cast<char16_t>(0x00CA));
+            tostr.Insert(aLength + 2, static_cast<char16_t>(0x0304));
             currentch++;
             continue;
           }
           case 1135: {
-            tostr.Insert(aLength + 1, (char16_t)0x00CA);
-            tostr.Insert(aLength + 2, (char16_t)0x030C);
+            tostr.Insert(aLength + 1, static_cast<char16_t>(0x00CA));
+            tostr.Insert(aLength + 2, static_cast<char16_t>(0x030C));
             currentch++;
             continue;
           }
           case 1164: {
-            tostr.Insert(aLength + 1, (char16_t)0x00EA);
-            tostr.Insert(aLength + 2, (char16_t)0x0304);
+            tostr.Insert(aLength + 1, static_cast<char16_t>(0x00EA));
+            tostr.Insert(aLength + 2, static_cast<char16_t>(0x0304));
             currentch++;
             continue;
           }
           case 1166: {
-            tostr.Insert(aLength + 1, (char16_t)0x00EA);
-            tostr.Insert(aLength + 2, (char16_t)0x030C);
+            tostr.Insert(aLength + 1, static_cast<char16_t>(0x00EA));
+            tostr.Insert(aLength + 2, static_cast<char16_t>(0x030C));
             currentch++;
             continue;
           }
@@ -324,7 +324,7 @@ bool Resource_Unicode::ConvertBig5ToUnicode(const char* const           fromstr,
               unsigned int uni = big5uni[pointer];
               if (uni <= 0xFFFF)
               {
-                char16_t curcar = ((char16_t)uni);
+                char16_t curcar = (static_cast<char16_t>(uni));
                 tostr.Insert(aLength + 1, curcar);
               }
               else
@@ -336,9 +336,9 @@ bool Resource_Unicode::ConvertBig5ToUnicode(const char* const           fromstr,
                 if (aStr16.Size() != 4)
                   return false; // not a surrogate pair
                 const char16_t* aChar16 = aStr16.ToCString();
-                tostr.Insert(aLength + 1, (char16_t)(*aChar16));
+                tostr.Insert(aLength + 1, (*aChar16));
                 aChar16++;
-                tostr.Insert(aLength + 2, (char16_t)(*aChar16));
+                tostr.Insert(aLength + 2, (*aChar16));
               }
               currentch++;
               continue;
@@ -349,7 +349,7 @@ bool Resource_Unicode::ConvertBig5ToUnicode(const char* const           fromstr,
       if (*currentch <= 0x7F)
       {
         // ASCII symbol
-        TCollection_ExtendedString curext(((char)*currentch));
+        TCollection_ExtendedString curext((static_cast<char>(*currentch)));
         currentch++;
         tostr.Insert(0, curext);
         continue;
@@ -361,14 +361,14 @@ bool Resource_Unicode::ConvertBig5ToUnicode(const char* const           fromstr,
       if (*currentch <= 0x7F)
       {
         // ASCII symbol
-        TCollection_ExtendedString curext(((char)*currentch));
+        TCollection_ExtendedString curext((static_cast<char>(*currentch)));
         currentch++;
         tostr.AssignCat(curext);
       }
       else if (*currentch >= 0x81 && *currentch <= 0xFE)
       {
         // Chinese symbol
-        big5lead = (unsigned int)(*currentch);
+        big5lead = static_cast<unsigned int>(*currentch);
         currentch++;
       }
       else
@@ -400,16 +400,16 @@ bool Resource_Unicode::ConvertUnicodeToSJIS(const TCollection_ExtendedString& fr
     {
       curcar = fromstr.Value(nbext);
       nbext++;
-      ph = (((unsigned int)curcar) >> 8) & 0xFF;
-      pl = ((unsigned int)curcar) & 0xFF;
+      ph = ((static_cast<unsigned int>(curcar)) >> 8) & 0xFF;
+      pl = (static_cast<unsigned int>(curcar)) & 0xFF;
       Resource_unicode_to_sjis(&ph, &pl);
       if (issjis1(ph))
       {
         if (nbtrans < (maxsize - 3))
         {
-          tostr[nbtrans] = ((char)ph);
+          tostr[nbtrans] = (static_cast<char>(ph));
           nbtrans++;
-          tostr[nbtrans] = ((char)pl);
+          tostr[nbtrans] = (static_cast<char>(pl));
           nbtrans++;
         }
         else
@@ -420,7 +420,7 @@ bool Resource_Unicode::ConvertUnicodeToSJIS(const TCollection_ExtendedString& fr
       }
       else
       {
-        tostr[nbtrans] = ((char)pl);
+        tostr[nbtrans] = (static_cast<char>(pl));
         nbtrans++;
       }
       if (nbtrans >= (maxsize - 1))
@@ -455,16 +455,16 @@ bool Resource_Unicode::ConvertUnicodeToEUC(const TCollection_ExtendedString& fro
     {
       curcar = fromstr.Value(nbext);
       nbext++;
-      ph = (((unsigned int)curcar) >> 8) & 0xFF;
-      pl = ((unsigned int)curcar) & 0xFF;
+      ph = ((static_cast<unsigned int>(curcar)) >> 8) & 0xFF;
+      pl = (static_cast<unsigned int>(curcar)) & 0xFF;
       Resource_unicode_to_euc(&ph, &pl);
       if (iseuc(ph))
       {
         if (nbtrans < (maxsize - 3))
         {
-          tostr[nbtrans] = ((char)ph);
+          tostr[nbtrans] = (static_cast<char>(ph));
           nbtrans++;
-          tostr[nbtrans] = ((char)pl);
+          tostr[nbtrans] = (static_cast<char>(pl));
           nbtrans++;
         }
         else
@@ -475,7 +475,7 @@ bool Resource_Unicode::ConvertUnicodeToEUC(const TCollection_ExtendedString& fro
       }
       else
       {
-        tostr[nbtrans] = ((char)pl);
+        tostr[nbtrans] = (static_cast<char>(pl));
         nbtrans++;
       }
       if (nbtrans >= (maxsize - 1))
@@ -510,16 +510,16 @@ bool Resource_Unicode::ConvertUnicodeToGB(const TCollection_ExtendedString& from
     {
       curcar = fromstr.Value(nbext);
       nbext++;
-      ph = (((unsigned int)curcar) >> 8) & 0xFF;
-      pl = ((unsigned int)curcar) & 0xFF;
+      ph = ((static_cast<unsigned int>(curcar)) >> 8) & 0xFF;
+      pl = (static_cast<unsigned int>(curcar)) & 0xFF;
       Resource_unicode_to_gb(&ph, &pl);
       if (isshift(ph))
       {
         if (nbtrans < (maxsize - 3))
         {
-          tostr[nbtrans] = ((char)ph);
+          tostr[nbtrans] = (static_cast<char>(ph));
           nbtrans++;
-          tostr[nbtrans] = ((char)pl);
+          tostr[nbtrans] = (static_cast<char>(pl));
           nbtrans++;
         }
         else
@@ -530,7 +530,7 @@ bool Resource_Unicode::ConvertUnicodeToGB(const TCollection_ExtendedString& from
       }
       else
       {
-        tostr[nbtrans] = ((char)curcar) & 0xFF;
+        tostr[nbtrans] = (static_cast<char>(curcar)) & 0xFF;
         nbtrans++;
       }
       if (nbtrans >= (maxsize - 1))
@@ -565,11 +565,11 @@ bool Resource_Unicode::ConvertUnicodeToANSI(const TCollection_ExtendedString& fr
     {
       curcar = fromstr.Value(nbext);
       nbext++;
-      ph = ((unsigned int)curcar) >> 8;
-      pl = ((unsigned int)curcar) & 0xFF;
+      ph = (static_cast<unsigned int>(curcar)) >> 8;
+      pl = (static_cast<unsigned int>(curcar)) & 0xFF;
       if (ph == 0)
       {
-        tostr[nbtrans] = ((char)pl);
+        tostr[nbtrans] = (static_cast<char>(pl));
       }
       else
       {
@@ -684,12 +684,12 @@ void Resource_Unicode::ConvertFormatToUnicode(const Resource_FormatType   theFor
     case Resource_FormatType_iso8859_8:
     case Resource_FormatType_iso8859_9:
     case Resource_FormatType_CP850: {
-      const int             aCodePageIndex = (int)theFormat - (int)Resource_FormatType_CP1250;
+      const int             aCodePageIndex = static_cast<int>(theFormat) - static_cast<int>(Resource_FormatType_CP1250);
       const char16_t* const aCodePage      = THE_CODEPAGES_ANSI[aCodePageIndex];
       theToStr.Clear();
       for (const char* anInputPntr = theFromStr; *anInputPntr != '\0'; ++anInputPntr)
       {
-        unsigned char anInputChar = (unsigned char)(*anInputPntr);
+        unsigned char anInputChar = static_cast<unsigned char>(*anInputPntr);
         char16_t aRes = (anInputChar & 0x80) != 0 ? aCodePage[(0x7f & anInputChar)] : anInputChar;
         if (aRes == 0)
         {
@@ -762,7 +762,7 @@ bool Resource_Unicode::ConvertUnicodeToFormat(const Resource_FormatType         
       {
         return false;
       }
-      const int             aCodePageIndex = (int)theFormat - (int)Resource_FormatType_CP1250;
+      const int             aCodePageIndex = static_cast<int>(theFormat) - static_cast<int>(Resource_FormatType_CP1250);
       const char16_t* const aCodePage      = THE_CODEPAGES_ANSI[aCodePageIndex];
       for (int aToCharInd = 0; aToCharInd < theMaxSize - 1; ++aToCharInd)
       {

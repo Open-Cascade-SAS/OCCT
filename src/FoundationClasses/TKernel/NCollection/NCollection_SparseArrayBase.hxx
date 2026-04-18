@@ -81,9 +81,9 @@ private:
   public:
     //! Initializes the block by pointer to block data
     Block(void* const theAddr, const size_t theNbItems, const size_t theItemSize)
-        : Count((size_t*)theAddr),
-          Array((char*)theAddr + sizeof(size_t)),
-          Bits((Cell*)((char*)theAddr + sizeof(size_t) + theNbItems * theItemSize))
+        : Count(static_cast<size_t*>(theAddr)),
+          Array(static_cast<char*>(theAddr) + sizeof(size_t)),
+          Bits(reinterpret_cast<Cell*>(static_cast<char*>(theAddr) + sizeof(size_t) + theNbItems * theItemSize))
     {
     }
 
@@ -99,7 +99,7 @@ private:
                          const size_t /*theNbItems*/,
                          const size_t /*theItemSize*/) noexcept
     {
-      return (char*)theAddress + sizeof(size_t);
+      return static_cast<char*>(theAddress) + sizeof(size_t);
     }
 
   public:
@@ -108,9 +108,9 @@ private:
     Cell Set(size_t i) noexcept
     {
       Cell* abyte = Bits + i / BitsPerCell();
-      Cell  amask = (Cell)('\1' << (i % BitsPerCell()));
-      Cell  anold = (Cell)(*abyte & amask);
-      *abyte      = (Cell)(*abyte | amask);
+      Cell  amask = static_cast<Cell>('\1' << (i % BitsPerCell()));
+      Cell  anold = static_cast<Cell>(*abyte & amask);
+      *abyte      = static_cast<Cell>(*abyte | amask);
       return !anold;
     }
 
@@ -118,8 +118,8 @@ private:
     Cell IsSet(size_t i) noexcept
     {
       Cell* abyte = Bits + i / BitsPerCell();
-      Cell  amask = (Cell)('\1' << (i % BitsPerCell()));
-      return (Cell)(*abyte & amask);
+      Cell  amask = static_cast<Cell>('\1' << (i % BitsPerCell()));
+      return static_cast<Cell>(*abyte & amask);
     }
 
     //! Unset bit for i-th item; returns non-null if that bit
@@ -127,9 +127,9 @@ private:
     Cell Unset(size_t i) noexcept
     {
       Cell* abyte = Bits + i / BitsPerCell();
-      Cell  amask = (Cell)('\1' << (i % BitsPerCell()));
-      Cell  anold = (Cell)(*abyte & amask);
-      *abyte      = (Cell)(*abyte & ~amask);
+      Cell  amask = static_cast<Cell>('\1' << (i % BitsPerCell()));
+      Cell  anold = static_cast<Cell>(*abyte & amask);
+      *abyte      = static_cast<Cell>(*abyte & ~amask);
       return anold;
     }
 
@@ -220,7 +220,7 @@ protected:
   //! Find address of the item in the block by index (in the block)
   void* getItem(const Block& theBlock, size_t theInd) const noexcept
   {
-    return ((char*)theBlock.Array) + myItemSize * theInd;
+    return (static_cast<char*>(theBlock.Array)) + myItemSize * theInd;
   }
 
   //! Direct const access to the item

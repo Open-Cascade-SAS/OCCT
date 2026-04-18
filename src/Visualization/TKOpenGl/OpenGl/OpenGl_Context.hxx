@@ -957,7 +957,7 @@ public: //! @name methods to alter or retrieve current state
   //! Note that this method rounds @theRatio to nearest integer.
   void SetResolution(unsigned int theResolution, float theRatio, float theScale)
   {
-    myResolution     = (unsigned int)(theScale * theResolution + 0.5f);
+    myResolution     = static_cast<unsigned int>(theScale * theResolution + 0.5f);
     myRenderScale    = theScale;
     myRenderScaleInv = 1.0f / theScale;
     SetResolutionRatio(theRatio * theScale);

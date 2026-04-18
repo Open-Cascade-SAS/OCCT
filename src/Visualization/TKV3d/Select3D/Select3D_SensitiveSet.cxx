@@ -296,6 +296,6 @@ void Select3D_SensitiveSet::DumpJson(Standard_OStream& theOStream, int theDepth)
 
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myDetectedIdx)
 
-  Select3D_BndBox3d aBoundingBox = ((Select3D_SensitiveSet*)this)->BoundingBox();
+  Select3D_BndBox3d aBoundingBox = (const_cast<Select3D_SensitiveSet*>(this))->BoundingBox();
   OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &aBoundingBox)
 }

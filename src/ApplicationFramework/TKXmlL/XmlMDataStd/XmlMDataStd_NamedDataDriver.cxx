@@ -428,7 +428,7 @@ bool XmlMDataStd_NamedDataDriver::Paste(const XmlObjMgt_Persistent&       theSou
         }
 
         TCollection_AsciiString aVal(aValueStr, '?');
-        uint8_t                 aValue = (uint8_t)aVal.IntegerValue();
+        uint8_t                 aValue = static_cast<uint8_t>(aVal.IntegerValue());
 
         aMap.Bind(aKey, aValue);
         aCurNode    = aCurElement->getNextSibling();
@@ -445,7 +445,7 @@ bool XmlMDataStd_NamedDataDriver::Paste(const XmlObjMgt_Persistent&       theSou
       }
 
       TCollection_AsciiString aVal(aValueStr, '?');
-      uint8_t                 aValue = (uint8_t)aVal.IntegerValue();
+      uint8_t                 aValue = static_cast<uint8_t>(aVal.IntegerValue());
       aMap.Bind(aKey, aValue);
       T->ChangeBytes(aMap);
     }

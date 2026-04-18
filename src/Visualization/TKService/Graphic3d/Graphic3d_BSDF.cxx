@@ -182,7 +182,7 @@ Graphic3d_BSDF Graphic3d_BSDF::CreateGlass(const NCollection_Vec3<float>& theWei
 Graphic3d_BSDF Graphic3d_BSDF::CreateMetallicRoughness(const Graphic3d_PBRMaterial& thePbr)
 {
   const NCollection_Vec3<float> aDiff =
-    (NCollection_Vec3<float>)thePbr.Color().GetRGB() * thePbr.Alpha();
+    NCollection_Vec3<float>(thePbr.Color().GetRGB()) * thePbr.Alpha();
   const float aRougness2 = thePbr.NormalizedRoughness() * thePbr.NormalizedRoughness();
 
   Graphic3d_BSDF aBsdf;

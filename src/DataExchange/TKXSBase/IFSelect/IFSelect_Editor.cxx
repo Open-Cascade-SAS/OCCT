@@ -59,15 +59,15 @@ void IFSelect_Editor::SetValue(const int                                num,
     thenames.Bind(shortname, num);
   if (lng > themaxsh)
     themaxsh = lng;
-  lng = (int)strlen(typval->Name());
+  lng = static_cast<int>(strlen(typval->Name()));
   if (lng > themaxco)
     themaxco = lng;
-  lng = (int)strlen(typval->Label());
+  lng = static_cast<int>(strlen(typval->Label()));
   if (lng > themaxla)
     themaxla = lng;
 
   thenames.Bind(typval->Name(), num);
-  int edm = (int)editmode;
+  int edm = static_cast<int>(editmode);
   thevalues.SetValue(num, typval);
   theshorts.SetValue(num, shn);
   themodes.SetValue(num, edm);
@@ -119,7 +119,7 @@ IFSelect_EditValue IFSelect_Editor::EditMode(const int num) const
   if (num < 1 || num > thenbval)
     return IFSelect_EditDynamic;
   int edm = themodes.Value(num);
-  return (IFSelect_EditValue)edm;
+  return static_cast<IFSelect_EditValue>(edm);
 }
 
 void IFSelect_Editor::PrintNames(Standard_OStream& S) const

@@ -97,14 +97,14 @@ void IGESData_IGESWriter::SendStartLine(const char* const startline)
 {
   Standard_PCharacter pstartline;
   //
-  pstartline = (Standard_PCharacter)startline;
+  pstartline = const_cast<Standard_PCharacter>(startline);
   //
   size_t lst = strlen(startline);
   if (lst == 0)
     return;
   if (thestar.IsNull())
     thestar = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
-  if (lst <= (size_t)MaxcarsG)
+  if (lst <= static_cast<size_t>(MaxcarsG))
   {
     thestar->Append(new TCollection_HAsciiString(startline));
     return;
@@ -314,7 +314,7 @@ void IGESData_IGESWriter::DirPart(const occ::handle<IGESData_IGESEntity>& anent)
     i       = 7;
     while (sn != 0)
     {
-      snum[i] = (char)((sn % 10) + 48);
+      snum[i] = static_cast<char>((sn % 10) + 48);
       sn      = sn / 10;
       i--;
     }
@@ -412,7 +412,7 @@ void IGESData_IGESWriter::AddString(const char* const val, const int lnval, cons
 {
   int lnstr = lnval;
   if (lnstr <= 0)
-    lnstr = (int)strlen(val);
+    lnstr = static_cast<int>(strlen(val));
   if (!thecurr.CanGet(lnstr + more + 1))
   {
     // + 1 (18-SEP-1996) to be sure that the separator n is not at the head of line
@@ -549,7 +549,7 @@ static void writefnes(Standard_OStream& S, const char* const ligne)
   {
     if (ligne[i] == '\0')
       return;
-    val = (char)(ligne[i] ^ (150 + (i & 3)));
+    val = static_cast<char>(ligne[i] ^ (150 + (i & 3)));
     S << val;
   }
 }
@@ -579,7 +579,7 @@ bool IGESData_IGESWriter::Print(Standard_OStream& S) const
   if (fnes)
   {
     for (i = 0; i < MaxcarsG; i++)
-      blancs[i] = (char)(blancs[i] ^ (150 + (i & 3)));
+      blancs[i] = static_cast<char>(blancs[i] ^ (150 + (i & 3)));
   }
 
   if (thesect != 4)

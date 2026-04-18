@@ -96,7 +96,7 @@ bool BRepBlend_AppFuncRoot::D0(const double Param,
                                NCollection_Array1<double>&   Weigths)
 {
   bool               Ok   = true;
-  Blend_AppFunction* Func = (Blend_AppFunction*)myFunc;
+  Blend_AppFunction* Func = static_cast<Blend_AppFunction*>(myFunc);
   Ok                      = SearchPoint(*Func, Param, myPnt);
 
   if (Ok)
@@ -120,7 +120,7 @@ bool BRepBlend_AppFuncRoot::D1(const double Param,
                                NCollection_Array1<double>&   DWeigths)
 {
   bool               Ok   = true;
-  Blend_AppFunction* Func = (Blend_AppFunction*)myFunc;
+  Blend_AppFunction* Func = static_cast<Blend_AppFunction*>(myFunc);
 
   Ok = SearchPoint(*Func, Param, myPnt);
 
@@ -152,7 +152,7 @@ bool BRepBlend_AppFuncRoot::D2(const double Param,
                                NCollection_Array1<double>&   D2Weigths)
 {
   bool               Ok   = true;
-  Blend_AppFunction* Func = (Blend_AppFunction*)myFunc;
+  Blend_AppFunction* Func = static_cast<Blend_AppFunction*>(myFunc);
 
   Ok = SearchPoint(*Func, Param, myPnt);
   if (Ok)
@@ -173,7 +173,7 @@ bool BRepBlend_AppFuncRoot::D2(const double Param,
 
 int BRepBlend_AppFuncRoot::Nb2dCurves() const
 {
-  Blend_AppFunction* Func = (Blend_AppFunction*)myFunc;
+  Blend_AppFunction* Func = static_cast<Blend_AppFunction*>(myFunc);
   int                i, j, k, nbpol2d;
   (*Func).GetShape(i, j, k, nbpol2d);
   return nbpol2d;
@@ -181,44 +181,44 @@ int BRepBlend_AppFuncRoot::Nb2dCurves() const
 
 void BRepBlend_AppFuncRoot::SectionShape(int& NbPoles, int& NbKnots, int& Degree) const
 {
-  Blend_AppFunction* Func = (Blend_AppFunction*)myFunc;
+  Blend_AppFunction* Func = static_cast<Blend_AppFunction*>(myFunc);
   int                ii;
   (*Func).GetShape(NbPoles, NbKnots, Degree, ii);
 }
 
 void BRepBlend_AppFuncRoot::Knots(NCollection_Array1<double>& TKnots) const
 {
-  Blend_AppFunction* Func = (Blend_AppFunction*)myFunc;
+  Blend_AppFunction* Func = static_cast<Blend_AppFunction*>(myFunc);
   Func->Knots(TKnots);
 }
 
 void BRepBlend_AppFuncRoot::Mults(NCollection_Array1<int>& TMults) const
 {
-  Blend_AppFunction* Func = (Blend_AppFunction*)myFunc;
+  Blend_AppFunction* Func = static_cast<Blend_AppFunction*>(myFunc);
   Func->Mults(TMults);
 }
 
 bool BRepBlend_AppFuncRoot::IsRational() const
 {
-  Blend_AppFunction* Func = (Blend_AppFunction*)myFunc;
+  Blend_AppFunction* Func = static_cast<Blend_AppFunction*>(myFunc);
   return (*Func).IsRational();
 }
 
 int BRepBlend_AppFuncRoot::NbIntervals(const GeomAbs_Shape S) const
 {
-  Blend_AppFunction* Func = (Blend_AppFunction*)myFunc;
+  Blend_AppFunction* Func = static_cast<Blend_AppFunction*>(myFunc);
   return Func->NbIntervals(S);
 }
 
 void BRepBlend_AppFuncRoot::Intervals(NCollection_Array1<double>& T, const GeomAbs_Shape S) const
 {
-  Blend_AppFunction* Func = (Blend_AppFunction*)myFunc;
+  Blend_AppFunction* Func = static_cast<Blend_AppFunction*>(myFunc);
   Func->Intervals(T, S);
 }
 
 void BRepBlend_AppFuncRoot::SetInterval(const double First, const double Last)
 {
-  Blend_AppFunction* Func = (Blend_AppFunction*)myFunc;
+  Blend_AppFunction* Func = static_cast<Blend_AppFunction*>(myFunc);
   Func->Set(First, Last);
 }
 
@@ -227,7 +227,7 @@ void BRepBlend_AppFuncRoot::Resolution(const int    Index,
                                        double&      TolU,
                                        double&      TolV) const
 {
-  Blend_AppFunction* Func = (Blend_AppFunction*)myFunc;
+  Blend_AppFunction* Func = static_cast<Blend_AppFunction*>(myFunc);
   Func->Resolution(Index, Tol, TolU, TolV);
 }
 
@@ -238,7 +238,7 @@ void BRepBlend_AppFuncRoot::GetTolerance(const double                BoundTol,
 {
   int                ii;
   math_Vector        V3d(1, Tol3d.Length()), V1d(1, Tol3d.Length());
-  Blend_AppFunction* Func = (Blend_AppFunction*)myFunc;
+  Blend_AppFunction* Func = static_cast<Blend_AppFunction*>(myFunc);
 
   Func->GetTolerance(BoundTol, SurfTol, AngleTol, V3d, V1d);
   for (ii = 1; ii <= Tol3d.Length(); ii++)
@@ -247,7 +247,7 @@ void BRepBlend_AppFuncRoot::GetTolerance(const double                BoundTol,
 
 void BRepBlend_AppFuncRoot::SetTolerance(const double Tol3d, const double Tol2d)
 {
-  Blend_AppFunction* Func = (Blend_AppFunction*)myFunc;
+  Blend_AppFunction* Func = static_cast<Blend_AppFunction*>(myFunc);
   int                ii, dim = Func->NbVariables();
   Func->GetTolerance(myTolerance, Tol3d);
   for (ii = 1; ii <= dim; ii++)
@@ -267,13 +267,13 @@ gp_Pnt BRepBlend_AppFuncRoot::BarycentreOfSurf() const
 
 double BRepBlend_AppFuncRoot::MaximalSection() const
 {
-  Blend_AppFunction* Func = (Blend_AppFunction*)myFunc;
+  Blend_AppFunction* Func = static_cast<Blend_AppFunction*>(myFunc);
   return Func->GetSectionSize();
 }
 
 void BRepBlend_AppFuncRoot::GetMinimalWeight(NCollection_Array1<double>& Weigths) const
 {
-  Blend_AppFunction* Func = (Blend_AppFunction*)myFunc;
+  Blend_AppFunction* Func = static_cast<Blend_AppFunction*>(myFunc);
   Func->GetMinimalWeight(Weigths);
 }
 

@@ -20,6 +20,6 @@
 inline const TCollection_AsciiString& BinMDF_ADriver::TypeName() const
 {
   if (myTypeName.Length() == 0)
-    (TCollection_AsciiString&)myTypeName += SourceType()->Name();
+    const_cast<TCollection_AsciiString&>(myTypeName) += SourceType()->Name();
   return myTypeName;
 }

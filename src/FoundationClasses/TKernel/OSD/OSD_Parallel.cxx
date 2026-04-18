@@ -260,7 +260,7 @@ int OSD_Parallel::NbLogicalProcessors()
   // _SC_NPROCESSORS_CONF   Number of processors configured
   // _SC_NPROCESSORS_MAX    Max number of processors supported by platform
   // _SC_NPROCESSORS_ONLN   Number of processors online
-  aNumLogicalProcessors = (int)sysconf(_SC_NPROCESSORS_ONLN);
+  aNumLogicalProcessors = static_cast<int>(sysconf(_SC_NPROCESSORS_ONLN));
 #endif
   return aNumLogicalProcessors;
 }

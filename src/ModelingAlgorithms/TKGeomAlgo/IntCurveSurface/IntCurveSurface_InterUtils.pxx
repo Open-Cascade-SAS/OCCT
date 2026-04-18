@@ -899,7 +899,7 @@ void DoSurface(const SurfaceType&          theSurface,
     else if (iU == 49)
       U = theU1;
     else
-      U = theU0 + dU * ((double)iU);
+      U = theU0 + dU * static_cast<double>(iU);
 
     for (iV = 0; iV < 50; iV++)
     {
@@ -908,7 +908,7 @@ void DoSurface(const SurfaceType&          theSurface,
       else if (iV == 49)
         V = theV1;
       else
-        V = theV0 + dV * ((double)iV);
+        V = theV0 + dV * static_cast<double>(iV);
 
       SurfaceTool::D0(theSurface, U, V, aPnt);
       theBoxSurface.Add(aPnt);
@@ -985,10 +985,10 @@ void DoNewBounds(const SurfaceType&                theSurface,
 
   double dU = (theU1 - theU0) / 50., dV = (theV1 - theV0) / 50.;
 
-  double USmin = theU0 + dU * ((double)(iUmin - 1));
-  double USmax = theU0 + dU * ((double)(iUmax - 1));
-  double VSmin = theV0 + dV * ((double)(iVmin - 1));
-  double VSmax = theV0 + dV * ((double)(iVmax - 1));
+  double USmin = theU0 + dU * (static_cast<double>(iUmin - 1));
+  double USmax = theU0 + dU * (static_cast<double>(iUmax - 1));
+  double VSmin = theV0 + dV * (static_cast<double>(iVmin - 1));
+  double VSmax = theV0 + dV * (static_cast<double>(iVmax - 1));
 
   if (USmin > USmax)
   {

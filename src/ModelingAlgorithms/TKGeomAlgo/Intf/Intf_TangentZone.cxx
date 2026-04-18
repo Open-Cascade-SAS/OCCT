@@ -235,10 +235,10 @@ bool Intf_TangentZone::Contains(const Intf_SectionPoint& ThePI) const
 void Intf_TangentZone::InfoFirst(int& segMin, double& paraMin, int& segMax, double& paraMax) const
 {
   ParamOnFirst(paraMin, paraMax);
-  segMin  = (int)(std::trunc(paraMin));
-  paraMin = paraMin - (double)segMin;
-  segMax  = (int)(std::trunc(paraMax));
-  paraMax = paraMax - (double)segMax;
+  segMin  = static_cast<int>(std::trunc(paraMin));
+  paraMin = paraMin - static_cast<double>(segMin);
+  segMax  = static_cast<int>(std::trunc(paraMax));
+  paraMax = paraMax - static_cast<double>(segMax);
 }
 
 //=================================================================================================
@@ -246,10 +246,10 @@ void Intf_TangentZone::InfoFirst(int& segMin, double& paraMin, int& segMax, doub
 void Intf_TangentZone::InfoSecond(int& segMin, double& paraMin, int& segMax, double& paraMax) const
 {
   ParamOnSecond(paraMin, paraMax);
-  segMin  = (int)(std::trunc(paraMin));
-  paraMin = paraMin - (double)segMin;
-  segMax  = (int)(std::trunc(paraMax));
-  paraMax = paraMax - (double)segMax;
+  segMin  = static_cast<int>(std::trunc(paraMin));
+  paraMin = paraMin - static_cast<double>(segMin);
+  segMax  = static_cast<int>(std::trunc(paraMax));
+  paraMax = paraMax - static_cast<double>(segMax);
 }
 
 //=================================================================================================

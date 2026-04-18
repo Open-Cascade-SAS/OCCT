@@ -1135,7 +1135,7 @@ void BRepBuilderAPI_Sewing::EvaluateAngulars(NCollection_Sequence<TopoDS_Shape>&
     }
 
     if (nbComputedAngle)
-      tabAng(i) = cumulateAngular / ((double)nbComputedAngle);
+      tabAng(i) = cumulateAngular / (static_cast<double>(nbComputedAngle));
   }
 }
 

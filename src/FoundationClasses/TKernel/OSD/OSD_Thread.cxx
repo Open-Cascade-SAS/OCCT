@@ -187,7 +187,7 @@ bool OSD_Thread::Run(void* const data,
   }
   else
   {
-    myThreadId = (Standard_ThreadId)myThread;
+    myThreadId = static_cast<Standard_ThreadId>(myThread);
   }
 #endif
   return myThread != OSD_PTHREAD_NULL;
@@ -358,6 +358,6 @@ Standard_ThreadId OSD_Thread::Current()
 #ifdef _WIN32
   return GetCurrentThreadId();
 #else
-  return (Standard_ThreadId)pthread_self();
+  return static_cast<Standard_ThreadId>(pthread_self());
 #endif
 }

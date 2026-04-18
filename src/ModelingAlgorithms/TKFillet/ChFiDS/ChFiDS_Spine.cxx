@@ -501,8 +501,8 @@ double ChFiDS_Spine::Absc(const double U, const int I)
   if (indexofcurve != I)
   {
     void* p                          = (void*)this;
-    ((ChFiDS_Spine*)p)->indexofcurve = I;
-    ((ChFiDS_Spine*)p)->myCurve.Initialize(TopoDS::Edge(spine.Value(I)));
+    (static_cast<ChFiDS_Spine*>(p))->indexofcurve = I;
+    (static_cast<ChFiDS_Spine*>(p))->myCurve.Initialize(TopoDS::Edge(spine.Value(I)));
   }
   double L = FirstParameter(I);
   if (spine.Value(I).Orientation() == TopAbs_REVERSED)
@@ -537,8 +537,8 @@ void ChFiDS_Spine::Parameter(const int Index, const double AbsC, double& U, cons
   if (Index != indexofcurve)
   {
     void* p                          = (void*)this;
-    ((ChFiDS_Spine*)p)->indexofcurve = Index;
-    ((ChFiDS_Spine*)p)->myCurve.Initialize(TopoDS::Edge(spine.Value(Index)));
+    (static_cast<ChFiDS_Spine*>(p))->indexofcurve = Index;
+    (static_cast<ChFiDS_Spine*>(p))->myCurve.Initialize(TopoDS::Edge(spine.Value(Index)));
   }
   double             L;
   TopAbs_Orientation Or = spine.Value(Index).Orientation();
@@ -671,8 +671,8 @@ gp_Pnt ChFiDS_Spine::Value(const double AbsC)
   if (Index != indexofcurve)
   {
     void* p                          = (void*)this;
-    ((ChFiDS_Spine*)p)->indexofcurve = Index;
-    ((ChFiDS_Spine*)p)->myCurve.Initialize(TopoDS::Edge(spine.Value(Index)));
+    (static_cast<ChFiDS_Spine*>(p))->indexofcurve = Index;
+    (static_cast<ChFiDS_Spine*>(p))->myCurve.Initialize(TopoDS::Edge(spine.Value(Index)));
   }
   double t    = L / Length(Index);
   double uapp = (1. - t) * myCurve.FirstParameter() + t * myCurve.LastParameter();
@@ -719,8 +719,8 @@ void ChFiDS_Spine::D1(const double AbsC, gp_Pnt& P, gp_Vec& V1)
     if (Index != indexofcurve)
     {
       void* p                          = (void*)this;
-      ((ChFiDS_Spine*)p)->indexofcurve = Index;
-      ((ChFiDS_Spine*)p)->myCurve.Initialize(TopoDS::Edge(spine.Value(Index)));
+      (static_cast<ChFiDS_Spine*>(p))->indexofcurve = Index;
+      (static_cast<ChFiDS_Spine*>(p))->myCurve.Initialize(TopoDS::Edge(spine.Value(Index)));
     }
     double t    = L / Length(Index);
     double uapp = (1. - t) * myCurve.FirstParameter() + t * myCurve.LastParameter();
@@ -768,8 +768,8 @@ void ChFiDS_Spine::D2(const double AbsC, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2)
     if (Index != indexofcurve)
     {
       void* p                          = (void*)this;
-      ((ChFiDS_Spine*)p)->indexofcurve = Index;
-      ((ChFiDS_Spine*)p)->myCurve.Initialize(TopoDS::Edge(spine.Value(Index)));
+      (static_cast<ChFiDS_Spine*>(p))->indexofcurve = Index;
+      (static_cast<ChFiDS_Spine*>(p))->myCurve.Initialize(TopoDS::Edge(spine.Value(Index)));
     }
     double t    = L / Length(Index);
     double uapp = (1. - t) * myCurve.FirstParameter() + t * myCurve.LastParameter();

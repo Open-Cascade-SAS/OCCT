@@ -61,6 +61,6 @@ const TCollection_AsciiString& XmlMDF_ADriver::TypeName() const
 {
   const char* const aString = myTypeName.ToCString();
   if (myTypeName.Length() == 0 || aString[myTypeName.Length() - 1] == ':')
-    (TCollection_AsciiString&)myTypeName += SourceType()->Name();
+    const_cast<TCollection_AsciiString&>(myTypeName) += SourceType()->Name();
   return myTypeName;
 }

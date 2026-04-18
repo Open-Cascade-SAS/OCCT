@@ -359,8 +359,8 @@ void TDF_Tool::Entry(const TDF_Label& aLabel, TCollection_AsciiString& anEntry)
       {
         int aTag = aLab.Tag();
         for (; aTag > 9; --aPtr, aTag /= 10)
-          *aPtr = char(aTag % 10) + '0';
-        *aPtr = char(aTag) + '0';
+          *aPtr = static_cast<char>(aTag % 10) + '0';
+        *aPtr = static_cast<char>(aTag) + '0';
         aPtr -= 2;
       }
       *aPtr = '0';

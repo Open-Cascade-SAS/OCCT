@@ -170,7 +170,7 @@ NCollection_AccAllocator::Block* NCollection_AccAllocator::findBlock(void* const
 
   theKey.Value--;
   aBlock = myBlocks.ChangeSeek(theKey);
-  if (aBlock && (uint8_t*)aBlock->address + (size_t)myBlockSize > theAddress)
+  if (aBlock && static_cast<uint8_t*>(aBlock->address) + (size_t)myBlockSize > theAddress)
   {
     return aBlock;
   }

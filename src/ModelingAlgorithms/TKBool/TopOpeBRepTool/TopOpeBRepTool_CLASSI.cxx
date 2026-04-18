@@ -431,7 +431,7 @@ bool TopOpeBRepTool_CLASSI::Classilist(
   if (nw <= 1)
     return true;
 
-  int nite = 0, nitemax = int(nw * (nw - 1) / 2);
+  int nite = 0, nitemax = (nw * (nw - 1) / 2);
   while (nite <= nitemax)
   {
     nw = lw.Extent();

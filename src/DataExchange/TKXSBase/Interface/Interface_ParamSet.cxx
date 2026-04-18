@@ -62,7 +62,7 @@ int Interface_ParamSet::Append(const char* const         val,
     if (thelnval + lnval + 1 > thelnres)
     {
       //      Insufficient character reservation: first increase
-      int   newres = (int)(thelnres * 2 + lnval);
+      int   newres = (thelnres * 2 + lnval);
       char* newval = new char[newres];
       for (i = 0; i < thelnval; i++)
         newval[i] = theval[i]; // szv#4:S4163:12Mar99 `<= thelnres` was wrong
@@ -76,8 +76,8 @@ int Interface_ParamSet::Append(const char* const         val,
       {
         Interface_FileParameter& OFP   = thelist->ChangeValue(i);
         Interface_ParamType      otyp  = OFP.ParamType();
-        char*                    oval  = (char*)OFP.CValue();
-        int                      delta = (int)(oval - poldVal);
+        char*                    oval  = const_cast<char*>(OFP.CValue());
+        int                      delta = static_cast<int>(oval - poldVal);
         // if (oval < theval || oval >= (theval+thelnres))
         //   continue;  //hors reserve //szv#4:S4163:12Mar99 `oval >` was wrong
         int onum = OFP.EntityNumber();
@@ -100,7 +100,7 @@ int Interface_ParamSet::Append(const char* const         val,
     FP.Init(&theval[thelnval], typ);
     if (nument != 0)
       FP.SetEntityNumber(nument);
-    thelnval += (int)(lnval + 1);
+    thelnval += (lnval + 1);
   }
   return thenbpar;
 }

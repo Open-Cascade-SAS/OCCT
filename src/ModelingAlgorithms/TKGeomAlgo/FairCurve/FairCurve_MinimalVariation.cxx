@@ -381,7 +381,7 @@ bool FairCurve_MinimalVariation::Compute(const gp_Vec2d&         DeltaP1,
       PseudoNormale.SetXY(Poles->Value(Poles->Lower()).XY()
                           - 2 * Poles->Value(Poles->Lower() + 1).XY()
                           + Poles->Value(Poles->Lower() + 2).XY());
-      OldCurvature1 = (((double)Degree - 1) / Degree) * (Tangente.Normalized() ^ PseudoNormale)
+      OldCurvature1 = ((static_cast<double>(Degree) - 1) / Degree) * (Tangente.Normalized() ^ PseudoNormale)
                       / Tangente.SquareMagnitude();
     }
     else
@@ -402,7 +402,7 @@ bool FairCurve_MinimalVariation::Compute(const gp_Vec2d&         DeltaP1,
       PseudoNormale.SetXY(Poles->Value(Poles->Upper()).XY()
                           - 2 * Poles->Value(Poles->Upper() - 1).XY()
                           + Poles->Value(Poles->Upper() - 2).XY());
-      OldCurvature2 = (((double)Degree - 1) / Degree) * (Tangente.Normalized() ^ PseudoNormale)
+      OldCurvature2 = ((static_cast<double>(Degree) - 1) / Degree) * (Tangente.Normalized() ^ PseudoNormale)
                       / Tangente.SquareMagnitude();
     }
     else
@@ -469,7 +469,7 @@ bool FairCurve_MinimalVariation::Compute(const gp_Vec2d&         DeltaP1,
     occ::handle<NCollection_HArray1<double>> NKnots = new NCollection_HArray1<double>(1, NbKnots);
     for (ii = 1; ii <= NbKnots; ii++)
     {
-      NKnots->ChangeValue(ii) = (double)(ii - 1) / (NbKnots - 1);
+      NKnots->ChangeValue(ii) = static_cast<double>(ii - 1) / (NbKnots - 1);
     }
 
     NewBS->InsertKnots(NKnots->Array1(), NMults->Array1(), 1.e-10);

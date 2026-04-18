@@ -36,7 +36,7 @@ bool Graphic3d_AttribBuffer::Init(const int                  theNbElems,
     return false;
   }
 
-  if (mySize > (size_t)IntegerLast() && myIsMutable)
+  if (mySize > static_cast<size_t>(IntegerLast()) && myIsMutable)
   {
     throw Standard_OutOfRange("Graphic3d_AttribBuffer::Init(), Mutable flag cannot be used for "
                               "buffer exceeding 32-bit address space");
@@ -48,7 +48,7 @@ bool Graphic3d_AttribBuffer::Init(const int                  theNbElems,
 
 void Graphic3d_AttribBuffer::SetMutable(bool theMutable)
 {
-  if (mySize > (size_t)IntegerLast() && theMutable)
+  if (mySize > static_cast<size_t>(IntegerLast()) && theMutable)
   {
     throw Standard_OutOfRange("Graphic3d_AttribBuffer::SetMutable(), Mutable flag cannot be used "
                               "for buffer exceeding 32-bit address space");
@@ -72,7 +72,7 @@ void Graphic3d_AttribBuffer::SetInterleaved(bool theIsInterleaved)
 
 void Graphic3d_AttribBuffer::invalidate(const Graphic3d_BufferRange& theRange)
 {
-  if (mySize > (size_t)IntegerLast())
+  if (mySize > static_cast<size_t>(IntegerLast()))
   {
     throw Standard_OutOfRange(
       "Graphic3d_Buffer::Invalidate() cannot be used for buffer exceeding 32-bit address space");
@@ -85,13 +85,13 @@ void Graphic3d_AttribBuffer::invalidate(const Graphic3d_BufferRange& theRange)
 
 void Graphic3d_AttribBuffer::Invalidate()
 {
-  if (mySize > (size_t)IntegerLast())
+  if (mySize > static_cast<size_t>(IntegerLast()))
   {
     throw Standard_OutOfRange("Graphic3d_AttribBuffer::Invalidate() cannot be used for buffer "
                               "exceeding 32-bit address space");
   }
 
-  invalidate(Graphic3d_BufferRange(0, (int)mySize));
+  invalidate(Graphic3d_BufferRange(0, static_cast<int>(mySize)));
 }
 
 //=================================================================================================

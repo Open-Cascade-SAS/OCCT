@@ -34,13 +34,13 @@ void TopOpeBRepBuild_Builder::GFillONPartsWES(const TopoDS_Shape&               
   if (GLOBAL_faces2d)
     BON.Perform2d(this,
                   FOR,
-                  (TopOpeBRepBuild_PGTopo)&G,
-                  (TopOpeBRepTool_Plos)&LSclass,
-                  (TopOpeBRepBuild_PWireEdgeSet)&WES);
+                  const_cast<TopOpeBRepBuild_PGTopo>(&G),
+                  const_cast<TopOpeBRepTool_Plos>(&LSclass),
+                  static_cast<TopOpeBRepBuild_PWireEdgeSet>(&WES));
   else
     BON.Perform(this,
                 FOR,
-                (TopOpeBRepBuild_PGTopo)&G,
-                (TopOpeBRepTool_Plos)&LSclass,
-                (TopOpeBRepBuild_PWireEdgeSet)&WES);
+                const_cast<TopOpeBRepBuild_PGTopo>(&G),
+                const_cast<TopOpeBRepTool_Plos>(&LSclass),
+                static_cast<TopOpeBRepBuild_PWireEdgeSet>(&WES));
 }

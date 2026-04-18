@@ -49,7 +49,7 @@ bool TObj_SequenceIterator::More() const
   // check type
   if (isMore && !myType.IsNull() && !myObjects->Value(myIndex)->IsKind(myType))
   {
-    TObj_SequenceIterator* me = (TObj_SequenceIterator*)this;
+    TObj_SequenceIterator* me = const_cast<TObj_SequenceIterator*>(this);
     me->Next();
     return More();
   }

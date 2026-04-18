@@ -177,7 +177,7 @@ TopAbs_State TopOpeBRepTool_ShapeClassifier::StateShapeShape(
   ClearCurrent();
   myS = S;
   myAvS.Nullify();
-  myPAvLS = (NCollection_List<TopoDS_Shape>*)&AvLS;
+  myPAvLS = const_cast<NCollection_List<TopoDS_Shape>*>(&AvLS);
   myRef   = SRef;
   Perform();
   return myState;
@@ -203,7 +203,7 @@ TopAbs_State TopOpeBRepTool_ShapeClassifier::StateShapeReference(
 {
   myS = S;
   myAvS.Nullify();
-  myPAvLS = (NCollection_List<TopoDS_Shape>*)&AvLS;
+  myPAvLS = const_cast<NCollection_List<TopoDS_Shape>*>(&AvLS);
   Perform();
   return myState;
 }

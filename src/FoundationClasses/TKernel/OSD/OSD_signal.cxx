@@ -935,7 +935,7 @@ static void SegvHandler(const int theSignal, siginfo_t* theSigInfo, void* const 
 
       const int aStackLength = OSD_SignalStackTraceLength;
       const int aStackBufLen = std::max(aStackLength * 200, 2048);
-      char*     aStackBuffer = aStackLength != 0 ? (char*)alloca(aStackBufLen) : nullptr;
+      char*     aStackBuffer = aStackLength != 0 ? static_cast<char*>(alloca(aStackBufLen)) : nullptr;
       if (aStackBuffer != nullptr)
       {
         memset(aStackBuffer, 0, aStackBufLen);

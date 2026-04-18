@@ -160,7 +160,7 @@ Standard_GUID TPrsStd_AISPresentation::GetDriverGUID() const
 
 Graphic3d_NameOfMaterial TPrsStd_AISPresentation::Material() const
 {
-  return (Graphic3d_NameOfMaterial)getData()->MaterialIndex();
+  return static_cast<Graphic3d_NameOfMaterial>(getData()->MaterialIndex());
 }
 
 //=================================================================================================

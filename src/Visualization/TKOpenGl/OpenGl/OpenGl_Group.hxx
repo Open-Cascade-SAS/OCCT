@@ -90,7 +90,7 @@ public:
 public:
   OpenGl_Structure* GlStruct() const
   {
-    return (OpenGl_Structure*)(myStructure->CStructure().operator->());
+    return reinterpret_cast<OpenGl_Structure*>(myStructure->CStructure().operator->());
   }
 
   Standard_EXPORT void AddElement(OpenGl_Element* theElem);

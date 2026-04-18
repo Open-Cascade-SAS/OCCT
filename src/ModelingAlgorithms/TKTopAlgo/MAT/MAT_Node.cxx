@@ -52,7 +52,7 @@ void MAT_Node::LinkedArcs(NCollection_Sequence<occ::handle<MAT_Arc>>& S) const
 {
   S.Clear();
   occ::handle<MAT_Node> Me = this;
-  occ::handle<MAT_Arc>  LA((MAT_Arc*)aLinkedArc);
+  occ::handle<MAT_Arc>  LA(static_cast<MAT_Arc*>(aLinkedArc));
 
   S.Append(LA);
 
@@ -74,7 +74,7 @@ void MAT_Node::NearElts(NCollection_Sequence<occ::handle<MAT_BasicElt>>& S) cons
   S.Clear();
 
   occ::handle<MAT_Node> Me = this;
-  occ::handle<MAT_Arc>  LA((MAT_Arc*)aLinkedArc);
+  occ::handle<MAT_Arc>  LA(static_cast<MAT_Arc*>(aLinkedArc));
 
   S.Append(LA->FirstElement());
   S.Append(LA->SecondElement());
@@ -118,7 +118,7 @@ double MAT_Node::Distance() const
 bool MAT_Node::PendingNode() const
 {
   occ::handle<MAT_Node> Me = this;
-  return (!((MAT_Arc*)aLinkedArc)->HasNeighbour(Me, MAT_Left));
+  return (!(static_cast<MAT_Arc*>(aLinkedArc))->HasNeighbour(Me, MAT_Left));
 }
 
 //=================================================================================================

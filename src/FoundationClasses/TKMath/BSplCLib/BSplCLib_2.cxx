@@ -986,8 +986,8 @@ void BSplCLib::FunctionMultiply(const BSplCLib_EvaluatorFunction& FunctionPtr,
   {
     throw Standard_ConstructionError();
   }
-  double* array_of_poles     = (double*)&Poles(Poles.Lower());
-  double* array_of_new_poles = (double*)&NewPoles(NewPoles.Lower());
+  double* array_of_poles     = const_cast<double*>(&Poles(Poles.Lower()));
+  double* array_of_new_poles = static_cast<double*>(&NewPoles(NewPoles.Lower()));
   BSplCLib::FunctionMultiply(FunctionPtr,
                              BSplineDegree,
                              BSplineFlatKnots,
@@ -1017,8 +1017,8 @@ void BSplCLib::FunctionReparameterise(const BSplCLib_EvaluatorFunction& Function
   {
     throw Standard_ConstructionError();
   }
-  double* array_of_poles     = (double*)&Poles(Poles.Lower());
-  double* array_of_new_poles = (double*)&NewPoles(NewPoles.Lower());
+  double* array_of_poles     = const_cast<double*>(&Poles(Poles.Lower()));
+  double* array_of_new_poles = static_cast<double*>(&NewPoles(NewPoles.Lower()));
   BSplCLib::FunctionReparameterise(FunctionPtr,
                                    BSplineDegree,
                                    BSplineFlatKnots,

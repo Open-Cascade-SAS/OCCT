@@ -34,7 +34,7 @@ static void timeToHoursMinutesSeconds(double  theTimeSec,
                                       int&    theMinutes,
                                       double& theSeconds)
 {
-  int aSec   = (int)theTimeSec;
+  int aSec   = static_cast<int>(theTimeSec);
   theHours   = aSec / 3600;
   theMinutes = (aSec - theHours * 3600) / 60;
   theSeconds = theTimeSec - theHours * 3600 - theMinutes * 60;

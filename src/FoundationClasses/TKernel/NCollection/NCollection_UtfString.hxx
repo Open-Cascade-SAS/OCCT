@@ -296,7 +296,7 @@ private: //! @name low-level methods
   //! Provides bytes interface to avoid incorrect pointer arithmetics.
   static void strCopy(uint8_t* theStrDst, const uint8_t* theStrSrc, const int theSizeBytes) noexcept
   {
-    std::memcpy(theStrDst, theStrSrc, (size_t)theSizeBytes);
+    std::memcpy(theStrDst, theStrSrc, static_cast<size_t>(theSizeBytes));
   }
 
   //! Compare two Unicode strings per-byte.
@@ -306,7 +306,7 @@ private: //! @name low-level methods
                           const int   theSizeBytes2) noexcept
   {
     return (theSizeBytes1 == theSizeBytes2)
-           && (std::memcmp(theString1, theString2, (size_t)theSizeBytes1) == 0);
+           && (std::memcmp(theString1, theString2, static_cast<size_t>(theSizeBytes1)) == 0);
   }
 
 private:          //! @name private fields

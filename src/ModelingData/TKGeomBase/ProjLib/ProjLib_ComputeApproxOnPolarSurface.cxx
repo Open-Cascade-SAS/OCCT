@@ -217,9 +217,9 @@ static gp_Pnt2d Function_Value(const double theU, const aFuncStruct& theData)
         gp_Cylinder Cylinder = theData.mySurf->Cylinder();
         ElSLib::Parameters(Cylinder, p, S, T);
         if (U0 < Uinf)
-          decalU = -int((Uinf - U0) / (2 * M_PI)) - 1;
+          decalU = -static_cast<int>((Uinf - U0) / (2 * M_PI)) - 1;
         if (U0 > Usup)
-          decalU = int((U0 - Usup) / (2 * M_PI)) + 1;
+          decalU = static_cast<int>((U0 - Usup) / (2 * M_PI)) + 1;
         S += decalU * 2 * M_PI;
         break;
       }
@@ -227,9 +227,9 @@ static gp_Pnt2d Function_Value(const double theU, const aFuncStruct& theData)
         gp_Cone Cone = theData.mySurf->Cone();
         ElSLib::Parameters(Cone, p, S, T);
         if (U0 < Uinf)
-          decalU = -int((Uinf - U0) / (2 * M_PI)) - 1;
+          decalU = -static_cast<int>((Uinf - U0) / (2 * M_PI)) - 1;
         if (U0 > Usup)
-          decalU = int((U0 - Usup) / (2 * M_PI)) + 1;
+          decalU = static_cast<int>((U0 - Usup) / (2 * M_PI)) + 1;
         S += decalU * 2 * M_PI;
         break;
       }
@@ -237,14 +237,14 @@ static gp_Pnt2d Function_Value(const double theU, const aFuncStruct& theData)
         gp_Sphere Sphere = theData.mySurf->Sphere();
         ElSLib::Parameters(Sphere, p, S, T);
         if (U0 < Uinf)
-          decalU = -int((Uinf - U0) / (2 * M_PI)) - 1;
+          decalU = -static_cast<int>((Uinf - U0) / (2 * M_PI)) - 1;
         if (U0 > Usup)
-          decalU = int((U0 - Usup) / (2 * M_PI)) + 1;
+          decalU = static_cast<int>((U0 - Usup) / (2 * M_PI)) + 1;
         S += decalU * 2 * M_PI;
         if (V0 < Vinf)
-          decalV = -int((Vinf - V0) / (2 * M_PI)) - 1;
+          decalV = -static_cast<int>((Vinf - V0) / (2 * M_PI)) - 1;
         if (V0 > (Vsup + (Vsup - Vinf)))
-          decalV = int((V0 - Vsup + (Vsup - Vinf)) / (2 * M_PI)) + 1;
+          decalV = static_cast<int>((V0 - Vsup + (Vsup - Vinf)) / (2 * M_PI)) + 1;
         T += decalV * 2 * M_PI;
         if (0.4 * M_PI < std::abs(U0 - S) && std::abs(U0 - S) < 1.6 * M_PI)
         {
@@ -260,13 +260,13 @@ static gp_Pnt2d Function_Value(const double theU, const aFuncStruct& theData)
         gp_Torus Torus = theData.mySurf->Torus();
         ElSLib::Parameters(Torus, p, S, T);
         if (U0 < Uinf)
-          decalU = -int((Uinf - U0) / (2 * M_PI)) - 1;
+          decalU = -static_cast<int>((Uinf - U0) / (2 * M_PI)) - 1;
         if (U0 > Usup)
-          decalU = int((U0 - Usup) / (2 * M_PI)) + 1;
+          decalU = static_cast<int>((U0 - Usup) / (2 * M_PI)) + 1;
         if (V0 < Vinf)
-          decalV = -int((Vinf - V0) / (2 * M_PI)) - 1;
+          decalV = -static_cast<int>((Vinf - V0) / (2 * M_PI)) - 1;
         if (V0 > Vsup)
-          decalV = int((V0 - Vsup) / (2 * M_PI)) + 1;
+          decalV = static_cast<int>((V0 - Vsup) / (2 * M_PI)) + 1;
         S += decalU * 2 * M_PI;
         T += decalV * 2 * M_PI;
         break;
@@ -288,7 +288,7 @@ static gp_Pnt2d Function_Value(const double theU, const aFuncStruct& theData)
       U0 = Uinf;
     else
     {
-      decalU = int((Uinf - U0) / uperiod) + 1;
+      decalU = static_cast<int>((Uinf - U0) / uperiod) + 1;
       U0 += decalU * uperiod;
     }
   }
@@ -298,7 +298,7 @@ static gp_Pnt2d Function_Value(const double theU, const aFuncStruct& theData)
       U0 = Usup;
     else
     {
-      decalU = -(int((U0 - Usup) / uperiod) + 1);
+      decalU = -(static_cast<int>((U0 - Usup) / uperiod) + 1);
       U0 += decalU * uperiod;
     }
   }
@@ -308,7 +308,7 @@ static gp_Pnt2d Function_Value(const double theU, const aFuncStruct& theData)
       V0 = Vinf;
     else
     {
-      decalV = int((Vinf - V0) / vperiod) + 1;
+      decalV = static_cast<int>((Vinf - V0) / vperiod) + 1;
       V0 += decalV * vperiod;
     }
   }
@@ -318,7 +318,7 @@ static gp_Pnt2d Function_Value(const double theU, const aFuncStruct& theData)
       V0 = Vsup;
     else
     {
-      decalV = -int((V0 - Vsup) / vperiod) - 1;
+      decalV = -static_cast<int>((V0 - Vsup) / vperiod) - 1;
       V0 += decalV * vperiod;
     }
   }
@@ -1738,7 +1738,7 @@ occ::handle<Geom2d_BSplineCurve> ProjLib_ComputeApproxOnPolarSurface::ProjectUsi
 
             if (extrloc.IsDone())
             {
-              Dist2Min = (int)extrloc.SquareDistance();
+              Dist2Min = static_cast<int>(extrloc.SquareDistance());
               if (Dist2Min < DistTol3d2)
               {
                 (extrloc.Point()).Parameter(u, v);
@@ -1783,7 +1783,7 @@ occ::handle<Geom2d_BSplineCurve> ProjLib_ComputeApproxOnPolarSurface::ProjectUsi
 
             if (extrloc.IsDone())
             {
-              Dist2Min = (int)extrloc.SquareDistance();
+              Dist2Min = static_cast<int>(extrloc.SquareDistance());
               if (Dist2Min < DistTol3d2)
               {
                 (extrloc.Point()).Parameter(u, v);
@@ -1854,7 +1854,7 @@ occ::handle<Geom2d_BSplineCurve> ProjLib_ComputeApproxOnPolarSurface::ProjectUsi
 
             if (extrloc.IsDone())
             {
-              Dist2Min = (int)extrloc.SquareDistance();
+              Dist2Min = static_cast<int>(extrloc.SquareDistance());
               if (Dist2Min < DistTol3d2)
               {
                 (extrloc.Point()).Parameter(u, v);
@@ -1899,7 +1899,7 @@ occ::handle<Geom2d_BSplineCurve> ProjLib_ComputeApproxOnPolarSurface::ProjectUsi
 
             if (extrloc.IsDone())
             {
-              Dist2Min = (int)extrloc.SquareDistance();
+              Dist2Min = static_cast<int>(extrloc.SquareDistance());
               if (Dist2Min < DistTol3d2)
               {
                 (extrloc.Point()).Parameter(u, v);

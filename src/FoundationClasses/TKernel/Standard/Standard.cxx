@@ -440,7 +440,7 @@ void* Standard::Reallocate(void* theStorage, const size_t theSize)
     throw Standard_OutOfMemory("Standard_MMgrRaw::Reallocate(): realloc failed");
   return aNewStorage;
 #else
-  void* aNewStorage = (void*)realloc(theStorage, theSize);
+  void* aNewStorage = realloc(theStorage, theSize);
   if (!aNewStorage)
     throw Standard_OutOfMemory("Standard_MMgrRaw::Reallocate(): realloc failed");
   return aNewStorage;

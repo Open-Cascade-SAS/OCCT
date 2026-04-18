@@ -204,7 +204,7 @@ void GeomFill::GetShape(const double                  MaxAng,
     }
     break;
     default: {
-      int NbSpan = (int)(std::ceil(3. * std::abs(MaxAng) / 2. / M_PI));
+      int NbSpan = static_cast<int>(std::ceil(3. * std::abs(MaxAng) / 2. / M_PI));
       NbPoles    = 2 * NbSpan + 1;
       NbKnots    = NbSpan + 1;
       Degree     = 2;
@@ -414,12 +414,12 @@ void GeomFill::GetCircle(const Convert_ParameterisationType TConv,
 
       np2 = nplan.Crossed(ns1);
 
-      Alpha  = Angle / ((double)(NbSpan));
+      Alpha  = Angle / (static_cast<double>(NbSpan));
       Cosas2 = std::cos(Alpha / 2);
 
       for (i = 1, jj = low + 2; i <= NbSpan - 1; i++, jj += 2)
       {
-        lambda = ((double)(i)) * Alpha;
+        lambda = (static_cast<double>(i)) * Alpha;
         Cosa   = std::cos(lambda);
         Sina   = std::sin(lambda);
         temp.SetLinearForm(Cosa - 1, ns1, Sina, np2);
@@ -543,13 +543,13 @@ bool GeomFill::GetCircle(const Convert_ParameterisationType TConv,
         np2  = nplan.Crossed(ns1);
         dnp2 = dnplan.Crossed(ns1).Added(nplan.Crossed(dn1w));
 
-        Alpha  = Angle / ((double)(NbSpan));
+        Alpha  = Angle / (static_cast<double>(NbSpan));
         Cosas2 = std::cos(Alpha / 2);
         Sinas2 = std::sin(Alpha / 2);
 
         for (i = 1, jj = low + 2; i <= NbSpan - 1; i++, jj += 2)
         {
-          lambda = ((double)(i)) * Alpha;
+          lambda = (static_cast<double>(i)) * Alpha;
           Cosa   = std::cos(lambda);
           Sina   = std::sin(lambda);
           temp.SetLinearForm(Cosa - 1, ns1, Sina, np2);
@@ -557,7 +557,7 @@ bool GeomFill::GetCircle(const Convert_ParameterisationType TConv,
 
           DPoles(jj).SetLinearForm(DRayon, temp, tang1);
           temp.SetLinearForm(-Sina, ns1, Cosa, np2);
-          temp.Multiply(((double)(i)) / ((double)(NbSpan)) * DAngle);
+          temp.Multiply((static_cast<double>(i)) / (static_cast<double>(NbSpan)) * DAngle);
           temp.Add(((Cosa - 1) * dn1w).Added(Sina * dnp2));
           DPoles(jj) += Rayon * temp;
         }
@@ -744,13 +744,13 @@ bool GeomFill::GetCircle(const Convert_ParameterisationType TConv,
       d2np2 = d2nplan.Crossed(ns1).Added(nplan.Crossed(dn2w));
       d2np2 += 2 * dnplan.Crossed(dn1w);
 
-      Alpha  = Angle / ((double)(NbSpan));
+      Alpha  = Angle / (static_cast<double>(NbSpan));
       Cosas2 = std::cos(Alpha / 2);
       Sinas2 = std::sin(Alpha / 2);
 
       for (i = 1, jj = low + 2; i <= NbSpan - 1; i++, jj += 2)
       {
-        lambda = ((double)(i)) * Alpha;
+        lambda = (static_cast<double>(i)) * Alpha;
         Cosa   = std::cos(lambda);
         Sina   = std::sin(lambda);
         temp.SetLinearForm(Cosa - 1, ns1, Sina, np2);
@@ -758,7 +758,7 @@ bool GeomFill::GetCircle(const Convert_ParameterisationType TConv,
 
         DPoles(jj).SetLinearForm(DRayon, temp, tang1);
         dtemp.SetLinearForm(-Sina, ns1, Cosa, np2);
-        aux = ((double)(i)) / ((double)(NbSpan));
+        aux = (static_cast<double>(i)) / (static_cast<double>(NbSpan));
         dtemp.Multiply(aux * DAngle);
         dtemp.Add(((Cosa - 1) * dn1w).Added(Sina * dnp2));
         DPoles(jj) += Rayon * dtemp;

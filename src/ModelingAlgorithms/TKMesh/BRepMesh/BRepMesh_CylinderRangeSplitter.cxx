@@ -50,7 +50,7 @@ Handle(IMeshData::ListOfPnt2d) BRepMesh_CylinderRangeSplitter::GenerateSurfaceNo
   if (aArcLen > GetDFace()->GetDeflection())
   {
     // Calculate parameters for iteration in U direction
-    nbU = (int)(su / myDu);
+    nbU = static_cast<int>(su / myDu);
 
     /*
     // Calculate parameters for iteration in V direction

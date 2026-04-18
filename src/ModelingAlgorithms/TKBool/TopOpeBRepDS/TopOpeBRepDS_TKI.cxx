@@ -43,8 +43,8 @@ TopOpeBRepDS_TKI::TopOpeBRepDS_TKI()
 
 void TopOpeBRepDS_TKI::Reset()
 {
-  int ip = (int)TopOpeBRepDS_POINT;
-  int is = (int)TopOpeBRepDS_SOLID;
+  int ip = static_cast<int>(TopOpeBRepDS_POINT);
+  int is = static_cast<int>(TopOpeBRepDS_SOLID);
   if (ip > is)
   {
     throw Standard_ProgramError("TopOpeBRepDS_TKI : enumeration badly ordered");
@@ -353,7 +353,7 @@ void TopOpeBRepDS_TKI::Find()
 int TopOpeBRepDS_TKI::KindToTableIndex(const TopOpeBRepDS_Kind K) const
 {
   // K(Kind) + mydelta = TI(integer) = index in myT
-  int TI = (int)K + mydelta;
+  int TI = static_cast<int>(K) + mydelta;
   return TI;
 }
 
@@ -362,7 +362,7 @@ int TopOpeBRepDS_TKI::KindToTableIndex(const TopOpeBRepDS_Kind K) const
 TopOpeBRepDS_Kind TopOpeBRepDS_TKI::TableIndexToKind(const int TI) const
 {
   // K(Kind) + mydelta = TI(integer) = index in myT
-  TopOpeBRepDS_Kind K = (TopOpeBRepDS_Kind)(TI - mydelta);
+  TopOpeBRepDS_Kind K = static_cast<TopOpeBRepDS_Kind>(TI - mydelta);
   return K;
 }
 

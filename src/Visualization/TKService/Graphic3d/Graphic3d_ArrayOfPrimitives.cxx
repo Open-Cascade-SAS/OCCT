@@ -134,7 +134,7 @@ void Graphic3d_ArrayOfPrimitives::init(Graphic3d_TypeOfPrimitiveArray theType,
     {
       myIndices = new Graphic3d_IndexBuffer(anAlloc);
     }
-    if (theMaxVertexs < int(USHRT_MAX))
+    if (theMaxVertexs < (USHRT_MAX))
     {
       if (!myIndices->Init<unsigned short>(theMaxEdges))
       {
@@ -192,7 +192,7 @@ void Graphic3d_ArrayOfPrimitives::init(Graphic3d_TypeOfPrimitiveArray theType,
 
   memset(myAttribs->ChangeData(),
          0,
-         size_t(myAttribs->Stride) * size_t(myAttribs->NbMaxElements()));
+         static_cast<size_t>(myAttribs->Stride) * static_cast<size_t>(myAttribs->NbMaxElements()));
   if ((theArrayOptions & Graphic3d_ArrayFlags_AttribsMutable) == 0
       && (theArrayOptions & Graphic3d_ArrayFlags_AttribsDeinterleaved) == 0)
   {

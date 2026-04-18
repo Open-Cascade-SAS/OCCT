@@ -236,24 +236,24 @@ bool RWPly_PlyWriterContext::WriteVertex(const gp_Pnt&                    thePoi
 
   if (myIsDoublePrec)
   {
-    *myStream << (double)thePoint.X() << " " << (double)thePoint.Y() << " " << (double)thePoint.Z();
+    *myStream << thePoint.X() << " " << thePoint.Y() << " " << thePoint.Z();
   }
   else
   {
-    *myStream << (float)thePoint.X() << " " << (float)thePoint.Y() << " " << (float)thePoint.Z();
+    *myStream << static_cast<float>(thePoint.X()) << " " << static_cast<float>(thePoint.Y()) << " " << static_cast<float>(thePoint.Z());
   }
   if (myHasNormals)
   {
-    *myStream << " " << (float)theNorm.x() << " " << (float)theNorm.y() << " "
-              << (float)theNorm.z();
+    *myStream << " " << static_cast<float>(theNorm.x()) << " " << static_cast<float>(theNorm.y()) << " "
+              << static_cast<float>(theNorm.z());
   }
   if (myHasTexCoords)
   {
-    *myStream << " " << (float)theUV.x() << " " << (float)theUV.y();
+    *myStream << " " << static_cast<float>(theUV.x()) << " " << static_cast<float>(theUV.y());
   }
   if (myHasColors)
   {
-    *myStream << " " << (int)theColor.r() << " " << (int)theColor.g() << " " << (int)theColor.b();
+    *myStream << " " << static_cast<int>(theColor.r()) << " " << static_cast<int>(theColor.g()) << " " << static_cast<int>(theColor.b());
   }
   *myStream << "\n";
   if (++myNbVerts > myNbHeaderVerts)

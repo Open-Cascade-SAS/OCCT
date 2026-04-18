@@ -230,13 +230,13 @@ public:
   //! in range [1, StatusesPerType]
   static int LocalStatusIndex(Message_Status theStatus)
   {
-    return ((unsigned int)theStatus & (unsigned int)MIndex) + 1;
+    return (static_cast<unsigned int>(theStatus) & static_cast<unsigned int>(MIndex)) + 1;
   }
 
   //! Returns status type (DONE, WARN, ALARM, or FAIL)
   static Message_StatusType TypeOfStatus(Message_Status theStatus)
   {
-    return (Message_StatusType)((unsigned int)theStatus & (unsigned int)MType);
+    return static_cast<Message_StatusType>(static_cast<unsigned int>(theStatus) & static_cast<unsigned int>(MType));
   }
 
   //! Returns status with index theIndex in whole range [FirstStatus, LastStatus]
@@ -244,13 +244,13 @@ public:
   {
     int indx = theIndex - 1;
     if (indx < 32)
-      return (Message_Status)(Message_DONE + indx);
+      return static_cast<Message_Status>(Message_DONE + indx);
     else if (indx < 64)
-      return (Message_Status)(Message_WARN + (indx - 32));
+      return static_cast<Message_Status>(Message_WARN + (indx - 32));
     else if (indx < 96)
-      return (Message_Status)(Message_ALARM + (indx - 64));
+      return static_cast<Message_Status>(Message_ALARM + (indx - 64));
     else if (indx < 128)
-      return (Message_Status)(Message_FAIL + (indx - 96));
+      return static_cast<Message_Status>(Message_FAIL + (indx - 96));
     return Message_None;
   }
 

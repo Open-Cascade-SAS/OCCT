@@ -94,7 +94,7 @@ occ::handle<Interface_InterfaceModel> IFGraph_SubPartsIterator::Model() const
 
 void IFGraph_SubPartsIterator::AddPart()
 {
-  theparts->Append(int(0));
+  theparts->Append((0));
   thepart = theparts->Length();
 }
 

@@ -110,7 +110,7 @@ static bool readReal(const XmlObjMgt_Element&   theElement,
   double aValue = 0.0;
   if (XmlObjMgt::GetReal(theElement.getAttribute(theName), aValue))
   {
-    theValue = (float)aValue;
+    theValue = static_cast<float>(aValue);
     return true;
   }
   return false;
@@ -135,11 +135,11 @@ static bool readVec3(const XmlObjMgt_Element&   theElement,
   LDOMString              aString = theElement.getAttribute(theName);
   const char*             aPos    = aString.GetString();
   char*                   aNext   = nullptr;
-  aVec3[0]                        = (float)Strtod(aPos, &aNext);
+  aVec3[0]                        = static_cast<float>(Strtod(aPos, &aNext));
   aPos                            = aNext;
-  aVec3[1]                        = (float)Strtod(aPos, &aNext);
+  aVec3[1]                        = static_cast<float>(Strtod(aPos, &aNext));
   aPos                            = aNext;
-  aVec3[2]                        = (float)Strtod(aPos, &aNext);
+  aVec3[2]                        = static_cast<float>(Strtod(aPos, &aNext));
   if (aPos != aNext)
   {
     theVec3 = aVec3;
@@ -181,13 +181,13 @@ static bool readVec4(const XmlObjMgt_Element&   theElement,
   LDOMString              aString = theElement.getAttribute(theName);
   const char*             aPos    = aString.GetString();
   char*                   aNext   = nullptr;
-  aVec4[0]                        = (float)Strtod(aPos, &aNext);
+  aVec4[0]                        = static_cast<float>(Strtod(aPos, &aNext));
   aPos                            = aNext;
-  aVec4[1]                        = (float)Strtod(aPos, &aNext);
+  aVec4[1]                        = static_cast<float>(Strtod(aPos, &aNext));
   aPos                            = aNext;
-  aVec4[2]                        = (float)Strtod(aPos, &aNext);
+  aVec4[2]                        = static_cast<float>(Strtod(aPos, &aNext));
   aPos                            = aNext;
-  aVec4[3]                        = (float)Strtod(aPos, &aNext);
+  aVec4[3]                        = static_cast<float>(Strtod(aPos, &aNext));
   if (aPos != aNext)
   {
     theVec4 = aVec4;

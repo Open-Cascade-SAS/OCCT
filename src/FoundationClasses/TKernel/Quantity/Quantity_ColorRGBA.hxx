@@ -87,7 +87,7 @@ public:
   bool IsDifferent(const Quantity_ColorRGBA& theOther) const noexcept
   {
     return myRgb.IsDifferent(theOther.GetRGB())
-           || std::abs(myAlpha - theOther.myAlpha) > (float)Quantity_Color::Epsilon();
+           || std::abs(myAlpha - theOther.myAlpha) > static_cast<float>(Quantity_Color::Epsilon());
   }
 
   //! Returns true if the distance between colors is greater than Epsilon().
@@ -100,7 +100,7 @@ public:
   bool IsEqual(const Quantity_ColorRGBA& theOther) const noexcept
   {
     return myRgb.IsEqual(theOther.GetRGB())
-           && std::abs(myAlpha - theOther.myAlpha) <= (float)Quantity_Color::Epsilon();
+           && std::abs(myAlpha - theOther.myAlpha) <= static_cast<float>(Quantity_Color::Epsilon());
   }
 
   //! Two colors are considered to be equal if their distance is no greater than Epsilon().
@@ -141,7 +141,7 @@ public:
   static TCollection_AsciiString ColorToHex(const Quantity_ColorRGBA& theColor,
                                             const bool theToPrefixHash = true) noexcept
   {
-    NCollection_Vec4<float> anSRgb = Convert_LinearRGB_To_sRGB((NCollection_Vec4<float>)theColor);
+    NCollection_Vec4<float> anSRgb = Convert_LinearRGB_To_sRGB(NCollection_Vec4<float>(theColor));
     NCollection_Vec4<int>   anSRgbInt(anSRgb * 255.0f + NCollection_Vec4<float>(0.5f));
     char                    aBuff[12];
     Sprintf(aBuff,

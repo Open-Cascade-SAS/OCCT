@@ -240,6 +240,6 @@ void math_Powell::Dump(Standard_OStream& o) const
   }
   else
   {
-    o << " Status = not Done because " << (int)TheStatus << "\n";
+    o << " Status = not Done because " << static_cast<int>(TheStatus) << "\n";
   }
 }

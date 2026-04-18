@@ -326,7 +326,7 @@ void TopOpeBRepBuild_Builder::GFillFaceSFS(const TopoDS_Shape&                  
         if (GLOBAL_lfrtoprocess)
         {
           if (GLOBAL_lfr1 == nullptr)
-            GLOBAL_lfr1 = (NCollection_List<TopoDS_Shape>*)new NCollection_List<TopoDS_Shape>();
+            GLOBAL_lfr1 = static_cast<NCollection_List<TopoDS_Shape>*>(new NCollection_List<TopoDS_Shape>());
           GLOBAL_lfr1->Clear();
         }
       }
@@ -336,10 +336,10 @@ void TopOpeBRepBuild_Builder::GFillFaceSFS(const TopoDS_Shape&                  
       //              . fanc hsdm is the unique ancestor face
       if (GLOBAL_SplitAnc == nullptr)
         GLOBAL_SplitAnc =
-          (NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>*)new NCollection_DataMap<
+          static_cast<NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>*>(new NCollection_DataMap<
             TopoDS_Shape,
             int,
-            TopTools_ShapeMapHasher>();
+            TopTools_ShapeMapHasher>());
       GLOBAL_SplitAnc->Clear();
 
       NCollection_List<TopoDS_Shape> LFSO, LFDO, LFSO1, LFDO1, LFSO2, LFDO2;
@@ -404,7 +404,7 @@ void TopOpeBRepBuild_Builder::GFillFaceSFS(const TopoDS_Shape&                  
 
         // ici : GLOBAL_lfrtoprocess = t
         // clang-format off
-	if (GLOBAL_lfr1==nullptr) GLOBAL_lfr1=(NCollection_List<TopoDS_Shape>*)new NCollection_List<TopoDS_Shape>(); //flo150998
+	if (GLOBAL_lfr1==nullptr) GLOBAL_lfr1=static_cast<NCollection_List<TopoDS_Shape>*>(new NCollection_List<TopoDS_Shape>()); //flo150998
         // clang-format on
         GLOBAL_lfr1->Clear();
         GSplitFaceSFS(FOR, LSO2, GM, SFS);

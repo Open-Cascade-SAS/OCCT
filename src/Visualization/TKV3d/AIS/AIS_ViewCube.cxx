@@ -348,7 +348,7 @@ void AIS_ViewCube::createRoundRectangleTriangles(
       const double anAngle =
         NCollection_Lerp<double>::Interpolate(M_PI * 0.5,
                                               0.0,
-                                              double(aNodeIter) / double(THE_NB_ROUND_SPLITS));
+                                              static_cast<double>(aNodeIter) / static_cast<double>(THE_NB_ROUND_SPLITS));
       theTris->AddVertex(gp_Pnt(aHSize.X() + aRadius * std::cos(anAngle),
                                 aHSize.Y() + aRadius * std::sin(anAngle),
                                 0.0)
@@ -359,7 +359,7 @@ void AIS_ViewCube::createRoundRectangleTriangles(
       const double anAngle =
         NCollection_Lerp<double>::Interpolate(0.0,
                                               -M_PI * 0.5,
-                                              double(aNodeIter) / double(THE_NB_ROUND_SPLITS));
+                                              static_cast<double>(aNodeIter) / static_cast<double>(THE_NB_ROUND_SPLITS));
       theTris->AddVertex(gp_Pnt(aHSize.X() + aRadius * std::cos(anAngle),
                                 -aHSize.Y() + aRadius * std::sin(anAngle),
                                 0.0)
@@ -370,7 +370,7 @@ void AIS_ViewCube::createRoundRectangleTriangles(
       const double anAngle =
         NCollection_Lerp<double>::Interpolate(-M_PI * 0.5,
                                               -M_PI,
-                                              double(aNodeIter) / double(THE_NB_ROUND_SPLITS));
+                                              static_cast<double>(aNodeIter) / static_cast<double>(THE_NB_ROUND_SPLITS));
       theTris->AddVertex(gp_Pnt(-aHSize.X() + aRadius * std::cos(anAngle),
                                 -aHSize.Y() + aRadius * std::sin(anAngle),
                                 0.0)
@@ -381,7 +381,7 @@ void AIS_ViewCube::createRoundRectangleTriangles(
       const double anAngle =
         NCollection_Lerp<double>::Interpolate(-M_PI,
                                               -M_PI * 1.5,
-                                              double(aNodeIter) / double(THE_NB_ROUND_SPLITS));
+                                              static_cast<double>(aNodeIter) / static_cast<double>(THE_NB_ROUND_SPLITS));
       theTris->AddVertex(gp_Pnt(-aHSize.X() + aRadius * std::cos(anAngle),
                                 aHSize.Y() + aRadius * std::sin(anAngle),
                                 0.0)
@@ -520,7 +520,7 @@ void AIS_ViewCube::createBoxCornerTriangles(const occ::handle<Graphic3d_ArrayOfT
       const double anAngle =
         NCollection_Lerp<double>::Interpolate(2.0 * M_PI,
                                               0.0,
-                                              double(aNodeIter) / double(THE_NB_DISK_SLICES));
+                                              static_cast<double>(aNodeIter) / static_cast<double>(THE_NB_DISK_SLICES));
       theTris->AddVertex(
         gp_Pnt(aRadius * std::cos(anAngle), aRadius * std::sin(anAngle), 0.0).Transformed(aTrsf));
     }
@@ -582,7 +582,7 @@ void AIS_ViewCube::Compute(const occ::handle<PrsMgr_PresentationManager>&,
     for (int anAxisIter = Prs3d_DatumParts_XAxis; anAxisIter <= Prs3d_DatumParts_ZAxis;
          ++anAxisIter)
     {
-      const Prs3d_DatumParts aPart = (Prs3d_DatumParts)anAxisIter;
+      const Prs3d_DatumParts aPart = static_cast<Prs3d_DatumParts>(anAxisIter);
       if (!aDatumAspect->DrawDatumPart(aPart))
       {
         continue;
@@ -653,12 +653,12 @@ void AIS_ViewCube::Compute(const occ::handle<PrsMgr_PresentationManager>&,
   // Display box sides
   {
     int aNbNodes = 0, aNbTris = 0;
-    for (int aPartIter = V3d_Xpos; aPartIter <= int(V3d_Zneg); ++aPartIter)
+    for (int aPartIter = V3d_Xpos; aPartIter <= static_cast<int>(V3d_Zneg); ++aPartIter)
     {
       createBoxPartTriangles(occ::handle<Graphic3d_ArrayOfTriangles>(),
                              aNbNodes,
                              aNbTris,
-                             (V3d_TypeOfOrientation)aPartIter);
+                             static_cast<V3d_TypeOfOrientation>(aPartIter));
     }
     if (aNbNodes > 0)
     {
@@ -670,11 +670,11 @@ void AIS_ViewCube::Compute(const occ::handle<PrsMgr_PresentationManager>&,
         aSegs = new Graphic3d_ArrayOfSegments(aNbNodes, aNbNodes * 2, Graphic3d_ArrayFlags_None);
       }
       aNbNodes = aNbTris = 0;
-      for (int aPartIter = V3d_Xpos; aPartIter <= int(V3d_Zneg); ++aPartIter)
+      for (int aPartIter = V3d_Xpos; aPartIter <= static_cast<int>(V3d_Zneg); ++aPartIter)
       {
         int       aTriNodesFrom = aTris->VertexNumber();
         const int aTriFrom      = aNbTris;
-        createBoxPartTriangles(aTris, aNbNodes, aNbTris, (V3d_TypeOfOrientation)aPartIter);
+        createBoxPartTriangles(aTris, aNbNodes, aNbTris, static_cast<V3d_TypeOfOrientation>(aPartIter));
         if (aSegs.IsNull())
         {
           continue;
@@ -710,9 +710,9 @@ void AIS_ViewCube::Compute(const occ::handle<PrsMgr_PresentationManager>&,
     // Display box sides labels
     occ::handle<Graphic3d_Group> aTextGroup = thePrs->NewGroup();
     aTextGroup->SetGroupPrimitivesAspect(myDrawer->TextAspect()->Aspect());
-    for (int aPartIter = V3d_Xpos; aPartIter <= int(V3d_Zneg); ++aPartIter)
+    for (int aPartIter = V3d_Xpos; aPartIter <= static_cast<int>(V3d_Zneg); ++aPartIter)
     {
-      const V3d_TypeOfOrientation anOrient = (V3d_TypeOfOrientation)aPartIter;
+      const V3d_TypeOfOrientation anOrient = static_cast<V3d_TypeOfOrientation>(aPartIter);
 
       TCollection_AsciiString aLabel;
       if (!myBoxSideLabels.Find(anOrient, aLabel) || aLabel.IsEmpty())
@@ -746,7 +746,7 @@ void AIS_ViewCube::Compute(const occ::handle<PrsMgr_PresentationManager>&,
       const gp_Ax2 aPosition(aPos, aDir, anUp.Crossed(aDir));
 
       occ::handle<Graphic3d_Text> aText =
-        new Graphic3d_Text((float)myDrawer->TextAspect()->Height());
+        new Graphic3d_Text(static_cast<float>(myDrawer->TextAspect()->Height()));
       aText->SetText(aLabel);
       aText->SetOrientation(aPosition);
       aText->SetOwnAnchorPoint(false);
@@ -759,21 +759,21 @@ void AIS_ViewCube::Compute(const occ::handle<PrsMgr_PresentationManager>&,
   // Display box edges
   {
     int aNbNodes = 0, aNbTris = 0;
-    for (int aPartIter = V3d_XposYpos; aPartIter <= int(V3d_YposZneg); ++aPartIter)
+    for (int aPartIter = V3d_XposYpos; aPartIter <= static_cast<int>(V3d_YposZneg); ++aPartIter)
     {
       createBoxPartTriangles(occ::handle<Graphic3d_ArrayOfTriangles>(),
                              aNbNodes,
                              aNbTris,
-                             (V3d_TypeOfOrientation)aPartIter);
+                             static_cast<V3d_TypeOfOrientation>(aPartIter));
     }
     if (aNbNodes > 0)
     {
       occ::handle<Graphic3d_ArrayOfTriangles> aTris =
         new Graphic3d_ArrayOfTriangles(aNbNodes, aNbTris * 3, Graphic3d_ArrayFlags_VertexNormal);
       aNbNodes = aNbTris = 0;
-      for (int aPartIter = V3d_XposYpos; aPartIter <= int(V3d_YposZneg); ++aPartIter)
+      for (int aPartIter = V3d_XposYpos; aPartIter <= static_cast<int>(V3d_YposZneg); ++aPartIter)
       {
-        const V3d_TypeOfOrientation anOrient = (V3d_TypeOfOrientation)aPartIter;
+        const V3d_TypeOfOrientation anOrient = static_cast<V3d_TypeOfOrientation>(aPartIter);
         createBoxPartTriangles(aTris, aNbNodes, aNbTris, anOrient);
       }
 
@@ -787,21 +787,21 @@ void AIS_ViewCube::Compute(const occ::handle<PrsMgr_PresentationManager>&,
   // Display box corners
   {
     int aNbNodes = 0, aNbTris = 0;
-    for (int aPartIter = V3d_XposYposZpos; aPartIter <= int(V3d_XnegYnegZneg); ++aPartIter)
+    for (int aPartIter = V3d_XposYposZpos; aPartIter <= static_cast<int>(V3d_XnegYnegZneg); ++aPartIter)
     {
       createBoxPartTriangles(occ::handle<Graphic3d_ArrayOfTriangles>(),
                              aNbNodes,
                              aNbTris,
-                             (V3d_TypeOfOrientation)aPartIter);
+                             static_cast<V3d_TypeOfOrientation>(aPartIter));
     }
     if (aNbNodes > 0)
     {
       occ::handle<Graphic3d_ArrayOfTriangles> aTris =
         new Graphic3d_ArrayOfTriangles(aNbNodes, aNbTris * 3, Graphic3d_ArrayFlags_VertexNormal);
       aNbNodes = aNbTris = 0;
-      for (int aPartIter = V3d_XposYposZpos; aPartIter <= int(V3d_XnegYnegZneg); ++aPartIter)
+      for (int aPartIter = V3d_XposYposZpos; aPartIter <= static_cast<int>(V3d_XnegYnegZneg); ++aPartIter)
       {
-        const V3d_TypeOfOrientation anOrient = (V3d_TypeOfOrientation)aPartIter;
+        const V3d_TypeOfOrientation anOrient = static_cast<V3d_TypeOfOrientation>(aPartIter);
         createBoxPartTriangles(aTris, aNbNodes, aNbTris, anOrient);
       }
 
@@ -823,9 +823,9 @@ void AIS_ViewCube::ComputeSelection(const occ::handle<SelectMgr_Selection>& theS
     return;
   }
 
-  for (int aPartIter = 0; aPartIter <= int(V3d_XnegYnegZneg); ++aPartIter)
+  for (int aPartIter = 0; aPartIter <= static_cast<int>(V3d_XnegYnegZneg); ++aPartIter)
   {
-    const V3d_TypeOfOrientation anOri    = (V3d_TypeOfOrientation)aPartIter;
+    const V3d_TypeOfOrientation anOri    = static_cast<V3d_TypeOfOrientation>(aPartIter);
     int                         aNbNodes = 0, aNbTris = 0;
     createBoxPartTriangles(occ::handle<Graphic3d_ArrayOfTriangles>(), aNbNodes, aNbTris, anOri);
     if (aNbNodes <= 0)

@@ -64,24 +64,24 @@ bool XmlObjMgt_GP::Translate(const XmlObjMgt_DOMString& theStr, gp_Trsf& T)
   const char* aStr    = theStr.GetString();
   char*       ptr;
   errno               = 0;
-  double aScaleFactor = double(Strtod(aStr, &ptr));
+  double aScaleFactor = (Strtod(aStr, &ptr));
   if (ptr != aStr && errno != ERANGE && errno != EINVAL)
   {
     T.SetScaleFactor(aScaleFactor);
     aStr      = ptr;
-    int aForm = int(strtol(aStr, &ptr, 10));
+    int aForm = static_cast<int>(strtol(aStr, &ptr, 10));
     if (ptr != aStr && errno != ERANGE && errno != EINVAL)
     {
-      T.SetForm((gp_TrsfForm)aForm);
+      T.SetForm(static_cast<gp_TrsfForm>(aForm));
       aStr = ptr;
 
       //  gp_Mat aMatr;
-      aStr = ::Translate(aStr, (gp_Mat&)T.HVectorialPart());
+      aStr = ::Translate(aStr, const_cast<gp_Mat&>(T.HVectorialPart()));
       if (aStr)
       {
 
         //  gp_XYZ aTransl;
-        ::Translate(aStr, (gp_XYZ&)T.TranslationPart());
+        ::Translate(aStr, const_cast<gp_XYZ&>(T.TranslationPart()));
         aResult = true;
       }
     }

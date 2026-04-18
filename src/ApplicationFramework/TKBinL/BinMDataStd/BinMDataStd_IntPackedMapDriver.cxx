@@ -123,5 +123,5 @@ void BinMDataStd_IntPackedMapDriver::Paste(
     for (; anIt.More(); anIt.Next())
       Target << anIt.Key();
   }
-  Target << (uint8_t)(anAtt->GetDelta() ? 1 : 0);
+  Target << static_cast<uint8_t>(anAtt->GetDelta() ? 1 : 0);
 }

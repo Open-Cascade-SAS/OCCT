@@ -94,7 +94,7 @@ void AdvApprox_SimpleApprox::Perform(const NCollection_Array1<int>&    LocalDime
   int i, idim, k, numss;
 
   int                          Dimension = myTotalDimension;
-  AdvApprox_EvaluatorFunction& Evaluator = *(AdvApprox_EvaluatorFunction*)myEvaluator;
+  AdvApprox_EvaluatorFunction& Evaluator = *static_cast<AdvApprox_EvaluatorFunction*>(myEvaluator);
 
   // ===== the computation of Rr(t) (the first part of Pp) ======
 
@@ -108,7 +108,7 @@ void AdvApprox_SimpleApprox::Perform(const NCollection_Array1<int>&    LocalDime
   math_Vector Result(1, myTotalDimension);
   int         ErrorCode, derive, i_idim;
   double      Fact    = (Last - First) / 2;
-  double*     pResult = (double*)&Result.Value(1);
+  double*     pResult = static_cast<double*>(&Result.Value(1));
   double      param;
 
   for (param = First, derive = myNivConstr; derive >= 0; derive--)
@@ -155,8 +155,8 @@ void AdvApprox_SimpleApprox::Perform(const NCollection_Array1<int>&    LocalDime
   math_Vector Fti(1, myTotalDimension);
   math_Vector Rpti(1, myTotalDimension);
   math_Vector Rmti(1, myTotalDimension);
-  double*     pFti  = (double*)&Fti.Value(1);
-  double*     Coef1 = (double*)&(myCoeff->ChangeArray1().Value(0));
+  double*     pFti  = static_cast<double*>(&Fti.Value(1));
+  double*     Coef1 = const_cast<double*>(&(myCoeff->ChangeArray1().Value(0)));
 
   derive = 0;
   double ti, tip, tin, alin = (Last - First) / 2, blin = (Last + First) / 2.;
@@ -276,7 +276,7 @@ void AdvApprox_SimpleApprox::Perform(const NCollection_Array1<int>&    LocalDime
       RangCoeff = RangCoeff + myTotalDimension;
     }
 
-    double* JacSS = (double*)&JacCoeff.Value(RangJacCoeff);
+    double* JacSS = const_cast<double*>(&JacCoeff.Value(RangJacCoeff));
     myJacPol.ReduceDegree(Dim, MaxDegree, LocalTolerancesArray(numss), JacSS[0], NewDegree, MaxErr);
     if (NewDegree > NewDegreeMax)
       NewDegreeMax = NewDegree;
@@ -290,7 +290,7 @@ void AdvApprox_SimpleApprox::Perform(const NCollection_Array1<int>&    LocalDime
   {
     Dim = LocalDimension(numss);
 
-    double* JacSS = (double*)&JacCoeff.Value(RangJacCoeff);
+    double* JacSS = const_cast<double*>(&JacCoeff.Value(RangJacCoeff));
     MaxErr        = myJacPol.MaxError(LocalDimension(numss), JacSS[0], NewDegreeMax);
     myMaxError->SetValue(numss, MaxErr);
     AverageErr = myJacPol.AverageError(LocalDimension(numss), JacSS[0], NewDegreeMax);

@@ -67,7 +67,7 @@ TCollection_AsciiString XmlLDrivers::CreationDate()
   time_t     nowbin;
   struct tm* nowstruct;
 
-  if (time(&nowbin) == (time_t)-1)
+  if (time(&nowbin) == static_cast<time_t>(-1))
   {
 #ifdef OCCT_DEBUG
     std::cerr << "Storage ERROR : Could not get time of day from time()" << std::endl;
@@ -76,7 +76,7 @@ TCollection_AsciiString XmlLDrivers::CreationDate()
 
   nowstruct = localtime(&nowbin);
 
-  if (strftime(nowstr, SLENGTH, "%Y-%m-%d", nowstruct) == (size_t)0)
+  if (strftime(nowstr, SLENGTH, "%Y-%m-%d", nowstruct) == static_cast<size_t>(0))
   {
 #ifdef OCCT_DEBUG
     std::cerr << "Storage ERROR : Could not get string from strftime()" << std::endl;

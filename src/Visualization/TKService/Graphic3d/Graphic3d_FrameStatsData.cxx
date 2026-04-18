@@ -146,7 +146,7 @@ void Graphic3d_FrameStatsDataTmp::FlushTimers(size_t theNbFrames, bool theIsFina
 
   if (theIsFinal)
   {
-    const double aNbFrames = (double)theNbFrames;
+    const double aNbFrames = static_cast<double>(theNbFrames);
     for (size_t aTimerIter = 0; aTimerIter < myTimers.size(); ++aTimerIter)
     {
       myTimers[aTimerIter] /= aNbFrames;

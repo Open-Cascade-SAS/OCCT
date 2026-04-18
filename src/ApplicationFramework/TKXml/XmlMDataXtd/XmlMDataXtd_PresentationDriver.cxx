@@ -68,7 +68,7 @@ bool XmlMDataXtd_PresentationDriver::Paste(const XmlObjMgt_Persistent&       the
     myMessageDriver->Send("Cannot retrieve guid string from attribute", Message_Fail);
     return false;
   }
-  const char* aGuidStr = (const char*)aDOMStr.GetString();
+  const char* aGuidStr = aDOMStr.GetString();
   aTPrs->SetDriverGUID(aGuidStr);
 
   // is displayed

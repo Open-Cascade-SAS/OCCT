@@ -105,7 +105,7 @@ void OSD_Directory::Build(const OSD_Protection& theProtect)
 #else
   errno = 0;
   TCollection_AsciiString aBuffer;
-  mode_t                  anInternalProt = (mode_t)theProtect.Internal();
+  mode_t                  anInternalProt = static_cast<mode_t>(theProtect.Internal());
   myPath.SystemName(aBuffer);
   umask(0);
   int aStatus = mkdir(aBuffer.ToCString(), anInternalProt);

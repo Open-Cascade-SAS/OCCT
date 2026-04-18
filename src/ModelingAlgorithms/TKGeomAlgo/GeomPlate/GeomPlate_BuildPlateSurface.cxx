@@ -608,7 +608,7 @@ void GeomPlate_BuildPlateSurface::Perform(const Message_ProgressRange& theProgre
       int NPointMax = 0;
       for (int i = 1; i <= NTLinCont; i++)
         if ((myLinCont->Value(i)->NbPoints()) > NPointMax)
-          NPointMax = (int)(myLinCont->Value(i)->NbPoints());
+          NPointMax = (myLinCont->Value(i)->NbPoints());
       //====================================================================
       // Discretization of curves
       //====================================================================
@@ -1544,7 +1544,7 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit(const Message_ProgressRange& t
       LenT += myLinCont->Value(i)->Length();
     for (i = 1; i <= NTLinCont; i++)
     {
-      int NbPoint = (int)(NTPoint * (myLinCont->Value(i)->Length()) / LenT);
+      int NbPoint = static_cast<int>(NTPoint * (myLinCont->Value(i)->Length()) / LenT);
       if (NbPoint < 10)
         NbPoint = 10;
 
@@ -2051,7 +2051,7 @@ void GeomPlate_BuildPlateSurface::Discretise(
       acrlaw->Set(tabP2d);
     }
 
-    NbPnt_i   = (int)(LinCont->NbPoints());
+    NbPnt_i   = (LinCont->NbPoints());
     NbPtInter = PntInter->Value(i).Length();
     NbPtG1G1  = PntG1G1->Value(i).Length();
 
@@ -2193,7 +2193,7 @@ void GeomPlate_BuildPlateSurface::CalculNbPtsInit()
 {
   double LenT      = 0;
   int    NTLinCont = myLinCont->Length();
-  int    NTPoint   = (int)(myNbPtsOnCur * NTLinCont);
+  int    NTPoint   = (myNbPtsOnCur * NTLinCont);
   int    i;
 
   for (i = 1; i <= NTLinCont; i++)
@@ -2205,15 +2205,15 @@ void GeomPlate_BuildPlateSurface::CalculNbPtsInit()
     {
       case 0: // Case G0 *1.2
         myLinCont->ChangeValue(i)->SetNbPoints(
-          int(1.2 * NTPoint * (myLinCont->Value(i)->Length()) / LenT));
+          static_cast<int>(1.2 * NTPoint * (myLinCont->Value(i)->Length()) / LenT));
         break;
       case 1: // Case G1 *1
         myLinCont->ChangeValue(i)->SetNbPoints(
-          int(NTPoint * (myLinCont->Value(i)->Length()) / LenT));
+          static_cast<int>(NTPoint * (myLinCont->Value(i)->Length()) / LenT));
         break;
       case 2: // Case G2 *0.7
         myLinCont->ChangeValue(i)->SetNbPoints(
-          int(0.7 * NTPoint * (myLinCont->Value(i)->Length()) / LenT));
+          static_cast<int>(0.7 * NTPoint * (myLinCont->Value(i)->Length()) / LenT));
         break;
     }
     if (myLinCont->Value(i)->NbPoints() < 3)
@@ -2489,7 +2489,7 @@ bool GeomPlate_BuildPlateSurface::VerifSurface(const int NbBoucle)
         if (LinCont->NbPoints() >= std::floor(LinCont->NbPoints() * Coef))
           Coef = 2; // to provide increase of the number of points
 
-        LinCont->SetNbPoints(int(LinCont->NbPoints() * Coef));
+        LinCont->SetNbPoints(static_cast<int>(LinCont->NbPoints() * Coef));
         Result = false;
       }
       else if (NdiffAng > 0) // at least 1 point is not acceptable in G1
@@ -2498,7 +2498,7 @@ bool GeomPlate_BuildPlateSurface::VerifSurface(const int NbBoucle)
         if ((LinCont->NbPoints() + 1) >= std::floor(LinCont->NbPoints() * Coef))
           Coef = 2;
 
-        LinCont->SetNbPoints(int(LinCont->NbPoints() * Coef));
+        LinCont->SetNbPoints(static_cast<int>(LinCont->NbPoints() * Coef));
         Result = false;
       }
     }

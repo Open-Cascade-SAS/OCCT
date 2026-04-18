@@ -38,7 +38,7 @@ TopOpeBRep_WPointInterIterator::TopOpeBRep_WPointInterIterator(const TopOpeBRep_
 
 void TopOpeBRep_WPointInterIterator::Init(const TopOpeBRep_LineInter& LI)
 {
-  myLineInter = (TopOpeBRep_LineInter*)&LI;
+  myLineInter = const_cast<TopOpeBRep_LineInter*>(&LI);
   Init();
 }
 

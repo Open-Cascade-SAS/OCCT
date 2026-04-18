@@ -129,7 +129,7 @@ void TopOpeBRepBuild_Builder::MergeKPartiskole()
     if (!emp)
     {
       if (plfIN == nullptr)
-        plfIN = (NCollection_List<TopoDS_Shape>*)&itm1.Value();
+        plfIN = const_cast<NCollection_List<TopoDS_Shape>*>(&itm1.Value());
       if (pfOU == nullptr)
         pfOU = &itm1.Key();
       if (pfIN == nullptr)

@@ -58,7 +58,7 @@ void NCollection_BasePointerVector::Append(const void* thePnt)
     }
     myArray = myAllocator.reallocate(myArray, myCapacity);
   }
-  myArray[mySize++] = (void*)thePnt;
+  myArray[mySize++] = const_cast<void*>(thePnt);
 }
 
 //=================================================================================================
@@ -79,7 +79,7 @@ void NCollection_BasePointerVector::SetValue(const size_t theInd, const void* th
     memset(myArray + mySize, 0, (theInd - mySize) * sizeof(void**));
     mySize = theInd;
   }
-  myArray[theInd] = (void*)thePnt;
+  myArray[theInd] = const_cast<void*>(thePnt);
 }
 
 //=================================================================================================

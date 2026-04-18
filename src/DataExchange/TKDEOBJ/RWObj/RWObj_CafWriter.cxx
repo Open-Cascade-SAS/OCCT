@@ -34,13 +34,13 @@ namespace
 //! Trivial cast.
 inline NCollection_Vec3<float> objXyzToVec(const gp_XYZ& thePnt)
 {
-  return NCollection_Vec3<float>((float)thePnt.X(), (float)thePnt.Y(), (float)thePnt.Z());
+  return NCollection_Vec3<float>(static_cast<float>(thePnt.X()), static_cast<float>(thePnt.Y()), static_cast<float>(thePnt.Z()));
 }
 
 //! Trivial cast.
 inline NCollection_Vec2<float> objXyToVec(const gp_XY& thePnt)
 {
-  return NCollection_Vec2<float>((float)thePnt.X(), (float)thePnt.Y());
+  return NCollection_Vec2<float>(static_cast<float>(thePnt.X()), static_cast<float>(thePnt.Y()));
 }
 
 //! Read name attribute.

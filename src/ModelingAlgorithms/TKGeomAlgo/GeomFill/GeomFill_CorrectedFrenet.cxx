@@ -358,7 +358,7 @@ void GeomFill_CorrectedFrenet::Init()
   AvStep = (myTrimmed->LastParameter() - myTrimmed->FirstParameter()) / NbStep;
   for (i = 1; i <= NbI; i++)
   {
-    NbStep = std::max(int((T(i + 1) - T(i)) / AvStep), 3);
+    NbStep = std::max(static_cast<int>((T(i + 1) - T(i)) / AvStep), 3);
     Step   = (T(i + 1) - T(i)) / NbStep;
     if (!InitInterval(T(i),
                       T(i + 1),

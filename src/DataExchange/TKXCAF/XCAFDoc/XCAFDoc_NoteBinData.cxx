@@ -95,10 +95,10 @@ bool XCAFDoc_NoteBinData::Set(const TCollection_ExtendedString& theTitle,
 
   Backup();
 
-  if (theFile.Size() > (size_t)IntegerLast())
+  if (theFile.Size() > static_cast<size_t>(IntegerLast()))
     return false;
 
-  myData.reset(new NCollection_HArray1<uint8_t>(1, (int)theFile.Size()));
+  myData.reset(new NCollection_HArray1<uint8_t>(1, static_cast<int>(theFile.Size())));
   int nbReadBytes = 0;
   theFile.Read((void*)&myData->First(), myData->Length(), nbReadBytes);
   if (nbReadBytes < myData->Length())

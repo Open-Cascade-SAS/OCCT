@@ -1212,9 +1212,9 @@ static void DumpAssembly(Standard_OStream& theDumpLog,
 
   if (deep)
   {
-    theDumpLog << "(" << *(void**)&S.TShape();
+    theDumpLog << "(" << *reinterpret_cast<void* const*>(&S.TShape());
     if (!S.Location().IsIdentity())
-      theDumpLog << ", " << *(void**)&S.Location();
+      theDumpLog << ", " << *reinterpret_cast<void* const*>(&S.Location());
     theDumpLog << ") ";
   }
   theDumpLog << std::endl;
@@ -1311,9 +1311,9 @@ void XCAFDoc_ShapeTool::DumpShape(Standard_OStream& theDumpLog,
 
   if (deep)
   {
-    theDumpLog << "(" << *(void**)&S.TShape();
+    theDumpLog << "(" << *reinterpret_cast<void* const*>(&S.TShape());
     if (!S.Location().IsIdentity())
-      theDumpLog << ", " << *(void**)&S.Location();
+      theDumpLog << ", " << *reinterpret_cast<void* const*>(&S.Location());
     theDumpLog << ") ";
   }
 }

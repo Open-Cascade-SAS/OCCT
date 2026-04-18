@@ -118,7 +118,7 @@ void DsgPrs_IdenticPresentation::Add(const occ::handle<Prs3d_Presentation>& aPre
   double  alpha    = pSAttach - pFAttach;
   if (alpha < 0)
     alpha += 2. * M_PI;
-  const int    nb    = (int)(50. * alpha / M_PI);
+  const int    nb    = static_cast<int>(50. * alpha / M_PI);
   const int    nbp   = std::max(4, nb);
   const double dteta = alpha / (nbp - 1);
 
@@ -168,7 +168,7 @@ void DsgPrs_IdenticPresentation::Add(const occ::handle<Prs3d_Presentation>& aPre
   double  alpha    = pSAttach - pFAttach;
   if (alpha < 0)
     alpha += 2. * M_PI;
-  const int    nb    = (int)(50. * alpha / M_PI);
+  const int    nb    = static_cast<int>(50. * alpha / M_PI);
   const int    nbp   = std::max(4, nb);
   const double dteta = alpha / (nbp - 1);
 
@@ -215,7 +215,7 @@ void DsgPrs_IdenticPresentation::Add(const occ::handle<Prs3d_Presentation>& aPre
   double alpha    = pSAttach - pFAttach;
   if (alpha < 0)
     alpha += 2. * M_PI;
-  const int    nb    = (int)(50.0 * alpha / M_PI);
+  const int    nb    = static_cast<int>(50.0 * alpha / M_PI);
   const int    nbp   = std::max(4, nb);
   const double dteta = alpha / (nbp - 1);
 

@@ -53,7 +53,7 @@ static bool isBlackPixel(const Image_PixMap& theData, size_t theY, size_t theX)
       return aColor[0] == 0 && aColor[1] == 0 && aColor[2] == 0;
     }
     default: {
-      const Quantity_ColorRGBA       aPixelRgba = theData.PixelColor((int)theY, (int)theX);
+      const Quantity_ColorRGBA       aPixelRgba = theData.PixelColor(static_cast<int>(theY), static_cast<int>(theX));
       const NCollection_Vec4<float>& aPixel     = aPixelRgba;
       return aPixel.r() == 0.0f && aPixel.g() == 0.0f && aPixel.b() == 0.0f;
     }
@@ -152,16 +152,16 @@ int Image_Diff::Compare()
     case Image_Format_Gray:
     case Image_Format_Alpha: {
       // Tolerance of comparison operation for color
-      const int aDiffThreshold = int(255.0 * myColorTolerance);
+      const int aDiffThreshold = static_cast<int>(255.0 * myColorTolerance);
       for (size_t aRow = 0; aRow < myImageRef->SizeY(); ++aRow)
       {
         for (size_t aCol = 0; aCol < myImageRef->SizeX(); ++aCol)
         {
-          const int aDiff = int(myImageNew->Value<unsigned char>(aRow, aCol))
-                            - int(myImageRef->Value<unsigned char>(aRow, aCol));
+          const int aDiff = static_cast<int>(myImageNew->Value<unsigned char>(aRow, aCol))
+                            - static_cast<int>(myImageRef->Value<unsigned char>(aRow, aCol));
           if (std::abs(aDiff) > aDiffThreshold)
           {
-            myDiffPixels.Append(PackXY((uint16_t)aCol, (uint16_t)aRow));
+            myDiffPixels.Append(PackXY(static_cast<uint16_t>(aCol), static_cast<uint16_t>(aRow)));
             ++aNbDiffColors;
           }
         }
@@ -176,7 +176,7 @@ int Image_Diff::Compare()
     case Image_Format_BGRA: {
       // Tolerance of comparison operation for color
       // Maximum difference between colors (white - black) = 100%
-      const int aDiffThreshold = int(255.0 * myColorTolerance);
+      const int aDiffThreshold = static_cast<int>(255.0 * myColorTolerance);
 
       // we don't care about RGB/BGR/RGBA/BGRA/RGB32/BGR32 differences
       // because we just compute summ of r g b components
@@ -187,14 +187,14 @@ int Image_Diff::Compare()
           // compute Chebyshev distance between two colors
           const uint8_t* aColorRef = myImageRef->RawValue(aRow, aCol);
           const uint8_t* aColorNew = myImageNew->RawValue(aRow, aCol);
-          const int      aDiff     = NCollection_Vec3<int>(int(aColorRef[0]) - int(aColorNew[0]),
-                                                  int(aColorRef[1]) - int(aColorNew[1]),
-                                                  int(aColorRef[2]) - int(aColorNew[2]))
+          const int      aDiff     = NCollection_Vec3<int>(static_cast<int>(aColorRef[0]) - static_cast<int>(aColorNew[0]),
+                                                  static_cast<int>(aColorRef[1]) - static_cast<int>(aColorNew[1]),
+                                                  static_cast<int>(aColorRef[2]) - static_cast<int>(aColorNew[2]))
                               .cwiseAbs()
                               .maxComp();
           if (aDiff > aDiffThreshold)
           {
-            myDiffPixels.Append(PackXY((uint16_t)aCol, (uint16_t)aRow));
+            myDiffPixels.Append(PackXY(static_cast<uint16_t>(aCol), static_cast<uint16_t>(aRow)));
             ++aNbDiffColors;
           }
         }
@@ -204,20 +204,20 @@ int Image_Diff::Compare()
     default: {
       // Tolerance of comparison operation for color
       // Maximum difference between colors (white - black) = 100%
-      const float aDiffThreshold = float(myColorTolerance);
+      const float aDiffThreshold = static_cast<float>(myColorTolerance);
       for (size_t aRow = 0; aRow < myImageRef->SizeY(); ++aRow)
       {
         for (size_t aCol = 0; aCol < myImageRef->SizeX(); ++aCol)
         {
           // compute Chebyshev distance between two colors
-          const Quantity_ColorRGBA       aPixel1Rgba = myImageRef->PixelColor(int(aCol), int(aRow));
-          const Quantity_ColorRGBA       aPixel2Rgba = myImageNew->PixelColor(int(aCol), int(aRow));
+          const Quantity_ColorRGBA       aPixel1Rgba = myImageRef->PixelColor(static_cast<int>(aCol), static_cast<int>(aRow));
+          const Quantity_ColorRGBA       aPixel2Rgba = myImageNew->PixelColor(static_cast<int>(aCol), static_cast<int>(aRow));
           const NCollection_Vec3<float>& aPixel1     = aPixel1Rgba.GetRGB();
           const NCollection_Vec3<float>& aPixel2     = aPixel2Rgba.GetRGB();
           const float                    aDiff       = (aPixel2 - aPixel1).cwiseAbs().maxComp();
           if (aDiff > aDiffThreshold)
           {
-            myDiffPixels.Append(PackXY((uint16_t)aCol, (uint16_t)aRow));
+            myDiffPixels.Append(PackXY(static_cast<uint16_t>(aCol), static_cast<uint16_t>(aRow)));
             ++aNbDiffColors;
           }
         }
@@ -404,8 +404,8 @@ int Image_Diff::ignoreBorderEffect()
     for (int aPixelId2 = aPixelId1 + 1; aPixelId2 < myDiffPixels.Length(); ++aPixelId2)
     {
       int aValue2 = myDiffPixels.Value(aPixelId2);
-      if (std::abs(int(UnpackX(aValue1)) - int(UnpackX(aValue2))) <= 1
-          && std::abs(int(UnpackY(aValue1)) - int(UnpackY(aValue2))) <= 1)
+      if (std::abs(static_cast<int>(UnpackX(aValue1)) - static_cast<int>(UnpackX(aValue2))) <= 1
+          && std::abs(static_cast<int>(UnpackY(aValue1)) - static_cast<int>(UnpackY(aValue2))) <= 1)
       {
         // A neighbour is found. Create a new group and add both pixels.
         if (myGroupsOfDiffPixels.IsEmpty())
@@ -474,9 +474,9 @@ int Image_Diff::ignoreBorderEffect()
       {
         int anX = UnpackX(aDiffPixel) + Image_Diff_NEIGHBOR_PIXELS[aNgbrIter][0];
         int anY = UnpackY(aDiffPixel) + Image_Diff_NEIGHBOR_PIXELS[aNgbrIter][1];
-        if (size_t(anX) < myImageRef->SizeX() // this unsigned math checks size_t(-1) at-once
-            && size_t(anY) < myImageRef->SizeY()
-            && aGroup->Map().Contains(PackXY((uint16_t)anX, (uint16_t)anY)))
+        if (static_cast<size_t>(anX) < myImageRef->SizeX() // this unsigned math checks size_t(-1) at-once
+            && static_cast<size_t>(anY) < myImageRef->SizeY()
+            && aGroup->Map().Contains(PackXY(static_cast<uint16_t>(anX), static_cast<uint16_t>(anY))))
         {
           ++aNeighboursNb;
         }
@@ -500,9 +500,9 @@ int Image_Diff::ignoreBorderEffect()
       {
         int anX = UnpackX(aDiffPixel) + Image_Diff_NEIGHBOR_PIXELS[aNgbrIter][0];
         int anY = UnpackY(aDiffPixel) + Image_Diff_NEIGHBOR_PIXELS[aNgbrIter][1];
-        if (size_t(anX) < myImageRef->SizeX() // this unsigned math checks size_t(-1) at-once
-            && size_t(anY) < myImageRef->SizeY()
-            && !isBlackPixel(*myImageRef, size_t(anY), size_t(anX)))
+        if (static_cast<size_t>(anX) < myImageRef->SizeX() // this unsigned math checks size_t(-1) at-once
+            && static_cast<size_t>(anY) < myImageRef->SizeY()
+            && !isBlackPixel(*myImageRef, static_cast<size_t>(anY), static_cast<size_t>(anX)))
         {
           ++aNeighboursNb;
         }

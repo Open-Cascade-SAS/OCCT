@@ -50,7 +50,7 @@ bool ShapeUpgrade_RemoveLocations::Remove(const TopoDS_Shape& theShape)
   myShape                      = aShape;
   TopAbs_ShapeEnum shtype      = theShape.ShapeType();
   bool             isRemoveLoc = ((shtype != TopAbs_COMPOUND && myLevelRemoving == TopAbs_SHAPE)
-                      || ((int)myLevelRemoving <= ((int)shtype)));
+                      || (static_cast<int>(myLevelRemoving) <= (static_cast<int>(shtype))));
   TopoDS_Shape     S;
   bool             isDone = MakeNewShape(theShape, S, myShape, isRemoveLoc);
 
@@ -195,7 +195,7 @@ bool ShapeUpgrade_RemoveLocations::MakeNewShape(const TopoDS_Shape& theShape,
   if (!theRemoveLoc)
   {
     isRemoveLoc = ((shtype != TopAbs_COMPOUND && myLevelRemoving == TopAbs_SHAPE)
-                   || ((int)myLevelRemoving <= ((int)shtype)));
+                   || (static_cast<int>(myLevelRemoving) <= (static_cast<int>(shtype))));
   }
 
   bool         aRebuild   = false;

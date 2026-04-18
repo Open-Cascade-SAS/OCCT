@@ -95,14 +95,14 @@ void Units_Measurement::Convert(const char* const aunit)
 
 Units_Measurement Units_Measurement::Integer() const
 {
-  return Units_Measurement((int)themeasurement, thetoken);
+  return Units_Measurement(static_cast<int>(themeasurement), thetoken);
 }
 
 //=================================================================================================
 
 Units_Measurement Units_Measurement::Fractional() const
 {
-  return Units_Measurement(themeasurement - (int)themeasurement, thetoken);
+  return Units_Measurement(themeasurement - static_cast<int>(themeasurement), thetoken);
 }
 
 //=================================================================================================

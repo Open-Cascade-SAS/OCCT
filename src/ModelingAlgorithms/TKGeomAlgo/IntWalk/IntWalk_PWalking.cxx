@@ -863,7 +863,7 @@ void IntWalk_PWalking::Perform(const NCollection_Array1<double>& ParDep,
     dP3 = sensCheminement * pasuv[2] * previousd2.X() / f;
     dP4 = sensCheminement * pasuv[3] * previousd2.Y() / f;
     //
-    aIncKey = 5. * (double)IncKey;
+    aIncKey = 5. * static_cast<double>(IncKey);
     aEps    = 1.e-7;
     if (ChoixIso == IntImp_UIsoparametricOnCaro1 && std::abs(dP1) < aEps)
     {
@@ -1835,13 +1835,13 @@ bool IntWalk_PWalking::ExtendLineInCommonZone(const IntImp_ConstIsoparametric th
     double dP4 = sensCheminement * pasuv[3] * previousd2.Y() / f;
 
     if (theChoixIso == IntImp_UIsoparametricOnCaro1 && std::abs(dP1) < 1.e-7)
-      dP1 *= (5. * (double)dIncKey);
+      dP1 *= (5. * static_cast<double>(dIncKey));
     if (theChoixIso == IntImp_VIsoparametricOnCaro1 && std::abs(dP2) < 1.e-7)
-      dP2 *= (5. * (double)dIncKey);
+      dP2 *= (5. * static_cast<double>(dIncKey));
     if (theChoixIso == IntImp_UIsoparametricOnCaro2 && std::abs(dP3) < 1.e-7)
-      dP3 *= (5. * (double)dIncKey);
+      dP3 *= (5. * static_cast<double>(dIncKey));
     if (theChoixIso == IntImp_VIsoparametricOnCaro2 && std::abs(dP4) < 1.e-7)
-      dP4 *= (5. * (double)dIncKey);
+      dP4 *= (5. * static_cast<double>(dIncKey));
 
     Param(1) += dP1;
     Param(2) += dP2;

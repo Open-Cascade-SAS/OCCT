@@ -52,6 +52,6 @@ void LDOM_CharacterData::setData(const LDOMString& theValue)
 int LDOM_CharacterData::getLength() const
 {
   if (myLength < 0)
-    (int&)myLength = (int)strlen(getNodeValue().GetString());
+    const_cast<int&>(myLength) = static_cast<int>(strlen(getNodeValue().GetString()));
   return myLength;
 }

@@ -518,7 +518,7 @@ VrmlData_ErrorStatus VrmlData_TextureCoordinate::Read(VrmlData_InBuffer& theBuff
         gp_XY* aPoints =
           reinterpret_cast<gp_XY*>(Scene().Allocator()->Allocate(myLength * sizeof(gp_XY)));
         myPoints = aPoints;
-        for (int i = 0; i < int(myLength); i++)
+        for (int i = 0; i < static_cast<int>(myLength); i++)
           aPoints[i] = vecValues(i);
       }
     }
@@ -615,7 +615,7 @@ VrmlData_ErrorStatus VrmlData_ArrayVec3d::ReadArray(VrmlData_InBuffer& theBuffer
         gp_XYZ* anArray =
           reinterpret_cast<gp_XYZ*>(Scene().Allocator()->Allocate(myLength * sizeof(gp_XYZ)));
         myArray = anArray;
-        for (int i = 0; i < int(myLength); i++)
+        for (int i = 0; i < static_cast<int>(myLength); i++)
           anArray[i] = vecValues(i);
       }
     }

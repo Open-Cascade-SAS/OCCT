@@ -7132,7 +7132,7 @@ L1000:
     AdvApp2Var_MathBase::mmapcmp_(ndimen,
     &ncfja, &ncoeff[ncb1], &wrkar[ipt5], &wrkar[ipt2]);
     */
-    AdvApp2Var_MathBase::mmapcmp_((int*)ndimen,
+    AdvApp2Var_MathBase::mmapcmp_(ndimen,
                                   &ncfja,
                                   &ncoeff[ncb1],
                                   &wrkar_off[ipt4],

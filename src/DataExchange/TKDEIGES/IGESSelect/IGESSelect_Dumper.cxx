@@ -101,7 +101,7 @@ bool IGESSelect_Dumper::WriteOwn(IFSelect_SessionFile&                  file,
     double                  rangemin, rangemax;
     TCollection_AsciiString mainform, forminrange;
     ff->Format(zerosup, mainform, hasrange, forminrange, rangemin, rangemax);
-    file.SendText((char*)(zerosup ? "zerosup" : "nozerosup"));
+    file.SendText(const_cast<char*>(zerosup ? "zerosup" : "nozerosup"));
     file.SendText(mainform.ToCString());
     if (hasrange)
     {
@@ -158,7 +158,7 @@ bool IGESSelect_Dumper::WriteOwn(IFSelect_SessionFile&                  file,
   if (type == STANDARD_TYPE(IGESSelect_SplineToBSpline))
   {
     bool tryc2 = GetCasted(IGESSelect_SplineToBSpline, item)->OptionTryC2();
-    file.SendText((char*)(tryc2 ? "TryC2" : "Normal"));
+    file.SendText(const_cast<char*>(tryc2 ? "TryC2" : "Normal"));
     return true;
   }
   return false;

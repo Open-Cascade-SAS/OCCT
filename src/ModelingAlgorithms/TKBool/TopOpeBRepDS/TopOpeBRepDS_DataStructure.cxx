@@ -118,7 +118,7 @@ int TopOpeBRepDS_DataStructure::AddCurve(const TopOpeBRepDS_Curve& C)
   myNbCurves++;
 
   // NYI : modifier const & sur Curve dans le CDL NYI
-  TopOpeBRepDS_Curve* PC = (TopOpeBRepDS_Curve*)(void*)&C;
+  TopOpeBRepDS_Curve* PC = static_cast<TopOpeBRepDS_Curve*>((void*)&C);
   PC->ChangeDSIndex(myNbCurves);
 
   TopOpeBRepDS_CurveData CD(C);

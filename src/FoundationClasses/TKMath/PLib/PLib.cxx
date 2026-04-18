@@ -266,7 +266,7 @@ double PLib::Bin(const int N, const int P)
   Standard_OutOfRange_Raise_if(P < 0 || P > N,
                                "PLib::Bin: parameter P is out of valid range [0, N]");
 
-  return double(aBinom.Value(N, P));
+  return static_cast<double>(aBinom.Value(N, P));
 }
 
 //=================================================================================================
@@ -1092,8 +1092,8 @@ void PLib::EvalPoly2Var(const double UParameter,
   int                        Udim = (VDegree + 1) * Dimension, index = Udim * UDerivativeRequest;
   NCollection_Array1<double> Curve(1, Udim * (UDerivativeRequest + 1));
   NCollection_Array1<double> Point(1, Dimension * (VDerivativeRequest + 1));
-  double*                    Result = (double*)&Curve.ChangeValue(1);
-  double*                    Digit  = (double*)&Point.ChangeValue(1);
+  double*                    Result = static_cast<double*>(&Curve.ChangeValue(1));
+  double*                    Digit  = static_cast<double*>(&Point.ChangeValue(1));
   double*                    ResultArray;
   ResultArray = &Results;
 
@@ -1229,7 +1229,7 @@ int PLib::EvalLagrange(const double Parameter,
       for (kk = 0; kk < Dimension; kk++)
       {
         ResultArray[Index + kk] *= difference;
-        ResultArray[Index + kk] += ResultArray[Index1 + kk] * (double)jj;
+        ResultArray[Index + kk] += ResultArray[Index1 + kk] * static_cast<double>(jj);
       }
     }
     Index = (ii - 1) * Dimension;
@@ -1377,7 +1377,7 @@ int PLib::EvalCubicHermite(const double Parameter,
       for (kk = 0; kk < Dimension; kk++)
       {
         ResultArray[Index + kk] *= difference;
-        ResultArray[Index + kk] += ResultArray[Index1 + kk] * (double)jj;
+        ResultArray[Index + kk] += ResultArray[Index1 + kk] * static_cast<double>(jj);
       }
     }
     Index = (ii - 1) * Dimension;

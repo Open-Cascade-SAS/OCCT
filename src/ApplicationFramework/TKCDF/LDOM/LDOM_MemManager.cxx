@@ -68,7 +68,7 @@ void* LDOM_MemManager::MemBlock::AllocateAndCheck(
   const LDOM_MemManager::MemBlock*& aFirstWithoutRoom)
 {
   void* aResult = nullptr;
-  int   aRoom   = (int)(myEndBlock - myFreeSpace);
+  int   aRoom   = static_cast<int>(myEndBlock - myFreeSpace);
   if (aSize <= aRoom)
   {
     aResult = myFreeSpace;
@@ -115,7 +115,7 @@ LDOM_MemManager::HashTable::HashTable(/* const int   aMask, */
     }
     myMask = nKeys - 1;
   */
-  myTable = (TableItem*)myManager.Allocate(sizeof(TableItem) * nKeys);
+  myTable = static_cast<TableItem*>(myManager.Allocate(sizeof(TableItem) * nKeys));
   for (m = 0; m < nKeys; m += 2)
   {
     myTable[m].str      = nullptr;
@@ -168,13 +168,13 @@ int LDOM_MemManager::HashTable::Hash(const char* aString, const int aLen)
   };
 
   unsigned int         aCRC = 0;
-  const unsigned char* aPtr = (const unsigned char*)aString;
+  const unsigned char* aPtr = reinterpret_cast<const unsigned char*>(aString);
   for (int i = aLen; i > 0; i--)
   {
-    const unsigned int bTmp = aCRC ^ (unsigned int)(*aPtr++);
+    const unsigned int bTmp = aCRC ^ static_cast<unsigned int>(*aPtr++);
     aCRC                    = ((aCRC >> 8) ^ wCRC16a[bTmp & 0x0F]) ^ wCRC16b[(bTmp >> 4) & 0x0F];
   }
-  return int(aCRC & HASH_MASK /* myMask */);
+  return static_cast<int>(aCRC & HASH_MASK /* myMask */);
 }
 
 //=======================================================================
@@ -194,9 +194,9 @@ const char* LDOM_MemManager::HashTable::AddString(const char* theString,
   if (aNode->str == nullptr)
   {
     LDOM_HashValue* anAlloc =
-      (LDOM_HashValue*)myManager.Allocate(theLen + 1 + sizeof(LDOM_HashValue));
-    anAlloc[0] = LDOM_HashValue(aHashIndex);
-    aNode->str = (char*)&anAlloc[1];
+      static_cast<LDOM_HashValue*>(myManager.Allocate(theLen + 1 + sizeof(LDOM_HashValue)));
+    anAlloc[0] = static_cast<LDOM_HashValue>(aHashIndex);
+    aNode->str = reinterpret_cast<char*>(&anAlloc[1]);
     memcpy(aNode->str, theString, theLen);
     aNode->str[theLen] = '\0';
     aResult            = aNode->str;
@@ -219,12 +219,12 @@ const char* LDOM_MemManager::HashTable::AddString(const char* theString,
     {
       // Attention!!! We can make this allocation in a separate pool
       //              improving performance
-      aNode->next = (TableItem*)myManager.Allocate(sizeof(TableItem));
+      aNode->next = static_cast<TableItem*>(myManager.Allocate(sizeof(TableItem)));
       aNode       = aNode->next;
       LDOM_HashValue* anAlloc =
-        (LDOM_HashValue*)myManager.Allocate(theLen + 1 + sizeof(LDOM_HashValue));
-      anAlloc[0] = LDOM_HashValue(aHashIndex);
-      aNode->str = (char*)&anAlloc[1];
+        static_cast<LDOM_HashValue*>(myManager.Allocate(theLen + 1 + sizeof(LDOM_HashValue)));
+      anAlloc[0] = static_cast<LDOM_HashValue>(aHashIndex);
+      aNode->str = reinterpret_cast<char*>(&anAlloc[1]);
       memcpy(aNode->str, theString, theLen);
       aNode->str[theLen] = '\0';
       aResult            = aNode->str;
@@ -332,7 +332,7 @@ bool LDOM_MemManager::CompareStrings(const char* theString,
                                      const int   theHashValue,
                                      const char* theHashedStr)
 {
-  if (((LDOM_HashValue*)theHashedStr)[-1] == LDOM_HashValue(theHashValue))
+  if (((LDOM_HashValue*)theHashedStr)[-1] == static_cast<LDOM_HashValue>(theHashValue))
     if (!strcmp(theString, theHashedStr))
       return true;
   return false;

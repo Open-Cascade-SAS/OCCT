@@ -99,11 +99,11 @@ void AdjustCellsCounts(const occ::handle<Adaptor3d_Surface>& theFace,
   double aSqNbVert = theNbVertices;
   if (aType == GeomAbs_Plane)
   {
-    theCellsCountU = theCellsCountV = (int)std::ceil(std::pow(2, std::log10(aSqNbVert)));
+    theCellsCountU = theCellsCountV = static_cast<int>(std::ceil(std::pow(2, std::log10(aSqNbVert))));
   }
   else if (aType == GeomAbs_Cylinder || aType == GeomAbs_Cone)
   {
-    theCellsCountV = (int)std::ceil(std::pow(2, std::log10(aSqNbVert)));
+    theCellsCountV = static_cast<int>(std::ceil(std::pow(2, std::log10(aSqNbVert))));
   }
   else if (aType == GeomAbs_SurfaceOfExtrusion || aType == GeomAbs_SurfaceOfRevolution)
   {
@@ -113,25 +113,25 @@ void AdjustCellsCounts(const occ::handle<Adaptor3d_Surface>& theFace,
     {
       // planar, cylindrical, conical cases
       if (aType == GeomAbs_SurfaceOfExtrusion)
-        theCellsCountU = (int)std::ceil(std::pow(2, std::log10(aSqNbVert)));
+        theCellsCountU = static_cast<int>(std::ceil(std::pow(2, std::log10(aSqNbVert))));
       else
-        theCellsCountV = (int)std::ceil(std::pow(2, std::log10(aSqNbVert)));
+        theCellsCountV = static_cast<int>(std::ceil(std::pow(2, std::log10(aSqNbVert))));
     }
     if (aType == GeomAbs_SurfaceOfExtrusion)
     {
       // V is always a line
-      theCellsCountV = (int)std::ceil(std::pow(2, std::log10(aSqNbVert)));
+      theCellsCountV = static_cast<int>(std::ceil(std::pow(2, std::log10(aSqNbVert))));
     }
   }
   else if (aType == GeomAbs_BezierSurface || aType == GeomAbs_BSplineSurface)
   {
     if (theFace->UDegree() < 2)
     {
-      theCellsCountU = (int)std::ceil(std::pow(2, std::log10(aSqNbVert)));
+      theCellsCountU = static_cast<int>(std::ceil(std::pow(2, std::log10(aSqNbVert))));
     }
     if (theFace->VDegree() < 2)
     {
-      theCellsCountV = (int)std::ceil(std::pow(2, std::log10(aSqNbVert)));
+      theCellsCountV = static_cast<int>(std::ceil(std::pow(2, std::log10(aSqNbVert))));
     }
   }
 
@@ -442,25 +442,25 @@ std::pair<int, int> BRepMesh_GeomTool::CellsCount(
   if (aType == GeomAbs_Torus)
   {
     aCellsCountU =
-      (int)std::ceil(std::pow(2, std::log10((aRangeU.second - aRangeU.first) / aDelta.first)));
+      static_cast<int>(std::ceil(std::pow(2, std::log10((aRangeU.second - aRangeU.first) / aDelta.first))));
     aCellsCountV =
-      (int)std::ceil(std::pow(2, std::log10((aRangeV.second - aRangeV.first) / aDelta.second)));
+      static_cast<int>(std::ceil(std::pow(2, std::log10((aRangeV.second - aRangeV.first) / aDelta.second))));
   }
   else if (aType == GeomAbs_Cylinder)
   {
     aCellsCountU =
-      (int)std::ceil(std::pow(2,
+      static_cast<int>(std::ceil(std::pow(2,
                               std::log10((aRangeU.second - aRangeU.first) / aDelta.first
-                                         / (aRangeV.second - aRangeV.first))));
+                                         / (aRangeV.second - aRangeV.first)))));
     aCellsCountV =
-      (int)std::ceil(std::pow(2, std::log10((aRangeV.second - aRangeV.first) / anErrFactorV)));
+      static_cast<int>(std::ceil(std::pow(2, std::log10((aRangeV.second - aRangeV.first) / anErrFactorV))));
   }
   else
   {
-    aCellsCountU = (int)std::ceil(
-      std::pow(2, std::log10((aRangeU.second - aRangeU.first) / aDelta.first / anErrFactorU)));
-    aCellsCountV = (int)std::ceil(
-      std::pow(2, std::log10((aRangeV.second - aRangeV.first) / aDelta.second / anErrFactorV)));
+    aCellsCountU = static_cast<int>(std::ceil(
+      std::pow(2, std::log10((aRangeU.second - aRangeU.first) / aDelta.first / anErrFactorU))));
+    aCellsCountV = static_cast<int>(std::ceil(
+      std::pow(2, std::log10((aRangeV.second - aRangeV.first) / aDelta.second / anErrFactorV))));
   }
 
   AdjustCellsCounts(theSurface, theVerticesNb, aCellsCountU, aCellsCountV);

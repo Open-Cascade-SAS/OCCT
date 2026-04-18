@@ -347,11 +347,11 @@ bool OpenGl_Texture::Init(const occ::handle<OpenGl_Context>& theCtx,
   if (aDataPtr != nullptr)
   {
     // clang-format off
-    const GLint anAligment = std::min((GLint )theImage->MaxRowAligmentBytes(), 8); // OpenGL supports alignment upto 8 bytes
+    const GLint anAligment = std::min(static_cast<GLint>(theImage->MaxRowAligmentBytes()), 8); // OpenGL supports alignment upto 8 bytes
     // clang-format on
     theCtx->core11fwd->glPixelStorei(GL_UNPACK_ALIGNMENT, anAligment);
-    const GLint anExtraBytes = GLint(theImage->RowExtraBytes());
-    const GLint aPixelsWidth = GLint(theImage->SizeRowBytes() / theImage->SizePixelBytes());
+    const GLint anExtraBytes = static_cast<GLint>(theImage->RowExtraBytes());
+    const GLint aPixelsWidth = static_cast<GLint>(theImage->SizeRowBytes() / theImage->SizePixelBytes());
     if (theCtx->hasUnpackRowLength)
     {
       theCtx->core11fwd->glPixelStorei(GL_UNPACK_ROW_LENGTH,
@@ -1326,7 +1326,7 @@ bool OpenGl_Texture::InitCubeMap(const occ::handle<OpenGl_Context>&    theCtx,
 
   myTarget    = GL_TEXTURE_CUBE_MAP;
   myNbSamples = 1;
-  mySize.SetValues((GLsizei)theSize, (GLsizei)theSize, 1);
+  mySize.SetValues(static_cast<GLsizei>(theSize), static_cast<GLsizei>(theSize), 1);
   myTextFormat  = aFormat.Format();
   mySizedFormat = aFormat.Internal();
 
@@ -1409,10 +1409,10 @@ bool OpenGl_Texture::InitCubeMap(const occ::handle<OpenGl_Context>&    theCtx,
       if (!anImage.IsNull())
       {
         // clang-format off
-        const GLint anAligment = std::min((GLint)anImage->MaxRowAligmentBytes(), 8); // OpenGL supports alignment upto 8 bytes
+        const GLint anAligment = std::min(static_cast<GLint>(anImage->MaxRowAligmentBytes()), 8); // OpenGL supports alignment upto 8 bytes
         // clang-format on
-        const GLint anExtraBytes = GLint(anImage->RowExtraBytes());
-        const GLint aPixelsWidth = GLint(anImage->SizeRowBytes() / anImage->SizePixelBytes());
+        const GLint anExtraBytes = static_cast<GLint>(anImage->RowExtraBytes());
+        const GLint aPixelsWidth = static_cast<GLint>(anImage->SizeRowBytes() / anImage->SizePixelBytes());
         const GLint aRowLength   = (anExtraBytes >= anAligment) ? aPixelsWidth : 0;
         if (theCtx->hasUnpackRowLength)
         {
@@ -1431,7 +1431,7 @@ bool OpenGl_Texture::InitCubeMap(const occ::handle<OpenGl_Context>&    theCtx,
           }
           anImage = aCopyImage;
           // clang-format off
-          const GLint anAligment2 = std::min((GLint)anImage->MaxRowAligmentBytes(), 8); // OpenGL supports alignment upto 8 bytes
+          const GLint anAligment2 = std::min(static_cast<GLint>(anImage->MaxRowAligmentBytes()), 8); // OpenGL supports alignment upto 8 bytes
           // clang-format on
           theCtx->core11fwd->glPixelStorei(GL_UNPACK_ALIGNMENT, anAligment2);
         }
@@ -1460,8 +1460,8 @@ bool OpenGl_Texture::InitCubeMap(const occ::handle<OpenGl_Context>&    theCtx,
     theCtx->core11fwd->glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
                                     0,
                                     anIntFormat,
-                                    GLsizei(theSize),
-                                    GLsizei(theSize),
+                                    static_cast<GLsizei>(theSize),
+                                    static_cast<GLsizei>(theSize),
                                     0,
                                     aFormat.PixelFormat(),
                                     aFormat.DataType(),
@@ -1477,7 +1477,7 @@ bool OpenGl_Texture::InitCubeMap(const occ::handle<OpenGl_Context>&    theCtx,
         GL_DEBUG_TYPE_ERROR,
         0,
         GL_DEBUG_SEVERITY_HIGH,
-        TCollection_AsciiString("Error: cubemap side  ") + (int)theSize + "x" + (int)theSize
+        TCollection_AsciiString("Error: cubemap side  ") + static_cast<int>(theSize) + "x" + static_cast<int>(theSize)
           + " IF: " + OpenGl_TextureFormat::FormatFormat(anIntFormat)
           + " PF: " + OpenGl_TextureFormat::FormatFormat(aFormat.PixelFormat())
           + " DT: " + OpenGl_TextureFormat::FormatDataType(aFormat.DataType())
@@ -1591,11 +1591,11 @@ size_t OpenGl_Texture::EstimatedDataSize() const
   size_t aSize = PixelSizeOfPixelFormat(mySizedFormat) * mySize.x() * myNbSamples;
   if (mySize.y() != 0)
   {
-    aSize *= size_t(mySize.y());
+    aSize *= static_cast<size_t>(mySize.y());
   }
   if (mySize.z() != 0)
   {
-    aSize *= size_t(mySize.z());
+    aSize *= static_cast<size_t>(mySize.z());
   }
   if (myTarget == GL_TEXTURE_CUBE_MAP)
   {
@@ -1650,7 +1650,7 @@ bool OpenGl_Texture::ImageDump(Image_PixMap&                      theImage,
   }
 
   // clang-format off
-  const GLint anAligment = std::min(GLint(theImage.MaxRowAligmentBytes()), 8); // limit to 8 bytes for OpenGL
+  const GLint anAligment = std::min(static_cast<GLint>(theImage.MaxRowAligmentBytes()), 8); // limit to 8 bytes for OpenGL
   // clang-format on
   theCtx->core11fwd->glPixelStorei(GL_PACK_ALIGNMENT, anAligment);
   if (theCtx->hasPackRowLength)
