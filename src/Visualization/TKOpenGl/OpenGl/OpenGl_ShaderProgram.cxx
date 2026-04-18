@@ -663,7 +663,7 @@ bool OpenGl_ShaderProgram::Initialize(
         GetUniformLocation(theCtx, "occShadowMapSamplers"))
   {
     std::vector<GLint> aShadowSamplers(myNbShadowMaps);
-    const GLint        aSamplFrom = static_cast<GLint>(theCtx->ShadowMapTexUnit()) - myNbShadowMaps + 1;
+    const GLint aSamplFrom = static_cast<GLint>(theCtx->ShadowMapTexUnit()) - myNbShadowMaps + 1;
     for (int aSamplerIter = 0; aSamplerIter < myNbShadowMaps; ++aSamplerIter)
     {
       aShadowSamplers[aSamplerIter] = aSamplFrom + aSamplerIter;

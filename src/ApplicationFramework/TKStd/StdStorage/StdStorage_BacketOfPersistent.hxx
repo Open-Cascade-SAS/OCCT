@@ -39,8 +39,8 @@ public:
         mySpaceSize(200000),
         myCurrentSpace(-1)
   {
-    mySpace =
-      static_cast<StdObjMgt_Persistent**>(Standard::Allocate(sizeof(StdObjMgt_Persistent*) * mySpaceSize));
+    mySpace = static_cast<StdObjMgt_Persistent**>(
+      Standard::Allocate(sizeof(StdObjMgt_Persistent*) * mySpaceSize));
   }
 
   StdStorage_Bucket(const int theSpaceSize)
@@ -48,8 +48,8 @@ public:
         mySpaceSize(theSpaceSize),
         myCurrentSpace(-1)
   {
-    mySpace =
-      static_cast<StdObjMgt_Persistent**>(Standard::Allocate(sizeof(StdObjMgt_Persistent*) * mySpaceSize));
+    mySpace = static_cast<StdObjMgt_Persistent**>(
+      Standard::Allocate(sizeof(StdObjMgt_Persistent*) * mySpaceSize));
   }
 
   void Clear();

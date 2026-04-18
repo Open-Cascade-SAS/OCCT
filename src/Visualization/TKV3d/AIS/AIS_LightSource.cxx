@@ -98,8 +98,8 @@ void AIS_LightSourceOwner::HilightWithColor(const occ::handle<PrsMgr_Presentatio
     aGroup->SetGroupPrimitivesAspect(aPointAspect->Aspect());
     aGroup->AddPrimitiveArray(aPoints);
 
-    const double               aRadius = aLightSource->Size() * 0.5;
-    const int                  aNbPnts = static_cast<int>(aLightSource->ArcSize() * 180 / (M_PI * aRadius));
+    const double aRadius = aLightSource->Size() * 0.5;
+    const int    aNbPnts = static_cast<int>(aLightSource->ArcSize() * 180 / (M_PI * aRadius));
     NCollection_Array1<gp_Pnt> aCircPoints(0, aNbPnts);
     const gp_Dir               aDirNorm(gp_Vec(gp::Origin(), aDetPnt));
     gp_Dir                     aDirNormToPln(gp::DY());

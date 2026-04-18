@@ -358,8 +358,9 @@ occ::handle<XCAFDimTolObjects_DatumObject> XCAFDoc_Datum::GetObject() const
           .FindChild(ChildLab_ModifierWithValue)
           .FindAttribute(TDataStd_Real::GetID(), aModifierWithValueV))
     {
-      anObj->SetModifierWithValue(static_cast<XCAFDimTolObjects_DatumModifWithValue>(aModifierWithValueM->Get()),
-                                  aModifierWithValueV->Get());
+      anObj->SetModifierWithValue(
+        static_cast<XCAFDimTolObjects_DatumModifWithValue>(aModifierWithValueM->Get()),
+        aModifierWithValueV->Get());
     }
   }
 
@@ -423,7 +424,8 @@ occ::handle<XCAFDimTolObjects_DatumObject> XCAFDoc_Datum::GetObject() const
           .FindChild(ChildLab_DTargetType)
           .FindAttribute(TDataStd_Integer::GetID(), aDTargetType))
     {
-      anObj->SetDatumTargetType(static_cast<XCAFDimTolObjects_DatumTargetType>(aDTargetType->Get()));
+      anObj->SetDatumTargetType(
+        static_cast<XCAFDimTolObjects_DatumTargetType>(aDTargetType->Get()));
       if (anObj->GetDatumTargetType() == XCAFDimTolObjects_DatumTargetType_Area)
       {
         occ::handle<TNaming_NamedShape> aDatumTarget;

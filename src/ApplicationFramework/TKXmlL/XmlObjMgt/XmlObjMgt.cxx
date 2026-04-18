@@ -149,7 +149,8 @@ bool XmlObjMgt::GetTagEntryString(const XmlObjMgt_DOMString& theSource,
     return false;
 
   //    Begin aTagEntry string
-  char* aTagEntry    = static_cast<char*>(Standard::Allocate(strlen(aSource) / 2)); // quite enough to hold it
+  char* aTagEntry =
+    static_cast<char*>(Standard::Allocate(strlen(aSource) / 2)); // quite enough to hold it
   char* aTagEntryPtr = aTagEntry + 1;
   *aTagEntry         = '0';
   aSource += aPrefixSize;
@@ -209,8 +210,8 @@ void XmlObjMgt::SetTagEntryString(XmlObjMgt_DOMString&           theTarget,
   //    Create a buffer to accumulate the XPath reference
   const size_t anElem1Size = sizeof(aRefElem1) - 1;
   const size_t anElem2Size = sizeof(aRefElem2) - 1;
-  char*        aTarget =
-    static_cast<char*>(Standard::Allocate(sizeof(aRefPrefix) + aTagCount * (anElem1Size + anElem2Size + 12)));
+  char*        aTarget     = static_cast<char*>(
+    Standard::Allocate(sizeof(aRefPrefix) + aTagCount * (anElem1Size + anElem2Size + 12)));
   memcpy(aTarget, aRefPrefix, sizeof(aRefPrefix) - 1);
   char* aTargetPtr = aTarget + (sizeof(aRefPrefix) - 1);
 

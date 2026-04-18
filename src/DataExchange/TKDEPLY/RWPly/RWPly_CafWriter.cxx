@@ -249,7 +249,9 @@ bool RWPly_CafWriter::writeNodes(RWPly_PlyWriterContext&    theWriter,
     if (theFace.HasNormals())
     {
       gp_Dir aNorm = theFace.NormalTransformed(aNodeIter);
-      aNormVec.SetValues(static_cast<float>(aNorm.X()), static_cast<float>(aNorm.Y()), static_cast<float>(aNorm.Z()));
+      aNormVec.SetValues(static_cast<float>(aNorm.X()),
+                         static_cast<float>(aNorm.Y()),
+                         static_cast<float>(aNorm.Z()));
       myCSTrsf.TransformNormal(aNormVec);
     }
     if (theFace.HasTexCoords())

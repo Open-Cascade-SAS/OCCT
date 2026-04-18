@@ -139,7 +139,10 @@ bool Font_FTFont::Init(const occ::handle<NCollection_Buffer>& theData,
   }
   else
   {
-    if (FT_New_Face(myFTLib->Instance(), myFontPath.ToCString(), static_cast<FT_Long>(theFaceId), &myFTFace)
+    if (FT_New_Face(myFTLib->Instance(),
+                    myFontPath.ToCString(),
+                    static_cast<FT_Long>(theFaceId),
+                    &myFTFace)
         != 0)
     {
       // Message::SendTrace (TCollection_AsciiString("Font '") + myFontPath + "' failed to load from
@@ -391,7 +394,8 @@ bool Font_FTFont::RenderGlyph(const char32_t theUChar)
   }
 
   if (theUChar == 0
-      || FT_Load_Char(myActiveFTFace, theUChar, static_cast<FT_Int32>(myLoadFlags | FT_LOAD_RENDER)) != 0
+      || FT_Load_Char(myActiveFTFace, theUChar, static_cast<FT_Int32>(myLoadFlags | FT_LOAD_RENDER))
+           != 0
       || myActiveFTFace->glyph == nullptr
       || myActiveFTFace->glyph->format != FT_GLYPH_FORMAT_BITMAP)
   {
@@ -457,7 +461,8 @@ unsigned int Font_FTFont::GlyphMaxSizeX(bool theToIncludeFallback) const
   {
     float aWidth = (FT_IS_SCALABLE(myFTFace) != 0)
                      ? static_cast<float>(myFTFace->bbox.xMax - myFTFace->bbox.xMin)
-                         * (static_cast<float>(myFTFace->size->metrics.x_ppem) / static_cast<float>(myFTFace->units_per_EM))
+                         * (static_cast<float>(myFTFace->size->metrics.x_ppem)
+                            / static_cast<float>(myFTFace->units_per_EM))
                      : fromFTPoints<float>(myFTFace->size->metrics.max_advance);
     return static_cast<unsigned int>(aWidth + 0.5f);
   }
@@ -489,7 +494,8 @@ unsigned int Font_FTFont::GlyphMaxSizeY(bool theToIncludeFallback) const
   {
     float aHeight = (FT_IS_SCALABLE(myFTFace) != 0)
                       ? static_cast<float>(myFTFace->bbox.yMax - myFTFace->bbox.yMin)
-                          * (static_cast<float>(myFTFace->size->metrics.y_ppem) / static_cast<float>(myFTFace->units_per_EM))
+                          * (static_cast<float>(myFTFace->size->metrics.y_ppem)
+                             / static_cast<float>(myFTFace->units_per_EM))
                       : fromFTPoints<float>(myFTFace->size->metrics.height);
     return static_cast<unsigned int>(aHeight + 0.5f);
   }
@@ -518,7 +524,8 @@ float Font_FTFont::Ascender() const
 {
 #ifdef HAVE_FREETYPE
   return static_cast<float>(myFTFace->ascender)
-         * (static_cast<float>(myFTFace->size->metrics.y_ppem) / static_cast<float>(myFTFace->units_per_EM));
+         * (static_cast<float>(myFTFace->size->metrics.y_ppem)
+            / static_cast<float>(myFTFace->units_per_EM));
 #else
   return 0.0f;
 #endif
@@ -530,7 +537,8 @@ float Font_FTFont::Descender() const
 {
 #ifdef HAVE_FREETYPE
   return static_cast<float>(myFTFace->descender)
-         * (static_cast<float>(myFTFace->size->metrics.y_ppem) / static_cast<float>(myFTFace->units_per_EM));
+         * (static_cast<float>(myFTFace->size->metrics.y_ppem)
+            / static_cast<float>(myFTFace->units_per_EM));
 #else
   return 0.0f;
 #endif
@@ -542,7 +550,8 @@ float Font_FTFont::LineSpacing() const
 {
 #ifdef HAVE_FREETYPE
   return static_cast<float>(myFTFace->height)
-         * (static_cast<float>(myFTFace->size->metrics.y_ppem) / static_cast<float>(myFTFace->units_per_EM));
+         * (static_cast<float>(myFTFace->size->metrics.y_ppem)
+            / static_cast<float>(myFTFace->units_per_EM));
 #else
   return 0.0f;
 #endif
@@ -664,8 +673,10 @@ void Font_FTFont::GlyphRect(Font_Rect& theRect) const
   const FT_Bitmap& aBitmap = myActiveFTFace->glyph->bitmap;
   theRect.Left             = static_cast<float>(myActiveFTFace->glyph->bitmap_left);
   theRect.Top              = static_cast<float>(myActiveFTFace->glyph->bitmap_top);
-  theRect.Right            = static_cast<float>(myActiveFTFace->glyph->bitmap_left + static_cast<int>(aBitmap.width));
-  theRect.Bottom           = static_cast<float>(myActiveFTFace->glyph->bitmap_top - static_cast<int>(aBitmap.rows));
+  theRect.Right =
+    static_cast<float>(myActiveFTFace->glyph->bitmap_left + static_cast<int>(aBitmap.width));
+  theRect.Bottom =
+    static_cast<float>(myActiveFTFace->glyph->bitmap_top - static_cast<int>(aBitmap.rows));
 #else
   (void)theRect;
 #endif

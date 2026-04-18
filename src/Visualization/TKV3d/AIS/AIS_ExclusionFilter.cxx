@@ -126,7 +126,8 @@ bool AIS_ExclusionFilter::IsSignatureIn(const AIS_KindOfInteractive aType,
 {
   if (!myStoredTypes.IsBound(aType))
     return false;
-  for (NCollection_List<int>::Iterator Lit(myStoredTypes(static_cast<int>(aType))); Lit.More(); Lit.Next())
+  for (NCollection_List<int>::Iterator Lit(myStoredTypes(static_cast<int>(aType))); Lit.More();
+       Lit.Next())
   {
     if (Lit.Value() == SignatureInType)
       return true;

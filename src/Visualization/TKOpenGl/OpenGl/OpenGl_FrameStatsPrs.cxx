@@ -36,7 +36,8 @@ static TCollection_AsciiString formatTimeMs(double theSeconds)
   const double aFpsVal = theSeconds != 0.0 ? 1.0 / theSeconds : 0.0;
   char         aFps[50];
   Sprintf(aFps, "%.1f", aFpsVal);
-  return TCollection_AsciiString() + static_cast<int>(theSeconds * 1000.0) + " ms (" + aFps + " FPS)";
+  return TCollection_AsciiString() + static_cast<int>(theSeconds * 1000.0) + " ms (" + aFps
+         + " FPS)";
 }
 } // namespace
 
@@ -197,7 +198,8 @@ void OpenGl_FrameStatsPrs::updateChart(const occ::handle<OpenGl_Workspace>& theW
     aCharSize.y() = static_cast<int>(0.15 * aViewSize.y());
   }
 
-  const NCollection_Vec2<double> aBinSize(static_cast<double>(aCharSize.x()) / static_cast<double>(aNbBins),
+  const NCollection_Vec2<double> aBinSize(static_cast<double>(aCharSize.x())
+                                            / static_cast<double>(aNbBins),
                                           0.15 * aViewSize.y());
   NCollection_Vec2<int>          anOffset;
   if (!myChartTrsfPers.IsNull() && myChartTrsfPers->IsTrihedronOr2d())
@@ -313,10 +315,17 @@ void OpenGl_FrameStatsPrs::updateChart(const occ::handle<OpenGl_Workspace>& theW
   {
     const NCollection_Vec4<uint8_t> aWhite(255, 255, 255, 255);
     const OpenGl_Vec3Vec4ub         aLines[4] = {
-      {NCollection_Vec3<float>(static_cast<float>(anOffset.x()), static_cast<float>(anOffset.y()), 0.0f), aWhite},
-      {NCollection_Vec3<float>(static_cast<float>(anOffset.x() + aCharSize.x()), static_cast<float>(anOffset.y()), 0.0f),
+      {NCollection_Vec3<float>(static_cast<float>(anOffset.x()),
+                               static_cast<float>(anOffset.y()),
+                               0.0f),
                aWhite},
-      {NCollection_Vec3<float>(static_cast<float>(anOffset.x()), static_cast<float>(anOffset.y() - aBinSize.y()), 0.0f),
+      {NCollection_Vec3<float>(static_cast<float>(anOffset.x() + aCharSize.x()),
+                               static_cast<float>(anOffset.y()),
+                               0.0f),
+               aWhite},
+      {NCollection_Vec3<float>(static_cast<float>(anOffset.x()),
+                               static_cast<float>(anOffset.y() - aBinSize.y()),
+                               0.0f),
                aWhite},
       {NCollection_Vec3<float>(static_cast<float>(anOffset.x() + aCharSize.x()),
                                static_cast<float>(anOffset.y() - aBinSize.y()),
@@ -354,7 +363,8 @@ void OpenGl_FrameStatsPrs::updateChart(const occ::handle<OpenGl_Workspace>& theW
       gp_Pnt(aLabX, static_cast<float>(anOffset.y() - aBinSize.y() / 2), 0.0f));
 
     myChartLabels[2].Text()->SetText(aLabels[isTopDown ? 2 : 0].ToCString());
-    myChartLabels[2].Text()->SetPosition(gp_Pnt(aLabX, static_cast<float>(anOffset.y() - aBinSize.y()), 0.0f));
+    myChartLabels[2].Text()->SetPosition(
+      gp_Pnt(aLabX, static_cast<float>(anOffset.y() - aBinSize.y()), 0.0f));
 
     for (int i = 0; i < 3; i++)
     {

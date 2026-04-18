@@ -187,12 +187,16 @@ bool Media_PlayerContext::DumpFirstFrame(const TCollection_AsciiString& theSrcVi
     if (aResSizeX > aResSizeY)
     {
       aResSizeX = theMaxSize;
-      aResSizeY = static_cast<int>((static_cast<double>(aFrame->SizeY()) / static_cast<double>(aFrame->SizeX())) * static_cast<double>(aResSizeX));
+      aResSizeY = static_cast<int>(
+        (static_cast<double>(aFrame->SizeY()) / static_cast<double>(aFrame->SizeX()))
+        * static_cast<double>(aResSizeX));
     }
     else
     {
       aResSizeY = theMaxSize;
-      aResSizeX = static_cast<int>((static_cast<double>(aFrame->SizeX()) / static_cast<double>(aFrame->SizeY())) * static_cast<double>(aResSizeY));
+      aResSizeX = static_cast<int>(
+        (static_cast<double>(aFrame->SizeX()) / static_cast<double>(aFrame->SizeY()))
+        * static_cast<double>(aResSizeY));
     }
   }
   if (!aPixMap->InitZero(Image_Format_RGB, aResSizeX, aResSizeY))

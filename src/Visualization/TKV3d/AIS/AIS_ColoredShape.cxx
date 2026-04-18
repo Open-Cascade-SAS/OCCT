@@ -795,9 +795,10 @@ bool AIS_ColoredShape::dispatchColors(
           && !(isOverriden || isSubOverride))) // bind original shape to default color
   {
     TopoDS_Compound       aCompound;
-    DataMapOfDrawerCompd& aDrawerShapeMap = theIsParentClosed && aShapeType == TopAbs_FACE
-                                              ? theDrawerClosedFaces
-                                              : theDrawerOpenedShapePerType[static_cast<size_t>(aShapeType)];
+    DataMapOfDrawerCompd& aDrawerShapeMap =
+      theIsParentClosed && aShapeType == TopAbs_FACE
+        ? theDrawerClosedFaces
+        : theDrawerOpenedShapePerType[static_cast<size_t>(aShapeType)];
     if (!aDrawerShapeMap.FindFromKey(aDrawer, aCompound))
     {
       aBBuilder.MakeCompound(aCompound);

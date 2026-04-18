@@ -88,7 +88,8 @@ uint64_t BinTools_IStream::ReadReference()
   if (aDelta == 0)
   {
     Standard_SStream aMsg;
-    aMsg << "BinTools_IStream::ReadReference: invalid reference " << static_cast<char>(myLastType) << std::endl;
+    aMsg << "BinTools_IStream::ReadReference: invalid reference " << static_cast<char>(myLastType)
+         << std::endl;
     throw Standard_Failure(aMsg.str().c_str());
   }
   return aCurrentPos - aDelta - 1; // add a type-byte

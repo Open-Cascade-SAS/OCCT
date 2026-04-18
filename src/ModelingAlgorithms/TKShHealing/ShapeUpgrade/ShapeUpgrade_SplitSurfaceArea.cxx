@@ -87,7 +87,10 @@ void ShapeUpgrade_SplitSurfaceArea::Compute(const bool /*Segment*/)
   else
   {
     nbSplitF = (aNbUV >= myNbParts ? myNbParts : RealToInt(ceil(sqrt(myNbParts * ceil(aNbUV)))));
-    nbSplitS = (aNbUV >= myNbParts ? 0 : RealToInt(ceil(static_cast<double>(myNbParts) / static_cast<double>(nbSplitF))));
+    nbSplitS =
+      (aNbUV >= myNbParts
+         ? 0
+         : RealToInt(ceil(static_cast<double>(myNbParts) / static_cast<double>(nbSplitF))));
   }
   if (nbSplitS == 1 && !anIsFixedUVnbSplits)
     nbSplitS++;

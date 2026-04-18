@@ -383,9 +383,10 @@ void OpenGl_GraduatedTrihedron::renderAxis(const occ::handle<OpenGl_Workspace>& 
   // Render arrow
   NCollection_Vec3<float> anArrowVec = myMin + anAxis.Direction * (myMax - myMin);
 
-  Graphic3d_TransformPers aTransMode(
-    Graphic3d_TMF_ZoomPers,
-    gp_Pnt(static_cast<double>(anArrowVec.x()), static_cast<double>(anArrowVec.y()), static_cast<double>(anArrowVec.z())));
+  Graphic3d_TransformPers        aTransMode(Graphic3d_TMF_ZoomPers,
+                                     gp_Pnt(static_cast<double>(anArrowVec.x()),
+                                            static_cast<double>(anArrowVec.y()),
+                                            static_cast<double>(anArrowVec.z())));
   const NCollection_Mat4<float>& aProjection = aContext->ProjectionState.Current();
   const NCollection_Mat4<float>& aWorldView  = aContext->WorldViewState.Current();
   const int                      aWidth      = theWorkspace->Width();
@@ -477,7 +478,8 @@ void OpenGl_GraduatedTrihedron::renderTickmarkLabels(
 
     NCollection_Mat4<float> aModelMat(theMat);
 
-    anAxis.InitTickmark(aContext, aDir * static_cast<float>(aCurAspect.TickmarksLength()) * theDpix);
+    anAxis.InitTickmark(aContext,
+                        aDir * static_cast<float>(aCurAspect.TickmarksLength()) * theDpix);
     Graphic3d_TransformUtils::Translate(aModelMat,
                                         theGridAxes.Ticks[theIndex].x(),
                                         theGridAxes.Ticks[theIndex].y(),
@@ -521,8 +523,7 @@ void OpenGl_GraduatedTrihedron::renderTickmarkLabels(
     for (int anIt = 0; anIt <= aCurAspect.TickmarksNumber(); ++anIt)
     {
       Sprintf(aTextValue, "%g", theGridAxes.Ticks[theIndex].GetData()[theIndex] + anIt * aStep);
-      NCollection_Vec3<float> aPos(theGridAxes.Ticks[theIndex]
-                                   + anAxis.Direction * (anIt * aStep)
+      NCollection_Vec3<float> aPos(theGridAxes.Ticks[theIndex] + anAxis.Direction * (anIt * aStep)
                                    + aDir * static_cast<float>(theDpix * anOffset));
 
       occ::handle<Graphic3d_Text> aText = myLabelValues.Text();

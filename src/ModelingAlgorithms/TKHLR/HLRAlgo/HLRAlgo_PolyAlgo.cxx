@@ -418,12 +418,15 @@ HLRAlgo_BiPoint::PointsT& HLRAlgo_PolyAlgo::Hide(HLRAlgo_EdgeStatus& theStatus,
   HLRAlgo_BiPoint&           aBP       = mySegListIt.ChangeValue();
   HLRAlgo_BiPoint::PointsT&  aPoints   = aBP.Points();
   HLRAlgo_BiPoint::IndicesT& anIndices = aBP.Indices();
-  theStatus = HLRAlgo_EdgeStatus(0.0, static_cast<float>(myTriangle.TolParam), 1.0, static_cast<float>(myTriangle.TolParam));
-  theIndex  = anIndices.ShapeIndex;
-  theReg1   = aBP.Rg1Line();
-  theRegn   = aBP.RgNLine();
-  theOutl   = aBP.OutLine();
-  theIntl   = aBP.IntLine();
+  theStatus                            = HLRAlgo_EdgeStatus(0.0,
+                                 static_cast<float>(myTriangle.TolParam),
+                                 1.0,
+                                 static_cast<float>(myTriangle.TolParam));
+  theIndex                             = anIndices.ShapeIndex;
+  theReg1                              = aBP.Rg1Line();
+  theRegn                              = aBP.RgNLine();
+  theOutl                              = aBP.OutLine();
+  theIntl                              = aBP.IntLine();
   if (aBP.Hidden())
   {
     theStatus.HideAll();

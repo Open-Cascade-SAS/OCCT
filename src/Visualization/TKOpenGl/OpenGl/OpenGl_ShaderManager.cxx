@@ -589,9 +589,9 @@ void OpenGl_ShaderManager::pushLightSourceState(
     NCollection_Vec2<float> aSizeBias;
     if (myLightSourceState.HasShadowMaps())
     {
-      aSizeBias.SetValues(1.0f
-                            / static_cast<float>(myLightSourceState.ShadowMaps()->First()->Texture()->SizeX()),
-                          myLightSourceState.ShadowMaps()->First()->ShadowMapBias());
+      aSizeBias.SetValues(
+        1.0f / static_cast<float>(myLightSourceState.ShadowMaps()->First()->Texture()->SizeX()),
+        myLightSourceState.ShadowMaps()->First()->ShadowMapBias());
       const int aNbShadows =
         std::min(theProgram->NbShadowMaps(), myLightSourceState.ShadowMaps()->Size());
       for (int aShadowIter = 0; aShadowIter < aNbShadows; ++aShadowIter)

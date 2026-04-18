@@ -815,7 +815,8 @@ int XSControl_TransferReader::TransferOne(const occ::handle<Standard_Transient>&
            << "      Ident : " << lab->ToCString() << Interface_MSG::Blanks(14 - lab->Length())
            << "******\n";
     sout << "******    Type : " << myModel->TypeName(ent, false)
-         << Interface_MSG::Blanks(static_cast<int>(44 - strlen(myModel->TypeName(ent, false)))) << "******";
+         << Interface_MSG::Blanks(static_cast<int>(44 - strlen(myModel->TypeName(ent, false))))
+         << "******";
     sout << "\n*******************************************************************\n";
   }
 

@@ -34,7 +34,9 @@ namespace
 //! Trivial cast.
 inline NCollection_Vec3<float> objXyzToVec(const gp_XYZ& thePnt)
 {
-  return NCollection_Vec3<float>(static_cast<float>(thePnt.X()), static_cast<float>(thePnt.Y()), static_cast<float>(thePnt.Z()));
+  return NCollection_Vec3<float>(static_cast<float>(thePnt.X()),
+                                 static_cast<float>(thePnt.Y()),
+                                 static_cast<float>(thePnt.Z()));
 }
 
 //! Trivial cast.

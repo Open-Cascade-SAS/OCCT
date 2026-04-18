@@ -266,7 +266,8 @@ bool BRepClass3d_SolidExplorer::PointInTheFace(const TopoDS_Face&               
     }
     if (ptr)
     {
-      const IntCurvesFace_Intersector& TheIntersector = (*(static_cast<IntCurvesFace_Intersector*>(ptr)));
+      const IntCurvesFace_Intersector& TheIntersector =
+        (*(static_cast<IntCurvesFace_Intersector*>(ptr)));
       // Check if the point is already in the face
       if (IsInside && (ClassifyUVPoint(TheIntersector, surf, gp_Pnt2d(u_, v_)) == TopAbs_IN))
       {

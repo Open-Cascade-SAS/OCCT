@@ -210,7 +210,9 @@ bool LDOMBasicString::equals(const LDOMBasicString& anOther) const
         case LDOM_AsciiDoc:
         case LDOM_AsciiDocClear:
         case LDOM_AsciiHashed:
-          return (strcmp(static_cast<const char*>(myVal.ptr), static_cast<const char*>(anOther.myVal.ptr)) == 0);
+          return (
+            strcmp(static_cast<const char*>(myVal.ptr), static_cast<const char*>(anOther.myVal.ptr))
+            == 0);
         case LDOM_NULL:
         default:;
       }

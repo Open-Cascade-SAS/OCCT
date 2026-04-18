@@ -356,7 +356,10 @@ public:
   //! @param[in] theVertex 3D coordinates
   void SetVertice(const int theIndex, const gp_Pnt& theVertex)
   {
-    SetVertice(theIndex, static_cast<float>(theVertex.X()), static_cast<float>(theVertex.Y()), static_cast<float>(theVertex.Z()));
+    SetVertice(theIndex,
+               static_cast<float>(theVertex.X()),
+               static_cast<float>(theVertex.Y()),
+               static_cast<float>(theVertex.Z()));
   }
 
   //! Change the vertice in the array.
@@ -436,7 +439,8 @@ public:
                                  "BAD VERTEX index");
     if (myColData != nullptr)
     {
-      *reinterpret_cast<int*>(myColData + myColStride * (static_cast<size_t>(theIndex) - 1)) = theColor32;
+      *reinterpret_cast<int*>(myColData + myColStride * (static_cast<size_t>(theIndex) - 1)) =
+        theColor32;
     }
   }
 
@@ -576,7 +580,8 @@ public:
                                  "BAD VERTEX index");
     if (myColData != nullptr)
     {
-      theColor = *reinterpret_cast<const int*>(myColData + myColStride * (static_cast<size_t>(theRank) - 1));
+      theColor =
+        *reinterpret_cast<const int*>(myColData + myColStride * (static_cast<size_t>(theRank) - 1));
     }
   }
 

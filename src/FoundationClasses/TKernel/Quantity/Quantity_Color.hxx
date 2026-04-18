@@ -381,7 +381,9 @@ public:
                      double&      theB) noexcept
   {
     const NCollection_Vec3<float> anRgb =
-      Convert_HLS_To_sRGB(NCollection_Vec3<float>(static_cast<float>(theH), static_cast<float>(theL), static_cast<float>(theS)));
+      Convert_HLS_To_sRGB(NCollection_Vec3<float>(static_cast<float>(theH),
+                                                  static_cast<float>(theL),
+                                                  static_cast<float>(theS)));
     theR = anRgb[0];
     theG = anRgb[1];
     theB = anRgb[2];
@@ -396,7 +398,9 @@ public:
                      double&      theS) noexcept
   {
     const NCollection_Vec3<float> aHls =
-      Convert_sRGB_To_HLS(NCollection_Vec3<float>(static_cast<float>(theR), static_cast<float>(theG), static_cast<float>(theB)));
+      Convert_sRGB_To_HLS(NCollection_Vec3<float>(static_cast<float>(theR),
+                                                  static_cast<float>(theG),
+                                                  static_cast<float>(theB)));
     theH = aHls[0];
     theL = aHls[1];
     theS = aHls[2];

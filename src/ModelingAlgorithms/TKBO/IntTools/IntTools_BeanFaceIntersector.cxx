@@ -2500,7 +2500,9 @@ static void CheckSampling(const IntTools_CurveRangeSample&         theCurveRange
   int aSamplesNb = theCurveRange.GetDepth() == 0 ? 1 : theCurveData.GetNbSample();
 
   // check
-  if ((pow(static_cast<double>(theCurveData.GetNbSample()), static_cast<double>(theCurveRange.GetDepth() + 1)) > dLimit)
+  if ((pow(static_cast<double>(theCurveData.GetNbSample()),
+           static_cast<double>(theCurveRange.GetDepth() + 1))
+       > dLimit)
       || ((DiffC / static_cast<double>(aSamplesNb)) < theCurveData.GetMinRange()))
   {
     bAllowSamplingC = false;
@@ -2508,7 +2510,8 @@ static void CheckSampling(const IntTools_CurveRangeSample&         theCurveRange
 
   aSamplesNb = theSurfaceRange.GetDepthU() == 0 ? 1 : theSurfaceData.GetNbSampleU();
 
-  if ((pow(static_cast<double>(theSurfaceData.GetNbSampleU()), static_cast<double>(theSurfaceRange.GetDepthU() + 1))
+  if ((pow(static_cast<double>(theSurfaceData.GetNbSampleU()),
+           static_cast<double>(theSurfaceRange.GetDepthU() + 1))
        > dLimit)
       || ((DiffU / static_cast<double>(aSamplesNb)) < theSurfaceData.GetMinRangeU()))
   {
@@ -2517,7 +2520,8 @@ static void CheckSampling(const IntTools_CurveRangeSample&         theCurveRange
 
   aSamplesNb = theSurfaceRange.GetDepthV() == 0 ? 1 : theSurfaceData.GetNbSampleV();
 
-  if ((pow(static_cast<double>(theSurfaceData.GetNbSampleV()), static_cast<double>(theSurfaceRange.GetDepthV() + 1))
+  if ((pow(static_cast<double>(theSurfaceData.GetNbSampleV()),
+           static_cast<double>(theSurfaceRange.GetDepthV() + 1))
        > dLimit)
       || ((DiffV / static_cast<double>(aSamplesNb)) < theSurfaceData.GetMinRangeV()))
   {

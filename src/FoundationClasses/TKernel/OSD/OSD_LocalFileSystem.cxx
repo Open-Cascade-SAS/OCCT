@@ -72,7 +72,10 @@ std::shared_ptr<std::streambuf> OSD_LocalFileSystem::OpenStreamBuffer(
   if (theOutBufSize && ((theMode & std::ios::in) != 0))
   {
     *theOutBufSize = (int64_t)aNewBuf->pubseekoff(0, std::ios_base::end, std::ios_base::in);
-    if (aNewBuf->pubseekoff(static_cast<std::streamoff>(theOffset), std::ios_base::beg, std::ios_base::in) < 0)
+    if (aNewBuf->pubseekoff(static_cast<std::streamoff>(theOffset),
+                            std::ios_base::beg,
+                            std::ios_base::in)
+        < 0)
     {
       *theOutBufSize = 0;
       return std::shared_ptr<std::streambuf>();

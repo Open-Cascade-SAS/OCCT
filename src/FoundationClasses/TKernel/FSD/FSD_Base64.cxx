@@ -42,8 +42,8 @@ size_t FSD_Base64::Encode(char*          theEncodedStr,
   size_t iStr = 0;
   for (size_t i = 0; i < theDataLen - aPad; i += 3)
   {
-    uint32_t aWord =
-      (static_cast<uint32_t>(theData[i]) << 16) + (static_cast<uint32_t>(theData[i + 1]) << 8) + theData[i + 2];
+    uint32_t aWord = (static_cast<uint32_t>(theData[i]) << 16)
+                     + (static_cast<uint32_t>(theData[i + 1]) << 8) + theData[i + 2];
     theEncodedStr[iStr++] = aBase64Chars[aWord >> 18];
     theEncodedStr[iStr++] = aBase64Chars[aWord >> 12 & 0x3F];
     theEncodedStr[iStr++] = aBase64Chars[aWord >> 6 & 0x3F];
@@ -53,7 +53,8 @@ size_t FSD_Base64::Encode(char*          theEncodedStr,
   {
     if (aPad != 0)
     {
-      uint32_t aWord        = static_cast<uint32_t>(theData[theDataLen - 2]) << 8 | theData[theDataLen - 1];
+      uint32_t aWord =
+        static_cast<uint32_t>(theData[theDataLen - 2]) << 8 | theData[theDataLen - 1];
       theEncodedStr[iStr++] = aBase64Chars[aWord >> 10];
       theEncodedStr[iStr++] = aBase64Chars[aWord >> 4 & 0x03F];
       theEncodedStr[iStr++] = aBase64Chars[(aWord & 0xF) << 2];

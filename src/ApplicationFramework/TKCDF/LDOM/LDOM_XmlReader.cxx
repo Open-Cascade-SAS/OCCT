@@ -311,8 +311,9 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
                   myPtr      = aNameEnd;
                   if (myPtr < myEndPtr)
                   {
-                    myElement =
-                      &LDOM_BasicElement::Create(aStartData, static_cast<int>(myPtr - aStartData), myDocument);
+                    myElement   = &LDOM_BasicElement::Create(aStartData,
+                                                           static_cast<int>(myPtr - aStartData),
+                                                           myDocument);
                     myLastChild = nullptr;
                     aState      = STATE_ATTRIBUTE_NAME;
                     aStartData  = nullptr;
@@ -608,13 +609,14 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord(Standard_IStream& theIStre
             }
             //      Limitation: we do not take into account that '<' and '&'
             //      are not allowed in attribute values
-            aPtr = static_cast<const char*>(memchr(aStartData, anAttDelimiter, myEndPtr - aStartData));
+            aPtr =
+              static_cast<const char*>(memchr(aStartData, anAttDelimiter, myEndPtr - aStartData));
             if (aPtr)
             {
-              const_cast<char&>(aPtr[0])          = '\0';
-              anAttDelimiter          = '\0';
-              char*       aDataString = const_cast<char*>(aStartData);
-              const char* ePtr        = aPtr;
+              const_cast<char&>(aPtr[0]) = '\0';
+              anAttDelimiter             = '\0';
+              char*       aDataString    = const_cast<char*>(aStartData);
+              const char* ePtr           = aPtr;
 
               //    Append the end of the string to previously taken data
               if (theData.Length() > 0)

@@ -51,16 +51,11 @@ bool DEOBJ_ConfigurationNode::Load(const occ::handle<DE_ConfigurationContext>& t
     THE_CONFIGURATION_SCOPE() + "." + GetFormat() + "." + GetVendor();
   InternalParameters.FileLengthUnit =
     theResource->RealVal("file.length.unit", InternalParameters.FileLengthUnit, aScope);
-  InternalParameters.SystemCS =
-    static_cast<RWMesh_CoordinateSystem>(theResource->IntegerVal("system.cs",
-                                                      static_cast<int>(InternalParameters.SystemCS),
-                                                      aScope)
-                              % 2);
-  InternalParameters.FileCS =
-    static_cast<RWMesh_CoordinateSystem>(theResource->IntegerVal("file.cs",
-                                                      static_cast<int>(InternalParameters.FileCS),
-                                                      aScope)
-                              % 2);
+  InternalParameters.SystemCS = static_cast<RWMesh_CoordinateSystem>(
+    theResource->IntegerVal("system.cs", static_cast<int>(InternalParameters.SystemCS), aScope)
+    % 2);
+  InternalParameters.FileCS = static_cast<RWMesh_CoordinateSystem>(
+    theResource->IntegerVal("file.cs", static_cast<int>(InternalParameters.FileCS), aScope) % 2);
 
   InternalParameters.ReadSinglePrecision =
     theResource->BooleanVal("read.single.precision",

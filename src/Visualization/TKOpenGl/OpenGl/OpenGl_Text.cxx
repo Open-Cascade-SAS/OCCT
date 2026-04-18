@@ -240,8 +240,12 @@ void OpenGl_Text::StringSize(const occ::handle<OpenGl_Context>& theCtx,
   theDescent = 0.0f;
   const TCollection_AsciiString aFontKey =
     FontKey(theTextAspect, static_cast<int>(theHeight), theResolution, theFontHinting);
-  occ::handle<OpenGl_Font> aFont =
-    FindFont(theCtx, theTextAspect, static_cast<int>(theHeight), theResolution, theFontHinting, aFontKey);
+  occ::handle<OpenGl_Font> aFont = FindFont(theCtx,
+                                            theTextAspect,
+                                            static_cast<int>(theHeight),
+                                            theResolution,
+                                            theFontHinting,
+                                            aFontKey);
   if (aFont.IsNull() || !aFont->IsValid())
   {
     return;
@@ -540,7 +544,12 @@ TCollection_AsciiString OpenGl_Text::FontKey(const OpenGl_Aspects& theAspect,
                                            : THE_DEFAULT_FONT;
 
   char aSuff[64];
-  Sprintf(aSuff, ":%d:%d:%d:%d", static_cast<int>(anAspect), static_cast<int>(theResolution), theHeight, static_cast<int>(theFontHinting));
+  Sprintf(aSuff,
+          ":%d:%d:%d:%d",
+          static_cast<int>(anAspect),
+          static_cast<int>(theResolution),
+          theHeight,
+          static_cast<int>(theFontHinting));
   return aFont + aSuff;
 }
 

@@ -164,7 +164,9 @@ void evalMixedAHT(const NCollection_Array1<gp_Pnt>& thePoles,
     }
     if constexpr (theMaxOrder >= 3)
     {
-      aB3 = (k >= 3) ? static_cast<double>(k) * static_cast<double>(k - 1) * static_cast<double>(k - 2) * aPowM3 : 0.0;
+      aB3 = (k >= 3) ? static_cast<double>(k) * static_cast<double>(k - 1)
+                         * static_cast<double>(k - 2) * aPowM3
+                     : 0.0;
     }
 
     if constexpr (theIsRational)

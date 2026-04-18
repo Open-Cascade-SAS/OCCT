@@ -256,8 +256,10 @@ inline char16_t* NCollection_UtfIterator<Type>::GetUtf16(char16_t* theBuffer) co
   {
     // surrogate pair
     char32_t aChar = myCharUtf32 - UTF16_SURROGATE_LOW_BASE;
-    *theBuffer++   = static_cast<char16_t>((aChar >> UTF16_SURROGATE_HIGH_SHIFT) + UTF16_SURROGATE_HIGH_START);
-    *theBuffer++   = static_cast<char16_t>((aChar & UTF16_SURROGATE_LOW_MASK) + UTF16_SURROGATE_LOW_START);
+    *theBuffer++ =
+      static_cast<char16_t>((aChar >> UTF16_SURROGATE_HIGH_SHIFT) + UTF16_SURROGATE_HIGH_START);
+    *theBuffer++ =
+      static_cast<char16_t>((aChar & UTF16_SURROGATE_LOW_MASK) + UTF16_SURROGATE_LOW_START);
     return theBuffer;
   }
 }

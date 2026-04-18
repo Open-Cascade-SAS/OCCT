@@ -312,8 +312,8 @@ void AIS_TexturedShape::Compute(const occ::handle<PrsMgr_PresentationManager>&,
   if (myshape.ShapeType() >= TopAbs_WIRE && myshape.ShapeType() <= TopAbs_VERTEX)
   {
     // TopAbs_WIRE -> 7, TopAbs_EDGE -> 8, TopAbs_VERTEX -> 9 (Graphic3d_DisplayPriority_Highlight)
-    const int aPrior =
-      static_cast<int>(Graphic3d_DisplayPriority_Above1) + static_cast<int>(myshape.ShapeType()) - TopAbs_WIRE;
+    const int aPrior = static_cast<int>(Graphic3d_DisplayPriority_Above1)
+                       + static_cast<int>(myshape.ShapeType()) - TopAbs_WIRE;
     thePrs->SetVisual(Graphic3d_TOS_ALL);
     thePrs->SetDisplayPriority(static_cast<Graphic3d_DisplayPriority>(aPrior));
   }

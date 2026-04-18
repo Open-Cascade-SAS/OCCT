@@ -187,7 +187,11 @@ bool OSD_Thread::Run(void* const data,
   }
   else
   {
+#ifdef __APPLE__
+    myThreadId = reinterpret_cast<Standard_ThreadId>(myThread);
+#else
     myThreadId = static_cast<Standard_ThreadId>(myThread);
+#endif
   }
 #endif
   return myThread != OSD_PTHREAD_NULL;
@@ -357,6 +361,8 @@ Standard_ThreadId OSD_Thread::Current()
 {
 #ifdef _WIN32
   return GetCurrentThreadId();
+#elif defined(__APPLE__)
+  return reinterpret_cast<Standard_ThreadId>(pthread_self());
 #else
   return static_cast<Standard_ThreadId>(pthread_self());
 #endif

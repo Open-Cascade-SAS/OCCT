@@ -34,10 +34,12 @@ bool NCollection_BaseMap::BeginResize(const int               NbBuckets,
     else
       return false;
   }
-  data1 = static_cast<NCollection_ListNode**>(Standard::Allocate((N + 1) * sizeof(NCollection_ListNode*)));
+  data1 = static_cast<NCollection_ListNode**>(
+    Standard::Allocate((N + 1) * sizeof(NCollection_ListNode*)));
   if (isDouble)
   {
-    data2 = static_cast<NCollection_ListNode**>(Standard::Allocate((N + 1) * sizeof(NCollection_ListNode*)));
+    data2 = static_cast<NCollection_ListNode**>(
+      Standard::Allocate((N + 1) * sizeof(NCollection_ListNode*)));
   }
   else
     data2 = nullptr;

@@ -53,7 +53,8 @@ void GeomPlate_PlateG0Criterion::Value(AdvApp2Var_Patch& P, const AdvApp2Var_Con
   double  UInt[2], VInt[2];
   int     MaxNbCoeff[2], NbCoeff[2];
   double* adrCoeff = nullptr;
-  adrCoeff         = static_cast<double*>(&P.Coefficients(1, C)->ChangeArray1()(P.Coefficients(1, C)->Lower()));
+  adrCoeff =
+    static_cast<double*>(&P.Coefficients(1, C)->ChangeArray1()(P.Coefficients(1, C)->Lower()));
 
   MaxNbCoeff[0] = C.ULimit();
   MaxNbCoeff[1] = C.VLimit();

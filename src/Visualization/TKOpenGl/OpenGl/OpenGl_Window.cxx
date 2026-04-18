@@ -601,10 +601,12 @@ void OpenGl_Window::Init(const occ::handle<OpenGl_GraphicDriver>& theDriver,
                     (Aspect_RenderingContext)aGContext,
                     isCoreProfile);
   #elif defined(HAVE_XLIB)
-  Window     aWindow   = static_cast<Window>(myPlatformWindow->NativeHandle());
-  Display*   aDisp     = reinterpret_cast<Display*>(theDriver->GetDisplayConnection()->GetDisplayAspect());
+  Window   aWindow = static_cast<Window>(myPlatformWindow->NativeHandle());
+  Display* aDisp =
+    reinterpret_cast<Display*>(theDriver->GetDisplayConnection()->GetDisplayAspect());
   GLXContext aGContext = static_cast<GLXContext>(theGContext);
-  GLXContext aSlaveCtx = !theShareCtx.IsNull() ? static_cast<GLXContext>(theShareCtx->myGContext) : nullptr;
+  GLXContext aSlaveCtx =
+    !theShareCtx.IsNull() ? static_cast<GLXContext>(theShareCtx->myGContext) : nullptr;
 
   XWindowAttributes aWinAttribs;
   XGetWindowAttributes(aDisp, aWindow, &aWinAttribs);
@@ -644,8 +646,8 @@ void OpenGl_Window::Init(const occ::handle<OpenGl_GraphicDriver>& theDriver,
                                                        GLXContext  share_context,
                                                        Bool        direct,
                                                        const int*  attrib_list);
-    glXCreateContextAttribsARB_t aCreateCtxProc =
-      reinterpret_cast<glXCreateContextAttribsARB_t>(glXGetProcAddress(reinterpret_cast<const GLubyte*>("glXCreateContextAttribsARB")));
+    glXCreateContextAttribsARB_t aCreateCtxProc = reinterpret_cast<glXCreateContextAttribsARB_t>(
+      glXGetProcAddress(reinterpret_cast<const GLubyte*>("glXCreateContextAttribsARB")));
     if (!theCaps->contextCompatible)
     {
       int aCoreCtxAttribs[] = {GLX_CONTEXT_MAJOR_VERSION_ARB,

@@ -424,7 +424,7 @@ void BRepCheck_Analyzer::Perform()
   const occ::handle<OSD_ThreadPool>& aThreadPool  = OSD_ThreadPool::DefaultPool();
   const int                          aNbThreads   = aThreadPool->NbThreads();
   int                                aNbTasks     = aNbThreads * 10;
-  int                                aTaskSize    = static_cast<int>(std::ceil(static_cast<double>(aMapSize) / aNbTasks));
+  int aTaskSize = static_cast<int>(std::ceil(static_cast<double>(aMapSize) / aNbTasks));
   if (aTaskSize < aMinTaskSize)
   {
     aTaskSize = aMinTaskSize;

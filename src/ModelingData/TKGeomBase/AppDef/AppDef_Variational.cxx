@@ -2716,8 +2716,8 @@ void AppDef_Variational::AssemblingConstraints(const occ::handle<FEmTool_Curve>&
   int MxDeg = Curve->Base().WorkDegree(), NbElm = Curve->NbElements(), NbDim = Curve->Dimension();
 
   NCollection_Array1<double> G0(0, MxDeg), G1(0, MxDeg), G2(0, MxDeg);
-  math_Vector                V0(static_cast<double*>(&G0(0)), 0, MxDeg), V1(static_cast<double*>(&G1(0)), 0, MxDeg),
-    V2(static_cast<double*>(&G2(0)), 0, MxDeg);
+  math_Vector                V0(static_cast<double*>(&G0(0)), 0, MxDeg),
+    V1(static_cast<double*>(&G1(0)), 0, MxDeg), V2(static_cast<double*>(&G2(0)), 0, MxDeg);
 
   int IndexOfConstraint, Ng3d, Ng2d, NBeg2d, NPass, NgPC1, NTang3d, NTang2d, Point, TypOfConstr,
     p0 = Parameters.Lower() - myFirstPoint, curel = 1, el, i, ipnt, ityp, j, k, pnt, curdim, jt,

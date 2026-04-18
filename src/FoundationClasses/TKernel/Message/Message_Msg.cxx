@@ -125,8 +125,8 @@ void Message_Msg::Set(const TCollection_ExtendedString& theMsg)
           continue;
       }
       mySeqOfFormats.Append(static_cast<int>(aFormatType)); // type
-      mySeqOfFormats.Append(aStart);           // beginning pos
-      mySeqOfFormats.Append(i + 1 - aStart);   // length
+      mySeqOfFormats.Append(aStart);                        // beginning pos
+      mySeqOfFormats.Append(i + 1 - aStart);                // length
     }
   }
   myOriginal = myMessageBody;

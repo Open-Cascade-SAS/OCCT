@@ -351,7 +351,8 @@ bool OpenGl_Texture::Init(const occ::handle<OpenGl_Context>& theCtx,
     // clang-format on
     theCtx->core11fwd->glPixelStorei(GL_UNPACK_ALIGNMENT, anAligment);
     const GLint anExtraBytes = static_cast<GLint>(theImage->RowExtraBytes());
-    const GLint aPixelsWidth = static_cast<GLint>(theImage->SizeRowBytes() / theImage->SizePixelBytes());
+    const GLint aPixelsWidth =
+      static_cast<GLint>(theImage->SizeRowBytes() / theImage->SizePixelBytes());
     if (theCtx->hasUnpackRowLength)
     {
       theCtx->core11fwd->glPixelStorei(GL_UNPACK_ROW_LENGTH,
@@ -1412,8 +1413,9 @@ bool OpenGl_Texture::InitCubeMap(const occ::handle<OpenGl_Context>&    theCtx,
         const GLint anAligment = std::min(static_cast<GLint>(anImage->MaxRowAligmentBytes()), 8); // OpenGL supports alignment upto 8 bytes
         // clang-format on
         const GLint anExtraBytes = static_cast<GLint>(anImage->RowExtraBytes());
-        const GLint aPixelsWidth = static_cast<GLint>(anImage->SizeRowBytes() / anImage->SizePixelBytes());
-        const GLint aRowLength   = (anExtraBytes >= anAligment) ? aPixelsWidth : 0;
+        const GLint aPixelsWidth =
+          static_cast<GLint>(anImage->SizeRowBytes() / anImage->SizePixelBytes());
+        const GLint aRowLength = (anExtraBytes >= anAligment) ? aPixelsWidth : 0;
         if (theCtx->hasUnpackRowLength)
         {
           theCtx->core11fwd->glPixelStorei(GL_UNPACK_ROW_LENGTH, aRowLength);
@@ -1477,8 +1479,8 @@ bool OpenGl_Texture::InitCubeMap(const occ::handle<OpenGl_Context>&    theCtx,
         GL_DEBUG_TYPE_ERROR,
         0,
         GL_DEBUG_SEVERITY_HIGH,
-        TCollection_AsciiString("Error: cubemap side  ") + static_cast<int>(theSize) + "x" + static_cast<int>(theSize)
-          + " IF: " + OpenGl_TextureFormat::FormatFormat(anIntFormat)
+        TCollection_AsciiString("Error: cubemap side  ") + static_cast<int>(theSize) + "x"
+          + static_cast<int>(theSize) + " IF: " + OpenGl_TextureFormat::FormatFormat(anIntFormat)
           + " PF: " + OpenGl_TextureFormat::FormatFormat(aFormat.PixelFormat())
           + " DT: " + OpenGl_TextureFormat::FormatDataType(aFormat.DataType())
           + " can not be created with error " + OpenGl_Context::FormatGlError(anErr) + ".");

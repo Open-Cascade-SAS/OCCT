@@ -339,8 +339,9 @@ protected:
     {
       if (myIsSinglePrecision)
       {
-        myVec3Vec->Append(
-          NCollection_Vec3<float>(static_cast<float>(thePnt.X()), static_cast<float>(thePnt.Y()), static_cast<float>(thePnt.Z())));
+        myVec3Vec->Append(NCollection_Vec3<float>(static_cast<float>(thePnt.X()),
+                                                  static_cast<float>(thePnt.Y()),
+                                                  static_cast<float>(thePnt.Z())));
       }
       else
       {

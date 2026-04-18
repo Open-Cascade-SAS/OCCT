@@ -134,10 +134,10 @@ static void SeveralWlinesProcessing(const occ::handle<Adaptor3d_Surface>& theSur
     {
       const occ::handle<IntPatch_Line>& aSLine = theSLin.Value(WLDMin);
       const occ::handle<IntPatch_WLine> aWLine = occ::down_cast<IntPatch_WLine>(aSLine);
-      int                               tiVpar = static_cast<int>(aWLine->Vertex(VDMin).ParameterOnLine());
-      int                               ciVpar = static_cast<int>(theWLline->Vertex(ciV).ParameterOnLine());
-      double                            u11 = 0., u12 = 0., v11 = 0., v12 = 0.;
-      double                            u21 = 0., u22 = 0., v21 = 0., v22 = 0.;
+      int    tiVpar = static_cast<int>(aWLine->Vertex(VDMin).ParameterOnLine());
+      int    ciVpar = static_cast<int>(theWLline->Vertex(ciV).ParameterOnLine());
+      double u11 = 0., u12 = 0., v11 = 0., v12 = 0.;
+      double u21 = 0., u22 = 0., v21 = 0., v22 = 0.;
       theWLline->Point(ciVpar).Parameters(u11, v11, u12, v12);
       aWLine->Point(tiVpar).Parameters(u21, v21, u22, v22);
 
@@ -3470,10 +3470,11 @@ void IntPatch_PrmPrmIntersection::PointDepart(occ::handle<IntSurf_LineOn2S>&    
   {
     for (j = 0; j < SV1; j++)
     {
-      aIPD.xIP1(i, j)   = -1;
-      const gp_Pnt& P   = aIPD.xP1(i, j);
-      aIPD.xP1DS2(i, j) = static_cast<char>(CodeReject(x20, y20, z20, x21, y21, z21, P.X(), P.Y(), P.Z()));
-      int ix            = static_cast<int>((P.X() - x0 + dx2) / dx);
+      aIPD.xIP1(i, j) = -1;
+      const gp_Pnt& P = aIPD.xP1(i, j);
+      aIPD.xP1DS2(i, j) =
+        static_cast<char>(CodeReject(x20, y20, z20, x21, y21, z21, P.X(), P.Y(), P.Z()));
+      int ix = static_cast<int>((P.X() - x0 + dx2) / dx);
       if (DansGrille(ix))
       {
         int iy = static_cast<int>((P.Y() - y0 + dy2) / dy);
@@ -3493,10 +3494,11 @@ void IntPatch_PrmPrmIntersection::PointDepart(occ::handle<IntSurf_LineOn2S>&    
   {
     for (j = 0; j < SV2; j++)
     {
-      aIPD.xIP2(i, j)   = -1;
-      const gp_Pnt& P   = aIPD.xP2(i, j);
-      aIPD.xP2DS1(i, j) = static_cast<char>(CodeReject(x10, y10, z10, x11, y11, z11, P.X(), P.Y(), P.Z()));
-      int ix            = static_cast<int>((P.X() - x0 + dx2) / dx);
+      aIPD.xIP2(i, j) = -1;
+      const gp_Pnt& P = aIPD.xP2(i, j);
+      aIPD.xP2DS1(i, j) =
+        static_cast<char>(CodeReject(x10, y10, z10, x11, y11, z11, P.X(), P.Y(), P.Z()));
+      int ix = static_cast<int>((P.X() - x0 + dx2) / dx);
       if (DansGrille(ix))
       {
         int iy = static_cast<int>((P.Y() - y0 + dy2) / dy);

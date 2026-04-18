@@ -258,7 +258,8 @@ bool AIS_RubberBand::fillTriangles()
   IMeshData::VectorOfInteger anIndexes(myPoints.Length(), anAllocator);
   for (int aPtIdx = aPtsLower; aPtIdx <= aPtsUpper; ++aPtIdx)
   {
-    gp_XY           aP(static_cast<double>(myPoints.Value(aPtIdx).x()), static_cast<double>(myPoints.Value(aPtIdx).y()));
+    gp_XY           aP(static_cast<double>(myPoints.Value(aPtIdx).x()),
+             static_cast<double>(myPoints.Value(aPtIdx).y()));
     BRepMesh_Vertex aVertex(aP, aPtIdx, BRepMesh_Frontier);
     anIndexes.Append(aMeshStructure->AddNode(aVertex));
   }
@@ -325,7 +326,10 @@ bool AIS_RubberBand::fillTriangles()
     {
       for (int anIt = 0; anIt < 3; ++anIt)
       {
-        myTriangles->SetVertice(aVertexIndex++, static_cast<float>(aPts[anIt].X()), static_cast<float>(aPts[anIt].Y()), 0.0f);
+        myTriangles->SetVertice(aVertexIndex++,
+                                static_cast<float>(aPts[anIt].X()),
+                                static_cast<float>(aPts[anIt].Y()),
+                                0.0f);
       }
     }
   }
@@ -362,12 +366,16 @@ void AIS_RubberBand::Compute(const occ::handle<PrsMgr_PresentationManager>&,
     myBorders = new Graphic3d_ArrayOfPolylines(myPoints.Length() + (myIsPolygonClosed ? 1 : 0));
     for (int anIt = 1; anIt <= myPoints.Length(); anIt++)
     {
-      myBorders->AddVertex(static_cast<double>(myPoints.Value(anIt).x()), static_cast<double>(myPoints.Value(anIt).y()), 0.0);
+      myBorders->AddVertex(static_cast<double>(myPoints.Value(anIt).x()),
+                           static_cast<double>(myPoints.Value(anIt).y()),
+                           0.0);
     }
 
     if (myIsPolygonClosed)
     {
-      myBorders->AddVertex(static_cast<double>(myPoints.Value(1).x()), static_cast<double>(myPoints.Value(1).y()), 0.0);
+      myBorders->AddVertex(static_cast<double>(myPoints.Value(1).x()),
+                           static_cast<double>(myPoints.Value(1).y()),
+                           0.0);
     }
   }
   else

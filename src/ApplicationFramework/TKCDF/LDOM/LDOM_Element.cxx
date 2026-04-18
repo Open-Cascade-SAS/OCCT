@@ -206,9 +206,9 @@ void LDOM_Element::ReplaceElement(const LDOM_Element& anOther)
   const LDOM_BasicElement& anOtherElem = (const LDOM_BasicElement&)anOther.Origin();
   if (myDocument == anOther.myDocument)
   {
-    anElem.myTagName                    = anOtherElem.myTagName;
-    anElem.myAttributeMask              = anOtherElem.myAttributeMask;
-    anElem.myFirstChild                 = anOtherElem.myFirstChild;
+    anElem.myTagName                                = anOtherElem.myTagName;
+    anElem.myAttributeMask                          = anOtherElem.myAttributeMask;
+    anElem.myFirstChild                             = anOtherElem.myFirstChild;
     const_cast<const LDOM_BasicNode*&>(myLastChild) = anOther.myLastChild;
   }
   else

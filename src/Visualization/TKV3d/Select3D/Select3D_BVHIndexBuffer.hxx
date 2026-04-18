@@ -61,9 +61,9 @@ public:
   //! Access index at specified position
   int PatchSize(const int theIndex) const
   {
-    return myHasPatches
-             ? static_cast<int>(*reinterpret_cast<const unsigned int*>(value(theIndex) + sizeof(unsigned int)))
-             : 1;
+    return myHasPatches ? static_cast<int>(*reinterpret_cast<const unsigned int*>(
+                            value(theIndex) + sizeof(unsigned int)))
+                        : 1;
   }
 
   //! Change index at specified position

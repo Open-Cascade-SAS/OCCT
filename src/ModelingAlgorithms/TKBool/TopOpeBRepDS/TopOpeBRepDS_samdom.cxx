@@ -51,21 +51,21 @@ Standard_EXPORT void FDSSDM_prepare(const occ::handle<TopOpeBRepDS_HDataStructur
 {
   if (Gps1 == nullptr)
   {
-    Gps1 = static_cast<NCollection_IndexedDataMap<
-            TopoDS_Shape,
-            NCollection_List<TopoDS_Shape>,
-            TopTools_ShapeMapHasher>*>(new NCollection_IndexedDataMap<TopoDS_Shape,
-                                                                     NCollection_List<TopoDS_Shape>,
-                                                                     TopTools_ShapeMapHasher>());
+    Gps1 = static_cast<NCollection_IndexedDataMap<TopoDS_Shape,
+                                                  NCollection_List<TopoDS_Shape>,
+                                                  TopTools_ShapeMapHasher>*>(
+      new NCollection_IndexedDataMap<TopoDS_Shape,
+                                     NCollection_List<TopoDS_Shape>,
+                                     TopTools_ShapeMapHasher>());
   }
   if (Gps2 == nullptr)
   {
-    Gps2 = static_cast<NCollection_IndexedDataMap<
-            TopoDS_Shape,
-            NCollection_List<TopoDS_Shape>,
-            TopTools_ShapeMapHasher>*>(new NCollection_IndexedDataMap<TopoDS_Shape,
-                                                                     NCollection_List<TopoDS_Shape>,
-                                                                     TopTools_ShapeMapHasher>());
+    Gps2 = static_cast<NCollection_IndexedDataMap<TopoDS_Shape,
+                                                  NCollection_List<TopoDS_Shape>,
+                                                  TopTools_ShapeMapHasher>*>(
+      new NCollection_IndexedDataMap<TopoDS_Shape,
+                                     NCollection_List<TopoDS_Shape>,
+                                     TopTools_ShapeMapHasher>());
   }
   // modified by NIZNHY-PKV Sun Dec 15 17:58:28 2002 f
   // Ghds = HDS;

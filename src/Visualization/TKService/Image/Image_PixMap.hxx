@@ -122,7 +122,10 @@ public: // high-level API
   }
 
   //! Return width / height.
-  double Ratio() const { return (SizeY() > 0) ? (static_cast<double>(SizeX()) / static_cast<double>(SizeY())) : 1.0; }
+  double Ratio() const
+  {
+    return (SizeY() > 0) ? (static_cast<double>(SizeX()) / static_cast<double>(SizeY())) : 1.0;
+  }
 
   //! Return true if data is NULL.
   bool IsEmpty() const { return myData.IsEmpty(); }
@@ -143,7 +146,8 @@ public: // high-level API
   //! @return the pixel color
   Quantity_ColorRGBA PixelColor(int theX, int theY, bool theToLinearize = false) const
   {
-    if (IsEmpty() || theX < 0 || static_cast<size_t>(theX) >= SizeX() || theY < 0 || static_cast<size_t>(theY) >= SizeY())
+    if (IsEmpty() || theX < 0 || static_cast<size_t>(theX) >= SizeX() || theY < 0
+        || static_cast<size_t>(theY) >= SizeY())
     {
       return Quantity_ColorRGBA(0.0f, 0.0f, 0.0f, 0.0f); // transparent
     }
@@ -181,7 +185,8 @@ public: // high-level API
                      const Quantity_ColorRGBA& theColor,
                      const bool                theToDeLinearize = false)
   {
-    if (IsEmpty() || theX < 0 || static_cast<size_t>(theX) >= SizeX() || theY < 0 || static_cast<size_t>(theY) >= SizeY())
+    if (IsEmpty() || theX < 0 || static_cast<size_t>(theX) >= SizeX() || theY < 0
+        || static_cast<size_t>(theY) >= SizeY())
     {
       return;
     }

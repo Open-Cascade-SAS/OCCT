@@ -83,7 +83,8 @@ private:
     Block(void* const theAddr, const size_t theNbItems, const size_t theItemSize)
         : Count(static_cast<size_t*>(theAddr)),
           Array(static_cast<char*>(theAddr) + sizeof(size_t)),
-          Bits(reinterpret_cast<Cell*>(static_cast<char*>(theAddr) + sizeof(size_t) + theNbItems * theItemSize))
+          Bits(reinterpret_cast<Cell*>(static_cast<char*>(theAddr) + sizeof(size_t)
+                                       + theNbItems * theItemSize))
     {
     }
 

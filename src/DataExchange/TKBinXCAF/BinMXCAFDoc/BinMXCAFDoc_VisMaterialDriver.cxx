@@ -231,8 +231,9 @@ bool BinMXCAFDoc_VisMaterialDriver::Paste(const BinObjMgt_Persistent&       theS
   if (aVerMaj < 1 || aVerMaj > MaterialVersionMajor)
   {
     myMessageDriver->Send(
-      TCollection_AsciiString("Skipping XCAFDoc_VisMaterial of unknown version ") + static_cast<int>(aVerMaj)
-      + "." + static_cast<int>(aVerMin) + " (supported version: " + static_cast<int>(MaterialVersionMajor) + "."
+      TCollection_AsciiString("Skipping XCAFDoc_VisMaterial of unknown version ")
+      + static_cast<int>(aVerMaj) + "." + static_cast<int>(aVerMin)
+      + " (supported version: " + static_cast<int>(MaterialVersionMajor) + "."
       + static_cast<int>(MaterialVersionMinor) + ")");
     return false;
   }

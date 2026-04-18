@@ -345,10 +345,10 @@ void AIS_ViewCube::createRoundRectangleTriangles(
     theTris->AddVertex(gp_Pnt(0.0, 0.0, 0.0).Transformed(theTrsf));
     for (int aNodeIter = 0; aNodeIter <= THE_NB_ROUND_SPLITS; ++aNodeIter)
     {
-      const double anAngle =
-        NCollection_Lerp<double>::Interpolate(M_PI * 0.5,
-                                              0.0,
-                                              static_cast<double>(aNodeIter) / static_cast<double>(THE_NB_ROUND_SPLITS));
+      const double anAngle = NCollection_Lerp<double>::Interpolate(
+        M_PI * 0.5,
+        0.0,
+        static_cast<double>(aNodeIter) / static_cast<double>(THE_NB_ROUND_SPLITS));
       theTris->AddVertex(gp_Pnt(aHSize.X() + aRadius * std::cos(anAngle),
                                 aHSize.Y() + aRadius * std::sin(anAngle),
                                 0.0)
@@ -356,10 +356,10 @@ void AIS_ViewCube::createRoundRectangleTriangles(
     }
     for (int aNodeIter = 0; aNodeIter <= THE_NB_ROUND_SPLITS; ++aNodeIter)
     {
-      const double anAngle =
-        NCollection_Lerp<double>::Interpolate(0.0,
-                                              -M_PI * 0.5,
-                                              static_cast<double>(aNodeIter) / static_cast<double>(THE_NB_ROUND_SPLITS));
+      const double anAngle = NCollection_Lerp<double>::Interpolate(
+        0.0,
+        -M_PI * 0.5,
+        static_cast<double>(aNodeIter) / static_cast<double>(THE_NB_ROUND_SPLITS));
       theTris->AddVertex(gp_Pnt(aHSize.X() + aRadius * std::cos(anAngle),
                                 -aHSize.Y() + aRadius * std::sin(anAngle),
                                 0.0)
@@ -367,10 +367,10 @@ void AIS_ViewCube::createRoundRectangleTriangles(
     }
     for (int aNodeIter = 0; aNodeIter <= THE_NB_ROUND_SPLITS; ++aNodeIter)
     {
-      const double anAngle =
-        NCollection_Lerp<double>::Interpolate(-M_PI * 0.5,
-                                              -M_PI,
-                                              static_cast<double>(aNodeIter) / static_cast<double>(THE_NB_ROUND_SPLITS));
+      const double anAngle = NCollection_Lerp<double>::Interpolate(
+        -M_PI * 0.5,
+        -M_PI,
+        static_cast<double>(aNodeIter) / static_cast<double>(THE_NB_ROUND_SPLITS));
       theTris->AddVertex(gp_Pnt(-aHSize.X() + aRadius * std::cos(anAngle),
                                 -aHSize.Y() + aRadius * std::sin(anAngle),
                                 0.0)
@@ -378,10 +378,10 @@ void AIS_ViewCube::createRoundRectangleTriangles(
     }
     for (int aNodeIter = 0; aNodeIter <= THE_NB_ROUND_SPLITS; ++aNodeIter)
     {
-      const double anAngle =
-        NCollection_Lerp<double>::Interpolate(-M_PI,
-                                              -M_PI * 1.5,
-                                              static_cast<double>(aNodeIter) / static_cast<double>(THE_NB_ROUND_SPLITS));
+      const double anAngle = NCollection_Lerp<double>::Interpolate(
+        -M_PI,
+        -M_PI * 1.5,
+        static_cast<double>(aNodeIter) / static_cast<double>(THE_NB_ROUND_SPLITS));
       theTris->AddVertex(gp_Pnt(-aHSize.X() + aRadius * std::cos(anAngle),
                                 aHSize.Y() + aRadius * std::sin(anAngle),
                                 0.0)
@@ -517,10 +517,10 @@ void AIS_ViewCube::createBoxCornerTriangles(const occ::handle<Graphic3d_ArrayOfT
     theTris->AddVertex(gp_Pnt(0.0, 0.0, 0.0).Transformed(aTrsf));
     for (int aNodeIter = 0; aNodeIter < THE_NB_DISK_SLICES; ++aNodeIter)
     {
-      const double anAngle =
-        NCollection_Lerp<double>::Interpolate(2.0 * M_PI,
-                                              0.0,
-                                              static_cast<double>(aNodeIter) / static_cast<double>(THE_NB_DISK_SLICES));
+      const double anAngle = NCollection_Lerp<double>::Interpolate(
+        2.0 * M_PI,
+        0.0,
+        static_cast<double>(aNodeIter) / static_cast<double>(THE_NB_DISK_SLICES));
       theTris->AddVertex(
         gp_Pnt(aRadius * std::cos(anAngle), aRadius * std::sin(anAngle), 0.0).Transformed(aTrsf));
     }
@@ -674,7 +674,10 @@ void AIS_ViewCube::Compute(const occ::handle<PrsMgr_PresentationManager>&,
       {
         int       aTriNodesFrom = aTris->VertexNumber();
         const int aTriFrom      = aNbTris;
-        createBoxPartTriangles(aTris, aNbNodes, aNbTris, static_cast<V3d_TypeOfOrientation>(aPartIter));
+        createBoxPartTriangles(aTris,
+                               aNbNodes,
+                               aNbTris,
+                               static_cast<V3d_TypeOfOrientation>(aPartIter));
         if (aSegs.IsNull())
         {
           continue;
@@ -787,7 +790,8 @@ void AIS_ViewCube::Compute(const occ::handle<PrsMgr_PresentationManager>&,
   // Display box corners
   {
     int aNbNodes = 0, aNbTris = 0;
-    for (int aPartIter = V3d_XposYposZpos; aPartIter <= static_cast<int>(V3d_XnegYnegZneg); ++aPartIter)
+    for (int aPartIter = V3d_XposYposZpos; aPartIter <= static_cast<int>(V3d_XnegYnegZneg);
+         ++aPartIter)
     {
       createBoxPartTriangles(occ::handle<Graphic3d_ArrayOfTriangles>(),
                              aNbNodes,
@@ -799,7 +803,8 @@ void AIS_ViewCube::Compute(const occ::handle<PrsMgr_PresentationManager>&,
       occ::handle<Graphic3d_ArrayOfTriangles> aTris =
         new Graphic3d_ArrayOfTriangles(aNbNodes, aNbTris * 3, Graphic3d_ArrayFlags_VertexNormal);
       aNbNodes = aNbTris = 0;
-      for (int aPartIter = V3d_XposYposZpos; aPartIter <= static_cast<int>(V3d_XnegYnegZneg); ++aPartIter)
+      for (int aPartIter = V3d_XposYposZpos; aPartIter <= static_cast<int>(V3d_XnegYnegZneg);
+           ++aPartIter)
       {
         const V3d_TypeOfOrientation anOrient = static_cast<V3d_TypeOfOrientation>(aPartIter);
         createBoxPartTriangles(aTris, aNbNodes, aNbTris, anOrient);

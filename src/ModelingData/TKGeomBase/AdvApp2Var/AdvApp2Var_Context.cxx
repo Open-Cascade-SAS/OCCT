@@ -183,7 +183,7 @@ AdvApp2Var_Context::AdvApp2Var_Context(const int                                
   // myJMaxU
   int                                      aSize = JDegU - 2 * iu - 1;
   occ::handle<NCollection_HArray1<double>> JMaxU = new NCollection_HArray1<double>(1, aSize);
-  double* JU_array                               = static_cast<double*>(&JMaxU->ChangeArray1()(JMaxU->Lower()));
+  double* JU_array = static_cast<double*>(&JMaxU->ChangeArray1()(JMaxU->Lower()));
   AdvApp2Var_ApproxF2var::mma2jmx_(&JDegU, &anOrderU, JU_array);
   myJMaxU = JMaxU;
 
@@ -203,7 +203,7 @@ AdvApp2Var_Context::AdvApp2Var_Context(const int                                
   // myJMaxV
   aSize                                          = JDegV - 2 * iv - 1;
   occ::handle<NCollection_HArray1<double>> JMaxV = new NCollection_HArray1<double>(1, aSize);
-  double* JV_array                               = static_cast<double*>(&JMaxV->ChangeArray1()(JMaxV->Lower()));
+  double* JV_array = static_cast<double*>(&JMaxV->ChangeArray1()(JMaxV->Lower()));
   AdvApp2Var_ApproxF2var::mma2jmx_(&JDegV, &anOrderV, JV_array);
   myJMaxV = JMaxV;
 

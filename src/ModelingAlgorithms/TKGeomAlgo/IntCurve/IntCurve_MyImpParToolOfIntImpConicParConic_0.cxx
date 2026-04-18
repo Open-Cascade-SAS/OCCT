@@ -32,8 +32,8 @@ IntCurve_MyImpParToolOfIntImpConicParConic::IntCurve_MyImpParToolOfIntImpConicPa
 
 bool IntCurve_MyImpParToolOfIntImpConicParConic::Value(const double Param, double& ApproxDistance)
 {
-  ApproxDistance =
-    TheImpTool.Distance(IntCurve_PConicTool::Value((*(static_cast<IntCurve_PConic*>(TheParCurve))), Param));
+  ApproxDistance = TheImpTool.Distance(
+    IntCurve_PConicTool::Value((*(static_cast<IntCurve_PConic*>(TheParCurve))), Param));
   return (true);
 }
 

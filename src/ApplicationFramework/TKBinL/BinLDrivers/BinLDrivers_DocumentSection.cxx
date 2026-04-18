@@ -147,7 +147,9 @@ void BinLDrivers_DocumentSection::Write(Standard_OStream&           theStream,
         "BinLDrivers_DocumentSection::Write : file size is too big, needs int64.");
 
     // Old documents stored file position as 4-bytes values.
-    int32_t aValInt[3] = {static_cast<int32_t>(myValue[0]), static_cast<int32_t>(myValue[1]), static_cast<int32_t>(myIsPostRead ? 1 : 0)};
+    int32_t aValInt[3] = {static_cast<int32_t>(myValue[0]),
+                          static_cast<int32_t>(myValue[1]),
+                          static_cast<int32_t>(myIsPostRead ? 1 : 0)};
 #ifdef DO_INVERSE
     aValInt[0] = InverseInt(aValInt[0]);
     aValInt[1] = InverseInt(aValInt[1]);

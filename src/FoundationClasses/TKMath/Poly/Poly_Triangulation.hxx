@@ -203,9 +203,10 @@ public:
   //! @param[in] theNormal normalized 3D vector defining a surface normal
   void SetNormal(const int theIndex, const gp_Dir& theNormal)
   {
-    SetNormal(
-      theIndex,
-      NCollection_Vec3<float>(static_cast<float>(theNormal.X()), static_cast<float>(theNormal.Y()), static_cast<float>(theNormal.Z())));
+    SetNormal(theIndex,
+              NCollection_Vec3<float>(static_cast<float>(theNormal.X()),
+                                      static_cast<float>(theNormal.Y()),
+                                      static_cast<float>(theNormal.Z())));
   }
 
   //! Returns mesh purpose bits.

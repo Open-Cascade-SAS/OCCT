@@ -574,10 +574,7 @@ void HLRBRep_Intersector::Perform(const gp_Lin& L, const double P)
           pmax = P + 0.0000001;
       }
       HLRBRep_ThePolygonOfInterCSurf Polygon(L, pmin, pmax, 3);
-      myCSIntersector.Perform(L,
-                              Polygon,
-                              mySurface,
-                              *(myPolyhedron));
+      myCSIntersector.Perform(L, Polygon, mySurface, *(myPolyhedron));
 
       break;
     }

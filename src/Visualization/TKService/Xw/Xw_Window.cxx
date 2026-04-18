@@ -76,17 +76,17 @@ Xw_Window::Xw_Window(const occ::handle<Aspect_DisplayConnection>& theXDisplay,
   aWinAttr.override_redirect = False;
 
   myXWindow = XCreateWindow(aDisp,
-                                    aParent,
-                                    myXLeft,
-                                    myYTop,
-                                    thePxWidth,
-                                    thePxHeight,
-                                    0,
-                                    aVisInfo != nullptr ? aVisInfo->depth : CopyFromParent,
-                                    InputOutput,
-                                    aVisInfo != nullptr ? aVisInfo->visual : CopyFromParent,
-                                    CWBorderPixel | CWColormap | CWEventMask | CWOverrideRedirect,
-                                    &aWinAttr);
+                            aParent,
+                            myXLeft,
+                            myYTop,
+                            thePxWidth,
+                            thePxHeight,
+                            0,
+                            aVisInfo != nullptr ? aVisInfo->depth : CopyFromParent,
+                            InputOutput,
+                            aVisInfo != nullptr ? aVisInfo->visual : CopyFromParent,
+                            CWBorderPixel | CWColormap | CWEventMask | CWOverrideRedirect,
+                            &aWinAttr);
   if (myXWindow == 0)
   {
     throw Aspect_WindowDefinitionError("Xw_Window, Unable to create window");
@@ -628,7 +628,10 @@ bool Xw_Window::ProcessMessage(Aspect_WindowInputListener& theListener,
       // remove all the StructureNotifyMask and process them at once
       for (int aNbMaxEvents = XPending(aDisplay); aNbMaxEvents > 0; --aNbMaxEvents)
       {
-        if (!XCheckWindowEvent(aDisplay, static_cast<Window>(myXWindow), StructureNotifyMask, &theMsg))
+        if (!XCheckWindowEvent(aDisplay,
+                               static_cast<Window>(myXWindow),
+                               StructureNotifyMask,
+                               &theMsg))
         {
           break;
         }

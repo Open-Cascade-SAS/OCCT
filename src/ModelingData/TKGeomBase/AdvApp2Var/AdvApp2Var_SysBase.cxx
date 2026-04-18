@@ -1671,7 +1671,8 @@ int maoverf_(int* nbentr, double* dtable)
     /* Loop. The upper limit is the int value of the logarithm of base 2
      */
     /* of NBENTR/NLONGR. */
-    i__1 = static_cast<int>(std::log(static_cast<float>(*nbentr) / static_cast<float>(63.)) / std::log(static_cast<float>(2.)));
+    i__1 = static_cast<int>(std::log(static_cast<float>(*nbentr) / static_cast<float>(63.))
+                            / std::log(static_cast<float>(2.)));
     for (ibid = 1; ibid <= i__1; ++ibid)
     {
 

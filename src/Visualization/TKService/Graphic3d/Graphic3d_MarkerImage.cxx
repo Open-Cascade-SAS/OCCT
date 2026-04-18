@@ -54,7 +54,7 @@ static void getMarkerBitMapParam(const Aspect_TypeOfMarker theMarkerType,
                                  int&                      theOffset,
                                  int&                      theNumOfBytes)
 {
-  const int    aType   = static_cast<int>(theMarkerType > Aspect_TOM_O ? Aspect_TOM_O : theMarkerType);
+  const int aType = static_cast<int>(theMarkerType > Aspect_TOM_O ? Aspect_TOM_O : theMarkerType);
   const double anIndex = static_cast<double>(TEL_NO_OF_SIZES - 1) * (theScale - TEL_PM_START_SIZE)
                          / (TEL_PM_END_SIZE - TEL_PM_START_SIZE);
   int anId = static_cast<int>(anIndex + 0.5);
@@ -266,10 +266,11 @@ occ::handle<NCollection_HArray1<uint8_t>> Graphic3d_MarkerImage::GetBitMapArray(
     return myBitMap;
   }
 
-  const int aNumOfBytesInRow = static_cast<int>(myImage->Width() / 8) + (myImage->Width() % 8 ? 1 : 0);
-  const int aNumOfBytes      = static_cast<int>(aNumOfBytesInRow * myImage->Height());
-  const int aHeight          = static_cast<int>(myImage->Height());
-  const int aWidth           = static_cast<int>(myImage->Width());
+  const int aNumOfBytesInRow =
+    static_cast<int>(myImage->Width() / 8) + (myImage->Width() % 8 ? 1 : 0);
+  const int aNumOfBytes = static_cast<int>(aNumOfBytesInRow * myImage->Height());
+  const int aHeight     = static_cast<int>(myImage->Height());
+  const int aWidth      = static_cast<int>(myImage->Width());
   occ::handle<NCollection_HArray1<uint8_t>> aBitMap =
     new NCollection_HArray1<uint8_t>(0, aNumOfBytes - 1);
   aBitMap->Init(0);
@@ -359,8 +360,9 @@ const occ::handle<Image_PixMap>& Graphic3d_MarkerImage::GetImageAlpha()
         uint8_t* anImageRow = myImageAlpha->ChangeRow(aRowIter);
         for (size_t aColumnIter = 0; aColumnIter < myImage->Width(); aColumnIter++)
         {
-          const Quantity_ColorRGBA aColor = myImage->PixelColor(static_cast<int>(aColumnIter), static_cast<int>(aRowIter));
-          anImageRow[aColumnIter]         = static_cast<uint8_t>(255.0 * aColor.Alpha());
+          const Quantity_ColorRGBA aColor =
+            myImage->PixelColor(static_cast<int>(aColumnIter), static_cast<int>(aRowIter));
+          anImageRow[aColumnIter] = static_cast<uint8_t>(255.0 * aColor.Alpha());
         }
       }
     }
@@ -432,7 +434,7 @@ occ::handle<Graphic3d_MarkerImage> Graphic3d_MarkerImage::StandardMarker(
       if (theMarkerType == Aspect_TOM_O_POINT)
       {
         // draw inner point as filled rectangle
-        const int                                 aSize = theScale > 7 ? 7 : static_cast<int>(theScale + 0.5F);
+        const int aSize = theScale > 7 ? 7 : static_cast<int>(theScale + 0.5F);
         occ::handle<NCollection_HArray1<uint8_t>> aBitMap = fillPointBitmap(aSize);
         aMarkerImage2 = new Graphic3d_MarkerImage(aBitMap, aSize, aSize);
       }

@@ -270,38 +270,40 @@ TCollection_AsciiString OSD_MemInfo::ToString() const
   TCollection_AsciiString anInfo;
   if (hasValue(MemPrivate))
   {
-    anInfo +=
-      TCollection_AsciiString("  Private memory:     ") + static_cast<int>(ValueMiB(MemPrivate)) + " MiB\n";
+    anInfo += TCollection_AsciiString("  Private memory:     ")
+              + static_cast<int>(ValueMiB(MemPrivate)) + " MiB\n";
   }
   if (hasValue(MemWorkingSet))
   {
-    anInfo +=
-      TCollection_AsciiString("  Working Set:        ") + static_cast<int>(ValueMiB(MemWorkingSet)) + " MiB";
+    anInfo += TCollection_AsciiString("  Working Set:        ")
+              + static_cast<int>(ValueMiB(MemWorkingSet)) + " MiB";
     if (hasValue(MemWorkingSetPeak))
     {
-      anInfo += TCollection_AsciiString(" (peak: ") + static_cast<int>(ValueMiB(MemWorkingSetPeak)) + " MiB)";
+      anInfo += TCollection_AsciiString(" (peak: ") + static_cast<int>(ValueMiB(MemWorkingSetPeak))
+                + " MiB)";
     }
     anInfo += "\n";
   }
   if (hasValue(MemSwapUsage))
   {
-    anInfo +=
-      TCollection_AsciiString("  Pagefile usage:     ") + static_cast<int>(ValueMiB(MemSwapUsage)) + " MiB";
+    anInfo += TCollection_AsciiString("  Pagefile usage:     ")
+              + static_cast<int>(ValueMiB(MemSwapUsage)) + " MiB";
     if (hasValue(MemSwapUsagePeak))
     {
-      anInfo += TCollection_AsciiString(" (peak: ") + static_cast<int>(ValueMiB(MemSwapUsagePeak)) + " MiB)";
+      anInfo += TCollection_AsciiString(" (peak: ") + static_cast<int>(ValueMiB(MemSwapUsagePeak))
+                + " MiB)";
     }
     anInfo += "\n";
   }
   if (hasValue(MemVirtual))
   {
-    anInfo +=
-      TCollection_AsciiString("  Virtual memory:     ") + static_cast<int>(ValueMiB(MemVirtual)) + " MiB\n";
+    anInfo += TCollection_AsciiString("  Virtual memory:     ")
+              + static_cast<int>(ValueMiB(MemVirtual)) + " MiB\n";
   }
   if (hasValue(MemHeapUsage))
   {
-    anInfo +=
-      TCollection_AsciiString("  Heap memory:     ") + static_cast<int>(ValueMiB(MemHeapUsage)) + " MiB\n";
+    anInfo += TCollection_AsciiString("  Heap memory:     ")
+              + static_cast<int>(ValueMiB(MemHeapUsage)) + " MiB\n";
   }
   return anInfo;
 }
@@ -325,8 +327,9 @@ size_t OSD_MemInfo::ValueMiB(const OSD_MemInfo::Counter theCounter) const
   {
     return static_cast<size_t>(-1);
   }
-  return (myCounters[theCounter] == static_cast<size_t>(-1)) ? static_cast<size_t>(-1)
-                                                : (myCounters[theCounter] / (1024 * 1024));
+  return (myCounters[theCounter] == static_cast<size_t>(-1))
+           ? static_cast<size_t>(-1)
+           : (myCounters[theCounter] / (1024 * 1024));
 }
 
 //=================================================================================================

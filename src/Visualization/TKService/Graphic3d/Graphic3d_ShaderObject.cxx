@@ -122,8 +122,9 @@ occ::handle<Graphic3d_ShaderObject> Graphic3d_ShaderObject::CreateFromSource(
   {
     const ShaderVariable& aVar        = aVarListIter.Value();
     int                   aStageLower = IntegerLast(), aStageUpper = IntegerFirst();
-    for (int aStageIter = Graphic3d_TOS_VERTEX; aStageIter <= static_cast<int>(Graphic3d_TOS_COMPUTE);
-         aStageIter     = aStageIter << 1)
+    for (int aStageIter = Graphic3d_TOS_VERTEX;
+         aStageIter <= static_cast<int>(Graphic3d_TOS_COMPUTE);
+         aStageIter = aStageIter << 1)
     {
       if ((aVar.Stages & aStageIter) != 0)
       {

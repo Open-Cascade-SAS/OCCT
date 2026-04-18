@@ -136,7 +136,8 @@ inline bool IsUpperCase(const char me)
 // ==================================================================
 inline char LowerCase(const char me)
 {
-  return static_cast<char>(static_cast<unsigned char>(std::tolower(static_cast<unsigned char>(me))));
+  return static_cast<char>(
+    static_cast<unsigned char>(std::tolower(static_cast<unsigned char>(me))));
 }
 
 // ==================================================================
@@ -144,7 +145,8 @@ inline char LowerCase(const char me)
 // ==================================================================
 inline char UpperCase(const char me)
 {
-  return static_cast<char>(static_cast<unsigned char>(std::toupper(static_cast<unsigned char>(me))));
+  return static_cast<char>(
+    static_cast<unsigned char>(std::toupper(static_cast<unsigned char>(me))));
 }
 
 #endif

@@ -413,7 +413,8 @@ bool RWStl_Reader::ReadBinary(Standard_IStream& theStream, const Message_Progres
 
   // read file header at first
   char aHeader[THE_STL_HEADER_SIZE + 1];
-  if (theStream.read(aHeader, THE_STL_HEADER_SIZE).gcount() != static_cast<std::streamsize>(THE_STL_HEADER_SIZE))
+  if (theStream.read(aHeader, THE_STL_HEADER_SIZE).gcount()
+      != static_cast<std::streamsize>(THE_STL_HEADER_SIZE))
   {
     Message::SendFail("Error: Corrupted binary STL file");
     return false;

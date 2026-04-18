@@ -507,7 +507,8 @@ void OpenGl_GraphicDriver::chooseVisualInfo()
   #endif
   if (aVisInfo != nullptr)
   {
-    myDisplayConnection->SetDefaultVisualInfo(reinterpret_cast<Aspect_XVisualInfo*>(aVisInfo), anFBConfig);
+    myDisplayConnection->SetDefaultVisualInfo(reinterpret_cast<Aspect_XVisualInfo*>(aVisInfo),
+                                              anFBConfig);
   }
   else
   {

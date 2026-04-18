@@ -46,7 +46,8 @@ Graphic3d_MediaTexture::Graphic3d_MediaTexture(std::mutex& theMutex, int thePlan
   myParams->SetModulate(false);
   myParams->SetRepeat(false);
   myParams->SetFilter(Graphic3d_TOTF_BILINEAR);
-  myParams->SetTextureUnit(Graphic3d_TextureUnit(static_cast<int>(Graphic3d_TextureUnit_0) + thePlane));
+  myParams->SetTextureUnit(
+    Graphic3d_TextureUnit(static_cast<int>(Graphic3d_TextureUnit_0) + thePlane));
 }
 
 //=================================================================================================

@@ -63,7 +63,8 @@ static const Font_FTFontParams THE_FONT_PARAMS(THE_FONT_SIZE, THE_RESOLUTION_DPI
 // compute scaling factor for specified font size
 inline double getScale(const double theSize)
 {
-  return theSize / static_cast<double>(THE_FONT_SIZE) * 72.0 / static_cast<double>(THE_RESOLUTION_DPI);
+  return theSize / static_cast<double>(THE_FONT_SIZE) * 72.0
+         / static_cast<double>(THE_RESOLUTION_DPI);
 }
 
 #ifdef HAVE_FREETYPE

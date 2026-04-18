@@ -728,7 +728,9 @@ bool OpenGl_Context::MakeCurrent()
     return false;
   }
 
-  if (!glXMakeCurrent(static_cast<Display*>(myDisplay), static_cast<GLXDrawable>(myWindow), static_cast<GLXContext>(myGContext)))
+  if (!glXMakeCurrent(static_cast<Display*>(myDisplay),
+                      static_cast<GLXDrawable>(myWindow),
+                      static_cast<GLXContext>(myGContext)))
   {
     // if there is no current context it might be impossible to use glGetError() correctly
     PushMessage(GL_DEBUG_SOURCE_WINDOW_SYSTEM,
@@ -804,7 +806,8 @@ bool OpenGl_Context::SetSwapInterval(const int theInterval)
   {
     typedef int (
       *glXSwapIntervalEXT_t_x)(Display* theDisplay, GLXDrawable theDrawable, int theInterval);
-    glXSwapIntervalEXT_t_x aFuncPtr = reinterpret_cast<glXSwapIntervalEXT_t_x>(myFuncs->glXSwapIntervalEXT);
+    glXSwapIntervalEXT_t_x aFuncPtr =
+      reinterpret_cast<glXSwapIntervalEXT_t_x>(myFuncs->glXSwapIntervalEXT);
     aFuncPtr(static_cast<Display*>(myDisplay), static_cast<GLXDrawable>(myWindow), theInterval);
     return true;
   }
@@ -863,7 +866,8 @@ bool OpenGl_Context::CheckExtension(const char* theExtName) const
     const size_t anExtNameLen = strlen(theExtName);
     for (GLint anIter = 0; anIter < anExtNb; ++anIter)
     {
-      const char*  anExtension = reinterpret_cast<const char*>(myFuncs->glGetStringi(GL_EXTENSIONS, static_cast<GLuint>(anIter)));
+      const char* anExtension = reinterpret_cast<const char*>(
+        myFuncs->glGetStringi(GL_EXTENSIONS, static_cast<GLuint>(anIter)));
       const size_t aTestExtNameLen = strlen(anExtension);
       if (aTestExtNameLen == anExtNameLen && strncmp(anExtension, theExtName, anExtNameLen) == 0)
       {
@@ -1826,7 +1830,9 @@ void OpenGl_Context::MemoryInfo(
     unsigned int aVMemMiB = 0;
     if (myFuncs->glXQueryCurrentRendererIntegerMESA(GLX_RENDERER_VIDEO_MEMORY_MESA, &aVMemMiB) != 0)
     {
-      addInfo(theDict, "GPU memory", TCollection_AsciiString() + static_cast<int>(aVMemMiB) + " MiB");
+      addInfo(theDict,
+              "GPU memory",
+              TCollection_AsciiString() + static_cast<int>(aVMemMiB) + " MiB");
     }
   }
 #endif
@@ -1939,7 +1945,9 @@ void OpenGl_Context::DiagnosticInformation(
     int aDriverVer[2] = {};
     OpenGl_GlFunctions::readGlVersion(aDriverVer[0], aDriverVer[1]);
     addInfo(theDict, "GLvendor", reinterpret_cast<const char*>(core11fwd->glGetString(GL_VENDOR)));
-    addInfo(theDict, "GLdevice", reinterpret_cast<const char*>(core11fwd->glGetString(GL_RENDERER)));
+    addInfo(theDict,
+            "GLdevice",
+            reinterpret_cast<const char*>(core11fwd->glGetString(GL_RENDERER)));
 #ifdef __EMSCRIPTEN__
     if (CheckExtension("GL_WEBGL_debug_renderer_info"))
     {
@@ -1954,7 +1962,9 @@ void OpenGl_Context::DiagnosticInformation(
     }
 #endif
 
-    addInfo(theDict, "GLversion", reinterpret_cast<const char*>(core11fwd->glGetString(GL_VERSION)));
+    addInfo(theDict,
+            "GLversion",
+            reinterpret_cast<const char*>(core11fwd->glGetString(GL_VERSION)));
     if (myGlVerMajor != aDriverVer[0] || myGlVerMinor != aDriverVer[1])
     {
       addInfo(theDict,
@@ -2013,7 +2023,8 @@ void OpenGl_Context::DiagnosticInformation(
       core11fwd->glGetIntegerv(GL_NUM_EXTENSIONS, &anExtNb);
       for (GLint anIter = 0; anIter < anExtNb; ++anIter)
       {
-        const char* anExtension = reinterpret_cast<const char*>(myFuncs->glGetStringi(GL_EXTENSIONS, static_cast<GLuint>(anIter)));
+        const char* anExtension = reinterpret_cast<const char*>(
+          myFuncs->glGetStringi(GL_EXTENSIONS, static_cast<GLuint>(anIter)));
         if (!anExtList.IsEmpty())
         {
           anExtList += " ";
@@ -2024,7 +2035,9 @@ void OpenGl_Context::DiagnosticInformation(
     }
     else
     {
-      addInfo(theDict, "GLextensions", reinterpret_cast<const char*>(core11fwd->glGetString(GL_EXTENSIONS)));
+      addInfo(theDict,
+              "GLextensions",
+              reinterpret_cast<const char*>(core11fwd->glGetString(GL_EXTENSIONS)));
     }
   }
 }

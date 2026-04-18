@@ -101,7 +101,10 @@ public:
 
   //! Return number of initially allocated elements which can fit into this buffer,
   //! while NbElements can be overwritten to smaller value.
-  int NbMaxElements() const { return Stride != 0 ? static_cast<int>(mySize / static_cast<size_t>(Stride)) : 0; }
+  int NbMaxElements() const
+  {
+    return Stride != 0 ? static_cast<int>(mySize / static_cast<size_t>(Stride)) : 0;
+  }
 
   //! @return array of attributes definitions
   const Graphic3d_Attribute* AttributesArray() const
@@ -160,10 +163,16 @@ public:
   uint8_t* ChangeData(const int theAttribIndex) { return myData + AttributeOffset(theAttribIndex); }
 
   //! Access specified element.
-  inline const uint8_t* value(const int theElem) const { return myData + Stride * static_cast<size_t>(theElem); }
+  inline const uint8_t* value(const int theElem) const
+  {
+    return myData + Stride * static_cast<size_t>(theElem);
+  }
 
   //! Access specified element.
-  inline uint8_t* changeValue(const int theElem) { return myData + Stride * static_cast<size_t>(theElem); }
+  inline uint8_t* changeValue(const int theElem)
+  {
+    return myData + Stride * static_cast<size_t>(theElem);
+  }
 
   //! Access element with specified position and type.
   template <typename Type_t>

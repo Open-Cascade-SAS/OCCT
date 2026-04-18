@@ -76,7 +76,9 @@ void OpenGl_TileSampler::GrabVarianceMap(const occ::handle<OpenGl_Context>& theC
 
       float& aTile = myVarianceMap.ChangeValue(aRowIter, aColIter);
       aTile        = aFactor * static_cast<float>(aRawValue);
-      aTile *= 1.0f / tileArea(static_cast<int>(aColIter), static_cast<int>(aRowIter)); // average error over the tile
+      aTile *= 1.0f
+               / tileArea(static_cast<int>(aColIter),
+                          static_cast<int>(aRowIter)); // average error over the tile
       if (aRowIter != 0)
       {
         aTile += myVarianceMap.Value(aRowIter - 1, aColIter);
@@ -162,7 +164,8 @@ void OpenGl_TileSampler::SetSize(const Graphic3d_RenderingParams& theParams,
     std::max(1, static_cast<int>(ceilf(static_cast<float>(theSize.x()) / aTileSize)));
   const int aNbTilesY =
     std::max(1, static_cast<int>(ceilf(static_cast<float>(theSize.y()) / aTileSize)));
-  if (myTileSize != aTileSize || static_cast<int>(myTiles.SizeX) != aNbTilesX || static_cast<int>(myTiles.SizeY) != aNbTilesY)
+  if (myTileSize != aTileSize || static_cast<int>(myTiles.SizeX) != aNbTilesX
+      || static_cast<int>(myTiles.SizeY) != aNbTilesY)
   {
     myTileSize    = aTileSize;
     myScaleFactor = 1.0e6f * (1024.0f / static_cast<float>(myTileSize * myTileSize));
@@ -194,7 +197,8 @@ void OpenGl_TileSampler::SetSize(const Graphic3d_RenderingParams& theParams,
   }
 
   // calculate a size of compact offsets texture optimal for rendering reduced number of tiles
-  int aNbShunkTilesX = static_cast<int>(myTiles.SizeX), aNbShunkTilesY = static_cast<int>(myTiles.SizeY);
+  int aNbShunkTilesX = static_cast<int>(myTiles.SizeX),
+      aNbShunkTilesY = static_cast<int>(myTiles.SizeY);
   if (theParams.NbRayTracingTiles > 0)
   {
     aNbShunkTilesX = 8;
@@ -204,7 +208,8 @@ void OpenGl_TileSampler::SetSize(const Graphic3d_RenderingParams& theParams,
       (anIdx % 2 == 0 ? aNbShunkTilesX : aNbShunkTilesY) <<= 1;
     }
   }
-  if (static_cast<int>(myOffsetsShrunk.SizeX) != aNbShunkTilesX || static_cast<int>(myOffsetsShrunk.SizeY) != aNbShunkTilesY)
+  if (static_cast<int>(myOffsetsShrunk.SizeX) != aNbShunkTilesX
+      || static_cast<int>(myOffsetsShrunk.SizeY) != aNbShunkTilesY)
   {
     myOffsetsShrunk.SetTopDown(true);
     myOffsetsShrunk.Init(myTiles.Allocator(), aNbShunkTilesX, aNbShunkTilesY);
@@ -244,7 +249,8 @@ bool OpenGl_TileSampler::upload(const occ::handle<OpenGl_Context>& theContext,
     {
       NCollection_Vec2<int>& aRedirectTile = anOffsets.ChangeValue(aRowIter, aColIter);
       aRedirectTile =
-        theAdaptive ? nextTileToSample() : NCollection_Vec2<int>(static_cast<int>(aColIter), static_cast<int>(aRowIter));
+        theAdaptive ? nextTileToSample()
+                    : NCollection_Vec2<int>(static_cast<int>(aColIter), static_cast<int>(aRowIter));
       myTiles.ChangeValue(aRedirectTile.y(), aRedirectTile.x()) += 1;
     }
   }
@@ -263,7 +269,8 @@ bool OpenGl_TileSampler::upload(const occ::handle<OpenGl_Context>& theContext,
     for (size_t aColIter = 0; aColIter < myTiles.SizeX; ++aColIter)
     {
       myTileSamples.ChangeValue(aRowIter, aColIter) =
-        tileArea(static_cast<int>(aColIter), static_cast<int>(aRowIter)) * myTiles.Value(aRowIter, aColIter);
+        tileArea(static_cast<int>(aColIter), static_cast<int>(aRowIter))
+        * myTiles.Value(aRowIter, aColIter);
     }
   }
 
@@ -309,14 +316,15 @@ bool OpenGl_TileSampler::upload(const occ::handle<OpenGl_Context>& theContext,
   if (!theOffsetsTexture.IsNull())
   {
     if (theOffsetsTexture->SizeX() != static_cast<int>(anOffsets.SizeX)
-        || theOffsetsTexture->SizeY() != static_cast<int>(anOffsets.SizeY) || !theOffsetsTexture->IsValid())
+        || theOffsetsTexture->SizeY() != static_cast<int>(anOffsets.SizeY)
+        || !theOffsetsTexture->IsValid())
     {
       theOffsetsTexture->Release(theContext.get());
-      if (!theOffsetsTexture->Init(
-            theContext,
-            OpenGl_TextureFormat::FindSizedFormat(theContext, GL_RG32I),
-            NCollection_Vec2<int>(static_cast<int>(anOffsets.SizeX), static_cast<int>(anOffsets.SizeY)),
-            Graphic3d_TypeOfTexture_2D))
+      if (!theOffsetsTexture->Init(theContext,
+                                   OpenGl_TextureFormat::FindSizedFormat(theContext, GL_RG32I),
+                                   NCollection_Vec2<int>(static_cast<int>(anOffsets.SizeX),
+                                                         static_cast<int>(anOffsets.SizeY)),
+                                   Graphic3d_TypeOfTexture_2D))
       {
         hasErrors = true;
       }

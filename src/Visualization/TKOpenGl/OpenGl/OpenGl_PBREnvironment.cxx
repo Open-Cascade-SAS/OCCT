@@ -474,9 +474,10 @@ bool OpenGl_PBREnvironment::processSpecIBLMap(const occ::handle<OpenGl_Context>&
       return false;
     }
 
-    const occ::handle<OpenGl_ShaderProgram>& aProg = theCtx->ActiveProgram();
-    const float                              aSolidAngleSource =
-      static_cast<float>(4.0 * M_PI / (6.0 * static_cast<float>(theDrawParams->EnvMapSize * theDrawParams->EnvMapSize)));
+    const occ::handle<OpenGl_ShaderProgram>& aProg             = theCtx->ActiveProgram();
+    const float                              aSolidAngleSource = static_cast<float>(
+      4.0 * M_PI
+      / (6.0 * static_cast<float>(theDrawParams->EnvMapSize * theDrawParams->EnvMapSize)));
     aProg->SetSampler(theCtx, "uEnvMap", theCtx->PBRSpecIBLMapTexUnit());
     aProg->SetUniform(theCtx, "uZCoeff", theDrawParams->IsZInverted ? -1 : 1);
     aProg->SetUniform(theCtx, "uYCoeff", theDrawParams->IsTopDown ? 1 : -1);
@@ -502,10 +503,11 @@ bool OpenGl_PBREnvironment::processSpecIBLMap(const occ::handle<OpenGl_Context>&
     theCtx->ResizeViewport(aViewport);
     if (theDrawParams != nullptr)
     {
-      const int aNbSamples = static_cast<int>(Graphic3d_PBRMaterial::SpecIBLMapSamplesFactor(
-                                   theDrawParams->Probability,
-                                   aLevelIter / static_cast<float>(mySpecMapLevelsNumber - 1))
-                                 * theDrawParams->NbSpecSamples);
+      const int aNbSamples =
+        static_cast<int>(Graphic3d_PBRMaterial::SpecIBLMapSamplesFactor(
+                           theDrawParams->Probability,
+                           aLevelIter / static_cast<float>(mySpecMapLevelsNumber - 1))
+                         * theDrawParams->NbSpecSamples);
       theCtx->ActiveProgram()->SetUniform(theCtx, "uSamplesNum", aNbSamples);
       theCtx->ActiveProgram()->SetUniform(theCtx, "uCurrentLevel", aLevelIter);
     }

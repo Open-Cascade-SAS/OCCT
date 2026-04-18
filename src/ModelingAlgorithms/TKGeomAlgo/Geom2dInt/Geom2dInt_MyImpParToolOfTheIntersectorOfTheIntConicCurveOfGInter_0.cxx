@@ -46,7 +46,10 @@ bool Geom2dInt_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfGInter::Derivativ
   gp_Vec2d TanParCurve;
   gp_Vec2d Grad = TheImpTool.GradDistance(
     Geom2dInt_Geom2dCurveTool::Value((*(static_cast<Adaptor2d_Curve2d*>(TheParCurve))), Param));
-  Geom2dInt_Geom2dCurveTool::D1((*(static_cast<Adaptor2d_Curve2d*>(TheParCurve))), Param, Pt, TanParCurve);
+  Geom2dInt_Geom2dCurveTool::D1((*(static_cast<Adaptor2d_Curve2d*>(TheParCurve))),
+                                Param,
+                                Pt,
+                                TanParCurve);
   D_ApproxDistance_DV = Grad.Dot(TanParCurve);
   return (true);
 }

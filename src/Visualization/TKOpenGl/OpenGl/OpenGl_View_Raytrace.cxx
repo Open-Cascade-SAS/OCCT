@@ -2094,7 +2094,10 @@ void OpenGl_View::updateCamera(const NCollection_Mat4<float>& theOrientation,
   {
     for (int aX = -1; aX <= 1; aX += 2)
     {
-      NCollection_Vec4<float> aOrigin(static_cast<GLfloat>(aX), static_cast<GLfloat>(aY), -1.0f, 1.0f);
+      NCollection_Vec4<float> aOrigin(static_cast<GLfloat>(aX),
+                                      static_cast<GLfloat>(aY),
+                                      -1.0f,
+                                      1.0f);
 
       aOrigin = theUnview * aOrigin;
 
@@ -2102,7 +2105,10 @@ void OpenGl_View::updateCamera(const NCollection_Mat4<float>& theOrientation,
       aOrigin.y() = aOrigin.y() / aOrigin.w();
       aOrigin.z() = aOrigin.z() / aOrigin.w();
 
-      NCollection_Vec4<float> aDirect(static_cast<GLfloat>(aX), static_cast<GLfloat>(aY), 1.0f, 1.0f);
+      NCollection_Vec4<float> aDirect(static_cast<GLfloat>(aX),
+                                      static_cast<GLfloat>(aY),
+                                      1.0f,
+                                      1.0f);
 
       aDirect = theUnview * aDirect;
 
@@ -2509,10 +2515,11 @@ bool OpenGl_View::uploadRaytraceData(const occ::handle<OpenGl_Context>& theGlCon
 
   if (myRaytraceGeometry.Materials.size() != 0)
   {
-    aResult &= myRaytraceMaterialTexture->Init(theGlContext,
-                                               4,
-                                               static_cast<GLsizei>(myRaytraceGeometry.Materials.size() * 19),
-                                               myRaytraceGeometry.Materials.front().Packed());
+    aResult &= myRaytraceMaterialTexture->Init(
+      theGlContext,
+      4,
+      static_cast<GLsizei>(myRaytraceGeometry.Materials.size() * 19),
+      myRaytraceGeometry.Materials.front().Packed());
 
     if (!aResult)
     {
@@ -2675,10 +2682,11 @@ bool OpenGl_View::updateRaytraceLightSources(const NCollection_Mat4<float>&     
   if (myRaytraceGeometry.Sources.size() != 0 && wasUpdated)
   {
     const GLfloat* aDataPtr = myRaytraceGeometry.Sources.front().Packed();
-    if (!myRaytraceLightSrcTexture->Init(theGlContext,
-                                         4,
-                                         static_cast<GLsizei>(myRaytraceGeometry.Sources.size() * 2),
-                                         aDataPtr))
+    if (!myRaytraceLightSrcTexture->Init(
+          theGlContext,
+          4,
+          static_cast<GLsizei>(myRaytraceGeometry.Sources.size() * 2),
+          aDataPtr))
     {
       Message::SendTrace() << "Error: Failed to upload light source buffer";
       return false;

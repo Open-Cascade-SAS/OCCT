@@ -2444,7 +2444,8 @@ void V3d_View::ZoomAtPoint(const int theMouseStartX,
   bool wasUpdateEnabled = SetImmediateUpdate(false);
 
   // zoom
-  double aDxy   = static_cast<double>((theMouseEndX + theMouseEndY) - (theMouseStartX + theMouseStartY));
+  double aDxy =
+    static_cast<double>((theMouseEndX + theMouseEndY) - (theMouseStartX + theMouseStartY));
   double aDZoom = std::abs(aDxy) / 100.0 + 1.0;
   aDZoom        = (aDxy > 0.0) ? aDZoom : 1.0 / aDZoom;
 
@@ -2573,7 +2574,8 @@ void V3d_View::Rotation(const int X, const int Y)
   double dx = 0., dy = 0., dz = 0.;
   if (myZRotation)
   {
-    dz = atan2(static_cast<double>(X) - rx / 2., ry / 2. - static_cast<double>(Y)) - atan2(sx - rx / 2., ry / 2. - sy);
+    dz = atan2(static_cast<double>(X) - rx / 2., ry / 2. - static_cast<double>(Y))
+         - atan2(sx - rx / 2., ry / 2. - sy);
   }
   else
   {
@@ -2679,7 +2681,9 @@ bool V3d_View::ToPixMap(Image_PixMap& theImage, const V3d_ImageDumpOptions& theP
           break;
       }
 
-      if (!theImage.InitZero(aFormat, static_cast<size_t>(aTargetSize.x()), static_cast<size_t>(aTargetSize.y())))
+      if (!theImage.InitZero(aFormat,
+                             static_cast<size_t>(aTargetSize.x()),
+                             static_cast<size_t>(aTargetSize.y())))
       {
         Message::SendFail(TCollection_AsciiString("Fail to allocate an image ") + aTargetSize.x()
                           + "x" + aTargetSize.y() + " for view dump");

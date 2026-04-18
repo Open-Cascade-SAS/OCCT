@@ -619,10 +619,10 @@ static void AddLine(const occ::handle<IntPatch_Line>& L,
     }
     case IntPatch_Walking: { //-- ****************************************
       occ::handle<IntPatch_WLine>          WLine(occ::down_cast<IntPatch_WLine>(L));
-      const occ::handle<IntSurf_LineOn2S>& Lori           = WLine->Curve();
-      occ::handle<IntSurf_LineOn2S>        LineOn2S       = new IntSurf_LineOn2S();
-      int                                  ParamMinOnLine = static_cast<int>(WLine->Vertex(i).ParameterOnLine());
-      int                                  ParamMaxOnLine = static_cast<int>(WLine->Vertex(j).ParameterOnLine());
+      const occ::handle<IntSurf_LineOn2S>& Lori     = WLine->Curve();
+      occ::handle<IntSurf_LineOn2S>        LineOn2S = new IntSurf_LineOn2S();
+      int ParamMinOnLine = static_cast<int>(WLine->Vertex(i).ParameterOnLine());
+      int ParamMaxOnLine = static_cast<int>(WLine->Vertex(j).ParameterOnLine());
       for (int k = ParamMinOnLine; k <= ParamMaxOnLine; k++)
       {
         LineOn2S->Add(Lori->Value(k));

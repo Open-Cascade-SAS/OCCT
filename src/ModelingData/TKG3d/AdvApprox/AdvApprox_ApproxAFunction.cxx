@@ -161,9 +161,9 @@ static void PrepareConvert(const int                         NumCurves,
   for (icurve = 1; icurve < NumCurves; icurve++)
   {
     // Init and positioning at the node
-    isCi = true;
-    Coef1 =
-      const_cast<double*>(&(Coefficients.Value((icurve - 1) * Dimension * RealDegree + Coefficients.Lower())));
+    isCi  = true;
+    Coef1 = const_cast<double*>(
+      &(Coefficients.Value((icurve - 1) * Dimension * RealDegree + Coefficients.Lower())));
     Coef2    = Coef1 + Dimension * RealDegree;
     int Deg1 = NumCoeffPerCurve(NumCoeffPerCurve.Lower() + icurve - 1) - 1;
     PLib::EvalPolynomial(PolynomialIntervals(icurve, 2),

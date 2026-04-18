@@ -124,7 +124,8 @@ bool OpenGl_Font::createTexture(const occ::handle<OpenGl_Context>& theCtx)
   const int aTextureSizeX = OpenGl_Context::GetPowerOfTwo(aGlyphsNb * aMaxTileSizeX, aMaxSize);
   const int aTilesPerRow  = aTextureSizeX / aMaxTileSizeX;
   const int aTextureSizeY =
-    OpenGl_Context::GetPowerOfTwo(static_cast<GLint>((aGlyphsNb / aTilesPerRow) + 1) * myTileSizeY, aMaxSize);
+    OpenGl_Context::GetPowerOfTwo(static_cast<GLint>((aGlyphsNb / aTilesPerRow) + 1) * myTileSizeY,
+                                  aMaxSize);
 
   memset(&myLastTilePx, 0, sizeof(myLastTilePx));
   myLastTilePx.Bottom = myTileSizeY;
@@ -139,7 +140,9 @@ bool OpenGl_Font::createTexture(const occ::handle<OpenGl_Context>& theCtx)
   occ::handle<OpenGl_Texture>& aTexture = myTextures.ChangeLast();
 
   Image_PixMap aBlackImg;
-  if (!aBlackImg.InitZero(Image_Format_Alpha, static_cast<size_t>(aTextureSizeX), static_cast<size_t>(aTextureSizeY))
+  if (!aBlackImg.InitZero(Image_Format_Alpha,
+                          static_cast<size_t>(aTextureSizeX),
+                          static_cast<size_t>(aTextureSizeY))
       || !aTexture->Init(theCtx, aBlackImg, Graphic3d_TypeOfTexture_2D, true)) // myTextureFormat
   {
     theCtx->PushMessage(GL_DEBUG_SOURCE_APPLICATION,
@@ -214,11 +217,13 @@ bool OpenGl_Font::renderGlyph(const occ::handle<OpenGl_Context>& theCtx, const c
                                      anImg.Data());
 
   OpenGl_Font::Tile aTile;
-  aTile.uv.Left   = static_cast<GLfloat>(myLastTilePx.Left) / static_cast<GLfloat>(aTexture->SizeX());
-  aTile.uv.Right  = static_cast<GLfloat>(myLastTilePx.Right) / static_cast<GLfloat>(aTexture->SizeX());
-  aTile.uv.Top    = static_cast<GLfloat>(myLastTilePx.Top) / static_cast<GLfloat>(aTexture->SizeY());
-  aTile.uv.Bottom = static_cast<GLfloat>(myLastTilePx.Top + anImg.SizeY()) / static_cast<GLfloat>(aTexture->SizeY());
-  aTile.texture   = aTexture->TextureId();
+  aTile.uv.Left = static_cast<GLfloat>(myLastTilePx.Left) / static_cast<GLfloat>(aTexture->SizeX());
+  aTile.uv.Right =
+    static_cast<GLfloat>(myLastTilePx.Right) / static_cast<GLfloat>(aTexture->SizeX());
+  aTile.uv.Top = static_cast<GLfloat>(myLastTilePx.Top) / static_cast<GLfloat>(aTexture->SizeY());
+  aTile.uv.Bottom = static_cast<GLfloat>(myLastTilePx.Top + anImg.SizeY())
+                    / static_cast<GLfloat>(aTexture->SizeY());
+  aTile.texture = aTexture->TextureId();
   myFont->GlyphRect(aTile.px);
 
   myLastTileId = aTileId;

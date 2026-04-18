@@ -117,9 +117,9 @@ void OSD_DirectoryIterator::Next()
     myEntry = readdir(static_cast<DIR*>(myDescr));
 
     if (!myEntry)
-    {                          // No file found
-      myEntry = nullptr;       // Keep pointer clean
-      myFlag  = false;         // No more files/directory
+    {                                       // No file found
+      myEntry = nullptr;                    // Keep pointer clean
+      myFlag  = false;                      // No more files/directory
       closedir(static_cast<DIR*>(myDescr)); // so close directory
       myDescr = nullptr;
       again   = 0;
@@ -130,7 +130,8 @@ void OSD_DirectoryIterator::Next()
       //     if (!strcmp(entry->d_name,"..")) continue;         2 directories.
 
       // Is it a directory ?
-      const TCollection_AsciiString aFullName = myPlace + "/" + (static_cast<struct dirent*>(myEntry))->d_name;
+      const TCollection_AsciiString aFullName =
+        myPlace + "/" + (static_cast<struct dirent*>(myEntry))->d_name;
       stat(aFullName.ToCString(), &stat_buf);
       if (S_ISDIR(stat_buf.st_mode)) // Ensure me it's not a file
         if (strcmp_joker(myMask.ToCString(), (static_cast<struct dirent*>(myEntry))->d_name))

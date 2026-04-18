@@ -92,8 +92,9 @@ static int colorDiscreteInterval(double theValue, double theMin, double theMax, 
     return 1;
   }
 
-  int anInterval =
-    1 + static_cast<int>(std::floor(static_cast<double>(theNbIntervals) * (theValue - theMin) / (theMax - theMin)));
+  int anInterval = 1
+                   + static_cast<int>(std::floor(static_cast<double>(theNbIntervals)
+                                                 * (theValue - theMin) / (theMax - theMin)));
   // map the very upper value (theValue==theMax) to the largest color interval
   anInterval = std::min(anInterval, theNbIntervals);
   return anInterval;
@@ -372,8 +373,9 @@ void AIS_ColorScale::SizeHint(int& theWidth, int& theHeight) const
     }
   }
 
-  const int aScaleWidth  = aColorWidth + aTextWidth + (aTextWidth ? 3 : 2) * mySpacing;
-  const int aScaleHeight = static_cast<int>(1.5 * (myNbIntervals + (myIsLabelAtBorder ? 2 : 1)) * aTextHeight);
+  const int aScaleWidth = aColorWidth + aTextWidth + (aTextWidth ? 3 : 2) * mySpacing;
+  const int aScaleHeight =
+    static_cast<int>(1.5 * (myNbIntervals + (myIsLabelAtBorder ? 2 : 1)) * aTextHeight);
 
   int aTitleWidth  = 0;
   int aTitleHeight = 0;
@@ -696,7 +698,7 @@ void AIS_ColorScale::drawColorBar(const occ::handle<Prs3d_Presentation>& thePrs,
     for (int aColorIter = 0; aColorIter < myNbIntervals; ++aColorIter)
     {
       const Quantity_Color& aColor = aColors.Value(aColorIter + 1);
-      const int             aSizeY = theBarBottom + static_cast<int>((aColorIter + 1) * aStepY) - anYBottomIter;
+      const int aSizeY = theBarBottom + static_cast<int>((aColorIter + 1) * aStepY) - anYBottomIter;
       addColoredQuad(aTriangles, anXLeft, anYBottomIter, theColorBreadth, aSizeY, aColor, aColor);
       anYBottomIter += aSizeY;
     }
@@ -771,11 +773,12 @@ void AIS_ColorScale::drawLabels(const occ::handle<Graphic3d_Group>&             
     }
   }
 
-  int       i1        = 0;
-  int       i2        = aNbLabels - 1;
-  int       aLast1    = i1;
-  int       aLast2    = i2;
-  const int anYBottom = myIsLabelAtBorder ? theBarBottom : theBarBottom + static_cast<int>(aStepY / 2);
+  int       i1     = 0;
+  int       i2     = aNbLabels - 1;
+  int       aLast1 = i1;
+  int       aLast2 = i2;
+  const int anYBottom =
+    myIsLabelAtBorder ? theBarBottom : theBarBottom + static_cast<int>(aStepY / 2);
   while (i2 - i1 >= aFilter || (i2 == 0 && i1 == 0))
   {
     int aPos1 = i1;
@@ -897,8 +900,12 @@ void AIS_ColorScale::TextSize(const TCollection_ExtendedString& theText,
     const TCollection_AsciiString       aText(theText);
     const occ::handle<V3d_Viewer>&      aViewer = GetContext()->CurrentViewer();
     const occ::handle<Graphic3d_CView>& aView   = aViewer->ActiveViewIterator().Value()->View();
-    aViewer->Driver()
-      ->TextSize(aView, aText.ToCString(), static_cast<float>(theHeight), aWidth, anAscent, aDescent);
+    aViewer->Driver()->TextSize(aView,
+                                aText.ToCString(),
+                                static_cast<float>(theHeight),
+                                aWidth,
+                                anAscent,
+                                aDescent);
   }
   theWidth   = static_cast<int>(aWidth);
   theAscent  = static_cast<int>(anAscent);

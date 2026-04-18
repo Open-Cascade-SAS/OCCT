@@ -116,7 +116,8 @@ occ::handle<PCDM_Document> PCDM_StorageDriver::Make(const occ::handle<CDM_Docume
 {
   occ::handle<PCDM_Document> voidDocument;
   Standard_SStream           aMsg;
-  aMsg << "No Make method were implemented in this Driver" << DynamicType()->Name() << static_cast<char>(0);
+  aMsg << "No Make method were implemented in this Driver" << DynamicType()->Name()
+       << static_cast<char>(0);
   throw Standard_NotImplemented(aMsg.str().c_str());
 }
 

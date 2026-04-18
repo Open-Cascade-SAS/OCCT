@@ -1511,8 +1511,8 @@ void BRepFeat_Form::UpdateDescendants(const BRepAlgoAPI_BooleanOperation& aBOP,
       }
       if (!exp.More())
       {
-        BRepAlgoAPI_BooleanOperation*         pBOP = const_cast<BRepAlgoAPI_BooleanOperation*>(&aBOP);
-        const NCollection_List<TopoDS_Shape>& aLM  = pBOP->Modified(fdsc);
+        BRepAlgoAPI_BooleanOperation* pBOP = const_cast<BRepAlgoAPI_BooleanOperation*>(&aBOP);
+        const NCollection_List<TopoDS_Shape>& aLM = pBOP->Modified(fdsc);
         it2.Initialize(aLM);
         for (; it2.More(); it2.Next())
         {

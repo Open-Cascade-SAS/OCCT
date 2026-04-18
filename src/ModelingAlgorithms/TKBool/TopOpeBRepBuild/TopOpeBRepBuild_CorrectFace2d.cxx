@@ -79,7 +79,8 @@ void TopOpeBRepBuild_CorrectFace2d::SetMapOfTrans2dInfo(
 NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&
   TopOpeBRepBuild_CorrectFace2d::MapOfTrans2dInfo()
 {
-  return *static_cast<NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>*>(myMap);
+  return *static_cast<
+    NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>*>(myMap);
 }
 
 //=================================================================================================
@@ -124,7 +125,8 @@ void TopOpeBRepBuild_CorrectFace2d::BuildCopyData(
   BRep_Builder BB;
 
   NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>* pMap =
-    static_cast<NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>*>(myMap);
+    static_cast<NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>*>(
+      myMap);
   //
   // 1. Copy myFace =>> myCopyFace
   TopoDS_Shape aLocalShape = aFace.EmptyCopied();
@@ -995,7 +997,8 @@ void TopOpeBRepBuild_CorrectFace2d::UpdateEdge(const TopoDS_Edge&               
   BRep_Builder BB;
 
   NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>* pMap =
-    static_cast<NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>*>(myMap);
+    static_cast<NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>*>(
+      myMap);
 
   // E is the Original Edge from Original Face.
   if (myEdMapInversed.Contains(ECopy))
@@ -1041,7 +1044,8 @@ void TopOpeBRepBuild_CorrectFace2d::UpdateEdge(const TopoDS_Edge&               
   BRep_Builder BB;
 
   NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>* pMap =
-    static_cast<NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>*>(myMap);
+    static_cast<NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>*>(
+      myMap);
 
   // E is the Original Edge from Original Face.
   if (myEdMapInversed.Contains(ECopy))

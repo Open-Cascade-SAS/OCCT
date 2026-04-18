@@ -278,7 +278,8 @@ occ::handle<CDM_Document> CDF_Application::Retrieve(const occ::handle<CDM_MetaDa
     if (!Format(aMetaData->FileName(), aFormat))
     {
       Standard_SStream aMsg;
-      aMsg << "Could not determine format for the file " << aMetaData->FileName() << static_cast<char>(0);
+      aMsg << "Could not determine format for the file " << aMetaData->FileName()
+           << static_cast<char>(0);
       throw Standard_NoSuchObject(aMsg.str().c_str());
     }
     occ::handle<PCDM_Reader> theReader = ReaderFromFormat(aFormat);

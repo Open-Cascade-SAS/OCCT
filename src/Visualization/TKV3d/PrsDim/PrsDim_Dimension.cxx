@@ -1266,7 +1266,8 @@ void PrsDim_Dimension::ComputeSelection(const occ::handle<SelectMgr_Selection>& 
     return;
   }
 
-  PrsDim_DimensionSelectionMode aSelectionMode = static_cast<PrsDim_DimensionSelectionMode>(theMode);
+  PrsDim_DimensionSelectionMode aSelectionMode =
+    static_cast<PrsDim_DimensionSelectionMode>(theMode);
 
   // init appropriate entity owner
   occ::handle<SelectMgr_EntityOwner> aSensitiveOwner;

@@ -220,7 +220,8 @@ void Graphic3d_PBRMaterial::GenerateEnvLUT(const occ::handle<Image_PixMap>& theL
 
 float Graphic3d_PBRMaterial::SpecIBLMapSamplesFactor(float theProbability, float theRoughness)
 {
-  return acosf(lutGenImportanceSampleCosTheta(theProbability, theRoughness)) * 2.f / static_cast<float>(M_PI);
+  return acosf(lutGenImportanceSampleCosTheta(theProbability, theRoughness)) * 2.f
+         / static_cast<float>(M_PI);
 }
 
 //=================================================================================================

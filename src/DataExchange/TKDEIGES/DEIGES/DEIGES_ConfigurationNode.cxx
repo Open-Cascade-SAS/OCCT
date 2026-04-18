@@ -55,30 +55,28 @@ bool DEIGES_ConfigurationNode::Load(const occ::handle<DE_ConfigurationContext>& 
     THE_CONFIGURATION_SCOPE() + "." + GetFormat() + "." + GetVendor();
 
   InternalParameters.ReadBSplineContinuity =
-    static_cast<DEIGES_Parameters::ReadMode_BSplineContinuity>(theResource->IntegerVal(
-      "read.iges.bspline.continuity",
-      InternalParameters.ReadBSplineContinuity,
-      aScope));
-  InternalParameters.ReadPrecisionMode =
-    static_cast<DEIGES_Parameters::ReadMode_Precision>(theResource->IntegerVal("read.precision.mode", InternalParameters.ReadPrecisionMode, aScope));
+    static_cast<DEIGES_Parameters::ReadMode_BSplineContinuity>(
+      theResource->IntegerVal("read.iges.bspline.continuity",
+                              InternalParameters.ReadBSplineContinuity,
+                              aScope));
+  InternalParameters.ReadPrecisionMode = static_cast<DEIGES_Parameters::ReadMode_Precision>(
+    theResource->IntegerVal("read.precision.mode", InternalParameters.ReadPrecisionMode, aScope));
   InternalParameters.ReadPrecisionVal =
     theResource->RealVal("read.precision.val", InternalParameters.ReadPrecisionVal, aScope);
-  InternalParameters.ReadMaxPrecisionMode =
-    static_cast<DEIGES_Parameters::ReadMode_MaxPrecision>(theResource->IntegerVal(
-      "read.maxprecision.mode",
-      InternalParameters.ReadMaxPrecisionMode,
-      aScope));
+  InternalParameters.ReadMaxPrecisionMode = static_cast<DEIGES_Parameters::ReadMode_MaxPrecision>(
+    theResource->IntegerVal("read.maxprecision.mode",
+                            InternalParameters.ReadMaxPrecisionMode,
+                            aScope));
   InternalParameters.ReadMaxPrecisionVal =
     theResource->RealVal("read.maxprecision.val", InternalParameters.ReadMaxPrecisionVal, aScope);
   InternalParameters.ReadSameParamMode =
     theResource->BooleanVal("read.stdsameparameter.mode",
                             InternalParameters.ReadSameParamMode,
                             aScope);
-  InternalParameters.ReadSurfaceCurveMode =
-    static_cast<DEIGES_Parameters::ReadMode_SurfaceCurve>(theResource->IntegerVal(
-      "read.surfacecurve.mode",
-      InternalParameters.ReadSurfaceCurveMode,
-      aScope));
+  InternalParameters.ReadSurfaceCurveMode = static_cast<DEIGES_Parameters::ReadMode_SurfaceCurve>(
+    theResource->IntegerVal("read.surfacecurve.mode",
+                            InternalParameters.ReadSurfaceCurveMode,
+                            aScope));
   InternalParameters.EncodeRegAngle =
     theResource->RealVal("read.encoderegularity.angle", InternalParameters.EncodeRegAngle, aScope);
 
@@ -95,15 +93,13 @@ bool DEIGES_ConfigurationNode::Load(const occ::handle<DE_ConfigurationContext>& 
   InternalParameters.ReadLayer =
     theResource->BooleanVal("read.layer", InternalParameters.ReadLayer, aScope);
 
-  InternalParameters.WriteBRepMode =
-    static_cast<DEIGES_Parameters::WriteMode_BRep>(theResource->IntegerVal("write.brep.mode",
-                                                               InternalParameters.WriteBRepMode,
-                                                               aScope));
+  InternalParameters.WriteBRepMode = static_cast<DEIGES_Parameters::WriteMode_BRep>(
+    theResource->IntegerVal("write.brep.mode", InternalParameters.WriteBRepMode, aScope));
   InternalParameters.WriteConvertSurfaceMode =
-    static_cast<DEIGES_Parameters::WriteMode_ConvertSurface>(theResource->IntegerVal(
-      "write.convertsurface.mode",
-      InternalParameters.WriteConvertSurfaceMode,
-      aScope));
+    static_cast<DEIGES_Parameters::WriteMode_ConvertSurface>(
+      theResource->IntegerVal("write.convertsurface.mode",
+                              InternalParameters.WriteConvertSurfaceMode,
+                              aScope));
   InternalParameters.WriteHeaderAuthor =
     theResource->StringVal("write.header.author", InternalParameters.WriteHeaderAuthor, aScope);
   InternalParameters.WriteHeaderCompany =
@@ -112,15 +108,12 @@ bool DEIGES_ConfigurationNode::Load(const occ::handle<DE_ConfigurationContext>& 
     theResource->StringVal("write.header.product", InternalParameters.WriteHeaderProduct, aScope);
   InternalParameters.WriteHeaderReciever =
     theResource->StringVal("write.header.receiver", InternalParameters.WriteHeaderReciever, aScope);
-  InternalParameters.WritePrecisionMode =
-    static_cast<DEIGES_Parameters::WriteMode_PrecisionMode>(theResource->IntegerVal(
-      "write.precision.mode",
-      InternalParameters.WritePrecisionMode,
-      aScope));
+  InternalParameters.WritePrecisionMode = static_cast<DEIGES_Parameters::WriteMode_PrecisionMode>(
+    theResource->IntegerVal("write.precision.mode", InternalParameters.WritePrecisionMode, aScope));
   InternalParameters.WritePrecisionVal =
     theResource->RealVal("write.precision.val", InternalParameters.WritePrecisionVal, aScope);
-  InternalParameters.WritePlaneMode =
-    static_cast<DEIGES_Parameters::WriteMode_PlaneMode>(theResource->IntegerVal("write.plane.mode", InternalParameters.WritePlaneMode, aScope));
+  InternalParameters.WritePlaneMode = static_cast<DEIGES_Parameters::WriteMode_PlaneMode>(
+    theResource->IntegerVal("write.plane.mode", InternalParameters.WritePlaneMode, aScope));
   InternalParameters.WriteOffsetMode =
     theResource->BooleanVal("write.offset", InternalParameters.WriteOffsetMode, aScope);
   InternalParameters.WriteColor =

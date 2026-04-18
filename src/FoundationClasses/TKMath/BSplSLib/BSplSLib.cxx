@@ -2405,7 +2405,8 @@ void BSplSLib::BuildCache(const double                      theU,
   for (int kk = 0; kk <= d1; kk++)
     BSplCLib::Bohm(u2, d2, d2, *dc.knots2, aDimension, *(dc.poles + kk * aDimension * d2p1));
 
-  double* aCache = static_cast<double*>(&(theCacheArray(theCacheArray.LowerRow(), theCacheArray.LowerCol())));
+  double* aCache =
+    static_cast<double*>(&(theCacheArray(theCacheArray.LowerRow(), theCacheArray.LowerCol())));
 
   double aFactors[2];
   // aFactors[0] corresponds to variable with minimal degree
@@ -2431,7 +2432,8 @@ void BSplSLib::BuildCache(const double                      theU,
   // Fill the weights for the surface which is not locally polynomial
   if (aCacheShift > aDimension)
   {
-    aCache = static_cast<double*>(&(theCacheArray(theCacheArray.LowerRow(), theCacheArray.LowerCol())));
+    aCache =
+      static_cast<double*>(&(theCacheArray(theCacheArray.LowerRow(), theCacheArray.LowerCol())));
     aCache += aCacheShift - 1;
     for (aRow = 0; aRow <= d2; aRow++)
       for (aCol = 0; aCol <= d1; aCol++)

@@ -21,13 +21,16 @@ void DEIGES_Parameters::InitFromStatic()
 {
   ReadBSplineContinuity =
     static_cast<ReadMode_BSplineContinuity>(Interface_Static::IVal("read.iges.bspline.continuity"));
-  ReadPrecisionMode    = static_cast<ReadMode_Precision>(Interface_Static::IVal("read.precision.mode"));
-  ReadPrecisionVal     = Interface_Static::RVal("read.precision.val");
-  ReadMaxPrecisionMode = static_cast<ReadMode_MaxPrecision>(Interface_Static::IVal("read.maxprecision.mode"));
-  ReadMaxPrecisionVal  = Interface_Static::RVal("read.maxprecision.val");
-  ReadSameParamMode    = Interface_Static::IVal("read.stdsameparameter.mode") == 1;
-  ReadSurfaceCurveMode = static_cast<ReadMode_SurfaceCurve>(Interface_Static::IVal("read.surfacecurve.mode"));
-  EncodeRegAngle       = Interface_Static::RVal("read.encoderegularity.angle");
+  ReadPrecisionMode =
+    static_cast<ReadMode_Precision>(Interface_Static::IVal("read.precision.mode"));
+  ReadPrecisionVal = Interface_Static::RVal("read.precision.val");
+  ReadMaxPrecisionMode =
+    static_cast<ReadMode_MaxPrecision>(Interface_Static::IVal("read.maxprecision.mode"));
+  ReadMaxPrecisionVal = Interface_Static::RVal("read.maxprecision.val");
+  ReadSameParamMode   = Interface_Static::IVal("read.stdsameparameter.mode") == 1;
+  ReadSurfaceCurveMode =
+    static_cast<ReadMode_SurfaceCurve>(Interface_Static::IVal("read.surfacecurve.mode"));
+  EncodeRegAngle = Interface_Static::RVal("read.encoderegularity.angle");
 
   ReadApproxd1       = Interface_Static::IVal("read.bspline.approxd1.mode") == 1;
   ReadFaultyEntities = Interface_Static::IVal("read.fau_lty.entities") == 1;
@@ -43,13 +46,14 @@ void DEIGES_Parameters::InitFromStatic()
   WriteHeaderCompany  = Interface_Static::CVal("write.header.company");
   WriteHeaderProduct  = Interface_Static::CVal("write.header.product");
   WriteHeaderReciever = Interface_Static::CVal("write.header.receiver");
-  WritePrecisionMode  = static_cast<WriteMode_PrecisionMode>(Interface_Static::IVal("write.precision.mode"));
-  WritePrecisionVal   = Interface_Static::RVal("write.precision.val");
-  WritePlaneMode      = static_cast<WriteMode_PlaneMode>(Interface_Static::IVal("write.plane.mode"));
-  WriteOffsetMode     = Interface_Static::IVal("write.offset") == 1;
-  WriteColor          = Interface_Static::IVal("write.color") == 1;
-  WriteName           = Interface_Static::IVal("write.name") == 1;
-  WriteLayer          = Interface_Static::IVal("write.layer") == 1;
+  WritePrecisionMode =
+    static_cast<WriteMode_PrecisionMode>(Interface_Static::IVal("write.precision.mode"));
+  WritePrecisionVal = Interface_Static::RVal("write.precision.val");
+  WritePlaneMode    = static_cast<WriteMode_PlaneMode>(Interface_Static::IVal("write.plane.mode"));
+  WriteOffsetMode   = Interface_Static::IVal("write.offset") == 1;
+  WriteColor        = Interface_Static::IVal("write.color") == 1;
+  WriteName         = Interface_Static::IVal("write.name") == 1;
+  WriteLayer        = Interface_Static::IVal("write.layer") == 1;
 }
 
 //=================================================================================================

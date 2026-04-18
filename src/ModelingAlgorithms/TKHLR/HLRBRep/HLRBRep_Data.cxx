@@ -1081,8 +1081,7 @@ void HLRBRep_Data::NextEdge(const bool skip)
     myLEMinMax   = &myLEData->MinMax();
     myLETol      = myLEData->Tolerance();
     myLEType     = myLEGeom->GetType();
-    if ((myLEData)->Vertical()
-        || (myLEDouble && (myLEData)->HideCount() == myHideCount - 1))
+    if ((myLEData)->Vertical() || (myLEDouble && (myLEData)->HideCount() == myHideCount - 1))
       NextEdge();
     (myLEData)->HideCount(myHideCount - 1);
     return;
@@ -1348,8 +1347,7 @@ void HLRBRep_Data::NextInterference()
                     {
                       if (myIntersector.NbPoints() == 1 && myIntersector.NbSegments() == 0)
                       {
-                        (myReject)
-                          ->SetIntersection(myLE, myFE, myIntersector.Point(1));
+                        (myReject)->SetIntersection(myLE, myFE, myIntersector.Point(1));
                       }
                     }
                   }
@@ -2458,8 +2456,7 @@ bool HLRBRep_Data::SameVertex(const bool h1, const bool h2)
 
     bool otherCase = true;
 
-    if ((h1 && (myLEData)->OutLVSta())
-        || (!h1 && (myLEData)->OutLVEnd()))
+    if ((h1 && (myLEData)->OutLVSta()) || (!h1 && (myLEData)->OutLVEnd()))
     {
       if (iFaceTest || myLEInternal)
         otherCase = false;
@@ -2469,8 +2466,7 @@ bool HLRBRep_Data::SameVertex(const bool h1, const bool h2)
 
     if (otherCase)
     {
-      if ((h1 && (myLEData)->CutAtSta())
-          || (!h1 && (myLEData)->CutAtEnd()))
+      if ((h1 && (myLEData)->CutAtSta()) || (!h1 && (myLEData)->CutAtEnd()))
       {
         myIntersected = false; // two connected OutLines do not
       } // intersect themselves.

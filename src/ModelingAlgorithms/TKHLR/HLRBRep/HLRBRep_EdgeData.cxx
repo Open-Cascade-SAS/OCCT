@@ -45,8 +45,9 @@ void HLRBRep_EdgeData::Set(const bool         Rg1L,
   OutLVEnd(Out2);
   CutAtSta(Cut1);
   CutAtEnd(Cut2);
-  Status().Initialize(Start,
-                      static_cast<float>(ChangeGeometry().Curve().Resolution(static_cast<double>(TolStart))),
-                      End,
-                      static_cast<float>(ChangeGeometry().Curve().Resolution(static_cast<double>(TolEnd))));
+  Status().Initialize(
+    Start,
+    static_cast<float>(ChangeGeometry().Curve().Resolution(static_cast<double>(TolStart))),
+    End,
+    static_cast<float>(ChangeGeometry().Curve().Resolution(static_cast<double>(TolEnd))));
 }

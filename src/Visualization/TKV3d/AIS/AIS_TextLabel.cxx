@@ -287,10 +287,14 @@ void AIS_TextLabel::Compute(const occ::handle<PrsMgr_PresentationManager>&,
         gp_Pnt aMaxPnt = gp_Pnt(aDx, aDy, 0.0).Transformed(aLabelPlane);
 
         Graphic3d_BndBox4f& aBox = thePrs->CurrentGroup()->ChangeBoundingBox();
-        aBox.Add(
-          NCollection_Vec4<float>(static_cast<float>(aMinPnt.X()), static_cast<float>(aMinPnt.Y()), static_cast<float>(aMinPnt.Z()), 1.0));
-        aBox.Add(
-          NCollection_Vec4<float>(static_cast<float>(aMaxPnt.X()), static_cast<float>(aMaxPnt.Y()), static_cast<float>(aMaxPnt.Z()), 1.0));
+        aBox.Add(NCollection_Vec4<float>(static_cast<float>(aMinPnt.X()),
+                                         static_cast<float>(aMinPnt.Y()),
+                                         static_cast<float>(aMinPnt.Z()),
+                                         1.0));
+        aBox.Add(NCollection_Vec4<float>(static_cast<float>(aMaxPnt.X()),
+                                         static_cast<float>(aMaxPnt.Y()),
+                                         static_cast<float>(aMaxPnt.Z()),
+                                         1.0));
       }
 
       break;

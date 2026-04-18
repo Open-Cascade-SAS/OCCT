@@ -59,9 +59,9 @@ void StdPrs_Plane::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
   if (theaspect->DisplayIso())
   {
     TheGroup->SetPrimitivesAspect(theaspect->IsoAspect()->Aspect());
-    const double                           dist   = theaspect->IsoDistance();
-    const int                              nbx    = static_cast<int>(std::abs(2. * Xmax) / dist) - 1;
-    const int                              nby    = static_cast<int>(std::abs(2. * Ymax) / dist) - 1;
+    const double                           dist = theaspect->IsoDistance();
+    const int                              nbx  = static_cast<int>(std::abs(2. * Xmax) / dist) - 1;
+    const int                              nby  = static_cast<int>(std::abs(2. * Ymax) / dist) - 1;
     occ::handle<Graphic3d_ArrayOfSegments> aPrims = new Graphic3d_ArrayOfSegments(2 * (nbx + nby));
     int                                    i;
     double                                 cur = -Xmax + dist;

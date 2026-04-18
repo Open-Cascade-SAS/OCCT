@@ -255,23 +255,26 @@ bool ApproxInt_MultiLine::Tangency(const int Index, NCollection_Array1<gp_Vec2d>
   {
     if (p2donfirst)
     {
-      ret = (static_cast<TheSvSurfaces*>(PtrOnmySvSurfaces))->TangencyOnSurf1(u1, v1, u2, v2, TabVec2d(1));
+      ret = (static_cast<TheSvSurfaces*>(PtrOnmySvSurfaces))
+              ->TangencyOnSurf1(u1, v1, u2, v2, TabVec2d(1));
     }
     else
     {
-      ret = (static_cast<TheSvSurfaces*>(PtrOnmySvSurfaces))->TangencyOnSurf2(u1, v1, u2, v2, TabVec2d(1));
+      ret = (static_cast<TheSvSurfaces*>(PtrOnmySvSurfaces))
+              ->TangencyOnSurf2(u1, v1, u2, v2, TabVec2d(1));
     }
   }
   else
   {
-    ret = (static_cast<TheSvSurfaces*>(PtrOnmySvSurfaces))->TangencyOnSurf1(u1, v1, u2, v2, TabVec2d(1));
+    ret = (static_cast<TheSvSurfaces*>(PtrOnmySvSurfaces))
+            ->TangencyOnSurf1(u1, v1, u2, v2, TabVec2d(1));
     if (ret)
     {
       if (TabVec2d.Length() >= 2)
       {
-        ret =
-          (ret
-           && (static_cast<TheSvSurfaces*>(PtrOnmySvSurfaces))->TangencyOnSurf2(u1, v1, u2, v2, TabVec2d(2)));
+        ret = (ret
+               && (static_cast<TheSvSurfaces*>(PtrOnmySvSurfaces))
+                    ->TangencyOnSurf2(u1, v1, u2, v2, TabVec2d(2)));
       }
     }
   }
@@ -672,7 +675,8 @@ bool ApproxInt_MultiLine::MakeMLOneMorePoint(const int            theLow,
     IsNewPointInvalid = myApproxU2V2 && std::abs(ucur2 - umid2) <= tolerance(1)
                         && std::abs(vcur2 - vmid2) <= tolerance(2);
     if (!IsNewPointInvalid
-        && (static_cast<TheSvSurfaces*>(PtrOnmySvSurfaces))->SeekPoint(umid1, vmid1, umid2, vmid2, MidPoint))
+        && (static_cast<TheSvSurfaces*>(PtrOnmySvSurfaces))
+             ->SeekPoint(umid1, vmid1, umid2, vmid2, MidPoint))
     {
       const gp_Pnt& NewPnt        = MidPoint.Value();
       double        SqDistNewPrev = NewPnt.SquareDistance(PrevPnt);

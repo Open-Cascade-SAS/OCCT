@@ -794,7 +794,8 @@ void Graphic3d_FrameStats::FrameEnd(const occ::handle<Graphic3d_CView>& theView,
                                                                <= Graphic3d_FrameStatsCounter_RENDERED_UPPER;
                                                                ++aCntIter)
     {
-      myCountersTmp.ChangeCounterValue(static_cast<Graphic3d_FrameStatsCounter>(aCntIter + anImmShift)) =
+      myCountersTmp.ChangeCounterValue(
+        static_cast<Graphic3d_FrameStatsCounter>(aCntIter + anImmShift)) =
         myCountersTmp.CounterValue(static_cast<Graphic3d_FrameStatsCounter>(aCntIter));
     }
 

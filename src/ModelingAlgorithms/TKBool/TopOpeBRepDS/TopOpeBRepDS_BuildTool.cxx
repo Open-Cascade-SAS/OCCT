@@ -744,14 +744,14 @@ void TopOpeBRepDS_BuildTool::PutPCurves(const TopOpeBRepDS_Curve& newC,
                                         const bool                comppc2) const
 {
 
-  TopoDS_Face&                     F1  = *(static_cast<TopoDS_Face*>((void*)&(TopoDS::Face(newC.Shape1()))));
+  TopoDS_Face& F1 = *(static_cast<TopoDS_Face*>((void*)&(TopoDS::Face(newC.Shape1()))));
   const occ::handle<Geom2d_Curve>& PC1 = newC.Curve1();
   if (!PC1.IsNull() && comppc1)
   {
     PCurve(F1, E, PC1);
   }
 
-  TopoDS_Face&                     F2  = *(static_cast<TopoDS_Face*>((void*)&(TopoDS::Face(newC.Shape2()))));
+  TopoDS_Face& F2 = *(static_cast<TopoDS_Face*>((void*)&(TopoDS::Face(newC.Shape2()))));
   const occ::handle<Geom2d_Curve>& PC2 = newC.Curve2();
   if (!PC2.IsNull() && comppc2)
   {

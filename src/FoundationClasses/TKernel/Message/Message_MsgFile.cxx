@@ -342,7 +342,7 @@ bool Message_MsgFile::LoadFromEnv(const char* const theEnvName,
 
 bool Message_MsgFile::LoadFromString(const char* const theContent, const int theLength)
 {
-  int                aStringSize = theLength >= 0 ? theLength : static_cast<int>(strlen(theContent));
+  int aStringSize = theLength >= 0 ? theLength : static_cast<int>(strlen(theContent));
   NCollection_Buffer aBuffer(NCollection_BaseAllocator::CommonBaseAllocator());
   if (aStringSize <= 0 || !aBuffer.Allocate(aStringSize + 2))
   {

@@ -989,7 +989,7 @@ void OSD_File::ReadLine(TCollection_AsciiString& theBuffer,
   }
 #else
   NCollection_Array1<char> aBuffer(0, theNbBytes);
-  char*                    aBufferGets = fgets(&aBuffer.ChangeFirst(), theNbBytes, static_cast<FILE*>(myFILE));
+  char* aBufferGets = fgets(&aBuffer.ChangeFirst(), theNbBytes, static_cast<FILE*>(myFILE));
   if (aBufferGets == nullptr)
   {
     if (!feof(static_cast<FILE*>(myFILE)))
@@ -1115,8 +1115,9 @@ void OSD_File::Read(void* const theBuffer, const int theNbBytes, int& theNbReadB
 
   theNbReadBytes = (int)aNbReadBytes;
 #else
-  theNbReadBytes   = 0;
-  int aNbReadBytes = static_cast<int>(read(myFileChannel, static_cast<char*>(theBuffer), theNbBytes));
+  theNbReadBytes = 0;
+  int aNbReadBytes =
+    static_cast<int>(read(myFileChannel, static_cast<char*>(theBuffer), theNbBytes));
   if (aNbReadBytes == -1)
   {
     myError.SetValue(errno, Iam, "Read");
@@ -1165,7 +1166,8 @@ void OSD_File::Write(void* const theBuffer, const int theNbBytes)
     _osd_wnt_set_error(myError, OSD_WFile);
   }
 #else
-  const int aNbWritten = static_cast<int>(write(myFileChannel, static_cast<const char*>(theBuffer), theNbBytes));
+  const int aNbWritten =
+    static_cast<int>(write(myFileChannel, static_cast<const char*>(theBuffer), theNbBytes));
   if (aNbWritten == -1)
   {
     myError.SetValue(errno, Iam, "Write");

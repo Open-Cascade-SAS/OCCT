@@ -94,7 +94,9 @@ public:
   //! Set surface normal at picked point.
   void SetSurfaceNormal(const gp_Vec& theNormal)
   {
-    myNormal.SetValues(static_cast<float>(theNormal.X()), static_cast<float>(theNormal.Y()), static_cast<float>(theNormal.Z()));
+    myNormal.SetValues(static_cast<float>(theNormal.X()),
+                       static_cast<float>(theNormal.Y()),
+                       static_cast<float>(theNormal.Z()));
   }
 
 private:

@@ -275,7 +275,8 @@ public:             //! @name Preparation methods
     if (!theName.IsEmpty())
     {
       myIsOwnName = true;
-      myName      = static_cast<char*>(Standard::AllocateOptimal(static_cast<size_t>(theName.Length()) + static_cast<size_t>(1)));
+      myName      = static_cast<char*>(
+        Standard::AllocateOptimal(static_cast<size_t>(theName.Length()) + static_cast<size_t>(1)));
       char* aName = const_cast<char*>(myName);
       memcpy(aName, theName.ToCString(), theName.Length());
       aName[theName.Length()] = '\0';

@@ -236,7 +236,8 @@ public:
   //! Returns status type (DONE, WARN, ALARM, or FAIL)
   static Message_StatusType TypeOfStatus(Message_Status theStatus)
   {
-    return static_cast<Message_StatusType>(static_cast<unsigned int>(theStatus) & static_cast<unsigned int>(MType));
+    return static_cast<Message_StatusType>(static_cast<unsigned int>(theStatus)
+                                           & static_cast<unsigned int>(MType));
   }
 
   //! Returns status with index theIndex in whole range [FirstStatus, LastStatus]

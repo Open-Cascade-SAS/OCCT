@@ -44,8 +44,12 @@ void OpenGl_VertexBuffer::BindVertexAttrib(const occ::handle<OpenGl_Context>& th
   }
   Bind(theGlCtx);
   theGlCtx->core20fwd->glEnableVertexAttribArray(theAttribLoc);
-  theGlCtx->core20fwd
-    ->glVertexAttribPointer(theAttribLoc, static_cast<GLint>(myComponentsNb), myDataType, GL_FALSE, 0, myOffset);
+  theGlCtx->core20fwd->glVertexAttribPointer(theAttribLoc,
+                                             static_cast<GLint>(myComponentsNb),
+                                             myDataType,
+                                             GL_FALSE,
+                                             0,
+                                             myOffset);
 }
 
 //=================================================================================================

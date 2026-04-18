@@ -53,14 +53,10 @@ bool DEBREP_ConfigurationNode::Load(const occ::handle<DE_ConfigurationContext>& 
 
   InternalParameters.WriteBinary =
     theResource->BooleanVal("write.binary", InternalParameters.WriteBinary, aScope);
-  InternalParameters.WriteVersionBin =
-    static_cast<BinTools_FormatVersion>(theResource->IntegerVal("write.version.binary",
-                                                    InternalParameters.WriteVersionBin,
-                                                    aScope));
-  InternalParameters.WriteVersionAscii =
-    static_cast<TopTools_FormatVersion>(theResource->IntegerVal("write.version.ascii",
-                                                    InternalParameters.WriteVersionAscii,
-                                                    aScope));
+  InternalParameters.WriteVersionBin = static_cast<BinTools_FormatVersion>(
+    theResource->IntegerVal("write.version.binary", InternalParameters.WriteVersionBin, aScope));
+  InternalParameters.WriteVersionAscii = static_cast<TopTools_FormatVersion>(
+    theResource->IntegerVal("write.version.ascii", InternalParameters.WriteVersionAscii, aScope));
   InternalParameters.WriteTriangles =
     theResource->BooleanVal("write.triangles", InternalParameters.WriteTriangles, aScope);
   InternalParameters.WriteNormals =

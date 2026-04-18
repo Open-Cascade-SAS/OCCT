@@ -2476,7 +2476,8 @@ void OpenGl_GlFunctions::load(OpenGl_Context& theCtx, bool theIsCoreProfile)
           && FindProcShort(glVertexAttrib4usv) && FindProcShort(glVertexAttribPointer);
   if (has20)
   {
-    const char* aGlslVer = reinterpret_cast<const char*>(::glGetString(GL_SHADING_LANGUAGE_VERSION));
+    const char* aGlslVer =
+      reinterpret_cast<const char*>(::glGetString(GL_SHADING_LANGUAGE_VERSION));
     if (aGlslVer == nullptr || *aGlslVer == '\0')
     {
       // broken context has been detected

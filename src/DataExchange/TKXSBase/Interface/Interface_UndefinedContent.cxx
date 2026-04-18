@@ -271,7 +271,8 @@ void Interface_UndefinedContent::SetEntity(const int                            
   else
     theentities.SetValue(rang, ent);
 
-  desc = static_cast<int>(ptype) + (Content_LocalRef << Content_LocalShift) + (rang << Content_NumberShift);
+  desc = static_cast<int>(ptype) + (Content_LocalRef << Content_LocalShift)
+         + (rang << Content_NumberShift);
   theparams->SetValue(num, desc);
 }
 

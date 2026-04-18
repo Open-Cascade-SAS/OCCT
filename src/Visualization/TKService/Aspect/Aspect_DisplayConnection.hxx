@@ -99,7 +99,10 @@ public:
   Display* GetDisplay() { return reinterpret_cast<Display*>(myDisplay); }
 
   //! Return default window visual or NULL when undefined.
-  XVisualInfo* GetDefaultVisualInfoX() const { return reinterpret_cast<XVisualInfo*>(myDefVisualInfo); }
+  XVisualInfo* GetDefaultVisualInfoX() const
+  {
+    return reinterpret_cast<XVisualInfo*>(myDefVisualInfo);
+  }
 
   //! Set default window visual; the visual will be deallocated using XFree().
   void SetDefaultVisualInfo(XVisualInfo* theVisual, Aspect_FBConfig theFBConfig)

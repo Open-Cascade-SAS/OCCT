@@ -123,26 +123,23 @@ Standard_EXPORT void FDSCNX_Prepare(const TopoDS_Shape& /*S1*/,
   }
   const TopOpeBRepDS_DataStructure& BDS = HDS->DS();
   if (GLOBAL_elf1 == nullptr)
-    GLOBAL_elf1 = static_cast<NCollection_DataMap<
-                   TopoDS_Shape,
-                   NCollection_List<TopoDS_Shape>,
-                   TopTools_ShapeMapHasher>*>(new NCollection_DataMap<TopoDS_Shape,
-                                                                     NCollection_List<TopoDS_Shape>,
-                                                                     TopTools_ShapeMapHasher>());
+    GLOBAL_elf1 = static_cast<
+      NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>*>(
+      new NCollection_DataMap<TopoDS_Shape,
+                              NCollection_List<TopoDS_Shape>,
+                              TopTools_ShapeMapHasher>());
   if (GLOBAL_elf2 == nullptr)
-    GLOBAL_elf2 = static_cast<NCollection_DataMap<
-                   TopoDS_Shape,
-                   NCollection_List<TopoDS_Shape>,
-                   TopTools_ShapeMapHasher>*>(new NCollection_DataMap<TopoDS_Shape,
-                                                                     NCollection_List<TopoDS_Shape>,
-                                                                     TopTools_ShapeMapHasher>());
+    GLOBAL_elf2 = static_cast<
+      NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>*>(
+      new NCollection_DataMap<TopoDS_Shape,
+                              NCollection_List<TopoDS_Shape>,
+                              TopTools_ShapeMapHasher>());
   if (GLOBAL_fle == nullptr)
-    GLOBAL_fle = static_cast<NCollection_DataMap<
-                  TopoDS_Shape,
-                  NCollection_List<TopoDS_Shape>,
-                  TopTools_ShapeMapHasher>*>(new NCollection_DataMap<TopoDS_Shape,
-                                                                    NCollection_List<TopoDS_Shape>,
-                                                                    TopTools_ShapeMapHasher>());
+    GLOBAL_fle = static_cast<
+      NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>*>(
+      new NCollection_DataMap<TopoDS_Shape,
+                              NCollection_List<TopoDS_Shape>,
+                              TopTools_ShapeMapHasher>());
   if (GLOBAL_los == nullptr)
     GLOBAL_los = static_cast<NCollection_List<TopoDS_Shape>*>(new NCollection_List<TopoDS_Shape>());
   GLOBAL_elf1->Clear();

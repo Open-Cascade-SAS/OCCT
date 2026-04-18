@@ -149,7 +149,8 @@ void StepData_StepReaderData::cleanText(const occ::handle<TCollection_HAsciiStri
         const char aPageId = UpperCase(static_cast<char>(aResString.Value(aStringInd + 2) & 255));
         if (aPageId >= 'A' && aPageId <= 'I')
         {
-          aLocalFormatType = static_cast<Resource_FormatType>(Resource_FormatType_iso8859_1 + (aPageId - 'A'));
+          aLocalFormatType =
+            static_cast<Resource_FormatType>(Resource_FormatType_iso8859_1 + (aPageId - 'A'));
         }
         else
         {
@@ -175,9 +176,10 @@ void StepData_StepReaderData::cleanText(const occ::handle<TCollection_HAsciiStri
       // converts followed two hexadecimal character.
       else if (aDirChar == 'X' && aStringInd <= aResStringSize - 4 && isSecSlash)
       {
-        char aResChar = static_cast<char>(convertCharacterTo16bit(aResString.Value(aStringInd + 3)));
-        aResChar =
-          (aResChar << 4) | static_cast<char>(convertCharacterTo16bit(aResString.Value(aStringInd + 4)));
+        char aResChar =
+          static_cast<char>(convertCharacterTo16bit(aResString.Value(aStringInd + 3)));
+        aResChar = (aResChar << 4)
+                   | static_cast<char>(convertCharacterTo16bit(aResString.Value(aStringInd + 4)));
         const char aStrForConvert[2] = {aResChar, '\0'};
         // clang-format off
         aTempExtString = TCollection_ExtendedString(aStrForConvert, false); // pass through without conversion

@@ -944,7 +944,8 @@ static occ::handle<IntPatch_RLine> BuildRLine(
           }
 
           int ParamMinOnLine = static_cast<int>(atmpWLine->Vertex(1).ParameterOnLine());
-          int ParamMaxOnLine = static_cast<int>(atmpWLine->Vertex(atmpWLine->NbVertex()).ParameterOnLine());
+          int ParamMaxOnLine =
+            static_cast<int>(atmpWLine->Vertex(atmpWLine->NbVertex()).ParameterOnLine());
 
           for (int k = ParamMinOnLine; k <= ParamMaxOnLine; k++)
           {

@@ -230,7 +230,9 @@ void MeshVS_TextPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& Prs,
           continue;
         }
 
-        aPnts.Append(NCollection_Vec3<float>(static_cast<float>(X), static_cast<float>(Y), static_cast<float>(Z)));
+        aPnts.Append(NCollection_Vec3<float>(static_cast<float>(X),
+                                             static_cast<float>(Y),
+                                             static_cast<float>(Z)));
 
         occ::handle<Graphic3d_Text> aText = new Graphic3d_Text(static_cast<float>(aHeight));
         aText->SetText(aStr);

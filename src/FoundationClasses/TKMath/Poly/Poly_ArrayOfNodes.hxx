@@ -137,7 +137,9 @@ inline void Poly_ArrayOfNodes::SetValue(int theIndex, const gp_Pnt& theValue)
   {
     NCollection_Vec3<float>& aVec3 =
       NCollection_AliasedArray::ChangeValue<NCollection_Vec3<float>>(theIndex);
-    aVec3.SetValues(static_cast<float>(theValue.X()), static_cast<float>(theValue.Y()), static_cast<float>(theValue.Z()));
+    aVec3.SetValues(static_cast<float>(theValue.X()),
+                    static_cast<float>(theValue.Y()),
+                    static_cast<float>(theValue.Z()));
   }
 }
 

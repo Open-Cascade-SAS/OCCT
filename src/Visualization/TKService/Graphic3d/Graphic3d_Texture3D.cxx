@@ -96,8 +96,8 @@ occ::handle<Image_PixMap> Graphic3d_Texture3D::GetImage(
             anImage->SizeRowBytes()))
       {
         Message::SendFail() << "Graphic3d_Texture3D::GetImage() failed to allocate 3D image "
-                            << static_cast<int>(anImage->SizeX()) << "x" << static_cast<int>(anImage->SizeY()) << "x"
-                            << aNbSlices;
+                            << static_cast<int>(anImage->SizeX()) << "x"
+                            << static_cast<int>(anImage->SizeY()) << "x" << aNbSlices;
         return occ::handle<Image_PixMap>();
       }
     }

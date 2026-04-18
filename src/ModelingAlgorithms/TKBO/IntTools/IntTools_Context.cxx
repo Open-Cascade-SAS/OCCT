@@ -253,8 +253,8 @@ GeomAPI_ProjectPointOnSurf& IntTools_Context::ProjPS(const TopoDS_Face& aF)
     UVBounds(aF, Umin, Usup, Vmin, Vsup);
     const occ::handle<Geom_Surface>& aS = BRep_Tool::Surface(aF);
     //
-    pProjPS =
-      static_cast<GeomAPI_ProjectPointOnSurf*>(myAllocator->Allocate(sizeof(GeomAPI_ProjectPointOnSurf)));
+    pProjPS = static_cast<GeomAPI_ProjectPointOnSurf*>(
+      myAllocator->Allocate(sizeof(GeomAPI_ProjectPointOnSurf)));
     new (pProjPS) GeomAPI_ProjectPointOnSurf();
     pProjPS->Init(aS, Umin, Usup, Vmin, Vsup, myPOnSTolerance);
     pProjPS->SetExtremaFlag(Extrema_ExtFlag_MIN); ///
@@ -275,8 +275,8 @@ GeomAPI_ProjectPointOnCurve& IntTools_Context::ProjPC(const TopoDS_Edge& aE)
     //
     occ::handle<Geom_Curve> aC3D = BRep_Tool::Curve(aE, f, l);
     //
-    pProjPC =
-      static_cast<GeomAPI_ProjectPointOnCurve*>(myAllocator->Allocate(sizeof(GeomAPI_ProjectPointOnCurve)));
+    pProjPC = static_cast<GeomAPI_ProjectPointOnCurve*>(
+      myAllocator->Allocate(sizeof(GeomAPI_ProjectPointOnCurve)));
     new (pProjPC) GeomAPI_ProjectPointOnCurve();
     pProjPC->Init(aC3D, f, l);
     //
@@ -297,8 +297,8 @@ GeomAPI_ProjectPointOnCurve& IntTools_Context::ProjPT(const occ::handle<Geom_Cur
     f = aC3D->FirstParameter();
     l = aC3D->LastParameter();
     //
-    pProjPT =
-      static_cast<GeomAPI_ProjectPointOnCurve*>(myAllocator->Allocate(sizeof(GeomAPI_ProjectPointOnCurve)));
+    pProjPT = static_cast<GeomAPI_ProjectPointOnCurve*>(
+      myAllocator->Allocate(sizeof(GeomAPI_ProjectPointOnCurve)));
     new (pProjPT) GeomAPI_ProjectPointOnCurve();
     pProjPT->Init(aC3D, f, l);
     //
@@ -314,7 +314,8 @@ BRepClass3d_SolidClassifier& IntTools_Context::SolidClassifier(const TopoDS_Soli
   BRepClass3d_SolidClassifier* pSC = nullptr;
   if (!mySClassMap.Find(aSolid, pSC))
   {
-    pSC = static_cast<BRepClass3d_SolidClassifier*>(myAllocator->Allocate(sizeof(BRepClass3d_SolidClassifier)));
+    pSC = static_cast<BRepClass3d_SolidClassifier*>(
+      myAllocator->Allocate(sizeof(BRepClass3d_SolidClassifier)));
     new (pSC) BRepClass3d_SolidClassifier(aSolid);
     //
     mySClassMap.Bind(aSolid, pSC);
@@ -361,7 +362,8 @@ Geom2dHatch_Hatcher& IntTools_Context::Hatcher(const TopoDS_Face& aF)
     aEpsT         = Precision::PConfusion();
     //
     Geom2dHatch_Intersector aIntr(aTolArcIntr, aTolTangfIntr);
-    pHatcher = static_cast<Geom2dHatch_Hatcher*>(myAllocator->Allocate(sizeof(Geom2dHatch_Hatcher)));
+    pHatcher =
+      static_cast<Geom2dHatch_Hatcher*>(myAllocator->Allocate(sizeof(Geom2dHatch_Hatcher)));
     new (pHatcher) Geom2dHatch_Hatcher(aIntr, aTolHatch2D, aTolHatch3D, true, false);
     //
     aFF = aF;
@@ -420,8 +422,8 @@ IntTools_SurfaceRangeLocalizeData& IntTools_Context::SurfaceData(const TopoDS_Fa
   IntTools_SurfaceRangeLocalizeData* pSData = nullptr;
   if (!myProjSDataMap.Find(aF, pSData))
   {
-    pSData = static_cast<IntTools_SurfaceRangeLocalizeData*>(myAllocator->Allocate(
-      sizeof(IntTools_SurfaceRangeLocalizeData)));
+    pSData = static_cast<IntTools_SurfaceRangeLocalizeData*>(
+      myAllocator->Allocate(sizeof(IntTools_SurfaceRangeLocalizeData)));
     new (pSData) IntTools_SurfaceRangeLocalizeData(3,
                                                    3,
                                                    10. * Precision::PConfusion(),

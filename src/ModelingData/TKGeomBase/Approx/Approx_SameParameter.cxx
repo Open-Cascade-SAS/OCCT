@@ -227,7 +227,15 @@ static bool Check(const NCollection_Array1<double>&   FlatKnots,
     double tc3d = pc3d[0] * (1.0 - t) + pc3d[nbp - 1] * t; // weight function.
     gp_Pnt Pc3d = c3d->Value(tc3d);
     double tcons;
-    BSplCLib::Eval(tc3d, false, 0, extrap_mode[0], aDegree, FlatKnots, 1, const_cast<double&>(Poles(1)), tcons);
+    BSplCLib::Eval(tc3d,
+                   false,
+                   0,
+                   extrap_mode[0],
+                   aDegree,
+                   FlatKnots,
+                   1,
+                   const_cast<double&>(Poles(1)),
+                   tcons);
 
     if (tcons < tprev || tcons > aParamLast)
     {

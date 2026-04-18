@@ -364,7 +364,7 @@ void* Standard_MMgrOpt::Allocate(const size_t aSize)
           {
             myMutex.lock();
             *reinterpret_cast<size_t**>(myNextAddr) = myFreeList[aPIndex];
-            myFreeList[aPIndex]   = myNextAddr;
+            myFreeList[aPIndex]                     = myNextAddr;
             myMutex.unlock();
           }
         }
@@ -394,8 +394,9 @@ void* Standard_MMgrOpt::Allocate(const size_t aSize)
       myMutex.unlock();
 
       // we use operator ?: instead of if() since it is faster
-      size_t* aBlock = static_cast<size_t*>(myClear ? calloc(RoundSizeN + BLOCK_SHIFT, sizeof(size_t))
-                                         : malloc((RoundSizeN + BLOCK_SHIFT) * sizeof(size_t)));
+      size_t* aBlock =
+        static_cast<size_t*>(myClear ? calloc(RoundSizeN + BLOCK_SHIFT, sizeof(size_t))
+                                     : malloc((RoundSizeN + BLOCK_SHIFT) * sizeof(size_t)));
 
       // if allocation failed, try to free some memory by purging free lists, and retry
       if (!aBlock)
@@ -728,7 +729,8 @@ retry:
 
     // allocate memory
     // note that on UNIX myMMap is file descriptor for /dev/null
-    aBlock = static_cast<size_t*>(mmap((char*)MMAP_BASE_ADDRESS, AlignedSize, PROT_READ | PROT_WRITE, MMAP_FLAGS, myMMap, 0));
+    aBlock = static_cast<size_t*>(
+      mmap((char*)MMAP_BASE_ADDRESS, AlignedSize, PROT_READ | PROT_WRITE, MMAP_FLAGS, myMMap, 0));
     if (aBlock == MAP_FAILED /* -1 */)
     {
       int errcode = errno;

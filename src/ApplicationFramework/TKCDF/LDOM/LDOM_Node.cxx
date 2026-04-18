@@ -150,7 +150,7 @@ LDOM_Node LDOM_Node::getLastChild() const
   {
     if (myLastChild == nullptr)
     {
-      const LDOM_BasicElement& anElement  = *(const LDOM_BasicElement*)myOrigin;
+      const LDOM_BasicElement& anElement              = *(const LDOM_BasicElement*)myOrigin;
       const_cast<const LDOM_BasicNode*&>(myLastChild) = anElement.GetLastChild();
     }
     return LDOM_Node(*myLastChild, myDocument);

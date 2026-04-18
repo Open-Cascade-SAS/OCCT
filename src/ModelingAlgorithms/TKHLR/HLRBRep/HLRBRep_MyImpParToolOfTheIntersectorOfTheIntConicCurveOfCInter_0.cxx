@@ -32,8 +32,8 @@ HLRBRep_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfCInter::
 bool HLRBRep_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfCInter::Value(const double Param,
                                                                            double& ApproxDistance)
 {
-  ApproxDistance =
-    TheImpTool.Distance(HLRBRep_CurveTool::Value((*(static_cast<HLRBRep_CurvePtr*>(TheParCurve))), Param));
+  ApproxDistance = TheImpTool.Distance(
+    HLRBRep_CurveTool::Value((*(static_cast<HLRBRep_CurvePtr*>(TheParCurve))), Param));
   return (true);
 }
 
@@ -43,8 +43,8 @@ bool HLRBRep_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfCInter::Derivative(
 {
   gp_Pnt2d Pt;
   gp_Vec2d TanParCurve;
-  gp_Vec2d Grad =
-    TheImpTool.GradDistance(HLRBRep_CurveTool::Value((*(static_cast<HLRBRep_CurvePtr*>(TheParCurve))), Param));
+  gp_Vec2d Grad = TheImpTool.GradDistance(
+    HLRBRep_CurveTool::Value((*(static_cast<HLRBRep_CurvePtr*>(TheParCurve))), Param));
   HLRBRep_CurveTool::D1((*(static_cast<HLRBRep_CurvePtr*>(TheParCurve))), Param, Pt, TanParCurve);
   D_ApproxDistance_DV = Grad.Dot(TanParCurve);
   return (true);

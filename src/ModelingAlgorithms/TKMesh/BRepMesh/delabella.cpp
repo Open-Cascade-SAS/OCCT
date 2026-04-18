@@ -176,7 +176,8 @@ struct CDelaBella : IDelaBella
     Signed62 dot(const Vert& p) const // dot
     {
       Vect d = p - *(Vert*)v[0];
-      return static_cast<Signed62>(n.x) * d.x + static_cast<Signed62>(n.y) * d.y + static_cast<Signed62>(n.z) * d.z;
+      return static_cast<Signed62>(n.x) * d.x + static_cast<Signed62>(n.y) * d.y
+             + static_cast<Signed62>(n.z) * d.z;
     }
 
     Norm cross() const // cross of diffs
@@ -833,9 +834,11 @@ struct CDelaBella : IDelaBella
     {
       Vert* v = vert_alloc + i;
       v->i    = i;
-      v->x    = static_cast<Signed14>(* reinterpret_cast<const float*>(reinterpret_cast<const char*>(x) + i * advance_bytes));
-      v->y    = static_cast<Signed14>(* reinterpret_cast<const float*>(reinterpret_cast<const char*>(y) + i * advance_bytes));
-      v->z    = s14sqr(v->x) + s14sqr(v->y);
+      v->x    = static_cast<Signed14>(
+        *reinterpret_cast<const float*>(reinterpret_cast<const char*>(x) + i * advance_bytes));
+      v->y = static_cast<Signed14>(
+        *reinterpret_cast<const float*>(reinterpret_cast<const char*>(y) + i * advance_bytes));
+      v->z = s14sqr(v->x) + s14sqr(v->y);
     }
 
     out_verts = Triangulate();
@@ -860,9 +863,11 @@ struct CDelaBella : IDelaBella
     {
       Vert* v = vert_alloc + i;
       v->i    = i;
-      v->x    = static_cast<Signed14>(* reinterpret_cast<const double*>(reinterpret_cast<const char*>(x) + i * advance_bytes));
-      v->y    = static_cast<Signed14>(* reinterpret_cast<const double*>(reinterpret_cast<const char*>(y) + i * advance_bytes));
-      v->z    = s14sqr(v->x) + s14sqr(v->y);
+      v->x    = static_cast<Signed14>(
+        *reinterpret_cast<const double*>(reinterpret_cast<const char*>(x) + i * advance_bytes));
+      v->y = static_cast<Signed14>(
+        *reinterpret_cast<const double*>(reinterpret_cast<const char*>(y) + i * advance_bytes));
+      v->z = s14sqr(v->x) + s14sqr(v->y);
     }
 
     out_verts = Triangulate();

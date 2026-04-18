@@ -375,7 +375,8 @@ void IGESGraph_ToolTextFontDef::OwnDump(const occ::handle<IGESGraph_TextFontDef>
         S << "\n";
         for (J = 1; J <= nbmotions; J++)
         {
-          S << "Pen up(1) / down(0) flag : " << static_cast<int>(ent->IsPenUp(I, J)) << " Next Pen Position : ";
+          S << "Pen up(1) / down(0) flag : " << static_cast<int>(ent->IsPenUp(I, J))
+            << " Next Pen Position : ";
           ent->NextPenPosition(I, J, IX, IY);
           S << " X=" << IX << " Y=" << IY << "\n";
         }

@@ -262,8 +262,8 @@ const LDOM_BasicNode* LDOM_BasicElement::RemoveAttribute(const LDOMBasicString& 
                                                          const LDOM_BasicNode*  aLastCh) const
 {
   //  Check attribute hash value against the current mask
-  const char* const   aNameStr        = aName.GetString();
-  const int           aHash           = LDOM_MemManager::Hash(aNameStr, static_cast<int>(strlen(aNameStr)));
+  const char* const   aNameStr = aName.GetString();
+  const int           aHash = LDOM_MemManager::Hash(aNameStr, static_cast<int>(strlen(aNameStr)));
   const unsigned int  anAttrMaskValue = aHash & (8 * sizeof(myAttributeMask) - 1);
   const unsigned long anAttributeMask = (1 << anAttrMaskValue);
 #ifdef OCCT_DEBUG_MASK
@@ -303,7 +303,7 @@ void LDOM_BasicElement::RemoveChild(const LDOM_BasicNode* aChild) const
       break;
     if (aNode == aChild)
     {
-      *aPrevNode               = aNode->GetSibling();
+      *aPrevNode                           = aNode->GetSibling();
       *const_cast<LDOM_BasicNode*>(aChild) = nullptr;
       break;
     }

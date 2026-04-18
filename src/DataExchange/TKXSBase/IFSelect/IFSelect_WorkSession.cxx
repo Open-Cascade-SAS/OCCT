@@ -562,7 +562,8 @@ Interface_CheckIterator IFSelect_WorkSession::ModelCheckList(const bool complete
   }
   Interface_CheckTool cht(Graph());
   checks = (complete ? cht.CompleteCheckList() : cht.AnalyseCheckList());
-  checks.SetName(const_cast<char*>(complete ? "Model Complete Check List" : "Model Syntactic Check List"));
+  checks.SetName(
+    const_cast<char*>(complete ? "Model Complete Check List" : "Model Syntactic Check List"));
   return checks;
 }
 

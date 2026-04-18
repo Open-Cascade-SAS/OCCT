@@ -51,10 +51,8 @@ bool DEXCAF_ConfigurationNode::Load(const occ::handle<DE_ConfigurationContext>& 
   TCollection_AsciiString aScope =
     THE_CONFIGURATION_SCOPE() + "." + GetFormat() + "." + GetVendor();
 
-  InternalParameters.ReadAppendMode =
-    static_cast<PCDM_ReaderFilter::AppendMode>(theResource->IntegerVal("read.append.mode",
-                                                           InternalParameters.ReadAppendMode,
-                                                           aScope));
+  InternalParameters.ReadAppendMode = static_cast<PCDM_ReaderFilter::AppendMode>(
+    theResource->IntegerVal("read.append.mode", InternalParameters.ReadAppendMode, aScope));
   theResource->GetStringSeq("read.skip.values", InternalParameters.ReadSkipValues, aScope);
   theResource->GetStringSeq("read.values", InternalParameters.ReadValues, aScope);
 

@@ -364,7 +364,8 @@ void BRepMesh_DataStructureOfDelaun::clearDeletedLinks()
 
 void BRepMesh_DataStructureOfDelaun::clearDeletedNodes()
 {
-  IMeshData::ListOfInteger& aDelNodes = const_cast<IMeshData::ListOfInteger&>(myNodes->GetListOfDelNodes());
+  IMeshData::ListOfInteger& aDelNodes =
+    const_cast<IMeshData::ListOfInteger&>(myNodes->GetListOfDelNodes());
 
   int aLastLiveItem = NbNodes();
   while (!aDelNodes.IsEmpty())

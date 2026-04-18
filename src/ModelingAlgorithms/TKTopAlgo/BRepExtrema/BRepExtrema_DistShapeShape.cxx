@@ -240,7 +240,7 @@ bool BRepExtrema_DistShapeShape::DistanceVertVert(
   const occ::handle<OSD_ThreadPool>& aThreadPool  = OSD_ThreadPool::DefaultPool();
   const int                          aNbThreads   = aThreadPool->NbThreads();
   int                                aNbTasks     = aNbThreads;
-  int                                aTaskSize    = static_cast<int>(std::ceil(static_cast<double>(aCount1) / aNbTasks));
+  int aTaskSize = static_cast<int>(std::ceil(static_cast<double>(aCount1) / aNbTasks));
   if (aTaskSize < aMinTaskSize)
   {
     aTaskSize = aMinTaskSize;
@@ -483,7 +483,7 @@ bool BRepExtrema_DistShapeShape::DistanceMapMap(
   const int                          aNbThreads       = aThreadPool->NbThreads();
   const int                          aMinPairTaskSize = aCount1 < 10 ? aCount1 : 10;
   int                                aNbPairTasks     = aNbThreads;
-  int                                aPairTaskSize = static_cast<int>(std::ceil(static_cast<double>(aCount1) / aNbPairTasks));
+  int aPairTaskSize = static_cast<int>(std::ceil(static_cast<double>(aCount1) / aNbPairTasks));
   if (aPairTaskSize < aMinPairTaskSize)
   {
     aPairTaskSize = aMinPairTaskSize;
@@ -767,7 +767,7 @@ bool BRepExtrema_DistShapeShape::SolidTreatment(
   const occ::handle<OSD_ThreadPool>& aThreadPool  = OSD_ThreadPool::DefaultPool();
   const int                          aNbThreads   = aThreadPool->NbThreads();
   int                                aNbTasks     = aNbThreads * 10;
-  int                                aTaskSize    = static_cast<int>(std::ceil(static_cast<double>(aMapSize) / aNbTasks));
+  int aTaskSize = static_cast<int>(std::ceil(static_cast<double>(aMapSize) / aNbTasks));
   if (aTaskSize < aMinTaskSize)
   {
     aTaskSize = aMinTaskSize;
@@ -1092,8 +1092,8 @@ void BRepExtrema_DistShapeShape::Dump(Standard_OStream& o) const
     o << "solution number " << i << ": " << std::endl;
     o << "the type of the solution on the first shape is " << static_cast<int>(SupportTypeShape1(i))
       << std::endl;
-    o << "the type of the solution on the second shape is " << static_cast<int>(SupportTypeShape2(i))
-      << std::endl;
+    o << "the type of the solution on the second shape is "
+      << static_cast<int>(SupportTypeShape2(i)) << std::endl;
     o << "the coordinates of  the point on the first shape are: " << std::endl;
     o << "X=" << PointOnShape1(i).X() << " Y=" << PointOnShape1(i).Y()
       << " Z=" << PointOnShape1(i).Z() << std::endl;

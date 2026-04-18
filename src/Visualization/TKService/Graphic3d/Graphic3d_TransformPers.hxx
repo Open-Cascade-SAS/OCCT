@@ -406,8 +406,9 @@ public:
         aProxyCamera->Center().XYZ() + aForward.XYZ() * (aFocus - aProxyCamera->Distance());
       if ((myParams.Params2d.Corner & (Aspect_TOTP_LEFT | Aspect_TOTP_RIGHT)) != 0)
       {
-        const double anOffsetX = (static_cast<double>(myParams.Params2d.OffsetX) + aJitterComp) * aScale;
-        const gp_Dir aSide     = aForward.Crossed(aProxyCamera->Up());
+        const double anOffsetX =
+          (static_cast<double>(myParams.Params2d.OffsetX) + aJitterComp) * aScale;
+        const gp_Dir aSide = aForward.Crossed(aProxyCamera->Up());
         const gp_XYZ aDeltaX =
           aSide.XYZ() * (std::abs(aViewDim.X()) * aProxyCamera->NDC2dOffsetX() - anOffsetX);
         if ((myParams.Params2d.Corner & Aspect_TOTP_RIGHT) != 0)
@@ -421,7 +422,8 @@ public:
       }
       if ((myParams.Params2d.Corner & (Aspect_TOTP_TOP | Aspect_TOTP_BOTTOM)) != 0)
       {
-        const double anOffsetY = (static_cast<double>(myParams.Params2d.OffsetY) + aJitterComp) * aScale;
+        const double anOffsetY =
+          (static_cast<double>(myParams.Params2d.OffsetY) + aJitterComp) * aScale;
         const gp_XYZ aDeltaY =
           aProxyCamera->Up().XYZ()
           * (std::abs(aViewDim.Y()) * aProxyCamera->NDC2dOffsetY() - anOffsetY);

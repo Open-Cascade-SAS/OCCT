@@ -104,13 +104,15 @@ public:
   //! Return data pointer to requested position.
   const uint8_t* Value(const size_t theRow, const size_t theCol) const
   {
-    return myTopRowPtr + static_cast<ptrdiff_t>(SizeRowBytes * theRow * TopToDown) + SizeBPP * theCol;
+    return myTopRowPtr + static_cast<ptrdiff_t>(SizeRowBytes * theRow * TopToDown)
+           + SizeBPP * theCol;
   }
 
   //! Return data pointer to requested position.
   uint8_t* ChangeValue(size_t theRow, size_t theCol)
   {
-    return myTopRowPtr + static_cast<ptrdiff_t>(SizeRowBytes * theRow * TopToDown) + SizeBPP * theCol;
+    return myTopRowPtr + static_cast<ptrdiff_t>(SizeRowBytes * theRow * TopToDown)
+           + SizeBPP * theCol;
   }
 
   //! Return data pointer to requested position.
@@ -133,7 +135,10 @@ public:
   }
 
   //! Return data pointer to requested 2D slice.
-  uint8_t* ChangeSlice(size_t theSlice) { return myData + static_cast<ptrdiff_t>(SizeSliceBytes * theSlice); }
+  uint8_t* ChangeSlice(size_t theSlice)
+  {
+    return myData + static_cast<ptrdiff_t>(SizeSliceBytes * theSlice);
+  }
 
   //! Return data pointer to requested row (first column).
   const uint8_t* SliceRow(size_t theSlice, size_t theRow) const

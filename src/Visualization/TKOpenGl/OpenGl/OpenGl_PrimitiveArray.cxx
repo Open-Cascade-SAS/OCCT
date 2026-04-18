@@ -1060,8 +1060,8 @@ void OpenGl_PrimitiveArray::Render(const occ::handle<OpenGl_Workspace>& theWorks
     {
       const NCollection_Vec2<int> aViewSize(aCtx->Viewport()[2], aCtx->Viewport()[3]);
       const int                   aMin = aViewSize.minComp();
-      const GLfloat               anEdgeWidth =
-        static_cast<GLfloat>(anAspectFace->Aspect()->EdgeWidth()) * aCtx->LineWidthScale() / static_cast<GLfloat>(aMin);
+      const GLfloat anEdgeWidth        = static_cast<GLfloat>(anAspectFace->Aspect()->EdgeWidth())
+                                  * aCtx->LineWidthScale() / static_cast<GLfloat>(aMin);
       const GLfloat anOrthoScale =
         aCtx->Camera()->IsOrthographic() ? static_cast<GLfloat>(aCtx->Camera()->Scale()) : -1.0f;
 

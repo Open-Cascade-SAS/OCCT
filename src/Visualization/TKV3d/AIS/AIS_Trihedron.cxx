@@ -640,8 +640,12 @@ void AIS_Trihedron::SetArrowColor(const Quantity_Color& theColor)
   for (int anAxisIter = Prs3d_DatumParts_XArrow; anAxisIter <= Prs3d_DatumParts_ZArrow;
        ++anAxisIter)
   {
-    myDrawer->DatumAspect()->ShadingAspect(static_cast<Prs3d_DatumParts>(anAxisIter))->SetColor(theColor);
-    myDrawer->DatumAspect()->LineAspect(static_cast<Prs3d_DatumParts>(anAxisIter))->SetColor(theColor);
+    myDrawer->DatumAspect()
+      ->ShadingAspect(static_cast<Prs3d_DatumParts>(anAxisIter))
+      ->SetColor(theColor);
+    myDrawer->DatumAspect()
+      ->LineAspect(static_cast<Prs3d_DatumParts>(anAxisIter))
+      ->SetColor(theColor);
   }
 }
 

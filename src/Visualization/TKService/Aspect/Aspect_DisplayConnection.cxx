@@ -104,8 +104,9 @@ void Aspect_DisplayConnection::Init(Aspect_XDisplay* theDisplay)
   myIsOwnDisplay = false;
   myAtoms.Clear();
 
-  myDisplay =
-    theDisplay != nullptr ? theDisplay : reinterpret_cast<Aspect_XDisplay*>(XOpenDisplay(myDisplayName.ToCString()));
+  myDisplay = theDisplay != nullptr
+                ? theDisplay
+                : reinterpret_cast<Aspect_XDisplay*>(XOpenDisplay(myDisplayName.ToCString()));
   if (myDisplay == nullptr)
   {
     TCollection_AsciiString aMessage;
@@ -117,7 +118,8 @@ void Aspect_DisplayConnection::Init(Aspect_XDisplay* theDisplay)
   {
     myIsOwnDisplay = theDisplay == nullptr;
     myAtoms.Bind(Aspect_XA_DELETE_WINDOW,
-                 static_cast<uint64_t>(XInternAtom(reinterpret_cast<Display*>(myDisplay), "WM_DELETE_WINDOW", False)));
+                 static_cast<uint64_t>(
+                   XInternAtom(reinterpret_cast<Display*>(myDisplay), "WM_DELETE_WINDOW", False)));
   }
 #else
   myDisplay      = theDisplay;

@@ -138,9 +138,9 @@ void OSD_FileIterator::Next()
     myEntry = readdir(static_cast<DIR*>(myDescr));
 
     if (!myEntry)
-    {                          // No file found
-      myEntry = nullptr;       // Keep pointer clean
-      myFlag  = false;         // No more files/directory
+    {                                       // No file found
+      myEntry = nullptr;                    // Keep pointer clean
+      myFlag  = false;                      // No more files/directory
       closedir(static_cast<DIR*>(myDescr)); // so close directory
       myDescr = nullptr;
       again   = 0;
@@ -153,7 +153,8 @@ void OSD_FileIterator::Next()
         continue;
 
       // Is it a file ?
-      const TCollection_AsciiString aFullName = myPlace + "/" + (static_cast<struct dirent*>(myEntry))->d_name;
+      const TCollection_AsciiString aFullName =
+        myPlace + "/" + (static_cast<struct dirent*>(myEntry))->d_name;
       stat(aFullName.ToCString(), &stat_buf);
       if (S_ISREG(stat_buf.st_mode)) // LD : Ensure me it's a regular file
         if (strcmp_joker(myMask.ToCString(), (static_cast<struct dirent*>(myEntry))->d_name))

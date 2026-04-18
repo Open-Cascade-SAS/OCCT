@@ -381,8 +381,8 @@ bool FairCurve_MinimalVariation::Compute(const gp_Vec2d&         DeltaP1,
       PseudoNormale.SetXY(Poles->Value(Poles->Lower()).XY()
                           - 2 * Poles->Value(Poles->Lower() + 1).XY()
                           + Poles->Value(Poles->Lower() + 2).XY());
-      OldCurvature1 = ((static_cast<double>(Degree) - 1) / Degree) * (Tangente.Normalized() ^ PseudoNormale)
-                      / Tangente.SquareMagnitude();
+      OldCurvature1 = ((static_cast<double>(Degree) - 1) / Degree)
+                      * (Tangente.Normalized() ^ PseudoNormale) / Tangente.SquareMagnitude();
     }
     else
     {
@@ -402,8 +402,8 @@ bool FairCurve_MinimalVariation::Compute(const gp_Vec2d&         DeltaP1,
       PseudoNormale.SetXY(Poles->Value(Poles->Upper()).XY()
                           - 2 * Poles->Value(Poles->Upper() - 1).XY()
                           + Poles->Value(Poles->Upper() - 2).XY());
-      OldCurvature2 = ((static_cast<double>(Degree) - 1) / Degree) * (Tangente.Normalized() ^ PseudoNormale)
-                      / Tangente.SquareMagnitude();
+      OldCurvature2 = ((static_cast<double>(Degree) - 1) / Degree)
+                      * (Tangente.Normalized() ^ PseudoNormale) / Tangente.SquareMagnitude();
     }
     else
     {

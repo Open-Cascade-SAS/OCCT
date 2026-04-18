@@ -91,7 +91,8 @@ occ::handle<Image_CompressedPixMap> Image_DDSParser::Load(
     return occ::handle<Image_CompressedPixMap>();
   }
 
-  occ::handle<Image_CompressedPixMap> aDef = parseHeader(*reinterpret_cast<const DDSFileHeader*>(aHeader + 4));
+  occ::handle<Image_CompressedPixMap> aDef =
+    parseHeader(*reinterpret_cast<const DDSFileHeader*>(aHeader + 4));
   if (aDef.IsNull())
   {
     return occ::handle<Image_CompressedPixMap>();

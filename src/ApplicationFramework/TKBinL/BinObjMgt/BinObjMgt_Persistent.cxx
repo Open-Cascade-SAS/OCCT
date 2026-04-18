@@ -702,7 +702,7 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetExtendedString(
   int                   aStartIndex  = myIndex;
   int                   aStartOffset = myOffset;
   BinObjMgt_Persistent* me           = const_cast<BinObjMgt_Persistent*>(this);
-  char16_t*             aData        = reinterpret_cast<char16_t*>(static_cast<char*>(myData(myIndex)) + myOffset);
+  char16_t* aData = reinterpret_cast<char16_t*>(static_cast<char*>(myData(myIndex)) + myOffset);
 
   // count the string length
   while (!noMoreData(1) && *aData++)
@@ -1009,7 +1009,7 @@ void BinObjMgt_Persistent::inverseExtCharData(const int theIndex,
   while (aLen > 0)
   {
     int       aLenInPiece = std::min(aLen, BP_PIECESIZE - anOffset);
-    char16_t* aData       = reinterpret_cast<char16_t*>(static_cast<char*>(myData(anIndex)) + anOffset);
+    char16_t* aData = reinterpret_cast<char16_t*>(static_cast<char*>(myData(anIndex)) + anOffset);
     for (int i = 0; i < aLenInPiece / BP_EXTCHARSIZE; i++)
       aData[i] = FSD_BinaryFile::InverseExtChar(aData[i]);
     aLen -= aLenInPiece;
@@ -1073,14 +1073,15 @@ void BinObjMgt_Persistent::inverseRealData(const int theIndex,
   {
     int aLenInPiece = std::min(aLen, BP_PIECESIZE - anOffset);
 
-    aWrapUnion.aRealData = reinterpret_cast<double*>(static_cast<char*>(myData(anIndex)) + anOffset);
+    aWrapUnion.aRealData =
+      reinterpret_cast<double*>(static_cast<char*>(myData(anIndex)) + anOffset);
 
     if (aPrevPtr)
     {
       int aTmp;
-      aTmp                 = FSD_BinaryFile::InverseInt(*static_cast<int*>(aPrevPtr));
-      *static_cast<int*>(aPrevPtr)      = FSD_BinaryFile::InverseInt(*aWrapUnion.aIntData);
-      *aWrapUnion.aIntData = aTmp;
+      aTmp                         = FSD_BinaryFile::InverseInt(*static_cast<int*>(aPrevPtr));
+      *static_cast<int*>(aPrevPtr) = FSD_BinaryFile::InverseInt(*aWrapUnion.aIntData);
+      *aWrapUnion.aIntData         = aTmp;
       aWrapUnion.aIntData++;
       aPrevPtr = nullptr;
     }

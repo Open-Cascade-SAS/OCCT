@@ -684,8 +684,9 @@ void Resource_Unicode::ConvertFormatToUnicode(const Resource_FormatType   theFor
     case Resource_FormatType_iso8859_8:
     case Resource_FormatType_iso8859_9:
     case Resource_FormatType_CP850: {
-      const int             aCodePageIndex = static_cast<int>(theFormat) - static_cast<int>(Resource_FormatType_CP1250);
-      const char16_t* const aCodePage      = THE_CODEPAGES_ANSI[aCodePageIndex];
+      const int aCodePageIndex =
+        static_cast<int>(theFormat) - static_cast<int>(Resource_FormatType_CP1250);
+      const char16_t* const aCodePage = THE_CODEPAGES_ANSI[aCodePageIndex];
       theToStr.Clear();
       for (const char* anInputPntr = theFromStr; *anInputPntr != '\0'; ++anInputPntr)
       {
@@ -762,8 +763,9 @@ bool Resource_Unicode::ConvertUnicodeToFormat(const Resource_FormatType         
       {
         return false;
       }
-      const int             aCodePageIndex = static_cast<int>(theFormat) - static_cast<int>(Resource_FormatType_CP1250);
-      const char16_t* const aCodePage      = THE_CODEPAGES_ANSI[aCodePageIndex];
+      const int aCodePageIndex =
+        static_cast<int>(theFormat) - static_cast<int>(Resource_FormatType_CP1250);
+      const char16_t* const aCodePage = THE_CODEPAGES_ANSI[aCodePageIndex];
       for (int aToCharInd = 0; aToCharInd < theMaxSize - 1; ++aToCharInd)
       {
         bool     isFind    = false;

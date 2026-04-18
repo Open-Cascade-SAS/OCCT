@@ -216,8 +216,8 @@ math_FunctionAllRoots::math_FunctionAllRoots(math_FunctionWithDerivative& F,
       // dernier intervalle nul et Value(Nbp).
 
       Nbrpt = static_cast<int>(std::trunc(std::abs((S.GetParameter(Nbp) - pfin.Value(pdeb.Length()))
-                                       / (S.GetParameter(Nbp) - S.GetParameter(1)))
-                              * Nbp));
+                                                   / (S.GetParameter(Nbp) - S.GetParameter(1)))
+                                          * Nbp));
       math_FunctionRoots Res(F,
                              pfin.Value(pdeb.Length()),
                              S.GetParameter(Nbp),

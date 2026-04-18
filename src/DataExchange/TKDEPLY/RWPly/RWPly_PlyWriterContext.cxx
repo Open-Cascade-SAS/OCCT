@@ -240,12 +240,13 @@ bool RWPly_PlyWriterContext::WriteVertex(const gp_Pnt&                    thePoi
   }
   else
   {
-    *myStream << static_cast<float>(thePoint.X()) << " " << static_cast<float>(thePoint.Y()) << " " << static_cast<float>(thePoint.Z());
+    *myStream << static_cast<float>(thePoint.X()) << " " << static_cast<float>(thePoint.Y()) << " "
+              << static_cast<float>(thePoint.Z());
   }
   if (myHasNormals)
   {
-    *myStream << " " << static_cast<float>(theNorm.x()) << " " << static_cast<float>(theNorm.y()) << " "
-              << static_cast<float>(theNorm.z());
+    *myStream << " " << static_cast<float>(theNorm.x()) << " " << static_cast<float>(theNorm.y())
+              << " " << static_cast<float>(theNorm.z());
   }
   if (myHasTexCoords)
   {
@@ -253,7 +254,8 @@ bool RWPly_PlyWriterContext::WriteVertex(const gp_Pnt&                    thePoi
   }
   if (myHasColors)
   {
-    *myStream << " " << static_cast<int>(theColor.r()) << " " << static_cast<int>(theColor.g()) << " " << static_cast<int>(theColor.b());
+    *myStream << " " << static_cast<int>(theColor.r()) << " " << static_cast<int>(theColor.g())
+              << " " << static_cast<int>(theColor.b());
   }
   *myStream << "\n";
   if (++myNbVerts > myNbHeaderVerts)

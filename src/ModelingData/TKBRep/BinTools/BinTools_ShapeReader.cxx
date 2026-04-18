@@ -210,7 +210,7 @@ TopoDS_Shape BinTools_ShapeReader::ReadShape(BinTools_IStream& theStream)
             }
             case 4: // -4- Regularity
             {
-              GeomAbs_Shape             aReg      = static_cast<GeomAbs_Shape>(theStream.ReadByte());
+              GeomAbs_Shape             aReg = static_cast<GeomAbs_Shape>(theStream.ReadByte());
               occ::handle<Geom_Surface> aSurface1 = ReadSurface(theStream);
               const TopLoc_Location*    aLoc1     = ReadLocation(theStream);
               occ::handle<Geom_Surface> aSurface2 = ReadSurface(theStream);

@@ -252,7 +252,8 @@ void OpenGl_AspectsSprite::build(const occ::handle<OpenGl_Context>&        theCt
   {
     // Creating texture resource for using it with point sprites
     occ::handle<Image_PixMap> anImage = aNewMarkerImage->GetImage();
-    theMarkerSize                     = std::max(static_cast<float>(anImage->Width()), static_cast<float>(anImage->Height()));
+    theMarkerSize =
+      std::max(static_cast<float>(anImage->Width()), static_cast<float>(anImage->Height()));
 
     if (!hadAlreadyRGBA)
     {
@@ -292,12 +293,14 @@ void OpenGl_AspectsSprite::build(const occ::handle<OpenGl_Context>&        theCt
       theCtx->core11fwd->glPixelStorei(GL_UNPACK_ALIGNMENT, anAligment);
 
       const GLint anExtraBytes = static_cast<GLint>(anImage->RowExtraBytes());
-      const GLint aPixelsWidth = static_cast<GLint>(anImage->SizeRowBytes() / anImage->SizePixelBytes());
-      const GLint aRowLength   = (anExtraBytes >= anAligment) ? aPixelsWidth : 0;
+      const GLint aPixelsWidth =
+        static_cast<GLint>(anImage->SizeRowBytes() / anImage->SizePixelBytes());
+      const GLint aRowLength = (anExtraBytes >= anAligment) ? aPixelsWidth : 0;
       theCtx->core11fwd->glPixelStorei(GL_UNPACK_ROW_LENGTH, aRowLength);
 
       theCtx->core11ffp->glNewList(aBitmapList, GL_COMPILE);
-      const int aWidth = static_cast<int>(anImage->Width()), aHeight = static_cast<int>(anImage->Height());
+      const int aWidth  = static_cast<int>(anImage->Width()),
+                aHeight = static_cast<int>(anImage->Height());
       // clang-format off
       theCtx->core11ffp->glBitmap (0, 0, 0, 0, static_cast<GLfloat>(-0.5f * aWidth), static_cast<GLfloat>(-0.5f * aHeight), nullptr); // make offsets that will be added to the current raster position
       // clang-format on

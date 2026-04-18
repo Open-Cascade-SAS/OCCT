@@ -710,8 +710,10 @@ void PrsMgr_PresentableObject::UnsetMaterial()
 void PrsMgr_PresentableObject::SetTransparency(const double theValue)
 {
   myDrawer->SetupOwnShadingAspect();
-  myDrawer->ShadingAspect()->Aspect()->ChangeFrontMaterial().SetTransparency(static_cast<float>(theValue));
-  myDrawer->ShadingAspect()->Aspect()->ChangeBackMaterial().SetTransparency(static_cast<float>(theValue));
+  myDrawer->ShadingAspect()->Aspect()->ChangeFrontMaterial().SetTransparency(
+    static_cast<float>(theValue));
+  myDrawer->ShadingAspect()->Aspect()->ChangeBackMaterial().SetTransparency(
+    static_cast<float>(theValue));
   myDrawer->SetTransparency(static_cast<float>(theValue));
 }
 

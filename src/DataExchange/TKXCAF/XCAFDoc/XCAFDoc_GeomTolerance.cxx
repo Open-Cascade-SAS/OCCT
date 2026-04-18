@@ -277,7 +277,8 @@ occ::handle<XCAFDimTolObjects_GeomToleranceObject> XCAFDoc_GeomTolerance::GetObj
         .FindChild(ChildLab_TypeOfValue)
         .FindAttribute(TDataStd_Integer::GetID(), aTypeOfValue))
   {
-    anObj->SetTypeOfValue(static_cast<XCAFDimTolObjects_GeomToleranceTypeValue>(aTypeOfValue->Get()));
+    anObj->SetTypeOfValue(
+      static_cast<XCAFDimTolObjects_GeomToleranceTypeValue>(aTypeOfValue->Get()));
   }
 
   occ::handle<TDataStd_Real> aValue;
@@ -298,7 +299,8 @@ occ::handle<XCAFDimTolObjects_GeomToleranceObject> XCAFDoc_GeomTolerance::GetObj
   occ::handle<TDataStd_Integer> aZoneModif;
   if (Label().FindChild(ChildLab_ZoneModif).FindAttribute(TDataStd_Integer::GetID(), aZoneModif))
   {
-    anObj->SetZoneModifier(static_cast<XCAFDimTolObjects_GeomToleranceZoneModif>(aZoneModif->Get()));
+    anObj->SetZoneModifier(
+      static_cast<XCAFDimTolObjects_GeomToleranceZoneModif>(aZoneModif->Get()));
   }
 
   occ::handle<TDataStd_Real> aValueOfZoneModif;
@@ -413,7 +415,9 @@ occ::handle<XCAFDimTolObjects_GeomToleranceObject> XCAFDoc_GeomTolerance::GetObj
     TDataXtd_Geometry::Plane(anAffectedPlaneAttr->Label(), aPlane);
     occ::handle<TDataStd_Integer> aTypeAttr;
     Label().FindChild(ChildLab_AffectedPlane).FindAttribute(TDataStd_Integer::GetID(), aTypeAttr);
-    anObj->SetAffectedPlane(aPlane, static_cast<XCAFDimTolObjects_ToleranceZoneAffectedPlane>(aTypeAttr->Get()));
+    anObj->SetAffectedPlane(
+      aPlane,
+      static_cast<XCAFDimTolObjects_ToleranceZoneAffectedPlane>(aTypeAttr->Get()));
   }
 
   return anObj;

@@ -195,7 +195,8 @@ bool BRepTopAdaptor_TopolTool::IsThePointOn(const gp_Pnt2d& P,
     myFClass2d = (void*)new BRepTopAdaptor_FClass2d(myFace, Tol);
   }
   return (TopAbs_ON
-          == (static_cast<BRepTopAdaptor_FClass2d*>(myFClass2d))->TestOnRestriction(P, Tol, RecadreOnPeriodic));
+          == (static_cast<BRepTopAdaptor_FClass2d*>(myFClass2d))
+               ->TestOnRestriction(P, Tol, RecadreOnPeriodic));
 }
 
 //=================================================================================================

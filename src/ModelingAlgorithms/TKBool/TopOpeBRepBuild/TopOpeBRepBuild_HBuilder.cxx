@@ -301,8 +301,9 @@ void TopOpeBRepBuild_HBuilder::MakeEdgeAncestorMap()
     re                         = DS.AncestorRank(ShaSpl);
     if (!re)
       continue;
-    TopOpeBRepDS_ListOfShapeOn1State& losos1s = (*const_cast<TopOpeBRepDS_ListOfShapeOn1State*>(&it.Value()));
-    NCollection_List<TopoDS_Shape>&   los     = losos1s.ChangeListOnState();
+    TopOpeBRepDS_ListOfShapeOn1State& losos1s =
+      (*const_cast<TopOpeBRepDS_ListOfShapeOn1State*>(&it.Value()));
+    NCollection_List<TopoDS_Shape>& los = losos1s.ChangeListOnState();
     its.Initialize(los);
     if (re == 1)
       for (; its.More(); its.Next())

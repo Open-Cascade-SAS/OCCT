@@ -456,8 +456,12 @@ static void SetMinMaxValuesCallback(Graphic3d_CView* theView)
     gp_Pnt aMin = aBox.CornerMin();
     gp_Pnt aMax = aBox.CornerMax();
 
-    NCollection_Vec3<float> aMinVec(static_cast<float>(aMin.X()), static_cast<float>(aMin.Y()), static_cast<float>(aMin.Z()));
-    NCollection_Vec3<float> aMaxVec(static_cast<float>(aMax.X()), static_cast<float>(aMax.Y()), static_cast<float>(aMax.Z()));
+    NCollection_Vec3<float> aMinVec(static_cast<float>(aMin.X()),
+                                    static_cast<float>(aMin.Y()),
+                                    static_cast<float>(aMin.Z()));
+    NCollection_Vec3<float> aMaxVec(static_cast<float>(aMax.X()),
+                                    static_cast<float>(aMax.Y()),
+                                    static_cast<float>(aMax.Z()));
     aView->GraduatedTrihedronMinMaxValues(aMinVec, aMaxVec);
   }
 }
@@ -873,8 +877,12 @@ Bnd_Box OpenGl_View::MinMaxValues(const bool theToIncludeAuxiliary) const
   if (theToIncludeAuxiliary && myRenderParams.ToShowStats
       && !myWorkspace->GetGlContext()->arbDepthClamp)
   {
-    Bnd_Box aStatsBox(gp_Pnt(static_cast<float>(myWindow->Width() / 2.0), static_cast<float>(myWindow->Height() / 2.0), 0.0),
-                      gp_Pnt(static_cast<float>(myWindow->Width() / 2.0), static_cast<float>(myWindow->Height() / 2.0), 0.0));
+    Bnd_Box aStatsBox(gp_Pnt(static_cast<float>(myWindow->Width() / 2.0),
+                             static_cast<float>(myWindow->Height() / 2.0),
+                             0.0),
+                      gp_Pnt(static_cast<float>(myWindow->Width() / 2.0),
+                             static_cast<float>(myWindow->Height() / 2.0),
+                             0.0));
     myRenderParams.StatsPosition->Apply(myCamera,
                                         myCamera->ProjectionMatrix(),
                                         myCamera->OrientationMatrix(),
@@ -1173,8 +1181,9 @@ bool OpenGl_View::prepareFrameBuffers(Graphic3d_Camera::Projection& theProj)
     aSizeY = myWindow->Height();
   }
 
-  const NCollection_Vec2<int> aRendSize(static_cast<int>(myRenderParams.RenderResolutionScale * aSizeX + 0.5f),
-                                        static_cast<int>(myRenderParams.RenderResolutionScale * aSizeY + 0.5f));
+  const NCollection_Vec2<int> aRendSize(
+    static_cast<int>(myRenderParams.RenderResolutionScale * aSizeX + 0.5f),
+    static_cast<int>(myRenderParams.RenderResolutionScale * aSizeY + 0.5f));
   if (aSizeX < 1 || aSizeY < 1 || aRendSize.x() < 1 || aRendSize.y() < 1)
   {
     myBackBufferRestored = false;
@@ -1655,7 +1664,8 @@ bool OpenGl_View::prepareFrameBuffers(Graphic3d_Camera::Projection& theProj)
       myShadowMaps->Resize(0, myLights->NbCastShadows() - 1, true);
     }
 
-    const GLint aSamplFrom = static_cast<GLint>(aCtx->ShadowMapTexUnit()) - myLights->NbCastShadows() + 1;
+    const GLint aSamplFrom =
+      static_cast<GLint>(aCtx->ShadowMapTexUnit()) - myLights->NbCastShadows() + 1;
     for (int aShadowIter = 0; aShadowIter < myShadowMaps->Size(); ++aShadowIter)
     {
       occ::handle<OpenGl_ShadowMap>& aShadow = myShadowMaps->ChangeValue(aShadowIter);
@@ -3256,8 +3266,9 @@ void OpenGl_View::drawStereoPair(OpenGl_FrameBuffer* theDrawFbo)
   for (int anEyeIter = 0; anEyeIter < 2; ++anEyeIter)
   {
     OpenGl_FrameBuffer* anEyeFbo = aPair[anEyeIter];
-    anEyeFbo->ColorTexture()->Bind(aCtx,
-                                   static_cast<Graphic3d_TextureUnit>(Graphic3d_TextureUnit_0 + anEyeIter));
+    anEyeFbo->ColorTexture()->Bind(
+      aCtx,
+      static_cast<Graphic3d_TextureUnit>(Graphic3d_TextureUnit_0 + anEyeIter));
     if (anEyeFbo->ColorTexture()->Sampler()->Parameters()->Filter() != Graphic3d_TOTF_BILINEAR)
     {
       // force filtering
@@ -3404,11 +3415,12 @@ void OpenGl_View::updateSkydomeBg(const occ::handle<OpenGl_Context>& theCtx)
   theCtx->BindProgram(aProg);
 
   // Setup uniforms
-  aProg->SetUniform(theCtx,
-                    "uSunDir",
-                    NCollection_Vec3<float>(static_cast<float>(mySkydomeAspect.SunDirection().X()),
-                                            static_cast<float>(mySkydomeAspect.SunDirection().Y()),
-                                            static_cast<float>(mySkydomeAspect.SunDirection().Z())));
+  aProg->SetUniform(
+    theCtx,
+    "uSunDir",
+    NCollection_Vec3<float>(static_cast<float>(mySkydomeAspect.SunDirection().X()),
+                            static_cast<float>(mySkydomeAspect.SunDirection().Y()),
+                            static_cast<float>(mySkydomeAspect.SunDirection().Z())));
   aProg->SetUniform(theCtx, "uCloudy", mySkydomeAspect.Cloudiness());
   aProg->SetUniform(theCtx, "uTime", mySkydomeAspect.TimeParameter());
   aProg->SetUniform(theCtx, "uFog", mySkydomeAspect.Fogginess());

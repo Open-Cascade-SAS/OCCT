@@ -60,9 +60,10 @@ public:
   //! Number of tiles within offsets texture.
   NCollection_Vec2<int> NbOffsetTiles(bool theAdaptive) const
   {
-    return theAdaptive
-             ? NCollection_Vec2<int>(static_cast<int>(myOffsetsShrunk.SizeX), static_cast<int>(myOffsetsShrunk.SizeY))
-             : NCollection_Vec2<int>(static_cast<int>(myOffsets.SizeX), static_cast<int>(myOffsets.SizeY));
+    return theAdaptive ? NCollection_Vec2<int>(static_cast<int>(myOffsetsShrunk.SizeX),
+                                               static_cast<int>(myOffsetsShrunk.SizeY))
+                       : NCollection_Vec2<int>(static_cast<int>(myOffsets.SizeX),
+                                               static_cast<int>(myOffsets.SizeY));
   }
 
   //! Maximum number of tiles within offsets texture.

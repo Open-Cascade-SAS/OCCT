@@ -55,7 +55,8 @@ void TopOpeBRepTool_SolidClassifier::LoadSolid(const TopoDS_Solid& SOL)
   }
   else
   {
-    myPClassifier = static_cast<BRepClass3d_SolidClassifier*>(myShapeClassifierMap.ChangeFromKey(SOL));
+    myPClassifier =
+      static_cast<BRepClass3d_SolidClassifier*>(myShapeClassifierMap.ChangeFromKey(SOL));
   }
 }
 
@@ -74,7 +75,8 @@ void TopOpeBRepTool_SolidClassifier::LoadShell(const TopoDS_Shell& SHE)
   }
   else
   {
-    myPClassifier = static_cast<BRepClass3d_SolidClassifier*>(myShapeClassifierMap.ChangeFromKey(SHE));
+    myPClassifier =
+      static_cast<BRepClass3d_SolidClassifier*>(myShapeClassifierMap.ChangeFromKey(SHE));
   }
 }
 

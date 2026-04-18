@@ -1229,9 +1229,9 @@ bool OpenGl_FrameBuffer::BufferDump(const occ::handle<OpenGl_Context>&     theGl
   theGlCtx->core11fwd->glPixelStorei(GL_PACK_ALIGNMENT, anAligment);
   bool isBatchCopy = !theImage.IsTopDown();
 
-  const GLint anExtraBytes       = static_cast<GLint>(theImage.RowExtraBytes());
-  GLint       aPixelsWidth       = static_cast<GLint>(theImage.SizeRowBytes() / theImage.SizePixelBytes());
-  size_t      aSizeRowBytesEstim = getAligned(theImage.SizePixelBytes() * aPixelsWidth, anAligment);
+  const GLint anExtraBytes = static_cast<GLint>(theImage.RowExtraBytes());
+  GLint  aPixelsWidth = static_cast<GLint>(theImage.SizeRowBytes() / theImage.SizePixelBytes());
+  size_t aSizeRowBytesEstim = getAligned(theImage.SizePixelBytes() * aPixelsWidth, anAligment);
   if (anExtraBytes < anAligment)
   {
     aPixelsWidth = 0;
@@ -1270,7 +1270,8 @@ bool OpenGl_FrameBuffer::BufferDump(const occ::handle<OpenGl_Context>&     theGl
                                         aFormat,
                                         aType,
                                         aRowBuffer.ChangeData());
-      const Image_ColorRGBA* aRowDataRgba = reinterpret_cast<const Image_ColorRGBA*>(aRowBuffer.Data());
+      const Image_ColorRGBA* aRowDataRgba =
+        reinterpret_cast<const Image_ColorRGBA*>(aRowBuffer.Data());
       if (theImage.Format() == Image_Format_BGR)
       {
         convertRowFromRgba(reinterpret_cast<Image_ColorBGR*>(theImage.ChangeRow(aRow)),

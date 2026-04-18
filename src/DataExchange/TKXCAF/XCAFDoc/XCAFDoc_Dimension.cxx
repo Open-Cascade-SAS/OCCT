@@ -361,16 +361,18 @@ occ::handle<XCAFDimTolObjects_DimensionObject> XCAFDoc_Dimension::GetObject() co
         .FindChild(ChildLab_AngularQualifier)
         .FindAttribute(TDataStd_Integer::GetID(), anAngularQualifier))
   {
-    anObj->SetAngularQualifier(static_cast<XCAFDimTolObjects_AngularQualifier>(anAngularQualifier->Get()));
+    anObj->SetAngularQualifier(
+      static_cast<XCAFDimTolObjects_AngularQualifier>(anAngularQualifier->Get()));
   }
 
   occ::handle<TDataStd_IntegerArray> aClass;
   if (Label().FindChild(ChildLab_Class).FindAttribute(TDataStd_IntegerArray::GetID(), aClass)
       && !aClass->Array().IsNull() && aClass->Array()->Length() > 0)
   {
-    anObj->SetClassOfTolerance(aClass->Array()->Value(1) != 0,
-                               static_cast<XCAFDimTolObjects_DimensionFormVariance>(aClass->Array()->Value(2)),
-                               static_cast<XCAFDimTolObjects_DimensionGrade>(aClass->Array()->Value(3)));
+    anObj->SetClassOfTolerance(
+      aClass->Array()->Value(1) != 0,
+      static_cast<XCAFDimTolObjects_DimensionFormVariance>(aClass->Array()->Value(2)),
+      static_cast<XCAFDimTolObjects_DimensionGrade>(aClass->Array()->Value(3)));
   }
 
   occ::handle<TDataStd_IntegerArray> aDec;

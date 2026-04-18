@@ -88,10 +88,11 @@ Storage_BucketOfPersistent::Storage_BucketOfPersistent(const int theBucketSize,
       myNumberOfBucketAllocated(theBucketNumber),
       myBucketSize(theBucketSize)
 {
-  myBuckets       = static_cast<Storage_Bucket**>(Standard::Allocate(sizeof(Storage_Bucket*) * theBucketNumber));
-  myBuckets[0]    = new Storage_Bucket(myBucketSize);
-  myCurrentBucket = myBuckets[0];
-  myLength        = 0;
+  myBuckets =
+    static_cast<Storage_Bucket**>(Standard::Allocate(sizeof(Storage_Bucket*) * theBucketNumber));
+  myBuckets[0]          = new Storage_Bucket(myBucketSize);
+  myCurrentBucket       = myBuckets[0];
+  myLength              = 0;
   myCurrentBucketNumber = 0;
 }
 

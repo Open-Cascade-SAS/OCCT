@@ -76,8 +76,8 @@ void LocOpe_CSIntersector::Perform(const NCollection_Sequence<gp_Lin>& Slin)
 
   myNbelem = Slin.Length();
   delete[] static_cast<NCollection_Sequence<LocOpe_PntFace>*>(myPoints);
-  myPoints =
-    static_cast<NCollection_Sequence<LocOpe_PntFace>*>(new NCollection_Sequence<LocOpe_PntFace>[myNbelem]);
+  myPoints = static_cast<NCollection_Sequence<LocOpe_PntFace>*>(
+    new NCollection_Sequence<LocOpe_PntFace>[myNbelem]);
 
   constexpr double binf = RealFirst();
   constexpr double bsup = RealLast();
@@ -91,7 +91,9 @@ void LocOpe_CSIntersector::Perform(const NCollection_Sequence<gp_Lin>& Slin)
       theInt.Perform(Slin(i), binf, bsup);
       if (theInt.IsDone())
       {
-        AddPoints(theInt, ((static_cast<NCollection_Sequence<LocOpe_PntFace>*>(myPoints))[i - 1]), theface);
+        AddPoints(theInt,
+                  ((static_cast<NCollection_Sequence<LocOpe_PntFace>*>(myPoints))[i - 1]),
+                  theface);
       }
     }
   }
@@ -110,8 +112,8 @@ void LocOpe_CSIntersector::Perform(const NCollection_Sequence<gp_Circ>& Scir)
 
   myNbelem = Scir.Length();
   delete[] static_cast<NCollection_Sequence<LocOpe_PntFace>*>(myPoints);
-  myPoints =
-    static_cast<NCollection_Sequence<LocOpe_PntFace>*>(new NCollection_Sequence<LocOpe_PntFace>[myNbelem]);
+  myPoints = static_cast<NCollection_Sequence<LocOpe_PntFace>*>(
+    new NCollection_Sequence<LocOpe_PntFace>[myNbelem]);
 
   TopExp_Explorer                exp(myShape, TopAbs_FACE);
   occ::handle<GeomAdaptor_Curve> HC   = new GeomAdaptor_Curve();
@@ -129,7 +131,9 @@ void LocOpe_CSIntersector::Perform(const NCollection_Sequence<gp_Circ>& Scir)
       theInt.Perform(HC, binf, bsup);
       if (theInt.IsDone())
       {
-        AddPoints(theInt, ((static_cast<NCollection_Sequence<LocOpe_PntFace>*>(myPoints))[i - 1]), theface);
+        AddPoints(theInt,
+                  ((static_cast<NCollection_Sequence<LocOpe_PntFace>*>(myPoints))[i - 1]),
+                  theface);
       }
     }
   }
@@ -148,8 +152,8 @@ void LocOpe_CSIntersector::Perform(const NCollection_Sequence<occ::handle<Geom_C
 
   myNbelem = Scur.Length();
   delete[] static_cast<NCollection_Sequence<LocOpe_PntFace>*>(myPoints);
-  myPoints =
-    static_cast<NCollection_Sequence<LocOpe_PntFace>*>(new NCollection_Sequence<LocOpe_PntFace>[myNbelem]);
+  myPoints = static_cast<NCollection_Sequence<LocOpe_PntFace>*>(
+    new NCollection_Sequence<LocOpe_PntFace>[myNbelem]);
 
   TopExp_Explorer                exp(myShape, TopAbs_FACE);
   occ::handle<GeomAdaptor_Curve> HC = new GeomAdaptor_Curve();
@@ -169,7 +173,9 @@ void LocOpe_CSIntersector::Perform(const NCollection_Sequence<occ::handle<Geom_C
       theInt.Perform(HC, binf, bsup);
       if (theInt.IsDone())
       {
-        AddPoints(theInt, ((static_cast<NCollection_Sequence<LocOpe_PntFace>*>(myPoints))[i - 1]), theface);
+        AddPoints(theInt,
+                  ((static_cast<NCollection_Sequence<LocOpe_PntFace>*>(myPoints))[i - 1]),
+                  theface);
       }
     }
   }
