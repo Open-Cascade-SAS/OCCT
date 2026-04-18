@@ -18,7 +18,7 @@
 #include <LDOM_BasicElement.hxx>
 #include <LDOM_BasicText.hxx>
 
-#define MEMORY_GRANULE 10000
+constexpr int MEMORY_GRANULE = 10000;
 
 //=================================================================================================
 

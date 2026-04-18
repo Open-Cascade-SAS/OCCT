@@ -792,7 +792,7 @@ occ::handle<Storage_Data>& Storage_Schema::ICurrentData()
   return _Storage_CData;
 }
 
-#define SLENGTH 80
+constexpr int SLENGTH = 80;
 
 //=================================================================================================
 

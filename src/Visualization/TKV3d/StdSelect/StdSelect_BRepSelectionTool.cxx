@@ -66,7 +66,7 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Wire.hxx>
 
-#define BVH_PRIMITIVE_LIMIT 800000
+constexpr int BVH_PRIMITIVE_LIMIT = 800000;
 
 namespace
 {

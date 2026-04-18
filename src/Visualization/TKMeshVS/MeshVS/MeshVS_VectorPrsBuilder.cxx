@@ -149,10 +149,10 @@ void MeshVS_VectorPrsBuilder::GetMinMaxVectorValue(const bool IsElement,
 
 //=================================================================================================
 
-#define NB_VERTICES 2
-#define NB_BOUNDS 1
-#define NB_TRIANGLES 6
-#define NB_FANS 1
+constexpr int NB_VERTICES  = 2;
+constexpr int NB_BOUNDS    = 1;
+constexpr int NB_TRIANGLES = 6;
+constexpr int NB_FANS      = 1;
 
 void MeshVS_VectorPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& Prs,
                                     const TColStd_PackedMapOfInteger&      IDs,
