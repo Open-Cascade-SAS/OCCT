@@ -69,7 +69,7 @@ void OSD_MemInfo::SetActive(const bool theActive)
 
 void OSD_MemInfo::Clear()
 {
-  for (unsigned long& myCounter : myCounters)
+  for (auto& myCounter : myCounters)
   {
     myCounter = size_t(-1);
   }
