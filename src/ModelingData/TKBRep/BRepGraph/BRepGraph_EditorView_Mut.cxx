@@ -162,7 +162,8 @@ static bool isRepIndexInRange(const BRepGraphInc_Storage& theStorage,
 
 //==================================================================================================
 
-[[maybe_unused]] static bool isActiveNode(const BRepGraphInc_Storage& theStorage, const BRepGraph_NodeId theNode)
+[[maybe_unused]] static bool isActiveNode(const BRepGraphInc_Storage& theStorage,
+                                          const BRepGraph_NodeId      theNode)
 {
   const BRepGraphInc::BaseDef* aDef = topoEntity(theStorage, theNode);
   return aDef != nullptr && !aDef->IsRemoved;
@@ -170,7 +171,8 @@ static bool isRepIndexInRange(const BRepGraphInc_Storage& theStorage,
 
 //==================================================================================================
 
-[[maybe_unused]] static bool isActiveRef(const BRepGraphInc_Storage& theStorage, const BRepGraph_RefId theRefId)
+[[maybe_unused]] static bool isActiveRef(const BRepGraphInc_Storage& theStorage,
+                                         const BRepGraph_RefId       theRefId)
 {
   if (!isRefIndexInRange(theStorage, theRefId))
   {
@@ -202,7 +204,8 @@ static bool isRepIndexInRange(const BRepGraphInc_Storage& theStorage,
 
 //==================================================================================================
 
-[[maybe_unused]] static bool isActiveRep(const BRepGraphInc_Storage& theStorage, const BRepGraph_RepId theRepId)
+[[maybe_unused]] static bool isActiveRep(const BRepGraphInc_Storage& theStorage,
+                                         const BRepGraph_RepId       theRepId)
 {
   if (!isRepIndexInRange(theStorage, theRepId))
   {
