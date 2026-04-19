@@ -141,8 +141,8 @@ void Transfer_ProcessForFinder::Clean()
 
 void Transfer_ProcessForFinder::Resize(const int nb)
 {
-  if (nb > themap.NbBuckets())
-    themap.ReSize(nb);
+  if (static_cast<size_t>(nb) > themap.NbBuckets())
+    themap.ReSize(static_cast<size_t>(nb));
 }
 
 //=================================================================================================

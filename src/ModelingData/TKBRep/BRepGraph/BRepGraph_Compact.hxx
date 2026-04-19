@@ -53,6 +53,7 @@ public:
     int NbRemovedCurves     = 0;
     int NbNodesBefore       = 0;
     int NbNodesAfter        = 0;
+
   };
 
   //! Run compaction with default options.

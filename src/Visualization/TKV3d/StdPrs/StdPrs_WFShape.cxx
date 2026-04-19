@@ -406,12 +406,12 @@ occ::handle<Graphic3d_ArrayOfPrimitives> StdPrs_WFShape::AddEdgesOnTriangulation
 {
   NCollection_Sequence<gp_Pnt> aSeqPnts;
   AddEdgesOnTriangulation(aSeqPnts, theShape, theToExcludeGeometric);
-  if (aSeqPnts.Size() < 2)
+  if (aSeqPnts.Length() < 2)
   {
     return occ::handle<Graphic3d_ArrayOfSegments>();
   }
 
-  int                                    aNbVertices = aSeqPnts.Size();
+  int                                    aNbVertices = aSeqPnts.Length();
   occ::handle<Graphic3d_ArrayOfSegments> aSurfArray  = new Graphic3d_ArrayOfSegments(aNbVertices);
   for (int anI = 1; anI <= aNbVertices; anI += 2)
   {

@@ -74,7 +74,7 @@ public:
   int AddNode(const gp_XYZ& thePnt) override
   {
     myNodes.Append(thePnt);
-    return myNodes.Size();
+    return myNodes.Length();
   }
 
   //! Add new triangle
@@ -91,12 +91,12 @@ public:
 
     occ::handle<Poly_Triangulation> aPoly =
       new Poly_Triangulation(myNodes.Length(), myTriangles.Length(), false);
-    for (int aNodeIter = 0; aNodeIter < myNodes.Size(); ++aNodeIter)
+    for (int aNodeIter = 0; aNodeIter < myNodes.Length(); ++aNodeIter)
     {
       aPoly->SetNode(aNodeIter + 1, myNodes[aNodeIter]);
     }
 
-    for (int aTriIter = 0; aTriIter < myTriangles.Size(); ++aTriIter)
+    for (int aTriIter = 0; aTriIter < myTriangles.Length(); ++aTriIter)
     {
       aPoly->SetTriangle(aTriIter + 1, myTriangles[aTriIter]);
     }

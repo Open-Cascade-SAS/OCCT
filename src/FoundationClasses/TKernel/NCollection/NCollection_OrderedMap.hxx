@@ -19,6 +19,7 @@
 #include <NCollection_StlIterator.hxx>
 #include <NCollection_TListNode.hxx>
 #include <Standard_NoSuchObject.hxx>
+#include <Standard_OutOfRange.hxx>
 
 #include <functional>
 #include <optional>
@@ -196,11 +197,19 @@ public:
 
   //! Constructor
   explicit NCollection_OrderedMap(
-    const int                                     theNbBuckets,
+    const size_t                                  theNbBuckets,
     const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
       : NCollection_BaseMap(theNbBuckets, true, theAllocator),
         myFirst(nullptr),
         myLast(nullptr)
+  {
+  }
+
+  //! Constructor (legacy int-taking).
+  explicit NCollection_OrderedMap(
+    const int                                     theNbBuckets,
+    const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
+      : NCollection_OrderedMap(NCollection_BaseMap::NbBucketsFromInt(theNbBuckets), theAllocator)
   {
   }
 
@@ -210,12 +219,23 @@ public:
   //! @param theAllocator custom memory allocator
   explicit NCollection_OrderedMap(
     const Hasher&                                 theHasher,
-    const int                                     theNbBuckets = 1,
+    const size_t                                  theNbBuckets = 1,
     const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
       : NCollection_BaseMap(theNbBuckets, true, theAllocator),
         myHasher(theHasher),
         myFirst(nullptr),
         myLast(nullptr)
+  {
+  }
+
+  //! Constructor with custom hasher (copy, legacy int-taking).
+  explicit NCollection_OrderedMap(
+    const Hasher&                                 theHasher,
+    const int                                     theNbBuckets,
+    const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
+      : NCollection_OrderedMap(theHasher,
+                               NCollection_BaseMap::NbBucketsFromInt(theNbBuckets),
+                               theAllocator)
   {
   }
 
@@ -225,12 +245,23 @@ public:
   //! @param theAllocator custom memory allocator
   explicit NCollection_OrderedMap(
     Hasher&&                                      theHasher,
-    const int                                     theNbBuckets = 1,
+    const size_t                                  theNbBuckets = 1,
     const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
       : NCollection_BaseMap(theNbBuckets, true, theAllocator),
         myHasher(std::move(theHasher)),
         myFirst(nullptr),
         myLast(nullptr)
+  {
+  }
+
+  //! Constructor with custom hasher (move, legacy int-taking).
+  explicit NCollection_OrderedMap(
+    Hasher&&                                      theHasher,
+    const int                                     theNbBuckets,
+    const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
+      : NCollection_OrderedMap(std::move(theHasher),
+                               NCollection_BaseMap::NbBucketsFromInt(theNbBuckets),
+                               theAllocator)
   {
   }
 
@@ -310,18 +341,18 @@ public:
   }
 
   //! ReSize
-  void ReSize(const int N)
+  void ReSize(const size_t N)
   {
     NCollection_ListNode** newdata = nullptr;
     NCollection_ListNode** dummy   = nullptr;
-    int                    newBuck;
+    size_t                 newBuck;
     if (BeginResize(N, newBuck, newdata, dummy))
     {
       if (myData1)
       {
         OrderedMapNode** olddata = (OrderedMapNode**)myData1;
         OrderedMapNode * p, *q;
-        for (int i = 0; i <= NbBuckets(); i++)
+        for (size_t i = 0; i <= NbBuckets(); ++i)
         {
           if (olddata[i])
           {
@@ -339,6 +370,12 @@ public:
       }
       EndResize(N, newBuck, newdata, dummy);
     }
+  }
+
+  void ReSize(const int N)
+  {
+    Standard_OutOfRange_Raise_if(N < 0, "NCollection_OrderedMap::ReSize: negative size");
+    ReSize(static_cast<size_t>(N));
   }
 
   //! Add
@@ -460,9 +497,6 @@ public:
   //! Destructor
   ~NCollection_OrderedMap() override { Clear(true); }
 
-  //! Size
-  int Size() const noexcept { return Extent(); }
-
   //! Returns the first key in insertion order.
   //! @return const reference to the first key
   //! @throws Standard_NoSuchObject if map is empty
@@ -527,7 +561,7 @@ protected:
     return myHasher(theKey1, theKey2);
   }
 
-  size_t HashCode(const TheKeyType& theKey, const int theUpperBound) const
+  size_t HashCode(const TheKeyType& theKey, const size_t theUpperBound) const
   {
     return myHasher(theKey) % theUpperBound + 1;
   }

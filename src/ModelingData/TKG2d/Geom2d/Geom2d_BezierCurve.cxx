@@ -323,10 +323,10 @@ void Geom2d_BezierCurve::Segment(const double U1, const double U2)
 {
   myClosed = (std::abs(Value(U1).Distance(Value(U2))) <= gp::Resolution());
 
-  NCollection_Array1<gp_Pnt2d> coeffs(1, myPoles.Size());
+  NCollection_Array1<gp_Pnt2d> coeffs(1, myPoles.Length());
   if (IsRational())
   {
-    NCollection_Array1<double> wcoeffs(1, myPoles.Size());
+    NCollection_Array1<double> wcoeffs(1, myPoles.Length());
     BSplCLib::BuildCache(0.0,
                          1.0,
                          false,
@@ -452,7 +452,7 @@ GeomAbs_Shape Geom2d_BezierCurve::Continuity() const
 
 int Geom2d_BezierCurve::Degree() const
 {
-  return myPoles.Size() - 1;
+  return myPoles.Length() - 1;
 }
 
 //=================================================================================================
@@ -693,10 +693,10 @@ void Geom2d_BezierCurve::DumpJson(Standard_OStream& theOStream, int theDepth) co
 
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myRational)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myClosed)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myPoles.Size())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myPoles.Length())
 
   if (myRational)
-    OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myWeights.Size())
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myWeights.Length())
 
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myMaxDerivInv)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myMaxDerivInvOk)
@@ -729,7 +729,7 @@ const NCollection_Array1<int>& Geom2d_BezierCurve::Multiplicities() const
       anArr[i] = NCollection_Array1<int>(THE_DATA[i][0], 1, 2);
     return anArr;
   }();
-  return THE_MULTS[myPoles.Size() - 1];
+  return THE_MULTS[myPoles.Length() - 1];
 }
 
 //=================================================================================================
@@ -744,5 +744,5 @@ const NCollection_Array1<double>& Geom2d_BezierCurve::KnotSequence() const
       anArr[i] = NCollection_Array1<double>(BSplCLib::FlatBezierKnots(i), 1, 2 * (i + 1));
     return anArr;
   }();
-  return THE_FKNOTS[myPoles.Size() - 1];
+  return THE_FKNOTS[myPoles.Length() - 1];
 }

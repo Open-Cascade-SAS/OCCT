@@ -1323,7 +1323,7 @@ const NCollection_List<TopoDS_Shape>& BRepOffsetAPI_ThruSections::Generated(cons
     for (; itl.More(); itl.Next())
     {
       int IndOfFace = itl.Value();
-      if (AllFaces.Size() < IndOfFace)
+      if (AllFaces.Length() < IndOfFace)
       {
         continue;
       }
@@ -1337,7 +1337,7 @@ const NCollection_List<TopoDS_Shape>& BRepOffsetAPI_ThruSections::Generated(cons
         {
           int IndOfFace = itl.Value();
           IndOfFace += (i - 1) * myNbEdgesInSection;
-          if (AllFaces.Size() < IndOfFace)
+          if (AllFaces.Length() < IndOfFace)
           {
             continue;
           }

@@ -263,19 +263,19 @@ BVH_Tree<T, N, BVH_QuadTree>* BVH_Tree<T, N, BVH_BinaryTree>::CollapseToQuadTree
         aGrandChildNodes.Append(Child<1>(aRghChild));
       }
 
-      for (int aNodeIdx = 0; aNodeIdx < aGrandChildNodes.Size(); ++aNodeIdx)
+      for (int aNodeIdx = 0; aNodeIdx < aGrandChildNodes.Length(); ++aNodeIdx)
       {
         aQueue.push_back(std::make_pair(aGrandChildNodes(aNodeIdx), std::get<1>(aNode) + 1));
       }
 
       aNodeInfo = BVH_Vec4i(0 /* inner flag */,
                             aNbNodes,
-                            aGrandChildNodes.Size() - 1,
+                            aGrandChildNodes.Length() - 1,
                             std::get<1>(aNode) /* level */);
 
       aQBVH->myDepth = (std::max)(aQBVH->myDepth, std::get<1>(aNode) + 1);
 
-      aNbNodes += aGrandChildNodes.Size();
+      aNbNodes += aGrandChildNodes.Length();
     }
 
     BVH::Array<int, 4>::Append(aQBVH->myNodeInfoBuffer, aNodeInfo);

@@ -16,7 +16,9 @@
 #include <BRepGraphInc_Reference.hxx>
 #include <BRepGraphInc_Representation.hxx>
 
-#include <BRepGraph_BuilderView.hxx>
+#include <BRepGraph_EditorView.hxx>
+#include <BRepGraph_Iterator.hxx>
+#include <BRepGraph_RefsIterator.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_Tool.hxx>
@@ -35,47 +37,6 @@
 
 #include <algorithm>
 #include <cmath>
-
-namespace
-{
-template <typename FuncT>
-void forWireCoEdgeRefEntries(const BRepGraph&       theGraph,
-                             const BRepGraph_WireId theWireId,
-                             FuncT&&                theFunc)
-{
-  const BRepGraphInc::WireDef& aWireEnt = theGraph.Topo().Wires().Definition(theWireId);
-  const BRepGraph::RefsView&   aRefs    = theGraph.Refs();
-  for (int i = 0; i < aWireEnt.CoEdgeRefIds.Length(); ++i)
-  {
-    const BRepGraph_CoEdgeRefId    aRefId = aWireEnt.CoEdgeRefIds.Value(i);
-    const BRepGraphInc::CoEdgeRef& aCR    = aRefs.CoEdges().Entry(aRefId);
-    if (aCR.IsRemoved || !aCR.CoEdgeDefId.IsValid(theGraph.Topo().CoEdges().Nb()))
-    {
-      continue;
-    }
-    theFunc(aCR);
-  }
-}
-
-template <typename FuncT>
-void forFaceWireRefEntries(const BRepGraph&       theGraph,
-                           const BRepGraph_FaceId theFaceId,
-                           FuncT&&                theFunc)
-{
-  const BRepGraphInc::FaceDef& aFaceEnt = theGraph.Topo().Faces().Definition(theFaceId);
-  const BRepGraph::RefsView&   aRefs    = theGraph.Refs();
-  for (int i = 0; i < aFaceEnt.WireRefIds.Length(); ++i)
-  {
-    const BRepGraph_WireRefId    aRefId = aFaceEnt.WireRefIds.Value(i);
-    const BRepGraphInc::WireRef& aWR    = aRefs.Wires().Entry(aRefId);
-    if (aWR.IsRemoved || !aWR.WireDefId.IsValid(theGraph.Topo().Wires().Nb()))
-    {
-      continue;
-    }
-    theFunc(aWR);
-  }
-}
-} // namespace
 
 //=================================================================================================
 
@@ -106,64 +67,76 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
 
   // Deduplicate surfaces by comparing Handle pointers on FaceDefs.
   // Map: surface handle -> canonical face index (first face that owns it).
-  NCollection_DataMap<occ::handle<Geom_Surface>, int, GeomHash_SurfaceHasher> aSurfToCanonicalFace(
+  NCollection_DataMap<occ::handle<Geom_Surface>, BRepGraph_FaceId, GeomHash_SurfaceHasher>
+    aSurfToCanonicalFace(
     aSurfHasher,
     std::max(1, theGraph.Topo().Faces().Nb() * 2),
     aTmpAlloc);
-  // Map: face index -> canonical face index (for faces whose surface should be replaced).
-  NCollection_DataMap<int, int> aSurfRewriteMap(std::max(1, theGraph.Topo().Faces().Nb()),
-                                                aTmpAlloc);
+  // Map: face id -> canonical face id (for faces whose surface should be replaced).
+  NCollection_DataMap<BRepGraph_FaceId, BRepGraph_FaceId> aSurfRewriteMap(
+    std::max(1, theGraph.Topo().Faces().Nb()),
+    aTmpAlloc);
 
-  for (int aFaceIdx = 0; aFaceIdx < theGraph.Topo().Faces().Nb(); ++aFaceIdx)
+  for (BRepGraph_FullFaceIterator aFaceIt(theGraph); aFaceIt.More(); aFaceIt.Next())
   {
-    const BRepGraph_FaceId aFaceId(aFaceIdx);
+    const BRepGraph_FaceId aFaceId = aFaceIt.CurrentId();
+    if (theGraph.Topo().Faces().Definition(aFaceId).IsRemoved)
+    {
+      continue;
+    }
     if (!BRepGraph_Tool::Face::HasSurface(theGraph, aFaceId))
     {
       continue;
     }
 
     const occ::handle<Geom_Surface>& aFaceSurf = BRepGraph_Tool::Face::Surface(theGraph, aFaceId);
-    const int*                       aCanonFaceIdx = aSurfToCanonicalFace.Seek(aFaceSurf);
-    if (aCanonFaceIdx == nullptr)
+    const BRepGraph_FaceId* aCanonFaceId = aSurfToCanonicalFace.Seek(aFaceSurf);
+    if (aCanonFaceId == nullptr)
     {
-      aSurfToCanonicalFace.Bind(aFaceSurf, aFaceIdx);
+      aSurfToCanonicalFace.Bind(aFaceSurf, aFaceId);
     }
-    else if (*aCanonFaceIdx != aFaceIdx)
+    else if (*aCanonFaceId != aFaceId)
     {
-      aSurfRewriteMap.Bind(aFaceIdx, *aCanonFaceIdx);
+      aSurfRewriteMap.Bind(aFaceId, *aCanonFaceId);
     }
   }
 
   // Deduplicate curves by comparing Handle pointers on EdgeDefs.
-  NCollection_DataMap<occ::handle<Geom_Curve>, int, GeomHash_CurveHasher> aCurveToCanonicalEdge(
+  NCollection_DataMap<occ::handle<Geom_Curve>, BRepGraph_EdgeId, GeomHash_CurveHasher>
+    aCurveToCanonicalEdge(
     aCurveHasher,
     std::max(1, theGraph.Topo().Edges().Nb() * 2),
     aTmpAlloc);
-  NCollection_DataMap<int, int> aCurveRewriteMap(std::max(1, theGraph.Topo().Edges().Nb()),
-                                                 aTmpAlloc);
+  NCollection_DataMap<BRepGraph_EdgeId, BRepGraph_EdgeId> aCurveRewriteMap(
+    std::max(1, theGraph.Topo().Edges().Nb()),
+    aTmpAlloc);
 
-  for (int anEdgeIdx = 0; anEdgeIdx < theGraph.Topo().Edges().Nb(); ++anEdgeIdx)
+  for (BRepGraph_FullEdgeIterator anEdgeIt(theGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
-    const BRepGraph_EdgeId anEdgeId(anEdgeIdx);
+    const BRepGraph_EdgeId anEdgeId = anEdgeIt.CurrentId();
+    if (theGraph.Topo().Edges().Definition(anEdgeId).IsRemoved)
+    {
+      continue;
+    }
     if (!BRepGraph_Tool::Edge::HasCurve(theGraph, anEdgeId))
     {
       continue;
     }
 
-    const occ::handle<Geom_Curve>& anEdgeCurve   = BRepGraph_Tool::Edge::Curve(theGraph, anEdgeId);
-    const int*                     aCanonEdgeIdx = aCurveToCanonicalEdge.Seek(anEdgeCurve);
-    if (aCanonEdgeIdx == nullptr)
+    const occ::handle<Geom_Curve>& anEdgeCurve = BRepGraph_Tool::Edge::Curve(theGraph, anEdgeId);
+    const BRepGraph_EdgeId*        aCanonEdgeId = aCurveToCanonicalEdge.Seek(anEdgeCurve);
+    if (aCanonEdgeId == nullptr)
     {
-      aCurveToCanonicalEdge.Bind(anEdgeCurve, anEdgeIdx);
+      aCurveToCanonicalEdge.Bind(anEdgeCurve, anEdgeId);
     }
-    else if (*aCanonEdgeIdx != anEdgeIdx)
+    else if (*aCanonEdgeId != anEdgeId)
     {
-      aCurveRewriteMap.Bind(anEdgeIdx, *aCanonEdgeIdx);
+      aCurveRewriteMap.Bind(anEdgeId, *aCanonEdgeId);
     }
   }
 
-  aResult.NbCanonicalSurfaces = theGraph.Topo().Faces().Nb() - aSurfRewriteMap.Size();
-  aResult.NbCanonicalCurves   = theGraph.Topo().Edges().Nb() - aCurveRewriteMap.Size();
+  aResult.NbCanonicalSurfaces = theGraph.Topo().Faces().Nb() - aSurfRewriteMap.Length();
+  aResult.NbCanonicalCurves   = theGraph.Topo().Edges().Nb() - aCurveRewriteMap.Length();
 
   if (theOptions.AnalyzeOnly && !theOptions.MergeEntitiesWhenSafe)
   {
@@ -174,43 +147,61 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
   if (!theOptions.AnalyzeOnly)
   {
     // Rewrite face surfaces: replace duplicate surface handles with canonical ones.
-    for (NCollection_DataMap<int, int>::Iterator anIt(aSurfRewriteMap); anIt.More(); anIt.Next())
+    for (NCollection_DataMap<BRepGraph_FaceId, BRepGraph_FaceId>::Iterator anIt(aSurfRewriteMap);
+         anIt.More();
+         anIt.Next())
     {
-      const int                                 aFaceIdx      = anIt.Key();
-      const int                                 aCanonFaceIdx = anIt.Value();
-      BRepGraph_MutGuard<BRepGraphInc::FaceDef> aFaceDef =
-        theGraph.Builder().MutFace(BRepGraph_FaceId(aFaceIdx));
+      const BRepGraph_FaceId                    aFaceId      = anIt.Key();
+      const BRepGraph_FaceId                    aCanonFaceId = anIt.Value();
       const BRepGraph_SurfaceRepId aCanonSurfRepId =
-        theGraph.Topo().Faces().Definition(BRepGraph_FaceId(aCanonFaceIdx)).SurfaceRepId;
+        theGraph.Topo().Faces().Definition(aCanonFaceId).SurfaceRepId;
+      const BRepGraph_SurfaceRepId aCurrentSurfRepId =
+        theGraph.Topo().Faces().Definition(aFaceId).SurfaceRepId;
+
+      // Skip if already canonical (idempotency: avoid re-recording same rewrite).
+      if (aCurrentSurfRepId == aCanonSurfRepId)
+        continue;
+
+      BRepGraph_MutGuard<BRepGraphInc::FaceDef> aFaceDef =
+        theGraph.Editor().Faces().Mut(aFaceId);
       aFaceDef->SurfaceRepId = aCanonSurfRepId;
       ++aResult.NbSurfaceRewrites;
-      aResult.AffectedFaces.Append(BRepGraph_FaceId(aFaceDef->Id.Index));
+      aResult.AffectedFaces.Append(aFaceId);
 
       NCollection_Vector<BRepGraph_NodeId> aRepl;
-      aRepl.Append(BRepGraph_FaceId(aCanonFaceIdx));
+      aRepl.Append(aCanonFaceId);
       theGraph.History().Record(TCollection_AsciiString("Dedup:CanonicalizeSurface"),
-                                aFaceDef->Id,
+                                aFaceId,
                                 aRepl);
       ++aResult.NbHistoryRecords;
     }
 
     // Rewrite edge curves: replace duplicate curve handles with canonical ones.
-    for (NCollection_DataMap<int, int>::Iterator anIt(aCurveRewriteMap); anIt.More(); anIt.Next())
+    for (NCollection_DataMap<BRepGraph_EdgeId, BRepGraph_EdgeId>::Iterator anIt(aCurveRewriteMap);
+         anIt.More();
+         anIt.Next())
     {
-      const int                                 anEdgeIdx     = anIt.Key();
-      const int                                 aCanonEdgeIdx = anIt.Value();
-      BRepGraph_MutGuard<BRepGraphInc::EdgeDef> anEdgeDef =
-        theGraph.Builder().MutEdge(BRepGraph_EdgeId(anEdgeIdx));
+      const BRepGraph_EdgeId                    anEdgeId      = anIt.Key();
+      const BRepGraph_EdgeId                    aCanonEdgeId  = anIt.Value();
       const BRepGraph_Curve3DRepId aCanonCurveRepId =
-        theGraph.Topo().Edges().Definition(BRepGraph_EdgeId(aCanonEdgeIdx)).Curve3DRepId;
+        theGraph.Topo().Edges().Definition(aCanonEdgeId).Curve3DRepId;
+      const BRepGraph_Curve3DRepId aCurrentCurveRepId =
+        theGraph.Topo().Edges().Definition(anEdgeId).Curve3DRepId;
+
+      // Skip if already canonical (idempotency: avoid re-recording same rewrite).
+      if (aCurrentCurveRepId == aCanonCurveRepId)
+        continue;
+
+      BRepGraph_MutGuard<BRepGraphInc::EdgeDef> anEdgeDef =
+        theGraph.Editor().Edges().Mut(anEdgeId);
       anEdgeDef->Curve3DRepId = aCanonCurveRepId;
       ++aResult.NbCurveRewrites;
-      aResult.AffectedEdges.Append(BRepGraph_EdgeId(anEdgeDef->Id.Index));
+      aResult.AffectedEdges.Append(anEdgeId);
 
       NCollection_Vector<BRepGraph_NodeId> aRepl;
-      aRepl.Append(BRepGraph_EdgeId(aCanonEdgeIdx));
+      aRepl.Append(aCanonEdgeId);
       theGraph.History().Record(TCollection_AsciiString("Dedup:CanonicalizeCurve"),
-                                anEdgeDef->Id,
+                                anEdgeId,
                                 aRepl);
       ++aResult.NbHistoryRecords;
     }
@@ -229,18 +220,17 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
   {
     const double aTol = theOptions.HashTolerance;
 
-    // Collect active vertices: (point, graph index) pairs.
+    // Collect active vertices: (point, graph id) pairs.
     const int                                  aNbVertices = theGraph.Topo().Vertices().Nb();
-    NCollection_Vector<std::pair<gp_Pnt, int>> aActiveVertices(256, aTmpAlloc);
-    for (int aVtxIdx = 0; aVtxIdx < aNbVertices; ++aVtxIdx)
+    NCollection_Vector<std::pair<gp_Pnt, BRepGraph_VertexId>> aActiveVertices(256, aTmpAlloc);
+    for (BRepGraph_FullVertexIterator aVertexIt(theGraph); aVertexIt.More(); aVertexIt.Next())
     {
-      const BRepGraphInc::VertexDef& aVtx =
-        theGraph.Topo().Vertices().Definition(BRepGraph_VertexId(aVtxIdx));
+      const BRepGraph_VertexId aVertexId = aVertexIt.CurrentId();
+      const BRepGraphInc::VertexDef& aVtx = theGraph.Topo().Vertices().Definition(aVertexId);
       if (aVtx.IsRemoved)
         continue;
-      aActiveVertices.Append(
-        std::make_pair(BRepGraph_Tool::Vertex::Pnt(theGraph, BRepGraph_VertexId(aVtxIdx)),
-                       aVtxIdx));
+      aActiveVertices.Append(std::make_pair(BRepGraph_Tool::Vertex::Pnt(theGraph, aVertexId),
+                                            aVertexId));
     }
 
     // Build KDTree from active vertex points - O(n log n).
@@ -253,37 +243,34 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
     if (!aPointsArr.IsEmpty())
       aTree.Build(aPointsArr);
 
-    // Canonical vertex map: old graph index -> canonical graph index.
-    NCollection_DataMap<int, int> aCanonicalVertex(std::max(1, aNbVertices), aTmpAlloc);
+    // Canonical vertex map: old graph id -> canonical graph id.
+    NCollection_DataMap<BRepGraph_VertexId, BRepGraph_VertexId> aCanonicalVertex(
+      std::max(1, aNbVertices),
+      aTmpAlloc);
 
     for (int aLocalIdx = 0; aLocalIdx < aNbActive; ++aLocalIdx)
     {
-      const int aBaseVtxIdx = aActiveVertices.Value(aLocalIdx).second;
-      if (aCanonicalVertex.IsBound(aBaseVtxIdx))
+      const BRepGraph_VertexId aBaseVtxId = aActiveVertices.Value(aLocalIdx).second;
+      if (aCanonicalVertex.IsBound(aBaseVtxId))
         continue;
 
-      const gp_Pnt aBaseVtxPnt =
-        BRepGraph_Tool::Vertex::Pnt(theGraph, BRepGraph_VertexId(aBaseVtxIdx));
-      const double aBaseVtxTol =
-        BRepGraph_Tool::Vertex::Tolerance(theGraph, BRepGraph_VertexId(aBaseVtxIdx));
+      const gp_Pnt aBaseVtxPnt = BRepGraph_Tool::Vertex::Pnt(theGraph, aBaseVtxId);
+      const double aBaseVtxTol = BRepGraph_Tool::Vertex::Tolerance(theGraph, aBaseVtxId);
 
       aTree.ForEachInRange(aBaseVtxPnt, aTol, [&](size_t theResultIdx) {
         const int anArrayIdx = static_cast<int>(theResultIdx) - 1;
         if (anArrayIdx <= aLocalIdx)
           return; // skip self and already-processed
 
-        const int aCandVtxIdx = aActiveVertices.Value(anArrayIdx).second;
-        if (aCanonicalVertex.IsBound(aCandVtxIdx))
+        const BRepGraph_VertexId aCandVtxId = aActiveVertices.Value(anArrayIdx).second;
+        if (aCanonicalVertex.IsBound(aCandVtxId))
           return;
 
-        const double aCandVtxTol =
-          BRepGraph_Tool::Vertex::Tolerance(theGraph, BRepGraph_VertexId(aCandVtxIdx));
+        const double aCandVtxTol = BRepGraph_Tool::Vertex::Tolerance(theGraph, aCandVtxId);
         const double aMaxTol = std::max(aBaseVtxTol, aCandVtxTol);
-        if (aBaseVtxPnt.Distance(
-              BRepGraph_Tool::Vertex::Pnt(theGraph, BRepGraph_VertexId(aCandVtxIdx)))
-            <= aMaxTol)
+        if (aBaseVtxPnt.Distance(BRepGraph_Tool::Vertex::Pnt(theGraph, aCandVtxId)) <= aMaxTol)
         {
-          aCanonicalVertex.Bind(aCandVtxIdx, aBaseVtxIdx);
+          aCanonicalVertex.Bind(aCandVtxId, aBaseVtxId);
         }
       });
     }
@@ -291,39 +278,66 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
     if (!theOptions.AnalyzeOnly)
     {
       // Redirect edge vertex references and mark non-canonical vertices as removed.
-      for (NCollection_DataMap<int, int>::Iterator anIt(aCanonicalVertex); anIt.More(); anIt.Next())
+      for (NCollection_DataMap<BRepGraph_VertexId, BRepGraph_VertexId>::Iterator anIt(
+             aCanonicalVertex);
+           anIt.More();
+           anIt.Next())
       {
-        const int              anOldIdx      = anIt.Key();
-        const int              aCanonicalIdx = anIt.Value();
-        const BRepGraph_NodeId anOldId       = BRepGraph_VertexId(anOldIdx);
-        const BRepGraph_NodeId aCanonId      = BRepGraph_VertexId(aCanonicalIdx);
+        const BRepGraph_VertexId anOldVertexId = anIt.Key();
+        const BRepGraph_VertexId aCanonVertexId = anIt.Value();
+        const BRepGraph_NodeId   anOldId = anOldVertexId;
+        const BRepGraph_NodeId   aCanonId = aCanonVertexId;
 
         // Update edges referencing the old vertex.
-        for (int anEdgeIdx = 0; anEdgeIdx < theGraph.Topo().Edges().Nb(); ++anEdgeIdx)
+        for (BRepGraph_FullEdgeIterator anEdgeIt(theGraph); anEdgeIt.More(); anEdgeIt.Next())
         {
+          const BRepGraph_EdgeId anEdgeId = anEdgeIt.CurrentId();
           BRepGraph_MutGuard<BRepGraphInc::EdgeDef> anEdge =
-            theGraph.Builder().MutEdge(BRepGraph_EdgeId(anEdgeIdx));
+            theGraph.Editor().Edges().Mut(anEdgeId);
           if (anEdge->IsRemoved)
             continue;
           // Resolve current vertex def ids through ref entries and update them.
           if (anEdge->StartVertexRefId.IsValid())
           {
             BRepGraph_MutGuard<BRepGraphInc::VertexRef> aStartRef =
-              theGraph.Builder().MutVertexRef(anEdge->StartVertexRefId);
-            if (aStartRef->VertexDefId == BRepGraph_VertexId(anOldId.Index))
-              aStartRef->VertexDefId = BRepGraph_VertexId(aCanonId.Index);
+              theGraph.Editor().Vertices().MutRef(anEdge->StartVertexRefId);
+            if (aStartRef->VertexDefId == anOldVertexId)
+              aStartRef->VertexDefId = aCanonVertexId;
           }
           if (anEdge->EndVertexRefId.IsValid())
           {
             BRepGraph_MutGuard<BRepGraphInc::VertexRef> anEndRef =
-              theGraph.Builder().MutVertexRef(anEdge->EndVertexRefId);
-            if (anEndRef->VertexDefId == BRepGraph_VertexId(anOldId.Index))
-              anEndRef->VertexDefId = BRepGraph_VertexId(aCanonId.Index);
+              theGraph.Editor().Vertices().MutRef(anEdge->EndVertexRefId);
+            if (anEndRef->VertexDefId == anOldVertexId)
+              anEndRef->VertexDefId = aCanonVertexId;
+          }
+          for (const BRepGraph_VertexRefId& anInternalRefId : anEdge->InternalVertexRefIds)
+          {
+            BRepGraph_MutGuard<BRepGraphInc::VertexRef> anInternalRef =
+              theGraph.Editor().Vertices().MutRef(anInternalRefId);
+              if (anInternalRef->VertexDefId == anOldVertexId)
+                anInternalRef->VertexDefId = aCanonVertexId;
+          }
+        }
+
+        // Update faces that directly reference the old vertex via FaceDef.VertexRefIds.
+        for (BRepGraph_FullFaceIterator aFaceIt(theGraph); aFaceIt.More(); aFaceIt.Next())
+        {
+          const BRepGraph_FaceId aFaceId = aFaceIt.CurrentId();
+          const BRepGraphInc::FaceDef& aFaceDef = theGraph.Topo().Faces().Definition(aFaceId);
+          if (aFaceDef.IsRemoved)
+            continue;
+          for (const BRepGraph_VertexRefId& aVRefId : aFaceDef.VertexRefIds)
+          {
+            BRepGraph_MutGuard<BRepGraphInc::VertexRef> aVRef =
+              theGraph.Editor().Vertices().MutRef(aVRefId);
+              if (aVRef->VertexDefId == anOldVertexId)
+                aVRef->VertexDefId = aCanonVertexId;
           }
         }
 
         // Mark non-canonical as removed.
-        theGraph.Builder().RemoveNode(anOldId, aCanonId);
+        theGraph.Editor().Gen().RemoveNode(anOldId, aCanonId);
 
         NCollection_Vector<BRepGraph_NodeId> aRepl;
         aRepl.Append(aCanonId);
@@ -334,7 +348,7 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
     }
     else
     {
-      aResult.NbMergedVertices = aCanonicalVertex.Size();
+      aResult.NbMergedVertices = aCanonicalVertex.Length();
     }
   }
 
@@ -344,8 +358,8 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
     struct EdgeKey
     {
       const Geom_Curve* CurvePtr;
-      int               StartVtx;
-      int               EndVtx;
+      BRepGraph_VertexId StartVtx;
+      BRepGraph_VertexId EndVtx;
 
       bool operator==(const EdgeKey& theOther) const
       {
@@ -360,68 +374,63 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
       {
         size_t aCombination[3];
         aCombination[0] = std::hash<const void*>{}(theKey.CurvePtr);
-        aCombination[1] = opencascade::hash(theKey.StartVtx);
-        aCombination[2] = opencascade::hash(theKey.EndVtx);
+          aCombination[1] = opencascade::hash(theKey.StartVtx);
+          aCombination[2] = opencascade::hash(theKey.EndVtx);
         return opencascade::hashBytes(aCombination, sizeof(aCombination));
       }
 
       bool operator()(const EdgeKey& theA, const EdgeKey& theB) const { return theA == theB; }
     };
 
-    NCollection_DataMap<EdgeKey, NCollection_Vector<int>, EdgeKeyHasher> anEdgeGroups(
+    NCollection_DataMap<EdgeKey, NCollection_Vector<BRepGraph_EdgeId>, EdgeKeyHasher>
+      anEdgeGroups(
       std::max(1, theGraph.Topo().Edges().Nb()),
       aTmpAlloc);
 
-    for (int anEdgeIdx = 0; anEdgeIdx < theGraph.Topo().Edges().Nb(); ++anEdgeIdx)
+    for (BRepGraph_FullEdgeIterator anEdgeIt(theGraph); anEdgeIt.More(); anEdgeIt.Next())
     {
-      const BRepGraph_EdgeId       anEdgeId(anEdgeIdx);
+      const BRepGraph_EdgeId anEdgeId = anEdgeIt.CurrentId();
       const BRepGraphInc::EdgeDef& anEdge = theGraph.Topo().Edges().Definition(anEdgeId);
       if (anEdge.IsRemoved || !BRepGraph_Tool::Edge::HasCurve(theGraph, anEdgeId))
         continue;
 
       // Use canonical (forward) key: use raw pointer as a stable identity.
       EdgeKey aKey;
-      aKey.CurvePtr = BRepGraph_Tool::Edge::Curve(theGraph, anEdgeId).get();
-      const BRepGraph_VertexId aStartVtxId =
-        anEdge.StartVertexRefId.IsValid()
-          ? theGraph.Refs().Vertices().Entry(anEdge.StartVertexRefId).VertexDefId
-          : BRepGraph_VertexId();
-      const BRepGraph_VertexId anEndVtxId =
-        anEdge.EndVertexRefId.IsValid()
-          ? theGraph.Refs().Vertices().Entry(anEdge.EndVertexRefId).VertexDefId
-          : BRepGraph_VertexId();
-      aKey.StartVtx = aStartVtxId.IsValid() ? aStartVtxId.Index : -1;
-      aKey.EndVtx   = anEndVtxId.IsValid() ? anEndVtxId.Index : -1;
+      aKey.CurvePtr              = BRepGraph_Tool::Edge::Curve(theGraph, anEdgeId).get();
+      const BRepGraph_VertexId aStartVtxId = BRepGraph_Tool::Edge::StartVertexId(theGraph, anEdgeId);
+      const BRepGraph_VertexId anEndVtxId  = BRepGraph_Tool::Edge::EndVertexId(theGraph, anEdgeId);
+      aKey.StartVtx = aStartVtxId;
+      aKey.EndVtx   = anEndVtxId;
 
       // Normalize: always use min vertex index first for undirected matching.
       if (aKey.StartVtx > aKey.EndVtx)
         std::swap(aKey.StartVtx, aKey.EndVtx);
 
-      anEdgeGroups.TryBind(aKey, NCollection_Vector<int>());
-      anEdgeGroups.ChangeFind(aKey).Append(anEdgeIdx);
+      anEdgeGroups.TryBind(aKey, NCollection_Vector<BRepGraph_EdgeId>());
+      anEdgeGroups.ChangeFind(aKey).Append(anEdgeId);
     }
 
-    NCollection_DataMap<int, int> aCanonicalEdge(std::max(1, theGraph.Topo().Edges().Nb()),
-                                                 aTmpAlloc);
+    NCollection_DataMap<BRepGraph_EdgeId, BRepGraph_EdgeId> aCanonicalEdge(
+      std::max(1, theGraph.Topo().Edges().Nb()),
+      aTmpAlloc);
 
-    for (NCollection_DataMap<EdgeKey, NCollection_Vector<int>, EdgeKeyHasher>::Iterator aGroupIter(
-           anEdgeGroups);
+    for (NCollection_DataMap<EdgeKey,
+                             NCollection_Vector<BRepGraph_EdgeId>,
+                             EdgeKeyHasher>::Iterator aGroupIter(anEdgeGroups);
          aGroupIter.More();
          aGroupIter.Next())
     {
-      const NCollection_Vector<int>& aGroup = aGroupIter.Value();
+      const NCollection_Vector<BRepGraph_EdgeId>& aGroup = aGroupIter.Value();
       if (aGroup.Length() < 2)
         continue;
 
-      const int                    aCanonIdx = aGroup.Value(0);
-      const BRepGraphInc::EdgeDef& aCanonEdge =
-        theGraph.Topo().Edges().Definition(BRepGraph_EdgeId(aCanonIdx));
+      const BRepGraph_EdgeId       aCanonEdgeId = aGroup.Value(0);
+      const BRepGraphInc::EdgeDef& aCanonEdge = theGraph.Topo().Edges().Definition(aCanonEdgeId);
 
       for (int aCandIter = 1; aCandIter < aGroup.Length(); ++aCandIter)
       {
-        const int                    aCandIdx = aGroup.Value(aCandIter);
-        const BRepGraphInc::EdgeDef& aCandEdge =
-          theGraph.Topo().Edges().Definition(BRepGraph_EdgeId(aCandIdx));
+        const BRepGraph_EdgeId       aCandEdgeId = aGroup.Value(aCandIter);
+        const BRepGraphInc::EdgeDef& aCandEdge = theGraph.Topo().Edges().Definition(aCandEdgeId);
 
         // Compare parameter ranges within tolerance.
         if (std::abs(aCanonEdge.ParamFirst - aCandEdge.ParamFirst) > theOptions.CompTolerance)
@@ -433,45 +442,27 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
         if (aCandEdge.Tolerance > aCanonEdge.Tolerance * 10.0)
           continue;
 
-        aCanonicalEdge.Bind(aCandIdx, aCanonIdx);
+        aCanonicalEdge.Bind(aCandEdgeId, aCanonEdgeId);
       }
     }
 
     if (!theOptions.AnalyzeOnly)
     {
-      for (NCollection_DataMap<int, int>::Iterator anIt(aCanonicalEdge); anIt.More(); anIt.Next())
+      for (NCollection_DataMap<BRepGraph_EdgeId, BRepGraph_EdgeId>::Iterator anIt(aCanonicalEdge);
+           anIt.More();
+           anIt.Next())
       {
-        const int              anOldIdx      = anIt.Key();
-        const int              aCanonicalIdx = anIt.Value();
-        const BRepGraph_NodeId anOldId       = BRepGraph_EdgeId(anOldIdx);
-        const BRepGraph_NodeId aCanonId      = BRepGraph_EdgeId(aCanonicalIdx);
-        const BRepGraph_EdgeId anOldEdgeId(anOldIdx);
-        const BRepGraph_EdgeId aCanonEdgeId(aCanonicalIdx);
+        const BRepGraph_EdgeId anOldEdgeId = anIt.Key();
+        const BRepGraph_EdgeId aCanonEdgeId = anIt.Value();
+        const BRepGraph_NodeId anOldId = anOldEdgeId;
+        const BRepGraph_NodeId aCanonId = aCanonEdgeId;
 
         // Determine if the non-canonical edge is reversed relative to canonical.
-        const BRepGraphInc::EdgeDef& aCanonEdge = theGraph.Topo().Edges().Definition(aCanonEdgeId);
-        const BRepGraphInc::EdgeDef& anOldEdge  = theGraph.Topo().Edges().Definition(anOldEdgeId);
-        // Resolve vertex def ids for reversal check.
-        const BRepGraph_NodeId aCanonStart =
-          aCanonEdge.StartVertexRefId.IsValid()
-            ? BRepGraph_VertexId(
-                theGraph.Refs().Vertices().Entry(aCanonEdge.StartVertexRefId).VertexDefId.Index)
-            : BRepGraph_NodeId();
-        const BRepGraph_NodeId aCanonEnd =
-          aCanonEdge.EndVertexRefId.IsValid()
-            ? BRepGraph_VertexId(
-                theGraph.Refs().Vertices().Entry(aCanonEdge.EndVertexRefId).VertexDefId.Index)
-            : BRepGraph_NodeId();
-        const BRepGraph_NodeId anOldStart =
-          anOldEdge.StartVertexRefId.IsValid()
-            ? BRepGraph_VertexId(
-                theGraph.Refs().Vertices().Entry(anOldEdge.StartVertexRefId).VertexDefId.Index)
-            : BRepGraph_NodeId();
-        const BRepGraph_NodeId anOldEnd =
-          anOldEdge.EndVertexRefId.IsValid()
-            ? BRepGraph_VertexId(
-                theGraph.Refs().Vertices().Entry(anOldEdge.EndVertexRefId).VertexDefId.Index)
-            : BRepGraph_NodeId();
+        // Resolve vertex def ids for reversal check using Tool helpers.
+        const BRepGraph_NodeId aCanonStart = BRepGraph_Tool::Edge::StartVertexId(theGraph, aCanonEdgeId);
+        const BRepGraph_NodeId aCanonEnd   = BRepGraph_Tool::Edge::EndVertexId(theGraph, aCanonEdgeId);
+        const BRepGraph_NodeId anOldStart  = BRepGraph_Tool::Edge::StartVertexId(theGraph, anOldEdgeId);
+        const BRepGraph_NodeId anOldEnd    = BRepGraph_Tool::Edge::EndVertexId(theGraph, anOldEdgeId);
         const bool isReversed = (aCanonStart == anOldEnd && aCanonEnd == anOldStart);
 
         // Replace in wires.
@@ -479,62 +470,18 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
           theGraph.Topo().Edges().Wires(anOldEdgeId);
         for (int aWireIter = 0; aWireIter < aWires.Length(); ++aWireIter)
         {
-          theGraph.Builder().ReplaceEdgeInWire(aWires.Value(aWireIter),
+          theGraph.Editor().Wires().ReplaceEdge(aWires.Value(aWireIter),
                                                anOldEdgeId,
                                                aCanonEdgeId,
                                                isReversed);
         }
 
-        // Transfer PCurves via CoEdges (skip duplicates).
-        // When the old edge is reversed relative to canonical, invert orientation
-        // so duplicate detection matches correctly against the canonical's CoEdges.
-        const NCollection_Vector<BRepGraph_CoEdgeId>& aOldCoEdges =
-          theGraph.Topo().Edges().CoEdges(anOldEdgeId);
-        const NCollection_Vector<BRepGraph_CoEdgeId>& aCanonCoEdges =
-          theGraph.Topo().Edges().CoEdges(aCanonEdgeId);
-        for (int aCEIdx = 0; aCEIdx < aOldCoEdges.Length(); ++aCEIdx)
-        {
-          const BRepGraphInc::CoEdgeDef& aOldCE =
-            theGraph.Topo().CoEdges().Definition(aOldCoEdges.Value(aCEIdx));
-          if (!aOldCE.Curve2DRepId.IsValid())
-            continue;
+        // ReplaceEdge() above rebinds all CoEdgeDef.EdgeDefId entries from anOldEdgeId
+        // to aCanonEdgeId (and updates the reverse CoEdgesOfEdge index), so
+        // theGraph.Topo().Edges().CoEdges(anOldEdgeId) is always empty at this point.
+        // PCurve handles are preserved through the CoEdge rebinding.
 
-          TopAbs_Orientation aTransferOri = aOldCE.Orientation;
-          if (isReversed)
-          {
-            if (aTransferOri == TopAbs_FORWARD)
-              aTransferOri = TopAbs_REVERSED;
-            else if (aTransferOri == TopAbs_REVERSED)
-              aTransferOri = TopAbs_FORWARD;
-          }
-
-          // Check if canonical edge already has a CoEdge for this face+orientation.
-          bool aAlreadyHas = false;
-          for (int aCanonCEIdx = 0; aCanonCEIdx < aCanonCoEdges.Length(); ++aCanonCEIdx)
-          {
-            const BRepGraphInc::CoEdgeDef& aCanonCE =
-              theGraph.Topo().CoEdges().Definition(aCanonCoEdges.Value(aCanonCEIdx));
-            if (aCanonCE.FaceDefId == aOldCE.FaceDefId && aCanonCE.Orientation == aTransferOri)
-            {
-              aAlreadyHas = true;
-              break;
-            }
-          }
-
-          if (!aAlreadyHas)
-          {
-            const occ::handle<Geom2d_Curve>& aOldPCurve =
-              BRepGraph_Tool::CoEdge::PCurve(theGraph, aOldCoEdges.Value(aCEIdx));
-            theGraph.Builder().AddPCurveToEdge(BRepGraph_EdgeId::FromNodeId(aCanonId),
-                                               aOldCE.FaceDefId,
-                                               aOldPCurve,
-                                               aOldCE.ParamFirst,
-                                               aOldCE.ParamLast,
-                                               aTransferOri);
-          }
-        }
-
-        theGraph.Builder().RemoveNode(anOldId, aCanonId);
+        theGraph.Editor().Gen().RemoveNode(anOldId, aCanonId);
 
         NCollection_Vector<BRepGraph_NodeId> aRepl;
         aRepl.Append(aCanonId);
@@ -545,7 +492,7 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
     }
     else
     {
-      aResult.NbMergedEdges = aCanonicalEdge.Size();
+      aResult.NbMergedEdges = aCanonicalEdge.Length();
     }
   }
 
@@ -557,15 +504,16 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
       size_t operator()(const BRepGraph_WireId theWireId, const BRepGraph& theGraph) const
       {
         size_t aHash = 0;
-        forWireCoEdgeRefEntries(theGraph, theWireId, [&](const BRepGraphInc::CoEdgeRef& aCR) {
-          const BRepGraphInc::CoEdgeDef& aCoEdge =
-            theGraph.Topo().CoEdges().Definition(aCR.CoEdgeDefId);
+        for (BRepGraph_RefsCoEdgeOfWire aCEIt(theGraph, theWireId); aCEIt.More(); aCEIt.Next())
+        {
+          const BRepGraphInc::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdges().Definition(
+            theGraph.Refs().CoEdges().Entry(aCEIt.CurrentId()).CoEdgeDefId);
           size_t aEntryHash[2];
           aEntryHash[0] = opencascade::hash(aCoEdge.EdgeDefId);
           aEntryHash[1] = opencascade::hash(static_cast<int>(aCoEdge.Orientation));
           aHash ^= opencascade::hashBytes(aEntryHash, sizeof(aEntryHash)) + 0x9e3779b9
                    + (aHash << 6) + (aHash >> 2);
-        });
+        }
         return aHash;
       }
     };
@@ -573,12 +521,14 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
     auto wiresEqual = [&](const BRepGraph_WireId theA, const BRepGraph_WireId theB) -> bool {
       NCollection_Vector<BRepGraph_CoEdgeId> aWireACoEdges;
       NCollection_Vector<BRepGraph_CoEdgeId> aWireBCoEdges;
-      forWireCoEdgeRefEntries(theGraph, theA, [&](const BRepGraphInc::CoEdgeRef& aCR) {
-        aWireACoEdges.Append(aCR.CoEdgeDefId);
-      });
-      forWireCoEdgeRefEntries(theGraph, theB, [&](const BRepGraphInc::CoEdgeRef& aCR) {
-        aWireBCoEdges.Append(aCR.CoEdgeDefId);
-      });
+      for (BRepGraph_RefsCoEdgeOfWire aCEIt(theGraph, theA); aCEIt.More(); aCEIt.Next())
+      {
+        aWireACoEdges.Append(theGraph.Refs().CoEdges().Entry(aCEIt.CurrentId()).CoEdgeDefId);
+      }
+      for (BRepGraph_RefsCoEdgeOfWire aCEIt(theGraph, theB); aCEIt.More(); aCEIt.Next())
+      {
+        aWireBCoEdges.Append(theGraph.Refs().CoEdges().Entry(aCEIt.CurrentId()).CoEdgeDefId);
+      }
 
       if (aWireACoEdges.Length() != aWireBCoEdges.Length())
         return false;
@@ -595,44 +545,45 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
       return true;
     };
 
-    NCollection_DataMap<size_t, NCollection_Vector<int>> aWireHashBuckets(
+    NCollection_DataMap<size_t, NCollection_Vector<BRepGraph_WireId>> aWireHashBuckets(
       std::max(1, theGraph.Topo().Wires().Nb()),
       aTmpAlloc);
 
     WireHash aHasher;
-    for (int aWireIdx = 0; aWireIdx < theGraph.Topo().Wires().Nb(); ++aWireIdx)
+    for (BRepGraph_FullWireIterator aWireIt(theGraph); aWireIt.More(); aWireIt.Next())
     {
-      const BRepGraphInc::WireDef& aWire =
-        theGraph.Topo().Wires().Definition(BRepGraph_WireId(aWireIdx));
+      const BRepGraph_WireId aWireId = aWireIt.CurrentId();
+      const BRepGraphInc::WireDef& aWire = theGraph.Topo().Wires().Definition(aWireId);
       if (aWire.IsRemoved)
         continue;
-      const size_t aH = aHasher(BRepGraph_WireId(aWireIdx), theGraph);
-      aWireHashBuckets.TryBind(aH, NCollection_Vector<int>());
-      aWireHashBuckets.ChangeFind(aH).Append(aWireIdx);
+      const size_t aH = aHasher(aWireId, theGraph);
+      aWireHashBuckets.TryBind(aH, NCollection_Vector<BRepGraph_WireId>());
+      aWireHashBuckets.ChangeFind(aH).Append(aWireId);
     }
 
-    NCollection_DataMap<int, int> aCanonicalWire(std::max(1, theGraph.Topo().Wires().Nb()),
-                                                 aTmpAlloc);
+    NCollection_DataMap<BRepGraph_WireId, BRepGraph_WireId> aCanonicalWire(
+      std::max(1, theGraph.Topo().Wires().Nb()),
+      aTmpAlloc);
 
-    for (NCollection_DataMap<size_t, NCollection_Vector<int>>::Iterator aBucketIter(
+    for (NCollection_DataMap<size_t, NCollection_Vector<BRepGraph_WireId>>::Iterator aBucketIter(
            aWireHashBuckets);
          aBucketIter.More();
          aBucketIter.Next())
     {
-      const NCollection_Vector<int>& aBucket = aBucketIter.Value();
+      const NCollection_Vector<BRepGraph_WireId>& aBucket = aBucketIter.Value();
       for (int aBaseIdx = 0; aBaseIdx < aBucket.Length(); ++aBaseIdx)
       {
-        const int aBaseWireIdx = aBucket.Value(aBaseIdx);
-        if (aCanonicalWire.IsBound(aBaseWireIdx))
+        const BRepGraph_WireId aBaseWireId = aBucket.Value(aBaseIdx);
+        if (aCanonicalWire.IsBound(aBaseWireId))
           continue;
 
         for (int aCandIdx = aBaseIdx + 1; aCandIdx < aBucket.Length(); ++aCandIdx)
         {
-          const int aCandWireIdx = aBucket.Value(aCandIdx);
-          if (aCanonicalWire.IsBound(aCandWireIdx))
+          const BRepGraph_WireId aCandWireId = aBucket.Value(aCandIdx);
+          if (aCanonicalWire.IsBound(aCandWireId))
             continue;
-          if (wiresEqual(BRepGraph_WireId(aBaseWireIdx), BRepGraph_WireId(aCandWireIdx)))
-            aCanonicalWire.Bind(aCandWireIdx, aBaseWireIdx);
+          if (wiresEqual(aBaseWireId, aCandWireId))
+            aCanonicalWire.Bind(aCandWireId, aBaseWireId);
         }
       }
     }
@@ -640,25 +591,85 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
     if (!theOptions.AnalyzeOnly)
     {
       // Mark non-canonical wires as removed.
-      for (NCollection_DataMap<int, int>::Iterator anIt(aCanonicalWire); anIt.More(); anIt.Next())
+      for (NCollection_DataMap<BRepGraph_WireId, BRepGraph_WireId>::Iterator anIt(aCanonicalWire);
+           anIt.More();
+           anIt.Next())
       {
-        const int              anOldIdx      = anIt.Key();
-        const int              aCanonicalIdx = anIt.Value();
-        const BRepGraph_NodeId anOldId       = BRepGraph_WireId(anOldIdx);
-        const BRepGraph_NodeId aCanonId      = BRepGraph_WireId(aCanonicalIdx);
+        const BRepGraph_WireId anOldWireId = anIt.Key();
+        const BRepGraph_WireId aCanonWireId = anIt.Value();
+        const BRepGraph_NodeId anOldId = anOldWireId;
+        const BRepGraph_NodeId aCanonId = aCanonWireId;
 
-        theGraph.Builder().RemoveNode(anOldId, aCanonId);
+        // Redirect FaceDef.WireRefIds that still point to the old wire.
+        for (BRepGraph_FullFaceIterator aFaceIt(theGraph); aFaceIt.More(); aFaceIt.Next())
+        {
+          const BRepGraph_FaceId aFaceId = aFaceIt.CurrentId();
+          const BRepGraphInc::FaceDef& aFaceDef = theGraph.Topo().Faces().Definition(aFaceId);
+          if (aFaceDef.IsRemoved)
+          {
+            continue;
+          }
 
-        NCollection_Vector<BRepGraph_NodeId> aRepl;
-        aRepl.Append(aCanonId);
-        theGraph.History().Record(TCollection_AsciiString("Dedup:MergeWire"), anOldId, aRepl);
+          for (int aWireRefIdx = 0; aWireRefIdx < aFaceDef.WireRefIds.Length(); ++aWireRefIdx)
+          {
+            const BRepGraph_WireRefId aWireRefId = aFaceDef.WireRefIds.Value(aWireRefIdx);
+            const BRepGraphInc::WireRef& aWireRef = theGraph.Refs().Wires().Entry(aWireRefId);
+            if (!aWireRef.IsRemoved && aWireRef.WireDefId == anOldWireId)
+            {
+              BRepGraph_MutGuard<BRepGraphInc::WireRef> aMutWireRef =
+                theGraph.Editor().Wires().MutRef(aWireRefId);
+              aMutWireRef->WireDefId = aCanonWireId;
+            }
+          }
+        }
+
+        // Redirect ShellDef.AuxChildRefIds and SolidDef.AuxChildRefIds that still
+        // point to the old wire as a non-face child.
+        for (BRepGraph_FullShellIterator aShellIt(theGraph); aShellIt.More(); aShellIt.Next())
+        {
+          const BRepGraph_ShellId aShellId = aShellIt.CurrentId();
+          if (theGraph.Topo().Shells().Definition(aShellId).IsRemoved)
+            continue;
+          for (BRepGraph_RefsChildOfShell aRefIt(theGraph, aShellId); aRefIt.More();
+               aRefIt.Next())
+          {
+            const BRepGraphInc::ChildRef& aCR =
+              theGraph.Refs().Children().Entry(aRefIt.CurrentId());
+            if (!aCR.IsRemoved && aCR.ChildDefId == anOldId)
+            {
+              BRepGraph_MutGuard<BRepGraphInc::ChildRef> aMutCR =
+                theGraph.Editor().Gen().MutChildRef(aRefIt.CurrentId());
+              aMutCR->ChildDefId = aCanonId;
+            }
+          }
+        }
+        for (BRepGraph_FullSolidIterator aSolidIt(theGraph); aSolidIt.More(); aSolidIt.Next())
+        {
+          const BRepGraph_SolidId aSolidId = aSolidIt.CurrentId();
+          if (theGraph.Topo().Solids().Definition(aSolidId).IsRemoved)
+            continue;
+          for (BRepGraph_RefsChildOfSolid aRefIt(theGraph, aSolidId); aRefIt.More();
+               aRefIt.Next())
+          {
+            const BRepGraphInc::ChildRef& aCR =
+              theGraph.Refs().Children().Entry(aRefIt.CurrentId());
+            if (!aCR.IsRemoved && aCR.ChildDefId == anOldId)
+            {
+              BRepGraph_MutGuard<BRepGraphInc::ChildRef> aMutCR =
+                theGraph.Editor().Gen().MutChildRef(aRefIt.CurrentId());
+              aMutCR->ChildDefId = aCanonId;
+            }
+          }
+        }
+
+        theGraph.Editor().Gen().RemoveNode(anOldId, aCanonId);
         ++aResult.NbHistoryRecords;
         ++aResult.NbMergedWires;
       }
     }
     else
     {
-      aResult.NbMergedWires = aCanonicalWire.Size();
+      aResult.NbMergedWires = aCanonicalWire.Length();
     }
   }
 
@@ -688,83 +699,114 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
       bool operator()(const FaceKey& theA, const FaceKey& theB) const { return theA == theB; }
     };
 
-    auto faceWireHash = [&](int theFaceIdx) -> size_t {
-      // Collect wire def ids used by this face (via transitional incidence entries).
+    auto faceWireHash = [&](const BRepGraph_FaceId theFaceId) -> size_t {
+      // Collect wire def ids used by this face via typed iterator.
       size_t aHash = 0;
-      forFaceWireRefEntries(theGraph,
-                            BRepGraph_FaceId(theFaceIdx),
-                            [&](const BRepGraphInc::WireRef& aWR) {
-                              if (aWR.IsOuter)
-                              {
-                                aHash ^= opencascade::hash(aWR.WireDefId);
-                              }
-                              else
-                              {
-                                aHash ^= opencascade::hash(aWR.WireDefId) + 0x9e3779b9;
-                              }
-                            });
+      for (BRepGraph_RefsWireOfFace aWireIt(theGraph, theFaceId); aWireIt.More(); aWireIt.Next())
+      {
+        const BRepGraphInc::WireRef& aWR = theGraph.Refs().Wires().Entry(aWireIt.CurrentId());
+        if (aWR.IsOuter)
+        {
+          aHash ^= opencascade::hash(aWR.WireDefId);
+        }
+        else
+        {
+          aHash ^= opencascade::hash(aWR.WireDefId) + 0x9e3779b9;
+        }
+      }
       return aHash;
     };
 
-    NCollection_DataMap<FaceKey, NCollection_Vector<int>, FaceKeyHasher> aFaceGroups(
+    NCollection_DataMap<FaceKey, NCollection_Vector<BRepGraph_FaceId>, FaceKeyHasher> aFaceGroups(
       std::max(1, theGraph.Topo().Faces().Nb()),
       aTmpAlloc);
 
-    for (int aFaceIdx = 0; aFaceIdx < theGraph.Topo().Faces().Nb(); ++aFaceIdx)
+    for (BRepGraph_FullFaceIterator aFaceIt(theGraph); aFaceIt.More(); aFaceIt.Next())
     {
-      const BRepGraph_FaceId       aFaceId(aFaceIdx);
+      const BRepGraph_FaceId aFaceId = aFaceIt.CurrentId();
       const BRepGraphInc::FaceDef& aFace = theGraph.Topo().Faces().Definition(aFaceId);
       if (aFace.IsRemoved || !BRepGraph_Tool::Face::HasSurface(theGraph, aFaceId))
         continue;
 
       FaceKey aKey;
       aKey.SurfPtr  = BRepGraph_Tool::Face::Surface(theGraph, aFaceId).get();
-      aKey.WireHash = faceWireHash(aFaceIdx);
+      aKey.WireHash = faceWireHash(aFaceId);
 
-      aFaceGroups.TryBind(aKey, NCollection_Vector<int>());
-      aFaceGroups.ChangeFind(aKey).Append(aFaceIdx);
+      aFaceGroups.TryBind(aKey, NCollection_Vector<BRepGraph_FaceId>());
+      aFaceGroups.ChangeFind(aKey).Append(aFaceId);
     }
 
-    NCollection_DataMap<int, int> aCanonicalFace(std::max(1, theGraph.Topo().Faces().Nb()),
-                                                 aTmpAlloc);
+    NCollection_DataMap<BRepGraph_FaceId, BRepGraph_FaceId> aCanonicalFace(
+      std::max(1, theGraph.Topo().Faces().Nb()),
+      aTmpAlloc);
 
-    for (NCollection_DataMap<FaceKey, NCollection_Vector<int>, FaceKeyHasher>::Iterator aGroupIter(
-           aFaceGroups);
+    for (NCollection_DataMap<FaceKey,
+                             NCollection_Vector<BRepGraph_FaceId>,
+                             FaceKeyHasher>::Iterator aGroupIter(aFaceGroups);
          aGroupIter.More();
          aGroupIter.Next())
     {
-      const NCollection_Vector<int>& aGroup = aGroupIter.Value();
+      const NCollection_Vector<BRepGraph_FaceId>& aGroup = aGroupIter.Value();
       if (aGroup.Length() < 2)
         continue;
 
-      const int                    aCanonIdx = aGroup.Value(0);
-      const BRepGraphInc::FaceDef& aCanonFace =
-        theGraph.Topo().Faces().Definition(BRepGraph_FaceId(aCanonIdx));
+      const BRepGraph_FaceId       aCanonFaceId = aGroup.Value(0);
+      const BRepGraphInc::FaceDef& aCanonFace = theGraph.Topo().Faces().Definition(aCanonFaceId);
 
       for (int aCandIter = 1; aCandIter < aGroup.Length(); ++aCandIter)
       {
-        const int                    aCandIdx = aGroup.Value(aCandIter);
-        const BRepGraphInc::FaceDef& aCandFace =
-          theGraph.Topo().Faces().Definition(BRepGraph_FaceId(aCandIdx));
+        const BRepGraph_FaceId       aCandFaceId = aGroup.Value(aCandIter);
+        const BRepGraphInc::FaceDef& aCandFace = theGraph.Topo().Faces().Definition(aCandFaceId);
 
         // Check tolerance compatibility.
         if (aCandFace.Tolerance > aCanonFace.Tolerance * 10.0)
           continue;
 
-        aCanonicalFace.Bind(aCandIdx, aCanonIdx);
+        aCanonicalFace.Bind(aCandFaceId, aCanonFaceId);
       }
     }
 
     if (!theOptions.AnalyzeOnly)
     {
-      for (NCollection_DataMap<int, int>::Iterator anIt(aCanonicalFace); anIt.More(); anIt.Next())
+      for (NCollection_DataMap<BRepGraph_FaceId, BRepGraph_FaceId>::Iterator anIt(aCanonicalFace);
+           anIt.More();
+           anIt.Next())
       {
-        const int              anOldIdx      = anIt.Key();
-        const int              aCanonicalIdx = anIt.Value();
-        const BRepGraph_NodeId anOldId       = BRepGraph_FaceId(anOldIdx);
-        const BRepGraph_NodeId aCanonId      = BRepGraph_FaceId(aCanonicalIdx);
+        const BRepGraph_FaceId anOldFaceId = anIt.Key();
+        const BRepGraph_FaceId aCanonFaceId = anIt.Value();
+        const BRepGraph_NodeId anOldId = anOldFaceId;
+        const BRepGraph_NodeId aCanonId = aCanonFaceId;
 
-        theGraph.Builder().RemoveNode(anOldId, aCanonId);
+        // Redirect Shell face refs that point to the old face.
+        for (BRepGraph_FullFaceRefIterator aFaceRefIt(theGraph); aFaceRefIt.More();
+          aFaceRefIt.Next())
+        {
+          const BRepGraph_FaceRefId aFaceRefId = aFaceRefIt.CurrentId();
+          const BRepGraphInc::FaceRef& aFaceRef = theGraph.Refs().Faces().Entry(aFaceRefId);
+          if (!aFaceRef.IsRemoved && aFaceRef.FaceDefId == anOldFaceId)
+          {
+            BRepGraph_MutGuard<BRepGraphInc::FaceRef> aMutFaceRef =
+              theGraph.Editor().Faces().MutRef(aFaceRefId);
+            aMutFaceRef->FaceDefId = aCanonFaceId;
+          }
+        }
+
+        // Redirect CoEdgeDef.FaceDefId entries that point to the old face to the canonical one.
+        // This must happen before RemoveNode, otherwise compact will produce dangling FaceDefId
+        // refs (CoEdges with invalid FaceDefId but live Curve2DRepId — orphaned PCurve state).
+        for (BRepGraph_FullCoEdgeIterator aCEIt(theGraph); aCEIt.More(); aCEIt.Next())
+        {
+          const BRepGraph_CoEdgeId aCEId = aCEIt.CurrentId();
+          if (theGraph.Topo().CoEdges().Definition(aCEId).IsRemoved)
+            continue;
+          if (theGraph.Topo().CoEdges().Definition(aCEId).FaceDefId == anOldFaceId)
+          {
+            BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef> aMutCE = theGraph.Editor().CoEdges().Mut(aCEId);
+            aMutCE->FaceDefId = aCanonFaceId;
+          }
+        }
+
+        theGraph.Editor().Gen().RemoveNode(anOldId, aCanonId);
 
         NCollection_Vector<BRepGraph_NodeId> aRepl;
         aRepl.Append(aCanonId);
@@ -775,7 +817,7 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
     }
     else
     {
-      aResult.NbMergedFaces = aCanonicalFace.Size();
+      aResult.NbMergedFaces = aCanonicalFace.Length();
     }
   }
 

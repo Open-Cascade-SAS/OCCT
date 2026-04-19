@@ -12,12 +12,13 @@
 // commercial license or contractual agreement.
 
 #include <BRepGraph.hxx>
-#include <BRepGraph_BuilderView.hxx>
+#include <BRepGraph_EditorView.hxx>
 #include <BRepGraph_Layer.hxx>
 #include <BRepGraph_LayerIterator.hxx>
 #include <BRepGraph_DeferredScope.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_Compact.hxx>
+#include <BRepGraph_Builder.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <Precision.hxx>
 #include <Standard_GUID.hxx>
@@ -204,7 +205,7 @@ protected:
   {
     BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
     const TopoDS_Shape& aBox = aBoxMaker.Shape();
-    myGraph.Build(aBox);
+    BRepGraph_Builder::Perform(myGraph, aBox);
     ASSERT_TRUE(myGraph.IsDone());
   }
 
@@ -215,10 +216,10 @@ TEST_F(BRepGraph_EventBusTest, ZeroCost_NoSubscribers)
 {
   // Mutate edge without any subscribing layer - verify no crash.
   {
-    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut = myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
+    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut = myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start());
     aMut->Tolerance                                = 0.5;
   }
-  EXPECT_GT(myGraph.Topo().Edges().Definition(BRepGraph_EdgeId(0)).OwnGen, 0u);
+  EXPECT_GT(myGraph.Topo().Edges().Definition(BRepGraph_EdgeId::Start()).OwnGen, 0u);
 }
 
 TEST_F(BRepGraph_EventBusTest, ImmediateMode_SingleEdge)
@@ -233,12 +234,12 @@ TEST_F(BRepGraph_EventBusTest, ImmediateMode_SingleEdge)
   myGraph.LayerRegistry().RegisterLayer(aLayer);
 
   {
-    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut = myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
+    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut = myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start());
     aMut->Tolerance                                = 0.5;
   }
 
   // Edge(0) should have an immediate event.
-  EXPECT_TRUE(aLayer->HasImmediateEventFor(BRepGraph_EdgeId(0)));
+  EXPECT_TRUE(aLayer->HasImmediateEventFor(BRepGraph_EdgeId::Start()));
   // At least one event total (edge + propagated parents).
   EXPECT_GT(aLayer->myImmediateEvents.Length(), 0);
 }
@@ -255,7 +256,7 @@ TEST_F(BRepGraph_EventBusTest, ImmediateMode_UpwardPropagation)
   myGraph.LayerRegistry().RegisterLayer(aLayer);
 
   {
-    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut = myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
+    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut = myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start());
     aMut->Tolerance                                = 0.5;
   }
 
@@ -267,8 +268,8 @@ TEST_F(BRepGraph_EventBusTest, ImmediateMode_UpwardPropagation)
   EXPECT_EQ(aLayer->CountImmediateEventsOfKind(BRepGraph_NodeId::Kind::Shell), 0);
   EXPECT_EQ(aLayer->CountImmediateEventsOfKind(BRepGraph_NodeId::Kind::Solid), 0);
   // Verify SubtreeGen was propagated upward despite no dispatch.
-  EXPECT_GT(myGraph.Topo().Wires().Definition(BRepGraph_WireId(0)).SubtreeGen, 0u);
-  EXPECT_GT(myGraph.Topo().Faces().Definition(BRepGraph_FaceId(0)).SubtreeGen, 0u);
+  EXPECT_GT(myGraph.Topo().Wires().Definition(BRepGraph_WireId::Start()).SubtreeGen, 0u);
+  EXPECT_GT(myGraph.Topo().Faces().Definition(BRepGraph_FaceId::Start()).SubtreeGen, 0u);
 }
 
 TEST_F(BRepGraph_EventBusTest, ImmediateMode_KindFilter)
@@ -280,7 +281,7 @@ TEST_F(BRepGraph_EventBusTest, ImmediateMode_KindFilter)
   myGraph.LayerRegistry().RegisterLayer(aLayer);
 
   {
-    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut = myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
+    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut = myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start());
     aMut->Tolerance                                = 0.5;
   }
 
@@ -289,7 +290,7 @@ TEST_F(BRepGraph_EventBusTest, ImmediateMode_KindFilter)
   EXPECT_EQ(aLayer->CountImmediateEventsOfKind(BRepGraph_NodeId::Kind::Edge), 0);
   EXPECT_EQ(aLayer->CountImmediateEventsOfKind(BRepGraph_NodeId::Kind::Face), 0);
   // But SubtreeGen was propagated.
-  EXPECT_GT(myGraph.Topo().Faces().Definition(BRepGraph_FaceId(0)).SubtreeGen, 0u);
+  EXPECT_GT(myGraph.Topo().Faces().Definition(BRepGraph_FaceId::Start()).SubtreeGen, 0u);
 }
 
 TEST_F(BRepGraph_EventBusTest, DeferredMode_BatchDispatch)
@@ -303,17 +304,17 @@ TEST_F(BRepGraph_EventBusTest, DeferredMode_BatchDispatch)
     new BRepGraph_ModTrackingLayer("Tracker", aAllKinds);
   myGraph.LayerRegistry().RegisterLayer(aLayer);
 
-  myGraph.Builder().BeginDeferredInvalidation();
-  myGraph.Builder().MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
-  myGraph.Builder().MutEdge(BRepGraph_EdgeId(1))->Tolerance = 0.6;
-  myGraph.Builder().MutEdge(BRepGraph_EdgeId(2))->Tolerance = 0.7;
-  myGraph.Builder().EndDeferredInvalidation();
+  myGraph.Editor().BeginDeferredInvalidation();
+  myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start())->Tolerance = 0.5;
+  myGraph.Editor().Edges().Mut(BRepGraph_EdgeId(1))->Tolerance = 0.6;
+  myGraph.Editor().Edges().Mut(BRepGraph_EdgeId(2))->Tolerance = 0.7;
+  myGraph.Editor().EndDeferredInvalidation();
 
   // OnNodesModified called exactly once.
   EXPECT_EQ(aLayer->myBatchCallCount, 1);
   // Batch contains at least the 3 edges + propagated parents.
   EXPECT_GE(aLayer->myBatchEvents.Length(), 3);
-  EXPECT_TRUE(aLayer->HasBatchEventFor(BRepGraph_EdgeId(0)));
+  EXPECT_TRUE(aLayer->HasBatchEventFor(BRepGraph_EdgeId::Start()));
   EXPECT_TRUE(aLayer->HasBatchEventFor(BRepGraph_EdgeId(1)));
   EXPECT_TRUE(aLayer->HasBatchEventFor(BRepGraph_EdgeId(2)));
 }
@@ -325,13 +326,13 @@ TEST_F(BRepGraph_EventBusTest, DeferredMode_NoImmediateDispatch)
     new BRepGraph_ModTrackingLayer("Tracker", aEdgeBit);
   myGraph.LayerRegistry().RegisterLayer(aLayer);
 
-  myGraph.Builder().BeginDeferredInvalidation();
-  myGraph.Builder().MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
+  myGraph.Editor().BeginDeferredInvalidation();
+  myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start())->Tolerance = 0.5;
 
   // During deferred mode: OnNodeModified must NOT be called.
   EXPECT_EQ(aLayer->myImmediateEvents.Length(), 0);
 
-  myGraph.Builder().EndDeferredInvalidation();
+  myGraph.Editor().EndDeferredInvalidation();
 
   // Immediate events still empty - only batch was dispatched.
   EXPECT_EQ(aLayer->myImmediateEvents.Length(), 0);
@@ -347,7 +348,7 @@ TEST_F(BRepGraph_EventBusTest, UnregisterLayer_FlagUpdate)
 
   // Mutate - should dispatch.
   {
-    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut = myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
+    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut = myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start());
     aMut->Tolerance                                = 0.5;
   }
   EXPECT_GT(aLayer->myImmediateEvents.Length(), 0);
@@ -358,7 +359,7 @@ TEST_F(BRepGraph_EventBusTest, UnregisterLayer_FlagUpdate)
 
   // Mutate again - should NOT dispatch (layer unregistered).
   {
-    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut = myGraph.Builder().MutEdge(BRepGraph_EdgeId(1));
+    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut = myGraph.Editor().Edges().Mut(BRepGraph_EdgeId(1));
     aMut->Tolerance                                = 0.6;
   }
   EXPECT_EQ(aLayer->myImmediateEvents.Length(), 0);
@@ -381,9 +382,9 @@ TEST_F(BRepGraph_EventBusTest, OnNodeRemoved_DispatchesReplacement)
   occ::handle<BRepGraph_ModTrackingLayer> aLayer = new BRepGraph_ModTrackingLayer("Tracker", 0);
   myGraph.LayerRegistry().RegisterLayer(aLayer);
 
-  const BRepGraph_NodeId anOldEdge = BRepGraph_EdgeId(0);
+  const BRepGraph_NodeId anOldEdge = BRepGraph_EdgeId::Start();
   const BRepGraph_NodeId aNewEdge  = BRepGraph_EdgeId(1);
-  myGraph.Builder().RemoveNode(anOldEdge, aNewEdge);
+  myGraph.Editor().Gen().RemoveNode(anOldEdge, aNewEdge);
 
   EXPECT_EQ(aLayer->myRemoveCallCount, 1);
   EXPECT_EQ(aLayer->myLastRemovedNode, anOldEdge);
@@ -395,8 +396,8 @@ TEST_F(BRepGraph_EventBusTest, OnNodeRemoved_DispatchesInvalidReplacementForPure
   occ::handle<BRepGraph_ModTrackingLayer> aLayer = new BRepGraph_ModTrackingLayer("Tracker", 0);
   myGraph.LayerRegistry().RegisterLayer(aLayer);
 
-  const BRepGraph_NodeId aFaceId = BRepGraph_FaceId(0);
-  myGraph.Builder().RemoveNode(aFaceId);
+  const BRepGraph_NodeId aFaceId = BRepGraph_FaceId::Start();
+  myGraph.Editor().Gen().RemoveNode(aFaceId);
 
   EXPECT_EQ(aLayer->myRemoveCallCount, 1);
   EXPECT_EQ(aLayer->myLastRemovedNode, aFaceId);
@@ -408,7 +409,7 @@ TEST_F(BRepGraph_EventBusTest, OnCompact_DispatchesRemapToRegisteredLayers)
   occ::handle<BRepGraph_ModTrackingLayer> aLayer = new BRepGraph_ModTrackingLayer("Tracker", 0);
   myGraph.LayerRegistry().RegisterLayer(aLayer);
 
-  myGraph.Builder().RemoveNode(BRepGraph_FaceId(0));
+  myGraph.Editor().Gen().RemoveNode(BRepGraph_FaceId::Start());
   const int aNbFacesBefore = myGraph.Topo().Faces().Nb();
 
   const BRepGraph_Compact::Result aResult = BRepGraph_Compact::Perform(myGraph);
@@ -421,7 +422,7 @@ TEST_F(BRepGraph_EventBusTest, OnCompact_DispatchesRemapToRegisteredLayers)
   ASSERT_NE(aNewFaceId, nullptr);
   EXPECT_EQ(aNewFaceId->NodeKind, BRepGraph_NodeId::Kind::Face);
   EXPECT_EQ(aNewFaceId->Index, 0);
-  EXPECT_EQ(aLayer->myLastRemapMap.Seek(BRepGraph_FaceId(0)), nullptr);
+  EXPECT_EQ(aLayer->myLastRemapMap.Seek(BRepGraph_FaceId::Start()), nullptr);
 }
 
 TEST_F(BRepGraph_EventBusTest, MultipleSubscribers)
@@ -438,7 +439,7 @@ TEST_F(BRepGraph_EventBusTest, MultipleSubscribers)
   myGraph.LayerRegistry().RegisterLayer(aFaceLayer);
 
   {
-    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut = myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
+    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut = myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start());
     aMut->Tolerance                                = 0.5;
   }
 
@@ -462,10 +463,10 @@ TEST_F(BRepGraph_EventBusTest, DefaultSubscribedKinds_Zero)
   // Mutate - a layer with default SubscribedKinds() should not receive modification events.
   // This just verifies the default no-subscription path remains a no-op.
   {
-    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut = myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
+    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut = myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start());
     aMut->Tolerance                                = 0.5;
   }
-  EXPECT_GT(myGraph.Topo().Edges().Definition(BRepGraph_EdgeId(0)).OwnGen, 0u);
+  EXPECT_GT(myGraph.Topo().Edges().Definition(BRepGraph_EdgeId::Start()).OwnGen, 0u);
 }
 
 TEST_F(BRepGraph_EventBusTest, DeferredScope_DispatchesOnDestruction)
@@ -477,7 +478,7 @@ TEST_F(BRepGraph_EventBusTest, DeferredScope_DispatchesOnDestruction)
 
   {
     BRepGraph_DeferredScope aScope(myGraph);
-    myGraph.Builder().MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
+    myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start())->Tolerance = 0.5;
 
     // During guard scope: no batch dispatch yet.
     EXPECT_EQ(aLayer->myBatchCallCount, 0);
@@ -485,7 +486,7 @@ TEST_F(BRepGraph_EventBusTest, DeferredScope_DispatchesOnDestruction)
 
   // After guard destruction: batch dispatched.
   EXPECT_EQ(aLayer->myBatchCallCount, 1);
-  EXPECT_TRUE(aLayer->HasBatchEventFor(BRepGraph_EdgeId(0)));
+  EXPECT_TRUE(aLayer->HasBatchEventFor(BRepGraph_EdgeId::Start()));
 }
 
 TEST_F(BRepGraph_EventBusTest, DeferredMode_NoModifications_NoDispatch)
@@ -495,9 +496,9 @@ TEST_F(BRepGraph_EventBusTest, DeferredMode_NoModifications_NoDispatch)
     new BRepGraph_ModTrackingLayer("Tracker", aEdgeBit);
   myGraph.LayerRegistry().RegisterLayer(aLayer);
 
-  myGraph.Builder().BeginDeferredInvalidation();
+  myGraph.Editor().BeginDeferredInvalidation();
   // No mutations.
-  myGraph.Builder().EndDeferredInvalidation();
+  myGraph.Editor().EndDeferredInvalidation();
 
   EXPECT_EQ(aLayer->myBatchCallCount, 0);
   EXPECT_EQ(aLayer->myBatchEvents.Length(), 0);
@@ -566,7 +567,7 @@ TEST_F(BRepGraph_EventBusTest, OnRefRemoved_DispatchedToAllLayers)
 
   // A box has FaceRef entries in its shell. Remove one.
   const BRepGraph_FaceRefId aFaceRef(0);
-  ASSERT_TRUE(myGraph.Builder().RemoveRef(aFaceRef));
+  ASSERT_TRUE(myGraph.Editor().Gen().RemoveRef(aFaceRef));
 
   // OnRefRemoved must be dispatched regardless of SubscribedRefKinds.
   EXPECT_EQ(aLayer->myRefRemoveCallCount, 1);
@@ -579,8 +580,8 @@ TEST_F(BRepGraph_EventBusTest, OnRefRemoved_MultipleRefs)
   occ::handle<BRepGraph_ModTrackingLayer> aLayer = new BRepGraph_ModTrackingLayer("Tracker", 0);
   myGraph.LayerRegistry().RegisterLayer(aLayer);
 
-  ASSERT_TRUE(myGraph.Builder().RemoveRef(BRepGraph_FaceRefId(0)));
-  ASSERT_TRUE(myGraph.Builder().RemoveRef(BRepGraph_FaceRefId(1)));
+  ASSERT_TRUE(myGraph.Editor().Gen().RemoveRef(BRepGraph_FaceRefId::Start()));
+  ASSERT_TRUE(myGraph.Editor().Gen().RemoveRef(BRepGraph_FaceRefId(1)));
 
   EXPECT_EQ(aLayer->myRefRemoveCallCount, 2);
   EXPECT_EQ(aLayer->myRefRemovedEvents.Length(), 2);
@@ -591,11 +592,11 @@ TEST_F(BRepGraph_EventBusTest, OnRefRemoved_AlreadyRemoved_NotDispatched)
   occ::handle<BRepGraph_ModTrackingLayer> aLayer = new BRepGraph_ModTrackingLayer("Tracker", 0);
   myGraph.LayerRegistry().RegisterLayer(aLayer);
 
-  ASSERT_TRUE(myGraph.Builder().RemoveRef(BRepGraph_FaceRefId(0)));
+  ASSERT_TRUE(myGraph.Editor().Gen().RemoveRef(BRepGraph_FaceRefId::Start()));
   EXPECT_EQ(aLayer->myRefRemoveCallCount, 1);
 
   // Second removal returns false and must NOT dispatch again.
-  EXPECT_FALSE(myGraph.Builder().RemoveRef(BRepGraph_FaceRefId(0)));
+  EXPECT_FALSE(myGraph.Editor().Gen().RemoveRef(BRepGraph_FaceRefId::Start()));
   EXPECT_EQ(aLayer->myRefRemoveCallCount, 1);
 }
 
@@ -609,7 +610,7 @@ TEST_F(BRepGraph_EventBusTest, OverlappingSubscription_EdgeAndFace)
   myGraph.LayerRegistry().RegisterLayer(aLayer);
 
   {
-    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut = myGraph.Builder().MutEdge(BRepGraph_EdgeId(0));
+    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut = myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start());
     aMut->Tolerance                                = 0.5;
   }
 

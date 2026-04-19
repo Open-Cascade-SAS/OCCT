@@ -221,9 +221,9 @@ void StdPrs_WFSurface::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
 
   int nbVertices = 0, nbBounds = 0;
   // Draw surface via primitive array
-  if (UIsoCurves.Size() > 0)
+  if (UIsoCurves.Length() > 0)
   {
-    nbBounds = UIsoCurves.Size();
+    nbBounds = UIsoCurves.Length();
     NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>::Iterator It;
     for (It.Init(UIsoCurves); It.More(); It.Next())
       nbVertices += It.Value()->Length();
@@ -241,9 +241,9 @@ void StdPrs_WFSurface::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
     TheGroup->AddPrimitiveArray(UIsoArray);
   }
 
-  if (VIsoCurves.Size() > 0)
+  if (VIsoCurves.Length() > 0)
   {
-    nbBounds = VIsoCurves.Size();
+    nbBounds = VIsoCurves.Length();
     NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>::Iterator It;
     for (It.Init(VIsoCurves); It.More(); It.Next())
       nbVertices += It.Value()->Length();
@@ -260,9 +260,9 @@ void StdPrs_WFSurface::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
     TheGroup->SetPrimitivesAspect(aDrawer->VIsoAspect()->Aspect());
     TheGroup->AddPrimitiveArray(VIsoArray);
   }
-  if (freeCurves.Size() > 0)
+  if (freeCurves.Length() > 0)
   {
-    nbBounds = freeCurves.Size();
+    nbBounds = freeCurves.Length();
     NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>::Iterator It;
     for (It.Init(freeCurves); It.More(); It.Next())
       nbVertices += It.Value()->Length();

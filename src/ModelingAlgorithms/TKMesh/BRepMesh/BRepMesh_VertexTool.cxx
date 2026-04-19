@@ -110,10 +110,3 @@ void BRepMesh_VertexTool::Substitute(const int theIndex, const BRepMesh_Vertex& 
   myCellFilter.Add(theIndex, aMinPnt, aMaxPnt);
 }
 
-//=================================================================================================
-
-void BRepMesh_VertexTool::Statistics(Standard_OStream& theStream) const
-{
-  theStream << "\nStructure Statistics\n---------------\n\n";
-  theStream << "This structure has " << mySelector.NbVertices() << " Nodes\n\n";
-}

@@ -36,7 +36,7 @@ public:
   //! Pushes current matrix into stack.
   void Push()
   {
-    if (++myStackHead >= myStack.Size())
+    if (++myStackHead >= myStack.Length())
     {
       myStack.Append(myCurrent);
     }
@@ -101,7 +101,7 @@ public:
                                      myCurrent.GetValue(3, 2),
                                      myCurrent.GetValue(3, 3))
 
-    OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myStack.Size())
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myStack.Length())
     OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myStackHead)
   }
 

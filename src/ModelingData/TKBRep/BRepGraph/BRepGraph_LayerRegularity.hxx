@@ -11,8 +11,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _BRepGraph_RegularityLayer_HeaderFile
-#define _BRepGraph_RegularityLayer_HeaderFile
+#ifndef _BRepGraph_LayerRegularity_HeaderFile
+#define _BRepGraph_LayerRegularity_HeaderFile
 
 #include <BRepGraph_Layer.hxx>
 
@@ -21,7 +21,7 @@
 #include <NCollection_Vector.hxx>
 
 //! @brief Stores edge continuity records between adjacent face pairs.
-class BRepGraph_RegularityLayer : public BRepGraph_Layer
+class BRepGraph_LayerRegularity : public BRepGraph_Layer
 {
 public:
   //! Return fixed layer type GUID.
@@ -74,7 +74,7 @@ public:
   Standard_EXPORT void InvalidateAll() noexcept override;
   Standard_EXPORT void Clear() noexcept override;
 
-  DEFINE_STANDARD_RTTIEXT(BRepGraph_RegularityLayer, BRepGraph_Layer)
+  DEFINE_STANDARD_RTTIEXT(BRepGraph_LayerRegularity, BRepGraph_Layer)
 
 private:
   void normalizeFacePair(BRepGraph_FaceId& theFace1, BRepGraph_FaceId& theFace2) const noexcept;
@@ -96,4 +96,4 @@ private:
   NCollection_DataMap<BRepGraph_FaceId, NCollection_Vector<BRepGraph_EdgeId>> myFaceToEdges;
 };
 
-#endif // _BRepGraph_RegularityLayer_HeaderFile
+#endif // _BRepGraph_LayerRegularity_HeaderFile

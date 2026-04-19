@@ -58,7 +58,7 @@ const BRepGraph_RefTransientCache::CacheSlot* BRepGraph_RefTransientCache::seekS
                        "BRepGraph_RefTransientCache: RefKind out of range");
   const NCollection_Vector<CacheSlot>& aVec =
     myKinds.Value(theKindSlot).myRefKinds[aRefKindIdx].mySlots;
-  if (theRef.Index >= aVec.Length())
+  if (!theRef.IsValidIn(aVec))
   {
     return nullptr;
   }

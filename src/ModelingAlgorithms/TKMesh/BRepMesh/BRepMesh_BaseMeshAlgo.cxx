@@ -137,9 +137,9 @@ int BRepMesh_BaseMeshAlgo::registerNode(const gp_Pnt&                  thePoint,
                                         const bool                     isForceAdd)
 {
   const int aNodeIndex =
-    addNodeToStructure(thePoint2d, myNodesMap->Size(), theMovability, isForceAdd);
+    addNodeToStructure(thePoint2d, myNodesMap->Length(), theMovability, isForceAdd);
 
-  if (aNodeIndex > myNodesMap->Size())
+  if (aNodeIndex > myNodesMap->Length())
   {
     myNodesMap->Append(thePoint);
   }
@@ -249,7 +249,7 @@ occ::handle<Poly_Triangulation> BRepMesh_BaseMeshAlgo::collectTriangles()
     {
       if (!myUsedNodes->IsBound(aNode[i]))
       {
-        myUsedNodes->Bind(aNode[i], myUsedNodes->Size() + 1);
+        myUsedNodes->Bind(aNode[i], myUsedNodes->Length() + 1);
       }
 
       aNode[i] = myUsedNodes->Find(aNode[i]);
@@ -266,7 +266,7 @@ occ::handle<Poly_Triangulation> BRepMesh_BaseMeshAlgo::collectTriangles()
 
 void BRepMesh_BaseMeshAlgo::collectNodes(const occ::handle<Poly_Triangulation>& theTriangulation)
 {
-  for (int i = 1; i <= myNodesMap->Size(); ++i)
+  for (int i = 1; i <= myNodesMap->Length(); ++i)
   {
     if (myUsedNodes->IsBound(i))
     {

@@ -199,9 +199,17 @@ public:
 
   //! Constructor
   explicit NCollection_IndexedMap(
-    const int                                     theNbBuckets,
+    const size_t                                  theNbBuckets,
     const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
       : NCollection_BaseMap(theNbBuckets, true, theAllocator)
+  {
+  }
+
+  //! Constructor (legacy int-taking).
+  explicit NCollection_IndexedMap(
+    const int                                     theNbBuckets,
+    const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
+      : NCollection_IndexedMap(NCollection_BaseMap::NbBucketsFromInt(theNbBuckets), theAllocator)
   {
   }
 
@@ -211,10 +219,21 @@ public:
   //! @param theAllocator custom memory allocator
   explicit NCollection_IndexedMap(
     const Hasher&                                 theHasher,
-    const int                                     theNbBuckets = 1,
+    const size_t                                  theNbBuckets = 1,
     const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
       : NCollection_BaseMap(theNbBuckets, true, theAllocator),
         myHasher(theHasher)
+  {
+  }
+
+  //! Constructor with custom hasher (copy, legacy int-taking).
+  explicit NCollection_IndexedMap(
+    const Hasher&                                 theHasher,
+    const int                                     theNbBuckets,
+    const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
+      : NCollection_IndexedMap(theHasher,
+                               NCollection_BaseMap::NbBucketsFromInt(theNbBuckets),
+                               theAllocator)
   {
   }
 
@@ -224,10 +243,21 @@ public:
   //! @param theAllocator custom memory allocator
   explicit NCollection_IndexedMap(
     Hasher&&                                      theHasher,
-    const int                                     theNbBuckets = 1,
+    const size_t                                  theNbBuckets = 1,
     const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
       : NCollection_BaseMap(theNbBuckets, true, theAllocator),
         myHasher(std::move(theHasher))
+  {
+  }
+
+  //! Constructor with custom hasher (move, legacy int-taking).
+  explicit NCollection_IndexedMap(
+    Hasher&&                                      theHasher,
+    const int                                     theNbBuckets,
+    const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
+      : NCollection_IndexedMap(std::move(theHasher),
+                               NCollection_BaseMap::NbBucketsFromInt(theNbBuckets),
+                               theAllocator)
   {
   }
 
@@ -299,16 +329,16 @@ public:
   }
 
   //! ReSize
-  void ReSize(const int theExtent)
+  void ReSize(const size_t theExtent)
   {
     NCollection_ListNode** ppNewData1 = nullptr;
     NCollection_ListNode** ppNewData2 = nullptr;
-    int                    newBuck;
+    size_t                 newBuck;
     if (BeginResize(theExtent, newBuck, ppNewData1, ppNewData2))
     {
       if (myData1)
       {
-        for (int aBucketIter = 0; aBucketIter <= NbBuckets(); ++aBucketIter)
+        for (size_t aBucketIter = 0; aBucketIter <= NbBuckets(); ++aBucketIter)
         {
           if (myData1[aBucketIter])
           {
@@ -330,6 +360,11 @@ public:
                 (NCollection_ListNode**)
                   Standard::Reallocate(myData2, (newBuck + 1) * sizeof(NCollection_ListNode*)));
     }
+  }
+
+  void ReSize(const int theExtent)
+  {
+    ReSize(static_cast<size_t>(theExtent < 0 ? 0 : theExtent));
   }
 
   //! Add adds a new key to the map.
@@ -411,9 +446,9 @@ public:
   }
 
   //! Substitute
-  void Substitute(const int theIndex, const TheKeyType& theKey1)
+  void Substitute(const size_t theIndex, const TheKeyType& theKey1)
   {
-    Standard_OutOfRange_Raise_if(theIndex < 1 || theIndex > Extent(),
+    Standard_OutOfRange_Raise_if(theIndex == 0 || theIndex > Size(),
                                  "NCollection_IndexedMap::Substitute : "
                                  "Index is out of range");
 
@@ -422,7 +457,7 @@ public:
     size_t          aHash;
     if (lookup(theKey1, aNode, aHash))
     {
-      if (aNode->Index() != theIndex)
+      if (static_cast<size_t>(aNode->Index()) != theIndex)
       {
         throw Standard_DomainError("NCollection_IndexedMap::Substitute : "
                                    "Attempt to substitute existing key");
@@ -451,11 +486,18 @@ public:
     myData1[aHash] = aNode;
   }
 
-  //! Swaps two elements with the given indices.
-  void Swap(const int theIndex1, const int theIndex2)
+  void Substitute(const int theIndex, const TheKeyType& theKey1)
   {
-    Standard_OutOfRange_Raise_if(theIndex1 < 1 || theIndex1 > Extent() || theIndex2 < 1
-                                   || theIndex2 > Extent(),
+    Standard_OutOfRange_Raise_if(theIndex < 0,
+                                 "NCollection_IndexedMap::Substitute: negative index");
+    Substitute(static_cast<size_t>(theIndex), theKey1);
+  }
+
+  //! Swaps two elements with the given indices.
+  void Swap(const size_t theIndex1, const size_t theIndex2)
+  {
+    Standard_OutOfRange_Raise_if(theIndex1 == 0 || theIndex1 > Size() || theIndex2 == 0
+                                   || theIndex2 > Size(),
                                  "NCollection_IndexedMap::Swap");
 
     if (theIndex1 == theIndex2)
@@ -470,10 +512,17 @@ public:
     myData2[theIndex1 - 1] = aP2;
   }
 
+  void Swap(const int theIndex1, const int theIndex2)
+  {
+    Standard_OutOfRange_Raise_if(theIndex1 < 0 || theIndex2 < 0,
+                                 "NCollection_IndexedMap::Swap: negative index");
+    Swap(static_cast<size_t>(theIndex1), static_cast<size_t>(theIndex2));
+  }
+
   //! RemoveLast
   void RemoveLast()
   {
-    const int aLastIndex = Extent();
+    const size_t aLastIndex = Size();
     Standard_OutOfRange_Raise_if(aLastIndex == 0, "NCollection_IndexedMap::RemoveLast");
 
     // Find the node for the last index and remove it
@@ -498,16 +547,23 @@ public:
 
   //! Remove the key of the given index.
   //! Caution! The index of the last key can be changed.
-  void RemoveFromIndex(const int theIndex)
+  void RemoveFromIndex(const size_t theIndex)
   {
-    Standard_OutOfRange_Raise_if(theIndex < 1 || theIndex > Extent(),
+    Standard_OutOfRange_Raise_if(theIndex == 0 || theIndex > Size(),
                                  "NCollection_IndexedMap::RemoveFromIndex");
-    const int aLastInd = Extent();
+    const size_t aLastInd = Size();
     if (theIndex != aLastInd)
     {
       Swap(theIndex, aLastInd);
     }
     RemoveLast();
+  }
+
+  void RemoveFromIndex(const int theIndex)
+  {
+    Standard_OutOfRange_Raise_if(theIndex < 0,
+                                 "NCollection_IndexedMap::RemoveFromIndex: negative index");
+    RemoveFromIndex(static_cast<size_t>(theIndex));
   }
 
   //! Remove the given key.
@@ -520,20 +576,29 @@ public:
       return false;
     }
 
-    RemoveFromIndex(anIndToRemove);
+    RemoveFromIndex(static_cast<size_t>(anIndToRemove));
     return true;
   }
 
   //! FindKey
-  const TheKeyType& FindKey(const int theIndex) const
+  const TheKeyType& FindKey(const size_t theIndex) const
   {
-    Standard_OutOfRange_Raise_if(theIndex < 1 || theIndex > Extent(),
+    Standard_OutOfRange_Raise_if(theIndex == 0 || theIndex > Size(),
                                  "NCollection_IndexedMap::FindKey");
     IndexedMapNode* pNode2 = (IndexedMapNode*)myData2[theIndex - 1];
     return pNode2->Key1();
   }
 
+  const TheKeyType& FindKey(const int theIndex) const
+  {
+    Standard_OutOfRange_Raise_if(theIndex < 0,
+                                 "NCollection_IndexedMap::FindKey: negative index");
+    return FindKey(static_cast<size_t>(theIndex));
+  }
+
   //! operator ()
+  const TheKeyType& operator()(const size_t theIndex) const { return FindKey(theIndex); }
+
   const TheKeyType& operator()(const int theIndex) const { return FindKey(theIndex); }
 
   //! FindIndex
@@ -564,9 +629,6 @@ public:
 
   //! Destructor
   ~NCollection_IndexedMap() override { Clear(true); }
-
-  //! Size
-  int Size() const noexcept { return Extent(); }
 
 protected:
   //! Lookup for particular key in map.
@@ -612,7 +674,7 @@ protected:
     return myHasher(theKey1, theKey2);
   }
 
-  size_t HashCode(const TheKeyType& theKey, const int theUpperBound) const
+  size_t HashCode(const TheKeyType& theKey, const size_t theUpperBound) const
   {
     return myHasher(theKey) % theUpperBound + 1;
   }

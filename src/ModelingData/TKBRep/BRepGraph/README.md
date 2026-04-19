@@ -15,6 +15,27 @@ BRepGraph provides a stable algorithm-facing API for:
 
 The goal is to make workflows like sewing, healing, compact, and deduplicate easier to implement and optimize.
 
+## Recent API Changes (April 2026)
+
+- **Mutation API unified**: `BRepGraph::Access()` has been merged into `BRepGraph::Editor()`.
+  All `MutEdge(...)`, `MutFace(...)`, `MutVertexRef(...)`, etc. RAII guards now live on
+  `EditorView` alongside structural `Add*()` / `Remove*()` / nested `Ops` classes.
+  Old callers that wrote `theGraph.Access().MutEdge(id)` should now write
+  `theGraph.Editor().MutEdge(id)`.
+- **Geometry helpers on `BRepGraph_Tool::CoEdge`**: `Orientation`, `IsReversed`, `EdgeOf`,
+  `FaceOf`, `SeamPair`, `IsSeam`. Prefer these over direct `BRepGraphInc::CoEdgeDef` field
+  access for encapsulation (single-field reads are also the migration target; perf-critical
+  hot loops that read many fields from one struct may keep direct struct access).
+- **`BRepGraph_ChildExplorer::Config` struct**: consolidated configuration (mode, target
+  kind, avoid kind, emit flag, accumulate-location/orientation, start location/orientation)
+  for the downward walker. The new
+  `BRepGraph_ChildExplorer(graph, root, Config{…})` constructor is the preferred long-term
+  idiom; existing overloads stay in place for compat. Extend `Config` with new fields
+  instead of adding new constructor overloads.
+- **Concrete layers renamed** for `*Layer*` prefix grouping:
+  `BRepGraph_ParamLayer` → `BRepGraph_LayerParam`, `BRepGraph_RegularityLayer` →
+  `BRepGraph_LayerRegularity`. Callers must update includes and type names.
+
 ## Current Model (April 2026)
 
 The runtime model is incidence-first:
@@ -59,12 +80,12 @@ All queries and mutations go through lightweight view objects obtained from a `B
 | View | Accessor | Purpose |
 |------|----------|---------|
 | **TopoView** | `Topo()` | Const topology definition access, representation access, adjacency queries, and raw Product/Occurrence definition storage |
-| **UIDsView** | `UIDs()` | UID allocation, lookup, validity checking |
-| **ShapesView** | `Shapes()` | Cached `Shape()` access, fresh `Reconstruct()`, and FindNode/HasNode reverse lookup |
+| **UIDsView** | `UIDs()` | UID allocation for active entries (`Of`), active-only lookup (`NodeIdFrom`/`RefIdFrom`), and validity checking (`Has`) |
+| **ShapesView** | `Shapes()` | Cached `Shape()` access (`null` for invalid/removed nodes), fresh `Reconstruct()` (`null` for invalid/removed nodes), `FindOriginal()/HasOriginal()` non-throw original lookup for active nodes, strict `OriginalOf()` (throws when absent), and FindNode/HasNode reverse lookup for active nodes |
 | **CacheView** | `Cache()` | Stable public transient cache access (Set/Get/Has/Remove per-node and per-ref cached values). Supports `CacheKindIter()` for enumerating active cache kinds on a node or ref. Low-level reserve, transfer, and explicit generation-aware access remain on `TransientCache()` / `RefTransientCache()` for algorithm code. |
-| **BuilderView** | `Builder()` | Mutations: AddProduct, AddOccurrence, RemoveNode, RemoveSubgraph, RemoveRef (with orphan pruning), SetCoEdgePCurve, ClearFaceMesh, ClearEdgePolygon3D, AppendFlattenedShape, AppendFullShape, rep creation (CreateTriangulationRep, CreatePolygon3DRep, CreatePolygonOnTriRep), ValidateMutationBoundary, MutGuard accessors |
+| **EditorView** | `Editor()` | All mutation: creation (nested `VertexOps`/`EdgeOps`/`WireOps`/`FaceOps`/… `Add(...)` / `Split(...)`), field-level `Mut*()` RAII guards (`MutEdge`, `MutFace`, `MutShell`, `MutProduct`, `MutVertexRef`, `MutSurface`, …), structural removal (RemoveNode, RemoveSubgraph, RemoveRef with orphan pruning), SetCoEdgePCurve, ClearFaceMesh, ClearEdgePolygon3D, AppendFlattenedShape, AppendFullShape, rep creation (CreateTriangulationRep, CreatePolygon3DRep, CreatePolygonOnTriRep), ValidateMutationBoundary. EditorView absorbs the former `AccessView`: there is a single entry point for all mutation. |
 | **RefsView** | `Refs()` | Reference entry access, RefUID lookup, VersionStamp for refs |
-| **PathView** | `Paths()` | Assembly-aware queries (RootProducts, IsAssembly, IsPart, NbComponents, Component) and path traversal (GlobalLocation, GlobalOrientation, PathsTo, NodeLocations, CommonAncestor) |
+| **MeshView** | `Mesh()` | Read-only mesh cache queries with cache-first, persistent-fallback priority. For mesh-cache writes use `BRepGraph_Tool::Mesh`. |
 
 `TopoView` also exposes grouped node-oriented helpers for discoverable read queries:
 
@@ -153,7 +174,7 @@ flowchart LR
   P5 --> D[IsDone]
 ```
 
-After topology population, `Build()` auto-creates a single root Product whose `ShapeRootId` points to the top-level topology node (controlled by `CreateAutoProduct` option, default true). This makes every BRepGraph intrinsically assembly-aware. When `CreateAutoProduct` is false (e.g. XCAF builder manages Products itself), the caller is responsible for creating Products.
+After topology population, `BRepGraph_Builder::Perform()` can auto-create a single root Product wrapping the top-level topology node. This graph-level policy is controlled by `BRepGraph_Builder::BuildOptions::CreateAutoProduct` (default true), because it is implemented by the builder layer rather than the backend population pipeline. When disabled (e.g. XCAF builder manages Products itself), the caller is responsible for creating Products.
 
 ### Reconstruct
 
@@ -216,12 +237,12 @@ flowchart LR
 |------|---------|
 | **TopoView** | `NbProducts`, `NbOccurrences`, grouped helpers `Products()` / `Occurrences()` |
 | **PathView** | `RootProducts`, `IsAssembly`, `IsPart`, `NbComponents`, `Component`, `OccurrenceLocation(occId)` |
-| **BuilderView** | `AddProduct`, `AddAssemblyProduct`, `AddOccurrence` (with optional parent occurrence), `RemoveSubgraph` (cascades to child occurrences), `MutProduct(i)`, `MutOccurrence(i)` (RAII guards) |
+| **EditorView** | `AddProduct`, `AddAssemblyProduct`, `AddOccurrence` (with optional parent occurrence), `RemoveSubgraph` (cascades to child occurrences), `MutProduct(i)`, `MutOccurrence(i)` (RAII guards) |
 | **Traversal** | Flat definition traversal via `BRepGraph_ProductIterator` / `BRepGraph_OccurrenceIterator` (or explicit `NbProducts()` / `NbOccurrences()` scans when storage-level access is required) |
 
 ### Single-Shape Graph
 
-`Build(aBox)` creates one Product with `ShapeRootId = Solid(0)`, zero occurrences. Algorithms always see a uniform model.
+`BRepGraph_Builder::Perform(aGraph, aBox)` creates one Product with `ShapeRootId = Solid(0)`, zero occurrences. Algorithms always see a uniform model.
 
 ## Traversal
 
@@ -251,7 +272,7 @@ Can also start from a Product to descend through assembly occurrences into topol
 
 `PathView` (via `Paths()`) resolves topology paths:
 
-- `RootProducts()` / `IsAssembly()` / `IsPart()` / `NbComponents()` / `Component()` - assembly-aware product traversal
+- `RootNodeIds()` / `BRepGraph_RootIterator` / `IsAssembly()` / `IsPart()` / `NbComponents()` / `Component()` - graph-root and assembly-aware product traversal
 -- `GlobalLocation(path)` / `GlobalOrientation(path)` - composed transforms
 - `ForEachPathTo(node, alloc, callback)` / `ForEachPathFromTo(root, leaf, alloc, callback)` - lazy reverse path enumeration without result-vector materialization
 - `ForEachNodeLocation(node, alloc, callback)` - lazy occurrence enumeration with path, location, and orientation per branch
@@ -324,7 +345,7 @@ const occ::handle<BRepGraph_ParamLayer> aParamLayer =
 
 ### TransientCache (`BRepGraph_TransientCache`) and RefTransientCache (`BRepGraph_RefTransientCache`)
 
-Centralized per-node (TransientCache) and per-reference (RefTransientCache) caches for algorithm-computed attributes. Dense graph-local storage keyed by registered cache-kind descriptors with O(1) slot access. NOT a Layer - cleared on Build() and Compact().
+Centralized per-node (TransientCache) and per-reference (RefTransientCache) caches for algorithm-computed attributes. Dense graph-local storage keyed by registered cache-kind descriptors with O(1) slot access. NOT a Layer - cleared on BRepGraph_Builder::Perform() and Compact().
 
 - **Purpose**: ephemeral computed caches (bounding boxes, UV bounds, FClass2d results)
 - **Identity**: cache families are described by `BRepGraph_CacheKind` with stable `Standard_GUID` identity
@@ -387,7 +408,7 @@ Reconstructed shapes are cached in `BRepGraph_Data::myCurrentShapes` as `CachedS
 
 ### History
 
-Primary mutation entry points are exposed via `Builder()` and scoped RAII guards (`BRepGraph_MutGuard`).
+Primary mutation entry points are exposed via `Editor()` and scoped RAII guards (`BRepGraph_MutGuard`).
 
 Common operations: SplitEdge, ReplaceEdgeInWire, AddPCurveToEdge, relation-edge add/remove.
 
@@ -414,24 +435,24 @@ Benefits: O(1) allocation (bump-pointer), O(1) destruction (bulk page release). 
 
 ## Build Options
 
-`Build(theShape, theParallel)` uses default `BRepGraphInc_Populate::Options`.
-Use the explicit overload when the caller needs to override optional extraction passes.
+`BRepGraph_Builder::Perform(graph, theShape, theParallel)` uses default `BRepGraph_Builder::BuildOptions`.
+Use the explicit overload when the caller needs to override extraction passes or graph-level import policy.
 
-`Build()` options:
+`BRepGraph_Builder::BuildOptions`:
 
-- `ExtractRegularities` (default true): edge continuity across face pairs.
-- `ExtractVertexPointReps` (default true): vertex parameter representations on curves/surfaces.
+- `Populate.ExtractRegularities` (default true): edge continuity across face pairs.
+- `Populate.ExtractVertexPointReps` (default true): vertex parameter representations on curves/surfaces.
 - `CreateAutoProduct` (default true): auto-create a root Product wrapping the top-level topology node. Set to false when a higher-level builder (e.g. XCAF) manages Products itself.
 
 ### Incremental Append
 
-`Builder().AppendFlattenedShape(shape)` appends faces without container nodes. `Builder().AppendFullShape(shape)` preserves the full hierarchy (Solid/Shell/Compound/CompSolid). Both accept `BRepGraphInc_Populate::Options` for controlling auto-Product creation and extraction passes. `Builder::AppendFull()` is the lower-level static API.
+`Editor().AppendFlattenedShape(shape)` appends faces without container nodes. `Editor().AppendFullShape(shape)` preserves the full hierarchy (Solid/Shell/Compound/CompSolid). Both accept `BRepGraphInc_Populate::Options` for backend extraction passes only. `BRepGraph_Builder::AppendFull()` is the lower-level static API.
 
 ## Debug Validation
 
 `BRepGraphInc_ReverseIndex::Validate()` checks all reverse index maps against forward entity refs. Called automatically via `Standard_ASSERT_VOID` after SplitEdge and ReplaceEdgeInWire in debug builds.
 
-`Builder().CommitMutation()` validates reverse index + active entity counts. Called at end of Sewing, Compact, Deduplicate.
+`Editor().CommitMutation()` validates reverse index + active entity counts. Called at end of Sewing, Compact, Deduplicate.
 
 ### Validation Pipeline
 
@@ -461,7 +482,7 @@ if (!aResult.IsValid())
 | Category | Files |
 |----------|-------|
 | **Core** | `BRepGraph.hxx/.cxx`, `BRepGraph_Data.hxx`, `BRepGraph_NodeId.hxx`, `BRepGraph_UID.hxx`, `BRepGraph_RefId.hxx`, `BRepGraph_RefUID.hxx`, `BRepGraph_RepId.hxx` |
-| **Views** | `BRepGraph_TopoView.hxx/.cxx`, `BRepGraph_UIDsView.hxx/.cxx`, `BRepGraph_RefsView.hxx/.cxx`, `BRepGraph_ShapesView.hxx/.cxx`, `BRepGraph_CacheView.hxx/.cxx`, `BRepGraph_BuilderView.hxx/.cxx`, `BRepGraph_PathView.hxx/.cxx` |
+| **Views** | `BRepGraph_TopoView.hxx/.cxx`, `BRepGraph_UIDsView.hxx/.cxx`, `BRepGraph_RefsView.hxx/.cxx`, `BRepGraph_ShapesView.hxx/.cxx`, `BRepGraph_CacheView.hxx/.cxx`, `BRepGraph_EditorView.hxx/.cxx`, `BRepGraph_PathView.hxx/.cxx` |
 | **Refs** | `BRepGraph_VersionStamp.hxx/.cxx` |
 | **Traversal** | `BRepGraph_ChildExplorer.hxx/.cxx`, `BRepGraph_ParentExplorer.hxx/.cxx`, `BRepGraph_RelatedIterator.hxx`, `BRepGraph_TopologyPath.hxx`, `BRepGraph_PCurveContext.hxx` |
 | **Geometry** | `BRepGraph_Tool.hxx/.cxx` |

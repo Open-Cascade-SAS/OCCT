@@ -104,9 +104,9 @@ void SelectMgr_SensitiveEntitySet::Remove(const occ::handle<SelectMgr_Selection>
       continue;
     }
 
-    if (anEntIdx != mySensitives.Size())
+    if (anEntIdx != mySensitives.Length())
     {
-      Swap(anEntIdx - 1, mySensitives.Size() - 1);
+      Swap(anEntIdx - 1, mySensitives.Length() - 1);
     }
     if (!aSensEnt->BaseSensitive()->TransformPersistence().IsNull())
     {
@@ -167,7 +167,7 @@ void SelectMgr_SensitiveEntitySet::Swap(const int theIndex1, const int theIndex2
 //=======================================================================
 int SelectMgr_SensitiveEntitySet::Size() const
 {
-  return mySensitives.Size();
+  return mySensitives.Length();
 }
 
 //=======================================================================

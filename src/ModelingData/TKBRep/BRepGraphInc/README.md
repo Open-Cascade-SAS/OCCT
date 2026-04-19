@@ -10,7 +10,7 @@ It provides the runtime source of truth for topology entities, assembly entities
 
 BRepGraphInc is the backend runtime model that powers BRepGraph.
 
-External code should normally enter through `BRepGraph::Build()`, `BRepGraph::Shapes()`, `BRepGraph::Topo()`, `BRepGraph::Refs()`, and the other facade views. A subset of `BRepGraphInc::*` structs is intentionally exposed read-only through those views; direct storage-level access (`BRepGraph_Data`, `myIncStorage`) is reserved for backend maintenance, low-level infrastructure, and focused tests.
+External code should normally enter through `BRepGraph_Builder::Perform()`, `BRepGraph::Shapes()`, `BRepGraph::Topo()`, `BRepGraph::Refs()`, and the other facade views. A subset of `BRepGraphInc::*` structs is intentionally exposed read-only through those views; direct storage-level access (`BRepGraph_Data`, `myIncStorage`) is reserved for backend maintenance, low-level infrastructure, and focused tests.
 
 ## What This Backend Owns
 
@@ -194,11 +194,11 @@ flowchart LR
 
 Backend entry point: `BRepGraphInc_Populate::Perform()`.
 
-`Options.CreateAutoProduct` (default true) controls whether a root Product is auto-created wrapping the top-level topology node. Set to false when a higher-level builder (e.g. XCAF) manages Products itself.
+`BRepGraphInc_Populate::Options` only controls backend extraction passes. Graph-level assembly policy such as root Product creation is owned by `BRepGraph_Builder::BuildOptions` in the facade layer.
 
 `BRepGraphInc_Populate::Append()` supports incremental addition to an already-populated storage, with TShape dedup against existing entities. Used by `BRepGraph_Builder::AppendFlattened()` (face-only) and `AppendFull()` (full hierarchy).
 
-For normal graph construction, use `BRepGraph::Build()` instead. The facade owns the public lifecycle, view initialization, mutation boundary behavior, and cache coordination on top of this backend pipeline.
+For normal graph construction, use `BRepGraph_Builder::Perform()` instead. The facade owns the public lifecycle, view initialization, mutation boundary behavior, and cache coordination on top of this backend pipeline.
 
 ### Geometry: Definition-Frame Storage
 
@@ -306,7 +306,7 @@ anEdge.Location(Identity);                     // Reset after attachment
 3. **Reverse-index**: required reverse rows must exist for forward refs used by query paths
 4. **Removal**: IsRemoved entities must be filtered from normal traversals
 5. **Mutation boundary**: entities, reverse indices, cache invalidation, and history are coherent after each operation
-6. **Assembly**: Build produces a root Product when `CreateAutoProduct` is true (default); occurrence cross-references valid; self-referencing rejected; ParentOccurrenceDefId forms a tree
+6. **Assembly**: occurrence cross-references valid; self-referencing rejected; builder-owned root Product creation remains coherent when enabled by build policy
 
 ## Memory and Performance
 
@@ -322,16 +322,16 @@ All public Storage accessors use strongly-typed ids (`BRepGraph_VertexId`, `BRep
 All containers use the graph's `NCollection_IncAllocator` for O(1) bump-pointer allocation and bulk-free destruction:
 
 - **Storage**: all entity tables, UID vectors, and DataMaps receive the allocator
-- **ReverseIndex**: `SetAllocator()` called before `Build()`. Inner vectors constructed with allocator via `preSize()`.
+- **ReverseIndex**: `SetAllocator()` called before reverse-index `Build()`. Inner vectors constructed with allocator via `preSize()`.
 
-Contract: `SetAllocator()` must be called before `Build()`/`BuildDelta()` on ReverseIndex.
+Contract: `SetAllocator()` must be called before reverse-index `Build()`/`BuildDelta()` calls.
 
 ### Other Performance Notes
 
 - Edge-to-face reverse index uses sort-dedup (stack-allocated for typical 1-4 coedges per edge)
 - `Append()` allocates UIDs incrementally (O(M) instead of O(N+M))
 - Post-passes are optional via `BRepGraphInc_Populate::Options`
-- `NbFacesOfEdge()` is O(1) via cached count vector
+- `NbFacesOfEdge()` is O(1) (reads `myEdgeToFaces.Value(idx).Length()` directly)
 
 ## TopoDS vs GraphInc Comparison (Box)
 

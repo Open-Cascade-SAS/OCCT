@@ -822,7 +822,7 @@ void MeshVS_MeshPrsBuilder::AddFaceSolidPrs(
       }
     }
 
-    if (!theIsSmoothShading || aVertexNormals.Size() != theNbNodes)
+    if (!theIsSmoothShading || aVertexNormals.Length() != theNbNodes)
     {
       aDataSource->GetNormal(theID, theMaxNodes, aNormalX, aNormalY, aNormalZ);
     }
@@ -853,7 +853,7 @@ void MeshVS_MeshPrsBuilder::AddFaceSolidPrs(
     {
       if (theIsShaded)
       {
-        if (theIsSmoothShading && aVertexNormals.Size() == theNbNodes)
+        if (theIsSmoothShading && aVertexNormals.Length() == theNbNodes)
         {
           aNormalX = aVertexNormals.Value(aSubIdx == 0 ? 0 : (aNodeIdx + aSubIdx)).X();
           aNormalY = aVertexNormals.Value(aSubIdx == 0 ? 0 : (aNodeIdx + aSubIdx)).Y();

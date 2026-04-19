@@ -76,7 +76,7 @@ public:
   }
 
   //! Returns size of objects set.
-  int Size() const override { return myObjects.Size(); }
+  int Size() const override { return myObjects.Length(); }
 
   //! Swaps items with indexes theIndex1 and theIndex2 in the set
   void Swap(const int theIndex1, const int theIndex2) override
@@ -111,8 +111,8 @@ public:
                               const NCollection_Vec2<int>&         theWinSize)
       : myObjects(theObjects)
   {
-    myBoundings.ReSize(myObjects.Size());
-    for (int anI = 1; anI <= myObjects.Size(); ++anI)
+    myBoundings.ReSize(myObjects.Length());
+    for (int anI = 1; anI <= myObjects.Length(); ++anI)
     {
       const occ::handle<SelectMgr_SelectableObject>& anObject = myObjects(anI);
 
@@ -210,7 +210,7 @@ public:
   }
 
   //! Returns size of objects set.
-  int Size() const override { return myObjects.Size(); }
+  int Size() const override { return myObjects.Length(); }
 
   //! Swaps items with indexes theIndex1 and theIndex2 in the set
   void Swap(const int theIndex1, const int theIndex2) override
@@ -278,7 +278,7 @@ bool SelectMgr_SelectableObjectSet::Append(const occ::handle<SelectMgr_Selectabl
   }
 
   // try adding it into the appropriate object subset
-  const int aSize = myObjects[aSubsetIdx].Size();
+  const int aSize = myObjects[aSubsetIdx].Length();
 
   if (aSize < myObjects[aSubsetIdx].Add(theObject))
   {
@@ -301,7 +301,7 @@ bool SelectMgr_SelectableObjectSet::Remove(const occ::handle<SelectMgr_Selectabl
 
     if (anIndex != 0)
     {
-      const int aSize = myObjects[aSubsetIdx].Size();
+      const int aSize = myObjects[aSubsetIdx].Length();
 
       if (anIndex != aSize)
       {

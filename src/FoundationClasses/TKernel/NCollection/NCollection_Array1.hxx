@@ -196,10 +196,10 @@ public:
     }
   }
 
-  //! Size query
-  int Size() const noexcept { return Length(); }
+  //! Size query.
+  size_t Size() const noexcept { return mySize; }
 
-  //! Length query (the same)
+  //! Length query (legacy int-returning API).
   int Length() const noexcept { return static_cast<int>(mySize); }
 
   //! Return TRUE if array has zero length.
@@ -308,6 +308,14 @@ public:
 
   //! operator[] - alias to ChangeValue
   reference operator[](const int theIndex) { return ChangeValue(theIndex); }
+
+  //! 0-based checked access independent of Lower()/Upper().
+  //! @param[in] theIndex 0-based index in [0, Size()-1]
+  const_reference At(const size_t theIndex) const { return at(theIndex); }
+
+  //! 0-based checked mutable access independent of Lower()/Upper().
+  //! @param[in] theIndex 0-based index in [0, Size()-1]
+  reference ChangeAt(const size_t theIndex) { return at(theIndex); }
 
   //! Set value
   void SetValue(const int theIndex, const value_type& theItem)

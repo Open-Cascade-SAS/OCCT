@@ -360,7 +360,7 @@ static occ::handle<Graphic3d_ArrayOfSegments> fillFaceBoundaries(const TopoDS_Sh
       ++aNbPolylines;
     }
   }
-  const int aNbExtra = !aSeqPntsExtra.IsNull() ? aSeqPntsExtra->Size() : 0;
+  const int aNbExtra = !aSeqPntsExtra.IsNull() ? aSeqPntsExtra->Length() : 0;
   if (aNodeNumber == 0)
   {
     if (aNbExtra < 2)

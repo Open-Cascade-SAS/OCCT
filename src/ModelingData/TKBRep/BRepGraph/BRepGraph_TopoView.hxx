@@ -16,6 +16,8 @@
 
 #include <BRepGraph.hxx>
 #include <BRepGraph_RepId.hxx>
+#include <BRepGraphInc_Definition.hxx>
+#include <BRepGraphInc_Representation.hxx>
 #include <GeomAdaptor_TransformedCurve.hxx>
 #include <GeomAdaptor_TransformedSurface.hxx>
 #include <TopLoc_Location.hxx>
@@ -54,6 +56,8 @@ public:
   public:
     [[nodiscard]] Standard_EXPORT int   Nb() const;
     [[nodiscard]] Standard_EXPORT int   NbActive() const;
+    [[nodiscard]] BRepGraph_FaceId      StartId() const { return BRepGraph_FaceId::Start(); }
+    [[nodiscard]] BRepGraph_FaceId      EndId() const { return BRepGraph_FaceId(Nb()); }
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::FaceDef& Definition(
       const BRepGraph_FaceId theFace) const;
     [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_ShellId>& Shells(
@@ -93,6 +97,8 @@ public:
   public:
     [[nodiscard]] Standard_EXPORT int   Nb() const;
     [[nodiscard]] Standard_EXPORT int   NbActive() const;
+    [[nodiscard]] BRepGraph_EdgeId      StartId() const { return BRepGraph_EdgeId::Start(); }
+    [[nodiscard]] BRepGraph_EdgeId      EndId() const { return BRepGraph_EdgeId(Nb()); }
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::EdgeDef& Definition(
       const BRepGraph_EdgeId theEdge) const;
     [[nodiscard]] Standard_EXPORT int   NbFaces(const BRepGraph_EdgeId theEdge) const;
@@ -152,6 +158,8 @@ public:
   public:
     [[nodiscard]] Standard_EXPORT int   Nb() const;
     [[nodiscard]] Standard_EXPORT int   NbActive() const;
+    [[nodiscard]] BRepGraph_VertexId    StartId() const { return BRepGraph_VertexId::Start(); }
+    [[nodiscard]] BRepGraph_VertexId    EndId() const { return BRepGraph_VertexId(Nb()); }
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::VertexDef& Definition(
       const BRepGraph_VertexId theVertex) const;
     [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_EdgeId>& Edges(
@@ -174,6 +182,8 @@ public:
   public:
     [[nodiscard]] Standard_EXPORT int   Nb() const;
     [[nodiscard]] Standard_EXPORT int   NbActive() const;
+    [[nodiscard]] BRepGraph_WireId      StartId() const { return BRepGraph_WireId::Start(); }
+    [[nodiscard]] BRepGraph_WireId      EndId() const { return BRepGraph_WireId(Nb()); }
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::WireDef& Definition(
       const BRepGraph_WireId theWire) const;
     [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_FaceId>& Faces(
@@ -196,6 +206,8 @@ public:
   public:
     [[nodiscard]] Standard_EXPORT int   Nb() const;
     [[nodiscard]] Standard_EXPORT int   NbActive() const;
+    [[nodiscard]] BRepGraph_ShellId     StartId() const { return BRepGraph_ShellId::Start(); }
+    [[nodiscard]] BRepGraph_ShellId     EndId() const { return BRepGraph_ShellId(Nb()); }
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::ShellDef& Definition(
       const BRepGraph_ShellId theShell) const;
     [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_SolidId>& Solids(
@@ -220,6 +232,8 @@ public:
   public:
     [[nodiscard]] Standard_EXPORT int   Nb() const;
     [[nodiscard]] Standard_EXPORT int   NbActive() const;
+    [[nodiscard]] BRepGraph_SolidId     StartId() const { return BRepGraph_SolidId::Start(); }
+    [[nodiscard]] BRepGraph_SolidId     EndId() const { return BRepGraph_SolidId(Nb()); }
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::SolidDef& Definition(
       const BRepGraph_SolidId theSolid) const;
     [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_CompSolidId>& CompSolids(
@@ -244,6 +258,8 @@ public:
   public:
     [[nodiscard]] Standard_EXPORT int   Nb() const;
     [[nodiscard]] Standard_EXPORT int   NbActive() const;
+    [[nodiscard]] BRepGraph_CoEdgeId    StartId() const { return BRepGraph_CoEdgeId::Start(); }
+    [[nodiscard]] BRepGraph_CoEdgeId    EndId() const { return BRepGraph_CoEdgeId(Nb()); }
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::CoEdgeDef& Definition(
       const BRepGraph_CoEdgeId theCoEdge) const;
     [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_WireId>& Wires(
@@ -272,6 +288,8 @@ public:
   public:
     [[nodiscard]] Standard_EXPORT int   Nb() const;
     [[nodiscard]] Standard_EXPORT int   NbActive() const;
+    [[nodiscard]] BRepGraph_CompoundId  StartId() const { return BRepGraph_CompoundId::Start(); }
+    [[nodiscard]] BRepGraph_CompoundId  EndId() const { return BRepGraph_CompoundId(Nb()); }
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::CompoundDef& Definition(
       const BRepGraph_CompoundId theCompound) const;
     [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_CompoundId>& ParentCompounds(
@@ -294,6 +312,8 @@ public:
   public:
     [[nodiscard]] Standard_EXPORT int   Nb() const;
     [[nodiscard]] Standard_EXPORT int   NbActive() const;
+    [[nodiscard]] BRepGraph_CompSolidId StartId() const { return BRepGraph_CompSolidId::Start(); }
+    [[nodiscard]] BRepGraph_CompSolidId EndId() const { return BRepGraph_CompSolidId(Nb()); }
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::CompSolidDef& Definition(
       const BRepGraph_CompSolidId theCompSolid) const;
     [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_CompoundId>& Compounds(
@@ -316,6 +336,8 @@ public:
   public:
     [[nodiscard]] Standard_EXPORT int   Nb() const;
     [[nodiscard]] Standard_EXPORT int   NbActive() const;
+    [[nodiscard]] BRepGraph_ProductId   StartId() const { return BRepGraph_ProductId::Start(); }
+    [[nodiscard]] BRepGraph_ProductId   EndId() const { return BRepGraph_ProductId(Nb()); }
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::ProductDef& Definition(
       const BRepGraph_ProductId theProduct) const;
     [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_OccurrenceId>& Instances(
@@ -323,13 +345,7 @@ public:
     [[nodiscard]] Standard_EXPORT BRepGraph_NodeId
       ShapeRoot(const BRepGraph_ProductId theProduct) const;
 
-    //! Return typed identifiers of all root products (products not referenced by an active
-    //! occurrence).
-    //! @param[in] theAllocator allocator for internal temporaries and the result vector
-    [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_ProductId> RootProducts(
-      const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
-
-    //! True if the product is an assembly (has child occurrences, no topology root).
+    //! True if the product is an assembly (has active child occurrences and no topology root).
     //! @param[in] theProduct typed product definition identifier
     [[nodiscard]] Standard_EXPORT bool IsAssembly(const BRepGraph_ProductId theProduct) const;
 
@@ -370,20 +386,19 @@ public:
   public:
     [[nodiscard]] Standard_EXPORT int   Nb() const;
     [[nodiscard]] Standard_EXPORT int   NbActive() const;
+    [[nodiscard]] BRepGraph_OccurrenceId StartId() const { return BRepGraph_OccurrenceId::Start(); }
+    [[nodiscard]] BRepGraph_OccurrenceId EndId() const { return BRepGraph_OccurrenceId(Nb()); }
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::OccurrenceDef& Definition(
       const BRepGraph_OccurrenceId theOccurrence) const;
     [[nodiscard]] Standard_EXPORT BRepGraph_ProductId
       Product(const BRepGraph_OccurrenceId theOccurrence) const;
     [[nodiscard]] Standard_EXPORT BRepGraph_ProductId
       ParentProduct(const BRepGraph_OccurrenceId theOccurrence) const;
-    [[nodiscard]] Standard_EXPORT BRepGraph_OccurrenceId
-      ParentOccurrence(const BRepGraph_OccurrenceId theOccurrence) const;
-
-    //! Compute the global placement of an occurrence by walking the parent chain.
-    //! Shared products can appear at multiple placements; the returned location is
-    //! specific to the supplied occurrence path through ParentOccurrenceDefId.
+    //! Return the local placement of an occurrence (OccurrenceRef::LocalLocation).
+    //! This is the placement relative to the parent product, not the global placement.
+    //! For global placement, use ChildExplorer with cumulative location tracking.
     //! @param[in] theOccurrence typed occurrence identifier
-    //! @return composed TopLoc_Location from root to the occurrence
+    //! @return OccurrenceRef::LocalLocation, or identity if not found
     [[nodiscard]] Standard_EXPORT TopLoc_Location
       OccurrenceLocation(const BRepGraph_OccurrenceId theOccurrence) const;
 
@@ -448,40 +463,6 @@ public:
     const BRepGraph* myGraph;
   };
 
-  //! @brief Polygonal and triangulation representation queries.
-  class PolyOps
-  {
-  public:
-    [[nodiscard]] Standard_EXPORT int NbTriangulations() const;
-    [[nodiscard]] Standard_EXPORT int NbPolygons3D() const;
-    [[nodiscard]] Standard_EXPORT int NbPolygons2D() const;
-    [[nodiscard]] Standard_EXPORT int NbPolygonsOnTri() const;
-
-    [[nodiscard]] Standard_EXPORT int NbActiveTriangulations() const;
-    [[nodiscard]] Standard_EXPORT int NbActivePolygons3D() const;
-    [[nodiscard]] Standard_EXPORT int NbActivePolygons2D() const;
-    [[nodiscard]] Standard_EXPORT int NbActivePolygonsOnTri() const;
-
-    [[nodiscard]] Standard_EXPORT const BRepGraphInc::TriangulationRep& TriangulationRep(
-      const BRepGraph_TriangulationRepId theRep) const;
-    [[nodiscard]] Standard_EXPORT const BRepGraphInc::Polygon3DRep& Polygon3DRep(
-      const BRepGraph_Polygon3DRepId theRep) const;
-    [[nodiscard]] Standard_EXPORT const BRepGraphInc::Polygon2DRep& Polygon2DRep(
-      const BRepGraph_Polygon2DRepId theRep) const;
-    [[nodiscard]] Standard_EXPORT const BRepGraphInc::PolygonOnTriRep& PolygonOnTriRep(
-      const BRepGraph_PolygonOnTriRepId theRep) const;
-
-  private:
-    friend class TopoView;
-
-    explicit PolyOps(const BRepGraph* theGraph)
-        : myGraph(theGraph)
-    {
-    }
-
-    const BRepGraph* myGraph;
-  };
-
   //! Grouped face-oriented queries.
   [[nodiscard]] const FaceOps& Faces() const { return myFaces; }
 
@@ -521,11 +502,6 @@ public:
   //! Grouped analytic geometry representation queries.
   [[nodiscard]] const GeometryOps& Geometry() const { return myGeometry; }
 
-  //! Grouped polygonal representation queries.
-  [[nodiscard]] const PolyOps& Poly() const { return myPoly; }
-
-  //! @name Representation groups
-  //!
   //! Representations use dense 0-based indexing. Iterate through grouped accessors:
   //! @code
   //!   for (int i = 0; i < aGraph.Topo().Geometry().NbSurfaces(); ++i)
@@ -554,8 +530,7 @@ private:
         myProducts(theGraph),
         myOccurrences(theGraph),
         myGen(theGraph),
-        myGeometry(theGraph),
-        myPoly(theGraph)
+        myGeometry(theGraph)
   {
   }
 
@@ -573,7 +548,6 @@ private:
   OccurrenceOps    myOccurrences;
   GenOps           myGen;
   GeometryOps      myGeometry;
-  PolyOps          myPoly;
 };
 
 #endif // _BRepGraph_TopoView_HeaderFile

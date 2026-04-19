@@ -76,7 +76,7 @@ public:
         aBox.Add(aPnt2);
         aBox.Enlarge(Precision::Confusion());
 
-        aBndBoxTreeFiller.Add(aSegments->Size(), aBox);
+        aBndBoxTreeFiller.Add(aSegments->Length(), aBox);
         aSegments->Append(BRepMesh_FaceChecker::Segment(aDEdge, &aPnt1, &aPnt2));
       }
     }
@@ -257,7 +257,7 @@ void BRepMesh_FaceChecker::perform(const int theWireIndex) const
     const occ::handle<Segments>&           aSegments2   = myWiresSegments->Value(aWireIt);
 
     aSelector.SetSegments(aSegments2);
-    for (int aSegmentIt = 0; aSegmentIt < aSegments1->Size(); ++aSegmentIt)
+    for (int aSegmentIt = 0; aSegmentIt < aSegments1->Length(); ++aSegmentIt)
     {
       const BRepMesh_FaceChecker::Segment& aSegment1 = aSegments1->Value(aSegmentIt);
       aSelector.Reset(&aSegment1, (aWireIt == theWireIndex) ? aSegmentIt : -1);
@@ -271,7 +271,7 @@ void BRepMesh_FaceChecker::perform(const int theWireIndex) const
         aIntersections->Add(aSegment1.EdgePtr);
 
         const IMeshData::VectorOfInteger& aSegments = aSelector.Indices();
-        for (int aSelIt = 0; aSelIt < aSegments.Size(); ++aSelIt)
+        for (int aSelIt = 0; aSelIt < aSegments.Length(); ++aSelIt)
         {
           const BRepMesh_FaceChecker::Segment& aSegment2 = aSegments2->Value(aSegments(aSelIt));
           aIntersections->Add(aSegment2.EdgePtr);

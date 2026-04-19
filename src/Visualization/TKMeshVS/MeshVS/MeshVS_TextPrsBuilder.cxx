@@ -244,7 +244,7 @@ void MeshVS_TextPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& Prs,
   {
     occ::handle<Graphic3d_Group>         aMarkerGroup = Prs->NewGroup();
     occ::handle<Graphic3d_ArrayOfPoints> anArrayOfPoints =
-      new Graphic3d_ArrayOfPoints(aPnts.Size());
+      new Graphic3d_ArrayOfPoints(aPnts.Length());
     for (NCollection_Sequence<NCollection_Vec3<float>>::Iterator aPntIter(aPnts); aPntIter.More();
          aPntIter.Next())
     {

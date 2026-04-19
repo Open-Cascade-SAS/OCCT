@@ -16,9 +16,9 @@
 #include <BRepGraphInc_Definition.hxx>
 #include <BRepGraphInc_Reference.hxx>
 #include <BRepGraphInc_Representation.hxx>
+#include <BRepGraphInc_Storage.hxx>
 #include <NCollection_LocalArray.hxx>
-
-#include <type_traits>
+#include <Standard_Assert.hxx>
 
 namespace
 {
@@ -95,15 +95,40 @@ void BRepGraphInc_ReverseIndex::Clear()
   myCompoundsOfFace.Clear();
   myCompoundsOfCompound.Clear();
   myCompoundsOfCompSolid.Clear();
+  myCompoundsOfWire.Clear();
+  myCompoundsOfEdge.Clear();
+  myCompoundsOfVertex.Clear();
   myCoEdgeToWires.Clear();
-  myEdgeFaceCount.Clear();
   myProductToOccurrences.Clear();
   myNbIndexedCoEdges = 0;
 }
 
 //=================================================================================================
 
+void BRepGraphInc_ReverseIndex::Build(const BRepGraphInc_Storage& theStorage)
+{
+  Build(theStorage.myVertices.Entities,
+        theStorage.myEdges.Entities,
+        theStorage.myCoEdges.Entities,
+        theStorage.myWires.Entities,
+        theStorage.myFaces.Entities,
+        theStorage.myShells.Entities,
+        theStorage.mySolids.Entities,
+        theStorage.myCompounds.Entities,
+        theStorage.myCompSolids.Entities,
+        theStorage.myShellRefs.Refs,
+        theStorage.myFaceRefs.Refs,
+        theStorage.myWireRefs.Refs,
+        theStorage.myCoEdgeRefs.Refs,
+        theStorage.mySolidRefs.Refs,
+        theStorage.myChildRefs.Refs,
+        theStorage.myVertexRefs.Refs);
+}
+
+//=================================================================================================
+
 void BRepGraphInc_ReverseIndex::Build(
+  const NCollection_Vector<BRepGraphInc::VertexDef>&    theVertices,
   const NCollection_Vector<BRepGraphInc::EdgeDef>&      theEdges,
   const NCollection_Vector<BRepGraphInc::CoEdgeDef>&    theCoEdges,
   const NCollection_Vector<BRepGraphInc::WireDef>&      theWires,
@@ -267,14 +292,6 @@ void BRepGraphInc_ReverseIndex::Build(
     }
   }
 
-  // Populate cached face counts from the edge-to-faces index.
-  myEdgeFaceCount.Clear();
-  for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
-  {
-    const NCollection_Vector<BRepGraph_FaceId>* aFaceVec = seekVec(myEdgeToFaces, anEdgeId.Index);
-    myEdgeFaceCount.Append(aFaceVec != nullptr ? aFaceVec->Length() : 0);
-  }
-
   // Wire -> Faces: iterate face entities and their WireRefIds for O(1) parent lookup.
   const int aNbFaces = theFaces.Length();
   for (BRepGraph_FaceId aFaceId(0); aFaceId.IsValid(aNbFaces); ++aFaceId)
@@ -342,11 +359,17 @@ void BRepGraphInc_ReverseIndex::Build(
   }
 
   // Compound -> child reverse indices: iterate compound entities and their ChildRefIds.
+  // Covers all legal TopoDS_Compound child kinds (Solid/Shell/Face/Compound/CompSolid
+  // + atomic Wire/Edge/Vertex); missing any kind causes silent unindexing of legal
+  // compounds and later reverse-lookup returns empty.
   preSize(myCompoundsOfSolid, theSolids.Length(), myAllocator);
   preSize(myCompoundsOfShell, theShells.Length(), myAllocator);
   preSize(myCompoundsOfFace, theFaces.Length(), myAllocator);
   preSize(myCompoundsOfCompound, theCompounds.Length(), myAllocator);
   preSize(myCompoundsOfCompSolid, theCompSolids.Length(), myAllocator);
+  preSize(myCompoundsOfWire, theWires.Length(), myAllocator);
+  preSize(myCompoundsOfEdge, theEdges.Length(), myAllocator);
+  preSize(myCompoundsOfVertex, theVertices.Length(), myAllocator);
   const int aNbCompounds = theCompounds.Length();
   for (BRepGraph_CompoundId aCompoundId(0); aCompoundId.IsValid(aNbCompounds); ++aCompoundId)
   {
@@ -376,6 +399,15 @@ void BRepGraphInc_ReverseIndex::Build(
       else if (aRef.ChildDefId.NodeKind == BRepGraph_NodeId::Kind::CompSolid
                && aRef.ChildDefId.Index >= 0 && aRef.ChildDefId.Index < theCompSolids.Length())
         appendDirect(myCompoundsOfCompSolid, aRef.ChildDefId.Index, aCompoundId);
+      else if (aRef.ChildDefId.NodeKind == BRepGraph_NodeId::Kind::Wire
+               && aRef.ChildDefId.Index >= 0 && aRef.ChildDefId.Index < theWires.Length())
+        appendDirect(myCompoundsOfWire, aRef.ChildDefId.Index, aCompoundId);
+      else if (aRef.ChildDefId.NodeKind == BRepGraph_NodeId::Kind::Edge
+               && aRef.ChildDefId.Index >= 0 && aRef.ChildDefId.Index < theEdges.Length())
+        appendDirect(myCompoundsOfEdge, aRef.ChildDefId.Index, aCompoundId);
+      else if (aRef.ChildDefId.NodeKind == BRepGraph_NodeId::Kind::Vertex
+               && aRef.ChildDefId.Index >= 0 && aRef.ChildDefId.Index < theVertices.Length())
+        appendDirect(myCompoundsOfVertex, aRef.ChildDefId.Index, aCompoundId);
     }
   }
 
@@ -428,23 +460,33 @@ void BRepGraphInc_ReverseIndex::Build(
 //=================================================================================================
 
 void BRepGraphInc_ReverseIndex::BuildDelta(
+  const NCollection_Vector<BRepGraphInc::VertexDef>& theVertices,
   const NCollection_Vector<BRepGraphInc::EdgeDef>&   theEdges,
   const NCollection_Vector<BRepGraphInc::CoEdgeDef>& theCoEdges,
   const NCollection_Vector<BRepGraphInc::WireDef>&   theWires,
   const NCollection_Vector<BRepGraphInc::FaceDef>&   theFaces,
   const NCollection_Vector<BRepGraphInc::ShellDef>&  theShells,
   const NCollection_Vector<BRepGraphInc::SolidDef>&  theSolids,
+  const NCollection_Vector<BRepGraphInc::CompoundDef>&  theCompounds,
+  const NCollection_Vector<BRepGraphInc::CompSolidDef>& theCompSolids,
   const NCollection_Vector<BRepGraphInc::ShellRef>&  theShellRefs,
   const NCollection_Vector<BRepGraphInc::FaceRef>&   theFaceRefs,
   const NCollection_Vector<BRepGraphInc::WireRef>&   theWireRefs,
   const NCollection_Vector<BRepGraphInc::CoEdgeRef>& theCoEdgeRefs,
+  const NCollection_Vector<BRepGraphInc::SolidRef>&  theSolidRefs,
+  const NCollection_Vector<BRepGraphInc::ChildRef>&  theChildRefs,
   const NCollection_Vector<BRepGraphInc::VertexRef>& theVertexRefs,
   const int                                          theOldNbEdges,
   const int                                          theOldNbWires,
   const int                                          theOldNbFaces,
   const int                                          theOldNbShells,
-  const int                                          theOldNbSolids)
+  const int                                          theOldNbSolids,
+  const int                                          theOldNbCompounds,
+  const int                                          theOldNbCompSolids,
+  const int                                          theOldNbChildRefs,
+  const int                                          theOldNbSolidRefs)
 {
+
   // Helper: resolve a VertexRefId to the corresponding VertexDefId (BRepGraph_VertexId).
   // Returns an invalid id if the ref id is invalid or out of range.
 
@@ -472,7 +514,15 @@ void BRepGraphInc_ReverseIndex::BuildDelta(
   ensureSize(myWireToFaces, theWires.Length(), myAllocator);
   ensureSize(myFaceToShells, theFaces.Length(), myAllocator);
   ensureSize(myShellToSolids, theShells.Length(), myAllocator);
-  ensureSize(myEdgeFaceCount, theEdges.Length());
+  ensureSize(myCompoundsOfSolid, theSolids.Length(), myAllocator);
+  ensureSize(myCompSolidsOfSolid, theSolids.Length(), myAllocator);
+  ensureSize(myCompoundsOfShell, theShells.Length(), myAllocator);
+  ensureSize(myCompoundsOfFace, theFaces.Length(), myAllocator);
+  ensureSize(myCompoundsOfCompound, theCompounds.Length(), myAllocator);
+  ensureSize(myCompoundsOfCompSolid, theCompSolids.Length(), myAllocator);
+  ensureSize(myCompoundsOfWire, theWires.Length(), myAllocator);
+  ensureSize(myCompoundsOfEdge, theEdges.Length(), myAllocator);
+  ensureSize(myCompoundsOfVertex, theVertices.Length(), myAllocator);
 
   // Vertex -> Edges: only new edges.
   for (BRepGraph_EdgeId anEdgeId(theOldNbEdges); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
@@ -512,10 +562,12 @@ void BRepGraphInc_ReverseIndex::BuildDelta(
   }
 
   // Edge -> CoEdges: scan only newly appended coedges (they may reference old edges).
-  int aOldNbIndexedCoEdges = myNbIndexedCoEdges;
-  if (aOldNbIndexedCoEdges < 0 || aOldNbIndexedCoEdges > theCoEdges.Length())
-    aOldNbIndexedCoEdges = 0;
-  const int aNbCoEdges = theCoEdges.Length();
+  Standard_ASSERT_RAISE(
+    myNbIndexedCoEdges >= 0 && myNbIndexedCoEdges <= theCoEdges.Length(),
+    "BRepGraphInc_ReverseIndex::BuildDelta: myNbIndexedCoEdges cursor out of range "
+    "(indicates CoEdge vector shrank between delta calls, which is unsupported)");
+  const int aOldNbIndexedCoEdges = myNbIndexedCoEdges;
+  const int aNbCoEdges           = theCoEdges.Length();
   for (BRepGraph_CoEdgeId aCoEdgeId(aOldNbIndexedCoEdges); aCoEdgeId.IsValid(aNbCoEdges);
        ++aCoEdgeId)
   {
@@ -594,13 +646,6 @@ void BRepGraphInc_ReverseIndex::BuildDelta(
     }
   }
 
-  // Update cached face counts for new edges.
-  for (BRepGraph_EdgeId anEdgeId(theOldNbEdges); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
-  {
-    const NCollection_Vector<BRepGraph_FaceId>* aFaceVec = seekVec(myEdgeToFaces, anEdgeId.Index);
-    myEdgeFaceCount.ChangeValue(anEdgeId.Index) = (aFaceVec != nullptr ? aFaceVec->Length() : 0);
-  }
-
   // Wire -> Faces: iterate only new face entities and their WireRefIds.
   const int aNbFaces = theFaces.Length();
   for (BRepGraph_FaceId aFaceId(theOldNbFaces); aFaceId.IsValid(aNbFaces); ++aFaceId)
@@ -665,6 +710,167 @@ void BRepGraphInc_ReverseIndex::BuildDelta(
         continue;
       appendUnique(myShellToSolids, aRef.ShellDefId.Index, aSolidId);
     }
+  }
+
+  int anOldNbCompounds = theOldNbCompounds;
+  if (anOldNbCompounds < 0 || anOldNbCompounds > theCompounds.Length())
+    anOldNbCompounds = 0;
+
+  // Compound -> child reverse indices:
+  // 1) process all refs of newly appended compound parents
+  // 2) process refs attached to pre-existing parents (covers appended refs on old parents)
+  const int aNbCompounds = theCompounds.Length();
+  for (BRepGraph_CompoundId aCompoundId(anOldNbCompounds); aCompoundId.IsValid(aNbCompounds);
+       ++aCompoundId)
+  {
+    const BRepGraphInc::CompoundDef& aComp = theCompounds.Value(aCompoundId.Index);
+    if (aComp.IsRemoved)
+      continue;
+    for (const BRepGraph_ChildRefId& aChildRefId : aComp.ChildRefIds)
+    {
+      const int aChildRefIdx = aChildRefId.Index;
+      if (aChildRefIdx < 0 || aChildRefIdx >= theChildRefs.Length())
+        continue;
+      const BRepGraphInc::ChildRef& aRef = theChildRefs.Value(aChildRefIdx);
+      if (aRef.IsRemoved || !aRef.ChildDefId.IsValid())
+        continue;
+      if (aRef.ChildDefId.NodeKind == BRepGraph_NodeId::Kind::Solid && aRef.ChildDefId.Index >= 0
+          && aRef.ChildDefId.Index < theSolids.Length())
+        appendUnique(myCompoundsOfSolid, aRef.ChildDefId.Index, aCompoundId);
+      else if (aRef.ChildDefId.NodeKind == BRepGraph_NodeId::Kind::Shell
+               && aRef.ChildDefId.Index >= 0 && aRef.ChildDefId.Index < theShells.Length())
+        appendUnique(myCompoundsOfShell, aRef.ChildDefId.Index, aCompoundId);
+      else if (aRef.ChildDefId.NodeKind == BRepGraph_NodeId::Kind::Face
+               && aRef.ChildDefId.Index >= 0 && aRef.ChildDefId.Index < theFaces.Length())
+        appendUnique(myCompoundsOfFace, aRef.ChildDefId.Index, aCompoundId);
+      else if (aRef.ChildDefId.NodeKind == BRepGraph_NodeId::Kind::Compound
+               && aRef.ChildDefId.Index >= 0 && aRef.ChildDefId.Index < theCompounds.Length())
+        appendUnique(myCompoundsOfCompound, aRef.ChildDefId.Index, aCompoundId);
+      else if (aRef.ChildDefId.NodeKind == BRepGraph_NodeId::Kind::CompSolid
+               && aRef.ChildDefId.Index >= 0 && aRef.ChildDefId.Index < theCompSolids.Length())
+        appendUnique(myCompoundsOfCompSolid, aRef.ChildDefId.Index, aCompoundId);
+      else if (aRef.ChildDefId.NodeKind == BRepGraph_NodeId::Kind::Wire
+               && aRef.ChildDefId.Index >= 0 && aRef.ChildDefId.Index < theWires.Length())
+        appendUnique(myCompoundsOfWire, aRef.ChildDefId.Index, aCompoundId);
+      else if (aRef.ChildDefId.NodeKind == BRepGraph_NodeId::Kind::Edge
+               && aRef.ChildDefId.Index >= 0 && aRef.ChildDefId.Index < theEdges.Length())
+        appendUnique(myCompoundsOfEdge, aRef.ChildDefId.Index, aCompoundId);
+      else if (aRef.ChildDefId.NodeKind == BRepGraph_NodeId::Kind::Vertex
+               && aRef.ChildDefId.Index >= 0 && aRef.ChildDefId.Index < theVertices.Length())
+        appendUnique(myCompoundsOfVertex, aRef.ChildDefId.Index, aCompoundId);
+    }
+  }
+
+  // Loop 2: process ChildRefs appended during this delta that point to a
+  // pre-existing compound parent. Iterate only [theOldNbChildRefs, NbChildRefs)
+  // so cost stays O(delta refs) regardless of pre-existing graph size.
+  int aOldNbChildRefs = theOldNbChildRefs;
+  if (aOldNbChildRefs < 0 || aOldNbChildRefs > theChildRefs.Length())
+    aOldNbChildRefs = 0;
+  const int aNbChildRefs = theChildRefs.Length();
+  for (BRepGraph_ChildRefId aChildRefId(aOldNbChildRefs); aChildRefId.IsValid(aNbChildRefs);
+       ++aChildRefId)
+  {
+    const BRepGraphInc::ChildRef& aRef = theChildRefs.Value(aChildRefId.Index);
+    if (aRef.IsRemoved || !aRef.ParentId.IsValid() || !aRef.ChildDefId.IsValid()
+        || aRef.ParentId.NodeKind != BRepGraph_NodeId::Kind::Compound)
+      continue;
+
+    const int aCompoundIdx = aRef.ParentId.Index;
+    if (aCompoundIdx < 0 || aCompoundIdx >= theCompounds.Length() || aCompoundIdx >= anOldNbCompounds)
+      continue;
+
+    const BRepGraphInc::CompoundDef& aComp = theCompounds.Value(aCompoundIdx);
+    if (aComp.IsRemoved)
+      continue;
+
+    if (aRef.ChildDefId.NodeKind == BRepGraph_NodeId::Kind::Solid && aRef.ChildDefId.Index >= 0
+        && aRef.ChildDefId.Index < theSolids.Length())
+      appendUnique(myCompoundsOfSolid, aRef.ChildDefId.Index, BRepGraph_CompoundId(aCompoundIdx));
+    else if (aRef.ChildDefId.NodeKind == BRepGraph_NodeId::Kind::Shell && aRef.ChildDefId.Index >= 0
+             && aRef.ChildDefId.Index < theShells.Length())
+      appendUnique(myCompoundsOfShell, aRef.ChildDefId.Index, BRepGraph_CompoundId(aCompoundIdx));
+    else if (aRef.ChildDefId.NodeKind == BRepGraph_NodeId::Kind::Face && aRef.ChildDefId.Index >= 0
+             && aRef.ChildDefId.Index < theFaces.Length())
+      appendUnique(myCompoundsOfFace, aRef.ChildDefId.Index, BRepGraph_CompoundId(aCompoundIdx));
+    else if (aRef.ChildDefId.NodeKind == BRepGraph_NodeId::Kind::Compound
+             && aRef.ChildDefId.Index >= 0 && aRef.ChildDefId.Index < theCompounds.Length())
+      appendUnique(myCompoundsOfCompound,
+                   aRef.ChildDefId.Index,
+                   BRepGraph_CompoundId(aCompoundIdx));
+    else if (aRef.ChildDefId.NodeKind == BRepGraph_NodeId::Kind::CompSolid
+             && aRef.ChildDefId.Index >= 0 && aRef.ChildDefId.Index < theCompSolids.Length())
+      appendUnique(myCompoundsOfCompSolid,
+                   aRef.ChildDefId.Index,
+                   BRepGraph_CompoundId(aCompoundIdx));
+    else if (aRef.ChildDefId.NodeKind == BRepGraph_NodeId::Kind::Wire
+             && aRef.ChildDefId.Index >= 0 && aRef.ChildDefId.Index < theWires.Length())
+      appendUnique(myCompoundsOfWire, aRef.ChildDefId.Index, BRepGraph_CompoundId(aCompoundIdx));
+    else if (aRef.ChildDefId.NodeKind == BRepGraph_NodeId::Kind::Edge
+             && aRef.ChildDefId.Index >= 0 && aRef.ChildDefId.Index < theEdges.Length())
+      appendUnique(myCompoundsOfEdge, aRef.ChildDefId.Index, BRepGraph_CompoundId(aCompoundIdx));
+    else if (aRef.ChildDefId.NodeKind == BRepGraph_NodeId::Kind::Vertex
+             && aRef.ChildDefId.Index >= 0 && aRef.ChildDefId.Index < theVertices.Length())
+      appendUnique(myCompoundsOfVertex, aRef.ChildDefId.Index, BRepGraph_CompoundId(aCompoundIdx));
+  }
+
+  int anOldNbCompSolids = theOldNbCompSolids;
+  if (anOldNbCompSolids < 0 || anOldNbCompSolids > theCompSolids.Length())
+    anOldNbCompSolids = 0;
+
+  // CompSolid -> Solid reverse index:
+  // 1) process all refs of newly appended compsolid parents
+  // 2) process refs attached to pre-existing parents (covers appended refs on old parents)
+  const int aNbCompSolids = theCompSolids.Length();
+  for (BRepGraph_CompSolidId aCompSolidId(anOldNbCompSolids);
+       aCompSolidId.IsValid(aNbCompSolids);
+       ++aCompSolidId)
+  {
+    const BRepGraphInc::CompSolidDef& aCS = theCompSolids.Value(aCompSolidId.Index);
+    if (aCS.IsRemoved)
+      continue;
+    for (const BRepGraph_SolidRefId& aSolidRefId : aCS.SolidRefIds)
+    {
+      const int aRefIdx = aSolidRefId.Index;
+      if (aRefIdx < 0 || aRefIdx >= theSolidRefs.Length())
+        continue;
+      const BRepGraphInc::SolidRef& aRef = theSolidRefs.Value(aRefIdx);
+      if (aRef.IsRemoved || !aRef.SolidDefId.IsValid() || aRef.SolidDefId.Index < 0
+          || aRef.SolidDefId.Index >= theSolids.Length())
+        continue;
+      if (theSolids.Value(aRef.SolidDefId.Index).IsRemoved)
+        continue;
+      appendUnique(myCompSolidsOfSolid, aRef.SolidDefId.Index, aCompSolidId);
+    }
+  }
+
+  // Loop 2: process SolidRefs appended during this delta that target a
+  // pre-existing compsolid parent. Iterate only [theOldNbSolidRefs, NbSolidRefs).
+  int aOldNbSolidRefs = theOldNbSolidRefs;
+  if (aOldNbSolidRefs < 0 || aOldNbSolidRefs > theSolidRefs.Length())
+    aOldNbSolidRefs = 0;
+  const int aNbSolidRefs = theSolidRefs.Length();
+  for (BRepGraph_SolidRefId aSolidRefId(aOldNbSolidRefs); aSolidRefId.IsValid(aNbSolidRefs);
+       ++aSolidRefId)
+  {
+    const BRepGraphInc::SolidRef& aRef = theSolidRefs.Value(aSolidRefId.Index);
+    if (aRef.IsRemoved || !aRef.ParentId.IsValid() || !aRef.SolidDefId.IsValid()
+        || aRef.ParentId.NodeKind != BRepGraph_NodeId::Kind::CompSolid)
+      continue;
+
+    const int aCompSolidIdx = aRef.ParentId.Index;
+    if (aCompSolidIdx < 0 || aCompSolidIdx >= theCompSolids.Length()
+        || aCompSolidIdx >= anOldNbCompSolids || aRef.SolidDefId.Index < 0
+        || aRef.SolidDefId.Index >= theSolids.Length())
+      continue;
+
+    const BRepGraphInc::CompSolidDef& aCS = theCompSolids.Value(aCompSolidIdx);
+    if (aCS.IsRemoved || theSolids.Value(aRef.SolidDefId.Index).IsRemoved)
+      continue;
+
+    appendUnique(myCompSolidsOfSolid,
+                 aRef.SolidDefId.Index,
+                 BRepGraph_CompSolidId(aCompSolidIdx));
   }
 }
 
@@ -795,24 +1001,7 @@ void BRepGraphInc_ReverseIndex::UnbindEdgeFromCoEdge(const BRepGraph_EdgeId   th
 void BRepGraphInc_ReverseIndex::BindEdgeToFace(const BRepGraph_EdgeId theEdgeId,
                                                const BRepGraph_FaceId theFaceId)
 {
-  // Detect new binding by checking vector size before/after appendUnique.
-  const int aSizeBefore =
-    (theEdgeId.Index < myEdgeToFaces.Length()) ? myEdgeToFaces.Value(theEdgeId.Index).Length() : 0;
   appendUnique(myEdgeToFaces, theEdgeId.Index, theFaceId);
-  const int aSizeAfter = myEdgeToFaces.Value(theEdgeId.Index).Length();
-
-  if (aSizeAfter > aSizeBefore)
-  {
-    // SetValue auto-expands with 0-initialized entries.
-    if (theEdgeId.Index >= myEdgeFaceCount.Length())
-    {
-      myEdgeFaceCount.SetValue(theEdgeId.Index, 1);
-    }
-    else
-    {
-      myEdgeFaceCount.ChangeValue(theEdgeId.Index) += 1;
-    }
-  }
 }
 
 //=================================================================================================
@@ -822,8 +1011,6 @@ void BRepGraphInc_ReverseIndex::UnbindEdgeFromFace(const BRepGraph_EdgeId theEdg
 {
   if (theEdgeId.Index < 0 || theEdgeId.Index >= myEdgeToFaces.Length())
     return;
-  Standard_ASSERT_VOID(myEdgeFaceCount.Length() == myEdgeToFaces.Length(),
-                       "UnbindEdgeFromFace: myEdgeFaceCount out of sync with myEdgeToFaces");
   NCollection_Vector<BRepGraph_FaceId>& aFaces = myEdgeToFaces.ChangeValue(theEdgeId.Index);
   for (int i = 0; i < aFaces.Length(); ++i)
   {
@@ -834,9 +1021,6 @@ void BRepGraphInc_ReverseIndex::UnbindEdgeFromFace(const BRepGraph_EdgeId theEdg
       if (i < aFaces.Length() - 1)
         aFaces.ChangeValue(i) = aFaces.Value(aFaces.Length() - 1);
       aFaces.EraseLast();
-      Standard_ASSERT_VOID(myEdgeFaceCount.Value(theEdgeId.Index) > 0,
-                           "UnbindEdgeFromFace: face count underflow");
-      myEdgeFaceCount.ChangeValue(theEdgeId.Index) -= 1;
       break;
     }
   }
@@ -845,16 +1029,21 @@ void BRepGraphInc_ReverseIndex::UnbindEdgeFromFace(const BRepGraph_EdgeId theEdg
 //=================================================================================================
 
 bool BRepGraphInc_ReverseIndex::Validate(
+  const NCollection_Vector<BRepGraphInc::VertexDef>& theVertices,
   const NCollection_Vector<BRepGraphInc::EdgeDef>&   theEdges,
   const NCollection_Vector<BRepGraphInc::CoEdgeDef>& theCoEdges,
   const NCollection_Vector<BRepGraphInc::WireDef>&   theWires,
   const NCollection_Vector<BRepGraphInc::FaceDef>&   theFaces,
   const NCollection_Vector<BRepGraphInc::ShellDef>&  theShells,
   const NCollection_Vector<BRepGraphInc::SolidDef>&  theSolids,
+  const NCollection_Vector<BRepGraphInc::CompoundDef>&  theCompounds,
+  const NCollection_Vector<BRepGraphInc::CompSolidDef>& theCompSolids,
   const NCollection_Vector<BRepGraphInc::ShellRef>&  theShellRefs,
   const NCollection_Vector<BRepGraphInc::FaceRef>&   theFaceRefs,
   const NCollection_Vector<BRepGraphInc::WireRef>&   theWireRefs,
   const NCollection_Vector<BRepGraphInc::CoEdgeRef>& theCoEdgeRefs,
+  const NCollection_Vector<BRepGraphInc::SolidRef>&  theSolidRefs,
+  const NCollection_Vector<BRepGraphInc::ChildRef>&  theChildRefs,
   const NCollection_Vector<BRepGraphInc::VertexRef>& theVertexRefs) const
 {
   auto hasActiveWireUsageOfEdge = [&](const int theWireIdx, const int theEdgeIdx) -> bool {
@@ -1032,6 +1221,114 @@ bool BRepGraphInc_ReverseIndex::Validate(
     return false;
   };
 
+  auto isActiveChildNode = [&](const BRepGraph_NodeId theChildId) -> bool {
+    if (!theChildId.IsValid() || theChildId.Index < 0)
+    {
+      return false;
+    }
+
+    switch (theChildId.NodeKind)
+    {
+      case BRepGraph_NodeId::Kind::Solid:
+        return theChildId.Index < theSolids.Length() && !theSolids.Value(theChildId.Index).IsRemoved;
+      case BRepGraph_NodeId::Kind::Shell:
+        return theChildId.Index < theShells.Length() && !theShells.Value(theChildId.Index).IsRemoved;
+      case BRepGraph_NodeId::Kind::Face:
+        return theChildId.Index < theFaces.Length() && !theFaces.Value(theChildId.Index).IsRemoved;
+      case BRepGraph_NodeId::Kind::Compound:
+        return theChildId.Index < theCompounds.Length()
+               && !theCompounds.Value(theChildId.Index).IsRemoved;
+      case BRepGraph_NodeId::Kind::CompSolid:
+        return theChildId.Index < theCompSolids.Length()
+               && !theCompSolids.Value(theChildId.Index).IsRemoved;
+      case BRepGraph_NodeId::Kind::Wire:
+        return theChildId.Index < theWires.Length() && !theWires.Value(theChildId.Index).IsRemoved;
+      case BRepGraph_NodeId::Kind::Edge:
+        return theChildId.Index < theEdges.Length() && !theEdges.Value(theChildId.Index).IsRemoved;
+      case BRepGraph_NodeId::Kind::Vertex:
+        return theChildId.Index < theVertices.Length()
+               && !theVertices.Value(theChildId.Index).IsRemoved;
+      default:
+        return false;
+    }
+  };
+
+  auto hasActiveCompoundChildRef = [&](const int theCompoundIdx,
+                                       const BRepGraph_NodeId theChildId) -> bool {
+    if (theCompoundIdx < 0 || theCompoundIdx >= theCompounds.Length() || !isActiveChildNode(theChildId))
+    {
+      return false;
+    }
+
+    const BRepGraphInc::CompoundDef& aCompound = theCompounds.Value(theCompoundIdx);
+    if (aCompound.IsRemoved)
+    {
+      return false;
+    }
+
+    for (const BRepGraph_ChildRefId& aChildRefId : aCompound.ChildRefIds)
+    {
+      const int aRefIdx = aChildRefId.Index;
+      if (aRefIdx < 0 || aRefIdx >= theChildRefs.Length())
+      {
+        continue;
+      }
+      const BRepGraphInc::ChildRef& aRef = theChildRefs.Value(aRefIdx);
+      if (aRef.IsRemoved || !aRef.ChildDefId.IsValid())
+      {
+        continue;
+      }
+      if (aRef.ParentId.NodeKind != BRepGraph_NodeId::Kind::Compound
+          || aRef.ParentId.Index != theCompoundIdx)
+      {
+        continue;
+      }
+      if (aRef.ChildDefId == theChildId)
+      {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  auto hasActiveCompSolidRef = [&](const int theCompSolidIdx, const int theSolidIdx) -> bool {
+    if (theCompSolidIdx < 0 || theCompSolidIdx >= theCompSolids.Length() || theSolidIdx < 0
+        || theSolidIdx >= theSolids.Length())
+    {
+      return false;
+    }
+
+    const BRepGraphInc::CompSolidDef& aCompSolid = theCompSolids.Value(theCompSolidIdx);
+    if (aCompSolid.IsRemoved || theSolids.Value(theSolidIdx).IsRemoved)
+    {
+      return false;
+    }
+
+    for (const BRepGraph_SolidRefId& aSolidRefId : aCompSolid.SolidRefIds)
+    {
+      const int aRefIdx = aSolidRefId.Index;
+      if (aRefIdx < 0 || aRefIdx >= theSolidRefs.Length())
+      {
+        continue;
+      }
+      const BRepGraphInc::SolidRef& aRef = theSolidRefs.Value(aRefIdx);
+      if (aRef.IsRemoved || !aRef.SolidDefId.IsValid())
+      {
+        continue;
+      }
+      if (aRef.ParentId.NodeKind != BRepGraph_NodeId::Kind::CompSolid
+          || aRef.ParentId.Index != theCompSolidIdx)
+      {
+        continue;
+      }
+      if (aRef.SolidDefId.Index == theSolidIdx)
+      {
+        return true;
+      }
+    }
+    return false;
+  };
+
   // Check: for each coedge ref entry, edge->wire reverse entry must exist.
   const int aNbCoEdgeRefs = theCoEdgeRefs.Length();
   for (BRepGraph_CoEdgeRefId aCoEdgeRefId(0); aCoEdgeRefId.IsValid(aNbCoEdgeRefs); ++aCoEdgeRefId)
@@ -1050,6 +1347,26 @@ bool BRepGraphInc_ReverseIndex::Validate(
     if (aCoEdge.IsRemoved || !aCoEdge.EdgeDefId.IsValid())
       return false;
     if (!containsIndexInTable(myEdgeToWires, aCoEdge.EdgeDefId.Index, aRef.ParentId.Index))
+      return false;
+  }
+
+  // Check: for each active coedge ref entry, coedge->wire reverse entry must exist.
+  for (BRepGraph_CoEdgeRefId aCoEdgeRefId(0); aCoEdgeRefId.IsValid(aNbCoEdgeRefs); ++aCoEdgeRefId)
+  {
+    const BRepGraphInc::CoEdgeRef& aRef = theCoEdgeRefs.Value(aCoEdgeRefId.Index);
+    if (aRef.IsRemoved || !aRef.ParentId.IsValid()
+        || aRef.ParentId.NodeKind != BRepGraph_NodeId::Kind::Wire || !aRef.CoEdgeDefId.IsValid())
+      continue;
+    if (aRef.ParentId.Index < 0 || aRef.ParentId.Index >= theWires.Length()
+        || aRef.CoEdgeDefId.Index < 0 || aRef.CoEdgeDefId.Index >= theCoEdges.Length())
+      return false;
+    const BRepGraphInc::WireDef& aWire = theWires.Value(aRef.ParentId.Index);
+    if (aWire.IsRemoved)
+      continue;
+    const BRepGraphInc::CoEdgeDef& aCoEdge = theCoEdges.Value(aRef.CoEdgeDefId.Index);
+    if (aCoEdge.IsRemoved)
+      continue;
+    if (!containsIndexInTable(myCoEdgeToWires, aRef.CoEdgeDefId.Index, aRef.ParentId.Index))
       return false;
   }
 
@@ -1137,6 +1454,91 @@ bool BRepGraphInc_ReverseIndex::Validate(
       continue;
     if (!containsIndexInTable(myShellToSolids, aRef.ShellDefId.Index, aRef.ParentId.Index))
       return false;
+  }
+
+  // Check: for each solid ref entry, solid->compsolid reverse entry must exist.
+  const int aNbSolidRefs = theSolidRefs.Length();
+  for (BRepGraph_SolidRefId aSolidRefId(0); aSolidRefId.IsValid(aNbSolidRefs); ++aSolidRefId)
+  {
+    const BRepGraphInc::SolidRef& aRef = theSolidRefs.Value(aSolidRefId.Index);
+    if (aRef.IsRemoved || !aRef.ParentId.IsValid()
+        || aRef.ParentId.NodeKind != BRepGraph_NodeId::Kind::CompSolid || !aRef.SolidDefId.IsValid())
+    {
+      continue;
+    }
+    if (aRef.ParentId.Index < 0 || aRef.ParentId.Index >= theCompSolids.Length()
+        || aRef.SolidDefId.Index < 0 || aRef.SolidDefId.Index >= theSolids.Length())
+    {
+      return false;
+    }
+    const BRepGraphInc::CompSolidDef& aCompSolid = theCompSolids.Value(aRef.ParentId.Index);
+    if (aCompSolid.IsRemoved || theSolids.Value(aRef.SolidDefId.Index).IsRemoved)
+    {
+      continue;
+    }
+    if (!containsIndexInTable(myCompSolidsOfSolid, aRef.SolidDefId.Index, aRef.ParentId.Index))
+    {
+      return false;
+    }
+  }
+
+  // Check: for each compound child ref entry, child->compound reverse entry must exist.
+  const int aNbChildRefs = theChildRefs.Length();
+  for (BRepGraph_ChildRefId aChildRefId(0); aChildRefId.IsValid(aNbChildRefs); ++aChildRefId)
+  {
+    const BRepGraphInc::ChildRef& aRef = theChildRefs.Value(aChildRefId.Index);
+    if (aRef.IsRemoved || !aRef.ParentId.IsValid()
+        || aRef.ParentId.NodeKind != BRepGraph_NodeId::Kind::Compound || !aRef.ChildDefId.IsValid())
+    {
+      continue;
+    }
+    if (aRef.ParentId.Index < 0 || aRef.ParentId.Index >= theCompounds.Length())
+    {
+      return false;
+    }
+    const BRepGraphInc::CompoundDef& aCompound = theCompounds.Value(aRef.ParentId.Index);
+    if (aCompound.IsRemoved || !isActiveChildNode(aRef.ChildDefId))
+    {
+      continue;
+    }
+
+    switch (aRef.ChildDefId.NodeKind)
+    {
+      case BRepGraph_NodeId::Kind::Solid:
+        if (!containsIndexInTable(myCompoundsOfSolid, aRef.ChildDefId.Index, aRef.ParentId.Index))
+          return false;
+        break;
+      case BRepGraph_NodeId::Kind::Shell:
+        if (!containsIndexInTable(myCompoundsOfShell, aRef.ChildDefId.Index, aRef.ParentId.Index))
+          return false;
+        break;
+      case BRepGraph_NodeId::Kind::Face:
+        if (!containsIndexInTable(myCompoundsOfFace, aRef.ChildDefId.Index, aRef.ParentId.Index))
+          return false;
+        break;
+      case BRepGraph_NodeId::Kind::Compound:
+        if (!containsIndexInTable(myCompoundsOfCompound, aRef.ChildDefId.Index, aRef.ParentId.Index))
+          return false;
+        break;
+      case BRepGraph_NodeId::Kind::CompSolid:
+        if (!containsIndexInTable(myCompoundsOfCompSolid, aRef.ChildDefId.Index, aRef.ParentId.Index))
+          return false;
+        break;
+      case BRepGraph_NodeId::Kind::Wire:
+        if (!containsIndexInTable(myCompoundsOfWire, aRef.ChildDefId.Index, aRef.ParentId.Index))
+          return false;
+        break;
+      case BRepGraph_NodeId::Kind::Edge:
+        if (!containsIndexInTable(myCompoundsOfEdge, aRef.ChildDefId.Index, aRef.ParentId.Index))
+          return false;
+        break;
+      case BRepGraph_NodeId::Kind::Vertex:
+        if (!containsIndexInTable(myCompoundsOfVertex, aRef.ChildDefId.Index, aRef.ParentId.Index))
+          return false;
+        break;
+      default:
+        return false;
+    }
   }
 
   // Check reverse tables for stale/extra entries not backed by active forward refs.
@@ -1264,6 +1666,251 @@ bool BRepGraphInc_ReverseIndex::Validate(
     }
   }
 
+  const int aNbCompoundsOfSolid = myCompoundsOfSolid.Length();
+  for (BRepGraph_SolidId aSolidId(0); aSolidId.IsValid(aNbCompoundsOfSolid); ++aSolidId)
+  {
+    const NCollection_Vector<BRepGraph_CompoundId>* aCompoundsVec =
+      seekVec(myCompoundsOfSolid, aSolidId.Index);
+    if (aCompoundsVec == nullptr)
+    {
+      continue;
+    }
+    for (const BRepGraph_CompoundId& aCompoundId : *aCompoundsVec)
+    {
+      if (aCompoundId.Index < 0 || aCompoundId.Index >= theCompounds.Length())
+      {
+        return false;
+      }
+      if (!hasActiveCompoundChildRef(aCompoundId.Index, BRepGraph_SolidId(aSolidId.Index)))
+      {
+        return false;
+      }
+    }
+  }
+
+  const int aNbCompSolidsOfSolid = myCompSolidsOfSolid.Length();
+  for (BRepGraph_SolidId aSolidId(0); aSolidId.IsValid(aNbCompSolidsOfSolid); ++aSolidId)
+  {
+    const NCollection_Vector<BRepGraph_CompSolidId>* aCompSolidsVec =
+      seekVec(myCompSolidsOfSolid, aSolidId.Index);
+    if (aCompSolidsVec == nullptr)
+    {
+      continue;
+    }
+    for (const BRepGraph_CompSolidId& aCompSolidId : *aCompSolidsVec)
+    {
+      if (aCompSolidId.Index < 0 || aCompSolidId.Index >= theCompSolids.Length())
+      {
+        return false;
+      }
+      if (!hasActiveCompSolidRef(aCompSolidId.Index, aSolidId.Index))
+      {
+        return false;
+      }
+    }
+  }
+
+  const int aNbCompoundsOfShell = myCompoundsOfShell.Length();
+  for (BRepGraph_ShellId aShellId(0); aShellId.IsValid(aNbCompoundsOfShell); ++aShellId)
+  {
+    const NCollection_Vector<BRepGraph_CompoundId>* aCompoundsVec =
+      seekVec(myCompoundsOfShell, aShellId.Index);
+    if (aCompoundsVec == nullptr)
+    {
+      continue;
+    }
+    for (const BRepGraph_CompoundId& aCompoundId : *aCompoundsVec)
+    {
+      if (aCompoundId.Index < 0 || aCompoundId.Index >= theCompounds.Length())
+      {
+        return false;
+      }
+      if (!hasActiveCompoundChildRef(aCompoundId.Index, BRepGraph_ShellId(aShellId.Index)))
+      {
+        return false;
+      }
+    }
+  }
+
+  const int aNbCompoundsOfFace = myCompoundsOfFace.Length();
+  for (BRepGraph_FaceId aFaceId(0); aFaceId.IsValid(aNbCompoundsOfFace); ++aFaceId)
+  {
+    const NCollection_Vector<BRepGraph_CompoundId>* aCompoundsVec =
+      seekVec(myCompoundsOfFace, aFaceId.Index);
+    if (aCompoundsVec == nullptr)
+    {
+      continue;
+    }
+    for (const BRepGraph_CompoundId& aCompoundId : *aCompoundsVec)
+    {
+      if (aCompoundId.Index < 0 || aCompoundId.Index >= theCompounds.Length())
+      {
+        return false;
+      }
+      if (!hasActiveCompoundChildRef(aCompoundId.Index, BRepGraph_FaceId(aFaceId.Index)))
+      {
+        return false;
+      }
+    }
+  }
+
+  const int aNbCompoundsOfCompound = myCompoundsOfCompound.Length();
+  for (BRepGraph_CompoundId aCompoundId(0); aCompoundId.IsValid(aNbCompoundsOfCompound); ++aCompoundId)
+  {
+    const NCollection_Vector<BRepGraph_CompoundId>* aCompoundsVec =
+      seekVec(myCompoundsOfCompound, aCompoundId.Index);
+    if (aCompoundsVec == nullptr)
+    {
+      continue;
+    }
+    for (const BRepGraph_CompoundId& aParentCompoundId : *aCompoundsVec)
+    {
+      if (aParentCompoundId.Index < 0 || aParentCompoundId.Index >= theCompounds.Length())
+      {
+        return false;
+      }
+      if (!hasActiveCompoundChildRef(aParentCompoundId.Index, aCompoundId))
+      {
+        return false;
+      }
+    }
+  }
+
+  const int aNbCompoundsOfCompSolid = myCompoundsOfCompSolid.Length();
+  for (BRepGraph_CompSolidId aCompSolidId(0); aCompSolidId.IsValid(aNbCompoundsOfCompSolid);
+       ++aCompSolidId)
+  {
+    const NCollection_Vector<BRepGraph_CompoundId>* aCompoundsVec =
+      seekVec(myCompoundsOfCompSolid, aCompSolidId.Index);
+    if (aCompoundsVec == nullptr)
+    {
+      continue;
+    }
+    for (const BRepGraph_CompoundId& aCompoundId : *aCompoundsVec)
+    {
+      if (aCompoundId.Index < 0 || aCompoundId.Index >= theCompounds.Length())
+      {
+        return false;
+      }
+      if (!hasActiveCompoundChildRef(aCompoundId.Index, aCompSolidId))
+      {
+        return false;
+      }
+    }
+  }
+
+  // Check reverse: myCompoundsOfWire - each entry must be backed by an active compound ChildRef.
+  const int aNbCompoundsOfWire = myCompoundsOfWire.Length();
+  for (BRepGraph_WireId aWireId(0); aWireId.IsValid(aNbCompoundsOfWire); ++aWireId)
+  {
+    const NCollection_Vector<BRepGraph_CompoundId>* aCompoundsVec =
+      seekVec(myCompoundsOfWire, aWireId.Index);
+    if (aCompoundsVec == nullptr)
+    {
+      continue;
+    }
+    for (const BRepGraph_CompoundId& aCompoundId : *aCompoundsVec)
+    {
+      if (aCompoundId.Index < 0 || aCompoundId.Index >= theCompounds.Length())
+      {
+        return false;
+      }
+      if (!hasActiveCompoundChildRef(aCompoundId.Index, BRepGraph_WireId(aWireId.Index)))
+      {
+        return false;
+      }
+    }
+  }
+
+  // Check reverse: myCompoundsOfEdge - each entry must be backed by an active compound ChildRef.
+  const int aNbCompoundsOfEdge = myCompoundsOfEdge.Length();
+  for (BRepGraph_EdgeId anEdgeId2(0); anEdgeId2.IsValid(aNbCompoundsOfEdge); ++anEdgeId2)
+  {
+    const NCollection_Vector<BRepGraph_CompoundId>* aCompoundsVec =
+      seekVec(myCompoundsOfEdge, anEdgeId2.Index);
+    if (aCompoundsVec == nullptr)
+    {
+      continue;
+    }
+    for (const BRepGraph_CompoundId& aCompoundId : *aCompoundsVec)
+    {
+      if (aCompoundId.Index < 0 || aCompoundId.Index >= theCompounds.Length())
+      {
+        return false;
+      }
+      if (!hasActiveCompoundChildRef(aCompoundId.Index, BRepGraph_EdgeId(anEdgeId2.Index)))
+      {
+        return false;
+      }
+    }
+  }
+
+  // Check reverse: myCompoundsOfVertex - each entry must be backed by an active compound ChildRef.
+  const int aNbCompoundsOfVertex = myCompoundsOfVertex.Length();
+  for (BRepGraph_VertexId aVertexId(0); aVertexId.IsValid(aNbCompoundsOfVertex); ++aVertexId)
+  {
+    const NCollection_Vector<BRepGraph_CompoundId>* aCompoundsVec =
+      seekVec(myCompoundsOfVertex, aVertexId.Index);
+    if (aCompoundsVec == nullptr)
+    {
+      continue;
+    }
+    for (const BRepGraph_CompoundId& aCompoundId : *aCompoundsVec)
+    {
+      if (aCompoundId.Index < 0 || aCompoundId.Index >= theCompounds.Length())
+      {
+        return false;
+      }
+      if (!hasActiveCompoundChildRef(aCompoundId.Index, BRepGraph_VertexId(aVertexId.Index)))
+      {
+        return false;
+      }
+    }
+  }
+
+  // Check reverse: myCoEdgeToWires - each entry must be backed by an active CoEdgeRef in that wire.
+  const int aNbCoEdgeToWires = myCoEdgeToWires.Length();
+  for (BRepGraph_CoEdgeId aCoEdgeId2(0); aCoEdgeId2.IsValid(aNbCoEdgeToWires); ++aCoEdgeId2)
+  {
+    const NCollection_Vector<BRepGraph_WireId>* aWiresVec =
+      seekVec(myCoEdgeToWires, aCoEdgeId2.Index);
+    if (aWiresVec == nullptr)
+    {
+      continue;
+    }
+    for (const BRepGraph_WireId& aWireId2 : *aWiresVec)
+    {
+      if (aWireId2.Index < 0 || aWireId2.Index >= theWires.Length())
+      {
+        return false;
+      }
+      const BRepGraphInc::WireDef& aWire = theWires.Value(aWireId2.Index);
+      if (aWire.IsRemoved)
+      {
+        // Stale entry: wire was removed but myCoEdgeToWires was not updated.
+        return false;
+      }
+      bool aFound = false;
+      for (const BRepGraph_CoEdgeRefId& aCoEdgeRefId2 : aWire.CoEdgeRefIds)
+      {
+        if (aCoEdgeRefId2.Index < 0 || aCoEdgeRefId2.Index >= theCoEdgeRefs.Length())
+          continue;
+        const BRepGraphInc::CoEdgeRef& aRef2 = theCoEdgeRefs.Value(aCoEdgeRefId2.Index);
+        if (aRef2.IsRemoved || !aRef2.CoEdgeDefId.IsValid())
+          continue;
+        if (aRef2.CoEdgeDefId.Index == aCoEdgeId2.Index)
+        {
+          aFound = true;
+          break;
+        }
+      }
+      if (!aFound)
+      {
+        return false;
+      }
+    }
+  }
+
   return true;
 }
 
@@ -1276,14 +1923,14 @@ void BRepGraphInc_ReverseIndex::BuildProductOccurrences(
   myProductToOccurrences.Clear();
   preSize(myProductToOccurrences, theNbProducts, myAllocator);
 
-  const int aNbOccurrences = theOccurrences.Length();
-  for (BRepGraph_OccurrenceId anOccurrenceId(0); anOccurrenceId.IsValid(aNbOccurrences);
-       ++anOccurrenceId)
+  BRepGraph_OccurrenceId anOccurrenceId(0);
+  for (const BRepGraphInc::OccurrenceDef& anOcc : theOccurrences)
   {
-    const BRepGraphInc::OccurrenceDef& anOcc = theOccurrences.Value(anOccurrenceId.Index);
-    if (anOcc.IsRemoved)
-      continue;
-    if (anOcc.ProductDefId.IsValid())
-      appendDirect(myProductToOccurrences, anOcc.ProductDefId.Index, anOccurrenceId);
+    if (!anOcc.IsRemoved && anOcc.ChildDefId.IsValid()
+        && anOcc.ChildDefId.NodeKind == BRepGraph_NodeId::Kind::Product)
+    {
+      appendDirect(myProductToOccurrences, anOcc.ChildDefId.Index, anOccurrenceId);
+    }
+    ++anOccurrenceId;
   }
 }

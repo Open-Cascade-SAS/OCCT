@@ -177,7 +177,7 @@ TEST(GeomGridEval_CircleTest, NonStandardCircle)
 
   // All points should be at distance 3 from center (1, 0, 0)
   const gp_Pnt aCenter(1, 0, 0);
-  for (int i = 1; i <= aGrid.Size(); ++i)
+  for (int i = 1; i <= aGrid.Length(); ++i)
   {
     EXPECT_NEAR(aGrid.Value(i).Distance(aCenter), 3.0, THE_TOLERANCE);
     EXPECT_NEAR(aGrid.Value(i).X(), 1.0, THE_TOLERANCE); // All points have X=1

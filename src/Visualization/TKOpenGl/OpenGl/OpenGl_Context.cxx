@@ -782,10 +782,15 @@ void OpenGl_Context::SwapBuffers()
 bool OpenGl_Context::SetSwapInterval(const int theInterval)
 {
 #if defined(HAVE_EGL)
+#if defined(__EMSCRIPTEN__)
+  (void)theInterval;
+  return true;
+#else
   if (::eglSwapInterval((EGLDisplay)myDisplay, theInterval) == EGL_TRUE)
   {
     return true;
   }
+#endif
 #elif defined(_WIN32)
   if (myFuncs->wglSwapIntervalEXT != NULL)
   {

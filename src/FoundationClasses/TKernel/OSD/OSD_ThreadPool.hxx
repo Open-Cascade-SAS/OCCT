@@ -81,10 +81,10 @@ public:
   int LowerThreadIndex() const { return 0; }
 
   //! Return the upper thread index (last index is reserved for self-thread).
-  int UpperThreadIndex() const { return LowerThreadIndex() + myThreads.Size(); }
+  int UpperThreadIndex() const { return LowerThreadIndex() + myThreads.Length(); }
 
   //! Return the number of threads; >= 1.
-  int NbThreads() const { return myThreads.Size() + 1; }
+  int NbThreads() const { return myThreads.Length() + 1; }
 
   //! Return maximum number of threads to be locked by a single Launcher object by default;
   //! the entire thread pool size is returned by default.

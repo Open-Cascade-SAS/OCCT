@@ -544,7 +544,7 @@ occ::handle<BRepTools_History> BRepTools_ReShape::History() const
     NCollection_IndexedMap<TopoDS_Shape> aIntermediates;
     NCollection_Map<TopoDS_Shape>        aModified;
     aIntermediates.Add(aShape);
-    for (int aI = 1; aI <= aIntermediates.Size(); ++aI)
+    for (int aI = 1; aI <= aIntermediates.Length(); ++aI)
     {
       const TopoDS_Shape& aIntermediate = aIntermediates(aI);
       const TReplacement* aReplacement  = myShapeToReplacement.Seek(aIntermediate);

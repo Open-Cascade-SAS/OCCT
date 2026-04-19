@@ -383,7 +383,7 @@ void GeomLib_CheckCurveOnSurface::Perform(
 
     const int aNbThreads =
       myIsParallel
-        ? std::min(anIntervals.Size(), OSD_ThreadPool::DefaultPool()->NbDefaultThreadsToLaunch())
+        ? std::min(anIntervals.Length(), OSD_ThreadPool::DefaultPool()->NbDefaultThreadsToLaunch())
         : 1;
     Array1OfHCurve aCurveArray(0, aNbThreads - 1);
     Array1OfHCurve aCurveOnSurfaceArray(0, aNbThreads - 1);

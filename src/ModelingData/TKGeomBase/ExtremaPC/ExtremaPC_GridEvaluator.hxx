@@ -87,7 +87,7 @@ public:
     const int aNbParams = theParams.Length();
 
     // Resize grid if needed
-    if (myGrid.Size() != aNbParams)
+    if (myGrid.Length() != aNbParams)
     {
       myGrid = NCollection_Array1<GridPoint>(0, aNbParams - 1);
     }
@@ -154,7 +154,7 @@ private:
   void scanGrid(const gp_Pnt& theP, double theTol, ExtremaPC::SearchMode theMode) const
   {
     myCandidates.Clear();
-    const int aNbGrid = myGrid.Size();
+    const int aNbGrid = myGrid.Length();
 
     if (aNbGrid < 2)
     {
@@ -162,7 +162,7 @@ private:
     }
 
     // Resize processed array if needed
-    if (myProcessed.Size() != aNbGrid)
+    if (myProcessed.Length() != aNbGrid)
     {
       myProcessed = NCollection_Array1<bool>(0, aNbGrid - 1);
     }

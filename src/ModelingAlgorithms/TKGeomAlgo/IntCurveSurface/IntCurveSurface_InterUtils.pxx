@@ -1244,7 +1244,7 @@ struct SortedStartPoints
     TabW.Clear();
   }
 
-  int Size() const { return TabU.Size(); }
+  int Size() const { return TabU.Length(); }
 
   void Append(double theU, double theV, double theW)
   {

@@ -19,6 +19,7 @@
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_TopoView.hxx>
+#include <BRepGraph_Builder.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <Precision.hxx>
@@ -33,7 +34,7 @@ protected:
   {
     BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
     const TopoDS_Shape& aBox = aBoxMaker.Shape();
-    myGraph.Build(aBox);
+    BRepGraph_Builder::Perform(myGraph, aBox);
   }
 
   BRepGraph myGraph;
@@ -51,7 +52,7 @@ TEST_F(BRepGraph_ConvenienceTest, NodeId_Factories_CorrectKindAndIndex)
   EXPECT_EQ(aShell.NodeKind, BRepGraph_NodeId::Kind::Shell);
   EXPECT_EQ(aShell.Index, 5);
 
-  const BRepGraph_NodeId aFace = BRepGraph_FaceId(0);
+  const BRepGraph_NodeId aFace = BRepGraph_FaceId::Start();
   EXPECT_EQ(aFace.NodeKind, BRepGraph_NodeId::Kind::Face);
   EXPECT_EQ(aFace.Index, 0);
 
@@ -67,11 +68,11 @@ TEST_F(BRepGraph_ConvenienceTest, NodeId_Factories_CorrectKindAndIndex)
   EXPECT_EQ(aVertex.NodeKind, BRepGraph_NodeId::Kind::Vertex);
   EXPECT_EQ(aVertex.Index, 1);
 
-  const BRepGraph_NodeId aCompound = BRepGraph_CompoundId(0);
+  const BRepGraph_NodeId aCompound = BRepGraph_CompoundId::Start();
   EXPECT_EQ(aCompound.NodeKind, BRepGraph_NodeId::Kind::Compound);
   EXPECT_EQ(aCompound.Index, 0);
 
-  const BRepGraph_NodeId aCompSolid = BRepGraph_CompSolidId(0);
+  const BRepGraph_NodeId aCompSolid = BRepGraph_CompSolidId::Start();
   EXPECT_EQ(aCompSolid.NodeKind, BRepGraph_NodeId::Kind::CompSolid);
   EXPECT_EQ(aCompSolid.Index, 0);
 }
@@ -79,7 +80,7 @@ TEST_F(BRepGraph_ConvenienceTest, NodeId_Factories_CorrectKindAndIndex)
 TEST_F(BRepGraph_ConvenienceTest, NodeId_Factories_EqualToConstructor)
 {
   EXPECT_EQ(BRepGraph_FaceId(3), BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, 3));
-  EXPECT_EQ(BRepGraph_EdgeId(0), BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, 0));
+  EXPECT_EQ(BRepGraph_EdgeId::Start(), BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, 0));
 }
 
 // ---------- Part B: EdgeDef Vertex Access via BRepGraph_Tool ----------
@@ -88,7 +89,7 @@ TEST_F(BRepGraph_ConvenienceTest, EdgeDef_StartVertex_Valid)
 {
   ASSERT_GT(myGraph.Topo().Edges().Nb(), 0);
   const BRepGraph_EdgeId         anEdgeId(0);
-  const BRepGraphInc::VertexRef& aStart = BRepGraph_Tool::Edge::StartVertex(myGraph, anEdgeId);
+  const BRepGraphInc::VertexRef& aStart = BRepGraph_Tool::Edge::StartVertexRef(myGraph, anEdgeId);
   EXPECT_TRUE(aStart.VertexDefId.IsValid());
 }
 
@@ -96,7 +97,7 @@ TEST_F(BRepGraph_ConvenienceTest, EdgeDef_EndVertex_Valid)
 {
   ASSERT_GT(myGraph.Topo().Edges().Nb(), 0);
   const BRepGraph_EdgeId         anEdgeId(0);
-  const BRepGraphInc::VertexRef& anEnd = BRepGraph_Tool::Edge::EndVertex(myGraph, anEdgeId);
+  const BRepGraphInc::VertexRef& anEnd = BRepGraph_Tool::Edge::EndVertexRef(myGraph, anEdgeId);
   EXPECT_TRUE(anEnd.VertexDefId.IsValid());
 }
 
@@ -108,9 +109,9 @@ TEST_F(BRepGraph_ConvenienceTest, EdgeDef_StartEnd_DifferForNonClosed)
   if (!anEdge.IsClosed)
   {
     const BRepGraph_VertexId aStartId =
-      BRepGraph_Tool::Edge::StartVertex(myGraph, anEdgeId).VertexDefId;
+      BRepGraph_Tool::Edge::StartVertexRef(myGraph, anEdgeId).VertexDefId;
     const BRepGraph_VertexId anEndId =
-      BRepGraph_Tool::Edge::EndVertex(myGraph, anEdgeId).VertexDefId;
+      BRepGraph_Tool::Edge::EndVertexRef(myGraph, anEdgeId).VertexDefId;
     EXPECT_NE(aStartId, anEndId);
   }
 }
@@ -130,7 +131,7 @@ TEST_F(BRepGraph_ConvenienceTest, FaceSurface_Valid)
 {
   const BRepGraph::TopoView aDefs = myGraph.Topo();
   ASSERT_GT(aDefs.Faces().Nb(), 0);
-  EXPECT_TRUE(aDefs.Faces().Definition(BRepGraph_FaceId(0)).SurfaceRepId.IsValid());
+  EXPECT_TRUE(aDefs.Faces().Definition(BRepGraph_FaceId::Start()).SurfaceRepId.IsValid());
 }
 
 TEST_F(BRepGraph_ConvenienceTest, FaceSurface_AllBoxFaces)
@@ -166,7 +167,7 @@ TEST_F(BRepGraph_ConvenienceTest, FindPCurve_ValidPair)
 
 TEST_F(BRepGraph_ConvenienceTest, FindPCurve_InvalidPair_ReturnsNull)
 {
-  EXPECT_EQ(BRepGraph_Tool::Edge::FindPCurve(myGraph, BRepGraph_EdgeId(0), BRepGraph_FaceId(9999)),
+  EXPECT_EQ(BRepGraph_Tool::Edge::FindPCurve(myGraph, BRepGraph_EdgeId::Start(), BRepGraph_FaceId(9999)),
             nullptr);
 }
 
@@ -176,14 +177,14 @@ TEST_F(BRepGraph_ConvenienceTest, ShellFaceRefs_Box_SixFaces)
 {
   const BRepGraph::RefsView& aRefs = myGraph.Refs();
   ASSERT_EQ(myGraph.Topo().Shells().Nb(), 1);
-  EXPECT_EQ(aRefs.Faces().IdsOf(BRepGraph_ShellId(0)).Length(), 6);
+  EXPECT_EQ(aRefs.Faces().IdsOf(BRepGraph_ShellId::Start()).Length(), 6);
 }
 
 TEST_F(BRepGraph_ConvenienceTest, ShellFaceRefs_AllValid)
 {
   const BRepGraph::RefsView&                     aRefs = myGraph.Refs();
   const NCollection_Vector<BRepGraph_FaceRefId>& aFaceRefIds =
-    aRefs.Faces().IdsOf(BRepGraph_ShellId(0));
+    aRefs.Faces().IdsOf(BRepGraph_ShellId::Start());
   for (int aFaceIter = 0; aFaceIter < aFaceRefIds.Length(); ++aFaceIter)
   {
     const BRepGraphInc::FaceRef& aFaceRef = aRefs.Faces().Entry(aFaceRefIds.Value(aFaceIter));
@@ -205,7 +206,7 @@ TEST_F(BRepGraph_ConvenienceTest, FindPCurve_WithOrientation_SeamEdge)
   const TopoDS_Shape&      aCyl = aCylMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Build(aCyl);
+  BRepGraph_Builder::Perform(aGraph, aCyl);
   ASSERT_TRUE(aGraph.IsDone());
 
   const BRepGraph::TopoView aDefs = aGraph.Topo();

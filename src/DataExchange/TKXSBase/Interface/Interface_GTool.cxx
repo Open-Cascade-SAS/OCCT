@@ -83,11 +83,11 @@ Interface_GeneralLib& Interface_GTool::Lib()
 
 void Interface_GTool::Reservate(const int nb, const bool enforce)
 {
-  int n = thentnum.NbBuckets();
-  if (n < nb && !enforce)
+  const size_t aNbBuckets = thentnum.NbBuckets();
+  if (aNbBuckets < static_cast<size_t>(nb) && !enforce)
     return;
-  thentnum.ReSize(nb);
-  thentmod.ReSize(nb);
+  thentnum.ReSize(static_cast<size_t>(nb));
+  thentmod.ReSize(static_cast<size_t>(nb));
 }
 
 void Interface_GTool::ClearEntities()

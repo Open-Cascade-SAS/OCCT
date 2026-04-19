@@ -15,8 +15,10 @@
 #define _BRepGraph_Data_HeaderFile
 
 #include <BRepGraph_CacheView.hxx>
-#include <BRepGraph_BuilderView.hxx>
+#include <BRepGraph_EditorView.hxx>
+#include <BRepGraph_MeshView.hxx>
 #include <BRepGraph_History.hxx>
+#include <BRepGraph_MeshCache.hxx>
 #include <BRepGraph_NodeId.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_ShapesView.hxx>
@@ -59,16 +61,16 @@ struct BRepGraph_Data
   std::atomic<size_t> myNextUIDCounter{
     1}; //!< Starts at 1; counter=0 is BRepGraph_UID invalid sentinel.
   std::atomic<uint32_t> myGeneration{0};
-  Standard_GUID         myGraphGUID; //!< Random graph identity, generated at Build().
+  Standard_GUID         myGraphGUID; //!< Random graph identity, generated at BRepGraph_Builder::Perform().
 
   //! History subsystem.
   BRepGraph_History myHistoryLog;
 
   bool myIsDone = false;
 
-  //! Root topology NodeIds created by Build()/append operations.
-  //! Face-level append may contribute multiple face roots for one input shape.
-  NCollection_Vector<BRepGraph_NodeId> myRootNodeIds;
+  //! Root product identifiers: products not referenced by any active occurrence.
+  //! Maintained incrementally by Editor/EditorView mutations.
+  NCollection_Vector<BRepGraph_ProductId> myRootProductIds;
 
   //! When true, markModified() only increments OwnGen + SubtreeGen and appends to
   //! myDeferredModified - no mutex acquisition and no upward propagation.
@@ -109,6 +111,11 @@ struct BRepGraph_Data
   mutable uint32_t                                               myRefUIDToRefIdGeneration = 0;
   mutable bool                                                   myRefUIDToRefIdDirty      = true;
 
+  //! Cached mesh data storage (algorithm-derived, non-mutating).
+  //! Holds triangulation/polygon rep references written by BRepGraphMesh.
+  //! Does NOT trigger markModified() or mutation tracking.
+  BRepGraph_MeshCacheStorage myMeshCache;
+
   using ReconstructCache = NCollection_DataMap<BRepGraph_NodeId, TopoDS_Shape>;
 
   //! Cached view objects (pointers set to owning BRepGraph in its constructor).
@@ -117,7 +124,8 @@ struct BRepGraph_Data
   BRepGraph::CacheView   myCacheView{nullptr};
   BRepGraph::RefsView    myRefsView{nullptr};
   BRepGraph::ShapesView  myShapesView{nullptr};
-  BRepGraph::BuilderView myBuilderView{nullptr};
+  BRepGraph::EditorView myEditorView{nullptr};
+  BRepGraph::MeshView    myMeshView{nullptr};
 
   BRepGraph_Data()
       : myAllocator(new NCollection_IncAllocator),

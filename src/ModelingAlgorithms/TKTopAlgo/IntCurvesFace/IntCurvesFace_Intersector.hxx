@@ -18,12 +18,15 @@
 #define _IntCurvesFace_Intersector_HeaderFile
 
 #include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_Surface.hxx>
+#include <Adaptor3d_TopolTool.hxx>
 #include <Bnd_BoundSortBox.hxx>
-#include <BRepAdaptor_Surface.hxx>
 #include <IntCurveSurface_IntersectionPoint.hxx>
 #include <NCollection_Sequence.hxx>
+#include <NCollection_Vector.hxx>
 #include <IntCurveSurface_ThePolyhedronOfHInter.hxx>
 #include <Standard_Integer.hxx>
+#include <TopAbs_Orientation.hxx>
 #include <TopoDS_Face.hxx>
 #include <GeomAbs_SurfaceType.hxx>
 #include <IntCurveSurface_TransitionOnCurve.hxx>
@@ -31,7 +34,6 @@
 
 #include <memory>
 
-class BRepTopAdaptor_TopolTool;
 class gp_Lin;
 class gp_Pnt;
 class IntCurveSurface_HInter;
@@ -62,6 +64,28 @@ public:
                                             const double       aTol,
                                             const bool         aRestr    = true,
                                             const bool         UseBToler = true);
+
+  //! Construct from an adaptor surface and topological tool, without TopoDS_Face.
+  //!
+  //! This constructor enables graph-native usage where face geometry is accessed
+  //! through adaptors rather than TopoDS shapes. The face member stays null.
+  //! Edge-tolerance refinement in InternalCall uses the provided min/max edge tolerances.
+  //! @param[in] theSurface    surface adaptor
+  //! @param[in] theTopolTool  topological tool providing UV classification and sampling
+  //! @param[in] theTol        intersection tolerance
+  //! @param[in] theFaceOri    face orientation (FORWARD/REVERSED) for transition computation
+  //! @param[in] theMinEdgeTol minimum edge tolerance on the face (for 2D classification)
+  //! @param[in] theMaxEdgeTol maximum edge tolerance on the face (for 2D classification fallback)
+  //! @param[in] theRestr      if true, restrict surface to UV bounds
+  //! @param[in] theUseBToler  if true, use boundary tolerance for classification refinement
+  Standard_EXPORT IntCurvesFace_Intersector(const occ::handle<Adaptor3d_Surface>&  theSurface,
+                                            const occ::handle<Adaptor3d_TopolTool>& theTopolTool,
+                                            const double              theTol,
+                                            const TopAbs_Orientation  theFaceOri,
+                                            const double              theMinEdgeTol,
+                                            const double              theMaxEdgeTol,
+                                            const bool                theRestr   = true,
+                                            const bool                theUseBToler = true);
 
   //! Perform the intersection between the
   //! segment L and the loaded face.
@@ -135,22 +159,29 @@ public:
   Standard_EXPORT ~IntCurvesFace_Intersector() override;
 
 private:
+  //! Common initialization: build polyhedron for non-analytical surfaces.
+  //! Called from both constructors after Hsurface and myTopolTool are set.
+  void initSampling();
+
   Standard_EXPORT void InternalCall(const IntCurveSurface_HInter& HICS,
                                     const double                  pinf,
                                     const double                  psup);
 
-  occ::handle<BRepTopAdaptor_TopolTool>                   myTopolTool;
-  occ::handle<BRepAdaptor_Surface>                        Hsurface;
-  double                                                  Tol;
+  occ::handle<Adaptor3d_TopolTool>                       myTopolTool;
+  occ::handle<Adaptor3d_Surface>                         Hsurface;
+  double                                                 Tol;
   NCollection_Sequence<IntCurveSurface_IntersectionPoint> SeqPnt;
-  NCollection_Sequence<int>                               mySeqState;
-  bool                                                    done;
-  bool                                                    myReady;
-  int                                                     nbpnt;
-  TopoDS_Face                                             face;
-  std::unique_ptr<IntCurveSurface_ThePolyhedronOfHInter>  myPolyhedron;
-  std::unique_ptr<Bnd_BoundSortBox>                       myBndBounding;
-  bool                                                    myUseBoundTol;
+  NCollection_Sequence<int>                              mySeqState;
+  bool                                                   done;
+  bool                                                   myReady;
+  int                                                    nbpnt;
+  TopoDS_Face                                            face;
+  TopAbs_Orientation                                     myFaceOri;    //!< Stored face orientation.
+  double                                                 myMinEdgeTol; //!< Min edge tolerance on face.
+  double                                                 myMaxEdgeTol; //!< Max edge tolerance on face.
+  std::unique_ptr<IntCurveSurface_ThePolyhedronOfHInter> myPolyhedron;
+  std::unique_ptr<Bnd_BoundSortBox>                      myBndBounding;
+  bool                                                   myUseBoundTol;
   bool myIsParallel; // Curve is "parallel" face surface
                      // This case is recognized only for some pairs
                      // of analytical curves and surfaces (plane - line, ...)

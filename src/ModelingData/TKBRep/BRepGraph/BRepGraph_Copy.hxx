@@ -16,6 +16,7 @@
 
 #include <BRepGraph.hxx>
 #include <BRepGraph_NodeId.hxx>
+#include <BRepGraph_Builder.hxx>
 
 #include <Standard_DefineAlloc.hxx>
 
@@ -35,7 +36,7 @@
 //! ## Typical usage
 //! @code
 //!   BRepGraph aGraph;
-//!   aGraph.Build(myShape);
+//!   BRepGraph_Builder::Perform(aGraph, myShape);
 //!   BRepGraph aCopy = BRepGraph_Copy::Perform(aGraph);
 //!   TopoDS_Shape aShape = aCopy.Shapes().Shape();
 //! @endcode

@@ -23,6 +23,7 @@
 #include <utility>
 
 //! @brief Type-safe, allocation-free iterator over BRepGraph definition nodes.
+//! @see BRepGraph class comment "Iterator guide" for choosing between iterator types.
 //!
 //! Provides sequential read-only access to definitions stored in BRepGraph.
 //! By default nodes with IsRemoved flag are skipped; set TheFullTraverse
@@ -216,6 +217,18 @@ public:
     skipRemoved();
   }
 
+  BRepGraph_Iterator(const BRepGraph& theGraph, const TypedId theStartId)
+      : myGraph(theGraph),
+        myCurrent(theStartId),
+        myLength(TypedId(Traits::Count(theGraph)))
+  {
+    if (myCurrent < TypedId::Start())
+    {
+      myCurrent = TypedId::Start();
+    }
+    skipRemoved();
+  }
+
   [[nodiscard]] bool More() const { return myCurrent < myLength; }
 
   void Next()
@@ -250,7 +263,7 @@ private:
   }
 
   const BRepGraph& myGraph;
-  TypedId          myCurrent = TypedId(0);
+  TypedId          myCurrent = TypedId::Start();
   TypedId          myLength;
 };
 
@@ -286,5 +299,35 @@ using BRepGraph_FullCompoundIterator   = BRepGraph_Iterator<BRepGraphInc::Compou
 using BRepGraph_FullCompSolidIterator  = BRepGraph_Iterator<BRepGraphInc::CompSolidDef, true>;
 using BRepGraph_FullProductIterator    = BRepGraph_Iterator<BRepGraphInc::ProductDef, true>;
 using BRepGraph_FullOccurrenceIterator = BRepGraph_Iterator<BRepGraphInc::OccurrenceDef, true>;
+
+//! @brief Allocation-free iterator over root product identifiers.
+//!
+//! Iterates directly over BRepGraph::RootProductIds() — products not
+//! referenced by any active occurrence.
+class BRepGraph_RootProductIterator
+{
+public:
+  explicit BRepGraph_RootProductIterator(const BRepGraph& theGraph)
+      : myRoots(theGraph.RootProductIds())
+  {
+  }
+
+  [[nodiscard]] bool More() const { return myIndex < myRoots.Length(); }
+
+  void Next() { ++myIndex; }
+
+  [[nodiscard]] const BRepGraph_ProductId& Current() const { return myRoots.Value(myIndex); }
+
+  NCollection_ForwardRangeIterator<BRepGraph_RootProductIterator> begin()
+  {
+    return NCollection_ForwardRangeIterator<BRepGraph_RootProductIterator>(this);
+  }
+
+  NCollection_ForwardRangeSentinel end() const { return NCollection_ForwardRangeSentinel{}; }
+
+private:
+  const NCollection_Vector<BRepGraph_ProductId>& myRoots;
+  int                                            myIndex = 0;
+};
 
 #endif // _BRepGraph_Iterator_HeaderFile

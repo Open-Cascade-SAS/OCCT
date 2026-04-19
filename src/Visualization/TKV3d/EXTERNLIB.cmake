@@ -1,6 +1,7 @@
 # External dependencies for TKV3d
 set(OCCT_TKV3d_EXTERNAL_LIBS
   TKBRep
+  TKDE
   TKMath
   TKernel
   TKService

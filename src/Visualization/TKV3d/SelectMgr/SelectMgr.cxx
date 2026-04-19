@@ -306,7 +306,7 @@ void SelectMgr::ComputeSensitivePrs(const occ::handle<Graphic3d_Structure>&     
   if (!aSeqPoints.IsEmpty())
   {
     occ::handle<Graphic3d_ArrayOfPoints> anArrayOfPoints =
-      new Graphic3d_ArrayOfPoints(aSeqPoints.Size());
+      new Graphic3d_ArrayOfPoints(aSeqPoints.Length());
     for (NCollection_Sequence<gp_Pnt>::Iterator aPntIter(aSeqPoints); aPntIter.More();
          aPntIter.Next())
     {

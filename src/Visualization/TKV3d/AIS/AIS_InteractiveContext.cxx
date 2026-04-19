@@ -2933,7 +2933,7 @@ AIS_StatusOfPick AIS_InteractiveContext::Select(
   const AIS_SelectionScheme                                     theSelScheme)
 {
   NCollection_IndexedMap<occ::handle<SelectMgr_EntityOwner>> aSelOwnerMap(
-    myAutoHilight ? mySelection->Objects().Size() : 0);
+    myAutoHilight ? mySelection->Objects().Length() : 0);
   if (myAutoHilight)
   {
     clearDynamicHighlight();

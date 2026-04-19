@@ -18,14 +18,29 @@
 #include <BRepGraphInc_Representation.hxx>
 #include <BRepGraph_Copy.hxx>
 #include <BRepGraph_Iterator.hxx>
-#include <NCollection_IncAllocator.hxx>
-#include <NCollection_Map.hxx>
-#include <BRepGraph_BuilderView.hxx>
+#include <BRepGraph_MeshView.hxx>
+#include <BRepGraph_EditorView.hxx>
+#include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_TopoView.hxx>
+#include <NCollection_Map.hxx>
 #include <BRepGraph_Tool.hxx>
 
 namespace
 {
+
+template <typename ApplyProductFn>
+void forEachRootProduct(BRepGraph& theGraph, ApplyProductFn&& theApplyProduct)
+{
+  const BRepGraph::TopoView::ProductOps& aProducts = theGraph.Topo().Products();
+  for (BRepGraph_RootProductIterator aRootIt(theGraph); aRootIt.More(); aRootIt.Next())
+  {
+    const BRepGraph_ProductId aProductId = aRootIt.Current();
+    if (aProductId.IsValid(aProducts.Nb()) && !aProducts.Definition(aProductId).IsRemoved)
+    {
+      theApplyProduct(aProductId);
+    }
+  }
+}
 
 //! Geometry-level transform: deep-copy geometry is already done by Copy,
 //! so transform geometry handles in-place.
@@ -36,36 +51,37 @@ void applyGeometryTransform(BRepGraph& theGraph, const gp_Trsf& theTrsf)
   // Transform absolute vertex points.
   for (BRepGraph_VertexIterator aVertexIt(theGraph); aVertexIt.More(); aVertexIt.Next())
   {
-    theGraph.Builder().MutVertex(aVertexIt.CurrentId())->Point.Transform(theTrsf);
+    theGraph.Editor().Vertices().Mut(aVertexIt.CurrentId())->Point.Transform(theTrsf);
   }
 
   // Transform surface geometry handles directly on surface reps.
   // Use visited set to avoid transforming shared handles twice.
-  NCollection_Map<int> aVisitedSurfReps;
+  NCollection_Map<BRepGraph_SurfaceRepId> aVisitedSurfReps;
   for (BRepGraph_FaceIterator aFaceIt(theGraph); aFaceIt.More(); aFaceIt.Next())
   {
     const BRepGraph_FaceId                    aFaceId = aFaceIt.CurrentId();
-    BRepGraph_MutGuard<BRepGraphInc::FaceDef> aFace   = theGraph.Builder().MutFace(aFaceId);
+    BRepGraph_MutGuard<BRepGraphInc::FaceDef> aFace   = theGraph.Editor().Faces().Mut(aFaceId);
     if (BRepGraph_Tool::Face::HasSurface(theGraph, aFaceId)
-        && aVisitedSurfReps.Add(aFace->SurfaceRepId.Index))
+      && aVisitedSurfReps.Add(aFace->SurfaceRepId))
     {
       const occ::handle<Geom_Surface>& aSurf = BRepGraph_Tool::Face::Surface(theGraph, aFaceId);
       if (!aSurf.IsNull())
         aSurf->Transform(theTrsf);
     }
     // Invalidate triangulations - meshes are no longer valid after geometry transform.
-    aFace->TriangulationRepIds.Clear();
-    aFace->ActiveTriangulationIndex = -1;
+    aFace->TriangulationRepId = BRepGraph_TriangulationRepId();
+    // Also invalidate cached mesh data.
+    BRepGraph_Tool::Mesh::ClearFaceCache(theGraph, aFaceId);
   }
 
   // Transform curve geometry handles directly on curve reps.
-  NCollection_Map<int> aVisitedCurveReps;
+  NCollection_Map<BRepGraph_Curve3DRepId> aVisitedCurveReps;
   for (BRepGraph_EdgeIterator anEdgeIt(theGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
     const BRepGraph_EdgeId                    anEdgeId = anEdgeIt.CurrentId();
-    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> anEdge   = theGraph.Builder().MutEdge(anEdgeId);
+    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> anEdge   = theGraph.Editor().Edges().Mut(anEdgeId);
     if (BRepGraph_Tool::Edge::HasCurve(theGraph, anEdgeId)
-        && aVisitedCurveReps.Add(anEdge->Curve3DRepId.Index))
+      && aVisitedCurveReps.Add(anEdge->Curve3DRepId))
     {
       const occ::handle<Geom_Curve>& aCurve3d = BRepGraph_Tool::Edge::Curve(theGraph, anEdgeId);
       if (!aCurve3d.IsNull())
@@ -83,18 +99,20 @@ void BRepGraph_Transform::applyLocationTransform(BRepGraph& theGraph, const gp_T
 {
   const TopLoc_Location aLoc(theTrsf);
 
-  // Compose the transform into root Product RootLocations.
-  // RootProducts() returns products not referenced by any occurrence.
-  // Product::RootLocation participates in location composition,
-  // so all descendant queries automatically include it.
-  const occ::handle<NCollection_BaseAllocator>  anAllocator = new NCollection_IncAllocator();
-  const NCollection_Vector<BRepGraph_ProductId> aRoots =
-    theGraph.Topo().Products().RootProducts(anAllocator);
-  for (const BRepGraph_ProductId& aRootId : aRoots)
-  {
-    BRepGraph_MutGuard<BRepGraphInc::ProductDef> aProduct = theGraph.Builder().MutProduct(aRootId);
-    aProduct->RootLocation                                = aLoc * aProduct->RootLocation;
-  }
+  // Compose the transform into all top-level OccurrenceRefs of each root product.
+  // This handles both parts (shape-root occurrence) and assemblies (sub-product occurrences).
+  forEachRootProduct(theGraph, [&](const BRepGraph_ProductId theProductId) {
+    const BRepGraphInc::ProductDef& aProduct = theGraph.Topo().Products().Definition(theProductId);
+    for (const BRepGraph_OccurrenceRefId& aRefId : aProduct.OccurrenceRefIds)
+    {
+      const BRepGraphInc::OccurrenceRef& aOccRef = theGraph.Refs().Occurrences().Entry(aRefId);
+      if (aOccRef.IsRemoved)
+        continue;
+      BRepGraph_MutGuard<BRepGraphInc::OccurrenceRef> aMutRef =
+        theGraph.Editor().Products().MutOccurrenceRef(aRefId);
+      aMutRef->LocalLocation = aLoc * aMutRef->LocalLocation;
+    }
+  });
 }
 
 //=================================================================================================
@@ -139,7 +157,7 @@ BRepGraph BRepGraph_Transform::TransformFace(const BRepGraph&       theGraph,
                                              const gp_Trsf&         theTrsf,
                                              const bool             theCopyGeom)
 {
-  if (!theGraph.IsDone() || theFace.Index < 0 || theFace.Index >= theGraph.Topo().Faces().Nb())
+  if (!theGraph.IsDone() || !theFace.IsValidIn(theGraph.Topo().Faces()))
     return BRepGraph();
 
   const bool useGeomModif =

@@ -9,6 +9,8 @@ set(OCCT_TKernel_GTests_FILES
   NCollection_Array2_Test.cxx
   NCollection_BaseAllocator_Test.cxx
   NCollection_CellFilter_Test.cxx
+  NCollection_DynamicArray_Test.cxx
+  NCollection_LinearVector_Test.cxx
   NCollection_DataMap_Test.cxx
   NCollection_DoubleMap_Test.cxx
   NCollection_FlatDataMap_Test.cxx

@@ -563,7 +563,7 @@ bool OpenGl_View::ShadowMapDump(Image_PixMap& theImage, const TCollection_AsciiS
   }
 
   const occ::handle<OpenGl_Context>& aGlCtx = myWorkspace->GetGlContext();
-  for (int aShadowIter = 0; aShadowIter < myShadowMaps->Size(); ++aShadowIter)
+  for (int aShadowIter = 0; aShadowIter < myShadowMaps->Length(); ++aShadowIter)
   {
     occ::handle<OpenGl_ShadowMap>& aShadow = myShadowMaps->ChangeValue(aShadowIter);
     if (!aShadow.IsNull() && aShadow->LightSource()->Name() == theLightName)
@@ -1649,14 +1649,14 @@ bool OpenGl_View::prepareFrameBuffers(Graphic3d_Camera::Projection& theProj)
                         && myRenderParams.Method != Graphic3d_RM_RAYTRACING;
   if (toUseShadowMap)
   {
-    if (myShadowMaps->Size() != myLights->NbCastShadows())
+    if (myShadowMaps->Length() != myLights->NbCastShadows())
     {
       myShadowMaps->Release(aCtx.get());
       myShadowMaps->Resize(0, myLights->NbCastShadows() - 1, true);
     }
 
     const GLint aSamplFrom = GLint(aCtx->ShadowMapTexUnit()) - myLights->NbCastShadows() + 1;
-    for (int aShadowIter = 0; aShadowIter < myShadowMaps->Size(); ++aShadowIter)
+    for (int aShadowIter = 0; aShadowIter < myShadowMaps->Length(); ++aShadowIter)
     {
       occ::handle<OpenGl_ShadowMap>& aShadow = myShadowMaps->ChangeValue(aShadowIter);
       if (aShadow.IsNull())
@@ -2172,7 +2172,8 @@ void OpenGl_View::redraw(const Graphic3d_Camera::Projection theProjection,
   }
   else
   {
-    const int aViewport[4] = {0, 0, myWindow->Width(), myWindow->Height()};
+    const NCollection_Vec2<int>& anOffset = ViewportOffset();
+    const int aViewport[4] = {anOffset.x(), anOffset.y(), myWindow->Width(), myWindow->Height()};
     aCtx->ResizeViewport(aViewport);
   }
 
@@ -2188,6 +2189,18 @@ void OpenGl_View::redraw(const Graphic3d_Camera::Projection theProjection,
 
   aCtx->core11fwd->glClearDepth(1.0);
 
+  // Scissor-restrict clear to viewport region when rendering at an offset
+  // in the default framebuffer. Without this, glClear wipes the entire framebuffer.
+  const NCollection_Vec2<int>& anClearOffset = ViewportOffset();
+  const bool hasViewportOffset = (anClearOffset.x() != 0 || anClearOffset.y() != 0)
+                              && theReadDrawFbo == nullptr;
+  if (hasViewportOffset)
+  {
+    aCtx->core11fwd->glScissor(anClearOffset.x(), anClearOffset.y(),
+                               myWindow->Width(), myWindow->Height());
+    aCtx->core11fwd->glEnable(GL_SCISSOR_TEST);
+  }
+
   const NCollection_Vec4<float> aBgColor = aCtx->Vec4FromQuantityColor(myBgColor);
   // clang-format off
   aCtx->SetColorMaskRGBA (NCollection_Vec4<bool> (true)); // force writes into all components, including alpha
@@ -2197,6 +2210,11 @@ void OpenGl_View::redraw(const Graphic3d_Camera::Projection theProjection,
                                 aBgColor.b(),
                                 aCtx->caps->buffersOpaqueAlpha ? 1.0f : 0.0f);
   aCtx->core11fwd->glClear(toClear);
+
+  if (hasViewportOffset)
+  {
+    aCtx->core11fwd->glDisable(GL_SCISSOR_TEST);
+  }
   aCtx->SetColorMask(true); // restore default alpha component write state
 
   render(theProjection, theReadDrawFbo, theOitAccumFbo, false);
@@ -2825,7 +2843,8 @@ void OpenGl_View::bindDefaultFbo(OpenGl_FrameBuffer* theCustomFbo)
       aCtx->arbFBO->glBindFramebuffer(GL_FRAMEBUFFER, OpenGl_FrameBuffer::NO_FRAMEBUFFER);
     }
 
-    const int aViewport[4] = {0, 0, myWindow->Width(), myWindow->Height()};
+    const NCollection_Vec2<int>& anOffset = ViewportOffset();
+    const int aViewport[4] = {anOffset.x(), anOffset.y(), myWindow->Width(), myWindow->Height()};
     aCtx->ResizeViewport(aViewport);
   }
 }
@@ -2892,8 +2911,18 @@ bool OpenGl_View::blitBuffers(OpenGl_FrameBuffer* theReadFbo,
     aCtx->arbFBO->glBindFramebuffer(GL_FRAMEBUFFER, OpenGl_FrameBuffer::NO_FRAMEBUFFER);
     aCtx->SetFrameBufferSRGB(false);
   }
-  const int aViewport[4] = {0, 0, aDrawSizeX, aDrawSizeY};
+  const NCollection_Vec2<int> aBlitOffset = (theDrawFbo == nullptr) ? ViewportOffset()
+                                                                    : NCollection_Vec2<int>(0, 0);
+  const int aViewport[4] = {aBlitOffset.x(), aBlitOffset.y(), aDrawSizeX, aDrawSizeY};
   aCtx->ResizeViewport(aViewport);
+
+  // Scissor-restrict clear when rendering at an offset in the default framebuffer.
+  const bool hasBlitOffset = (aBlitOffset.x() != 0 || aBlitOffset.y() != 0);
+  if (hasBlitOffset)
+  {
+    aCtx->core11fwd->glScissor(aBlitOffset.x(), aBlitOffset.y(), aDrawSizeX, aDrawSizeY);
+    aCtx->core11fwd->glEnable(GL_SCISSOR_TEST);
+  }
 
   // clang-format off
   aCtx->SetColorMaskRGBA (NCollection_Vec4<bool> (true)); // force writes into all components, including alpha
@@ -2901,6 +2930,11 @@ bool OpenGl_View::blitBuffers(OpenGl_FrameBuffer* theReadFbo,
   aCtx->core20fwd->glClearDepth(1.0);
   aCtx->core20fwd->glClearColor(0.0f, 0.0f, 0.0f, aCtx->caps->buffersOpaqueAlpha ? 1.0f : 0.0f);
   aCtx->core20fwd->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+  if (hasBlitOffset)
+  {
+    aCtx->core11fwd->glDisable(GL_SCISSOR_TEST);
+  }
   aCtx->SetColorMask(true); // restore default alpha component write state
 
   const bool toApplyGamma  = aCtx->ToRenderSRGB() != aCtx->IsFrameBufferSRGB();
@@ -2953,10 +2987,10 @@ bool OpenGl_View::blitBuffers(OpenGl_FrameBuffer* theReadFbo,
                                         0,
                                         aReadSizeX,
                                         aReadSizeY,
-                                        0,
-                                        0,
-                                        aDrawSizeX,
-                                        aDrawSizeY,
+                                        aBlitOffset.x(),
+                                        aBlitOffset.y(),
+                                        aBlitOffset.x() + aDrawSizeX,
+                                        aBlitOffset.y() + aDrawSizeY,
                                         aCopyMask,
                                         GL_NEAREST);
     const int anErr = aCtx->core11fwd->glGetError();

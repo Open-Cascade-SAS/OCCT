@@ -18,77 +18,114 @@
 #include <BRepGraphInc_Reference.hxx>
 #include <BRepGraphInc_Representation.hxx>
 
-#include <BRepGraph_BuilderView.hxx>
+#include <BRepGraph_EditorView.hxx>
+#include <BRepGraph_ChildExplorer.hxx>
 #include <BRepGraph_Data.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_TransientCache.hxx>
 #include <BRepGraph_History.hxx>
+#include <BRepGraph_RefUID.hxx>
 #include <BRepGraph_UID.hxx>
+#include <BRepGraph_Validate.hxx>
 
 #include <NCollection_DataMap.hxx>
+#include <NCollection_Map.hxx>
 
 #include <utility>
 
 namespace
 {
 
+void collectReachableNodesFromRootProducts(const BRepGraph& theGraph,
+                                           NCollection_Map<BRepGraph_NodeId>& theReachableNodes)
+{
+  for (BRepGraph_RootProductIterator aRootIt(theGraph); aRootIt.More(); aRootIt.Next())
+  {
+    const BRepGraph_ProductId aRootProductId = aRootIt.Current();
+    const int aRootNb = theGraph.Topo().Products().Nb();
+    if (!aRootProductId.IsValid(aRootNb))
+    {
+      continue;
+    }
+
+    theReachableNodes.Add(aRootProductId);
+
+    for (BRepGraph_ChildExplorer aChildIt(theGraph, aRootProductId); aChildIt.More(); aChildIt.Next())
+    {
+      const BRepGraph_NodeId aNode = aChildIt.Current().DefId;
+      if (aNode.IsValid())
+      {
+        theReachableNodes.Add(aNode);
+      }
+    }
+  }
+}
+
+
 //! Remap a NodeId through old->new index maps. Returns invalid NodeId if not found.
 BRepGraph_NodeId remapNodeId(const BRepGraph_NodeId&              theId,
-                             const NCollection_DataMap<int, int>& theVertexMap,
-                             const NCollection_DataMap<int, int>& theEdgeMap,
-                             const NCollection_DataMap<int, int>& theWireMap,
-                             const NCollection_DataMap<int, int>& theFaceMap,
-                             const NCollection_DataMap<int, int>& theShellMap,
-                             const NCollection_DataMap<int, int>& theSolidMap,
-                             const NCollection_DataMap<int, int>& theCompoundMap,
-                             const NCollection_DataMap<int, int>& theCompSolidMap)
+                             const NCollection_DataMap<BRepGraph_VertexId, BRepGraph_VertexId>&
+                               theVertexMap,
+                             const NCollection_DataMap<BRepGraph_EdgeId, BRepGraph_EdgeId>&
+                               theEdgeMap,
+                             const NCollection_DataMap<BRepGraph_WireId, BRepGraph_WireId>&
+                               theWireMap,
+                             const NCollection_DataMap<BRepGraph_FaceId, BRepGraph_FaceId>&
+                               theFaceMap,
+                             const NCollection_DataMap<BRepGraph_ShellId, BRepGraph_ShellId>&
+                               theShellMap,
+                             const NCollection_DataMap<BRepGraph_SolidId, BRepGraph_SolidId>&
+                               theSolidMap,
+                             const NCollection_DataMap<BRepGraph_CompoundId, BRepGraph_CompoundId>&
+                               theCompoundMap,
+                             const NCollection_DataMap<BRepGraph_CompSolidId, BRepGraph_CompSolidId>&
+                               theCompSolidMap)
 {
   if (!theId.IsValid())
     return BRepGraph_NodeId();
 
-  const NCollection_DataMap<int, int>* aMap = nullptr;
   switch (theId.NodeKind)
   {
-    case BRepGraph_NodeId::Kind::Vertex:
-      aMap = &theVertexMap;
-      break;
-    case BRepGraph_NodeId::Kind::Edge:
-      aMap = &theEdgeMap;
-      break;
-    case BRepGraph_NodeId::Kind::Wire:
-      aMap = &theWireMap;
-      break;
-    case BRepGraph_NodeId::Kind::Face:
-      aMap = &theFaceMap;
-      break;
-    case BRepGraph_NodeId::Kind::Shell:
-      aMap = &theShellMap;
-      break;
-    case BRepGraph_NodeId::Kind::Solid:
-      aMap = &theSolidMap;
-      break;
-    case BRepGraph_NodeId::Kind::Compound:
-      aMap = &theCompoundMap;
-      break;
-    case BRepGraph_NodeId::Kind::CompSolid:
-      aMap = &theCompSolidMap;
-      break;
+    case BRepGraph_NodeId::Kind::Vertex: {
+      const BRepGraph_VertexId* aNewId = theVertexMap.Seek(BRepGraph_VertexId(theId));
+      return aNewId != nullptr ? BRepGraph_NodeId(*aNewId) : BRepGraph_NodeId();
+    }
+    case BRepGraph_NodeId::Kind::Edge: {
+      const BRepGraph_EdgeId* aNewId = theEdgeMap.Seek(BRepGraph_EdgeId(theId));
+      return aNewId != nullptr ? BRepGraph_NodeId(*aNewId) : BRepGraph_NodeId();
+    }
+    case BRepGraph_NodeId::Kind::Wire: {
+      const BRepGraph_WireId* aNewId = theWireMap.Seek(BRepGraph_WireId(theId));
+      return aNewId != nullptr ? BRepGraph_NodeId(*aNewId) : BRepGraph_NodeId();
+    }
+    case BRepGraph_NodeId::Kind::Face: {
+      const BRepGraph_FaceId* aNewId = theFaceMap.Seek(BRepGraph_FaceId(theId));
+      return aNewId != nullptr ? BRepGraph_NodeId(*aNewId) : BRepGraph_NodeId();
+    }
+    case BRepGraph_NodeId::Kind::Shell: {
+      const BRepGraph_ShellId* aNewId = theShellMap.Seek(BRepGraph_ShellId(theId));
+      return aNewId != nullptr ? BRepGraph_NodeId(*aNewId) : BRepGraph_NodeId();
+    }
+    case BRepGraph_NodeId::Kind::Solid: {
+      const BRepGraph_SolidId* aNewId = theSolidMap.Seek(BRepGraph_SolidId(theId));
+      return aNewId != nullptr ? BRepGraph_NodeId(*aNewId) : BRepGraph_NodeId();
+    }
+    case BRepGraph_NodeId::Kind::Compound: {
+      const BRepGraph_CompoundId* aNewId = theCompoundMap.Seek(BRepGraph_CompoundId(theId));
+      return aNewId != nullptr ? BRepGraph_NodeId(*aNewId) : BRepGraph_NodeId();
+    }
+    case BRepGraph_NodeId::Kind::CompSolid: {
+      const BRepGraph_CompSolidId* aNewId = theCompSolidMap.Seek(BRepGraph_CompSolidId(theId));
+      return aNewId != nullptr ? BRepGraph_NodeId(*aNewId) : BRepGraph_NodeId();
+    }
     default:
       // Product/Occurrence kinds are not compacted - they reference topology
       // nodes which are remapped independently.
       break;
   }
-
-  if (aMap == nullptr)
-    return BRepGraph_NodeId();
-
-  const int* aNewIdx = aMap->Seek(theId.Index);
-  if (aNewIdx == nullptr)
-    return BRepGraph_NodeId();
-
-  return BRepGraph_NodeId(theId.NodeKind, *aNewIdx);
+  return BRepGraph_NodeId();
 }
 
 template <typename NodeDefT>
@@ -103,13 +140,127 @@ int countActiveDefs(const BRepGraph& theGraph)
 }
 
 template <typename NodeDefT>
-void bindActiveIndexMap(const BRepGraph& theGraph, NCollection_DataMap<int, int>& theMap)
+void bindActiveIndexMap(const BRepGraph& theGraph,
+                        NCollection_DataMap<typename BRepGraph_Iterator<NodeDefT>::TypedId,
+                                            typename BRepGraph_Iterator<NodeDefT>::TypedId>& theMap,
+                        const NCollection_Map<BRepGraph_NodeId>* theReachableNodes = nullptr)
 {
-  int aNewIdx = 0;
+  using IdT       = typename BRepGraph_Iterator<NodeDefT>::TypedId;
+  IdT aNextNewId = IdT::Start();
   for (BRepGraph_Iterator<NodeDefT> anIt(theGraph); anIt.More(); anIt.Next())
   {
-    theMap.Bind(anIt.CurrentId().Index, aNewIdx++);
+    const IdT aNodeId = anIt.CurrentId();
+    if (theReachableNodes != nullptr && !theReachableNodes->Contains(aNodeId))
+    {
+      continue;
+    }
+    theMap.Bind(aNodeId, aNextNewId);
+    ++aNextNewId;
   }
+}
+
+//! Compute shell closedness from rebuilt incidence.
+//! A shell is considered closed if each non-degenerate edge used by shell faces
+//! is referenced by exactly two faces of that shell.
+bool isShellClosedByIncidence(const BRepGraph& theGraph, const BRepGraph_ShellId theShell)
+{
+  NCollection_Map<BRepGraph_FaceId> aShellFaces;
+  for (BRepGraph_RefsFaceOfShell aFaceIt(theGraph, theShell); aFaceIt.More(); aFaceIt.Next())
+  {
+    const BRepGraphInc::FaceRef& aFR = theGraph.Refs().Faces().Entry(aFaceIt.CurrentId());
+    aShellFaces.Add(aFR.FaceDefId);
+  }
+
+  if (aShellFaces.IsEmpty())
+  {
+    return false;
+  }
+
+  for (BRepGraph_Iterator<BRepGraphInc::EdgeDef> anEdgeIt(theGraph); anEdgeIt.More(); anEdgeIt.Next())
+  {
+    const BRepGraph_EdgeId anEdgeId = anEdgeIt.CurrentId();
+    if (BRepGraph_Tool::Edge::Degenerated(theGraph, anEdgeId))
+    {
+      continue;
+    }
+
+    int aFaceCountInShell = 0;
+    const NCollection_Vector<BRepGraph_FaceId>& aEdgeFaces = theGraph.Topo().Edges().Faces(anEdgeId);
+    for (NCollection_Vector<BRepGraph_FaceId>::Iterator aFaceIt(aEdgeFaces); aFaceIt.More();
+         aFaceIt.Next())
+    {
+      if (aShellFaces.Contains(aFaceIt.Value()))
+      {
+        ++aFaceCountInShell;
+      }
+    }
+
+    if (aFaceCountInShell == 1 || aFaceCountInShell > 2)
+    {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+//! Compute wire closedness from rebuilt coedge/vertex incidence.
+//! A wire is considered closed if every participating vertex has even degree.
+bool isWireClosedByIncidence(const BRepGraph& theGraph, const BRepGraph_WireId theWire)
+{
+  const BRepGraph::RefsView& aRefs = theGraph.Refs();
+  const BRepGraph::TopoView& aTopo = theGraph.Topo();
+
+  NCollection_DataMap<BRepGraph_VertexId, int> aVertexDegree;
+  int                                            aNbCoEdges = 0;
+
+  for (BRepGraph_RefsCoEdgeOfWire aCEIt(theGraph, theWire); aCEIt.More(); aCEIt.Next())
+  {
+    const BRepGraphInc::CoEdgeRef& aCRef = aRefs.CoEdges().Entry(aCEIt.CurrentId());
+    const BRepGraphInc::CoEdgeDef& aCoEdge = aTopo.CoEdges().Definition(aCRef.CoEdgeDefId);
+    const BRepGraphInc::EdgeDef&   anEdge  = aTopo.Edges().Definition(aCoEdge.EdgeDefId);
+
+    const BRepGraph_VertexRefId aStartRefId =
+      (aCoEdge.Orientation == TopAbs_FORWARD) ? anEdge.StartVertexRefId : anEdge.EndVertexRefId;
+    const BRepGraph_VertexRefId anEndRefId =
+      (aCoEdge.Orientation == TopAbs_FORWARD) ? anEdge.EndVertexRefId : anEdge.StartVertexRefId;
+
+    if (!aStartRefId.IsValid() || !anEndRefId.IsValid())
+    {
+      return false;
+    }
+
+    const BRepGraph_VertexId aStartVtxId = aRefs.Vertices().Entry(aStartRefId).VertexDefId;
+    const BRepGraph_VertexId anEndVtxId  = aRefs.Vertices().Entry(anEndRefId).VertexDefId;
+
+    if (!aVertexDegree.IsBound(aStartVtxId))
+    {
+      aVertexDegree.Bind(aStartVtxId, 0);
+    }
+    if (!aVertexDegree.IsBound(anEndVtxId))
+    {
+      aVertexDegree.Bind(anEndVtxId, 0);
+    }
+
+    aVertexDegree.ChangeFind(aStartVtxId)++;
+    aVertexDegree.ChangeFind(anEndVtxId)++;
+    ++aNbCoEdges;
+  }
+
+  if (aNbCoEdges == 0)
+  {
+    return false;
+  }
+
+  for (NCollection_DataMap<BRepGraph_VertexId, int>::Iterator aDegIt(aVertexDegree); aDegIt.More(); aDegIt.Next())
+  {
+    if ((aDegIt.Value() % 2) != 0)
+    {
+      return false;
+    }
+  }
+
+  return true;
 }
 
 } // namespace
@@ -164,118 +315,54 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
   }
 
   // Build old->new index maps for each node kind.
-  NCollection_DataMap<int, int> aVertexMap, anEdgeMap, aCoEdgeMap, aWireMap, aFaceMap;
-  NCollection_DataMap<int, int> aShellMap, aSolidMap, aCompoundMap, aCompSolidMap;
+  NCollection_DataMap<BRepGraph_VertexId, BRepGraph_VertexId>         aVertexMap;
+  NCollection_DataMap<BRepGraph_EdgeId, BRepGraph_EdgeId>             anEdgeMap;
+  NCollection_DataMap<BRepGraph_CoEdgeId, BRepGraph_CoEdgeId>         aCoEdgeMap;
+  NCollection_DataMap<BRepGraph_WireId, BRepGraph_WireId>             aWireMap;
+  NCollection_DataMap<BRepGraph_FaceId, BRepGraph_FaceId>             aFaceMap;
+  NCollection_DataMap<BRepGraph_ShellId, BRepGraph_ShellId>           aShellMap;
+  NCollection_DataMap<BRepGraph_SolidId, BRepGraph_SolidId>           aSolidMap;
+  NCollection_DataMap<BRepGraph_CompoundId, BRepGraph_CompoundId>     aCompoundMap;
+  NCollection_DataMap<BRepGraph_CompSolidId, BRepGraph_CompSolidId>   aCompSolidMap;
+  NCollection_DataMap<BRepGraph_ProductId, BRepGraph_ProductId>       aProductMap;
+  NCollection_DataMap<BRepGraph_OccurrenceId, BRepGraph_OccurrenceId> anOccurrenceMap;
 
-  bindActiveIndexMap<BRepGraphInc::VertexDef>(theGraph, aVertexMap);
-  bindActiveIndexMap<BRepGraphInc::EdgeDef>(theGraph, anEdgeMap);
-  bindActiveIndexMap<BRepGraphInc::WireDef>(theGraph, aWireMap);
-  bindActiveIndexMap<BRepGraphInc::FaceDef>(theGraph, aFaceMap);
-  bindActiveIndexMap<BRepGraphInc::ShellDef>(theGraph, aShellMap);
-  bindActiveIndexMap<BRepGraphInc::SolidDef>(theGraph, aSolidMap);
-  bindActiveIndexMap<BRepGraphInc::CompoundDef>(theGraph, aCompoundMap);
-  bindActiveIndexMap<BRepGraphInc::CompSolidDef>(theGraph, aCompSolidMap);
+  // Per-kind ref id remap: old RefId → new RefId.
+  // Built during topology rebuild loops; used for RefUID transfer after swap.
+  NCollection_DataMap<BRepGraph_VertexRefId, BRepGraph_VertexRefId>       aVertexRefMap;
+  NCollection_DataMap<BRepGraph_CoEdgeRefId, BRepGraph_CoEdgeRefId>       aCoEdgeRefMap;
+  NCollection_DataMap<BRepGraph_WireRefId, BRepGraph_WireRefId>           aWireRefMap;
+  NCollection_DataMap<BRepGraph_FaceRefId, BRepGraph_FaceRefId>           aFaceRefMap;
+  NCollection_DataMap<BRepGraph_ShellRefId, BRepGraph_ShellRefId>         aShellRefMap;
+  NCollection_DataMap<BRepGraph_ChildRefId, BRepGraph_ChildRefId>         aChildRefMap;
+  NCollection_DataMap<BRepGraph_SolidRefId, BRepGraph_SolidRefId>         aSolidRefMap;
+  NCollection_DataMap<BRepGraph_OccurrenceRefId, BRepGraph_OccurrenceRefId> anOccurrenceRefMap;
+
+  NCollection_Map<BRepGraph_NodeId> aReachableNodes;
+  const bool                hasRootProducts = !theGraph.RootProductIds().IsEmpty();
+  if (hasRootProducts)
+  {
+    collectReachableNodesFromRootProducts(theGraph, aReachableNodes);
+  }
+
+  const NCollection_Map<BRepGraph_NodeId>* aReachableFilter = hasRootProducts ? &aReachableNodes : nullptr;
+
+  bindActiveIndexMap<BRepGraphInc::VertexDef>(theGraph, aVertexMap, aReachableFilter);
+  bindActiveIndexMap<BRepGraphInc::EdgeDef>(theGraph, anEdgeMap, aReachableFilter);
+  bindActiveIndexMap<BRepGraphInc::WireDef>(theGraph, aWireMap, aReachableFilter);
+  bindActiveIndexMap<BRepGraphInc::FaceDef>(theGraph, aFaceMap, aReachableFilter);
+  bindActiveIndexMap<BRepGraphInc::ShellDef>(theGraph, aShellMap, aReachableFilter);
+  bindActiveIndexMap<BRepGraphInc::SolidDef>(theGraph, aSolidMap, aReachableFilter);
+  bindActiveIndexMap<BRepGraphInc::CompoundDef>(theGraph, aCompoundMap, aReachableFilter);
+  bindActiveIndexMap<BRepGraphInc::CompSolidDef>(theGraph, aCompSolidMap, aReachableFilter);
 
   const bool wasHistoryEnabled = theGraph.History().IsEnabled();
   theGraph.History().SetEnabled(theOptions.HistoryMode);
   const BRepGraph_Data* aGraphData  = theGraph.data();
   const uint32_t        aGeneration = aGraphData->myGeneration.load(std::memory_order_relaxed);
 
-  // Record history before swap (remap entries for topology defs).
-  if (theOptions.HistoryMode)
-  {
-    for (const auto& [aOldIdx, aNewIdx] : aVertexMap.Items())
-    {
-      if (aOldIdx != aNewIdx)
-      {
-        NCollection_Vector<BRepGraph_NodeId> aRepl;
-        aRepl.Append(BRepGraph_VertexId(aNewIdx));
-        theGraph.History().Record(TCollection_AsciiString("Compact:Remap"),
-                                  BRepGraph_VertexId(aOldIdx),
-                                  aRepl);
-      }
-    }
-    for (const auto& [aOldIdx, aNewIdx] : anEdgeMap.Items())
-    {
-      if (aOldIdx != aNewIdx)
-      {
-        NCollection_Vector<BRepGraph_NodeId> aRepl;
-        aRepl.Append(BRepGraph_EdgeId(aNewIdx));
-        theGraph.History().Record(TCollection_AsciiString("Compact:Remap"),
-                                  BRepGraph_EdgeId(aOldIdx),
-                                  aRepl);
-      }
-    }
-    for (const auto& [aOldIdx, aNewIdx] : aFaceMap.Items())
-    {
-      if (aOldIdx != aNewIdx)
-      {
-        NCollection_Vector<BRepGraph_NodeId> aRepl;
-        aRepl.Append(BRepGraph_FaceId(aNewIdx));
-        theGraph.History().Record(TCollection_AsciiString("Compact:Remap"),
-                                  BRepGraph_FaceId(aOldIdx),
-                                  aRepl);
-      }
-    }
-    for (const auto& [aOldIdx, aNewIdx] : aWireMap.Items())
-    {
-      if (aOldIdx != aNewIdx)
-      {
-        NCollection_Vector<BRepGraph_NodeId> aRepl;
-        aRepl.Append(BRepGraph_WireId(aNewIdx));
-        theGraph.History().Record(TCollection_AsciiString("Compact:Remap"),
-                                  BRepGraph_WireId(aOldIdx),
-                                  aRepl);
-      }
-    }
-    for (const auto& [aOldIdx, aNewIdx] : aShellMap.Items())
-    {
-      if (aOldIdx != aNewIdx)
-      {
-        NCollection_Vector<BRepGraph_NodeId> aRepl;
-        aRepl.Append(BRepGraph_ShellId(aNewIdx));
-        theGraph.History().Record(TCollection_AsciiString("Compact:Remap"),
-                                  BRepGraph_ShellId(aOldIdx),
-                                  aRepl);
-      }
-    }
-    for (const auto& [aOldIdx, aNewIdx] : aSolidMap.Items())
-    {
-      if (aOldIdx != aNewIdx)
-      {
-        NCollection_Vector<BRepGraph_NodeId> aRepl;
-        aRepl.Append(BRepGraph_SolidId(aNewIdx));
-        theGraph.History().Record(TCollection_AsciiString("Compact:Remap"),
-                                  BRepGraph_SolidId(aOldIdx),
-                                  aRepl);
-      }
-    }
-    for (const auto& [aOldIdx, aNewIdx] : aCompoundMap.Items())
-    {
-      if (aOldIdx != aNewIdx)
-      {
-        NCollection_Vector<BRepGraph_NodeId> aRepl;
-        aRepl.Append(BRepGraph_CompoundId(aNewIdx));
-        theGraph.History().Record(TCollection_AsciiString("Compact:Remap"),
-                                  BRepGraph_CompoundId(aOldIdx),
-                                  aRepl);
-      }
-    }
-    for (const auto& [aOldIdx, aNewIdx] : aCompSolidMap.Items())
-    {
-      if (aOldIdx != aNewIdx)
-      {
-        NCollection_Vector<BRepGraph_NodeId> aRepl;
-        aRepl.Append(BRepGraph_CompSolidId(aNewIdx));
-        theGraph.History().Record(TCollection_AsciiString("Compact:Remap"),
-                                  BRepGraph_CompSolidId(aOldIdx),
-                                  aRepl);
-      }
-    }
-  }
-
   // Construct a fresh graph and rebuild bottom-up.
-  // Geometry nodes (Surface, Curve) are automatically created through AddFace/AddEdge.
+  // Geometry nodes (Surface, Curve) are automatically created through Add/Add.
   BRepGraph       aNewGraph;
   BRepGraph_Data* aNewGraphData = aNewGraph.data();
   aNewGraphData->myGeneration.store(aGeneration, std::memory_order_relaxed);
@@ -297,31 +384,37 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
   // Vertices.
   for (BRepGraph_Iterator<BRepGraphInc::VertexDef> anIt(theGraph); anIt.More(); anIt.Next())
   {
+    if (aVertexMap.Seek(anIt.CurrentId()) == nullptr)
+    {
+      continue;
+    }
+
     const BRepGraphInc::VertexDef& anOldVtx = anIt.Current();
-    (void)aNewGraph.Builder().AddVertex(anOldVtx.Point, anOldVtx.Tolerance);
+    (void)aNewGraph.Editor().Vertices().Add(anOldVtx.Point, anOldVtx.Tolerance);
   }
 
   // Edges.
   for (BRepGraph_Iterator<BRepGraphInc::EdgeDef> anIt(theGraph); anIt.More(); anIt.Next())
   {
-    const BRepGraph_EdgeId       anOldEdgeId = anIt.CurrentId();
+    const BRepGraph_EdgeId anOldEdgeId = anIt.CurrentId();
+    if (anEdgeMap.Seek(anOldEdgeId) == nullptr)
+    {
+      continue;
+    }
     const BRepGraphInc::EdgeDef& anOldEdge   = anIt.Current();
 
+    const BRepGraph_VertexId aOldStartId = BRepGraph_Tool::Edge::StartVertexId(theGraph, anOldEdgeId);
     const BRepGraph_VertexId aNewStart =
-      anOldEdge.StartVertexRefId.IsValid()
-        ? BRepGraph_VertexId::FromNodeId(
-            remapId(BRepGraph_Tool::Edge::StartVertex(theGraph, anOldEdgeId).VertexDefId))
-        : BRepGraph_VertexId();
+      aOldStartId.IsValid() ? BRepGraph_VertexId::FromNodeId(remapId(aOldStartId))
+                             : BRepGraph_VertexId();
+    const BRepGraph_VertexId aOldEndId = BRepGraph_Tool::Edge::EndVertexId(theGraph, anOldEdgeId);
     const BRepGraph_VertexId aNewEnd =
-      anOldEdge.EndVertexRefId.IsValid()
-        ? BRepGraph_VertexId::FromNodeId(
-            remapId(BRepGraph_Tool::Edge::EndVertex(theGraph, anOldEdgeId).VertexDefId))
-        : BRepGraph_VertexId();
+      aOldEndId.IsValid() ? BRepGraph_VertexId::FromNodeId(remapId(aOldEndId)) : BRepGraph_VertexId();
 
     // Get the curve handle if available.
     const occ::handle<Geom_Curve>& aCurve = BRepGraph_Tool::Edge::Curve(theGraph, anOldEdgeId);
 
-    const BRepGraph_EdgeId aNewEdgeId = aNewGraph.Builder().AddEdge(aNewStart,
+    const BRepGraph_EdgeId aNewEdgeId = aNewGraph.Editor().Edges().Add(aNewStart,
                                                                     aNewEnd,
                                                                     aCurve,
                                                                     anOldEdge.ParamFirst,
@@ -329,10 +422,59 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
                                                                     anOldEdge.Tolerance);
 
     // Copy edge properties.
-    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aNewEdge = aNewGraph.Builder().MutEdge(aNewEdgeId);
+    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aNewEdge = aNewGraph.Editor().Edges().Mut(aNewEdgeId);
     aNewEdge->IsDegenerate                             = anOldEdge.IsDegenerate;
+    aNewEdge->IsClosed                                 = anOldEdge.IsClosed;
     aNewEdge->SameParameter                            = anOldEdge.SameParameter;
     aNewEdge->SameRange                                = anOldEdge.SameRange;
+
+    if (anOldEdge.StartVertexRefId.IsValid() && aNewEdge->StartVertexRefId.IsValid())
+    {
+      const BRepGraphInc::VertexRef& anOldStartRef =
+        theGraph.Refs().Vertices().Entry(anOldEdge.StartVertexRefId);
+      BRepGraph_MutGuard<BRepGraphInc::VertexRef> aNewStartRef =
+        aNewGraph.Editor().Vertices().MutRef(aNewEdge->StartVertexRefId);
+      aNewStartRef->Orientation = anOldStartRef.Orientation;
+      aNewStartRef->LocalLocation = anOldStartRef.LocalLocation;
+      aVertexRefMap.Bind(anOldEdge.StartVertexRefId, aNewEdge->StartVertexRefId);
+    }
+
+    if (anOldEdge.EndVertexRefId.IsValid() && aNewEdge->EndVertexRefId.IsValid())
+    {
+      const BRepGraphInc::VertexRef& anOldEndRef =
+        theGraph.Refs().Vertices().Entry(anOldEdge.EndVertexRefId);
+      BRepGraph_MutGuard<BRepGraphInc::VertexRef> aNewEndRef =
+        aNewGraph.Editor().Vertices().MutRef(aNewEdge->EndVertexRefId);
+      aNewEndRef->Orientation = anOldEndRef.Orientation;
+      aNewEndRef->LocalLocation = anOldEndRef.LocalLocation;
+      aVertexRefMap.Bind(anOldEdge.EndVertexRefId, aNewEdge->EndVertexRefId);
+    }
+
+    for (const BRepGraph_VertexRefId& anOldInternalRefId : anOldEdge.InternalVertexRefIds)
+    {
+      const BRepGraphInc::VertexRef& anOldInternalRef =
+        theGraph.Refs().Vertices().Entry(anOldInternalRefId);
+      const BRepGraph_VertexId aNewVertexId =
+        BRepGraph_VertexId::FromNodeId(remapId(anOldInternalRef.VertexDefId));
+      if (!aNewVertexId.IsValid())
+      {
+        continue;
+      }
+
+      const BRepGraph_VertexRefId aNewInternalRefId =
+        aNewGraph.Editor().Edges().AddInternalVertex(aNewEdgeId,
+                                                      aNewVertexId,
+                                                      anOldInternalRef.Orientation);
+      if (!aNewInternalRefId.IsValid())
+      {
+        continue;
+      }
+
+      BRepGraph_MutGuard<BRepGraphInc::VertexRef> aNewInternalRef =
+        aNewGraph.Editor().Vertices().MutRef(aNewInternalRefId);
+      aNewInternalRef->LocalLocation = anOldInternalRef.LocalLocation;
+      aVertexRefMap.Bind(anOldInternalRefId, aNewInternalRefId);
+    }
   }
 
   // PCurves (added after edges and faces are known).
@@ -342,9 +484,14 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
   for (BRepGraph_Iterator<BRepGraphInc::WireDef> anIt(theGraph); anIt.More(); anIt.Next())
   {
     const BRepGraph_WireId anOldWireId = anIt.CurrentId();
+    if (aWireMap.Seek(anOldWireId) == nullptr)
+    {
+      continue;
+    }
 
     NCollection_Vector<std::pair<BRepGraph_EdgeId, TopAbs_Orientation>> aNewEntries;
     NCollection_Vector<BRepGraph_CoEdgeId>                              anOldCoEdges;
+    NCollection_Vector<BRepGraph_CoEdgeRefId>                           anOldCoEdgeRefs;
     for (BRepGraph_RefsCoEdgeOfWire aRefIt(theGraph, anOldWireId); aRefIt.More(); aRefIt.Next())
     {
       const BRepGraphInc::CoEdgeRef& aCR = theGraph.Refs().CoEdges().Entry(aRefIt.CurrentId());
@@ -356,27 +503,51 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
       {
         aNewEntries.Append(std::make_pair(aNewEdgeDefId, aCoEdge.Orientation));
         anOldCoEdges.Append(aCR.CoEdgeDefId);
+        anOldCoEdgeRefs.Append(aRefIt.CurrentId());
       }
     }
-    const int aNewFirstCoEdge = aNewGraph.Topo().CoEdges().Nb();
-    (void)aNewGraph.Builder().AddWire(aNewEntries);
-    for (int aCoEdgeIdx = 0; aCoEdgeIdx < anOldCoEdges.Length(); ++aCoEdgeIdx)
+    const BRepGraph_WireId aNewWireId = aNewGraph.Editor().Wires().Add(aNewEntries);
+
+    const NCollection_Vector<BRepGraph_CoEdgeRefId>& aNewCoEdgeRefs =
+      aNewGraph.Topo().Wires().Definition(aNewWireId).CoEdgeRefIds;
+    for (int aRefIdx = 0; aRefIdx < anOldCoEdgeRefs.Length() && aRefIdx < aNewCoEdgeRefs.Length(); ++aRefIdx)
     {
-      aCoEdgeMap.Bind(anOldCoEdges.Value(aCoEdgeIdx).Index, aNewFirstCoEdge + aCoEdgeIdx);
+      const BRepGraphInc::CoEdgeRef& anOldRef =
+        theGraph.Refs().CoEdges().Entry(anOldCoEdgeRefs.Value(aRefIdx));
+      BRepGraph_MutGuard<BRepGraphInc::CoEdgeRef> aNewRef =
+        aNewGraph.Editor().CoEdges().MutRef(aNewCoEdgeRefs.Value(aRefIdx));
+      aNewRef->LocalLocation = anOldRef.LocalLocation;
+
+      // Build aCoEdgeMap from actual CoEdgeDef IDs returned by the builder,
+      // not from a predicted Nb()-based offset which can be wrong.
+      const BRepGraphInc::CoEdgeRef& aNewCoEdgeRef =
+        aNewGraph.Refs().CoEdges().Entry(aNewCoEdgeRefs.Value(aRefIdx));
+      aCoEdgeMap.Bind(anOldCoEdges.Value(aRefIdx), aNewCoEdgeRef.CoEdgeDefId);
+      // Track CoEdgeRef index remap for RefUID transfer.
+      aCoEdgeRefMap.Bind(anOldCoEdgeRefs.Value(aRefIdx), aNewCoEdgeRefs.Value(aRefIdx));
     }
+
+    BRepGraph_MutGuard<BRepGraphInc::WireDef> aNewWire = aNewGraph.Editor().Wires().Mut(aNewWireId);
+    aNewWire->IsClosed = isWireClosedByIncidence(aNewGraph, aNewWireId);
   }
 
   // Faces.
   for (BRepGraph_Iterator<BRepGraphInc::FaceDef> anIt(theGraph); anIt.More(); anIt.Next())
   {
-    const BRepGraph_FaceId       anOldFaceId = anIt.CurrentId();
+    const BRepGraph_FaceId anOldFaceId = anIt.CurrentId();
+    if (aFaceMap.Seek(anOldFaceId) == nullptr)
+    {
+      continue;
+    }
     const BRepGraphInc::FaceDef& anOldFace   = anIt.Current();
 
     const occ::handle<Geom_Surface>& aSurf = BRepGraph_Tool::Face::Surface(theGraph, anOldFaceId);
 
-    // Find outer wire from transitional incidence entries.
+    // Find outer wire from incidence ref entries.
     BRepGraph_WireId                     aNewOuterWire;
     NCollection_Vector<BRepGraph_WireId> aNewInnerWires;
+    BRepGraph_WireRefId                  anOldOuterWireRef;
+    NCollection_Vector<BRepGraph_WireRefId> anOldInnerWireRefs;
 
     for (BRepGraph_RefsWireOfFace aRefIt(theGraph, anOldFaceId); aRefIt.More(); aRefIt.Next())
     {
@@ -387,81 +558,258 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
       if (aWR.IsOuter)
       {
         aNewOuterWire = aRemapped;
+        anOldOuterWireRef = aRefIt.CurrentId();
       }
       else
       {
         aNewInnerWires.Append(aRemapped);
+        anOldInnerWireRefs.Append(aRefIt.CurrentId());
       }
     }
 
-    (void)aNewGraph.Builder().AddFace(aSurf, aNewOuterWire, aNewInnerWires, anOldFace.Tolerance);
+    const BRepGraph_FaceId aNewFaceId =
+      aNewGraph.Editor().Faces().Add(aSurf, aNewOuterWire, aNewInnerWires, anOldFace.Tolerance);
 
-    // Copy triangulations from old FaceDef to new FaceDef.
-    BRepGraph_MutGuard<BRepGraphInc::FaceDef> aNewFace =
-      aNewGraph.Builder().MutFace(BRepGraph_FaceId(aFaceMap.Find(anOldFaceId.Index)));
-    aNewFace->TriangulationRepIds      = anOldFace.TriangulationRepIds;
-    aNewFace->ActiveTriangulationIndex = anOldFace.ActiveTriangulationIndex;
+    BRepGraph_MutGuard<BRepGraphInc::FaceDef> aNewFace = aNewGraph.Editor().Faces().Mut(aNewFaceId);
+    aNewFace->NaturalRestriction = anOldFace.NaturalRestriction;
+
+    const NCollection_Vector<BRepGraph_WireRefId>& aNewWireRefs = aNewFace->WireRefIds;
+    if (anOldOuterWireRef.IsValid() && !aNewWireRefs.IsEmpty())
+    {
+      const BRepGraphInc::WireRef& anOldOuterRef =
+        theGraph.Refs().Wires().Entry(anOldOuterWireRef);
+      BRepGraph_MutGuard<BRepGraphInc::WireRef> aNewOuterRef =
+        aNewGraph.Editor().Wires().MutRef(aNewWireRefs.First());
+      aNewOuterRef->IsOuter = anOldOuterRef.IsOuter;
+      aNewOuterRef->Orientation = anOldOuterRef.Orientation;
+      aNewOuterRef->LocalLocation = anOldOuterRef.LocalLocation;
+      aWireRefMap.Bind(anOldOuterWireRef, aNewWireRefs.First());
+    }
+
+    for (int anInnerIdx = 0;
+         anInnerIdx < anOldInnerWireRefs.Length() && anInnerIdx + 1 < aNewWireRefs.Length();
+         ++anInnerIdx)
+    {
+      const BRepGraphInc::WireRef& anOldInnerRef =
+        theGraph.Refs().Wires().Entry(anOldInnerWireRefs.Value(anInnerIdx));
+      BRepGraph_MutGuard<BRepGraphInc::WireRef> aNewInnerRef =
+        aNewGraph.Editor().Wires().MutRef(aNewWireRefs.Value(anInnerIdx + 1));
+      aNewInnerRef->IsOuter = anOldInnerRef.IsOuter;
+      aNewInnerRef->Orientation = anOldInnerRef.Orientation;
+      aNewInnerRef->LocalLocation = anOldInnerRef.LocalLocation;
+      aWireRefMap.Bind(anOldInnerWireRefs.Value(anInnerIdx), aNewWireRefs.Value(anInnerIdx + 1));
+    }
+
+    for (const BRepGraph_VertexRefId& anOldVertexRefId : anOldFace.VertexRefIds)
+    {
+      const BRepGraphInc::VertexRef& anOldVertexRef =
+        theGraph.Refs().Vertices().Entry(anOldVertexRefId);
+      const BRepGraph_VertexId aNewVertexId =
+        BRepGraph_VertexId::FromNodeId(remapId(anOldVertexRef.VertexDefId));
+      if (!aNewVertexId.IsValid())
+      {
+        continue;
+      }
+
+      const BRepGraph_VertexRefId aNewVertexRefId =
+        aNewGraph.Editor().Faces().AddVertex(aNewFaceId,
+                                              aNewVertexId,
+                                              anOldVertexRef.Orientation);
+      if (!aNewVertexRefId.IsValid())
+      {
+        continue;
+      }
+
+      BRepGraph_MutGuard<BRepGraphInc::VertexRef> aNewVertexRef =
+        aNewGraph.Editor().Vertices().MutRef(aNewVertexRefId);
+      aNewVertexRef->LocalLocation = anOldVertexRef.LocalLocation;
+      aVertexRefMap.Bind(anOldVertexRefId, aNewVertexRefId);
+    }
   }
 
-  // Add PCurves to edges in the new graph via CoEdge data.
-  for (BRepGraph_Iterator<BRepGraphInc::EdgeDef> anIt(theGraph); anIt.More(); anIt.Next())
+  // Transfer face/PCurve attributes onto the remapped coedges created by WireOps::Add().
+  for (BRepGraph_Iterator<BRepGraphInc::CoEdgeDef> anIt(theGraph); anIt.More(); anIt.Next())
   {
-    const BRepGraph_EdgeId anOldEdgeId = anIt.CurrentId();
-    const int              aNewEdgeIdx = anEdgeMap.Find(anOldEdgeId.Index);
-
-    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIds =
-      theGraph.Topo().Edges().CoEdges(anOldEdgeId);
-    for (const BRepGraph_CoEdgeId& aCoEdgeId : aCoEdgeIds)
+    const BRepGraph_CoEdgeId anOldCoEdgeId = anIt.CurrentId();
+    const BRepGraph_CoEdgeId* aNewCoEdgeId = aCoEdgeMap.Seek(anOldCoEdgeId);
+    if (aNewCoEdgeId == nullptr)
     {
-      const BRepGraphInc::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdges().Definition(aCoEdgeId);
-      if (!aCoEdge.Curve2DRepId.IsValid())
-        continue;
-
-      const BRepGraph_FaceId aNewFaceId = BRepGraph_FaceId::FromNodeId(remapId(aCoEdge.FaceDefId));
-      if (!aNewFaceId.IsValid())
-        continue;
-
-      const occ::handle<Geom2d_Curve>& aCompactPCurve =
-        BRepGraph_Tool::CoEdge::PCurve(theGraph, aCoEdgeId);
-      aNewGraph.Builder().AddPCurveToEdge(BRepGraph_EdgeId(aNewEdgeIdx),
-                                          aNewFaceId,
-                                          aCompactPCurve,
-                                          aCoEdge.ParamFirst,
-                                          aCoEdge.ParamLast,
-                                          aCoEdge.Orientation);
+      continue;
     }
+
+    const BRepGraphInc::CoEdgeDef& anOldCoEdge = anIt.Current();
+    BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef> aNewCoEdge =
+      aNewGraph.Editor().CoEdges().Mut(*aNewCoEdgeId);
+
+    aNewCoEdge->FaceDefId = BRepGraph_FaceId::FromNodeId(remapId(anOldCoEdge.FaceDefId));
+    aNewCoEdge->Orientation = anOldCoEdge.Orientation;
+    aNewCoEdge->ParamFirst = anOldCoEdge.ParamFirst;
+    aNewCoEdge->ParamLast = anOldCoEdge.ParamLast;
+    aNewCoEdge->Continuity = anOldCoEdge.Continuity;
+    aNewCoEdge->UV1 = anOldCoEdge.UV1;
+    aNewCoEdge->UV2 = anOldCoEdge.UV2;
+    aNewCoEdge->SeamContinuity = anOldCoEdge.SeamContinuity;
+
+    // If the owning face was removed, keep the coedge as free-wire usage only.
+    // Drop face-bound parametric payload (PCurve/UV/continuity) to avoid stale
+    // face references causing reconstruction/meshing corruption.
+    if (!aNewCoEdge->FaceDefId.IsValid())
+    {
+      aNewCoEdge->Curve2DRepId = BRepGraph_Curve2DRepId();
+      aNewCoEdge->ParamFirst = 0.0;
+      aNewCoEdge->ParamLast = 0.0;
+      aNewCoEdge->Continuity = GeomAbs_C0;
+      aNewCoEdge->UV1 = gp_Pnt2d();
+      aNewCoEdge->UV2 = gp_Pnt2d();
+      continue;
+    }
+
+    if (anOldCoEdge.Curve2DRepId.IsValid())
+    {
+      const occ::handle<Geom2d_Curve>& anOldPCurve =
+        BRepGraph_Tool::CoEdge::PCurve(theGraph, anOldCoEdgeId);
+      if (!anOldPCurve.IsNull())
+      {
+        // Use the builder API to create the Curve2DRep — this ensures internal
+        // registration tables are updated correctly (as documented in EditorView.hxx).
+        const BRepGraph_Curve2DRepId aNewRepId =
+          aNewGraph.Editor().CoEdges().CreateCurve2DRep(anOldPCurve);
+        if (aNewRepId.IsValid())
+        {
+          aNewCoEdge->Curve2DRepId = aNewRepId;
+        }
+      }
+    }
+  }
+
+  // Remap seam-pair links after all coedges have their new ids.
+  for (BRepGraph_Iterator<BRepGraphInc::CoEdgeDef> anIt(theGraph); anIt.More(); anIt.Next())
+  {
+    const BRepGraph_CoEdgeId anOldCoEdgeId = anIt.CurrentId();
+    const BRepGraph_CoEdgeId* aNewCoEdgeId = aCoEdgeMap.Seek(anOldCoEdgeId);
+    if (aNewCoEdgeId == nullptr)
+    {
+      continue;
+    }
+
+    const BRepGraphInc::CoEdgeDef& anOldCoEdge = anIt.Current();
+    if (!anOldCoEdge.SeamPairId.IsValid())
+    {
+      continue;
+    }
+
+    const BRepGraph_CoEdgeId* aNewSeamPairId = aCoEdgeMap.Seek(anOldCoEdge.SeamPairId);
+    if (aNewSeamPairId == nullptr)
+    {
+      continue;
+    }
+
+    BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef> aNewCoEdge =
+      aNewGraph.Editor().CoEdges().Mut(*aNewCoEdgeId);
+    aNewCoEdge->SeamPairId = *aNewSeamPairId;
   }
 
   // Shells.
   for (BRepGraph_Iterator<BRepGraphInc::ShellDef> anIt(theGraph); anIt.More(); anIt.Next())
   {
     const BRepGraph_ShellId anOldShellId = anIt.CurrentId();
+    if (aShellMap.Seek(anOldShellId) == nullptr)
+    {
+      continue;
+    }
 
-    const BRepGraph_ShellId aNewShellId = aNewGraph.Builder().AddShell();
+    const BRepGraph_ShellId aNewShellId = aNewGraph.Editor().Shells().Add();
 
-    // Add faces to shell via transitional incidence entries.
+    // Add faces to shell via incidence ref entries.
     for (BRepGraph_RefsFaceOfShell aRefIt(theGraph, anOldShellId); aRefIt.More(); aRefIt.Next())
     {
       const BRepGraphInc::FaceRef& aFR      = theGraph.Refs().Faces().Entry(aRefIt.CurrentId());
       const BRepGraph_FaceId       aNewFace = BRepGraph_FaceId::FromNodeId(remapId(aFR.FaceDefId));
       if (aNewFace.IsValid())
-        aNewGraph.Builder().AddFaceToShell(aNewShellId, aNewFace, aFR.Orientation);
+      {
+        const BRepGraph_FaceRefId aNewFaceRefId =
+          aNewGraph.Editor().Shells().AddFace(aNewShellId, aNewFace, aFR.Orientation);
+        if (aNewFaceRefId.IsValid())
+        {
+          BRepGraph_MutGuard<BRepGraphInc::FaceRef> aNewFaceRef =
+            aNewGraph.Editor().Faces().MutRef(aNewFaceRefId);
+          aNewFaceRef->LocalLocation = aFR.LocalLocation;
+          aFaceRefMap.Bind(aRefIt.CurrentId(), aNewFaceRefId);
+        }
+      }
     }
+
+    for (BRepGraph_RefsChildOfShell aRefIt(theGraph, anOldShellId); aRefIt.More(); aRefIt.Next())
+    {
+      const BRepGraphInc::ChildRef& aCR = theGraph.Refs().Children().Entry(aRefIt.CurrentId());
+      const BRepGraph_NodeId aNewChild = remapId(aCR.ChildDefId);
+      if (!aNewChild.IsValid())
+      {
+        continue;
+      }
+      const BRepGraph_ChildRefId aNewChildRefId =
+        aNewGraph.Editor().Shells().AddChild(aNewShellId, aNewChild, aCR.Orientation);
+      if (!aNewChildRefId.IsValid())
+      {
+        continue;
+      }
+      BRepGraph_MutGuard<BRepGraphInc::ChildRef> aNewChildRef =
+        aNewGraph.Editor().Gen().MutChildRef(aNewChildRefId);
+      aNewChildRef->LocalLocation = aCR.LocalLocation;
+      aChildRefMap.Bind(aRefIt.CurrentId(), aNewChildRefId);
+    }
+
+    BRepGraph_MutGuard<BRepGraphInc::ShellDef> aNewShell = aNewGraph.Editor().Shells().Mut(aNewShellId);
+    aNewShell->IsClosed = isShellClosedByIncidence(aNewGraph, aNewShellId);
   }
 
   // Solids.
   for (BRepGraph_Iterator<BRepGraphInc::SolidDef> anIt(theGraph); anIt.More(); anIt.Next())
   {
     const BRepGraph_SolidId anOldSolidId = anIt.CurrentId();
+    if (aSolidMap.Seek(anOldSolidId) == nullptr)
+    {
+      continue;
+    }
 
-    const BRepGraph_SolidId aNewSolidId = aNewGraph.Builder().AddSolid();
+    const BRepGraph_SolidId aNewSolidId = aNewGraph.Editor().Solids().Add();
 
     for (BRepGraph_RefsShellOfSolid aRefIt(theGraph, anOldSolidId); aRefIt.More(); aRefIt.Next())
     {
       const BRepGraphInc::ShellRef& aSR = theGraph.Refs().Shells().Entry(aRefIt.CurrentId());
       const BRepGraph_ShellId aNewShell = BRepGraph_ShellId::FromNodeId(remapId(aSR.ShellDefId));
       if (aNewShell.IsValid())
-        aNewGraph.Builder().AddShellToSolid(aNewSolidId, aNewShell, aSR.Orientation);
+      {
+        const BRepGraph_ShellRefId aNewShellRefId =
+          aNewGraph.Editor().Solids().AddShell(aNewSolidId, aNewShell, aSR.Orientation);
+        if (aNewShellRefId.IsValid())
+        {
+          BRepGraph_MutGuard<BRepGraphInc::ShellRef> aNewShellRef =
+            aNewGraph.Editor().Shells().MutRef(aNewShellRefId);
+          aNewShellRef->LocalLocation = aSR.LocalLocation;
+          aShellRefMap.Bind(aRefIt.CurrentId(), aNewShellRefId);
+        }
+      }
+    }
+
+    for (BRepGraph_RefsChildOfSolid aRefIt(theGraph, anOldSolidId); aRefIt.More(); aRefIt.Next())
+    {
+      const BRepGraphInc::ChildRef& aCR = theGraph.Refs().Children().Entry(aRefIt.CurrentId());
+      const BRepGraph_NodeId aNewChild = remapId(aCR.ChildDefId);
+      if (!aNewChild.IsValid())
+      {
+        continue;
+      }
+      const BRepGraph_ChildRefId aNewChildRefId =
+        aNewGraph.Editor().Solids().AddChild(aNewSolidId, aNewChild, aCR.Orientation);
+      if (!aNewChildRefId.IsValid())
+      {
+        continue;
+      }
+      BRepGraph_MutGuard<BRepGraphInc::ChildRef> aNewChildRef =
+        aNewGraph.Editor().Gen().MutChildRef(aNewChildRefId);
+      aNewChildRef->LocalLocation = aCR.LocalLocation;
+      aChildRefMap.Bind(aRefIt.CurrentId(), aNewChildRefId);
     }
   }
 
@@ -469,53 +817,320 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
   for (BRepGraph_Iterator<BRepGraphInc::CompoundDef> anIt(theGraph); anIt.More(); anIt.Next())
   {
     const BRepGraph_CompoundId anOldCompoundId = anIt.CurrentId();
+    if (aCompoundMap.Seek(anOldCompoundId) == nullptr)
+    {
+      continue;
+    }
 
     NCollection_Vector<BRepGraph_NodeId> aNewChildren;
+    NCollection_Vector<BRepGraph_ChildRefId> anOldChildRefs;
     for (BRepGraph_RefsChildOfCompound aRefIt(theGraph, anOldCompoundId); aRefIt.More();
          aRefIt.Next())
     {
       const BRepGraphInc::ChildRef& aCR = theGraph.Refs().Children().Entry(aRefIt.CurrentId());
       const BRepGraph_NodeId        aNewChild = remapId(aCR.ChildDefId);
       if (aNewChild.IsValid())
+      {
         aNewChildren.Append(aNewChild);
+        anOldChildRefs.Append(aRefIt.CurrentId());
+      }
     }
-    (void)aNewGraph.Builder().AddCompound(aNewChildren);
+    const BRepGraph_CompoundId aNewCompoundId = aNewGraph.Editor().Compounds().Add(aNewChildren);
+    if (aNewCompoundId.IsValid())
+    {
+      const NCollection_Vector<BRepGraph_ChildRefId>& aNewChildRefs =
+        aNewGraph.Topo().Compounds().Definition(aNewCompoundId).ChildRefIds;
+      for (int aRefIdx = 0; aRefIdx < anOldChildRefs.Length() && aRefIdx < aNewChildRefs.Length(); ++aRefIdx)
+      {
+        const BRepGraphInc::ChildRef& anOldRef =
+          theGraph.Refs().Children().Entry(anOldChildRefs.Value(aRefIdx));
+        BRepGraph_MutGuard<BRepGraphInc::ChildRef> aNewRef =
+          aNewGraph.Editor().Gen().MutChildRef(aNewChildRefs.Value(aRefIdx));
+        aNewRef->Orientation = anOldRef.Orientation;
+        aNewRef->LocalLocation = anOldRef.LocalLocation;
+        aChildRefMap.Bind(anOldChildRefs.Value(aRefIdx), aNewChildRefs.Value(aRefIdx));
+      }
+    }
   }
 
   // CompSolids.
   for (BRepGraph_Iterator<BRepGraphInc::CompSolidDef> anIt(theGraph); anIt.More(); anIt.Next())
   {
     const BRepGraph_CompSolidId anOldCompSolidId = anIt.CurrentId();
+    if (aCompSolidMap.Seek(anOldCompSolidId) == nullptr)
+    {
+      continue;
+    }
 
     NCollection_Vector<BRepGraph_SolidId> aNewSolids;
+    NCollection_Vector<BRepGraph_SolidRefId> anOldSolidRefs;
     for (BRepGraph_RefsSolidOfCompSolid aRefIt(theGraph, anOldCompSolidId); aRefIt.More();
          aRefIt.Next())
     {
       const BRepGraphInc::SolidRef& aSR = theGraph.Refs().Solids().Entry(aRefIt.CurrentId());
       const BRepGraph_SolidId aNewSolid = BRepGraph_SolidId::FromNodeId(remapId(aSR.SolidDefId));
       if (aNewSolid.IsValid())
+      {
         aNewSolids.Append(aNewSolid);
+        anOldSolidRefs.Append(aRefIt.CurrentId());
+      }
     }
-    (void)aNewGraph.Builder().AddCompSolid(aNewSolids);
+    const BRepGraph_CompSolidId aNewCompSolidId = aNewGraph.Editor().CompSolids().Add(aNewSolids);
+    if (aNewCompSolidId.IsValid())
+    {
+      const NCollection_Vector<BRepGraph_SolidRefId>& aNewSolidRefs =
+        aNewGraph.Topo().CompSolids().Definition(aNewCompSolidId).SolidRefIds;
+      for (int aRefIdx = 0; aRefIdx < anOldSolidRefs.Length() && aRefIdx < aNewSolidRefs.Length(); ++aRefIdx)
+      {
+        const BRepGraphInc::SolidRef& anOldRef =
+          theGraph.Refs().Solids().Entry(anOldSolidRefs.Value(aRefIdx));
+        BRepGraph_MutGuard<BRepGraphInc::SolidRef> aNewRef =
+          aNewGraph.Editor().Solids().MutRef(aNewSolidRefs.Value(aRefIdx));
+        aNewRef->Orientation = anOldRef.Orientation;
+        aNewRef->LocalLocation = anOldRef.LocalLocation;
+        aSolidRefMap.Bind(anOldSolidRefs.Value(aRefIdx), aNewSolidRefs.Value(aRefIdx));
+      }
+    }
   }
 
   // Rebuild reverse index from final forward incidence to guarantee compact output consistency.
   aNewGraph.incStorage().BuildReverseIndex();
 
+  // Validate rebuilt graph before swapping it into the source graph.
+  // If rebuilt topology is inconsistent, keep source graph unchanged.
+  if (!aNewGraph.Editor().ValidateMutationBoundary())
+  {
+    aResult.NbNodesAfter = aResult.NbNodesBefore;
+    theGraph.History().SetEnabled(wasHistoryEnabled);
+    return aResult;
+  }
+
+  const BRepGraph_Validate::Result aCompactValidation = BRepGraph_Validate::Perform(aNewGraph);
+  if (!aCompactValidation.IsValid())
+  {
+    aResult.NbNodesAfter = aResult.NbNodesBefore;
+    theGraph.History().SetEnabled(wasHistoryEnabled);
+    return aResult;
+  }
+
+  // Rebuild assembly/product structure preserving part roots and assembly placements.
+  // Products and occurrences are not topology defs and must be rebuilt explicitly.
+  for (BRepGraph_FullProductIterator aProductIt(theGraph); aProductIt.More(); aProductIt.Next())
+  {
+    const BRepGraph_ProductId anOldProductId = aProductIt.CurrentId();
+    if (hasRootProducts && !aReachableNodes.Contains(anOldProductId))
+    {
+      continue;
+    }
+    const BRepGraphInc::ProductDef& anOldProduct = theGraph.Topo().Products().Definition(anOldProductId);
+    if (anOldProduct.IsRemoved)
+    {
+      continue;
+    }
+
+    BRepGraph_ProductId aNewProductId;
+    const BRepGraph_NodeId anOldShapeRoot = theGraph.Topo().Products().ShapeRootNode(anOldProductId);
+    if (anOldShapeRoot.IsValid() && BRepGraph_NodeId::IsTopologyKind(anOldShapeRoot.NodeKind))
+    {
+      const BRepGraph_NodeId aNewShapeRoot = remapId(anOldShapeRoot);
+      if (aNewShapeRoot.IsValid())
+      {
+        aNewProductId = aNewGraph.Editor().Products().Add(aNewShapeRoot);
+      }
+    }
+
+    if (!aNewProductId.IsValid())
+    {
+      aNewProductId = aNewGraph.Editor().Products().AddAssembly();
+    }
+
+    if (!aNewProductId.IsValid())
+    {
+      continue;
+    }
+
+    aProductMap.Bind(anOldProductId, aNewProductId);
+
+    // Map part root occurrence (topology child occurrence inside product).
+    BRepGraph_OccurrenceId    anOldPartOccurrenceId;
+    BRepGraph_OccurrenceRefId anOldPartOccurrenceRefId;
+    for (const BRepGraph_OccurrenceRefId& anOldOccRefId : anOldProduct.OccurrenceRefIds)
+    {
+      const BRepGraphInc::OccurrenceRef& anOldOccRef =
+        theGraph.Refs().Occurrences().Entry(anOldOccRefId);
+      if (anOldOccRef.IsRemoved)
+      {
+        continue;
+      }
+
+      const BRepGraphInc::OccurrenceDef& anOldOccDef =
+        theGraph.Topo().Occurrences().Definition(anOldOccRef.OccurrenceDefId);
+      if (anOldOccDef.IsRemoved)
+      {
+        continue;
+      }
+
+      if (anOldOccDef.ChildDefId.IsValid()
+          && BRepGraph_NodeId::IsTopologyKind(anOldOccDef.ChildDefId.NodeKind))
+      {
+        anOldPartOccurrenceId    = anOldOccRef.OccurrenceDefId;
+        anOldPartOccurrenceRefId = anOldOccRefId;
+        break;
+      }
+    }
+
+    if (!anOldPartOccurrenceId.IsValid())
+    {
+      continue;
+    }
+
+    const BRepGraphInc::ProductDef& aNewProduct =
+      aNewGraph.Topo().Products().Definition(aNewProductId);
+    for (const BRepGraph_OccurrenceRefId& aNewOccRefId : aNewProduct.OccurrenceRefIds)
+    {
+      const BRepGraphInc::OccurrenceRef& aNewOccRef =
+        aNewGraph.Refs().Occurrences().Entry(aNewOccRefId);
+      const BRepGraphInc::OccurrenceDef& aNewOccDef =
+        aNewGraph.Topo().Occurrences().Definition(aNewOccRef.OccurrenceDefId);
+      if (aNewOccDef.IsRemoved)
+      {
+        continue;
+      }
+
+      if (aNewOccDef.ChildDefId.IsValid()
+          && BRepGraph_NodeId::IsTopologyKind(aNewOccDef.ChildDefId.NodeKind))
+      {
+        anOccurrenceMap.Bind(anOldPartOccurrenceId, aNewOccRef.OccurrenceDefId);
+        if (anOldPartOccurrenceRefId.IsValid())
+        {
+          anOccurrenceRefMap.Bind(anOldPartOccurrenceRefId, aNewOccRefId);
+        }
+        break;
+      }
+    }
+  }
+
+  // Restore product-product assembly links with local placements.
+  for (BRepGraph_FullProductIterator aParentProductIt(theGraph); aParentProductIt.More();
+       aParentProductIt.Next())
+  {
+    const BRepGraph_ProductId anOldParentProductId = aParentProductIt.CurrentId();
+    if (hasRootProducts && !aReachableNodes.Contains(anOldParentProductId))
+    {
+      continue;
+    }
+    const BRepGraphInc::ProductDef& anOldParentProduct =
+      theGraph.Topo().Products().Definition(anOldParentProductId);
+    if (anOldParentProduct.IsRemoved)
+    {
+      continue;
+    }
+
+    const BRepGraph_ProductId* aNewParentId = aProductMap.Seek(anOldParentProductId);
+    if (aNewParentId == nullptr)
+    {
+      continue;
+    }
+
+    for (const BRepGraph_OccurrenceRefId& anOldOccRefId : anOldParentProduct.OccurrenceRefIds)
+    {
+      const BRepGraphInc::OccurrenceRef& anOldOccRef =
+        theGraph.Refs().Occurrences().Entry(anOldOccRefId);
+      if (anOldOccRef.IsRemoved)
+      {
+        continue;
+      }
+
+      const BRepGraphInc::OccurrenceDef& anOldOccDef =
+        theGraph.Topo().Occurrences().Definition(anOldOccRef.OccurrenceDefId);
+      if (anOldOccDef.IsRemoved || !anOldOccDef.ChildDefId.IsValid()
+          || anOldOccDef.ChildDefId.NodeKind != BRepGraph_NodeId::Kind::Product)
+      {
+        continue;
+      }
+
+      const BRepGraph_ProductId  anOldChildProductId(anOldOccDef.ChildDefId);
+      const BRepGraph_ProductId* aNewChildId = aProductMap.Seek(anOldChildProductId);
+      if (aNewChildId == nullptr)
+      {
+        continue;
+      }
+
+      const BRepGraph_OccurrenceId aNewOccId = aNewGraph.Editor().Products().AddOccurrence(
+        *aNewParentId,
+        *aNewChildId,
+        anOldOccRef.LocalLocation);
+
+      if (aNewOccId.IsValid())
+      {
+        anOccurrenceMap.Bind(anOldOccRef.OccurrenceDefId, aNewOccId);
+        // Find the new OccurrenceRef in the parent product for RefUID transfer.
+        const BRepGraphInc::ProductDef& aNewParentDef =
+          aNewGraph.Topo().Products().Definition(*aNewParentId);
+        for (const BRepGraph_OccurrenceRefId& aNewOccRefId : aNewParentDef.OccurrenceRefIds)
+        {
+          if (aNewGraph.Refs().Occurrences().Entry(aNewOccRefId).OccurrenceDefId == aNewOccId)
+          {
+            anOccurrenceRefMap.Bind(anOldOccRefId, aNewOccRefId);
+            break;
+          }
+        }
+      }
+    }
+  }
+
+  // Force full mesh/presentation recomputation after compact rebuild.
+  // Compaction rewrites ids and references; preserving old mesh reps can leave
+  // stale polygon/triangulation bindings and corrupted appearance/bounds.
+  aNewGraph.meshCache().Clear();
+  aNewGraph.refTransientCache().Clear();
+
+  for (BRepGraph_Iterator<BRepGraphInc::FaceDef> anIt(aNewGraph); anIt.More(); anIt.Next())
+  {
+    BRepGraph_MutGuard<BRepGraphInc::FaceDef> aFace = aNewGraph.Editor().Faces().Mut(anIt.CurrentId());
+    aFace->TriangulationRepId = BRepGraph_TriangulationRepId();
+  }
+
+  for (BRepGraph_Iterator<BRepGraphInc::EdgeDef> anIt(aNewGraph); anIt.More(); anIt.Next())
+  {
+    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> anEdge = aNewGraph.Editor().Edges().Mut(anIt.CurrentId());
+    anEdge->Polygon3DRepId = BRepGraph_Polygon3DRepId();
+  }
+
+  for (BRepGraph_Iterator<BRepGraphInc::CoEdgeDef> anIt(aNewGraph); anIt.More(); anIt.Next())
+  {
+    BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef> aCoEdge = aNewGraph.Editor().CoEdges().Mut(anIt.CurrentId());
+    aCoEdge->Polygon2DRepId = BRepGraph_Polygon2DRepId();
+    aCoEdge->PolygonOnTriRepId = BRepGraph_PolygonOnTriRepId();
+  }
+
   aResult.NbNodesAfter = static_cast<int>(aNewGraph.Topo().Gen().NbNodes());
 
   // Transfer per-kind UID vectors from old graph to new graph using index remap maps.
   // Each new graph's UID vector[newIdx] = old graph's UID vector[oldIdx].
-  auto transferUIDs = [&](const NCollection_DataMap<int, int>&     theMap,
+  auto transferUIDs = [&](const auto&                              theMap,
                           const NCollection_Vector<BRepGraph_UID>& theOldVec,
                           NCollection_Vector<BRepGraph_UID>&       theNewVec) {
-    // New vector was already populated by BuilderView during reconstruction.
+    // New vector was already populated by EditorView during reconstruction.
     // Overwrite entries that have a mapping from the old graph.
-    for (const auto& [anOldIdx, aNewIdx] : theMap.Items())
+    for (const auto& [anOldId, aNewId] : theMap.Items())
     {
-      if (anOldIdx < theOldVec.Length() && theOldVec.Value(anOldIdx).IsValid())
+      if (anOldId.IsValidIn(theOldVec) && theOldVec.Value(anOldId.Index).IsValid())
       {
-        theNewVec.ChangeValue(aNewIdx) = theOldVec.Value(anOldIdx);
+        theNewVec.ChangeValue(aNewId.Index) = theOldVec.Value(anOldId.Index);
+      }
+    }
+  };
+
+  // Same logic for per-kind RefUID vectors.
+  auto transferRefUIDs = [&](const auto&                                 theMap,
+                             const NCollection_Vector<BRepGraph_RefUID>& theOldVec,
+                             NCollection_Vector<BRepGraph_RefUID>&       theNewVec) {
+    for (const auto& [anOldId, aNewId] : theMap.Items())
+    {
+      if (anOldId.IsValidIn(theOldVec) && theOldVec.Value(anOldId.Index).IsValid())
+      {
+        theNewVec.ChangeValue(aNewId.Index) = theOldVec.Value(anOldId.Index);
       }
     }
   };
@@ -544,10 +1159,47 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
   transferUIDs(aCompSolidMap,
                aGraphData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::CompSolid),
                aNewGraphData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::CompSolid));
+  transferUIDs(aProductMap,
+               aGraphData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Product),
+               aNewGraphData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Product));
+  transferUIDs(anOccurrenceMap,
+               aGraphData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::Occurrence),
+               aNewGraphData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::Occurrence));
+  transferUIDs(aCoEdgeMap,
+               aGraphData->myIncStorage.UIDs(BRepGraph_NodeId::Kind::CoEdge),
+               aNewGraphData->myIncStorage.ChangeUIDs(BRepGraph_NodeId::Kind::CoEdge));
+
+  // Transfer per-kind RefUID vectors. Builder allocates fresh RefUIDs during rebuild;
+  // overwrite them with the original UIDs from the old graph so that all RefIdFrom(refUID)
+  // lookups remain valid after compaction.
+  transferRefUIDs(aVertexRefMap,
+                  aGraphData->myIncStorage.RefUIDs(BRepGraph_RefId::Kind::Vertex),
+                  aNewGraphData->myIncStorage.ChangeRefUIDs(BRepGraph_RefId::Kind::Vertex));
+  transferRefUIDs(aCoEdgeRefMap,
+                  aGraphData->myIncStorage.RefUIDs(BRepGraph_RefId::Kind::CoEdge),
+                  aNewGraphData->myIncStorage.ChangeRefUIDs(BRepGraph_RefId::Kind::CoEdge));
+  transferRefUIDs(aWireRefMap,
+                  aGraphData->myIncStorage.RefUIDs(BRepGraph_RefId::Kind::Wire),
+                  aNewGraphData->myIncStorage.ChangeRefUIDs(BRepGraph_RefId::Kind::Wire));
+  transferRefUIDs(aFaceRefMap,
+                  aGraphData->myIncStorage.RefUIDs(BRepGraph_RefId::Kind::Face),
+                  aNewGraphData->myIncStorage.ChangeRefUIDs(BRepGraph_RefId::Kind::Face));
+  transferRefUIDs(aShellRefMap,
+                  aGraphData->myIncStorage.RefUIDs(BRepGraph_RefId::Kind::Shell),
+                  aNewGraphData->myIncStorage.ChangeRefUIDs(BRepGraph_RefId::Kind::Shell));
+  transferRefUIDs(aSolidRefMap,
+                  aGraphData->myIncStorage.RefUIDs(BRepGraph_RefId::Kind::Solid),
+                  aNewGraphData->myIncStorage.ChangeRefUIDs(BRepGraph_RefId::Kind::Solid));
+  transferRefUIDs(aChildRefMap,
+                  aGraphData->myIncStorage.RefUIDs(BRepGraph_RefId::Kind::Child),
+                  aNewGraphData->myIncStorage.ChangeRefUIDs(BRepGraph_RefId::Kind::Child));
+  transferRefUIDs(anOccurrenceRefMap,
+                  aGraphData->myIncStorage.RefUIDs(BRepGraph_RefId::Kind::Occurrence),
+                  aNewGraphData->myIncStorage.ChangeRefUIDs(BRepGraph_RefId::Kind::Occurrence));
 
   // Mark UID reverse index dirty so it is rebuilt from the transferred UID vectors
   // on next NodeIdFrom()/Has() call. The reverse index was populated during
-  // AddVertex/AddEdge/etc. with intermediate UIDs that are now overwritten.
+  // Add/Add/etc. with intermediate UIDs that are now overwritten.
   {
     std::unique_lock<std::shared_mutex> aUIDLock(aNewGraphData->myUIDToNodeIdMutex);
     aNewGraphData->myUIDToNodeIdDirty = true;
@@ -560,12 +1212,27 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
   aNewGraphData->myNextUIDCounter.store(
     aGraphData->myNextUIDCounter.load(std::memory_order_relaxed),
     std::memory_order_relaxed);
+  // Preserve graph generation so transferred UIDs remain valid after compaction.
+  // Compact rewrites ids and clears caches explicitly; it is not a new BRepGraph_Builder::Perform() cycle.
   aNewGraphData->myGeneration.store(aGraphData->myGeneration.load(std::memory_order_relaxed),
                                     std::memory_order_relaxed);
   aNewGraphData->myIsDone = true;
 
   // Save layers before swap (default move would transfer empty layers from aNewGraph).
   BRepGraph_LayerRegistry aSavedLayerRegistry = std::move(theGraph.layerRegistry());
+
+  // Save TShape-to-NodeId and NodeId-to-OriginalShape bindings before swap.
+  // These maps are populated by BRepGraphInc_Populate during BRepGraph_Builder::Perform() with TopoDS_Shape data.
+  // The rebuilt aNewGraph has no TopoDS_Shape bindings, so they must be transferred here.
+  // We capture into local vectors using the ForEach API, then remap keys/values after the swap.
+  NCollection_Vector<std::pair<const TopoDS_TShape*, BRepGraph_NodeId>> aTShapeBindings;
+  NCollection_Vector<std::pair<BRepGraph_NodeId, TopoDS_Shape>>          aOriginalBindings;
+  aGraphData->myIncStorage.ForEachTShapeBinding(
+    [&](const TopoDS_TShape* theTShape, const BRepGraph_NodeId& theNodeId)
+    { aTShapeBindings.Append({theTShape, theNodeId}); });
+  aGraphData->myIncStorage.ForEachOriginalBinding(
+    [&](const BRepGraph_NodeId& theNodeId, const TopoDS_Shape& theShape)
+    { aOriginalBindings.Append({theNodeId, theShape}); });
 
   // Swap.
   theGraph = std::move(aNewGraph);
@@ -600,28 +1267,62 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
   }
   // Build unified remap map covering all 8 topology kinds.
   NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId> aRemapMap;
-  for (const auto& [aOldIdx, aNewIdx] : aVertexMap.Items())
-    aRemapMap.Bind(BRepGraph_VertexId(aOldIdx), BRepGraph_VertexId(aNewIdx));
-  for (const auto& [aOldIdx, aNewIdx] : anEdgeMap.Items())
-    aRemapMap.Bind(BRepGraph_EdgeId(aOldIdx), BRepGraph_EdgeId(aNewIdx));
-  for (const auto& [aOldIdx, aNewIdx] : aCoEdgeMap.Items())
-    aRemapMap.Bind(BRepGraph_CoEdgeId(aOldIdx), BRepGraph_CoEdgeId(aNewIdx));
-  for (const auto& [aOldIdx, aNewIdx] : aWireMap.Items())
-    aRemapMap.Bind(BRepGraph_WireId(aOldIdx), BRepGraph_WireId(aNewIdx));
-  for (const auto& [aOldIdx, aNewIdx] : aFaceMap.Items())
-    aRemapMap.Bind(BRepGraph_FaceId(aOldIdx), BRepGraph_FaceId(aNewIdx));
-  for (const auto& [aOldIdx, aNewIdx] : aShellMap.Items())
-    aRemapMap.Bind(BRepGraph_ShellId(aOldIdx), BRepGraph_ShellId(aNewIdx));
-  for (const auto& [aOldIdx, aNewIdx] : aSolidMap.Items())
-    aRemapMap.Bind(BRepGraph_SolidId(aOldIdx), BRepGraph_SolidId(aNewIdx));
-  for (const auto& [aOldIdx, aNewIdx] : aCompoundMap.Items())
-    aRemapMap.Bind(BRepGraph_CompoundId(aOldIdx), BRepGraph_CompoundId(aNewIdx));
-  for (const auto& [aOldIdx, aNewIdx] : aCompSolidMap.Items())
-    aRemapMap.Bind(BRepGraph_CompSolidId(aOldIdx), BRepGraph_CompSolidId(aNewIdx));
+  for (const auto& [anOldId, aNewId] : aVertexMap.Items())
+    aRemapMap.Bind(anOldId, aNewId);
+  for (const auto& [anOldId, aNewId] : anEdgeMap.Items())
+    aRemapMap.Bind(anOldId, aNewId);
+  for (const auto& [anOldId, aNewId] : aCoEdgeMap.Items())
+    aRemapMap.Bind(anOldId, aNewId);
+  for (const auto& [anOldId, aNewId] : aWireMap.Items())
+    aRemapMap.Bind(anOldId, aNewId);
+  for (const auto& [anOldId, aNewId] : aFaceMap.Items())
+    aRemapMap.Bind(anOldId, aNewId);
+  for (const auto& [anOldId, aNewId] : aShellMap.Items())
+    aRemapMap.Bind(anOldId, aNewId);
+  for (const auto& [anOldId, aNewId] : aSolidMap.Items())
+    aRemapMap.Bind(anOldId, aNewId);
+  for (const auto& [anOldId, aNewId] : aCompoundMap.Items())
+    aRemapMap.Bind(anOldId, aNewId);
+  for (const auto& [anOldId, aNewId] : aCompSolidMap.Items())
+    aRemapMap.Bind(anOldId, aNewId);
+  for (const auto& [anOldId, aNewId] : aProductMap.Items())
+    aRemapMap.Bind(anOldId, aNewId);
+  for (const auto& [anOldId, aNewId] : anOccurrenceMap.Items())
+    aRemapMap.Bind(anOldId, aNewId);
 
   theGraph.LayerRegistry().DispatchOnCompact(aRemapMap);
 
-  theGraph.Builder().CommitMutation();
+  // Restore TShape-to-NodeId and NodeId-to-OriginalShape bindings, remapping NodeIds through
+  // aRemapMap. Nodes that were removed (dead, no entry in aRemapMap) are simply dropped.
+  for (const auto& [aTShape, aOldId] : aTShapeBindings)
+  {
+    const BRepGraph_NodeId* aNewId = aRemapMap.Seek(aOldId);
+    if (aNewId != nullptr)
+      theGraph.incStorage().BindTShapeToNode(aTShape, *aNewId);
+  }
+  for (const auto& [aOldId, aShape] : aOriginalBindings)
+  {
+    const BRepGraph_NodeId* aNewId = aRemapMap.Seek(aOldId);
+    if (aNewId != nullptr)
+      theGraph.incStorage().BindOriginal(*aNewId, aShape);
+  }
+
+  // Record history after swap so records survive in the new graph's history log.
+  // aRemapMap covers all topology kinds (Vertex..Occurrence + CoEdge).
+  if (theOptions.HistoryMode)
+  {
+    theGraph.History().SetEnabled(true);
+    for (NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>::Iterator anIt(aRemapMap);
+         anIt.More();
+         anIt.Next())
+    {
+      NCollection_Vector<BRepGraph_NodeId> aRepl;
+      aRepl.Append(anIt.Value());
+      theGraph.History().Record(TCollection_AsciiString("Compact:Remap"), anIt.Key(), aRepl);
+    }
+  }
+
+  theGraph.Editor().CommitMutation();
   theGraph.History().SetEnabled(wasHistoryEnabled);
   return aResult;
 }

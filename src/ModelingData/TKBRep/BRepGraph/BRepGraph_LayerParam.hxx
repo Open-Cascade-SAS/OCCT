@@ -11,8 +11,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _BRepGraph_ParamLayer_HeaderFile
-#define _BRepGraph_ParamLayer_HeaderFile
+#ifndef _BRepGraph_LayerParam_HeaderFile
+#define _BRepGraph_LayerParam_HeaderFile
 
 #include <BRepGraph_Layer.hxx>
 
@@ -21,7 +21,7 @@
 #include <gp_Pnt2d.hxx>
 
 //! @brief Stores vertex-on-curve, vertex-on-surface, and vertex-on-PCurve bindings.
-class BRepGraph_ParamLayer : public BRepGraph_Layer
+class BRepGraph_LayerParam : public BRepGraph_Layer
 {
 public:
   //! Return fixed layer type GUID.
@@ -106,7 +106,7 @@ public:
   Standard_EXPORT void InvalidateAll() noexcept override;
   Standard_EXPORT void Clear() noexcept override;
 
-  DEFINE_STANDARD_RTTIEXT(BRepGraph_ParamLayer, BRepGraph_Layer)
+  DEFINE_STANDARD_RTTIEXT(BRepGraph_LayerParam, BRepGraph_Layer)
 
 private:
   void removeVertexBindings(const BRepGraph_VertexId theVertex) noexcept;
@@ -147,4 +147,4 @@ private:
     myCoEdgeToVertices;
 };
 
-#endif // _BRepGraph_ParamLayer_HeaderFile
+#endif // _BRepGraph_LayerParam_HeaderFile

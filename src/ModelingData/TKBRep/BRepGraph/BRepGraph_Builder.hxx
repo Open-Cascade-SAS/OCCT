@@ -30,19 +30,36 @@ class BRepGraph_Builder
 public:
   DEFINE_STANDARD_ALLOC
 
+  //! Build-time options owned by BRepGraph_Builder.
+  struct BuildOptions
+  {
+    //! Backend extraction passes executed during shape population.
+    BRepGraphInc_Populate::Options Populate;
+
+    //! Auto-create a root Product wrapping the imported top-level topology.
+    //! Disable this when a higher-level builder manages Product creation.
+    bool CreateAutoProduct;
+
+    BuildOptions()
+        : Populate(),
+          CreateAutoProduct(true)
+    {
+    }
+  };
+
   //! Build the full graph from a TopoDS_Shape (clears existing data first).
   //! @param[in,out] theGraph   graph to populate
   //! @param[in] theShape       root shape
   //! @param[in] theParallel    if true, face-level construction runs in parallel
   static Standard_EXPORT void Perform(BRepGraph&          theGraph,
                                       const TopoDS_Shape& theShape,
-                                      const bool          theParallel);
+                                      const bool          theParallel = false);
 
   //! Build the full graph with explicit post-pass control.
-  static Standard_EXPORT void Perform(BRepGraph&                            theGraph,
-                                      const TopoDS_Shape&                   theShape,
-                                      const bool                            theParallel,
-                                      const BRepGraphInc_Populate::Options& theOptions);
+  static Standard_EXPORT void Perform(BRepGraph&                      theGraph,
+                                      const TopoDS_Shape&             theShape,
+                                      const bool                      theParallel,
+                                      const BuildOptions&             theOptions);
 
   //! Append a shape to the existing graph without clearing.
   //! Flattens hierarchy containers away. Solid/Shell/Compound/CompSolid inputs
@@ -51,7 +68,7 @@ public:
   //! @param[in,out] theGraph   graph to extend
   //! @param[in] theShape       shape to add
   //! @param[in] theParallel    if true, per-face geometry extraction is parallel
-  //! @param[in] theOptions     populate options (e.g. CreateAutoProduct)
+  //! @param[in] theOptions     backend extraction options
   static Standard_EXPORT void AppendFlattened(
     BRepGraph&                            theGraph,
     const TopoDS_Shape&                   theShape,
@@ -65,7 +82,7 @@ public:
   //! @param[in,out] theGraph   graph to extend
   //! @param[in] theShape       shape to add
   //! @param[in] theParallel    if true, per-face geometry extraction is parallel
-  //! @param[in] theOptions     populate options (e.g. CreateAutoProduct)
+  //! @param[in] theOptions     backend extraction options
   static Standard_EXPORT void AppendFull(
     BRepGraph&                            theGraph,
     const TopoDS_Shape&                   theShape,

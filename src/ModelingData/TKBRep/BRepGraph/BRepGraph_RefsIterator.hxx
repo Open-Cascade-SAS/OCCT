@@ -27,6 +27,179 @@
 //! definitions.
 namespace BRepGraph_RefsIterator
 {
+namespace Detail
+{
+template <typename T>
+struct RefTraits;
+
+template <>
+struct RefTraits<BRepGraphInc::ShellRef>
+{
+  using RefId = BRepGraph_ShellRefId;
+
+  static int Count(const BRepGraph& theGraph) { return theGraph.Refs().Shells().Nb(); }
+
+  static const BRepGraphInc::ShellRef& Get(const BRepGraph& theGraph, const RefId theRefId)
+  {
+    return theGraph.Refs().Shells().Entry(theRefId);
+  }
+};
+
+template <>
+struct RefTraits<BRepGraphInc::FaceRef>
+{
+  using RefId = BRepGraph_FaceRefId;
+
+  static int Count(const BRepGraph& theGraph) { return theGraph.Refs().Faces().Nb(); }
+
+  static const BRepGraphInc::FaceRef& Get(const BRepGraph& theGraph, const RefId theRefId)
+  {
+    return theGraph.Refs().Faces().Entry(theRefId);
+  }
+};
+
+template <>
+struct RefTraits<BRepGraphInc::WireRef>
+{
+  using RefId = BRepGraph_WireRefId;
+
+  static int Count(const BRepGraph& theGraph) { return theGraph.Refs().Wires().Nb(); }
+
+  static const BRepGraphInc::WireRef& Get(const BRepGraph& theGraph, const RefId theRefId)
+  {
+    return theGraph.Refs().Wires().Entry(theRefId);
+  }
+};
+
+template <>
+struct RefTraits<BRepGraphInc::CoEdgeRef>
+{
+  using RefId = BRepGraph_CoEdgeRefId;
+
+  static int Count(const BRepGraph& theGraph) { return theGraph.Refs().CoEdges().Nb(); }
+
+  static const BRepGraphInc::CoEdgeRef& Get(const BRepGraph& theGraph, const RefId theRefId)
+  {
+    return theGraph.Refs().CoEdges().Entry(theRefId);
+  }
+};
+
+template <>
+struct RefTraits<BRepGraphInc::VertexRef>
+{
+  using RefId = BRepGraph_VertexRefId;
+
+  static int Count(const BRepGraph& theGraph) { return theGraph.Refs().Vertices().Nb(); }
+
+  static const BRepGraphInc::VertexRef& Get(const BRepGraph& theGraph, const RefId theRefId)
+  {
+    return theGraph.Refs().Vertices().Entry(theRefId);
+  }
+};
+
+template <>
+struct RefTraits<BRepGraphInc::SolidRef>
+{
+  using RefId = BRepGraph_SolidRefId;
+
+  static int Count(const BRepGraph& theGraph) { return theGraph.Refs().Solids().Nb(); }
+
+  static const BRepGraphInc::SolidRef& Get(const BRepGraph& theGraph, const RefId theRefId)
+  {
+    return theGraph.Refs().Solids().Entry(theRefId);
+  }
+};
+
+template <>
+struct RefTraits<BRepGraphInc::ChildRef>
+{
+  using RefId = BRepGraph_ChildRefId;
+
+  static int Count(const BRepGraph& theGraph) { return theGraph.Refs().Children().Nb(); }
+
+  static const BRepGraphInc::ChildRef& Get(const BRepGraph& theGraph, const RefId theRefId)
+  {
+    return theGraph.Refs().Children().Entry(theRefId);
+  }
+};
+
+template <>
+struct RefTraits<BRepGraphInc::OccurrenceRef>
+{
+  using RefId = BRepGraph_OccurrenceRefId;
+
+  static int Count(const BRepGraph& theGraph) { return theGraph.Refs().Occurrences().Nb(); }
+
+  static const BRepGraphInc::OccurrenceRef& Get(const BRepGraph& theGraph,
+                                                 const RefId      theRefId)
+  {
+    return theGraph.Refs().Occurrences().Entry(theRefId);
+  }
+};
+} // namespace Detail
+
+template <typename RefType, bool TheFullTraverse = false>
+class RefIterator
+{
+public:
+  using Traits = Detail::RefTraits<RefType>;
+  using RefId  = typename Traits::RefId;
+
+  RefIterator(const BRepGraph& theGraph)
+      : myGraph(theGraph),
+        myLength(RefId(Traits::Count(theGraph)))
+  {
+    skipRemoved();
+  }
+
+  RefIterator(const BRepGraph& theGraph, const RefId theStartId)
+      : myGraph(theGraph),
+        myCurrent(theStartId),
+        myLength(RefId(Traits::Count(theGraph)))
+  {
+    if (myCurrent < RefId::Start())
+    {
+      myCurrent = RefId::Start();
+    }
+    skipRemoved();
+  }
+
+  [[nodiscard]] bool More() const { return myCurrent < myLength; }
+
+  void Next()
+  {
+    ++myCurrent;
+    skipRemoved();
+  }
+
+  [[nodiscard]] const RefType& Current() const { return Traits::Get(myGraph, myCurrent); }
+
+  [[nodiscard]] RefId CurrentId() const { return myCurrent; }
+
+  NCollection_ForwardRangeIterator<RefIterator> begin()
+  {
+    return NCollection_ForwardRangeIterator<RefIterator>(this);
+  }
+
+  NCollection_ForwardRangeSentinel end() const { return NCollection_ForwardRangeSentinel{}; }
+
+private:
+  void skipRemoved()
+  {
+    if constexpr (!TheFullTraverse)
+    {
+      while (myCurrent < myLength && Current().IsRemoved)
+      {
+        ++myCurrent;
+      }
+    }
+  }
+
+  const BRepGraph& myGraph;
+  RefId            myCurrent = RefId::Start();
+  RefId            myLength;
+};
+
 template <typename ParentIdT, typename RefIdT, typename RefEntryT>
 struct BaseTraits
 {
@@ -483,5 +656,32 @@ using BRepGraph_RefsChildOfCompound =
 using BRepGraph_RefsOccurrenceOfProduct =
   BRepGraph_RefsIterator::RefsOfParent<BRepGraph_RefsIterator::OccurrenceOfProductTraits>;
 using BRepGraph_RefsVertexOfEdge = BRepGraph_RefsIterator::RefsVertexOfEdge;
+
+using BRepGraph_ShellRefIterator = BRepGraph_RefsIterator::RefIterator<BRepGraphInc::ShellRef>;
+using BRepGraph_FaceRefIterator = BRepGraph_RefsIterator::RefIterator<BRepGraphInc::FaceRef>;
+using BRepGraph_WireRefIterator = BRepGraph_RefsIterator::RefIterator<BRepGraphInc::WireRef>;
+using BRepGraph_CoEdgeRefIterator = BRepGraph_RefsIterator::RefIterator<BRepGraphInc::CoEdgeRef>;
+using BRepGraph_VertexRefIterator = BRepGraph_RefsIterator::RefIterator<BRepGraphInc::VertexRef>;
+using BRepGraph_SolidRefIterator = BRepGraph_RefsIterator::RefIterator<BRepGraphInc::SolidRef>;
+using BRepGraph_ChildRefIterator = BRepGraph_RefsIterator::RefIterator<BRepGraphInc::ChildRef>;
+using BRepGraph_OccurrenceRefIterator =
+  BRepGraph_RefsIterator::RefIterator<BRepGraphInc::OccurrenceRef>;
+
+using BRepGraph_FullShellRefIterator =
+  BRepGraph_RefsIterator::RefIterator<BRepGraphInc::ShellRef, true>;
+using BRepGraph_FullFaceRefIterator =
+  BRepGraph_RefsIterator::RefIterator<BRepGraphInc::FaceRef, true>;
+using BRepGraph_FullWireRefIterator =
+  BRepGraph_RefsIterator::RefIterator<BRepGraphInc::WireRef, true>;
+using BRepGraph_FullCoEdgeRefIterator =
+  BRepGraph_RefsIterator::RefIterator<BRepGraphInc::CoEdgeRef, true>;
+using BRepGraph_FullVertexRefIterator =
+  BRepGraph_RefsIterator::RefIterator<BRepGraphInc::VertexRef, true>;
+using BRepGraph_FullSolidRefIterator =
+  BRepGraph_RefsIterator::RefIterator<BRepGraphInc::SolidRef, true>;
+using BRepGraph_FullChildRefIterator =
+  BRepGraph_RefsIterator::RefIterator<BRepGraphInc::ChildRef, true>;
+using BRepGraph_FullOccurrenceRefIterator =
+  BRepGraph_RefsIterator::RefIterator<BRepGraphInc::OccurrenceRef, true>;
 
 #endif // _BRepGraph_RefsIterator_HeaderFile

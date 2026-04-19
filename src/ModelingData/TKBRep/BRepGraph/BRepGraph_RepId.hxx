@@ -19,6 +19,7 @@
 
 #include <cstddef>
 #include <functional>
+#include <utility>
 
 //! Lightweight typed index into a per-kind representation vector inside BRepGraph.
 //!
@@ -73,11 +74,14 @@ struct BRepGraph_RepId
   template <Kind TheKind>
   struct Typed
   {
+    static constexpr int THE_START_INDEX   = 0;
+    static constexpr int THE_INVALID_INDEX = -1;
+
     int Index;
 
     //! Default: invalid (Index = -1).
     Typed()
-        : Index(-1)
+        : Index(THE_INVALID_INDEX)
     {
     }
 
@@ -85,17 +89,48 @@ struct BRepGraph_RepId
     explicit Typed(const int theIdx)
         : Index(theIdx)
     {
-      Standard_ASSERT_VOID(theIdx >= -1, "index must be >= -1");
+      Standard_ASSERT_VOID(theIdx >= THE_INVALID_INDEX, "index must be >= -1");
     }
 
+    //! Construct from an untyped representation id of the same kind.
+    explicit Typed(const BRepGraph_RepId theId)
+        : Typed(FromRepId(theId))
+    {
+    }
+
+    template <Kind OtherKind, typename std::enable_if_t<OtherKind != TheKind, int> = 0>
+    Typed(const Typed<OtherKind>&) = delete;
+
+    //! First valid id in a dense per-kind sequence.
+    [[nodiscard]] static Typed Start() { return Typed(THE_START_INDEX); }
+
+    //! Invalid sentinel id.
+    [[nodiscard]] static Typed Invalid() { return Typed(); }
+
     //! True if this id points to an allocated representation slot.
-    [[nodiscard]] bool IsValid() const { return Index >= 0; }
+    [[nodiscard]] bool IsValid() const { return Index > THE_INVALID_INDEX; }
 
     //! True if this id points to an allocated slot within [0, theMaxCount).
     [[nodiscard]] bool IsValid(const int theMaxCount) const
     {
       Standard_ASSERT_RETURN(theMaxCount >= 0, "max count must be non-negative", false);
-      return Index >= 0 && Index < theMaxCount;
+      return IsValid() && Index < theMaxCount;
+    }
+
+    //! True if this id is within the dense range exposed by a provider with Nb().
+    template <typename CountProviderT>
+    [[nodiscard]] auto IsValidIn(const CountProviderT& theProvider) const
+      -> decltype(theProvider.Nb(), bool())
+    {
+      return IsValid(theProvider.Nb());
+    }
+
+    //! True if this id is within the dense range exposed by a provider with Length().
+    template <typename CountProviderT>
+    [[nodiscard]] auto IsValidIn(const CountProviderT& theProvider) const
+      -> decltype(theProvider.Length(), bool())
+    {
+      return IsValid(theProvider.Length());
     }
 
     //! Implicit conversion to untyped RepId.
@@ -165,6 +200,9 @@ struct BRepGraph_RepId
     }
   };
 
+  static constexpr int THE_START_INDEX   = 0;
+  static constexpr int THE_INVALID_INDEX = -1;
+
   Kind RepKind;
   int  Index;
 
@@ -172,7 +210,7 @@ struct BRepGraph_RepId
   //! RepKind is set to Kind::Surface but is meaningless when !IsValid().
   BRepGraph_RepId()
       : RepKind(Kind::Surface),
-        Index(-1)
+        Index(THE_INVALID_INDEX)
   {
   }
 
@@ -180,40 +218,75 @@ struct BRepGraph_RepId
       : RepKind(theKind),
         Index(theIdx)
   {
+    Standard_ASSERT_VOID(theIdx >= THE_INVALID_INDEX, "BRepGraph_RepId: index must be >= -1");
+  }
+
+  //! First valid id in a dense sequence for the specified kind.
+  [[nodiscard]] static BRepGraph_RepId Start(const Kind theKind)
+  {
+    return BRepGraph_RepId(theKind, THE_START_INDEX);
+  }
+
+  //! Invalid sentinel id for the specified kind.
+  [[nodiscard]] static BRepGraph_RepId Invalid(const Kind theKind = Kind::Surface)
+  {
+    return BRepGraph_RepId(theKind, THE_INVALID_INDEX);
   }
 
   //! True if this id points to an allocated representation slot.
-  [[nodiscard]] bool IsValid() const { return Index >= 0; }
+  [[nodiscard]] bool IsValid() const { return Index > THE_INVALID_INDEX; }
 
   //! True if this id points to an allocated slot within [0, theMaxCount).
   [[nodiscard]] bool IsValid(const int theMaxCount) const
   {
     Standard_ASSERT_RETURN(theMaxCount >= 0, "max count must be non-negative", false);
-    return Index >= 0 && Index < theMaxCount;
+    return IsValid() && Index < theMaxCount;
   }
 
-  //! @name Static factory methods returning typed RepIds.
+  //! True if this id is within the dense range exposed by a provider with Nb().
+  template <typename CountProviderT>
+  [[nodiscard]] auto IsValidIn(const CountProviderT& theProvider) const
+    -> decltype(theProvider.Nb(), bool())
+  {
+    return IsValid(theProvider.Nb());
+  }
+
+  //! True if this id is within the dense range exposed by a provider with Length().
+  template <typename CountProviderT>
+  [[nodiscard]] auto IsValidIn(const CountProviderT& theProvider) const
+    -> decltype(theProvider.Length(), bool())
+  {
+    return IsValid(theProvider.Length());
+  }
+
+  //! Creates a typed surface representation id from the given index.
   static Typed<Kind::Surface> Surface(const int theIdx) { return Typed<Kind::Surface>(theIdx); }
 
+  //! Creates a typed 3D curve representation id from the given index.
   static Typed<Kind::Curve3D> Curve3D(const int theIdx) { return Typed<Kind::Curve3D>(theIdx); }
 
+  //! Creates a typed 2D curve representation id from the given index.
   static Typed<Kind::Curve2D> Curve2D(const int theIdx) { return Typed<Kind::Curve2D>(theIdx); }
 
+  //! Creates a typed triangulation representation id from the given index.
   static Typed<Kind::Triangulation> Triangulation(const int theIdx)
   {
     return Typed<Kind::Triangulation>(theIdx);
   }
 
+  //! Creates a typed 3D polygon representation id from the given index.
   static Typed<Kind::Polygon3D> Polygon3D(const int theIdx)
   {
     return Typed<Kind::Polygon3D>(theIdx);
   }
 
+  //! Creates a typed 2D polygon representation id from the given index.
   static Typed<Kind::Polygon2D> Polygon2D(const int theIdx)
   {
     return Typed<Kind::Polygon2D>(theIdx);
   }
 
+  //! Creates a typed polygon-on-triangulation representation id from the given index.
   static Typed<Kind::PolygonOnTri> PolygonOnTri(const int theIdx)
   {
     return Typed<Kind::PolygonOnTri>(theIdx);
@@ -261,9 +334,36 @@ struct BRepGraph_RepId
   {
     return BRepGraph_RepId(RepKind, Index - theOffset);
   }
+
+  //! Dispatch a generic rep id to a callable taking the matching typed rep id.
+  template <typename FuncT>
+  static auto Visit(const BRepGraph_RepId theRepId, FuncT&& theFunc)
+    -> decltype(std::forward<FuncT>(theFunc)(Typed<Kind::Surface>()))
+  {
+    switch (theRepId.RepKind)
+    {
+      case Kind::Surface:
+        return std::forward<FuncT>(theFunc)(Typed<Kind::Surface>::FromRepId(theRepId));
+      case Kind::Curve3D:
+        return std::forward<FuncT>(theFunc)(Typed<Kind::Curve3D>::FromRepId(theRepId));
+      case Kind::Curve2D:
+        return std::forward<FuncT>(theFunc)(Typed<Kind::Curve2D>::FromRepId(theRepId));
+      case Kind::Triangulation:
+        return std::forward<FuncT>(theFunc)(Typed<Kind::Triangulation>::FromRepId(theRepId));
+      case Kind::Polygon3D:
+        return std::forward<FuncT>(theFunc)(Typed<Kind::Polygon3D>::FromRepId(theRepId));
+      case Kind::Polygon2D:
+        return std::forward<FuncT>(theFunc)(Typed<Kind::Polygon2D>::FromRepId(theRepId));
+      case Kind::PolygonOnTri:
+        return std::forward<FuncT>(theFunc)(Typed<Kind::PolygonOnTri>::FromRepId(theRepId));
+    }
+
+    Standard_ASSERT_VOID(false, "BRepGraph_RepId::Visit: unhandled Kind");
+    return std::forward<FuncT>(theFunc)(Typed<Kind::Surface>());
+  }
 };
 
-//! @name Convenience type aliases for typed RepIds.
+// Convenience type aliases for typed RepIds.
 using BRepGraph_SurfaceRepId       = BRepGraph_RepId::Typed<BRepGraph_RepId::Kind::Surface>;
 using BRepGraph_Curve3DRepId       = BRepGraph_RepId::Typed<BRepGraph_RepId::Kind::Curve3D>;
 using BRepGraph_Curve2DRepId       = BRepGraph_RepId::Typed<BRepGraph_RepId::Kind::Curve2D>;

@@ -138,7 +138,7 @@ void Geom_BezierCurve::Increase(const int Deg)
   if (Deg < Degree() || Deg > Geom_BezierCurve::MaxDegree())
     throw Standard_ConstructionError("Geom_BezierCurve::Increase");
 
-  const int aDeg = myPoles.Size() - 1;
+  const int aDeg = myPoles.Length() - 1;
 
   NCollection_Array1<gp_Pnt> npoles(1, Deg + 1);
   double                     aKnotsBuf[2];
@@ -345,12 +345,12 @@ void Geom_BezierCurve::Segment(const double U1, const double U2)
 {
   myClosed = (std::abs(Value(U1).Distance(Value(U2))) <= Precision::Confusion());
 
-  const int aDeg = myPoles.Size() - 1;
+  const int aDeg = myPoles.Length() - 1;
 
-  NCollection_Array1<gp_Pnt> coeffs(1, myPoles.Size());
+  NCollection_Array1<gp_Pnt> coeffs(1, myPoles.Length());
   if (IsRational())
   {
-    NCollection_Array1<double> wcoeffs(1, myPoles.Size());
+    NCollection_Array1<double> wcoeffs(1, myPoles.Length());
     BSplCLib::BuildCache(0.0,
                          1.0,
                          false,
@@ -479,7 +479,7 @@ GeomAbs_Shape Geom_BezierCurve::Continuity() const
 
 int Geom_BezierCurve::Degree() const
 {
-  return myPoles.Size() - 1;
+  return myPoles.Length() - 1;
 }
 
 //=================================================================================================
@@ -557,7 +557,7 @@ gp_Vec Geom_BezierCurve::EvalDN(const double U, const int N) const
 
   gp_Vec V;
 
-  const int aDeg = myPoles.Size() - 1;
+  const int aDeg = myPoles.Length() - 1;
 
   BSplCLib::DN(U, N, 0, aDeg, false, myPoles, Weights(), Knots(), &Multiplicities(), V);
   return V;
@@ -670,7 +670,7 @@ void Geom_BezierCurve::Resolution(const double Tolerance3D, double& UTolerance)
 {
   if (!myMaxDerivInvOk)
   {
-    const int aDeg = myPoles.Size() - 1;
+    const int aDeg = myPoles.Length() - 1;
     BSplCLib::Resolution(myPoles,
                          Weights(),
                          myPoles.Length(),
@@ -735,10 +735,10 @@ void Geom_BezierCurve::DumpJson(Standard_OStream& theOStream, int theDepth) cons
 
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myRational)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myClosed)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myPoles.Size())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myPoles.Length())
 
   if (myRational)
-    OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myWeights.Size())
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myWeights.Length())
 
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myMaxDerivInv)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myMaxDerivInvOk)
@@ -771,7 +771,7 @@ const NCollection_Array1<int>& Geom_BezierCurve::Multiplicities() const
       anArr[i] = NCollection_Array1<int>(THE_DATA[i][0], 1, 2);
     return anArr;
   }();
-  return THE_MULTS[myPoles.Size() - 1];
+  return THE_MULTS[myPoles.Length() - 1];
 }
 
 //=================================================================================================
@@ -786,5 +786,5 @@ const NCollection_Array1<double>& Geom_BezierCurve::KnotSequence() const
       anArr[i] = NCollection_Array1<double>(BSplCLib::FlatBezierKnots(i), 1, 2 * (i + 1));
     return anArr;
   }();
-  return THE_FKNOTS[myPoles.Size() - 1];
+  return THE_FKNOTS[myPoles.Length() - 1];
 }

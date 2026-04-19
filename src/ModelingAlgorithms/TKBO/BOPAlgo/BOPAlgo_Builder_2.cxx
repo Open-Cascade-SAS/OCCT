@@ -712,8 +712,8 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
   aPSOuter.Next();
 
   // Set progress range for each task to be run in parallel
-  Message_ProgressScope aPSParallel(aPSOuter.Next(6), "Checking SD faces", aVPSB.Size());
-  for (int iPSB = 0; iPSB < aVPSB.Size(); ++iPSB)
+  Message_ProgressScope aPSParallel(aPSOuter.Next(6), "Checking SD faces", aVPSB.Length());
+  for (int iPSB = 0; iPSB < aVPSB.Length(); ++iPSB)
   {
     aVPSB.ChangeValue(iPSB).SetProgressRange(aPSParallel.Next());
   }
@@ -883,8 +883,8 @@ void BOPAlgo_Builder::FillInternalVertices(const Message_ProgressRange& theRange
   }
 
   // Set progress range for each task to be run in parallel
-  Message_ProgressScope aPSParallel(aPSOuter.Next(), "Looking for internal shapes", aVVFI.Size());
-  for (int iVFI = 0; iVFI < aVVFI.Size(); ++iVFI)
+  Message_ProgressScope aPSParallel(aPSOuter.Next(), "Looking for internal shapes", aVVFI.Length());
+  for (int iVFI = 0; iVFI < aVVFI.Length(); ++iVFI)
   {
     aVVFI.ChangeValue(iVFI).SetProgressRange(aPSParallel.Next());
   }

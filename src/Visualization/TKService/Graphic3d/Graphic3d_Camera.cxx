@@ -25,6 +25,7 @@
 #include <Standard_ShortReal.hxx>
 #include <Standard_Assert.hxx>
 
+#include <cmath>
 #include <atomic>
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_Camera, Standard_Transient)
@@ -50,6 +51,11 @@ static double zEpsilon()
 // relative z-range tolerance compatible with for floating point.
 static double zEpsilon(const double theValue)
 {
+  if (!std::isfinite(theValue))
+  {
+    return FLT_MIN;
+  }
+
   double anAbsValue = std::abs(theValue);
   if (anAbsValue <= (double)FLT_MIN)
   {
@@ -1451,15 +1457,34 @@ bool Graphic3d_Camera::ZFitAll(const double   theScaleFactor,
 {
   Standard_ASSERT_RAISE(theScaleFactor > 0.0, "Zero or negative scale factor is not allowed.");
 
+  auto setDefaultZRange = [&theZNear, &theZFar]() {
+    theZNear = DEFAULT_ZNEAR;
+    theZFar  = DEFAULT_ZFAR;
+    return false;
+  };
+
+  auto isFiniteXYZ = [](const gp_XYZ& theValue) {
+    return std::isfinite(theValue.X()) && std::isfinite(theValue.Y()) && std::isfinite(theValue.Z());
+  };
+
+  auto isFiniteBounds = [](const double theBounds[6]) {
+    for (int anIdx = 0; anIdx < 6; ++anIdx)
+    {
+      if (!std::isfinite(theBounds[anIdx]))
+      {
+        return false;
+      }
+    }
+    return true;
+  };
+
   // Method changes zNear and zFar parameters of camera so as to fit graphical structures
   // by their graphical boundaries. It precisely fits min max boundaries of primary application
   // objects (second argument), while it can sacrifice the real graphical boundaries of the
   // scene with infinite or helper objects (third argument) for the sake of perspective projection.
   if (theGraphicBB.IsVoid())
   {
-    theZNear = DEFAULT_ZNEAR;
-    theZFar  = DEFAULT_ZFAR;
-    return false;
+    return setDefaultZRange();
   }
 
   // Measure depth of boundary points from camera eye.
@@ -1468,6 +1493,10 @@ bool Graphic3d_Camera::ZFitAll(const double   theScaleFactor,
   double aGraphicBB[6];
   theGraphicBB
     .Get(aGraphicBB[0], aGraphicBB[1], aGraphicBB[2], aGraphicBB[3], aGraphicBB[4], aGraphicBB[5]);
+  if (!isFiniteBounds(aGraphicBB))
+  {
+    return setDefaultZRange();
+  }
 
   aPntsToMeasure.Append(gp_Pnt(aGraphicBB[0], aGraphicBB[1], aGraphicBB[2]));
   aPntsToMeasure.Append(gp_Pnt(aGraphicBB[0], aGraphicBB[1], aGraphicBB[5]));
@@ -1484,15 +1513,21 @@ bool Graphic3d_Camera::ZFitAll(const double   theScaleFactor,
   {
     double aMinMax[6];
     theMinMax.Get(aMinMax[0], aMinMax[1], aMinMax[2], aMinMax[3], aMinMax[4], aMinMax[5]);
-
-    aPntsToMeasure.Append(gp_Pnt(aMinMax[0], aMinMax[1], aMinMax[2]));
-    aPntsToMeasure.Append(gp_Pnt(aMinMax[0], aMinMax[1], aMinMax[5]));
-    aPntsToMeasure.Append(gp_Pnt(aMinMax[0], aMinMax[4], aMinMax[2]));
-    aPntsToMeasure.Append(gp_Pnt(aMinMax[0], aMinMax[4], aMinMax[5]));
-    aPntsToMeasure.Append(gp_Pnt(aMinMax[3], aMinMax[1], aMinMax[2]));
-    aPntsToMeasure.Append(gp_Pnt(aMinMax[3], aMinMax[1], aMinMax[5]));
-    aPntsToMeasure.Append(gp_Pnt(aMinMax[3], aMinMax[4], aMinMax[2]));
-    aPntsToMeasure.Append(gp_Pnt(aMinMax[3], aMinMax[4], aMinMax[5]));
+    if (!isFiniteBounds(aMinMax))
+    {
+      isFiniteMinMax = false;
+    }
+    else
+    {
+      aPntsToMeasure.Append(gp_Pnt(aMinMax[0], aMinMax[1], aMinMax[2]));
+      aPntsToMeasure.Append(gp_Pnt(aMinMax[0], aMinMax[1], aMinMax[5]));
+      aPntsToMeasure.Append(gp_Pnt(aMinMax[0], aMinMax[4], aMinMax[2]));
+      aPntsToMeasure.Append(gp_Pnt(aMinMax[0], aMinMax[4], aMinMax[5]));
+      aPntsToMeasure.Append(gp_Pnt(aMinMax[3], aMinMax[1], aMinMax[2]));
+      aPntsToMeasure.Append(gp_Pnt(aMinMax[3], aMinMax[1], aMinMax[5]));
+      aPntsToMeasure.Append(gp_Pnt(aMinMax[3], aMinMax[4], aMinMax[2]));
+      aPntsToMeasure.Append(gp_Pnt(aMinMax[3], aMinMax[4], aMinMax[5]));
+    }
   }
 
   // Camera eye plane.
@@ -1506,6 +1541,10 @@ bool Graphic3d_Camera::ZFitAll(const double   theScaleFactor,
   double aGraphMaxDist = RealFirst();
 
   const gp_XYZ& anAxialScale = myAxialScale;
+  if (!isFiniteXYZ(aCamEye.XYZ()) || !isFiniteXYZ(anAxialScale))
+  {
+    return setDefaultZRange();
+  }
 
   // Get minimum and maximum distances to the eye plane.
   int                                    aCounter = 0;
@@ -1517,8 +1556,16 @@ bool Graphic3d_Camera::ZFitAll(const double   theScaleFactor,
     aMeasurePnt = gp_Pnt(aMeasurePnt.X() * anAxialScale.X(),
                          aMeasurePnt.Y() * anAxialScale.Y(),
                          aMeasurePnt.Z() * anAxialScale.Z());
+    if (!isFiniteXYZ(aMeasurePnt.XYZ()))
+    {
+      return setDefaultZRange();
+    }
 
     double aDistance = aCamPln.Distance(aMeasurePnt);
+    if (!std::isfinite(aDistance))
+    {
+      return setDefaultZRange();
+    }
 
     // Check if the camera is intruded into the scene.
     gp_Vec aVecToMeasurePnt(aCamEye, aMeasurePnt);
@@ -1537,6 +1584,18 @@ bool Graphic3d_Camera::ZFitAll(const double   theScaleFactor,
     aCounter++;
   }
 
+  if (!std::isfinite(aGraphMinDist) || !std::isfinite(aGraphMaxDist)
+      || aGraphMinDist == RealLast() || aGraphMaxDist == RealFirst())
+  {
+    return setDefaultZRange();
+  }
+
+  if (isFiniteMinMax && (!std::isfinite(aModelMinDist) || !std::isfinite(aModelMaxDist)
+                         || aModelMinDist == RealLast() || aModelMaxDist == RealFirst()))
+  {
+    isFiniteMinMax = false;
+  }
+
   // Compute depth of bounding box center.
   double aMidDepth  = (aGraphMinDist + aGraphMaxDist) * 0.5;
   double aHalfDepth = (aGraphMaxDist - aGraphMinDist) * 0.5;
@@ -1544,15 +1603,17 @@ bool Graphic3d_Camera::ZFitAll(const double   theScaleFactor,
   // Compute enlarged or shrank near and far z ranges.
   double aZNear = aMidDepth - aHalfDepth * theScaleFactor;
   double aZFar  = aMidDepth + aHalfDepth * theScaleFactor;
+  if (!std::isfinite(aZNear) || !std::isfinite(aZFar))
+  {
+    return setDefaultZRange();
+  }
 
   if (!IsOrthographic())
   {
     // Everything is behind the perspective camera.
     if (aZFar < zEpsilon())
     {
-      theZNear = DEFAULT_ZNEAR;
-      theZFar  = DEFAULT_ZFAR;
-      return false;
+      return setDefaultZRange();
     }
   }
 
@@ -1577,13 +1638,25 @@ bool Graphic3d_Camera::ZFitAll(const double   theScaleFactor,
   // of point coordinates by direction vector.
   gp_Pnt aGraphicMin = theGraphicBB.CornerMin();
   gp_Pnt aGraphicMax = theGraphicBB.CornerMax();
+  if (!isFiniteXYZ(aGraphicMin.XYZ()) || !isFiniteXYZ(aGraphicMax.XYZ()))
+  {
+    return setDefaultZRange();
+  }
 
   double aModelConf =
     6.0 * zEpsilon(aGraphicMin.XYZ().Modulus()) + 6.0 * zEpsilon(aGraphicMax.XYZ().Modulus());
+  if (!std::isfinite(aEyeConf) || !std::isfinite(aModelConf))
+  {
+    return setDefaultZRange();
+  }
 
   // Compensate floating point conversion errors by increasing zNear, zFar to avoid clipping.
   aZNear -= zEpsilon(aZNear) + aEyeConf + aModelConf;
   aZFar += zEpsilon(aZFar) + aEyeConf + aModelConf;
+  if (!std::isfinite(aZNear) || !std::isfinite(aZFar))
+  {
+    return setDefaultZRange();
+  }
 
   if (!IsOrthographic())
   {
@@ -1610,6 +1683,11 @@ bool Graphic3d_Camera::ZFitAll(const double   theScaleFactor,
     double aZMin   = isFiniteMinMax ? aModelMinDist : aGraphMinDist;
     double aZ      = aZMin < 0 ? aZRange / 2.0 : aZRange / 2.0 + aZMin;
     double aZNearMin = aZ * 5.97E-4;
+    if (!std::isfinite(aZRange) || !std::isfinite(aZMin) || !std::isfinite(aZ)
+        || !std::isfinite(aZNearMin))
+    {
+      return setDefaultZRange();
+    }
     if (aZNear < aZNearMin)
     {
       // Clip zNear according to the minimum value matching the quality.
@@ -1633,12 +1711,18 @@ bool Graphic3d_Camera::ZFitAll(const double   theScaleFactor,
     {
       aZNear = zEpsilon();
     }
-    Standard_ASSERT_RAISE(aZFar > aZNear, "ZFar should be greater than ZNear");
+    if (!std::isfinite(aZNear) || !std::isfinite(aZFar) || aZFar <= aZNear)
+    {
+      return setDefaultZRange();
+    }
   }
 
   theZNear = aZNear;
   theZFar  = aZFar;
-  Standard_ASSERT_RAISE(aZFar > aZNear, "ZFar should be greater than ZNear");
+  if (!std::isfinite(aZFar) || !std::isfinite(aZNear) || aZFar <= aZNear)
+  {
+    return setDefaultZRange();
+  }
   return true;
 }
 

@@ -661,6 +661,20 @@ public: //! @name subview properties
   //! Update subview position and dimensions.
   Standard_EXPORT void SubviewResized(const occ::handle<Aspect_NeutralWindow>& theWindow);
 
+  //! Return viewport offset for rendering into a sub-region of the default framebuffer.
+  //! Default is (0,0). Values are in OpenGL coordinates (bottom-left origin).
+  const NCollection_Vec2<int>& ViewportOffset() const { return myViewportOffset; }
+
+  //! Set viewport offset for rendering into a sub-region of the default framebuffer.
+  void SetViewportOffset(const NCollection_Vec2<int>& theOffset)
+  {
+    if (myViewportOffset != theOffset)
+    {
+      myViewportOffset = theOffset;
+      Invalidate();
+    }
+  }
+
 private:
   //! Adds the structure to display lists of the view.
   virtual void displayStructure(const occ::handle<Graphic3d_CStructure>& theStructure,
@@ -690,6 +704,7 @@ protected:
   NCollection_Vec2<int>               mySubviewMargins;           //!< subview margins in pixels
   NCollection_Vec2<double>               mySubviewSize;              //!< subview size
   NCollection_Vec2<double>               mySubviewOffset;            //!< subview corner offset within parent view
+  NCollection_Vec2<int>                  myViewportOffset;           //!< viewport offset within default framebuffer (GL coords)
                                            // clang-format on
 
   occ::handle<Graphic3d_StructureManager>                myStructureManager;

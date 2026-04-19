@@ -120,7 +120,9 @@ public:
         myUMin(theOther.myUMin),
         myVMin(theOther.myVMin),
         myUMax(theOther.myUMax),
-        myVMax(theOther.myVMax)
+        myVMax(theOther.myVMax),
+        myGrid(std::move(theOther.myGrid)),
+        myGridReady(theOther.myGridReady)
   {
   }
 
@@ -138,6 +140,8 @@ public:
       myVMin        = theOther.myVMin;
       myUMax        = theOther.myUMax;
       myVMax        = theOther.myVMax;
+      myGrid        = std::move(theOther.myGrid);
+      myGridReady   = theOther.myGridReady;
     }
     return *this;
   }
@@ -195,7 +199,20 @@ private:
   //! Copy assignment operator is deleted.
   CSLib_Class2d& operator=(const CSLib_Class2d&) = delete;
 
+  //! Builds the grid cache for fast point classification.
+  //! Samples each grid cell to determine if it is fully inside, fully outside,
+  //! or on the boundary (requires exact ray-casting).
+  void buildGridCache();
+
 private:
+  //! Grid cell classification for the fast-path cache.
+  enum GridCell : signed char
+  {
+    GridCell_Inside  =  1, //!< Cell is fully inside the polygon
+    GridCell_Outside = -1, //!< Cell is fully outside the polygon
+    GridCell_Boundary = 0  //!< Cell straddles a polygon edge — needs exact test
+  };
+
   NCollection_Array1<double> myPnts2dX;           //!< X coordinates (normalized)
   NCollection_Array1<double> myPnts2dY;           //!< Y coordinates (normalized)
   double                     myTolU        = 0.0; //!< Tolerance in U direction (normalized)
@@ -205,6 +222,13 @@ private:
   double                     myVMin        = 0.0; //!< Original minimum V bound
   double                     myUMax        = 0.0; //!< Original maximum U bound
   double                     myVMax        = 0.0; //!< Original maximum V bound
+
+  //! Grid cache for O(1) classification of points far from polygon edges.
+  //! Built once in the constructor; queried in SiDans() before falling through
+  //! to the O(N) ray-casting algorithm.
+  static constexpr int       THE_GRID_SIZE = 32;  //!< Grid resolution per axis
+  NCollection_Array1<GridCell> myGrid;             //!< Flat grid [THE_GRID_SIZE * THE_GRID_SIZE]
+  bool                       myGridReady = false;  //!< True if grid was successfully built
 };
 
 #endif // _CSLib_Class2d_HeaderFile

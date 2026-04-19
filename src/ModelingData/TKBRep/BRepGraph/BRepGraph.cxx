@@ -33,13 +33,15 @@ void BRepGraph::initViews()
 {
   if (myData)
   {
-    myData->myTopoView    = TopoView(this);
-    myData->myUIDsView    = UIDsView(this);
-    myData->myCacheView   = CacheView(this);
-    myData->myRefsView    = RefsView(this);
-    myData->myShapesView  = ShapesView(this);
-    myData->myBuilderView = BuilderView(this);
+    myData->myTopoView   = TopoView(this);
+    myData->myUIDsView   = UIDsView(this);
+    myData->myCacheView  = CacheView(this);
+    myData->myRefsView   = RefsView(this);
+    myData->myShapesView = ShapesView(this);
+    myData->myEditorView = EditorView(this);
+    myData->myMeshView   = MeshView(this);
   }
+  myLayerRegistry.SetOwningGraph(this);
 }
 
 BRepGraph::BRepGraph()
@@ -104,16 +106,23 @@ const BRepGraph::ShapesView& BRepGraph::Shapes() const
 
 //=================================================================================================
 
-BRepGraph::BuilderView& BRepGraph::Builder()
+BRepGraph::EditorView& BRepGraph::Editor()
 {
-  return myData->myBuilderView;
+  return myData->myEditorView;
 }
 
 //=================================================================================================
 
-const BRepGraph::BuilderView& BRepGraph::Builder() const
+const BRepGraph::EditorView& BRepGraph::Editor() const
 {
-  return myData->myBuilderView;
+  return myData->myEditorView;
+}
+
+//=================================================================================================
+
+const BRepGraph::MeshView& BRepGraph::Mesh() const
+{
+  return myData->myMeshView;
 }
 
 //=================================================================================================
@@ -146,26 +155,10 @@ BRepGraph& BRepGraph::operator=(BRepGraph&& theOther) noexcept
 
 //=================================================================================================
 
-void BRepGraph::Build(const TopoDS_Shape& theShape, const bool theParallel)
-{
-  BRepGraph_Builder::Perform(*this, theShape, theParallel);
-}
-
-//=================================================================================================
-
-void BRepGraph::Build(const TopoDS_Shape&                   theShape,
-                      const bool                            theParallel,
-                      const BRepGraphInc_Populate::Options& theOptions)
-{
-  BRepGraph_Builder::Perform(*this, theShape, theParallel, theOptions);
-}
-
-//=================================================================================================
-
 BRepGraph_UID BRepGraph::allocateUID(const BRepGraph_NodeId theNodeId)
 {
   // Load counter before append: if Append() throws, no counter is consumed.
-  // Single-threaded precondition: UID allocation is only called from Builder
+  // Single-threaded precondition: UID allocation is only called from Editor
   // methods which are externally serialized, so load-then-increment is safe.
   const size_t   aCounter    = myData->myNextUIDCounter.load(std::memory_order_relaxed);
   const uint32_t aGeneration = myData->myGeneration.load(std::memory_order_relaxed);
@@ -217,11 +210,6 @@ BRepGraph_RefUID BRepGraph::allocateRefUID(const BRepGraph_RefId theRefId)
 
 //=================================================================================================
 
-// mutableCache() removed - NodeCache no longer exists in BaseDef.
-// Transient caches now live in BRepGraph_TransientCache.
-
-//=================================================================================================
-
 bool BRepGraph::IsDone() const
 {
   return myData->myIsDone;
@@ -229,9 +217,9 @@ bool BRepGraph::IsDone() const
 
 //=================================================================================================
 
-const NCollection_Vector<BRepGraph_NodeId>& BRepGraph::RootNodeIds() const
+const NCollection_Vector<BRepGraph_ProductId>& BRepGraph::RootProductIds() const
 {
-  return myData->myRootNodeIds;
+  return myData->myRootProductIds;
 }
 
 //=================================================================================================
@@ -244,47 +232,47 @@ const BRepGraphInc::BaseDef* BRepGraph::topoEntity(const BRepGraph_NodeId theId)
   switch (theId.NodeKind)
   {
     case BRepGraph_NodeId::Kind::Solid: {
-      const BRepGraph_SolidId anId(theId.Index);
+      const BRepGraph_SolidId anId(theId);
       return anId.IsValid(aStorage.NbSolids()) ? &aStorage.Solid(anId) : nullptr;
     }
     case BRepGraph_NodeId::Kind::Shell: {
-      const BRepGraph_ShellId anId(theId.Index);
+      const BRepGraph_ShellId anId(theId);
       return anId.IsValid(aStorage.NbShells()) ? &aStorage.Shell(anId) : nullptr;
     }
     case BRepGraph_NodeId::Kind::Face: {
-      const BRepGraph_FaceId anId(theId.Index);
+      const BRepGraph_FaceId anId(theId);
       return anId.IsValid(aStorage.NbFaces()) ? &aStorage.Face(anId) : nullptr;
     }
     case BRepGraph_NodeId::Kind::Wire: {
-      const BRepGraph_WireId anId(theId.Index);
+      const BRepGraph_WireId anId(theId);
       return anId.IsValid(aStorage.NbWires()) ? &aStorage.Wire(anId) : nullptr;
     }
     case BRepGraph_NodeId::Kind::Edge: {
-      const BRepGraph_EdgeId anId(theId.Index);
+      const BRepGraph_EdgeId anId(theId);
       return anId.IsValid(aStorage.NbEdges()) ? &aStorage.Edge(anId) : nullptr;
     }
     case BRepGraph_NodeId::Kind::CoEdge: {
-      const BRepGraph_CoEdgeId anId(theId.Index);
+      const BRepGraph_CoEdgeId anId(theId);
       return anId.IsValid(aStorage.NbCoEdges()) ? &aStorage.CoEdge(anId) : nullptr;
     }
     case BRepGraph_NodeId::Kind::Vertex: {
-      const BRepGraph_VertexId anId(theId.Index);
+      const BRepGraph_VertexId anId(theId);
       return anId.IsValid(aStorage.NbVertices()) ? &aStorage.Vertex(anId) : nullptr;
     }
     case BRepGraph_NodeId::Kind::Compound: {
-      const BRepGraph_CompoundId anId(theId.Index);
+      const BRepGraph_CompoundId anId(theId);
       return anId.IsValid(aStorage.NbCompounds()) ? &aStorage.Compound(anId) : nullptr;
     }
     case BRepGraph_NodeId::Kind::CompSolid: {
-      const BRepGraph_CompSolidId anId(theId.Index);
+      const BRepGraph_CompSolidId anId(theId);
       return anId.IsValid(aStorage.NbCompSolids()) ? &aStorage.CompSolid(anId) : nullptr;
     }
     case BRepGraph_NodeId::Kind::Product: {
-      const BRepGraph_ProductId anId(theId.Index);
+      const BRepGraph_ProductId anId(theId);
       return anId.IsValid(aStorage.NbProducts()) ? &aStorage.Product(anId) : nullptr;
     }
     case BRepGraph_NodeId::Kind::Occurrence: {
-      const BRepGraph_OccurrenceId anId(theId.Index);
+      const BRepGraph_OccurrenceId anId(theId);
       return anId.IsValid(aStorage.NbOccurrences()) ? &aStorage.Occurrence(anId) : nullptr;
     }
     default:
@@ -302,47 +290,47 @@ BRepGraphInc::BaseDef* BRepGraph::changeTopoEntity(const BRepGraph_NodeId theId)
   switch (theId.NodeKind)
   {
     case BRepGraph_NodeId::Kind::Solid: {
-      const BRepGraph_SolidId anId(theId.Index);
+      const BRepGraph_SolidId anId(theId);
       return anId.IsValid(aStorage.NbSolids()) ? &aStorage.ChangeSolid(anId) : nullptr;
     }
     case BRepGraph_NodeId::Kind::Shell: {
-      const BRepGraph_ShellId anId(theId.Index);
+      const BRepGraph_ShellId anId(theId);
       return anId.IsValid(aStorage.NbShells()) ? &aStorage.ChangeShell(anId) : nullptr;
     }
     case BRepGraph_NodeId::Kind::Face: {
-      const BRepGraph_FaceId anId(theId.Index);
+      const BRepGraph_FaceId anId(theId);
       return anId.IsValid(aStorage.NbFaces()) ? &aStorage.ChangeFace(anId) : nullptr;
     }
     case BRepGraph_NodeId::Kind::Wire: {
-      const BRepGraph_WireId anId(theId.Index);
+      const BRepGraph_WireId anId(theId);
       return anId.IsValid(aStorage.NbWires()) ? &aStorage.ChangeWire(anId) : nullptr;
     }
     case BRepGraph_NodeId::Kind::Edge: {
-      const BRepGraph_EdgeId anId(theId.Index);
+      const BRepGraph_EdgeId anId(theId);
       return anId.IsValid(aStorage.NbEdges()) ? &aStorage.ChangeEdge(anId) : nullptr;
     }
     case BRepGraph_NodeId::Kind::CoEdge: {
-      const BRepGraph_CoEdgeId anId(theId.Index);
+      const BRepGraph_CoEdgeId anId(theId);
       return anId.IsValid(aStorage.NbCoEdges()) ? &aStorage.ChangeCoEdge(anId) : nullptr;
     }
     case BRepGraph_NodeId::Kind::Vertex: {
-      const BRepGraph_VertexId anId(theId.Index);
+      const BRepGraph_VertexId anId(theId);
       return anId.IsValid(aStorage.NbVertices()) ? &aStorage.ChangeVertex(anId) : nullptr;
     }
     case BRepGraph_NodeId::Kind::Compound: {
-      const BRepGraph_CompoundId anId(theId.Index);
+      const BRepGraph_CompoundId anId(theId);
       return anId.IsValid(aStorage.NbCompounds()) ? &aStorage.ChangeCompound(anId) : nullptr;
     }
     case BRepGraph_NodeId::Kind::CompSolid: {
-      const BRepGraph_CompSolidId anId(theId.Index);
+      const BRepGraph_CompSolidId anId(theId);
       return anId.IsValid(aStorage.NbCompSolids()) ? &aStorage.ChangeCompSolid(anId) : nullptr;
     }
     case BRepGraph_NodeId::Kind::Product: {
-      const BRepGraph_ProductId anId(theId.Index);
+      const BRepGraph_ProductId anId(theId);
       return anId.IsValid(aStorage.NbProducts()) ? &aStorage.ChangeProduct(anId) : nullptr;
     }
     case BRepGraph_NodeId::Kind::Occurrence: {
-      const BRepGraph_OccurrenceId anId(theId.Index);
+      const BRepGraph_OccurrenceId anId(theId);
       return anId.IsValid(aStorage.NbOccurrences()) ? &aStorage.ChangeOccurrence(anId) : nullptr;
     }
     default:
@@ -412,7 +400,7 @@ void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
     {
       case Kind::Compound: {
         for (BRepGraph_DefsChildOfCompound aChildIt(*this,
-                                                    BRepGraph_CompoundId(aCurrent.Node.Index));
+                                                    BRepGraph_CompoundId(aCurrent.Node));
              aChildIt.More();
              aChildIt.Next())
         {
@@ -422,7 +410,7 @@ void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
       }
       case Kind::CompSolid: {
         for (BRepGraph_DefsSolidOfCompSolid aChildIt(*this,
-                                                     BRepGraph_CompSolidId(aCurrent.Node.Index));
+                                                     BRepGraph_CompSolidId(aCurrent.Node));
              aChildIt.More();
              aChildIt.Next())
         {
@@ -432,8 +420,8 @@ void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
       }
       case Kind::Solid: {
         const BRepGraphInc::SolidDef& aSolidEnt =
-          aStorage.Solid(BRepGraph_SolidId(aCurrent.Node.Index));
-        for (BRepGraph_DefsShellOfSolid aChildIt(*this, BRepGraph_SolidId(aCurrent.Node.Index));
+          aStorage.Solid(BRepGraph_SolidId(aCurrent.Node));
+        for (BRepGraph_DefsShellOfSolid aChildIt(*this, BRepGraph_SolidId(aCurrent.Node));
              aChildIt.More();
              aChildIt.Next())
         {
@@ -445,8 +433,8 @@ void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
       }
       case Kind::Shell: {
         const BRepGraphInc::ShellDef& aShellEnt =
-          aStorage.Shell(BRepGraph_ShellId(aCurrent.Node.Index));
-        for (BRepGraph_DefsFaceOfShell aChildIt(*this, BRepGraph_ShellId(aCurrent.Node.Index));
+          aStorage.Shell(BRepGraph_ShellId(aCurrent.Node));
+        for (BRepGraph_DefsFaceOfShell aChildIt(*this, BRepGraph_ShellId(aCurrent.Node));
              aChildIt.More();
              aChildIt.Next())
         {
@@ -457,7 +445,7 @@ void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
         break;
       }
       case Kind::Face: {
-        for (BRepGraph_DefsWireOfFace aChildIt(*this, BRepGraph_FaceId(aCurrent.Node.Index));
+        for (BRepGraph_DefsWireOfFace aChildIt(*this, BRepGraph_FaceId(aCurrent.Node));
              aChildIt.More();
              aChildIt.Next())
         {
@@ -466,7 +454,7 @@ void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
         break;
       }
       case Kind::Wire: {
-        for (BRepGraph_DefsEdgeOfWire aChildIt(*this, BRepGraph_WireId(aCurrent.Node.Index));
+        for (BRepGraph_DefsEdgeOfWire aChildIt(*this, BRepGraph_WireId(aCurrent.Node));
              aChildIt.More();
              aChildIt.Next())
         {
@@ -475,7 +463,7 @@ void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
         break;
       }
       case Kind::Edge: {
-        for (BRepGraph_DefsVertexOfEdge aChildIt(*this, BRepGraph_EdgeId(aCurrent.Node.Index));
+        for (BRepGraph_DefsVertexOfEdge aChildIt(*this, BRepGraph_EdgeId(aCurrent.Node));
              aChildIt.More();
              aChildIt.Next())
         {
@@ -484,11 +472,9 @@ void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
         break;
       }
       case Kind::Product: {
-        const BRepGraphInc::ProductDef& aProd =
-          aStorage.Product(BRepGraph_ProductId(aCurrent.Node.Index));
-        aPushChild(aProd.ShapeRootId, aNextDepth);
+        // Product children are occurrences.
         for (BRepGraph_RefsOccurrenceOfProduct aChildIt(*this,
-                                                        BRepGraph_ProductId(aCurrent.Node.Index));
+                                                        BRepGraph_ProductId(aCurrent.Node));
              aChildIt.More();
              aChildIt.Next())
         {
@@ -498,8 +484,8 @@ void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
       }
       case Kind::Occurrence: {
         const BRepGraphInc::OccurrenceDef& anOcc =
-          aStorage.Occurrence(BRepGraph_OccurrenceId(aCurrent.Node.Index));
-        aPushChild(anOcc.ProductDefId, aNextDepth);
+          aStorage.Occurrence(BRepGraph_OccurrenceId(aCurrent.Node));
+        aPushChild(anOcc.ChildDefId, aNextDepth);
         break;
       }
       default:
@@ -618,7 +604,7 @@ void BRepGraph::propagateSubtreeGen(const BRepGraph_NodeId theNodeId) noexcept
       break;
     case BRepGraph_NodeId::Kind::Edge: {
       const NCollection_Vector<BRepGraph_WireId>* aWires =
-        aRevIdx.WiresOfEdge(BRepGraph_EdgeId(theNodeId.Index));
+        aRevIdx.WiresOfEdge(BRepGraph_EdgeId(theNodeId));
       if (aWires != nullptr)
         for (const BRepGraph_WireId& aWireId : *aWires)
           markParentSubtreeGen(aWireId);
@@ -626,7 +612,7 @@ void BRepGraph::propagateSubtreeGen(const BRepGraph_NodeId theNodeId) noexcept
     }
     case BRepGraph_NodeId::Kind::Wire: {
       const NCollection_Vector<BRepGraph_FaceId>* aFaces =
-        aRevIdx.FacesOfWire(BRepGraph_WireId(theNodeId.Index));
+        aRevIdx.FacesOfWire(BRepGraph_WireId(theNodeId));
       if (aFaces != nullptr)
         for (const BRepGraph_FaceId& aFaceId : *aFaces)
           markParentSubtreeGen(aFaceId);
@@ -634,7 +620,7 @@ void BRepGraph::propagateSubtreeGen(const BRepGraph_NodeId theNodeId) noexcept
     }
     case BRepGraph_NodeId::Kind::Face: {
       const NCollection_Vector<BRepGraph_ShellId>* aShells =
-        aRevIdx.ShellsOfFace(BRepGraph_FaceId(theNodeId.Index));
+        aRevIdx.ShellsOfFace(BRepGraph_FaceId(theNodeId));
       if (aShells != nullptr)
         for (const BRepGraph_ShellId& aShellId : *aShells)
           markParentSubtreeGen(aShellId);
@@ -642,7 +628,7 @@ void BRepGraph::propagateSubtreeGen(const BRepGraph_NodeId theNodeId) noexcept
     }
     case BRepGraph_NodeId::Kind::Shell: {
       const NCollection_Vector<BRepGraph_SolidId>* aSolids =
-        aRevIdx.SolidsOfShell(BRepGraph_ShellId(theNodeId.Index));
+        aRevIdx.SolidsOfShell(BRepGraph_ShellId(theNodeId));
       if (aSolids != nullptr)
         for (const BRepGraph_SolidId& aSolidId : *aSolids)
           markParentSubtreeGen(aSolidId);
@@ -650,15 +636,35 @@ void BRepGraph::propagateSubtreeGen(const BRepGraph_NodeId theNodeId) noexcept
     }
     case BRepGraph_NodeId::Kind::Occurrence: {
       // Occurrence modifications propagate to the parent product.
-      const BRepGraphInc::OccurrenceDef& anOccDef =
-        myData->myIncStorage.Occurrence(BRepGraph_OccurrenceId(theNodeId.Index));
-      if (anOccDef.ParentProductDefId.IsValid())
-        markParentSubtreeGen(anOccDef.ParentProductDefId);
+      // Parent product is on the OccurrenceRef that links to this OccurrenceDef.
+      const BRepGraph_OccurrenceId aThisOccId(theNodeId);
+      for (BRepGraph_OccurrenceRefIterator aRefIt(*this); aRefIt.More(); aRefIt.Next())
+      {
+        const BRepGraphInc::OccurrenceRef& aRef = aRefIt.Current();
+        if (aRef.OccurrenceDefId == aThisOccId)
+        {
+          markParentSubtreeGen(BRepGraph_ProductId::FromNodeId(aRef.ParentId));
+          break;
+        }
+      }
       break;
     }
-    default:
-      // Solid/Compound/CompSolid/Product modifications don't propagate further.
+    default: {
+      // Solid/Compound/CompSolid/Product: propagate to parent occurrences
+      // that reference this node as ChildDefId.
+      if (BRepGraph_NodeId::IsTopologyKind(theNodeId.NodeKind)
+          || theNodeId.NodeKind == BRepGraph_NodeId::Kind::Product)
+      {
+        for (BRepGraph_OccurrenceIterator anOccIt(*this); anOccIt.More(); anOccIt.Next())
+        {
+          if (anOccIt.Current().ChildDefId == theNodeId)
+          {
+            markParentSubtreeGen(anOccIt.CurrentId());
+          }
+        }
+      }
       break;
+    }
   }
 }
 
@@ -669,104 +675,175 @@ void BRepGraph::markRepModified(const BRepGraph_RepId theRepId) noexcept
   if (!theRepId.IsValid())
     return;
 
-  BRepGraphInc_Storage&       aStorage = myData->myIncStorage;
-  const BRepGraph_RepId::Kind aKind    = theRepId.RepKind;
-  const int                   anIdx    = theRepId.Index;
+  BRepGraphInc_Storage& aStorage = myData->myIncStorage;
 
   // Increment OwnGen on the representation.
-  switch (aKind)
+  switch (theRepId.RepKind)
   {
-    case BRepGraph_RepId::Kind::Surface:
-      if (anIdx < aStorage.NbSurfaces())
-        ++aStorage.ChangeSurfaceRep(BRepGraph_SurfaceRepId(anIdx)).OwnGen;
+    case BRepGraph_RepId::Kind::Surface: {
+      const BRepGraph_SurfaceRepId aRepId(theRepId);
+      if (aRepId.IsValid(aStorage.NbSurfaces()))
+        ++aStorage.ChangeSurfaceRep(aRepId).OwnGen;
       break;
-    case BRepGraph_RepId::Kind::Curve3D:
-      if (anIdx < aStorage.NbCurves3D())
-        ++aStorage.ChangeCurve3DRep(BRepGraph_Curve3DRepId(anIdx)).OwnGen;
+    }
+    case BRepGraph_RepId::Kind::Curve3D: {
+      const BRepGraph_Curve3DRepId aRepId(theRepId);
+      if (aRepId.IsValid(aStorage.NbCurves3D()))
+        ++aStorage.ChangeCurve3DRep(aRepId).OwnGen;
       break;
-    case BRepGraph_RepId::Kind::Curve2D:
-      if (anIdx < aStorage.NbCurves2D())
-        ++aStorage.ChangeCurve2DRep(BRepGraph_Curve2DRepId(anIdx)).OwnGen;
+    }
+    case BRepGraph_RepId::Kind::Curve2D: {
+      const BRepGraph_Curve2DRepId aRepId(theRepId);
+      if (aRepId.IsValid(aStorage.NbCurves2D()))
+        ++aStorage.ChangeCurve2DRep(aRepId).OwnGen;
       break;
-    case BRepGraph_RepId::Kind::Triangulation:
-      if (anIdx < aStorage.NbTriangulations())
-        ++aStorage.ChangeTriangulationRep(BRepGraph_TriangulationRepId(anIdx)).OwnGen;
+    }
+    case BRepGraph_RepId::Kind::Triangulation: {
+      const BRepGraph_TriangulationRepId aRepId(theRepId);
+      if (aRepId.IsValid(aStorage.NbTriangulations()))
+        ++aStorage.ChangeTriangulationRep(aRepId).OwnGen;
       break;
-    case BRepGraph_RepId::Kind::Polygon3D:
-      if (anIdx < aStorage.NbPolygons3D())
-        ++aStorage.ChangePolygon3DRep(BRepGraph_Polygon3DRepId(anIdx)).OwnGen;
+    }
+    case BRepGraph_RepId::Kind::Polygon3D: {
+      const BRepGraph_Polygon3DRepId aRepId(theRepId);
+      if (aRepId.IsValid(aStorage.NbPolygons3D()))
+        ++aStorage.ChangePolygon3DRep(aRepId).OwnGen;
       break;
-    case BRepGraph_RepId::Kind::Polygon2D:
-      if (anIdx < aStorage.NbPolygons2D())
-        ++aStorage.ChangePolygon2DRep(BRepGraph_Polygon2DRepId(anIdx)).OwnGen;
+    }
+    case BRepGraph_RepId::Kind::Polygon2D: {
+      const BRepGraph_Polygon2DRepId aRepId(theRepId);
+      if (aRepId.IsValid(aStorage.NbPolygons2D()))
+        ++aStorage.ChangePolygon2DRep(aRepId).OwnGen;
       break;
-    case BRepGraph_RepId::Kind::PolygonOnTri:
-      if (anIdx < aStorage.NbPolygonsOnTri())
-        ++aStorage.ChangePolygonOnTriRep(BRepGraph_PolygonOnTriRepId(anIdx)).OwnGen;
+    }
+    case BRepGraph_RepId::Kind::PolygonOnTri: {
+      const BRepGraph_PolygonOnTriRepId aRepId(theRepId);
+      if (aRepId.IsValid(aStorage.NbPolygonsOnTri()))
+        ++aStorage.ChangePolygonOnTriRep(aRepId).OwnGen;
       break;
+    }
     default:
       return;
   }
 
   // Propagate mutation to owning topology nodes.
-  switch (aKind)
+  switch (theRepId.RepKind)
   {
-    case BRepGraph_RepId::Kind::Surface:
-      for (BRepGraph_Iterator<BRepGraphInc::FaceDef> aFaceIt(*this); aFaceIt.More(); aFaceIt.Next())
-        if (aFaceIt.Current().SurfaceRepId.Index == anIdx)
+    case BRepGraph_RepId::Kind::Surface: {
+      const BRepGraph_SurfaceRepId aSurfaceRepId(theRepId);
+      for (BRepGraph_FaceIterator aFaceIt(*this); aFaceIt.More(); aFaceIt.Next())
+        if (aFaceIt.Current().SurfaceRepId == aSurfaceRepId)
           markModified(aFaceIt.CurrentId());
       break;
-    case BRepGraph_RepId::Kind::Curve3D:
-      for (BRepGraph_Iterator<BRepGraphInc::EdgeDef> anEdgeIt(*this); anEdgeIt.More();
-           anEdgeIt.Next())
-        if (anEdgeIt.Current().Curve3DRepId.Index == anIdx)
+    }
+    case BRepGraph_RepId::Kind::Curve3D: {
+      const BRepGraph_Curve3DRepId aCurve3DRepId(theRepId);
+      for (BRepGraph_EdgeIterator anEdgeIt(*this); anEdgeIt.More(); anEdgeIt.Next())
+        if (anEdgeIt.Current().Curve3DRepId == aCurve3DRepId)
           markModified(anEdgeIt.CurrentId());
       break;
-    case BRepGraph_RepId::Kind::Curve2D:
-      for (BRepGraph_Iterator<BRepGraphInc::CoEdgeDef> aCoEdgeIt(*this); aCoEdgeIt.More();
-           aCoEdgeIt.Next())
-        if (aCoEdgeIt.Current().Curve2DRepId.Index == anIdx)
+    }
+    case BRepGraph_RepId::Kind::Curve2D: {
+      const BRepGraph_Curve2DRepId aCurve2DRepId(theRepId);
+      for (BRepGraph_CoEdgeIterator aCoEdgeIt(*this); aCoEdgeIt.More(); aCoEdgeIt.Next())
+        if (aCoEdgeIt.Current().Curve2DRepId == aCurve2DRepId)
           markModified(aCoEdgeIt.CurrentId());
       break;
-    case BRepGraph_RepId::Kind::Triangulation:
-      for (BRepGraph_Iterator<BRepGraphInc::FaceDef> aFaceIt(*this); aFaceIt.More(); aFaceIt.Next())
+    }
+    case BRepGraph_RepId::Kind::Triangulation: {
+      const BRepGraph_TriangulationRepId aTriangulationRepId(theRepId);
+      for (BRepGraph_FaceIterator aFaceIt(*this); aFaceIt.More(); aFaceIt.Next())
       {
-        const BRepGraphInc::FaceDef& aFace = aFaceIt.Current();
-        for (const BRepGraph_TriangulationRepId& aTriRepId : aFace.TriangulationRepIds)
-          if (aTriRepId.Index == anIdx)
-          {
-            markModified(aFaceIt.CurrentId());
-            break;
-          }
-      }
-      break;
-    case BRepGraph_RepId::Kind::Polygon3D:
-      for (BRepGraph_Iterator<BRepGraphInc::EdgeDef> anEdgeIt(*this); anEdgeIt.More();
-           anEdgeIt.Next())
-        if (anEdgeIt.Current().Polygon3DRepId.Index == anIdx)
-          markModified(anEdgeIt.CurrentId());
-      break;
-    case BRepGraph_RepId::Kind::Polygon2D:
-      for (BRepGraph_Iterator<BRepGraphInc::CoEdgeDef> aCoEdgeIt(*this); aCoEdgeIt.More();
-           aCoEdgeIt.Next())
-        if (aCoEdgeIt.Current().Polygon2DRepId.Index == anIdx)
-          markModified(aCoEdgeIt.CurrentId());
-      break;
-    case BRepGraph_RepId::Kind::PolygonOnTri:
-      for (BRepGraph_Iterator<BRepGraphInc::CoEdgeDef> aCoEdgeIt(*this); aCoEdgeIt.More();
-           aCoEdgeIt.Next())
-      {
-        const BRepGraphInc::CoEdgeDef& aCoEdge = aCoEdgeIt.Current();
-        for (const BRepGraph_PolygonOnTriRepId& aPolyRepId : aCoEdge.PolygonOnTriRepIds)
+        const BRepGraphInc::FaceDef& aFace   = aFaceIt.Current();
+        const BRepGraph_FaceId       aFaceId = aFaceIt.CurrentId();
+        bool aFound                          = aFace.TriangulationRepId == aTriangulationRepId;
+        if (!aFound)
         {
-          if (aPolyRepId.Index == anIdx)
+          const BRepGraph_MeshCache::FaceMeshEntry* aCached =
+            myData->myMeshCache.FindFaceMesh(aFaceId);
+          if (aCached != nullptr)
           {
-            markModified(aCoEdgeIt.CurrentId());
-            break;
+            for (NCollection_Vector<BRepGraph_TriangulationRepId>::Iterator aTriIt(
+                   aCached->TriangulationRepIds);
+                 aTriIt.More();
+                 aTriIt.Next())
+              if (aTriIt.Value() == aTriangulationRepId)
+              {
+                aFound = true;
+                break;
+              }
           }
         }
+        if (aFound)
+          markModified(aFaceId);
       }
       break;
+    }
+    case BRepGraph_RepId::Kind::Polygon3D: {
+      const BRepGraph_Polygon3DRepId aPolygon3DRepId(theRepId);
+      for (BRepGraph_EdgeIterator anEdgeIt(*this); anEdgeIt.More(); anEdgeIt.Next())
+      {
+        const BRepGraph_EdgeId anEdgeId = anEdgeIt.CurrentId();
+        bool aFound = anEdgeIt.Current().Polygon3DRepId == aPolygon3DRepId;
+        if (!aFound)
+        {
+          const BRepGraph_MeshCache::EdgeMeshEntry* aCached =
+            myData->myMeshCache.FindEdgeMesh(anEdgeId);
+          if (aCached != nullptr && aCached->Polygon3DRepId == aPolygon3DRepId)
+            aFound = true;
+        }
+        if (aFound)
+          markModified(anEdgeId);
+      }
+      break;
+    }
+    case BRepGraph_RepId::Kind::Polygon2D: {
+      const BRepGraph_Polygon2DRepId aPolygon2DRepId(theRepId);
+      for (BRepGraph_CoEdgeIterator aCoEdgeIt(*this); aCoEdgeIt.More(); aCoEdgeIt.Next())
+      {
+        const BRepGraph_CoEdgeId aCoEdgeId = aCoEdgeIt.CurrentId();
+        bool aFound = aCoEdgeIt.Current().Polygon2DRepId == aPolygon2DRepId;
+        if (!aFound)
+        {
+          const BRepGraph_MeshCache::CoEdgeMeshEntry* aCached =
+            myData->myMeshCache.FindCoEdgeMesh(aCoEdgeId);
+          if (aCached != nullptr && aCached->Polygon2DRepId == aPolygon2DRepId)
+            aFound = true;
+        }
+        if (aFound)
+          markModified(aCoEdgeId);
+      }
+      break;
+    }
+    case BRepGraph_RepId::Kind::PolygonOnTri: {
+      const BRepGraph_PolygonOnTriRepId aPolygonOnTriRepId(theRepId);
+      for (BRepGraph_CoEdgeIterator aCoEdgeIt(*this); aCoEdgeIt.More(); aCoEdgeIt.Next())
+      {
+        const BRepGraph_CoEdgeId       aCoEdgeId = aCoEdgeIt.CurrentId();
+        const BRepGraphInc::CoEdgeDef& aCoEdge   = aCoEdgeIt.Current();
+        bool aFound = aCoEdge.PolygonOnTriRepId == aPolygonOnTriRepId;
+        if (!aFound)
+        {
+          const BRepGraph_MeshCache::CoEdgeMeshEntry* aCached =
+            myData->myMeshCache.FindCoEdgeMesh(aCoEdgeId);
+          if (aCached != nullptr)
+          {
+            for (NCollection_Vector<BRepGraph_PolygonOnTriRepId>::Iterator aPolyIt(
+                   aCached->PolygonOnTriRepIds);
+                 aPolyIt.More();
+                 aPolyIt.Next())
+              if (aPolyIt.Value() == aPolygonOnTriRepId)
+              {
+                aFound = true;
+                break;
+              }
+          }
+        }
+        if (aFound)
+          markModified(aCoEdgeId);
+      }
+      break;
+    }
     default:
       break;
   }
@@ -778,7 +855,7 @@ void BRepGraph::SetAllocator(const occ::handle<NCollection_BaseAllocator>& theAl
 {
   Standard_ASSERT_VOID(
     !myData->myIsDone,
-    "SetAllocator: must be called before Build() - existing graph state will be lost");
+    "SetAllocator: must be called before BRepGraph_Builder::Perform() - existing graph state will be lost");
 
   myData->myAllocator =
     !theAlloc.IsNull() ? theAlloc : NCollection_BaseAllocator::CommonBaseAllocator();
@@ -891,6 +968,20 @@ const BRepGraph_RefTransientCache& BRepGraph::refTransientCache() const
 
 //=================================================================================================
 
+BRepGraph_MeshCacheStorage& BRepGraph::meshCache()
+{
+  return myData->myMeshCache;
+}
+
+//=================================================================================================
+
+const BRepGraph_MeshCacheStorage& BRepGraph::meshCache() const
+{
+  return myData->myMeshCache;
+}
+
+//=================================================================================================
+
 const BRepGraphInc::BaseRef* BRepGraph::refEntity(const BRepGraph_RefId theId) const
 {
   if (!theId.IsValid())
@@ -899,35 +990,35 @@ const BRepGraphInc::BaseRef* BRepGraph::refEntity(const BRepGraph_RefId theId) c
   switch (theId.RefKind)
   {
     case BRepGraph_RefId::Kind::Shell: {
-      const BRepGraph_ShellRefId anId(theId.Index);
+      const BRepGraph_ShellRefId anId(theId);
       return anId.IsValid(aStorage.NbShellRefs()) ? &aStorage.ShellRef(anId) : nullptr;
     }
     case BRepGraph_RefId::Kind::Face: {
-      const BRepGraph_FaceRefId anId(theId.Index);
+      const BRepGraph_FaceRefId anId(theId);
       return anId.IsValid(aStorage.NbFaceRefs()) ? &aStorage.FaceRef(anId) : nullptr;
     }
     case BRepGraph_RefId::Kind::Wire: {
-      const BRepGraph_WireRefId anId(theId.Index);
+      const BRepGraph_WireRefId anId(theId);
       return anId.IsValid(aStorage.NbWireRefs()) ? &aStorage.WireRef(anId) : nullptr;
     }
     case BRepGraph_RefId::Kind::CoEdge: {
-      const BRepGraph_CoEdgeRefId anId(theId.Index);
+      const BRepGraph_CoEdgeRefId anId(theId);
       return anId.IsValid(aStorage.NbCoEdgeRefs()) ? &aStorage.CoEdgeRef(anId) : nullptr;
     }
     case BRepGraph_RefId::Kind::Vertex: {
-      const BRepGraph_VertexRefId anId(theId.Index);
+      const BRepGraph_VertexRefId anId(theId);
       return anId.IsValid(aStorage.NbVertexRefs()) ? &aStorage.VertexRef(anId) : nullptr;
     }
     case BRepGraph_RefId::Kind::Solid: {
-      const BRepGraph_SolidRefId anId(theId.Index);
+      const BRepGraph_SolidRefId anId(theId);
       return anId.IsValid(aStorage.NbSolidRefs()) ? &aStorage.SolidRef(anId) : nullptr;
     }
     case BRepGraph_RefId::Kind::Child: {
-      const BRepGraph_ChildRefId anId(theId.Index);
+      const BRepGraph_ChildRefId anId(theId);
       return anId.IsValid(aStorage.NbChildRefs()) ? &aStorage.ChildRef(anId) : nullptr;
     }
     case BRepGraph_RefId::Kind::Occurrence: {
-      const BRepGraph_OccurrenceRefId anId(theId.Index);
+      const BRepGraph_OccurrenceRefId anId(theId);
       return anId.IsValid(aStorage.NbOccurrenceRefs()) ? &aStorage.OccurrenceRef(anId) : nullptr;
     }
     default:

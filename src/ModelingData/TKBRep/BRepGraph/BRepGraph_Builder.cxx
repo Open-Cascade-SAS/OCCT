@@ -12,12 +12,14 @@
 // commercial license or contractual agreement.
 
 #include <BRepGraph_Builder.hxx>
-#include <BRepGraph_BuilderView.hxx>
+#include <BRepGraph_EditorView.hxx>
+#include <BRepGraph_Iterator.hxx>
+#include <BRepGraph_RefsIterator.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraph_Data.hxx>
 #include <BRepGraph_Layer.hxx>
-#include <BRepGraph_ParamLayer.hxx>
-#include <BRepGraph_RegularityLayer.hxx>
+#include <BRepGraph_LayerParam.hxx>
+#include <BRepGraph_LayerRegularity.hxx>
 #include <BRepGraph_TransientCache.hxx>
 #include <BRepGraphInc_Populate.hxx>
 #include <BRepGraphInc_Storage.hxx>
@@ -56,7 +58,7 @@ static Standard_GUID generateRandomGUID()
 static void assertMutationBoundary(BRepGraph& theGraph, const char* theContext)
 {
   (void)theContext;
-  const bool isValid = theGraph.Builder().ValidateMutationBoundary();
+  const bool isValid = theGraph.Editor().ValidateMutationBoundary();
   Standard_ASSERT_VOID(isValid, theContext);
   (void)isValid;
 }
@@ -72,62 +74,49 @@ void BRepGraph_Builder::populateUIDs(BRepGraph& theGraph)
   if (!aStorage.GetIsDone())
     return;
 
-  const int aNbVertices = aStorage.NbVertices();
-  for (BRepGraph_VertexId aVertexId(0); aVertexId.IsValid(aNbVertices); ++aVertexId)
-    theGraph.allocateUID(aStorage.Vertex(aVertexId).Id);
-  const int aNbEdges = aStorage.NbEdges();
-  for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
-    theGraph.allocateUID(aStorage.Edge(anEdgeId).Id);
-  const int aNbCoEdges = aStorage.NbCoEdges();
-  for (BRepGraph_CoEdgeId aCoEdgeId(0); aCoEdgeId.IsValid(aNbCoEdges); ++aCoEdgeId)
-    theGraph.allocateUID(aStorage.CoEdge(aCoEdgeId).Id);
-  const int aNbWires = aStorage.NbWires();
-  for (BRepGraph_WireId aWireId(0); aWireId.IsValid(aNbWires); ++aWireId)
-    theGraph.allocateUID(aStorage.Wire(aWireId).Id);
-  const int aNbFaces = aStorage.NbFaces();
-  for (BRepGraph_FaceId aFaceId(0); aFaceId.IsValid(aNbFaces); ++aFaceId)
-    theGraph.allocateUID(aStorage.Face(aFaceId).Id);
-  const int aNbShells = aStorage.NbShells();
-  for (BRepGraph_ShellId aShellId(0); aShellId.IsValid(aNbShells); ++aShellId)
-    theGraph.allocateUID(aStorage.Shell(aShellId).Id);
-  const int aNbSolids = aStorage.NbSolids();
-  for (BRepGraph_SolidId aSolidId(0); aSolidId.IsValid(aNbSolids); ++aSolidId)
-    theGraph.allocateUID(aStorage.Solid(aSolidId).Id);
-  const int aNbCompounds = aStorage.NbCompounds();
-  for (BRepGraph_CompoundId aCompoundId(0); aCompoundId.IsValid(aNbCompounds); ++aCompoundId)
-    theGraph.allocateUID(aStorage.Compound(aCompoundId).Id);
-  const int aNbCompSolids = aStorage.NbCompSolids();
-  for (BRepGraph_CompSolidId aCompSolidId(0); aCompSolidId.IsValid(aNbCompSolids); ++aCompSolidId)
-    theGraph.allocateUID(aStorage.CompSolid(aCompSolidId).Id);
-  const int aNbProducts = aStorage.NbProducts();
-  for (BRepGraph_ProductId aProductId(0); aProductId.IsValid(aNbProducts); ++aProductId)
-    theGraph.allocateUID(aStorage.Product(aProductId).Id);
-  const int aNbOccurrences = aStorage.NbOccurrences();
-  for (BRepGraph_OccurrenceId anOccurrenceId(0); anOccurrenceId.IsValid(aNbOccurrences);
-       ++anOccurrenceId)
-    theGraph.allocateUID(aStorage.Occurrence(anOccurrenceId).Id);
+  for (BRepGraph_FullVertexIterator aVertexIt(theGraph); aVertexIt.More(); aVertexIt.Next())
+    theGraph.allocateUID(aVertexIt.CurrentId());
+  for (BRepGraph_FullEdgeIterator anEdgeIt(theGraph); anEdgeIt.More(); anEdgeIt.Next())
+    theGraph.allocateUID(anEdgeIt.CurrentId());
+  for (BRepGraph_FullCoEdgeIterator aCoEdgeIt(theGraph); aCoEdgeIt.More(); aCoEdgeIt.Next())
+    theGraph.allocateUID(aCoEdgeIt.CurrentId());
+  for (BRepGraph_FullWireIterator aWireIt(theGraph); aWireIt.More(); aWireIt.Next())
+    theGraph.allocateUID(aWireIt.CurrentId());
+  for (BRepGraph_FullFaceIterator aFaceIt(theGraph); aFaceIt.More(); aFaceIt.Next())
+    theGraph.allocateUID(aFaceIt.CurrentId());
+  for (BRepGraph_FullShellIterator aShellIt(theGraph); aShellIt.More(); aShellIt.Next())
+    theGraph.allocateUID(aShellIt.CurrentId());
+  for (BRepGraph_FullSolidIterator aSolidIt(theGraph); aSolidIt.More(); aSolidIt.Next())
+    theGraph.allocateUID(aSolidIt.CurrentId());
+  for (BRepGraph_FullCompoundIterator aCompoundIt(theGraph); aCompoundIt.More();
+       aCompoundIt.Next())
+    theGraph.allocateUID(aCompoundIt.CurrentId());
+  for (BRepGraph_FullCompSolidIterator aCompSolidIt(theGraph); aCompSolidIt.More();
+       aCompSolidIt.Next())
+    theGraph.allocateUID(aCompSolidIt.CurrentId());
+  for (BRepGraph_FullProductIterator aProductIt(theGraph); aProductIt.More();
+       aProductIt.Next())
+    theGraph.allocateUID(aProductIt.CurrentId());
+  for (BRepGraph_FullOccurrenceIterator anOccurrenceIt(theGraph); anOccurrenceIt.More();
+       anOccurrenceIt.Next())
+    theGraph.allocateUID(anOccurrenceIt.CurrentId());
 
-  const int aNbShellRefs = aStorage.NbShellRefs();
-  for (BRepGraph_ShellRefId aShellRefId(0); aShellRefId.IsValid(aNbShellRefs); ++aShellRefId)
-    theGraph.allocateRefUID(aShellRefId);
-  const int aNbFaceRefs = aStorage.NbFaceRefs();
-  for (BRepGraph_FaceRefId aFaceRefId(0); aFaceRefId.IsValid(aNbFaceRefs); ++aFaceRefId)
-    theGraph.allocateRefUID(aFaceRefId);
-  const int aNbWireRefs = aStorage.NbWireRefs();
-  for (BRepGraph_WireRefId aWireRefId(0); aWireRefId.IsValid(aNbWireRefs); ++aWireRefId)
-    theGraph.allocateRefUID(aWireRefId);
-  const int aNbCoEdgeRefs = aStorage.NbCoEdgeRefs();
-  for (BRepGraph_CoEdgeRefId aCoEdgeRefId(0); aCoEdgeRefId.IsValid(aNbCoEdgeRefs); ++aCoEdgeRefId)
-    theGraph.allocateRefUID(aCoEdgeRefId);
-  const int aNbVertexRefs = aStorage.NbVertexRefs();
-  for (BRepGraph_VertexRefId aVertexRefId(0); aVertexRefId.IsValid(aNbVertexRefs); ++aVertexRefId)
-    theGraph.allocateRefUID(aVertexRefId);
-  const int aNbSolidRefs = aStorage.NbSolidRefs();
-  for (BRepGraph_SolidRefId aSolidRefId(0); aSolidRefId.IsValid(aNbSolidRefs); ++aSolidRefId)
-    theGraph.allocateRefUID(aSolidRefId);
-  const int aNbChildRefs = aStorage.NbChildRefs();
-  for (BRepGraph_ChildRefId aChildRefId(0); aChildRefId.IsValid(aNbChildRefs); ++aChildRefId)
-    theGraph.allocateRefUID(aChildRefId);
+  for (BRepGraph_FullShellRefIterator aShellRefIt(theGraph); aShellRefIt.More(); aShellRefIt.Next())
+    theGraph.allocateRefUID(aShellRefIt.CurrentId());
+  for (BRepGraph_FullFaceRefIterator aFaceRefIt(theGraph); aFaceRefIt.More(); aFaceRefIt.Next())
+    theGraph.allocateRefUID(aFaceRefIt.CurrentId());
+  for (BRepGraph_FullWireRefIterator aWireRefIt(theGraph); aWireRefIt.More(); aWireRefIt.Next())
+    theGraph.allocateRefUID(aWireRefIt.CurrentId());
+  for (BRepGraph_FullCoEdgeRefIterator aCoEdgeRefIt(theGraph); aCoEdgeRefIt.More();
+       aCoEdgeRefIt.Next())
+    theGraph.allocateRefUID(aCoEdgeRefIt.CurrentId());
+  for (BRepGraph_FullVertexRefIterator aVertexRefIt(theGraph); aVertexRefIt.More();
+       aVertexRefIt.Next())
+    theGraph.allocateRefUID(aVertexRefIt.CurrentId());
+  for (BRepGraph_FullSolidRefIterator aSolidRefIt(theGraph); aSolidRefIt.More(); aSolidRefIt.Next())
+    theGraph.allocateRefUID(aSolidRefIt.CurrentId());
+  for (BRepGraph_FullChildRefIterator aChildRefIt(theGraph); aChildRefIt.More(); aChildRefIt.Next())
+    theGraph.allocateRefUID(aChildRefIt.CurrentId());
 }
 
 //=================================================================================================
@@ -136,20 +125,20 @@ void BRepGraph_Builder::Perform(BRepGraph&          theGraph,
                                 const TopoDS_Shape& theShape,
                                 const bool          theParallel)
 {
-  Perform(theGraph, theShape, theParallel, BRepGraphInc_Populate::Options());
+  Perform(theGraph, theShape, theParallel, BuildOptions());
 }
 
 //=================================================================================================
 
-void BRepGraph_Builder::Perform(BRepGraph&                            theGraph,
-                                const TopoDS_Shape&                   theShape,
-                                const bool                            theParallel,
-                                const BRepGraphInc_Populate::Options& theOptions)
+void BRepGraph_Builder::Perform(BRepGraph&                      theGraph,
+                                const TopoDS_Shape&             theShape,
+                                const bool                      theParallel,
+                                const BuildOptions&             theOptions)
 {
   theGraph.myData->myIncStorage.Clear();
   theGraph.myData->myHistoryLog.Clear();
   theGraph.myData->myCurrentShapes.Clear();
-  theGraph.myData->myRootNodeIds.Clear();
+  theGraph.myData->myRootProductIds.Clear();
   theGraph.myTransientCache.Clear();
   {
     std::unique_lock<std::shared_mutex> aUIDLock(theGraph.myData->myUIDToNodeIdMutex);
@@ -175,15 +164,15 @@ void BRepGraph_Builder::Perform(BRepGraph&                            theGraph,
 
   // Temporary allocator for populate scratch data, discarded after build.
   occ::handle<NCollection_IncAllocator>   aTmpAlloc = new NCollection_IncAllocator;
-  const occ::handle<BRepGraph_ParamLayer> aParamLayer =
-    theGraph.LayerRegistry().FindLayer<BRepGraph_ParamLayer>();
-  const occ::handle<BRepGraph_RegularityLayer> aRegularityLayer =
-    theGraph.LayerRegistry().FindLayer<BRepGraph_RegularityLayer>();
+  const occ::handle<BRepGraph_LayerParam> aParamLayer =
+    theGraph.LayerRegistry().FindLayer<BRepGraph_LayerParam>();
+  const occ::handle<BRepGraph_LayerRegularity> aRegularityLayer =
+    theGraph.LayerRegistry().FindLayer<BRepGraph_LayerRegularity>();
 
   BRepGraphInc_Populate::Perform(theGraph.myData->myIncStorage,
                                  theShape,
                                  theParallel,
-                                 theOptions,
+                                 theOptions.Populate,
                                  aParamLayer.get(),
                                  aRegularityLayer.get(),
                                  aTmpAlloc);
@@ -203,54 +192,67 @@ void BRepGraph_Builder::Perform(BRepGraph&                            theGraph,
     {
       case TopAbs_COMPOUND:
         if (aStorage.NbCompounds() > 0)
-          aTopologyRoot = BRepGraph_CompoundId(0);
+          aTopologyRoot = BRepGraph_CompoundId::Start();
         break;
       case TopAbs_COMPSOLID:
         if (aStorage.NbCompSolids() > 0)
-          aTopologyRoot = BRepGraph_CompSolidId(0);
+          aTopologyRoot = BRepGraph_CompSolidId::Start();
         break;
       case TopAbs_SOLID:
         if (aStorage.NbSolids() > 0)
-          aTopologyRoot = BRepGraph_SolidId(0);
+          aTopologyRoot = BRepGraph_SolidId::Start();
         break;
       case TopAbs_SHELL:
         if (aStorage.NbShells() > 0)
-          aTopologyRoot = BRepGraph_ShellId(0);
+          aTopologyRoot = BRepGraph_ShellId::Start();
         break;
       case TopAbs_FACE:
         if (aStorage.NbFaces() > 0)
-          aTopologyRoot = BRepGraph_FaceId(0);
+          aTopologyRoot = BRepGraph_FaceId::Start();
         break;
       case TopAbs_WIRE:
         if (aStorage.NbWires() > 0)
-          aTopologyRoot = BRepGraph_WireId(0);
+          aTopologyRoot = BRepGraph_WireId::Start();
         break;
       case TopAbs_EDGE:
         if (aStorage.NbEdges() > 0)
-          aTopologyRoot = BRepGraph_EdgeId(0);
+          aTopologyRoot = BRepGraph_EdgeId::Start();
         break;
       case TopAbs_VERTEX:
         if (aStorage.NbVertices() > 0)
-          aTopologyRoot = BRepGraph_VertexId(0);
+          aTopologyRoot = BRepGraph_VertexId::Start();
         break;
       default:
         break;
     }
 
-    if (aTopologyRoot.IsValid())
-      theGraph.myData->myRootNodeIds.Append(aTopologyRoot);
-
-    // Auto-create a single root Product pointing to the top-level topology node.
-    // Skipped when CreateAutoProduct is false (e.g. XCAF builder manages Products itself).
+    // Auto-create a single root Product pointing to the top-level topology node
+    // via an occurrence. Skipped when CreateAutoProduct is false (e.g. XCAF builder
+    // manages Products itself).
     if (theOptions.CreateAutoProduct)
     {
-      BRepGraphInc::ProductDef& aProduct    = aStorage.AppendProduct();
-      const int                 aProductIdx = aStorage.NbProducts() - 1;
-      aProduct.Id                           = BRepGraph_ProductId(aProductIdx);
-      aProduct.ShapeRootId                  = aTopologyRoot; // invalid if no topology matched
-      aProduct.RootOrientation              = theShape.Orientation();
-      aProduct.RootLocation                 = theShape.Location();
-      theGraph.allocateUID(aProduct.Id);
+      const BRepGraph_ProductId aProductId = aStorage.AppendProduct();
+      BRepGraphInc::ProductDef& aProduct   = aStorage.ChangeProduct(aProductId);
+      theGraph.allocateUID(aProductId);
+
+      // Link the product to its shape root via an occurrence + occurrence ref.
+      if (aTopologyRoot.IsValid())
+      {
+        const BRepGraph_OccurrenceId anOccId = aStorage.AppendOccurrence();
+        BRepGraphInc::OccurrenceDef& anOccDef = aStorage.ChangeOccurrence(anOccId);
+        anOccDef.ChildDefId                   = aTopologyRoot;
+        theGraph.allocateUID(anOccId);
+
+        const BRepGraph_OccurrenceRefId anOccRefId = aStorage.AppendOccurrenceRef();
+        BRepGraphInc::OccurrenceRef&    anOccRef   = aStorage.ChangeOccurrenceRef(anOccRefId);
+        anOccRef.ParentId                          = BRepGraph_NodeId(aProductId);
+        anOccRef.OccurrenceDefId                   = anOccId;
+        anOccRef.LocalLocation                     = theShape.Location();
+        theGraph.allocateRefUID(anOccRefId);
+        aProduct.OccurrenceRefIds.Append(anOccRefId);
+      }
+
+      theGraph.myData->myRootProductIds.Append(aProductId);
     }
   }
 
@@ -282,7 +284,7 @@ void BRepGraph_Builder::Perform(BRepGraph&                            theGraph,
     theGraph.myTransientCache.Reserve(aReservedKindCount, aCounts);
   }
 
-  assertMutationBoundary(theGraph, "Build: post-build mutation boundary inconsistency");
+  assertMutationBoundary(theGraph, "Perform: post-build mutation boundary inconsistency");
 }
 
 //=================================================================================================
@@ -317,10 +319,10 @@ void BRepGraph_Builder::AppendFlattened(BRepGraph&                            th
   const int             anOldChildRef   = aStorage.NbChildRefs();
 
   occ::handle<NCollection_IncAllocator>   aTmpAlloc = new NCollection_IncAllocator;
-  const occ::handle<BRepGraph_ParamLayer> aParamLayer =
-    theGraph.LayerRegistry().FindLayer<BRepGraph_ParamLayer>();
-  const occ::handle<BRepGraph_RegularityLayer> aRegularityLayer =
-    theGraph.LayerRegistry().FindLayer<BRepGraph_RegularityLayer>();
+  const occ::handle<BRepGraph_LayerParam> aParamLayer =
+    theGraph.LayerRegistry().FindLayer<BRepGraph_LayerParam>();
+  const occ::handle<BRepGraph_LayerRegularity> aRegularityLayer =
+    theGraph.LayerRegistry().FindLayer<BRepGraph_LayerRegularity>();
   NCollection_Vector<BRepGraph_NodeId> aAppendedRoots(8, theGraph.Allocator());
   BRepGraphInc_Populate::AppendFlattened(aStorage,
                                          theShape,
@@ -355,11 +357,6 @@ void BRepGraph_Builder::AppendFlattened(BRepGraph&                            th
                           anOldVertexRef,
                           anOldSolidRef,
                           anOldChildRef);
-
-  for (const BRepGraph_NodeId& aRootNode : aAppendedRoots)
-  {
-    theGraph.myData->myRootNodeIds.Append(aRootNode);
-  }
 
   theGraph.myData->myIsDone = true;
 
@@ -397,10 +394,10 @@ void BRepGraph_Builder::AppendFull(BRepGraph&                            theGrap
   const int             anOldChildRef   = aStorage.NbChildRefs();
 
   occ::handle<NCollection_IncAllocator>   aTmpAlloc = new NCollection_IncAllocator;
-  const occ::handle<BRepGraph_ParamLayer> aParamLayer =
-    theGraph.LayerRegistry().FindLayer<BRepGraph_ParamLayer>();
-  const occ::handle<BRepGraph_RegularityLayer> aRegularityLayer =
-    theGraph.LayerRegistry().FindLayer<BRepGraph_RegularityLayer>();
+  const occ::handle<BRepGraph_LayerParam> aParamLayer =
+    theGraph.LayerRegistry().FindLayer<BRepGraph_LayerParam>();
+  const occ::handle<BRepGraph_LayerRegularity> aRegularityLayer =
+    theGraph.LayerRegistry().FindLayer<BRepGraph_LayerRegularity>();
   BRepGraphInc_Populate::Append(aStorage,
                                 theShape,
                                 theParallel,
@@ -466,68 +463,80 @@ void BRepGraph_Builder::populateUIDsIncremental(BRepGraph& theGraph,
   if (!aStorage.GetIsDone())
     return;
 
-  const int aNbVertices = aStorage.NbVertices();
-  for (BRepGraph_VertexId aVertexId(theOldVtx); aVertexId.IsValid(aNbVertices); ++aVertexId)
-    theGraph.allocateUID(aStorage.Vertex(aVertexId).Id);
-  const int aNbEdges = aStorage.NbEdges();
-  for (BRepGraph_EdgeId anEdgeId(theOldEdge); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
-    theGraph.allocateUID(aStorage.Edge(anEdgeId).Id);
-  const int aNbCoEdges = aStorage.NbCoEdges();
-  for (BRepGraph_CoEdgeId aCoEdgeId(theOldCoEdge); aCoEdgeId.IsValid(aNbCoEdges); ++aCoEdgeId)
-    theGraph.allocateUID(aStorage.CoEdge(aCoEdgeId).Id);
-  const int aNbWires = aStorage.NbWires();
-  for (BRepGraph_WireId aWireId(theOldWire); aWireId.IsValid(aNbWires); ++aWireId)
-    theGraph.allocateUID(aStorage.Wire(aWireId).Id);
-  const int aNbFaces = aStorage.NbFaces();
-  for (BRepGraph_FaceId aFaceId(theOldFace); aFaceId.IsValid(aNbFaces); ++aFaceId)
-    theGraph.allocateUID(aStorage.Face(aFaceId).Id);
-  const int aNbShells = aStorage.NbShells();
-  for (BRepGraph_ShellId aShellId(theOldShell); aShellId.IsValid(aNbShells); ++aShellId)
-    theGraph.allocateUID(aStorage.Shell(aShellId).Id);
-  const int aNbSolids = aStorage.NbSolids();
-  for (BRepGraph_SolidId aSolidId(theOldSolid); aSolidId.IsValid(aNbSolids); ++aSolidId)
-    theGraph.allocateUID(aStorage.Solid(aSolidId).Id);
-  const int aNbCompounds = aStorage.NbCompounds();
-  for (BRepGraph_CompoundId aCompoundId(theOldComp); aCompoundId.IsValid(aNbCompounds);
-       ++aCompoundId)
-    theGraph.allocateUID(aStorage.Compound(aCompoundId).Id);
-  const int aNbCompSolids = aStorage.NbCompSolids();
-  for (BRepGraph_CompSolidId aCompSolidId(theOldCS); aCompSolidId.IsValid(aNbCompSolids);
-       ++aCompSolidId)
-    theGraph.allocateUID(aStorage.CompSolid(aCompSolidId).Id);
-  const int aNbProducts = aStorage.NbProducts();
-  for (BRepGraph_ProductId aProductId(theOldProduct); aProductId.IsValid(aNbProducts); ++aProductId)
-    theGraph.allocateUID(aStorage.Product(aProductId).Id);
-  const int aNbOccurrences = aStorage.NbOccurrences();
-  for (BRepGraph_OccurrenceId anOccurrenceId(theOldOccurrence);
-       anOccurrenceId.IsValid(aNbOccurrences);
-       ++anOccurrenceId)
-    theGraph.allocateUID(aStorage.Occurrence(anOccurrenceId).Id);
+  for (BRepGraph_FullVertexIterator aVertexIt(theGraph, BRepGraph_VertexId(theOldVtx));
+       aVertexIt.More();
+       aVertexIt.Next())
+    theGraph.allocateUID(aVertexIt.CurrentId());
+  for (BRepGraph_FullEdgeIterator anEdgeIt(theGraph, BRepGraph_EdgeId(theOldEdge));
+       anEdgeIt.More();
+       anEdgeIt.Next())
+    theGraph.allocateUID(anEdgeIt.CurrentId());
+  for (BRepGraph_FullCoEdgeIterator aCoEdgeIt(theGraph, BRepGraph_CoEdgeId(theOldCoEdge));
+       aCoEdgeIt.More();
+       aCoEdgeIt.Next())
+    theGraph.allocateUID(aCoEdgeIt.CurrentId());
+  for (BRepGraph_FullWireIterator aWireIt(theGraph, BRepGraph_WireId(theOldWire));
+       aWireIt.More();
+       aWireIt.Next())
+    theGraph.allocateUID(aWireIt.CurrentId());
+  for (BRepGraph_FullFaceIterator aFaceIt(theGraph, BRepGraph_FaceId(theOldFace));
+       aFaceIt.More();
+       aFaceIt.Next())
+    theGraph.allocateUID(aFaceIt.CurrentId());
+  for (BRepGraph_FullShellIterator aShellIt(theGraph, BRepGraph_ShellId(theOldShell));
+       aShellIt.More();
+       aShellIt.Next())
+    theGraph.allocateUID(aShellIt.CurrentId());
+  for (BRepGraph_FullSolidIterator aSolidIt(theGraph, BRepGraph_SolidId(theOldSolid));
+       aSolidIt.More();
+       aSolidIt.Next())
+    theGraph.allocateUID(aSolidIt.CurrentId());
+  for (BRepGraph_FullCompoundIterator aCompoundIt(theGraph, BRepGraph_CompoundId(theOldComp));
+       aCompoundIt.More();
+       aCompoundIt.Next())
+    theGraph.allocateUID(aCompoundIt.CurrentId());
+  for (BRepGraph_FullCompSolidIterator aCompSolidIt(theGraph, BRepGraph_CompSolidId(theOldCS));
+       aCompSolidIt.More();
+       aCompSolidIt.Next())
+    theGraph.allocateUID(aCompSolidIt.CurrentId());
+  for (BRepGraph_FullProductIterator aProductIt(theGraph, BRepGraph_ProductId(theOldProduct));
+       aProductIt.More();
+       aProductIt.Next())
+    theGraph.allocateUID(aProductIt.CurrentId());
+  for (BRepGraph_FullOccurrenceIterator anOccurrenceIt(theGraph,
+                                                       BRepGraph_OccurrenceId(theOldOccurrence));
+       anOccurrenceIt.More();
+       anOccurrenceIt.Next())
+    theGraph.allocateUID(anOccurrenceIt.CurrentId());
 
-  const int aNbShellRefs = aStorage.NbShellRefs();
-  for (BRepGraph_ShellRefId aShellRefId(theOldShellRef); aShellRefId.IsValid(aNbShellRefs);
-       ++aShellRefId)
-    theGraph.allocateRefUID(aShellRefId);
-  const int aNbFaceRefs = aStorage.NbFaceRefs();
-  for (BRepGraph_FaceRefId aFaceRefId(theOldFaceRef); aFaceRefId.IsValid(aNbFaceRefs); ++aFaceRefId)
-    theGraph.allocateRefUID(aFaceRefId);
-  const int aNbWireRefs = aStorage.NbWireRefs();
-  for (BRepGraph_WireRefId aWireRefId(theOldWireRef); aWireRefId.IsValid(aNbWireRefs); ++aWireRefId)
-    theGraph.allocateRefUID(aWireRefId);
-  const int aNbCoEdgeRefs = aStorage.NbCoEdgeRefs();
-  for (BRepGraph_CoEdgeRefId aCoEdgeRefId(theOldCoEdgeRef); aCoEdgeRefId.IsValid(aNbCoEdgeRefs);
-       ++aCoEdgeRefId)
-    theGraph.allocateRefUID(aCoEdgeRefId);
-  const int aNbVertexRefs = aStorage.NbVertexRefs();
-  for (BRepGraph_VertexRefId aVertexRefId(theOldVertexRef); aVertexRefId.IsValid(aNbVertexRefs);
-       ++aVertexRefId)
-    theGraph.allocateRefUID(aVertexRefId);
-  const int aNbSolidRefs = aStorage.NbSolidRefs();
-  for (BRepGraph_SolidRefId aSolidRefId(theOldSolidRef); aSolidRefId.IsValid(aNbSolidRefs);
-       ++aSolidRefId)
-    theGraph.allocateRefUID(aSolidRefId);
-  const int aNbChildRefs = aStorage.NbChildRefs();
-  for (BRepGraph_ChildRefId aChildRefId(theOldChildRef); aChildRefId.IsValid(aNbChildRefs);
-       ++aChildRefId)
-    theGraph.allocateRefUID(aChildRefId);
+  for (BRepGraph_FullShellRefIterator aShellRefIt(theGraph, BRepGraph_ShellRefId(theOldShellRef));
+       aShellRefIt.More();
+       aShellRefIt.Next())
+    theGraph.allocateRefUID(aShellRefIt.CurrentId());
+  for (BRepGraph_FullFaceRefIterator aFaceRefIt(theGraph, BRepGraph_FaceRefId(theOldFaceRef));
+       aFaceRefIt.More();
+       aFaceRefIt.Next())
+    theGraph.allocateRefUID(aFaceRefIt.CurrentId());
+  for (BRepGraph_FullWireRefIterator aWireRefIt(theGraph, BRepGraph_WireRefId(theOldWireRef));
+       aWireRefIt.More();
+       aWireRefIt.Next())
+    theGraph.allocateRefUID(aWireRefIt.CurrentId());
+  for (BRepGraph_FullCoEdgeRefIterator aCoEdgeRefIt(theGraph,
+                                                    BRepGraph_CoEdgeRefId(theOldCoEdgeRef));
+       aCoEdgeRefIt.More();
+       aCoEdgeRefIt.Next())
+    theGraph.allocateRefUID(aCoEdgeRefIt.CurrentId());
+  for (BRepGraph_FullVertexRefIterator aVertexRefIt(theGraph,
+                                                    BRepGraph_VertexRefId(theOldVertexRef));
+       aVertexRefIt.More();
+       aVertexRefIt.Next())
+    theGraph.allocateRefUID(aVertexRefIt.CurrentId());
+  for (BRepGraph_FullSolidRefIterator aSolidRefIt(theGraph, BRepGraph_SolidRefId(theOldSolidRef));
+       aSolidRefIt.More();
+       aSolidRefIt.Next())
+    theGraph.allocateRefUID(aSolidRefIt.CurrentId());
+  for (BRepGraph_FullChildRefIterator aChildRefIt(theGraph, BRepGraph_ChildRefId(theOldChildRef));
+       aChildRefIt.More();
+       aChildRefIt.Next())
+    theGraph.allocateRefUID(aChildRefIt.CurrentId());
 }

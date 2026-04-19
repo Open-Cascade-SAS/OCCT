@@ -32,7 +32,7 @@ namespace NCollection_Primes
 {
 //! Returns the next prime number greater than or equal to theN.
 //! If theN exceeds the largest available prime, returns theN + 1.
-Standard_EXPORT int NextPrimeForMap(const int theN) noexcept;
+Standard_EXPORT size_t NextPrimeForMap(const size_t theN) noexcept;
 }; // namespace NCollection_Primes
 
 #endif // _NCollection_Primes_HeaderFile

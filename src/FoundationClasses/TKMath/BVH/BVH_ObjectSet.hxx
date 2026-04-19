@@ -56,7 +56,7 @@ public:
 
 public:
   //! Return total number of objects.
-  int Size() const override { return myObjects.Size(); }
+  int Size() const override { return myObjects.Length(); }
 
   //! Returns AABB of entire set of objects.
   using BVH_Set<T, N>::Box;

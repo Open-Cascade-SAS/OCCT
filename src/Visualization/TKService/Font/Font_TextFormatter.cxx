@@ -230,12 +230,12 @@ void Font_TextFormatter::Format()
     }
     else
     {
-      for (int aLineIt = 0; aLineIt < myNewLines.Size(); aLineIt++)
+      for (int aLineIt = 0; aLineIt < myNewLines.Length(); aLineIt++)
       {
         aMaxLineWidth = std::max(aMaxLineWidth, LineWidth(aLineIt));
       }
       // clang-format off
-      aMaxLineWidth = std::max(aMaxLineWidth, LineWidth (myNewLines.Size())); // processing the last line also
+      aMaxLineWidth = std::max(aMaxLineWidth, LineWidth (myNewLines.Length())); // processing the last line also
       // clang-format on
     }
   }
@@ -316,7 +316,7 @@ void Font_TextFormatter::Format()
 
 bool Font_TextFormatter::GlyphBoundingBox(const int theIndex, Font_Rect& theBndBox) const
 {
-  if (theIndex < 0 || theIndex >= Corners().Size())
+  if (theIndex < 0 || theIndex >= Corners().Length())
   {
     return false;
   }

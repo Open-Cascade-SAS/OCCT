@@ -70,7 +70,7 @@ protected:
   int addNode(const gp_Pnt& thePnt) override
   {
     myNodes.Append(thePnt);
-    return myNodes.Size();
+    return myNodes.Length();
   }
 
   //! Ignore normal.

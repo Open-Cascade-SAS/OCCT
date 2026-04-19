@@ -20,7 +20,8 @@
 #include <Standard_MemoryUtils.hxx>
 
 #include <utility>
-#include <mutex>
+#include <atomic>
+#include <shared_mutex>
 
 /**
  *  Class NCollection_IncAllocator - incremental memory  allocator. This class
@@ -99,10 +100,10 @@ public:
   {
     IBlock(void* thePointer, const size_t theSize);
 
-    char*   CurPointer;
-    size_t  AvailableSize;
-    IBlock* NextBlock        = nullptr; //! Pointer to next sorted block
-    IBlock* NextOrderedBlock = nullptr; //! Pointer to next ordered block
+    std::atomic<char*>  CurPointer;    //!< Atomic for lock-free bump under shared lock
+    std::atomic<size_t> AvailableSize; //!< Atomic for CAS-based space reservation under shared lock
+    IBlock* NextBlock        = nullptr; //!< Pointer to next sorted block
+    IBlock* NextOrderedBlock = nullptr; //!< Pointer to next ordered block
   };
 
   //! Description ability to next growing size each 5-th new block
@@ -116,6 +117,11 @@ public:
   };
 
 protected:
+  //! Slow-path allocation: allocates a new block if needed, performs
+  //! bump allocation, and reorders the block list. Must be called
+  //! under mutex (when thread-safe) or without lock (when non-thread-safe).
+  void* allocateSlow(const size_t theSize);
+
   //! Increases size according current block size level
   void increaseBlockSize();
 
@@ -134,7 +140,7 @@ public:
 private:
   unsigned int                myBlockSize;                //!< Block size to incremental allocations
   unsigned int                myBlockCount     = 0;       //!< Count of created blocks
-  std::unique_ptr<std::mutex> myMutex          = nullptr; //!< Thread-safety mutex
+  std::shared_mutex*          myMutex          = nullptr; //!< Thread-safety shared mutex (owned)
   IBlock*                     myAllocationHeap = nullptr; //!< Sorted list for allocations
   IBlock*                     myUsedHeap       = nullptr; //!< Sorted list for store empty blocks
   IBlock* myOrderedBlocks = nullptr; //!< Ordered list for store growing size blocks

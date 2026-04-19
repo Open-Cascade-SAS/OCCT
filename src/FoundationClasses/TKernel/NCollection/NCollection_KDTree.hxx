@@ -289,7 +289,7 @@ public:
     // Use range search to get candidates, then filter by exact distance tolerance
     NCollection_DynamicArray<size_t> aCandidates;
     rangeSearchRecursive(theQuery, aSearchRadiusSq, 1, static_cast<int>(mySize), 0, aCandidates);
-    for (int i = 0; i < aCandidates.Size(); ++i)
+    for (size_t i = 0; i < aCandidates.Size(); ++i)
     {
       const size_t anIdx   = aCandidates[i];
       const double aSqDist = squareDistance(theQuery, myPoints.Value(static_cast<int>(anIdx)));
