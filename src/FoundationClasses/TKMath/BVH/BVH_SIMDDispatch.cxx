@@ -205,6 +205,96 @@ int RayBox4_Scalar(const BVH_Ray4f_Splat& theRay,
 
 //=================================================================================================
 
+int RayBox8_Scalar(const BVH_Ray8f_Splat& theRay,
+                   const BVH_Box8f_SoA&   theBoxes,
+                   float*                 theOutTEnter,
+                   float*                 theOutTLeave) noexcept
+{
+  int aMask = 0;
+  for (int i = 0; i < 8; ++i)
+  {
+    float aTEnter = std::numeric_limits<float>::lowest();
+    float aTLeave = (std::numeric_limits<float>::max)();
+    bool  aHit    = true;
+
+    if (std::isinf(theRay.idx[i]))
+    {
+      if (theRay.ox[i] < theBoxes.minX[i] || theRay.ox[i] > theBoxes.maxX[i])
+        aHit = false;
+    }
+    else
+    {
+      const float aT1 = (theBoxes.minX[i] - theRay.ox[i]) * theRay.idx[i];
+      const float aT2 = (theBoxes.maxX[i] - theRay.ox[i]) * theRay.idx[i];
+      aTEnter         = (std::max)(aTEnter, (std::min)(aT1, aT2));
+      aTLeave         = (std::min)(aTLeave, (std::max)(aT1, aT2));
+    }
+
+    if (aHit)
+    {
+      if (std::isinf(theRay.idy[i]))
+      {
+        if (theRay.oy[i] < theBoxes.minY[i] || theRay.oy[i] > theBoxes.maxY[i])
+          aHit = false;
+      }
+      else
+      {
+        const float aT1 = (theBoxes.minY[i] - theRay.oy[i]) * theRay.idy[i];
+        const float aT2 = (theBoxes.maxY[i] - theRay.oy[i]) * theRay.idy[i];
+        aTEnter         = (std::max)(aTEnter, (std::min)(aT1, aT2));
+        aTLeave         = (std::min)(aTLeave, (std::max)(aT1, aT2));
+      }
+    }
+
+    if (aHit)
+    {
+      if (std::isinf(theRay.idz[i]))
+      {
+        if (theRay.oz[i] < theBoxes.minZ[i] || theRay.oz[i] > theBoxes.maxZ[i])
+          aHit = false;
+      }
+      else
+      {
+        const float aT1 = (theBoxes.minZ[i] - theRay.oz[i]) * theRay.idz[i];
+        const float aT2 = (theBoxes.maxZ[i] - theRay.oz[i]) * theRay.idz[i];
+        aTEnter         = (std::max)(aTEnter, (std::min)(aT1, aT2));
+        aTLeave         = (std::min)(aTLeave, (std::max)(aT1, aT2));
+      }
+    }
+
+    if (aHit && aTEnter <= aTLeave && aTLeave >= 0.0f)
+    {
+      theOutTEnter[i] = aTEnter;
+      theOutTLeave[i] = aTLeave;
+      aMask |= (1 << i);
+    }
+    else
+    {
+      theOutTEnter[i] = std::numeric_limits<float>::quiet_NaN();
+      theOutTLeave[i] = std::numeric_limits<float>::quiet_NaN();
+    }
+  }
+  return aMask;
+}
+
+//=================================================================================================
+
+RayBox8_Fn GetRayBox8() noexcept
+{
+  static const RayBox8_Fn sFn = []() noexcept -> RayBox8_Fn {
+    // BVH8 dispatch placeholder; SIMD kernels (SSE2/AVX2/AVX-512) are wired
+    // in subsequent commits.
+    switch (Detect())
+    {
+      default:
+        return &RayBox8_Scalar;
+    }
+  }();
+  return sFn;
+}
+
+//=================================================================================================
+
 RayBox4_Fn GetRayBox4() noexcept
 {
   static const RayBox4_Fn sFn = []() noexcept -> RayBox4_Fn {

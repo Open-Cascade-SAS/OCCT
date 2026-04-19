@@ -211,3 +211,103 @@ TEST(BVH_ToolsSIMDBenchmark, DISABLED_RayBox4_KernelComparison)
 
   std::cout << std::endl;
 }
+
+namespace
+{
+
+//! 8-wide variant of BenchmarkData / MeasureKernel for the BVH8 kernels.
+struct BenchmarkData8
+{
+  std::vector<BVH::SIMD::BVH_Ray8f_Splat> rays;
+  std::vector<BVH::SIMD::BVH_Box8f_SoA>   boxes;
+
+  BenchmarkData8()
+  {
+    rays.reserve(kNumCases);
+    boxes.reserve(kNumCases);
+
+    std::mt19937                          aGen(0x12345);
+    std::uniform_real_distribution<float> aPos(-10.0f, 10.0f);
+    std::uniform_real_distribution<float> aSize(0.5f, 4.0f);
+    std::uniform_real_distribution<float> aDir(-1.0f, 1.0f);
+
+    for (int aCase = 0; aCase < kNumCases; ++aCase)
+    {
+      float dx = aDir(aGen), dy = aDir(aGen), dz = aDir(aGen);
+      const float aLen = std::sqrt(dx * dx + dy * dy + dz * dz);
+      if (aLen < 1.0e-3f) { dx = 1.0f; dy = 0.0f; dz = 0.0f; }
+      else { dx /= aLen; dy /= aLen; dz /= aLen; }
+      const float ox = aPos(aGen), oy = aPos(aGen), oz = aPos(aGen);
+
+      BVH::SIMD::BVH_Ray8f_Splat aRay{};
+      for (int i = 0; i < 8; ++i)
+      {
+        aRay.ox[i]  = ox; aRay.oy[i] = oy; aRay.oz[i] = oz;
+        aRay.idx[i] = (dx != 0.0f) ? (1.0f / dx) : std::numeric_limits<float>::infinity();
+        aRay.idy[i] = (dy != 0.0f) ? (1.0f / dy) : std::numeric_limits<float>::infinity();
+        aRay.idz[i] = (dz != 0.0f) ? (1.0f / dz) : std::numeric_limits<float>::infinity();
+      }
+      rays.push_back(aRay);
+
+      BVH::SIMD::BVH_Box8f_SoA aBoxes{};
+      for (int k = 0; k < 8; ++k)
+      {
+        const float cx = aPos(aGen), cy = aPos(aGen), cz = aPos(aGen);
+        const float sx = aSize(aGen), sy = aSize(aGen), sz = aSize(aGen);
+        aBoxes.minX[k] = cx - sx; aBoxes.minY[k] = cy - sy; aBoxes.minZ[k] = cz - sz;
+        aBoxes.maxX[k] = cx + sx; aBoxes.maxY[k] = cy + sy; aBoxes.maxZ[k] = cz + sz;
+      }
+      boxes.push_back(aBoxes);
+    }
+  }
+};
+
+KernelTime MeasureKernel8(const char*               theName,
+                          BVH::SIMD::RayBox8_Fn     theFn,
+                          const BenchmarkData8&     theData)
+{
+  long long aWarmupSink = 0;
+  for (const auto& aRay : theData.rays)
+  {
+    float aTEnter[8]{}, aTLeave[8]{};
+    aWarmupSink += theFn(aRay, theData.boxes[0], aTEnter, aTLeave);
+  }
+  long long aSink = aWarmupSink;
+  auto      t0    = std::chrono::high_resolution_clock::now();
+  for (int aRep = 0; aRep < kNumRepeats; ++aRep)
+  {
+    const auto& aRay = theData.rays[aRep & (kNumCases - 1)];
+    for (int aCase = 0; aCase < kNumCases; ++aCase)
+    {
+      float aTEnter[8]{}, aTLeave[8]{};
+      aSink += theFn(aRay, theData.boxes[aCase], aTEnter, aTLeave);
+    }
+  }
+  auto         t1         = std::chrono::high_resolution_clock::now();
+  const double aTotalNs   = std::chrono::duration<double, std::nano>(t1 - t0).count();
+  const double aPerCallNs = aTotalNs / (static_cast<double>(kNumRepeats) * kNumCases);
+  return {theName, aPerCallNs, aSink};
+}
+
+} // namespace
+
+TEST(BVH_ToolsSIMDBenchmark, DISABLED_RayBox8_KernelComparison)
+{
+  BenchmarkData8 aData;
+
+  std::cout << "\n=== RayBox8 microbenchmark (BVH8 fan-out) ===" << std::endl;
+  std::cout << "  cases   : " << kNumCases << " (random ray + 8 AABB)" << std::endl;
+  std::cout << "  repeats : " << kNumRepeats << std::endl;
+  std::cout << "  per kernel: " << (static_cast<long long>(kNumCases) * kNumRepeats)
+            << " invocations" << std::endl << std::endl;
+
+  KernelTime aScalar = MeasureKernel8("Scalar", &BVH::SIMD::RayBox8_Scalar, aData);
+  PrintRow(aScalar, aScalar.nsPerCall);
+
+  // SIMD variants (SSE2/AVX2/AVX-512) wired in subsequent commits will
+  // appear here as their kernels are added to the dispatcher.
+  KernelTime aDispatched = MeasureKernel8("Dispatched", BVH::SIMD::GetRayBox8(), aData);
+  PrintRow(aDispatched, aScalar.nsPerCall);
+
+  std::cout << std::endl;
+}

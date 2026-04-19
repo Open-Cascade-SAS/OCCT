@@ -145,3 +145,78 @@ TEST(BVH_SIMDDispatchTest, ScalarRayBox4_ParallelRayInsideSlab)
   int   aMask = BVH::SIMD::RayBox4_Scalar(aRay, aBoxes, aTEnter, aTLeave);
   EXPECT_EQ(aMask, 0b0101);
 }
+
+namespace
+{
+
+BVH::SIMD::BVH_Ray8f_Splat MakeRay8Splat(float ox, float oy, float oz,
+                                         float dx, float dy, float dz)
+{
+  BVH::SIMD::BVH_Ray8f_Splat aRay{};
+  for (int i = 0; i < 8; ++i)
+  {
+    aRay.ox[i]  = ox;
+    aRay.oy[i]  = oy;
+    aRay.oz[i]  = oz;
+    aRay.idx[i] = (dx != 0.0f) ? (1.0f / dx) : std::numeric_limits<float>::infinity();
+    aRay.idy[i] = (dy != 0.0f) ? (1.0f / dy) : std::numeric_limits<float>::infinity();
+    aRay.idz[i] = (dz != 0.0f) ? (1.0f / dz) : std::numeric_limits<float>::infinity();
+  }
+  return aRay;
+}
+
+void SetBox8(BVH::SIMD::BVH_Box8f_SoA& theBoxes, int i,
+             float minx, float miny, float minz,
+             float maxx, float maxy, float maxz)
+{
+  theBoxes.minX[i] = minx; theBoxes.minY[i] = miny; theBoxes.minZ[i] = minz;
+  theBoxes.maxX[i] = maxx; theBoxes.maxY[i] = maxy; theBoxes.maxZ[i] = maxz;
+}
+
+} // namespace
+
+TEST(BVH_SIMDDispatchTest, ScalarRayBox8_AllHit)
+{
+  BVH::SIMD::BVH_Ray8f_Splat aRay = MakeRay8Splat(-1.0f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f);
+  BVH::SIMD::BVH_Box8f_SoA   aBoxes{};
+  for (int i = 0; i < 8; ++i)
+  {
+    SetBox8(aBoxes, i, i * 2.0f, 0.0f, 0.0f, i * 2.0f + 1.0f, 1.0f, 1.0f);
+  }
+  float aTEnter[8]{}, aTLeave[8]{};
+  int   aMask = BVH::SIMD::RayBox8_Scalar(aRay, aBoxes, aTEnter, aTLeave);
+  EXPECT_EQ(aMask, 0xFF);
+}
+
+TEST(BVH_SIMDDispatchTest, ScalarRayBox8_AllMiss)
+{
+  BVH::SIMD::BVH_Ray8f_Splat aRay = MakeRay8Splat(-1.0f, 5.0f, 0.5f, 1.0f, 0.0f, 0.0f);
+  BVH::SIMD::BVH_Box8f_SoA   aBoxes{};
+  for (int i = 0; i < 8; ++i)
+  {
+    SetBox8(aBoxes, i, i * 2.0f, 0.0f, 0.0f, i * 2.0f + 1.0f, 1.0f, 1.0f);
+  }
+  float aTEnter[8]{}, aTLeave[8]{};
+  int   aMask = BVH::SIMD::RayBox8_Scalar(aRay, aBoxes, aTEnter, aTLeave);
+  EXPECT_EQ(aMask, 0);
+}
+
+TEST(BVH_SIMDDispatchTest, ScalarRayBox8_PartialHit_8BitMosaic)
+{
+  // Even-index lanes hit, odd lanes are offset out of plane.
+  BVH::SIMD::BVH_Ray8f_Splat aRay = MakeRay8Splat(-1.0f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f);
+  BVH::SIMD::BVH_Box8f_SoA   aBoxes{};
+  for (int i = 0; i < 8; ++i)
+  {
+    const float dy = (i & 1) ? 5.0f : 0.0f;
+    SetBox8(aBoxes, i, i * 2.0f, dy, 0.0f, i * 2.0f + 1.0f, dy + 1.0f, 1.0f);
+  }
+  float aTEnter[8]{}, aTLeave[8]{};
+  int   aMask = BVH::SIMD::RayBox8_Scalar(aRay, aBoxes, aTEnter, aTLeave);
+  EXPECT_EQ(aMask, 0b01010101);
+}
+
+TEST(BVH_SIMDDispatchTest, GetRayBox8ReturnsNonNull)
+{
+  EXPECT_NE(BVH::SIMD::GetRayBox8(), nullptr);
+}

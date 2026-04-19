@@ -45,6 +45,30 @@ struct alignas(16) BVH_Ray4f_Splat
   float idz[4];
 };
 
+//! 8 axis-aligned bounding boxes packed in Structure-of-Arrays layout.
+//! Used as input to BVH8 (1-ray-vs-8-AABB) SIMD kernels which can fully
+//! consume a 256-bit AVX2 register.
+struct alignas(32) BVH_Box8f_SoA
+{
+  float minX[8];
+  float minY[8];
+  float minZ[8];
+  float maxX[8];
+  float maxY[8];
+  float maxZ[8];
+};
+
+//! Single ray with each component broadcast to 8 SIMD lanes.
+struct alignas(32) BVH_Ray8f_Splat
+{
+  float ox[8];
+  float oy[8];
+  float oz[8];
+  float idx[8];
+  float idy[8];
+  float idz[8];
+};
+
 //! Detected SIMD instruction set level.
 enum class Level
 {
@@ -83,6 +107,24 @@ Standard_EXPORT int RayBox4_Scalar(const BVH_Ray4f_Splat& theRay,
 //! variable OCCT_BVH_SIMD_FORCE to one of: scalar, sse2, avx2, avx512.
 //! Useful for testing each kernel on a single machine.
 Standard_EXPORT RayBox4_Fn GetRayBox4() noexcept;
+
+//! Function pointer type for the 1-ray-vs-8-AABB kernel (BVH8 fan-out).
+//! Returns an 8-bit hit mask (bit i set if child i is hit). outTEnter/Leave
+//! receive per-lane slab intervals; values for non-hit lanes are unspecified.
+using RayBox8_Fn = int (*)(const BVH_Ray8f_Splat& theRay,
+                           const BVH_Box8f_SoA&   theBoxes,
+                           float*                 theOutTEnter,
+                           float*                 theOutTLeave) noexcept;
+
+//! Scalar reference implementation of the 8-wide kernel.
+Standard_EXPORT int RayBox8_Scalar(const BVH_Ray8f_Splat& theRay,
+                                   const BVH_Box8f_SoA&   theBoxes,
+                                   float*                 theOutTEnter,
+                                   float*                 theOutTLeave) noexcept;
+
+//! Dispatcher for the 8-wide kernel; picks the best implementation for
+//! the host CPU. Honours OCCT_BVH_SIMD_FORCE the same way GetRayBox4 does.
+Standard_EXPORT RayBox8_Fn GetRayBox8() noexcept;
 
 } // namespace SIMD
 } // namespace BVH
