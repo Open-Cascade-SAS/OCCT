@@ -28,9 +28,9 @@ Aspect_XRSession::Aspect_XRSession()
       myIod(0.0),
       myDispFreq(0.0f)
 {
-  for (int aRoleIter = 0; aRoleIter < Aspect_XRTrackedDeviceRole_NB; ++aRoleIter)
+  for (auto& myRoleAction : myRoleActions)
   {
-    myRoleActions[aRoleIter].Resize(0, Aspect_XRGenericAction_NB - 1, false);
+    myRoleAction.Resize(0, Aspect_XRGenericAction_NB - 1, false);
   }
 }
 

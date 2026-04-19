@@ -768,9 +768,9 @@ static bool IsAutonomVertex(const TopoDS_Shape& theVertex,
   nF[0] = thePDS->Index(theFace1);
   nF[1] = thePDS->Index(theFace2);
 
-  for (int i = 0; i < 2; i++)
+  for (int i : nF)
   {
-    const BOPDS_FaceInfo&       aFaceInfo = thePDS->FaceInfo(nF[i]);
+    const BOPDS_FaceInfo&       aFaceInfo = thePDS->FaceInfo(i);
     const NCollection_Map<int>& IndMap    = aFaceInfo.VerticesOn();
     if (IndMap.Contains(nV))
       return false;

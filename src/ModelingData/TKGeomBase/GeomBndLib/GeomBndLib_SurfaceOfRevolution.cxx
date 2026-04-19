@@ -87,13 +87,13 @@ static Bnd_Box buildRevolutionBox(const Bnd_Box& theCurveBox,
       const double aXVals[2]                                = {aXmin, aXmax};
       const double aYVals[2]                                = {aYmin, aYmax};
       const double aZVals[2]                                = {aZmin, aZmax};
-      for (int ix = 0; ix < 2; ++ix)
-        for (int iy = 0; iy < 2; ++iy)
-          for (int iz = 0; iz < 2; ++iz)
+      for (double aXVal : aXVals)
+        for (double aYVal : aYVals)
+          for (double aZVal : aZVals)
           {
             addRevolutionCircle(theOrigin,
                                 theAxisDir,
-                                gp_Pnt(aXVals[ix], aYVals[iy], aZVals[iz]),
+                                gp_Pnt(aXVal, aYVal, aZVal),
                                 theUMin,
                                 theUMax,
                                 aBox);
@@ -124,13 +124,13 @@ static Bnd_Box buildRevolutionBox(const Bnd_Box& theCurveBox,
   const double aYVals[2] = {aYmin, aYmax};
   const double aZVals[2] = {aZmin, aZmax};
 
-  for (int ix = 0; ix < 2; ++ix)
-    for (int iy = 0; iy < 2; ++iy)
-      for (int iz = 0; iz < 2; ++iz)
+  for (double aXVal : aXVals)
+    for (double aYVal : aYVals)
+      for (double aZVal : aZVals)
       {
         addRevolutionCircle(theOrigin,
                             theAxisDir,
-                            gp_Pnt(aXVals[ix], aYVals[iy], aZVals[iz]),
+                            gp_Pnt(aXVal, aYVal, aZVal),
                             theUMin,
                             theUMax,
                             aBox);

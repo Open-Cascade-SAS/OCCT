@@ -748,9 +748,8 @@ bool BRepMesh_Delaun::isBoundToFrontier(const int theRefNodeId, const int theRef
       const BRepMesh_Triangle& aElement = GetTriangle(aTriId);
       const int (&anEdges)[3]           = aElement.myEdges;
 
-      for (int anEdgeIt = 0; anEdgeIt < 3; ++anEdgeIt)
+      for (int anEdgeId : anEdges)
       {
-        const int anEdgeId = anEdges[anEdgeIt];
         if (anEdgeId == aCurrentLinkId)
           continue;
 

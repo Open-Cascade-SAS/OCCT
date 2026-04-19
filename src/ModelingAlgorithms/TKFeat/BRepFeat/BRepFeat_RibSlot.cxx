@@ -709,10 +709,10 @@ double BRepFeat_RibSlot::HeightMax(const TopoDS_Shape& theSbase,
   double c[6], bnd;
   Box.Get(c[0], c[2], c[4], c[1], c[3], c[5]);
   bnd = c[0];
-  for (int i = 0; i < 6; i++)
+  for (double i : c)
   {
-    if (c[i] > bnd)
-      bnd = c[i];
+    if (i > bnd)
+      bnd = i;
   }
   p1.SetCoord(c[0] - 2. * bnd, c[1] - 2. * bnd, c[2] - 2. * bnd);
   p2.SetCoord(c[3] + 2. * bnd, c[4] + 2. * bnd, c[5] + 2. * bnd);

@@ -495,23 +495,23 @@ static TopoDS_Vertex FindVertex(const gp_Pnt&                                   
     {
       TopExp::Vertices(E, VV[0], VV[1]);
 
-      for (int i = 0; i < 2; i++)
+      for (const auto& i : VV)
       {
         // if OK la Tolerance du Vertex
-        Tol2 = BRep_Tool::Tolerance(VV[i]);
+        Tol2 = BRep_Tool::Tolerance(i);
         Tol2 *= Tol2;
-        gp_Pnt P1 = BRep_Tool::Pnt(VV[i]);
+        gp_Pnt P1 = BRep_Tool::Pnt(i);
         Dist      = P.SquareDistance(P1);
         if (Dist <= Tol2)
-          return VV[i];
+          return i;
         // otherwise with the required tolerance.
         if (TolCarre > Tol2)
         {
           if (Dist <= TolCarre)
           {
             // so it is necessary to update the tolerance of Vertex.
-            B.UpdateVertex(VV[i], Tol);
-            return VV[i];
+            B.UpdateVertex(i, Tol);
+            return i;
           }
         }
       }

@@ -133,9 +133,9 @@ BRepPrim_GWedge::BRepPrim_GWedge()
       X2Min(0),
       X2Max(0)
 {
-  for (int i = 0; i < NBFACES; i++)
+  for (bool& i : myInfinite)
   {
-    myInfinite[i] = false;
+    i = false;
   }
 
   BRepPrim_Wedge_Init(ShellBuilt, VerticesBuilt, EdgesBuilt, WiresBuilt, FacesBuilt);
@@ -161,9 +161,9 @@ BRepPrim_GWedge::BRepPrim_GWedge(const BRepPrim_Builder& B,
       X2Min(0),
       X2Max(dx)
 {
-  for (int i = 0; i < NBFACES; i++)
+  for (bool& i : myInfinite)
   {
-    myInfinite[i] = false;
+    i = false;
   }
 
   BRepPrim_Wedge_Init(ShellBuilt, VerticesBuilt, EdgesBuilt, WiresBuilt, FacesBuilt);
@@ -190,9 +190,9 @@ BRepPrim_GWedge::BRepPrim_GWedge(const BRepPrim_Builder& B,
       X2Min(0),
       X2Max(ltx)
 {
-  for (int i = 0; i < NBFACES; i++)
+  for (bool& i : myInfinite)
   {
-    myInfinite[i] = false;
+    i = false;
   }
 
   BRepPrim_Wedge_Init(ShellBuilt, VerticesBuilt, EdgesBuilt, WiresBuilt, FacesBuilt);
@@ -228,9 +228,9 @@ BRepPrim_GWedge::BRepPrim_GWedge(const BRepPrim_Builder& B,
       X2Min(x2min),
       X2Max(x2max)
 {
-  for (int i = 0; i < NBFACES; i++)
+  for (bool& i : myInfinite)
   {
-    myInfinite[i] = false;
+    i = false;
   }
 
   BRepPrim_Wedge_Init(ShellBuilt, VerticesBuilt, EdgesBuilt, WiresBuilt, FacesBuilt);

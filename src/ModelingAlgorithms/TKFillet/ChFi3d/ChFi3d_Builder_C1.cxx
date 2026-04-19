@@ -1097,18 +1097,18 @@ void ChFi3d_Builder::PerformOneCorner(const int Index, const bool thePrepareOnSa
     ChFiDS_CommonPoint CV[2];
     CV[0] = CV1;
     CV[1] = CV2;
-    for (int i = 0; i < 2; i++)
+    for (const auto& i : CV)
     {
-      if (CV[i].IsOnArc() && ChFi3d_IsPseudoSeam(CV[i].Arc(), Fv))
+      if (i.IsOnArc() && ChFi3d_IsPseudoSeam(i.Arc(), Fv))
       {
         gp_Pnt2d                  pfac1, PcF, PcL;
         gp_Vec2d                  DerPc, DerHc;
         double                    first, last, prm1, prm2;
         bool                      onfirst, FirstToPar;
-        occ::handle<Geom2d_Curve> Hc = BRep_Tool::CurveOnSurface(CV[i].Arc(), Fv, first, last);
+        occ::handle<Geom2d_Curve> Hc = BRep_Tool::CurveOnSurface(i.Arc(), Fv, first, last);
         if (Hc.IsNull())
           throw Standard_ConstructionError("Failed to get p-curve of edge");
-        pfac1   = Hc->Value(CV[i].ParameterOnArc());
+        pfac1   = Hc->Value(i.ParameterOnArc());
         PcF     = Pc->Value(Udeb);
         PcL     = Pc->Value(Ufin);
         onfirst = pfac1.Distance(PcF) < pfac1.Distance(PcL);
@@ -1119,22 +1119,22 @@ void ChFi3d_Builder::PerformOneCorner(const int Index, const bool thePrepareOnSa
           Pc->D1(Ufin, PcL, DerPc);
           DerPc.Reverse();
         }
-        Hc->D1(CV[i].ParameterOnArc(), pfac1, DerHc);
+        Hc->D1(i.ParameterOnArc(), pfac1, DerHc);
         if (DerHc.Dot(DerPc) > 0.)
         {
-          prm1       = CV[i].ParameterOnArc();
+          prm1       = i.ParameterOnArc();
           prm2       = last;
           FirstToPar = false;
         }
         else
         {
           prm1       = first;
-          prm2       = CV[i].ParameterOnArc();
+          prm2       = i.ParameterOnArc();
           FirstToPar = true;
         }
-        occ::handle<Geom_Curve> Ct = BRep_Tool::Curve(CV[i].Arc(), first, last);
+        occ::handle<Geom_Curve> Ct = BRep_Tool::Curve(i.Arc(), first, last);
         Ct                         = new Geom_TrimmedCurve(Ct, prm1, prm2);
-        double                                           toled = BRep_Tool::Tolerance(CV[i].Arc());
+        double                                           toled = BRep_Tool::Tolerance(i.Arc());
         TopOpeBRepDS_Curve                               tcurv(Ct, toled);
         occ::handle<TopOpeBRepDS_CurvePointInterference> Interfp1, Interfp2;
         int                                              indcurv;
@@ -1154,9 +1154,9 @@ void ChFi3d_Builder::PerformOneCorner(const int Index, const bool thePrepareOnSa
         DStr.ChangeCurveInterferences(indcurv).Append(Interfp1);
         DStr.ChangeCurveInterferences(indcurv).Append(Interfp2);
         int indface = DStr.AddShape(Fv);
-        Interfc     = ChFi3d_FilCurveInDS(indcurv, indface, Hc, CV[i].Arc().Orientation());
+        Interfc     = ChFi3d_FilCurveInDS(indcurv, indface, Hc, i.Arc().Orientation());
         DStr.ChangeShapeInterferences(indface).Append(Interfc);
-        TopoDS_Edge aLocalEdge = CV[i].Arc();
+        TopoDS_Edge aLocalEdge = i.Arc();
         aLocalEdge.Reverse();
         occ::handle<Geom2d_Curve> HcR = BRep_Tool::CurveOnSurface(aLocalEdge, Fv, first, last);
         if (HcR.IsNull())

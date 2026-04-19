@@ -600,15 +600,15 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
     int nF[2];
     aFF.Indices(nF[0], nF[1]);
     // store indices to the vector
-    for (int j = 0; j < 2; ++j)
+    for (int j : nF)
     {
-      if (!myDS->HasFaceInfo(nF[j]))
+      if (!myDS->HasFaceInfo(j))
         continue;
 
-      if (!aMFence.Add(nF[j]))
+      if (!aMFence.Add(j))
         continue;
 
-      aFIVec.Appended() = nF[j];
+      aFIVec.Appended() = j;
     }
   }
 

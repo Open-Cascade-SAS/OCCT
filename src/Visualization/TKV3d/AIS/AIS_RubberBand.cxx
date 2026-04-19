@@ -315,17 +315,16 @@ bool AIS_RubberBand::fillTriangles()
     if (toFill)
     {
       gp_Dir aNorm = gp::DZ();
-      for (int anIt = 0; anIt < 3; ++anIt)
+      for (auto aPt : aPts)
       {
-        myTriangles
-          ->AddVertex(aPts[anIt].X(), aPts[anIt].Y(), 0.0, aNorm.X(), aNorm.Y(), aNorm.Z());
+        myTriangles->AddVertex(aPt.X(), aPt.Y(), 0.0, aNorm.X(), aNorm.Y(), aNorm.Z());
       }
     }
     else
     {
-      for (int anIt = 0; anIt < 3; ++anIt)
+      for (auto aPt : aPts)
       {
-        myTriangles->SetVertice(aVertexIndex++, (float)aPts[anIt].X(), (float)aPts[anIt].Y(), 0.0f);
+        myTriangles->SetVertice(aVertexIndex++, (float)aPt.X(), (float)aPt.Y(), 0.0f);
       }
     }
   }

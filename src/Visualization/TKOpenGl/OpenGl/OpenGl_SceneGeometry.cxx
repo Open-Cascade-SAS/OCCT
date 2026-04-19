@@ -446,9 +446,9 @@ bool OpenGl_RaytraceGeometry::ReleaseTextures(const occ::handle<OpenGl_Context>&
     return true;
   }
 
-  for (size_t aTexIter = 0; aTexIter < myTextureHandles.size(); ++aTexIter)
+  for (GLuint64 myTextureHandle : myTextureHandles)
   {
-    theContext->arbTexBindless->glMakeTextureHandleNonResidentARB(myTextureHandles[aTexIter]);
+    theContext->arbTexBindless->glMakeTextureHandleNonResidentARB(myTextureHandle);
     const GLenum anErr = theContext->core11fwd->glGetError();
     if (anErr != GL_NO_ERROR)
     {

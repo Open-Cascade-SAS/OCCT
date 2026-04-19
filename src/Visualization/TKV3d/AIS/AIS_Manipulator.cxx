@@ -791,11 +791,11 @@ void AIS_Manipulator::RecomputeTransformation(const occ::handle<Graphic3d_Camera
   bool isRecomputedScaling     = false;
 
   // Remove transformation from dragger group
-  for (int anIt = 0; anIt < 3; ++anIt)
+  for (const auto& myAxe : myAxes)
   {
-    if (myAxes[anIt].HasDragging())
+    if (myAxe.HasDragging())
     {
-      myAxes[anIt].DraggerGroup()->SetTransformation(gp_Trsf());
+      myAxe.DraggerGroup()->SetTransformation(gp_Trsf());
       isRecomputedDragging = true;
     }
   }
@@ -938,10 +938,10 @@ void AIS_Manipulator::RecomputeTransformation(const occ::handle<Graphic3d_Camera
 
   if (isRecomputedDragging)
   {
-    for (int anIt = 0; anIt < 3; ++anIt)
+    for (const auto& myAxe : myAxes)
     {
-      myAxes[anIt].DraggerHighlightPrs()->CurrentGroup()->SetTransformation(
-        myAxes[anIt].DraggerGroup()->Transformation());
+      myAxe.DraggerHighlightPrs()->CurrentGroup()->SetTransformation(
+        myAxe.DraggerGroup()->Transformation());
     }
   }
 
@@ -1072,9 +1072,9 @@ void AIS_Manipulator::updateTransformation()
   // since AIS_Manipulator::setLocalTransformation() implementation throws exception
   // as protection from external calls
   AIS_InteractiveObject::setLocalTransformation(aGeomTrsf);
-  for (int anIt = 0; anIt < 3; ++anIt)
+  for (auto& myAxe : myAxes)
   {
-    myAxes[anIt].Transform(aGeomTrsf);
+    myAxe.Transform(aGeomTrsf);
   }
 
   if (myIsZoomPersistentMode)
@@ -1102,9 +1102,9 @@ void AIS_Manipulator::updateTransformation()
 
 void AIS_Manipulator::SetSize(const float theSideLength)
 {
-  for (int anIt = 0; anIt < 3; ++anIt)
+  for (auto& myAxe : myAxes)
   {
-    myAxes[anIt].SetSize(theSideLength);
+    myAxe.SetSize(theSideLength);
   }
 
   SetToUpdate();
@@ -1114,9 +1114,9 @@ void AIS_Manipulator::SetSize(const float theSideLength)
 
 void AIS_Manipulator::SetGap(const float theValue)
 {
-  for (int anIt = 0; anIt < 3; ++anIt)
+  for (auto& myAxe : myAxes)
   {
-    myAxes[anIt].SetIndent(theValue);
+    myAxe.SetIndent(theValue);
   }
 
   SetToUpdate();
@@ -1211,9 +1211,9 @@ void AIS_Manipulator::setTransformPersistence(
 {
   AIS_InteractiveObject::SetTransformPersistence(theTrsfPers);
 
-  for (int anIt = 0; anIt < 3; ++anIt)
+  for (auto& myAxe : myAxes)
   {
-    myAxes[anIt].SetTransformPersistence(theTrsfPers);
+    myAxe.SetTransformPersistence(theTrsfPers);
   }
 }
 
@@ -1271,17 +1271,17 @@ void AIS_Manipulator::Compute(const occ::handle<PrsMgr_PresentationManager>& the
     mySectorGroup->SetGroupPrimitivesAspect(anAspect->Aspect());
   }
 
-  for (int anIt = 0; anIt < 3; ++anIt)
+  for (auto& myAxe : myAxes)
   {
     // Display axes
     aGroup = thePrs->NewGroup();
 
     occ::handle<Prs3d_ShadingAspect> anAspectAx =
       new Prs3d_ShadingAspect(new Graphic3d_AspectFillArea3d(*anAspect->Aspect()));
-    anAspectAx->SetColor(myAxes[anIt].Color());
+    anAspectAx->SetColor(myAxe.Color());
     aGroup->SetGroupPrimitivesAspect(anAspectAx->Aspect());
-    myAxes[anIt].Compute(thePrsMgr, thePrs, anAspectAx, mySkinMode);
-    myAxes[anIt].SetTransformPersistence(TransformPersistence());
+    myAxe.Compute(thePrsMgr, thePrs, anAspectAx, mySkinMode);
+    myAxe.SetTransformPersistence(TransformPersistence());
   }
 
   updateTransformation();

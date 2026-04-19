@@ -61,9 +61,9 @@ void SelectMgr_TriangularFrustum::cacheVertexProjections(
     double        aMax   = -DBL_MAX;
     double        aMin   = DBL_MAX;
     const gp_XYZ& aPlane = theFrustum->myPlanes[aPlaneIdx].XYZ();
-    for (int aVertIdx = 0; aVertIdx < 6; ++aVertIdx)
+    for (const auto& myVertice : theFrustum->myVertices)
     {
-      double aProjection = aPlane.Dot(theFrustum->myVertices[aVertIdx].XYZ());
+      double aProjection = aPlane.Dot(myVertice.XYZ());
       aMax               = std::max(aMax, aProjection);
       aMin               = std::min(aMin, aProjection);
     }
@@ -75,9 +75,9 @@ void SelectMgr_TriangularFrustum::cacheVertexProjections(
   {
     double aMax = -DBL_MAX;
     double aMin = DBL_MAX;
-    for (int aVertIdx = 0; aVertIdx < 6; ++aVertIdx)
+    for (const auto& myVertice : theFrustum->myVertices)
     {
-      double aProjection = theFrustum->myVertices[aVertIdx].XYZ().GetData()[aDim];
+      double aProjection = myVertice.XYZ().GetData()[aDim];
       aMax               = std::max(aMax, aProjection);
       aMin               = std::min(aMin, aProjection);
     }

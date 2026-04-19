@@ -108,8 +108,8 @@ int Interface_FloatWriter::Convert(const double      val,
   char      lxp[anMasSize], *pText;
   int       i0 = 0, j0 = 0;
 
-  for (int i = 0; i < anMasSize; ++i)
-    lxp[i] = '\0';
+  for (char& i : lxp)
+    i = '\0';
 
   pText = (char*)text;
   //

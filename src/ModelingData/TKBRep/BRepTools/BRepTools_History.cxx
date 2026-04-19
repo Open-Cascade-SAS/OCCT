@@ -292,11 +292,11 @@ void BRepTools_History::Merge(const BRepTools_History& theHistory23)
   }
 
   // Unbound the empty M12 and G12.
-  for (int aI = 0; aI < 2; ++aI)
+  for (auto& aI : aS1ToGAndM)
   {
     for (NCollection_DataMap<TopoDS_Shape,
                              NCollection_List<TopoDS_Shape>,
-                             TopTools_ShapeMapHasher>::Iterator aMIt1(*aS1ToGAndM[aI]);
+                             TopTools_ShapeMapHasher>::Iterator aMIt1(*aI);
          aMIt1.More();)
     {
       const TopoDS_Shape&                   aS1  = aMIt1.Key();
@@ -305,7 +305,7 @@ void BRepTools_History::Merge(const BRepTools_History& theHistory23)
       if (aL12.IsEmpty())
       {
         myRemoved.Add(aS1);
-        aS1ToGAndM[aI]->UnBind(aS1);
+        aI->UnBind(aS1);
       }
     }
   }

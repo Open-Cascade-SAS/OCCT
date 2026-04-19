@@ -33,9 +33,9 @@ Extrema_ExtPElS::Extrema_ExtPElS()
 {
   myDone  = false;
   myNbExt = 0;
-  for (int i = 0; i < 4; i++)
+  for (double& i : mySqDist)
   {
-    mySqDist[i] = RealLast();
+    i = RealLast();
   }
 }
 

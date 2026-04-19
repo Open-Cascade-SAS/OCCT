@@ -1336,12 +1336,12 @@ void BOPAlgo_PaveFiller::PostTreatFF(
   const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>* VerMap[2] = {
     &theVertsOnRejectedPB,
     &VertsUnused};
-  for (int imap = 0; imap < 2; imap++)
+  for (auto& imap : VerMap)
   {
-    int NbVer = VerMap[imap]->Extent();
+    int NbVer = imap->Extent();
     for (int i = 1; i <= NbVer; ++i)
     {
-      TopoDS_Shape aVer = VerMap[imap]->FindKey(i);
+      TopoDS_Shape aVer = imap->FindKey(i);
       int          iVer = myDS->Index(aVer);
       const int*   pSD  = aDMNewSD.Seek(iVer);
       if (pSD)
@@ -3745,24 +3745,24 @@ void BOPAlgo_PaveFiller::RemovePaveBlocks(const NCollection_Map<int>& theEdges)
     NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>* aIMPB[] = {&aFI.ChangePaveBlocksIn(),
                                                                      &aFI.ChangePaveBlocksOn(),
                                                                      &aFI.ChangePaveBlocksSc()};
-    for (int k = 0; k < 3; k++)
+    for (auto& k : aIMPB)
     {
-      int aNbPB = aIMPB[k]->Extent(), m;
+      int aNbPB = k->Extent(), m;
       for (m = 1; m <= aNbPB; ++m)
       {
-        const occ::handle<BOPDS_PaveBlock>& aPB = aIMPB[k]->FindKey(m);
+        const occ::handle<BOPDS_PaveBlock>& aPB = k->FindKey(m);
         if (theEdges.Contains(aPB->Edge()))
           break;
       }
       if (m <= aNbPB)
       {
-        NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>> aMPBCopy = *aIMPB[k];
-        aIMPB[k]->Clear();
+        NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>> aMPBCopy = *k;
+        k->Clear();
         for (m = 1; m <= aNbPB; ++m)
         {
           const occ::handle<BOPDS_PaveBlock>& aPB = aMPBCopy(m);
           if (!theEdges.Contains(aPB->Edge()))
-            aIMPB[k]->Add(aPB);
+            k->Add(aPB);
         }
       }
     }
@@ -4041,20 +4041,20 @@ void BOPAlgo_PaveFiller::CorrectToleranceOfSE()
       int nV[2];
       aPB->Indices(nV[0], nV[1]);
       //
-      for (int j = 0; j < 2; j++)
+      for (int j : nV)
       {
-        if (aMVIToReduce.Contains(nV[j]))
+        if (aMVIToReduce.Contains(j))
         {
-          double* aMaxTol = aMVITol.ChangeSeek(nV[j]);
+          double* aMaxTol = aMVITol.ChangeSeek(j);
           if (!aMaxTol)
           {
-            aMVITol.Bind(nV[j], aTolE);
+            aMVITol.Bind(j, aTolE);
           }
           else if (aTolE > *aMaxTol)
           {
             *aMaxTol = aTolE;
           }
-          NCollection_List<occ::handle<BOPDS_PaveBlock>>& aPBList = aMVIPBs.ChangeFromKey(nV[j]);
+          NCollection_List<occ::handle<BOPDS_PaveBlock>>& aPBList = aMVIPBs.ChangeFromKey(j);
           aPBList.Append(aPB);
         }
       }

@@ -1067,10 +1067,10 @@ void OSD::SetSignal(OSD_SignalMode theSignalMode, bool theFloatingSignal)
   const int NBSIG = 8;
   const int aSignalTypes[NBSIG] =
     {SIGFPE, SIGHUP, SIGINT, SIGQUIT, SIGILL, SIGBUS, SIGSYS, SIGSEGV};
-  for (int i = 0; i < NBSIG; ++i)
+  for (int aSignalType : aSignalTypes)
   {
     // SIGSEGV has special handler
-    if (aSignalTypes[i] == SIGSEGV)
+    if (aSignalType == SIGSEGV)
     {
   #ifdef SA_SIGINFO
       anActSet.sa_sigaction = /*(void(*)(int, siginfo_t *, void*))*/ SegvHandler;
@@ -1083,22 +1083,22 @@ void OSD::SetSignal(OSD_SignalMode theSignalMode, bool theFloatingSignal)
     int retcode = -1;
     if (theSignalMode == OSD_SignalMode_Set || theSignalMode == OSD_SignalMode_SetUnhandled)
     {
-      retcode = sigaction(aSignalTypes[i], &anActSet, &anActOld);
+      retcode = sigaction(aSignalType, &anActSet, &anActOld);
     }
     else if (theSignalMode == OSD_SignalMode_Unset)
     {
-      retcode = sigaction(aSignalTypes[i], &anActDfl, &anActOld);
+      retcode = sigaction(aSignalType, &anActDfl, &anActOld);
     }
     if (theSignalMode == OSD_SignalMode_SetUnhandled && retcode == 0
         && anActOld.sa_handler != SIG_DFL)
     {
       struct sigaction anActOld2;
       sigemptyset(&anActOld2.sa_mask);
-      retcode = sigaction(aSignalTypes[i], &anActOld, &anActOld2);
+      retcode = sigaction(aSignalType, &anActOld, &anActOld2);
     }
     Standard_ASSERT(retcode == 0,
                     "sigaction() failed",
-                    std::cout << "OSD::SetSignal(): sigaction() failed for " << aSignalTypes[i]
+                    std::cout << "OSD::SetSignal(): sigaction() failed for " << aSignalType
                               << std::endl);
   }
 }

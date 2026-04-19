@@ -1217,10 +1217,10 @@ static bool Filling(const TopoDS_Shape&                                         
   // (the normal will be computed not in
   // singularity point definitely).
   Angle = RealFirst();
-  for (int i = 0; i < 3; i++)
+  for (double i : aPrm)
   {
     gp_Vec D1U, D1V, N1, N2;
-    C1->D0(aPrm[i], P2d);
+    C1->D0(i, P2d);
     Surf->D1(P2d.X(), P2d.Y(), P, D1U, D1V);
     N1 = D1U ^ D1V;
 
@@ -1229,7 +1229,7 @@ static bool Filling(const TopoDS_Shape&                                         
 
     //  C1 = BT.CurveOnSurface(E1, TopoDS::Face(F1), f2, l2);
     C1 = BRep_Tool::CurveOnSurface(E1, TopoDS::Face(F1), f2, l2);
-    C1->D0(aPrm[i], P2d);
+    C1->D0(i, P2d);
     occ::handle<BRepAdaptor_Surface> AS = new BRepAdaptor_Surface(TopoDS::Face(F1));
     AS->D1(P2d.X(), P2d.Y(), P, D1U, D1V);
     N2 = D1U ^ D1V;

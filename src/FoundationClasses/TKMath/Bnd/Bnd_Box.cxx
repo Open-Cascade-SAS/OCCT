@@ -409,10 +409,10 @@ Bnd_Box Bnd_Box::Transformed(const gp_Trsf& T) const
       gp_Pnt(Xmin, Ymax, Zmax),
       gp_Pnt(Xmax, Ymax, Zmax),
     };
-    for (int aCornerIter = 0; aCornerIter < 8; ++aCornerIter)
+    for (auto& aCorner : aCorners)
     {
-      aCorners[aCornerIter].Transform(T);
-      aNewBox.Add(aCorners[aCornerIter]);
+      aCorner.Transform(T);
+      aNewBox.Add(aCorner);
     }
   }
   aNewBox.Gap = Gap;

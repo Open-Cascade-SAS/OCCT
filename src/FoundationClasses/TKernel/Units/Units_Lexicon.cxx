@@ -102,10 +102,8 @@ void Units_Lexicon::Creates()
 {
   thesequenceoftokens = new NCollection_HSequence<occ::handle<Units_Token>>();
 
-  const int aNbLexiItems = sizeof(THE_LEXICON) / sizeof(LexiconItem);
-  for (int anItemIter = 0; anItemIter < aNbLexiItems; ++anItemIter)
+  for (const auto& anItem : THE_LEXICON)
   {
-    const LexiconItem& anItem = THE_LEXICON[anItemIter];
     if (thesequenceoftokens->IsEmpty())
     {
       occ::handle<Units_Token> aToken =

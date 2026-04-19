@@ -60,11 +60,9 @@
 static bool TRI_SOLUTION(const NCollection_Sequence<BRepExtrema_SolutionElem>& SeqSol,
                          const gp_Pnt&                                         Pt)
 {
-  for (NCollection_Sequence<BRepExtrema_SolutionElem>::iterator anIt = SeqSol.begin();
-       anIt != SeqSol.end();
-       anIt++)
+  for (auto& anIt : SeqSol)
   {
-    const double dst = anIt->Point().Distance(Pt);
+    const double dst = anIt.Point().Distance(Pt);
     if (dst <= Precision::Confusion())
     {
       return false;

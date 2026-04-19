@@ -533,13 +533,13 @@ void BRepFeat::FaceUntil(const TopoDS_Shape& Sbase, TopoDS_Face& FUntil)
   {
     gp_Pln aPln = occ::down_cast<Geom_Plane>(s)->Pln();
     double u, v, umin = RealLast(), umax = -umin, vmin = RealLast(), vmax = -vmin;
-    for (int i = 0; i < 2; i++)
+    for (double i : x)
     {
-      for (int j = 0; j < 2; j++)
+      for (double j : y)
       {
-        for (int k = 0; k < 2; k++)
+        for (double k : z)
         {
-          gp_Pnt aP(x[i], y[j], z[k]);
+          gp_Pnt aP(i, j, k);
           ElSLib::Parameters(aPln, aP, u, v);
           if (u < umin)
             umin = u;
@@ -562,13 +562,13 @@ void BRepFeat::FaceUntil(const TopoDS_Shape& Sbase, TopoDS_Face& FUntil)
   {
     gp_Cylinder aCyl = occ::down_cast<Geom_CylindricalSurface>(s)->Cylinder();
     double      u, v, vmin = RealLast(), vmax = -vmin;
-    for (int i = 0; i < 2; i++)
+    for (double i : x)
     {
-      for (int j = 0; j < 2; j++)
+      for (double j : y)
       {
-        for (int k = 0; k < 2; k++)
+        for (double k : z)
         {
-          gp_Pnt aP(x[i], y[j], z[k]);
+          gp_Pnt aP(i, j, k);
           ElSLib::Parameters(aCyl, aP, u, v);
           if (v < vmin)
             vmin = v;
@@ -585,13 +585,13 @@ void BRepFeat::FaceUntil(const TopoDS_Shape& Sbase, TopoDS_Face& FUntil)
   {
     gp_Cone aCon = occ::down_cast<Geom_ConicalSurface>(s)->Cone();
     double  u, v, vmin = RealLast(), vmax = -vmin;
-    for (int i = 0; i < 2; i++)
+    for (double i : x)
     {
-      for (int j = 0; j < 2; j++)
+      for (double j : y)
       {
-        for (int k = 0; k < 2; k++)
+        for (double k : z)
         {
-          gp_Pnt aP(x[i], y[j], z[k]);
+          gp_Pnt aP(i, j, k);
           ElSLib::Parameters(aCon, aP, u, v);
           if (v < vmin)
             vmin = v;

@@ -5953,9 +5953,9 @@ void WorkWithBoundaries::AddBoundaryPoint(const occ::handle<IntPatch_WLine>& the
   isTheFound1 = isTheFound2 = false;
 
   // Adding found points on boundary in the WLine.
-  for (int i = 0; i < aSize; i++)
+  for (auto& i : aUVPoint)
   {
-    if (aUVPoint[i].myU1 == RealLast())
+    if (i.myU1 == RealLast())
       break;
 
     if (!AddPointIntoWL(myQuad1,
@@ -5963,8 +5963,8 @@ void WorkWithBoundaries::AddBoundaryPoint(const occ::handle<IntPatch_WLine>& the
                         myCoeffs,
                         myIsReverse,
                         false,
-                        gp_Pnt2d(aUVPoint[i].myU1, aUVPoint[i].myV1),
-                        gp_Pnt2d(aUVPoint[i].myU2, aUVPoint[i].myV2),
+                        gp_Pnt2d(i.myU1, i.myV1),
+                        gp_Pnt2d(i.myU2, i.myV2),
                         aUSurf1f,
                         aUSurf1l,
                         aUSurf2f,
@@ -5983,7 +5983,7 @@ void WorkWithBoundaries::AddBoundaryPoint(const occ::handle<IntPatch_WLine>& the
       continue;
     }
 
-    if (aUVPoint[i].mySurfID == 0)
+    if (i.mySurfID == 0)
     {
       isTheFound1 = true;
     }
@@ -6691,8 +6691,8 @@ static IntPatch_ImpImpIntersection::IntStatus CyCyNoGeometric(
   {
     // Process every continuous region
     bool isAddedIntoWL[aNbWLines];
-    for (int i = 0; i < aNbWLines; i++)
-      isAddedIntoWL[i] = false;
+    for (bool& i : isAddedIntoWL)
+      i = false;
 
     double anUf = 1.0, anUl = 0.0;
     if (!theRange[aCurInterval].GetBounds(anUf, anUl))
@@ -7678,10 +7678,10 @@ static IntPatch_ImpImpIntersection::IntStatus CyCyNoGeometric(
     // Fill aWLine by additional points
     if (anAddedPar[1] - anAddedPar[0] > aStepMin)
     {
-      for (int aParID = 0; aParID < 2; aParID++)
+      for (double aParID : anAddedPar)
       {
         double aU2 = 0.0, aV1 = 0.0, aV2 = 0.0;
-        ComputationMethods::CylCylComputeParameters(anAddedPar[aParID],
+        ComputationMethods::CylCylComputeParameters(aParID,
                                                     anIndex,
                                                     anEquationCoeffs,
                                                     aU2,
@@ -7693,7 +7693,7 @@ static IntPatch_ImpImpIntersection::IntStatus CyCyNoGeometric(
                        anEquationCoeffs,
                        isReversed,
                        true,
-                       gp_Pnt2d(anAddedPar[aParID], aV1),
+                       gp_Pnt2d(aParID, aV1),
                        gp_Pnt2d(aU2, aV2),
                        aUSurf1f,
                        aUSurf1l,
@@ -7839,14 +7839,14 @@ IntPatch_ImpImpIntersection::IntStatus IntCyCy(
     const double aSplitArr[3] = {aUSBou[aCID][0], aUSBou[aCID][1], 0.0};
 
     NCollection_List<Bnd_Range>::Iterator anITrRng;
-    for (int aSInd = 0; aSInd < 3; aSInd++)
+    for (double aSInd : aSplitArr)
     {
       NCollection_List<Bnd_Range> aLstTemp(aListOfRng);
       aListOfRng.Clear();
       for (anITrRng.Init(aLstTemp); anITrRng.More(); anITrRng.Next())
       {
         Bnd_Range& aRng = anITrRng.ChangeValue();
-        aRng.Split(aSplitArr[aSInd], aListOfRng, aPeriod);
+        aRng.Split(aSInd, aListOfRng, aPeriod);
       }
     }
 

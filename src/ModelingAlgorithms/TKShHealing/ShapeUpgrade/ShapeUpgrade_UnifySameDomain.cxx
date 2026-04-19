@@ -2162,16 +2162,16 @@ bool ShapeUpgrade_UnifySameDomain::MergeSubSeq(
     gp_Vec Vec(PV1, PV2);
     if (mySafeInputMode)
     {
-      for (int k = 0; k < 2; k++)
+      for (auto& k : V)
       {
-        if (!myContext->IsRecorded(V[k]))
+        if (!myContext->IsRecorded(k))
         {
-          TopoDS_Vertex Vcopy = TopoDS::Vertex(V[k].EmptyCopied());
-          myContext->Replace(V[k], Vcopy);
-          V[k] = Vcopy;
+          TopoDS_Vertex Vcopy = TopoDS::Vertex(k.EmptyCopied());
+          myContext->Replace(k, Vcopy);
+          k = Vcopy;
         }
         else
-          V[k] = TopoDS::Vertex(myContext->Apply(V[k]));
+          k = TopoDS::Vertex(myContext->Apply(k));
       }
     }
     occ::handle<Geom_Line>         L    = new Geom_Line(gp_Ax1(PV1, Vec));
@@ -2263,16 +2263,16 @@ bool ShapeUpgrade_UnifySameDomain::MergeSubSeq(
 
       if (mySafeInputMode)
       {
-        for (int k = 0; k < 2; k++)
+        for (auto& k : V)
         {
-          if (!myContext->IsRecorded(V[k]))
+          if (!myContext->IsRecorded(k))
           {
-            TopoDS_Vertex Vcopy = TopoDS::Vertex(V[k].EmptyCopied());
-            myContext->Replace(V[k], Vcopy);
-            V[k] = Vcopy;
+            TopoDS_Vertex Vcopy = TopoDS::Vertex(k.EmptyCopied());
+            myContext->Replace(k, Vcopy);
+            k = Vcopy;
           }
           else
-            V[k] = TopoDS::Vertex(myContext->Apply(V[k]));
+            k = TopoDS::Vertex(myContext->Apply(k));
         }
       }
 

@@ -1237,12 +1237,12 @@ void TopOpeBRepBuild_Builder::FillSecEdgeAncestorMap(
       continue;
     }
     TopAbs_State states[3] = {TopAbs_IN, TopAbs_ON, TopAbs_OUT};
-    for (int j = 0; j < 3; j++)
+    for (auto& state : states)
     {
       //      bool isSplit = IsSplit(es,states[j]);
-      if (IsSplit(es, states[j]))
+      if (IsSplit(es, state))
       {
-        NCollection_List<TopoDS_Shape>::Iterator it(Splits(es, states[j]));
+        NCollection_List<TopoDS_Shape>::Iterator it(Splits(es, state));
         for (; it.More(); it.Next())
         {
           const TopoDS_Shape& aS = it.Value();

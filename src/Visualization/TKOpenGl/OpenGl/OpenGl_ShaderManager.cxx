@@ -174,9 +174,9 @@ void OpenGl_ShaderManager::clear()
   myBlitPrograms[1].Init(occ::handle<OpenGl_ShaderProgram>());
   myBoundBoxProgram.Nullify();
   myBoundBoxVertBuffer.Nullify();
-  for (int aModeIter = 0; aModeIter < Graphic3d_StereoMode_NB; ++aModeIter)
+  for (auto& myStereoProgram : myStereoPrograms)
   {
-    myStereoPrograms[aModeIter].Nullify();
+    myStereoProgram.Nullify();
   }
   switchLightPrograms();
 }

@@ -434,12 +434,12 @@ private:
       int aNodes[3];
       this->getStructure()->ElementNodes(aTriangle, aNodes);
 
-      for (int i = 0; i < 3; ++i)
+      for (int& aNode : aNodes)
       {
-        if (!aUsedNodes.Contains(aNodes[i]))
+        if (!aUsedNodes.Contains(aNode))
         {
-          aUsedNodes.Add(aNodes[i]);
-          const BRepMesh_Vertex& aVertex = this->getStructure()->GetNode(aNodes[i]);
+          aUsedNodes.Add(aNode);
+          const BRepMesh_Vertex& aVertex = this->getStructure()->GetNode(aNode);
           const gp_Pnt&          aPoint  = this->getNodesMap()->Value(aVertex.Location3d());
 
           if (thePnt3d.SquareDistance(aPoint) < mySqMinSize)

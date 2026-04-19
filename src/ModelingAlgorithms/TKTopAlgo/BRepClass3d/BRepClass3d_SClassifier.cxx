@@ -125,10 +125,8 @@ void BRepClass3d_SClassifier::PerformInfinitePoint(BRepClass3d_SolidExplorer& aS
   const int NB_MAX_POINTS_PER_FACE = 10;
   for (int itry = 0; itry < NB_MAX_POINTS_PER_FACE; itry++)
   {
-    for (std::vector<TopoDS_Face>::iterator iFace = aFaces.begin(); iFace != aFaces.end(); ++iFace)
+    for (auto aF : aFaces)
     {
-      TopoDS_Face aF = *iFace;
-
       TopAbs_State                      aState      = TopAbs_OUT;
       IntCurveSurface_TransitionOnCurve aTransition = IntCurveSurface_Tangent;
 

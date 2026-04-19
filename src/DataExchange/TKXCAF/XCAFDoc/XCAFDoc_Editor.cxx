@@ -332,15 +332,15 @@ void XCAFDoc_Editor::CloneMetaData(
     occ::handle<XCAFDoc_ColorTool> aSrcColorTool = XCAFDoc_DocumentTool::ColorTool(theSrcLabel);
     occ::handle<XCAFDoc_ColorTool> aDstColorTool = XCAFDoc_DocumentTool::ColorTool(theDstLabel);
     const XCAFDoc_ColorType aTypes[] = {XCAFDoc_ColorGen, XCAFDoc_ColorSurf, XCAFDoc_ColorCurv};
-    for (int anInd = 0; anInd < 3; anInd++)
+    for (auto aType : aTypes)
     {
       TDF_Label aColorL;
-      aSrcColorTool->GetColor(theSrcLabel, aTypes[anInd], aColorL);
+      aSrcColorTool->GetColor(theSrcLabel, aType, aColorL);
       if (!aColorL.IsNull())
       {
         Quantity_ColorRGBA aColor;
         aSrcColorTool->GetColor(aColorL, aColor);
-        aDstColorTool->SetColor(theDstLabel, aColor, aTypes[anInd]);
+        aDstColorTool->SetColor(theDstLabel, aColor, aType);
       }
     }
     aDstColorTool->SetVisibility(theDstLabel, aSrcColorTool->IsVisible(theSrcLabel));

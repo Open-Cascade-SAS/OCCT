@@ -453,9 +453,9 @@ void Poly_Triangulation::ComputeNormals()
     const gp_XYZ                  aTriNorm = aVec01 ^ aVec02;
     const NCollection_Vec3<float> aNorm3f =
       NCollection_Vec3<float>(float(aTriNorm.X()), float(aTriNorm.Y()), float(aTriNorm.Z()));
-    for (int aNodeIter = 0; aNodeIter < 3; ++aNodeIter)
+    for (int aNodeIter : anElem)
     {
-      myNormals.ChangeValue(anElem[aNodeIter] - 1) += aNorm3f;
+      myNormals.ChangeValue(aNodeIter - 1) += aNorm3f;
     }
   }
 

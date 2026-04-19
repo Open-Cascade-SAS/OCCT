@@ -45,9 +45,9 @@ void Prs3d::AddFreeEdges(NCollection_Sequence<gp_Pnt>&          theSegments,
   for (int anI = 1; anI <= aNbTriangles; ++anI)
   {
     aPolyConnect.Triangles(anI, aT[0], aT[1], aT[2]);
-    for (int aJ = 0; aJ < 3; ++aJ)
+    for (int aJ : aT)
     {
-      if (aT[aJ] == 0)
+      if (aJ == 0)
       {
         ++aNbFree;
       }

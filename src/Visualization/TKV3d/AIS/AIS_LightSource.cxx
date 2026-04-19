@@ -575,10 +575,9 @@ void AIS_LightSource::computeAmbient(const occ::handle<Prs3d_Presentation>& theP
                                      Graphic3d_ArrayFlags_VertexNormal);
     occ::handle<Graphic3d_ArrayOfSegments> aLineArray =
       new Graphic3d_ArrayOfSegments(aNbArrows * 2);
-    for (int anArrIter = 0; anArrIter < aNbArrows; ++anArrIter)
+    for (const auto& aDir : aDirList)
     {
-      const gp_Dir& aDir = aDirList[anArrIter];
-      const gp_XYZ  aPnt = aLightPos + aDir.XYZ() * aLen;
+      const gp_XYZ aPnt = aLightPos + aDir.XYZ() * aLen;
       if (!aLineArray.IsNull())
       {
         aLineArray->AddVertex(aPnt + aDir.XYZ() * aLen * 0.5);

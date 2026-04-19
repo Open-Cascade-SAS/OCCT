@@ -731,12 +731,12 @@ VrmlData_ErrorStatus VrmlData_Scene::ReadXYZ(VrmlData_InBuffer& theBuffer,
 {
   double               aVal[3] = {0., 0., 0.};
   VrmlData_ErrorStatus aStatus = VrmlData_StatusOK;
-  for (int i = 0; i < 3; i++)
+  for (double& i : aVal)
   {
     if (!VrmlData_Node::OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
       break;
     char* endptr;
-    aVal[i] = Strtod(theBuffer.LinePtr, &endptr);
+    i = Strtod(theBuffer.LinePtr, &endptr);
     if (endptr == theBuffer.LinePtr)
     {
       aStatus = VrmlData_NumericInputError;
@@ -744,7 +744,7 @@ VrmlData_ErrorStatus VrmlData_Scene::ReadXYZ(VrmlData_InBuffer& theBuffer,
     }
     else
     {
-      if (isOnlyPos && aVal[i] < 0.001 * Precision::Confusion())
+      if (isOnlyPos && i < 0.001 * Precision::Confusion())
       {
         aStatus = VrmlData_IrrelevantNumber;
         break;
@@ -775,12 +775,12 @@ VrmlData_ErrorStatus VrmlData_Scene::ReadXY(VrmlData_InBuffer& theBuffer,
 {
   double               aVal[2] = {0., 0.};
   VrmlData_ErrorStatus aStatus = VrmlData_StatusOK;
-  for (int i = 0; i < 2; i++)
+  for (double& i : aVal)
   {
     if (!VrmlData_Node::OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
       break;
     char* endptr;
-    aVal[i] = Strtod(theBuffer.LinePtr, &endptr);
+    i = Strtod(theBuffer.LinePtr, &endptr);
     if (endptr == theBuffer.LinePtr)
     {
       aStatus = VrmlData_NumericInputError;
@@ -788,7 +788,7 @@ VrmlData_ErrorStatus VrmlData_Scene::ReadXY(VrmlData_InBuffer& theBuffer,
     }
     else
     {
-      if (isOnlyPos && aVal[i] < 0.001 * Precision::Confusion())
+      if (isOnlyPos && i < 0.001 * Precision::Confusion())
       {
         aStatus = VrmlData_IrrelevantNumber;
         break;

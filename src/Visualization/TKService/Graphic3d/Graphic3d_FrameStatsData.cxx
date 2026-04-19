@@ -147,9 +147,9 @@ void Graphic3d_FrameStatsDataTmp::FlushTimers(size_t theNbFrames, bool theIsFina
   if (theIsFinal)
   {
     const double aNbFrames = (double)theNbFrames;
-    for (size_t aTimerIter = 0; aTimerIter < myTimers.size(); ++aTimerIter)
+    for (double& myTimer : myTimers)
     {
-      myTimers[aTimerIter] /= aNbFrames;
+      myTimer /= aNbFrames;
     }
   }
 }
@@ -160,8 +160,8 @@ void Graphic3d_FrameStatsDataTmp::Reset()
 {
   Graphic3d_FrameStatsData::Reset();
   myTimersPrev.assign(myTimersPrev.size(), 0.0);
-  for (size_t aTimerIter = 0; aTimerIter < myOsdTimers.size(); ++aTimerIter)
+  for (auto& myOsdTimer : myOsdTimers)
   {
-    myOsdTimers[aTimerIter].Reset();
+    myOsdTimer.Reset();
   }
 }

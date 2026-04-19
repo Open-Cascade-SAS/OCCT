@@ -67,15 +67,15 @@ void OpenGl_DepthPeeling::AttachDepthTexture(
 {
   if (!theDepthStencilTexture.IsNull() && theDepthStencilTexture->IsValid())
   {
-    for (int aPairIter = 0; aPairIter < 2; ++aPairIter)
+    for (const auto& aPairIter : myDepthPeelFbosOit)
     {
-      myDepthPeelFbosOit[aPairIter]->BindBuffer(theCtx);
+      aPairIter->BindBuffer(theCtx);
       theCtx->arbFBO->glFramebufferTexture2D(GL_FRAMEBUFFER,
                                              GL_DEPTH_STENCIL_ATTACHMENT,
                                              theDepthStencilTexture->GetTarget(),
                                              theDepthStencilTexture->TextureId(),
                                              0);
-      myDepthPeelFbosOit[aPairIter]->UnbindBuffer(theCtx);
+      aPairIter->UnbindBuffer(theCtx);
     }
   }
 }
@@ -86,16 +86,15 @@ void OpenGl_DepthPeeling::DetachDepthTexture(const occ::handle<OpenGl_Context>& 
 {
   if (!myDepthPeelFbosOit[0]->DepthStencilTexture().IsNull())
   {
-    for (int aPairIter = 0; aPairIter < 2; ++aPairIter)
+    for (const auto& aPairIter : myDepthPeelFbosOit)
     {
-      myDepthPeelFbosOit[aPairIter]->BindBuffer(theCtx);
-      theCtx->arbFBO->glFramebufferTexture2D(
-        GL_FRAMEBUFFER,
-        GL_DEPTH_STENCIL_ATTACHMENT,
-        myDepthPeelFbosOit[aPairIter]->DepthStencilTexture()->GetTarget(),
-        0,
-        0);
-      myDepthPeelFbosOit[aPairIter]->UnbindBuffer(theCtx);
+      aPairIter->BindBuffer(theCtx);
+      theCtx->arbFBO->glFramebufferTexture2D(GL_FRAMEBUFFER,
+                                             GL_DEPTH_STENCIL_ATTACHMENT,
+                                             aPairIter->DepthStencilTexture()->GetTarget(),
+                                             0,
+                                             0);
+      aPairIter->UnbindBuffer(theCtx);
     }
   }
 }

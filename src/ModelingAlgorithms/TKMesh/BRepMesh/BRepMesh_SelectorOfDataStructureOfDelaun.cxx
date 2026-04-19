@@ -83,8 +83,8 @@ void BRepMesh_SelectorOfDataStructureOfDelaun::NeighboursOf(const BRepMesh_Trian
   int v[3];
   myMesh->ElementNodes(theElement, v);
 
-  for (int i = 0; i < 3; ++i)
-    NeighboursOfNode(v[i]);
+  for (int i : v)
+    NeighboursOfNode(i);
 }
 
 //=================================================================================================
@@ -100,8 +100,8 @@ void BRepMesh_SelectorOfDataStructureOfDelaun::NeighboursByEdgeOf(
   const BRepMesh_Triangle& theElement)
 {
   const int (&e)[3] = theElement.myEdges;
-  for (int i = 0; i < 3; ++i)
-    elementsOfLink(e[i]);
+  for (int i : e)
+    elementsOfLink(i);
 }
 
 //=================================================================================================
