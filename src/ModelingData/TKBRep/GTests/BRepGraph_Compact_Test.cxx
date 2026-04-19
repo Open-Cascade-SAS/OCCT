@@ -91,24 +91,6 @@ int countHistoryRecordsByOp(const BRepGraph& theGraph, const TCollection_AsciiSt
   return aCount;
 }
 
-void expectBoxNear(const Bnd_Box& theLeft, const Bnd_Box& theRight, const double theTol)
-{
-  ASSERT_FALSE(theLeft.IsVoid());
-  ASSERT_FALSE(theRight.IsVoid());
-
-  double aLeftMinX, aLeftMinY, aLeftMinZ, aLeftMaxX, aLeftMaxY, aLeftMaxZ;
-  double aRightMinX, aRightMinY, aRightMinZ, aRightMaxX, aRightMaxY, aRightMaxZ;
-  theLeft.Get(aLeftMinX, aLeftMinY, aLeftMinZ, aLeftMaxX, aLeftMaxY, aLeftMaxZ);
-  theRight.Get(aRightMinX, aRightMinY, aRightMinZ, aRightMaxX, aRightMaxY, aRightMaxZ);
-
-  EXPECT_NEAR(aLeftMinX, aRightMinX, theTol);
-  EXPECT_NEAR(aLeftMinY, aRightMinY, theTol);
-  EXPECT_NEAR(aLeftMinZ, aRightMinZ, theTol);
-  EXPECT_NEAR(aLeftMaxX, aRightMaxX, theTol);
-  EXPECT_NEAR(aLeftMaxY, aRightMaxY, theTol);
-  EXPECT_NEAR(aLeftMaxZ, aRightMaxZ, theTol);
-}
-
 } // namespace
 
 TEST(BRepGraph_CompactTest, NoRemovedNodes_Noop)
