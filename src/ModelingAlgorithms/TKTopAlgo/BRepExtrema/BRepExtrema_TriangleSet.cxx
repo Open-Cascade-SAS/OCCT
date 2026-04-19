@@ -267,7 +267,10 @@ bool BRepExtrema_TriangleSet::initFace(const TopoDS_Face& theFace, const int the
 
     aTriangulation->Triangle(aTriIdx).Get(aVertex1, aVertex2, aVertex3);
 
-    myTriangles.emplace_back(aVertex1 + aVertOffset, aVertex2 + aVertOffset, aVertex3 + aVertOffset, theIndex);
+    myTriangles.emplace_back(aVertex1 + aVertOffset,
+                             aVertex2 + aVertOffset,
+                             aVertex3 + aVertOffset,
+                             theIndex);
   }
 
   myNumTrgInShapeVec.SetValue(theIndex, aTriangulation->NbTriangles());
@@ -295,9 +298,9 @@ bool BRepExtrema_TriangleSet::initEdge(const TopoDS_Edge& theEdge, const int the
   {
     // segment as degenerate triangle
     myTriangles.emplace_back(aVertIdx + aVertOffset,
-                                    aVertIdx + aVertOffset + 1,
-                                    aVertIdx + aVertOffset + 1,
-                                    theIndex);
+                             aVertIdx + aVertOffset + 1,
+                             aVertIdx + aVertOffset + 1,
+                             theIndex);
   }
   return true;
 }
