@@ -88,6 +88,60 @@ inline int RayBox4_SSE2(const BVH_Ray4f_Splat& theRay,
   return _mm_movemask_ps(aHitMask);
 }
 
+//! SSE2 BVH8 kernel: dispatched twice over the 4-wide kernel.
+//! On its own this saves nothing over running RayBox4 twice from outside,
+//! but it lets the 8-wide dispatcher present a uniform API. AVX2 will
+//! genuinely consume the full 8-lane width with __m256 in a later commit.
+inline int RayBox8_SSE2(const BVH_Ray8f_Splat& theRay,
+                        const BVH_Box8f_SoA&   theBoxes,
+                        float*                 theOutTEnter,
+                        float*                 theOutTLeave) noexcept
+{
+  // Lower half: lanes 0..3 -> reuse RayBox4_SSE2.
+  BVH_Ray4f_Splat aRayLo{};
+  BVH_Box4f_SoA   aBoxLo{};
+  for (int i = 0; i < 4; ++i)
+  {
+    aRayLo.ox[i]  = theRay.ox[i];
+    aRayLo.oy[i]  = theRay.oy[i];
+    aRayLo.oz[i]  = theRay.oz[i];
+    aRayLo.idx[i] = theRay.idx[i];
+    aRayLo.idy[i] = theRay.idy[i];
+    aRayLo.idz[i] = theRay.idz[i];
+
+    aBoxLo.minX[i] = theBoxes.minX[i];
+    aBoxLo.minY[i] = theBoxes.minY[i];
+    aBoxLo.minZ[i] = theBoxes.minZ[i];
+    aBoxLo.maxX[i] = theBoxes.maxX[i];
+    aBoxLo.maxY[i] = theBoxes.maxY[i];
+    aBoxLo.maxZ[i] = theBoxes.maxZ[i];
+  }
+  const int aMaskLo = RayBox4_SSE2(aRayLo, aBoxLo, theOutTEnter, theOutTLeave);
+
+  // Upper half: lanes 4..7.
+  BVH_Ray4f_Splat aRayHi{};
+  BVH_Box4f_SoA   aBoxHi{};
+  for (int i = 0; i < 4; ++i)
+  {
+    aRayHi.ox[i]  = theRay.ox[i + 4];
+    aRayHi.oy[i]  = theRay.oy[i + 4];
+    aRayHi.oz[i]  = theRay.oz[i + 4];
+    aRayHi.idx[i] = theRay.idx[i + 4];
+    aRayHi.idy[i] = theRay.idy[i + 4];
+    aRayHi.idz[i] = theRay.idz[i + 4];
+
+    aBoxHi.minX[i] = theBoxes.minX[i + 4];
+    aBoxHi.minY[i] = theBoxes.minY[i + 4];
+    aBoxHi.minZ[i] = theBoxes.minZ[i + 4];
+    aBoxHi.maxX[i] = theBoxes.maxX[i + 4];
+    aBoxHi.maxY[i] = theBoxes.maxY[i + 4];
+    aBoxHi.maxZ[i] = theBoxes.maxZ[i + 4];
+  }
+  const int aMaskHi = RayBox4_SSE2(aRayHi, aBoxHi, theOutTEnter + 4, theOutTLeave + 4);
+
+  return aMaskLo | (aMaskHi << 4);
+}
+
 #endif // BVH_HAS_SSE2_KERNEL
 
 } // namespace SIMD

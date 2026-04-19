@@ -304,8 +304,12 @@ TEST(BVH_ToolsSIMDBenchmark, DISABLED_RayBox8_KernelComparison)
   KernelTime aScalar = MeasureKernel8("Scalar", &BVH::SIMD::RayBox8_Scalar, aData);
   PrintRow(aScalar, aScalar.nsPerCall);
 
-  // SIMD variants (SSE2/AVX2/AVX-512) wired in subsequent commits will
-  // appear here as their kernels are added to the dispatcher.
+#if defined(BVH_HAS_SSE2_KERNEL)
+  KernelTime aSSE2 = MeasureKernel8("SSE2", &BVH::SIMD::RayBox8_SSE2, aData);
+  PrintRow(aSSE2, aScalar.nsPerCall);
+#endif
+
+  // AVX2/AVX-512 RayBox8 kernels wired in subsequent commits.
   KernelTime aDispatched = MeasureKernel8("Dispatched", BVH::SIMD::GetRayBox8(), aData);
   PrintRow(aDispatched, aScalar.nsPerCall);
 

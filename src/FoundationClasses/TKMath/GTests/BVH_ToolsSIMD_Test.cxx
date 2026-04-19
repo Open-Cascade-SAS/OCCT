@@ -206,6 +206,77 @@ TEST(BVH_ToolsSIMDTest, SSE2_RandomConsistencyVsScalar)
   EXPECT_EQ(anAgree, kNumCases);
 }
 
+namespace
+{
+
+BVH::SIMD::BVH_Ray8f_Splat MakeRay8(float ox, float oy, float oz,
+                                    float dx, float dy, float dz)
+{
+  BVH::SIMD::BVH_Ray8f_Splat aRay{};
+  for (int i = 0; i < 8; ++i)
+  {
+    aRay.ox[i]  = ox;
+    aRay.oy[i]  = oy;
+    aRay.oz[i]  = oz;
+    aRay.idx[i] = (dx != 0.0f) ? (1.0f / dx) : std::numeric_limits<float>::infinity();
+    aRay.idy[i] = (dy != 0.0f) ? (1.0f / dy) : std::numeric_limits<float>::infinity();
+    aRay.idz[i] = (dz != 0.0f) ? (1.0f / dz) : std::numeric_limits<float>::infinity();
+  }
+  return aRay;
+}
+
+void SetBox8(BVH::SIMD::BVH_Box8f_SoA& theBoxes, int i,
+             float minx, float miny, float minz,
+             float maxx, float maxy, float maxz)
+{
+  theBoxes.minX[i] = minx; theBoxes.minY[i] = miny; theBoxes.minZ[i] = minz;
+  theBoxes.maxX[i] = maxx; theBoxes.maxY[i] = maxy; theBoxes.maxZ[i] = maxz;
+}
+
+} // namespace
+
+TEST(BVH_ToolsSIMDTest, SSE2_RayBox8_RandomConsistencyVsScalar)
+{
+  std::mt19937                          aGen(0xBEEF8888u);
+  std::uniform_real_distribution<float> aPos(-10.0f, 10.0f);
+  std::uniform_real_distribution<float> aSize(0.1f, 5.0f);
+  std::uniform_real_distribution<float> aDir(-1.0f, 1.0f);
+
+  constexpr int   kNumCases = 500;
+  constexpr float kEps      = 1.0e-3f;
+
+  for (int aCase = 0; aCase < kNumCases; ++aCase)
+  {
+    float dx = aDir(aGen), dy = aDir(aGen), dz = aDir(aGen);
+    if (std::abs(dx) < 1.0e-3f && std::abs(dy) < 1.0e-3f && std::abs(dz) < 1.0e-3f)
+      dx = 1.0f;
+    BVH::SIMD::BVH_Ray8f_Splat aRay = MakeRay8(aPos(aGen), aPos(aGen), aPos(aGen), dx, dy, dz);
+
+    BVH::SIMD::BVH_Box8f_SoA aBoxes{};
+    for (int k = 0; k < 8; ++k)
+    {
+      const float cx = aPos(aGen), cy = aPos(aGen), cz = aPos(aGen);
+      const float sx = aSize(aGen), sy = aSize(aGen), sz = aSize(aGen);
+      SetBox8(aBoxes, k, cx - sx, cy - sy, cz - sz, cx + sx, cy + sy, cz + sz);
+    }
+
+    float aSEnter[8]{}, aSLeave[8]{};
+    int   aSMask = BVH::SIMD::RayBox8_Scalar(aRay, aBoxes, aSEnter, aSLeave);
+    float aTEnter[8]{}, aTLeave[8]{};
+    int   aTMask = BVH::SIMD::RayBox8_SSE2(aRay, aBoxes, aTEnter, aTLeave);
+
+    EXPECT_EQ(aSMask, aTMask) << "RayBox8 SSE2 case " << aCase << " mask mismatch";
+    for (int i = 0; i < 8; ++i)
+    {
+      if (((aSMask >> i) & 1) && ((aTMask >> i) & 1))
+      {
+        EXPECT_NEAR(aSEnter[i], aTEnter[i], kEps);
+        EXPECT_NEAR(aSLeave[i], aTLeave[i], kEps);
+      }
+    }
+  }
+}
+
 TEST(BVH_ToolsSIMDTest, Dispatch_PrefersBestKernelOnX86)
 {
   // On any x86_64 host SSE2 is mandatory; AVX2 may or may not be present.

@@ -282,10 +282,16 @@ int RayBox8_Scalar(const BVH_Ray8f_Splat& theRay,
 RayBox8_Fn GetRayBox8() noexcept
 {
   static const RayBox8_Fn sFn = []() noexcept -> RayBox8_Fn {
-    // BVH8 dispatch placeholder; SIMD kernels (SSE2/AVX2/AVX-512) are wired
-    // in subsequent commits.
     switch (Detect())
     {
+      // case Level::AVX512: return &RayBox8_AVX512;  // wired in commit 12
+      // case Level::AVX2:   return &RayBox8_AVX2;    // wired in commit 11
+#if defined(BVH_HAS_SSE2_KERNEL)
+      case Level::SSE2:
+      case Level::AVX2:
+      case Level::AVX512:
+        return &RayBox8_SSE2;
+#endif
       default:
         return &RayBox8_Scalar;
     }
