@@ -29,11 +29,11 @@ The goal is to make workflows like sewing, healing, compact, and deduplicate eas
 - **`BRepGraph_ChildExplorer::Config` struct**: consolidated configuration (mode, target
   kind, avoid kind, emit flag, accumulate-location/orientation, start location/orientation)
   for the downward walker. The new
-  `BRepGraph_ChildExplorer(graph, root, Config{…})` constructor is the preferred long-term
+  `BRepGraph_ChildExplorer(graph, root, Config{...})` constructor is the preferred long-term
   idiom; existing overloads stay in place for compat. Extend `Config` with new fields
   instead of adding new constructor overloads.
 - **Concrete layers renamed** for `*Layer*` prefix grouping:
-  `BRepGraph_ParamLayer` → `BRepGraph_LayerParam`, `BRepGraph_RegularityLayer` →
+  `BRepGraph_ParamLayer` -> `BRepGraph_LayerParam`, `BRepGraph_RegularityLayer` ->
   `BRepGraph_LayerRegularity`. Callers must update includes and type names.
 
 ## Current Model (April 2026)
@@ -83,7 +83,7 @@ All queries and mutations go through lightweight view objects obtained from a `B
 | **UIDsView** | `UIDs()` | UID allocation for active entries (`Of`), active-only lookup (`NodeIdFrom`/`RefIdFrom`), and validity checking (`Has`) |
 | **ShapesView** | `Shapes()` | Cached `Shape()` access (`null` for invalid/removed nodes), fresh `Reconstruct()` (`null` for invalid/removed nodes), `FindOriginal()/HasOriginal()` non-throw original lookup for active nodes, strict `OriginalOf()` (throws when absent), and FindNode/HasNode reverse lookup for active nodes |
 | **CacheView** | `Cache()` | Stable public transient cache access (Set/Get/Has/Remove per-node and per-ref cached values). Supports `CacheKindIter()` for enumerating active cache kinds on a node or ref. Low-level reserve, transfer, and explicit generation-aware access remain on `TransientCache()` / `RefTransientCache()` for algorithm code. |
-| **EditorView** | `Editor()` | All mutation: creation (nested `VertexOps`/`EdgeOps`/`WireOps`/`FaceOps`/… `Add(...)` / `Split(...)`), field-level `Mut*()` RAII guards (`MutEdge`, `MutFace`, `MutShell`, `MutProduct`, `MutVertexRef`, `MutSurface`, …), structural removal (RemoveNode, RemoveSubgraph, RemoveRef with orphan pruning), SetCoEdgePCurve, ClearFaceMesh, ClearEdgePolygon3D, AppendFlattenedShape, AppendFullShape, rep creation (CreateTriangulationRep, CreatePolygon3DRep, CreatePolygonOnTriRep), ValidateMutationBoundary. EditorView absorbs the former `AccessView`: there is a single entry point for all mutation. |
+| **EditorView** | `Editor()` | All mutation: creation (nested `VertexOps`/`EdgeOps`/`WireOps`/`FaceOps`/... `Add(...)` / `Split(...)`), field-level `Mut*()` RAII guards (`MutEdge`, `MutFace`, `MutShell`, `MutProduct`, `MutVertexRef`, `MutSurface`, ...), structural removal (RemoveNode, RemoveSubgraph, RemoveRef with orphan pruning), SetCoEdgePCurve, ClearFaceMesh, ClearEdgePolygon3D, AppendFlattenedShape, AppendFullShape, rep creation (CreateTriangulationRep, CreatePolygon3DRep, CreatePolygonOnTriRep), ValidateMutationBoundary. EditorView absorbs the former `AccessView`: there is a single entry point for all mutation. |
 | **RefsView** | `Refs()` | Reference entry access, RefUID lookup, VersionStamp for refs |
 | **MeshView** | `Mesh()` | Read-only mesh cache queries with cache-first, persistent-fallback priority. For mesh-cache writes use `BRepGraph_Tool::Mesh`. |
 
@@ -122,7 +122,7 @@ Use `BRepGraph_ChildExplorer` and `BRepGraph_ParentExplorer` directly for struct
 - **Topology entities**: Vertex, Edge, CoEdge, Wire, Face, Shell, Solid, Compound, CompSolid
 - **Assembly entities**: Product (part or assembly), Occurrence (placed instance)
 - **Context refs**: VertexUsage, CoEdgeUsage, WireUsage, FaceUsage, ShellUsage, SolidUsage, ChildUsage, OccurrenceUsage
-- **Reverse indices**: edge→wire, edge→face, edge→coedge, vertex→edge, wire→face, face→shell, shell→solid, product→occurrences
+- **Reverse indices**: edge->wire, edge->face, edge->coedge, vertex->edge, wire->face, face->shell, shell->solid, product->occurrences
 
 ## Reference Identity (RefId)
 
@@ -357,8 +357,8 @@ Centralized per-node (TransientCache) and per-reference (RefTransientCache) cach
 
 ### When to Use Which
 
-- Data that must persist and migrate across graph mutations → **Layer**
-- Computed values that can be recomputed from entity state → **TransientCache** (prefer `CacheView` / `Cache()` in public code)
+- Data that must persist and migrate across graph mutations -> **Layer**
+- Computed values that can be recomputed from entity state -> **TransientCache** (prefer `CacheView` / `Cache()` in public code)
 
 ### Persistence Boundary
 
@@ -384,7 +384,7 @@ Every entity (`BaseDef`) carries two generation counters:
 
 When an entity is directly mutated via `MutGuard`:
 1. `++OwnGen; ++SubtreeGen` on the mutated entity
-2. `propagateSubtreeGen()` walks upward via reverse indices (Edge→Wire→Face→Shell→Solid)
+2. `propagateSubtreeGen()` walks upward via reverse indices (Edge->Wire->Face->Shell->Solid)
 3. Each parent gets `++SubtreeGen` only (NOT OwnGen - parent's own data didn't change)
 4. Diamond guard (`LastPropWave`) prevents exponential blowup on shared parents
 

@@ -600,7 +600,7 @@ TEST(NCollection_LinearVectorTest, ResizeNonTrivial)
   aVec.Append("a");
   aVec.Append("b");
 
-  // Grow — new elements should be default-constructed (empty strings)
+  // Grow - new elements should be default-constructed (empty strings)
   aVec.Resize(4);
   EXPECT_EQ(4, aVec.Size());
   EXPECT_EQ("a", aVec(0));
@@ -608,7 +608,7 @@ TEST(NCollection_LinearVectorTest, ResizeNonTrivial)
   EXPECT_TRUE(aVec(2).empty());
   EXPECT_TRUE(aVec(3).empty());
 
-  // Shrink — excess elements should be destroyed
+  // Shrink - excess elements should be destroyed
   aVec.Resize(1);
   EXPECT_EQ(1, aVec.Size());
   EXPECT_EQ("a", aVec(0));

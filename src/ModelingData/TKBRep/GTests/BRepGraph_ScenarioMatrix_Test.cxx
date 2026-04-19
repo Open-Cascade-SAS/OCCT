@@ -88,10 +88,10 @@ static int countSubShapes(const TopoDS_Shape& theShape, TopAbs_ShapeEnum theType
 // =============================================================================
 // Scenario 1: Box mutation -> Validate(Audit) -> Reconstruct -> BRepGraphInc round-trip
 //
-// Flow: build box graph → clean audit validate → mutate a vertex point in
-// the graph → audit validate again (structural integrity must survive a data
-// change) → reconstruct the solid → verify area has changed → BRepGraphInc
-// populate from reconstructed solid → ValidateReverseIndex.
+// Flow: build box graph -> clean audit validate -> mutate a vertex point in
+// the graph -> audit validate again (structural integrity must survive a data
+// change) -> reconstruct the solid -> verify area has changed -> BRepGraphInc
+// populate from reconstructed solid -> ValidateReverseIndex.
 // =============================================================================
 
 TEST(BRepGraph_ScenarioMatrix, Box_MutateVertex_ValidateReconstructPopulateRoundTrip)
@@ -133,7 +133,7 @@ TEST(BRepGraph_ScenarioMatrix, Box_MutateVertex_ValidateReconstructPopulateRound
 
   // Box face areas are defined by planar surface geometry, not vertex points.
   // Moving one vertex by 50 units in the graph does NOT change the solid's
-  // computed surface area — it only relocates the vertex shape.
+  // computed surface area - it only relocates the vertex shape.
   // The regression lock-in here is that reconstruct produces a non-degenerate solid.
   const double aReconArea = computeArea(aRecon);
   EXPECT_NEAR(aReconArea, anOrigArea, anOrigArea * 0.01)
@@ -156,7 +156,7 @@ TEST(BRepGraph_ScenarioMatrix, Box_MutateVertex_ValidateReconstructPopulateRound
       aFoundMutatedVertex = true;
   }
   EXPECT_TRUE(aFoundMutatedVertex)
-    << "Reconstructed solid must contain a vertex at the mutated point — "
+    << "Reconstructed solid must contain a vertex at the mutated point - "
        "graph Mut(VertexDef) must propagate through BRepGraphInc_Reconstruct";
 
   // --- BRepGraphInc round-trip from the reconstructed solid ---
@@ -179,10 +179,10 @@ TEST(BRepGraph_ScenarioMatrix, Box_MutateVertex_ValidateReconstructPopulateRound
 // Scenario 2: Cylinder seam edge – mutation in BRepGraph + BRepGraphInc
 // cross-validation
 //
-// Flow: build cylinder → BRepGraph + BRepGraphInc_Storage → locate the seam
-// edge in storage → mutate its tolerance in BRepGraph (cross-reference by
-// shared edge index) → Validate(Audit) on the graph → Reconstruct → second
-// BRepGraphInc populate → seam edges are still present → ValidateReverseIndex.
+// Flow: build cylinder -> BRepGraph + BRepGraphInc_Storage -> locate the seam
+// edge in storage -> mutate its tolerance in BRepGraph (cross-reference by
+// shared edge index) -> Validate(Audit) on the graph -> Reconstruct -> second
+// BRepGraphInc populate -> seam edges are still present -> ValidateReverseIndex.
 // =============================================================================
 
 TEST(BRepGraph_ScenarioMatrix, Cylinder_SeamEdge_MutationAndBothSubsystemsConsistent)
@@ -284,10 +284,10 @@ TEST(BRepGraph_ScenarioMatrix, Cylinder_SeamEdge_MutationAndBothSubsystemsConsis
 // Scenario 3: CompSolid – BRepGraph + BRepGraphInc reverse-index + mutation
 // + reconstruct round-trip
 //
-// Flow: build CompSolid (2 boxes) → BRepGraph build → BRepGraphInc populate
-// → ValidateReverseIndex → Validate(Audit) → mutate an edge tolerance in
-// BRepGraph → Validate(Audit) still passes → reconstruct the CompSolid →
-// BRepGraphInc populate from reconstructed → sub-shape counts match.
+// Flow: build CompSolid (2 boxes) -> BRepGraph build -> BRepGraphInc populate
+// -> ValidateReverseIndex -> Validate(Audit) -> mutate an edge tolerance in
+// BRepGraph -> Validate(Audit) still passes -> reconstruct the CompSolid ->
+// BRepGraphInc populate from reconstructed -> sub-shape counts match.
 // =============================================================================
 
 TEST(BRepGraph_ScenarioMatrix, CompSolid_TwoBoxes_BothSubsystemsMutateReconstructRoundTrip)
@@ -365,9 +365,9 @@ TEST(BRepGraph_ScenarioMatrix, CompSolid_TwoBoxes_BothSubsystemsMutateReconstruc
 }
 
 // =============================================================================
-// Scenario 4: Assembly – two occurrences of a shared part → Validate(Audit)
-// checks assembly DAG → reconstruct the part → BRepGraphInc populate from
-// the reconstructed part → entity counts and reverse index consistent.
+// Scenario 4: Assembly – two occurrences of a shared part -> Validate(Audit)
+// checks assembly DAG -> reconstruct the part -> BRepGraphInc populate from
+// the reconstructed part -> entity counts and reverse index consistent.
 // =============================================================================
 
 TEST(BRepGraph_ScenarioMatrix, Assembly_TwoOccurrences_ValidateDAGReconstructPartPopulate)
@@ -436,7 +436,7 @@ TEST(BRepGraph_ScenarioMatrix, Assembly_TwoOccurrences_ValidateDAGReconstructPar
 // Scenario 5: Compound with free wire + free edge + free vertex
 //
 // Flow: build a compound containing three atomic sub-shapes (wire, edge,
-// vertex) → BRepGraph build → Validate(Audit) → BRepGraphInc populate →
+// vertex) -> BRepGraph build -> Validate(Audit) -> BRepGraphInc populate ->
 // ValidateReverseIndex.  Exercises the
 // myCompoundsOfWire / myCompoundsOfEdge / myCompoundsOfVertex reverse-index
 // paths end-to-end, combined with the BRepGraph structural check.
@@ -825,8 +825,8 @@ TEST(BRepGraph_ScenarioMatrix, Compound_MixedAtomicChildren_ReverseIndexCoverage
   TopoDS_Compound aCompound;
   BRep_Builder    aBB;
   aBB.MakeCompound(aCompound);
-  aBB.Add(aCompound, aBox);        // solid (contributes Solid + Shell + Faces + …)
-  aBB.Add(aCompound, aFreeSh);     // another shell (sharing faces with box → dedup)
+  aBB.Add(aCompound, aBox);        // solid (contributes Solid + Shell + Faces + ...)
+  aBB.Add(aCompound, aFreeSh);     // another shell (sharing faces with box -> dedup)
   aBB.Add(aCompound, aFreeFace);   // isolated face (same face, TShape-dedup path)
   aBB.Add(aCompound, aFreeEdge);   // free edge (no face)
   aBB.Add(aCompound, aFreeVertex); // free vertex
@@ -911,7 +911,7 @@ TEST(BRepGraph_ScenarioMatrix, Compound_MixedAtomicChildren_ReverseIndexCoverage
 }
 
 // =============================================================================
-// Scenario 10: CompSolid holding three boxes — reverse-index must cover every
+// Scenario 10: CompSolid holding three boxes - reverse-index must cover every
 // solid, and every solid must see exactly one CompSolid parent in the reverse
 // map. Exercises the myCompSolidsOfSolid path with N>2.
 // =============================================================================
@@ -955,7 +955,7 @@ TEST(BRepGraph_ScenarioMatrix, CompSolid_ThreeBoxes_ReverseIndexPerSolid)
 }
 
 // =============================================================================
-// Scenario 11: Sphere seam — seam CoEdges come in bidirectionally-paired pairs.
+// Scenario 11: Sphere seam - seam CoEdges come in bidirectionally-paired pairs.
 // If a.SeamPairId == b, then b.SeamPairId must equal a. Verify post-build and
 // post-reconstruct; exercises the SeamPairId round-trip under periodic uv.
 // =============================================================================
@@ -979,7 +979,7 @@ TEST(BRepGraph_ScenarioMatrix, Sphere_SeamCoEdgePair_Bidirectional)
     ASSERT_TRUE(aCoEdge.SeamPairId.IsValid(aStorage.NbCoEdges()));
     const BRepGraphInc::CoEdgeDef& aPaired = aStorage.CoEdge(aCoEdge.SeamPairId);
     EXPECT_EQ(aPaired.SeamPairId, aCoEdgeId)
-      << "Seam pair must be bidirectional (forward→reverse→forward)";
+      << "Seam pair must be bidirectional (forward->reverse->forward)";
     EXPECT_EQ(aPaired.EdgeDefId, aCoEdge.EdgeDefId)
       << "Seam pair must share the same underlying EdgeDef";
   }
@@ -1016,7 +1016,7 @@ TEST(BRepGraph_ScenarioMatrix, Sphere_SeamCoEdgePair_Bidirectional)
 }
 
 // =============================================================================
-// Scenario 12: Rep orphan detection — Curve3DRep is soft-removed while an
+// Scenario 12: Rep orphan detection - Curve3DRep is soft-removed while an
 // EdgeDef still forward-references it. Validate(Audit) must flag the orphan.
 // =============================================================================
 
@@ -1069,7 +1069,7 @@ TEST(BRepGraph_ScenarioMatrix, Validate_OrphanCurve3DRep_FlaggedByAudit)
 }
 
 // =============================================================================
-// Scenario 13: Cylinder seam-edge Split — exercises the seam-pair case of
+// Scenario 13: Cylinder seam-edge Split - exercises the seam-pair case of
 // EdgeOps::Split(). The unified CoEdge rebuild pass allocates two fresh sub-
 // coedges per original (including seam partners), preserves SeamPairId
 // linkage on the new pairs, and retires orphan vertex refs.
@@ -1214,7 +1214,7 @@ TEST(BRepGraph_ScenarioMatrix, Cylinder_SeamEdgeSplit_CoEdgeFaceIncidence)
 // =============================================================================
 // Scenario 15: after Split the original edge's boundary vertex refs must be
 // retired (IsRemoved=true). Without retirement those refs become orphans
-// whose ParentId points at a removed edge — the "Orphan VertexRef: ParentId
+// whose ParentId points at a removed edge - the "Orphan VertexRef: ParentId
 // is not a live Edge" Audit rule fires.
 // =============================================================================
 

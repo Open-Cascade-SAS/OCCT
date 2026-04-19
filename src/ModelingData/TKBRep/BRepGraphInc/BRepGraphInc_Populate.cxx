@@ -2185,7 +2185,7 @@ void BRepGraphInc_Populate::Append(BRepGraphInc_Storage&                        
   registerFaceData(theStorage, aFaceData, aRepDedup);
 
   // Phase 3a: Fix compound ChildRef linkages in NEWLY APPENDED compounds only.
-  // Pre-existing compounds are not re-processed — Append assumes complete subgraph
+  // Pre-existing compounds are not re-processed - Append assumes complete subgraph
   // hierarchies with no cross-references to existing containers.
   //
   // Cost is O(total children across new compounds). Earlier versions rescanned every

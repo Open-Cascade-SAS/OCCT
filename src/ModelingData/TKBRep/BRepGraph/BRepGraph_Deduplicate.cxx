@@ -784,7 +784,7 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
 
         // Redirect CoEdgeDef.FaceDefId entries that point to the old face to the canonical one.
         // This must happen before RemoveNode, otherwise compact will produce dangling FaceDefId
-        // refs (CoEdges with invalid FaceDefId but live Curve2DRepId — orphaned PCurve state).
+        // refs (CoEdges with invalid FaceDefId but live Curve2DRepId - orphaned PCurve state).
         for (BRepGraph_FullCoEdgeIterator aCEIt(theGraph); aCEIt.More(); aCEIt.Next())
         {
           const BRepGraph_CoEdgeId aCEId = aCEIt.CurrentId();

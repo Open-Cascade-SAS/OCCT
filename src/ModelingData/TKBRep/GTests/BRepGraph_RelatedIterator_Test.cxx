@@ -116,7 +116,7 @@ TEST_F(BRepGraph_RelatedIteratorTest, EdgeOfBox_ReturnsIncidentVerticesAndFaces)
 
 TEST_F(BRepGraph_RelatedIteratorTest, AssemblyNodes_YieldNoRelations)
 {
-  // Assembly/container nodes have no topological relations — use ChildExplorer instead.
+  // Assembly/container nodes have no topological relations - use ChildExplorer instead.
   const BRepGraph_ProductId aPartProduct =
     myGraph.Editor().Products().Add(BRepGraph_NodeId(BRepGraph_SolidId::Start()));
   const BRepGraph_ProductId aRootAssembly = myGraph.Editor().Products().AddAssembly();
@@ -169,7 +169,7 @@ TEST_F(BRepGraph_RelatedIteratorTest, EdgeReferencedByFace_RemovedFaceIsSkipped)
 
 TEST_F(BRepGraph_RelatedIteratorTest, ContainerNodes_YieldNoRelations)
 {
-  // Solid, Shell are containers — no topological relations.
+  // Solid, Shell are containers - no topological relations.
   BRepGraph_RelatedIterator aSolidIt(myGraph, BRepGraph_NodeId(BRepGraph_SolidId::Start()));
   EXPECT_FALSE(aSolidIt.More());
 
@@ -300,7 +300,7 @@ TEST_F(BRepGraph_RelatedIteratorTest, EdgeOfBox_RemovedFace_CorrectTransition)
   ASSERT_EQ(aParentFaces.Length(), 2);
   myGraph.Editor().Gen().RemoveNode(aParentFaces.Value(0));
 
-  // Iterate — expect 1 face + 2 vertices, confirming correct stage transition.
+  // Iterate - expect 1 face + 2 vertices, confirming correct stage transition.
   const int aFaceCount =
     countRelations(myGraph, anEdgeNode, BRepGraph_RelatedIterator::RelationKind::ReferencedByFace);
   const int aVertexCount =

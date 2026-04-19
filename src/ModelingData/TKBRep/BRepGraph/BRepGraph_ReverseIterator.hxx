@@ -345,7 +345,7 @@ private:
   bool                                    myHasCurrent = false;
 };
 
-// Traits for RefsParentsOf — each knows how to find the RefId
+// Traits for RefsParentsOf - each knows how to find the RefId
 // linking a parent to a specific child definition.
 
 struct FaceOfWireRefTraits

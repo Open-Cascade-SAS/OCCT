@@ -148,7 +148,7 @@ TEST(BRepGraph_MutGuardTest, MovedFrom_DoesNotDoubleNotify)
   const uint32_t aGenAfter =
     aGraph.Topo().Vertices().Definition(BRepGraph_VertexId::Start()).OwnGen;
   EXPECT_EQ(aGenAfter, aGenBefore + 1u)
-    << "Move must transfer the notification obligation — no double-bump";
+    << "Move must transfer the notification obligation - no double-bump";
 }
 
 TEST(BRepGraph_MutGuardTest, RefGuard_SameMoveSemantics)

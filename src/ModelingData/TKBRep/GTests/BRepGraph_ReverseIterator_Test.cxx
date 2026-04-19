@@ -240,7 +240,7 @@ TEST_F(BRepGraph_ReverseIteratorTest, StartingIndex_SkipsToPosition)
   const NCollection_Vector<BRepGraph_EdgeId>& anEdges = myGraph.Topo().Vertices().Edges(aVertexId);
   ASSERT_EQ(anEdges.Length(), 3);
 
-  // Start at index 1 — should yield only edges at index >= 1.
+  // Start at index 1 - should yield only edges at index >= 1.
   BRepGraph_EdgesOfVertex anIt(myGraph, anEdges, 1);
   const int               aCount = countIterator(anIt);
   EXPECT_EQ(aCount, 2);

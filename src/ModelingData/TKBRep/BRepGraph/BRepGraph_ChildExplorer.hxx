@@ -215,7 +215,7 @@ public:
                                           TraversalMode theMode = TraversalMode::DirectChildren);
 
   //! Returns the traversal configuration this explorer was constructed with.
-  //! Read-only — configuration is fixed for the lifetime of the explorer.
+  //! Read-only - configuration is fixed for the lifetime of the explorer.
   [[nodiscard]] const Config& GetConfig() const { return myConfig; }
 
   [[nodiscard]] bool More() const { return myHasMore; }
@@ -315,7 +315,7 @@ private:
 
   const BRepGraph* myGraph = nullptr;
   BRepGraph_NodeId myRoot;
-  Config           myConfig; //!< Traversal configuration — single source of truth.
+  Config           myConfig; //!< Traversal configuration - single source of truth.
 
   NCollection_LocalArray<StackFrame, THE_INLINE_STACK_SIZE> myStack;
   int                                                       myStackTop     = -1;

@@ -302,7 +302,7 @@ using BRepGraph_FullOccurrenceIterator = BRepGraph_Iterator<BRepGraphInc::Occurr
 
 //! @brief Allocation-free iterator over root product identifiers.
 //!
-//! Iterates directly over BRepGraph::RootProductIds() — products not
+//! Iterates directly over BRepGraph::RootProductIds() - products not
 //! referenced by any active occurrence.
 class BRepGraph_RootProductIterator
 {

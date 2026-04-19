@@ -37,9 +37,9 @@
 //!
 //! Indices are always 0-based.
 //!
-//! @warning Any operation that may grow the buffer — Append, Appended,
+//! @warning Any operation that may grow the buffer - Append, Appended,
 //!          EmplaceAppend, SetValue past end, Resize, Reserve, InsertBefore,
-//!          InsertAfter, copy/move assignment — invalidates all iterators,
+//!          InsertAfter, copy/move assignment - invalidates all iterators,
 //!          references, and raw pointers into the vector whenever it
 //!          actually reallocates. Erase/EraseLast also invalidate references
 //!          at or beyond the removed position.
@@ -446,7 +446,7 @@ public:
                                  "NCollection_LinearVector::Erase");
     const size_t aCount = theTo - theFrom;
     // Shift first (move-assign over still-live slots), then destroy the
-    // vacated tail — see Erase(size_t) above for the rationale.
+    // vacated tail - see Erase(size_t) above for the rationale.
     if (theTo < mySize)
     {
       shiftLeft(theFrom, theTo, mySize);
@@ -558,7 +558,7 @@ private:
   //! Shift live elements [theSrcFrom, theSrcTo) left so they start at theDstFrom.
   //! Requires theDstFrom < theSrcFrom and assumes both source and destination
   //! slots currently hold live, constructed objects (move-assignment is used).
-  //! The caller is responsible for destroying the vacated tail — see Erase().
+  //! The caller is responsible for destroying the vacated tail - see Erase().
   void shiftLeft(const size_t theDstFrom, const size_t theSrcFrom, const size_t theSrcTo)
   {
     const size_t aCount = theSrcTo - theSrcFrom;

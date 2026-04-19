@@ -121,7 +121,7 @@ struct ChildRef : public BaseRef
 };
 
 //! Occurrence reference storage entry.
-//! Like ChildRef but without Orientation — placement is a reference property.
+//! Like ChildRef but without Orientation - placement is a reference property.
 //! Structurally parallel to other ref types: definitions carry no location.
 struct OccurrenceRef : public BaseRef
 {

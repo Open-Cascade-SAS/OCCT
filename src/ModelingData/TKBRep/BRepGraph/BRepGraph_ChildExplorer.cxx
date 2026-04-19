@@ -603,7 +603,7 @@ void BRepGraph_ChildExplorer::advance()
           {
             aChildNode = anOcc.ChildDefId;
             aStepIdx   = -1;
-            // Location is on the OccurrenceRef — find it by scanning.
+            // Location is on the OccurrenceRef - find it by scanning.
             if (myConfig.AccumulateLocation)
             {
               for (BRepGraph_FullOccurrenceRefIterator aRefIt(*myGraph); aRefIt.More();

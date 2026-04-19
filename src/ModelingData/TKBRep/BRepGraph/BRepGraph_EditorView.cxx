@@ -1947,7 +1947,7 @@ void BRepGraph::EditorView::EdgeOps::Split(const BRepGraph_EdgeId   theEdgeEntit
                             aOld.ParamLast,
                             aOld.Continuity);
         aNewBCE.SeamContinuity = aOld.SeamContinuity;
-        // UV at the split-point start is left default (0,0) — see aNewACE.
+        // UV at the split-point start is left default (0,0) - see aNewACE.
         aNewBCE.UV2               = aOld.UV2;
         aNewBCE.Polygon2DRepId    = aOld.Polygon2DRepId;
         aNewBCE.PolygonOnTriRepId = aOld.PolygonOnTriRepId;
@@ -1964,7 +1964,7 @@ void BRepGraph::EditorView::EdgeOps::Split(const BRepGraph_EdgeId   theEdgeEntit
     // Step 3: re-establish SeamPairId linkage on new pairs. If the old
     // partner CoEdge is also in our map (true for intra-edge seam pairs),
     // wire SubA<->partnerSubA and SubB<->partnerSubB; otherwise leave the
-    // new CoEdges unpaired — an orphan SeamPairId would point into a dead
+    // new CoEdges unpaired - an orphan SeamPairId would point into a dead
     // slot.
     for (int i = 0; i < aNbOrig; ++i)
     {
@@ -2058,7 +2058,7 @@ void BRepGraph::EditorView::EdgeOps::Split(const BRepGraph_EdgeId   theEdgeEntit
     // points at the about-to-be-removed edge; leaving them live would
     // trip the "Orphan VertexRef: ParentId is not a live Edge" Audit
     // rule. Internal vertex refs are dropped rather than reparented to
-    // SubA/SubB based on parameter — reparenting is a follow-up when a
+    // SubA/SubB based on parameter - reparenting is a follow-up when a
     // caller surfaces that needs it.
     if (aOrigStartVertexRefId.IsValid())
       aStorage.MarkRemovedRef(aOrigStartVertexRefId);
@@ -2138,7 +2138,7 @@ void BRepGraph::EditorView::EdgeOps::Split(const BRepGraph_EdgeId   theEdgeEntit
 
     // Edge-to-face: unbind the original edge and bind both sub-edges for
     // each face the original edge touched. aOrigFaces was captured during
-    // the CoEdge rebuild above (may contain duplicates for seam edges — the
+    // the CoEdge rebuild above (may contain duplicates for seam edges - the
     // Bind/Unbind helpers are dedup-safe).
     for (const BRepGraph_FaceId& aFaceId : aOrigFaces)
     {

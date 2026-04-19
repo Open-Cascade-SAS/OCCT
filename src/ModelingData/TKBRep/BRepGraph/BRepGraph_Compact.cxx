@@ -323,7 +323,7 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
   NCollection_DataMap<BRepGraph_ProductId, BRepGraph_ProductId>       aProductMap;
   NCollection_DataMap<BRepGraph_OccurrenceId, BRepGraph_OccurrenceId> anOccurrenceMap;
 
-  // Per-kind ref id remap: old RefId → new RefId.
+  // Per-kind ref id remap: old RefId -> new RefId.
   // Built during topology rebuild loops; used for RefUID transfer after swap.
   NCollection_DataMap<BRepGraph_VertexRefId, BRepGraph_VertexRefId>         aVertexRefMap;
   NCollection_DataMap<BRepGraph_CoEdgeRefId, BRepGraph_CoEdgeRefId>         aCoEdgeRefMap;
@@ -667,7 +667,7 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
         BRepGraph_Tool::CoEdge::PCurve(theGraph, anOldCoEdgeId);
       if (!anOldPCurve.IsNull())
       {
-        // Use the builder API to create the Curve2DRep — this ensures internal
+        // Use the builder API to create the Curve2DRep - this ensures internal
         // registration tables are updated correctly (as documented in EditorView.hxx).
         const BRepGraph_Curve2DRepId aNewRepId =
           aNewGraph.Editor().CoEdges().CreateCurve2DRep(anOldPCurve);

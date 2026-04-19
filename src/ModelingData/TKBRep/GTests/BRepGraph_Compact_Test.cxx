@@ -512,7 +512,7 @@ TEST(BRepGraph_CompactTest, UIDRoundTrip_RefUIDs_AfterCompaction)
   BRepGraph_Builder::Perform(aGraph, aBoxMaker.Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  // VertexRef — from Edge 0 start vertex ref.
+  // VertexRef - from Edge 0 start vertex ref.
   BRepGraph_VertexRefId aVertexRefId;
   {
     const BRepGraphInc::EdgeDef& anEdge =
@@ -521,7 +521,7 @@ TEST(BRepGraph_CompactTest, UIDRoundTrip_RefUIDs_AfterCompaction)
       aVertexRefId = anEdge.StartVertexRefId;
   }
 
-  // CoEdgeRef — from Face 1 wire (Face 0 will be removed before compact).
+  // CoEdgeRef - from Face 1 wire (Face 0 will be removed before compact).
   BRepGraph_CoEdgeRefId aCoEdgeRefId;
   {
     const BRepGraphInc::FaceDef& aFace = aGraph.Topo().Faces().Definition(BRepGraph_FaceId(1));
@@ -534,7 +534,7 @@ TEST(BRepGraph_CompactTest, UIDRoundTrip_RefUIDs_AfterCompaction)
     }
   }
 
-  // WireRef — from Face 1 first wire ref (we will remove Face 0, so use Face 1).
+  // WireRef - from Face 1 first wire ref (we will remove Face 0, so use Face 1).
   BRepGraph_WireRefId aWireRefId;
   ASSERT_GE(aGraph.Topo().Faces().Nb(), 2);
   {
@@ -543,7 +543,7 @@ TEST(BRepGraph_CompactTest, UIDRoundTrip_RefUIDs_AfterCompaction)
       aWireRefId = aFace.WireRefIds.First();
   }
 
-  // FaceRef — from Shell, pointing to Face 1 (skip Face 0 whose ref will be removed).
+  // FaceRef - from Shell, pointing to Face 1 (skip Face 0 whose ref will be removed).
   BRepGraph_FaceRefId aFaceRefId;
   {
     for (BRepGraph_Iterator<BRepGraphInc::ShellDef> anIt(aGraph); anIt.More(); anIt.Next())
@@ -551,7 +551,7 @@ TEST(BRepGraph_CompactTest, UIDRoundTrip_RefUIDs_AfterCompaction)
       for (BRepGraph_RefsFaceOfShell aRefIt(aGraph, anIt.CurrentId()); aRefIt.More(); aRefIt.Next())
       {
         const BRepGraphInc::FaceRef& aFR = aGraph.Refs().Faces().Entry(aRefIt.CurrentId());
-        // Skip Face 0 ref — that face will be removed before compact.
+        // Skip Face 0 ref - that face will be removed before compact.
         if (aFR.FaceDefId.Index != 0)
         {
           aFaceRefId = aRefIt.CurrentId();
@@ -563,7 +563,7 @@ TEST(BRepGraph_CompactTest, UIDRoundTrip_RefUIDs_AfterCompaction)
     }
   }
 
-  // ShellRef — from Solid 0 via refs iterator.
+  // ShellRef - from Solid 0 via refs iterator.
   BRepGraph_ShellRefId aShellRefId;
   {
     for (BRepGraph_Iterator<BRepGraphInc::SolidDef> anIt(aGraph); anIt.More(); anIt.Next())

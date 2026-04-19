@@ -108,11 +108,11 @@ void* NCollection_IncAllocator::AllocateOptimal(const size_t theSize)
                                                           std::memory_order_acquire,
                                                           std::memory_order_relaxed))
           {
-            // Won the CAS — claim our disjoint portion of the block.
+            // Won the CAS - claim our disjoint portion of the block.
             char* aRes = aBlock->CurPointer.fetch_add(theSize, std::memory_order_relaxed);
             return aRes;
           }
-          // CAS failed (another thread allocated), anAvail updated — retry.
+          // CAS failed (another thread allocated), anAvail updated - retry.
         }
       }
     } // shared lock released before taking exclusive
@@ -202,7 +202,7 @@ void* NCollection_IncAllocator::Allocate(const size_t theSize)
 
 void NCollection_IncAllocator::clean()
 {
-  // Exclusive lock — no allocations can be in progress.
+  // Exclusive lock - no allocations can be in progress.
   if (myMutex)
     myMutex->lock();
   IBlock* aHeapIter = myOrderedBlocks;

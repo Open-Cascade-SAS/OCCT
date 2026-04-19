@@ -187,7 +187,7 @@ public:
       const BRepGraph_EdgeId theEdge);
 
     //! Returns the start vertex definition id directly (shortcut for
-    //! `StartVertexRef(…).VertexDefId`). Invalid if the edge has no start vertex.
+    //! `StartVertexRef(...).VertexDefId`). Invalid if the edge has no start vertex.
     //! @param[in] theGraph source graph
     //! @param[in] theEdge  typed edge definition identifier
     //! @return start vertex id
@@ -196,7 +196,7 @@ public:
       const BRepGraph_EdgeId theEdge);
 
     //! Returns the end vertex definition id directly (shortcut for
-    //! `EndVertexRef(…).VertexDefId`). Invalid if the edge has no end vertex.
+    //! `EndVertexRef(...).VertexDefId`). Invalid if the edge has no end vertex.
     //! @param[in] theGraph source graph
     //! @param[in] theEdge  typed edge definition identifier
     //! @return end vertex id
@@ -368,7 +368,7 @@ public:
       const BRepGraph_CoEdgeId theCoEdge);
 
     //! Returns true if the coedge is REVERSED relative to its parent edge.
-    //! Convenience shortcut for `Orientation(…) == TopAbs_REVERSED`.
+    //! Convenience shortcut for `Orientation(...) == TopAbs_REVERSED`.
     [[nodiscard]] Standard_EXPORT static bool IsReversed(const BRepGraph&         theGraph,
                                                          const BRepGraph_CoEdgeId theCoEdge);
 
@@ -520,7 +520,7 @@ public:
                                                                   const BRepGraph_FaceId theFace);
 
     //! Returns the outer wire definition id directly (shortcut for
-    //! `OuterWire(…)->WireDefId`). Invalid if the face has no outer wire.
+    //! `OuterWire(...)->WireDefId`). Invalid if the face has no outer wire.
     //! @param[in] theGraph source graph
     //! @param[in] theFace  typed face definition identifier
     //! @return outer wire id

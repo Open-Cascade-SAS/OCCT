@@ -268,7 +268,7 @@ struct CompSolidDef : public BaseDef
 //! Children are managed uniformly via OccurrenceRefIds:
 //! - A part product has one occurrence whose ChildDefId is a topology root node.
 //! - An assembly product has occurrences whose ChildDefId values are other products.
-//! Products carry no location or orientation — those live on references.
+//! Products carry no location or orientation - those live on references.
 struct ProductDef : public BaseDef
 {
   using TypeId = BRepGraph_ProductId;

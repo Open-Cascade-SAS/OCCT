@@ -35,19 +35,19 @@ public:
   //! Topological relation kinds yielded by the iterator.
   //! Only geometry-level relations are supported (Face, Edge, Vertex, Wire, CoEdge).
   //! Assembly/container nodes (Solid, Shell, Compound, Product, Occurrence) have
-  //! no topological relations — use BRepGraph_ChildExplorer / BRepGraph_ParentExplorer instead.
+  //! no topological relations - use BRepGraph_ChildExplorer / BRepGraph_ParentExplorer instead.
   enum class RelationKind
   {
-    BoundaryEdge,     //!< Face → Edge bounding the face
-    AdjacentFace,     //!< Face → Face sharing an edge
-    OuterWire,        //!< Face → Wire (outer boundary)
-    ReferencedByFace, //!< Edge → Face that uses this edge
-    IncidentVertex,   //!< Edge → Vertex (start/end)
-    WireCoEdge,       //!< Wire → CoEdge (member)
-    OwningFace,       //!< Wire/CoEdge → Face (container)
-    IncidentEdge,     //!< Vertex → Edge (touching)
-    ParentEdge,       //!< CoEdge → Edge (underlying definition)
-    SeamPair,         //!< CoEdge → CoEdge (seam twin)
+    BoundaryEdge,     //!< Face -> Edge bounding the face
+    AdjacentFace,     //!< Face -> Face sharing an edge
+    OuterWire,        //!< Face -> Wire (outer boundary)
+    ReferencedByFace, //!< Edge -> Face that uses this edge
+    IncidentVertex,   //!< Edge -> Vertex (start/end)
+    WireCoEdge,       //!< Wire -> CoEdge (member)
+    OwningFace,       //!< Wire/CoEdge -> Face (container)
+    IncidentEdge,     //!< Vertex -> Edge (touching)
+    ParentEdge,       //!< CoEdge -> Edge (underlying definition)
+    SeamPair,         //!< CoEdge -> CoEdge (seam twin)
   };
 
   enum class Stage

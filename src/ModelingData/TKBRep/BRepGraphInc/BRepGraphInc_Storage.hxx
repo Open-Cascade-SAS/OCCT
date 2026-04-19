@@ -790,7 +790,7 @@ public:
 
   //! Incrementally update reverse indices for entities appended after a previous
   //! BuildReverseIndex(). Only processes entities and refs from the old counts to the
-  //! current vector lengths — the caller must snapshot ChildRef / SolidRef counts before
+  //! current vector lengths - the caller must snapshot ChildRef / SolidRef counts before
   //! any Append so this remains O(delta), not O(total).
   Standard_EXPORT void BuildDeltaReverseIndex(const int theOldNbEdges,
                                               const int theOldNbWires,

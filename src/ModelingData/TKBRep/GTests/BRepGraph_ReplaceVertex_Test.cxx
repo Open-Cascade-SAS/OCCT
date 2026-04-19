@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// Coverage for EditorView::EdgeOps::ReplaceVertex — boundary/internal vertex
+// Coverage for EditorView::EdgeOps::ReplaceVertex - boundary/internal vertex
 // remap without a full edge rebuild.
 
 #include <BRepGraph.hxx>

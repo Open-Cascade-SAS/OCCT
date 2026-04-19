@@ -18,7 +18,7 @@ External code should normally enter through `BRepGraph_Builder::Perform()`, `BRe
 - Assembly entity tables (Product, Occurrence)
 - Representation entity tables (SurfaceRep, Curve3DRep, Curve2DRep, TriangulationRep, Polygon3DRep, Polygon2DRep, PolygonOnTriRep)
 - Reference entry tables (ShellRef, FaceRef, WireRef, CoEdgeRef, VertexRef, SolidRef, ChildRef, OccurrenceRef) with BaseRef identity, orientation, and location
-- Reverse adjacency indices (including product→occurrences)
+- Reverse adjacency indices (including product->occurrences)
 - TShape to NodeId mapping
 - Original shape map
 - Per-kind UID vectors (10 entity kinds + 8 ref kinds)
@@ -187,7 +187,7 @@ flowchart LR
 | **Phase 1** | Sequential | Traverse hierarchy. Create container entities (Compound, CompSolid, Solid, Shell). Collect face contexts. |
 | **Phase 2** | Parallel | Extract per-face geometry: surface, PCurves, triangulations, vertices, edges. |
 | **Phase 3** | Sequential | Register faces, wires, edges, CoEdges with TShape deduplication. Link faces to shells. |
-| **Phase 3a** | Sequential | Resolve deferred Compound→Face ChildUsage indices via TShape lookup. |
+| **Phase 3a** | Sequential | Resolve deferred Compound->Face ChildUsage indices via TShape lookup. |
 | **Phase 3b** | Optional | Edge regularities (controlled by `Options.ExtractRegularities`). |
 | **Phase 3c** | Optional | Vertex point representations (controlled by `Options.ExtractVertexPointReps`). |
 | **Phase 4** | Sequential | Build reverse indices for O(1) upward navigation. |
@@ -282,22 +282,22 @@ anEdge.Location(Identity);                     // Reset after attachment
 
 | Map | Purpose |
 |-----|---------|
-| edge → wires | Wire membership |
-| edge → faces | Face adjacency (from CoEdge.FaceDefId) |
-| edge → coedges | CoEdge lookup by parent edge |
+| edge -> wires | Wire membership |
+| edge -> faces | Face adjacency (from CoEdge.FaceDefId) |
+| edge -> coedges | CoEdge lookup by parent edge |
 | edge face count | Cached O(1) face count per edge |
-| vertex → edges | Vertex incidence |
-| coedge → wires | CoEdge-to-wire membership |
-| wire → faces | Wire-to-face membership |
-| face → shells | Face-to-shell membership |
-| shell → solids | Shell-to-solid membership |
-| solid → compounds | Compound parents of a solid |
-| solid → compsolids | CompSolid parents of a solid |
-| shell → compounds | Compound parents of a shell |
-| face → compounds | Compound parents of a face |
-| compound → compounds | Compound parents of a compound |
-| compsolid → compounds | Compound parents of a compsolid |
-| product → occurrences | Assembly references |
+| vertex -> edges | Vertex incidence |
+| coedge -> wires | CoEdge-to-wire membership |
+| wire -> faces | Wire-to-face membership |
+| face -> shells | Face-to-shell membership |
+| shell -> solids | Shell-to-solid membership |
+| solid -> compounds | Compound parents of a solid |
+| solid -> compsolids | CompSolid parents of a solid |
+| shell -> compounds | Compound parents of a shell |
+| face -> compounds | Compound parents of a face |
+| compound -> compounds | Compound parents of a compound |
+| compsolid -> compounds | Compound parents of a compsolid |
+| product -> occurrences | Assembly references |
 
 ## Core Invariants
 
@@ -355,7 +355,7 @@ Key difference: TopoDS expresses context through shape occurrences. GraphInc kee
 | `BRepGraphInc_Definition.hxx` | Entity struct definitions |
 | `BRepGraphInc_Reference.hxx` | Context reference definitions |
 | `BRepGraphInc_Storage.hxx/.cxx` | Typed storage and ownership |
-| `BRepGraphInc_Populate.hxx/.cxx` | TopoDS → incidence build and append |
-| `BRepGraphInc_Reconstruct.hxx/.cxx` | Incidence → TopoDS reconstruction |
+| `BRepGraphInc_Populate.hxx/.cxx` | TopoDS -> incidence build and append |
+| `BRepGraphInc_Reconstruct.hxx/.cxx` | Incidence -> TopoDS reconstruction |
 | `BRepGraphInc_ReverseIndex.hxx/.cxx` | Reverse adjacency services |
 | `BRepGraph_WireExplorer.hxx` | Wire traversal in connection order (in BRepGraph package) |
