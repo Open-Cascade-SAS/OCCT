@@ -101,7 +101,7 @@ StepData_EnumTool::StepData_EnumTool(const char* const e0,
 
 void StepData_EnumTool::AddDefinition(const char* const term)
 {
-  char text[80];
+  char text[80] = {0};
   if (!term)
     return;
   if (term[0] == '\0')

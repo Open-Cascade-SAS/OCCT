@@ -304,7 +304,7 @@ void IGESData_IGESWriter::DirPart(const occ::handle<IGESData_IGESEntity>& anent)
   if (anent->HasShortLabel())
   {
     occ::handle<TCollection_HAsciiString> slab = anent->ShortLabel();
-    for (i = 0; i < slab->Length(); i++)
+    for (i = 0; i < slab->Length() && i < 8; i++)
       label[i] = slab->Value(i + 1);
   }
   if (anent->HasSubScriptNumber())
