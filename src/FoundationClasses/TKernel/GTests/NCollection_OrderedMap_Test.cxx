@@ -356,9 +356,9 @@ TEST(NCollection_OrderedMapTest, STLBeginEnd)
   aMap.Add(30);
 
   std::vector<int> anOrder;
-  for (auto it = aMap.begin(); it != aMap.end(); ++it)
+  for (int it : aMap)
   {
-    anOrder.push_back(*it);
+    anOrder.push_back(it);
   }
 
   const std::vector<int> anExpected = {10, 20, 30};

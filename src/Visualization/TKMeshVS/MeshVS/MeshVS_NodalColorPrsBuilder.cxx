@@ -178,10 +178,10 @@ void MeshVS_NodalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& P
   // colors
   Graphic3d_MaterialAspect aMaterial[2] = {Graphic3d_NameOfMaterial_Plastified,
                                            Graphic3d_NameOfMaterial_Plastified};
-  for (int i = 0; i < 2; ++i)
+  for (auto & i : aMaterial)
   {
-    aMaterial[i].SetSpecularColor(Quantity_NOC_BLACK);
-    aMaterial[i].SetEmissiveColor(Quantity_NOC_BLACK);
+    i.SetSpecularColor(Quantity_NOC_BLACK);
+    i.SetEmissiveColor(Quantity_NOC_BLACK);
     if (IsReflect)
     {
       // OCC20644 Using the material with reflection properties same as in
@@ -194,8 +194,8 @@ void MeshVS_NodalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& P
       // is done by TelUpdateMaterial().
       // 0.5 is used to have the colors in 3D maximally similar to those in the color scale.
       // This is possible when the sum of all coefficient is equal to 1.
-      aMaterial[i].SetAmbientColor(Quantity_Color(NCollection_Vec3<float>(0.5f)));
-      aMaterial[i].SetDiffuseColor(Quantity_Color(NCollection_Vec3<float>(0.5f)));
+      i.SetAmbientColor(Quantity_Color(NCollection_Vec3<float>(0.5f)));
+      i.SetDiffuseColor(Quantity_Color(NCollection_Vec3<float>(0.5f)));
     }
   }
 

@@ -83,9 +83,9 @@ void OpenGl_GraduatedTrihedron::initGlResources(const occ::handle<OpenGl_Context
   myAxes[0].InitArrow(theCtx, myData.ArrowsLength(), NCollection_Vec3<float>(0.0f, 0.0f, 1.0f));
   myAxes[1].InitArrow(theCtx, myData.ArrowsLength(), NCollection_Vec3<float>(0.0f, 0.0f, 1.0f));
   myAxes[2].InitArrow(theCtx, myData.ArrowsLength(), NCollection_Vec3<float>(1.0f, 0.0f, 0.0f));
-  for (int anIt = 0; anIt < 3; ++anIt)
+  for (auto & myAxe : myAxes)
   {
-    myAxes[anIt].Label.SetFontSize(theCtx, myData.NamesSize());
+    myAxe.Label.SetFontSize(theCtx, myData.NamesSize());
   }
 
   myLabelValues.SetFontSize(theCtx, myData.ValuesSize());

@@ -286,9 +286,9 @@ public:
   //! @param[in] theFactor  the scale factor.
   constexpr void Multiply(const Element_t theFactor) noexcept
   {
-    for (size_t i = 0; i < 9; ++i)
+    for (auto & i : myMat)
     {
-      myMat[i] *= theFactor;
+      i *= theFactor;
     }
   }
 
@@ -322,9 +322,9 @@ public:
   //! @param[in] theFactor  the scale factor.
   constexpr void Divide(const Element_t theFactor)
   {
-    for (size_t i = 0; i < 9; ++i)
+    for (auto & i : myMat)
     {
-      myMat[i] /= theFactor;
+      i /= theFactor;
     }
   }
 

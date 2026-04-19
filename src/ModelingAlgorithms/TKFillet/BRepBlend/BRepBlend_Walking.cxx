@@ -2462,9 +2462,9 @@ bool BRepBlend_Walking::CorrectExtremityOnOneRst(const int     IndexOfRst,
   double GlobalMinSqDist = Precision::Infinite();
   double ParamOnGuide    = 0;
   gp_Pnt PointOnGuide;
-  for (int k = 0; k < 2; k++)
+  for (double End : Ends)
   {
-    gp_Pnt2d      P2dOnEnd = BRepBlend_HCurve2dTool::Value(DomainOfRst->Value(), Ends[k]);
+    gp_Pnt2d      P2dOnEnd = BRepBlend_HCurve2dTool::Value(DomainOfRst->Value(), End);
     gp_Pnt        PntOnEnd = Adaptor3d_HSurfaceTool::Value(SurfOfRst, P2dOnEnd.X(), P2dOnEnd.Y());
     Extrema_ExtPC projoncurv(PntOnEnd, theElSpine);
     if (!projoncurv.IsDone())

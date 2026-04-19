@@ -2589,10 +2589,8 @@ bool BRepGraph::BuilderView::ValidateMutationBoundary(
                                                   BRepGraph_NodeId::Kind::CompSolid,
                                                   BRepGraph_NodeId::Kind::Product,
                                                   BRepGraph_NodeId::Kind::Occurrence};
-  for (int aKindIdx = 0; aKindIdx < static_cast<int>(sizeof(THE_KINDS) / sizeof(THE_KINDS[0]));
-       ++aKindIdx)
+  for (auto aKind : THE_KINDS)
   {
-    const BRepGraph_NodeId::Kind aKind       = THE_KINDS[aKindIdx];
     const int                    aCachedCnt  = cachedActiveByKind(aStorage, aKind);
     const int                    anActualCnt = countActiveByKind(*myGraph, aKind);
     if (aCachedCnt == anActualCnt)

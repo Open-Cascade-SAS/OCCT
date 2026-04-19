@@ -216,13 +216,13 @@ void MeshVS_ElementalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation
 
   Graphic3d_MaterialAspect aMaterial[2] = {Graphic3d_NameOfMaterial_Plastified,
                                            Graphic3d_NameOfMaterial_Plastified};
-  for (int i = 0; i < 2; i++)
+  for (auto & i : aMaterial)
   {
     // OCC20644 "plastic" is most suitable here, as it is "non-physic"
     // so TelUpdateMaterial() from OpenGl_attri.c uses the interior
     // color from AspectFillArea3d to calculate all material colors
-    aMaterial[i].SetSpecularColor(Quantity_NOC_BLACK);
-    aMaterial[i].SetEmissiveColor(Quantity_NOC_BLACK);
+    i.SetSpecularColor(Quantity_NOC_BLACK);
+    i.SetEmissiveColor(Quantity_NOC_BLACK);
 
     // OCC21720 For single-colored elements turning all material components off is a good idea,
     // as anyhow the normals are not computed and the lighting will be off,
@@ -235,8 +235,8 @@ void MeshVS_ElementalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation
       // those in the color scale most exactly (the sum of all reflection
       // coefficients is equal to 1). See also MeshVS_NodalColorPrsBuilder
       // class for more explanations.
-      aMaterial[i].SetAmbientColor(Quantity_Color(NCollection_Vec3<float>(0.5f)));
-      aMaterial[i].SetDiffuseColor(Quantity_Color(NCollection_Vec3<float>(0.5f)));
+      i.SetAmbientColor(Quantity_Color(NCollection_Vec3<float>(0.5f)));
+      i.SetDiffuseColor(Quantity_Color(NCollection_Vec3<float>(0.5f)));
     }
   }
 
@@ -514,13 +514,13 @@ void MeshVS_ElementalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation
 
   Graphic3d_MaterialAspect aMaterial2[2] = {Graphic3d_NameOfMaterial_Plastified,
                                             Graphic3d_NameOfMaterial_Plastified};
-  for (int i = 0; i < 2; i++)
+  for (auto & i : aMaterial2)
   {
     // OCC20644 "plastic" is most suitable here, as it is "non-physic"
     // so TelUpdateMaterial() from OpenGl_attri.c uses the interior
     // color from AspectFillArea3d to calculate all material colors
-    aMaterial2[i].SetSpecularColor(Quantity_NOC_BLACK);
-    aMaterial2[i].SetEmissiveColor(Quantity_NOC_BLACK);
+    i.SetSpecularColor(Quantity_NOC_BLACK);
+    i.SetEmissiveColor(Quantity_NOC_BLACK);
 
     if (!IsReflect)
     {
@@ -529,8 +529,8 @@ void MeshVS_ElementalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation
       // to have different materials for front and back sides!
       // Instead, trying to make material color "nondirectional" with
       // only ambient component on.
-      aMaterial2[i].SetAmbientColor(Quantity_Color(NCollection_Vec3<float>(1.0f)));
-      aMaterial2[i].SetDiffuseColor(Quantity_NOC_BLACK);
+      i.SetAmbientColor(Quantity_Color(NCollection_Vec3<float>(1.0f)));
+      i.SetDiffuseColor(Quantity_NOC_BLACK);
     }
     else
     {
@@ -539,8 +539,8 @@ void MeshVS_ElementalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation
       // those in the color scale most exactly (the sum of all reflection
       // coefficients is equal to 1). See also MeshVS_NodalColorPrsBuilder
       // class for more explanations.
-      aMaterial2[i].SetAmbientColor(Quantity_Color(NCollection_Vec3<float>(0.5f)));
-      aMaterial2[i].SetDiffuseColor(Quantity_Color(NCollection_Vec3<float>(0.5f)));
+      i.SetAmbientColor(Quantity_Color(NCollection_Vec3<float>(0.5f)));
+      i.SetDiffuseColor(Quantity_Color(NCollection_Vec3<float>(0.5f)));
     }
   }
 

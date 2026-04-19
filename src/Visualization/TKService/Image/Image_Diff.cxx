@@ -470,10 +470,10 @@ int Image_Diff::ignoreBorderEffect()
 
       // pixels of a line have only 1 or 2 neighbour pixels inside the same group
       // check all neighbour pixels on presence in the group
-      for (size_t aNgbrIter = 0; aNgbrIter < Image_Diff_NbOfNeighborPixels; ++aNgbrIter)
+      for (auto aNgbrIter : Image_Diff_NEIGHBOR_PIXELS)
       {
-        int anX = UnpackX(aDiffPixel) + Image_Diff_NEIGHBOR_PIXELS[aNgbrIter][0];
-        int anY = UnpackY(aDiffPixel) + Image_Diff_NEIGHBOR_PIXELS[aNgbrIter][1];
+        int anX = UnpackX(aDiffPixel) + aNgbrIter[0];
+        int anY = UnpackY(aDiffPixel) + aNgbrIter[1];
         if (size_t(anX) < myImageRef->SizeX() // this unsigned math checks size_t(-1) at-once
             && size_t(anY) < myImageRef->SizeY()
             && aGroup->Map().Contains(PackXY((uint16_t)anX, (uint16_t)anY)))
@@ -496,10 +496,10 @@ int Image_Diff::ignoreBorderEffect()
       // If the pixel has greater than 1 not black neighbour pixel, it is a border of a shape.
       // Otherwise, it may be a topological edge, for example.
       aNeighboursNb = 0;
-      for (size_t aNgbrIter = 0; aNgbrIter < Image_Diff_NbOfNeighborPixels; ++aNgbrIter)
+      for (auto aNgbrIter : Image_Diff_NEIGHBOR_PIXELS)
       {
-        int anX = UnpackX(aDiffPixel) + Image_Diff_NEIGHBOR_PIXELS[aNgbrIter][0];
-        int anY = UnpackY(aDiffPixel) + Image_Diff_NEIGHBOR_PIXELS[aNgbrIter][1];
+        int anX = UnpackX(aDiffPixel) + aNgbrIter[0];
+        int anY = UnpackY(aDiffPixel) + aNgbrIter[1];
         if (size_t(anX) < myImageRef->SizeX() // this unsigned math checks size_t(-1) at-once
             && size_t(anY) < myImageRef->SizeY()
             && !isBlackPixel(*myImageRef, size_t(anY), size_t(anX)))

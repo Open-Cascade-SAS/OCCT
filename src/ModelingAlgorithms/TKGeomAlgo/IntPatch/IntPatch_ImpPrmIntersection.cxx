@@ -3620,10 +3620,10 @@ bool IsCoincide(IntPatch_TheSurfFunction&              theFunc,
 
     double aU, aV;
     double dU = aUl - aUf, dV = aVl - aVf;
-    for (int i = 0; i < 7; i++)
+    for (double aCoeff : aCoeffs)
     {
-      aU = aUf + aCoeffs[i] * dU;
-      aV = aVf + aCoeffs[i] * dV;
+      aU = aUf + aCoeff * dU;
+      aV = aVf + aCoeff * dV;
 
       aX.Value(1) = aU;
       aX.Value(2) = aV;

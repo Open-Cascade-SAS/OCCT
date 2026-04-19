@@ -403,9 +403,9 @@ void AIS_Trihedron::computePresentation(
   const occ::handle<PrsMgr_PresentationManager>& /*thePrsMgr*/,
   const occ::handle<Prs3d_Presentation>& thePrs)
 {
-  for (int aPartIter = 0; aPartIter < Prs3d_DatumParts_NB; ++aPartIter)
+  for (auto & aPartIter : myPartToGroup)
   {
-    myPartToGroup[aPartIter].Nullify();
+    aPartIter.Nullify();
   }
 
   occ::handle<Prs3d_DatumAspect> anAspect      = myDrawer->DatumAspect();
@@ -749,9 +749,9 @@ void AIS_Trihedron::updatePrimitives(const occ::handle<Prs3d_DatumAspect>& theAs
                                      const gp_Dir&                         theYDirection,
                                      const gp_Dir&                         theZDirection)
 {
-  for (int aPartIter = 0; aPartIter < Prs3d_DatumParts_NB; ++aPartIter)
+  for (auto & myPrimitive : myPrimitives)
   {
-    myPrimitives[aPartIter].Nullify();
+    myPrimitive.Nullify();
   }
 
   NCollection_DataMap<Prs3d_DatumParts, gp_Dir> anAxisDirs;

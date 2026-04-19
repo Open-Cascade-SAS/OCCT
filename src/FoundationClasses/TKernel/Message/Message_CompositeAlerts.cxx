@@ -124,9 +124,9 @@ bool Message_CompositeAlerts::HasAlert(const occ::handle<Standard_Type>& theType
 
 void Message_CompositeAlerts::Clear()
 {
-  for (unsigned int i = 0; i < sizeof(myAlerts) / sizeof(myAlerts[0]); ++i)
+  for (auto & myAlert : myAlerts)
   {
-    myAlerts[i].Clear();
+    myAlert.Clear();
   }
 }
 
@@ -145,13 +145,13 @@ void Message_CompositeAlerts::Clear(Message_Gravity theGravity)
 
 void Message_CompositeAlerts::Clear(const occ::handle<Standard_Type>& theType)
 {
-  for (unsigned int i = 0; i < sizeof(myAlerts) / sizeof(myAlerts[0]); ++i)
+  for (auto & myAlert : myAlerts)
   {
-    for (NCollection_List<occ::handle<Message_Alert>>::Iterator anIt(myAlerts[i]); anIt.More();)
+    for (NCollection_List<occ::handle<Message_Alert>>::Iterator anIt(myAlert); anIt.More();)
     {
       if (anIt.Value().IsNull() || anIt.Value()->IsInstance(theType))
       {
-        myAlerts[i].Remove(anIt);
+        myAlert.Remove(anIt);
       }
       else
       {
@@ -168,12 +168,12 @@ void Message_CompositeAlerts::DumpJson(Standard_OStream& theOStream, int theDept
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
   int anInc = 1;
-  for (unsigned int i = 0; i < sizeof(myAlerts) / sizeof(myAlerts[0]); ++i)
+  for (const auto & myAlert : myAlerts)
   {
-    if (myAlerts[i].IsEmpty())
+    if (myAlert.IsEmpty())
       continue;
 
-    for (NCollection_List<occ::handle<Message_Alert>>::Iterator anIt(myAlerts[i]); anIt.More();
+    for (NCollection_List<occ::handle<Message_Alert>>::Iterator anIt(myAlert); anIt.More();
          anIt.Next(), anInc++)
     {
       const occ::handle<Message_Alert>& anAlert = anIt.Value();

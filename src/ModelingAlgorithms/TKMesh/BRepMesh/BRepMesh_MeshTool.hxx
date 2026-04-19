@@ -192,11 +192,11 @@ private:
     int aEdges[3];
     AddTriangle(theNode0, theNode1, theNode2, aEdges);
 
-    for (int i = 0; i < 3; ++i)
+    for (int aEdge : aEdges)
     {
-      if (!theUsedLinks.Contains(aEdges[i]))
+      if (!theUsedLinks.Contains(aEdge))
       {
-        theStack.push(aEdges[i]);
+        theStack.push(aEdge);
       }
     }
   }

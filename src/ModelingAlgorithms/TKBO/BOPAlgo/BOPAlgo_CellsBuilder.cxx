@@ -781,16 +781,16 @@ void BOPAlgo_CellsBuilder::MakeContainers()
     aLS[iDim - 1].Append(aS);
   }
   //
-  for (int i = 0; i < 3; ++i)
+  for (auto & i : aLS)
   {
-    if (aLS[i].IsEmpty())
+    if (i.IsEmpty())
     {
       continue;
     }
     //
     TopoDS_Compound aC;
     aBB.MakeCompound(aC);
-    NCollection_List<TopoDS_Shape>::Iterator aItLS(aLS[i]);
+    NCollection_List<TopoDS_Shape>::Iterator aItLS(i);
     for (; aItLS.More(); aItLS.Next())
     {
       aBB.Add(aC, aItLS.Value());

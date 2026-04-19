@@ -423,9 +423,9 @@ TEST(NCollection_MapTest, BeginEndIterator)
 
   // Test begin/end iteration
   std::set<int> aFoundKeys;
-  for (auto it = aMap.begin(); it != aMap.end(); ++it)
+  for (int it : aMap)
   {
-    aFoundKeys.insert(*it);
+    aFoundKeys.insert(it);
   }
 
   EXPECT_EQ(3u, aFoundKeys.size());

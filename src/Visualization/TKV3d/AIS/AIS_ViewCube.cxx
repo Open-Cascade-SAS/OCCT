@@ -930,13 +930,13 @@ void AIS_ViewCube::StartAnimation(const occ::handle<AIS_ViewCubeOwner>& theOwner
 
       double aBestAngle = Precision::Infinite();
       gp_Dir anUpBest;
-      for (int anUpIter = 0; anUpIter < 4; ++anUpIter)
+      for (const auto & anUpIter : anUpList)
       {
-        double anAngle = anUpList[anUpIter].Angle(anOldUp);
+        double anAngle = anUpIter.Angle(anOldUp);
         if (aBestAngle > anAngle)
         {
           aBestAngle = anAngle;
-          anUpBest   = anUpList[anUpIter];
+          anUpBest   = anUpIter;
         }
       }
       myEndState->SetUp(anUpBest);

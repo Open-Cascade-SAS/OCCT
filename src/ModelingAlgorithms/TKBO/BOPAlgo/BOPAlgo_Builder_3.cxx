@@ -529,10 +529,10 @@ void BOPAlgo_Builder::BuildSplitSolids(
     // Convert all errors of BuilderSolid into warnings for main report.
     const occ::handle<Message_Report>& aBSReport       = aBS.GetReport();
     Message_Gravity                    anAlertTypes[2] = {Message_Warning, Message_Fail};
-    for (int iGravity = 0; iGravity < 2; iGravity++)
+    for (auto & anAlertType : anAlertTypes)
     {
       const NCollection_List<occ::handle<Message_Alert>>& anLAlerts =
-        aBSReport->GetAlerts(anAlertTypes[iGravity]);
+        aBSReport->GetAlerts(anAlertType);
       for (NCollection_List<occ::handle<Message_Alert>>::Iterator itA(anLAlerts); itA.More();
            itA.Next())
       {

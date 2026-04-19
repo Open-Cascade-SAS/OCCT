@@ -2070,9 +2070,8 @@ void AIS_ViewController::handleViewOrientationKeys(
   {
     const size_t aNbKeys     = sizeof(THE_VIEW_KEYS) / sizeof(*THE_VIEW_KEYS);
     const double anEventTime = EventTime();
-    for (size_t aKeyIter = 0; aKeyIter < aNbKeys; ++aKeyIter)
+    for (auto aKeyAction : THE_VIEW_KEYS)
     {
-      const ViewKeyAction& aKeyAction = THE_VIEW_KEYS[aKeyIter];
       if (!myKeys.IsKeyDown(aKeyAction.Key))
       {
         continue;

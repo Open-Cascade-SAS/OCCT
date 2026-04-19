@@ -43,9 +43,9 @@ public:
     {
       return true;
     }
-    for (size_t aRangeIter = 0; aRangeIter < myClipRanges.size(); ++aRangeIter)
+    for (auto myClipRange : myClipRanges)
     {
-      if (!myClipRanges[aRangeIter].IsOut(theDepth))
+      if (!myClipRange.IsOut(theDepth))
       {
         return true;
       }
@@ -70,11 +70,11 @@ public:
       myUnclipRange.GetMin(theDepth);
     }
 
-    for (size_t aRangeIter = 0; aRangeIter < myClipRanges.size(); ++aRangeIter)
+    for (auto myClipRange : myClipRanges)
     {
-      if (!myClipRanges[aRangeIter].IsOut(theDepth))
+      if (!myClipRange.IsOut(theDepth))
       {
-        aCommonClipRange = myClipRanges[aRangeIter];
+        aCommonClipRange = myClipRange;
         break;
       }
     }
@@ -84,11 +84,11 @@ public:
       return true;
     }
 
-    for (size_t aRangeIter = 0; aRangeIter < myClipRanges.size(); ++aRangeIter)
+    for (auto myClipRange : myClipRanges)
     {
-      if (!aCommonClipRange.IsOut(myClipRanges[aRangeIter]))
+      if (!aCommonClipRange.IsOut(myClipRange))
       {
-        aCommonClipRange.Add(myClipRanges[aRangeIter]);
+        aCommonClipRange.Add(myClipRange);
       }
     }
 

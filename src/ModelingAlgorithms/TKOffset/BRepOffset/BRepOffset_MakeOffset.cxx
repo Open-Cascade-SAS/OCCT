@@ -2138,9 +2138,9 @@ void BRepOffset_MakeOffset::ToContext(
         }
         TopoDS_Vertex V[2];
         TopExp::Vertices(E, V[0], V[1]);
-        for (int i = 0; i < 2; i++)
+        for (const auto & i : V)
         {
-          const NCollection_List<TopoDS_Shape>& LVA = myAnalyse.Ancestors(V[i]);
+          const NCollection_List<TopoDS_Shape>& LVA = myAnalyse.Ancestors(i);
           for (itl.Initialize(LVA); itl.More(); itl.Next())
           {
             const TopoDS_Edge& EV = TopoDS::Edge(itl.Value());
@@ -2148,7 +2148,7 @@ void BRepOffset_MakeOffset::ToContext(
             {
               const BRepOffset_Offset& OF = MapSF(EV);
               FacesToBuild.Add(EV);
-              MEF.Bind(OF.Generated(V[i]), CF);
+              MEF.Bind(OF.Generated(i), CF);
             }
           }
         }

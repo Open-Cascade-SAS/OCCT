@@ -226,14 +226,14 @@ TEST(GeomFill_GordonBuilder, ThreeByThreeGrid_InterpolatesAllPoints)
   const occ::handle<Geom_BSplineSurface>& aSurf     = aBuilder.Surface();
   const double                            aGuideX[] = {0.0, 0.5, 1.0};
   const double                            aProfY[]  = {0.0, 0.5, 1.0};
-  for (int iG = 0; iG < 3; ++iG)
+  for (double iG : aGuideX)
   {
-    for (int iP = 0; iP < 3; ++iP)
+    for (double iP : aProfY)
     {
       verifyPointOnSurface(aSurf,
-                           aGuideX[iG],
-                           aProfY[iP],
-                           gp_Pnt(aGuideX[iG], aProfY[iP], 0.0),
+                           iG,
+                           iP,
+                           gp_Pnt(iG, iP, 0.0),
                            1.0e-3);
     }
   }
@@ -340,11 +340,11 @@ TEST(GeomFill_GordonBuilder, FiveByFourGrid_ProducesValidSurface)
   ASSERT_FALSE(aSurf.IsNull());
 
   // Verify all 20 intersection points.
-  for (int i = 0; i < 5; ++i)
+  for (double i : aProfY)
   {
-    for (int j = 0; j < 4; ++j)
+    for (double j : aGuidX)
     {
-      verifyPointOnSurface(aSurf, aGuidX[j], aProfY[i], gp_Pnt(aGuidX[j], aProfY[i], 0.0), 1.0e-3);
+      verifyPointOnSurface(aSurf, j, i, gp_Pnt(j, i, 0.0), 1.0e-3);
     }
   }
 }
@@ -753,13 +753,13 @@ TEST(GeomFill_Gordon, ReversedCurveNetwork_ProducesValidSurface)
 
   double aXMin = RealLast(), aXMax = -RealLast();
   double aYMin = RealLast(), aYMax = -RealLast();
-  for (int i = 0; i < 4; ++i)
+  for (const auto & aCorner : aCorners)
   {
-    EXPECT_NEAR(aCorners[i].Z(), 0.0, 0.01);
-    aXMin = std::min(aXMin, aCorners[i].X());
-    aXMax = std::max(aXMax, aCorners[i].X());
-    aYMin = std::min(aYMin, aCorners[i].Y());
-    aYMax = std::max(aYMax, aCorners[i].Y());
+    EXPECT_NEAR(aCorner.Z(), 0.0, 0.01);
+    aXMin = std::min(aXMin, aCorner.X());
+    aXMax = std::max(aXMax, aCorner.X());
+    aYMin = std::min(aYMin, aCorner.Y());
+    aYMax = std::max(aYMax, aCorner.Y());
   }
   EXPECT_NEAR(aXMin, 0.0, 0.01);
   EXPECT_NEAR(aXMax, 1.0, 0.01);

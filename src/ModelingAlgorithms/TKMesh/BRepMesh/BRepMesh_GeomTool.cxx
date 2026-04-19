@@ -409,9 +409,9 @@ BRepMesh_GeomTool::IntFlag BRepMesh_GeomTool::IntSegSeg(const gp_XY& theStartPnt
   // Intersection is out of segments ranges
   constexpr double aPrec    = Precision::PConfusion();
   const double     aEndPrec = 1 - aPrec;
-  for (int i = 0; i < 2; ++i)
+  for (double i : aParam)
   {
-    if (aParam[i] < aPrec || aParam[i] > aEndPrec)
+    if (i < aPrec || i > aEndPrec)
       return BRepMesh_GeomTool::NoIntersection;
   }
 

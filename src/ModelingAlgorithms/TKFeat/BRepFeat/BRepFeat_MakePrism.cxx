@@ -1058,12 +1058,12 @@ static double HeightMax(const TopoDS_Shape& theSbase,
 
   Box.Get(c[0], c[2], c[4], c[1], c[3], c[5]);
   double parmin = c[0], parmax = c[0];
-  for (int i = 0; i < 6; i++)
+  for (double i : c)
   {
-    if (c[i] > parmax)
-      parmax = c[i];
-    if (c[i] < parmin)
-      parmin = c[i];
+    if (i > parmax)
+      parmax = i;
+    if (i < parmin)
+      parmin = i;
   }
   // #ifndef OCCT_DEBUG
   double Height = fabs(2. * (parmax - parmin));

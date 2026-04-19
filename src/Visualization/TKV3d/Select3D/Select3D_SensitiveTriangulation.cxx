@@ -37,9 +37,9 @@ static int NbOfFreeEdges(const occ::handle<Poly_Triangulation>& theTriangulation
   for (int aTrgIdx = 1; aTrgIdx <= theTriangulation->NbTriangles(); aTrgIdx++)
   {
     aPoly.Triangles(aTrgIdx, aTriangleNodes[0], aTriangleNodes[1], aTriangleNodes[2]);
-    for (int aNodeIdx = 0; aNodeIdx < 3; ++aNodeIdx)
+    for (int aTriangleNode : aTriangleNodes)
     {
-      if (aTriangleNodes[aNodeIdx] == 0)
+      if (aTriangleNode == 0)
       {
         ++aNbFree;
       }

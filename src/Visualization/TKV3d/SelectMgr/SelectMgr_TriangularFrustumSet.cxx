@@ -276,12 +276,12 @@ bool SelectMgr_TriangularFrustumSet::OverlapsBox(const NCollection_Vec3<double>&
                           gp_Pnt(0.0, 0.0, aMinMaxPnts[1].Z() - aMinMaxPnts[0].Z())};
 
     int aSign = 1;
-    for (int aPntsIdx = 0; aPntsIdx < 2; aPntsIdx++)
+    for (const auto & aMinMaxPnt : aMinMaxPnts)
     {
       for (int aCoordIdx = 0; aCoordIdx < 3; aCoordIdx++)
       {
-        gp_Pnt anOffsetPnt = aMinMaxPnts[aPntsIdx].XYZ() + aSign * anOffset[aCoordIdx].XYZ();
-        if (isIntersectBoundary(aMinMaxPnts[aPntsIdx], anOffsetPnt)
+        gp_Pnt anOffsetPnt = aMinMaxPnt.XYZ() + aSign * anOffset[aCoordIdx].XYZ();
+        if (isIntersectBoundary(aMinMaxPnt, anOffsetPnt)
             || isIntersectBoundary(anOffsetPnt,
                                    anOffsetPnt.XYZ() + aSign * anOffset[(aCoordIdx + 1) % 3].XYZ()))
         {
@@ -642,7 +642,7 @@ bool SelectMgr_TriangularFrustumSet::OverlapsCylinder(const double   theBottomRa
   NCollection_Array1<gp_Pnt> aVertices(aVerticesBuf[0], 0, 2);
 
   bool isCylInsideTriangSet = true;
-  for (int i = 0; i < 6; ++i)
+  for (const auto & aPoint : aPoints)
   {
     bool isInside = false;
     for (NCollection_List<occ::handle<SelectMgr_TriangularFrustum>>::Iterator anIter(myFrustums);
@@ -654,7 +654,7 @@ bool SelectMgr_TriangularFrustumSet::OverlapsCylinder(const double   theBottomRa
       {
         aVertices[anIdx] = anIter.Value()->myVertices[anIdx];
       }
-      if (anIter.Value()->isDotInside(aPoints[i], aVertices))
+      if (anIter.Value()->isDotInside(aPoint, aVertices))
       {
         isInside = true;
         break;

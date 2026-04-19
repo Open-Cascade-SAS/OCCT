@@ -726,9 +726,9 @@ TEST_F(NCollection_OrderedDataMapTest, STLBeginEnd)
 
   // STL iterator gives values (not keys), in insertion order
   std::vector<int> aValues;
-  for (auto it = aMap.cbegin(); it != aMap.cend(); ++it)
+  for (int it : aMap)
   {
-    aValues.push_back(*it);
+    aValues.push_back(it);
   }
 
   const std::vector<int> anExpected = {300, 100, 200};

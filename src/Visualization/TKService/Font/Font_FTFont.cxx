@@ -465,11 +465,11 @@ unsigned int Font_FTFont::GlyphMaxSizeX(bool theToIncludeFallback) const
   unsigned int aWidth = GlyphMaxSizeX(false);
   if (theToIncludeFallback)
   {
-    for (int aFontIter = 0; aFontIter < Font_UnicodeSubset_NB; ++aFontIter)
+    for (const auto & myFallbackFace : myFallbackFaces)
     {
-      if (!myFallbackFaces[aFontIter].IsNull() && myFallbackFaces[aFontIter]->IsValid())
+      if (!myFallbackFace.IsNull() && myFallbackFace->IsValid())
       {
-        aWidth = std::max(aWidth, myFallbackFaces[aFontIter]->GlyphMaxSizeX(false));
+        aWidth = std::max(aWidth, myFallbackFace->GlyphMaxSizeX(false));
       }
     }
   }
@@ -497,11 +497,11 @@ unsigned int Font_FTFont::GlyphMaxSizeY(bool theToIncludeFallback) const
   unsigned int aHeight = GlyphMaxSizeY(false);
   if (theToIncludeFallback)
   {
-    for (int aFontIter = 0; aFontIter < Font_UnicodeSubset_NB; ++aFontIter)
+    for (const auto & myFallbackFace : myFallbackFaces)
     {
-      if (!myFallbackFaces[aFontIter].IsNull() && myFallbackFaces[aFontIter]->IsValid())
+      if (!myFallbackFace.IsNull() && myFallbackFace->IsValid())
       {
-        aHeight = std::max(aHeight, myFallbackFaces[aFontIter]->GlyphMaxSizeY(false));
+        aHeight = std::max(aHeight, myFallbackFace->GlyphMaxSizeY(false));
       }
     }
   }
@@ -641,11 +641,11 @@ int Font_FTFont::GlyphsNumber(bool theToIncludeFallback) const
   int aNbGlyphs = (int)myFTFace->num_glyphs;
   if (theToIncludeFallback)
   {
-    for (int aFontIter = 0; aFontIter < Font_UnicodeSubset_NB; ++aFontIter)
+    for (const auto & myFallbackFace : myFallbackFaces)
     {
-      if (!myFallbackFaces[aFontIter].IsNull() && myFallbackFaces[aFontIter]->IsValid())
+      if (!myFallbackFace.IsNull() && myFallbackFace->IsValid())
       {
-        aNbGlyphs += myFallbackFaces[aFontIter]->GlyphsNumber(false);
+        aNbGlyphs += myFallbackFace->GlyphsNumber(false);
       }
     }
   }

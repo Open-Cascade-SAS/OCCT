@@ -285,9 +285,9 @@ private:
       Project(theAxis, theMin, theMax);
     else
     {
-      for (int i = 0; i < myNbExtremalPoints; ++i)
+      for (const auto & myLExtremalPoint : myLExtremalPoints)
       {
-        double aPrm = theAxis.Dot(myLExtremalPoints[i]);
+        double aPrm = theAxis.Dot(myLExtremalPoint);
         if (aPrm < theMin)
           theMin = aPrm;
         if (aPrm > theMax)
@@ -475,8 +475,8 @@ void OBBTool::ComputeExtremePoints()
   // created by the maximally distant extreme points
   if (!myOptimal)
   {
-    for (int i = 0; i < 5; i++)
-      myTriIdx[i] = INT_MAX;
+    for (int & i : myTriIdx)
+      i = INT_MAX;
 
     // Compute myTriIdx[0] and myTriIdx[1].
     double aMaxSqDist = -1.0;
@@ -895,12 +895,12 @@ bool Bnd_OBB::IsOut(const Bnd_OBB& theOther) const
   const double aTolNull = Epsilon(1.0);
 
   // Check the axes produced by the cross products
-  for (int i = 0; i < 3; ++i)
+  for (const auto & myAxe : myAxes)
   {
-    for (int j = 0; j < 3; ++j)
+    for (const auto & j : theOther.myAxes)
     {
       // Separating axis
-      gp_XYZ aLAxe = myAxes[i].Crossed(theOther.myAxes[j]);
+      gp_XYZ aLAxe = myAxe.Crossed(j);
 
       const double aNorm = aLAxe.Modulus();
       if (aNorm < aTolNull)
@@ -955,9 +955,9 @@ bool Bnd_OBB::IsCompletelyInside(const Bnd_OBB& theOther) const
 
   gp_Pnt aVert[8];
   theOther.GetVertex(aVert);
-  for (int i = 0; i < 8; i++)
+  for (const auto & i : aVert)
   {
-    if (IsOut(aVert[i]))
+    if (IsOut(i))
       return false;
   }
 

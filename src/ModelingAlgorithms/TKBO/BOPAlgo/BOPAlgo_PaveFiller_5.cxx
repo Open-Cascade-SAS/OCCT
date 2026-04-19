@@ -888,9 +888,9 @@ void BOPAlgo_PaveFiller::ForceInterfEF(
     // Vertices of the face
     NCollection_Map<int>        aMVF;
     const NCollection_Map<int>* pMVF[] = {&aFI.VerticesOn(), &aFI.VerticesIn(), &aFI.VerticesSc()};
-    for (int iM = 0; iM < 3; ++iM)
+    for (auto & iM : pMVF)
     {
-      NCollection_Map<int>::Iterator itM(*pMVF[iM]);
+      NCollection_Map<int>::Iterator itM(*iM);
       for (; itM.More(); itM.Next())
         aMVF.Add(itM.Value());
     }
@@ -899,12 +899,12 @@ void BOPAlgo_PaveFiller::ForceInterfEF(
     const NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>* pMPBF[] = {&aFI.PaveBlocksOn(),
                                                                            &aFI.PaveBlocksIn(),
                                                                            &aFI.PaveBlocksSc()};
-    for (int iM = 0; iM < 3; ++iM)
+    for (auto & iM : pMPBF)
     {
-      const int aNb = pMPBF[iM]->Extent();
+      const int aNb = iM->Extent();
       for (int iPB = 1; iPB <= aNb; ++iPB)
       {
-        const occ::handle<BOPDS_PaveBlock>& aPB = pMPBF[iM]->FindKey(iPB);
+        const occ::handle<BOPDS_PaveBlock>& aPB = iM->FindKey(iPB);
         aMVF.Add(aPB->Pave1().Index());
         aMVF.Add(aPB->Pave2().Index());
       }
@@ -1015,9 +1015,9 @@ void BOPAlgo_PaveFiller::ForceInterfEF(
         // Use the maximal tolerance of the pave block's vertices
         // as a max criteria for the computed distance.
 
-        for (int iP = 0; iP < 2; ++iP)
+        for (double iP : aTS)
         {
-          gp_Pnt aP = aBAC.Value(aTS[iP]);
+          gp_Pnt aP = aBAC.Value(iP);
           aProjPS.Perform(aP);
           if (aProjPS.NbPoints())
           {

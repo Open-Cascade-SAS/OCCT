@@ -245,14 +245,14 @@ occ::handle<Poly_Triangulation> BRepMesh_BaseMeshAlgo::collectTriangles()
     int aNode[3];
     myStructure->ElementNodes(aCurElem, aNode);
 
-    for (int i = 0; i < 3; ++i)
+    for (int & i : aNode)
     {
-      if (!myUsedNodes->IsBound(aNode[i]))
+      if (!myUsedNodes->IsBound(i))
       {
-        myUsedNodes->Bind(aNode[i], myUsedNodes->Size() + 1);
+        myUsedNodes->Bind(i, myUsedNodes->Size() + 1);
       }
 
-      aNode[i] = myUsedNodes->Find(aNode[i]);
+      i = myUsedNodes->Find(i);
     }
 
     aRes->SetTriangle(aTriangeId, Poly_Triangle(aNode[0], aNode[1], aNode[2]));

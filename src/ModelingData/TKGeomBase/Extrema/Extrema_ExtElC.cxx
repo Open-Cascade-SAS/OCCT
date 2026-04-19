@@ -258,9 +258,9 @@ Extrema_ExtElC::Extrema_ExtElC()
   myDone  = false;
   myIsPar = false;
   myNbExt = 0;
-  for (size_t anIdx = 0; anIdx < sizeof(mySqDist) / sizeof(mySqDist[0]); anIdx++)
+  for (double & anIdx : mySqDist)
   {
-    mySqDist[anIdx] = RealLast();
+    anIdx = RealLast();
   }
 }
 //=================================================================================================
@@ -315,9 +315,9 @@ Extrema_ExtElC::Extrema_ExtElC(const gp_Lin& theC1, const gp_Lin& theC2, const d
   myDone  = false;
   myNbExt = 0;
   myIsPar = false;
-  for (size_t anIdx = 0; anIdx < sizeof(mySqDist) / sizeof(mySqDist[0]); anIdx++)
+  for (double & anIdx : mySqDist)
   {
-    mySqDist[anIdx] = RealLast();
+    anIdx = RealLast();
   }
 
   const gp_Dir &aD1 = theC1.Position().Direction(), &aD2 = theC2.Position().Direction();
@@ -473,9 +473,9 @@ Extrema_ExtElC::Extrema_ExtElC(const gp_Lin& C1, const gp_Circ& C2, const double
   myIsPar = false;
   myDone  = false;
   myNbExt = 0;
-  for (size_t anIdx = 0; anIdx < sizeof(mySqDist) / sizeof(mySqDist[0]); anIdx++)
+  for (double & anIdx : mySqDist)
   {
-    mySqDist[anIdx] = RealLast();
+    anIdx = RealLast();
   }
 
   if (PlanarLineCircleExtrema(C1, C2))
@@ -656,9 +656,9 @@ Extrema_ExtElC::Extrema_ExtElC(const gp_Lin& C1, const gp_Elips& C2)
   myIsPar = false;
   myDone  = false;
   myNbExt = 0;
-  for (size_t anIdx = 0; anIdx < sizeof(mySqDist) / sizeof(mySqDist[0]); anIdx++)
+  for (double & anIdx : mySqDist)
   {
-    mySqDist[anIdx] = RealLast();
+    anIdx = RealLast();
   }
 
   // Calculate T1 the reference of the ellipse ...
@@ -779,9 +779,9 @@ Extrema_ExtElC::Extrema_ExtElC(const gp_Lin& C1, const gp_Hypr& C2)
   myIsPar = false;
   myDone  = false;
   myNbExt = 0;
-  for (size_t anIdx = 0; anIdx < sizeof(mySqDist) / sizeof(mySqDist[0]); anIdx++)
+  for (double & anIdx : mySqDist)
   {
-    mySqDist[anIdx] = RealLast();
+    anIdx = RealLast();
   }
 
   // Calculate T1 in the reference of the hyperbola...
@@ -881,9 +881,9 @@ Extrema_ExtElC::Extrema_ExtElC(const gp_Lin& C1, const gp_Parab& C2)
   myIsPar = false;
   myDone  = false;
   myNbExt = 0;
-  for (size_t anIdx = 0; anIdx < sizeof(mySqDist) / sizeof(mySqDist[0]); anIdx++)
+  for (double & anIdx : mySqDist)
   {
-    mySqDist[anIdx] = RealLast();
+    anIdx = RealLast();
   }
 
   // Calculate T1 in the reference of the parabola...
@@ -948,9 +948,9 @@ Extrema_ExtElC::Extrema_ExtElC(const gp_Circ& C1, const gp_Circ& C2)
   myIsPar = false;
   myDone  = false;
   myNbExt = 0;
-  for (size_t anIdx = 0; anIdx < sizeof(mySqDist) / sizeof(mySqDist[0]); anIdx++)
+  for (double & anIdx : mySqDist)
   {
-    mySqDist[anIdx] = RealLast();
+    anIdx = RealLast();
   }
   //
   aTolA  = Precision::Angular();

@@ -51,9 +51,9 @@ public:
   //! Constructor
   OpenGl_SetOfShaderPrograms(const occ::handle<OpenGl_SetOfPrograms>& thePrograms)
   {
-    for (int aSetIter = 0; aSetIter < Graphic3d_TypeOfShadingModel_NB - 1; ++aSetIter)
+    for (auto & myProgram : myPrograms)
     {
-      myPrograms[aSetIter] = thePrograms;
+      myProgram = thePrograms;
     }
   }
 

@@ -426,17 +426,17 @@ bool prismsIntersected(const BRepExtrema_BoundingPrism& thePrism1,
     return false;
   }
 
-  for (int anIdx = 0; anIdx < 3; ++anIdx)
+  for (const auto & EdgeNormal : thePrism1.EdgeNormals)
   {
-    if (thePrism1.Separated(thePrism2, thePrism1.EdgeNormals[anIdx]))
+    if (thePrism1.Separated(thePrism2, EdgeNormal))
     {
       return false;
     }
   }
 
-  for (int anIdx = 0; anIdx < 3; ++anIdx)
+  for (const auto & EdgeNormal : thePrism2.EdgeNormals)
   {
-    if (thePrism1.Separated(thePrism2, thePrism2.EdgeNormals[anIdx]))
+    if (thePrism1.Separated(thePrism2, EdgeNormal))
     {
       return false;
     }

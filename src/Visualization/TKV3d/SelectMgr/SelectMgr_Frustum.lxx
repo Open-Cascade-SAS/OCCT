@@ -440,11 +440,11 @@ bool SelectMgr_Frustum<N>::hasTriangleOverlap(const gp_Pnt& thePnt1,
   }
 
   int aDirectionsNb = myCamera->IsOrthographic() ? 4 : 6;
-  for (int aTriangleEdgeIdx = 0; aTriangleEdgeIdx < 3; ++aTriangleEdgeIdx)
+  for (const auto & aTrEdge : aTrEdges)
   {
     for (int aVolDir = 0; aVolDir < aDirectionsNb; ++aVolDir)
     {
-      const gp_XYZ& aTestDirection = myEdgeDirs[aVolDir].XYZ().Crossed(aTrEdges[aTriangleEdgeIdx]);
+      const gp_XYZ& aTestDirection = myEdgeDirs[aVolDir].XYZ().Crossed(aTrEdge);
 
       if (isSeparated(thePnt1, thePnt2, thePnt3, aTestDirection))
       {
@@ -792,9 +792,9 @@ bool SelectMgr_Frustum<N>::hasCylinderOverlap(const double   theBottomRad,
     return true;
   }
   bool isCylInsideRec = true;
-  for (int i = 0; i < 6; ++i)
+  for (auto & aPoint : aPoints)
   {
-    isCylInsideRec &= isDotInside(aPoints[i], aVertices);
+    isCylInsideRec &= isDotInside(aPoint, aVertices);
   }
   if (theInside != nullptr)
   {
@@ -904,9 +904,8 @@ void SelectMgr_Frustum<N>::DumpJson(Standard_OStream& theOStream, int theDepth) 
     OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, aMinOrthoVertsProjections)
   }
 
-  for (int anIndex = 0; anIndex < 6; anIndex++)
+  for (const auto & anEdgeDir : myEdgeDirs)
   {
-    const gp_Vec& anEdgeDir = myEdgeDirs[anIndex];
     OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &anEdgeDir)
   }
 }

@@ -356,13 +356,13 @@ void OpenGl_FrameStatsPrs::updateChart(const occ::handle<OpenGl_Workspace>& theW
     myChartLabels[2].Text()->SetText(aLabels[isTopDown ? 2 : 0].ToCString());
     myChartLabels[2].Text()->SetPosition(gp_Pnt(aLabX, float(anOffset.y() - aBinSize.y()), 0.0f));
 
-    for (int i = 0; i < 3; i++)
+    for (auto & myChartLabel : myChartLabels)
     {
-      myChartLabels[i].Text()->SetHeight(aParams.Height());
-      myChartLabels[i].Text()->SetHorizontalAlignment(aParams.HorizontalAlignment());
-      myChartLabels[i].Text()->SetVerticalAlignment(aParams.VerticalAlignment());
+      myChartLabel.Text()->SetHeight(aParams.Height());
+      myChartLabel.Text()->SetHorizontalAlignment(aParams.HorizontalAlignment());
+      myChartLabel.Text()->SetVerticalAlignment(aParams.VerticalAlignment());
 
-      myChartLabels[i].Reset(aCtx);
+      myChartLabel.Reset(aCtx);
     }
   }
 }

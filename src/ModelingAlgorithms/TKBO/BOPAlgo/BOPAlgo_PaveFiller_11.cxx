@@ -90,12 +90,12 @@ void BOPAlgo_PaveFiller::CheckSelfInterference()
           {
             int nV[2];
             aPB->Indices(nV[0], nV[1]);
-            for (int k = 0; k < 2; ++k)
+            for (int k : nV)
             {
-              if (!aR.Contains(nV[k]) && !aMSubS.Contains(nV[k]))
+              if (!aR.Contains(k) && !aMSubS.Contains(k))
               {
                 // Add connection
-                const TopoDS_Shape& aV = myDS->Shape(nV[k]);
+                const TopoDS_Shape& aV = myDS->Shape(k);
                 NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>* pMSOr =
                   aMCSI.ChangeSeek(aV);
                 if (!pMSOr)

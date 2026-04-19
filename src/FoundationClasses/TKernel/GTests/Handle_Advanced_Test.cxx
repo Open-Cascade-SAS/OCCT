@@ -324,17 +324,17 @@ TEST_F(HandleAdvancedTest, HandleArrayOperations)
   EXPECT_EQ(5, aHandleVector.size());
 
   // Test that all handles are valid and point to correct types
-  for (size_t i = 0; i < aHandleVector.size(); ++i)
+  for (const auto & i : aHandleVector)
   {
-    EXPECT_FALSE(aHandleVector[i].IsNull());
+    EXPECT_FALSE(i.IsNull());
 
     // Test polymorphic behavior
-    EXPECT_TRUE(aHandleVector[i]->IsKind("QaClass00_50"));
+    EXPECT_TRUE(i->IsKind("QaClass00_50"));
 
     // Test dynamic casting
-    occ::handle<QaClass00_50> aCast = aHandleVector[i];
+    occ::handle<QaClass00_50> aCast = i;
     EXPECT_FALSE(aCast.IsNull());
-    EXPECT_EQ(aHandleVector[i].get(), aCast.get());
+    EXPECT_EQ(i.get(), aCast.get());
   }
 
   // Test specific type casting

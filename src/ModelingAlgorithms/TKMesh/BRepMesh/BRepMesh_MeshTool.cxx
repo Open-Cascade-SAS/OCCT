@@ -252,12 +252,12 @@ void BRepMesh_MeshTool::collectTrianglesOnFreeLinksAroundNodesOf(
         const BRepMesh_Triangle& aElement = myStructure->GetElement(aIndex);
         const int (&aEdges)[3]            = aElement.myEdges;
 
-        for (int i = 0; i < 3; ++i)
+        for (int aEdge : aEdges)
         {
-          if (aEdges[i] != aLinkIndex && !aUsedLinks.Contains(aEdges[i]))
+          if (aEdge != aLinkIndex && !aUsedLinks.Contains(aEdge))
           {
-            aUsedLinks.Add(aEdges[i]);
-            aStack.push(aEdges[i]);
+            aUsedLinks.Add(aEdge);
+            aStack.push(aEdge);
           }
         }
       }

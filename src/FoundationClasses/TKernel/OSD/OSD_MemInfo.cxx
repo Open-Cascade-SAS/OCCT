@@ -69,9 +69,9 @@ void OSD_MemInfo::SetActive(const bool theActive)
 
 void OSD_MemInfo::Clear()
 {
-  for (int anIter = 0; anIter < MemCounter_NB; ++anIter)
+  for (unsigned long & myCounter : myCounters)
   {
-    myCounters[anIter] = size_t(-1);
+    myCounter = size_t(-1);
   }
 }
 

@@ -276,8 +276,8 @@ bool MeshVS_Tool::GetNormal(const NCollection_Array1<double>& Nodes, gp_Vec& Nor
     {
       double cur =
         std::sqrt(cur_vec[0] * cur_vec[0] + cur_vec[1] * cur_vec[1] + cur_vec[2] * cur_vec[2]);
-      for (int k = 0; k < 3; k++)
-        cur_vec[k] /= cur;
+      for (double & k : cur_vec)
+        k /= cur;
     }
 
     if (fabs(normal[0]) <= conf && fabs(normal[1]) <= conf && fabs(normal[2]) <= conf)
@@ -344,8 +344,8 @@ bool MeshVS_Tool::GetAverageNormal(const NCollection_Array1<double>& Nodes, gp_V
     {
       double cur =
         std::sqrt(cur_vec[0] * cur_vec[0] + cur_vec[1] * cur_vec[1] + cur_vec[2] * cur_vec[2]);
-      for (int k = 0; k < 3; k++)
-        cur_vec[k] /= cur;
+      for (double & k : cur_vec)
+        k /= cur;
     }
 
     norm_vec[i - 2].SetCoord(cur_vec[0], cur_vec[1], cur_vec[2]);

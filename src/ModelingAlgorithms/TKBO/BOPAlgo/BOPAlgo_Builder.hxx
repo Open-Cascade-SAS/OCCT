@@ -325,9 +325,9 @@ protected: //! @name Analyze progress of the operation
   public:
     NbShapes()
     {
-      for (int i = 0; i < 8; ++i)
+      for (int & i : myNbShapesArr)
       {
-        myNbShapesArr[i] = 0;
+        i = 0;
       }
     }
 
