@@ -3038,14 +3038,14 @@ void OpenGl_Context::DumpJson(Standard_OStream& theOStream, int theDepth) const
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myHasRayTracingAdaptiveSampling)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myHasRayTracingAdaptiveSamplingAtomic)
 
-  for (int i : myViewport)
+  for (int i = 0; i < 4; i++)
   {
-    OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, i)
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myViewport[i])
   }
 
-  for (int i : myViewportVirt)
+  for (int i = 0; i < 4; i++)
   {
-    OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, i)
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myViewportVirt[i])
   }
 
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myPointSpriteOrig)
