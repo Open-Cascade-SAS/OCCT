@@ -496,7 +496,9 @@ TEST(BRepGraph_ScenarioMatrix, Compound_FreeWireFreeEdgeFreeVertex_ValidateAndPo
       aStorage.ReverseIndex().CompoundsOfWire(BRepGraph_WireId::Start());
     EXPECT_NE(aCmpOfWire, nullptr) << "Free wire must appear in CompoundsOfWire reverse index";
     if (aCmpOfWire != nullptr)
+    {
       EXPECT_GE(aCmpOfWire->Length(), 1);
+    }
   }
 
   // At least one edge must be reverse-indexed directly into the compound
@@ -526,7 +528,9 @@ TEST(BRepGraph_ScenarioMatrix, Compound_FreeWireFreeEdgeFreeVertex_ValidateAndPo
     aStorage.ReverseIndex().CompoundsOfVertex(aFreeVtxId);
   EXPECT_NE(aCmpOfFreeVtx, nullptr) << "Free vertex must appear in CompoundsOfVertex reverse index";
   if (aCmpOfFreeVtx != nullptr)
+  {
     EXPECT_GE(aCmpOfFreeVtx->Length(), 1);
+  }
 
   EXPECT_TRUE(aStorage.ValidateReverseIndex())
     << "Reverse index must be consistent for compound with atomic sub-shapes";
