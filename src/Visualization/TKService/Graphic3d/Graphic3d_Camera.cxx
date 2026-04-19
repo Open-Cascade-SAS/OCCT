@@ -18,6 +18,8 @@
 #include <gp_Pln.hxx>
 #include <gp_QuaternionNLerp.hxx>
 #include <gp_QuaternionSLerp.hxx>
+#include <Message.hxx>
+#include <Message_Messenger.hxx>
 #include <NCollection_Vec4.hxx>
 #include <Standard_TypeDef.hxx>
 #include <Graphic3d_WorldViewProjState.hxx>
@@ -1458,6 +1460,15 @@ bool Graphic3d_Camera::ZFitAll(const double   theScaleFactor,
   Standard_ASSERT_RAISE(theScaleFactor > 0.0, "Zero or negative scale factor is not allowed.");
 
   auto setDefaultZRange = [&theZNear, &theZFar]() {
+    // Once-per-process warning -- ZFitAll can fire every frame with a degenerate
+    // bounding box, so the atomic suppresses re-logging after the first failure.
+    static std::atomic_bool theReported{false};
+    if (!theReported.exchange(true, std::memory_order_relaxed))
+    {
+      Message::SendWarning(
+        "Graphic3d_Camera::ZFitAll: non-finite or invalid input; falling back to default Z range "
+        "[0.001, 3000]. Subsequent occurrences of this warning are suppressed.");
+    }
     theZNear = DEFAULT_ZNEAR;
     theZFar  = DEFAULT_ZFAR;
     return false;

@@ -32,6 +32,9 @@ bool SelectMgr_Frustum<N>::isSeparated(const NCollection_Vec3<double>& theBoxMin
                                        const gp_XYZ&                   theDirect,
                                        bool*                           theInside) const
 {
+  // Non-finite axis or near-zero-length direction: return false (no overlap).
+  // Silent by design -- hot selection path, and "no overlap" is the correct
+  // conservative answer for SAT on degenerate input.
   if (!std::isfinite(theDirect.X()) || !std::isfinite(theDirect.Y()) || !std::isfinite(theDirect.Z())
       || theDirect.SquareModulus() <= gp::Resolution())
   {
