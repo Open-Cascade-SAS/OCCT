@@ -176,7 +176,7 @@ TEST(BRepGraph_ScenarioMatrix, Box_MutateVertex_ValidateReconstructPopulateRound
 }
 
 // =============================================================================
-// Scenario 2: Cylinder seam edge – mutation in BRepGraph + BRepGraphInc
+// Scenario 2: Cylinder seam edge - mutation in BRepGraph + BRepGraphInc
 // cross-validation
 //
 // Flow: build cylinder -> BRepGraph + BRepGraphInc_Storage -> locate the seam
@@ -281,7 +281,7 @@ TEST(BRepGraph_ScenarioMatrix, Cylinder_SeamEdge_MutationAndBothSubsystemsConsis
 }
 
 // =============================================================================
-// Scenario 3: CompSolid – BRepGraph + BRepGraphInc reverse-index + mutation
+// Scenario 3: CompSolid - BRepGraph + BRepGraphInc reverse-index + mutation
 // + reconstruct round-trip
 //
 // Flow: build CompSolid (2 boxes) -> BRepGraph build -> BRepGraphInc populate
@@ -365,7 +365,7 @@ TEST(BRepGraph_ScenarioMatrix, CompSolid_TwoBoxes_BothSubsystemsMutateReconstruc
 }
 
 // =============================================================================
-// Scenario 4: Assembly – two occurrences of a shared part -> Validate(Audit)
+// Scenario 4: Assembly - two occurrences of a shared part -> Validate(Audit)
 // checks assembly DAG -> reconstruct the part -> BRepGraphInc populate from
 // the reconstructed part -> entity counts and reverse index consistent.
 // =============================================================================
@@ -533,7 +533,7 @@ TEST(BRepGraph_ScenarioMatrix, Compound_FreeWireFreeEdgeFreeVertex_ValidateAndPo
 }
 
 // =============================================================================
-// Scenario 6: Compound [Box + Cylinder] – BRepGraph + BRepGraphInc both
+// Scenario 6: Compound [Box + Cylinder] - BRepGraph + BRepGraphInc both
 // subsystems used, face tolerance mutation on a box face, area regression
 // check, seam presence after second populate.
 //

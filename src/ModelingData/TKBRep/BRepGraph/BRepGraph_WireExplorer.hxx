@@ -207,7 +207,7 @@ private:
     }
   }
 
-  NCollection_LocalArray<BRepGraph_CoEdgeId, 16> myOrder;   //!< Ordered coedge IDs (stack for <=16).
+  NCollection_LocalArray<BRepGraph_CoEdgeId, 16> myOrder; //!< Ordered coedge IDs (stack for <=16).
   int                                            myCurrent; //!< Current iteration index.
   int                                            myLength;  //!< Number of coedges.
 };

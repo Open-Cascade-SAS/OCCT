@@ -2189,7 +2189,7 @@ void BRepGraphInc_Populate::Append(BRepGraphInc_Storage&                        
   // hierarchies with no cross-references to existing containers.
   //
   // Cost is O(total children across new compounds). Earlier versions rescanned every
-  // ChildRef in the storage for each child (O(children × total refs)); the new compound's
+  // ChildRef in the storage for each child (O(children x total refs)); the new compound's
   // own ChildRefIds vector is already in order, so we iterate it directly.
   const int aNbCompounds = theStorage.myCompounds.Nb();
   for (int aCompIdx = anOldNbCompounds; aCompIdx < aNbCompounds; ++aCompIdx)
