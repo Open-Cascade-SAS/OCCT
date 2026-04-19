@@ -22,6 +22,7 @@ set(OCCT_TKMath_GTests_FILES
   BVH_RadixSorter_Test.cxx
   BVH_Ray_Test.cxx
   BVH_SIMDDispatch_Test.cxx
+  BVH_ToolsSIMD_Test.cxx
   BVH_SpatialMedianBuilder_Test.cxx
   BVH_SweepPlaneBuilder_Test.cxx
   BVH_Tools_Test.cxx
