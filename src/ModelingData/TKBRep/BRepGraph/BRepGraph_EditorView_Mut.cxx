@@ -232,8 +232,8 @@ static bool isActiveRep(const BRepGraphInc_Storage& theStorage, const BRepGraph_
 
 //==================================================================================================
 
-static void validateMutableNodeId(const BRepGraphInc_Storage& theStorage,
-                                  const BRepGraph_NodeId      theNodeId)
+static void validateMutableNodeId(const BRepGraphInc_Storage& theStorage [[maybe_unused]],
+                                  const BRepGraph_NodeId      theNodeId [[maybe_unused]])
 {
   Standard_ProgramError_Raise_if(!isActiveNode(theStorage, theNodeId),
                                  "BRepGraph::EditorView::Mut*(): invalid node id");
@@ -241,8 +241,8 @@ static void validateMutableNodeId(const BRepGraphInc_Storage& theStorage,
 
 //==================================================================================================
 
-static void validateMutableRefId(const BRepGraphInc_Storage& theStorage,
-                                 const BRepGraph_RefId       theRefId)
+static void validateMutableRefId(const BRepGraphInc_Storage& theStorage [[maybe_unused]],
+                                 const BRepGraph_RefId       theRefId [[maybe_unused]])
 {
   Standard_ProgramError_Raise_if(!isActiveRef(theStorage, theRefId),
                                  "BRepGraph::EditorView::Mut*(): invalid reference id");
@@ -250,8 +250,8 @@ static void validateMutableRefId(const BRepGraphInc_Storage& theStorage,
 
 //==================================================================================================
 
-static void validateMutableRepId(const BRepGraphInc_Storage& theStorage,
-                                 const BRepGraph_RepId       theRepId)
+static void validateMutableRepId(const BRepGraphInc_Storage& theStorage [[maybe_unused]],
+                                 const BRepGraph_RepId       theRepId [[maybe_unused]])
 {
   Standard_ProgramError_Raise_if(!isActiveRep(theStorage, theRepId),
                                  "BRepGraph::EditorView::Mut*(): invalid representation id");
