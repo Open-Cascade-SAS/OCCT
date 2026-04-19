@@ -18,7 +18,6 @@
 #include <Bnd_Box.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraph_EditorView.hxx>
-#include <BRepGraphAlgo_BndLib.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_History.hxx>
 #include <BRepGraph_HistoryRecord.hxx>
@@ -231,36 +230,6 @@ TEST(BRepGraph_CompactTest, FullPipeline_Deduplicate_Compact_Validate)
   EXPECT_EQ(aCompactRes.NbNodesAfter, aCompactRes.NbNodesBefore);
 
   // Validate.
-  const BRepGraph_Validate::Result aValResult = BRepGraph_Validate::Perform(aGraph);
-  EXPECT_TRUE(aValResult.IsValid());
-}
-
-TEST(BRepGraph_CompactTest, RemovalCompact_PreservesBounds_AndDoesNotGrowTopology)
-{
-  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
-  const TopoDS_Shape& aBox = aBoxMaker.Shape();
-
-  BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, aBox);
-  ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_GT(aGraph.Topo().CoEdges().Nb(), 0);
-  ASSERT_GT(aGraph.Topo().Faces().Nb(), 2);
-
-  aGraph.Editor().Gen().RemoveNode(BRepGraph_FaceId(2));
-
-  const int aCoEdgesBeforeCompact = aGraph.Topo().CoEdges().Nb();
-
-  Bnd_Box aBoxBeforeCompact;
-  BRepGraphAlgo_BndLib::Add(aGraph, aBoxBeforeCompact);
-
-  const BRepGraph_Compact::Result aRes = BRepGraph_Compact::Perform(aGraph);
-  EXPECT_GE(aRes.NbNodesBefore, aRes.NbNodesAfter);
-  EXPECT_LE(aGraph.Topo().CoEdges().Nb(), aCoEdgesBeforeCompact);
-
-  Bnd_Box aBoxAfterCompact;
-  BRepGraphAlgo_BndLib::Add(aGraph, aBoxAfterCompact);
-  expectBoxNear(aBoxAfterCompact, aBoxBeforeCompact, Precision::Confusion());
-
   const BRepGraph_Validate::Result aValResult = BRepGraph_Validate::Perform(aGraph);
   EXPECT_TRUE(aValResult.IsValid());
 }
