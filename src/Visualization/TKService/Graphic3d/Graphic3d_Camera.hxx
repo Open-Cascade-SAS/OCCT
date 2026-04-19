@@ -371,10 +371,8 @@ public:
   void ZFitAll(const double theScaleFactor, const Bnd_Box& theMinMax, const Bnd_Box& theGraphicBB)
   {
     double aZNear = 0.0, aZFar = 1.0;
-    if (ZFitAll(theScaleFactor, theMinMax, theGraphicBB, aZNear, aZFar))
-    {
-      SetZRange(aZNear, aZFar);
-    }
+    ZFitAll(theScaleFactor, theMinMax, theGraphicBB, aZNear, aZFar);
+    SetZRange(aZNear, aZFar);
   }
 
   //! Change the Near and Far Z-clipping plane positions.

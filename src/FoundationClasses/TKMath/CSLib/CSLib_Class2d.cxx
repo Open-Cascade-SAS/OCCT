@@ -95,9 +95,6 @@ void CSLib_Class2d::init(const TCol_Containers2d& thePnts2d,
   {
     myTolV /= aDv;
   }
-
-  // Build grid cache for O(1) fast-path classification.
-  buildGridCache();
 }
 
 //=================================================================================================
@@ -141,53 +138,6 @@ CSLib_Class2d::CSLib_Class2d(const NCollection_Vector<gp_Pnt2d>& thePnts2d,
 
 //=================================================================================================
 
-void CSLib_Class2d::buildGridCache()
-{
-  if (myPointsCount < 3)
-    return;
-
-  const int aTotalCells = THE_GRID_SIZE * THE_GRID_SIZE;
-  myGrid.Resize(0, aTotalCells - 1, false);
-
-  const double aCellW = 1.0 / THE_GRID_SIZE;
-  const double aCellH = 1.0 / THE_GRID_SIZE;
-
-  for (int aIY = 0; aIY < THE_GRID_SIZE; ++aIY)
-  {
-    const double aY0 = aIY * aCellH;
-    const double aY1 = aY0 + aCellH;
-    const double aYC = aY0 + aCellH * 0.5;
-
-    for (int aIX = 0; aIX < THE_GRID_SIZE; ++aIX)
-    {
-      const double aX0 = aIX * aCellW;
-      const double aX1 = aX0 + aCellW;
-      const double aXC = aX0 + aCellW * 0.5;
-
-      // Sample 5 points: 4 corners + center.
-      const bool aC = internalSiDans(aXC, aYC);
-      const bool a00 = internalSiDans(aX0, aY0);
-      const bool a10 = internalSiDans(aX1, aY0);
-      const bool a01 = internalSiDans(aX0, aY1);
-      const bool a11 = internalSiDans(aX1, aY1);
-
-      const int aIdx = aIY * THE_GRID_SIZE + aIX;
-      if (aC == a00 && aC == a10 && aC == a01 && aC == a11)
-      {
-        myGrid.SetValue(aIdx, aC ? GridCell_Inside : GridCell_Outside);
-      }
-      else
-      {
-        myGrid.SetValue(aIdx, GridCell_Boundary);
-      }
-    }
-  }
-
-  myGridReady = true;
-}
-
-//=================================================================================================
-
 CSLib_Class2d::Result CSLib_Class2d::SiDans(const gp_Pnt2d& thePoint) const
 {
   if (myPointsCount == 0)
@@ -212,21 +162,6 @@ CSLib_Class2d::Result CSLib_Class2d::SiDans(const gp_Pnt2d& thePoint) const
   // Transform to normalized coordinates.
   aX = transformToNormalized(aX, myUMin, myUMax - myUMin);
   aY = transformToNormalized(aY, myVMin, myVMax - myVMin);
-
-  // Fast-path: grid cache lookup (O(1) for points far from polygon edges).
-  if (myGridReady)
-  {
-    int aIX = static_cast<int>(aX * THE_GRID_SIZE);
-    int aIY = static_cast<int>(aY * THE_GRID_SIZE);
-    aIX = std::clamp(aIX, 0, THE_GRID_SIZE - 1);
-    aIY = std::clamp(aIY, 0, THE_GRID_SIZE - 1);
-    const GridCell aCell = myGrid.Value(aIY * THE_GRID_SIZE + aIX);
-    if (aCell == GridCell_Inside)
-      return Result_Inside;
-    if (aCell == GridCell_Outside)
-      return Result_Outside;
-    // GridCell_Boundary — fall through to exact classification.
-  }
 
   // Perform classification with ON detection.
   const Result aResult = internalSiDansOuOn(aX, aY);
@@ -299,20 +234,16 @@ CSLib_Class2d::Result CSLib_Class2d::SiDans_OnMode(const gp_Pnt2d& thePoint,
 bool CSLib_Class2d::internalSiDans(const double thePx, const double thePy) const
 {
   // Ray-casting algorithm: count edge crossings with a horizontal ray from (Px, Py) to +infinity.
-  // Use raw pointers for cache-friendly sequential access and auto-vectorization.
-  const double* pX = &myPnts2dX.First();
-  const double* pY = &myPnts2dY.First();
-
   int aNbCrossings = 0;
 
-  double aPrevDx          = pX[0] - thePx;
-  double aPrevDy          = pY[0] - thePy;
+  double aPrevDx          = myPnts2dX.Value(0) - thePx;
+  double aPrevDy          = myPnts2dY.Value(0) - thePy;
   bool   aPrevYIsNegative = (aPrevDy < 0.0);
 
   for (int aNextIdx = 1; aNextIdx <= myPointsCount; ++aNextIdx)
   {
-    const double aCurrDx          = pX[aNextIdx] - thePx;
-    const double aCurrDy          = pY[aNextIdx] - thePy;
+    const double aCurrDx          = myPnts2dX.Value(aNextIdx) - thePx;
+    const double aCurrDy          = myPnts2dY.Value(aNextIdx) - thePy;
     const bool   aCurrYIsNegative = (aCurrDy < 0.0);
 
     // Check for edge crossing when Y changes sign.
@@ -349,21 +280,17 @@ CSLib_Class2d::Result CSLib_Class2d::internalSiDansOuOn(const double thePx,
                                                         const double thePy) const
 {
   // Ray-casting algorithm with ON detection.
-  // Use raw pointers for cache-friendly sequential access and auto-vectorization.
-  const double* pX = &myPnts2dX.First();
-  const double* pY = &myPnts2dY.First();
-
   int aNbCrossings = 0;
 
-  double aPrevDx          = pX[0] - thePx;
-  double aPrevDy          = pY[0] - thePy;
+  double aPrevDx          = myPnts2dX.Value(0) - thePx;
+  double aPrevDy          = myPnts2dY.Value(0) - thePy;
   bool   aPrevYIsNegative = (aPrevDy < 0.0);
 
   for (int aNextIdx = 1; aNextIdx <= myPointsCount; ++aNextIdx)
   {
     const int    aPrevIdx = aNextIdx - 1;
-    const double aCurrDx  = pX[aNextIdx] - thePx;
-    const double aCurrDy  = pY[aNextIdx] - thePy;
+    const double aCurrDx  = myPnts2dX.Value(aNextIdx) - thePx;
+    const double aCurrDy  = myPnts2dY.Value(aNextIdx) - thePy;
 
     // Check if point is very close to current vertex.
     if (aCurrDx < myTolU && aCurrDx > -myTolU && aCurrDy < myTolV && aCurrDy > -myTolV)
@@ -374,13 +301,13 @@ CSLib_Class2d::Result CSLib_Class2d::internalSiDansOuOn(const double thePx,
     // Check if point is ON the edge by computing Y at the test point's X.
     // Skip interpolation for nearly vertical edges to avoid division instability.
     // For vertical edges, the ON detection is handled by the tolerance check above.
-    const double aEdgeDx = pX[aNextIdx] - pX[aPrevIdx];
-    if ((pX[aPrevIdx] - thePx) * aCurrDx < 0.0
+    const double aEdgeDx = myPnts2dX.Value(aNextIdx) - myPnts2dX.Value(aPrevIdx);
+    if ((myPnts2dX.Value(aPrevIdx) - thePx) * aCurrDx < 0.0
         && std::abs(aEdgeDx) > Precision::PConfusion())
     {
       const double aInterpY =
-        pY[aNextIdx]
-        - (pY[aNextIdx] - pY[aPrevIdx]) / aEdgeDx * aCurrDx;
+        myPnts2dY.Value(aNextIdx)
+        - (myPnts2dY.Value(aNextIdx) - myPnts2dY.Value(aPrevIdx)) / aEdgeDx * aCurrDx;
       const double aDeltaY = aInterpY - thePy;
       if (aDeltaY >= -myTolV && aDeltaY <= myTolV)
       {

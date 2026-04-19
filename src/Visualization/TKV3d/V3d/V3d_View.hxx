@@ -876,12 +876,6 @@ public:
   //! Returns the associated Graphic3d view.
   const occ::handle<Graphic3d_CView>& View() const { return myView; }
 
-  //! Return viewport offset for direct framebuffer rendering (OpenGL bottom-left coords).
-  const NCollection_Vec2<int>& ViewportOffset() const { return myView->ViewportOffset(); }
-
-  //! Set viewport offset for direct framebuffer rendering (OpenGL bottom-left coords).
-  void SetViewportOffset(const NCollection_Vec2<int>& theOffset) { myView->SetViewportOffset(theOffset); }
-
   //! Switches computed HLR mode in the view.
   Standard_EXPORT void SetComputedMode(const bool theMode);
 

@@ -36,7 +36,6 @@
 #include <Intf_Tool.hxx>
 #include <TopoDS_Face.hxx>
 #include <BRep_Tool.hxx>
-#include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
 
@@ -130,9 +129,6 @@ IntCurvesFace_Intersector::IntCurvesFace_Intersector(const TopoDS_Face& Face,
       done(false),
       myReady(false),
       nbpnt(0),
-      myFaceOri(Face.Orientation()),
-      myMinEdgeTol(0.0),
-      myMaxEdgeTol(0.0),
       myUseBoundTol(UseBToler),
       myIsParallel(false)
 {
@@ -141,86 +137,54 @@ IntCurvesFace_Intersector::IntCurvesFace_Intersector(const TopoDS_Face& Face,
   surface.Initialize(Face, aRestr);
   Hsurface    = new BRepAdaptor_Surface(surface);
   myTopolTool = new BRepTopAdaptor_TopolTool(Hsurface);
-  initSampling();
-}
 
-//=================================================================================================
-
-IntCurvesFace_Intersector::IntCurvesFace_Intersector(
-  const occ::handle<Adaptor3d_Surface>&  theSurface,
-  const occ::handle<Adaptor3d_TopolTool>& theTopolTool,
-  const double                           theTol,
-  const TopAbs_Orientation               theFaceOri,
-  const double                           theMinEdgeTol,
-  const double                           theMaxEdgeTol,
-  const bool                             theRestr,
-  const bool                             theUseBToler)
-    : Tol(theTol),
-      done(false),
-      myReady(false),
-      nbpnt(0),
-      myFaceOri(theFaceOri),
-      myMinEdgeTol(theMinEdgeTol),
-      myMaxEdgeTol(theMaxEdgeTol),
-      myUseBoundTol(theUseBToler),
-      myIsParallel(false)
-{
-  // face stays null — this is the adaptor-only path.
-  (void)theRestr; // UV restriction is embedded in the surface adaptor itself.
-  Hsurface    = theSurface;
-  myTopolTool = theTopolTool;
-  initSampling();
-}
-
-//=================================================================================================
-
-void IntCurvesFace_Intersector::initSampling()
-{
-  const GeomAbs_SurfaceType aSurfType = Adaptor3d_HSurfaceTool::GetType(Hsurface);
-  if (aSurfType != GeomAbs_Plane && aSurfType != GeomAbs_Cylinder
-      && aSurfType != GeomAbs_Cone && aSurfType != GeomAbs_Sphere
-      && aSurfType != GeomAbs_Torus)
+  GeomAbs_SurfaceType SurfaceType = Adaptor3d_HSurfaceTool::GetType(Hsurface);
+  if ((SurfaceType != GeomAbs_Plane) && (SurfaceType != GeomAbs_Cylinder)
+      && (SurfaceType != GeomAbs_Cone) && (SurfaceType != GeomAbs_Sphere)
+      && (SurfaceType != GeomAbs_Torus))
   {
-    int    aNbSU, aNbSV;
-    const double aU0 = Hsurface->FirstUParameter();
-    const double aU1 = Hsurface->LastUParameter();
-    const double aV0 = Hsurface->FirstVParameter();
-    const double aV1 = Hsurface->LastVParameter();
+    int    nbsu, nbsv;
+    double U0, V0, U1, V1;
+    U0 = Hsurface->FirstUParameter();
+    U1 = Hsurface->LastUParameter();
+    V0 = Hsurface->FirstVParameter();
+    V1 = Hsurface->LastVParameter();
+    //
+    nbsu = myTopolTool->NbSamplesU();
+    nbsv = myTopolTool->NbSamplesV();
+    //
+    double aURes = Hsurface->UResolution(1.0);
+    double aVRes = Hsurface->VResolution(1.0);
 
-    aNbSU = myTopolTool->NbSamplesU();
-    aNbSV = myTopolTool->NbSamplesV();
-
-    const double aURes = Hsurface->UResolution(1.0);
-    const double aVRes = Hsurface->VResolution(1.0);
-
+    // Checking correlation between number of samples and length of the face along each axis
     const double aTresh       = 100.0;
     int          aMinSamples  = 20;
     const int    aMaxSamples  = 40;
     const int    aMaxSamples2 = aMaxSamples * aMaxSamples;
-    const double aDU          = (aU1 - aU0) / aURes;
-    const double aDV          = (aV1 - aV0) / aVRes;
-    if (aNbSU < aMinSamples)
-      aNbSU = aMinSamples;
-    if (aNbSV < aMinSamples)
-      aNbSV = aMinSamples;
-    if (aNbSU > aMaxSamples)
-      aNbSU = aMaxSamples;
-    if (aNbSV > aMaxSamples)
-      aNbSV = aMaxSamples;
+    double       dU           = (U1 - U0) / aURes;
+    double       dV           = (V1 - V0) / aVRes;
+    if (nbsu < aMinSamples)
+      nbsu = aMinSamples;
+    if (nbsv < aMinSamples)
+      nbsv = aMinSamples;
+    if (nbsu > aMaxSamples)
+      nbsu = aMaxSamples;
+    if (nbsv > aMaxSamples)
+      nbsv = aMaxSamples;
 
-    if (aDU > Precision::Confusion() && aDV > Precision::Confusion())
+    if (dU > Precision::Confusion() && dV > Precision::Confusion())
     {
-      if (std::max(aDU, aDV) > std::min(aDU, aDV) * aTresh)
+      if (std::max(dU, dV) > std::min(dU, dV) * aTresh)
       {
         aMinSamples = 10;
-        aNbSU       = static_cast<int>(std::sqrt(aDU / aDV) * aMaxSamples);
-        if (aNbSU < aMinSamples)
-          aNbSU = aMinSamples;
-        aNbSV = aMaxSamples2 / aNbSU;
-        if (aNbSV < aMinSamples)
+        nbsu        = (int)(std::sqrt(dU / dV) * aMaxSamples);
+        if (nbsu < aMinSamples)
+          nbsu = aMinSamples;
+        nbsv = aMaxSamples2 / nbsu;
+        if (nbsv < aMinSamples)
         {
-          aNbSV = aMinSamples;
-          aNbSU = aMaxSamples2 / aMinSamples;
+          nbsv = aMinSamples;
+          nbsu = aMaxSamples2 / aMinSamples;
         }
       }
     }
@@ -229,20 +193,21 @@ void IntCurvesFace_Intersector::initSampling()
       return; // surface has no extension along one of directions
     }
 
-    const int aNbUOnS = Hsurface->NbUIntervals(GeomAbs_C2);
-    const int aNbVOnS = Hsurface->NbVIntervals(GeomAbs_C2);
+    int NbUOnS = Hsurface->NbUIntervals(GeomAbs_C2);
+    int NbVOnS = Hsurface->NbVIntervals(GeomAbs_C2);
 
-    if (aNbUOnS > 1 || aNbVOnS > 1)
+    if (NbUOnS > 1 || NbVOnS > 1)
     {
-      occ::handle<NCollection_HArray1<double>> aUPars, aVPars;
-      ComputeSamplePars(Hsurface, aNbSU, aNbSV, aUPars, aVPars);
-      myPolyhedron.reset(new IntCurveSurface_ThePolyhedronOfHInter(
-        Hsurface, aUPars->ChangeArray1(), aVPars->ChangeArray1()));
+      occ::handle<NCollection_HArray1<double>> UPars, VPars;
+      ComputeSamplePars(Hsurface, nbsu, nbsv, UPars, VPars);
+      myPolyhedron.reset(new IntCurveSurface_ThePolyhedronOfHInter(Hsurface,
+                                                                   UPars->ChangeArray1(),
+                                                                   VPars->ChangeArray1()));
     }
     else
     {
       myPolyhedron.reset(
-        new IntCurveSurface_ThePolyhedronOfHInter(Hsurface, aNbSU, aNbSV, aU0, aV0, aU1, aV1));
+        new IntCurveSurface_ThePolyhedronOfHInter(Hsurface, nbsu, nbsv, U0, V0, U1, V1));
     }
   }
   myReady = true;
@@ -256,88 +221,57 @@ void IntCurvesFace_Intersector::InternalCall(const IntCurveSurface_HInter& HICS,
 {
   if (HICS.IsDone() && HICS.NbPoints() > 0)
   {
-    // Calculate tolerance for 2d classifier.
-    // When face is available, compute edge tolerances from TopoDS; otherwise use stored values.
-    double mintol3d, maxtol3d;
-    double mintol2d = Tol, maxtol2d = Tol;
-    if (!face.IsNull())
+    // Calculate tolerance for 2d classifier
+    double          mintol3d = BRep_Tool::Tolerance(face);
+    double          maxtol3d = mintol3d;
+    double          mintol2d = Tol, maxtol2d = Tol;
+    TopExp_Explorer anExp(face, TopAbs_EDGE);
+    for (; anExp.More(); anExp.Next())
     {
-      mintol3d = BRep_Tool::Tolerance(face);
-      maxtol3d = mintol3d;
-      TopExp_Explorer anEdgeExp(face, TopAbs_EDGE);
-      for (; anEdgeExp.More(); anEdgeExp.Next())
-      {
-        const double aCurTol = BRep_Tool::Tolerance(TopoDS::Edge(anEdgeExp.Current()));
-        mintol3d = std::min(mintol3d, aCurTol);
-        maxtol3d = std::max(maxtol3d, aCurTol);
-      }
+      double curtol = BRep_Tool::Tolerance(TopoDS::Edge(anExp.Current()));
+      mintol3d      = std::min(mintol3d, curtol);
+      maxtol3d      = std::max(maxtol3d, curtol);
     }
-    else
-    {
-      // Adaptor path: use stored edge tolerances from constructor.
-      mintol3d = myMinEdgeTol;
-      maxtol3d = myMaxEdgeTol;
-    }
-    const double aMinRes = std::max(Hsurface->UResolution(mintol3d),
-                                    Hsurface->VResolution(mintol3d));
-    const double aMaxRes = std::max(Hsurface->UResolution(maxtol3d),
-                                    Hsurface->VResolution(maxtol3d));
-    mintol2d = std::max(aMinRes, Tol);
-    maxtol2d = std::max(aMaxRes, Tol);
+    double minres = std::max(Hsurface->UResolution(mintol3d), Hsurface->VResolution(mintol3d));
+    double maxres = std::max(Hsurface->UResolution(maxtol3d), Hsurface->VResolution(maxtol3d));
+    mintol2d      = std::max(minres, Tol);
+    maxtol2d      = std::max(maxres, Tol);
     //
-    occ::handle<Adaptor3d_TopolTool> anAdditionalTool;
+    occ::handle<BRepTopAdaptor_TopolTool> anAdditionalTool;
     for (int index = HICS.NbPoints(); index >= 1; index--)
     {
       const IntCurveSurface_IntersectionPoint& HICSPointindex = HICS.Point(index);
       gp_Pnt2d                                 Puv(HICSPointindex.U(), HICSPointindex.V());
 
+      // TopAbs_State currentstate = myTopolTool->Classify(Puv,Tol);
       TopAbs_State currentstate = myTopolTool->Classify(Puv, !myUseBoundTol ? 0 : mintol2d);
       if (myUseBoundTol && currentstate == TopAbs_OUT && maxtol2d > mintol2d)
       {
         if (anAdditionalTool.IsNull())
         {
-          // Create a second classifier with the coarser tolerance.
-          // For TopoDS path, use BRepTopAdaptor_TopolTool; for adaptor path,
-          // just reuse the existing tool (it accepts varying tolerance in Classify).
-          if (!face.IsNull())
-          {
-            anAdditionalTool = new BRepTopAdaptor_TopolTool(Hsurface);
-          }
-          else
-          {
-            anAdditionalTool = myTopolTool;
-          }
+          anAdditionalTool = new BRepTopAdaptor_TopolTool(Hsurface);
         }
         currentstate = anAdditionalTool->Classify(Puv, maxtol2d);
         if (currentstate == TopAbs_ON)
         {
           currentstate = TopAbs_OUT;
-          // Find out nearest edge and its tolerance.
-          // Only available when face is present (TopoDS path).
-          if (!face.IsNull())
+          // Find out nearest edge and it's tolerance
+          anExp.Init(face, TopAbs_EDGE);
+          for (; anExp.More(); anExp.Next())
           {
-            TopExp_Explorer anEdgeExp2(face, TopAbs_EDGE);
-            for (; anEdgeExp2.More(); anEdgeExp2.Next())
+            TopoDS_Edge                 anE = TopoDS::Edge(anExp.Current());
+            double                      f, l;
+            occ::handle<Geom_Curve>     aPC = BRep_Tool::Curve(anE, f, l);
+            GeomAPI_ProjectPointOnCurve aProj(HICSPointindex.Pnt(), aPC, f, l);
+            if (aProj.NbPoints() > 0)
             {
-              TopoDS_Edge                 anE = TopoDS::Edge(anEdgeExp2.Current());
-              double                      f, l;
-              occ::handle<Geom_Curve>     aPC = BRep_Tool::Curve(anE, f, l);
-              GeomAPI_ProjectPointOnCurve aProj(HICSPointindex.Pnt(), aPC, f, l);
-              if (aProj.NbPoints() > 0)
+              if (aProj.LowerDistance() <= maxtol3d)
               {
-                if (aProj.LowerDistance() <= maxtol3d)
-                {
-                  currentstate = TopAbs_ON;
-                  break;
-                }
+                // Nearest edge is found, state is really ON
+                currentstate = TopAbs_ON;
+                break;
               }
             }
-          }
-          else
-          {
-            // Adaptor path: accept ON state without edge projection verification.
-            // The classifier has determined the point is ON at the coarser tolerance.
-            currentstate = TopAbs_ON;
           }
         }
       }
@@ -351,9 +285,11 @@ void IntCurvesFace_Intersector::InternalCall(const IntCurveSurface_HInter& HICS,
           double                            W          = HICSW;
           IntCurveSurface_TransitionOnCurve transition = HICSPointindex.Transition();
           gp_Pnt                            pnt        = HICSPointindex.Pnt();
+          //  Modified by skv - Wed Sep  3 16:14:10 2003 OCC578 Begin
           int anIntState = (currentstate == TopAbs_IN) ? 0 : 1;
+          //  Modified by skv - Wed Sep  3 16:14:11 2003 OCC578 End
 
-          if (transition != IntCurveSurface_Tangent && myFaceOri == TopAbs_REVERSED)
+          if (transition != IntCurveSurface_Tangent && face.Orientation() == TopAbs_REVERSED)
           {
             if (transition == IntCurveSurface_In)
               transition = IntCurveSurface_Out;

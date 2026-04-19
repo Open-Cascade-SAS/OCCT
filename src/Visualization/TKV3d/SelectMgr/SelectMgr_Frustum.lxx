@@ -20,8 +20,6 @@
 #include <Standard_Assert.hxx>
 #include <SelectMgr_FrustumBuilder.hxx>
 
-#include <cmath>
-
 // =======================================================================
 // function : isSeparated
 // purpose  : Checks if AABB and frustum are separated along the given axis.
@@ -32,15 +30,6 @@ bool SelectMgr_Frustum<N>::isSeparated(const NCollection_Vec3<double>& theBoxMin
                                        const gp_XYZ&                   theDirect,
                                        bool*                           theInside) const
 {
-  // Non-finite axis or near-zero-length direction: return false (no overlap).
-  // Silent by design -- hot selection path, and "no overlap" is the correct
-  // conservative answer for SAT on degenerate input.
-  if (!std::isfinite(theDirect.X()) || !std::isfinite(theDirect.Y()) || !std::isfinite(theDirect.Z())
-      || theDirect.SquareModulus() <= gp::Resolution())
-  {
-    return false;
-  }
-
   const double aMinB = theDirect.X() * (theDirect.X() < 0.0 ? theBoxMax.x() : theBoxMin.x())
                        + theDirect.Y() * (theDirect.Y() < 0.0 ? theBoxMax.y() : theBoxMin.y())
                        + theDirect.Z() * (theDirect.Z() < 0.0 ? theBoxMax.z() : theBoxMin.z());
@@ -48,10 +37,8 @@ bool SelectMgr_Frustum<N>::isSeparated(const NCollection_Vec3<double>& theBoxMin
   const double aMaxB = theDirect.X() * (theDirect.X() < 0.0 ? theBoxMin.x() : theBoxMax.x())
                        + theDirect.Y() * (theDirect.Y() < 0.0 ? theBoxMin.y() : theBoxMax.y())
                        + theDirect.Z() * (theDirect.Z() < 0.0 ? theBoxMin.z() : theBoxMax.z());
-  if (!std::isfinite(aMinB) || !std::isfinite(aMaxB) || aMaxB < aMinB)
-  {
-    return false;
-  }
+
+  Standard_ASSERT_RAISE(aMaxB >= aMinB, "Error! Failed to project box");
 
   // frustum projection
   double aMinF = DBL_MAX;
@@ -147,15 +134,6 @@ bool SelectMgr_Frustum<N>::hasBoxOverlap(const NCollection_Vec3<double>& theMinP
 {
   for (int anAxis = 0; anAxis < 3; ++anAxis)
   {
-    if (!std::isfinite(theMinPnt[anAxis]) || !std::isfinite(theMaxPnt[anAxis])
-        || theMinPnt[anAxis] > theMaxPnt[anAxis])
-    {
-      return false;
-    }
-  }
-
-  for (int anAxis = 0; anAxis < 3; ++anAxis)
-  {
     if (theMinPnt[anAxis] > myMaxOrthoVertsProjections[anAxis]
         || theMaxPnt[anAxis] < myMinOrthoVertsProjections[anAxis])
     {
@@ -181,10 +159,7 @@ bool SelectMgr_Frustum<N>::hasBoxOverlap(const NCollection_Vec3<double>& theMinP
                                + aPlane.Y() * (aPlane.Y() < 0.f ? theMinPnt.y() : theMaxPnt.y())
                                + aPlane.Z() * (aPlane.Z() < 0.f ? theMinPnt.z() : theMaxPnt.z());
 
-    if (!std::isfinite(aBoxProjMin) || !std::isfinite(aBoxProjMax) || aBoxProjMax < aBoxProjMin)
-    {
-      return false;
-    }
+    Standard_ASSERT_RAISE(aBoxProjMax >= aBoxProjMin, "Error! Failed to project box");
 
     if (aBoxProjMin > myMaxVertsProjections[aPlaneIdx]
         || aBoxProjMax < myMinVertsProjections[aPlaneIdx])
@@ -208,7 +183,7 @@ bool SelectMgr_Frustum<N>::hasBoxOverlap(const NCollection_Vec3<double>& theMinP
          aVolDir < aDirectionsNb;
          ++aVolDir)
     {
-      gp_XYZ aDirection(0.0, 0.0, 0.0);
+      gp_XYZ aDirection(DBL_MAX, DBL_MAX, DBL_MAX);
       aDirection.ChangeData()[aDim]      = 0;
       aDirection.ChangeData()[aNext]     = -myEdgeDirs[aVolDir].XYZ().GetData()[aNextNext];
       aDirection.ChangeData()[aNextNext] = myEdgeDirs[aVolDir].XYZ().GetData()[aNext];
@@ -537,11 +512,11 @@ bool SelectMgr_Frustum<N>::isDotInside(const gp_Pnt&                     thePnt,
                                        const NCollection_Array1<gp_Pnt>& theVertices) const
 {
   double anAngle = 0.0;
-  for (int aVertIdx = 0; aVertIdx < theVertices.Length(); aVertIdx++)
+  for (int aVertIdx = 0; aVertIdx < theVertices.Size(); aVertIdx++)
   {
     const gp_Pnt aVert1 = theVertices[aVertIdx];
     const gp_Pnt aVert2 =
-      (aVertIdx == (theVertices.Length() - 1) ? theVertices[0] : theVertices[aVertIdx + 1]);
+      (aVertIdx == (theVertices.Size() - 1) ? theVertices[0] : theVertices[aVertIdx + 1]);
     const gp_Vec aVec1(thePnt, aVert1);
     const gp_Vec aVec2(thePnt, aVert2);
     anAngle += aVec1.Angle(aVec2);
