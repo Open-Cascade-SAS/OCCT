@@ -36,6 +36,13 @@
 //! types, growth allocates a new buffer and move-constructs elements.
 //!
 //! Indices are always 0-based.
+//!
+//! @warning Any operation that may grow the buffer — Append, Appended,
+//!          EmplaceAppend, SetValue past end, Resize, Reserve, InsertBefore,
+//!          InsertAfter, copy/move assignment — invalidates all iterators,
+//!          references, and raw pointers into the vector whenever it
+//!          actually reallocates. Erase/EraseLast also invalidate references
+//!          at or beyond the removed position.
 template <typename TheItemType>
 class NCollection_LinearVector
 {

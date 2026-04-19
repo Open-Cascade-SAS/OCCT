@@ -21,6 +21,7 @@
 
 #include <utility>
 #include <atomic>
+#include <memory>
 #include <shared_mutex>
 
 /**
@@ -62,6 +63,9 @@ public:
   Standard_EXPORT NCollection_IncAllocator(const size_t theBlockSize = THE_DEFAULT_BLOCK_SIZE);
 
   //! Setup mutex for thread-safe allocations.
+  //! @warning Must not be called concurrently with Allocate/AllocateOptimal/Reset/clean
+  //!          on the same allocator instance; toggling the mutex while another thread
+  //!          holds a shared_lock on the fast path is undefined behaviour.
   Standard_EXPORT void SetThreadSafe(const bool theIsThreadSafe = true);
 
   //! Allocate memory with given size. Returns NULL on failure
@@ -138,11 +142,11 @@ public:
   static constexpr size_t THE_MINIMUM_BLOCK_SIZE = 1024 * 2;
 
 private:
-  unsigned int                myBlockSize;                //!< Block size to incremental allocations
-  unsigned int                myBlockCount     = 0;       //!< Count of created blocks
-  std::shared_mutex*          myMutex          = nullptr; //!< Thread-safety shared mutex (owned)
-  IBlock*                     myAllocationHeap = nullptr; //!< Sorted list for allocations
-  IBlock*                     myUsedHeap       = nullptr; //!< Sorted list for store empty blocks
+  unsigned int                       myBlockSize;          //!< Block size to incremental allocations
+  unsigned int                       myBlockCount = 0;     //!< Count of created blocks
+  std::unique_ptr<std::shared_mutex> myMutex;              //!< Thread-safety shared mutex (owned, RAII)
+  IBlock*                            myAllocationHeap = nullptr; //!< Sorted list for allocations
+  IBlock*                            myUsedHeap       = nullptr; //!< Sorted list for store empty blocks
   IBlock* myOrderedBlocks = nullptr; //!< Ordered list for store growing size blocks
 
 public:

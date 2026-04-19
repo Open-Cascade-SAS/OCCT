@@ -71,13 +71,12 @@ void NCollection_IncAllocator::SetThreadSafe(const bool theIsThreadSafe)
   {
     if (!myMutex)
     {
-      myMutex = new std::shared_mutex();
+      myMutex = std::make_unique<std::shared_mutex>();
     }
   }
   else
   {
-    delete myMutex;
-    myMutex = nullptr;
+    myMutex.reset();
   }
 }
 
@@ -86,8 +85,6 @@ void NCollection_IncAllocator::SetThreadSafe(const bool theIsThreadSafe)
 NCollection_IncAllocator::~NCollection_IncAllocator()
 {
   clean();
-  delete myMutex;
-  myMutex = nullptr;
 }
 
 //=================================================================================================

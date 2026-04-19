@@ -272,7 +272,7 @@ Can also start from a Product to descend through assembly occurrences into topol
 
 `PathView` (via `Paths()`) resolves topology paths:
 
-- `RootNodeIds()` / `BRepGraph_RootIterator` / `IsAssembly()` / `IsPart()` / `NbComponents()` / `Component()` - graph-root and assembly-aware product traversal
+- `RootProductIds()` / `BRepGraph_RootIterator` / `IsAssembly()` / `IsPart()` / `NbComponents()` / `Component()` - graph-root and assembly-aware product traversal
 -- `GlobalLocation(path)` / `GlobalOrientation(path)` - composed transforms
 - `ForEachPathTo(node, alloc, callback)` / `ForEachPathFromTo(root, leaf, alloc, callback)` - lazy reverse path enumeration without result-vector materialization
 - `ForEachNodeLocation(node, alloc, callback)` - lazy occurrence enumeration with path, location, and orientation per branch

@@ -35,6 +35,20 @@
 //! so the cached mesh is stale.
 //!
 //! Writing to the cache does NOT trigger markModified() or mutation tracking.
+//!
+//! ### Invalidation contract
+//! The cache relies on the following invariants upheld by BRepGraph mutations:
+//! 1. Any `Editor().Faces().Mut(FaceId)` guard bumps `FaceDef.OwnGen` on scope
+//!    exit, invalidating cached face mesh entries.
+//! 2. `markRepModified(SurfaceRepId | TriangulationRepId)` iterates every Face
+//!    referencing the rep and calls `markModified(FaceId)`, so geometry edits
+//!    through `Editor().Reps().MutSurface/MutTriangulation()` also invalidate
+//!    cached face meshes.
+//! 3. `markRepModified(TriangulationRepId)` additionally scans the cache itself
+//!    (not just persistent `FaceDef.TriangulationRepId`) so that cached-only
+//!    triangulations are bumped along with their owning Face's `OwnGen`.
+//! Edge/CoEdge caches follow the analogous pattern for `EdgeDef`/`CoEdgeDef`
+//! and the corresponding `Polygon3D`/`Polygon2D`/`PolygonOnTri` reps.
 namespace BRepGraph_MeshCache
 {
 

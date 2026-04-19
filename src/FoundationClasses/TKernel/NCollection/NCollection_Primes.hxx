@@ -16,6 +16,8 @@
 
 #include <Standard_Macro.hxx>
 
+#include <cstddef>
+
 //! Namespace provides a collection of prime numbers.
 //!
 //! This namespace is used to store a collection of prime numbers that are used as
