@@ -95,6 +95,77 @@ inline int RayBox4_AVX2(const BVH_Ray4f_Splat& theRay,
   return _mm_movemask_ps(aHitMask);
 }
 
+//! AVX2 BVH8 kernel: 1 ray vs 8 AABBs in a single 256-bit pass.
+//!
+//! This is the kernel BVH8 was built for -- __m256 holds all 8 lanes so
+//! the entire fan-out is tested per inner-node visit, where the SSE2
+//! BVH8 kernel needed two 4-wide passes.
+//!
+//! Optimisation: tavianator's sign-based corner select. The slab method
+//! normally computes (min - origin)*invDir AND (max - origin)*invDir then
+//! takes min/max to know which face is "near" vs "far". But the answer is
+//! determined entirely by the sign of invDir per axis, which is a property
+//! of the ray (not the box), so we can pre-select the near/far corners
+//! once per call via _mm256_blendv_ps and skip three extra mul+min/max
+//! pairs. Per-axis: 1 blend + 1 sub + 1 mul -> 3 instructions, down from
+//! the 4 of the symmetric form (2 sub + 2 mul + 1 min + 1 max).
+//!
+//! NaN handling for parallel rays (invDir = inf, origin on box face)
+//! still relies on the "min/max returns the second operand on NaN" SSE
+//! semantics, with the same operand ordering as SSE2 so the parallel-axis
+//! NaN gets absorbed by the finite results of the other two axes.
+__attribute__((target("avx2")))
+inline int RayBox8_AVX2(const BVH_Ray8f_Splat& theRay,
+                        const BVH_Box8f_SoA&   theBoxes,
+                        float*                 theOutTEnter,
+                        float*                 theOutTLeave) noexcept
+{
+  const __m256 anOx = _mm256_loadu_ps(theRay.ox);
+  const __m256 anOy = _mm256_loadu_ps(theRay.oy);
+  const __m256 anOz = _mm256_loadu_ps(theRay.oz);
+  const __m256 anIdx = _mm256_loadu_ps(theRay.idx);
+  const __m256 anIdy = _mm256_loadu_ps(theRay.idy);
+  const __m256 anIdz = _mm256_loadu_ps(theRay.idz);
+
+  // Sign of invDir per axis: 1 (negative direction) -> near corner is max,
+  // far corner is min. _mm256_blendv_ps picks operand B where the sign bit
+  // of the mask is set, A otherwise.
+  const __m256 aMinX = _mm256_loadu_ps(theBoxes.minX);
+  const __m256 aMaxX = _mm256_loadu_ps(theBoxes.maxX);
+  const __m256 aMinY = _mm256_loadu_ps(theBoxes.minY);
+  const __m256 aMaxY = _mm256_loadu_ps(theBoxes.maxY);
+  const __m256 aMinZ = _mm256_loadu_ps(theBoxes.minZ);
+  const __m256 aMaxZ = _mm256_loadu_ps(theBoxes.maxZ);
+
+  const __m256 aNearX = _mm256_blendv_ps(aMinX, aMaxX, anIdx);
+  const __m256 aFarX  = _mm256_blendv_ps(aMaxX, aMinX, anIdx);
+  const __m256 aNearY = _mm256_blendv_ps(aMinY, aMaxY, anIdy);
+  const __m256 aFarY  = _mm256_blendv_ps(aMaxY, aMinY, anIdy);
+  const __m256 aNearZ = _mm256_blendv_ps(aMinZ, aMaxZ, anIdz);
+  const __m256 aFarZ  = _mm256_blendv_ps(aMaxZ, aMinZ, anIdz);
+
+  const __m256 aTNearX = _mm256_mul_ps(_mm256_sub_ps(aNearX, anOx), anIdx);
+  const __m256 aTFarX  = _mm256_mul_ps(_mm256_sub_ps(aFarX,  anOx), anIdx);
+  const __m256 aTNearY = _mm256_mul_ps(_mm256_sub_ps(aNearY, anOy), anIdy);
+  const __m256 aTFarY  = _mm256_mul_ps(_mm256_sub_ps(aFarY,  anOy), anIdy);
+  const __m256 aTNearZ = _mm256_mul_ps(_mm256_sub_ps(aNearZ, anOz), anIdz);
+  const __m256 aTFarZ  = _mm256_mul_ps(_mm256_sub_ps(aFarZ,  anOz), anIdz);
+
+  // Operand order matches the SSE2 kernel so NaN propagation is identical:
+  // a parallel-axis NaN gets dominated by the finite results of the other
+  // two axes via the "min/max returns the second operand on NaN" rule.
+  const __m256 aTEnter = _mm256_max_ps(_mm256_max_ps(aTNearY, aTNearZ), aTNearX);
+  const __m256 aTLeave = _mm256_min_ps(_mm256_min_ps(aTFarY,  aTFarZ),  aTFarX);
+
+  const __m256 aZero    = _mm256_setzero_ps();
+  const __m256 aHitMask = _mm256_and_ps(_mm256_cmp_ps(aTEnter, aTLeave, _CMP_LE_OQ),
+                                        _mm256_cmp_ps(aTLeave, aZero, _CMP_GE_OQ));
+
+  _mm256_storeu_ps(theOutTEnter, aTEnter);
+  _mm256_storeu_ps(theOutTLeave, aTLeave);
+  return _mm256_movemask_ps(aHitMask);
+}
+
 #endif // BVH_HAS_AVX2_KERNEL
 
 } // namespace SIMD

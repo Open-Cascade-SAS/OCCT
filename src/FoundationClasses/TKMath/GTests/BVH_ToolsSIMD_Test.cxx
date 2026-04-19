@@ -235,6 +235,54 @@ void SetBox8(BVH::SIMD::BVH_Box8f_SoA& theBoxes, int i,
 
 } // namespace
 
+#if defined(BVH_HAS_AVX2_KERNEL)
+TEST(BVH_ToolsSIMDTest, AVX2_RayBox8_RandomConsistencyVsScalar)
+{
+  if (BVH::SIMD::Detect() < BVH::SIMD::Level::AVX2)
+  {
+    GTEST_SKIP() << "AVX2 not supported on this CPU";
+  }
+  std::mt19937                          aGen(0xCAFE8888u);
+  std::uniform_real_distribution<float> aPos(-10.0f, 10.0f);
+  std::uniform_real_distribution<float> aSize(0.1f, 5.0f);
+  std::uniform_real_distribution<float> aDir(-1.0f, 1.0f);
+
+  constexpr int   kNumCases = 500;
+  constexpr float kEps      = 1.0e-3f;
+
+  for (int aCase = 0; aCase < kNumCases; ++aCase)
+  {
+    float dx = aDir(aGen), dy = aDir(aGen), dz = aDir(aGen);
+    if (std::abs(dx) < 1.0e-3f && std::abs(dy) < 1.0e-3f && std::abs(dz) < 1.0e-3f)
+      dx = 1.0f;
+    BVH::SIMD::BVH_Ray8f_Splat aRay = MakeRay8(aPos(aGen), aPos(aGen), aPos(aGen), dx, dy, dz);
+
+    BVH::SIMD::BVH_Box8f_SoA aBoxes{};
+    for (int k = 0; k < 8; ++k)
+    {
+      const float cx = aPos(aGen), cy = aPos(aGen), cz = aPos(aGen);
+      const float sx = aSize(aGen), sy = aSize(aGen), sz = aSize(aGen);
+      SetBox8(aBoxes, k, cx - sx, cy - sy, cz - sz, cx + sx, cy + sy, cz + sz);
+    }
+
+    float aSEnter[8]{}, aSLeave[8]{};
+    int   aSMask = BVH::SIMD::RayBox8_Scalar(aRay, aBoxes, aSEnter, aSLeave);
+    float aTEnter[8]{}, aTLeave[8]{};
+    int   aTMask = BVH::SIMD::RayBox8_AVX2(aRay, aBoxes, aTEnter, aTLeave);
+
+    EXPECT_EQ(aSMask, aTMask) << "RayBox8 AVX2 case " << aCase << " mask mismatch";
+    for (int i = 0; i < 8; ++i)
+    {
+      if (((aSMask >> i) & 1) && ((aTMask >> i) & 1))
+      {
+        EXPECT_NEAR(aSEnter[i], aTEnter[i], kEps);
+        EXPECT_NEAR(aSLeave[i], aTLeave[i], kEps);
+      }
+    }
+  }
+}
+#endif // BVH_HAS_AVX2_KERNEL
+
 TEST(BVH_ToolsSIMDTest, SSE2_RayBox8_RandomConsistencyVsScalar)
 {
   std::mt19937                          aGen(0xBEEF8888u);

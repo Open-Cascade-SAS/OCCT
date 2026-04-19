@@ -285,11 +285,17 @@ RayBox8_Fn GetRayBox8() noexcept
     switch (Detect())
     {
       // case Level::AVX512: return &RayBox8_AVX512;  // wired in commit 12
-      // case Level::AVX2:   return &RayBox8_AVX2;    // wired in commit 11
-#if defined(BVH_HAS_SSE2_KERNEL)
-      case Level::SSE2:
+#if defined(BVH_HAS_AVX2_KERNEL)
       case Level::AVX2:
       case Level::AVX512:
+        return &RayBox8_AVX2;
+#endif
+#if defined(BVH_HAS_SSE2_KERNEL)
+      case Level::SSE2:
+  #if !defined(BVH_HAS_AVX2_KERNEL)
+      case Level::AVX2:
+      case Level::AVX512:
+  #endif
         return &RayBox8_SSE2;
 #endif
       default:
