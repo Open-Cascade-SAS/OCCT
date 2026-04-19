@@ -67,7 +67,6 @@ struct BRepGraph_VersionStamp
                          const uint32_t       theMutationGen,
                          const uint32_t       theGeneration)
       : myUID(theUID),
-
         myMutationGen(theMutationGen),
         myGeneration(theGeneration),
         myDomain(Domain::Entity)

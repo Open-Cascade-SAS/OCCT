@@ -32,7 +32,6 @@ class StepTidy_BaseTestFixture : public testing::Test
 protected:
   // Initialize the work session and model.
   StepTidy_BaseTestFixture()
-
   {
     STEPControl_Controller::Init();
     myWS = new XSControl_WorkSession;
