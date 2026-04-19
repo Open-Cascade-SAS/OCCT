@@ -563,7 +563,7 @@ bool OpenGl_View::ShadowMapDump(Image_PixMap& theImage, const TCollection_AsciiS
   }
 
   const occ::handle<OpenGl_Context>& aGlCtx = myWorkspace->GetGlContext();
-  for (int aShadowIter = 0; aShadowIter < myShadowMaps->Size(); ++aShadowIter)
+  for (int aShadowIter = 0; aShadowIter < myShadowMaps->Length(); ++aShadowIter)
   {
     occ::handle<OpenGl_ShadowMap>& aShadow = myShadowMaps->ChangeValue(aShadowIter);
     if (!aShadow.IsNull() && aShadow->LightSource()->Name() == theLightName)
@@ -1649,14 +1649,14 @@ bool OpenGl_View::prepareFrameBuffers(Graphic3d_Camera::Projection& theProj)
                         && myRenderParams.Method != Graphic3d_RM_RAYTRACING;
   if (toUseShadowMap)
   {
-    if (myShadowMaps->Size() != myLights->NbCastShadows())
+    if (myShadowMaps->Length() != myLights->NbCastShadows())
     {
       myShadowMaps->Release(aCtx.get());
       myShadowMaps->Resize(0, myLights->NbCastShadows() - 1, true);
     }
 
     const GLint aSamplFrom = GLint(aCtx->ShadowMapTexUnit()) - myLights->NbCastShadows() + 1;
-    for (int aShadowIter = 0; aShadowIter < myShadowMaps->Size(); ++aShadowIter)
+    for (int aShadowIter = 0; aShadowIter < myShadowMaps->Length(); ++aShadowIter)
     {
       occ::handle<OpenGl_ShadowMap>& aShadow = myShadowMaps->ChangeValue(aShadowIter);
       if (aShadow.IsNull())
