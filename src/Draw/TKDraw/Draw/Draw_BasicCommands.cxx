@@ -627,7 +627,7 @@ static int cpulimit(Draw_Interpretor& di, int n, const char** a)
     if (aFirst) // Launch the thread only at the 1st call.
     {
       aFirst = 0;
-      _beginthreadex(NULL, 0, CpuFunc, NULL, 0, &aThreadID);
+      _beginthreadex(nullptr, 0, CpuFunc, nullptr, 0, &aThreadID);
     }
   }
 

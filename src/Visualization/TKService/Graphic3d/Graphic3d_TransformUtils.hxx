@@ -33,13 +33,13 @@ struct MatrixType
 template <>
 struct MatrixType<double>
 {
-  typedef NCollection_Mat4<double> Mat4;
+  using Mat4 = NCollection_Mat4<double>;
 };
 
 template <>
 struct MatrixType<float>
 {
-  typedef NCollection_Mat4<float> Mat4;
+  using Mat4 = NCollection_Mat4<float>;
 };
 
 template <class T>
@@ -50,17 +50,17 @@ struct VectorType
 template <>
 struct VectorType<double>
 {
-  typedef NCollection_Vec2<double> Vec2;
-  typedef NCollection_Vec3<double> Vec3;
-  typedef NCollection_Vec4<double> Vec4;
+  using Vec2 = NCollection_Vec2<double>;
+  using Vec3 = NCollection_Vec3<double>;
+  using Vec4 = NCollection_Vec4<double>;
 };
 
 template <>
 struct VectorType<float>
 {
-  typedef NCollection_Vec2<float> Vec2;
-  typedef NCollection_Vec3<float> Vec3;
-  typedef NCollection_Vec4<float> Vec4;
+  using Vec2 = NCollection_Vec2<float>;
+  using Vec3 = NCollection_Vec3<float>;
+  using Vec4 = NCollection_Vec4<float>;
 };
 
 //! Converts gp_Trsf to NCollection_Mat4<float>.

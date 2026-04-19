@@ -118,7 +118,7 @@ template <class T, int N>
 class BVH_Box : public BVH_BaseBox<T, N, BVH_Box>
 {
 public:
-  typedef typename BVH::VectorType<T, N>::Type BVH_VecNt;
+  using BVH_VecNt = typename BVH::VectorType<T, N>::Type;
 
 private:
   //! Returns the minimum point sentinel value for invalid box.
@@ -425,7 +425,7 @@ struct SurfaceCalculator
 template <class T, int N>
 struct BoxMinMax
 {
-  typedef typename BVH::VectorType<T, N>::Type BVH_VecNt;
+  using BVH_VecNt = typename BVH::VectorType<T, N>::Type;
 
   //! Computes component-wise minimum in-place.
   static inline void CwiseMin(BVH_VecNt& theVec1, const BVH_VecNt& theVec2)

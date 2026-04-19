@@ -31,8 +31,8 @@
 
 #include <utility>
 
-typedef void (*NCollection_DelListNode)(NCollection_ListNode*,
-                                        occ::handle<NCollection_BaseAllocator>& theAl);
+using NCollection_DelListNode = void (*)(NCollection_ListNode*,
+                                         occ::handle<NCollection_BaseAllocator>& theAl);
 
 // ********************************************************** BaseList class
 class NCollection_BaseList

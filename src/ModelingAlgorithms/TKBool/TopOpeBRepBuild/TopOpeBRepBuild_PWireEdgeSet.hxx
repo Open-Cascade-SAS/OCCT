@@ -18,6 +18,6 @@
 #define _TopOpeBRepBuild_PWireEdgeSet_HeaderFile
 
 class TopOpeBRepBuild_WireEdgeSet;
-typedef TopOpeBRepBuild_WireEdgeSet* TopOpeBRepBuild_PWireEdgeSet;
+using TopOpeBRepBuild_PWireEdgeSet = TopOpeBRepBuild_WireEdgeSet*;
 
 #endif // _TopOpeBRepBuild_PWireEdgeSet_HeaderFile

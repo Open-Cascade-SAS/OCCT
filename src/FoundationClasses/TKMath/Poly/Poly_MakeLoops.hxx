@@ -97,8 +97,8 @@ public:
   };
 
   // Define the Loop as a list of links
-  typedef NCollection_List<Link> ListOfLink;
-  typedef ListOfLink             Loop;
+  using ListOfLink = NCollection_List<Link>;
+  using Loop       = ListOfLink;
 
   //! The abstract helper class
   class Helper

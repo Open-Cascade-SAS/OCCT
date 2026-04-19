@@ -27,6 +27,6 @@ struct IntPolyh_PointNormal
   gp_Vec Normal;
 };
 
-typedef IntPolyh_Array<IntPolyh_PointNormal> IntPolyh_ArrayOfPointNormal;
+using IntPolyh_ArrayOfPointNormal = IntPolyh_Array<IntPolyh_PointNormal>;
 
 #endif

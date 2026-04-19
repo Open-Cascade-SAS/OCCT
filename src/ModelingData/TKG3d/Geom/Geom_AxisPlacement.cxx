@@ -22,10 +22,10 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Geom_AxisPlacement, Geom_Geometry)
 
-typedef gp_Ax1 Ax1;
-typedef gp_Dir Dir;
-typedef gp_Pnt Pnt;
-typedef gp_Vec Vec;
+using Ax1 = gp_Ax1;
+using Dir = gp_Dir;
+using Pnt = gp_Pnt;
+using Vec = gp_Vec;
 
 const gp_Ax1& Geom_AxisPlacement::Axis() const
 {

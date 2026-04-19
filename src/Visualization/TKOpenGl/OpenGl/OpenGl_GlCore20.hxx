@@ -22,7 +22,7 @@
 struct OpenGl_GlCore20 : public OpenGl_GlCore15
 {
 private:
-  typedef OpenGl_GlCore15 theBaseClass_t;
+  using theBaseClass_t = OpenGl_GlCore15;
 
 public: //! @name OpenGL 2.0 additives to 1.5
   using theBaseClass_t::glAttachShader;

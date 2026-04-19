@@ -53,9 +53,9 @@ HWND CreateCommandWindow(HWND hWnd, int /*nitem*/)
                                    400,
                                    100,
                                    hWnd,
-                                   NULL,
+                                   nullptr,
                                    hInstance,
-                                   NULL);
+                                   nullptr);
 
   ShowWindow(hWndCommand, SW_SHOW);
   return hWndCommand;
@@ -108,7 +108,7 @@ BOOL CommandCreateProc(HWND hWnd)
   HINSTANCE hInstance = (HINSTANCE)GetWindowLongPtrW(hWnd, GWLP_HINSTANCE);
   HWND      hWndEdit =
     CreateWindowW(L"EDIT",
-                  NULL,
+                  nullptr,
                   WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_LEFT | ES_MULTILINE | ES_AUTOVSCROLL,
                   0,
                   0,
@@ -117,10 +117,10 @@ BOOL CommandCreateProc(HWND hWnd)
                   hWnd,
                   0,
                   hInstance,
-                  NULL);
+                  nullptr);
 
   // Save hWndEdit in the extra memory in 0 of CommandWindow
-  if (hWndEdit != NULL)
+  if (hWndEdit != nullptr)
   {
     SetWindowLongPtrW(hWnd, CLIENTWND, (LONG_PTR)hWndEdit);
   }

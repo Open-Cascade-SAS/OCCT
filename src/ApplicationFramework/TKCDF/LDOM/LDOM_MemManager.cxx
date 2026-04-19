@@ -18,8 +18,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(LDOM_MemManager, Standard_Transient)
 
-#define HASH_MASK 255
-#define MINIMAL_ROOM 3
+constexpr int HASH_MASK    = 255;
+constexpr int MINIMAL_ROOM = 3;
 
 typedef unsigned char LDOM_HashValue; // allocating HASH_MASK integer
 

@@ -45,14 +45,13 @@ IMPLEMENT_STANDARD_RTTIEXT(AIS_InteractiveContext, Standard_Transient)
 
 namespace
 {
-typedef NCollection_DataMap<
+using AIS_MapOfObjectOwners = NCollection_DataMap<
   occ::handle<SelectMgr_SelectableObject>,
-  occ::handle<NCollection_Shared<NCollection_IndexedMap<occ::handle<SelectMgr_EntityOwner>>>>>
-  AIS_MapOfObjectOwners;
-typedef NCollection_DataMap<
-  occ::handle<SelectMgr_SelectableObject>,
-  occ::handle<NCollection_Shared<NCollection_IndexedMap<occ::handle<SelectMgr_EntityOwner>>>>>::
-  Iterator AIS_MapIteratorOfMapOfObjectOwners;
+  occ::handle<NCollection_Shared<NCollection_IndexedMap<occ::handle<SelectMgr_EntityOwner>>>>>;
+using AIS_MapIteratorOfMapOfObjectOwners =
+  NCollection_DataMap<occ::handle<SelectMgr_SelectableObject>,
+                      occ::handle<NCollection_Shared<
+                        NCollection_IndexedMap<occ::handle<SelectMgr_EntityOwner>>>>>::Iterator;
 
 //! Initialize default highlighting attributes.
 static void initDefaultHilightAttributes(const occ::handle<Prs3d_Drawer>& theDrawer,

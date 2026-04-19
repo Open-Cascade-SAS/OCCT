@@ -88,7 +88,7 @@ AVCodecContext* Image_VideoRecorder::getCodecContext() const
   #if FFMPEG_HAVE_AVCODEC_PARAMETERS
   return myCodecCtx;
   #else
-  return myVideoStream != NULL ? myVideoStream->codec : NULL;
+  return myVideoStream != nullptr ? myVideoStream->codec : nullptr;
   #endif
 #else
   return nullptr;
@@ -563,7 +563,8 @@ bool Image_VideoRecorder::writeVideoFrame(const bool theToFlush)
       myFrame->pts = myFrameCount;
     }
     int isGotPacket = 0;
-    aResAv = avcodec_encode_video2(aCodecCtx, &aPacket, theToFlush ? NULL : myFrame, &isGotPacket);
+    aResAv =
+      avcodec_encode_video2(aCodecCtx, &aPacket, theToFlush ? nullptr : myFrame, &isGotPacket);
     if (aResAv < 0)
     {
       ::Message::SendFail(TCollection_AsciiString("Error: can not encode video frame, ")

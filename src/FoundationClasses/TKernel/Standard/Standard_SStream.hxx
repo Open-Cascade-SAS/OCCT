@@ -18,6 +18,6 @@
 #include <sstream>
 
 //! Defines Standard_SStream as typedef to C++ string stream.
-typedef std::stringstream Standard_SStream;
+using Standard_SStream = std::stringstream;
 
 #endif // _Standard_SStream_HeaderFile

@@ -22,7 +22,7 @@
 struct OpenGl_GlCore14 : public OpenGl_GlCore13
 {
 private:
-  typedef OpenGl_GlCore13 theBaseClass_t;
+  using theBaseClass_t = OpenGl_GlCore13;
 
 public: //! @name OpenGL 1.4 additives to 1.3
   using theBaseClass_t::glBlendFuncSeparate;

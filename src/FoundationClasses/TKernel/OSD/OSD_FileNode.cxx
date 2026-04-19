@@ -620,7 +620,7 @@ OSD_Protection OSD_FileNode::Protection()
 
   if ((pSD = GetFileSecurityEx(fNameW.ToWideString(),
                                DACL_SECURITY_INFORMATION | OWNER_SECURITY_INFORMATION))
-        == NULL
+        == nullptr
       || !_osd_wnt_sd_to_protection(pSD,
                                     retVal,
                                     _get_file_type(fName.ToCString(), INVALID_HANDLE_VALUE)
@@ -628,7 +628,7 @@ OSD_Protection OSD_FileNode::Protection()
 
     _osd_wnt_set_error(myError, OSD_WFileNode);
 
-  if (pSD != NULL)
+  if (pSD != nullptr)
 
     FreeFileSecurity(pSD);
 
@@ -654,10 +654,10 @@ void OSD_FileNode::SetProtection(const OSD_Protection& Prot)
                                     == FLAG_DIRECTORY,
                                   fNameW.ToWideString());
 
-  if (pSD == NULL || !SetFileSecurityW(fNameW.ToWideString(), DACL_SECURITY_INFORMATION, pSD))
+  if (pSD == nullptr || !SetFileSecurityW(fNameW.ToWideString(), DACL_SECURITY_INFORMATION, pSD))
     _osd_wnt_set_error(myError, OSD_WFileNode, fNameW.ToWideString());
 
-  if (pSD != NULL)
+  if (pSD != nullptr)
 
     FreeSD(pSD);
 
@@ -714,7 +714,7 @@ Quantity_Date OSD_FileNode::AccessMoment()
   if (_get_file_time(fNameW.ToWideString(), &stAccessSystemMoment, TRUE))
   {
     SYSTEMTIME* aSysTime = &stAccessMoment;
-    BOOL aFlag = SystemTimeToTzSpecificLocalTime(NULL, &stAccessSystemMoment, &stAccessMoment);
+    BOOL aFlag = SystemTimeToTzSpecificLocalTime(nullptr, &stAccessSystemMoment, &stAccessMoment);
     if (aFlag == 0) // AGV: test for success (e.g., unsupported on Win95/98)
       aSysTime = &stAccessSystemMoment;
     retVal.SetValues(aSysTime->wMonth,
@@ -752,7 +752,8 @@ Quantity_Date OSD_FileNode::CreationMoment()
   if (_get_file_time(fNameW.ToWideString(), &stCreationSystemMoment, FALSE))
   {
     SYSTEMTIME* aSysTime = &stCreationMoment;
-    BOOL aFlag = SystemTimeToTzSpecificLocalTime(NULL, &stCreationSystemMoment, &stCreationMoment);
+    BOOL        aFlag =
+      SystemTimeToTzSpecificLocalTime(nullptr, &stCreationSystemMoment, &stCreationMoment);
     if (aFlag == 0) // AGV: test for success (e.g., unsupported on Win95/98)
       aSysTime = &stCreationSystemMoment;
     retVal.SetValues(aSysTime->wMonth,
@@ -836,7 +837,7 @@ void _osd_wnt_set_error(OSD_Error& err, int who, ...)
   } // end if
 
   char aBufferA[2048];
-  WideCharToMultiByte(CP_UTF8, 0, buffer, -1, aBufferA, sizeof(aBufferA), NULL, NULL);
+  WideCharToMultiByte(CP_UTF8, 0, buffer, -1, aBufferA, sizeof(aBufferA), nullptr, nullptr);
   err.SetValue(errCode, who, aBufferA);
 
   va_end(arg_ptr);
@@ -863,20 +864,20 @@ static BOOL __fastcall _get_file_time(const wchar_t* fName, LPSYSTEMTIME lpSysTi
   __try
   {
   #ifndef OCCT_UWP
-    if ((hFile = CreateFileW(fName, 0, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL))
+    if ((hFile = CreateFileW(fName, 0, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr))
         == INVALID_HANDLE_VALUE)
   #else
     CREATEFILE2_EXTENDED_PARAMETERS pCreateExParams = {};
     pCreateExParams.dwSize                          = sizeof(CREATEFILE2_EXTENDED_PARAMETERS);
     pCreateExParams.dwFileAttributes                = FILE_ATTRIBUTE_NORMAL;
-    pCreateExParams.lpSecurityAttributes            = NULL;
-    pCreateExParams.hTemplateFile                   = NULL;
-    if ((hFile = CreateFile2(fName, NULL, NULL, OPEN_EXISTING, &pCreateExParams))
+    pCreateExParams.lpSecurityAttributes            = nullptr;
+    pCreateExParams.hTemplateFile                   = nullptr;
+    if ((hFile = CreateFile2(fName, nullptr, nullptr, OPEN_EXISTING, &pCreateExParams))
         == INVALID_HANDLE_VALUE)
   #endif
       __leave;
 
-    if (!GetFileTime(hFile, &ftCreationTime, NULL, &ftLastWriteTime))
+    if (!GetFileTime(hFile, &ftCreationTime, nullptr, &ftLastWriteTime))
       __leave;
 
     lpftPtr = fAccess ? &ftLastWriteTime : &ftCreationTime;

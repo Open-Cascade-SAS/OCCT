@@ -16,6 +16,6 @@
 #define _BOPDS_PDS_HeaderFile
 
 class BOPDS_DS;
-typedef BOPDS_DS* BOPDS_PDS;
+using BOPDS_PDS = BOPDS_DS*;
 
 #endif // _BOPDS_PDS_HeaderFile

@@ -18,6 +18,6 @@
 #include <StdPrs_BRepFont.hxx>
 
 //! Alias for porting from old name.
-typedef StdPrs_BRepFont Font_BRepFont;
+using Font_BRepFont = StdPrs_BRepFont;
 
 #endif // _Font_BRepFont_H__

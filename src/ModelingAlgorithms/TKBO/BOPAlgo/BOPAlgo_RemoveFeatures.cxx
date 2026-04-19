@@ -831,7 +831,7 @@ private: //! @name Fields
   // clang-format on
 };
 
-typedef NCollection_Vector<FillGap> VectorOfFillGap;
+using VectorOfFillGap = NCollection_Vector<FillGap>;
 
 //=======================================================================
 // function: RemoveFeatures

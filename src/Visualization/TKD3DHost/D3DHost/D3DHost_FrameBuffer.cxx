@@ -28,10 +28,10 @@ IMPLEMENT_STANDARD_RTTIEXT(D3DHost_FrameBuffer, OpenGl_FrameBuffer)
 //=================================================================================================
 
 D3DHost_FrameBuffer::D3DHost_FrameBuffer()
-    : myD3dSurf(NULL),
-      myD3dSurfShare(NULL),
-      myGlD3dDevice(NULL),
-      myGlD3dSurf(NULL),
+    : myD3dSurf(nullptr),
+      myD3dSurfShare(nullptr),
+      myGlD3dDevice(nullptr),
+      myGlD3dSurf(nullptr),
       myLockCount(0),
       myD3dFallback(false),
       myIsSRGBReady(false)
@@ -42,38 +42,38 @@ D3DHost_FrameBuffer::D3DHost_FrameBuffer()
 
 D3DHost_FrameBuffer::~D3DHost_FrameBuffer()
 {
-  Release(NULL);
+  Release(nullptr);
 }
 
 //=================================================================================================
 
 void D3DHost_FrameBuffer::Release(OpenGl_Context* theCtx)
 {
-  if (myGlD3dDevice != NULL)
+  if (myGlD3dDevice != nullptr)
   {
     const OpenGl_GlFunctions* aFuncs =
-      (theCtx != NULL && theCtx->IsValid()) ? theCtx->Functions() : NULL;
-    if (myGlD3dSurf != NULL)
+      (theCtx != nullptr && theCtx->IsValid()) ? theCtx->Functions() : nullptr;
+    if (myGlD3dSurf != nullptr)
     {
-      if (aFuncs != NULL)
+      if (aFuncs != nullptr)
       {
         aFuncs->wglDXUnregisterObjectNV(myGlD3dDevice, myGlD3dSurf);
       }
-      myGlD3dSurf = NULL;
+      myGlD3dSurf = nullptr;
     }
 
-    if (aFuncs != NULL)
+    if (aFuncs != nullptr)
     {
       aFuncs->wglDXCloseDeviceNV(myGlD3dDevice);
     }
-    myGlD3dDevice = NULL;
+    myGlD3dDevice = nullptr;
   }
 
-  if (myD3dSurf != NULL)
+  if (myD3dSurf != nullptr)
   {
     myD3dSurf->Release();
-    myD3dSurf      = NULL;
-    myD3dSurfShare = NULL;
+    myD3dSurf      = nullptr;
+    myD3dSurfShare = nullptr;
   }
 
   OpenGl_FrameBuffer::Release(theCtx);
@@ -119,7 +119,7 @@ bool D3DHost_FrameBuffer::InitD3dFallback(const occ::handle<OpenGl_Context>& the
                                        0,
                                        theIsD3dEx ? TRUE : FALSE,
                                        &myD3dSurf,
-                                       theIsD3dEx ? &myD3dSurfShare : NULL)
+                                       theIsD3dEx ? &myD3dSurfShare : nullptr)
       != D3D_OK)
   {
     Release(theCtx.operator->());
@@ -155,7 +155,7 @@ bool D3DHost_FrameBuffer::InitD3dInterop(const occ::handle<OpenGl_Context>& theC
   const int aSizeY = theSizeY > 0 ? theSizeY : 2;
 
   const OpenGl_GlFunctions* aFuncs = theCtx->Functions();
-  if (aFuncs->wglDXOpenDeviceNV == NULL)
+  if (aFuncs->wglDXOpenDeviceNV == nullptr)
   {
     Release(theCtx.operator->());
     theCtx->PushMessage(GL_DEBUG_SOURCE_APPLICATION,
@@ -175,7 +175,7 @@ bool D3DHost_FrameBuffer::InitD3dInterop(const occ::handle<OpenGl_Context>& theC
                                        0,
                                        theIsD3dEx ? TRUE : FALSE,
                                        &myD3dSurf,
-                                       theIsD3dEx ? &myD3dSurfShare : NULL)
+                                       theIsD3dEx ? &myD3dSurfShare : nullptr)
       != D3D_OK)
   {
     Release(theCtx.operator->());
@@ -190,7 +190,7 @@ bool D3DHost_FrameBuffer::InitD3dInterop(const occ::handle<OpenGl_Context>& theC
   }
 
   myGlD3dDevice = aFuncs->wglDXOpenDeviceNV(theD3DDevice);
-  if (myGlD3dDevice == NULL)
+  if (myGlD3dDevice == nullptr)
   {
     Release(theCtx.operator->());
     theCtx->PushMessage(
@@ -240,7 +240,7 @@ bool D3DHost_FrameBuffer::InitD3dInterop(const occ::handle<OpenGl_Context>& theC
 bool D3DHost_FrameBuffer::registerD3dBuffer(const occ::handle<OpenGl_Context>& theCtx)
 {
   const OpenGl_GlFunctions* aFuncs = theCtx->Functions();
-  if (myGlD3dSurf != NULL)
+  if (myGlD3dSurf != nullptr)
   {
     if (!aFuncs->wglDXUnregisterObjectNV(myGlD3dDevice, myGlD3dSurf))
     {
@@ -251,7 +251,7 @@ bool D3DHost_FrameBuffer::registerD3dBuffer(const occ::handle<OpenGl_Context>& t
                           "D3DHost_FrameBuffer, can not unregister color buffer");
       return false;
     }
-    myGlD3dSurf = NULL;
+    myGlD3dSurf = nullptr;
   }
 
   if (!aFuncs->wglDXSetResourceShareHandleNV(myD3dSurf, myD3dSurfShare))
@@ -274,7 +274,7 @@ bool D3DHost_FrameBuffer::registerD3dBuffer(const occ::handle<OpenGl_Context>& t
                                               GL_TEXTURE_2D,
                                               WGL_ACCESS_WRITE_DISCARD_NV);
   theCtx->ResetErrors(true);
-  if (myGlD3dSurf == NULL)
+  if (myGlD3dSurf == nullptr)
   {
     theCtx->PushMessage(GL_DEBUG_SOURCE_APPLICATION,
                         GL_DEBUG_TYPE_ERROR,
@@ -294,7 +294,7 @@ void D3DHost_FrameBuffer::BindBuffer(const occ::handle<OpenGl_Context>& theCtx)
   Standard_ProgramError_Raise_if(
     myLockCount < 1,
     "D3DHost_FrameBuffer::BindBuffer(), resource should be locked beforehand!");
-  if (theCtx->arbFBO == NULL)
+  if (theCtx->arbFBO == nullptr)
   {
     return;
   }
@@ -367,7 +367,7 @@ void D3DHost_FrameBuffer::LockSurface(const occ::handle<OpenGl_Context>& theCtx)
   {
     return;
   }
-  if (myGlD3dSurf == NULL)
+  if (myGlD3dSurf == nullptr)
   {
     return;
   }
@@ -394,13 +394,13 @@ void D3DHost_FrameBuffer::UnlockSurface(const occ::handle<OpenGl_Context>& theCt
 
   if (myD3dFallback)
   {
-    if (myD3dSurf == NULL)
+    if (myD3dSurf == nullptr)
     {
       return;
     }
 
     D3DLOCKED_RECT aLockedRect;
-    if (myD3dSurf->LockRect(&aLockedRect, NULL, 0) != 0)
+    if (myD3dSurf->LockRect(&aLockedRect, nullptr, 0) != 0)
     {
       theCtx->PushMessage(GL_DEBUG_SOURCE_APPLICATION,
                           GL_DEBUG_TYPE_ERROR,
@@ -440,7 +440,7 @@ void D3DHost_FrameBuffer::UnlockSurface(const occ::handle<OpenGl_Context>& theCt
     myD3dSurf->UnlockRect();
     return;
   }
-  if (myGlD3dSurf == NULL)
+  if (myGlD3dSurf == nullptr)
   {
     return;
   }

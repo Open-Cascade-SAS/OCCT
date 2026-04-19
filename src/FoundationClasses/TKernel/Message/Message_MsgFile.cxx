@@ -25,8 +25,8 @@
 #include <cstdio>
 #include <mutex>
 
-typedef NCollection_DataMap<TCollection_AsciiString, TCollection_ExtendedString>
-  Message_DataMapOfExtendedString;
+using Message_DataMapOfExtendedString =
+  NCollection_DataMap<TCollection_AsciiString, TCollection_ExtendedString>;
 
 static Message_DataMapOfExtendedString& msgsDataMap()
 {
@@ -41,13 +41,13 @@ static std::mutex& Message_MsgFile_Mutex()
   return theMutex;
 }
 
-typedef enum
+enum LoadingState
 {
   MsgFile_WaitingKeyword,
   MsgFile_WaitingMessage,
   MsgFile_WaitingMoreMessage,
   MsgFile_Indefinite
-} LoadingState;
+};
 
 //=======================================================================
 // function : Message_MsgFile
@@ -93,13 +93,13 @@ struct TCollection_String;
 template <>
 struct TCollection_String<char>
 {
-  typedef TCollection_AsciiString type;
+  using type = TCollection_AsciiString;
 };
 
 template <>
 struct TCollection_String<char16_t>
 {
-  typedef TCollection_ExtendedString type;
+  using type = TCollection_ExtendedString;
 };
 
 template <class CharType>

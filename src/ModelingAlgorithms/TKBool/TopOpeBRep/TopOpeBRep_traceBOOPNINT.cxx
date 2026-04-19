@@ -56,7 +56,7 @@ private:
 
 BOOPNINTL::BOOPNINTL()
 {
-  Set(false, 0, NULL);
+  Set(false, 0, nullptr);
 }
 
 int BOOPNINTL::Set(const bool b, int n, char** a)

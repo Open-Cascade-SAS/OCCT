@@ -206,8 +206,8 @@ class Extrema_GGenExtCC_PointsInspector
 public:
   static constexpr int Dimension = 2;
 
-  typedef gp_XY Point;
-  typedef gp_XY Target;
+  using Point  = gp_XY;
+  using Target = gp_XY;
 
   static double Coord(int i, const Point& thePnt) { return thePnt.Coord(i + 1); }
 

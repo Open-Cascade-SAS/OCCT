@@ -28,8 +28,8 @@ public:
   DEFINE_STANDARD_ALLOC
   DEFINE_NCOLLECTION_ALLOC
 
-  typedef NCollection_Sequence<TheItemType> SequenceType;
-  typedef TheItemType                       value_type;
+  using SequenceType = NCollection_Sequence<TheItemType>;
+  using value_type   = TheItemType;
 
 public:
   //! Default constructor.

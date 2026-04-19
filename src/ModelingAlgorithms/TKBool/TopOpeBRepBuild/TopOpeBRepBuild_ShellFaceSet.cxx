@@ -49,7 +49,7 @@ TopOpeBRepBuild_ShellFaceSet::TopOpeBRepBuild_ShellFaceSet
 
 #ifdef OCCT_DEBUG
   myDEBName = "SFS";
-  if (A != NULL)
+  if (A != nullptr)
   {
     TopOpeBRepBuild_Builder* pB = ((TopOpeBRepBuild_Builder*)((void*)A));
     myDEBNumber                 = pB->GdumpSHASETindex();
@@ -61,7 +61,7 @@ TopOpeBRepBuild_ShellFaceSet::TopOpeBRepBuild_ShellFaceSet
     }
     if (tSPS)
     {
-      pB->GdumpSHA(S, NULL);
+      pB->GdumpSHA(S, nullptr);
       std::cout << std::endl;
     }
   }

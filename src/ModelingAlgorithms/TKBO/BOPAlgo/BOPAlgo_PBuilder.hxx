@@ -16,6 +16,6 @@
 #define _BOPAlgo_PBuilder_HeaderFile
 
 class BOPAlgo_Builder;
-typedef BOPAlgo_Builder* BOPAlgo_PBuilder;
+using BOPAlgo_PBuilder = BOPAlgo_Builder*;
 
 #endif // _BOPAlgo_PBuilder_HeaderFile

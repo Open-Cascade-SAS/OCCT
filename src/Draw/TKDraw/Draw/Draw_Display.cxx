@@ -145,8 +145,8 @@ void Draw_Display::DrawMarker(const gp_Pnt2d& pt, const Draw_MarkerShape S, cons
   MoveTo(pt);
 }
 
-#define MAXPNT 200
-#define DEFLECTION 5
+constexpr int MAXPNT     = 200;
+constexpr int DEFLECTION = 5;
 
 //=================================================================================================
 

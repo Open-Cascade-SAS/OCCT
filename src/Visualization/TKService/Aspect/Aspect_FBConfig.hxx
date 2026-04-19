@@ -14,7 +14,7 @@
 #ifndef _Aspect_FBConfig_HeaderFile
 #define _Aspect_FBConfig_HeaderFile
 
-typedef struct __GLXFBConfigRec* GLXFBConfig;
-typedef GLXFBConfig              Aspect_FBConfig;
+using GLXFBConfig     = struct __GLXFBConfigRec*;
+using Aspect_FBConfig = GLXFBConfig;
 
 #endif // _Aspect_FBConfig_HeaderFile

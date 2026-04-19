@@ -392,7 +392,7 @@ private:
 };
 
 // Vector of Solid Builders
-typedef NCollection_Vector<BOPAlgo_SplitSolid> BOPAlgo_VectorOfBuilderSolid;
+using BOPAlgo_VectorOfBuilderSolid = NCollection_Vector<BOPAlgo_SplitSolid>;
 
 //=================================================================================================
 

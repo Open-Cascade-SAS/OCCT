@@ -38,7 +38,7 @@ class BRepExtrema_ProximityDistTool
     : public BVH_Distance<double, 3, BVH_Vec3d, BRepExtrema_TriangleSet>
 {
 public:
-  typedef typename BVH_Tools<double, 3>::BVH_PrjStateInTriangle BVH_PrjState;
+  using BVH_PrjState = typename BVH_Tools<double, 3>::BVH_PrjStateInTriangle;
 
   enum ProxPnt_Status
   {

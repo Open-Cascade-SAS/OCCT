@@ -20,7 +20,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Geom_Point, Geom_Geometry)
 
-typedef Geom_Point Point;
+using Point = Geom_Point;
 
 double Geom_Point::Distance(const occ::handle<Geom_Point>& Other) const
 {

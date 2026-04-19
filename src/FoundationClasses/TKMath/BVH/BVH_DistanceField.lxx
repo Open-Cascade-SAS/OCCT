@@ -165,7 +165,7 @@ template <class T, int N, class BVHSetType>
 class SquareDistanceToPoint : public BVH_Distance<T, N, typename VectorType<T, N>::Type, BVHSetType>
 {
 public:
-  typedef typename VectorType<T, N>::Type BVH_VecNt;
+  using BVH_VecNt = typename VectorType<T, N>::Type;
 
 public:
   SquareDistanceToPoint()
@@ -202,7 +202,7 @@ template <class T, int N>
 class PointTriangulationSquareDistance : public SquareDistanceToPoint<T, N, BVH_Triangulation<T, N>>
 {
 public:
-  typedef typename VectorType<T, N>::Type BVH_VecNt;
+  using BVH_VecNt = typename VectorType<T, N>::Type;
 
 public:
   //! Constructor
@@ -288,7 +288,7 @@ template <class T, int N>
 class PointGeometrySquareDistance : public SquareDistanceToPoint<T, N, BVH_Geometry<T, N>>
 {
 public:
-  typedef typename VectorType<T, N>::Type BVH_VecNt;
+  using BVH_VecNt = typename VectorType<T, N>::Type;
 
 public:
   //! Constructor

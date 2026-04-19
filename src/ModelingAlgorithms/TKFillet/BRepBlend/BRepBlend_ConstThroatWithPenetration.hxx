@@ -17,6 +17,6 @@
 
 #include <BlendFunc_ConstThroatWithPenetration.hxx>
 
-typedef BlendFunc_ConstThroatWithPenetration BRepBlend_ConstThroatWithPenetration;
+using BRepBlend_ConstThroatWithPenetration = BlendFunc_ConstThroatWithPenetration;
 
 #endif // _BRepBlend_ConstThroatWithPenetration_HeaderFile

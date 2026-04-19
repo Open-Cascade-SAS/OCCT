@@ -18,6 +18,6 @@
 #define _TopOpeBRep_PLineInter_HeaderFile
 
 class TopOpeBRep_LineInter;
-typedef TopOpeBRep_LineInter* TopOpeBRep_PLineInter;
+using TopOpeBRep_PLineInter = TopOpeBRep_LineInter*;
 
 #endif // _TopOpeBRep_PLineInter_HeaderFile

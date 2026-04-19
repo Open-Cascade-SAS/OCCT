@@ -340,7 +340,7 @@ class Image_ComPtr
 public:
   //! Empty constructor.
   Image_ComPtr()
-      : myPtr(NULL)
+      : myPtr(nullptr)
   {
   }
 
@@ -348,22 +348,22 @@ public:
   ~Image_ComPtr() { Nullify(); }
 
   //! Return TRUE if pointer is NULL.
-  bool IsNull() const { return myPtr == NULL; }
+  bool IsNull() const { return myPtr == nullptr; }
 
   //! Release the pointer.
   void Nullify()
   {
-    if (myPtr != NULL)
+    if (myPtr != nullptr)
     {
       myPtr->Release();
-      myPtr = NULL;
+      myPtr = nullptr;
     }
   }
 
   //! Return pointer for initialization.
   T*& ChangePtr()
   {
-    Standard_ASSERT_RAISE(myPtr == NULL, "Pointer cannot be initialized twice!");
+    Standard_ASSERT_RAISE(myPtr == nullptr, "Pointer cannot be initialized twice!");
     return myPtr;
   }
 
@@ -448,7 +448,7 @@ static WICPixelFormatGUID convertToWicFormat(Image_Format theFormat)
 
 Image_AlienPixMap::Image_AlienPixMap()
 #ifdef HAVE_WINCODEC
-    : myPalette(NULL)
+    : myPalette(nullptr)
 #else
     : myLibImage(nullptr)
 #endif
@@ -602,14 +602,14 @@ void Image_AlienPixMap::Clear()
     myLibImage = nullptr;
   }
 #elif defined(HAVE_WINCODEC)
-  if (myPalette != NULL)
+  if (myPalette != nullptr)
   {
     myPalette->Release();
-    myPalette = NULL;
+    myPalette = nullptr;
   }
 #elif defined(__EMSCRIPTEN__)
   free((void*)myLibImage);
-  myLibImage = NULL;
+  myLibImage = nullptr;
 #endif
 }
 
@@ -819,9 +819,9 @@ bool Image_AlienPixMap::Load(const uint8_t*                 theData,
   Clear();
 
   Image_ComPtr<IWICImagingFactory> aWicImgFactory;
-  CoInitializeEx(NULL, COINIT_MULTITHREADED);
+  CoInitializeEx(nullptr, COINIT_MULTITHREADED);
   if (CoCreateInstance(CLSID_WICImagingFactory,
-                       NULL,
+                       nullptr,
                        CLSCTX_INPROC_SERVER,
                        IID_PPV_ARGS(&aWicImgFactory.ChangePtr()))
       != S_OK)
@@ -832,7 +832,7 @@ bool Image_AlienPixMap::Load(const uint8_t*                 theData,
 
   Image_ComPtr<IWICBitmapDecoder> aWicDecoder;
   Image_ComPtr<IWICStream>        aWicStream;
-  if (theData != NULL)
+  if (theData != nullptr)
   {
     if (aWicImgFactory->CreateStream(&aWicStream.ChangePtr()) != S_OK
         || aWicStream->InitializeFromMemory((BYTE*)theData, (DWORD)theLength) != S_OK)
@@ -841,7 +841,7 @@ bool Image_AlienPixMap::Load(const uint8_t*                 theData,
       return false;
     }
     if (aWicImgFactory->CreateDecoderFromStream(aWicStream.get(),
-                                                NULL,
+                                                nullptr,
                                                 WICDecodeMetadataCacheOnDemand,
                                                 &aWicDecoder.ChangePtr())
         != S_OK)
@@ -854,7 +854,7 @@ bool Image_AlienPixMap::Load(const uint8_t*                 theData,
   {
     const TCollection_ExtendedString aFileNameW(theFileName);
     if (aWicImgFactory->CreateDecoderFromFilename(aFileNameW.ToWideString(),
-                                                  NULL,
+                                                  nullptr,
                                                   GENERIC_READ,
                                                   WICDecodeMetadataCacheOnDemand,
                                                   &aWicDecoder.ChangePtr())
@@ -886,7 +886,7 @@ bool Image_AlienPixMap::Load(const uint8_t*                 theData,
         || aWicConvertedFrame->Initialize(aWicFrameDecode.get(),
                                           convertToWicFormat(aPixelFormat),
                                           WICBitmapDitherTypeNone,
-                                          NULL,
+                                          nullptr,
                                           0.0f,
                                           WICBitmapPaletteTypeCustom)
              != S_OK)
@@ -927,7 +927,7 @@ bool Image_AlienPixMap::Load(const uint8_t*                 theData,
     aWicSrc   = aRotator.get();
   }
 
-  if (aWicSrc->CopyPixels(NULL, (UINT)SizeRowBytes(), (UINT)SizeBytes(), ChangeData()) != S_OK)
+  if (aWicSrc->CopyPixels(nullptr, (UINT)SizeRowBytes(), (UINT)SizeBytes(), ChangeData()) != S_OK)
   {
     Message::SendFail("Error: cannot copy pixels from WIC Image");
     return false;
@@ -973,7 +973,7 @@ bool Image_AlienPixMap::Load(const uint8_t*                 theData,
                              const TCollection_AsciiString& theImagePath)
 {
   Clear();
-  if (theData != NULL)
+  if (theData != nullptr)
   {
     (void)theLength;
     Message::SendFail("Error: no image library available for decoding in-memory buffer");
@@ -982,7 +982,7 @@ bool Image_AlienPixMap::Load(const uint8_t*                 theData,
 
   int   aSizeX = 0, aSizeY = 0;
   char* anImgData = emscripten_get_preloaded_image_data(theImagePath.ToCString(), &aSizeX, &aSizeY);
-  if (anImgData == NULL)
+  if (anImgData == nullptr)
   {
     Message::SendFail() << "Error: image '" << theImagePath << "' is not preloaded";
     return false;
@@ -1089,9 +1089,9 @@ static bool convertData(const Image_AlienPixMap&  theSrcPixMapData,
                         1,
                         theSrcPixMapData.SizeXYZ(),
                         aSizeRowBytes,
-                        NULL);
+                        nullptr);
 
-  if (aWicFormatConverter->CopyPixels(NULL,
+  if (aWicFormatConverter->CopyPixels(nullptr,
                                       aSizeRowBytes,
                                       aSizeBytes,
                                       theDstPixMapData.ChangeData())
@@ -1193,9 +1193,9 @@ bool Image_AlienPixMap::Save(uint8_t*                       theBuffer,
   }
 
   Image_ComPtr<IWICImagingFactory> aWicImgFactory;
-  CoInitializeEx(NULL, COINIT_MULTITHREADED);
+  CoInitializeEx(nullptr, COINIT_MULTITHREADED);
   if (CoCreateInstance(CLSID_WICImagingFactory,
-                       NULL,
+                       nullptr,
                        CLSCTX_INPROC_SERVER,
                        IID_PPV_ARGS(&aWicImgFactory.ChangePtr()))
       != S_OK)
@@ -1223,7 +1223,7 @@ bool Image_AlienPixMap::Save(uint8_t*                       theBuffer,
   Image_ComPtr<IWICStream>         aWicStream;
   Image_ComPtr<IWICBitmapEncoder>  aWicEncoder;
   const TCollection_ExtendedString aFileNameW(theFileName);
-  if (theBuffer != NULL)
+  if (theBuffer != nullptr)
   {
     if (aWicImgFactory->CreateStream(&aWicStream.ChangePtr()) != S_OK
         || aWicStream->InitializeFromMemory(theBuffer, (DWORD)theLength) != S_OK)
@@ -1241,7 +1241,7 @@ bool Image_AlienPixMap::Save(uint8_t*                       theBuffer,
       return false;
     }
   }
-  if (aWicImgFactory->CreateEncoder(aFileFormat, NULL, &aWicEncoder.ChangePtr()) != S_OK
+  if (aWicImgFactory->CreateEncoder(aFileFormat, nullptr, &aWicEncoder.ChangePtr()) != S_OK
       || aWicEncoder->Initialize(aWicStream.get(), WICBitmapEncoderNoCache) != S_OK)
   {
     Message::SendFail("Error: cannot create WIC Encoder");
@@ -1250,8 +1250,8 @@ bool Image_AlienPixMap::Save(uint8_t*                       theBuffer,
 
   WICPixelFormatGUID                  aWicPixelFormatRes = aWicPixelFormat;
   Image_ComPtr<IWICBitmapFrameEncode> aWicFrameEncode;
-  if (aWicEncoder->CreateNewFrame(&aWicFrameEncode.ChangePtr(), NULL) != S_OK
-      || aWicFrameEncode->Initialize(NULL) != S_OK
+  if (aWicEncoder->CreateNewFrame(&aWicFrameEncode.ChangePtr(), nullptr) != S_OK
+      || aWicFrameEncode->Initialize(nullptr) != S_OK
       || aWicFrameEncode->SetSize((UINT)SizeX(), (UINT)SizeY()) != S_OK
       || aWicFrameEncode->SetPixelFormat(&aWicPixelFormatRes) != S_OK)
   {
@@ -1260,7 +1260,7 @@ bool Image_AlienPixMap::Save(uint8_t*                       theBuffer,
   }
 
   if (aFileFormat == GUID_ContainerFormatGif
-      && (myPalette == NULL || aWicFrameEncode->SetPalette(myPalette) != S_OK))
+      && (myPalette == nullptr || aWicFrameEncode->SetPalette(myPalette) != S_OK))
   {
     Message::SendFail("Error: cannot set palette");
     return false;
@@ -1383,9 +1383,9 @@ bool Image_AlienPixMap::Save(std::ostream& theStream, const TCollection_AsciiStr
   }
 
   Image_ComPtr<IWICImagingFactory> aWicImgFactory;
-  CoInitializeEx(NULL, COINIT_MULTITHREADED);
+  CoInitializeEx(nullptr, COINIT_MULTITHREADED);
   if (CoCreateInstance(CLSID_WICImagingFactory,
-                       NULL,
+                       nullptr,
                        CLSCTX_INPROC_SERVER,
                        IID_PPV_ARGS(&aWicImgFactory.ChangePtr()))
       != S_OK)
@@ -1413,13 +1413,13 @@ bool Image_AlienPixMap::Save(std::ostream& theStream, const TCollection_AsciiStr
   Image_ComPtr<IStream>           aStream;
   Image_ComPtr<IWICBitmapEncoder> aWicEncoder;
 
-  if (CreateStreamOnHGlobal(NULL, true, &aStream.ChangePtr()) != S_OK)
+  if (CreateStreamOnHGlobal(nullptr, true, &aStream.ChangePtr()) != S_OK)
   {
     Message::SendFail("Error: cannot create Stream on global");
     return false;
   }
 
-  if (aWicImgFactory->CreateEncoder(aFileFormat, NULL, &aWicEncoder.ChangePtr()) != S_OK
+  if (aWicImgFactory->CreateEncoder(aFileFormat, nullptr, &aWicEncoder.ChangePtr()) != S_OK
       || aWicEncoder->Initialize(aStream.get(), WICBitmapEncoderNoCache) != S_OK)
   {
     Message::SendFail("Error: cannot create WIC Encoder");
@@ -1428,8 +1428,8 @@ bool Image_AlienPixMap::Save(std::ostream& theStream, const TCollection_AsciiStr
 
   WICPixelFormatGUID                  aWicPixelFormatRes = aWicPixelFormat;
   Image_ComPtr<IWICBitmapFrameEncode> aWicFrameEncode;
-  if (aWicEncoder->CreateNewFrame(&aWicFrameEncode.ChangePtr(), NULL) != S_OK
-      || aWicFrameEncode->Initialize(NULL) != S_OK
+  if (aWicEncoder->CreateNewFrame(&aWicFrameEncode.ChangePtr(), nullptr) != S_OK
+      || aWicFrameEncode->Initialize(nullptr) != S_OK
       || aWicFrameEncode->SetSize((UINT)SizeX(), (UINT)SizeY()) != S_OK
       || aWicFrameEncode->SetPixelFormat(&aWicPixelFormatRes) != S_OK)
   {
@@ -1438,7 +1438,7 @@ bool Image_AlienPixMap::Save(std::ostream& theStream, const TCollection_AsciiStr
   }
 
   if (aFileFormat == GUID_ContainerFormatGif
-      && (myPalette == NULL || aWicFrameEncode->SetPalette(myPalette) != S_OK))
+      && (myPalette == nullptr || aWicFrameEncode->SetPalette(myPalette) != S_OK))
   {
     Message::SendFail("Error: cannot set palette");
     return false;
@@ -1504,7 +1504,7 @@ bool Image_AlienPixMap::Save(std::ostream& theStream, const TCollection_AsciiStr
   }
 
   LPVOID aData = GlobalLock(aMem);
-  if (aData == NULL)
+  if (aData == nullptr)
   {
     Message::SendFail("Error: cannot lock global");
     return false;

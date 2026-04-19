@@ -20,7 +20,7 @@
 #include <Standard_Transient.hxx>
 
 // forward declarations to avoid including of FreeType headers
-typedef struct FT_LibraryRec_* FT_Library;
+using FT_Library = struct FT_LibraryRec_*;
 
 //! Wrapper over FT_Library. Provides access to FreeType library.
 class Font_FTLibrary : public Standard_Transient

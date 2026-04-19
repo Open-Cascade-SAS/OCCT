@@ -156,7 +156,7 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(BRepBlend_AppFuncRoot, Approx_SweepFunction)
 
-  Standard_EXPORT ~BRepBlend_AppFuncRoot();
+  Standard_EXPORT ~BRepBlend_AppFuncRoot() override;
 
 protected:
   Standard_EXPORT BRepBlend_AppFuncRoot(occ::handle<BRepBlend_Line>& Line,

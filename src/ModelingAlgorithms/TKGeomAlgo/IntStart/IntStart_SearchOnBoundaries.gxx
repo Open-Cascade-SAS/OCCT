@@ -110,7 +110,7 @@ public:
 
   // returns value of the one-dimension-function when parameter
   // is equal to theX
-  virtual bool Value(const double theX, double& theFVal)
+  bool Value(const double theX, double& theFVal) override
   {
     if (!myFunc->Value(theX, theFVal))
       return false;
@@ -120,7 +120,7 @@ public:
   }
 
   // see analogical method for abstract owner class math_Function
-  virtual int GetStateNumber() { return 0; }
+  int GetStateNumber() override { return 0; }
 
 private:
   TheFunction* myFunc;

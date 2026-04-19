@@ -68,7 +68,7 @@ public:
 public:
   //!@name Support of run-time type information (RTTI)
 
-  typedef void base_type;
+  using base_type = void;
 
   static constexpr const char* get_type_name() { return "Standard_Transient"; }
 

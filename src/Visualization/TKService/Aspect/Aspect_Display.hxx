@@ -22,6 +22,6 @@
 #ifndef _Aspect_Display_HeaderFile
 #define _Aspect_Display_HeaderFile
 
-typedef void* Aspect_Display; /* Display* under UNIX */
+using Aspect_Display = void*; /* Display* under UNIX */
 
 #endif /* _Aspect_Display_HeaderFile */

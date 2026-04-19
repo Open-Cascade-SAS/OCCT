@@ -35,7 +35,7 @@ class BVH_Transform : public BVH_Properties
 {
 public:
   //! Type of transformation matrix.
-  typedef typename BVH::MatrixType<T, N>::Type BVH_MatNt;
+  using BVH_MatNt = typename BVH::MatrixType<T, N>::Type;
 
 public:
   //! Creates new identity transformation.
@@ -78,11 +78,11 @@ struct MatrixOp
 template <class T>
 struct MatrixOp<T, 4>
 {
-  typedef typename BVH::MatrixType<T, 4>::Type BVH_Mat4t;
+  using BVH_Mat4t = typename BVH::MatrixType<T, 4>::Type;
 
   static void Inverse(const BVH_Mat4t& theIn, BVH_Mat4t& theOut) { theIn.Inverted(theOut); }
 
-  typedef typename BVH::VectorType<T, 4>::Type BVH_Vec4t;
+  using BVH_Vec4t = typename BVH::VectorType<T, 4>::Type;
 
   static BVH_Vec4t Multiply(const BVH_Mat4t& theMat, const BVH_Vec4t& theVec)
   {
@@ -100,7 +100,7 @@ struct UnitVector
 template <class T>
 struct UnitVector<T, 2>
 {
-  typedef typename BVH::VectorType<T, 2>::Type BVH_Vec2t;
+  using BVH_Vec2t = typename BVH::VectorType<T, 2>::Type;
 
   static BVH_Vec2t DX() { return BVH_Vec2t(static_cast<T>(1.0), static_cast<T>(0.0)); }
 
@@ -112,7 +112,7 @@ struct UnitVector<T, 2>
 template <class T>
 struct UnitVector<T, 3>
 {
-  typedef typename BVH::VectorType<T, 3>::Type BVH_Vec3t;
+  using BVH_Vec3t = typename BVH::VectorType<T, 3>::Type;
 
   static BVH_Vec3t DX()
   {
@@ -133,7 +133,7 @@ struct UnitVector<T, 3>
 template <class T>
 struct UnitVector<T, 4>
 {
-  typedef typename BVH::VectorType<T, 4>::Type BVH_Vec4t;
+  using BVH_Vec4t = typename BVH::VectorType<T, 4>::Type;
 
   static BVH_Vec4t DX()
   {

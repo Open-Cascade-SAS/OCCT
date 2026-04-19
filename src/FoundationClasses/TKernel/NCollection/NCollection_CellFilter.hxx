@@ -113,8 +113,8 @@ template <class Inspector>
 class NCollection_CellFilter
 {
 public:
-  typedef typename Inspector::Target Target;
-  typedef typename Inspector::Point  Point;
+  using Target = typename Inspector::Target;
+  using Point  = typename Inspector::Point;
 
 public:
   //! Constructor; initialized by dimension count and cell size.
@@ -237,8 +237,8 @@ protected:
   };
 
   //! Cell index type.
-  typedef int                                        Cell_IndexType;
-  typedef NCollection_LocalArray<Cell_IndexType, 10> CellIndex;
+  using Cell_IndexType = int;
+  using CellIndex      = NCollection_LocalArray<Cell_IndexType, 10>;
 
   /**
    * Auxiliary structure representing a cell in the space.
@@ -333,7 +333,7 @@ protected:
     }
   };
 
-  typedef NCollection_Map<Cell, CellHasher> CellMap;
+  using CellMap = NCollection_Map<Cell, CellHasher>;
 
 protected:
   //! Reset allocator to the new one

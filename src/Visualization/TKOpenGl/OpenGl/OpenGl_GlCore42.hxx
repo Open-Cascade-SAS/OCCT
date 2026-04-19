@@ -22,7 +22,7 @@
 struct OpenGl_GlCore42 : public OpenGl_GlCore41
 {
 private:
-  typedef OpenGl_GlCore41 theBaseClass_t;
+  using theBaseClass_t = OpenGl_GlCore41;
 
 public: //! @name GL_ARB_base_instance (added to OpenGL 4.2 core)
   using theBaseClass_t::glDrawArraysInstancedBaseInstance;

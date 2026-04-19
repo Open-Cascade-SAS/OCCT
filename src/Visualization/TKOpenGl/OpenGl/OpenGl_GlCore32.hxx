@@ -22,7 +22,7 @@
 struct OpenGl_GlCore32 : public OpenGl_GlCore31
 {
 private:
-  typedef OpenGl_GlCore31 theBaseClass_t;
+  using theBaseClass_t = OpenGl_GlCore31;
 
 public: //! @name GL_ARB_draw_elements_base_vertex (added to OpenGL 3.2 core)
   using theBaseClass_t::glDrawElementsBaseVertex;

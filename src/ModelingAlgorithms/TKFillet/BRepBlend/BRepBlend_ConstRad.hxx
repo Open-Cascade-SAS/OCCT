@@ -19,6 +19,6 @@
 
 #include <BlendFunc_ConstRad.hxx>
 
-typedef BlendFunc_ConstRad BRepBlend_ConstRad;
+using BRepBlend_ConstRad = BlendFunc_ConstRad;
 
 #endif // _BRepBlend_ConstRad_HeaderFile

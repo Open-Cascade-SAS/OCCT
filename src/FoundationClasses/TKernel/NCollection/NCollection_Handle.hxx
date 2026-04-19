@@ -70,7 +70,7 @@ private:
   }
 
 public:
-  typedef T element_type;
+  using element_type = T;
 
   //! Default constructor; creates null handle
   NCollection_Handle() = default;

@@ -59,7 +59,7 @@ class BVH_TreeBase : public BVH_TreeBaseTransient
   friend class BVH_Builder<T, N>;
 
 public: //! @name custom data types
-  typedef typename BVH_Box<T, N>::BVH_VecNt BVH_VecNt;
+  using BVH_VecNt = typename BVH_Box<T, N>::BVH_VecNt;
 
 public: //! @name general methods
   //! Creates new empty BVH tree.

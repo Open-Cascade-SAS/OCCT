@@ -48,19 +48,19 @@ struct VectorType
 template <class T>
 struct VectorType<T, 1>
 {
-  typedef T Type;
+  using Type = T;
 };
 
 template <class T>
 struct VectorType<T, 2>
 {
-  typedef NCollection_Vec2<T> Type;
+  using Type = NCollection_Vec2<T>;
 };
 
 template <class T>
 struct VectorType<T, 3>
 {
-  typedef NCollection_Vec3<T> Type;
+  using Type = NCollection_Vec3<T>;
 };
 
 template <class T>
@@ -92,7 +92,7 @@ Bnd_Box ToBndBox(const NCollection_Vec4<T>& theMin, const NCollection_Vec4<T>& t
 template <class T>
 struct VectorType<T, 4>
 {
-  typedef NCollection_Vec4<T> Type;
+  using Type = NCollection_Vec4<T>;
 };
 
 //! Tool class for selecting appropriate matrix type (Eigen or NCollection).
@@ -107,7 +107,7 @@ struct MatrixType
 template <class T>
 struct MatrixType<T, 4>
 {
-  typedef NCollection_Mat4<T> Type;
+  using Type = NCollection_Mat4<T>;
 };
 
 //! Tool class for selecting type of array of vectors (STD or NCollection vector).
@@ -119,58 +119,58 @@ struct ArrayType
 #ifndef _BVH_USE_STD_VECTOR_
   typedef NCollection_Vector<typename VectorType<T, N>::Type> Type;
 #else
-  typedef std::vector<typename VectorType<T, N>::Type> Type;
+  using Type = std::vector<typename VectorType<T, N>::Type>;
 #endif
 };
 } // namespace BVH
 
 //! 2D vector of integers.
-typedef BVH::VectorType<int, 2>::Type BVH_Vec2i;
+using BVH_Vec2i = BVH::VectorType<int, 2>::Type;
 //! 3D vector of integers.
-typedef BVH::VectorType<int, 3>::Type BVH_Vec3i;
+using BVH_Vec3i = BVH::VectorType<int, 3>::Type;
 //! 4D vector of integers.
-typedef BVH::VectorType<int, 4>::Type BVH_Vec4i;
+using BVH_Vec4i = BVH::VectorType<int, 4>::Type;
 
 //! Array of 2D vectors of integers.
-typedef BVH::ArrayType<int, 2>::Type BVH_Array2i;
+using BVH_Array2i = BVH::ArrayType<int, 2>::Type;
 //! Array of 3D vectors of integers.
-typedef BVH::ArrayType<int, 3>::Type BVH_Array3i;
+using BVH_Array3i = BVH::ArrayType<int, 3>::Type;
 //! Array of 4D vectors of integers.
-typedef BVH::ArrayType<int, 4>::Type BVH_Array4i;
+using BVH_Array4i = BVH::ArrayType<int, 4>::Type;
 
 //! 2D vector of single precision reals.
-typedef BVH::VectorType<float, 2>::Type BVH_Vec2f;
+using BVH_Vec2f = BVH::VectorType<float, 2>::Type;
 //! 3D vector of single precision reals.
-typedef BVH::VectorType<float, 3>::Type BVH_Vec3f;
+using BVH_Vec3f = BVH::VectorType<float, 3>::Type;
 //! 4D vector of single precision reals.
-typedef BVH::VectorType<float, 4>::Type BVH_Vec4f;
+using BVH_Vec4f = BVH::VectorType<float, 4>::Type;
 
 //! Array of 2D vectors of single precision reals.
-typedef BVH::ArrayType<float, 2>::Type BVH_Array2f;
+using BVH_Array2f = BVH::ArrayType<float, 2>::Type;
 //! Array of 3D vectors of single precision reals.
-typedef BVH::ArrayType<float, 3>::Type BVH_Array3f;
+using BVH_Array3f = BVH::ArrayType<float, 3>::Type;
 //! Array of 4D vectors of single precision reals.
-typedef BVH::ArrayType<float, 4>::Type BVH_Array4f;
+using BVH_Array4f = BVH::ArrayType<float, 4>::Type;
 
 //! 2D vector of double precision reals.
-typedef BVH::VectorType<double, 2>::Type BVH_Vec2d;
+using BVH_Vec2d = BVH::VectorType<double, 2>::Type;
 //! 3D vector of double precision reals.
-typedef BVH::VectorType<double, 3>::Type BVH_Vec3d;
+using BVH_Vec3d = BVH::VectorType<double, 3>::Type;
 //! 4D vector of double precision reals.
-typedef BVH::VectorType<double, 4>::Type BVH_Vec4d;
+using BVH_Vec4d = BVH::VectorType<double, 4>::Type;
 
 //! Array of 2D vectors of double precision reals.
-typedef BVH::ArrayType<double, 2>::Type BVH_Array2d;
+using BVH_Array2d = BVH::ArrayType<double, 2>::Type;
 //! Array of 3D vectors of double precision reals.
-typedef BVH::ArrayType<double, 3>::Type BVH_Array3d;
+using BVH_Array3d = BVH::ArrayType<double, 3>::Type;
 //! Array of 4D vectors of double precision reals.
-typedef BVH::ArrayType<double, 4>::Type BVH_Array4d;
+using BVH_Array4d = BVH::ArrayType<double, 4>::Type;
 
 //! 4x4 matrix of single precision reals.
-typedef BVH::MatrixType<float, 4>::Type BVH_Mat4f;
+using BVH_Mat4f = BVH::MatrixType<float, 4>::Type;
 
 //! 4x4 matrix of double precision reals.
-typedef BVH::MatrixType<double, 4>::Type BVH_Mat4d;
+using BVH_Mat4d = BVH::MatrixType<double, 4>::Type;
 
 namespace BVH
 {
@@ -186,7 +186,7 @@ struct VecComp
 template <class T>
 struct VecComp<T, 2>
 {
-  typedef typename BVH::VectorType<T, 2>::Type BVH_Vec2t;
+  using BVH_Vec2t = typename BVH::VectorType<T, 2>::Type;
 
   static constexpr T Get(const BVH_Vec2t& theVec, const int theAxis)
   {
@@ -197,7 +197,7 @@ struct VecComp<T, 2>
 template <class T>
 struct VecComp<T, 3>
 {
-  typedef typename BVH::VectorType<T, 3>::Type BVH_Vec3t;
+  using BVH_Vec3t = typename BVH::VectorType<T, 3>::Type;
 
   static constexpr T Get(const BVH_Vec3t& theVec, const int theAxis)
   {
@@ -208,7 +208,7 @@ struct VecComp<T, 3>
 template <class T>
 struct VecComp<T, 4>
 {
-  typedef typename BVH::VectorType<T, 4>::Type BVH_Vec4t;
+  using BVH_Vec4t = typename BVH::VectorType<T, 4>::Type;
 
   static constexpr T Get(const BVH_Vec4t& theVec, const int theAxis)
   {
@@ -224,7 +224,7 @@ struct VecComp<T, 4>
 template <class T, int N = 1>
 struct Array
 {
-  typedef typename BVH::ArrayType<T, N>::Type BVH_ArrayNt;
+  using BVH_ArrayNt = typename BVH::ArrayType<T, N>::Type;
 
   //! Returns a const reference to the element with the given index.
   static inline const typename BVH::VectorType<T, N>::Type& Value(const BVH_ArrayNt& theArray,

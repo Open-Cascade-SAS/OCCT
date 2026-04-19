@@ -19,6 +19,6 @@
 
 #include <Graphic3d_CLight.hxx>
 
-typedef Graphic3d_CLight V3d_Light;
+using V3d_Light = Graphic3d_CLight;
 
 #endif // _V3d_Light_HeaderFile

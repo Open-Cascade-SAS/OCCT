@@ -19,12 +19,12 @@
 
 #define ChildNodeIterator_UpToBrother                                                              \
   {                                                                                                \
-    while (!myNode.IsNull() && (myNode->Depth() > myFirstLevel) && myNode->myNext == NULL)         \
+    while (!myNode.IsNull() && (myNode->Depth() > myFirstLevel) && myNode->myNext == nullptr)      \
       myNode = myNode->myFather;                                                                   \
-    if (!myNode.IsNull() && (myNode->Depth() > myFirstLevel) && myNode->myFather != NULL)          \
+    if (!myNode.IsNull() && (myNode->Depth() > myFirstLevel) && myNode->myFather != nullptr)       \
       myNode = myNode->myNext;                                                                     \
     else                                                                                           \
-      myNode = NULL;                                                                               \
+      myNode = nullptr;                                                                            \
   }
 
 //=================================================================================================

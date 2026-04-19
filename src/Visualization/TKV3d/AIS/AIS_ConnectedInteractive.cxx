@@ -233,8 +233,8 @@ void AIS_ConnectedInteractive::computeSubShapeSelection(
   const occ::handle<SelectMgr_Selection>& theSelection,
   const int                               theMode)
 {
-  typedef NCollection_List<occ::handle<Select3D_SensitiveEntity>> SensitiveList;
-  typedef NCollection_DataMap<TopoDS_Shape, SensitiveList>        Shapes2EntitiesMap;
+  using SensitiveList      = NCollection_List<occ::handle<Select3D_SensitiveEntity>>;
+  using Shapes2EntitiesMap = NCollection_DataMap<TopoDS_Shape, SensitiveList>;
 
   if (!myReference->HasSelection(theMode))
   {

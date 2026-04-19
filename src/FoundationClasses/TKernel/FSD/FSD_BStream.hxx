@@ -17,6 +17,6 @@
 
 #include <stdio.h>
 
-typedef FILE* FSD_BStream;
+using FSD_BStream = FILE*;
 
 #endif

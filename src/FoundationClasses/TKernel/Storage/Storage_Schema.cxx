@@ -43,8 +43,8 @@ IMPLEMENT_STANDARD_RTTIEXT(Storage_Schema, Standard_Transient)
   #include <OSD_Protection.hxx>
   #include <OSD_Environment.hxx>
 
-typedef NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>
-  DataMapOfAStringAString;
+using DataMapOfAStringAString =
+  NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>;
 
 #endif
 
@@ -793,7 +793,7 @@ occ::handle<Storage_Data>& Storage_Schema::ICurrentData()
   return _Storage_CData;
 }
 
-#define SLENGTH 80
+constexpr int SLENGTH = 80;
 
 //=================================================================================================
 

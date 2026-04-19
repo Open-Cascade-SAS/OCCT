@@ -132,7 +132,7 @@ protected:
 };
 
 //=======================================================================
-typedef NCollection_Vector<BOPAlgo_VertexFace> BOPAlgo_VectorOfVertexFace;
+using BOPAlgo_VectorOfVertexFace = NCollection_Vector<BOPAlgo_VertexFace>;
 
 //=================================================================================================
 

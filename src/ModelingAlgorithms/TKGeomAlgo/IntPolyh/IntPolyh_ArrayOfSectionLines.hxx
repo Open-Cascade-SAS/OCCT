@@ -19,6 +19,6 @@
 #include <IntPolyh_Array.hxx>
 #include <IntPolyh_SectionLine.hxx>
 
-typedef IntPolyh_Array<IntPolyh_SectionLine> IntPolyh_ArrayOfSectionLines;
+using IntPolyh_ArrayOfSectionLines = IntPolyh_Array<IntPolyh_SectionLine>;
 
 #endif

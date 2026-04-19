@@ -32,7 +32,7 @@ class BVH_DistanceField
   friend class BVH_ParallelDistanceFieldBuilder<T, N>;
 
 public:
-  typedef typename BVH::VectorType<T, N>::Type BVH_VecNt;
+  using BVH_VecNt = typename BVH::VectorType<T, N>::Type;
 
 public:
   //! Creates empty 3D distance field.

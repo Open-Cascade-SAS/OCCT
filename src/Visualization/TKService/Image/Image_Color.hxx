@@ -23,7 +23,7 @@ struct Image_ColorRGB
 {
 
   //! Component type.
-  typedef uint8_t ComponentType_t;
+  using ComponentType_t = uint8_t;
 
   //! Returns the number of components.
   static int Length() { return 3; }
@@ -56,7 +56,7 @@ struct Image_ColorRGB32
 {
 
   //! Component type.
-  typedef uint8_t ComponentType_t;
+  using ComponentType_t = uint8_t;
 
   //! Returns the number of components.
   static int Length() { return 3; }
@@ -94,7 +94,7 @@ struct Image_ColorRGBA
 {
 
   //! Component type.
-  typedef uint8_t ComponentType_t;
+  using ComponentType_t = uint8_t;
 
   //! Returns the number of components.
   static int Length() { return 4; }
@@ -132,7 +132,7 @@ struct Image_ColorBGR
 {
 
   //! Component type.
-  typedef uint8_t ComponentType_t;
+  using ComponentType_t = uint8_t;
 
   //! Returns the number of components.
   static int Length() { return 3; }
@@ -164,7 +164,7 @@ struct Image_ColorBGR32
 {
 
   //! Component type.
-  typedef uint8_t ComponentType_t;
+  using ComponentType_t = uint8_t;
 
   //! Returns the number of components.
   static int Length() { return 3; }
@@ -202,7 +202,7 @@ struct Image_ColorBGRA
 {
 
   //! Component type.
-  typedef uint8_t ComponentType_t;
+  using ComponentType_t = uint8_t;
 
   //! Returns the number of components.
   static int Length() { return 4; }
@@ -239,7 +239,7 @@ public:
 struct Image_ColorRGF
 {
   //! Component type.
-  typedef float ComponentType_t;
+  using ComponentType_t = float;
 
   //! Returns the number of components.
   static int Length() { return 2; }
@@ -265,7 +265,7 @@ struct Image_ColorRGBF
 {
 
   //! Component type.
-  typedef float ComponentType_t;
+  using ComponentType_t = float;
 
   //! Returns the number of components.
   static int Length() { return 3; }
@@ -297,7 +297,7 @@ struct Image_ColorBGRF
 {
 
   //! Component type.
-  typedef float ComponentType_t;
+  using ComponentType_t = float;
 
   //! Returns the number of components.
   static int Length() { return 3; }
@@ -329,7 +329,7 @@ struct Image_ColorRGBAF
 {
 
   //! Component type.
-  typedef float ComponentType_t;
+  using ComponentType_t = float;
 
   //! Returns the number of components.
   static int Length() { return 4; }
@@ -367,7 +367,7 @@ struct Image_ColorBGRAF
 {
 
   //! Component type.
-  typedef float ComponentType_t;
+  using ComponentType_t = float;
 
   //! Returns the number of components.
   static int Length() { return 4; }

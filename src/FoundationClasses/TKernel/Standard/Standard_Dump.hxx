@@ -176,7 +176,7 @@
 //! Depth = -1 is the default value, dump here is unlimited.
 #define OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, theField)                              \
   {                                                                                                \
-    if (theDepth != 0 && (void*)(theField) != NULL)                                                \
+    if (theDepth != 0 && (void*)(theField) != nullptr)                                             \
     {                                                                                              \
       Standard_SStream aFieldStream;                                                               \
       (theField)->DumpJson(aFieldStream, theDepth - 1);                                            \
@@ -194,7 +194,7 @@
 //! Inc name value added to the key to provide unique keys
 #define OCCT_DUMP_FIELD_VALUES_DUMPED_INC(theOStream, theDepth, theField, theIncName)              \
   {                                                                                                \
-    if (theDepth != 0 && (void*)(theField) != NULL)                                                \
+    if (theDepth != 0 && (void*)(theField) != nullptr)                                             \
     {                                                                                              \
       Standard_SStream aFieldStream;                                                               \
       (theField)->DumpJson(aFieldStream, theDepth - 1);                                            \
@@ -211,7 +211,7 @@
 //! Depth = -1 is the default value, dump here is unlimited.
 #define OCCT_INIT_FIELD_VALUES_DUMPED(theSStream, theStreamPos, theField)                          \
   {                                                                                                \
-    if ((theField) == NULL || !(theField)->InitFromJson(theSStream, theStreamPos))                 \
+    if ((theField) == nullptr || !(theField)->InitFromJson(theSStream, theStreamPos))              \
       return false;                                                                                \
   }
 

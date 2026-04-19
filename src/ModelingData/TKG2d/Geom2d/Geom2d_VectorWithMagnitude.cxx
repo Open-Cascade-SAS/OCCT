@@ -24,11 +24,11 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Geom2d_VectorWithMagnitude, Geom2d_Vector)
 
-typedef Geom2d_Vector              Vector;
-typedef Geom2d_VectorWithMagnitude VectorWithMagnitude;
-typedef gp_Ax2d                    Ax2d;
-typedef gp_Pnt2d                   Pnt2d;
-typedef gp_Trsf2d                  Trsf2d;
+using Vector              = Geom2d_Vector;
+using VectorWithMagnitude = Geom2d_VectorWithMagnitude;
+using Ax2d                = gp_Ax2d;
+using Pnt2d               = gp_Pnt2d;
+using Trsf2d              = gp_Trsf2d;
 
 Geom2d_VectorWithMagnitude::Geom2d_VectorWithMagnitude(const gp_Vec2d& V)
 {

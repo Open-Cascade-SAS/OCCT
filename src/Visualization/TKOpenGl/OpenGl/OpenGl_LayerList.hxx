@@ -139,8 +139,8 @@ protected:
   class OpenGl_LayerStack
   {
   public:
-    typedef NCollection_Array1<const Graphic3d_Layer*>::const_iterator const_iterator;
-    typedef NCollection_Array1<const Graphic3d_Layer*>::iterator       iterator;
+    using const_iterator = NCollection_Array1<const Graphic3d_Layer*>::const_iterator;
+    using iterator       = NCollection_Array1<const Graphic3d_Layer*>::iterator;
 
     //! Reallocate internal buffer of the stack.
     void Allocate(int theSize)

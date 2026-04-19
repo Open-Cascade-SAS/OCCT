@@ -24,7 +24,7 @@ namespace
 {
 
 //! The integer type used to represent some color or color component
-typedef unsigned int ColorInteger;
+using ColorInteger = unsigned int;
 
 //! Defines all possible lengths of strings representing color in hex format
 enum HexColorLength

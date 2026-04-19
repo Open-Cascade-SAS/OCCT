@@ -152,7 +152,7 @@ LDOM_Element LDOM_Element::GetChildByTagName(const LDOMString& aTagName) const
       LDOMString
 #ifdef DOM2_MODEL
         aNodeName = aChildNode.getLocalName(); // try DOM2/namespaces
-      if (aNodeName == NULL)
+      if (aNodeName == nullptr)
 #endif
         aNodeName = aChildNode.getNodeName(); // use DOM1
       if (aNodeName.equals(aTagName))

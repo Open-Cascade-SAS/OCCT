@@ -22,7 +22,7 @@
 struct OpenGl_GlCore12 : public OpenGl_GlCore11Fwd
 {
 private:
-  typedef OpenGl_GlCore11Fwd theBaseClass_t;
+  using theBaseClass_t = OpenGl_GlCore11Fwd;
 
 public: //! @name OpenGL 1.2 additives to 1.1
   using theBaseClass_t::glBlendColor;

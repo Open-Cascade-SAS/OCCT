@@ -85,7 +85,7 @@ protected:
 };
 
 //=======================================================================
-typedef NCollection_Vector<BOPAlgo_CBK> BOPAlgo_VectorOfCBK;
+using BOPAlgo_VectorOfCBK = NCollection_Vector<BOPAlgo_CBK>;
 
 //=================================================================================================
 

@@ -33,8 +33,8 @@ template <class TheObjType, class TheBndType>
 class NCollection_EBTree : public NCollection_UBTree<TheObjType, TheBndType>
 {
 public:
-  typedef NCollection_UBTree<TheObjType, TheBndType> UBTree;
-  typedef typename UBTree::TreeNode                  TreeNode;
+  using UBTree   = NCollection_UBTree<TheObjType, TheBndType>;
+  using TreeNode = typename UBTree::TreeNode;
 
   // ---------- PUBLIC METHODS ----------
 

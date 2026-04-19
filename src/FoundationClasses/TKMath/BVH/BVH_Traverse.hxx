@@ -181,7 +181,7 @@ template <class NumType, int Dimension, class BVHSetType = void, class MetricTyp
 class BVH_Traverse : public BVH_BaseTraverse<MetricType>
 {
 public: //! @name public types
-  typedef typename BVH_Box<NumType, Dimension>::BVH_VecNt BVH_VecNt;
+  using BVH_VecNt = typename BVH_Box<NumType, Dimension>::BVH_VecNt;
 
 public: //! @name Constructor
   //! Constructor
@@ -272,7 +272,7 @@ template <class NumType, int Dimension, class BVHSetType = void, class MetricTyp
 class BVH_PairTraverse : public BVH_BaseTraverse<MetricType>
 {
 public: //! @name public types
-  typedef typename BVH_Box<NumType, Dimension>::BVH_VecNt BVH_VecNt;
+  using BVH_VecNt = typename BVH_Box<NumType, Dimension>::BVH_VecNt;
 
 public: //! @name Constructor
   //! Constructor

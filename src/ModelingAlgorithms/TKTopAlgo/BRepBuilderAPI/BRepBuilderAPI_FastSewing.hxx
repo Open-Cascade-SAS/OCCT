@@ -45,7 +45,7 @@
 class BRepBuilderAPI_FastSewing : public Standard_Transient
 {
 public:
-  typedef unsigned int FS_VARStatuses;
+  using FS_VARStatuses = unsigned int;
 
   //! Enumeration of result statuses
   // ATTENTION!!! If you add new status, please
@@ -254,8 +254,8 @@ protected:
   public:
     static constexpr int Dimension = 3;
 
-    typedef gp_XYZ Point;
-    typedef int    Target;
+    using Point  = gp_XYZ;
+    using Target = int;
 
     static double Coord(int i, const Point& thePnt) { return thePnt.Coord(i + 1); }
 

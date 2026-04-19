@@ -22,11 +22,11 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Geom_CartesianPoint, Geom_Point)
 
-typedef Geom_CartesianPoint CartesianPoint;
-typedef gp_Ax1              Ax1;
-typedef gp_Ax2              Ax2;
-typedef gp_Vec              Vec;
-typedef gp_Trsf             Trsf;
+using CartesianPoint = Geom_CartesianPoint;
+using Ax1            = gp_Ax1;
+using Ax2            = gp_Ax2;
+using Vec            = gp_Vec;
+using Trsf           = gp_Trsf;
 
 //=================================================================================================
 

@@ -17,7 +17,7 @@
 #include <LDOM_NodeList.hxx>
 #include <LDOM_BasicNode.hxx>
 
-typedef const LDOM_BasicNode* LDOM_BasicNodePtr;
+using LDOM_BasicNodePtr = const LDOM_BasicNode*;
 
 DECLARE_SEQUENCE(LDOM_BasicNodeSequence, LDOM_BasicNodePtr)
 IMPLEMENT_SEQUENCE(LDOM_BasicNodeSequence, LDOM_BasicNodePtr)

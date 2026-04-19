@@ -20,7 +20,7 @@
 
 class Message_ProgressRange;
 
-typedef bool (*ShapeProcess_OperFunc)(const occ::handle<ShapeProcess_Context>& context,
-                                      const Message_ProgressRange&             theProgress);
+using ShapeProcess_OperFunc = bool (*)(const occ::handle<ShapeProcess_Context>& context,
+                                       const Message_ProgressRange&             theProgress);
 
 #endif

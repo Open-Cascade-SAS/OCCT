@@ -103,7 +103,7 @@ inline bool Standard_ASSERT_REPORT_(const char* theFile,
   return _CrtDbgReport(_CRT_ASSERT,
                        theFile,
                        theLine,
-                       NULL,
+                       nullptr,
                        "%s\n(Condition: \"%s\")\n",
                        theDesc,
                        theExpr)
@@ -119,7 +119,7 @@ inline bool Standard_ASSERT_REPORT_(const char* theFile,
   std::cerr << "ERROR: statement '" << theExpr << "' is not TRUE!\n"
             << "\nFile: '" << theFile << "'"
             << "\nLine: " << theLine << "\n";
-  if (theDesc != NULL && *theDesc != '\0')
+  if (theDesc != nullptr && *theDesc != '\0')
     std::cerr << "Description: " << theDesc << "\n";
 
   std::cerr << std::flush;

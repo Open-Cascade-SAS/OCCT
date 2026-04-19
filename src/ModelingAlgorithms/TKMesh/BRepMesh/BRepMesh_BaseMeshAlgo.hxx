@@ -29,7 +29,7 @@ class BRepMesh_DataStructureOfDelaun;
 class BRepMesh_BaseMeshAlgo : public IMeshTools_MeshAlgo
 {
 public:
-  typedef NCollection_Shared<NCollection_Vector<gp_Pnt>> VectorOfPnt;
+  using VectorOfPnt = NCollection_Shared<NCollection_Vector<gp_Pnt>>;
 
   //! Constructor.
   Standard_EXPORT BRepMesh_BaseMeshAlgo();
@@ -107,7 +107,7 @@ private:
   void collectNodes(const occ::handle<Poly_Triangulation>& theTriangulation);
 
 private:
-  typedef NCollection_Shared<NCollection_DataMap<int, int>> DMapOfIntegerInteger;
+  using DMapOfIntegerInteger = NCollection_Shared<NCollection_DataMap<int, int>>;
 
   IMeshData::IFaceHandle                      myDFace;
   IMeshTools_Parameters                       myParameters;

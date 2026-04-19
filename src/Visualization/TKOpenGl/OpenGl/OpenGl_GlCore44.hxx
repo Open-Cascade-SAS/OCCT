@@ -22,7 +22,7 @@
 struct OpenGl_GlCore44 : public OpenGl_GlCore43
 {
 private:
-  typedef OpenGl_GlCore43 theBaseClass_t;
+  using theBaseClass_t = OpenGl_GlCore43;
 
 public: //! @name OpenGL 4.4 additives to 4.3
   using theBaseClass_t::glBindBuffersBase;

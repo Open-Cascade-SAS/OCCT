@@ -71,79 +71,79 @@ const size_t MEMORY_BLOCK_SIZE_HUGE = 1024 * 1024;
 const size_t MEMORY_BLOCK_SIZE_HUGE = 512 * 1024;
 #endif
 
-typedef IMeshData_Edge* IEdgePtr;
-typedef IMeshData_Face* IFacePtr;
+using IEdgePtr = IMeshData_Edge*;
+using IFacePtr = IMeshData_Face*;
 
-typedef occ::handle<IMeshData_Edge>   IEdgeHandle;
-typedef occ::handle<IMeshData_Wire>   IWireHandle;
-typedef occ::handle<IMeshData_Face>   IFaceHandle;
-typedef occ::handle<IMeshData_Curve>  ICurveHandle;
-typedef occ::handle<IMeshData_PCurve> IPCurveHandle;
+using IEdgeHandle   = occ::handle<IMeshData_Edge>;
+using IWireHandle   = occ::handle<IMeshData_Wire>;
+using IFaceHandle   = occ::handle<IMeshData_Face>;
+using ICurveHandle  = occ::handle<IMeshData_Curve>;
+using IPCurveHandle = occ::handle<IMeshData_PCurve>;
 
-typedef IMeshData_ParametersListArrayAdaptor<ICurveHandle> ICurveArrayAdaptor;
-typedef occ::handle<ICurveArrayAdaptor>                    ICurveArrayAdaptorHandle;
+using ICurveArrayAdaptor       = IMeshData_ParametersListArrayAdaptor<ICurveHandle>;
+using ICurveArrayAdaptorHandle = occ::handle<ICurveArrayAdaptor>;
 
-typedef NCollection_Shared<NCollection_EBTree<int, Bnd_Box2d>> BndBox2dTree;
-typedef NCollection_UBTreeFiller<int, Bnd_Box2d>               BndBox2dTreeFiller;
+using BndBox2dTree       = NCollection_Shared<NCollection_EBTree<int, Bnd_Box2d>>;
+using BndBox2dTreeFiller = NCollection_UBTreeFiller<int, Bnd_Box2d>;
 
 // Vectors
-typedef NCollection_Shared<NCollection_Vector<IFaceHandle>>        VectorOfIFaceHandles;
-typedef NCollection_Shared<NCollection_Vector<IWireHandle>>        VectorOfIWireHandles;
-typedef NCollection_Shared<NCollection_Vector<IEdgeHandle>>        VectorOfIEdgeHandles;
-typedef NCollection_Shared<NCollection_Vector<IPCurveHandle>>      VectorOfIPCurveHandles;
-typedef NCollection_Shared<NCollection_Vector<IEdgePtr>>           VectorOfIEdgePtrs;
-typedef NCollection_Shared<NCollection_Vector<bool>>               VectorOfBoolean;
-typedef NCollection_Shared<NCollection_Vector<int>>                VectorOfInteger;
-typedef NCollection_Shared<NCollection_Vector<TopAbs_Orientation>> VectorOfOrientation;
-typedef NCollection_Shared<NCollection_Vector<BRepMesh_Triangle>>  VectorOfElements;
-typedef NCollection_Shared<NCollection_Vector<BRepMesh_Circle>>    VectorOfCircle;
+using VectorOfIFaceHandles   = NCollection_Shared<NCollection_Vector<IFaceHandle>>;
+using VectorOfIWireHandles   = NCollection_Shared<NCollection_Vector<IWireHandle>>;
+using VectorOfIEdgeHandles   = NCollection_Shared<NCollection_Vector<IEdgeHandle>>;
+using VectorOfIPCurveHandles = NCollection_Shared<NCollection_Vector<IPCurveHandle>>;
+using VectorOfIEdgePtrs      = NCollection_Shared<NCollection_Vector<IEdgePtr>>;
+using VectorOfBoolean        = NCollection_Shared<NCollection_Vector<bool>>;
+using VectorOfInteger        = NCollection_Shared<NCollection_Vector<int>>;
+using VectorOfOrientation    = NCollection_Shared<NCollection_Vector<TopAbs_Orientation>>;
+using VectorOfElements       = NCollection_Shared<NCollection_Vector<BRepMesh_Triangle>>;
+using VectorOfCircle         = NCollection_Shared<NCollection_Vector<BRepMesh_Circle>>;
 
-typedef NCollection_Shared<NCollection_Array1<BRepMesh_Vertex>> Array1OfVertexOfDelaun;
-typedef NCollection_Shared<NCollection_Vector<BRepMesh_Vertex>> VectorOfVertex;
+using Array1OfVertexOfDelaun = NCollection_Shared<NCollection_Array1<BRepMesh_Vertex>>;
+using VectorOfVertex         = NCollection_Shared<NCollection_Vector<BRepMesh_Vertex>>;
 
 // Sequences
-typedef NCollection_Shared<NCollection_Sequence<Bnd_B2d>> SequenceOfBndB2d;
-typedef NCollection_Shared<NCollection_Sequence<int>>     SequenceOfInteger;
-typedef NCollection_Shared<NCollection_Sequence<double>>  SequenceOfReal;
+using SequenceOfBndB2d  = NCollection_Shared<NCollection_Sequence<Bnd_B2d>>;
+using SequenceOfInteger = NCollection_Shared<NCollection_Sequence<int>>;
+using SequenceOfReal    = NCollection_Shared<NCollection_Sequence<double>>;
 
 namespace Model
 {
-typedef std::deque<gp_Pnt, NCollection_OccAllocator<gp_Pnt>>     SequenceOfPnt;
-typedef std::deque<gp_Pnt2d, NCollection_OccAllocator<gp_Pnt2d>> SequenceOfPnt2d;
-typedef std::deque<double, NCollection_OccAllocator<double>>     SequenceOfReal;
-typedef std::deque<int, NCollection_OccAllocator<int>>           SequenceOfInteger;
+using SequenceOfPnt     = std::deque<gp_Pnt, NCollection_OccAllocator<gp_Pnt>>;
+using SequenceOfPnt2d   = std::deque<gp_Pnt2d, NCollection_OccAllocator<gp_Pnt2d>>;
+using SequenceOfReal    = std::deque<double, NCollection_OccAllocator<double>>;
+using SequenceOfInteger = std::deque<int, NCollection_OccAllocator<int>>;
 } // namespace Model
 
 // Lists
-typedef NCollection_Shared<NCollection_List<int>>           ListOfInteger;
-typedef NCollection_Shared<NCollection_List<gp_Pnt2d>>      ListOfPnt2d;
-typedef NCollection_Shared<NCollection_List<IPCurveHandle>> ListOfIPCurves;
+using ListOfInteger  = NCollection_Shared<NCollection_List<int>>;
+using ListOfPnt2d    = NCollection_Shared<NCollection_List<gp_Pnt2d>>;
+using ListOfIPCurves = NCollection_Shared<NCollection_List<IPCurveHandle>>;
 
-typedef NCollection_Shared<TColStd_PackedMapOfInteger> MapOfInteger;
-typedef TColStd_PackedMapOfInteger::Iterator           IteratorOfMapOfInteger;
+using MapOfInteger           = NCollection_Shared<TColStd_PackedMapOfInteger>;
+using IteratorOfMapOfInteger = TColStd_PackedMapOfInteger::Iterator;
 
-typedef NCollection_CellFilter<BRepMesh_CircleInspector> CircleCellFilter;
-typedef NCollection_CellFilter<BRepMesh_VertexInspector> VertexCellFilter;
+using CircleCellFilter = NCollection_CellFilter<BRepMesh_CircleInspector>;
+using VertexCellFilter = NCollection_CellFilter<BRepMesh_VertexInspector>;
 
-typedef NCollection_Shared<NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>>
-  DMapOfShapeInteger;
-typedef NCollection_Shared<NCollection_DataMap<IFacePtr, ListOfInteger>>
-                                                                   DMapOfIFacePtrsListOfInteger;
-typedef NCollection_Shared<NCollection_Map<IEdgePtr>>              MapOfIEdgePtr;
-typedef NCollection_Shared<NCollection_Map<IFacePtr>>              MapOfIFacePtr;
-typedef NCollection_Shared<NCollection_Map<BRepMesh_OrientedEdge>> MapOfOrientedEdges;
-typedef NCollection_Shared<NCollection_Map<double>>                MapOfReal;
-typedef NCollection_Shared<NCollection_IndexedDataMap<IFacePtr, ListOfIPCurves>>
-  IDMapOfIFacePtrsListOfIPCurves;
-typedef NCollection_Shared<NCollection_DataMap<IFacePtr, occ::handle<MapOfIEdgePtr>>>
-  DMapOfIFacePtrsMapOfIEdgePtrs;
-typedef NCollection_Shared<NCollection_IndexedDataMap<BRepMesh_Edge, BRepMesh_PairOfIndex>>
-                                                                    IDMapOfLink;
-typedef NCollection_Shared<NCollection_DataMap<int, ListOfInteger>> DMapOfIntegerListOfInteger;
-typedef NCollection_Shared<NCollection_DataMap<int, bool>>          MapOfIntegerInteger;
-typedef NCollection_Shared<NCollection_IndexedMap<double>>          IMapOfReal;
+using DMapOfShapeInteger =
+  NCollection_Shared<NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>>;
+using DMapOfIFacePtrsListOfInteger =
+  NCollection_Shared<NCollection_DataMap<IFacePtr, ListOfInteger>>;
+using MapOfIEdgePtr      = NCollection_Shared<NCollection_Map<IEdgePtr>>;
+using MapOfIFacePtr      = NCollection_Shared<NCollection_Map<IFacePtr>>;
+using MapOfOrientedEdges = NCollection_Shared<NCollection_Map<BRepMesh_OrientedEdge>>;
+using MapOfReal          = NCollection_Shared<NCollection_Map<double>>;
+using IDMapOfIFacePtrsListOfIPCurves =
+  NCollection_Shared<NCollection_IndexedDataMap<IFacePtr, ListOfIPCurves>>;
+using DMapOfIFacePtrsMapOfIEdgePtrs =
+  NCollection_Shared<NCollection_DataMap<IFacePtr, occ::handle<MapOfIEdgePtr>>>;
+using IDMapOfLink =
+  NCollection_Shared<NCollection_IndexedDataMap<BRepMesh_Edge, BRepMesh_PairOfIndex>>;
+using DMapOfIntegerListOfInteger = NCollection_Shared<NCollection_DataMap<int, ListOfInteger>>;
+using MapOfIntegerInteger        = NCollection_Shared<NCollection_DataMap<int, bool>>;
+using IMapOfReal                 = NCollection_Shared<NCollection_IndexedMap<double>>;
 
-typedef NCollection_Shared<NCollection_Array1<int>> Array1OfInteger;
+using Array1OfInteger = NCollection_Shared<NCollection_Array1<int>>;
 } // namespace IMeshData
 
 #endif

@@ -41,7 +41,7 @@ extern bool              TopOpeBRep_GettraceSHA(const int i);
 extern bool              TopOpeBRepBuild_GettraceSS();
 extern bool              TopOpeBRepBuild_GetcontextSSCONNEX();
 extern bool              TopOpeBRepBuild_GettraceCHK();
-TopOpeBRepBuild_Builder* LOCAL_PBUILDER_DEB = NULL;
+TopOpeBRepBuild_Builder* LOCAL_PBUILDER_DEB = nullptr;
 
 void debwesclo(const int) {}
 #endif

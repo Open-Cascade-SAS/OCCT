@@ -233,7 +233,7 @@ void Standard_MMgrOpt::Initialize()
     size_t high_sbrk;
 
     high_sbrk = 700 * 1024 * 1024;
-    if ((var = getenv("CLD_HIGH_SBRK")) != NULL)
+    if ((var = getenv("CLD_HIGH_SBRK")) != nullptr)
     {
       high_sbrk = atoi(var);
     }
@@ -751,14 +751,14 @@ retry:
 
     // allocate mapped file
     HANDLE  hMap    = CreateFileMapping(INVALID_HANDLE_VALUE,
-                                    NULL,
+                                    nullptr,
                                     PAGE_READWRITE,
                                     DWORD(AlignedSize / 0x80000000),
                                     DWORD(AlignedSize % 0x80000000),
-                                    NULL);
+                                    nullptr);
     HANDLE* aMBlock = (hMap && GetLastError() != ERROR_ALREADY_EXISTS
                          ? (HANDLE*)MapViewOfFile(hMap, FILE_MAP_WRITE, 0, 0, 0)
-                         : NULL);
+                         : nullptr);
     // check for error and try allocating address space
     if (!aMBlock)
     {
@@ -781,7 +781,7 @@ retry:
                        L"Standard_MMgrOpt::AllocMemory() failed to mmap");
 
       char messageA[BUFSIZE];
-      WideCharToMultiByte(CP_UTF8, 0, message, -1, messageA, sizeof(messageA), NULL, NULL);
+      WideCharToMultiByte(CP_UTF8, 0, message, -1, messageA, sizeof(messageA), nullptr, nullptr);
       throw Standard_OutOfMemory(messageA);
     }
 

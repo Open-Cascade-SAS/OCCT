@@ -120,7 +120,7 @@ public:
   }
 
   //! Returns nothing on Windows
-  virtual Aspect_FBConfig NativeFBConfig() const override { return NULL; }
+  virtual Aspect_FBConfig NativeFBConfig() const override { return nullptr; }
 
   //! Sets window title.
   Standard_EXPORT virtual void SetTitle(const TCollection_AsciiString& theTitle) override;

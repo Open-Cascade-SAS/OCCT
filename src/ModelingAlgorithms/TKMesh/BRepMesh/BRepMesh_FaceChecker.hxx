@@ -51,11 +51,11 @@ public: //! @name mesher API
     }
   };
 
-  typedef NCollection_Shared<NCollection_Vector<Segment>>                         Segments;
-  typedef NCollection_Shared<NCollection_Array1<occ::handle<Segments>>>           ArrayOfSegments;
-  typedef NCollection_Shared<NCollection_Array1<Handle(IMeshData::BndBox2dTree)>> ArrayOfBndBoxTree;
-  typedef NCollection_Shared<NCollection_Array1<Handle(IMeshData::MapOfIEdgePtr)>>
-    ArrayOfMapOfIEdgePtr;
+  using Segments          = NCollection_Shared<NCollection_Vector<Segment>>;
+  using ArrayOfSegments   = NCollection_Shared<NCollection_Array1<occ::handle<Segments>>>;
+  using ArrayOfBndBoxTree = NCollection_Shared<NCollection_Array1<Handle(IMeshData::BndBox2dTree)>>;
+  using ArrayOfMapOfIEdgePtr =
+    NCollection_Shared<NCollection_Array1<Handle(IMeshData::MapOfIEdgePtr)>>;
 
   //! Default constructor
   Standard_EXPORT BRepMesh_FaceChecker(const IMeshData::IFaceHandle& theFace,

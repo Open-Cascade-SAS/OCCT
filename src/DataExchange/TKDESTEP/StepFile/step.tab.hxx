@@ -111,7 +111,7 @@ class scanner;
   #define YY_NOTHROW
 #else
   #define YY_NOEXCEPT
-  #define YY_NOTHROW throw()
+  #define YY_NOTHROW
 #endif
 
 // Support constexpr when possible.

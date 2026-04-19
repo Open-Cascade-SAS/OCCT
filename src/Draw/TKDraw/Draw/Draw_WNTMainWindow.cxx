@@ -69,7 +69,7 @@ LRESULT APIENTRY WndProc(HWND hWndFrame, UINT wMsg, WPARAM wParam, LPARAM lParam
 BOOL CreateProc(HWND hWndFrame)
 {
   HWND hWnd = CreateMDIClientWindow(hWndFrame);
-  if (hWnd != NULL)
+  if (hWnd != nullptr)
   {
     // Save hWnd in the main window in extra memory in 0
     SetWindowLongPtrW(hWndFrame, CLIENTWND, (LONG_PTR)hWnd);
@@ -90,7 +90,7 @@ LRESULT APIENTRY CmdProc(HWND hWndFrame, UINT wMsg, WPARAM /*wParam*/, LPARAM /*
   switch (wMsg)
   {
     case IDM_WINDOW_NEXT: {
-      if (hWndClient != NULL)
+      if (hWndClient != nullptr)
       {
         HWND hWndActive = (HWND)SendMessageW(hWndClient, WM_MDIGETACTIVE, 0, 0l);
         SendMessageW(hWndClient, WM_MDINEXT, (WPARAM)hWndActive, 0l);
@@ -98,21 +98,21 @@ LRESULT APIENTRY CmdProc(HWND hWndFrame, UINT wMsg, WPARAM /*wParam*/, LPARAM /*
       break;
     }
     case IDM_WINDOW_CASCADE: {
-      if (hWndClient != NULL)
+      if (hWndClient != nullptr)
       {
         SendMessageW(hWndClient, WM_MDICASCADE, 0, 0l);
       }
       break;
     }
     case IDM_WINDOW_TILEHOR: {
-      if (hWndClient != NULL)
+      if (hWndClient != nullptr)
       {
         SendMessageW(hWndClient, WM_MDITILE, MDITILE_HORIZONTAL, 0l);
       }
       break;
     }
     case IDM_WINDOW_TILEVERT: {
-      if (hWndClient != NULL)
+      if (hWndClient != nullptr)
       {
         SendMessageW(hWndClient, WM_MDITILE, MDITILE_VERTICAL, 0l);
       }

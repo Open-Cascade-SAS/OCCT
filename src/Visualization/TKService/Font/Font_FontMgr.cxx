@@ -46,7 +46,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Font_FontMgr, Standard_Transient)
 namespace
 {
 // list of supported extensions
-static const char* Font_FontMgr_Extensions[] = {"ttf", "otf", "ttc", NULL};
+static const char* Font_FontMgr_Extensions[] = {"ttf", "otf", "ttc", nullptr};
 } // namespace
 
 #else
@@ -624,7 +624,7 @@ void Font_FontMgr::InitFontDataBase()
 #elif defined(_WIN32)
 
   // font directory is placed in "C:\Windows\Fonts\"
-  UINT aStrLength = GetSystemWindowsDirectoryA(NULL, 0);
+  UINT aStrLength = GetSystemWindowsDirectoryA(nullptr, 0);
   if (aStrLength == 0)
   {
     return;
@@ -649,7 +649,7 @@ void Font_FontMgr::InitFontDataBase()
   }
 
   NCollection_Map<TCollection_AsciiString> aSupportedExtensions;
-  for (int anIter = 0; Font_FontMgr_Extensions[anIter] != NULL; ++anIter)
+  for (int anIter = 0; Font_FontMgr_Extensions[anIter] != nullptr; ++anIter)
   {
     const char* anExt = Font_FontMgr_Extensions[anIter];
     aSupportedExtensions.Add(TCollection_AsciiString(anExt));
@@ -664,8 +664,8 @@ void Font_FontMgr::InitFontDataBase()
                                        anIter,
                                        aNameBuff,
                                        &aNameSize,
-                                       NULL,
-                                       NULL,
+                                       nullptr,
+                                       nullptr,
                                        (LPBYTE)aPathBuff,
                                        &aPathSize)
                          != ERROR_NO_MORE_ITEMS;

@@ -17,13 +17,13 @@
 #include <Message_MsgFile.hxx>
 #include <TCollection_AsciiString.hxx>
 
-typedef enum
+enum FormatType
 {
   Msg_IntegerType,
   Msg_RealType,
   Msg_StringType,
   Msg_IndefiniteType
-} FormatType;
+};
 
 //=================================================================================================
 

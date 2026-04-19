@@ -19,6 +19,6 @@
 
 #include <BlendFunc_ChAsymInv.hxx>
 
-typedef BlendFunc_ChAsymInv BRepBlend_ChAsymInv;
+using BRepBlend_ChAsymInv = BlendFunc_ChAsymInv;
 
 #endif // _BRepBlend_ChAsymInv_HeaderFile

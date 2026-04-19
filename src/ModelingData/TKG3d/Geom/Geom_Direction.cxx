@@ -25,12 +25,12 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Geom_Direction, Geom_Vector)
 
-typedef Geom_Direction Direction;
-typedef Geom_Vector    Vector;
-typedef gp_Ax1         Ax1;
-typedef gp_Ax2         Ax2;
-typedef gp_Pnt         Pnt;
-typedef gp_Trsf        Trsf;
+using Direction = Geom_Direction;
+using Vector    = Geom_Vector;
+using Ax1       = gp_Ax1;
+using Ax2       = gp_Ax2;
+using Pnt       = gp_Pnt;
+using Trsf      = gp_Trsf;
 
 //=================================================================================================
 

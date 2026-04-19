@@ -27,7 +27,7 @@ class BVH_ObjectSet : public BVH_Set<T, N>
 {
 public:
   //! Type of array of geometric objects.
-  typedef NCollection_Vector<opencascade::handle<BVH_Object<T, N>>> BVH_ObjectList;
+  using BVH_ObjectList = NCollection_Vector<opencascade::handle<BVH_Object<T, N>>>;
 
 public:
   //! Creates new set of geometric objects.

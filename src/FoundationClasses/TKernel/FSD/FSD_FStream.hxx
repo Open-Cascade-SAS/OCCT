@@ -23,6 +23,6 @@
 
 #include <fstream>
 
-typedef std::fstream FSD_FStream;
+using FSD_FStream = std::fstream;
 
 #endif

@@ -60,10 +60,10 @@
 #include <algorithm>
 class BOPDS_PaveBlock;
 
-typedef NCollection_IndexedDataMap<TopoDS_Shape, gp_Dir, TopTools_ShapeMapHasher>
-  BOPAlgo_IndexedDataMapOfShapeDir;
-typedef NCollection_IndexedDataMap<TopoDS_Shape, gp_Pln, TopTools_ShapeMapHasher>
-  BOPAlgo_IndexedDataMapOfShapePln;
+using BOPAlgo_IndexedDataMapOfShapeDir =
+  NCollection_IndexedDataMap<TopoDS_Shape, gp_Dir, TopTools_ShapeMapHasher>;
+using BOPAlgo_IndexedDataMapOfShapePln =
+  NCollection_IndexedDataMap<TopoDS_Shape, gp_Pln, TopTools_ShapeMapHasher>;
 
 static void MakeWires(
   const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theEdges,
@@ -453,7 +453,7 @@ int BOPAlgo_Tools::EdgesToWires(const TopoDS_Shape& theEdges,
     }
   }
   //
-  typedef NCollection_List<gp_Dir> BOPAlgo_ListOfDir;
+  using BOPAlgo_ListOfDir = NCollection_List<gp_Dir>;
   //
   // to avoid processing of the same edges in the same plane store
   // the processed planes into a list and use it as a fence map
@@ -1214,7 +1214,7 @@ private:
 };
 
 // Vector of ShapeBox
-typedef NCollection_Vector<BOPAlgo_ShapeBox> BOPAlgo_VectorOfShapeBox;
+using BOPAlgo_VectorOfShapeBox = NCollection_Vector<BOPAlgo_ShapeBox>;
 
 //=======================================================================
 // class : BOPAlgo_FillIn3DParts
@@ -1557,7 +1557,7 @@ void BOPAlgo_FillIn3DParts::MakeConnexityBlock(
 }
 
 // Vector of solid classifiers
-typedef NCollection_Vector<BOPAlgo_FillIn3DParts> BOPAlgo_VectorOfFillIn3DParts;
+using BOPAlgo_VectorOfFillIn3DParts = NCollection_Vector<BOPAlgo_FillIn3DParts>;
 
 //=================================================================================================
 

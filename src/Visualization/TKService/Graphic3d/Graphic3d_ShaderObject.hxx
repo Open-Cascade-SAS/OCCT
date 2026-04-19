@@ -49,7 +49,7 @@ public:
   };
 
   //! List of variable of shader program.
-  typedef NCollection_Sequence<ShaderVariable> ShaderVariableList;
+  using ShaderVariableList = NCollection_Sequence<ShaderVariable>;
 
 public:
   //! Creates new shader object from specified file.

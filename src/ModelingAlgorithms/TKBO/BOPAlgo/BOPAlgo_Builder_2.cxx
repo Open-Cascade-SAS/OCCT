@@ -112,7 +112,7 @@ protected:
 };
 
 //
-typedef NCollection_Vector<BOPAlgo_PairOfShapeBoolean> BOPAlgo_VectorOfPairOfShapeBoolean;
+using BOPAlgo_VectorOfPairOfShapeBoolean = NCollection_Vector<BOPAlgo_PairOfShapeBoolean>;
 
 //=======================================================================
 // class   : BOPAlgo_SplitFace
@@ -143,7 +143,7 @@ private:
   Message_ProgressRange myRange;
 };
 
-typedef NCollection_Vector<BOPAlgo_SplitFace> BOPAlgo_VectorOfBuilderFace;
+using BOPAlgo_VectorOfBuilderFace = NCollection_Vector<BOPAlgo_SplitFace>;
 
 //=================================================================================================
 
@@ -207,7 +207,7 @@ protected:
 };
 
 //
-typedef NCollection_Vector<BOPAlgo_VFI> BOPAlgo_VectorOfVFI;
+using BOPAlgo_VectorOfVFI = NCollection_Vector<BOPAlgo_VFI>;
 
 //=================================================================================================
 
@@ -549,8 +549,8 @@ void BOPAlgo_Builder::BuildSplitFaces(const Message_ProgressRange& theRange)
 
 //=================================================================================================
 
-typedef NCollection_IndexedDataMap<BOPTools_Set, NCollection_List<TopoDS_Shape>>
-  BOPAlgo_IndexedDataMapOfSetListOfShape;
+using BOPAlgo_IndexedDataMapOfSetListOfShape =
+  NCollection_IndexedDataMap<BOPTools_Set, NCollection_List<TopoDS_Shape>>;
 
 static void AddEdgeSet(const TopoDS_Shape&                           theS,
                        BOPAlgo_IndexedDataMapOfSetListOfShape&       theMap,

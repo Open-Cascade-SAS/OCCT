@@ -16,7 +16,7 @@
 #ifndef MeshVS_DisplayModeFlags_HeaderFile
 #define MeshVS_DisplayModeFlags_HeaderFile
 
-typedef int MeshVS_DisplayModeFlags;
+using MeshVS_DisplayModeFlags = int;
 
 enum
 {

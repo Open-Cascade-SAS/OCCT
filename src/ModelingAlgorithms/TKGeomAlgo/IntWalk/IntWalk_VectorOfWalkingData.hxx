@@ -28,7 +28,7 @@ struct IntWalk_WalkingData
   int    etat;
 };
 
-typedef std::vector<IntWalk_WalkingData, NCollection_OccAllocator<IntWalk_WalkingData>>
-  IntWalk_VectorOfWalkingData;
+using IntWalk_VectorOfWalkingData =
+  std::vector<IntWalk_WalkingData, NCollection_OccAllocator<IntWalk_WalkingData>>;
 
 #endif

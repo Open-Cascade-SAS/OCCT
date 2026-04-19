@@ -30,7 +30,7 @@ class Graphic3d_MediaTextureSet : public Graphic3d_TextureSet, public Media_IFra
   DEFINE_STANDARD_RTTIEXT(Graphic3d_MediaTextureSet, Graphic3d_TextureSet)
 public:
   //! Callback definition.
-  typedef void (*CallbackOnUpdate_t)(void* theUserPtr);
+  using CallbackOnUpdate_t = void (*)(void* theUserPtr);
 
 public:
   //! Empty constructor.

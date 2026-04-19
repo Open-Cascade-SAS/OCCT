@@ -43,7 +43,7 @@ class Graphic3d_ClipPlane : public Standard_Transient
 public:
   //! Type defining XYZW (ABCD) plane equation - left for compatibility with old code using
   //! Graphic3d_ClipPlane::Equation type.
-  typedef NCollection_Vec4<double> Equation;
+  using Equation = NCollection_Vec4<double>;
 
 public:
   //! Default constructor.

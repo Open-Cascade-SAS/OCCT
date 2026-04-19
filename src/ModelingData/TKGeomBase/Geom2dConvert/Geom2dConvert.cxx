@@ -53,17 +53,17 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_HArray1.hxx>
 
-typedef gp_Circ2d                    Circ2d;
-typedef gp_Elips2d                   Elips2d;
-typedef gp_Hypr2d                    Hypr2d;
-typedef gp_Parab2d                   Parab2d;
-typedef gp_Pnt2d                     Pnt2d;
-typedef gp_Trsf2d                    Trsf2d;
-typedef Geom2d_Curve                 Curve;
-typedef Geom2d_BSplineCurve          BSplineCurve;
-typedef NCollection_Array1<double>   Array1OfReal;
-typedef NCollection_Array1<int>      Array1OfInteger;
-typedef NCollection_Array1<gp_Pnt2d> Array1OfPnt2d;
+using Circ2d          = gp_Circ2d;
+using Elips2d         = gp_Elips2d;
+using Hypr2d          = gp_Hypr2d;
+using Parab2d         = gp_Parab2d;
+using Pnt2d           = gp_Pnt2d;
+using Trsf2d          = gp_Trsf2d;
+using Curve           = Geom2d_Curve;
+using BSplineCurve    = Geom2d_BSplineCurve;
+using Array1OfReal    = NCollection_Array1<double>;
+using Array1OfInteger = NCollection_Array1<int>;
+using Array1OfPnt2d   = NCollection_Array1<gp_Pnt2d>;
 
 //=================================================================================================
 

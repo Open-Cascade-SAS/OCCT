@@ -22,7 +22,7 @@
 struct OpenGl_GlCore15 : public OpenGl_GlCore14
 {
 private:
-  typedef OpenGl_GlCore14 theBaseClass_t;
+  using theBaseClass_t = OpenGl_GlCore14;
 
 public: //! @name OpenGL 1.5 additives to 1.4
 #if !defined(GL_ES_VERSION_2_0)

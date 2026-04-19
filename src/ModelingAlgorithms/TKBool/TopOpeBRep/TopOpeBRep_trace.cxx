@@ -164,7 +164,7 @@ Standard_EXPORT bool TopOpeBRep_GetcontextREST1(char* str)
   if (TopOpeBRep_contextREST1)
   {
     std::cout << "context REST1 actif";
-    if (str != NULL)
+    if (str != nullptr)
       std::cout << str;
     std::cout << std::endl;
   }
@@ -190,7 +190,7 @@ Standard_EXPORT bool TopOpeBRep_GetcontextREST2(char* str)
   if (TopOpeBRep_contextREST2)
   {
     std::cout << "context REST2 actif";
-    if (str != NULL)
+    if (str != nullptr)
       std::cout << str;
     std::cout << std::endl;
   }
@@ -216,7 +216,7 @@ Standard_EXPORT bool TopOpeBRep_GetcontextINL(char* str)
   if (TopOpeBRep_contextINL)
   {
     std::cout << "context INL actif";
-    if (str != NULL)
+    if (str != nullptr)
       std::cout << str;
     std::cout << std::endl;
   }
@@ -242,7 +242,7 @@ Standard_EXPORT bool TopOpeBRep_GetcontextNEWKP(char* str)
   if (TopOpeBRep_contextNEWKP)
   {
     std::cout << "context NEWKP actif";
-    if (str != NULL)
+    if (str != nullptr)
       std::cout << str;
     std::cout << std::endl;
   }
@@ -290,7 +290,7 @@ Standard_EXPORT bool TopOpeBRep_GetcontextNONOG(char* str)
   if (TopOpeBRep_contextNONOG)
   {
     std::cout << "context NONOG actif";
-    if (str != NULL)
+    if (str != nullptr)
       std::cout << str;
     std::cout << std::endl;
   }

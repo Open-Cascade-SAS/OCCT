@@ -411,10 +411,10 @@ bool GeomInt_LineTool::DecompositionOfWLine(
   const GeomInt_LineConstructor&                    theLConstructor,
   NCollection_Sequence<occ::handle<IntPatch_Line>>& theNewLines)
 {
-  typedef NCollection_List<int> ListOfInteger;
+  using ListOfInteger = NCollection_List<int>;
   // have to use std::vector, not NCollection_Vector in order to use copy constructor of
   // ListOfInteger which will be created with specific allocator instance
-  typedef std::vector<ListOfInteger, NCollection_OccAllocator<ListOfInteger>> ArrayOfListOfInteger;
+  using ArrayOfListOfInteger = std::vector<ListOfInteger, NCollection_OccAllocator<ListOfInteger>>;
 
   bool   bIsPrevPointOnBoundary, bIsCurrentPointOnBoundary;
   int    nblines, aNbPnts, aNbParts, pit, i, j, aNbListOfPointIndex;

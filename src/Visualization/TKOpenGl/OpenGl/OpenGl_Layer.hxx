@@ -18,6 +18,6 @@
 
 #include <Graphic3d_Layer.hxx>
 
-typedef Graphic3d_Layer OpenGl_Layer;
+using OpenGl_Layer = Graphic3d_Layer;
 
 #endif //_OpenGl_Layer_Header

@@ -73,7 +73,7 @@ private:
   class Block
   {
   public:
-    typedef unsigned char Cell; //!< type of items used to hold bits
+    using Cell = unsigned char; //!< type of items used to hold bits
 
     //! Number of bits in each cell
     static constexpr size_t BitsPerCell() noexcept { return sizeof(Cell) * 8; }

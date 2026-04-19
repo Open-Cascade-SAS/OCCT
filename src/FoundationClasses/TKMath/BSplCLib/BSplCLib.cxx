@@ -40,10 +40,10 @@
 
 #include <algorithm>
 
-typedef gp_Pnt                     Pnt;
-typedef gp_Vec                     Vec;
-typedef NCollection_Array1<double> Array1OfReal;
-typedef NCollection_Array1<int>    Array1OfInteger;
+using Pnt             = gp_Pnt;
+using Vec             = gp_Vec;
+using Array1OfReal    = NCollection_Array1<double>;
+using Array1OfInteger = NCollection_Array1<int>;
 
 //=======================================================================
 // class : BSplCLib_LocalMatrix

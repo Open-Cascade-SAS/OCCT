@@ -20,6 +20,6 @@
 #include <PrsMgr_DisplayStatus.hxx>
 
 //! To give the display status of an Interactive Object.
-typedef PrsMgr_DisplayStatus AIS_DisplayStatus;
+using AIS_DisplayStatus = PrsMgr_DisplayStatus;
 
 #endif // _AIS_DisplayStatus_HeaderFile

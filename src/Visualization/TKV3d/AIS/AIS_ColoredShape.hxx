@@ -106,8 +106,8 @@ protected: //! @name override presentation computation
                                         const int                               theMode) override;
 
 protected:
-  typedef NCollection_IndexedDataMap<occ::handle<AIS_ColoredDrawer>, TopoDS_Compound>
-    DataMapOfDrawerCompd;
+  using DataMapOfDrawerCompd =
+    NCollection_IndexedDataMap<occ::handle<AIS_ColoredDrawer>, TopoDS_Compound>;
 
 protected:
   //! Recursive function to map shapes.

@@ -33,22 +33,22 @@ struct GCPnts_TCurveTypes
 template <>
 struct GCPnts_TCurveTypes<Adaptor3d_Curve>
 {
-  typedef gp_Pnt                Point;
-  typedef Geom_BezierCurve      BezierCurve;
-  typedef Geom_BSplineCurve     BSplineCurve;
-  typedef GCPnts_DistFunction   DistFunction;
-  typedef GCPnts_DistFunctionMV DistFunctionMV;
+  using Point          = gp_Pnt;
+  using BezierCurve    = Geom_BezierCurve;
+  using BSplineCurve   = Geom_BSplineCurve;
+  using DistFunction   = GCPnts_DistFunction;
+  using DistFunctionMV = GCPnts_DistFunctionMV;
 };
 
 //! Auxiliary tool to resolve 2D curve classes.
 template <>
 struct GCPnts_TCurveTypes<Adaptor2d_Curve2d>
 {
-  typedef gp_Pnt2d                Point;
-  typedef Geom2d_BezierCurve      BezierCurve;
-  typedef Geom2d_BSplineCurve     BSplineCurve;
-  typedef GCPnts_DistFunction2d   DistFunction;
-  typedef GCPnts_DistFunction2dMV DistFunctionMV;
+  using Point          = gp_Pnt2d;
+  using BezierCurve    = Geom2d_BezierCurve;
+  using BSplineCurve   = Geom2d_BSplineCurve;
+  using DistFunction   = GCPnts_DistFunction2d;
+  using DistFunctionMV = GCPnts_DistFunction2dMV;
 };
 
 #endif // _GCPnts_TCurveTypes_HeaderFile

@@ -298,7 +298,7 @@ void TopOpeBRepBuild_Area1dBuilder::ADD_Loop_TO_LISTOFLoop(
     std::cout << "--------------------- add area loop to area : ";
     L->Dump();
     std::cout << std::endl;
-    if (ss != NULL)
+    if (ss != nullptr)
       std::cout << (char*)ss << std::endl;
     DumpList(LOL);
     std::cout << "---------------------" << std::endl;
@@ -328,7 +328,7 @@ void TopOpeBRepBuild_Area1dBuilder::REM_Loop_FROM_LISTOFLoop(
       std::cout << "--------------------- remove area loop from area : ";
       ITA.Value()->Dump();
       std::cout << std::endl;
-      if (s != NULL)
+      if (s != nullptr)
         std::cout << s << std::endl;
     }
   }
@@ -368,11 +368,11 @@ void TopOpeBRepBuild_Area1dBuilder::ADD_LISTOFLoop_TO_LISTOFLoop(
   if (TopOpeBRepBuild_GettraceAREA())
   {
     std::cout << "--------------------- add area 1 to area 2 : ";
-    if (s != NULL)
+    if (s != nullptr)
       std::cout << s;
     std::cout << std::endl;
     std::cout << "1 : ";
-    if (s1 != NULL)
+    if (s1 != nullptr)
       std::cout << s1;
     std::cout << std::endl;
     DumpList(A1);
@@ -385,7 +385,7 @@ void TopOpeBRepBuild_Area1dBuilder::ADD_LISTOFLoop_TO_LISTOFLoop(
   if (TopOpeBRepBuild_GettraceAREA())
   {
     std::cout << "2 : ";
-    if (s2 != NULL)
+    if (s2 != nullptr)
       std::cout << s2;
     std::cout << std::endl;
     DumpList(A2);

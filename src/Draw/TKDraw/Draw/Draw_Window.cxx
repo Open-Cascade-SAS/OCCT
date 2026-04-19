@@ -53,7 +53,7 @@ EM_JS(bool, occJSModuleNoExitRuntime, (), { return Module.noExitRuntime == = tru
     // which *HAS* X11 headers in Tk.framework but doesn't install them appropriately
     #define _TK
 typedef struct Tk_Window_* Tk_Window;
-typedef const char*        Tk_Uid;
+using Tk_Uid = const char*;
 
 extern "C" int         Tk_Init(Tcl_Interp* interp);
 extern "C" void        Tk_MainLoop();
@@ -245,7 +245,7 @@ Draw_Window::Draw_Window(const char*                  theTitle,
                          Aspect_Drawable              theWin)
     : myWindow(0),
   #if defined(_WIN32)
-      myMemHbm(NULL),
+      myMemHbm(nullptr),
       myCurrPen(0),
       myCurrMode(0),
   #elif defined(HAVE_XLIB)
@@ -292,7 +292,7 @@ Draw_Window::~Draw_Window()
   if (myMemHbm)
   {
     DeleteObject(myMemHbm);
-    myMemHbm = NULL;
+    myMemHbm = nullptr;
   }
   #elif defined(HAVE_XLIB)
   getDrawWindowList().Remove(this);
@@ -309,7 +309,7 @@ Draw_Window::~Draw_Window()
 void Draw_Window::init(const NCollection_Vec2<int>& theXY, const NCollection_Vec2<int>& theSize)
 {
   #ifdef _WIN32
-  if (myWindow == NULL)
+  if (myWindow == nullptr)
   {
     myWindow = createDrawWindow(hWndClientMDI, 0);
   }
@@ -325,7 +325,7 @@ void Draw_Window::init(const NCollection_Vec2<int>& theXY, const NCollection_Vec
   aRect.bottom = theXY.y() + theSize.y();
   aRect.left   = theXY.x();
   aRect.right  = theXY.x() + theSize.x();
-  AdjustWindowRectEx(&aRect, aWinStyle, aMenu != NULL ? TRUE : FALSE, aWinStyleEx);
+  AdjustWindowRectEx(&aRect, aWinStyle, aMenu != nullptr ? TRUE : FALSE, aWinStyleEx);
 
   SetPosition(aRect.left, aRect.top);
   SetDimension(aRect.right - aRect.left, aRect.bottom - aRect.top);
@@ -426,7 +426,7 @@ HDC Draw_Window::getMemDC(HDC theWinDC)
 {
   if (!myUseBuffer)
   {
-    return NULL;
+    return nullptr;
   }
 
   HDC aWorkDC = CreateCompatibleDC(theWinDC);
@@ -488,7 +488,7 @@ void Draw_Window::InitBuffer()
     if (myMemHbm)
     {
       DeleteObject(myMemHbm);
-      myMemHbm = NULL;
+      myMemHbm = nullptr;
     }
   }
   #elif defined(HAVE_XLIB)
@@ -823,7 +823,7 @@ void Draw_Window::DrawSegments(const Draw_XSegment* theSegments, int theNbElems)
   for (int aSegIter = 0; aSegIter < theNbElems; ++aSegIter)
   {
     const Draw_XSegment& aSeg = theSegments[aSegIter];
-    MoveToEx(aWorkDC, aSeg[0].x(), aSeg[0].y(), NULL);
+    MoveToEx(aWorkDC, aSeg[0].x(), aSeg[0].y(), nullptr);
     LineTo(aWorkDC, aSeg[1].x(), aSeg[1].y());
   }
   if (myUseBuffer)
@@ -947,7 +947,7 @@ static bool SaveBitmap(HBITMAP theHBitmap, const char* theFileName)
   aBitmapInfo.biCompression = BI_RGB;
 
   // Copy the pixels
-  HDC  aDC       = GetDC(NULL);
+  HDC  aDC       = GetDC(nullptr);
   bool isSuccess = GetDIBits(aDC,
                              theHBitmap,
                              0,                          // first scan line to set
@@ -956,7 +956,7 @@ static bool SaveBitmap(HBITMAP theHBitmap, const char* theFileName)
                              (LPBITMAPINFO)&aBitmapInfo, // bitmap data info
                              DIB_RGB_COLORS)
                    != 0;
-  ReleaseDC(NULL, aDC);
+  ReleaseDC(nullptr, aDC);
   return isSuccess && anImage.Save(theFileName);
 }
   #endif
@@ -977,7 +977,7 @@ bool Draw_Window::Save(const char* theFileName) const
   int aHeight = aRect.bottom - aRect.top;
 
   // Prepare the DCs
-  HDC aDstDC = GetDC(NULL);
+  HDC aDstDC = GetDC(nullptr);
   HDC aSrcDC = GetDC(myWindow); // we copy only client area
   HDC aMemDC = CreateCompatibleDC(aDstDC);
 
@@ -1461,10 +1461,10 @@ HWND Draw_Window::createDrawWindow(HWND hWndClient, int nitem)
                               1,
                               1,
                               1,
-                              NULL,
-                              NULL,
-                              ::GetModuleHandle(NULL),
-                              NULL);
+                              nullptr,
+                              nullptr,
+                              ::GetModuleHandle(nullptr),
+                              nullptr);
     if (!Draw_VirtualWindows)
     {
       SetWindowPos(aWin, HWND_TOPMOST, 1, 1, 1, 1, SWP_NOMOVE);
@@ -1494,7 +1494,7 @@ HWND Draw_Window::createDrawWindow(HWND hWndClient, int nitem)
 LRESULT APIENTRY Draw_Window::DrawProc(HWND hWnd, UINT wMsg, WPARAM wParam, LPARAM lParam)
 {
   Draw_Window* aLocWin = (Draw_Window*)GetWindowLongPtrW(hWnd, CLIENTWND);
-  if (aLocWin == NULL)
+  if (aLocWin == nullptr)
   {
     return Draw_IsConsoleSubsystem ? DefWindowProcW(hWnd, wMsg, wParam, lParam)
                                    : DefMDIChildProcW(hWnd, wMsg, wParam, lParam);
@@ -1542,11 +1542,11 @@ void Draw_Window::SelectWait(HANDLE& theWindow, int& theX, int& theY, int& theBu
 {
   MSG aMsg;
   aMsg.wParam = 1;
-  GetMessageW(&aMsg, NULL, 0, 0);
+  GetMessageW(&aMsg, nullptr, 0, 0);
   while ((aMsg.message != WM_RBUTTONDOWN && aMsg.message != WM_LBUTTONDOWN)
          || !(Draw_IsConsoleSubsystem || IsChild(Draw_Window::hWndClientMDI, aMsg.hwnd)))
   {
-    GetMessageW(&aMsg, NULL, 0, 0);
+    GetMessageW(&aMsg, nullptr, 0, 0);
   }
 
   theWindow = aMsg.hwnd;
@@ -1569,12 +1569,12 @@ void Draw_Window::SelectNoWait(HANDLE& theWindow, int& theX, int& theY, int& the
 {
   MSG aMsg;
   aMsg.wParam = 1;
-  GetMessageW(&aMsg, NULL, 0, 0);
+  GetMessageW(&aMsg, nullptr, 0, 0);
   while ((aMsg.message != WM_RBUTTONDOWN && aMsg.message != WM_LBUTTONDOWN
           && aMsg.message != WM_MOUSEMOVE)
          || !(Draw_IsConsoleSubsystem || IsChild(Draw_Window::hWndClientMDI, aMsg.hwnd)))
   {
-    GetMessageW(&aMsg, NULL, 0, 0);
+    GetMessageW(&aMsg, nullptr, 0, 0);
   }
 
   theWindow = aMsg.hwnd;
@@ -1621,11 +1621,11 @@ bool Init_Appli(HINSTANCE hInst, HINSTANCE hPrevInst, int nShow, HWND& hWndFrame
   dwMainThreadId = GetCurrentThreadId();
 
   // necessary for normal Tk operation
-  hThread = CreateThread(NULL,   // no security attributes
-                         0,      // use default stack size
-                         tkLoop, // thread function
-                         NULL,   // no thread function argument
-                         0,      // use default creation flags
+  hThread = CreateThread(nullptr, // no security attributes
+                         0,       // use default stack size
+                         tkLoop,  // thread function
+                         nullptr, // no thread function argument
+                         0,       // use default creation flags
                          &IDThread);
   if (!hThread)
   {
@@ -1647,7 +1647,7 @@ bool Init_Appli(HINSTANCE hInst, HINSTANCE hPrevInst, int nShow, HWND& hWndFrame
       std::cout << "Failed to initialize Tk: " << anExcept.what() << std::endl;
     }
 
-    Tcl_StaticPackage(interp, "Tk", Tk_Init, (Tcl_PackageInitProc*)NULL);
+    Tcl_StaticPackage(interp, "Tk", Tk_Init, (Tcl_PackageInitProc*)nullptr);
   #endif
     // since the main Tcl/Tk loop wasn't created --> switch to batch mode
     return false;
@@ -1672,8 +1672,8 @@ bool Init_Appli(HINSTANCE hInst, HINSTANCE hPrevInst, int nShow, HWND& hWndFrame
    ** Enter the application message-polling loop.  This is the anchor for
    ** the application.
    */
-  hWndFrame = !Draw_IsConsoleSubsystem ? CreateAppWindow(hInst) : NULL;
-  if (hWndFrame != NULL)
+  hWndFrame = !Draw_IsConsoleSubsystem ? CreateAppWindow(hInst) : nullptr;
+  if (hWndFrame != nullptr)
   {
     ShowWindow(hWndFrame, nShow);
     UpdateWindow(hWndFrame);
@@ -1716,10 +1716,10 @@ static DWORD WINAPI readStdinThreadFunc(const LPVOID theThreadParameter)
     }
 
     const HANDLE anStdIn = ::GetStdHandle(STD_INPUT_HANDLE);
-    if (anStdIn != NULL && anStdIn != INVALID_HANDLE_VALUE && isConsoleInput)
+    if (anStdIn != nullptr && anStdIn != INVALID_HANDLE_VALUE && isConsoleInput)
     {
       DWORD aNbRead = 0;
-      if (ReadConsoleW(anStdIn, console_command, DRAW_COMMAND_SIZE, &aNbRead, NULL))
+      if (ReadConsoleW(anStdIn, console_command, DRAW_COMMAND_SIZE, &aNbRead, nullptr))
       {
         console_command[aNbRead] = L'\0';
         console_semaphore        = HAS_CONSOLE_COMMAND;
@@ -1769,7 +1769,7 @@ static Tcl_Channel TclpGetDefaultStdChannel(
   Tcl_Channel channel;
   HANDLE      handle;
   int         mode     = -1;
-  const char* bufMode  = NULL;
+  const char* bufMode  = nullptr;
   DWORD       handleId = (DWORD)-1;
   /* Standard handle to retrieve. */
 
@@ -1805,7 +1805,7 @@ static Tcl_Channel TclpGetDefaultStdChannel(
 
   if ((handle == INVALID_HANDLE_VALUE) || (handle == 0))
   {
-    return (Tcl_Channel)NULL;
+    return (Tcl_Channel) nullptr;
   }
 
   /*
@@ -1821,26 +1821,26 @@ static Tcl_Channel TclpGetDefaultStdChannel(
                        FALSE,
                        DUPLICATE_SAME_ACCESS))
   {
-    return (Tcl_Channel)NULL;
+    return (Tcl_Channel) nullptr;
   }
 
   channel = Tcl_MakeFileChannel(handle, mode);
 
-  if (channel == NULL)
+  if (channel == nullptr)
   {
-    return (Tcl_Channel)NULL;
+    return (Tcl_Channel) nullptr;
   }
 
   /*
    * Set up the normal channel options for stdio handles.
    */
 
-  if (Tcl_SetChannelOption(NULL, channel, "-translation", "auto") != TCL_OK
-      || Tcl_SetChannelOption(NULL, channel, "-eofchar", "\032 {}") != TCL_OK
-      || Tcl_SetChannelOption(NULL, channel, "-buffering", bufMode) != TCL_OK)
+  if (Tcl_SetChannelOption(nullptr, channel, "-translation", "auto") != TCL_OK
+      || Tcl_SetChannelOption(nullptr, channel, "-eofchar", "\032 {}") != TCL_OK
+      || Tcl_SetChannelOption(nullptr, channel, "-buffering", bufMode) != TCL_OK)
   {
-    Tcl_Close(NULL, channel);
-    return (Tcl_Channel)NULL;
+    Tcl_Close(nullptr, channel);
+    return (Tcl_Channel) nullptr;
   }
   return channel;
 }
@@ -1852,7 +1852,7 @@ static void ResetStdChannel(int type)
   Tcl_SetStdChannel(aChannel, type);
   if (aChannel)
   {
-    Tcl_RegisterChannel(NULL, aChannel);
+    Tcl_RegisterChannel(nullptr, aChannel);
   }
 }
 
@@ -1889,15 +1889,15 @@ static DWORD WINAPI tkLoop(const LPVOID theThreadParameter)
     Tcl_Channel aChannelIn  = Tcl_GetStdChannel(TCL_STDIN);
     Tcl_Channel aChannelOut = Tcl_GetStdChannel(TCL_STDOUT);
     Tcl_Channel aChannelErr = Tcl_GetStdChannel(TCL_STDERR);
-    if (aChannelIn != NULL)
+    if (aChannelIn != nullptr)
     {
       Tcl_RegisterChannel(aCommands.Interp(), aChannelIn);
     }
-    if (aChannelOut != NULL)
+    if (aChannelOut != nullptr)
     {
       Tcl_RegisterChannel(aCommands.Interp(), aChannelOut);
     }
-    if (aChannelErr != NULL)
+    if (aChannelErr != nullptr)
     {
       Tcl_RegisterChannel(aCommands.Interp(), aChannelErr);
     }
@@ -1929,9 +1929,9 @@ static DWORD WINAPI tkLoop(const LPVOID theThreadParameter)
     {
       std::cout << "tkLoop: exception in TK_Init\n";
     }
-    Tcl_StaticPackage(interp, "Tk", Tk_Init, (Tcl_PackageInitProc*)NULL);
+    Tcl_StaticPackage(interp, "Tk", Tk_Init, (Tcl_PackageInitProc*)nullptr);
     mainWindow = Tk_MainWindow(interp);
-    if (mainWindow == NULL)
+    if (mainWindow == nullptr)
     {
     #if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 5)))
       fprintf(stderr, "%s\n", Tcl_GetStringResult(interp));
@@ -2002,7 +2002,7 @@ static DWORD WINAPI tkLoop(const LPVOID theThreadParameter)
 void Run_Appli(HWND hWnd)
 {
   MSG    msg;
-  HACCEL hAccel = NULL;
+  HACCEL hAccel = nullptr;
   msg.wParam    = 1;
 
   //  if (!(hAccel = LoadAccelerators (hInstance, MAKEINTRESOURCE(ACCEL_ID))))
@@ -2011,18 +2011,18 @@ void Run_Appli(HWND hWnd)
   HANDLE hThread;
   if (Draw_IsConsoleSubsystem)
   {
-    hThread = CreateThread(NULL,                // no security attributes
+    hThread = CreateThread(nullptr,             // no security attributes
                            0,                   // use default stack size
                            readStdinThreadFunc, // thread function
-                           NULL,                // no thread function argument
+                           nullptr,             // no thread function argument
                            0,                   // use default creation flags
                            &IDThread);          // returns thread identifier
     if (!hThread)
     {
       std::cout << "pb in creation of the thread reading stdin" << std::endl;
       Draw_IsConsoleSubsystem = false;
-      Init_Appli(GetModuleHandleW(NULL),
-                 GetModuleHandleW(NULL),
+      Init_Appli(GetModuleHandleW(nullptr),
+                 GetModuleHandleW(nullptr),
                  1,
                  hWnd); // reinit => create MDI client wnd
     }
@@ -2035,7 +2035,7 @@ void Run_Appli(HWND hWnd)
   }
 
   // simple Win32 message loop
-  while (GetMessageW(&msg, NULL, 0, 0) > 0)
+  while (GetMessageW(&msg, nullptr, 0, 0) > 0)
   {
     if (!TranslateAcceleratorW(hWnd, hAccel, &msg))
     {

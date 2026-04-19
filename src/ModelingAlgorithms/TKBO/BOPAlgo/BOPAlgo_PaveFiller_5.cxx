@@ -158,7 +158,7 @@ protected:
 
 //
 //=======================================================================
-typedef NCollection_Vector<BOPAlgo_EdgeFace> BOPAlgo_VectorOfEdgeFace;
+using BOPAlgo_VectorOfEdgeFace = NCollection_Vector<BOPAlgo_EdgeFace>;
 
 //=================================================================================================
 

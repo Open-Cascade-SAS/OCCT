@@ -127,7 +127,7 @@ public:
   virtual Aspect_Drawable NativeParentHandle() const override { return 0; }
 
   //! Returns nothing on OS X
-  virtual Aspect_FBConfig NativeFBConfig() const override { return NULL; }
+  virtual Aspect_FBConfig NativeFBConfig() const override { return nullptr; }
 
   //! Sets window title.
   Standard_EXPORT virtual void SetTitle(const TCollection_AsciiString& theTitle) override;
@@ -135,7 +135,7 @@ public:
   //! Invalidate entire window content by setting NSView::setNeedsDisplay property.
   //! Call will be implicitly redirected to the main thread when called from non-GUI thread.
   Standard_EXPORT virtual void InvalidateContent(
-    const occ::handle<Aspect_DisplayConnection>& theDisp = NULL) override;
+    const occ::handle<Aspect_DisplayConnection>& theDisp = nullptr) override;
 
 protected:
 #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE

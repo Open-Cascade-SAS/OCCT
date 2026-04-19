@@ -142,7 +142,7 @@ private:
     InsertBefore
   };
 
-  typedef NCollection_DataMap<int, IMeshData::MapOfInteger> DataMapOfMap;
+  using DataMapOfMap = NCollection_DataMap<int, IMeshData::MapOfInteger>;
 
   //! Performs initialization of circles cell filter tool.
   void initCirclesTool(const Bnd_Box2d& theBox, const int theCellsCountU, const int theCellsCountV);

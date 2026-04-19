@@ -132,34 +132,34 @@ struct Graphic3d_UniformValue : public Graphic3d_ValueInterface
 };
 
 //! Integer uniform value.
-typedef Graphic3d_UniformValue<int> Graphic3d_UniformInt;
+using Graphic3d_UniformInt = Graphic3d_UniformValue<int>;
 
 //! Integer uniform 2D vector.
-typedef Graphic3d_UniformValue<NCollection_Vec2<int>> Graphic3d_UniformVec2i;
+using Graphic3d_UniformVec2i = Graphic3d_UniformValue<NCollection_Vec2<int>>;
 
 //! Integer uniform 3D vector.
-typedef Graphic3d_UniformValue<NCollection_Vec3<int>> Graphic3d_UniformVec3i;
+using Graphic3d_UniformVec3i = Graphic3d_UniformValue<NCollection_Vec3<int>>;
 
 //! Integer uniform 4D vector.
-typedef Graphic3d_UniformValue<NCollection_Vec4<int>> Graphic3d_UniformVec4i;
+using Graphic3d_UniformVec4i = Graphic3d_UniformValue<NCollection_Vec4<int>>;
 
 //! Floating-point uniform value.
-typedef Graphic3d_UniformValue<float> Graphic3d_UniformFloat;
+using Graphic3d_UniformFloat = Graphic3d_UniformValue<float>;
 
 //! Floating-point uniform 2D vector.
-typedef Graphic3d_UniformValue<NCollection_Vec2<float>> Graphic3d_UniformVec2;
+using Graphic3d_UniformVec2 = Graphic3d_UniformValue<NCollection_Vec2<float>>;
 
 //! Floating-point uniform 3D vector.
-typedef Graphic3d_UniformValue<NCollection_Vec3<float>> Graphic3d_UniformVec3;
+using Graphic3d_UniformVec3 = Graphic3d_UniformValue<NCollection_Vec3<float>>;
 
 //! Floating-point uniform 4D vector.
-typedef Graphic3d_UniformValue<NCollection_Vec4<float>> Graphic3d_UniformVec4;
+using Graphic3d_UniformVec4 = Graphic3d_UniformValue<NCollection_Vec4<float>>;
 
 //! Floating-point uniform 3x3 matrix.
-typedef Graphic3d_UniformValue<NCollection_Mat3<float>> Graphic3d_UniformMat3;
+using Graphic3d_UniformMat3 = Graphic3d_UniformValue<NCollection_Mat3<float>>;
 
 //! Floating-point uniform 4x4 matrix.
-typedef Graphic3d_UniformValue<NCollection_Mat4<float>> Graphic3d_UniformMat4;
+using Graphic3d_UniformMat4 = Graphic3d_UniformValue<NCollection_Mat4<float>>;
 
 //! Describes custom uniform shader variable.
 class Graphic3d_ShaderVariable : public Standard_Transient

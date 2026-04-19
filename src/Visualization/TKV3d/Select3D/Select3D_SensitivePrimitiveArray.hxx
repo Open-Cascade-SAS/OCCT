@@ -317,8 +317,8 @@ protected:
                                        bool theIsFullInside) override;
 
 private:
-  typedef NCollection_Shared<NCollection_Array1<occ::handle<Select3D_SensitivePrimitiveArray>>>
-    Select3D_PrimArraySubGroupArray;
+  using Select3D_PrimArraySubGroupArray =
+    NCollection_Shared<NCollection_Array1<occ::handle<Select3D_SensitivePrimitiveArray>>>;
   struct Select3D_SensitivePrimitiveArray_InitFunctor;
   struct Select3D_SensitivePrimitiveArray_BVHFunctor;
 

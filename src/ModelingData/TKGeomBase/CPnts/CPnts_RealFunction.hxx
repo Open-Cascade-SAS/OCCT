@@ -21,6 +21,6 @@
 
 //! A pointer on a function for MyGaussFunction
 
-typedef double (*CPnts_RealFunction)(const double, void* const);
+using CPnts_RealFunction = double (*)(const double, void* const);
 
 #endif

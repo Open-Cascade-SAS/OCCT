@@ -65,8 +65,8 @@ D3DHost_View::D3DHost_View(const occ::handle<Graphic3d_StructureManager>& theMgr
                            const occ::handle<OpenGl_Caps>&                theCaps,
                            OpenGl_StateCounter*                           theCounter)
     : OpenGl_View(theMgr, theDriver, theCaps, theCounter),
-      myD3dLib(NULL),
-      myD3dDevice(NULL),
+      myD3dLib(nullptr),
+      myD3dDevice(nullptr),
       myD3dParams(new D3DPRESENT_PARAMETERS()),
       myRefreshRate(D3DPRESENT_RATE_DEFAULT),
       myIsD3dEx(false)
@@ -89,16 +89,16 @@ D3DHost_View::D3DHost_View(const occ::handle<Graphic3d_StructureManager>& theMgr
 
 D3DHost_View::~D3DHost_View()
 {
-  ReleaseGlResources(NULL);
-  if (myD3dDevice != NULL)
+  ReleaseGlResources(nullptr);
+  if (myD3dDevice != nullptr)
   {
     myD3dDevice->Release();
-    myD3dDevice = NULL;
+    myD3dDevice = nullptr;
   }
-  if (myD3dLib != NULL)
+  if (myD3dLib != nullptr)
   {
     myD3dLib->Release();
-    myD3dLib = NULL;
+    myD3dLib = nullptr;
   }
 }
 
@@ -132,10 +132,10 @@ void D3DHost_View::SetWindow(const occ::handle<Graphic3d_CView>& theParentVIew,
     myD3dWglFbo->Release(myWorkspace->GetGlContext().operator->());
     myD3dWglFbo.Nullify();
   }
-  if (myD3dDevice != NULL)
+  if (myD3dDevice != nullptr)
   {
     myD3dDevice->Release();
-    myD3dDevice = NULL;
+    myD3dDevice = nullptr;
   }
 
   OpenGl_View::SetWindow(theParentVIew, theWindow, theContext);
@@ -154,7 +154,7 @@ void D3DHost_View::DiagnosticInformation(
   Graphic3d_DiagnosticInfo                                                      theFlags) const
 {
   base_type::DiagnosticInformation(theDict, theFlags);
-  if (myD3dDevice == NULL)
+  if (myD3dDevice == nullptr)
   {
     return;
   }
@@ -201,30 +201,30 @@ void D3DHost_View::DiagnosticInformation(
 
 bool D3DHost_View::d3dInitLib()
 {
-  if (myD3dLib == NULL)
+  if (myD3dLib == nullptr)
   {
-    IDirect3D9Ex* aD3dLibEx = NULL;
+    IDirect3D9Ex* aD3dLibEx = nullptr;
     // we link against d3d (using Direct3DCreate9 symbol), thus it should be already loaded
     HMODULE aLib = GetModuleHandleW(L"d3d9");
-    if (aLib != NULL)
+    if (aLib != nullptr)
     {
       // retrieve D3D9Ex function dynamically (available only since Vista+)
       typedef HRESULT(WINAPI * Direct3DCreate9Ex_t)(UINT, IDirect3D9Ex**);
       Direct3DCreate9Ex_t Direct3DCreate9ExProc =
         (Direct3DCreate9Ex_t)GetProcAddress(aLib, "Direct3DCreate9Ex");
-      if (Direct3DCreate9ExProc != NULL)
+      if (Direct3DCreate9ExProc != nullptr)
       {
         Direct3DCreate9ExProc(D3D_SDK_VERSION, &aD3dLibEx);
       }
     }
     myD3dLib  = aD3dLibEx;
-    myIsD3dEx = aD3dLibEx != NULL;
-    if (myD3dLib == NULL)
+    myIsD3dEx = aD3dLibEx != nullptr;
+    if (myD3dLib == nullptr)
     {
       myD3dLib = Direct3DCreate9(D3D_SDK_VERSION);
     }
   }
-  return myD3dLib != NULL;
+  return myD3dLib != nullptr;
 }
 
 //=================================================================================================
@@ -269,14 +269,14 @@ bool D3DHost_View::d3dInit()
     return false;
   }
 
-  return myD3dDevice != NULL;
+  return myD3dDevice != nullptr;
 }
 
 //=================================================================================================
 
 bool D3DHost_View::d3dReset()
 {
-  if (myD3dDevice == NULL)
+  if (myD3dDevice == nullptr)
   {
     return false;
   }
@@ -338,13 +338,14 @@ bool D3DHost_View::d3dCreateRenderTarget()
 
 void D3DHost_View::d3dBeginRender()
 {
-  if (myD3dDevice == NULL)
+  if (myD3dDevice == nullptr)
   {
     return;
   }
 
   // clear the back buffer
-  myD3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 0, 0), 1.0f, 0);
+  myD3dDevice
+    ->Clear(0, nullptr, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 0, 0), 1.0f, 0);
   myD3dDevice->BeginScene();
 }
 
@@ -352,7 +353,7 @@ void D3DHost_View::d3dBeginRender()
 
 void D3DHost_View::d3dEndRender()
 {
-  if (myD3dDevice != NULL)
+  if (myD3dDevice != nullptr)
   {
     myD3dDevice->EndScene();
   }
@@ -362,12 +363,12 @@ void D3DHost_View::d3dEndRender()
 
 bool D3DHost_View::d3dSwap()
 {
-  if (myD3dDevice == NULL)
+  if (myD3dDevice == nullptr)
   {
     return false;
   }
 
-  const HRESULT isOK = myD3dDevice->Present(NULL, NULL, NULL, NULL);
+  const HRESULT isOK = myD3dDevice->Present(nullptr, nullptr, nullptr, nullptr);
   if (isOK != D3D_OK && isOK != S_PRESENT_OCCLUDED)
   {
     myWorkspace->GetGlContext()->PushMessage(
@@ -384,7 +385,7 @@ bool D3DHost_View::d3dSwap()
 
 void D3DHost_View::Redraw()
 {
-  if (!myWorkspace->Activate() || myD3dDevice == NULL)
+  if (!myWorkspace->Activate() || myD3dDevice == nullptr)
   {
     return;
   }
@@ -395,7 +396,7 @@ void D3DHost_View::Redraw()
   }
 
   occ::handle<OpenGl_Context> aCtx = myWorkspace->GetGlContext();
-  if (myWindow->PlatformWindow()->IsVirtual() && aCtx->arbFBO == NULL)
+  if (myWindow->PlatformWindow()->IsVirtual() && aCtx->arbFBO == nullptr)
   {
     // do a dirty hack in extreme fallback mode with OpenGL driver not supporting FBO,
     // the back buffer of hidden window is used for rendering as offscreen buffer
@@ -432,9 +433,13 @@ void D3DHost_View::Redraw()
   // blit result to the D3D back buffer and swap
   d3dBeginRender();
 
-  IDirect3DSurface9* aBackbuffer = NULL;
+  IDirect3DSurface9* aBackbuffer = nullptr;
   myD3dDevice->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &aBackbuffer);
-  myD3dDevice->StretchRect(myD3dWglFbo->D3dColorSurface(), NULL, aBackbuffer, NULL, D3DTEXF_LINEAR);
+  myD3dDevice->StretchRect(myD3dWglFbo->D3dColorSurface(),
+                           nullptr,
+                           aBackbuffer,
+                           nullptr,
+                           D3DTEXF_LINEAR);
   aBackbuffer->Release();
 
   d3dEndRender();
@@ -452,7 +457,7 @@ void D3DHost_View::RedrawImmediate()
     Redraw();
     return;
   }
-  else if (!myWorkspace->Activate() || myD3dDevice == NULL)
+  else if (!myWorkspace->Activate() || myD3dDevice == nullptr)
   {
     return;
   }
@@ -480,9 +485,13 @@ void D3DHost_View::RedrawImmediate()
   // blit result to the D3D back buffer and swap
   d3dBeginRender();
 
-  IDirect3DSurface9* aBackbuffer = NULL;
+  IDirect3DSurface9* aBackbuffer = nullptr;
   myD3dDevice->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &aBackbuffer);
-  myD3dDevice->StretchRect(myD3dWglFbo->D3dColorSurface(), NULL, aBackbuffer, NULL, D3DTEXF_LINEAR);
+  myD3dDevice->StretchRect(myD3dWglFbo->D3dColorSurface(),
+                           nullptr,
+                           aBackbuffer,
+                           nullptr,
+                           D3DTEXF_LINEAR);
   aBackbuffer->Release();
 
   d3dEndRender();

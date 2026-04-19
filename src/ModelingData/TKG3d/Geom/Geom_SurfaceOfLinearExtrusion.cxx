@@ -48,13 +48,13 @@ IMPLEMENT_STANDARD_RTTIEXT(Geom_SurfaceOfLinearExtrusion, Geom_SweptSurface)
 #define VFKNOTS (vfknots->Array1())
 #define FMULTS (BSplCLib::NoMults())
 
-typedef Geom_SurfaceOfLinearExtrusion SurfaceOfLinearExtrusion;
-typedef Geom_Curve                    Curve;
-typedef gp_Dir                        Dir;
-typedef gp_Pnt                        Pnt;
-typedef gp_Trsf                       Trsf;
-typedef gp_Vec                        Vec;
-typedef gp_XYZ                        XYZ;
+using SurfaceOfLinearExtrusion = Geom_SurfaceOfLinearExtrusion;
+using Curve                    = Geom_Curve;
+using Dir                      = gp_Dir;
+using Pnt                      = gp_Pnt;
+using Trsf                     = gp_Trsf;
+using Vec                      = gp_Vec;
+using XYZ                      = gp_XYZ;
 
 //=================================================================================================
 

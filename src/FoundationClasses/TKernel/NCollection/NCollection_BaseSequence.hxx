@@ -47,8 +47,8 @@ private:
   NCollection_SeqNode* myPrevious;
 };
 
-typedef void (*NCollection_DelSeqNode)(NCollection_SeqNode*,
-                                       occ::handle<NCollection_BaseAllocator>& theAl);
+using NCollection_DelSeqNode = void (*)(NCollection_SeqNode*,
+                                        occ::handle<NCollection_BaseAllocator>& theAl);
 
 /**
  * Purpose:     This  is  a base  class  for  the  Sequence.  It  deals with

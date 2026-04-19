@@ -20,9 +20,9 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Geom2d_Vector, Geom2d_Geometry)
 
-typedef Geom2d_Vector Vector;
-typedef gp_Ax2d       Ax2d;
-typedef gp_Pnt2d      Pnt2d;
+using Vector = Geom2d_Vector;
+using Ax2d   = gp_Ax2d;
+using Pnt2d  = gp_Pnt2d;
 
 double Geom2d_Vector::Angle(const occ::handle<Geom2d_Vector>& Other) const
 {

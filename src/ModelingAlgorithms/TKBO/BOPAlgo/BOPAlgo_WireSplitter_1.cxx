@@ -44,7 +44,7 @@
 #include <NCollection_IndexedDataMap.hxx>
 #include <NCollection_Map.hxx>
 
-typedef NCollection_DataMap<TopoDS_Shape, bool, TopTools_ShapeMapHasher> MyDataMapOfShapeBoolean;
+using MyDataMapOfShapeBoolean = NCollection_DataMap<TopoDS_Shape, bool, TopTools_ShapeMapHasher>;
 //
 
 static double Angle(const gp_Dir2d& aDir2D);

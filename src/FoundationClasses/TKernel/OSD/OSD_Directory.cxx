@@ -69,7 +69,7 @@ void OSD_Directory::Build(const OSD_Protection& theProtect)
 
     // create directory if it does not exist;
     TCollection_ExtendedString aDirNameW(aDirName);
-    if (CreateDirectoryW(aDirNameW.ToWideString(), NULL))
+    if (CreateDirectoryW(aDirNameW.ToWideString(), nullptr))
     {
       isOK = true;
     }
@@ -86,7 +86,7 @@ void OSD_Directory::Build(const OSD_Protection& theProtect)
         myError = aSupDir.myError;
         return;
       }
-      isOK = (CreateDirectoryW(aDirNameW.ToWideString(), NULL) != 0);
+      isOK = (CreateDirectoryW(aDirNameW.ToWideString(), nullptr) != 0);
     }
   }
 
@@ -137,8 +137,8 @@ void OSD_Directory::Build(const OSD_Protection& theProtect)
 OSD_Directory OSD_Directory::BuildTemporary()
 {
 #ifdef _WIN32
-  wchar_t* aTmpNameW = _wtmpnam(NULL);
-  if (aTmpNameW == NULL)
+  wchar_t* aTmpNameW = _wtmpnam(nullptr);
+  if (aTmpNameW == nullptr)
   {
     return OSD_Directory();
   }

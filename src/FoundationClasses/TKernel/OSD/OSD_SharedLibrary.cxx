@@ -56,7 +56,7 @@ extern "C"
 
   #include <dlfcn.h>
 
-  #define BAD(X) ((X) == NULL)
+  #define BAD(X) ((X) == nullptr)
 
 // ----------------------------------------------------------------
 //
@@ -229,16 +229,16 @@ static char    errMsgA[1024];
 OSD_SharedLibrary ::OSD_SharedLibrary()
 {
 
-  myHandle = NULL;
-  myName   = NULL;
+  myHandle = nullptr;
+  myName   = nullptr;
 
 } // end constructor ( 1 )
 
 OSD_SharedLibrary ::OSD_SharedLibrary(const char* const aFilename)
 {
 
-  myHandle = NULL;
-  myName   = NULL;
+  myHandle = nullptr;
+  myName   = nullptr;
 
   SetName(aFilename);
 
@@ -263,7 +263,7 @@ void OSD_SharedLibrary ::SetName(const char* const aName)
   #ifndef OCCT_UWP
   myHandle = GetModuleHandleW(nameW.ToWideString());
   #else
-  myHandle = LoadPackagedLibrary(nameW.ToWideString(), NULL);
+  myHandle = LoadPackagedLibrary(nameW.ToWideString(), nullptr);
   FreeLibrary((HMODULE)myHandle);
   #endif
 
@@ -281,16 +281,16 @@ bool OSD_SharedLibrary ::DlOpen(const OSD_LoadMode /*Mode*/)
 
   bool retVal = true;
 
-  if (myHandle == NULL)
+  if (myHandle == nullptr)
   {
     TCollection_ExtendedString myNameW(myName);
   #ifndef OCCT_UWP
     myHandle =
-      (HINSTANCE)LoadLibraryExW(myNameW.ToWideString(), NULL, LOAD_WITH_ALTERED_SEARCH_PATH);
+      (HINSTANCE)LoadLibraryExW(myNameW.ToWideString(), nullptr, LOAD_WITH_ALTERED_SEARCH_PATH);
   #else
-    myHandle = (HINSTANCE)LoadPackagedLibrary(myNameW.ToWideString(), NULL);
+    myHandle = (HINSTANCE)LoadPackagedLibrary(myNameW.ToWideString(), nullptr);
   #endif
-    if (myHandle == NULL)
+    if (myHandle == nullptr)
     {
       lastDLLError = GetLastError();
       retVal       = false;
@@ -306,7 +306,7 @@ OSD_Function OSD_SharedLibrary ::DlSymb(const char* const Name) const
 
   OSD_Function func = (OSD_Function)GetProcAddress((HMODULE)myHandle, Name);
 
-  if (func == NULL)
+  if (func == nullptr)
 
     lastDLLError = GetLastError();
 
@@ -332,7 +332,7 @@ const char* OSD_SharedLibrary ::DlError() const
                  1024,
                  (va_list*)&myName);
 
-  WideCharToMultiByte(CP_UTF8, 0, errMsg, -1, errMsgA, sizeof(errMsgA), NULL, NULL);
+  WideCharToMultiByte(CP_UTF8, 0, errMsg, -1, errMsgA, sizeof(errMsgA), nullptr, nullptr);
   return errMsgA;
 } // end OSD_SharedLibrary :: DlError
 

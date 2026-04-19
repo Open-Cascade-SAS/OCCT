@@ -81,11 +81,11 @@ PSECURITY_DESCRIPTOR AllocSD(void)
   PSECURITY_DESCRIPTOR retVal =
     (PSECURITY_DESCRIPTOR)HeapAlloc(hHeap, 0, sizeof(SECURITY_DESCRIPTOR));
 
-  if (retVal != NULL && !InitializeSecurityDescriptor(retVal, SECURITY_DESCRIPTOR_REVISION))
+  if (retVal != nullptr && !InitializeSecurityDescriptor(retVal, SECURITY_DESCRIPTOR_REVISION))
   {
 
     HeapFree(hHeap, 0, (PVOID)retVal);
-    retVal = NULL;
+    retVal = nullptr;
 
   } /* end if */
 
@@ -137,7 +137,7 @@ LPVOID GetTokenInformationEx(HANDLE hToken, TOKEN_INFORMATION_CLASS tic)
   DWORD  errVal;
   DWORD  dwSize;
   DWORD  dwSizeNeeded = 0;
-  LPVOID buffer       = NULL;
+  LPVOID buffer       = nullptr;
   BOOL   fOK          = FALSE;
 
   __try
@@ -156,7 +156,7 @@ LPVOID GetTokenInformationEx(HANDLE hToken, TOKEN_INFORMATION_CLASS tic)
 
           __leave;
 
-        if ((buffer = HeapAlloc(hHeap, 0, dwSizeNeeded)) == NULL)
+        if ((buffer = HeapAlloc(hHeap, 0, dwSizeNeeded)) == nullptr)
 
           __leave;
 
@@ -171,11 +171,11 @@ LPVOID GetTokenInformationEx(HANDLE hToken, TOKEN_INFORMATION_CLASS tic)
   __finally
   {
 
-    if (!fOK && buffer != NULL)
+    if (!fOK && buffer != nullptr)
     {
 
       HeapFree(hHeap, 0, buffer);
-      buffer = NULL;
+      buffer = nullptr;
 
     } /* end if */
 
@@ -554,7 +554,7 @@ PSECURITY_DESCRIPTOR GetFileSecurityEx(LPCWSTR fileName, SECURITY_INFORMATION si
   DWORD                errVal;
   DWORD                dwSize;
   DWORD                dwSizeNeeded = 0;
-  PSECURITY_DESCRIPTOR retVal       = NULL;
+  PSECURITY_DESCRIPTOR retVal       = nullptr;
   BOOL                 fOK          = FALSE;
 
   __try
@@ -572,7 +572,7 @@ PSECURITY_DESCRIPTOR GetFileSecurityEx(LPCWSTR fileName, SECURITY_INFORMATION si
         if ((errVal = GetLastError()) != ERROR_INSUFFICIENT_BUFFER)
           __leave;
 
-        if ((retVal = (PSECURITY_DESCRIPTOR)HeapAlloc(hHeap, 0, dwSizeNeeded)) == NULL)
+        if ((retVal = (PSECURITY_DESCRIPTOR)HeapAlloc(hHeap, 0, dwSizeNeeded)) == nullptr)
           __leave;
 
       } /* end if */
@@ -586,11 +586,11 @@ PSECURITY_DESCRIPTOR GetFileSecurityEx(LPCWSTR fileName, SECURITY_INFORMATION si
   __finally
   {
 
-    if (!fOK && retVal != NULL)
+    if (!fOK && retVal != nullptr)
     {
 
       HeapFree(hHeap, 0, retVal);
-      retVal = NULL;
+      retVal = nullptr;
 
     } /* end if */
 
@@ -639,7 +639,7 @@ PACL CreateAcl(DWORD dwAclSize)
 
   retVal = (PACL)HeapAlloc(hHeap, 0, dwAclSize);
 
-  if (retVal != NULL)
+  if (retVal != nullptr)
 
     InitializeAcl(retVal, dwAclSize, ACL_REVISION);
 
@@ -678,7 +678,7 @@ PVOID AllocAccessAllowedAce(DWORD dwMask, BYTE flags, PSID pSID)
 
   retVal = (PFILE_ACE)HeapAlloc(hHeap, 0, wSize);
 
-  if (retVal != NULL)
+  if (retVal != nullptr)
   {
 
     retVal->header.AceType  = ACCESS_ALLOWED_ACE_TYPE;
@@ -721,22 +721,22 @@ void FreeAce(PVOID pACE)
 /***/
 static BOOL MoveDirectory(const wchar_t* oldDir, const wchar_t* newDir, DWORD& theRecurseLevel)
 {
-  wchar_t* driveSrc = NULL;
-  wchar_t* driveDst = NULL;
-  wchar_t* pathSrc  = NULL;
-  wchar_t* pathDst  = NULL;
+  wchar_t* driveSrc = nullptr;
+  wchar_t* driveDst = nullptr;
+  wchar_t* pathSrc  = nullptr;
+  wchar_t* pathDst  = nullptr;
   BOOL     retVal   = FALSE;
   if (theRecurseLevel == 0)
   {
     ++theRecurseLevel;
     BOOL fFind = FALSE;
-    if ((driveSrc = (wchar_t*)HeapAlloc(hHeap, 0, _MAX_DRIVE * sizeof(wchar_t))) != NULL
-        && (driveDst = (wchar_t*)HeapAlloc(hHeap, 0, _MAX_DRIVE * sizeof(wchar_t))) != NULL
-        && (pathSrc = (wchar_t*)HeapAlloc(hHeap, 0, _MAX_DIR * sizeof(wchar_t))) != NULL
-        && (pathDst = (wchar_t*)HeapAlloc(hHeap, 0, _MAX_DIR * sizeof(wchar_t))) != NULL)
+    if ((driveSrc = (wchar_t*)HeapAlloc(hHeap, 0, _MAX_DRIVE * sizeof(wchar_t))) != nullptr
+        && (driveDst = (wchar_t*)HeapAlloc(hHeap, 0, _MAX_DRIVE * sizeof(wchar_t))) != nullptr
+        && (pathSrc = (wchar_t*)HeapAlloc(hHeap, 0, _MAX_DIR * sizeof(wchar_t))) != nullptr
+        && (pathDst = (wchar_t*)HeapAlloc(hHeap, 0, _MAX_DIR * sizeof(wchar_t))) != nullptr)
     {
-      _wsplitpath(oldDir, driveSrc, pathSrc, NULL, NULL);
-      _wsplitpath(newDir, driveDst, pathDst, NULL, NULL);
+      _wsplitpath(oldDir, driveSrc, pathSrc, nullptr, nullptr);
+      _wsplitpath(newDir, driveDst, pathDst, nullptr, nullptr);
       if (wcscmp(driveSrc, driveDst) == 0 && wcscmp(pathSrc, pathDst) == 0)
       {
       retry:
@@ -744,7 +744,7 @@ static BOOL MoveDirectory(const wchar_t* oldDir, const wchar_t* newDir, DWORD& t
         fFind  = TRUE;
         if (!retVal)
         {
-          if (_response_dir_proc != NULL)
+          if (_response_dir_proc != nullptr)
           {
             const DIR_RESPONSE response = _response_dir_proc(oldDir);
             if (response == DIR_RETRY)
@@ -757,26 +757,26 @@ static BOOL MoveDirectory(const wchar_t* oldDir, const wchar_t* newDir, DWORD& t
             }
           }
         }
-        else if (_move_dir_proc != NULL)
+        else if (_move_dir_proc != nullptr)
         {
           _move_dir_proc(oldDir, newDir);
         }
       }
     }
 
-    if (pathDst != NULL)
+    if (pathDst != nullptr)
     {
       HeapFree(hHeap, 0, pathDst);
     }
-    if (pathSrc != NULL)
+    if (pathSrc != nullptr)
     {
       HeapFree(hHeap, 0, pathSrc);
     }
-    if (driveDst != NULL)
+    if (driveDst != nullptr)
     {
       HeapFree(hHeap, 0, driveDst);
     }
-    if (driveSrc != NULL)
+    if (driveSrc != nullptr)
     {
       HeapFree(hHeap, 0, driveSrc);
     }
@@ -792,24 +792,25 @@ static BOOL MoveDirectory(const wchar_t* oldDir, const wchar_t* newDir, DWORD& t
     ++theRecurseLevel;
   }
 
-  WIN32_FIND_DATAW* pFD          = NULL;
-  wchar_t*          pName        = NULL;
-  wchar_t*          pFullNameSrc = NULL;
-  wchar_t*          pFullNameDst = NULL;
+  WIN32_FIND_DATAW* pFD          = nullptr;
+  wchar_t*          pName        = nullptr;
+  wchar_t*          pFullNameSrc = nullptr;
+  wchar_t*          pFullNameDst = nullptr;
   HANDLE            hFindFile    = INVALID_HANDLE_VALUE;
-  retVal                         = CreateDirectoryW(newDir, NULL);
+  retVal                         = CreateDirectoryW(newDir, nullptr);
   if (retVal || (!retVal && GetLastError() == ERROR_ALREADY_EXISTS))
   {
     size_t anOldDirLength;
     StringCchLengthW(oldDir, MAX_PATH, &anOldDirLength);
     const size_t aNameLength = anOldDirLength + WILD_CARD_LEN + sizeof(L'\x00');
-    if ((pFD = (WIN32_FIND_DATAW*)HeapAlloc(hHeap, 0, sizeof(WIN32_FIND_DATAW))) != NULL
-        && (pName = (wchar_t*)HeapAlloc(hHeap, 0, aNameLength)) != NULL)
+    if ((pFD = (WIN32_FIND_DATAW*)HeapAlloc(hHeap, 0, sizeof(WIN32_FIND_DATAW))) != nullptr
+        && (pName = (wchar_t*)HeapAlloc(hHeap, 0, aNameLength)) != nullptr)
     {
       StringCchCopyW(pName, aNameLength, oldDir);
       StringCchCatW(pName, aNameLength, WILD_CARD);
-      retVal    = TRUE;
-      hFindFile = FindFirstFileExW(pName, FindExInfoStandard, pFD, FindExSearchNameMatch, NULL, 0);
+      retVal = TRUE;
+      hFindFile =
+        FindFirstFileExW(pName, FindExInfoStandard, pFD, FindExSearchNameMatch, nullptr, 0);
       for (BOOL fFind = hFindFile != INVALID_HANDLE_VALUE; fFind;
            fFind      = FindNextFileW(hFindFile, pFD))
       {
@@ -829,8 +830,8 @@ static BOOL MoveDirectory(const wchar_t* oldDir, const wchar_t* newDir, DWORD& t
           anOldDirLength + aFileNameLength + sizeof(L'/') + sizeof(L'\x00');
         const size_t aFullNameDstLength =
           aNewDirLength + aFileNameLength + sizeof(L'/') + sizeof(L'\x00');
-        if ((pFullNameSrc = (wchar_t*)HeapAlloc(hHeap, 0, aFullNameSrcLength)) == NULL
-            || (pFullNameDst = (wchar_t*)HeapAlloc(hHeap, 0, aFullNameDstLength)) == NULL)
+        if ((pFullNameSrc = (wchar_t*)HeapAlloc(hHeap, 0, aFullNameSrcLength)) == nullptr
+            || (pFullNameDst = (wchar_t*)HeapAlloc(hHeap, 0, aFullNameDstLength)) == nullptr)
         {
           break;
         }
@@ -859,7 +860,7 @@ static BOOL MoveDirectory(const wchar_t* oldDir, const wchar_t* newDir, DWORD& t
                                MOVEFILE_REPLACE_EXISTING | MOVEFILE_COPY_ALLOWED);
           if (!retVal)
           {
-            if (_response_dir_proc != NULL)
+            if (_response_dir_proc != nullptr)
             {
               const DIR_RESPONSE response = _response_dir_proc(pFullNameSrc);
               if (response == DIR_ABORT)
@@ -880,7 +881,7 @@ static BOOL MoveDirectory(const wchar_t* oldDir, const wchar_t* newDir, DWORD& t
               }
             }
           }
-          else if (_move_dir_proc != NULL)
+          else if (_move_dir_proc != nullptr)
           {
             _move_dir_proc(pFullNameSrc, pFullNameDst);
           }
@@ -888,7 +889,7 @@ static BOOL MoveDirectory(const wchar_t* oldDir, const wchar_t* newDir, DWORD& t
 
         HeapFree(hHeap, 0, pFullNameDst);
         HeapFree(hHeap, 0, pFullNameSrc);
-        pFullNameSrc = pFullNameDst = NULL;
+        pFullNameSrc = pFullNameDst = nullptr;
       }
     }
   }
@@ -898,19 +899,19 @@ static BOOL MoveDirectory(const wchar_t* oldDir, const wchar_t* newDir, DWORD& t
     FindClose(hFindFile);
   }
 
-  if (pFullNameSrc != NULL)
+  if (pFullNameSrc != nullptr)
   {
     HeapFree(hHeap, 0, pFullNameSrc);
   }
-  if (pFullNameDst != NULL)
+  if (pFullNameDst != nullptr)
   {
     HeapFree(hHeap, 0, pFullNameDst);
   }
-  if (pName != NULL)
+  if (pName != nullptr)
   {
     HeapFree(hHeap, 0, pName);
   }
-  if (pFD != NULL)
+  if (pFD != nullptr)
   {
     HeapFree(hHeap, 0, pFD);
   }
@@ -921,7 +922,7 @@ static BOOL MoveDirectory(const wchar_t* oldDir, const wchar_t* newDir, DWORD& t
     retVal = RemoveDirectoryW(oldDir);
     if (!retVal)
     {
-      if (_response_dir_proc != NULL)
+      if (_response_dir_proc != nullptr)
       {
         const DIR_RESPONSE response = _response_dir_proc(oldDir);
         if (response == DIR_RETRY)
@@ -955,26 +956,27 @@ BOOL MoveDirectory(const wchar_t* oldDir, const wchar_t* newDir)
 /***/
 BOOL CopyDirectory(const wchar_t* dirSrc, const wchar_t* dirDst)
 {
-  WIN32_FIND_DATAW* pFD          = NULL;
-  wchar_t*          pName        = NULL;
-  wchar_t*          pFullNameSrc = NULL;
-  wchar_t*          pFullNameDst = NULL;
+  WIN32_FIND_DATAW* pFD          = nullptr;
+  wchar_t*          pName        = nullptr;
+  wchar_t*          pFullNameSrc = nullptr;
+  wchar_t*          pFullNameDst = nullptr;
   HANDLE            hFindFile    = INVALID_HANDLE_VALUE;
 
-  BOOL retVal = CreateDirectoryW(dirDst, NULL);
+  BOOL retVal = CreateDirectoryW(dirDst, nullptr);
   if (retVal || (!retVal && GetLastError() == ERROR_ALREADY_EXISTS))
   {
     size_t aDirSrcLength = 0;
     StringCchLengthW(dirSrc, MAX_PATH, &aDirSrcLength);
     const size_t aNameLength = aDirSrcLength + WILD_CARD_LEN + sizeof(L'\x00');
-    if ((pFD = (WIN32_FIND_DATAW*)HeapAlloc(hHeap, 0, sizeof(WIN32_FIND_DATAW))) != NULL
-        && (pName = (wchar_t*)HeapAlloc(hHeap, 0, aNameLength)) != NULL)
+    if ((pFD = (WIN32_FIND_DATAW*)HeapAlloc(hHeap, 0, sizeof(WIN32_FIND_DATAW))) != nullptr
+        && (pName = (wchar_t*)HeapAlloc(hHeap, 0, aNameLength)) != nullptr)
     {
       StringCchCopyW(pName, aNameLength, dirSrc);
       StringCchCatW(pName, aNameLength, WILD_CARD);
 
-      retVal    = TRUE;
-      hFindFile = FindFirstFileExW(pName, FindExInfoStandard, pFD, FindExSearchNameMatch, NULL, 0);
+      retVal = TRUE;
+      hFindFile =
+        FindFirstFileExW(pName, FindExInfoStandard, pFD, FindExSearchNameMatch, nullptr, 0);
       for (BOOL fFind = hFindFile != INVALID_HANDLE_VALUE; fFind;
            fFind      = FindNextFileW(hFindFile, pFD))
       {
@@ -994,8 +996,8 @@ BOOL CopyDirectory(const wchar_t* dirSrc, const wchar_t* dirDst)
           aDirSrcLength + aFileNameLength + sizeof(L'/') + sizeof(L'\x00');
         const size_t aFullNameDstLength =
           aDirDstLength + aFileNameLength + sizeof(L'/') + sizeof(L'\x00');
-        if ((pFullNameSrc = (wchar_t*)HeapAlloc(hHeap, 0, aFullNameSrcLength)) == NULL
-            || (pFullNameDst = (wchar_t*)HeapAlloc(hHeap, 0, aFullNameDstLength)) == NULL)
+        if ((pFullNameSrc = (wchar_t*)HeapAlloc(hHeap, 0, aFullNameSrcLength)) == nullptr
+            || (pFullNameDst = (wchar_t*)HeapAlloc(hHeap, 0, aFullNameDstLength)) == nullptr)
         {
           break;
         }
@@ -1025,7 +1027,7 @@ BOOL CopyDirectory(const wchar_t* dirSrc, const wchar_t* dirDst)
   #endif
           if (!retVal)
           {
-            if (_response_dir_proc != NULL)
+            if (_response_dir_proc != nullptr)
             {
               const DIR_RESPONSE response = _response_dir_proc(pFullNameSrc);
               if (response == DIR_ABORT)
@@ -1046,7 +1048,7 @@ BOOL CopyDirectory(const wchar_t* dirSrc, const wchar_t* dirDst)
               }
             }
           }
-          else if (_copy_dir_proc != NULL)
+          else if (_copy_dir_proc != nullptr)
           {
             _copy_dir_proc(pFullNameSrc, pFullNameDst);
           }
@@ -1054,7 +1056,7 @@ BOOL CopyDirectory(const wchar_t* dirSrc, const wchar_t* dirDst)
 
         HeapFree(hHeap, 0, pFullNameDst);
         HeapFree(hHeap, 0, pFullNameSrc);
-        pFullNameSrc = pFullNameDst = NULL;
+        pFullNameSrc = pFullNameDst = nullptr;
       }
     }
   }
@@ -1064,19 +1066,19 @@ BOOL CopyDirectory(const wchar_t* dirSrc, const wchar_t* dirDst)
     FindClose(hFindFile);
   }
 
-  if (pFullNameSrc != NULL)
+  if (pFullNameSrc != nullptr)
   {
     HeapFree(hHeap, 0, pFullNameSrc);
   }
-  if (pFullNameDst != NULL)
+  if (pFullNameDst != nullptr)
   {
     HeapFree(hHeap, 0, pFullNameDst);
   }
-  if (pName != NULL)
+  if (pName != nullptr)
   {
     HeapFree(hHeap, 0, pName);
   }
-  if (pFD != NULL)
+  if (pFD != nullptr)
   {
     HeapFree(hHeap, 0, pFD);
   }

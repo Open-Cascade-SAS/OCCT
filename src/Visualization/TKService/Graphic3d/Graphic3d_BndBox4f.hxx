@@ -21,6 +21,6 @@
 //! Redefines BVH_Box<float, 4> for AABB representation
 //! Describes rendering parameters and effects.
 
-typedef BVH_Box<float, 4> Graphic3d_BndBox4f;
+using Graphic3d_BndBox4f = BVH_Box<float, 4>;
 
 #endif // _Graphic3d_BndBox4f_HeaderFile

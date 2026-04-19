@@ -34,7 +34,7 @@ public:
   #elif defined(_MSC_VER)
       : myLocale(_create_locale(LC_ALL, "C"))
   #else
-      : myLocale(NULL)
+      : myLocale(nullptr)
   #endif
   {
   }
@@ -79,9 +79,9 @@ Standard_CLocaleSentry::Standard_CLocaleSentry()
 {
   #if !defined(OCCT_CLOCALE_POSIX2008)
   const char* aPrevLocale = (const char*)myPrevLocale;
-  if (myPrevLocale == NULL || (aPrevLocale[0] == 'C' && aPrevLocale[1] == '\0'))
+  if (myPrevLocale == nullptr || (aPrevLocale[0] == 'C' && aPrevLocale[1] == '\0'))
   {
-    myPrevLocale = NULL; // already C locale
+    myPrevLocale = nullptr; // already C locale
     return;
   }
   // copy string as following setlocale calls may invalidate returned pointer
@@ -100,7 +100,7 @@ Standard_CLocaleSentry::~Standard_CLocaleSentry()
   #if defined(OCCT_CLOCALE_POSIX2008)
   uselocale((locale_t)myPrevLocale);
   #else
-  if (myPrevLocale != NULL)
+  if (myPrevLocale != nullptr)
   {
     const char* aPrevLocale = (const char*)myPrevLocale;
     setlocale(LC_ALL, aPrevLocale);

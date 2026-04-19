@@ -19,6 +19,6 @@
 #include <IntPolyh_Array.hxx>
 #include <IntPolyh_StartPoint.hxx>
 
-typedef IntPolyh_Array<IntPolyh_StartPoint> IntPolyh_ArrayOfTangentZones;
+using IntPolyh_ArrayOfTangentZones = IntPolyh_Array<IntPolyh_StartPoint>;
 
 #endif

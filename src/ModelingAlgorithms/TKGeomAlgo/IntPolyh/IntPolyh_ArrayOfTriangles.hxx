@@ -20,6 +20,6 @@
 // #include <IntPolyh_Triangle.hxx>
 class IntPolyh_Triangle;
 
-typedef IntPolyh_Array<IntPolyh_Triangle> IntPolyh_ArrayOfTriangles;
+using IntPolyh_ArrayOfTriangles = IntPolyh_Array<IntPolyh_Triangle>;
 
 #endif

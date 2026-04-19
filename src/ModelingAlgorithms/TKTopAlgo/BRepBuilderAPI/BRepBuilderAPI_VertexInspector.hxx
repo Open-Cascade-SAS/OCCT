@@ -22,7 +22,7 @@
 #include <gp_XYZ.hxx>
 #include <NCollection_CellFilter.hxx>
 
-typedef NCollection_Vector<gp_XYZ> VectorOfPoint;
+using VectorOfPoint = NCollection_Vector<gp_XYZ>;
 
 //! Inspector for CellFilter algorithm working with gp_XYZ points in 3d space.
 //! Used in search of coincidence points with a certain tolerance.
@@ -32,8 +32,8 @@ class BRepBuilderAPI_VertexInspector
 public:
   static constexpr int Dimension = 3;
 
-  typedef gp_XYZ Point;
-  typedef int    Target;
+  using Point  = gp_XYZ;
+  using Target = int;
 
   static double Coord(int i, const Point& thePnt) { return thePnt.Coord(i + 1); }
 

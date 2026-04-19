@@ -22,7 +22,7 @@
 struct OpenGl_GlCore21 : public OpenGl_GlCore20
 {
 private:
-  typedef OpenGl_GlCore20 theBaseClass_t;
+  using theBaseClass_t = OpenGl_GlCore20;
 
 public: //! @name OpenGL 2.1 additives to 2.0
 #if !defined(GL_ES_VERSION_2_0)

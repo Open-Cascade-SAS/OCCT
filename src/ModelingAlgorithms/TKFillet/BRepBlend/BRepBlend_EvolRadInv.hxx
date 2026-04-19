@@ -19,6 +19,6 @@
 
 #include <BlendFunc_EvolRadInv.hxx>
 
-typedef BlendFunc_EvolRadInv BRepBlend_EvolRadInv;
+using BRepBlend_EvolRadInv = BlendFunc_EvolRadInv;
 
 #endif // _BRepBlend_EvolRadInv_HeaderFile

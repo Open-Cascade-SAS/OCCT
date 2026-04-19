@@ -19,6 +19,6 @@
 
 #include <BlendFunc_ChamfInv.hxx>
 
-typedef BlendFunc_ChamfInv BRepBlend_ChamfInv;
+using BRepBlend_ChamfInv = BlendFunc_ChamfInv;
 
 #endif // _BRepBlend_ChamfInv_HeaderFile

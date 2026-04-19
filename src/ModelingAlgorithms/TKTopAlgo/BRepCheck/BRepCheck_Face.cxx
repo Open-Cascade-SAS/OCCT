@@ -56,7 +56,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepCheck_Face, BRepCheck_Result)
 
 // #include <BRepAdaptor_Curve2d.hxx>
 // #include <Geom2dInt_GInter.hxx>
-typedef NCollection_DataMap<TopoDS_Shape, Bnd_Box2d> DataMapOfShapeBox2d;
+using DataMapOfShapeBox2d = NCollection_DataMap<TopoDS_Shape, Bnd_Box2d>;
 
 static bool Intersect(const TopoDS_Wire&,
                       const TopoDS_Wire&,

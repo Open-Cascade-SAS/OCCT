@@ -17,7 +17,7 @@
 #include <Aspect_VKeyFlags.hxx>
 
 //! Define virtual key as integer number to allow extensions.
-typedef unsigned int Aspect_VKey;
+using Aspect_VKey = unsigned int;
 
 //! Enumeration defining virtual keys irrelevant to current keyboard layout for simplified hot-keys
 //! management logic.

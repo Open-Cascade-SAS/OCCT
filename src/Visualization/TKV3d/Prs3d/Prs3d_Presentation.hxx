@@ -20,6 +20,6 @@
 #include <Graphic3d_Structure.hxx>
 
 //! Alias for porting code.
-typedef Graphic3d_Structure Prs3d_Presentation;
+using Prs3d_Presentation = Graphic3d_Structure;
 
 #endif // _Prs3d_Presentation_HeaderFile

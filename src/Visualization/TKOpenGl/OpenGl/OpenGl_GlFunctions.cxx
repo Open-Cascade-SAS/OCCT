@@ -116,7 +116,7 @@ static void APIENTRY glGetTexLevelParameterfv(GLenum   target,
 static void APIENTRY glGetPointerv(GLenum name, GLvoid** params)
 {
 #if defined(GL_ES_VERSION_2_0)
-  *params = NULL;
+  *params = nullptr;
   ::glEnable(0xFFFF); // added to OpenGL ES 3.2
   (void)name;
 #else
@@ -1740,7 +1740,7 @@ void OpenGl_GlFunctions::readGlVersion(int& theGlVerMajor, int& theGlVerMinor)
 #if defined(__EMSCRIPTEN__)
   if (theGlVerMajor >= 3)
   {
-    if (!toCheckVer3 || ::strstr(aVerStr, "WebGL 1.0") != NULL)
+    if (!toCheckVer3 || ::strstr(aVerStr, "WebGL 1.0") != nullptr)
     {
       Message::SendWarning()
         << "Warning! OpenGL context reports version " << theGlVerMajor << "." << theGlVerMinor
@@ -1913,7 +1913,7 @@ void OpenGl_GlFunctions::load(OpenGl_Context& theCtx, bool theIsCoreProfile)
   }
 
 #if defined(GL_ES_VERSION_2_0)
-  theCtx.core11ffp = NULL;
+  theCtx.core11ffp = nullptr;
 #else
   theCtx.core11ffp = !isCoreProfile ? (OpenGl_GlCore11*)this : nullptr;
 #endif
@@ -2065,7 +2065,7 @@ void OpenGl_GlFunctions::load(OpenGl_Context& theCtx, bool theIsCoreProfile)
   #ifndef __EMSCRIPTEN__
     && hasMapBufferRange
   #endif
-    && hasInstanced && theCtx.arbSamplerObject != NULL && theCtx.arbFBOBlit != NULL
+    && hasInstanced && theCtx.arbSamplerObject != nullptr && theCtx.arbFBOBlit != nullptr
     && FindProcShort(glReadBuffer) && FindProcShort(glDrawRangeElements)
     && FindProcShort(glTexImage3D) && FindProcShort(glTexSubImage3D)
     && FindProcShort(glCopyTexSubImage3D) && FindProcShort(glCompressedTexImage3D)
@@ -2161,7 +2161,7 @@ void OpenGl_GlFunctions::load(OpenGl_Context& theCtx, bool theIsCoreProfile)
   if (isGlGreaterEqualShort(3, 2) || checkExtensionShort("GL_KHR_debug"))
   {
     // this functionality become a part of OpenGL ES 3.2
-    theCtx.arbDbg = NULL;
+    theCtx.arbDbg = nullptr;
     if (isGlGreaterEqualShort(3, 2) && FindProcShort(glDebugMessageControl)
         && FindProcShort(glDebugMessageInsert) && FindProcShort(glDebugMessageCallback)
         && FindProcShort(glGetDebugMessageLog))
@@ -2182,7 +2182,7 @@ void OpenGl_GlFunctions::load(OpenGl_Context& theCtx, bool theIsCoreProfile)
 
   // load OpenGL ES 3.2 new functions
   const bool has32es =
-    isGlGreaterEqualShort(3, 2) && has31es && hasTexBuffer32 && theCtx.arbDbg != NULL
+    isGlGreaterEqualShort(3, 2) && has31es && hasTexBuffer32 && theCtx.arbDbg != nullptr
     && FindProcShort(glBlendBarrier) && FindProcShort(glCopyImageSubData)
     && FindProcShort(glPushDebugGroup) && FindProcShort(glPopDebugGroup)
     && FindProcShort(glObjectLabel) && FindProcShort(glGetObjectLabel)

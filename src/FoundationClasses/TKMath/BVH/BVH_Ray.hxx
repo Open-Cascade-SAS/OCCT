@@ -25,7 +25,7 @@ template <class T, int N>
 class BVH_Ray
 {
 public:
-  typedef typename BVH::VectorType<T, N>::Type BVH_VecNt;
+  using BVH_VecNt = typename BVH::VectorType<T, N>::Type;
 
 public:
   BVH_VecNt Origin;    //!< Ray origin point

@@ -52,16 +52,16 @@ IMPLEMENT_STANDARD_RTTIEXT(Geom_SurfaceOfRevolution, Geom_SweptSurface)
 #define VFKNOTS (vfknots->Array1())
 #define FMULTS (BSplCLib::NoMults())
 
-typedef Geom_SurfaceOfRevolution SurfaceOfRevolution;
-typedef Geom_Curve               Curve;
-typedef gp_Ax1                   Ax1;
-typedef gp_Ax2                   Ax2;
-typedef gp_Dir                   Dir;
-typedef gp_Lin                   Lin;
-typedef gp_Pnt                   Pnt;
-typedef gp_Trsf                  Trsf;
-typedef gp_Vec                   Vec;
-typedef gp_XYZ                   XYZ;
+using SurfaceOfRevolution = Geom_SurfaceOfRevolution;
+using Curve               = Geom_Curve;
+using Ax1                 = gp_Ax1;
+using Ax2                 = gp_Ax2;
+using Dir                 = gp_Dir;
+using Lin                 = gp_Lin;
+using Pnt                 = gp_Pnt;
+using Trsf                = gp_Trsf;
+using Vec                 = gp_Vec;
+using XYZ                 = gp_XYZ;
 
 //=================================================================================================
 

@@ -23,7 +23,7 @@ struct PM_FONT_INFO
   int   offset;
 };
 
-typedef PM_FONT_INFO* pm_font_info;
+using pm_font_info = PM_FONT_INFO*;
 
 #define PM_PLUS_10_NUM 9 * 2
 #define PM_PLUS_15_NUM 11 * 2

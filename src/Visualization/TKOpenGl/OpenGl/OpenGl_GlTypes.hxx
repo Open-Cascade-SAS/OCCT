@@ -48,29 +48,29 @@
 
 #include <OpenGl_khrplatform.h>
 
-typedef khronos_int8_t   GLbyte;
-typedef khronos_float_t  GLclampf;
-typedef khronos_int32_t  GLfixed;
-typedef short            GLshort;
-typedef unsigned short   GLushort;
-typedef void             GLvoid;
-typedef struct __GLsync* GLsync;
-typedef khronos_int64_t  GLint64;
-typedef khronos_uint64_t GLuint64;
-typedef unsigned int     GLenum;
-typedef unsigned int     GLuint;
-typedef char             GLchar;
-typedef khronos_float_t  GLfloat;
-typedef khronos_ssize_t  GLsizeiptr;
-typedef khronos_intptr_t GLintptr;
-typedef unsigned int     GLbitfield;
-typedef int              GLint;
-typedef unsigned char    GLboolean;
-typedef int              GLsizei;
-typedef khronos_uint8_t  GLubyte;
+using GLbyte     = khronos_int8_t;
+using GLclampf   = khronos_float_t;
+using GLfixed    = khronos_int32_t;
+using GLshort    = short;
+using GLushort   = unsigned short;
+using GLvoid     = void;
+using GLsync     = struct __GLsync*;
+using GLint64    = khronos_int64_t;
+using GLuint64   = khronos_uint64_t;
+using GLenum     = unsigned int;
+using GLuint     = unsigned int;
+using GLchar     = char;
+using GLfloat    = khronos_float_t;
+using GLsizeiptr = khronos_ssize_t;
+using GLintptr   = khronos_intptr_t;
+using GLbitfield = unsigned int;
+using GLint      = int;
+using GLboolean  = unsigned char;
+using GLsizei    = int;
+using GLubyte    = khronos_uint8_t;
 
-typedef double GLdouble;
-typedef double GLclampd;
+using GLdouble = double;
+using GLclampd = double;
 
 #define GL_NONE 0
 

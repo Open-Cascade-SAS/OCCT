@@ -25,7 +25,7 @@
 #include <algorithm>
 
 //! Pair of Morton code and primitive ID.
-typedef std::pair<unsigned int, int> BVH_EncodedLink;
+using BVH_EncodedLink = std::pair<unsigned int, int>;
 
 namespace BVH
 {
@@ -87,7 +87,7 @@ template <class T, int N>
 class BVH_RadixSorter : public BVH_Sorter<T, N>
 {
 public:
-  typedef typename BVH::VectorType<T, N>::Type BVH_VecNt;
+  using BVH_VecNt = typename BVH::VectorType<T, N>::Type;
 
 public:
   //! Creates new BVH radix sorter for the given AABB.
@@ -155,7 +155,7 @@ struct BitComparator
 class RadixSorter
 {
 public:
-  typedef NCollection_Array1<BVH_EncodedLink>::iterator LinkIterator;
+  using LinkIterator = NCollection_Array1<BVH_EncodedLink>::iterator;
 
 private:
   //! Structure defining sorting range.

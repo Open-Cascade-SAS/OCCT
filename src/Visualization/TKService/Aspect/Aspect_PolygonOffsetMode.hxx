@@ -18,7 +18,7 @@
 
 // Enumeration for polygon offset modes
 
-typedef enum
+enum Aspect_PolygonOffsetMode
 {
   Aspect_POM_Off   = 0x00, /* all polygon offset modes disabled                     */
   Aspect_POM_Fill  = 0x01, /* GL_POLYGON_OFFSET_FILL enabled (shaded polygons)      */
@@ -27,6 +27,6 @@ typedef enum
   Aspect_POM_All   = Aspect_POM_Fill | Aspect_POM_Line | Aspect_POM_Point,
   Aspect_POM_None  = 0x08, /* do not change current polygon offset mode             */
   Aspect_POM_Mask  = Aspect_POM_All | Aspect_POM_None
-} Aspect_PolygonOffsetMode;
+};
 
 #endif

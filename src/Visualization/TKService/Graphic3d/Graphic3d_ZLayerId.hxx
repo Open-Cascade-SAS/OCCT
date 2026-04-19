@@ -18,7 +18,7 @@
 
 #include <Standard_Integer.hxx>
 
-typedef int Graphic3d_ZLayerId;
+using Graphic3d_ZLayerId = int;
 
 //! This enumeration defines the list of predefined layers, which can not be removed (but settings
 //! can be overridden). Custom layers might be added with positive index (>= 1) if standard list is

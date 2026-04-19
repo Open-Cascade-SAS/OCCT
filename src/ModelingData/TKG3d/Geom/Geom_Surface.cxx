@@ -26,7 +26,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Geom_Surface, Geom_Geometry)
 
-typedef Geom_Surface Surface;
+using Surface = Geom_Surface;
 
 //=================================================================================================
 

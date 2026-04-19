@@ -284,10 +284,10 @@ void Draw_Appli(int argc, char** argv, const FDraw_InitAppli Draw_InitAppli)
     typedef BOOL(WINAPI * SetDllDirectoryW_t)(const wchar_t* thePathName);
     HMODULE            aKern32Module = GetModuleHandleW(L"kernel32");
     SetDllDirectoryW_t aFunc =
-      (aKern32Module != NULL)
+      (aKern32Module != nullptr)
         ? (SetDllDirectoryW_t)GetProcAddress(aKern32Module, "SetDllDirectoryW")
-        : NULL;
-    if (aFunc != NULL)
+        : nullptr;
+    if (aFunc != nullptr)
     {
       aFunc(aUserDllPath.ToWideString());
     }
@@ -295,7 +295,7 @@ void Draw_Appli(int argc, char** argv, const FDraw_InitAppli Draw_InitAppli)
     {
       // std::cerr << "SetDllDirectoryW() is not available on this system!\n";
     }
-    if (aKern32Module != NULL)
+    if (aKern32Module != nullptr)
     {
       FreeLibrary(aKern32Module);
     }
@@ -390,7 +390,7 @@ void Draw_Appli(int argc, char** argv, const FDraw_InitAppli Draw_InitAppli)
   // init X window and create display
   // *****************************************************************
 #ifdef _WIN32
-  HWND hWnd = NULL;
+  HWND hWnd = nullptr;
 #endif
 
   if (!Draw_Batch)

@@ -27,7 +27,7 @@ class BRepMesh_DelaunayNodeInsertionMeshAlgo
 {
 private:
   // Typedef for OCCT RTTI
-  typedef BRepMesh_NodeInsertionMeshAlgo<RangeSplitter, BaseAlgo> InsertionBaseClass;
+  using InsertionBaseClass = BRepMesh_NodeInsertionMeshAlgo<RangeSplitter, BaseAlgo>;
 
 public:
   //! Constructor.

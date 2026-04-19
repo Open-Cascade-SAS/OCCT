@@ -67,7 +67,7 @@ struct is_integer : std::integral_constant<bool,
 template <typename TheType>
 struct disable_deduction
 {
-  typedef TheType type;
+  using type = TheType;
 };
 
 } // namespace opencascade

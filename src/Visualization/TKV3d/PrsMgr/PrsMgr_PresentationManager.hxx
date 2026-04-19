@@ -23,7 +23,7 @@
 #include <Prs3d_Presentation.hxx>
 
 class Graphic3d_Structure;
-typedef Graphic3d_Structure Prs3d_Presentation;
+using Prs3d_Presentation = Graphic3d_Structure;
 
 class TopLoc_Datum3D;
 class Prs3d_Drawer;

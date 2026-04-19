@@ -132,8 +132,8 @@ private:
   {
   public:
     //! Points and target type
-    typedef math_Vector Point;
-    typedef math_Vector Target;
+    using Point  = math_Vector;
+    using Target = math_Vector;
 
     NCollection_CellFilter_Inspector(const int theDim, const double theTol)
         : myCurrent(1, theDim)

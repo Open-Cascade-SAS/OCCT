@@ -43,7 +43,7 @@
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_BasicDumper, IFSelect_SessionDumper)
 
 // #include <IFSelect_SelectTextType.hxx>
-#define FIRSTCHAR 1
+constexpr int FIRSTCHAR = 1;
 
 // Literal param "own" in the form  :"<val>" -> first = 3
 // Now, simplified form         : <val>  directly -> first = 1

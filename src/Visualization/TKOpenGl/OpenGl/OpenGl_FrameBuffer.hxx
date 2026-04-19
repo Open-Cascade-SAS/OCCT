@@ -382,7 +382,7 @@ protected:
   bool isValidFrameBuffer() const { return myGlFBufferId != NO_FRAMEBUFFER; }
 
 protected:
-  typedef NCollection_Vector<occ::handle<OpenGl_Texture>> OpenGl_TextureArray;
+  using OpenGl_TextureArray = NCollection_Vector<occ::handle<OpenGl_Texture>>;
 
 protected:
   // clang-format off

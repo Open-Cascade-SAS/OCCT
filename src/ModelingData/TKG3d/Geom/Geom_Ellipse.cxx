@@ -30,12 +30,12 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Geom_Ellipse, Geom_Conic)
 
-typedef gp_Ax1  Ax1;
-typedef gp_Ax2  Ax2;
-typedef gp_Pnt  Pnt;
-typedef gp_Vec  Vec;
-typedef gp_Trsf Trsf;
-typedef gp_XYZ  XYZ;
+using Ax1  = gp_Ax1;
+using Ax2  = gp_Ax2;
+using Pnt  = gp_Pnt;
+using Vec  = gp_Vec;
+using Trsf = gp_Trsf;
+using XYZ  = gp_XYZ;
 
 //=================================================================================================
 

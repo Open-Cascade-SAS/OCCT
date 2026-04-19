@@ -160,7 +160,7 @@ protected:
 
 //
 //=======================================================================
-typedef NCollection_Vector<BOPAlgo_SplitEdge> BOPAlgo_VectorOfSplitEdge;
+using BOPAlgo_VectorOfSplitEdge = NCollection_Vector<BOPAlgo_SplitEdge>;
 
 //=================================================================================================
 
@@ -305,7 +305,7 @@ protected:
 
 //
 //=======================================================================
-typedef NCollection_Vector<BOPAlgo_MPC> BOPAlgo_VectorOfMPC;
+using BOPAlgo_VectorOfMPC = NCollection_Vector<BOPAlgo_MPC>;
 
 //=================================================================================================
 
@@ -356,7 +356,7 @@ private:
 };
 
 //=======================================================================
-typedef NCollection_Vector<BOPAlgo_BPC> BOPAlgo_VectorOfBPC;
+using BOPAlgo_VectorOfBPC = NCollection_Vector<BOPAlgo_BPC>;
 
 //=================================================================================================
 

@@ -169,7 +169,7 @@ bool OSD_Thread::Run(void* const data,
 
   // then try to create a new thread
   DWORD aThreadId = DWORD();
-  myThread        = CreateThread(NULL, WNTStackSize, WNTthread_func, adata, 0, &aThreadId);
+  myThread        = CreateThread(nullptr, WNTStackSize, WNTthread_func, adata, 0, &aThreadId);
   myThreadId      = aThreadId;
   if (myThread)
     SetThreadPriority(myThread, myPriority);

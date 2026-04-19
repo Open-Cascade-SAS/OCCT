@@ -54,14 +54,14 @@ public:
 public:
   //! Main constructor.
   TouchInputHelper()
-      : myRegisterTouchWindow(NULL),
-        myUnregisterTouchWindow(NULL),
-        myGetTouchInputInfo(NULL),
-        myCloseTouchInputHandle(NULL),
+      : myRegisterTouchWindow(nullptr),
+        myUnregisterTouchWindow(nullptr),
+        myGetTouchInputInfo(nullptr),
+        myCloseTouchInputHandle(nullptr),
         myIsRegistered(false)
   {
     HMODULE aUser32Module = GetModuleHandleW(L"User32");
-    if (aUser32Module != NULL)
+    if (aUser32Module != nullptr)
     {
       // User32 should be already loaded
       myRegisterTouchWindow =
@@ -80,7 +80,7 @@ public:
   //! Register window to receive WM_TOUCH events.
   bool Register(HWND theWin)
   {
-    if (myRegisterTouchWindow == NULL)
+    if (myRegisterTouchWindow == nullptr)
     {
       return false;
     }
@@ -105,7 +105,7 @@ public:
           myHInput((HTOUCHINPUT)theMsg.lParam)
     {
       const int aNbTouches = LOWORD(theMsg.wParam);
-      if (aNbTouches > 0 && theHelper.myGetTouchInputInfo != NULL)
+      if (aNbTouches > 0 && theHelper.myGetTouchInputInfo != nullptr)
       {
         InnerTouchArray::Allocate(aNbTouches);
         TOUCHINPUT* aTouches = InnerTouchArray::operator TOUCHINPUT*();
@@ -119,7 +119,7 @@ public:
     //! Destructor.
     ~TouchInputInfo()
     {
-      if (myHelper->myCloseTouchInputHandle != NULL)
+      if (myHelper->myCloseTouchInputHandle != nullptr)
       {
         myHelper->myCloseTouchInputHandle(myHInput);
       }
@@ -153,8 +153,8 @@ WNT_Window::WNT_Window(const char* const              theTitle,
                        void* const                    theClientStruct)
     : Aspect_Window(),
       myWClass(theClass),
-      myHWindow(NULL),
-      myHParentWindow(NULL),
+      myHWindow(nullptr),
+      myHParentWindow(nullptr),
       myXLeft(thePxLeft),
       myYTop(thePxTop),
       myXRight(thePxLeft + thePxWidth),
@@ -182,7 +182,7 @@ WNT_Window::WNT_Window(const char* const              theTitle,
   aRect.bottom = myYBottom;
   aRect.left   = myXLeft;
   aRect.right  = myXRight;
-  AdjustWindowRect(&aRect, aStyle, theMenu != NULL ? TRUE : FALSE);
+  AdjustWindowRect(&aRect, aStyle, theMenu != nullptr ? TRUE : FALSE);
   myXLeft   = aRect.left;
   myYTop    = aRect.top;
   myXRight  = aRect.right;
@@ -237,7 +237,7 @@ WNT_Window::WNT_Window(const Aspect_Handle theHandle, const Quantity_NameOfColor
 
 WNT_Window::~WNT_Window()
 {
-  if (myHWindow == NULL || myIsForeign)
+  if (myHWindow == nullptr || myIsForeign)
   {
     return;
   }
@@ -398,7 +398,7 @@ void WNT_Window::Position(int& theX1, int& theY1, int& theX2, int& theY2) const
   aPntRight.y = aRect.bottom;
   ::ClientToScreen((HWND)myHWindow, &aPntRight);
 
-  if (myHParentWindow != NULL)
+  if (myHParentWindow != nullptr)
   {
     ::ScreenToClient((HWND)myHParentWindow, &aPntLeft);
     ::ScreenToClient((HWND)myHParentWindow, &aPntRight);
@@ -449,9 +449,9 @@ void WNT_Window::SetTitle(const TCollection_AsciiString& theTitle)
 
 void WNT_Window::InvalidateContent(const occ::handle<Aspect_DisplayConnection>&)
 {
-  if (myHWindow != NULL)
+  if (myHWindow != nullptr)
   {
-    ::InvalidateRect((HWND)myHWindow, NULL, TRUE);
+    ::InvalidateRect((HWND)myHWindow, nullptr, TRUE);
   }
 }
 
@@ -711,7 +711,7 @@ Aspect_VKeyMouse WNT_Window::MouseButtonsAsync()
 
 int WNT_Window::RegisterRawInputDevices(unsigned int theRawDeviceMask)
 {
-  if (IsVirtual() || myHWindow == NULL)
+  if (IsVirtual() || myHWindow == nullptr)
   {
     return 0;
   }
@@ -929,7 +929,11 @@ bool WNT_Window::ProcessMessage(Aspect_WindowInputListener& theListener, MSG& th
     }
     case WM_INPUT: {
       UINT aSize = 0;
-      ::GetRawInputData((HRAWINPUT)theMsg.lParam, RID_INPUT, NULL, &aSize, sizeof(RAWINPUTHEADER));
+      ::GetRawInputData((HRAWINPUT)theMsg.lParam,
+                        RID_INPUT,
+                        nullptr,
+                        &aSize,
+                        sizeof(RAWINPUTHEADER));
       NCollection_LocalArray<BYTE> aRawData(aSize);
       if (aSize == 0
           || ::GetRawInputData((HRAWINPUT)theMsg.lParam,

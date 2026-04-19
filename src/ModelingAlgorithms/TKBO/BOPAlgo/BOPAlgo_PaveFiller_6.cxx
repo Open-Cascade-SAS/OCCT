@@ -278,7 +278,7 @@ protected:
 
 //=================================================================================================
 
-typedef NCollection_Vector<BOPAlgo_FaceFace> BOPAlgo_VectorOfFaceFace;
+using BOPAlgo_VectorOfFaceFace = NCollection_Vector<BOPAlgo_FaceFace>;
 
 //=================================================================================================
 

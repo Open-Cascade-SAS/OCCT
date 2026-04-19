@@ -19,6 +19,6 @@
 
 #include <BlendFunc_Chamfer.hxx>
 
-typedef BlendFunc_Chamfer BRepBlend_Chamfer;
+using BRepBlend_Chamfer = BlendFunc_Chamfer;
 
 #endif // _BRepBlend_Chamfer_HeaderFile
