@@ -13,6 +13,7 @@
 
 #include <BVH_SIMDDispatch.hxx>
 
+#include <BVH_ToolsSIMD_AVX2.hxx>
 #include <BVH_ToolsSIMD_SSE2.hxx>
 
 #include <algorithm>
@@ -209,11 +210,17 @@ RayBox4_Fn GetRayBox4() noexcept
     switch (Detect())
     {
       // case Level::AVX512: return &RayBox4_AVX512;  // wired in commit 5
-      // case Level::AVX2:   return &RayBox4_AVX2;    // wired in commit 4
-#if defined(BVH_HAS_SSE2_KERNEL)
-      case Level::SSE2:
+#if defined(BVH_HAS_AVX2_KERNEL)
       case Level::AVX2:
       case Level::AVX512:
+        return &RayBox4_AVX2;
+#endif
+#if defined(BVH_HAS_SSE2_KERNEL)
+      case Level::SSE2:
+  #if !defined(BVH_HAS_AVX2_KERNEL)
+      case Level::AVX2:
+      case Level::AVX512:
+  #endif
         return &RayBox4_SSE2;
 #endif
       default:

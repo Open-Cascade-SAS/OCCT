@@ -14,6 +14,7 @@
 #include <gtest/gtest.h>
 
 #include <BVH_SIMDDispatch.hxx>
+#include <BVH_ToolsSIMD_AVX2.hxx>
 #include <BVH_ToolsSIMD_SSE2.hxx>
 
 #include <cmath>
@@ -204,17 +205,104 @@ TEST(BVH_ToolsSIMDTest, SSE2_RandomConsistencyVsScalar)
   EXPECT_EQ(anAgree, kNumCases);
 }
 
-TEST(BVH_ToolsSIMDTest, Dispatch_PrefersSSE2OverScalarOnX86)
+TEST(BVH_ToolsSIMDTest, Dispatch_PrefersBestKernelOnX86)
 {
-  // On any x86_64 host SSE2 is mandatory, so the dispatcher must select
-  // the SSE2 kernel (not the scalar one). Skip on non-x86 architectures.
+  // On any x86_64 host SSE2 is mandatory; AVX2 may or may not be present.
+  // The dispatcher must select something better than scalar.
   #if defined(__x86_64__) || defined(_M_X64)
   BVH::SIMD::RayBox4_Fn aFn = BVH::SIMD::GetRayBox4();
   EXPECT_NE(aFn, &BVH::SIMD::RayBox4_Scalar);
-  EXPECT_EQ(aFn, &BVH::SIMD::RayBox4_SSE2);
   #else
   GTEST_SKIP() << "Non-x86 architecture, dispatch test does not apply";
   #endif
 }
 
 #endif // BVH_HAS_SSE2_KERNEL
+
+#if defined(BVH_HAS_AVX2_KERNEL)
+
+TEST(BVH_ToolsSIMDTest, AVX2_AllHit)
+{
+  if (BVH::SIMD::Detect() < BVH::SIMD::Level::AVX2)
+  {
+    GTEST_SKIP() << "AVX2 not supported on this CPU";
+  }
+  BVH::SIMD::BVH_Ray4f_Splat aRay = MakeRaySplat(-1.0f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f);
+  BVH::SIMD::BVH_Box4f_SoA   aBoxes{};
+  SetBox(aBoxes, 0, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
+  SetBox(aBoxes, 1, 2.0f, 0.0f, 0.0f, 3.0f, 1.0f, 1.0f);
+  SetBox(aBoxes, 2, 4.0f, 0.0f, 0.0f, 5.0f, 1.0f, 1.0f);
+  SetBox(aBoxes, 3, 6.0f, 0.0f, 0.0f, 7.0f, 1.0f, 1.0f);
+
+  float aTEnter[4]{}, aTLeave[4]{};
+  int   aMask = BVH::SIMD::RayBox4_AVX2(aRay, aBoxes, aTEnter, aTLeave);
+  EXPECT_EQ(aMask, 0b1111);
+}
+
+TEST(BVH_ToolsSIMDTest, AVX2_PartialHit_Mosaic)
+{
+  if (BVH::SIMD::Detect() < BVH::SIMD::Level::AVX2)
+  {
+    GTEST_SKIP() << "AVX2 not supported on this CPU";
+  }
+  BVH::SIMD::BVH_Ray4f_Splat aRay = MakeRaySplat(-1.0f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f);
+  BVH::SIMD::BVH_Box4f_SoA   aBoxes{};
+  SetBox(aBoxes, 0, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
+  SetBox(aBoxes, 1, 2.0f, 5.0f, 0.0f, 3.0f, 6.0f, 1.0f);
+  SetBox(aBoxes, 2, 4.0f, 0.0f, 0.0f, 5.0f, 1.0f, 1.0f);
+  SetBox(aBoxes, 3, 6.0f, 5.0f, 0.0f, 7.0f, 6.0f, 1.0f);
+
+  float aTEnter[4]{}, aTLeave[4]{};
+  int   aMask = BVH::SIMD::RayBox4_AVX2(aRay, aBoxes, aTEnter, aTLeave);
+  EXPECT_EQ(aMask, 0b0101);
+}
+
+TEST(BVH_ToolsSIMDTest, AVX2_RandomConsistencyVsScalar)
+{
+  if (BVH::SIMD::Detect() < BVH::SIMD::Level::AVX2)
+  {
+    GTEST_SKIP() << "AVX2 not supported on this CPU";
+  }
+  std::mt19937                          aGen(0xCAFEFEEDu);
+  std::uniform_real_distribution<float> aPos(-10.0f, 10.0f);
+  std::uniform_real_distribution<float> aSize(0.1f, 5.0f);
+  std::uniform_real_distribution<float> aDir(-1.0f, 1.0f);
+
+  constexpr int   kNumCases = 1000;
+  constexpr float kEps      = 1.0e-3f;
+
+  for (int aCase = 0; aCase < kNumCases; ++aCase)
+  {
+    float dx = aDir(aGen), dy = aDir(aGen), dz = aDir(aGen);
+    if (std::abs(dx) < 1.0e-3f && std::abs(dy) < 1.0e-3f && std::abs(dz) < 1.0e-3f)
+    {
+      dx = 1.0f;
+    }
+    BVH::SIMD::BVH_Ray4f_Splat aRay = MakeRaySplat(aPos(aGen), aPos(aGen), aPos(aGen), dx, dy, dz);
+
+    BVH::SIMD::BVH_Box4f_SoA aBoxes{};
+    for (int k = 0; k < 4; ++k)
+    {
+      const float cx = aPos(aGen), cy = aPos(aGen), cz = aPos(aGen);
+      const float sx = aSize(aGen), sy = aSize(aGen), sz = aSize(aGen);
+      SetBox(aBoxes, k, cx - sx, cy - sy, cz - sz, cx + sx, cy + sy, cz + sz);
+    }
+
+    float aSEnter[4]{}, aSLeave[4]{};
+    int   aSMask = BVH::SIMD::RayBox4_Scalar(aRay, aBoxes, aSEnter, aSLeave);
+    float aTEnter[4]{}, aTLeave[4]{};
+    int   aTMask = BVH::SIMD::RayBox4_AVX2(aRay, aBoxes, aTEnter, aTLeave);
+
+    EXPECT_EQ(aSMask, aTMask) << "AVX2 case " << aCase << " mask mismatch";
+    for (int i = 0; i < 4; ++i)
+    {
+      if (((aSMask >> i) & 1) && ((aTMask >> i) & 1))
+      {
+        EXPECT_NEAR(aSEnter[i], aTEnter[i], kEps);
+        EXPECT_NEAR(aSLeave[i], aTLeave[i], kEps);
+      }
+    }
+  }
+}
+
+#endif // BVH_HAS_AVX2_KERNEL
