@@ -31,6 +31,8 @@ set(OCCT_BVH_FILES
   BVH_Sorter.hxx
   BVH_QuickSorter.hxx
   BVH_RadixSorter.hxx
+  BVH_SIMDDispatch.hxx
+  BVH_SIMDDispatch.cxx
   BVH_SpatialMedianBuilder.hxx
   BVH_SweepPlaneBuilder.hxx
   BVH_Tools.hxx
