@@ -167,7 +167,6 @@ runs:
               -D BUILD_GTEST=ON \
               -D BUILD_CPP_STANDARD=C++17 \
               -D INSTALL_GTEST=ON \
-              -D CMAKE_CXX_FLAGS="-Werror -Wall -Wextra -Wno-deprecated-declarations -Wno-unknown-warning-option -Wno-error=cast-function-type-mismatch" \
               ${{ inputs.additional-cmake-flags }} ..
         echo "Configuration completed successfully for macOS"
       shell: bash

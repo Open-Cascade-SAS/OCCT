@@ -44,6 +44,10 @@ else()
     # when using newer Clang versions (LLVM 18+) that are stricter about this C++ standard violation
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-elaborated-enum-base")
     set (CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -Wno-elaborated-enum-base")
+    # Apple system headers (declared deprecated but still used) and Clang-18+ cast
+    # diagnostics that OCCT cannot address without changing downstream APIs.
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations \
+                                             -Wno-error=cast-function-type-mismatch")
   endif()
   add_definitions(-DOCC_CONVERT_SIGNALS)
 endif()
@@ -146,7 +150,16 @@ if (MSVC)
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
   endif()
 elseif (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX OR (CMAKE_CXX_COMPILER_ID MATCHES "[Cc][Ll][Aa][Nn][Gg]"))
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
+  # GCC 15+ -Warray-bounds, -Wmaybe-uninitialized and -Wstringop-overflow produce
+  # false positives inside inlined STL code (e.g. std::sort on fixed-size arrays
+  # with runtime-bounded count). Keep them as warnings, not errors.
+  # -Wno-unknown-warning-option lets Clang ignore GCC-only -Wno-error= flags
+  # (maybe-uninitialized, stringop-overflow) instead of treating them as errors.
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror \
+      -Wno-unknown-warning-option \
+      -Wno-error=array-bounds \
+      -Wno-error=maybe-uninitialized \
+      -Wno-error=stringop-overflow")
 
   if ("${BUILD_OPT_PROFILE}" STREQUAL "Production")
     # /Ot (favor speed over size) is similar to -O2 or -O3 in GCC/Clang.
