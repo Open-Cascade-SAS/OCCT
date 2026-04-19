@@ -444,7 +444,7 @@ void BRepMesh_Delaun::RemoveAuxElements()
 
   // Destruction of triangles containing a top of the super triangle
   BRepMesh_SelectorOfDataStructureOfDelaun aSelector(myMeshData);
-  for (int aSupVertId = 0; aSupVertId < mySupVert.Size(); ++aSupVertId)
+  for (int aSupVertId = 0; aSupVertId < mySupVert.Length(); ++aSupVertId)
     aSelector.NeighboursOfNode(mySupVert[aSupVertId]);
 
   IMeshData::IteratorOfMapOfInteger aFreeTriangles(aSelector.Elements());
@@ -461,7 +461,7 @@ void BRepMesh_Delaun::RemoveAuxElements()
   }
 
   // The tops of the super triangle are destroyed
-  for (int aSupVertId = 0; aSupVertId < mySupVert.Size(); ++aSupVertId)
+  for (int aSupVertId = 0; aSupVertId < mySupVert.Length(); ++aSupVertId)
     myMeshData->RemoveNode(mySupVert[aSupVertId]);
 }
 
