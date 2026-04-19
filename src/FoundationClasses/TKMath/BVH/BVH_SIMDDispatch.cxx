@@ -14,6 +14,7 @@
 #include <BVH_SIMDDispatch.hxx>
 
 #include <BVH_ToolsSIMD_AVX2.hxx>
+#include <BVH_ToolsSIMD_AVX512.hxx>
 #include <BVH_ToolsSIMD_SSE2.hxx>
 
 #include <algorithm>
@@ -209,16 +210,23 @@ RayBox4_Fn GetRayBox4() noexcept
   static const RayBox4_Fn sFn = []() noexcept -> RayBox4_Fn {
     switch (Detect())
     {
-      // case Level::AVX512: return &RayBox4_AVX512;  // wired in commit 5
+#if defined(BVH_HAS_AVX512_KERNEL)
+      case Level::AVX512:
+        return &RayBox4_AVX512;
+#endif
 #if defined(BVH_HAS_AVX2_KERNEL)
       case Level::AVX2:
+  #if !defined(BVH_HAS_AVX512_KERNEL)
       case Level::AVX512:
+  #endif
         return &RayBox4_AVX2;
 #endif
 #if defined(BVH_HAS_SSE2_KERNEL)
       case Level::SSE2:
   #if !defined(BVH_HAS_AVX2_KERNEL)
       case Level::AVX2:
+  #endif
+  #if !defined(BVH_HAS_AVX512_KERNEL) && !defined(BVH_HAS_AVX2_KERNEL)
       case Level::AVX512:
   #endif
         return &RayBox4_SSE2;

@@ -15,6 +15,7 @@
 
 #include <BVH_SIMDDispatch.hxx>
 #include <BVH_ToolsSIMD_AVX2.hxx>
+#include <BVH_ToolsSIMD_AVX512.hxx>
 #include <BVH_ToolsSIMD_SSE2.hxx>
 
 #include <cmath>
@@ -306,3 +307,91 @@ TEST(BVH_ToolsSIMDTest, AVX2_RandomConsistencyVsScalar)
 }
 
 #endif // BVH_HAS_AVX2_KERNEL
+
+#if defined(BVH_HAS_AVX512_KERNEL)
+
+TEST(BVH_ToolsSIMDTest, AVX512_AllHit)
+{
+  if (BVH::SIMD::Detect() < BVH::SIMD::Level::AVX512)
+  {
+    GTEST_SKIP() << "AVX-512 not supported on this CPU";
+  }
+  BVH::SIMD::BVH_Ray4f_Splat aRay = MakeRaySplat(-1.0f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f);
+  BVH::SIMD::BVH_Box4f_SoA   aBoxes{};
+  SetBox(aBoxes, 0, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
+  SetBox(aBoxes, 1, 2.0f, 0.0f, 0.0f, 3.0f, 1.0f, 1.0f);
+  SetBox(aBoxes, 2, 4.0f, 0.0f, 0.0f, 5.0f, 1.0f, 1.0f);
+  SetBox(aBoxes, 3, 6.0f, 0.0f, 0.0f, 7.0f, 1.0f, 1.0f);
+
+  float aTEnter[4]{}, aTLeave[4]{};
+  int   aMask = BVH::SIMD::RayBox4_AVX512(aRay, aBoxes, aTEnter, aTLeave);
+  EXPECT_EQ(aMask, 0b1111);
+}
+
+TEST(BVH_ToolsSIMDTest, AVX512_PartialHit_Mosaic)
+{
+  if (BVH::SIMD::Detect() < BVH::SIMD::Level::AVX512)
+  {
+    GTEST_SKIP() << "AVX-512 not supported on this CPU";
+  }
+  BVH::SIMD::BVH_Ray4f_Splat aRay = MakeRaySplat(-1.0f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f);
+  BVH::SIMD::BVH_Box4f_SoA   aBoxes{};
+  SetBox(aBoxes, 0, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
+  SetBox(aBoxes, 1, 2.0f, 5.0f, 0.0f, 3.0f, 6.0f, 1.0f);
+  SetBox(aBoxes, 2, 4.0f, 0.0f, 0.0f, 5.0f, 1.0f, 1.0f);
+  SetBox(aBoxes, 3, 6.0f, 5.0f, 0.0f, 7.0f, 6.0f, 1.0f);
+
+  float aTEnter[4]{}, aTLeave[4]{};
+  int   aMask = BVH::SIMD::RayBox4_AVX512(aRay, aBoxes, aTEnter, aTLeave);
+  EXPECT_EQ(aMask, 0b0101);
+}
+
+TEST(BVH_ToolsSIMDTest, AVX512_RandomConsistencyVsScalar)
+{
+  if (BVH::SIMD::Detect() < BVH::SIMD::Level::AVX512)
+  {
+    GTEST_SKIP() << "AVX-512 not supported on this CPU";
+  }
+  std::mt19937                          aGen(0xDEADBEEFu);
+  std::uniform_real_distribution<float> aPos(-10.0f, 10.0f);
+  std::uniform_real_distribution<float> aSize(0.1f, 5.0f);
+  std::uniform_real_distribution<float> aDir(-1.0f, 1.0f);
+
+  constexpr int   kNumCases = 1000;
+  constexpr float kEps      = 1.0e-3f;
+
+  for (int aCase = 0; aCase < kNumCases; ++aCase)
+  {
+    float dx = aDir(aGen), dy = aDir(aGen), dz = aDir(aGen);
+    if (std::abs(dx) < 1.0e-3f && std::abs(dy) < 1.0e-3f && std::abs(dz) < 1.0e-3f)
+    {
+      dx = 1.0f;
+    }
+    BVH::SIMD::BVH_Ray4f_Splat aRay = MakeRaySplat(aPos(aGen), aPos(aGen), aPos(aGen), dx, dy, dz);
+
+    BVH::SIMD::BVH_Box4f_SoA aBoxes{};
+    for (int k = 0; k < 4; ++k)
+    {
+      const float cx = aPos(aGen), cy = aPos(aGen), cz = aPos(aGen);
+      const float sx = aSize(aGen), sy = aSize(aGen), sz = aSize(aGen);
+      SetBox(aBoxes, k, cx - sx, cy - sy, cz - sz, cx + sx, cy + sy, cz + sz);
+    }
+
+    float aSEnter[4]{}, aSLeave[4]{};
+    int   aSMask = BVH::SIMD::RayBox4_Scalar(aRay, aBoxes, aSEnter, aSLeave);
+    float aTEnter[4]{}, aTLeave[4]{};
+    int   aTMask = BVH::SIMD::RayBox4_AVX512(aRay, aBoxes, aTEnter, aTLeave);
+
+    EXPECT_EQ(aSMask, aTMask) << "AVX-512 case " << aCase << " mask mismatch";
+    for (int i = 0; i < 4; ++i)
+    {
+      if (((aSMask >> i) & 1) && ((aTMask >> i) & 1))
+      {
+        EXPECT_NEAR(aSEnter[i], aTEnter[i], kEps);
+        EXPECT_NEAR(aSLeave[i], aTLeave[i], kEps);
+      }
+    }
+  }
+}
+
+#endif // BVH_HAS_AVX512_KERNEL

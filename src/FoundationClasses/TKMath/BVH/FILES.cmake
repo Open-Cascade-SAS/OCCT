@@ -34,6 +34,7 @@ set(OCCT_BVH_FILES
   BVH_SIMDDispatch.hxx
   BVH_SIMDDispatch.cxx
   BVH_ToolsSIMD_AVX2.hxx
+  BVH_ToolsSIMD_AVX512.hxx
   BVH_ToolsSIMD_SSE2.hxx
   BVH_SpatialMedianBuilder.hxx
   BVH_SweepPlaneBuilder.hxx
