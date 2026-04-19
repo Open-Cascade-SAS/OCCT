@@ -156,6 +156,7 @@ elseif (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX OR (CMAKE_CXX_COMPIL
   # -Wno-unknown-warning-option lets Clang ignore GCC-only -Wno-error= flags
   # (maybe-uninitialized, stringop-overflow) instead of treating them as errors.
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror \
+      -Wzero-as-null-pointer-constant \
       -Wno-unknown-warning-option \
       -Wno-error=array-bounds \
       -Wno-error=maybe-uninitialized \

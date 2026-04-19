@@ -110,7 +110,7 @@ ApproxInt_MultiLine::ApproxInt_MultiLine(const Handle_TheLine& line,
                                          const bool            P2DOnFirst,
                                          const int             IndMin,
                                          const int             IndMax)
-    : PtrOnmySvSurfaces(0),
+    : PtrOnmySvSurfaces(nullptr),
       myLine(line),
       indicemin(std::min(IndMin, IndMax)),
       indicemax(std::max(IndMin, IndMax)),
