@@ -26,6 +26,7 @@
 BRepMesh_CircleTool::BRepMesh_CircleTool(const occ::handle<NCollection_IncAllocator>& theAllocator)
     : myTolerance(Precision::PConfusion()),
       myAllocator(theAllocator),
+      myCellFilter(10.0, theAllocator),
       mySelector(myTolerance, 64, theAllocator)
 {
 }
@@ -36,87 +37,36 @@ BRepMesh_CircleTool::BRepMesh_CircleTool(const int theReservedSize,
                                          const occ::handle<NCollection_IncAllocator>& theAllocator)
     : myTolerance(Precision::PConfusion()),
       myAllocator(theAllocator),
+      myCellFilter(10.0, theAllocator),
       mySelector(myTolerance, std::max(theReservedSize, 64), theAllocator)
 {
 }
 
 //=================================================================================================
 
-void BRepMesh_CircleTool::initGrid()
-{
-  if (myCellSizeX <= 0. || myCellSizeY <= 0.)
-    return;
-
-  const double aDeltaX = myFaceMax.X() - myFaceMin.X();
-  const double aDeltaY = myFaceMax.Y() - myFaceMin.Y();
-  if (aDeltaX <= 0. || aDeltaY <= 0.)
-    return;
-
-  myGridSizeX = std::max(1, static_cast<int>(std::ceil(aDeltaX / myCellSizeX)));
-  myGridSizeY = std::max(1, static_cast<int>(std::ceil(aDeltaY / myCellSizeY)));
-
-  // Safety cap to avoid excessive memory for pathological cases.
-  constexpr int THE_MAX_GRID_SIZE = 10000;
-  myGridSizeX = std::min(myGridSizeX, THE_MAX_GRID_SIZE);
-  myGridSizeY = std::min(myGridSizeY, THE_MAX_GRID_SIZE);
-
-  const int aTotalCells = myGridSizeX * myGridSizeY;
-  myGrid.Resize(0, aTotalCells - 1, false);
-  for (int i = 0; i < aTotalCells; ++i)
-  {
-    myGrid.SetValue(i, nullptr);
-  }
-  myGridReady = true;
-}
-
-//=================================================================================================
-
 void BRepMesh_CircleTool::bind(const int theIndex, const gp_XY& theLocation, const double theRadius)
 {
-  BRepMesh_Circle aCircle(theLocation, theRadius);
+  BRepMesh_Circle aCirle(theLocation, theRadius);
 
-  if (myGridReady)
-  {
-    // Clamp circle bounding box to the face bounds.
-    const double aMaxX = std::min(theLocation.X() + theRadius, myFaceMax.X());
-    const double aMinX = std::max(theLocation.X() - theRadius, myFaceMin.X());
-    const double aMaxY = std::min(theLocation.Y() + theRadius, myFaceMax.Y());
-    const double aMinY = std::max(theLocation.Y() - theRadius, myFaceMin.Y());
+  // compute coords
+  double aMaxX = std::min(theLocation.X() + theRadius, myFaceMax.X());
+  double aMinX = std::max(theLocation.X() - theRadius, myFaceMin.X());
+  double aMaxY = std::min(theLocation.Y() + theRadius, myFaceMax.Y());
+  double aMinY = std::max(theLocation.Y() - theRadius, myFaceMin.Y());
 
-    // Insert into all cells the circle overlaps.
-    int anIXMin = static_cast<int>(std::floor((aMinX - myFaceMin.X()) / myCellSizeX));
-    int anIXMax = static_cast<int>(std::floor((aMaxX - myFaceMin.X()) / myCellSizeX));
-    int anIYMin = static_cast<int>(std::floor((aMinY - myFaceMin.Y()) / myCellSizeY));
-    int anIYMax = static_cast<int>(std::floor((aMaxY - myFaceMin.Y()) / myCellSizeY));
+  gp_XY aMinPnt(aMinX, aMinY);
+  gp_XY aMaxPnt(aMaxX, aMaxY);
 
-    anIXMin = std::clamp(anIXMin, 0, myGridSizeX - 1);
-    anIXMax = std::clamp(anIXMax, 0, myGridSizeX - 1);
-    anIYMin = std::clamp(anIYMin, 0, myGridSizeY - 1);
-    anIYMax = std::clamp(anIYMax, 0, myGridSizeY - 1);
-
-    for (int anIY = anIYMin; anIY <= anIYMax; ++anIY)
-    {
-      const int aRowOffset = anIY * myGridSizeX;
-      for (int anIX = anIXMin; anIX <= anIXMax; ++anIX)
-      {
-        const int aIdx  = aRowOffset + anIX;
-        GridNode* aNode = static_cast<GridNode*>(myAllocator->AllocateOptimal(sizeof(GridNode)));
-        aNode->TriIndex = theIndex;
-        aNode->Next     = myGrid.Value(aIdx);
-        myGrid.SetValue(aIdx, aNode);
-      }
-    }
-  }
-
-  mySelector.Bind(theIndex, aCircle);
+  myCellFilter.Add(theIndex, aMinPnt, aMaxPnt);
+  mySelector.Bind(theIndex, aCirle);
 }
 
 //=================================================================================================
 
 void BRepMesh_CircleTool::Bind(const int theIndex, const gp_Circ2d& theCircle)
 {
-  gp_XY        aCoord  = theCircle.Location().Coord();
-  const double aRadius = theCircle.Radius();
+  gp_XY  aCoord  = theCircle.Location().Coord();
+  double aRadius = theCircle.Radius();
   bind(theIndex, aCoord, aRadius);
 }
 
@@ -202,42 +152,10 @@ void BRepMesh_CircleTool::Delete(const int theIndex)
 
 //=================================================================================================
 
-std::vector<int, NCollection_Allocator<int>>& BRepMesh_CircleTool::Select(const gp_XY& thePoint)
+IMeshData::ListOfInteger& BRepMesh_CircleTool::Select(const gp_XY& thePoint)
 {
   mySelector.SetPoint(thePoint);
-
-  if (myGridReady)
-  {
-    const int     aIdx  = cellIndex(thePoint.X(), thePoint.Y());
-    GridNode** aPrev = &myGrid.ChangeValue(aIdx);
-    GridNode*  aNode = *aPrev;
-    while (aNode != nullptr)
-    {
-      GridNode* aNext = aNode->Next;
-      const NCollection_CellFilter_Action anAction = mySelector.Inspect(aNode->TriIndex);
-      if (anAction == CellFilter_Purge)
-      {
-        // Unlink purged node (lazy removal).
-        // Node memory is reclaimed when IncAllocator resets.
-        *aPrev = aNext;
-      }
-      else
-      {
-        aPrev = &aNode->Next;
-      }
-      aNode = aNext;
-    }
-  }
-  else
-  {
-    // Fallback: grid not yet initialized, inspect all bound circles (O(N)).
-    const int aLen = static_cast<int>(mySelector.Circles().Size());
-    for (int i = 0; i < aLen; ++i)
-    {
-      mySelector.Inspect(i);
-    }
-  }
-
+  myCellFilter.Inspect(thePoint, mySelector);
   return mySelector.GetShotCircles();
 }
 

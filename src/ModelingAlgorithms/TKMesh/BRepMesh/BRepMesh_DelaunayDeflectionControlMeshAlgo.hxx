@@ -421,14 +421,15 @@ private:
   //! generation of triangles with sides smaller than MinSize.
   bool rejectByMinSize(const gp_XY& thePnt2d, const gp_Pnt& thePnt3d)
   {
-    IMeshData::MapOfInteger aUsedNodes;
-    std::vector<int, NCollection_Allocator<int>>& aCirclesList =
+    IMeshData::MapOfInteger   aUsedNodes;
+    IMeshData::ListOfInteger& aCirclesList =
       const_cast<BRepMesh_CircleTool&>(*myCircles)
         .Select(this->getRangeSplitter().Scale(thePnt2d, true).XY());
 
-    for (int aCircleIdx = 0; aCircleIdx < static_cast<int>(aCirclesList.size()); ++aCircleIdx)
+    IMeshData::ListOfInteger::Iterator aCircleIt(aCirclesList);
+    for (; aCircleIt.More(); aCircleIt.Next())
     {
-      const BRepMesh_Triangle& aTriangle = this->getStructure()->GetElement(aCirclesList[aCircleIdx]);
+      const BRepMesh_Triangle& aTriangle = this->getStructure()->GetElement(aCircleIt.Value());
 
       int aNodes[3];
       this->getStructure()->ElementNodes(aTriangle, aNodes);
