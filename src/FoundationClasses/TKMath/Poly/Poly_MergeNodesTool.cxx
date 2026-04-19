@@ -360,7 +360,9 @@ void Poly_MergeNodesTool::PushLastElement(int theNbNodes)
   if (myToMergeElems)
   {
     NCollection_Vec4<int> aSorted = myNodeInds;
-    std::sort(aSorted.ChangeData(), aSorted.ChangeData() + theNbNodes);
+    // theNbNodes is bounded by the Vec4 capacity; clamp defensively.
+    const int aNbToSort = std::min(theNbNodes, 4);
+    std::sort(aSorted.ChangeData(), aSorted.ChangeData() + aNbToSort);
     if (!myElemMap.Add(aSorted))
     {
       ++myNbMergedElems;
