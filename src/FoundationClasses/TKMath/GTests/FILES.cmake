@@ -19,6 +19,7 @@ set(OCCT_TKMath_GTests_FILES
   BVH_BuildQueue_Test.cxx
   BVH_LinearBuilder_Test.cxx
   BVH_OctTree_Test.cxx
+  BVH_TraverseOct_Test.cxx
   BVH_QuickSorter_Test.cxx
   BVH_RadixSorter_Test.cxx
   BVH_Ray_Test.cxx
