@@ -19,6 +19,7 @@ set(OCCT_BVH_FILES
   BVH_IndexedBoxSet.hxx
   BVH_LinearBuilder.hxx
   BVH_Object.hxx
+  BVH_OctTree.hxx
   BVH_ObjectSet.hxx
   BVH_PairDistance.hxx
   BVH_PrimitiveSet.hxx

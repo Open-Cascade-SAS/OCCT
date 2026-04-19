@@ -16,6 +16,7 @@
 #ifndef _BVH_BinaryTree_Header
 #define _BVH_BinaryTree_Header
 
+#include <BVH_OctTree.hxx>
 #include <BVH_QuadTree.hxx>
 
 #include <deque>
@@ -149,6 +150,12 @@ public: //! @name methods specific to binary BVH
   //! Collapses the tree into QBVH an returns it. As a result, each
   //! 2-nd level of current tree is kept and the rest are discarded.
   BVH_Tree<T, N, BVH_QuadTree>* CollapseToQuadTree() const;
+
+  //! Collapses the tree into a BVH8 (OBVH) and returns it. Each 3rd level
+  //! of the source tree is preserved while the intermediate levels are
+  //! flattened into a single inner node holding 1..8 children. Built so a
+  //! 1-ray-vs-8-AABB SIMD kernel (RayBox8_AVX2) can saturate __m256 lanes.
+  BVH_Tree<T, N, BVH_OctTree>* CollapseToOctTree() const;
 };
 
 namespace BVH
@@ -283,6 +290,90 @@ BVH_Tree<T, N, BVH_QuadTree>* BVH_Tree<T, N, BVH_BinaryTree>::CollapseToQuadTree
   }
 
   return aQBVH;
+}
+
+//=================================================================================================
+
+namespace BVH
+{
+//! Walks down a binary subtree at most theDepth levels and records the nodes
+//! it stops at. A node is recorded if it is a leaf or if the descent depth
+//! reached theDepth. Used by CollapseToOctTree to gather up to 8 representatives
+//! of a 3-level binary subtree as the children of one BVH8 inner node.
+template <class T, int N>
+void GatherDescendants(const BVH_Tree<T, N, BVH_BinaryTree>* theTree,
+                       const int                             theNode,
+                       const int                             theDepth,
+                       NCollection_Vector<int>&              theOutNodes)
+{
+  if (theDepth == 0 || theTree->IsOuter(theNode))
+  {
+    theOutNodes.Append(theNode);
+    return;
+  }
+  GatherDescendants(theTree, theTree->template Child<0>(theNode), theDepth - 1, theOutNodes);
+  GatherDescendants(theTree, theTree->template Child<1>(theNode), theDepth - 1, theOutNodes);
+}
+} // namespace BVH
+
+template <class T, int N>
+BVH_Tree<T, N, BVH_OctTree>* BVH_Tree<T, N, BVH_BinaryTree>::CollapseToOctTree() const
+{
+  BVH_Tree<T, N, BVH_OctTree>* aOBVH = new BVH_Tree<T, N, BVH_OctTree>;
+
+  if (this->Length() == 0)
+  {
+    return aOBVH;
+  }
+
+  // Each queue entry pairs a source-tree node id with the level it sits at
+  // in the destination tree (used only for myDepth bookkeeping).
+  std::deque<std::pair<int, int>> aQueue(1, std::make_pair(0, 0));
+
+  for (int aNbNodes = 1; !aQueue.empty();)
+  {
+    const std::pair<int, int> aNode = aQueue.front();
+
+    BVH::Array<T, N>::Append(aOBVH->myMinPointBuffer,
+                             BVH::Array<T, N>::Value(this->myMinPointBuffer, std::get<0>(aNode)));
+    BVH::Array<T, N>::Append(aOBVH->myMaxPointBuffer,
+                             BVH::Array<T, N>::Value(this->myMaxPointBuffer, std::get<0>(aNode)));
+
+    BVH_Vec4i aNodeInfo;
+    if (this->IsOuter(std::get<0>(aNode)))
+    {
+      aNodeInfo = BVH_Vec4i(1 /* leaf flag */,
+                            this->BegPrimitive(std::get<0>(aNode)),
+                            this->EndPrimitive(std::get<0>(aNode)),
+                            std::get<1>(aNode));
+    }
+    else
+    {
+      // Walk 3 binary levels down (or stop early at leaves) to harvest up
+      // to 2^3 = 8 representatives that become the children of this BVH8
+      // inner node.
+      NCollection_Vector<int> aGrandChildren;
+      BVH::GatherDescendants(this, std::get<0>(aNode), 3, aGrandChildren);
+
+      for (int aIdx = 0; aIdx < aGrandChildren.Size(); ++aIdx)
+      {
+        aQueue.push_back(std::make_pair(aGrandChildren(aIdx), std::get<1>(aNode) + 1));
+      }
+
+      aNodeInfo = BVH_Vec4i(0 /* inner flag */,
+                            aNbNodes,
+                            aGrandChildren.Size() - 1,
+                            std::get<1>(aNode));
+
+      aOBVH->myDepth = (std::max)(aOBVH->myDepth, std::get<1>(aNode) + 1);
+      aNbNodes += aGrandChildren.Size();
+    }
+
+    BVH::Array<int, 4>::Append(aOBVH->myNodeInfoBuffer, aNodeInfo);
+    aQueue.pop_front();
+  }
+
+  return aOBVH;
 }
 
 #endif // _BVH_BinaryTree_Header
