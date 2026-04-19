@@ -68,10 +68,11 @@ TEST(BRepGraph_MutGuardTest, DereferenceAfterMove_Throws)
 
   BRepGraph_MutGuard<BRepGraphInc::VertexDef> aMoved(std::move(aGuard));
   (void)aMoved;
-
+#ifndef No_Exception
   // Using operator-> or operator* on the moved-from guard must raise.
   EXPECT_THROW({ (void)aGuard.operator->(); }, Standard_ProgramError);
   EXPECT_THROW({ (void)(*aGuard); }, Standard_ProgramError);
+#endif
 }
 
 TEST(BRepGraph_MutGuardTest, MoveAssignmentFlushesThenTransfers)
