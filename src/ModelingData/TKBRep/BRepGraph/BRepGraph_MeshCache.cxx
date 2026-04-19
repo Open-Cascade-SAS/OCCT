@@ -35,8 +35,8 @@ bool BRepGraph_MeshCacheStorage::HasFaceMesh(const BRepGraph_FaceId theFace) con
 
 //=================================================================================================
 
-const BRepGraph_MeshCache::FaceMeshEntry*
-  BRepGraph_MeshCacheStorage::FindFaceMesh(const BRepGraph_FaceId theFace) const
+const BRepGraph_MeshCache::FaceMeshEntry* BRepGraph_MeshCacheStorage::FindFaceMesh(
+  const BRepGraph_FaceId theFace) const
 {
   if (!theFace.IsValidIn(myFaceMeshes))
     return nullptr;
@@ -48,8 +48,8 @@ const BRepGraph_MeshCache::FaceMeshEntry*
 
 //=================================================================================================
 
-BRepGraph_MeshCache::FaceMeshEntry&
-  BRepGraph_MeshCacheStorage::ChangeFaceMesh(const BRepGraph_FaceId theFace)
+BRepGraph_MeshCache::FaceMeshEntry& BRepGraph_MeshCacheStorage::ChangeFaceMesh(
+  const BRepGraph_FaceId theFace)
 {
   ensureSize(myFaceMeshes, theFace.Index);
   return myFaceMeshes.ChangeValue(theFace.Index);
@@ -76,8 +76,8 @@ bool BRepGraph_MeshCacheStorage::HasCoEdgeMesh(const BRepGraph_CoEdgeId theCoEdg
 
 //=================================================================================================
 
-const BRepGraph_MeshCache::CoEdgeMeshEntry*
-  BRepGraph_MeshCacheStorage::FindCoEdgeMesh(const BRepGraph_CoEdgeId theCoEdge) const
+const BRepGraph_MeshCache::CoEdgeMeshEntry* BRepGraph_MeshCacheStorage::FindCoEdgeMesh(
+  const BRepGraph_CoEdgeId theCoEdge) const
 {
   if (!theCoEdge.IsValidIn(myCoEdgeMeshes))
     return nullptr;
@@ -89,8 +89,8 @@ const BRepGraph_MeshCache::CoEdgeMeshEntry*
 
 //=================================================================================================
 
-BRepGraph_MeshCache::CoEdgeMeshEntry&
-  BRepGraph_MeshCacheStorage::ChangeCoEdgeMesh(const BRepGraph_CoEdgeId theCoEdge)
+BRepGraph_MeshCache::CoEdgeMeshEntry& BRepGraph_MeshCacheStorage::ChangeCoEdgeMesh(
+  const BRepGraph_CoEdgeId theCoEdge)
 {
   ensureSize(myCoEdgeMeshes, theCoEdge.Index);
   return myCoEdgeMeshes.ChangeValue(theCoEdge.Index);
@@ -117,8 +117,8 @@ bool BRepGraph_MeshCacheStorage::HasEdgeMesh(const BRepGraph_EdgeId theEdge) con
 
 //=================================================================================================
 
-const BRepGraph_MeshCache::EdgeMeshEntry*
-  BRepGraph_MeshCacheStorage::FindEdgeMesh(const BRepGraph_EdgeId theEdge) const
+const BRepGraph_MeshCache::EdgeMeshEntry* BRepGraph_MeshCacheStorage::FindEdgeMesh(
+  const BRepGraph_EdgeId theEdge) const
 {
   if (!theEdge.IsValidIn(myEdgeMeshes))
     return nullptr;
@@ -130,8 +130,8 @@ const BRepGraph_MeshCache::EdgeMeshEntry*
 
 //=================================================================================================
 
-BRepGraph_MeshCache::EdgeMeshEntry&
-  BRepGraph_MeshCacheStorage::ChangeEdgeMesh(const BRepGraph_EdgeId theEdge)
+BRepGraph_MeshCache::EdgeMeshEntry& BRepGraph_MeshCacheStorage::ChangeEdgeMesh(
+  const BRepGraph_EdgeId theEdge)
 {
   ensureSize(myEdgeMeshes, theEdge.Index);
   return myEdgeMeshes.ChangeValue(theEdge.Index);

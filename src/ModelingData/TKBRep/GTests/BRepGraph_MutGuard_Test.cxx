@@ -98,8 +98,7 @@ TEST(BRepGraph_MutGuardTest, MoveAssignmentFlushesThenTransfers)
   // Both vertex 0 and vertex 1 must have had their OwnGen bumped exactly once each.
   const uint32_t aGenAfterV0 =
     aGraph.Topo().Vertices().Definition(BRepGraph_VertexId::Start()).OwnGen;
-  const uint32_t aGenAfterV1 =
-    aGraph.Topo().Vertices().Definition(BRepGraph_VertexId(1)).OwnGen;
+  const uint32_t aGenAfterV1 = aGraph.Topo().Vertices().Definition(BRepGraph_VertexId(1)).OwnGen;
   EXPECT_GT(aGenAfterV0, aGenBefore);
   EXPECT_GT(aGenAfterV1, 0u);
 }
@@ -158,9 +157,8 @@ TEST(BRepGraph_MutGuardTest, RefGuard_SameMoveSemantics)
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Refs().Faces().Nb(), 0);
 
-  const BRepGraph_FaceRefId aRefId(0);
-  BRepGraph_MutGuard<BRepGraphInc::FaceRef> aGuard =
-    aGraph.Editor().Faces().MutRef(aRefId);
+  const BRepGraph_FaceRefId                 aRefId(0);
+  BRepGraph_MutGuard<BRepGraphInc::FaceRef> aGuard = aGraph.Editor().Faces().MutRef(aRefId);
   EXPECT_TRUE(static_cast<bool>(aGuard));
 
   BRepGraph_MutGuard<BRepGraphInc::FaceRef> aMoved(std::move(aGuard));

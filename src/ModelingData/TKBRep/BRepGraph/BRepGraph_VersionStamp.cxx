@@ -59,23 +59,23 @@ Standard_GUID BRepGraph_VersionStamp::ToGUID(const Standard_GUID& theGraphGUID) 
   // the result is well-distributed even on 32-bit platforms where
   // size_t is only 4 bytes.
   const size_t aQuarter = anOff / 4;
-  const size_t aHash1 = opencascade::hashBytes(aBuffer, static_cast<int>(aQuarter));
-  const size_t aHash2 = opencascade::hashBytes(aBuffer + aQuarter, static_cast<int>(aQuarter));
+  const size_t aHash1   = opencascade::hashBytes(aBuffer, static_cast<int>(aQuarter));
+  const size_t aHash2   = opencascade::hashBytes(aBuffer + aQuarter, static_cast<int>(aQuarter));
   const size_t aHash3 = opencascade::hashBytes(aBuffer + aQuarter * 2, static_cast<int>(aQuarter));
-  const size_t aHash4 = opencascade::hashBytes(aBuffer + aQuarter * 3,
-                                               static_cast<int>(anOff - aQuarter * 3));
+  const size_t aHash4 =
+    opencascade::hashBytes(aBuffer + aQuarter * 3, static_cast<int>(anOff - aQuarter * 3));
 
   // Pack four hashes into a 128-bit UUID (16 bytes = 4 x 4 bytes).
   // Truncate each size_t hash to uint32_t to avoid buffer overflow on 64-bit
   // platforms where sizeof(size_t) > 4.
-  Standard_UUID aResultUUID;
+  Standard_UUID    aResultUUID;
   constexpr size_t THE_QUARTER = sizeof(Standard_UUID) / 4; // 4 bytes
   static_assert(THE_QUARTER == sizeof(uint32_t), "UUID quarter must be 4 bytes");
-  const uint32_t aH1 = static_cast<uint32_t>(aHash1);
-  const uint32_t aH2 = static_cast<uint32_t>(aHash2);
-  const uint32_t aH3 = static_cast<uint32_t>(aHash3);
-  const uint32_t aH4 = static_cast<uint32_t>(aHash4);
-  uint8_t* aDst = reinterpret_cast<uint8_t*>(&aResultUUID);
+  const uint32_t aH1  = static_cast<uint32_t>(aHash1);
+  const uint32_t aH2  = static_cast<uint32_t>(aHash2);
+  const uint32_t aH3  = static_cast<uint32_t>(aHash3);
+  const uint32_t aH4  = static_cast<uint32_t>(aHash4);
+  uint8_t*       aDst = reinterpret_cast<uint8_t*>(&aResultUUID);
   std::memcpy(aDst, &aH1, THE_QUARTER);
   std::memcpy(aDst + THE_QUARTER, &aH2, THE_QUARTER);
   std::memcpy(aDst + THE_QUARTER * 2, &aH3, THE_QUARTER);

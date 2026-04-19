@@ -186,6 +186,7 @@ protected:
 
 private:
   friend class ::BRepGraph_LayerRegistry;
+
   void setOwningGraph(const BRepGraph* theGraph) noexcept { myOwningGraph = theGraph; }
 
   const BRepGraph* myOwningGraph = nullptr;

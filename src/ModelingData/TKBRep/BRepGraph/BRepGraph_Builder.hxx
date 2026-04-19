@@ -56,10 +56,10 @@ public:
                                       const bool          theParallel = false);
 
   //! Build the full graph with explicit post-pass control.
-  static Standard_EXPORT void Perform(BRepGraph&                      theGraph,
-                                      const TopoDS_Shape&             theShape,
-                                      const bool                      theParallel,
-                                      const BuildOptions&             theOptions);
+  static Standard_EXPORT void Perform(BRepGraph&          theGraph,
+                                      const TopoDS_Shape& theShape,
+                                      const bool          theParallel,
+                                      const BuildOptions& theOptions);
 
   //! Append a shape to the existing graph without clearing.
   //! Flattens hierarchy containers away. Solid/Shell/Compound/CompSolid inputs

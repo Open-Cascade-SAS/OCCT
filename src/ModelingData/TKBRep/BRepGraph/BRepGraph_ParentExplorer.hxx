@@ -84,10 +84,11 @@ public:
   //! @endcode
   struct Config
   {
-    TraversalMode                         Mode          = TraversalMode::Recursive;
-    std::optional<BRepGraph_NodeId::Kind> TargetKind;       //!< Emit only this kind (no value = emit all).
-    std::optional<BRepGraph_NodeId::Kind> AvoidKind;        //!< Do not ascend through this kind.
-    bool                                  EmitAvoidKind = false; //!< Emit matching avoid-kind ancestors once.
+    TraversalMode Mode = TraversalMode::Recursive;
+    std::optional<BRepGraph_NodeId::Kind>
+      TargetKind;                                    //!< Emit only this kind (no value = emit all).
+    std::optional<BRepGraph_NodeId::Kind> AvoidKind; //!< Do not ascend through this kind.
+    bool EmitAvoidKind = false;                      //!< Emit matching avoid-kind ancestors once.
   };
 
   //! Preferred long-term constructor: all tuning knobs in `Config`.
@@ -219,22 +220,22 @@ private:
 
   Standard_EXPORT bool findParentProduct(const BRepGraph_OccurrenceId theOccurrence,
                                          BRepGraph_ProductId&         theProduct) const;
-  Standard_EXPORT int findOccurrenceStep(const BRepGraph_ProductId    theParentProduct,
-                                         const BRepGraph_OccurrenceId theOccurrence) const;
-  Standard_EXPORT int findCompoundChildStep(const BRepGraph_CompoundId theParent,
-                                            const BRepGraph_NodeId     theChild) const;
-  Standard_EXPORT int findCompSolidSolidStep(const BRepGraph_CompSolidId theParent,
-                                             const BRepGraph_SolidId     theChild) const;
-  Standard_EXPORT int findSolidChildStep(const BRepGraph_SolidId theParent,
-                                         const BRepGraph_NodeId  theChild) const;
-  Standard_EXPORT int findShellChildStep(const BRepGraph_ShellId theParent,
-                                         const BRepGraph_NodeId  theChild) const;
-  Standard_EXPORT int findFaceChildStep(const BRepGraph_FaceId theParent,
-                                        const BRepGraph_NodeId theChild) const;
-  Standard_EXPORT int findWireCoEdgeStep(const BRepGraph_WireId   theParent,
-                                         const BRepGraph_CoEdgeId theChild) const;
-  Standard_EXPORT int findEdgeVertexStep(const BRepGraph_EdgeId   theParent,
-                                         const BRepGraph_VertexId theChild) const;
+  Standard_EXPORT int  findOccurrenceStep(const BRepGraph_ProductId    theParentProduct,
+                                          const BRepGraph_OccurrenceId theOccurrence) const;
+  Standard_EXPORT int  findCompoundChildStep(const BRepGraph_CompoundId theParent,
+                                             const BRepGraph_NodeId     theChild) const;
+  Standard_EXPORT int  findCompSolidSolidStep(const BRepGraph_CompSolidId theParent,
+                                              const BRepGraph_SolidId     theChild) const;
+  Standard_EXPORT int  findSolidChildStep(const BRepGraph_SolidId theParent,
+                                          const BRepGraph_NodeId  theChild) const;
+  Standard_EXPORT int  findShellChildStep(const BRepGraph_ShellId theParent,
+                                          const BRepGraph_NodeId  theChild) const;
+  Standard_EXPORT int  findFaceChildStep(const BRepGraph_FaceId theParent,
+                                         const BRepGraph_NodeId theChild) const;
+  Standard_EXPORT int  findWireCoEdgeStep(const BRepGraph_WireId   theParent,
+                                          const BRepGraph_CoEdgeId theChild) const;
+  Standard_EXPORT int  findEdgeVertexStep(const BRepGraph_EdgeId   theParent,
+                                          const BRepGraph_VertexId theChild) const;
 
   static std::optional<BRepGraph_NodeId::Kind> normalizeAvoidKind(
     const BRepGraph_NodeId                       theNode,

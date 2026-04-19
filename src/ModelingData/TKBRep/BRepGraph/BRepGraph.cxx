@@ -399,8 +399,7 @@ void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
     switch (aCurrent.Node.NodeKind)
     {
       case Kind::Compound: {
-        for (BRepGraph_DefsChildOfCompound aChildIt(*this,
-                                                    BRepGraph_CompoundId(aCurrent.Node));
+        for (BRepGraph_DefsChildOfCompound aChildIt(*this, BRepGraph_CompoundId(aCurrent.Node));
              aChildIt.More();
              aChildIt.Next())
         {
@@ -409,8 +408,7 @@ void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
         break;
       }
       case Kind::CompSolid: {
-        for (BRepGraph_DefsSolidOfCompSolid aChildIt(*this,
-                                                     BRepGraph_CompSolidId(aCurrent.Node));
+        for (BRepGraph_DefsSolidOfCompSolid aChildIt(*this, BRepGraph_CompSolidId(aCurrent.Node));
              aChildIt.More();
              aChildIt.Next())
         {
@@ -419,8 +417,7 @@ void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
         break;
       }
       case Kind::Solid: {
-        const BRepGraphInc::SolidDef& aSolidEnt =
-          aStorage.Solid(BRepGraph_SolidId(aCurrent.Node));
+        const BRepGraphInc::SolidDef& aSolidEnt = aStorage.Solid(BRepGraph_SolidId(aCurrent.Node));
         for (BRepGraph_DefsShellOfSolid aChildIt(*this, BRepGraph_SolidId(aCurrent.Node));
              aChildIt.More();
              aChildIt.Next())
@@ -432,8 +429,7 @@ void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
         break;
       }
       case Kind::Shell: {
-        const BRepGraphInc::ShellDef& aShellEnt =
-          aStorage.Shell(BRepGraph_ShellId(aCurrent.Node));
+        const BRepGraphInc::ShellDef& aShellEnt = aStorage.Shell(BRepGraph_ShellId(aCurrent.Node));
         for (BRepGraph_DefsFaceOfShell aChildIt(*this, BRepGraph_ShellId(aCurrent.Node));
              aChildIt.More();
              aChildIt.Next())
@@ -473,8 +469,7 @@ void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
       }
       case Kind::Product: {
         // Product children are occurrences.
-        for (BRepGraph_RefsOccurrenceOfProduct aChildIt(*this,
-                                                        BRepGraph_ProductId(aCurrent.Node));
+        for (BRepGraph_RefsOccurrenceOfProduct aChildIt(*this, BRepGraph_ProductId(aCurrent.Node));
              aChildIt.More();
              aChildIt.Next())
         {
@@ -756,7 +751,7 @@ void BRepGraph::markRepModified(const BRepGraph_RepId theRepId) noexcept
       {
         const BRepGraphInc::FaceDef& aFace   = aFaceIt.Current();
         const BRepGraph_FaceId       aFaceId = aFaceIt.CurrentId();
-        bool aFound                          = aFace.TriangulationRepId == aTriangulationRepId;
+        bool                         aFound  = aFace.TriangulationRepId == aTriangulationRepId;
         if (!aFound)
         {
           const BRepGraph_MeshCache::FaceMeshEntry* aCached =
@@ -784,7 +779,7 @@ void BRepGraph::markRepModified(const BRepGraph_RepId theRepId) noexcept
       for (BRepGraph_EdgeIterator anEdgeIt(*this); anEdgeIt.More(); anEdgeIt.Next())
       {
         const BRepGraph_EdgeId anEdgeId = anEdgeIt.CurrentId();
-        bool aFound = anEdgeIt.Current().Polygon3DRepId == aPolygon3DRepId;
+        bool                   aFound   = anEdgeIt.Current().Polygon3DRepId == aPolygon3DRepId;
         if (!aFound)
         {
           const BRepGraph_MeshCache::EdgeMeshEntry* aCached =
@@ -802,7 +797,7 @@ void BRepGraph::markRepModified(const BRepGraph_RepId theRepId) noexcept
       for (BRepGraph_CoEdgeIterator aCoEdgeIt(*this); aCoEdgeIt.More(); aCoEdgeIt.Next())
       {
         const BRepGraph_CoEdgeId aCoEdgeId = aCoEdgeIt.CurrentId();
-        bool aFound = aCoEdgeIt.Current().Polygon2DRepId == aPolygon2DRepId;
+        bool                     aFound    = aCoEdgeIt.Current().Polygon2DRepId == aPolygon2DRepId;
         if (!aFound)
         {
           const BRepGraph_MeshCache::CoEdgeMeshEntry* aCached =
@@ -821,7 +816,7 @@ void BRepGraph::markRepModified(const BRepGraph_RepId theRepId) noexcept
       {
         const BRepGraph_CoEdgeId       aCoEdgeId = aCoEdgeIt.CurrentId();
         const BRepGraphInc::CoEdgeDef& aCoEdge   = aCoEdgeIt.Current();
-        bool aFound = aCoEdge.PolygonOnTriRepId == aPolygonOnTriRepId;
+        bool                           aFound    = aCoEdge.PolygonOnTriRepId == aPolygonOnTriRepId;
         if (!aFound)
         {
           const BRepGraph_MeshCache::CoEdgeMeshEntry* aCached =
@@ -853,9 +848,9 @@ void BRepGraph::markRepModified(const BRepGraph_RepId theRepId) noexcept
 
 void BRepGraph::SetAllocator(const occ::handle<NCollection_BaseAllocator>& theAlloc)
 {
-  Standard_ASSERT_VOID(
-    !myData->myIsDone,
-    "SetAllocator: must be called before BRepGraph_Builder::Perform() - existing graph state will be lost");
+  Standard_ASSERT_VOID(!myData->myIsDone,
+                       "SetAllocator: must be called before BRepGraph_Builder::Perform() - "
+                       "existing graph state will be lost");
 
   myData->myAllocator =
     !theAlloc.IsNull() ? theAlloc : NCollection_BaseAllocator::CommonBaseAllocator();

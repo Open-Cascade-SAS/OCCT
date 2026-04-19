@@ -423,8 +423,8 @@ TEST_F(BRepGraph_HistoryTest, SplitEdge_IgnoresRemovedCoEdgeRefEntries)
   ASSERT_GT(myGraph.Topo().Edges().Nb(), 0);
 
   const BRepGraph_EdgeId       anEdgeId(0);
-  const BRepGraphInc::EdgeDef& anEdgeDef = myGraph.Topo().Edges().Definition(anEdgeId);
-  const double aSplitParam = 0.5 * (anEdgeDef.ParamFirst + anEdgeDef.ParamLast);
+  const BRepGraphInc::EdgeDef& anEdgeDef   = myGraph.Topo().Edges().Definition(anEdgeId);
+  const double                 aSplitParam = 0.5 * (anEdgeDef.ParamFirst + anEdgeDef.ParamLast);
 
   const NCollection_Vector<BRepGraph_WireId>& aWireIndices = myGraph.Topo().Edges().Wires(anEdgeId);
   ASSERT_GT(aWireIndices.Length(), 1);
@@ -452,8 +452,9 @@ TEST_F(BRepGraph_HistoryTest, SplitEdge_IgnoresRemovedCoEdgeRefEntries)
   ASSERT_GE(aRemovedOrd, 0);
 
   {
-    BRepGraph_MutGuard<BRepGraphInc::CoEdgeRef> aMut = myGraph.Editor().CoEdges().MutRef(aRefToRemove);
-    aMut->IsRemoved                                  = true;
+    BRepGraph_MutGuard<BRepGraphInc::CoEdgeRef> aMut =
+      myGraph.Editor().CoEdges().MutRef(aRefToRemove);
+    aMut->IsRemoved = true;
   }
   ASSERT_TRUE(myGraph.Refs().CoEdges().Entry(aRefToRemove).IsRemoved);
   const BRepGraph_CoEdgeId aRemovedCoEdgeId =
@@ -502,8 +503,8 @@ TEST_F(BRepGraph_HistoryTest, ApplyModification_SplitEdge_RecordsBothDerivedNode
   ASSERT_GT(myGraph.Topo().Edges().Nb(), 0);
 
   const BRepGraph_EdgeId       anEdgeId(0);
-  const BRepGraphInc::EdgeDef& anEdgeDef = myGraph.Topo().Edges().Definition(anEdgeId);
-  const double aSplitParam = 0.5 * (anEdgeDef.ParamFirst + anEdgeDef.ParamLast);
+  const BRepGraphInc::EdgeDef& anEdgeDef   = myGraph.Topo().Edges().Definition(anEdgeId);
+  const double                 aSplitParam = 0.5 * (anEdgeDef.ParamFirst + anEdgeDef.ParamLast);
 
   const BRepGraph_VertexId aSplitVertex =
     myGraph.Editor().Vertices().Add(gp_Pnt(4.0, 5.0, 6.0), 1.0e-7);
@@ -517,10 +518,10 @@ TEST_F(BRepGraph_HistoryTest, ApplyModification_SplitEdge_RecordsBothDerivedNode
       BRepGraph_EdgeId aSubA;
       BRepGraph_EdgeId aSubB;
       theGraph.Editor().Edges().Split(BRepGraph_EdgeId::FromNodeId(theTarget),
-                                   aSplitVertex,
-                                   aSplitParam,
-                                   aSubA,
-                                   aSubB);
+                                      aSplitVertex,
+                                      aSplitParam,
+                                      aSubA,
+                                      aSubB);
 
       NCollection_Vector<BRepGraph_NodeId> aResult;
       aResult.Append(aSubA);

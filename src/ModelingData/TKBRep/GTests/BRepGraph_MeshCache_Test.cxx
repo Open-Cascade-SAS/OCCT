@@ -75,8 +75,7 @@ TEST(BRepGraph_MeshCacheTest, CacheStaleAfterFaceMutation)
   }
 
   const BRepGraph_MeshCache::FaceMeshEntry* aAfter = aGraph.Mesh().Faces().CachedMesh(aFaceId);
-  EXPECT_EQ(aAfter, nullptr)
-    << "CachedMesh must become null (stale) after Face Mut bumps OwnGen";
+  EXPECT_EQ(aAfter, nullptr) << "CachedMesh must become null (stale) after Face Mut bumps OwnGen";
 }
 
 TEST(BRepGraph_MeshCacheTest, CacheStaleAfterSurfaceRepMutation)

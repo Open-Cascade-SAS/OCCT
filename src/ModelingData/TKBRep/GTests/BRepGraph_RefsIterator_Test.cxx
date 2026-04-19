@@ -170,7 +170,8 @@ TEST(BRepGraph_RefsIteratorTestStandalone, VertexOfFace_ExposesDirectVertexRef)
 
 TEST_F(BRepGraph_RefsIteratorTest, ChildOfCompound_EnumeratesChildRefs)
 {
-  const BRepGraph_VertexId aLooseVertex = myGraph.Editor().Vertices().Add(gp_Pnt(1.0, 2.0, 3.0), 0.01);
+  const BRepGraph_VertexId aLooseVertex =
+    myGraph.Editor().Vertices().Add(gp_Pnt(1.0, 2.0, 3.0), 0.01);
   ASSERT_TRUE(aLooseVertex.IsValid());
 
   NCollection_Vector<BRepGraph_NodeId> aChildren;
@@ -191,13 +192,15 @@ TEST_F(BRepGraph_RefsIteratorTest, ChildOfCompound_EnumeratesChildRefs)
 
 TEST_F(BRepGraph_RefsIteratorTest, OccurrenceOfProduct_EnumeratesOccurrenceRefs)
 {
-  const BRepGraph_ProductId aPart      = myGraph.Editor().Products().Add(BRepGraph_SolidId::Start());
+  const BRepGraph_ProductId aPart = myGraph.Editor().Products().Add(BRepGraph_SolidId::Start());
   const BRepGraph_ProductId anAssembly = myGraph.Editor().Products().AddAssembly();
   ASSERT_TRUE(aPart.IsValid());
   ASSERT_TRUE(anAssembly.IsValid());
 
-  EXPECT_TRUE(myGraph.Editor().Products().AddOccurrence(anAssembly, aPart, TopLoc_Location()).IsValid());
-  EXPECT_TRUE(myGraph.Editor().Products().AddOccurrence(anAssembly, aPart, TopLoc_Location()).IsValid());
+  EXPECT_TRUE(
+    myGraph.Editor().Products().AddOccurrence(anAssembly, aPart, TopLoc_Location()).IsValid());
+  EXPECT_TRUE(
+    myGraph.Editor().Products().AddOccurrence(anAssembly, aPart, TopLoc_Location()).IsValid());
 
   EXPECT_EQ(countIterator(BRepGraph_RefsOccurrenceOfProduct(myGraph, anAssembly)), 2);
 }

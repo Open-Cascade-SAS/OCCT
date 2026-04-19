@@ -96,9 +96,9 @@ public:
 
   //! Move constructor.
   NCollection_LinearVector(NCollection_LinearVector&& theOther) noexcept
-    : myData(theOther.myData),
-      mySize(theOther.mySize),
-      myCapacity(theOther.myCapacity)
+      : myData(theOther.myData),
+        mySize(theOther.mySize),
+        myCapacity(theOther.myCapacity)
   {
     theOther.myData     = nullptr;
     theOther.mySize     = 0;
@@ -151,9 +151,9 @@ public:
     if (this != &theOther)
     {
       Clear(true);
-      myData     = theOther.myData;
-      mySize     = theOther.mySize;
-      myCapacity = theOther.myCapacity;
+      myData              = theOther.myData;
+      mySize              = theOther.mySize;
+      myCapacity          = theOther.myCapacity;
       theOther.myData     = nullptr;
       theOther.mySize     = 0;
       theOther.myCapacity = 0;
@@ -442,7 +442,8 @@ public:
   //! @param[in] theTo   end index (exclusive, 0-based)
   void Erase(const size_t theFrom, const size_t theTo)
   {
-    Standard_OutOfRange_Raise_if(theTo > mySize || theFrom >= theTo, "NCollection_LinearVector::Erase");
+    Standard_OutOfRange_Raise_if(theTo > mySize || theFrom >= theTo,
+                                 "NCollection_LinearVector::Erase");
     const size_t aCount = theTo - theFrom;
     // Shift first (move-assign over still-live slots), then destroy the
     // vacated tail — see Erase(size_t) above for the rationale.
@@ -563,9 +564,7 @@ private:
     const size_t aCount = theSrcTo - theSrcFrom;
     if constexpr (std::is_trivially_copyable_v<TheItemType>)
     {
-      std::memmove(myData + theDstFrom,
-                   myData + theSrcFrom,
-                   aCount * sizeof(TheItemType));
+      std::memmove(myData + theDstFrom, myData + theSrcFrom, aCount * sizeof(TheItemType));
     }
     else
     {

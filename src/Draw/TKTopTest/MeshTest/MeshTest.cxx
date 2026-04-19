@@ -891,10 +891,10 @@ static int trianglesinfo(Draw_Interpretor& theDI, int theNbArgs, const char** th
          aRangeIter.Next(), anIndex++)
     {
       aLODsRangeStr += TCollection_AsciiString(aRangeIter.Value());
-        if (anIndex < aLODsRange.Length() - 1)
-        {
-          aLODsRangeStr += " ";
-        }
+      if (anIndex < aLODsRange.Length() - 1)
+      {
+        aLODsRangeStr += " ";
+      }
     }
     theDI << TCollection_AsciiString("Number of triangulation LODs [") + aLODsRangeStr + "]\n";
     if (aLODsRange.Length() > 1)

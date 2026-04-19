@@ -1371,7 +1371,8 @@ void BOPDS_DS::Paves(const int theEdge, NCollection_List<BOPDS_Pave>& theResultP
     }
   }
 
-  Standard_ASSERT_VOID(aPaveBlocks.Length() + 1 == aVisitedPaves.Length(), "Abnormal number of paves");
+  Standard_ASSERT_VOID(aPaveBlocks.Length() + 1 == aVisitedPaves.Length(),
+                       "Abnormal number of paves");
 
   std::sort(pPaves.begin(), pPaves.end());
   for (const auto& aPave : pPaves)

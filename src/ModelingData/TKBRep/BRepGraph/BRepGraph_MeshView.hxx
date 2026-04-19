@@ -58,8 +58,8 @@ public:
       ActiveTriangulationRepId(const BRepGraph_FaceId theFace) const;
 
     //! Direct access to cached face mesh entry (null if absent or stale).
-    [[nodiscard]] Standard_EXPORT const BRepGraph_MeshCache::FaceMeshEntry*
-      CachedMesh(const BRepGraph_FaceId theFace) const;
+    [[nodiscard]] Standard_EXPORT const BRepGraph_MeshCache::FaceMeshEntry* CachedMesh(
+      const BRepGraph_FaceId theFace) const;
 
   private:
     friend class MeshView;
@@ -69,8 +69,7 @@ public:
     {
     }
 
-    [[nodiscard]] bool isFresh(const BRepGraph_FaceId theFace,
-                               const uint32_t         theStoredGen) const;
+    [[nodiscard]] bool isFresh(const BRepGraph_FaceId theFace, const uint32_t theStoredGen) const;
 
     const BRepGraph* myGraph;
   };
@@ -87,8 +86,8 @@ public:
       Polygon3DRepId(const BRepGraph_EdgeId theEdge) const;
 
     //! Direct access to cached edge mesh entry (null if absent or stale).
-    [[nodiscard]] Standard_EXPORT const BRepGraph_MeshCache::EdgeMeshEntry*
-      CachedMesh(const BRepGraph_EdgeId theEdge) const;
+    [[nodiscard]] Standard_EXPORT const BRepGraph_MeshCache::EdgeMeshEntry* CachedMesh(
+      const BRepGraph_EdgeId theEdge) const;
 
   private:
     friend class MeshView;
@@ -98,8 +97,7 @@ public:
     {
     }
 
-    [[nodiscard]] bool isFresh(const BRepGraph_EdgeId theEdge,
-                               const uint32_t         theStoredGen) const;
+    [[nodiscard]] bool isFresh(const BRepGraph_EdgeId theEdge, const uint32_t theStoredGen) const;
 
     const BRepGraph* myGraph;
   };
@@ -112,8 +110,8 @@ public:
     [[nodiscard]] Standard_EXPORT bool HasMesh(const BRepGraph_CoEdgeId theCoEdge) const;
 
     //! Direct access to cached coedge mesh entry (null if absent or stale).
-    [[nodiscard]] Standard_EXPORT const BRepGraph_MeshCache::CoEdgeMeshEntry*
-      CachedMesh(const BRepGraph_CoEdgeId theCoEdge) const;
+    [[nodiscard]] Standard_EXPORT const BRepGraph_MeshCache::CoEdgeMeshEntry* CachedMesh(
+      const BRepGraph_CoEdgeId theCoEdge) const;
 
   private:
     friend class MeshView;

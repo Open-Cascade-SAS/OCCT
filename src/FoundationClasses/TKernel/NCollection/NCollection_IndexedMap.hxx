@@ -362,10 +362,7 @@ public:
     }
   }
 
-  void ReSize(const int theExtent)
-  {
-    ReSize(static_cast<size_t>(theExtent < 0 ? 0 : theExtent));
-  }
+  void ReSize(const int theExtent) { ReSize(static_cast<size_t>(theExtent < 0 ? 0 : theExtent)); }
 
   //! Add adds a new key to the map.
   //! @param theKey1 key to add
@@ -591,8 +588,7 @@ public:
 
   const TheKeyType& FindKey(const int theIndex) const
   {
-    Standard_OutOfRange_Raise_if(theIndex < 0,
-                                 "NCollection_IndexedMap::FindKey: negative index");
+    Standard_OutOfRange_Raise_if(theIndex < 0, "NCollection_IndexedMap::FindKey: negative index");
     return FindKey(static_cast<size_t>(theIndex));
   }
 

@@ -128,7 +128,8 @@ TEST_F(BRepGraph_MutationGenTest, SubtreeGen_PropagatedParent_Incremented)
 TEST_F(BRepGraph_MutationGenTest, SubtreeGen_DeferredPropagatedParent_Incremented)
 {
   // Store baselines before mutation.
-  const uint32_t aEdgeOwnGenBefore = myGraph.Topo().Edges().Definition(BRepGraph_EdgeId::Start()).OwnGen;
+  const uint32_t aEdgeOwnGenBefore =
+    myGraph.Topo().Edges().Definition(BRepGraph_EdgeId::Start()).OwnGen;
   NCollection_Vector<uint32_t> aWireSubtreeGensBefore;
   for (BRepGraph_WireIterator aWireIt(myGraph); aWireIt.More(); aWireIt.Next())
     aWireSubtreeGensBefore.Append(aWireIt.Current().SubtreeGen);
@@ -142,7 +143,8 @@ TEST_F(BRepGraph_MutationGenTest, SubtreeGen_DeferredPropagatedParent_Incremente
   myGraph.Editor().EndDeferredInvalidation();
 
   // Directly mutated edge: OwnGen incremented by exactly 1.
-  EXPECT_EQ(myGraph.Topo().Edges().Definition(BRepGraph_EdgeId::Start()).OwnGen, aEdgeOwnGenBefore + 1);
+  EXPECT_EQ(myGraph.Topo().Edges().Definition(BRepGraph_EdgeId::Start()).OwnGen,
+            aEdgeOwnGenBefore + 1);
 
   // At least one parent wire must have SubtreeGen incremented vs its baseline.
   bool aAnyWireSubtreeIncremented = false;
@@ -168,7 +170,8 @@ TEST_F(BRepGraph_MutationGenTest, RepMutation_SurfacePropagatesSubtreeGenToFace)
   EXPECT_EQ(myGraph.Topo().Faces().Definition(aFaceId).SubtreeGen, 0u);
 
   {
-    BRepGraph_MutGuard<BRepGraphInc::SurfaceRep> aGuard = myGraph.Editor().Reps().MutSurface(aSurfId);
+    BRepGraph_MutGuard<BRepGraphInc::SurfaceRep> aGuard =
+      myGraph.Editor().Reps().MutSurface(aSurfId);
     (void)aGuard;
   }
 
@@ -188,7 +191,8 @@ TEST_F(BRepGraph_MutationGenTest, RepMutation_Curve3DPropagatesSubtreeGenToEdge)
   EXPECT_EQ(myGraph.Topo().Edges().Definition(anEdgeId).SubtreeGen, 0u);
 
   {
-    BRepGraph_MutGuard<BRepGraphInc::Curve3DRep> aGuard = myGraph.Editor().Reps().MutCurve3D(aCurveId);
+    BRepGraph_MutGuard<BRepGraphInc::Curve3DRep> aGuard =
+      myGraph.Editor().Reps().MutCurve3D(aCurveId);
     (void)aGuard;
   }
 
@@ -211,7 +215,8 @@ TEST_F(BRepGraph_MutationGenTest, RepMutation_Curve2DPropagatesSubtreeGenToCoEdg
     EXPECT_EQ(aCoEdgeIt.Current().SubtreeGen, 0u);
 
     {
-      BRepGraph_MutGuard<BRepGraphInc::Curve2DRep> aGuard = myGraph.Editor().Reps().MutCurve2D(aCurveId);
+      BRepGraph_MutGuard<BRepGraphInc::Curve2DRep> aGuard =
+        myGraph.Editor().Reps().MutCurve2D(aCurveId);
       (void)aGuard;
     }
 

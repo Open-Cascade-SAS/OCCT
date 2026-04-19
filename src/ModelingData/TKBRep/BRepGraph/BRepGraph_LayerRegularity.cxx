@@ -414,15 +414,13 @@ void BRepGraph_LayerRegularity::OnNodeRemoved(const BRepGraph_NodeId theNode,
   {
     case BRepGraph_NodeId::Kind::Edge:
       if (theReplacement.NodeKind == BRepGraph_NodeId::Kind::Edge && theReplacement.IsValid())
-        migrateEdgeBindings(BRepGraph_EdgeId(theNode),
-                            BRepGraph_EdgeId(theReplacement));
+        migrateEdgeBindings(BRepGraph_EdgeId(theNode), BRepGraph_EdgeId(theReplacement));
       else
         removeEdgeBindings(BRepGraph_EdgeId(theNode));
       break;
     case BRepGraph_NodeId::Kind::Face:
       if (theReplacement.NodeKind == BRepGraph_NodeId::Kind::Face && theReplacement.IsValid())
-        migrateFaceBindings(BRepGraph_FaceId(theNode),
-                            BRepGraph_FaceId(theReplacement));
+        migrateFaceBindings(BRepGraph_FaceId(theNode), BRepGraph_FaceId(theReplacement));
       else
         invalidateFaceBindings(BRepGraph_FaceId(theNode));
       break;

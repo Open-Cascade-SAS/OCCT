@@ -53,7 +53,7 @@ TEST_F(BRepGraph_QuerySurfaceTest, Face_NbWires_BoxFaceHasOneWire)
 TEST_F(BRepGraph_QuerySurfaceTest, Face_Bounds_BoxFaceHasFiniteBounds)
 {
   const BRepGraph_FaceId aFaceId(0);
-  double uMin = 0.0, uMax = 0.0, vMin = 0.0, vMax = 0.0;
+  double                 uMin = 0.0, uMax = 0.0, vMin = 0.0, vMax = 0.0;
   BRepGraph_Tool::Face::Bounds(myBoxGraph, aFaceId, uMin, uMax, vMin, vMax);
 
   EXPECT_LT(uMin, uMax) << "UMin should be less than UMax for a valid face";
@@ -106,7 +106,8 @@ TEST_F(BRepGraph_QuerySurfaceTest, Edge_NbFaces_BoxEdgeHasExactlyTwoFaces)
   for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
   {
     const int aNbFaces = BRepGraph_Tool::Edge::NbFaces(myBoxGraph, anEdgeId);
-    EXPECT_EQ(aNbFaces, 2) << "Box edge " << anEdgeId.Index << " should be shared by exactly 2 faces";
+    EXPECT_EQ(aNbFaces, 2) << "Box edge " << anEdgeId.Index
+                           << " should be shared by exactly 2 faces";
   }
 }
 

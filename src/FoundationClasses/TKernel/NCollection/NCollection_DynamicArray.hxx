@@ -61,7 +61,7 @@ public:
   DEFINE_NCOLLECTION_ALLOC;
 
 public:
-  typedef NCollection_OccAllocator<TheItemType> allocator_type;
+  typedef NCollection_OccAllocator<TheItemType>  allocator_type;
   typedef NCollection_LinearVector<TheItemType*> vector;
 
 public:
@@ -659,10 +659,7 @@ protected:
   }
 
   //! Wrapper to extract array of block pointers.
-  TheItemType** getArray() noexcept
-  {
-    return myContainer.IsEmpty() ? nullptr : &myContainer[0];
-  }
+  TheItemType** getArray() noexcept { return myContainer.IsEmpty() ? nullptr : &myContainer[0]; }
 
   //! Wrapper to extract array of block pointers (const overload).
   TheItemType* const* getArray() const noexcept

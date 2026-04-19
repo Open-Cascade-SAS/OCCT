@@ -29,23 +29,23 @@ namespace
 {
 struct BRepGraph_ReconstructionContext
 {
-  const BRepGraph*                 Graph        = nullptr;
-  const BRepGraphInc_Storage*      Storage      = nullptr;
-  const BRepGraph_LayerParam*      Params       = nullptr;
-  const BRepGraph_LayerRegularity* Regularities = nullptr;
-  BRepGraphInc_Reconstruct::Cache  Cache;
+  const BRepGraph*                     Graph        = nullptr;
+  const BRepGraphInc_Storage*          Storage      = nullptr;
+  const BRepGraph_LayerParam*          Params       = nullptr;
+  const BRepGraph_LayerRegularity*     Regularities = nullptr;
+  BRepGraphInc_Reconstruct::Cache      Cache;
   NCollection_Map<BRepGraph_ProductId> ActiveProducts;
 };
 
-static TopoDS_Shape reconstructProductLocal(BRepGraph_ReconstructionContext& theContext,
-                                            const BRepGraph_ProductId        theProduct,
-                                            const BRepGraph_OccurrenceId     theParentOccurrence =
-                                              BRepGraph_OccurrenceId(),
-                                            const bool theFilterByParentOccurrence = false);
+static TopoDS_Shape reconstructProductLocal(
+  BRepGraph_ReconstructionContext& theContext,
+  const BRepGraph_ProductId        theProduct,
+  const BRepGraph_OccurrenceId     theParentOccurrence         = BRepGraph_OccurrenceId(),
+  const bool                       theFilterByParentOccurrence = false);
 
 static TopoDS_Shape reconstructOccurrenceLocal(BRepGraph_ReconstructionContext& theContext,
                                                const BRepGraph_OccurrenceId     theOccurrence,
-                                               const TopLoc_Location& theLocalLocation)
+                                               const TopLoc_Location&           theLocalLocation)
 {
   const BRepGraphInc_Storage& aStorage = *theContext.Storage;
   if (!theOccurrence.IsValid(aStorage.NbOccurrences()))
@@ -58,8 +58,10 @@ static TopoDS_Shape reconstructOccurrenceLocal(BRepGraph_ReconstructionContext& 
   TopoDS_Shape aShape;
   if (anOccurrence.ChildDefId.NodeKind == BRepGraph_NodeId::Kind::Product)
   {
-    aShape = reconstructProductLocal(
-      theContext, BRepGraph_ProductId(anOccurrence.ChildDefId), theOccurrence, true);
+    aShape = reconstructProductLocal(theContext,
+                                     BRepGraph_ProductId(anOccurrence.ChildDefId),
+                                     theOccurrence,
+                                     true);
   }
   else
   {
@@ -77,7 +79,7 @@ static TopoDS_Shape reconstructOccurrenceLocal(BRepGraph_ReconstructionContext& 
 static TopoDS_Shape reconstructProductLocal(BRepGraph_ReconstructionContext& theContext,
                                             const BRepGraph_ProductId        theProduct,
                                             const BRepGraph_OccurrenceId     theParentOccurrence,
-                                            const bool                       theFilterByParentOccurrence)
+                                            const bool theFilterByParentOccurrence)
 {
   (void)theParentOccurrence; // Reserved for future parent-occurrence filtering.
   const BRepGraphInc_Storage& aStorage = *theContext.Storage;
@@ -98,7 +100,7 @@ static TopoDS_Shape reconstructProductLocal(BRepGraph_ReconstructionContext& the
   theContext.ActiveProducts.Add(theProduct);
 
   // Find the shape root: scan occurrence refs for a topology (non-product) child.
-  TopoDS_Shape    aResult;
+  TopoDS_Shape     aResult;
   BRepGraph_NodeId aShapeRootNode;
   TopLoc_Location  aRootLocation;
   for (int i = 0; i < aProduct.OccurrenceRefIds.Length(); ++i)
@@ -111,8 +113,7 @@ static TopoDS_Shape reconstructProductLocal(BRepGraph_ReconstructionContext& the
     const BRepGraphInc::OccurrenceDef& aDef = aStorage.Occurrence(aRef.OccurrenceDefId);
     if (aDef.IsRemoved)
       continue;
-    if (aDef.ChildDefId.IsValid()
-        && aDef.ChildDefId.NodeKind != BRepGraph_NodeId::Kind::Product)
+    if (aDef.ChildDefId.IsValid() && aDef.ChildDefId.NodeKind != BRepGraph_NodeId::Kind::Product)
     {
       aShapeRootNode = aDef.ChildDefId;
       aRootLocation  = aRef.LocalLocation;
@@ -152,8 +153,9 @@ static TopoDS_Shape reconstructProductLocal(BRepGraph_ReconstructionContext& the
         continue;
       }
 
-      TopoDS_Shape aChild =
-        reconstructOccurrenceLocal(theContext, anOccurrenceRef.OccurrenceDefId, anOccurrenceRef.LocalLocation);
+      TopoDS_Shape aChild = reconstructOccurrenceLocal(theContext,
+                                                       anOccurrenceRef.OccurrenceDefId,
+                                                       anOccurrenceRef.LocalLocation);
       if (!aChild.IsNull())
         aBuilder.Add(aCompound, aChild);
     }
@@ -190,8 +192,10 @@ static TopoDS_Shape reconstructShape(BRepGraph_ReconstructionContext& theContext
       TopoDS_Shape aShape;
       if (anOccurrenceDef.ChildDefId.NodeKind == BRepGraph_NodeId::Kind::Product)
       {
-        aShape = reconstructProductLocal(
-          theContext, BRepGraph_ProductId(anOccurrenceDef.ChildDefId), anOccurrence, true);
+        aShape = reconstructProductLocal(theContext,
+                                         BRepGraph_ProductId(anOccurrenceDef.ChildDefId),
+                                         anOccurrence,
+                                         true);
       }
       else
       {

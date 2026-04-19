@@ -109,4 +109,3 @@ void BRepMesh_VertexTool::Substitute(const int theIndex, const BRepMesh_Vertex& 
   expandPoint(aV.Coord(), aMinPnt, aMaxPnt);
   myCellFilter.Add(theIndex, aMinPnt, aMaxPnt);
 }
-

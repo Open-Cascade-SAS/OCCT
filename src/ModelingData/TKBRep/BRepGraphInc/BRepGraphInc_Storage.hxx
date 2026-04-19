@@ -347,28 +347,16 @@ public:
   BRepGraph_Curve2DRepId AppendCurve2DRep() { return myCurves2D.Append(); }
 
   //! Appends a new triangulation representation slot and returns its typed id.
-  BRepGraph_TriangulationRepId AppendTriangulationRep()
-  {
-    return myTriangulationsRep.Append();
-  }
+  BRepGraph_TriangulationRepId AppendTriangulationRep() { return myTriangulationsRep.Append(); }
 
   //! Appends a new 3D polygon representation slot and returns its typed id.
-  BRepGraph_Polygon3DRepId AppendPolygon3DRep()
-  {
-    return myPolygons3D.Append();
-  }
+  BRepGraph_Polygon3DRepId AppendPolygon3DRep() { return myPolygons3D.Append(); }
 
   //! Appends a new 2D polygon representation slot and returns its typed id.
-  BRepGraph_Polygon2DRepId AppendPolygon2DRep()
-  {
-    return myPolygons2D.Append();
-  }
+  BRepGraph_Polygon2DRepId AppendPolygon2DRep() { return myPolygons2D.Append(); }
 
   //! Appends a new polygon-on-triangulation representation slot and returns its typed id.
-  BRepGraph_PolygonOnTriRepId AppendPolygonOnTriRep()
-  {
-    return myPolygonsOnTri.Append();
-  }
+  BRepGraph_PolygonOnTriRepId AppendPolygonOnTriRep() { return myPolygonsOnTri.Append(); }
 
   //! Returns the vertex entity at the given typed id.
   //! @param[in] theVertex typed vertex id
@@ -646,28 +634,16 @@ public:
   BRepGraph_SolidId AppendSolid() { return mySolids.Append(myAllocator); }
 
   //! Appends a new compound entity and returns its typed id.
-  BRepGraph_CompoundId AppendCompound()
-  {
-    return myCompounds.Append(myAllocator);
-  }
+  BRepGraph_CompoundId AppendCompound() { return myCompounds.Append(myAllocator); }
 
   //! Appends a new compsolid entity and returns its typed id.
-  BRepGraph_CompSolidId AppendCompSolid()
-  {
-    return myCompSolids.Append(myAllocator);
-  }
+  BRepGraph_CompSolidId AppendCompSolid() { return myCompSolids.Append(myAllocator); }
 
   //! Appends a new product entity and returns its typed id.
-  BRepGraph_ProductId AppendProduct()
-  {
-    return myProducts.Append(myAllocator);
-  }
+  BRepGraph_ProductId AppendProduct() { return myProducts.Append(myAllocator); }
 
   //! Appends a new occurrence entity and returns its typed id.
-  BRepGraph_OccurrenceId AppendOccurrence()
-  {
-    return myOccurrences.Append(myAllocator);
-  }
+  BRepGraph_OccurrenceId AppendOccurrence() { return myOccurrences.Append(myAllocator); }
 
   //! Appends a new shell reference entry and returns its typed id.
   BRepGraph_ShellRefId AppendShellRef() { return myShellRefs.Append(); }
@@ -691,10 +667,7 @@ public:
   BRepGraph_ChildRefId AppendChildRef() { return myChildRefs.Append(); }
 
   //! Appends a new occurrence reference entry and returns its typed id.
-  BRepGraph_OccurrenceRefId AppendOccurrenceRef()
-  {
-    return myOccurrenceRefs.Append();
-  }
+  BRepGraph_OccurrenceRefId AppendOccurrenceRef() { return myOccurrenceRefs.Append(); }
 
   //! Return the per-kind UID vector for a given Kind.
   [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_UID>& UIDs(
@@ -844,7 +817,7 @@ private:
   template <typename EntityT>
   struct DefStore
   {
-    using TypeId = typename EntityT::TypeId;
+    using TypeId    = typename EntityT::TypeId;
     using ValueType = EntityT;
 
     NCollection_Vector<EntityT>       Entities;
@@ -911,7 +884,7 @@ private:
   template <typename RepT>
   struct RepStore
   {
-    using TypeId = typename RepT::TypeId;
+    using TypeId    = typename RepT::TypeId;
     using ValueType = RepT;
 
     NCollection_Vector<RepT> Entities;
@@ -985,7 +958,7 @@ private:
   template <typename RefT>
   struct RefStore
   {
-    using TypeId = typename RefT::TypeId;
+    using TypeId    = typename RefT::TypeId;
     using ValueType = RefT;
 
     NCollection_Vector<RefT>             Refs;

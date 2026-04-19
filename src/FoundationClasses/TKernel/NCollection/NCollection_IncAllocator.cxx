@@ -97,14 +97,16 @@ void* NCollection_IncAllocator::AllocateOptimal(const size_t theSize)
     // concurrently via CAS. Block list structure is read-only under shared lock.
     {
       std::shared_lock<std::shared_mutex> aSharedLock(*myMutex);
-      IBlock* aBlock = myAllocationHeap;
+      IBlock*                             aBlock = myAllocationHeap;
       if (aBlock)
       {
         size_t anAvail = aBlock->AvailableSize.load(std::memory_order_relaxed);
         while (anAvail >= theSize)
         {
-          if (aBlock->AvailableSize.compare_exchange_weak(
-                anAvail, anAvail - theSize, std::memory_order_acquire, std::memory_order_relaxed))
+          if (aBlock->AvailableSize.compare_exchange_weak(anAvail,
+                                                          anAvail - theSize,
+                                                          std::memory_order_acquire,
+                                                          std::memory_order_relaxed))
           {
             // Won the CAS — claim our disjoint portion of the block.
             char* aRes = aBlock->CurPointer.fetch_add(theSize, std::memory_order_relaxed);
@@ -155,8 +157,7 @@ void* NCollection_IncAllocator::allocateSlow(const size_t theSize)
   // Bump allocate within the selected block.
   const size_t anAvail = aBlock->AvailableSize.load(std::memory_order_relaxed);
   void*        aRes    = aBlock->CurPointer.load(std::memory_order_relaxed);
-  aBlock->CurPointer.store(
-    static_cast<char*>(aRes) + theSize, std::memory_order_relaxed);
+  aBlock->CurPointer.store(static_cast<char*>(aRes) + theSize, std::memory_order_relaxed);
   aBlock->AvailableSize.store(anAvail - theSize, std::memory_order_relaxed);
   if (anAvail - theSize < 16)
   {

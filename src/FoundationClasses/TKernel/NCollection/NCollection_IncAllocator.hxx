@@ -106,8 +106,8 @@ public:
 
     std::atomic<char*>  CurPointer;    //!< Atomic for lock-free bump under shared lock
     std::atomic<size_t> AvailableSize; //!< Atomic for CAS-based space reservation under shared lock
-    IBlock* NextBlock        = nullptr; //!< Pointer to next sorted block
-    IBlock* NextOrderedBlock = nullptr; //!< Pointer to next ordered block
+    IBlock*             NextBlock        = nullptr; //!< Pointer to next sorted block
+    IBlock*             NextOrderedBlock = nullptr; //!< Pointer to next ordered block
   };
 
   //! Description ability to next growing size each 5-th new block
@@ -142,11 +142,11 @@ public:
   static constexpr size_t THE_MINIMUM_BLOCK_SIZE = 1024 * 2;
 
 private:
-  unsigned int                       myBlockSize;          //!< Block size to incremental allocations
-  unsigned int                       myBlockCount = 0;     //!< Count of created blocks
-  std::unique_ptr<std::shared_mutex> myMutex;              //!< Thread-safety shared mutex (owned, RAII)
+  unsigned int                       myBlockSize;      //!< Block size to incremental allocations
+  unsigned int                       myBlockCount = 0; //!< Count of created blocks
+  std::unique_ptr<std::shared_mutex> myMutex;          //!< Thread-safety shared mutex (owned, RAII)
   IBlock*                            myAllocationHeap = nullptr; //!< Sorted list for allocations
-  IBlock*                            myUsedHeap       = nullptr; //!< Sorted list for store empty blocks
+  IBlock*                            myUsedHeap = nullptr; //!< Sorted list for store empty blocks
   IBlock* myOrderedBlocks = nullptr; //!< Ordered list for store growing size blocks
 
 public:

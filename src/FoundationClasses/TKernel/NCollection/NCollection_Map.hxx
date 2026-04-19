@@ -189,7 +189,9 @@ public:
   explicit NCollection_Map(const Hasher&                                 theHasher,
                            const int                                     theNbBuckets,
                            const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
-      : NCollection_Map(theHasher, NCollection_BaseMap::NbBucketsFromInt(theNbBuckets), theAllocator)
+      : NCollection_Map(theHasher,
+                        NCollection_BaseMap::NbBucketsFromInt(theNbBuckets),
+                        theAllocator)
   {
   }
 

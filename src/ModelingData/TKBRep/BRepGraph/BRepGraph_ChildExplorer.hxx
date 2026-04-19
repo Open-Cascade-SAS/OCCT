@@ -93,14 +93,16 @@ public:
   //! @endcode
   struct Config
   {
-    TraversalMode                         Mode           = TraversalMode::Recursive;
-    std::optional<BRepGraph_NodeId::Kind> TargetKind;       //!< Emit only this kind (no value = emit all).
-    std::optional<BRepGraph_NodeId::Kind> AvoidKind;        //!< Do not descend into this kind.
-    bool                                  EmitAvoidKind = false; //!< Emit matching avoid-kind nodes once before skipping their subtree.
-    bool                                  AccumulateLocation    = true;  //!< Compose Location down the walk.
-    bool                                  AccumulateOrientation = true;  //!< Compose Orientation down the walk.
-    TopLoc_Location                       StartLoc;                      //!< Initial accumulated location.
-    TopAbs_Orientation                    StartOri = TopAbs_FORWARD;     //!< Initial accumulated orientation.
+    TraversalMode Mode = TraversalMode::Recursive;
+    std::optional<BRepGraph_NodeId::Kind>
+      TargetKind;                                    //!< Emit only this kind (no value = emit all).
+    std::optional<BRepGraph_NodeId::Kind> AvoidKind; //!< Do not descend into this kind.
+    bool                                  EmitAvoidKind =
+      false; //!< Emit matching avoid-kind nodes once before skipping their subtree.
+    bool               AccumulateLocation    = true; //!< Compose Location down the walk.
+    bool               AccumulateOrientation = true; //!< Compose Orientation down the walk.
+    TopLoc_Location    StartLoc;                     //!< Initial accumulated location.
+    TopAbs_Orientation StartOri = TopAbs_FORWARD;    //!< Initial accumulated orientation.
   };
 
   //! Preferred long-term constructor: all tuning knobs in `Config`.
@@ -148,9 +150,9 @@ public:
   //! family above and keeps them on the generic NodeId traversal path.
   template <BRepGraph_NodeId::Kind TheKind,
             typename std::enable_if_t<TheKind != BRepGraph_NodeId::Kind::Product, int> = 0>
-  BRepGraph_ChildExplorer(const BRepGraph&                         theGraph,
-                          const BRepGraph_NodeId::Typed<TheKind>   theRoot,
-                          BRepGraph_NodeId::Kind                   theTargetKind)
+  BRepGraph_ChildExplorer(const BRepGraph&                       theGraph,
+                          const BRepGraph_NodeId::Typed<TheKind> theRoot,
+                          BRepGraph_NodeId::Kind                 theTargetKind)
       : BRepGraph_ChildExplorer(theGraph, BRepGraph_NodeId(theRoot), theTargetKind)
   {
   }
@@ -164,10 +166,10 @@ public:
   //! family above and keeps them on the generic NodeId traversal path.
   template <BRepGraph_NodeId::Kind TheKind,
             typename std::enable_if_t<TheKind != BRepGraph_NodeId::Kind::Product, int> = 0>
-  BRepGraph_ChildExplorer(const BRepGraph&                         theGraph,
-                          const BRepGraph_NodeId::Typed<TheKind>   theRoot,
-                          BRepGraph_NodeId::Kind                   theTargetKind,
-                          TraversalMode                            theMode)
+  BRepGraph_ChildExplorer(const BRepGraph&                       theGraph,
+                          const BRepGraph_NodeId::Typed<TheKind> theRoot,
+                          BRepGraph_NodeId::Kind                 theTargetKind,
+                          TraversalMode                          theMode)
       : BRepGraph_ChildExplorer(theGraph, BRepGraph_NodeId(theRoot), theTargetKind, theMode)
   {
   }
@@ -190,12 +192,12 @@ public:
   //! family above and keeps them on the generic NodeId traversal path.
   template <BRepGraph_NodeId::Kind TheKind,
             typename std::enable_if_t<TheKind != BRepGraph_NodeId::Kind::Product, int> = 0>
-  BRepGraph_ChildExplorer(const BRepGraph&                         theGraph,
-                          const BRepGraph_NodeId::Typed<TheKind>   theRoot,
-                          BRepGraph_NodeId::Kind                   theTargetKind,
-                          bool                                     theCumLoc,
-                          bool                                     theCumOri,
-                          TraversalMode                            theMode = TraversalMode::Recursive)
+  BRepGraph_ChildExplorer(const BRepGraph&                       theGraph,
+                          const BRepGraph_NodeId::Typed<TheKind> theRoot,
+                          BRepGraph_NodeId::Kind                 theTargetKind,
+                          bool                                   theCumLoc,
+                          bool                                   theCumOri,
+                          TraversalMode                          theMode = TraversalMode::Recursive)
       : BRepGraph_ChildExplorer(theGraph,
                                 BRepGraph_NodeId(theRoot),
                                 theTargetKind,

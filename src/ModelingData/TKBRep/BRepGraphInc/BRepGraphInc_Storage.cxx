@@ -257,8 +257,7 @@ const BRepGraphInc::BaseRef& BRepGraphInc_Storage::BaseRef(const BRepGraph_RefId
     return anInvalid;
   }
 
-  const auto aFindRef = [this](const auto theTypedId) -> const BRepGraphInc::BaseRef*
-  {
+  const auto aFindRef = [this](const auto theTypedId) -> const BRepGraphInc::BaseRef* {
     using TypeId = std::remove_cv_t<decltype(theTypedId)>;
 
     if constexpr (std::is_same_v<TypeId, BRepGraph_ShellRefId>)
@@ -281,8 +280,7 @@ const BRepGraphInc::BaseRef& BRepGraphInc_Storage::BaseRef(const BRepGraph_RefId
     Standard_ASSERT_RETURN(false, "BaseRef: unsupported ref id type", nullptr);
   };
 
-  const BRepGraphInc::BaseRef* aRef =
-    BRepGraph_RefId::Visit(theRefId, aFindRef);
+  const BRepGraphInc::BaseRef* aRef = BRepGraph_RefId::Visit(theRefId, aFindRef);
   return aRef != nullptr ? *aRef : anInvalid;
 }
 
@@ -296,8 +294,7 @@ BRepGraphInc::BaseRef& BRepGraphInc_Storage::ChangeBaseRef(const BRepGraph_RefId
     return anInvalid;
   }
 
-  const auto aChangeRef = [this](const auto theTypedId) -> BRepGraphInc::BaseRef*
-  {
+  const auto aChangeRef = [this](const auto theTypedId) -> BRepGraphInc::BaseRef* {
     using TypeId = std::remove_cv_t<decltype(theTypedId)>;
 
     if constexpr (std::is_same_v<TypeId, BRepGraph_ShellRefId>)
@@ -320,8 +317,7 @@ BRepGraphInc::BaseRef& BRepGraphInc_Storage::ChangeBaseRef(const BRepGraph_RefId
     Standard_ASSERT_RETURN(false, "ChangeBaseRef: unsupported ref id type", nullptr);
   };
 
-  BRepGraphInc::BaseRef* aRef =
-    BRepGraph_RefId::Visit(theRefId, aChangeRef);
+  BRepGraphInc::BaseRef* aRef = BRepGraph_RefId::Visit(theRefId, aChangeRef);
   return aRef != nullptr ? *aRef : anInvalid;
 }
 
@@ -365,8 +361,7 @@ void BRepGraphInc_Storage::Clear()
 
 bool BRepGraphInc_Storage::MarkRemoved(const BRepGraph_NodeId theNodeId)
 {
-  const auto aMarkRemoved = [this](const auto theTypedId) -> bool
-  {
+  const auto aMarkRemoved = [this](const auto theTypedId) -> bool {
     using TypeId = std::remove_cv_t<decltype(theTypedId)>;
 
     if constexpr (std::is_same_v<TypeId, BRepGraph_VertexId>)
@@ -395,17 +390,14 @@ bool BRepGraphInc_Storage::MarkRemoved(const BRepGraph_NodeId theNodeId)
     Standard_ASSERT_RETURN(false, "MarkRemoved: unsupported node id type", false);
   };
 
-  return theNodeId.IsValid()
-           ? BRepGraph_NodeId::Visit(theNodeId, aMarkRemoved)
-           : false;
+  return theNodeId.IsValid() ? BRepGraph_NodeId::Visit(theNodeId, aMarkRemoved) : false;
 }
 
 //=================================================================================================
 
 bool BRepGraphInc_Storage::MarkRemovedRef(const BRepGraph_RefId theRefId)
 {
-  const auto aMarkRemoved = [this](const auto theTypedId) -> bool
-  {
+  const auto aMarkRemoved = [this](const auto theTypedId) -> bool {
     using TypeId = std::remove_cv_t<decltype(theTypedId)>;
 
     if constexpr (std::is_same_v<TypeId, BRepGraph_ShellRefId>)
@@ -428,17 +420,14 @@ bool BRepGraphInc_Storage::MarkRemovedRef(const BRepGraph_RefId theRefId)
     Standard_ASSERT_RETURN(false, "MarkRemovedRef: unsupported ref id type", false);
   };
 
-  return theRefId.IsValid()
-           ? BRepGraph_RefId::Visit(theRefId, aMarkRemoved)
-           : false;
+  return theRefId.IsValid() ? BRepGraph_RefId::Visit(theRefId, aMarkRemoved) : false;
 }
 
 //=================================================================================================
 
 bool BRepGraphInc_Storage::MarkRemovedRep(const BRepGraph_RepId theRepId)
 {
-  const auto aMarkRemoved = [this](const auto theTypedId) -> bool
-  {
+  const auto aMarkRemoved = [this](const auto theTypedId) -> bool {
     using TypeId = std::remove_cv_t<decltype(theTypedId)>;
 
     if constexpr (std::is_same_v<TypeId, BRepGraph_SurfaceRepId>)
@@ -459,9 +448,7 @@ bool BRepGraphInc_Storage::MarkRemovedRep(const BRepGraph_RepId theRepId)
     Standard_ASSERT_RETURN(false, "MarkRemovedRep: unsupported rep id type", false);
   };
 
-  return theRepId.IsValid()
-           ? BRepGraph_RepId::Visit(theRepId, aMarkRemoved)
-           : false;
+  return theRepId.IsValid() ? BRepGraph_RepId::Visit(theRepId, aMarkRemoved) : false;
 }
 
 //=================================================================================================

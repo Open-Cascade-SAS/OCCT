@@ -33,7 +33,7 @@
 #include <GeomProjLib.hxx>
 #include <Standard_NoSuchObject.hxx>
 
-gp_Pnt BRepGraph_Tool::Vertex::Pnt(const BRepGraph&                 theGraph,
+gp_Pnt BRepGraph_Tool::Vertex::Pnt(const BRepGraph&                    theGraph,
                                    const BRepGraphInc::VertexInstance& theRef)
 {
   const gp_Pnt& aPnt = theGraph.Topo().Vertices().Definition(theRef.DefId).Point;
@@ -153,12 +153,12 @@ const BRepGraphInc::VertexRef& invalidVertexRef()
   static const BRepGraphInc::VertexRef THE_INVALID_VERTEX_REF;
   return THE_INVALID_VERTEX_REF;
 }
-}
+} // namespace
 
 //=================================================================================================
 
 const BRepGraphInc::VertexRef& BRepGraph_Tool::Edge::StartVertexRef(const BRepGraph&       theGraph,
-                                                                 const BRepGraph_EdgeId theEdge)
+                                                                    const BRepGraph_EdgeId theEdge)
 {
   const BRepGraph_VertexRefId aRefId = theGraph.Topo().Edges().Definition(theEdge).StartVertexRefId;
   return aRefId.IsValid() ? theGraph.Refs().Vertices().Entry(aRefId) : invalidVertexRef();
@@ -167,7 +167,7 @@ const BRepGraphInc::VertexRef& BRepGraph_Tool::Edge::StartVertexRef(const BRepGr
 //=================================================================================================
 
 const BRepGraphInc::VertexRef& BRepGraph_Tool::Edge::EndVertexRef(const BRepGraph&       theGraph,
-                                                               const BRepGraph_EdgeId theEdge)
+                                                                  const BRepGraph_EdgeId theEdge)
 {
   const BRepGraph_VertexRefId aRefId = theGraph.Topo().Edges().Definition(theEdge).EndVertexRefId;
   return aRefId.IsValid() ? theGraph.Refs().Vertices().Entry(aRefId) : invalidVertexRef();
@@ -198,7 +198,7 @@ BRepGraph_VertexId BRepGraph_Tool::Edge::EndVertexId(const BRepGraph&       theG
 //=================================================================================================
 
 GeomAdaptor_TransformedCurve BRepGraph_Tool::Edge::CurveAdaptor(
-  const BRepGraph&                 theGraph,
+  const BRepGraph&                    theGraph,
   const BRepGraphInc::CoEdgeInstance& theRef)
 {
   const BRepGraphInc::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdges().Definition(theRef.DefId);
@@ -281,7 +281,7 @@ const occ::handle<Geom_Curve>& BRepGraph_Tool::Edge::Curve(const BRepGraph&     
 
 //=================================================================================================
 
-occ::handle<Geom_Curve> BRepGraph_Tool::Edge::Curve(const BRepGraph&                 theGraph,
+occ::handle<Geom_Curve> BRepGraph_Tool::Edge::Curve(const BRepGraph&                    theGraph,
                                                     const BRepGraphInc::CoEdgeInstance& theRef)
 {
   const BRepGraphInc::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdges().Definition(theRef.DefId);
@@ -435,16 +435,16 @@ BRepGraph_CoEdgeId BRepGraph_Tool::CoEdge::SeamPair(const BRepGraph&         the
 
 //=================================================================================================
 
-bool BRepGraph_Tool::CoEdge::IsSeam(const BRepGraph&         theGraph,
-                                    const BRepGraph_CoEdgeId theCoEdge)
+bool BRepGraph_Tool::CoEdge::IsSeam(const BRepGraph& theGraph, const BRepGraph_CoEdgeId theCoEdge)
 {
   return theGraph.Topo().CoEdges().Definition(theCoEdge).SeamPairId.IsValid();
 }
 
 //=================================================================================================
 
-Geom2dAdaptor_Curve BRepGraph_Tool::CoEdge::PCurveAdaptor(const BRepGraph&                 theGraph,
-                                                          const BRepGraphInc::CoEdgeInstance& theRef)
+Geom2dAdaptor_Curve BRepGraph_Tool::CoEdge::PCurveAdaptor(
+  const BRepGraph&                    theGraph,
+  const BRepGraphInc::CoEdgeInstance& theRef)
 {
   return PCurveAdaptor(theGraph, theRef.DefId);
 }
@@ -475,7 +475,7 @@ Geom2dAdaptor_Curve BRepGraph_Tool::CoEdge::PCurveAdaptor(const BRepGraph&      
   }
 
   const occ::handle<Geom_Surface>& aSurface = Face::Surface(theGraph, aCoEdge.FaceDefId);
-  const occ::handle<Geom_Plane> aPlane = occ::down_cast<Geom_Plane>(aSurface);
+  const occ::handle<Geom_Plane>    aPlane   = occ::down_cast<Geom_Plane>(aSurface);
   if (aPlane.IsNull() || !Edge::HasCurve(theGraph, aCoEdge.EdgeDefId))
   {
     return Geom2dAdaptor_Curve();
@@ -743,7 +743,7 @@ void BRepGraph_Tool::Face::Bounds(const BRepGraph&       theGraph,
                                   double&                theVMin,
                                   double&                theVMax)
 {
-  theUMin = theUMax = theVMin = theVMax = 0.0;
+  theUMin = theUMax = theVMin = theVMax  = 0.0;
   const occ::handle<Geom_Surface>& aSurf = Surface(theGraph, theFace);
   if (!aSurf.IsNull())
     aSurf->Bounds(theUMin, theUMax, theVMin, theVMax);
@@ -752,9 +752,9 @@ void BRepGraph_Tool::Face::Bounds(const BRepGraph&       theGraph,
 //=================================================================================================
 
 occ::handle<Adaptor3d_CurveOnSurface> BRepGraph_Tool::Edge::CurveOnSurface(
-  const BRepGraph&                 theGraph,
+  const BRepGraph&                    theGraph,
   const BRepGraphInc::CoEdgeInstance& theRef,
-  const BRepGraph_FaceId           theFace)
+  const BRepGraph_FaceId              theFace)
 {
   const BRepGraphInc::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdges().Definition(theRef.DefId);
   const BRepGraphInc::FaceDef&   aFace   = theGraph.Topo().Faces().Definition(theFace);
@@ -796,7 +796,8 @@ int BRepGraph_Tool::Wire::NbCoEdges(const BRepGraph& theGraph, const BRepGraph_W
 
 //=================================================================================================
 
-BRepGraph_FaceId BRepGraph_Tool::Wire::FaceOf(const BRepGraph& theGraph, const BRepGraph_WireId theWire)
+BRepGraph_FaceId BRepGraph_Tool::Wire::FaceOf(const BRepGraph&       theGraph,
+                                              const BRepGraph_WireId theWire)
 {
   const NCollection_Vector<BRepGraph_FaceId>& aFaces = theGraph.Topo().Wires().Faces(theWire);
   if (aFaces.IsEmpty())
@@ -872,28 +873,25 @@ BRepGraph_Polygon3DRepId BRepGraph_Tool::Mesh::CreatePolygon3DRep(
 //=================================================================================================
 
 BRepGraph_PolygonOnTriRepId BRepGraph_Tool::Mesh::CreatePolygonOnTriRep(
-  BRepGraph&                                       theGraph,
+  BRepGraph&                                      theGraph,
   const occ::handle<Poly_PolygonOnTriangulation>& thePolygon,
   const BRepGraph_TriangulationRepId              theTriRepId)
 {
   if (thePolygon.IsNull() || !theTriRepId.IsValid())
     return BRepGraph_PolygonOnTriRepId();
 
-  const BRepGraph_PolygonOnTriRepId aRepId =
-    theGraph.data()->myIncStorage.AppendPolygonOnTriRep();
-  BRepGraphInc::PolygonOnTriRep& aRep =
-    theGraph.data()->myIncStorage.ChangePolygonOnTriRep(aRepId);
-  aRep.Polygon            = thePolygon;
-  aRep.TriangulationRepId = theTriRepId;
+  const BRepGraph_PolygonOnTriRepId aRepId = theGraph.data()->myIncStorage.AppendPolygonOnTriRep();
+  BRepGraphInc::PolygonOnTriRep& aRep = theGraph.data()->myIncStorage.ChangePolygonOnTriRep(aRepId);
+  aRep.Polygon                        = thePolygon;
+  aRep.TriangulationRepId             = theTriRepId;
   return aRepId;
 }
 
 //=================================================================================================
 
-void BRepGraph_Tool::Mesh::AppendCachedTriangulation(
-  BRepGraph&                         theGraph,
-  const BRepGraph_FaceId             theFace,
-  const BRepGraph_TriangulationRepId theTriRepId)
+void BRepGraph_Tool::Mesh::AppendCachedTriangulation(BRepGraph&                         theGraph,
+                                                     const BRepGraph_FaceId             theFace,
+                                                     const BRepGraph_TriangulationRepId theTriRepId)
 {
   const BRepGraphInc_Storage& aStorage = theGraph.data()->myIncStorage;
   if (!theFace.IsValid(aStorage.NbFaces()) || !theTriRepId.IsValid())
@@ -907,8 +905,8 @@ void BRepGraph_Tool::Mesh::AppendCachedTriangulation(
 //=================================================================================================
 
 void BRepGraph_Tool::Mesh::SetCachedActiveIndex(BRepGraph&             theGraph,
-                                                 const BRepGraph_FaceId theFace,
-                                                 const int              theActiveIndex)
+                                                const BRepGraph_FaceId theFace,
+                                                const int              theActiveIndex)
 {
   const BRepGraphInc_Storage& aStorage = theGraph.data()->myIncStorage;
   if (!theFace.IsValid(aStorage.NbFaces()))
@@ -921,8 +919,7 @@ void BRepGraph_Tool::Mesh::SetCachedActiveIndex(BRepGraph&             theGraph,
 
 //=================================================================================================
 
-void BRepGraph_Tool::Mesh::ClearFaceCache(BRepGraph&             theGraph,
-                                           const BRepGraph_FaceId theFace)
+void BRepGraph_Tool::Mesh::ClearFaceCache(BRepGraph& theGraph, const BRepGraph_FaceId theFace)
 {
   BRepGraph_MeshCacheStorage& aMeshCache = theGraph.data()->myMeshCache;
   aMeshCache.ClearFaceMesh(theFace);
@@ -953,9 +950,9 @@ void BRepGraph_Tool::Mesh::ClearFaceCache(BRepGraph&             theGraph,
 
 //=================================================================================================
 
-void BRepGraph_Tool::Mesh::SetCachedPolygon3D(BRepGraph&                      theGraph,
-                                               const BRepGraph_EdgeId          theEdge,
-                                               const BRepGraph_Polygon3DRepId thePolyRepId)
+void BRepGraph_Tool::Mesh::SetCachedPolygon3D(BRepGraph&                     theGraph,
+                                              const BRepGraph_EdgeId         theEdge,
+                                              const BRepGraph_Polygon3DRepId thePolyRepId)
 {
   const BRepGraphInc_Storage& aStorage = theGraph.data()->myIncStorage;
   if (!theEdge.IsValid(aStorage.NbEdges()))
@@ -968,18 +965,16 @@ void BRepGraph_Tool::Mesh::SetCachedPolygon3D(BRepGraph&                      th
 
 //=================================================================================================
 
-void BRepGraph_Tool::Mesh::ClearEdgeCache(BRepGraph&             theGraph,
-                                           const BRepGraph_EdgeId theEdge)
+void BRepGraph_Tool::Mesh::ClearEdgeCache(BRepGraph& theGraph, const BRepGraph_EdgeId theEdge)
 {
   theGraph.data()->myMeshCache.ClearEdgeMesh(theEdge);
 }
 
 //=================================================================================================
 
-void BRepGraph_Tool::Mesh::AppendCachedPolygonOnTri(
-  BRepGraph&                        theGraph,
-  const BRepGraph_CoEdgeId          theCoEdge,
-  const BRepGraph_PolygonOnTriRepId thePolyRepId)
+void BRepGraph_Tool::Mesh::AppendCachedPolygonOnTri(BRepGraph&                        theGraph,
+                                                    const BRepGraph_CoEdgeId          theCoEdge,
+                                                    const BRepGraph_PolygonOnTriRepId thePolyRepId)
 {
   const BRepGraphInc_Storage& aStorage = theGraph.data()->myIncStorage;
   if (!theCoEdge.IsValid(aStorage.NbCoEdges()) || !thePolyRepId.IsValid())
@@ -992,9 +987,9 @@ void BRepGraph_Tool::Mesh::AppendCachedPolygonOnTri(
 
 //=================================================================================================
 
-void BRepGraph_Tool::Mesh::SetCachedPolygon2D(BRepGraph&                      theGraph,
-                                               const BRepGraph_CoEdgeId       theCoEdge,
-                                               const BRepGraph_Polygon2DRepId thePolyRepId)
+void BRepGraph_Tool::Mesh::SetCachedPolygon2D(BRepGraph&                     theGraph,
+                                              const BRepGraph_CoEdgeId       theCoEdge,
+                                              const BRepGraph_Polygon2DRepId thePolyRepId)
 {
   const BRepGraphInc_Storage& aStorage = theGraph.data()->myIncStorage;
   if (!theCoEdge.IsValid(aStorage.NbCoEdges()))

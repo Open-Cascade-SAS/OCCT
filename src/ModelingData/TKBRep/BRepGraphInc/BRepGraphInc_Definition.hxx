@@ -185,8 +185,9 @@ struct FaceDef : public BaseDef
 {
   using TypeId = BRepGraph_FaceId;
 
-  BRepGraph_SurfaceRepId       SurfaceRepId;       //!< Typed id into mySurfaces
-  BRepGraph_TriangulationRepId TriangulationRepId; //!< Typed id into myTriangulations (persistent/imported)
+  BRepGraph_SurfaceRepId SurfaceRepId; //!< Typed id into mySurfaces
+  BRepGraph_TriangulationRepId
+    TriangulationRepId; //!< Typed id into myTriangulations (persistent/imported)
 
   double Tolerance          = 0.0;
   bool   NaturalRestriction = false;
@@ -272,7 +273,8 @@ struct ProductDef : public BaseDef
 {
   using TypeId = BRepGraph_ProductId;
 
-  NCollection_Vector<BRepGraph_OccurrenceRefId> OccurrenceRefIds; //!< All children (shape roots and sub-products)
+  NCollection_Vector<BRepGraph_OccurrenceRefId>
+    OccurrenceRefIds; //!< All children (shape roots and sub-products)
 
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {

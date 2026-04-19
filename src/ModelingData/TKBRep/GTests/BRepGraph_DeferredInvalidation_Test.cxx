@@ -329,7 +329,8 @@ TEST_F(BRepGraph_DeferredInvalidationTest,
   {
     gp_Trsf aTrsf;
     aTrsf.SetTranslation(gp_Vec(100.0, 0.0, 0.0));
-    myGraph.Editor().Products().MutOccurrenceRef(anOccRefId)->LocalLocation = TopLoc_Location(aTrsf);
+    myGraph.Editor().Products().MutOccurrenceRef(anOccRefId)->LocalLocation =
+      TopLoc_Location(aTrsf);
   }
 
   // During deferred mode: ref modified.

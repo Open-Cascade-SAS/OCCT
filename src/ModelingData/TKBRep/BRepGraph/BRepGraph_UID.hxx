@@ -108,9 +108,9 @@ struct BRepGraph_UID
   }
 
 private:
-  size_t                 myCounter;    //!< 0 = invalid sentinel; valid counters start at 1.
-  BRepGraph_NodeId::Kind myKind;       //!< Node kind.
-  uint32_t               myGeneration; //!< BRepGraph_Builder::Perform() cycle that produced this UID.
+  size_t                 myCounter; //!< 0 = invalid sentinel; valid counters start at 1.
+  BRepGraph_NodeId::Kind myKind;    //!< Node kind.
+  uint32_t myGeneration;            //!< BRepGraph_Builder::Perform() cycle that produced this UID.
 };
 
 //! std::hash specialization for NCollection_DefaultHasher support.

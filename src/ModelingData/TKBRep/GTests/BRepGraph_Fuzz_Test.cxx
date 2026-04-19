@@ -107,8 +107,7 @@ bool applyOne(BRepGraph& theGraph, std::mt19937& theRng)
 
   switch (aKind)
   {
-    case MutationKind::BumpEdgeTolerance:
-    {
+    case MutationKind::BumpEdgeTolerance: {
       BRepGraph_EdgeId anEdgeId;
       if (!pickActiveEdge(anEdgeId))
         return false;
@@ -116,31 +115,26 @@ bool applyOne(BRepGraph& theGraph, std::mt19937& theRng)
       aMut->Tolerance                                = aMut->Tolerance + 1.0e-4;
       return true;
     }
-    case MutationKind::MutateVertexPoint:
-    {
+    case MutationKind::MutateVertexPoint: {
       BRepGraph_VertexId aVtxId;
       if (!pickActiveVertex(aVtxId))
         return false;
-      BRepGraph_MutGuard<BRepGraphInc::VertexDef> aMut =
-        theGraph.Editor().Vertices().Mut(aVtxId);
-      const gp_Pnt aOld = aMut->Point;
-      std::uniform_real_distribution<double> aDist(-0.1, 0.1);
-      aMut->Point = gp_Pnt(aOld.X() + aDist(theRng),
-                           aOld.Y() + aDist(theRng),
-                           aOld.Z() + aDist(theRng));
+      BRepGraph_MutGuard<BRepGraphInc::VertexDef> aMut = theGraph.Editor().Vertices().Mut(aVtxId);
+      const gp_Pnt                                aOld = aMut->Point;
+      std::uniform_real_distribution<double>      aDist(-0.1, 0.1);
+      aMut->Point =
+        gp_Pnt(aOld.X() + aDist(theRng), aOld.Y() + aDist(theRng), aOld.Z() + aDist(theRng));
       return true;
     }
-    case MutationKind::BumpFaceTolerance:
-    {
+    case MutationKind::BumpFaceTolerance: {
       if (aNbFaces <= 0)
         return false;
       std::uniform_int_distribution<int> aDist(0, aNbFaces - 1);
       BRepGraph_FaceId                   aFaceId(aDist(theRng));
       if (theGraph.Topo().Faces().Definition(aFaceId).IsRemoved)
         return false;
-      BRepGraph_MutGuard<BRepGraphInc::FaceDef> aMut =
-        theGraph.Editor().Faces().Mut(aFaceId);
-      aMut->Tolerance = aMut->Tolerance + 1.0e-4;
+      BRepGraph_MutGuard<BRepGraphInc::FaceDef> aMut = theGraph.Editor().Faces().Mut(aFaceId);
+      aMut->Tolerance                                = aMut->Tolerance + 1.0e-4;
       return true;
     }
     default:
@@ -163,7 +157,8 @@ FuzzOutcome runFuzz(BRepGraph& theGraph, const uint32_t theSeed, const int theNb
       EXPECT_TRUE(aResult.IsValid())
         << "Fuzz iteration " << aIt << " (seed=" << theSeed << ") left the graph invalid. "
         << "First issue: "
-        << (aResult.Issues.Length() > 0 ? aResult.Issues.First().Description.ToCString() : "(none)");
+        << (aResult.Issues.Length() > 0 ? aResult.Issues.First().Description.ToCString()
+                                        : "(none)");
     }
     else
     {
@@ -186,14 +181,12 @@ TEST_P(BRepGraph_FuzzSeedTest, BoxSeed_RandomMutations_RemainValid)
   BRepGraph aGraph;
   BRepGraph_Builder::Perform(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_TRUE(
-    BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit()).IsValid())
+  ASSERT_TRUE(BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit()).IsValid())
     << "Seed graph must be clean before fuzzing";
 
   const FuzzOutcome aOut = runFuzz(aGraph, aSeed, 50);
   EXPECT_GE(aOut.NbValidated, 1) << "At least one mutation should land per seed";
-  SUCCEED() << "seed=" << aSeed << " applied=" << aOut.NbApplied
-            << " skipped=" << aOut.NbSkipped;
+  SUCCEED() << "seed=" << aSeed << " applied=" << aOut.NbApplied << " skipped=" << aOut.NbSkipped;
 }
 
 TEST_P(BRepGraph_FuzzSeedTest, CylinderSeed_RandomMutations_RemainValid)
@@ -203,13 +196,11 @@ TEST_P(BRepGraph_FuzzSeedTest, CylinderSeed_RandomMutations_RemainValid)
   BRepGraph aGraph;
   BRepGraph_Builder::Perform(aGraph, BRepPrimAPI_MakeCylinder(5.0, 15.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
-  ASSERT_TRUE(
-    BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit()).IsValid());
+  ASSERT_TRUE(BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit()).IsValid());
 
   const FuzzOutcome aOut = runFuzz(aGraph, aSeed, 40);
   EXPECT_GE(aOut.NbValidated, 1);
-  SUCCEED() << "seed=" << aSeed << " applied=" << aOut.NbApplied
-            << " skipped=" << aOut.NbSkipped;
+  SUCCEED() << "seed=" << aSeed << " applied=" << aOut.NbApplied << " skipped=" << aOut.NbSkipped;
 }
 
 INSTANTIATE_TEST_SUITE_P(FixedSeeds,

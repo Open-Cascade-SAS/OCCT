@@ -76,7 +76,8 @@ TEST(BRepGraph_AssemblyTest, Build_SingleSolid_AutoCreatesRootProduct)
   ASSERT_TRUE(aGraph.IsDone());
 
   EXPECT_EQ(aGraph.Topo().Products().Nb(), 1);
-  // BRepGraph_Builder::Perform() creates a shape-root occurrence linking product to its topology root.
+  // BRepGraph_Builder::Perform() creates a shape-root occurrence linking product to its topology
+  // root.
   EXPECT_EQ(aGraph.Topo().Occurrences().Nb(), 1);
 
   (void)aGraph.Topo().Products().Definition(BRepGraph_ProductId::Start());
@@ -104,10 +105,12 @@ TEST(BRepGraph_AssemblyTest, Build_Compound_AutoCreatesRootProduct)
   ASSERT_TRUE(aGraph.IsDone());
 
   EXPECT_EQ(aGraph.Topo().Products().Nb(), 1);
-  // BRepGraph_Builder::Perform() creates a shape-root occurrence linking product to its topology root.
+  // BRepGraph_Builder::Perform() creates a shape-root occurrence linking product to its topology
+  // root.
   EXPECT_EQ(aGraph.Topo().Occurrences().Nb(), 1);
 
-  const BRepGraph_NodeId aShapeRoot = aGraph.Topo().Products().ShapeRoot(BRepGraph_ProductId::Start());
+  const BRepGraph_NodeId aShapeRoot =
+    aGraph.Topo().Products().ShapeRoot(BRepGraph_ProductId::Start());
   EXPECT_TRUE(aShapeRoot.IsValid());
   EXPECT_EQ(aShapeRoot.NodeKind, BRepGraph_NodeId::Kind::Compound);
 }
@@ -177,7 +180,8 @@ TEST(BRepGraph_AssemblyTest, AddOccurrence_LinksCorrectly)
   aTrsf.SetTranslation(gp_Vec(100.0, 0.0, 0.0));
   TopLoc_Location aLoc(aTrsf);
 
-  const BRepGraph_OccurrenceId anOccId = aGraph.Editor().Products().AddOccurrence(aAssemblyId, aPartId, aLoc);
+  const BRepGraph_OccurrenceId anOccId =
+    aGraph.Editor().Products().AddOccurrence(aAssemblyId, aPartId, aLoc);
 
   EXPECT_TRUE(anOccId.IsValid());
 
@@ -279,7 +283,8 @@ TEST(BRepGraph_AssemblyTest, RootProductIds_ShapelessRootAssembly_UsesProductId)
 
   const BRepGraph_ProductId aPartId     = BRepGraph_ProductId::Start();
   const BRepGraph_ProductId aAssemblyId = aGraph.Editor().Products().AddAssembly();
-  ASSERT_TRUE(aGraph.Editor().Products().AddOccurrence(aAssemblyId, aPartId, TopLoc_Location()).IsValid());
+  ASSERT_TRUE(
+    aGraph.Editor().Products().AddOccurrence(aAssemblyId, aPartId, TopLoc_Location()).IsValid());
 
   const NCollection_Vector<BRepGraph_ProductId>& aRoots = aGraph.RootProductIds();
   ASSERT_EQ(aRoots.Length(), 1);
@@ -301,7 +306,9 @@ TEST(BRepGraph_AssemblyTest, RootProductIds_ReflectsAssemblyMutation)
   EXPECT_EQ(aRootsBefore.Value(0), BRepGraph_ProductId::Start());
 
   const BRepGraph_ProductId aAssemblyId = aGraph.Editor().Products().AddAssembly();
-  (void)aGraph.Editor().Products().AddOccurrence(aAssemblyId, BRepGraph_ProductId::Start(), TopLoc_Location());
+  (void)aGraph.Editor().Products().AddOccurrence(aAssemblyId,
+                                                 BRepGraph_ProductId::Start(),
+                                                 TopLoc_Location());
 
   const NCollection_Vector<BRepGraph_ProductId> aRootsAfter = collectRootProducts(aGraph);
   ASSERT_EQ(aRootsAfter.Length(), 1);
@@ -533,7 +540,10 @@ TEST(BRepGraph_AssemblyTest, GlobalPlacement_DeepNesting)
     aGraph.Editor().Products().AddOccurrence(aRootAsmId, aSubAsmId, TopLoc_Location(aTrsf2));
   // SubAssembly places Part with aTrsf1, with parent occurrence = anOccSubAsm.
   const BRepGraph_OccurrenceId anOccPart =
-    aGraph.Editor().Products().AddOccurrence(aSubAsmId, aPartId, TopLoc_Location(aTrsf1), anOccSubAsm);
+    aGraph.Editor().Products().AddOccurrence(aSubAsmId,
+                                             aPartId,
+                                             TopLoc_Location(aTrsf1),
+                                             anOccSubAsm);
 
   // OccurrenceLocation returns the local location from the OccurrenceRef.
   // Global placement composition (parent chain walk) is handled by PathView.
@@ -564,7 +574,9 @@ TEST(BRepGraph_AssemblyTest, NbNodes_IncludesAssembly)
 
   // Add assembly + occurrence.
   const BRepGraph_ProductId aAssemblyId = aGraph.Editor().Products().AddAssembly();
-  (void)aGraph.Editor().Products().AddOccurrence(aAssemblyId, BRepGraph_ProductId::Start(), TopLoc_Location());
+  (void)aGraph.Editor().Products().AddOccurrence(aAssemblyId,
+                                                 BRepGraph_ProductId::Start(),
+                                                 TopLoc_Location());
 
   const size_t aNbNodesAfterAssembly = aGraph.Topo().Gen().NbNodes();
   EXPECT_EQ(aNbNodesAfterAssembly, aNbNodesAfterBuild + 2); // +1 product, +1 occurrence
@@ -683,15 +695,16 @@ TEST(BRepGraph_AssemblyTest, AddOccurrence_InvalidParent_ReturnsInvalid)
   BRepGraph_Builder::Perform(aGraph, BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  BRepGraph_OccurrenceId aResult = aGraph.Editor().Products().AddOccurrence(BRepGraph_ProductId(999),
-                                                                  BRepGraph_ProductId::Start(),
-                                                                  TopLoc_Location());
+  BRepGraph_OccurrenceId aResult =
+    aGraph.Editor().Products().AddOccurrence(BRepGraph_ProductId(999),
+                                             BRepGraph_ProductId::Start(),
+                                             TopLoc_Location());
   EXPECT_FALSE(aResult.IsValid());
 
   // Out-of-bounds referenced product index.
   aResult = aGraph.Editor().Products().AddOccurrence(BRepGraph_ProductId::Start(),
-                                           BRepGraph_ProductId(999),
-                                           TopLoc_Location());
+                                                     BRepGraph_ProductId(999),
+                                                     TopLoc_Location());
   EXPECT_FALSE(aResult.IsValid());
 }
 
@@ -793,14 +806,18 @@ TEST(BRepGraph_AssemblyTest, AddOccurrence_RemovedProduct_ReturnsInvalid)
 
   // Cannot add occurrence to a removed product.
   const BRepGraph_OccurrenceId aResult =
-    aGraph.Editor().Products().AddOccurrence(aAssemblyId, BRepGraph_ProductId::Start(), TopLoc_Location());
+    aGraph.Editor().Products().AddOccurrence(aAssemblyId,
+                                             BRepGraph_ProductId::Start(),
+                                             TopLoc_Location());
   EXPECT_FALSE(aResult.IsValid());
 
   // Cannot reference a removed product either.
   const BRepGraph_ProductId aAsm2 = aGraph.Editor().Products().AddAssembly();
   aGraph.Editor().Gen().RemoveNode(BRepGraph_ProductId::Start());
   const BRepGraph_OccurrenceId aResult2 =
-    aGraph.Editor().Products().AddOccurrence(aAsm2, BRepGraph_ProductId::Start(), TopLoc_Location());
+    aGraph.Editor().Products().AddOccurrence(aAsm2,
+                                             BRepGraph_ProductId::Start(),
+                                             TopLoc_Location());
   EXPECT_FALSE(aResult2.IsValid());
 }
 
@@ -891,10 +908,14 @@ TEST(BRepGraph_AssemblyTest, ShapesView_AssemblyProduct_ReconstructsChildOccurre
   gp_Trsf aTrsf2;
   aTrsf2.SetTranslation(gp_Vec(200.0, 0.0, 0.0));
 
-  ASSERT_TRUE(
-    aGraph.Editor().Products().AddOccurrence(aAssemblyId, aPartId, TopLoc_Location(aTrsf1)).IsValid());
-  ASSERT_TRUE(
-    aGraph.Editor().Products().AddOccurrence(aAssemblyId, aPartId, TopLoc_Location(aTrsf2)).IsValid());
+  ASSERT_TRUE(aGraph.Editor()
+                .Products()
+                .AddOccurrence(aAssemblyId, aPartId, TopLoc_Location(aTrsf1))
+                .IsValid());
+  ASSERT_TRUE(aGraph.Editor()
+                .Products()
+                .AddOccurrence(aAssemblyId, aPartId, TopLoc_Location(aTrsf2))
+                .IsValid());
 
   const TopoDS_Shape aAssemblyShape = aGraph.Shapes().Shape(aAssemblyId);
   ASSERT_FALSE(aAssemblyShape.IsNull());
@@ -932,16 +953,18 @@ TEST(BRepGraph_AssemblyTest, ShapesView_OccurrenceShape_UsesGlobalPlacementChain
   gp_Trsf aParentTrsf;
   aParentTrsf.SetTranslation(gp_Vec(10.0, 0.0, 0.0));
   const BRepGraph_OccurrenceId aParentOccurrence =
-    aGraph.Editor().Products().AddOccurrence(aRootAssembly, aSubAssembly, TopLoc_Location(aParentTrsf));
+    aGraph.Editor().Products().AddOccurrence(aRootAssembly,
+                                             aSubAssembly,
+                                             TopLoc_Location(aParentTrsf));
   ASSERT_TRUE(aParentOccurrence.IsValid());
 
   gp_Trsf aChildTrsf;
   aChildTrsf.SetTranslation(gp_Vec(20.0, 0.0, 0.0));
   const BRepGraph_OccurrenceId aChildOccurrence =
     aGraph.Editor().Products().AddOccurrence(aSubAssembly,
-                                   aPartId,
-                                   TopLoc_Location(aChildTrsf),
-                                   aParentOccurrence);
+                                             aPartId,
+                                             TopLoc_Location(aChildTrsf),
+                                             aParentOccurrence);
   ASSERT_TRUE(aChildOccurrence.IsValid());
 
   const TopoDS_Shape aSubAssemblyShape = aGraph.Shapes().Shape(aSubAssembly);
@@ -979,31 +1002,35 @@ TEST(BRepGraph_AssemblyTest, ShapesView_OccurrenceShape_FiltersNestedChildrenByP
   gp_Trsf aParentTrsf1;
   aParentTrsf1.SetTranslation(gp_Vec(100.0, 0.0, 0.0));
   const BRepGraph_OccurrenceId aParentOccurrence1 =
-    aGraph.Editor().Products().AddOccurrence(aRootAssembly, aSubAssembly, TopLoc_Location(aParentTrsf1));
+    aGraph.Editor().Products().AddOccurrence(aRootAssembly,
+                                             aSubAssembly,
+                                             TopLoc_Location(aParentTrsf1));
   ASSERT_TRUE(aParentOccurrence1.IsValid());
 
   gp_Trsf aParentTrsf2;
   aParentTrsf2.SetTranslation(gp_Vec(200.0, 0.0, 0.0));
   const BRepGraph_OccurrenceId aParentOccurrence2 =
-    aGraph.Editor().Products().AddOccurrence(aRootAssembly, aSubAssembly, TopLoc_Location(aParentTrsf2));
+    aGraph.Editor().Products().AddOccurrence(aRootAssembly,
+                                             aSubAssembly,
+                                             TopLoc_Location(aParentTrsf2));
   ASSERT_TRUE(aParentOccurrence2.IsValid());
 
   gp_Trsf aChildTrsf1;
   aChildTrsf1.SetTranslation(gp_Vec(10.0, 0.0, 0.0));
   const BRepGraph_OccurrenceId aChildOccurrence1 =
     aGraph.Editor().Products().AddOccurrence(aSubAssembly,
-                                   aPartId,
-                                   TopLoc_Location(aChildTrsf1),
-                                   aParentOccurrence1);
+                                             aPartId,
+                                             TopLoc_Location(aChildTrsf1),
+                                             aParentOccurrence1);
   ASSERT_TRUE(aChildOccurrence1.IsValid());
 
   gp_Trsf aChildTrsf2;
   aChildTrsf2.SetTranslation(gp_Vec(20.0, 0.0, 0.0));
   const BRepGraph_OccurrenceId aChildOccurrence2 =
     aGraph.Editor().Products().AddOccurrence(aSubAssembly,
-                                   aPartId,
-                                   TopLoc_Location(aChildTrsf2),
-                                   aParentOccurrence2);
+                                             aPartId,
+                                             TopLoc_Location(aChildTrsf2),
+                                             aParentOccurrence2);
   ASSERT_TRUE(aChildOccurrence2.IsValid());
 
   // Verify that occurrence shapes are non-null and have children.
@@ -1029,7 +1056,8 @@ TEST(BRepGraph_AssemblyTest, ShapesView_OccurrenceShape_FiltersNestedChildrenByP
 // ShapesView_OccurrenceShape_KeepsCommonChildrenAndFiltersBranchSpecificOnes
 // =============================================================================
 
-TEST(BRepGraph_AssemblyTest, ShapesView_OccurrenceShape_KeepsCommonChildrenAndFiltersBranchSpecificOnes)
+TEST(BRepGraph_AssemblyTest,
+     ShapesView_OccurrenceShape_KeepsCommonChildrenAndFiltersBranchSpecificOnes)
 {
   BRepGraph aGraph;
   BRepGraph_Builder::Perform(aGraph, BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
@@ -1042,37 +1070,43 @@ TEST(BRepGraph_AssemblyTest, ShapesView_OccurrenceShape_KeepsCommonChildrenAndFi
   gp_Trsf aParentTrsf1;
   aParentTrsf1.SetTranslation(gp_Vec(100.0, 0.0, 0.0));
   const BRepGraph_OccurrenceId aParentOccurrence1 =
-    aGraph.Editor().Products().AddOccurrence(aRootAssembly, aSubAssembly, TopLoc_Location(aParentTrsf1));
+    aGraph.Editor().Products().AddOccurrence(aRootAssembly,
+                                             aSubAssembly,
+                                             TopLoc_Location(aParentTrsf1));
   ASSERT_TRUE(aParentOccurrence1.IsValid());
 
   gp_Trsf aParentTrsf2;
   aParentTrsf2.SetTranslation(gp_Vec(200.0, 0.0, 0.0));
   const BRepGraph_OccurrenceId aParentOccurrence2 =
-    aGraph.Editor().Products().AddOccurrence(aRootAssembly, aSubAssembly, TopLoc_Location(aParentTrsf2));
+    aGraph.Editor().Products().AddOccurrence(aRootAssembly,
+                                             aSubAssembly,
+                                             TopLoc_Location(aParentTrsf2));
   ASSERT_TRUE(aParentOccurrence2.IsValid());
 
   gp_Trsf aCommonChildTrsf;
   aCommonChildTrsf.SetTranslation(gp_Vec(5.0, 0.0, 0.0));
   const BRepGraph_OccurrenceId aCommonChildOccurrence =
-    aGraph.Editor().Products().AddOccurrence(aSubAssembly, aPartId, TopLoc_Location(aCommonChildTrsf));
+    aGraph.Editor().Products().AddOccurrence(aSubAssembly,
+                                             aPartId,
+                                             TopLoc_Location(aCommonChildTrsf));
   ASSERT_TRUE(aCommonChildOccurrence.IsValid());
 
   gp_Trsf aBranchChildTrsf1;
   aBranchChildTrsf1.SetTranslation(gp_Vec(10.0, 0.0, 0.0));
   const BRepGraph_OccurrenceId aBranchChildOccurrence1 =
     aGraph.Editor().Products().AddOccurrence(aSubAssembly,
-                                   aPartId,
-                                   TopLoc_Location(aBranchChildTrsf1),
-                                   aParentOccurrence1);
+                                             aPartId,
+                                             TopLoc_Location(aBranchChildTrsf1),
+                                             aParentOccurrence1);
   ASSERT_TRUE(aBranchChildOccurrence1.IsValid());
 
   gp_Trsf aBranchChildTrsf2;
   aBranchChildTrsf2.SetTranslation(gp_Vec(20.0, 0.0, 0.0));
   const BRepGraph_OccurrenceId aBranchChildOccurrence2 =
     aGraph.Editor().Products().AddOccurrence(aSubAssembly,
-                                   aPartId,
-                                   TopLoc_Location(aBranchChildTrsf2),
-                                   aParentOccurrence2);
+                                             aPartId,
+                                             TopLoc_Location(aBranchChildTrsf2),
+                                             aParentOccurrence2);
   ASSERT_TRUE(aBranchChildOccurrence2.IsValid());
 
   // Verify occurrence shapes are reconstructed and have children.

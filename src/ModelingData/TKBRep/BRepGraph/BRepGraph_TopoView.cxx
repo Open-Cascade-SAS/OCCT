@@ -390,7 +390,7 @@ NCollection_Vector<BRepGraph_EdgeId> BRepGraph::TopoView::EdgeOps::Adjacent(
   }
 
   // Find adjacent edges via shared vertices.
-  const BRepGraphInc_ReverseIndex& aRevIdx = aStorage.ReverseIndex();
+  const BRepGraphInc_ReverseIndex&  aRevIdx = aStorage.ReverseIndex();
   NCollection_Map<BRepGraph_EdgeId> anEdgeSet;
   for (const BRepGraph_VertexId& aVertexId : aVertices)
   {
@@ -931,8 +931,8 @@ BRepGraph_NodeId BRepGraph::TopoView::ProductOps::ShapeRoot(
   // Scan occurrences to find the first with a topology ChildDefId.
   for (int i = 0; i < aProductDef.OccurrenceRefIds.Length(); ++i)
   {
-    const BRepGraph_OccurrenceRefId       aRefId = aProductDef.OccurrenceRefIds.Value(i);
-    const BRepGraphInc::OccurrenceRef&    aRef   = aStorage.OccurrenceRef(aRefId);
+    const BRepGraph_OccurrenceRefId    aRefId = aProductDef.OccurrenceRefIds.Value(i);
+    const BRepGraphInc::OccurrenceRef& aRef   = aStorage.OccurrenceRef(aRefId);
     if (aRef.IsRemoved)
       continue;
     const BRepGraphInc::OccurrenceDef& anOccDef = aStorage.Occurrence(aRef.OccurrenceDefId);
@@ -1319,4 +1319,3 @@ bool BRepGraph::TopoView::GenOps::IsRemoved(const BRepGraph_NodeId theNode) cons
     return false;
   return aDef->IsRemoved;
 }
-

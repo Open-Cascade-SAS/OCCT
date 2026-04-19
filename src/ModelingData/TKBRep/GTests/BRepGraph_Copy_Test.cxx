@@ -387,8 +387,8 @@ TEST(BRepGraph_CopyTest, FusedBoxes_Regularity_AreaPreserved)
   EXPECT_EQ(aCopyGraph.Topo().Edges().Nb(), aGraph.Topo().Edges().Nb());
 
   // Verify area is preserved by summing individual face areas.
-  double aCopyArea = 0.0;
-  const int aNbFaces = aCopyGraph.Topo().Faces().Nb();
+  double    aCopyArea = 0.0;
+  const int aNbFaces  = aCopyGraph.Topo().Faces().Nb();
   for (BRepGraph_FaceId aFaceId(0); aFaceId.IsValid(aNbFaces); ++aFaceId)
   {
     TopoDS_Shape aFace = aCopyGraph.Shapes().Reconstruct(aFaceId);

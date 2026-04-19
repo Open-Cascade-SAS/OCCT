@@ -88,14 +88,12 @@ void BRepGraph_Builder::populateUIDs(BRepGraph& theGraph)
     theGraph.allocateUID(aShellIt.CurrentId());
   for (BRepGraph_FullSolidIterator aSolidIt(theGraph); aSolidIt.More(); aSolidIt.Next())
     theGraph.allocateUID(aSolidIt.CurrentId());
-  for (BRepGraph_FullCompoundIterator aCompoundIt(theGraph); aCompoundIt.More();
-       aCompoundIt.Next())
+  for (BRepGraph_FullCompoundIterator aCompoundIt(theGraph); aCompoundIt.More(); aCompoundIt.Next())
     theGraph.allocateUID(aCompoundIt.CurrentId());
   for (BRepGraph_FullCompSolidIterator aCompSolidIt(theGraph); aCompSolidIt.More();
        aCompSolidIt.Next())
     theGraph.allocateUID(aCompSolidIt.CurrentId());
-  for (BRepGraph_FullProductIterator aProductIt(theGraph); aProductIt.More();
-       aProductIt.Next())
+  for (BRepGraph_FullProductIterator aProductIt(theGraph); aProductIt.More(); aProductIt.Next())
     theGraph.allocateUID(aProductIt.CurrentId());
   for (BRepGraph_FullOccurrenceIterator anOccurrenceIt(theGraph); anOccurrenceIt.More();
        anOccurrenceIt.Next())
@@ -130,10 +128,10 @@ void BRepGraph_Builder::Perform(BRepGraph&          theGraph,
 
 //=================================================================================================
 
-void BRepGraph_Builder::Perform(BRepGraph&                      theGraph,
-                                const TopoDS_Shape&             theShape,
-                                const bool                      theParallel,
-                                const BuildOptions&             theOptions)
+void BRepGraph_Builder::Perform(BRepGraph&          theGraph,
+                                const TopoDS_Shape& theShape,
+                                const bool          theParallel,
+                                const BuildOptions& theOptions)
 {
   theGraph.myData->myIncStorage.Clear();
   theGraph.myData->myHistoryLog.Clear();
@@ -238,7 +236,7 @@ void BRepGraph_Builder::Perform(BRepGraph&                      theGraph,
       // Link the product to its shape root via an occurrence + occurrence ref.
       if (aTopologyRoot.IsValid())
       {
-        const BRepGraph_OccurrenceId anOccId = aStorage.AppendOccurrence();
+        const BRepGraph_OccurrenceId anOccId  = aStorage.AppendOccurrence();
         BRepGraphInc::OccurrenceDef& anOccDef = aStorage.ChangeOccurrence(anOccId);
         anOccDef.ChildDefId                   = aTopologyRoot;
         theGraph.allocateUID(anOccId);
@@ -467,20 +465,17 @@ void BRepGraph_Builder::populateUIDsIncremental(BRepGraph& theGraph,
        aVertexIt.More();
        aVertexIt.Next())
     theGraph.allocateUID(aVertexIt.CurrentId());
-  for (BRepGraph_FullEdgeIterator anEdgeIt(theGraph, BRepGraph_EdgeId(theOldEdge));
-       anEdgeIt.More();
+  for (BRepGraph_FullEdgeIterator anEdgeIt(theGraph, BRepGraph_EdgeId(theOldEdge)); anEdgeIt.More();
        anEdgeIt.Next())
     theGraph.allocateUID(anEdgeIt.CurrentId());
   for (BRepGraph_FullCoEdgeIterator aCoEdgeIt(theGraph, BRepGraph_CoEdgeId(theOldCoEdge));
        aCoEdgeIt.More();
        aCoEdgeIt.Next())
     theGraph.allocateUID(aCoEdgeIt.CurrentId());
-  for (BRepGraph_FullWireIterator aWireIt(theGraph, BRepGraph_WireId(theOldWire));
-       aWireIt.More();
+  for (BRepGraph_FullWireIterator aWireIt(theGraph, BRepGraph_WireId(theOldWire)); aWireIt.More();
        aWireIt.Next())
     theGraph.allocateUID(aWireIt.CurrentId());
-  for (BRepGraph_FullFaceIterator aFaceIt(theGraph, BRepGraph_FaceId(theOldFace));
-       aFaceIt.More();
+  for (BRepGraph_FullFaceIterator aFaceIt(theGraph, BRepGraph_FaceId(theOldFace)); aFaceIt.More();
        aFaceIt.Next())
     theGraph.allocateUID(aFaceIt.CurrentId());
   for (BRepGraph_FullShellIterator aShellIt(theGraph, BRepGraph_ShellId(theOldShell));

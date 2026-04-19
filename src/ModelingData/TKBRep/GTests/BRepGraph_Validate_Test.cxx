@@ -50,8 +50,8 @@ NCollection_Vector<BRepGraph_CoEdgeRefId> coEdgeRefsOfWire(const BRepGraph&     
                                                            const BRepGraph_WireId theWireId)
 {
   NCollection_Vector<BRepGraph_CoEdgeRefId> aRefIds;
-  const BRepGraph_NodeId                    aParentNode = theWireId;
-  const BRepGraph::RefsView&                aRefs       = theGraph.Refs();
+  const BRepGraph_NodeId                    aParentNode   = theWireId;
+  const BRepGraph::RefsView&                aRefs         = theGraph.Refs();
   const int                                 aNbCoEdgeRefs = aRefs.CoEdges().Nb();
   for (BRepGraph_CoEdgeRefId aRefId(0); aRefId.IsValid(aNbCoEdgeRefs); ++aRefId)
   {
@@ -132,7 +132,8 @@ TEST(BRepGraph_ValidateTest, DetectsRemovedNodeReference)
   const int          aNbEdges = aGraph.Topo().Edges().Nb();
   for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
   {
-    const BRepGraphInc::VertexRef& aStartRef = BRepGraph_Tool::Edge::StartVertexRef(aGraph, anEdgeId);
+    const BRepGraphInc::VertexRef& aStartRef =
+      BRepGraph_Tool::Edge::StartVertexRef(aGraph, anEdgeId);
     if (aStartRef.VertexDefId.IsValid())
     {
       aVtxToRemove = aStartRef.VertexDefId;
@@ -195,8 +196,8 @@ TEST(BRepGraph_ValidateTest, WireConnectivity_DisconnectedEdges)
     aGraph.Refs().Vertices().Entry(aFirstEdge->EndVertexRefId).VertexDefId;
   const BRepGraph_VertexId anOrigStartVtx =
     aGraph.Refs().Vertices().Entry(aFirstEdge->StartVertexRefId).VertexDefId;
-  const BRepGraph_NodeId anOrigEnd = BRepGraph_NodeId(anOrigEndVtx);
-  const int aNbVertices = aGraph.Topo().Vertices().Nb();
+  const BRepGraph_NodeId anOrigEnd   = BRepGraph_NodeId(anOrigEndVtx);
+  const int              aNbVertices = aGraph.Topo().Vertices().Nb();
   for (BRepGraph_VertexId aVertexId(0); aVertexId.IsValid(aNbVertices); ++aVertexId)
   {
     if (aVertexId != anOrigEnd && aVertexId != BRepGraph_NodeId(anOrigStartVtx))
@@ -243,8 +244,9 @@ TEST(BRepGraph_ValidateTest, BoundsCheck_InvalidIndex)
   ASSERT_GT(aGraph.Topo().Edges().Nb(), 0);
 
   // Corrupt edge's Curve3d to null.
-  BRepGraph_MutGuard<BRepGraphInc::EdgeDef> anEdge = aGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start());
-  anEdge->Curve3DRepId                             = BRepGraph_Curve3DRepId();
+  BRepGraph_MutGuard<BRepGraphInc::EdgeDef> anEdge =
+    aGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start());
+  anEdge->Curve3DRepId = BRepGraph_Curve3DRepId();
 
   const BRepGraph_Validate::Result aResult =
     BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit());
@@ -265,7 +267,7 @@ TEST(BRepGraph_ValidateTest, AfterSplitEdge_ProducesSubEdges)
   // Find a non-degenerate edge with valid vertices to split.
   BRepGraph_EdgeId anEdgeId;
   double           aSplitParam = 0.0;
-  const int aNbEdges = aGraph.Topo().Edges().Nb();
+  const int        aNbEdges    = aGraph.Topo().Edges().Nb();
   for (BRepGraph_EdgeId anCandEdgeId(0); anCandEdgeId.IsValid(aNbEdges); ++anCandEdgeId)
   {
     const BRepGraphInc::EdgeDef& anEdgeDef = aGraph.Topo().Edges().Definition(anCandEdgeId);
@@ -444,7 +446,9 @@ TEST(BRepGraph_ValidateTest, AssemblyGraph_ValidProduct_NoIssuesInAudit)
   const BRepGraph_OccurrenceId anOcc1 =
     aGraph.Editor().Products().AddOccurrence(aAssemblyProduct, aPartProduct, TopLoc_Location());
   const BRepGraph_OccurrenceId anOcc2 =
-    aGraph.Editor().Products().AddOccurrence(aAssemblyProduct, aPartProduct, TopLoc_Location(aTrsf));
+    aGraph.Editor().Products().AddOccurrence(aAssemblyProduct,
+                                             aPartProduct,
+                                             TopLoc_Location(aTrsf));
   ASSERT_TRUE(anOcc1.IsValid());
   ASSERT_TRUE(anOcc2.IsValid());
 
@@ -484,8 +488,8 @@ TEST(BRepGraph_ValidateTest, AssemblyGraph_CorruptedOccurrenceChildDefId_Detecte
   // Corrupt the first occurrence's ChildDefId to an out-of-bounds value.
   BRepGraph_MutGuard<BRepGraphInc::OccurrenceDef> anOccDef =
     aGraph.Editor().Products().MutOccurrence(BRepGraph_OccurrenceId::Start());
-  anOccDef->ChildDefId = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Solid,
-                                          aGraph.Topo().Solids().Nb() + 999);
+  anOccDef->ChildDefId =
+    BRepGraph_NodeId(BRepGraph_NodeId::Kind::Solid, aGraph.Topo().Solids().Nb() + 999);
 
   const BRepGraph_Validate::Result aAuditResult =
     BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit());
@@ -508,7 +512,8 @@ TEST(BRepGraph_ValidateTest, AssemblyGraph_CorruptedOccurrenceChildDefId_Detecte
   EXPECT_TRUE(aFoundExpectedError) << "Audit should report 'OccurrenceDef.ChildDefId invalid'.";
 }
 
-TEST(BRepGraph_ValidateTest, AssemblyGraph_CorruptedOccurrenceChildDefId_ProductIndex_DetectedByAudit)
+TEST(BRepGraph_ValidateTest,
+     AssemblyGraph_CorruptedOccurrenceChildDefId_ProductIndex_DetectedByAudit)
 {
   const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
 
@@ -531,8 +536,8 @@ TEST(BRepGraph_ValidateTest, AssemblyGraph_CorruptedOccurrenceChildDefId_Product
   // Corrupt the occurrence's ChildDefId to an invalid index.
   BRepGraph_MutGuard<BRepGraphInc::OccurrenceDef> anOccDef =
     aGraph.Editor().Products().MutOccurrence(anOccId);
-  anOccDef->ChildDefId = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Product,
-                                          aGraph.Topo().Products().Nb() + 999);
+  anOccDef->ChildDefId =
+    BRepGraph_NodeId(BRepGraph_NodeId::Kind::Product, aGraph.Topo().Products().Nb() + 999);
 
   const BRepGraph_Validate::Result aAuditResult =
     BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit());
@@ -603,7 +608,8 @@ TEST(BRepGraph_ValidateTest, LightweightVsAudit_RemovedVertexReference_Different
   const int          aNbEdges = aGraph.Topo().Edges().Nb();
   for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
   {
-    const BRepGraphInc::VertexRef& aStartRef = BRepGraph_Tool::Edge::StartVertexRef(aGraph, anEdgeId);
+    const BRepGraphInc::VertexRef& aStartRef =
+      BRepGraph_Tool::Edge::StartVertexRef(aGraph, anEdgeId);
     if (aStartRef.VertexDefId.IsValid())
     {
       aVtxToRemove = aStartRef.VertexDefId;
@@ -647,8 +653,8 @@ TEST(BRepGraph_ValidateTest, Audit_DetectsOrphanWireRef_AfterFaceRemoval)
 {
   // Build a simple box; pick one face; corrupt its WireRef so the parent points
   // at a removed face index. The new audit block for orphan WireRefs must flag it.
-  BRepGraph           aGraph;
-  const TopoDS_Shape  aBox = BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape();
+  BRepGraph          aGraph;
+  const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape();
   BRepGraph_Builder::Perform(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
@@ -658,14 +664,13 @@ TEST(BRepGraph_ValidateTest, Audit_DetectsOrphanWireRef_AfterFaceRemoval)
   bool aDidCorrupt = false;
   for (int aRefIdx = 0; aRefIdx < aRefs.Wires().Nb() && !aDidCorrupt; ++aRefIdx)
   {
-    const BRepGraph_WireRefId      aRefId(aRefIdx);
-    const BRepGraphInc::WireRef&   aRef = aRefs.Wires().Entry(aRefId);
+    const BRepGraph_WireRefId    aRefId(aRefIdx);
+    const BRepGraphInc::WireRef& aRef = aRefs.Wires().Entry(aRefId);
     if (aRef.IsRemoved)
       continue;
-    BRepGraph_MutGuard<BRepGraphInc::WireRef> aMut =
-      aGraph.Editor().Wires().MutRef(aRefId);
+    BRepGraph_MutGuard<BRepGraphInc::WireRef> aMut = aGraph.Editor().Wires().MutRef(aRefId);
     aMut->ParentId = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, 9999);
-    aDidCorrupt = true;
+    aDidCorrupt    = true;
   }
   ASSERT_TRUE(aDidCorrupt);
 

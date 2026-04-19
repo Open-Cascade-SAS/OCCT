@@ -59,13 +59,15 @@ TEST_F(BRepGraph_WireExplorerTest, BoxWire_EdgesReturnedInConnectionOrder)
     const BRepGraphInc::CoEdgeDef& aPrevCoEdge = myGraph.Topo().CoEdges().Definition(aPrevId);
     const BRepGraphInc::CoEdgeDef& aCurrCoEdge = myGraph.Topo().CoEdges().Definition(aCurrId);
 
-    const BRepGraphInc::EdgeDef& aPrevEdge = myGraph.Topo().Edges().Definition(aPrevCoEdge.EdgeDefId);
-    const BRepGraphInc::EdgeDef& aCurrEdge = myGraph.Topo().Edges().Definition(aCurrCoEdge.EdgeDefId);
+    const BRepGraphInc::EdgeDef& aPrevEdge =
+      myGraph.Topo().Edges().Definition(aPrevCoEdge.EdgeDefId);
+    const BRepGraphInc::EdgeDef& aCurrEdge =
+      myGraph.Topo().Edges().Definition(aCurrCoEdge.EdgeDefId);
 
     // Resolve oriented end vertex of previous and start vertex of current.
-    const BRepGraph_VertexRefId aPrevEndRef = (aPrevCoEdge.Orientation == TopAbs_FORWARD)
-                                                ? aPrevEdge.EndVertexRefId
-                                                : aPrevEdge.StartVertexRefId;
+    const BRepGraph_VertexRefId aPrevEndRef   = (aPrevCoEdge.Orientation == TopAbs_FORWARD)
+                                                  ? aPrevEdge.EndVertexRefId
+                                                  : aPrevEdge.StartVertexRefId;
     const BRepGraph_VertexRefId aCurrStartRef = (aCurrCoEdge.Orientation == TopAbs_FORWARD)
                                                   ? aCurrEdge.StartVertexRefId
                                                   : aCurrEdge.EndVertexRefId;
@@ -73,8 +75,7 @@ TEST_F(BRepGraph_WireExplorerTest, BoxWire_EdgesReturnedInConnectionOrder)
     ASSERT_TRUE(aPrevEndRef.IsValid()) << "Invalid end vertex ref at index " << anIdx;
     ASSERT_TRUE(aCurrStartRef.IsValid()) << "Invalid start vertex ref at index " << (anIdx + 1);
 
-    const BRepGraph_VertexId aPrevEndVtx =
-      myGraph.Refs().Vertices().Entry(aPrevEndRef).VertexDefId;
+    const BRepGraph_VertexId aPrevEndVtx = myGraph.Refs().Vertices().Entry(aPrevEndRef).VertexDefId;
     const BRepGraph_VertexId aCurrStartVtx =
       myGraph.Refs().Vertices().Entry(aCurrStartRef).VertexDefId;
 

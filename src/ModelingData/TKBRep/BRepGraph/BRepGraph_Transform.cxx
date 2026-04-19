@@ -62,7 +62,7 @@ void applyGeometryTransform(BRepGraph& theGraph, const gp_Trsf& theTrsf)
     const BRepGraph_FaceId                    aFaceId = aFaceIt.CurrentId();
     BRepGraph_MutGuard<BRepGraphInc::FaceDef> aFace   = theGraph.Editor().Faces().Mut(aFaceId);
     if (BRepGraph_Tool::Face::HasSurface(theGraph, aFaceId)
-      && aVisitedSurfReps.Add(aFace->SurfaceRepId))
+        && aVisitedSurfReps.Add(aFace->SurfaceRepId))
     {
       const occ::handle<Geom_Surface>& aSurf = BRepGraph_Tool::Face::Surface(theGraph, aFaceId);
       if (!aSurf.IsNull())
@@ -81,7 +81,7 @@ void applyGeometryTransform(BRepGraph& theGraph, const gp_Trsf& theTrsf)
     const BRepGraph_EdgeId                    anEdgeId = anEdgeIt.CurrentId();
     BRepGraph_MutGuard<BRepGraphInc::EdgeDef> anEdge   = theGraph.Editor().Edges().Mut(anEdgeId);
     if (BRepGraph_Tool::Edge::HasCurve(theGraph, anEdgeId)
-      && aVisitedCurveReps.Add(anEdge->Curve3DRepId))
+        && aVisitedCurveReps.Add(anEdge->Curve3DRepId))
     {
       const occ::handle<Geom_Curve>& aCurve3d = BRepGraph_Tool::Edge::Curve(theGraph, anEdgeId);
       if (!aCurve3d.IsNull())

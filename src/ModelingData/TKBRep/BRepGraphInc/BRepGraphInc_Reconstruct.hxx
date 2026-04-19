@@ -43,13 +43,13 @@ public:
   {
     //! Number of Kind slots used by BRepGraph_NodeId dense-kind indexing.
     //! Includes topology kinds, assembly kinds, and the reserved gap at kind 9.
-    static constexpr int THE_KIND_COUNT = BRepGraph_NodeId::THE_KIND_COUNT;
+    static constexpr int THE_KIND_COUNT        = BRepGraph_NodeId::THE_KIND_COUNT;
     static constexpr int THE_DEFAULT_INCREMENT = 32;
 
     occ::handle<NCollection_IncAllocator> myAllocator;
     occ::handle<NCollection_IncAllocator> myTempAllocator;
-    NCollection_Vector<TopoDS_Shape> myKinds[THE_KIND_COUNT];
-    int myTempScopeDepth = 0;
+    NCollection_Vector<TopoDS_Shape>      myKinds[THE_KIND_COUNT];
+    int                                   myTempScopeDepth = 0;
 
     struct TempScope
     {

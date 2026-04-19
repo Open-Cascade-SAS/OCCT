@@ -216,8 +216,9 @@ TEST_F(BRepGraph_EventBusTest, ZeroCost_NoSubscribers)
 {
   // Mutate edge without any subscribing layer - verify no crash.
   {
-    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut = myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start());
-    aMut->Tolerance                                = 0.5;
+    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut =
+      myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start());
+    aMut->Tolerance = 0.5;
   }
   EXPECT_GT(myGraph.Topo().Edges().Definition(BRepGraph_EdgeId::Start()).OwnGen, 0u);
 }
@@ -234,8 +235,9 @@ TEST_F(BRepGraph_EventBusTest, ImmediateMode_SingleEdge)
   myGraph.LayerRegistry().RegisterLayer(aLayer);
 
   {
-    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut = myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start());
-    aMut->Tolerance                                = 0.5;
+    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut =
+      myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start());
+    aMut->Tolerance = 0.5;
   }
 
   // Edge(0) should have an immediate event.
@@ -256,8 +258,9 @@ TEST_F(BRepGraph_EventBusTest, ImmediateMode_UpwardPropagation)
   myGraph.LayerRegistry().RegisterLayer(aLayer);
 
   {
-    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut = myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start());
-    aMut->Tolerance                                = 0.5;
+    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut =
+      myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start());
+    aMut->Tolerance = 0.5;
   }
 
   // Only directly mutated node gets immediate dispatch.
@@ -281,8 +284,9 @@ TEST_F(BRepGraph_EventBusTest, ImmediateMode_KindFilter)
   myGraph.LayerRegistry().RegisterLayer(aLayer);
 
   {
-    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut = myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start());
-    aMut->Tolerance                                = 0.5;
+    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut =
+      myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start());
+    aMut->Tolerance = 0.5;
   }
 
   // No face dispatch from upward propagation (mutex-free SubtreeGen only).
@@ -306,8 +310,8 @@ TEST_F(BRepGraph_EventBusTest, DeferredMode_BatchDispatch)
 
   myGraph.Editor().BeginDeferredInvalidation();
   myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start())->Tolerance = 0.5;
-  myGraph.Editor().Edges().Mut(BRepGraph_EdgeId(1))->Tolerance = 0.6;
-  myGraph.Editor().Edges().Mut(BRepGraph_EdgeId(2))->Tolerance = 0.7;
+  myGraph.Editor().Edges().Mut(BRepGraph_EdgeId(1))->Tolerance       = 0.6;
+  myGraph.Editor().Edges().Mut(BRepGraph_EdgeId(2))->Tolerance       = 0.7;
   myGraph.Editor().EndDeferredInvalidation();
 
   // OnNodesModified called exactly once.
@@ -348,8 +352,9 @@ TEST_F(BRepGraph_EventBusTest, UnregisterLayer_FlagUpdate)
 
   // Mutate - should dispatch.
   {
-    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut = myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start());
-    aMut->Tolerance                                = 0.5;
+    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut =
+      myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start());
+    aMut->Tolerance = 0.5;
   }
   EXPECT_GT(aLayer->myImmediateEvents.Length(), 0);
 
@@ -359,8 +364,9 @@ TEST_F(BRepGraph_EventBusTest, UnregisterLayer_FlagUpdate)
 
   // Mutate again - should NOT dispatch (layer unregistered).
   {
-    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut = myGraph.Editor().Edges().Mut(BRepGraph_EdgeId(1));
-    aMut->Tolerance                                = 0.6;
+    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut =
+      myGraph.Editor().Edges().Mut(BRepGraph_EdgeId(1));
+    aMut->Tolerance = 0.6;
   }
   EXPECT_EQ(aLayer->myImmediateEvents.Length(), 0);
 }
@@ -439,8 +445,9 @@ TEST_F(BRepGraph_EventBusTest, MultipleSubscribers)
   myGraph.LayerRegistry().RegisterLayer(aFaceLayer);
 
   {
-    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut = myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start());
-    aMut->Tolerance                                = 0.5;
+    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut =
+      myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start());
+    aMut->Tolerance = 0.5;
   }
 
   // Edge layer gets edge events (directly mutated), no face events.
@@ -463,8 +470,9 @@ TEST_F(BRepGraph_EventBusTest, DefaultSubscribedKinds_Zero)
   // Mutate - a layer with default SubscribedKinds() should not receive modification events.
   // This just verifies the default no-subscription path remains a no-op.
   {
-    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut = myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start());
-    aMut->Tolerance                                = 0.5;
+    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut =
+      myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start());
+    aMut->Tolerance = 0.5;
   }
   EXPECT_GT(myGraph.Topo().Edges().Definition(BRepGraph_EdgeId::Start()).OwnGen, 0u);
 }
@@ -610,8 +618,9 @@ TEST_F(BRepGraph_EventBusTest, OverlappingSubscription_EdgeAndFace)
   myGraph.LayerRegistry().RegisterLayer(aLayer);
 
   {
-    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut = myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start());
-    aMut->Tolerance                                = 0.5;
+    BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut =
+      myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start());
+    aMut->Tolerance = 0.5;
   }
 
   // Edge events from direct mutation; NO face events (no parent dispatch).

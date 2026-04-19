@@ -575,7 +575,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(
     TopoDS_Wire         aNewWire;
 
     const auto aProcessCoEdgeForFace = [&](const BRepGraph_CoEdgeRefId theCoEdgeRefId,
-                                           const bool                   theAddToWire) {
+                                           const bool                  theAddToWire) {
       const BRepGraphInc::CoEdgeRef& aCoEdgeRef = theStorage.CoEdgeRef(theCoEdgeRefId);
       if (aCoEdgeRef.IsRemoved || !aCoEdgeRef.CoEdgeDefId.IsValid(theStorage.NbCoEdges()))
         return;
@@ -754,7 +754,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(
 
   // Add wires to face: outer first, then inner.
   // Wire orientation must be applied before adding to face.
-  TopoDS_Wire                    anOuterWire;
+  TopoDS_Wire                     anOuterWire;
   NCollection_Vector<TopoDS_Wire> anInnerWires(Cache::THE_DEFAULT_INCREMENT,
                                                theCache.myTempAllocator);
   for (const BRepGraph_WireRefId& aWireRefId : aFace.WireRefIds)
@@ -836,7 +836,8 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(
       }
       if (anEdgeEnt.EndVertexRefId.IsValid())
       {
-        const BRepGraph_VertexId aVertexId = theStorage.VertexRef(anEdgeEnt.EndVertexRefId).VertexDefId;
+        const BRepGraph_VertexId aVertexId =
+          theStorage.VertexRef(anEdgeEnt.EndVertexRefId).VertexDefId;
         if (aProcessedVertices.Add(aVertexId.Index))
           restoreVertexPointReps(theStorage, theParams, aVertexId, theCache, aBB);
       }

@@ -162,7 +162,7 @@ int NCollection_UBTreeFiller<TheObjType, TheBndType>::Fill()
   {
     for (i = nbAdd; i > 0; i--)
     {
-      const int ind = i - static_cast<int>(static_cast<unsigned int>(myRandGen()) % i) - 1;
+      const int     ind     = i - static_cast<int>(static_cast<unsigned int>(myRandGen()) % i) - 1;
       const ObjBnd& aObjBnd = mySeqPtr(ind);
       myTree.Add(aObjBnd.myObj, aObjBnd.myBnd);
       mySeqPtr(ind) = mySeqPtr(i - 1);

@@ -54,9 +54,9 @@ void BRepGraph_LayerRegistry::UnregisterLayer(const Standard_GUID& theGUID)
   if (aSlotPtr == nullptr)
     return;
 
-  const int aSlot     = *aSlotPtr;
-  const int aLastSlot = myLayers.Length() - 1;
-  const occ::handle<BRepGraph_Layer> aRemoved = myLayers.Value(aSlot);
+  const int                          aSlot     = *aSlotPtr;
+  const int                          aLastSlot = myLayers.Length() - 1;
+  const occ::handle<BRepGraph_Layer> aRemoved  = myLayers.Value(aSlot);
   if (aSlot != aLastSlot)
   {
     const occ::handle<BRepGraph_Layer>& aLastLayer = myLayers.Value(aLastSlot);

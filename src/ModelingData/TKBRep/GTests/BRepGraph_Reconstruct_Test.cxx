@@ -415,7 +415,8 @@ TEST(BRepGraph_ReconstructTest, HasOriginal_ManualVertex_ReturnsFalse)
   BRepGraph_Builder::Perform(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  const BRepGraph_VertexId aVertexId = aGraph.Editor().Vertices().Add(gp_Pnt(42.0, 0.0, 0.0), 0.001);
+  const BRepGraph_VertexId aVertexId =
+    aGraph.Editor().Vertices().Add(gp_Pnt(42.0, 0.0, 0.0), 0.001);
   ASSERT_TRUE(aVertexId.IsValid());
 
   EXPECT_FALSE(aGraph.Shapes().HasOriginal(aVertexId));

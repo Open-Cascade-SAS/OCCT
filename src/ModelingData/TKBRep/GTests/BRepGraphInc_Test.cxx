@@ -212,9 +212,9 @@ TEST(BRepGraphIncTest, Storage_AppendAccess_UsesTypedIds)
   EXPECT_FALSE(aStorage.FaceRef(aFaceRefId).IsRemoved);
   EXPECT_FALSE(aStorage.SurfaceRep(aSurfaceRepId).IsRemoved);
 
-  aStorage.ChangeVertex(aVertexId).Tolerance        = 1.25;
-  aStorage.ChangeFaceRef(aFaceRefId).Orientation    = TopAbs_REVERSED;
-  aStorage.ChangeSurfaceRep(aSurfaceRepId).OwnGen   = 7;
+  aStorage.ChangeVertex(aVertexId).Tolerance      = 1.25;
+  aStorage.ChangeFaceRef(aFaceRefId).Orientation  = TopAbs_REVERSED;
+  aStorage.ChangeSurfaceRep(aSurfaceRepId).OwnGen = 7;
 
   EXPECT_DOUBLE_EQ(aStorage.Vertex(aVertexId).Tolerance, 1.25);
   EXPECT_EQ(aStorage.FaceRef(aFaceRefId).Orientation, TopAbs_REVERSED);
@@ -1330,8 +1330,8 @@ TEST(BRepGraphIncTest, ReverseIndex_CompSolid_ReverseMaintained_AfterBuild)
   // Build a TopoDS_CompSolid containing two boxes and verify:
   //   1. myCompSolidsOfSolid is populated for both solids
   //   2. ValidateReverseIndex() passes
-  BRep_Builder      aBB;
-  TopoDS_CompSolid  aCompSolid;
+  BRep_Builder     aBB;
+  TopoDS_CompSolid aCompSolid;
   aBB.MakeCompSolid(aCompSolid);
 
   BRepPrimAPI_MakeBox aBoxMaker1(4.0, 4.0, 4.0);
@@ -1392,7 +1392,7 @@ TEST(BRepGraphIncTest, ReverseIndex_CompSolid_ReverseMaintained_AfterBuildDelta)
 TEST(BRepGraphIncTest, ReverseIndex_Validate_Box_FullConsistency)
 {
   // Smoke test: a simple solid box must pass full reverse-index validation.
-  BRepPrimAPI_MakeBox  aBoxMaker(10.0, 20.0, 30.0);
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraphInc_Storage aStorage;

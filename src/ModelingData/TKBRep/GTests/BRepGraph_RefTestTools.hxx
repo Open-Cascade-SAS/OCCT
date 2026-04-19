@@ -149,9 +149,9 @@ inline NCollection_Vector<BRepGraph_SolidRefId> SolidRefsOfCompSolid(
   const BRepGraph_CompSolidId theCompSolidId)
 {
   NCollection_Vector<BRepGraph_SolidRefId> aRefIds;
-  const BRepGraph::RefsView&               aRefs = theGraph.Refs();
+  const BRepGraph::RefsView&               aRefs        = theGraph.Refs();
   const BRepGraph_NodeId                   aParentNode  = theCompSolidId;
-  const int              aNbSolidRefs            = aRefs.Solids().Nb();
+  const int                                aNbSolidRefs = aRefs.Solids().Nb();
   for (BRepGraph_SolidRefId aRefId(0); aRefId.IsValid(aNbSolidRefs); ++aRefId)
   {
     const BRepGraphInc::SolidRef& aRef = aRefs.Solids().Entry(aRefId);
@@ -328,8 +328,8 @@ inline NCollection_Vector<BRepGraph_SolidRefId> SolidRefsOfCompSolid(
   const BRepGraph_CompSolidId theCompSolidId)
 {
   NCollection_Vector<BRepGraph_SolidRefId> aRefIds;
-  const BRepGraph_NodeId aParentNode  = theCompSolidId;
-  const int              aNbSolidRefs = theStorage.NbSolidRefs();
+  const BRepGraph_NodeId                   aParentNode  = theCompSolidId;
+  const int                                aNbSolidRefs = theStorage.NbSolidRefs();
   for (BRepGraph_SolidRefId aRefId(0); aRefId.IsValid(aNbSolidRefs); ++aRefId)
   {
     const BRepGraphInc::SolidRef& aRef = theStorage.SolidRef(aRefId);

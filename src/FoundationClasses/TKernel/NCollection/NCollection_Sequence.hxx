@@ -401,8 +401,7 @@ public:
 
   void InsertAfter(const int theIndex, NCollection_Sequence& theSeq)
   {
-    Standard_OutOfRange_Raise_if(theIndex < 0,
-                                 "NCollection_Sequence::InsertAfter: negative index");
+    Standard_OutOfRange_Raise_if(theIndex < 0, "NCollection_Sequence::InsertAfter: negative index");
     InsertAfter(static_cast<size_t>(theIndex), theSeq);
   }
 
@@ -415,8 +414,7 @@ public:
 
   void InsertAfter(const int theIndex, const TheItemType& theItem)
   {
-    Standard_OutOfRange_Raise_if(theIndex < 0,
-                                 "NCollection_Sequence::InsertAfter: negative index");
+    Standard_OutOfRange_Raise_if(theIndex < 0, "NCollection_Sequence::InsertAfter: negative index");
     InsertAfter(static_cast<size_t>(theIndex), theItem);
   }
 
@@ -429,8 +427,7 @@ public:
 
   void InsertAfter(const int theIndex, TheItemType&& theItem)
   {
-    Standard_OutOfRange_Raise_if(theIndex < 0,
-                                 "NCollection_Sequence::InsertAfter: negative index");
+    Standard_OutOfRange_Raise_if(theIndex < 0, "NCollection_Sequence::InsertAfter: negative index");
     InsertAfter(static_cast<size_t>(theIndex), std::forward<TheItemType>(theItem));
   }
 

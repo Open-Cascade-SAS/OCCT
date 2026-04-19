@@ -20,8 +20,7 @@
 TEST(NCollection_DynamicArrayTest, SizeReturnsSizeT)
 {
   NCollection_DynamicArray<int> aVec;
-  static_assert(std::is_same_v<decltype(aVec.Size()), size_t>,
-                "Size() must return size_t");
+  static_assert(std::is_same_v<decltype(aVec.Size()), size_t>, "Size() must return size_t");
   EXPECT_EQ(size_t(0), aVec.Size());
 
   aVec.Append(42);

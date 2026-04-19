@@ -39,7 +39,8 @@ public:
 
   //! Return the RefUID assigned to a reference.
   //! @param[in] theRefId reference identifier
-  //! @return RefUID for the active reference, or invalid RefUID if theRefId is out of bounds or removed
+  //! @return RefUID for the active reference, or invalid RefUID if theRefId is out of bounds or
+  //! removed
   [[nodiscard]] Standard_EXPORT BRepGraph_RefUID Of(const BRepGraph_RefId theRefId) const;
 
   //! Resolve a UID back to a NodeId using the internal reverse index.

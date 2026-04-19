@@ -621,30 +621,26 @@ void BRepGraph_LayerParam::OnNodeRemoved(const BRepGraph_NodeId theNode,
   {
     case BRepGraph_NodeId::Kind::Vertex:
       if (theReplacement.NodeKind == BRepGraph_NodeId::Kind::Vertex && theReplacement.IsValid())
-        migrateVertexBindings(BRepGraph_VertexId(theNode),
-                              BRepGraph_VertexId(theReplacement));
+        migrateVertexBindings(BRepGraph_VertexId(theNode), BRepGraph_VertexId(theReplacement));
       else
         removeVertexBindings(BRepGraph_VertexId(theNode));
       break;
     case BRepGraph_NodeId::Kind::Edge:
       if (theReplacement.NodeKind == BRepGraph_NodeId::Kind::Edge && theReplacement.IsValid())
-        migrateEdgeBindings(BRepGraph_EdgeId(theNode),
-                            BRepGraph_EdgeId(theReplacement));
+        migrateEdgeBindings(BRepGraph_EdgeId(theNode), BRepGraph_EdgeId(theReplacement));
       else
         invalidateEdgeBindings(BRepGraph_EdgeId(theNode));
       break;
     case BRepGraph_NodeId::Kind::Face:
       if (theReplacement.NodeKind == BRepGraph_NodeId::Kind::Face && theReplacement.IsValid())
-        migrateFaceBindings(BRepGraph_FaceId(theNode),
-                            BRepGraph_FaceId(theReplacement));
+        migrateFaceBindings(BRepGraph_FaceId(theNode), BRepGraph_FaceId(theReplacement));
       else
         invalidateFaceBindings(BRepGraph_FaceId(theNode));
       break;
     case BRepGraph_NodeId::Kind::CoEdge:
       if (theReplacement.NodeKind == BRepGraph_NodeId::Kind::CoEdge && theReplacement.IsValid())
       {
-        migrateCoEdgeBindings(BRepGraph_CoEdgeId(theNode),
-                              BRepGraph_CoEdgeId(theReplacement));
+        migrateCoEdgeBindings(BRepGraph_CoEdgeId(theNode), BRepGraph_CoEdgeId(theReplacement));
       }
       else
       {

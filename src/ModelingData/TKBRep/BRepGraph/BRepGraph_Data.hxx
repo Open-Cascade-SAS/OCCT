@@ -61,7 +61,7 @@ struct BRepGraph_Data
   std::atomic<size_t> myNextUIDCounter{
     1}; //!< Starts at 1; counter=0 is BRepGraph_UID invalid sentinel.
   std::atomic<uint32_t> myGeneration{0};
-  Standard_GUID         myGraphGUID; //!< Random graph identity, generated at BRepGraph_Builder::Perform().
+  Standard_GUID myGraphGUID; //!< Random graph identity, generated at BRepGraph_Builder::Perform().
 
   //! History subsystem.
   BRepGraph_History myHistoryLog;
@@ -119,13 +119,13 @@ struct BRepGraph_Data
   using ReconstructCache = NCollection_DataMap<BRepGraph_NodeId, TopoDS_Shape>;
 
   //! Cached view objects (pointers set to owning BRepGraph in its constructor).
-  BRepGraph::TopoView    myTopoView{nullptr};
-  BRepGraph::UIDsView    myUIDsView{nullptr};
-  BRepGraph::CacheView   myCacheView{nullptr};
-  BRepGraph::RefsView    myRefsView{nullptr};
-  BRepGraph::ShapesView  myShapesView{nullptr};
+  BRepGraph::TopoView   myTopoView{nullptr};
+  BRepGraph::UIDsView   myUIDsView{nullptr};
+  BRepGraph::CacheView  myCacheView{nullptr};
+  BRepGraph::RefsView   myRefsView{nullptr};
+  BRepGraph::ShapesView myShapesView{nullptr};
   BRepGraph::EditorView myEditorView{nullptr};
-  BRepGraph::MeshView    myMeshView{nullptr};
+  BRepGraph::MeshView   myMeshView{nullptr};
 
   BRepGraph_Data()
       : myAllocator(new NCollection_IncAllocator),

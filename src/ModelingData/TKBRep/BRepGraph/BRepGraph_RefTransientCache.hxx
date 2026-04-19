@@ -36,8 +36,8 @@
 //! differs from the reference's current OwnGen the cached value is considered stale.
 //!
 //! ## Lifecycle
-//! NOT a Layer. Cleared on BRepGraph_Builder::Perform() and Compact(). No explicit removal callback -
-//! stale data is auto-detected by OwnGen mismatch.
+//! NOT a Layer. Cleared on BRepGraph_Builder::Perform() and Compact(). No explicit removal callback
+//! - stale data is auto-detected by OwnGen mismatch.
 //!
 //! ## Thread safety
 //! After Reserve(), Get() and Set() for in-range indices bypass the mutex entirely.

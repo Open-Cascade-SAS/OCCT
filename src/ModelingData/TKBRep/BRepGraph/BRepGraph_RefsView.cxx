@@ -497,4 +497,3 @@ const NCollection_Vector<BRepGraph_SolidRefId>& BRepGraph::RefsView::SolidOps::I
 }
 
 //=================================================================================================
-

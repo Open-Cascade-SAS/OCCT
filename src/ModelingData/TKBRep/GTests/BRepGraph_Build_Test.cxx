@@ -734,9 +734,10 @@ TEST(BRepGraph_BuildTest, Box_EdgeVertexDefsAreValid)
 
   for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
-    const BRepGraph_EdgeId         anEdgeId  = anEdgeIt.CurrentId();
-    const BRepGraphInc::VertexRef& aStartRef = BRepGraph_Tool::Edge::StartVertexRef(aGraph, anEdgeId);
-    const BRepGraphInc::VertexRef& anEndRef  = BRepGraph_Tool::Edge::EndVertexRef(aGraph, anEdgeId);
+    const BRepGraph_EdgeId         anEdgeId = anEdgeIt.CurrentId();
+    const BRepGraphInc::VertexRef& aStartRef =
+      BRepGraph_Tool::Edge::StartVertexRef(aGraph, anEdgeId);
+    const BRepGraphInc::VertexRef& anEndRef = BRepGraph_Tool::Edge::EndVertexRef(aGraph, anEdgeId);
     EXPECT_TRUE(aStartRef.VertexDefId.IsValid())
       << "Edge " << anEdgeId.Index << " has invalid start vertex";
     EXPECT_TRUE(anEndRef.VertexDefId.IsValid())
@@ -850,7 +851,8 @@ TEST(BRepGraph_BuildTest, AppendFlattenedShape_AfterBuild_DoesNotCreateNewSolidD
 
   EXPECT_EQ(aGraph.Topo().Solids().Nb(), aNbSolidsBefore);
   EXPECT_EQ(aGraph.Topo().Faces().Nb(), aNbFacesBefore + 6);
-  // Initial BRepGraph_Builder::Perform() created 1 product; AppendFlattenedShape doesn't create products.
+  // Initial BRepGraph_Builder::Perform() created 1 product; AppendFlattenedShape doesn't create
+  // products.
   EXPECT_EQ(aGraph.RootProductIds().Length(), 1);
   EXPECT_TRUE(aGraph.Editor().ValidateMutationBoundary());
 }
@@ -984,7 +986,7 @@ TEST(BRepGraph_BuildTest, AppendFlattenedShape_CompoundWithStandaloneShapes)
                BRepBuilderAPI_MakeEdge(gp_Pnt(0.0, 0.0, 0.0), gp_Pnt(10.0, 0.0, 0.0)).Shape());
 
   const int aNbVerticesBefore = aGraph.Topo().Vertices().Nb();
-  const int aNbEdgesBefore   = aGraph.Topo().Edges().Nb();
+  const int aNbEdgesBefore    = aGraph.Topo().Edges().Nb();
   aGraph.Editor().AppendFlattenedShape(aCompound);
   ASSERT_TRUE(aGraph.IsDone());
   // The compound should add at least 1 vertex and 1 edge.

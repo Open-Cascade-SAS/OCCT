@@ -90,7 +90,8 @@ TEST(BRepGraph_ParentExplorerTest, FaceParents_DirectParents_ExposeChildAndRef)
   EXPECT_EQ(anExp.CurrentChild(), BRepGraph_NodeId(BRepGraph_FaceId::Start()));
   EXPECT_EQ(anExp.CurrentLinkKind(), BRepGraph_ParentExplorer::LinkKind::Reference);
 
-  const BRepGraph_FaceRefId aFaceRefId = aGraph.Refs().Faces().IdsOf(BRepGraph_ShellId::Start()).Value(0);
+  const BRepGraph_FaceRefId aFaceRefId =
+    aGraph.Refs().Faces().IdsOf(BRepGraph_ShellId::Start()).Value(0);
   EXPECT_EQ(anExp.CurrentRef(), BRepGraph_RefId(aFaceRefId));
 }
 
@@ -150,7 +151,10 @@ TEST(BRepGraph_ParentExplorerTest, AllParents_AvoidSolid_PrunesProducts)
   BRepGraph_Builder::Perform(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  BRepGraph_ParentExplorer anExp(aGraph, BRepGraph_FaceId::Start(), BRepGraph_NodeId::Kind::Solid, false);
+  BRepGraph_ParentExplorer anExp(aGraph,
+                                 BRepGraph_FaceId::Start(),
+                                 BRepGraph_NodeId::Kind::Solid,
+                                 false);
   ASSERT_TRUE(anExp.More());
   EXPECT_EQ(anExp.Current().DefId, BRepGraph_NodeId(BRepGraph_ShellId::Start()));
 
@@ -164,7 +168,10 @@ TEST(BRepGraph_ParentExplorerTest, AllParents_AvoidSolidEmitBoundary_ReturnsShel
   BRepGraph_Builder::Perform(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  BRepGraph_ParentExplorer anExp(aGraph, BRepGraph_FaceId::Start(), BRepGraph_NodeId::Kind::Solid, true);
+  BRepGraph_ParentExplorer anExp(aGraph,
+                                 BRepGraph_FaceId::Start(),
+                                 BRepGraph_NodeId::Kind::Solid,
+                                 true);
   ASSERT_TRUE(anExp.More());
   EXPECT_EQ(anExp.Current().DefId, BRepGraph_NodeId(BRepGraph_ShellId::Start()));
 
@@ -191,8 +198,10 @@ TEST(BRepGraph_ParentExplorerTest, SharedProduct_ProductParentsKeepDistinctConte
   aT1.SetTranslation(gp_Vec(10.0, 0.0, 0.0));
   gp_Trsf aT2;
   aT2.SetTranslation(gp_Vec(25.0, 0.0, 0.0));
-  ASSERT_TRUE(aGraph.Editor().Products().AddOccurrence(anAssembly, aPart, TopLoc_Location(aT1)).IsValid());
-  ASSERT_TRUE(aGraph.Editor().Products().AddOccurrence(anAssembly, aPart, TopLoc_Location(aT2)).IsValid());
+  ASSERT_TRUE(
+    aGraph.Editor().Products().AddOccurrence(anAssembly, aPart, TopLoc_Location(aT1)).IsValid());
+  ASSERT_TRUE(
+    aGraph.Editor().Products().AddOccurrence(anAssembly, aPart, TopLoc_Location(aT2)).IsValid());
 
   int             aPartCount = 0;
   TopLoc_Location aLoc1;

@@ -24,8 +24,7 @@ TEST(BRepGraph_TypedIdDispatchTest, VisitNodeId_ConvertsToMatchingTypedId)
   const BRepGraph_NodeId aNodeId(BRepGraph_NodeId::Kind::Face, 4);
 
   bool      isFace = false;
-  const int anIdx  = BRepGraph_NodeId::Visit(aNodeId, [&](const auto theTypedId) -> int
-  {
+  const int anIdx  = BRepGraph_NodeId::Visit(aNodeId, [&](const auto theTypedId) -> int {
     using TypeId = std::remove_cv_t<decltype(theTypedId)>;
     isFace       = std::is_same_v<TypeId, BRepGraph_FaceId>;
     return theTypedId.Index;
@@ -40,8 +39,7 @@ TEST(BRepGraph_TypedIdDispatchTest, VisitRefId_ConvertsToMatchingTypedId)
   const BRepGraph_RefId aRefId(BRepGraph_RefId::Kind::CoEdge, 6);
 
   bool      isCoEdge = false;
-  const int anIdx    = BRepGraph_RefId::Visit(aRefId, [&](const auto theTypedId) -> int
-  {
+  const int anIdx    = BRepGraph_RefId::Visit(aRefId, [&](const auto theTypedId) -> int {
     using TypeId = std::remove_cv_t<decltype(theTypedId)>;
     isCoEdge     = std::is_same_v<TypeId, BRepGraph_CoEdgeRefId>;
     return theTypedId.Index;
@@ -56,8 +54,7 @@ TEST(BRepGraph_TypedIdDispatchTest, VisitRepId_ConvertsToMatchingTypedId)
   const BRepGraph_RepId aRepId(BRepGraph_RepId::Kind::PolygonOnTri, 2);
 
   bool      isPolygonOnTri = false;
-  const int anIdx          = BRepGraph_RepId::Visit(aRepId, [&](const auto theTypedId) -> int
-  {
+  const int anIdx          = BRepGraph_RepId::Visit(aRepId, [&](const auto theTypedId) -> int {
     using TypeId   = std::remove_cv_t<decltype(theTypedId)>;
     isPolygonOnTri = std::is_same_v<TypeId, BRepGraph_PolygonOnTriRepId>;
     return theTypedId.Index;

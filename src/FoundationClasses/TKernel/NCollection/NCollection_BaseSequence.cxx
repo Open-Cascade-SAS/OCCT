@@ -388,7 +388,9 @@ void NCollection_BaseSequence::RemoveSeq(const size_t theIndex, NCollection_DelS
 
 //=================================================================================================
 
-void NCollection_BaseSequence::RemoveSeq(const size_t From, const size_t To, NCollection_DelSeqNode fDel)
+void NCollection_BaseSequence::RemoveSeq(const size_t           From,
+                                         const size_t           To,
+                                         NCollection_DelSeqNode fDel)
 {
   Standard_OutOfRange_Raise_if(From == 0 || To > mySize || From > To,
                                "NCollection_BaseSequence::RemoveSeq() - invalid input range");

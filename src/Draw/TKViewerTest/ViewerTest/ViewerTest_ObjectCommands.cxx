@@ -165,9 +165,10 @@ static bool convertToColor(
   const occ::handle<NCollection_HSequence<TCollection_AsciiString>>& theColorValues,
   Quantity_Color&                                                    theColor)
 {
-  const char* anArgs[3] = {theColorValues->Length() >= 1 ? theColorValues->Value(1).ToCString() : "",
-                           theColorValues->Length() >= 2 ? theColorValues->Value(2).ToCString() : "",
-                           theColorValues->Length() >= 3 ? theColorValues->Value(3).ToCString() : ""};
+  const char* anArgs[3] = {
+    theColorValues->Length() >= 1 ? theColorValues->Value(1).ToCString() : "",
+    theColorValues->Length() >= 2 ? theColorValues->Value(2).ToCString() : "",
+    theColorValues->Length() >= 3 ? theColorValues->Value(3).ToCString() : ""};
   return Draw::ParseColor(theColorValues->Length(), anArgs, theColor) != 0;
 }
 

@@ -167,8 +167,9 @@ TEST_F(BRepGraph_ConvenienceTest, FindPCurve_ValidPair)
 
 TEST_F(BRepGraph_ConvenienceTest, FindPCurve_InvalidPair_ReturnsNull)
 {
-  EXPECT_EQ(BRepGraph_Tool::Edge::FindPCurve(myGraph, BRepGraph_EdgeId::Start(), BRepGraph_FaceId(9999)),
-            nullptr);
+  EXPECT_EQ(
+    BRepGraph_Tool::Edge::FindPCurve(myGraph, BRepGraph_EdgeId::Start(), BRepGraph_FaceId(9999)),
+    nullptr);
 }
 
 // ---------- Part F: RefsView::FaceRefIdsOf ----------

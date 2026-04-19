@@ -44,7 +44,7 @@ TEST(BRepGraph_ReplaceVertexTest, StartVertex_SwappedToFreshVertex_AuditClean)
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Topo().Edges().Nb(), 0);
 
-  const BRepGraph_EdgeId anEdgeId(0);
+  const BRepGraph_EdgeId      anEdgeId(0);
   const BRepGraph_VertexRefId anOldStartRefId =
     aGraph.Topo().Edges().Definition(anEdgeId).StartVertexRefId;
   ASSERT_TRUE(anOldStartRefId.IsValid());
@@ -80,8 +80,7 @@ TEST(BRepGraph_ReplaceVertexTest, EndVertex_SwappedToFreshVertex_PreservesOrient
   const BRepGraph_VertexRefId anOldEndRefId =
     aGraph.Topo().Edges().Definition(anEdgeId).EndVertexRefId;
   ASSERT_TRUE(anOldEndRefId.IsValid());
-  const TopAbs_Orientation aExpectedOri =
-    aGraph.Refs().Vertices().Entry(anOldEndRefId).Orientation;
+  const TopAbs_Orientation aExpectedOri = aGraph.Refs().Vertices().Entry(anOldEndRefId).Orientation;
 
   const BRepGraph_VertexId aNewVertex =
     aGraph.Editor().Vertices().Add(gp_Pnt(1.0, 2.0, 3.0), 1.0e-7);
@@ -134,8 +133,7 @@ TEST(BRepGraph_ReplaceVertexTest, InactiveEdge_Rejected)
 
   const BRepGraph_VertexRefId aResult =
     aGraph.Editor().Edges().ReplaceVertex(anEdgeId, anOldRefId, aNewVertex);
-  EXPECT_FALSE(aResult.IsValid())
-    << "Replacing on a removed edge must return an invalid ref id";
+  EXPECT_FALSE(aResult.IsValid()) << "Replacing on a removed edge must return an invalid ref id";
 }
 
 TEST(BRepGraph_ReplaceVertexTest, WrongParent_Rejected)
@@ -167,14 +165,12 @@ TEST(BRepGraph_ReplaceVertexTest, ReverseIndex_Rebuilt_VertexToEdge)
   const BRepGraph_EdgeId      anEdgeId(0);
   const BRepGraph_VertexRefId anOldRefId =
     aGraph.Topo().Edges().Definition(anEdgeId).StartVertexRefId;
-  const BRepGraph_VertexId aOldVertexId =
-    aGraph.Refs().Vertices().Entry(anOldRefId).VertexDefId;
+  const BRepGraph_VertexId aOldVertexId = aGraph.Refs().Vertices().Entry(anOldRefId).VertexDefId;
 
   const BRepGraph_VertexId aNewVertex =
     aGraph.Editor().Vertices().Add(gp_Pnt(1000.0, 0.0, 0.0), 1.0e-7);
 
-  ASSERT_TRUE(
-    aGraph.Editor().Edges().ReplaceVertex(anEdgeId, anOldRefId, aNewVertex).IsValid());
+  ASSERT_TRUE(aGraph.Editor().Edges().ReplaceVertex(anEdgeId, anOldRefId, aNewVertex).IsValid());
 
   // New vertex must now see anEdgeId in its vertex-to-edge reverse map.
   const NCollection_Vector<BRepGraph_EdgeId>& aNewEdges =

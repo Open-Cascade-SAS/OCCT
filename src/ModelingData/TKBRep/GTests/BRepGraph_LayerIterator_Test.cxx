@@ -34,7 +34,8 @@ public:
   {
   }
 
-  const Standard_GUID&           ID() const override { return myId; }
+  const Standard_GUID& ID() const override { return myId; }
+
   const TCollection_AsciiString& Name() const override { return myName; }
 
   void OnNodeRemoved(const BRepGraph_NodeId /*theNode*/,
@@ -42,12 +43,13 @@ public:
   {
   }
 
-  void OnCompact(
-    const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>& /*theRemapMap*/) noexcept override
+  void OnCompact(const NCollection_DataMap<BRepGraph_NodeId,
+                                           BRepGraph_NodeId>& /*theRemapMap*/) noexcept override
   {
   }
 
   void InvalidateAll() noexcept override {}
+
   void Clear() noexcept override {}
 
 private:

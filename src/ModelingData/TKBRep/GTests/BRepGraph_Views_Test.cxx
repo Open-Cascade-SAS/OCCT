@@ -214,7 +214,9 @@ TEST_F(BRepGraph_ViewsTest, DefsView_FindPCurve_NoCrash)
 {
   // FindPCurve may or may not return a non-null pointer for an arbitrary edge/face pair.
   // Just verify it does not crash.
-  (void)BRepGraph_Tool::Edge::FindPCurve(myGraph, BRepGraph_EdgeId::Start(), BRepGraph_FaceId::Start());
+  (void)BRepGraph_Tool::Edge::FindPCurve(myGraph,
+                                         BRepGraph_EdgeId::Start(),
+                                         BRepGraph_FaceId::Start());
 }
 
 TEST_F(BRepGraph_ViewsTest, DefsView_RepIdConvenienceAccessors_RoundTrip)
@@ -346,7 +348,7 @@ TEST_F(BRepGraph_ViewsTest, UIDsView_Of_RemovedRef_ReturnsInvalid)
     myGraph.Refs().Faces().IdsOf(BRepGraph_ShellId::Start());
   ASSERT_GT(aFaceRefs.Length(), 0);
   const BRepGraph_FaceRefId aFaceRefId = aFaceRefs.Value(0);
-  const BRepGraph_RefUID    aUID = myGraph.UIDs().Of(aFaceRefId);
+  const BRepGraph_RefUID    aUID       = myGraph.UIDs().Of(aFaceRefId);
   ASSERT_TRUE(aUID.IsValid());
 
   ASSERT_TRUE(myGraph.Editor().Gen().RemoveRef(aFaceRefId));
@@ -455,7 +457,10 @@ TEST_F(BRepGraph_ViewsTest, TopoView_GroupedProductAndOccurrenceOps_Parity)
   const BRepGraph_OccurrenceId aSubOccurrence =
     myGraph.Editor().Products().AddOccurrence(aRootAssembly, aSubAssembly, TopLoc_Location());
   const BRepGraph_OccurrenceId aPartOccurrence =
-    myGraph.Editor().Products().AddOccurrence(aSubAssembly, aPartProduct, TopLoc_Location(), aSubOccurrence);
+    myGraph.Editor().Products().AddOccurrence(aSubAssembly,
+                                              aPartProduct,
+                                              TopLoc_Location(),
+                                              aSubOccurrence);
   ASSERT_TRUE(aSubOccurrence.IsValid());
   ASSERT_TRUE(aPartOccurrence.IsValid());
 
@@ -468,8 +473,7 @@ TEST_F(BRepGraph_ViewsTest, TopoView_GroupedProductAndOccurrenceOps_Parity)
 
   EXPECT_EQ(BRepGraph_NodeId(aPartOccurrence), BRepGraph_NodeId(aPartOccurrence));
   EXPECT_EQ(myGraph.Topo().Occurrences().Product(aPartOccurrence), aPartProduct);
-  EXPECT_EQ(myGraph.Topo().Occurrences().ParentProduct(aPartOccurrence),
-            aSubAssembly);
+  EXPECT_EQ(myGraph.Topo().Occurrences().ParentProduct(aPartOccurrence), aSubAssembly);
 
   const NCollection_Vector<BRepGraph_OccurrenceRefId>& aOccurrenceRefs =
     myGraph.Refs().Occurrences().IdsOf(aSubAssembly);
@@ -798,8 +802,8 @@ TEST_F(BRepGraph_ViewsTest, RefsView_VertexRefIdsOfEdge_ContainsBoundaryVertices
   for (BRepGraph_RefsVertexOfEdge aRefIt(myGraph, BRepGraph_EdgeId::Start()); aRefIt.More();
        aRefIt.Next())
   {
-    const BRepGraph_VertexRefId aVertexRefId = aRefIt.CurrentId();
-    const BRepGraphInc::VertexRef& aRef = myGraph.Refs().Vertices().Entry(aVertexRefId);
+    const BRepGraph_VertexRefId    aVertexRefId = aRefIt.CurrentId();
+    const BRepGraphInc::VertexRef& aRef         = myGraph.Refs().Vertices().Entry(aVertexRefId);
     EXPECT_FALSE(aRef.IsRemoved);
     EXPECT_TRUE(aRef.VertexDefId.IsValid(myGraph.Topo().Vertices().Nb()));
     ++aNbVertexRefs;
@@ -818,9 +822,10 @@ TEST_F(BRepGraph_ViewsTest, RefsView_GenericRefHelpers_RoundTripForTypedRef)
   aTrsf.SetTranslation(gp_Vec(1.0, 2.0, 3.0));
 
   {
-    BRepGraph_MutGuard<BRepGraphInc::FaceRef> aFaceRef = myGraph.Editor().Faces().MutRef(aFaceRefId);
-    aFaceRef->LocalLocation                            = TopLoc_Location(aTrsf);
-    aFaceRef->Orientation                              = TopAbs_REVERSED;
+    BRepGraph_MutGuard<BRepGraphInc::FaceRef> aFaceRef =
+      myGraph.Editor().Faces().MutRef(aFaceRefId);
+    aFaceRef->LocalLocation = TopLoc_Location(aTrsf);
+    aFaceRef->Orientation   = TopAbs_REVERSED;
   }
 
   const BRepGraphInc::FaceRef& aFaceRefEntry = myGraph.Refs().Faces().Entry(aFaceRefId);
@@ -862,8 +867,10 @@ TEST_F(BRepGraph_ViewsTest, RefsView_GenericRefHelpers_OccurrenceDefaults)
 
   gp_Trsf aTrsf;
   aTrsf.SetTranslation(gp_Vec(4.0, 5.0, 6.0));
-  ASSERT_TRUE(
-    myGraph.Editor().Products().AddOccurrence(anAssembly, aPartProduct, TopLoc_Location(aTrsf)).IsValid());
+  ASSERT_TRUE(myGraph.Editor()
+                .Products()
+                .AddOccurrence(anAssembly, aPartProduct, TopLoc_Location(aTrsf))
+                .IsValid());
 
   const NCollection_Vector<BRepGraph_OccurrenceRefId>& anOccurrenceRefs =
     myGraph.Refs().Occurrences().IdsOf(anAssembly);
@@ -891,8 +898,9 @@ TEST_F(BRepGraph_ViewsTest, RefsView_GenericRefHelpers_InvalidAndRemoved)
   const BRepGraph_FaceRefId aFaceRefId = aFaceRefs.Value(0);
 
   {
-    BRepGraph_MutGuard<BRepGraphInc::FaceRef> aFaceRef = myGraph.Editor().Faces().MutRef(aFaceRefId);
-    aFaceRef->IsRemoved                                = true;
+    BRepGraph_MutGuard<BRepGraphInc::FaceRef> aFaceRef =
+      myGraph.Editor().Faces().MutRef(aFaceRefId);
+    aFaceRef->IsRemoved = true;
   }
 
   EXPECT_TRUE(myGraph.Refs().IsRemoved(aFaceRefId));
@@ -914,9 +922,9 @@ TEST_F(BRepGraph_ViewsTest, ShapesView_HasOriginal_True)
 
 TEST_F(BRepGraph_ViewsTest, ShapesView_FindOriginal_ValidNode_ReturnsPointer)
 {
-  const BRepGraph_FaceId   aFaceId(0);
-  const TopoDS_Shape*      aFound = myGraph.Shapes().FindOriginal(aFaceId);
-  const TopoDS_Shape&      anOrig = myGraph.Shapes().OriginalOf(aFaceId);
+  const BRepGraph_FaceId aFaceId(0);
+  const TopoDS_Shape*    aFound = myGraph.Shapes().FindOriginal(aFaceId);
+  const TopoDS_Shape&    anOrig = myGraph.Shapes().OriginalOf(aFaceId);
   ASSERT_NE(aFound, nullptr);
   EXPECT_TRUE(aFound->IsSame(anOrig));
 }
@@ -928,9 +936,9 @@ TEST_F(BRepGraph_ViewsTest, ShapesView_FindOriginal_InvalidNode_ReturnsNull)
 
 TEST_F(BRepGraph_ViewsTest, ShapesView_OriginalOf_InvalidNode_Throws)
 {
-  #ifndef No_Exception
+#ifndef No_Exception
   EXPECT_THROW((void)myGraph.Shapes().OriginalOf(BRepGraph_NodeId()), Standard_ProgramError);
-  #endif
+#endif
 }
 
 TEST_F(BRepGraph_ViewsTest, ShapesView_RemovedNode_OriginalQueries_AreUnavailable)
@@ -943,9 +951,9 @@ TEST_F(BRepGraph_ViewsTest, ShapesView_RemovedNode_OriginalQueries_AreUnavailabl
   EXPECT_FALSE(myGraph.Shapes().HasOriginal(aFaceId));
   EXPECT_EQ(myGraph.Shapes().FindOriginal(aFaceId), nullptr);
   EXPECT_TRUE(myGraph.Shapes().Shape(aFaceId).IsNull());
-  #ifndef No_Exception
+#ifndef No_Exception
   EXPECT_THROW((void)myGraph.Shapes().OriginalOf(aFaceId), Standard_ProgramError);
-  #endif
+#endif
 }
 
 TEST_F(BRepGraph_ViewsTest, ShapesView_Reconstruct_InvalidNode_ReturnsNull)
@@ -962,10 +970,10 @@ TEST_F(BRepGraph_ViewsTest, ShapesView_Reconstruct_RemovedNode_ReturnsNull)
 
 TEST_F(BRepGraph_ViewsTest, ShapesView_FindNodeAndHasNode_RemovedNode_AreUnavailable)
 {
-  const BRepGraph_FaceId   aFaceId(0);
-  const TopoDS_Shape*      aOrig   = myGraph.Shapes().FindOriginal(aFaceId);
+  const BRepGraph_FaceId aFaceId(0);
+  const TopoDS_Shape*    aOrig = myGraph.Shapes().FindOriginal(aFaceId);
   ASSERT_NE(aOrig, nullptr);
-  const TopoDS_Shape       aFaceShape = *aOrig;
+  const TopoDS_Shape aFaceShape = *aOrig;
 
   ASSERT_TRUE(myGraph.Shapes().HasNode(aFaceShape));
   ASSERT_EQ(myGraph.Shapes().FindNode(aFaceShape), BRepGraph_NodeId(aFaceId));
@@ -989,18 +997,18 @@ TEST_F(BRepGraph_ViewsTest, MutView_EdgeDef_IncrementsOwnGen)
 
 TEST_F(BRepGraph_ViewsTest, MutView_InvalidNode_ThrowsProgramError)
 {
-  #ifndef No_Exception
+#ifndef No_Exception
   EXPECT_THROW((void)myGraph.Editor().Faces().Mut(BRepGraph_FaceId(777777)), Standard_ProgramError);
-  #endif
+#endif
 }
 
 TEST_F(BRepGraph_ViewsTest, MutView_RemovedNode_ThrowsProgramError)
 {
-  #ifndef No_Exception
+#ifndef No_Exception
   const BRepGraph_FaceId aFaceId(0);
   myGraph.Editor().Gen().RemoveNode(aFaceId);
   EXPECT_THROW((void)myGraph.Editor().Faces().Mut(aFaceId), Standard_ProgramError);
-  #endif
+#endif
 }
 
 TEST_F(BRepGraph_ViewsTest, MutView_RemovedRef_ThrowsProgramError)
@@ -1011,20 +1019,21 @@ TEST_F(BRepGraph_ViewsTest, MutView_RemovedRef_ThrowsProgramError)
   const BRepGraph_FaceRefId aFaceRefId = aFaceRefs.Value(0);
 
   ASSERT_TRUE(myGraph.Editor().Gen().RemoveRef(aFaceRefId));
-  #ifndef No_Exception
+#ifndef No_Exception
   EXPECT_THROW((void)myGraph.Editor().Faces().MutRef(aFaceRefId), Standard_ProgramError);
-  #endif
+#endif
 }
 
 TEST_F(BRepGraph_ViewsTest, MutView_RemovedRep_ThrowsProgramError)
 {
-  const BRepGraph_SurfaceRepId aSurfaceRepId = myGraph.Topo().Faces().SurfaceRepId(BRepGraph_FaceId::Start());
+  const BRepGraph_SurfaceRepId aSurfaceRepId =
+    myGraph.Topo().Faces().SurfaceRepId(BRepGraph_FaceId::Start());
   ASSERT_TRUE(aSurfaceRepId.IsValid());
 
   myGraph.Editor().Gen().RemoveRep(aSurfaceRepId);
-  #ifndef No_Exception
+#ifndef No_Exception
   EXPECT_THROW((void)myGraph.Editor().Reps().MutSurface(aSurfaceRepId), Standard_ProgramError);
-  #endif
+#endif
 }
 
 // ---------- EditorView ----------

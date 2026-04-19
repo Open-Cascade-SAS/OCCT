@@ -532,8 +532,7 @@ TEST(BRepGraph_GeometryTest, CoEdgePCurveAdaptor_FallsBackOnPlaneWhenStoredPCurv
   aGraph.Editor().CoEdges().SetPCurve(aCoEdgeId, occ::handle<Geom2d_Curve>());
   EXPECT_TRUE(BRepGraph_Tool::CoEdge::PCurve(aGraph, aCoEdgeId).IsNull());
 
-  const Geom2dAdaptor_Curve aPCurve =
-    BRepGraph_Tool::CoEdge::PCurveAdaptor(aGraph, aCoEdgeId);
+  const Geom2dAdaptor_Curve aPCurve = BRepGraph_Tool::CoEdge::PCurveAdaptor(aGraph, aCoEdgeId);
   ASSERT_TRUE(aPCurve.IsInitialized());
   EXPECT_FALSE(BRepGraph_Tool::CoEdge::HasPCurve(aGraph, aCoEdgeId));
 

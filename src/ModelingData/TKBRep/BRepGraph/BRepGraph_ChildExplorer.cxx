@@ -149,9 +149,10 @@ BRepGraph_ChildExplorer::BRepGraph_ChildExplorer(
   const std::optional<BRepGraph_NodeId::Kind>& theAvoidKind,
   const bool                                   theEmitAvoidKind,
   const TraversalMode                          theMode)
-    : BRepGraph_ChildExplorer(theGraph,
-                              theRoot,
-                              childExplorerConfig(theMode, std::nullopt, theAvoidKind, theEmitAvoidKind))
+    : BRepGraph_ChildExplorer(
+        theGraph,
+        theRoot,
+        childExplorerConfig(theMode, std::nullopt, theAvoidKind, theEmitAvoidKind))
 {
 }
 
@@ -194,12 +195,10 @@ BRepGraph_ChildExplorer::BRepGraph_ChildExplorer(
   const std::optional<BRepGraph_NodeId::Kind>& theAvoidKind,
   const bool                                   theEmitAvoidKind,
   const TraversalMode                          theMode)
-    : BRepGraph_ChildExplorer(theGraph,
-                              theRoot,
-                              childExplorerConfig(theMode,
-                                                  theTargetKind,
-                                                  theAvoidKind,
-                                                  theEmitAvoidKind))
+    : BRepGraph_ChildExplorer(
+        theGraph,
+        theRoot,
+        childExplorerConfig(theMode, theTargetKind, theAvoidKind, theEmitAvoidKind))
 {
 }
 
@@ -221,14 +220,10 @@ BRepGraph_ChildExplorer::BRepGraph_ChildExplorer(const BRepGraph&       theGraph
                                                  const bool             theCumLoc,
                                                  const bool             theCumOri,
                                                  const TraversalMode    theMode)
-    : BRepGraph_ChildExplorer(theGraph,
-                              theRoot,
-                              childExplorerConfig(theMode,
-                                                  theTargetKind,
-                                                  std::nullopt,
-                                                  false,
-                                                  theCumLoc,
-                                                  theCumOri))
+    : BRepGraph_ChildExplorer(
+        theGraph,
+        theRoot,
+        childExplorerConfig(theMode, theTargetKind, std::nullopt, false, theCumLoc, theCumOri))
 {
 }
 
@@ -288,7 +283,8 @@ void BRepGraph_ChildExplorer::startTraversal(const TopLoc_Location&   theStartLo
   if (matchesAvoid(myRoot))
   {
     const BRepGraphInc::BaseDef* aRootDef = myGraph->Topo().Gen().TopoEntity(myRoot);
-    if (myConfig.TargetKind.has_value() && myConfig.EmitAvoidKind && aRootDef != nullptr && !aRootDef->IsRemoved)
+    if (myConfig.TargetKind.has_value() && myConfig.EmitAvoidKind && aRootDef != nullptr
+        && !aRootDef->IsRemoved)
     {
       StackFrame aRootFrame;
       aRootFrame.Node           = myRoot;
@@ -629,8 +625,8 @@ void BRepGraph_ChildExplorer::advance()
 
       case Kind::Product: {
         // All product children (shape roots and sub-products) go through occurrences.
-          const BRepGraph_ProductId aProdId(aFrame.Node);
-        const int aNbComps = myGraph->Topo().Products().NbComponents(aProdId);
+        const BRepGraph_ProductId aProdId(aFrame.Node);
+        const int                 aNbComps = myGraph->Topo().Products().NbComponents(aProdId);
         if (aIdx < aNbComps)
         {
           const BRepGraph_OccurrenceId anOccId =
@@ -698,7 +694,8 @@ void BRepGraph_ChildExplorer::advance()
 
     // Descend if this kind can contain the target.
     if (myConfig.Mode == TraversalMode::Recursive
-        && ((myConfig.TargetKind.has_value() && canContainTarget(aChildNode.NodeKind, *myConfig.TargetKind))
+        && ((myConfig.TargetKind.has_value()
+             && canContainTarget(aChildNode.NodeKind, *myConfig.TargetKind))
             || (!myConfig.TargetKind.has_value() && canHaveChildren(aChildNode.NodeKind))))
     {
       StackFrame aChildFrame;
@@ -773,7 +770,8 @@ bool BRepGraph_ChildExplorer::shouldDescendFromCurrent() const
   }
 
   const BRepGraph_NodeId aNode = myStack[myCurrentFrame].Node;
-  return !myConfig.TargetKind.has_value() && !matchesAvoid(aNode) && canHaveChildren(aNode.NodeKind);
+  return !myConfig.TargetKind.has_value() && !matchesAvoid(aNode)
+         && canHaveChildren(aNode.NodeKind);
 }
 
 //=================================================================================================

@@ -120,31 +120,32 @@ public:
   //! @param[in] theOldNbCompSolids compsolid count before the append operation
   //! @param[in] theOldNbChildRefs  ChildRef count before the append operation
   //! @param[in] theOldNbSolidRefs  SolidRef count before the append operation
-  Standard_EXPORT void BuildDelta(const NCollection_Vector<BRepGraphInc::VertexDef>& theVertices,
-                                  const NCollection_Vector<BRepGraphInc::EdgeDef>&   theEdges,
-                                  const NCollection_Vector<BRepGraphInc::CoEdgeDef>& theCoEdges,
-                                  const NCollection_Vector<BRepGraphInc::WireDef>&   theWires,
-                                  const NCollection_Vector<BRepGraphInc::FaceDef>&   theFaces,
-                                  const NCollection_Vector<BRepGraphInc::ShellDef>&  theShells,
-                                  const NCollection_Vector<BRepGraphInc::SolidDef>&  theSolids,
-                                  const NCollection_Vector<BRepGraphInc::CompoundDef>&  theCompounds,
-                                  const NCollection_Vector<BRepGraphInc::CompSolidDef>& theCompSolids,
-                                  const NCollection_Vector<BRepGraphInc::ShellRef>&  theShellRefs,
-                                  const NCollection_Vector<BRepGraphInc::FaceRef>&   theFaceRefs,
-                                  const NCollection_Vector<BRepGraphInc::WireRef>&   theWireRefs,
-                                  const NCollection_Vector<BRepGraphInc::CoEdgeRef>& theCoEdgeRefs,
-                                  const NCollection_Vector<BRepGraphInc::SolidRef>&  theSolidRefs,
-                                  const NCollection_Vector<BRepGraphInc::ChildRef>&  theChildRefs,
-                                  const NCollection_Vector<BRepGraphInc::VertexRef>& theVertexRefs,
-                                  const int                                          theOldNbEdges,
-                                  const int                                          theOldNbWires,
-                                  const int                                          theOldNbFaces,
-                                  const int                                          theOldNbShells,
-                                  const int                                          theOldNbSolids,
-                                  const int                                          theOldNbCompounds,
-                                  const int                                          theOldNbCompSolids,
-                                  const int                                          theOldNbChildRefs,
-                                  const int                                          theOldNbSolidRefs);
+  Standard_EXPORT void BuildDelta(
+    const NCollection_Vector<BRepGraphInc::VertexDef>&    theVertices,
+    const NCollection_Vector<BRepGraphInc::EdgeDef>&      theEdges,
+    const NCollection_Vector<BRepGraphInc::CoEdgeDef>&    theCoEdges,
+    const NCollection_Vector<BRepGraphInc::WireDef>&      theWires,
+    const NCollection_Vector<BRepGraphInc::FaceDef>&      theFaces,
+    const NCollection_Vector<BRepGraphInc::ShellDef>&     theShells,
+    const NCollection_Vector<BRepGraphInc::SolidDef>&     theSolids,
+    const NCollection_Vector<BRepGraphInc::CompoundDef>&  theCompounds,
+    const NCollection_Vector<BRepGraphInc::CompSolidDef>& theCompSolids,
+    const NCollection_Vector<BRepGraphInc::ShellRef>&     theShellRefs,
+    const NCollection_Vector<BRepGraphInc::FaceRef>&      theFaceRefs,
+    const NCollection_Vector<BRepGraphInc::WireRef>&      theWireRefs,
+    const NCollection_Vector<BRepGraphInc::CoEdgeRef>&    theCoEdgeRefs,
+    const NCollection_Vector<BRepGraphInc::SolidRef>&     theSolidRefs,
+    const NCollection_Vector<BRepGraphInc::ChildRef>&     theChildRefs,
+    const NCollection_Vector<BRepGraphInc::VertexRef>&    theVertexRefs,
+    const int                                             theOldNbEdges,
+    const int                                             theOldNbWires,
+    const int                                             theOldNbFaces,
+    const int                                             theOldNbShells,
+    const int                                             theOldNbSolids,
+    const int                                             theOldNbCompounds,
+    const int                                             theOldNbCompSolids,
+    const int                                             theOldNbChildRefs,
+    const int                                             theOldNbSolidRefs);
 
   //! Build product-to-occurrences reverse index.
   //! @param[in] theOccurrences occurrence entity vector
@@ -536,7 +537,7 @@ private:
   TypedIndexTable<BRepGraph_CompoundId>
     myCompoundsOfCompound; //!< Compound -> parent Compound indices.
   TypedIndexTable<BRepGraph_CompoundId>
-    myCompoundsOfCompSolid;                             //!< CompSolid -> parent Compound indices.
+    myCompoundsOfCompSolid; //!< CompSolid -> parent Compound indices.
   TypedIndexTable<BRepGraph_CompoundId> myCompoundsOfWire;   //!< Wire -> parent Compound indices.
   TypedIndexTable<BRepGraph_CompoundId> myCompoundsOfEdge;   //!< Edge -> parent Compound indices.
   TypedIndexTable<BRepGraph_CompoundId> myCompoundsOfVertex; //!< Vertex -> parent Compound indices.

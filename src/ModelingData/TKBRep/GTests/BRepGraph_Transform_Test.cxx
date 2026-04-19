@@ -74,8 +74,8 @@ TEST(BRepGraph_TransformTest, TranslateBox_AreaPreserved)
   ASSERT_TRUE(aResultGraph.IsDone());
 
   // Verify area is preserved by summing individual face areas.
-  double aTransArea = 0.0;
-  const int aNbFaces = aResultGraph.Topo().Faces().Nb();
+  double    aTransArea = 0.0;
+  const int aNbFaces   = aResultGraph.Topo().Faces().Nb();
   for (BRepGraph_FaceId aFaceId(0); aFaceId.IsValid(aNbFaces); ++aFaceId)
   {
     TopoDS_Shape aFace = aResultGraph.Shapes().Reconstruct(aFaceId);
@@ -152,7 +152,7 @@ TEST(BRepGraph_TransformTest, LocationOnly_NoCopyGeom)
 
   // Verify the transform is stored on the shape-root OccurrenceRef's LocalLocation.
   ASSERT_GT(aResultGraph.Topo().Products().Nb(), 0);
-  const BRepGraph_ProductId aProductId = BRepGraph_ProductId::Start();
+  const BRepGraph_ProductId       aProductId = BRepGraph_ProductId::Start();
   const BRepGraphInc::ProductDef& aProductDef =
     aResultGraph.Topo().Products().Definition(aProductId);
   ASSERT_GE(aProductDef.OccurrenceRefIds.Length(), 1);

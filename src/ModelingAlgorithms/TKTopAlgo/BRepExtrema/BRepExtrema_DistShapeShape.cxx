@@ -318,7 +318,9 @@ struct DistanceFunctor
 
   void operator()(const int theIndex) const
   {
-    Message_ProgressScope aScope(Ranges[theIndex], nullptr, ArrayOfArrays->Value(theIndex).Length());
+    Message_ProgressScope aScope(Ranges[theIndex],
+                                 nullptr,
+                                 ArrayOfArrays->Value(theIndex).Length());
     Solution.Dist[theIndex] = StartDist;
     for (int i = 0; i < ArrayOfArrays->Value(theIndex).Length(); i++)
     {
@@ -709,8 +711,10 @@ struct TreatmentFunctor
 
   void operator()(const int theIndex) const
   {
-    const double          aTolerance = 0.001;
-    Message_ProgressScope aScope(Ranges[theIndex], nullptr, ArrayOfArrays->Value(theIndex).Length());
+    const double                aTolerance = 0.001;
+    Message_ProgressScope       aScope(Ranges[theIndex],
+                                 nullptr,
+                                 ArrayOfArrays->Value(theIndex).Length());
     BRepClass3d_SolidClassifier aClassifier(Shape);
 
     for (int i = 0; i < ArrayOfArrays->Value(theIndex).Length(); i++)
