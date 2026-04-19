@@ -165,10 +165,11 @@ static bool convertToColor(
   const occ::handle<NCollection_HSequence<TCollection_AsciiString>>& theColorValues,
   Quantity_Color&                                                    theColor)
 {
-  const char* anArgs[3] = {theColorValues->Size() >= 1 ? theColorValues->Value(1).ToCString() : "",
-                           theColorValues->Size() >= 2 ? theColorValues->Value(2).ToCString() : "",
-                           theColorValues->Size() >= 3 ? theColorValues->Value(3).ToCString() : ""};
-  return Draw::ParseColor(theColorValues->Size(), anArgs, theColor) != 0;
+  const char* anArgs[3] = {
+    theColorValues->Length() >= 1 ? theColorValues->Value(1).ToCString() : "",
+    theColorValues->Length() >= 2 ? theColorValues->Value(2).ToCString() : "",
+    theColorValues->Length() >= 3 ? theColorValues->Value(3).ToCString() : ""};
+  return Draw::ParseColor(theColorValues->Length(), anArgs, theColor) != 0;
 }
 
 static bool convertToDatumPart(const TCollection_AsciiString& theValue,
@@ -4525,7 +4526,7 @@ static int VDisconnect(Draw_Interpretor& di, int argc, const char** argv)
   if (!aMap.Find2(anObject, anIObj))
   {
     // try to interpret second argument as child number
-    if (anObjectNumber > 0 && anObjectNumber <= anAssembly->Children().Size())
+    if (anObjectNumber > 0 && anObjectNumber <= anAssembly->Children().Length())
     {
       int aCounter = 1;
       for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anIter(
@@ -6574,7 +6575,7 @@ protected:
     {
       const bool toReverse = ToOrient && aFaceIt.Key().Orientation() == TopAbs_REVERSED;
       occ::handle<Graphic3d_ArrayOfSegments> aSegments =
-        new Graphic3d_ArrayOfSegments(2 * aFaceIt.Value().Size());
+        new Graphic3d_ArrayOfSegments(2 * aFaceIt.Value().Length());
       for (NCollection_Vector<std::pair<gp_Pnt, gp_Pnt>>::Iterator aPntIt(aFaceIt.Value());
            aPntIt.More();
            aPntIt.Next())

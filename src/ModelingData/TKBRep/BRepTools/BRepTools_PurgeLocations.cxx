@@ -73,7 +73,7 @@ bool BRepTools_PurgeLocations::Perform(const TopoDS_Shape& theShape)
       continue;
     }
     int il;
-    for (il = 0; il < aBadTrsfInds.Size(); ++il)
+    for (il = 0; il < aBadTrsfInds.Length(); ++il)
     {
       if (aBadTrsfInds(il) == aLocInd)
       {

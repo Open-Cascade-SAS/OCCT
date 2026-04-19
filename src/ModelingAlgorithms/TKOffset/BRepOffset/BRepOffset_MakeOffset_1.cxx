@@ -4784,7 +4784,7 @@ void BRepOffset_BuildOffsetFaces::ShapesConnections(
 
         NCollection_List<TopoDS_Shape>            aLV;
         const NCollection_Vector<BOPDS_InterfEF>& aEFs = pDS->InterfEF();
-        for (int iEF = 0; iEF < aEFs.Size(); ++iEF)
+        for (int iEF = 0; iEF < aEFs.Length(); ++iEF)
         {
           const BOPDS_InterfEF& aEF = aEFs(iEF);
           if (aEF.Contains(nE) && aEF.Contains(nFOp))

@@ -13,6 +13,7 @@
 
 #include <BRepGraph.hxx>
 #include <BRepGraph_TopoView.hxx>
+#include <BRepGraph_Builder.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 
 #include <gtest/gtest.h>
@@ -57,7 +58,7 @@ TEST(BRepGraph_NodeIdTest, ImplicitConversion_PassToFunction)
 {
   // Typed ids work with existing APIs that take BRepGraph_NodeId.
   BRepGraph aGraph;
-  aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  BRepGraph_Builder::Perform(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph_FaceId aFace(0);

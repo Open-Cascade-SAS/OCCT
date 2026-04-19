@@ -667,7 +667,7 @@ bool XCAFDoc_Editor::FilterShapeTree(const occ::handle<XCAFDoc_ShapeTool>& theSh
     return false;
   }
   occ::handle<NCollection_BaseAllocator> anAllocator = new NCollection_IncAllocator();
-  NCollection_Map<TDF_Label>             aLabelsToKeep(theLabelsToKeep.Size(), anAllocator);
+  NCollection_Map<TDF_Label>             aLabelsToKeep(theLabelsToKeep.Length(), anAllocator);
   for (NCollection_Map<TDF_Label>::Iterator aLabelIter(theLabelsToKeep); aLabelIter.More();
        aLabelIter.Next())
   {

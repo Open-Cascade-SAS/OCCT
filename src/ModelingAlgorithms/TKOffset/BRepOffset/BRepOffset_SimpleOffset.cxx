@@ -174,7 +174,7 @@ void BRepOffset_SimpleOffset::FillOffsetData(const TopoDS_Shape& theShape)
   NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
     aEdgeFaceMap;
   TopExp::MapShapesAndAncestors(theShape, TopAbs_EDGE, TopAbs_FACE, aEdgeFaceMap);
-  for (int anIdx = 1; anIdx <= aEdgeFaceMap.Size(); ++anIdx)
+  for (int anIdx = 1; anIdx <= aEdgeFaceMap.Length(); ++anIdx)
   {
     const TopoDS_Edge& aCurrEdge = TopoDS::Edge(aEdgeFaceMap.FindKey(anIdx));
     FillEdgeData(aCurrEdge, aEdgeFaceMap, anIdx);
@@ -184,7 +184,7 @@ void BRepOffset_SimpleOffset::FillOffsetData(const TopoDS_Shape& theShape)
   NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
     aVertexEdgeMap;
   TopExp::MapShapesAndAncestors(theShape, TopAbs_VERTEX, TopAbs_EDGE, aVertexEdgeMap);
-  for (int anIdx = 1; anIdx <= aVertexEdgeMap.Size(); ++anIdx)
+  for (int anIdx = 1; anIdx <= aVertexEdgeMap.Length(); ++anIdx)
   {
     const TopoDS_Vertex& aCurrVertex = TopoDS::Vertex(aVertexEdgeMap.FindKey(anIdx));
     FillVertexData(aCurrVertex, aVertexEdgeMap, anIdx);

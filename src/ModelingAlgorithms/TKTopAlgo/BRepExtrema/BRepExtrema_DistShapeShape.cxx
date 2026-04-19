@@ -150,15 +150,15 @@ struct VertexFunctor
 {
   VertexFunctor(NCollection_Array1<IndexBand>* theBandArray, const Message_ProgressRange& theRange)
       : BandArray(theBandArray),
-        Solution(theBandArray->Size()),
+        Solution(theBandArray->Length()),
         Map1(nullptr),
         Map2(nullptr),
-        Scope(theRange, "Vertices distances calculating", theBandArray->Size()),
-        Ranges(0, theBandArray->Size() - 1),
+        Scope(theRange, "Vertices distances calculating", theBandArray->Length()),
+        Ranges(0, theBandArray->Length() - 1),
         Eps(Precision::Confusion()),
         StartDist(0.0)
   {
-    for (int i = 0; i < theBandArray->Size(); ++i)
+    for (int i = 0; i < theBandArray->Length(); ++i)
     {
       Ranges.SetValue(i, Scope.Next());
     }
@@ -251,7 +251,7 @@ bool BRepExtrema_DistShapeShape::DistanceVertVert(
   NCollection_Array1<IndexBand> aBandArray(0, aNbTasks - 1);
   Message_ProgressScope         aDistScope(theRange, nullptr, 1);
 
-  for (int anI = 0; anI < aBandArray.Size(); ++anI)
+  for (int anI = 0; anI < aBandArray.Length(); ++anI)
   {
     if (aCount1 < aFirstIndex + aTaskSize - 1)
     {
@@ -272,7 +272,7 @@ bool BRepExtrema_DistShapeShape::DistanceVertVert(
   {
     return false;
   }
-  for (int anI = 0; anI < aFunctor.Solution.Dist.Size(); ++anI)
+  for (int anI = 0; anI < aFunctor.Solution.Dist.Length(); ++anI)
   {
     double aDist = aFunctor.Solution.Dist[anI];
     if (aDist < myDistRef - myEps)
@@ -300,17 +300,17 @@ struct DistanceFunctor
   DistanceFunctor(NCollection_Array1<NCollection_Array1<BRepExtrema_CheckPair>>* theArrayOfArrays,
                   const Message_ProgressRange&                                   theRange)
       : ArrayOfArrays(theArrayOfArrays),
-        Solution(ArrayOfArrays->Size()),
+        Solution(ArrayOfArrays->Length()),
         Map1(nullptr),
         Map2(nullptr),
         LBox1(nullptr),
         LBox2(nullptr),
-        Scope(theRange, "Shapes distances calculating", theArrayOfArrays->Size()),
-        Ranges(0, theArrayOfArrays->Size() - 1),
+        Scope(theRange, "Shapes distances calculating", theArrayOfArrays->Length()),
+        Ranges(0, theArrayOfArrays->Length() - 1),
         Eps(Precision::Confusion()),
         StartDist(0.0)
   {
-    for (int i = 0; i < theArrayOfArrays->Size(); ++i)
+    for (int i = 0; i < theArrayOfArrays->Length(); ++i)
     {
       Ranges.SetValue(i, Scope.Next());
     }
@@ -318,9 +318,11 @@ struct DistanceFunctor
 
   void operator()(const int theIndex) const
   {
-    Message_ProgressScope aScope(Ranges[theIndex], nullptr, ArrayOfArrays->Value(theIndex).Size());
+    Message_ProgressScope aScope(Ranges[theIndex],
+                                 nullptr,
+                                 ArrayOfArrays->Value(theIndex).Length());
     Solution.Dist[theIndex] = StartDist;
-    for (int i = 0; i < ArrayOfArrays->Value(theIndex).Size(); i++)
+    for (int i = 0; i < ArrayOfArrays->Value(theIndex).Length(); i++)
     {
       if (!aScope.More())
       {
@@ -393,15 +395,15 @@ struct DistancePairFunctor
   DistancePairFunctor(NCollection_Array1<IndexBand>* theBandArray,
                       const Message_ProgressRange&   theRange)
       : BandArray(theBandArray),
-        PairList(0, theBandArray->Size() - 1),
+        PairList(0, theBandArray->Length() - 1),
         LBox1(nullptr),
         LBox2(nullptr),
-        Scope(theRange, "Boxes distances calculating", theBandArray->Size()),
-        Ranges(0, theBandArray->Size() - 1),
+        Scope(theRange, "Boxes distances calculating", theBandArray->Length()),
+        Ranges(0, theBandArray->Length() - 1),
         DistRef(0),
         Eps(Precision::Confusion())
   {
-    for (int i = 0; i < theBandArray->Size(); ++i)
+    for (int i = 0; i < theBandArray->Length(); ++i)
     {
       Ranges.SetValue(i, Scope.Next());
     }
@@ -422,7 +424,7 @@ struct DistancePairFunctor
       }
       aScope.Next();
 
-      for (int anIdx2 = 1; anIdx2 <= LBox2->Size(); ++anIdx2)
+      for (int anIdx2 = 1; anIdx2 <= LBox2->Length(); ++anIdx2)
       {
         const Bnd_Box& aBox1 = LBox1->Value(anIdx1);
         const Bnd_Box& aBox2 = LBox2->Value(anIdx2);
@@ -445,7 +447,7 @@ struct DistancePairFunctor
     int aSize(0);
     for (int anI = PairList.Lower(); anI <= PairList.Upper(); ++anI)
     {
-      aSize += PairList[anI].Size();
+      aSize += PairList[anI].Length();
     }
     return aSize;
   }
@@ -493,7 +495,7 @@ bool BRepExtrema_DistShapeShape::DistanceMapMap(
   int                           aFirstIndex(1);
   NCollection_Array1<IndexBand> aBandArray(0, aNbPairTasks - 1);
 
-  for (int anI = 0; anI < aBandArray.Size(); ++anI)
+  for (int anI = 0; anI < aBandArray.Length(); ++anI)
   {
     if (aCount1 < aFirstIndex + aPairTaskSize - 1)
     {
@@ -522,9 +524,9 @@ bool BRepExtrema_DistShapeShape::DistanceMapMap(
   }
   NCollection_Array1<BRepExtrema_CheckPair> aPairList(0, aListSize - 1);
   int                                       aListIndex(0);
-  for (int anI = 0; anI < aPairFunctor.PairList.Size(); ++anI)
+  for (int anI = 0; anI < aPairFunctor.PairList.Length(); ++anI)
   {
-    for (int aJ = 0; aJ < aPairFunctor.PairList[anI].Size(); ++aJ)
+    for (int aJ = 0; aJ < aPairFunctor.PairList[anI].Length(); ++aJ)
     {
       aPairList[aListIndex] = aPairFunctor.PairList[anI][aJ];
       ++aListIndex;
@@ -533,7 +535,7 @@ bool BRepExtrema_DistShapeShape::DistanceMapMap(
 
   std::stable_sort(aPairList.begin(), aPairList.end(), BRepExtrema_CheckPair_Comparator);
 
-  const int aMapSize  = aPairList.Size();
+  const int aMapSize  = aPairList.Length();
   int       aNbTasks  = aMapSize < aNbThreads ? aMapSize : aNbThreads;
   int       aTaskSize = (int)std::ceil((double)aMapSize / aNbTasks);
 
@@ -559,7 +561,7 @@ bool BRepExtrema_DistShapeShape::DistanceMapMap(
         }
         anArrayOfArray[aJ].Resize(0, aVectorSize - 1, false);
       }
-      if (anI < anArrayOfArray[aJ].Size())
+      if (anI < anArrayOfArray[aJ].Length())
       {
         anArrayOfArray[aJ][anI] = aPairList(anI * aNbTasks + aJ);
       }
@@ -583,7 +585,7 @@ bool BRepExtrema_DistShapeShape::DistanceMapMap(
     return false;
   }
 
-  for (int anI = 0; anI < aFunctor.Solution.Dist.Size(); ++anI)
+  for (int anI = 0; anI < aFunctor.Solution.Dist.Length(); ++anI)
   {
     double aDist = aFunctor.Solution.Dist[anI];
     if (aDist < myDistRef - myEps)
@@ -694,14 +696,14 @@ struct TreatmentFunctor
       : ArrayOfArrays(theArrayOfArrays),
         SolutionsShape1(nullptr),
         SolutionsShape2(nullptr),
-        Scope(theRange, "Search for the inner solid", theArrayOfArrays->Size()),
-        Ranges(0, theArrayOfArrays->Size() - 1),
+        Scope(theRange, "Search for the inner solid", theArrayOfArrays->Length()),
+        Ranges(0, theArrayOfArrays->Length() - 1),
         DistRef(nullptr),
         InnerSol(nullptr),
         IsDone(nullptr)
 
   {
-    for (int i = 0; i < theArrayOfArrays->Size(); ++i)
+    for (int i = 0; i < theArrayOfArrays->Length(); ++i)
     {
       Ranges.SetValue(i, Scope.Next());
     }
@@ -709,11 +711,13 @@ struct TreatmentFunctor
 
   void operator()(const int theIndex) const
   {
-    const double          aTolerance = 0.001;
-    Message_ProgressScope aScope(Ranges[theIndex], nullptr, ArrayOfArrays->Value(theIndex).Size());
+    const double                aTolerance = 0.001;
+    Message_ProgressScope       aScope(Ranges[theIndex],
+                                 nullptr,
+                                 ArrayOfArrays->Value(theIndex).Length());
     BRepClass3d_SolidClassifier aClassifier(Shape);
 
-    for (int i = 0; i < ArrayOfArrays->Value(theIndex).Size(); i++)
+    for (int i = 0; i < ArrayOfArrays->Value(theIndex).Length(); i++)
     {
       if (!aScope.More())
       {

@@ -14,15 +14,8 @@
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_Data.hxx>
 #include <BRepGraph_RefsIterator.hxx>
-#include <NCollection_PackedMap.hxx>
 
 #include <shared_mutex>
-
-namespace
-{
-constexpr int THE_REFSVIEW_EDGE_VERTEX_REF_BLOCK_SIZE = 4;
-
-} // namespace
 
 //=================================================================================================
 
@@ -501,31 +494,6 @@ const NCollection_Vector<BRepGraph_SolidRefId>& BRepGraph::RefsView::SolidOps::I
   if (!theCompSolid.IsValid(myGraph->myData->myIncStorage.NbCompSolids()))
     return anEmpty;
   return myGraph->myData->myIncStorage.CompSolid(theCompSolid).SolidRefIds;
-}
-
-//=================================================================================================
-
-NCollection_Vector<BRepGraph_VertexRefId> BRepGraph::RefsView::VertexOps::IdsOf(
-  const BRepGraph_EdgeId                        theEdge,
-  const occ::handle<NCollection_BaseAllocator>& theAllocator) const
-{
-  NCollection_Vector<BRepGraph_VertexRefId> aResult(THE_REFSVIEW_EDGE_VERTEX_REF_BLOCK_SIZE,
-                                                    theAllocator);
-  const BRepGraphInc_Storage&               aStorage = myGraph->myData->myIncStorage;
-  if (!theEdge.IsValid(aStorage.NbEdges()))
-    return aResult;
-
-  NCollection_PackedMap<int> aSeenRefIds;
-
-  for (BRepGraph_RefsVertexOfEdge aRefIt(*myGraph, theEdge); aRefIt.More(); aRefIt.Next())
-  {
-    const BRepGraph_VertexRefId aRefId = aRefIt.CurrentId();
-    if (aSeenRefIds.Add(aRefId.Index))
-    {
-      aResult.Append(aRefId);
-    }
-  }
-  return aResult;
 }
 
 //=================================================================================================

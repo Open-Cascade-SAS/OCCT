@@ -18,9 +18,11 @@
 #include <BRepGraphInc_Reference.hxx>
 #include <BRepGraphInc_Representation.hxx>
 
+#include <BRepGraph_MeshCache.hxx>
+#include <BRepGraph_MeshView.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_RefsView.hxx>
-#include <BRepGraph_BuilderView.hxx>
+#include <BRepGraph_EditorView.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_UIDsView.hxx>
 #include <BRepGraph_WireExplorer.hxx>
@@ -76,12 +78,12 @@ bool isEntityRemoved(const BRepGraph& theGraph, BRepGraph_NodeId theId)
 //! @param[in]     theBoundaryIssues boundary issues reported by mutator
 //! @param[in,out] theIssues         destination validator issue vector
 void appendMutationBoundaryIssues(
-  const NCollection_Vector<BRepGraph::BuilderView::BoundaryIssue>& theBoundaryIssues,
-  NCollection_Vector<BRepGraph_Validate::Issue>&                   theIssues)
+  const NCollection_Vector<BRepGraph::EditorView::BoundaryIssue>& theBoundaryIssues,
+  NCollection_Vector<BRepGraph_Validate::Issue>&                  theIssues)
 {
   using Issue    = BRepGraph_Validate::Issue;
   using Severity = BRepGraph_Validate::Severity;
-  for (const BRepGraph::BuilderView::BoundaryIssue& aBoundaryIssue : theBoundaryIssues)
+  for (const BRepGraph::EditorView::BoundaryIssue& aBoundaryIssue : theBoundaryIssues)
   {
     theIssues.Append(Issue{Severity::Error, aBoundaryIssue.NodeId, aBoundaryIssue.Description});
   }
@@ -111,7 +113,7 @@ void checkCrossReferenceBounds(const BRepGraph&                               th
       if (aStartVtxId.IsValid() && !isValidNodeId(theGraph, aStartVtxId))
       {
         theIssues.Append(Issue{Severity::Error,
-                               anEdge.Id,
+                               anEdgeIt.CurrentId(),
                                "EdgeDef.StartVertexRefId resolves to out-of-bounds VertexDefId"});
       }
     }
@@ -122,7 +124,7 @@ void checkCrossReferenceBounds(const BRepGraph&                               th
       if (anEndVtxId.IsValid() && !isValidNodeId(theGraph, anEndVtxId))
       {
         theIssues.Append(Issue{Severity::Error,
-                               anEdge.Id,
+                               anEdgeIt.CurrentId(),
                                "EdgeDef.EndVertexRefId resolves to out-of-bounds VertexDefId"});
       }
     }
@@ -137,38 +139,38 @@ void checkCrossReferenceBounds(const BRepGraph&                               th
 
     if (aCoEdge.FaceDefId.IsValid() && !isValidNodeId(theGraph, aCoEdge.FaceDefId))
     {
-      theIssues.Append(Issue{Severity::Error, aCoEdge.Id, "CoEdgeDef.FaceDefId out of bounds"});
+      theIssues.Append(Issue{Severity::Error, aCoEdgeId, "CoEdgeDef.FaceDefId out of bounds"});
     }
     const BRepGraph_NodeId anEdgeId = aCoEdge.EdgeDefId;
     if (anEdgeId.IsValid() && !isValidNodeId(theGraph, anEdgeId))
     {
-      theIssues.Append(Issue{Severity::Error, aCoEdge.Id, "CoEdgeDef.EdgeDefId out of bounds"});
+      theIssues.Append(Issue{Severity::Error, aCoEdgeId, "CoEdgeDef.EdgeDefId out of bounds"});
     }
     // SeamPairId consistency.
     if (aCoEdge.SeamPairId.IsValid())
     {
       if (!aCoEdge.SeamPairId.IsValid(theGraph.Topo().CoEdges().Nb()))
       {
-        theIssues.Append(Issue{Severity::Error, aCoEdge.Id, "CoEdgeDef.SeamPairId out of bounds"});
+        theIssues.Append(Issue{Severity::Error, aCoEdgeId, "CoEdgeDef.SeamPairId out of bounds"});
       }
-      else if (aCoEdge.SeamPairId.Index == aCoEdgeId.Index)
+      else if (aCoEdge.SeamPairId == aCoEdgeId)
       {
         theIssues.Append(
-          Issue{Severity::Error, aCoEdge.Id, "CoEdgeDef.SeamPairId is self-reference"});
+          Issue{Severity::Error, aCoEdgeId, "CoEdgeDef.SeamPairId is self-reference"});
       }
       else
       {
         const BRepGraphInc::CoEdgeDef& aPair =
           theGraph.Topo().CoEdges().Definition(aCoEdge.SeamPairId);
-        if (aPair.SeamPairId.Index != aCoEdgeId.Index)
+        if (aPair.SeamPairId != aCoEdgeId)
         {
           theIssues.Append(
-            Issue{Severity::Error, aCoEdge.Id, "CoEdgeDef.SeamPairId not bidirectional"});
+            Issue{Severity::Error, aCoEdgeId, "CoEdgeDef.SeamPairId not bidirectional"});
         }
         if (aPair.FaceDefId != aCoEdge.FaceDefId)
         {
           theIssues.Append(
-            Issue{Severity::Error, aCoEdge.Id, "CoEdgeDef seam pair has different FaceDefId"});
+            Issue{Severity::Error, aCoEdgeId, "CoEdgeDef seam pair has different FaceDefId"});
         }
       }
     }
@@ -176,7 +178,7 @@ void checkCrossReferenceBounds(const BRepGraph&                               th
     if (aCoEdge.Curve2DRepId.IsValid()
         && !aCoEdge.Curve2DRepId.IsValid(theGraph.Topo().Geometry().NbCurves2D()))
     {
-      theIssues.Append(Issue{Severity::Error, aCoEdge.Id, "CoEdgeDef.Curve2DRepId out of bounds"});
+      theIssues.Append(Issue{Severity::Error, aCoEdgeId, "CoEdgeDef.Curve2DRepId out of bounds"});
     }
   }
 
@@ -185,8 +187,7 @@ void checkCrossReferenceBounds(const BRepGraph&                               th
   // Check WireDef CoEdgeRef references.
   for (BRepGraph_Iterator<BRepGraphInc::WireDef> aWireIt(theGraph); aWireIt.More(); aWireIt.Next())
   {
-    const BRepGraphInc::WireDef& aWire   = aWireIt.Current();
-    const BRepGraph_WireId       aWireId = aWireIt.CurrentId();
+    const BRepGraph_WireId aWireId = aWireIt.CurrentId();
 
     for (BRepGraph_RefsCoEdgeOfWire anIt(theGraph, aWireId); anIt.More(); anIt.Next())
     {
@@ -195,7 +196,7 @@ void checkCrossReferenceBounds(const BRepGraph&                               th
       if (aCoEdgeDefId.IsValid() && !isValidNodeId(theGraph, aCoEdgeDefId))
       {
         theIssues.Append(
-          Issue{Severity::Error, aWire.Id, "WireDef.CoEdgeUsage CoEdgeIdx out of bounds"});
+          Issue{Severity::Error, aWireId, "WireDef.CoEdgeUsage CoEdgeIdx out of bounds"});
       }
       const BRepGraphInc::CoEdgeDef& aCoEdge =
         theGraph.Topo().CoEdges().Definition(aCR.CoEdgeDefId);
@@ -203,7 +204,7 @@ void checkCrossReferenceBounds(const BRepGraph&                               th
       if (anEdgeDefId.IsValid() && !isValidNodeId(theGraph, anEdgeDefId))
       {
         theIssues.Append(
-          Issue{Severity::Error, aWire.Id, "WireDef.CoEdgeUsage EdgeIdx out of bounds"});
+          Issue{Severity::Error, aWireId, "WireDef.CoEdgeUsage EdgeIdx out of bounds"});
       }
     }
   }
@@ -212,8 +213,7 @@ void checkCrossReferenceBounds(const BRepGraph&                               th
   for (BRepGraph_Iterator<BRepGraphInc::CompoundDef> aCompIt(theGraph); aCompIt.More();
        aCompIt.Next())
   {
-    const BRepGraphInc::CompoundDef& aComp       = aCompIt.Current();
-    const BRepGraph_CompoundId       aCompoundId = aCompIt.CurrentId();
+    const BRepGraph_CompoundId aCompoundId = aCompIt.CurrentId();
 
     for (BRepGraph_RefsChildOfCompound anIt(theGraph, aCompoundId); anIt.More(); anIt.Next())
     {
@@ -221,7 +221,8 @@ void checkCrossReferenceBounds(const BRepGraph&                               th
       const BRepGraph_NodeId        aChildId = aCR.ChildDefId;
       if (aChildId.IsValid() && !isValidNodeId(theGraph, aChildId))
       {
-        theIssues.Append(Issue{Severity::Error, aComp.Id, "CompoundDef.ChildDefId out of bounds"});
+        theIssues.Append(
+          Issue{Severity::Error, aCompoundId, "CompoundDef.ChildDefId out of bounds"});
       }
     }
   }
@@ -229,8 +230,7 @@ void checkCrossReferenceBounds(const BRepGraph&                               th
   // Check CompSolidDef SolidRef references.
   for (BRepGraph_Iterator<BRepGraphInc::CompSolidDef> aCSIt(theGraph); aCSIt.More(); aCSIt.Next())
   {
-    const BRepGraphInc::CompSolidDef& aCS          = aCSIt.Current();
-    const BRepGraph_CompSolidId       aCompSolidId = aCSIt.CurrentId();
+    const BRepGraph_CompSolidId aCompSolidId = aCSIt.CurrentId();
 
     for (BRepGraph_RefsSolidOfCompSolid anIt(theGraph, aCompSolidId); anIt.More(); anIt.Next())
     {
@@ -238,7 +238,8 @@ void checkCrossReferenceBounds(const BRepGraph&                               th
       const BRepGraph_NodeId        aSolidId = aSR.SolidDefId;
       if (aSolidId.IsValid() && !isValidNodeId(theGraph, aSolidId))
       {
-        theIssues.Append(Issue{Severity::Error, aCS.Id, "CompSolidDef.SolidDefId out of bounds"});
+        theIssues.Append(
+          Issue{Severity::Error, aCompSolidId, "CompSolidDef.SolidDefId out of bounds"});
       }
     }
   }
@@ -247,8 +248,7 @@ void checkCrossReferenceBounds(const BRepGraph&                               th
   for (BRepGraph_Iterator<BRepGraphInc::ShellDef> aShellIt(theGraph); aShellIt.More();
        aShellIt.Next())
   {
-    const BRepGraphInc::ShellDef& aShell   = aShellIt.Current();
-    const BRepGraph_ShellId       aShellId = aShellIt.CurrentId();
+    const BRepGraph_ShellId aShellId = aShellIt.CurrentId();
 
     for (BRepGraph_RefsFaceOfShell anIt(theGraph, aShellId); anIt.More(); anIt.Next())
     {
@@ -257,7 +257,7 @@ void checkCrossReferenceBounds(const BRepGraph&                               th
       if (aFaceDefId.IsValid() && !isValidNodeId(theGraph, aFaceDefId))
       {
         theIssues.Append(
-          Issue{Severity::Error, aShell.Id, "ShellDef.FaceUsage FaceIdx out of bounds"});
+          Issue{Severity::Error, aShellId, "ShellDef.FaceUsage FaceIdx out of bounds"});
       }
     }
   }
@@ -266,8 +266,7 @@ void checkCrossReferenceBounds(const BRepGraph&                               th
   for (BRepGraph_Iterator<BRepGraphInc::SolidDef> aSolidIt(theGraph); aSolidIt.More();
        aSolidIt.Next())
   {
-    const BRepGraphInc::SolidDef& aSolid   = aSolidIt.Current();
-    const BRepGraph_SolidId       aSolidId = aSolidIt.CurrentId();
+    const BRepGraph_SolidId aSolidId = aSolidIt.CurrentId();
 
     for (BRepGraph_RefsShellOfSolid anIt(theGraph, aSolidId); anIt.More(); anIt.Next())
     {
@@ -276,7 +275,7 @@ void checkCrossReferenceBounds(const BRepGraph&                               th
       if (aShellDefId.IsValid() && !isValidNodeId(theGraph, aShellDefId))
       {
         theIssues.Append(
-          Issue{Severity::Error, aSolid.Id, "SolidDef.ShellUsage ShellIdx out of bounds"});
+          Issue{Severity::Error, aSolidId, "SolidDef.ShellUsage ShellIdx out of bounds"});
       }
     }
   }
@@ -285,23 +284,7 @@ void checkCrossReferenceBounds(const BRepGraph&                               th
   for (BRepGraph_Iterator<BRepGraphInc::ProductDef> aProductIt(theGraph); aProductIt.More();
        aProductIt.Next())
   {
-    const BRepGraphInc::ProductDef& aProduct = aProductIt.Current();
-    const BRepGraph_ProductId       aProdId  = aProductIt.CurrentId();
-
-    if (aProduct.ShapeRootId.IsValid())
-    {
-      if (!isValidNodeId(theGraph, aProduct.ShapeRootId))
-      {
-        theIssues.Append(
-          Issue{Severity::Error, aProduct.Id, "ProductDef.ShapeRootId out of bounds"});
-      }
-      else if (aProduct.ShapeRootId.NodeKind == BRepGraph_NodeId::Kind::CoEdge
-               || BRepGraph_NodeId::IsAssemblyKind(aProduct.ShapeRootId.NodeKind))
-      {
-        theIssues.Append(
-          Issue{Severity::Error, aProduct.Id, "ProductDef.ShapeRootId has invalid node kind"});
-      }
-    }
+    const BRepGraph_ProductId aProdId = aProductIt.CurrentId();
 
     for (BRepGraph_RefsOccurrenceOfProduct anOccIt(theGraph, aProdId); anOccIt.More();
          anOccIt.Next())
@@ -311,7 +294,7 @@ void checkCrossReferenceBounds(const BRepGraph&                               th
       if (anOccId.IsValid() && !isValidNodeId(theGraph, anOccId))
       {
         theIssues.Append(
-          Issue{Severity::Error, aProduct.Id, "ProductDef.OccurrenceUsage out of bounds"});
+          Issue{Severity::Error, aProdId, "ProductDef.OccurrenceUsage out of bounds"});
       }
     }
   }
@@ -320,31 +303,33 @@ void checkCrossReferenceBounds(const BRepGraph&                               th
   for (BRepGraph_Iterator<BRepGraphInc::OccurrenceDef> anOccIt(theGraph); anOccIt.More();
        anOccIt.Next())
   {
-    const BRepGraphInc::OccurrenceDef& anOcc   = anOccIt.Current();
-    const BRepGraph_OccurrenceId       anOccId = anOccIt.CurrentId();
+    const BRepGraphInc::OccurrenceDef& anOcc    = anOccIt.Current();
+    const BRepGraph_OccurrenceId       anOccId  = anOccIt.CurrentId();
+    const BRepGraph_NodeId             aChildId = anOcc.ChildDefId;
+    const BRepGraph_NodeId::Kind       aKind    = aChildId.NodeKind;
 
-    if (!anOcc.ProductDefId.IsValid() || !isValidNodeId(theGraph, anOcc.ProductDefId))
+    if (!aChildId.IsValid())
     {
-      theIssues.Append(Issue{Severity::Error, anOcc.Id, "OccurrenceDef.ProductDefId invalid"});
+      theIssues.Append(Issue{Severity::Error, anOccId, "OccurrenceDef.ChildDefId invalid"});
+      continue;
     }
-    if (!anOcc.ParentProductDefId.IsValid() || !isValidNodeId(theGraph, anOcc.ParentProductDefId))
+
+    const bool isKindAllowed =
+      aKind == BRepGraph_NodeId::Kind::Product || BRepGraph_NodeId::IsTopologyKind(aKind);
+    if (!isKindAllowed)
     {
       theIssues.Append(
-        Issue{Severity::Error, anOcc.Id, "OccurrenceDef.ParentProductDefId invalid"});
+        Issue{Severity::Error,
+              anOccId,
+              aKind == BRepGraph_NodeId::Kind::Occurrence
+                ? "OccurrenceDef.ChildDefId cannot reference an Occurrence"
+                : "OccurrenceDef.ChildDefId kind is not Product or a topology kind"});
+      continue;
     }
 
-    if (anOcc.ParentOccurrenceDefId.IsValid())
+    if (!isValidNodeId(theGraph, aChildId) || isEntityRemoved(theGraph, aChildId))
     {
-      if (!isValidNodeId(theGraph, anOcc.ParentOccurrenceDefId))
-      {
-        theIssues.Append(
-          Issue{Severity::Error, anOcc.Id, "OccurrenceDef.ParentOccurrenceDefId invalid"});
-      }
-      else if (anOcc.ParentOccurrenceDefId.Index == anOccId.Index)
-      {
-        theIssues.Append(
-          Issue{Severity::Error, anOcc.Id, "OccurrenceDef.ParentOccurrenceDefId self-reference"});
-      }
+      theIssues.Append(Issue{Severity::Error, anOccId, "OccurrenceDef.ChildDefId invalid"});
     }
   }
 }
@@ -360,7 +345,7 @@ void checkReverseIndexConsistency(const BRepGraph&                              
   using Severity = BRepGraph_Validate::Severity;
 
   // Build expected edge->wires mapping from CoEdgeRef scans.
-  NCollection_DataMap<int, NCollection_Map<int>> anExpected;
+  NCollection_DataMap<BRepGraph_EdgeId, NCollection_Map<BRepGraph_WireId>> anExpected;
   for (BRepGraph_Iterator<BRepGraphInc::WireDef> aWireIt(theGraph); aWireIt.More(); aWireIt.Next())
   {
     const BRepGraph_WireId aWireId = aWireIt.CurrentId();
@@ -373,9 +358,9 @@ void checkReverseIndexConsistency(const BRepGraph&                              
       if (!aCoEdge.EdgeDefId.IsValid())
         continue;
 
-      if (!anExpected.IsBound(aCoEdge.EdgeDefId.Index))
-        anExpected.Bind(aCoEdge.EdgeDefId.Index, NCollection_Map<int>());
-      anExpected.ChangeFind(aCoEdge.EdgeDefId.Index).Add(aWireId.Index);
+      if (!anExpected.IsBound(aCoEdge.EdgeDefId))
+        anExpected.Bind(aCoEdge.EdgeDefId, NCollection_Map<BRepGraph_WireId>());
+      anExpected.ChangeFind(aCoEdge.EdgeDefId).Add(aWireId);
     }
   }
 
@@ -383,35 +368,35 @@ void checkReverseIndexConsistency(const BRepGraph&                              
   for (BRepGraph_Iterator<BRepGraphInc::EdgeDef> anEdgeIt(theGraph); anEdgeIt.More();
        anEdgeIt.Next())
   {
-    const BRepGraph_EdgeId       anEdgeId = anEdgeIt.CurrentId();
-    const BRepGraphInc::EdgeDef& anEdge   = anEdgeIt.Current();
+    const BRepGraph_EdgeId anEdgeId = anEdgeIt.CurrentId();
 
     const NCollection_Vector<BRepGraph_WireId>& aActualWires =
       theGraph.Topo().Edges().Wires(anEdgeId);
-    const NCollection_Map<int>* anExpectedWires = anExpected.Seek(anEdgeId.Index);
+    const NCollection_Map<BRepGraph_WireId>* anExpectedWires = anExpected.Seek(anEdgeId);
 
     const int anExpectedCount = (anExpectedWires != nullptr) ? anExpectedWires->Extent() : 0;
 
     // Build a set from actual wires for comparison.
-    NCollection_Map<int> anActualSet;
+    NCollection_Map<BRepGraph_WireId> anActualSet;
     for (const BRepGraph_WireId& aWireId : aActualWires)
-      anActualSet.Add(aWireId.Index);
+      anActualSet.Add(aWireId);
 
     if (anActualSet.Extent() != anExpectedCount)
     {
-      theIssues.Append(
-        Issue{Severity::Error, anEdge.Id, "Reverse index ReverseIdx.WiresOfEdge size mismatch"});
+      theIssues.Append(Issue{Severity::Error,
+                             anEdgeIt.CurrentId(),
+                             "Reverse index ReverseIdx.WiresOfEdge size mismatch"});
       continue;
     }
 
     if (anExpectedWires != nullptr)
     {
-      for (const int aWireIdx : *anExpectedWires)
+      for (const BRepGraph_WireId& aWireId : *anExpectedWires)
       {
-        if (!anActualSet.Contains(aWireIdx))
+        if (!anActualSet.Contains(aWireId))
         {
           theIssues.Append(Issue{Severity::Error,
-                                 anEdge.Id,
+                                 anEdgeIt.CurrentId(),
                                  "Reverse index ReverseIdx.WiresOfEdge missing wire entry"});
           break;
         }
@@ -435,7 +420,7 @@ void checkReverseIndexFaceCountCache(const BRepGraph&                           
   {
     const BRepGraph_EdgeId anEdgeId = anEdgeIt.CurrentId();
 
-    NCollection_Map<int>                          aUniqueFaces;
+    NCollection_Map<BRepGraph_FaceId>             aUniqueFaces;
     const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdges = aDefs.Edges().CoEdges(anEdgeId);
     for (const BRepGraph_CoEdgeId& aCoEdgeId : aCoEdges)
     {
@@ -444,7 +429,7 @@ void checkReverseIndexFaceCountCache(const BRepGraph&                           
       {
         continue;
       }
-      aUniqueFaces.Add(aCoEdge.FaceDefId.Index);
+      aUniqueFaces.Add(aCoEdge.FaceDefId);
     }
 
     const int aCachedCount  = aDefs.Edges().NbFaces(anEdgeId);
@@ -474,8 +459,7 @@ void checkIncidenceRefConsistency(const BRepGraph&                              
   // Check face->wire incidence refs.
   for (BRepGraph_Iterator<BRepGraphInc::FaceDef> aFaceIt(theGraph); aFaceIt.More(); aFaceIt.Next())
   {
-    const BRepGraphInc::FaceDef& aFace   = aFaceIt.Current();
-    const BRepGraph_FaceId       aFaceId = aFaceIt.CurrentId();
+    const BRepGraph_FaceId aFaceId = aFaceIt.CurrentId();
 
     for (BRepGraph_RefsWireOfFace anIt(theGraph, aFaceId); anIt.More(); anIt.Next())
     {
@@ -484,7 +468,7 @@ void checkIncidenceRefConsistency(const BRepGraph&                              
       if (aWireId.IsValid() && !isValidNodeId(theGraph, aWireId))
       {
         theIssues.Append(
-          Issue{Severity::Error, aFace.Id, "FaceDef.WireUsage WireIdx out of bounds"});
+          Issue{Severity::Error, aFaceIt.CurrentId(), "FaceDef.WireUsage WireIdx out of bounds"});
       }
     }
   }
@@ -493,8 +477,7 @@ void checkIncidenceRefConsistency(const BRepGraph&                              
   for (BRepGraph_Iterator<BRepGraphInc::ShellDef> aShellIt(theGraph); aShellIt.More();
        aShellIt.Next())
   {
-    const BRepGraphInc::ShellDef& aShell   = aShellIt.Current();
-    const BRepGraph_ShellId       aShellId = aShellIt.CurrentId();
+    const BRepGraph_ShellId aShellId = aShellIt.CurrentId();
 
     for (BRepGraph_RefsFaceOfShell anIt(theGraph, aShellId); anIt.More(); anIt.Next())
     {
@@ -502,7 +485,7 @@ void checkIncidenceRefConsistency(const BRepGraph&                              
       const BRepGraph_NodeId       aFaceId = aFR.FaceDefId;
       if (aFaceId.IsValid() && isEntityRemoved(theGraph, aFaceId))
       {
-        theIssues.Append(Issue{Severity::Error, aShell.Id, "ShellDef references removed FaceDef"});
+        theIssues.Append(Issue{Severity::Error, aShellId, "ShellDef references removed FaceDef"});
       }
     }
   }
@@ -511,8 +494,7 @@ void checkIncidenceRefConsistency(const BRepGraph&                              
   for (BRepGraph_Iterator<BRepGraphInc::SolidDef> aSolidIt(theGraph); aSolidIt.More();
        aSolidIt.Next())
   {
-    const BRepGraphInc::SolidDef& aSolid   = aSolidIt.Current();
-    const BRepGraph_SolidId       aSolidId = aSolidIt.CurrentId();
+    const BRepGraph_SolidId aSolidId = aSolidIt.CurrentId();
 
     for (BRepGraph_RefsShellOfSolid anIt(theGraph, aSolidId); anIt.More(); anIt.Next())
     {
@@ -520,7 +502,7 @@ void checkIncidenceRefConsistency(const BRepGraph&                              
       const BRepGraph_NodeId        aShellId = aSR.ShellDefId;
       if (aShellId.IsValid() && isEntityRemoved(theGraph, aShellId))
       {
-        theIssues.Append(Issue{Severity::Error, aSolid.Id, "SolidDef references removed ShellDef"});
+        theIssues.Append(Issue{Severity::Error, aSolidId, "SolidDef references removed ShellDef"});
       }
     }
   }
@@ -547,18 +529,21 @@ void checkGeometryReferences(const BRepGraph&                               theG
     if (!BRepGraph_Tool::Edge::Degenerated(theGraph, anEdgeId)
         && !BRepGraph_Tool::Edge::HasCurve(theGraph, anEdgeId))
     {
-      theIssues.Append(
-        Issue{Severity::Error, anEdge.Id, "Non-degenerate EdgeDef has no Curve3D representation"});
+      theIssues.Append(Issue{Severity::Error,
+                             anEdgeIt.CurrentId(),
+                             "Non-degenerate EdgeDef has no Curve3D representation"});
     }
     if (anEdge.Curve3DRepId.IsValid()
         && !anEdge.Curve3DRepId.IsValid(theGraph.Topo().Geometry().NbCurves3D()))
     {
-      theIssues.Append(Issue{Severity::Error, anEdge.Id, "EdgeDef.Curve3DRepId out of bounds"});
+      theIssues.Append(
+        Issue{Severity::Error, anEdgeIt.CurrentId(), "EdgeDef.Curve3DRepId out of bounds"});
     }
     if (anEdge.Polygon3DRepId.IsValid()
-        && !anEdge.Polygon3DRepId.IsValid(theGraph.Topo().Poly().NbPolygons3D()))
+        && !anEdge.Polygon3DRepId.IsValid(theGraph.Mesh().Poly().NbPolygons3D()))
     {
-      theIssues.Append(Issue{Severity::Error, anEdge.Id, "EdgeDef.Polygon3DRepId out of bounds"});
+      theIssues.Append(
+        Issue{Severity::Error, anEdgeIt.CurrentId(), "EdgeDef.Polygon3DRepId out of bounds"});
     }
   }
 
@@ -569,15 +554,31 @@ void checkGeometryReferences(const BRepGraph&                               theG
     if (aFace.SurfaceRepId.IsValid()
         && !aFace.SurfaceRepId.IsValid(theGraph.Topo().Geometry().NbSurfaces()))
     {
-      theIssues.Append(Issue{Severity::Error, aFace.Id, "FaceDef.SurfaceRepId out of bounds"});
+      theIssues.Append(
+        Issue{Severity::Error, aFaceIt.CurrentId(), "FaceDef.SurfaceRepId out of bounds"});
     }
-    for (const BRepGraph_TriangulationRepId& aTriRepId : aFace.TriangulationRepIds)
+    if (aFace.TriangulationRepId.IsValid()
+        && !aFace.TriangulationRepId.IsValid(theGraph.Mesh().Poly().NbTriangulations()))
     {
-      if (aTriRepId.Index >= theGraph.Topo().Poly().NbTriangulations())
+      theIssues.Append(
+        Issue{Severity::Error, aFaceIt.CurrentId(), "FaceDef.TriangulationRepId out of bounds"});
+    }
+    // Validate cached mesh entry bounds.
+    const BRepGraph_MeshCache::FaceMeshEntry* aCachedFace =
+      theGraph.Mesh().Faces().CachedMesh(aFaceIt.CurrentId());
+    if (aCachedFace != nullptr)
+    {
+      for (int aCIdx = 0; aCIdx < aCachedFace->TriangulationRepIds.Length(); ++aCIdx)
       {
-        theIssues.Append(
-          Issue{Severity::Error, aFace.Id, "FaceDef.TriangulationRepId out of bounds"});
-        break;
+        const BRepGraph_TriangulationRepId aCTriRepId =
+          aCachedFace->TriangulationRepIds.Value(aCIdx);
+        if (!aCTriRepId.IsValid(theGraph.Mesh().Poly().NbTriangulations()))
+        {
+          theIssues.Append(Issue{Severity::Error,
+                                 aFaceIt.CurrentId(),
+                                 "MeshCache.FaceMesh.TriangulationRepId out of bounds"});
+          break;
+        }
       }
     }
   }
@@ -592,7 +593,64 @@ void checkGeometryReferences(const BRepGraph&                               theG
     if (aCoEdge.FaceDefId.IsValid() && !BRepGraph_Tool::CoEdge::HasPCurve(theGraph, aCoEdgeId))
     {
       theIssues.Append(
-        Issue{Severity::Error, aCoEdge.Id, "CoEdgeDef has no Curve2D representation"});
+        Issue{Severity::Error, aCoEdgeId, "CoEdgeDef has no Curve2D representation"});
+    }
+  }
+
+  // Orphan-rep detection: an active def that forward-references a rep which
+  // has been soft-removed leaves the rep id pointing at dead geometry. The
+  // rep should have been cleared (or the def removed) as part of the same
+  // mutation; surface the asymmetry.
+  const BRepGraph::TopoView::GeometryOps& aGeom = theGraph.Topo().Geometry();
+  const BRepGraph::MeshView::PolyOps&     aPoly = theGraph.Mesh().Poly();
+  for (BRepGraph_Iterator<BRepGraphInc::EdgeDef> anEdgeIt(theGraph); anEdgeIt.More();
+       anEdgeIt.Next())
+  {
+    const BRepGraphInc::EdgeDef& anEdge = anEdgeIt.Current();
+    if (anEdge.Curve3DRepId.IsValid() && anEdge.Curve3DRepId.IsValid(aGeom.NbCurves3D())
+        && aGeom.Curve3DRep(anEdge.Curve3DRepId).IsRemoved)
+    {
+      theIssues.Append(Issue{Severity::Error,
+                             anEdgeIt.CurrentId(),
+                             "EdgeDef.Curve3DRepId points to a removed Curve3DRep"});
+    }
+    if (anEdge.Polygon3DRepId.IsValid() && anEdge.Polygon3DRepId.IsValid(aPoly.NbPolygons3D())
+        && aPoly.Polygon3DRep(anEdge.Polygon3DRepId).IsRemoved)
+    {
+      theIssues.Append(Issue{Severity::Error,
+                             anEdgeIt.CurrentId(),
+                             "EdgeDef.Polygon3DRepId points to a removed Polygon3DRep"});
+    }
+  }
+  for (BRepGraph_Iterator<BRepGraphInc::FaceDef> aFaceIt(theGraph); aFaceIt.More(); aFaceIt.Next())
+  {
+    const BRepGraphInc::FaceDef& aFace = aFaceIt.Current();
+    if (aFace.SurfaceRepId.IsValid() && aFace.SurfaceRepId.IsValid(aGeom.NbSurfaces())
+        && aGeom.SurfaceRep(aFace.SurfaceRepId).IsRemoved)
+    {
+      theIssues.Append(Issue{Severity::Error,
+                             aFaceIt.CurrentId(),
+                             "FaceDef.SurfaceRepId points to a removed SurfaceRep"});
+    }
+    if (aFace.TriangulationRepId.IsValid()
+        && aFace.TriangulationRepId.IsValid(aPoly.NbTriangulations())
+        && aPoly.TriangulationRep(aFace.TriangulationRepId).IsRemoved)
+    {
+      theIssues.Append(Issue{Severity::Error,
+                             aFaceIt.CurrentId(),
+                             "FaceDef.TriangulationRepId points to a removed TriangulationRep"});
+    }
+  }
+  for (BRepGraph_Iterator<BRepGraphInc::CoEdgeDef> aCoEdgeIt(theGraph); aCoEdgeIt.More();
+       aCoEdgeIt.Next())
+  {
+    const BRepGraphInc::CoEdgeDef& aCoEdge = aCoEdgeIt.Current();
+    if (aCoEdge.Curve2DRepId.IsValid() && aCoEdge.Curve2DRepId.IsValid(aGeom.NbCurves2D())
+        && aGeom.Curve2DRep(aCoEdge.Curve2DRepId).IsRemoved)
+    {
+      theIssues.Append(Issue{Severity::Error,
+                             aCoEdgeIt.CurrentId(),
+                             "CoEdgeDef.Curve2DRepId points to a removed Curve2DRep"});
     }
   }
 }
@@ -620,7 +678,7 @@ void checkRemovedNodeIsolation(const BRepGraph&                               th
       if (aStartVtxId.IsValid() && isEntityRemoved(theGraph, aStartVtxId))
       {
         theIssues.Append(Issue{Severity::Error,
-                               anEdge.Id,
+                               anEdgeIt.CurrentId(),
                                "Non-removed EdgeDef references removed StartVertexEntity"});
       }
     }
@@ -631,7 +689,7 @@ void checkRemovedNodeIsolation(const BRepGraph&                               th
       if (anEndVtxId.IsValid() && isEntityRemoved(theGraph, anEndVtxId))
       {
         theIssues.Append(Issue{Severity::Error,
-                               anEdge.Id,
+                               anEdgeIt.CurrentId(),
                                "Non-removed EdgeDef references removed EndVertexEntity"});
       }
     }
@@ -640,8 +698,7 @@ void checkRemovedNodeIsolation(const BRepGraph&                               th
   // Non-removed wires must not reference removed edges.
   for (BRepGraph_Iterator<BRepGraphInc::WireDef> aWireIt(theGraph); aWireIt.More(); aWireIt.Next())
   {
-    const BRepGraphInc::WireDef& aWire   = aWireIt.Current();
-    const BRepGraph_WireId       aWireId = aWireIt.CurrentId();
+    const BRepGraph_WireId aWireId = aWireIt.CurrentId();
 
     bool hasRemovedEdge = false;
     for (BRepGraph_RefsCoEdgeOfWire anIt(theGraph, aWireId); anIt.More(); anIt.Next())
@@ -662,7 +719,21 @@ void checkRemovedNodeIsolation(const BRepGraph&                               th
     if (hasRemovedEdge)
     {
       theIssues.Append(
-        Issue{Severity::Error, aWire.Id, "Non-removed WireDef references removed EdgeDef"});
+        Issue{Severity::Error, aWireId, "Non-removed WireDef references removed EdgeDef"});
+    }
+  }
+
+  // Non-removed coedges must not reference removed faces.
+  for (BRepGraph_Iterator<BRepGraphInc::CoEdgeDef> aCoEdgeIt(theGraph); aCoEdgeIt.More();
+       aCoEdgeIt.Next())
+  {
+    const BRepGraphInc::CoEdgeDef& aCoEdge = aCoEdgeIt.Current();
+    const BRepGraph_NodeId         aFaceId = aCoEdge.FaceDefId;
+    if (aFaceId.IsValid() && isEntityRemoved(theGraph, aFaceId))
+    {
+      theIssues.Append(Issue{Severity::Error,
+                             aCoEdgeIt.CurrentId(),
+                             "Non-removed CoEdgeDef.FaceDefId references removed FaceDef"});
     }
   }
 }
@@ -678,36 +749,21 @@ void checkWireConnectivity(const BRepGraph&                               theGra
   using Issue    = BRepGraph_Validate::Issue;
   using Severity = BRepGraph_Validate::Severity;
 
-  auto edgeLookup = [&theGraph](int theIdx) -> const BRepGraphInc::EdgeDef& {
-    return theGraph.Topo().Edges().Definition(BRepGraph_EdgeId(theIdx));
-  };
-
   for (BRepGraph_Iterator<BRepGraphInc::WireDef> aWireIt(theGraph); aWireIt.More(); aWireIt.Next())
   {
-    const BRepGraphInc::WireDef& aWire   = aWireIt.Current();
-    const BRepGraph_WireId       aWireId = aWireIt.CurrentId();
+    const BRepGraph_WireId aWireId = aWireIt.CurrentId();
 
-    NCollection_Vector<BRepGraphInc::CoEdgeUsage> aWireCoEdgeRefs;
-    for (BRepGraph_RefsCoEdgeOfWire anIt(theGraph, aWireId); anIt.More(); anIt.Next())
-    {
-      const BRepGraphInc::CoEdgeRef& aCRE = theGraph.Refs().CoEdges().Entry(anIt.CurrentId());
-      BRepGraphInc::CoEdgeUsage      aCR;
-      aCR.DefId    = aCRE.CoEdgeDefId;
-      aCR.Location = aCRE.LocalLocation;
-      aWireCoEdgeRefs.Append(aCR);
-    }
-
-    const int aNbCoEdges = aWireCoEdgeRefs.Length();
-    if (aNbCoEdges < 2)
+    BRepGraph_WireExplorer anExp(theGraph, aWireId);
+    if (anExp.NbEdges() < 2)
       continue;
 
     // Validate all edge indices first.
     bool aAllValid = true;
-    for (int anIdx = 0; anIdx < aNbCoEdges; ++anIdx)
+    for (; anExp.More(); anExp.Next())
     {
-      const BRepGraphInc::CoEdgeUsage& aCR      = aWireCoEdgeRefs.Value(anIdx);
-      const BRepGraphInc::CoEdgeDef&   aCoEdge  = theGraph.Topo().CoEdges().Definition(aCR.DefId);
-      const BRepGraph_NodeId           anEdgeId = aCoEdge.EdgeDefId;
+      const BRepGraphInc::CoEdgeDef& aCoEdge =
+        theGraph.Topo().CoEdges().Definition(anExp.CurrentCoEdgeId());
+      const BRepGraph_NodeId anEdgeId = aCoEdge.EdgeDefId;
       if (!anEdgeId.IsValid() || !isValidNodeId(theGraph, anEdgeId))
       {
         aAllValid = false;
@@ -717,111 +773,53 @@ void checkWireConnectivity(const BRepGraph&                               theGra
     if (!aAllValid)
       continue;
 
-    // Build connection-ordered sequence via WireExplorer, then check
-    // that all consecutive pairs in the ordered sequence are connected.
-    auto coedgeLookup = [&theGraph](int theIdx) -> const BRepGraphInc::CoEdgeDef& {
-      return theGraph.Topo().CoEdges().Definition(BRepGraph_CoEdgeId(theIdx));
-    };
-    auto vtxRefLookup = [&theGraph](const BRepGraph_VertexRefId theRefId) -> BRepGraph_VertexId {
-      return theGraph.Refs().Vertices().Entry(theRefId).VertexDefId;
-    };
-    BRepGraph_WireExplorer anExp(aWireCoEdgeRefs, coedgeLookup, edgeLookup, vtxRefLookup);
-    const NCollection_Vector<BRepGraphInc::CoEdgeUsage>& anOrdered = anExp.OrderedRefs();
-
-    for (int anIdx = 0; anIdx < anOrdered.Length() - 1; ++anIdx)
+    // Check that all consecutive pairs in the ordered sequence are connected.
+    anExp.Reset();
+    BRepGraph_CoEdgeId aPrevId = anExp.CurrentCoEdgeId();
+    anExp.Next();
+    int anIdx = 0;
+    for (; anExp.More(); anExp.Next(), ++anIdx)
     {
-      const BRepGraphInc::CoEdgeUsage& aCurrCR = anOrdered.Value(anIdx);
-      const BRepGraphInc::CoEdgeUsage& aNextCR = anOrdered.Value(anIdx + 1);
+      const BRepGraph_CoEdgeId aCurrId = anExp.CurrentCoEdgeId();
 
-      const BRepGraphInc::CoEdgeDef& aCurrCoEdge =
-        theGraph.Topo().CoEdges().Definition(aCurrCR.DefId);
-      const BRepGraphInc::CoEdgeDef& aNextCoEdge =
-        theGraph.Topo().CoEdges().Definition(aNextCR.DefId);
+      const BRepGraphInc::CoEdgeDef& aPrevCoEdge = theGraph.Topo().CoEdges().Definition(aPrevId);
+      const BRepGraphInc::CoEdgeDef& aCurrCoEdge = theGraph.Topo().CoEdges().Definition(aCurrId);
 
+      const BRepGraphInc::EdgeDef& aPrevEdge =
+        theGraph.Topo().Edges().Definition(aPrevCoEdge.EdgeDefId);
       const BRepGraphInc::EdgeDef& aCurrEdge =
         theGraph.Topo().Edges().Definition(aCurrCoEdge.EdgeDefId);
-      const BRepGraphInc::EdgeDef& aNextEdge =
-        theGraph.Topo().Edges().Definition(aNextCoEdge.EdgeDefId);
 
-      // Resolve oriented end vertex of current edge.
-      const BRepGraph_VertexRefId aCurrEndRefId = (aCurrCoEdge.Orientation == TopAbs_FORWARD)
-                                                    ? aCurrEdge.EndVertexRefId
-                                                    : aCurrEdge.StartVertexRefId;
-      const BRepGraph_NodeId      aCurrEnd =
-        aCurrEndRefId.IsValid()
-               ? BRepGraph_VertexId(theGraph.Refs().Vertices().Entry(aCurrEndRefId).VertexDefId.Index)
+      // Resolve oriented end vertex of previous edge.
+      const BRepGraph_VertexRefId aPrevEndRefId = (aPrevCoEdge.Orientation == TopAbs_FORWARD)
+                                                    ? aPrevEdge.EndVertexRefId
+                                                    : aPrevEdge.StartVertexRefId;
+      const BRepGraph_NodeId      aPrevEnd =
+        aPrevEndRefId.IsValid()
+               ? BRepGraph_VertexId(theGraph.Refs().Vertices().Entry(aPrevEndRefId).VertexDefId)
                : BRepGraph_NodeId();
 
-      // Resolve oriented start vertex of next edge.
-      const BRepGraph_VertexRefId aNextStartRefId = (aNextCoEdge.Orientation == TopAbs_FORWARD)
-                                                      ? aNextEdge.StartVertexRefId
-                                                      : aNextEdge.EndVertexRefId;
-      const BRepGraph_NodeId      aNextStart =
-        aNextStartRefId.IsValid()
-               ? BRepGraph_VertexId(theGraph.Refs().Vertices().Entry(aNextStartRefId).VertexDefId.Index)
+      // Resolve oriented start vertex of current edge.
+      const BRepGraph_VertexRefId aCurrStartRefId = (aCurrCoEdge.Orientation == TopAbs_FORWARD)
+                                                      ? aCurrEdge.StartVertexRefId
+                                                      : aCurrEdge.EndVertexRefId;
+      const BRepGraph_NodeId      aCurrStart =
+        aCurrStartRefId.IsValid()
+               ? BRepGraph_VertexId(theGraph.Refs().Vertices().Entry(aCurrStartRefId).VertexDefId)
                : BRepGraph_NodeId();
 
-      if (aCurrEnd.IsValid() && aNextStart.IsValid() && aCurrEnd != aNextStart)
+      if (aPrevEnd.IsValid() && aCurrStart.IsValid() && aPrevEnd != aCurrStart)
       {
         TCollection_AsciiString aDesc("Wire edges not connected: edge[");
         aDesc += TCollection_AsciiString(anIdx);
         aDesc += "] end != edge[";
         aDesc += TCollection_AsciiString(anIdx + 1);
         aDesc += "] start";
-        theIssues.Append(Issue{Severity::Error, aWire.Id, aDesc});
+        theIssues.Append(Issue{Severity::Error, aWireId, aDesc});
       }
+      aPrevId = aCurrId;
     }
   }
-}
-
-//! Validate that every entity's Id field matches its actual vector position:
-//! Entity[i].Id must equal (Kind, i). Detects corruption from incorrect
-//! Compact remapping or manual entity manipulation.
-//! @param[in]     theGraph  source graph
-//! @param[in,out] theIssues collection to append diagnostic issues
-void checkDefIds(const BRepGraph&                               theGraph,
-                 NCollection_Vector<BRepGraph_Validate::Issue>& theIssues)
-{
-  using Severity                   = BRepGraph_Validate::Severity;
-  using Issue                      = BRepGraph_Validate::Issue;
-  const BRepGraph::TopoView& aDefs = theGraph.Topo();
-
-  auto checkKind = [&](BRepGraph_NodeId::Kind theKind, int theNb) {
-    for (int anIdx = 0; anIdx < theNb; ++anIdx)
-    {
-      const BRepGraph_NodeId       anExpected(theKind, anIdx);
-      const BRepGraphInc::BaseDef* aDef = aDefs.Gen().TopoEntity(anExpected);
-      if (aDef == nullptr)
-      {
-        continue;
-      }
-      if (aDef->Id != anExpected)
-      {
-        TCollection_AsciiString aDesc("Entity Id mismatch: expected (");
-        aDesc += TCollection_AsciiString(static_cast<int>(theKind));
-        aDesc += ",";
-        aDesc += TCollection_AsciiString(anIdx);
-        aDesc += ") got (";
-        aDesc += TCollection_AsciiString(static_cast<int>(aDef->Id.NodeKind));
-        aDesc += ",";
-        aDesc += TCollection_AsciiString(aDef->Id.Index);
-        aDesc += ")";
-        theIssues.Append(Issue{Severity::Error, anExpected, aDesc});
-      }
-    }
-  };
-
-  checkKind(BRepGraph_NodeId::Kind::Vertex, aDefs.Vertices().Nb());
-  checkKind(BRepGraph_NodeId::Kind::Edge, aDefs.Edges().Nb());
-  checkKind(BRepGraph_NodeId::Kind::CoEdge, aDefs.CoEdges().Nb());
-  checkKind(BRepGraph_NodeId::Kind::Wire, aDefs.Wires().Nb());
-  checkKind(BRepGraph_NodeId::Kind::Face, aDefs.Faces().Nb());
-  checkKind(BRepGraph_NodeId::Kind::Shell, aDefs.Shells().Nb());
-  checkKind(BRepGraph_NodeId::Kind::Solid, aDefs.Solids().Nb());
-  checkKind(BRepGraph_NodeId::Kind::Compound, aDefs.Compounds().Nb());
-  checkKind(BRepGraph_NodeId::Kind::CompSolid, aDefs.CompSolids().Nb());
-  checkKind(BRepGraph_NodeId::Kind::Product, aDefs.Products().Nb());
-  checkKind(BRepGraph_NodeId::Kind::Occurrence, aDefs.Occurrences().Nb());
 }
 
 //! Validate that NbActive*() counts match the actual number of non-removed
@@ -928,16 +926,16 @@ BRepGraph_Validate::Result BRepGraph_Validate::Perform(const BRepGraph& theGraph
 
   if (theOptions.ValidationMode == Mode::Lightweight)
   {
-    NCollection_Vector<BRepGraph::BuilderView::BoundaryIssue> aBoundaryIssues;
-    if (!theGraph.Builder().ValidateMutationBoundary(&aBoundaryIssues))
+    NCollection_Vector<BRepGraph::EditorView::BoundaryIssue> aBoundaryIssues;
+    if (!theGraph.Editor().ValidateMutationBoundary(&aBoundaryIssues))
     {
       appendMutationBoundaryIssues(aBoundaryIssues, aResult.Issues);
     }
     return aResult;
   }
 
-  NCollection_Vector<BRepGraph::BuilderView::BoundaryIssue> aBoundaryIssues;
-  if (!theGraph.Builder().ValidateMutationBoundary(&aBoundaryIssues))
+  NCollection_Vector<BRepGraph::EditorView::BoundaryIssue> aBoundaryIssues;
+  if (!theGraph.Editor().ValidateMutationBoundary(&aBoundaryIssues))
   {
     appendMutationBoundaryIssues(aBoundaryIssues, aResult.Issues);
   }
@@ -950,7 +948,6 @@ BRepGraph_Validate::Result BRepGraph_Validate::Perform(const BRepGraph& theGraph
   checkRemovedNodeIsolation(theGraph, aResult.Issues);
   checkWireConnectivity(theGraph, aResult.Issues);
 
-  checkDefIds(theGraph, aResult.Issues);
   checkActiveCounts(theGraph, aResult.Issues);
 
   // UID integrity checks: all active nodes must have a valid UID that round-trips.
@@ -1013,7 +1010,7 @@ BRepGraph_Validate::Result BRepGraph_Validate::Perform(const BRepGraph& theGraph
 
     // BFS from this product's children; skip already-visited to avoid
     // exponential blowup on DAGs. A cycle exists if we re-encounter aProdIdx.
-    NCollection_Map<int>                    aVisited;
+    NCollection_Map<BRepGraph_ProductId>    aVisited;
     NCollection_Vector<BRepGraph_ProductId> aQueue;
     int                                     aHead = 0;
 
@@ -1025,9 +1022,12 @@ BRepGraph_Validate::Result BRepGraph_Validate::Perform(const BRepGraph& theGraph
         theGraph.Refs().Occurrences().Entry(anOccIt.CurrentId());
       const BRepGraphInc::OccurrenceDef& anOcc =
         aDefs.Occurrences().Definition(anOccRef.OccurrenceDefId);
-      if (anOcc.IsRemoved || !anOcc.ProductDefId.IsValid(aDefs.Products().Nb()))
+      if (anOcc.IsRemoved || anOcc.ChildDefId.NodeKind != BRepGraph_NodeId::Kind::Product)
         continue;
-      if (anOcc.ProductDefId.Index == aProdId.Index)
+      const BRepGraph_ProductId aChildProdId = BRepGraph_ProductId::FromNodeId(anOcc.ChildDefId);
+      if (!aChildProdId.IsValid(aDefs.Products().Nb()))
+        continue;
+      if (aChildProdId == aProdId)
       {
         aResult.Issues.Append(
           Issue{Severity::Error,
@@ -1035,8 +1035,8 @@ BRepGraph_Validate::Result BRepGraph_Validate::Perform(const BRepGraph& theGraph
                 "Assembly cycle: Product directly references itself via occurrence"});
         break;
       }
-      if (aVisited.Add(anOcc.ProductDefId.Index))
-        aQueue.Append(anOcc.ProductDefId);
+      if (aVisited.Add(aChildProdId))
+        aQueue.Append(aChildProdId);
     }
 
     bool aCycleFound = false;
@@ -1054,9 +1054,12 @@ BRepGraph_Validate::Result BRepGraph_Validate::Perform(const BRepGraph& theGraph
           theGraph.Refs().Occurrences().Entry(aRefIt.CurrentId());
         const BRepGraphInc::OccurrenceDef& aOcc =
           aDefs.Occurrences().Definition(aRef.OccurrenceDefId);
-        if (aOcc.IsRemoved || !aOcc.ProductDefId.IsValid(aDefs.Products().Nb()))
+        if (aOcc.IsRemoved || aOcc.ChildDefId.NodeKind != BRepGraph_NodeId::Kind::Product)
           continue;
-        if (aOcc.ProductDefId.Index == aProdId.Index)
+        const BRepGraph_ProductId aDescProdId = BRepGraph_ProductId::FromNodeId(aOcc.ChildDefId);
+        if (!aDescProdId.IsValid(aDefs.Products().Nb()))
+          continue;
+        if (aDescProdId == aProdId)
         {
           aResult.Issues.Append(
             Issue{Severity::Error,
@@ -1065,8 +1068,287 @@ BRepGraph_Validate::Result BRepGraph_Validate::Perform(const BRepGraph& theGraph
           aCycleFound = true;
           break;
         }
-        if (aVisited.Add(aOcc.ProductDefId.Index))
-          aQueue.Append(aOcc.ProductDefId);
+        if (aVisited.Add(aDescProdId))
+          aQueue.Append(aDescProdId);
+      }
+    }
+  }
+
+  // Compound structural cycle detection: a compound must not reach itself
+  // directly or transitively through ChildRefs whose ChildDefId.NodeKind is
+  // Compound. Distinct from Product/Occurrence cycles (those are assembly-level).
+  for (BRepGraph_Iterator<BRepGraphInc::CompoundDef> aCompIt(theGraph); aCompIt.More();
+       aCompIt.Next())
+  {
+    const BRepGraph_CompoundId               aRootCompoundId = aCompIt.CurrentId();
+    NCollection_Map<BRepGraph_CompoundId>    aVisited;
+    NCollection_Vector<BRepGraph_CompoundId> aQueue;
+    int                                      aHead = 0;
+
+    for (BRepGraph_RefsChildOfCompound anIt(theGraph, aRootCompoundId); anIt.More(); anIt.Next())
+    {
+      const BRepGraphInc::ChildRef& aCR = theGraph.Refs().Children().Entry(anIt.CurrentId());
+      if (aCR.IsRemoved || aCR.ChildDefId.NodeKind != BRepGraph_NodeId::Kind::Compound
+          || !aCR.ChildDefId.IsValid())
+        continue;
+      const BRepGraph_CompoundId aChildCompoundId =
+        BRepGraph_CompoundId::FromNodeId(aCR.ChildDefId);
+      if (!aChildCompoundId.IsValidIn(aDefs.Compounds()))
+        continue;
+      if (aChildCompoundId == aRootCompoundId)
+      {
+        aResult.Issues.Append(
+          Issue{Severity::Error,
+                aRootCompoundId,
+                "Compound cycle: Compound directly references itself via ChildRef"});
+        break;
+      }
+      if (aVisited.Add(aChildCompoundId))
+        aQueue.Append(aChildCompoundId);
+    }
+
+    bool aCycleFound = false;
+    while (aHead < aQueue.Length() && !aCycleFound)
+    {
+      const BRepGraph_CompoundId aChildCompoundId = aQueue.Value(aHead);
+      ++aHead;
+      if (aDefs.Compounds().Definition(aChildCompoundId).IsRemoved)
+        continue;
+      for (BRepGraph_RefsChildOfCompound aRefIt(theGraph, aChildCompoundId); aRefIt.More();
+           aRefIt.Next())
+      {
+        const BRepGraphInc::ChildRef& aCR = theGraph.Refs().Children().Entry(aRefIt.CurrentId());
+        if (aCR.IsRemoved || aCR.ChildDefId.NodeKind != BRepGraph_NodeId::Kind::Compound
+            || !aCR.ChildDefId.IsValid())
+          continue;
+        const BRepGraph_CompoundId aDescCompoundId =
+          BRepGraph_CompoundId::FromNodeId(aCR.ChildDefId);
+        if (!aDescCompoundId.IsValidIn(aDefs.Compounds()))
+          continue;
+        if (aDescCompoundId == aRootCompoundId)
+        {
+          aResult.Issues.Append(
+            Issue{Severity::Error,
+                  aRootCompoundId,
+                  "Compound cycle: Compound reaches itself through ChildRef chain"});
+          aCycleFound = true;
+          break;
+        }
+        if (aVisited.Add(aDescCompoundId))
+          aQueue.Append(aDescCompoundId);
+      }
+    }
+  }
+
+  // Orphan ref detection: ChildRef/SolidRef entries whose ParentId points
+  // to a removed / out-of-range container. These survive node removal and
+  // can cause reverse-index queries to return wrong answers.
+  {
+    const BRepGraph::RefsView& aRefs = theGraph.Refs();
+    for (BRepGraph_FullChildRefIterator aChildRefIt(theGraph); aChildRefIt.More();
+         aChildRefIt.Next())
+    {
+      const BRepGraph_ChildRefId    aChildRefId = aChildRefIt.CurrentId();
+      const BRepGraphInc::ChildRef& aCR         = aRefs.Children().Entry(aChildRefId);
+      if (aCR.IsRemoved)
+        continue;
+      const BRepGraph_NodeId aParentId = aCR.ParentId;
+      if (!aParentId.IsValid() || aParentId.NodeKind != BRepGraph_NodeId::Kind::Compound
+          || !BRepGraph_CompoundId(aParentId).IsValidIn(aDefs.Compounds())
+          || aDefs.Compounds().Definition(BRepGraph_CompoundId(aParentId)).IsRemoved)
+      {
+        aResult.Issues.Append(
+          Issue{Severity::Error,
+                aParentId,
+                "Orphan ChildRef: ParentId points to removed or out-of-range Compound"});
+      }
+    }
+
+    for (BRepGraph_FullSolidRefIterator aSolidRefIt(theGraph); aSolidRefIt.More();
+         aSolidRefIt.Next())
+    {
+      const BRepGraph_SolidRefId    aSolidRefId = aSolidRefIt.CurrentId();
+      const BRepGraphInc::SolidRef& aSR         = aRefs.Solids().Entry(aSolidRefId);
+      if (aSR.IsRemoved)
+        continue;
+      if (!aSR.ParentId.IsValid())
+      {
+        aResult.Issues.Append(
+          Issue{Severity::Error, aSR.ParentId, "Orphan SolidRef: ParentId invalid"});
+        continue;
+      }
+      if (aSR.ParentId.NodeKind == BRepGraph_NodeId::Kind::CompSolid)
+      {
+        if (!BRepGraph_CompSolidId(aSR.ParentId).IsValidIn(aDefs.CompSolids())
+            || aDefs.CompSolids().Definition(BRepGraph_CompSolidId(aSR.ParentId)).IsRemoved)
+        {
+          aResult.Issues.Append(
+            Issue{Severity::Error,
+                  aSR.ParentId,
+                  "Orphan SolidRef: ParentId points to removed or out-of-range CompSolid"});
+        }
+      }
+    }
+
+    // Shell refs: parent must be a live Solid.
+    for (BRepGraph_FullShellRefIterator aShellRefIt(theGraph); aShellRefIt.More();
+         aShellRefIt.Next())
+    {
+      const BRepGraph_ShellRefId    aShellRefId = aShellRefIt.CurrentId();
+      const BRepGraphInc::ShellRef& aRef        = aRefs.Shells().Entry(aShellRefId);
+      if (aRef.IsRemoved)
+        continue;
+      const BRepGraph_NodeId aP = aRef.ParentId;
+      if (!aP.IsValid() || aP.NodeKind != BRepGraph_NodeId::Kind::Solid
+          || !BRepGraph_SolidId(aP).IsValidIn(aDefs.Solids())
+          || aDefs.Solids().Definition(BRepGraph_SolidId(aP)).IsRemoved)
+      {
+        aResult.Issues.Append(
+          Issue{Severity::Error, aP, "Orphan ShellRef: ParentId is not a live Solid"});
+      }
+    }
+
+    // Face refs: parent must be a live Shell.
+    for (BRepGraph_FullFaceRefIterator aFaceRefIt(theGraph); aFaceRefIt.More(); aFaceRefIt.Next())
+    {
+      const BRepGraph_FaceRefId    aFaceRefId = aFaceRefIt.CurrentId();
+      const BRepGraphInc::FaceRef& aRef       = aRefs.Faces().Entry(aFaceRefId);
+      if (aRef.IsRemoved)
+        continue;
+      const BRepGraph_NodeId aP = aRef.ParentId;
+      if (!aP.IsValid() || aP.NodeKind != BRepGraph_NodeId::Kind::Shell
+          || !BRepGraph_ShellId(aP).IsValidIn(aDefs.Shells())
+          || aDefs.Shells().Definition(BRepGraph_ShellId(aP)).IsRemoved)
+      {
+        aResult.Issues.Append(
+          Issue{Severity::Error, aP, "Orphan FaceRef: ParentId is not a live Shell"});
+      }
+    }
+
+    // Wire refs: parent must be a live Face.
+    for (BRepGraph_FullWireRefIterator aWireRefIt(theGraph); aWireRefIt.More(); aWireRefIt.Next())
+    {
+      const BRepGraph_WireRefId    aWireRefId = aWireRefIt.CurrentId();
+      const BRepGraphInc::WireRef& aRef       = aRefs.Wires().Entry(aWireRefId);
+      if (aRef.IsRemoved)
+        continue;
+      const BRepGraph_NodeId aP = aRef.ParentId;
+      if (!aP.IsValid() || aP.NodeKind != BRepGraph_NodeId::Kind::Face
+          || !BRepGraph_FaceId(aP).IsValidIn(aDefs.Faces())
+          || aDefs.Faces().Definition(BRepGraph_FaceId(aP)).IsRemoved)
+      {
+        aResult.Issues.Append(
+          Issue{Severity::Error, aP, "Orphan WireRef: ParentId is not a live Face"});
+      }
+    }
+
+    // CoEdge refs: parent must be a live Wire.
+    for (BRepGraph_FullCoEdgeRefIterator aCoEdgeRefIt(theGraph); aCoEdgeRefIt.More();
+         aCoEdgeRefIt.Next())
+    {
+      const BRepGraph_CoEdgeRefId    aCoEdgeRefId = aCoEdgeRefIt.CurrentId();
+      const BRepGraphInc::CoEdgeRef& aRef         = aRefs.CoEdges().Entry(aCoEdgeRefId);
+      if (aRef.IsRemoved)
+        continue;
+      const BRepGraph_NodeId aP = aRef.ParentId;
+      if (!aP.IsValid() || aP.NodeKind != BRepGraph_NodeId::Kind::Wire
+          || !BRepGraph_WireId(aP).IsValidIn(aDefs.Wires())
+          || aDefs.Wires().Definition(BRepGraph_WireId(aP)).IsRemoved)
+      {
+        aResult.Issues.Append(
+          Issue{Severity::Error, aP, "Orphan CoEdgeRef: ParentId is not a live Wire"});
+      }
+    }
+
+    // Vertex refs: parent must be a live Edge.
+    for (BRepGraph_FullVertexRefIterator aVertexRefIt(theGraph); aVertexRefIt.More();
+         aVertexRefIt.Next())
+    {
+      const BRepGraph_VertexRefId    aVertexRefId = aVertexRefIt.CurrentId();
+      const BRepGraphInc::VertexRef& aRef         = aRefs.Vertices().Entry(aVertexRefId);
+      if (aRef.IsRemoved)
+        continue;
+      const BRepGraph_NodeId aP = aRef.ParentId;
+      if (!aP.IsValid() || aP.NodeKind != BRepGraph_NodeId::Kind::Edge
+          || !BRepGraph_EdgeId(aP).IsValidIn(aDefs.Edges())
+          || aDefs.Edges().Definition(BRepGraph_EdgeId(aP)).IsRemoved)
+      {
+        aResult.Issues.Append(
+          Issue{Severity::Error, aP, "Orphan VertexRef: ParentId is not a live Edge"});
+      }
+    }
+
+    // Occurrence refs: parent must be a live Product.
+    for (BRepGraph_FullOccurrenceRefIterator anOccurrenceRefIt(theGraph); anOccurrenceRefIt.More();
+         anOccurrenceRefIt.Next())
+    {
+      const BRepGraph_OccurrenceRefId    aOccurrenceRefId = anOccurrenceRefIt.CurrentId();
+      const BRepGraphInc::OccurrenceRef& aRef = aRefs.Occurrences().Entry(aOccurrenceRefId);
+      if (aRef.IsRemoved)
+        continue;
+      const BRepGraph_NodeId aP = aRef.ParentId;
+      if (!aP.IsValid() || aP.NodeKind != BRepGraph_NodeId::Kind::Product
+          || !BRepGraph_ProductId(aP).IsValidIn(aDefs.Products())
+          || aDefs.Products().Definition(BRepGraph_ProductId(aP)).IsRemoved)
+      {
+        aResult.Issues.Append(
+          Issue{Severity::Error, aP, "Orphan OccurrenceRef: ParentId is not a live Product"});
+      }
+    }
+  }
+
+  // Occurrence-to-Product liveness: every active OccurrenceDef whose ChildDefId
+  // points to a Product must target a live Product. This catches the case where
+  // a Product is soft-removed but dependent Occurrences survived.
+  for (BRepGraph_Iterator<BRepGraphInc::OccurrenceDef> anOccIt(theGraph); anOccIt.More();
+       anOccIt.Next())
+  {
+    const BRepGraphInc::OccurrenceDef& anOcc = anOccIt.Current();
+    if (anOcc.ChildDefId.NodeKind != BRepGraph_NodeId::Kind::Product)
+      continue;
+    const BRepGraph_ProductId aChildProductId(anOcc.ChildDefId);
+    if (!aChildProductId.IsValidIn(aDefs.Products())
+        || aDefs.Products().Definition(aChildProductId).IsRemoved)
+    {
+      aResult.Issues.Append(
+        Issue{Severity::Error,
+              anOccIt.CurrentId(),
+              "Active OccurrenceDef.ChildDefId points to a removed or out-of-range Product"});
+    }
+  }
+
+  // Cross-container ownership: a Solid must not be simultaneously referenced by
+  // an active Compound ChildRef AND an active CompSolid SolidRef. OCCT models
+  // a solid as belonging to either a Compound or a CompSolid, not both.
+  {
+    const BRepGraph::RefsView&         aRefs = theGraph.Refs();
+    NCollection_Map<BRepGraph_SolidId> aCompoundOwnedSolids;
+    for (BRepGraph_FullChildRefIterator aChildRefIt(theGraph); aChildRefIt.More();
+         aChildRefIt.Next())
+    {
+      const BRepGraph_ChildRefId    aChildRefId = aChildRefIt.CurrentId();
+      const BRepGraphInc::ChildRef& aCR         = aRefs.Children().Entry(aChildRefId);
+      if (aCR.IsRemoved)
+        continue;
+      if (aCR.ChildDefId.NodeKind == BRepGraph_NodeId::Kind::Solid && aCR.ChildDefId.IsValid())
+      {
+        aCompoundOwnedSolids.Add(BRepGraph_SolidId::FromNodeId(aCR.ChildDefId));
+      }
+    }
+    for (BRepGraph_FullSolidRefIterator aSolidRefIt(theGraph); aSolidRefIt.More();
+         aSolidRefIt.Next())
+    {
+      const BRepGraph_SolidRefId    aSolidRefId = aSolidRefIt.CurrentId();
+      const BRepGraphInc::SolidRef& aSR         = aRefs.Solids().Entry(aSolidRefId);
+      if (aSR.IsRemoved)
+        continue;
+      if (aSR.SolidDefId.IsValid() && aCompoundOwnedSolids.Contains(aSR.SolidDefId))
+      {
+        aResult.Issues.Append(
+          Issue{Severity::Error,
+                aSR.SolidDefId,
+                "Cross-container ownership: Solid is referenced by both a Compound (ChildRef) "
+                "and a CompSolid (SolidRef)"});
       }
     }
   }

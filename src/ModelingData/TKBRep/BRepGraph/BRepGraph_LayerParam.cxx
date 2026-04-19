@@ -11,9 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepGraph_ParamLayer.hxx>
+#include <BRepGraph_LayerParam.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(BRepGraph_ParamLayer, BRepGraph_Layer)
+IMPLEMENT_STANDARD_RTTIEXT(BRepGraph_LayerParam, BRepGraph_Layer)
 
 namespace
 {
@@ -69,47 +69,47 @@ static BRepGraph_VertexId remapVertex(
   const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>& theRemapMap,
   const BRepGraph_VertexId                                       theVertex)
 {
-  const BRepGraph_NodeId* aNewId = theRemapMap.Seek(BRepGraph_VertexId(theVertex.Index));
+  const BRepGraph_NodeId* aNewId = theRemapMap.Seek(theVertex);
   if (aNewId == nullptr || aNewId->NodeKind != BRepGraph_NodeId::Kind::Vertex)
     return BRepGraph_VertexId();
-  return BRepGraph_VertexId(aNewId->Index);
+  return BRepGraph_VertexId(*aNewId);
 }
 
 static BRepGraph_EdgeId remapEdge(
   const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>& theRemapMap,
   const BRepGraph_EdgeId                                         theEdge)
 {
-  const BRepGraph_NodeId* aNewId = theRemapMap.Seek(BRepGraph_EdgeId(theEdge.Index));
+  const BRepGraph_NodeId* aNewId = theRemapMap.Seek(theEdge);
   if (aNewId == nullptr || aNewId->NodeKind != BRepGraph_NodeId::Kind::Edge)
     return BRepGraph_EdgeId();
-  return BRepGraph_EdgeId(aNewId->Index);
+  return BRepGraph_EdgeId(*aNewId);
 }
 
 static BRepGraph_FaceId remapFace(
   const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>& theRemapMap,
   const BRepGraph_FaceId                                         theFace)
 {
-  const BRepGraph_NodeId* aNewId = theRemapMap.Seek(BRepGraph_FaceId(theFace.Index));
+  const BRepGraph_NodeId* aNewId = theRemapMap.Seek(theFace);
   if (aNewId == nullptr || aNewId->NodeKind != BRepGraph_NodeId::Kind::Face)
     return BRepGraph_FaceId();
-  return BRepGraph_FaceId(aNewId->Index);
+  return BRepGraph_FaceId(*aNewId);
 }
 
 static BRepGraph_CoEdgeId remapCoEdge(
   const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>& theRemapMap,
   const BRepGraph_CoEdgeId                                       theCoEdge)
 {
-  const BRepGraph_NodeId* aNewId = theRemapMap.Seek(BRepGraph_CoEdgeId(theCoEdge.Index));
+  const BRepGraph_NodeId* aNewId = theRemapMap.Seek(theCoEdge);
   if (aNewId == nullptr || aNewId->NodeKind != BRepGraph_NodeId::Kind::CoEdge)
     return BRepGraph_CoEdgeId();
-  return BRepGraph_CoEdgeId(aNewId->Index);
+  return BRepGraph_CoEdgeId(*aNewId);
 }
 
 } // namespace
 
 //=================================================================================================
 
-const Standard_GUID& BRepGraph_ParamLayer::GetID()
+const Standard_GUID& BRepGraph_LayerParam::GetID()
 {
   static const Standard_GUID THE_LAYER_ID("2f9b6a5c-1f2d-4a88-9c1c-7a0c16a10001");
   return THE_LAYER_ID;
@@ -117,21 +117,21 @@ const Standard_GUID& BRepGraph_ParamLayer::GetID()
 
 //=================================================================================================
 
-const Standard_GUID& BRepGraph_ParamLayer::ID() const
+const Standard_GUID& BRepGraph_LayerParam::ID() const
 {
   return GetID();
 }
 
 //=================================================================================================
 
-const TCollection_AsciiString& BRepGraph_ParamLayer::Name() const
+const TCollection_AsciiString& BRepGraph_LayerParam::Name() const
 {
   return THE_LAYER_NAME;
 }
 
 //=================================================================================================
 
-int BRepGraph_ParamLayer::SubscribedKinds() const
+int BRepGraph_LayerParam::SubscribedKinds() const
 {
   return KindBit(BRepGraph_NodeId::Kind::Vertex) | KindBit(BRepGraph_NodeId::Kind::Edge)
          | KindBit(BRepGraph_NodeId::Kind::Face) | KindBit(BRepGraph_NodeId::Kind::CoEdge);
@@ -139,7 +139,7 @@ int BRepGraph_ParamLayer::SubscribedKinds() const
 
 //=================================================================================================
 
-const BRepGraph_ParamLayer::VertexParams* BRepGraph_ParamLayer::FindVertexParams(
+const BRepGraph_LayerParam::VertexParams* BRepGraph_LayerParam::FindVertexParams(
   const BRepGraph_VertexId theVertex) const
 {
   return myVertexParams.Seek(theVertex);
@@ -147,7 +147,7 @@ const BRepGraph_ParamLayer::VertexParams* BRepGraph_ParamLayer::FindVertexParams
 
 //=================================================================================================
 
-bool BRepGraph_ParamLayer::FindPointOnCurve(const BRepGraph_VertexId theVertex,
+bool BRepGraph_LayerParam::FindPointOnCurve(const BRepGraph_VertexId theVertex,
                                             const BRepGraph_EdgeId   theEdge,
                                             double* const            theParameter) const
 {
@@ -168,7 +168,7 @@ bool BRepGraph_ParamLayer::FindPointOnCurve(const BRepGraph_VertexId theVertex,
 
 //=================================================================================================
 
-bool BRepGraph_ParamLayer::FindPointOnSurface(const BRepGraph_VertexId theVertex,
+bool BRepGraph_LayerParam::FindPointOnSurface(const BRepGraph_VertexId theVertex,
                                               const BRepGraph_FaceId   theFace,
                                               gp_Pnt2d* const          theUV) const
 {
@@ -189,7 +189,7 @@ bool BRepGraph_ParamLayer::FindPointOnSurface(const BRepGraph_VertexId theVertex
 
 //=================================================================================================
 
-bool BRepGraph_ParamLayer::FindPointOnPCurve(const BRepGraph_VertexId theVertex,
+bool BRepGraph_LayerParam::FindPointOnPCurve(const BRepGraph_VertexId theVertex,
                                              const BRepGraph_CoEdgeId theCoEdge,
                                              double* const            theParameter) const
 {
@@ -210,7 +210,7 @@ bool BRepGraph_ParamLayer::FindPointOnPCurve(const BRepGraph_VertexId theVertex,
 
 //=================================================================================================
 
-int BRepGraph_ParamLayer::NbPointsOnCurve(const BRepGraph_VertexId theVertex) const
+int BRepGraph_LayerParam::NbPointsOnCurve(const BRepGraph_VertexId theVertex) const
 {
   const VertexParams* aParams = FindVertexParams(theVertex);
   return aParams == nullptr ? 0 : aParams->PointsOnCurve.Length();
@@ -218,7 +218,7 @@ int BRepGraph_ParamLayer::NbPointsOnCurve(const BRepGraph_VertexId theVertex) co
 
 //=================================================================================================
 
-int BRepGraph_ParamLayer::NbPointsOnSurface(const BRepGraph_VertexId theVertex) const
+int BRepGraph_LayerParam::NbPointsOnSurface(const BRepGraph_VertexId theVertex) const
 {
   const VertexParams* aParams = FindVertexParams(theVertex);
   return aParams == nullptr ? 0 : aParams->PointsOnSurface.Length();
@@ -226,7 +226,7 @@ int BRepGraph_ParamLayer::NbPointsOnSurface(const BRepGraph_VertexId theVertex) 
 
 //=================================================================================================
 
-int BRepGraph_ParamLayer::NbPointsOnPCurve(const BRepGraph_VertexId theVertex) const
+int BRepGraph_LayerParam::NbPointsOnPCurve(const BRepGraph_VertexId theVertex) const
 {
   const VertexParams* aParams = FindVertexParams(theVertex);
   return aParams == nullptr ? 0 : aParams->PointsOnPCurve.Length();
@@ -234,7 +234,7 @@ int BRepGraph_ParamLayer::NbPointsOnPCurve(const BRepGraph_VertexId theVertex) c
 
 //=================================================================================================
 
-BRepGraph_ParamLayer::VertexParams& BRepGraph_ParamLayer::changeVertexParams(
+BRepGraph_LayerParam::VertexParams& BRepGraph_LayerParam::changeVertexParams(
   const BRepGraph_VertexId theVertex)
 {
   if (!myVertexParams.IsBound(theVertex))
@@ -244,7 +244,7 @@ BRepGraph_ParamLayer::VertexParams& BRepGraph_ParamLayer::changeVertexParams(
 
 //=================================================================================================
 
-void BRepGraph_ParamLayer::bindEdgeToVertex(const BRepGraph_EdgeId   theEdge,
+void BRepGraph_LayerParam::bindEdgeToVertex(const BRepGraph_EdgeId   theEdge,
                                             const BRepGraph_VertexId theVertex)
 {
   appendUnique(myEdgeToVertices, theEdge, theVertex);
@@ -252,7 +252,7 @@ void BRepGraph_ParamLayer::bindEdgeToVertex(const BRepGraph_EdgeId   theEdge,
 
 //=================================================================================================
 
-void BRepGraph_ParamLayer::bindFaceToVertex(const BRepGraph_FaceId   theFace,
+void BRepGraph_LayerParam::bindFaceToVertex(const BRepGraph_FaceId   theFace,
                                             const BRepGraph_VertexId theVertex)
 {
   appendUnique(myFaceToVertices, theFace, theVertex);
@@ -260,7 +260,7 @@ void BRepGraph_ParamLayer::bindFaceToVertex(const BRepGraph_FaceId   theFace,
 
 //=================================================================================================
 
-void BRepGraph_ParamLayer::bindCoEdgeToVertex(const BRepGraph_CoEdgeId theCoEdge,
+void BRepGraph_LayerParam::bindCoEdgeToVertex(const BRepGraph_CoEdgeId theCoEdge,
                                               const BRepGraph_VertexId theVertex)
 {
   appendUnique(myCoEdgeToVertices, theCoEdge, theVertex);
@@ -268,7 +268,7 @@ void BRepGraph_ParamLayer::bindCoEdgeToVertex(const BRepGraph_CoEdgeId theCoEdge
 
 //=================================================================================================
 
-void BRepGraph_ParamLayer::unbindEdgeFromVertex(const BRepGraph_EdgeId   theEdge,
+void BRepGraph_LayerParam::unbindEdgeFromVertex(const BRepGraph_EdgeId   theEdge,
                                                 const BRepGraph_VertexId theVertex) noexcept
 {
   removeVertex(myEdgeToVertices, theEdge, theVertex);
@@ -276,7 +276,7 @@ void BRepGraph_ParamLayer::unbindEdgeFromVertex(const BRepGraph_EdgeId   theEdge
 
 //=================================================================================================
 
-void BRepGraph_ParamLayer::unbindFaceFromVertex(const BRepGraph_FaceId   theFace,
+void BRepGraph_LayerParam::unbindFaceFromVertex(const BRepGraph_FaceId   theFace,
                                                 const BRepGraph_VertexId theVertex) noexcept
 {
   removeVertex(myFaceToVertices, theFace, theVertex);
@@ -284,7 +284,7 @@ void BRepGraph_ParamLayer::unbindFaceFromVertex(const BRepGraph_FaceId   theFace
 
 //=================================================================================================
 
-void BRepGraph_ParamLayer::unbindCoEdgeFromVertex(const BRepGraph_CoEdgeId theCoEdge,
+void BRepGraph_LayerParam::unbindCoEdgeFromVertex(const BRepGraph_CoEdgeId theCoEdge,
                                                   const BRepGraph_VertexId theVertex) noexcept
 {
   removeVertex(myCoEdgeToVertices, theCoEdge, theVertex);
@@ -292,7 +292,7 @@ void BRepGraph_ParamLayer::unbindCoEdgeFromVertex(const BRepGraph_CoEdgeId theCo
 
 //=================================================================================================
 
-void BRepGraph_ParamLayer::SetPointOnCurve(const BRepGraph_VertexId theVertex,
+void BRepGraph_LayerParam::SetPointOnCurve(const BRepGraph_VertexId theVertex,
                                            const BRepGraph_EdgeId   theEdge,
                                            const double             theParameter)
 {
@@ -314,7 +314,7 @@ void BRepGraph_ParamLayer::SetPointOnCurve(const BRepGraph_VertexId theVertex,
 
 //=================================================================================================
 
-void BRepGraph_ParamLayer::SetPointOnSurface(const BRepGraph_VertexId theVertex,
+void BRepGraph_LayerParam::SetPointOnSurface(const BRepGraph_VertexId theVertex,
                                              const BRepGraph_FaceId   theFace,
                                              const double             theParameterU,
                                              const double             theParameterV)
@@ -339,7 +339,7 @@ void BRepGraph_ParamLayer::SetPointOnSurface(const BRepGraph_VertexId theVertex,
 
 //=================================================================================================
 
-void BRepGraph_ParamLayer::SetPointOnPCurve(const BRepGraph_VertexId theVertex,
+void BRepGraph_LayerParam::SetPointOnPCurve(const BRepGraph_VertexId theVertex,
                                             const BRepGraph_CoEdgeId theCoEdge,
                                             const double             theParameter)
 {
@@ -361,7 +361,7 @@ void BRepGraph_ParamLayer::SetPointOnPCurve(const BRepGraph_VertexId theVertex,
 
 //=================================================================================================
 
-void BRepGraph_ParamLayer::removePointOnCurve(const BRepGraph_VertexId theVertex,
+void BRepGraph_LayerParam::removePointOnCurve(const BRepGraph_VertexId theVertex,
                                               const BRepGraph_EdgeId   theEdge) noexcept
 {
   if (!myVertexParams.IsBound(theVertex))
@@ -386,7 +386,7 @@ void BRepGraph_ParamLayer::removePointOnCurve(const BRepGraph_VertexId theVertex
 
 //=================================================================================================
 
-void BRepGraph_ParamLayer::removePointOnSurface(const BRepGraph_VertexId theVertex,
+void BRepGraph_LayerParam::removePointOnSurface(const BRepGraph_VertexId theVertex,
                                                 const BRepGraph_FaceId   theFace) noexcept
 {
   if (!myVertexParams.IsBound(theVertex))
@@ -413,7 +413,7 @@ void BRepGraph_ParamLayer::removePointOnSurface(const BRepGraph_VertexId theVert
 
 //=================================================================================================
 
-void BRepGraph_ParamLayer::removePointOnPCurve(const BRepGraph_VertexId theVertex,
+void BRepGraph_LayerParam::removePointOnPCurve(const BRepGraph_VertexId theVertex,
                                                const BRepGraph_CoEdgeId theCoEdge) noexcept
 {
   if (!myVertexParams.IsBound(theVertex))
@@ -440,7 +440,7 @@ void BRepGraph_ParamLayer::removePointOnPCurve(const BRepGraph_VertexId theVerte
 
 //=================================================================================================
 
-void BRepGraph_ParamLayer::removeVertexBindings(const BRepGraph_VertexId theVertex) noexcept
+void BRepGraph_LayerParam::removeVertexBindings(const BRepGraph_VertexId theVertex) noexcept
 {
   const VertexParams* aParams = myVertexParams.Seek(theVertex);
   if (aParams == nullptr)
@@ -457,7 +457,7 @@ void BRepGraph_ParamLayer::removeVertexBindings(const BRepGraph_VertexId theVert
 
 //=================================================================================================
 
-void BRepGraph_ParamLayer::invalidateEdgeBindings(const BRepGraph_EdgeId theEdge) noexcept
+void BRepGraph_LayerParam::invalidateEdgeBindings(const BRepGraph_EdgeId theEdge) noexcept
 {
   const NCollection_Vector<BRepGraph_VertexId>* aVertices = myEdgeToVertices.Seek(theEdge);
   if (aVertices == nullptr)
@@ -470,7 +470,7 @@ void BRepGraph_ParamLayer::invalidateEdgeBindings(const BRepGraph_EdgeId theEdge
 
 //=================================================================================================
 
-void BRepGraph_ParamLayer::invalidateFaceBindings(const BRepGraph_FaceId theFace) noexcept
+void BRepGraph_LayerParam::invalidateFaceBindings(const BRepGraph_FaceId theFace) noexcept
 {
   const NCollection_Vector<BRepGraph_VertexId>* aVertices = myFaceToVertices.Seek(theFace);
   if (aVertices == nullptr)
@@ -483,7 +483,7 @@ void BRepGraph_ParamLayer::invalidateFaceBindings(const BRepGraph_FaceId theFace
 
 //=================================================================================================
 
-void BRepGraph_ParamLayer::invalidateCoEdgeBindings(const BRepGraph_CoEdgeId theCoEdge) noexcept
+void BRepGraph_LayerParam::invalidateCoEdgeBindings(const BRepGraph_CoEdgeId theCoEdge) noexcept
 {
   const NCollection_Vector<BRepGraph_VertexId>* aVertices = myCoEdgeToVertices.Seek(theCoEdge);
   if (aVertices == nullptr)
@@ -496,7 +496,7 @@ void BRepGraph_ParamLayer::invalidateCoEdgeBindings(const BRepGraph_CoEdgeId the
 
 //=================================================================================================
 
-void BRepGraph_ParamLayer::migrateVertexBindings(const BRepGraph_VertexId theOldVertex,
+void BRepGraph_LayerParam::migrateVertexBindings(const BRepGraph_VertexId theOldVertex,
                                                  const BRepGraph_VertexId theNewVertex) noexcept
 {
   const VertexParams* aParams = myVertexParams.Seek(theOldVertex);
@@ -522,7 +522,7 @@ void BRepGraph_ParamLayer::migrateVertexBindings(const BRepGraph_VertexId theOld
 
 //=================================================================================================
 
-void BRepGraph_ParamLayer::migrateEdgeBindings(const BRepGraph_EdgeId theOldEdge,
+void BRepGraph_LayerParam::migrateEdgeBindings(const BRepGraph_EdgeId theOldEdge,
                                                const BRepGraph_EdgeId theNewEdge) noexcept
 {
   const NCollection_Vector<BRepGraph_VertexId>* aVertices = myEdgeToVertices.Seek(theOldEdge);
@@ -542,7 +542,7 @@ void BRepGraph_ParamLayer::migrateEdgeBindings(const BRepGraph_EdgeId theOldEdge
 
 //=================================================================================================
 
-void BRepGraph_ParamLayer::migrateFaceBindings(const BRepGraph_FaceId theOldFace,
+void BRepGraph_LayerParam::migrateFaceBindings(const BRepGraph_FaceId theOldFace,
                                                const BRepGraph_FaceId theNewFace) noexcept
 {
   const NCollection_Vector<BRepGraph_VertexId>* aVertices = myFaceToVertices.Seek(theOldFace);
@@ -562,7 +562,7 @@ void BRepGraph_ParamLayer::migrateFaceBindings(const BRepGraph_FaceId theOldFace
 
 //=================================================================================================
 
-void BRepGraph_ParamLayer::migrateCoEdgeBindings(const BRepGraph_CoEdgeId theOldCoEdge,
+void BRepGraph_LayerParam::migrateCoEdgeBindings(const BRepGraph_CoEdgeId theOldCoEdge,
                                                  const BRepGraph_CoEdgeId theNewCoEdge) noexcept
 {
   const NCollection_Vector<BRepGraph_VertexId>* aVertices = myCoEdgeToVertices.Seek(theOldCoEdge);
@@ -582,21 +582,21 @@ void BRepGraph_ParamLayer::migrateCoEdgeBindings(const BRepGraph_CoEdgeId theOld
 
 //=================================================================================================
 
-void BRepGraph_ParamLayer::OnNodeModified(const BRepGraph_NodeId theNode) noexcept
+void BRepGraph_LayerParam::OnNodeModified(const BRepGraph_NodeId theNode) noexcept
 {
   switch (theNode.NodeKind)
   {
     case BRepGraph_NodeId::Kind::Vertex:
-      removeVertexBindings(BRepGraph_VertexId(theNode.Index));
+      removeVertexBindings(BRepGraph_VertexId(theNode));
       break;
     case BRepGraph_NodeId::Kind::Edge:
-      invalidateEdgeBindings(BRepGraph_EdgeId(theNode.Index));
+      invalidateEdgeBindings(BRepGraph_EdgeId(theNode));
       break;
     case BRepGraph_NodeId::Kind::Face:
-      invalidateFaceBindings(BRepGraph_FaceId(theNode.Index));
+      invalidateFaceBindings(BRepGraph_FaceId(theNode));
       break;
     case BRepGraph_NodeId::Kind::CoEdge:
-      invalidateCoEdgeBindings(BRepGraph_CoEdgeId(theNode.Index));
+      invalidateCoEdgeBindings(BRepGraph_CoEdgeId(theNode));
       break;
     default:
       break;
@@ -605,7 +605,7 @@ void BRepGraph_ParamLayer::OnNodeModified(const BRepGraph_NodeId theNode) noexce
 
 //=================================================================================================
 
-void BRepGraph_ParamLayer::OnNodesModified(
+void BRepGraph_LayerParam::OnNodesModified(
   const NCollection_Vector<BRepGraph_NodeId>& theModifiedNodes) noexcept
 {
   for (const BRepGraph_NodeId& aModifiedNode : theModifiedNodes)
@@ -614,41 +614,37 @@ void BRepGraph_ParamLayer::OnNodesModified(
 
 //=================================================================================================
 
-void BRepGraph_ParamLayer::OnNodeRemoved(const BRepGraph_NodeId theNode,
+void BRepGraph_LayerParam::OnNodeRemoved(const BRepGraph_NodeId theNode,
                                          const BRepGraph_NodeId theReplacement) noexcept
 {
   switch (theNode.NodeKind)
   {
     case BRepGraph_NodeId::Kind::Vertex:
       if (theReplacement.NodeKind == BRepGraph_NodeId::Kind::Vertex && theReplacement.IsValid())
-        migrateVertexBindings(BRepGraph_VertexId(theNode.Index),
-                              BRepGraph_VertexId(theReplacement.Index));
+        migrateVertexBindings(BRepGraph_VertexId(theNode), BRepGraph_VertexId(theReplacement));
       else
-        removeVertexBindings(BRepGraph_VertexId(theNode.Index));
+        removeVertexBindings(BRepGraph_VertexId(theNode));
       break;
     case BRepGraph_NodeId::Kind::Edge:
       if (theReplacement.NodeKind == BRepGraph_NodeId::Kind::Edge && theReplacement.IsValid())
-        migrateEdgeBindings(BRepGraph_EdgeId(theNode.Index),
-                            BRepGraph_EdgeId(theReplacement.Index));
+        migrateEdgeBindings(BRepGraph_EdgeId(theNode), BRepGraph_EdgeId(theReplacement));
       else
-        invalidateEdgeBindings(BRepGraph_EdgeId(theNode.Index));
+        invalidateEdgeBindings(BRepGraph_EdgeId(theNode));
       break;
     case BRepGraph_NodeId::Kind::Face:
       if (theReplacement.NodeKind == BRepGraph_NodeId::Kind::Face && theReplacement.IsValid())
-        migrateFaceBindings(BRepGraph_FaceId(theNode.Index),
-                            BRepGraph_FaceId(theReplacement.Index));
+        migrateFaceBindings(BRepGraph_FaceId(theNode), BRepGraph_FaceId(theReplacement));
       else
-        invalidateFaceBindings(BRepGraph_FaceId(theNode.Index));
+        invalidateFaceBindings(BRepGraph_FaceId(theNode));
       break;
     case BRepGraph_NodeId::Kind::CoEdge:
       if (theReplacement.NodeKind == BRepGraph_NodeId::Kind::CoEdge && theReplacement.IsValid())
       {
-        migrateCoEdgeBindings(BRepGraph_CoEdgeId(theNode.Index),
-                              BRepGraph_CoEdgeId(theReplacement.Index));
+        migrateCoEdgeBindings(BRepGraph_CoEdgeId(theNode), BRepGraph_CoEdgeId(theReplacement));
       }
       else
       {
-        invalidateCoEdgeBindings(BRepGraph_CoEdgeId(theNode.Index));
+        invalidateCoEdgeBindings(BRepGraph_CoEdgeId(theNode));
       }
       break;
     default:
@@ -658,7 +654,7 @@ void BRepGraph_ParamLayer::OnNodeRemoved(const BRepGraph_NodeId theNode,
 
 //=================================================================================================
 
-void BRepGraph_ParamLayer::OnCompact(
+void BRepGraph_LayerParam::OnCompact(
   const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>& theRemapMap) noexcept
 {
   NCollection_DataMap<BRepGraph_VertexId, VertexParams>                           aNewParams;
@@ -734,14 +730,14 @@ void BRepGraph_ParamLayer::OnCompact(
 
 //=================================================================================================
 
-void BRepGraph_ParamLayer::InvalidateAll() noexcept
+void BRepGraph_LayerParam::InvalidateAll() noexcept
 {
   Clear();
 }
 
 //=================================================================================================
 
-void BRepGraph_ParamLayer::Clear() noexcept
+void BRepGraph_LayerParam::Clear() noexcept
 {
   myVertexParams.Clear();
   myEdgeToVertices.Clear();

@@ -169,10 +169,10 @@ public:
   {
   }
 
-  //! Size (number of items)
-  int Size() const noexcept { return Length(); }
+  //! Size (number of items).
+  size_t Size() const noexcept { return mySizeRow * mySizeCol; }
 
-  //! Length (number of items)
+  //! Length (legacy int-returning API).
   int Length() const noexcept { return NbRows() * NbColumns(); }
 
   //! Returns number of rows
@@ -303,6 +303,26 @@ public:
   {
     const size_t aPos = (theRow - myLowerRow) * mySizeCol + (theCol - myLowerCol);
     NCollection_Array1<TheItemType>::at(aPos) = std::forward<TheItemType>(theItem);
+  }
+
+  //! 0-based checked access independent of LowerRow()/LowerCol().
+  //! @param[in] theRow 0-based row index in [0, NbRows()-1]
+  //! @param[in] theCol 0-based column index in [0, NbColumns()-1]
+  const_reference At(const size_t theRow, const size_t theCol) const
+  {
+    Standard_OutOfRange_Raise_if(theRow >= mySizeRow || theCol >= mySizeCol,
+                                 "NCollection_Array2::At");
+    return NCollection_Array1<TheItemType>::at(theRow * mySizeCol + theCol);
+  }
+
+  //! 0-based checked mutable access independent of LowerRow()/LowerCol().
+  //! @param[in] theRow 0-based row index in [0, NbRows()-1]
+  //! @param[in] theCol 0-based column index in [0, NbColumns()-1]
+  reference ChangeAt(const size_t theRow, const size_t theCol)
+  {
+    Standard_OutOfRange_Raise_if(theRow >= mySizeRow || theCol >= mySizeCol,
+                                 "NCollection_Array2::ChangeAt");
+    return NCollection_Array1<TheItemType>::at(theRow * mySizeCol + theCol);
   }
 
   //! Emplace value at the specified row and column, constructing it in-place

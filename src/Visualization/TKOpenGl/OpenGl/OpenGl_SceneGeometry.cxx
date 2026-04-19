@@ -264,7 +264,7 @@ bool OpenGl_RaytraceGeometry::ProcessAcceleration()
       const int anObjectIdx = aBVH->BegPrimitive(aNodeIdx);
 
       Standard_ASSERT_RETURN(
-        anObjectIdx < myObjects.Size(),
+        anObjectIdx < myObjects.Length(),
         "Error! Invalid leaf node in high-level BVH (contains out-of-range object)",
         false);
 
@@ -362,7 +362,7 @@ OpenGl_TriangleSet* OpenGl_RaytraceGeometry::TriangleSet(int theNodeIdx)
   if (theNodeIdx >= aBVH->Length() || !aBVH->IsOuter(theNodeIdx))
     return nullptr;
 
-  if (aBVH->NodeInfoBuffer().at(theNodeIdx).x() > myObjects.Size())
+  if (aBVH->NodeInfoBuffer().at(theNodeIdx).x() > myObjects.Length())
     return nullptr;
 
   return dynamic_cast<OpenGl_TriangleSet*>(

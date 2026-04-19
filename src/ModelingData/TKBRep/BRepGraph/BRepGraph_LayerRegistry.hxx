@@ -39,6 +39,12 @@ public:
   BRepGraph_LayerRegistry(BRepGraph_LayerRegistry&&) noexcept            = default;
   BRepGraph_LayerRegistry& operator=(BRepGraph_LayerRegistry&&) noexcept = default;
 
+  //! Bind the owning graph. Propagates to every registered layer.
+  Standard_EXPORT void SetOwningGraph(BRepGraph* theGraph) noexcept;
+
+  //! Owning graph bound via SetOwningGraph(), or nullptr.
+  [[nodiscard]] BRepGraph* OwningGraph() const noexcept { return myOwningGraph; }
+
   //! Register a layer. Replaces an existing layer with the same GUID.
   //! @return slot index in the internal dense vector, or -1 for null input.
   Standard_EXPORT int RegisterLayer(const occ::handle<BRepGraph_Layer>& theLayer);
@@ -121,6 +127,7 @@ private:
   NCollection_DataMap<Standard_GUID, int>          myGuidToSlot;
   int                                              mySubscribedKindsMask    = 0;
   int                                              mySubscribedRefKindsMask = 0;
+  BRepGraph*                                       myOwningGraph            = nullptr;
 };
 
 #endif // _BRepGraph_LayerRegistry_HeaderFile

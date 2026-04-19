@@ -396,7 +396,7 @@ Geom2dEval_AHTBezierCurve::Geom2dEval_AHTBezierCurve(const NCollection_Array1<gp
     throw Standard_ConstructionError("Geom2dEval_AHTBezierCurve: beta must be >= 0");
   }
   const int aDim = basisDimension(theAlgDegree, theAlpha, theBeta);
-  if (thePoles.Size() != aDim)
+  if (thePoles.Length() != aDim)
   {
     throw Standard_ConstructionError(
       "Geom2dEval_AHTBezierCurve: NbPoles must equal basisDimension");
@@ -430,12 +430,12 @@ Geom2dEval_AHTBezierCurve::Geom2dEval_AHTBezierCurve(const NCollection_Array1<gp
     throw Standard_ConstructionError("Geom2dEval_AHTBezierCurve: beta must be >= 0");
   }
   const int aDim = basisDimension(theAlgDegree, theAlpha, theBeta);
-  if (thePoles.Size() != aDim)
+  if (thePoles.Length() != aDim)
   {
     throw Standard_ConstructionError(
       "Geom2dEval_AHTBezierCurve: NbPoles must equal basisDimension");
   }
-  if (theWeights.Size() != thePoles.Size())
+  if (theWeights.Length() != thePoles.Length())
   {
     throw Standard_ConstructionError(
       "Geom2dEval_AHTBezierCurve: weights array size must match poles array size");
@@ -488,7 +488,7 @@ double Geom2dEval_AHTBezierCurve::Beta() const
 
 int Geom2dEval_AHTBezierCurve::NbPoles() const
 {
-  return myPoles.Size();
+  return myPoles.Length();
 }
 
 //=================================================================================================

@@ -724,7 +724,7 @@ void AIS_ColorScale::drawLabels(const occ::handle<Graphic3d_Group>&             
     return;
   }
 
-  const int    aNbLabels    = theLabels.Size();
+  const int    aNbLabels    = theLabels.Length();
   const int    aNbIntervals = myIsLabelAtBorder ? aNbLabels - 1 : aNbLabels;
   const double aStepY       = double(theBarHeight) / double(aNbIntervals);
   if (aStepY <= 0.0)

@@ -73,11 +73,11 @@ void Poly_Connect::Load(const occ::handle<Poly_Triangulation>& theTriangulation)
   const int aNbTris  = myTriangulation->NbTriangles();
   {
     const int aNbAdjs = 6 * aNbTris;
-    if (myTriangles.Size() != aNbNodes)
+    if (myTriangles.Length() != aNbNodes)
     {
       myTriangles.Resize(1, aNbNodes, false);
     }
-    if (myAdjacents.Size() != aNbAdjs)
+    if (myAdjacents.Length() != aNbAdjs)
     {
       myAdjacents.Resize(1, aNbAdjs, false);
     }

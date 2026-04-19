@@ -22,14 +22,14 @@
 
 class TopoDS_Shape;
 class BRepGraphInc_Storage;
-class BRepGraph_ParamLayer;
-class BRepGraph_RegularityLayer;
+class BRepGraph_LayerParam;
+class BRepGraph_LayerRegularity;
 
 //! @brief Backend population pipeline for BRepGraphInc_Storage.
 //!
 //! This class is part of the BRepGraphInc backend and is intended for
 //! backend maintenance, tests, and low-level infrastructure only.
-//! External code should enter through BRepGraph::Build(), which owns the
+//! External code should enter through BRepGraph_Builder::Perform(), which owns the
 //! public lifecycle, cache invalidation, and layer coordination.
 //!
 //! Adapted from BRepGraph_Builder, but writes to incidence-table storage
@@ -51,12 +51,10 @@ public:
   {
     bool ExtractRegularities;    //!< Phase 3b: edge regularities
     bool ExtractVertexPointReps; //!< Phase 3c: vertex point representations
-    bool CreateAutoProduct;      //!< Auto-create a root Product wrapping the top-level topology
 
     Options()
         : ExtractRegularities(true),
-          ExtractVertexPointReps(true),
-          CreateAutoProduct(true)
+          ExtractVertexPointReps(true)
     {
     }
   };
@@ -70,8 +68,8 @@ public:
                                       const TopoDS_Shape&        theShape,
                                       const bool                 theParallel,
                                       const Options&             theOptions         = Options(),
-                                      BRepGraph_ParamLayer*      theParamLayer      = nullptr,
-                                      BRepGraph_RegularityLayer* theRegularityLayer = nullptr,
+                                      BRepGraph_LayerParam*      theParamLayer      = nullptr,
+                                      BRepGraph_LayerRegularity* theRegularityLayer = nullptr,
                                       const occ::handle<NCollection_BaseAllocator>& theTmpAlloc =
                                         occ::handle<NCollection_BaseAllocator>());
 
@@ -91,8 +89,8 @@ public:
     const bool                                    theParallel,
     NCollection_Vector<BRepGraph_NodeId>&         theAppendedRoots,
     const Options&                                theOptions         = Options(),
-    BRepGraph_ParamLayer*                         theParamLayer      = nullptr,
-    BRepGraph_RegularityLayer*                    theRegularityLayer = nullptr,
+    BRepGraph_LayerParam*                         theParamLayer      = nullptr,
+    BRepGraph_LayerRegularity*                    theRegularityLayer = nullptr,
     const occ::handle<NCollection_BaseAllocator>& theTmpAlloc =
       occ::handle<NCollection_BaseAllocator>());
 
@@ -109,8 +107,8 @@ public:
                                      const TopoDS_Shape&        theShape,
                                      const bool                 theParallel,
                                      const Options&             theOptions         = Options(),
-                                     BRepGraph_ParamLayer*      theParamLayer      = nullptr,
-                                     BRepGraph_RegularityLayer* theRegularityLayer = nullptr,
+                                     BRepGraph_LayerParam*      theParamLayer      = nullptr,
+                                     BRepGraph_LayerRegularity* theRegularityLayer = nullptr,
                                      const occ::handle<NCollection_BaseAllocator>& theTmpAlloc =
                                        occ::handle<NCollection_BaseAllocator>());
 

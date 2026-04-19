@@ -37,7 +37,7 @@ Select3D_SensitiveGroup::Select3D_SensitiveGroup(
   NCollection_Sequence<occ::handle<Select3D_SensitiveEntity>>& theEntities,
   const bool                                                   theIsMustMatchAll)
     : Select3D_SensitiveSet(theOwnerId),
-      myEntities(std::max(1, theEntities.Size())),
+      myEntities(std::max(1, theEntities.Length())),
       myMustMatchAll(theIsMustMatchAll),
       myToCheckOverlapAll(false),
       myCenter(0.0, 0.0, 0.0)
@@ -74,7 +74,7 @@ void Select3D_SensitiveGroup::Add(
   }
 
   gp_Pnt aCent(0.0, 0.0, 0.0);
-  myEntities.ReSize(myEntities.Extent() + theEntities.Size());
+  myEntities.ReSize(myEntities.Extent() + theEntities.Length());
   for (NCollection_Sequence<occ::handle<Select3D_SensitiveEntity>>::Iterator anIter(theEntities);
        anIter.More();
        anIter.Next())
@@ -125,7 +125,7 @@ void Select3D_SensitiveGroup::Remove(const occ::handle<Select3D_SensitiveEntity>
   myBndBox.Clear();
   myCenter = gp_Pnt(0.0, 0.0, 0.0);
   myBVHPrimIndexes.Clear();
-  for (int anIdx = 1; anIdx <= myEntities.Size(); ++anIdx)
+  for (int anIdx = 1; anIdx <= myEntities.Length(); ++anIdx)
   {
     const occ::handle<Select3D_SensitiveEntity>& anEntity = myEntities.FindKey(anIdx);
     myBndBox.Combine(anEntity->BoundingBox());
@@ -158,7 +158,7 @@ void Select3D_SensitiveGroup::Clear()
 //=======================================================================
 int Select3D_SensitiveGroup::NbSubElements() const
 {
-  return myEntities.Size();
+  return myEntities.Length();
 }
 
 //=================================================================================================
@@ -314,7 +314,7 @@ void Select3D_SensitiveGroup::Swap(const int theIdx1, const int theIdx2)
 //=======================================================================
 int Select3D_SensitiveGroup::Size() const
 {
-  return myBVHPrimIndexes.Size();
+  return myBVHPrimIndexes.Length();
 }
 
 // =======================================================================

@@ -20,24 +20,26 @@
 
 //=================================================================================================
 
-bool NCollection_BaseMap::BeginResize(const int               NbBuckets,
-                                      int&                    N,
+bool NCollection_BaseMap::BeginResize(const size_t            theExtent,
+                                      size_t&                 theNewBuckets,
                                       NCollection_ListNode**& data1,
                                       NCollection_ListNode**& data2) const
 {
   // get next size for the buckets array
-  N = NextPrimeForMap(NbBuckets);
-  if (N <= myNbBuckets)
+  theNewBuckets = NextPrimeForMap(theExtent);
+  if (theNewBuckets <= myNbBuckets)
   {
     if (!myData1)
-      N = myNbBuckets;
+      theNewBuckets = myNbBuckets;
     else
       return false;
   }
-  data1 = (NCollection_ListNode**)Standard::Allocate((N + 1) * sizeof(NCollection_ListNode*));
+  data1 =
+    (NCollection_ListNode**)Standard::Allocate((theNewBuckets + 1) * sizeof(NCollection_ListNode*));
   if (isDouble)
   {
-    data2 = (NCollection_ListNode**)Standard::Allocate((N + 1) * sizeof(NCollection_ListNode*));
+    data2 = (NCollection_ListNode**)Standard::Allocate((theNewBuckets + 1)
+                                                       * sizeof(NCollection_ListNode*));
   }
   else
     data2 = nullptr;
@@ -46,16 +48,16 @@ bool NCollection_BaseMap::BeginResize(const int               NbBuckets,
 
 //=================================================================================================
 
-void NCollection_BaseMap::EndResize(const int              theNbBuckets,
-                                    const int              N,
+void NCollection_BaseMap::EndResize(const size_t           theExtent,
+                                    const size_t           theNewBuckets,
                                     NCollection_ListNode** data1,
                                     NCollection_ListNode** data2) noexcept
 {
-  (void)theNbBuckets; // obsolete parameter
+  (void)theExtent; // obsolete parameter
   Standard::Free(myData1);
   if (isDouble)
     Standard::Free(myData2);
-  myNbBuckets = N;
+  myNbBuckets = theNewBuckets;
   myData1     = data1;
   myData2     = data2;
 }
@@ -66,8 +68,8 @@ void NCollection_BaseMap::Destroy(NCollection_DelMapNode fDel, bool doReleaseMem
 {
   if (!IsEmpty())
   {
-    const int aNbBuckets = NbBuckets();
-    for (int anInd = 0; anInd <= aNbBuckets; anInd++)
+    const size_t aNbBuckets = NbBuckets();
+    for (size_t anInd = 0; anInd <= aNbBuckets; ++anInd)
     {
       if (myData1[anInd])
       {
@@ -97,59 +99,7 @@ void NCollection_BaseMap::Destroy(NCollection_DelMapNode fDel, bool doReleaseMem
 
 //=================================================================================================
 
-void NCollection_BaseMap::Statistics(Standard_OStream& S) const
-{
-  S << "\nMap Statistics\n---------------\n\n";
-  S << "This Map has " << myNbBuckets << " Buckets and " << mySize << " Keys\n\n";
-
-  if (mySize == 0)
-    return;
-
-  // compute statistics on 1
-  int*                   sizes = new int[mySize + 1];
-  int                    i, l, nb;
-  NCollection_ListNode*  p;
-  NCollection_ListNode** data;
-
-  S << "\nStatistics for the first Key\n";
-  for (i = 0; i <= mySize; i++)
-    sizes[i] = 0;
-  data = (NCollection_ListNode**)myData1;
-  nb   = 0;
-  for (i = 0; i <= myNbBuckets; i++)
-  {
-    l = 0;
-    p = data[i];
-    if (p)
-      nb++;
-    while (p)
-    {
-      l++;
-      p = p->Next();
-    }
-    sizes[l]++;
-  }
-
-  // display results
-  l = 0;
-  for (i = 0; i <= mySize; i++)
-  {
-    if (sizes[i] > 0)
-    {
-      l += sizes[i] * i;
-      S << std::setw(5) << sizes[i] << " buckets of size " << i << "\n";
-    }
-  }
-
-  double mean = ((double)l) / ((double)nb);
-  S << "\n\nMean of length : " << mean << "\n";
-
-  delete[] sizes;
-}
-
-//=================================================================================================
-
-int NCollection_BaseMap::NextPrimeForMap(const int N) const noexcept
+size_t NCollection_BaseMap::NextPrimeForMap(const size_t N) const noexcept
 {
   return NCollection_Primes::NextPrimeForMap(N);
 }

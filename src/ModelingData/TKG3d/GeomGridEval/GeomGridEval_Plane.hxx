@@ -60,8 +60,8 @@ public:
   NCollection_Array2<gp_Pnt> EvaluateGrid(const NCollection_Array1<double>& theUParams,
                                           const NCollection_Array1<double>& theVParams) const
   {
-    const int aNbU = theUParams.Size();
-    const int aNbV = theVParams.Size();
+    const int aNbU = theUParams.Length();
+    const int aNbV = theVParams.Length();
     if (myGeom.IsNull() || aNbU == 0 || aNbV == 0)
     {
       return NCollection_Array2<gp_Pnt>();
@@ -110,8 +110,8 @@ public:
     const NCollection_Array1<double>& theUParams,
     const NCollection_Array1<double>& theVParams) const
   {
-    const int aNbU = theUParams.Size();
-    const int aNbV = theVParams.Size();
+    const int aNbU = theUParams.Length();
+    const int aNbV = theVParams.Length();
     if (myGeom.IsNull() || aNbU == 0 || aNbV == 0)
     {
       return NCollection_Array2<GeomGridEval::SurfD1>();
@@ -163,8 +163,8 @@ public:
     const NCollection_Array1<double>& theUParams,
     const NCollection_Array1<double>& theVParams) const
   {
-    const int aNbU = theUParams.Size();
-    const int aNbV = theVParams.Size();
+    const int aNbU = theUParams.Length();
+    const int aNbV = theVParams.Length();
     if (myGeom.IsNull() || aNbU == 0 || aNbV == 0)
     {
       return NCollection_Array2<GeomGridEval::SurfD2>();
@@ -217,8 +217,8 @@ public:
     const NCollection_Array1<double>& theUParams,
     const NCollection_Array1<double>& theVParams) const
   {
-    const int aNbU = theUParams.Size();
-    const int aNbV = theVParams.Size();
+    const int aNbU = theUParams.Length();
+    const int aNbV = theVParams.Length();
     if (myGeom.IsNull() || aNbU == 0 || aNbV == 0)
     {
       return NCollection_Array2<GeomGridEval::SurfD3>();
@@ -281,8 +281,8 @@ public:
                                             int                               theNU,
                                             int                               theNV) const
   {
-    const int aNbU = theUParams.Size();
-    const int aNbV = theVParams.Size();
+    const int aNbU = theUParams.Length();
+    const int aNbV = theVParams.Length();
     if (myGeom.IsNull() || aNbU == 0 || aNbV == 0 || theNU < 0 || theNV < 0 || (theNU + theNV) < 1)
     {
       return NCollection_Array2<gp_Vec>();

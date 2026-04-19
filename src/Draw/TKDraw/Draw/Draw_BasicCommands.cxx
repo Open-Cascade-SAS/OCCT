@@ -486,8 +486,10 @@ static int dversion(Draw_Interpretor& di, int, const char**)
   #include <sys/param.h>
   di << "OS: BSD (BSD = " << BSD << ")\n";
 #elif defined(__EMSCRIPTEN__)
-  di << "OS: WebAssembly (Emscripten SDK " << __EMSCRIPTEN_major__ << "." << __EMSCRIPTEN_minor__
-     << "." << __EMSCRIPTEN_tiny__
+  // Uppercase macros (__EMSCRIPTEN_MAJOR__) introduced in Emscripten 3.x;
+  // lowercase (__EMSCRIPTEN_major__) removed in 4.x.
+  di << "OS: WebAssembly (Emscripten SDK " << __EMSCRIPTEN_MAJOR__ << "." << __EMSCRIPTEN_MINOR__
+     << "." << __EMSCRIPTEN_TINY__
   #ifdef __EMSCRIPTEN_PTHREADS__
      << "; pthreads ON"
   #else

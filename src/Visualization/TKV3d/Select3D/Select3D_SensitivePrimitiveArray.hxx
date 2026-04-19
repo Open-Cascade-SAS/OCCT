@@ -247,7 +247,7 @@ public:
   //! Returns the amount of nodes in triangulation
   int NbSubElements() const override
   {
-    return !myGroups.IsNull() ? myGroups->Size() : myBvhIndices.NbElements;
+    return !myGroups.IsNull() ? myGroups->Length() : myBvhIndices.NbElements;
   }
 
   //! Returns bounding box of triangle/edge with index theIdx

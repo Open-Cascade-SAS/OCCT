@@ -19,8 +19,11 @@
 #include <NCollection_Vector.hxx>
 #include <Standard_DefineAlloc.hxx>
 
+class BRepGraphInc_Storage;
+
 namespace BRepGraphInc
 {
+struct VertexDef;
 struct EdgeDef;
 struct CoEdgeDef;
 struct WireDef;
@@ -43,9 +46,9 @@ struct VertexRef;
 //! @brief Backend reverse incidence indices for O(1) upward navigation.
 //!
 //! Built from entity and reference-entry tables after population.
-//! Full Build() is used for initial construction, while builder-side
+//! Full ReverseIndex::Build() is used for initial construction, while builder-side
 //! mutations maintain the index incrementally through targeted bind/unbind
-//! operations and BuildDelta() for append workflows.
+//! operations and ReverseIndex::BuildDelta() for append workflows.
 //!
 //! ## Two query tiers
 //! Pointer-returning methods (e.g. WiresOfEdge() -> nullptr for empty) serve
@@ -66,6 +69,10 @@ public:
   //! Clear all indices.
   Standard_EXPORT void Clear();
 
+  //! Rebuild all reverse indices from storage tables.
+  //! Thin wrapper over the explicit-table overload retained for compatibility.
+  Standard_EXPORT void Build(const BRepGraphInc_Storage& theStorage);
+
   //! Rebuild all reverse indices from the entity and reference-entry tables.
   //! Edge-to-face index is derived from CoEdge.FaceDefId links.
   //! @pre SetAllocator() must have been called (uses myAllocator for inner vectors).
@@ -84,7 +91,8 @@ public:
   //! @param[in] theSolidRefs  solid ref-entry table (compsolid -> solid reverse)
   //! @param[in] theChildRefs  child ref-entry table (compound child reverse)
   //! @param[in] theVertexRefs vertex ref-entry table (edge vertex resolution)
-  Standard_EXPORT void Build(const NCollection_Vector<BRepGraphInc::EdgeDef>&      theEdges,
+  Standard_EXPORT void Build(const NCollection_Vector<BRepGraphInc::VertexDef>&    theVertices,
+                             const NCollection_Vector<BRepGraphInc::EdgeDef>&      theEdges,
                              const NCollection_Vector<BRepGraphInc::CoEdgeDef>&    theCoEdges,
                              const NCollection_Vector<BRepGraphInc::WireDef>&      theWires,
                              const NCollection_Vector<BRepGraphInc::FaceDef>&      theFaces,
@@ -101,31 +109,43 @@ public:
                              const NCollection_Vector<BRepGraphInc::VertexRef>&    theVertexRefs);
 
   //! Incrementally update reverse indices for entities/ref-parents appended after a previous
-  //! Build(). Only processes entities from the old counts to the current vector lengths and
-  //! reference entries whose parent was newly appended.
-  //! Compound/CompSolid reverse indices are not updated incrementally -
-  //! these containers are populated once during Build() and not mutated post-build.
+  //! ReverseIndex::Build(). Only processes entities from the old counts to the current vector
+  //! lengths and appended reference entries.
   //! @param[in] theOldNbEdges   edge count before the append operation
   //! @param[in] theOldNbWires   wire count before the append operation
   //! @param[in] theOldNbFaces   face count before the append operation
   //! @param[in] theOldNbShells  shell count before the append operation
   //! @param[in] theOldNbSolids  solid count before the append operation
-  Standard_EXPORT void BuildDelta(const NCollection_Vector<BRepGraphInc::EdgeDef>&   theEdges,
-                                  const NCollection_Vector<BRepGraphInc::CoEdgeDef>& theCoEdges,
-                                  const NCollection_Vector<BRepGraphInc::WireDef>&   theWires,
-                                  const NCollection_Vector<BRepGraphInc::FaceDef>&   theFaces,
-                                  const NCollection_Vector<BRepGraphInc::ShellDef>&  theShells,
-                                  const NCollection_Vector<BRepGraphInc::SolidDef>&  theSolids,
-                                  const NCollection_Vector<BRepGraphInc::ShellRef>&  theShellRefs,
-                                  const NCollection_Vector<BRepGraphInc::FaceRef>&   theFaceRefs,
-                                  const NCollection_Vector<BRepGraphInc::WireRef>&   theWireRefs,
-                                  const NCollection_Vector<BRepGraphInc::CoEdgeRef>& theCoEdgeRefs,
-                                  const NCollection_Vector<BRepGraphInc::VertexRef>& theVertexRefs,
-                                  const int                                          theOldNbEdges,
-                                  const int                                          theOldNbWires,
-                                  const int                                          theOldNbFaces,
-                                  const int                                          theOldNbShells,
-                                  const int theOldNbSolids);
+  //! @param[in] theOldNbCompounds compound count before the append operation
+  //! @param[in] theOldNbCompSolids compsolid count before the append operation
+  //! @param[in] theOldNbChildRefs  ChildRef count before the append operation
+  //! @param[in] theOldNbSolidRefs  SolidRef count before the append operation
+  Standard_EXPORT void BuildDelta(
+    const NCollection_Vector<BRepGraphInc::VertexDef>&    theVertices,
+    const NCollection_Vector<BRepGraphInc::EdgeDef>&      theEdges,
+    const NCollection_Vector<BRepGraphInc::CoEdgeDef>&    theCoEdges,
+    const NCollection_Vector<BRepGraphInc::WireDef>&      theWires,
+    const NCollection_Vector<BRepGraphInc::FaceDef>&      theFaces,
+    const NCollection_Vector<BRepGraphInc::ShellDef>&     theShells,
+    const NCollection_Vector<BRepGraphInc::SolidDef>&     theSolids,
+    const NCollection_Vector<BRepGraphInc::CompoundDef>&  theCompounds,
+    const NCollection_Vector<BRepGraphInc::CompSolidDef>& theCompSolids,
+    const NCollection_Vector<BRepGraphInc::ShellRef>&     theShellRefs,
+    const NCollection_Vector<BRepGraphInc::FaceRef>&      theFaceRefs,
+    const NCollection_Vector<BRepGraphInc::WireRef>&      theWireRefs,
+    const NCollection_Vector<BRepGraphInc::CoEdgeRef>&    theCoEdgeRefs,
+    const NCollection_Vector<BRepGraphInc::SolidRef>&     theSolidRefs,
+    const NCollection_Vector<BRepGraphInc::ChildRef>&     theChildRefs,
+    const NCollection_Vector<BRepGraphInc::VertexRef>&    theVertexRefs,
+    const int                                             theOldNbEdges,
+    const int                                             theOldNbWires,
+    const int                                             theOldNbFaces,
+    const int                                             theOldNbShells,
+    const int                                             theOldNbSolids,
+    const int                                             theOldNbCompounds,
+    const int                                             theOldNbCompSolids,
+    const int                                             theOldNbChildRefs,
+    const int                                             theOldNbSolidRefs);
 
   //! Build product-to-occurrences reverse index.
   //! @param[in] theOccurrences occurrence entity vector
@@ -155,13 +175,13 @@ public:
     return seekVec(myEdgeToCoEdges, theEdgeId.Index);
   }
 
-  //! Return cached face count for an edge - O(1).
-  //! Populated during Build() and updated incrementally by BindEdgeToFace().
+  //! Return the number of faces incident to an edge - O(1).
+  //! Derived directly from the edge-to-faces adjacency vector to keep a single source of truth.
   [[nodiscard]] int NbFacesOfEdge(const BRepGraph_EdgeId theEdgeId) const
   {
-    if (theEdgeId.Index < 0 || theEdgeId.Index >= myEdgeFaceCount.Length())
+    if (theEdgeId.Index < 0 || theEdgeId.Index >= myEdgeToFaces.Length())
       return 0;
-    return myEdgeFaceCount.Value(theEdgeId.Index);
+    return myEdgeToFaces.Value(theEdgeId.Index).Length();
   }
 
   //! Return edge indices incident to the given vertex.
@@ -192,46 +212,69 @@ public:
     return seekVec(myShellToSolids, theShellId.Index);
   }
 
-  //! Return compound indices containing the given solid as a NodeUsage.
+  //! Return compound indices containing the given solid as a NodeInstance.
   [[nodiscard]] const NCollection_Vector<BRepGraph_CompoundId>* CompoundsOfSolid(
     const BRepGraph_SolidId theSolidId) const
   {
     return seekVec(myCompoundsOfSolid, theSolidId.Index);
   }
 
-  //! Return compsolid indices containing the given solid as a SolidUsage.
+  //! Return compsolid indices containing the given solid as a SolidInstance.
   [[nodiscard]] const NCollection_Vector<BRepGraph_CompSolidId>* CompSolidsOfSolid(
     const BRepGraph_SolidId theSolidId) const
   {
     return seekVec(myCompSolidsOfSolid, theSolidId.Index);
   }
 
-  //! Return compound indices containing the given shell as a NodeUsage.
+  //! Return compound indices containing the given shell as a NodeInstance.
   [[nodiscard]] const NCollection_Vector<BRepGraph_CompoundId>* CompoundsOfShell(
     const BRepGraph_ShellId theShellId) const
   {
     return seekVec(myCompoundsOfShell, theShellId.Index);
   }
 
-  //! Return compound indices containing the given face as a NodeUsage.
+  //! Return compound indices containing the given face as a NodeInstance.
   [[nodiscard]] const NCollection_Vector<BRepGraph_CompoundId>* CompoundsOfFace(
     const BRepGraph_FaceId theFaceId) const
   {
     return seekVec(myCompoundsOfFace, theFaceId.Index);
   }
 
-  //! Return compound indices containing the given compound as a NodeUsage.
+  //! Return compound indices containing the given compound as a NodeInstance.
   [[nodiscard]] const NCollection_Vector<BRepGraph_CompoundId>* CompoundsOfCompound(
     const BRepGraph_CompoundId theCompoundId) const
   {
     return seekVec(myCompoundsOfCompound, theCompoundId.Index);
   }
 
-  //! Return compound indices containing the given compsolid as a NodeUsage.
+  //! Return compound indices containing the given compsolid as a NodeInstance.
   [[nodiscard]] const NCollection_Vector<BRepGraph_CompoundId>* CompoundsOfCompSolid(
     const BRepGraph_CompSolidId theCompSolidId) const
   {
     return seekVec(myCompoundsOfCompSolid, theCompSolidId.Index);
+  }
+
+  //! Return compound indices containing the given wire as a NodeInstance.
+  //! OCCT `TopoDS_Compound` can legally hold atomic topology (wire / edge /
+  //! vertex); these reverse maps round-trip that case.
+  [[nodiscard]] const NCollection_Vector<BRepGraph_CompoundId>* CompoundsOfWire(
+    const BRepGraph_WireId theWireId) const
+  {
+    return seekVec(myCompoundsOfWire, theWireId.Index);
+  }
+
+  //! Return compound indices containing the given edge as a NodeInstance.
+  [[nodiscard]] const NCollection_Vector<BRepGraph_CompoundId>* CompoundsOfEdge(
+    const BRepGraph_EdgeId theEdgeId) const
+  {
+    return seekVec(myCompoundsOfEdge, theEdgeId.Index);
+  }
+
+  //! Return compound indices containing the given vertex as a NodeInstance.
+  [[nodiscard]] const NCollection_Vector<BRepGraph_CompoundId>* CompoundsOfVertex(
+    const BRepGraph_VertexId theVertexId) const
+  {
+    return seekVec(myCompoundsOfVertex, theVertexId.Index);
   }
 
   //! Return wire indices containing the given coedge.
@@ -304,17 +347,22 @@ public:
   //! reverse entry exists (edge->wire). Intended for debug validation.
   //! @return true if all forward refs have matching reverse entries
   Standard_EXPORT bool Validate(
-    const NCollection_Vector<BRepGraphInc::EdgeDef>&   theEdges,
-    const NCollection_Vector<BRepGraphInc::CoEdgeDef>& theCoEdges,
-    const NCollection_Vector<BRepGraphInc::WireDef>&   theWires,
-    const NCollection_Vector<BRepGraphInc::FaceDef>&   theFaces,
-    const NCollection_Vector<BRepGraphInc::ShellDef>&  theShells,
-    const NCollection_Vector<BRepGraphInc::SolidDef>&  theSolids,
-    const NCollection_Vector<BRepGraphInc::ShellRef>&  theShellRefs,
-    const NCollection_Vector<BRepGraphInc::FaceRef>&   theFaceRefs,
-    const NCollection_Vector<BRepGraphInc::WireRef>&   theWireRefs,
-    const NCollection_Vector<BRepGraphInc::CoEdgeRef>& theCoEdgeRefs,
-    const NCollection_Vector<BRepGraphInc::VertexRef>& theVertexRefs) const;
+    const NCollection_Vector<BRepGraphInc::VertexDef>&    theVertices,
+    const NCollection_Vector<BRepGraphInc::EdgeDef>&      theEdges,
+    const NCollection_Vector<BRepGraphInc::CoEdgeDef>&    theCoEdges,
+    const NCollection_Vector<BRepGraphInc::WireDef>&      theWires,
+    const NCollection_Vector<BRepGraphInc::FaceDef>&      theFaces,
+    const NCollection_Vector<BRepGraphInc::ShellDef>&     theShells,
+    const NCollection_Vector<BRepGraphInc::SolidDef>&     theSolids,
+    const NCollection_Vector<BRepGraphInc::CompoundDef>&  theCompounds,
+    const NCollection_Vector<BRepGraphInc::CompSolidDef>& theCompSolids,
+    const NCollection_Vector<BRepGraphInc::ShellRef>&     theShellRefs,
+    const NCollection_Vector<BRepGraphInc::FaceRef>&      theFaceRefs,
+    const NCollection_Vector<BRepGraphInc::WireRef>&      theWireRefs,
+    const NCollection_Vector<BRepGraphInc::CoEdgeRef>&    theCoEdgeRefs,
+    const NCollection_Vector<BRepGraphInc::SolidRef>&     theSolidRefs,
+    const NCollection_Vector<BRepGraphInc::ChildRef>&     theChildRefs,
+    const NCollection_Vector<BRepGraphInc::VertexRef>&    theVertexRefs) const;
 
   // --- Incremental mutation ---
 
@@ -443,7 +491,7 @@ private:
   static void appendUnique(TypedIndexTable<T>& theIdx, const int theKey, const T theVal)
   {
     Standard_ASSERT_RETURN(theKey >= 0, "appendUnique: negative key", );
-    // Grow if needed for incremental mutation after Build().
+    // Grow if needed for incremental mutation after ReverseIndex::Build().
     if (theKey >= theIdx.Length())
       ensureSize(theIdx, theKey + 1);
 
@@ -457,12 +505,12 @@ private:
   }
 
   //! Add theVal to the vector at theKey unconditionally (no duplicate check).
-  //! Used during Build() where freshly-cleared indices guarantee no duplicates.
+  //! Used during ReverseIndex::Build() where freshly-cleared indices guarantee no duplicates.
   template <typename T>
   static void appendDirect(TypedIndexTable<T>& theIdx, const int theKey, const T theVal)
   {
     Standard_ASSERT_RETURN(theKey >= 0, "appendDirect: negative key", );
-    // During Build(), outer vector is pre-sized so theKey < Length().
+    // During ReverseIndex::Build(), outer vector is pre-sized so theKey < Length().
     // For safety, grow if somehow out of range.
     if (theKey >= theIdx.Length())
       ensureSize(theIdx, theKey + 1);
@@ -489,11 +537,13 @@ private:
   TypedIndexTable<BRepGraph_CompoundId>
     myCompoundsOfCompound; //!< Compound -> parent Compound indices.
   TypedIndexTable<BRepGraph_CompoundId>
-    myCompoundsOfCompSolid;                          //!< CompSolid -> parent Compound indices.
-  TypedIndexTable<BRepGraph_WireId> myCoEdgeToWires; //!< CoEdge -> parent Wire indices.
+    myCompoundsOfCompSolid; //!< CompSolid -> parent Compound indices.
+  TypedIndexTable<BRepGraph_CompoundId> myCompoundsOfWire;   //!< Wire -> parent Compound indices.
+  TypedIndexTable<BRepGraph_CompoundId> myCompoundsOfEdge;   //!< Edge -> parent Compound indices.
+  TypedIndexTable<BRepGraph_CompoundId> myCompoundsOfVertex; //!< Vertex -> parent Compound indices.
+  TypedIndexTable<BRepGraph_WireId>     myCoEdgeToWires;     //!< CoEdge -> parent Wire indices.
 
-  NCollection_Vector<int> myEdgeFaceCount; //!< Cached face count per edge, O(1) lookup.
-  int myNbIndexedCoEdges = 0;              //!< Number of coedges indexed by Build()/BuildDelta().
+  int myNbIndexedCoEdges = 0; //!< Number of coedges indexed by ReverseIndex::Build()/BuildDelta().
 };
 
 #endif // _BRepGraphInc_ReverseIndex_HeaderFile

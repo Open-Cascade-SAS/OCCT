@@ -216,7 +216,7 @@ void V3d_Viewer::SetDefaultViewSize(const double theSize)
 
 bool V3d_Viewer::IfMoreViews() const
 {
-  return myDefinedViews.Size() < myStructureManager->MaxNumOfViews();
+  return myDefinedViews.Length() < myStructureManager->MaxNumOfViews();
 }
 
 //=================================================================================================

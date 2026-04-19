@@ -43,7 +43,7 @@ void BRepLib_MakeWire::Add(const NCollection_List<TopoDS_Shape>& L)
 {
   myError      = BRepLib_WireDone;
   int aLSize   = 0;
-  int aRefSize = L.Size();
+  int aRefSize = L.Length();
   if (!L.IsEmpty())
   {
     ///

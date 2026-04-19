@@ -19,6 +19,7 @@
 
 #include <cstddef>
 #include <functional>
+#include <utility>
 
 //! Lightweight typed index into a per-kind node vector inside BRepGraph.
 //!
@@ -61,11 +62,14 @@ struct BRepGraph_NodeId
   template <Kind TheKind>
   struct Typed
   {
+    static constexpr int THE_START_INDEX   = 0;
+    static constexpr int THE_INVALID_INDEX = -1;
+
     int Index;
 
     //! Default: invalid (Index = -1).
     Typed()
-        : Index(-1)
+        : Index(THE_INVALID_INDEX)
     {
     }
 
@@ -73,17 +77,48 @@ struct BRepGraph_NodeId
     explicit Typed(const int theIdx)
         : Index(theIdx)
     {
-      Standard_ASSERT_VOID(theIdx >= -1, "index must be >= -1");
+      Standard_ASSERT_VOID(theIdx >= THE_INVALID_INDEX, "index must be >= -1");
     }
 
+    //! Construct from an untyped node id of the same kind.
+    explicit Typed(const BRepGraph_NodeId theId)
+        : Typed(FromNodeId(theId))
+    {
+    }
+
+    template <Kind OtherKind, typename std::enable_if_t<OtherKind != TheKind, int> = 0>
+    Typed(const Typed<OtherKind>&) = delete;
+
+    //! First valid id in a dense per-kind sequence.
+    [[nodiscard]] static Typed Start() { return Typed(THE_START_INDEX); }
+
+    //! Invalid sentinel id.
+    [[nodiscard]] static Typed Invalid() { return Typed(); }
+
     //! True if this id points to an allocated node slot.
-    [[nodiscard]] bool IsValid() const { return Index >= 0; }
+    [[nodiscard]] bool IsValid() const { return Index > THE_INVALID_INDEX; }
 
     //! True if this id points to an allocated slot within [0, theMaxCount).
     [[nodiscard]] bool IsValid(const int theMaxCount) const
     {
       Standard_ASSERT_RETURN(theMaxCount >= 0, "max count must be non-negative", false);
-      return Index >= 0 && Index < theMaxCount;
+      return IsValid() && Index < theMaxCount;
+    }
+
+    //! True if this id is within the dense range exposed by a provider with Nb().
+    template <typename CountProviderT>
+    [[nodiscard]] auto IsValidIn(const CountProviderT& theProvider) const
+      -> decltype(theProvider.Nb(), bool())
+    {
+      return IsValid(theProvider.Nb());
+    }
+
+    //! True if this id is within the dense range exposed by a provider with Length().
+    template <typename CountProviderT>
+    [[nodiscard]] auto IsValidIn(const CountProviderT& theProvider) const
+      -> decltype(theProvider.Length(), bool())
+    {
+      return IsValid(theProvider.Length());
     }
 
     //! Implicit conversion to untyped NodeId.
@@ -164,7 +199,9 @@ struct BRepGraph_NodeId
 
   //! Total number of dense kind slots used by per-kind arrays.
   //! Includes the reserved gap at enum value 9.
-  static constexpr int THE_KIND_COUNT = static_cast<int>(Kind::Occurrence) + 1;
+  static constexpr int THE_KIND_COUNT    = static_cast<int>(Kind::Occurrence) + 1;
+  static constexpr int THE_START_INDEX   = 0;
+  static constexpr int THE_INVALID_INDEX = -1;
 
   Kind NodeKind;
   int  Index;
@@ -173,7 +210,7 @@ struct BRepGraph_NodeId
   //! NodeKind is set to Kind::Solid but is meaningless when !IsValid().
   BRepGraph_NodeId()
       : NodeKind(Kind::Solid),
-        Index(-1)
+        Index(THE_INVALID_INDEX)
   {
   }
 
@@ -181,17 +218,45 @@ struct BRepGraph_NodeId
       : NodeKind(theKind),
         Index(theIdx)
   {
-    Standard_ASSERT_VOID(theIdx >= -1, "BRepGraph_NodeId: index must be >= -1");
+    Standard_ASSERT_VOID(theIdx >= THE_INVALID_INDEX, "BRepGraph_NodeId: index must be >= -1");
+  }
+
+  //! First valid id in a dense sequence for the specified kind.
+  [[nodiscard]] static BRepGraph_NodeId Start(const Kind theKind)
+  {
+    return BRepGraph_NodeId(theKind, THE_START_INDEX);
+  }
+
+  //! Invalid sentinel id for the specified kind.
+  [[nodiscard]] static BRepGraph_NodeId Invalid(const Kind theKind = Kind::Solid)
+  {
+    return BRepGraph_NodeId(theKind, THE_INVALID_INDEX);
   }
 
   //! True if this id points to an allocated node slot.
-  [[nodiscard]] bool IsValid() const { return Index >= 0; }
+  [[nodiscard]] bool IsValid() const { return Index > THE_INVALID_INDEX; }
 
   //! True if this id points to an allocated slot within [0, theMaxCount).
   [[nodiscard]] bool IsValid(const int theMaxCount) const
   {
     Standard_ASSERT_RETURN(theMaxCount >= 0, "max count must be non-negative", false);
-    return Index >= 0 && Index < theMaxCount;
+    return IsValid() && Index < theMaxCount;
+  }
+
+  //! True if this id is within the dense range exposed by a provider with Nb().
+  template <typename CountProviderT>
+  [[nodiscard]] auto IsValidIn(const CountProviderT& theProvider) const
+    -> decltype(theProvider.Nb(), bool())
+  {
+    return IsValid(theProvider.Nb());
+  }
+
+  //! True if this id is within the dense range exposed by a provider with Length().
+  template <typename CountProviderT>
+  [[nodiscard]] auto IsValidIn(const CountProviderT& theProvider) const
+    -> decltype(theProvider.Length(), bool())
+  {
+    return IsValid(theProvider.Length());
   }
 
   bool operator==(const BRepGraph_NodeId& theOther) const
@@ -236,9 +301,44 @@ struct BRepGraph_NodeId
   {
     return BRepGraph_NodeId(NodeKind, Index - theOffset);
   }
+
+  //! Dispatch a generic node id to a callable taking the matching typed node id.
+  template <typename FuncT>
+  static auto Visit(const BRepGraph_NodeId theNodeId, FuncT&& theFunc)
+    -> decltype(std::forward<FuncT>(theFunc)(Typed<Kind::Vertex>()))
+  {
+    switch (theNodeId.NodeKind)
+    {
+      case Kind::Vertex:
+        return std::forward<FuncT>(theFunc)(Typed<Kind::Vertex>::FromNodeId(theNodeId));
+      case Kind::Edge:
+        return std::forward<FuncT>(theFunc)(Typed<Kind::Edge>::FromNodeId(theNodeId));
+      case Kind::CoEdge:
+        return std::forward<FuncT>(theFunc)(Typed<Kind::CoEdge>::FromNodeId(theNodeId));
+      case Kind::Wire:
+        return std::forward<FuncT>(theFunc)(Typed<Kind::Wire>::FromNodeId(theNodeId));
+      case Kind::Face:
+        return std::forward<FuncT>(theFunc)(Typed<Kind::Face>::FromNodeId(theNodeId));
+      case Kind::Shell:
+        return std::forward<FuncT>(theFunc)(Typed<Kind::Shell>::FromNodeId(theNodeId));
+      case Kind::Solid:
+        return std::forward<FuncT>(theFunc)(Typed<Kind::Solid>::FromNodeId(theNodeId));
+      case Kind::Compound:
+        return std::forward<FuncT>(theFunc)(Typed<Kind::Compound>::FromNodeId(theNodeId));
+      case Kind::CompSolid:
+        return std::forward<FuncT>(theFunc)(Typed<Kind::CompSolid>::FromNodeId(theNodeId));
+      case Kind::Product:
+        return std::forward<FuncT>(theFunc)(Typed<Kind::Product>::FromNodeId(theNodeId));
+      case Kind::Occurrence:
+        return std::forward<FuncT>(theFunc)(Typed<Kind::Occurrence>::FromNodeId(theNodeId));
+    }
+
+    Standard_ASSERT_VOID(false, "BRepGraph_NodeId::Visit: unhandled Kind");
+    return std::forward<FuncT>(theFunc)(Typed<Kind::Vertex>());
+  }
 };
 
-//! @name Convenience type aliases for typed NodeIds.
+// Convenience type aliases for typed NodeIds.
 using BRepGraph_SolidId      = BRepGraph_NodeId::Typed<BRepGraph_NodeId::Kind::Solid>;
 using BRepGraph_ShellId      = BRepGraph_NodeId::Typed<BRepGraph_NodeId::Kind::Shell>;
 using BRepGraph_FaceId       = BRepGraph_NodeId::Typed<BRepGraph_NodeId::Kind::Face>;

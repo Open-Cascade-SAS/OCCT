@@ -22,6 +22,11 @@
 #include <Standard_Transient.hxx>
 #include <TCollection_AsciiString.hxx>
 
+#include <cstdint>
+
+class BRepGraph;
+class BRepGraph_LayerRegistry;
+
 //! @brief Abstract base class for named attribute layers.
 //!
 //! A layer groups per-node and per-reference metadata under a unique name with
@@ -158,6 +163,36 @@ public:
     return 1 << static_cast<int>(theKind);
   }
 
+  // --- Revision + owning-graph access ---
+
+  //! Monotonic revision counter incremented by touch() on every observable
+  //! state change. Consumers compare stored revisions to detect staleness in O(1).
+  //! Derived layers MUST call touch() from their mutators.
+  [[nodiscard]] uint64_t Revision() const noexcept { return myRevision; }
+
+  //! Owning graph, set by the registry on RegisterLayer() and cleared on Unregister().
+  //! Nullptr before registration or after unregistration.
+  [[nodiscard]] const BRepGraph* OwningGraph() const noexcept { return myOwningGraph; }
+
+  //! Mutable accessor for layers that drive graph mutations (e.g. meshing).
+  [[nodiscard]] BRepGraph* OwningMutableGraph() const noexcept
+  {
+    return const_cast<BRepGraph*>(myOwningGraph);
+  }
+
+protected:
+  //! Bump the revision counter.
+  void touch() noexcept { ++myRevision; }
+
+private:
+  friend class ::BRepGraph_LayerRegistry;
+
+  void setOwningGraph(const BRepGraph* theGraph) noexcept { myOwningGraph = theGraph; }
+
+  const BRepGraph* myOwningGraph = nullptr;
+  uint64_t         myRevision    = 0;
+
+public:
   DEFINE_STANDARD_RTTIEXT(BRepGraph_Layer, Standard_Transient)
 };
 

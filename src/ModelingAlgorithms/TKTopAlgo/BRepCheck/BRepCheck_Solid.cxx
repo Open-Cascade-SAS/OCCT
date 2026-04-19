@@ -281,7 +281,7 @@ void BRepCheck_Solid::Minimum()
     BRepCheck::Add(aLST, BRepCheck_BadOrientationOfSubshape);
   }
   //
-  aNbVTS = aVTS.Size();
+  aNbVTS = aVTS.Length();
   if (aNbVTS < 2)
   {
     return;

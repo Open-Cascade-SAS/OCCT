@@ -682,7 +682,7 @@ void ViewerTest::Clear()
 
   TheAISContext()->RebuildSelectionStructs();
   TheAISContext()->UpdateCurrentViewer();
-  if (aListRemoved.Size() == GetMapOfAIS().Extent())
+  if (aListRemoved.Length() == GetMapOfAIS().Extent())
   {
     GetMapOfAIS().Clear();
   }
@@ -4370,13 +4370,13 @@ int VTexture(Draw_Interpretor& theDi, int theArgsNb, const char** theArgVec)
         aSlicesSeq.Append(aSlicePath);
       }
 
-      if (aSlicesSeq.Size() < 2)
+      if (aSlicesSeq.Length() < 2)
       {
         Message::SendFail() << "Syntax error at '" << aNameCase << "'";
         return 1;
       }
       NCollection_Array1<TCollection_AsciiString> aSlices;
-      aSlices.Resize(0, aSlicesSeq.Size() - 1, false);
+      aSlices.Resize(0, aSlicesSeq.Length() - 1, false);
       int aSliceIndex = 0;
       for (const TCollection_AsciiString& aSliceIter : aSlicesSeq)
       {
@@ -4480,8 +4480,8 @@ int VTexture(Draw_Interpretor& theDi, int theArgsNb, const char** theArgVec)
     occ::handle<Graphic3d_TextureSet> aTextureSetNew;
     if (!aTextureVecNew.IsEmpty())
     {
-      aNbChanged     = aTextureVecNew.Size();
-      aTextureSetNew = new Graphic3d_TextureSet(aTextureVecNew.Size());
+      aNbChanged     = aTextureVecNew.Length();
+      aTextureSetNew = new Graphic3d_TextureSet(aTextureVecNew.Length());
       for (int aTexIter = 0; aTexIter < aTextureSetNew->Size(); ++aTexIter)
       {
         occ::handle<Graphic3d_TextureMap>& aTextureNew = aTextureVecNew.ChangeValue(aTexIter);

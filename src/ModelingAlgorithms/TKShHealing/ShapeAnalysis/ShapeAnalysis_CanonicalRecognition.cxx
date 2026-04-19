@@ -694,7 +694,7 @@ occ::handle<Geom_Surface> ShapeAnalysis_CanonicalRecognition::GetSurface(
   }
   else
   {
-    for (i = 0; i < aSurfs.Size(); ++i)
+    for (i = 0; i < aSurfs.Length(); ++i)
     {
       SetSurfParams(theTarget, aSurfs(i), aPos, aParams);
       double aDev = DeviationSurfParams(theTarget, thePos, theParams, aPos, aParams);

@@ -244,7 +244,7 @@ void BOPAlgo_Section::BuildSection(const Message_ProgressRange& theRange)
   const NCollection_Vector<NCollection_List<occ::handle<BOPDS_PaveBlock>>>& aPBP =
     myDS->PaveBlocksPool();
   //
-  aNb = aPBP.Size();
+  aNb = aPBP.Length();
   for (i = 0; i < aNb; ++i)
   {
     const NCollection_List<occ::handle<BOPDS_PaveBlock>>& aLPB = aPBP(i);

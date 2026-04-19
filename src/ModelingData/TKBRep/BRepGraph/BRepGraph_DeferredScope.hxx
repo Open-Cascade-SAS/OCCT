@@ -15,7 +15,7 @@
 #define _BRepGraph_DeferredScope_HeaderFile
 
 #include <BRepGraph.hxx>
-#include <BRepGraph_BuilderView.hxx>
+#include <BRepGraph_EditorView.hxx>
 
 //! @brief RAII guard for batch mutation scopes with deferred invalidation.
 //!
@@ -52,10 +52,10 @@ public:
   //! Begin deferred invalidation if not already active.
   explicit BRepGraph_DeferredScope(BRepGraph& theGraph)
       : myGraph(theGraph),
-        myOwnsScope(!theGraph.Builder().IsDeferredMode())
+        myOwnsScope(!theGraph.Editor().IsDeferredMode())
   {
     if (myOwnsScope)
-      myGraph.Builder().BeginDeferredInvalidation();
+      myGraph.Editor().BeginDeferredInvalidation();
   }
 
   //! End deferred invalidation and validate reverse index + active counts.
@@ -63,8 +63,8 @@ public:
   {
     if (myOwnsScope)
     {
-      myGraph.Builder().EndDeferredInvalidation();
-      myGraph.Builder().CommitMutation();
+      myGraph.Editor().EndDeferredInvalidation();
+      myGraph.Editor().CommitMutation();
     }
   }
 

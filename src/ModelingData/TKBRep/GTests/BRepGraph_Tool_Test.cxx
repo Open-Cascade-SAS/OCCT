@@ -13,125 +13,136 @@
 
 #include <BRepGraph.hxx>
 #include <BRepGraph_Tool.hxx>
+#include <BRepGraph_Builder.hxx>
+#include <BRepGraph_TopoView.hxx>
 
 #include <BRepPrimAPI_MakeBox.hxx>
-#include <gp_Trsf.hxx>
-#include <gp_Vec.hxx>
+#include <BRepPrimAPI_MakeCylinder.hxx>
+#include <Precision.hxx>
 
 #include <gtest/gtest.h>
 
-namespace
-{
-static bool hasRelatedNode(const NCollection_Sequence<BRepGraph_Tool::RelatedEntity>& theItems,
-                           const BRepGraph_NodeId&                                    theNode,
-                           const char*                                                theRelation)
-{
-  for (NCollection_Sequence<BRepGraph_Tool::RelatedEntity>::Iterator anIt(theItems); anIt.More();
-       anIt.Next())
-  {
-    if (anIt.Value().Node == theNode && anIt.Value().Relation == theRelation)
-    {
-      return true;
-    }
-  }
-  return false;
-}
-} // namespace
+// ---------- New ownership and lookup helpers (query-surface-expansion) ----------
 
-class BRepGraph_ToolTest : public testing::Test
+class BRepGraph_QuerySurfaceTest : public testing::Test
 {
 protected:
   void SetUp() override
   {
     BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
-    myGraph.Build(aBoxMaker.Shape());
+    BRepGraph_Builder::Perform(myBoxGraph, aBoxMaker.Shape());
+
+    BRepPrimAPI_MakeCylinder aCylMaker(5.0, 15.0);
+    BRepGraph_Builder::Perform(myCylGraph, aCylMaker.Shape());
   }
 
-  BRepGraph myGraph;
+  BRepGraph myBoxGraph;
+  BRepGraph myCylGraph;
 };
 
-TEST_F(BRepGraph_ToolTest, Related_FaceOfBox_ReturnsBoundaryEdgesAndOuterWire)
+TEST_F(BRepGraph_QuerySurfaceTest, Face_NbWires_BoxFaceHasOneWire)
+{
+  const int aNbFaces = myBoxGraph.Topo().Faces().Nb();
+  for (BRepGraph_FaceId aFaceId(0); aFaceId.IsValid(aNbFaces); ++aFaceId)
+  {
+    const int aNb = BRepGraph_Tool::Face::NbWires(myBoxGraph, aFaceId);
+    EXPECT_EQ(aNb, 1) << "Box face " << aFaceId.Index << " should have exactly 1 wire";
+  }
+}
+
+TEST_F(BRepGraph_QuerySurfaceTest, Face_Bounds_BoxFaceHasFiniteBounds)
 {
   const BRepGraph_FaceId aFaceId(0);
+  double                 uMin = 0.0, uMax = 0.0, vMin = 0.0, vMax = 0.0;
+  BRepGraph_Tool::Face::Bounds(myBoxGraph, aFaceId, uMin, uMax, vMin, vMax);
 
-  const NCollection_Sequence<BRepGraph_Tool::RelatedEntity> aItems =
-    BRepGraph_Tool::Related(myGraph, BRepGraph_NodeId(aFaceId));
+  EXPECT_LT(uMin, uMax) << "UMin should be less than UMax for a valid face";
+  EXPECT_LT(vMin, vMax) << "VMin should be less than VMax for a valid face";
+  EXPECT_LT(uMin, Precision::Infinite());
+  EXPECT_LT(vMin, Precision::Infinite());
+}
 
-  EXPECT_TRUE(hasRelatedNode(aItems, BRepGraph_NodeId(BRepGraph_WireId(0)), "Outer wire"));
-
-  int aBoundaryEdgeCount  = 0;
-  int anAdjacentFaceCount = 0;
-  for (NCollection_Sequence<BRepGraph_Tool::RelatedEntity>::Iterator anIt(aItems); anIt.More();
-       anIt.Next())
+TEST_F(BRepGraph_QuerySurfaceTest, Face_Bounds_CylinderFaceReturnsSurfaceBounds)
+{
+  // Verify that Bounds() returns the same values as Surface()->Bounds() for each face.
+  const int aNbFaces = myCylGraph.Topo().Faces().Nb();
+  for (BRepGraph_FaceId aFaceId(0); aFaceId.IsValid(aNbFaces); ++aFaceId)
   {
-    if (anIt.Value().Relation == "Boundary edge")
-    {
-      ++aBoundaryEdgeCount;
-    }
-    if (anIt.Value().Relation == "Adjacent face")
-    {
-      ++anAdjacentFaceCount;
-    }
-  }
+    if (!BRepGraph_Tool::Face::HasSurface(myCylGraph, aFaceId))
+      continue;
 
-  EXPECT_EQ(aBoundaryEdgeCount, 4);
-  EXPECT_EQ(anAdjacentFaceCount, 4);
+    double uMin = 0.0, uMax = 0.0, vMin = 0.0, vMax = 0.0;
+    BRepGraph_Tool::Face::Bounds(myCylGraph, aFaceId, uMin, uMax, vMin, vMax);
+
+    double expUMin = 0.0, expUMax = 0.0, expVMin = 0.0, expVMax = 0.0;
+    BRepGraph_Tool::Face::Surface(myCylGraph, aFaceId)->Bounds(expUMin, expUMax, expVMin, expVMax);
+
+    EXPECT_EQ(uMin, expUMin) << "UMin mismatch on face " << aFaceId.Index;
+    EXPECT_EQ(uMax, expUMax) << "UMax mismatch on face " << aFaceId.Index;
+    EXPECT_EQ(vMin, expVMin) << "VMin mismatch on face " << aFaceId.Index;
+    EXPECT_EQ(vMax, expVMax) << "VMax mismatch on face " << aFaceId.Index;
+  }
 }
 
-TEST_F(BRepGraph_ToolTest, Related_EdgeOfBox_ReturnsIncidentVerticesAndFaces)
+TEST_F(BRepGraph_QuerySurfaceTest, Wire_FaceOf_ReturnsValidFace)
 {
-  const BRepGraph_EdgeId anEdgeId(0);
+  const BRepGraph_WireId aWireId(0);
+  const BRepGraph_FaceId aFace = BRepGraph_Tool::Wire::FaceOf(myBoxGraph, aWireId);
+  EXPECT_TRUE(aFace.IsValid()) << "Wire 0 should have an owning face";
+}
 
-  const NCollection_Sequence<BRepGraph_Tool::RelatedEntity> aItems =
-    BRepGraph_Tool::Related(myGraph, BRepGraph_NodeId(anEdgeId));
+TEST_F(BRepGraph_QuerySurfaceTest, Wire_IsOuter_FirstWireOfBoxFaceIsOuter)
+{
+  const BRepGraph_FaceId aFaceId(0);
+  const BRepGraph_WireId anOuterWire = BRepGraph_Tool::Face::OuterWireId(myBoxGraph, aFaceId);
+  ASSERT_TRUE(anOuterWire.IsValid());
+  EXPECT_TRUE(BRepGraph_Tool::Wire::IsOuter(myBoxGraph, anOuterWire))
+    << "OuterWireId-found wire should be flagged IsOuter";
+}
 
-  int aVertexCount = 0;
-  int aFaceCount   = 0;
-  for (NCollection_Sequence<BRepGraph_Tool::RelatedEntity>::Iterator anIt(aItems); anIt.More();
-       anIt.Next())
+TEST_F(BRepGraph_QuerySurfaceTest, Edge_NbFaces_BoxEdgeHasExactlyTwoFaces)
+{
+  const int aNbEdges = myBoxGraph.Topo().Edges().Nb();
+  for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
   {
-    if (anIt.Value().Relation == "Incident vertex")
-    {
-      ++aVertexCount;
-    }
-    if (anIt.Value().Relation == "Referenced by face")
-    {
-      ++aFaceCount;
-    }
+    const int aNbFaces = BRepGraph_Tool::Edge::NbFaces(myBoxGraph, anEdgeId);
+    EXPECT_EQ(aNbFaces, 2) << "Box edge " << anEdgeId.Index
+                           << " should be shared by exactly 2 faces";
   }
-
-  EXPECT_EQ(aVertexCount, 2);
-  EXPECT_EQ(aFaceCount, 2);
 }
 
-TEST_F(BRepGraph_ToolTest, Related_ProductAndOccurrence_ReturnExpectedAssemblyLinks)
+TEST_F(BRepGraph_QuerySurfaceTest, Edge_IsManifold_BoxEdgesAreManifold)
 {
-  const BRepGraph_ProductId aPartProduct =
-    myGraph.Builder().AddProduct(BRepGraph_NodeId(BRepGraph_SolidId(0)));
-  const BRepGraph_ProductId aRootAssembly = myGraph.Builder().AddAssemblyProduct();
-  ASSERT_TRUE(aPartProduct.IsValid());
-  ASSERT_TRUE(aRootAssembly.IsValid());
-
-  gp_Trsf aTrsf;
-  aTrsf.SetTranslation(gp_Vec(1.0, 2.0, 3.0));
-  const BRepGraph_OccurrenceId anOccurrenceId =
-    myGraph.Builder().AddOccurrence(aRootAssembly, aPartProduct, TopLoc_Location(aTrsf));
-  ASSERT_TRUE(anOccurrenceId.IsValid());
-
-  const NCollection_Sequence<BRepGraph_Tool::RelatedEntity> aProductItems =
-    BRepGraph_Tool::Related(myGraph, BRepGraph_NodeId(aRootAssembly));
-  EXPECT_TRUE(hasRelatedNode(aProductItems, BRepGraph_NodeId(anOccurrenceId), "Child occurrence"));
-
-  const NCollection_Sequence<BRepGraph_Tool::RelatedEntity> anOccurrenceItems =
-    BRepGraph_Tool::Related(myGraph, BRepGraph_NodeId(anOccurrenceId));
-  EXPECT_TRUE(
-    hasRelatedNode(anOccurrenceItems, BRepGraph_NodeId(aPartProduct), "Referenced product"));
-  EXPECT_TRUE(hasRelatedNode(anOccurrenceItems, BRepGraph_NodeId(aRootAssembly), "Parent product"));
+  const int aNbEdges = myBoxGraph.Topo().Edges().Nb();
+  for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
+  {
+    EXPECT_TRUE(BRepGraph_Tool::Edge::IsManifold(myBoxGraph, anEdgeId))
+      << "Box edge " << anEdgeId.Index << " should be manifold";
+    EXPECT_FALSE(BRepGraph_Tool::Edge::IsBoundary(myBoxGraph, anEdgeId))
+      << "Box edge " << anEdgeId.Index << " should not be a boundary-only edge";
+  }
 }
 
-TEST_F(BRepGraph_ToolTest, Related_InvalidNode_ReturnsEmpty)
+TEST_F(BRepGraph_QuerySurfaceTest, Vertex_NbEdges_BoxVertexHasThreeEdges)
 {
-  const NCollection_Sequence<BRepGraph_Tool::RelatedEntity> aItems =
-    BRepGraph_Tool::Related(myGraph, BRepGraph_NodeId());
-  EXPECT_TRUE(aItems.IsEmpty());
+  const int aNbVertices = myBoxGraph.Topo().Vertices().Nb();
+  for (BRepGraph_VertexId aVertexId(0); aVertexId.IsValid(aNbVertices); ++aVertexId)
+  {
+    const int aNbEdges = BRepGraph_Tool::Vertex::NbEdges(myBoxGraph, aVertexId);
+    EXPECT_EQ(aNbEdges, 3) << "Box vertex " << aVertexId.Index << " should be incident to 3 edges";
+  }
+}
+
+TEST_F(BRepGraph_QuerySurfaceTest, Shell_IsClosed_BoxShellIsClosed)
+{
+  ASSERT_GE(myBoxGraph.Topo().Shells().Nb(), 1);
+  EXPECT_TRUE(BRepGraph_Tool::Shell::IsClosed(myBoxGraph, BRepGraph_ShellId::Start()))
+    << "Box shell should be closed";
+}
+
+TEST_F(BRepGraph_QuerySurfaceTest, Shell_NbFaces_BoxShellHasSixFaces)
+{
+  ASSERT_GE(myBoxGraph.Topo().Shells().Nb(), 1);
+  EXPECT_EQ(BRepGraph_Tool::Shell::NbFaces(myBoxGraph, BRepGraph_ShellId::Start()), 6)
+    << "Box shell should reference 6 faces";
 }

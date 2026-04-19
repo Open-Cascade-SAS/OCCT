@@ -223,7 +223,7 @@ public:
 
   //! Constructor with initial capacity hint
   //! @param theNbBuckets initial capacity (will be rounded up to power of 2)
-  explicit NCollection_FlatDataMap(const int theNbBuckets)
+  explicit NCollection_FlatDataMap(const size_t theNbBuckets)
       : mySlots(nullptr),
         myCapacity(0),
         mySize(0)
@@ -237,7 +237,7 @@ public:
   //! Constructor with custom hasher (copy).
   //! @param theHasher custom hasher instance
   //! @param theNbBuckets initial capacity hint
-  explicit NCollection_FlatDataMap(const Hasher& theHasher, const int theNbBuckets = 0)
+  explicit NCollection_FlatDataMap(const Hasher& theHasher, const size_t theNbBuckets = 0)
       : mySlots(nullptr),
         myCapacity(0),
         mySize(0),
@@ -252,7 +252,7 @@ public:
   //! Constructor with custom hasher (move).
   //! @param theHasher custom hasher instance (moved)
   //! @param theNbBuckets initial capacity hint
-  explicit NCollection_FlatDataMap(Hasher&& theHasher, const int theNbBuckets = 0)
+  explicit NCollection_FlatDataMap(Hasher&& theHasher, const size_t theNbBuckets = 0)
       : mySlots(nullptr),
         myCapacity(0),
         mySize(0),
@@ -363,10 +363,10 @@ public:
 public:
   // **************** Query methods ****************
 
-  //! Returns number of elements
-  int Size() const noexcept { return static_cast<int>(mySize); }
+  //! Returns number of elements.
+  size_t Size() const noexcept { return mySize; }
 
-  //! Returns number of elements
+  //! Returns number of elements (legacy int-returning API, convention shared with BaseMap).
   int Extent() const noexcept { return static_cast<int>(mySize); }
 
   //! Returns true if map is empty

@@ -11,16 +11,25 @@ set(OCCT_TKBRep_GTests_FILES
   BRepGraph_Builder_Test.cxx
   BRepGraph_NodeId_Test.cxx
   BRepGraph_RefId_Test.cxx
+  BRepGraph_TypedIdDispatch_Test.cxx
   BRepGraph_RefsIterator_Test.cxx
   BRepGraph_Benchmark_Test.cxx
   BRepGraph_Build_Test.cxx
   BRepGraph_DeferredInvalidation_Test.cxx
+  BRepGraph_Fuzz_Test.cxx
+  BRepGraph_MeshCache_Test.cxx
+  BRepGraph_MutGuard_Test.cxx
+  BRepGraph_ReplaceVertex_Test.cxx
   BRepGraph_MutationGen_Test.cxx
   BRepGraph_Convenience_Test.cxx
   BRepGraph_RelatedIterator_Test.cxx
   BRepGraph_EdgeCases_Test.cxx
   BRepGraph_ChildExplorer_Test.cxx
+  BRepGraph_Iterator_Test.cxx
+  BRepGraph_LayerIterator_Test.cxx
   BRepGraph_ParentExplorer_Test.cxx
+  BRepGraph_ReverseIterator_Test.cxx
+  BRepGraph_WireExplorer_Test.cxx
   BRepGraph_EventBus_Test.cxx
   BRepGraph_Geometry_Test.cxx
   BRepGraph_History_Test.cxx
@@ -30,10 +39,12 @@ set(OCCT_TKBRep_GTests_FILES
   BRepGraph_Test.cxx
   BRepGraph_VersionStamp_Test.cxx
   BRepGraph_Views_Test.cxx
+  BRepGraph_Tool_Test.cxx
   BRepGraph_Compact_Test.cxx
   BRepGraph_Copy_Test.cxx
   BRepGraph_Transform_Test.cxx
   BRepGraph_Validate_Test.cxx
+  BRepGraph_ScenarioMatrix_Test.cxx
   BRepGraph_Deduplicate_Test.cxx
   TopExp_Test.cxx
   TopoDS_Builder_Test.cxx

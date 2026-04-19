@@ -36,44 +36,57 @@ namespace BRepGraphInc
 //! Fields shared by every representation entity.
 struct BaseRep
 {
-  BRepGraph_RepId Id;                //!< Typed address (Kind + per-kind index)
-  uint32_t        OwnGen    = 0;     //!< Per-rep mutation counter
-  bool            IsRemoved = false; //!< Soft-removal flag
+  using TypeId = BRepGraph_RepId;
+
+  uint32_t OwnGen    = 0;     //!< Per-rep mutation counter
+  bool     IsRemoved = false; //!< Soft-removal flag
 };
 
 //! Surface geometry representation for faces.
 struct SurfaceRep : public BaseRep
 {
+  using TypeId = BRepGraph_SurfaceRepId;
+
   occ::handle<Geom_Surface> Surface; //!< The geometric surface
 };
 
 //! 3D curve geometry representation for edges.
 struct Curve3DRep : public BaseRep
 {
+  using TypeId = BRepGraph_Curve3DRepId;
+
   occ::handle<Geom_Curve> Curve; //!< The 3D curve geometry
 };
 
 //! 2D parametric curve (PCurve) representation for coedges.
 struct Curve2DRep : public BaseRep
 {
+  using TypeId = BRepGraph_Curve2DRepId;
+
   occ::handle<Geom2d_Curve> Curve; //!< The 2D parametric curve
 };
 
 //! Triangulation mesh representation for faces.
 struct TriangulationRep : public BaseRep
 {
+  using TypeId = BRepGraph_TriangulationRepId;
+
   occ::handle<Poly_Triangulation> Triangulation; //!< The mesh
 };
 
 //! 3D polygon discretization for edges.
 struct Polygon3DRep : public BaseRep
 {
+  using TypeId = BRepGraph_Polygon3DRepId;
+
   occ::handle<Poly_Polygon3D> Polygon; //!< The 3D polygon
 };
 
 //! 2D polygon-on-surface discretization for coedges.
 struct Polygon2DRep : public BaseRep
 {
+  using TypeId = BRepGraph_Polygon2DRepId;
+
   occ::handle<Poly_Polygon2D> Polygon; //!< The 2D polygon on surface parametric space
 };
 
@@ -81,6 +94,8 @@ struct Polygon2DRep : public BaseRep
 //! Links a polygon to a specific triangulation rep (global index, not face-local).
 struct PolygonOnTriRep : public BaseRep
 {
+  using TypeId = BRepGraph_PolygonOnTriRepId;
+
   occ::handle<Poly_PolygonOnTriangulation> Polygon; //!< Polygon indices into triangulation
   BRepGraph_TriangulationRepId TriangulationRepId;  //!< Typed id into myTriangulationsRep
 };

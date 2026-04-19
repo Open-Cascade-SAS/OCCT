@@ -13,8 +13,8 @@
 
 #include <BRepGraphInc_Populate.hxx>
 #include <BRepGraph_ParallelPolicy.hxx>
-#include <BRepGraph_ParamLayer.hxx>
-#include <BRepGraph_RegularityLayer.hxx>
+#include <BRepGraph_LayerParam.hxx>
+#include <BRepGraph_LayerRegularity.hxx>
 #include <BRepGraphInc_Storage.hxx>
 
 #include <BRep_CurveOn2Surfaces.hxx>
@@ -70,113 +70,106 @@ namespace
 
 //=================================================================================================
 
-void appendFaceRef(BRepGraphInc_Storage&          theStorage,
-                   const BRepGraph_ShellId        theParentShellId,
-                   const BRepGraphInc::FaceUsage& theRef)
+void appendFaceRef(BRepGraphInc_Storage&             theStorage,
+                   const BRepGraph_ShellId           theParentShellId,
+                   const BRepGraphInc::FaceInstance& theRef)
 {
-  BRepGraphInc::FaceRef&    anEntry = theStorage.AppendFaceRef();
-  const BRepGraph_FaceRefId aRefId(theStorage.NbFaceRefs() - 1);
-  anEntry.RefId         = aRefId;
-  anEntry.ParentId      = BRepGraph_ShellId(theParentShellId.Index);
-  anEntry.FaceDefId     = theRef.DefId;
-  anEntry.Orientation   = theRef.Orientation;
-  anEntry.LocalLocation = theRef.Location;
+  const BRepGraph_FaceRefId aRefId  = theStorage.AppendFaceRef();
+  BRepGraphInc::FaceRef&    anEntry = theStorage.ChangeFaceRef(aRefId);
+  anEntry.ParentId                  = BRepGraph_ShellId(theParentShellId.Index);
+  anEntry.FaceDefId                 = theRef.DefId;
+  anEntry.Orientation               = theRef.Orientation;
+  anEntry.LocalLocation             = theRef.Location;
   theStorage.ChangeShell(theParentShellId).FaceRefIds.Append(aRefId);
 }
 
 //=================================================================================================
 
-void appendWireRef(BRepGraphInc_Storage&          theStorage,
-                   const BRepGraph_FaceId         theParentFaceId,
-                   const BRepGraphInc::WireUsage& theRef)
+void appendWireRef(BRepGraphInc_Storage&             theStorage,
+                   const BRepGraph_FaceId            theParentFaceId,
+                   const BRepGraphInc::WireInstance& theRef)
 {
-  BRepGraphInc::WireRef&    anEntry = theStorage.AppendWireRef();
-  const BRepGraph_WireRefId aRefId(theStorage.NbWireRefs() - 1);
-  anEntry.RefId         = aRefId;
-  anEntry.ParentId      = BRepGraph_FaceId(theParentFaceId.Index);
-  anEntry.WireDefId     = theRef.DefId;
-  anEntry.IsOuter       = theRef.IsOuter;
-  anEntry.Orientation   = theRef.Orientation;
-  anEntry.LocalLocation = theRef.Location;
+  const BRepGraph_WireRefId aRefId  = theStorage.AppendWireRef();
+  BRepGraphInc::WireRef&    anEntry = theStorage.ChangeWireRef(aRefId);
+  anEntry.ParentId                  = BRepGraph_FaceId(theParentFaceId.Index);
+  anEntry.WireDefId                 = theRef.DefId;
+  anEntry.IsOuter                   = theRef.IsOuter;
+  anEntry.Orientation               = theRef.Orientation;
+  anEntry.LocalLocation             = theRef.Location;
   theStorage.ChangeFace(theParentFaceId).WireRefIds.Append(aRefId);
 }
 
 //=================================================================================================
 
-void appendCoEdgeRef(BRepGraphInc_Storage&            theStorage,
-                     const BRepGraph_WireId           theParentWireId,
-                     const BRepGraphInc::CoEdgeUsage& theRef)
+void appendCoEdgeRef(BRepGraphInc_Storage&               theStorage,
+                     const BRepGraph_WireId              theParentWireId,
+                     const BRepGraphInc::CoEdgeInstance& theRef)
 {
-  BRepGraphInc::CoEdgeRef&    anEntry = theStorage.AppendCoEdgeRef();
-  const BRepGraph_CoEdgeRefId aRefId(theStorage.NbCoEdgeRefs() - 1);
-  anEntry.RefId         = aRefId;
-  anEntry.ParentId      = BRepGraph_WireId(theParentWireId.Index);
-  anEntry.CoEdgeDefId   = theRef.DefId;
-  anEntry.LocalLocation = theRef.Location;
+  const BRepGraph_CoEdgeRefId aRefId  = theStorage.AppendCoEdgeRef();
+  BRepGraphInc::CoEdgeRef&    anEntry = theStorage.ChangeCoEdgeRef(aRefId);
+  anEntry.ParentId                    = BRepGraph_WireId(theParentWireId.Index);
+  anEntry.CoEdgeDefId                 = theRef.DefId;
+  anEntry.LocalLocation               = theRef.Location;
   theStorage.ChangeWire(theParentWireId).CoEdgeRefIds.Append(aRefId);
 }
 
 //=================================================================================================
 
-BRepGraph_VertexRefId appendVertexRef(BRepGraphInc_Storage&            theStorage,
-                                      const BRepGraph_NodeId           theParentId,
-                                      const BRepGraphInc::VertexUsage& theRef)
+BRepGraph_VertexRefId appendVertexRef(BRepGraphInc_Storage&               theStorage,
+                                      const BRepGraph_NodeId              theParentId,
+                                      const BRepGraphInc::VertexInstance& theRef)
 {
-  BRepGraphInc::VertexRef&    anEntry = theStorage.AppendVertexRef();
-  const BRepGraph_VertexRefId aRefId(theStorage.NbVertexRefs() - 1);
-  anEntry.RefId         = aRefId;
-  anEntry.ParentId      = theParentId;
-  anEntry.VertexDefId   = theRef.DefId;
-  anEntry.Orientation   = theRef.Orientation;
-  anEntry.LocalLocation = theRef.Location;
+  const BRepGraph_VertexRefId aRefId  = theStorage.AppendVertexRef();
+  BRepGraphInc::VertexRef&    anEntry = theStorage.ChangeVertexRef(aRefId);
+  anEntry.ParentId                    = theParentId;
+  anEntry.VertexDefId                 = theRef.DefId;
+  anEntry.Orientation                 = theRef.Orientation;
+  anEntry.LocalLocation               = theRef.Location;
   return aRefId;
 }
 
 //=================================================================================================
 
-void appendShellRef(BRepGraphInc_Storage&           theStorage,
-                    const BRepGraph_SolidId         theParentSolidId,
-                    const BRepGraphInc::ShellUsage& theRef)
+void appendShellRef(BRepGraphInc_Storage&              theStorage,
+                    const BRepGraph_SolidId            theParentSolidId,
+                    const BRepGraphInc::ShellInstance& theRef)
 {
-  BRepGraphInc::ShellRef&    anEntry = theStorage.AppendShellRef();
-  const BRepGraph_ShellRefId aRefId(theStorage.NbShellRefs() - 1);
-  anEntry.RefId         = aRefId;
-  anEntry.ParentId      = BRepGraph_SolidId(theParentSolidId.Index);
-  anEntry.ShellDefId    = theRef.DefId;
-  anEntry.Orientation   = theRef.Orientation;
-  anEntry.LocalLocation = theRef.Location;
+  const BRepGraph_ShellRefId aRefId  = theStorage.AppendShellRef();
+  BRepGraphInc::ShellRef&    anEntry = theStorage.ChangeShellRef(aRefId);
+  anEntry.ParentId                   = BRepGraph_SolidId(theParentSolidId.Index);
+  anEntry.ShellDefId                 = theRef.DefId;
+  anEntry.Orientation                = theRef.Orientation;
+  anEntry.LocalLocation              = theRef.Location;
   theStorage.ChangeSolid(theParentSolidId).ShellRefIds.Append(aRefId);
 }
 
 //=================================================================================================
 
-void appendSolidRef(BRepGraphInc_Storage&           theStorage,
-                    const BRepGraph_CompSolidId     theParentCompSolidId,
-                    const BRepGraphInc::SolidUsage& theRef)
+void appendSolidRef(BRepGraphInc_Storage&              theStorage,
+                    const BRepGraph_CompSolidId        theParentCompSolidId,
+                    const BRepGraphInc::SolidInstance& theRef)
 {
-  BRepGraphInc::SolidRef&    anEntry = theStorage.AppendSolidRef();
-  const BRepGraph_SolidRefId aRefId(theStorage.NbSolidRefs() - 1);
-  anEntry.RefId         = aRefId;
-  anEntry.ParentId      = BRepGraph_CompSolidId(theParentCompSolidId.Index);
-  anEntry.SolidDefId    = theRef.DefId;
-  anEntry.Orientation   = theRef.Orientation;
-  anEntry.LocalLocation = theRef.Location;
+  const BRepGraph_SolidRefId aRefId  = theStorage.AppendSolidRef();
+  BRepGraphInc::SolidRef&    anEntry = theStorage.ChangeSolidRef(aRefId);
+  anEntry.ParentId                   = BRepGraph_CompSolidId(theParentCompSolidId.Index);
+  anEntry.SolidDefId                 = theRef.DefId;
+  anEntry.Orientation                = theRef.Orientation;
+  anEntry.LocalLocation              = theRef.Location;
   theStorage.ChangeCompSolid(theParentCompSolidId).SolidRefIds.Append(aRefId);
 }
 
 //=================================================================================================
 
-BRepGraph_ChildRefId appendChildRef(BRepGraphInc_Storage&          theStorage,
-                                    const BRepGraph_NodeId         theParentId,
-                                    const BRepGraphInc::NodeUsage& theRef)
+BRepGraph_ChildRefId appendChildRef(BRepGraphInc_Storage&             theStorage,
+                                    const BRepGraph_NodeId            theParentId,
+                                    const BRepGraphInc::NodeInstance& theRef)
 {
-  BRepGraphInc::ChildRef&    anEntry = theStorage.AppendChildRef();
-  const BRepGraph_ChildRefId aRefId(theStorage.NbChildRefs() - 1);
-  anEntry.RefId         = aRefId;
-  anEntry.ParentId      = theParentId;
-  anEntry.ChildDefId    = theRef.DefId;
-  anEntry.Orientation   = theRef.Orientation;
-  anEntry.LocalLocation = theRef.Location;
+  const BRepGraph_ChildRefId aRefId  = theStorage.AppendChildRef();
+  BRepGraphInc::ChildRef&    anEntry = theStorage.ChangeChildRef(aRefId);
+  anEntry.ParentId                   = theParentId;
+  anEntry.ChildDefId                 = theRef.DefId;
+  anEntry.Orientation                = theRef.Orientation;
+  anEntry.LocalLocation              = theRef.Location;
   if (theParentId.NodeKind == BRepGraph_NodeId::Kind::Compound)
     theStorage.ChangeCompound(BRepGraph_CompoundId(theParentId.Index)).ChildRefIds.Append(aRefId);
   return aRefId;
@@ -248,14 +241,13 @@ struct FaceLocalData
   int             ParentShellIdx = -1;
 
   // Phase 2 extracted geometry.
-  occ::handle<Geom_Surface> Surface;
-  occ::handle<Geom_Surface> OriginalSurface; //!< Pre-transform surface for PCurve matching
-  NCollection_Vector<occ::handle<Poly_Triangulation>> Triangulations;
-  int                                                 ActiveTriangulationIndex = -1;
-  double                                              Tolerance                = 0.0;
-  TopAbs_Orientation                                  Orientation              = TopAbs_FORWARD;
-  bool                                                NaturalRestriction       = false;
-  NCollection_Vector<ExtractedWire>                   Wires;
+  occ::handle<Geom_Surface>         Surface;
+  occ::handle<Geom_Surface>         OriginalSurface; //!< Pre-transform surface for PCurve matching
+  occ::handle<Poly_Triangulation>   ActiveTriangulation;
+  double                            Tolerance          = 0.0;
+  TopAbs_Orientation                Orientation        = TopAbs_FORWARD;
+  bool                              NaturalRestriction = false;
+  NCollection_Vector<ExtractedWire> Wires;
   NCollection_Vector<ExtractedInternalVertex> DirectVertices; //!< INTERNAL/EXTERNAL vertex children
 };
 
@@ -478,14 +470,13 @@ int registerOrReuseVertex(BRepGraphInc_Storage& theStorage,
   if (anExisting != nullptr)
     return anExisting->Index;
 
-  BRepGraphInc::VertexDef& aVtxEnt = theStorage.AppendVertex();
-  int                      aVtxIdx = theStorage.NbVertices() - 1;
-  aVtxEnt.Id                       = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Vertex, aVtxIdx);
+  const BRepGraph_VertexId aVtxId  = theStorage.AppendVertex();
+  BRepGraphInc::VertexDef& aVtxEnt = theStorage.ChangeVertex(aVtxId);
   aVtxEnt.Point                    = thePoint;
   aVtxEnt.Tolerance                = theTolerance;
-  theStorage.BindTShapeToNode(theVertex.TShape().get(), aVtxEnt.Id);
-  theStorage.BindOriginal(aVtxEnt.Id, theVertex);
-  return aVtxIdx;
+  theStorage.BindTShapeToNode(theVertex.TShape().get(), aVtxId);
+  theStorage.BindOriginal(aVtxId, theVertex);
+  return aVtxId.Index;
 }
 
 //! Convenience overload: extracts point and tolerance from the vertex.
@@ -571,12 +562,11 @@ int getOrCreateSurfaceRep(BRepGraphInc_Storage&            theStorage,
   const int*          anExisting = theDedup.Surfaces.Seek(aPtr);
   if (anExisting != nullptr)
     return *anExisting;
-  BRepGraphInc::SurfaceRep& aRep  = theStorage.AppendSurfaceRep();
-  const int                 anIdx = theStorage.NbSurfaces() - 1;
-  aRep.Id                         = BRepGraph_RepId::Surface(anIdx);
-  aRep.Surface                    = theSurface;
-  theDedup.Surfaces.Bind(aPtr, anIdx);
-  return anIdx;
+  const BRepGraph_SurfaceRepId aRepId = theStorage.AppendSurfaceRep();
+  BRepGraphInc::SurfaceRep&    aRep   = theStorage.ChangeSurfaceRep(aRepId);
+  aRep.Surface                        = theSurface;
+  theDedup.Surfaces.Bind(aPtr, aRepId.Index);
+  return aRepId.Index;
 }
 
 //! Create or reuse a Curve3DRep for the given 3D curve handle.
@@ -590,12 +580,11 @@ int getOrCreateCurve3DRep(BRepGraphInc_Storage&          theStorage,
   const int*        anExisting = theDedup.Curves3D.Seek(aPtr);
   if (anExisting != nullptr)
     return *anExisting;
-  BRepGraphInc::Curve3DRep& aRep  = theStorage.AppendCurve3DRep();
-  const int                 anIdx = theStorage.NbCurves3D() - 1;
-  aRep.Id                         = BRepGraph_RepId::Curve3D(anIdx);
-  aRep.Curve                      = theCurve;
-  theDedup.Curves3D.Bind(aPtr, anIdx);
-  return anIdx;
+  const BRepGraph_Curve3DRepId aRepId = theStorage.AppendCurve3DRep();
+  BRepGraphInc::Curve3DRep&    aRep   = theStorage.ChangeCurve3DRep(aRepId);
+  aRep.Curve                          = theCurve;
+  theDedup.Curves3D.Bind(aPtr, aRepId.Index);
+  return aRepId.Index;
 }
 
 //! Create or reuse a Curve2DRep for the given 2D curve handle.
@@ -609,12 +598,11 @@ int getOrCreateCurve2DRep(BRepGraphInc_Storage&            theStorage,
   const int*          anExisting = theDedup.Curves2D.Seek(aPtr);
   if (anExisting != nullptr)
     return *anExisting;
-  BRepGraphInc::Curve2DRep& aRep  = theStorage.AppendCurve2DRep();
-  const int                 anIdx = theStorage.NbCurves2D() - 1;
-  aRep.Id                         = BRepGraph_RepId::Curve2D(anIdx);
-  aRep.Curve                      = theCurve;
-  theDedup.Curves2D.Bind(aPtr, anIdx);
-  return anIdx;
+  const BRepGraph_Curve2DRepId aRepId = theStorage.AppendCurve2DRep();
+  BRepGraphInc::Curve2DRep&    aRep   = theStorage.ChangeCurve2DRep(aRepId);
+  aRep.Curve                          = theCurve;
+  theDedup.Curves2D.Bind(aPtr, aRepId.Index);
+  return aRepId.Index;
 }
 
 //! Create or reuse a TriangulationRep for the given triangulation handle.
@@ -628,12 +616,11 @@ int getOrCreateTriangulationRep(BRepGraphInc_Storage&                  theStorag
   const int*                anExisting = theDedup.Triangulations.Seek(aPtr);
   if (anExisting != nullptr)
     return *anExisting;
-  BRepGraphInc::TriangulationRep& aRep  = theStorage.AppendTriangulationRep();
-  const int                       anIdx = theStorage.NbTriangulations() - 1;
-  aRep.Id                               = BRepGraph_RepId::Triangulation(anIdx);
-  aRep.Triangulation                    = theTriangulation;
-  theDedup.Triangulations.Bind(aPtr, anIdx);
-  return anIdx;
+  const BRepGraph_TriangulationRepId aRepId = theStorage.AppendTriangulationRep();
+  BRepGraphInc::TriangulationRep&    aRep   = theStorage.ChangeTriangulationRep(aRepId);
+  aRep.Triangulation                        = theTriangulation;
+  theDedup.Triangulations.Bind(aPtr, aRepId.Index);
+  return aRepId.Index;
 }
 
 //! Create or reuse a Polygon3DRep for the given polygon handle.
@@ -647,12 +634,11 @@ int getOrCreatePolygon3DRep(BRepGraphInc_Storage&              theStorage,
   const int*            anExisting = theDedup.Polygons3D.Seek(aPtr);
   if (anExisting != nullptr)
     return *anExisting;
-  BRepGraphInc::Polygon3DRep& aRep  = theStorage.AppendPolygon3DRep();
-  const int                   anIdx = theStorage.NbPolygons3D() - 1;
-  aRep.Id                           = BRepGraph_RepId::Polygon3D(anIdx);
-  aRep.Polygon                      = thePolygon;
-  theDedup.Polygons3D.Bind(aPtr, anIdx);
-  return anIdx;
+  const BRepGraph_Polygon3DRepId aRepId = theStorage.AppendPolygon3DRep();
+  BRepGraphInc::Polygon3DRep&    aRep   = theStorage.ChangePolygon3DRep(aRepId);
+  aRep.Polygon                          = thePolygon;
+  theDedup.Polygons3D.Bind(aPtr, aRepId.Index);
+  return aRepId.Index;
 }
 
 //! Create or reuse a Polygon2DRep for the given polygon-on-surface handle.
@@ -666,12 +652,11 @@ int getOrCreatePolygon2DRep(BRepGraphInc_Storage&              theStorage,
   const int*            anExisting = theDedup.Polygons2D.Seek(aPtr);
   if (anExisting != nullptr)
     return *anExisting;
-  BRepGraphInc::Polygon2DRep& aRep  = theStorage.AppendPolygon2DRep();
-  const int                   anIdx = theStorage.NbPolygons2D() - 1;
-  aRep.Id                           = BRepGraph_RepId::Polygon2D(anIdx);
-  aRep.Polygon                      = thePolygon;
-  theDedup.Polygons2D.Bind(aPtr, anIdx);
-  return anIdx;
+  const BRepGraph_Polygon2DRepId aRepId = theStorage.AppendPolygon2DRep();
+  BRepGraphInc::Polygon2DRep&    aRep   = theStorage.ChangePolygon2DRep(aRepId);
+  aRep.Polygon                          = thePolygon;
+  theDedup.Polygons2D.Bind(aPtr, aRepId.Index);
+  return aRepId.Index;
 }
 
 //! Create or reuse a PolygonOnTriRep for the given polygon-on-triangulation handle.
@@ -687,13 +672,12 @@ int getOrCreatePolygonOnTriRep(BRepGraphInc_Storage&                           t
   const int*                         anExisting = theDedup.PolygonsOnTri.Seek(aPtr);
   if (anExisting != nullptr)
     return *anExisting;
-  BRepGraphInc::PolygonOnTriRep& aRep  = theStorage.AppendPolygonOnTriRep();
-  const int                      anIdx = theStorage.NbPolygonsOnTri() - 1;
-  aRep.Id                              = BRepGraph_RepId::PolygonOnTri(anIdx);
-  aRep.Polygon                         = thePolygon;
-  aRep.TriangulationRepId              = BRepGraph_TriangulationRepId(theTriRepIdx);
-  theDedup.PolygonsOnTri.Bind(aPtr, anIdx);
-  return anIdx;
+  const BRepGraph_PolygonOnTriRepId aRepId = theStorage.AppendPolygonOnTriRep();
+  BRepGraphInc::PolygonOnTriRep&    aRep   = theStorage.ChangePolygonOnTriRep(aRepId);
+  aRep.Polygon                             = thePolygon;
+  aRep.TriangulationRepId                  = BRepGraph_TriangulationRepId(theTriRepIdx);
+  theDedup.PolygonsOnTri.Bind(aPtr, aRepId.Index);
+  return aRepId.Index;
 }
 
 //! Register an edge entity from pre-extracted data, with TShape dedup.
@@ -707,9 +691,8 @@ int registerExtractedEdge(BRepGraphInc_Storage& theStorage,
   if (anExisting != nullptr)
     return anExisting->Index;
 
-  BRepGraphInc::EdgeDef& anEdgeEnt = theStorage.AppendEdge();
-  int                    anEdgeIdx = theStorage.NbEdges() - 1;
-  anEdgeEnt.Id                     = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, anEdgeIdx);
+  const BRepGraph_EdgeId anEdgeId  = theStorage.AppendEdge();
+  BRepGraphInc::EdgeDef& anEdgeEnt = theStorage.ChangeEdge(anEdgeId);
   anEdgeEnt.Tolerance              = theEdgeData.Tolerance;
   anEdgeEnt.IsDegenerate           = theEdgeData.IsDegenerate;
   anEdgeEnt.SameParameter          = theEdgeData.SameParameter;
@@ -728,25 +711,25 @@ int registerExtractedEdge(BRepGraphInc_Storage& theStorage,
   // Vertices may be null for infinite edges or degenerate topology.
   if (!theEdgeData.StartVertex.Shape.IsNull())
   {
-    BRepGraphInc::VertexUsage aVR;
+    BRepGraphInc::VertexInstance aVR;
     aVR.DefId                  = BRepGraph_VertexId(registerOrReuseVertex(theStorage,
                                                          theEdgeData.StartVertex.Shape,
                                                          theEdgeData.StartVertex.Point,
                                                          theEdgeData.StartVertex.Tolerance));
     aVR.Orientation            = TopAbs_FORWARD;
     aVR.Location               = theEdgeData.StartVertex.Shape.Location();
-    anEdgeEnt.StartVertexRefId = appendVertexRef(theStorage, anEdgeEnt.Id, aVR);
+    anEdgeEnt.StartVertexRefId = appendVertexRef(theStorage, anEdgeId, aVR);
   }
   if (!theEdgeData.EndVertex.Shape.IsNull())
   {
-    BRepGraphInc::VertexUsage aVR;
+    BRepGraphInc::VertexInstance aVR;
     aVR.DefId                = BRepGraph_VertexId(registerOrReuseVertex(theStorage,
                                                          theEdgeData.EndVertex.Shape,
                                                          theEdgeData.EndVertex.Point,
                                                          theEdgeData.EndVertex.Tolerance));
     aVR.Orientation          = TopAbs_REVERSED;
     aVR.Location             = theEdgeData.EndVertex.Shape.Location();
-    anEdgeEnt.EndVertexRefId = appendVertexRef(theStorage, anEdgeEnt.Id, aVR);
+    anEdgeEnt.EndVertexRefId = appendVertexRef(theStorage, anEdgeId, aVR);
   }
 
   // Register internal/external vertices.
@@ -756,24 +739,24 @@ int registerExtractedEdge(BRepGraphInc_Storage& theStorage,
       registerOrReuseVertex(theStorage, anIntVtx.Shape, anIntVtx.Point, anIntVtx.Tolerance);
     if (anIntVtxIdx >= 0)
     {
-      BRepGraphInc::VertexUsage aVR;
+      BRepGraphInc::VertexInstance aVR;
       aVR.DefId       = BRepGraph_VertexId(anIntVtxIdx);
       aVR.Orientation = anIntVtx.Orientation;
       aVR.Location    = anIntVtx.Shape.Location();
-      anEdgeEnt.InternalVertexRefIds.Append(appendVertexRef(theStorage, anEdgeEnt.Id, aVR));
+      anEdgeEnt.InternalVertexRefIds.Append(appendVertexRef(theStorage, anEdgeId, aVR));
     }
   }
 
-  theStorage.BindTShapeToNode(theEdgeData.Shape.TShape().get(), anEdgeEnt.Id);
-  theStorage.BindOriginal(anEdgeEnt.Id, theEdgeData.Shape);
-  return anEdgeIdx;
+  theStorage.BindTShapeToNode(theEdgeData.Shape.TShape().get(), anEdgeId);
+  theStorage.BindOriginal(anEdgeId, theEdgeData.Shape);
+  return anEdgeId.Index;
 }
 
-//! Create a NodeUsage from a child shape, resolving its index via TShape lookup.
+//! Create a NodeInstance from a child shape, resolving its index via TShape lookup.
 //! Returns true if the ref was created successfully (child was found in storage).
 bool makeAuxChildRef(const BRepGraphInc_Storage& theStorage,
                      const TopoDS_Shape&         theChild,
-                     BRepGraphInc::NodeUsage&    theRef)
+                     BRepGraphInc::NodeInstance& theRef)
 {
   const BRepGraph_NodeId* aChildNodeId = theStorage.FindNodeByTShape(theChild.TShape().get());
   if (aChildNodeId == nullptr)
@@ -1002,24 +985,10 @@ void extractFaceData(FaceLocalData& theData)
                                                                 aSurfCombinedLoc);
   }
 
-  // Extract triangulations.
+  // Extract active triangulation only.
   {
-    TopLoc_Location                                          aTriLoc;
-    const NCollection_List<occ::handle<Poly_Triangulation>>& aTriList =
-      BRep_Tool::Triangulations(aFace, aTriLoc);
-    occ::handle<Poly_Triangulation> anActiveTri;
-    {
-      TopLoc_Location aDummyLoc;
-      anActiveTri = BRep_Tool::Triangulation(aFace, aDummyLoc);
-    }
-    int aTriIdx = 0;
-    for (const occ::handle<Poly_Triangulation>& aTri : aTriList)
-    {
-      theData.Triangulations.Append(aTri);
-      if (!anActiveTri.IsNull() && aTri == anActiveTri)
-        theData.ActiveTriangulationIndex = aTriIdx;
-      ++aTriIdx;
-    }
+    TopLoc_Location aDummyLoc;
+    theData.ActiveTriangulation = BRep_Tool::Triangulation(aFace, aDummyLoc);
   }
 
   theData.Tolerance          = BRep_Tool::Tolerance(aFace);
@@ -1089,30 +1058,29 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
     }
     else
     {
-      aIsNewFaceDef                = true;
-      BRepGraphInc::FaceDef& aFace = theStorage.AppendFace();
-      aFaceIdx                     = theStorage.NbFaces() - 1;
-      aFace.Id                     = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, aFaceIdx);
-      aFace.Tolerance              = aData.Tolerance;
-      aFace.NaturalRestriction     = aData.NaturalRestriction;
+      aIsNewFaceDef                  = true;
+      const BRepGraph_FaceId aFaceId = theStorage.AppendFace();
+      aFaceIdx                       = aFaceId.Index;
+      BRepGraphInc::FaceDef& aFace   = theStorage.ChangeFace(aFaceId);
+      aFace.Tolerance                = aData.Tolerance;
+      aFace.NaturalRestriction       = aData.NaturalRestriction;
       aFace.SurfaceRepId =
         BRepGraph_SurfaceRepId(getOrCreateSurfaceRep(theStorage, theRepDedup, aData.Surface));
 
-      for (const occ::handle<Poly_Triangulation>& aTri : aData.Triangulations)
+      if (!aData.ActiveTriangulation.IsNull())
       {
-        aFace.TriangulationRepIds.Append(
-          BRepGraph_TriangulationRepId(getOrCreateTriangulationRep(theStorage, theRepDedup, aTri)));
+        aFace.TriangulationRepId = BRepGraph_TriangulationRepId(
+          getOrCreateTriangulationRep(theStorage, theRepDedup, aData.ActiveTriangulation));
       }
-      aFace.ActiveTriangulationIndex = aData.ActiveTriangulationIndex;
 
-      theStorage.BindTShapeToNode(aCurFace.TShape().get(), aFace.Id);
-      theStorage.BindOriginal(aFace.Id, aCurFace);
+      theStorage.BindTShapeToNode(aCurFace.TShape().get(), aFaceId);
+      theStorage.BindOriginal(aFaceId, aCurFace);
     }
 
     // Link face to parent shell (with per-instance location for shared TShapes).
     if (aData.ParentShellIdx >= 0)
     {
-      BRepGraphInc::FaceUsage aRef;
+      BRepGraphInc::FaceInstance aRef;
       aRef.DefId       = BRepGraph_FaceId(aFaceIdx);
       aRef.Orientation = aData.Orientation;
       aRef.Location    = aCurFace.Location();
@@ -1146,17 +1114,16 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
       }
       else
       {
-        BRepGraphInc::WireDef& aWire = theStorage.AppendWire();
-        aWireIdx                     = theStorage.NbWires() - 1;
-        aWire.Id                     = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Wire, aWireIdx);
-        theStorage.BindTShapeToNode(aWireData.Shape.TShape().get(), aWire.Id);
-        theStorage.BindOriginal(aWire.Id, aWireData.Shape);
+        const BRepGraph_WireId aWireId = theStorage.AppendWire();
+        aWireIdx                       = aWireId.Index;
+        theStorage.BindTShapeToNode(aWireData.Shape.TShape().get(), aWireId);
+        theStorage.BindOriginal(aWireId, aWireData.Shape);
         aIsNewWireDef = true;
       }
 
       // Link wire to face.
       {
-        BRepGraphInc::WireUsage aWireRef;
+        BRepGraphInc::WireInstance aWireRef;
         aWireRef.DefId       = BRepGraph_WireId(aWireIdx);
         aWireRef.Orientation = aWireData.Shape.Orientation();
         aWireRef.Location    = aWireData.Shape.Location();
@@ -1179,13 +1146,13 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
         if (aIsNewWireDef)
         {
           // Create the forward CoEdge.
-          BRepGraphInc::CoEdgeDef& aCoEdge = theStorage.AppendCoEdge();
-          aFwdCoEdgeIdx                    = theStorage.NbCoEdges() - 1;
-          const int aCoEdgeIdx             = aFwdCoEdgeIdx;
-          aCoEdge.Id                       = BRepGraph_CoEdgeId(aCoEdgeIdx);
-          aCoEdge.EdgeDefId                = BRepGraph_EdgeId(anEdgeIdx);
-          aCoEdge.FaceDefId                = BRepGraph_FaceId(aFaceIdx);
-          aCoEdge.Orientation              = anEdgeData.OrientationInWire;
+          const BRepGraph_CoEdgeId aCoEdgeId  = theStorage.AppendCoEdge();
+          aFwdCoEdgeIdx                       = aCoEdgeId.Index;
+          const int                aCoEdgeIdx = aFwdCoEdgeIdx;
+          BRepGraphInc::CoEdgeDef& aCoEdge    = theStorage.ChangeCoEdge(aCoEdgeId);
+          aCoEdge.EdgeDefId                   = BRepGraph_EdgeId(anEdgeIdx);
+          aCoEdge.FaceDefId                   = BRepGraph_FaceId(aFaceIdx);
+          aCoEdge.Orientation                 = anEdgeData.OrientationInWire;
 
           // Populate CoEdge with PCurve and polygon data for this face context.
           if (!anEdgeData.PCurve2d.IsNull())
@@ -1204,13 +1171,13 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
           // Handle seam edge: create a second CoEdge for the reversed sense.
           if (!anEdgeData.PCurve2dReversed.IsNull())
           {
-            BRepGraphInc::CoEdgeDef& aSeamCoEdge = theStorage.AppendCoEdge();
-            aSeamCoEdgeIdx                       = theStorage.NbCoEdges() - 1;
-            aSeamCoEdge.Id                       = BRepGraph_CoEdgeId(aSeamCoEdgeIdx);
-            aSeamCoEdge.EdgeDefId                = BRepGraph_EdgeId(anEdgeIdx);
-            aSeamCoEdge.FaceDefId                = BRepGraph_FaceId(aFaceIdx);
-            aSeamCoEdge.Orientation              = TopAbs_REVERSED;
-            aSeamCoEdge.Curve2DRepId             = BRepGraph_Curve2DRepId(
+            const BRepGraph_CoEdgeId aSeamCoEdgeId = theStorage.AppendCoEdge();
+            aSeamCoEdgeIdx                         = aSeamCoEdgeId.Index;
+            BRepGraphInc::CoEdgeDef& aSeamCoEdge   = theStorage.ChangeCoEdge(aSeamCoEdgeId);
+            aSeamCoEdge.EdgeDefId                  = BRepGraph_EdgeId(anEdgeIdx);
+            aSeamCoEdge.FaceDefId                  = BRepGraph_FaceId(aFaceIdx);
+            aSeamCoEdge.Orientation                = TopAbs_REVERSED;
+            aSeamCoEdge.Curve2DRepId               = BRepGraph_Curve2DRepId(
               getOrCreateCurve2DRep(theStorage, theRepDedup, anEdgeData.PCurve2dReversed));
             aSeamCoEdge.ParamFirst     = anEdgeData.PCFirstReversed;
             aSeamCoEdge.ParamLast      = anEdgeData.PCLastReversed;
@@ -1227,7 +1194,7 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
           }
 
           // Add CoEdgeUsage to wire with edge-in-wire Location.
-          BRepGraphInc::CoEdgeUsage aCoEdgeRef;
+          BRepGraphInc::CoEdgeInstance aCoEdgeRef;
           aCoEdgeRef.DefId    = BRepGraph_CoEdgeId(aCoEdgeIdx);
           aCoEdgeRef.Location = anEdgeData.Shape.Location();
           const BRepGraph_WireId aWireId(aWireIdx);
@@ -1255,53 +1222,54 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
           if (hasSeamCoEdge)
             aRevEdge = TopoDS::Edge(anEdgeData.Shape.Reversed());
 
-          for (const BRepGraph_TriangulationRepId& aTriRepIdOrig : aFaceDef.TriangulationRepIds)
+          if (aFaceDef.TriangulationRepId.IsValid())
           {
-            if (!aTriRepIdOrig.IsValid())
-              continue;
             const occ::handle<Poly_Triangulation>& aTri =
-              theStorage.TriangulationRep(aTriRepIdOrig).Triangulation;
-            if (aTri.IsNull())
-              continue;
-
-            occ::handle<Poly_PolygonOnTriangulation> aPolyOnTri =
-              BRep_Tool::PolygonOnTriangulation(anEdgeData.Shape, aTri, aPolyTriLoc);
-            if (aPolyOnTri.IsNull())
-              continue;
-
-            int aTriRepIdx = aTriRepIdOrig.Index;
-            if (!aPolyTriLoc.IsIdentity())
+              theStorage.TriangulationRep(aFaceDef.TriangulationRepId).Triangulation;
+            if (!aTri.IsNull())
             {
-              const TopLoc_Location aRepLoc = anEdgeData.Shape.Location().Inverted() * aPolyTriLoc;
-              if (!aRepLoc.IsIdentity())
+              occ::handle<Poly_PolygonOnTriangulation> aPolyOnTri =
+                BRep_Tool::PolygonOnTriangulation(anEdgeData.Shape, aTri, aPolyTriLoc);
+              if (!aPolyOnTri.IsNull())
               {
-                occ::handle<Poly_Triangulation> aTriCopy = aTri->Copy();
-                const gp_Trsf&                  aTrsf    = aRepLoc.Transformation();
-                for (int aNodeIdx = 1; aNodeIdx <= aTriCopy->NbNodes(); ++aNodeIdx)
-                  aTriCopy->SetNode(aNodeIdx, aTriCopy->Node(aNodeIdx).Transformed(aTrsf));
-                aTriRepIdx = getOrCreateTriangulationRep(theStorage, theRepDedup, aTriCopy);
-                aFaceMut.TriangulationRepIds.Append(BRepGraph_TriangulationRepId(aTriRepIdx));
-              }
-            }
+                int aTriRepIdx = aFaceDef.TriangulationRepId.Index;
+                if (!aPolyTriLoc.IsIdentity())
+                {
+                  const TopLoc_Location aRepLoc =
+                    anEdgeData.Shape.Location().Inverted() * aPolyTriLoc;
+                  if (!aRepLoc.IsIdentity())
+                  {
+                    occ::handle<Poly_Triangulation> aTriCopy = aTri->Copy();
+                    const gp_Trsf&                  aTrsf    = aRepLoc.Transformation();
+                    for (int aNodeIdx = 1; aNodeIdx <= aTriCopy->NbNodes(); ++aNodeIdx)
+                      aTriCopy->SetNode(aNodeIdx, aTriCopy->Node(aNodeIdx).Transformed(aTrsf));
+                    aTriRepIdx = getOrCreateTriangulationRep(theStorage, theRepDedup, aTriCopy);
+                    aFaceMut.TriangulationRepId = BRepGraph_TriangulationRepId(aTriRepIdx);
+                  }
+                }
 
-            const int aPolyOnTriRepIdx =
-              getOrCreatePolygonOnTriRep(theStorage, theRepDedup, aPolyOnTri, aTriRepIdx);
+                const int aPolyOnTriRepIdx =
+                  getOrCreatePolygonOnTriRep(theStorage, theRepDedup, aPolyOnTri, aTriRepIdx);
 
-            theStorage.ChangeCoEdge(BRepGraph_CoEdgeId(aFwdCoEdgeIdx))
-              .PolygonOnTriRepIds.Append(BRepGraph_PolygonOnTriRepId(aPolyOnTriRepIdx));
+                theStorage.ChangeCoEdge(BRepGraph_CoEdgeId(aFwdCoEdgeIdx)).PolygonOnTriRepId =
+                  BRepGraph_PolygonOnTriRepId(aPolyOnTriRepIdx);
 
-            // Seam polygon-on-triangulation.
-            if (hasSeamCoEdge)
-            {
-              occ::handle<Poly_PolygonOnTriangulation> aPolyOnTriRev =
-                BRep_Tool::PolygonOnTriangulation(aRevEdge, aTri, aPolyTriLoc);
-              if (!aPolyOnTriRev.IsNull() && aPolyOnTriRev != aPolyOnTri)
-              {
-                const int aSeamPolyRepIdx =
-                  getOrCreatePolygonOnTriRep(theStorage, theRepDedup, aPolyOnTriRev, aTriRepIdx);
+                // Seam polygon-on-triangulation.
+                if (hasSeamCoEdge)
+                {
+                  occ::handle<Poly_PolygonOnTriangulation> aPolyOnTriRev =
+                    BRep_Tool::PolygonOnTriangulation(aRevEdge, aTri, aPolyTriLoc);
+                  if (!aPolyOnTriRev.IsNull() && aPolyOnTriRev != aPolyOnTri)
+                  {
+                    const int aSeamPolyRepIdx = getOrCreatePolygonOnTriRep(theStorage,
+                                                                           theRepDedup,
+                                                                           aPolyOnTriRev,
+                                                                           aTriRepIdx);
 
-                theStorage.ChangeCoEdge(BRepGraph_CoEdgeId(aSeamCoEdgeIdx))
-                  .PolygonOnTriRepIds.Append(BRepGraph_PolygonOnTriRepId(aSeamPolyRepIdx));
+                    theStorage.ChangeCoEdge(BRepGraph_CoEdgeId(aSeamCoEdgeIdx)).PolygonOnTriRepId =
+                      BRepGraph_PolygonOnTriRepId(aSeamPolyRepIdx);
+                  }
+                }
               }
             }
           }
@@ -1322,7 +1290,7 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
         registerOrReuseVertex(theStorage, aDirVtx.Shape, aDirVtx.Point, aDirVtx.Tolerance);
       if (aVtxIdx >= 0)
       {
-        BRepGraphInc::VertexUsage aVR;
+        BRepGraphInc::VertexInstance aVR;
         aVR.DefId       = BRepGraph_VertexId(aVtxIdx);
         aVR.Orientation = aDirVtx.Orientation;
         aVR.Location    = aDirVtx.Shape.Location();
@@ -1353,11 +1321,11 @@ void traverseHierarchy(BRepGraphInc_Storage&              theStorage,
       if (findExistingNode(theStorage, aCompound, BRepGraph_NodeId::Kind::Compound))
         break;
 
-      BRepGraphInc::CompoundDef& aCompEnt = theStorage.AppendCompound();
+      theStorage.AppendCompound();
       int                        aCompIdx = theStorage.NbCompounds() - 1;
-      aCompEnt.Id = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Compound, aCompIdx);
-      theStorage.BindTShapeToNode(aCompound.TShape().get(), aCompEnt.Id);
-      theStorage.BindOriginal(aCompEnt.Id, aCompound);
+      const BRepGraph_CompoundId aCompId(aCompIdx);
+      theStorage.BindTShapeToNode(aCompound.TShape().get(), aCompId);
+      theStorage.BindOriginal(aCompId, aCompound);
 
       const TopLoc_Location aGlobalLoc = theParentGlobalLoc * aCompound.Location();
 
@@ -1382,7 +1350,7 @@ void traverseHierarchy(BRepGraphInc_Storage&              theStorage,
               aChildIdx = aChildNodeId->Index;
           }
 
-          BRepGraphInc::NodeUsage aRef;
+          BRepGraphInc::NodeInstance aRef;
           aRef.DefId       = BRepGraph_NodeId(aChildKind, aChildIdx);
           aRef.Orientation = aChild.Orientation();
           aRef.Location    = aChild.Location();
@@ -1398,11 +1366,11 @@ void traverseHierarchy(BRepGraphInc_Storage&              theStorage,
       if (findExistingNode(theStorage, aCompSolid, BRepGraph_NodeId::Kind::CompSolid))
         break;
 
-      BRepGraphInc::CompSolidDef& aCSolidEnt = theStorage.AppendCompSolid();
+      theStorage.AppendCompSolid();
       int                         aCSolidIdx = theStorage.NbCompSolids() - 1;
-      aCSolidEnt.Id = BRepGraph_NodeId(BRepGraph_NodeId::Kind::CompSolid, aCSolidIdx);
-      theStorage.BindTShapeToNode(aCompSolid.TShape().get(), aCSolidEnt.Id);
-      theStorage.BindOriginal(aCSolidEnt.Id, aCompSolid);
+      const BRepGraph_CompSolidId aCSolidId(aCSolidIdx);
+      theStorage.BindTShapeToNode(aCompSolid.TShape().get(), aCSolidId);
+      theStorage.BindOriginal(aCSolidId, aCompSolid);
 
       const TopLoc_Location aGlobalLoc = theParentGlobalLoc * aCompSolid.Location();
 
@@ -1417,7 +1385,7 @@ void traverseHierarchy(BRepGraphInc_Storage&              theStorage,
         if (aSolidNodeId == nullptr)
           continue;
 
-        BRepGraphInc::SolidUsage aRef;
+        BRepGraphInc::SolidInstance aRef;
         aRef.DefId       = BRepGraph_SolidId::FromNodeId(*aSolidNodeId);
         aRef.Orientation = aChildIt.Value().Orientation();
         aRef.Location    = aChildIt.Value().Location();
@@ -1432,11 +1400,11 @@ void traverseHierarchy(BRepGraphInc_Storage&              theStorage,
       if (findExistingNode(theStorage, aSolid, BRepGraph_NodeId::Kind::Solid))
         break;
 
-      BRepGraphInc::SolidDef& aSolidEnt = theStorage.AppendSolid();
+      theStorage.AppendSolid();
       int                     aSolidIdx = theStorage.NbSolids() - 1;
-      aSolidEnt.Id = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Solid, aSolidIdx);
-      theStorage.BindTShapeToNode(aSolid.TShape().get(), aSolidEnt.Id);
-      theStorage.BindOriginal(aSolidEnt.Id, aSolid);
+      const BRepGraph_SolidId aSolidId(aSolidIdx);
+      theStorage.BindTShapeToNode(aSolid.TShape().get(), aSolidId);
+      theStorage.BindOriginal(aSolidId, aSolid);
 
       const TopLoc_Location aGlobalLoc = theParentGlobalLoc * aSolid.Location();
 
@@ -1451,7 +1419,7 @@ void traverseHierarchy(BRepGraphInc_Storage&              theStorage,
           if (aShellNodeId == nullptr)
             continue;
 
-          BRepGraphInc::ShellUsage aRef;
+          BRepGraphInc::ShellInstance aRef;
           aRef.DefId       = BRepGraph_ShellId::FromNodeId(*aShellNodeId);
           aRef.Orientation = aChild.Orientation();
           aRef.Location    = aChild.Location();
@@ -1460,7 +1428,7 @@ void traverseHierarchy(BRepGraphInc_Storage&              theStorage,
         }
         else if (aChild.ShapeType() == TopAbs_EDGE || aChild.ShapeType() == TopAbs_VERTEX)
         {
-          BRepGraphInc::NodeUsage aCR;
+          BRepGraphInc::NodeInstance aCR;
           if (makeAuxChildRef(theStorage, aChild, aCR))
           {
             const BRepGraph_SolidId    aSolidId(aSolidIdx);
@@ -1478,12 +1446,12 @@ void traverseHierarchy(BRepGraphInc_Storage&              theStorage,
       if (findExistingNode(theStorage, aShell, BRepGraph_NodeId::Kind::Shell))
         break;
 
-      BRepGraphInc::ShellDef& aShellEnt = theStorage.AppendShell();
-      int                     aShellIdx = theStorage.NbShells() - 1;
-      aShellEnt.Id       = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Shell, aShellIdx);
-      aShellEnt.IsClosed = aShell.Closed();
-      theStorage.BindTShapeToNode(aShell.TShape().get(), aShellEnt.Id);
-      theStorage.BindOriginal(aShellEnt.Id, aShell);
+      const BRepGraph_ShellId aShellId  = theStorage.AppendShell();
+      const int               aShellIdx = aShellId.Index;
+      BRepGraphInc::ShellDef& aShellEnt = theStorage.ChangeShell(aShellId);
+      aShellEnt.IsClosed                = aShell.Closed();
+      theStorage.BindTShapeToNode(aShell.TShape().get(), aShellId);
+      theStorage.BindOriginal(aShellId, aShell);
 
       const TopLoc_Location aGlobalLoc = theParentGlobalLoc * aShell.Location();
 
@@ -1501,7 +1469,7 @@ void traverseHierarchy(BRepGraphInc_Storage&              theStorage,
         {
           traverseHierarchy(theStorage, theFaceData, theRepDedup, aChild, aGlobalLoc);
 
-          BRepGraphInc::NodeUsage aCR;
+          BRepGraphInc::NodeInstance aCR;
           if (makeAuxChildRef(theStorage, aChild, aCR))
           {
             const BRepGraph_ShellId    aShellId(aShellIdx);
@@ -1527,12 +1495,12 @@ void traverseHierarchy(BRepGraphInc_Storage&              theStorage,
       if (findExistingNode(theStorage, aWire, BRepGraph_NodeId::Kind::Wire))
         break;
 
-      BRepGraphInc::WireDef& aWireEnt = theStorage.AppendWire();
-      int                    aWireIdx = theStorage.NbWires() - 1;
-      aWireEnt.Id                     = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Wire, aWireIdx);
+      const BRepGraph_WireId aWireId  = theStorage.AppendWire();
+      const int              aWireIdx = aWireId.Index;
+      BRepGraphInc::WireDef& aWireEnt = theStorage.ChangeWire(aWireId);
       aWireEnt.IsClosed               = aWire.Closed();
-      theStorage.BindTShapeToNode(aWire.TShape().get(), aWireEnt.Id);
-      theStorage.BindOriginal(aWireEnt.Id, aWire);
+      theStorage.BindTShapeToNode(aWire.TShape().get(), aWireId);
+      theStorage.BindOriginal(aWireId, aWire);
 
       for (TopoDS_Iterator anEdgeIt(aWire, false, false); anEdgeIt.More(); anEdgeIt.Next())
       {
@@ -1548,15 +1516,15 @@ void traverseHierarchy(BRepGraphInc_Storage&              theStorage,
         if (anEdgeNodeId != nullptr && anEdgeNodeId->NodeKind == BRepGraph_NodeId::Kind::Edge)
         {
           // Create CoEdge for free wire (no face context).
-          BRepGraphInc::CoEdgeDef& aCoEdge    = theStorage.AppendCoEdge();
-          const int                aCoEdgeIdx = theStorage.NbCoEdges() - 1;
-          aCoEdge.Id                          = BRepGraph_CoEdgeId(aCoEdgeIdx);
+          const BRepGraph_CoEdgeId aCoEdgeId  = theStorage.AppendCoEdge();
+          const int                aCoEdgeIdx = aCoEdgeId.Index;
+          BRepGraphInc::CoEdgeDef& aCoEdge    = theStorage.ChangeCoEdge(aCoEdgeId);
           aCoEdge.EdgeDefId                   = BRepGraph_EdgeId::FromNodeId(*anEdgeNodeId);
           aCoEdge.Orientation                 = anEdge.Orientation();
           // FaceDefId left invalid for free wires.
           // Curve2d left null for free wires.
 
-          BRepGraphInc::CoEdgeUsage aCoEdgeRef;
+          BRepGraphInc::CoEdgeInstance aCoEdgeRef;
           aCoEdgeRef.DefId    = BRepGraph_CoEdgeId(aCoEdgeIdx);
           aCoEdgeRef.Location = anEdge.Location();
           const BRepGraph_WireId aWireId(aWireIdx);
@@ -1571,9 +1539,8 @@ void traverseHierarchy(BRepGraphInc_Storage&              theStorage,
       if (findExistingNode(theStorage, anEdge, BRepGraph_NodeId::Kind::Edge))
         break;
 
-      BRepGraphInc::EdgeDef& anEdgeEnt = theStorage.AppendEdge();
-      int                    anEdgeIdx = theStorage.NbEdges() - 1;
-      anEdgeEnt.Id                     = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, anEdgeIdx);
+      const BRepGraph_EdgeId anEdgeId  = theStorage.AppendEdge();
+      BRepGraphInc::EdgeDef& anEdgeEnt = theStorage.ChangeEdge(anEdgeId);
       anEdgeEnt.Tolerance              = BRep_Tool::Tolerance(anEdge);
       anEdgeEnt.IsDegenerate           = BRep_Tool::Degenerated(anEdge);
       anEdgeEnt.SameParameter          = BRep_Tool::SameParameter(anEdge);
@@ -1603,25 +1570,25 @@ void traverseHierarchy(BRepGraphInc_Storage&              theStorage,
       // Vertices may be null for infinite edges or degenerate topology.
       if (!aVFirst.IsNull())
       {
-        BRepGraphInc::VertexUsage aVR;
+        BRepGraphInc::VertexInstance aVR;
         aVR.DefId                  = BRepGraph_VertexId(registerOrReuseVertex(theStorage,
                                                              aVFirst,
                                                              rawVertexPoint(aVFirst),
                                                              BRep_Tool::Tolerance(aVFirst)));
         aVR.Orientation            = TopAbs_FORWARD;
         aVR.Location               = aVFirst.Location();
-        anEdgeEnt.StartVertexRefId = appendVertexRef(theStorage, anEdgeEnt.Id, aVR);
+        anEdgeEnt.StartVertexRefId = appendVertexRef(theStorage, anEdgeId, aVR);
       }
       if (!aVLast.IsNull())
       {
-        BRepGraphInc::VertexUsage aVR;
+        BRepGraphInc::VertexInstance aVR;
         aVR.DefId                = BRepGraph_VertexId(registerOrReuseVertex(theStorage,
                                                              aVLast,
                                                              rawVertexPoint(aVLast),
                                                              BRep_Tool::Tolerance(aVLast)));
         aVR.Orientation          = TopAbs_REVERSED;
         aVR.Location             = aVLast.Location();
-        anEdgeEnt.EndVertexRefId = appendVertexRef(theStorage, anEdgeEnt.Id, aVR);
+        anEdgeEnt.EndVertexRefId = appendVertexRef(theStorage, anEdgeId, aVR);
       }
 
       for (const ExtractedInternalVertex& anIntVtx : anInternalVerts)
@@ -1630,11 +1597,11 @@ void traverseHierarchy(BRepGraphInc_Storage&              theStorage,
           registerOrReuseVertex(theStorage, anIntVtx.Shape, anIntVtx.Point, anIntVtx.Tolerance);
         if (anIntVtxIdx >= 0)
         {
-          BRepGraphInc::VertexUsage aVR;
+          BRepGraphInc::VertexInstance aVR;
           aVR.DefId       = BRepGraph_VertexId(anIntVtxIdx);
           aVR.Orientation = anIntVtx.Orientation;
           aVR.Location    = anIntVtx.Shape.Location();
-          anEdgeEnt.InternalVertexRefIds.Append(appendVertexRef(theStorage, anEdgeEnt.Id, aVR));
+          anEdgeEnt.InternalVertexRefIds.Append(appendVertexRef(theStorage, anEdgeId, aVR));
         }
       }
 
@@ -1647,8 +1614,8 @@ void traverseHierarchy(BRepGraphInc_Storage&              theStorage,
           BRepGraph_Polygon3DRepId(getOrCreatePolygon3DRep(theStorage, theRepDedup, aPolygon3D));
       }
 
-      theStorage.BindTShapeToNode(anEdge.TShape().get(), anEdgeEnt.Id);
-      theStorage.BindOriginal(anEdgeEnt.Id, anEdge);
+      theStorage.BindTShapeToNode(anEdge.TShape().get(), anEdgeId);
+      theStorage.BindOriginal(anEdgeId, anEdge);
       break;
     }
 
@@ -1738,7 +1705,7 @@ void flattenForAppend(BRepGraphInc_Storage&                 theStorage,
 //=================================================================================================
 
 void populateRegularityLayer(BRepGraphInc_Storage&                         theStorage,
-                             BRepGraph_RegularityLayer*                    theRegularityLayer,
+                             BRepGraph_LayerRegularity*                    theRegularityLayer,
                              const bool                                    theExtractRegularities,
                              const int                                     theOldNbEdges,
                              const occ::handle<NCollection_BaseAllocator>& theTmpAlloc)
@@ -1756,8 +1723,7 @@ void populateRegularityLayer(BRepGraphInc_Storage&                         theSt
   const int                                     aNbFaces = theStorage.NbFaces();
   for (BRepGraph_FaceId aFaceId(0); aFaceId.IsValid(aNbFaces); ++aFaceId)
   {
-    const BRepGraphInc::FaceDef& aFace      = theStorage.Face(aFaceId);
-    const TopoDS_Shape*          anOrigFace = theStorage.FindOriginal(aFace.Id);
+    const TopoDS_Shape* anOrigFace = theStorage.FindOriginal(aFaceId);
     if (anOrigFace == nullptr || anOrigFace->IsNull())
       continue;
 
@@ -1771,8 +1737,7 @@ void populateRegularityLayer(BRepGraphInc_Storage&                         theSt
   const int aNbEdges = theStorage.NbEdges();
   for (BRepGraph_EdgeId anEdgeId(theOldNbEdges); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
   {
-    const BRepGraphInc::EdgeDef& anEdgeEnt   = theStorage.Edge(anEdgeId);
-    const TopoDS_Shape*          anOrigShape = theStorage.FindOriginal(anEdgeEnt.Id);
+    const TopoDS_Shape* anOrigShape = theStorage.FindOriginal(anEdgeId);
     if (anOrigShape == nullptr || anOrigShape->IsNull())
       continue;
 
@@ -1812,7 +1777,7 @@ void populateRegularityLayer(BRepGraphInc_Storage&                         theSt
 //=================================================================================================
 
 void populateParamLayer(BRepGraphInc_Storage&                         theStorage,
-                        BRepGraph_ParamLayer*                         theParamLayer,
+                        BRepGraph_LayerParam*                         theParamLayer,
                         const bool                                    theExtractVertexPointReps,
                         const int                                     theOldNbVertices,
                         const occ::handle<NCollection_BaseAllocator>& theTmpAlloc)
@@ -1829,8 +1794,7 @@ void populateParamLayer(BRepGraphInc_Storage&                         theStorage
   const int                                                aNbEdges = theStorage.NbEdges();
   for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
   {
-    const BRepGraphInc::EdgeDef& anEdgeEnt  = theStorage.Edge(anEdgeId);
-    const TopoDS_Shape*          anOrigEdge = theStorage.FindOriginal(anEdgeEnt.Id);
+    const TopoDS_Shape* anOrigEdge = theStorage.FindOriginal(anEdgeId);
     if (anOrigEdge == nullptr || anOrigEdge->IsNull())
       continue;
 
@@ -1840,7 +1804,7 @@ void populateParamLayer(BRepGraphInc_Storage&                         theStorage
     occ::handle<Geom_Curve> aRawCurve =
       BRep_Tool::Curve(TopoDS::Edge(*anOrigEdge), aLoc, aFirst, aLast);
     if (!aRawCurve.IsNull())
-      aCurveToEdgeDef.TryBind(aRawCurve.get(), anEdgeEnt.Id);
+      aCurveToEdgeDef.TryBind(aRawCurve.get(), anEdgeId);
   }
 
   NCollection_DataMap<const Geom_Surface*, BRepGraph_NodeId> aSurfToFaceDef(1, theTmpAlloc);
@@ -1848,16 +1812,15 @@ void populateParamLayer(BRepGraphInc_Storage&                         theStorage
   const int                                                  aNbFaces = theStorage.NbFaces();
   for (BRepGraph_FaceId aFaceId(0); aFaceId.IsValid(aNbFaces); ++aFaceId)
   {
-    const BRepGraphInc::FaceDef& aFaceEnt    = theStorage.Face(aFaceId);
-    const TopoDS_Shape*          anOrigFace  = theStorage.FindOriginal(aFaceEnt.Id);
-    const Geom_Surface*          aRawSurfPtr = nullptr;
+    const TopoDS_Shape* anOrigFace  = theStorage.FindOriginal(aFaceId);
+    const Geom_Surface* aRawSurfPtr = nullptr;
     if (anOrigFace != nullptr && !anOrigFace->IsNull())
     {
       TopLoc_Location           aLoc;
       occ::handle<Geom_Surface> aRawSurf = BRep_Tool::Surface(TopoDS::Face(*anOrigFace), aLoc);
       if (!aRawSurf.IsNull())
       {
-        aSurfToFaceDef.TryBind(aRawSurf.get(), aFaceEnt.Id);
+        aSurfToFaceDef.TryBind(aRawSurf.get(), aFaceId);
         aRawSurfPtr = aRawSurf.get();
       }
     }
@@ -1895,8 +1858,7 @@ void populateParamLayer(BRepGraphInc_Storage&                         theStorage
   const int aNbVertices = theStorage.NbVertices();
   for (BRepGraph_VertexId aVertexId(theOldNbVertices); aVertexId.IsValid(aNbVertices); ++aVertexId)
   {
-    const BRepGraphInc::VertexDef& aVtxDef   = theStorage.Vertex(aVertexId);
-    const TopoDS_Shape*            aVtxShape = theStorage.FindOriginal(aVtxDef.Id);
+    const TopoDS_Shape* aVtxShape = theStorage.FindOriginal(aVertexId);
     if (aVtxShape == nullptr || aVtxShape->IsNull())
       continue;
 
@@ -1962,8 +1924,8 @@ void populateParamLayer(BRepGraphInc_Storage&                         theStorage
 //=================================================================================================
 
 void populateOptionalLayers(BRepGraphInc_Storage&                         theStorage,
-                            BRepGraph_ParamLayer*                         theParamLayer,
-                            BRepGraph_RegularityLayer*                    theRegularityLayer,
+                            BRepGraph_LayerParam*                         theParamLayer,
+                            BRepGraph_LayerRegularity*                    theRegularityLayer,
                             const BRepGraphInc_Populate::Options&         theOptions,
                             const int                                     theOldNbEdges,
                             const int                                     theOldNbVertices,
@@ -1989,8 +1951,8 @@ void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage&      theStorage,
                                     const TopoDS_Shape&        theShape,
                                     const bool                 theParallel,
                                     const Options&             theOptions,
-                                    BRepGraph_ParamLayer*      theParamLayer,
-                                    BRepGraph_RegularityLayer* theRegularityLayer,
+                                    BRepGraph_LayerParam*      theParamLayer,
+                                    BRepGraph_LayerRegularity* theRegularityLayer,
                                     const occ::handle<NCollection_BaseAllocator>& theTmpAlloc)
 {
   theStorage.Clear();
@@ -2030,15 +1992,14 @@ void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage&      theStorage,
   const int aNbCompounds = theStorage.myCompounds.Nb();
   for (BRepGraph_CompoundId aCompoundId(0); aCompoundId.IsValid(aNbCompounds); ++aCompoundId)
   {
-    BRepGraphInc::CompoundDef& aComp     = theStorage.myCompounds.Change(aCompoundId.Index);
-    const TopoDS_Shape*        aCompOrig = theStorage.myOriginalShapes.Seek(aComp.Id);
+    const BRepGraph_NodeId aParentId(aCompoundId);
+    const TopoDS_Shape*    aCompOrig = theStorage.myOriginalShapes.Seek(aParentId);
     if (aCompOrig == nullptr)
       continue;
 
     int aRefOrd = 0;
     for (TopoDS_Iterator aChildIt(*aCompOrig, false, false); aChildIt.More(); aChildIt.Next())
     {
-      const BRepGraph_NodeId  aParentId    = aComp.Id;
       BRepGraphInc::ChildRef* aRef         = nullptr;
       int                     aCurrentOrd  = 0;
       const int               aNbChildRefs = theStorage.NbChildRefs();
@@ -2092,8 +2053,8 @@ void BRepGraphInc_Populate::AppendFlattened(
   const bool                                    theParallel,
   NCollection_Vector<BRepGraph_NodeId>&         theAppendedRoots,
   const Options&                                theOptions,
-  BRepGraph_ParamLayer*                         theParamLayer,
-  BRepGraph_RegularityLayer*                    theRegularityLayer,
+  BRepGraph_LayerParam*                         theParamLayer,
+  BRepGraph_LayerRegularity*                    theRegularityLayer,
   const occ::handle<NCollection_BaseAllocator>& theTmpAlloc)
 {
   if (theShape.IsNull())
@@ -2106,12 +2067,16 @@ void BRepGraphInc_Populate::AppendFlattened(
   const int aParallelWorkers = theParallel ? BRepGraph_ParallelPolicy::WorkerCount() : 1;
 
   // Snapshot entity counts before appending, for incremental updates.
-  const int anOldNbEdges    = theStorage.NbEdges();
-  const int anOldNbWires    = theStorage.NbWires();
-  const int anOldNbFaces    = theStorage.NbFaces();
-  const int anOldNbShells   = theStorage.NbShells();
-  const int anOldNbSolids   = theStorage.NbSolids();
-  const int anOldNbVertices = theStorage.NbVertices();
+  const int anOldNbEdges      = theStorage.NbEdges();
+  const int anOldNbWires      = theStorage.NbWires();
+  const int anOldNbFaces      = theStorage.NbFaces();
+  const int anOldNbShells     = theStorage.NbShells();
+  const int anOldNbSolids     = theStorage.NbSolids();
+  const int anOldNbCompounds  = theStorage.NbCompounds();
+  const int anOldNbCompSolids = theStorage.NbCompSolids();
+  const int anOldNbVertices   = theStorage.NbVertices();
+  const int anOldNbChildRefs  = theStorage.NbChildRefs();
+  const int anOldNbSolidRefs  = theStorage.NbSolidRefs();
 
   // Collect face contexts by flattening hierarchy.
   NCollection_Vector<FaceLocalData> aFaceData(256, aTmpAlloc);
@@ -2161,7 +2126,11 @@ void BRepGraphInc_Populate::AppendFlattened(
                                     anOldNbWires,
                                     anOldNbFaces,
                                     anOldNbShells,
-                                    anOldNbSolids);
+                                    anOldNbSolids,
+                                    anOldNbCompounds,
+                                    anOldNbCompSolids,
+                                    anOldNbChildRefs,
+                                    anOldNbSolidRefs);
 
   theStorage.myIsDone = true;
 }
@@ -2172,8 +2141,8 @@ void BRepGraphInc_Populate::Append(BRepGraphInc_Storage&                        
                                    const TopoDS_Shape&                           theShape,
                                    const bool                                    theParallel,
                                    const Options&                                theOptions,
-                                   BRepGraph_ParamLayer*                         theParamLayer,
-                                   BRepGraph_RegularityLayer*                    theRegularityLayer,
+                                   BRepGraph_LayerParam*                         theParamLayer,
+                                   BRepGraph_LayerRegularity*                    theRegularityLayer,
                                    const occ::handle<NCollection_BaseAllocator>& theTmpAlloc)
 {
   if (theShape.IsNull())
@@ -2184,13 +2153,16 @@ void BRepGraphInc_Populate::Append(BRepGraphInc_Storage&                        
   const int aParallelWorkers = theParallel ? BRepGraph_ParallelPolicy::WorkerCount() : 1;
 
   // Snapshot entity counts before appending, for incremental updates.
-  const int anOldNbEdges     = theStorage.NbEdges();
-  const int anOldNbWires     = theStorage.NbWires();
-  const int anOldNbFaces     = theStorage.NbFaces();
-  const int anOldNbShells    = theStorage.NbShells();
-  const int anOldNbSolids    = theStorage.NbSolids();
-  const int anOldNbVertices  = theStorage.NbVertices();
-  const int anOldNbCompounds = theStorage.NbCompounds();
+  const int anOldNbEdges      = theStorage.NbEdges();
+  const int anOldNbWires      = theStorage.NbWires();
+  const int anOldNbFaces      = theStorage.NbFaces();
+  const int anOldNbShells     = theStorage.NbShells();
+  const int anOldNbSolids     = theStorage.NbSolids();
+  const int anOldNbVertices   = theStorage.NbVertices();
+  const int anOldNbCompounds  = theStorage.NbCompounds();
+  const int anOldNbCompSolids = theStorage.NbCompSolids();
+  const int anOldNbChildRefs  = theStorage.NbChildRefs();
+  const int anOldNbSolidRefs  = theStorage.NbSolidRefs();
 
   // Phase 1 (sequential): Traverse the full hierarchy.
   // Existing shapes are deduplicated via findExistingNode; only new shapes are added.
@@ -2213,46 +2185,44 @@ void BRepGraphInc_Populate::Append(BRepGraphInc_Storage&                        
   registerFaceData(theStorage, aFaceData, aRepDedup);
 
   // Phase 3a: Fix compound ChildRef linkages in NEWLY APPENDED compounds only.
-  // Pre-existing compounds are not re-processed - Append assumes complete
-  // subgraph hierarchies with no cross-references to existing containers.
+  // Pre-existing compounds are not re-processed - Append assumes complete subgraph
+  // hierarchies with no cross-references to existing containers.
+  //
+  // Cost is O(total children across new compounds). Earlier versions rescanned every
+  // ChildRef in the storage for each child (O(children x total refs)); the new compound's
+  // own ChildRefIds vector is already in order, so we iterate it directly.
   const int aNbCompounds = theStorage.myCompounds.Nb();
   for (int aCompIdx = anOldNbCompounds; aCompIdx < aNbCompounds; ++aCompIdx)
   {
-    BRepGraphInc::CompoundDef& aComp     = theStorage.myCompounds.Change(aCompIdx);
-    const TopoDS_Shape*        aCompOrig = theStorage.myOriginalShapes.Seek(aComp.Id);
+    const BRepGraph_NodeId aCompoundNode = BRepGraph_CompoundId(aCompIdx);
+    const TopoDS_Shape*    aCompOrig     = theStorage.myOriginalShapes.Seek(aCompoundNode);
     if (aCompOrig == nullptr)
       continue;
+
+    const BRepGraphInc::CompoundDef& aCompDef = theStorage.Compound(BRepGraph_CompoundId(aCompIdx));
+    const int                        aNbOwnedRefs = aCompDef.ChildRefIds.Length();
 
     int aRefOrd = 0;
     for (TopoDS_Iterator aChildIt(*aCompOrig, false, false); aChildIt.More(); aChildIt.Next())
     {
-      const BRepGraph_NodeId  aParentId    = aComp.Id;
-      BRepGraphInc::ChildRef* aRef         = nullptr;
-      int                     aCurrentOrd  = 0;
-      const int               aNbChildRefs = theStorage.NbChildRefs();
-      for (BRepGraph_ChildRefId aChildRefId(0); aChildRefId.IsValid(aNbChildRefs); ++aChildRefId)
+      if (aRefOrd >= aNbOwnedRefs)
+        break;
+      const BRepGraph_ChildRefId aOwnedRefId = aCompDef.ChildRefIds.Value(aRefOrd);
+      BRepGraphInc::ChildRef&    aRef        = theStorage.ChangeChildRef(aOwnedRefId);
+
+      if (aRef.IsRemoved || aRef.ParentId != aCompoundNode)
       {
-        BRepGraphInc::ChildRef& aCandidate = theStorage.ChangeChildRef(aChildRefId);
-        if (aCandidate.ParentId != aParentId || aCandidate.IsRemoved)
-          continue;
-        if (aCurrentOrd == aRefOrd)
-        {
-          aRef = &aCandidate;
-          break;
-        }
-        ++aCurrentOrd;
+        ++aRefOrd;
+        continue;
       }
 
-      if (aRef == nullptr)
-        break;
-
-      if (!aRef->ChildDefId.IsValid())
+      if (!aRef.ChildDefId.IsValid())
       {
         const BRepGraph_NodeId* aNodeId =
           theStorage.myTShapeToNodeId.Seek(aChildIt.Value().TShape().get());
         if (aNodeId != nullptr
             && aNodeId->NodeKind == shapeTypeToNodeKind(aChildIt.Value().ShapeType()))
-          aRef->ChildDefId = *aNodeId;
+          aRef.ChildDefId = *aNodeId;
       }
       ++aRefOrd;
     }
@@ -2271,7 +2241,11 @@ void BRepGraphInc_Populate::Append(BRepGraphInc_Storage&                        
                                     anOldNbWires,
                                     anOldNbFaces,
                                     anOldNbShells,
-                                    anOldNbSolids);
+                                    anOldNbSolids,
+                                    anOldNbCompounds,
+                                    anOldNbCompSolids,
+                                    anOldNbChildRefs,
+                                    anOldNbSolidRefs);
 
   theStorage.myIsDone = true;
 }

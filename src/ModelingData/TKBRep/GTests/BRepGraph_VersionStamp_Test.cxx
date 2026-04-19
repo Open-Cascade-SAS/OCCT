@@ -12,10 +12,11 @@
 // commercial license or contractual agreement.
 
 #include <BRepGraph.hxx>
-#include <BRepGraph_BuilderView.hxx>
+#include <BRepGraph_EditorView.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_UIDsView.hxx>
 #include <BRepGraph_VersionStamp.hxx>
+#include <BRepGraph_Builder.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <Standard_GUID.hxx>
 
@@ -28,7 +29,7 @@ protected:
   {
     BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
     const TopoDS_Shape& aBox = aBoxMaker.Shape();
-    myGraph.Build(aBox);
+    BRepGraph_Builder::Perform(myGraph, aBox);
     ASSERT_TRUE(myGraph.IsDone());
   }
 
@@ -65,36 +66,36 @@ TEST_F(BRepGraph_VersionStampTest, StampOf_InvalidNode_ReturnsInvalid)
 
 TEST_F(BRepGraph_VersionStampTest, IsStale_UnmutatedNode_ReturnsFalse)
 {
-  const BRepGraph_VersionStamp aStamp = myGraph.UIDs().StampOf(BRepGraph_FaceId(0));
+  const BRepGraph_VersionStamp aStamp = myGraph.UIDs().StampOf(BRepGraph_FaceId::Start());
   EXPECT_FALSE(myGraph.UIDs().IsStale(aStamp));
 }
 
 TEST_F(BRepGraph_VersionStampTest, IsStale_MutatedNode_ReturnsTrue)
 {
-  const BRepGraph_VersionStamp aStamp = myGraph.UIDs().StampOf(BRepGraph_FaceId(0));
+  const BRepGraph_VersionStamp aStamp = myGraph.UIDs().StampOf(BRepGraph_FaceId::Start());
 
   // Mutate the face.
-  myGraph.Builder().MutFace(BRepGraph_FaceId(0))->NaturalRestriction = true;
+  myGraph.Editor().Faces().Mut(BRepGraph_FaceId::Start())->NaturalRestriction = true;
 
   EXPECT_TRUE(myGraph.UIDs().IsStale(aStamp));
 }
 
 TEST_F(BRepGraph_VersionStampTest, IsStale_RemovedNode_ReturnsTrue)
 {
-  const BRepGraph_VersionStamp aStamp = myGraph.UIDs().StampOf(BRepGraph_FaceId(0));
+  const BRepGraph_VersionStamp aStamp = myGraph.UIDs().StampOf(BRepGraph_FaceId::Start());
 
-  myGraph.Builder().RemoveNode(BRepGraph_FaceId(0));
+  myGraph.Editor().Gen().RemoveNode(BRepGraph_FaceId::Start());
 
   EXPECT_TRUE(myGraph.UIDs().IsStale(aStamp));
 }
 
 TEST_F(BRepGraph_VersionStampTest, IsStale_DifferentGeneration_ReturnsTrue)
 {
-  const BRepGraph_VersionStamp aStamp = myGraph.UIDs().StampOf(BRepGraph_FaceId(0));
+  const BRepGraph_VersionStamp aStamp = myGraph.UIDs().StampOf(BRepGraph_FaceId::Start());
 
   // Rebuild the graph - generation changes.
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
-  myGraph.Build(aBoxMaker.Shape());
+  BRepGraph_Builder::Perform(myGraph, aBoxMaker.Shape());
   ASSERT_TRUE(myGraph.IsDone());
 
   EXPECT_TRUE(myGraph.UIDs().IsStale(aStamp));
@@ -102,12 +103,12 @@ TEST_F(BRepGraph_VersionStampTest, IsStale_DifferentGeneration_ReturnsTrue)
 
 TEST_F(BRepGraph_VersionStampTest, IsStale_DeferredMode_TracksCorrectly)
 {
-  const BRepGraph_VersionStamp aStamp = myGraph.UIDs().StampOf(BRepGraph_EdgeId(0));
+  const BRepGraph_VersionStamp aStamp = myGraph.UIDs().StampOf(BRepGraph_EdgeId::Start());
 
   // Mutate in deferred mode.
-  myGraph.Builder().BeginDeferredInvalidation();
-  myGraph.Builder().MutEdge(BRepGraph_EdgeId(0))->Tolerance = 0.5;
-  myGraph.Builder().EndDeferredInvalidation();
+  myGraph.Editor().BeginDeferredInvalidation();
+  myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start())->Tolerance = 0.5;
+  myGraph.Editor().EndDeferredInvalidation();
 
   EXPECT_TRUE(myGraph.UIDs().IsStale(aStamp));
 }
@@ -122,32 +123,32 @@ TEST_F(BRepGraph_VersionStampTest, IsStale_InvalidStamp_ReturnsTrue)
 
 TEST_F(BRepGraph_VersionStampTest, StampIdentity_SameNode_Equal)
 {
-  const BRepGraph_VersionStamp aStamp1 = myGraph.UIDs().StampOf(BRepGraph_FaceId(0));
-  const BRepGraph_VersionStamp aStamp2 = myGraph.UIDs().StampOf(BRepGraph_FaceId(0));
+  const BRepGraph_VersionStamp aStamp1 = myGraph.UIDs().StampOf(BRepGraph_FaceId::Start());
+  const BRepGraph_VersionStamp aStamp2 = myGraph.UIDs().StampOf(BRepGraph_FaceId::Start());
   EXPECT_EQ(aStamp1, aStamp2);
 }
 
 TEST_F(BRepGraph_VersionStampTest, StampIdentity_DifferentNodes_NotEqual)
 {
-  const BRepGraph_VersionStamp aStamp1 = myGraph.UIDs().StampOf(BRepGraph_FaceId(0));
+  const BRepGraph_VersionStamp aStamp1 = myGraph.UIDs().StampOf(BRepGraph_FaceId::Start());
   const BRepGraph_VersionStamp aStamp2 = myGraph.UIDs().StampOf(BRepGraph_FaceId(1));
   EXPECT_NE(aStamp1, aStamp2);
 }
 
 TEST_F(BRepGraph_VersionStampTest, IsSameNode_SameVersion_ReturnsTrue)
 {
-  const BRepGraph_VersionStamp aStamp1 = myGraph.UIDs().StampOf(BRepGraph_FaceId(0));
-  const BRepGraph_VersionStamp aStamp2 = myGraph.UIDs().StampOf(BRepGraph_FaceId(0));
+  const BRepGraph_VersionStamp aStamp1 = myGraph.UIDs().StampOf(BRepGraph_FaceId::Start());
+  const BRepGraph_VersionStamp aStamp2 = myGraph.UIDs().StampOf(BRepGraph_FaceId::Start());
   EXPECT_TRUE(aStamp1.IsSameNode(aStamp2));
 }
 
 TEST_F(BRepGraph_VersionStampTest, IsSameNode_DifferentVersion_StillSameNode)
 {
-  const BRepGraph_VersionStamp aStampBefore = myGraph.UIDs().StampOf(BRepGraph_FaceId(0));
+  const BRepGraph_VersionStamp aStampBefore = myGraph.UIDs().StampOf(BRepGraph_FaceId::Start());
 
-  myGraph.Builder().MutFace(BRepGraph_FaceId(0))->NaturalRestriction = true;
+  myGraph.Editor().Faces().Mut(BRepGraph_FaceId::Start())->NaturalRestriction = true;
 
-  const BRepGraph_VersionStamp aStampAfter = myGraph.UIDs().StampOf(BRepGraph_FaceId(0));
+  const BRepGraph_VersionStamp aStampAfter = myGraph.UIDs().StampOf(BRepGraph_FaceId::Start());
 
   // Full equality fails (different MutationGen).
   EXPECT_NE(aStampBefore, aStampAfter);
@@ -160,7 +161,7 @@ TEST_F(BRepGraph_VersionStampTest, StampOf_AssemblyNodes_WorksForProductsAndOccu
   // Box graph auto-creates a root Product.
   ASSERT_GT(myGraph.Topo().Products().Nb(), 0);
 
-  const BRepGraph_VersionStamp aProdStamp = myGraph.UIDs().StampOf(BRepGraph_ProductId(0));
+  const BRepGraph_VersionStamp aProdStamp = myGraph.UIDs().StampOf(BRepGraph_ProductId::Start());
   EXPECT_TRUE(aProdStamp.IsValid());
   EXPECT_FALSE(myGraph.UIDs().IsStale(aProdStamp));
 }
@@ -180,7 +181,7 @@ TEST_F(BRepGraph_VersionStampTest, GraphGUID_Rebuild_Changes)
   const Standard_GUID aGUID1 = myGraph.UIDs().GraphGUID();
 
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
-  myGraph.Build(aBoxMaker.Shape());
+  BRepGraph_Builder::Perform(myGraph, aBoxMaker.Shape());
   ASSERT_TRUE(myGraph.IsDone());
 
   const Standard_GUID aGUID2 = myGraph.UIDs().GraphGUID();
@@ -192,7 +193,7 @@ TEST_F(BRepGraph_VersionStampTest, GraphGUID_Rebuild_Changes)
 
 TEST_F(BRepGraph_VersionStampTest, ToGUID_Deterministic_SameInputSameOutput)
 {
-  const BRepGraph_VersionStamp aStamp = myGraph.UIDs().StampOf(BRepGraph_FaceId(0));
+  const BRepGraph_VersionStamp aStamp = myGraph.UIDs().StampOf(BRepGraph_FaceId::Start());
   const Standard_GUID&         aGraph = myGraph.UIDs().GraphGUID();
   const Standard_GUID          aGUID1 = aStamp.ToGUID(aGraph);
   const Standard_GUID          aGUID2 = aStamp.ToGUID(aGraph);
@@ -201,13 +202,13 @@ TEST_F(BRepGraph_VersionStampTest, ToGUID_Deterministic_SameInputSameOutput)
 
 TEST_F(BRepGraph_VersionStampTest, ToGUID_DifferentMutationGen_DifferentGUID)
 {
-  const BRepGraph_VersionStamp aStampBefore = myGraph.UIDs().StampOf(BRepGraph_FaceId(0));
+  const BRepGraph_VersionStamp aStampBefore = myGraph.UIDs().StampOf(BRepGraph_FaceId::Start());
   const Standard_GUID&         aGraph       = myGraph.UIDs().GraphGUID();
   const Standard_GUID          aGUIDBefore  = aStampBefore.ToGUID(aGraph);
 
-  myGraph.Builder().MutFace(BRepGraph_FaceId(0))->NaturalRestriction = true;
+  myGraph.Editor().Faces().Mut(BRepGraph_FaceId::Start())->NaturalRestriction = true;
 
-  const BRepGraph_VersionStamp aStampAfter = myGraph.UIDs().StampOf(BRepGraph_FaceId(0));
+  const BRepGraph_VersionStamp aStampAfter = myGraph.UIDs().StampOf(BRepGraph_FaceId::Start());
   const Standard_GUID          aGUIDAfter  = aStampAfter.ToGUID(aGraph);
 
   EXPECT_NE(aGUIDBefore, aGUIDAfter);
@@ -215,7 +216,7 @@ TEST_F(BRepGraph_VersionStampTest, ToGUID_DifferentMutationGen_DifferentGUID)
 
 TEST_F(BRepGraph_VersionStampTest, ToGUID_DifferentGraphGUID_DifferentGUID)
 {
-  const BRepGraph_VersionStamp aStamp = myGraph.UIDs().StampOf(BRepGraph_FaceId(0));
+  const BRepGraph_VersionStamp aStamp = myGraph.UIDs().StampOf(BRepGraph_FaceId::Start());
 
   const Standard_GUID aGraphA("a1b2c3d4-e5f6-7890-abcd-ef0123456789");
   const Standard_GUID aGraphB("11223344-5566-7788-99aa-bbccddeeff00");
@@ -230,7 +231,7 @@ TEST_F(BRepGraph_VersionStampTest, ToGUID_DifferentNodes_DifferentGUID)
 {
   const Standard_GUID& aGraph = myGraph.UIDs().GraphGUID();
 
-  const BRepGraph_VersionStamp aStamp0 = myGraph.UIDs().StampOf(BRepGraph_FaceId(0));
+  const BRepGraph_VersionStamp aStamp0 = myGraph.UIDs().StampOf(BRepGraph_FaceId::Start());
   const BRepGraph_VersionStamp aStamp1 = myGraph.UIDs().StampOf(BRepGraph_FaceId(1));
 
   EXPECT_NE(aStamp0.ToGUID(aGraph), aStamp1.ToGUID(aGraph));

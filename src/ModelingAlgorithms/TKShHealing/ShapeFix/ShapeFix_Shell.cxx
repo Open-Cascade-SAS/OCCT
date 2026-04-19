@@ -354,7 +354,7 @@ static bool GetShells(
   EdgeFacesMap aEdgeFaces;
   aEdgeFaces.reserve(aNumberOfEdges);
 
-  for (int aFaceInd = 1; aFaceInd <= aFaceEdges.Size(); ++aFaceInd)
+  for (int aFaceInd = 1; aFaceInd <= aFaceEdges.Length(); ++aFaceInd)
   {
     const TopoDS_Face&                     aFace           = aFaceEdges.FindKey(aFaceInd);
     const NCollection_Array1<TopoDS_Edge>& aFaceEdgesArray = aFaceEdges.FindFromIndex(aFaceInd);

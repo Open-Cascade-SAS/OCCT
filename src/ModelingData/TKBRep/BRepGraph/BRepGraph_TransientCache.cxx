@@ -188,7 +188,7 @@ const BRepGraph_TransientCache::CacheSlot* BRepGraph_TransientCache::seekSlot(
                        "BRepGraph_TransientCache: NodeKind out of range");
   const NCollection_Vector<CacheSlot>& aVec =
     myKinds.Value(theKindSlot).myNodeKinds[aKindIdx].mySlots;
-  if (theNode.Index >= aVec.Length())
+  if (!theNode.IsValidIn(aVec))
   {
     return nullptr;
   }

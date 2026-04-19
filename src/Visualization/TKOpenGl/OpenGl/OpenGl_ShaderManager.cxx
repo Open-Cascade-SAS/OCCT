@@ -430,7 +430,7 @@ void OpenGl_ShaderManager::pushLightSourceState(
     return;
   }
 
-  if (myLightTypeArray.Size() < aNbLightsMax)
+  if (myLightTypeArray.Length() < aNbLightsMax)
   {
     myLightTypeArray.Resize(0, aNbLightsMax - 1, false);
     myLightParamsArray.Resize(0, aNbLightsMax - 1, false);
@@ -581,7 +581,7 @@ void OpenGl_ShaderManager::pushLightSourceState(
   if (const OpenGl_ShaderUniformLocation aShadowMatLoc =
         theProgram->GetStateLocation(OpenGl_OCC_LIGHT_SHADOWMAP_MATRICES))
   {
-    if (myShadowMatArray.Size() < theProgram->NbShadowMaps())
+    if (myShadowMatArray.Length() < theProgram->NbShadowMaps())
     {
       myShadowMatArray.Resize(0, theProgram->NbShadowMaps() - 1, false);
     }
@@ -593,7 +593,7 @@ void OpenGl_ShaderManager::pushLightSourceState(
                             / (float)myLightSourceState.ShadowMaps()->First()->Texture()->SizeX(),
                           myLightSourceState.ShadowMaps()->First()->ShadowMapBias());
       const int aNbShadows =
-        std::min(theProgram->NbShadowMaps(), myLightSourceState.ShadowMaps()->Size());
+        std::min(theProgram->NbShadowMaps(), myLightSourceState.ShadowMaps()->Length());
       for (int aShadowIter = 0; aShadowIter < aNbShadows; ++aShadowIter)
       {
         const occ::handle<OpenGl_ShadowMap>& aShadow =
@@ -769,7 +769,7 @@ void OpenGl_ShaderManager::pushClippingState(
     }
 
     const int aNbMaxPlanes = myContext->MaxClipPlanes();
-    if (myClipPlaneArrayFfp.Size() < aNbMaxPlanes)
+    if (myClipPlaneArrayFfp.Length() < aNbMaxPlanes)
     {
       myClipPlaneArrayFfp.Resize(0, aNbMaxPlanes - 1, false);
     }
@@ -852,7 +852,7 @@ void OpenGl_ShaderManager::pushClippingState(
     return;
   }
 
-  if (myClipPlaneArray.Size() < aNbClipPlanesMax)
+  if (myClipPlaneArray.Length() < aNbClipPlanesMax)
   {
     myClipPlaneArray.Resize(0, aNbClipPlanesMax - 1, false);
     myClipChainArray.Resize(0, aNbClipPlanesMax - 1, false);

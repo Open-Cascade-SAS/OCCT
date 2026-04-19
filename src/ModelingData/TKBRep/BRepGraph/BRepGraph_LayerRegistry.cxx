@@ -26,12 +26,19 @@ int BRepGraph_LayerRegistry::RegisterLayer(const occ::handle<BRepGraph_Layer>& t
   const int*           aSlot = myGuidToSlot.Seek(aGUID);
   if (aSlot != nullptr)
   {
+    const occ::handle<BRepGraph_Layer>& aPrev = myLayers.Value(*aSlot);
+    if (!aPrev.IsNull() && aPrev.get() != theLayer.get())
+    {
+      aPrev->setOwningGraph(nullptr);
+    }
+    theLayer->setOwningGraph(myOwningGraph);
     myLayers.ChangeValue(*aSlot) = theLayer;
     recomputeSubscribedKindsMask();
     return *aSlot;
   }
 
   const int aNewSlot = myLayers.Length();
+  theLayer->setOwningGraph(myOwningGraph);
   myLayers.Append(theLayer);
   myGuidToSlot.Bind(aGUID, aNewSlot);
   mySubscribedKindsMask |= theLayer->SubscribedKinds();
@@ -47,8 +54,9 @@ void BRepGraph_LayerRegistry::UnregisterLayer(const Standard_GUID& theGUID)
   if (aSlotPtr == nullptr)
     return;
 
-  const int aSlot     = *aSlotPtr;
-  const int aLastSlot = myLayers.Length() - 1;
+  const int                          aSlot     = *aSlotPtr;
+  const int                          aLastSlot = myLayers.Length() - 1;
+  const occ::handle<BRepGraph_Layer> aRemoved  = myLayers.Value(aSlot);
   if (aSlot != aLastSlot)
   {
     const occ::handle<BRepGraph_Layer>& aLastLayer = myLayers.Value(aLastSlot);
@@ -59,6 +67,22 @@ void BRepGraph_LayerRegistry::UnregisterLayer(const Standard_GUID& theGUID)
   myLayers.EraseLast();
   myGuidToSlot.UnBind(theGUID);
   recomputeSubscribedKindsMask();
+  if (!aRemoved.IsNull())
+  {
+    aRemoved->setOwningGraph(nullptr);
+  }
+}
+
+//=================================================================================================
+
+void BRepGraph_LayerRegistry::SetOwningGraph(BRepGraph* theGraph) noexcept
+{
+  myOwningGraph = theGraph;
+  for (const occ::handle<BRepGraph_Layer>& aLayer : myLayers)
+  {
+    if (!aLayer.IsNull())
+      aLayer->setOwningGraph(theGraph);
+  }
 }
 
 //=================================================================================================

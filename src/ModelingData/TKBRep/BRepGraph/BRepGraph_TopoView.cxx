@@ -46,14 +46,14 @@ NCollection_Vector<BRepGraph_EdgeId> collectFaceEdges(
   if (!theFace.IsValid(theGraph.Topo().Faces().Nb()))
     return aResult;
 
-  NCollection_PackedMap<int> anEdgeSet;
+  NCollection_Map<BRepGraph_EdgeId> anEdgeSet;
   for (BRepGraph_DefsWireOfFace aWireIt(theGraph, theFace); aWireIt.More(); aWireIt.Next())
   {
     for (BRepGraph_DefsEdgeOfWire anEdgeIt(theGraph, aWireIt.CurrentId()); anEdgeIt.More();
          anEdgeIt.Next())
     {
       const BRepGraph_EdgeId anEdgeId = anEdgeIt.CurrentId();
-      if (anEdgeSet.Add(anEdgeId.Index))
+      if (anEdgeSet.Add(anEdgeId))
       {
         aResult.Append(anEdgeId);
       }
@@ -147,7 +147,7 @@ BRepGraph_TriangulationRepId BRepGraph::TopoView::FaceOps::ActiveTriangulationRe
     return BRepGraph_TriangulationRepId();
   }
 
-  const BRepGraph_TriangulationRepId aRepId = aStorage.Face(theFace).ActiveTriangulationRepId();
+  const BRepGraph_TriangulationRepId aRepId = aStorage.Face(theFace).TriangulationRepId;
   if (!aRepId.IsValid(aStorage.NbTriangulations()) || aStorage.TriangulationRep(aRepId).IsRemoved)
   {
     return BRepGraph_TriangulationRepId();
@@ -204,17 +204,17 @@ NCollection_Vector<BRepGraph_EdgeId> BRepGraph::TopoView::FaceOps::SharedEdges(
     collectFaceEdges(*myGraph, theFaceA, theAllocator);
   const NCollection_Vector<BRepGraph_EdgeId> aFaceBEdges =
     collectFaceEdges(*myGraph, theFaceB, theAllocator);
-  NCollection_PackedMap<int> aFaceAEdgeSet;
-  NCollection_PackedMap<int> anAddedEdges;
+  NCollection_Map<BRepGraph_EdgeId> aFaceAEdgeSet;
+  NCollection_Map<BRepGraph_EdgeId> anAddedEdges;
 
   for (const BRepGraph_EdgeId& anEdgeId : aFaceAEdges)
   {
-    aFaceAEdgeSet.Add(anEdgeId.Index);
+    aFaceAEdgeSet.Add(anEdgeId);
   }
 
   for (const BRepGraph_EdgeId& anEdgeId : aFaceBEdges)
   {
-    if (aFaceAEdgeSet.Contains(anEdgeId.Index) && anAddedEdges.Add(anEdgeId.Index))
+    if (aFaceAEdgeSet.Contains(anEdgeId) && anAddedEdges.Add(anEdgeId))
     {
       aResult.Append(anEdgeId);
     }
@@ -230,7 +230,7 @@ NCollection_Vector<BRepGraph_FaceId> BRepGraph::TopoView::FaceOps::Adjacent(
 {
   NCollection_Vector<BRepGraph_FaceId> aResult(THE_TOPOVIEW_FACE_ADJACENCY_BLOCK_SIZE,
                                                theAllocator);
-  NCollection_PackedMap<int>           aFaceSet;
+  NCollection_Map<BRepGraph_FaceId>    aFaceSet;
   const BRepGraphInc_Storage&          aStorage = myGraph->myData->myIncStorage;
   if (!theFace.IsValid(aStorage.NbFaces()))
   {
@@ -261,7 +261,7 @@ NCollection_Vector<BRepGraph_FaceId> BRepGraph::TopoView::FaceOps::Adjacent(
         continue;
       }
 
-      if (aFaceSet.Add(anAdjacentFaceId.Index))
+      if (aFaceSet.Add(anAdjacentFaceId))
       {
         aResult.Append(anAdjacentFaceId);
       }
@@ -379,19 +379,19 @@ NCollection_Vector<BRepGraph_EdgeId> BRepGraph::TopoView::EdgeOps::Adjacent(
 
   NCollection_Vector<BRepGraph_VertexId> aVertices(THE_TOPOVIEW_EDGE_VERTEX_BLOCK_SIZE,
                                                    theAllocator);
-  NCollection_PackedMap<int>             aSeenVertices;
+  NCollection_Map<BRepGraph_VertexId>    aSeenVertices;
   for (BRepGraph_DefsVertexOfEdge aVertexIt(*myGraph, theEdge); aVertexIt.More(); aVertexIt.Next())
   {
     const BRepGraph_VertexId aVertexId = aVertexIt.CurrentId();
-    if (aSeenVertices.Add(aVertexId.Index))
+    if (aSeenVertices.Add(aVertexId))
     {
       aVertices.Append(aVertexId);
     }
   }
 
   // Find adjacent edges via shared vertices.
-  const BRepGraphInc_ReverseIndex& aRevIdx = aStorage.ReverseIndex();
-  NCollection_PackedMap<int>       anEdgeSet;
+  const BRepGraphInc_ReverseIndex&  aRevIdx = aStorage.ReverseIndex();
+  NCollection_Map<BRepGraph_EdgeId> anEdgeSet;
   for (const BRepGraph_VertexId& aVertexId : aVertices)
   {
     const NCollection_Vector<BRepGraph_EdgeId>* anEdges = aRevIdx.EdgesOfVertex(aVertexId);
@@ -413,7 +413,7 @@ NCollection_Vector<BRepGraph_EdgeId> BRepGraph::TopoView::EdgeOps::Adjacent(
         continue;
       }
 
-      if (anEdgeSet.Add(anAdjacentEdgeId.Index))
+      if (anEdgeSet.Add(anAdjacentEdgeId))
       {
         aResult.Append(anAdjacentEdgeId);
       }
@@ -922,49 +922,34 @@ BRepGraph_NodeId BRepGraph::TopoView::ProductOps::ShapeRoot(
     return BRepGraph_NodeId();
   }
 
-  const BRepGraph_NodeId aShapeRoot = aStorage.Product(theProduct).ShapeRootId;
-  if (!aShapeRoot.IsValid())
+  const BRepGraphInc::ProductDef& aProductDef = aStorage.Product(theProduct);
+  if (aProductDef.IsRemoved)
   {
     return BRepGraph_NodeId();
   }
 
-  const BRepGraphInc::BaseDef* aRoot = myGraph->Topo().Gen().TopoEntity(aShapeRoot);
-  if (aRoot == nullptr || aRoot->IsRemoved)
+  // Scan occurrences to find the first with a topology ChildDefId.
+  for (int i = 0; i < aProductDef.OccurrenceRefIds.Length(); ++i)
   {
-    return BRepGraph_NodeId();
-  }
-  return aShapeRoot;
-}
+    const BRepGraph_OccurrenceRefId    aRefId = aProductDef.OccurrenceRefIds.Value(i);
+    const BRepGraphInc::OccurrenceRef& aRef   = aStorage.OccurrenceRef(aRefId);
+    if (aRef.IsRemoved)
+      continue;
+    const BRepGraphInc::OccurrenceDef& anOccDef = aStorage.Occurrence(aRef.OccurrenceDefId);
+    if (anOccDef.IsRemoved)
+      continue;
+    if (!anOccDef.ChildDefId.IsValid()
+        || BRepGraph_NodeId::IsAssemblyKind(anOccDef.ChildDefId.NodeKind))
+      continue;
 
-//=================================================================================================
-
-NCollection_Vector<BRepGraph_ProductId> BRepGraph::TopoView::ProductOps::RootProducts(
-  const occ::handle<NCollection_BaseAllocator>& theAllocator) const
-{
-  constexpr int                           THE_ROOT_PRODUCTS_BLOCK_SIZE = 4;
-  NCollection_Vector<BRepGraph_ProductId> aResult(THE_ROOT_PRODUCTS_BLOCK_SIZE, theAllocator);
-
-  NCollection_Map<int> aReferencedProducts(1, theAllocator);
-  for (BRepGraph_OccurrenceIterator anOccIt(*myGraph); anOccIt.More(); anOccIt.Next())
-  {
-    const BRepGraphInc::OccurrenceDef& anOcc = anOccIt.Current();
-    if (anOcc.ProductDefId.IsValid())
+    const BRepGraphInc::BaseDef* aRoot = myGraph->Topo().Gen().TopoEntity(anOccDef.ChildDefId);
+    if (aRoot != nullptr && !aRoot->IsRemoved)
     {
-      aReferencedProducts.Add(anOcc.ProductDefId.Index);
+      return anOccDef.ChildDefId;
     }
   }
-
-  for (BRepGraph_ProductIterator aProdIt(*myGraph); aProdIt.More(); aProdIt.Next())
-  {
-    if (!aReferencedProducts.Contains(aProdIt.CurrentId().Index))
-    {
-      aResult.Append(aProdIt.CurrentId());
-    }
-  }
-  return aResult;
+  return BRepGraph_NodeId();
 }
-
-//=================================================================================================
 
 bool BRepGraph::TopoView::ProductOps::IsAssembly(const BRepGraph_ProductId theProduct) const
 {
@@ -975,7 +960,27 @@ bool BRepGraph::TopoView::ProductOps::IsAssembly(const BRepGraph_ProductId thePr
   }
 
   const BRepGraphInc::ProductDef& aProductDef = aStorage.Product(theProduct);
-  return !aProductDef.IsRemoved && !aProductDef.ShapeRootId.IsValid();
+  if (aProductDef.IsRemoved)
+  {
+    return false;
+  }
+
+  // Assembly if any active occurrence references a product child.
+  for (int i = 0; i < aProductDef.OccurrenceRefIds.Length(); ++i)
+  {
+    const BRepGraph_OccurrenceRefId    aRefId = aProductDef.OccurrenceRefIds.Value(i);
+    const BRepGraphInc::OccurrenceRef& aRef   = aStorage.OccurrenceRef(aRefId);
+    if (aRef.IsRemoved)
+      continue;
+    const BRepGraphInc::OccurrenceDef& anOccDef = aStorage.Occurrence(aRef.OccurrenceDefId);
+    if (anOccDef.IsRemoved)
+      continue;
+    if (anOccDef.ChildDefId.NodeKind == BRepGraph_NodeId::Kind::Product)
+    {
+      return true;
+    }
+  }
+  return false;
 }
 
 //=================================================================================================
@@ -989,7 +994,28 @@ bool BRepGraph::TopoView::ProductOps::IsPart(const BRepGraph_ProductId theProduc
   }
 
   const BRepGraphInc::ProductDef& aProductDef = aStorage.Product(theProduct);
-  return !aProductDef.IsRemoved && aProductDef.ShapeRootId.IsValid();
+  if (aProductDef.IsRemoved)
+  {
+    return false;
+  }
+
+  // Part if any active occurrence references a topology child.
+  for (int i = 0; i < aProductDef.OccurrenceRefIds.Length(); ++i)
+  {
+    const BRepGraph_OccurrenceRefId    aRefId = aProductDef.OccurrenceRefIds.Value(i);
+    const BRepGraphInc::OccurrenceRef& aRef   = aStorage.OccurrenceRef(aRefId);
+    if (aRef.IsRemoved)
+      continue;
+    const BRepGraphInc::OccurrenceDef& anOccDef = aStorage.Occurrence(aRef.OccurrenceDefId);
+    if (anOccDef.IsRemoved)
+      continue;
+    if (anOccDef.ChildDefId.IsValid()
+        && !BRepGraph_NodeId::IsAssemblyKind(anOccDef.ChildDefId.NodeKind))
+    {
+      return true;
+    }
+  }
+  return false;
 }
 
 //=================================================================================================
@@ -1008,7 +1034,24 @@ BRepGraph_NodeId BRepGraph::TopoView::ProductOps::ShapeRootNode(
   {
     return BRepGraph_NodeId();
   }
-  return aProductDef.ShapeRootId;
+
+  // Find the first occurrence with a topology ChildDefId.
+  for (int i = 0; i < aProductDef.OccurrenceRefIds.Length(); ++i)
+  {
+    const BRepGraph_OccurrenceRefId    aRefId = aProductDef.OccurrenceRefIds.Value(i);
+    const BRepGraphInc::OccurrenceRef& aRef   = aStorage.OccurrenceRef(aRefId);
+    if (aRef.IsRemoved)
+      continue;
+    const BRepGraphInc::OccurrenceDef& anOccDef = aStorage.Occurrence(aRef.OccurrenceDefId);
+    if (anOccDef.IsRemoved)
+      continue;
+    if (anOccDef.ChildDefId.IsValid()
+        && !BRepGraph_NodeId::IsAssemblyKind(anOccDef.ChildDefId.NodeKind))
+    {
+      return anOccDef.ChildDefId;
+    }
+  }
+  return BRepGraph_NodeId();
 }
 
 //=================================================================================================
@@ -1111,15 +1154,17 @@ BRepGraph_ProductId BRepGraph::TopoView::OccurrenceOps::Product(
   }
 
   const BRepGraphInc::OccurrenceDef& anOccurrence = aStorage.Occurrence(theOccurrence);
-  if (anOccurrence.IsRemoved || !anOccurrence.ProductDefId.IsValid(aStorage.NbProducts()))
+  if (anOccurrence.IsRemoved || !anOccurrence.ChildDefId.IsValid()
+      || anOccurrence.ChildDefId.NodeKind != BRepGraph_NodeId::Kind::Product)
   {
     return BRepGraph_ProductId();
   }
-  if (aStorage.Product(anOccurrence.ProductDefId).IsRemoved)
+  const BRepGraph_ProductId aProductId = BRepGraph_ProductId::FromNodeId(anOccurrence.ChildDefId);
+  if (!aProductId.IsValid(aStorage.NbProducts()) || aStorage.Product(aProductId).IsRemoved)
   {
     return BRepGraph_ProductId();
   }
-  return anOccurrence.ProductDefId;
+  return aProductId;
 }
 
 //=================================================================================================
@@ -1134,39 +1179,31 @@ BRepGraph_ProductId BRepGraph::TopoView::OccurrenceOps::ParentProduct(
   }
 
   const BRepGraphInc::OccurrenceDef& anOccurrence = aStorage.Occurrence(theOccurrence);
-  if (anOccurrence.IsRemoved || !anOccurrence.ParentProductDefId.IsValid(aStorage.NbProducts()))
+  if (anOccurrence.IsRemoved)
   {
     return BRepGraph_ProductId();
   }
-  if (aStorage.Product(anOccurrence.ParentProductDefId).IsRemoved)
-  {
-    return BRepGraph_ProductId();
-  }
-  return anOccurrence.ParentProductDefId;
-}
 
-//=================================================================================================
+  // Find the OccurrenceRef that owns this OccurrenceDef to get ParentId.
+  const int aNbOccRefs = aStorage.NbOccurrenceRefs();
+  for (int i = 0; i < aNbOccRefs; ++i)
+  {
+    const BRepGraphInc::OccurrenceRef& aRef = aStorage.OccurrenceRef(BRepGraph_OccurrenceRefId(i));
+    if (aRef.IsRemoved || aRef.OccurrenceDefId != theOccurrence)
+      continue;
 
-BRepGraph_OccurrenceId BRepGraph::TopoView::OccurrenceOps::ParentOccurrence(
-  const BRepGraph_OccurrenceId theOccurrence) const
-{
-  const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
-  if (!theOccurrence.IsValid(aStorage.NbOccurrences()))
-  {
-    return BRepGraph_OccurrenceId();
-  }
+    if (aRef.ParentId.NodeKind != BRepGraph_NodeId::Kind::Product)
+      return BRepGraph_ProductId();
 
-  const BRepGraphInc::OccurrenceDef& anOccurrence = aStorage.Occurrence(theOccurrence);
-  if (anOccurrence.IsRemoved
-      || !anOccurrence.ParentOccurrenceDefId.IsValid(aStorage.NbOccurrences()))
-  {
-    return BRepGraph_OccurrenceId();
+    const BRepGraph_ProductId aParentProduct = BRepGraph_ProductId::FromNodeId(aRef.ParentId);
+    if (!aParentProduct.IsValid(aStorage.NbProducts())
+        || aStorage.Product(aParentProduct).IsRemoved)
+    {
+      return BRepGraph_ProductId();
+    }
+    return aParentProduct;
   }
-  if (aStorage.Occurrence(anOccurrence.ParentOccurrenceDefId).IsRemoved)
-  {
-    return BRepGraph_OccurrenceId();
-  }
-  return anOccurrence.ParentOccurrenceDefId;
+  return BRepGraph_ProductId();
 }
 
 //=================================================================================================
@@ -1178,23 +1215,18 @@ TopLoc_Location BRepGraph::TopoView::OccurrenceOps::OccurrenceLocation(
   if (!theOccurrence.IsValid(aStorage.NbOccurrences()))
     return TopLoc_Location();
 
-  TopLoc_Location        aGlobal      = aStorage.Occurrence(theOccurrence).Placement;
-  BRepGraph_OccurrenceId aParentOccId = aStorage.Occurrence(theOccurrence).ParentOccurrenceDefId;
-
-  const int aNbOccurrences = aStorage.NbOccurrences();
-  int       aSteps         = 0;
-
-  while (aParentOccId.IsValid(aNbOccurrences) && aSteps < aNbOccurrences)
+  // Placement is now on OccurrenceRef::LocalLocation.
+  // Find the OccurrenceRef that owns this OccurrenceDef.
+  const int aNbOccRefs = aStorage.NbOccurrenceRefs();
+  for (int i = 0; i < aNbOccRefs; ++i)
   {
-    ++aSteps;
-    const BRepGraphInc::OccurrenceDef& aParentOcc = aStorage.Occurrence(aParentOccId);
-    if (aParentOcc.IsRemoved)
-      break;
-    aGlobal      = aParentOcc.Placement * aGlobal;
-    aParentOccId = aParentOcc.ParentOccurrenceDefId;
+    const BRepGraphInc::OccurrenceRef& aRef = aStorage.OccurrenceRef(BRepGraph_OccurrenceRefId(i));
+    if (!aRef.IsRemoved && aRef.OccurrenceDefId == theOccurrence)
+    {
+      return aRef.LocalLocation;
+    }
   }
-
-  return aGlobal;
+  return TopLoc_Location();
 }
 
 //=================================================================================================
@@ -1261,94 +1293,6 @@ const BRepGraphInc::Curve2DRep& BRepGraph::TopoView::GeometryOps::Curve2DRep(
   const BRepGraph_Curve2DRepId theRep) const
 {
   return myGraph->myData->myIncStorage.Curve2DRep(theRep);
-}
-
-//=================================================================================================
-
-int BRepGraph::TopoView::PolyOps::NbTriangulations() const
-{
-  return myGraph->myData->myIncStorage.NbTriangulations();
-}
-
-//=================================================================================================
-
-int BRepGraph::TopoView::PolyOps::NbPolygons3D() const
-{
-  return myGraph->myData->myIncStorage.NbPolygons3D();
-}
-
-//=================================================================================================
-
-int BRepGraph::TopoView::PolyOps::NbPolygons2D() const
-{
-  return myGraph->myData->myIncStorage.NbPolygons2D();
-}
-
-//=================================================================================================
-
-int BRepGraph::TopoView::PolyOps::NbPolygonsOnTri() const
-{
-  return myGraph->myData->myIncStorage.NbPolygonsOnTri();
-}
-
-//=================================================================================================
-
-int BRepGraph::TopoView::PolyOps::NbActiveTriangulations() const
-{
-  return myGraph->myData->myIncStorage.NbActiveTriangulations();
-}
-
-//=================================================================================================
-
-int BRepGraph::TopoView::PolyOps::NbActivePolygons3D() const
-{
-  return myGraph->myData->myIncStorage.NbActivePolygons3D();
-}
-
-//=================================================================================================
-
-int BRepGraph::TopoView::PolyOps::NbActivePolygons2D() const
-{
-  return myGraph->myData->myIncStorage.NbActivePolygons2D();
-}
-
-//=================================================================================================
-
-int BRepGraph::TopoView::PolyOps::NbActivePolygonsOnTri() const
-{
-  return myGraph->myData->myIncStorage.NbActivePolygonsOnTri();
-}
-
-//=================================================================================================
-
-const BRepGraphInc::TriangulationRep& BRepGraph::TopoView::PolyOps::TriangulationRep(
-  const BRepGraph_TriangulationRepId theRep) const
-{
-  return myGraph->myData->myIncStorage.TriangulationRep(theRep);
-}
-
-//=================================================================================================
-
-const BRepGraphInc::Polygon3DRep& BRepGraph::TopoView::PolyOps::Polygon3DRep(
-  const BRepGraph_Polygon3DRepId theRep) const
-{
-  return myGraph->myData->myIncStorage.Polygon3DRep(theRep);
-}
-
-//=================================================================================================
-
-const BRepGraphInc::Polygon2DRep& BRepGraph::TopoView::PolyOps::Polygon2DRep(
-  const BRepGraph_Polygon2DRepId theRep) const
-{
-  return myGraph->myData->myIncStorage.Polygon2DRep(theRep);
-}
-
-//=================================================================================================
-
-const BRepGraphInc::PolygonOnTriRep& BRepGraph::TopoView::PolyOps::PolygonOnTriRep(
-  const BRepGraph_PolygonOnTriRepId theRep) const
-{
-  return myGraph->myData->myIncStorage.PolygonOnTriRep(theRep);
 }
 
 const BRepGraphInc::BaseDef* BRepGraph::TopoView::GenOps::TopoEntity(

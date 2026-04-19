@@ -13,11 +13,12 @@
 
 #include <BRep_Builder.hxx>
 #include <BRepGraph.hxx>
-#include <BRepGraph_BuilderView.hxx>
+#include <BRepGraph_EditorView.hxx>
 #include <BRepGraph_Iterator.hxx>
 #include "BRepGraph_RefTestTools.hxx"
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_TopoView.hxx>
+#include <BRepGraph_Builder.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>
@@ -39,7 +40,7 @@ protected:
   {
     BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
     const TopoDS_Shape& aBox = aBoxMaker.Shape();
-    myGraph.Build(aBox);
+    BRepGraph_Builder::Perform(myGraph, aBox);
   }
 
   BRepGraph myGraph;
@@ -80,14 +81,14 @@ TEST_F(BRepGraph_SharingTest, SolidDef_HasOneShellRef)
 {
   ASSERT_TRUE(myGraph.IsDone());
   EXPECT_EQ(myGraph.Topo().Solids().Nb(), 1);
-  EXPECT_EQ(BRepGraph_TestTools::CountShellRefsOfSolid(myGraph, BRepGraph_SolidId(0)), 1);
+  EXPECT_EQ(BRepGraph_TestTools::CountShellRefsOfSolid(myGraph, BRepGraph_SolidId::Start()), 1);
 }
 
 TEST_F(BRepGraph_SharingTest, ShellDef_HasSixFaceRefs)
 {
   ASSERT_TRUE(myGraph.IsDone());
   EXPECT_EQ(myGraph.Topo().Shells().Nb(), 1);
-  EXPECT_EQ(BRepGraph_TestTools::CountFaceRefsOfShell(myGraph, BRepGraph_ShellId(0)), 6);
+  EXPECT_EQ(BRepGraph_TestTools::CountFaceRefsOfShell(myGraph, BRepGraph_ShellId::Start()), 6);
 }
 
 // =========================================================================
@@ -98,14 +99,14 @@ TEST_F(BRepGraph_SharingTest, SolidDef_ContainsOneShellRef)
 {
   ASSERT_TRUE(myGraph.IsDone());
   EXPECT_EQ(myGraph.Topo().Solids().Nb(), 1);
-  EXPECT_EQ(BRepGraph_TestTools::CountShellRefsOfSolid(myGraph, BRepGraph_SolidId(0)), 1);
+  EXPECT_EQ(BRepGraph_TestTools::CountShellRefsOfSolid(myGraph, BRepGraph_SolidId::Start()), 1);
 }
 
 TEST_F(BRepGraph_SharingTest, ShellDef_ContainsSixFaceRefs)
 {
   ASSERT_TRUE(myGraph.IsDone());
   EXPECT_EQ(myGraph.Topo().Shells().Nb(), 1);
-  EXPECT_EQ(BRepGraph_TestTools::CountFaceRefsOfShell(myGraph, BRepGraph_ShellId(0)), 6);
+  EXPECT_EQ(BRepGraph_TestTools::CountFaceRefsOfShell(myGraph, BRepGraph_ShellId::Start()), 6);
 }
 
 TEST_F(BRepGraph_SharingTest, FaceDef_OuterWireIdx_Valid)
@@ -139,9 +140,9 @@ TEST_F(BRepGraph_SharingTest, EdgeDef_VertexDefs_BothValid)
   for (BRepGraph_EdgeIterator anEdgeIt(myGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
     const BRepGraph_EdgeId anEdgeId = anEdgeIt.CurrentId();
-    EXPECT_TRUE(BRepGraph_Tool::Edge::StartVertex(myGraph, anEdgeId).VertexDefId.IsValid())
+    EXPECT_TRUE(BRepGraph_Tool::Edge::StartVertexRef(myGraph, anEdgeId).VertexDefId.IsValid())
       << "Edge def " << anEdgeId.Index << " has invalid start vertex def";
-    EXPECT_TRUE(BRepGraph_Tool::Edge::EndVertex(myGraph, anEdgeId).VertexDefId.IsValid())
+    EXPECT_TRUE(BRepGraph_Tool::Edge::EndVertexRef(myGraph, anEdgeId).VertexDefId.IsValid())
       << "Edge def " << anEdgeId.Index << " has invalid end vertex def";
   }
 }
@@ -191,9 +192,9 @@ TEST_F(BRepGraph_SharingTest, NonClosedEdge_StartEnd_Different)
       continue;
     // Box edges are not closed, so start and end vertex defs must differ
     const BRepGraph_VertexId aStartVtx =
-      BRepGraph_Tool::Edge::StartVertex(myGraph, anEdgeId).VertexDefId;
+      BRepGraph_Tool::Edge::StartVertexRef(myGraph, anEdgeId).VertexDefId;
     const BRepGraph_VertexId anEndVtx =
-      BRepGraph_Tool::Edge::EndVertex(myGraph, anEdgeId).VertexDefId;
+      BRepGraph_Tool::Edge::EndVertexRef(myGraph, anEdgeId).VertexDefId;
     EXPECT_NE(aStartVtx, anEndVtx) << "Non-degenerate edge def " << anEdgeId.Index
                                    << " has identical start and end vertex def ids";
   }
@@ -233,7 +234,7 @@ TEST_F(BRepGraph_SharingTest, CompoundTwoIdenticalBoxes)
   aBuilder.Add(aCompound, aBox);
 
   BRepGraph aGraph;
-  aGraph.Build(aCompound);
+  BRepGraph_Builder::Perform(aGraph, aCompound);
   ASSERT_TRUE(aGraph.IsDone());
 
   // Same TShape added twice to compound: definition is shared (1 solid def),
@@ -247,7 +248,7 @@ TEST_F(BRepGraph_SharingTest, CompoundTwoIdenticalBoxes)
 
   // Compound has 2 child references to the same solid.
   const NCollection_Vector<BRepGraph_ChildRefId> aChildRefs =
-    BRepGraph_TestTools::ChildRefsOfParent(aGraph, BRepGraph_CompoundId(0));
+    BRepGraph_TestTools::ChildRefsOfParent(aGraph, BRepGraph_CompoundId::Start());
   ASSERT_EQ(aChildRefs.Length(), 2);
   EXPECT_EQ(aGraph.Refs().Children().Entry(aChildRefs.Value(0)).ChildDefId.Index,
             aGraph.Refs().Children().Entry(aChildRefs.Value(1)).ChildDefId.Index);
@@ -268,7 +269,7 @@ TEST_F(BRepGraph_SharingTest, CompoundTwoDistinctBoxes)
   aBuilder.Add(aCompound, aBox2);
 
   BRepGraph aGraph;
-  aGraph.Build(aCompound);
+  BRepGraph_Builder::Perform(aGraph, aCompound);
   ASSERT_TRUE(aGraph.IsDone());
 
   // Two different TShapes: no sharing, definitions are independent
@@ -294,7 +295,7 @@ TEST_F(BRepGraph_SharingTest, CompoundWithLocation_MoreUsagesThanDefs)
   aBuilder.Add(aCompound, aMovedBox);
 
   BRepGraph aGraph;
-  aGraph.Build(aCompound);
+  BRepGraph_Builder::Perform(aGraph, aCompound);
   ASSERT_TRUE(aGraph.IsDone());
 
   // Same TShape with different locations: defs are shared.
@@ -319,7 +320,7 @@ TEST_F(BRepGraph_SharingTest, TranslatedCopy_SameTShape_SharedDefs)
   aBuilder.Add(aCompound, aCopy);
 
   BRepGraph aGraph;
-  aGraph.Build(aCompound);
+  BRepGraph_Builder::Perform(aGraph, aCompound);
   ASSERT_TRUE(aGraph.IsDone());
 
   // Moved() preserves TShape, so all definitions are shared (1 solid def).

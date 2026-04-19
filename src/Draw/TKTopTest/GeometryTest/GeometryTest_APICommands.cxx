@@ -620,7 +620,7 @@ static int extrema(Draw_Interpretor& di, int n, const char** a)
   char* aName2 = aName; // portage WNT
 
   // Output points.
-  const int aPntCount = aPnts1.Size();
+  const int aPntCount = aPnts1.Length();
   if (aPntCount == 0 || isInfinitySolutions)
   {
     // Infinity solutions flag may be set with 0 number of
@@ -665,7 +665,7 @@ static int extrema(Draw_Interpretor& di, int n, const char** a)
     // Output parameters.
     for (int aJ = 0; aJ < 4; ++aJ)
     {
-      for (int aPrmCount = aPrms[aJ].Size(), aK = 0; aK < aPrmCount; ++aK)
+      for (int aPrmCount = aPrms[aJ].Length(), aK = 0; aK < aPrmCount; ++aK)
       {
         double aP = aPrms[aJ](aK);
         Sprintf(aName, "%s%d%s%d", "prm_", aJ + 1, "_", aK + 1);

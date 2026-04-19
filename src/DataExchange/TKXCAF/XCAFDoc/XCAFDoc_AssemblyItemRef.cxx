@@ -143,7 +143,7 @@ bool XCAFDoc_AssemblyItemRef::IsOrphan() const
       NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aMap;
       TopExp::MapShapes(aShape, aMap);
       int aSubshapeIndex = GetSubshapeIndex();
-      if (aSubshapeIndex < 1 || aMap.Size() < aSubshapeIndex)
+      if (aSubshapeIndex < 1 || aMap.Length() < aSubshapeIndex)
         return true;
     }
   }

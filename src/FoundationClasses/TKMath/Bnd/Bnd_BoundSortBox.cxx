@@ -333,7 +333,7 @@ void Bnd_BoundSortBox::Initialize(const occ::handle<NCollection_HArray1<Bnd_Box>
     }
   }
 
-  myResolution = getBnd_VoxelGridResolution(myBoxes->Size());
+  myResolution = getBnd_VoxelGridResolution(myBoxes->Length());
 
   if (myEnclosingBox.IsVoid())
   {
@@ -353,7 +353,7 @@ void Bnd_BoundSortBox::Initialize(const Bnd_Box&                                
 {
   myBoxes        = theSetOfBoxes;
   myEnclosingBox = theEnclosingBox;
-  myResolution   = getBnd_VoxelGridResolution(myBoxes->Size());
+  myResolution   = getBnd_VoxelGridResolution(myBoxes->Length());
 
   if (myEnclosingBox.IsVoid())
   {

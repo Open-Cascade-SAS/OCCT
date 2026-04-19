@@ -2861,7 +2861,7 @@ static int VBackground(Draw_Interpretor& theDI, int theNbArgs, const char** theA
 
       if (aCubeMapSeq.Size() > 1 && aCubeMapSeq.Size() < 6)
       {
-        aCubeMapSeq.Remove(2, aCubeMapSeq.Size());
+        aCubeMapSeq.Remove(2, aCubeMapSeq.Length());
       }
     }
     else if (anArgIter + 6 < theNbArgs && anArg == "-order")

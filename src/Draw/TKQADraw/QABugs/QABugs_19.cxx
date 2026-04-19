@@ -1698,7 +1698,7 @@ public:
 
   int Begin() const { return 0; }
 
-  int End() const { return myX.Size(); }
+  int End() const { return myX.Length(); }
 
   //! Dummy calculation
   void operator()(int theIndex) const { myY(theIndex) = myScalar * myX(theIndex) + myY(theIndex); }

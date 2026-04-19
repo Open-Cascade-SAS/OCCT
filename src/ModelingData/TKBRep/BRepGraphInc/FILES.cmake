@@ -4,7 +4,7 @@ set(OCCT_BRepGraphInc_FILES
   BRepGraphInc_Definition.hxx
   BRepGraphInc_Reference.hxx
   BRepGraphInc_Representation.hxx
-  BRepGraphInc_Usage.hxx
+  BRepGraphInc_Instance.hxx
   BRepGraphInc_Populate.cxx
   BRepGraphInc_Populate.hxx
   BRepGraphInc_Reconstruct.cxx

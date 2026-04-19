@@ -89,7 +89,7 @@ inline int countSpanSize(const NCollection_Array1<double>& theParams,
                          int                               theTargetSpan)
 {
   const int aLower = theParams.Lower();
-  const int aNb    = theParams.Size();
+  const int aNb    = theParams.Length();
   int       aCount = 1;
 
   if (!theIsPeriodic)
@@ -153,8 +153,8 @@ NCollection_Array2<ResultT> evaluateGridCached(const SurfaceData&               
                                                CacheEvalF                        theCacheEval,
                                                DirectEvalF                       theDirectEval)
 {
-  const int aNbU  = theUParams.Size();
-  const int aNbV  = theVParams.Size();
+  const int aNbU  = theUParams.Length();
+  const int aNbV  = theVParams.Length();
   const int aLowU = theUParams.Lower();
   const int aLowV = theVParams.Lower();
 
@@ -278,8 +278,8 @@ NCollection_Array2<ResultT> evaluateGridDirect(const SurfaceData&               
                                                const NCollection_Array1<double>& theVParams,
                                                EvalF                             theEval)
 {
-  const int aNbU  = theUParams.Size();
-  const int aNbV  = theVParams.Size();
+  const int aNbU  = theUParams.Length();
+  const int aNbV  = theVParams.Length();
   const int aLowU = theUParams.Lower();
   const int aLowV = theVParams.Lower();
 
@@ -577,8 +577,8 @@ NCollection_Array2<gp_Vec> GeomGridEval_BSplineSurface::EvaluateGridDN(
     return NCollection_Array2<gp_Vec>();
   }
 
-  const int aNbU = theUParams.Size();
-  const int aNbV = theVParams.Size();
+  const int aNbU = theUParams.Length();
+  const int aNbV = theVParams.Length();
 
   // Derivatives beyond degree are zero
   if (theNU > aData.UDegree || theNV > aData.VDegree)

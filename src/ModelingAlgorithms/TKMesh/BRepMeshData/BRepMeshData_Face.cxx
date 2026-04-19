@@ -37,7 +37,7 @@ BRepMeshData_Face::~BRepMeshData_Face() = default;
 
 int BRepMeshData_Face::WiresNb() const
 {
-  return myDWires.Size();
+  return myDWires.Length();
 }
 
 //=================================================================================================

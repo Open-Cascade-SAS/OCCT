@@ -317,7 +317,7 @@ void StdPrs_Isolines::addOnTriangulation(
         if (anIsoPnts.IsNull())
         {
           aPolylines.Append(new VecOfSegments());
-          anIsoIndexes.SetValue(anIsoIdx, aPolylines.Size());
+          anIsoIndexes.SetValue(anIsoIdx, aPolylines.Length());
           anIsoPnts = aPolylines.ChangeValue(anIsoIndexes.Value(anIsoIdx));
         }
 

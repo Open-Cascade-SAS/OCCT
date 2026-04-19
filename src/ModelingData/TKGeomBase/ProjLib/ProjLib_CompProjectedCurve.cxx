@@ -1001,7 +1001,7 @@ void ProjLib_CompProjectedCurve::Init()
         }
 
         // We assume at least one point of cache inside of a split.
-        const int aSize = aSplits.Size();
+        const int aSize = aSplits.Length();
         for (int anIdx = aSplitIdx; anIdx < aSize; ++anIdx)
         {
           const double aParam = aSplits(anIdx);

@@ -334,7 +334,7 @@ void BOPAlgo_PaveFiller::PerformFF(const Message_ProgressRange& theRange)
   // some faces have to be moved to obtain more precise intersection
   NCollection_DataMap<BOPDS_Pair, NCollection_List<int>> aEEMap;
   const NCollection_Vector<BOPDS_InterfEE>&              aVEEs = myDS->InterfEE();
-  for (int iEE = 0; iEE < aVEEs.Size(); ++iEE)
+  for (int iEE = 0; iEE < aVEEs.Length(); ++iEE)
   {
     const BOPDS_Interf& aEE = aVEEs(iEE);
     if (!aEE.HasIndexNew())

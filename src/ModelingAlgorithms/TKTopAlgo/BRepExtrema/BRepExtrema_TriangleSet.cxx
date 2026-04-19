@@ -219,7 +219,7 @@ bool BRepExtrema_TriangleSet::Init(const NCollection_Vector<TopoDS_Shape>& theSh
   Clear();
 
   bool isOK = true;
-  for (int aShapeIdx = 0; aShapeIdx < theShapes.Size() && isOK; ++aShapeIdx)
+  for (int aShapeIdx = 0; aShapeIdx < theShapes.Length() && isOK; ++aShapeIdx)
   {
     if (theShapes(aShapeIdx).ShapeType() == TopAbs_FACE)
       isOK = initFace(TopoDS::Face(theShapes(aShapeIdx)), aShapeIdx);
@@ -309,7 +309,7 @@ void BRepExtrema_TriangleSet::initNodes(const NCollection_Array1<gp_Pnt>& theNod
                                         const gp_Trsf&                    theTrsf,
                                         const int                         theIndex)
 {
-  for (int aVertIdx = 1; aVertIdx <= theNodes.Size(); ++aVertIdx)
+  for (int aVertIdx = 1; aVertIdx <= theNodes.Length(); ++aVertIdx)
   {
     gp_Pnt aVertex = theNodes.Value(aVertIdx);
 
@@ -319,5 +319,5 @@ void BRepExtrema_TriangleSet::initNodes(const NCollection_Array1<gp_Pnt>& theNod
     myShapeIdxOfVtxVec.Append(theIndex);
   }
 
-  myNumVtxInShapeVec.SetValue(theIndex, theNodes.Size());
+  myNumVtxInShapeVec.SetValue(theIndex, theNodes.Length());
 }
