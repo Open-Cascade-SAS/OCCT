@@ -317,7 +317,18 @@ TEST(BVH_ToolsSIMDBenchmark, DISABLED_RayBox8_KernelComparison)
   }
 #endif
 
-  // AVX-512 RayBox8 kernel wired in the next commit.
+#if defined(BVH_HAS_AVX512_KERNEL)
+  if (BVH::SIMD::Detect() >= BVH::SIMD::Level::AVX512)
+  {
+    KernelTime aAVX512 = MeasureKernel8("AVX-512", &BVH::SIMD::RayBox8_AVX512, aData);
+    PrintRow(aAVX512, aScalar.nsPerCall);
+  }
+  else
+  {
+    std::cout << "  AVX-512       (skipped: CPU support absent)" << std::endl;
+  }
+#endif
+
   KernelTime aDispatched = MeasureKernel8("Dispatched", BVH::SIMD::GetRayBox8(), aData);
   PrintRow(aDispatched, aScalar.nsPerCall);
 

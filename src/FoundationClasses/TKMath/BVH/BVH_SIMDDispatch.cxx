@@ -284,16 +284,23 @@ RayBox8_Fn GetRayBox8() noexcept
   static const RayBox8_Fn sFn = []() noexcept -> RayBox8_Fn {
     switch (Detect())
     {
-      // case Level::AVX512: return &RayBox8_AVX512;  // wired in commit 12
+#if defined(BVH_HAS_AVX512_KERNEL)
+      case Level::AVX512:
+        return &RayBox8_AVX512;
+#endif
 #if defined(BVH_HAS_AVX2_KERNEL)
       case Level::AVX2:
+  #if !defined(BVH_HAS_AVX512_KERNEL)
       case Level::AVX512:
+  #endif
         return &RayBox8_AVX2;
 #endif
 #if defined(BVH_HAS_SSE2_KERNEL)
       case Level::SSE2:
   #if !defined(BVH_HAS_AVX2_KERNEL)
       case Level::AVX2:
+  #endif
+  #if !defined(BVH_HAS_AVX512_KERNEL) && !defined(BVH_HAS_AVX2_KERNEL)
       case Level::AVX512:
   #endif
         return &RayBox8_SSE2;
