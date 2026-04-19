@@ -781,7 +781,7 @@ void BOPAlgo_CellsBuilder::MakeContainers()
     aLS[iDim - 1].Append(aS);
   }
   //
-  for (auto & i : aLS)
+  for (auto& i : aLS)
   {
     if (i.IsEmpty())
     {

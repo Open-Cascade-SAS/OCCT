@@ -346,7 +346,7 @@ void BRepMesh_DataStructureOfDelaun::clearDeletedLinks()
       bool                     o[3];
       const BRepMesh_Triangle& aElement = GetElement(aPair.Index(j));
       aElement.Edges(e, o);
-      for (int & i : e)
+      for (int& i : e)
       {
         if (i == aLastLiveItemId)
         {

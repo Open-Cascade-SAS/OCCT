@@ -317,8 +317,7 @@ bool AIS_RubberBand::fillTriangles()
       gp_Dir aNorm = gp::DZ();
       for (auto aPt : aPts)
       {
-        myTriangles
-          ->AddVertex(aPt.X(), aPt.Y(), 0.0, aNorm.X(), aNorm.Y(), aNorm.Z());
+        myTriangles->AddVertex(aPt.X(), aPt.Y(), 0.0, aNorm.X(), aNorm.Y(), aNorm.Z());
       }
     }
     else

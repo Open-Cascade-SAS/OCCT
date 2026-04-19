@@ -33,7 +33,7 @@ Extrema_ExtPElS::Extrema_ExtPElS()
 {
   myDone  = false;
   myNbExt = 0;
-  for (double & i : mySqDist)
+  for (double& i : mySqDist)
   {
     i = RealLast();
   }

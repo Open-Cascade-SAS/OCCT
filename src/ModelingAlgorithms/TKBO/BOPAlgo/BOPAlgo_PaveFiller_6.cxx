@@ -1336,7 +1336,7 @@ void BOPAlgo_PaveFiller::PostTreatFF(
   const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>* VerMap[2] = {
     &theVertsOnRejectedPB,
     &VertsUnused};
-  for (auto & imap : VerMap)
+  for (auto& imap : VerMap)
   {
     int NbVer = imap->Extent();
     for (int i = 1; i <= NbVer; ++i)
@@ -3745,7 +3745,7 @@ void BOPAlgo_PaveFiller::RemovePaveBlocks(const NCollection_Map<int>& theEdges)
     NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>* aIMPB[] = {&aFI.ChangePaveBlocksIn(),
                                                                      &aFI.ChangePaveBlocksOn(),
                                                                      &aFI.ChangePaveBlocksSc()};
-    for (auto & k : aIMPB)
+    for (auto& k : aIMPB)
     {
       int aNbPB = k->Extent(), m;
       for (m = 1; m <= aNbPB; ++m)

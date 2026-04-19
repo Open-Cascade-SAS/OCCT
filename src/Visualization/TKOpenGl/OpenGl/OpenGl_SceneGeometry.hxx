@@ -124,7 +124,7 @@ public:
   //! Sets material index for entire triangle set.
   void SetMaterialIndex(int theMatID)
   {
-    for (auto & Element : Elements)
+    for (auto& Element : Elements)
     {
       Element.w() = theMatID;
     }

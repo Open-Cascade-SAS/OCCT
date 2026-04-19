@@ -51,7 +51,7 @@ public:
   //! Constructor
   OpenGl_SetOfShaderPrograms(const occ::handle<OpenGl_SetOfPrograms>& thePrograms)
   {
-    for (auto & myProgram : myPrograms)
+    for (auto& myProgram : myPrograms)
     {
       myProgram = thePrograms;
     }

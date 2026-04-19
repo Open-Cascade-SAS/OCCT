@@ -5953,7 +5953,7 @@ void WorkWithBoundaries::AddBoundaryPoint(const occ::handle<IntPatch_WLine>& the
   isTheFound1 = isTheFound2 = false;
 
   // Adding found points on boundary in the WLine.
-  for (auto & i : aUVPoint)
+  for (auto& i : aUVPoint)
   {
     if (i.myU1 == RealLast())
       break;
@@ -6691,7 +6691,7 @@ static IntPatch_ImpImpIntersection::IntStatus CyCyNoGeometric(
   {
     // Process every continuous region
     bool isAddedIntoWL[aNbWLines];
-    for (bool & i : isAddedIntoWL)
+    for (bool& i : isAddedIntoWL)
       i = false;
 
     double anUf = 1.0, anUl = 0.0;

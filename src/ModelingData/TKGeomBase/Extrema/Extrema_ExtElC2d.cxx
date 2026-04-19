@@ -34,7 +34,7 @@ Extrema_ExtElC2d::Extrema_ExtElC2d()
   myDone  = false;
   myIsPar = false;
   myNbExt = 0;
-  for (double & anIdx : mySqDist)
+  for (double& anIdx : mySqDist)
   {
     anIdx = RealLast();
   }
@@ -60,7 +60,7 @@ Method:
   myDone  = false;
   myIsPar = false;
   myNbExt = 0;
-  for (double & anIdx : mySqDist)
+  for (double& anIdx : mySqDist)
   {
     anIdx = RealLast();
   }
@@ -117,7 +117,7 @@ Method:
   myIsPar = false;
   myDone  = false;
   myNbExt = 0;
-  for (double & anIdx : mySqDist)
+  for (double& anIdx : mySqDist)
   {
     anIdx = RealLast();
   }
@@ -169,7 +169,7 @@ Extrema_ExtElC2d::Extrema_ExtElC2d(const gp_Lin2d& C1, const gp_Elips2d& C2)
   myIsPar = false;
   myDone  = false;
   myNbExt = 0;
-  for (double & anIdx : mySqDist)
+  for (double& anIdx : mySqDist)
   {
     anIdx = RealLast();
   }
@@ -220,7 +220,7 @@ Extrema_ExtElC2d::Extrema_ExtElC2d(const gp_Lin2d& C1, const gp_Hypr2d& C2)
   myIsPar = false;
   myDone  = false;
   myNbExt = 0;
-  for (double & anIdx : mySqDist)
+  for (double& anIdx : mySqDist)
   {
     anIdx = RealLast();
   }
@@ -263,7 +263,7 @@ Extrema_ExtElC2d::Extrema_ExtElC2d(const gp_Lin2d& C1, const gp_Parab2d& C2)
   myIsPar = false;
   myDone  = false;
   myNbExt = 0;
-  for (double & anIdx : mySqDist)
+  for (double& anIdx : mySqDist)
   {
     anIdx = RealLast();
   }
@@ -302,7 +302,7 @@ Extrema_ExtElC2d::Extrema_ExtElC2d(const gp_Circ2d& C1, const gp_Circ2d& C2)
   myDone  = false;
   myNbExt = 0;
   myDone  = true;
-  for (double & anIdx : mySqDist)
+  for (double& anIdx : mySqDist)
   {
     anIdx = RealLast();
   }
@@ -360,7 +360,7 @@ Extrema_ExtElC2d::Extrema_ExtElC2d(const gp_Circ2d& C1, const gp_Elips2d& C2)
   myIsPar = false;
   myDone  = false;
   myNbExt = 0;
-  for (double & anIdx : mySqDist)
+  for (double& anIdx : mySqDist)
   {
     anIdx = RealLast();
   }
@@ -400,7 +400,7 @@ Extrema_ExtElC2d::Extrema_ExtElC2d(const gp_Circ2d& C1, const gp_Hypr2d& C2)
   myIsPar = false;
   myDone  = false;
   myNbExt = 0;
-  for (double & anIdx : mySqDist)
+  for (double& anIdx : mySqDist)
   {
     anIdx = RealLast();
   }
@@ -440,7 +440,7 @@ Extrema_ExtElC2d::Extrema_ExtElC2d(const gp_Circ2d& C1, const gp_Parab2d& C2)
   myIsPar = false;
   myDone  = false;
   myNbExt = 0;
-  for (double & anIdx : mySqDist)
+  for (double& anIdx : mySqDist)
   {
     anIdx = RealLast();
   }

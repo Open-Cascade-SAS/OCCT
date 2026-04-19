@@ -1097,7 +1097,7 @@ void ChFi3d_Builder::PerformOneCorner(const int Index, const bool thePrepareOnSa
     ChFiDS_CommonPoint CV[2];
     CV[0] = CV1;
     CV[1] = CV2;
-    for (const auto & i : CV)
+    for (const auto& i : CV)
     {
       if (i.IsOnArc() && ChFi3d_IsPseudoSeam(i.Arc(), Fv))
       {

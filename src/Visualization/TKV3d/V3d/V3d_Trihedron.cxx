@@ -378,11 +378,11 @@ void V3d_Trihedron::DumpJson(Standard_OStream& theOStream, int theDepth) const
 
   OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, mySphereShadingAspect.get())
 
-  for (const auto & aTextAspect : myTextAspects)
+  for (const auto& aTextAspect : myTextAspects)
   {
     OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, aTextAspect.get())
   }
-  for (const auto & anArrowShadinAspect : myArrowShadingAspects)
+  for (const auto& anArrowShadinAspect : myArrowShadingAspects)
   {
     OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, anArrowShadinAspect.get())
   }

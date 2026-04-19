@@ -693,7 +693,7 @@ TEST(NCollection_KDTreeTest, BruteForce_NearestComparison)
   constexpr int THE_N = 200;
   TestRandom    aRng(42);
   TestPoint2D   aPoints[THE_N];
-  for (auto & aPoint : aPoints)
+  for (auto& aPoint : aPoints)
   {
     aPoint = {aRng.NextDouble(-100, 100), aRng.NextDouble(-100, 100)};
   }
@@ -726,7 +726,7 @@ TEST(NCollection_KDTreeTest, BruteForce_KNearestComparison)
   constexpr size_t THE_K = 5;
   TestRandom       aRng(123);
   TestPoint2D      aPoints[THE_N];
-  for (auto & aPoint : aPoints)
+  for (auto& aPoint : aPoints)
   {
     aPoint = {aRng.NextDouble(-50, 50), aRng.NextDouble(-50, 50)};
   }
@@ -756,7 +756,7 @@ TEST(NCollection_KDTreeTest, BruteForce_RangeSearchComparison)
   constexpr int THE_N = 200;
   TestRandom    aRng(77);
   TestPoint2D   aPoints[THE_N];
-  for (auto & aPoint : aPoints)
+  for (auto& aPoint : aPoints)
   {
     aPoint = {aRng.NextDouble(-50, 50), aRng.NextDouble(-50, 50)};
   }
@@ -786,7 +786,7 @@ TEST(NCollection_KDTreeTest, BruteForce_BoxSearchComparison)
   constexpr int THE_N = 200;
   TestRandom    aRng(99);
   TestPoint2D   aPoints[THE_N];
-  for (auto & aPoint : aPoints)
+  for (auto& aPoint : aPoints)
   {
     aPoint = {aRng.NextDouble(-50, 50), aRng.NextDouble(-50, 50)};
   }
@@ -803,7 +803,7 @@ TEST(NCollection_KDTreeTest, BruteForce_BoxSearchComparison)
     const NCollection_DynamicArray<size_t> aKdResult = aTree.BoxSearch(aMin, aMax);
     // Brute force
     size_t aBfCount = 0;
-    for (auto & aPoint : aPoints)
+    for (auto& aPoint : aPoints)
     {
       if (aPoint.X >= aX1 && aPoint.X <= aX2 && aPoint.Y >= aY1 && aPoint.Y <= aY2)
       {
@@ -823,7 +823,7 @@ TEST(NCollection_KDTreeTest, LargeDataSet_1000Points)
   constexpr int THE_N = 1000;
   TestRandom    aRng(2024);
   TestPoint2D   aPoints[THE_N];
-  for (auto & aPoint : aPoints)
+  for (auto& aPoint : aPoints)
   {
     aPoint = {aRng.NextDouble(-1000, 1000), aRng.NextDouble(-1000, 1000)};
   }
@@ -974,7 +974,7 @@ TEST(NCollection_KDTreeTest, PointAccessor_AllPoints)
   aTree.Build(aPoints, 5);
   // Every input point should be accessible via Point()
   std::set<std::pair<int, int>> anOrigSet;
-  for (auto & aPoint : aPoints)
+  for (auto& aPoint : aPoints)
   {
     anOrigSet.insert({static_cast<int>(aPoint.X), static_cast<int>(aPoint.Y)});
   }
@@ -1422,7 +1422,7 @@ TEST(NCollection_KDTreeTest, KNearest2D_ValidIndices)
   constexpr int THE_N = 50;
   TestRandom    aRng(555);
   TestPoint2D   aPoints[THE_N];
-  for (auto & aPoint : aPoints)
+  for (auto& aPoint : aPoints)
   {
     aPoint = {aRng.NextDouble(-10, 10), aRng.NextDouble(-10, 10)};
   }
@@ -1463,7 +1463,7 @@ TEST(NCollection_KDTreeTest, KNearest3D_BruteForce)
   constexpr size_t THE_K = 7;
   TestRandom       aRng(333);
   TestPoint3D      aPoints[THE_N];
-  for (auto & aPoint : aPoints)
+  for (auto& aPoint : aPoints)
   {
     aPoint = {aRng.NextDouble(-50, 50), aRng.NextDouble(-50, 50), aRng.NextDouble(-50, 50)};
   }
@@ -1495,7 +1495,7 @@ TEST(NCollection_KDTreeTest, KNearest2D_LargeK)
   constexpr size_t THE_K = 50;
   TestRandom       aRng(789);
   TestPoint2D      aPoints[THE_N];
-  for (auto & aPoint : aPoints)
+  for (auto& aPoint : aPoints)
   {
     aPoint = {aRng.NextDouble(-100, 100), aRng.NextDouble(-100, 100)};
   }
@@ -1594,7 +1594,7 @@ TEST(NCollection_KDTreeTest, RangeSearch2D_ValidIndices)
   constexpr int THE_N = 30;
   TestRandom    aRng(444);
   TestPoint2D   aPoints[THE_N];
-  for (auto & aPoint : aPoints)
+  for (auto& aPoint : aPoints)
   {
     aPoint = {aRng.NextDouble(-10, 10), aRng.NextDouble(-10, 10)};
   }
@@ -1613,7 +1613,7 @@ TEST(NCollection_KDTreeTest, RangeSearch3D_BruteForce)
   constexpr int THE_N = 150;
   TestRandom    aRng(888);
   TestPoint3D   aPoints[THE_N];
-  for (auto & aPoint : aPoints)
+  for (auto& aPoint : aPoints)
   {
     aPoint = {aRng.NextDouble(-50, 50), aRng.NextDouble(-50, 50), aRng.NextDouble(-50, 50)};
   }
@@ -1628,7 +1628,7 @@ TEST(NCollection_KDTreeTest, RangeSearch3D_BruteForce)
     const NCollection_DynamicArray<size_t> aKdResult = aTree.RangeSearch(aQuery, aRadius);
     size_t                                 aBfCount  = 0;
     const double                           aRadiusSq = aRadius * aRadius;
-    for (const auto & aPoint : aPoints)
+    for (const auto& aPoint : aPoints)
     {
       if (sqDist3D(aQuery, aPoint) <= aRadiusSq)
       {
@@ -1644,7 +1644,7 @@ TEST(NCollection_KDTreeTest, RangeSearch2D_VerifyPointsInRange)
   constexpr int THE_N = 50;
   TestRandom    aRng(111);
   TestPoint2D   aPoints[THE_N];
-  for (auto & aPoint : aPoints)
+  for (auto& aPoint : aPoints)
   {
     aPoint = {aRng.NextDouble(-20, 20), aRng.NextDouble(-20, 20)};
   }
@@ -1720,7 +1720,7 @@ TEST(NCollection_KDTreeTest, BoxSearch3D_BruteForce)
   constexpr int THE_N = 150;
   TestRandom    aRng(246);
   TestPoint3D   aPoints[THE_N];
-  for (auto & aPoint : aPoints)
+  for (auto& aPoint : aPoints)
   {
     aPoint = {aRng.NextDouble(-50, 50), aRng.NextDouble(-50, 50), aRng.NextDouble(-50, 50)};
   }
@@ -1737,7 +1737,7 @@ TEST(NCollection_KDTreeTest, BoxSearch3D_BruteForce)
     const NCollection_DynamicArray<size_t> aKdResult =
       aTree.BoxSearch({aX1, aY1, aZ1}, {aX2, aY2, aZ2});
     size_t aBfCount = 0;
-    for (auto & aPoint : aPoints)
+    for (auto& aPoint : aPoints)
     {
       if (aPoint.X >= aX1 && aPoint.X <= aX2 && aPoint.Y >= aY1 && aPoint.Y <= aY2
           && aPoint.Z >= aZ1 && aPoint.Z <= aZ2)
@@ -1754,7 +1754,7 @@ TEST(NCollection_KDTreeTest, BoxSearch2D_VerifyPointsInBox)
   constexpr int THE_N = 50;
   TestRandom    aRng(222);
   TestPoint2D   aPoints[THE_N];
-  for (auto & aPoint : aPoints)
+  for (auto& aPoint : aPoints)
   {
     aPoint = {aRng.NextDouble(-20, 20), aRng.NextDouble(-20, 20)};
   }
@@ -1793,11 +1793,9 @@ TEST(NCollection_KDTreeTest, BruteForce3D_NearestComparison)
   constexpr int THE_N = 200;
   TestRandom    aRng(1001);
   TestPoint3D   aPoints[THE_N];
-  for (auto & aPoint : aPoints)
+  for (auto& aPoint : aPoints)
   {
-    aPoint = {aRng.NextDouble(-100, 100),
-                  aRng.NextDouble(-100, 100),
-                  aRng.NextDouble(-100, 100)};
+    aPoint = {aRng.NextDouble(-100, 100), aRng.NextDouble(-100, 100), aRng.NextDouble(-100, 100)};
   }
   NCollection_KDTree<TestPoint3D, 3> aTree;
   aTree.Build(aPoints, THE_N);
@@ -1809,7 +1807,7 @@ TEST(NCollection_KDTreeTest, BruteForce3D_NearestComparison)
     double      aKdSqDist = 0.0;
     aTree.NearestPoint(aQuery, aKdSqDist);
     double aBfBest = std::numeric_limits<double>::max();
-    for (const auto & aPoint : aPoints)
+    for (const auto& aPoint : aPoints)
     {
       const double aDist = sqDist3D(aQuery, aPoint);
       if (aDist < aBfBest)
@@ -1834,7 +1832,7 @@ TEST(NCollection_KDTreeTest, BruteForce_NearestMultipleSeeds)
   {
     TestRandom  aRng(aSeed);
     TestPoint2D aPoints[THE_N];
-    for (auto & aPoint : aPoints)
+    for (auto& aPoint : aPoints)
     {
       aPoint = {aRng.NextDouble(-200, 200), aRng.NextDouble(-200, 200)};
     }
@@ -1868,7 +1866,7 @@ TEST(NCollection_KDTreeTest, RangeSearch_IndicesMatchPoints)
   constexpr int THE_N = 100;
   TestRandom    aRng(666);
   TestPoint2D   aPoints[THE_N];
-  for (auto & aPoint : aPoints)
+  for (auto& aPoint : aPoints)
   {
     aPoint = {aRng.NextDouble(-30, 30), aRng.NextDouble(-30, 30)};
   }
@@ -1903,7 +1901,7 @@ TEST(NCollection_KDTreeTest, BoxSearch_IndicesMatchPoints)
   constexpr int THE_N = 100;
   TestRandom    aRng(777);
   TestPoint2D   aPoints[THE_N];
-  for (auto & aPoint : aPoints)
+  for (auto& aPoint : aPoints)
   {
     aPoint = {aRng.NextDouble(-30, 30), aRng.NextDouble(-30, 30)};
   }
@@ -1922,10 +1920,9 @@ TEST(NCollection_KDTreeTest, BoxSearch_IndicesMatchPoints)
     EXPECT_LE(aP.Y, 10.0);
   }
   size_t aBfCount = 0;
-  for (auto & aPoint : aPoints)
+  for (auto& aPoint : aPoints)
   {
-    if (aPoint.X >= -10.0 && aPoint.X <= 10.0 && aPoint.Y >= -10.0
-        && aPoint.Y <= 10.0)
+    if (aPoint.X >= -10.0 && aPoint.X <= 10.0 && aPoint.Y >= -10.0 && aPoint.Y <= 10.0)
     {
       ++aBfCount;
     }
@@ -1939,7 +1936,7 @@ TEST(NCollection_KDTreeTest, KNearest_IndicesMatchPoints)
   constexpr size_t THE_K = 10;
   TestRandom       aRng(321);
   TestPoint2D      aPoints[THE_N];
-  for (auto & aPoint : aPoints)
+  for (auto& aPoint : aPoints)
   {
     aPoint = {aRng.NextDouble(-50, 50), aRng.NextDouble(-50, 50)};
   }
@@ -2017,7 +2014,7 @@ TEST(NCollection_KDTreeTest, Degenerate_AllIdentical)
 {
   constexpr int THE_N = 20;
   TestPoint2D   aPoints[THE_N];
-  for (auto & aPoint : aPoints)
+  for (auto& aPoint : aPoints)
   {
     aPoint = {42.0, 42.0};
   }
@@ -2116,7 +2113,7 @@ TEST(NCollection_KDTreeTest, Degenerate_OneQuadrantOnly)
   constexpr int THE_N = 30;
   TestRandom    aRng(654);
   TestPoint2D   aPoints[THE_N];
-  for (auto & aPoint : aPoints)
+  for (auto& aPoint : aPoints)
   {
     aPoint = {aRng.NextDouble(0, 100), aRng.NextDouble(0, 100)};
   }
@@ -2179,11 +2176,11 @@ TEST(NCollection_KDTreeTest, LargeDataSet_3D_5000Points)
   constexpr int THE_N = 5000;
   TestRandom    aRng(4242);
   TestPoint3D   aPoints[THE_N];
-  for (auto & aPoint : aPoints)
+  for (auto& aPoint : aPoints)
   {
     aPoint = {aRng.NextDouble(-1000, 1000),
-                  aRng.NextDouble(-1000, 1000),
-                  aRng.NextDouble(-1000, 1000)};
+              aRng.NextDouble(-1000, 1000),
+              aRng.NextDouble(-1000, 1000)};
   }
   NCollection_KDTree<TestPoint3D, 3> aTree;
   aTree.Build(aPoints, THE_N);
@@ -2196,7 +2193,7 @@ TEST(NCollection_KDTreeTest, LargeDataSet_3D_5000Points)
     double      aKdSqDist = 0.0;
     aTree.NearestPoint(aQuery, aKdSqDist);
     double aBfBest = std::numeric_limits<double>::max();
-    for (const auto & aPoint : aPoints)
+    for (const auto& aPoint : aPoints)
     {
       const double aDist = sqDist3D(aQuery, aPoint);
       if (aDist < aBfBest)
@@ -2268,7 +2265,7 @@ TEST(NCollection_KDTreeTest, DuplicatePoints_AllSame3D)
 {
   constexpr int THE_N = 50;
   TestPoint3D   aPoints[THE_N];
-  for (auto & aPoint : aPoints)
+  for (auto& aPoint : aPoints)
   {
     aPoint = {7.0, 7.0, 7.0};
   }
@@ -2302,7 +2299,7 @@ TEST(NCollection_KDTreeTest, AllSamePoints_LargeSet2D)
   // 1000 identical 2D points - stress tests median-split when all coordinates equal.
   constexpr int THE_N = 1000;
   TestPoint2D   aPoints[THE_N];
-  for (auto & aPoint : aPoints)
+  for (auto& aPoint : aPoints)
   {
     aPoint = {3.0, 7.0};
   }
@@ -2322,7 +2319,7 @@ TEST(NCollection_KDTreeTest, AllSamePoints_LargeSet3D)
 {
   constexpr int THE_N = 500;
   TestPoint3D   aPoints[THE_N];
-  for (auto & aPoint : aPoints)
+  for (auto& aPoint : aPoints)
   {
     aPoint = {-2.0, 4.0, 6.0};
   }
@@ -2338,7 +2335,7 @@ TEST(NCollection_KDTreeTest, AllSamePoints_KNearest)
 {
   constexpr int THE_N = 100;
   TestPoint2D   aPoints[THE_N];
-  for (auto & aPoint : aPoints)
+  for (auto& aPoint : aPoints)
   {
     aPoint = {5.0, 5.0};
   }
@@ -2362,7 +2359,7 @@ TEST(NCollection_KDTreeTest, AllSamePoints_RangeSearch)
 {
   constexpr int THE_N = 100;
   TestPoint2D   aPoints[THE_N];
-  for (auto & aPoint : aPoints)
+  for (auto& aPoint : aPoints)
   {
     aPoint = {5.0, 5.0};
   }
@@ -2383,7 +2380,7 @@ TEST(NCollection_KDTreeTest, AllSamePoints_BoxSearch)
 {
   constexpr int THE_N = 100;
   TestPoint2D   aPoints[THE_N];
-  for (auto & aPoint : aPoints)
+  for (auto& aPoint : aPoints)
   {
     aPoint = {5.0, 5.0};
   }
@@ -2404,7 +2401,7 @@ TEST(NCollection_KDTreeTest, AllSamePoints_NearestPoints)
 {
   constexpr int THE_N = 50;
   TestPoint2D   aPoints[THE_N];
-  for (auto & aPoint : aPoints)
+  for (auto& aPoint : aPoints)
   {
     aPoint = {3.0, 3.0};
   }
@@ -2421,7 +2418,7 @@ TEST(NCollection_KDTreeTest, AllSamePoints_CopyMove)
 {
   constexpr int THE_N = 100;
   TestPoint2D   aPoints[THE_N];
-  for (auto & aPoint : aPoints)
+  for (auto& aPoint : aPoints)
   {
     aPoint = {2.0, 8.0};
   }
@@ -2541,7 +2538,7 @@ TEST(NCollection_KDTreeTest, BruteForce_AllQueries_500Points)
   constexpr int THE_N = 500;
   TestRandom    aRng(2026);
   TestPoint2D   aPoints[THE_N];
-  for (auto & aPoint : aPoints)
+  for (auto& aPoint : aPoints)
   {
     aPoint = {aRng.NextDouble(-500, 500), aRng.NextDouble(-500, 500)};
   }
@@ -2595,10 +2592,9 @@ TEST(NCollection_KDTreeTest, BruteForce_AllQueries_500Points)
       TestPoint2D                            aMax(aQuery.X + aHalf, aQuery.Y + aHalf);
       const NCollection_DynamicArray<size_t> aKdResult = aTree.BoxSearch(aMin, aMax);
       size_t                                 aBfCount  = 0;
-      for (auto & aPoint : aPoints)
+      for (auto& aPoint : aPoints)
       {
-        if (aPoint.X >= aMin.X && aPoint.X <= aMax.X && aPoint.Y >= aMin.Y
-            && aPoint.Y <= aMax.Y)
+        if (aPoint.X >= aMin.X && aPoint.X <= aMax.X && aPoint.Y >= aMin.Y && aPoint.Y <= aMax.Y)
           ++aBfCount;
       }
       EXPECT_EQ(aKdResult.Size(), aBfCount) << "Box q=" << q;
@@ -2739,7 +2735,7 @@ TEST(NCollection_KDTreeTest, NearestPoints_ValidIndices)
   constexpr int THE_N = 50;
   TestRandom    aRng(7070);
   TestPoint2D   aPoints[THE_N];
-  for (auto & aPoint : aPoints)
+  for (auto& aPoint : aPoints)
   {
     aPoint = {aRng.NextDouble(-10, 10), aRng.NextDouble(-10, 10)};
   }

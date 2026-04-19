@@ -246,7 +246,7 @@ void SelectMgr_RectangularFrustum::cacheVertexProjections(
       double        aMax   = -DBL_MAX;
       double        aMin   = DBL_MAX;
       const gp_XYZ& aPlane = theFrustum->myPlanes[aPlaneIdx].XYZ();
-      for (const auto & myVertice : theFrustum->myVertices)
+      for (const auto& myVertice : theFrustum->myVertices)
       {
         double aProjection = aPlane.Dot(myVertice.XYZ());
         aMin               = std::min(aMin, aProjection);
@@ -262,7 +262,7 @@ void SelectMgr_RectangularFrustum::cacheVertexProjections(
   {
     double aMax = -DBL_MAX;
     double aMin = DBL_MAX;
-    for (const auto & myVertice : theFrustum->myVertices)
+    for (const auto& myVertice : theFrustum->myVertices)
     {
       const gp_XYZ& aVert = myVertice.XYZ();
       aMax                = std::max(aVert.GetData()[aDim], aMax);

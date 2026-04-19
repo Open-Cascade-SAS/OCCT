@@ -2138,7 +2138,7 @@ void BRepOffset_MakeOffset::ToContext(
         }
         TopoDS_Vertex V[2];
         TopExp::Vertices(E, V[0], V[1]);
-        for (const auto & i : V)
+        for (const auto& i : V)
         {
           const NCollection_List<TopoDS_Shape>& LVA = myAnalyse.Ancestors(i);
           for (itl.Initialize(LVA); itl.More(); itl.Next())

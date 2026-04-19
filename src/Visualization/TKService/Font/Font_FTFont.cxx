@@ -465,7 +465,7 @@ unsigned int Font_FTFont::GlyphMaxSizeX(bool theToIncludeFallback) const
   unsigned int aWidth = GlyphMaxSizeX(false);
   if (theToIncludeFallback)
   {
-    for (const auto & myFallbackFace : myFallbackFaces)
+    for (const auto& myFallbackFace : myFallbackFaces)
     {
       if (!myFallbackFace.IsNull() && myFallbackFace->IsValid())
       {
@@ -497,7 +497,7 @@ unsigned int Font_FTFont::GlyphMaxSizeY(bool theToIncludeFallback) const
   unsigned int aHeight = GlyphMaxSizeY(false);
   if (theToIncludeFallback)
   {
-    for (const auto & myFallbackFace : myFallbackFaces)
+    for (const auto& myFallbackFace : myFallbackFaces)
     {
       if (!myFallbackFace.IsNull() && myFallbackFace->IsValid())
       {
@@ -641,7 +641,7 @@ int Font_FTFont::GlyphsNumber(bool theToIncludeFallback) const
   int aNbGlyphs = (int)myFTFace->num_glyphs;
   if (theToIncludeFallback)
   {
-    for (const auto & myFallbackFace : myFallbackFaces)
+    for (const auto& myFallbackFace : myFallbackFaces)
     {
       if (!myFallbackFace.IsNull() && myFallbackFace->IsValid())
       {

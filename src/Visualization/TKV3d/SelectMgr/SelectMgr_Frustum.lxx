@@ -440,7 +440,7 @@ bool SelectMgr_Frustum<N>::hasTriangleOverlap(const gp_Pnt& thePnt1,
   }
 
   int aDirectionsNb = myCamera->IsOrthographic() ? 4 : 6;
-  for (const auto & aTrEdge : aTrEdges)
+  for (const auto& aTrEdge : aTrEdges)
   {
     for (int aVolDir = 0; aVolDir < aDirectionsNb; ++aVolDir)
     {
@@ -792,7 +792,7 @@ bool SelectMgr_Frustum<N>::hasCylinderOverlap(const double   theBottomRad,
     return true;
   }
   bool isCylInsideRec = true;
-  for (auto & aPoint : aPoints)
+  for (auto& aPoint : aPoints)
   {
     isCylInsideRec &= isDotInside(aPoint, aVertices);
   }
@@ -904,7 +904,7 @@ void SelectMgr_Frustum<N>::DumpJson(Standard_OStream& theOStream, int theDepth) 
     OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, aMinOrthoVertsProjections)
   }
 
-  for (const auto & anEdgeDir : myEdgeDirs)
+  for (const auto& anEdgeDir : myEdgeDirs)
   {
     OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &anEdgeDir)
   }

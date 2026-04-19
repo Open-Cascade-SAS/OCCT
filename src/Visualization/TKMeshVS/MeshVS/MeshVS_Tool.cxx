@@ -276,7 +276,7 @@ bool MeshVS_Tool::GetNormal(const NCollection_Array1<double>& Nodes, gp_Vec& Nor
     {
       double cur =
         std::sqrt(cur_vec[0] * cur_vec[0] + cur_vec[1] * cur_vec[1] + cur_vec[2] * cur_vec[2]);
-      for (double & k : cur_vec)
+      for (double& k : cur_vec)
         k /= cur;
     }
 
@@ -344,7 +344,7 @@ bool MeshVS_Tool::GetAverageNormal(const NCollection_Array1<double>& Nodes, gp_V
     {
       double cur =
         std::sqrt(cur_vec[0] * cur_vec[0] + cur_vec[1] * cur_vec[1] + cur_vec[2] * cur_vec[2]);
-      for (double & k : cur_vec)
+      for (double& k : cur_vec)
         k /= cur;
     }
 

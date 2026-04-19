@@ -731,7 +731,7 @@ VrmlData_ErrorStatus VrmlData_Scene::ReadXYZ(VrmlData_InBuffer& theBuffer,
 {
   double               aVal[3] = {0., 0., 0.};
   VrmlData_ErrorStatus aStatus = VrmlData_StatusOK;
-  for (double & i : aVal)
+  for (double& i : aVal)
   {
     if (!VrmlData_Node::OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
       break;
@@ -775,7 +775,7 @@ VrmlData_ErrorStatus VrmlData_Scene::ReadXY(VrmlData_InBuffer& theBuffer,
 {
   double               aVal[2] = {0., 0.};
   VrmlData_ErrorStatus aStatus = VrmlData_StatusOK;
-  for (double & i : aVal)
+  for (double& i : aVal)
   {
     if (!VrmlData_Node::OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
       break;

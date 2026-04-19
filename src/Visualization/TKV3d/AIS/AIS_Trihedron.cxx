@@ -403,7 +403,7 @@ void AIS_Trihedron::computePresentation(
   const occ::handle<PrsMgr_PresentationManager>& /*thePrsMgr*/,
   const occ::handle<Prs3d_Presentation>& thePrs)
 {
-  for (auto & aPartIter : myPartToGroup)
+  for (auto& aPartIter : myPartToGroup)
   {
     aPartIter.Nullify();
   }
@@ -749,7 +749,7 @@ void AIS_Trihedron::updatePrimitives(const occ::handle<Prs3d_DatumAspect>& theAs
                                      const gp_Dir&                         theYDirection,
                                      const gp_Dir&                         theZDirection)
 {
-  for (auto & myPrimitive : myPrimitives)
+  for (auto& myPrimitive : myPrimitives)
   {
     myPrimitive.Nullify();
   }

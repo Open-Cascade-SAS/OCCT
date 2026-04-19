@@ -269,7 +269,7 @@ NewtonResultN<4> Solve4D(const Function&              theFunc,
     if (aStepNorm > aMaxStep)
     {
       const double aScale = aMaxStep / aStepNorm;
-      for (double & i : aDelta)
+      for (double& i : aDelta)
       {
         i *= aScale;
       }

@@ -191,7 +191,7 @@ OpenGl_View::OpenGl_View(const occ::handle<Graphic3d_StructureManager>& theMgr,
 OpenGl_View::~OpenGl_View()
 {
   ReleaseGlResources(nullptr); // ensure ReleaseGlResources() was called within valid context
-  for (auto & myBackground : myBackgrounds)
+  for (auto& myBackground : myBackgrounds)
   {
     OpenGl_Element::Destroy(nullptr, myBackground);
   }
@@ -231,7 +231,7 @@ void OpenGl_View::releaseSrgbResources(const occ::handle<OpenGl_Context>& theCtx
     myCubeMapParams->Release(theCtx.get());
   }
 
-  for (auto & myBackground : myBackgrounds)
+  for (auto& myBackground : myBackgrounds)
   {
     if (myBackground != nullptr)
     {

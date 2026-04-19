@@ -81,7 +81,7 @@ double BRepCheck::PrecCurve(const Adaptor3d_Curve& aAC3D)
     aX[3]  = aEL3D.MajorRadius();
     aX[4]  = aEL3D.MinorRadius();
     aXEmax = -1.;
-    for (double & i : aX)
+    for (double& i : aX)
     {
       if (i < 0.)
       {
@@ -113,7 +113,7 @@ double BRepCheck::PrecSurface(const occ::handle<Adaptor3d_Surface>& aAHSurf)
     aCone.Location().Coord(aX[0], aX[1], aX[2]);
     aX[3]  = aCone.RefRadius();
     aXEmax = -1.;
-    for (double & i : aX)
+    for (double& i : aX)
     {
       if (i < 0.)
       {

@@ -352,7 +352,7 @@ bool RWStl_Reader::ReadAscii(Standard_IStream&            theStream,
 
     gp_XYZ aVertex[3];
     bool   isEOF = false;
-    for (auto & i : aVertex)
+    for (auto& i : aVertex)
     {
       aLine = theBuffer.ReadLine(theStream, aLineLen);
       if (aLine == nullptr)

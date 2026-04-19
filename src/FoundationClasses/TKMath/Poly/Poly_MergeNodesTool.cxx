@@ -213,7 +213,7 @@ inline bool Poly_MergeNodesTool::MergedNodesMap::Bind(int&                      
       CellVec3i(-1, 1, -1), CellVec3i(1, 1, -1), CellVec3i(-1, -1, 1),  CellVec3i(1, -1, 1),
       CellVec3i(-1, 1, 1),  CellVec3i(1, 1, 1)};
     const CellVec3i anIndexCnt = vec3ToCell(thePos);
-    for (const auto & aNeigIter : THE_NEIGHBRS)
+    for (const auto& aNeigIter : THE_NEIGHBRS)
     {
       const CellVec3i anIndex = anIndexCnt + aNeigIter;
       const size_t    aHashEx = vec3iHashCode(anIndex, NbBuckets());

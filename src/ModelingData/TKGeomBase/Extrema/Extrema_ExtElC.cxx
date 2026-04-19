@@ -258,7 +258,7 @@ Extrema_ExtElC::Extrema_ExtElC()
   myDone  = false;
   myIsPar = false;
   myNbExt = 0;
-  for (double & anIdx : mySqDist)
+  for (double& anIdx : mySqDist)
   {
     anIdx = RealLast();
   }
@@ -315,7 +315,7 @@ Extrema_ExtElC::Extrema_ExtElC(const gp_Lin& theC1, const gp_Lin& theC2, const d
   myDone  = false;
   myNbExt = 0;
   myIsPar = false;
-  for (double & anIdx : mySqDist)
+  for (double& anIdx : mySqDist)
   {
     anIdx = RealLast();
   }
@@ -473,7 +473,7 @@ Extrema_ExtElC::Extrema_ExtElC(const gp_Lin& C1, const gp_Circ& C2, const double
   myIsPar = false;
   myDone  = false;
   myNbExt = 0;
-  for (double & anIdx : mySqDist)
+  for (double& anIdx : mySqDist)
   {
     anIdx = RealLast();
   }
@@ -656,7 +656,7 @@ Extrema_ExtElC::Extrema_ExtElC(const gp_Lin& C1, const gp_Elips& C2)
   myIsPar = false;
   myDone  = false;
   myNbExt = 0;
-  for (double & anIdx : mySqDist)
+  for (double& anIdx : mySqDist)
   {
     anIdx = RealLast();
   }
@@ -779,7 +779,7 @@ Extrema_ExtElC::Extrema_ExtElC(const gp_Lin& C1, const gp_Hypr& C2)
   myIsPar = false;
   myDone  = false;
   myNbExt = 0;
-  for (double & anIdx : mySqDist)
+  for (double& anIdx : mySqDist)
   {
     anIdx = RealLast();
   }
@@ -881,7 +881,7 @@ Extrema_ExtElC::Extrema_ExtElC(const gp_Lin& C1, const gp_Parab& C2)
   myIsPar = false;
   myDone  = false;
   myNbExt = 0;
-  for (double & anIdx : mySqDist)
+  for (double& anIdx : mySqDist)
   {
     anIdx = RealLast();
   }
@@ -948,7 +948,7 @@ Extrema_ExtElC::Extrema_ExtElC(const gp_Circ& C1, const gp_Circ& C2)
   myIsPar = false;
   myDone  = false;
   myNbExt = 0;
-  for (double & anIdx : mySqDist)
+  for (double& anIdx : mySqDist)
   {
     anIdx = RealLast();
   }

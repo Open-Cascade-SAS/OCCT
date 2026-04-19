@@ -149,7 +149,7 @@ Extrema_ExtPExtS::Extrema_ExtPExtS()
       myDone(false),
       myNbExt(0)
 {
-  for (double & anIdx : mySqDist)
+  for (double& anIdx : mySqDist)
   {
     anIdx = RealLast();
   }
@@ -176,7 +176,7 @@ Extrema_ExtPExtS::Extrema_ExtPExtS(const gp_Pnt&                                
       myDone(false),
       myNbExt(0)
 {
-  for (double & anIdx : mySqDist)
+  for (double& anIdx : mySqDist)
   {
     anIdx = RealLast();
   }
@@ -202,7 +202,7 @@ Extrema_ExtPExtS::Extrema_ExtPExtS(const gp_Pnt&                                
       myDone(false),
       myNbExt(0)
 {
-  for (double & anIdx : mySqDist)
+  for (double& anIdx : mySqDist)
   {
     anIdx = RealLast();
   }

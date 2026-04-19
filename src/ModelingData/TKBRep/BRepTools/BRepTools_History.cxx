@@ -292,7 +292,7 @@ void BRepTools_History::Merge(const BRepTools_History& theHistory23)
   }
 
   // Unbound the empty M12 and G12.
-  for (auto & aI : aS1ToGAndM)
+  for (auto& aI : aS1ToGAndM)
   {
     for (NCollection_DataMap<TopoDS_Shape,
                              NCollection_List<TopoDS_Shape>,

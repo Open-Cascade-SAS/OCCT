@@ -791,7 +791,7 @@ void AIS_Manipulator::RecomputeTransformation(const occ::handle<Graphic3d_Camera
   bool isRecomputedScaling     = false;
 
   // Remove transformation from dragger group
-  for (const auto & myAxe : myAxes)
+  for (const auto& myAxe : myAxes)
   {
     if (myAxe.HasDragging())
     {
@@ -938,7 +938,7 @@ void AIS_Manipulator::RecomputeTransformation(const occ::handle<Graphic3d_Camera
 
   if (isRecomputedDragging)
   {
-    for (const auto & myAxe : myAxes)
+    for (const auto& myAxe : myAxes)
     {
       myAxe.DraggerHighlightPrs()->CurrentGroup()->SetTransformation(
         myAxe.DraggerGroup()->Transformation());
@@ -1072,7 +1072,7 @@ void AIS_Manipulator::updateTransformation()
   // since AIS_Manipulator::setLocalTransformation() implementation throws exception
   // as protection from external calls
   AIS_InteractiveObject::setLocalTransformation(aGeomTrsf);
-  for (auto & myAxe : myAxes)
+  for (auto& myAxe : myAxes)
   {
     myAxe.Transform(aGeomTrsf);
   }
@@ -1102,7 +1102,7 @@ void AIS_Manipulator::updateTransformation()
 
 void AIS_Manipulator::SetSize(const float theSideLength)
 {
-  for (auto & myAxe : myAxes)
+  for (auto& myAxe : myAxes)
   {
     myAxe.SetSize(theSideLength);
   }
@@ -1114,7 +1114,7 @@ void AIS_Manipulator::SetSize(const float theSideLength)
 
 void AIS_Manipulator::SetGap(const float theValue)
 {
-  for (auto & myAxe : myAxes)
+  for (auto& myAxe : myAxes)
   {
     myAxe.SetIndent(theValue);
   }
@@ -1211,7 +1211,7 @@ void AIS_Manipulator::setTransformPersistence(
 {
   AIS_InteractiveObject::SetTransformPersistence(theTrsfPers);
 
-  for (auto & myAxe : myAxes)
+  for (auto& myAxe : myAxes)
   {
     myAxe.SetTransformPersistence(theTrsfPers);
   }
@@ -1271,7 +1271,7 @@ void AIS_Manipulator::Compute(const occ::handle<PrsMgr_PresentationManager>& the
     mySectorGroup->SetGroupPrimitivesAspect(anAspect->Aspect());
   }
 
-  for (auto & myAxe : myAxes)
+  for (auto& myAxe : myAxes)
   {
     // Display axes
     aGroup = thePrs->NewGroup();

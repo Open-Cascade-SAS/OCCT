@@ -2095,9 +2095,9 @@ gp_Pnt V3d_View::GravityPoint() const
                                          gp_Pnt(Xmax, Ymax, Zmin),
                                          gp_Pnt(Xmax, Ymax, Zmax)};
 
-    for (const auto & aBndPnt : aPnts)
+    for (const auto& aBndPnt : aPnts)
     {
-      const gp_Pnt  aProjected = Camera()->Project(aBndPnt);
+      const gp_Pnt aProjected = Camera()->Project(aBndPnt);
       if (std::abs(aProjected.X()) <= 1.0 && std::abs(aProjected.Y()) <= 1.0)
       {
         aResult += aBndPnt.XYZ();
@@ -2122,7 +2122,7 @@ gp_Pnt V3d_View::GravityPoint() const
                                            gp_Pnt(Xmax, Ymax, Zmin),
                                            gp_Pnt(Xmax, Ymax, Zmax)};
 
-      for (const auto & aBndPnt : aPnts)
+      for (const auto& aBndPnt : aPnts)
       {
         aResult += aBndPnt.XYZ();
         ++aNbPoints;

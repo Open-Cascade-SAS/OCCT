@@ -324,7 +324,7 @@ TEST_F(HandleAdvancedTest, HandleArrayOperations)
   EXPECT_EQ(5, aHandleVector.size());
 
   // Test that all handles are valid and point to correct types
-  for (const auto & i : aHandleVector)
+  for (const auto& i : aHandleVector)
   {
     EXPECT_FALSE(i.IsNull());
 

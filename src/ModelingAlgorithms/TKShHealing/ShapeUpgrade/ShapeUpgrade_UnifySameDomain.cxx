@@ -2162,7 +2162,7 @@ bool ShapeUpgrade_UnifySameDomain::MergeSubSeq(
     gp_Vec Vec(PV1, PV2);
     if (mySafeInputMode)
     {
-      for (auto & k : V)
+      for (auto& k : V)
       {
         if (!myContext->IsRecorded(k))
         {
@@ -2263,7 +2263,7 @@ bool ShapeUpgrade_UnifySameDomain::MergeSubSeq(
 
       if (mySafeInputMode)
       {
-        for (auto & k : V)
+        for (auto& k : V)
         {
           if (!myContext->IsRecorded(k))
           {

@@ -664,7 +664,7 @@ void BOPAlgo_PaveFiller::PerformNewVertices(
     const occ::handle<BOPDS_PaveBlock>& aPB1  = aCPB.PaveBlock1();
     const occ::handle<BOPDS_PaveBlock>& aPB2  = aCPB.PaveBlock2();
     const occ::handle<BOPDS_PaveBlock>  aPB[] = {aPB1, aPB2};
-    for (const auto & j : aPB)
+    for (const auto& j : aPB)
     {
       NCollection_List<int>* pLI = aMPBLI.ChangeSeek(j);
       if (!pLI)
@@ -1256,7 +1256,7 @@ void BOPAlgo_PaveFiller::ForceInterfEE(const Message_ProgressRange& theRange)
     myDS->AddInterf(nE1, nE2);
 
     // Fill map for common blocks creation
-    for (const auto & j : aPB)
+    for (const auto& j : aPB)
     {
       if (myDS->IsCommonBlock(j))
       {
@@ -1264,10 +1264,7 @@ void BOPAlgo_PaveFiller::ForceInterfEE(const Message_ProgressRange& theRange)
           myDS->CommonBlock(j)->PaveBlocks();
         NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator aItLPB(aLPBCB);
         for (; aItLPB.More(); aItLPB.Next())
-          BOPAlgo_Tools::FillMap<occ::handle<BOPDS_PaveBlock>>(j,
-                                                               aItLPB.Value(),
-                                                               aMPBLPB,
-                                                               anAlloc);
+          BOPAlgo_Tools::FillMap<occ::handle<BOPDS_PaveBlock>>(j, aItLPB.Value(), aMPBLPB, anAlloc);
       }
     }
     BOPAlgo_Tools::FillMap<occ::handle<BOPDS_PaveBlock>>(aPB[0], aPB[1], aMPBLPB, anAlloc);

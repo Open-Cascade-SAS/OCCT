@@ -434,7 +434,7 @@ private:
       int aNodes[3];
       this->getStructure()->ElementNodes(aTriangle, aNodes);
 
-      for (int & aNode : aNodes)
+      for (int& aNode : aNodes)
       {
         if (!aUsedNodes.Contains(aNode))
         {

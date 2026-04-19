@@ -133,7 +133,7 @@ BRepPrim_GWedge::BRepPrim_GWedge()
       X2Min(0),
       X2Max(0)
 {
-  for (bool & i : myInfinite)
+  for (bool& i : myInfinite)
   {
     i = false;
   }
@@ -161,7 +161,7 @@ BRepPrim_GWedge::BRepPrim_GWedge(const BRepPrim_Builder& B,
       X2Min(0),
       X2Max(dx)
 {
-  for (bool & i : myInfinite)
+  for (bool& i : myInfinite)
   {
     i = false;
   }
@@ -190,7 +190,7 @@ BRepPrim_GWedge::BRepPrim_GWedge(const BRepPrim_Builder& B,
       X2Min(0),
       X2Max(ltx)
 {
-  for (bool & i : myInfinite)
+  for (bool& i : myInfinite)
   {
     i = false;
   }
@@ -228,7 +228,7 @@ BRepPrim_GWedge::BRepPrim_GWedge(const BRepPrim_Builder& B,
       X2Min(x2min),
       X2Max(x2max)
 {
-  for (bool & i : myInfinite)
+  for (bool& i : myInfinite)
   {
     i = false;
   }

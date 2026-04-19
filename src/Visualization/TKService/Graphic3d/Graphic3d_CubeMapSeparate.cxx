@@ -200,7 +200,7 @@ bool Graphic3d_CubeMapSeparate::IsDone() const
     return true;
   }
 
-  for (const auto & myPath : myPaths)
+  for (const auto& myPath : myPaths)
   {
     OSD_File aCubeMapFile(myPath);
     if (!aCubeMapFile.Exists())
@@ -216,7 +216,7 @@ bool Graphic3d_CubeMapSeparate::IsDone() const
 
 void Graphic3d_CubeMapSeparate::resetImages()
 {
-  for (auto & myImage : myImages)
+  for (auto& myImage : myImages)
   {
     myImage.Nullify();
   }

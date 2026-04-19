@@ -4657,7 +4657,7 @@ struct UnitWeightsArray
   constexpr UnitWeightsArray()
       : Data{}
   {
-    for (double & i : Data)
+    for (double& i : Data)
       i = 1.0;
   }
 };

@@ -171,11 +171,11 @@ void Prs3d_DatumAspect::DumpJson(Standard_OStream& theOStream, int theDepth) con
 
   OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, myPointAspect.get())
   OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, myArrowAspect.get())
-  for (const auto & aShadingAspect : myShadedAspects)
+  for (const auto& aShadingAspect : myShadedAspects)
   {
     OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, aShadingAspect.get())
   }
-  for (const auto & aLineAspect : myLineAspects)
+  for (const auto& aLineAspect : myLineAspects)
   {
     OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, aLineAspect.get())
   }

@@ -230,11 +230,7 @@ TEST(GeomFill_GordonBuilder, ThreeByThreeGrid_InterpolatesAllPoints)
   {
     for (double iP : aProfY)
     {
-      verifyPointOnSurface(aSurf,
-                           iG,
-                           iP,
-                           gp_Pnt(iG, iP, 0.0),
-                           1.0e-3);
+      verifyPointOnSurface(aSurf, iG, iP, gp_Pnt(iG, iP, 0.0), 1.0e-3);
     }
   }
 }
@@ -753,7 +749,7 @@ TEST(GeomFill_Gordon, ReversedCurveNetwork_ProducesValidSurface)
 
   double aXMin = RealLast(), aXMax = -RealLast();
   double aYMin = RealLast(), aYMax = -RealLast();
-  for (const auto & aCorner : aCorners)
+  for (const auto& aCorner : aCorners)
   {
     EXPECT_NEAR(aCorner.Z(), 0.0, 0.01);
     aXMin = std::min(aXMin, aCorner.X());

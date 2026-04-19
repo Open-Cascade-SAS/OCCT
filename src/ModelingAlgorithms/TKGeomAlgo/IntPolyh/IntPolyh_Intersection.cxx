@@ -434,7 +434,7 @@ void IntPolyh_Intersection::MergeCouples(NCollection_List<IntPolyh_Couple>& anAr
   NCollection_Map<IntPolyh_Couple> aFenceMap;
   //
   NCollection_List<IntPolyh_Couple>* pLists[4] = {&anArrayFF, &anArrayFR, &anArrayRF, &anArrayRR};
-  for (auto & pList : pLists)
+  for (auto& pList : pLists)
   {
     NCollection_List<IntPolyh_Couple>::Iterator aIt(*pList);
     for (; aIt.More();)

@@ -79,7 +79,7 @@ bool MeshVS_SensitiveQuad::Matches(SelectBasics_SelectingVolumeManager& theMgr,
                                         Select3D_TOS_INTERIOR,
                                         aDummy);
     }
-    for (const auto & myVertice : myVertices)
+    for (const auto& myVertice : myVertices)
     {
       if (!theMgr.OverlapsPoint(myVertice))
         return false;
@@ -114,7 +114,7 @@ bool MeshVS_SensitiveQuad::Matches(SelectBasics_SelectingVolumeManager& theMgr,
 gp_Pnt MeshVS_SensitiveQuad::CenterOfGeometry() const
 {
   gp_XYZ aSum(0.0, 0.0, 0.0);
-  for (const auto & myVertice : myVertices)
+  for (const auto& myVertice : myVertices)
   {
     aSum += myVertice.XYZ();
   }
@@ -127,11 +127,9 @@ gp_Pnt MeshVS_SensitiveQuad::CenterOfGeometry() const
 Select3D_BndBox3d MeshVS_SensitiveQuad::BoundingBox()
 {
   Select3D_BndBox3d aBox;
-  for (const auto & myVertice : myVertices)
+  for (const auto& myVertice : myVertices)
   {
-    aBox.Add(NCollection_Vec3<double>(myVertice.X(),
-                                      myVertice.Y(),
-                                      myVertice.Z()));
+    aBox.Add(NCollection_Vec3<double>(myVertice.X(), myVertice.Y(), myVertice.Z()));
   }
 
   return aBox;

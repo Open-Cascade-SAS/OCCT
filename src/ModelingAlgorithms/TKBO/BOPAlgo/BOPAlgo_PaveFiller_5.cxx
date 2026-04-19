@@ -888,7 +888,7 @@ void BOPAlgo_PaveFiller::ForceInterfEF(
     // Vertices of the face
     NCollection_Map<int>        aMVF;
     const NCollection_Map<int>* pMVF[] = {&aFI.VerticesOn(), &aFI.VerticesIn(), &aFI.VerticesSc()};
-    for (auto & iM : pMVF)
+    for (auto& iM : pMVF)
     {
       NCollection_Map<int>::Iterator itM(*iM);
       for (; itM.More(); itM.Next())
@@ -899,7 +899,7 @@ void BOPAlgo_PaveFiller::ForceInterfEF(
     const NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>* pMPBF[] = {&aFI.PaveBlocksOn(),
                                                                            &aFI.PaveBlocksIn(),
                                                                            &aFI.PaveBlocksSc()};
-    for (auto & iM : pMPBF)
+    for (auto& iM : pMPBF)
     {
       const int aNb = iM->Extent();
       for (int iPB = 1; iPB <= aNb; ++iPB)

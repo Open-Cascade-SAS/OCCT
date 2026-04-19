@@ -28,7 +28,7 @@ Aspect_XRSession::Aspect_XRSession()
       myIod(0.0),
       myDispFreq(0.0f)
 {
-  for (auto & myRoleAction : myRoleActions)
+  for (auto& myRoleAction : myRoleActions)
   {
     myRoleAction.Resize(0, Aspect_XRGenericAction_NB - 1, false);
   }

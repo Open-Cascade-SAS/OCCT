@@ -193,9 +193,9 @@ void BRepOffset_Inter3d::FaceInter(const TopoDS_Face&    F1,
         TopExp::Vertices(EE1, VE1[0], VE1[1]);
         TopExp::Vertices(EE2, VE2[0], VE2[1]);
         TopoDS_Vertex V;
-        for (auto & i : VE1)
+        for (auto& i : VE1)
         {
-          for (const auto & j : VE2)
+          for (const auto& j : VE2)
           {
             if (i.IsSame(j))
             {
@@ -322,7 +322,7 @@ void BRepOffset_Inter3d::ConnexIntByArc(const NCollection_List<TopoDS_Shape>& /*
       TopExp::Vertices(E1, V[0], V[1]);
       const NCollection_List<TopoDS_Shape>& AncE1 = Analyse.Ancestors(E1);
 
-      for (const auto & i : V)
+      for (const auto& i : V)
       {
         if (!InitOffsetFace.HasImage(i))
         {
@@ -1343,7 +1343,7 @@ void BRepOffset_Inter3d::ContextIntByArc(
       //------------------------------------------------------
       TopoDS_Vertex V[2];
       TopExp::Vertices(E, V[0], V[1]);
-      for (const auto & i : V)
+      for (const auto& i : V)
       {
         if (!MV.Add(i))
           continue;

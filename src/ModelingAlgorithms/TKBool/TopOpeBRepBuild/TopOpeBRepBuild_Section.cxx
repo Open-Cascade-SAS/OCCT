@@ -1237,7 +1237,7 @@ void TopOpeBRepBuild_Builder::FillSecEdgeAncestorMap(
       continue;
     }
     TopAbs_State states[3] = {TopAbs_IN, TopAbs_ON, TopAbs_OUT};
-    for (auto & state : states)
+    for (auto& state : states)
     {
       //      bool isSplit = IsSplit(es,states[j]);
       if (IsSplit(es, state))

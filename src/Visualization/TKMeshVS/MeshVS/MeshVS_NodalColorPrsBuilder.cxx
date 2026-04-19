@@ -178,7 +178,7 @@ void MeshVS_NodalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& P
   // colors
   Graphic3d_MaterialAspect aMaterial[2] = {Graphic3d_NameOfMaterial_Plastified,
                                            Graphic3d_NameOfMaterial_Plastified};
-  for (auto & i : aMaterial)
+  for (auto& i : aMaterial)
   {
     i.SetSpecularColor(Quantity_NOC_BLACK);
     i.SetEmissiveColor(Quantity_NOC_BLACK);

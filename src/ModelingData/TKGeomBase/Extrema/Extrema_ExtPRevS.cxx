@@ -206,7 +206,7 @@ Extrema_ExtPRevS::Extrema_ExtPRevS()
   myNbExt                    = 0;
   myIsAnalyticallyComputable = false;
 
-  for (double & i : mySqDist)
+  for (double& i : mySqDist)
   {
     i = RealLast();
   }

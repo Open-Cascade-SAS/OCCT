@@ -678,10 +678,10 @@ void Graphic3d_TransformPers::Apply(const occ::handle<Graphic3d_Camera>& theCame
     typename BVH_Box<T, 4>::BVH_VecNt(aMax.x(), aMax.y(), aMax.z(), static_cast<T>(1.0));
 
   theBoundingBox.Clear();
-  for (auto & aCorner : anArrayOfCorners)
+  for (auto& aCorner : anArrayOfCorners)
   {
-    aCorner                                    = aTPers * aCorner;
-    aCorner                                    = aCorner / aCorner.w();
+    aCorner = aTPers * aCorner;
+    aCorner = aCorner / aCorner.w();
     theBoundingBox.Add(typename BVH_Box<T, 3>::BVH_VecNt(aCorner.x(), aCorner.y(), aCorner.z()));
   }
 }

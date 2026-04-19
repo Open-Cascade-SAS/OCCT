@@ -174,7 +174,7 @@ void OpenGl_ShaderManager::clear()
   myBlitPrograms[1].Init(occ::handle<OpenGl_ShaderProgram>());
   myBoundBoxProgram.Nullify();
   myBoundBoxVertBuffer.Nullify();
-  for (auto & myStereoProgram : myStereoPrograms)
+  for (auto& myStereoProgram : myStereoPrograms)
   {
     myStereoProgram.Nullify();
   }

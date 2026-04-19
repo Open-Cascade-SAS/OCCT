@@ -409,7 +409,7 @@ Bnd_Box Bnd_Box::Transformed(const gp_Trsf& T) const
       gp_Pnt(Xmin, Ymax, Zmax),
       gp_Pnt(Xmax, Ymax, Zmax),
     };
-    for (auto & aCorner : aCorners)
+    for (auto& aCorner : aCorners)
     {
       aCorner.Transform(T);
       aNewBox.Add(aCorner);

@@ -216,7 +216,7 @@ void MeshVS_ElementalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation
 
   Graphic3d_MaterialAspect aMaterial[2] = {Graphic3d_NameOfMaterial_Plastified,
                                            Graphic3d_NameOfMaterial_Plastified};
-  for (auto & i : aMaterial)
+  for (auto& i : aMaterial)
   {
     // OCC20644 "plastic" is most suitable here, as it is "non-physic"
     // so TelUpdateMaterial() from OpenGl_attri.c uses the interior
@@ -514,7 +514,7 @@ void MeshVS_ElementalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation
 
   Graphic3d_MaterialAspect aMaterial2[2] = {Graphic3d_NameOfMaterial_Plastified,
                                             Graphic3d_NameOfMaterial_Plastified};
-  for (auto & i : aMaterial2)
+  for (auto& i : aMaterial2)
   {
     // OCC20644 "plastic" is most suitable here, as it is "non-physic"
     // so TelUpdateMaterial() from OpenGl_attri.c uses the interior

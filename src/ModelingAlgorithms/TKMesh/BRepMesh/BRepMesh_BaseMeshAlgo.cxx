@@ -245,7 +245,7 @@ occ::handle<Poly_Triangulation> BRepMesh_BaseMeshAlgo::collectTriangles()
     int aNode[3];
     myStructure->ElementNodes(aCurElem, aNode);
 
-    for (int & i : aNode)
+    for (int& i : aNode)
     {
       if (!myUsedNodes->IsBound(i))
       {

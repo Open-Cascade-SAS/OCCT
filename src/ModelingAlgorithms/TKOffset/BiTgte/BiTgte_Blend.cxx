@@ -495,7 +495,7 @@ static TopoDS_Vertex FindVertex(const gp_Pnt&                                   
     {
       TopExp::Vertices(E, VV[0], VV[1]);
 
-      for (const auto & i : VV)
+      for (const auto& i : VV)
       {
         // if OK la Tolerance du Vertex
         Tol2 = BRep_Tool::Tolerance(i);

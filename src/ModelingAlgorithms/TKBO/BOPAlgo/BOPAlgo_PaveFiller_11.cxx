@@ -95,7 +95,7 @@ void BOPAlgo_PaveFiller::CheckSelfInterference()
               if (!aR.Contains(k) && !aMSubS.Contains(k))
               {
                 // Add connection
-                const TopoDS_Shape& aV = myDS->Shape(k);
+                const TopoDS_Shape&                                            aV = myDS->Shape(k);
                 NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>* pMSOr =
                   aMCSI.ChangeSeek(aV);
                 if (!pMSOr)

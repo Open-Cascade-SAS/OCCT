@@ -124,7 +124,7 @@ bool Message_CompositeAlerts::HasAlert(const occ::handle<Standard_Type>& theType
 
 void Message_CompositeAlerts::Clear()
 {
-  for (auto & myAlert : myAlerts)
+  for (auto& myAlert : myAlerts)
   {
     myAlert.Clear();
   }
@@ -145,7 +145,7 @@ void Message_CompositeAlerts::Clear(Message_Gravity theGravity)
 
 void Message_CompositeAlerts::Clear(const occ::handle<Standard_Type>& theType)
 {
-  for (auto & myAlert : myAlerts)
+  for (auto& myAlert : myAlerts)
   {
     for (NCollection_List<occ::handle<Message_Alert>>::Iterator anIt(myAlert); anIt.More();)
     {
@@ -168,7 +168,7 @@ void Message_CompositeAlerts::DumpJson(Standard_OStream& theOStream, int theDept
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
   int anInc = 1;
-  for (const auto & myAlert : myAlerts)
+  for (const auto& myAlert : myAlerts)
   {
     if (myAlert.IsEmpty())
       continue;

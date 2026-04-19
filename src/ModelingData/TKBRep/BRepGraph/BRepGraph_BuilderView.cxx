@@ -2591,8 +2591,8 @@ bool BRepGraph::BuilderView::ValidateMutationBoundary(
                                                   BRepGraph_NodeId::Kind::Occurrence};
   for (auto aKind : THE_KINDS)
   {
-    const int                    aCachedCnt  = cachedActiveByKind(aStorage, aKind);
-    const int                    anActualCnt = countActiveByKind(*myGraph, aKind);
+    const int aCachedCnt  = cachedActiveByKind(aStorage, aKind);
+    const int anActualCnt = countActiveByKind(*myGraph, aKind);
     if (aCachedCnt == anActualCnt)
       continue;
 
