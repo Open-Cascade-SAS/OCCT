@@ -152,6 +152,7 @@ runs:
         cmake -G "Unix Makefiles" \
               -D CMAKE_C_COMPILER=${{ inputs.compiler == 'clang' && 'clang' || 'gcc' }} \
               -D CMAKE_CXX_COMPILER=${{ inputs.compiler == 'clang' && 'clang++' || 'g++' }} \
+              -D CMAKE_CXX_FLAGS="-Werror -Wzero-as-null-pointer-constant -Wno-unknown-warning-option -Wno-error=array-bounds -Wno-error=maybe-uninitialized -Wno-error=stringop-overflow -Wno-deprecated-declarations -Wno-error=cast-function-type-mismatch" \
               -D BUILD_USE_PCH=${{ inputs.build-use-pch }} \
               -D BUILD_OPT_PROFILE=${{ inputs.build-opt-profile }} \
               -D BUILD_INCLUDE_SYMLINK=ON \
@@ -182,6 +183,7 @@ runs:
         cmake -G "Unix Makefiles" \
               -D CMAKE_C_COMPILER=${{ inputs.compiler == 'clang' && 'clang' || 'gcc' }} \
               -D CMAKE_CXX_COMPILER=${{ inputs.compiler == 'clang' && 'clang++' || 'g++' }} \
+              -D CMAKE_CXX_FLAGS="-Werror -Wzero-as-null-pointer-constant -Wno-unknown-warning-option -Wno-error=array-bounds -Wno-error=maybe-uninitialized -Wno-error=stringop-overflow" \
               -D BUILD_USE_PCH=${{ inputs.build-use-pch }} \
               -D BUILD_INCLUDE_SYMLINK=ON \
               -D BUILD_OPT_PROFILE=${{ inputs.build-opt-profile }} \
