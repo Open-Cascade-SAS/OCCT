@@ -207,7 +207,13 @@ bool STEPConstruct_Assembly::CheckSRRReversesNAUO(
       occ::handle<StepShape_ShapeDefinitionRepresentation> SDR =
         occ::down_cast<StepShape_ShapeDefinitionRepresentation>(enti);
       if (SDR->UsedRepresentation() == rep1)
-        pd1 = SDR->Definition().PropertyDefinition()->Definition().ProductDefinition();
+      {
+        const occ::handle<StepRepr_PropertyDefinition> aPD = SDR->Definition().PropertyDefinition();
+        if (aPD)
+        {
+          pd1 = aPD->Definition().ProductDefinition();
+        }
+      }
     }
   }
 
@@ -220,7 +226,13 @@ bool STEPConstruct_Assembly::CheckSRRReversesNAUO(
       occ::handle<StepShape_ShapeDefinitionRepresentation> SDR =
         occ::down_cast<StepShape_ShapeDefinitionRepresentation>(enti);
       if (SDR->UsedRepresentation() == rep2)
-        pd2 = SDR->Definition().PropertyDefinition()->Definition().ProductDefinition();
+      {
+        const occ::handle<StepRepr_PropertyDefinition> aPD = SDR->Definition().PropertyDefinition();
+        if (aPD)
+        {
+          pd2 = aPD->Definition().ProductDefinition();
+        }
+      }
     }
   }
 
