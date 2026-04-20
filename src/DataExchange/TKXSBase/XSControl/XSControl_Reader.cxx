@@ -230,8 +230,8 @@ int XSControl_Reader::TransferList(
   aTransferReader->BeginTransfer();
   InitializeMissingParameters();
   ClearShapes();
-  Message_ProgressScope aProgressScope(theProgress, nullptr, theList->Size());
-  for (int i = 1; i <= theList->Size() && aProgressScope.More(); i++)
+  Message_ProgressScope aProgressScope(theProgress, nullptr, static_cast<double>(theList->Size()));
+  for (size_t i = 1; i <= theList->Size() && aProgressScope.More(); i++)
   {
     occ::handle<Standard_Transient> aStart = theList->Value(i);
     if (aTransferReader->TransferOne(aStart, true, aProgressScope.Next()) == 0)
@@ -259,8 +259,8 @@ int XSControl_Reader::TransferRoots(const Message_ProgressRange& theProgress)
   aTransferReader->BeginTransfer();
   InitializeMissingParameters();
   ClearShapes();
-  Message_ProgressScope aProgressScope(theProgress, "Root", theroots.Size());
-  for (int i = 1; i <= theroots.Size() && aProgressScope.More(); i++)
+  Message_ProgressScope aProgressScope(theProgress, "Root", static_cast<double>(theroots.Size()));
+  for (size_t i = 1; i <= theroots.Size() && aProgressScope.More(); i++)
   {
     occ::handle<Standard_Transient> aStart = theroots.Value(i);
     if (aTransferReader->TransferOne(aStart, true, aProgressScope.Next()) == 0)
