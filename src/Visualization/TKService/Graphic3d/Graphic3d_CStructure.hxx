@@ -106,6 +106,12 @@ public:
   //! Set if some groups might have transform persistence.
   void SetGroupTransformPersistence(bool theValue) { myHasGroupTrsf = theValue; }
 
+  //! Return TRUE if some groups might have flipping options; FALSE by default.
+  bool HasGroupFlipping() const { return myHasGroupFlipping; }
+
+  //! Set if some groups might have flipping options.
+  void SetGroupFlipping(bool theValue) { myHasGroupFlipping = theValue; }
+
   //! @return associated clip planes
   const occ::handle<Graphic3d_SequenceOfHClipPlane>& ClipPlanes() const { return myClipPlanes; }
 
@@ -250,6 +256,7 @@ protected:
   bool myBndBoxClipCheck;  //!< Flag responsible for checking of bounding box clipping before drawing of object
 
   bool myHasGroupTrsf;     //!< flag specifying that some groups might have transform persistence
+  bool myHasGroupFlipping; //!< flag specifying that some groups might have flipping options
 
 public:
 

@@ -19,6 +19,7 @@
 
 #include <Graphic3d_BndBox4f.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
+#include <Graphic3d_Flipper.hxx>
 #include <NCollection_DataMap.hxx>
 #include <Standard_CString.hxx>
 #include <Graphic3d_Vertex.hxx>
@@ -133,6 +134,9 @@ public:
   //! sets the flipping to theIsEnabled state.
   Standard_EXPORT virtual void SetFlippingOptions(const bool    theIsEnabled,
                                                   const gp_Ax2& theRefPlane) = 0;
+
+  //! Return flipper metadata describing the runtime flip of this group, or null if not flipped.
+  const occ::handle<Graphic3d_Flipper>& Flipper() const { return myFlipper; }
 
   //! Return transformation.
   const gp_Trsf& Transformation() const { return myTrsf; }
@@ -315,6 +319,7 @@ protected:
 
 protected:
   occ::handle<Graphic3d_TransformPers> myTrsfPers;  //!< current transform persistence
+  occ::handle<Graphic3d_Flipper>       myFlipper;   //!< current group flipping
   Graphic3d_Structure*                 myStructure; //!< pointer to the parent structure
   Graphic3d_BndBox4f                   myBounds;    //!< bounding box
   gp_Trsf                              myTrsf;      //!< group transformation

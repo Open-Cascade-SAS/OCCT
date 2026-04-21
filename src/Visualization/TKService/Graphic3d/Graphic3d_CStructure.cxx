@@ -32,6 +32,7 @@ Graphic3d_CStructure::Graphic3d_CStructure(
       myIsCulled(true),
       myBndBoxClipCheck(true),
       myHasGroupTrsf(false),
+      myHasGroupFlipping(false),
       //
       IsInfinite(0),
       stick(0),
