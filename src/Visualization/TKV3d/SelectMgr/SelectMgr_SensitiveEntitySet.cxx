@@ -15,6 +15,7 @@
 
 #include <SelectMgr_SensitiveEntitySet.hxx>
 
+#include <Graphic3d_Flipper.hxx>
 #include <Graphic3d_TransformPers.hxx>
 #include <Select3D_SensitiveEntity.hxx>
 #include <SelectMgr_SensitiveEntity.hxx>
@@ -25,9 +26,10 @@ IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_SensitiveEntitySet, BVH_PrimitiveSet3d)
 
 SelectMgr_SensitiveEntitySet::SelectMgr_SensitiveEntitySet(
   const occ::handle<Select3D_BVHBuilder3d>& theBuilder)
-    : BVH_PrimitiveSet3d(theBuilder)
+    : BVH_PrimitiveSet3d(theBuilder),
+      myNbEntityWithPersistence(0),
+      myNbEntityWithFlipping(0)
 {
-  myNbEntityWithPersistence = 0;
 }
 
 //=======================================================================
@@ -49,6 +51,10 @@ void SelectMgr_SensitiveEntitySet::Append(const occ::handle<SelectMgr_SensitiveE
   if (!theEntity->BaseSensitive()->TransformPersistence().IsNull())
   {
     ++myNbEntityWithPersistence;
+  }
+  if (!theEntity->BaseSensitive()->Flipper().IsNull())
+  {
+    ++myNbEntityWithFlipping;
   }
   MarkDirty();
 }
@@ -81,6 +87,10 @@ void SelectMgr_SensitiveEntitySet::Append(const occ::handle<SelectMgr_Selection>
     {
       ++myNbEntityWithPersistence;
     }
+    if (!aSensEnt->BaseSensitive()->Flipper().IsNull())
+    {
+      ++myNbEntityWithFlipping;
+    }
   }
   MarkDirty();
 }
@@ -111,6 +121,10 @@ void SelectMgr_SensitiveEntitySet::Remove(const occ::handle<SelectMgr_Selection>
     if (!aSensEnt->BaseSensitive()->TransformPersistence().IsNull())
     {
       --myNbEntityWithPersistence;
+    }
+    if (!aSensEnt->BaseSensitive()->Flipper().IsNull())
+    {
+      --myNbEntityWithFlipping;
     }
 
     mySensitives.RemoveLast();

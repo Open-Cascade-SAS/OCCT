@@ -203,6 +203,10 @@ void SelectMgr::ComputeSensitivePrs(const occ::handle<Graphic3d_Structure>&     
        aSelEntIter.Next())
   {
     const occ::handle<Select3D_SensitiveEntity>& anEnt = aSelEntIter.Value()->BaseSensitive();
+    if (!anEnt->Flipper().IsNull())
+    {
+      thePrs->CurrentGroup()->SetFlippingOptions(true, anEnt->Flipper()->RefPlane());
+    }
     if (occ::handle<Select3D_SensitiveBox> aSensBox = occ::down_cast<Select3D_SensitiveBox>(anEnt))
     {
       addBoundingBox(aSeqLines, aSensBox, theLoc);
