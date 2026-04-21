@@ -225,8 +225,8 @@ int XSControl_Reader::TransferList(
   if (theList.IsNull())
     return 0;
 
-  int                                          aTransferedCount = 0;
-  const occ::handle<XSControl_TransferReader>& aTransferReader  = thesession->TransferReader();
+  int                                          aTransferredCount = 0;
+  const occ::handle<XSControl_TransferReader>& aTransferReader   = thesession->TransferReader();
   aTransferReader->BeginTransfer();
   InitializeMissingParameters();
   ClearShapes();
@@ -243,9 +243,9 @@ int XSControl_Reader::TransferList(
     // Null shapes are allowed intentionally.
     // SMH May 00: allow empty shapes (STEP CAX-IF, external references)
     theshapes.Append(aShape);
-    ++aTransferedCount;
+    ++aTransferredCount;
   }
-  return aTransferedCount;
+  return aTransferredCount;
 }
 
 //=================================================================================================
@@ -254,8 +254,8 @@ int XSControl_Reader::TransferRoots(const Message_ProgressRange& theProgress)
 {
   NbRootsForTransfer();
 
-  int                                          aTransferedCount = 0;
-  const occ::handle<XSControl_TransferReader>& aTransferReader  = thesession->TransferReader();
+  int                                          aTransferredCount = 0;
+  const occ::handle<XSControl_TransferReader>& aTransferReader   = thesession->TransferReader();
   aTransferReader->BeginTransfer();
   InitializeMissingParameters();
   ClearShapes();
@@ -272,9 +272,9 @@ int XSControl_Reader::TransferRoots(const Message_ProgressRange& theProgress)
     // Null shapes are allowed intentionally.
     // SMH May 00: allow empty shapes (STEP CAX-IF, external references)
     theshapes.Append(aShape);
-    ++aTransferedCount;
+    ++aTransferredCount;
   }
-  return aTransferedCount;
+  return aTransferredCount;
 }
 
 //=================================================================================================
@@ -321,14 +321,16 @@ TopoDS_Shape XSControl_Reader::OneShape() const
   BRep_Builder    aBuilder;
   TopoDS_Compound aResult;
   aBuilder.MakeCompound(aResult);
+  bool aNonNullShapeAdded = false;
   for (const auto& aCurrShape : theshapes)
   {
     if (!aCurrShape.IsNull())
     {
       aBuilder.Add(aResult, aCurrShape);
+      aNonNullShapeAdded = true;
     }
   }
-  return aResult;
+  return aNonNullShapeAdded ? aResult : TopoDS_Shape();
 }
 
 //=================================================================================================
