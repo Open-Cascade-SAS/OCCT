@@ -3632,22 +3632,22 @@ void OpenGl_View::renderGrid()
   aContext->core11fwd->glGetIntegerv(GL_BLEND_DST_RGB, &aPrevBlendDstRgb);
   aContext->core11fwd->glGetIntegerv(GL_BLEND_SRC_ALPHA, &aPrevBlendSrcA);
   aContext->core11fwd->glGetIntegerv(GL_BLEND_DST_ALPHA, &aPrevBlendDstA);
-  const bool hasDepthClamp      = aContext->arbDepthClamp;
-  const bool wasDepthClamp      = hasDepthClamp
-                                    && aContext->core11fwd->glIsEnabled(GL_DEPTH_CLAMP) == GL_TRUE;
+  const bool hasDepthClamp = aContext->arbDepthClamp;
+  const bool wasDepthClamp =
+    hasDepthClamp && aContext->core11fwd->glIsEnabled(GL_DEPTH_CLAMP) == GL_TRUE;
   const occ::handle<OpenGl_ShaderProgram> aPrevProgram = aContext->ActiveProgram();
 
   // Adjust ZRange for the grid geometry so unprojection stays well-conditioned.
-  Bnd_Box           aBnd       = MinMaxValues(true);
-  const gp_Pnt      aPlaneLoc  = myGridPlane.Location();
+  Bnd_Box      aBnd      = MinMaxValues(true);
+  const gp_Pnt aPlaneLoc = myGridPlane.Location();
   if (myGridParams.IsBackground() || aBnd.IsVoid() || aBnd.IsOut(aPlaneLoc))
   {
     aBnd.Add(aPlaneLoc);
     aCamera->ZFitAll(1.0, aBnd, aBnd);
   }
-  const double                       aZNearKeep  = aCamera->ZNear();
-  const double                       aZFarKeep   = aCamera->ZFar();
-  const Graphic3d_Camera::Projection aProjKeep   = aCamera->ProjectionType();
+  const double                       aZNearKeep = aCamera->ZNear();
+  const double                       aZFarKeep  = aCamera->ZFar();
+  const Graphic3d_Camera::Projection aProjKeep  = aCamera->ProjectionType();
   aCamera->SetZRange(aZNearKeep, std::max(aZNearKeep * 1.001, aZFarKeep));
   if (myGridParams.IsBackground())
   {
@@ -3714,17 +3714,17 @@ void OpenGl_View::renderGrid()
     aProg->SetUniform(aContext, "uIsDrawAxis", myGridParams.IsDrawAxis() ? 1 : 0);
     aProg->SetUniform(aContext, "uIsBackground", myGridParams.IsBackground() ? 1 : 0);
     aProg->SetUniform(aContext, "uGridType", myGridParams.IsCircular() ? 1 : 0);
-    // Angular spokes per radian: N spokes in 180° = N / pi spokes per radian.
+    // Angular spokes per radian: N spokes in 180 deg = N / pi spokes per radian.
     const double aAngularScale =
       myGridParams.IsCircular() ? double(myGridParams.AngularDivisions()) / M_PI : 0.0;
     aProg->SetUniform(aContext, "uAngularScale", GLfloat(aAngularScale));
 
     // In-plane rotation: rotate the plane's X/Y basis around the plane normal
     // so the grid lines follow the requested RotationAngle.
-    const double aCosA = std::cos(myGridParams.RotationAngle());
-    const double aSinA = std::sin(myGridParams.RotationAngle());
-    const gp_Dir aRawX = myGridPlane.XDirection();
-    const gp_Dir aRawY = myGridPlane.YDirection();
+    const double aCosA     = std::cos(myGridParams.RotationAngle());
+    const double aSinA     = std::sin(myGridParams.RotationAngle());
+    const gp_Dir aRawX     = myGridPlane.XDirection();
+    const gp_Dir aRawY     = myGridPlane.YDirection();
     const gp_XYZ aXRotated = aRawX.XYZ() * aCosA + aRawY.XYZ() * aSinA;
     const gp_XYZ aYRotated = aRawY.XYZ() * aCosA - aRawX.XYZ() * aSinA;
 
@@ -3738,19 +3738,18 @@ void OpenGl_View::renderGrid()
                                               (float)aPlaneOrigin.Y(),
                                               (float)aPlaneOrigin.Z()));
     const gp_Dir aNDir = myGridPlane.Direction();
-    aProg->SetUniform(aContext,
-                      "uPlaneX",
-                      NCollection_Vec3<float>((float)aXRotated.X(),
-                                              (float)aXRotated.Y(),
-                                              (float)aXRotated.Z()));
-    aProg->SetUniform(aContext,
-                      "uPlaneY",
-                      NCollection_Vec3<float>((float)aYRotated.X(),
-                                              (float)aYRotated.Y(),
-                                              (float)aYRotated.Z()));
-    aProg->SetUniform(aContext,
-                      "uPlaneN",
-                      NCollection_Vec3<float>((float)aNDir.X(), (float)aNDir.Y(), (float)aNDir.Z()));
+    aProg->SetUniform(
+      aContext,
+      "uPlaneX",
+      NCollection_Vec3<float>((float)aXRotated.X(), (float)aXRotated.Y(), (float)aXRotated.Z()));
+    aProg->SetUniform(
+      aContext,
+      "uPlaneY",
+      NCollection_Vec3<float>((float)aYRotated.X(), (float)aYRotated.Y(), (float)aYRotated.Z()));
+    aProg->SetUniform(
+      aContext,
+      "uPlaneN",
+      NCollection_Vec3<float>((float)aNDir.X(), (float)aNDir.Y(), (float)aNDir.Z()));
 
     aContext->core32->glDrawArrays(GL_TRIANGLES, 0, 6);
   }

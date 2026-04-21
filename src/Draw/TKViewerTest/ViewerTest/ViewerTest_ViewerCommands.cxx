@@ -5004,8 +5004,8 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
   NCollection_Vec2<double> aNewOriginXY, aNewStepXY, aNewSizeXY;
   double                   aNewRotAngle = 0.0, aNewZOffset = 0.0;
   bool hasOrigin = false, hasStep = false, hasRotAngle = false, hasSize = false, hasZOffset = false;
-  bool              isInfinite = false, hasInfOff = false;
-  Aspect_GridParams aGridParams;
+  bool isInfinite = false, hasInfOff = false;
+  Aspect_GridParams      aGridParams;
   ViewerTest_AutoUpdater anUpdateTool(ViewerTest::GetAISContext(), aView);
   for (int anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
   {
@@ -5110,8 +5110,7 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
       }
       anArgIter += 2;
     }
-    else if (anArgIter + 2 < theArgNb
-             && (anArg == "-color"))
+    else if (anArgIter + 2 < theArgNb && (anArg == "-color"))
     {
       aGridParams.SetColor(Quantity_Color(Draw::Atof(theArgVec[anArgIter + 1]),
                                           Draw::Atof(theArgVec[anArgIter + 2]),
@@ -5123,8 +5122,7 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
     {
       aGridParams.SetScale(Draw::Atof(theArgVec[++anArgIter]));
     }
-    else if (anArgIter + 1 < theArgNb
-             && (anArg == "-linethickness" || anArg == "-thickness"))
+    else if (anArgIter + 1 < theArgNb && (anArg == "-linethickness" || anArg == "-thickness"))
     {
       aGridParams.SetLineThickness(Draw::Atof(theArgVec[++anArgIter]));
     }
