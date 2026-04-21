@@ -355,9 +355,9 @@ bool SelectMgr_TriangularFrustumSet::isPointInsideNearProjection(const gp_Pnt& t
     return false;
   }
 
-  const gp_Pnt& aNearA    = myFrustums.First()->myVertices[0];
-  const gp_Pnt& aNearB    = myFrustums.First()->myVertices[1];
-  const gp_Pnt& aNearC    = myFrustums.First()->myVertices[2];
+  const gp_Pnt& aNearA     = myFrustums.First()->myVertices[0];
+  const gp_Pnt& aNearB     = myFrustums.First()->myVertices[1];
+  const gp_Pnt& aNearC     = myFrustums.First()->myVertices[2];
   const gp_Vec  aPlaneNorm = gp_Vec(aNearA, aNearB).Crossed(gp_Vec(aNearA, aNearC));
   const double  aNormSqr   = aPlaneNorm.SquareMagnitude();
   if (aNormSqr < Precision::SquareConfusion())
@@ -365,8 +365,8 @@ bool SelectMgr_TriangularFrustumSet::isPointInsideNearProjection(const gp_Pnt& t
     return false;
   }
 
-  gp_Pnt        aProj  = thePnt;
-  const double  aDistN = aPlaneNorm.X() * (thePnt.X() - aNearA.X())
+  gp_Pnt       aProj  = thePnt;
+  const double aDistN = aPlaneNorm.X() * (thePnt.X() - aNearA.X())
                         + aPlaneNorm.Y() * (thePnt.Y() - aNearA.Y())
                         + aPlaneNorm.Z() * (thePnt.Z() - aNearA.Z());
   const double aScale = aDistN / aNormSqr;
@@ -374,9 +374,9 @@ bool SelectMgr_TriangularFrustumSet::isPointInsideNearProjection(const gp_Pnt& t
                  thePnt.Y() - aPlaneNorm.Y() * aScale,
                  thePnt.Z() - aPlaneNorm.Z() * aScale);
 
-  const double aAbsX    = std::abs(aPlaneNorm.X());
-  const double aAbsY    = std::abs(aPlaneNorm.Y());
-  const double aAbsZ    = std::abs(aPlaneNorm.Z());
+  const double aAbsX     = std::abs(aPlaneNorm.X());
+  const double aAbsY     = std::abs(aPlaneNorm.Y());
+  const double aAbsZ     = std::abs(aPlaneNorm.Z());
   int          aDropAxis = 0;
   if (aAbsY >= aAbsX && aAbsY >= aAbsZ)
   {
@@ -387,15 +387,14 @@ bool SelectMgr_TriangularFrustumSet::isPointInsideNearProjection(const gp_Pnt& t
     aDropAxis = 2;
   }
 
-  const int     aLowerIdx = myBoundaryPoints.Lower();
-  const gp_XY   aPnt2D    = projectTo2D(aProj, aDropAxis);
-  bool          isInside  = false;
+  const int   aLowerIdx = myBoundaryPoints.Lower();
+  const gp_XY aPnt2D    = projectTo2D(aProj, aDropAxis);
+  bool        isInside  = false;
   for (int anIdx = 0, aPrev = aNearCount - 1; anIdx < aNearCount; aPrev = anIdx++)
   {
-    const gp_XY aCur = projectTo2D(myBoundaryPoints.Value(aLowerIdx + anIdx), aDropAxis);
-    const gp_XY aOld = projectTo2D(myBoundaryPoints.Value(aLowerIdx + aPrev), aDropAxis);
-    const bool  isStrideY =
-      (aCur.Y() > aPnt2D.Y()) != (aOld.Y() > aPnt2D.Y());
+    const gp_XY aCur      = projectTo2D(myBoundaryPoints.Value(aLowerIdx + anIdx), aDropAxis);
+    const gp_XY aOld      = projectTo2D(myBoundaryPoints.Value(aLowerIdx + aPrev), aDropAxis);
+    const bool  isStrideY = (aCur.Y() > aPnt2D.Y()) != (aOld.Y() > aPnt2D.Y());
     if (!isStrideY)
     {
       continue;
@@ -406,8 +405,7 @@ bool SelectMgr_TriangularFrustumSet::isPointInsideNearProjection(const gp_Pnt& t
     {
       continue;
     }
-    const double aXOnEdge =
-      (aOld.X() - aCur.X()) * (aPnt2D.Y() - aCur.Y()) / aDenom + aCur.X();
+    const double aXOnEdge = (aOld.X() - aCur.X()) * (aPnt2D.Y() - aCur.Y()) / aDenom + aCur.X();
     if (aPnt2D.X() < aXOnEdge)
     {
       isInside = !isInside;
