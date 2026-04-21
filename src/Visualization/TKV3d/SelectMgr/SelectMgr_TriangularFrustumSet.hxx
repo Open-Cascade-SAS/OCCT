@@ -84,8 +84,8 @@ public:
                                      const SelectMgr_ViewClipRange& theClipRange,
                                      SelectBasics_PickResult&       thePickResult) const override;
 
-  //! Always returns FALSE (not applicable to this selector).
-  bool OverlapsPoint(const gp_Pnt&) const override { return false; }
+  //! Returns TRUE when the point's near-plane projection lies inside the polyline loop.
+  Standard_EXPORT bool OverlapsPoint(const gp_Pnt& thePnt) const override;
 
   Standard_EXPORT bool OverlapsPolygon(const NCollection_Array1<gp_Pnt>& theArrayOfPnts,
                                        Select3D_TypeOfSensitivity        theSensType,
@@ -169,6 +169,12 @@ public:
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
 private:
+  //! Projects thePnt onto the frustum near plane and runs a 2D ray-cast
+  //! point-in-polygon test against the original polyline loop.
+  //! Coplanarity of every frustum's near triangle is guaranteed by Build()
+  //! (all near vertices come from ProjectPntOnViewPlane(x, y, 0.0)).
+  Standard_EXPORT bool isPointInsideNearProjection(const gp_Pnt& thePnt) const;
+
   //! Checks whether the segment intersects with the boundary of the current volume selection
   Standard_EXPORT bool isIntersectBoundary(const gp_Pnt& thePnt1, const gp_Pnt& thePnt2) const;
 

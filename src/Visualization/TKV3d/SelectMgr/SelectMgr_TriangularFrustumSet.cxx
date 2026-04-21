@@ -22,12 +22,30 @@
 #include <Geom_Circle.hxx>
 #include <Geom_Line.hxx>
 #include <NCollection_IncAllocator.hxx>
+#include <Precision.hxx>
 #include <SelectMgr_FrustumBuilder.hxx>
+
+#include <cmath>
 
 namespace
 {
 static const size_t MEMORY_BLOCK_SIZE = 512 * 7;
+
+//! Drops the dominant-magnitude plane-normal axis and returns the remaining pair as a 2D point.
+//! Matches the drop-axis chosen in isPointInsideNearProjection().
+static gp_XY projectTo2D(const gp_Pnt& thePnt, const int theDropAxis)
+{
+  switch (theDropAxis)
+  {
+    case 1:
+      return gp_XY(thePnt.X(), thePnt.Z());
+    case 2:
+      return gp_XY(thePnt.X(), thePnt.Y());
+    default:
+      return gp_XY(thePnt.Y(), thePnt.Z());
+  }
 }
+} // namespace
 
 //=================================================================================================
 
@@ -254,47 +272,44 @@ bool SelectMgr_TriangularFrustumSet::OverlapsBox(const NCollection_Vec3<double>&
                         "Error! SelectMgr_TriangularFrustumSet::Overlaps() should be called after "
                         "selection frustum initialization");
 
+  bool isAnyFrustumOverlap = false;
   for (NCollection_List<occ::handle<SelectMgr_TriangularFrustum>>::Iterator anIter(myFrustums);
        anIter.More();
        anIter.Next())
   {
-    if (!anIter.Value()->OverlapsBox(theMinPnt, theMaxPnt, nullptr))
+    if (anIter.Value()->OverlapsBox(theMinPnt, theMaxPnt, nullptr))
     {
-      continue;
+      isAnyFrustumOverlap = true;
+      break;
     }
+  }
+  if (!isAnyFrustumOverlap)
+  {
+    return false;
+  }
 
-    if (myToAllowOverlap || theInside == nullptr)
-    {
-      return true;
-    }
-
-    gp_Pnt aMinMaxPnts[2] = {gp_Pnt(theMinPnt.x(), theMinPnt.y(), theMinPnt.z()),
-                             gp_Pnt(theMaxPnt.x(), theMaxPnt.y(), theMaxPnt.z())};
-
-    gp_Pnt anOffset[3] = {gp_Pnt(aMinMaxPnts[1].X() - aMinMaxPnts[0].X(), 0.0, 0.0),
-                          gp_Pnt(0.0, aMinMaxPnts[1].Y() - aMinMaxPnts[0].Y(), 0.0),
-                          gp_Pnt(0.0, 0.0, aMinMaxPnts[1].Z() - aMinMaxPnts[0].Z())};
-
-    int aSign = 1;
-    for (int aPntsIdx = 0; aPntsIdx < 2; aPntsIdx++)
-    {
-      for (int aCoordIdx = 0; aCoordIdx < 3; aCoordIdx++)
-      {
-        gp_Pnt anOffsetPnt = aMinMaxPnts[aPntsIdx].XYZ() + aSign * anOffset[aCoordIdx].XYZ();
-        if (isIntersectBoundary(aMinMaxPnts[aPntsIdx], anOffsetPnt)
-            || isIntersectBoundary(anOffsetPnt,
-                                   anOffsetPnt.XYZ() + aSign * anOffset[(aCoordIdx + 1) % 3].XYZ()))
-        {
-          *theInside &= false;
-          return true;
-        }
-      }
-      aSign = -aSign;
-    }
+  if (myToAllowOverlap || theInside == nullptr)
+  {
     return true;
   }
 
-  return false;
+  const gp_Pnt aCorners[8] = {gp_Pnt(theMinPnt.x(), theMinPnt.y(), theMinPnt.z()),
+                              gp_Pnt(theMaxPnt.x(), theMinPnt.y(), theMinPnt.z()),
+                              gp_Pnt(theMinPnt.x(), theMaxPnt.y(), theMinPnt.z()),
+                              gp_Pnt(theMaxPnt.x(), theMaxPnt.y(), theMinPnt.z()),
+                              gp_Pnt(theMinPnt.x(), theMinPnt.y(), theMaxPnt.z()),
+                              gp_Pnt(theMaxPnt.x(), theMinPnt.y(), theMaxPnt.z()),
+                              gp_Pnt(theMinPnt.x(), theMaxPnt.y(), theMaxPnt.z()),
+                              gp_Pnt(theMaxPnt.x(), theMaxPnt.y(), theMaxPnt.z())};
+  for (const gp_Pnt& aCorner : aCorners)
+  {
+    if (!isPointInsideNearProjection(aCorner))
+    {
+      *theInside &= false;
+      break;
+    }
+  }
+  return true;
 }
 
 //=================================================================================================
@@ -318,6 +333,87 @@ bool SelectMgr_TriangularFrustumSet::OverlapsPoint(const gp_Pnt&                
   }
 
   return false;
+}
+
+//=================================================================================================
+
+bool SelectMgr_TriangularFrustumSet::OverlapsPoint(const gp_Pnt& thePnt) const
+{
+  Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Polyline,
+                        "Error! SelectMgr_TriangularFrustumSet::Overlaps() should be called after "
+                        "selection frustum initialization");
+  return isPointInsideNearProjection(thePnt);
+}
+
+//=================================================================================================
+
+bool SelectMgr_TriangularFrustumSet::isPointInsideNearProjection(const gp_Pnt& thePnt) const
+{
+  const int aNearCount = static_cast<int>(myBoundaryPoints.Size() / 2);
+  if (aNearCount < 3 || myFrustums.IsEmpty())
+  {
+    return false;
+  }
+
+  const gp_Pnt& aNearA    = myFrustums.First()->myVertices[0];
+  const gp_Pnt& aNearB    = myFrustums.First()->myVertices[1];
+  const gp_Pnt& aNearC    = myFrustums.First()->myVertices[2];
+  const gp_Vec  aPlaneNorm = gp_Vec(aNearA, aNearB).Crossed(gp_Vec(aNearA, aNearC));
+  const double  aNormSqr   = aPlaneNorm.SquareMagnitude();
+  if (aNormSqr < Precision::SquareConfusion())
+  {
+    return false;
+  }
+
+  gp_Pnt        aProj  = thePnt;
+  const double  aDistN = aPlaneNorm.X() * (thePnt.X() - aNearA.X())
+                        + aPlaneNorm.Y() * (thePnt.Y() - aNearA.Y())
+                        + aPlaneNorm.Z() * (thePnt.Z() - aNearA.Z());
+  const double aScale = aDistN / aNormSqr;
+  aProj.SetCoord(thePnt.X() - aPlaneNorm.X() * aScale,
+                 thePnt.Y() - aPlaneNorm.Y() * aScale,
+                 thePnt.Z() - aPlaneNorm.Z() * aScale);
+
+  const double aAbsX    = std::abs(aPlaneNorm.X());
+  const double aAbsY    = std::abs(aPlaneNorm.Y());
+  const double aAbsZ    = std::abs(aPlaneNorm.Z());
+  int          aDropAxis = 0;
+  if (aAbsY >= aAbsX && aAbsY >= aAbsZ)
+  {
+    aDropAxis = 1;
+  }
+  else if (aAbsZ >= aAbsX && aAbsZ >= aAbsY)
+  {
+    aDropAxis = 2;
+  }
+
+  const int     aLowerIdx = myBoundaryPoints.Lower();
+  const gp_XY   aPnt2D    = projectTo2D(aProj, aDropAxis);
+  bool          isInside  = false;
+  for (int anIdx = 0, aPrev = aNearCount - 1; anIdx < aNearCount; aPrev = anIdx++)
+  {
+    const gp_XY aCur = projectTo2D(myBoundaryPoints.Value(aLowerIdx + anIdx), aDropAxis);
+    const gp_XY aOld = projectTo2D(myBoundaryPoints.Value(aLowerIdx + aPrev), aDropAxis);
+    const bool  isStrideY =
+      (aCur.Y() > aPnt2D.Y()) != (aOld.Y() > aPnt2D.Y());
+    if (!isStrideY)
+    {
+      continue;
+    }
+
+    const double aDenom = aOld.Y() - aCur.Y();
+    if (std::abs(aDenom) < Precision::Confusion())
+    {
+      continue;
+    }
+    const double aXOnEdge =
+      (aOld.X() - aCur.X()) * (aPnt2D.Y() - aCur.Y()) / aDenom + aCur.X();
+    if (aPnt2D.X() < aXOnEdge)
+    {
+      isInside = !isInside;
+    }
+  }
+  return isInside;
 }
 
 //=================================================================================================

@@ -1,0 +1,43 @@
+puts "========================================"
+puts "Visualization - polyline selection must respect strict inclusion"
+puts "Rubber-band polyline with -allowoverlap 0 should only pick entities"
+puts "whose bounding boxes project fully inside the drawn polyline."
+puts "========================================"
+puts ""
+
+pload MODELING VISUALIZATION
+vinit View1 -height 400 -width 600
+
+psphere s1 1
+psphere s2 1
+ttranslate s1 2 0 0
+ttranslate s2 -2 0 0
+vdisplay -dispMode 1 s1 s2
+vfit
+
+# Polyline enclosing only s1 (right-hand sphere).
+# Strict inclusion: only s1 is selected.
+vselect 350 130 570 130 570 280 350 280 -allowoverlap 0
+if {![string match "*Selected*" [vstate s1]] ||
+    [string match "*Selected*" [vstate s2]]} {
+  puts "Error: strict-inclusion polyline should pick only s1, not s2"
+}
+
+# Polyline enclosing only s1, overlap mode on.
+# Still only s1 should overlap this polyline at all.
+vselect 0 0
+vselect 350 130 570 130 570 280 350 280 -allowoverlap 1
+if {![string match "*Selected*" [vstate s1]] ||
+    [string match "*Selected*" [vstate s2]]} {
+  puts "Error: overlap polyline should still only pick s1 (s2 is far left)"
+}
+
+# Polyline enclosing both spheres, strict inclusion: both must be picked.
+vselect 0 0
+vselect 10 130 590 130 590 280 10 280 -allowoverlap 0
+if {![string match "*Selected*" [vstate s1]] ||
+    ![string match "*Selected*" [vstate s2]]} {
+  puts "Error: polyline enclosing both spheres must pick s1 and s2"
+}
+
+vdump ${imagedir}/${casename}.png
