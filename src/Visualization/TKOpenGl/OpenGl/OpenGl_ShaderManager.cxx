@@ -174,6 +174,7 @@ void OpenGl_ShaderManager::clear()
   myBlitPrograms[1].Init(occ::handle<OpenGl_ShaderProgram>());
   myBoundBoxProgram.Nullify();
   myBoundBoxVertBuffer.Nullify();
+  myGridProgram.Nullify();
   for (int aModeIter = 0; aModeIter < Graphic3d_StereoMode_NB; ++aModeIter)
   {
     myStereoPrograms[aModeIter].Nullify();
@@ -1472,6 +1473,29 @@ const occ::handle<Graphic3d_ShaderProgram>& OpenGl_ShaderManager::GetColoredQuad
     myColoredQuadProgram = getColoredQuadProgram();
   }
   return myColoredQuadProgram;
+}
+
+//=================================================================================================
+
+bool OpenGl_ShaderManager::BindGridProgram()
+{
+  if (!myGridProgram.IsNull())
+  {
+    if (!myGridProgram->IsValid())
+    {
+      return false;
+    }
+    return myContext->BindProgram(myGridProgram);
+  }
+
+  occ::handle<Graphic3d_ShaderProgram> aProgramSrc = getGridProgram();
+  TCollection_AsciiString              aKey;
+  if (!Create(aProgramSrc, aKey, myGridProgram))
+  {
+    myGridProgram = new OpenGl_ShaderProgram(); // mark as invalid so we don't retry every frame
+    return false;
+  }
+  return myContext->BindProgram(myGridProgram);
 }
 
 //=================================================================================================

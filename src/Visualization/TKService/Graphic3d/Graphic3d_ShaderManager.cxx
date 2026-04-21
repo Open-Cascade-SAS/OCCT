@@ -2148,3 +2148,190 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getColoredQuadProg
 
   return aProgSrc;
 }
+
+//=================================================================================================
+
+occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() const
+{
+  occ::handle<Graphic3d_ShaderProgram> aProgSrc = new Graphic3d_ShaderProgram();
+
+  Graphic3d_ShaderObject::ShaderVariableList aUniforms, aStageInOuts;
+  aStageInOuts.Append(
+    Graphic3d_ShaderObject::ShaderVariable("vec3 NearPoint",
+                                           Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
+  aStageInOuts.Append(
+    Graphic3d_ShaderObject::ShaderVariable("vec3 FarPoint",
+                                           Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
+  aStageInOuts.Append(
+    Graphic3d_ShaderObject::ShaderVariable("mat4 MVP",
+                                           Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
+
+  aUniforms.Append(Graphic3d_ShaderObject::ShaderVariable("float uZNear", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append(Graphic3d_ShaderObject::ShaderVariable("float uZFar", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append(Graphic3d_ShaderObject::ShaderVariable("float uScaleX", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append(Graphic3d_ShaderObject::ShaderVariable("float uScaleY", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append(
+    Graphic3d_ShaderObject::ShaderVariable("float uThickness", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append(Graphic3d_ShaderObject::ShaderVariable("vec3 uColor", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append(
+    Graphic3d_ShaderObject::ShaderVariable("int uIsDrawAxis", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append(
+    Graphic3d_ShaderObject::ShaderVariable("int uIsBackground", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append(
+    Graphic3d_ShaderObject::ShaderVariable("vec3 uPlaneOrigin", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append(Graphic3d_ShaderObject::ShaderVariable("vec3 uPlaneX", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append(Graphic3d_ShaderObject::ShaderVariable("vec3 uPlaneY", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append(Graphic3d_ShaderObject::ShaderVariable("vec3 uPlaneN", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append(Graphic3d_ShaderObject::ShaderVariable("int uGridType", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append(
+    Graphic3d_ShaderObject::ShaderVariable("float uAngularScale", Graphic3d_TOS_FRAGMENT));
+
+  TCollection_AsciiString aSrcVert = TCollection_AsciiString()
+    + EOL "const vec3 gridPlane[6] = vec3[] ("
+    EOL "  vec3( 1.0,  1.0, 0.0), vec3(-1.0, -1.0, 0.0), vec3(-1.0,  1.0, 0.0),"
+    EOL "  vec3(-1.0, -1.0, 0.0), vec3( 1.0,  1.0, 0.0), vec3( 1.0, -1.0, 0.0));"
+
+    EOL "vec3 unproject (float theX, float theY, float theZ)"
+    EOL "{"
+    EOL "  vec4 aUnproj = occModelWorldMatrixInverse * occWorldViewMatrixInverse"
+    EOL "               * occProjectionMatrixInverse * vec4 (theX, theY, theZ, 1.0);"
+    EOL "  return aUnproj.xyz / aUnproj.w;"
+    EOL "}"
+
+    EOL "void main()"
+    EOL "{"
+    EOL "  vec3 aVertex = gridPlane[gl_VertexID];"
+    EOL "  NearPoint = unproject (aVertex.x, aVertex.y, -1.0);"
+    EOL "  FarPoint  = unproject (aVertex.x, aVertex.y,  1.0);"
+    EOL "  MVP       = occProjectionMatrix * occWorldViewMatrix * occModelWorldMatrix;"
+    EOL "  gl_Position = vec4 (aVertex, 1.0);"
+    EOL "}";
+
+  TCollection_AsciiString aSrcFrag = TCollection_AsciiString()
+    + EOL "vec4 gridLines (vec2 theUV, vec3 theColor, vec2 theScale,"
+    EOL "                bool theIsDrawAxis, float theThickness)"
+    EOL "{"
+    EOL "  vec2 aCoord      = theUV * theScale;"
+    EOL "  vec2 aDerivative = max (fwidth (aCoord), vec2 (theThickness));"
+    EOL "  vec2 aGrid       = abs (fract (aCoord - 0.5) - 0.5) / aDerivative;"
+    EOL "  float aLine      = min (aGrid.x, aGrid.y);"
+    EOL "  float aMinY      = min (aDerivative.y, 1.0);"
+    EOL "  float aMinX      = min (aDerivative.x, 1.0);"
+    EOL "  vec4  aColor     = vec4 (theColor, 1.0 - min (aLine, 1.0));"
+    EOL "  if (uIsDrawAxis != 0 && theIsDrawAxis)"
+    EOL "  {"
+    EOL "    bool isYAxis = abs (aCoord.x) < aMinX;"
+    EOL "    bool isXAxis = abs (aCoord.y) < aMinY;"
+    EOL "    if      (isXAxis && isYAxis) { aColor.xyz = vec3 (0.0, 0.0, 1.0); }"
+    EOL "    else if (isXAxis)            { aColor.xyz = vec3 (1.0, 0.0, 0.0); }"
+    EOL "    else if (isYAxis)            { aColor.xyz = vec3 (0.0, 1.0, 0.0); }"
+    EOL "  }"
+    EOL "  return aColor;"
+    EOL "}"
+
+    EOL "float computeDepth (vec3 thePos)"
+    EOL "{"
+    EOL "  vec4 aClip = MVP * vec4 (thePos, 1.0);"
+    EOL "  return aClip.z / aClip.w;"
+    EOL "}"
+
+    EOL "float computeLinearDepth (vec3 thePos)"
+    EOL "{"
+    EOL "  float aClipDepth   = computeDepth (thePos) * 2.0 - 1.0;"
+    EOL "  float aLinearDepth = (2.0 * uZNear * uZFar)"
+    EOL "                     / (uZFar + uZNear - aClipDepth * (uZFar - uZNear));"
+    EOL "  return aLinearDepth / uZFar;"
+    EOL "}"
+
+    EOL "void main()"
+    EOL "{"
+    // Ray-plane intersection on an arbitrary plane {uPlaneOrigin, uPlaneN}.
+    EOL "  vec3 aDir      = FarPoint - NearPoint;"
+    EOL "  float aDenom   = dot (uPlaneN, aDir);"
+    EOL "  if (abs (aDenom) < 1e-8) { discard; }"
+    EOL "  float aT       = dot (uPlaneN, uPlaneOrigin - NearPoint) / aDenom;"
+    EOL "  vec3  aHit     = NearPoint + aT * aDir;"
+    // Plane-local 2D coords, origin-centered to tame fp precision at large world offsets.
+    EOL "  vec3  aLocal3  = aHit - uPlaneOrigin;"
+    EOL "  vec2  aLocal   = vec2 (dot (aLocal3, uPlaneX), dot (aLocal3, uPlaneY));"
+
+    EOL "  float aLinearDepth = computeLinearDepth (aHit);"
+    // Grid coordinates depend on uGridType: 0=rectangular (X/Y), 1=circular (radius/angle).
+    EOL "  vec2 aGridUv;"
+    EOL "  vec2 aScale;"
+    EOL "  vec2 aAxisUv;"
+    EOL "  if (uGridType == 1)"
+    EOL "  {"
+    EOL "    float aR = length (aLocal);"
+    EOL "    float aA = atan (aLocal.y, aLocal.x);"
+    // Radius scaled by uScaleX (rings). Angle scaled by uAngularScale (spokes per radian).
+    EOL "    aGridUv  = vec2 (aR, aA);"
+    EOL "    aScale   = vec2 (uScaleX, uAngularScale);"
+    // For axis colouring reuse plane-local coords so X/Y axes keep their RGB.
+    EOL "    aAxisUv  = aLocal;"
+    EOL "  }"
+    EOL "  else"
+    EOL "  {"
+    EOL "    aGridUv = aLocal;"
+    EOL "    aScale  = vec2 (uScaleX, uScaleY);"
+    EOL "    aAxisUv = aLocal;"
+    EOL "  }"
+    EOL "  vec4 aMajor  = gridLines (aGridUv, uColor,        aScale,        uGridType == 0, uThickness);"
+    EOL "  vec4 aColor  = aMajor.a == 0.0"
+    EOL "               ? gridLines (aGridUv, 0.25 * uColor, aScale * 10.0, false,         uThickness)"
+    EOL "               : aMajor;"
+    // For circular grid, paint X/Y axis lines explicitly using plane-local coords.
+    EOL "  if (uIsDrawAxis != 0 && uGridType == 1)"
+    EOL "  {"
+    EOL "    vec2 aDerivAxis = max (fwidth (aAxisUv), vec2 (uThickness));"
+    EOL "    if (abs (aAxisUv.x) < aDerivAxis.x && abs (aAxisUv.y) < aDerivAxis.y)"
+    EOL "    {"
+    EOL "      aColor = vec4 (0.0, 0.0, 1.0, 1.0);"
+    EOL "    }"
+    EOL "    else if (abs (aAxisUv.y) < aDerivAxis.y)"
+    EOL "    {"
+    EOL "      aColor = vec4 (1.0, 0.0, 0.0, 1.0);"
+    EOL "    }"
+    EOL "    else if (abs (aAxisUv.x) < aDerivAxis.x)"
+    EOL "    {"
+    EOL "      aColor = vec4 (0.0, 1.0, 0.0, 1.0);"
+    EOL "    }"
+    EOL "  }"
+
+    EOL "  float aDepth = computeDepth (aHit);"
+    EOL "  float aFar   = gl_DepthRange.far;"
+    EOL "  float aNear  = gl_DepthRange.near;"
+    EOL "  aDepth       = ((aFar - aNear) * aDepth + aNear + aFar) * 0.5;"
+    EOL "  if (aColor.a == 0.0 || aT <= 0.0) { discard; }"
+
+    EOL "  if (aLinearDepth < 0.0)"
+    EOL "  {"
+    EOL "    aColor.a *= max (0.0, 0.5 * log (abs (aLinearDepth)));"
+    EOL "  }"
+
+    EOL "  float aMaxDepth = 1.0 - 1e-5;"
+    EOL "  gl_FragDepth = uIsBackground != 0 ? aMaxDepth : min (aDepth, aMaxDepth);"
+    EOL "  occFragColor = aColor;"
+    EOL "}";
+
+  // Requires gl_VertexID (GL 3.0/ES 3.0+), fwidth, gl_FragDepth.
+  if (myGapi == Aspect_GraphicsLibrary_OpenGL)
+  {
+    aProgSrc->SetHeader("#version 150");
+  }
+  else if (myGapi == Aspect_GraphicsLibrary_OpenGLES && IsGapiGreaterEqual(3, 0))
+  {
+    aProgSrc->SetHeader("#version 300 es");
+  }
+
+  aProgSrc->AttachShader(Graphic3d_ShaderObject::CreateFromSource(aSrcVert,
+                                                                  Graphic3d_TOS_VERTEX,
+                                                                  aUniforms,
+                                                                  aStageInOuts));
+  aProgSrc->AttachShader(Graphic3d_ShaderObject::CreateFromSource(aSrcFrag,
+                                                                  Graphic3d_TOS_FRAGMENT,
+                                                                  aUniforms,
+                                                                  aStageInOuts));
+
+  return aProgSrc;
+}

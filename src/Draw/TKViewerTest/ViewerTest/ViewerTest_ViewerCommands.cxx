@@ -5004,6 +5004,8 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
   NCollection_Vec2<double> aNewOriginXY, aNewStepXY, aNewSizeXY;
   double                   aNewRotAngle = 0.0, aNewZOffset = 0.0;
   bool hasOrigin = false, hasStep = false, hasRotAngle = false, hasSize = false, hasZOffset = false;
+  bool              isInfinite = false, hasInfOff = false;
+  Aspect_GridParams aGridParams;
   ViewerTest_AutoUpdater anUpdateTool(ViewerTest::GetAISContext(), aView);
   for (int anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
   {
@@ -5024,6 +5026,10 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
       else if (anArgNext == "c" || anArgNext == "circ" || anArgNext == "circular")
       {
         aType = Aspect_GT_Circular;
+      }
+      else if (anArgNext == "inf" || anArgNext == "infinite")
+      {
+        isInfinite = true;
       }
       else
       {
@@ -5104,6 +5110,39 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
       }
       anArgIter += 2;
     }
+    else if (anArgIter + 2 < theArgNb
+             && (anArg == "-color"))
+    {
+      aGridParams.SetColor(Quantity_Color(Draw::Atof(theArgVec[anArgIter + 1]),
+                                          Draw::Atof(theArgVec[anArgIter + 2]),
+                                          Draw::Atof(theArgVec[anArgIter + 3]),
+                                          Quantity_TOC_RGB));
+      anArgIter += 3;
+    }
+    else if (anArgIter + 1 < theArgNb && anArg == "-scale")
+    {
+      aGridParams.SetScale(Draw::Atof(theArgVec[++anArgIter]));
+    }
+    else if (anArgIter + 1 < theArgNb
+             && (anArg == "-linethickness" || anArg == "-thickness"))
+    {
+      aGridParams.SetLineThickness(Draw::Atof(theArgVec[++anArgIter]));
+    }
+    else if (anArgIter + 1 < theArgNb && anArg == "-background")
+    {
+      const int aVal = Draw::Atoi(theArgVec[++anArgIter]);
+      aGridParams.SetIsBackground(aVal != 0);
+    }
+    else if (anArgIter + 1 < theArgNb && anArg == "-drawaxis")
+    {
+      const int aVal = Draw::Atoi(theArgVec[++anArgIter]);
+      aGridParams.SetIsDrawAxis(aVal != 0);
+    }
+    else if (anArgIter + 1 < theArgNb && (anArg == "-inf" || anArg == "-infinity"))
+    {
+      const int aVal = Draw::Atoi(theArgVec[++anArgIter]);
+      aGridParams.SetIsInfinity(aVal != 0);
+    }
     else if (anArg == "r" || anArg == "rect" || anArg == "rectangular")
     {
       aType = Aspect_GT_Rectangular;
@@ -5120,16 +5159,37 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
     {
       aMode = Aspect_GDM_Points;
     }
-    else if (anArgIter + 1 >= theArgNb && anArg == "off")
+    else if (anArg == "off")
     {
-      aViewer->DeactivateGrid();
-      return 0;
+      hasInfOff = true;
     }
     else
     {
       Message::SendFail() << "Syntax error at '" << anArg << "'";
       return 1;
     }
+  }
+
+  if (isInfinite || hasInfOff)
+  {
+    if (hasInfOff)
+    {
+      aView->GridErase();
+    }
+    if (isInfinite)
+    {
+      if (hasOrigin)
+      {
+        aGridParams.SetOrigin(gp_Pnt(aNewOriginXY.x(), aNewOriginXY.y(), 0.0));
+      }
+      aView->GridDisplay(aGridParams);
+    }
+    if (hasInfOff && !isInfinite)
+    {
+      // plain 'vgrid off' still deactivates the classical grid
+      aViewer->DeactivateGrid();
+    }
+    return 0;
   }
 
   if (aType == Aspect_GT_Rectangular)
@@ -13951,9 +14011,14 @@ vlayerline x1 y1 x2 y2 [linewidth=0.5] [linetype=0] [transparency=1.0]
 )" /* [vlayerline] */);
 
   addCmd("vgrid", VGrid, /* [vgrid] */ R"(
-vgrid [off] [-type {rect|circ}] [-mode {line|point}] [-origin X Y] [-rotAngle Angle] [-zoffset DZ]
+vgrid [off] [-type {rect|circ|inf}] [-mode {line|point}] [-origin X Y] [-rotAngle Angle] [-zoffset DZ]
       [-step X Y] [-size DX DY]
       [-step StepRadius NbDivisions] [-radius Radius]
+      [-color R G B] [-scale N] [-lineThickness T]
+      [-background {0|1}] [-drawAxis {0|1}] [-inf {0|1}]
+Switches to infinite shader-rendered grid when '-type inf' is set. Color, scale,
+line thickness, background, axis and infinite-adaptive-scale knobs apply only to
+the infinite type. '-origin X Y' sets the in-plane grid origin for all types.
 )" /* [vgrid] */);
 
   addCmd("vpriviledgedplane", VPriviledgedPlane, /* [vpriviledgedplane] */ R"(

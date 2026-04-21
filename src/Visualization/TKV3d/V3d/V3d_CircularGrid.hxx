@@ -19,15 +19,12 @@
 
 #include <Standard.hxx>
 
-#include <gp_Ax3.hxx>
-#include <V3d_ViewerPointer.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Integer.hxx>
 #include <Aspect_CircularGrid.hxx>
-class Graphic3d_Structure;
-class Graphic3d_Group;
+#include <V3d_ViewerPointer.hxx>
 
+//! Circular grid bound to a V3d_Viewer. Snap math (Compute/Hit) is inherited
+//! from Aspect_CircularGrid; rendering goes through the shader-based infinite
+//! grid (OpenGl_View::renderGrid) with a polar branch.
 class V3d_CircularGrid : public Aspect_CircularGrid
 {
   DEFINE_STANDARD_RTTIEXT(V3d_CircularGrid, Aspect_CircularGrid)
@@ -58,29 +55,15 @@ protected:
   Standard_EXPORT void UpdateDisplay() override;
 
 private:
-  Standard_EXPORT void DefineLines();
-
-  Standard_EXPORT void DefinePoints();
-
-private:
-  //! Custom Graphic3d_Structure implementation.
-  class CircularGridStructure;
+  //! Broadcast current parameters to every view owned by the viewer.
+  //! When theDoDisplay is false, erases the shader grid from each view instead.
+  void syncViews(const bool theDoDisplay) const;
 
 private:
-  occ::handle<Graphic3d_Structure> myStructure;
-  occ::handle<Graphic3d_Group>     myGroup;
-  gp_Ax3                           myCurViewPlane;
-  V3d_ViewerPointer                myViewer;
-  bool                             myCurAreDefined;
-  bool                             myToComputePrs;
-  Aspect_GridDrawMode              myCurDrawMode;
-  double                           myCurXo;
-  double                           myCurYo;
-  double                           myCurAngle;
-  double                           myCurStep;
-  int                              myCurDivi;
-  double                           myRadius;
-  double                           myOffSet;
+  V3d_ViewerPointer myViewer;
+  mutable bool      myIsDisplayed;
+  double            myRadius;
+  double            myOffSet;
 };
 
 #endif // _V3d_CircularGrid_HeaderFile

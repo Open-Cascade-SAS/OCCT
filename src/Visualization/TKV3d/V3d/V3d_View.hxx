@@ -17,6 +17,7 @@
 #ifndef _V3d_View_HeaderFile
 #define _V3d_View_HeaderFile
 
+#include <Aspect_GridParams.hxx>
 #include <Graphic3d_ClipPlane.hxx>
 #include <Graphic3d_Texture2D.hxx>
 #include <Graphic3d_TypeOfShadingModel.hxx>
@@ -913,6 +914,15 @@ public:
   //! Defines or Updates the activity of the
   //! grid in <me>
   Standard_EXPORT void SetGridActivity(const bool aFlag);
+
+  //! Display a shader-rendered infinite grid on the viewer's privileged plane.
+  Standard_EXPORT void GridDisplay(const Aspect_GridParams& theParams);
+
+  //! Display a shader-rendered infinite grid on an explicit plane.
+  Standard_EXPORT void GridDisplay(const Aspect_GridParams& theParams, const gp_Ax3& thePlane);
+
+  //! Erase the shader-rendered infinite grid.
+  Standard_EXPORT void GridErase();
 
   //! Dumps the full contents of the View into the image file. This is an alias for ToPixMap() with
   //! Image_AlienPixMap.
