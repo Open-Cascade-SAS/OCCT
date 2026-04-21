@@ -49,7 +49,7 @@ TEST(Graphic3d_FlipperTest, Compute_IdentityWorldView_ReturnsIdentity)
 {
   Graphic3d_Flipper aFlipper(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1), gp_Dir(1, 0, 0)));
 
-  NCollection_Mat4<double> aWorldView; // identity
+  NCollection_Mat4<double>       aWorldView; // identity
   const NCollection_Mat4<double> aResult = aFlipper.Compute(aWorldView);
   EXPECT_TRUE(aResult.IsIdentity()) << "Aligned ref system under identity WV should yield no flip";
 }
@@ -150,7 +150,7 @@ TEST(Graphic3d_FlipperTest, Compute_ObjectTransformChangesDecision)
   EXPECT_TRUE(aFlipper.Compute(aWorldView).IsIdentity())
     << "Identity WV keeps ref system aligned, no flip";
 
-  // Object rotated 180 deg about Z — composing this into MV inverts X and Y,
+  // Object rotated 180 deg about Z - composing this into MV inverts X and Y,
   // which is exactly the trigger for the (isReversedX || isReversedY) && !isReversedZ
   // branch in Compute(). The resulting matrix must not be identity.
   NCollection_Mat4<double> anObjTrsf;

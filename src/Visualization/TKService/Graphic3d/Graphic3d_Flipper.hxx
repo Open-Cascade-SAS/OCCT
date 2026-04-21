@@ -71,7 +71,7 @@ public:
   //! TODO: group-level Graphic3d_Group::Transformation() is not folded in by
   //! the selection pipeline yet (the sensitive entity does not carry a
   //! reference to its host group). This only affects consumers that give the
-  //! flipping group its own gp_Trsf — uncommon in stock OCCT.
+  //! flipping group its own gp_Trsf - uncommon in stock OCCT.
   template <class T>
   NCollection_Mat4<T> Compute(const NCollection_Mat4<T>& theWorldView) const;
 
@@ -150,8 +150,7 @@ void Graphic3d_Flipper::Apply(const NCollection_Mat4<T>& theWorldView,
     typename BVH_Box<T, 4>::BVH_VecNt& aCorner = anArrayOfCorners[anIt];
     aCorner                                    = aTPers * aCorner;
     aCorner                                    = aCorner / aCorner.w();
-    theBoundingBox.Add(
-      typename BVH_Box<T, 3>::BVH_VecNt(aCorner.x(), aCorner.y(), aCorner.z()));
+    theBoundingBox.Add(typename BVH_Box<T, 3>::BVH_VecNt(aCorner.x(), aCorner.y(), aCorner.z()));
   }
 }
 
@@ -182,14 +181,11 @@ NCollection_Mat4<T> Graphic3d_Flipper::Compute(const NCollection_Mat4<T>& theWor
 
   const NCollection_Vec4<T> aMVReferenceOrigin = aMatrixMV * aReferenceOrigin;
   const NCollection_Vec4<T> aMVReferenceX =
-    aMatrixMV
-    * NCollection_Vec4<T>(aReferenceX.xyz() + aReferenceOrigin.xyz(), static_cast<T>(1));
+    aMatrixMV * NCollection_Vec4<T>(aReferenceX.xyz() + aReferenceOrigin.xyz(), static_cast<T>(1));
   const NCollection_Vec4<T> aMVReferenceY =
-    aMatrixMV
-    * NCollection_Vec4<T>(aReferenceY.xyz() + aReferenceOrigin.xyz(), static_cast<T>(1));
+    aMatrixMV * NCollection_Vec4<T>(aReferenceY.xyz() + aReferenceOrigin.xyz(), static_cast<T>(1));
   const NCollection_Vec4<T> aMVReferenceZ =
-    aMatrixMV
-    * NCollection_Vec4<T>(aReferenceZ.xyz() + aReferenceOrigin.xyz(), static_cast<T>(1));
+    aMatrixMV * NCollection_Vec4<T>(aReferenceZ.xyz() + aReferenceOrigin.xyz(), static_cast<T>(1));
 
   const NCollection_Vec4<T> aDirX = aMVReferenceX - aMVReferenceOrigin;
   const NCollection_Vec4<T> aDirY = aMVReferenceY - aMVReferenceOrigin;

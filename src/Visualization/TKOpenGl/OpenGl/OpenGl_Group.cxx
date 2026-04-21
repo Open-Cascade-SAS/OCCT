@@ -203,7 +203,7 @@ void OpenGl_Group::SetFlippingOptions(const bool theIsEnabled, const gp_Ax2& the
   // call SetFlippingOptions(true,...) then SetFlippingOptions(false,...) on the same
   // group around the primitives that must be flipped. The selection side needs to know
   // the group contains flipped geometry, so myFlipper must persist across the disable
-  // call — we only set it, never clear it.
+  // call - we only set it, never clear it.
   if (theIsEnabled)
   {
     myStructure->CStructure()->SetGroupFlipping(true);
