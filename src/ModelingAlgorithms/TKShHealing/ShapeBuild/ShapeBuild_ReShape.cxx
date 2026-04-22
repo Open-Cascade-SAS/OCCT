@@ -165,15 +165,16 @@ TopoDS_Shape ShapeBuild_ReShape::Apply(const TopoDS_Shape&    shape,
 TopoDS_Shape ShapeBuild_ReShape::Apply(const TopoDS_Shape&    theShape,
                                        const TopAbs_ShapeEnum theUntil)
 {
-  LoopDetector aVisited;
-  return applyImpl(theShape, theUntil, aVisited);
+  NCollection_Map<occ::handle<TopoDS_TShape>> anInFlight;
+  return applyImpl(theShape, theUntil, anInFlight);
 }
 
 //=================================================================================================
 
-TopoDS_Shape ShapeBuild_ReShape::applyImpl(const TopoDS_Shape&    theShape,
-                                           const TopAbs_ShapeEnum theUntil,
-                                           LoopDetector&          theVisited)
+TopoDS_Shape ShapeBuild_ReShape::applyImpl(
+  const TopoDS_Shape&                          theShape,
+  const TopAbs_ShapeEnum                       theUntil,
+  NCollection_Map<occ::handle<TopoDS_TShape>>& theInFlight)
 {
   myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
   if (theShape.IsNull())
@@ -189,19 +190,19 @@ TopoDS_Shape ShapeBuild_ReShape::applyImpl(const TopoDS_Shape&    theShape,
     return aNewShape;
   }
 
-  // Check if this shape was already visited to prevent infinite recursion
-  // on shapes with shared sub-shapes (e.g., Moebius strip with shared edges).
-  if (!theVisited.CanContinue(theShape))
-  {
-    // Already processed this shape, return the replacement from map
+  // DFS cycle guard: if theShape is already being processed further up the call
+  // stack, its replacement must be a compound that transitively contains it.
+  // Return the direct replacement without descending to break the cycle.
+  if (theInFlight.Contains(theShape.TShape()))
     return aNewShape;
-  }
 
-  // If shape was replaced, apply modifications to the result recursively
+  // If shape was replaced, apply modifications to the result recursively.
   bool aConsLoc = ModeConsiderLocation();
   if ((aConsLoc && !aNewShape.IsPartner(theShape)) || (!aConsLoc && !aNewShape.IsSame(theShape)))
   {
-    TopoDS_Shape aRes = applyImpl(aNewShape, theUntil, theVisited);
+    theInFlight.Add(theShape.TShape());
+    TopoDS_Shape aRes = applyImpl(aNewShape, theUntil, theInFlight);
+    theInFlight.Remove(theShape.TShape());
     myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
     return aRes;
   }
@@ -221,10 +222,11 @@ TopoDS_Shape ShapeBuild_ReShape::applyImpl(const TopoDS_Shape&    theShape,
   int  aLocStatus = myStatus;
 
   // Apply recorded modifications to subshapes
+  theInFlight.Add(theShape.TShape());
   for (TopoDS_Iterator anIt(theShape, false); anIt.More(); anIt.Next())
   {
     const TopoDS_Shape& aSh = anIt.Value();
-    aNewShape               = applyImpl(aSh, theUntil, theVisited);
+    aNewShape               = applyImpl(aSh, theUntil, theInFlight);
     if (aNewShape != aSh)
     {
       if (ShapeExtend::DecodeStatus(myStatus, ShapeExtend_DONE4))
@@ -255,6 +257,7 @@ TopoDS_Shape ShapeBuild_ReShape::applyImpl(const TopoDS_Shape&    theShape,
     if (!aNbItems)
       aLocStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL1);
   }
+  theInFlight.Remove(theShape.TShape());
   if (!aModif)
     return theShape;
 
@@ -288,24 +291,4 @@ int ShapeBuild_ReShape::Status(const TopoDS_Shape& theShape,
 bool ShapeBuild_ReShape::Status(const ShapeExtend_Status theStatus) const
 {
   return ShapeExtend::DecodeStatus(myStatus, theStatus);
-}
-
-//=================================================================================================
-
-bool ShapeBuild_ReShape::LoopDetector::CanContinue(const TopoDS_Shape& theShape)
-{
-  int* aVisitCount = myVisited.ChangeSeek(theShape);
-  if (aVisitCount == nullptr)
-  {
-    // First visit
-    myVisited.Bind(theShape, 1);
-    return true;
-  }
-  else
-  {
-    // Allow to visit twice.
-    // If we allow only one visit, it breaks test heal fix_gaps B2.
-    // If we allow unlimited visits, it may lead to infinite loops.
-    return ++(*aVisitCount) < 3;
-  }
 }

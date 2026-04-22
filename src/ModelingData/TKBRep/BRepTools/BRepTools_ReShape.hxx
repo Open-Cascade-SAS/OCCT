@@ -20,6 +20,7 @@
 #include <BRepTools_History.hxx>
 
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_TShape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_Map.hxx>
@@ -98,6 +99,14 @@ public:
   //! Else, returns the replacing item
   Standard_EXPORT virtual TopoDS_Shape Value(const TopoDS_Shape& shape) const;
 
+  //! Follows the replacement chain for @p theShape to its leaf without descending into sub-shapes.
+  //! Iterates Value() until a fixpoint is reached. Unlike Apply(), this does not rebuild
+  //! the shape from its children, so it is safe to call on edges/wires whose sub-shapes
+  //! have their own pending replacements (avoids cascading sub-shape re-expansion).
+  //! @return the final replacement, or the original shape if not recorded,
+  //!         or a Null shape if the chain terminates in a Remove.
+  Standard_EXPORT TopoDS_Shape ValueLeaf(const TopoDS_Shape& theShape) const;
+
   //! Returns a complete substitution status for a shape
   //! 0  : not recorded,   <newsh> = original <shape>
   //! < 0: to be removed,  <newsh> is NULL
@@ -172,6 +181,15 @@ protected:
   Standard_EXPORT virtual void replace(const TopoDS_Shape&    shape,
                                        const TopoDS_Shape&    newshape,
                                        const TReplacementKind theKind);
+
+  //! Recursive worker for Apply with a DFS in-flight set keyed by TShape handle.
+  //! Prevents unbounded descent when a replacement is a compound that transitively
+  //! contains the original shape as a sub-shape (cyclic containment, distinct from
+  //! cycles in the replacement map itself).
+  Standard_EXPORT TopoDS_Shape applyImpl(
+    const TopoDS_Shape&                          theShape,
+    const TopAbs_ShapeEnum                       theUntil,
+    NCollection_Map<occ::handle<TopoDS_TShape>>& theInFlight);
 
 private:
   //! Returns 'true' if the kind of a replacement is an ordinary merging.

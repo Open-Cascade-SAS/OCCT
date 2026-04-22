@@ -23,6 +23,7 @@
 #include <BRepTools_ReShape.hxx>
 #include <NCollection_Map.hxx>
 #include <TopAbs_ShapeEnum.hxx>
+#include <TopoDS_TShape.hxx>
 #include <Standard_Integer.hxx>
 #include <ShapeExtend_Status.hxx>
 class TopoDS_Shape;
@@ -107,31 +108,13 @@ public:
   DEFINE_STANDARD_RTTIEXT(ShapeBuild_ReShape, BRepTools_ReShape)
 
 private:
-  // Class to detect loops during recursive shape processing.
-  class LoopDetector
-  {
-  private:
-    // Visited map type (orientation-sensitive to allow proper processing
-    // of shapes with different orientations).
-    // int is visit count.
-    using VisitedMap = NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>;
-
-  public:
-    LoopDetector() = default;
-
-    // Returns true if loop was not detected and processing can continue.
-    bool CanContinue(const TopoDS_Shape& theShape);
-
-  private:
-    VisitedMap myVisited;
-  };
-
-  //! Internal recursive implementation of Apply.
-  //! Uses visited map to prevent infinite recursion on shapes with shared
-  //! sub-shapes (e.g., Moebius strip with shared edges).
-  TopoDS_Shape applyImpl(const TopoDS_Shape&    theShape,
-                         const TopAbs_ShapeEnum theUntil,
-                         LoopDetector&          theVisited);
+  //! Recursive worker for Apply with a DFS in-flight set keyed by TShape handle.
+  //! Prevents unbounded descent when a replacement is a compound that transitively
+  //! contains the original shape as a sub-shape (cyclic containment, distinct from
+  //! cycles in the replacement map itself).
+  TopoDS_Shape applyImpl(const TopoDS_Shape&                     theShape,
+                         const TopAbs_ShapeEnum                  theUntil,
+                         NCollection_Map<occ::handle<TopoDS_TShape>>& theInFlight);
 };
 
 #endif // _ShapeBuild_ReShape_HeaderFile

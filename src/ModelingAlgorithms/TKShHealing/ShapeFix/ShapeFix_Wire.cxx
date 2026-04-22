@@ -3808,25 +3808,13 @@ void ShapeFix_Wire::FixDummySeam(const int num)
 void ShapeFix_Wire::UpdateWire()
 {
   occ::handle<ShapeExtend_WireData> sbwd = WireData();
-  // Track already-expanded edges to prevent exponential growth from shared context
-  // (especially important for non-orientable surfaces like Moebius strips where
-  // edges are shared across faces and accumulated replacements can cascade)
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> anExpandedEdges;
-
   for (int i = 1; i <= sbwd->NbEdges(); i++)
   {
     TopoDS_Edge E = sbwd->Edge(i);
-    // Use Value() instead of Apply() to get only the direct replacement
-    // without recursively following replacement chains. This prevents
-    // exponential edge explosion on Moebius strips where shared edges
-    // accumulate cascading replacements across multiple faces.
-    // The full chain resolution happens at final shell-level Apply().
-    // Note: Now again we are using Apply() because using Value() breaks test de step_2 R7
-    TopoDS_Shape S = Context()->Apply(E);
-    if (S == E)
-      continue;
-    // Skip if this edge was already expanded in this call to prevent duplicates
-    if (!anExpandedEdges.Add(E))
+    // ValueLeaf follows the replacement chain without descending into sub-shapes,
+    // so a previously-split edge is not re-expanded on subsequent Perform() passes.
+    TopoDS_Shape S = Context()->ValueLeaf(E);
+    if (!S.IsNull() && S.IsEqual(E))
       continue;
     for (TopExp_Explorer exp(S, TopAbs_EDGE); exp.More(); exp.Next())
       sbwd->Add(exp.Current(), i++);
