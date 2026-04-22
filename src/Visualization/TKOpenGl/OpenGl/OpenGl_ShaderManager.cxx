@@ -1485,6 +1485,11 @@ bool OpenGl_ShaderManager::BindGridProgram()
     TCollection_AsciiString              aKey;
     if (!Create(aProgramSrc, aKey, myGridProgram))
     {
+      myContext->PushMessage(GL_DEBUG_SOURCE_APPLICATION,
+                             GL_DEBUG_TYPE_ERROR,
+                             0,
+                             GL_DEBUG_SEVERITY_HIGH,
+                             "Error: infinite-grid shader failed to compile/link");
       myGridProgram = new OpenGl_ShaderProgram(); // mark as invalid so we don't retry every frame
       return false;
     }
