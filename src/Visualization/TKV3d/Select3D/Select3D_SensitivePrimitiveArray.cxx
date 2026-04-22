@@ -403,6 +403,16 @@ bool Select3D_SensitivePrimitiveArray::InitTriangulation(
 
 //=================================================================================================
 
+std::array<NCollection_Vec3<float>, 3> Select3D_SensitivePrimitiveArray::GetVertex(
+  const int theIndex) const
+{
+  int aTriNodes[3] = {0, 0, 0};
+  getTriIndices(myIndices, theIndex * 3, aTriNodes);
+  return {getPosVec3(aTriNodes[0]), getPosVec3(aTriNodes[1]), getPosVec3(aTriNodes[2])};
+}
+
+//=================================================================================================
+
 bool Select3D_SensitivePrimitiveArray::InitPoints(
   const occ::handle<Graphic3d_Buffer>&      theVerts,
   const occ::handle<Graphic3d_IndexBuffer>& theIndices,

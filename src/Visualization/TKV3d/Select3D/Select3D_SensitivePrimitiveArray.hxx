@@ -24,6 +24,8 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_Shared.hxx>
 
+#include <array>
+
 //! Sensitive for triangulation or point set defined by Primitive Array.
 //! The primitives can be optionally combined into patches within BVH tree
 //! to reduce its building time in expense of extra traverse time.
@@ -230,6 +232,11 @@ public:
 
   //! Return the second node of last topmost detected edge or -1 if undefined (axis picking).
   int LastDetectedEdgeNode2() const { return myDetectedEdgeNode2; }
+
+  //! Return the three vertex positions of the triangle at the given triangulation index.
+  //! Only meaningful for triangulation-based primitive arrays.
+  //! @param[in] theIndex zero-based triangle index within [0, triangle count)
+  Standard_EXPORT std::array<NCollection_Vec3<float>, 3> GetVertex(const int theIndex) const;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
