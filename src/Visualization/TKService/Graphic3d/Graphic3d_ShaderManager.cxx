@@ -2283,15 +2283,6 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
     "  aDepth       = ((aFar - aNear) * aDepth + aNear + aFar) * 0.5;" EOL
     "  if (aColor.a == 0.0 || aT <= 0.0) { discard; }"
 
-    // Soft horizon fade: aDenom is dot(planeN, Far - Near); its magnitude shrinks
-    // toward zero as the ray grazes the plane. Normalize it so the fade kicks in
-    // only in the last few degrees, leaving the grid fully opaque everywhere
-    // else regardless of camera tilt.
-    EOL "  float aRayLen = length (aDir);" EOL
-    "  float aGraze  = aRayLen > 0.0 ? abs (aDenom) / aRayLen : 1.0;" EOL
-    "  aColor.a *= smoothstep (0.0, 0.1, aGraze);" EOL
-    "  if (aColor.a < 0.01) { discard; }"
-
     EOL "  float aMaxDepth = 1.0 - 1e-5;" EOL
     "  gl_FragDepth = uIsBackground != 0 ? aMaxDepth : min (aDepth, aMaxDepth);" EOL
     "  occFragColor = aColor;" EOL "}";
