@@ -5004,7 +5004,7 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
   NCollection_Vec2<double> aNewOriginXY, aNewStepXY, aNewSizeXY;
   double                   aNewRotAngle = 0.0, aNewZOffset = 0.0;
   bool hasOrigin = false, hasStep = false, hasRotAngle = false, hasSize = false, hasZOffset = false;
-  bool isInfinite = false, hasInfOff = false;
+  bool isInfinite = false, hasInfOff = false, hasScale = false;
   Aspect_GridParams      aGridParams;
   ViewerTest_AutoUpdater anUpdateTool(ViewerTest::GetAISContext(), aView);
   for (int anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
@@ -5120,6 +5120,7 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
     }
     else if (anArgIter + 1 < theArgNb && anArg == "-scale")
     {
+      hasScale = true;
       aGridParams.SetScale(Draw::Atof(theArgVec[++anArgIter]));
     }
     else if (anArgIter + 1 < theArgNb && (anArg == "-linethickness" || anArg == "-thickness"))
@@ -5181,8 +5182,14 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
       // selections against. Without this step, -type inf draws the grid but
       // snap returns a stale/default world point that doesn't line up with
       // the visible intersections. Derive the snap step from Scale so the two
-      // stay consistent.
-      const double aInfStep = aGridParams.Scale() > 0.0 ? 1.0 / aGridParams.Scale() : 10.0;
+      // stay consistent. When caller omits -scale, the Aspect_GridParams
+      // default of 0.01 gives XStep=100 which is too coarse for typical
+      // scenes; fall back to a 1-unit step so the grid is immediately useful.
+      if (!hasScale)
+      {
+        aGridParams.SetScale(1.0);
+      }
+      const double aInfStep = 1.0 / aGridParams.Scale();
       const double anOrigX  = hasOrigin ? aNewOriginXY.x() : 0.0;
       const double anOrigY  = hasOrigin ? aNewOriginXY.y() : 0.0;
       aViewer->SetRectangularGridValues(anOrigX, anOrigY, aInfStep, aInfStep, 0.0);
