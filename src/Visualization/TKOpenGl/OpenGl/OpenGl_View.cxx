@@ -3685,6 +3685,10 @@ void OpenGl_View::renderGrid()
   {
     aBnd.Add(aPlaneLoc);
     aCamera->ZFitAll(1.0, aBnd, aBnd);
+    // Guard against degenerate ZRange (ZNear ~= ZFar) that ZFitAll can produce
+    // when the scene is coplanar with the grid plane — the projection matrix
+    // 1/(far-near) term blows up otherwise. The restore block at end-of-function
+    // puts ZRange back to the user's original values captured above aZNearKeep.
     const double aZNearFit = aCamera->ZNear();
     const double aZFarFit  = aCamera->ZFar();
     aCamera->SetZRange(aZNearFit, std::max(aZNearFit * 1.001, aZFarFit));
