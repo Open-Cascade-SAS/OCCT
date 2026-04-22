@@ -281,9 +281,9 @@ void OpenGl_View::ReleaseGlResources(const occ::handle<OpenGl_Context>& theCtx)
     myPBREnvironment->Release(theCtx.get());
   }
 
-  if (myGridVao != 0 && !theCtx.IsNull())
+  if (myGridVao != 0 && !theCtx.IsNull() && theCtx->core30 != nullptr)
   {
-    theCtx->core32->glDeleteVertexArrays(1, &myGridVao);
+    theCtx->core30->glDeleteVertexArrays(1, &myGridVao);
   }
   myGridVao = 0;
 
@@ -3611,21 +3611,21 @@ void OpenGl_View::renderGrid()
   {
     return;
   }
-  if (aContext->core32 == nullptr)
+  if (aContext->core30 == nullptr)
   {
-    // The shader grid requires GL 3.2+ / GLES 3.0+ (VAO + gl_VertexID + gl_FragDepth).
+    // The shader grid requires GL 3.0+ / GLES 3.0+ (VAO + gl_VertexID + gl_FragDepth).
     // Warn once per process so the caller knows why the grid isn't drawn; snap
     // math still works. The process scope avoids per-view state bloat - a stray
     // missed warning on a second view is less costly than a data member.
-    static bool THE_GRID_GL32_WARNED = false;
-    if (!THE_GRID_GL32_WARNED)
+    static bool THE_GRID_GL30_WARNED = false;
+    if (!THE_GRID_GL30_WARNED)
     {
-      THE_GRID_GL32_WARNED = true;
+      THE_GRID_GL30_WARNED = true;
       aContext->PushMessage(GL_DEBUG_SOURCE_APPLICATION,
                             GL_DEBUG_TYPE_OTHER,
                             0,
                             GL_DEBUG_SEVERITY_MEDIUM,
-                            "Warning: shader-based grid requires GL 3.2 / GLES 3.0 or later; "
+                            "Warning: shader-based grid requires GL 3.0 / GLES 3.0 or later; "
                             "grid will not be rendered on this driver. Snap selection remains "
                             "functional.");
     }
@@ -3640,7 +3640,7 @@ void OpenGl_View::renderGrid()
 
   if (myGridVao == 0)
   {
-    aContext->core32->glGenVertexArrays(1, &myGridVao);
+    aContext->core30->glGenVertexArrays(1, &myGridVao);
     if (myGridVao == 0)
     {
       myToShowGrid = false;
@@ -3649,7 +3649,7 @@ void OpenGl_View::renderGrid()
   }
 
   GLint aPrevVao = 0;
-  aContext->core32->glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &aPrevVao);
+  aContext->core11fwd->glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &aPrevVao);
 
   GLboolean wasDepthTest  = aContext->core11fwd->glIsEnabled(GL_DEPTH_TEST);
   GLboolean wasBlend      = aContext->core11fwd->glIsEnabled(GL_BLEND);
@@ -3728,7 +3728,7 @@ void OpenGl_View::renderGrid()
     aContext->core11fwd->glEnable(GL_DEPTH_CLAMP);
   }
 
-  aContext->core32->glBindVertexArray(myGridVao);
+  aContext->core30->glBindVertexArray(myGridVao);
 
   double aScaleX = myGridParams.Scale();
   double aScaleY = myGridParams.EffectiveScaleY();
@@ -3818,11 +3818,11 @@ void OpenGl_View::renderGrid()
       "uPlaneN",
       NCollection_Vec3<float>((float)aNDir.X(), (float)aNDir.Y(), (float)aNDir.Z()));
 
-    aContext->core32->glDrawArrays(GL_TRIANGLES, 0, 6);
+    aContext->core11fwd->glDrawArrays(GL_TRIANGLES, 0, 6);
   }
 
   aContext->BindProgram(aPrevProgram);
-  aContext->core32->glBindVertexArray(aPrevVao);
+  aContext->core30->glBindVertexArray((GLuint)aPrevVao);
 
   aCamera->SetZRange(aZNearKeep, aZFarKeep);
   aCamera->SetProjectionType(aProjKeep);
