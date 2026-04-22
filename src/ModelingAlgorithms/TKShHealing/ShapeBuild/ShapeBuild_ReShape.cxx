@@ -171,10 +171,9 @@ TopoDS_Shape ShapeBuild_ReShape::Apply(const TopoDS_Shape&    theShape,
 
 //=================================================================================================
 
-TopoDS_Shape ShapeBuild_ReShape::applyImpl(
-  const TopoDS_Shape&                          theShape,
-  const TopAbs_ShapeEnum                       theUntil,
-  NCollection_Map<occ::handle<TopoDS_TShape>>& theInFlight)
+TopoDS_Shape ShapeBuild_ReShape::applyImpl(const TopoDS_Shape&                          theShape,
+                                           const TopAbs_ShapeEnum                       theUntil,
+                                           NCollection_Map<occ::handle<TopoDS_TShape>>& theInFlight)
 {
   myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
   if (theShape.IsNull())

@@ -112,8 +112,8 @@ private:
   //! Prevents unbounded descent when a replacement is a compound that transitively
   //! contains the original shape as a sub-shape (cyclic containment, distinct from
   //! cycles in the replacement map itself).
-  TopoDS_Shape applyImpl(const TopoDS_Shape&                     theShape,
-                         const TopAbs_ShapeEnum                  theUntil,
+  TopoDS_Shape applyImpl(const TopoDS_Shape&                          theShape,
+                         const TopAbs_ShapeEnum                       theUntil,
                          NCollection_Map<occ::handle<TopoDS_TShape>>& theInFlight);
 };
 

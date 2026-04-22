@@ -186,10 +186,9 @@ protected:
   //! Prevents unbounded descent when a replacement is a compound that transitively
   //! contains the original shape as a sub-shape (cyclic containment, distinct from
   //! cycles in the replacement map itself).
-  Standard_EXPORT TopoDS_Shape applyImpl(
-    const TopoDS_Shape&                          theShape,
-    const TopAbs_ShapeEnum                       theUntil,
-    NCollection_Map<occ::handle<TopoDS_TShape>>& theInFlight);
+  Standard_EXPORT TopoDS_Shape applyImpl(const TopoDS_Shape&                          theShape,
+                                         const TopAbs_ShapeEnum                       theUntil,
+                                         NCollection_Map<occ::handle<TopoDS_TShape>>& theInFlight);
 
 private:
   //! Returns 'true' if the kind of a replacement is an ordinary merging.

@@ -189,8 +189,7 @@ void BRepTools_ReShape::replace(const TopoDS_Shape&    ashape,
   // e.g. A -> ... -> X -> A. Walk forward from newshape via Value(); if the walk
   // ever lands on shape itself, record only an identity (effectively no-op) to
   // avoid forming a cycle that would later deadlock Apply()/ValueLeaf().
-  if (theKind != TReplacementKind_Remove && !newshape.IsNull()
-      && !newshape.IsPartner(shape))
+  if (theKind != TReplacementKind_Remove && !newshape.IsNull() && !newshape.IsPartner(shape))
   {
     // Reject replacements that would close a cycle in the map. Walk forward from
     // newshape via Value(); if the chain ever lands back on shape's underlying TShape
@@ -212,7 +211,7 @@ void BRepTools_ReShape::replace(const TopoDS_Shape&    ashape,
         break;
       }
       if (!aSeen.Add(aNext.TShape()))
-        break; // existing cycle in data — not ours to introduce, bail
+        break; // existing cycle in data - not ours to introduce, bail
       aProbe = aNext;
     }
     if (aCycle)
@@ -298,10 +297,10 @@ TopoDS_Shape BRepTools_ReShape::ValueLeaf(const TopoDS_Shape& theShape) const
   // Track visited shapes by their underlying TShape. Rationale: the replacement map keys
   // entries via TopTools_ShapeMapHasher (orientation-ignoring IsSame) and, when
   // myConsiderLocation is set, strips locations on both insertion and lookup. That leaves
-  // TShape as the only identity axis that's stable across the walk under every mode —
+  // TShape as the only identity axis that's stable across the walk under every mode -
   // so keying the cycle guard on the TShape handle catches cycles that would otherwise
   // slip past orientation/location-sensitive comparisons.
-  TopoDS_Shape                          aCurrent = theShape;
+  TopoDS_Shape                                aCurrent = theShape;
   NCollection_Map<occ::handle<TopoDS_TShape>> aVisited;
   aVisited.Add(aCurrent.TShape());
 
@@ -314,7 +313,7 @@ TopoDS_Shape BRepTools_ReShape::ValueLeaf(const TopoDS_Shape& theShape) const
       return aNext;
     if (!aVisited.Add(aNext.TShape()))
     {
-      // Cycle in replacement data — return current best to avoid looping.
+      // Cycle in replacement data - return current best to avoid looping.
       return aNext;
     }
     aCurrent = aNext;
@@ -440,10 +439,9 @@ TopoDS_Shape BRepTools_ReShape::Apply(const TopoDS_Shape& shape, const TopAbs_Sh
 
 //=================================================================================================
 
-TopoDS_Shape BRepTools_ReShape::applyImpl(
-  const TopoDS_Shape&                          shape,
-  const TopAbs_ShapeEnum                       until,
-  NCollection_Map<occ::handle<TopoDS_TShape>>& theInFlight)
+TopoDS_Shape BRepTools_ReShape::applyImpl(const TopoDS_Shape&                          shape,
+                                          const TopAbs_ShapeEnum                       until,
+                                          NCollection_Map<occ::handle<TopoDS_TShape>>& theInFlight)
 {
   myStatus = EncodeStatus(0); // ShapeExtend::EncodeStatus ( ShapeExtend_OK );
   if (shape.IsNull())
