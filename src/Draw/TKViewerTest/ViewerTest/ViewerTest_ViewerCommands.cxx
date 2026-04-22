@@ -5176,10 +5176,25 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
     }
     if (isInfinite)
     {
-      if (hasOrigin)
-      {
-        aGridParams.SetOrigin(gp_Pnt(aNewOriginXY.x(), aNewOriginXY.y(), 0.0));
-      }
+      // Route through the rectangular grid path first so V3d_View::MyGrid is
+      // populated — V3d_View::Compute needs an Aspect_RectangularGrid to snap
+      // selections against. Without this step, -type inf draws the grid but
+      // snap returns a stale/default world point that doesn't line up with
+      // the visible intersections. Derive the snap step from Scale so the two
+      // stay consistent.
+      const double aInfStep = aGridParams.Scale() > 0.0 ? 1.0 / aGridParams.Scale() : 10.0;
+      const double anOrigX  = hasOrigin ? aNewOriginXY.x() : 0.0;
+      const double anOrigY  = hasOrigin ? aNewOriginXY.y() : 0.0;
+      aViewer->SetRectangularGridValues(anOrigX, anOrigY, aInfStep, aInfStep, 0.0);
+      aViewer->ActivateGrid(Aspect_GT_Rectangular, aMode);
+      // Override the display with the inf-specific params (color, background,
+      // drawAxis, IsInfinity, lineThickness). Convert origin to the same
+      // world-offset convention used by V3d_RectangularGrid::syncViews so the
+      // shader's aPlaneOrigin matches snap's aPnt0.
+      const gp_Ax3 aPlane = aViewer->PrivilegedPlane();
+      const gp_XYZ aOriginOffset =
+        aPlane.XDirection().XYZ() * -anOrigX + aPlane.YDirection().XYZ() * -anOrigY;
+      aGridParams.SetOrigin(gp_Pnt(aOriginOffset));
       aView->GridDisplay(aGridParams);
     }
     if (hasInfOff && !isInfinite)
