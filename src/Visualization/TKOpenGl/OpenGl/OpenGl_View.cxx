@@ -16,6 +16,7 @@
 #include <OpenGl_View.hxx>
 
 #include <cmath>
+#include <iostream>
 
 #include <Aspect_NeutralWindow.hxx>
 #include <Aspect_RenderingContext.hxx>
@@ -3568,6 +3569,9 @@ void OpenGl_View::updatePBREnvironment(const occ::handle<OpenGl_Context>& theCtx
 
 void OpenGl_View::GridDisplay(const Aspect_GridParams& theParams, const gp_Ax3& thePlane)
 {
+  std::cout << "[Grid] GridDisplay: scale=" << theParams.Scale()
+            << " scaleY=" << theParams.ScaleY() << " drawMode=" << int(theParams.DrawMode())
+            << " angular=" << theParams.AngularDivisions() << std::endl;
   myGridParams = theParams;
   myGridPlane  = thePlane;
   myToShowGrid = true;
@@ -3590,20 +3594,41 @@ void OpenGl_View::GridErase()
 
 void OpenGl_View::renderGrid()
 {
+  static int THE_GRID_DIAG_COUNTER = 0;
+  const bool toTrace               = THE_GRID_DIAG_COUNTER < 4;
+  if (toTrace)
+  {
+    ++THE_GRID_DIAG_COUNTER;
+    std::cout << "[Grid] renderGrid entered, myToShowGrid=" << (myToShowGrid ? 1 : 0)
+              << " drawMode=" << int(myGridParams.DrawMode()) << std::endl;
+  }
+
   if (!myToShowGrid || myGridParams.DrawMode() == Aspect_GDM_None)
   {
+    if (toTrace)
+    {
+      std::cout << "[Grid] early-out: toShow or DrawMode=None" << std::endl;
+    }
     return;
   }
 
   const occ::handle<OpenGl_Context>& aContext = myWorkspace->GetGlContext();
   if (aContext.IsNull() || aContext->core32 == nullptr)
   {
+    if (toTrace)
+    {
+      std::cout << "[Grid] early-out: no context or no core32 (required for VAO)" << std::endl;
+    }
     return;
   }
 
   const occ::handle<Graphic3d_Camera>& aCamera = aContext->Camera();
   if (aCamera.IsNull())
   {
+    if (toTrace)
+    {
+      std::cout << "[Grid] early-out: no camera" << std::endl;
+    }
     return;
   }
 
@@ -3612,6 +3637,10 @@ void OpenGl_View::renderGrid()
     aContext->core32->glGenVertexArrays(1, &myGridVao);
     if (myGridVao == 0)
     {
+      if (toTrace)
+      {
+        std::cout << "[Grid] early-out: glGenVertexArrays returned 0" << std::endl;
+      }
       myToShowGrid = false;
       return;
     }
@@ -3703,7 +3732,15 @@ void OpenGl_View::renderGrid()
     aScaleY = aScaleX;
   }
 
-  if (aContext->ShaderManager()->BindGridProgram())
+  const bool isGridBound = aContext->ShaderManager()->BindGridProgram();
+  if (toTrace)
+  {
+    std::cout << "[Grid] BindGridProgram returned " << (isGridBound ? 1 : 0)
+              << " scaleX=" << aScaleX << " scaleY=" << aScaleY
+              << " gridType=" << (myGridParams.IsCircular() ? 1 : 0)
+              << " isBg=" << (myGridParams.IsBackground() ? 1 : 0) << std::endl;
+  }
+  if (isGridBound)
   {
     const occ::handle<OpenGl_ShaderProgram>& aProg = aContext->ActiveProgram();
 
@@ -3759,6 +3796,11 @@ void OpenGl_View::renderGrid()
       NCollection_Vec3<float>((float)aNDir.X(), (float)aNDir.Y(), (float)aNDir.Z()));
 
     aContext->core32->glDrawArrays(GL_TRIANGLES, 0, 6);
+    if (toTrace)
+    {
+      const GLenum anErr = aContext->core11fwd->glGetError();
+      std::cout << "[Grid] glDrawArrays done, glError=" << int(anErr) << std::endl;
+    }
   }
 
   aContext->BindProgram(aPrevProgram);
