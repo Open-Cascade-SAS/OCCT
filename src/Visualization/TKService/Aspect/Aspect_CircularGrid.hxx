@@ -57,7 +57,7 @@ public:
   Standard_EXPORT int DivisionNumber() const;
 
   //! Set the circular grid radius (plane-local units). 0.0 (default) means
-  //! unbounded — the shader draws the grid to the horizon.
+  //! unbounded - the shader draws the grid to the horizon.
   Standard_EXPORT void SetRadius(const double theRadius);
 
   //! Return the bounded radius. 0.0 means unbounded.
@@ -74,7 +74,7 @@ public:
   //! Restrict the grid to an angular wedge, walking counter-clockwise from
   //! @p theStart to @p theEnd (radians, measured from the rotated plane X
   //! axis). Setting both values equal (e.g. both 0.0) returns to full-circle
-  //! rendering — the sentinel used for unbounded.
+  //! rendering - the sentinel used for unbounded.
   Standard_EXPORT void SetArcRange(const double theStart, const double theEnd);
 
   //! Return the arc start angle (radians). Meaningful only when IsArc() is true.

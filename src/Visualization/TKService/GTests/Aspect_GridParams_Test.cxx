@@ -56,7 +56,8 @@ TEST(Aspect_GridParamsTest, Bounds_RoundTrip)
   EXPECT_TRUE(aParams.IsBounded());
 
   aParams.SetSizeX(0.0);
-  EXPECT_FALSE(aParams.IsBounded()) << "clearing SizeX returns to unbounded when other bounds are 0";
+  EXPECT_FALSE(aParams.IsBounded())
+    << "clearing SizeX returns to unbounded when other bounds are 0";
 
   aParams.SetSizeY(5.0);
   EXPECT_TRUE(aParams.IsBounded());

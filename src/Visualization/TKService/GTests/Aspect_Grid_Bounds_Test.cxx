@@ -30,8 +30,11 @@ public:
       : Aspect_RectangularGrid(theXStep, theYStep)
   {
   }
+
   void Display() override {}
+
   void Erase() const override {}
+
   bool IsDisplayed() const override { return false; }
 
 protected:
@@ -45,8 +48,11 @@ public:
       : Aspect_CircularGrid(theRadiusStep, theDivisions)
   {
   }
+
   void Display() override {}
+
   void Erase() const override {}
+
   bool IsDisplayed() const override { return false; }
 
 protected:

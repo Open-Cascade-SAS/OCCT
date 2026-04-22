@@ -5189,7 +5189,7 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
     if (isInfinite)
     {
       // Route through the rectangular grid path first so V3d_View::MyGrid is
-      // populated — V3d_View::Compute needs an Aspect_RectangularGrid to snap
+      // populated - V3d_View::Compute needs an Aspect_RectangularGrid to snap
       // selections against. Without this step, -type inf draws the grid but
       // snap returns a stale/default world point that doesn't line up with
       // the visible intersections. Derive the snap step from Scale so the two
@@ -5328,7 +5328,7 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
       aViewer->SetCircularGridGraphicValues(aRadius, aZOffset);
     }
     // Angular range must hit the Aspect_CircularGrid base before ActivateGrid
-    // fires syncViews — syncViews copies AngleStart/End from the grid, so any
+    // fires syncViews - syncViews copies AngleStart/End from the grid, so any
     // value set earlier only on aGridParams would get overwritten.
     if (hasArc)
     {

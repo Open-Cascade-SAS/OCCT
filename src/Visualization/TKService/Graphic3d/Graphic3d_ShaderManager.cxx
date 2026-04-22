@@ -2199,8 +2199,7 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
           "  vec3(-1.0, -1.0, 0.0), vec3( 1.0,  1.0, 0.0), vec3( 1.0, -1.0, 0.0));"
 
     EOL "void main()" EOL "{" EOL "  vec3 aVertex = gridPlane[gl_VertexID];" EOL
-          "  vNdc        = aVertex.xy;" EOL
-          "  gl_Position = vec4 (aVertex, 1.0);" EOL "}";
+          "  vNdc        = aVertex.xy;" EOL "  gl_Position = vec4 (aVertex, 1.0);" EOL "}";
 
   TCollection_AsciiString aSrcFrag =
     TCollection_AsciiString()
@@ -2249,8 +2248,7 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
     "  vec3 aFarPoint  = unproject (vNdc.x, vNdc.y,  1.0);"
     // Ray-plane intersection on an arbitrary plane {uPlaneOrigin, uPlaneN}.
     EOL "  vec3  aDir     = aFarPoint - aNearPoint;" EOL
-    "  float aDenom   = dot (uPlaneN, aDir);" EOL
-    "  if (abs (aDenom) < 1e-8) { discard; }" EOL
+    "  float aDenom   = dot (uPlaneN, aDir);" EOL "  if (abs (aDenom) < 1e-8) { discard; }" EOL
     "  float aT       = dot (uPlaneN, uPlaneOrigin - aNearPoint) / aDenom;" EOL
     "  vec3  aHit     = aNearPoint + aT * aDir;"
     // Plane-local 2D coords, origin-centered to tame fp precision at large world offsets.
@@ -2266,8 +2264,7 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
     "    if (uBounds.z > 0.0)" EOL "    {" EOL "      float aRr = length (aLocal);" EOL
     "      if (aRr > uBounds.z) { discard; }" EOL
     "      aBoundFade = 1.0 - smoothstep (0.95 * uBounds.z, uBounds.z, aRr);" EOL "    }" EOL
-    "    if (uArcBounded != 0)" EOL "    {" EOL
-    "      float aAang = atan (aLocal.y, aLocal.x);" EOL
+    "    if (uArcBounded != 0)" EOL "    {" EOL "      float aAang = atan (aLocal.y, aLocal.x);" EOL
     "      float aSpan = uArcRange.y - uArcRange.x;" EOL
     "      if (aSpan < 0.0) { aSpan += 6.28318530718; }" EOL
     "      float aDelta = aAang - uArcRange.x;" EOL

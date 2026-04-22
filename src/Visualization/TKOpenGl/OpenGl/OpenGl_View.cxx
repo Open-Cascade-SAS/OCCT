@@ -3735,13 +3735,11 @@ void OpenGl_View::renderGrid()
     const float aHalfX  = myGridParams.SizeX() > 0.0 ? float(myGridParams.SizeX() * 0.5) : 0.0f;
     const float aHalfY  = myGridParams.SizeY() > 0.0 ? float(myGridParams.SizeY() * 0.5) : 0.0f;
     const float aRadius = myGridParams.Radius() > 0.0 ? float(myGridParams.Radius()) : 0.0f;
-    aProg->SetUniform(aContext,
-                      "uBounds",
-                      NCollection_Vec3<float>(aHalfX, aHalfY, aRadius));
-    aProg->SetUniform(aContext,
-                      "uArcRange",
-                      NCollection_Vec2<float>(float(myGridParams.AngleStart()),
-                                              float(myGridParams.AngleEnd())));
+    aProg->SetUniform(aContext, "uBounds", NCollection_Vec3<float>(aHalfX, aHalfY, aRadius));
+    aProg->SetUniform(
+      aContext,
+      "uArcRange",
+      NCollection_Vec2<float>(float(myGridParams.AngleStart()), float(myGridParams.AngleEnd())));
     aProg->SetUniform(aContext, "uArcBounded", myGridParams.IsArc() ? 1 : 0);
 
     // In-plane rotation: rotate the plane's X/Y basis around the plane normal
@@ -3759,9 +3757,9 @@ void OpenGl_View::renderGrid()
     // ZOffset pushes the displayed plane along its normal to avoid z-fighting
     // with coplanar geometry. Snap math uses the unshifted plane, so selection
     // still lands on the true plane.
-    const gp_Dir aNDir          = myGridPlane.Direction();
-    const double aZOffset       = myGridParams.ZOffset();
-    const gp_Pnt aOriginLocal   = myGridParams.Origin();
+    const gp_Dir aNDir        = myGridPlane.Direction();
+    const double aZOffset     = myGridParams.ZOffset();
+    const gp_Pnt aOriginLocal = myGridParams.Origin();
     const gp_Pnt aPlaneOrigin(aPlaneLoc.X() + aOriginLocal.X() + aNDir.X() * aZOffset,
                               aPlaneLoc.Y() + aOriginLocal.Y() + aNDir.Y() * aZOffset,
                               aPlaneLoc.Z() + aOriginLocal.Z() + aNDir.Z() * aZOffset);

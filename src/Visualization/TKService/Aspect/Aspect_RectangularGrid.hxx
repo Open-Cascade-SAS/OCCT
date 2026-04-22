@@ -73,7 +73,7 @@ public:
   Standard_EXPORT double SecondAngle() const;
 
   //! Set full extent of the bounded grid along the plane X direction (plane-local units).
-  //! 0.0 (default) means unbounded — the shader draws the grid to the horizon.
+  //! 0.0 (default) means unbounded - the shader draws the grid to the horizon.
   Standard_EXPORT void SetSizeX(const double theSize);
 
   //! Return the bounded-region extent along plane X. 0.0 means unbounded.
@@ -87,7 +87,7 @@ public:
   double SizeY() const { return mySizeY; }
 
   //! Set signed offset (plane-local units) applied along the plane normal for
-  //! display only — snap math stays on the plane. Use a small negative value
+  //! display only - snap math stays on the plane. Use a small negative value
   //! to push the grid slightly below coplanar geometry and avoid z-fighting.
   Standard_EXPORT void SetZOffset(const double theOffset);
 
