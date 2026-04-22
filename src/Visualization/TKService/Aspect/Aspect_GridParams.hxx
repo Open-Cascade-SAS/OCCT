@@ -90,7 +90,8 @@ public:
   //! renderer to polar rings (Scale -> radial step) and spokes at pi/N rad.
   int AngularDivisions() const { return myAngularDivisions; }
 
-  //! Set angular subdivision count (0 = rectangular grid, N>0 = circular with N spokes per 180 deg).
+  //! Set angular subdivision count (0 = rectangular grid, N>0 = circular with N spokes per 180
+  //! deg).
   void SetAngularDivisions(const int theDivisions) { myAngularDivisions = theDivisions; }
 
   //! Return TRUE when the parameters describe a circular (polar) grid.

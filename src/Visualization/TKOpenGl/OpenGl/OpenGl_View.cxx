@@ -3724,9 +3724,7 @@ void OpenGl_View::renderGrid()
     const double aAngularScale =
       myGridParams.IsCircular() ? double(myGridParams.AngularDivisions()) / M_PI : 0.0;
     aProg->SetUniform(aContext, "uAngularScale", GLfloat(aAngularScale));
-    aProg->SetUniform(aContext,
-                      "uDrawMode",
-                      myGridParams.DrawMode() == Aspect_GDM_Points ? 1 : 0);
+    aProg->SetUniform(aContext, "uDrawMode", myGridParams.DrawMode() == Aspect_GDM_Points ? 1 : 0);
 
     // In-plane rotation: rotate the plane's X/Y basis around the plane normal
     // so the grid lines follow the requested RotationAngle.
