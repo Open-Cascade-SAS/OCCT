@@ -141,9 +141,16 @@ void V3d_CircularGrid::syncViews(const bool theDoDisplay) const
 
   Aspect_GridParams aParams;
   aParams.SetColor(myColor);
+  aParams.SetAccentColor(myTenthColor);
   aParams.SetOrigin(gp_Pnt(aOriginOffset));
   aParams.SetScale(1.0 / aRadiusStep);
   aParams.SetScaleY(0.0); // unused in circular mode
+  aParams.SetAccentScaleX(0.1 / aRadiusStep);
+  // Angular accent defaults OFF: classical OCCT circular grids have no
+  // "tenth spoke" concept. Spokes come from DivisionNumber and are already
+  // drawn by the base layer at full count. Setting this to a positive value
+  // (e.g. aDivisions / (k * M_PI) for k > 1) would highlight every k-th spoke.
+  aParams.SetAccentAngularScale(0.0);
   aParams.SetRotationAngle(RotationAngle());
   aParams.SetAngularDivisions(aDivisions);
   aParams.SetDrawMode(DrawMode());

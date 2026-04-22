@@ -33,8 +33,7 @@ Aspect_CircularGrid::Aspect_CircularGrid(const double aRadiusStep,
       myRadius(0.0),
       myZOffset(0.0),
       myAngleStart(0.0),
-      myAngleEnd(0.0),
-      myIsArc(false)
+      myAngleEnd(0.0)
 {
 }
 
@@ -199,9 +198,12 @@ void Aspect_CircularGrid::SetZOffset(const double theOffset)
 
 void Aspect_CircularGrid::SetArcRange(const double theStart, const double theEnd)
 {
+  if (myAngleStart == theStart && myAngleEnd == theEnd)
+  {
+    return;
+  }
   myAngleStart = theStart;
   myAngleEnd   = theEnd;
-  myIsArc      = (theStart != theEnd);
   UpdateDisplay();
 }
 
@@ -222,5 +224,4 @@ void Aspect_CircularGrid::DumpJson(Standard_OStream& theOStream, int theDepth) c
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myZOffset)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myAngleStart)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myAngleEnd)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myIsArc)
 }

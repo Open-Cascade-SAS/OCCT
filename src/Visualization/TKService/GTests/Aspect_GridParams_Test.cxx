@@ -14,6 +14,7 @@
 #include <Aspect_GridParams.hxx>
 #include <Precision.hxx>
 #include <Quantity_Color.hxx>
+#include <Standard_NegativeValue.hxx>
 #include <gp_Pnt.hxx>
 
 #include <gtest/gtest.h>
@@ -22,9 +23,14 @@ TEST(Aspect_GridParamsTest, Defaults_AreReasonable)
 {
   Aspect_GridParams aParams;
   EXPECT_EQ(Quantity_NOC_GRAY70, aParams.Color().Name()) << "default color is grey";
+  EXPECT_EQ(Quantity_NOC_GRAY50, aParams.AccentColor().Name())
+    << "default accent color is darker grey";
   EXPECT_DOUBLE_EQ(0.01, aParams.Scale());
   EXPECT_DOUBLE_EQ(0.0, aParams.ScaleY()) << "default ScaleY is 0 (isotropic sentinel)";
   EXPECT_DOUBLE_EQ(0.01, aParams.EffectiveScaleY()) << "isotropic: EffectiveScaleY mirrors Scale";
+  EXPECT_DOUBLE_EQ(0.0, aParams.AccentScaleX());
+  EXPECT_DOUBLE_EQ(0.0, aParams.AccentScaleY());
+  EXPECT_DOUBLE_EQ(0.0, aParams.AccentAngularScale());
   EXPECT_DOUBLE_EQ(0.01, aParams.LineThickness());
   EXPECT_DOUBLE_EQ(0.0, aParams.RotationAngle());
   EXPECT_EQ(0, aParams.AngularDivisions()) << "default grid is rectangular";
@@ -146,6 +152,10 @@ TEST(Aspect_GridParamsTest, Setters_RoundTrip)
   aParams.SetColor(aBlue);
   EXPECT_EQ(aBlue, aParams.Color());
 
+  const Quantity_Color aRed(Quantity_NOC_RED);
+  aParams.SetAccentColor(aRed);
+  EXPECT_EQ(aRed, aParams.AccentColor());
+
   const gp_Pnt aOrigin(1.0, 2.0, 3.0);
   aParams.SetOrigin(aOrigin);
   EXPECT_NEAR(1.0, aParams.Origin().X(), Precision::Confusion());
@@ -158,6 +168,13 @@ TEST(Aspect_GridParamsTest, Setters_RoundTrip)
   aParams.SetScaleY(0.75);
   EXPECT_DOUBLE_EQ(0.75, aParams.ScaleY());
   EXPECT_DOUBLE_EQ(0.75, aParams.EffectiveScaleY());
+
+  aParams.SetAccentScaleX(0.05);
+  aParams.SetAccentScaleY(0.1);
+  aParams.SetAccentAngularScale(2.5);
+  EXPECT_DOUBLE_EQ(0.05, aParams.AccentScaleX());
+  EXPECT_DOUBLE_EQ(0.1, aParams.AccentScaleY());
+  EXPECT_DOUBLE_EQ(2.5, aParams.AccentAngularScale());
 
   aParams.SetLineThickness(0.02);
   EXPECT_DOUBLE_EQ(0.02, aParams.LineThickness());
@@ -184,8 +201,12 @@ TEST(Aspect_GridParamsTest, Copy_PreservesFields)
   Aspect_GridParams aSrc;
   aSrc.SetColor(Quantity_Color(0.1, 0.2, 0.3, Quantity_TOC_RGB));
   aSrc.SetOrigin(gp_Pnt(4.0, 5.0, 6.0));
+  aSrc.SetAccentColor(Quantity_Color(0.7, 0.6, 0.5, Quantity_TOC_RGB));
   aSrc.SetScale(0.25);
   aSrc.SetScaleY(0.125);
+  aSrc.SetAccentScaleX(0.025);
+  aSrc.SetAccentScaleY(0.0125);
+  aSrc.SetAccentAngularScale(3.0);
   aSrc.SetLineThickness(0.04);
   aSrc.SetRotationAngle(-0.5);
   aSrc.SetAngularDivisions(16);
@@ -205,9 +226,15 @@ TEST(Aspect_GridParamsTest, Copy_PreservesFields)
   EXPECT_NEAR(4.0, aCopy.Origin().X(), Precision::Confusion());
   EXPECT_NEAR(5.0, aCopy.Origin().Y(), Precision::Confusion());
   EXPECT_NEAR(6.0, aCopy.Origin().Z(), Precision::Confusion());
+  EXPECT_NEAR(0.7, aCopy.AccentColor().Red(), Precision::Confusion());
+  EXPECT_NEAR(0.6, aCopy.AccentColor().Green(), Precision::Confusion());
+  EXPECT_NEAR(0.5, aCopy.AccentColor().Blue(), Precision::Confusion());
   EXPECT_DOUBLE_EQ(0.25, aCopy.Scale());
   EXPECT_DOUBLE_EQ(0.125, aCopy.ScaleY());
   EXPECT_DOUBLE_EQ(0.125, aCopy.EffectiveScaleY());
+  EXPECT_DOUBLE_EQ(0.025, aCopy.AccentScaleX());
+  EXPECT_DOUBLE_EQ(0.0125, aCopy.AccentScaleY());
+  EXPECT_DOUBLE_EQ(3.0, aCopy.AccentAngularScale());
   EXPECT_DOUBLE_EQ(0.04, aCopy.LineThickness());
   EXPECT_DOUBLE_EQ(-0.5, aCopy.RotationAngle());
   EXPECT_EQ(16, aCopy.AngularDivisions());
@@ -224,3 +251,16 @@ TEST(Aspect_GridParamsTest, Copy_PreservesFields)
   EXPECT_TRUE(aCopy.IsBounded());
   EXPECT_TRUE(aCopy.IsArc());
 }
+
+#ifndef No_Exception
+TEST(Aspect_GridParamsTest, Setters_RejectNegativeValues)
+{
+  Aspect_GridParams aParams;
+  EXPECT_THROW(aParams.SetScale(-1.0), Standard_NegativeValue);
+  EXPECT_THROW(aParams.SetScaleY(-1.0), Standard_NegativeValue);
+  EXPECT_THROW(aParams.SetLineThickness(-0.1), Standard_NegativeValue);
+  EXPECT_THROW(aParams.SetSizeX(-1.0), Standard_NegativeValue);
+  EXPECT_THROW(aParams.SetSizeY(-1.0), Standard_NegativeValue);
+  EXPECT_THROW(aParams.SetRadius(-1.0), Standard_NegativeValue);
+}
+#endif

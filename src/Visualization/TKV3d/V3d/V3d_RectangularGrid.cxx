@@ -151,9 +151,12 @@ void V3d_RectangularGrid::syncViews(const bool theDoDisplay) const
 
   Aspect_GridParams aParams;
   aParams.SetColor(myColor);
+  aParams.SetAccentColor(myTenthColor);
   aParams.SetOrigin(gp_Pnt(aOriginOffset));
   aParams.SetScale(1.0 / aXStep);
   aParams.SetScaleY(1.0 / aYStep);
+  aParams.SetAccentScaleX(0.1 / aXStep);
+  aParams.SetAccentScaleY(0.1 / aYStep);
   aParams.SetRotationAngle(RotationAngle());
   aParams.SetDrawMode(DrawMode());
   aParams.SetSizeX(SizeX());

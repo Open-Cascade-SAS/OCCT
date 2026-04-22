@@ -84,7 +84,7 @@ public:
   double AngleEnd() const { return myAngleEnd; }
 
   //! Return TRUE when the grid is restricted to an angular wedge.
-  bool IsArc() const { return myIsArc; }
+  bool IsArc() const { return myAngleStart != myAngleEnd; }
 
   Standard_EXPORT void Init() override;
 
@@ -101,7 +101,6 @@ private:
   double myZOffset;
   double myAngleStart;
   double myAngleEnd;
-  bool   myIsArc;
 };
 
 #endif // _Aspect_CircularGrid_HeaderFile

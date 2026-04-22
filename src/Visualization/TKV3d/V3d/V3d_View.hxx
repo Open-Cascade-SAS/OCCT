@@ -915,13 +915,20 @@ public:
   //! grid in <me>
   Standard_EXPORT void SetGridActivity(const bool aFlag);
 
-  //! Display a shader-rendered infinite grid on the viewer's privileged plane.
+  //! Display a shader-rendered grid on the viewer's privileged plane.
+  //! @param[in] theParams render-only appearance (color, scale, bounds, arc,
+  //!            draw-mode, background/inf flags); snap geometry still comes
+  //!            from the classical Aspect_*Grid on the viewer.
   Standard_EXPORT void GridDisplay(const Aspect_GridParams& theParams);
 
-  //! Display a shader-rendered infinite grid on an explicit plane.
+  //! Display a shader-rendered grid on an explicit plane (overrides the
+  //! viewer's privileged plane for this view only).
+  //! @param[in] theParams appearance parameters; see the single-argument overload.
+  //! @param[in] thePlane  world-space grid plane (origin + axes).
   Standard_EXPORT void GridDisplay(const Aspect_GridParams& theParams, const gp_Ax3& thePlane);
 
-  //! Erase the shader-rendered infinite grid.
+  //! Erase the shader-rendered grid from this view. Does not touch the
+  //! viewer's classical grid activation used by snap.
   Standard_EXPORT void GridErase();
 
   //! Dumps the full contents of the View into the image file. This is an alias for ToPixMap() with

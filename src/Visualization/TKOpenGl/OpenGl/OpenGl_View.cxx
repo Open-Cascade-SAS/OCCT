@@ -3568,14 +3568,25 @@ void OpenGl_View::updatePBREnvironment(const occ::handle<OpenGl_Context>& theCtx
 
 void OpenGl_View::GridDisplay(const Aspect_GridParams& theParams, const gp_Ax3& thePlane)
 {
+  // Reference view matrix (for background-mode anchoring) is captured only on
+  // transitions into background mode or into the showing state. Otherwise live
+  // param edits (SetArcRange, SetSize, etc.) while the camera is mid-orbit would
+  // re-snapshot the current view and visually snap the anchored grid.
+  const bool wasShowing    = myToShowGrid;
+  const bool wasBackground = wasShowing && myGridParams.IsBackground();
+  const bool toCapture = theParams.IsBackground() && (!wasShowing || !wasBackground);
+
   myGridParams = theParams;
   myGridPlane  = thePlane;
   myToShowGrid = true;
 
-  const occ::handle<OpenGl_Context>& aCtx = myWorkspace->GetGlContext();
-  if (!aCtx.IsNull())
+  if (toCapture)
   {
-    myGridRefViewMatrix = aCtx->WorldViewState.Current();
+    const occ::handle<OpenGl_Context>& aCtx = myWorkspace->GetGlContext();
+    if (!aCtx.IsNull())
+    {
+      myGridRefViewMatrix = aCtx->WorldViewState.Current();
+    }
   }
 }
 
@@ -3596,8 +3607,28 @@ void OpenGl_View::renderGrid()
   }
 
   const occ::handle<OpenGl_Context>& aContext = myWorkspace->GetGlContext();
-  if (aContext.IsNull() || aContext->core32 == nullptr)
+  if (aContext.IsNull())
   {
+    return;
+  }
+  if (aContext->core32 == nullptr)
+  {
+    // The shader grid requires GL 3.2+ / GLES 3.0+ (VAO + gl_VertexID + gl_FragDepth).
+    // Warn once per process so the caller knows why the grid isn't drawn; snap
+    // math still works. The process scope avoids per-view state bloat - a stray
+    // missed warning on a second view is less costly than a data member.
+    static bool THE_GRID_GL32_WARNED = false;
+    if (!THE_GRID_GL32_WARNED)
+    {
+      THE_GRID_GL32_WARNED = true;
+      aContext->PushMessage(GL_DEBUG_SOURCE_APPLICATION,
+                            GL_DEBUG_TYPE_OTHER,
+                            0,
+                            GL_DEBUG_SEVERITY_MEDIUM,
+                            "Warning: shader-based grid requires GL 3.2 / GLES 3.0 or later; "
+                            "grid will not be rendered on this driver. Snap selection remains "
+                            "functional.");
+    }
     return;
   }
 
@@ -3712,8 +3743,6 @@ void OpenGl_View::renderGrid()
   {
     const occ::handle<OpenGl_ShaderProgram>& aProg = aContext->ActiveProgram();
 
-    aProg->SetUniform(aContext, "uZNear", GLfloat(aCamera->ZNear()));
-    aProg->SetUniform(aContext, "uZFar", GLfloat(aCamera->ZFar()));
     aProg->SetUniform(aContext, "uScaleX", GLfloat(aScaleX));
     aProg->SetUniform(aContext, "uScaleY", GLfloat(aScaleY));
     aProg->SetUniform(aContext, "uThickness", GLfloat(myGridParams.LineThickness()));
@@ -3722,6 +3751,14 @@ void OpenGl_View::renderGrid()
                       NCollection_Vec3<float>((float)myGridParams.Color().Red(),
                                               (float)myGridParams.Color().Green(),
                                               (float)myGridParams.Color().Blue()));
+    aProg->SetUniform(aContext,
+                      "uAccentColor",
+                      NCollection_Vec3<float>((float)myGridParams.AccentColor().Red(),
+                                              (float)myGridParams.AccentColor().Green(),
+                                              (float)myGridParams.AccentColor().Blue()));
+    aProg->SetUniform(aContext, "uAccentScaleX", GLfloat(myGridParams.AccentScaleX()));
+    aProg->SetUniform(aContext, "uAccentScaleY", GLfloat(myGridParams.AccentScaleY()));
+    aProg->SetUniform(aContext, "uAccentAngularScale", GLfloat(myGridParams.AccentAngularScale()));
     aProg->SetUniform(aContext, "uIsDrawAxis", myGridParams.IsDrawAxis() ? 1 : 0);
     aProg->SetUniform(aContext, "uIsBackground", myGridParams.IsBackground() ? 1 : 0);
     aProg->SetUniform(aContext, "uGridType", myGridParams.IsCircular() ? 1 : 0);
