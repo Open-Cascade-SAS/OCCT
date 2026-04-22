@@ -3655,6 +3655,7 @@ void OpenGl_View::renderGrid()
 
   GLboolean wasDepthTest  = aContext->core11fwd->glIsEnabled(GL_DEPTH_TEST);
   GLboolean wasBlend      = aContext->core11fwd->glIsEnabled(GL_BLEND);
+  GLboolean wasCullFace   = aContext->core11fwd->glIsEnabled(GL_CULL_FACE);
   GLboolean wasDepthWrite = GL_TRUE;
   aContext->core11fwd->glGetBooleanv(GL_DEPTH_WRITEMASK, &wasDepthWrite);
   GLint aPrevDepthFunc = GL_LESS;
@@ -3720,6 +3721,11 @@ void OpenGl_View::renderGrid()
   aContext->core11fwd->glDepthMask(GL_TRUE);
   aContext->core11fwd->glEnable(GL_BLEND);
   aContext->core11fwd->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  // The clip-space full-screen quad winds CW; if back-face culling is on
+  // (leftover from prior scene render with solid interiors), every triangle
+  // is culled and the grid silently vanishes. Disable culling for the draw
+  // call and restore at the end.
+  aContext->core11fwd->glDisable(GL_CULL_FACE);
   if (hasDepthClamp && !wasDepthClamp)
   {
     aContext->core11fwd->glEnable(GL_DEPTH_CLAMP);
@@ -3832,6 +3838,10 @@ void OpenGl_View::renderGrid()
                                            aPrevBlendDstRgb,
                                            aPrevBlendSrcA,
                                            aPrevBlendDstA);
+  if (wasCullFace == GL_TRUE)
+  {
+    aContext->core11fwd->glEnable(GL_CULL_FACE);
+  }
   if (hasDepthClamp && !wasDepthClamp)
   {
     aContext->core11fwd->glDisable(GL_DEPTH_CLAMP);
