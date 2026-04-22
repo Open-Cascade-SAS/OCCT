@@ -2213,7 +2213,7 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
     "vec4 gridLines2d (vec2 theUV, vec3 theColor, vec2 theScale," EOL
     "                  bool theIsDrawAxis, float theThickness)" EOL "{" EOL
     "  vec2 aCoord      = theUV * theScale;" EOL
-    "  vec2 aDerivative = max (fwidth (aCoord) * 0.75, vec2 (theThickness));" EOL
+    "  vec2 aDerivative = max (fwidth (aCoord), vec2 (theThickness));" EOL
     "  vec2 aGrid       = abs (fract (aCoord - 0.5) - 0.5) / aDerivative;" EOL
     // Lines mode: either axis near 0 is enough. Points mode: both must be near 0
     // so only intersections light up.
@@ -2233,7 +2233,7 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
 
     EOL "vec4 gridLines1d (float theCoord, float theScale, vec3 theColor, float theThickness)" EOL
     "{" EOL "  float aCoord      = theCoord * theScale;" EOL
-    "  float aDerivative = max (fwidth (aCoord) * 0.75, theThickness);" EOL
+    "  float aDerivative = max (fwidth (aCoord), theThickness);" EOL
     "  float aGrid       = abs (fract (aCoord - 0.5) - 0.5) / aDerivative;" EOL
     "  return vec4 (theColor, 1.0 - min (aGrid, 1.0));" EOL "}"
 
@@ -2244,6 +2244,13 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
     "  vec4 aUnproj = occModelWorldMatrixInverse * occWorldViewMatrixInverse" EOL
     "               * occProjectionMatrixInverse * vec4 (theX, theY, theZ, 1.0);" EOL
     "  return aUnproj.xyz / aUnproj.w;" EOL "}"
+
+    EOL "bool intersectPlane (vec3 theNearPoint, vec3 theFarPoint, out vec3 theHit)" EOL "{" EOL
+    "  vec3  aDir   = theFarPoint - theNearPoint;" EOL "  float aDenom = dot (uPlaneN, aDir);" EOL
+    "  if (abs (aDenom) < 1e-6)" EOL "  {" EOL "    theHit = theNearPoint;" EOL
+    "    return false;" EOL "  }" EOL
+    "  float aT = dot (uPlaneN, uPlaneOrigin - theNearPoint) / aDenom;" EOL
+    "  theHit = theNearPoint + aT * aDir;" EOL "  return true;" EOL "}" EOL
 
     EOL "float computeDepth (vec3 thePos)" EOL "{" EOL
     "  mat4 aMVP  = occProjectionMatrix * occWorldViewMatrix * occModelWorldMatrix;" EOL
@@ -2263,14 +2270,8 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
     // nonlinearity of the perspective divide when ray endpoints are passed as
     // varyings. Each fragment reconstructs its own Near/Far world points.
     EOL "  vec3 aNearPoint = unproject (vNdc.x, vNdc.y, -1.0);" EOL
-    "  vec3 aFarPoint  = unproject (vNdc.x, vNdc.y,  1.0);"
-    // Ray-plane intersection on an arbitrary plane {uPlaneOrigin, uPlaneN}.
-    // Angle-based parallel test (scale-invariant in world units).
-    EOL "  vec3  aDir     = aFarPoint - aNearPoint;" EOL "  vec3  aDirUnit = normalize (aDir);" EOL
-    "  if (abs (dot (uPlaneN, aDirUnit)) < GRID_PARALLEL_EPS) { discard; }" EOL
-    "  float aDenom   = dot (uPlaneN, aDir);" EOL
-    "  float aT       = dot (uPlaneN, uPlaneOrigin - aNearPoint) / aDenom;" EOL
-    "  vec3  aHit     = aNearPoint + aT * aDir;"
+    "  vec3 aFarPoint  = unproject (vNdc.x, vNdc.y,  1.0);" EOL "  vec3 aHit;" EOL
+    "  if (!intersectPlane (aNearPoint, aFarPoint, aHit)) { discard; }"
     // Plane-local 2D coords, origin-centered to tame fp precision at large world offsets.
     EOL "  vec3  aLocal3  = aHit - uPlaneOrigin;" EOL
     "  vec2  aLocal   = vec2 (dot (aLocal3, uPlaneX), dot (aLocal3, uPlaneY));"
@@ -2292,16 +2293,29 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
     "(aLocal.y));" EOL "  }"
 
     // Grid coordinates depend on uGridType: 0=rectangular (X/Y), 1=circular (radius/angle).
-    EOL "  vec2 aGridUv;" EOL "  vec2 aScale;" EOL "  vec2 aAxisUv;" EOL "  if (uGridType == 1)" EOL
-    "  {" EOL "    aGridUv = vec2 (aR, aA);" EOL "    aScale  = vec2 (uScaleX, uAngularScale);" EOL
-    "    aAxisUv = aLocal;" EOL "  }" EOL "  else" EOL "  {" EOL "    aGridUv = aLocal;" EOL
+    // For rectangular grid, rebase UVs around a snapped reference point (screen center
+    // ray hit) to keep fract() arguments numerically small at shallow view angles.
+    EOL "  vec2 aStableLocal = aLocal;" EOL "  if (uGridType == 0)" EOL "  {" EOL
+    "    vec3 aNearCenter = unproject (0.0, 0.0, -1.0);" EOL
+    "    vec3 aFarCenter  = unproject (0.0, 0.0,  1.0);" EOL "    vec3 aRefHit;" EOL
+    "    if (intersectPlane (aNearCenter, aFarCenter, aRefHit))" EOL "    {" EOL
+    "      vec3 aRefLocal3 = aRefHit - uPlaneOrigin;" EOL
+    "      vec2 aRefLocal = vec2 (dot (aRefLocal3, uPlaneX), dot (aRefLocal3, uPlaneY));" EOL
+    "      vec2 aScaleSafe = max (abs (vec2 (uScaleX, uScaleY)), vec2 (1e-9));" EOL
+    "      vec2 aShift = floor (aRefLocal * aScaleSafe) / aScaleSafe;" EOL
+    "      aStableLocal = aLocal - aShift;" EOL "    }" EOL "  }" EOL "  vec2 aGridUv;" EOL
+    "  vec2 aScale;" EOL "  vec2 aAxisUv;" EOL "  if (uGridType == 1)" EOL "  {" EOL
+    "    aGridUv = vec2 (aR, aA);" EOL "    aScale  = vec2 (uScaleX, uAngularScale);" EOL
+    "    aAxisUv = aLocal;" EOL "  }" EOL "  else" EOL "  {" EOL "    aGridUv = aStableLocal;" EOL
     "    aScale  = vec2 (uScaleX, uScaleY);" EOL "    aAxisUv = aLocal;" EOL "  }" EOL
     "  vec4 aColor = gridLines2d (aGridUv, uColor, aScale, uGridType == 0, uThickness);" EOL
     "  if (uDrawMode != 1)" EOL "  {" EOL "    if (uGridType == 0)" EOL "    {" EOL
     "      if (uAccentScaleX > 0.0)" EOL "      {" EOL
-    "        aColor = overlayGrid (aColor, gridLines1d (aLocal.x, uAccentScaleX, uAccentColor, "
+    "        aColor = overlayGrid (aColor, gridLines1d (aStableLocal.x, uAccentScaleX, "
+    "uAccentColor, "
     "uThickness));" EOL "      }" EOL "      if (uAccentScaleY > 0.0)" EOL "      {" EOL
-    "        aColor = overlayGrid (aColor, gridLines1d (aLocal.y, uAccentScaleY, uAccentColor, "
+    "        aColor = overlayGrid (aColor, gridLines1d (aStableLocal.y, uAccentScaleY, "
+    "uAccentColor, "
     "uThickness));" EOL "      }" EOL "    }" EOL "    else" EOL "    {" EOL
     "      if (uAccentScaleX > 0.0)" EOL "      {" EOL
     "        aColor = overlayGrid (aColor, gridLines1d (aR, uAccentScaleX, uAccentColor, "
