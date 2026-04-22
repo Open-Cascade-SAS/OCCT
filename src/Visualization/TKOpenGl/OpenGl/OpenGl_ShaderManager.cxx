@@ -1479,23 +1479,25 @@ const occ::handle<Graphic3d_ShaderProgram>& OpenGl_ShaderManager::GetColoredQuad
 
 bool OpenGl_ShaderManager::BindGridProgram()
 {
-  if (!myGridProgram.IsNull())
+  if (myGridProgram.IsNull())
   {
-    if (!myGridProgram->IsValid())
+    occ::handle<Graphic3d_ShaderProgram> aProgramSrc = getGridProgram();
+    TCollection_AsciiString              aKey;
+    if (!Create(aProgramSrc, aKey, myGridProgram))
     {
+      myGridProgram = new OpenGl_ShaderProgram(); // mark as invalid so we don't retry every frame
       return false;
     }
-    return myContext->BindProgram(myGridProgram);
   }
-
-  occ::handle<Graphic3d_ShaderProgram> aProgramSrc = getGridProgram();
-  TCollection_AsciiString              aKey;
-  if (!Create(aProgramSrc, aKey, myGridProgram))
+  if (!myGridProgram->IsValid())
   {
-    myGridProgram = new OpenGl_ShaderProgram(); // mark as invalid so we don't retry every frame
     return false;
   }
-  return myContext->BindProgram(myGridProgram);
+  // Route through bindProgramWithState so OCCT built-in uniforms (occProjectionMatrix,
+  // occWorldViewMatrix, occModelWorldMatrix, their inverses, viewport, etc.) are uploaded
+  // to the grid program. The shader's unproject() path depends on these matrices; without
+  // PushState they stay at zero and every fragment is discarded (the grid never draws).
+  return bindProgramWithState(myGridProgram, Graphic3d_TypeOfShadingModel_Unlit);
 }
 
 //=================================================================================================
