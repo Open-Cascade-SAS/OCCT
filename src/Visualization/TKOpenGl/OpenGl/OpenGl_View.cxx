@@ -23,6 +23,7 @@
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_Texture2D.hxx>
 #include <Graphic3d_TextureEnv.hxx>
+#include <Graphic3d_TransformUtils.hxx>
 #include <Image_AlienPixMap.hxx>
 #include <OpenGl_ArbFBO.hxx>
 #include <OpenGl_BackgroundArray.hxx>
@@ -3813,6 +3814,74 @@ void OpenGl_View::renderGrid()
       aContext,
       "uPlaneY",
       NCollection_Vec3<float>((float)aYRotated.X(), (float)aYRotated.Y(), (float)aYRotated.Z()));
+
+    // Build a stable per-frame rectangular-grid reference point in plane-local
+    // coordinates. This keeps shader fract() arguments bounded at shallow angles
+    // without re-running extra unproject/intersection work for every fragment.
+    int                     aHasStableRef = 0;
+    NCollection_Vec2<float> aStableRefLocal(0.0f, 0.0f);
+    if (!myGridParams.IsCircular())
+    {
+      const int* aViewport = aContext->Viewport();
+      if (aViewport != nullptr)
+      {
+        const float aWinX = float(aViewport[0]) + float(aViewport[2]) * 0.5f;
+        const float aWinY = float(aViewport[1]) + float(aViewport[3]) * 0.5f;
+
+        float      aNearX = 0.0f, aNearY = 0.0f, aNearZ = 0.0f;
+        float      aFarX = 0.0f, aFarY = 0.0f, aFarZ = 0.0f;
+        const bool isNearOk =
+          Graphic3d_TransformUtils::UnProject<float>(aWinX,
+                                                     aWinY,
+                                                     0.0f,
+                                                     aContext->WorldViewState.Current(),
+                                                     aContext->ProjectionState.Current(),
+                                                     aViewport,
+                                                     aNearX,
+                                                     aNearY,
+                                                     aNearZ);
+        const bool isFarOk =
+          Graphic3d_TransformUtils::UnProject<float>(aWinX,
+                                                     aWinY,
+                                                     1.0f,
+                                                     aContext->WorldViewState.Current(),
+                                                     aContext->ProjectionState.Current(),
+                                                     aViewport,
+                                                     aFarX,
+                                                     aFarY,
+                                                     aFarZ);
+        if (isNearOk && isFarOk)
+        {
+          const NCollection_Vec3<float> aNearP(aNearX, aNearY, aNearZ);
+          const NCollection_Vec3<float> aFarP(aFarX, aFarY, aFarZ);
+          const NCollection_Vec3<float> aDir = aFarP - aNearP;
+
+          const NCollection_Vec3<float> aPlaneN((float)aNDir.X(),
+                                                (float)aNDir.Y(),
+                                                (float)aNDir.Z());
+          const float                   aDenom = aPlaneN.Dot(aDir);
+          if (std::abs(aDenom) > 1.0e-6f)
+          {
+            const NCollection_Vec3<float> aPlaneOriginV((float)aPlaneOrigin.X(),
+                                                        (float)aPlaneOrigin.Y(),
+                                                        (float)aPlaneOrigin.Z());
+            const float                   aT      = aPlaneN.Dot(aPlaneOriginV - aNearP) / aDenom;
+            const NCollection_Vec3<float> aHit    = aNearP + aDir * aT;
+            const NCollection_Vec3<float> aLocal3 = aHit - aPlaneOriginV;
+            const NCollection_Vec3<float> aPlaneX((float)aXRotated.X(),
+                                                  (float)aXRotated.Y(),
+                                                  (float)aXRotated.Z());
+            const NCollection_Vec3<float> aPlaneY((float)aYRotated.X(),
+                                                  (float)aYRotated.Y(),
+                                                  (float)aYRotated.Z());
+            aStableRefLocal.SetValues(aLocal3.Dot(aPlaneX), aLocal3.Dot(aPlaneY));
+            aHasStableRef = 1;
+          }
+        }
+      }
+    }
+    aProg->SetUniform(aContext, "uStableRefLocal", aStableRefLocal);
+    aProg->SetUniform(aContext, "uHasStableRef", aHasStableRef);
     aProg->SetUniform(
       aContext,
       "uPlaneN",

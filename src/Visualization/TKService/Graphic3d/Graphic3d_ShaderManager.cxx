@@ -2192,6 +2192,10 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
   aUniforms.Append(
     Graphic3d_ShaderObject::ShaderVariable("float uAngularScale", Graphic3d_TOS_FRAGMENT));
   aUniforms.Append(Graphic3d_ShaderObject::ShaderVariable("int uDrawMode", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append(
+    Graphic3d_ShaderObject::ShaderVariable("vec2 uStableRefLocal", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append(
+    Graphic3d_ShaderObject::ShaderVariable("int uHasStableRef", Graphic3d_TOS_FRAGMENT));
   aUniforms.Append(Graphic3d_ShaderObject::ShaderVariable("vec3 uBounds", Graphic3d_TOS_FRAGMENT));
   aUniforms.Append(
     Graphic3d_ShaderObject::ShaderVariable("vec2 uArcRange", Graphic3d_TOS_FRAGMENT));
@@ -2245,9 +2249,12 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
     "               * occProjectionMatrixInverse * vec4 (theX, theY, theZ, 1.0);" EOL
     "  return aUnproj.xyz / aUnproj.w;" EOL "}"
 
+    // sin(angle) threshold for "ray parallel to plane" - ~5.7e-5 deg.
+    EOL "const float GRID_PARALLEL_EPS = 1e-6;"
+
     EOL "bool intersectPlane (vec3 theNearPoint, vec3 theFarPoint, out vec3 theHit)" EOL "{" EOL
     "  vec3  aDir   = theFarPoint - theNearPoint;" EOL "  float aDenom = dot (uPlaneN, aDir);" EOL
-    "  if (abs (aDenom) < 1e-6)" EOL "  {" EOL "    theHit = theNearPoint;" EOL
+    "  if (abs (aDenom) < GRID_PARALLEL_EPS)" EOL "  {" EOL "    theHit = theNearPoint;" EOL
     "    return false;" EOL "  }" EOL
     "  float aT = dot (uPlaneN, uPlaneOrigin - theNearPoint) / aDenom;" EOL
     "  theHit = theNearPoint + aT * aDir;" EOL "  return true;" EOL "}" EOL
@@ -2259,8 +2266,6 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
     // Fade-band width (as a fraction of bound) applied inside the bound edge.
     // Narrow smoothstep softens rectangular/disc cuts; angular cut stays hard.
     EOL "const float GRID_FADE_BAND = 0.95;"
-    // sin(angle) threshold for "ray parallel to plane" - ~5.7e-5 deg.
-    EOL "const float GRID_PARALLEL_EPS = 1e-6;"
     // Keep gl_FragDepth strictly less than 1.0 so the grid never lands exactly
     // on the far plane (some drivers cull there).
     EOL "const float GRID_DEPTH_EPS = 1e-5;" EOL "const float GRID_TWO_PI = 6.28318530718;"
@@ -2293,16 +2298,12 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
     "(aLocal.y));" EOL "  }"
 
     // Grid coordinates depend on uGridType: 0=rectangular (X/Y), 1=circular (radius/angle).
-    // For rectangular grid, rebase UVs around a snapped reference point (screen center
-    // ray hit) to keep fract() arguments numerically small at shallow view angles.
+    // For rectangular grid, rebase UVs around a CPU-provided stable reference
+    // (same for all fragments in the frame) to keep fract() arguments small.
     EOL "  vec2 aStableLocal = aLocal;" EOL "  if (uGridType == 0)" EOL "  {" EOL
-    "    vec3 aNearCenter = unproject (0.0, 0.0, -1.0);" EOL
-    "    vec3 aFarCenter  = unproject (0.0, 0.0,  1.0);" EOL "    vec3 aRefHit;" EOL
-    "    if (intersectPlane (aNearCenter, aFarCenter, aRefHit))" EOL "    {" EOL
-    "      vec3 aRefLocal3 = aRefHit - uPlaneOrigin;" EOL
-    "      vec2 aRefLocal = vec2 (dot (aRefLocal3, uPlaneX), dot (aRefLocal3, uPlaneY));" EOL
+    "    if (uHasStableRef != 0)" EOL "    {" EOL
     "      vec2 aScaleSafe = max (abs (vec2 (uScaleX, uScaleY)), vec2 (1e-9));" EOL
-    "      vec2 aShift = floor (aRefLocal * aScaleSafe) / aScaleSafe;" EOL
+    "      vec2 aShift = floor (uStableRefLocal * aScaleSafe) / aScaleSafe;" EOL
     "      aStableLocal = aLocal - aShift;" EOL "    }" EOL "  }" EOL "  vec2 aGridUv;" EOL
     "  vec2 aScale;" EOL "  vec2 aAxisUv;" EOL "  if (uGridType == 1)" EOL "  {" EOL
     "    aGridUv = vec2 (aR, aA);" EOL "    aScale  = vec2 (uScaleX, uAngularScale);" EOL
@@ -2310,12 +2311,18 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
     "    aScale  = vec2 (uScaleX, uScaleY);" EOL "    aAxisUv = aLocal;" EOL "  }" EOL
     "  vec4 aColor = gridLines2d (aGridUv, uColor, aScale, uGridType == 0, uThickness);" EOL
     "  if (uDrawMode != 1)" EOL "  {" EOL "    if (uGridType == 0)" EOL "    {" EOL
-    "      if (uAccentScaleX > 0.0)" EOL "      {" EOL
-    "        aColor = overlayGrid (aColor, gridLines1d (aStableLocal.x, uAccentScaleX, "
-    "uAccentColor, "
+    "      if (uAccentScaleX > 0.0)" EOL "      {" EOL "        float aAccX = aLocal.x;" EOL
+    "        if (uHasStableRef != 0)" EOL "        {" EOL
+    "          float aScaleAccX = max (abs (uAccentScaleX), 1e-9);" EOL
+    "          float aShiftAccX = floor (uStableRefLocal.x * aScaleAccX) / aScaleAccX;" EOL
+    "          aAccX -= aShiftAccX;" EOL "        }" EOL
+    "        aColor = overlayGrid (aColor, gridLines1d (aAccX, uAccentScaleX, uAccentColor, "
     "uThickness));" EOL "      }" EOL "      if (uAccentScaleY > 0.0)" EOL "      {" EOL
-    "        aColor = overlayGrid (aColor, gridLines1d (aStableLocal.y, uAccentScaleY, "
-    "uAccentColor, "
+    "        float aAccY = aLocal.y;" EOL "        if (uHasStableRef != 0)" EOL "        {" EOL
+    "          float aScaleAccY = max (abs (uAccentScaleY), 1e-9);" EOL
+    "          float aShiftAccY = floor (uStableRefLocal.y * aScaleAccY) / aScaleAccY;" EOL
+    "          aAccY -= aShiftAccY;" EOL "        }" EOL
+    "        aColor = overlayGrid (aColor, gridLines1d (aAccY, uAccentScaleY, uAccentColor, "
     "uThickness));" EOL "      }" EOL "    }" EOL "    else" EOL "    {" EOL
     "      if (uAccentScaleX > 0.0)" EOL "      {" EOL
     "        aColor = overlayGrid (aColor, gridLines1d (aR, uAccentScaleX, uAccentColor, "
