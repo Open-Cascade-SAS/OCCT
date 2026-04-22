@@ -5007,9 +5007,9 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
   double                   aNewArcStart = 0.0, aNewArcEnd = 0.0;
   Quantity_Color           aNewColor, aNewTenthColor;
   bool hasOrigin = false, hasStep = false, hasRotAngle = false, hasSize = false, hasRadius = false,
-       hasZOffset = false;
-  bool isInfinite = false, hasInfOff = false, hasScale = false, hasArc = false;
-  bool hasColor = false, hasTenthColor = false;
+       hasZOffset                   = false;
+  bool                   isInfinite = false, hasInfOff = false, hasScale = false, hasArc = false;
+  bool                   hasColor = false, hasTenthColor = false;
   Aspect_GridParams      aGridParams;
   ViewerTest_AutoUpdater anUpdateTool(ViewerTest::GetAISContext(), aView);
   for (int anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
@@ -5125,8 +5125,7 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
       aGridParams.SetColor(aNewColor);
       anArgIter += 3;
     }
-    else if (anArgIter + 3 < theArgNb
-             && (anArg == "-tenthcolor" || anArg == "-accentcolor"))
+    else if (anArgIter + 3 < theArgNb && (anArg == "-tenthcolor" || anArg == "-accentcolor"))
     {
       hasTenthColor  = true;
       aNewTenthColor = Quantity_Color(Draw::Atof(theArgVec[anArgIter + 1]),
@@ -5214,11 +5213,10 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
       // route through ActivateGrid(rect|circ) first and override the display
       // with the inf-specific params afterwards. Decide the shape from aType
       // (user explicitly asked) or from the presence of circular-only options.
-      const bool isInfCircular =
-        aType == Aspect_GT_Circular || hasRadius || hasArc;
-      const double anOrigX   = hasOrigin ? aNewOriginXY.x() : 0.0;
-      const double anOrigY   = hasOrigin ? aNewOriginXY.y() : 0.0;
-      const double aRotAngle = hasRotAngle ? aNewRotAngle : 0.0;
+      const bool   isInfCircular = aType == Aspect_GT_Circular || hasRadius || hasArc;
+      const double anOrigX       = hasOrigin ? aNewOriginXY.x() : 0.0;
+      const double anOrigY       = hasOrigin ? aNewOriginXY.y() : 0.0;
+      const double aRotAngle     = hasRotAngle ? aNewRotAngle : 0.0;
 
       if (isInfCircular)
       {
@@ -5257,7 +5255,7 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
         // Rectangular infinite grid. Derive step from explicit -step or from the
         // Aspect_GridParams scale; fall back to 1 world unit so the default is
         // immediately useful (Aspect_GridParams::Scale defaults to 0.01 which
-        // would give step 100 — too coarse for typical scenes).
+        // would give step 100 - too coarse for typical scenes).
         if (!hasScale)
         {
           if (hasStep)

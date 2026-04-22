@@ -3574,7 +3574,7 @@ void OpenGl_View::GridDisplay(const Aspect_GridParams& theParams, const gp_Ax3& 
   // re-snapshot the current view and visually snap the anchored grid.
   const bool wasShowing    = myToShowGrid;
   const bool wasBackground = wasShowing && myGridParams.IsBackground();
-  const bool toCapture = theParams.IsBackground() && (!wasShowing || !wasBackground);
+  const bool toCapture     = theParams.IsBackground() && (!wasShowing || !wasBackground);
 
   myGridParams = theParams;
   myGridPlane  = thePlane;
