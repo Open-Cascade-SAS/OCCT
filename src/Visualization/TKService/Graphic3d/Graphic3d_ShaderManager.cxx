@@ -2216,16 +2216,20 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
     + EOL
     "vec4 gridLines2d (vec2 theUV, vec3 theColor, vec2 theScale," EOL
     "                  bool theIsDrawAxis, float theThickness)" EOL "{" EOL
-    "  vec2 aCoord      = theUV * theScale;" EOL
-    "  vec2 aDerivative = max (fwidth (aCoord), vec2 (theThickness));" EOL
+    "  vec2 aCoord      = theUV * theScale;" EOL "  vec2 aFwidth     = fwidth (aCoord);" EOL
+    "  vec2 aDerivative = max (aFwidth, vec2 (theThickness));" EOL
     "  vec2 aGrid       = abs (fract (aCoord - 0.5) - 0.5) / aDerivative;" EOL
-    // Lines mode: either axis near 0 is enough. Points mode: both must be near 0
-    // so only intersections light up.
-    EOL "  float aMetric   = uDrawMode == 1 ? max (aGrid.x, aGrid.y)" EOL
-    "                                   : min (aGrid.x, aGrid.y);" EOL
-    "  float aMinY      = min (aDerivative.y, 1.0);" EOL
-    "  float aMinX      = min (aDerivative.x, 1.0);" EOL
-    "  vec4  aColor     = vec4 (theColor, 1.0 - min (aMetric, 1.0));" EOL
+    // Per-axis Nyquist fade: when more than ~1.5 grid cells map to a pixel in a given
+    // direction, that set of lines fades to zero instead of smearing into a bright band.
+    // Lines mode (uDrawMode!=1): bright when either axis shows a line -> max of per-axis alphas.
+    // Points mode (uDrawMode==1): bright only at intersections -> product of per-axis alphas.
+    EOL "  vec2  aNyq    = vec2 (1.0) - smoothstep (vec2 (1.0), vec2 (2.0), aFwidth);" EOL
+    "  float aAlphaX = (1.0 - min (aGrid.x, 1.0)) * aNyq.x;" EOL
+    "  float aAlphaY = (1.0 - min (aGrid.y, 1.0)) * aNyq.y;" EOL
+    "  float aAlpha  = uDrawMode == 1 ? aAlphaX * aAlphaY : max (aAlphaX, aAlphaY);" EOL
+    "  float aMinY   = min (aDerivative.y, 1.0);" EOL
+    "  float aMinX   = min (aDerivative.x, 1.0);" EOL
+    "  vec4  aColor  = vec4 (theColor, aAlpha);" EOL
     // Axis colouring in lines mode only; a "point" has no axis direction.
     EOL "  if (uIsDrawAxis != 0 && theIsDrawAxis && uDrawMode != 1)" EOL "  {" EOL
     "    bool isYAxis = abs (aCoord.x) < aMinX;" EOL
@@ -2237,9 +2241,11 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
 
     EOL "vec4 gridLines1d (float theCoord, float theScale, vec3 theColor, float theThickness)" EOL
     "{" EOL "  float aCoord      = theCoord * theScale;" EOL
-    "  float aDerivative = max (fwidth (aCoord), theThickness);" EOL
+    "  float aFwidth     = fwidth (aCoord);" EOL
+    "  float aDerivative = max (aFwidth, theThickness);" EOL
     "  float aGrid       = abs (fract (aCoord - 0.5) - 0.5) / aDerivative;" EOL
-    "  return vec4 (theColor, 1.0 - min (aGrid, 1.0));" EOL "}"
+    "  float aNyq        = 1.0 - smoothstep (1.0, 2.0, aFwidth);" EOL
+    "  return vec4 (theColor, (1.0 - min (aGrid, 1.0)) * aNyq);" EOL "}"
 
     EOL "vec4 overlayGrid (vec4 theBase, vec4 theAccent)" EOL "{" EOL
     "  return theAccent.a >= theBase.a ? theAccent : theBase;" EOL "}"
@@ -2253,9 +2259,10 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
     EOL "const float GRID_PARALLEL_EPS = 1e-6;"
 
     EOL "bool intersectPlane (vec3 theNearPoint, vec3 theFarPoint, out vec3 theHit)" EOL "{" EOL
-    "  vec3  aDir   = theFarPoint - theNearPoint;" EOL "  float aDenom = dot (uPlaneN, aDir);" EOL
-    "  if (abs (aDenom) < GRID_PARALLEL_EPS)" EOL "  {" EOL "    theHit = theNearPoint;" EOL
-    "    return false;" EOL "  }" EOL
+    "  vec3  aDir    = theFarPoint - theNearPoint;" EOL
+    "  float aDenomN = dot (uPlaneN, normalize (aDir));" EOL
+    "  if (abs (aDenomN) < GRID_PARALLEL_EPS)" EOL "  {" EOL "    theHit = theNearPoint;" EOL
+    "    return false;" EOL "  }" EOL "  float aDenom = dot (uPlaneN, aDir);" EOL
     "  float aT = dot (uPlaneN, uPlaneOrigin - theNearPoint) / aDenom;" EOL
     "  theHit = theNearPoint + aT * aDir;" EOL "  return true;" EOL "}" EOL
 
@@ -2284,17 +2291,23 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
     // Bounded work area. Rectangular, radial and angular clipping can be mixed.
     EOL "  float aR = length (aLocal);" EOL "  float aA = atan (aLocal.y, aLocal.x);" EOL
     "  float aBoundFade = 1.0;" EOL "  if (uBounds.z > 0.0)" EOL "  {" EOL
-    "    if (aR > uBounds.z) { discard; }" EOL
-    "    aBoundFade *= 1.0 - smoothstep (GRID_FADE_BAND * uBounds.z, uBounds.z, aR);" EOL "  }" EOL
-    "  if (uArcBounded != 0)" EOL "  {" EOL "    float aSpan = uArcRange.y - uArcRange.x;" EOL
+    "    float aFwBR = fwidth (aR);" EOL "    if (aR > uBounds.z + aFwBR) { discard; }" EOL
+    "    aBoundFade *= 1.0 - smoothstep (GRID_FADE_BAND * uBounds.z, uBounds.z + aFwBR, aR);" EOL
+    "  }" EOL "  if (uArcBounded != 0)" EOL "  {" EOL
+    "    float aSpan = uArcRange.y - uArcRange.x;" EOL
     "    if (aSpan < 0.0) { aSpan += GRID_TWO_PI; }" EOL "    float aDelta = aA - uArcRange.x;" EOL
     "    if (aDelta < 0.0) { aDelta += GRID_TWO_PI; }" EOL
     "    if (aDelta > aSpan) { discard; }" EOL "  }" EOL "  if (uBounds.x > 0.0)" EOL "  {" EOL
-    "    if (abs (aLocal.x) > uBounds.x) { discard; }" EOL
-    "    aBoundFade *= 1.0 - smoothstep (GRID_FADE_BAND * uBounds.x, uBounds.x, abs "
+    // Extend the hard discard and smoothstep range by fwidth so the rectangular
+    // boundary gets sub-pixel AA (one screen-pixel transition) instead of a
+    // hard binary staircase at the clipping edge.
+    "    float aFwBX = fwidth (abs (aLocal.x));" EOL
+    "    if (abs (aLocal.x) > uBounds.x + aFwBX) { discard; }" EOL
+    "    aBoundFade *= 1.0 - smoothstep (GRID_FADE_BAND * uBounds.x, uBounds.x + aFwBX, abs "
     "(aLocal.x));" EOL "  }" EOL "  if (uBounds.y > 0.0)" EOL "  {" EOL
-    "    if (abs (aLocal.y) > uBounds.y) { discard; }" EOL
-    "    aBoundFade *= 1.0 - smoothstep (GRID_FADE_BAND * uBounds.y, uBounds.y, abs "
+    "    float aFwBY = fwidth (abs (aLocal.y));" EOL
+    "    if (abs (aLocal.y) > uBounds.y + aFwBY) { discard; }" EOL
+    "    aBoundFade *= 1.0 - smoothstep (GRID_FADE_BAND * uBounds.y, uBounds.y + aFwBY, abs "
     "(aLocal.y));" EOL "  }"
 
     // Grid coordinates depend on uGridType: 0=rectangular (X/Y), 1=circular (radius/angle).
