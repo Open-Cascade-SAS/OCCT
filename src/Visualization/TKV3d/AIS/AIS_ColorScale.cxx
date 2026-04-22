@@ -45,12 +45,11 @@ static void addColoredQuad(const occ::handle<Graphic3d_ArrayOfTriangles>& theTri
                            const Quantity_Color&                          theColorTop)
 {
   const int aVertIndex = theTris->VertexNumber() + 1;
+  theTris->AddVertex(gp_Pnt(theXLeft, theYBottom + theSizeY, 0.0), theColorTop);
   theTris->AddVertex(gp_Pnt(theXLeft, theYBottom, 0.0), theColorBottom);
   theTris->AddVertex(gp_Pnt(theXLeft + theSizeX, theYBottom, 0.0), theColorBottom);
-  theTris->AddVertex(gp_Pnt(theXLeft, theYBottom + theSizeY, 0.0), theColorTop);
   theTris->AddVertex(gp_Pnt(theXLeft + theSizeX, theYBottom + theSizeY, 0.0), theColorTop);
-  theTris->AddEdges(aVertIndex, aVertIndex + 1, aVertIndex + 2);
-  theTris->AddEdges(aVertIndex + 1, aVertIndex + 3, aVertIndex + 2);
+  theTris->AddQuadTriangleEdges(aVertIndex, aVertIndex + 1, aVertIndex + 2, aVertIndex + 3);
 }
 
 //! Compute hue angle from specified value.
