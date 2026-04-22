@@ -4,7 +4,6 @@ puts "============"
 puts ""
 
 pload VISUALIZATION
-dpiaware 0
 
 vclear
 vinit View1 -width 490 -height 409
