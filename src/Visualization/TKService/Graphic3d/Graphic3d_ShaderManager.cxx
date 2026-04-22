@@ -2280,8 +2280,14 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
 
     EOL "  float aDepth = computeDepth (aHit);" EOL "  float aFar   = gl_DepthRange.far;" EOL
     "  float aNear  = gl_DepthRange.near;" EOL
-    "  aDepth       = ((aFar - aNear) * aDepth + aNear + aFar) * 0.5;" EOL
-    "  if (aColor.a == 0.0 || aT <= 0.0) { discard; }"
+    "  aDepth       = ((aFar - aNear) * aDepth + aNear + aFar) * 0.5;"
+    // No aT-sign discard: when the grid plane passes through / close to the
+    // near clip (the "grid going into camera view" case), aT can be <= 0 for
+    // fragments whose Near point is on the opposite side of the plane. The ray
+    // still intersects the plane; we just clamp depth via gl_FragDepth's [0,1]
+    // range so those fragments read as "in front of everything", which reads
+    // naturally as the ground/plane reaching under the camera.
+    EOL "  if (aColor.a == 0.0) { discard; }"
 
     EOL "  float aMaxDepth = 1.0 - 1e-5;" EOL
     "  gl_FragDepth = uIsBackground != 0 ? aMaxDepth : min (aDepth, aMaxDepth);" EOL
