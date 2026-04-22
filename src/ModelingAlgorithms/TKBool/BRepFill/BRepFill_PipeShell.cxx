@@ -179,27 +179,41 @@ static bool PerformPlan(TopoDS_Shape& S)
 // purpose  : Checks whether aFace is oriented to the same side as aShell or not
 //=============================================================================
 
-static bool IsSameOriented(const TopoDS_Shape& aFace, const TopoDS_Shape& aShell)
+static bool IsSameOriented(const TopoDS_Shape& theFace, const TopoDS_Shape& theShell)
 {
-  TopExp_Explorer    Explo(aFace, TopAbs_EDGE);
-  TopoDS_Shape       anEdge = Explo.Current();
-  TopAbs_Orientation Or1    = anEdge.Orientation();
-
   NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-    EFmap;
-  TopExp::MapShapesAndAncestors(aShell, TopAbs_EDGE, TopAbs_FACE, EFmap);
+    anEdgeFaceMap;
+  TopExp::MapShapesAndAncestors(theShell, TopAbs_EDGE, TopAbs_FACE, anEdgeFaceMap);
 
-  const TopoDS_Shape& AdjacentFace = EFmap.FindFromKey(anEdge).First();
-  TopoDS_Shape        theEdge;
-  for (Explo.Init(AdjacentFace, TopAbs_EDGE); Explo.More(); Explo.Next())
+  for (TopExp_Explorer aFaceExplorer(theFace, TopAbs_EDGE); aFaceExplorer.More();
+       aFaceExplorer.Next())
   {
-    theEdge = Explo.Current();
-    if (theEdge.IsSame(anEdge))
-      break;
+    // Find an edge of theFace that is also present in theShell.
+    const TopoDS_Shape       aCurrentEdge            = aFaceExplorer.Current();
+    const TopAbs_Orientation aCurrentEdgeOrientation = aCurrentEdge.Orientation();
+    if (!anEdgeFaceMap.Contains(aCurrentEdge))
+    {
+      continue;
+    }
+
+    // Find a face that is adjacent to the edge and belongs to theShell.
+    const TopoDS_Shape& anAdjFace = anEdgeFaceMap.FindFromKey(aCurrentEdge).First();
+    for (TopExp_Explorer anAdjFaceExplorer(anAdjFace, TopAbs_EDGE); anAdjFaceExplorer.More();
+         anAdjFaceExplorer.Next())
+    {
+      // Find the same edge in the adjacent face and compare their orientations.
+      // The same means TShape and Location is same, but orientation may differ.
+      const TopoDS_Shape anAdjEdge = anAdjFaceExplorer.Current();
+      if (anAdjEdge.IsSame(aCurrentEdge))
+      {
+        const TopAbs_Orientation anAdjEdgeOrientation = anAdjEdge.Orientation();
+        return aCurrentEdgeOrientation != anAdjEdgeOrientation;
+      }
+    }
   }
 
-  TopAbs_Orientation Or2 = theEdge.Orientation();
-  return Or1 != Or2;
+  // No shared edge found. Should not happen for valid input.
+  return false;
 }
 
 //=================================================================================================
