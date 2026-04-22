@@ -43,8 +43,8 @@ V3d_RectangularGrid::V3d_RectangularGrid(const V3d_ViewerPointer& aViewer,
 
   SetXStep(THE_DEFAULT_GRID_STEP);
   SetYStep(THE_DEFAULT_GRID_STEP);
-  Aspect_RectangularGrid::SetSizeX(0.5 * aViewer->DefaultViewSize());
-  Aspect_RectangularGrid::SetSizeY(0.5 * aViewer->DefaultViewSize());
+  // Keep rectangular grid unbounded by default; explicit -size / viewer API
+  // requests set non-zero SizeX/SizeY and activate clipping in the shader.
   Aspect_RectangularGrid::SetZOffset(THE_DEFAULT_GRID_STEP / THE_MYFACTOR);
 }
 

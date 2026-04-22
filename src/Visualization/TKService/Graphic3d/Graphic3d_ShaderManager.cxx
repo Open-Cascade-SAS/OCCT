@@ -2213,7 +2213,7 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
     "vec4 gridLines2d (vec2 theUV, vec3 theColor, vec2 theScale," EOL
     "                  bool theIsDrawAxis, float theThickness)" EOL "{" EOL
     "  vec2 aCoord      = theUV * theScale;" EOL
-    "  vec2 aDerivative = max (fwidth (aCoord), vec2 (theThickness));" EOL
+    "  vec2 aDerivative = max (fwidth (aCoord) * 0.75, vec2 (theThickness));" EOL
     "  vec2 aGrid       = abs (fract (aCoord - 0.5) - 0.5) / aDerivative;" EOL
     // Lines mode: either axis near 0 is enough. Points mode: both must be near 0
     // so only intersections light up.
@@ -2233,7 +2233,7 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
 
     EOL "vec4 gridLines1d (float theCoord, float theScale, vec3 theColor, float theThickness)" EOL
     "{" EOL "  float aCoord      = theCoord * theScale;" EOL
-    "  float aDerivative = max (fwidth (aCoord), theThickness);" EOL
+    "  float aDerivative = max (fwidth (aCoord) * 0.75, theThickness);" EOL
     "  float aGrid       = abs (fract (aCoord - 0.5) - 0.5) / aDerivative;" EOL
     "  return vec4 (theColor, 1.0 - min (aGrid, 1.0));" EOL "}"
 
