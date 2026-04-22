@@ -205,7 +205,9 @@ static bool IsSameOriented(const TopoDS_Shape& theFace, const TopoDS_Shape& theS
     }
   }
 
-  // No shared edge: orientation cannot be determined, leave the face unchanged.
+  // No shared edge found. Orientation cannot be determined reliably and this
+  // should not happen for valid input. Preserve the current face orientation
+  // instead of reporting an opposite orientation and forcing a reversal.
   return true;
 }
 
