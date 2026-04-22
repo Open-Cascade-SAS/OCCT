@@ -1319,6 +1319,19 @@ void IntWalk_PWalking::Perform(const NCollection_Array1<double>& ParDep,
                         bTestFirstPoint = false;
                       }
                     }
+                    // Check for 3D cycling: if the walker has moved away from the starting point
+                    // and later returns near it, the intersection curve is closed in 3D.
+                    // This catches cases where the UV-based closure check in TestArret fails
+                    // (e.g., near-tangent surfaces with shared boundary edges).
+                    else if (line->NbPoints() > 100
+                             && pf.SquareDistance(pl) < aSQDistMax)
+                    {
+                      close  = true;
+                      Arrive = true;
+                      AddAPoint(line->Value(1));
+                      LevelOfIterWithoutAppend = 0;
+                      break;
+                    }
                     //
                     AddAPoint(previousPoint);
                     RejectIndex++;
