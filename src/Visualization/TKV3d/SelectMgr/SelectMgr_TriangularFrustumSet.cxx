@@ -254,47 +254,44 @@ bool SelectMgr_TriangularFrustumSet::OverlapsBox(const NCollection_Vec3<double>&
                         "Error! SelectMgr_TriangularFrustumSet::Overlaps() should be called after "
                         "selection frustum initialization");
 
+  bool isAnyFrustumOverlap = false;
   for (NCollection_List<occ::handle<SelectMgr_TriangularFrustum>>::Iterator anIter(myFrustums);
        anIter.More();
        anIter.Next())
   {
-    if (!anIter.Value()->OverlapsBox(theMinPnt, theMaxPnt, nullptr))
+    if (anIter.Value()->OverlapsBox(theMinPnt, theMaxPnt, nullptr))
     {
-      continue;
+      isAnyFrustumOverlap = true;
+      break;
     }
+  }
+  if (!isAnyFrustumOverlap)
+  {
+    return false;
+  }
 
-    if (myToAllowOverlap || theInside == nullptr)
-    {
-      return true;
-    }
-
-    gp_Pnt aMinMaxPnts[2] = {gp_Pnt(theMinPnt.x(), theMinPnt.y(), theMinPnt.z()),
-                             gp_Pnt(theMaxPnt.x(), theMaxPnt.y(), theMaxPnt.z())};
-
-    gp_Pnt anOffset[3] = {gp_Pnt(aMinMaxPnts[1].X() - aMinMaxPnts[0].X(), 0.0, 0.0),
-                          gp_Pnt(0.0, aMinMaxPnts[1].Y() - aMinMaxPnts[0].Y(), 0.0),
-                          gp_Pnt(0.0, 0.0, aMinMaxPnts[1].Z() - aMinMaxPnts[0].Z())};
-
-    int aSign = 1;
-    for (int aPntsIdx = 0; aPntsIdx < 2; aPntsIdx++)
-    {
-      for (int aCoordIdx = 0; aCoordIdx < 3; aCoordIdx++)
-      {
-        gp_Pnt anOffsetPnt = aMinMaxPnts[aPntsIdx].XYZ() + aSign * anOffset[aCoordIdx].XYZ();
-        if (isIntersectBoundary(aMinMaxPnts[aPntsIdx], anOffsetPnt)
-            || isIntersectBoundary(anOffsetPnt,
-                                   anOffsetPnt.XYZ() + aSign * anOffset[(aCoordIdx + 1) % 3].XYZ()))
-        {
-          *theInside &= false;
-          return true;
-        }
-      }
-      aSign = -aSign;
-    }
+  if (myToAllowOverlap || theInside == nullptr)
+  {
     return true;
   }
 
-  return false;
+  const gp_Pnt aCorners[8] = {gp_Pnt(theMinPnt.x(), theMinPnt.y(), theMinPnt.z()),
+                              gp_Pnt(theMaxPnt.x(), theMinPnt.y(), theMinPnt.z()),
+                              gp_Pnt(theMinPnt.x(), theMaxPnt.y(), theMinPnt.z()),
+                              gp_Pnt(theMaxPnt.x(), theMaxPnt.y(), theMinPnt.z()),
+                              gp_Pnt(theMinPnt.x(), theMinPnt.y(), theMaxPnt.z()),
+                              gp_Pnt(theMaxPnt.x(), theMinPnt.y(), theMaxPnt.z()),
+                              gp_Pnt(theMinPnt.x(), theMaxPnt.y(), theMaxPnt.z()),
+                              gp_Pnt(theMaxPnt.x(), theMaxPnt.y(), theMaxPnt.z())};
+  for (const gp_Pnt& aCorner : aCorners)
+  {
+    if (!isPointInsideAnyFrustum(aCorner))
+    {
+      *theInside &= false;
+      break;
+    }
+  }
+  return true;
 }
 
 //=================================================================================================
@@ -317,6 +314,32 @@ bool SelectMgr_TriangularFrustumSet::OverlapsPoint(const gp_Pnt&                
     }
   }
 
+  return false;
+}
+
+//=================================================================================================
+
+bool SelectMgr_TriangularFrustumSet::OverlapsPoint(const gp_Pnt& thePnt) const
+{
+  Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Polyline,
+                        "Error! SelectMgr_TriangularFrustumSet::Overlaps() should be called after "
+                        "selection frustum initialization");
+  return isPointInsideAnyFrustum(thePnt);
+}
+
+//=================================================================================================
+
+bool SelectMgr_TriangularFrustumSet::isPointInsideAnyFrustum(const gp_Pnt& thePnt) const
+{
+  for (NCollection_List<occ::handle<SelectMgr_TriangularFrustum>>::Iterator anIter(myFrustums);
+       anIter.More();
+       anIter.Next())
+  {
+    if (anIter.Value()->hasPointOverlap(thePnt))
+    {
+      return true;
+    }
+  }
   return false;
 }
 
