@@ -17,6 +17,7 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
+#include <Aspect_GridDrawMode.hxx>
 #include <Quantity_Color.hxx>
 #include <gp_Pnt.hxx>
 
@@ -38,6 +39,7 @@ public:
         myLineThickness(0.01),
         myRotationAngle(0.0),
         myAngularDivisions(0),
+        myDrawMode(Aspect_GDM_Lines),
         myIsBackground(false),
         myIsDrawAxis(true),
         myIsInfinity(false)
@@ -94,6 +96,13 @@ public:
   //! Return TRUE when the parameters describe a circular (polar) grid.
   bool IsCircular() const { return myAngularDivisions > 0; }
 
+  //! Return draw mode: lines, points at grid intersections, or none.
+  Aspect_GridDrawMode DrawMode() const { return myDrawMode; }
+
+  //! Set draw mode. Aspect_GDM_None suppresses rendering entirely; Points draws
+  //! dots at grid-line intersections, Lines (default) draws the full grid.
+  void SetDrawMode(const Aspect_GridDrawMode theMode) { myDrawMode = theMode; }
+
   //! Return TRUE if grid is drawn as a view-space background (behind all geometry).
   bool IsBackground() const { return myIsBackground; }
 
@@ -114,16 +123,17 @@ public:
   void SetIsInfinity(const bool theIsInfinity) { myIsInfinity = theIsInfinity; }
 
 private:
-  Quantity_Color myColor;
-  gp_Pnt         myOrigin;
-  double         myScale;
-  double         myScaleY;
-  double         myLineThickness;
-  double         myRotationAngle;
-  int            myAngularDivisions;
-  bool           myIsBackground;
-  bool           myIsDrawAxis;
-  bool           myIsInfinity;
+  Quantity_Color      myColor;
+  gp_Pnt              myOrigin;
+  double              myScale;
+  double              myScaleY;
+  double              myLineThickness;
+  double              myRotationAngle;
+  int                 myAngularDivisions;
+  Aspect_GridDrawMode myDrawMode;
+  bool                myIsBackground;
+  bool                myIsDrawAxis;
+  bool                myIsInfinity;
 };
 
 #endif // _Aspect_GridParams_HeaderFile

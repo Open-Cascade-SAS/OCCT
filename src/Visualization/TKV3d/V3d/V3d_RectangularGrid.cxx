@@ -160,6 +160,7 @@ void V3d_RectangularGrid::syncViews(const bool theDoDisplay) const
   aParams.SetScale(1.0 / aXStep);
   aParams.SetScaleY(1.0 / aYStep);
   aParams.SetRotationAngle(RotationAngle());
+  aParams.SetDrawMode(DrawMode());
   aParams.SetIsBackground(false);
   aParams.SetIsDrawAxis(false);
   aParams.SetIsInfinity(false);

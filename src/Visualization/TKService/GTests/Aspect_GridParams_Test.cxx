@@ -29,12 +29,24 @@ TEST(Aspect_GridParamsTest, Defaults_AreReasonable)
   EXPECT_DOUBLE_EQ(0.0, aParams.RotationAngle());
   EXPECT_EQ(0, aParams.AngularDivisions()) << "default grid is rectangular";
   EXPECT_FALSE(aParams.IsCircular());
+  EXPECT_EQ(Aspect_GDM_Lines, aParams.DrawMode());
   EXPECT_FALSE(aParams.IsBackground());
   EXPECT_TRUE(aParams.IsDrawAxis());
   EXPECT_FALSE(aParams.IsInfinity());
   EXPECT_NEAR(0.0, aParams.Origin().X(), Precision::Confusion());
   EXPECT_NEAR(0.0, aParams.Origin().Y(), Precision::Confusion());
   EXPECT_NEAR(0.0, aParams.Origin().Z(), Precision::Confusion());
+}
+
+TEST(Aspect_GridParamsTest, DrawMode_RoundTrip)
+{
+  Aspect_GridParams aParams;
+  aParams.SetDrawMode(Aspect_GDM_Points);
+  EXPECT_EQ(Aspect_GDM_Points, aParams.DrawMode());
+  aParams.SetDrawMode(Aspect_GDM_None);
+  EXPECT_EQ(Aspect_GDM_None, aParams.DrawMode());
+  aParams.SetDrawMode(Aspect_GDM_Lines);
+  EXPECT_EQ(Aspect_GDM_Lines, aParams.DrawMode());
 }
 
 TEST(Aspect_GridParamsTest, AngularDivisions_ToggleCircular)

@@ -3590,7 +3590,7 @@ void OpenGl_View::GridErase()
 
 void OpenGl_View::renderGrid()
 {
-  if (!myToShowGrid)
+  if (!myToShowGrid || myGridParams.DrawMode() == Aspect_GDM_None)
   {
     return;
   }
@@ -3637,18 +3637,24 @@ void OpenGl_View::renderGrid()
     hasDepthClamp && aContext->core11fwd->glIsEnabled(GL_DEPTH_CLAMP) == GL_TRUE;
   const occ::handle<OpenGl_ShaderProgram> aPrevProgram = aContext->ActiveProgram();
 
-  // Adjust ZRange for the grid geometry so unprojection stays well-conditioned.
+  // Capture the user-set camera ZRange BEFORE any grid-specific adjustment.
+  // ZFitAll below mutates the camera; the restore block at the end of this
+  // method targets these original values, otherwise vconvert and other APIs
+  // observing ZRange between frames see values inflated by the grid bounds.
+  const double                       aZNearKeep = aCamera->ZNear();
+  const double                       aZFarKeep  = aCamera->ZFar();
+  const Graphic3d_Camera::Projection aProjKeep  = aCamera->ProjectionType();
+
   Bnd_Box      aBnd      = MinMaxValues(true);
   const gp_Pnt aPlaneLoc = myGridPlane.Location();
   if (myGridParams.IsBackground() || aBnd.IsVoid() || aBnd.IsOut(aPlaneLoc))
   {
     aBnd.Add(aPlaneLoc);
     aCamera->ZFitAll(1.0, aBnd, aBnd);
+    const double aZNearFit = aCamera->ZNear();
+    const double aZFarFit  = aCamera->ZFar();
+    aCamera->SetZRange(aZNearFit, std::max(aZNearFit * 1.001, aZFarFit));
   }
-  const double                       aZNearKeep = aCamera->ZNear();
-  const double                       aZFarKeep  = aCamera->ZFar();
-  const Graphic3d_Camera::Projection aProjKeep  = aCamera->ProjectionType();
-  aCamera->SetZRange(aZNearKeep, std::max(aZNearKeep * 1.001, aZFarKeep));
   if (myGridParams.IsBackground())
   {
     aCamera->SetProjectionType(Graphic3d_Camera::Projection_Orthographic);
@@ -3718,6 +3724,9 @@ void OpenGl_View::renderGrid()
     const double aAngularScale =
       myGridParams.IsCircular() ? double(myGridParams.AngularDivisions()) / M_PI : 0.0;
     aProg->SetUniform(aContext, "uAngularScale", GLfloat(aAngularScale));
+    aProg->SetUniform(aContext,
+                      "uDrawMode",
+                      myGridParams.DrawMode() == Aspect_GDM_Points ? 1 : 0);
 
     // In-plane rotation: rotate the plane's X/Y basis around the plane normal
     // so the grid lines follow the requested RotationAngle.

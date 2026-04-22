@@ -150,6 +150,7 @@ void V3d_CircularGrid::syncViews(const bool theDoDisplay) const
   aParams.SetScaleY(0.0); // unused in circular mode
   aParams.SetRotationAngle(RotationAngle());
   aParams.SetAngularDivisions(aDivisions);
+  aParams.SetDrawMode(DrawMode());
   aParams.SetIsBackground(false);
   aParams.SetIsDrawAxis(false);
   aParams.SetIsInfinity(false);

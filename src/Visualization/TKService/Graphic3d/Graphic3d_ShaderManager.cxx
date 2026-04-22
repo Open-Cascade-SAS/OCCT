@@ -2185,6 +2185,7 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
   aUniforms.Append(Graphic3d_ShaderObject::ShaderVariable("int uGridType", Graphic3d_TOS_FRAGMENT));
   aUniforms.Append(
     Graphic3d_ShaderObject::ShaderVariable("float uAngularScale", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append(Graphic3d_ShaderObject::ShaderVariable("int uDrawMode", Graphic3d_TOS_FRAGMENT));
 
   TCollection_AsciiString aSrcVert =
     TCollection_AsciiString()
@@ -2211,11 +2212,15 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
     "  vec2 aCoord      = theUV * theScale;" EOL
     "  vec2 aDerivative = max (fwidth (aCoord), vec2 (theThickness));" EOL
     "  vec2 aGrid       = abs (fract (aCoord - 0.5) - 0.5) / aDerivative;" EOL
-    "  float aLine      = min (aGrid.x, aGrid.y);" EOL
+    // Lines mode: either axis near 0 is enough. Points mode: both must be near 0
+    // so only intersections light up.
+    EOL "  float aMetric   = uDrawMode == 1 ? max (aGrid.x, aGrid.y)" EOL
+    "                                   : min (aGrid.x, aGrid.y);" EOL
     "  float aMinY      = min (aDerivative.y, 1.0);" EOL
     "  float aMinX      = min (aDerivative.x, 1.0);" EOL
-    "  vec4  aColor     = vec4 (theColor, 1.0 - min (aLine, 1.0));" EOL
-    "  if (uIsDrawAxis != 0 && theIsDrawAxis)" EOL "  {" EOL
+    "  vec4  aColor     = vec4 (theColor, 1.0 - min (aMetric, 1.0));" EOL
+    // Axis colouring in lines mode only; a "point" has no axis direction.
+    EOL "  if (uIsDrawAxis != 0 && theIsDrawAxis && uDrawMode != 1)" EOL "  {" EOL
     "    bool isYAxis = abs (aCoord.x) < aMinX;" EOL
     "    bool isXAxis = abs (aCoord.y) < aMinY;" EOL
     "    if      (isXAxis && isYAxis) { aColor.xyz = vec3 (0.0, 0.0, 1.0); }" EOL
@@ -2252,11 +2257,14 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
     EOL "    aAxisUv  = aLocal;" EOL "  }" EOL "  else" EOL "  {" EOL "    aGridUv = aLocal;" EOL
     "    aScale  = vec2 (uScaleX, uScaleY);" EOL "    aAxisUv = aLocal;" EOL "  }" EOL
     "  vec4 aMajor  = gridLines (aGridUv, uColor,        aScale,        uGridType == 0, "
-    "uThickness);" EOL "  vec4 aColor  = aMajor.a == 0.0" EOL
+    "uThickness);" EOL
+    // Minor grid is only meaningful for lines; in points mode it would clutter
+    // the view with a second ring of fine dots.
+    EOL "  vec4 aColor  = (aMajor.a == 0.0 && uDrawMode != 1)" EOL
     "               ? gridLines (aGridUv, 0.25 * uColor, aScale * 10.0, false,         "
     "uThickness)" EOL "               : aMajor;"
     // For circular grid, paint X/Y axis lines explicitly using plane-local coords.
-    EOL "  if (uIsDrawAxis != 0 && uGridType == 1)" EOL "  {" EOL
+    EOL "  if (uIsDrawAxis != 0 && uGridType == 1 && uDrawMode != 1)" EOL "  {" EOL
     "    vec2 aDerivAxis = max (fwidth (aAxisUv), vec2 (uThickness));" EOL
     "    if (abs (aAxisUv.x) < aDerivAxis.x && abs (aAxisUv.y) < aDerivAxis.y)" EOL "    {" EOL
     "      aColor = vec4 (0.0, 0.0, 1.0, 1.0);" EOL "    }" EOL
