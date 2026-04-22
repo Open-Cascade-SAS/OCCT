@@ -143,9 +143,17 @@ void V3d_CircularGrid::syncViews(const bool theDoDisplay) const
   const double aRadiusStep = RadiusStep() > 0.0 ? RadiusStep() : THE_DEFAULT_GRID_STEP;
   const int    aDivisions  = DivisionNumber() > 0 ? DivisionNumber() : THE_DEFAULT_DIVISION;
 
+  const gp_Ax3 aPlane = myViewer->PrivilegedPlane();
+
+  // Same convention as V3d_RectangularGrid::syncViews: origin is a world-space
+  // offset aligned with the plane basis so the shader's aPlaneOrigin matches
+  // V3d_View::Compute's aPnt0 used for snap selection.
+  const gp_XYZ aOriginOffset =
+    aPlane.XDirection().XYZ() * -XOrigin() + aPlane.YDirection().XYZ() * -YOrigin();
+
   Aspect_GridParams aParams;
   aParams.SetColor(myColor);
-  aParams.SetOrigin(gp_Pnt(XOrigin(), YOrigin(), -myOffSet));
+  aParams.SetOrigin(gp_Pnt(aOriginOffset));
   aParams.SetScale(1.0 / aRadiusStep);
   aParams.SetScaleY(0.0); // unused in circular mode
   aParams.SetRotationAngle(RotationAngle());
@@ -154,8 +162,6 @@ void V3d_CircularGrid::syncViews(const bool theDoDisplay) const
   aParams.SetIsBackground(false);
   aParams.SetIsDrawAxis(false);
   aParams.SetIsInfinity(false);
-
-  const gp_Ax3 aPlane = myViewer->PrivilegedPlane();
 
   for (const occ::handle<V3d_View>& aView : myViewer->DefinedViews())
   {

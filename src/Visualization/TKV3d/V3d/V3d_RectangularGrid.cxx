@@ -154,9 +154,19 @@ void V3d_RectangularGrid::syncViews(const bool theDoDisplay) const
   const double aXStep = XStep() > 0.0 ? XStep() : THE_DEFAULT_GRID_STEP;
   const double aYStep = YStep() > 0.0 ? YStep() : THE_DEFAULT_GRID_STEP;
 
+  const gp_Ax3 aPlane = myViewer->PrivilegedPlane();
+
+  // Pass the grid origin as a world-space offset from the plane origin, so the
+  // shader's aPlaneOrigin = planeLoc + Origin matches V3d_View::Compute's
+  // aPnt0 = planeLoc - XOrigin * planeX - YOrigin * planeY. Any other
+  // convention leaves selection snapping to a world point that doesn't line up
+  // with the drawn grid for tilted privileged planes.
+  const gp_XYZ aOriginOffset =
+    aPlane.XDirection().XYZ() * -XOrigin() + aPlane.YDirection().XYZ() * -YOrigin();
+
   Aspect_GridParams aParams;
   aParams.SetColor(myColor);
-  aParams.SetOrigin(gp_Pnt(XOrigin(), YOrigin(), -myOffSet));
+  aParams.SetOrigin(gp_Pnt(aOriginOffset));
   aParams.SetScale(1.0 / aXStep);
   aParams.SetScaleY(1.0 / aYStep);
   aParams.SetRotationAngle(RotationAngle());
@@ -164,8 +174,6 @@ void V3d_RectangularGrid::syncViews(const bool theDoDisplay) const
   aParams.SetIsBackground(false);
   aParams.SetIsDrawAxis(false);
   aParams.SetIsInfinity(false);
-
-  const gp_Ax3 aPlane = myViewer->PrivilegedPlane();
 
   for (const occ::handle<V3d_View>& aView : myViewer->DefinedViews())
   {

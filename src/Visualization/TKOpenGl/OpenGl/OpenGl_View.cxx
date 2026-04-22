@@ -3773,13 +3773,16 @@ void OpenGl_View::renderGrid()
     aProg->SetUniform(aContext, "uDrawMode", myGridParams.DrawMode() == Aspect_GDM_Points ? 1 : 0);
 
     // In-plane rotation: rotate the plane's X/Y basis around the plane normal
-    // so the grid lines follow the requested RotationAngle.
+    // so the grid lines follow the requested RotationAngle. Sign matches
+    // V3d_View::SetGrid's Trsf2 so snap (V3d_View::Compute) and the drawn
+    // grid use the same basis: aGridX = cos*planeX - sin*planeY,
+    //                          aGridY = sin*planeX + cos*planeY.
     const double aCosA     = std::cos(myGridParams.RotationAngle());
     const double aSinA     = std::sin(myGridParams.RotationAngle());
     const gp_Dir aRawX     = myGridPlane.XDirection();
     const gp_Dir aRawY     = myGridPlane.YDirection();
-    const gp_XYZ aXRotated = aRawX.XYZ() * aCosA + aRawY.XYZ() * aSinA;
-    const gp_XYZ aYRotated = aRawY.XYZ() * aCosA - aRawX.XYZ() * aSinA;
+    const gp_XYZ aXRotated = aRawX.XYZ() * aCosA - aRawY.XYZ() * aSinA;
+    const gp_XYZ aYRotated = aRawX.XYZ() * aSinA + aRawY.XYZ() * aCosA;
 
     const gp_Pnt aOriginLocal = myGridParams.Origin();
     const gp_Pnt aPlaneOrigin(aPlaneLoc.X() + aOriginLocal.X(),
