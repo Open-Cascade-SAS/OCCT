@@ -17,8 +17,8 @@ vzoom 0.2
 vgrid -type rect -step 0.5 0.5 -mode lines
 vdump $imagedir/${casename}_lines.png
 
-# Points mode: only the intersections light up (via uDrawMode=1 in shader,
-# metric switches from min(aGrid.x,aGrid.y) to max(aGrid.x,aGrid.y)).
+# Points mode: only the intersections light up (uDrawMode=1 in shader,
+# alpha = aAlphaX * aAlphaY instead of max(aAlphaX, aAlphaY)).
 vgrid -type rect -step 0.5 0.5 -mode points
 vdump $imagedir/${casename}_points.png
 

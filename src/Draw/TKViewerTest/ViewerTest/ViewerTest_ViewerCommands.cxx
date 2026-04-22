@@ -21,6 +21,7 @@
 #include <ViewerTest.hxx>
 
 #include <Aspect_CircularGrid.hxx>
+#include <Aspect_GridParams.hxx>
 #include <AIS_AnimationAxisRotation.hxx>
 #include <AIS_AnimationCamera.hxx>
 #include <AIS_AnimationObject.hxx>

@@ -2370,7 +2370,7 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
   // Requires gl_VertexID (GL 3.0/ES 3.0+), fwidth, gl_FragDepth.
   if (myGapi == Aspect_GraphicsLibrary_OpenGL)
   {
-    aProgSrc->SetHeader("#version 150");
+    aProgSrc->SetHeader(IsGapiGreaterEqual(3, 2) ? "#version 150" : "#version 130");
   }
   else if (myGapi == Aspect_GraphicsLibrary_OpenGLES && IsGapiGreaterEqual(3, 0))
   {
