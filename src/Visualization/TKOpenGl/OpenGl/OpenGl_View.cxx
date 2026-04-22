@@ -3594,11 +3594,15 @@ void OpenGl_View::GridErase()
 
 void OpenGl_View::renderGrid()
 {
-  static int THE_GRID_DIAG_COUNTER = 0;
-  const bool toTrace               = THE_GRID_DIAG_COUNTER < 4;
+  // Trace every enter while myToShowGrid is true (up to a cap to avoid flooding if
+  // grid is on and multiple redraws fire). Always trace the first call even if
+  // myToShowGrid is false, so we can see the pre-activation state once.
+  static int THE_GRID_DIAG_ON_COUNTER  = 0;
+  static int THE_GRID_DIAG_OFF_COUNTER = 0;
+  const bool toTrace =
+    myToShowGrid ? (THE_GRID_DIAG_ON_COUNTER++ < 8) : (THE_GRID_DIAG_OFF_COUNTER++ < 2);
   if (toTrace)
   {
-    ++THE_GRID_DIAG_COUNTER;
     std::cout << "[Grid] renderGrid entered, myToShowGrid=" << (myToShowGrid ? 1 : 0)
               << " drawMode=" << int(myGridParams.DrawMode()) << std::endl;
   }
