@@ -169,11 +169,11 @@ public:
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
 private:
-  //! Projects thePnt onto the frustum near plane and runs a 2D ray-cast
-  //! point-in-polygon test against the original polyline loop.
-  //! Coplanarity of every frustum's near triangle is guaranteed by Build()
-  //! (all near vertices come from ProjectPntOnViewPlane(x, y, 0.0)).
-  Standard_EXPORT bool isPointInsideNearProjection(const gp_Pnt& thePnt) const;
+  //! Returns TRUE when the given world-space point lies inside any of the
+  //! triangular frustums of the polyline prism. Delegates to the SAT-based
+  //! hasPointOverlap() on each child frustum, which is correct for both
+  //! orthographic and perspective cameras.
+  Standard_EXPORT bool isPointInsideAnyFrustum(const gp_Pnt& thePnt) const;
 
   //! Checks whether the segment intersects with the boundary of the current volume selection
   Standard_EXPORT bool isIntersectBoundary(const gp_Pnt& thePnt1, const gp_Pnt& thePnt2) const;

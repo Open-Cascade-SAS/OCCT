@@ -1,7 +1,11 @@
 puts "========================================"
-puts "Visualization - polyline selection must respect strict inclusion"
-puts "Rubber-band polyline with -allowoverlap 0 should only pick entities"
-puts "whose bounding boxes project fully inside the drawn polyline."
+puts "Visualization - polyline (polygonal) selection in strict-inclusion mode"
+puts "Regression guard for SelectMgr_TriangularFrustumSet::OverlapsPoint /"
+puts "OverlapsBox: the single-arg OverlapsPoint(gp_Pnt) used to return false"
+puts "unconditionally, which made strict-inclusion polyline selection of"
+puts "SensitiveTriangle / SensitivePoly / SensitiveTriangulation /"
+puts "SensitivePrimitiveArray / MeshVS_* impossible."
+puts "Pixel coordinates are reused from tests/vselect/sphere/rectangle_selection."
 puts "========================================"
 puts ""
 
@@ -15,29 +19,29 @@ ttranslate s2 -2 0 0
 vdisplay -dispMode 1 s1 s2
 vfit
 
-# Polyline enclosing only s1 (right-hand sphere).
-# Strict inclusion: only s1 is selected.
-vselect 350 130 570 130 570 280 350 280 -allowoverlap 0
-if {![string match "*Selected*" [vstate s1]] ||
-    [string match "*Selected*" [vstate s2]]} {
-  puts "Error: strict-inclusion polyline should pick only s1, not s2"
-}
-
-# Polyline enclosing only s1, overlap mode on.
-# Still only s1 should overlap this polyline at all.
-vselect 0 0
-vselect 350 130 570 130 570 280 350 280 -allowoverlap 1
-if {![string match "*Selected*" [vstate s1]] ||
-    [string match "*Selected*" [vstate s2]]} {
-  puts "Error: overlap polyline should still only pick s1 (s2 is far left)"
-}
-
-# Polyline enclosing both spheres, strict inclusion: both must be picked.
-vselect 0 0
-vselect 10 130 590 130 590 280 10 280 -allowoverlap 0
+# A 4-point polygon that matches the extent of the selection rectangle
+# (15,15)-(585,385) used in tests/vselect/sphere/rectangle_selection,
+# where strict inclusion is known to select both spheres.
+vselect 15 15 585 15 585 385 15 385 -allowoverlap 0
 if {![string match "*Selected*" [vstate s1]] ||
     ![string match "*Selected*" [vstate s2]]} {
-  puts "Error: polyline enclosing both spheres must pick s1 and s2"
+  puts "Error: polyline enclosing both spheres must select s1 and s2 in strict inclusion mode"
+}
+
+# A tiny polygon fully inside the upper-left corner of the viewport that
+# does not cover either sphere. Neither sphere must be selected, in either mode.
+vselect 0 0
+vselect 5 5 40 5 40 40 5 40 -allowoverlap 0
+if { [string match "*Selected*" [vstate s1]] ||
+     [string match "*Selected*" [vstate s2]]} {
+  puts "Error: polyline not covering any sphere must not select anything (strict)"
+}
+
+vselect 0 0
+vselect 5 5 40 5 40 40 5 40 -allowoverlap 1
+if { [string match "*Selected*" [vstate s1]] ||
+     [string match "*Selected*" [vstate s2]]} {
+  puts "Error: polyline not covering any sphere must not select anything (overlap)"
 }
 
 vdump ${imagedir}/${casename}.png
