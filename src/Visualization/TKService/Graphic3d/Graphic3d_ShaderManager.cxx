@@ -2156,14 +2156,14 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
   occ::handle<Graphic3d_ShaderProgram> aProgSrc = new Graphic3d_ShaderProgram();
 
   Graphic3d_ShaderObject::ShaderVariableList aUniforms, aStageInOuts;
+  // Pass only NDC.xy to the fragment. Near/Far world points are computed
+  // per-pixel because the perspective-divide that unproject() performs is
+  // nonlinear in NDC, and linearly interpolating the resulting world-space
+  // points across the full-screen quad produces wrong rays along the
+  // diagonal seam between the two triangles (visible as empty triangular
+  // dead zones at oblique camera angles).
   aStageInOuts.Append(
-    Graphic3d_ShaderObject::ShaderVariable("vec3 NearPoint",
-                                           Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
-  aStageInOuts.Append(
-    Graphic3d_ShaderObject::ShaderVariable("vec3 FarPoint",
-                                           Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
-  aStageInOuts.Append(
-    Graphic3d_ShaderObject::ShaderVariable("mat4 MVP",
+    Graphic3d_ShaderObject::ShaderVariable("vec2 vNdc",
                                            Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
 
   aUniforms.Append(Graphic3d_ShaderObject::ShaderVariable("float uZNear", Graphic3d_TOS_FRAGMENT));
@@ -2193,15 +2193,8 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
           "  vec3( 1.0,  1.0, 0.0), vec3(-1.0, -1.0, 0.0), vec3(-1.0,  1.0, 0.0)," EOL
           "  vec3(-1.0, -1.0, 0.0), vec3( 1.0,  1.0, 0.0), vec3( 1.0, -1.0, 0.0));"
 
-    EOL "vec3 unproject (float theX, float theY, float theZ)" EOL "{" EOL
-          "  vec4 aUnproj = occModelWorldMatrixInverse * occWorldViewMatrixInverse" EOL
-          "               * occProjectionMatrixInverse * vec4 (theX, theY, theZ, 1.0);" EOL
-          "  return aUnproj.xyz / aUnproj.w;" EOL "}"
-
     EOL "void main()" EOL "{" EOL "  vec3 aVertex = gridPlane[gl_VertexID];" EOL
-          "  NearPoint = unproject (aVertex.x, aVertex.y, -1.0);" EOL
-          "  FarPoint  = unproject (aVertex.x, aVertex.y,  1.0);" EOL
-          "  MVP       = occProjectionMatrix * occWorldViewMatrix * occModelWorldMatrix;" EOL
+          "  vNdc        = aVertex.xy;" EOL
           "  gl_Position = vec4 (aVertex, 1.0);" EOL "}";
 
   TCollection_AsciiString aSrcFrag =
@@ -2228,8 +2221,14 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
     "    else if (isYAxis)            { aColor.xyz = vec3 (0.0, 1.0, 0.0); }" EOL "  }" EOL
     "  return aColor;" EOL "}"
 
+    EOL "vec3 unproject (float theX, float theY, float theZ)" EOL "{" EOL
+    "  vec4 aUnproj = occModelWorldMatrixInverse * occWorldViewMatrixInverse" EOL
+    "               * occProjectionMatrixInverse * vec4 (theX, theY, theZ, 1.0);" EOL
+    "  return aUnproj.xyz / aUnproj.w;" EOL "}"
+
     EOL "float computeDepth (vec3 thePos)" EOL "{" EOL
-    "  vec4 aClip = MVP * vec4 (thePos, 1.0);" EOL "  return aClip.z / aClip.w;" EOL "}"
+    "  mat4 aMVP  = occProjectionMatrix * occWorldViewMatrix * occModelWorldMatrix;" EOL
+    "  vec4 aClip = aMVP * vec4 (thePos, 1.0);" EOL "  return aClip.z / aClip.w;" EOL "}"
 
     EOL "float computeLinearDepth (vec3 thePos)" EOL "{" EOL
     "  float aClipDepth   = computeDepth (thePos) * 2.0 - 1.0;" EOL
@@ -2238,11 +2237,17 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
     "  return aLinearDepth / uZFar;" EOL "}"
 
     EOL "void main()" EOL "{"
+    // Unproject per-pixel from vNdc (linearly interpolated NDC.xy) to avoid the
+    // nonlinearity of the perspective divide when ray endpoints are passed as
+    // varyings. Each fragment reconstructs its own Near/Far world points.
+    EOL "  vec3 aNearPoint = unproject (vNdc.x, vNdc.y, -1.0);" EOL
+    "  vec3 aFarPoint  = unproject (vNdc.x, vNdc.y,  1.0);"
     // Ray-plane intersection on an arbitrary plane {uPlaneOrigin, uPlaneN}.
-    EOL "  vec3 aDir      = FarPoint - NearPoint;" EOL "  float aDenom   = dot (uPlaneN, aDir);" EOL
+    EOL "  vec3  aDir     = aFarPoint - aNearPoint;" EOL
+    "  float aDenom   = dot (uPlaneN, aDir);" EOL
     "  if (abs (aDenom) < 1e-8) { discard; }" EOL
-    "  float aT       = dot (uPlaneN, uPlaneOrigin - NearPoint) / aDenom;" EOL
-    "  vec3  aHit     = NearPoint + aT * aDir;"
+    "  float aT       = dot (uPlaneN, uPlaneOrigin - aNearPoint) / aDenom;" EOL
+    "  vec3  aHit     = aNearPoint + aT * aDir;"
     // Plane-local 2D coords, origin-centered to tame fp precision at large world offsets.
     EOL "  vec3  aLocal3  = aHit - uPlaneOrigin;" EOL
     "  vec2  aLocal   = vec2 (dot (aLocal3, uPlaneX), dot (aLocal3, uPlaneY));"
