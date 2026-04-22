@@ -1323,8 +1323,7 @@ void IntWalk_PWalking::Perform(const NCollection_Array1<double>& ParDep,
                     // and later returns near it, the intersection curve is closed in 3D.
                     // This catches cases where the UV-based closure check in TestArret fails
                     // (e.g., near-tangent surfaces with shared boundary edges).
-                    else if (line->NbPoints() > 100
-                             && pf.SquareDistance(pl) < aSQDistMax)
+                    else if (line->NbPoints() > 100 && pf.SquareDistance(pl) < aSQDistMax)
                     {
                       close  = true;
                       Arrive = true;
@@ -2578,9 +2577,9 @@ bool IntWalk_PWalking::SeekPointOnBoundary(const occ::handle<Adaptor3d_Surface>&
 
   // Tune solution tolerance according with object size.
   const double aRes1  = std::max(Precision::PConfusion() / theASurf1->UResolution(1.0),
-                                Precision::PConfusion() / theASurf1->VResolution(1.0));
+                                 Precision::PConfusion() / theASurf1->VResolution(1.0));
   const double aRes2  = std::max(Precision::PConfusion() / theASurf2->UResolution(1.0),
-                                Precision::PConfusion() / theASurf2->VResolution(1.0));
+                                 Precision::PConfusion() / theASurf2->VResolution(1.0));
   const double a3DTol = std::max(aRes1, aRes2);
   const double aTol   = std::max(Precision::Confusion(), a3DTol);
 
