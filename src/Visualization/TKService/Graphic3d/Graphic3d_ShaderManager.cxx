@@ -2186,6 +2186,11 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
   aUniforms.Append(
     Graphic3d_ShaderObject::ShaderVariable("float uAngularScale", Graphic3d_TOS_FRAGMENT));
   aUniforms.Append(Graphic3d_ShaderObject::ShaderVariable("int uDrawMode", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append(Graphic3d_ShaderObject::ShaderVariable("vec3 uBounds", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append(
+    Graphic3d_ShaderObject::ShaderVariable("vec2 uArcRange", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append(
+    Graphic3d_ShaderObject::ShaderVariable("int uArcBounded", Graphic3d_TOS_FRAGMENT));
 
   TCollection_AsciiString aSrcVert =
     TCollection_AsciiString()
@@ -2252,6 +2257,30 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
     EOL "  vec3  aLocal3  = aHit - uPlaneOrigin;" EOL
     "  vec2  aLocal   = vec2 (dot (aLocal3, uPlaneX), dot (aLocal3, uPlaneY));"
 
+    // Bounded work area. uBounds = (HalfSizeX, HalfSizeY, Radius). 0 on an
+    // axis means unbounded along that axis; positive values discard fragments
+    // outside the bounded region. Narrow smoothstep near the edge softens the
+    // cut for rectangular bounds (angular cut stays hard: soft fades across
+    // an angle look visually confusing).
+    EOL "  float aBoundFade = 1.0;" EOL "  if (uGridType == 1)" EOL "  {" EOL
+    "    if (uBounds.z > 0.0)" EOL "    {" EOL "      float aRr = length (aLocal);" EOL
+    "      if (aRr > uBounds.z) { discard; }" EOL
+    "      aBoundFade = 1.0 - smoothstep (0.95 * uBounds.z, uBounds.z, aRr);" EOL "    }" EOL
+    "    if (uArcBounded != 0)" EOL "    {" EOL
+    "      float aAang = atan (aLocal.y, aLocal.x);" EOL
+    "      float aSpan = uArcRange.y - uArcRange.x;" EOL
+    "      if (aSpan < 0.0) { aSpan += 6.28318530718; }" EOL
+    "      float aDelta = aAang - uArcRange.x;" EOL
+    "      if (aDelta < 0.0) { aDelta += 6.28318530718; }" EOL
+    "      if (aDelta > aSpan) { discard; }" EOL "    }" EOL "  }" EOL "  else" EOL "  {" EOL
+    "    if (uBounds.x > 0.0)" EOL "    {" EOL
+    "      if (abs (aLocal.x) > uBounds.x) { discard; }" EOL
+    "      aBoundFade *= 1.0 - smoothstep (0.95 * uBounds.x, uBounds.x, abs (aLocal.x));" EOL
+    "    }" EOL "    if (uBounds.y > 0.0)" EOL "    {" EOL
+    "      if (abs (aLocal.y) > uBounds.y) { discard; }" EOL
+    "      aBoundFade *= 1.0 - smoothstep (0.95 * uBounds.y, uBounds.y, abs (aLocal.y));" EOL
+    "    }" EOL "  }"
+
     EOL "  float aLinearDepth = computeLinearDepth (aHit);"
     // Grid coordinates depend on uGridType: 0=rectangular (X/Y), 1=circular (radius/angle).
     EOL "  vec2 aGridUv;" EOL "  vec2 aScale;" EOL "  vec2 aAxisUv;" EOL "  if (uGridType == 1)" EOL
@@ -2291,7 +2320,7 @@ occ::handle<Graphic3d_ShaderProgram> Graphic3d_ShaderManager::getGridProgram() c
 
     EOL "  float aMaxDepth = 1.0 - 1e-5;" EOL
     "  gl_FragDepth = uIsBackground != 0 ? aMaxDepth : min (aDepth, aMaxDepth);" EOL
-    "  occFragColor = aColor;" EOL "}";
+    "  aColor.a *= aBoundFade;" EOL "  occFragColor = aColor;" EOL "}";
 
   // Requires gl_VertexID (GL 3.0/ES 3.0+), fwidth, gl_FragDepth.
   if (myGapi == Aspect_GraphicsLibrary_OpenGL)

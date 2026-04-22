@@ -1,0 +1,33 @@
+puts "=================================================================="
+puts "0030979: Bounded circular shader grid (-radius, -arc support)"
+puts "=================================================================="
+
+pload MODELING VISUALIZATION
+
+vclear
+vinit View1 w=400 h=400
+vaxo
+
+box b 1 1 0.1
+vdisplay b -dispMode 1
+vfit
+vzoom 0.3
+
+# Full disc within radius 2.5
+vgrid -type circ -step 0.25 16 -radius 2.5
+vdump $imagedir/${casename}_disc.png
+
+# Half circle (0..pi, walking CCW).
+vgrid -type circ -step 0.25 16 -radius 2.5 -arc 0 3.14159
+vdump $imagedir/${casename}_halfcircle.png
+
+# Quarter (upper-right).
+vgrid -type circ -step 0.25 16 -radius 2.5 -arc 0 1.5707
+vdump $imagedir/${casename}_quarter.png
+
+# Wraparound: 3pi/4 .. -3pi/4 covers the back pi/2 region by going CCW
+# through +pi and wrapping to -pi (270-degree arc around the far side).
+vgrid -type circ -step 0.25 16 -radius 2.5 -arc 2.356 -2.356
+vdump $imagedir/${casename}_wraparound.png
+
+vgrid off

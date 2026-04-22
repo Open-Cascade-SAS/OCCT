@@ -30,7 +30,8 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Construct with sensible defaults: grey lines on the plane origin with
-  //! axis coloring enabled, 1/100 plane-unit spacing, overlay mode.
+  //! axis coloring enabled, 1/100 plane-unit spacing, overlay mode,
+  //! unbounded in extent and radius.
   Aspect_GridParams()
       : myColor(Quantity_NOC_GRAY70),
         myOrigin(0.0, 0.0, 0.0),
@@ -38,6 +39,12 @@ public:
         myScaleY(0.0),
         myLineThickness(0.01),
         myRotationAngle(0.0),
+        mySizeX(0.0),
+        mySizeY(0.0),
+        myRadius(0.0),
+        myZOffset(0.0),
+        myAngleStart(0.0),
+        myAngleEnd(0.0),
         myAngularDivisions(0),
         myDrawMode(Aspect_GDM_Lines),
         myIsBackground(false),
@@ -97,6 +104,51 @@ public:
   //! Return TRUE when the parameters describe a circular (polar) grid.
   bool IsCircular() const { return myAngularDivisions > 0; }
 
+  //! Return rectangular bounded extent along plane X; 0.0 means unbounded.
+  double SizeX() const { return mySizeX; }
+
+  //! Set rectangular bounded extent along plane X; 0.0 means unbounded.
+  void SetSizeX(const double theSize) { mySizeX = theSize; }
+
+  //! Return rectangular bounded extent along plane Y; 0.0 means unbounded.
+  double SizeY() const { return mySizeY; }
+
+  //! Set rectangular bounded extent along plane Y; 0.0 means unbounded.
+  void SetSizeY(const double theSize) { mySizeY = theSize; }
+
+  //! Return circular bounded radius; 0.0 means unbounded.
+  double Radius() const { return myRadius; }
+
+  //! Set circular bounded radius; 0.0 means unbounded.
+  void SetRadius(const double theRadius) { myRadius = theRadius; }
+
+  //! Return signed plane-normal offset applied at render time.
+  double ZOffset() const { return myZOffset; }
+
+  //! Set signed plane-normal offset applied at render time (display only;
+  //! snap math stays on the unshifted plane).
+  void SetZOffset(const double theOffset) { myZOffset = theOffset; }
+
+  //! Return arc start angle (radians). Meaningful only when IsArc() is true.
+  double AngleStart() const { return myAngleStart; }
+
+  //! Return arc end angle (radians). Meaningful only when IsArc() is true.
+  double AngleEnd() const { return myAngleEnd; }
+
+  //! Restrict the circular grid to an angular wedge [start, end], walking CCW.
+  //! Equal start and end (e.g. 0.0 and 0.0) returns to full-circle rendering.
+  void SetArcRange(const double theStart, const double theEnd)
+  {
+    myAngleStart = theStart;
+    myAngleEnd   = theEnd;
+  }
+
+  //! Return TRUE when the parameters describe a bounded rectangle or disc.
+  bool IsBounded() const { return mySizeX > 0.0 || mySizeY > 0.0 || myRadius > 0.0; }
+
+  //! Return TRUE when the circular grid is restricted to a sub-arc.
+  bool IsArc() const { return myAngleStart != myAngleEnd; }
+
   //! Return draw mode: lines, points at grid intersections, or none.
   Aspect_GridDrawMode DrawMode() const { return myDrawMode; }
 
@@ -130,6 +182,12 @@ private:
   double              myScaleY;
   double              myLineThickness;
   double              myRotationAngle;
+  double              mySizeX;
+  double              mySizeY;
+  double              myRadius;
+  double              myZOffset;
+  double              myAngleStart;
+  double              myAngleEnd;
   int                 myAngularDivisions;
   Aspect_GridDrawMode myDrawMode;
   bool                myIsBackground;

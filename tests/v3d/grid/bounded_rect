@@ -1,0 +1,30 @@
+puts "=================================================================="
+puts "0030979: Bounded rectangular shader grid (-size X Y clips the area)"
+puts "=================================================================="
+
+pload MODELING VISUALIZATION
+
+vclear
+vinit View1 w=400 h=400
+vaxo
+
+box b 3 3 0.1
+vdisplay b -dispMode 1
+vfit
+vzoom 0.5
+
+# Full square bound: 4x4 world-unit patch centered at plane origin.
+vgrid -type rect -step 0.5 0.5 -size 4 4
+vdump $imagedir/${casename}_full_square.png
+
+# Bounded in X only, infinite along Y: should render an 4-unit-wide strip
+# extending vertically to the horizon (Y=0 keeps the Y axis unbounded).
+vgrid -type rect -step 0.5 0.5 -size 4 0
+vdump $imagedir/${casename}_strip_x.png
+
+# Same width but with a slight z-offset so the grid sinks below the box's
+# top face — used to avoid z-fighting in dense-coplanar scenes.
+vgrid -type rect -step 0.5 0.5 -size 4 4 -zoffset -0.01
+vdump $imagedir/${casename}_zoffset.png
+
+vgrid off

@@ -16,7 +16,6 @@
 #include <OpenGl_View.hxx>
 
 #include <cmath>
-#include <iostream>
 
 #include <Aspect_NeutralWindow.hxx>
 #include <Aspect_RenderingContext.hxx>
@@ -3569,9 +3568,6 @@ void OpenGl_View::updatePBREnvironment(const occ::handle<OpenGl_Context>& theCtx
 
 void OpenGl_View::GridDisplay(const Aspect_GridParams& theParams, const gp_Ax3& thePlane)
 {
-  std::cout << "[Grid] GridDisplay: scale=" << theParams.Scale()
-            << " scaleY=" << theParams.ScaleY() << " drawMode=" << int(theParams.DrawMode())
-            << " angular=" << theParams.AngularDivisions() << std::endl;
   myGridParams = theParams;
   myGridPlane  = thePlane;
   myToShowGrid = true;
@@ -3594,45 +3590,20 @@ void OpenGl_View::GridErase()
 
 void OpenGl_View::renderGrid()
 {
-  // Trace every enter while myToShowGrid is true (up to a cap to avoid flooding if
-  // grid is on and multiple redraws fire). Always trace the first call even if
-  // myToShowGrid is false, so we can see the pre-activation state once.
-  static int THE_GRID_DIAG_ON_COUNTER  = 0;
-  static int THE_GRID_DIAG_OFF_COUNTER = 0;
-  const bool toTrace =
-    myToShowGrid ? (THE_GRID_DIAG_ON_COUNTER++ < 8) : (THE_GRID_DIAG_OFF_COUNTER++ < 2);
-  if (toTrace)
-  {
-    std::cout << "[Grid] renderGrid entered, myToShowGrid=" << (myToShowGrid ? 1 : 0)
-              << " drawMode=" << int(myGridParams.DrawMode()) << std::endl;
-  }
-
   if (!myToShowGrid || myGridParams.DrawMode() == Aspect_GDM_None)
   {
-    if (toTrace)
-    {
-      std::cout << "[Grid] early-out: toShow or DrawMode=None" << std::endl;
-    }
     return;
   }
 
   const occ::handle<OpenGl_Context>& aContext = myWorkspace->GetGlContext();
   if (aContext.IsNull() || aContext->core32 == nullptr)
   {
-    if (toTrace)
-    {
-      std::cout << "[Grid] early-out: no context or no core32 (required for VAO)" << std::endl;
-    }
     return;
   }
 
   const occ::handle<Graphic3d_Camera>& aCamera = aContext->Camera();
   if (aCamera.IsNull())
   {
-    if (toTrace)
-    {
-      std::cout << "[Grid] early-out: no camera" << std::endl;
-    }
     return;
   }
 
@@ -3641,10 +3612,6 @@ void OpenGl_View::renderGrid()
     aContext->core32->glGenVertexArrays(1, &myGridVao);
     if (myGridVao == 0)
     {
-      if (toTrace)
-      {
-        std::cout << "[Grid] early-out: glGenVertexArrays returned 0" << std::endl;
-      }
       myToShowGrid = false;
       return;
     }
@@ -3741,15 +3708,7 @@ void OpenGl_View::renderGrid()
     aScaleY = aScaleX;
   }
 
-  const bool isGridBound = aContext->ShaderManager()->BindGridProgram();
-  if (toTrace)
-  {
-    std::cout << "[Grid] BindGridProgram returned " << (isGridBound ? 1 : 0)
-              << " scaleX=" << aScaleX << " scaleY=" << aScaleY
-              << " gridType=" << (myGridParams.IsCircular() ? 1 : 0)
-              << " isBg=" << (myGridParams.IsBackground() ? 1 : 0) << std::endl;
-  }
-  if (isGridBound)
+  if (aContext->ShaderManager()->BindGridProgram())
   {
     const occ::handle<OpenGl_ShaderProgram>& aProg = aContext->ActiveProgram();
 
@@ -3772,6 +3731,19 @@ void OpenGl_View::renderGrid()
     aProg->SetUniform(aContext, "uAngularScale", GLfloat(aAngularScale));
     aProg->SetUniform(aContext, "uDrawMode", myGridParams.DrawMode() == Aspect_GDM_Points ? 1 : 0);
 
+    // Bounded work area (HalfSizeX, HalfSizeY, Radius). 0 = unbounded along that axis.
+    const float aHalfX  = myGridParams.SizeX() > 0.0 ? float(myGridParams.SizeX() * 0.5) : 0.0f;
+    const float aHalfY  = myGridParams.SizeY() > 0.0 ? float(myGridParams.SizeY() * 0.5) : 0.0f;
+    const float aRadius = myGridParams.Radius() > 0.0 ? float(myGridParams.Radius()) : 0.0f;
+    aProg->SetUniform(aContext,
+                      "uBounds",
+                      NCollection_Vec3<float>(aHalfX, aHalfY, aRadius));
+    aProg->SetUniform(aContext,
+                      "uArcRange",
+                      NCollection_Vec2<float>(float(myGridParams.AngleStart()),
+                                              float(myGridParams.AngleEnd())));
+    aProg->SetUniform(aContext, "uArcBounded", myGridParams.IsArc() ? 1 : 0);
+
     // In-plane rotation: rotate the plane's X/Y basis around the plane normal
     // so the grid lines follow the requested RotationAngle. Sign matches
     // V3d_View::SetGrid's Trsf2 so snap (V3d_View::Compute) and the drawn
@@ -3784,16 +3756,20 @@ void OpenGl_View::renderGrid()
     const gp_XYZ aXRotated = aRawX.XYZ() * aCosA - aRawY.XYZ() * aSinA;
     const gp_XYZ aYRotated = aRawX.XYZ() * aSinA + aRawY.XYZ() * aCosA;
 
-    const gp_Pnt aOriginLocal = myGridParams.Origin();
-    const gp_Pnt aPlaneOrigin(aPlaneLoc.X() + aOriginLocal.X(),
-                              aPlaneLoc.Y() + aOriginLocal.Y(),
-                              aPlaneLoc.Z() + aOriginLocal.Z());
+    // ZOffset pushes the displayed plane along its normal to avoid z-fighting
+    // with coplanar geometry. Snap math uses the unshifted plane, so selection
+    // still lands on the true plane.
+    const gp_Dir aNDir          = myGridPlane.Direction();
+    const double aZOffset       = myGridParams.ZOffset();
+    const gp_Pnt aOriginLocal   = myGridParams.Origin();
+    const gp_Pnt aPlaneOrigin(aPlaneLoc.X() + aOriginLocal.X() + aNDir.X() * aZOffset,
+                              aPlaneLoc.Y() + aOriginLocal.Y() + aNDir.Y() * aZOffset,
+                              aPlaneLoc.Z() + aOriginLocal.Z() + aNDir.Z() * aZOffset);
     aProg->SetUniform(aContext,
                       "uPlaneOrigin",
                       NCollection_Vec3<float>((float)aPlaneOrigin.X(),
                                               (float)aPlaneOrigin.Y(),
                                               (float)aPlaneOrigin.Z()));
-    const gp_Dir aNDir = myGridPlane.Direction();
     aProg->SetUniform(
       aContext,
       "uPlaneX",
@@ -3808,11 +3784,6 @@ void OpenGl_View::renderGrid()
       NCollection_Vec3<float>((float)aNDir.X(), (float)aNDir.Y(), (float)aNDir.Z()));
 
     aContext->core32->glDrawArrays(GL_TRIANGLES, 0, 6);
-    if (toTrace)
-    {
-      const GLenum anErr = aContext->core11fwd->glGetError();
-      std::cout << "[Grid] glDrawArrays done, glError=" << int(anErr) << std::endl;
-    }
   }
 
   aContext->BindProgram(aPrevProgram);

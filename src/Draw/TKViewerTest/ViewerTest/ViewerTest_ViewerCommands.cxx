@@ -20,6 +20,7 @@
 
 #include <ViewerTest.hxx>
 
+#include <Aspect_CircularGrid.hxx>
 #include <AIS_AnimationAxisRotation.hxx>
 #include <AIS_AnimationCamera.hxx>
 #include <AIS_AnimationObject.hxx>
@@ -5003,8 +5004,9 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
   Aspect_GridDrawMode      aMode = aViewer->GridDrawMode();
   NCollection_Vec2<double> aNewOriginXY, aNewStepXY, aNewSizeXY;
   double                   aNewRotAngle = 0.0, aNewZOffset = 0.0;
+  double                   aNewArcStart = 0.0, aNewArcEnd = 0.0;
   bool hasOrigin = false, hasStep = false, hasRotAngle = false, hasSize = false, hasZOffset = false;
-  bool isInfinite = false, hasInfOff = false, hasScale = false;
+  bool isInfinite = false, hasInfOff = false, hasScale = false, hasArc = false;
   Aspect_GridParams      aGridParams;
   ViewerTest_AutoUpdater anUpdateTool(ViewerTest::GetAISContext(), aView);
   for (int anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
@@ -5142,6 +5144,15 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
       const int aVal = Draw::Atoi(theArgVec[++anArgIter]);
       aGridParams.SetIsInfinity(aVal != 0);
     }
+    else if (anArgIter + 2 < theArgNb && anArg == "-arc")
+    {
+      // Angular range for circular grids (radians). Equal start/end = full circle.
+      hasArc       = true;
+      aNewArcStart = Draw::Atof(theArgVec[anArgIter + 1]);
+      aNewArcEnd   = Draw::Atof(theArgVec[anArgIter + 2]);
+      aGridParams.SetArcRange(aNewArcStart, aNewArcEnd);
+      anArgIter += 2;
+    }
     else if (anArg == "r" || anArg == "rect" || anArg == "rectangular")
     {
       aType = Aspect_GT_Rectangular;
@@ -5202,6 +5213,18 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
       const gp_XYZ aOriginOffset =
         aPlane.XDirection().XYZ() * -anOrigX + aPlane.YDirection().XYZ() * -anOrigY;
       aGridParams.SetOrigin(gp_Pnt(aOriginOffset));
+      // Pass through bounded-area knobs so `vgrid -type inf -size X Y` clips the
+      // infinite grid to a rectangle, and `-radius R` / `-arc S E` clip to a disc
+      // or wedge (angular range carried via SetArcRange earlier in the parser).
+      if (hasSize)
+      {
+        aGridParams.SetSizeX(aNewSizeXY.x());
+        aGridParams.SetSizeY(aNewSizeXY.y());
+      }
+      if (hasZOffset)
+      {
+        aGridParams.SetZOffset(aNewZOffset);
+      }
       aView->GridDisplay(aGridParams);
     }
     if (hasInfOff && !isInfinite)
@@ -5303,6 +5326,17 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
         aZOffset = aNewZOffset;
       }
       aViewer->SetCircularGridGraphicValues(aRadius, aZOffset);
+    }
+    // Angular range must hit the Aspect_CircularGrid base before ActivateGrid
+    // fires syncViews — syncViews copies AngleStart/End from the grid, so any
+    // value set earlier only on aGridParams would get overwritten.
+    if (hasArc)
+    {
+      if (occ::handle<Aspect_CircularGrid> aCircGrid =
+            occ::down_cast<Aspect_CircularGrid>(aViewer->Grid(true)))
+      {
+        aCircGrid->SetArcRange(aNewArcStart, aNewArcEnd);
+      }
     }
   }
   aViewer->ActivateGrid(aType, aMode);

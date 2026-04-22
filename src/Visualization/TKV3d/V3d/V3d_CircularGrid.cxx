@@ -37,14 +37,14 @@ V3d_CircularGrid::V3d_CircularGrid(const V3d_ViewerPointer& aViewer,
                                    const Quantity_Color&    aTenthColor)
     : Aspect_CircularGrid(1., THE_DEFAULT_DIVISION),
       myViewer(aViewer),
-      myIsDisplayed(false),
-      myRadius(0.5 * aViewer->DefaultViewSize()),
-      myOffSet(THE_DEFAULT_GRID_STEP / THE_MYFACTOR)
+      myIsDisplayed(false)
 {
   myColor      = aColor;
   myTenthColor = aTenthColor;
 
   SetRadiusStep(THE_DEFAULT_GRID_STEP);
+  Aspect_CircularGrid::SetRadius(0.5 * aViewer->DefaultViewSize());
+  Aspect_CircularGrid::SetZOffset(THE_DEFAULT_GRID_STEP / THE_MYFACTOR);
 }
 
 //=================================================================================================
@@ -106,29 +106,17 @@ void V3d_CircularGrid::UpdateDisplay()
 
 void V3d_CircularGrid::GraphicValues(double& theRadius, double& theOffSet) const
 {
-  theRadius = myRadius;
-  theOffSet = myOffSet;
+  theRadius = Radius();
+  theOffSet = ZOffset();
 }
 
 //=================================================================================================
 
 void V3d_CircularGrid::SetGraphicValues(const double theRadius, const double theOffSet)
 {
-  bool aChanged = false;
-  if (myRadius != theRadius)
-  {
-    myRadius = theRadius;
-    aChanged = true;
-  }
-  if (myOffSet != theOffSet)
-  {
-    myOffSet = theOffSet;
-    aChanged = true;
-  }
-  if (aChanged)
-  {
-    UpdateDisplay();
-  }
+  // Base-class setters each trigger UpdateDisplay only on real change.
+  SetRadius(theRadius);
+  SetZOffset(theOffSet);
 }
 
 //=================================================================================================
@@ -159,6 +147,9 @@ void V3d_CircularGrid::syncViews(const bool theDoDisplay) const
   aParams.SetRotationAngle(RotationAngle());
   aParams.SetAngularDivisions(aDivisions);
   aParams.SetDrawMode(DrawMode());
+  aParams.SetRadius(Radius());
+  aParams.SetZOffset(ZOffset());
+  aParams.SetArcRange(AngleStart(), AngleEnd());
   aParams.SetIsBackground(false);
   aParams.SetIsDrawAxis(false);
   aParams.SetIsInfinity(false);
@@ -189,6 +180,4 @@ void V3d_CircularGrid::DumpJson(Standard_OStream& theOStream, int theDepth) cons
 
   OCCT_DUMP_FIELD_VALUE_POINTER(theOStream, myViewer)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myIsDisplayed)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myRadius)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myOffSet)
 }

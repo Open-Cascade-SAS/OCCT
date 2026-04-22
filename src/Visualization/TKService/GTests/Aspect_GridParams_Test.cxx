@@ -36,6 +36,61 @@ TEST(Aspect_GridParamsTest, Defaults_AreReasonable)
   EXPECT_NEAR(0.0, aParams.Origin().X(), Precision::Confusion());
   EXPECT_NEAR(0.0, aParams.Origin().Y(), Precision::Confusion());
   EXPECT_NEAR(0.0, aParams.Origin().Z(), Precision::Confusion());
+  EXPECT_DOUBLE_EQ(0.0, aParams.SizeX());
+  EXPECT_DOUBLE_EQ(0.0, aParams.SizeY());
+  EXPECT_DOUBLE_EQ(0.0, aParams.Radius());
+  EXPECT_DOUBLE_EQ(0.0, aParams.ZOffset());
+  EXPECT_DOUBLE_EQ(0.0, aParams.AngleStart());
+  EXPECT_DOUBLE_EQ(0.0, aParams.AngleEnd());
+  EXPECT_FALSE(aParams.IsBounded());
+  EXPECT_FALSE(aParams.IsArc());
+}
+
+TEST(Aspect_GridParamsTest, Bounds_RoundTrip)
+{
+  Aspect_GridParams aParams;
+  EXPECT_FALSE(aParams.IsBounded());
+
+  aParams.SetSizeX(10.0);
+  EXPECT_DOUBLE_EQ(10.0, aParams.SizeX());
+  EXPECT_TRUE(aParams.IsBounded());
+
+  aParams.SetSizeX(0.0);
+  EXPECT_FALSE(aParams.IsBounded()) << "clearing SizeX returns to unbounded when other bounds are 0";
+
+  aParams.SetSizeY(5.0);
+  EXPECT_TRUE(aParams.IsBounded());
+  aParams.SetSizeY(0.0);
+
+  aParams.SetRadius(3.0);
+  EXPECT_DOUBLE_EQ(3.0, aParams.Radius());
+  EXPECT_TRUE(aParams.IsBounded());
+
+  aParams.SetRadius(0.0);
+  EXPECT_FALSE(aParams.IsBounded());
+
+  aParams.SetZOffset(-0.01);
+  EXPECT_DOUBLE_EQ(-0.01, aParams.ZOffset());
+  EXPECT_FALSE(aParams.IsBounded()) << "ZOffset alone is not a bound";
+}
+
+TEST(Aspect_GridParamsTest, ArcRange_RoundTrip)
+{
+  Aspect_GridParams aParams;
+  EXPECT_FALSE(aParams.IsArc());
+
+  aParams.SetArcRange(0.0, M_PI);
+  EXPECT_DOUBLE_EQ(0.0, aParams.AngleStart());
+  EXPECT_DOUBLE_EQ(M_PI, aParams.AngleEnd());
+  EXPECT_TRUE(aParams.IsArc());
+
+  // Equal start and end reverts to full circle sentinel.
+  aParams.SetArcRange(1.0, 1.0);
+  EXPECT_FALSE(aParams.IsArc());
+
+  // Wraparound: Start > End is allowed; renderer walks CCW through the wrap.
+  aParams.SetArcRange(2.356, -2.356);
+  EXPECT_TRUE(aParams.IsArc());
 }
 
 TEST(Aspect_GridParamsTest, DrawMode_RoundTrip)
@@ -136,6 +191,11 @@ TEST(Aspect_GridParamsTest, Copy_PreservesFields)
   aSrc.SetIsBackground(true);
   aSrc.SetIsDrawAxis(false);
   aSrc.SetIsInfinity(true);
+  aSrc.SetSizeX(7.0);
+  aSrc.SetSizeY(3.0);
+  aSrc.SetRadius(2.0);
+  aSrc.SetZOffset(-0.002);
+  aSrc.SetArcRange(0.25, 2.0);
 
   const Aspect_GridParams aCopy = aSrc;
   EXPECT_NEAR(0.1, aCopy.Color().Red(), Precision::Confusion());
@@ -154,4 +214,12 @@ TEST(Aspect_GridParamsTest, Copy_PreservesFields)
   EXPECT_TRUE(aCopy.IsBackground());
   EXPECT_FALSE(aCopy.IsDrawAxis());
   EXPECT_TRUE(aCopy.IsInfinity());
+  EXPECT_DOUBLE_EQ(7.0, aCopy.SizeX());
+  EXPECT_DOUBLE_EQ(3.0, aCopy.SizeY());
+  EXPECT_DOUBLE_EQ(2.0, aCopy.Radius());
+  EXPECT_DOUBLE_EQ(-0.002, aCopy.ZOffset());
+  EXPECT_DOUBLE_EQ(0.25, aCopy.AngleStart());
+  EXPECT_DOUBLE_EQ(2.0, aCopy.AngleEnd());
+  EXPECT_TRUE(aCopy.IsBounded());
+  EXPECT_TRUE(aCopy.IsArc());
 }

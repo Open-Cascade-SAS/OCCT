@@ -64,9 +64,6 @@ private:
 private:
   V3d_ViewerPointer myViewer;
   mutable bool      myIsDisplayed;
-  double            myXSize;
-  double            myYSize;
-  double            myOffSet;
 };
 
 #endif // _V3d_RectangularGrid_HeaderFile

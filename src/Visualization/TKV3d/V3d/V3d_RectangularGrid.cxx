@@ -36,16 +36,16 @@ V3d_RectangularGrid::V3d_RectangularGrid(const V3d_ViewerPointer& aViewer,
                                          const Quantity_Color&    aTenthColor)
     : Aspect_RectangularGrid(1., 1.),
       myViewer(aViewer),
-      myIsDisplayed(false),
-      myXSize(0.5 * aViewer->DefaultViewSize()),
-      myYSize(0.5 * aViewer->DefaultViewSize()),
-      myOffSet(THE_DEFAULT_GRID_STEP / THE_MYFACTOR)
+      myIsDisplayed(false)
 {
   myColor      = aColor;
   myTenthColor = aTenthColor;
 
   SetXStep(THE_DEFAULT_GRID_STEP);
   SetYStep(THE_DEFAULT_GRID_STEP);
+  Aspect_RectangularGrid::SetSizeX(0.5 * aViewer->DefaultViewSize());
+  Aspect_RectangularGrid::SetSizeY(0.5 * aViewer->DefaultViewSize());
+  Aspect_RectangularGrid::SetZOffset(THE_DEFAULT_GRID_STEP / THE_MYFACTOR);
 }
 
 //=================================================================================================
@@ -107,9 +107,9 @@ void V3d_RectangularGrid::UpdateDisplay()
 
 void V3d_RectangularGrid::GraphicValues(double& theXSize, double& theYSize, double& theOffSet) const
 {
-  theXSize  = myXSize;
-  theYSize  = myYSize;
-  theOffSet = myOffSet;
+  theXSize  = SizeX();
+  theYSize  = SizeY();
+  theOffSet = ZOffset();
 }
 
 //=================================================================================================
@@ -118,26 +118,11 @@ void V3d_RectangularGrid::SetGraphicValues(const double theXSize,
                                            const double theYSize,
                                            const double theOffSet)
 {
-  bool aChanged = false;
-  if (myXSize != theXSize)
-  {
-    myXSize  = theXSize;
-    aChanged = true;
-  }
-  if (myYSize != theYSize)
-  {
-    myYSize  = theYSize;
-    aChanged = true;
-  }
-  if (myOffSet != theOffSet)
-  {
-    myOffSet = theOffSet;
-    aChanged = true;
-  }
-  if (aChanged)
-  {
-    UpdateDisplay();
-  }
+  // The Aspect_RectangularGrid setters each trigger UpdateDisplay() only when the
+  // value actually changes, so the final UpdateDisplay fires at most once.
+  SetSizeX(theXSize);
+  SetSizeY(theYSize);
+  SetZOffset(theOffSet);
 }
 
 //=================================================================================================
@@ -171,6 +156,9 @@ void V3d_RectangularGrid::syncViews(const bool theDoDisplay) const
   aParams.SetScaleY(1.0 / aYStep);
   aParams.SetRotationAngle(RotationAngle());
   aParams.SetDrawMode(DrawMode());
+  aParams.SetSizeX(SizeX());
+  aParams.SetSizeY(SizeY());
+  aParams.SetZOffset(ZOffset());
   aParams.SetIsBackground(false);
   aParams.SetIsDrawAxis(false);
   aParams.SetIsInfinity(false);
@@ -201,7 +189,4 @@ void V3d_RectangularGrid::DumpJson(Standard_OStream& theOStream, int theDepth) c
 
   OCCT_DUMP_FIELD_VALUE_POINTER(theOStream, myViewer)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myIsDisplayed)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myXSize)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myYSize)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myOffSet)
 }
