@@ -42,11 +42,11 @@ protected:
 
 TEST_F(BRepGraph_QuerySurfaceTest, Face_NbWires_BoxFaceHasOneWire)
 {
-  const int aNbFaces = myBoxGraph.Topo().Faces().Nb();
-  for (BRepGraph_FaceId aFaceId(0); aFaceId.IsValid(aNbFaces); ++aFaceId)
+  for (BRepGraph_FaceId aFaceId = BRepGraph_FaceId::Start();
+       aFaceId.IsValid(myBoxGraph.Topo().Faces().Nb()); ++aFaceId)
   {
-    const int aNb = BRepGraph_Tool::Face::NbWires(myBoxGraph, aFaceId);
-    EXPECT_EQ(aNb, 1) << "Box face " << aFaceId.Index << " should have exactly 1 wire";
+    const uint32_t aNb = BRepGraph_Tool::Face::NbWires(myBoxGraph, aFaceId);
+    EXPECT_EQ(aNb, 1u) << "Box face " << aFaceId.Index << " should have exactly 1 wire";
   }
 }
 
@@ -102,12 +102,12 @@ TEST_F(BRepGraph_QuerySurfaceTest, Wire_IsOuter_FirstWireOfBoxFaceIsOuter)
 
 TEST_F(BRepGraph_QuerySurfaceTest, Edge_NbFaces_BoxEdgeHasExactlyTwoFaces)
 {
-  const int aNbEdges = myBoxGraph.Topo().Edges().Nb();
-  for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
+  for (BRepGraph_EdgeId anEdgeId = BRepGraph_EdgeId::Start();
+       anEdgeId.IsValid(myBoxGraph.Topo().Edges().Nb()); ++anEdgeId)
   {
-    const int aNbFaces = BRepGraph_Tool::Edge::NbFaces(myBoxGraph, anEdgeId);
-    EXPECT_EQ(aNbFaces, 2) << "Box edge " << anEdgeId.Index
-                           << " should be shared by exactly 2 faces";
+    const uint32_t aNbFaces = BRepGraph_Tool::Edge::NbFaces(myBoxGraph, anEdgeId);
+    EXPECT_EQ(aNbFaces, 2u) << "Box edge " << anEdgeId.Index
+                            << " should be shared by exactly 2 faces";
   }
 }
 

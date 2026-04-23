@@ -1264,7 +1264,7 @@ TEST_F(BRepGraphTest, NbFacesOfEdge_SharedEdge)
   {
     if (!BRepGraph_Tool::Edge::Degenerated(myGraph, anEdgeIt.CurrentId()))
     {
-      const int aCount = myGraph.Topo().Edges().NbFaces(anEdgeIt.CurrentId());
+      const uint32_t aCount = myGraph.Topo().Edges().NbFaces(anEdgeIt.CurrentId());
       EXPECT_EQ(aCount, 2) << "Edge " << anEdgeIt.CurrentId().Index
                            << " should be shared by 2 faces";
     }
@@ -1279,7 +1279,7 @@ TEST_F(BRepGraphTest, FreeEdges_ClosedBox_Empty)
 
 TEST_F(BRepGraphTest, RecordHistory_BasicEntry)
 {
-  int                                  aBefore = myGraph.History().NbRecords();
+  size_t                               aBefore = myGraph.History().NbRecords();
   BRepGraph_NodeId                     anEdge0(BRepGraph_NodeId::Kind::Edge, 0);
   BRepGraph_NodeId                     anEdge1(BRepGraph_NodeId::Kind::Edge, 1);
   NCollection_Vector<BRepGraph_NodeId> aRepl;
@@ -1693,7 +1693,7 @@ TEST(BRepGraph_UIDsViewTest, ReverseLookupStaysCurrentAfterProgrammaticAdd)
 
 TEST_F(BRepGraphTest, RecordHistory_MultipleRecords_SequenceNumbers)
 {
-  const int aBefore = myGraph.History().NbRecords();
+  const size_t aBefore = myGraph.History().NbRecords();
 
   BRepGraph_NodeId                     anEdge0(BRepGraph_NodeId::Kind::Edge, 0);
   BRepGraph_NodeId                     anEdge1(BRepGraph_NodeId::Kind::Edge, 1);
@@ -1707,7 +1707,7 @@ TEST_F(BRepGraphTest, RecordHistory_MultipleRecords_SequenceNumbers)
   EXPECT_EQ(myGraph.History().NbRecords(), aBefore + 3);
 
   // Check monotonically increasing sequence numbers.
-  for (int anIdx = aBefore + 1; anIdx < aBefore + 3; ++anIdx)
+  for (size_t anIdx = aBefore + 1; anIdx < aBefore + 3; ++anIdx)
   {
     EXPECT_GT(myGraph.History().Record(anIdx).SequenceNumber,
               myGraph.History().Record(anIdx - 1).SequenceNumber)
@@ -2289,8 +2289,8 @@ TEST_F(BRepGraphTest, Decompose_ThreeDisconnectedFaces_ThreeComponents)
 TEST_F(BRepGraphTest, DetectToleranceConflicts_ManualConflict_Detected)
 {
   // Find two edges that share the same Curve3d handle.
-  bool      isConflictSetUp = false;
-  const int aNbEdges        = myGraph.Topo().Edges().Nb();
+  bool           isConflictSetUp = false;
+  const uint32_t aNbEdges        = myGraph.Topo().Edges().Nb();
   for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges) && !isConflictSetUp; ++anEdgeId)
   {
     if (BRepGraph_Tool::Edge::Degenerated(myGraph, anEdgeId)
@@ -2781,7 +2781,7 @@ TEST_F(BRepGraphTest, SetHistoryEnabled_DisableAndQuery)
 
 TEST_F(BRepGraphTest, RecordHistory_Disabled_NoRecordAdded)
 {
-  const int aBefore = myGraph.History().NbRecords();
+  const size_t aBefore = myGraph.History().NbRecords();
 
   myGraph.History().SetEnabled(false);
 
@@ -2798,7 +2798,7 @@ TEST_F(BRepGraphTest, RecordHistory_ReEnabled_RecordsAgain)
 {
   myGraph.History().SetEnabled(false);
 
-  const int aBefore = myGraph.History().NbRecords();
+  const size_t aBefore = myGraph.History().NbRecords();
 
   BRepGraph_NodeId                     anEdge0(BRepGraph_NodeId::Kind::Edge, 0);
   BRepGraph_NodeId                     anEdge1(BRepGraph_NodeId::Kind::Edge, 1);
@@ -2817,7 +2817,7 @@ TEST_F(BRepGraphTest, ApplyModification_HistoryDisabled_NoHistoryNoDerivedEdges)
 {
   myGraph.History().SetEnabled(false);
 
-  const int aNbHistBefore = myGraph.History().NbRecords();
+  const size_t aNbHistBefore = myGraph.History().NbRecords();
 
   BRepGraph_NodeId anEdge0(BRepGraph_NodeId::Kind::Edge, 0);
   BRepGraph_NodeId anEdge1(BRepGraph_NodeId::Kind::Edge, 1);

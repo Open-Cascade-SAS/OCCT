@@ -194,7 +194,7 @@ private:
   struct StackFrame
   {
     BRepGraph_NodeId   Node;
-    int                NextParentIdx = 0;
+    uint32_t           NextParentIdx = 0;
     int                StepToChild   = -1;
     TopLoc_Location    AccLocation;
     TopAbs_Orientation AccOrientation = TopAbs_FORWARD;
@@ -215,7 +215,7 @@ private:
   [[nodiscard]] Standard_EXPORT int branchRootFrame() const;
 
   Standard_EXPORT bool findNthProductWrapper(const BRepGraph_NodeId theNode,
-                                             const int              theOrdinal,
+                                             const uint32_t         theOrdinal,
                                              BRepGraph_ProductId&   theProduct) const;
 
   Standard_EXPORT bool findParentProduct(const BRepGraph_OccurrenceId theOccurrence,

@@ -497,7 +497,7 @@ public:
     }
 
     myRefIds = &TraitsT::RefIds(theGraph, theParent);
-    myLength = myRefIds->Length();
+    myLength = static_cast<uint32_t>(myRefIds->Size());
     skipRemoved();
   }
 
@@ -509,9 +509,9 @@ public:
     skipRemoved();
   }
 
-  [[nodiscard]] RefId CurrentId() const { return myRefIds->Value(myIndex); }
+  [[nodiscard]] RefId CurrentId() const { return myRefIds->Value(static_cast<size_t>(myIndex)); }
 
-  [[nodiscard]] int Index() const { return myIndex; }
+  [[nodiscard]] uint32_t Index() const { return myIndex; }
 
   //! Returns an STL-compatible iterator for range-based for loops.
   NCollection_ForwardRangeIterator<RefsOfParent> begin()
@@ -527,7 +527,8 @@ private:
   {
     while (myRefIds != nullptr && myIndex < myLength)
     {
-      const typename TraitsT::RefEntry& aRef = TraitsT::Ref(myGraph, myRefIds->Value(myIndex));
+      const typename TraitsT::RefEntry& aRef =
+        TraitsT::Ref(myGraph, myRefIds->Value(static_cast<size_t>(myIndex)));
       if (!aRef.IsRemoved)
       {
         const BRepGraphInc::BaseDef* aChildDef =
@@ -543,8 +544,8 @@ private:
 
   const BRepGraph&                 myGraph;
   const NCollection_Vector<RefId>* myRefIds = nullptr;
-  int                              myIndex  = 0;
-  int                              myLength = 0;
+  uint32_t                         myIndex  = 0;
+  uint32_t                         myLength = 0;
 };
 
 //! @brief Direct active vertex reference ids of an edge.
@@ -565,7 +566,7 @@ public:
     }
 
     myEdge   = &theGraph.Topo().Edges().Definition(theEdgeId);
-    myLength = 2 + myEdge->InternalVertexRefIds.Length();
+    myLength = 2u + static_cast<uint32_t>(myEdge->InternalVertexRefIds.Size());
     skipRemoved();
   }
 
@@ -579,7 +580,7 @@ public:
 
   [[nodiscard]] RefId CurrentId() const { return refIdAt(myIndex); }
 
-  [[nodiscard]] int Index() const { return myIndex; }
+  [[nodiscard]] uint32_t Index() const { return myIndex; }
 
   //! Returns an STL-compatible iterator for range-based for loops.
   NCollection_ForwardRangeIterator<RefsVertexOfEdge> begin()
@@ -591,7 +592,7 @@ public:
   NCollection_ForwardRangeSentinel end() const { return NCollection_ForwardRangeSentinel{}; }
 
 private:
-  [[nodiscard]] RefId refIdAt(const int theIndex) const
+  [[nodiscard]] RefId refIdAt(const uint32_t theIndex) const
   {
     if (theIndex == 0)
     {
@@ -601,7 +602,7 @@ private:
     {
       return myEdge->EndVertexRefId;
     }
-    return myEdge->InternalVertexRefIds.Value(theIndex - 2);
+    return myEdge->InternalVertexRefIds.Value(static_cast<size_t>(theIndex - 2));
   }
 
   void skipRemoved()
@@ -628,8 +629,8 @@ private:
 
   const BRepGraph&             myGraph;
   const BRepGraphInc::EdgeDef* myEdge   = nullptr;
-  int                          myIndex  = 0;
-  int                          myLength = 0;
+  uint32_t                     myIndex  = 0;
+  uint32_t                     myLength = 0;
 };
 
 } // namespace BRepGraph_RefsIterator

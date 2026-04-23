@@ -23,45 +23,45 @@ int BRepGraph_LayerRegistry::RegisterLayer(const occ::handle<BRepGraph_Layer>& t
     return -1;
 
   const Standard_GUID& aGUID = theLayer->ID();
-  const int*           aSlot = myGuidToSlot.Seek(aGUID);
+  const uint32_t*      aSlot = myGuidToSlot.Seek(aGUID);
   if (aSlot != nullptr)
   {
-    const occ::handle<BRepGraph_Layer>& aPrev = myLayers.Value(*aSlot);
+    const occ::handle<BRepGraph_Layer>& aPrev = myLayers.Value(static_cast<size_t>(*aSlot));
     if (!aPrev.IsNull() && aPrev.get() != theLayer.get())
     {
       aPrev->setOwningGraph(nullptr);
     }
     theLayer->setOwningGraph(myOwningGraph);
-    myLayers.ChangeValue(*aSlot) = theLayer;
+    myLayers.ChangeValue(static_cast<size_t>(*aSlot)) = theLayer;
     recomputeSubscribedKindsMask();
-    return *aSlot;
+    return static_cast<int>(*aSlot);
   }
 
-  const int aNewSlot = myLayers.Length();
+  const uint32_t aNewSlot = static_cast<uint32_t>(myLayers.Size());
   theLayer->setOwningGraph(myOwningGraph);
   myLayers.Append(theLayer);
   myGuidToSlot.Bind(aGUID, aNewSlot);
   mySubscribedKindsMask |= theLayer->SubscribedKinds();
   mySubscribedRefKindsMask |= theLayer->SubscribedRefKinds();
-  return aNewSlot;
+  return static_cast<int>(aNewSlot);
 }
 
 //=================================================================================================
 
 void BRepGraph_LayerRegistry::UnregisterLayer(const Standard_GUID& theGUID)
 {
-  const int* aSlotPtr = myGuidToSlot.Seek(theGUID);
+  const uint32_t* aSlotPtr = myGuidToSlot.Seek(theGUID);
   if (aSlotPtr == nullptr)
     return;
 
-  const int                          aSlot     = *aSlotPtr;
-  const int                          aLastSlot = myLayers.Length() - 1;
-  const occ::handle<BRepGraph_Layer> aRemoved  = myLayers.Value(aSlot);
+  const uint32_t                     aSlot     = *aSlotPtr;
+  const uint32_t                     aLastSlot = static_cast<uint32_t>(myLayers.Size()) - 1;
+  const occ::handle<BRepGraph_Layer> aRemoved  = myLayers.Value(static_cast<size_t>(aSlot));
   if (aSlot != aLastSlot)
   {
-    const occ::handle<BRepGraph_Layer>& aLastLayer = myLayers.Value(aLastSlot);
-    myLayers.ChangeValue(aSlot)                    = aLastLayer;
-    myGuidToSlot.ChangeFind(aLastLayer->ID())      = aSlot;
+    const occ::handle<BRepGraph_Layer>& aLastLayer = myLayers.Value(static_cast<size_t>(aLastSlot));
+    myLayers.ChangeValue(static_cast<size_t>(aSlot)) = aLastLayer;
+    myGuidToSlot.ChangeFind(aLastLayer->ID())         = aSlot;
   }
 
   myLayers.EraseLast();
@@ -89,25 +89,25 @@ void BRepGraph_LayerRegistry::SetOwningGraph(BRepGraph* theGraph) noexcept
 
 occ::handle<BRepGraph_Layer> BRepGraph_LayerRegistry::FindLayer(const Standard_GUID& theGUID) const
 {
-  const int* aSlot = myGuidToSlot.Seek(theGUID);
-  return aSlot != nullptr ? myLayers.Value(*aSlot) : occ::handle<BRepGraph_Layer>();
+  const uint32_t* aSlot = myGuidToSlot.Seek(theGUID);
+  return aSlot != nullptr ? myLayers.Value(static_cast<size_t>(*aSlot)) : occ::handle<BRepGraph_Layer>();
 }
 
 //=================================================================================================
 
 int BRepGraph_LayerRegistry::FindSlot(const Standard_GUID& theGUID) const
 {
-  const int* aSlot = myGuidToSlot.Seek(theGUID);
-  return aSlot != nullptr ? *aSlot : -1;
+  const uint32_t* aSlot = myGuidToSlot.Seek(theGUID);
+  return aSlot != nullptr ? static_cast<int>(*aSlot) : -1;
 }
 
 //=================================================================================================
 
 const occ::handle<BRepGraph_Layer>& BRepGraph_LayerRegistry::Layer(const int theSlot) const
 {
-  Standard_OutOfRange_Raise_if(theSlot < 0 || theSlot >= myLayers.Length(),
+  Standard_OutOfRange_Raise_if(theSlot < 0 || static_cast<uint32_t>(theSlot) >= myLayers.Size(),
                                "BRepGraph_LayerRegistry::Layer() - invalid slot");
-  return myLayers.Value(theSlot);
+  return myLayers.Value(static_cast<size_t>(theSlot));
 }
 
 //=================================================================================================

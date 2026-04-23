@@ -124,9 +124,9 @@ private:
 
 private:
   NCollection_Vector<occ::handle<BRepGraph_Layer>> myLayers;
-  NCollection_DataMap<Standard_GUID, int>          myGuidToSlot;
-  int                                              mySubscribedKindsMask    = 0;
-  int                                              mySubscribedRefKindsMask = 0;
+  NCollection_DataMap<Standard_GUID, uint32_t>     myGuidToSlot;
+  uint32_t                                         mySubscribedKindsMask    = 0;
+  uint32_t                                         mySubscribedRefKindsMask = 0;
   BRepGraph*                                       myOwningGraph            = nullptr;
 };
 

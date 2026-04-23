@@ -103,16 +103,11 @@ static TopoDS_Shape reconstructProductLocal(BRepGraph_ReconstructionContext& the
   TopoDS_Shape     aResult;
   BRepGraph_NodeId aShapeRootNode;
   TopLoc_Location  aRootLocation;
-  for (int i = 0; i < aProduct.OccurrenceRefIds.Length(); ++i)
+  for (BRepGraph_RefsOccurrenceOfProduct anOccIt(*theContext.Graph, theProduct); anOccIt.More();
+       anOccIt.Next())
   {
-    const BRepGraphInc::OccurrenceRef& aRef = aStorage.OccurrenceRef(aProduct.OccurrenceRefIds(i));
-    if (aRef.IsRemoved)
-      continue;
-    if (!aRef.OccurrenceDefId.IsValid(aStorage.NbOccurrences()))
-      continue;
+    const BRepGraphInc::OccurrenceRef& aRef = aStorage.OccurrenceRef(anOccIt.CurrentId());
     const BRepGraphInc::OccurrenceDef& aDef = aStorage.Occurrence(aRef.OccurrenceDefId);
-    if (aDef.IsRemoved)
-      continue;
     if (aDef.ChildDefId.IsValid() && aDef.ChildDefId.NodeKind != BRepGraph_NodeId::Kind::Product)
     {
       aShapeRootNode = aDef.ChildDefId;

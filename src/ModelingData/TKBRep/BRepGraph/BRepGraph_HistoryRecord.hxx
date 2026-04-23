@@ -35,7 +35,7 @@
 struct BRepGraph_HistoryRecord
 {
   TCollection_AsciiString OperationName;
-  int                     SequenceNumber = 0;
+  size_t                  SequenceNumber = 0;
 
   //! Key: original node id before the operation.
   //! Value: sequence of replacement node ids after the operation.

@@ -18,13 +18,15 @@
 #include <Standard_HashUtils.hxx>
 
 #include <cstddef>
+#include <cstdint>
 #include <functional>
+#include <limits>
 #include <utility>
 
 //! Lightweight typed index into a per-kind node vector inside BRepGraph.
 //!
 //! The pair (NodeKind, Index) forms a unique node identifier within one graph
-//! instance.  Default-constructed NodeId has Index = -1 (invalid).
+//! instance.  Default-constructed NodeId has Index = UINT32_MAX (invalid).
 //!
 //! NodeId is a value type: cheap to copy, compare, hash.  It carries no
 //! pointer back to the owning graph; the caller is responsible for using
@@ -62,22 +64,21 @@ struct BRepGraph_NodeId
   template <Kind TheKind>
   struct Typed
   {
-    static constexpr int THE_START_INDEX   = 0;
-    static constexpr int THE_INVALID_INDEX = -1;
+    static constexpr uint32_t THE_START_INDEX   = 0u;
+    static constexpr uint32_t THE_INVALID_INDEX = std::numeric_limits<uint32_t>::max();
 
-    int Index;
+    uint32_t Index;
 
-    //! Default: invalid (Index = -1).
+    //! Default: invalid (Index = UINT32_MAX).
     Typed()
         : Index(THE_INVALID_INDEX)
     {
     }
 
     //! Construct from index.
-    explicit Typed(const int theIdx)
+    explicit Typed(const uint32_t theIdx)
         : Index(theIdx)
     {
-      Standard_ASSERT_VOID(theIdx >= THE_INVALID_INDEX, "index must be >= -1");
     }
 
     //! Construct from an untyped node id of the same kind.
@@ -96,14 +97,11 @@ struct BRepGraph_NodeId
     [[nodiscard]] static Typed Invalid() { return Typed(); }
 
     //! True if this id points to an allocated node slot.
-    [[nodiscard]] bool IsValid() const { return Index > THE_INVALID_INDEX; }
+    [[nodiscard]] bool IsValid() const { return Index != THE_INVALID_INDEX; }
 
     //! True if this id points to an allocated slot within [0, theMaxCount).
-    [[nodiscard]] bool IsValid(const int theMaxCount) const
-    {
-      Standard_ASSERT_RETURN(theMaxCount >= 0, "max count must be non-negative", false);
-      return IsValid() && Index < theMaxCount;
-    }
+    //! UINT32_MAX (invalid sentinel) always fails this check for any realistic count.
+    [[nodiscard]] bool IsValid(const uint32_t theMaxCount) const { return Index < theMaxCount; }
 
     //! True if this id is within the dense range exposed by a provider with Nb().
     template <typename CountProviderT>
@@ -113,12 +111,12 @@ struct BRepGraph_NodeId
       return IsValid(theProvider.Nb());
     }
 
-    //! True if this id is within the dense range exposed by a provider with Length().
+    //! True if this id is within the dense range exposed by a provider with Size().
     template <typename CountProviderT>
     [[nodiscard]] auto IsValidIn(const CountProviderT& theProvider) const
-      -> decltype(theProvider.Length(), bool())
+      -> decltype(theProvider.Size(), bool())
     {
-      return IsValid(theProvider.Length());
+      return IsValid(static_cast<uint32_t>(theProvider.Size()));
     }
 
     //! Implicit conversion to untyped NodeId.
@@ -148,7 +146,7 @@ struct BRepGraph_NodeId
     //! Pre-increment (++id).
     Typed& operator++()
     {
-      Standard_ASSERT_VOID(Index >= 0, "pre-increment on invalid id");
+      Standard_ASSERT_VOID(Index != THE_INVALID_INDEX, "pre-increment on invalid id");
       ++Index;
       return *this;
     }
@@ -156,17 +154,25 @@ struct BRepGraph_NodeId
     //! Post-increment (id++).
     Typed operator++(int)
     {
-      Standard_ASSERT_VOID(Index >= 0, "post-increment on invalid id");
+      Standard_ASSERT_VOID(Index != THE_INVALID_INDEX, "post-increment on invalid id");
       Typed aPrev = *this;
       ++Index;
       return aPrev;
     }
 
     //! Advance by offset.
-    [[nodiscard]] Typed operator+(const int theOffset) const { return Typed(Index + theOffset); }
+    [[nodiscard]] Typed operator+(const uint32_t theOffset) const
+    {
+      return Typed(Index + theOffset);
+    }
 
     //! Retreat by offset.
-    [[nodiscard]] Typed operator-(const int theOffset) const { return Typed(Index - theOffset); }
+    [[nodiscard]] Typed operator-(const uint32_t theOffset) const
+    {
+      Standard_ASSERT_VOID(Index != THE_INVALID_INDEX && Index >= theOffset,
+                           "retreat underflows index");
+      return Typed(Index - theOffset);
+    }
 
     //! Comparison with untyped NodeId (checks both Kind and Index).
     bool operator==(const BRepGraph_NodeId& theOther) const
@@ -199,14 +205,14 @@ struct BRepGraph_NodeId
 
   //! Total number of dense kind slots used by per-kind arrays.
   //! Includes the reserved gap at enum value 9.
-  static constexpr int THE_KIND_COUNT    = static_cast<int>(Kind::Occurrence) + 1;
-  static constexpr int THE_START_INDEX   = 0;
-  static constexpr int THE_INVALID_INDEX = -1;
+  static constexpr int      THE_KIND_COUNT    = static_cast<int>(Kind::Occurrence) + 1;
+  static constexpr uint32_t THE_START_INDEX   = 0u;
+  static constexpr uint32_t THE_INVALID_INDEX = std::numeric_limits<uint32_t>::max();
 
-  Kind NodeKind;
-  int  Index;
+  Kind     NodeKind;
+  uint32_t Index;
 
-  //! Default: invalid NodeId (Index = -1).
+  //! Default: invalid NodeId (Index = UINT32_MAX).
   //! NodeKind is set to Kind::Solid but is meaningless when !IsValid().
   BRepGraph_NodeId()
       : NodeKind(Kind::Solid),
@@ -214,11 +220,10 @@ struct BRepGraph_NodeId
   {
   }
 
-  BRepGraph_NodeId(const Kind theKind, const int theIdx)
+  BRepGraph_NodeId(const Kind theKind, const uint32_t theIdx)
       : NodeKind(theKind),
         Index(theIdx)
   {
-    Standard_ASSERT_VOID(theIdx >= THE_INVALID_INDEX, "BRepGraph_NodeId: index must be >= -1");
   }
 
   //! First valid id in a dense sequence for the specified kind.
@@ -234,14 +239,11 @@ struct BRepGraph_NodeId
   }
 
   //! True if this id points to an allocated node slot.
-  [[nodiscard]] bool IsValid() const { return Index > THE_INVALID_INDEX; }
+  [[nodiscard]] bool IsValid() const { return Index != THE_INVALID_INDEX; }
 
   //! True if this id points to an allocated slot within [0, theMaxCount).
-  [[nodiscard]] bool IsValid(const int theMaxCount) const
-  {
-    Standard_ASSERT_RETURN(theMaxCount >= 0, "max count must be non-negative", false);
-    return IsValid() && Index < theMaxCount;
-  }
+  //! UINT32_MAX (invalid sentinel) always fails this check for any realistic count.
+  [[nodiscard]] bool IsValid(const uint32_t theMaxCount) const { return Index < theMaxCount; }
 
   //! True if this id is within the dense range exposed by a provider with Nb().
   template <typename CountProviderT>
@@ -251,12 +253,12 @@ struct BRepGraph_NodeId
     return IsValid(theProvider.Nb());
   }
 
-  //! True if this id is within the dense range exposed by a provider with Length().
+  //! True if this id is within the dense range exposed by a provider with Size().
   template <typename CountProviderT>
   [[nodiscard]] auto IsValidIn(const CountProviderT& theProvider) const
-    -> decltype(theProvider.Length(), bool())
+    -> decltype(theProvider.Size(), bool())
   {
-    return IsValid(theProvider.Length());
+    return IsValid(static_cast<uint32_t>(theProvider.Size()));
   }
 
   bool operator==(const BRepGraph_NodeId& theOther) const
@@ -276,7 +278,7 @@ struct BRepGraph_NodeId
   //! Pre-increment (++id).
   BRepGraph_NodeId& operator++()
   {
-    Standard_ASSERT_VOID(Index >= 0, "pre-increment on invalid id");
+    Standard_ASSERT_VOID(Index != THE_INVALID_INDEX, "pre-increment on invalid id");
     ++Index;
     return *this;
   }
@@ -284,21 +286,23 @@ struct BRepGraph_NodeId
   //! Post-increment (id++).
   BRepGraph_NodeId operator++(int)
   {
-    Standard_ASSERT_VOID(Index >= 0, "post-increment on invalid id");
+    Standard_ASSERT_VOID(Index != THE_INVALID_INDEX, "post-increment on invalid id");
     BRepGraph_NodeId aPrev = *this;
     ++Index;
     return aPrev;
   }
 
   //! Advance by offset.
-  [[nodiscard]] BRepGraph_NodeId operator+(const int theOffset) const
+  [[nodiscard]] BRepGraph_NodeId operator+(const uint32_t theOffset) const
   {
     return BRepGraph_NodeId(NodeKind, Index + theOffset);
   }
 
   //! Retreat by offset.
-  [[nodiscard]] BRepGraph_NodeId operator-(const int theOffset) const
+  [[nodiscard]] BRepGraph_NodeId operator-(const uint32_t theOffset) const
   {
+    Standard_ASSERT_VOID(Index != THE_INVALID_INDEX && Index >= theOffset,
+                         "retreat underflows index");
     return BRepGraph_NodeId(NodeKind, Index - theOffset);
   }
 

@@ -75,9 +75,9 @@ public:
                                          const BRepGraph_CoEdgeId theCoEdge,
                                          double* const            theParameter = nullptr) const;
 
-  Standard_EXPORT int NbPointsOnCurve(const BRepGraph_VertexId theVertex) const;
-  Standard_EXPORT int NbPointsOnSurface(const BRepGraph_VertexId theVertex) const;
-  Standard_EXPORT int NbPointsOnPCurve(const BRepGraph_VertexId theVertex) const;
+  Standard_EXPORT uint32_t NbPointsOnCurve(const BRepGraph_VertexId theVertex) const;
+  Standard_EXPORT uint32_t NbPointsOnSurface(const BRepGraph_VertexId theVertex) const;
+  Standard_EXPORT uint32_t NbPointsOnPCurve(const BRepGraph_VertexId theVertex) const;
 
   [[nodiscard]] bool HasBindings() const { return myVertexParams.Extent() != 0; }
 

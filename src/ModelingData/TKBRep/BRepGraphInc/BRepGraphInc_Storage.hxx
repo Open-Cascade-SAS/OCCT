@@ -61,160 +61,160 @@ public:
   }
 
   //! Returns the total number of vertex entities (including removed).
-  [[nodiscard]] int NbVertices() const { return myVertices.Nb(); }
+  [[nodiscard]] uint32_t NbVertices() const { return myVertices.Nb(); }
 
   //! Returns the total number of edge entities (including removed).
-  [[nodiscard]] int NbEdges() const { return myEdges.Nb(); }
+  [[nodiscard]] uint32_t NbEdges() const { return myEdges.Nb(); }
 
   //! Returns the total number of coedge entities (including removed).
-  [[nodiscard]] int NbCoEdges() const { return myCoEdges.Nb(); }
+  [[nodiscard]] uint32_t NbCoEdges() const { return myCoEdges.Nb(); }
 
   //! Returns the total number of wire entities (including removed).
-  [[nodiscard]] int NbWires() const { return myWires.Nb(); }
+  [[nodiscard]] uint32_t NbWires() const { return myWires.Nb(); }
 
   //! Returns the total number of face entities (including removed).
-  [[nodiscard]] int NbFaces() const { return myFaces.Nb(); }
+  [[nodiscard]] uint32_t NbFaces() const { return myFaces.Nb(); }
 
   //! Returns the total number of shell entities (including removed).
-  [[nodiscard]] int NbShells() const { return myShells.Nb(); }
+  [[nodiscard]] uint32_t NbShells() const { return myShells.Nb(); }
 
   //! Returns the total number of solid entities (including removed).
-  [[nodiscard]] int NbSolids() const { return mySolids.Nb(); }
+  [[nodiscard]] uint32_t NbSolids() const { return mySolids.Nb(); }
 
   //! Returns the total number of compound entities (including removed).
-  [[nodiscard]] int NbCompounds() const { return myCompounds.Nb(); }
+  [[nodiscard]] uint32_t NbCompounds() const { return myCompounds.Nb(); }
 
   //! Returns the total number of compsolid entities (including removed).
-  [[nodiscard]] int NbCompSolids() const { return myCompSolids.Nb(); }
+  [[nodiscard]] uint32_t NbCompSolids() const { return myCompSolids.Nb(); }
 
   //! Returns the total number of product entities (including removed).
-  [[nodiscard]] int NbProducts() const { return myProducts.Nb(); }
+  [[nodiscard]] uint32_t NbProducts() const { return myProducts.Nb(); }
 
   //! Returns the total number of occurrence entities (including removed).
-  [[nodiscard]] int NbOccurrences() const { return myOccurrences.Nb(); }
+  [[nodiscard]] uint32_t NbOccurrences() const { return myOccurrences.Nb(); }
 
   //! Returns the total number of shell reference entries (including removed).
-  [[nodiscard]] int NbShellRefs() const { return myShellRefs.Nb(); }
+  [[nodiscard]] uint32_t NbShellRefs() const { return myShellRefs.Nb(); }
 
   //! Returns the total number of face reference entries (including removed).
-  [[nodiscard]] int NbFaceRefs() const { return myFaceRefs.Nb(); }
+  [[nodiscard]] uint32_t NbFaceRefs() const { return myFaceRefs.Nb(); }
 
   //! Returns the total number of wire reference entries (including removed).
-  [[nodiscard]] int NbWireRefs() const { return myWireRefs.Nb(); }
+  [[nodiscard]] uint32_t NbWireRefs() const { return myWireRefs.Nb(); }
 
   //! Returns the total number of coedge reference entries (including removed).
-  [[nodiscard]] int NbCoEdgeRefs() const { return myCoEdgeRefs.Nb(); }
+  [[nodiscard]] uint32_t NbCoEdgeRefs() const { return myCoEdgeRefs.Nb(); }
 
   //! Returns the total number of vertex reference entries (including removed).
-  [[nodiscard]] int NbVertexRefs() const { return myVertexRefs.Nb(); }
+  [[nodiscard]] uint32_t NbVertexRefs() const { return myVertexRefs.Nb(); }
 
   //! Returns the total number of solid reference entries (including removed).
-  [[nodiscard]] int NbSolidRefs() const { return mySolidRefs.Nb(); }
+  [[nodiscard]] uint32_t NbSolidRefs() const { return mySolidRefs.Nb(); }
 
   //! Returns the total number of child reference entries (including removed).
-  [[nodiscard]] int NbChildRefs() const { return myChildRefs.Nb(); }
+  [[nodiscard]] uint32_t NbChildRefs() const { return myChildRefs.Nb(); }
 
   //! Returns the total number of occurrence reference entries (including removed).
-  [[nodiscard]] int NbOccurrenceRefs() const { return myOccurrenceRefs.Nb(); }
+  [[nodiscard]] uint32_t NbOccurrenceRefs() const { return myOccurrenceRefs.Nb(); }
 
   //! Returns the total number of surface representations.
-  [[nodiscard]] int NbSurfaces() const { return mySurfaces.Nb(); }
+  [[nodiscard]] uint32_t NbSurfaces() const { return mySurfaces.Nb(); }
 
   //! Returns the total number of 3D curve representations.
-  [[nodiscard]] int NbCurves3D() const { return myCurves3D.Nb(); }
+  [[nodiscard]] uint32_t NbCurves3D() const { return myCurves3D.Nb(); }
 
   //! Returns the total number of 2D curve representations.
-  [[nodiscard]] int NbCurves2D() const { return myCurves2D.Nb(); }
+  [[nodiscard]] uint32_t NbCurves2D() const { return myCurves2D.Nb(); }
 
   //! Returns the total number of triangulation representations.
-  [[nodiscard]] int NbTriangulations() const { return myTriangulationsRep.Nb(); }
+  [[nodiscard]] uint32_t NbTriangulations() const { return myTriangulationsRep.Nb(); }
 
   //! Returns the total number of 3D polygon representations.
-  [[nodiscard]] int NbPolygons3D() const { return myPolygons3D.Nb(); }
+  [[nodiscard]] uint32_t NbPolygons3D() const { return myPolygons3D.Nb(); }
 
   //! Returns the total number of 2D polygon representations.
-  [[nodiscard]] int NbPolygons2D() const { return myPolygons2D.Nb(); }
+  [[nodiscard]] uint32_t NbPolygons2D() const { return myPolygons2D.Nb(); }
 
   //! Returns the total number of polygon-on-triangulation representations.
-  [[nodiscard]] int NbPolygonsOnTri() const { return myPolygonsOnTri.Nb(); }
+  [[nodiscard]] uint32_t NbPolygonsOnTri() const { return myPolygonsOnTri.Nb(); }
 
   //! Returns the number of active surface representations (excluding removed).
-  [[nodiscard]] int NbActiveSurfaces() const { return mySurfaces.NbActive; }
+  [[nodiscard]] uint32_t NbActiveSurfaces() const { return mySurfaces.NbActive; }
 
   //! Returns the number of active 3D curve representations (excluding removed).
-  [[nodiscard]] int NbActiveCurves3D() const { return myCurves3D.NbActive; }
+  [[nodiscard]] uint32_t NbActiveCurves3D() const { return myCurves3D.NbActive; }
 
   //! Returns the number of active 2D curve representations (excluding removed).
-  [[nodiscard]] int NbActiveCurves2D() const { return myCurves2D.NbActive; }
+  [[nodiscard]] uint32_t NbActiveCurves2D() const { return myCurves2D.NbActive; }
 
   //! Returns the number of active triangulation representations (excluding removed).
-  [[nodiscard]] int NbActiveTriangulations() const { return myTriangulationsRep.NbActive; }
+  [[nodiscard]] uint32_t NbActiveTriangulations() const { return myTriangulationsRep.NbActive; }
 
   //! Returns the number of active 3D polygon representations (excluding removed).
-  [[nodiscard]] int NbActivePolygons3D() const { return myPolygons3D.NbActive; }
+  [[nodiscard]] uint32_t NbActivePolygons3D() const { return myPolygons3D.NbActive; }
 
   //! Returns the number of active 2D polygon representations (excluding removed).
-  [[nodiscard]] int NbActivePolygons2D() const { return myPolygons2D.NbActive; }
+  [[nodiscard]] uint32_t NbActivePolygons2D() const { return myPolygons2D.NbActive; }
 
   //! Returns the number of active polygon-on-triangulation representations (excluding removed).
-  [[nodiscard]] int NbActivePolygonsOnTri() const { return myPolygonsOnTri.NbActive; }
+  [[nodiscard]] uint32_t NbActivePolygonsOnTri() const { return myPolygonsOnTri.NbActive; }
 
   //! Returns the number of active vertex entities (excluding removed).
-  [[nodiscard]] int NbActiveVertices() const { return myVertices.NbActive; }
+  [[nodiscard]] uint32_t NbActiveVertices() const { return myVertices.NbActive; }
 
   //! Returns the number of active edge entities (excluding removed).
-  [[nodiscard]] int NbActiveEdges() const { return myEdges.NbActive; }
+  [[nodiscard]] uint32_t NbActiveEdges() const { return myEdges.NbActive; }
 
   //! Returns the number of active coedge entities (excluding removed).
-  [[nodiscard]] int NbActiveCoEdges() const { return myCoEdges.NbActive; }
+  [[nodiscard]] uint32_t NbActiveCoEdges() const { return myCoEdges.NbActive; }
 
   //! Returns the number of active wire entities (excluding removed).
-  [[nodiscard]] int NbActiveWires() const { return myWires.NbActive; }
+  [[nodiscard]] uint32_t NbActiveWires() const { return myWires.NbActive; }
 
   //! Returns the number of active face entities (excluding removed).
-  [[nodiscard]] int NbActiveFaces() const { return myFaces.NbActive; }
+  [[nodiscard]] uint32_t NbActiveFaces() const { return myFaces.NbActive; }
 
   //! Returns the number of active shell entities (excluding removed).
-  [[nodiscard]] int NbActiveShells() const { return myShells.NbActive; }
+  [[nodiscard]] uint32_t NbActiveShells() const { return myShells.NbActive; }
 
   //! Returns the number of active solid entities (excluding removed).
-  [[nodiscard]] int NbActiveSolids() const { return mySolids.NbActive; }
+  [[nodiscard]] uint32_t NbActiveSolids() const { return mySolids.NbActive; }
 
   //! Returns the number of active compound entities (excluding removed).
-  [[nodiscard]] int NbActiveCompounds() const { return myCompounds.NbActive; }
+  [[nodiscard]] uint32_t NbActiveCompounds() const { return myCompounds.NbActive; }
 
   //! Returns the number of active compsolid entities (excluding removed).
-  [[nodiscard]] int NbActiveCompSolids() const { return myCompSolids.NbActive; }
+  [[nodiscard]] uint32_t NbActiveCompSolids() const { return myCompSolids.NbActive; }
 
   //! Returns the number of active product entities (excluding removed).
-  [[nodiscard]] int NbActiveProducts() const { return myProducts.NbActive; }
+  [[nodiscard]] uint32_t NbActiveProducts() const { return myProducts.NbActive; }
 
   //! Returns the number of active occurrence entities (excluding removed).
-  [[nodiscard]] int NbActiveOccurrences() const { return myOccurrences.NbActive; }
+  [[nodiscard]] uint32_t NbActiveOccurrences() const { return myOccurrences.NbActive; }
 
   //! Returns the number of active shell reference entries (excluding removed).
-  [[nodiscard]] int NbActiveShellRefs() const { return myShellRefs.NbActive; }
+  [[nodiscard]] uint32_t NbActiveShellRefs() const { return myShellRefs.NbActive; }
 
   //! Returns the number of active face reference entries (excluding removed).
-  [[nodiscard]] int NbActiveFaceRefs() const { return myFaceRefs.NbActive; }
+  [[nodiscard]] uint32_t NbActiveFaceRefs() const { return myFaceRefs.NbActive; }
 
   //! Returns the number of active wire reference entries (excluding removed).
-  [[nodiscard]] int NbActiveWireRefs() const { return myWireRefs.NbActive; }
+  [[nodiscard]] uint32_t NbActiveWireRefs() const { return myWireRefs.NbActive; }
 
   //! Returns the number of active coedge reference entries (excluding removed).
-  [[nodiscard]] int NbActiveCoEdgeRefs() const { return myCoEdgeRefs.NbActive; }
+  [[nodiscard]] uint32_t NbActiveCoEdgeRefs() const { return myCoEdgeRefs.NbActive; }
 
   //! Returns the number of active vertex reference entries (excluding removed).
-  [[nodiscard]] int NbActiveVertexRefs() const { return myVertexRefs.NbActive; }
+  [[nodiscard]] uint32_t NbActiveVertexRefs() const { return myVertexRefs.NbActive; }
 
   //! Returns the number of active solid reference entries (excluding removed).
-  [[nodiscard]] int NbActiveSolidRefs() const { return mySolidRefs.NbActive; }
+  [[nodiscard]] uint32_t NbActiveSolidRefs() const { return mySolidRefs.NbActive; }
 
   //! Returns the number of active child reference entries (excluding removed).
-  [[nodiscard]] int NbActiveChildRefs() const { return myChildRefs.NbActive; }
+  [[nodiscard]] uint32_t NbActiveChildRefs() const { return myChildRefs.NbActive; }
 
   //! Returns the number of active occurrence reference entries (excluding removed).
-  [[nodiscard]] int NbActiveOccurrenceRefs() const { return myOccurrenceRefs.NbActive; }
+  [[nodiscard]] uint32_t NbActiveOccurrenceRefs() const { return myOccurrenceRefs.NbActive; }
 
   //! Mark an entity node as removed and decrement its active counter once.
   //! @param[in] theNodeId typed entity id
@@ -792,15 +792,15 @@ public:
   //! BuildReverseIndex(). Only processes entities and refs from the old counts to the
   //! current vector lengths - the caller must snapshot ChildRef / SolidRef counts before
   //! any Append so this remains O(delta), not O(total).
-  Standard_EXPORT void BuildDeltaReverseIndex(const int theOldNbEdges,
-                                              const int theOldNbWires,
-                                              const int theOldNbFaces,
-                                              const int theOldNbShells,
-                                              const int theOldNbSolids,
-                                              const int theOldNbCompounds,
-                                              const int theOldNbCompSolids,
-                                              const int theOldNbChildRefs,
-                                              const int theOldNbSolidRefs);
+  Standard_EXPORT void BuildDeltaReverseIndex(const uint32_t theOldNbEdges,
+                                              const uint32_t theOldNbWires,
+                                              const uint32_t theOldNbFaces,
+                                              const uint32_t theOldNbShells,
+                                              const uint32_t theOldNbSolids,
+                                              const uint32_t theOldNbCompounds,
+                                              const uint32_t theOldNbCompSolids,
+                                              const uint32_t theOldNbChildRefs,
+                                              const uint32_t theOldNbSolidRefs);
 
   //! Debug: verify reverse index consistency against entity tables.
   //! @return true if all forward refs have matching reverse entries
@@ -822,7 +822,7 @@ private:
 
     NCollection_Vector<EntityT>       Entities;
     NCollection_Vector<BRepGraph_UID> UIDs;
-    int                               NbActive = 0;
+    uint32_t                          NbActive = 0;
 
     DefStore() = default;
 
@@ -832,16 +832,22 @@ private:
     {
     }
 
-    int Nb() const { return Entities.Length(); }
+    uint32_t Nb() const { return static_cast<uint32_t>(Entities.Size()); }
 
-    const EntityT& Get(const TypeId theId) const { return Entities.Value(theId.Index); }
+    const EntityT& Get(const TypeId theId) const
+    {
+      return Entities.Value(static_cast<size_t>(theId.Index));
+    }
 
-    EntityT& Change(const TypeId theId) { return Entities.ChangeValue(theId.Index); }
+    EntityT& Change(const TypeId theId)
+    {
+      return Entities.ChangeValue(static_cast<size_t>(theId.Index));
+    }
 
     //! Append a default-constructed entity and return its typed slot id.
     TypeId Append(const occ::handle<NCollection_BaseAllocator>& theAlloc)
     {
-      const TypeId anId(Entities.Length());
+      const TypeId anId(static_cast<uint32_t>(Entities.Size()));
       ++NbActive;
       Entities.Appended().InitVectors(theAlloc);
       return anId;
@@ -849,14 +855,14 @@ private:
 
     void DecrementActive()
     {
-      Standard_ASSERT_VOID(NbActive > 0, "DefStore::DecrementActive: underflow");
-      if (NbActive > 0)
+      Standard_ASSERT_VOID(NbActive > 0u, "DefStore::DecrementActive: underflow");
+      if (NbActive > 0u)
         --NbActive;
     }
 
     bool MarkRemoved(const TypeId theId)
     {
-      if (!theId.IsValid(Entities.Length()))
+      if (!theId.IsValid(Nb()))
       {
         return false;
       }
@@ -888,7 +894,7 @@ private:
     using ValueType = RepT;
 
     NCollection_Vector<RepT> Entities;
-    int                      NbActive = 0;
+    uint32_t                 NbActive = 0;
 
     RepStore() = default;
 
@@ -897,16 +903,19 @@ private:
     {
     }
 
-    int Nb() const { return Entities.Length(); }
+    uint32_t Nb() const { return static_cast<uint32_t>(Entities.Size()); }
 
-    const RepT& Get(const TypeId theId) const { return Entities.Value(theId.Index); }
+    const RepT& Get(const TypeId theId) const
+    {
+      return Entities.Value(static_cast<size_t>(theId.Index));
+    }
 
-    RepT& Change(const TypeId theId) { return Entities.ChangeValue(theId.Index); }
+    RepT& Change(const TypeId theId) { return Entities.ChangeValue(static_cast<size_t>(theId.Index)); }
 
     //! Append a default-constructed rep and return its typed slot id.
     TypeId Append()
     {
-      const TypeId anId(Entities.Length());
+      const TypeId anId(static_cast<uint32_t>(Entities.Size()));
       ++NbActive;
       Entities.Appended();
       return anId;
@@ -914,14 +923,14 @@ private:
 
     void DecrementActive()
     {
-      Standard_ASSERT_VOID(NbActive > 0, "RepStore::DecrementActive: underflow");
-      if (NbActive > 0)
+      Standard_ASSERT_VOID(NbActive > 0u, "RepStore::DecrementActive: underflow");
+      if (NbActive > 0u)
         --NbActive;
     }
 
     bool MarkRemoved(const TypeId theId)
     {
-      if (!theId.IsValid(Entities.Length()))
+      if (!theId.IsValid(Nb()))
       {
         return false;
       }
@@ -938,8 +947,8 @@ private:
 
     void EraseLast()
     {
-      Standard_ASSERT_VOID(NbActive > 0, "RepStore::EraseLast: underflow");
-      if (NbActive > 0)
+      Standard_ASSERT_VOID(NbActive > 0u, "RepStore::EraseLast: underflow");
+      if (NbActive > 0u)
       {
         Entities.EraseLast();
         --NbActive;
@@ -963,7 +972,7 @@ private:
 
     NCollection_Vector<RefT>             Refs;
     NCollection_Vector<BRepGraph_RefUID> UIDs;
-    int                                  NbActive = 0;
+    uint32_t                             NbActive = 0;
 
     RefStore() = default;
 
@@ -973,16 +982,19 @@ private:
     {
     }
 
-    int Nb() const { return Refs.Length(); }
+    uint32_t Nb() const { return static_cast<uint32_t>(Refs.Size()); }
 
-    const RefT& Get(const TypeId theId) const { return Refs.Value(theId.Index); }
+    const RefT& Get(const TypeId theId) const
+    {
+      return Refs.Value(static_cast<size_t>(theId.Index));
+    }
 
-    RefT& Change(const TypeId theId) { return Refs.ChangeValue(theId.Index); }
+    RefT& Change(const TypeId theId) { return Refs.ChangeValue(static_cast<size_t>(theId.Index)); }
 
     //! Append a default-constructed ref entry and return its typed slot id.
     TypeId Append()
     {
-      const TypeId anId(Refs.Length());
+      const TypeId anId(static_cast<uint32_t>(Refs.Size()));
       ++NbActive;
       Refs.Appended();
       return anId;
@@ -990,14 +1002,14 @@ private:
 
     void DecrementActive()
     {
-      Standard_ASSERT_VOID(NbActive > 0, "RefStore::DecrementActive: underflow");
-      if (NbActive > 0)
+      Standard_ASSERT_VOID(NbActive > 0u, "RefStore::DecrementActive: underflow");
+      if (NbActive > 0u)
         --NbActive;
     }
 
     bool MarkRemoved(const TypeId theId)
     {
-      if (!theId.IsValid(Refs.Length()))
+      if (!theId.IsValid(Nb()))
       {
         return false;
       }

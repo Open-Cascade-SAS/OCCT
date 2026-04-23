@@ -178,7 +178,7 @@ public:
 private:
   //! Ensure vector has at least theIndex+1 elements.
   template <typename T>
-  static void ensureSize(NCollection_Vector<T>& theVec, const int theIndex);
+  static void ensureSize(NCollection_Vector<T>& theVec, const size_t theIndex);
 
   NCollection_Vector<BRepGraph_MeshCache::FaceMeshEntry>   myFaceMeshes;
   NCollection_Vector<BRepGraph_MeshCache::CoEdgeMeshEntry> myCoEdgeMeshes;

@@ -26,7 +26,7 @@ void appendRefUIDReverseIndex(BRepGraph_Data& theData, const BRepGraph_RefId::Ki
   const NCollection_Vector<BRepGraph_RefUID>& aUIDs = theData.myIncStorage.RefUIDs(theKind);
   for (BRepGraph_RefId aRefId = BRepGraph_RefId::Start(theKind); aRefId.IsValidIn(aUIDs); ++aRefId)
   {
-    const BRepGraph_RefUID aUID = aUIDs.Value(aRefId.Index);
+    const BRepGraph_RefUID aUID = aUIDs.Value(static_cast<size_t>(aRefId.Index));
     if (aUID.IsValid())
     {
       theData.myRefUIDToRefId.Bind(aUID, aRefId);
@@ -42,7 +42,7 @@ void appendUIDReverseIndex(BRepGraph_Data& theData, const BRepGraph_NodeId::Kind
   for (BRepGraph_NodeId aNodeId = BRepGraph_NodeId::Start(theKind); aNodeId.IsValidIn(aUIDs);
        ++aNodeId)
   {
-    const BRepGraph_UID aUID = aUIDs.Value(aNodeId.Index);
+    const BRepGraph_UID aUID = aUIDs.Value(static_cast<size_t>(aNodeId.Index));
     if (aUID.IsValid())
     {
       theData.myUIDToNodeId.Bind(aUID, aNodeId);
@@ -134,7 +134,7 @@ BRepGraph_UID BRepGraph::UIDsView::Of(const BRepGraph_NodeId theNode) const
     myGraph->myData->myIncStorage.UIDs(theNode.NodeKind);
   if (!theNode.IsValidIn(aVec))
     return BRepGraph_UID();
-  return aVec.Value(theNode.Index);
+  return aVec.Value(static_cast<size_t>(theNode.Index));
 }
 
 //=================================================================================================
@@ -153,7 +153,7 @@ BRepGraph_RefUID BRepGraph::UIDsView::Of(const BRepGraph_RefId theRefId) const
   if (aBase.IsRemoved)
     return BRepGraph_RefUID();
 
-  return aVec.Value(theRefId.Index);
+  return aVec.Value(static_cast<size_t>(theRefId.Index));
 }
 
 //=================================================================================================
@@ -244,7 +244,7 @@ BRepGraph_VersionStamp BRepGraph::UIDsView::StampOf(const BRepGraph_NodeId theNo
   if (!theNode.IsValidIn(aVec))
     return BRepGraph_VersionStamp();
 
-  const BRepGraph_UID          aUID = aVec.Value(theNode.Index);
+  const BRepGraph_UID          aUID = aVec.Value(static_cast<size_t>(theNode.Index));
   const BRepGraphInc::BaseDef* aDef = myGraph->topoEntity(theNode);
   if (aDef == nullptr || aDef->IsRemoved)
     return BRepGraph_VersionStamp();
@@ -268,7 +268,7 @@ BRepGraph_VersionStamp BRepGraph::UIDsView::StampOf(const BRepGraph_RefId theRef
   if (aBase.IsRemoved)
     return BRepGraph_VersionStamp();
 
-  return BRepGraph_VersionStamp(aUIDs.Value(theRefId.Index),
+  return BRepGraph_VersionStamp(aUIDs.Value(static_cast<size_t>(theRefId.Index)),
                                 aBase.OwnGen,
                                 myGraph->myData->myGeneration.load());
 }

@@ -132,7 +132,7 @@ int nbPCurveEntries(const BRepGraph& theGraph)
 int countHistoryRecordsByOp(const BRepGraph& theGraph, const TCollection_AsciiString& theOp)
 {
   int aCount = 0;
-  for (int aRecIdx = 0; aRecIdx < theGraph.History().NbRecords(); ++aRecIdx)
+  for (size_t aRecIdx = 0; aRecIdx < theGraph.History().NbRecords(); ++aRecIdx)
   {
     if (theGraph.History().Record(aRecIdx).OperationName == theOp)
     {
@@ -336,7 +336,7 @@ TEST(BRepGraph_DeduplicateTest, CanonicalizeSurfaces_RewritesAndRecordsHistory)
   anOpts.AnalyzeOnly = false;
   anOpts.HistoryMode = true;
 
-  const int                           aHistoryBefore = aGraph.History().NbRecords();
+  const size_t                        aHistoryBefore = aGraph.History().NbRecords();
   const BRepGraph_Deduplicate::Result aRes = BRepGraph_Deduplicate::Perform(aGraph, anOpts);
 
   EXPECT_EQ(aRes.NbSurfaceRewrites, 1);
@@ -853,7 +853,7 @@ TEST(BRepGraph_DeduplicateTest, HistoryFindOriginal_TracesBackToCanonical)
   ASSERT_EQ(aRes.NbHistoryRecords, 5);
 
   // For each history record, FindOriginal on the replacement should trace back.
-  for (int aRecIdx = 0; aRecIdx < aGraph.History().NbRecords(); ++aRecIdx)
+  for (size_t aRecIdx = 0; aRecIdx < aGraph.History().NbRecords(); ++aRecIdx)
   {
     const BRepGraph_HistoryRecord& aRec = aGraph.History().Record(aRecIdx);
     for (NCollection_DataMap<BRepGraph_NodeId, NCollection_Vector<BRepGraph_NodeId>>::Iterator
@@ -892,7 +892,7 @@ TEST(BRepGraph_DeduplicateTest, HistoryFindDerived_ContainsCanonicalNode)
   // For each history record, FindDerived on the original should contain the replacements.
   // All records are canonicalize records with 1 replacement (no nullify records).
   int aNbCanonMappings = 0;
-  for (int aRecIdx = 0; aRecIdx < aGraph.History().NbRecords(); ++aRecIdx)
+  for (size_t aRecIdx = 0; aRecIdx < aGraph.History().NbRecords(); ++aRecIdx)
   {
     const BRepGraph_HistoryRecord& aRec = aGraph.History().Record(aRecIdx);
     for (NCollection_DataMap<BRepGraph_NodeId, NCollection_Vector<BRepGraph_NodeId>>::Iterator
@@ -921,12 +921,15 @@ TEST(BRepGraph_DeduplicateTest, HistoryRecordSequenceNumbers_AreMonotonic)
 
   (void)BRepGraph_Deduplicate::Perform(aGraph, anOpts);
 
-  int aPrevSeq = -1;
-  for (int aRecIdx = 0; aRecIdx < aGraph.History().NbRecords(); ++aRecIdx)
+  bool   isFirst  = true;
+  size_t aPrevSeq = 0;
+  for (size_t aRecIdx = 0; aRecIdx < aGraph.History().NbRecords(); ++aRecIdx)
   {
     const BRepGraph_HistoryRecord& aRec = aGraph.History().Record(aRecIdx);
-    EXPECT_GT(aRec.SequenceNumber, aPrevSeq);
+    if (!isFirst)
+      EXPECT_GT(aRec.SequenceNumber, aPrevSeq);
     aPrevSeq = aRec.SequenceNumber;
+    isFirst  = false;
   }
 }
 
@@ -1557,13 +1560,13 @@ TEST(BRepGraph_DeduplicateTest, AnalyzeOnly_NoBackRefChangesOrNullification)
   for (BRepGraph_FullFaceIterator aFaceIt(aGraph); aFaceIt.More(); aFaceIt.Next())
   {
     const BRepGraph_FaceId aFaceId = aFaceIt.CurrentId();
-    EXPECT_EQ(BRepGraph_Tool::Face::Surface(aGraph, aFaceId).get(), aSurfPtrs.Value(aFaceId.Index));
+    EXPECT_EQ(BRepGraph_Tool::Face::Surface(aGraph, aFaceId).get(), aSurfPtrs.Value(static_cast<int>(aFaceId.Index)));
   }
   for (BRepGraph_FullEdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
     const BRepGraph_EdgeId anEdgeId = anEdgeIt.CurrentId();
     EXPECT_EQ(BRepGraph_Tool::Edge::Curve(aGraph, anEdgeId).get(),
-              aCurvePtrs.Value(anEdgeId.Index));
+              aCurvePtrs.Value(static_cast<int>(anEdgeId.Index)));
   }
 
   // All handles still non-null.

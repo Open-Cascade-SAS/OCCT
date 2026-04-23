@@ -636,18 +636,18 @@ TEST_F(BRepGraph_ViewsTest, EdgeOps_FindCoEdgeId_InvalidPair_ReturnsInvalid)
 {
   // Use a valid edge but a face that doesn't share it.
   // Edge 0 and the last face are very unlikely to share a coedge in a box.
-  const int                                   aNbFaces = myGraph.Topo().Faces().Nb();
   const BRepGraph_EdgeId                      anEdge(0);
   const NCollection_Vector<BRepGraph_FaceId>& aEdgeFaces = myGraph.Topo().Edges().Faces(anEdge);
 
   // Find a face NOT adjacent to edge 0.
   BRepGraph_FaceId aNonAdjacentFace;
-  for (int aFaceIdx = 0; aFaceIdx < aNbFaces; ++aFaceIdx)
+  for (BRepGraph_FaceId aFaceId = BRepGraph_FaceId::Start();
+       aFaceId.IsValid(myGraph.Topo().Faces().Nb()); ++aFaceId)
   {
     bool isAdjacent = false;
     for (const BRepGraph_FaceId& aFace : aEdgeFaces)
     {
-      if (aFace.Index == aFaceIdx)
+      if (aFace.Index == aFaceId.Index)
       {
         isAdjacent = true;
         break;
@@ -655,7 +655,7 @@ TEST_F(BRepGraph_ViewsTest, EdgeOps_FindCoEdgeId_InvalidPair_ReturnsInvalid)
     }
     if (!isAdjacent)
     {
-      aNonAdjacentFace = BRepGraph_FaceId(aFaceIdx);
+      aNonAdjacentFace = aFaceId;
       break;
     }
   }

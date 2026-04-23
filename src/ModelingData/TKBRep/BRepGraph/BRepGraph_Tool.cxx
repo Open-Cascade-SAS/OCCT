@@ -328,9 +328,9 @@ double BRepGraph_Tool::Vertex::PCurveParameter(const BRepGraph&         theGraph
 
 //=================================================================================================
 
-int BRepGraph_Tool::Vertex::NbEdges(const BRepGraph& theGraph, const BRepGraph_VertexId theVertex)
+uint32_t BRepGraph_Tool::Vertex::NbEdges(const BRepGraph& theGraph, const BRepGraph_VertexId theVertex)
 {
-  return theGraph.Topo().Vertices().Edges(theVertex).Length();
+  return static_cast<uint32_t>(theGraph.Topo().Vertices().Edges(theVertex).Size());
 }
 
 //=================================================================================================
@@ -374,7 +374,7 @@ GeomAbs_Shape BRepGraph_Tool::Edge::MaxContinuity(const BRepGraph&       theGrap
 
 //=================================================================================================
 
-int BRepGraph_Tool::Edge::NbFaces(const BRepGraph& theGraph, const BRepGraph_EdgeId theEdge)
+uint32_t BRepGraph_Tool::Edge::NbFaces(const BRepGraph& theGraph, const BRepGraph_EdgeId theEdge)
 {
   return theGraph.Topo().Edges().NbFaces(theEdge);
 }
@@ -729,9 +729,9 @@ const occ::handle<Poly_Triangulation>& BRepGraph_Tool::Face::Triangulation(
 
 //=================================================================================================
 
-int BRepGraph_Tool::Face::NbWires(const BRepGraph& theGraph, const BRepGraph_FaceId theFace)
+uint32_t BRepGraph_Tool::Face::NbWires(const BRepGraph& theGraph, const BRepGraph_FaceId theFace)
 {
-  return theGraph.Topo().Faces().Definition(theFace).WireRefIds.Length();
+  return static_cast<uint32_t>(theGraph.Topo().Faces().Definition(theFace).WireRefIds.Size());
 }
 
 //=================================================================================================
@@ -789,9 +789,9 @@ bool BRepGraph_Tool::Wire::IsClosed(const BRepGraph& theGraph, const BRepGraph_W
 
 //=================================================================================================
 
-int BRepGraph_Tool::Wire::NbCoEdges(const BRepGraph& theGraph, const BRepGraph_WireId theWire)
+uint32_t BRepGraph_Tool::Wire::NbCoEdges(const BRepGraph& theGraph, const BRepGraph_WireId theWire)
 {
-  return theGraph.Topo().Wires().Definition(theWire).CoEdgeRefIds.Length();
+  return static_cast<uint32_t>(theGraph.Topo().Wires().Definition(theWire).CoEdgeRefIds.Size());
 }
 
 //=================================================================================================
@@ -834,9 +834,9 @@ bool BRepGraph_Tool::Shell::IsClosed(const BRepGraph& theGraph, const BRepGraph_
 
 //=================================================================================================
 
-int BRepGraph_Tool::Shell::NbFaces(const BRepGraph& theGraph, const BRepGraph_ShellId theShell)
+uint32_t BRepGraph_Tool::Shell::NbFaces(const BRepGraph& theGraph, const BRepGraph_ShellId theShell)
 {
-  return theGraph.Topo().Shells().Definition(theShell).FaceRefIds.Length();
+  return static_cast<uint32_t>(theGraph.Topo().Shells().Definition(theShell).FaceRefIds.Size());
 }
 
 //=================================================================================================
@@ -928,18 +928,16 @@ void BRepGraph_Tool::Mesh::ClearFaceCache(BRepGraph& theGraph, const BRepGraph_F
   if (!theFace.IsValid(aStorage.NbFaces()))
     return;
   const BRepGraphInc::FaceDef& aFace = aStorage.Face(theFace);
-  for (int aWireIdx = 0; aWireIdx < aFace.WireRefIds.Length(); ++aWireIdx)
+  for (const BRepGraph_WireRefId& aWireRefId : aFace.WireRefIds)
   {
-    const BRepGraph_WireRefId aWireRefId = aFace.WireRefIds.Value(aWireIdx);
     if (!aWireRefId.IsValid(aStorage.NbWireRefs()))
       continue;
     const BRepGraph_WireId aWireId = aStorage.WireRef(aWireRefId).WireDefId;
     if (!aWireId.IsValid(aStorage.NbWires()))
       continue;
     const BRepGraphInc::WireDef& aWire = aStorage.Wire(aWireId);
-    for (int aCERefIdx = 0; aCERefIdx < aWire.CoEdgeRefIds.Length(); ++aCERefIdx)
+    for (const BRepGraph_CoEdgeRefId& aCERefId : aWire.CoEdgeRefIds)
     {
-      const BRepGraph_CoEdgeRefId aCERefId = aWire.CoEdgeRefIds.Value(aCERefIdx);
       if (!aCERefId.IsValid(aStorage.NbCoEdgeRefs()))
         continue;
       const BRepGraph_CoEdgeId aCoEdgeId = aStorage.CoEdgeRef(aCERefId).CoEdgeDefId;

@@ -53,7 +53,7 @@ void BRepGraph_History::Record(const TCollection_AsciiString&              theOp
   // Append a new history record.
   BRepGraph_HistoryRecord aRecord;
   aRecord.OperationName  = theOpLabel;
-  aRecord.SequenceNumber = myRecords.Length();
+  aRecord.SequenceNumber = myRecords.Size();
   if (!myAllocator.IsNull())
   {
     aRecord.Mapping =
@@ -100,20 +100,20 @@ void BRepGraph_History::RecordBatch(const TCollection_AsciiString&              
                                     const NCollection_Vector<BRepGraph_NodeId>& theReplacements,
                                     const TCollection_AsciiString&              theExtraInfo)
 {
-  Standard_ASSERT_VOID(theOriginals.Length() == theReplacements.Length(),
+  Standard_ASSERT_VOID(theOriginals.Size() == theReplacements.Size(),
                        "RecordBatch: mismatched vector lengths");
   if (!myEnabled || theOriginals.IsEmpty())
   {
     return;
   }
 
-  const int aNbPairs = theOriginals.Length();
+  const size_t aNbPairs = theOriginals.Size();
 
   // Create a single history record with all mappings.
   // Pre-size the Mapping to avoid DataMap rehashing.
   BRepGraph_HistoryRecord aRecord;
   aRecord.OperationName  = theOpLabel;
-  aRecord.SequenceNumber = myRecords.Length();
+  aRecord.SequenceNumber = myRecords.Size();
   if (!myAllocator.IsNull())
   {
     aRecord.Mapping =
@@ -127,15 +127,20 @@ void BRepGraph_History::RecordBatch(const TCollection_AsciiString&              
   aRecord.ExtraInfo = theExtraInfo;
 
   // Build mapping: each pair creates a 1-element replacement vector.
-  for (int i = 0; i < aNbPairs; ++i)
   {
-    const BRepGraph_NodeId& anOriginal   = theOriginals.Value(i);
-    const BRepGraph_NodeId& aReplacement = theReplacements.Value(i);
-    Standard_ASSERT_VOID(!aRecord.Mapping.IsBound(anOriginal),
-                         "RecordBatch: duplicate original node");
-    NCollection_Vector<BRepGraph_NodeId> aRepVec(THE_HISTORY_REPLACEMENT_BLOCK_SIZE, myAllocator);
-    aRepVec.Append(aReplacement);
-    aRecord.Mapping.Bind(anOriginal, std::move(aRepVec));
+    NCollection_Vector<BRepGraph_NodeId>::Iterator anOrigIt(theOriginals);
+    NCollection_Vector<BRepGraph_NodeId>::Iterator aReplIt(theReplacements);
+    for (; anOrigIt.More(); anOrigIt.Next(), aReplIt.Next())
+    {
+      const BRepGraph_NodeId& anOriginal   = anOrigIt.Value();
+      const BRepGraph_NodeId& aReplacement = aReplIt.Value();
+      Standard_ASSERT_VOID(!aRecord.Mapping.IsBound(anOriginal),
+                           "RecordBatch: duplicate original node");
+      NCollection_Vector<BRepGraph_NodeId> aRepVec(THE_HISTORY_REPLACEMENT_BLOCK_SIZE,
+                                                   myAllocator);
+      aRepVec.Append(aReplacement);
+      aRecord.Mapping.Bind(anOriginal, std::move(aRepVec));
+    }
   }
   myRecords.Append(std::move(aRecord));
 
@@ -144,26 +149,31 @@ void BRepGraph_History::RecordBatch(const TCollection_AsciiString&              
   myDerivedToOriginal.ReSize(myDerivedToOriginal.Extent() + aNbPairs);
   myOriginalToDerived.ReSize(myOriginalToDerived.Extent() + aNbPairs);
 
-  for (int i = 0; i < aNbPairs; ++i)
   {
-    const BRepGraph_NodeId& anOriginal   = theOriginals.Value(i);
-    const BRepGraph_NodeId& aReplacement = theReplacements.Value(i);
-    if (aReplacement == anOriginal)
+    NCollection_Vector<BRepGraph_NodeId>::Iterator anOrigIt(theOriginals);
+    NCollection_Vector<BRepGraph_NodeId>::Iterator aReplIt(theReplacements);
+    for (; anOrigIt.More(); anOrigIt.Next(), aReplIt.Next())
     {
-      continue;
-    }
+      const BRepGraph_NodeId& anOriginal   = anOrigIt.Value();
+      const BRepGraph_NodeId& aReplacement = aReplIt.Value();
+      if (aReplacement == anOriginal)
+      {
+        continue;
+      }
 
-    myDerivedToOriginal.Bind(aReplacement, anOriginal);
+      myDerivedToOriginal.Bind(aReplacement, anOriginal);
 
-    if (myOriginalToDerived.IsBound(anOriginal))
-    {
-      myOriginalToDerived.ChangeFind(anOriginal).Append(aReplacement);
-    }
-    else
-    {
-      NCollection_Vector<BRepGraph_NodeId> aDerVec(THE_HISTORY_REPLACEMENT_BLOCK_SIZE, myAllocator);
-      aDerVec.Append(aReplacement);
-      myOriginalToDerived.Bind(anOriginal, std::move(aDerVec));
+      if (myOriginalToDerived.IsBound(anOriginal))
+      {
+        myOriginalToDerived.ChangeFind(anOriginal).Append(aReplacement);
+      }
+      else
+      {
+        NCollection_Vector<BRepGraph_NodeId> aDerVec(THE_HISTORY_REPLACEMENT_BLOCK_SIZE,
+                                                     myAllocator);
+        aDerVec.Append(aReplacement);
+        myOriginalToDerived.Bind(anOriginal, std::move(aDerVec));
+      }
     }
   }
 }
@@ -202,9 +212,10 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph_History::FindDerived(
   aQueue.Append(theOriginal);
   aVisited.Add(theOriginal);
 
-  for (int aQueueIdx = 0; aQueueIdx < aQueue.Length(); ++aQueueIdx)
+  size_t aFront = 0;
+  while (aFront < aQueue.Size())
   {
-    const BRepGraph_NodeId aNode = aQueue.Value(aQueueIdx);
+    const BRepGraph_NodeId aNode = aQueue.Value(aFront++);
     if (!myOriginalToDerived.IsBound(aNode))
     {
       // Leaf node: only add if it is not the initial query node itself.
@@ -242,14 +253,14 @@ NCollection_Vector<BRepGraph_NodeId> BRepGraph_History::FindDerived(
 
 //=================================================================================================
 
-int BRepGraph_History::NbRecords() const
+size_t BRepGraph_History::NbRecords() const
 {
-  return myRecords.Length();
+  return myRecords.Size();
 }
 
 //=================================================================================================
 
-const BRepGraph_HistoryRecord& BRepGraph_History::Record(const int theRecordIdx) const
+const BRepGraph_HistoryRecord& BRepGraph_History::Record(const size_t theRecordIdx) const
 {
   return myRecords.Value(theRecordIdx);
 }

@@ -200,7 +200,7 @@ public:
     skipRemoved();
   }
 
-  [[nodiscard]] bool More() const { return myIndex < myParents->Length(); }
+  [[nodiscard]] bool More() const { return myIndex < myParents->Size(); }
 
   void Next()
   {
@@ -222,10 +222,11 @@ public:
   [[nodiscard]] int Index() const { return myIndex; }
 
   //! Returns the total number of parent entries (including removed).
-  [[nodiscard]] int Length() const { return myParents->Length(); }
+  [[nodiscard]] int    Length() const { return myParents->Length(); }
+  [[nodiscard]] size_t Size()   const { return myParents->Size(); }
 
   //! Returns the parent ID at the given index (does NOT check IsRemoved).
-  [[nodiscard]] TypedIdT Value(const int theIndex) const { return myParents->Value(theIndex); }
+  [[nodiscard]] TypedIdT Value(const size_t theIndex) const { return myParents->Value(theIndex); }
 
   //! Returns an STL-compatible iterator for range-based for loops.
   NCollection_ForwardRangeIterator<ParentsOf> begin()

@@ -36,9 +36,9 @@ void appendUnique(
   }
 
   NCollection_Vector<BRepGraph_EdgeId>& anEdges = theMap.ChangeFind(theFace);
-  for (int anIdx = 0; anIdx < anEdges.Length(); ++anIdx)
+  for (const BRepGraph_EdgeId& aEdge : anEdges)
   {
-    if (anEdges.Value(anIdx) == theEdge)
+    if (aEdge == theEdge)
       return;
   }
   anEdges.Append(theEdge);
@@ -52,12 +52,14 @@ void removeEdge(NCollection_DataMap<BRepGraph_FaceId, NCollection_Vector<BRepGra
     return;
 
   NCollection_Vector<BRepGraph_EdgeId>& anEdges = theMap.ChangeFind(theFace);
-  for (int anIdx = 0; anIdx < anEdges.Length(); ++anIdx)
+  uint32_t anIdx = 0;
+  for (NCollection_Vector<BRepGraph_EdgeId>::Iterator anIt(anEdges); anIt.More();
+       anIt.Next(), ++anIdx)
   {
-    if (anEdges.Value(anIdx) != theEdge)
+    if (anIt.Value() != theEdge)
       continue;
-    if (anIdx < anEdges.Length() - 1)
-      anEdges.ChangeValue(anIdx) = anEdges.Value(anEdges.Length() - 1);
+    if (anIdx < static_cast<uint32_t>(anEdges.Size()) - 1u)
+      anEdges.ChangeValue(static_cast<size_t>(anIdx)) = anEdges.Value(anEdges.Size() - 1u);
     anEdges.EraseLast();
     break;
   }
@@ -162,10 +164,10 @@ bool BRepGraph_LayerRegularity::FindContinuity(const BRepGraph_EdgeId theEdge,
 
 //=================================================================================================
 
-int BRepGraph_LayerRegularity::NbRegularities(const BRepGraph_EdgeId theEdge) const
+uint32_t BRepGraph_LayerRegularity::NbRegularities(const BRepGraph_EdgeId theEdge) const
 {
   const EdgeRegularities* aRegularities = FindEdgeRegularities(theEdge);
-  return aRegularities == nullptr ? 0 : aRegularities->Entries.Length();
+  return aRegularities == nullptr ? 0u : static_cast<uint32_t>(aRegularities->Entries.Size());
 }
 
 //=================================================================================================
@@ -223,12 +225,12 @@ void BRepGraph_LayerRegularity::SetRegularity(const BRepGraph_EdgeId theEdge,
   normalizeFacePair(aFace1, aFace2);
 
   EdgeRegularities& aRegularities = changeEdgeRegularities(theEdge);
-  for (int anIdx = 0; anIdx < aRegularities.Entries.Length(); ++anIdx)
+  for (NCollection_Vector<RegularityEntry>::Iterator anIt(aRegularities.Entries); anIt.More();
+       anIt.Next())
   {
-    RegularityEntry& anEntry = aRegularities.Entries.ChangeValue(anIdx);
-    if (anEntry.FaceEntity1 != aFace1 || anEntry.FaceEntity2 != aFace2)
+    if (anIt.Value().FaceEntity1 != aFace1 || anIt.Value().FaceEntity2 != aFace2)
       continue;
-    anEntry.Continuity = theContinuity;
+    anIt.ChangeValue().Continuity = theContinuity;
     return;
   }
 
@@ -255,14 +257,15 @@ void BRepGraph_LayerRegularity::removeRegularity(const BRepGraph_EdgeId theEdge,
 
   EdgeRegularities& aRegularities = myEdgeRegularities.ChangeFind(theEdge);
   bool              aFound        = false;
-  for (int anIdx = 0; anIdx < aRegularities.Entries.Length(); ++anIdx)
+  uint32_t          anIdx         = 0;
+  for (NCollection_Vector<RegularityEntry>::Iterator anIt(aRegularities.Entries); anIt.More();
+       anIt.Next(), ++anIdx)
   {
-    const RegularityEntry& anEntry = aRegularities.Entries.Value(anIdx);
-    if (anEntry.FaceEntity1 != aFace1 || anEntry.FaceEntity2 != aFace2)
+    if (anIt.Value().FaceEntity1 != aFace1 || anIt.Value().FaceEntity2 != aFace2)
       continue;
-    if (anIdx < aRegularities.Entries.Length() - 1)
-      aRegularities.Entries.ChangeValue(anIdx) =
-        aRegularities.Entries.Value(aRegularities.Entries.Length() - 1);
+    if (anIdx < static_cast<uint32_t>(aRegularities.Entries.Size()) - 1u)
+      aRegularities.Entries.ChangeValue(static_cast<size_t>(anIdx)) =
+        aRegularities.Entries.Value(aRegularities.Entries.Size() - 1u);
     aRegularities.Entries.EraseLast();
     aFound = true;
     break;
@@ -274,9 +277,8 @@ void BRepGraph_LayerRegularity::removeRegularity(const BRepGraph_EdgeId theEdge,
   // Only unbind a face if no remaining entry still references it on this edge.
   bool aFace1StillReferenced = false;
   bool aFace2StillReferenced = false;
-  for (int anIdx = 0; anIdx < aRegularities.Entries.Length(); ++anIdx)
+  for (const RegularityEntry& anEntry : aRegularities.Entries)
   {
-    const RegularityEntry& anEntry = aRegularities.Entries.Value(anIdx);
     if (anEntry.FaceEntity1 == aFace1 || anEntry.FaceEntity2 == aFace1)
       aFace1StillReferenced = true;
     if (anEntry.FaceEntity1 == aFace2 || anEntry.FaceEntity2 == aFace2)
@@ -316,17 +318,16 @@ void BRepGraph_LayerRegularity::invalidateFaceBindings(const BRepGraph_FaceId th
     return;
 
   const NCollection_Vector<BRepGraph_EdgeId> aBoundEdges = *anEdges;
-  for (int anIdx = 0; anIdx < aBoundEdges.Length(); ++anIdx)
+  for (const BRepGraph_EdgeId& aEdgeId : aBoundEdges)
   {
-    const EdgeRegularities* aRegularities = myEdgeRegularities.Seek(aBoundEdges.Value(anIdx));
+    const EdgeRegularities* aRegularities = myEdgeRegularities.Seek(aEdgeId);
     if (aRegularities == nullptr)
       continue;
     const EdgeRegularities aEntries = *aRegularities;
-    for (int aRegIdx = 0; aRegIdx < aEntries.Entries.Length(); ++aRegIdx)
+    for (const RegularityEntry& anEntry : aEntries.Entries)
     {
-      const RegularityEntry& anEntry = aEntries.Entries.Value(aRegIdx);
       if (anEntry.FaceEntity1 == theFace || anEntry.FaceEntity2 == theFace)
-        removeRegularity(aBoundEdges.Value(anIdx), anEntry.FaceEntity1, anEntry.FaceEntity2);
+        removeRegularity(aEdgeId, anEntry.FaceEntity1, anEntry.FaceEntity2);
     }
   }
 }
@@ -358,23 +359,22 @@ void BRepGraph_LayerRegularity::migrateFaceBindings(const BRepGraph_FaceId theOl
     return;
 
   const NCollection_Vector<BRepGraph_EdgeId> aBoundEdges = *anEdges;
-  for (int anIdx = 0; anIdx < aBoundEdges.Length(); ++anIdx)
+  for (const BRepGraph_EdgeId& aEdgeId : aBoundEdges)
   {
-    const EdgeRegularities* aRegularities = myEdgeRegularities.Seek(aBoundEdges.Value(anIdx));
+    const EdgeRegularities* aRegularities = myEdgeRegularities.Seek(aEdgeId);
     if (aRegularities == nullptr)
       continue;
     const EdgeRegularities aEntries = *aRegularities;
-    for (int aRegIdx = 0; aRegIdx < aEntries.Entries.Length(); ++aRegIdx)
+    for (const RegularityEntry& anEntry : aEntries.Entries)
     {
-      const RegularityEntry& anEntry = aEntries.Entries.Value(aRegIdx);
       if (anEntry.FaceEntity1 != theOldFace && anEntry.FaceEntity2 != theOldFace)
         continue;
-      removeRegularity(aBoundEdges.Value(anIdx), anEntry.FaceEntity1, anEntry.FaceEntity2);
+      removeRegularity(aEdgeId, anEntry.FaceEntity1, anEntry.FaceEntity2);
       const BRepGraph_FaceId aFace1 =
         anEntry.FaceEntity1 == theOldFace ? theNewFace : anEntry.FaceEntity1;
       const BRepGraph_FaceId aFace2 =
         anEntry.FaceEntity2 == theOldFace ? theNewFace : anEntry.FaceEntity2;
-      SetRegularity(aBoundEdges.Value(anIdx), aFace1, aFace2, anEntry.Continuity);
+      SetRegularity(aEdgeId, aFace1, aFace2, anEntry.Continuity);
     }
   }
 }
@@ -457,13 +457,13 @@ void BRepGraph_LayerRegularity::OnCompact(
 
       // Deduplicate: if same face pair already exists for this edge, update continuity.
       bool aDuplicate = false;
-      for (int aExIdx = 0; aExIdx < aRegularities.Entries.Length(); ++aExIdx)
+      for (NCollection_Vector<RegularityEntry>::Iterator anIt(aRegularities.Entries); anIt.More();
+           anIt.Next())
       {
-        RegularityEntry& anExisting = aRegularities.Entries.ChangeValue(aExIdx);
-        if (anExisting.FaceEntity1 == aNewFace1 && anExisting.FaceEntity2 == aNewFace2)
+        if (anIt.Value().FaceEntity1 == aNewFace1 && anIt.Value().FaceEntity2 == aNewFace2)
         {
-          anExisting.Continuity = anOldEntry.Continuity;
-          aDuplicate            = true;
+          anIt.ChangeValue().Continuity = anOldEntry.Continuity;
+          aDuplicate                    = true;
           break;
         }
       }

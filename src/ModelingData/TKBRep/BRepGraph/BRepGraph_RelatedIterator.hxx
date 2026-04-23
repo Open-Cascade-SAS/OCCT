@@ -188,9 +188,9 @@ private:
 
         const NCollection_Vector<BRepGraph_FaceId>& aFaces =
           myGraph->Topo().Edges().Faces(aCoEdgeIt.Current().EdgeDefId);
-        for (; myDeepIndex < aFaces.Length(); ++myDeepIndex)
+        for (; myDeepIndex < static_cast<uint32_t>(aFaces.Size()); ++myDeepIndex)
         {
-          const BRepGraph_FaceId anAdjacentFaceId = aFaces.Value(myDeepIndex);
+          const BRepGraph_FaceId anAdjacentFaceId = aFaces.Value(static_cast<size_t>(myDeepIndex));
           if (anAdjacentFaceId == aFaceId)
           {
             continue;
@@ -372,9 +372,9 @@ private:
   BRepGraph_NodeId myCurrent;
   RelationKind     myRelation   = RelationKind::BoundaryEdge;
   Stage            myStage      = Stage::First;
-  int              myIndex      = 0;
-  int              myInnerIndex = 0;
-  int              myDeepIndex  = 0;
+  uint32_t         myIndex      = 0;
+  uint32_t         myInnerIndex = 0;
+  uint32_t         myDeepIndex  = 0;
   bool             myHasCurrent = false;
 };
 
