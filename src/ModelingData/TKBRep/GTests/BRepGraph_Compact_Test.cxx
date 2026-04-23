@@ -18,7 +18,6 @@
 #include <Bnd_Box.hxx>
 #include <BRepGraph.hxx>
 #include <BRepGraph_EditorView.hxx>
-#include <BRepGraphAlgo_BndLib.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_History.hxx>
 #include <BRepGraph_HistoryRecord.hxx>
@@ -90,6 +89,14 @@ int countHistoryRecordsByOp(const BRepGraph& theGraph, const TCollection_AsciiSt
       ++aCount;
   }
   return aCount;
+}
+
+void addGraphBounds(const BRepGraph& theGraph, Bnd_Box& theBox)
+{
+  for (BRepGraph_VertexIterator aVertIt(theGraph); aVertIt.More(); aVertIt.Next())
+  {
+    theBox.Add(theGraph.Topo().Vertices().Definition(aVertIt.CurrentId()).Point);
+  }
 }
 
 void expectBoxNear(const Bnd_Box& theLeft, const Bnd_Box& theRight, const double theTol)
@@ -252,17 +259,17 @@ TEST(BRepGraph_CompactTest, RemovalCompact_PreservesBounds_AndDoesNotGrowTopolog
 
   aGraph.Editor().Gen().RemoveNode(BRepGraph_FaceId(2));
 
-  const int aCoEdgesBeforeCompact = aGraph.Topo().CoEdges().Nb();
+  const uint32_t aCoEdgesBeforeCompact = aGraph.Topo().CoEdges().Nb();
 
   Bnd_Box aBoxBeforeCompact;
-  BRepGraphAlgo_BndLib::Add(aGraph, aBoxBeforeCompact);
+  addGraphBounds(aGraph, aBoxBeforeCompact);
 
   const BRepGraph_Compact::Result aRes = BRepGraph_Compact::Perform(aGraph);
   EXPECT_GE(aRes.NbNodesBefore, aRes.NbNodesAfter);
   EXPECT_LE(aGraph.Topo().CoEdges().Nb(), aCoEdgesBeforeCompact);
 
   Bnd_Box aBoxAfterCompact;
-  BRepGraphAlgo_BndLib::Add(aGraph, aBoxAfterCompact);
+  addGraphBounds(aGraph, aBoxAfterCompact);
   expectBoxNear(aBoxAfterCompact, aBoxBeforeCompact, Precision::Confusion());
 
   const BRepGraph_Validate::Result aValResult = BRepGraph_Validate::Perform(aGraph);

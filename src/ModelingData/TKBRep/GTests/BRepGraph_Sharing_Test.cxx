@@ -59,8 +59,8 @@ TEST_F(BRepGraph_SharingTest, EdgeDef_EachSharedByTwoFaces)
   {
     const BRepGraph_EdgeId anEdgeId   = anEdgeIt.CurrentId();
     const uint32_t         aFaceCount = myGraph.Topo().Edges().NbFaces(anEdgeId);
-    EXPECT_EQ(aFaceCount, 2) << "Edge def " << anEdgeId.Index
-                             << " expected to be shared by 2 faces, got " << aFaceCount;
+    EXPECT_EQ(aFaceCount, 2u) << "Edge def " << anEdgeId.Index
+                              << " expected to be shared by 2 faces, got " << aFaceCount;
   }
 }
 

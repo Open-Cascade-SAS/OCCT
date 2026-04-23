@@ -1265,8 +1265,8 @@ TEST_F(BRepGraphTest, NbFacesOfEdge_SharedEdge)
     if (!BRepGraph_Tool::Edge::Degenerated(myGraph, anEdgeIt.CurrentId()))
     {
       const uint32_t aCount = myGraph.Topo().Edges().NbFaces(anEdgeIt.CurrentId());
-      EXPECT_EQ(aCount, 2) << "Edge " << anEdgeIt.CurrentId().Index
-                           << " should be shared by 2 faces";
+      EXPECT_EQ(aCount, 2u) << "Edge " << anEdgeIt.CurrentId().Index
+                            << " should be shared by 2 faces";
     }
   }
 }
