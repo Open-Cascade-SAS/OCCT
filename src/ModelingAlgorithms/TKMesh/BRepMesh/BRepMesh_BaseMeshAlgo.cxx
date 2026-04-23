@@ -141,7 +141,16 @@ int BRepMesh_BaseMeshAlgo::registerNode(const gp_Pnt&                  thePoint,
   if (aNodeIndex > myNodesMap->Length())
   {
     myNodesMap->Append(thePoint);
-    myUsedNodes->Bind(aNodeIndex, aNodeIndex);
+    // Pre-bind frontier and fixed nodes with identity mapping so that
+    // pcurve indices (set in initDataStructure as raw structure indices)
+    // remain valid as compact Poly_Triangulation indices. Free (internal)
+    // nodes are NOT pre-bound: they enter myUsedNodes only via
+    // collectTriangles() when actually referenced by a triangle, which
+    // prevents unreferenced internal nodes from appearing as free nodes.
+    if (theMovability != BRepMesh_Free)
+    {
+      myUsedNodes->Bind(aNodeIndex, aNodeIndex);
+    }
   }
 
   return aNodeIndex;
