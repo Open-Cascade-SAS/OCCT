@@ -192,7 +192,7 @@ public:
   //! Skips to the first non-removed entry at or after theStartIndex.
   ParentsOf(const BRepGraph&                    theGraph,
             const NCollection_Vector<TypedIdT>& theParents,
-            const int                           theStartIndex)
+            const uint32_t                      theStartIndex)
       : myGraph(&theGraph),
         myParents(&theParents),
         myIndex(theStartIndex)
@@ -200,7 +200,7 @@ public:
     skipRemoved();
   }
 
-  [[nodiscard]] bool More() const { return myIndex < myParents->Size(); }
+  [[nodiscard]] bool More() const { return myIndex < static_cast<uint32_t>(myParents->Size()); }
 
   void Next()
   {
@@ -208,7 +208,10 @@ public:
     skipRemoved();
   }
 
-  [[nodiscard]] TypedIdT CurrentId() const { return myParents->Value(myIndex); }
+  [[nodiscard]] TypedIdT CurrentId() const
+  {
+    return myParents->Value(static_cast<size_t>(myIndex));
+  }
 
   //! Alias for CurrentId(), enables range-for via NCollection_ForwardRange Current() priority.
   [[nodiscard]] TypedIdT Current() const { return CurrentId(); }
@@ -219,7 +222,7 @@ public:
     return DefTraits<TypedIdT>::Get(*myGraph, CurrentId());
   }
 
-  [[nodiscard]] int Index() const { return myIndex; }
+  [[nodiscard]] uint32_t Index() const { return myIndex; }
 
   //! Returns the total number of parent entries (including removed).
   [[nodiscard]] int Length() const { return myParents->Length(); }
@@ -241,10 +244,10 @@ public:
 private:
   void skipRemoved()
   {
-    while (myIndex < myParents->Length())
+    while (myIndex < static_cast<uint32_t>(myParents->Length()))
     {
       const BRepGraphInc::BaseDef* aDef =
-        myGraph->Topo().Gen().TopoEntity(BRepGraph_NodeId(myParents->Value(myIndex)));
+        myGraph->Topo().Gen().TopoEntity(myParents->Value(static_cast<size_t>(myIndex)));
       if (aDef != nullptr && !aDef->IsRemoved)
       {
         return;
@@ -255,7 +258,7 @@ private:
 
   const BRepGraph*                    myGraph   = nullptr;
   const NCollection_Vector<TypedIdT>* myParents = nullptr;
-  int                                 myIndex   = 0;
+  uint32_t                            myIndex   = 0;
 };
 
 //! Result pair returned by RefsParentsOf: parent definition ID + the RefId
@@ -305,7 +308,7 @@ public:
 
   [[nodiscard]] RefIdType CurrentRefId() const { return myCurrent.Ref; }
 
-  [[nodiscard]] int Index() const { return myIndex; }
+  [[nodiscard]] uint32_t Index() const { return myIndex; }
 
   //! Returns an STL-compatible iterator for range-based for loops.
   NCollection_ForwardRangeIterator<RefsParentsOf> begin()
@@ -320,9 +323,9 @@ private:
   void advance()
   {
     myHasCurrent = false;
-    while (myIndex < myParents->Length())
+    while (myIndex < static_cast<uint32_t>(myParents->Size()))
     {
-      const ParentIdType           aParentId = myParents->Value(myIndex);
+      const ParentIdType           aParentId = myParents->Value(static_cast<size_t>(myIndex));
       const BRepGraphInc::BaseDef* aDef =
         myGraph->Topo().Gen().TopoEntity(BRepGraph_NodeId(aParentId));
       if (aDef != nullptr && !aDef->IsRemoved)
@@ -343,7 +346,7 @@ private:
   const NCollection_Vector<ParentIdType>* myParents = nullptr;
   ChildIdType                             myChild;
   ResultType                              myCurrent;
-  int                                     myIndex      = 0;
+  uint32_t                                myIndex      = 0;
   bool                                    myHasCurrent = false;
 };
 

@@ -1081,7 +1081,7 @@ BRepGraph_Validate::Result BRepGraph_Validate::Perform(const BRepGraph& theGraph
     const BRepGraph_CompoundId               aRootCompoundId = aCompIt.CurrentId();
     NCollection_Map<BRepGraph_CompoundId>    aVisited;
     NCollection_Vector<BRepGraph_CompoundId> aQueue;
-    int                                      aHead = 0;
+    size_t                                   aHead = 0;
 
     for (BRepGraph_RefsChildOfCompound anIt(theGraph, aRootCompoundId); anIt.More(); anIt.Next())
     {
