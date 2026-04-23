@@ -642,7 +642,8 @@ TEST_F(BRepGraph_ViewsTest, EdgeOps_FindCoEdgeId_InvalidPair_ReturnsInvalid)
   // Find a face NOT adjacent to edge 0.
   BRepGraph_FaceId aNonAdjacentFace;
   for (BRepGraph_FaceId aFaceId = BRepGraph_FaceId::Start();
-       aFaceId.IsValid(myGraph.Topo().Faces().Nb()); ++aFaceId)
+       aFaceId.IsValid(myGraph.Topo().Faces().Nb());
+       ++aFaceId)
   {
     bool isAdjacent = false;
     for (const BRepGraph_FaceId& aFace : aEdgeFaces)

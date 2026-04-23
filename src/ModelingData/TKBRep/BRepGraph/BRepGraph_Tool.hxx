@@ -613,7 +613,7 @@ public:
     //! @param[in] theWire  typed wire definition identifier
     //! @return number of coedge entries
     [[nodiscard]] Standard_EXPORT static uint32_t NbCoEdges(const BRepGraph&       theGraph,
-                                                             const BRepGraph_WireId theWire);
+                                                            const BRepGraph_WireId theWire);
 
     //! Returns the first owning face for this wire via the reverse-index table.
     //! Returns an invalid id if the wire has no owning face (free wire).
@@ -651,7 +651,7 @@ public:
     //! @param[in] theShell typed shell definition identifier
     //! @return number of face entries (including removed)
     [[nodiscard]] Standard_EXPORT static uint32_t NbFaces(const BRepGraph&        theGraph,
-                                                           const BRepGraph_ShellId theShell);
+                                                          const BRepGraph_ShellId theShell);
   };
 
   //! @brief Mesh cache writes and representation creation.

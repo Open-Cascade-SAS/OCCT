@@ -1182,7 +1182,8 @@ BRepGraph_ProductId BRepGraph::TopoView::OccurrenceOps::ParentProduct(
 
   // Find the OccurrenceRef that owns this OccurrenceDef to get ParentId.
   for (BRepGraph_OccurrenceRefId aRefId = myGraph->Refs().Occurrences().StartId();
-       aRefId < myGraph->Refs().Occurrences().EndId(); ++aRefId)
+       aRefId < myGraph->Refs().Occurrences().EndId();
+       ++aRefId)
   {
     const BRepGraphInc::OccurrenceRef& aRef = aStorage.OccurrenceRef(aRefId);
     if (aRef.IsRemoved || aRef.OccurrenceDefId != theOccurrence)
@@ -1214,7 +1215,8 @@ TopLoc_Location BRepGraph::TopoView::OccurrenceOps::OccurrenceLocation(
   // Placement is now on OccurrenceRef::LocalLocation.
   // Find the OccurrenceRef that owns this OccurrenceDef.
   for (BRepGraph_OccurrenceRefId aRefId = myGraph->Refs().Occurrences().StartId();
-       aRefId < myGraph->Refs().Occurrences().EndId(); ++aRefId)
+       aRefId < myGraph->Refs().Occurrences().EndId();
+       ++aRefId)
   {
     const BRepGraphInc::OccurrenceRef& aRef = aStorage.OccurrenceRef(aRefId);
     if (!aRef.IsRemoved && aRef.OccurrenceDefId == theOccurrence)

@@ -910,7 +910,10 @@ private:
       return Entities.Value(static_cast<size_t>(theId.Index));
     }
 
-    RepT& Change(const TypeId theId) { return Entities.ChangeValue(static_cast<size_t>(theId.Index)); }
+    RepT& Change(const TypeId theId)
+    {
+      return Entities.ChangeValue(static_cast<size_t>(theId.Index));
+    }
 
     //! Append a default-constructed rep and return its typed slot id.
     TypeId Append()

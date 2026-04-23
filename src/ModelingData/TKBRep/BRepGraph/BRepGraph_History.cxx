@@ -136,8 +136,7 @@ void BRepGraph_History::RecordBatch(const TCollection_AsciiString&              
       const BRepGraph_NodeId& aReplacement = aReplIt.Value();
       Standard_ASSERT_VOID(!aRecord.Mapping.IsBound(anOriginal),
                            "RecordBatch: duplicate original node");
-      NCollection_Vector<BRepGraph_NodeId> aRepVec(THE_HISTORY_REPLACEMENT_BLOCK_SIZE,
-                                                   myAllocator);
+      NCollection_Vector<BRepGraph_NodeId> aRepVec(THE_HISTORY_REPLACEMENT_BLOCK_SIZE, myAllocator);
       aRepVec.Append(aReplacement);
       aRecord.Mapping.Bind(anOriginal, std::move(aRepVec));
     }

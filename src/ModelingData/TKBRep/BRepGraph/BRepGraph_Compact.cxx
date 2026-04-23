@@ -1120,9 +1120,11 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
     // Overwrite entries that have a mapping from the old graph.
     for (const auto& [anOldId, aNewId] : theMap.Items())
     {
-      if (anOldId.IsValidIn(theOldVec) && theOldVec.Value(static_cast<size_t>(anOldId.Index)).IsValid())
+      if (anOldId.IsValidIn(theOldVec)
+          && theOldVec.Value(static_cast<size_t>(anOldId.Index)).IsValid())
       {
-        theNewVec.ChangeValue(static_cast<size_t>(aNewId.Index)) = theOldVec.Value(static_cast<size_t>(anOldId.Index));
+        theNewVec.ChangeValue(static_cast<size_t>(aNewId.Index)) =
+          theOldVec.Value(static_cast<size_t>(anOldId.Index));
       }
     }
   };
@@ -1133,9 +1135,11 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
                              NCollection_Vector<BRepGraph_RefUID>&       theNewVec) {
     for (const auto& [anOldId, aNewId] : theMap.Items())
     {
-      if (anOldId.IsValidIn(theOldVec) && theOldVec.Value(static_cast<size_t>(anOldId.Index)).IsValid())
+      if (anOldId.IsValidIn(theOldVec)
+          && theOldVec.Value(static_cast<size_t>(anOldId.Index)).IsValid())
       {
-        theNewVec.ChangeValue(static_cast<size_t>(aNewId.Index)) = theOldVec.Value(static_cast<size_t>(anOldId.Index));
+        theNewVec.ChangeValue(static_cast<size_t>(aNewId.Index)) =
+          theOldVec.Value(static_cast<size_t>(anOldId.Index));
       }
     }
   };

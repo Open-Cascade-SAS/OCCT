@@ -313,7 +313,8 @@ TEST(BRepGraph_ScenarioMatrix, CompSolid_TwoBoxes_BothSubsystemsMutateReconstruc
 
   // Both solids must be reverse-indexed into the CompSolid.
   for (BRepGraph_SolidId aSolidId = BRepGraph_SolidId::Start();
-       aSolidId.IsValid(aOrigStorage.NbSolids()); ++aSolidId)
+       aSolidId.IsValid(aOrigStorage.NbSolids());
+       ++aSolidId)
   {
     const NCollection_Vector<BRepGraph_CompSolidId>* aCSVec =
       aOrigStorage.ReverseIndex().CompSolidsOfSolid(aSolidId);

@@ -328,7 +328,8 @@ double BRepGraph_Tool::Vertex::PCurveParameter(const BRepGraph&         theGraph
 
 //=================================================================================================
 
-uint32_t BRepGraph_Tool::Vertex::NbEdges(const BRepGraph& theGraph, const BRepGraph_VertexId theVertex)
+uint32_t BRepGraph_Tool::Vertex::NbEdges(const BRepGraph&         theGraph,
+                                         const BRepGraph_VertexId theVertex)
 {
   return static_cast<uint32_t>(theGraph.Topo().Vertices().Edges(theVertex).Size());
 }

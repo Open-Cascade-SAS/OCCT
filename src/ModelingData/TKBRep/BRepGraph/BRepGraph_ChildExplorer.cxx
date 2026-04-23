@@ -355,8 +355,8 @@ void BRepGraph_ChildExplorer::advance()
 
   while (myStackTop >= 0)
   {
-    StackFrame&      aFrame = topFrame();
-    const uint32_t   aIdx   = aFrame.NextChildIdx;
+    StackFrame&    aFrame = topFrame();
+    const uint32_t aIdx   = aFrame.NextChildIdx;
 
     // Per-kind child iteration.
     // Each branch either yields a child (with step, loc, ori) and increments NextChildIdx,
@@ -524,8 +524,7 @@ void BRepGraph_ChildExplorer::advance()
         uint32_t       i          = aIdx;
         for (; i < aNbCoEdges; ++i)
         {
-          const BRepGraph_CoEdgeRefId aRefId =
-            aWire.CoEdgeRefIds.Value(static_cast<size_t>(i));
+          const BRepGraph_CoEdgeRefId aRefId = aWire.CoEdgeRefIds.Value(static_cast<size_t>(i));
           if (!aRefs.IsRemoved(aRefId))
           {
             aChildNode = aRefs.ChildNode(aRefId);

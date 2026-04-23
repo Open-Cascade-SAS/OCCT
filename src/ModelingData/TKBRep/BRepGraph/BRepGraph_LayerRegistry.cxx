@@ -61,7 +61,7 @@ void BRepGraph_LayerRegistry::UnregisterLayer(const Standard_GUID& theGUID)
   {
     const occ::handle<BRepGraph_Layer>& aLastLayer = myLayers.Value(static_cast<size_t>(aLastSlot));
     myLayers.ChangeValue(static_cast<size_t>(aSlot)) = aLastLayer;
-    myGuidToSlot.ChangeFind(aLastLayer->ID())         = aSlot;
+    myGuidToSlot.ChangeFind(aLastLayer->ID())        = aSlot;
   }
 
   myLayers.EraseLast();
@@ -90,7 +90,8 @@ void BRepGraph_LayerRegistry::SetOwningGraph(BRepGraph* theGraph) noexcept
 occ::handle<BRepGraph_Layer> BRepGraph_LayerRegistry::FindLayer(const Standard_GUID& theGUID) const
 {
   const uint32_t* aSlot = myGuidToSlot.Seek(theGUID);
-  return aSlot != nullptr ? myLayers.Value(static_cast<size_t>(*aSlot)) : occ::handle<BRepGraph_Layer>();
+  return aSlot != nullptr ? myLayers.Value(static_cast<size_t>(*aSlot))
+                          : occ::handle<BRepGraph_Layer>();
 }
 
 //=================================================================================================

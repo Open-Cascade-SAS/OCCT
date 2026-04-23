@@ -51,7 +51,7 @@ void removeVertex(NCollection_DataMap<KeyT, NCollection_Vector<BRepGraph_VertexI
     return;
 
   NCollection_Vector<BRepGraph_VertexId>& aVertices = theMap.ChangeFind(theKey);
-  uint32_t anIdx = 0;
+  uint32_t                                anIdx     = 0;
   for (NCollection_Vector<BRepGraph_VertexId>::Iterator anIt(aVertices); anIt.More();
        anIt.Next(), ++anIdx)
   {
@@ -322,8 +322,7 @@ void BRepGraph_LayerParam::SetPointOnSurface(const BRepGraph_VertexId theVertex,
                                              const double             theParameterV)
 {
   VertexParams& aParams = changeVertexParams(theVertex);
-  for (NCollection_Vector<PointOnSurfaceEntry>::Iterator anIt(aParams.PointsOnSurface);
-       anIt.More();
+  for (NCollection_Vector<PointOnSurfaceEntry>::Iterator anIt(aParams.PointsOnSurface); anIt.More();
        anIt.Next())
   {
     if (anIt.Value().FaceDefId != theFace)
@@ -370,8 +369,8 @@ void BRepGraph_LayerParam::removePointOnCurve(const BRepGraph_VertexId theVertex
   if (!myVertexParams.IsBound(theVertex))
     return;
 
-  VertexParams& aParams  = myVertexParams.ChangeFind(theVertex);
-  uint32_t      anIdx    = 0;
+  VertexParams& aParams = myVertexParams.ChangeFind(theVertex);
+  uint32_t      anIdx   = 0;
   for (NCollection_Vector<PointOnCurveEntry>::Iterator anIt(aParams.PointsOnCurve); anIt.More();
        anIt.Next(), ++anIdx)
   {
@@ -397,10 +396,9 @@ void BRepGraph_LayerParam::removePointOnSurface(const BRepGraph_VertexId theVert
   if (!myVertexParams.IsBound(theVertex))
     return;
 
-  VertexParams& aParams  = myVertexParams.ChangeFind(theVertex);
-  uint32_t      anIdx    = 0;
-  for (NCollection_Vector<PointOnSurfaceEntry>::Iterator anIt(aParams.PointsOnSurface);
-       anIt.More();
+  VertexParams& aParams = myVertexParams.ChangeFind(theVertex);
+  uint32_t      anIdx   = 0;
+  for (NCollection_Vector<PointOnSurfaceEntry>::Iterator anIt(aParams.PointsOnSurface); anIt.More();
        anIt.Next(), ++anIdx)
   {
     if (anIt.Value().FaceDefId != theFace)
@@ -425,8 +423,8 @@ void BRepGraph_LayerParam::removePointOnPCurve(const BRepGraph_VertexId theVerte
   if (!myVertexParams.IsBound(theVertex))
     return;
 
-  VertexParams& aParams  = myVertexParams.ChangeFind(theVertex);
-  uint32_t      anIdx    = 0;
+  VertexParams& aParams = myVertexParams.ChangeFind(theVertex);
+  uint32_t      anIdx   = 0;
   for (NCollection_Vector<PointOnPCurveEntry>::Iterator anIt(aParams.PointsOnPCurve); anIt.More();
        anIt.Next(), ++anIdx)
   {

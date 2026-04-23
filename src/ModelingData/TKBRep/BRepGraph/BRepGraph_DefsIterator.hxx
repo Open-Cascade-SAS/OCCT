@@ -476,7 +476,8 @@ public:
 
   [[nodiscard]] ChildId CurrentId() const
   {
-    return TraitsT::ChildIdOf(myGraph, TraitsT::Ref(myGraph, myRefIds->Value(static_cast<size_t>(myIndex))));
+    return TraitsT::ChildIdOf(myGraph,
+                              TraitsT::Ref(myGraph, myRefIds->Value(static_cast<size_t>(myIndex))));
   }
 
   [[nodiscard]] const ChildDef& Current() const { return TraitsT::Child(myGraph, CurrentId()); }

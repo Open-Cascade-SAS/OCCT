@@ -334,7 +334,7 @@ BRepGraph BRepGraph_Copy::Perform(const BRepGraph& theGraph, const bool theCopyG
   // Phase 3: Transfer UIDs (identity mapping - direct vector copy).
   auto copyUIDs = [](const NCollection_Vector<BRepGraph_UID>& theSrc,
                      NCollection_Vector<BRepGraph_UID>&       theDst) {
-    NCollection_Vector<BRepGraph_UID>::Iterator       aDstIt(theDst);
+    NCollection_Vector<BRepGraph_UID>::Iterator aDstIt(theDst);
     NCollection_Vector<BRepGraph_UID>::Iterator anSrcIt(theSrc);
     for (; anSrcIt.More() && aDstIt.More(); anSrcIt.Next(), aDstIt.Next())
     {

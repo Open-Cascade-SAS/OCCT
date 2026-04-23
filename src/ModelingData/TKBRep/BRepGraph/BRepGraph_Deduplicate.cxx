@@ -228,7 +228,7 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
     // Build KDTree from active vertex points - O(n log n).
     const int                  aNbActive = static_cast<int>(aActiveVertices.Size());
     NCollection_Array1<gp_Pnt> aPointsArr(0, std::max(0, aNbActive - 1));
-    int i = 0;
+    int                        i = 0;
     for (const auto& aVertex : aActiveVertices)
       aPointsArr.SetValue(i++, aVertex.first);
 

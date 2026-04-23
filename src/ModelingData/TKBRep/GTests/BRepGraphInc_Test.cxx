@@ -1348,7 +1348,8 @@ TEST(BRepGraphIncTest, ReverseIndex_CompSolid_ReverseMaintained_AfterBuild)
 
   // Both solids must appear in myCompSolidsOfSolid.
   for (BRepGraph_SolidId aSolidId = BRepGraph_SolidId::Start();
-       aSolidId.IsValid(aStorage.NbSolids()); ++aSolidId)
+       aSolidId.IsValid(aStorage.NbSolids());
+       ++aSolidId)
   {
     const NCollection_Vector<BRepGraph_CompSolidId>* aCSVec =
       aStorage.ReverseIndex().CompSolidsOfSolid(aSolidId);

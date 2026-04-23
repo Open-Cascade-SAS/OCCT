@@ -795,7 +795,8 @@ bool BRepGraph_ParentExplorer::nextParentFrame(StackFrame& theChild, StackFrame&
           return false;
         }
 
-        const BRepGraph_OccurrenceId       anOccurrenceId = anOccurrences.Value(static_cast<size_t>(aParentIdx));
+        const BRepGraph_OccurrenceId anOccurrenceId =
+          anOccurrences.Value(static_cast<size_t>(aParentIdx));
         const BRepGraphInc::OccurrenceDef& anOccurrence =
           aTopo.Occurrences().Definition(anOccurrenceId);
         if (anOccurrence.IsRemoved)
@@ -1027,7 +1028,7 @@ bool BRepGraph_ParentExplorer::findParentProduct(const BRepGraph_OccurrenceId th
   const BRepGraph::RefsView& aRefs = myGraph->Refs();
   for (BRepGraph_ProductIterator aProdIt(*myGraph); aProdIt.More(); aProdIt.Next())
   {
-    const BRepGraph_ProductId                            aProductId = aProdIt.CurrentId();
+    const BRepGraph_ProductId aProductId = aProdIt.CurrentId();
     for (BRepGraph_RefsOccurrenceOfProduct anOccIt(*myGraph, aProductId); anOccIt.More();
          anOccIt.Next())
     {

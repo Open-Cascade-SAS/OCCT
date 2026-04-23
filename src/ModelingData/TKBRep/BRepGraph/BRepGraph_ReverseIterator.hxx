@@ -222,8 +222,9 @@ public:
   [[nodiscard]] int Index() const { return myIndex; }
 
   //! Returns the total number of parent entries (including removed).
-  [[nodiscard]] int    Length() const { return myParents->Length(); }
-  [[nodiscard]] size_t Size()   const { return myParents->Size(); }
+  [[nodiscard]] int Length() const { return myParents->Length(); }
+
+  [[nodiscard]] size_t Size() const { return myParents->Size(); }
 
   //! Returns the parent ID at the given index (does NOT check IsRemoved).
   [[nodiscard]] TypedIdT Value(const size_t theIndex) const { return myParents->Value(theIndex); }

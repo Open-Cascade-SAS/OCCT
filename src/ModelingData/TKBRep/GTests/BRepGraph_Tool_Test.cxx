@@ -43,7 +43,8 @@ protected:
 TEST_F(BRepGraph_QuerySurfaceTest, Face_NbWires_BoxFaceHasOneWire)
 {
   for (BRepGraph_FaceId aFaceId = BRepGraph_FaceId::Start();
-       aFaceId.IsValid(myBoxGraph.Topo().Faces().Nb()); ++aFaceId)
+       aFaceId.IsValid(myBoxGraph.Topo().Faces().Nb());
+       ++aFaceId)
   {
     const uint32_t aNb = BRepGraph_Tool::Face::NbWires(myBoxGraph, aFaceId);
     EXPECT_EQ(aNb, 1u) << "Box face " << aFaceId.Index << " should have exactly 1 wire";
@@ -103,7 +104,8 @@ TEST_F(BRepGraph_QuerySurfaceTest, Wire_IsOuter_FirstWireOfBoxFaceIsOuter)
 TEST_F(BRepGraph_QuerySurfaceTest, Edge_NbFaces_BoxEdgeHasExactlyTwoFaces)
 {
   for (BRepGraph_EdgeId anEdgeId = BRepGraph_EdgeId::Start();
-       anEdgeId.IsValid(myBoxGraph.Topo().Edges().Nb()); ++anEdgeId)
+       anEdgeId.IsValid(myBoxGraph.Topo().Edges().Nb());
+       ++anEdgeId)
   {
     const uint32_t aNbFaces = BRepGraph_Tool::Edge::NbFaces(myBoxGraph, anEdgeId);
     EXPECT_EQ(aNbFaces, 2u) << "Box edge " << anEdgeId.Index

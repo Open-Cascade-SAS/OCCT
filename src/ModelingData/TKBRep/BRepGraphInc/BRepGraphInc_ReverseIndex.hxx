@@ -539,7 +539,8 @@ private:
   TypedIndexTable<BRepGraph_CompoundId> myCompoundsOfVertex; //!< Vertex -> parent Compound indices.
   TypedIndexTable<BRepGraph_WireId>     myCoEdgeToWires;     //!< CoEdge -> parent Wire indices.
 
-  uint32_t myNbIndexedCoEdges = 0; //!< Number of coedges indexed by ReverseIndex::Build()/BuildDelta().
+  uint32_t myNbIndexedCoEdges =
+    0; //!< Number of coedges indexed by ReverseIndex::Build()/BuildDelta().
 };
 
 #endif // _BRepGraphInc_ReverseIndex_HeaderFile

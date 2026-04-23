@@ -52,7 +52,7 @@ void removeEdge(NCollection_DataMap<BRepGraph_FaceId, NCollection_Vector<BRepGra
     return;
 
   NCollection_Vector<BRepGraph_EdgeId>& anEdges = theMap.ChangeFind(theFace);
-  uint32_t anIdx = 0;
+  uint32_t                              anIdx   = 0;
   for (NCollection_Vector<BRepGraph_EdgeId>::Iterator anIt(anEdges); anIt.More();
        anIt.Next(), ++anIdx)
   {

@@ -79,7 +79,8 @@ public:
   //! Access a record by index (0-based).
   //! @param[in] theRecordIdx zero-based index into the records vector
   //! @return the history record at the given index
-  [[nodiscard]] Standard_EXPORT const BRepGraph_HistoryRecord& Record(const size_t theRecordIdx) const;
+  [[nodiscard]] Standard_EXPORT const BRepGraph_HistoryRecord& Record(
+    const size_t theRecordIdx) const;
 
   //! Enable or disable history recording.
   //! @param[in] theVal true to enable, false to disable

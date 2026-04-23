@@ -167,16 +167,20 @@ TEST(BRepGraph_CompactTest, IndexDensity_NoGaps)
 
   // After compaction, there should be no removed defs.
   for (BRepGraph_VertexId aVertexId = BRepGraph_VertexId::Start();
-       aVertexId.IsValid(aGraph.Topo().Vertices().Nb()); ++aVertexId)
+       aVertexId.IsValid(aGraph.Topo().Vertices().Nb());
+       ++aVertexId)
     EXPECT_FALSE(aGraph.Topo().Vertices().Definition(aVertexId).IsRemoved);
   for (BRepGraph_EdgeId anEdgeId = BRepGraph_EdgeId::Start();
-       anEdgeId.IsValid(aGraph.Topo().Edges().Nb()); ++anEdgeId)
+       anEdgeId.IsValid(aGraph.Topo().Edges().Nb());
+       ++anEdgeId)
     EXPECT_FALSE(aGraph.Topo().Edges().Definition(anEdgeId).IsRemoved);
   for (BRepGraph_FaceId aFaceId = BRepGraph_FaceId::Start();
-       aFaceId.IsValid(aGraph.Topo().Faces().Nb()); ++aFaceId)
+       aFaceId.IsValid(aGraph.Topo().Faces().Nb());
+       ++aFaceId)
     EXPECT_FALSE(aGraph.Topo().Faces().Definition(aFaceId).IsRemoved);
   for (BRepGraph_WireId aWireId = BRepGraph_WireId::Start();
-       aWireId.IsValid(aGraph.Topo().Wires().Nb()); ++aWireId)
+       aWireId.IsValid(aGraph.Topo().Wires().Nb());
+       ++aWireId)
     EXPECT_FALSE(aGraph.Topo().Wires().Definition(aWireId).IsRemoved);
 }
 
@@ -447,9 +451,10 @@ TEST(BRepGraph_CompactTest, OwnGen_SurvivesCompact)
 
   // Edge 0 may have been remapped. Find the edge that carries the mutated
   // tolerance and verify both the tolerance value and OwnGen are preserved.
-  bool      aFound               = false;
+  bool aFound = false;
   for (BRepGraph_EdgeId anEdgeId = BRepGraph_EdgeId::Start();
-       anEdgeId.IsValid(aGraph.Topo().Edges().Nb()); ++anEdgeId)
+       anEdgeId.IsValid(aGraph.Topo().Edges().Nb());
+       ++anEdgeId)
   {
     const BRepGraphInc::EdgeDef& anEdge = aGraph.Topo().Edges().Definition(anEdgeId);
     if (std::abs(anEdge.Tolerance - THE_MUTATED_EDGE_TOLERANCE) < Precision::Confusion())

@@ -1263,7 +1263,8 @@ void BRepGraph::EditorView::GenOps::RemoveSubgraph(const BRepGraph_NodeId theNod
         // Detach from parent product's OccurrenceRefIds.
         // Find the parent product by scanning OccurrenceRefs.
         for (BRepGraph_OccurrenceRefId aOccRefId = myGraph->Refs().Occurrences().StartId();
-             aOccRefId < myGraph->Refs().Occurrences().EndId(); ++aOccRefId)
+             aOccRefId < myGraph->Refs().Occurrences().EndId();
+             ++aOccRefId)
         {
           const BRepGraphInc::OccurrenceRef& aRef = aStorage.OccurrenceRef(aOccRefId);
           if (aRef.IsRemoved || aRef.OccurrenceDefId != theNode)
@@ -1276,8 +1277,7 @@ void BRepGraph::EditorView::GenOps::RemoveSubgraph(const BRepGraph_NodeId theNod
           NCollection_Vector<BRepGraph_OccurrenceRefId>& aRefIds =
             myGraph->myData->myIncStorage.ChangeProduct(aParentProduct).OccurrenceRefIds;
           uint32_t anIdx = 0;
-          for (NCollection_Vector<BRepGraph_OccurrenceRefId>::Iterator anIt(aRefIds);
-               anIt.More();
+          for (NCollection_Vector<BRepGraph_OccurrenceRefId>::Iterator anIt(aRefIds); anIt.More();
                anIt.Next(), ++anIdx)
           {
             if (anIt.Value() == aOccRefId)
@@ -1641,7 +1641,8 @@ void BRepGraph::EditorView::EndDeferredInvalidation() noexcept
         // Occurrence modifications propagate to the parent product.
         // Find the parent product via OccurrenceRef.ParentId.
         for (BRepGraph_OccurrenceRefId aOccRefId = myGraph->Refs().Occurrences().StartId();
-             aOccRefId < myGraph->Refs().Occurrences().EndId(); ++aOccRefId)
+             aOccRefId < myGraph->Refs().Occurrences().EndId();
+             ++aOccRefId)
         {
           const BRepGraphInc::OccurrenceRef& aRef =
             myGraph->myData->myIncStorage.OccurrenceRef(aOccRefId);
@@ -1763,12 +1764,12 @@ void BRepGraph::EditorView::EdgeOps::Split(const BRepGraph_EdgeId   theEdgeEntit
   // Allocate SubA slot.
   const BRepGraph_EdgeId aSubAId(aMutStorage.NbEdges());
   aMutStorage.AppendEdge();
-  theSubA            = aSubAId;
+  theSubA = aSubAId;
 
   // Allocate SubB slot (note: Appended() may invalidate aSubADef reference - use index).
   const BRepGraph_EdgeId aSubBId(aMutStorage.NbEdges());
   aMutStorage.AppendEdge();
-  theSubB            = aSubBId;
+  theSubB = aSubBId;
 
   // Build vertex ref entries for the split vertex (no Location since split vertex is new).
   const BRepGraph_VertexId aSplitVertexDefId = theSplitVertex;
@@ -1787,10 +1788,10 @@ void BRepGraph::EditorView::EdgeOps::Split(const BRepGraph_EdgeId   theEdgeEntit
     const BRepGraph_VertexRefId aSubAStartRefId2(aMutStorage.NbVertexRefs());
     aMutStorage.AppendVertexRef();
     BRepGraphInc::VertexRef& aSubAStartRef = aMutStorage.ChangeVertexRef(aSubAStartRefId2);
-    aSubAStartRef.ParentId      = BRepGraph_NodeId(aSubAId);
-    aSubAStartRef.VertexDefId   = aOrigStartVertexId;
-    aSubAStartRef.Orientation   = aOrigStartOri;
-    aSubAStartRef.LocalLocation = aOrigStartLoc;
+    aSubAStartRef.ParentId                 = BRepGraph_NodeId(aSubAId);
+    aSubAStartRef.VertexDefId              = aOrigStartVertexId;
+    aSubAStartRef.Orientation              = aOrigStartOri;
+    aSubAStartRef.LocalLocation            = aOrigStartLoc;
     myGraph->allocateRefUID(aSubAStartRefId2);
     aSubAStartRefId = aSubAStartRefId2;
   }
@@ -1816,9 +1817,9 @@ void BRepGraph::EditorView::EdgeOps::Split(const BRepGraph_EdgeId   theEdgeEntit
     const BRepGraph_VertexRefId aSubBStartRefId2(aMutStorage.NbVertexRefs());
     aMutStorage.AppendVertexRef();
     BRepGraphInc::VertexRef& aSubBStartRef = aMutStorage.ChangeVertexRef(aSubBStartRefId2);
-    aSubBStartRef.ParentId    = BRepGraph_NodeId(aSubBId);
-    aSubBStartRef.VertexDefId = aSplitVertexDefId;
-    aSubBStartRef.Orientation = TopAbs_FORWARD;
+    aSubBStartRef.ParentId                 = BRepGraph_NodeId(aSubBId);
+    aSubBStartRef.VertexDefId              = aSplitVertexDefId;
+    aSubBStartRef.Orientation              = TopAbs_FORWARD;
     myGraph->allocateRefUID(aSubBStartRefId2);
     aSubBStartRefId = aSubBStartRefId2;
   }
@@ -1847,8 +1848,7 @@ void BRepGraph::EditorView::EdgeOps::Split(const BRepGraph_EdgeId   theEdgeEntit
 
   // Set SubA: StartVertex -> SplitVertex, [ParamFirst, theSplitParam].
   {
-    BRepGraphInc::EdgeDef& aSubA =
-      myGraph->myData->myIncStorage.ChangeEdge(aSubAId);
+    BRepGraphInc::EdgeDef& aSubA = myGraph->myData->myIncStorage.ChangeEdge(aSubAId);
     initSubEdgeEntity(aSubA,
                       aOrigCurve3DRepId,
                       aOrigTolerance,
@@ -1861,8 +1861,7 @@ void BRepGraph::EditorView::EdgeOps::Split(const BRepGraph_EdgeId   theEdgeEntit
 
   // Set SubB: SplitVertex -> EndVertex, [theSplitParam, ParamLast].
   {
-    BRepGraphInc::EdgeDef& aSubB =
-      myGraph->myData->myIncStorage.ChangeEdge(aSubBId);
+    BRepGraphInc::EdgeDef& aSubB = myGraph->myData->myIncStorage.ChangeEdge(aSubBId);
     initSubEdgeEntity(aSubB,
                       aOrigCurve3DRepId,
                       aOrigTolerance,
@@ -1982,8 +1981,10 @@ void BRepGraph::EditorView::EdgeOps::Split(const BRepGraph_EdgeId   theEdgeEntit
         continue;
       int aJ = -1;
       aIdxOf.Find(aOldSeamPair, aJ);
-      aStorage.ChangeCoEdge(aNewACoEdgeIds.Value(static_cast<size_t>(i))).SeamPairId = aNewACoEdgeIds.Value(aJ);
-      aStorage.ChangeCoEdge(aNewBCoEdgeIds.Value(static_cast<size_t>(i))).SeamPairId = aNewBCoEdgeIds.Value(aJ);
+      aStorage.ChangeCoEdge(aNewACoEdgeIds.Value(static_cast<size_t>(i))).SeamPairId =
+        aNewACoEdgeIds.Value(aJ);
+      aStorage.ChangeCoEdge(aNewBCoEdgeIds.Value(static_cast<size_t>(i))).SeamPairId =
+        aNewBCoEdgeIds.Value(aJ);
     }
 
     // Step 4: rebuild wire CoEdgeRefIds (snapshot-before-mutate). For each

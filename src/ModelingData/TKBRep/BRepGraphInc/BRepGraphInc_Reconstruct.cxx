@@ -273,7 +273,8 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage&      the
     }
 
     case BRepGraph_NodeId::Kind::Face: {
-      aResult = FaceWithCache(theStorage, BRepGraph_FaceId(theNode), theCache, theParams, theRegularities);
+      aResult =
+        FaceWithCache(theStorage, BRepGraph_FaceId(theNode), theCache, theParams, theRegularities);
       break;
     }
 
@@ -353,9 +354,8 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage&      the
     }
 
     case BRepGraph_NodeId::Kind::Compound: {
-      const BRepGraphInc::CompoundDef& aComp =
-        theStorage.Compound(BRepGraph_CompoundId(theNode));
-      TopoDS_Compound aNewComp;
+      const BRepGraphInc::CompoundDef& aComp = theStorage.Compound(BRepGraph_CompoundId(theNode));
+      TopoDS_Compound                  aNewComp;
       aBB.MakeCompound(aNewComp);
       for (const BRepGraph_ChildRefId& aChildRefId : aComp.ChildRefIds)
       {
@@ -377,9 +377,8 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage&      the
     }
 
     case BRepGraph_NodeId::Kind::CompSolid: {
-      const BRepGraphInc::CompSolidDef& aCS =
-        theStorage.CompSolid(BRepGraph_CompSolidId(theNode));
-      TopoDS_CompSolid aNewCS;
+      const BRepGraphInc::CompSolidDef& aCS = theStorage.CompSolid(BRepGraph_CompSolidId(theNode));
+      TopoDS_CompSolid                  aNewCS;
       aBB.MakeCompSolid(aNewCS);
       for (const BRepGraph_SolidRefId& aSolidRefId : aCS.SolidRefIds)
       {

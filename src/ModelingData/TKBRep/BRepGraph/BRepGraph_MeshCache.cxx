@@ -40,7 +40,8 @@ const BRepGraph_MeshCache::FaceMeshEntry* BRepGraph_MeshCacheStorage::FindFaceMe
 {
   if (!theFace.IsValidIn(myFaceMeshes))
     return nullptr;
-  const BRepGraph_MeshCache::FaceMeshEntry& anEntry = myFaceMeshes.Value(static_cast<size_t>(theFace.Index));
+  const BRepGraph_MeshCache::FaceMeshEntry& anEntry =
+    myFaceMeshes.Value(static_cast<size_t>(theFace.Index));
   if (!anEntry.IsPresent())
     return nullptr;
   return &anEntry;
@@ -81,7 +82,8 @@ const BRepGraph_MeshCache::CoEdgeMeshEntry* BRepGraph_MeshCacheStorage::FindCoEd
 {
   if (!theCoEdge.IsValidIn(myCoEdgeMeshes))
     return nullptr;
-  const BRepGraph_MeshCache::CoEdgeMeshEntry& anEntry = myCoEdgeMeshes.Value(static_cast<size_t>(theCoEdge.Index));
+  const BRepGraph_MeshCache::CoEdgeMeshEntry& anEntry =
+    myCoEdgeMeshes.Value(static_cast<size_t>(theCoEdge.Index));
   if (!anEntry.IsPresent())
     return nullptr;
   return &anEntry;
@@ -122,7 +124,8 @@ const BRepGraph_MeshCache::EdgeMeshEntry* BRepGraph_MeshCacheStorage::FindEdgeMe
 {
   if (!theEdge.IsValidIn(myEdgeMeshes))
     return nullptr;
-  const BRepGraph_MeshCache::EdgeMeshEntry& anEntry = myEdgeMeshes.Value(static_cast<size_t>(theEdge.Index));
+  const BRepGraph_MeshCache::EdgeMeshEntry& anEntry =
+    myEdgeMeshes.Value(static_cast<size_t>(theEdge.Index));
   if (!anEntry.IsPresent())
     return nullptr;
   return &anEntry;
@@ -175,7 +178,8 @@ void BRepGraph_MeshCacheStorage::OnCompact(
       const BRepGraph_FaceId anOldFaceId(anOldId);
       if (!anOldFaceId.IsValidIn(myFaceMeshes))
         continue;
-      const BRepGraph_MeshCache::FaceMeshEntry& anOldEntry = myFaceMeshes.Value(static_cast<size_t>(anOldFaceId.Index));
+      const BRepGraph_MeshCache::FaceMeshEntry& anOldEntry =
+        myFaceMeshes.Value(static_cast<size_t>(anOldFaceId.Index));
       if (!anOldEntry.IsPresent())
         continue;
       ensureSize(aNewFaces, static_cast<size_t>(aNewId.Index));
@@ -222,7 +226,8 @@ void BRepGraph_MeshCacheStorage::OnCompact(
       const BRepGraph_EdgeId anOldEdgeId(anOldId);
       if (!anOldEdgeId.IsValidIn(myEdgeMeshes))
         continue;
-      const BRepGraph_MeshCache::EdgeMeshEntry& anOldEntry = myEdgeMeshes.Value(static_cast<size_t>(anOldEdgeId.Index));
+      const BRepGraph_MeshCache::EdgeMeshEntry& anOldEntry =
+        myEdgeMeshes.Value(static_cast<size_t>(anOldEdgeId.Index));
       if (!anOldEntry.IsPresent())
         continue;
       ensureSize(aNewEdges, static_cast<size_t>(aNewId.Index));

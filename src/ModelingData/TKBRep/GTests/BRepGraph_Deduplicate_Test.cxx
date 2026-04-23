@@ -1560,7 +1560,8 @@ TEST(BRepGraph_DeduplicateTest, AnalyzeOnly_NoBackRefChangesOrNullification)
   for (BRepGraph_FullFaceIterator aFaceIt(aGraph); aFaceIt.More(); aFaceIt.Next())
   {
     const BRepGraph_FaceId aFaceId = aFaceIt.CurrentId();
-    EXPECT_EQ(BRepGraph_Tool::Face::Surface(aGraph, aFaceId).get(), aSurfPtrs.Value(static_cast<int>(aFaceId.Index)));
+    EXPECT_EQ(BRepGraph_Tool::Face::Surface(aGraph, aFaceId).get(),
+              aSurfPtrs.Value(static_cast<int>(aFaceId.Index)));
   }
   for (BRepGraph_FullEdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
