@@ -927,7 +927,9 @@ TEST(BRepGraph_DeduplicateTest, HistoryRecordSequenceNumbers_AreMonotonic)
   {
     const BRepGraph_HistoryRecord& aRec = aGraph.History().Record(aRecIdx);
     if (!isFirst)
+    {
       EXPECT_GT(aRec.SequenceNumber, aPrevSeq);
+    }
     aPrevSeq = aRec.SequenceNumber;
     isFirst  = false;
   }
