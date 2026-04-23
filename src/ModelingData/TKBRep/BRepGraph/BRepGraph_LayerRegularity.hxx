@@ -52,7 +52,7 @@ public:
                                       const BRepGraph_FaceId theFace2,
                                       GeomAbs_Shape* const   theContinuity = nullptr) const;
 
-  Standard_EXPORT int           NbRegularities(const BRepGraph_EdgeId theEdge) const;
+  Standard_EXPORT uint32_t      NbRegularities(const BRepGraph_EdgeId theEdge) const;
   Standard_EXPORT GeomAbs_Shape MaxContinuity(const BRepGraph_EdgeId theEdge) const;
 
   [[nodiscard]] bool HasBindings() const { return myEdgeRegularities.Extent() != 0; }

@@ -44,7 +44,7 @@ void collectReachableNodesFromRootProducts(const BRepGraph&                   th
   for (BRepGraph_RootProductIterator aRootIt(theGraph); aRootIt.More(); aRootIt.Next())
   {
     const BRepGraph_ProductId aRootProductId = aRootIt.Current();
-    const int                 aRootNb        = theGraph.Topo().Products().Nb();
+    const uint32_t            aRootNb        = theGraph.Topo().Products().Nb();
     if (!aRootProductId.IsValid(aRootNb))
     {
       continue;
@@ -509,7 +509,7 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
 
     const NCollection_Vector<BRepGraph_CoEdgeRefId>& aNewCoEdgeRefs =
       aNewGraph.Topo().Wires().Definition(aNewWireId).CoEdgeRefIds;
-    for (int aRefIdx = 0; aRefIdx < anOldCoEdgeRefs.Length() && aRefIdx < aNewCoEdgeRefs.Length();
+    for (size_t aRefIdx = 0; aRefIdx < anOldCoEdgeRefs.Size() && aRefIdx < aNewCoEdgeRefs.Size();
          ++aRefIdx)
     {
       const BRepGraphInc::CoEdgeRef& anOldRef =
@@ -585,8 +585,8 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
       aWireRefMap.Bind(anOldOuterWireRef, aNewWireRefs.First());
     }
 
-    for (int anInnerIdx = 0;
-         anInnerIdx < anOldInnerWireRefs.Length() && anInnerIdx + 1 < aNewWireRefs.Length();
+    for (size_t anInnerIdx = 0;
+         anInnerIdx < anOldInnerWireRefs.Size() && anInnerIdx + 1 < aNewWireRefs.Size();
          ++anInnerIdx)
     {
       const BRepGraphInc::WireRef& anOldInnerRef =
@@ -838,7 +838,7 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
     {
       const NCollection_Vector<BRepGraph_ChildRefId>& aNewChildRefs =
         aNewGraph.Topo().Compounds().Definition(aNewCompoundId).ChildRefIds;
-      for (int aRefIdx = 0; aRefIdx < anOldChildRefs.Length() && aRefIdx < aNewChildRefs.Length();
+      for (size_t aRefIdx = 0; aRefIdx < anOldChildRefs.Size() && aRefIdx < aNewChildRefs.Size();
            ++aRefIdx)
       {
         const BRepGraphInc::ChildRef& anOldRef =
@@ -879,7 +879,7 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
     {
       const NCollection_Vector<BRepGraph_SolidRefId>& aNewSolidRefs =
         aNewGraph.Topo().CompSolids().Definition(aNewCompSolidId).SolidRefIds;
-      for (int aRefIdx = 0; aRefIdx < anOldSolidRefs.Length() && aRefIdx < aNewSolidRefs.Length();
+      for (size_t aRefIdx = 0; aRefIdx < anOldSolidRefs.Size() && aRefIdx < aNewSolidRefs.Size();
            ++aRefIdx)
       {
         const BRepGraphInc::SolidRef& anOldRef =
@@ -1120,9 +1120,11 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
     // Overwrite entries that have a mapping from the old graph.
     for (const auto& [anOldId, aNewId] : theMap.Items())
     {
-      if (anOldId.IsValidIn(theOldVec) && theOldVec.Value(anOldId.Index).IsValid())
+      if (anOldId.IsValidIn(theOldVec)
+          && theOldVec.Value(static_cast<size_t>(anOldId.Index)).IsValid())
       {
-        theNewVec.ChangeValue(aNewId.Index) = theOldVec.Value(anOldId.Index);
+        theNewVec.ChangeValue(static_cast<size_t>(aNewId.Index)) =
+          theOldVec.Value(static_cast<size_t>(anOldId.Index));
       }
     }
   };
@@ -1133,9 +1135,11 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
                              NCollection_Vector<BRepGraph_RefUID>&       theNewVec) {
     for (const auto& [anOldId, aNewId] : theMap.Items())
     {
-      if (anOldId.IsValidIn(theOldVec) && theOldVec.Value(anOldId.Index).IsValid())
+      if (anOldId.IsValidIn(theOldVec)
+          && theOldVec.Value(static_cast<size_t>(anOldId.Index)).IsValid())
       {
-        theNewVec.ChangeValue(aNewId.Index) = theOldVec.Value(anOldId.Index);
+        theNewVec.ChangeValue(static_cast<size_t>(aNewId.Index)) =
+          theOldVec.Value(static_cast<size_t>(anOldId.Index));
       }
     }
   };

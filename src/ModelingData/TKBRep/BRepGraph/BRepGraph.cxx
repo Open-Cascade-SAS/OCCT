@@ -355,20 +355,20 @@ void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
   struct StackEntry
   {
     BRepGraph_NodeId Node;
-    int              Depth;
+    uint32_t         Depth;
   };
 
-  const int aNbNodes = aStorage.NbSolids() + aStorage.NbShells() + aStorage.NbFaces()
-                       + aStorage.NbWires() + aStorage.NbEdges() + aStorage.NbVertices()
-                       + aStorage.NbCompounds() + aStorage.NbCompSolids() + aStorage.NbProducts()
-                       + aStorage.NbOccurrences();
-  const int                             aMaxDepth = aNbNodes > 0 ? aNbNodes : 1;
+  const uint32_t aNbNodes = aStorage.NbSolids() + aStorage.NbShells() + aStorage.NbFaces()
+                            + aStorage.NbWires() + aStorage.NbEdges() + aStorage.NbVertices()
+                            + aStorage.NbCompounds() + aStorage.NbCompSolids()
+                            + aStorage.NbProducts() + aStorage.NbOccurrences();
+  const uint32_t                        aMaxDepth = aNbNodes > 0 ? aNbNodes : 1;
   occ::handle<NCollection_IncAllocator> anAlloc   = new NCollection_IncAllocator();
   NCollection_Vector<StackEntry>        aStack(64, anAlloc);
-  NCollection_Map<BRepGraph_NodeId>     aVisited(aNbNodes, anAlloc);
+  NCollection_Map<BRepGraph_NodeId>     aVisited(static_cast<size_t>(aNbNodes), anAlloc);
   aStack.Append({theNode, 0});
 
-  const auto aPushChild = [&](const BRepGraph_NodeId theChild, const int theDepth) {
+  const auto aPushChild = [&](const BRepGraph_NodeId theChild, const uint32_t theDepth) {
     if (!theChild.IsValid())
       return;
     aStack.Append({theChild, theDepth});
@@ -394,7 +394,7 @@ void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
       ++anEntity->SubtreeGen;
     }
 
-    const int aNextDepth = aCurrent.Depth + 1;
+    const uint32_t aNextDepth = aCurrent.Depth + 1;
 
     switch (aCurrent.Node.NodeKind)
     {

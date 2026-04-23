@@ -121,8 +121,8 @@ public:
     //! @param[in] theGraph  source graph
     //! @param[in] theVertex typed vertex definition identifier
     //! @return edge count
-    [[nodiscard]] Standard_EXPORT static int NbEdges(const BRepGraph&         theGraph,
-                                                     const BRepGraph_VertexId theVertex);
+    [[nodiscard]] Standard_EXPORT static uint32_t NbEdges(const BRepGraph&         theGraph,
+                                                          const BRepGraph_VertexId theVertex);
   };
 
   //! @brief Edge geometry, curve, polygon, and continuity accessors.
@@ -292,8 +292,8 @@ public:
     //! @param[in] theGraph source graph
     //! @param[in] theEdge  typed edge definition identifier
     //! @return face count
-    [[nodiscard]] Standard_EXPORT static int NbFaces(const BRepGraph&       theGraph,
-                                                     const BRepGraph_EdgeId theEdge);
+    [[nodiscard]] Standard_EXPORT static uint32_t NbFaces(const BRepGraph&       theGraph,
+                                                          const BRepGraph_EdgeId theEdge);
 
     //! Returns true if the edge is shared by exactly two faces (manifold).
     //! @param[in] theGraph source graph
@@ -572,8 +572,8 @@ public:
     //! @param[in] theGraph source graph
     //! @param[in] theFace  typed face definition identifier
     //! @return wire count (includes removed refs)
-    [[nodiscard]] Standard_EXPORT static int NbWires(const BRepGraph&       theGraph,
-                                                     const BRepGraph_FaceId theFace);
+    [[nodiscard]] Standard_EXPORT static uint32_t NbWires(const BRepGraph&       theGraph,
+                                                          const BRepGraph_FaceId theFace);
 
     //! Returns the UV parameter bounds of the face surface.
     //! For faces with NaturalRestriction the bounds come directly from the surface.
@@ -612,8 +612,8 @@ public:
     //! @param[in] theGraph source graph
     //! @param[in] theWire  typed wire definition identifier
     //! @return number of coedge entries
-    [[nodiscard]] Standard_EXPORT static int NbCoEdges(const BRepGraph&       theGraph,
-                                                       const BRepGraph_WireId theWire);
+    [[nodiscard]] Standard_EXPORT static uint32_t NbCoEdges(const BRepGraph&       theGraph,
+                                                            const BRepGraph_WireId theWire);
 
     //! Returns the first owning face for this wire via the reverse-index table.
     //! Returns an invalid id if the wire has no owning face (free wire).
@@ -650,8 +650,8 @@ public:
     //! @param[in] theGraph source graph
     //! @param[in] theShell typed shell definition identifier
     //! @return number of face entries (including removed)
-    [[nodiscard]] Standard_EXPORT static int NbFaces(const BRepGraph&        theGraph,
-                                                     const BRepGraph_ShellId theShell);
+    [[nodiscard]] Standard_EXPORT static uint32_t NbFaces(const BRepGraph&        theGraph,
+                                                          const BRepGraph_ShellId theShell);
   };
 
   //! @brief Mesh cache writes and representation creation.

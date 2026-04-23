@@ -137,22 +137,22 @@ public:
     const NCollection_Vector<BRepGraphInc::SolidRef>&     theSolidRefs,
     const NCollection_Vector<BRepGraphInc::ChildRef>&     theChildRefs,
     const NCollection_Vector<BRepGraphInc::VertexRef>&    theVertexRefs,
-    const int                                             theOldNbEdges,
-    const int                                             theOldNbWires,
-    const int                                             theOldNbFaces,
-    const int                                             theOldNbShells,
-    const int                                             theOldNbSolids,
-    const int                                             theOldNbCompounds,
-    const int                                             theOldNbCompSolids,
-    const int                                             theOldNbChildRefs,
-    const int                                             theOldNbSolidRefs);
+    const uint32_t                                        theOldNbEdges,
+    const uint32_t                                        theOldNbWires,
+    const uint32_t                                        theOldNbFaces,
+    const uint32_t                                        theOldNbShells,
+    const uint32_t                                        theOldNbSolids,
+    const uint32_t                                        theOldNbCompounds,
+    const uint32_t                                        theOldNbCompSolids,
+    const uint32_t                                        theOldNbChildRefs,
+    const uint32_t                                        theOldNbSolidRefs);
 
   //! Build product-to-occurrences reverse index.
   //! @param[in] theOccurrences occurrence entity vector
   //! @param[in] theNbProducts  total number of products (for pre-sizing)
   Standard_EXPORT void BuildProductOccurrences(
     const NCollection_Vector<BRepGraphInc::OccurrenceDef>& theOccurrences,
-    const int                                              theNbProducts);
+    const uint32_t                                         theNbProducts);
 
   //! Return wire indices containing the given edge.
   [[nodiscard]] const NCollection_Vector<BRepGraph_WireId>* WiresOfEdge(
@@ -177,11 +177,10 @@ public:
 
   //! Return the number of faces incident to an edge - O(1).
   //! Derived directly from the edge-to-faces adjacency vector to keep a single source of truth.
-  [[nodiscard]] int NbFacesOfEdge(const BRepGraph_EdgeId theEdgeId) const
+  [[nodiscard]] uint32_t NbFacesOfEdge(const BRepGraph_EdgeId theEdgeId) const
   {
-    if (theEdgeId.Index < 0 || theEdgeId.Index >= myEdgeToFaces.Length())
-      return 0;
-    return myEdgeToFaces.Value(theEdgeId.Index).Length();
+    const NCollection_Vector<BRepGraph_FaceId>* aFaces = seekVec(myEdgeToFaces, theEdgeId.Index);
+    return aFaces != nullptr ? static_cast<uint32_t>(aFaces->Size()) : 0u;
   }
 
   //! Return edge indices incident to the given vertex.
@@ -418,17 +417,19 @@ private:
 
   //! Bounds-checked lookup returning nullptr for out-of-range or empty slots.
   template <typename T>
-  static const NCollection_Vector<T>* seekVec(const TypedIndexTable<T>& theIdx, const int theKey)
+  static const NCollection_Vector<T>* seekVec(const TypedIndexTable<T>& theIdx,
+                                              const uint32_t            theKey)
   {
-    if (theKey < 0 || theKey >= theIdx.Length())
+    if (theKey >= theIdx.Size())
       return nullptr;
-    const NCollection_Vector<T>& aVec = theIdx.Value(theKey);
+    const NCollection_Vector<T>& aVec = theIdx.Value(static_cast<size_t>(theKey));
     return aVec.IsEmpty() ? nullptr : &aVec;
   }
 
   //! Bounds-checked lookup returning a const reference (empty vector for missing keys).
   template <typename T>
-  static const NCollection_Vector<T>& seekRef(const TypedIndexTable<T>& theIdx, const int theKey)
+  static const NCollection_Vector<T>& seekRef(const TypedIndexTable<T>& theIdx,
+                                              const uint32_t            theKey)
   {
     const NCollection_Vector<T>* aPtr = seekVec(theIdx, theKey);
     if (aPtr != nullptr)
@@ -441,23 +442,23 @@ private:
   //! If theAlloc is non-null, inner vectors are constructed with it.
   template <typename T>
   static void ensureSize(TypedIndexTable<T>&                           theIdx,
-                         const int                                     theSize,
+                         const uint32_t                                theSize,
                          const occ::handle<NCollection_BaseAllocator>& theAlloc =
                            occ::handle<NCollection_BaseAllocator>())
   {
-    if (theSize <= theIdx.Length())
+    if (theSize <= theIdx.Size())
       return;
 
     if (!theAlloc.IsNull())
     {
-      for (int i = theIdx.Length(); i < theSize; ++i)
+      for (size_t i = theIdx.Size(), aNb = static_cast<size_t>(theSize); i < aNb; ++i)
       {
         theIdx.Append(NCollection_Vector<T>(16, theAlloc));
       }
     }
     else
     {
-      for (int i = theIdx.Length(); i < theSize; ++i)
+      for (size_t i = theIdx.Size(), aNb = static_cast<size_t>(theSize); i < aNb; ++i)
       {
         theIdx.Appended();
       }
@@ -467,9 +468,9 @@ private:
   //! Ensure theVec has at least theSize elements.
   //! New elements are default-constructed (zero for scalar types).
   template <typename T>
-  static void ensureSize(NCollection_Vector<T>& theVec, const int theSize)
+  static void ensureSize(NCollection_Vector<T>& theVec, const uint32_t theSize)
   {
-    while (theVec.Length() < theSize)
+    while (theVec.Size() < static_cast<size_t>(theSize))
     {
       theVec.Appended();
     }
@@ -478,7 +479,7 @@ private:
   //! Resize theIdx exactly to theSize slots (clears previous content first).
   template <typename T>
   static void preSize(TypedIndexTable<T>&                           theIdx,
-                      const int                                     theSize,
+                      const uint32_t                                theSize,
                       const occ::handle<NCollection_BaseAllocator>& theAlloc =
                         occ::handle<NCollection_BaseAllocator>())
   {
@@ -488,14 +489,12 @@ private:
 
   //! Add theVal to the vector at theKey, creating if needed.  Skips duplicates.
   template <typename T>
-  static void appendUnique(TypedIndexTable<T>& theIdx, const int theKey, const T theVal)
+  static void appendUnique(TypedIndexTable<T>& theIdx, const uint32_t theKey, const T theVal)
   {
-    Standard_ASSERT_RETURN(theKey >= 0, "appendUnique: negative key", );
-    // Grow if needed for incremental mutation after ReverseIndex::Build().
-    if (theKey >= theIdx.Length())
-      ensureSize(theIdx, theKey + 1);
+    if (theKey >= theIdx.Size())
+      ensureSize(theIdx, theKey + 1u);
 
-    NCollection_Vector<T>& aVec = theIdx.ChangeValue(theKey);
+    NCollection_Vector<T>& aVec = theIdx.ChangeValue(static_cast<size_t>(theKey));
     for (const T& anElem : aVec)
     {
       if (anElem == theVal)
@@ -507,15 +506,12 @@ private:
   //! Add theVal to the vector at theKey unconditionally (no duplicate check).
   //! Used during ReverseIndex::Build() where freshly-cleared indices guarantee no duplicates.
   template <typename T>
-  static void appendDirect(TypedIndexTable<T>& theIdx, const int theKey, const T theVal)
+  static void appendDirect(TypedIndexTable<T>& theIdx, const uint32_t theKey, const T theVal)
   {
-    Standard_ASSERT_RETURN(theKey >= 0, "appendDirect: negative key", );
-    // During ReverseIndex::Build(), outer vector is pre-sized so theKey < Length().
-    // For safety, grow if somehow out of range.
-    if (theKey >= theIdx.Length())
-      ensureSize(theIdx, theKey + 1);
+    if (theKey >= theIdx.Size())
+      ensureSize(theIdx, theKey + 1u);
 
-    theIdx.ChangeValue(theKey).Append(theVal);
+    theIdx.ChangeValue(static_cast<size_t>(theKey)).Append(theVal);
   }
 
   occ::handle<NCollection_BaseAllocator> myAllocator;
@@ -543,7 +539,8 @@ private:
   TypedIndexTable<BRepGraph_CompoundId> myCompoundsOfVertex; //!< Vertex -> parent Compound indices.
   TypedIndexTable<BRepGraph_WireId>     myCoEdgeToWires;     //!< CoEdge -> parent Wire indices.
 
-  int myNbIndexedCoEdges = 0; //!< Number of coedges indexed by ReverseIndex::Build()/BuildDelta().
+  uint32_t myNbIndexedCoEdges =
+    0; //!< Number of coedges indexed by ReverseIndex::Build()/BuildDelta().
 };
 
 #endif // _BRepGraphInc_ReverseIndex_HeaderFile

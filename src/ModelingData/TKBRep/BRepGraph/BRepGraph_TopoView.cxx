@@ -315,7 +315,7 @@ const BRepGraphInc::EdgeDef& BRepGraph::TopoView::EdgeOps::Definition(
 
 //=================================================================================================
 
-int BRepGraph::TopoView::EdgeOps::NbFaces(const BRepGraph_EdgeId theEdge) const
+uint32_t BRepGraph::TopoView::EdgeOps::NbFaces(const BRepGraph_EdgeId theEdge) const
 {
   return myGraph->myData->myIncStorage.ReverseIndex().NbFacesOfEdge(theEdge);
 }
@@ -929,10 +929,9 @@ BRepGraph_NodeId BRepGraph::TopoView::ProductOps::ShapeRoot(
   }
 
   // Scan occurrences to find the first with a topology ChildDefId.
-  for (int i = 0; i < aProductDef.OccurrenceRefIds.Length(); ++i)
+  for (const BRepGraph_OccurrenceRefId& aRefId : aProductDef.OccurrenceRefIds)
   {
-    const BRepGraph_OccurrenceRefId    aRefId = aProductDef.OccurrenceRefIds.Value(i);
-    const BRepGraphInc::OccurrenceRef& aRef   = aStorage.OccurrenceRef(aRefId);
+    const BRepGraphInc::OccurrenceRef& aRef = aStorage.OccurrenceRef(aRefId);
     if (aRef.IsRemoved)
       continue;
     const BRepGraphInc::OccurrenceDef& anOccDef = aStorage.Occurrence(aRef.OccurrenceDefId);
@@ -966,10 +965,9 @@ bool BRepGraph::TopoView::ProductOps::IsAssembly(const BRepGraph_ProductId thePr
   }
 
   // Assembly if any active occurrence references a product child.
-  for (int i = 0; i < aProductDef.OccurrenceRefIds.Length(); ++i)
+  for (const BRepGraph_OccurrenceRefId& aRefId : aProductDef.OccurrenceRefIds)
   {
-    const BRepGraph_OccurrenceRefId    aRefId = aProductDef.OccurrenceRefIds.Value(i);
-    const BRepGraphInc::OccurrenceRef& aRef   = aStorage.OccurrenceRef(aRefId);
+    const BRepGraphInc::OccurrenceRef& aRef = aStorage.OccurrenceRef(aRefId);
     if (aRef.IsRemoved)
       continue;
     const BRepGraphInc::OccurrenceDef& anOccDef = aStorage.Occurrence(aRef.OccurrenceDefId);
@@ -1000,10 +998,9 @@ bool BRepGraph::TopoView::ProductOps::IsPart(const BRepGraph_ProductId theProduc
   }
 
   // Part if any active occurrence references a topology child.
-  for (int i = 0; i < aProductDef.OccurrenceRefIds.Length(); ++i)
+  for (const BRepGraph_OccurrenceRefId& aRefId : aProductDef.OccurrenceRefIds)
   {
-    const BRepGraph_OccurrenceRefId    aRefId = aProductDef.OccurrenceRefIds.Value(i);
-    const BRepGraphInc::OccurrenceRef& aRef   = aStorage.OccurrenceRef(aRefId);
+    const BRepGraphInc::OccurrenceRef& aRef = aStorage.OccurrenceRef(aRefId);
     if (aRef.IsRemoved)
       continue;
     const BRepGraphInc::OccurrenceDef& anOccDef = aStorage.Occurrence(aRef.OccurrenceDefId);
@@ -1036,10 +1033,9 @@ BRepGraph_NodeId BRepGraph::TopoView::ProductOps::ShapeRootNode(
   }
 
   // Find the first occurrence with a topology ChildDefId.
-  for (int i = 0; i < aProductDef.OccurrenceRefIds.Length(); ++i)
+  for (const BRepGraph_OccurrenceRefId& aRefId : aProductDef.OccurrenceRefIds)
   {
-    const BRepGraph_OccurrenceRefId    aRefId = aProductDef.OccurrenceRefIds.Value(i);
-    const BRepGraphInc::OccurrenceRef& aRef   = aStorage.OccurrenceRef(aRefId);
+    const BRepGraphInc::OccurrenceRef& aRef = aStorage.OccurrenceRef(aRefId);
     if (aRef.IsRemoved)
       continue;
     const BRepGraphInc::OccurrenceDef& anOccDef = aStorage.Occurrence(aRef.OccurrenceDefId);
@@ -1185,10 +1181,11 @@ BRepGraph_ProductId BRepGraph::TopoView::OccurrenceOps::ParentProduct(
   }
 
   // Find the OccurrenceRef that owns this OccurrenceDef to get ParentId.
-  const int aNbOccRefs = aStorage.NbOccurrenceRefs();
-  for (int i = 0; i < aNbOccRefs; ++i)
+  for (BRepGraph_OccurrenceRefId aRefId = myGraph->Refs().Occurrences().StartId();
+       aRefId < myGraph->Refs().Occurrences().EndId();
+       ++aRefId)
   {
-    const BRepGraphInc::OccurrenceRef& aRef = aStorage.OccurrenceRef(BRepGraph_OccurrenceRefId(i));
+    const BRepGraphInc::OccurrenceRef& aRef = aStorage.OccurrenceRef(aRefId);
     if (aRef.IsRemoved || aRef.OccurrenceDefId != theOccurrence)
       continue;
 
@@ -1217,10 +1214,11 @@ TopLoc_Location BRepGraph::TopoView::OccurrenceOps::OccurrenceLocation(
 
   // Placement is now on OccurrenceRef::LocalLocation.
   // Find the OccurrenceRef that owns this OccurrenceDef.
-  const int aNbOccRefs = aStorage.NbOccurrenceRefs();
-  for (int i = 0; i < aNbOccRefs; ++i)
+  for (BRepGraph_OccurrenceRefId aRefId = myGraph->Refs().Occurrences().StartId();
+       aRefId < myGraph->Refs().Occurrences().EndId();
+       ++aRefId)
   {
-    const BRepGraphInc::OccurrenceRef& aRef = aStorage.OccurrenceRef(BRepGraph_OccurrenceRefId(i));
+    const BRepGraphInc::OccurrenceRef& aRef = aStorage.OccurrenceRef(aRefId);
     if (!aRef.IsRemoved && aRef.OccurrenceDefId == theOccurrence)
     {
       return aRef.LocalLocation;

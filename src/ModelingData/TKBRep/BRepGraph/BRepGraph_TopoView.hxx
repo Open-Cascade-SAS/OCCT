@@ -107,7 +107,7 @@ public:
 
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::EdgeDef& Definition(
       const BRepGraph_EdgeId theEdge) const;
-    [[nodiscard]] Standard_EXPORT int   NbFaces(const BRepGraph_EdgeId theEdge) const;
+    [[nodiscard]] Standard_EXPORT uint32_t NbFaces(const BRepGraph_EdgeId theEdge) const;
     [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_WireId>& Wires(
       const BRepGraph_EdgeId theEdge) const;
     [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_CoEdgeId>& CoEdges(

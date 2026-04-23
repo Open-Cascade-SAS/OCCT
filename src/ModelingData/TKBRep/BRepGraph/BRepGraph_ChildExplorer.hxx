@@ -262,7 +262,7 @@ private:
   struct StackFrame
   {
     BRepGraph_NodeId   Node;
-    int                NextChildIdx   = 0;
+    uint32_t           NextChildIdx   = 0;
     int                StepFromParent = -1;
     TopLoc_Location    AccLocation;
     TopAbs_Orientation AccOrientation = TopAbs_FORWARD;

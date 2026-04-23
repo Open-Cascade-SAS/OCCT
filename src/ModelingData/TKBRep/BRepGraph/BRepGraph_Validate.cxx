@@ -432,12 +432,12 @@ void checkReverseIndexFaceCountCache(const BRepGraph&                           
       aUniqueFaces.Add(aCoEdge.FaceDefId);
     }
 
-    const int aCachedCount  = aDefs.Edges().NbFaces(anEdgeId);
-    const int anActualCount = aUniqueFaces.Extent();
-    if (aCachedCount != anActualCount)
+    const uint32_t aCachedCount  = aDefs.Edges().NbFaces(anEdgeId);
+    const int      anActualCount = aUniqueFaces.Extent();
+    if (static_cast<int>(aCachedCount) != anActualCount)
     {
       TCollection_AsciiString aDesc("Reverse index face-count cache mismatch: cached=");
-      aDesc += TCollection_AsciiString(aCachedCount);
+      aDesc += TCollection_AsciiString(static_cast<int>(aCachedCount));
       aDesc += " actual=";
       aDesc += TCollection_AsciiString(anActualCount);
       theIssues.Append(Issue{Severity::Error, anEdgeId, aDesc});
@@ -568,10 +568,8 @@ void checkGeometryReferences(const BRepGraph&                               theG
       theGraph.Mesh().Faces().CachedMesh(aFaceIt.CurrentId());
     if (aCachedFace != nullptr)
     {
-      for (int aCIdx = 0; aCIdx < aCachedFace->TriangulationRepIds.Length(); ++aCIdx)
+      for (const BRepGraph_TriangulationRepId& aCTriRepId : aCachedFace->TriangulationRepIds)
       {
-        const BRepGraph_TriangulationRepId aCTriRepId =
-          aCachedFace->TriangulationRepIds.Value(aCIdx);
         if (!aCTriRepId.IsValid(theGraph.Mesh().Poly().NbTriangulations()))
         {
           theIssues.Append(Issue{Severity::Error,
@@ -1012,7 +1010,7 @@ BRepGraph_Validate::Result BRepGraph_Validate::Perform(const BRepGraph& theGraph
     // exponential blowup on DAGs. A cycle exists if we re-encounter aProdIdx.
     NCollection_Map<BRepGraph_ProductId>    aVisited;
     NCollection_Vector<BRepGraph_ProductId> aQueue;
-    int                                     aHead = 0;
+    size_t                                  aHead = 0;
 
     // Seed with direct children.
     for (BRepGraph_RefsOccurrenceOfProduct anOccIt(theGraph, aProdId); anOccIt.More();
@@ -1040,7 +1038,7 @@ BRepGraph_Validate::Result BRepGraph_Validate::Perform(const BRepGraph& theGraph
     }
 
     bool aCycleFound = false;
-    while (aHead < aQueue.Length() && !aCycleFound)
+    while (aHead < aQueue.Size() && !aCycleFound)
     {
       const BRepGraph_ProductId aChildProdId = aQueue.Value(aHead);
       ++aHead;
@@ -1083,7 +1081,7 @@ BRepGraph_Validate::Result BRepGraph_Validate::Perform(const BRepGraph& theGraph
     const BRepGraph_CompoundId               aRootCompoundId = aCompIt.CurrentId();
     NCollection_Map<BRepGraph_CompoundId>    aVisited;
     NCollection_Vector<BRepGraph_CompoundId> aQueue;
-    int                                      aHead = 0;
+    size_t                                   aHead = 0;
 
     for (BRepGraph_RefsChildOfCompound anIt(theGraph, aRootCompoundId); anIt.More(); anIt.Next())
     {
@@ -1108,7 +1106,7 @@ BRepGraph_Validate::Result BRepGraph_Validate::Perform(const BRepGraph& theGraph
     }
 
     bool aCycleFound = false;
-    while (aHead < aQueue.Length() && !aCycleFound)
+    while (aHead < aQueue.Size() && !aCycleFound)
     {
       const BRepGraph_CompoundId aChildCompoundId = aQueue.Value(aHead);
       ++aHead;

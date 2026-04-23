@@ -88,9 +88,9 @@ public:
       if (aKindIdx < 0 || aKindIdx >= THE_KIND_COUNT)
         return nullptr;
       const NCollection_Vector<TopoDS_Shape>& aVec = myKinds[aKindIdx];
-      if (theNode.Index >= aVec.Length())
+      if (theNode.Index >= aVec.Size())
         return nullptr;
-      const TopoDS_Shape& aShape = aVec.Value(theNode.Index);
+      const TopoDS_Shape& aShape = aVec.Value(static_cast<size_t>(theNode.Index));
       return aShape.IsNull() ? nullptr : &aShape;
     }
 
@@ -101,7 +101,7 @@ public:
       if (aKindIdx < 0 || aKindIdx >= THE_KIND_COUNT)
         return;
       NCollection_Vector<TopoDS_Shape>& aVec = myKinds[aKindIdx];
-      aVec.SetValue(theNode.Index, theShape);
+      aVec.SetValue(static_cast<size_t>(theNode.Index), theShape);
     }
 
     //! Check if a node is already cached.
@@ -135,12 +135,12 @@ public:
 
   //! Reconstruct a face with shared edge/vertex cache for multi-face contexts.
   //! @param[in] theStorage    incidence storage
-  //! @param[in] theFaceIdx    face entity index
+  //! @param[in] theFaceId     face entity id
   //! @param[in,out] theCache  shared cache for edge and vertex shapes
   //! @return reconstructed face shape
   static Standard_EXPORT TopoDS_Shape
     FaceWithCache(const BRepGraphInc_Storage&      theStorage,
-                  const int                        theFaceIdx,
+                  const BRepGraph_FaceId           theFaceId,
                   Cache&                           theCache,
                   const BRepGraph_LayerParam*      theParams       = nullptr,
                   const BRepGraph_LayerRegularity* theRegularities = nullptr);

@@ -34,9 +34,9 @@ void appendUnique(NCollection_DataMap<KeyT, NCollection_Vector<BRepGraph_VertexI
   }
 
   NCollection_Vector<BRepGraph_VertexId>& aVertices = theMap.ChangeFind(theKey);
-  for (int anIdx = 0; anIdx < aVertices.Length(); ++anIdx)
+  for (const BRepGraph_VertexId& aVtx : aVertices)
   {
-    if (aVertices.Value(anIdx) == theVertex)
+    if (aVtx == theVertex)
       return;
   }
   aVertices.Append(theVertex);
@@ -51,12 +51,14 @@ void removeVertex(NCollection_DataMap<KeyT, NCollection_Vector<BRepGraph_VertexI
     return;
 
   NCollection_Vector<BRepGraph_VertexId>& aVertices = theMap.ChangeFind(theKey);
-  for (int anIdx = 0; anIdx < aVertices.Length(); ++anIdx)
+  uint32_t                                anIdx     = 0;
+  for (NCollection_Vector<BRepGraph_VertexId>::Iterator anIt(aVertices); anIt.More();
+       anIt.Next(), ++anIdx)
   {
-    if (aVertices.Value(anIdx) != theVertex)
+    if (anIt.Value() != theVertex)
       continue;
-    if (anIdx < aVertices.Length() - 1)
-      aVertices.ChangeValue(anIdx) = aVertices.Value(aVertices.Length() - 1);
+    if (anIdx < static_cast<uint32_t>(aVertices.Size()) - 1u)
+      aVertices.ChangeValue(static_cast<size_t>(anIdx)) = aVertices.Value(aVertices.Size() - 1u);
     aVertices.EraseLast();
     break;
   }
@@ -210,26 +212,26 @@ bool BRepGraph_LayerParam::FindPointOnPCurve(const BRepGraph_VertexId theVertex,
 
 //=================================================================================================
 
-int BRepGraph_LayerParam::NbPointsOnCurve(const BRepGraph_VertexId theVertex) const
+uint32_t BRepGraph_LayerParam::NbPointsOnCurve(const BRepGraph_VertexId theVertex) const
 {
   const VertexParams* aParams = FindVertexParams(theVertex);
-  return aParams == nullptr ? 0 : aParams->PointsOnCurve.Length();
+  return aParams == nullptr ? 0u : static_cast<uint32_t>(aParams->PointsOnCurve.Size());
 }
 
 //=================================================================================================
 
-int BRepGraph_LayerParam::NbPointsOnSurface(const BRepGraph_VertexId theVertex) const
+uint32_t BRepGraph_LayerParam::NbPointsOnSurface(const BRepGraph_VertexId theVertex) const
 {
   const VertexParams* aParams = FindVertexParams(theVertex);
-  return aParams == nullptr ? 0 : aParams->PointsOnSurface.Length();
+  return aParams == nullptr ? 0u : static_cast<uint32_t>(aParams->PointsOnSurface.Size());
 }
 
 //=================================================================================================
 
-int BRepGraph_LayerParam::NbPointsOnPCurve(const BRepGraph_VertexId theVertex) const
+uint32_t BRepGraph_LayerParam::NbPointsOnPCurve(const BRepGraph_VertexId theVertex) const
 {
   const VertexParams* aParams = FindVertexParams(theVertex);
-  return aParams == nullptr ? 0 : aParams->PointsOnPCurve.Length();
+  return aParams == nullptr ? 0u : static_cast<uint32_t>(aParams->PointsOnPCurve.Size());
 }
 
 //=================================================================================================
@@ -297,12 +299,12 @@ void BRepGraph_LayerParam::SetPointOnCurve(const BRepGraph_VertexId theVertex,
                                            const double             theParameter)
 {
   VertexParams& aParams = changeVertexParams(theVertex);
-  for (int anIdx = 0; anIdx < aParams.PointsOnCurve.Length(); ++anIdx)
+  for (NCollection_Vector<PointOnCurveEntry>::Iterator anIt(aParams.PointsOnCurve); anIt.More();
+       anIt.Next())
   {
-    PointOnCurveEntry& anEntry = aParams.PointsOnCurve.ChangeValue(anIdx);
-    if (anEntry.EdgeDefId != theEdge)
+    if (anIt.Value().EdgeDefId != theEdge)
       continue;
-    anEntry.Parameter = theParameter;
+    anIt.ChangeValue().Parameter = theParameter;
     return;
   }
 
@@ -320,13 +322,13 @@ void BRepGraph_LayerParam::SetPointOnSurface(const BRepGraph_VertexId theVertex,
                                              const double             theParameterV)
 {
   VertexParams& aParams = changeVertexParams(theVertex);
-  for (int anIdx = 0; anIdx < aParams.PointsOnSurface.Length(); ++anIdx)
+  for (NCollection_Vector<PointOnSurfaceEntry>::Iterator anIt(aParams.PointsOnSurface); anIt.More();
+       anIt.Next())
   {
-    PointOnSurfaceEntry& anEntry = aParams.PointsOnSurface.ChangeValue(anIdx);
-    if (anEntry.FaceDefId != theFace)
+    if (anIt.Value().FaceDefId != theFace)
       continue;
-    anEntry.ParameterU = theParameterU;
-    anEntry.ParameterV = theParameterV;
+    anIt.ChangeValue().ParameterU = theParameterU;
+    anIt.ChangeValue().ParameterV = theParameterV;
     return;
   }
 
@@ -344,12 +346,12 @@ void BRepGraph_LayerParam::SetPointOnPCurve(const BRepGraph_VertexId theVertex,
                                             const double             theParameter)
 {
   VertexParams& aParams = changeVertexParams(theVertex);
-  for (int anIdx = 0; anIdx < aParams.PointsOnPCurve.Length(); ++anIdx)
+  for (NCollection_Vector<PointOnPCurveEntry>::Iterator anIt(aParams.PointsOnPCurve); anIt.More();
+       anIt.Next())
   {
-    PointOnPCurveEntry& anEntry = aParams.PointsOnPCurve.ChangeValue(anIdx);
-    if (anEntry.CoEdgeDefId != theCoEdge)
+    if (anIt.Value().CoEdgeDefId != theCoEdge)
       continue;
-    anEntry.Parameter = theParameter;
+    anIt.ChangeValue().Parameter = theParameter;
     return;
   }
 
@@ -368,13 +370,15 @@ void BRepGraph_LayerParam::removePointOnCurve(const BRepGraph_VertexId theVertex
     return;
 
   VertexParams& aParams = myVertexParams.ChangeFind(theVertex);
-  for (int anIdx = 0; anIdx < aParams.PointsOnCurve.Length(); ++anIdx)
+  uint32_t      anIdx   = 0;
+  for (NCollection_Vector<PointOnCurveEntry>::Iterator anIt(aParams.PointsOnCurve); anIt.More();
+       anIt.Next(), ++anIdx)
   {
-    if (aParams.PointsOnCurve.Value(anIdx).EdgeDefId != theEdge)
+    if (anIt.Value().EdgeDefId != theEdge)
       continue;
-    if (anIdx < aParams.PointsOnCurve.Length() - 1)
-      aParams.PointsOnCurve.ChangeValue(anIdx) =
-        aParams.PointsOnCurve.Value(aParams.PointsOnCurve.Length() - 1);
+    if (anIdx < static_cast<uint32_t>(aParams.PointsOnCurve.Size()) - 1u)
+      aParams.PointsOnCurve.ChangeValue(static_cast<size_t>(anIdx)) =
+        aParams.PointsOnCurve.Value(aParams.PointsOnCurve.Size() - 1u);
     aParams.PointsOnCurve.EraseLast();
     unbindEdgeFromVertex(theEdge, theVertex);
     break;
@@ -393,15 +397,15 @@ void BRepGraph_LayerParam::removePointOnSurface(const BRepGraph_VertexId theVert
     return;
 
   VertexParams& aParams = myVertexParams.ChangeFind(theVertex);
-  for (int anIdx = 0; anIdx < aParams.PointsOnSurface.Length(); ++anIdx)
+  uint32_t      anIdx   = 0;
+  for (NCollection_Vector<PointOnSurfaceEntry>::Iterator anIt(aParams.PointsOnSurface); anIt.More();
+       anIt.Next(), ++anIdx)
   {
-    if (aParams.PointsOnSurface.Value(anIdx).FaceDefId != theFace)
+    if (anIt.Value().FaceDefId != theFace)
       continue;
-    if (anIdx < aParams.PointsOnSurface.Length() - 1)
-    {
-      aParams.PointsOnSurface.ChangeValue(anIdx) =
-        aParams.PointsOnSurface.Value(aParams.PointsOnSurface.Length() - 1);
-    }
+    if (anIdx < static_cast<uint32_t>(aParams.PointsOnSurface.Size()) - 1u)
+      aParams.PointsOnSurface.ChangeValue(static_cast<size_t>(anIdx)) =
+        aParams.PointsOnSurface.Value(aParams.PointsOnSurface.Size() - 1u);
     aParams.PointsOnSurface.EraseLast();
     unbindFaceFromVertex(theFace, theVertex);
     break;
@@ -420,15 +424,15 @@ void BRepGraph_LayerParam::removePointOnPCurve(const BRepGraph_VertexId theVerte
     return;
 
   VertexParams& aParams = myVertexParams.ChangeFind(theVertex);
-  for (int anIdx = 0; anIdx < aParams.PointsOnPCurve.Length(); ++anIdx)
+  uint32_t      anIdx   = 0;
+  for (NCollection_Vector<PointOnPCurveEntry>::Iterator anIt(aParams.PointsOnPCurve); anIt.More();
+       anIt.Next(), ++anIdx)
   {
-    if (aParams.PointsOnPCurve.Value(anIdx).CoEdgeDefId != theCoEdge)
+    if (anIt.Value().CoEdgeDefId != theCoEdge)
       continue;
-    if (anIdx < aParams.PointsOnPCurve.Length() - 1)
-    {
-      aParams.PointsOnPCurve.ChangeValue(anIdx) =
-        aParams.PointsOnPCurve.Value(aParams.PointsOnPCurve.Length() - 1);
-    }
+    if (anIdx < static_cast<uint32_t>(aParams.PointsOnPCurve.Size()) - 1u)
+      aParams.PointsOnPCurve.ChangeValue(static_cast<size_t>(anIdx)) =
+        aParams.PointsOnPCurve.Value(aParams.PointsOnPCurve.Size() - 1u);
     aParams.PointsOnPCurve.EraseLast();
     unbindCoEdgeFromVertex(theCoEdge, theVertex);
     break;
@@ -464,8 +468,8 @@ void BRepGraph_LayerParam::invalidateEdgeBindings(const BRepGraph_EdgeId theEdge
     return;
 
   const NCollection_Vector<BRepGraph_VertexId> aBoundVertices = *aVertices;
-  for (int anIdx = 0; anIdx < aBoundVertices.Length(); ++anIdx)
-    removePointOnCurve(aBoundVertices.Value(anIdx), theEdge);
+  for (const BRepGraph_VertexId& aVtx : aBoundVertices)
+    removePointOnCurve(aVtx, theEdge);
 }
 
 //=================================================================================================
@@ -477,8 +481,8 @@ void BRepGraph_LayerParam::invalidateFaceBindings(const BRepGraph_FaceId theFace
     return;
 
   const NCollection_Vector<BRepGraph_VertexId> aBoundVertices = *aVertices;
-  for (int anIdx = 0; anIdx < aBoundVertices.Length(); ++anIdx)
-    removePointOnSurface(aBoundVertices.Value(anIdx), theFace);
+  for (const BRepGraph_VertexId& aVtx : aBoundVertices)
+    removePointOnSurface(aVtx, theFace);
 }
 
 //=================================================================================================
@@ -490,8 +494,8 @@ void BRepGraph_LayerParam::invalidateCoEdgeBindings(const BRepGraph_CoEdgeId the
     return;
 
   const NCollection_Vector<BRepGraph_VertexId> aBoundVertices = *aVertices;
-  for (int anIdx = 0; anIdx < aBoundVertices.Length(); ++anIdx)
-    removePointOnPCurve(aBoundVertices.Value(anIdx), theCoEdge);
+  for (const BRepGraph_VertexId& aVtx : aBoundVertices)
+    removePointOnPCurve(aVtx, theCoEdge);
 }
 
 //=================================================================================================
@@ -530,13 +534,13 @@ void BRepGraph_LayerParam::migrateEdgeBindings(const BRepGraph_EdgeId theOldEdge
     return;
 
   const NCollection_Vector<BRepGraph_VertexId> aBoundVertices = *aVertices;
-  for (int anIdx = 0; anIdx < aBoundVertices.Length(); ++anIdx)
+  for (const BRepGraph_VertexId& aVtx : aBoundVertices)
   {
     double aParameter = 0.0;
-    if (!FindPointOnCurve(aBoundVertices.Value(anIdx), theOldEdge, &aParameter))
+    if (!FindPointOnCurve(aVtx, theOldEdge, &aParameter))
       continue;
-    removePointOnCurve(aBoundVertices.Value(anIdx), theOldEdge);
-    SetPointOnCurve(aBoundVertices.Value(anIdx), theNewEdge, aParameter);
+    removePointOnCurve(aVtx, theOldEdge);
+    SetPointOnCurve(aVtx, theNewEdge, aParameter);
   }
 }
 
@@ -550,13 +554,13 @@ void BRepGraph_LayerParam::migrateFaceBindings(const BRepGraph_FaceId theOldFace
     return;
 
   const NCollection_Vector<BRepGraph_VertexId> aBoundVertices = *aVertices;
-  for (int anIdx = 0; anIdx < aBoundVertices.Length(); ++anIdx)
+  for (const BRepGraph_VertexId& aVtx : aBoundVertices)
   {
     gp_Pnt2d aUV;
-    if (!FindPointOnSurface(aBoundVertices.Value(anIdx), theOldFace, &aUV))
+    if (!FindPointOnSurface(aVtx, theOldFace, &aUV))
       continue;
-    removePointOnSurface(aBoundVertices.Value(anIdx), theOldFace);
-    SetPointOnSurface(aBoundVertices.Value(anIdx), theNewFace, aUV.X(), aUV.Y());
+    removePointOnSurface(aVtx, theOldFace);
+    SetPointOnSurface(aVtx, theNewFace, aUV.X(), aUV.Y());
   }
 }
 
@@ -570,13 +574,13 @@ void BRepGraph_LayerParam::migrateCoEdgeBindings(const BRepGraph_CoEdgeId theOld
     return;
 
   const NCollection_Vector<BRepGraph_VertexId> aBoundVertices = *aVertices;
-  for (int anIdx = 0; anIdx < aBoundVertices.Length(); ++anIdx)
+  for (const BRepGraph_VertexId& aVtx : aBoundVertices)
   {
     double aParameter = 0.0;
-    if (!FindPointOnPCurve(aBoundVertices.Value(anIdx), theOldCoEdge, &aParameter))
+    if (!FindPointOnPCurve(aVtx, theOldCoEdge, &aParameter))
       continue;
-    removePointOnPCurve(aBoundVertices.Value(anIdx), theOldCoEdge);
-    SetPointOnPCurve(aBoundVertices.Value(anIdx), theNewCoEdge, aParameter);
+    removePointOnPCurve(aVtx, theOldCoEdge);
+    SetPointOnPCurve(aVtx, theNewCoEdge, aParameter);
   }
 }
 
