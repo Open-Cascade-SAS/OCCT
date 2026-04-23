@@ -42,8 +42,8 @@ namespace
 //! @return The created internal vertex, or null vertex if failed
 TopoDS_Vertex addInternalVertexToFace(TopoDS_Face& theFace, const gp_Pnt& thePoint)
 {
-  Handle(Geom_Surface)       aSurf = BRep_Tool::Surface(theFace);
-  GeomAPI_ProjectPointOnSurf aProjection(thePoint, aSurf);
+  const occ::handle<Geom_Surface>  aSurf = BRep_Tool::Surface(theFace);
+  const GeomAPI_ProjectPointOnSurf aProjection(thePoint, aSurf);
   if (!aProjection.IsDone() || aProjection.NbPoints() == 0)
   {
     return TopoDS_Vertex();
@@ -62,18 +62,17 @@ TopoDS_Vertex addInternalVertexToFace(TopoDS_Face& theFace, const gp_Pnt& thePoi
   return aVertex;
 }
 
-//! Check if a triangulation has any invalid (uninitialized) nodes.
-//! Invalid nodes are detected by checking for abnormally large coordinate values.
+//! Checks triangulation nodes for valid coordinates (no extreme values).
 //! @param theTri The triangulation to check
 //! @param theLoc The location transformation
 //! @return True if all nodes are valid, false if any invalid nodes detected
-bool hasValidNodes(const Handle(Poly_Triangulation)& theTri, const TopLoc_Location& theLoc)
+bool hasOnlyValidNodes(const occ::handle<Poly_Triangulation>& theTri, const TopLoc_Location& theLoc)
 {
-  const double aMaxValidCoord = 1.0e10; // Reasonable max for valid geometry
+  constexpr double aMaxValidCoord = 1.0e10; // Reasonable max for valid geometry
 
   for (int i = 1; i <= theTri->NbNodes(); ++i)
   {
-    gp_Pnt aPoint = theTri->Node(i).Transformed(theLoc);
+    const gp_Pnt aPoint = theTri->Node(i).Transformed(theLoc);
     if (std::abs(aPoint.X()) > aMaxValidCoord || std::abs(aPoint.Y()) > aMaxValidCoord
         || std::abs(aPoint.Z()) > aMaxValidCoord)
     {
@@ -86,7 +85,7 @@ bool hasValidNodes(const Handle(Poly_Triangulation)& theTri, const TopLoc_Locati
 //! Check if any triangle has degenerate indices (duplicate node indices).
 //! @param theTri The triangulation to check
 //! @return True if all triangles have unique node indices, false otherwise
-bool hasValidTriangles(const Handle(Poly_Triangulation)& theTri)
+bool hasOnlyValidTriangles(const occ::handle<Poly_Triangulation>& theTri)
 {
   for (int i = 1; i <= theTri->NbTriangles(); ++i)
   {
@@ -104,19 +103,17 @@ bool hasValidTriangles(const Handle(Poly_Triangulation)& theTri)
 //! @param theTri The triangulation to search
 //! @param theLoc The location transformation
 //! @param thePoint The target point
-//! @param theMinDist Output: distance to closest node
-//! @return Index of closest node (1-based), or 0 if no nodes
-int findClosestNode(const Handle(Poly_Triangulation)& theTri,
-                    const TopLoc_Location&            theLoc,
-                    const gp_Pnt&                     thePoint,
-                    double&                           theMinDist)
+//! @return Pair of closest node index and distance to the point.
+std::pair<int, double> findClosestNode(const occ::handle<Poly_Triangulation>& theTri,
+                                       const TopLoc_Location&                 theLoc,
+                                       const gp_Pnt&                          thePoint)
 {
   int    aClosestIdx = 0;
   double aMinDistSq  = std::numeric_limits<double>::max();
 
   for (int i = 1; i <= theTri->NbNodes(); ++i)
   {
-    gp_Pnt       aNode  = theTri->Node(i).Transformed(theLoc);
+    const gp_Pnt aNode  = theTri->Node(i).Transformed(theLoc);
     const double aDist2 = thePoint.SquareDistance(aNode);
     if (aDist2 < aMinDistSq)
     {
@@ -125,8 +122,7 @@ int findClosestNode(const Handle(Poly_Triangulation)& theTri,
     }
   }
 
-  theMinDist = std::sqrt(aMinDistSq);
-  return aClosestIdx;
+  return {aClosestIdx, std::sqrt(aMinDistSq)};
 }
 
 } // namespace
@@ -138,19 +134,19 @@ int findClosestNode(const Handle(Poly_Triangulation)& theTri,
 TEST(BRepMesh_BaseMeshAlgoTest, InternalVerticesAreBound)
 {
   // Create a simple planar face
-  gp_Pln       aPlane(gp_Pnt(0.0, 0.0, 0.0), gp::DZ());
+  const gp_Pln aPlane(gp_Pnt(0.0, 0.0, 0.0), gp::DZ());
   const double aUMin = 0.0, aUMax = 100.0;
   const double aVMin = 0.0, aVMax = 50.0;
   TopoDS_Face  aFace = BRepBuilderAPI_MakeFace(aPlane, aUMin, aUMax, aVMin, aVMax);
 
   // Add internal vertices on the face
-  gp_Pnt aInternalPts[3] = {gp_Pnt(40.0, 20.0, 0.0),
-                            gp_Pnt(60.0, 30.0, 0.0),
-                            gp_Pnt(77.0, 33.0, 0.0)};
+  const gp_Pnt aInternalPts[3] = {gp_Pnt(40.0, 20.0, 0.0),
+                                  gp_Pnt(60.0, 30.0, 0.0),
+                                  gp_Pnt(77.0, 33.0, 0.0)};
 
   for (int i = 0; i < 3; ++i)
   {
-    TopoDS_Vertex aVertex = addInternalVertexToFace(aFace, aInternalPts[i]);
+    const TopoDS_Vertex aVertex = addInternalVertexToFace(aFace, aInternalPts[i]);
     ASSERT_FALSE(aVertex.IsNull()) << "Failed to add internal vertex " << i;
   }
 
@@ -160,26 +156,26 @@ TEST(BRepMesh_BaseMeshAlgoTest, InternalVerticesAreBound)
   aParams.Angle                = 0.5;
   aParams.InternalVerticesMode = true;
 
-  BRepMesh_IncrementalMesh aMesher(aFace, aParams);
+  const BRepMesh_IncrementalMesh aMesher(aFace, aParams);
   ASSERT_TRUE(aMesher.IsDone()) << "Meshing should succeed";
 
   // Get triangulation
-  TopLoc_Location            aLoc;
-  Handle(Poly_Triangulation) aTri = BRep_Tool::Triangulation(aFace, aLoc);
+  TopLoc_Location                       aLoc;
+  const occ::handle<Poly_Triangulation> aTri = BRep_Tool::Triangulation(aFace, aLoc);
   ASSERT_FALSE(aTri.IsNull()) << "Triangulation should be created";
 
   // Verify all nodes are valid (not uninitialized)
-  EXPECT_TRUE(hasValidNodes(aTri, aLoc)) << "All triangulation nodes should have valid coordinates";
+  EXPECT_TRUE(hasOnlyValidNodes(aTri, aLoc))
+    << "All triangulation nodes should have valid coordinates";
 
   // Verify triangles are valid (no degenerate triangles)
-  EXPECT_TRUE(hasValidTriangles(aTri)) << "All triangles should have unique node indices";
+  EXPECT_TRUE(hasOnlyValidTriangles(aTri)) << "All triangles should have unique node indices";
 
   // Verify internal vertices are present in the triangulation with correct coordinates
   const double aTolerance = 1.0e-6;
   for (int i = 0; i < 3; ++i)
   {
-    double aMinDist    = 0.0;
-    int    aClosestIdx = findClosestNode(aTri, aLoc, aInternalPts[i], aMinDist);
+    auto [aClosestIdx, aMinDist] = findClosestNode(aTri, aLoc, aInternalPts[i]);
     EXPECT_GT(aClosestIdx, 0) << "Should find a closest node for internal vertex " << i;
     EXPECT_LT(aMinDist, aTolerance)
       << "Internal vertex " << i << " should be present in triangulation (dist=" << aMinDist << ")";
@@ -189,7 +185,7 @@ TEST(BRepMesh_BaseMeshAlgoTest, InternalVerticesAreBound)
 TEST(BRepMesh_BaseMeshAlgoTest, MultipleInternalVertices)
 {
   // Test with more internal vertices to ensure the fix handles multiple vertices correctly
-  gp_Pln       aPlane(gp_Pnt(0.0, 0.0, 0.0), gp::DZ());
+  const gp_Pln aPlane(gp_Pnt(0.0, 0.0, 0.0), gp::DZ());
   const double aSize = 100.0;
   TopoDS_Face  aFace = BRepBuilderAPI_MakeFace(aPlane, 0.0, aSize, 0.0, aSize);
 
@@ -200,11 +196,11 @@ TEST(BRepMesh_BaseMeshAlgoTest, MultipleInternalVertices)
   {
     for (int j = 1; j < aGridSize; ++j)
     {
-      double aX = (aSize * i) / aGridSize;
-      double aY = (aSize * j) / aGridSize;
-      gp_Pnt aPt(aX, aY, 0.0);
+      double       aX = (aSize * i) / aGridSize;
+      double       aY = (aSize * j) / aGridSize;
+      const gp_Pnt aPt(aX, aY, 0.0);
       anInternalPts.Append(aPt);
-      TopoDS_Vertex aVertex = addInternalVertexToFace(aFace, aPt);
+      const TopoDS_Vertex aVertex = addInternalVertexToFace(aFace, aPt);
       ASSERT_FALSE(aVertex.IsNull())
         << "Failed to add internal vertex at (" << aX << ", " << aY << ")";
     }
@@ -215,23 +211,23 @@ TEST(BRepMesh_BaseMeshAlgoTest, MultipleInternalVertices)
   aParams.Angle                = 0.5;
   aParams.InternalVerticesMode = true;
 
-  BRepMesh_IncrementalMesh aMesher(aFace, aParams);
+  const BRepMesh_IncrementalMesh aMesher(aFace, aParams);
   ASSERT_TRUE(aMesher.IsDone()) << "Meshing should succeed";
 
-  TopLoc_Location            aLoc;
-  Handle(Poly_Triangulation) aTri = BRep_Tool::Triangulation(aFace, aLoc);
+  TopLoc_Location                       aLoc;
+  const occ::handle<Poly_Triangulation> aTri = BRep_Tool::Triangulation(aFace, aLoc);
   ASSERT_FALSE(aTri.IsNull()) << "Triangulation should be created";
 
-  EXPECT_TRUE(hasValidNodes(aTri, aLoc)) << "All triangulation nodes should have valid coordinates";
-  EXPECT_TRUE(hasValidTriangles(aTri)) << "All triangles should have unique node indices";
+  EXPECT_TRUE(hasOnlyValidNodes(aTri, aLoc))
+    << "All triangulation nodes should have valid coordinates";
+  EXPECT_TRUE(hasOnlyValidTriangles(aTri)) << "All triangles should have unique node indices";
 
   // Verify all internal vertices are present
-  const double aTolerance  = 1.0e-6;
-  int          aFoundCount = 0;
-  for (int i = 0; i < anInternalPts.Size(); ++i)
+  constexpr double aTolerance  = 1.0e-6;
+  int              aFoundCount = 0;
+  for (const auto& aPoint : anInternalPts)
   {
-    double aMinDist    = 0.0;
-    int    aClosestIdx = findClosestNode(aTri, aLoc, anInternalPts(i), aMinDist);
+    auto [aClosestIdx, aMinDist] = findClosestNode(aTri, aLoc, aPoint);
     if (aClosestIdx > 0 && aMinDist < aTolerance)
     {
       ++aFoundCount;
@@ -244,11 +240,11 @@ TEST(BRepMesh_BaseMeshAlgoTest, MultipleInternalVertices)
 TEST(BRepMesh_BaseMeshAlgoTest, InternalVerticesModeDisabled)
 {
   // Verify that when InternalVerticesMode is disabled, internal vertices are not included
-  gp_Pln      aPlane(gp_Pnt(0.0, 0.0, 0.0), gp::DZ());
-  TopoDS_Face aFace = BRepBuilderAPI_MakeFace(aPlane, 0.0, 100.0, 0.0, 50.0);
+  const gp_Pln aPlane(gp_Pnt(0.0, 0.0, 0.0), gp::DZ());
+  TopoDS_Face  aFace = BRepBuilderAPI_MakeFace(aPlane, 0.0, 100.0, 0.0, 50.0);
 
-  gp_Pnt        aInternalPt(50.0, 25.0, 0.0);
-  TopoDS_Vertex aVertex = addInternalVertexToFace(aFace, aInternalPt);
+  const gp_Pnt        aInternalPt(50.0, 25.0, 0.0);
+  const TopoDS_Vertex aVertex = addInternalVertexToFace(aFace, aInternalPt);
   ASSERT_FALSE(aVertex.IsNull()) << "Failed to add internal vertex";
 
   // Mesh with internal vertices mode DISABLED
@@ -257,21 +253,21 @@ TEST(BRepMesh_BaseMeshAlgoTest, InternalVerticesModeDisabled)
   aParams.Angle                = 0.5;
   aParams.InternalVerticesMode = false;
 
-  BRepMesh_IncrementalMesh aMesher(aFace, aParams);
+  const BRepMesh_IncrementalMesh aMesher(aFace, aParams);
   ASSERT_TRUE(aMesher.IsDone()) << "Meshing should succeed";
 
-  TopLoc_Location            aLoc;
-  Handle(Poly_Triangulation) aTri = BRep_Tool::Triangulation(aFace, aLoc);
+  TopLoc_Location                       aLoc;
+  const occ::handle<Poly_Triangulation> aTri = BRep_Tool::Triangulation(aFace, aLoc);
   ASSERT_FALSE(aTri.IsNull()) << "Triangulation should be created";
 
   // Triangulation should still be valid
-  EXPECT_TRUE(hasValidNodes(aTri, aLoc)) << "All triangulation nodes should have valid coordinates";
-  EXPECT_TRUE(hasValidTriangles(aTri)) << "All triangles should have unique node indices";
+  EXPECT_TRUE(hasOnlyValidNodes(aTri, aLoc))
+    << "All triangulation nodes should have valid coordinates";
+  EXPECT_TRUE(hasOnlyValidTriangles(aTri)) << "All triangles should have unique node indices";
 
   // Internal vertex should NOT be in the triangulation (or at least not as a fixed point)
   // The mesh should have fewer nodes when internal vertices are disabled
-  double aMinDist    = 0.0;
-  int    aClosestIdx = findClosestNode(aTri, aLoc, aInternalPt, aMinDist);
+  auto [aClosestIdx, aMinDist] = findClosestNode(aTri, aLoc, aInternalPt);
 
   // The internal vertex might still be close to some mesh node, but it shouldn't be exact
   // For a simple planar face, the mesh might have very few nodes
