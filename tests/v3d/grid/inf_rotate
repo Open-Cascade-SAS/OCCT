@@ -1,0 +1,21 @@
+puts "======================================================="
+puts "0030979: shader infinite grid stays fixed during rotation"
+puts "======================================================="
+
+pload MODELING VISUALIZATION
+
+vclear
+vinit View1
+vaxo
+box b 1 2 3
+vdisplay b -dispMode 1
+vfit
+vzoom 0.2
+
+vgrid -type inf -background 1
+vdump $imagedir/${casename}_before.png
+
+vrotate 0 0 0.5
+vdump $imagedir/${casename}_after.png
+
+vgrid off

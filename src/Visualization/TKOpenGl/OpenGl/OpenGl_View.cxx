@@ -15,12 +15,15 @@
 
 #include <OpenGl_View.hxx>
 
+#include <cmath>
+
 #include <Aspect_NeutralWindow.hxx>
 #include <Aspect_RenderingContext.hxx>
 #include <Aspect_XRSession.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_Texture2D.hxx>
 #include <Graphic3d_TextureEnv.hxx>
+#include <Graphic3d_TransformUtils.hxx>
 #include <Image_AlienPixMap.hxx>
 #include <OpenGl_ArbFBO.hxx>
 #include <OpenGl_BackgroundArray.hxx>
@@ -28,6 +31,7 @@
 #include <OpenGl_DepthPeeling.hxx>
 #include <OpenGl_FrameBuffer.hxx>
 #include <OpenGl_GlCore11.hxx>
+#include <OpenGl_GlCore32.hxx>
 #include <OpenGl_GraduatedTrihedron.hxx>
 #include <OpenGl_GraphicDriver.hxx>
 #include <OpenGl_RenderFilter.hxx>
@@ -134,6 +138,8 @@ OpenGl_View::OpenGl_View(const occ::handle<Graphic3d_StructureManager>& theMgr,
       myTextureParams(new OpenGl_Aspects()),
       myCubeMapParams(new OpenGl_Aspects()),
       myColoredQuadParams(new OpenGl_Aspects()),
+      myGridVao(0),
+      myToShowGrid(false),
       myPBREnvState(OpenGl_PBREnvState_NONEXISTENT),
       myPBREnvRequest(false),
       // ray-tracing fields initialization
@@ -275,6 +281,13 @@ void OpenGl_View::ReleaseGlResources(const occ::handle<OpenGl_Context>& theCtx)
   {
     myPBREnvironment->Release(theCtx.get());
   }
+
+  if (myGridVao != 0 && !theCtx.IsNull() && theCtx->core30 != nullptr)
+  {
+    theCtx->core30->glDeleteVertexArrays(1, &myGridVao);
+  }
+  myGridVao = 0;
+
   ReleaseXR();
 }
 
@@ -2580,6 +2593,12 @@ void OpenGl_View::render(Graphic3d_Camera::Projection theProjection,
 
   myWorkspace->SetEnvironmentTexture(occ::handle<OpenGl_TextureSet>());
 
+  // Render shader-based infinite grid on top of opaque scene, before trihedron.
+  if (!theToDrawImmediate)
+  {
+    renderGrid();
+  }
+
   // ===============================
   //      Step 4: Trihedron
   // ===============================
@@ -3544,4 +3563,364 @@ void OpenGl_View::updatePBREnvironment(const occ::handle<OpenGl_Context>& theCtx
   }
   aGlTextureSet.Nullify();
   OpenGl_Element::Destroy(theCtx.get(), aTmpGlAspects);
+}
+
+//=================================================================================================
+
+void OpenGl_View::GridDisplay(const Aspect_GridParams& theParams, const gp_Ax3& thePlane)
+{
+  // Reference view matrix (for background-mode anchoring) is captured only on
+  // transitions into background mode or into the showing state. Otherwise live
+  // param edits (SetArcRange, SetSize, etc.) while the camera is mid-orbit would
+  // re-snapshot the current view and visually snap the anchored grid.
+  const bool wasShowing    = myToShowGrid;
+  const bool wasBackground = wasShowing && myGridParams.IsBackground();
+  const bool toCapture     = theParams.IsBackground() && (!wasShowing || !wasBackground);
+
+  myGridParams = theParams;
+  myGridPlane  = thePlane;
+  myToShowGrid = true;
+
+  if (toCapture)
+  {
+    const occ::handle<OpenGl_Context>& aCtx = myWorkspace->GetGlContext();
+    if (!aCtx.IsNull())
+    {
+      myGridRefViewMatrix = aCtx->WorldViewState.Current();
+    }
+  }
+}
+
+//=================================================================================================
+
+void OpenGl_View::GridErase()
+{
+  myToShowGrid = false;
+}
+
+//=================================================================================================
+
+void OpenGl_View::renderGrid()
+{
+  if (!myToShowGrid || myGridParams.DrawMode() == Aspect_GDM_None)
+  {
+    return;
+  }
+
+  const occ::handle<OpenGl_Context>& aContext = myWorkspace->GetGlContext();
+  if (aContext.IsNull())
+  {
+    return;
+  }
+  if (aContext->core30 == nullptr)
+  {
+    // The shader grid requires GL 3.0+ / GLES 3.0+ (VAO + gl_VertexID + gl_FragDepth).
+    // Warn once per process so the caller knows why the grid isn't drawn; snap
+    // math still works. The process scope avoids per-view state bloat - a stray
+    // missed warning on a second view is less costly than a data member.
+    static bool THE_GRID_GL30_WARNED = false;
+    if (!THE_GRID_GL30_WARNED)
+    {
+      THE_GRID_GL30_WARNED = true;
+      aContext->PushMessage(GL_DEBUG_SOURCE_APPLICATION,
+                            GL_DEBUG_TYPE_OTHER,
+                            0,
+                            GL_DEBUG_SEVERITY_MEDIUM,
+                            "Warning: shader-based grid requires GL 3.0 / GLES 3.0 or later; "
+                            "grid will not be rendered on this driver. Snap selection remains "
+                            "functional.");
+    }
+    return;
+  }
+
+  const occ::handle<Graphic3d_Camera>& aCamera = aContext->Camera();
+  if (aCamera.IsNull())
+  {
+    return;
+  }
+
+  if (myGridVao == 0)
+  {
+    aContext->core30->glGenVertexArrays(1, &myGridVao);
+    if (myGridVao == 0)
+    {
+      myToShowGrid = false;
+      return;
+    }
+  }
+
+  GLint aPrevVao = 0;
+  aContext->core11fwd->glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &aPrevVao);
+
+  GLboolean wasDepthTest  = aContext->core11fwd->glIsEnabled(GL_DEPTH_TEST);
+  GLboolean wasBlend      = aContext->core11fwd->glIsEnabled(GL_BLEND);
+  GLboolean wasCullFace   = aContext->core11fwd->glIsEnabled(GL_CULL_FACE);
+  GLboolean wasDepthWrite = GL_TRUE;
+  aContext->core11fwd->glGetBooleanv(GL_DEPTH_WRITEMASK, &wasDepthWrite);
+  GLint aPrevDepthFunc = GL_LESS;
+  aContext->core11fwd->glGetIntegerv(GL_DEPTH_FUNC, &aPrevDepthFunc);
+  GLint aPrevBlendSrcRgb = GL_ONE, aPrevBlendDstRgb = GL_ZERO;
+  GLint aPrevBlendSrcA = GL_ONE, aPrevBlendDstA = GL_ZERO;
+  aContext->core11fwd->glGetIntegerv(GL_BLEND_SRC_RGB, &aPrevBlendSrcRgb);
+  aContext->core11fwd->glGetIntegerv(GL_BLEND_DST_RGB, &aPrevBlendDstRgb);
+  aContext->core11fwd->glGetIntegerv(GL_BLEND_SRC_ALPHA, &aPrevBlendSrcA);
+  aContext->core11fwd->glGetIntegerv(GL_BLEND_DST_ALPHA, &aPrevBlendDstA);
+  const bool hasDepthClamp = aContext->arbDepthClamp;
+  const bool wasDepthClamp =
+    hasDepthClamp && aContext->core11fwd->glIsEnabled(GL_DEPTH_CLAMP) == GL_TRUE;
+  const occ::handle<OpenGl_ShaderProgram> aPrevProgram = aContext->ActiveProgram();
+
+  // Capture the user-set camera ZRange BEFORE any grid-specific adjustment.
+  // ZFitAll below mutates the camera; the restore block at the end of this
+  // method targets these original values, otherwise vconvert and other APIs
+  // observing ZRange between frames see values inflated by the grid bounds.
+  const double                       aZNearKeep = aCamera->ZNear();
+  const double                       aZFarKeep  = aCamera->ZFar();
+  const Graphic3d_Camera::Projection aProjKeep  = aCamera->ProjectionType();
+
+  Bnd_Box      aBnd      = MinMaxValues(true);
+  const gp_Pnt aPlaneLoc = myGridPlane.Location();
+  if (myGridParams.IsBackground() || aBnd.IsVoid() || aBnd.IsOut(aPlaneLoc))
+  {
+    aBnd.Add(aPlaneLoc);
+    // ZFitAll asserts ZFar > ZNear on return (Graphic3d_Camera.cxx:1636),
+    // so no post-hoc SetZRange nudge is needed.
+    aCamera->ZFitAll(1.0, aBnd, aBnd);
+  }
+  if (myGridParams.IsBackground())
+  {
+    aCamera->SetProjectionType(Graphic3d_Camera::Projection_Orthographic);
+  }
+
+  aContext->ProjectionState.Push();
+  aContext->ProjectionState.SetCurrent(aCamera->ProjectionMatrixF());
+  aContext->ApplyProjectionMatrix();
+
+  const NCollection_Mat4<float> aWorldViewCurrent = aContext->WorldViewState.Current();
+  aContext->WorldViewState.Push();
+  if (myGridParams.IsBackground())
+  {
+    // In background mode the grid lives in an unchanging reference frame.
+    // Derive the camera-motion delta from the captured reference view matrix so the
+    // grid stays fixed in world coords during pan/rotate, without exposing
+    // PanningVector / RotationPoint on Graphic3d_Camera.
+    NCollection_Mat4<float> aRefInv;
+    if (!myGridRefViewMatrix.Inverted(aRefInv))
+    {
+      aRefInv.InitIdentity();
+    }
+    NCollection_Mat4<float> aDelta = aWorldViewCurrent * aRefInv;
+    aContext->WorldViewState.SetCurrent(aDelta);
+  }
+  aContext->ApplyWorldViewMatrix();
+
+  aContext->core11fwd->glEnable(GL_DEPTH_TEST);
+  aContext->core11fwd->glDepthFunc(GL_LESS);
+  aContext->core11fwd->glDepthMask(GL_TRUE);
+  aContext->core11fwd->glEnable(GL_BLEND);
+  aContext->core11fwd->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  // The clip-space full-screen quad winds CW; if back-face culling is on
+  // (leftover from prior scene render with solid interiors), every triangle
+  // is culled and the grid silently vanishes. Disable culling for the draw
+  // call and restore at the end.
+  aContext->core11fwd->glDisable(GL_CULL_FACE);
+  if (hasDepthClamp && !wasDepthClamp)
+  {
+    aContext->core11fwd->glEnable(GL_DEPTH_CLAMP);
+  }
+
+  aContext->core30->glBindVertexArray(myGridVao);
+
+  double aScaleX = myGridParams.Scale();
+  double aScaleY = myGridParams.EffectiveScaleY();
+  if (myGridParams.IsInfinity())
+  {
+    const double aCamScale = aCamera->Scale();
+    aScaleX = 10.0 / std::pow(10.0, std::floor(std::log10(std::max(aCamScale, 1.0))) + 1.0);
+    aScaleY = aScaleX;
+  }
+
+  if (aContext->ShaderManager()->BindGridProgram())
+  {
+    const occ::handle<OpenGl_ShaderProgram>& aProg = aContext->ActiveProgram();
+
+    aProg->SetUniform(aContext, "uScaleX", GLfloat(aScaleX));
+    aProg->SetUniform(aContext, "uScaleY", GLfloat(aScaleY));
+    aProg->SetUniform(aContext, "uThickness", GLfloat(myGridParams.LineThickness()));
+    aProg->SetUniform(aContext,
+                      "uColor",
+                      NCollection_Vec3<float>((float)myGridParams.Color().Red(),
+                                              (float)myGridParams.Color().Green(),
+                                              (float)myGridParams.Color().Blue()));
+    aProg->SetUniform(aContext,
+                      "uAccentColor",
+                      NCollection_Vec3<float>((float)myGridParams.AccentColor().Red(),
+                                              (float)myGridParams.AccentColor().Green(),
+                                              (float)myGridParams.AccentColor().Blue()));
+    aProg->SetUniform(aContext, "uAccentScaleX", GLfloat(myGridParams.AccentScaleX()));
+    aProg->SetUniform(aContext, "uAccentScaleY", GLfloat(myGridParams.AccentScaleY()));
+    aProg->SetUniform(aContext, "uAccentAngularScale", GLfloat(myGridParams.AccentAngularScale()));
+    aProg->SetUniform(aContext, "uIsDrawAxis", myGridParams.IsDrawAxis() ? 1 : 0);
+    aProg->SetUniform(aContext, "uIsBackground", myGridParams.IsBackground() ? 1 : 0);
+    aProg->SetUniform(aContext, "uGridType", myGridParams.IsCircular() ? 1 : 0);
+    // Angular spokes per radian: N spokes in 180 deg = N / pi spokes per radian.
+    const double aAngularScale =
+      myGridParams.IsCircular() ? double(myGridParams.AngularDivisions()) / M_PI : 0.0;
+    aProg->SetUniform(aContext, "uAngularScale", GLfloat(aAngularScale));
+    aProg->SetUniform(aContext, "uDrawMode", myGridParams.DrawMode() == Aspect_GDM_Points ? 1 : 0);
+
+    // Bounded work area (HalfSizeX, HalfSizeY, Radius). 0 = unbounded along that axis.
+    const float aHalfX  = myGridParams.SizeX() > 0.0 ? float(myGridParams.SizeX() * 0.5) : 0.0f;
+    const float aHalfY  = myGridParams.SizeY() > 0.0 ? float(myGridParams.SizeY() * 0.5) : 0.0f;
+    const float aRadius = myGridParams.Radius() > 0.0 ? float(myGridParams.Radius()) : 0.0f;
+    aProg->SetUniform(aContext, "uBounds", NCollection_Vec3<float>(aHalfX, aHalfY, aRadius));
+    aProg->SetUniform(
+      aContext,
+      "uArcRange",
+      NCollection_Vec2<float>(float(myGridParams.AngleStart()), float(myGridParams.AngleEnd())));
+    aProg->SetUniform(aContext, "uArcBounded", myGridParams.IsArc() ? 1 : 0);
+
+    // In-plane rotation: rotate the plane's X/Y basis around the plane normal
+    // so the grid lines follow the requested RotationAngle. Sign matches
+    // V3d_View::SetGrid's Trsf2 so snap (V3d_View::Compute) and the drawn
+    // grid use the same basis: aGridX = cos*planeX - sin*planeY,
+    //                          aGridY = sin*planeX + cos*planeY.
+    const double aCosA     = std::cos(myGridParams.RotationAngle());
+    const double aSinA     = std::sin(myGridParams.RotationAngle());
+    const gp_Dir aRawX     = myGridPlane.XDirection();
+    const gp_Dir aRawY     = myGridPlane.YDirection();
+    const gp_XYZ aXRotated = aRawX.XYZ() * aCosA - aRawY.XYZ() * aSinA;
+    const gp_XYZ aYRotated = aRawX.XYZ() * aSinA + aRawY.XYZ() * aCosA;
+
+    // ZOffset pushes the displayed plane along its normal to avoid z-fighting
+    // with coplanar geometry. Snap math uses the unshifted plane, so selection
+    // still lands on the true plane.
+    const gp_Dir aNDir        = myGridPlane.Direction();
+    const double aZOffset     = myGridParams.ZOffset();
+    const gp_Pnt aOriginLocal = myGridParams.Origin();
+    const gp_Pnt aPlaneOrigin(aPlaneLoc.X() + aOriginLocal.X() + aNDir.X() * aZOffset,
+                              aPlaneLoc.Y() + aOriginLocal.Y() + aNDir.Y() * aZOffset,
+                              aPlaneLoc.Z() + aOriginLocal.Z() + aNDir.Z() * aZOffset);
+    aProg->SetUniform(aContext,
+                      "uPlaneOrigin",
+                      NCollection_Vec3<float>((float)aPlaneOrigin.X(),
+                                              (float)aPlaneOrigin.Y(),
+                                              (float)aPlaneOrigin.Z()));
+    aProg->SetUniform(
+      aContext,
+      "uPlaneX",
+      NCollection_Vec3<float>((float)aXRotated.X(), (float)aXRotated.Y(), (float)aXRotated.Z()));
+    aProg->SetUniform(
+      aContext,
+      "uPlaneY",
+      NCollection_Vec3<float>((float)aYRotated.X(), (float)aYRotated.Y(), (float)aYRotated.Z()));
+
+    // Build a stable per-frame rectangular-grid reference point in plane-local
+    // coordinates. This keeps shader fract() arguments bounded at shallow angles
+    // without re-running extra unproject/intersection work for every fragment.
+    int                     aHasStableRef = 0;
+    NCollection_Vec2<float> aStableRefLocal(0.0f, 0.0f);
+    if (!myGridParams.IsCircular())
+    {
+      const int* aViewport = aContext->Viewport();
+      if (aViewport != nullptr)
+      {
+        const float aWinX = float(aViewport[0]) + float(aViewport[2]) * 0.5f;
+        const float aWinY = float(aViewport[1]) + float(aViewport[3]) * 0.5f;
+
+        float      aNearX = 0.0f, aNearY = 0.0f, aNearZ = 0.0f;
+        float      aFarX = 0.0f, aFarY = 0.0f, aFarZ = 0.0f;
+        const bool isNearOk =
+          Graphic3d_TransformUtils::UnProject<float>(aWinX,
+                                                     aWinY,
+                                                     0.0f,
+                                                     aContext->WorldViewState.Current(),
+                                                     aContext->ProjectionState.Current(),
+                                                     aViewport,
+                                                     aNearX,
+                                                     aNearY,
+                                                     aNearZ);
+        const bool isFarOk =
+          Graphic3d_TransformUtils::UnProject<float>(aWinX,
+                                                     aWinY,
+                                                     1.0f,
+                                                     aContext->WorldViewState.Current(),
+                                                     aContext->ProjectionState.Current(),
+                                                     aViewport,
+                                                     aFarX,
+                                                     aFarY,
+                                                     aFarZ);
+        if (isNearOk && isFarOk)
+        {
+          const NCollection_Vec3<float> aNearP(aNearX, aNearY, aNearZ);
+          const NCollection_Vec3<float> aFarP(aFarX, aFarY, aFarZ);
+          const NCollection_Vec3<float> aDir = aFarP - aNearP;
+
+          const NCollection_Vec3<float> aPlaneN((float)aNDir.X(),
+                                                (float)aNDir.Y(),
+                                                (float)aNDir.Z());
+          const float                   aDenom = aPlaneN.Dot(aDir);
+          if (std::abs(aDenom) > 1.0e-6f)
+          {
+            const NCollection_Vec3<float> aPlaneOriginV((float)aPlaneOrigin.X(),
+                                                        (float)aPlaneOrigin.Y(),
+                                                        (float)aPlaneOrigin.Z());
+            const float                   aT      = aPlaneN.Dot(aPlaneOriginV - aNearP) / aDenom;
+            const NCollection_Vec3<float> aHit    = aNearP + aDir * aT;
+            const NCollection_Vec3<float> aLocal3 = aHit - aPlaneOriginV;
+            const NCollection_Vec3<float> aPlaneX((float)aXRotated.X(),
+                                                  (float)aXRotated.Y(),
+                                                  (float)aXRotated.Z());
+            const NCollection_Vec3<float> aPlaneY((float)aYRotated.X(),
+                                                  (float)aYRotated.Y(),
+                                                  (float)aYRotated.Z());
+            aStableRefLocal.SetValues(aLocal3.Dot(aPlaneX), aLocal3.Dot(aPlaneY));
+            aHasStableRef = 1;
+          }
+        }
+      }
+    }
+    aProg->SetUniform(aContext, "uStableRefLocal", aStableRefLocal);
+    aProg->SetUniform(aContext, "uHasStableRef", aHasStableRef);
+    aProg->SetUniform(
+      aContext,
+      "uPlaneN",
+      NCollection_Vec3<float>((float)aNDir.X(), (float)aNDir.Y(), (float)aNDir.Z()));
+
+    aContext->core11fwd->glDrawArrays(GL_TRIANGLES, 0, 6);
+  }
+
+  aContext->BindProgram(aPrevProgram);
+  aContext->core30->glBindVertexArray((GLuint)aPrevVao);
+
+  aCamera->SetZRange(aZNearKeep, aZFarKeep);
+  aCamera->SetProjectionType(aProjKeep);
+
+  aContext->WorldViewState.Pop();
+  aContext->ProjectionState.Pop();
+  aContext->ApplyWorldViewMatrix();
+  aContext->ApplyProjectionMatrix();
+
+  if (wasDepthTest == GL_FALSE)
+  {
+    aContext->core11fwd->glDisable(GL_DEPTH_TEST);
+  }
+  aContext->core11fwd->glDepthFunc(aPrevDepthFunc);
+  aContext->core11fwd->glDepthMask(wasDepthWrite);
+  if (wasBlend == GL_FALSE)
+  {
+    aContext->core11fwd->glDisable(GL_BLEND);
+  }
+  aContext->core15fwd->glBlendFuncSeparate(aPrevBlendSrcRgb,
+                                           aPrevBlendDstRgb,
+                                           aPrevBlendSrcA,
+                                           aPrevBlendDstA);
+  if (wasCullFace == GL_TRUE)
+  {
+    aContext->core11fwd->glEnable(GL_CULL_FACE);
+  }
+  if (hasDepthClamp && !wasDepthClamp)
+  {
+    aContext->core11fwd->glDisable(GL_DEPTH_CLAMP);
+  }
 }

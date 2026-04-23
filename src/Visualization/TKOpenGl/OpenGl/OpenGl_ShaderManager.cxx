@@ -174,6 +174,7 @@ void OpenGl_ShaderManager::clear()
   myBlitPrograms[1].Init(occ::handle<OpenGl_ShaderProgram>());
   myBoundBoxProgram.Nullify();
   myBoundBoxVertBuffer.Nullify();
+  myGridProgram.Nullify();
   for (int aModeIter = 0; aModeIter < Graphic3d_StereoMode_NB; ++aModeIter)
   {
     myStereoPrograms[aModeIter].Nullify();
@@ -1472,6 +1473,36 @@ const occ::handle<Graphic3d_ShaderProgram>& OpenGl_ShaderManager::GetColoredQuad
     myColoredQuadProgram = getColoredQuadProgram();
   }
   return myColoredQuadProgram;
+}
+
+//=================================================================================================
+
+bool OpenGl_ShaderManager::BindGridProgram()
+{
+  if (myGridProgram.IsNull())
+  {
+    occ::handle<Graphic3d_ShaderProgram> aProgramSrc = getGridProgram();
+    TCollection_AsciiString              aKey;
+    if (!Create(aProgramSrc, aKey, myGridProgram))
+    {
+      myContext->PushMessage(GL_DEBUG_SOURCE_APPLICATION,
+                             GL_DEBUG_TYPE_ERROR,
+                             0,
+                             GL_DEBUG_SEVERITY_HIGH,
+                             "Error: infinite-grid shader failed to compile/link");
+      myGridProgram = new OpenGl_ShaderProgram(); // mark as invalid so we don't retry every frame
+      return false;
+    }
+  }
+  if (!myGridProgram->IsValid())
+  {
+    return false;
+  }
+  // Route through bindProgramWithState so OCCT built-in uniforms (occProjectionMatrix,
+  // occWorldViewMatrix, occModelWorldMatrix, their inverses, viewport, etc.) are uploaded
+  // to the grid program. The shader's unproject() path depends on these matrices; without
+  // PushState they stay at zero and every fragment is discarded (the grid never draws).
+  return bindProgramWithState(myGridProgram, Graphic3d_TypeOfShadingModel_Unlit);
 }
 
 //=================================================================================================
