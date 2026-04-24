@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Bnd_BoundSortBox.hxx>
 #include <Bnd_Box.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
@@ -22,8 +21,10 @@
 #include <gp_Vec.hxx>
 #include <gp_XYZ.hxx>
 #include <Intf.hxx>
+#include <IntPatch_BVHTraversal.hxx>
 #include <IntPatch_InterferencePolyhedron.hxx>
 #include <IntPatch_Polyhedron.hxx>
+#include <IntPatch_PolyhedronBVH.hxx>
 #include <IntPatch_PolyhedronTool.hxx>
 #include <NCollection_LocalArray.hxx>
 #include <Standard_Integer.hxx>
@@ -117,89 +118,22 @@ void IntPatch_InterferencePolyhedron::Perform(const IntPatch_Polyhedron& Objet)
 
 void IntPatch_InterferencePolyhedron::Interference(const IntPatch_Polyhedron&) {}
 
-void IntPatch_InterferencePolyhedron::Interference(const IntPatch_Polyhedron& FirstPol,
-                                                   const IntPatch_Polyhedron& SeconPol)
+void IntPatch_InterferencePolyhedron::Interference(const IntPatch_Polyhedron& theFirstPol,
+                                                   const IntPatch_Polyhedron& theSecondPol)
 {
-  bool gridOnFirst          = true;
-  int  NbTrianglesFirstPol  = IntPatch_PolyhedronTool::NbTriangles(FirstPol);
-  int  NbTrianglesSecondPol = IntPatch_PolyhedronTool::NbTriangles(SeconPol);
-  int  iFirst, iSecon;
+  // Build BVH sets for both polyhedra
+  IntPatch_PolyhedronBVH aSet1(theFirstPol);
+  IntPatch_PolyhedronBVH aSet2(theSecondPol);
 
-  //------------------------------------------------------------------------------------------
-  //-- the same number of triangles it is necessary to test better on
-  //-- the size of boxes.
-  //--
-  //-- the second is chosen if nbTri1 > 2*nbTri2   or   if VolBoit1 > 2*VolBoit2
-  //--
-  //--if (!SelfIntf && NbTrianglesFirstPol>NbTrianglesSecondPol)
-  //--  gridOnFirst=false;
+  // Find candidate triangle pairs via BVH traversal
+  IntPatch_BVHTraversal aTraversal;
+  aTraversal.Perform(aSet1, aSet2, SelfIntf);
 
-  if (!SelfIntf)
+  // Process each candidate pair
+  const NCollection_Vector<IntPatch_BVHTraversal::TrianglePair>& aPairs = aTraversal.Pairs();
+  for (const auto& aPair : aPairs)
   {
-    if (NbTrianglesFirstPol > NbTrianglesSecondPol + NbTrianglesSecondPol)
-      gridOnFirst = false;
-
-    double vol1, vol2, Xmin, Ymin, Zmin, Xmax, Ymax, Zmax;
-    IntPatch_PolyhedronTool::Bounding(FirstPol).Get(Xmin, Ymin, Zmin, Xmax, Ymax, Zmax);
-    vol1 = (Xmax - Xmin) * (Ymax - Ymin) * (Zmax - Zmin);
-
-    IntPatch_PolyhedronTool::Bounding(SeconPol).Get(Xmin, Ymin, Zmin, Xmax, Ymax, Zmax);
-    vol2 = (Xmax - Xmin) * (Ymax - Ymin) * (Zmax - Zmin);
-
-    if (vol1 > 8.0 * vol2)
-      gridOnFirst = false;
-  }
-
-  if (gridOnFirst)
-  {
-    Bnd_BoundSortBox TheGridFirst;
-    TheGridFirst.Initialize(IntPatch_PolyhedronTool::Bounding(FirstPol),
-                            IntPatch_PolyhedronTool::ComponentsBounding(FirstPol));
-
-    for (iSecon = 1; iSecon <= NbTrianglesSecondPol; iSecon++)
-    {
-
-      NCollection_List<int>::Iterator iLoI(
-        TheGridFirst.Compare(IntPatch_PolyhedronTool::ComponentsBounding(SeconPol)->Value(iSecon)));
-      while (iLoI.More())
-      {
-        iFirst = iLoI.Value();
-        if (SelfIntf)
-        {
-          if (iFirst < iSecon)
-            Intersect(iFirst, FirstPol, iSecon, SeconPol);
-        }
-        else
-          Intersect(iFirst, FirstPol, iSecon, SeconPol);
-        iLoI.Next();
-      }
-    }
-  }
-
-  else
-  {
-    Bnd_BoundSortBox TheGridSecond;
-    TheGridSecond.Initialize(IntPatch_PolyhedronTool::Bounding(SeconPol),
-                             IntPatch_PolyhedronTool::ComponentsBounding(SeconPol));
-
-    for (iFirst = 1; iFirst <= NbTrianglesFirstPol; iFirst++)
-    {
-      NCollection_List<int>::Iterator iLoI(TheGridSecond.Compare(
-        IntPatch_PolyhedronTool::ComponentsBounding(FirstPol)->Value(iFirst)));
-
-      while (iLoI.More())
-      {
-        iSecon = iLoI.Value();
-        if (SelfIntf)
-        {
-          if (iFirst < iSecon)
-            Intersect(iFirst, FirstPol, iSecon, SeconPol);
-        }
-        else
-          Intersect(iFirst, FirstPol, iSecon, SeconPol);
-        iLoI.Next();
-      }
-    }
+    Intersect(aPair.First, theFirstPol, aPair.Second, theSecondPol);
   }
 }
 
@@ -523,7 +457,7 @@ void IntPatch_InterferencePolyhedron::Intersect(const int                  Tri1,
                   {
                     parO[iObj] = dpOeT[inext][iToo] / div;
                     piO        = (IntPatch_PolyhedronTool::Point(FirstPol, OI[inext]).XYZ())
-                          + (voo[iObj].Reversed() * parO[iObj]);
+                                 + (voo[iObj].Reversed() * parO[iObj]);
                   }
                   else
                     Pb = true;
@@ -535,7 +469,7 @@ void IntPatch_InterferencePolyhedron::Intersect(const int                  Tri1,
                   {
                     parO[iObj] = dpOeT[iObj][iToo] / (dpOeT[iObj][iToo] - dpOeT[inext][iToo]);
                     piO        = (IntPatch_PolyhedronTool::Point(FirstPol, OI[iObj]).XYZ())
-                          + (voo[iObj] * parO[iObj]);
+                                 + (voo[iObj] * parO[iObj]);
                   }
                   else
                     Pb = true;
@@ -547,7 +481,7 @@ void IntPatch_InterferencePolyhedron::Intersect(const int                  Tri1,
                   {
                     parT[iToo] = deOpT[iObj][jnext] / div;
                     piT        = (IntPatch_PolyhedronTool::Point(SeconPol, TI[jnext]).XYZ())
-                          + (vtt[iToo].Reversed() * parT[iToo]);
+                                 + (vtt[iToo].Reversed() * parT[iToo]);
                   }
                   else
                     Pb = true;
@@ -559,7 +493,7 @@ void IntPatch_InterferencePolyhedron::Intersect(const int                  Tri1,
                   {
                     parT[iToo] = deOpT[iObj][iToo] / div;
                     piT        = (IntPatch_PolyhedronTool::Point(SeconPol, TI[iToo]).XYZ())
-                          + (vtt[iToo] * parT[iToo]);
+                                 + (vtt[iToo] * parT[iToo]);
                   }
                   else
                     Pb = true;
@@ -1059,7 +993,7 @@ bool IntPatch_InterferencePolyhedron::TangentZoneValue(Intf_TangentZone&        
             parO[nbpInt] = dpOeT[nob][nou] / (dpOeT[nob][nou] - dpOeT[nob2][nou]);
             parT[nbpInt] = deOpT[nob][nou] / (deOpT[nob][nou] - deOpT[nob][nou2]);
             gp_Pnt lepi  = IntPatch_PolyhedronTool::Point(SeconPol, TI[nou])
-                            .Translated(gp_Vec(vtt[nou] * parT[nbpInt]));
+                             .Translated(gp_Vec(vtt[nou] * parT[nbpInt]));
             if (OI[nob] > OI[nob2])
               parO[nbpInt] = 1. - parO[nbpInt];
             if (TI[nou] > TI[nou2])
@@ -1148,8 +1082,8 @@ void IntPatch_InterferencePolyhedron::CoupleCharacteristics(const IntPatch_Polyh
     for (n2 = 0; n2 < 3; n2++)
     {
 
-      gp_XYZ vto = IntPatch_PolyhedronTool::Point(FirstPol, OI[n1]).XYZ()
-                   - IntPatch_PolyhedronTool::Point(SeconPol, TI[n2]).XYZ();
+      gp_XYZ vto    = IntPatch_PolyhedronTool::Point(FirstPol, OI[n1]).XYZ()
+                      - IntPatch_PolyhedronTool::Point(SeconPol, TI[n2]).XYZ();
       dpOpT[n1][n2] = vto.Modulus();
 
       lg = vtt[n2].Modulus();
