@@ -35,30 +35,30 @@ namespace detail
 //! (max < min) so subsequent SIMD tests reject them naturally.
 inline void LoadChildBoxes(const opencascade::handle<BVH_Tree<float, 3, BVH_QuadTree>>& theTree,
                            int                                                          theBaseIdx,
-                           int                                                          theNumChildren,
+                           int            theNumChildren,
                            BVH_Box4f_SoA& theBoxes) noexcept
 {
   for (int aK = 0; aK < theNumChildren; ++aK)
   {
-    const auto& aMin     = theTree->MinPoint(theBaseIdx + aK);
-    const auto& aMax     = theTree->MaxPoint(theBaseIdx + aK);
-    theBoxes.minX[aK]    = aMin.x();
-    theBoxes.minY[aK]    = aMin.y();
-    theBoxes.minZ[aK]    = aMin.z();
-    theBoxes.maxX[aK]    = aMax.x();
-    theBoxes.maxY[aK]    = aMax.y();
-    theBoxes.maxZ[aK]    = aMax.z();
+    const auto& aMin  = theTree->MinPoint(theBaseIdx + aK);
+    const auto& aMax  = theTree->MaxPoint(theBaseIdx + aK);
+    theBoxes.minX[aK] = aMin.x();
+    theBoxes.minY[aK] = aMin.y();
+    theBoxes.minZ[aK] = aMin.z();
+    theBoxes.maxX[aK] = aMax.x();
+    theBoxes.maxY[aK] = aMax.y();
+    theBoxes.maxZ[aK] = aMax.z();
   }
   // Padding lanes get an "always-miss" box: max < min on every axis.
   // The slab test produces tEnter > tLeave and the lane is rejected.
   for (int aK = theNumChildren; aK < 4; ++aK)
   {
-    theBoxes.minX[aK]    = 1.0f;
-    theBoxes.minY[aK]    = 1.0f;
-    theBoxes.minZ[aK]    = 1.0f;
-    theBoxes.maxX[aK]    = -1.0f;
-    theBoxes.maxY[aK]    = -1.0f;
-    theBoxes.maxZ[aK]    = -1.0f;
+    theBoxes.minX[aK] = 1.0f;
+    theBoxes.minY[aK] = 1.0f;
+    theBoxes.minZ[aK] = 1.0f;
+    theBoxes.maxX[aK] = -1.0f;
+    theBoxes.maxY[aK] = -1.0f;
+    theBoxes.maxZ[aK] = -1.0f;
   }
 }
 
@@ -94,10 +94,9 @@ inline BVH_Ray4f_Splat MakeRaySplat(const BVH_Ray<float, 3>& theRay) noexcept
 //! BVH::SIMD::GetRayBox4(), which picks the best implementation at process
 //! start based on CPU detection.
 template <class Acceptor>
-inline void TraverseQuad(
-  const opencascade::handle<BVH_Tree<float, 3, BVH_QuadTree>>& theTree,
-  const BVH_Ray<float, 3>&                                     theRay,
-  Acceptor&                                                    theAcceptor) noexcept
+inline void TraverseQuad(const opencascade::handle<BVH_Tree<float, 3, BVH_QuadTree>>& theTree,
+                         const BVH_Ray<float, 3>&                                     theRay,
+                         Acceptor& theAcceptor) noexcept
 {
   if (theTree.IsNull() || theTree->Length() == 0)
   {
@@ -110,7 +109,7 @@ inline void TraverseQuad(
   // Stack of nodes to visit; QBVH is at most BVH_Constants_MaxTreeDepth deep
   // and each level adds up to 4 children, so a per-level slot of 4 suffices.
   int aStack[BVH_Constants_MaxTreeDepth * 4];
-  int aTop      = 0;
+  int aTop       = 0;
   aStack[aTop++] = 0; // root
 
   while (aTop > 0)
@@ -129,9 +128,9 @@ inline void TraverseQuad(
 
     // Inner node: child indices = NodeInfo[aNode].y() + K, K in [0, NumChildren).
     // NumChildren = NodeInfo[aNode].z() + 1 (range 1..4).
-    const auto& aInfo         = theTree->NodeInfoBuffer()[aNode];
-    const int   aBaseIdx      = aInfo.y();
-    const int   aNumChildren  = aInfo.z() + 1;
+    const auto& aInfo        = theTree->NodeInfoBuffer()[aNode];
+    const int   aBaseIdx     = aInfo.y();
+    const int   aNumChildren = aInfo.z() + 1;
 
     BVH_Box4f_SoA aBoxes;
     detail::LoadChildBoxes(theTree, aBaseIdx, aNumChildren, aBoxes);

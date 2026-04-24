@@ -68,7 +68,10 @@ Level applyForceOverride(Level theDetected) noexcept
 
 Level detectImpl() noexcept
 {
-#if defined(__GNUC__) || defined(__clang__)
+#if (defined(__GNUC__) || defined(__clang__)) && (defined(__x86_64__) || defined(__i386__))
+  // GCC/Clang builtins __builtin_cpu_{init,supports} are x86-only;
+  // on ARM (e.g. macOS Apple Silicon runners) they compile-fail with
+  // "builtin is not supported on this target".
   __builtin_cpu_init();
   if (__builtin_cpu_supports("avx512f"))
   {
