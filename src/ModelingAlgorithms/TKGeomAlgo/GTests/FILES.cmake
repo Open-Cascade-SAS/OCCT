@@ -20,6 +20,7 @@ set(OCCT_TKGeomAlgo_GTests_FILES
   IntCurveSurface_ThePolygonOfHInter_Test.cxx
   Intf_Tool_Test.cxx
   IntPatch_Polyhedron_Test.cxx
+  IntPatch_PolyhedronBVH_Test.cxx
   IntPolyh_Intersection_Test.cxx
   IntPolyh_Point_Test.cxx
   IntSurf_LineOn2S_Test.cxx
