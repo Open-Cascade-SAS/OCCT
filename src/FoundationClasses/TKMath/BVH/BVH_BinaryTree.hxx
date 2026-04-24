@@ -17,6 +17,7 @@
 #define _BVH_BinaryTree_Header
 
 #include <BVH_QuadTree.hxx>
+#include <BVH_WideTree.hxx>
 
 #include <deque>
 #include <tuple>
@@ -149,6 +150,16 @@ public: //! @name methods specific to binary BVH
   //! Collapses the tree into QBVH an returns it. As a result, each
   //! 2-nd level of current tree is kept and the rest are discarded.
   BVH_Tree<T, N, BVH_QuadTree>* CollapseToQuadTree() const;
+
+  //! Collapses the tree into a W-wide BVH (BVH8 for W=8, BVH16 for W=16).
+  //! Each log2(W)-th level of the source tree is preserved while the
+  //! intermediate levels are flattened into a single inner node holding
+  //! 1..W children. Built so the matching SIMD kernel saturates its native
+  //! register width:
+  //!   - W=8  -> BVH8,  RayBoxN_AVX2_8 (__m256, ymm)
+  //!   - W=16 -> BVH16, RayBoxN_AVX512_16 (__m512, zmm)
+  template <int W>
+  BVH_Tree<T, N, BVH_WideTree<W>>* CollapseToWide() const;
 };
 
 namespace BVH
@@ -283,6 +294,93 @@ BVH_Tree<T, N, BVH_QuadTree>* BVH_Tree<T, N, BVH_BinaryTree>::CollapseToQuadTree
   }
 
   return aQBVH;
+}
+
+//=================================================================================================
+
+namespace BVH
+{
+//! Walks down a binary subtree at most theDepth levels and records the nodes
+//! it stops at. A node is recorded if it is a leaf or if the descent depth
+//! reached theDepth. Used by CollapseToWide<W> to gather up to 2^Log2W = W
+//! representatives of a Log2W-level binary subtree as the children of one
+//! wide-BVH inner node.
+template <class T, int N>
+void GatherDescendants(const BVH_Tree<T, N, BVH_BinaryTree>* theTree,
+                       const int                             theNode,
+                       const int                             theDepth,
+                       NCollection_Vector<int>&              theOutNodes)
+{
+  if (theDepth == 0 || theTree->IsOuter(theNode))
+  {
+    theOutNodes.Append(theNode);
+    return;
+  }
+  GatherDescendants(theTree, theTree->template Child<0>(theNode), theDepth - 1, theOutNodes);
+  GatherDescendants(theTree, theTree->template Child<1>(theNode), theDepth - 1, theOutNodes);
+}
+} // namespace BVH
+
+template <class T, int N>
+template <int W>
+BVH_Tree<T, N, BVH_WideTree<W>>* BVH_Tree<T, N, BVH_BinaryTree>::CollapseToWide() const
+{
+  static_assert(W == 8 || W == 16, "CollapseToWide<W> only instantiated for W=8 or W=16");
+  constexpr int kLog2W = BVH_WideTree<W>::Log2W;
+
+  BVH_Tree<T, N, BVH_WideTree<W>>* aWBVH = new BVH_Tree<T, N, BVH_WideTree<W>>;
+
+  if (this->Length() == 0)
+  {
+    return aWBVH;
+  }
+
+  // Each queue entry pairs a source-tree node id with the level it sits at
+  // in the destination tree (used only for myDepth bookkeeping).
+  std::deque<std::pair<int, int>> aQueue(1, std::make_pair(0, 0));
+
+  for (int aNbNodes = 1; !aQueue.empty();)
+  {
+    const std::pair<int, int> aNode = aQueue.front();
+
+    BVH::Array<T, N>::Append(aWBVH->myMinPointBuffer,
+                             BVH::Array<T, N>::Value(this->myMinPointBuffer, std::get<0>(aNode)));
+    BVH::Array<T, N>::Append(aWBVH->myMaxPointBuffer,
+                             BVH::Array<T, N>::Value(this->myMaxPointBuffer, std::get<0>(aNode)));
+
+    BVH_Vec4i aNodeInfo;
+    if (this->IsOuter(std::get<0>(aNode)))
+    {
+      aNodeInfo = BVH_Vec4i(1 /* leaf flag */,
+                            this->BegPrimitive(std::get<0>(aNode)),
+                            this->EndPrimitive(std::get<0>(aNode)),
+                            std::get<1>(aNode));
+    }
+    else
+    {
+      // Walk Log2W binary levels down (or stop early at leaves) to harvest
+      // up to 2^Log2W = W representatives that become the children of this
+      // wide-BVH inner node.
+      NCollection_Vector<int> aGrandChildren;
+      BVH::GatherDescendants(this, std::get<0>(aNode), kLog2W, aGrandChildren);
+
+      for (int aIdx = 0; aIdx < aGrandChildren.Size(); ++aIdx)
+      {
+        aQueue.push_back(std::make_pair(aGrandChildren(aIdx), std::get<1>(aNode) + 1));
+      }
+
+      aNodeInfo =
+        BVH_Vec4i(0 /* inner flag */, aNbNodes, aGrandChildren.Size() - 1, std::get<1>(aNode));
+
+      aWBVH->myDepth = (std::max)(aWBVH->myDepth, std::get<1>(aNode) + 1);
+      aNbNodes += aGrandChildren.Size();
+    }
+
+    BVH::Array<int, 4>::Append(aWBVH->myNodeInfoBuffer, aNodeInfo);
+    aQueue.pop_front();
+  }
+
+  return aWBVH;
 }
 
 #endif // _BVH_BinaryTree_Header

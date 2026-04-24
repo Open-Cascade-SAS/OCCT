@@ -31,14 +31,22 @@ set(OCCT_BVH_FILES
   BVH_Sorter.hxx
   BVH_QuickSorter.hxx
   BVH_RadixSorter.hxx
+  BVH_SIMDDispatch.hxx
+  BVH_SIMDDispatch.cxx
+  BVH_ToolsSIMD_AVX2.hxx
+  BVH_ToolsSIMD_AVX512.hxx
+  BVH_ToolsSIMD_SSE2.hxx
   BVH_SpatialMedianBuilder.hxx
   BVH_SweepPlaneBuilder.hxx
   BVH_Tools.hxx
   BVH_Traverse.hxx
   BVH_Traverse.lxx
+  BVH_TraverseQuad.hxx
+  BVH_TraverseWide.hxx
   BVH_Tree.hxx
   BVH_BinaryTree.hxx
   BVH_QuadTree.hxx
+  BVH_WideTree.hxx
   BVH_Triangulation.hxx
   BVH_Types.hxx
 )

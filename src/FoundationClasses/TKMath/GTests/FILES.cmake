@@ -21,6 +21,14 @@ set(OCCT_TKMath_GTests_FILES
   BVH_QuickSorter_Test.cxx
   BVH_RadixSorter_Test.cxx
   BVH_Ray_Test.cxx
+  BVH_SIMDDispatch_Test.cxx
+  BVH_ToolsSIMD_Benchmark_Test.cxx
+  BVH_ToolsSIMD_Test.cxx
+  BVH_TraverseQuad_Test.cxx
+  BVH_TraverseWide8_Test.cxx
+  BVH_TraverseWide16_Test.cxx
+  BVH_WideTree8_Test.cxx
+  BVH_WideTree16_Test.cxx
   BVH_SpatialMedianBuilder_Test.cxx
   BVH_SweepPlaneBuilder_Test.cxx
   BVH_Tools_Test.cxx

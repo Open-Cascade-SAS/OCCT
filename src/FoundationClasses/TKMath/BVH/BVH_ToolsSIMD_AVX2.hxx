@@ -1,0 +1,171 @@
+// Copyright (c) 2026 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef BVH_ToolsSIMD_AVX2_HeaderFile
+#define BVH_ToolsSIMD_AVX2_HeaderFile
+
+#include <BVH_SIMDDispatch.hxx>
+
+// AVX2+FMA path is available on GCC/Clang when the target architecture supports
+// per-function attributes; on MSVC the same kernel must live in a .cxx compiled
+// with /arch:AVX2 (a build wrapper not yet provided in this commit).
+#if defined(__x86_64__) || defined(_M_X64)
+  #if defined(__GNUC__) || defined(__clang__)
+    #define BVH_HAS_AVX2_KERNEL 1
+    #include <immintrin.h>
+  #endif
+#endif
+
+namespace BVH
+{
+namespace SIMD
+{
+
+#if defined(BVH_HAS_AVX2_KERNEL)
+
+//! AVX2 implementation of the 1-ray-vs-4-AABB slab test.
+//!
+//! Uses BVH4-sized __m128 lanes (the upper 128 bits of __m256 would be wasted
+//! at this fan-out). The slab formula is the same as SSE2 -- t = (box-origin)
+//! * invDir, NOT t = invDir*box - invDir*origin -- because FMA's
+//! "multiply-then-subtract" order produces 0*inf = NaN for parallel rays
+//! on lanes whose box face touches origin, which would diverge from the
+//! scalar reference. The win over SSE2 comes from VEX 3-operand encoding
+//! and the more flexible scheduling enabled by the AVX2 target attribute,
+//! not from FMA.
+//!
+//! Function-level target attribute keeps the rest of the translation unit
+//! buildable on hosts without AVX2; the dispatcher only routes to this
+//! kernel after runtime CPU detection (BVH_SIMDDispatch::Detect) confirms
+//! AVX2 + OS XSAVE support are present.
+__attribute__((target("avx2,fma"))) inline int RayBox4_AVX2(const BVH_Ray4f_Splat& theRay,
+                                                            const BVH_Box4f_SoA&   theBoxes,
+                                                            float*                 theOutTEnter,
+                                                            float* theOutTLeave) noexcept
+{
+  const __m128 anOx  = _mm_loadu_ps(theRay.ox);
+  const __m128 anOy  = _mm_loadu_ps(theRay.oy);
+  const __m128 anOz  = _mm_loadu_ps(theRay.oz);
+  const __m128 anIdx = _mm_loadu_ps(theRay.idx);
+  const __m128 anIdy = _mm_loadu_ps(theRay.idy);
+  const __m128 anIdz = _mm_loadu_ps(theRay.idz);
+
+  const __m128 aMinX = _mm_loadu_ps(theBoxes.minX);
+  const __m128 aMaxX = _mm_loadu_ps(theBoxes.maxX);
+  const __m128 aMinY = _mm_loadu_ps(theBoxes.minY);
+  const __m128 aMaxY = _mm_loadu_ps(theBoxes.maxY);
+  const __m128 aMinZ = _mm_loadu_ps(theBoxes.minZ);
+  const __m128 aMaxZ = _mm_loadu_ps(theBoxes.maxZ);
+
+  const __m128 aT1x = _mm_mul_ps(_mm_sub_ps(aMinX, anOx), anIdx);
+  const __m128 aT2x = _mm_mul_ps(_mm_sub_ps(aMaxX, anOx), anIdx);
+  const __m128 aT1y = _mm_mul_ps(_mm_sub_ps(aMinY, anOy), anIdy);
+  const __m128 aT2y = _mm_mul_ps(_mm_sub_ps(aMaxY, anOy), anIdy);
+  const __m128 aT1z = _mm_mul_ps(_mm_sub_ps(aMinZ, anOz), anIdz);
+  const __m128 aT2z = _mm_mul_ps(_mm_sub_ps(aMaxZ, anOz), anIdz);
+
+  const __m128 aTminX = _mm_min_ps(aT1x, aT2x);
+  const __m128 aTmaxX = _mm_max_ps(aT1x, aT2x);
+  const __m128 aTminY = _mm_min_ps(aT1y, aT2y);
+  const __m128 aTmaxY = _mm_max_ps(aT1y, aT2y);
+  const __m128 aTminZ = _mm_min_ps(aT1z, aT2z);
+  const __m128 aTmaxZ = _mm_max_ps(aT1z, aT2z);
+
+  // Same NaN-absorbing operand order as the SSE2 path.
+  const __m128 aTEnter = _mm_max_ps(_mm_max_ps(aTminY, aTminZ), aTminX);
+  const __m128 aTLeave = _mm_min_ps(_mm_min_ps(aTmaxY, aTmaxZ), aTmaxX);
+
+  const __m128 aZero    = _mm_setzero_ps();
+  const __m128 aHitMask = _mm_and_ps(_mm_cmple_ps(aTEnter, aTLeave), _mm_cmpge_ps(aTLeave, aZero));
+
+  _mm_storeu_ps(theOutTEnter, aTEnter);
+  _mm_storeu_ps(theOutTLeave, aTLeave);
+  return _mm_movemask_ps(aHitMask);
+}
+
+//! AVX2 BVH8 kernel: 1 ray vs 8 AABBs in a single 256-bit pass.
+//!
+//! This is the kernel BVH8 was built for -- __m256 holds all 8 lanes so
+//! the entire fan-out is tested per inner-node visit. Selected by the
+//! W=8 dispatcher (BVH::SIMD::GetRayBoxN<8>()) on AVX2-capable hosts.
+//!
+//! Optimisation: tavianator's sign-based corner select. The slab method
+//! normally computes (min - origin)*invDir AND (max - origin)*invDir then
+//! takes min/max to know which face is "near" vs "far". But the answer is
+//! determined entirely by the sign of invDir per axis, which is a property
+//! of the ray (not the box), so we can pre-select the near/far corners
+//! once per call via _mm256_blendv_ps and skip three extra mul+min/max
+//! pairs. Per-axis: 1 blend + 1 sub + 1 mul -> 3 instructions, down from
+//! the 4 of the symmetric form (2 sub + 2 mul + 1 min + 1 max).
+//!
+//! NaN handling for parallel rays (invDir = inf, origin on box face)
+//! still relies on the "min/max returns the second operand on NaN" SSE
+//! semantics, with the same operand ordering as SSE2 so the parallel-axis
+//! NaN gets absorbed by the finite results of the other two axes.
+__attribute__((target("avx2"))) inline int RayBoxN_AVX2_8(const BVH_RayNf_Splat<8>& theRay,
+                                                          const BVH_BoxNf_SoA<8>&   theBoxes,
+                                                          float*                    theOutTEnter,
+                                                          float* theOutTLeave) noexcept
+{
+  const __m256 anOx  = _mm256_loadu_ps(theRay.ox);
+  const __m256 anOy  = _mm256_loadu_ps(theRay.oy);
+  const __m256 anOz  = _mm256_loadu_ps(theRay.oz);
+  const __m256 anIdx = _mm256_loadu_ps(theRay.idx);
+  const __m256 anIdy = _mm256_loadu_ps(theRay.idy);
+  const __m256 anIdz = _mm256_loadu_ps(theRay.idz);
+
+  // Sign of invDir per axis: 1 (negative direction) -> near corner is max,
+  // far corner is min. _mm256_blendv_ps picks operand B where the sign bit
+  // of the mask is set, A otherwise.
+  const __m256 aMinX = _mm256_loadu_ps(theBoxes.minX);
+  const __m256 aMaxX = _mm256_loadu_ps(theBoxes.maxX);
+  const __m256 aMinY = _mm256_loadu_ps(theBoxes.minY);
+  const __m256 aMaxY = _mm256_loadu_ps(theBoxes.maxY);
+  const __m256 aMinZ = _mm256_loadu_ps(theBoxes.minZ);
+  const __m256 aMaxZ = _mm256_loadu_ps(theBoxes.maxZ);
+
+  const __m256 aNearX = _mm256_blendv_ps(aMinX, aMaxX, anIdx);
+  const __m256 aFarX  = _mm256_blendv_ps(aMaxX, aMinX, anIdx);
+  const __m256 aNearY = _mm256_blendv_ps(aMinY, aMaxY, anIdy);
+  const __m256 aFarY  = _mm256_blendv_ps(aMaxY, aMinY, anIdy);
+  const __m256 aNearZ = _mm256_blendv_ps(aMinZ, aMaxZ, anIdz);
+  const __m256 aFarZ  = _mm256_blendv_ps(aMaxZ, aMinZ, anIdz);
+
+  const __m256 aTNearX = _mm256_mul_ps(_mm256_sub_ps(aNearX, anOx), anIdx);
+  const __m256 aTFarX  = _mm256_mul_ps(_mm256_sub_ps(aFarX, anOx), anIdx);
+  const __m256 aTNearY = _mm256_mul_ps(_mm256_sub_ps(aNearY, anOy), anIdy);
+  const __m256 aTFarY  = _mm256_mul_ps(_mm256_sub_ps(aFarY, anOy), anIdy);
+  const __m256 aTNearZ = _mm256_mul_ps(_mm256_sub_ps(aNearZ, anOz), anIdz);
+  const __m256 aTFarZ  = _mm256_mul_ps(_mm256_sub_ps(aFarZ, anOz), anIdz);
+
+  // Operand order matches the SSE2 kernel so NaN propagation is identical:
+  // a parallel-axis NaN gets dominated by the finite results of the other
+  // two axes via the "min/max returns the second operand on NaN" rule.
+  const __m256 aTEnter = _mm256_max_ps(_mm256_max_ps(aTNearY, aTNearZ), aTNearX);
+  const __m256 aTLeave = _mm256_min_ps(_mm256_min_ps(aTFarY, aTFarZ), aTFarX);
+
+  const __m256 aZero    = _mm256_setzero_ps();
+  const __m256 aHitMask = _mm256_and_ps(_mm256_cmp_ps(aTEnter, aTLeave, _CMP_LE_OQ),
+                                        _mm256_cmp_ps(aTLeave, aZero, _CMP_GE_OQ));
+
+  _mm256_storeu_ps(theOutTEnter, aTEnter);
+  _mm256_storeu_ps(theOutTLeave, aTLeave);
+  return _mm256_movemask_ps(aHitMask);
+}
+
+#endif // BVH_HAS_AVX2_KERNEL
+
+} // namespace SIMD
+} // namespace BVH
+
+#endif // BVH_ToolsSIMD_AVX2_HeaderFile
