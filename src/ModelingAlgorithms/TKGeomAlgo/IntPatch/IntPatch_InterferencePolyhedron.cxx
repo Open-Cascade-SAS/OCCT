@@ -457,7 +457,7 @@ void IntPatch_InterferencePolyhedron::Intersect(const int                  Tri1,
                   {
                     parO[iObj] = dpOeT[inext][iToo] / div;
                     piO        = (IntPatch_PolyhedronTool::Point(FirstPol, OI[inext]).XYZ())
-                                 + (voo[iObj].Reversed() * parO[iObj]);
+                          + (voo[iObj].Reversed() * parO[iObj]);
                   }
                   else
                     Pb = true;
@@ -469,7 +469,7 @@ void IntPatch_InterferencePolyhedron::Intersect(const int                  Tri1,
                   {
                     parO[iObj] = dpOeT[iObj][iToo] / (dpOeT[iObj][iToo] - dpOeT[inext][iToo]);
                     piO        = (IntPatch_PolyhedronTool::Point(FirstPol, OI[iObj]).XYZ())
-                                 + (voo[iObj] * parO[iObj]);
+                          + (voo[iObj] * parO[iObj]);
                   }
                   else
                     Pb = true;
@@ -481,7 +481,7 @@ void IntPatch_InterferencePolyhedron::Intersect(const int                  Tri1,
                   {
                     parT[iToo] = deOpT[iObj][jnext] / div;
                     piT        = (IntPatch_PolyhedronTool::Point(SeconPol, TI[jnext]).XYZ())
-                                 + (vtt[iToo].Reversed() * parT[iToo]);
+                          + (vtt[iToo].Reversed() * parT[iToo]);
                   }
                   else
                     Pb = true;
@@ -493,7 +493,7 @@ void IntPatch_InterferencePolyhedron::Intersect(const int                  Tri1,
                   {
                     parT[iToo] = deOpT[iObj][iToo] / div;
                     piT        = (IntPatch_PolyhedronTool::Point(SeconPol, TI[iToo]).XYZ())
-                                 + (vtt[iToo] * parT[iToo]);
+                          + (vtt[iToo] * parT[iToo]);
                   }
                   else
                     Pb = true;
@@ -993,7 +993,7 @@ bool IntPatch_InterferencePolyhedron::TangentZoneValue(Intf_TangentZone&        
             parO[nbpInt] = dpOeT[nob][nou] / (dpOeT[nob][nou] - dpOeT[nob2][nou]);
             parT[nbpInt] = deOpT[nob][nou] / (deOpT[nob][nou] - deOpT[nob][nou2]);
             gp_Pnt lepi  = IntPatch_PolyhedronTool::Point(SeconPol, TI[nou])
-                             .Translated(gp_Vec(vtt[nou] * parT[nbpInt]));
+                            .Translated(gp_Vec(vtt[nou] * parT[nbpInt]));
             if (OI[nob] > OI[nob2])
               parO[nbpInt] = 1. - parO[nbpInt];
             if (TI[nou] > TI[nou2])
@@ -1082,8 +1082,8 @@ void IntPatch_InterferencePolyhedron::CoupleCharacteristics(const IntPatch_Polyh
     for (n2 = 0; n2 < 3; n2++)
     {
 
-      gp_XYZ vto    = IntPatch_PolyhedronTool::Point(FirstPol, OI[n1]).XYZ()
-                      - IntPatch_PolyhedronTool::Point(SeconPol, TI[n2]).XYZ();
+      gp_XYZ vto = IntPatch_PolyhedronTool::Point(FirstPol, OI[n1]).XYZ()
+                   - IntPatch_PolyhedronTool::Point(SeconPol, TI[n2]).XYZ();
       dpOpT[n1][n2] = vto.Modulus();
 
       lg = vtt[n2].Modulus();
