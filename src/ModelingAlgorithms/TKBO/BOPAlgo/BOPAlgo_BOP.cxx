@@ -38,117 +38,6 @@
 #include <NCollection_IndexedMap.hxx>
 #include <NCollection_Map.hxx>
 #include <Precision.hxx>
-#include <Bnd_Box.hxx>
-#include <BRepBndLib.hxx>
-#include <BRepGProp.hxx>
-#include <GProp_GProps.hxx>
-
-#include <cmath>
-
-namespace
-{
-Bnd_Box bboxFromDsOrCompute(const BOPDS_DS* theDS, const TopoDS_Shape& theShape)
-{
-  if (theDS != nullptr)
-  {
-    const int anIdx = theDS->Index(theShape);
-    if (anIdx >= 0)
-    {
-      const Bnd_Box& aB = theDS->ShapeInfo(anIdx).Box();
-      if (!aB.IsVoid())
-        return aB;
-    }
-  }
-  Bnd_Box aB;
-  BRepBndLib::Add(theShape, aB);
-  return aB;
-}
-
-//! True if any SOLID in <theShape> is a degenerate prism whose representative
-//! thickness (2 * volume / maxFaceArea) divided by bbox diagonal falls below
-//! <theRelThicknessTol>. Such a solid must be treated as empty for
-//! volume-subtract BOPs.
-bool isDegenerateThinSolid(const TopoDS_Shape& theShape,
-                           const double        theRelThicknessTol,
-                           const BOPDS_DS*     theDS)
-{
-  for (TopExp_Explorer aSolidExp(theShape, TopAbs_SOLID); aSolidExp.More(); aSolidExp.Next())
-  {
-    const TopoDS_Shape& aSolid = aSolidExp.Current();
-
-    bool bOpenShell = false;
-    for (TopExp_Explorer aShExp(aSolid, TopAbs_SHELL); aShExp.More(); aShExp.Next())
-    {
-      if (!aShExp.Current().Closed())
-      {
-        bOpenShell = true;
-        break;
-      }
-    }
-    if (bOpenShell)
-      continue;
-
-    Bnd_Box aBox = bboxFromDsOrCompute(theDS, aSolid);
-    if (aBox.IsVoid() || aBox.IsOpen())
-      continue;
-    double x1, y1, z1, x2, y2, z2;
-    aBox.Get(x1, y1, z1, x2, y2, z2);
-    const double aDx   = x2 - x1;
-    const double aDy   = y2 - y1;
-    const double aDz   = z2 - z1;
-    const double aDiag = std::sqrt(aDx * aDx + aDy * aDy + aDz * aDz);
-    if (aDiag <= 0.0)
-      continue;
-
-    const double aMinExt = std::min({aDx, aDy, aDz});
-    if (aMinExt / aDiag < theRelThicknessTol)
-      return true;
-
-    GProp_GProps aVolProps;
-    BRepGProp::VolumeProperties(aSolid, aVolProps);
-    const double aVolume = std::abs(aVolProps.Mass());
-    if (aVolume <= 0.0)
-      return true;
-
-    double aMaxFaceBboxArea = 0.0;
-    for (TopExp_Explorer aFaceExp(aSolid, TopAbs_FACE); aFaceExp.More(); aFaceExp.Next())
-    {
-      Bnd_Box aFBox = bboxFromDsOrCompute(theDS, aFaceExp.Current());
-      if (aFBox.IsVoid() || aFBox.IsOpen())
-        continue;
-      double fx1, fy1, fz1, fx2, fy2, fz2;
-      aFBox.Get(fx1, fy1, fz1, fx2, fy2, fz2);
-      const double aFDx           = fx2 - fx1;
-      const double aFDy           = fy2 - fy1;
-      const double aFDz           = fz2 - fz1;
-      const double aFaceAreaUpper = aFDx * aFDx + aFDy * aFDy + aFDz * aFDz;
-      if (aFaceAreaUpper > aMaxFaceBboxArea)
-        aMaxFaceBboxArea = aFaceAreaUpper;
-    }
-    if (aMaxFaceBboxArea <= 0.0)
-      continue;
-
-    if ((2.0 * aVolume) / aMaxFaceBboxArea / aDiag > theRelThicknessTol)
-      continue;
-
-    double aMaxFaceArea = 0.0;
-    for (TopExp_Explorer aFaceExp(aSolid, TopAbs_FACE); aFaceExp.More(); aFaceExp.Next())
-    {
-      GProp_GProps aFaceProps;
-      BRepGProp::SurfaceProperties(aFaceExp.Current(), aFaceProps);
-      const double aArea = std::abs(aFaceProps.Mass());
-      if (aArea > aMaxFaceArea)
-        aMaxFaceArea = aArea;
-    }
-    if (aMaxFaceArea <= 0.0)
-      continue;
-
-    if ((2.0 * aVolume) / aMaxFaceArea / aDiag < theRelThicknessTol)
-      return true;
-  }
-  return false;
-}
-} // namespace
 
 static TopAbs_ShapeEnum TypeToExplore(const int theDim);
 //
@@ -271,8 +160,6 @@ void BOPAlgo_BOP::CheckData()
     {
       const TopoDS_Shape& aS       = aItLS.Value();
       bool                bIsEmpty = BOPTools_AlgoTools3D::IsEmptyShape(aS);
-      if (!bIsEmpty && isDegenerateThinSolid(aS, Precision::Confusion(), myDS))
-        bIsEmpty = true;
       if (bIsEmpty)
       {
         AddWarning(new BOPAlgo_AlertEmptyShape(aS));
@@ -332,8 +219,7 @@ bool BOPAlgo_BOP::TreatEmptyShape()
   NCollection_List<TopoDS_Shape>::Iterator aItLS(myArguments);
   for (; aItLS.More(); aItLS.Next())
   {
-    if (!BOPTools_AlgoTools3D::IsEmptyShape(aItLS.Value())
-        && !isDegenerateThinSolid(aItLS.Value(), Precision::Confusion(), myDS))
+    if (!BOPTools_AlgoTools3D::IsEmptyShape(aItLS.Value()))
     {
       aLValidObjs.Append(aItLS.Value());
     }
@@ -344,8 +230,7 @@ bool BOPAlgo_BOP::TreatEmptyShape()
   aItLS.Initialize(myTools);
   for (; aItLS.More(); aItLS.Next())
   {
-    if (!BOPTools_AlgoTools3D::IsEmptyShape(aItLS.Value())
-        && !isDegenerateThinSolid(aItLS.Value(), Precision::Confusion(), myDS))
+    if (!BOPTools_AlgoTools3D::IsEmptyShape(aItLS.Value()))
     {
       aLValidTools.Append(aItLS.Value());
     }

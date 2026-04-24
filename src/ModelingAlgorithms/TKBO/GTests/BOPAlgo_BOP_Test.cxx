@@ -195,28 +195,33 @@ class BOPAlgo_DegenerateToolTest : public BOPAlgo_TestBase
 {
 };
 
-TEST_F(BOPAlgo_DegenerateToolTest, Cut_AxisAlignedThinTool_ReturnsArgUnchanged)
+TEST_F(BOPAlgo_DegenerateToolTest, Cut_AxisAlignedThinTool_NearlyPreservesBoxVolume)
 {
   const TopoDS_Shape aBox =
     BOPTest_Utilities::CreateBox(gp_Pnt(0.0, 0.0, 0.0), 100.0, 100.0, 100.0);
   const TopoDS_Shape aThin =
     BOPTest_Utilities::CreateBox(gp_Pnt(-500.0, 25.0, -500.0), 1500.0, 1.0e-6, 1500.0);
 
-  const TopoDS_Shape aRes = PerformDirectBOP(aBox, aThin, BOPAlgo_CUT);
+  const TopoDS_Shape aRes      = PerformDirectBOP(aBox, aThin, BOPAlgo_CUT);
+  const double       aBoxVol   = BOPTest_Utilities::GetVolume(aBox);
+  const double       aOverlapV = 100.0 * 1.0e-6 * 100.0;
   ASSERT_FALSE(aRes.IsNull());
-  EXPECT_NEAR(BOPTest_Utilities::GetVolume(aRes), BOPTest_Utilities::GetVolume(aBox), myTolerance);
+  EXPECT_NEAR(BOPTest_Utilities::GetVolume(aRes), aBoxVol - aOverlapV, 1.0e-4);
 }
 
-TEST_F(BOPAlgo_DegenerateToolTest, Fuse_AxisAlignedThinTool_KeepsThickOnly)
+TEST_F(BOPAlgo_DegenerateToolTest, Fuse_AxisAlignedThinTool_AddsNonOverlappingSlice)
 {
   const TopoDS_Shape aBox =
     BOPTest_Utilities::CreateBox(gp_Pnt(0.0, 0.0, 0.0), 100.0, 100.0, 100.0);
   const TopoDS_Shape aThin =
     BOPTest_Utilities::CreateBox(gp_Pnt(-500.0, 25.0, -500.0), 1500.0, 1.0e-6, 1500.0);
 
-  const TopoDS_Shape aRes = PerformDirectBOP(aBox, aThin, BOPAlgo_FUSE);
+  const TopoDS_Shape aRes      = PerformDirectBOP(aBox, aThin, BOPAlgo_FUSE);
+  const double       aBoxVol   = BOPTest_Utilities::GetVolume(aBox);
+  const double       aThinVol  = 1500.0 * 1.0e-6 * 1500.0;
+  const double       aOverlapV = 100.0 * 1.0e-6 * 100.0;
   ASSERT_FALSE(aRes.IsNull());
-  EXPECT_NEAR(BOPTest_Utilities::GetVolume(aRes), BOPTest_Utilities::GetVolume(aBox), myTolerance);
+  EXPECT_NEAR(BOPTest_Utilities::GetVolume(aRes), aBoxVol + aThinVol - aOverlapV, 1.0e-4);
 }
 
 TEST_F(BOPAlgo_DegenerateToolTest, Cut_LegitimateThinSlab_NotTreatedAsEmpty)
