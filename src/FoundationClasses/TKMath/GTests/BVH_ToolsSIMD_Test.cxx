@@ -25,7 +25,16 @@
 namespace
 {
 
-BVH::SIMD::BVH_Ray4f_Splat MakeRaySplat(float ox, float oy, float oz, float dx, float dy, float dz)
+// [[maybe_unused]] suppresses -Wunused-function on platforms where the
+// SSE2 kernel test block is compiled out (e.g. macOS Apple Silicon, where
+// BVH_HAS_SSE2_KERNEL is undefined and every consumer of these helpers
+// vanishes with the #if).
+[[maybe_unused]] BVH::SIMD::BVH_Ray4f_Splat MakeRaySplat(float ox,
+                                                         float oy,
+                                                         float oz,
+                                                         float dx,
+                                                         float dy,
+                                                         float dz)
 {
   BVH::SIMD::BVH_Ray4f_Splat aRay{};
   for (int i = 0; i < 4; ++i)
@@ -40,14 +49,14 @@ BVH::SIMD::BVH_Ray4f_Splat MakeRaySplat(float ox, float oy, float oz, float dx, 
   return aRay;
 }
 
-void SetBox(BVH::SIMD::BVH_Box4f_SoA& theBoxes,
-            int                       i,
-            float                     minx,
-            float                     miny,
-            float                     minz,
-            float                     maxx,
-            float                     maxy,
-            float                     maxz)
+[[maybe_unused]] void SetBox(BVH::SIMD::BVH_Box4f_SoA& theBoxes,
+                             int                       i,
+                             float                     minx,
+                             float                     miny,
+                             float                     minz,
+                             float                     maxx,
+                             float                     maxy,
+                             float                     maxz)
 {
   theBoxes.minX[i] = minx;
   theBoxes.minY[i] = miny;
