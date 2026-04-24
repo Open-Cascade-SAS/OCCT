@@ -183,3 +183,49 @@ TEST_F(BOPAlgo_ComplexOperationsTest, DirectVsTwoStepComparison)
   EXPECT_NEAR(aDirectVolume, aTwoStepVolume, myTolerance)
     << "Direct and two-step operations should produce equivalent results";
 }
+
+//=================================================================================================
+// Degenerate thin-tool tests
+//=================================================================================================
+
+class BOPAlgo_DegenerateToolTest : public BOPAlgo_TestBase
+{
+};
+
+TEST_F(BOPAlgo_DegenerateToolTest, Cut_AxisAlignedThinTool_ReturnsArgUnchanged)
+{
+  const TopoDS_Shape aBox =
+    BOPTest_Utilities::CreateBox(gp_Pnt(0.0, 0.0, 0.0), 100.0, 100.0, 100.0);
+  const TopoDS_Shape aThin =
+    BOPTest_Utilities::CreateBox(gp_Pnt(-500.0, 25.0, -500.0), 1500.0, 1.0e-6, 1500.0);
+
+  const TopoDS_Shape aRes = PerformDirectBOP(aBox, aThin, BOPAlgo_CUT);
+  ASSERT_FALSE(aRes.IsNull());
+  EXPECT_NEAR(BOPTest_Utilities::GetVolume(aRes), BOPTest_Utilities::GetVolume(aBox), myTolerance);
+}
+
+TEST_F(BOPAlgo_DegenerateToolTest, Fuse_AxisAlignedThinTool_KeepsThickOnly)
+{
+  const TopoDS_Shape aBox =
+    BOPTest_Utilities::CreateBox(gp_Pnt(0.0, 0.0, 0.0), 100.0, 100.0, 100.0);
+  const TopoDS_Shape aThin =
+    BOPTest_Utilities::CreateBox(gp_Pnt(-500.0, 25.0, -500.0), 1500.0, 1.0e-6, 1500.0);
+
+  const TopoDS_Shape aRes = PerformDirectBOP(aBox, aThin, BOPAlgo_FUSE);
+  ASSERT_FALSE(aRes.IsNull());
+  EXPECT_NEAR(BOPTest_Utilities::GetVolume(aRes), BOPTest_Utilities::GetVolume(aBox), myTolerance);
+}
+
+TEST_F(BOPAlgo_DegenerateToolTest, Cut_LegitimateThinSlab_NotTreatedAsEmpty)
+{
+  const TopoDS_Shape aBox =
+    BOPTest_Utilities::CreateBox(gp_Pnt(0.0, 0.0, 0.0), 100.0, 100.0, 100.0);
+  const TopoDS_Shape aSlab =
+    BOPTest_Utilities::CreateBox(gp_Pnt(0.0, 0.0, 50.0), 100.0, 100.0, 1.0);
+
+  const TopoDS_Shape aRes = PerformDirectBOP(aBox, aSlab, BOPAlgo_CUT);
+  ASSERT_FALSE(aRes.IsNull());
+  EXPECT_NEAR(BOPTest_Utilities::GetVolume(aRes),
+              BOPTest_Utilities::GetVolume(aBox) - BOPTest_Utilities::GetVolume(aSlab),
+              myTolerance);
+}
