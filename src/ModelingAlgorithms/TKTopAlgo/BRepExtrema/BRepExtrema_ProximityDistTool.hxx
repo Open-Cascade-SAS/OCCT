@@ -94,13 +94,13 @@ public:
 
   //! Creates new tool for the given element sets.
   Standard_EXPORT BRepExtrema_ProximityDistTool(
-    const occ::handle<BRepExtrema_TriangleSet>& theSet1,
-    const int                                   theNbSamples1,
-    const BVH_Array3d&                          theAddVertices1,
-    const NCollection_DynamicArray<ProxPnt_Status>&   theAddStatus1,
-    const occ::handle<BRepExtrema_TriangleSet>& theSet2,
-    const NCollection_DynamicArray<TopoDS_Shape>&     theShapeList1,
-    const NCollection_DynamicArray<TopoDS_Shape>&     theShapeList2);
+    const occ::handle<BRepExtrema_TriangleSet>&     theSet1,
+    const int                                       theNbSamples1,
+    const BVH_Array3d&                              theAddVertices1,
+    const NCollection_DynamicArray<ProxPnt_Status>& theAddStatus1,
+    const occ::handle<BRepExtrema_TriangleSet>&     theSet2,
+    const NCollection_DynamicArray<TopoDS_Shape>&   theShapeList1,
+    const NCollection_DynamicArray<TopoDS_Shape>&   theShapeList2);
 
 public:
   //! Loads the given element sets into the tool.
@@ -112,7 +112,7 @@ public:
                                       const NCollection_DynamicArray<TopoDS_Shape>& theShapeList2);
 
   //! Loads given additional vertices and their statuses.
-  void LoadAdditionalPointsFirstSet(const BVH_Array3d&                        theAddVertices1,
+  void LoadAdditionalPointsFirstSet(const BVH_Array3d&                              theAddVertices1,
                                     const NCollection_DynamicArray<ProxPnt_Status>& theAddStatus1);
 
   //! Performs searching of the proximity distance.

@@ -501,7 +501,7 @@ TEST(MathOpt_PSOTest, SeededInit_Rastrigin2D_StableQuality)
   aConfig.InitMode      = MathOpt::PSOInitMode::SeededPlusRandom;
 
   // Seed near global minimum
-  math_Vector                                  aSeedPos(1, 2, 0.0);
+  math_Vector                                        aSeedPos(1, 2, 0.0);
   NCollection_DynamicArray<MathOpt::PSOSeedParticle> aSeeds;
   aSeeds.Append(MathOpt::PSOSeedParticle(aSeedPos, 0.0));
 
@@ -742,7 +742,7 @@ TEST(MathOpt_PSOTest, ClampedSeed_ReEvaluates_StaleValue)
 
   // Provide a stale value of 0.0 which is wrong for (5, -5)
   NCollection_DynamicArray<MathOpt::PSOSeedParticle> aSeeds;
-  MathOpt::PSOSeedParticle                     aSeed(aSeedPos, 0.0);
+  MathOpt::PSOSeedParticle                           aSeed(aSeedPos, 0.0);
   aSeeds.Append(aSeed);
 
   auto aResult = MathOpt::PSO(aFunc, aLower, aUpper, aConfig, &aSeeds);

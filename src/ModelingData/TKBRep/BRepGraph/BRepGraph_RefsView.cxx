@@ -250,8 +250,8 @@ const NCollection_DynamicArray<BRepGraph_ChildRefId>& BRepGraph::RefsView::Child
 
 //=================================================================================================
 
-const NCollection_DynamicArray<BRepGraph_OccurrenceRefId>& BRepGraph::RefsView::OccurrenceOps::IdsOf(
-  const BRepGraph_ProductId theProduct) const
+const NCollection_DynamicArray<BRepGraph_OccurrenceRefId>& BRepGraph::RefsView::OccurrenceOps::
+  IdsOf(const BRepGraph_ProductId theProduct) const
 {
   static const NCollection_DynamicArray<BRepGraph_OccurrenceRefId> anEmpty;
   if (!theProduct.IsValid(myGraph->myData->myIncStorage.NbProducts()))

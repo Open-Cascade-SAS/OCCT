@@ -183,7 +183,7 @@ TEST_F(BRepGraph_ConvenienceTest, ShellFaceRefs_Box_SixFaces)
 
 TEST_F(BRepGraph_ConvenienceTest, ShellFaceRefs_AllValid)
 {
-  const BRepGraph::RefsView&                     aRefs = myGraph.Refs();
+  const BRepGraph::RefsView&                           aRefs = myGraph.Refs();
   const NCollection_DynamicArray<BRepGraph_FaceRefId>& aFaceRefIds =
     aRefs.Faces().IdsOf(BRepGraph_ShellId::Start());
   for (int aFaceIter = 0; aFaceIter < aFaceRefIds.Length(); ++aFaceIter)

@@ -1144,7 +1144,7 @@ void DBRep_DrawableShape::display(const occ::handle<Poly_Triangulation>& T,
   }
 
   // allocate the arrays
-  NCollection_Array1<int>                   Free(1, std::max(1, 2 * nFree));
+  NCollection_Array1<int>                         Free(1, std::max(1, 2 * nFree));
   NCollection_DynamicArray<NCollection_Vec2<int>> anInternal;
 
   int fr = 1;
@@ -1197,9 +1197,10 @@ void DBRep_DrawableShape::display(const occ::handle<Poly_Triangulation>& T,
 
 //=================================================================================================
 
-bool DBRep_DrawableShape::addMeshNormals(NCollection_DynamicArray<std::pair<gp_Pnt, gp_Pnt>>& theNormals,
-                                         const TopoDS_Face&                             theFace,
-                                         const double                                   theLength)
+bool DBRep_DrawableShape::addMeshNormals(
+  NCollection_DynamicArray<std::pair<gp_Pnt, gp_Pnt>>& theNormals,
+  const TopoDS_Face&                                   theFace,
+  const double                                         theLength)
 {
   TopLoc_Location                        aLoc;
   const occ::handle<Poly_Triangulation>& aTriangulation = BRep_Tool::Triangulation(theFace, aLoc);
@@ -1254,14 +1255,15 @@ bool DBRep_DrawableShape::addMeshNormals(NCollection_DynamicArray<std::pair<gp_P
 
 void DBRep_DrawableShape::addMeshNormals(
   NCollection_DataMap<TopoDS_Face, NCollection_DynamicArray<std::pair<gp_Pnt, gp_Pnt>>>& theNormals,
-  const TopoDS_Shape&                                                              theShape,
-  const double                                                                     theLength)
+  const TopoDS_Shape&                                                                    theShape,
+  const double                                                                           theLength)
 {
   TopLoc_Location aLoc;
   for (TopExp_Explorer aFaceIt(theShape, TopAbs_FACE); aFaceIt.More(); aFaceIt.Next())
   {
-    const TopoDS_Face&                             aFace        = TopoDS::Face(aFaceIt.Current());
-    NCollection_DynamicArray<std::pair<gp_Pnt, gp_Pnt>>* aFaceNormals = theNormals.ChangeSeek(aFace);
+    const TopoDS_Face&                                   aFace = TopoDS::Face(aFaceIt.Current());
+    NCollection_DynamicArray<std::pair<gp_Pnt, gp_Pnt>>* aFaceNormals =
+      theNormals.ChangeSeek(aFace);
     if (aFaceNormals == nullptr)
     {
       aFaceNormals = theNormals.Bound(aFace, NCollection_DynamicArray<std::pair<gp_Pnt, gp_Pnt>>());
@@ -1275,10 +1277,10 @@ void DBRep_DrawableShape::addMeshNormals(
 
 bool DBRep_DrawableShape::addSurfaceNormals(
   NCollection_DynamicArray<std::pair<gp_Pnt, gp_Pnt>>& theNormals,
-  const TopoDS_Face&                             theFace,
-  const double                                   theLength,
-  const int                                      theNbAlongU,
-  const int                                      theNbAlongV)
+  const TopoDS_Face&                                   theFace,
+  const double                                         theLength,
+  const int                                            theNbAlongU,
+  const int                                            theNbAlongV)
 {
   {
     TopLoc_Location                  aLoc;
@@ -1331,15 +1333,16 @@ bool DBRep_DrawableShape::addSurfaceNormals(
 
 void DBRep_DrawableShape::addSurfaceNormals(
   NCollection_DataMap<TopoDS_Face, NCollection_DynamicArray<std::pair<gp_Pnt, gp_Pnt>>>& theNormals,
-  const TopoDS_Shape&                                                              theShape,
-  const double                                                                     theLength,
-  const int                                                                        theNbAlongU,
-  const int                                                                        theNbAlongV)
+  const TopoDS_Shape&                                                                    theShape,
+  const double                                                                           theLength,
+  const int theNbAlongU,
+  const int theNbAlongV)
 {
   for (TopExp_Explorer aFaceIt(theShape, TopAbs_FACE); aFaceIt.More(); aFaceIt.Next())
   {
-    const TopoDS_Face&                             aFace        = TopoDS::Face(aFaceIt.Current());
-    NCollection_DynamicArray<std::pair<gp_Pnt, gp_Pnt>>* aFaceNormals = theNormals.ChangeSeek(aFace);
+    const TopoDS_Face&                                   aFace = TopoDS::Face(aFaceIt.Current());
+    NCollection_DynamicArray<std::pair<gp_Pnt, gp_Pnt>>* aFaceNormals =
+      theNormals.ChangeSeek(aFace);
     if (aFaceNormals == nullptr)
     {
       aFaceNormals = theNormals.Bound(aFace, NCollection_DynamicArray<std::pair<gp_Pnt, gp_Pnt>>());

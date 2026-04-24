@@ -35,7 +35,8 @@ BRepExtrema_TriangleSet::BRepExtrema_TriangleSet()
 // function : BRepExtrema_TriangleSet
 // purpose  : Creates triangle set from the given face
 //=======================================================================
-BRepExtrema_TriangleSet::BRepExtrema_TriangleSet(const NCollection_DynamicArray<TopoDS_Shape>& theFaces)
+BRepExtrema_TriangleSet::BRepExtrema_TriangleSet(
+  const NCollection_DynamicArray<TopoDS_Shape>& theFaces)
 {
   // Set default builder - linear BVH (LBVH)
   myBuilder =

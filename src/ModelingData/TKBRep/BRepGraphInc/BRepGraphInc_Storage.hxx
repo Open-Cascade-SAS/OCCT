@@ -822,7 +822,7 @@ private:
 
     NCollection_DynamicArray<EntityT>       Entities;
     NCollection_DynamicArray<BRepGraph_UID> UIDs;
-    uint32_t                          NbActive = 0;
+    uint32_t                                NbActive = 0;
 
     DefStore() = default;
 
@@ -894,7 +894,7 @@ private:
     using ValueType = RepT;
 
     NCollection_DynamicArray<RepT> Entities;
-    uint32_t                 NbActive = 0;
+    uint32_t                       NbActive = 0;
 
     RepStore() = default;
 
@@ -975,7 +975,7 @@ private:
 
     NCollection_DynamicArray<RefT>             Refs;
     NCollection_DynamicArray<BRepGraph_RefUID> UIDs;
-    uint32_t                             NbActive = 0;
+    uint32_t                                   NbActive = 0;
 
     RefStore() = default;
 

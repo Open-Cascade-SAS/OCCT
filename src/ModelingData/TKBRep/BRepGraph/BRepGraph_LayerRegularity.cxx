@@ -24,8 +24,8 @@ static const TCollection_AsciiString THE_LAYER_NAME("Regularity");
 
 void appendUnique(
   NCollection_DataMap<BRepGraph_FaceId, NCollection_DynamicArray<BRepGraph_EdgeId>>& theMap,
-  const BRepGraph_FaceId                                                       theFace,
-  const BRepGraph_EdgeId                                                       theEdge)
+  const BRepGraph_FaceId                                                             theFace,
+  const BRepGraph_EdgeId                                                             theEdge)
 {
   if (!theMap.IsBound(theFace))
   {
@@ -44,15 +44,16 @@ void appendUnique(
   anEdges.Append(theEdge);
 }
 
-void removeEdge(NCollection_DataMap<BRepGraph_FaceId, NCollection_DynamicArray<BRepGraph_EdgeId>>& theMap,
-                const BRepGraph_FaceId theFace,
-                const BRepGraph_EdgeId theEdge) noexcept
+void removeEdge(
+  NCollection_DataMap<BRepGraph_FaceId, NCollection_DynamicArray<BRepGraph_EdgeId>>& theMap,
+  const BRepGraph_FaceId                                                             theFace,
+  const BRepGraph_EdgeId theEdge) noexcept
 {
   if (!theMap.IsBound(theFace))
     return;
 
   NCollection_DynamicArray<BRepGraph_EdgeId>& anEdges = theMap.ChangeFind(theFace);
-  uint32_t                              anIdx   = 0;
+  uint32_t                                    anIdx   = 0;
   for (NCollection_DynamicArray<BRepGraph_EdgeId>::Iterator anIt(anEdges); anIt.More();
        anIt.Next(), ++anIdx)
   {
@@ -434,7 +435,7 @@ void BRepGraph_LayerRegularity::OnNodeRemoved(const BRepGraph_NodeId theNode,
 void BRepGraph_LayerRegularity::OnCompact(
   const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>& theRemapMap) noexcept
 {
-  NCollection_DataMap<BRepGraph_EdgeId, EdgeRegularities>                     aNewEdgeRegs;
+  NCollection_DataMap<BRepGraph_EdgeId, EdgeRegularities>                           aNewEdgeRegs;
   NCollection_DataMap<BRepGraph_FaceId, NCollection_DynamicArray<BRepGraph_EdgeId>> aNewFaceToEdges;
 
   for (const auto& [aOldEdge, aOldRegularities] : myEdgeRegularities.Items())
@@ -457,7 +458,8 @@ void BRepGraph_LayerRegularity::OnCompact(
 
       // Deduplicate: if same face pair already exists for this edge, update continuity.
       bool aDuplicate = false;
-      for (NCollection_DynamicArray<RegularityEntry>::Iterator anIt(aRegularities.Entries); anIt.More();
+      for (NCollection_DynamicArray<RegularityEntry>::Iterator anIt(aRegularities.Entries);
+           anIt.More();
            anIt.Next())
       {
         if (anIt.Value().FaceEntity1 == aNewFace1 && anIt.Value().FaceEntity2 == aNewFace2)

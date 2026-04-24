@@ -78,7 +78,7 @@ static bool checkWasFailedFbo(const occ::handle<OpenGl_FrameBuffer>& theFboToChe
 //! Chooses compatible internal color format for OIT frame buffer.
 static bool chooseOitColorConfiguration(const occ::handle<OpenGl_Context>& theGlContext,
                                         const int                          theConfigIndex,
-                                        NCollection_DynamicArray<int>&           theFormats)
+                                        NCollection_DynamicArray<int>&     theFormats)
 {
   theFormats.Clear();
   switch (theConfigIndex)

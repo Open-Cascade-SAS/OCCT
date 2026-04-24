@@ -22,8 +22,8 @@ static const TCollection_AsciiString THE_LAYER_NAME("Param");
 
 template <typename KeyT>
 void appendUnique(NCollection_DataMap<KeyT, NCollection_DynamicArray<BRepGraph_VertexId>>& theMap,
-                  const KeyT                                                         theKey,
-                  const BRepGraph_VertexId                                           theVertex)
+                  const KeyT                                                               theKey,
+                  const BRepGraph_VertexId theVertex)
 {
   if (!theMap.IsBound(theKey))
   {
@@ -44,14 +44,14 @@ void appendUnique(NCollection_DataMap<KeyT, NCollection_DynamicArray<BRepGraph_V
 
 template <typename KeyT>
 void removeVertex(NCollection_DataMap<KeyT, NCollection_DynamicArray<BRepGraph_VertexId>>& theMap,
-                  const KeyT                                                         theKey,
+                  const KeyT                                                               theKey,
                   const BRepGraph_VertexId theVertex) noexcept
 {
   if (!theMap.IsBound(theKey))
     return;
 
   NCollection_DynamicArray<BRepGraph_VertexId>& aVertices = theMap.ChangeFind(theKey);
-  uint32_t                                anIdx     = 0;
+  uint32_t                                      anIdx     = 0;
   for (NCollection_DynamicArray<BRepGraph_VertexId>::Iterator anIt(aVertices); anIt.More();
        anIt.Next(), ++anIdx)
   {
@@ -299,7 +299,8 @@ void BRepGraph_LayerParam::SetPointOnCurve(const BRepGraph_VertexId theVertex,
                                            const double             theParameter)
 {
   VertexParams& aParams = changeVertexParams(theVertex);
-  for (NCollection_DynamicArray<PointOnCurveEntry>::Iterator anIt(aParams.PointsOnCurve); anIt.More();
+  for (NCollection_DynamicArray<PointOnCurveEntry>::Iterator anIt(aParams.PointsOnCurve);
+       anIt.More();
        anIt.Next())
   {
     if (anIt.Value().EdgeDefId != theEdge)
@@ -322,7 +323,8 @@ void BRepGraph_LayerParam::SetPointOnSurface(const BRepGraph_VertexId theVertex,
                                              const double             theParameterV)
 {
   VertexParams& aParams = changeVertexParams(theVertex);
-  for (NCollection_DynamicArray<PointOnSurfaceEntry>::Iterator anIt(aParams.PointsOnSurface); anIt.More();
+  for (NCollection_DynamicArray<PointOnSurfaceEntry>::Iterator anIt(aParams.PointsOnSurface);
+       anIt.More();
        anIt.Next())
   {
     if (anIt.Value().FaceDefId != theFace)
@@ -346,7 +348,8 @@ void BRepGraph_LayerParam::SetPointOnPCurve(const BRepGraph_VertexId theVertex,
                                             const double             theParameter)
 {
   VertexParams& aParams = changeVertexParams(theVertex);
-  for (NCollection_DynamicArray<PointOnPCurveEntry>::Iterator anIt(aParams.PointsOnPCurve); anIt.More();
+  for (NCollection_DynamicArray<PointOnPCurveEntry>::Iterator anIt(aParams.PointsOnPCurve);
+       anIt.More();
        anIt.Next())
   {
     if (anIt.Value().CoEdgeDefId != theCoEdge)
@@ -371,7 +374,8 @@ void BRepGraph_LayerParam::removePointOnCurve(const BRepGraph_VertexId theVertex
 
   VertexParams& aParams = myVertexParams.ChangeFind(theVertex);
   uint32_t      anIdx   = 0;
-  for (NCollection_DynamicArray<PointOnCurveEntry>::Iterator anIt(aParams.PointsOnCurve); anIt.More();
+  for (NCollection_DynamicArray<PointOnCurveEntry>::Iterator anIt(aParams.PointsOnCurve);
+       anIt.More();
        anIt.Next(), ++anIdx)
   {
     if (anIt.Value().EdgeDefId != theEdge)
@@ -398,7 +402,8 @@ void BRepGraph_LayerParam::removePointOnSurface(const BRepGraph_VertexId theVert
 
   VertexParams& aParams = myVertexParams.ChangeFind(theVertex);
   uint32_t      anIdx   = 0;
-  for (NCollection_DynamicArray<PointOnSurfaceEntry>::Iterator anIt(aParams.PointsOnSurface); anIt.More();
+  for (NCollection_DynamicArray<PointOnSurfaceEntry>::Iterator anIt(aParams.PointsOnSurface);
+       anIt.More();
        anIt.Next(), ++anIdx)
   {
     if (anIt.Value().FaceDefId != theFace)
@@ -425,7 +430,8 @@ void BRepGraph_LayerParam::removePointOnPCurve(const BRepGraph_VertexId theVerte
 
   VertexParams& aParams = myVertexParams.ChangeFind(theVertex);
   uint32_t      anIdx   = 0;
-  for (NCollection_DynamicArray<PointOnPCurveEntry>::Iterator anIt(aParams.PointsOnPCurve); anIt.More();
+  for (NCollection_DynamicArray<PointOnPCurveEntry>::Iterator anIt(aParams.PointsOnPCurve);
+       anIt.More();
        anIt.Next(), ++anIdx)
   {
     if (anIt.Value().CoEdgeDefId != theCoEdge)
@@ -489,7 +495,8 @@ void BRepGraph_LayerParam::invalidateFaceBindings(const BRepGraph_FaceId theFace
 
 void BRepGraph_LayerParam::invalidateCoEdgeBindings(const BRepGraph_CoEdgeId theCoEdge) noexcept
 {
-  const NCollection_DynamicArray<BRepGraph_VertexId>* aVertices = myCoEdgeToVertices.Seek(theCoEdge);
+  const NCollection_DynamicArray<BRepGraph_VertexId>* aVertices =
+    myCoEdgeToVertices.Seek(theCoEdge);
   if (aVertices == nullptr)
     return;
 
@@ -569,7 +576,8 @@ void BRepGraph_LayerParam::migrateFaceBindings(const BRepGraph_FaceId theOldFace
 void BRepGraph_LayerParam::migrateCoEdgeBindings(const BRepGraph_CoEdgeId theOldCoEdge,
                                                  const BRepGraph_CoEdgeId theNewCoEdge) noexcept
 {
-  const NCollection_DynamicArray<BRepGraph_VertexId>* aVertices = myCoEdgeToVertices.Seek(theOldCoEdge);
+  const NCollection_DynamicArray<BRepGraph_VertexId>* aVertices =
+    myCoEdgeToVertices.Seek(theOldCoEdge);
   if (aVertices == nullptr)
     return;
 
@@ -661,10 +669,11 @@ void BRepGraph_LayerParam::OnNodeRemoved(const BRepGraph_NodeId theNode,
 void BRepGraph_LayerParam::OnCompact(
   const NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>& theRemapMap) noexcept
 {
-  NCollection_DataMap<BRepGraph_VertexId, VertexParams>                           aNewParams;
-  NCollection_DataMap<BRepGraph_EdgeId, NCollection_DynamicArray<BRepGraph_VertexId>>   aNewEdgeToVtx;
-  NCollection_DataMap<BRepGraph_FaceId, NCollection_DynamicArray<BRepGraph_VertexId>>   aNewFaceToVtx;
-  NCollection_DataMap<BRepGraph_CoEdgeId, NCollection_DynamicArray<BRepGraph_VertexId>> aNewCoEdgeToVtx;
+  NCollection_DataMap<BRepGraph_VertexId, VertexParams>                               aNewParams;
+  NCollection_DataMap<BRepGraph_EdgeId, NCollection_DynamicArray<BRepGraph_VertexId>> aNewEdgeToVtx;
+  NCollection_DataMap<BRepGraph_FaceId, NCollection_DynamicArray<BRepGraph_VertexId>> aNewFaceToVtx;
+  NCollection_DataMap<BRepGraph_CoEdgeId, NCollection_DynamicArray<BRepGraph_VertexId>>
+    aNewCoEdgeToVtx;
 
   for (const auto& [aOldVertex, aOldParams] : myVertexParams.Items())
   {

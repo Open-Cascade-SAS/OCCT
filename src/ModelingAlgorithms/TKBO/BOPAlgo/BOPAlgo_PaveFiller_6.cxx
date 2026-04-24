@@ -333,7 +333,7 @@ void BOPAlgo_PaveFiller::PerformFF(const Message_ProgressRange& theRange)
   // Collect all pairs of Edge/Edge interferences to check if
   // some faces have to be moved to obtain more precise intersection
   NCollection_DataMap<BOPDS_Pair, NCollection_List<int>> aEEMap;
-  const NCollection_DynamicArray<BOPDS_InterfEE>&              aVEEs = myDS->InterfEE();
+  const NCollection_DynamicArray<BOPDS_InterfEE>&        aVEEs = myDS->InterfEE();
   for (int iEE = 0; iEE < aVEEs.Length(); ++iEE)
   {
     const BOPDS_Interf& aEE = aVEEs(iEE);
@@ -653,8 +653,8 @@ void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
   }
   //
   NCollection_DynamicArray<BOPDS_InterfFF>& aFFs  = myDS->InterfFF();
-  int                                 aNbFF = aFFs.Length();
-  Message_ProgressScope               aPS(aPSOuter.Next(), "Building section edges", aNbFF);
+  int                                       aNbFF = aFFs.Length();
+  Message_ProgressScope                     aPS(aPSOuter.Next(), "Building section edges", aNbFF);
   if (!aNbFF)
   {
     return;
@@ -734,9 +734,9 @@ void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
     aFF.Indices(nF1, nF2);
     //
     NCollection_DynamicArray<BOPDS_Point>& aVP = aFF.ChangePoints();
-    aNbP                                 = aVP.Length();
+    aNbP                                       = aVP.Length();
     NCollection_DynamicArray<BOPDS_Curve>& aVC = aFF.ChangeCurves();
-    aNbC                                 = aVC.Length();
+    aNbC                                       = aVC.Length();
     if (!aNbP && !aNbC)
     {
       continue;
@@ -1183,7 +1183,7 @@ void BOPAlgo_PaveFiller::PostTreatFF(
   aPF.SetNonDestructive(myNonDestructive);
   //
   NCollection_DynamicArray<BOPDS_InterfFF>& aFFs  = myDS->InterfFF();
-  int                                 aNbFF = aFFs.Length();
+  int                                       aNbFF = aFFs.Length();
   //
 
   // Find unused vertices
@@ -1228,11 +1228,11 @@ void BOPAlgo_PaveFiller::PostTreatFF(
       aSI.SetShape(aS);
       iV = myDS->Append(aSI);
       //
-      iX                                    = aCPB.IndexInterf();
-      iP                                    = aCPB.Index();
-      BOPDS_InterfFF&                  aFF  = aFFs(iX);
+      iX                                          = aCPB.IndexInterf();
+      iP                                          = aCPB.Index();
+      BOPDS_InterfFF&                        aFF  = aFFs(iX);
       NCollection_DynamicArray<BOPDS_Point>& aVNP = aFF.ChangePoints();
-      BOPDS_Point&                     aNP  = aVNP(iP);
+      BOPDS_Point&                           aNP  = aVNP(iP);
       aNP.SetIndex(iV);
     }
     else if (aType == TopAbs_EDGE)
@@ -1421,12 +1421,12 @@ void BOPAlgo_PaveFiller::PostTreatFF(
       else
       {
         // update FF interference
-        const BOPDS_CoupleOfPaveBlocks& aCPB  = theMSCPB.FindFromKey(aSx);
-        iX                                    = aCPB.IndexInterf();
-        iP                                    = aCPB.Index();
-        BOPDS_InterfFF&                  aFF  = aFFs(iX);
+        const BOPDS_CoupleOfPaveBlocks& aCPB        = theMSCPB.FindFromKey(aSx);
+        iX                                          = aCPB.IndexInterf();
+        iP                                          = aCPB.Index();
+        BOPDS_InterfFF&                        aFF  = aFFs(iX);
         NCollection_DynamicArray<BOPDS_Point>& aVNP = aFF.ChangePoints();
-        BOPDS_Point&                     aNP  = aVNP(iP);
+        BOPDS_Point&                           aNP  = aVNP(iP);
         aNP.SetIndex(iV);
       }
     } // if (aType==TopAbs_VERTEX) {
@@ -1464,7 +1464,7 @@ void BOPAlgo_PaveFiller::PostTreatFF(
       else
       {
         BOPDS_InterfFF&                                 aFF   = aFFs(iX);
-        NCollection_DynamicArray<BOPDS_Curve>&                aVNC  = aFF.ChangeCurves();
+        NCollection_DynamicArray<BOPDS_Curve>&          aVNC  = aFF.ChangeCurves();
         BOPDS_Curve&                                    aNC   = aVNC(iC);
         NCollection_List<occ::handle<BOPDS_PaveBlock>>& aLPBC = aNC.ChangePaveBlocks();
         //
@@ -1649,7 +1649,7 @@ void BOPAlgo_PaveFiller::UpdateFaceInfo(
   NCollection_DataMap<int, NCollection_List<occ::handle<BOPDS_PaveBlock>>> anEdgeLPB;
 
   NCollection_DynamicArray<BOPDS_InterfFF>& aFFs = myDS->InterfFF();
-  aNbFF                                    = aFFs.Length();
+  aNbFF                                          = aFFs.Length();
   // 1. Sections (curves, points);
   for (i = 0; i < aNbFF; ++i)
   {
@@ -1661,7 +1661,7 @@ void BOPAlgo_PaveFiller::UpdateFaceInfo(
     //
     // 1.1. Section edges
     NCollection_DynamicArray<BOPDS_Curve>& aVNC = aFF.ChangeCurves();
-    aNbC                                  = aVNC.Length();
+    aNbC                                        = aVNC.Length();
     for (j = 0; j < aNbC; ++j)
     {
       BOPDS_Curve&                                    aNC   = aVNC(j);
@@ -1708,7 +1708,7 @@ void BOPAlgo_PaveFiller::UpdateFaceInfo(
     //
     // 1.2. Section vertices
     const NCollection_DynamicArray<BOPDS_Point>& aVNP = aFF.Points();
-    aNbP                                        = aVNP.Length();
+    aNbP                                              = aVNP.Length();
     for (j = 0; j < aNbP; ++j)
     {
       const BOPDS_Point& aNP = aVNP(j);
@@ -2354,7 +2354,7 @@ struct PaveBlockDist
 } // namespace
 
 void BOPAlgo_PaveFiller::FilterPavesOnCurves(const NCollection_DynamicArray<BOPDS_Curve>& theVNC,
-                                             NCollection_DataMap<int, double>&      theMVTol)
+                                             NCollection_DataMap<int, double>&            theMVTol)
 {
   // For each vertex found in ExtPaves of pave blocks of section curves
   // collect list of pave blocks with distance to the curve
@@ -2531,7 +2531,7 @@ void BOPAlgo_PaveFiller::GetEFPnts(const int                          nF1,
   GetFullShapeMap(nF2, aMI);
   //
   NCollection_DynamicArray<BOPDS_InterfEF>& aEFs = myDS->InterfEF();
-  aNbEFs                                   = aEFs.Length();
+  aNbEFs                                         = aEFs.Length();
   //
   for (i = 0; i < aNbEFs; ++i)
   {
@@ -2603,10 +2603,10 @@ void BOPAlgo_PaveFiller::GetEFPnts(const int                          nF1,
 //=================================================================================================
 
 void BOPAlgo_PaveFiller::PutEFPavesOnCurve(const NCollection_DynamicArray<BOPDS_Curve>& theVC,
-                                           const int                              theIndex,
-                                           const NCollection_Map<int>&            aMI,
-                                           const NCollection_Map<int>&            aMVEF,
-                                           NCollection_DataMap<int, double>&      aMVTol,
+                                           const int                                    theIndex,
+                                           const NCollection_Map<int>&                  aMI,
+                                           const NCollection_Map<int>&                  aMVEF,
+                                           NCollection_DataMap<int, double>&            aMVTol,
                                            NCollection_DataMap<int, NCollection_List<int>>& aDMVLV)
 {
   if (!aMVEF.Extent())
@@ -2662,7 +2662,7 @@ void BOPAlgo_PaveFiller::PutStickPavesOnCurve(
   const TopoDS_Face&                               aF1,
   const TopoDS_Face&                               aF2,
   const NCollection_Map<int>&                      aMI,
-  const NCollection_DynamicArray<BOPDS_Curve>&           theVC,
+  const NCollection_DynamicArray<BOPDS_Curve>&     theVC,
   const int                                        theIndex,
   const NCollection_Map<int>&                      aMVStick,
   NCollection_DataMap<int, double>&                aMVTol,
@@ -2837,7 +2837,7 @@ void BOPAlgo_PaveFiller::GetFullShapeMap(const int nF, NCollection_Map<int>& aMI
 //=================================================================================================
 
 void BOPAlgo_PaveFiller::RemoveUsedVertices(const NCollection_DynamicArray<BOPDS_Curve>& aVC,
-                                            NCollection_Map<int>&                  aMV)
+                                            NCollection_Map<int>&                        aMV)
 {
   if (aMV.IsEmpty())
     return;
@@ -3089,7 +3089,7 @@ void BOPAlgo_PaveFiller::ProcessExistingPaveBlocks(
   NCollection_DataMap<int, NCollection_List<int>>::Iterator aItBV;
   //
   NCollection_DynamicArray<BOPDS_InterfFF>& aFFs = myDS->InterfFF();
-  BOPDS_InterfFF&                     aFF  = aFFs(theInt);
+  BOPDS_InterfFF&                           aFF  = aFFs(theInt);
   NCollection_DynamicArray<BOPDS_Curve>&    aVC  = aFF.ChangeCurves();
   //
   const BOPDS_FaceInfo& aFI1 = myDS->FaceInfo(nF1);
@@ -3575,12 +3575,12 @@ void BOPAlgo_PaveFiller::UpdatePaveBlocks(const NCollection_DataMap<int, int>& a
 
   // Get pave blocks of section edges
   NCollection_DynamicArray<BOPDS_InterfFF>& aFFs  = myDS->InterfFF();
-  int                                 aNbFF = aFFs.Length();
+  int                                       aNbFF = aFFs.Length();
   for (i = 0; i < aNbFF; ++i)
   {
-    const BOPDS_InterfFF&                  aFF  = aFFs(i);
+    const BOPDS_InterfFF&                        aFF  = aFFs(i);
     const NCollection_DynamicArray<BOPDS_Curve>& aVNC = aFF.Curves();
-    int                                    aNbC = aVNC.Length();
+    int                                          aNbC = aVNC.Length();
     for (j = 0; j < aNbC; ++j)
     {
       const BOPDS_Curve&                                    aNC   = aVNC(j);
@@ -3707,15 +3707,15 @@ void BOPAlgo_PaveFiller::RemovePaveBlocks(const NCollection_Map<int>& theEdges)
   }
 
   // 2. from section curves
-  NCollection_Map<int>                aMPassed;
+  NCollection_Map<int>                      aMPassed;
   NCollection_DynamicArray<BOPDS_InterfFF>& aFFs  = myDS->InterfFF();
-  int                                 aNbFF = aFFs.Length(), j;
+  int                                       aNbFF = aFFs.Length(), j;
   for (i = 0; i < aNbFF; ++i)
   {
     BOPDS_InterfFF& aFF = aFFs(i);
     // remove from Section pave blocks
     NCollection_DynamicArray<BOPDS_Curve>& aVNC = aFF.ChangeCurves();
-    int                              aNbC = aVNC.Length();
+    int                                    aNbC = aVNC.Length();
     for (j = 0; j < aNbC; ++j)
     {
       BOPDS_Curve&                                             aNC  = aVNC(j);
@@ -3808,7 +3808,7 @@ void BOPAlgo_PaveFiller::UpdateBlocksWithSharedVertices()
   int aNbFF;
   //
   NCollection_DynamicArray<BOPDS_InterfFF>& aFFs = myDS->InterfFF();
-  aNbFF                                    = aFFs.Length();
+  aNbFF                                          = aFFs.Length();
   if (!aNbFF)
   {
     return;
@@ -3824,7 +3824,7 @@ void BOPAlgo_PaveFiller::UpdateBlocksWithSharedVertices()
     BOPDS_InterfFF& aFF = aFFs(i);
     //
     NCollection_DynamicArray<BOPDS_Curve>& aVC = aFF.ChangeCurves();
-    aNbC                                 = aVC.Length();
+    aNbC                                       = aVC.Length();
     if (!aNbC)
     {
       continue;
@@ -3939,7 +3939,7 @@ void BOPAlgo_PaveFiller::CorrectToleranceOfSE()
     BOPDS_InterfFF& aFF = aFFs(i);
     //
     NCollection_DynamicArray<BOPDS_Curve>& aVNC = aFF.ChangeCurves();
-    int                              aNbC = aVNC.Length(), k;
+    int                                    aNbC = aVNC.Length(), k;
     for (k = 0; k < aNbC; ++k)
     {
       BOPDS_Curve&                                             aNC  = aVNC(k);
@@ -4019,7 +4019,7 @@ void BOPAlgo_PaveFiller::CorrectToleranceOfSE()
   //     reducing the tolerance to the value less than the tolerances of edges,
   //     i.e. minimal tolerance for the vertex is the max tolerance of the
   //     edges containing this vertex
-  NCollection_DataMap<int, double>                                    aMVITol;
+  NCollection_DataMap<int, double>                                          aMVITol;
   NCollection_DynamicArray<NCollection_List<occ::handle<BOPDS_PaveBlock>>>& aPBP =
     myDS->ChangePaveBlocksPool();
   aNb = aPBP.Length();
@@ -4138,12 +4138,12 @@ void BOPAlgo_PaveFiller::PutSEInOtherFaces(const Message_ProgressRange& theRange
   NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>> aMPBScAll;
 
   NCollection_DynamicArray<BOPDS_InterfFF>& aFFs  = myDS->InterfFF();
-  const int                           aNbFF = aFFs.Length();
-  Message_ProgressScope               aPS(theRange, nullptr, 1);
+  const int                                 aNbFF = aFFs.Length();
+  Message_ProgressScope                     aPS(theRange, nullptr, 1);
   for (int i = 0; i < aNbFF; ++i)
   {
     const NCollection_DynamicArray<BOPDS_Curve>& aVNC = aFFs(i).Curves();
-    const int                              aNbC = aVNC.Length();
+    const int                                    aNbC = aVNC.Length();
     for (int j = 0; j < aNbC; ++j)
     {
       const NCollection_List<occ::handle<BOPDS_PaveBlock>>&    aLPBC = aVNC(j).PaveBlocks();

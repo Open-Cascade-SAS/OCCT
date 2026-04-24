@@ -135,10 +135,10 @@ private:
 private:
   // ---------- PRIVATE FIELDS ----------
 
-  UBTree&                    myTree;
+  UBTree&                          myTree;
   NCollection_DynamicArray<ObjBnd> mySeqPtr;
-  std::mt19937               myRandGen; //!< random number generator
-  bool                       myIsFullRandom;
+  std::mt19937                     myRandGen; //!< random number generator
+  bool                             myIsFullRandom;
 };
 
 //=================================================================================================

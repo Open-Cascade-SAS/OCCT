@@ -27,9 +27,9 @@ typedef NCollection_Vec2<float> Vec2f;
 
 //! Auxiliary function to translate corners by the vector.
 inline void move(NCollection_DynamicArray<Vec2f>& theCorners,
-                 const Vec2f&               theMoveVec,
-                 int                        theCharLower,
-                 const int                  theCharUpper)
+                 const Vec2f&                     theMoveVec,
+                 int                              theCharLower,
+                 const int                        theCharUpper)
 {
   for (; theCharLower <= theCharUpper; ++theCharLower)
   {
@@ -39,9 +39,9 @@ inline void move(NCollection_DynamicArray<Vec2f>& theCorners,
 
 //! Auxiliary function to translate corners in vertical direction.
 inline void moveY(NCollection_DynamicArray<Vec2f>& theCorners,
-                  const float                theMoveVec,
-                  int                        theCharLower,
-                  const int                  theCharUpper)
+                  const float                      theMoveVec,
+                  int                              theCharLower,
+                  const int                        theCharUpper)
 {
   for (; theCharLower <= theCharUpper; ++theCharLower)
   {

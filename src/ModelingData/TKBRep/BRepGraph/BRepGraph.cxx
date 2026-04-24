@@ -364,7 +364,7 @@ void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
                             + aStorage.NbProducts() + aStorage.NbOccurrences();
   const uint32_t                        aMaxDepth = aNbNodes > 0 ? aNbNodes : 1;
   occ::handle<NCollection_IncAllocator> anAlloc   = new NCollection_IncAllocator();
-  NCollection_DynamicArray<StackEntry>        aStack(64, anAlloc);
+  NCollection_DynamicArray<StackEntry>  aStack(64, anAlloc);
   NCollection_Map<BRepGraph_NodeId>     aVisited(static_cast<size_t>(aNbNodes), anAlloc);
   aStack.Append({theNode, 0});
 

@@ -250,7 +250,8 @@ void SelectMgr::ComputeSensitivePrs(const occ::handle<Graphic3d_Structure>&     
     {
       const NCollection_DynamicArray<occ::handle<Select3D_SensitiveEntity>>& anEntities =
         aWire->GetEdges();
-      for (NCollection_DynamicArray<occ::handle<Select3D_SensitiveEntity>>::Iterator aSubIter(anEntities);
+      for (NCollection_DynamicArray<occ::handle<Select3D_SensitiveEntity>>::Iterator aSubIter(
+             anEntities);
            aSubIter.More();
            aSubIter.Next())
       {

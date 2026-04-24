@@ -281,7 +281,7 @@ bool HasAncestorFaces(const BOPAlgo_PPaveFiller& pPF,
   int                                                      aNbFF, i, j, nE, nF1, nF2, aNbVC;
   NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator aItLPB;
   //
-  const BOPDS_PDS&                    pDS  = pPF->PDS();
+  const BOPDS_PDS&                          pDS  = pPF->PDS();
   NCollection_DynamicArray<BOPDS_InterfFF>& aFFs = pDS->InterfFF();
   //
   // section edges
@@ -292,7 +292,7 @@ bool HasAncestorFaces(const BOPAlgo_PPaveFiller& pPF,
     aFFi.Indices(nF1, nF2);
     //
     const NCollection_DynamicArray<BOPDS_Curve>& aVC = aFFi.Curves();
-    aNbVC                                      = aVC.Length();
+    aNbVC                                            = aVC.Length();
     for (j = 0; j < aNbVC; j++)
     {
       const BOPDS_Curve& aBC = aVC(j);

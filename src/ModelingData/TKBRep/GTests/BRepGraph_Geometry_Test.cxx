@@ -175,7 +175,7 @@ TEST(BRepGraph_GeometryTest, Box_FindPCurve_AllEdgeFacePairs_Valid)
   int aPCurveCount = 0;
   for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
-    const BRepGraph_EdgeId                        anEdgeId = anEdgeIt.CurrentId();
+    const BRepGraph_EdgeId                              anEdgeId = anEdgeIt.CurrentId();
     const NCollection_DynamicArray<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
       aGraph.Topo().Edges().CoEdges(anEdgeId);
     for (const BRepGraph_CoEdgeId& aCoEdgeId : aCoEdgeIdxs)
@@ -294,7 +294,7 @@ TEST(BRepGraph_GeometryTest, SameDomainFaces_SimpleBox_Empty)
   // For a simple box each face has a unique surface, so SameDomainFaces is empty.
   for (BRepGraph_FaceIterator aFaceIt(aGraph); aFaceIt.More(); aFaceIt.Next())
   {
-    const BRepGraph_FaceId                     aFaceDefId = aFaceIt.CurrentId();
+    const BRepGraph_FaceId                           aFaceDefId = aFaceIt.CurrentId();
     const NCollection_DynamicArray<BRepGraph_FaceId> aSameDomain =
       aGraph.Topo().Faces().SameDomain(aFaceDefId, aGraph.Allocator());
     EXPECT_EQ(aSameDomain.Length(), 0)
@@ -708,7 +708,7 @@ TEST(BRepGraph_GeometryTest, Cylinder_SeamEdge_FindPCurve_WithOrientation)
 
   for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
-    const BRepGraph_EdgeId                        anEdgeId = anEdgeIt.CurrentId();
+    const BRepGraph_EdgeId                              anEdgeId = anEdgeIt.CurrentId();
     const NCollection_DynamicArray<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
       aGraph.Topo().Edges().CoEdges(anEdgeId);
 
@@ -742,7 +742,7 @@ TEST(BRepGraph_GeometryTest, Box_FindPCurve_MatchesToolOverload)
 
   for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
-    const BRepGraph_EdgeId                        anEdgeId = anEdgeIt.CurrentId();
+    const BRepGraph_EdgeId                              anEdgeId = anEdgeIt.CurrentId();
     const NCollection_DynamicArray<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
       aGraph.Topo().Edges().CoEdges(anEdgeId);
 

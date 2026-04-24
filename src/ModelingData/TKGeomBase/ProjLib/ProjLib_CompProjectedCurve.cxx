@@ -83,7 +83,7 @@ struct SplitDS
 {
   SplitDS(const occ::handle<Adaptor3d_Curve>&   theCurve,
           const occ::handle<Adaptor3d_Surface>& theSurface,
-          NCollection_DynamicArray<double>&           theSplits)
+          NCollection_DynamicArray<double>&     theSplits)
       : myCurve(theCurve),
         mySurface(theSurface),
         mySplits(theSplits),
@@ -98,7 +98,7 @@ struct SplitDS
 
   const occ::handle<Adaptor3d_Curve>   myCurve;
   const occ::handle<Adaptor3d_Surface> mySurface;
-  NCollection_DynamicArray<double>&          mySplits;
+  NCollection_DynamicArray<double>&    mySplits;
 
   double myPerMinParam;
   double myPerMaxParam;
@@ -119,7 +119,7 @@ static void BuildCurveSplits(const occ::handle<Adaptor3d_Curve>&   theCurve,
                              const occ::handle<Adaptor3d_Surface>& theSurface,
                              const double                          theTolU,
                              const double                          theTolV,
-                             NCollection_DynamicArray<double>&           theSplits);
+                             NCollection_DynamicArray<double>&     theSplits);
 
 //! Perform splitting on a specified direction. Sub-method in BuildCurveSplits.
 static void SplitOnDirection(SplitDS& theSplitDS);
@@ -2109,7 +2109,7 @@ void BuildCurveSplits(const occ::handle<Adaptor3d_Curve>&   theCurve,
                       const occ::handle<Adaptor3d_Surface>& theSurface,
                       const double                          theTolU,
                       const double                          theTolV,
-                      NCollection_DynamicArray<double>&           theSplits)
+                      NCollection_DynamicArray<double>&     theSplits)
 {
   SplitDS aDS(theCurve, theSurface, theSplits);
 

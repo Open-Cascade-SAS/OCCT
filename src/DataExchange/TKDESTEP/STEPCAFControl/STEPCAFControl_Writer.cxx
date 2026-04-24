@@ -3561,7 +3561,7 @@ static void WriteDerivedGeometry(
   const occ::handle<StepRepr_ConstructiveGeometryRepresentation>& theRepr,
   occ::handle<StepRepr_ShapeAspect>&                              theFirstSA,
   occ::handle<StepRepr_ShapeAspect>&                              theSecondSA,
-  NCollection_DynamicArray<occ::handle<StepGeom_CartesianPoint>>&       thePnts,
+  NCollection_DynamicArray<occ::handle<StepGeom_CartesianPoint>>& thePnts,
   const StepData_Factors&                                         theLocalFactors)
 {
   const occ::handle<Interface_InterfaceModel>& aModel = theWS->Model();
@@ -4629,8 +4629,8 @@ bool STEPCAFControl_Writer::writeDGTsAP242(const occ::handle<XSControl_WorkSessi
   occ::handle<StepRepr_ConstructiveGeometryRepresentationRelationship> aCGReprRel =
     new StepRepr_ConstructiveGeometryRepresentationRelationship();
   NCollection_DynamicArray<occ::handle<StepGeom_CartesianPoint>> aConnectionPnts;
-  occ::handle<StepRepr_RepresentationContext>              dummyRC;
-  occ::handle<StepAP242_GeometricItemSpecificUsage>        dummyGISU;
+  occ::handle<StepRepr_RepresentationContext>                    dummyRC;
+  occ::handle<StepAP242_GeometricItemSpecificUsage>              dummyGISU;
   for (NCollection_Sequence<TDF_Label>::Iterator aDGTIter(aDGTLabels); aDGTIter.More();
        aDGTIter.Next())
   {

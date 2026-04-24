@@ -2271,8 +2271,8 @@ bool readPMIPresentation(const occ::handle<Standard_Transient>&       thePresent
   {
     return false;
   }
-  occ::handle<Transfer_TransientProcess>                 aTP = theTR->TransientProcess();
-  occ::handle<StepVisual_StyledItem>                     anAO;
+  occ::handle<Transfer_TransientProcess>                       aTP = theTR->TransientProcess();
+  occ::handle<StepVisual_StyledItem>                           anAO;
   NCollection_DynamicArray<occ::handle<StepVisual_StyledItem>> anAnnotations;
   if (thePresentEntity->IsKind(STANDARD_TYPE(StepVisual_AnnotationOccurrence))
       || thePresentEntity->IsKind(STANDARD_TYPE(StepVisual_TessellatedAnnotationOccurrence)))
@@ -2392,8 +2392,8 @@ bool readPMIPresentation(const occ::handle<Standard_Transient>&       thePresent
             continue;
           }
 
-          NCollection_Handle<NCollection_DynamicArray<occ::handle<NCollection_HSequence<int>>>> aCurves =
-            aTessCurve->Curves();
+          NCollection_Handle<NCollection_DynamicArray<occ::handle<NCollection_HSequence<int>>>>
+              aCurves   = aTessCurve->Curves();
           int aNbCurves = (aCurves.IsNull() ? 0 : aCurves->Length());
           for (int k = 0; k < aNbCurves; k++)
           {

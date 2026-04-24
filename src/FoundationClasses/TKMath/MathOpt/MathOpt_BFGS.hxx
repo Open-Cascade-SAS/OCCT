@@ -367,7 +367,7 @@ VectorResult LBFGS(Function&          theFunc,
   // Storage for {s, y} pairs (circular buffer)
   NCollection_DynamicArray<math_Vector> aSVec;
   NCollection_DynamicArray<math_Vector> aYVec;
-  math_Vector                     aRhoVec(0, aM - 1, 0.0);
+  math_Vector                           aRhoVec(0, aM - 1, 0.0);
   for (int i = 0; i < aM; ++i)
   {
     aSVec.Append(math_Vector(1, aN));

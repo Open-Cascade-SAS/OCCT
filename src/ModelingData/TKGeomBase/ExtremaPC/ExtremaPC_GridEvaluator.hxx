@@ -496,11 +496,12 @@ private:
   NCollection_Array1<GridPoint> myGrid; //!< Cached grid
 
   // Mutable cached temporaries (reused via Clear())
-  mutable ExtremaPC::Result                          myResult;        //!< Reusable result
-  mutable NCollection_DynamicArray<Candidate>              myCandidates;    //!< Candidates from grid scan
-  mutable NCollection_DynamicArray<double>                 myFoundRoots;    //!< Found roots for dedup
-  mutable NCollection_DynamicArray<std::pair<int, double>> mySortedIndices; //!< Sorted candidate indices
-  mutable NCollection_Array1<bool>                   myProcessed; //!< Processed flags for grid scan
+  mutable ExtremaPC::Result                   myResult;     //!< Reusable result
+  mutable NCollection_DynamicArray<Candidate> myCandidates; //!< Candidates from grid scan
+  mutable NCollection_DynamicArray<double>    myFoundRoots; //!< Found roots for dedup
+  mutable NCollection_DynamicArray<std::pair<int, double>>
+                                   mySortedIndices; //!< Sorted candidate indices
+  mutable NCollection_Array1<bool> myProcessed;     //!< Processed flags for grid scan
 };
 
 #endif // _ExtremaPC_GridEvaluator_HeaderFile

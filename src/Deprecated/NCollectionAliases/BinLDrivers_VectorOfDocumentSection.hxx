@@ -23,8 +23,9 @@
 #include <NCollection_DynamicArray.hxx>
 #include <BinLDrivers_DocumentSection.hxx>
 
-Standard_HEADER_DEPRECATED("BinLDrivers_VectorOfDocumentSection.hxx is deprecated since OCCT "
-                           "8.0.0. Use NCollection_DynamicArray<BinLDrivers_DocumentSection> directly.")
+Standard_HEADER_DEPRECATED(
+  "BinLDrivers_VectorOfDocumentSection.hxx is deprecated since OCCT "
+  "8.0.0. Use NCollection_DynamicArray<BinLDrivers_DocumentSection> directly.")
 
   Standard_DEPRECATED("BinLDrivers_VectorOfDocumentSection is deprecated, use "
                       "NCollection_DynamicArray<BinLDrivers_DocumentSection> directly")

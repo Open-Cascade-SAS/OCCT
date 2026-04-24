@@ -539,9 +539,10 @@ double BRepBuilderAPI_FastSewing::Compute3DRange()
 
 //=================================================================================================
 
-BRepBuilderAPI_FastSewing::NodeInspector::NodeInspector(const NCollection_DynamicArray<FS_Vertex>& theVec,
-                                                        const gp_Pnt&                        thePnt,
-                                                        const double                         theTol)
+BRepBuilderAPI_FastSewing::NodeInspector::NodeInspector(
+  const NCollection_DynamicArray<FS_Vertex>& theVec,
+  const gp_Pnt&                              thePnt,
+  const double                               theTol)
     : myVecOfVertexes(theVec),
       myPoint(thePnt),
       myResID(-1)
@@ -569,7 +570,7 @@ NCollection_CellFilter_Action BRepBuilderAPI_FastSewing::NodeInspector::Inspect(
 void BRepBuilderAPI_FastSewing::FS_Edge::CreateTopologicalEdge(
   const NCollection_DynamicArray<FS_Vertex>& theVertexVec,
   const NCollection_DynamicArray<FS_Face>&   theFaceVec,
-  const double                         theTol)
+  const double                               theTol)
 {
   BRep_Builder aBuilder;
 
@@ -648,7 +649,7 @@ void BRepBuilderAPI_FastSewing::FS_Edge::CreateTopologicalEdge(
 
 void BRepBuilderAPI_FastSewing::FS_Face::CreateTopologicalWire(
   const NCollection_DynamicArray<FS_Edge>& theEdgeVec,
-  const double                       theToler)
+  const double                             theToler)
 {
   TopLoc_Location aLocation;
   // 3D-curves in 1st and 2nd faces are considered to be in same-range

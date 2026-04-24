@@ -573,7 +573,7 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
   // It is necessary to analyze all Face/Face intersections
   // and find all faces with equal sets of edges
   const NCollection_DynamicArray<BOPDS_InterfFF>& aFFs   = myDS->InterfFF();
-  int                                       aNbFFs = aFFs.Length();
+  int                                             aNbFFs = aFFs.Length();
   if (!aNbFFs)
     return;
 

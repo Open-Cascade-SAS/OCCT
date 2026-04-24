@@ -217,8 +217,8 @@ private:
 
 private:
   occ::handle<ShapeAnalysis_Surface> mySurf;      //!< Surface to project on
-  NCollection_DynamicArray<gp_Pnt>         myCorners3d; //!< 3D positions of B-spline surface corners
-  NCollection_DynamicArray<gp_Pnt2d>       myCorners2d; //!< UV parameters of B-spline surface corners
+  NCollection_DynamicArray<gp_Pnt>   myCorners3d; //!< 3D positions of B-spline surface corners
+  NCollection_DynamicArray<gp_Pnt2d> myCorners2d; //!< UV parameters of B-spline surface corners
 };
 
 //=================================================================================================

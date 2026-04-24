@@ -21,7 +21,8 @@ StepVisual_TessellatedCurveSet::StepVisual_TessellatedCurveSet() = default;
 void StepVisual_TessellatedCurveSet::Init(
   const occ::handle<TCollection_HAsciiString>&   theName,
   const occ::handle<StepVisual_CoordinatesList>& theCoordList,
-  const NCollection_Handle<NCollection_DynamicArray<occ::handle<NCollection_HSequence<int>>>>& theCurves)
+  const NCollection_Handle<NCollection_DynamicArray<occ::handle<NCollection_HSequence<int>>>>&
+    theCurves)
 {
   StepRepr_RepresentationItem::Init(theName);
   myCoordList = theCoordList;

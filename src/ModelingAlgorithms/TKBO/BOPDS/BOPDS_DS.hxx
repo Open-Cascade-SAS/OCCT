@@ -476,29 +476,29 @@ private:
   void buildVertexEdgeMap();
 
 private:
-  occ::handle<NCollection_BaseAllocator>                             myAllocator;
-  NCollection_List<TopoDS_Shape>                                     myArguments;
-  int                                                                myNbShapes;
-  int                                                                myNbSourceShapes;
+  occ::handle<NCollection_BaseAllocator>                                   myAllocator;
+  NCollection_List<TopoDS_Shape>                                           myArguments;
+  int                                                                      myNbShapes;
+  int                                                                      myNbSourceShapes;
   NCollection_DynamicArray<BOPDS_IndexRange>                               myRanges;
   NCollection_DynamicArray<BOPDS_ShapeInfo>                                myLines;
-  NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>    myMapShapeIndex;
+  NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>          myMapShapeIndex;
   NCollection_DynamicArray<NCollection_List<occ::handle<BOPDS_PaveBlock>>> myPaveBlocksPool;
   NCollection_DataMap<occ::handle<BOPDS_PaveBlock>, occ::handle<BOPDS_CommonBlock>> myMapPBCB;
-  NCollection_DynamicArray<BOPDS_FaceInfo>                                                myFaceInfoPool;
+  NCollection_DynamicArray<BOPDS_FaceInfo>                                          myFaceInfoPool;
   NCollection_DataMap<int, int>                                                     myShapesSD;
   NCollection_DataMap<int, NCollection_List<int>>                                   myMapVE;
   NCollection_Map<BOPDS_Pair>                                                       myInterfTB;
-  NCollection_DynamicArray<BOPDS_InterfVV>                                                myInterfVV;
-  NCollection_DynamicArray<BOPDS_InterfVE>                                                myInterfVE;
-  NCollection_DynamicArray<BOPDS_InterfVF>                                                myInterfVF;
-  NCollection_DynamicArray<BOPDS_InterfEE>                                                myInterfEE;
-  NCollection_DynamicArray<BOPDS_InterfEF>                                                myInterfEF;
-  NCollection_DynamicArray<BOPDS_InterfFF>                                                myInterfFF;
-  NCollection_DynamicArray<BOPDS_InterfVZ>                                                myInterfVZ;
-  NCollection_DynamicArray<BOPDS_InterfEZ>                                                myInterfEZ;
-  NCollection_DynamicArray<BOPDS_InterfFZ>                                                myInterfFZ;
-  NCollection_DynamicArray<BOPDS_InterfZZ>                                                myInterfZZ;
+  NCollection_DynamicArray<BOPDS_InterfVV>                                          myInterfVV;
+  NCollection_DynamicArray<BOPDS_InterfVE>                                          myInterfVE;
+  NCollection_DynamicArray<BOPDS_InterfVF>                                          myInterfVF;
+  NCollection_DynamicArray<BOPDS_InterfEE>                                          myInterfEE;
+  NCollection_DynamicArray<BOPDS_InterfEF>                                          myInterfEF;
+  NCollection_DynamicArray<BOPDS_InterfFF>                                          myInterfFF;
+  NCollection_DynamicArray<BOPDS_InterfVZ>                                          myInterfVZ;
+  NCollection_DynamicArray<BOPDS_InterfEZ>                                          myInterfEZ;
+  NCollection_DynamicArray<BOPDS_InterfFZ>                                          myInterfFZ;
+  NCollection_DynamicArray<BOPDS_InterfZZ>                                          myInterfZZ;
   NCollection_Map<int>                                                              myInterfered;
 };
 

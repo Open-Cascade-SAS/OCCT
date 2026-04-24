@@ -54,7 +54,7 @@ const gp_Lin2d isoV(const double theV)
 }
 
 typedef NCollection_Shared<NCollection_DynamicArray<StdPrs_Isolines::SegOnIso>> VecOfSegments;
-typedef NCollection_Sequence<occ::handle<VecOfSegments>>                  SeqOfVecOfSegments;
+typedef NCollection_Sequence<occ::handle<VecOfSegments>>                        SeqOfVecOfSegments;
 
 //! Pack isoline segments into polylines.
 static void sortSegments(const SeqOfVecOfSegments&                                     theSegments,

@@ -74,7 +74,7 @@ bool hasOtherActiveParent(const BRepGraph&       theGraph,
 }
 
 void removeFromRootProducts(NCollection_DynamicArray<BRepGraph_ProductId>& theRoots,
-                            const BRepGraph_ProductId                theProduct)
+                            const BRepGraph_ProductId                      theProduct)
 {
   NCollection_DynamicArray<BRepGraph_ProductId> aFiltered;
   for (const BRepGraph_ProductId& aRoot : theRoots)
@@ -111,7 +111,8 @@ bool hasAnyActiveUsage(const BRepGraph& theGraph, const BRepGraph_NodeId theChil
 template <typename RefIdT>
 RefIdT findOrderedRef(const NCollection_DynamicArray<RefIdT>& theRefIds, const RefIdT theRefId)
 {
-  for (typename NCollection_DynamicArray<RefIdT>::Iterator anIt(theRefIds); anIt.More(); anIt.Next())
+  for (typename NCollection_DynamicArray<RefIdT>::Iterator anIt(theRefIds); anIt.More();
+       anIt.Next())
   {
     if (anIt.Value() == theRefId)
       return theRefId;
@@ -138,11 +139,11 @@ void eraseOrderedRef(const RefIdT theRefId, NCollection_DynamicArray<RefIdT>& th
 }
 
 template <typename RefIdT>
-bool detachOrderedParentRef(BRepGraph&                  theGraph,
-                            const RefIdT                theRefId,
+bool detachOrderedParentRef(BRepGraph&                        theGraph,
+                            const RefIdT                      theRefId,
                             NCollection_DynamicArray<RefIdT>& theParentRefIds,
-                            const BRepGraph_NodeId      theChildNode,
-                            const bool                  theToPruneOrphanedChild)
+                            const BRepGraph_NodeId            theChildNode,
+                            const bool                        theToPruneOrphanedChild)
 {
   if (!findOrderedRef(theParentRefIds, theRefId).IsValid())
   {
@@ -677,10 +678,10 @@ BRepGraph_VertexRefId BRepGraph::EditorView::EdgeOps::AddInternalVertex(
 //=================================================================================================
 
 BRepGraph_FaceId BRepGraph::EditorView::FaceOps::Add(
-  const occ::handle<Geom_Surface>&            theSurface,
-  const BRepGraph_WireId                      theOuterWire,
+  const occ::handle<Geom_Surface>&                  theSurface,
+  const BRepGraph_WireId                            theOuterWire,
   const NCollection_DynamicArray<BRepGraph_WireId>& theInnerWires,
-  const double                                theTolerance)
+  const double                                      theTolerance)
 {
   BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
   if (theOuterWire.IsValid() && !isActiveNode(aStorage, theOuterWire))
@@ -1277,7 +1278,8 @@ void BRepGraph::EditorView::GenOps::RemoveSubgraph(const BRepGraph_NodeId theNod
           NCollection_DynamicArray<BRepGraph_OccurrenceRefId>& aRefIds =
             myGraph->myData->myIncStorage.ChangeProduct(aParentProduct).OccurrenceRefIds;
           uint32_t anIdx = 0;
-          for (NCollection_DynamicArray<BRepGraph_OccurrenceRefId>::Iterator anIt(aRefIds); anIt.More();
+          for (NCollection_DynamicArray<BRepGraph_OccurrenceRefId>::Iterator anIt(aRefIds);
+               anIt.More();
                anIt.Next(), ++anIdx)
           {
             if (anIt.Value() == aOccRefId)
@@ -1677,7 +1679,8 @@ void BRepGraph::EditorView::EndDeferredInvalidation() noexcept
   aDeferredList.Clear();
 
   // Dispatch deferred reference modification events to subscribing layers.
-  NCollection_DynamicArray<BRepGraph_RefId>& aDeferredRefList = myGraph->myData->myDeferredRefModified;
+  NCollection_DynamicArray<BRepGraph_RefId>& aDeferredRefList =
+    myGraph->myData->myDeferredRefModified;
   if (!aDeferredRefList.IsEmpty() && myGraph->myLayerRegistry.HasRefModificationSubscribers())
   {
     int aRefKindsMask = 0;
@@ -1700,9 +1703,9 @@ bool BRepGraph::EditorView::IsDeferredMode() const
 //=================================================================================================
 
 void BRepGraph::EditorView::GenOps::applyModificationImpl(
-  const BRepGraph_NodeId                 theTarget,
+  const BRepGraph_NodeId                       theTarget,
   NCollection_DynamicArray<BRepGraph_NodeId>&& theReplacements,
-  const TCollection_AsciiString&         theOpLabel)
+  const TCollection_AsciiString&               theOpLabel)
 {
   myGraph->myData->myHistoryLog.Record(theOpLabel, theTarget, theReplacements);
   myGraph->invalidateSubgraphImpl(theTarget);
@@ -1900,8 +1903,8 @@ void BRepGraph::EditorView::EdgeOps::Split(const BRepGraph_EdgeId   theEdgeEntit
 
     // Step 2: allocate SubA-CE + SubB-CE per original with full payload.
     NCollection_DataMap<BRepGraph_CoEdgeId, int> aIdxOf;
-    NCollection_DynamicArray<BRepGraph_CoEdgeId>       aNewACoEdgeIds;
-    NCollection_DynamicArray<BRepGraph_CoEdgeId>       aNewBCoEdgeIds;
+    NCollection_DynamicArray<BRepGraph_CoEdgeId> aNewACoEdgeIds;
+    NCollection_DynamicArray<BRepGraph_CoEdgeId> aNewBCoEdgeIds;
     const double                                 aParamRange = aOrigParamLast - aOrigParamFirst;
     for (uint32_t i = 0; i < aNbOrig; ++i)
     {
@@ -1997,7 +2000,8 @@ void BRepGraph::EditorView::EdgeOps::Split(const BRepGraph_EdgeId   theEdgeEntit
       NCollection_DynamicArray<BRepGraph_CoEdgeRefId> aSnapshot;
       {
         const BRepGraphInc::WireDef& aWireDef = aStorage.Wire(aWireId);
-        for (NCollection_DynamicArray<BRepGraph_CoEdgeRefId>::Iterator aRefIt(aWireDef.CoEdgeRefIds);
+        for (NCollection_DynamicArray<BRepGraph_CoEdgeRefId>::Iterator aRefIt(
+               aWireDef.CoEdgeRefIds);
              aRefIt.More();
              aRefIt.Next())
         {
@@ -2926,7 +2930,7 @@ bool BRepGraph::EditorView::EdgeOps::RemoveVertex(const BRepGraph_EdgeId      th
   else
   {
     NCollection_DynamicArray<BRepGraph_VertexRefId>& anEdgeRefIds = aEdge.InternalVertexRefIds;
-    isFound                                                 = detachOrderedParentRef(*myGraph,
+    isFound                                                       = detachOrderedParentRef(*myGraph,
                                      theVertexRefId,
                                      anEdgeRefIds,
                                      BRepGraph_NodeId(aRef.VertexDefId),
@@ -3017,7 +3021,8 @@ BRepGraph_VertexRefId BRepGraph::EditorView::EdgeOps::ReplaceVertex(
   else
   {
     bool isFound = false;
-    for (NCollection_DynamicArray<BRepGraph_VertexRefId>::Iterator anIt(anEdge.InternalVertexRefIds);
+    for (NCollection_DynamicArray<BRepGraph_VertexRefId>::Iterator anIt(
+           anEdge.InternalVertexRefIds);
          anIt.More();
          anIt.Next())
     {
@@ -3062,7 +3067,7 @@ BRepGraph_VertexRefId BRepGraph::EditorView::EdgeOps::ReplaceVertex(
 void BRepGraph::EditorView::CommitMutation() noexcept
 {
   NCollection_DynamicArray<BoundaryIssue> anIssues;
-  const bool                        isValid = ValidateMutationBoundary(&anIssues);
+  const bool                              isValid = ValidateMutationBoundary(&anIssues);
   Standard_ASSERT_VOID(isValid, "CommitMutation: mutation boundary consistency check failed");
   (void)isValid;
   (void)anIssues;

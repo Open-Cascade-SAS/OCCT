@@ -25,7 +25,8 @@
 Standard_HEADER_DEPRECATED("GeomInt_VectorOfReal.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_DynamicArray<double> directly.")
 
-  Standard_DEPRECATED("GeomInt_VectorOfReal is deprecated, use NCollection_DynamicArray<double> directly")
+  Standard_DEPRECATED(
+    "GeomInt_VectorOfReal is deprecated, use NCollection_DynamicArray<double> directly")
 typedef NCollection_DynamicArray<double> GeomInt_VectorOfReal;
 
 #endif // _GeomInt_VectorOfReal_hxx

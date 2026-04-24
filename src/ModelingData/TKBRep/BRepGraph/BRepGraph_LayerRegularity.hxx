@@ -92,7 +92,7 @@ private:
                            const BRepGraph_FaceId theNewFace) noexcept;
 
 private:
-  NCollection_DataMap<BRepGraph_EdgeId, EdgeRegularities>                     myEdgeRegularities;
+  NCollection_DataMap<BRepGraph_EdgeId, EdgeRegularities> myEdgeRegularities;
   NCollection_DataMap<BRepGraph_FaceId, NCollection_DynamicArray<BRepGraph_EdgeId>> myFaceToEdges;
 };
 

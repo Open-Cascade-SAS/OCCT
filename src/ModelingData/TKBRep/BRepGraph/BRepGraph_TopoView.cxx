@@ -42,7 +42,8 @@ NCollection_DynamicArray<BRepGraph_EdgeId> collectFaceEdges(
   const BRepGraph_FaceId                        theFace,
   const occ::handle<NCollection_BaseAllocator>& theAllocator)
 {
-  NCollection_DynamicArray<BRepGraph_EdgeId> aResult(THE_TOPOVIEW_FACE_EDGE_BLOCK_SIZE, theAllocator);
+  NCollection_DynamicArray<BRepGraph_EdgeId> aResult(THE_TOPOVIEW_FACE_EDGE_BLOCK_SIZE,
+                                                     theAllocator);
   if (!theFace.IsValid(theGraph.Topo().Faces().Nb()))
     return aResult;
 
@@ -161,8 +162,9 @@ NCollection_DynamicArray<BRepGraph_FaceId> BRepGraph::TopoView::FaceOps::SameDom
   const BRepGraph_FaceId                        theFace,
   const occ::handle<NCollection_BaseAllocator>& theAllocator) const
 {
-  NCollection_DynamicArray<BRepGraph_FaceId> aResult(THE_TOPOVIEW_SAME_DOMAIN_BLOCK_SIZE, theAllocator);
-  const BRepGraphInc_Storage&          aStorage = myGraph->myData->myIncStorage;
+  NCollection_DynamicArray<BRepGraph_FaceId> aResult(THE_TOPOVIEW_SAME_DOMAIN_BLOCK_SIZE,
+                                                     theAllocator);
+  const BRepGraphInc_Storage&                aStorage = myGraph->myData->myIncStorage;
   if (!theFace.IsValid(aStorage.NbFaces()))
   {
     return aResult;
@@ -193,8 +195,9 @@ NCollection_DynamicArray<BRepGraph_EdgeId> BRepGraph::TopoView::FaceOps::SharedE
   const BRepGraph_FaceId                        theFaceB,
   const occ::handle<NCollection_BaseAllocator>& theAllocator) const
 {
-  NCollection_DynamicArray<BRepGraph_EdgeId> aResult(THE_TOPOVIEW_SHARED_EDGE_BLOCK_SIZE, theAllocator);
-  const BRepGraphInc_Storage&          aStorage = myGraph->myData->myIncStorage;
+  NCollection_DynamicArray<BRepGraph_EdgeId> aResult(THE_TOPOVIEW_SHARED_EDGE_BLOCK_SIZE,
+                                                     theAllocator);
+  const BRepGraphInc_Storage&                aStorage = myGraph->myData->myIncStorage;
   if (!theFaceA.IsValid(aStorage.NbFaces()) || !theFaceB.IsValid(aStorage.NbFaces()))
   {
     return aResult;
@@ -229,9 +232,9 @@ NCollection_DynamicArray<BRepGraph_FaceId> BRepGraph::TopoView::FaceOps::Adjacen
   const occ::handle<NCollection_BaseAllocator>& theAllocator) const
 {
   NCollection_DynamicArray<BRepGraph_FaceId> aResult(THE_TOPOVIEW_FACE_ADJACENCY_BLOCK_SIZE,
-                                               theAllocator);
-  NCollection_Map<BRepGraph_FaceId>    aFaceSet;
-  const BRepGraphInc_Storage&          aStorage = myGraph->myData->myIncStorage;
+                                                     theAllocator);
+  NCollection_Map<BRepGraph_FaceId>          aFaceSet;
+  const BRepGraphInc_Storage&                aStorage = myGraph->myData->myIncStorage;
   if (!theFace.IsValid(aStorage.NbFaces()))
   {
     return aResult;
@@ -370,16 +373,16 @@ NCollection_DynamicArray<BRepGraph_EdgeId> BRepGraph::TopoView::EdgeOps::Adjacen
   const occ::handle<NCollection_BaseAllocator>& theAllocator) const
 {
   NCollection_DynamicArray<BRepGraph_EdgeId> aResult(THE_TOPOVIEW_EDGE_ADJACENCY_BLOCK_SIZE,
-                                               theAllocator);
-  const BRepGraphInc_Storage&          aStorage = myGraph->myData->myIncStorage;
+                                                     theAllocator);
+  const BRepGraphInc_Storage&                aStorage = myGraph->myData->myIncStorage;
   if (!theEdge.IsValid(aStorage.NbEdges()))
   {
     return aResult;
   }
 
   NCollection_DynamicArray<BRepGraph_VertexId> aVertices(THE_TOPOVIEW_EDGE_VERTEX_BLOCK_SIZE,
-                                                   theAllocator);
-  NCollection_Map<BRepGraph_VertexId>    aSeenVertices;
+                                                         theAllocator);
+  NCollection_Map<BRepGraph_VertexId>          aSeenVertices;
   for (BRepGraph_DefsVertexOfEdge aVertexIt(*myGraph, theEdge); aVertexIt.More(); aVertexIt.Next())
   {
     const BRepGraph_VertexId aVertexId = aVertexIt.CurrentId();
@@ -839,8 +842,8 @@ const BRepGraphInc::CompoundDef& BRepGraph::TopoView::CompoundOps::Definition(
 
 //=================================================================================================
 
-const NCollection_DynamicArray<BRepGraph_CompoundId>& BRepGraph::TopoView::CompoundOps::ParentCompounds(
-  const BRepGraph_CompoundId theCompound) const
+const NCollection_DynamicArray<BRepGraph_CompoundId>& BRepGraph::TopoView::CompoundOps::
+  ParentCompounds(const BRepGraph_CompoundId theCompound) const
 {
   const NCollection_DynamicArray<BRepGraph_CompoundId>* aCompounds =
     myGraph->myData->myIncStorage.ReverseIndex().CompoundsOfCompound(theCompound);

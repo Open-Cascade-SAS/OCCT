@@ -238,8 +238,8 @@ occ::handle<StepVisual_ComplexTriangulatedSurfaceSet> GenerateComplexTriangulate
 occ::handle<StepVisual_TessellatedCurveSet> GenerateTessellatedCurveSet(
   const TopoDS_Shape& theShape)
 {
-  NCollection_Handle<NCollection_DynamicArray<occ::handle<NCollection_HSequence<int>>>> aLineStrips =
-    new NCollection_DynamicArray<occ::handle<NCollection_HSequence<int>>>;
+  NCollection_Handle<NCollection_DynamicArray<occ::handle<NCollection_HSequence<int>>>>
+    aLineStrips = new NCollection_DynamicArray<occ::handle<NCollection_HSequence<int>>>;
   // Temporary contanier for points. We need points in NCollection_HArray1<gp_XYZ> type of
   // container, however in order to create it we need to know it's size.
   // Currently number of points is unknown, so we will put all the points in a

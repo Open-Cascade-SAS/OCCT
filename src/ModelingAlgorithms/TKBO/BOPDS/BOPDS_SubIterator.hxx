@@ -94,12 +94,12 @@ protected:
   //! Performs intersection of bounding boxes
   Standard_EXPORT virtual void Intersect();
 
-  occ::handle<NCollection_BaseAllocator>   myAllocator;
-  BOPDS_PDS                                myDS;
+  occ::handle<NCollection_BaseAllocator>         myAllocator;
+  BOPDS_PDS                                      myDS;
   NCollection_DynamicArray<BOPDS_Pair>           myList;
   NCollection_DynamicArray<BOPDS_Pair>::Iterator myIterator;
-  NCollection_List<int>*                   mySubSet1;
-  NCollection_List<int>*                   mySubSet2;
+  NCollection_List<int>*                         mySubSet1;
+  NCollection_List<int>*                         mySubSet2;
 };
 
 #endif // _BOPDS_SubIterator_HeaderFile

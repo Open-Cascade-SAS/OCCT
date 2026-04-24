@@ -2856,7 +2856,7 @@ static int OCC7639(Draw_Interpretor& di, int argc, const char** argv)
     return 1;
   }
 
-  int                     i, aValue, aPosition;
+  int                           i, aValue, aPosition;
   NCollection_DynamicArray<int> vec;
   for (i = 0; i < argc - 1; i++)
   {
@@ -2866,7 +2866,7 @@ static int OCC7639(Draw_Interpretor& di, int argc, const char** argv)
     vec.SetValue(aValue, aPosition);
   }
   NCollection_DynamicArray<int>::Iterator it(vec);
-  int                               j;
+  int                                     j;
   for (j = 0; it.More(); it.Next(), j++)
   {
     // di << it.Value() << "\n";

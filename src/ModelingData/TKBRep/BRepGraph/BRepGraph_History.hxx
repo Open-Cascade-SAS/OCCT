@@ -40,8 +40,8 @@ public:
   //! @param[in] theOpLabel      human-readable operation name
   //! @param[in] theOriginal     node id before the operation
   //! @param[in] theReplacements node ids after the operation
-  Standard_EXPORT void Record(const TCollection_AsciiString&              theOpLabel,
-                              const BRepGraph_NodeId                      theOriginal,
+  Standard_EXPORT void Record(const TCollection_AsciiString&                    theOpLabel,
+                              const BRepGraph_NodeId                            theOriginal,
                               const NCollection_DynamicArray<BRepGraph_NodeId>& theReplacements);
 
   //! Record a batch of 1-to-1 modifications in a single history event.
@@ -53,10 +53,10 @@ public:
   //! @param[in] theReplacements node ids after the operation (same length)
   //! @param[in] theExtraInfo    optional diagnostic info stored on the record
   Standard_EXPORT void RecordBatch(
-    const TCollection_AsciiString&              theOpLabel,
+    const TCollection_AsciiString&                    theOpLabel,
     const NCollection_DynamicArray<BRepGraph_NodeId>& theOriginals,
     const NCollection_DynamicArray<BRepGraph_NodeId>& theReplacements,
-    const TCollection_AsciiString&              theExtraInfo = TCollection_AsciiString());
+    const TCollection_AsciiString&                    theExtraInfo = TCollection_AsciiString());
 
   //! Walk backwards from a modified node to its original.
   //! Follows the reverse map recursively until a root is reached.
@@ -107,7 +107,8 @@ private:
   NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId> myDerivedToOriginal;
 
   //! Forward map: original node -> vector of derived nodes.
-  NCollection_DataMap<BRepGraph_NodeId, NCollection_DynamicArray<BRepGraph_NodeId>> myOriginalToDerived;
+  NCollection_DataMap<BRepGraph_NodeId, NCollection_DynamicArray<BRepGraph_NodeId>>
+    myOriginalToDerived;
 
   bool myEnabled = true;
 };

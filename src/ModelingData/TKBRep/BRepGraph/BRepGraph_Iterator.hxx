@@ -327,7 +327,7 @@ public:
 
 private:
   const NCollection_DynamicArray<BRepGraph_ProductId>& myRoots;
-  int                                            myIndex = 0;
+  int                                                  myIndex = 0;
 };
 
 #endif // _BRepGraph_Iterator_HeaderFile

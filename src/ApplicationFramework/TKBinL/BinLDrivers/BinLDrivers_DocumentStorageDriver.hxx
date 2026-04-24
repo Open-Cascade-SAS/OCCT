@@ -125,7 +125,7 @@ private:
   NCollection_List<TDF_Label>                             myEmptyLabels;
   NCollection_Map<occ::handle<Standard_Transient>>        myMapUnsupported;
   NCollection_IndexedMap<occ::handle<Standard_Transient>> myTypesMap;
-  NCollection_DynamicArray<BinLDrivers_DocumentSection>         mySections;
+  NCollection_DynamicArray<BinLDrivers_DocumentSection>   mySections;
   TCollection_ExtendedString                              myFileName;
   //! Sizes of labels and some attributes that will be stored in the second pass
   NCollection_List<occ::handle<BinObjMgt_Position>> mySizesToWrite;

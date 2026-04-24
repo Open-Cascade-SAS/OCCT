@@ -177,7 +177,7 @@ static void fillParams(const NCollection_Array1<double>& theKnots,
                        int                               theDegree,
                        double                            theParMin,
                        double                            theParMax,
-                       NCollection_DynamicArray<double>&       theParams)
+                       NCollection_DynamicArray<double>& theParams)
 {
   double aPrevPar = theParMin;
   theParams.Append(aPrevPar);
@@ -207,10 +207,10 @@ static void fillParams(const NCollection_Array1<double>& theKnots,
   theParams.Append(theParMax);
 }
 
-static void fillPoints(const BRepAdaptor_Curve&          theCurve,
+static void fillPoints(const BRepAdaptor_Curve&                theCurve,
                        const NCollection_DynamicArray<double>& theParams,
-                       NCollection_Sequence<gp_Pnt>&     thePoints,
-                       NCollection_Sequence<double>&     theWeights)
+                       NCollection_Sequence<gp_Pnt>&           thePoints,
+                       NCollection_Sequence<double>&           theWeights)
 {
   double aDistPrev = 0., aDistNext;
   gp_Pnt aPPrev(theCurve.Value(theParams(0))), aPNext;

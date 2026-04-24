@@ -32,8 +32,8 @@ TEST(NCollection_DynamicArrayTest, DefaultConstructor)
 TEST(NCollection_DynamicArrayTest, ResizeConstructor)
 {
   // Test constructor with initial size
-  const int               initialSize  = 10;
-  const int               initialValue = 42;
+  const int                     initialSize  = 10;
+  const int                     initialValue = 42;
   NCollection_DynamicArray<int> aVector(initialSize);
 
   // Initialize all elements to the same value
@@ -345,7 +345,7 @@ TEST(NCollection_DynamicArrayTest, CustomAllocator)
 {
   // Test with custom allocator
   occ::handle<NCollection_BaseAllocator> anAlloc = NCollection_BaseAllocator::CommonBaseAllocator();
-  NCollection_DynamicArray<int>                aVector(256, anAlloc);
+  NCollection_DynamicArray<int>          aVector(256, anAlloc);
 
   // Verify vector works with custom allocator
   aVector.Append(10);
@@ -387,7 +387,7 @@ TEST(NCollection_DynamicArrayTest, SetIncrement)
 TEST(NCollection_DynamicArrayTest, STLAlgorithmCompatibility_MinMax)
 {
   NCollection_DynamicArray<int> aVector;
-  std::vector<int>        aStdVector;
+  std::vector<int>              aStdVector;
 
   std::mt19937                       aGenerator(1); // Fixed seed for reproducible tests
   std::uniform_int_distribution<int> aDistribution(0, RAND_MAX);
@@ -411,7 +411,7 @@ TEST(NCollection_DynamicArrayTest, STLAlgorithmCompatibility_MinMax)
 TEST(NCollection_DynamicArrayTest, STLAlgorithmCompatibility_Replace)
 {
   NCollection_DynamicArray<int> aVector;
-  std::vector<int>        aStdVector;
+  std::vector<int>              aStdVector;
 
   std::mt19937                       aGenerator(1); // Fixed seed for reproducible tests
   std::uniform_int_distribution<int> aDistribution(0, RAND_MAX);
@@ -434,7 +434,7 @@ TEST(NCollection_DynamicArrayTest, STLAlgorithmCompatibility_Replace)
 TEST(NCollection_DynamicArrayTest, STLAlgorithmCompatibility_Reverse)
 {
   NCollection_DynamicArray<int> aVector;
-  std::vector<int>        aStdVector;
+  std::vector<int>              aStdVector;
 
   for (int anIdx = 0; anIdx < 100; ++anIdx)
   {
@@ -451,7 +451,7 @@ TEST(NCollection_DynamicArrayTest, STLAlgorithmCompatibility_Reverse)
 TEST(NCollection_DynamicArrayTest, STLAlgorithmCompatibility_Sort)
 {
   NCollection_DynamicArray<int> aVector;
-  std::vector<int>        aStdVector;
+  std::vector<int>              aStdVector;
 
   std::mt19937                       aGenerator(1); // Fixed seed for reproducible tests
   std::uniform_int_distribution<int> aDistribution(0, RAND_MAX);
@@ -799,7 +799,6 @@ TEST(NCollection_DynamicArrayTest, InsertAfter_MultipleInserts)
   EXPECT_EQ(30, aVector(2));
   EXPECT_EQ(40, aVector(3));
 }
-
 
 TEST(NCollection_DynamicArrayTest, SizeReturnsSizeT)
 {

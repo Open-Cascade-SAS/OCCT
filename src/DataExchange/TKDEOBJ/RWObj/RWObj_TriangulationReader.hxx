@@ -106,8 +106,9 @@ protected:
   NCollection_DynamicArray<NCollection_Vec3<float>>
     myNormals; //!< normals of currently filled triangulation
   NCollection_DynamicArray<NCollection_Vec2<float>>
-                                    myNodesUV;   //!< UVs     of currently filled triangulation
-  NCollection_DynamicArray<Poly_Triangle> myTriangles; //!< indexes of currently filled triangulation
+    myNodesUV; //!< UVs     of currently filled triangulation
+  NCollection_DynamicArray<Poly_Triangle>
+    myTriangles; //!< indexes of currently filled triangulation
 
   RWObj_IShapeReceiver* myShapeReceiver;      //!< optional shape receiver
   TopoDS_Compound       myResultShape;        //!< result shape as Compound of objects

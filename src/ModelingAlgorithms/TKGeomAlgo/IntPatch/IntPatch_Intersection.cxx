@@ -2235,9 +2235,9 @@ double IntPatch_Intersection::DefineUVMaxStep(const occ::handle<Adaptor3d_Surfac
 
 //=================================================================================================
 
-static void splitCone(const occ::handle<Adaptor3d_Surface>&               theS,
-                      const occ::handle<Adaptor3d_TopolTool>&             theD,
-                      const double                                        theTol,
+static void splitCone(const occ::handle<Adaptor3d_Surface>&                     theS,
+                      const occ::handle<Adaptor3d_TopolTool>&                   theD,
+                      const double                                              theTol,
                       NCollection_DynamicArray<occ::handle<Adaptor3d_Surface>>& theVecHS)
 {
   if (theS->GetType() != GeomAbs_Cone)
@@ -2273,11 +2273,11 @@ static void splitCone(const occ::handle<Adaptor3d_Surface>&               theS,
 // purpose  : Prepares surfaces for intersection
 //=======================================================================
 void IntPatch_Intersection::PrepareSurfaces(
-  const occ::handle<Adaptor3d_Surface>&               theS1,
-  const occ::handle<Adaptor3d_TopolTool>&             theD1,
-  const occ::handle<Adaptor3d_Surface>&               theS2,
-  const occ::handle<Adaptor3d_TopolTool>&             theD2,
-  const double                                        theTol,
+  const occ::handle<Adaptor3d_Surface>&                     theS1,
+  const occ::handle<Adaptor3d_TopolTool>&                   theD1,
+  const occ::handle<Adaptor3d_Surface>&                     theS2,
+  const occ::handle<Adaptor3d_TopolTool>&                   theD2,
+  const double                                              theTol,
   NCollection_DynamicArray<occ::handle<Adaptor3d_Surface>>& theVecHS1,
   NCollection_DynamicArray<occ::handle<Adaptor3d_Surface>>& theVecHS2)
 {

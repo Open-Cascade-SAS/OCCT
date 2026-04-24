@@ -209,7 +209,7 @@ void BOPAlgo_CheckerSI::PostTreat()
 
   // 0
   NCollection_DynamicArray<BOPDS_InterfVV>& aVVs = myDS->InterfVV();
-  aNb                                      = aVVs.Length();
+  aNb                                            = aVVs.Length();
   for (i = 0; i != aNb; ++i)
   {
     const BOPDS_InterfVV& aVV = aVVs(i);
@@ -224,7 +224,7 @@ void BOPAlgo_CheckerSI::PostTreat()
   //
   // 1
   NCollection_DynamicArray<BOPDS_InterfVE>& aVEs = myDS->InterfVE();
-  aNb                                      = aVEs.Length();
+  aNb                                            = aVEs.Length();
   for (i = 0; i != aNb; ++i)
   {
     const BOPDS_InterfVE& aVE = aVEs(i);
@@ -239,7 +239,7 @@ void BOPAlgo_CheckerSI::PostTreat()
   //
   // 2
   NCollection_DynamicArray<BOPDS_InterfEE>& aEEs = myDS->InterfEE();
-  aNb                                      = aEEs.Length();
+  aNb                                            = aEEs.Length();
   for (i = 0; i != aNb; ++i)
   {
     const BOPDS_InterfEE& aEE = aEEs(i);
@@ -254,7 +254,7 @@ void BOPAlgo_CheckerSI::PostTreat()
   //
   // 3
   NCollection_DynamicArray<BOPDS_InterfVF>& aVFs = myDS->InterfVF();
-  aNb                                      = aVFs.Length();
+  aNb                                            = aVFs.Length();
   for (i = 0; i != aNb; ++i)
   {
     const BOPDS_InterfVF& aVF = aVFs(i);
@@ -269,7 +269,7 @@ void BOPAlgo_CheckerSI::PostTreat()
   //
   // 4
   NCollection_DynamicArray<BOPDS_InterfEF>& aEFs = myDS->InterfEF();
-  aNb                                      = aEFs.Length();
+  aNb                                            = aEFs.Length();
   for (i = 0; i != aNb; ++i)
   {
     const BOPDS_InterfEF& aEF = aEFs(i);
@@ -288,7 +288,7 @@ void BOPAlgo_CheckerSI::PostTreat()
   //
   // 5
   NCollection_DynamicArray<BOPDS_InterfFF>& aFFs = myDS->InterfFF();
-  aNb                                      = aFFs.Length();
+  aNb                                            = aFFs.Length();
   for (i = 0; i != aNb; ++i)
   {
     bool bTangentFaces, bFlag;
@@ -297,10 +297,10 @@ void BOPAlgo_CheckerSI::PostTreat()
     const BOPDS_InterfFF& aFF = aFFs(i);
     aFF.Indices(n1, n2);
     //
-    bTangentFaces                              = aFF.TangentFaces();
-    aNbP                                       = aFF.Points().Length();
+    bTangentFaces                                    = aFF.TangentFaces();
+    aNbP                                             = aFF.Points().Length();
     const NCollection_DynamicArray<BOPDS_Curve>& aVC = aFF.Curves();
-    aNbC                                       = aVC.Length();
+    aNbC                                             = aVC.Length();
     if (!aNbP && !aNbC && !bTangentFaces)
     {
       continue;
@@ -347,7 +347,7 @@ void BOPAlgo_CheckerSI::PostTreat()
   //
   // 6
   NCollection_DynamicArray<BOPDS_InterfVZ>& aVZs = myDS->InterfVZ();
-  aNb                                      = aVZs.Length();
+  aNb                                            = aVZs.Length();
   for (i = 0; i != aNb; ++i)
   {
     //
@@ -363,7 +363,7 @@ void BOPAlgo_CheckerSI::PostTreat()
   //
   // 7
   NCollection_DynamicArray<BOPDS_InterfEZ>& aEZs = myDS->InterfEZ();
-  aNb                                      = aEZs.Length();
+  aNb                                            = aEZs.Length();
   for (i = 0; i != aNb; ++i)
   {
     //
@@ -375,7 +375,7 @@ void BOPAlgo_CheckerSI::PostTreat()
   //
   // 8
   NCollection_DynamicArray<BOPDS_InterfFZ>& aFZs = myDS->InterfFZ();
-  aNb                                      = aFZs.Length();
+  aNb                                            = aFZs.Length();
   for (i = 0; i != aNb; ++i)
   {
     //
@@ -387,7 +387,7 @@ void BOPAlgo_CheckerSI::PostTreat()
   //
   // 9
   NCollection_DynamicArray<BOPDS_InterfZZ>& aZZs = myDS->InterfZZ();
-  aNb                                      = aZZs.Length();
+  aNb                                            = aZZs.Length();
   for (i = 0; i != aNb; ++i)
   {
     //

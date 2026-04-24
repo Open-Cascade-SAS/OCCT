@@ -89,12 +89,12 @@ class NCollection_List;
  * to Triangles and Links, you can subclass Poly_CoherentTriangulation and use the protected API for
  * your needs.
  *
- * Memory management: All data objects are stored in NCollection_DynamicArray containers that prove to be
- * efficient for the performance. In addition references to triangles are stored in ring lists, with
- * an instance of such list per Poly_CoherentNode. These lists are allocated in a memory allocator
- * that is provided in the constructor of Poly_CoherentTriangulation. By default the standard OCCT
- * allocator (aka NCollection_BaseAllocator) is used. But if you need to increase the performance
- * you can use NCollection_IncAllocator instead.
+ * Memory management: All data objects are stored in NCollection_DynamicArray containers that prove
+ * to be efficient for the performance. In addition references to triangles are stored in ring
+ * lists, with an instance of such list per Poly_CoherentNode. These lists are allocated in a memory
+ * allocator that is provided in the constructor of Poly_CoherentTriangulation. By default the
+ * standard OCCT allocator (aka NCollection_BaseAllocator) is used. But if you need to increase the
+ * performance you can use NCollection_IncAllocator instead.
  * </ul>
  */
 class Poly_CoherentTriangulation : public Standard_Transient
@@ -354,8 +354,8 @@ protected:
   NCollection_DynamicArray<Poly_CoherentTriangle> myTriangles;
   NCollection_DynamicArray<Poly_CoherentNode>     myNodes;
   NCollection_DynamicArray<Poly_CoherentLink>     myLinks;
-  occ::handle<NCollection_BaseAllocator>    myAlloc;
-  double                                    myDeflection;
+  occ::handle<NCollection_BaseAllocator>          myAlloc;
+  double                                          myDeflection;
 
 public:
   // Declaration of CASCADE RTTI

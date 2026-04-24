@@ -227,8 +227,8 @@ protected:
 
 private:
   NCollection_Sequence<occ::handle<Standard_Transient>>                   myAdaptorApplied;
-  NCollection_DynamicArray<occ::handle<Standard_Transient>>                     myParams;
-  NCollection_DynamicArray<int>                                                 myParamUses;
+  NCollection_DynamicArray<occ::handle<Standard_Transient>>               myParams;
+  NCollection_DynamicArray<int>                                           myParamUses;
   occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> myModeWriteShapeN;
 };
 

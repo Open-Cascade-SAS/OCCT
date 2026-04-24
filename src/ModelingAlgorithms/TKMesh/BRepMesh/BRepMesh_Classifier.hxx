@@ -57,7 +57,7 @@ public:
 
 private:
   NCollection_DynamicArray<NCollection_Handle<CSLib_Class2d>> myTabClass;
-  IMeshData::VectorOfBoolean                            myTabOrient;
+  IMeshData::VectorOfBoolean                                  myTabOrient;
 };
 
 #endif

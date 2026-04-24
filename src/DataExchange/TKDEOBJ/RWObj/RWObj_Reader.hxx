@@ -351,7 +351,7 @@ protected:
   private:
     Handle(NCollection_Shared<NCollection_DynamicArray<gp_Pnt>>)                  myPntVec;
     Handle(NCollection_Shared<NCollection_DynamicArray<NCollection_Vec3<float>>>) myVec3Vec;
-    bool                                                                    myIsSinglePrecision;
+    bool myIsSinglePrecision;
   };
 
 protected:
@@ -375,9 +375,10 @@ protected:
   // set of nodal properties defines Vertex (thus node at the same location but with different
   // normal should be duplicated). The following code converts OBJ definition of nodal properties to
   // Primitive Array definition.
-  VectorOfVertices                            myObjVerts;   //!< temporary vector of vertices
-  NCollection_DynamicArray<NCollection_Vec2<float>> myObjVertsUV; //!< temporary vector of UV parameters
-  NCollection_DynamicArray<NCollection_Vec3<float>> myObjNorms;   //!< temporary vector of normals
+  VectorOfVertices myObjVerts; //!< temporary vector of vertices
+  NCollection_DynamicArray<NCollection_Vec2<float>>
+    myObjVertsUV; //!< temporary vector of UV parameters
+  NCollection_DynamicArray<NCollection_Vec3<float>> myObjNorms; //!< temporary vector of normals
   NCollection_DataMap<NCollection_Vec3<int>, int, ObjVec3iHasher> myPackedIndices;
   NCollection_DataMap<TCollection_AsciiString, RWObj_Material>
     myMaterials; //!< map of known materials

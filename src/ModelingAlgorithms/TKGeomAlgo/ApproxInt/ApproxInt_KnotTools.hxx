@@ -69,7 +69,7 @@ public:
                                          const bool                          theApproxU1V1,
                                          const bool                          theApproxU2V2,
                                          const int                           theMinNbPnts,
-                                         NCollection_DynamicArray<int>&            theKnots);
+                                         NCollection_DynamicArray<int>&      theKnots);
 
   //! Builds discrete curvature
   Standard_EXPORT static void BuildCurvature(const NCollection_LocalArray<double>& theCoords,
@@ -126,9 +126,9 @@ private:
   //! II: Filter points with too small amount of points per knot interval.
   //!
   //! III: Fill Last Knot.
-  static void FilterKnots(NCollection_Sequence<int>& theInds,
-                          const int                  theMinNbPnts,
-                          NCollection_DynamicArray<int>&   theLKnots);
+  static void FilterKnots(NCollection_Sequence<int>&     theInds,
+                          const int                      theMinNbPnts,
+                          NCollection_DynamicArray<int>& theLKnots);
 };
 
 #endif

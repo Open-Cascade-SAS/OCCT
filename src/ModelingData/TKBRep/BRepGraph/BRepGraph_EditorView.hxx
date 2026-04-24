@@ -290,8 +290,8 @@ public:
     //! @param[in] theEdges ordered edge entries
     //! @return typed wire definition identifier, or invalid if any referenced
     //!         edge entry is invalid
-    [[nodiscard]] Standard_EXPORT BRepGraph_WireId
-      Add(const NCollection_DynamicArray<std::pair<BRepGraph_EdgeId, TopAbs_Orientation>>& theEdges);
+    [[nodiscard]] Standard_EXPORT BRepGraph_WireId Add(
+      const NCollection_DynamicArray<std::pair<BRepGraph_EdgeId, TopAbs_Orientation>>& theEdges);
 
     //! Replace one edge with another in a wire definition.
     //! Updates the CoEdge's EdgeIdx to point to the new edge, adjusts orientation
@@ -347,10 +347,10 @@ public:
     //! @return typed face definition identifier, or invalid if any referenced
     //!         wire id is out of range or removed
     [[nodiscard]] Standard_EXPORT BRepGraph_FaceId
-      Add(const occ::handle<Geom_Surface>&            theSurface,
-          const BRepGraph_WireId                      theOuterWire,
+      Add(const occ::handle<Geom_Surface>&                  theSurface,
+          const BRepGraph_WireId                            theOuterWire,
           const NCollection_DynamicArray<BRepGraph_WireId>& theInnerWires,
-          const double                                theTolerance);
+          const double                                      theTolerance);
 
     //! Add a direct INTERNAL/EXTERNAL vertex usage to a face definition.
     //! @param[in] theFaceEntity   typed face definition identifier
@@ -781,9 +781,9 @@ public:
     }
 
     Standard_EXPORT void applyModificationImpl(
-      const BRepGraph_NodeId                 theTarget,
+      const BRepGraph_NodeId                       theTarget,
       NCollection_DynamicArray<BRepGraph_NodeId>&& theReplacements,
-      const TCollection_AsciiString&         theOpLabel);
+      const TCollection_AsciiString&               theOpLabel);
 
     BRepGraph* myGraph;
   };

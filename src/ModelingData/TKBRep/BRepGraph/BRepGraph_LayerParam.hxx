@@ -140,9 +140,11 @@ private:
                            const BRepGraph_CoEdgeId theCoEdge) noexcept;
 
 private:
-  NCollection_DataMap<BRepGraph_VertexId, VertexParams>                         myVertexParams;
-  NCollection_DataMap<BRepGraph_EdgeId, NCollection_DynamicArray<BRepGraph_VertexId>> myEdgeToVertices;
-  NCollection_DataMap<BRepGraph_FaceId, NCollection_DynamicArray<BRepGraph_VertexId>> myFaceToVertices;
+  NCollection_DataMap<BRepGraph_VertexId, VertexParams> myVertexParams;
+  NCollection_DataMap<BRepGraph_EdgeId, NCollection_DynamicArray<BRepGraph_VertexId>>
+    myEdgeToVertices;
+  NCollection_DataMap<BRepGraph_FaceId, NCollection_DynamicArray<BRepGraph_VertexId>>
+    myFaceToVertices;
   NCollection_DataMap<BRepGraph_CoEdgeId, NCollection_DynamicArray<BRepGraph_VertexId>>
     myCoEdgeToVertices;
 };

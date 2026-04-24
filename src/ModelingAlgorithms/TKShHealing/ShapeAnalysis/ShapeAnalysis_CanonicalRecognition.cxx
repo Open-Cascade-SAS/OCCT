@@ -649,7 +649,7 @@ occ::handle<Geom_Surface> ShapeAnalysis_CanonicalRecognition::GetSurface(
   // Get surface list
   NCollection_DynamicArray<occ::handle<Geom_Surface>> aSurfs;
   NCollection_DynamicArray<double>                    aGaps;
-  int                                           j = 0;
+  int                                                 j = 0;
   for (;;)
   {
     j++;
@@ -1198,9 +1198,9 @@ bool GetSamplePoints(const TopoDS_Wire&                        theWire,
   NCollection_DynamicArray<double>            aLengths;
   NCollection_DynamicArray<BRepAdaptor_Curve> aCurves;
   NCollection_DynamicArray<gp_XYZ>            aPoints;
-  double                                aTol         = std::max(1.e-3, theTol / 10.);
-  double                                aTotalLength = 0.;
-  TopoDS_Iterator                       anEIter(theWire);
+  double                                      aTol         = std::max(1.e-3, theTol / 10.);
+  double                                      aTotalLength = 0.;
+  TopoDS_Iterator                             anEIter(theWire);
   for (; anEIter.More(); anEIter.Next())
   {
     const TopoDS_Edge& anE = TopoDS::Edge(anEIter.Value());

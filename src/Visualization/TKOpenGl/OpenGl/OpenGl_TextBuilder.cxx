@@ -42,7 +42,7 @@ void OpenGl_TextBuilder::createGlyphs(
   const occ::handle<Font_TextFormatter>& theFormatter,
   const occ::handle<OpenGl_Context>&     theCtx,
   OpenGl_Font&                           theFont,
-  NCollection_DynamicArray<GLuint>&            theTextures,
+  NCollection_DynamicArray<GLuint>&      theTextures,
   NCollection_DynamicArray<NCollection_Handle<NCollection_DynamicArray<NCollection_Vec2<float>>>>&
     theVertsPerTexture,
   NCollection_DynamicArray<NCollection_Handle<NCollection_DynamicArray<NCollection_Vec2<float>>>>&
@@ -87,8 +87,10 @@ void OpenGl_TextBuilder::createGlyphs(
       theTCrdsPerTexture.Append(new NCollection_DynamicArray<NCollection_Vec2<float>>());
     }
 
-    NCollection_DynamicArray<NCollection_Vec2<float>>& aVerts = *theVertsPerTexture.ChangeValue(aListId);
-    NCollection_DynamicArray<NCollection_Vec2<float>>& aTCrds = *theTCrdsPerTexture.ChangeValue(aListId);
+    NCollection_DynamicArray<NCollection_Vec2<float>>& aVerts =
+      *theVertsPerTexture.ChangeValue(aListId);
+    NCollection_DynamicArray<NCollection_Vec2<float>>& aTCrds =
+      *theTCrdsPerTexture.ChangeValue(aListId);
 
     // apply floor on position to avoid blurring issues
     // due to cross-pixel coordinates
@@ -111,9 +113,9 @@ void OpenGl_TextBuilder::createGlyphs(
 //=================================================================================================
 
 void OpenGl_TextBuilder::Perform(
-  const occ::handle<Font_TextFormatter>&                theFormatter,
-  const occ::handle<OpenGl_Context>&                    theCtx,
-  OpenGl_Font&                                          theFont,
+  const occ::handle<Font_TextFormatter>&                      theFormatter,
+  const occ::handle<OpenGl_Context>&                          theCtx,
+  OpenGl_Font&                                                theFont,
   NCollection_DynamicArray<GLuint>&                           theTextures,
   NCollection_DynamicArray<occ::handle<OpenGl_VertexBuffer>>& theVertsPerTexture,
   NCollection_DynamicArray<occ::handle<OpenGl_VertexBuffer>>& theTCrdsPerTexture)

@@ -79,9 +79,9 @@ TopoDS_Wire BRepAlgo::ConvertWire(const TopoDS_Wire& theWire,
                                   const double       theAngleTol,
                                   const TopoDS_Face& theFace)
 {
-  TopoDS_Wire                       aResult;
-  double                            aMaxTol(0.);
-  const occ::handle<Geom_Surface>   aSurf = BRep_Tool::Surface(theFace);
+  TopoDS_Wire                             aResult;
+  double                                  aMaxTol(0.);
+  const occ::handle<Geom_Surface>         aSurf = BRep_Tool::Surface(theFace);
   NCollection_DynamicArray<OrientedCurve> vecCurve;
 
   BRepTools_WireExplorer anExpE(theWire, theFace);

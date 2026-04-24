@@ -1380,7 +1380,8 @@ static int normals(Draw_Interpretor& theDI, int theArgNum, const char** theArgs)
     DBRep_DrawableShape::addSurfaceNormals(aNormals, aShape, aLength, aNbAlongU, aNbAlongV);
   }
 
-  for (NCollection_DataMap<TopoDS_Face, NCollection_DynamicArray<std::pair<gp_Pnt, gp_Pnt>>>::Iterator
+  for (NCollection_DataMap<TopoDS_Face,
+                           NCollection_DynamicArray<std::pair<gp_Pnt, gp_Pnt>>>::Iterator
          aFaceIt(aNormals);
        aFaceIt.More();
        aFaceIt.Next())

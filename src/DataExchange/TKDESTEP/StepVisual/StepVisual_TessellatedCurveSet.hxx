@@ -42,11 +42,12 @@ public:
       theCurves);
 
   Standard_EXPORT occ::handle<StepVisual_CoordinatesList> CoordList() const;
-  Standard_EXPORT NCollection_Handle<NCollection_DynamicArray<occ::handle<NCollection_HSequence<int>>>>
-                  Curves() const;
+  Standard_EXPORT                                         NCollection_Handle<
+                                            NCollection_DynamicArray<occ::handle<NCollection_HSequence<int>>>>
+    Curves() const;
 
 private:
-  occ::handle<StepVisual_CoordinatesList>                                         myCoordList;
+  occ::handle<StepVisual_CoordinatesList>                                               myCoordList;
   NCollection_Handle<NCollection_DynamicArray<occ::handle<NCollection_HSequence<int>>>> myCurves;
 
 public:

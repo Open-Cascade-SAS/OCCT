@@ -117,10 +117,10 @@ protected:
   occ::handle<Message_Messenger>   myMsgDriver;
 
 private:
-  BinObjMgt_Persistent                            myPAtt;
-  NCollection_Map<int>                            myMapUnsupported;
+  BinObjMgt_Persistent                                  myPAtt;
+  NCollection_Map<int>                                  myMapUnsupported;
   NCollection_DynamicArray<BinLDrivers_DocumentSection> mySections;
-  NCollection_Map<int>                            myUnresolvedLinks;
+  NCollection_Map<int>                                  myUnresolvedLinks;
 };
 
 #endif // _BinLDrivers_DocumentRetrievalDriver_HeaderFile

@@ -223,7 +223,7 @@ private:
   //! Constructs a ParentsOf starting at myIndex for O(1) amortized resumption.
   template <typename TypedIdT>
   [[nodiscard]] bool advanceParents(const NCollection_DynamicArray<TypedIdT>& theParents,
-                                    const RelationKind                  theRelation)
+                                    const RelationKind                        theRelation)
   {
     BRepGraph_ReverseIterator::ParentsOf<TypedIdT> anIt(*myGraph, theParents, myIndex);
     if (anIt.More())

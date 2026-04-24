@@ -146,7 +146,7 @@ protected: //! @name clipping state modification commands
 private:
   occ::handle<Graphic3d_SequenceOfHClipPlane> myPlanesGlobal;   //!< global clipping planes
   occ::handle<Graphic3d_SequenceOfHClipPlane> myPlanesLocal;    //!< object clipping planes
-  NCollection_DynamicArray<bool>                    myDisabledPlanes; //!< ids of disabled planes
+  NCollection_DynamicArray<bool>              myDisabledPlanes; //!< ids of disabled planes
 
   // clang-format off
   occ::handle<Graphic3d_ClipPlane>              myCappedChain;    //!< chain which is either temporary disabled or the only one enabled for Capping algorithm

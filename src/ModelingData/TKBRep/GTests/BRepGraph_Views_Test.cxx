@@ -53,7 +53,7 @@ const occ::handle<BRepGraph_CacheKind>& testUserAttrKind()
 
 template <class theRefIdType, class theRefFn>
 static int countActiveRefs(const NCollection_DynamicArray<theRefIdType>& theRefIds,
-                           const theRefFn&                         theRefAccess)
+                           const theRefFn&                               theRefAccess)
 {
   int aCount = 0;
   for (const theRefIdType& aRefId : theRefIds)
@@ -231,7 +231,8 @@ TEST_F(BRepGraph_ViewsTest, DefsView_RepIdConvenienceAccessors_RoundTrip)
   EXPECT_EQ(myGraph.Topo().Edges().Curve3DRepId(anEdgeId),
             myGraph.Topo().Edges().Definition(anEdgeId).Curve3DRepId);
 
-  const NCollection_DynamicArray<BRepGraph_CoEdgeId>& aCoEdges = myGraph.Topo().Edges().CoEdges(anEdgeId);
+  const NCollection_DynamicArray<BRepGraph_CoEdgeId>& aCoEdges =
+    myGraph.Topo().Edges().CoEdges(anEdgeId);
   ASSERT_GT(aCoEdges.Length(), 0);
   const BRepGraph_CoEdgeId aCoEdgeId = aCoEdges.Value(0);
   EXPECT_EQ(myGraph.Topo().CoEdges().Curve2DRepId(aCoEdgeId),
@@ -275,8 +276,8 @@ TEST_F(BRepGraph_ViewsTest, UIDsView_NodeIdFrom_RoundTrip)
 TEST_F(BRepGraph_ViewsTest, UIDsView_NodeIdFrom_MultipleRoundTrip)
 {
   NCollection_DynamicArray<BRepGraph_UID> aUIDs;
-  const BRepGraph_UID               aFaceUID  = myGraph.UIDs().Of(BRepGraph_FaceId::Start());
-  const BRepGraph_UID               anEdgeUID = myGraph.UIDs().Of(BRepGraph_EdgeId::Start());
+  const BRepGraph_UID                     aFaceUID  = myGraph.UIDs().Of(BRepGraph_FaceId::Start());
+  const BRepGraph_UID                     anEdgeUID = myGraph.UIDs().Of(BRepGraph_EdgeId::Start());
   ASSERT_TRUE(aFaceUID.IsValid());
   ASSERT_TRUE(anEdgeUID.IsValid());
 
@@ -366,7 +367,7 @@ TEST_F(BRepGraph_ViewsTest, UIDsView_Of_OutOfRangeRef_ReturnsInvalid)
 
 TEST_F(BRepGraph_ViewsTest, SpatialView_AdjacentFaces_FourPerBoxFace)
 {
-  BRepGraph_FaceId                     aFaceId(0);
+  BRepGraph_FaceId                           aFaceId(0);
   NCollection_DynamicArray<BRepGraph_FaceId> aResult =
     myGraph.Topo().Faces().Adjacent(aFaceId, myGraph.Allocator());
   EXPECT_EQ(aResult.Length(), 4);
@@ -374,8 +375,9 @@ TEST_F(BRepGraph_ViewsTest, SpatialView_AdjacentFaces_FourPerBoxFace)
 
 TEST_F(BRepGraph_ViewsTest, SpatialView_FacesOfEdge_TwoPerBoxEdge)
 {
-  BRepGraph_EdgeId                            anEdgeId(0);
-  const NCollection_DynamicArray<BRepGraph_FaceId>& aResult = myGraph.Topo().Edges().Faces(anEdgeId);
+  BRepGraph_EdgeId                                  anEdgeId(0);
+  const NCollection_DynamicArray<BRepGraph_FaceId>& aResult =
+    myGraph.Topo().Edges().Faces(anEdgeId);
   EXPECT_EQ(aResult.Length(), 2);
 }
 
@@ -636,8 +638,9 @@ TEST_F(BRepGraph_ViewsTest, EdgeOps_FindCoEdgeId_InvalidPair_ReturnsInvalid)
 {
   // Use a valid edge but a face that doesn't share it.
   // Edge 0 and the last face are very unlikely to share a coedge in a box.
-  const BRepGraph_EdgeId                      anEdge(0);
-  const NCollection_DynamicArray<BRepGraph_FaceId>& aEdgeFaces = myGraph.Topo().Edges().Faces(anEdge);
+  const BRepGraph_EdgeId                            anEdge(0);
+  const NCollection_DynamicArray<BRepGraph_FaceId>& aEdgeFaces =
+    myGraph.Topo().Edges().Faces(anEdge);
 
   // Find a face NOT adjacent to edge 0.
   BRepGraph_FaceId aNonAdjacentFace;
@@ -779,8 +782,9 @@ TEST_F(BRepGraph_ViewsTest, RefsView_RefIdsOf_MatchFreshBuild)
 
 TEST_F(BRepGraph_ViewsTest, RefsView_FaceRefIdsOf_LocalFilteringHandlesRemoved)
 {
-  const BRepGraph_ShellId                        aShellId(0);
-  const NCollection_DynamicArray<BRepGraph_FaceRefId>& aFaceRefs = myGraph.Refs().Faces().IdsOf(aShellId);
+  const BRepGraph_ShellId                              aShellId(0);
+  const NCollection_DynamicArray<BRepGraph_FaceRefId>& aFaceRefs =
+    myGraph.Refs().Faces().IdsOf(aShellId);
   ASSERT_GT(aFaceRefs.Length(), 0);
 
   {
@@ -1082,7 +1086,8 @@ TEST_F(BRepGraph_ViewsTest, EditorView_RemoveRep_CurveAndPCurve_HideCurveQueries
   EXPECT_FALSE(BRepGraph_Tool::Edge::HasCurve(myGraph, anEdgeId));
   EXPECT_TRUE(BRepGraph_Tool::Edge::Curve(myGraph, anEdgeId).IsNull());
 
-  const NCollection_DynamicArray<BRepGraph_CoEdgeId>& aCoEdges = myGraph.Topo().Edges().CoEdges(anEdgeId);
+  const NCollection_DynamicArray<BRepGraph_CoEdgeId>& aCoEdges =
+    myGraph.Topo().Edges().CoEdges(anEdgeId);
   ASSERT_GT(aCoEdges.Length(), 0);
   const BRepGraph_CoEdgeId     aCoEdgeId     = aCoEdges.Value(0);
   const BRepGraph_Curve2DRepId aCurve2DRepId = myGraph.Topo().CoEdges().Curve2DRepId(aCoEdgeId);

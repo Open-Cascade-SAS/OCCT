@@ -92,10 +92,10 @@ public:
 
   //! Creates new proximity tool for the given element sets.
   Standard_EXPORT BRepExtrema_ProximityValueTool(
-    const occ::handle<BRepExtrema_TriangleSet>& theSet1,
-    const occ::handle<BRepExtrema_TriangleSet>& theSet2,
-    const NCollection_DynamicArray<TopoDS_Shape>&     theShapeList1,
-    const NCollection_DynamicArray<TopoDS_Shape>&     theShapeList2);
+    const occ::handle<BRepExtrema_TriangleSet>&   theSet1,
+    const occ::handle<BRepExtrema_TriangleSet>&   theSet2,
+    const NCollection_DynamicArray<TopoDS_Shape>& theShapeList1,
+    const NCollection_DynamicArray<TopoDS_Shape>& theShapeList2);
 
 public:
   //! Loads the given element sets into the proximity tool.
@@ -144,40 +144,40 @@ private:
                             double&             theStep);
 
   //! Returns the computed proximity value from first BVH to another one.
-  double computeProximityDist(const occ::handle<BRepExtrema_TriangleSet>& theSet1,
-                              const int                                   theNbSamples1,
-                              const BVH_Array3d&                          theAddVertices1,
-                              const NCollection_DynamicArray<ProxPnt_Status>&   theAddStatus1,
-                              const occ::handle<BRepExtrema_TriangleSet>& theSet2,
-                              const NCollection_DynamicArray<TopoDS_Shape>&     theShapeList1,
-                              const NCollection_DynamicArray<TopoDS_Shape>&     theShapeList2,
-                              BVH_Vec3d&                                  thePoint1,
-                              BVH_Vec3d&                                  thePoint2,
-                              ProxPnt_Status&                             thePointStatus1,
-                              ProxPnt_Status&                             thePointStatus2) const;
+  double computeProximityDist(const occ::handle<BRepExtrema_TriangleSet>&     theSet1,
+                              const int                                       theNbSamples1,
+                              const BVH_Array3d&                              theAddVertices1,
+                              const NCollection_DynamicArray<ProxPnt_Status>& theAddStatus1,
+                              const occ::handle<BRepExtrema_TriangleSet>&     theSet2,
+                              const NCollection_DynamicArray<TopoDS_Shape>&   theShapeList1,
+                              const NCollection_DynamicArray<TopoDS_Shape>&   theShapeList2,
+                              BVH_Vec3d&                                      thePoint1,
+                              BVH_Vec3d&                                      thePoint2,
+                              ProxPnt_Status&                                 thePointStatus1,
+                              ProxPnt_Status& thePointStatus2) const;
 
   //! Gets additional vertices on shapes with refining a coarser one if it's needed.
   bool getShapesAdditionalVertices();
 
   //! Gets additional vertices and their statuses on the edge with the input step.
-  bool getEdgeAdditionalVertices(const TopoDS_Edge&                  theEdge,
-                                 const double                        theStep,
-                                 BVH_Array3d&                        theAddVertices,
+  bool getEdgeAdditionalVertices(const TopoDS_Edge&                        theEdge,
+                                 const double                              theStep,
+                                 BVH_Array3d&                              theAddVertices,
                                  NCollection_DynamicArray<ProxPnt_Status>& theAddStatuses);
 
   //! Gets additional vertices and their statuses on the face with the input step (triangle square).
-  bool getFaceAdditionalVertices(const TopoDS_Face&                  theFace,
-                                 const double                        theStep,
-                                 BVH_Array3d&                        theAddVertices,
+  bool getFaceAdditionalVertices(const TopoDS_Face&                        theFace,
+                                 const double                              theStep,
+                                 BVH_Array3d&                              theAddVertices,
                                  NCollection_DynamicArray<ProxPnt_Status>& theAddStatuses);
 
   //! Splits the triangle recursively, halving the longest side
   //! to the area of the current triangle > input step
   void doRecurTrgSplit(const gp_Pnt (&theTrg)[3],
                        const ProxPnt_Status (&theEdgesStatus)[3],
-                       const double                        theTol,
-                       const double                        theStep,
-                       BVH_Array3d&                        theAddVertices,
+                       const double                              theTol,
+                       const double                              theStep,
+                       BVH_Array3d&                              theAddVertices,
                        NCollection_DynamicArray<ProxPnt_Status>& theAddStatuses);
 
 private:

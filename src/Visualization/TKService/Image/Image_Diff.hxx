@@ -141,7 +141,7 @@ protected:
                                         // clang-format on
 
   //! coordinates of different pixels, packed in one int using 16-bit integers to save memory
-  NCollection_DynamicArray<int>                                    myDiffPixels;
+  NCollection_DynamicArray<int>                              myDiffPixels;
   TColStd_PackedMapOfInteger                                 myLinearGroups;
   NCollection_List<occ::handle<TColStd_HPackedMapOfInteger>> myGroupsOfDiffPixels;
 

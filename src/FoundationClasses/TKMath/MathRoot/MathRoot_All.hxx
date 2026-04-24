@@ -38,7 +38,7 @@ struct NullInterval
 //! Result for all roots finder including null intervals.
 struct AllRootsResult
 {
-  MathUtils::Status                Status = MathUtils::Status::NotConverged;
+  MathUtils::Status                      Status = MathUtils::Status::NotConverged;
   NCollection_DynamicArray<double>       Roots;         //!< Isolated root locations
   NCollection_DynamicArray<int>          RootStates;    //!< State numbers for roots
   NCollection_DynamicArray<NullInterval> NullIntervals; //!< Intervals where function is null

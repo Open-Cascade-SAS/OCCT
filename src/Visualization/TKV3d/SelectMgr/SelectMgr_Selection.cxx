@@ -125,7 +125,8 @@ void SelectMgr_Selection::DumpJson(Standard_OStream& theOStream, int theDepth) c
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
   NCollection_Map<occ::handle<SelectMgr_EntityOwner>> anOwners;
-  for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator anIterator(myEntities);
+  for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator anIterator(
+         myEntities);
        anIterator.More();
        anIterator.Next())
   {
@@ -141,7 +142,8 @@ void SelectMgr_Selection::DumpJson(Standard_OStream& theOStream, int theDepth) c
     }
   }
 
-  for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator anIterator(myEntities);
+  for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator anIterator(
+         myEntities);
        anIterator.More();
        anIterator.Next())
   {

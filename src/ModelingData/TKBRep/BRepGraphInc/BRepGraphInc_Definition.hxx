@@ -38,7 +38,7 @@ namespace BRepGraphInc
 
 //! Helper: reinitialize a vector member with the given allocator and block size.
 template <typename T>
-inline void InitVec(NCollection_DynamicArray<T>&                        theVec,
+inline void InitVec(NCollection_DynamicArray<T>&                  theVec,
                     const occ::handle<NCollection_BaseAllocator>& theAlloc,
                     const int                                     theBlockSize = 4)
 {
@@ -171,7 +171,7 @@ struct WireDef : public BaseDef
 {
   using TypeId = BRepGraph_WireId;
 
-  bool                                      IsClosed = false;
+  bool                                            IsClosed = false;
   NCollection_DynamicArray<BRepGraph_CoEdgeRefId> CoEdgeRefIds; //!< Ordered coedge ref indices
 
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
@@ -213,8 +213,9 @@ struct ShellDef : public BaseDef
   using TypeId = BRepGraph_ShellId;
 
   bool IsClosed = false; //!< True if shell forms a watertight (closed) boundary.
-  NCollection_DynamicArray<BRepGraph_FaceRefId>  FaceRefIds;     //!< Face ref indices
-  NCollection_DynamicArray<BRepGraph_ChildRefId> AuxChildRefIds; //!< Non-face children (wires, edges)
+  NCollection_DynamicArray<BRepGraph_FaceRefId> FaceRefIds; //!< Face ref indices
+  NCollection_DynamicArray<BRepGraph_ChildRefId>
+    AuxChildRefIds; //!< Non-face children (wires, edges)
 
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {
@@ -228,8 +229,9 @@ struct SolidDef : public BaseDef
 {
   using TypeId = BRepGraph_SolidId;
 
-  NCollection_DynamicArray<BRepGraph_ShellRefId> ShellRefIds;    //!< Shell ref indices
-  NCollection_DynamicArray<BRepGraph_ChildRefId> AuxChildRefIds; //!< Non-shell children (edges, vertices)
+  NCollection_DynamicArray<BRepGraph_ShellRefId> ShellRefIds; //!< Shell ref indices
+  NCollection_DynamicArray<BRepGraph_ChildRefId>
+    AuxChildRefIds; //!< Non-shell children (edges, vertices)
 
   void InitVectors(const occ::handle<NCollection_BaseAllocator>& theAlloc)
   {

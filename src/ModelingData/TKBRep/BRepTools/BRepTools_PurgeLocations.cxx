@@ -37,7 +37,7 @@ bool BRepTools_PurgeLocations::Perform(const TopoDS_Shape& theShape)
   AddShape(myShape);
 
   // Check locations;
-  int                     ind;
+  int                           ind;
   NCollection_DynamicArray<int> aBadTrsfInds;
   for (ind = 1;; ++ind)
   {

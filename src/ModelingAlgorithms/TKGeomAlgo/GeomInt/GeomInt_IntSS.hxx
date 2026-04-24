@@ -155,11 +155,11 @@ public:
   //! points of given theC2d1 and theC2d2 curves with the boundaries
   //! of the source surface.
   Standard_EXPORT static void TrimILineOnSurfBoundaries(
-    const occ::handle<Geom2d_Curve>& theC2d1,
-    const occ::handle<Geom2d_Curve>& theC2d2,
-    const Bnd_Box2d&                 theBound1,
-    const Bnd_Box2d&                 theBound2,
-    NCollection_DynamicArray<double>&      theArrayOfParameters);
+    const occ::handle<Geom2d_Curve>&  theC2d1,
+    const occ::handle<Geom2d_Curve>&  theC2d2,
+    const Bnd_Box2d&                  theBound1,
+    const Bnd_Box2d&                  theBound2,
+    NCollection_DynamicArray<double>& theArrayOfParameters);
 
   Standard_EXPORT static occ::handle<Geom_Curve> MakeBSpline(const occ::handle<IntPatch_WLine>& WL,
                                                              const int ideb,

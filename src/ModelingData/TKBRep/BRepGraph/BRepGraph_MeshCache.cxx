@@ -16,7 +16,8 @@
 //=================================================================================================
 
 template <typename T>
-void BRepGraph_MeshCacheStorage::ensureSize(NCollection_DynamicArray<T>& theVec, const size_t theIndex)
+void BRepGraph_MeshCacheStorage::ensureSize(NCollection_DynamicArray<T>& theVec,
+                                            const size_t                 theIndex)
 {
   while (theVec.Size() <= theIndex)
   {

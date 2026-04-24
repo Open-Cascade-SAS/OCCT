@@ -57,7 +57,7 @@ protected:
   Standard_EXPORT void Clear();
 
   occ::handle<NCollection_BaseAllocator> myAllocator;
-  NCollection_DynamicArray<TopoDS_Shape>       myShapes;
+  NCollection_DynamicArray<TopoDS_Shape> myShapes;
   TopoDS_Shape                           myShape;
   int                                    myNbShapes;
   size_t                                 mySum;

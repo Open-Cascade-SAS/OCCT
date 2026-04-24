@@ -193,11 +193,11 @@ public:
 
   //! Prepares surfaces for intersection
   Standard_EXPORT static void PrepareSurfaces(
-    const occ::handle<Adaptor3d_Surface>&               theS1,
-    const occ::handle<Adaptor3d_TopolTool>&             theD1,
-    const occ::handle<Adaptor3d_Surface>&               theS2,
-    const occ::handle<Adaptor3d_TopolTool>&             theD2,
-    const double                                        Tol,
+    const occ::handle<Adaptor3d_Surface>&                     theS1,
+    const occ::handle<Adaptor3d_TopolTool>&                   theD1,
+    const occ::handle<Adaptor3d_Surface>&                     theS2,
+    const occ::handle<Adaptor3d_TopolTool>&                   theD2,
+    const double                                              Tol,
     NCollection_DynamicArray<occ::handle<Adaptor3d_Surface>>& theSeqHS1,
     NCollection_DynamicArray<occ::handle<Adaptor3d_Surface>>& theSeqHS2);
 

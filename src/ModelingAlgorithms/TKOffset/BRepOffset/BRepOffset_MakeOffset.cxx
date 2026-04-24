@@ -303,9 +303,9 @@ static bool TrimEdges(
 
 static void AppendToList(NCollection_List<TopoDS_Shape>& theL, const TopoDS_Shape& theS);
 
-static BRepOffset_Error checkSinglePoint(const double                      theUParam,
-                                         const double                      theVParam,
-                                         const occ::handle<Geom_Surface>&  theSurf,
+static BRepOffset_Error checkSinglePoint(const double                            theUParam,
+                                         const double                            theVParam,
+                                         const occ::handle<Geom_Surface>&        theSurf,
                                          const NCollection_DynamicArray<gp_Pnt>& theBadPoints);
 
 //---------------------------------------------------------------------
@@ -4267,7 +4267,7 @@ bool BRepOffset_MakeOffset::CheckInputData(const Message_ProgressRange& theRange
 
     // Get degenerated points, to avoid check them.
     NCollection_DynamicArray<gp_Pnt> aBad3dPnts;
-    TopExp_Explorer            anExpFE(aF, TopAbs_EDGE);
+    TopExp_Explorer                  anExpFE(aF, TopAbs_EDGE);
     for (; anExpFE.More(); anExpFE.Next())
     {
       const TopoDS_Edge& aE = TopoDS::Edge(anExpFE.Current());
@@ -4389,9 +4389,9 @@ void BRepOffset_MakeOffset::RemoveInternalEdges()
 // function : checkSinglePoint
 // purpose  : Check single point on surface for bad normals
 //=======================================================================
-BRepOffset_Error checkSinglePoint(const double                      theUParam,
-                                  const double                      theVParam,
-                                  const occ::handle<Geom_Surface>&  theSurf,
+BRepOffset_Error checkSinglePoint(const double                            theUParam,
+                                  const double                            theVParam,
+                                  const occ::handle<Geom_Surface>&        theSurf,
                                   const NCollection_DynamicArray<gp_Pnt>& theBadPoints)
 {
   gp_Pnt aPnt;

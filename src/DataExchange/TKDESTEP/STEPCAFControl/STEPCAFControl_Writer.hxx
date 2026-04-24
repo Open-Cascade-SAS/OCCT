@@ -426,13 +426,13 @@ private:
   bool                                         myMetadataMode;
   bool                                         mySHUOMode;
   NCollection_DataMap<TopoDS_Shape, occ::handle<Standard_Transient>, TopTools_ShapeMapHasher>
-                                                               myMapCompMDGPR;
-  bool                                                         myGDTMode;
-  bool                                                         myMatMode;
-  bool                                                         myVisMatMode;
-  bool                                                         myIsCleanDuplicates;
+                                                                     myMapCompMDGPR;
+  bool                                                               myGDTMode;
+  bool                                                               myMatMode;
+  bool                                                               myVisMatMode;
+  bool                                                               myIsCleanDuplicates;
   NCollection_DynamicArray<occ::handle<StepRepr_RepresentationItem>> myGDTAnnotations;
-  occ::handle<StepVisual_DraughtingModel>                      myGDTPresentationDM;
+  occ::handle<StepVisual_DraughtingModel>                            myGDTPresentationDM;
   occ::handle<NCollection_HArray1<occ::handle<StepVisual_PresentationStyleAssignment>>>
                                                myGDTPrsCurveStyle;
   occ::handle<StepRepr_ProductDefinitionShape> myGDTCommonPDS;

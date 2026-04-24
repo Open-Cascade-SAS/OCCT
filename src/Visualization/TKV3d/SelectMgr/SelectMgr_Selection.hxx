@@ -132,12 +132,12 @@ public:
 
 private:
   NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>> myEntities;
-  int                                                        myMode;
-  SelectMgr_TypeOfUpdate                                     myUpdateStatus;
-  mutable SelectMgr_StateOfSelection                         mySelectionState;
-  mutable SelectMgr_TypeOfBVHUpdate                          myBVHUpdateStatus;
-  int                                                        mySensFactor;
-  bool                                                       myIsCustomSens;
+  int                                                              myMode;
+  SelectMgr_TypeOfUpdate                                           myUpdateStatus;
+  mutable SelectMgr_StateOfSelection                               mySelectionState;
+  mutable SelectMgr_TypeOfBVHUpdate                                myBVHUpdateStatus;
+  int                                                              mySensFactor;
+  bool                                                             myIsCustomSens;
 };
 
 #endif

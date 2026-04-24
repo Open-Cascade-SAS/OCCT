@@ -41,8 +41,8 @@ class RWGltf_CafReader::CafReader_GltfBaseLoadingFunctor
 public:
   //! Main constructor.
   CafReader_GltfBaseLoadingFunctor(NCollection_DynamicArray<TopoDS_Face>& theFaceList,
-                                   const Message_ProgressRange&     theProgress,
-                                   const OSD_ThreadPool::Launcher&  theThreadPool)
+                                   const Message_ProgressRange&           theProgress,
+                                   const OSD_ThreadPool::Launcher&        theThreadPool)
       : myFaceList(&theFaceList),
         myProgress(theProgress, "Loading glTF triangulation", std::max(1, theFaceList.Length())),
         myThreadPool(theThreadPool)
@@ -84,9 +84,9 @@ protected:
 
 protected:
   NCollection_DynamicArray<TopoDS_Face>* myFaceList;
-  mutable std::mutex               myMutex;
-  mutable Message_ProgressScope    myProgress;
-  const OSD_ThreadPool::Launcher&  myThreadPool;
+  mutable std::mutex                     myMutex;
+  mutable Message_ProgressScope          myProgress;
+  const OSD_ThreadPool::Launcher&        myThreadPool;
 };
 
 //! Functor for parallel execution of all glTF data loading.
@@ -100,10 +100,10 @@ public:
   };
 
   //! Main constructor.
-  CafReader_GltfFullDataLoadingFunctor(RWGltf_CafReader*                myCafReader,
+  CafReader_GltfFullDataLoadingFunctor(RWGltf_CafReader*                      myCafReader,
                                        NCollection_DynamicArray<TopoDS_Face>& theFaceList,
-                                       const Message_ProgressRange&     theProgress,
-                                       const OSD_ThreadPool::Launcher&  theThreadPool)
+                                       const Message_ProgressRange&           theProgress,
+                                       const OSD_ThreadPool::Launcher&        theThreadPool)
       : CafReader_GltfBaseLoadingFunctor(theFaceList, theProgress, theThreadPool),
         myCafReader(myCafReader),
         myTlsData(theThreadPool.LowerThreadIndex(), theThreadPool.UpperThreadIndex())
@@ -148,8 +148,8 @@ class RWGltf_CafReader::CafReader_GltfStreamDataLoadingFunctor
 public:
   //! Main constructor.
   CafReader_GltfStreamDataLoadingFunctor(NCollection_DynamicArray<TopoDS_Face>& theFaceList,
-                                         const Message_ProgressRange&     theProgress,
-                                         const OSD_ThreadPool::Launcher&  theThreadPool)
+                                         const Message_ProgressRange&           theProgress,
+                                         const OSD_ThreadPool::Launcher&        theThreadPool)
       : CafReader_GltfBaseLoadingFunctor(theFaceList, theProgress, theThreadPool)
   {
     //
@@ -366,8 +366,8 @@ occ::handle<RWMesh_TriangulationReader> RWGltf_CafReader::createMeshReaderContex
 //=================================================================================================
 
 bool RWGltf_CafReader::readLateData(NCollection_DynamicArray<TopoDS_Face>& theFaces,
-                                    const TCollection_AsciiString&   theFile,
-                                    const Message_ProgressRange&     theProgress)
+                                    const TCollection_AsciiString&         theFile,
+                                    const Message_ProgressRange&           theProgress)
 {
   occ::handle<RWGltf_TriangulationReader> aReader =
     occ::down_cast<RWGltf_TriangulationReader>(createMeshReaderContext());
@@ -407,7 +407,7 @@ bool RWGltf_CafReader::readLateData(NCollection_DynamicArray<TopoDS_Face>& theFa
 //=================================================================================================
 
 void RWGltf_CafReader::updateLateDataReader(
-  NCollection_DynamicArray<TopoDS_Face>&               theFaces,
+  NCollection_DynamicArray<TopoDS_Face>&         theFaces,
   const occ::handle<RWMesh_TriangulationReader>& theReader) const
 {
   TopLoc_Location aDummyLoc;

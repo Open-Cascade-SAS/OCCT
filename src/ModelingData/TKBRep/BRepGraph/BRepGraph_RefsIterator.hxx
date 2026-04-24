@@ -230,7 +230,7 @@ struct ShellOfSolidTraits
   }
 
   static const NCollection_DynamicArray<RefId>& RefIds(const BRepGraph& theGraph,
-                                                 const ParentId   theParent)
+                                                       const ParentId   theParent)
   {
     return theGraph.Topo().Solids().Definition(theParent).ShellRefIds;
   }
@@ -256,7 +256,7 @@ struct FaceOfShellTraits
   }
 
   static const NCollection_DynamicArray<RefId>& RefIds(const BRepGraph& theGraph,
-                                                 const ParentId   theParent)
+                                                       const ParentId   theParent)
   {
     return theGraph.Topo().Shells().Definition(theParent).FaceRefIds;
   }
@@ -282,7 +282,7 @@ struct ChildOfShellTraits
   }
 
   static const NCollection_DynamicArray<RefId>& RefIds(const BRepGraph& theGraph,
-                                                 const ParentId   theParent)
+                                                       const ParentId   theParent)
   {
     return theGraph.Topo().Shells().Definition(theParent).AuxChildRefIds;
   }
@@ -308,7 +308,7 @@ struct WireOfFaceTraits
   }
 
   static const NCollection_DynamicArray<RefId>& RefIds(const BRepGraph& theGraph,
-                                                 const ParentId   theParent)
+                                                       const ParentId   theParent)
   {
     return theGraph.Topo().Faces().Definition(theParent).WireRefIds;
   }
@@ -334,7 +334,7 @@ struct VertexOfFaceTraits
   }
 
   static const NCollection_DynamicArray<RefId>& RefIds(const BRepGraph& theGraph,
-                                                 const ParentId   theParent)
+                                                       const ParentId   theParent)
   {
     return theGraph.Topo().Faces().Definition(theParent).VertexRefIds;
   }
@@ -360,7 +360,7 @@ struct CoEdgeOfWireTraits
   }
 
   static const NCollection_DynamicArray<RefId>& RefIds(const BRepGraph& theGraph,
-                                                 const ParentId   theParent)
+                                                       const ParentId   theParent)
   {
     return theGraph.Topo().Wires().Definition(theParent).CoEdgeRefIds;
   }
@@ -386,7 +386,7 @@ struct SolidOfCompSolidTraits
   }
 
   static const NCollection_DynamicArray<RefId>& RefIds(const BRepGraph& theGraph,
-                                                 const ParentId   theParent)
+                                                       const ParentId   theParent)
   {
     return theGraph.Topo().CompSolids().Definition(theParent).SolidRefIds;
   }
@@ -412,7 +412,7 @@ struct ChildOfSolidTraits
   }
 
   static const NCollection_DynamicArray<RefId>& RefIds(const BRepGraph& theGraph,
-                                                 const ParentId   theParent)
+                                                       const ParentId   theParent)
   {
     return theGraph.Topo().Solids().Definition(theParent).AuxChildRefIds;
   }
@@ -438,7 +438,7 @@ struct ChildOfCompoundTraits
   }
 
   static const NCollection_DynamicArray<RefId>& RefIds(const BRepGraph& theGraph,
-                                                 const ParentId   theParent)
+                                                       const ParentId   theParent)
   {
     return theGraph.Topo().Compounds().Definition(theParent).ChildRefIds;
   }
@@ -464,7 +464,7 @@ struct OccurrenceOfProductTraits
   }
 
   static const NCollection_DynamicArray<RefId>& RefIds(const BRepGraph& theGraph,
-                                                 const ParentId   theParent)
+                                                       const ParentId   theParent)
   {
     return theGraph.Topo().Products().Definition(theParent).OccurrenceRefIds;
   }
@@ -542,10 +542,10 @@ private:
     }
   }
 
-  const BRepGraph&                 myGraph;
+  const BRepGraph&                       myGraph;
   const NCollection_DynamicArray<RefId>* myRefIds = nullptr;
-  uint32_t                         myIndex  = 0;
-  uint32_t                         myLength = 0;
+  uint32_t                               myIndex  = 0;
+  uint32_t                               myLength = 0;
 };
 
 //! @brief Direct active vertex reference ids of an edge.

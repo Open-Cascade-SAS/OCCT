@@ -88,7 +88,7 @@ public:
   //! Dispatch OnNodesModified to subscribed layers.
   Standard_EXPORT void DispatchNodesModified(
     const NCollection_DynamicArray<BRepGraph_NodeId>& theModifiedNodes,
-    const int                                   theModifiedKindsMask) noexcept;
+    const int                                         theModifiedKindsMask) noexcept;
 
   //! Dispatch OnCompact to all registered layers.
   Standard_EXPORT void DispatchOnCompact(
@@ -111,7 +111,7 @@ public:
   //! Dispatch OnRefsModified to subscribed layers (deferred/batch mode).
   Standard_EXPORT void DispatchRefsModified(
     const NCollection_DynamicArray<BRepGraph_RefId>& theModifiedRefs,
-    const int                                  theModifiedRefKindsMask) noexcept;
+    const int                                        theModifiedRefKindsMask) noexcept;
 
   //! Clear all registered layer payloads without unregistering them.
   Standard_EXPORT void ClearAll() noexcept;
@@ -124,10 +124,10 @@ private:
 
 private:
   NCollection_DynamicArray<occ::handle<BRepGraph_Layer>> myLayers;
-  NCollection_DataMap<Standard_GUID, uint32_t>     myGuidToSlot;
-  uint32_t                                         mySubscribedKindsMask    = 0;
-  uint32_t                                         mySubscribedRefKindsMask = 0;
-  BRepGraph*                                       myOwningGraph            = nullptr;
+  NCollection_DataMap<Standard_GUID, uint32_t>           myGuidToSlot;
+  uint32_t                                               mySubscribedKindsMask    = 0;
+  uint32_t                                               mySubscribedRefKindsMask = 0;
+  BRepGraph*                                             myOwningGraph            = nullptr;
 };
 
 #endif // _BRepGraph_LayerRegistry_HeaderFile

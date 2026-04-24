@@ -141,8 +141,8 @@ public:
     return aCount;
   }
 
-  NCollection_DynamicArray<BRepGraph_NodeId>                    myImmediateEvents;
-  NCollection_DynamicArray<BRepGraph_NodeId>                    myBatchEvents;
+  NCollection_DynamicArray<BRepGraph_NodeId>              myImmediateEvents;
+  NCollection_DynamicArray<BRepGraph_NodeId>              myBatchEvents;
   int                                                     myBatchCallCount   = 0;
   int                                                     myRemoveCallCount  = 0;
   int                                                     myCompactCallCount = 0;
@@ -153,8 +153,8 @@ public:
   NCollection_DynamicArray<BRepGraph_RefId> myRefRemovedEvents;
   NCollection_DynamicArray<BRepGraph_RefId> myRefImmediateEvents;
   NCollection_DynamicArray<BRepGraph_RefId> myRefBatchEvents;
-  int                                 myRefBatchCallCount  = 0;
-  int                                 myRefRemoveCallCount = 0;
+  int                                       myRefBatchCallCount  = 0;
+  int                                       myRefRemoveCallCount = 0;
 
   DEFINE_STANDARD_RTTIEXT(BRepGraph_ModTrackingLayer, BRepGraph_Layer)
 

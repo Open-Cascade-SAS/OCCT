@@ -150,7 +150,8 @@ occ::handle<Select3D_SensitiveEntity> Select3D_SensitiveWire::GetConnected()
 // function : GetEdges
 // purpose  : returns the sensitive edges stored in this wire
 //=======================================================================
-const NCollection_DynamicArray<occ::handle<Select3D_SensitiveEntity>>& Select3D_SensitiveWire::GetEdges()
+const NCollection_DynamicArray<occ::handle<Select3D_SensitiveEntity>>& Select3D_SensitiveWire::
+  GetEdges()
 {
   return myEntities;
 }
@@ -218,7 +219,8 @@ void Select3D_SensitiveWire::DumpJson(Standard_OStream& theOStream, int theDepth
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
   OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Select3D_SensitiveSet)
 
-  for (NCollection_DynamicArray<occ::handle<Select3D_SensitiveEntity>>::Iterator anIterator(myEntities);
+  for (NCollection_DynamicArray<occ::handle<Select3D_SensitiveEntity>>::Iterator anIterator(
+         myEntities);
        anIterator.More();
        anIterator.Next())
   {

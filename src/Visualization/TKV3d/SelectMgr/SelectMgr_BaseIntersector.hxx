@@ -125,7 +125,8 @@ public:
   //! Stores plane equation coefficients (in the following form:
   //! Ax + By + Cz + D = 0) to the given vector.
   //! This method only clears input vector for the base class.
-  virtual void GetPlanes(NCollection_DynamicArray<NCollection_Vec4<double>>& thePlaneEquations) const
+  virtual void GetPlanes(
+    NCollection_DynamicArray<NCollection_Vec4<double>>& thePlaneEquations) const
   {
     thePlaneEquations.Clear();
   }

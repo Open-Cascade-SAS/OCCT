@@ -93,7 +93,7 @@ void appendMutationBoundaryIssues(
 //! coedge, compound child refs) point to valid, in-bounds entity slots.
 //! @param[in]     theGraph  source graph
 //! @param[in,out] theIssues collection to append diagnostic issues
-void checkCrossReferenceBounds(const BRepGraph&                               theGraph,
+void checkCrossReferenceBounds(const BRepGraph&                                     theGraph,
                                NCollection_DynamicArray<BRepGraph_Validate::Issue>& theIssues)
 {
   using Issue    = BRepGraph_Validate::Issue;
@@ -338,7 +338,7 @@ void checkCrossReferenceBounds(const BRepGraph&                               th
 //! (edge->wires, edge->faces, vertex->edges, wire->faces, face->shells, shell->solids).
 //! @param[in]     theGraph  source graph
 //! @param[in,out] theIssues collection to append diagnostic issues
-void checkReverseIndexConsistency(const BRepGraph&                               theGraph,
+void checkReverseIndexConsistency(const BRepGraph&                                     theGraph,
                                   NCollection_DynamicArray<BRepGraph_Validate::Issue>& theIssues)
 {
   using Issue    = BRepGraph_Validate::Issue;
@@ -408,7 +408,7 @@ void checkReverseIndexConsistency(const BRepGraph&                              
 //! Validate consistency of cached edge-face counts in reverse index.
 //! @param[in]     theGraph  source graph
 //! @param[in,out] theIssues collection to append diagnostic issues
-void checkReverseIndexFaceCountCache(const BRepGraph&                               theGraph,
+void checkReverseIndexFaceCountCache(const BRepGraph&                                     theGraph,
                                      NCollection_DynamicArray<BRepGraph_Validate::Issue>& theIssues)
 {
   using Issue                      = BRepGraph_Validate::Issue;
@@ -420,7 +420,7 @@ void checkReverseIndexFaceCountCache(const BRepGraph&                           
   {
     const BRepGraph_EdgeId anEdgeId = anEdgeIt.CurrentId();
 
-    NCollection_Map<BRepGraph_FaceId>             aUniqueFaces;
+    NCollection_Map<BRepGraph_FaceId>                   aUniqueFaces;
     const NCollection_DynamicArray<BRepGraph_CoEdgeId>& aCoEdges = aDefs.Edges().CoEdges(anEdgeId);
     for (const BRepGraph_CoEdgeId& aCoEdgeId : aCoEdges)
     {
@@ -450,7 +450,7 @@ void checkReverseIndexFaceCountCache(const BRepGraph&                           
 //! of the expected kind.
 //! @param[in]     theGraph  source graph
 //! @param[in,out] theIssues collection to append diagnostic issues
-void checkIncidenceRefConsistency(const BRepGraph&                               theGraph,
+void checkIncidenceRefConsistency(const BRepGraph&                                     theGraph,
                                   NCollection_DynamicArray<BRepGraph_Validate::Issue>& theIssues)
 {
   using Issue    = BRepGraph_Validate::Issue;
@@ -513,7 +513,7 @@ void checkIncidenceRefConsistency(const BRepGraph&                              
 //! reference non-null geometry handles.
 //! @param[in]     theGraph  source graph
 //! @param[in,out] theIssues collection to append diagnostic issues
-void checkGeometryReferences(const BRepGraph&                               theGraph,
+void checkGeometryReferences(const BRepGraph&                                     theGraph,
                              NCollection_DynamicArray<BRepGraph_Validate::Issue>& theIssues)
 {
   using Issue    = BRepGraph_Validate::Issue;
@@ -657,7 +657,7 @@ void checkGeometryReferences(const BRepGraph&                               theG
 //! parent entity through forward incidence refs.
 //! @param[in]     theGraph  source graph
 //! @param[in,out] theIssues collection to append diagnostic issues
-void checkRemovedNodeIsolation(const BRepGraph&                               theGraph,
+void checkRemovedNodeIsolation(const BRepGraph&                                     theGraph,
                                NCollection_DynamicArray<BRepGraph_Validate::Issue>& theIssues)
 {
   using Issue    = BRepGraph_Validate::Issue;
@@ -741,7 +741,7 @@ void checkRemovedNodeIsolation(const BRepGraph&                               th
 //! order-independent traversal.
 //! @param[in]     theGraph  source graph
 //! @param[in,out] theIssues collection to append diagnostic issues
-void checkWireConnectivity(const BRepGraph&                               theGraph,
+void checkWireConnectivity(const BRepGraph&                                     theGraph,
                            NCollection_DynamicArray<BRepGraph_Validate::Issue>& theIssues)
 {
   using Issue    = BRepGraph_Validate::Issue;
@@ -824,7 +824,7 @@ void checkWireConnectivity(const BRepGraph&                               theGra
 //! entities in each per-kind vector.
 //! @param[in]     theGraph  source graph
 //! @param[in,out] theIssues collection to append diagnostic issues
-void checkActiveCounts(const BRepGraph&                               theGraph,
+void checkActiveCounts(const BRepGraph&                                     theGraph,
                        NCollection_DynamicArray<BRepGraph_Validate::Issue>& theIssues)
 {
   using Severity                   = BRepGraph_Validate::Severity;
@@ -1008,9 +1008,9 @@ BRepGraph_Validate::Result BRepGraph_Validate::Perform(const BRepGraph& theGraph
 
     // BFS from this product's children; skip already-visited to avoid
     // exponential blowup on DAGs. A cycle exists if we re-encounter aProdIdx.
-    NCollection_Map<BRepGraph_ProductId>    aVisited;
+    NCollection_Map<BRepGraph_ProductId>          aVisited;
     NCollection_DynamicArray<BRepGraph_ProductId> aQueue;
-    size_t                                  aHead = 0;
+    size_t                                        aHead = 0;
 
     // Seed with direct children.
     for (BRepGraph_RefsOccurrenceOfProduct anOccIt(theGraph, aProdId); anOccIt.More();
@@ -1078,10 +1078,10 @@ BRepGraph_Validate::Result BRepGraph_Validate::Perform(const BRepGraph& theGraph
   for (BRepGraph_Iterator<BRepGraphInc::CompoundDef> aCompIt(theGraph); aCompIt.More();
        aCompIt.Next())
   {
-    const BRepGraph_CompoundId               aRootCompoundId = aCompIt.CurrentId();
-    NCollection_Map<BRepGraph_CompoundId>    aVisited;
+    const BRepGraph_CompoundId                     aRootCompoundId = aCompIt.CurrentId();
+    NCollection_Map<BRepGraph_CompoundId>          aVisited;
     NCollection_DynamicArray<BRepGraph_CompoundId> aQueue;
-    size_t                                   aHead = 0;
+    size_t                                         aHead = 0;
 
     for (BRepGraph_RefsChildOfCompound anIt(theGraph, aRootCompoundId); anIt.More(); anIt.Next())
     {

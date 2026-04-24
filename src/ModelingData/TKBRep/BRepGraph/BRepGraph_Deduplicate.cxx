@@ -375,9 +375,8 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
       bool operator()(const EdgeKey& theA, const EdgeKey& theB) const { return theA == theB; }
     };
 
-    NCollection_DataMap<EdgeKey, NCollection_DynamicArray<BRepGraph_EdgeId>, EdgeKeyHasher> anEdgeGroups(
-      std::max(1, theGraph.Topo().Edges().Nb()),
-      aTmpAlloc);
+    NCollection_DataMap<EdgeKey, NCollection_DynamicArray<BRepGraph_EdgeId>, EdgeKeyHasher>
+      anEdgeGroups(std::max(1, theGraph.Topo().Edges().Nb()), aTmpAlloc);
 
     for (BRepGraph_FullEdgeIterator anEdgeIt(theGraph); anEdgeIt.More(); anEdgeIt.Next())
     {
@@ -407,8 +406,8 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
       std::max(1, theGraph.Topo().Edges().Nb()),
       aTmpAlloc);
 
-    for (NCollection_DataMap<EdgeKey, NCollection_DynamicArray<BRepGraph_EdgeId>, EdgeKeyHasher>::Iterator
-           aGroupIter(anEdgeGroups);
+    for (NCollection_DataMap<EdgeKey, NCollection_DynamicArray<BRepGraph_EdgeId>, EdgeKeyHasher>::
+           Iterator aGroupIter(anEdgeGroups);
          aGroupIter.More();
          aGroupIter.Next())
     {
@@ -559,8 +558,8 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
       std::max(1, theGraph.Topo().Wires().Nb()),
       aTmpAlloc);
 
-    for (NCollection_DataMap<size_t, NCollection_DynamicArray<BRepGraph_WireId>>::Iterator aBucketIter(
-           aWireHashBuckets);
+    for (NCollection_DataMap<size_t, NCollection_DynamicArray<BRepGraph_WireId>>::Iterator
+           aBucketIter(aWireHashBuckets);
          aBucketIter.More();
          aBucketIter.Next())
     {
@@ -708,9 +707,8 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
       return aHash;
     };
 
-    NCollection_DataMap<FaceKey, NCollection_DynamicArray<BRepGraph_FaceId>, FaceKeyHasher> aFaceGroups(
-      std::max(1, theGraph.Topo().Faces().Nb()),
-      aTmpAlloc);
+    NCollection_DataMap<FaceKey, NCollection_DynamicArray<BRepGraph_FaceId>, FaceKeyHasher>
+      aFaceGroups(std::max(1, theGraph.Topo().Faces().Nb()), aTmpAlloc);
 
     for (BRepGraph_FullFaceIterator aFaceIt(theGraph); aFaceIt.More(); aFaceIt.Next())
     {
@@ -731,8 +729,8 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
       std::max(1, theGraph.Topo().Faces().Nb()),
       aTmpAlloc);
 
-    for (NCollection_DataMap<FaceKey, NCollection_DynamicArray<BRepGraph_FaceId>, FaceKeyHasher>::Iterator
-           aGroupIter(aFaceGroups);
+    for (NCollection_DataMap<FaceKey, NCollection_DynamicArray<BRepGraph_FaceId>, FaceKeyHasher>::
+           Iterator aGroupIter(aFaceGroups);
          aGroupIter.More();
          aGroupIter.Next())
     {

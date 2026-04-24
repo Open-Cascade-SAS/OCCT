@@ -661,7 +661,8 @@ bool BRepGraphInc_Storage::ValidateReverseIndex() const
   for (BRepGraph_EdgeId anEdgeId = BRepGraph_EdgeId::Start(); anEdgeId.IsValid(myEdges.Nb());
        ++anEdgeId)
   {
-    const NCollection_DynamicArray<BRepGraph_CoEdgeId>* aCoEdges = myReverseIdx.CoEdgesOfEdge(anEdgeId);
+    const NCollection_DynamicArray<BRepGraph_CoEdgeId>* aCoEdges =
+      myReverseIdx.CoEdgesOfEdge(anEdgeId);
     if (aCoEdges == nullptr)
     {
       continue;

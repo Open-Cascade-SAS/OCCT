@@ -294,9 +294,9 @@ protected:                          //! @name input data
   NCollection_String      myString; //!< currently rendered text
   NCollection_Vec2<float> myPen;    //!< current pen position
   NCollection_DynamicArray<NCollection_Vec2<float>>
-                            myCorners;  //!< The bottom left corners of a formatted rectangles.
+                                  myCorners; //!< The bottom left corners of a formatted rectangles.
   NCollection_DynamicArray<float> myNewLines; //!< position at LF
-                                        // clang-format off
+                                              // clang-format off
   float myLineSpacing;   //!< line spacing (computed as maximum of all fonts involved in text formatting)
   float myAscender;      //!< line spacing for the first line
   bool               myIsFormatted;   //!< formatting state
@@ -304,8 +304,8 @@ protected:                          //! @name input data
 protected: //! @name temporary variables for formatting routines
 
   int   myLinesNb;       //!< overall (new)lines number (including splitting by width limit)
-                                        // clang-format on
-  int myRectLineStart;                  //!< id of first rectangle on the current line
+                                              // clang-format on
+  int myRectLineStart;                        //!< id of first rectangle on the current line
   int myNewLineNb;
 
   float                   myPenCurrLine; //!< current baseline position

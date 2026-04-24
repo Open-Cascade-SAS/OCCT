@@ -28,13 +28,14 @@ namespace BRepGraph_TestTools
 {
 
 //=================================================================================================
-inline NCollection_DynamicArray<BRepGraph_CoEdgeRefId> CoEdgeRefsOfWire(const BRepGraph&       theGraph,
-                                                                  const BRepGraph_WireId theWireId)
+inline NCollection_DynamicArray<BRepGraph_CoEdgeRefId> CoEdgeRefsOfWire(
+  const BRepGraph&       theGraph,
+  const BRepGraph_WireId theWireId)
 {
   NCollection_DynamicArray<BRepGraph_CoEdgeRefId> aRefIds;
-  const BRepGraph::RefsView&                aRefs         = theGraph.Refs();
-  const BRepGraph_NodeId                    aParentNode   = theWireId;
-  const int                                 aNbCoEdgeRefs = aRefs.CoEdges().Nb();
+  const BRepGraph::RefsView&                      aRefs         = theGraph.Refs();
+  const BRepGraph_NodeId                          aParentNode   = theWireId;
+  const int                                       aNbCoEdgeRefs = aRefs.CoEdges().Nb();
   for (BRepGraph_CoEdgeRefId aRefId(0); aRefId.IsValid(aNbCoEdgeRefs); ++aRefId)
   {
     const BRepGraphInc::CoEdgeRef& aRef = aRefs.CoEdges().Entry(aRefId);
@@ -53,13 +54,14 @@ inline int CountCoEdgeRefsOfWire(const BRepGraph& theGraph, const BRepGraph_Wire
 
 //=================================================================================================
 
-inline NCollection_DynamicArray<BRepGraph_WireRefId> WireRefsOfFace(const BRepGraph&       theGraph,
-                                                              const BRepGraph_FaceId theFaceId)
+inline NCollection_DynamicArray<BRepGraph_WireRefId> WireRefsOfFace(
+  const BRepGraph&       theGraph,
+  const BRepGraph_FaceId theFaceId)
 {
   NCollection_DynamicArray<BRepGraph_WireRefId> aRefIds;
-  const BRepGraph::RefsView&              aRefs       = theGraph.Refs();
-  const BRepGraph_NodeId                  aParentNode = theFaceId;
-  const int                               aNbWireRefs = aRefs.Wires().Nb();
+  const BRepGraph::RefsView&                    aRefs       = theGraph.Refs();
+  const BRepGraph_NodeId                        aParentNode = theFaceId;
+  const int                                     aNbWireRefs = aRefs.Wires().Nb();
   for (BRepGraph_WireRefId aRefId(0); aRefId.IsValid(aNbWireRefs); ++aRefId)
   {
     const BRepGraphInc::WireRef& aRef = aRefs.Wires().Entry(aRefId);
@@ -82,8 +84,9 @@ inline bool FaceUsesWire(const BRepGraph&       theGraph,
                          const BRepGraph_FaceId theFaceId,
                          const BRepGraph_WireId theWireId)
 {
-  const BRepGraph::RefsView&                    aRefs     = theGraph.Refs();
-  const NCollection_DynamicArray<BRepGraph_WireRefId> aWireRefs = WireRefsOfFace(theGraph, theFaceId);
+  const BRepGraph::RefsView&                          aRefs = theGraph.Refs();
+  const NCollection_DynamicArray<BRepGraph_WireRefId> aWireRefs =
+    WireRefsOfFace(theGraph, theFaceId);
   for (const BRepGraph_WireRefId& aWireRefId : aWireRefs)
   {
     if (aRefs.Wires().Entry(aWireRefId).WireDefId == theWireId)
@@ -94,13 +97,14 @@ inline bool FaceUsesWire(const BRepGraph&       theGraph,
 
 //=================================================================================================
 
-inline NCollection_DynamicArray<BRepGraph_FaceRefId> FaceRefsOfShell(const BRepGraph&        theGraph,
-                                                               const BRepGraph_ShellId theShellId)
+inline NCollection_DynamicArray<BRepGraph_FaceRefId> FaceRefsOfShell(
+  const BRepGraph&        theGraph,
+  const BRepGraph_ShellId theShellId)
 {
   NCollection_DynamicArray<BRepGraph_FaceRefId> aRefIds;
-  const BRepGraph::RefsView&              aRefs       = theGraph.Refs();
-  const BRepGraph_NodeId                  aParentNode = theShellId;
-  const int                               aNbFaceRefs = aRefs.Faces().Nb();
+  const BRepGraph::RefsView&                    aRefs       = theGraph.Refs();
+  const BRepGraph_NodeId                        aParentNode = theShellId;
+  const int                                     aNbFaceRefs = aRefs.Faces().Nb();
   for (BRepGraph_FaceRefId aRefId(0); aRefId.IsValid(aNbFaceRefs); ++aRefId)
   {
     const BRepGraphInc::FaceRef& aRef = aRefs.Faces().Entry(aRefId);
@@ -119,13 +123,14 @@ inline int CountFaceRefsOfShell(const BRepGraph& theGraph, const BRepGraph_Shell
 
 //=================================================================================================
 
-inline NCollection_DynamicArray<BRepGraph_ShellRefId> ShellRefsOfSolid(const BRepGraph&        theGraph,
-                                                                 const BRepGraph_SolidId theSolidId)
+inline NCollection_DynamicArray<BRepGraph_ShellRefId> ShellRefsOfSolid(
+  const BRepGraph&        theGraph,
+  const BRepGraph_SolidId theSolidId)
 {
   NCollection_DynamicArray<BRepGraph_ShellRefId> aRefIds;
-  const BRepGraph::RefsView&               aRefs        = theGraph.Refs();
-  const BRepGraph_NodeId                   aParentNode  = theSolidId;
-  const int                                aNbShellRefs = aRefs.Shells().Nb();
+  const BRepGraph::RefsView&                     aRefs        = theGraph.Refs();
+  const BRepGraph_NodeId                         aParentNode  = theSolidId;
+  const int                                      aNbShellRefs = aRefs.Shells().Nb();
   for (BRepGraph_ShellRefId aRefId(0); aRefId.IsValid(aNbShellRefs); ++aRefId)
   {
     const BRepGraphInc::ShellRef& aRef = aRefs.Shells().Entry(aRefId);
@@ -149,9 +154,9 @@ inline NCollection_DynamicArray<BRepGraph_SolidRefId> SolidRefsOfCompSolid(
   const BRepGraph_CompSolidId theCompSolidId)
 {
   NCollection_DynamicArray<BRepGraph_SolidRefId> aRefIds;
-  const BRepGraph::RefsView&               aRefs        = theGraph.Refs();
-  const BRepGraph_NodeId                   aParentNode  = theCompSolidId;
-  const int                                aNbSolidRefs = aRefs.Solids().Nb();
+  const BRepGraph::RefsView&                     aRefs        = theGraph.Refs();
+  const BRepGraph_NodeId                         aParentNode  = theCompSolidId;
+  const int                                      aNbSolidRefs = aRefs.Solids().Nb();
   for (BRepGraph_SolidRefId aRefId(0); aRefId.IsValid(aNbSolidRefs); ++aRefId)
   {
     const BRepGraphInc::SolidRef& aRef = aRefs.Solids().Entry(aRefId);
@@ -176,8 +181,8 @@ inline NCollection_DynamicArray<BRepGraph_ChildRefId> ChildRefsOfParent(
   const BRepGraph_NodeId theParentId)
 {
   NCollection_DynamicArray<BRepGraph_ChildRefId> aRefIds;
-  const BRepGraph::RefsView&               aRefs        = theGraph.Refs();
-  const int                                aNbChildRefs = aRefs.Children().Nb();
+  const BRepGraph::RefsView&                     aRefs        = theGraph.Refs();
+  const int                                      aNbChildRefs = aRefs.Children().Nb();
   for (BRepGraph_ChildRefId aRefId(0); aRefId.IsValid(aNbChildRefs); ++aRefId)
   {
     const BRepGraphInc::ChildRef& aRef = aRefs.Children().Entry(aRefId);
@@ -208,8 +213,8 @@ inline NCollection_DynamicArray<BRepGraph_CoEdgeRefId> CoEdgeRefsOfWire(
   const BRepGraph_WireId      theWireId)
 {
   NCollection_DynamicArray<BRepGraph_CoEdgeRefId> aRefIds;
-  const BRepGraph_NodeId                    aParentNode   = theWireId;
-  const int                                 aNbCoEdgeRefs = theStorage.NbCoEdgeRefs();
+  const BRepGraph_NodeId                          aParentNode   = theWireId;
+  const int                                       aNbCoEdgeRefs = theStorage.NbCoEdgeRefs();
   for (BRepGraph_CoEdgeRefId aRefId(0); aRefId.IsValid(aNbCoEdgeRefs); ++aRefId)
   {
     const BRepGraphInc::CoEdgeRef& aRef = theStorage.CoEdgeRef(aRefId);
@@ -234,8 +239,8 @@ inline NCollection_DynamicArray<BRepGraph_WireRefId> WireRefsOfFace(
   const BRepGraph_FaceId      theFaceId)
 {
   NCollection_DynamicArray<BRepGraph_WireRefId> aRefIds;
-  const BRepGraph_NodeId                  aParentNode = theFaceId;
-  const int                               aNbWireRefs = theStorage.NbWireRefs();
+  const BRepGraph_NodeId                        aParentNode = theFaceId;
+  const int                                     aNbWireRefs = theStorage.NbWireRefs();
   for (BRepGraph_WireRefId aRefId(0); aRefId.IsValid(aNbWireRefs); ++aRefId)
   {
     const BRepGraphInc::WireRef& aRef = theStorage.WireRef(aRefId);
@@ -259,7 +264,8 @@ inline bool FaceUsesWire(const BRepGraphInc_Storage& theStorage,
                          const BRepGraph_FaceId      theFaceId,
                          const BRepGraph_WireId      theWireId)
 {
-  const NCollection_DynamicArray<BRepGraph_WireRefId> aWireRefs = WireRefsOfFace(theStorage, theFaceId);
+  const NCollection_DynamicArray<BRepGraph_WireRefId> aWireRefs =
+    WireRefsOfFace(theStorage, theFaceId);
   for (const BRepGraph_WireRefId& aWireRefId : aWireRefs)
   {
     const BRepGraphInc::WireRef& aWireRef = theStorage.WireRef(aWireRefId);
@@ -276,8 +282,8 @@ inline NCollection_DynamicArray<BRepGraph_FaceRefId> FaceRefsOfShell(
   const BRepGraph_ShellId     theShellId)
 {
   NCollection_DynamicArray<BRepGraph_FaceRefId> aRefIds;
-  const BRepGraph_NodeId                  aParentNode = theShellId;
-  const int                               aNbFaceRefs = theStorage.NbFaceRefs();
+  const BRepGraph_NodeId                        aParentNode = theShellId;
+  const int                                     aNbFaceRefs = theStorage.NbFaceRefs();
   for (BRepGraph_FaceRefId aRefId(0); aRefId.IsValid(aNbFaceRefs); ++aRefId)
   {
     const BRepGraphInc::FaceRef& aRef = theStorage.FaceRef(aRefId);
@@ -302,8 +308,8 @@ inline NCollection_DynamicArray<BRepGraph_ShellRefId> ShellRefsOfSolid(
   const BRepGraph_SolidId     theSolidId)
 {
   NCollection_DynamicArray<BRepGraph_ShellRefId> aRefIds;
-  const BRepGraph_NodeId                   aParentNode  = theSolidId;
-  const int                                aNbShellRefs = theStorage.NbShellRefs();
+  const BRepGraph_NodeId                         aParentNode  = theSolidId;
+  const int                                      aNbShellRefs = theStorage.NbShellRefs();
   for (BRepGraph_ShellRefId aRefId(0); aRefId.IsValid(aNbShellRefs); ++aRefId)
   {
     const BRepGraphInc::ShellRef& aRef = theStorage.ShellRef(aRefId);
@@ -328,8 +334,8 @@ inline NCollection_DynamicArray<BRepGraph_SolidRefId> SolidRefsOfCompSolid(
   const BRepGraph_CompSolidId theCompSolidId)
 {
   NCollection_DynamicArray<BRepGraph_SolidRefId> aRefIds;
-  const BRepGraph_NodeId                   aParentNode  = theCompSolidId;
-  const int                                aNbSolidRefs = theStorage.NbSolidRefs();
+  const BRepGraph_NodeId                         aParentNode  = theCompSolidId;
+  const int                                      aNbSolidRefs = theStorage.NbSolidRefs();
   for (BRepGraph_SolidRefId aRefId(0); aRefId.IsValid(aNbSolidRefs); ++aRefId)
   {
     const BRepGraphInc::SolidRef& aRef = theStorage.SolidRef(aRefId);
@@ -354,7 +360,7 @@ inline NCollection_DynamicArray<BRepGraph_ChildRefId> ChildRefsOfParent(
   const BRepGraph_NodeId      theParentId)
 {
   NCollection_DynamicArray<BRepGraph_ChildRefId> aRefIds;
-  const int                                aNbChildRefs = theStorage.NbChildRefs();
+  const int                                      aNbChildRefs = theStorage.NbChildRefs();
   for (BRepGraph_ChildRefId aRefId(0); aRefId.IsValid(aNbChildRefs); ++aRefId)
   {
     const BRepGraphInc::ChildRef& aRef = theStorage.ChildRef(aRefId);
@@ -377,7 +383,8 @@ inline int CountChildRefsOfParent(const BRepGraphInc_Storage& theStorage,
 inline BRepGraph_WireId OuterWireOfFace(const BRepGraphInc_Storage& theStorage,
                                         const BRepGraph_FaceId      theFaceId)
 {
-  const NCollection_DynamicArray<BRepGraph_WireRefId> aWireRefs = WireRefsOfFace(theStorage, theFaceId);
+  const NCollection_DynamicArray<BRepGraph_WireRefId> aWireRefs =
+    WireRefsOfFace(theStorage, theFaceId);
   for (const BRepGraph_WireRefId& aWireRefId : aWireRefs)
   {
     const BRepGraphInc::WireRef& aWireRef = theStorage.WireRef(aWireRefId);

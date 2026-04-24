@@ -120,9 +120,9 @@ protected:                                            //! @name Fields
                                                       //! particular intersection type
   BOPDS_PDS myDS;                                     //!< Data Structure
   NCollection_DynamicArray<NCollection_DynamicArray<BOPDS_Pair>>
-                                           myLists;       //!< Pairs with interfering bounding boxes
-  NCollection_DynamicArray<BOPDS_Pair>::Iterator myIterator;    //!< Iterator on each interfering type
-  bool                                     myRunParallel; //!< Flag for parallel processing
+                                                 myLists; //!< Pairs with interfering bounding boxes
+  NCollection_DynamicArray<BOPDS_Pair>::Iterator myIterator; //!< Iterator on each interfering type
+  bool                                           myRunParallel; //!< Flag for parallel processing
   NCollection_DynamicArray<NCollection_DynamicArray<BOPDS_Pair>>
     myExtLists;  //!< Extra pairs of sub-shapes found after
                  //! intersection of increased sub-shapes

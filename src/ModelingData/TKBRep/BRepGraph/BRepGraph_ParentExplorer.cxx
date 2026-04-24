@@ -786,7 +786,7 @@ bool BRepGraph_ParentExplorer::nextParentFrame(StackFrame& theChild, StackFrame&
       }
 
       case Kind::Product: {
-        const BRepGraph_ProductId                         aProductId(theChild.Node);
+        const BRepGraph_ProductId                               aProductId(theChild.Node);
         const NCollection_DynamicArray<BRepGraph_OccurrenceId>& anOccurrences =
           aTopo.Products().Instances(aProductId);
         const uint32_t aNbOccurrences = static_cast<uint32_t>(anOccurrences.Size());

@@ -178,7 +178,7 @@ bool isShellClosedByIncidence(const BRepGraph& theGraph, const BRepGraph_ShellId
       continue;
     }
 
-    int                                         aFaceCountInShell = 0;
+    int                                               aFaceCountInShell = 0;
     const NCollection_DynamicArray<BRepGraph_FaceId>& aEdgeFaces =
       theGraph.Topo().Edges().Faces(anEdgeId);
     for (NCollection_DynamicArray<BRepGraph_FaceId>::Iterator aFaceIt(aEdgeFaces); aFaceIt.More();
@@ -544,9 +544,9 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
     const occ::handle<Geom_Surface>& aSurf = BRepGraph_Tool::Face::Surface(theGraph, anOldFaceId);
 
     // Find outer wire from incidence ref entries.
-    BRepGraph_WireId                        aNewOuterWire;
+    BRepGraph_WireId                              aNewOuterWire;
     NCollection_DynamicArray<BRepGraph_WireId>    aNewInnerWires;
-    BRepGraph_WireRefId                     anOldOuterWireRef;
+    BRepGraph_WireRefId                           anOldOuterWireRef;
     NCollection_DynamicArray<BRepGraph_WireRefId> anOldInnerWireRefs;
 
     for (BRepGraph_RefsWireOfFace aRefIt(theGraph, anOldFaceId); aRefIt.More(); aRefIt.Next())
@@ -1113,7 +1113,7 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
 
   // Transfer per-kind UID vectors from old graph to new graph using index remap maps.
   // Each new graph's UID vector[newIdx] = old graph's UID vector[oldIdx].
-  auto transferUIDs = [&](const auto&                              theMap,
+  auto transferUIDs = [&](const auto&                                    theMap,
                           const NCollection_DynamicArray<BRepGraph_UID>& theOldVec,
                           NCollection_DynamicArray<BRepGraph_UID>&       theNewVec) {
     // New vector was already populated by EditorView during reconstruction.
@@ -1130,7 +1130,7 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
   };
 
   // Same logic for per-kind RefUID vectors.
-  auto transferRefUIDs = [&](const auto&                                 theMap,
+  auto transferRefUIDs = [&](const auto&                                       theMap,
                              const NCollection_DynamicArray<BRepGraph_RefUID>& theOldVec,
                              NCollection_DynamicArray<BRepGraph_RefUID>&       theNewVec) {
     for (const auto& [anOldId, aNewId] : theMap.Items())

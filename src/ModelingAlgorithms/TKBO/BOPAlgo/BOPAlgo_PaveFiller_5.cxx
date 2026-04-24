@@ -692,7 +692,7 @@ void BOPAlgo_PaveFiller::ReduceIntersectionRange(const int theV1,
   }
   //
   NCollection_DynamicArray<BOPDS_InterfEE>& aEEs   = myDS->InterfEE();
-  int                                 aNbEEs = aEEs.Length();
+  int                                       aNbEEs = aEEs.Length();
   if (!aNbEEs)
   {
     return;

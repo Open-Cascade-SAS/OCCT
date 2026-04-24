@@ -47,12 +47,12 @@ namespace
 //=================================================================================================
 
 NCollection_DynamicArray<BRepGraph_CoEdgeRefId> coEdgeRefsOfWire(const BRepGraph&       theGraph,
-                                                           const BRepGraph_WireId theWireId)
+                                                                 const BRepGraph_WireId theWireId)
 {
   NCollection_DynamicArray<BRepGraph_CoEdgeRefId> aRefIds;
-  const BRepGraph_NodeId                    aParentNode   = theWireId;
-  const BRepGraph::RefsView&                aRefs         = theGraph.Refs();
-  const int                                 aNbCoEdgeRefs = aRefs.CoEdges().Nb();
+  const BRepGraph_NodeId                          aParentNode   = theWireId;
+  const BRepGraph::RefsView&                      aRefs         = theGraph.Refs();
+  const int                                       aNbCoEdgeRefs = aRefs.CoEdges().Nb();
   for (BRepGraph_CoEdgeRefId aRefId(0); aRefId.IsValid(aNbCoEdgeRefs); ++aRefId)
   {
     const BRepGraphInc::CoEdgeRef& aRef = aRefs.CoEdges().Entry(aRefId);
@@ -397,7 +397,8 @@ TEST(BRepGraph_ValidateTest, Audit_ValidatesCoEdgeUIDsFromBuilderWireCreation)
   const BRepGraph_WireId aWireId = aGraph.Editor().Wires().Add(anEdges);
   ASSERT_TRUE(aWireId.IsValid());
 
-  const NCollection_DynamicArray<BRepGraph_CoEdgeRefId> aWireRefIds = coEdgeRefsOfWire(aGraph, aWireId);
+  const NCollection_DynamicArray<BRepGraph_CoEdgeRefId> aWireRefIds =
+    coEdgeRefsOfWire(aGraph, aWireId);
   ASSERT_EQ(aWireRefIds.Length(), 1);
   const BRepGraph_NodeId aCoEdgeId =
     BRepGraph_CoEdgeId(aGraph.Refs().CoEdges().Entry(aWireRefIds.Value(0)).CoEdgeDefId.Index);

@@ -103,12 +103,12 @@ public:
   //! @param[in] theUMax   Maximum U bound of the polygon domain
   //! @param[in] theVMax   Maximum V bound of the polygon domain
   Standard_EXPORT CSLib_Class2d(const NCollection_DynamicArray<gp_Pnt2d>& thePnts2d,
-                                double                              theTolU,
-                                double                              theTolV,
-                                double                              theUMin,
-                                double                              theVMin,
-                                double                              theUMax,
-                                double                              theVMax);
+                                double                                    theTolU,
+                                double                                    theTolV,
+                                double                                    theUMin,
+                                double                                    theVMin,
+                                double                                    theUMax,
+                                double                                    theVMax);
 
   //! Move constructor.
   CSLib_Class2d(CSLib_Class2d&& theOther) noexcept

@@ -98,7 +98,7 @@ typedef NCollection_Shared<NCollection_DynamicArray<TopAbs_Orientation>> VectorO
 typedef NCollection_Shared<NCollection_DynamicArray<BRepMesh_Triangle>>  VectorOfElements;
 typedef NCollection_Shared<NCollection_DynamicArray<BRepMesh_Circle>>    VectorOfCircle;
 
-typedef NCollection_Shared<NCollection_Array1<BRepMesh_Vertex>> Array1OfVertexOfDelaun;
+typedef NCollection_Shared<NCollection_Array1<BRepMesh_Vertex>>       Array1OfVertexOfDelaun;
 typedef NCollection_Shared<NCollection_DynamicArray<BRepMesh_Vertex>> VectorOfVertex;
 
 // Sequences

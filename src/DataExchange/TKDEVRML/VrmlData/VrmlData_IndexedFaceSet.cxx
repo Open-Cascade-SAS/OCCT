@@ -159,8 +159,8 @@ const occ::handle<TopoDS_TShape>& VrmlData_IndexedFaceSet::TShape()
     return myTShape;
   }
   // prepare vector of nodes
-  NCollection_DynamicArray<gp_XYZ>    aNodes;
-  NCollection_DataMap<int, int> mapIdId;
+  NCollection_DynamicArray<gp_XYZ> aNodes;
+  NCollection_DataMap<int, int>    mapIdId;
   for (i = 0; i < nNodes; i++)
   {
     if (mapNodeId.Contains(i))

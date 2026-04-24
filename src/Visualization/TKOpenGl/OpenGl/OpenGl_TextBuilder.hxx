@@ -36,9 +36,9 @@ public:
 
   //! Creates texture quads for the given text.
   Standard_EXPORT void Perform(
-    const occ::handle<Font_TextFormatter>&                theFormatter,
-    const occ::handle<OpenGl_Context>&                    theContext,
-    OpenGl_Font&                                          theFont,
+    const occ::handle<Font_TextFormatter>&                      theFormatter,
+    const occ::handle<OpenGl_Context>&                          theContext,
+    OpenGl_Font&                                                theFont,
     NCollection_DynamicArray<GLuint>&                           theTextures,
     NCollection_DynamicArray<occ::handle<OpenGl_VertexBuffer>>& theVertsPerTexture,
     NCollection_DynamicArray<occ::handle<OpenGl_VertexBuffer>>& theTCrdsPerTexture);
@@ -48,14 +48,14 @@ protected: //! @name class auxiliary methods
     const occ::handle<Font_TextFormatter>& theFormatter,
     const occ::handle<OpenGl_Context>&     theCtx,
     OpenGl_Font&                           theFont,
-    NCollection_DynamicArray<GLuint>&            theTextures,
+    NCollection_DynamicArray<GLuint>&      theTextures,
     NCollection_DynamicArray<NCollection_Handle<NCollection_DynamicArray<NCollection_Vec2<float>>>>&
       theVertsPerTexture,
     NCollection_DynamicArray<NCollection_Handle<NCollection_DynamicArray<NCollection_Vec2<float>>>>&
       theTCrdsPerTexture);
 
 protected: //! @name class auxiliary fields
-  NCollection_DynamicArray<OpenGl_Font::Tile>              myTileRects;
+  NCollection_DynamicArray<OpenGl_Font::Tile>        myTileRects;
   OpenGl_VertexBufferEditor<NCollection_Vec2<float>> myVboEditor;
 };
 

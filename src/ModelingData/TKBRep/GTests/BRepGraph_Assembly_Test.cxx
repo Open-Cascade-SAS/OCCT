@@ -52,7 +52,7 @@ NCollection_DynamicArray<BRepGraph_ProductId> collectRootProducts(const BRepGrap
 }
 
 bool hasRootProduct(const NCollection_DynamicArray<BRepGraph_ProductId>& theRoots,
-                    const BRepGraph_ProductId                      theProduct)
+                    const BRepGraph_ProductId                            theProduct)
 {
   for (const BRepGraph_ProductId& aRoot : theRoots)
   {

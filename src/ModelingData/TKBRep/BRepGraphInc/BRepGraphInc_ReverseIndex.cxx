@@ -27,7 +27,7 @@ namespace
 template <typename T>
 BRepGraph_VertexId resolveVertexDefId(
   const NCollection_DynamicArray<BRepGraphInc::VertexRef>& theVertexRefs,
-  const T                                            theRefId)
+  const T                                                  theRefId)
 {
   if (!theRefId.IsValid(static_cast<uint32_t>(theVertexRefs.Size())))
     return BRepGraph_VertexId();
@@ -36,8 +36,8 @@ BRepGraph_VertexId resolveVertexDefId(
 
 template <typename TKey, typename TVal>
 bool containsIndexInTable(const NCollection_DynamicArray<NCollection_DynamicArray<TVal>>& theIdx,
-                          const TKey                                          theKey,
-                          const TVal                                          theVal)
+                          const TKey                                                      theKey,
+                          const TVal                                                      theVal)
 {
   if (!theKey.IsValid(static_cast<uint32_t>(theIdx.Size())))
     return false;
@@ -51,8 +51,8 @@ bool containsIndexInTable(const NCollection_DynamicArray<NCollection_DynamicArra
 static bool hasActiveFaceForEdgeInCoEdges(
   const NCollection_DynamicArray<BRepGraph_CoEdgeId>&      theCoEdgeIds,
   const NCollection_DynamicArray<BRepGraphInc::CoEdgeDef>& theCoEdges,
-  const BRepGraph_EdgeId                             theEdgeId,
-  const BRepGraph_FaceId                             theFaceId)
+  const BRepGraph_EdgeId                                   theEdgeId,
+  const BRepGraph_FaceId                                   theFaceId)
 {
   for (const BRepGraph_CoEdgeId& aCoEdgeId : theCoEdgeIds)
   {
@@ -459,15 +459,15 @@ void BRepGraphInc_ReverseIndex::BuildDelta(
   const NCollection_DynamicArray<BRepGraphInc::SolidRef>&     theSolidRefs,
   const NCollection_DynamicArray<BRepGraphInc::ChildRef>&     theChildRefs,
   const NCollection_DynamicArray<BRepGraphInc::VertexRef>&    theVertexRefs,
-  const uint32_t                                        theOldNbEdges,
-  const uint32_t                                        theOldNbWires,
-  const uint32_t                                        theOldNbFaces,
-  const uint32_t                                        theOldNbShells,
-  const uint32_t                                        theOldNbSolids,
-  const uint32_t                                        theOldNbCompounds,
-  const uint32_t                                        theOldNbCompSolids,
-  const uint32_t                                        theOldNbChildRefs,
-  const uint32_t                                        theOldNbSolidRefs)
+  const uint32_t                                              theOldNbEdges,
+  const uint32_t                                              theOldNbWires,
+  const uint32_t                                              theOldNbFaces,
+  const uint32_t                                              theOldNbShells,
+  const uint32_t                                              theOldNbSolids,
+  const uint32_t                                              theOldNbCompounds,
+  const uint32_t                                              theOldNbCompSolids,
+  const uint32_t                                              theOldNbChildRefs,
+  const uint32_t                                              theOldNbSolidRefs)
 {
 
   // Helper: resolve a VertexRefId to the corresponding VertexDefId (BRepGraph_VertexId).
@@ -1605,7 +1605,8 @@ bool BRepGraphInc_ReverseIndex::Validate(
   const uint32_t aNbEdgeToFaces = static_cast<uint32_t>(myEdgeToFaces.Size());
   for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdgeToFaces); ++anEdgeId)
   {
-    const NCollection_DynamicArray<BRepGraph_FaceId>* aFaces = seekVec(myEdgeToFaces, anEdgeId.Index);
+    const NCollection_DynamicArray<BRepGraph_FaceId>* aFaces =
+      seekVec(myEdgeToFaces, anEdgeId.Index);
     if (aFaces == nullptr)
     {
       continue;
@@ -1921,7 +1922,7 @@ bool BRepGraphInc_ReverseIndex::Validate(
 
 void BRepGraphInc_ReverseIndex::BuildProductOccurrences(
   const NCollection_DynamicArray<BRepGraphInc::OccurrenceDef>& theOccurrences,
-  const uint32_t                                         theNbProducts)
+  const uint32_t                                               theNbProducts)
 {
   myProductToOccurrences.Clear();
   preSize(myProductToOccurrences, theNbProducts, myAllocator);

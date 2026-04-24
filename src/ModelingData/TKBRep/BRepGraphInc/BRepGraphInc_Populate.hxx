@@ -87,7 +87,7 @@ public:
     BRepGraphInc_Storage&                         theStorage,
     const TopoDS_Shape&                           theShape,
     const bool                                    theParallel,
-    NCollection_DynamicArray<BRepGraph_NodeId>&         theAppendedRoots,
+    NCollection_DynamicArray<BRepGraph_NodeId>&   theAppendedRoots,
     const Options&                                theOptions         = Options(),
     BRepGraph_LayerParam*                         theParamLayer      = nullptr,
     BRepGraph_LayerRegularity*                    theRegularityLayer = nullptr,

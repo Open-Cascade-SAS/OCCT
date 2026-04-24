@@ -827,8 +827,8 @@ VrmlData_ErrorStatus VrmlData_Scene::ReadArrIndex(VrmlData_InBuffer& theBuffer,
       theBuffer.LinePtr++;
       NCollection_DynamicArray<const int*> vecIndice;
       NCollection_DynamicArray<int>        vecInt;
-      bool                           isMore(true);
-      long                           anIntValue;
+      bool                                 isMore(true);
+      long                                 anIntValue;
 
       // Loop reading integers from the stream
       while (isMore && VrmlData_Node::OK(aStatus, ReadLine(theBuffer)))

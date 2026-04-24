@@ -947,7 +947,7 @@ void AppendIntAna(const CurveType&           theCurve,
                   bool&                      theIsParallel,
                   AppendFunc                 theAppend)
 {
-  bool                                                  aIsParallel = false;
+  bool                                                        aIsParallel = false;
   NCollection_DynamicArray<IntCurveSurface_IntersectionPoint> aPoints;
 
   if (IntCurveSurface_InterUtils::ProcessIntAna<CurveType, CurveTool, SurfaceType, SurfaceTool>(

@@ -245,13 +245,13 @@ const NCollection_List<TopoDS_Shape>& BRepAlgoAPI_BuilderAlgo::SectionEdges()
   const BOPDS_PDS& pDS = myDSFiller->PDS();
   // Iterate on all Face/Face interferences and take section edges
   NCollection_DynamicArray<BOPDS_InterfFF>& aFFs  = pDS->InterfFF();
-  const int                           aNbFF = aFFs.Length();
+  const int                                 aNbFF = aFFs.Length();
   for (int i = 0; i < aNbFF; ++i)
   {
     BOPDS_InterfFF& aFFi = aFFs(i);
     // Section curves between pair of faces
     const NCollection_DynamicArray<BOPDS_Curve>& aSectionCurves = aFFi.Curves();
-    const int                              aNbC           = aSectionCurves.Length();
+    const int                                    aNbC           = aSectionCurves.Length();
     for (int j = 0; j < aNbC; ++j)
     {
       const BOPDS_Curve& aCurve = aSectionCurves(j);

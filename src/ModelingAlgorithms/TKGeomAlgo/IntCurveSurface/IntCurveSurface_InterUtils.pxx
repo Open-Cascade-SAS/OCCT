@@ -1101,10 +1101,10 @@ bool ComputeAppendPoint(const CurveType&                   theCurve,
 //! @param[out] thePoints Vector of computed intersection points
 //! @return true if the operation was done successfully
 template <typename CurveType, typename CurveTool, typename SurfaceType, typename SurfaceTool>
-bool ProcessIntAna(const CurveType&                                       theCurve,
-                   const SurfaceType&                                     theSurface,
-                   const IntAna_IntConicQuad&                             theIntAna,
-                   bool&                                                  theIsParallel,
+bool ProcessIntAna(const CurveType&                                             theCurve,
+                   const SurfaceType&                                           theSurface,
+                   const IntAna_IntConicQuad&                                   theIntAna,
+                   bool&                                                        theIsParallel,
                    NCollection_DynamicArray<IntCurveSurface_IntersectionPoint>& thePoints)
 {
   theIsParallel = false;
@@ -1156,8 +1156,8 @@ template <typename QuadCurvExactType,
           typename CurveTool,
           typename SurfaceType,
           typename SurfaceTool>
-void PerformCurveQuadric(const CurveType&                                       theCurve,
-                         const SurfaceType&                                     theSurface,
+void PerformCurveQuadric(const CurveType&                                             theCurve,
+                         const SurfaceType&                                           theSurface,
                          NCollection_DynamicArray<IntCurveSurface_IntersectionPoint>& thePoints)
 {
   thePoints.Clear();
@@ -1196,9 +1196,9 @@ void PerformCurveQuadric(const CurveType&                                       
 //! @tparam SurfaceTool The surface tool class
 //! @return true if intersection was processed successfully, false if fallback is needed
 template <typename CurveType, typename CurveTool, typename SurfaceType, typename SurfaceTool>
-bool ProcessLinTorus(const gp_Lin&                                          theLine,
-                     const CurveType&                                       theCurve,
-                     const SurfaceType&                                     theSurface,
+bool ProcessLinTorus(const gp_Lin&                                                theLine,
+                     const CurveType&                                             theCurve,
+                     const SurfaceType&                                           theSurface,
                      NCollection_DynamicArray<IntCurveSurface_IntersectionPoint>& thePoints)
 {
   thePoints.Clear();
@@ -1371,17 +1371,17 @@ template <typename ExactInterType,
           typename CurveTool,
           typename SurfaceType,
           typename SurfaceTool>
-void ProcessSortedPoints(ExactInterType&                                        theExactInter,
-                         math_FunctionSetRoot&                                  theRsnld,
-                         const SortedStartPoints&                               thePoints,
-                         const double                                           theU0,
-                         const double                                           theU1,
-                         const double                                           theV0,
-                         const double                                           theV1,
-                         const double                                           theWinf,
-                         const double                                           theWsup,
-                         const CurveType&                                       theCurve,
-                         const SurfaceType&                                     theSurface,
+void ProcessSortedPoints(ExactInterType&                                              theExactInter,
+                         math_FunctionSetRoot&                                        theRsnld,
+                         const SortedStartPoints&                                     thePoints,
+                         const double                                                 theU0,
+                         const double                                                 theU1,
+                         const double                                                 theV0,
+                         const double                                                 theV1,
+                         const double                                                 theWinf,
+                         const double                                                 theWsup,
+                         const CurveType&                                             theCurve,
+                         const SurfaceType&                                           theSurface,
                          NCollection_DynamicArray<IntCurveSurface_IntersectionPoint>& theResult)
 {
   theResult.Clear();
@@ -1459,7 +1459,7 @@ struct UVBounds
 //! @tparam SurfaceType The surface type
 //! @tparam SurfaceTool The surface tool class
 template <typename SurfaceType, typename SurfaceTool>
-void DecomposeSurfaceIntervals(const SurfaceType&            theSurface,
+void DecomposeSurfaceIntervals(const SurfaceType&                  theSurface,
                                NCollection_DynamicArray<UVBounds>& theIntervals)
 {
   theIntervals.Clear();

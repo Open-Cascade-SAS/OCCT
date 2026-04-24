@@ -276,7 +276,7 @@ protected:
                                        NCollection_DataMap<int, NCollection_List<int>>& theDMVLV);
 
   Standard_EXPORT void FilterPavesOnCurves(const NCollection_DynamicArray<BOPDS_Curve>& theVNC,
-                                           NCollection_DataMap<int, double>&      theMVTol);
+                                           NCollection_DataMap<int, double>&            theMVTol);
 
   //! Depending on the parameter aType it checks whether
   //! the vertex nV was created in EE or EF intersections.
@@ -347,7 +347,7 @@ protected:
                                  NCollection_List<IntSurf_PntOn2S>& aListOfPnts);
 
   //! Checks and puts paves created in EF intersections on the curve <theNC>.
-  Standard_EXPORT void PutEFPavesOnCurve(const NCollection_DynamicArray<BOPDS_Curve>&           theVC,
+  Standard_EXPORT void PutEFPavesOnCurve(const NCollection_DynamicArray<BOPDS_Curve>&     theVC,
                                          const int                                        theIndex,
                                          const NCollection_Map<int>&                      theMI,
                                          const NCollection_Map<int>&                      theMVEF,
@@ -359,7 +359,7 @@ protected:
     const TopoDS_Face&                               aF1,
     const TopoDS_Face&                               aF2,
     const NCollection_Map<int>&                      theMI,
-    const NCollection_DynamicArray<BOPDS_Curve>&           theVC,
+    const NCollection_DynamicArray<BOPDS_Curve>&     theVC,
     const int                                        theIndex,
     const NCollection_Map<int>&                      theMVStick,
     NCollection_DataMap<int, double>&                theMVTol,
@@ -383,7 +383,7 @@ protected:
   //! curve <theNC> from the map <theMV>.
   //! It is used in PutEFPavesOnCurve and PutStickPavesOnCurve methods.
   Standard_EXPORT void RemoveUsedVertices(const NCollection_DynamicArray<BOPDS_Curve>& theVC,
-                                          NCollection_Map<int>&                  theMV);
+                                          NCollection_Map<int>&                        theMV);
 
   //! Puts the pave nV on the curve theNC.
   //! Parameter aType defines whether to check the pave with

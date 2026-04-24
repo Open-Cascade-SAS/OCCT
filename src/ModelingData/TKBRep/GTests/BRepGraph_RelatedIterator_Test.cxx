@@ -296,7 +296,8 @@ TEST_F(BRepGraph_RelatedIteratorTest, EdgeOfBox_RemovedFace_CorrectTransition)
   const BRepGraph_NodeId anEdgeNode(anEdgeId);
 
   // Remove one parent face.
-  const NCollection_DynamicArray<BRepGraph_FaceId>& aParentFaces = myGraph.Topo().Edges().Faces(anEdgeId);
+  const NCollection_DynamicArray<BRepGraph_FaceId>& aParentFaces =
+    myGraph.Topo().Edges().Faces(anEdgeId);
   ASSERT_EQ(aParentFaces.Length(), 2);
   myGraph.Editor().Gen().RemoveNode(aParentFaces.Value(0));
 

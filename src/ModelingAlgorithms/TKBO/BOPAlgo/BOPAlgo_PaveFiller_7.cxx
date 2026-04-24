@@ -692,14 +692,14 @@ void BOPAlgo_PaveFiller::MakePCurves(const Message_ProgressRange& theRange)
   if (bPCurveOnS[0] || bPCurveOnS[1])
   {
     // container to remember already added edge-face pairs
-    NCollection_Map<BOPDS_Pair>         anEFPairs;
+    NCollection_Map<BOPDS_Pair>               anEFPairs;
     NCollection_DynamicArray<BOPDS_InterfFF>& aFFs = myDS->InterfFF();
-    aNbFF                                    = aFFs.Length();
+    aNbFF                                          = aFFs.Length();
     for (i = 0; i < aNbFF; ++i)
     {
-      const BOPDS_InterfFF&                  aFF  = aFFs(i);
+      const BOPDS_InterfFF&                        aFF  = aFFs(i);
       const NCollection_DynamicArray<BOPDS_Curve>& aVNC = aFF.Curves();
-      aNbC                                        = aVNC.Length();
+      aNbC                                              = aVNC.Length();
       if (aNbC == 0)
         continue;
       int nF[2];

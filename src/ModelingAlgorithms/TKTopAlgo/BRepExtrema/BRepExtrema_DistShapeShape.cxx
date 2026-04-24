@@ -452,14 +452,14 @@ struct DistancePairFunctor
     return aSize;
   }
 
-  NCollection_Array1<IndexBand>*                                        BandArray;
+  NCollection_Array1<IndexBand>*                                              BandArray;
   mutable NCollection_Array1<NCollection_DynamicArray<BRepExtrema_CheckPair>> PairList;
-  const NCollection_Array1<Bnd_Box>*                                    LBox1;
-  const NCollection_Array1<Bnd_Box>*                                    LBox2;
-  Message_ProgressScope                                                 Scope;
-  NCollection_Array1<Message_ProgressRange>                             Ranges;
-  double                                                                DistRef;
-  double                                                                Eps;
+  const NCollection_Array1<Bnd_Box>*                                          LBox1;
+  const NCollection_Array1<Bnd_Box>*                                          LBox2;
+  Message_ProgressScope                                                       Scope;
+  NCollection_Array1<Message_ProgressRange>                                   Ranges;
+  double                                                                      DistRef;
+  double                                                                      Eps;
 };
 
 //=================================================================================================

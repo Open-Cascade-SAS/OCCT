@@ -42,7 +42,7 @@ public:
 
 public:
   //! Constructor. Initialized tool by the given parameters.
-  Standard_EXPORT BRepMesh_Triangulator(const NCollection_DynamicArray<gp_XYZ>&                  theXYZs,
+  Standard_EXPORT BRepMesh_Triangulator(const NCollection_DynamicArray<gp_XYZ>&            theXYZs,
                                         const NCollection_List<NCollection_Sequence<int>>& theWires,
                                         const gp_Dir&                                      theNorm);
 
@@ -70,7 +70,7 @@ private:
   bool triangulate(NCollection_List<Poly_Triangle>& thePolyTriangles);
 
 private:
-  const NCollection_DynamicArray<gp_XYZ>&                  myXYZs;
+  const NCollection_DynamicArray<gp_XYZ>&            myXYZs;
   const NCollection_List<NCollection_Sequence<int>>& myWires;
   gp_Pln                                             myPlane;
   occ::handle<Message_Messenger>                     myMess;

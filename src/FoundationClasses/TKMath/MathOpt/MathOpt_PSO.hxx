@@ -224,12 +224,12 @@ void PolishCoordinateWise(Function&          theFunc,
 //! @param theStats optional output statistics
 //! @return result containing best solution found
 template <typename Function>
-VectorResult PSO(Function&                                  theFunc,
-                 const math_Vector&                         theLowerBounds,
-                 const math_Vector&                         theUpperBounds,
-                 const PSOConfig&                           theConfig,
+VectorResult PSO(Function&                                        theFunc,
+                 const math_Vector&                               theLowerBounds,
+                 const math_Vector&                               theUpperBounds,
+                 const PSOConfig&                                 theConfig,
                  const NCollection_DynamicArray<PSOSeedParticle>* theSeeds,
-                 PSOStats*                                  theStats = nullptr)
+                 PSOStats*                                        theStats = nullptr)
 {
   VectorResult aResult;
 

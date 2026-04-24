@@ -163,7 +163,7 @@ private:
   double                                 myTolReached3d;
   double                                 myTolReached2d;
   Approx_Data                            myData;
-  NCollection_DynamicArray<int>                myKnots;
+  NCollection_DynamicArray<int>          myKnots;
 };
 
 #endif // _GeomInt_WLApprox_HeaderFile

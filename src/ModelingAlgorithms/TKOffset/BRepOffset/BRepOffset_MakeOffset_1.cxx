@@ -4571,12 +4571,12 @@ void BRepOffset_BuildOffsetFaces::ShapesConnections(
   const BOPDS_PDS& pDS = theBuilder.PDS();
   // analyze all Face/Face intersections
   const NCollection_DynamicArray<BOPDS_InterfFF>& aFFs = pDS->InterfFF();
-  int                                       iInt, aNbFF = aFFs.Length();
+  int                                             iInt, aNbFF = aFFs.Length();
   for (iInt = 0; iInt < aNbFF; ++iInt)
   {
-    const BOPDS_InterfFF&                  aFF  = aFFs(iInt);
+    const BOPDS_InterfFF&                        aFF  = aFFs(iInt);
     const NCollection_DynamicArray<BOPDS_Curve>& aVNC = aFF.Curves();
-    int                                    aNbC = aVNC.Length();
+    int                                          aNbC = aVNC.Length();
     if (!aNbC)
     {
       continue;
@@ -4782,7 +4782,7 @@ void BRepOffset_BuildOffsetFaces::ShapesConnections(
           continue;
         }
 
-        NCollection_List<TopoDS_Shape>            aLV;
+        NCollection_List<TopoDS_Shape>                  aLV;
         const NCollection_DynamicArray<BOPDS_InterfEF>& aEFs = pDS->InterfEF();
         for (int iEF = 0; iEF < aEFs.Length(); ++iEF)
         {
@@ -8472,7 +8472,7 @@ void BRepOffset_BuildOffsetFaces::GetInvalidEdgesByBounds(
   //
   // check edge/edge intersections
   const NCollection_DynamicArray<BOPDS_InterfEE>& aEEs = pDS->InterfEE();
-  int                                       i, aNb = aEEs.Length();
+  int                                             i, aNb = aEEs.Length();
   for (i = 0; i < aNb; ++i)
   {
     const BOPDS_InterfEE& aEE = aEEs(i);

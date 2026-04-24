@@ -160,7 +160,7 @@ TEST_F(BRepGraph_SharingTest, SharedEdge_IncidenceRefs_DifferentOrientation)
   int aMultiFaceEdgeCount = 0;
   for (BRepGraph_EdgeIterator anEdgeIt(myGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
-    const BRepGraph_EdgeId                        anEdgeId = anEdgeIt.CurrentId();
+    const BRepGraph_EdgeId                              anEdgeId = anEdgeIt.CurrentId();
     const NCollection_DynamicArray<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
       myGraph.Topo().Edges().CoEdges(anEdgeId);
     if (aCoEdgeIdxs.Length() < 2)

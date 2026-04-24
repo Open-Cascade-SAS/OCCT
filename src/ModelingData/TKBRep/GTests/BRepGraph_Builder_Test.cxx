@@ -139,7 +139,7 @@ TEST(BRepGraph_BuilderTest, AddFace_WithSurface)
 
   BRepGraph_WireId aWireId = aGraph.Editor().Wires().Add(aEdges);
 
-  occ::handle<Geom_Plane>              aPlane = new Geom_Plane(gp_Pln());
+  occ::handle<Geom_Plane>                    aPlane = new Geom_Plane(gp_Pln());
   NCollection_DynamicArray<BRepGraph_WireId> aInnerWires;
   BRepGraph_FaceId aFaceId = aGraph.Editor().Faces().Add(aPlane, aWireId, aInnerWires, 0.001);
 
@@ -185,9 +185,9 @@ TEST(BRepGraph_BuilderTest, AddFace_InvalidOuterWire_ReturnsInvalidAndDoesNotApp
 {
   BRepGraph aGraph;
 
-  occ::handle<Geom_Plane>              aPlane = new Geom_Plane(gp_Pln());
+  occ::handle<Geom_Plane>                    aPlane = new Geom_Plane(gp_Pln());
   NCollection_DynamicArray<BRepGraph_WireId> anInnerWires;
-  const BRepGraph_FaceId               aFaceId =
+  const BRepGraph_FaceId                     aFaceId =
     aGraph.Editor().Faces().Add(aPlane, BRepGraph_WireId(9), anInnerWires, 0.001);
 
   EXPECT_FALSE(aFaceId.IsValid());
@@ -324,8 +324,8 @@ TEST(BRepGraph_BuilderTest, AddFace_CreatesUsage)
   aEdges.Append({aE2, TopAbs_FORWARD});
   aEdges.Append({aE3, TopAbs_FORWARD});
 
-  BRepGraph_WireId                     aWireId = aGraph.Editor().Wires().Add(aEdges);
-  occ::handle<Geom_Plane>              aPlane  = new Geom_Plane(gp_Pln());
+  BRepGraph_WireId                           aWireId = aGraph.Editor().Wires().Add(aEdges);
+  occ::handle<Geom_Plane>                    aPlane  = new Geom_Plane(gp_Pln());
   NCollection_DynamicArray<BRepGraph_WireId> aInnerWires;
   BRepGraph_FaceId aFaceId = aGraph.Editor().Faces().Add(aPlane, aWireId, aInnerWires, 0.001);
 
@@ -442,8 +442,8 @@ TEST(BRepGraph_BuilderTest, FullSolid_ProgrammaticConstruction)
   aEdges.Append({aE2, TopAbs_FORWARD});
   aEdges.Append({aE3, TopAbs_FORWARD});
 
-  BRepGraph_WireId                     aWireId = aGraph.Editor().Wires().Add(aEdges);
-  occ::handle<Geom_Plane>              aPlane  = new Geom_Plane(gp_Pln());
+  BRepGraph_WireId                           aWireId = aGraph.Editor().Wires().Add(aEdges);
+  occ::handle<Geom_Plane>                    aPlane  = new Geom_Plane(gp_Pln());
   NCollection_DynamicArray<BRepGraph_WireId> aInnerWires;
   BRepGraph_FaceId aFaceId = aGraph.Editor().Faces().Add(aPlane, aWireId, aInnerWires, 0.001);
 
@@ -522,7 +522,7 @@ TEST(BRepGraph_BuilderTest, MutableSolidDefinition)
 
 TEST(BRepGraph_BuilderTest, MutableCompoundDefinition)
 {
-  BRepGraph                            aGraph;
+  BRepGraph                                  aGraph;
   NCollection_DynamicArray<BRepGraph_NodeId> aChildren;
   (void)aGraph.Editor().Compounds().Add(aChildren);
   ASSERT_EQ(aGraph.Topo().Compounds().Nb(), 1);
@@ -536,7 +536,7 @@ TEST(BRepGraph_BuilderTest, MutableCompoundDefinition)
 
 TEST(BRepGraph_BuilderTest, MutableCompSolidDefinition)
 {
-  BRepGraph                             aGraph;
+  BRepGraph                                   aGraph;
   NCollection_DynamicArray<BRepGraph_SolidId> aSolids;
   (void)aGraph.Editor().CompSolids().Add(aSolids);
   ASSERT_EQ(aGraph.Topo().CompSolids().Nb(), 1);
@@ -648,8 +648,8 @@ TEST(BRepGraph_BuilderTest, RemoveFace_RemovesWiresAndEdges)
   aEdges.Append({aE2, TopAbs_FORWARD});
   aEdges.Append({aE3, TopAbs_FORWARD});
 
-  BRepGraph_WireId                     aWireId = aGraph.Editor().Wires().Add(aEdges);
-  occ::handle<Geom_Plane>              aPlane  = new Geom_Plane(gp_Pln());
+  BRepGraph_WireId                           aWireId = aGraph.Editor().Wires().Add(aEdges);
+  occ::handle<Geom_Plane>                    aPlane  = new Geom_Plane(gp_Pln());
   NCollection_DynamicArray<BRepGraph_WireId> aInnerWires;
   BRepGraph_FaceId aFaceId = aGraph.Editor().Faces().Add(aPlane, aWireId, aInnerWires, 0.001);
 

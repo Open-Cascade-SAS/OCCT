@@ -42,11 +42,11 @@ using namespace MathUtils;
 //! Contains all found roots sorted in ascending order.
 struct MultipleResult
 {
-  MathUtils::Status          Status       = MathUtils::Status::NotConverged; //!< Computation status
-  size_t                     NbIterations = 0;  //!< Total iterations across all roots
-  NCollection_DynamicArray<double> Roots;             //!< Found roots (sorted)
-  NCollection_DynamicArray<double> Values;            //!< Function values at roots
-  bool                       IsAllNull = false; //!< True if function is essentially zero in range
+  MathUtils::Status                Status = MathUtils::Status::NotConverged; //!< Computation status
+  size_t                           NbIterations = 0; //!< Total iterations across all roots
+  NCollection_DynamicArray<double> Roots;            //!< Found roots (sorted)
+  NCollection_DynamicArray<double> Values;           //!< Function values at roots
+  bool IsAllNull = false; //!< True if function is essentially zero in range
 
   //! Returns true if computation succeeded.
   bool IsDone() const { return Status == MathUtils::Status::OK; }

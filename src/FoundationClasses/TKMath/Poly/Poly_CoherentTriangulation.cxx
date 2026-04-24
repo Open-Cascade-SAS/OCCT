@@ -111,7 +111,7 @@ occ::handle<Poly_Triangulation> Poly_CoherentTriangulation::GetTriangulation() c
   occ::handle<Poly_Triangulation> aResult = new Poly_Triangulation(nNodes, nTriangles, false);
 
   NCollection_DynamicArray<int> vecNodeId;
-  int                     aCount = 0;
+  int                           aCount = 0;
 
   // Copy the nodes (3D and 2D coordinates)
   for (int i = 0; i < myNodes.Length(); i++)
@@ -141,7 +141,8 @@ occ::handle<Poly_Triangulation> Poly_CoherentTriangulation::GetTriangulation() c
 
   // Copy the triangles
   aCount = 0;
-  for (NCollection_DynamicArray<Poly_CoherentTriangle>::Iterator anIterT(myTriangles); anIterT.More();
+  for (NCollection_DynamicArray<Poly_CoherentTriangle>::Iterator anIterT(myTriangles);
+       anIterT.More();
        anIterT.Next())
   {
     const Poly_CoherentTriangle& aTri = anIterT.Value();
@@ -349,7 +350,7 @@ void Poly_CoherentTriangulation::IteratorOfLink::Next() noexcept
 
 int Poly_CoherentTriangulation::NNodes() const
 {
-  int                                             aCount(0);
+  int                                                   aCount(0);
   NCollection_DynamicArray<Poly_CoherentNode>::Iterator anIter(myNodes);
   for (; anIter.More(); anIter.Next())
     if (!anIter.Value().IsFreeNode())
@@ -361,7 +362,7 @@ int Poly_CoherentTriangulation::NNodes() const
 
 int Poly_CoherentTriangulation::NTriangles() const
 {
-  int                                                 aCount(0);
+  int                                                       aCount(0);
   NCollection_DynamicArray<Poly_CoherentTriangle>::Iterator anIter(myTriangles);
   for (; anIter.More(); anIter.Next())
   {
@@ -376,7 +377,7 @@ int Poly_CoherentTriangulation::NTriangles() const
 
 int Poly_CoherentTriangulation::NLinks() const
 {
-  int                                             aCount(0);
+  int                                                   aCount(0);
   NCollection_DynamicArray<Poly_CoherentLink>::Iterator anIter(myLinks);
   for (; anIter.More(); anIter.Next())
   {

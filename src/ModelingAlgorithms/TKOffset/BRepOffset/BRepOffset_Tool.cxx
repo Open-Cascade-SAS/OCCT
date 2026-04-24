@@ -813,7 +813,7 @@ static bool IsAutonomVertex(const TopoDS_Shape& aVertex, const BOPDS_PDS& pDS)
   // check if vertex with index "index" is not created in VV or EE or EF interference
   // VV
   NCollection_DynamicArray<BOPDS_InterfVV>& aVVs = pDS->InterfVV();
-  aNbVVs                                   = aVVs.Length();
+  aNbVVs                                         = aVVs.Length();
   for (aInt = 0; aInt < aNbVVs; aInt++)
   {
     const BOPDS_InterfVV& aVV = aVVs(aInt);
@@ -827,7 +827,7 @@ static bool IsAutonomVertex(const TopoDS_Shape& aVertex, const BOPDS_PDS& pDS)
   }
   // EE
   NCollection_DynamicArray<BOPDS_InterfEE>& aEEs = pDS->InterfEE();
-  aNbEEs                                   = aEEs.Length();
+  aNbEEs                                         = aEEs.Length();
   for (aInt = 0; aInt < aNbEEs; aInt++)
   {
     const BOPDS_InterfEE& aEE = aEEs(aInt);
@@ -842,7 +842,7 @@ static bool IsAutonomVertex(const TopoDS_Shape& aVertex, const BOPDS_PDS& pDS)
   }
   // EF
   NCollection_DynamicArray<BOPDS_InterfEF>& aEFs = pDS->InterfEF();
-  aNbEFs                                   = aEFs.Length();
+  aNbEFs                                         = aEFs.Length();
   for (aInt = 0; aInt < aNbEFs; aInt++)
   {
     const BOPDS_InterfEF& aEF = aEFs(aInt);
@@ -1182,8 +1182,8 @@ static void CheckIntersFF(const BOPDS_PDS&                                      
                           NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& TrueEdges)
 {
   NCollection_DynamicArray<BOPDS_InterfFF>& aFFs = pDS->InterfFF();
-  int                                 aNb  = aFFs.Length();
-  int                                 i, j, nbe = 0;
+  int                                       aNb  = aFFs.Length();
+  int                                       i, j, nbe = 0;
 
   TopoDS_Compound Edges;
   BRep_Builder    BB;
@@ -1191,9 +1191,9 @@ static void CheckIntersFF(const BOPDS_PDS&                                      
 
   for (i = 0; i < aNb; ++i)
   {
-    BOPDS_InterfFF&                        aFFi      = aFFs(i);
+    BOPDS_InterfFF&                              aFFi      = aFFs(i);
     const NCollection_DynamicArray<BOPDS_Curve>& aBCurves  = aFFi.Curves();
-    int                                    aNbCurves = aBCurves.Length();
+    int                                          aNbCurves = aBCurves.Length();
 
     for (j = 0; j < aNbCurves; ++j)
     {
@@ -1389,10 +1389,10 @@ void BRepOffset_Tool::Inter3D(const TopoDS_Face&              F1,
   bool addPCurve1 = true;
   bool addPCurve2 = true;
 
-  const BOPDS_PDS&                    pDS  = aPF.PDS();
+  const BOPDS_PDS&                          pDS  = aPF.PDS();
   NCollection_DynamicArray<BOPDS_InterfFF>& aFFs = pDS->InterfFF();
-  int                                 aNb  = aFFs.Length();
-  int                                 i = 0, j = 0, k;
+  int                                       aNb  = aFFs.Length();
+  int                                       i = 0, j = 0, k;
   // Store Result
   L1.Clear();
   L2.Clear();
@@ -1403,7 +1403,7 @@ void BRepOffset_Tool::Inter3D(const TopoDS_Face&              F1,
   //
   for (i = 0; i < aNb; i++)
   {
-    BOPDS_InterfFF&                        aFFi     = aFFs(i);
+    BOPDS_InterfFF&                              aFFi     = aFFs(i);
     const NCollection_DynamicArray<BOPDS_Curve>& aBCurves = aFFi.Curves();
 
     int aNbCurves = aBCurves.Length();

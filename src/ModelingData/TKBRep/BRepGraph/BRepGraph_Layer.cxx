@@ -50,7 +50,8 @@ void BRepGraph_Layer::OnRefModified(const BRepGraph_RefId /*theRef*/) noexcept {
 
 //=================================================================================================
 
-void BRepGraph_Layer::OnRefsModified(const NCollection_DynamicArray<BRepGraph_RefId>& /*theModifiedRefs*/,
-                                     const int /*theModifiedRefKindsMask*/) noexcept
+void BRepGraph_Layer::OnRefsModified(
+  const NCollection_DynamicArray<BRepGraph_RefId>& /*theModifiedRefs*/,
+  const int /*theModifiedRefKindsMask*/) noexcept
 {
 }

@@ -110,7 +110,7 @@ VectorResult DifferentialEvolution(Function&           theFunc,
 
   // Population: vector of candidate solutions
   NCollection_DynamicArray<math_Vector> aPopulation;
-  math_Vector                     aFitness(0, aNbPop - 1);
+  math_Vector                           aFitness(0, aNbPop - 1);
 
   // Initialize population
   for (int aMemberIdx = 0; aMemberIdx < aNbPop; ++aMemberIdx)
@@ -390,13 +390,13 @@ VectorResult GlobalMinimum(Function&           theFunc,
 //! @param theStats optional PSO statistics output
 //! @return result containing best solution found
 template <typename Function>
-VectorResult GlobalMinimum(Function&                                  theFunc,
-                           const math_Vector&                         theLowerBounds,
-                           const math_Vector&                         theUpperBounds,
-                           const GlobalConfig&                        theConfig,
-                           const PSOConfig*                           thePSOConfig,
+VectorResult GlobalMinimum(Function&                                        theFunc,
+                           const math_Vector&                               theLowerBounds,
+                           const math_Vector&                               theUpperBounds,
+                           const GlobalConfig&                              theConfig,
+                           const PSOConfig*                                 thePSOConfig,
                            const NCollection_DynamicArray<PSOSeedParticle>* theSeeds = nullptr,
-                           PSOStats*                                  theStats = nullptr)
+                           PSOStats*                                        theStats = nullptr)
 {
   switch (theConfig.Strategy)
   {

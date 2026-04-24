@@ -1027,8 +1027,9 @@ public:
   //! xst-params-split    4     Split
   //! xst-param-read      5     Transfer on Reading
   //! xst-param-write     6     Transfer on Writing
-  Standard_EXPORT void SetParams(const NCollection_DynamicArray<occ::handle<Standard_Transient>>& params,
-                                 const NCollection_DynamicArray<int>& uselist);
+  Standard_EXPORT void SetParams(
+    const NCollection_DynamicArray<occ::handle<Standard_Transient>>& params,
+    const NCollection_DynamicArray<int>&                             uselist);
 
   //! Traces the Statics attached to a given use number
   //! If <use> is given positive (normal), the trace is embedded

@@ -190,9 +190,9 @@ public:
 
   //! Construct starting at a given vector index (for resumable iteration).
   //! Skips to the first non-removed entry at or after theStartIndex.
-  ParentsOf(const BRepGraph&                    theGraph,
+  ParentsOf(const BRepGraph&                          theGraph,
             const NCollection_DynamicArray<TypedIdT>& theParents,
-            const uint32_t                      theStartIndex)
+            const uint32_t                            theStartIndex)
       : myGraph(&theGraph),
         myParents(&theParents),
         myIndex(theStartIndex)
@@ -256,9 +256,9 @@ private:
     }
   }
 
-  const BRepGraph*                    myGraph   = nullptr;
+  const BRepGraph*                          myGraph   = nullptr;
   const NCollection_DynamicArray<TypedIdT>* myParents = nullptr;
-  uint32_t                            myIndex   = 0;
+  uint32_t                                  myIndex   = 0;
 };
 
 //! Result pair returned by RefsParentsOf: parent definition ID + the RefId
@@ -284,9 +284,9 @@ public:
   using RefIdType    = typename TraitsT::RefId;
   using ResultType   = ParentRef<ParentIdType, RefIdType>;
 
-  RefsParentsOf(const BRepGraph&                        theGraph,
+  RefsParentsOf(const BRepGraph&                              theGraph,
                 const NCollection_DynamicArray<ParentIdType>& theParents,
-                const ChildIdType                       theChild)
+                const ChildIdType                             theChild)
       : myGraph(&theGraph),
         myParents(&theParents),
         myChild(theChild)
@@ -342,12 +342,12 @@ private:
     }
   }
 
-  const BRepGraph*                        myGraph   = nullptr;
+  const BRepGraph*                              myGraph   = nullptr;
   const NCollection_DynamicArray<ParentIdType>* myParents = nullptr;
-  ChildIdType                             myChild;
-  ResultType                              myCurrent;
-  uint32_t                                myIndex      = 0;
-  bool                                    myHasCurrent = false;
+  ChildIdType                                   myChild;
+  ResultType                                    myCurrent;
+  uint32_t                                      myIndex      = 0;
+  bool                                          myHasCurrent = false;
 };
 
 // Traits for RefsParentsOf - each knows how to find the RefId

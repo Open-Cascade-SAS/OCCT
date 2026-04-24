@@ -114,12 +114,12 @@ protected:
 
   //! Read late data from RWGltf_GltfLatePrimitiveArray stored as Poly_Triangulation within faces.
   Standard_EXPORT virtual bool readLateData(NCollection_DynamicArray<TopoDS_Face>& theFaces,
-                                            const TCollection_AsciiString&   theFile,
-                                            const Message_ProgressRange&     theProgress);
+                                            const TCollection_AsciiString&         theFile,
+                                            const Message_ProgressRange&           theProgress);
 
   //! Set reader for each late data.
   Standard_EXPORT void updateLateDataReader(
-    NCollection_DynamicArray<TopoDS_Face>&               theFaces,
+    NCollection_DynamicArray<TopoDS_Face>&         theFaces,
     const occ::handle<RWMesh_TriangulationReader>& theReader) const;
 
 protected:

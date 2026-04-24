@@ -600,7 +600,7 @@ public:
 
   //
 protected:
-  bool                            myTangentFaces;
+  bool                                  myTangentFaces;
   NCollection_DynamicArray<BOPDS_Curve> myCurves;
   NCollection_DynamicArray<BOPDS_Point> myPoints;
 };

@@ -316,8 +316,8 @@ public:
 
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::CompoundDef& Definition(
       const BRepGraph_CompoundId theCompound) const;
-    [[nodiscard]] Standard_EXPORT const NCollection_DynamicArray<BRepGraph_CompoundId>& ParentCompounds(
-      const BRepGraph_CompoundId theCompound) const;
+    [[nodiscard]] Standard_EXPORT const NCollection_DynamicArray<BRepGraph_CompoundId>&
+      ParentCompounds(const BRepGraph_CompoundId theCompound) const;
 
   private:
     friend class TopoView;

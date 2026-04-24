@@ -322,8 +322,8 @@ inline static void fillParams(const NCollection_Array1<double>&         theKnots
                               int                                       theSample)
 {
   NCollection_DynamicArray<double> aParams;
-  int                        i        = 1;
-  double                     aPrevPar = theParMin;
+  int                              i        = 1;
+  double                           aPrevPar = theParMin;
   aParams.Append(aPrevPar);
   // calculation the array of parametric points depending on the knots array variation and degree of
   // given surface

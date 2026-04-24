@@ -36,13 +36,14 @@ void BRepGraph_History::SetAllocator(const occ::handle<NCollection_BaseAllocator
     NCollection_DynamicArray<BRepGraph_HistoryRecord>(THE_HISTORY_RECORD_BLOCK_SIZE, myAllocator);
   myDerivedToOriginal = NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>(1, myAllocator);
   myOriginalToDerived =
-    NCollection_DataMap<BRepGraph_NodeId, NCollection_DynamicArray<BRepGraph_NodeId>>(1, myAllocator);
+    NCollection_DataMap<BRepGraph_NodeId, NCollection_DynamicArray<BRepGraph_NodeId>>(1,
+                                                                                      myAllocator);
 }
 
 //=================================================================================================
 
-void BRepGraph_History::Record(const TCollection_AsciiString&              theOpLabel,
-                               const BRepGraph_NodeId                      theOriginal,
+void BRepGraph_History::Record(const TCollection_AsciiString&                    theOpLabel,
+                               const BRepGraph_NodeId                            theOriginal,
                                const NCollection_DynamicArray<BRepGraph_NodeId>& theReplacements)
 {
   if (!myEnabled)
@@ -57,7 +58,9 @@ void BRepGraph_History::Record(const TCollection_AsciiString&              theOp
   if (!myAllocator.IsNull())
   {
     aRecord.Mapping =
-      NCollection_DataMap<BRepGraph_NodeId, NCollection_DynamicArray<BRepGraph_NodeId>>(1, myAllocator);
+      NCollection_DataMap<BRepGraph_NodeId, NCollection_DynamicArray<BRepGraph_NodeId>>(
+        1,
+        myAllocator);
   }
   aRecord.Mapping.Bind(theOriginal, theReplacements);
   myRecords.Append(std::move(aRecord));
@@ -66,7 +69,7 @@ void BRepGraph_History::Record(const TCollection_AsciiString&              theOp
   // Skip self-referencing entries (aDerived == theOriginal) to avoid overwriting
   // prior chain links in the reverse map.
   NCollection_DynamicArray<BRepGraph_NodeId> aFilteredReplacements(THE_HISTORY_FILTERED_BLOCK_SIZE,
-                                                             myAllocator);
+                                                                   myAllocator);
   for (const BRepGraph_NodeId& aDerived : theReplacements)
   {
     if (aDerived != theOriginal)
@@ -81,7 +84,8 @@ void BRepGraph_History::Record(const TCollection_AsciiString&              theOp
 
   if (myOriginalToDerived.IsBound(theOriginal))
   {
-    NCollection_DynamicArray<BRepGraph_NodeId>& aDerivedVec = myOriginalToDerived.ChangeFind(theOriginal);
+    NCollection_DynamicArray<BRepGraph_NodeId>& aDerivedVec =
+      myOriginalToDerived.ChangeFind(theOriginal);
     for (const BRepGraph_NodeId& aDerived : aFilteredReplacements)
     {
       aDerivedVec.Append(aDerived);
@@ -95,10 +99,11 @@ void BRepGraph_History::Record(const TCollection_AsciiString&              theOp
 
 //=================================================================================================
 
-void BRepGraph_History::RecordBatch(const TCollection_AsciiString&              theOpLabel,
-                                    const NCollection_DynamicArray<BRepGraph_NodeId>& theOriginals,
-                                    const NCollection_DynamicArray<BRepGraph_NodeId>& theReplacements,
-                                    const TCollection_AsciiString&              theExtraInfo)
+void BRepGraph_History::RecordBatch(
+  const TCollection_AsciiString&                    theOpLabel,
+  const NCollection_DynamicArray<BRepGraph_NodeId>& theOriginals,
+  const NCollection_DynamicArray<BRepGraph_NodeId>& theReplacements,
+  const TCollection_AsciiString&                    theExtraInfo)
 {
   Standard_ASSERT_VOID(theOriginals.Size() == theReplacements.Size(),
                        "RecordBatch: mismatched vector lengths");
@@ -117,8 +122,9 @@ void BRepGraph_History::RecordBatch(const TCollection_AsciiString&              
   if (!myAllocator.IsNull())
   {
     aRecord.Mapping =
-      NCollection_DataMap<BRepGraph_NodeId, NCollection_DynamicArray<BRepGraph_NodeId>>(aNbPairs,
-                                                                                  myAllocator);
+      NCollection_DataMap<BRepGraph_NodeId, NCollection_DynamicArray<BRepGraph_NodeId>>(
+        aNbPairs,
+        myAllocator);
   }
   else
   {
@@ -136,7 +142,8 @@ void BRepGraph_History::RecordBatch(const TCollection_AsciiString&              
       const BRepGraph_NodeId& aReplacement = aReplIt.Value();
       Standard_ASSERT_VOID(!aRecord.Mapping.IsBound(anOriginal),
                            "RecordBatch: duplicate original node");
-      NCollection_DynamicArray<BRepGraph_NodeId> aRepVec(THE_HISTORY_REPLACEMENT_BLOCK_SIZE, myAllocator);
+      NCollection_DynamicArray<BRepGraph_NodeId> aRepVec(THE_HISTORY_REPLACEMENT_BLOCK_SIZE,
+                                                         myAllocator);
       aRepVec.Append(aReplacement);
       aRecord.Mapping.Bind(anOriginal, std::move(aRepVec));
     }
@@ -169,7 +176,7 @@ void BRepGraph_History::RecordBatch(const TCollection_AsciiString&              
       else
       {
         NCollection_DynamicArray<BRepGraph_NodeId> aDerVec(THE_HISTORY_REPLACEMENT_BLOCK_SIZE,
-                                                     myAllocator);
+                                                           myAllocator);
         aDerVec.Append(aReplacement);
         myOriginalToDerived.Bind(anOriginal, std::move(aDerVec));
       }
@@ -206,7 +213,7 @@ NCollection_DynamicArray<BRepGraph_NodeId> BRepGraph_History::FindDerived(
   // A visited set guards against infinite loops if cycles exist in the forward map.
   NCollection_DynamicArray<BRepGraph_NodeId> aResult(THE_HISTORY_DERIVED_BLOCK_SIZE);
   NCollection_DynamicArray<BRepGraph_NodeId> aQueue(THE_HISTORY_QUEUE_BLOCK_SIZE);
-  NCollection_Map<BRepGraph_NodeId>    aVisited;
+  NCollection_Map<BRepGraph_NodeId>          aVisited;
 
   aQueue.Append(theOriginal);
   aVisited.Add(theOriginal);
@@ -225,7 +232,8 @@ NCollection_DynamicArray<BRepGraph_NodeId> BRepGraph_History::FindDerived(
       continue;
     }
 
-    const NCollection_DynamicArray<BRepGraph_NodeId>& aDirectDerived = myOriginalToDerived.Find(aNode);
+    const NCollection_DynamicArray<BRepGraph_NodeId>& aDirectDerived =
+      myOriginalToDerived.Find(aNode);
     for (const BRepGraph_NodeId& aDerived : aDirectDerived)
     {
       if (aVisited.Add(aDerived))

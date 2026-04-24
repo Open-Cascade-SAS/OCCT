@@ -553,7 +553,8 @@ void XCAFDimTolObjects_DimensionObject::DumpJson(Standard_OStream& theOStream, i
     OCCT_DUMP_FIELD_VALUE_STRING(theOStream, aPresentationName)
   }
 
-  for (NCollection_DynamicArray<occ::handle<TCollection_HAsciiString>>::Iterator aDescIt(myDescriptions);
+  for (NCollection_DynamicArray<occ::handle<TCollection_HAsciiString>>::Iterator aDescIt(
+         myDescriptions);
        aDescIt.More();
        aDescIt.Next())
   {

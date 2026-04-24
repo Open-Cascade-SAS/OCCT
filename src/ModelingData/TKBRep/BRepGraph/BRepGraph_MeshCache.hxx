@@ -56,7 +56,7 @@ namespace BRepGraph_MeshCache
 struct FaceMeshEntry
 {
   NCollection_DynamicArray<BRepGraph_TriangulationRepId> TriangulationRepIds;
-  int                                              ActiveTriangulationIndex = -1;
+  int                                                    ActiveTriangulationIndex = -1;
   uint32_t StoredOwnGen = 0; //!< OwnGen of FaceDef at write time
 
   //! True if this entry contains mesh data.
@@ -82,7 +82,7 @@ struct FaceMeshEntry
 //! Cached mesh entry for a coedge: polygon-on-triangulation and polygon-2D rep references.
 struct CoEdgeMeshEntry
 {
-  BRepGraph_Polygon2DRepId                        Polygon2DRepId;
+  BRepGraph_Polygon2DRepId                              Polygon2DRepId;
   NCollection_DynamicArray<BRepGraph_PolygonOnTriRepId> PolygonOnTriRepIds;
   uint32_t StoredOwnGen = 0; //!< OwnGen of CoEdgeDef at write time
 

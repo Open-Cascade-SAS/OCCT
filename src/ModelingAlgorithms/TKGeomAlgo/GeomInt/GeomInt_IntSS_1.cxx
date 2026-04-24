@@ -170,7 +170,7 @@ static bool ParametersOfNearestPointOnSurface(const Extrema_ExtPS& theExtr,
 
 static void GetSegmentBoundary(const IntRes2d_IntersectionSegment& theSegm,
                                const occ::handle<Geom2d_Curve>&    theCurve,
-                               NCollection_DynamicArray<double>&         theArrayOfParameters)
+                               NCollection_DynamicArray<double>&   theArrayOfParameters)
 {
   double aU1 = theCurve->FirstParameter(), aU2 = theCurve->LastParameter();
 
@@ -196,7 +196,7 @@ static void IntersectCurveAndBoundary(const occ::handle<Geom2d_Curve>&       the
                                       const occ::handle<Geom2d_Curve>* const theArrBounds,
                                       const int                              theNumberOfCurves,
                                       const double                           theTol,
-                                      NCollection_DynamicArray<double>&            theArrayOfParameters)
+                                      NCollection_DynamicArray<double>&      theArrayOfParameters)
 {
   if (theC2d.IsNull())
     return;
@@ -1296,11 +1296,12 @@ void GeomInt_IntSS::BuildPCurves(const double                     f,
 //            surface boundaries and fills theArrayOfParameters by parameters
 //            along the given curves corresponding of these points.
 //=======================================================================
-void GeomInt_IntSS::TrimILineOnSurfBoundaries(const occ::handle<Geom2d_Curve>& theC2d1,
-                                              const occ::handle<Geom2d_Curve>& theC2d2,
-                                              const Bnd_Box2d&                 theBound1,
-                                              const Bnd_Box2d&                 theBound2,
-                                              NCollection_DynamicArray<double>&      theArrayOfParameters)
+void GeomInt_IntSS::TrimILineOnSurfBoundaries(
+  const occ::handle<Geom2d_Curve>&  theC2d1,
+  const occ::handle<Geom2d_Curve>&  theC2d2,
+  const Bnd_Box2d&                  theBound1,
+  const Bnd_Box2d&                  theBound2,
+  NCollection_DynamicArray<double>& theArrayOfParameters)
 {
   // Rectangular boundaries of two surfaces: [0]:U=Ufirst, [1]:U=Ulast,
   //                                         [2]:V=Vfirst, [3]:V=Vlast

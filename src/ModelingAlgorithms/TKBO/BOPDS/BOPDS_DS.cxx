@@ -387,15 +387,16 @@ bool BOPDS_DS::HasInterfSubShapes(const int theIndex1, const int theIndex2) cons
 
 //=================================================================================================
 
-const NCollection_DynamicArray<NCollection_List<occ::handle<BOPDS_PaveBlock>>>& BOPDS_DS::PaveBlocksPool()
-  const
+const NCollection_DynamicArray<NCollection_List<occ::handle<BOPDS_PaveBlock>>>& BOPDS_DS::
+  PaveBlocksPool() const
 {
   return myPaveBlocksPool;
 }
 
 //=================================================================================================
 
-NCollection_DynamicArray<NCollection_List<occ::handle<BOPDS_PaveBlock>>>& BOPDS_DS::ChangePaveBlocksPool()
+NCollection_DynamicArray<NCollection_List<occ::handle<BOPDS_PaveBlock>>>& BOPDS_DS::
+  ChangePaveBlocksPool()
 {
   return myPaveBlocksPool;
 }

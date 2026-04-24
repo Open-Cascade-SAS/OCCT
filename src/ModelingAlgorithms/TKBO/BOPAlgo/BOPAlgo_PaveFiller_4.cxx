@@ -317,7 +317,7 @@ void BOPAlgo_PaveFiller::TreatVerticesEE()
   aNbS = myDS->NbSourceShapes();
   //
   NCollection_DynamicArray<BOPDS_InterfEE>& aEEs = myDS->InterfEE();
-  aNbEEs                                   = aEEs.Length();
+  aNbEEs                                         = aEEs.Length();
   for (i = 0; i < aNbEEs; ++i)
   {
     BOPDS_InterfEE& aEE = aEEs(i);

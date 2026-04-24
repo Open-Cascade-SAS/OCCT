@@ -155,7 +155,7 @@ public:
   //! @param[in] theModifiedRefKindsMask bitwise OR of all modified ref kinds
   Standard_EXPORT virtual void OnRefsModified(
     const NCollection_DynamicArray<BRepGraph_RefId>& theModifiedRefs,
-    const int                                  theModifiedRefKindsMask) noexcept;
+    const int                                        theModifiedRefKindsMask) noexcept;
 
   //! Convenience: return bitmask bit for a given RefId::Kind.
   static int RefKindBit(const BRepGraph_RefId::Kind theKind)

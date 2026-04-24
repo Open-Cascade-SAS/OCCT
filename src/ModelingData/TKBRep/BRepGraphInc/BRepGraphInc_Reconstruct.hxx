@@ -46,10 +46,10 @@ public:
     static constexpr int THE_KIND_COUNT        = BRepGraph_NodeId::THE_KIND_COUNT;
     static constexpr int THE_DEFAULT_INCREMENT = 32;
 
-    occ::handle<NCollection_IncAllocator> myAllocator;
-    occ::handle<NCollection_IncAllocator> myTempAllocator;
-    NCollection_DynamicArray<TopoDS_Shape>      myKinds[THE_KIND_COUNT];
-    int                                   myTempScopeDepth = 0;
+    occ::handle<NCollection_IncAllocator>  myAllocator;
+    occ::handle<NCollection_IncAllocator>  myTempAllocator;
+    NCollection_DynamicArray<TopoDS_Shape> myKinds[THE_KIND_COUNT];
+    int                                    myTempScopeDepth = 0;
 
     struct TempScope
     {
@@ -77,7 +77,8 @@ public:
     {
       for (int aKindIdx = 0; aKindIdx < THE_KIND_COUNT; ++aKindIdx)
       {
-        myKinds[aKindIdx] = NCollection_DynamicArray<TopoDS_Shape>(THE_DEFAULT_INCREMENT, myAllocator);
+        myKinds[aKindIdx] =
+          NCollection_DynamicArray<TopoDS_Shape>(THE_DEFAULT_INCREMENT, myAllocator);
       }
     }
 
