@@ -159,7 +159,7 @@ public:
   //! Stores plane equation coefficients (in the following form:
   //! Ax + By + Cz + D = 0) to the given vector
   Standard_EXPORT void GetPlanes(
-    NCollection_Vector<NCollection_Vec4<double>>& thePlaneEquations) const override;
+    NCollection_DynamicArray<NCollection_Vec4<double>>& thePlaneEquations) const override;
 
   //! If theIsToAllow is false, only fully included sensitives will be detected, otherwise the
   //! algorithm will mark both included and overlapped entities as matched

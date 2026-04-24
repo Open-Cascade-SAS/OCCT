@@ -207,7 +207,7 @@ struct ExtractedEdge
   bool                                        SameRange     = false;
   ExtractedVertex                             StartVertex;
   ExtractedVertex                             EndVertex;
-  NCollection_Vector<ExtractedInternalVertex> InternalVertices;
+  NCollection_DynamicArray<ExtractedInternalVertex> InternalVertices;
   TopAbs_Orientation                          OrientationInWire = TopAbs_FORWARD;
   occ::handle<Geom2d_Curve>                   PCurve2d;
   double                                      PCFirst = 0.0;
@@ -229,7 +229,7 @@ struct ExtractedWire
 {
   TopoDS_Wire                       Shape;
   bool                              IsOuter = false;
-  NCollection_Vector<ExtractedEdge> Edges;
+  NCollection_DynamicArray<ExtractedEdge> Edges;
 };
 
 //! All data extracted from a single face.
@@ -247,8 +247,8 @@ struct FaceLocalData
   double                            Tolerance          = 0.0;
   TopAbs_Orientation                Orientation        = TopAbs_FORWARD;
   bool                              NaturalRestriction = false;
-  NCollection_Vector<ExtractedWire> Wires;
-  NCollection_Vector<ExtractedInternalVertex> DirectVertices; //!< INTERNAL/EXTERNAL vertex children
+  NCollection_DynamicArray<ExtractedWire> Wires;
+  NCollection_DynamicArray<ExtractedInternalVertex> DirectVertices; //!< INTERNAL/EXTERNAL vertex children
 };
 
 //! Extract stored PCurve(s) from edge for a given face's surface.
@@ -780,7 +780,7 @@ bool makeAuxChildRef(const BRepGraphInc_Storage& theStorage,
 static void edgeVertices(const TopoDS_Edge&                           theEdge,
                          TopoDS_Vertex&                               theFirst,
                          TopoDS_Vertex&                               theLast,
-                         NCollection_Vector<ExtractedInternalVertex>& theInternal)
+                         NCollection_DynamicArray<ExtractedInternalVertex>& theInternal)
 {
   for (TopoDS_Iterator aVIt(theEdge, false, false); aVIt.More(); aVIt.Next())
   {
@@ -1042,7 +1042,7 @@ void extractFaceData(FaceLocalData& theData)
 //! Register pre-extracted face data into incidence storage.
 //! Uses unified TShapeToNodeId map and populates OriginalShapes.
 void registerFaceData(BRepGraphInc_Storage&                    theStorage,
-                      const NCollection_Vector<FaceLocalData>& theFaceData,
+                      const NCollection_DynamicArray<FaceLocalData>& theFaceData,
                       RepDedup&                                theRepDedup)
 {
   for (const FaceLocalData& aData : theFaceData)
@@ -1295,7 +1295,7 @@ void registerFaceData(BRepGraphInc_Storage&                    theStorage,
 //! (Compound, CompSolid, Solid, Shell) and collecting face contexts into theFaceData.
 //! Used by Perform() for Phase 1.
 void traverseHierarchy(BRepGraphInc_Storage&              theStorage,
-                       NCollection_Vector<FaceLocalData>& theFaceData,
+                       NCollection_DynamicArray<FaceLocalData>& theFaceData,
                        RepDedup&                          theRepDedup,
                        const TopoDS_Shape&                theCurrentShape,
                        const TopLoc_Location&             theParentGlobalLoc)
@@ -1533,7 +1533,7 @@ void traverseHierarchy(BRepGraphInc_Storage&              theStorage,
 
       // Extract vertices.
       TopoDS_Vertex                               aVFirst, aVLast;
-      NCollection_Vector<ExtractedInternalVertex> anInternalVerts;
+      NCollection_DynamicArray<ExtractedInternalVertex> anInternalVerts;
       edgeVertices(anEdge, aVFirst, aVLast, anInternalVerts);
 
       // Register vertices (using definition-frame points; Location stored on VertexRef).
@@ -1599,7 +1599,7 @@ void traverseHierarchy(BRepGraphInc_Storage&              theStorage,
 }
 
 //! Append a root NodeId to the vector, skipping duplicates.
-static void appendUniqueRootNode(NCollection_Vector<BRepGraph_NodeId>& theRoots,
+static void appendUniqueRootNode(NCollection_DynamicArray<BRepGraph_NodeId>& theRoots,
                                  const BRepGraph_NodeId&               theNodeId)
 {
   if (!theNodeId.IsValid())
@@ -1617,11 +1617,11 @@ static void appendUniqueRootNode(NCollection_Vector<BRepGraph_NodeId>& theRoots,
 //! Face roots are collected for the parallel face pipeline; standalone
 //! wire/edge/vertex roots are registered directly through traverseHierarchy().
 void flattenForAppend(BRepGraphInc_Storage&                 theStorage,
-                      NCollection_Vector<FaceLocalData>&    theFaceData,
+                      NCollection_DynamicArray<FaceLocalData>&    theFaceData,
                       RepDedup&                             theRepDedup,
                       const TopoDS_Shape&                   theCurrentShape,
                       const TopLoc_Location&                theParentGlobalLoc,
-                      NCollection_Vector<BRepGraph_NodeId>* theAppendedRoots)
+                      NCollection_DynamicArray<BRepGraph_NodeId>* theAppendedRoots)
 {
   if (theCurrentShape.IsNull())
     return;
@@ -1774,7 +1774,7 @@ void populateParamLayer(BRepGraphInc_Storage&                         theStorage
   }
 
   NCollection_DataMap<const Geom_Surface*, BRepGraph_NodeId> aSurfToFaceDef(1, theTmpAlloc);
-  NCollection_Vector<const Geom_Surface*>                    aFaceRawSurfaces(1, theTmpAlloc);
+  NCollection_DynamicArray<const Geom_Surface*>                    aFaceRawSurfaces(1, theTmpAlloc);
   const uint32_t                                             aNbFaces = theStorage.NbFaces();
   for (BRepGraph_FaceId aFaceId = BRepGraph_FaceId::Start(); aFaceId.IsValid(aNbFaces); ++aFaceId)
   {
@@ -1793,7 +1793,7 @@ void populateParamLayer(BRepGraphInc_Storage&                         theStorage
     aFaceRawSurfaces.Append(aRawSurfPtr);
   }
 
-  NCollection_DataMap<const Geom2d_Curve*, NCollection_Vector<BRepGraph_CoEdgeId>> aPCurveToCoEdges(
+  NCollection_DataMap<const Geom2d_Curve*, NCollection_DynamicArray<BRepGraph_CoEdgeId>> aPCurveToCoEdges(
     1,
     theTmpAlloc);
   const uint32_t aNbCoEdges = theStorage.NbCoEdges();
@@ -1807,10 +1807,10 @@ void populateParamLayer(BRepGraphInc_Storage&                         theStorage
     if (aPCurve.IsNull())
       continue;
 
-    NCollection_Vector<BRepGraph_CoEdgeId>* aCoEdges = aPCurveToCoEdges.ChangeSeek(aPCurve.get());
+    NCollection_DynamicArray<BRepGraph_CoEdgeId>* aCoEdges = aPCurveToCoEdges.ChangeSeek(aPCurve.get());
     if (aCoEdges == nullptr)
     {
-      NCollection_Vector<BRepGraph_CoEdgeId> aNewCoEdges(1, theTmpAlloc);
+      NCollection_DynamicArray<BRepGraph_CoEdgeId> aNewCoEdges(1, theTmpAlloc);
       aNewCoEdges.Append(aCoEdgeId);
       aPCurveToCoEdges.Bind(aPCurve.get(), aNewCoEdges);
     }
@@ -1849,7 +1849,7 @@ void populateParamLayer(BRepGraphInc_Storage&                         theStorage
       else if (const occ::handle<BRep_PointOnCurveOnSurface> aPOCS =
                  occ::down_cast<BRep_PointOnCurveOnSurface>(aPtRep))
       {
-        const NCollection_Vector<BRepGraph_CoEdgeId>* aCandidates =
+        const NCollection_DynamicArray<BRepGraph_CoEdgeId>* aCandidates =
           aPCurveToCoEdges.Seek(aPOCS->PCurve().get());
         if (aCandidates == nullptr)
           continue;
@@ -1933,7 +1933,7 @@ void BRepGraphInc_Populate::Perform(BRepGraphInc_Storage&      theStorage,
   const int aParallelWorkers = theParallel ? BRepGraph_ParallelPolicy::WorkerCount() : 1;
 
   // Phase 1 (sequential): Recursively explore hierarchy, collecting face contexts.
-  NCollection_Vector<FaceLocalData> aFaceData(256, aTmpAlloc);
+  NCollection_DynamicArray<FaceLocalData> aFaceData(256, aTmpAlloc);
   RepDedup                          aRepDedup;
 
   traverseHierarchy(theStorage, aFaceData, aRepDedup, theShape, TopLoc_Location());
@@ -2019,7 +2019,7 @@ void BRepGraphInc_Populate::AppendFlattened(
   BRepGraphInc_Storage&                         theStorage,
   const TopoDS_Shape&                           theShape,
   const bool                                    theParallel,
-  NCollection_Vector<BRepGraph_NodeId>&         theAppendedRoots,
+  NCollection_DynamicArray<BRepGraph_NodeId>&         theAppendedRoots,
   const Options&                                theOptions,
   BRepGraph_LayerParam*                         theParamLayer,
   BRepGraph_LayerRegularity*                    theRegularityLayer,
@@ -2047,7 +2047,7 @@ void BRepGraphInc_Populate::AppendFlattened(
   const uint32_t anOldNbSolidRefs  = theStorage.NbSolidRefs();
 
   // Collect face contexts by flattening hierarchy.
-  NCollection_Vector<FaceLocalData> aFaceData(256, aTmpAlloc);
+  NCollection_DynamicArray<FaceLocalData> aFaceData(256, aTmpAlloc);
   RepDedup                          aRepDedup;
 
   flattenForAppend(theStorage,
@@ -2134,7 +2134,7 @@ void BRepGraphInc_Populate::Append(BRepGraphInc_Storage&                        
 
   // Phase 1 (sequential): Traverse the full hierarchy.
   // Existing shapes are deduplicated via findExistingNode; only new shapes are added.
-  NCollection_Vector<FaceLocalData> aFaceData(256, aTmpAlloc);
+  NCollection_DynamicArray<FaceLocalData> aFaceData(256, aTmpAlloc);
   RepDedup                          aRepDedup;
   traverseHierarchy(theStorage, aFaceData, aRepDedup, theShape, TopLoc_Location());
 

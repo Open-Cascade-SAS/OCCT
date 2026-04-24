@@ -15,7 +15,7 @@
 
 #include <GeomGridEval_BSplineCurve.hxx>
 #include <math_Vector.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 
 //==================================================================================================
 
@@ -60,7 +60,7 @@ math_Vector ExtremaPC_BSplineCurve::buildKnotAwareParams() const
   const int aSamplesPerSpan = ExtremaPC::THE_BSPLINE_SPAN_MULTIPLIER * (aDegree + 1);
 
   // Single-pass algorithm using dynamic vector
-  NCollection_Vector<double> aParams;
+  NCollection_DynamicArray<double> aParams;
   aParams.Append(theUMin);
 
   for (int i = aKnots.Lower(); i < aKnots.Upper(); ++i)

@@ -47,7 +47,7 @@
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Extrema_ExtCC.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 
 #define FuncTol 1.e-10
 
@@ -83,7 +83,7 @@ struct SplitDS
 {
   SplitDS(const occ::handle<Adaptor3d_Curve>&   theCurve,
           const occ::handle<Adaptor3d_Surface>& theSurface,
-          NCollection_Vector<double>&           theSplits)
+          NCollection_DynamicArray<double>&           theSplits)
       : myCurve(theCurve),
         mySurface(theSurface),
         mySplits(theSplits),
@@ -98,7 +98,7 @@ struct SplitDS
 
   const occ::handle<Adaptor3d_Curve>   myCurve;
   const occ::handle<Adaptor3d_Surface> mySurface;
-  NCollection_Vector<double>&          mySplits;
+  NCollection_DynamicArray<double>&          mySplits;
 
   double myPerMinParam;
   double myPerMaxParam;
@@ -119,7 +119,7 @@ static void BuildCurveSplits(const occ::handle<Adaptor3d_Curve>&   theCurve,
                              const occ::handle<Adaptor3d_Surface>& theSurface,
                              const double                          theTolU,
                              const double                          theTolV,
-                             NCollection_Vector<double>&           theSplits);
+                             NCollection_DynamicArray<double>&           theSplits);
 
 //! Perform splitting on a specified direction. Sub-method in BuildCurveSplits.
 static void SplitOnDirection(SplitDS& theSplitDS);
@@ -640,7 +640,7 @@ occ::handle<Adaptor2d_Curve2d> ProjLib_CompProjectedCurve::ShallowCopy() const
 void ProjLib_CompProjectedCurve::Init()
 {
   myTabInt.Nullify();
-  NCollection_Vector<double> aSplits;
+  NCollection_DynamicArray<double> aSplits;
   aSplits.Clear();
 
   double Tol; // Tolerance for ExactBound
@@ -2109,7 +2109,7 @@ void BuildCurveSplits(const occ::handle<Adaptor3d_Curve>&   theCurve,
                       const occ::handle<Adaptor3d_Surface>& theSurface,
                       const double                          theTolU,
                       const double                          theTolV,
-                      NCollection_Vector<double>&           theSplits)
+                      NCollection_DynamicArray<double>&           theSplits)
 {
   SplitDS aDS(theCurve, theSurface, theSplits);
 

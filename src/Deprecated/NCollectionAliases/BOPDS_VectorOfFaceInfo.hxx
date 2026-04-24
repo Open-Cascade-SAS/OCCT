@@ -14,20 +14,20 @@
 //! @file BOPDS_VectorOfFaceInfo.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_Vector<BOPDS_FaceInfo> directly instead.
+//!             Use NCollection_DynamicArray<BOPDS_FaceInfo> directly instead.
 
 #ifndef _BOPDS_VectorOfFaceInfo_hxx
 #define _BOPDS_VectorOfFaceInfo_hxx
 
 #include <Standard_Macro.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <BOPDS_FaceInfo.hxx>
 
 Standard_HEADER_DEPRECATED("BOPDS_VectorOfFaceInfo.hxx is deprecated since OCCT 8.0.0. Use "
-                           "NCollection_Vector<BOPDS_FaceInfo> directly.")
+                           "NCollection_DynamicArray<BOPDS_FaceInfo> directly.")
 
   Standard_DEPRECATED(
-    "BOPDS_VectorOfFaceInfo is deprecated, use NCollection_Vector<BOPDS_FaceInfo> directly")
-typedef NCollection_Vector<BOPDS_FaceInfo> BOPDS_VectorOfFaceInfo;
+    "BOPDS_VectorOfFaceInfo is deprecated, use NCollection_DynamicArray<BOPDS_FaceInfo> directly")
+typedef NCollection_DynamicArray<BOPDS_FaceInfo> BOPDS_VectorOfFaceInfo;
 
 #endif // _BOPDS_VectorOfFaceInfo_hxx

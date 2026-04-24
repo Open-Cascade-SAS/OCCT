@@ -41,9 +41,9 @@ static double translationX(const TopoDS_Shape& theShape)
   return theShape.Location().Transformation().TranslationPart().X();
 }
 
-NCollection_Vector<BRepGraph_ProductId> collectRootProducts(const BRepGraph& theGraph)
+NCollection_DynamicArray<BRepGraph_ProductId> collectRootProducts(const BRepGraph& theGraph)
 {
-  NCollection_Vector<BRepGraph_ProductId> aRoots(4);
+  NCollection_DynamicArray<BRepGraph_ProductId> aRoots(4);
   for (BRepGraph_RootProductIterator aRootIt(theGraph); aRootIt.More(); aRootIt.Next())
   {
     aRoots.Append(aRootIt.Current());
@@ -51,7 +51,7 @@ NCollection_Vector<BRepGraph_ProductId> collectRootProducts(const BRepGraph& the
   return aRoots;
 }
 
-bool hasRootProduct(const NCollection_Vector<BRepGraph_ProductId>& theRoots,
+bool hasRootProduct(const NCollection_DynamicArray<BRepGraph_ProductId>& theRoots,
                     const BRepGraph_ProductId                      theProduct)
 {
   for (const BRepGraph_ProductId& aRoot : theRoots)
@@ -256,7 +256,7 @@ TEST(BRepGraph_AssemblyTest, RootProductIds_Query)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Auto-created root product is the first root.
-  NCollection_Vector<BRepGraph_ProductId> aRoots = collectRootProducts(aGraph);
+  NCollection_DynamicArray<BRepGraph_ProductId> aRoots = collectRootProducts(aGraph);
   EXPECT_EQ(aRoots.Length(), 1);
   EXPECT_EQ(aRoots.Value(0), BRepGraph_ProductId::Start());
 
@@ -286,7 +286,7 @@ TEST(BRepGraph_AssemblyTest, RootProductIds_ShapelessRootAssembly_UsesProductId)
   ASSERT_TRUE(
     aGraph.Editor().Products().AddOccurrence(aAssemblyId, aPartId, TopLoc_Location()).IsValid());
 
-  const NCollection_Vector<BRepGraph_ProductId>& aRoots = aGraph.RootProductIds();
+  const NCollection_DynamicArray<BRepGraph_ProductId>& aRoots = aGraph.RootProductIds();
   ASSERT_EQ(aRoots.Length(), 1);
   EXPECT_EQ(aRoots.Value(0), aAssemblyId);
 }
@@ -301,7 +301,7 @@ TEST(BRepGraph_AssemblyTest, RootProductIds_ReflectsAssemblyMutation)
   BRepGraph_Builder::Perform(aGraph, BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  const NCollection_Vector<BRepGraph_ProductId> aRootsBefore = collectRootProducts(aGraph);
+  const NCollection_DynamicArray<BRepGraph_ProductId> aRootsBefore = collectRootProducts(aGraph);
   ASSERT_EQ(aRootsBefore.Length(), 1);
   EXPECT_EQ(aRootsBefore.Value(0), BRepGraph_ProductId::Start());
 
@@ -310,7 +310,7 @@ TEST(BRepGraph_AssemblyTest, RootProductIds_ReflectsAssemblyMutation)
                                                  BRepGraph_ProductId::Start(),
                                                  TopLoc_Location());
 
-  const NCollection_Vector<BRepGraph_ProductId> aRootsAfter = collectRootProducts(aGraph);
+  const NCollection_DynamicArray<BRepGraph_ProductId> aRootsAfter = collectRootProducts(aGraph);
   ASSERT_EQ(aRootsAfter.Length(), 1);
   EXPECT_EQ(aRootsAfter.Value(0), aAssemblyId);
 }
@@ -331,7 +331,7 @@ TEST(BRepGraph_AssemblyTest, RemoveOccurrence_UpdatesParent)
     aGraph.Editor().Products().AddOccurrence(aAssemblyId, aPartId, TopLoc_Location());
 
   EXPECT_EQ(aGraph.Topo().Products().NbComponents(aAssemblyId), 1);
-  const NCollection_Vector<BRepGraph_OccurrenceRefId>& aBeforeRefs =
+  const NCollection_DynamicArray<BRepGraph_OccurrenceRefId>& aBeforeRefs =
     aGraph.Refs().Occurrences().IdsOf(aAssemblyId);
   ASSERT_EQ(aBeforeRefs.Length(), 1);
   const BRepGraph_OccurrenceRefId anOccRefId = aBeforeRefs.Value(0);
@@ -342,7 +342,7 @@ TEST(BRepGraph_AssemblyTest, RemoveOccurrence_UpdatesParent)
 
   EXPECT_TRUE(aGraph.Topo().Gen().IsRemoved(anOccId));
   EXPECT_EQ(aGraph.Topo().Products().NbComponents(aAssemblyId), 0);
-  const NCollection_Vector<BRepGraph_OccurrenceRefId>& anAfterRefs =
+  const NCollection_DynamicArray<BRepGraph_OccurrenceRefId>& anAfterRefs =
     aGraph.Refs().Occurrences().IdsOf(aAssemblyId);
   EXPECT_EQ(anAfterRefs.Length(), 0);
   EXPECT_TRUE(aGraph.Refs().Occurrences().Entry(anOccRefId).IsRemoved);
@@ -485,7 +485,7 @@ TEST(BRepGraph_AssemblyTest, MutOccurrenceRef_LocalLocation)
   ASSERT_TRUE(anOccId.IsValid());
 
   // Find the OccurrenceRefId for the occurrence.
-  const NCollection_Vector<BRepGraph_OccurrenceRefId>& aOccRefs =
+  const NCollection_DynamicArray<BRepGraph_OccurrenceRefId>& aOccRefs =
     aGraph.Refs().Occurrences().IdsOf(aAssemblyId);
   ASSERT_EQ(aOccRefs.Length(), 1);
   const BRepGraph_OccurrenceRefId anOccRefId = aOccRefs.Value(0);
@@ -742,7 +742,7 @@ TEST(BRepGraph_AssemblyTest, RootProducts_RemovedOccurrence_DoesNotAffectRoots)
     aGraph.Editor().Products().AddOccurrence(aAssemblyId, aPartId, TopLoc_Location());
 
   // Before removal: only assembly is root (part is referenced).
-  NCollection_Vector<BRepGraph_ProductId> aRoots = collectRootProducts(aGraph);
+  NCollection_DynamicArray<BRepGraph_ProductId> aRoots = collectRootProducts(aGraph);
   EXPECT_EQ(aRoots.Length(), 1);
   EXPECT_EQ(aRoots.Value(0), aAssemblyId);
 

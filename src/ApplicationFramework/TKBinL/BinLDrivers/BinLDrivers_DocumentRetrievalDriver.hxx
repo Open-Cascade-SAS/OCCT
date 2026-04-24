@@ -22,7 +22,7 @@
 #include <BinObjMgt_RRelocationTable.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_Map.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <BinLDrivers_DocumentSection.hxx>
 #include <PCDM_RetrievalDriver.hxx>
 #include <Standard_IStream.hxx>
@@ -119,7 +119,7 @@ protected:
 private:
   BinObjMgt_Persistent                            myPAtt;
   NCollection_Map<int>                            myMapUnsupported;
-  NCollection_Vector<BinLDrivers_DocumentSection> mySections;
+  NCollection_DynamicArray<BinLDrivers_DocumentSection> mySections;
   NCollection_Map<int>                            myUnresolvedLinks;
 };
 

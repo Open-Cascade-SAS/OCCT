@@ -19,7 +19,7 @@
 #include <MathRoot_Multiple.hxx>
 #include <math_Vector.hxx>
 
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 
 #include <cmath>
 
@@ -39,9 +39,9 @@ struct NullInterval
 struct AllRootsResult
 {
   MathUtils::Status                Status = MathUtils::Status::NotConverged;
-  NCollection_Vector<double>       Roots;         //!< Isolated root locations
-  NCollection_Vector<int>          RootStates;    //!< State numbers for roots
-  NCollection_Vector<NullInterval> NullIntervals; //!< Intervals where function is null
+  NCollection_DynamicArray<double>       Roots;         //!< Isolated root locations
+  NCollection_DynamicArray<int>          RootStates;    //!< State numbers for roots
+  NCollection_DynamicArray<NullInterval> NullIntervals; //!< Intervals where function is null
 
   bool IsDone() const { return Status == MathUtils::Status::OK; }
 
@@ -138,7 +138,7 @@ AllRootsResult FindAllRootsWithIntervals(Func&              theFunc,
   double aDebNul = 0.0, aFinNul = 0.0;
   double aValSav = aPrevVal;
 
-  NCollection_Vector<double> aIntervalStarts, aIntervalEnds;
+  NCollection_DynamicArray<double> aIntervalStarts, aIntervalEnds;
 
   // Scan through samples to find null intervals
   for (int i = 1; i < aNbp; ++i)

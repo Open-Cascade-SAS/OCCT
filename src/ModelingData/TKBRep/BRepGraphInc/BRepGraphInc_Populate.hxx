@@ -17,7 +17,7 @@
 #include <BRepGraph_NodeId.hxx>
 
 #include <NCollection_BaseAllocator.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <Standard_DefineAlloc.hxx>
 
 class TopoDS_Shape;
@@ -87,7 +87,7 @@ public:
     BRepGraphInc_Storage&                         theStorage,
     const TopoDS_Shape&                           theShape,
     const bool                                    theParallel,
-    NCollection_Vector<BRepGraph_NodeId>&         theAppendedRoots,
+    NCollection_DynamicArray<BRepGraph_NodeId>&         theAppendedRoots,
     const Options&                                theOptions         = Options(),
     BRepGraph_LayerParam*                         theParamLayer      = nullptr,
     BRepGraph_LayerRegularity*                    theRegularityLayer = nullptr,

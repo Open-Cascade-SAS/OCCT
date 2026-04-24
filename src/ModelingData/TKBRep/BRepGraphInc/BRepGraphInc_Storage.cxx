@@ -19,7 +19,7 @@ namespace
 {
 
 template <typename T>
-bool containsNodeIndex(const NCollection_Vector<T>* theVec, const uint32_t theIndex)
+bool containsNodeIndex(const NCollection_DynamicArray<T>* theVec, const uint32_t theIndex)
 {
   if (theVec == nullptr)
   {
@@ -86,7 +86,7 @@ BRepGraphInc_Storage::BRepGraphInc_Storage(const occ::handle<NCollection_BaseAll
 
 //=================================================================================================
 
-const NCollection_Vector<BRepGraph_UID>& BRepGraphInc_Storage::UIDs(
+const NCollection_DynamicArray<BRepGraph_UID>& BRepGraphInc_Storage::UIDs(
   const BRepGraph_NodeId::Kind theKind) const
 {
   switch (theKind)
@@ -117,13 +117,13 @@ const NCollection_Vector<BRepGraph_UID>& BRepGraphInc_Storage::UIDs(
       break;
   }
   Standard_ASSERT_VOID(false, "UIDs: unhandled Kind");
-  static const NCollection_Vector<BRepGraph_UID> THE_EMPTY;
+  static const NCollection_DynamicArray<BRepGraph_UID> THE_EMPTY;
   return THE_EMPTY;
 }
 
 //=================================================================================================
 
-NCollection_Vector<BRepGraph_UID>& BRepGraphInc_Storage::ChangeUIDs(
+NCollection_DynamicArray<BRepGraph_UID>& BRepGraphInc_Storage::ChangeUIDs(
   const BRepGraph_NodeId::Kind theKind)
 {
   switch (theKind)
@@ -174,7 +174,7 @@ void BRepGraphInc_Storage::ResetAllUIDs()
 
 //=================================================================================================
 
-const NCollection_Vector<BRepGraph_RefUID>& BRepGraphInc_Storage::RefUIDs(
+const NCollection_DynamicArray<BRepGraph_RefUID>& BRepGraphInc_Storage::RefUIDs(
   const BRepGraph_RefId::Kind theKind) const
 {
   switch (theKind)
@@ -199,13 +199,13 @@ const NCollection_Vector<BRepGraph_RefUID>& BRepGraphInc_Storage::RefUIDs(
       break;
   }
   Standard_ASSERT_VOID(false, "RefUIDs: unhandled Kind");
-  static const NCollection_Vector<BRepGraph_RefUID> THE_EMPTY;
+  static const NCollection_DynamicArray<BRepGraph_RefUID> THE_EMPTY;
   return THE_EMPTY;
 }
 
 //=================================================================================================
 
-NCollection_Vector<BRepGraph_RefUID>& BRepGraphInc_Storage::ChangeRefUIDs(
+NCollection_DynamicArray<BRepGraph_RefUID>& BRepGraphInc_Storage::ChangeRefUIDs(
   const BRepGraph_RefId::Kind theKind)
 {
   switch (theKind)
@@ -661,7 +661,7 @@ bool BRepGraphInc_Storage::ValidateReverseIndex() const
   for (BRepGraph_EdgeId anEdgeId = BRepGraph_EdgeId::Start(); anEdgeId.IsValid(myEdges.Nb());
        ++anEdgeId)
   {
-    const NCollection_Vector<BRepGraph_CoEdgeId>* aCoEdges = myReverseIdx.CoEdgesOfEdge(anEdgeId);
+    const NCollection_DynamicArray<BRepGraph_CoEdgeId>* aCoEdges = myReverseIdx.CoEdgesOfEdge(anEdgeId);
     if (aCoEdges == nullptr)
     {
       continue;
@@ -836,7 +836,7 @@ bool BRepGraphInc_Storage::ValidateReverseIndex() const
        aProductId.IsValid(myProducts.Nb());
        ++aProductId)
   {
-    const NCollection_Vector<BRepGraph_OccurrenceId>* anOccs =
+    const NCollection_DynamicArray<BRepGraph_OccurrenceId>* anOccs =
       myReverseIdx.OccurrencesOfProduct(aProductId);
     if (anOccs == nullptr)
     {

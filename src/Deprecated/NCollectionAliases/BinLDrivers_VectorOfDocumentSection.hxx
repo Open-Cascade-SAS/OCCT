@@ -14,20 +14,20 @@
 //! @file BinLDrivers_VectorOfDocumentSection.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_Vector<BinLDrivers_DocumentSection> directly instead.
+//!             Use NCollection_DynamicArray<BinLDrivers_DocumentSection> directly instead.
 
 #ifndef _BinLDrivers_VectorOfDocumentSection_hxx
 #define _BinLDrivers_VectorOfDocumentSection_hxx
 
 #include <Standard_Macro.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <BinLDrivers_DocumentSection.hxx>
 
 Standard_HEADER_DEPRECATED("BinLDrivers_VectorOfDocumentSection.hxx is deprecated since OCCT "
-                           "8.0.0. Use NCollection_Vector<BinLDrivers_DocumentSection> directly.")
+                           "8.0.0. Use NCollection_DynamicArray<BinLDrivers_DocumentSection> directly.")
 
   Standard_DEPRECATED("BinLDrivers_VectorOfDocumentSection is deprecated, use "
-                      "NCollection_Vector<BinLDrivers_DocumentSection> directly")
-typedef NCollection_Vector<BinLDrivers_DocumentSection> BinLDrivers_VectorOfDocumentSection;
+                      "NCollection_DynamicArray<BinLDrivers_DocumentSection> directly")
+typedef NCollection_DynamicArray<BinLDrivers_DocumentSection> BinLDrivers_VectorOfDocumentSection;
 
 #endif // _BinLDrivers_VectorOfDocumentSection_hxx

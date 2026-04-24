@@ -52,7 +52,7 @@ const occ::handle<BRepGraph_CacheKind>& testUserAttrKind()
 }
 
 template <class theRefIdType, class theRefFn>
-static int countActiveRefs(const NCollection_Vector<theRefIdType>& theRefIds,
+static int countActiveRefs(const NCollection_DynamicArray<theRefIdType>& theRefIds,
                            const theRefFn&                         theRefAccess)
 {
   int aCount = 0;
@@ -231,7 +231,7 @@ TEST_F(BRepGraph_ViewsTest, DefsView_RepIdConvenienceAccessors_RoundTrip)
   EXPECT_EQ(myGraph.Topo().Edges().Curve3DRepId(anEdgeId),
             myGraph.Topo().Edges().Definition(anEdgeId).Curve3DRepId);
 
-  const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdges = myGraph.Topo().Edges().CoEdges(anEdgeId);
+  const NCollection_DynamicArray<BRepGraph_CoEdgeId>& aCoEdges = myGraph.Topo().Edges().CoEdges(anEdgeId);
   ASSERT_GT(aCoEdges.Length(), 0);
   const BRepGraph_CoEdgeId aCoEdgeId = aCoEdges.Value(0);
   EXPECT_EQ(myGraph.Topo().CoEdges().Curve2DRepId(aCoEdgeId),
@@ -274,7 +274,7 @@ TEST_F(BRepGraph_ViewsTest, UIDsView_NodeIdFrom_RoundTrip)
 
 TEST_F(BRepGraph_ViewsTest, UIDsView_NodeIdFrom_MultipleRoundTrip)
 {
-  NCollection_Vector<BRepGraph_UID> aUIDs;
+  NCollection_DynamicArray<BRepGraph_UID> aUIDs;
   const BRepGraph_UID               aFaceUID  = myGraph.UIDs().Of(BRepGraph_FaceId::Start());
   const BRepGraph_UID               anEdgeUID = myGraph.UIDs().Of(BRepGraph_EdgeId::Start());
   ASSERT_TRUE(aFaceUID.IsValid());
@@ -290,7 +290,7 @@ TEST_F(BRepGraph_ViewsTest, UIDsView_NodeIdFrom_MultipleRoundTrip)
 
 TEST_F(BRepGraph_ViewsTest, UIDsView_NodeIdFrom_InvalidAndWrongGeneration)
 {
-  NCollection_Vector<BRepGraph_UID> aUIDs;
+  NCollection_DynamicArray<BRepGraph_UID> aUIDs;
   aUIDs.Append(BRepGraph_UID());
   aUIDs.Append(BRepGraph_UID(BRepGraph_NodeId::Kind::Face, 1, myGraph.UIDs().Generation() + 1));
 
@@ -326,7 +326,7 @@ TEST_F(BRepGraph_ViewsTest, UIDsView_Of_RemovedNode_ReturnsInvalid)
 
 TEST_F(BRepGraph_ViewsTest, UIDsView_RefLookup_RemovedRef_ReturnsInvalidAndHasFalse)
 {
-  const NCollection_Vector<BRepGraph_FaceRefId>& aFaceRefs =
+  const NCollection_DynamicArray<BRepGraph_FaceRefId>& aFaceRefs =
     myGraph.Refs().Faces().IdsOf(BRepGraph_ShellId::Start());
   ASSERT_GT(aFaceRefs.Length(), 0);
   const BRepGraph_FaceRefId aFaceRefId = aFaceRefs.Value(0);
@@ -344,7 +344,7 @@ TEST_F(BRepGraph_ViewsTest, UIDsView_RefLookup_RemovedRef_ReturnsInvalidAndHasFa
 
 TEST_F(BRepGraph_ViewsTest, UIDsView_Of_RemovedRef_ReturnsInvalid)
 {
-  const NCollection_Vector<BRepGraph_FaceRefId>& aFaceRefs =
+  const NCollection_DynamicArray<BRepGraph_FaceRefId>& aFaceRefs =
     myGraph.Refs().Faces().IdsOf(BRepGraph_ShellId::Start());
   ASSERT_GT(aFaceRefs.Length(), 0);
   const BRepGraph_FaceRefId aFaceRefId = aFaceRefs.Value(0);
@@ -367,7 +367,7 @@ TEST_F(BRepGraph_ViewsTest, UIDsView_Of_OutOfRangeRef_ReturnsInvalid)
 TEST_F(BRepGraph_ViewsTest, SpatialView_AdjacentFaces_FourPerBoxFace)
 {
   BRepGraph_FaceId                     aFaceId(0);
-  NCollection_Vector<BRepGraph_FaceId> aResult =
+  NCollection_DynamicArray<BRepGraph_FaceId> aResult =
     myGraph.Topo().Faces().Adjacent(aFaceId, myGraph.Allocator());
   EXPECT_EQ(aResult.Length(), 4);
 }
@@ -375,7 +375,7 @@ TEST_F(BRepGraph_ViewsTest, SpatialView_AdjacentFaces_FourPerBoxFace)
 TEST_F(BRepGraph_ViewsTest, SpatialView_FacesOfEdge_TwoPerBoxEdge)
 {
   BRepGraph_EdgeId                            anEdgeId(0);
-  const NCollection_Vector<BRepGraph_FaceId>& aResult = myGraph.Topo().Edges().Faces(anEdgeId);
+  const NCollection_DynamicArray<BRepGraph_FaceId>& aResult = myGraph.Topo().Edges().Faces(anEdgeId);
   EXPECT_EQ(aResult.Length(), 2);
 }
 
@@ -386,11 +386,11 @@ TEST_F(BRepGraph_ViewsTest, SpatialView_OutParam_Parity)
   const BRepGraph_VertexId                      aVertexId(0);
   const occ::handle<NCollection_BaseAllocator>& anAllocator = myGraph.Allocator();
 
-  const NCollection_Vector<BRepGraph_FaceId> aAdjacentByValue =
+  const NCollection_DynamicArray<BRepGraph_FaceId> aAdjacentByValue =
     myGraph.Topo().Faces().Adjacent(aFaceId, anAllocator);
   EXPECT_EQ(aAdjacentByValue.Length(), 4);
 
-  const NCollection_Vector<BRepGraph_EdgeId> anAdjEdgesByValue =
+  const NCollection_DynamicArray<BRepGraph_EdgeId> anAdjEdgesByValue =
     myGraph.Topo().Edges().Adjacent(anEdgeId, anAllocator);
   EXPECT_GE(anAdjEdgesByValue.Length(), 4);
 }
@@ -475,7 +475,7 @@ TEST_F(BRepGraph_ViewsTest, TopoView_GroupedProductAndOccurrenceOps_Parity)
   EXPECT_EQ(myGraph.Topo().Occurrences().Product(aPartOccurrence), aPartProduct);
   EXPECT_EQ(myGraph.Topo().Occurrences().ParentProduct(aPartOccurrence), aSubAssembly);
 
-  const NCollection_Vector<BRepGraph_OccurrenceRefId>& aOccurrenceRefs =
+  const NCollection_DynamicArray<BRepGraph_OccurrenceRefId>& aOccurrenceRefs =
     myGraph.Refs().Occurrences().IdsOf(aSubAssembly);
   ASSERT_EQ(aOccurrenceRefs.Length(), 1);
   {
@@ -491,12 +491,12 @@ TEST_F(BRepGraph_ViewsTest, SpatialView_OutParam_ClearAndInvalid)
 {
   const occ::handle<NCollection_BaseAllocator>& anAllocator = myGraph.Allocator();
 
-  const NCollection_Vector<BRepGraph_FaceId> aFaceResult =
+  const NCollection_DynamicArray<BRepGraph_FaceId> aFaceResult =
     myGraph.Topo().Faces().Adjacent(BRepGraph_FaceId::Start(), anAllocator);
   EXPECT_EQ(aFaceResult.Length(), 4);
   EXPECT_EQ(myGraph.Topo().Faces().Adjacent(BRepGraph_FaceId(999), anAllocator).Length(), 0);
 
-  const NCollection_Vector<BRepGraph_EdgeId> anAdjEdgeResult =
+  const NCollection_DynamicArray<BRepGraph_EdgeId> anAdjEdgeResult =
     myGraph.Topo().Edges().Adjacent(BRepGraph_EdgeId::Start(), anAllocator);
   EXPECT_GE(anAdjEdgeResult.Length(), 4);
   EXPECT_EQ(myGraph.Topo().Edges().Adjacent(BRepGraph_EdgeId(999), anAllocator).Length(), 0);
@@ -619,7 +619,7 @@ TEST_F(BRepGraph_ViewsTest, EdgeOps_FindCoEdgeId_ValidPair)
   (void)anEdgeDef;
 
   // Use reverse index to get a face for this edge.
-  const NCollection_Vector<BRepGraph_FaceId>& aFaces = myGraph.Topo().Edges().Faces(anEdge);
+  const NCollection_DynamicArray<BRepGraph_FaceId>& aFaces = myGraph.Topo().Edges().Faces(anEdge);
   ASSERT_GT(aFaces.Length(), 0);
   const BRepGraph_FaceId aFace = aFaces.Value(0);
 
@@ -637,7 +637,7 @@ TEST_F(BRepGraph_ViewsTest, EdgeOps_FindCoEdgeId_InvalidPair_ReturnsInvalid)
   // Use a valid edge but a face that doesn't share it.
   // Edge 0 and the last face are very unlikely to share a coedge in a box.
   const BRepGraph_EdgeId                      anEdge(0);
-  const NCollection_Vector<BRepGraph_FaceId>& aEdgeFaces = myGraph.Topo().Edges().Faces(anEdge);
+  const NCollection_DynamicArray<BRepGraph_FaceId>& aEdgeFaces = myGraph.Topo().Edges().Faces(anEdge);
 
   // Find a face NOT adjacent to edge 0.
   BRepGraph_FaceId aNonAdjacentFace;
@@ -780,7 +780,7 @@ TEST_F(BRepGraph_ViewsTest, RefsView_RefIdsOf_MatchFreshBuild)
 TEST_F(BRepGraph_ViewsTest, RefsView_FaceRefIdsOf_LocalFilteringHandlesRemoved)
 {
   const BRepGraph_ShellId                        aShellId(0);
-  const NCollection_Vector<BRepGraph_FaceRefId>& aFaceRefs = myGraph.Refs().Faces().IdsOf(aShellId);
+  const NCollection_DynamicArray<BRepGraph_FaceRefId>& aFaceRefs = myGraph.Refs().Faces().IdsOf(aShellId);
   ASSERT_GT(aFaceRefs.Length(), 0);
 
   {
@@ -814,7 +814,7 @@ TEST_F(BRepGraph_ViewsTest, RefsView_VertexRefIdsOfEdge_ContainsBoundaryVertices
 
 TEST_F(BRepGraph_ViewsTest, RefsView_GenericRefHelpers_RoundTripForTypedRef)
 {
-  const NCollection_Vector<BRepGraph_FaceRefId>& aFaceRefs =
+  const NCollection_DynamicArray<BRepGraph_FaceRefId>& aFaceRefs =
     myGraph.Refs().Faces().IdsOf(BRepGraph_ShellId::Start());
   ASSERT_GT(aFaceRefs.Length(), 0);
 
@@ -873,7 +873,7 @@ TEST_F(BRepGraph_ViewsTest, RefsView_GenericRefHelpers_OccurrenceDefaults)
                 .AddOccurrence(anAssembly, aPartProduct, TopLoc_Location(aTrsf))
                 .IsValid());
 
-  const NCollection_Vector<BRepGraph_OccurrenceRefId>& anOccurrenceRefs =
+  const NCollection_DynamicArray<BRepGraph_OccurrenceRefId>& anOccurrenceRefs =
     myGraph.Refs().Occurrences().IdsOf(anAssembly);
   ASSERT_EQ(anOccurrenceRefs.Length(), 1);
 
@@ -893,7 +893,7 @@ TEST_F(BRepGraph_ViewsTest, RefsView_GenericRefHelpers_InvalidAndRemoved)
   EXPECT_EQ(myGraph.Refs().Orientation(BRepGraph_RefId()), TopAbs_FORWARD);
   EXPECT_TRUE(myGraph.Refs().IsRemoved(BRepGraph_RefId()));
 
-  const NCollection_Vector<BRepGraph_FaceRefId>& aFaceRefs =
+  const NCollection_DynamicArray<BRepGraph_FaceRefId>& aFaceRefs =
     myGraph.Refs().Faces().IdsOf(BRepGraph_ShellId::Start());
   ASSERT_GT(aFaceRefs.Length(), 0);
   const BRepGraph_FaceRefId aFaceRefId = aFaceRefs.Value(0);
@@ -1014,7 +1014,7 @@ TEST_F(BRepGraph_ViewsTest, MutView_RemovedNode_ThrowsProgramError)
 
 TEST_F(BRepGraph_ViewsTest, MutView_RemovedRef_ThrowsProgramError)
 {
-  const NCollection_Vector<BRepGraph_FaceRefId>& aFaceRefs =
+  const NCollection_DynamicArray<BRepGraph_FaceRefId>& aFaceRefs =
     myGraph.Refs().Faces().IdsOf(BRepGraph_ShellId::Start());
   ASSERT_GT(aFaceRefs.Length(), 0);
   const BRepGraph_FaceRefId aFaceRefId = aFaceRefs.Value(0);
@@ -1082,7 +1082,7 @@ TEST_F(BRepGraph_ViewsTest, EditorView_RemoveRep_CurveAndPCurve_HideCurveQueries
   EXPECT_FALSE(BRepGraph_Tool::Edge::HasCurve(myGraph, anEdgeId));
   EXPECT_TRUE(BRepGraph_Tool::Edge::Curve(myGraph, anEdgeId).IsNull());
 
-  const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdges = myGraph.Topo().Edges().CoEdges(anEdgeId);
+  const NCollection_DynamicArray<BRepGraph_CoEdgeId>& aCoEdges = myGraph.Topo().Edges().CoEdges(anEdgeId);
   ASSERT_GT(aCoEdges.Length(), 0);
   const BRepGraph_CoEdgeId     aCoEdgeId     = aCoEdges.Value(0);
   const BRepGraph_Curve2DRepId aCurve2DRepId = myGraph.Topo().CoEdges().Curve2DRepId(aCoEdgeId);

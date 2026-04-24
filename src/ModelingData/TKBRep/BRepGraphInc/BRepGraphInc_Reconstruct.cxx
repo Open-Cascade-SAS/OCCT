@@ -753,7 +753,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(
   // Add wires to face: outer first, then inner.
   // Wire orientation must be applied before adding to face.
   TopoDS_Wire                     anOuterWire;
-  NCollection_Vector<TopoDS_Wire> anInnerWires(Cache::THE_DEFAULT_INCREMENT,
+  NCollection_DynamicArray<TopoDS_Wire> anInnerWires(Cache::THE_DEFAULT_INCREMENT,
                                                theCache.myTempAllocator);
   for (const BRepGraph_WireRefId& aWireRefId : aFace.WireRefIds)
   {

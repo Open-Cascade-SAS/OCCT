@@ -42,10 +42,10 @@ void OpenGl_TextBuilder::createGlyphs(
   const occ::handle<Font_TextFormatter>& theFormatter,
   const occ::handle<OpenGl_Context>&     theCtx,
   OpenGl_Font&                           theFont,
-  NCollection_Vector<GLuint>&            theTextures,
-  NCollection_Vector<NCollection_Handle<NCollection_Vector<NCollection_Vec2<float>>>>&
+  NCollection_DynamicArray<GLuint>&            theTextures,
+  NCollection_DynamicArray<NCollection_Handle<NCollection_DynamicArray<NCollection_Vec2<float>>>>&
     theVertsPerTexture,
-  NCollection_Vector<NCollection_Handle<NCollection_Vector<NCollection_Vec2<float>>>>&
+  NCollection_DynamicArray<NCollection_Handle<NCollection_DynamicArray<NCollection_Vec2<float>>>>&
     theTCrdsPerTexture)
 {
   NCollection_Vec2<float> aVec(0.0f, 0.0f);
@@ -83,12 +83,12 @@ void OpenGl_TextBuilder::createGlyphs(
     if (aListId >= theTextures.Length())
     {
       theTextures.Append(aTexture);
-      theVertsPerTexture.Append(new NCollection_Vector<NCollection_Vec2<float>>());
-      theTCrdsPerTexture.Append(new NCollection_Vector<NCollection_Vec2<float>>());
+      theVertsPerTexture.Append(new NCollection_DynamicArray<NCollection_Vec2<float>>());
+      theTCrdsPerTexture.Append(new NCollection_DynamicArray<NCollection_Vec2<float>>());
     }
 
-    NCollection_Vector<NCollection_Vec2<float>>& aVerts = *theVertsPerTexture.ChangeValue(aListId);
-    NCollection_Vector<NCollection_Vec2<float>>& aTCrds = *theTCrdsPerTexture.ChangeValue(aListId);
+    NCollection_DynamicArray<NCollection_Vec2<float>>& aVerts = *theVertsPerTexture.ChangeValue(aListId);
+    NCollection_DynamicArray<NCollection_Vec2<float>>& aTCrds = *theTCrdsPerTexture.ChangeValue(aListId);
 
     // apply floor on position to avoid blurring issues
     // due to cross-pixel coordinates
@@ -114,13 +114,13 @@ void OpenGl_TextBuilder::Perform(
   const occ::handle<Font_TextFormatter>&                theFormatter,
   const occ::handle<OpenGl_Context>&                    theCtx,
   OpenGl_Font&                                          theFont,
-  NCollection_Vector<GLuint>&                           theTextures,
-  NCollection_Vector<occ::handle<OpenGl_VertexBuffer>>& theVertsPerTexture,
-  NCollection_Vector<occ::handle<OpenGl_VertexBuffer>>& theTCrdsPerTexture)
+  NCollection_DynamicArray<GLuint>&                           theTextures,
+  NCollection_DynamicArray<occ::handle<OpenGl_VertexBuffer>>& theVertsPerTexture,
+  NCollection_DynamicArray<occ::handle<OpenGl_VertexBuffer>>& theTCrdsPerTexture)
 {
-  NCollection_Vector<NCollection_Handle<NCollection_Vector<NCollection_Vec2<float>>>>
+  NCollection_DynamicArray<NCollection_Handle<NCollection_DynamicArray<NCollection_Vec2<float>>>>
     aVertsPerTexture;
-  NCollection_Vector<NCollection_Handle<NCollection_Vector<NCollection_Vec2<float>>>>
+  NCollection_DynamicArray<NCollection_Handle<NCollection_DynamicArray<NCollection_Vec2<float>>>>
     aTCrdsPerTexture;
 
   createGlyphs(theFormatter, theCtx, theFont, theTextures, aVertsPerTexture, aTCrdsPerTexture);
@@ -158,7 +158,7 @@ void OpenGl_TextBuilder::Perform(
 
   for (int aTextureIter = 0; aTextureIter < theTextures.Length(); ++aTextureIter)
   {
-    const NCollection_Vector<NCollection_Vec2<float>>& aVerts =
+    const NCollection_DynamicArray<NCollection_Vec2<float>>& aVerts =
       *aVertsPerTexture.Value(aTextureIter);
     occ::handle<OpenGl_VertexBuffer>& aVertsVbo = theVertsPerTexture.ChangeValue(aTextureIter);
     if (!aVertsVbo->Init(theCtx, 2, aVerts.Length(), (GLfloat*)nullptr)
@@ -172,7 +172,7 @@ void OpenGl_TextBuilder::Perform(
     }
     myVboEditor.Flush();
 
-    const NCollection_Vector<NCollection_Vec2<float>>& aTCrds =
+    const NCollection_DynamicArray<NCollection_Vec2<float>>& aTCrds =
       *aTCrdsPerTexture.Value(aTextureIter);
     occ::handle<OpenGl_VertexBuffer>& aTCrdsVbo = theTCrdsPerTexture.ChangeValue(aTextureIter);
     if (!aTCrdsVbo->Init(theCtx, 2, aVerts.Length(), (GLfloat*)nullptr)

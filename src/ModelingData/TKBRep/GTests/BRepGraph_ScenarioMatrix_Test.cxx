@@ -206,7 +206,7 @@ TEST(BRepGraph_ScenarioMatrix, Cylinder_SeamEdge_MutationAndBothSubsystemsConsis
     for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges) && !aSeamEdgeId.IsValid();
          ++anEdgeId)
     {
-      const NCollection_Vector<BRepGraph_CoEdgeId>* aCoEdges =
+      const NCollection_DynamicArray<BRepGraph_CoEdgeId>* aCoEdges =
         aOrigStorage.ReverseIndex().CoEdgesOfEdge(anEdgeId);
       if (aCoEdges == nullptr)
         continue;
@@ -259,7 +259,7 @@ TEST(BRepGraph_ScenarioMatrix, Cylinder_SeamEdge_MutationAndBothSubsystemsConsis
     const int aNbEdges = aReconStorage.NbEdges();
     for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges) && !aSeamFound; ++anEdgeId)
     {
-      const NCollection_Vector<BRepGraph_CoEdgeId>* aCoEdges =
+      const NCollection_DynamicArray<BRepGraph_CoEdgeId>* aCoEdges =
         aReconStorage.ReverseIndex().CoEdgesOfEdge(anEdgeId);
       if (aCoEdges == nullptr)
         continue;
@@ -316,7 +316,7 @@ TEST(BRepGraph_ScenarioMatrix, CompSolid_TwoBoxes_BothSubsystemsMutateReconstruc
        aSolidId.IsValid(aOrigStorage.NbSolids());
        ++aSolidId)
   {
-    const NCollection_Vector<BRepGraph_CompSolidId>* aCSVec =
+    const NCollection_DynamicArray<BRepGraph_CompSolidId>* aCSVec =
       aOrigStorage.ReverseIndex().CompSolidsOfSolid(aSolidId);
     EXPECT_NE(aCSVec, nullptr) << "Solid " << aSolidId.Index << " not in any CompSolid";
   }
@@ -494,7 +494,7 @@ TEST(BRepGraph_ScenarioMatrix, Compound_FreeWireFreeEdgeFreeVertex_ValidateAndPo
 
   // Wire must be reverse-indexed into the compound.
   {
-    const NCollection_Vector<BRepGraph_CompoundId>* aCmpOfWire =
+    const NCollection_DynamicArray<BRepGraph_CompoundId>* aCmpOfWire =
       aStorage.ReverseIndex().CompoundsOfWire(BRepGraph_WireId::Start());
     EXPECT_NE(aCmpOfWire, nullptr) << "Free wire must appear in CompoundsOfWire reverse index";
     if (aCmpOfWire != nullptr)
@@ -508,7 +508,7 @@ TEST(BRepGraph_ScenarioMatrix, Compound_FreeWireFreeEdgeFreeVertex_ValidateAndPo
   bool aFoundEdgeInCompound = false;
   for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aStorage.NbEdges()); ++anEdgeId)
   {
-    const NCollection_Vector<BRepGraph_CompoundId>* aCmpOfEdge =
+    const NCollection_DynamicArray<BRepGraph_CompoundId>* aCmpOfEdge =
       aStorage.ReverseIndex().CompoundsOfEdge(anEdgeId);
     if (aCmpOfEdge != nullptr && aCmpOfEdge->Length() > 0)
     {
@@ -526,7 +526,7 @@ TEST(BRepGraph_ScenarioMatrix, Compound_FreeWireFreeEdgeFreeVertex_ValidateAndPo
   ASSERT_EQ(aFreeVtxNode->NodeKind, BRepGraph_NodeId::Kind::Vertex);
   const BRepGraph_VertexId aFreeVtxId(aFreeVtxNode->Index);
 
-  const NCollection_Vector<BRepGraph_CompoundId>* aCmpOfFreeVtx =
+  const NCollection_DynamicArray<BRepGraph_CompoundId>* aCmpOfFreeVtx =
     aStorage.ReverseIndex().CompoundsOfVertex(aFreeVtxId);
   EXPECT_NE(aCmpOfFreeVtx, nullptr) << "Free vertex must appear in CompoundsOfVertex reverse index";
   if (aCmpOfFreeVtx != nullptr)
@@ -574,7 +574,7 @@ TEST(BRepGraph_ScenarioMatrix, Compound_BoxAndCylinder_MutationReconstructAreaRe
   int aBaseSeamCount = 0;
   for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aBaseStorage.NbEdges()); ++anEdgeId)
   {
-    const NCollection_Vector<BRepGraph_CoEdgeId>* aCoEdges =
+    const NCollection_DynamicArray<BRepGraph_CoEdgeId>* aCoEdges =
       aBaseStorage.ReverseIndex().CoEdgesOfEdge(anEdgeId);
     if (aCoEdges == nullptr)
       continue;
@@ -636,7 +636,7 @@ TEST(BRepGraph_ScenarioMatrix, Compound_BoxAndCylinder_MutationReconstructAreaRe
   int aReconSeamCount = 0;
   for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aReconStorage.NbEdges()); ++anEdgeId)
   {
-    const NCollection_Vector<BRepGraph_CoEdgeId>* aCoEdges =
+    const NCollection_DynamicArray<BRepGraph_CoEdgeId>* aCoEdges =
       aReconStorage.ReverseIndex().CoEdgesOfEdge(anEdgeId);
     if (aCoEdges == nullptr)
       continue;
@@ -898,19 +898,19 @@ TEST(BRepGraph_ScenarioMatrix, Compound_MixedAtomicChildren_ReverseIndexCoverage
   const BRepGraphInc_ReverseIndex& aRev = aStorage.ReverseIndex();
   if (aStorage.NbSolids() > 0)
   {
-    const NCollection_Vector<BRepGraph_CompoundId>* aParents =
+    const NCollection_DynamicArray<BRepGraph_CompoundId>* aParents =
       aRev.CompoundsOfSolid(BRepGraph_SolidId::Start());
     EXPECT_TRUE(aParents == nullptr || aParents->Length() >= 0);
   }
   if (aStorage.NbEdges() > 0)
   {
-    const NCollection_Vector<BRepGraph_CompoundId>* aParents =
+    const NCollection_DynamicArray<BRepGraph_CompoundId>* aParents =
       aRev.CompoundsOfEdge(BRepGraph_EdgeId::Start());
     (void)aParents;
   }
   if (aStorage.NbVertices() > 0)
   {
-    const NCollection_Vector<BRepGraph_CompoundId>* aParents =
+    const NCollection_DynamicArray<BRepGraph_CompoundId>* aParents =
       aRev.CompoundsOfVertex(BRepGraph_VertexId::Start());
     (void)aParents;
   }
@@ -947,7 +947,7 @@ TEST(BRepGraph_ScenarioMatrix, CompSolid_ThreeBoxes_ReverseIndexPerSolid)
 
   for (BRepGraph_SolidId aSolidId(0); aSolidId.IsValid(aStorage.NbSolids()); ++aSolidId)
   {
-    const NCollection_Vector<BRepGraph_CompSolidId>* aParents =
+    const NCollection_DynamicArray<BRepGraph_CompSolidId>* aParents =
       aStorage.ReverseIndex().CompSolidsOfSolid(aSolidId);
     ASSERT_NE(aParents, nullptr) << "Solid " << aSolidId.Index
                                  << " missing from CompSolid reverse index";
@@ -1091,7 +1091,7 @@ TEST(BRepGraph_ScenarioMatrix, Cylinder_SeamEdgeSplit_AuditStable)
   BRepGraph_EdgeId aSeamEdgeId;
   for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aGraph.Topo().Edges().Nb()); ++anEdgeId)
   {
-    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdges =
+    const NCollection_DynamicArray<BRepGraph_CoEdgeId>& aCoEdges =
       aGraph.Topo().Edges().CoEdges(anEdgeId);
     for (const BRepGraph_CoEdgeId& aCoEdgeId : aCoEdges)
     {
@@ -1130,7 +1130,7 @@ TEST(BRepGraph_ScenarioMatrix, Cylinder_SeamEdgeSplit_AuditStable)
 
   // Every seam-paired coedge on the live sub-edges must still be bidirectional.
   auto checkBidirectionalOnEdge = [&](const BRepGraph_EdgeId theEdgeId) {
-    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdges =
+    const NCollection_DynamicArray<BRepGraph_CoEdgeId>& aCoEdges =
       aGraph.Topo().Edges().CoEdges(theEdgeId);
     for (const BRepGraph_CoEdgeId& aCoEdgeId : aCoEdges)
     {
@@ -1164,7 +1164,7 @@ TEST(BRepGraph_ScenarioMatrix, Cylinder_SeamEdgeSplit_CoEdgeFaceIncidence)
   BRepGraph_EdgeId aSeamEdgeId;
   for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aGraph.Topo().Edges().Nb()); ++anEdgeId)
   {
-    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdges =
+    const NCollection_DynamicArray<BRepGraph_CoEdgeId>& aCoEdges =
       aGraph.Topo().Edges().CoEdges(anEdgeId);
     for (const BRepGraph_CoEdgeId& aCoEdgeId : aCoEdges)
     {
@@ -1190,7 +1190,7 @@ TEST(BRepGraph_ScenarioMatrix, Cylinder_SeamEdgeSplit_CoEdgeFaceIncidence)
   ASSERT_TRUE(aSubB.IsValid());
 
   auto checkCoEdgeIncidence = [&](const BRepGraph_EdgeId theSubId) {
-    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdges =
+    const NCollection_DynamicArray<BRepGraph_CoEdgeId>& aCoEdges =
       aGraph.Topo().Edges().CoEdges(theSubId);
     ASSERT_GT(aCoEdges.Length(), 0) << "Sub-edge must carry at least one CoEdge";
     for (const BRepGraph_CoEdgeId& aCoEdgeId : aCoEdges)

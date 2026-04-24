@@ -45,7 +45,7 @@
 #include <GeomConvert_ConvType.hxx>
 #include <GeomAbs_SurfaceType.hxx>
 #include <GeomAbs_CurveType.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <BRepLib_FindSurface.hxx>
@@ -647,8 +647,8 @@ occ::handle<Geom_Surface> ShapeAnalysis_CanonicalRecognition::GetSurface(
   int&                        theStatus)
 {
   // Get surface list
-  NCollection_Vector<occ::handle<Geom_Surface>> aSurfs;
-  NCollection_Vector<double>                    aGaps;
+  NCollection_DynamicArray<occ::handle<Geom_Surface>> aSurfs;
+  NCollection_DynamicArray<double>                    aGaps;
   int                                           j = 0;
   for (;;)
   {
@@ -731,8 +731,8 @@ occ::handle<Geom_Surface> ShapeAnalysis_CanonicalRecognition::GetSurface(
   int&                        theStatus)
 {
   // Get surface list
-  NCollection_Vector<occ::handle<Geom_Surface>> aSurfs;
-  NCollection_Vector<double>                    aGaps;
+  NCollection_DynamicArray<occ::handle<Geom_Surface>> aSurfs;
+  NCollection_DynamicArray<double>                    aGaps;
 
   TopoDS_Iterator anIter(theWire);
   if (!anIter.More())
@@ -1195,9 +1195,9 @@ bool GetSamplePoints(const TopoDS_Wire&                        theWire,
                      const int                                 theMaxNbInt,
                      occ::handle<NCollection_HArray1<gp_XYZ>>& thePoints)
 {
-  NCollection_Vector<double>            aLengths;
-  NCollection_Vector<BRepAdaptor_Curve> aCurves;
-  NCollection_Vector<gp_XYZ>            aPoints;
+  NCollection_DynamicArray<double>            aLengths;
+  NCollection_DynamicArray<BRepAdaptor_Curve> aCurves;
+  NCollection_DynamicArray<gp_XYZ>            aPoints;
   double                                aTol         = std::max(1.e-3, theTol / 10.);
   double                                aTotalLength = 0.;
   TopoDS_Iterator                       anEIter(theWire);

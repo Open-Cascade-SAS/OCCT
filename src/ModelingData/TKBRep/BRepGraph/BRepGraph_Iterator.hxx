@@ -326,7 +326,7 @@ public:
   NCollection_ForwardRangeSentinel end() const { return NCollection_ForwardRangeSentinel{}; }
 
 private:
-  const NCollection_Vector<BRepGraph_ProductId>& myRoots;
+  const NCollection_DynamicArray<BRepGraph_ProductId>& myRoots;
   int                                            myIndex = 0;
 };
 

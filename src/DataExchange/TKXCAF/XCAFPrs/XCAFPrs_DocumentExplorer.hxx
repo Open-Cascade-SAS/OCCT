@@ -15,7 +15,7 @@
 #ifndef _XCAFPrs_DocumentExplorer_HeaderFile
 #define _XCAFPrs_DocumentExplorer_HeaderFile
 
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <XCAFPrs_DocumentNode.hxx>
 #include <TDF_Label.hxx>
 #include <NCollection_Sequence.hxx>
@@ -171,7 +171,7 @@ protected:
   occ::handle<XCAFDoc_VisMaterialTool>      myVisMatTool; //!< visual material tool
   NCollection_Sequence<TDF_Label>           myRoots;      //!< sequence of root labels
   NCollection_Sequence<TDF_Label>::Iterator myRootIter;   //!< current root label
-  NCollection_Vector<XCAFPrs_DocumentNode>  myNodeStack;  //!< node stack
+  NCollection_DynamicArray<XCAFPrs_DocumentNode>  myNodeStack;  //!< node stack
   int                                       myTop;        //!< top position in the node stack
                                                           // clang-format off
   bool                myHasMore;    //!< global flag indicating that iterator points to the label

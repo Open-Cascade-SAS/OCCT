@@ -2238,7 +2238,7 @@ double IntPatch_Intersection::DefineUVMaxStep(const occ::handle<Adaptor3d_Surfac
 static void splitCone(const occ::handle<Adaptor3d_Surface>&               theS,
                       const occ::handle<Adaptor3d_TopolTool>&             theD,
                       const double                                        theTol,
-                      NCollection_Vector<occ::handle<Adaptor3d_Surface>>& theVecHS)
+                      NCollection_DynamicArray<occ::handle<Adaptor3d_Surface>>& theVecHS)
 {
   if (theS->GetType() != GeomAbs_Cone)
   {
@@ -2278,8 +2278,8 @@ void IntPatch_Intersection::PrepareSurfaces(
   const occ::handle<Adaptor3d_Surface>&               theS2,
   const occ::handle<Adaptor3d_TopolTool>&             theD2,
   const double                                        theTol,
-  NCollection_Vector<occ::handle<Adaptor3d_Surface>>& theVecHS1,
-  NCollection_Vector<occ::handle<Adaptor3d_Surface>>& theVecHS2)
+  NCollection_DynamicArray<occ::handle<Adaptor3d_Surface>>& theVecHS1,
+  NCollection_DynamicArray<occ::handle<Adaptor3d_Surface>>& theVecHS2)
 {
   if ((theS1->GetType() == GeomAbs_Cone)
       && (std::abs(M_PI / 2. - std::abs(theS1->Cone().SemiAngle())) < theTol))

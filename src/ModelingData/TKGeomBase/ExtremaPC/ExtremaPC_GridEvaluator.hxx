@@ -22,7 +22,7 @@
 #include <MathRoot_Newton.hxx>
 #include <MathUtils_Config.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 
 #include <algorithm>
 #include <cmath>
@@ -497,9 +497,9 @@ private:
 
   // Mutable cached temporaries (reused via Clear())
   mutable ExtremaPC::Result                          myResult;        //!< Reusable result
-  mutable NCollection_Vector<Candidate>              myCandidates;    //!< Candidates from grid scan
-  mutable NCollection_Vector<double>                 myFoundRoots;    //!< Found roots for dedup
-  mutable NCollection_Vector<std::pair<int, double>> mySortedIndices; //!< Sorted candidate indices
+  mutable NCollection_DynamicArray<Candidate>              myCandidates;    //!< Candidates from grid scan
+  mutable NCollection_DynamicArray<double>                 myFoundRoots;    //!< Found roots for dedup
+  mutable NCollection_DynamicArray<std::pair<int, double>> mySortedIndices; //!< Sorted candidate indices
   mutable NCollection_Array1<bool>                   myProcessed; //!< Processed flags for grid scan
 };
 

@@ -23,7 +23,7 @@
 //! NCollection iterator can be extended to STL iterator of any category by
 //! adding necessary methods: STL forward iterator requires IsEqual method,
 //! STL bidirectional iterator requires Previous method, and STL random access
-//! iterator requires Offset and Differ methods. See NCollection_Vector as
+//! iterator requires Offset and Differ methods. See NCollection_DynamicArray as
 //! example of declaring custom STL iterators.
 template <class Category, class BaseIterator, class ItemType, bool IsConstant>
 class NCollection_StlIterator

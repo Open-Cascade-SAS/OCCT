@@ -321,7 +321,7 @@ void BRepGraph_Builder::AppendFlattened(BRepGraph&                            th
     theGraph.LayerRegistry().FindLayer<BRepGraph_LayerParam>();
   const occ::handle<BRepGraph_LayerRegularity> aRegularityLayer =
     theGraph.LayerRegistry().FindLayer<BRepGraph_LayerRegularity>();
-  NCollection_Vector<BRepGraph_NodeId> aAppendedRoots(8, theGraph.Allocator());
+  NCollection_DynamicArray<BRepGraph_NodeId> aAppendedRoots(8, theGraph.Allocator());
   BRepGraphInc_Populate::AppendFlattened(aStorage,
                                          theShape,
                                          theParallel,

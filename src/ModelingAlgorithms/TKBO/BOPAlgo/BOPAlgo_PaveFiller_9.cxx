@@ -22,7 +22,7 @@
 #include <BOPTools_Parallel.hxx>
 #include <IntTools_Context.hxx>
 #include <IntTools_ShrunkRange.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_Map.hxx>
 #include <TopoDS_Edge.hxx>
@@ -58,7 +58,7 @@ protected:
 
 //
 //=======================================================================
-typedef NCollection_Vector<BOPAlgo_ShrunkRange> BOPAlgo_VectorOfShrunkRange;
+typedef NCollection_DynamicArray<BOPAlgo_ShrunkRange> BOPAlgo_VectorOfShrunkRange;
 
 //=================================================================================================
 

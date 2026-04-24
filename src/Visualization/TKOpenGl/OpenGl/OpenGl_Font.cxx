@@ -76,7 +76,7 @@ void OpenGl_Font::Release(OpenGl_Context* theCtx)
 size_t OpenGl_Font::EstimatedDataSize() const
 {
   size_t aSize = 0;
-  for (NCollection_Vector<occ::handle<OpenGl_Texture>>::Iterator aTexIter(myTextures);
+  for (NCollection_DynamicArray<occ::handle<OpenGl_Texture>>::Iterator aTexIter(myTextures);
        aTexIter.More();
        aTexIter.Next())
   {

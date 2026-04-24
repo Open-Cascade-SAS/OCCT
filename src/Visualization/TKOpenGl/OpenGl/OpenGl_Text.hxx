@@ -154,10 +154,10 @@ private:
 protected:
   occ::handle<Graphic3d_Text>                                  myText; //!< text parameters
   mutable occ::handle<OpenGl_Font>                             myFont;
-  mutable NCollection_Vector<GLuint>                           myTextures; //!< textures' IDs
-  mutable NCollection_Vector<occ::handle<OpenGl_VertexBuffer>> myVertsVbo; //!< VBOs of vertices
+  mutable NCollection_DynamicArray<GLuint>                           myTextures; //!< textures' IDs
+  mutable NCollection_DynamicArray<occ::handle<OpenGl_VertexBuffer>> myVertsVbo; //!< VBOs of vertices
                                                                            // clang-format off
-  mutable NCollection_Vector<occ::handle<OpenGl_VertexBuffer>> myTCrdsVbo;   //!< VBOs of texture coordinates
+  mutable NCollection_DynamicArray<occ::handle<OpenGl_VertexBuffer>> myTCrdsVbo;   //!< VBOs of texture coordinates
   mutable occ::handle<OpenGl_VertexBuffer>                     myBndVertsVbo;//!< VBOs of vertices for bounding box
                                                         // clang-format on
   mutable Font_Rect myBndBox;

@@ -23,7 +23,7 @@
 
 //! @brief Single-level typed iterators over parent definitions via reverse index.
 //!
-//! These iterators wrap the NCollection_Vector<TypedIdT> returned by TopoView
+//! These iterators wrap the NCollection_DynamicArray<TypedIdT> returned by TopoView
 //! reverse-index accessors (e.g. Edges().Faces(), Wires().Faces(), Vertices().Edges()).
 //! They provide a typed, skip-removed iteration pattern consistent with the
 //! forward iterators in BRepGraph_DefsIterator and BRepGraph_RefsIterator.
@@ -181,7 +181,7 @@ template <typename TypedIdT>
 class ParentsOf
 {
 public:
-  ParentsOf(const BRepGraph& theGraph, const NCollection_Vector<TypedIdT>& theParents)
+  ParentsOf(const BRepGraph& theGraph, const NCollection_DynamicArray<TypedIdT>& theParents)
       : myGraph(&theGraph),
         myParents(&theParents)
   {
@@ -191,7 +191,7 @@ public:
   //! Construct starting at a given vector index (for resumable iteration).
   //! Skips to the first non-removed entry at or after theStartIndex.
   ParentsOf(const BRepGraph&                    theGraph,
-            const NCollection_Vector<TypedIdT>& theParents,
+            const NCollection_DynamicArray<TypedIdT>& theParents,
             const uint32_t                      theStartIndex)
       : myGraph(&theGraph),
         myParents(&theParents),
@@ -257,7 +257,7 @@ private:
   }
 
   const BRepGraph*                    myGraph   = nullptr;
-  const NCollection_Vector<TypedIdT>* myParents = nullptr;
+  const NCollection_DynamicArray<TypedIdT>* myParents = nullptr;
   uint32_t                            myIndex   = 0;
 };
 
@@ -285,7 +285,7 @@ public:
   using ResultType   = ParentRef<ParentIdType, RefIdType>;
 
   RefsParentsOf(const BRepGraph&                        theGraph,
-                const NCollection_Vector<ParentIdType>& theParents,
+                const NCollection_DynamicArray<ParentIdType>& theParents,
                 const ChildIdType                       theChild)
       : myGraph(&theGraph),
         myParents(&theParents),
@@ -343,7 +343,7 @@ private:
   }
 
   const BRepGraph*                        myGraph   = nullptr;
-  const NCollection_Vector<ParentIdType>* myParents = nullptr;
+  const NCollection_DynamicArray<ParentIdType>* myParents = nullptr;
   ChildIdType                             myChild;
   ResultType                              myCurrent;
   uint32_t                                myIndex      = 0;

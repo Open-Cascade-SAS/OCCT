@@ -539,7 +539,7 @@ double BRepBuilderAPI_FastSewing::Compute3DRange()
 
 //=================================================================================================
 
-BRepBuilderAPI_FastSewing::NodeInspector::NodeInspector(const NCollection_Vector<FS_Vertex>& theVec,
+BRepBuilderAPI_FastSewing::NodeInspector::NodeInspector(const NCollection_DynamicArray<FS_Vertex>& theVec,
                                                         const gp_Pnt&                        thePnt,
                                                         const double                         theTol)
     : myVecOfVertexes(theVec),
@@ -567,8 +567,8 @@ NCollection_CellFilter_Action BRepBuilderAPI_FastSewing::NodeInspector::Inspect(
 //=================================================================================================
 
 void BRepBuilderAPI_FastSewing::FS_Edge::CreateTopologicalEdge(
-  const NCollection_Vector<FS_Vertex>& theVertexVec,
-  const NCollection_Vector<FS_Face>&   theFaceVec,
+  const NCollection_DynamicArray<FS_Vertex>& theVertexVec,
+  const NCollection_DynamicArray<FS_Face>&   theFaceVec,
   const double                         theTol)
 {
   BRep_Builder aBuilder;
@@ -647,7 +647,7 @@ void BRepBuilderAPI_FastSewing::FS_Edge::CreateTopologicalEdge(
 //=================================================================================================
 
 void BRepBuilderAPI_FastSewing::FS_Face::CreateTopologicalWire(
-  const NCollection_Vector<FS_Edge>& theEdgeVec,
+  const NCollection_DynamicArray<FS_Edge>& theEdgeVec,
   const double                       theToler)
 {
   TopLoc_Location aLocation;

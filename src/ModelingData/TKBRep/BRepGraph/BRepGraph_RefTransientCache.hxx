@@ -17,7 +17,7 @@
 #include <BRepGraph_RefId.hxx>
 #include <BRepGraph_TransientCache.hxx>
 
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 
 #include <atomic>
 #include <shared_mutex>
@@ -146,7 +146,7 @@ private:
   //! Per-ref-kind dense vector of cache slots.
   struct RefKindStore
   {
-    NCollection_Vector<CacheSlot> mySlots;
+    NCollection_DynamicArray<CacheSlot> mySlots;
   };
 
   //! Per-cache-kind storage: one ref-kind store per reference kind.
@@ -165,7 +165,7 @@ private:
   const CacheSlot* seekSlot(const BRepGraph_RefId theRef, const int theKindSlot) const;
 
   //! Outer vector indexed by cache-kind slot.
-  NCollection_Vector<CacheKindSlot> myKinds;
+  NCollection_DynamicArray<CacheKindSlot> myKinds;
 
   //! True after Reserve() - enables lock-free access for in-range slots.
   std::atomic<bool> myIsReserved{false};

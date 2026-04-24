@@ -24,7 +24,7 @@
 
 #include <Standard_Integer.hxx>
 #include <BOPDS_PDS.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <BOPDS_Pair.hxx>
 #include <BOPTools_BoxTree.hxx>
 #include <NCollection_BaseAllocator.hxx>
@@ -119,11 +119,11 @@ protected:                                            //! @name Fields
   int                                    myLength;    //!< Length of the intersection vector of
                                                       //! particular intersection type
   BOPDS_PDS myDS;                                     //!< Data Structure
-  NCollection_Vector<NCollection_Vector<BOPDS_Pair>>
+  NCollection_DynamicArray<NCollection_DynamicArray<BOPDS_Pair>>
                                            myLists;       //!< Pairs with interfering bounding boxes
-  NCollection_Vector<BOPDS_Pair>::Iterator myIterator;    //!< Iterator on each interfering type
+  NCollection_DynamicArray<BOPDS_Pair>::Iterator myIterator;    //!< Iterator on each interfering type
   bool                                     myRunParallel; //!< Flag for parallel processing
-  NCollection_Vector<NCollection_Vector<BOPDS_Pair>>
+  NCollection_DynamicArray<NCollection_DynamicArray<BOPDS_Pair>>
     myExtLists;  //!< Extra pairs of sub-shapes found after
                  //! intersection of increased sub-shapes
   bool myUseExt; //!< Information flag for using the extra lists

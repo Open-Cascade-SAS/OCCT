@@ -161,7 +161,7 @@ TEST_F(BRepGraph_SharingTest, SharedEdge_IncidenceRefs_DifferentOrientation)
   for (BRepGraph_EdgeIterator anEdgeIt(myGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
     const BRepGraph_EdgeId                        anEdgeId = anEdgeIt.CurrentId();
-    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
+    const NCollection_DynamicArray<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
       myGraph.Topo().Edges().CoEdges(anEdgeId);
     if (aCoEdgeIdxs.Length() < 2)
       continue;
@@ -247,7 +247,7 @@ TEST_F(BRepGraph_SharingTest, CompoundTwoIdenticalBoxes)
   EXPECT_EQ(aGraph.Topo().Vertices().Nb(), 8);
 
   // Compound has 2 child references to the same solid.
-  const NCollection_Vector<BRepGraph_ChildRefId> aChildRefs =
+  const NCollection_DynamicArray<BRepGraph_ChildRefId> aChildRefs =
     BRepGraph_TestTools::ChildRefsOfParent(aGraph, BRepGraph_CompoundId::Start());
   ASSERT_EQ(aChildRefs.Length(), 2);
   EXPECT_EQ(aGraph.Refs().Children().Entry(aChildRefs.Value(0)).ChildDefId.Index,

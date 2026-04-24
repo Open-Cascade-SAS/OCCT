@@ -21,7 +21,7 @@
 #include <Standard_Transient.hxx>
 #include <TCollection_AsciiString.hxx>
 
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 
 #include <atomic>
 #include <functional>
@@ -331,7 +331,7 @@ private:
   //! Per-node-kind dense vector of cache slots.
   struct NodeKindStore
   {
-    NCollection_Vector<CacheSlot> mySlots;
+    NCollection_DynamicArray<CacheSlot> mySlots;
   };
 
   //! Per-cache-kind storage: one node-kind store per entity kind.
@@ -350,7 +350,7 @@ private:
   const CacheSlot* seekSlot(const BRepGraph_NodeId theNode, const int theKindSlot) const;
 
   //! Outer vector indexed by cache-kind slot.
-  NCollection_Vector<CacheKindSlot> myKinds;
+  NCollection_DynamicArray<CacheKindSlot> myKinds;
 
   //! True after Reserve() - enables lock-free access for in-range slots.
   std::atomic<bool> myIsReserved{false};

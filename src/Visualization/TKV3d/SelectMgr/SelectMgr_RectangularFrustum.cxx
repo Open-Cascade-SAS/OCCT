@@ -17,7 +17,7 @@
 
 #include <BVH_Tools.hxx>
 #include <gp_Pln.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <Poly_Triangle.hxx>
 #include <NCollection_Array1.hxx>
 #include <SelectMgr_FrustumBuilder.hxx>
@@ -1107,7 +1107,7 @@ gp_Pnt SelectMgr_RectangularFrustum::DetectedPoint(const double theDepth) const
 //=================================================================================================
 
 void SelectMgr_RectangularFrustum::GetPlanes(
-  NCollection_Vector<NCollection_Vec4<double>>& thePlaneEquations) const
+  NCollection_DynamicArray<NCollection_Vec4<double>>& thePlaneEquations) const
 {
   thePlaneEquations.Clear();
 

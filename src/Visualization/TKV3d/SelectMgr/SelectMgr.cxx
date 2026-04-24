@@ -197,7 +197,7 @@ void SelectMgr::ComputeSensitivePrs(const occ::handle<Graphic3d_Structure>&     
 
   NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>> aSeqLines, aSeqFree;
   NCollection_Sequence<gp_Pnt>                                 aSeqPoints;
-  for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
+  for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
          theSel->Entities());
        aSelEntIter.More();
        aSelEntIter.Next())
@@ -248,9 +248,9 @@ void SelectMgr::ComputeSensitivePrs(const occ::handle<Graphic3d_Structure>&     
     else if (occ::handle<Select3D_SensitiveWire> aWire =
                occ::down_cast<Select3D_SensitiveWire>(anEnt))
     {
-      const NCollection_Vector<occ::handle<Select3D_SensitiveEntity>>& anEntities =
+      const NCollection_DynamicArray<occ::handle<Select3D_SensitiveEntity>>& anEntities =
         aWire->GetEdges();
-      for (NCollection_Vector<occ::handle<Select3D_SensitiveEntity>>::Iterator aSubIter(anEntities);
+      for (NCollection_DynamicArray<occ::handle<Select3D_SensitiveEntity>>::Iterator aSubIter(anEntities);
            aSubIter.More();
            aSubIter.Next())
       {

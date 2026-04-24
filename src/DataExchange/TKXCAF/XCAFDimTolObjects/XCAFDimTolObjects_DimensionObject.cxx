@@ -430,8 +430,8 @@ void XCAFDimTolObjects_DimensionObject::RemoveDescription(const int theNumber)
 {
   if (theNumber < myDescriptions.Lower() || theNumber > myDescriptions.Upper())
     return;
-  NCollection_Vector<occ::handle<TCollection_HAsciiString>> aDescriptions;
-  NCollection_Vector<occ::handle<TCollection_HAsciiString>> aDescriptionNames;
+  NCollection_DynamicArray<occ::handle<TCollection_HAsciiString>> aDescriptions;
+  NCollection_DynamicArray<occ::handle<TCollection_HAsciiString>> aDescriptionNames;
   for (int i = aDescriptions.Lower(); i < theNumber; i++)
   {
     aDescriptions.Append(myDescriptions.Value(i));
@@ -553,7 +553,7 @@ void XCAFDimTolObjects_DimensionObject::DumpJson(Standard_OStream& theOStream, i
     OCCT_DUMP_FIELD_VALUE_STRING(theOStream, aPresentationName)
   }
 
-  for (NCollection_Vector<occ::handle<TCollection_HAsciiString>>::Iterator aDescIt(myDescriptions);
+  for (NCollection_DynamicArray<occ::handle<TCollection_HAsciiString>>::Iterator aDescIt(myDescriptions);
        aDescIt.More();
        aDescIt.Next())
   {
@@ -563,7 +563,7 @@ void XCAFDimTolObjects_DimensionObject::DumpJson(Standard_OStream& theOStream, i
     OCCT_DUMP_FIELD_VALUE_STRING(theOStream, aDescription)
   }
 
-  for (NCollection_Vector<occ::handle<TCollection_HAsciiString>>::Iterator aDescNameIt(
+  for (NCollection_DynamicArray<occ::handle<TCollection_HAsciiString>>::Iterator aDescNameIt(
          myDescriptionNames);
        aDescNameIt.More();
        aDescNameIt.Next())

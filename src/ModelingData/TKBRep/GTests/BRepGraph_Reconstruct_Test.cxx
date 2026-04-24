@@ -339,7 +339,7 @@ TEST(BRepGraph_ReconstructTest, Face_OrientationPreserved)
 
   // Verify that reconstructed faces have valid orientations matching ref entries.
   ASSERT_EQ(aGraph.Topo().Shells().Nb(), 1);
-  const NCollection_Vector<BRepGraph_FaceRefId> aFaceRefs =
+  const NCollection_DynamicArray<BRepGraph_FaceRefId> aFaceRefs =
     BRepGraph_TestTools::FaceRefsOfShell(aGraph, BRepGraph_ShellId::Start());
   for (const BRepGraph_FaceRefId& aFaceRefId : aFaceRefs)
   {
@@ -514,7 +514,7 @@ TEST(BRepGraph_ReconstructTest, AfterVertexMutation_ModifiedFlagAndPointChanged)
     BRepGraph_TestTools::OuterWireOfFace(aGraph, BRepGraph_FaceId::Start());
   ASSERT_TRUE(anOuterWire.IsValid());
 
-  const NCollection_Vector<BRepGraph_CoEdgeRefId> aCoEdgeRefs =
+  const NCollection_DynamicArray<BRepGraph_CoEdgeRefId> aCoEdgeRefs =
     BRepGraph_TestTools::CoEdgeRefsOfWire(aGraph, anOuterWire);
   ASSERT_GT(aCoEdgeRefs.Length(), 0);
 

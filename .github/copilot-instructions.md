@@ -129,7 +129,7 @@ Use standard C++ primitive types in all code. The old `Standard_*` typedefs are 
 | `TCollection_AsciiString`         | `std::string`             | ASCII string               |
 | `TCollection_ExtendedString`      | `std::wstring`            | Unicode string             |
 | `NCollection_Array1<T>`           | `std::vector<T>`          | Fixed-size array (1-based) |
-| `NCollection_Vector<T>`           | `std::vector<T>`          | Dynamic array              |
+| `NCollection_DynamicArray<T>`           | `std::vector<T>`          | Dynamic array              |
 | `NCollection_List<T>`             | `std::list<T>`            | Doubly-linked list         |
 | `NCollection_Sequence<T>`         | `std::deque<T>`           | Indexed sequence           |
 | `NCollection_Map<K>`              | `std::unordered_set<K>`   | Hash set                   |

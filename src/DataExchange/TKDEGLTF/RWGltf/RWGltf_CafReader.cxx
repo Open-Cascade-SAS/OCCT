@@ -40,7 +40,7 @@ class RWGltf_CafReader::CafReader_GltfBaseLoadingFunctor
 {
 public:
   //! Main constructor.
-  CafReader_GltfBaseLoadingFunctor(NCollection_Vector<TopoDS_Face>& theFaceList,
+  CafReader_GltfBaseLoadingFunctor(NCollection_DynamicArray<TopoDS_Face>& theFaceList,
                                    const Message_ProgressRange&     theProgress,
                                    const OSD_ThreadPool::Launcher&  theThreadPool)
       : myFaceList(&theFaceList),
@@ -83,7 +83,7 @@ protected:
     int                                               theThreadIndex) const = 0;
 
 protected:
-  NCollection_Vector<TopoDS_Face>* myFaceList;
+  NCollection_DynamicArray<TopoDS_Face>* myFaceList;
   mutable std::mutex               myMutex;
   mutable Message_ProgressScope    myProgress;
   const OSD_ThreadPool::Launcher&  myThreadPool;
@@ -101,7 +101,7 @@ public:
 
   //! Main constructor.
   CafReader_GltfFullDataLoadingFunctor(RWGltf_CafReader*                myCafReader,
-                                       NCollection_Vector<TopoDS_Face>& theFaceList,
+                                       NCollection_DynamicArray<TopoDS_Face>& theFaceList,
                                        const Message_ProgressRange&     theProgress,
                                        const OSD_ThreadPool::Launcher&  theThreadPool)
       : CafReader_GltfBaseLoadingFunctor(theFaceList, theProgress, theThreadPool),
@@ -147,7 +147,7 @@ class RWGltf_CafReader::CafReader_GltfStreamDataLoadingFunctor
 {
 public:
   //! Main constructor.
-  CafReader_GltfStreamDataLoadingFunctor(NCollection_Vector<TopoDS_Face>& theFaceList,
+  CafReader_GltfStreamDataLoadingFunctor(NCollection_DynamicArray<TopoDS_Face>& theFaceList,
                                          const Message_ProgressRange&     theProgress,
                                          const OSD_ThreadPool::Launcher&  theThreadPool)
       : CafReader_GltfBaseLoadingFunctor(theFaceList, theProgress, theThreadPool)
@@ -365,7 +365,7 @@ occ::handle<RWMesh_TriangulationReader> RWGltf_CafReader::createMeshReaderContex
 
 //=================================================================================================
 
-bool RWGltf_CafReader::readLateData(NCollection_Vector<TopoDS_Face>& theFaces,
+bool RWGltf_CafReader::readLateData(NCollection_DynamicArray<TopoDS_Face>& theFaces,
                                     const TCollection_AsciiString&   theFile,
                                     const Message_ProgressRange&     theProgress)
 {
@@ -407,11 +407,11 @@ bool RWGltf_CafReader::readLateData(NCollection_Vector<TopoDS_Face>& theFaces,
 //=================================================================================================
 
 void RWGltf_CafReader::updateLateDataReader(
-  NCollection_Vector<TopoDS_Face>&               theFaces,
+  NCollection_DynamicArray<TopoDS_Face>&               theFaces,
   const occ::handle<RWMesh_TriangulationReader>& theReader) const
 {
   TopLoc_Location aDummyLoc;
-  for (NCollection_Vector<TopoDS_Face>::Iterator aFaceIter(theFaces); aFaceIter.More();
+  for (NCollection_DynamicArray<TopoDS_Face>::Iterator aFaceIter(theFaces); aFaceIter.More();
        aFaceIter.Next())
   {
     const TopoDS_Face& aFace = aFaceIter.Value();

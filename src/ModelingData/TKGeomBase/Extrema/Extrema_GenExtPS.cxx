@@ -321,7 +321,7 @@ inline static void fillParams(const NCollection_Array1<double>&         theKnots
                               occ::handle<NCollection_HArray1<double>>& theParams,
                               int                                       theSample)
 {
-  NCollection_Vector<double> aParams;
+  NCollection_DynamicArray<double> aParams;
   int                        i        = 1;
   double                     aPrevPar = theParMin;
   aParams.Append(aPrevPar);

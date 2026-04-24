@@ -22,7 +22,7 @@
 #include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_Sequence.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 
 class gp_Pnt2d;
 
@@ -102,7 +102,7 @@ public:
   //! @param[in] theVMin   Minimum V bound of the polygon domain
   //! @param[in] theUMax   Maximum U bound of the polygon domain
   //! @param[in] theVMax   Maximum V bound of the polygon domain
-  Standard_EXPORT CSLib_Class2d(const NCollection_Vector<gp_Pnt2d>& thePnts2d,
+  Standard_EXPORT CSLib_Class2d(const NCollection_DynamicArray<gp_Pnt2d>& thePnts2d,
                                 double                              theTolU,
                                 double                              theTolV,
                                 double                              theUMin,

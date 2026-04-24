@@ -18,7 +18,7 @@
 
 #include <GeomAbs_Shape.hxx>
 #include <NCollection_DataMap.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 
 //! @brief Stores edge continuity records between adjacent face pairs.
 class BRepGraph_LayerRegularity : public BRepGraph_Layer
@@ -39,7 +39,7 @@ public:
 
   struct EdgeRegularities
   {
-    NCollection_Vector<RegularityEntry> Entries;
+    NCollection_DynamicArray<RegularityEntry> Entries;
 
     [[nodiscard]] bool IsEmpty() const { return Entries.IsEmpty(); }
   };
@@ -66,7 +66,7 @@ public:
   [[nodiscard]] Standard_EXPORT int              SubscribedKinds() const override;
   Standard_EXPORT void OnNodeModified(const BRepGraph_NodeId theNode) noexcept override;
   Standard_EXPORT void OnNodesModified(
-    const NCollection_Vector<BRepGraph_NodeId>& theModifiedNodes) noexcept override;
+    const NCollection_DynamicArray<BRepGraph_NodeId>& theModifiedNodes) noexcept override;
   Standard_EXPORT void OnNodeRemoved(const BRepGraph_NodeId theNode,
                                      const BRepGraph_NodeId theReplacement) noexcept override;
   Standard_EXPORT void OnCompact(
@@ -93,7 +93,7 @@ private:
 
 private:
   NCollection_DataMap<BRepGraph_EdgeId, EdgeRegularities>                     myEdgeRegularities;
-  NCollection_DataMap<BRepGraph_FaceId, NCollection_Vector<BRepGraph_EdgeId>> myFaceToEdges;
+  NCollection_DataMap<BRepGraph_FaceId, NCollection_DynamicArray<BRepGraph_EdgeId>> myFaceToEdges;
 };
 
 #endif // _BRepGraph_LayerRegularity_HeaderFile

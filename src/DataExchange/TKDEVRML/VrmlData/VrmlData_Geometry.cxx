@@ -28,7 +28,7 @@
 #include <BRepPrim_Cylinder.hxx>
 #include <BRepPrim_Sphere.hxx>
 #include <BRepPrim_Builder.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <VrmlData_ArrayVec3d.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(VrmlData_Geometry, VrmlData_Node)
@@ -469,7 +469,7 @@ occ::handle<VrmlData_Node> VrmlData_TextureCoordinate::Clone(
 VrmlData_ErrorStatus VrmlData_TextureCoordinate::Read(VrmlData_InBuffer& theBuffer)
 {
   VrmlData_ErrorStatus      aStatus;
-  NCollection_Vector<gp_XY> vecValues;
+  NCollection_DynamicArray<gp_XY> vecValues;
   if (OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
   {
     // Match the name with the current word in the stream
@@ -546,7 +546,7 @@ VrmlData_ErrorStatus VrmlData_ArrayVec3d::ReadArray(VrmlData_InBuffer& theBuffer
                                                     const bool         isScale)
 {
   VrmlData_ErrorStatus       aStatus;
-  NCollection_Vector<gp_XYZ> vecValues;
+  NCollection_DynamicArray<gp_XYZ> vecValues;
   if (OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
   {
     // Match the name with the current word in the stream

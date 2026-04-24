@@ -66,7 +66,7 @@ void SelectMgr_SensitiveEntitySet::Append(const occ::handle<SelectMgr_SensitiveE
 //=======================================================================
 void SelectMgr_SensitiveEntitySet::Append(const occ::handle<SelectMgr_Selection>& theSelection)
 {
-  for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
+  for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
          theSelection->Entities());
        aSelEntIter.More();
        aSelEntIter.Next())
@@ -102,7 +102,7 @@ void SelectMgr_SensitiveEntitySet::Append(const occ::handle<SelectMgr_Selection>
 //=======================================================================
 void SelectMgr_SensitiveEntitySet::Remove(const occ::handle<SelectMgr_Selection>& theSelection)
 {
-  for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
+  for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
          theSelection->Entities());
        aSelEntIter.More();
        aSelEntIter.Next())

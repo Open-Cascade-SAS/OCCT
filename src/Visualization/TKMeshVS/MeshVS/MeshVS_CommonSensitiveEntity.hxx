@@ -87,7 +87,7 @@ private:
 
 private:
   occ::handle<MeshVS_DataSource> myDataSource;  //!< mesh data source
-  NCollection_Vector<int>        myItemIndexes; //!< indices for BVH tree reordering
+  NCollection_DynamicArray<int>        myItemIndexes; //!< indices for BVH tree reordering
   MeshVS_MeshSelectionMethod     mySelMethod;   //!< selection mode
                                                 // clang-format off
   int                     myMaxFaceNodes; //!< maximum nodes within the element in mesh

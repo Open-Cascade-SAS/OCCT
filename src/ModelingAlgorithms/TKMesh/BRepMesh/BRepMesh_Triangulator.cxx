@@ -73,7 +73,7 @@ occ::handle<Poly_Triangulation> BRepMesh_Triangulator::ToPolyTriangulation(
 //=================================================================================================
 
 BRepMesh_Triangulator::BRepMesh_Triangulator(
-  const NCollection_Vector<gp_XYZ>&                  theXYZs,
+  const NCollection_DynamicArray<gp_XYZ>&                  theXYZs,
   const NCollection_List<NCollection_Sequence<int>>& theWires,
   const gp_Dir&                                      theNorm)
     : myXYZs(theXYZs),

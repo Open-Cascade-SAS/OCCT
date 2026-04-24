@@ -19,7 +19,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <TopoDS_Shape.hxx>
 
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 
 class BRepGraphInc_Storage;
 class BRepGraph_LayerParam;
@@ -48,7 +48,7 @@ public:
 
     occ::handle<NCollection_IncAllocator> myAllocator;
     occ::handle<NCollection_IncAllocator> myTempAllocator;
-    NCollection_Vector<TopoDS_Shape>      myKinds[THE_KIND_COUNT];
+    NCollection_DynamicArray<TopoDS_Shape>      myKinds[THE_KIND_COUNT];
     int                                   myTempScopeDepth = 0;
 
     struct TempScope
@@ -77,7 +77,7 @@ public:
     {
       for (int aKindIdx = 0; aKindIdx < THE_KIND_COUNT; ++aKindIdx)
       {
-        myKinds[aKindIdx] = NCollection_Vector<TopoDS_Shape>(THE_DEFAULT_INCREMENT, myAllocator);
+        myKinds[aKindIdx] = NCollection_DynamicArray<TopoDS_Shape>(THE_DEFAULT_INCREMENT, myAllocator);
       }
     }
 
@@ -87,7 +87,7 @@ public:
       const int aKindIdx = static_cast<int>(theNode.NodeKind);
       if (aKindIdx < 0 || aKindIdx >= THE_KIND_COUNT)
         return nullptr;
-      const NCollection_Vector<TopoDS_Shape>& aVec = myKinds[aKindIdx];
+      const NCollection_DynamicArray<TopoDS_Shape>& aVec = myKinds[aKindIdx];
       if (theNode.Index >= aVec.Size())
         return nullptr;
       const TopoDS_Shape& aShape = aVec.Value(static_cast<size_t>(theNode.Index));
@@ -100,7 +100,7 @@ public:
       const int aKindIdx = static_cast<int>(theNode.NodeKind);
       if (aKindIdx < 0 || aKindIdx >= THE_KIND_COUNT)
         return;
-      NCollection_Vector<TopoDS_Shape>& aVec = myKinds[aKindIdx];
+      NCollection_DynamicArray<TopoDS_Shape>& aVec = myKinds[aKindIdx];
       aVec.SetValue(static_cast<size_t>(theNode.Index), theShape);
     }
 

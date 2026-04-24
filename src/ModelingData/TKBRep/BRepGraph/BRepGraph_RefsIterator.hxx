@@ -229,7 +229,7 @@ struct ShellOfSolidTraits
            && !theGraph.Topo().Solids().Definition(theParent).IsRemoved;
   }
 
-  static const NCollection_Vector<RefId>& RefIds(const BRepGraph& theGraph,
+  static const NCollection_DynamicArray<RefId>& RefIds(const BRepGraph& theGraph,
                                                  const ParentId   theParent)
   {
     return theGraph.Topo().Solids().Definition(theParent).ShellRefIds;
@@ -255,7 +255,7 @@ struct FaceOfShellTraits
            && !theGraph.Topo().Shells().Definition(theParent).IsRemoved;
   }
 
-  static const NCollection_Vector<RefId>& RefIds(const BRepGraph& theGraph,
+  static const NCollection_DynamicArray<RefId>& RefIds(const BRepGraph& theGraph,
                                                  const ParentId   theParent)
   {
     return theGraph.Topo().Shells().Definition(theParent).FaceRefIds;
@@ -281,7 +281,7 @@ struct ChildOfShellTraits
            && !theGraph.Topo().Shells().Definition(theParent).IsRemoved;
   }
 
-  static const NCollection_Vector<RefId>& RefIds(const BRepGraph& theGraph,
+  static const NCollection_DynamicArray<RefId>& RefIds(const BRepGraph& theGraph,
                                                  const ParentId   theParent)
   {
     return theGraph.Topo().Shells().Definition(theParent).AuxChildRefIds;
@@ -307,7 +307,7 @@ struct WireOfFaceTraits
            && !theGraph.Topo().Faces().Definition(theParent).IsRemoved;
   }
 
-  static const NCollection_Vector<RefId>& RefIds(const BRepGraph& theGraph,
+  static const NCollection_DynamicArray<RefId>& RefIds(const BRepGraph& theGraph,
                                                  const ParentId   theParent)
   {
     return theGraph.Topo().Faces().Definition(theParent).WireRefIds;
@@ -333,7 +333,7 @@ struct VertexOfFaceTraits
            && !theGraph.Topo().Faces().Definition(theParent).IsRemoved;
   }
 
-  static const NCollection_Vector<RefId>& RefIds(const BRepGraph& theGraph,
+  static const NCollection_DynamicArray<RefId>& RefIds(const BRepGraph& theGraph,
                                                  const ParentId   theParent)
   {
     return theGraph.Topo().Faces().Definition(theParent).VertexRefIds;
@@ -359,7 +359,7 @@ struct CoEdgeOfWireTraits
            && !theGraph.Topo().Wires().Definition(theParent).IsRemoved;
   }
 
-  static const NCollection_Vector<RefId>& RefIds(const BRepGraph& theGraph,
+  static const NCollection_DynamicArray<RefId>& RefIds(const BRepGraph& theGraph,
                                                  const ParentId   theParent)
   {
     return theGraph.Topo().Wires().Definition(theParent).CoEdgeRefIds;
@@ -385,7 +385,7 @@ struct SolidOfCompSolidTraits
            && !theGraph.Topo().CompSolids().Definition(theParent).IsRemoved;
   }
 
-  static const NCollection_Vector<RefId>& RefIds(const BRepGraph& theGraph,
+  static const NCollection_DynamicArray<RefId>& RefIds(const BRepGraph& theGraph,
                                                  const ParentId   theParent)
   {
     return theGraph.Topo().CompSolids().Definition(theParent).SolidRefIds;
@@ -411,7 +411,7 @@ struct ChildOfSolidTraits
            && !theGraph.Topo().Solids().Definition(theParent).IsRemoved;
   }
 
-  static const NCollection_Vector<RefId>& RefIds(const BRepGraph& theGraph,
+  static const NCollection_DynamicArray<RefId>& RefIds(const BRepGraph& theGraph,
                                                  const ParentId   theParent)
   {
     return theGraph.Topo().Solids().Definition(theParent).AuxChildRefIds;
@@ -437,7 +437,7 @@ struct ChildOfCompoundTraits
            && !theGraph.Topo().Compounds().Definition(theParent).IsRemoved;
   }
 
-  static const NCollection_Vector<RefId>& RefIds(const BRepGraph& theGraph,
+  static const NCollection_DynamicArray<RefId>& RefIds(const BRepGraph& theGraph,
                                                  const ParentId   theParent)
   {
     return theGraph.Topo().Compounds().Definition(theParent).ChildRefIds;
@@ -463,7 +463,7 @@ struct OccurrenceOfProductTraits
            && !theGraph.Topo().Products().Definition(theParent).IsRemoved;
   }
 
-  static const NCollection_Vector<RefId>& RefIds(const BRepGraph& theGraph,
+  static const NCollection_DynamicArray<RefId>& RefIds(const BRepGraph& theGraph,
                                                  const ParentId   theParent)
   {
     return theGraph.Topo().Products().Definition(theParent).OccurrenceRefIds;
@@ -543,7 +543,7 @@ private:
   }
 
   const BRepGraph&                 myGraph;
-  const NCollection_Vector<RefId>* myRefIds = nullptr;
+  const NCollection_DynamicArray<RefId>* myRefIds = nullptr;
   uint32_t                         myIndex  = 0;
   uint32_t                         myLength = 0;
 };

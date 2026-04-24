@@ -14,20 +14,20 @@
 //! @file BOPDS_VectorOfIndexRange.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_Vector<BOPDS_IndexRange> directly instead.
+//!             Use NCollection_DynamicArray<BOPDS_IndexRange> directly instead.
 
 #ifndef _BOPDS_VectorOfIndexRange_hxx
 #define _BOPDS_VectorOfIndexRange_hxx
 
 #include <Standard_Macro.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <BOPDS_IndexRange.hxx>
 
 Standard_HEADER_DEPRECATED("BOPDS_VectorOfIndexRange.hxx is deprecated since OCCT 8.0.0. Use "
-                           "NCollection_Vector<BOPDS_IndexRange> directly.")
+                           "NCollection_DynamicArray<BOPDS_IndexRange> directly.")
 
   Standard_DEPRECATED(
-    "BOPDS_VectorOfIndexRange is deprecated, use NCollection_Vector<BOPDS_IndexRange> directly")
-typedef NCollection_Vector<BOPDS_IndexRange> BOPDS_VectorOfIndexRange;
+    "BOPDS_VectorOfIndexRange is deprecated, use NCollection_DynamicArray<BOPDS_IndexRange> directly")
+typedef NCollection_DynamicArray<BOPDS_IndexRange> BOPDS_VectorOfIndexRange;
 
 #endif // _BOPDS_VectorOfIndexRange_hxx

@@ -24,7 +24,7 @@
 #include <Interface_CheckIterator.hxx>
 #include <Standard_Transient.hxx>
 #include <NCollection_IndexedDataMap.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <NCollection_DataMap.hxx>
 #include <Standard_CString.hxx>
 #include <IFSelect_ReturnStatus.hxx>
@@ -1027,8 +1027,8 @@ public:
   //! xst-params-split    4     Split
   //! xst-param-read      5     Transfer on Reading
   //! xst-param-write     6     Transfer on Writing
-  Standard_EXPORT void SetParams(const NCollection_Vector<occ::handle<Standard_Transient>>& params,
-                                 const NCollection_Vector<int>& uselist);
+  Standard_EXPORT void SetParams(const NCollection_DynamicArray<occ::handle<Standard_Transient>>& params,
+                                 const NCollection_DynamicArray<int>& uselist);
 
   //! Traces the Statics attached to a given use number
   //! If <use> is given positive (normal), the trace is embedded

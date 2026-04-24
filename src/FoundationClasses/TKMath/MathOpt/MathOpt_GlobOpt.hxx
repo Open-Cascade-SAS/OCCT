@@ -22,7 +22,7 @@
 #include <MathOpt_Powell.hxx>
 #include <MathUtils_Core.hxx>
 
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 
 #include <cmath>
 
@@ -109,7 +109,7 @@ VectorResult DifferentialEvolution(Function&           theFunc,
   MathUtils::RandomGenerator aRNG(theConfig.Seed);
 
   // Population: vector of candidate solutions
-  NCollection_Vector<math_Vector> aPopulation;
+  NCollection_DynamicArray<math_Vector> aPopulation;
   math_Vector                     aFitness(0, aNbPop - 1);
 
   // Initialize population
@@ -395,7 +395,7 @@ VectorResult GlobalMinimum(Function&                                  theFunc,
                            const math_Vector&                         theUpperBounds,
                            const GlobalConfig&                        theConfig,
                            const PSOConfig*                           thePSOConfig,
-                           const NCollection_Vector<PSOSeedParticle>* theSeeds = nullptr,
+                           const NCollection_DynamicArray<PSOSeedParticle>* theSeeds = nullptr,
                            PSOStats*                                  theStats = nullptr)
 {
   switch (theConfig.Strategy)

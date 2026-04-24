@@ -316,12 +316,12 @@ TEST(BRepGraph_ParentExplorerTest, CoEdgeParents_ImmediateWireIsVisible)
   BRepGraph_Builder::Perform(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  const NCollection_Vector<BRepGraph_WireRefId>& aWireRefIds =
+  const NCollection_DynamicArray<BRepGraph_WireRefId>& aWireRefIds =
     aGraph.Refs().Wires().IdsOf(BRepGraph_FaceId::Start());
   ASSERT_GT(aWireRefIds.Length(), 0);
   const BRepGraph_WireId aWireId = aGraph.Refs().Wires().Entry(aWireRefIds.Value(0)).WireDefId;
 
-  const NCollection_Vector<BRepGraph_CoEdgeRefId>& aCoEdgeRefIds =
+  const NCollection_DynamicArray<BRepGraph_CoEdgeRefId>& aCoEdgeRefIds =
     aGraph.Refs().CoEdges().IdsOf(aWireId);
   ASSERT_GT(aCoEdgeRefIds.Length(), 0);
   const BRepGraph_CoEdgeId aCoEdgeId =

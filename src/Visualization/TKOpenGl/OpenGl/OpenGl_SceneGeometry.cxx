@@ -381,7 +381,7 @@ bool OpenGl_RaytraceGeometry::AcquireTextures(const occ::handle<OpenGl_Context>&
   }
 
   int aTexIter = 0;
-  for (NCollection_Vector<occ::handle<OpenGl_Texture>>::Iterator aTexSrcIter(myTextures);
+  for (NCollection_DynamicArray<occ::handle<OpenGl_Texture>>::Iterator aTexSrcIter(myTextures);
        aTexSrcIter.More();
        aTexSrcIter.Next(), ++aTexIter)
   {
@@ -477,7 +477,7 @@ int OpenGl_RaytraceGeometry::AddTexture(const occ::handle<OpenGl_Texture>& theTe
     return -1;
   }
 
-  NCollection_Vector<occ::handle<OpenGl_Texture>>::iterator anIter =
+  NCollection_DynamicArray<occ::handle<OpenGl_Texture>>::iterator anIter =
     std::find(myTextures.begin(), myTextures.end(), theTexture);
 
   if (anIter == myTextures.end())
@@ -508,7 +508,7 @@ bool OpenGl_RaytraceGeometry::UpdateTextureHandles(const occ::handle<OpenGl_Cont
   myTextureHandles.resize(myTextures.Size());
 
   int aTexIter = 0;
-  for (NCollection_Vector<occ::handle<OpenGl_Texture>>::Iterator aTexSrcIter(myTextures);
+  for (NCollection_DynamicArray<occ::handle<OpenGl_Texture>>::Iterator aTexSrcIter(myTextures);
        aTexSrcIter.More();
        aTexSrcIter.Next(), ++aTexIter)
   {

@@ -16,7 +16,7 @@
 #ifndef IntPolyh_Array_HeaderFile
 #define IntPolyh_Array_HeaderFile
 
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <stdio.h>
 
 /**
@@ -24,7 +24,7 @@
 *
 *   1. The Array is dynamic array of objects.
 *
-*   2. The Array uses NCollection_Vector to store objects
+*   2. The Array uses NCollection_DynamicArray to store objects
 *
 *   3. The Array can be created:
 *      3.1.  with initial length Nb=0.
@@ -59,7 +59,7 @@ template <class Type>
 class IntPolyh_Array
 {
 public:
-  typedef NCollection_Vector<Type> IntPolyh_VectorOfType;
+  typedef NCollection_DynamicArray<Type> IntPolyh_VectorOfType;
 
   /**
    * Constructor.

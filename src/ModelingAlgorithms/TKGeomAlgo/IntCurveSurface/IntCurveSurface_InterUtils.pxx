@@ -42,7 +42,7 @@
 #include <Intf_SectionPoint.hxx>
 #include <Intf_TangentZone.hxx>
 #include <math_FunctionSetRoot.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <Precision.hxx>
 #include <ProjLib_Plane.hxx>
 #include <gp_Pnt.hxx>
@@ -1105,7 +1105,7 @@ bool ProcessIntAna(const CurveType&                                       theCur
                    const SurfaceType&                                     theSurface,
                    const IntAna_IntConicQuad&                             theIntAna,
                    bool&                                                  theIsParallel,
-                   NCollection_Vector<IntCurveSurface_IntersectionPoint>& thePoints)
+                   NCollection_DynamicArray<IntCurveSurface_IntersectionPoint>& thePoints)
 {
   theIsParallel = false;
   thePoints.Clear();
@@ -1158,7 +1158,7 @@ template <typename QuadCurvExactType,
           typename SurfaceTool>
 void PerformCurveQuadric(const CurveType&                                       theCurve,
                          const SurfaceType&                                     theSurface,
-                         NCollection_Vector<IntCurveSurface_IntersectionPoint>& thePoints)
+                         NCollection_DynamicArray<IntCurveSurface_IntersectionPoint>& thePoints)
 {
   thePoints.Clear();
 
@@ -1199,7 +1199,7 @@ template <typename CurveType, typename CurveTool, typename SurfaceType, typename
 bool ProcessLinTorus(const gp_Lin&                                          theLine,
                      const CurveType&                                       theCurve,
                      const SurfaceType&                                     theSurface,
-                     NCollection_Vector<IntCurveSurface_IntersectionPoint>& thePoints)
+                     NCollection_DynamicArray<IntCurveSurface_IntersectionPoint>& thePoints)
 {
   thePoints.Clear();
 
@@ -1233,9 +1233,9 @@ bool ProcessLinTorus(const gp_Lin&                                          theL
 //! Structure to hold sorted intersection start points.
 struct SortedStartPoints
 {
-  NCollection_Vector<double> TabU;
-  NCollection_Vector<double> TabV;
-  NCollection_Vector<double> TabW;
+  NCollection_DynamicArray<double> TabU;
+  NCollection_DynamicArray<double> TabV;
+  NCollection_DynamicArray<double> TabW;
 
   void Clear()
   {
@@ -1382,7 +1382,7 @@ void ProcessSortedPoints(ExactInterType&                                        
                          const double                                           theWsup,
                          const CurveType&                                       theCurve,
                          const SurfaceType&                                     theSurface,
-                         NCollection_Vector<IntCurveSurface_IntersectionPoint>& theResult)
+                         NCollection_DynamicArray<IntCurveSurface_IntersectionPoint>& theResult)
 {
   theResult.Clear();
 
@@ -1460,7 +1460,7 @@ struct UVBounds
 //! @tparam SurfaceTool The surface tool class
 template <typename SurfaceType, typename SurfaceTool>
 void DecomposeSurfaceIntervals(const SurfaceType&            theSurface,
-                               NCollection_Vector<UVBounds>& theIntervals)
+                               NCollection_DynamicArray<UVBounds>& theIntervals)
 {
   theIntervals.Clear();
 

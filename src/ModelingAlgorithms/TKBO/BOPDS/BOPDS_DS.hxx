@@ -24,7 +24,7 @@
 #include <NCollection_Map.hxx>
 #include <BOPDS_Pair.hxx>
 #include <BOPDS_PaveBlock.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <BOPDS_FaceInfo.hxx>
 #include <BOPDS_IndexRange.hxx>
 #include <BOPDS_Interf.hxx>
@@ -150,12 +150,12 @@ public:
 
   //! Selector
   //! Returns the information about pave blocks on source edges
-  Standard_EXPORT const NCollection_Vector<NCollection_List<occ::handle<BOPDS_PaveBlock>>>&
+  Standard_EXPORT const NCollection_DynamicArray<NCollection_List<occ::handle<BOPDS_PaveBlock>>>&
                         PaveBlocksPool() const;
 
   //! Selector/Modifier
   //! Returns the information about pave blocks on source edges
-  Standard_EXPORT NCollection_Vector<NCollection_List<occ::handle<BOPDS_PaveBlock>>>&
+  Standard_EXPORT NCollection_DynamicArray<NCollection_List<occ::handle<BOPDS_PaveBlock>>>&
                   ChangePaveBlocksPool();
 
   //! Query
@@ -208,7 +208,7 @@ public:
 
   //! Selector
   //! Returns the information about state of faces
-  Standard_EXPORT const NCollection_Vector<BOPDS_FaceInfo>& FaceInfoPool() const;
+  Standard_EXPORT const NCollection_DynamicArray<BOPDS_FaceInfo>& FaceInfoPool() const;
 
   //! Query
   //! Returns true if the shape with index theIndex has the
@@ -309,43 +309,43 @@ public:
 
   //! Selector/Modifier
   //! Returns the collection of interferences Vertex/Vertex
-  NCollection_Vector<BOPDS_InterfVV>& InterfVV();
+  NCollection_DynamicArray<BOPDS_InterfVV>& InterfVV();
 
   //! Selector/Modifier
   //! Returns the collection of interferences Vertex/Edge
-  NCollection_Vector<BOPDS_InterfVE>& InterfVE();
+  NCollection_DynamicArray<BOPDS_InterfVE>& InterfVE();
 
   //! Selector/Modifier
   //! Returns the collection of interferences Vertex/Face
-  NCollection_Vector<BOPDS_InterfVF>& InterfVF();
+  NCollection_DynamicArray<BOPDS_InterfVF>& InterfVF();
 
   //! Selector/Modifier
   //! Returns the collection of interferences Edge/Edge
-  NCollection_Vector<BOPDS_InterfEE>& InterfEE();
+  NCollection_DynamicArray<BOPDS_InterfEE>& InterfEE();
 
   //! Selector/Modifier
   //! Returns the collection of interferences Edge/Face
-  NCollection_Vector<BOPDS_InterfEF>& InterfEF();
+  NCollection_DynamicArray<BOPDS_InterfEF>& InterfEF();
 
   //! Selector/Modifier
   //! Returns the collection of interferences Face/Face
-  NCollection_Vector<BOPDS_InterfFF>& InterfFF();
+  NCollection_DynamicArray<BOPDS_InterfFF>& InterfFF();
 
   //! Selector/Modifier
   //! Returns the collection of interferences Vertex/Solid
-  NCollection_Vector<BOPDS_InterfVZ>& InterfVZ();
+  NCollection_DynamicArray<BOPDS_InterfVZ>& InterfVZ();
 
   //! Selector/Modifier
   //! Returns the collection of interferences Edge/Solid
-  NCollection_Vector<BOPDS_InterfEZ>& InterfEZ();
+  NCollection_DynamicArray<BOPDS_InterfEZ>& InterfEZ();
 
   //! Selector/Modifier
   //! Returns the collection of interferences Face/Solid
-  NCollection_Vector<BOPDS_InterfFZ>& InterfFZ();
+  NCollection_DynamicArray<BOPDS_InterfFZ>& InterfFZ();
 
   //! Selector/Modifier
   //! Returns the collection of interferences Solid/Solid
-  NCollection_Vector<BOPDS_InterfZZ>& InterfZZ();
+  NCollection_DynamicArray<BOPDS_InterfZZ>& InterfZZ();
 
   //! Returns the number of types of the interferences
   static int NbInterfTypes();
@@ -480,25 +480,25 @@ private:
   NCollection_List<TopoDS_Shape>                                     myArguments;
   int                                                                myNbShapes;
   int                                                                myNbSourceShapes;
-  NCollection_Vector<BOPDS_IndexRange>                               myRanges;
-  NCollection_Vector<BOPDS_ShapeInfo>                                myLines;
+  NCollection_DynamicArray<BOPDS_IndexRange>                               myRanges;
+  NCollection_DynamicArray<BOPDS_ShapeInfo>                                myLines;
   NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>    myMapShapeIndex;
-  NCollection_Vector<NCollection_List<occ::handle<BOPDS_PaveBlock>>> myPaveBlocksPool;
+  NCollection_DynamicArray<NCollection_List<occ::handle<BOPDS_PaveBlock>>> myPaveBlocksPool;
   NCollection_DataMap<occ::handle<BOPDS_PaveBlock>, occ::handle<BOPDS_CommonBlock>> myMapPBCB;
-  NCollection_Vector<BOPDS_FaceInfo>                                                myFaceInfoPool;
+  NCollection_DynamicArray<BOPDS_FaceInfo>                                                myFaceInfoPool;
   NCollection_DataMap<int, int>                                                     myShapesSD;
   NCollection_DataMap<int, NCollection_List<int>>                                   myMapVE;
   NCollection_Map<BOPDS_Pair>                                                       myInterfTB;
-  NCollection_Vector<BOPDS_InterfVV>                                                myInterfVV;
-  NCollection_Vector<BOPDS_InterfVE>                                                myInterfVE;
-  NCollection_Vector<BOPDS_InterfVF>                                                myInterfVF;
-  NCollection_Vector<BOPDS_InterfEE>                                                myInterfEE;
-  NCollection_Vector<BOPDS_InterfEF>                                                myInterfEF;
-  NCollection_Vector<BOPDS_InterfFF>                                                myInterfFF;
-  NCollection_Vector<BOPDS_InterfVZ>                                                myInterfVZ;
-  NCollection_Vector<BOPDS_InterfEZ>                                                myInterfEZ;
-  NCollection_Vector<BOPDS_InterfFZ>                                                myInterfFZ;
-  NCollection_Vector<BOPDS_InterfZZ>                                                myInterfZZ;
+  NCollection_DynamicArray<BOPDS_InterfVV>                                                myInterfVV;
+  NCollection_DynamicArray<BOPDS_InterfVE>                                                myInterfVE;
+  NCollection_DynamicArray<BOPDS_InterfVF>                                                myInterfVF;
+  NCollection_DynamicArray<BOPDS_InterfEE>                                                myInterfEE;
+  NCollection_DynamicArray<BOPDS_InterfEF>                                                myInterfEF;
+  NCollection_DynamicArray<BOPDS_InterfFF>                                                myInterfFF;
+  NCollection_DynamicArray<BOPDS_InterfVZ>                                                myInterfVZ;
+  NCollection_DynamicArray<BOPDS_InterfEZ>                                                myInterfEZ;
+  NCollection_DynamicArray<BOPDS_InterfFZ>                                                myInterfFZ;
+  NCollection_DynamicArray<BOPDS_InterfZZ>                                                myInterfZZ;
   NCollection_Map<int>                                                              myInterfered;
 };
 

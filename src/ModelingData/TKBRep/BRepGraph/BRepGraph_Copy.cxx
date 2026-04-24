@@ -160,7 +160,7 @@ BRepGraph BRepGraph_Copy::Perform(const BRepGraph& theGraph, const bool theCopyG
   for (BRepGraph_FullWireIterator aWireIt(theGraph); aWireIt.More(); aWireIt.Next())
   {
     const BRepGraph_WireId aWireId = aWireIt.CurrentId();
-    NCollection_Vector<std::pair<BRepGraph_EdgeId, TopAbs_Orientation>> aWireEdges;
+    NCollection_DynamicArray<std::pair<BRepGraph_EdgeId, TopAbs_Orientation>> aWireEdges;
     for (BRepGraph_RefsCoEdgeOfWire aCEIt(theGraph, aWireId); aCEIt.More(); aCEIt.Next())
     {
       const BRepGraphInc::CoEdgeDef& aCoEdge =
@@ -183,7 +183,7 @@ BRepGraph BRepGraph_Copy::Perform(const BRepGraph& theGraph, const bool theCopyG
 
     // Get outer/inner wire def NodeIds via typed iterator.
     BRepGraph_WireId                     anOuterWire;
-    NCollection_Vector<BRepGraph_WireId> anInnerWires;
+    NCollection_DynamicArray<BRepGraph_WireId> anInnerWires;
 
     for (BRepGraph_RefsWireOfFace aWRIt(theGraph, aFaceId); aWRIt.More(); aWRIt.Next())
     {
@@ -220,7 +220,7 @@ BRepGraph BRepGraph_Copy::Perform(const BRepGraph& theGraph, const bool theCopyG
   for (BRepGraph_FullEdgeIterator anEdgeIt(theGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
     const BRepGraph_EdgeId                        anEdgeId = anEdgeIt.CurrentId();
-    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIds =
+    const NCollection_DynamicArray<BRepGraph_CoEdgeId>& aCoEdgeIds =
       theGraph.Topo().Edges().CoEdges(anEdgeId);
     for (const BRepGraph_CoEdgeId& aCoEdgeId : aCoEdgeIds)
     {
@@ -276,7 +276,7 @@ BRepGraph BRepGraph_Copy::Perform(const BRepGraph& theGraph, const bool theCopyG
   for (BRepGraph_FullCompoundIterator aCompoundIt(theGraph); aCompoundIt.More(); aCompoundIt.Next())
   {
     const BRepGraph_CompoundId           aCompoundId = aCompoundIt.CurrentId();
-    NCollection_Vector<BRepGraph_NodeId> aChildNodeIds;
+    NCollection_DynamicArray<BRepGraph_NodeId> aChildNodeIds;
     for (BRepGraph_RefsChildOfCompound aCRIt(theGraph, aCompoundId); aCRIt.More(); aCRIt.Next())
     {
       aChildNodeIds.Append(aRefs.Children().Entry(aCRIt.CurrentId()).ChildDefId);
@@ -290,7 +290,7 @@ BRepGraph BRepGraph_Copy::Perform(const BRepGraph& theGraph, const bool theCopyG
        aCompSolidIt.Next())
   {
     const BRepGraph_CompSolidId           aCompSolidId = aCompSolidIt.CurrentId();
-    NCollection_Vector<BRepGraph_SolidId> aSolidNodeIds;
+    NCollection_DynamicArray<BRepGraph_SolidId> aSolidNodeIds;
     for (BRepGraph_RefsSolidOfCompSolid aSRIt(theGraph, aCompSolidId); aSRIt.More(); aSRIt.Next())
     {
       aSolidNodeIds.Append(aRefs.Solids().Entry(aSRIt.CurrentId()).SolidDefId);
@@ -332,10 +332,10 @@ BRepGraph BRepGraph_Copy::Perform(const BRepGraph& theGraph, const bool theCopyG
   }
 
   // Phase 3: Transfer UIDs (identity mapping - direct vector copy).
-  auto copyUIDs = [](const NCollection_Vector<BRepGraph_UID>& theSrc,
-                     NCollection_Vector<BRepGraph_UID>&       theDst) {
-    NCollection_Vector<BRepGraph_UID>::Iterator aDstIt(theDst);
-    NCollection_Vector<BRepGraph_UID>::Iterator anSrcIt(theSrc);
+  auto copyUIDs = [](const NCollection_DynamicArray<BRepGraph_UID>& theSrc,
+                     NCollection_DynamicArray<BRepGraph_UID>&       theDst) {
+    NCollection_DynamicArray<BRepGraph_UID>::Iterator aDstIt(theDst);
+    NCollection_DynamicArray<BRepGraph_UID>::Iterator anSrcIt(theSrc);
     for (; anSrcIt.More() && aDstIt.More(); anSrcIt.Next(), aDstIt.Next())
     {
       if (anSrcIt.Value().IsValid())
@@ -521,7 +521,7 @@ BRepGraph BRepGraph_Copy::CopyFace(const BRepGraph&       theGraph,
   for (int anIdx = 1; anIdx <= aWireSet.Extent(); ++anIdx)
   {
     const BRepGraph_WireId anOldWireId = aWireSet.FindKey(anIdx);
-    NCollection_Vector<std::pair<BRepGraph_EdgeId, TopAbs_Orientation>> aNewEntries;
+    NCollection_DynamicArray<std::pair<BRepGraph_EdgeId, TopAbs_Orientation>> aNewEntries;
     for (BRepGraph_RefsCoEdgeOfWire aCEIt(theGraph, anOldWireId); aCEIt.More(); aCEIt.Next())
     {
       const BRepGraphInc::CoEdgeDef& aCoEdge =
@@ -540,7 +540,7 @@ BRepGraph BRepGraph_Copy::CopyFace(const BRepGraph&       theGraph,
   occ::handle<Geom_Surface>        aSurf        = copySurface(aFaceSrcSurf, theCopyGeom);
 
   BRepGraph_WireId                     anOuterWire;
-  NCollection_Vector<BRepGraph_WireId> anInnerWires;
+  NCollection_DynamicArray<BRepGraph_WireId> anInnerWires;
 
   for (BRepGraph_RefsWireOfFace aWRIt(theGraph, theFace); aWRIt.More(); aWRIt.Next())
   {
@@ -581,7 +581,7 @@ BRepGraph BRepGraph_Copy::CopyFace(const BRepGraph&       theGraph,
   {
     const BRepGraph_EdgeId                        anOldEdgeId = anEdgeSet.FindKey(anIdx);
     const BRepGraph_EdgeId                        aNewEdgeId(anIdx - 1);
-    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIds =
+    const NCollection_DynamicArray<BRepGraph_CoEdgeId>& aCoEdgeIds =
       theGraph.Topo().Edges().CoEdges(anOldEdgeId);
     for (const BRepGraph_CoEdgeId& aCoEdgeId : aCoEdgeIds)
     {

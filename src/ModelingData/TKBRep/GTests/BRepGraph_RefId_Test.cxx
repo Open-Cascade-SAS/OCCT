@@ -482,7 +482,7 @@ TEST(BRepGraph_RefIdTest, ChildRefs_CompoundEntriesAreValid)
 
   for (BRepGraph_CompoundIterator aCompIt(aGraph); aCompIt.More(); aCompIt.Next())
   {
-    const NCollection_Vector<BRepGraph_ChildRefId> aChildRefs =
+    const NCollection_DynamicArray<BRepGraph_ChildRefId> aChildRefs =
       BRepGraph_TestTools::ChildRefsOfParent(aGraph, aCompIt.CurrentId());
     for (const BRepGraph_ChildRefId& aChildRefId : aChildRefs)
     {

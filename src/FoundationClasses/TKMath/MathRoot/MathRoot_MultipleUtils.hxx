@@ -19,7 +19,7 @@
 #include <MathRoot_Brent.hxx>
 #include <math_Vector.hxx>
 
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 
 #include <algorithm>
 #include <cmath>
@@ -44,8 +44,8 @@ struct MultipleResult
 {
   MathUtils::Status          Status       = MathUtils::Status::NotConverged; //!< Computation status
   size_t                     NbIterations = 0;  //!< Total iterations across all roots
-  NCollection_Vector<double> Roots;             //!< Found roots (sorted)
-  NCollection_Vector<double> Values;            //!< Function values at roots
+  NCollection_DynamicArray<double> Roots;             //!< Found roots (sorted)
+  NCollection_DynamicArray<double> Values;            //!< Function values at roots
   bool                       IsAllNull = false; //!< True if function is essentially zero in range
 
   //! Returns true if computation succeeded.

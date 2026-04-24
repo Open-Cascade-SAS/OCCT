@@ -16,7 +16,7 @@
 //=================================================================================================
 
 template <typename T>
-void BRepGraph_MeshCacheStorage::ensureSize(NCollection_Vector<T>& theVec, const size_t theIndex)
+void BRepGraph_MeshCacheStorage::ensureSize(NCollection_DynamicArray<T>& theVec, const size_t theIndex)
 {
   while (theVec.Size() <= theIndex)
   {
@@ -166,7 +166,7 @@ void BRepGraph_MeshCacheStorage::OnCompact(
 {
   // Remap face mesh entries.
   {
-    NCollection_Vector<BRepGraph_MeshCache::FaceMeshEntry> aNewFaces;
+    NCollection_DynamicArray<BRepGraph_MeshCache::FaceMeshEntry> aNewFaces;
     for (NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>::Iterator anIter(theNodeRemapMap);
          anIter.More();
          anIter.Next())
@@ -190,7 +190,7 @@ void BRepGraph_MeshCacheStorage::OnCompact(
 
   // Remap coedge mesh entries.
   {
-    NCollection_Vector<BRepGraph_MeshCache::CoEdgeMeshEntry> aNewCoEdges;
+    NCollection_DynamicArray<BRepGraph_MeshCache::CoEdgeMeshEntry> aNewCoEdges;
     for (NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>::Iterator anIter(theNodeRemapMap);
          anIter.More();
          anIter.Next())
@@ -214,7 +214,7 @@ void BRepGraph_MeshCacheStorage::OnCompact(
 
   // Remap edge mesh entries.
   {
-    NCollection_Vector<BRepGraph_MeshCache::EdgeMeshEntry> aNewEdges;
+    NCollection_DynamicArray<BRepGraph_MeshCache::EdgeMeshEntry> aNewEdges;
     for (NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId>::Iterator anIter(theNodeRemapMap);
          anIter.More();
          anIter.Next())

@@ -24,7 +24,7 @@
 #include <math_GlobOptMin.hxx>
 #include <math_Vector.hxx>
 #include <NCollection_CellFilter.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <Precision.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
@@ -629,7 +629,7 @@ void Extrema_GGenExtCC<TheCurve1,
                                     Precision::PConfusion());
   Extrema_GGenExtCC_PointsInspector                         anInspector(aCellSize);
   NCollection_CellFilter<Extrema_GGenExtCC_PointsInspector> aFilter(aCellSize);
-  NCollection_Vector<gp_XY>                                 aPnts;
+  NCollection_DynamicArray<gp_XY>                                 aPnts;
 
   int         i, j, k;
   math_Vector aFirstBorderInterval(1, 2);

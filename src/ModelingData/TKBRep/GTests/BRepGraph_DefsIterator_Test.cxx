@@ -185,7 +185,7 @@ TEST_F(BRepGraph_DefsIteratorTest, ChildOfCompound_EnumeratesHeterogeneousChildr
     myGraph.Editor().Vertices().Add(gp_Pnt(1.0, 2.0, 3.0), 0.01);
   ASSERT_TRUE(aLooseVertex.IsValid());
 
-  NCollection_Vector<BRepGraph_NodeId> aChildren;
+  NCollection_DynamicArray<BRepGraph_NodeId> aChildren;
   aChildren.Append(BRepGraph_SolidId::Start());
   aChildren.Append(aLooseVertex);
   const BRepGraph_CompoundId aCompound = myGraph.Editor().Compounds().Add(aChildren);
@@ -206,7 +206,7 @@ TEST_F(BRepGraph_DefsIteratorTest, SolidOfCompSolid_EnumeratesDirectSolids)
   ASSERT_TRUE(aSolidA.IsValid());
   ASSERT_TRUE(aSolidB.IsValid());
 
-  NCollection_Vector<BRepGraph_SolidId> aSolids;
+  NCollection_DynamicArray<BRepGraph_SolidId> aSolids;
   aSolids.Append(aSolidA);
   aSolids.Append(aSolidB);
   const BRepGraph_CompSolidId aCompSolid = myGraph.Editor().CompSolids().Add(aSolids);
@@ -232,7 +232,7 @@ TEST_F(BRepGraph_DefsIteratorTest, OccurrenceOfProduct_EnumeratesDirectOccurrenc
 
 TEST_F(BRepGraph_DefsIteratorTest, AuxChildrenOfShellAndSolid_EnumerateInjectedChildren)
 {
-  NCollection_Vector<BRepGraph_NodeId> aShellChildren;
+  NCollection_DynamicArray<BRepGraph_NodeId> aShellChildren;
   aShellChildren.Append(BRepGraph_WireId::Start());
   aShellChildren.Append(BRepGraph_EdgeId::Start());
   const BRepGraph_CompoundId aShellSeed = myGraph.Editor().Compounds().Add(aShellChildren);
@@ -255,7 +255,7 @@ TEST_F(BRepGraph_DefsIteratorTest, AuxChildrenOfShellAndSolid_EnumerateInjectedC
   ASSERT_TRUE(aShellIt.More());
   EXPECT_EQ(aShellIt.CurrentId().NodeKind, BRepGraph_NodeId::Kind::Edge);
 
-  NCollection_Vector<BRepGraph_NodeId> aSolidChildren;
+  NCollection_DynamicArray<BRepGraph_NodeId> aSolidChildren;
   aSolidChildren.Append(BRepGraph_EdgeId(1));
   aSolidChildren.Append(BRepGraph_VertexId::Start());
   const BRepGraph_CompoundId aSolidSeed = myGraph.Editor().Compounds().Add(aSolidChildren);
@@ -281,7 +281,7 @@ TEST_F(BRepGraph_DefsIteratorTest, AuxChildrenOfShellAndSolid_EnumerateInjectedC
 
 TEST_F(BRepGraph_DefsIteratorTest, RemovedWireRef_IsSkipped)
 {
-  const NCollection_Vector<BRepGraph_WireRefId>& aWireRefs =
+  const NCollection_DynamicArray<BRepGraph_WireRefId>& aWireRefs =
     myGraph.Refs().Wires().IdsOf(BRepGraph_FaceId::Start());
   ASSERT_EQ(aWireRefs.Length(), 1);
 

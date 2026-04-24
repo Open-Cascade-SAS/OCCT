@@ -17,7 +17,7 @@
 #include <Interface_ShareTool.hxx>
 #include <Standard_Transient.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 
 #include <mutex>
 
@@ -28,9 +28,9 @@ static const char* unspec                      = "unspecified";
 
 static volatile bool gMapTypesInit = false;
 
-static NCollection_Vector<TCollection_AsciiString>& theCats()
+static NCollection_DynamicArray<TCollection_AsciiString>& theCats()
 {
-  static NCollection_Vector<TCollection_AsciiString> aCat;
+  static NCollection_DynamicArray<TCollection_AsciiString> aCat;
   return aCat;
 }
 

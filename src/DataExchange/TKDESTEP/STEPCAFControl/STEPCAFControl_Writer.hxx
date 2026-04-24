@@ -20,7 +20,7 @@
 #include <Standard_Transient.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 #include <TDF_Label.hxx>
@@ -431,7 +431,7 @@ private:
   bool                                                         myMatMode;
   bool                                                         myVisMatMode;
   bool                                                         myIsCleanDuplicates;
-  NCollection_Vector<occ::handle<StepRepr_RepresentationItem>> myGDTAnnotations;
+  NCollection_DynamicArray<occ::handle<StepRepr_RepresentationItem>> myGDTAnnotations;
   occ::handle<StepVisual_DraughtingModel>                      myGDTPresentationDM;
   occ::handle<NCollection_HArray1<occ::handle<StepVisual_PresentationStyleAssignment>>>
                                                myGDTPrsCurveStyle;

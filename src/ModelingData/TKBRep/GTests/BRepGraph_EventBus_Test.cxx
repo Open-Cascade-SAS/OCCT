@@ -60,7 +60,7 @@ public:
     myRefImmediateEvents.Append(theRef);
   }
 
-  void OnRefsModified(const NCollection_Vector<BRepGraph_RefId>& theRefs,
+  void OnRefsModified(const NCollection_DynamicArray<BRepGraph_RefId>& theRefs,
                       const int /*theModifiedRefKindsMask*/) noexcept override
   {
     myRefBatchEvents = theRefs;
@@ -72,7 +72,7 @@ public:
     myImmediateEvents.Append(theNode);
   }
 
-  void OnNodesModified(const NCollection_Vector<BRepGraph_NodeId>& theNodes) noexcept override
+  void OnNodesModified(const NCollection_DynamicArray<BRepGraph_NodeId>& theNodes) noexcept override
   {
     myBatchEvents = theNodes;
     ++myBatchCallCount;
@@ -141,8 +141,8 @@ public:
     return aCount;
   }
 
-  NCollection_Vector<BRepGraph_NodeId>                    myImmediateEvents;
-  NCollection_Vector<BRepGraph_NodeId>                    myBatchEvents;
+  NCollection_DynamicArray<BRepGraph_NodeId>                    myImmediateEvents;
+  NCollection_DynamicArray<BRepGraph_NodeId>                    myBatchEvents;
   int                                                     myBatchCallCount   = 0;
   int                                                     myRemoveCallCount  = 0;
   int                                                     myCompactCallCount = 0;
@@ -150,9 +150,9 @@ public:
   BRepGraph_NodeId                                        myLastReplacement;
   NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId> myLastRemapMap;
 
-  NCollection_Vector<BRepGraph_RefId> myRefRemovedEvents;
-  NCollection_Vector<BRepGraph_RefId> myRefImmediateEvents;
-  NCollection_Vector<BRepGraph_RefId> myRefBatchEvents;
+  NCollection_DynamicArray<BRepGraph_RefId> myRefRemovedEvents;
+  NCollection_DynamicArray<BRepGraph_RefId> myRefImmediateEvents;
+  NCollection_DynamicArray<BRepGraph_RefId> myRefBatchEvents;
   int                                 myRefBatchCallCount  = 0;
   int                                 myRefRemoveCallCount = 0;
 

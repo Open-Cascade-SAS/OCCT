@@ -179,9 +179,9 @@ bool isShellClosedByIncidence(const BRepGraph& theGraph, const BRepGraph_ShellId
     }
 
     int                                         aFaceCountInShell = 0;
-    const NCollection_Vector<BRepGraph_FaceId>& aEdgeFaces =
+    const NCollection_DynamicArray<BRepGraph_FaceId>& aEdgeFaces =
       theGraph.Topo().Edges().Faces(anEdgeId);
-    for (NCollection_Vector<BRepGraph_FaceId>::Iterator aFaceIt(aEdgeFaces); aFaceIt.More();
+    for (NCollection_DynamicArray<BRepGraph_FaceId>::Iterator aFaceIt(aEdgeFaces); aFaceIt.More();
          aFaceIt.Next())
     {
       if (aShellFaces.Contains(aFaceIt.Value()))
@@ -488,9 +488,9 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
       continue;
     }
 
-    NCollection_Vector<std::pair<BRepGraph_EdgeId, TopAbs_Orientation>> aNewEntries;
-    NCollection_Vector<BRepGraph_CoEdgeId>                              anOldCoEdges;
-    NCollection_Vector<BRepGraph_CoEdgeRefId>                           anOldCoEdgeRefs;
+    NCollection_DynamicArray<std::pair<BRepGraph_EdgeId, TopAbs_Orientation>> aNewEntries;
+    NCollection_DynamicArray<BRepGraph_CoEdgeId>                              anOldCoEdges;
+    NCollection_DynamicArray<BRepGraph_CoEdgeRefId>                           anOldCoEdgeRefs;
     for (BRepGraph_RefsCoEdgeOfWire aRefIt(theGraph, anOldWireId); aRefIt.More(); aRefIt.Next())
     {
       const BRepGraphInc::CoEdgeRef& aCR = theGraph.Refs().CoEdges().Entry(aRefIt.CurrentId());
@@ -507,7 +507,7 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
     }
     const BRepGraph_WireId aNewWireId = aNewGraph.Editor().Wires().Add(aNewEntries);
 
-    const NCollection_Vector<BRepGraph_CoEdgeRefId>& aNewCoEdgeRefs =
+    const NCollection_DynamicArray<BRepGraph_CoEdgeRefId>& aNewCoEdgeRefs =
       aNewGraph.Topo().Wires().Definition(aNewWireId).CoEdgeRefIds;
     for (size_t aRefIdx = 0; aRefIdx < anOldCoEdgeRefs.Size() && aRefIdx < aNewCoEdgeRefs.Size();
          ++aRefIdx)
@@ -545,9 +545,9 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
 
     // Find outer wire from incidence ref entries.
     BRepGraph_WireId                        aNewOuterWire;
-    NCollection_Vector<BRepGraph_WireId>    aNewInnerWires;
+    NCollection_DynamicArray<BRepGraph_WireId>    aNewInnerWires;
     BRepGraph_WireRefId                     anOldOuterWireRef;
-    NCollection_Vector<BRepGraph_WireRefId> anOldInnerWireRefs;
+    NCollection_DynamicArray<BRepGraph_WireRefId> anOldInnerWireRefs;
 
     for (BRepGraph_RefsWireOfFace aRefIt(theGraph, anOldFaceId); aRefIt.More(); aRefIt.Next())
     {
@@ -573,7 +573,7 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
     BRepGraph_MutGuard<BRepGraphInc::FaceDef> aNewFace = aNewGraph.Editor().Faces().Mut(aNewFaceId);
     aNewFace->NaturalRestriction                       = anOldFace.NaturalRestriction;
 
-    const NCollection_Vector<BRepGraph_WireRefId>& aNewWireRefs = aNewFace->WireRefIds;
+    const NCollection_DynamicArray<BRepGraph_WireRefId>& aNewWireRefs = aNewFace->WireRefIds;
     if (anOldOuterWireRef.IsValid() && !aNewWireRefs.IsEmpty())
     {
       const BRepGraphInc::WireRef& anOldOuterRef = theGraph.Refs().Wires().Entry(anOldOuterWireRef);
@@ -820,8 +820,8 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
       continue;
     }
 
-    NCollection_Vector<BRepGraph_NodeId>     aNewChildren;
-    NCollection_Vector<BRepGraph_ChildRefId> anOldChildRefs;
+    NCollection_DynamicArray<BRepGraph_NodeId>     aNewChildren;
+    NCollection_DynamicArray<BRepGraph_ChildRefId> anOldChildRefs;
     for (BRepGraph_RefsChildOfCompound aRefIt(theGraph, anOldCompoundId); aRefIt.More();
          aRefIt.Next())
     {
@@ -836,7 +836,7 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
     const BRepGraph_CompoundId aNewCompoundId = aNewGraph.Editor().Compounds().Add(aNewChildren);
     if (aNewCompoundId.IsValid())
     {
-      const NCollection_Vector<BRepGraph_ChildRefId>& aNewChildRefs =
+      const NCollection_DynamicArray<BRepGraph_ChildRefId>& aNewChildRefs =
         aNewGraph.Topo().Compounds().Definition(aNewCompoundId).ChildRefIds;
       for (size_t aRefIdx = 0; aRefIdx < anOldChildRefs.Size() && aRefIdx < aNewChildRefs.Size();
            ++aRefIdx)
@@ -861,8 +861,8 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
       continue;
     }
 
-    NCollection_Vector<BRepGraph_SolidId>    aNewSolids;
-    NCollection_Vector<BRepGraph_SolidRefId> anOldSolidRefs;
+    NCollection_DynamicArray<BRepGraph_SolidId>    aNewSolids;
+    NCollection_DynamicArray<BRepGraph_SolidRefId> anOldSolidRefs;
     for (BRepGraph_RefsSolidOfCompSolid aRefIt(theGraph, anOldCompSolidId); aRefIt.More();
          aRefIt.Next())
     {
@@ -877,7 +877,7 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
     const BRepGraph_CompSolidId aNewCompSolidId = aNewGraph.Editor().CompSolids().Add(aNewSolids);
     if (aNewCompSolidId.IsValid())
     {
-      const NCollection_Vector<BRepGraph_SolidRefId>& aNewSolidRefs =
+      const NCollection_DynamicArray<BRepGraph_SolidRefId>& aNewSolidRefs =
         aNewGraph.Topo().CompSolids().Definition(aNewCompSolidId).SolidRefIds;
       for (size_t aRefIdx = 0; aRefIdx < anOldSolidRefs.Size() && aRefIdx < aNewSolidRefs.Size();
            ++aRefIdx)
@@ -1114,8 +1114,8 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
   // Transfer per-kind UID vectors from old graph to new graph using index remap maps.
   // Each new graph's UID vector[newIdx] = old graph's UID vector[oldIdx].
   auto transferUIDs = [&](const auto&                              theMap,
-                          const NCollection_Vector<BRepGraph_UID>& theOldVec,
-                          NCollection_Vector<BRepGraph_UID>&       theNewVec) {
+                          const NCollection_DynamicArray<BRepGraph_UID>& theOldVec,
+                          NCollection_DynamicArray<BRepGraph_UID>&       theNewVec) {
     // New vector was already populated by EditorView during reconstruction.
     // Overwrite entries that have a mapping from the old graph.
     for (const auto& [anOldId, aNewId] : theMap.Items())
@@ -1131,8 +1131,8 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
 
   // Same logic for per-kind RefUID vectors.
   auto transferRefUIDs = [&](const auto&                                 theMap,
-                             const NCollection_Vector<BRepGraph_RefUID>& theOldVec,
-                             NCollection_Vector<BRepGraph_RefUID>&       theNewVec) {
+                             const NCollection_DynamicArray<BRepGraph_RefUID>& theOldVec,
+                             NCollection_DynamicArray<BRepGraph_RefUID>&       theNewVec) {
     for (const auto& [anOldId, aNewId] : theMap.Items())
     {
       if (anOldId.IsValidIn(theOldVec)
@@ -1236,8 +1236,8 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
   // TopoDS_Shape data. The rebuilt aNewGraph has no TopoDS_Shape bindings, so they must be
   // transferred here. We capture into local vectors using the ForEach API, then remap keys/values
   // after the swap.
-  NCollection_Vector<std::pair<const TopoDS_TShape*, BRepGraph_NodeId>> aTShapeBindings;
-  NCollection_Vector<std::pair<BRepGraph_NodeId, TopoDS_Shape>>         aOriginalBindings;
+  NCollection_DynamicArray<std::pair<const TopoDS_TShape*, BRepGraph_NodeId>> aTShapeBindings;
+  NCollection_DynamicArray<std::pair<BRepGraph_NodeId, TopoDS_Shape>>         aOriginalBindings;
   aGraphData->myIncStorage.ForEachTShapeBinding(
     [&](const TopoDS_TShape* theTShape, const BRepGraph_NodeId& theNodeId) {
       aTShapeBindings.Append({theTShape, theNodeId});
@@ -1329,7 +1329,7 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
          anIt.More();
          anIt.Next())
     {
-      NCollection_Vector<BRepGraph_NodeId> aRepl;
+      NCollection_DynamicArray<BRepGraph_NodeId> aRepl;
       aRepl.Append(anIt.Value());
       theGraph.History().Record(TCollection_AsciiString("Compact:Remap"), anIt.Key(), aRepl);
     }

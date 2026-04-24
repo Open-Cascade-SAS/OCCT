@@ -21,7 +21,7 @@
 #include <OpenGl_VertexBufferEditor.hxx>
 #include <OpenGl_Vec.hxx>
 
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <NCollection_Handle.hxx>
 
 class Font_TextFormatter;
@@ -39,23 +39,23 @@ public:
     const occ::handle<Font_TextFormatter>&                theFormatter,
     const occ::handle<OpenGl_Context>&                    theContext,
     OpenGl_Font&                                          theFont,
-    NCollection_Vector<GLuint>&                           theTextures,
-    NCollection_Vector<occ::handle<OpenGl_VertexBuffer>>& theVertsPerTexture,
-    NCollection_Vector<occ::handle<OpenGl_VertexBuffer>>& theTCrdsPerTexture);
+    NCollection_DynamicArray<GLuint>&                           theTextures,
+    NCollection_DynamicArray<occ::handle<OpenGl_VertexBuffer>>& theVertsPerTexture,
+    NCollection_DynamicArray<occ::handle<OpenGl_VertexBuffer>>& theTCrdsPerTexture);
 
 protected: //! @name class auxiliary methods
   Standard_EXPORT void createGlyphs(
     const occ::handle<Font_TextFormatter>& theFormatter,
     const occ::handle<OpenGl_Context>&     theCtx,
     OpenGl_Font&                           theFont,
-    NCollection_Vector<GLuint>&            theTextures,
-    NCollection_Vector<NCollection_Handle<NCollection_Vector<NCollection_Vec2<float>>>>&
+    NCollection_DynamicArray<GLuint>&            theTextures,
+    NCollection_DynamicArray<NCollection_Handle<NCollection_DynamicArray<NCollection_Vec2<float>>>>&
       theVertsPerTexture,
-    NCollection_Vector<NCollection_Handle<NCollection_Vector<NCollection_Vec2<float>>>>&
+    NCollection_DynamicArray<NCollection_Handle<NCollection_DynamicArray<NCollection_Vec2<float>>>>&
       theTCrdsPerTexture);
 
 protected: //! @name class auxiliary fields
-  NCollection_Vector<OpenGl_Font::Tile>              myTileRects;
+  NCollection_DynamicArray<OpenGl_Font::Tile>              myTileRects;
   OpenGl_VertexBufferEditor<NCollection_Vec2<float>> myVboEditor;
 };
 

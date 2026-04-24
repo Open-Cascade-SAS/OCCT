@@ -34,7 +34,7 @@
 #include <IntCurveSurface_IntersectionPoint.hxx>
 #include <Intf_Tool.hxx>
 #include <math_FunctionSetRoot.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <Precision.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array2.hxx>
@@ -75,7 +75,7 @@ void Perform(const CurveType&   theCurve,
   theReset();
   theDone = true;
 
-  NCollection_Vector<IntCurveSurface_InterUtils::UVBounds> aIntervals;
+  NCollection_DynamicArray<IntCurveSurface_InterUtils::UVBounds> aIntervals;
   IntCurveSurface_InterUtils::DecomposeSurfaceIntervals<SurfaceType, SurfaceTool>(theSurface,
                                                                                   aIntervals);
 
@@ -328,7 +328,7 @@ void InternalPerformBSB(const CurveType&      theCurve,
                                                                              aStartPoints);
   IntCurveSurface_InterUtils::SortStartPoints(aStartPoints);
 
-  NCollection_Vector<IntCurveSurface_IntersectionPoint> aResultPoints;
+  NCollection_DynamicArray<IntCurveSurface_IntersectionPoint> aResultPoints;
   IntCurveSurface_InterUtils::
     ProcessSortedPoints<ExactInterType, CurveType, CurveTool, SurfaceType, SurfaceTool>(
       intersectionExacte,
@@ -387,7 +387,7 @@ void InternalPerform(const CurveType&      theCurve,
                                                                              aStartPoints);
   IntCurveSurface_InterUtils::SortStartPoints(aStartPoints);
 
-  NCollection_Vector<IntCurveSurface_IntersectionPoint> aResultPoints;
+  NCollection_DynamicArray<IntCurveSurface_IntersectionPoint> aResultPoints;
   IntCurveSurface_InterUtils::
     ProcessSortedPoints<ExactInterType, CurveType, CurveTool, SurfaceType, SurfaceTool>(
       intersectionExacte,
@@ -420,7 +420,7 @@ void InternalPerformCurveQuadric(const CurveType&   theCurve,
                                  const SurfaceType& theSurface,
                                  AppendFunc         theAppend)
 {
-  NCollection_Vector<IntCurveSurface_IntersectionPoint> aPoints;
+  NCollection_DynamicArray<IntCurveSurface_IntersectionPoint> aPoints;
 
   IntCurveSurface_InterUtils::
     PerformCurveQuadric<QuadCurvExactInterType, CurveType, CurveTool, SurfaceType, SurfaceTool>(
@@ -555,7 +555,7 @@ void PerformConicSurfLine(const gp_Lin&           theLine,
       break;
     }
     case GeomAbs_Torus: {
-      NCollection_Vector<IntCurveSurface_IntersectionPoint> aPoints;
+      NCollection_DynamicArray<IntCurveSurface_IntersectionPoint> aPoints;
       if (IntCurveSurface_InterUtils::
             ProcessLinTorus<CurveType, CurveTool, SurfaceType, SurfaceTool>(theLine,
                                                                             theCurve,
@@ -948,7 +948,7 @@ void AppendIntAna(const CurveType&           theCurve,
                   AppendFunc                 theAppend)
 {
   bool                                                  aIsParallel = false;
-  NCollection_Vector<IntCurveSurface_IntersectionPoint> aPoints;
+  NCollection_DynamicArray<IntCurveSurface_IntersectionPoint> aPoints;
 
   if (IntCurveSurface_InterUtils::ProcessIntAna<CurveType, CurveTool, SurfaceType, SurfaceTool>(
         theCurve,

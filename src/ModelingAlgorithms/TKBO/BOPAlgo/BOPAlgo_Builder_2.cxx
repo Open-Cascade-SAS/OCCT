@@ -25,7 +25,7 @@
 #include <BOPDS_Interf.hxx>
 #include <BOPDS_PaveBlock.hxx>
 #include <BOPDS_ShapeInfo.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <BOPTools_AlgoTools.hxx>
 #include <BOPTools_AlgoTools2D.hxx>
 #include <BOPTools_AlgoTools3D.hxx>
@@ -112,7 +112,7 @@ protected:
 };
 
 //
-typedef NCollection_Vector<BOPAlgo_PairOfShapeBoolean> BOPAlgo_VectorOfPairOfShapeBoolean;
+typedef NCollection_DynamicArray<BOPAlgo_PairOfShapeBoolean> BOPAlgo_VectorOfPairOfShapeBoolean;
 
 //=======================================================================
 // class   : BOPAlgo_SplitFace
@@ -143,7 +143,7 @@ private:
   Message_ProgressRange myRange;
 };
 
-typedef NCollection_Vector<BOPAlgo_SplitFace> BOPAlgo_VectorOfBuilderFace;
+typedef NCollection_DynamicArray<BOPAlgo_SplitFace> BOPAlgo_VectorOfBuilderFace;
 
 //=================================================================================================
 
@@ -207,7 +207,7 @@ protected:
 };
 
 //
-typedef NCollection_Vector<BOPAlgo_VFI> BOPAlgo_VectorOfVFI;
+typedef NCollection_DynamicArray<BOPAlgo_VFI> BOPAlgo_VectorOfVFI;
 
 //=================================================================================================
 
@@ -572,7 +572,7 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
 {
   // It is necessary to analyze all Face/Face intersections
   // and find all faces with equal sets of edges
-  const NCollection_Vector<BOPDS_InterfFF>& aFFs   = myDS->InterfFF();
+  const NCollection_DynamicArray<BOPDS_InterfFF>& aFFs   = myDS->InterfFF();
   int                                       aNbFFs = aFFs.Length();
   if (!aNbFFs)
     return;
@@ -584,7 +584,7 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
   // Vector to store the indices of faces for future sorting
   // for making the SD face for the group from the face with
   // smallest index in Data structure
-  NCollection_Vector<int> aFIVec(256, aAllocator);
+  NCollection_DynamicArray<int> aFIVec(256, aAllocator);
   // Fence map to avoid repeated checks of the same face.
   NCollection_Map<int> aMFence(1, aAllocator);
 

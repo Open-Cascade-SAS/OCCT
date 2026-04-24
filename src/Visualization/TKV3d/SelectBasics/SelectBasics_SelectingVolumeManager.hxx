@@ -169,7 +169,7 @@ public:
 
   //! Stores plane equation coefficients (in the following form:
   //! Ax + By + Cz + D = 0) to the given vector
-  virtual void GetPlanes(NCollection_Vector<NCollection_Vec4<double>>& thePlaneEquations) const = 0;
+  virtual void GetPlanes(NCollection_DynamicArray<NCollection_Vec4<double>>& thePlaneEquations) const = 0;
 
   //! Dumps the content of me into the stream
   virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const

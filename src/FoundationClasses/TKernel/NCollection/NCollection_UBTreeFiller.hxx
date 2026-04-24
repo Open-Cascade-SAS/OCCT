@@ -17,7 +17,7 @@
 #define NCollection_UBTreeFiller_HeaderFile
 
 #include <NCollection_UBTree.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 
 #include <random>
 
@@ -136,7 +136,7 @@ private:
   // ---------- PRIVATE FIELDS ----------
 
   UBTree&                    myTree;
-  NCollection_Vector<ObjBnd> mySeqPtr;
+  NCollection_DynamicArray<ObjBnd> mySeqPtr;
   std::mt19937               myRandGen; //!< random number generator
   bool                       myIsFullRandom;
 };

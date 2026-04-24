@@ -91,7 +91,7 @@
 #include <NCollection_IndexedMap.hxx>
 #include <BRepBuilderAPI_Sewing.hxx>
 #include <Geom_Line.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <NCollection_IncAllocator.hxx>
 //
 #include <BOPAlgo_MakerVolume.hxx>
@@ -306,7 +306,7 @@ static void AppendToList(NCollection_List<TopoDS_Shape>& theL, const TopoDS_Shap
 static BRepOffset_Error checkSinglePoint(const double                      theUParam,
                                          const double                      theVParam,
                                          const occ::handle<Geom_Surface>&  theSurf,
-                                         const NCollection_Vector<gp_Pnt>& theBadPoints);
+                                         const NCollection_DynamicArray<gp_Pnt>& theBadPoints);
 
 //---------------------------------------------------------------------
 static void UpdateTolerance(
@@ -4266,7 +4266,7 @@ bool BRepOffset_MakeOffset::CheckInputData(const Message_ProgressRange& theRange
     }
 
     // Get degenerated points, to avoid check them.
-    NCollection_Vector<gp_Pnt> aBad3dPnts;
+    NCollection_DynamicArray<gp_Pnt> aBad3dPnts;
     TopExp_Explorer            anExpFE(aF, TopAbs_EDGE);
     for (; anExpFE.More(); anExpFE.Next())
     {
@@ -4392,7 +4392,7 @@ void BRepOffset_MakeOffset::RemoveInternalEdges()
 BRepOffset_Error checkSinglePoint(const double                      theUParam,
                                   const double                      theVParam,
                                   const occ::handle<Geom_Surface>&  theSurf,
-                                  const NCollection_Vector<gp_Pnt>& theBadPoints)
+                                  const NCollection_DynamicArray<gp_Pnt>& theBadPoints)
 {
   gp_Pnt aPnt;
   gp_Vec aD1U, aD1V;

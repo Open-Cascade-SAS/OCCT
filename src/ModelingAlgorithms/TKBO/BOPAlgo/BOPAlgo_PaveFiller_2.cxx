@@ -23,7 +23,7 @@
 #include <BOPDS_Iterator.hxx>
 #include <BOPDS_Pair.hxx>
 #include <BOPDS_PaveBlock.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <BOPTools_AlgoTools.hxx>
 #include <BOPTools_Parallel.hxx>
 #include <BRep_Builder.hxx>
@@ -134,7 +134,7 @@ protected:
 };
 
 //=======================================================================
-typedef NCollection_Vector<BOPAlgo_VertexEdge> BOPAlgo_VectorOfVertexEdge;
+typedef NCollection_DynamicArray<BOPAlgo_VertexEdge> BOPAlgo_VectorOfVertexEdge;
 
 //=================================================================================================
 
@@ -218,7 +218,7 @@ void BOPAlgo_PaveFiller::IntersectVE(
     return;
   }
   //
-  NCollection_Vector<BOPDS_InterfVE>& aVEs = myDS->InterfVE();
+  NCollection_DynamicArray<BOPDS_InterfVE>& aVEs = myDS->InterfVE();
   if (theAddInterfs)
   {
     aVEs.SetIncrement(aNbVE);

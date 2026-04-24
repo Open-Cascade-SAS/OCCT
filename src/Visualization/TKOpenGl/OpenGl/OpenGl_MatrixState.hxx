@@ -17,7 +17,7 @@
 #define _OpenGl_MatrixState_H__
 
 #include <OpenGl_Vec.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <Standard_Dump.hxx>
 
 //! Software implementation for OpenGL matrix stack.
@@ -107,7 +107,7 @@ public:
 
 private:
   // clang-format off
-  NCollection_Vector<typename OpenGl::MatrixType<T>::Mat4> myStack;     //!< Collection used to maintenance matrix stack
+  NCollection_DynamicArray<typename OpenGl::MatrixType<T>::Mat4> myStack;     //!< Collection used to maintenance matrix stack
   // clang-format on
   typename OpenGl::MatrixType<T>::Mat4 myCurrent;   //!< Current matrix
   int                                  myStackHead; //!< Index of stack head

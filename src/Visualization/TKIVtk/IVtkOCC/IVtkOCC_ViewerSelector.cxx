@@ -201,7 +201,7 @@ void IVtkOCC_ViewerSelector::Pick(double**                  thePoly,
 
 void IVtkOCC_ViewerSelector::Activate(const occ::handle<SelectMgr_Selection>& theSelection)
 {
-  for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
+  for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
          theSelection->Entities());
        aSelEntIter.More();
        aSelEntIter.Next())
@@ -222,7 +222,7 @@ void IVtkOCC_ViewerSelector::Activate(const occ::handle<SelectMgr_Selection>& th
 //============================================================================
 void IVtkOCC_ViewerSelector::Deactivate(const occ::handle<SelectMgr_Selection>& theSelection)
 {
-  for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
+  for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
          theSelection->Entities());
        aSelEntIter.More();
        aSelEntIter.Next())

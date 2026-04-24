@@ -17,7 +17,7 @@
 
 #include <IntTools_CommonPrt.hxx>
 #include <NCollection_BaseAllocator.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <BOPDS_Curve.hxx>
 #include <BOPDS_Point.hxx>
 
@@ -569,7 +569,7 @@ public:
    * @return
    *   intersection curves
    */
-  const NCollection_Vector<BOPDS_Curve>& Curves() const { return myCurves; }
+  const NCollection_DynamicArray<BOPDS_Curve>& Curves() const { return myCurves; }
 
   //
   /**
@@ -578,7 +578,7 @@ public:
    * @return
    *   intersection curves
    */
-  NCollection_Vector<BOPDS_Curve>& ChangeCurves() { return myCurves; }
+  NCollection_DynamicArray<BOPDS_Curve>& ChangeCurves() { return myCurves; }
 
   //
   /**
@@ -587,7 +587,7 @@ public:
    * @return
    *   intersection points
    */
-  const NCollection_Vector<BOPDS_Point>& Points() const { return myPoints; }
+  const NCollection_DynamicArray<BOPDS_Point>& Points() const { return myPoints; }
 
   //
   /**
@@ -596,13 +596,13 @@ public:
    * @return
    *   intersection points
    */
-  NCollection_Vector<BOPDS_Point>& ChangePoints() { return myPoints; }
+  NCollection_DynamicArray<BOPDS_Point>& ChangePoints() { return myPoints; }
 
   //
 protected:
   bool                            myTangentFaces;
-  NCollection_Vector<BOPDS_Curve> myCurves;
-  NCollection_Vector<BOPDS_Point> myPoints;
+  NCollection_DynamicArray<BOPDS_Curve> myCurves;
+  NCollection_DynamicArray<BOPDS_Point> myPoints;
 };
 
 /**

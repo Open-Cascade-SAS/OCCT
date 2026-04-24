@@ -35,7 +35,7 @@
 #include <TopoDS_TShape.hxx>
 #include <TopLoc_Location.hxx>
 
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_BaseAllocator.hxx>
@@ -70,7 +70,7 @@ struct BRepGraph_Data
 
   //! Root product identifiers: products not referenced by any active occurrence.
   //! Maintained incrementally by Editor/EditorView mutations.
-  NCollection_Vector<BRepGraph_ProductId> myRootProductIds;
+  NCollection_DynamicArray<BRepGraph_ProductId> myRootProductIds;
 
   //! When true, markModified() only increments OwnGen + SubtreeGen and appends to
   //! myDeferredModified - no mutex acquisition and no upward propagation.
@@ -83,10 +83,10 @@ struct BRepGraph_Data
   std::atomic<uint32_t> myPropagationWave{0};
 
   //! NodeIds accumulated during deferred mode. Processed by EndDeferredInvalidation().
-  NCollection_Vector<BRepGraph_NodeId> myDeferredModified;
+  NCollection_DynamicArray<BRepGraph_NodeId> myDeferredModified;
 
   //! RefIds accumulated during deferred mode. Processed by EndDeferredInvalidation().
-  NCollection_Vector<BRepGraph_RefId> myDeferredRefModified;
+  NCollection_DynamicArray<BRepGraph_RefId> myDeferredRefModified;
 
   //! Gen-validated shape cache entry.
   struct CachedShape

@@ -21,7 +21,7 @@
 #include <StepVisual_CoordinatesList.hxx>
 #include <StepVisual_TessellatedItem.hxx>
 
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <NCollection_Handle.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_Sequence.hxx>
@@ -38,16 +38,16 @@ public:
   Standard_EXPORT void Init(
     const occ::handle<TCollection_HAsciiString>&   theName,
     const occ::handle<StepVisual_CoordinatesList>& theCoordList,
-    const NCollection_Handle<NCollection_Vector<occ::handle<NCollection_HSequence<int>>>>&
+    const NCollection_Handle<NCollection_DynamicArray<occ::handle<NCollection_HSequence<int>>>>&
       theCurves);
 
   Standard_EXPORT occ::handle<StepVisual_CoordinatesList> CoordList() const;
-  Standard_EXPORT NCollection_Handle<NCollection_Vector<occ::handle<NCollection_HSequence<int>>>>
+  Standard_EXPORT NCollection_Handle<NCollection_DynamicArray<occ::handle<NCollection_HSequence<int>>>>
                   Curves() const;
 
 private:
   occ::handle<StepVisual_CoordinatesList>                                         myCoordList;
-  NCollection_Handle<NCollection_Vector<occ::handle<NCollection_HSequence<int>>>> myCurves;
+  NCollection_Handle<NCollection_DynamicArray<occ::handle<NCollection_HSequence<int>>>> myCurves;
 
 public:
   DEFINE_STANDARD_RTTIEXT(StepVisual_TessellatedCurveSet, StepVisual_TessellatedItem)

@@ -41,7 +41,7 @@ SelectMgr_Selection::~SelectMgr_Selection()
 
 void SelectMgr_Selection::Destroy()
 {
-  for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator anEntityIter(
+  for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator anEntityIter(
          myEntities);
        anEntityIter.More();
        anEntityIter.Next())
@@ -86,7 +86,7 @@ void SelectMgr_Selection::Add(const occ::handle<Select3D_SensitiveEntity>& theSe
 
 void SelectMgr_Selection::Clear()
 {
-  for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator anEntityIter(
+  for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator anEntityIter(
          myEntities);
        anEntityIter.More();
        anEntityIter.Next())
@@ -108,7 +108,7 @@ void SelectMgr_Selection::SetSensitivity(const int theNewSens)
 {
   mySensFactor   = theNewSens;
   myIsCustomSens = true;
-  for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator anEntityIter(
+  for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator anEntityIter(
          myEntities);
        anEntityIter.More();
        anEntityIter.Next())
@@ -125,7 +125,7 @@ void SelectMgr_Selection::DumpJson(Standard_OStream& theOStream, int theDepth) c
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
   NCollection_Map<occ::handle<SelectMgr_EntityOwner>> anOwners;
-  for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator anIterator(myEntities);
+  for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator anIterator(myEntities);
        anIterator.More();
        anIterator.Next())
   {
@@ -141,7 +141,7 @@ void SelectMgr_Selection::DumpJson(Standard_OStream& theOStream, int theDepth) c
     }
   }
 
-  for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator anIterator(myEntities);
+  for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator anIterator(myEntities);
        anIterator.More();
        anIterator.Next())
   {

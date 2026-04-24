@@ -20,7 +20,7 @@
 #include <Graphic3d_HorizontalTextAlignment.hxx>
 #include <Graphic3d_VerticalTextAlignment.hxx>
 #include <NCollection_DataMap.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <NCollection_String.hxx>
 
 class Font_FTFont;
@@ -250,10 +250,10 @@ public:
   }
 
   //! Returns internal container of the top left corners of a formatted rectangles.
-  const NCollection_Vector<NCollection_Vec2<float>>& Corners() const { return myCorners; }
+  const NCollection_DynamicArray<NCollection_Vec2<float>>& Corners() const { return myCorners; }
 
   //! Returns container of each line position at LF in formatted text
-  const NCollection_Vector<float>& NewLines() const { return myNewLines; }
+  const NCollection_DynamicArray<float>& NewLines() const { return myNewLines; }
 
   //! Returns true if the symbol is CR, BEL, FF, NP, BS or VT
   static inline bool IsCommandSymbol(const char32_t& theSymbol)
@@ -293,9 +293,9 @@ protected:                                    //! @name configuration
 protected:                          //! @name input data
   NCollection_String      myString; //!< currently rendered text
   NCollection_Vec2<float> myPen;    //!< current pen position
-  NCollection_Vector<NCollection_Vec2<float>>
+  NCollection_DynamicArray<NCollection_Vec2<float>>
                             myCorners;  //!< The bottom left corners of a formatted rectangles.
-  NCollection_Vector<float> myNewLines; //!< position at LF
+  NCollection_DynamicArray<float> myNewLines; //!< position at LF
                                         // clang-format off
   float myLineSpacing;   //!< line spacing (computed as maximum of all fonts involved in text formatting)
   float myAscender;      //!< line spacing for the first line

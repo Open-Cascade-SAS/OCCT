@@ -35,7 +35,7 @@
 #include <GeomConvert.hxx>
 #include <GeomConvert_CompCurveToBSplineCurve.hxx>
 #include <GeomLProp.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <gp_Pnt.hxx>
 #include <Precision.hxx>
 #include <ShapeFix_Shape.hxx>
@@ -82,7 +82,7 @@ TopoDS_Wire BRepAlgo::ConvertWire(const TopoDS_Wire& theWire,
   TopoDS_Wire                       aResult;
   double                            aMaxTol(0.);
   const occ::handle<Geom_Surface>   aSurf = BRep_Tool::Surface(theFace);
-  NCollection_Vector<OrientedCurve> vecCurve;
+  NCollection_DynamicArray<OrientedCurve> vecCurve;
 
   BRepTools_WireExplorer anExpE(theWire, theFace);
   // Explore the edges in the current wire, in their connection order

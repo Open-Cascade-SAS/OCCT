@@ -14,18 +14,18 @@
 //! @file GeomInt_VectorOfReal.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_Vector<double> directly instead.
+//!             Use NCollection_DynamicArray<double> directly instead.
 
 #ifndef _GeomInt_VectorOfReal_hxx
 #define _GeomInt_VectorOfReal_hxx
 
 #include <Standard_Macro.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 
 Standard_HEADER_DEPRECATED("GeomInt_VectorOfReal.hxx is deprecated since OCCT 8.0.0. Use "
-                           "NCollection_Vector<double> directly.")
+                           "NCollection_DynamicArray<double> directly.")
 
-  Standard_DEPRECATED("GeomInt_VectorOfReal is deprecated, use NCollection_Vector<double> directly")
-typedef NCollection_Vector<double> GeomInt_VectorOfReal;
+  Standard_DEPRECATED("GeomInt_VectorOfReal is deprecated, use NCollection_DynamicArray<double> directly")
+typedef NCollection_DynamicArray<double> GeomInt_VectorOfReal;
 
 #endif // _GeomInt_VectorOfReal_hxx

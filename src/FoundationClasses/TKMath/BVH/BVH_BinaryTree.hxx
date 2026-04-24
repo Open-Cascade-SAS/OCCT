@@ -239,7 +239,7 @@ BVH_Tree<T, N, BVH_QuadTree>* BVH_Tree<T, N, BVH_BinaryTree>::CollapseToQuadTree
     }
     else
     {
-      NCollection_Vector<int> aGrandChildNodes;
+      NCollection_DynamicArray<int> aGrandChildNodes;
 
       const int aLftChild = Child<0>(std::get<0>(aNode));
       const int aRghChild = Child<1>(std::get<0>(aNode));

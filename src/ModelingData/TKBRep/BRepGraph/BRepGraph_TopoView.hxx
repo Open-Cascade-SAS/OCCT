@@ -63,22 +63,22 @@ public:
 
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::FaceDef& Definition(
       const BRepGraph_FaceId theFace) const;
-    [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_ShellId>& Shells(
+    [[nodiscard]] Standard_EXPORT const NCollection_DynamicArray<BRepGraph_ShellId>& Shells(
       const BRepGraph_FaceId theFace) const;
-    [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_CompoundId>& Compounds(
+    [[nodiscard]] Standard_EXPORT const NCollection_DynamicArray<BRepGraph_CompoundId>& Compounds(
       const BRepGraph_FaceId theFace) const;
     [[nodiscard]] Standard_EXPORT BRepGraph_SurfaceRepId
       SurfaceRepId(const BRepGraph_FaceId theFace) const;
     [[nodiscard]] Standard_EXPORT BRepGraph_TriangulationRepId
                                   ActiveTriangulationRepId(const BRepGraph_FaceId theFace) const;
-    [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_FaceId> SameDomain(
+    [[nodiscard]] Standard_EXPORT NCollection_DynamicArray<BRepGraph_FaceId> SameDomain(
       const BRepGraph_FaceId                        theFace,
       const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
-    [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_EdgeId> SharedEdges(
+    [[nodiscard]] Standard_EXPORT NCollection_DynamicArray<BRepGraph_EdgeId> SharedEdges(
       const BRepGraph_FaceId                        theFaceA,
       const BRepGraph_FaceId                        theFaceB,
       const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
-    [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_FaceId> Adjacent(
+    [[nodiscard]] Standard_EXPORT NCollection_DynamicArray<BRepGraph_FaceId> Adjacent(
       const BRepGraph_FaceId                        theFace,
       const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
     [[nodiscard]] Standard_EXPORT BRepGraph_WireId OuterWire(const BRepGraph_FaceId theFace) const;
@@ -108,15 +108,15 @@ public:
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::EdgeDef& Definition(
       const BRepGraph_EdgeId theEdge) const;
     [[nodiscard]] Standard_EXPORT uint32_t NbFaces(const BRepGraph_EdgeId theEdge) const;
-    [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_WireId>& Wires(
+    [[nodiscard]] Standard_EXPORT const NCollection_DynamicArray<BRepGraph_WireId>& Wires(
       const BRepGraph_EdgeId theEdge) const;
-    [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_CoEdgeId>& CoEdges(
+    [[nodiscard]] Standard_EXPORT const NCollection_DynamicArray<BRepGraph_CoEdgeId>& CoEdges(
       const BRepGraph_EdgeId theEdge) const;
-    [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_FaceId>& Faces(
+    [[nodiscard]] Standard_EXPORT const NCollection_DynamicArray<BRepGraph_FaceId>& Faces(
       const BRepGraph_EdgeId theEdge) const;
     [[nodiscard]] Standard_EXPORT BRepGraph_Curve3DRepId
                                   Curve3DRepId(const BRepGraph_EdgeId theEdge) const;
-    [[nodiscard]] Standard_EXPORT NCollection_Vector<BRepGraph_EdgeId> Adjacent(
+    [[nodiscard]] Standard_EXPORT NCollection_DynamicArray<BRepGraph_EdgeId> Adjacent(
       const BRepGraph_EdgeId                        theEdge,
       const occ::handle<NCollection_BaseAllocator>& theAllocator) const;
     [[nodiscard]] Standard_EXPORT bool  IsBoundary(const BRepGraph_EdgeId theEdge) const;
@@ -171,7 +171,7 @@ public:
 
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::VertexDef& Definition(
       const BRepGraph_VertexId theVertex) const;
-    [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_EdgeId>& Edges(
+    [[nodiscard]] Standard_EXPORT const NCollection_DynamicArray<BRepGraph_EdgeId>& Edges(
       const BRepGraph_VertexId theVertex) const;
 
   private:
@@ -198,7 +198,7 @@ public:
 
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::WireDef& Definition(
       const BRepGraph_WireId theWire) const;
-    [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_FaceId>& Faces(
+    [[nodiscard]] Standard_EXPORT const NCollection_DynamicArray<BRepGraph_FaceId>& Faces(
       const BRepGraph_WireId theWire) const;
 
   private:
@@ -225,9 +225,9 @@ public:
 
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::ShellDef& Definition(
       const BRepGraph_ShellId theShell) const;
-    [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_SolidId>& Solids(
+    [[nodiscard]] Standard_EXPORT const NCollection_DynamicArray<BRepGraph_SolidId>& Solids(
       const BRepGraph_ShellId theShell) const;
-    [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_CompoundId>& Compounds(
+    [[nodiscard]] Standard_EXPORT const NCollection_DynamicArray<BRepGraph_CompoundId>& Compounds(
       const BRepGraph_ShellId theShell) const;
 
   private:
@@ -254,9 +254,9 @@ public:
 
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::SolidDef& Definition(
       const BRepGraph_SolidId theSolid) const;
-    [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_CompSolidId>& CompSolids(
+    [[nodiscard]] Standard_EXPORT const NCollection_DynamicArray<BRepGraph_CompSolidId>& CompSolids(
       const BRepGraph_SolidId theSolid) const;
-    [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_CompoundId>& Compounds(
+    [[nodiscard]] Standard_EXPORT const NCollection_DynamicArray<BRepGraph_CompoundId>& Compounds(
       const BRepGraph_SolidId theSolid) const;
 
   private:
@@ -283,7 +283,7 @@ public:
 
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::CoEdgeDef& Definition(
       const BRepGraph_CoEdgeId theCoEdge) const;
-    [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_WireId>& Wires(
+    [[nodiscard]] Standard_EXPORT const NCollection_DynamicArray<BRepGraph_WireId>& Wires(
       const BRepGraph_CoEdgeId theCoEdge) const;
     [[nodiscard]] Standard_EXPORT BRepGraph_EdgeId Edge(const BRepGraph_CoEdgeId theCoEdge) const;
     [[nodiscard]] Standard_EXPORT BRepGraph_FaceId Face(const BRepGraph_CoEdgeId theCoEdge) const;
@@ -316,7 +316,7 @@ public:
 
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::CompoundDef& Definition(
       const BRepGraph_CompoundId theCompound) const;
-    [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_CompoundId>& ParentCompounds(
+    [[nodiscard]] Standard_EXPORT const NCollection_DynamicArray<BRepGraph_CompoundId>& ParentCompounds(
       const BRepGraph_CompoundId theCompound) const;
 
   private:
@@ -343,7 +343,7 @@ public:
 
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::CompSolidDef& Definition(
       const BRepGraph_CompSolidId theCompSolid) const;
-    [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_CompoundId>& Compounds(
+    [[nodiscard]] Standard_EXPORT const NCollection_DynamicArray<BRepGraph_CompoundId>& Compounds(
       const BRepGraph_CompSolidId theCompSolid) const;
 
   private:
@@ -370,7 +370,7 @@ public:
 
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::ProductDef& Definition(
       const BRepGraph_ProductId theProduct) const;
-    [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_OccurrenceId>& Instances(
+    [[nodiscard]] Standard_EXPORT const NCollection_DynamicArray<BRepGraph_OccurrenceId>& Instances(
       const BRepGraph_ProductId theProduct) const;
     [[nodiscard]] Standard_EXPORT BRepGraph_NodeId
       ShapeRoot(const BRepGraph_ProductId theProduct) const;

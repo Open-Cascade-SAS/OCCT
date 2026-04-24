@@ -25,7 +25,7 @@
 #include <NCollection_Map.hxx>
 #include <BOPDS_Pair.hxx>
 #include <BOPDS_PIteratorSI.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <BRep_Tool.hxx>
 #include <BOPTools_AlgoTools.hxx>
 #include <BOPTools_Parallel.hxx>
@@ -95,7 +95,7 @@ protected:
 
 //=======================================================================
 
-typedef NCollection_Vector<BOPAlgo_FaceSelfIntersect> BOPAlgo_VectorOfFaceSelfIntersect;
+typedef NCollection_DynamicArray<BOPAlgo_FaceSelfIntersect> BOPAlgo_VectorOfFaceSelfIntersect;
 
 //=================================================================================================
 
@@ -208,7 +208,7 @@ void BOPAlgo_CheckerSI::PostTreat()
   NCollection_Map<BOPDS_Pair>& aMPK = *((NCollection_Map<BOPDS_Pair>*)&myDS->Interferences());
 
   // 0
-  NCollection_Vector<BOPDS_InterfVV>& aVVs = myDS->InterfVV();
+  NCollection_DynamicArray<BOPDS_InterfVV>& aVVs = myDS->InterfVV();
   aNb                                      = aVVs.Length();
   for (i = 0; i != aNb; ++i)
   {
@@ -223,7 +223,7 @@ void BOPAlgo_CheckerSI::PostTreat()
   }
   //
   // 1
-  NCollection_Vector<BOPDS_InterfVE>& aVEs = myDS->InterfVE();
+  NCollection_DynamicArray<BOPDS_InterfVE>& aVEs = myDS->InterfVE();
   aNb                                      = aVEs.Length();
   for (i = 0; i != aNb; ++i)
   {
@@ -238,7 +238,7 @@ void BOPAlgo_CheckerSI::PostTreat()
   }
   //
   // 2
-  NCollection_Vector<BOPDS_InterfEE>& aEEs = myDS->InterfEE();
+  NCollection_DynamicArray<BOPDS_InterfEE>& aEEs = myDS->InterfEE();
   aNb                                      = aEEs.Length();
   for (i = 0; i != aNb; ++i)
   {
@@ -253,7 +253,7 @@ void BOPAlgo_CheckerSI::PostTreat()
   }
   //
   // 3
-  NCollection_Vector<BOPDS_InterfVF>& aVFs = myDS->InterfVF();
+  NCollection_DynamicArray<BOPDS_InterfVF>& aVFs = myDS->InterfVF();
   aNb                                      = aVFs.Length();
   for (i = 0; i != aNb; ++i)
   {
@@ -268,7 +268,7 @@ void BOPAlgo_CheckerSI::PostTreat()
   }
   //
   // 4
-  NCollection_Vector<BOPDS_InterfEF>& aEFs = myDS->InterfEF();
+  NCollection_DynamicArray<BOPDS_InterfEF>& aEFs = myDS->InterfEF();
   aNb                                      = aEFs.Length();
   for (i = 0; i != aNb; ++i)
   {
@@ -287,7 +287,7 @@ void BOPAlgo_CheckerSI::PostTreat()
   }
   //
   // 5
-  NCollection_Vector<BOPDS_InterfFF>& aFFs = myDS->InterfFF();
+  NCollection_DynamicArray<BOPDS_InterfFF>& aFFs = myDS->InterfFF();
   aNb                                      = aFFs.Length();
   for (i = 0; i != aNb; ++i)
   {
@@ -299,7 +299,7 @@ void BOPAlgo_CheckerSI::PostTreat()
     //
     bTangentFaces                              = aFF.TangentFaces();
     aNbP                                       = aFF.Points().Length();
-    const NCollection_Vector<BOPDS_Curve>& aVC = aFF.Curves();
+    const NCollection_DynamicArray<BOPDS_Curve>& aVC = aFF.Curves();
     aNbC                                       = aVC.Length();
     if (!aNbP && !aNbC && !bTangentFaces)
     {
@@ -346,7 +346,7 @@ void BOPAlgo_CheckerSI::PostTreat()
   //
   //
   // 6
-  NCollection_Vector<BOPDS_InterfVZ>& aVZs = myDS->InterfVZ();
+  NCollection_DynamicArray<BOPDS_InterfVZ>& aVZs = myDS->InterfVZ();
   aNb                                      = aVZs.Length();
   for (i = 0; i != aNb; ++i)
   {
@@ -362,7 +362,7 @@ void BOPAlgo_CheckerSI::PostTreat()
   }
   //
   // 7
-  NCollection_Vector<BOPDS_InterfEZ>& aEZs = myDS->InterfEZ();
+  NCollection_DynamicArray<BOPDS_InterfEZ>& aEZs = myDS->InterfEZ();
   aNb                                      = aEZs.Length();
   for (i = 0; i != aNb; ++i)
   {
@@ -374,7 +374,7 @@ void BOPAlgo_CheckerSI::PostTreat()
   }
   //
   // 8
-  NCollection_Vector<BOPDS_InterfFZ>& aFZs = myDS->InterfFZ();
+  NCollection_DynamicArray<BOPDS_InterfFZ>& aFZs = myDS->InterfFZ();
   aNb                                      = aFZs.Length();
   for (i = 0; i != aNb; ++i)
   {
@@ -386,7 +386,7 @@ void BOPAlgo_CheckerSI::PostTreat()
   }
   //
   // 9
-  NCollection_Vector<BOPDS_InterfZZ>& aZZs = myDS->InterfZZ();
+  NCollection_DynamicArray<BOPDS_InterfZZ>& aZZs = myDS->InterfZZ();
   aNb                                      = aZZs.Length();
   for (i = 0; i != aNb; ++i)
   {

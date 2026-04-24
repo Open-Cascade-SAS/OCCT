@@ -24,7 +24,7 @@
 #include <NCollection_Sequence.hxx>
 #include <Geom2d_Curve.hxx>
 #include <gp_Pnt.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 
 class Geom_Surface;
 class Geom_Curve;
@@ -159,7 +159,7 @@ public:
     const occ::handle<Geom2d_Curve>& theC2d2,
     const Bnd_Box2d&                 theBound1,
     const Bnd_Box2d&                 theBound2,
-    NCollection_Vector<double>&      theArrayOfParameters);
+    NCollection_DynamicArray<double>&      theArrayOfParameters);
 
   Standard_EXPORT static occ::handle<Geom_Curve> MakeBSpline(const occ::handle<IntPatch_WLine>& WL,
                                                              const int ideb,

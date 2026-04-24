@@ -15,7 +15,7 @@
 #ifndef _RWGltf_CafReader_HeaderFile
 #define _RWGltf_CafReader_HeaderFile
 
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <RWMesh_CafReader.hxx>
 #include <TopoDS_Face.hxx>
 
@@ -113,13 +113,13 @@ protected:
   Standard_EXPORT virtual occ::handle<RWMesh_TriangulationReader> createMeshReaderContext() const;
 
   //! Read late data from RWGltf_GltfLatePrimitiveArray stored as Poly_Triangulation within faces.
-  Standard_EXPORT virtual bool readLateData(NCollection_Vector<TopoDS_Face>& theFaces,
+  Standard_EXPORT virtual bool readLateData(NCollection_DynamicArray<TopoDS_Face>& theFaces,
                                             const TCollection_AsciiString&   theFile,
                                             const Message_ProgressRange&     theProgress);
 
   //! Set reader for each late data.
   Standard_EXPORT void updateLateDataReader(
-    NCollection_Vector<TopoDS_Face>&               theFaces,
+    NCollection_DynamicArray<TopoDS_Face>&               theFaces,
     const occ::handle<RWMesh_TriangulationReader>& theReader) const;
 
 protected:

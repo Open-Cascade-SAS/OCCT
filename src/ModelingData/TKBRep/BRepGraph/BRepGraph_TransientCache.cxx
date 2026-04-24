@@ -14,7 +14,7 @@
 #include <BRepGraph_TransientCache.hxx>
 
 #include <NCollection_DataMap.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepGraph_CacheKind, Standard_Transient)
 
@@ -24,7 +24,7 @@ namespace
 struct BRepGraph_CacheKindRegistryData
 {
   NCollection_DataMap<Standard_GUID, int>              GuidToSlot;
-  NCollection_Vector<occ::handle<BRepGraph_CacheKind>> Kinds;
+  NCollection_DynamicArray<occ::handle<BRepGraph_CacheKind>> Kinds;
   std::shared_mutex                                    Mutex;
 };
 
@@ -163,7 +163,7 @@ BRepGraph_TransientCache::CacheSlot& BRepGraph_TransientCache::changeSlot(
   const int aKindIdx = static_cast<int>(theNode.NodeKind);
   Standard_ASSERT_VOID(aKindIdx >= 0 && aKindIdx < THE_KIND_COUNT,
                        "BRepGraph_TransientCache: NodeKind out of range");
-  NCollection_Vector<CacheSlot>& aVec =
+  NCollection_DynamicArray<CacheSlot>& aVec =
     myKinds.ChangeValue(theKindSlot).myNodeKinds[aKindIdx].mySlots;
   if (theNode.Index >= aVec.Size())
   {
@@ -186,7 +186,7 @@ const BRepGraph_TransientCache::CacheSlot* BRepGraph_TransientCache::seekSlot(
   const int aKindIdx = static_cast<int>(theNode.NodeKind);
   Standard_ASSERT_VOID(aKindIdx >= 0 && aKindIdx < THE_KIND_COUNT,
                        "BRepGraph_TransientCache: NodeKind out of range");
-  const NCollection_Vector<CacheSlot>& aVec =
+  const NCollection_DynamicArray<CacheSlot>& aVec =
     myKinds.Value(theKindSlot).myNodeKinds[aKindIdx].mySlots;
   if (!theNode.IsValidIn(aVec))
   {
@@ -259,7 +259,7 @@ void BRepGraph_TransientCache::Set(const BRepGraph_NodeId                   theN
   if (myIsReserved.load(std::memory_order_acquire) && theKindSlot < myKinds.Length())
   {
     const int                      aKindIdx = static_cast<int>(theNode.NodeKind);
-    NCollection_Vector<CacheSlot>& aVec =
+    NCollection_DynamicArray<CacheSlot>& aVec =
       myKinds.ChangeValue(theKindSlot).myNodeKinds[aKindIdx].mySlots;
     if (theNode.Index < aVec.Size())
     {
@@ -312,7 +312,7 @@ occ::handle<BRepGraph_CacheValue> BRepGraph_TransientCache::Get(
   if (myIsReserved.load(std::memory_order_acquire) && theKindSlot < myKinds.Length())
   {
     const int                            aKindIdx = static_cast<int>(theNode.NodeKind);
-    const NCollection_Vector<CacheSlot>& aVec =
+    const NCollection_DynamicArray<CacheSlot>& aVec =
       myKinds.Value(theKindSlot).myNodeKinds[aKindIdx].mySlots;
     if (theNode.Index < aVec.Size())
     {
@@ -377,7 +377,7 @@ bool BRepGraph_TransientCache::Remove(const BRepGraph_NodeId theNode, const int 
   }
 
   const int                      aKindIdx = static_cast<int>(theNode.NodeKind);
-  NCollection_Vector<CacheSlot>& aVec =
+  NCollection_DynamicArray<CacheSlot>& aVec =
     myKinds.ChangeValue(theKindSlot).myNodeKinds[aKindIdx].mySlots;
   if (theNode.Index >= aVec.Size())
   {

@@ -225,7 +225,7 @@
 #include <StepVisual_TessellatedCurveSet.hxx>
 #include <StepVisual_ComplexTriangulatedSurfaceSet.hxx>
 #include <StepVisual_CoordinatesList.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <StepVisual_OverRidingStyledItem.hxx>
 #include <StepVisual_ContextDependentOverRidingStyledItem.hxx>
 #include <StepRepr_ShapeRepresentationRelationshipWithTransformation.hxx>
@@ -1189,7 +1189,7 @@ static void SetStyle(
     return;
 
   // collect styled items
-  NCollection_Vector<StepVisual_StyledItemTarget> anItems;
+  NCollection_DynamicArray<StepVisual_StyledItemTarget> anItems;
   if (!theStyle->ItemAP242().IsNull())
   {
     anItems.Append(theStyle->ItemAP242());
@@ -2273,7 +2273,7 @@ bool readPMIPresentation(const occ::handle<Standard_Transient>&       thePresent
   }
   occ::handle<Transfer_TransientProcess>                 aTP = theTR->TransientProcess();
   occ::handle<StepVisual_StyledItem>                     anAO;
-  NCollection_Vector<occ::handle<StepVisual_StyledItem>> anAnnotations;
+  NCollection_DynamicArray<occ::handle<StepVisual_StyledItem>> anAnnotations;
   if (thePresentEntity->IsKind(STANDARD_TYPE(StepVisual_AnnotationOccurrence))
       || thePresentEntity->IsKind(STANDARD_TYPE(StepVisual_TessellatedAnnotationOccurrence)))
   {
@@ -2392,7 +2392,7 @@ bool readPMIPresentation(const occ::handle<Standard_Transient>&       thePresent
             continue;
           }
 
-          NCollection_Handle<NCollection_Vector<occ::handle<NCollection_HSequence<int>>>> aCurves =
+          NCollection_Handle<NCollection_DynamicArray<occ::handle<NCollection_HSequence<int>>>> aCurves =
             aTessCurve->Curves();
           int aNbCurves = (aCurves.IsNull() ? 0 : aCurves->Length());
           for (int k = 0; k < aNbCurves; k++)

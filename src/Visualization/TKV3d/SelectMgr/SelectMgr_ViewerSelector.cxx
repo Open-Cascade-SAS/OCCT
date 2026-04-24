@@ -201,7 +201,7 @@ void SelectMgr_ViewerSelector::SetPixelTolerance(const int theTolerance)
 
 void SelectMgr_ViewerSelector::Activate(const occ::handle<SelectMgr_Selection>& theSelection)
 {
-  for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
+  for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
          theSelection->Entities());
        aSelEntIter.More();
        aSelEntIter.Next())
@@ -221,7 +221,7 @@ void SelectMgr_ViewerSelector::Activate(const occ::handle<SelectMgr_Selection>& 
 
 void SelectMgr_ViewerSelector::Deactivate(const occ::handle<SelectMgr_Selection>& theSelection)
 {
-  for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
+  for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
          theSelection->Entities());
        aSelEntIter.More();
        aSelEntIter.Next())

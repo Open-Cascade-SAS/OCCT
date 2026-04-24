@@ -514,7 +514,7 @@ protected: //! @name Rendering properties
   GLint myFboColorFormat;                         //!< sized format for color attachments
                                                   // clang-format off
   GLint                      myFboDepthFormat;        //!< sized format for depth-stencil attachments
-  NCollection_Vector<int>        myFboOitColorConfig;     //!< selected color format configuration for OIT color attachments
+  NCollection_DynamicArray<int>        myFboOitColorConfig;     //!< selected color format configuration for OIT color attachments
   occ::handle<OpenGl_FrameBuffer> myMainSceneFbos[2];
   occ::handle<OpenGl_FrameBuffer> myMainSceneFbosOit[2];      //!< Additional buffers for transparent draw of main layer.
   occ::handle<OpenGl_FrameBuffer> myImmediateSceneFbos[2];    //!< Additional buffers for immediate layer in stereo mode.

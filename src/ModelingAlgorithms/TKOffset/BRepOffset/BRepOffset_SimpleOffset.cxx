@@ -27,7 +27,7 @@
 #include <GeomAdaptor_Curve.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <GeomAdaptor_Surface.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
@@ -318,7 +318,7 @@ void BRepOffset_SimpleOffset::FillVertexData(
     return; // Free verices are skipped.
 
   // Array to store offset points.
-  NCollection_Vector<gp_Pnt> anOffsetPointVec;
+  NCollection_DynamicArray<gp_Pnt> anOffsetPointVec;
 
   double aMaxEdgeTol = 0.0;
 
@@ -371,7 +371,7 @@ void BRepOffset_SimpleOffset::FillVertexData(
     aMaxEdgeTol = std::max(aMaxEdgeTol, aNED.myTol);
   }
 
-  // NCollection_Vector starts from 0 by default.
+  // NCollection_DynamicArray starts from 0 by default.
   // It's better to use lower() and upper() in this case instead of direct indexes range.
   gp_Pnt aCenter(0.0, 0.0, 0.0);
   for (int i = anOffsetPointVec.Lower(); i <= anOffsetPointVec.Upper(); ++i)

@@ -61,7 +61,7 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_PropagatesUpOnFlush)
   myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start())->Tolerance = 0.5;
 
   // During deferred mode: edge is mutated, but parent wire/face are NOT yet.
-  const NCollection_Vector<BRepGraph_WireId>& aWires =
+  const NCollection_DynamicArray<BRepGraph_WireId>& aWires =
     myGraph.Topo().Edges().Wires(BRepGraph_EdgeId::Start());
   ASSERT_GT(aWires.Length(), 0);
   EXPECT_EQ(myGraph.Topo().Wires().Definition(aWires.Value(0)).SubtreeGen, 0u);
@@ -227,7 +227,7 @@ TEST_F(BRepGraph_DeferredInvalidationTest, EndWithoutBegin_IsIdempotent)
 
 TEST_F(BRepGraph_DeferredInvalidationTest, DeferredScope_NestedGuards_FlushOnlyOnOuterDestruction)
 {
-  const NCollection_Vector<BRepGraph_WireId>& aWires =
+  const NCollection_DynamicArray<BRepGraph_WireId>& aWires =
     myGraph.Topo().Edges().Wires(BRepGraph_EdgeId::Start());
   ASSERT_GT(aWires.Length(), 0);
   const BRepGraph_WireId aWireId = aWires.Value(0);
@@ -319,7 +319,7 @@ TEST_F(BRepGraph_DeferredInvalidationTest,
   EXPECT_EQ(myGraph.Topo().Products().Definition(aAssemblyId).SubtreeGen, 0u);
 
   // Find the OccurrenceRefId for the occurrence.
-  const NCollection_Vector<BRepGraph_OccurrenceRefId>& aOccRefs =
+  const NCollection_DynamicArray<BRepGraph_OccurrenceRefId>& aOccRefs =
     myGraph.Refs().Occurrences().IdsOf(aAssemblyId);
   ASSERT_EQ(aOccRefs.Length(), 1);
   const BRepGraph_OccurrenceRefId anOccRefId = aOccRefs.Value(0);

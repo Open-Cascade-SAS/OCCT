@@ -34,7 +34,7 @@ public:
   Standard_EXPORT BRepExtrema_TriangleSet();
 
   //! Creates triangle set from the given face.
-  Standard_EXPORT BRepExtrema_TriangleSet(const NCollection_Vector<TopoDS_Shape>& theFaces);
+  Standard_EXPORT BRepExtrema_TriangleSet(const NCollection_DynamicArray<TopoDS_Shape>& theFaces);
 
   //! Releases resources of triangle set.
   Standard_EXPORT ~BRepExtrema_TriangleSet() override;
@@ -60,7 +60,7 @@ public:
   Standard_EXPORT void Clear();
 
   //! Initializes triangle set.
-  Standard_EXPORT bool Init(const NCollection_Vector<TopoDS_Shape>& theShapes);
+  Standard_EXPORT bool Init(const NCollection_DynamicArray<TopoDS_Shape>& theShapes);
 
   //! Returns all vertices.
   Standard_EXPORT const BVH_Array3d& GetVertices() const { return myVertexArray; }
@@ -110,13 +110,13 @@ protected:
 
   //! Vector of shapes' indices where index of item corresponds to index of vertex,
   //! belonging to this shape.
-  NCollection_Vector<int> myShapeIdxOfVtxVec;
+  NCollection_DynamicArray<int> myShapeIdxOfVtxVec;
 
   //! Vector of vertexes' number belonging to shape which index corresponds item's index.
-  NCollection_Vector<int> myNumVtxInShapeVec;
+  NCollection_DynamicArray<int> myNumVtxInShapeVec;
 
   //! Vector of triangles' number belonging to shape which index corresponds item's index.
-  NCollection_Vector<int> myNumTrgInShapeVec;
+  NCollection_DynamicArray<int> myNumTrgInShapeVec;
 
   //! Map of triangles' indices after (key) and before (value) swapping.
   NCollection_DataMap<int, int> myTrgIdxMap;

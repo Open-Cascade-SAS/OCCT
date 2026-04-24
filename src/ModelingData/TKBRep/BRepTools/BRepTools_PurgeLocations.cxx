@@ -13,7 +13,7 @@
 
 #include <BRepTools_PurgeLocations.hxx>
 #include <TopoDS_Iterator.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <BRepTools.hxx>
 #include <BRepTools_TrsfModification.hxx>
 #include <BRepTools_Modifier.hxx>
@@ -38,7 +38,7 @@ bool BRepTools_PurgeLocations::Perform(const TopoDS_Shape& theShape)
 
   // Check locations;
   int                     ind;
-  NCollection_Vector<int> aBadTrsfInds;
+  NCollection_DynamicArray<int> aBadTrsfInds;
   for (ind = 1;; ++ind)
   {
     const TopLoc_Location& aLoc = myLocations.Location(ind);

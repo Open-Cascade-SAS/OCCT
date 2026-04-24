@@ -508,8 +508,8 @@ static int extrema(Draw_Interpretor& di, int n, const char** a)
     U2l = GC2->LastParameter();
   }
 
-  NCollection_Vector<gp_Pnt> aPnts1, aPnts2;
-  NCollection_Vector<double> aPrms[4];
+  NCollection_DynamicArray<gp_Pnt> aPnts1, aPnts2;
+  NCollection_DynamicArray<double> aPrms[4];
   if (!GC1.IsNull() && !GC2.IsNull())
   {
     GeomAPI_ExtremaCurveCurve Ex(GC1, GC2, U1f, U1l, U2f, U2l);

@@ -32,7 +32,7 @@
 #include <NCollection_IncAllocator.hxx>
 #include <NCollection_KDTree.hxx>
 #include <NCollection_Map.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <Standard_HashUtils.hxx>
 
 #include <algorithm>
@@ -161,7 +161,7 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
       ++aResult.NbSurfaceRewrites;
       aResult.AffectedFaces.Append(aFaceId);
 
-      NCollection_Vector<BRepGraph_NodeId> aRepl;
+      NCollection_DynamicArray<BRepGraph_NodeId> aRepl;
       aRepl.Append(aCanonFaceId);
       theGraph.History().Record(TCollection_AsciiString("Dedup:CanonicalizeSurface"),
                                 aFaceId,
@@ -190,7 +190,7 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
       ++aResult.NbCurveRewrites;
       aResult.AffectedEdges.Append(anEdgeId);
 
-      NCollection_Vector<BRepGraph_NodeId> aRepl;
+      NCollection_DynamicArray<BRepGraph_NodeId> aRepl;
       aRepl.Append(aCanonEdgeId);
       theGraph.History().Record(TCollection_AsciiString("Dedup:CanonicalizeCurve"),
                                 anEdgeId,
@@ -214,7 +214,7 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
 
     // Collect active vertices: (point, graph id) pairs.
     const uint32_t aNbVertices = theGraph.Topo().Vertices().Nb();
-    NCollection_Vector<std::pair<gp_Pnt, BRepGraph_VertexId>> aActiveVertices(256, aTmpAlloc);
+    NCollection_DynamicArray<std::pair<gp_Pnt, BRepGraph_VertexId>> aActiveVertices(256, aTmpAlloc);
     for (BRepGraph_FullVertexIterator aVertexIt(theGraph); aVertexIt.More(); aVertexIt.Next())
     {
       const BRepGraph_VertexId       aVertexId = aVertexIt.CurrentId();
@@ -332,7 +332,7 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
         // Mark non-canonical as removed.
         theGraph.Editor().Gen().RemoveNode(anOldId, aCanonId);
 
-        NCollection_Vector<BRepGraph_NodeId> aRepl;
+        NCollection_DynamicArray<BRepGraph_NodeId> aRepl;
         aRepl.Append(aCanonId);
         theGraph.History().Record(TCollection_AsciiString("Dedup:MergeVertex"), anOldId, aRepl);
         ++aResult.NbHistoryRecords;
@@ -375,7 +375,7 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
       bool operator()(const EdgeKey& theA, const EdgeKey& theB) const { return theA == theB; }
     };
 
-    NCollection_DataMap<EdgeKey, NCollection_Vector<BRepGraph_EdgeId>, EdgeKeyHasher> anEdgeGroups(
+    NCollection_DataMap<EdgeKey, NCollection_DynamicArray<BRepGraph_EdgeId>, EdgeKeyHasher> anEdgeGroups(
       std::max(1, theGraph.Topo().Edges().Nb()),
       aTmpAlloc);
 
@@ -399,7 +399,7 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
       if (aKey.StartVtx > aKey.EndVtx)
         std::swap(aKey.StartVtx, aKey.EndVtx);
 
-      anEdgeGroups.TryBind(aKey, NCollection_Vector<BRepGraph_EdgeId>());
+      anEdgeGroups.TryBind(aKey, NCollection_DynamicArray<BRepGraph_EdgeId>());
       anEdgeGroups.ChangeFind(aKey).Append(anEdgeId);
     }
 
@@ -407,12 +407,12 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
       std::max(1, theGraph.Topo().Edges().Nb()),
       aTmpAlloc);
 
-    for (NCollection_DataMap<EdgeKey, NCollection_Vector<BRepGraph_EdgeId>, EdgeKeyHasher>::Iterator
+    for (NCollection_DataMap<EdgeKey, NCollection_DynamicArray<BRepGraph_EdgeId>, EdgeKeyHasher>::Iterator
            aGroupIter(anEdgeGroups);
          aGroupIter.More();
          aGroupIter.Next())
     {
-      const NCollection_Vector<BRepGraph_EdgeId>& aGroup = aGroupIter.Value();
+      const NCollection_DynamicArray<BRepGraph_EdgeId>& aGroup = aGroupIter.Value();
       if (aGroup.Size() < 2)
         continue;
 
@@ -461,7 +461,7 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
         const bool             isReversed = (aCanonStart == anOldEnd && aCanonEnd == anOldStart);
 
         // Replace in wires.
-        const NCollection_Vector<BRepGraph_WireId>& aWires =
+        const NCollection_DynamicArray<BRepGraph_WireId>& aWires =
           theGraph.Topo().Edges().Wires(anOldEdgeId);
         for (const BRepGraph_WireId& aWireId : aWires)
         {
@@ -475,7 +475,7 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
 
         theGraph.Editor().Gen().RemoveNode(anOldId, aCanonId);
 
-        NCollection_Vector<BRepGraph_NodeId> aRepl;
+        NCollection_DynamicArray<BRepGraph_NodeId> aRepl;
         aRepl.Append(aCanonId);
         theGraph.History().Record(TCollection_AsciiString("Dedup:MergeEdge"), anOldId, aRepl);
         ++aResult.NbHistoryRecords;
@@ -511,8 +511,8 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
     };
 
     auto wiresEqual = [&](const BRepGraph_WireId theA, const BRepGraph_WireId theB) -> bool {
-      NCollection_Vector<BRepGraph_CoEdgeId> aWireACoEdges;
-      NCollection_Vector<BRepGraph_CoEdgeId> aWireBCoEdges;
+      NCollection_DynamicArray<BRepGraph_CoEdgeId> aWireACoEdges;
+      NCollection_DynamicArray<BRepGraph_CoEdgeId> aWireBCoEdges;
       for (BRepGraph_RefsCoEdgeOfWire aCEIt(theGraph, theA); aCEIt.More(); aCEIt.Next())
       {
         aWireACoEdges.Append(theGraph.Refs().CoEdges().Entry(aCEIt.CurrentId()).CoEdgeDefId);
@@ -524,8 +524,8 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
 
       if (aWireACoEdges.Size() != aWireBCoEdges.Size())
         return false;
-      NCollection_Vector<BRepGraph_CoEdgeId>::Iterator anItA(aWireACoEdges);
-      NCollection_Vector<BRepGraph_CoEdgeId>::Iterator anItB(aWireBCoEdges);
+      NCollection_DynamicArray<BRepGraph_CoEdgeId>::Iterator anItA(aWireACoEdges);
+      NCollection_DynamicArray<BRepGraph_CoEdgeId>::Iterator anItB(aWireBCoEdges);
       for (; anItA.More(); anItA.Next(), anItB.Next())
       {
         const BRepGraphInc::CoEdgeDef& aCoEdgeA =
@@ -539,7 +539,7 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
       return true;
     };
 
-    NCollection_DataMap<size_t, NCollection_Vector<BRepGraph_WireId>> aWireHashBuckets(
+    NCollection_DataMap<size_t, NCollection_DynamicArray<BRepGraph_WireId>> aWireHashBuckets(
       std::max(1, theGraph.Topo().Wires().Nb()),
       aTmpAlloc);
 
@@ -551,7 +551,7 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
       if (aWire.IsRemoved)
         continue;
       const size_t aH = aHasher(aWireId, theGraph);
-      aWireHashBuckets.TryBind(aH, NCollection_Vector<BRepGraph_WireId>());
+      aWireHashBuckets.TryBind(aH, NCollection_DynamicArray<BRepGraph_WireId>());
       aWireHashBuckets.ChangeFind(aH).Append(aWireId);
     }
 
@@ -559,12 +559,12 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
       std::max(1, theGraph.Topo().Wires().Nb()),
       aTmpAlloc);
 
-    for (NCollection_DataMap<size_t, NCollection_Vector<BRepGraph_WireId>>::Iterator aBucketIter(
+    for (NCollection_DataMap<size_t, NCollection_DynamicArray<BRepGraph_WireId>>::Iterator aBucketIter(
            aWireHashBuckets);
          aBucketIter.More();
          aBucketIter.Next())
     {
-      const NCollection_Vector<BRepGraph_WireId>& aBucket = aBucketIter.Value();
+      const NCollection_DynamicArray<BRepGraph_WireId>& aBucket = aBucketIter.Value();
       for (size_t aBaseIdx = 0; aBaseIdx < aBucket.Size(); ++aBaseIdx)
       {
         const BRepGraph_WireId aBaseWireId = aBucket.Value(aBaseIdx);
@@ -708,7 +708,7 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
       return aHash;
     };
 
-    NCollection_DataMap<FaceKey, NCollection_Vector<BRepGraph_FaceId>, FaceKeyHasher> aFaceGroups(
+    NCollection_DataMap<FaceKey, NCollection_DynamicArray<BRepGraph_FaceId>, FaceKeyHasher> aFaceGroups(
       std::max(1, theGraph.Topo().Faces().Nb()),
       aTmpAlloc);
 
@@ -723,7 +723,7 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
       aKey.SurfPtr  = BRepGraph_Tool::Face::Surface(theGraph, aFaceId).get();
       aKey.WireHash = faceWireHash(aFaceId);
 
-      aFaceGroups.TryBind(aKey, NCollection_Vector<BRepGraph_FaceId>());
+      aFaceGroups.TryBind(aKey, NCollection_DynamicArray<BRepGraph_FaceId>());
       aFaceGroups.ChangeFind(aKey).Append(aFaceId);
     }
 
@@ -731,12 +731,12 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
       std::max(1, theGraph.Topo().Faces().Nb()),
       aTmpAlloc);
 
-    for (NCollection_DataMap<FaceKey, NCollection_Vector<BRepGraph_FaceId>, FaceKeyHasher>::Iterator
+    for (NCollection_DataMap<FaceKey, NCollection_DynamicArray<BRepGraph_FaceId>, FaceKeyHasher>::Iterator
            aGroupIter(aFaceGroups);
          aGroupIter.More();
          aGroupIter.Next())
     {
-      const NCollection_Vector<BRepGraph_FaceId>& aGroup = aGroupIter.Value();
+      const NCollection_DynamicArray<BRepGraph_FaceId>& aGroup = aGroupIter.Value();
       if (aGroup.Size() < 2)
         continue;
 
@@ -799,7 +799,7 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
 
         theGraph.Editor().Gen().RemoveNode(anOldId, aCanonId);
 
-        NCollection_Vector<BRepGraph_NodeId> aRepl;
+        NCollection_DynamicArray<BRepGraph_NodeId> aRepl;
         aRepl.Append(aCanonId);
         theGraph.History().Record(TCollection_AsciiString("Dedup:MergeFace"), anOldId, aRepl);
         ++aResult.NbHistoryRecords;

@@ -21,7 +21,7 @@
 /**
  * Dynamically resizable sparse array of objects
  *
- * This class is similar to NCollection_Vector: it works like virtually
+ * This class is similar to NCollection_DynamicArray: it works like virtually
  * unlimited array of items accessible by index; however unlike simple
  * Vector it distinguishes items that have been set from the ones that
  * have not been set explicitly.

@@ -4099,7 +4099,7 @@ int VTexture(Draw_Interpretor& theDi, int theArgsNb, const char** theArgVec)
   occ::handle<AIS_InteractiveObject>                    aTexturedIO;
   occ::handle<AIS_Shape>                                aTexturedShape;
   occ::handle<Graphic3d_TextureSet>                     aTextureSetOld;
-  NCollection_Vector<occ::handle<Graphic3d_TextureMap>> aTextureVecNew;
+  NCollection_DynamicArray<occ::handle<Graphic3d_TextureMap>> aTextureVecNew;
   bool toSetGenRepeat = false, toSetGenScale = false, toSetGenOrigin = false, toSetImage = false,
        toComputeUV = false;
 

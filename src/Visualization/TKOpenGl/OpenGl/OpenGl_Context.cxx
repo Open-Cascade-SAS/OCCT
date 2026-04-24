@@ -42,7 +42,7 @@
 #include <Graphic3d_RenderingParams.hxx>
 #include <Image_SupportedFormats.hxx>
 #include <Message_Messenger.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <Standard_ProgramError.hxx>
 #include <Standard_WarningDisableFunctionCast.hxx>
 
@@ -2086,7 +2086,7 @@ void OpenGl_Context::ReleaseDelayed()
   }
 
   // release delayed shared resources
-  NCollection_Vector<TCollection_AsciiString> aDeadList;
+  NCollection_DynamicArray<TCollection_AsciiString> aDeadList;
   for (NCollection_DataMap<TCollection_AsciiString, int>::Iterator anIter(*myDelayed);
        anIter.More();
        anIter.Next())

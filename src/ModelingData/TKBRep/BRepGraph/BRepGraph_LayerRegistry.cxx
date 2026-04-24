@@ -140,7 +140,7 @@ void BRepGraph_LayerRegistry::DispatchNodeModified(const BRepGraph_NodeId theNod
 //=================================================================================================
 
 void BRepGraph_LayerRegistry::DispatchNodesModified(
-  const NCollection_Vector<BRepGraph_NodeId>& theModifiedNodes,
+  const NCollection_DynamicArray<BRepGraph_NodeId>& theModifiedNodes,
   const int                                   theModifiedKindsMask) noexcept
 {
   if (!HasModificationSubscribers() || theModifiedKindsMask == 0)
@@ -212,7 +212,7 @@ void BRepGraph_LayerRegistry::DispatchRefModified(const BRepGraph_RefId theRef) 
 //=================================================================================================
 
 void BRepGraph_LayerRegistry::DispatchRefsModified(
-  const NCollection_Vector<BRepGraph_RefId>& theModifiedRefs,
+  const NCollection_DynamicArray<BRepGraph_RefId>& theModifiedRefs,
   const int                                  theModifiedRefKindsMask) noexcept
 {
   if (!HasRefModificationSubscribers() || theModifiedRefKindsMask == 0)

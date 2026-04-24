@@ -181,7 +181,7 @@ static void RemoveEdges(const TopoDS_Compound&                theSourceComp,
                         const NCollection_List<TopoDS_Shape>& theListToRemove,
                         TopoDS_Compound&                      theResultComp);
 
-static bool FilterSectionEdges(const NCollection_Vector<BOPDS_Curve>& theBCurves,
+static bool FilterSectionEdges(const NCollection_DynamicArray<BOPDS_Curve>& theBCurves,
                                const TopoDS_Face&                     theSecPlane,
                                const BOPDS_PDS&                       theDS,
                                TopoDS_Compound&                       theResult);
@@ -328,7 +328,7 @@ void BRepFill_TrimShellCorner::Perform()
   //
   const BOPDS_PDS& theDS = aPF.PDS();
   //
-  NCollection_Vector<BOPDS_InterfFF>& aFFs   = theDS->InterfFF();
+  NCollection_DynamicArray<BOPDS_InterfFF>& aFFs   = theDS->InterfFF();
   int                                 aNbFFs = aFFs.Length();
 
   if (!SplitUEdges(myUEdges, theDS, myIntPointCrossDir, myHistMap))
@@ -352,9 +352,9 @@ void BRepFill_TrimShellCorner::Perform()
       BOPDS_InterfFF& aFFi = aFFs(i);
       aFFi.Indices(nF1, nF2);
       //
-      NCollection_Vector<BOPDS_Point>& aVP       = aFFi.ChangePoints();
+      NCollection_DynamicArray<BOPDS_Point>& aVP       = aFFi.ChangePoints();
       aNbP                                       = aVP.Length();
-      const NCollection_Vector<BOPDS_Curve>& aVC = aFFi.Curves();
+      const NCollection_DynamicArray<BOPDS_Curve>& aVC = aFFi.Curves();
       aNbC                                       = aVC.Length();
       if (!aNbP && !aNbC)
       {
@@ -754,9 +754,9 @@ bool BRepFill_TrimShellCorner::MakeFacesSec(const int        theIndex,
                                             const int        theFaceIndex2,
                                             const int        theSSInterfIndex)
 {
-  const NCollection_Vector<BOPDS_InterfFF>& aFFs     = theDS->InterfFF();
+  const NCollection_DynamicArray<BOPDS_InterfFF>& aFFs     = theDS->InterfFF();
   const BOPDS_InterfFF&                     aFFi     = aFFs(theSSInterfIndex);
-  const NCollection_Vector<BOPDS_Curve>&    aBCurves = aFFi.Curves();
+  const NCollection_DynamicArray<BOPDS_Curve>&    aBCurves = aFFi.Curves();
 
   TopoDS_Compound aSecEdges;
   TopoDS_Face     aSecPlane;
@@ -1206,7 +1206,7 @@ bool SplitUEdges(
     theHistMap)
 {
 
-  const NCollection_Vector<BOPDS_InterfVV>& aVVs = theDS->InterfVV();
+  const NCollection_DynamicArray<BOPDS_InterfVV>& aVVs = theDS->InterfVV();
 
   BRep_Builder                     aBB;
   int                              ueit = 0, upRow, lowCol, upCol;
@@ -1354,7 +1354,7 @@ bool FindCommonVertex(const BOPDS_PDS& theDS,
                       double&          theParamOnE2)
 {
 
-  const NCollection_Vector<BOPDS_InterfEE>& aEEs = theDS->InterfEE();
+  const NCollection_DynamicArray<BOPDS_InterfEE>& aEEs = theDS->InterfEE();
 
   bool          bvertexfound = false;
   TopoDS_Vertex aCommonVertex;
@@ -2414,7 +2414,7 @@ void RemoveEdges(const TopoDS_Compound&                theSourceComp,
 
 //=================================================================================================
 
-bool FilterSectionEdges(const NCollection_Vector<BOPDS_Curve>& theBCurves,
+bool FilterSectionEdges(const NCollection_DynamicArray<BOPDS_Curve>& theBCurves,
                         const TopoDS_Face&                     theSecPlane,
                         const BOPDS_PDS&                       theDS,
                         TopoDS_Compound&                       theResult)
