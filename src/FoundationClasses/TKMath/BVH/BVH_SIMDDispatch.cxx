@@ -276,10 +276,18 @@ template <>
 RayBoxN_Fn<16> GetRayBoxN<16>() noexcept
 {
   static const RayBoxN_Fn<16> sFn = []() noexcept -> RayBoxN_Fn<16> {
-    // AVX-512 16-wide kernel will be added in a follow-up commit; until then
-    // the scalar fallback satisfies correctness for any host that opts into
-    // BVH_WideTree<16>.
-    return &RayBoxN_Scalar<16>;
+    switch (Detect())
+    {
+#if defined(BVH_HAS_AVX512_KERNEL)
+      case Level::AVX512:
+        return &RayBoxN_AVX512_16;
+#endif
+      default:
+        // No AVX-512 -> fall back to scalar. Loop-based AVX2/SSE2 paths were
+        // intentionally not provided because for hosts without AVX-512, the
+        // BVH8/AVX2 layout is the right fan-out choice anyway.
+        return &RayBoxN_Scalar<16>;
+    }
   }();
   return sFn;
 }

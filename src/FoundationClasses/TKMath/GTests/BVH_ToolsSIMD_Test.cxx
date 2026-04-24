@@ -481,4 +481,50 @@ TEST(BVH_ToolsSIMDTest, AVX512_RandomConsistencyVsScalar)
   }
 }
 
+TEST(BVH_ToolsSIMDTest, AVX512_RayBoxN16_RandomConsistencyVsScalar)
+{
+  if (BVH::SIMD::Detect() < BVH::SIMD::Level::AVX512)
+  {
+    GTEST_SKIP() << "AVX-512 not supported on this CPU";
+  }
+  std::mt19937                          aGen(0xCAFE16FFu);
+  std::uniform_real_distribution<float> aPos(-10.0f, 10.0f);
+  std::uniform_real_distribution<float> aSize(0.1f, 5.0f);
+  std::uniform_real_distribution<float> aDir(-1.0f, 1.0f);
+
+  constexpr int   kNumCases = 1000;
+  constexpr float kEps      = 1.0e-3f;
+
+  for (int aCase = 0; aCase < kNumCases; ++aCase)
+  {
+    float dx = aDir(aGen), dy = aDir(aGen), dz = aDir(aGen);
+    if (std::abs(dx) < 1.0e-3f && std::abs(dy) < 1.0e-3f && std::abs(dz) < 1.0e-3f)
+      dx = 1.0f;
+    auto aRay = MakeRayN<16>(aPos(aGen), aPos(aGen), aPos(aGen), dx, dy, dz);
+
+    BVH::SIMD::BVH_BoxNf_SoA<16> aBoxes{};
+    for (int k = 0; k < 16; ++k)
+    {
+      const float cx = aPos(aGen), cy = aPos(aGen), cz = aPos(aGen);
+      const float sx = aSize(aGen), sy = aSize(aGen), sz = aSize(aGen);
+      SetBoxN<16>(aBoxes, k, cx - sx, cy - sy, cz - sz, cx + sx, cy + sy, cz + sz);
+    }
+
+    float aSEnter[16]{}, aSLeave[16]{};
+    int   aSMask = BVH::SIMD::RayBoxN_Scalar<16>(aRay, aBoxes, aSEnter, aSLeave);
+    float aTEnter[16]{}, aTLeave[16]{};
+    int   aTMask = BVH::SIMD::RayBoxN_AVX512_16(aRay, aBoxes, aTEnter, aTLeave);
+
+    EXPECT_EQ(aSMask, aTMask) << "RayBoxN<16> AVX-512 case " << aCase << " mask mismatch";
+    for (int i = 0; i < 16; ++i)
+    {
+      if (((aSMask >> i) & 1) && ((aTMask >> i) & 1))
+      {
+        EXPECT_NEAR(aSEnter[i], aTEnter[i], kEps);
+        EXPECT_NEAR(aSLeave[i], aTLeave[i], kEps);
+      }
+    }
+  }
+}
+
 #endif // BVH_HAS_AVX512_KERNEL
