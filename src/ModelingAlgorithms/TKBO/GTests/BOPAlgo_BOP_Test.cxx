@@ -13,6 +13,9 @@
 
 #include "BOPTest_Utilities.pxx"
 
+#include <BRepBndLib.hxx>
+#include <BRepPrimAPI_MakeHalfSpace.hxx>
+
 //=================================================================================================
 // Direct BOP Operations Tests (equivalent to bcut, bfuse, bcommon, btuc commands)
 //=================================================================================================
@@ -228,4 +231,47 @@ TEST_F(BOPAlgo_DegenerateToolTest, Cut_LegitimateThinSlab_NotTreatedAsEmpty)
   EXPECT_NEAR(BOPTest_Utilities::GetVolume(aRes),
               BOPTest_Utilities::GetVolume(aBox) - BOPTest_Utilities::GetVolume(aSlab),
               myTolerance);
+}
+
+TEST_F(BOPAlgo_DegenerateToolTest, Common_SolidAndPlanarFace_Unaffected)
+{
+  const TopoDS_Shape aBox =
+    BOPTest_Utilities::CreateBox(gp_Pnt(0.0, 0.0, 0.0), 100.0, 100.0, 100.0);
+  const gp_Pln            aPln(gp_Pnt(0.0, 0.0, 50.0), gp_Dir(0.0, 0.0, 1.0));
+  BRepBuilderAPI_MakeFace aFaceMaker(aPln, -200.0, 200.0, -200.0, 200.0);
+  ASSERT_TRUE(aFaceMaker.IsDone());
+  const TopoDS_Shape aFace = aFaceMaker.Face();
+
+  const TopoDS_Shape aRes = PerformDirectBOP(aBox, aFace, BOPAlgo_COMMON);
+  ASSERT_FALSE(aRes.IsNull());
+  EXPECT_NEAR(BOPTest_Utilities::GetSurfaceArea(aRes), 1.0e4, 1.0);
+}
+
+TEST_F(BOPAlgo_DegenerateToolTest, Cut_BySemiInfinitePrism_Unaffected)
+{
+  const TopoDS_Shape aBox = BOPTest_Utilities::CreateBox(gp_Pnt(0.0, -1.0, -1.0), 2.0, 2.0, 2.0);
+  const gp_Pln       aPln(gp_Pnt(-0.5, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
+  BRepBuilderAPI_MakeFace aFaceMaker(aPln, -0.5, 0.5, -0.5, 0.5);
+  ASSERT_TRUE(aFaceMaker.IsDone());
+  BRepPrimAPI_MakePrism aPrismMaker(aFaceMaker.Face(), gp_Dir(1.0, 0.0, 0.0), true);
+  ASSERT_TRUE(aPrismMaker.IsDone());
+
+  const TopoDS_Shape aRes = PerformDirectBOP(aBox, aPrismMaker.Shape(), BOPAlgo_CUT);
+  ASSERT_FALSE(aRes.IsNull());
+  EXPECT_GT(BOPTest_Utilities::GetVolume(aRes), 1.0);
+}
+
+TEST_F(BOPAlgo_DegenerateToolTest, Common_SolidAndHalfspace_Unaffected)
+{
+  const TopoDS_Shape aBox =
+    BOPTest_Utilities::CreateBox(gp_Pnt(0.0, 0.0, -30.0), 150.0, 200.0, 200.0);
+  const gp_Pln            aPln(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  BRepBuilderAPI_MakeFace aFaceMaker(aPln, -250.0, 250.0, -250.0, 250.0);
+  ASSERT_TRUE(aFaceMaker.IsDone());
+  BRepPrimAPI_MakeHalfSpace aHSMaker(aFaceMaker.Face(), gp_Pnt(0.0, 0.0, -100.0));
+  const TopoDS_Shape        aHalfSpace = aHSMaker.Solid();
+
+  const TopoDS_Shape aRes = PerformDirectBOP(aBox, aHalfSpace, BOPAlgo_COMMON);
+  ASSERT_FALSE(aRes.IsNull());
+  EXPECT_GT(BOPTest_Utilities::GetVolume(aRes), 1.0);
 }

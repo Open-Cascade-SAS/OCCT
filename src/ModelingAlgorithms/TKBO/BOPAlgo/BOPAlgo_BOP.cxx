@@ -76,8 +76,20 @@ bool isDegenerateThinSolid(const TopoDS_Shape& theShape,
   {
     const TopoDS_Shape& aSolid = aSolidExp.Current();
 
+    bool bOpenShell = false;
+    for (TopExp_Explorer aShExp(aSolid, TopAbs_SHELL); aShExp.More(); aShExp.Next())
+    {
+      if (!aShExp.Current().Closed())
+      {
+        bOpenShell = true;
+        break;
+      }
+    }
+    if (bOpenShell)
+      continue;
+
     Bnd_Box aBox = bboxFromDsOrCompute(theDS, aSolid);
-    if (aBox.IsVoid())
+    if (aBox.IsVoid() || aBox.IsOpen())
       continue;
     double x1, y1, z1, x2, y2, z2;
     aBox.Get(x1, y1, z1, x2, y2, z2);
@@ -102,7 +114,7 @@ bool isDegenerateThinSolid(const TopoDS_Shape& theShape,
     for (TopExp_Explorer aFaceExp(aSolid, TopAbs_FACE); aFaceExp.More(); aFaceExp.Next())
     {
       Bnd_Box aFBox = bboxFromDsOrCompute(theDS, aFaceExp.Current());
-      if (aFBox.IsVoid())
+      if (aFBox.IsVoid() || aFBox.IsOpen())
         continue;
       double fx1, fy1, fz1, fx2, fy2, fz2;
       aFBox.Get(fx1, fy1, fz1, fx2, fy2, fz2);
