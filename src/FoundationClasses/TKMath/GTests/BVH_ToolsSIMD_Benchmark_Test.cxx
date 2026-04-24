@@ -35,8 +35,8 @@
 namespace
 {
 
-constexpr int kNumCases   = 4096;     // distinct (ray, 4-box) pairs
-constexpr int kNumRepeats = 4096;     // outer iteration count
+constexpr int kNumCases   = 4096; // distinct (ray, 4-box) pairs
+constexpr int kNumRepeats = 4096; // outer iteration count
 
 //! Generates kNumCases random (ray, 4-AABB) pairs that mostly intersect.
 struct BenchmarkData
@@ -56,7 +56,7 @@ struct BenchmarkData
 
     for (int aCase = 0; aCase < kNumCases; ++aCase)
     {
-      float dx = aDir(aGen), dy = aDir(aGen), dz = aDir(aGen);
+      float       dx = aDir(aGen), dy = aDir(aGen), dz = aDir(aGen);
       const float aLen = std::sqrt(dx * dx + dy * dy + dz * dz);
       if (aLen < 1.0e-3f)
       {
@@ -109,9 +109,9 @@ struct KernelTime
   long long   sinkSum; // accumulated mask, prevents the optimizer from removing the loop
 };
 
-KernelTime MeasureKernel(const char*               theName,
-                         BVH::SIMD::RayBox4_Fn     theFn,
-                         const BenchmarkData&      theData)
+KernelTime MeasureKernel(const char*           theName,
+                         BVH::SIMD::RayBox4_Fn theFn,
+                         const BenchmarkData&  theData)
 {
   // Warm-up: 1 pass over all data.
   long long aWarmupSink = 0;
@@ -141,13 +141,11 @@ KernelTime MeasureKernel(const char*               theName,
 
 void PrintRow(const KernelTime& theTime, double theBaselineNs)
 {
-  std::cout << "  " << std::left << std::setw(14) << theTime.name
-            << std::right << std::fixed << std::setprecision(2)
-            << std::setw(8) << theTime.nsPerCall << " ns/call"
-            << "  " << std::setw(6) << std::setprecision(2)
-            << (theBaselineNs / theTime.nsPerCall) << "x"
-            << "  (sink=" << theTime.sinkSum << ")"
-            << std::endl;
+  std::cout << "  " << std::left << std::setw(14) << theTime.name << std::right << std::fixed
+            << std::setprecision(2) << std::setw(8) << theTime.nsPerCall << " ns/call"
+            << "  " << std::setw(6) << std::setprecision(2) << (theBaselineNs / theTime.nsPerCall)
+            << "x"
+            << "  (sink=" << theTime.sinkSum << ")" << std::endl;
 }
 
 } // namespace
@@ -164,10 +162,18 @@ TEST(BVH_ToolsSIMDBenchmark, DISABLED_RayBox4_KernelComparison)
   std::cout << "  detected: ";
   switch (BVH::SIMD::Detect())
   {
-    case BVH::SIMD::Level::AVX512: std::cout << "AVX-512"; break;
-    case BVH::SIMD::Level::AVX2:   std::cout << "AVX2";    break;
-    case BVH::SIMD::Level::SSE2:   std::cout << "SSE2";    break;
-    default:                       std::cout << "Scalar";  break;
+    case BVH::SIMD::Level::AVX512:
+      std::cout << "AVX-512";
+      break;
+    case BVH::SIMD::Level::AVX2:
+      std::cout << "AVX2";
+      break;
+    case BVH::SIMD::Level::SSE2:
+      std::cout << "SSE2";
+      break;
+    default:
+      std::cout << "Scalar";
+      break;
   }
   std::cout << std::endl << std::endl;
 
@@ -177,8 +183,7 @@ TEST(BVH_ToolsSIMDBenchmark, DISABLED_RayBox4_KernelComparison)
 #if defined(BVH_HAS_SSE2_KERNEL)
   KernelTime aSSE2 = MeasureKernel("SSE2", &BVH::SIMD::RayBox4_SSE2, aData);
   PrintRow(aSSE2, aScalar.nsPerCall);
-  EXPECT_LT(aSSE2.nsPerCall, aScalar.nsPerCall)
-    << "SSE2 should be at least as fast as scalar";
+  EXPECT_LT(aSSE2.nsPerCall, aScalar.nsPerCall) << "SSE2 should be at least as fast as scalar";
 #endif
 
 #if defined(BVH_HAS_AVX2_KERNEL)
@@ -215,13 +220,17 @@ TEST(BVH_ToolsSIMDBenchmark, DISABLED_RayBox4_KernelComparison)
 namespace
 {
 
-//! 8-wide variant of BenchmarkData / MeasureKernel for the BVH8 kernels.
-struct BenchmarkData8
+//! 8-wide variant of BenchmarkData / MeasureKernel for the BVH8 kernels
+//! (RayBoxN<8>: scalar reference + AVX2 natural fit).
+//! SSE2 and AVX-512 BVH8 paths were intentionally removed because past
+//! benches confirmed they offer no win over AVX2 (the natural ymm fit) at
+//! 8-wide fan-out.
+struct BenchmarkDataN8
 {
-  std::vector<BVH::SIMD::BVH_Ray8f_Splat> rays;
-  std::vector<BVH::SIMD::BVH_Box8f_SoA>   boxes;
+  std::vector<BVH::SIMD::BVH_RayNf_Splat<8>> rays;
+  std::vector<BVH::SIMD::BVH_BoxNf_SoA<8>>   boxes;
 
-  BenchmarkData8()
+  BenchmarkDataN8()
   {
     rays.reserve(kNumCases);
     boxes.reserve(kNumCases);
@@ -233,38 +242,54 @@ struct BenchmarkData8
 
     for (int aCase = 0; aCase < kNumCases; ++aCase)
     {
-      float dx = aDir(aGen), dy = aDir(aGen), dz = aDir(aGen);
+      float       dx = aDir(aGen), dy = aDir(aGen), dz = aDir(aGen);
       const float aLen = std::sqrt(dx * dx + dy * dy + dz * dz);
-      if (aLen < 1.0e-3f) { dx = 1.0f; dy = 0.0f; dz = 0.0f; }
-      else { dx /= aLen; dy /= aLen; dz /= aLen; }
+      if (aLen < 1.0e-3f)
+      {
+        dx = 1.0f;
+        dy = 0.0f;
+        dz = 0.0f;
+      }
+      else
+      {
+        dx /= aLen;
+        dy /= aLen;
+        dz /= aLen;
+      }
       const float ox = aPos(aGen), oy = aPos(aGen), oz = aPos(aGen);
 
-      BVH::SIMD::BVH_Ray8f_Splat aRay{};
+      BVH::SIMD::BVH_RayNf_Splat<8> aRay{};
       for (int i = 0; i < 8; ++i)
       {
-        aRay.ox[i]  = ox; aRay.oy[i] = oy; aRay.oz[i] = oz;
+        aRay.ox[i]  = ox;
+        aRay.oy[i]  = oy;
+        aRay.oz[i]  = oz;
         aRay.idx[i] = (dx != 0.0f) ? (1.0f / dx) : std::numeric_limits<float>::infinity();
         aRay.idy[i] = (dy != 0.0f) ? (1.0f / dy) : std::numeric_limits<float>::infinity();
         aRay.idz[i] = (dz != 0.0f) ? (1.0f / dz) : std::numeric_limits<float>::infinity();
       }
       rays.push_back(aRay);
 
-      BVH::SIMD::BVH_Box8f_SoA aBoxes{};
+      BVH::SIMD::BVH_BoxNf_SoA<8> aBoxes{};
       for (int k = 0; k < 8; ++k)
       {
         const float cx = aPos(aGen), cy = aPos(aGen), cz = aPos(aGen);
         const float sx = aSize(aGen), sy = aSize(aGen), sz = aSize(aGen);
-        aBoxes.minX[k] = cx - sx; aBoxes.minY[k] = cy - sy; aBoxes.minZ[k] = cz - sz;
-        aBoxes.maxX[k] = cx + sx; aBoxes.maxY[k] = cy + sy; aBoxes.maxZ[k] = cz + sz;
+        aBoxes.minX[k] = cx - sx;
+        aBoxes.minY[k] = cy - sy;
+        aBoxes.minZ[k] = cz - sz;
+        aBoxes.maxX[k] = cx + sx;
+        aBoxes.maxY[k] = cy + sy;
+        aBoxes.maxZ[k] = cz + sz;
       }
       boxes.push_back(aBoxes);
     }
   }
 };
 
-KernelTime MeasureKernel8(const char*               theName,
-                          BVH::SIMD::RayBox8_Fn     theFn,
-                          const BenchmarkData8&     theData)
+KernelTime MeasureKernelN8(const char*              theName,
+                           BVH::SIMD::RayBoxN_Fn<8> theFn,
+                           const BenchmarkDataN8&   theData)
 {
   long long aWarmupSink = 0;
   for (const auto& aRay : theData.rays)
@@ -291,45 +316,33 @@ KernelTime MeasureKernel8(const char*               theName,
 
 } // namespace
 
-TEST(BVH_ToolsSIMDBenchmark, DISABLED_RayBox8_KernelComparison)
+TEST(BVH_ToolsSIMDBenchmark, DISABLED_RayBoxN8_KernelComparison)
 {
-  BenchmarkData8 aData;
+  BenchmarkDataN8 aData;
 
-  std::cout << "\n=== RayBox8 microbenchmark (BVH8 fan-out) ===" << std::endl;
+  std::cout << "\n=== RayBoxN<8> microbenchmark (BVH8 fan-out) ===" << std::endl;
   std::cout << "  cases   : " << kNumCases << " (random ray + 8 AABB)" << std::endl;
   std::cout << "  repeats : " << kNumRepeats << std::endl;
   std::cout << "  per kernel: " << (static_cast<long long>(kNumCases) * kNumRepeats)
-            << " invocations" << std::endl << std::endl;
+            << " invocations" << std::endl
+            << std::endl;
 
-  KernelTime aScalar = MeasureKernel8("Scalar", &BVH::SIMD::RayBox8_Scalar, aData);
+  KernelTime aScalar = MeasureKernelN8("Scalar", &BVH::SIMD::RayBoxN_Scalar<8>, aData);
   PrintRow(aScalar, aScalar.nsPerCall);
-
-#if defined(BVH_HAS_SSE2_KERNEL)
-  KernelTime aSSE2 = MeasureKernel8("SSE2", &BVH::SIMD::RayBox8_SSE2, aData);
-  PrintRow(aSSE2, aScalar.nsPerCall);
-#endif
 
 #if defined(BVH_HAS_AVX2_KERNEL)
   if (BVH::SIMD::Detect() >= BVH::SIMD::Level::AVX2)
   {
-    KernelTime aAVX2 = MeasureKernel8("AVX2", &BVH::SIMD::RayBox8_AVX2, aData);
+    KernelTime aAVX2 = MeasureKernelN8("AVX2", &BVH::SIMD::RayBoxN_AVX2_8, aData);
     PrintRow(aAVX2, aScalar.nsPerCall);
-  }
-#endif
-
-#if defined(BVH_HAS_AVX512_KERNEL)
-  if (BVH::SIMD::Detect() >= BVH::SIMD::Level::AVX512)
-  {
-    KernelTime aAVX512 = MeasureKernel8("AVX-512", &BVH::SIMD::RayBox8_AVX512, aData);
-    PrintRow(aAVX512, aScalar.nsPerCall);
   }
   else
   {
-    std::cout << "  AVX-512       (skipped: CPU support absent)" << std::endl;
+    std::cout << "  AVX2          (skipped: CPU support absent)" << std::endl;
   }
 #endif
 
-  KernelTime aDispatched = MeasureKernel8("Dispatched", BVH::SIMD::GetRayBox8(), aData);
+  KernelTime aDispatched = MeasureKernelN8("Dispatched", BVH::SIMD::GetRayBoxN<8>(), aData);
   PrintRow(aDispatched, aScalar.nsPerCall);
 
   std::cout << std::endl;

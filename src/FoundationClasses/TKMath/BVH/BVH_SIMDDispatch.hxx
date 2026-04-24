@@ -16,13 +16,19 @@
 
 #include <Standard_Macro.hxx>
 
+#include <algorithm>
+#include <cmath>
+#include <limits>
+
 namespace BVH
 {
 namespace SIMD
 {
 
 //! 4 axis-aligned bounding boxes packed in Structure-of-Arrays layout.
-//! Used as input to SIMD-accelerated quad-BVH traversal kernels.
+//! Used as input to SIMD-accelerated quad-BVH (BVH4) traversal kernels.
+//! Kept as a non-template legacy struct because BVH4 is intentionally outside
+//! the BVH_WideTree<W> abstraction (SSE2 with __m128 is its natural fit).
 struct alignas(16) BVH_Box4f_SoA
 {
   float minX[4];
@@ -45,28 +51,33 @@ struct alignas(16) BVH_Ray4f_Splat
   float idz[4];
 };
 
-//! 8 axis-aligned bounding boxes packed in Structure-of-Arrays layout.
-//! Used as input to BVH8 (1-ray-vs-8-AABB) SIMD kernels which can fully
-//! consume a 256-bit AVX2 register.
-struct alignas(32) BVH_Box8f_SoA
+//! W axis-aligned bounding boxes packed in Structure-of-Arrays layout.
+//! Used as input to BVH_WideTree<W> SIMD kernels:
+//!   - W=8  fills a single __m256 (AVX2)   in one slab pass
+//!   - W=16 fills a single __m512 (AVX-512) in one slab pass
+template <int W>
+struct alignas(W * 4) BVH_BoxNf_SoA
 {
-  float minX[8];
-  float minY[8];
-  float minZ[8];
-  float maxX[8];
-  float maxY[8];
-  float maxZ[8];
+  static_assert(W == 8 || W == 16, "Only W=8 (AVX2) and W=16 (AVX-512) are instantiated");
+  float minX[W];
+  float minY[W];
+  float minZ[W];
+  float maxX[W];
+  float maxY[W];
+  float maxZ[W];
 };
 
-//! Single ray with each component broadcast to 8 SIMD lanes.
-struct alignas(32) BVH_Ray8f_Splat
+//! Single ray with each component broadcast to W SIMD lanes.
+template <int W>
+struct alignas(W * 4) BVH_RayNf_Splat
 {
-  float ox[8];
-  float oy[8];
-  float oz[8];
-  float idx[8];
-  float idy[8];
-  float idz[8];
+  static_assert(W == 8 || W == 16, "Only W=8 (AVX2) and W=16 (AVX-512) are instantiated");
+  float ox[W];
+  float oy[W];
+  float oz[W];
+  float idx[W];
+  float idy[W];
+  float idz[W];
 };
 
 //! Detected SIMD instruction set level.
@@ -83,6 +94,10 @@ enum class Level
 //! the relevant register state across context switches.
 //! Result is computed once per process and cached.
 Standard_EXPORT Level Detect() noexcept;
+
+//=============================================================================
+// BVH4 (legacy, untouched by the BVH_WideTree<W> refactor)
+//=============================================================================
 
 //! Function pointer type for the 1-ray-vs-4-AABB kernel.
 //! Returns a 4-bit hit mask (bit i set if child i is hit).
@@ -108,23 +123,109 @@ Standard_EXPORT int RayBox4_Scalar(const BVH_Ray4f_Splat& theRay,
 //! Useful for testing each kernel on a single machine.
 Standard_EXPORT RayBox4_Fn GetRayBox4() noexcept;
 
-//! Function pointer type for the 1-ray-vs-8-AABB kernel (BVH8 fan-out).
-//! Returns an 8-bit hit mask (bit i set if child i is hit). outTEnter/Leave
-//! receive per-lane slab intervals; values for non-hit lanes are unspecified.
-using RayBox8_Fn = int (*)(const BVH_Ray8f_Splat& theRay,
-                           const BVH_Box8f_SoA&   theBoxes,
-                           float*                 theOutTEnter,
-                           float*                 theOutTLeave) noexcept;
+//=============================================================================
+// BVH_WideTree<W> kernels (W=8: AVX2 + scalar; W=16: AVX-512 + scalar)
+//=============================================================================
 
-//! Scalar reference implementation of the 8-wide kernel.
-Standard_EXPORT int RayBox8_Scalar(const BVH_Ray8f_Splat& theRay,
-                                   const BVH_Box8f_SoA&   theBoxes,
-                                   float*                 theOutTEnter,
-                                   float*                 theOutTLeave) noexcept;
+//! Function pointer type for the 1-ray-vs-W-AABB kernel.
+//! Returns a W-bit hit mask (bit i set if child i is hit).
+template <int W>
+using RayBoxN_Fn = int (*)(const BVH_RayNf_Splat<W>& theRay,
+                           const BVH_BoxNf_SoA<W>&   theBoxes,
+                           float*                    theOutTEnter,
+                           float*                    theOutTLeave) noexcept;
 
-//! Dispatcher for the 8-wide kernel; picks the best implementation for
-//! the host CPU. Honours OCCT_BVH_SIMD_FORCE the same way GetRayBox4 does.
-Standard_EXPORT RayBox8_Fn GetRayBox8() noexcept;
+//! Scalar reference implementation of the W-wide kernel. Defined inline as
+//! a function template so any W can be exercised; the dispatcher uses it as
+//! a fallback when no SIMD kernel is available for the host.
+template <int W>
+inline int RayBoxN_Scalar(const BVH_RayNf_Splat<W>& theRay,
+                          const BVH_BoxNf_SoA<W>&   theBoxes,
+                          float*                    theOutTEnter,
+                          float*                    theOutTLeave) noexcept
+{
+  int aMask = 0;
+  for (int i = 0; i < W; ++i)
+  {
+    float aTEnter = std::numeric_limits<float>::lowest();
+    float aTLeave = (std::numeric_limits<float>::max)();
+    bool  aHit    = true;
+
+    if (std::isinf(theRay.idx[i]))
+    {
+      if (theRay.ox[i] < theBoxes.minX[i] || theRay.ox[i] > theBoxes.maxX[i])
+        aHit = false;
+    }
+    else
+    {
+      const float aT1 = (theBoxes.minX[i] - theRay.ox[i]) * theRay.idx[i];
+      const float aT2 = (theBoxes.maxX[i] - theRay.ox[i]) * theRay.idx[i];
+      aTEnter         = (std::max)(aTEnter, (std::min)(aT1, aT2));
+      aTLeave         = (std::min)(aTLeave, (std::max)(aT1, aT2));
+    }
+
+    if (aHit)
+    {
+      if (std::isinf(theRay.idy[i]))
+      {
+        if (theRay.oy[i] < theBoxes.minY[i] || theRay.oy[i] > theBoxes.maxY[i])
+          aHit = false;
+      }
+      else
+      {
+        const float aT1 = (theBoxes.minY[i] - theRay.oy[i]) * theRay.idy[i];
+        const float aT2 = (theBoxes.maxY[i] - theRay.oy[i]) * theRay.idy[i];
+        aTEnter         = (std::max)(aTEnter, (std::min)(aT1, aT2));
+        aTLeave         = (std::min)(aTLeave, (std::max)(aT1, aT2));
+      }
+    }
+
+    if (aHit)
+    {
+      if (std::isinf(theRay.idz[i]))
+      {
+        if (theRay.oz[i] < theBoxes.minZ[i] || theRay.oz[i] > theBoxes.maxZ[i])
+          aHit = false;
+      }
+      else
+      {
+        const float aT1 = (theBoxes.minZ[i] - theRay.oz[i]) * theRay.idz[i];
+        const float aT2 = (theBoxes.maxZ[i] - theRay.oz[i]) * theRay.idz[i];
+        aTEnter         = (std::max)(aTEnter, (std::min)(aT1, aT2));
+        aTLeave         = (std::min)(aTLeave, (std::max)(aT1, aT2));
+      }
+    }
+
+    if (aHit && aTEnter <= aTLeave && aTLeave >= 0.0f)
+    {
+      theOutTEnter[i] = aTEnter;
+      theOutTLeave[i] = aTLeave;
+      aMask |= (1 << i);
+    }
+    else
+    {
+      theOutTEnter[i] = std::numeric_limits<float>::quiet_NaN();
+      theOutTLeave[i] = std::numeric_limits<float>::quiet_NaN();
+    }
+  }
+  return aMask;
+}
+
+//! Returns a function pointer to the best available W-wide kernel for this
+//! CPU. Defined as explicit specializations in the .cxx so the static
+//! dispatch cache lives in one place per W.
+//!
+//! For W=8 the dispatch chooses AVX2 (the natural fit) or scalar fallback.
+//! For W=16 the dispatch chooses AVX-512 (the natural fit) or scalar fallback.
+//! Setting OCCT_BVH_SIMD_FORCE=scalar forces scalar regardless of CPU.
+template <int W>
+Standard_EXPORT RayBoxN_Fn<W> GetRayBoxN() noexcept;
+
+// Explicit specialization declarations -- bodies live in BVH_SIMDDispatch.cxx.
+template <>
+Standard_EXPORT RayBoxN_Fn<8> GetRayBoxN<8>() noexcept;
+template <>
+Standard_EXPORT RayBoxN_Fn<16> GetRayBoxN<16>() noexcept;
 
 } // namespace SIMD
 } // namespace BVH

@@ -149,11 +149,16 @@ TEST(BVH_SIMDDispatchTest, ScalarRayBox4_ParallelRayInsideSlab)
 namespace
 {
 
-BVH::SIMD::BVH_Ray8f_Splat MakeRay8Splat(float ox, float oy, float oz,
-                                         float dx, float dy, float dz)
+template <int W>
+BVH::SIMD::BVH_RayNf_Splat<W> MakeRayNSplat(float ox,
+                                            float oy,
+                                            float oz,
+                                            float dx,
+                                            float dy,
+                                            float dz)
 {
-  BVH::SIMD::BVH_Ray8f_Splat aRay{};
-  for (int i = 0; i < 8; ++i)
+  BVH::SIMD::BVH_RayNf_Splat<W> aRay{};
+  for (int i = 0; i < W; ++i)
   {
     aRay.ox[i]  = ox;
     aRay.oy[i]  = oy;
@@ -165,58 +170,68 @@ BVH::SIMD::BVH_Ray8f_Splat MakeRay8Splat(float ox, float oy, float oz,
   return aRay;
 }
 
-void SetBox8(BVH::SIMD::BVH_Box8f_SoA& theBoxes, int i,
-             float minx, float miny, float minz,
-             float maxx, float maxy, float maxz)
+template <int W>
+void SetBoxN(BVH::SIMD::BVH_BoxNf_SoA<W>& theBoxes,
+             int                          i,
+             float                        minx,
+             float                        miny,
+             float                        minz,
+             float                        maxx,
+             float                        maxy,
+             float                        maxz)
 {
-  theBoxes.minX[i] = minx; theBoxes.minY[i] = miny; theBoxes.minZ[i] = minz;
-  theBoxes.maxX[i] = maxx; theBoxes.maxY[i] = maxy; theBoxes.maxZ[i] = maxz;
+  theBoxes.minX[i] = minx;
+  theBoxes.minY[i] = miny;
+  theBoxes.minZ[i] = minz;
+  theBoxes.maxX[i] = maxx;
+  theBoxes.maxY[i] = maxy;
+  theBoxes.maxZ[i] = maxz;
 }
 
 } // namespace
 
-TEST(BVH_SIMDDispatchTest, ScalarRayBox8_AllHit)
+TEST(BVH_SIMDDispatchTest, ScalarRayBoxN8_AllHit)
 {
-  BVH::SIMD::BVH_Ray8f_Splat aRay = MakeRay8Splat(-1.0f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f);
-  BVH::SIMD::BVH_Box8f_SoA   aBoxes{};
+  auto                        aRay = MakeRayNSplat<8>(-1.0f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f);
+  BVH::SIMD::BVH_BoxNf_SoA<8> aBoxes{};
   for (int i = 0; i < 8; ++i)
   {
-    SetBox8(aBoxes, i, i * 2.0f, 0.0f, 0.0f, i * 2.0f + 1.0f, 1.0f, 1.0f);
+    SetBoxN<8>(aBoxes, i, i * 2.0f, 0.0f, 0.0f, i * 2.0f + 1.0f, 1.0f, 1.0f);
   }
   float aTEnter[8]{}, aTLeave[8]{};
-  int   aMask = BVH::SIMD::RayBox8_Scalar(aRay, aBoxes, aTEnter, aTLeave);
+  int   aMask = BVH::SIMD::RayBoxN_Scalar<8>(aRay, aBoxes, aTEnter, aTLeave);
   EXPECT_EQ(aMask, 0xFF);
 }
 
-TEST(BVH_SIMDDispatchTest, ScalarRayBox8_AllMiss)
+TEST(BVH_SIMDDispatchTest, ScalarRayBoxN8_AllMiss)
 {
-  BVH::SIMD::BVH_Ray8f_Splat aRay = MakeRay8Splat(-1.0f, 5.0f, 0.5f, 1.0f, 0.0f, 0.0f);
-  BVH::SIMD::BVH_Box8f_SoA   aBoxes{};
+  auto                        aRay = MakeRayNSplat<8>(-1.0f, 5.0f, 0.5f, 1.0f, 0.0f, 0.0f);
+  BVH::SIMD::BVH_BoxNf_SoA<8> aBoxes{};
   for (int i = 0; i < 8; ++i)
   {
-    SetBox8(aBoxes, i, i * 2.0f, 0.0f, 0.0f, i * 2.0f + 1.0f, 1.0f, 1.0f);
+    SetBoxN<8>(aBoxes, i, i * 2.0f, 0.0f, 0.0f, i * 2.0f + 1.0f, 1.0f, 1.0f);
   }
   float aTEnter[8]{}, aTLeave[8]{};
-  int   aMask = BVH::SIMD::RayBox8_Scalar(aRay, aBoxes, aTEnter, aTLeave);
+  int   aMask = BVH::SIMD::RayBoxN_Scalar<8>(aRay, aBoxes, aTEnter, aTLeave);
   EXPECT_EQ(aMask, 0);
 }
 
-TEST(BVH_SIMDDispatchTest, ScalarRayBox8_PartialHit_8BitMosaic)
+TEST(BVH_SIMDDispatchTest, ScalarRayBoxN8_PartialHit_8BitMosaic)
 {
   // Even-index lanes hit, odd lanes are offset out of plane.
-  BVH::SIMD::BVH_Ray8f_Splat aRay = MakeRay8Splat(-1.0f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f);
-  BVH::SIMD::BVH_Box8f_SoA   aBoxes{};
+  auto                        aRay = MakeRayNSplat<8>(-1.0f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f);
+  BVH::SIMD::BVH_BoxNf_SoA<8> aBoxes{};
   for (int i = 0; i < 8; ++i)
   {
     const float dy = (i & 1) ? 5.0f : 0.0f;
-    SetBox8(aBoxes, i, i * 2.0f, dy, 0.0f, i * 2.0f + 1.0f, dy + 1.0f, 1.0f);
+    SetBoxN<8>(aBoxes, i, i * 2.0f, dy, 0.0f, i * 2.0f + 1.0f, dy + 1.0f, 1.0f);
   }
   float aTEnter[8]{}, aTLeave[8]{};
-  int   aMask = BVH::SIMD::RayBox8_Scalar(aRay, aBoxes, aTEnter, aTLeave);
+  int   aMask = BVH::SIMD::RayBoxN_Scalar<8>(aRay, aBoxes, aTEnter, aTLeave);
   EXPECT_EQ(aMask, 0b01010101);
 }
 
-TEST(BVH_SIMDDispatchTest, GetRayBox8ReturnsNonNull)
+TEST(BVH_SIMDDispatchTest, GetRayBoxN8ReturnsNonNull)
 {
-  EXPECT_NE(BVH::SIMD::GetRayBox8(), nullptr);
+  EXPECT_NE(BVH::SIMD::GetRayBoxN<8>(), nullptr);
 }

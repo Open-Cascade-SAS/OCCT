@@ -91,8 +91,8 @@ Level detectImpl() noexcept
   __cpuidex(aRegs, 7, 0);
   const bool hasAVX2    = ((aRegs[1] >> 5) & 1) != 0;
   const bool hasAVX512F = ((aRegs[1] >> 16) & 1) != 0;
-  // OS XSAVE bits: bit 1 = SSE, bit 2 = AVX (YMM), bits 5-7 = AVX-512 (opmask, ZMM_Hi256, Hi16_ZMM).
-  // 0xE6 = 0b11100110 covers AVX-512 + AVX + SSE state preservation.
+  // OS XSAVE bits: bit 1 = SSE, bit 2 = AVX (YMM), bits 5-7 = AVX-512 (opmask, ZMM_Hi256,
+  // Hi16_ZMM). 0xE6 = 0b11100110 covers AVX-512 + AVX + SSE state preservation.
   unsigned long long anXcr0 = hasOSXSAVE ? _xgetbv(0) : 0ULL;
   if (hasOSXSAVE && hasAVX512F && (anXcr0 & 0xE6ULL) == 0xE6ULL)
   {
@@ -120,7 +120,9 @@ Level Detect() noexcept
   return sLevel;
 }
 
-//=================================================================================================
+//=============================================================================
+// BVH4 (legacy, untouched by the BVH_WideTree<W> refactor)
+//=============================================================================
 
 int RayBox4_Scalar(const BVH_Ray4f_Splat& theRay,
                    const BVH_Box4f_SoA&   theBoxes,
@@ -205,115 +207,6 @@ int RayBox4_Scalar(const BVH_Ray4f_Splat& theRay,
 
 //=================================================================================================
 
-int RayBox8_Scalar(const BVH_Ray8f_Splat& theRay,
-                   const BVH_Box8f_SoA&   theBoxes,
-                   float*                 theOutTEnter,
-                   float*                 theOutTLeave) noexcept
-{
-  int aMask = 0;
-  for (int i = 0; i < 8; ++i)
-  {
-    float aTEnter = std::numeric_limits<float>::lowest();
-    float aTLeave = (std::numeric_limits<float>::max)();
-    bool  aHit    = true;
-
-    if (std::isinf(theRay.idx[i]))
-    {
-      if (theRay.ox[i] < theBoxes.minX[i] || theRay.ox[i] > theBoxes.maxX[i])
-        aHit = false;
-    }
-    else
-    {
-      const float aT1 = (theBoxes.minX[i] - theRay.ox[i]) * theRay.idx[i];
-      const float aT2 = (theBoxes.maxX[i] - theRay.ox[i]) * theRay.idx[i];
-      aTEnter         = (std::max)(aTEnter, (std::min)(aT1, aT2));
-      aTLeave         = (std::min)(aTLeave, (std::max)(aT1, aT2));
-    }
-
-    if (aHit)
-    {
-      if (std::isinf(theRay.idy[i]))
-      {
-        if (theRay.oy[i] < theBoxes.minY[i] || theRay.oy[i] > theBoxes.maxY[i])
-          aHit = false;
-      }
-      else
-      {
-        const float aT1 = (theBoxes.minY[i] - theRay.oy[i]) * theRay.idy[i];
-        const float aT2 = (theBoxes.maxY[i] - theRay.oy[i]) * theRay.idy[i];
-        aTEnter         = (std::max)(aTEnter, (std::min)(aT1, aT2));
-        aTLeave         = (std::min)(aTLeave, (std::max)(aT1, aT2));
-      }
-    }
-
-    if (aHit)
-    {
-      if (std::isinf(theRay.idz[i]))
-      {
-        if (theRay.oz[i] < theBoxes.minZ[i] || theRay.oz[i] > theBoxes.maxZ[i])
-          aHit = false;
-      }
-      else
-      {
-        const float aT1 = (theBoxes.minZ[i] - theRay.oz[i]) * theRay.idz[i];
-        const float aT2 = (theBoxes.maxZ[i] - theRay.oz[i]) * theRay.idz[i];
-        aTEnter         = (std::max)(aTEnter, (std::min)(aT1, aT2));
-        aTLeave         = (std::min)(aTLeave, (std::max)(aT1, aT2));
-      }
-    }
-
-    if (aHit && aTEnter <= aTLeave && aTLeave >= 0.0f)
-    {
-      theOutTEnter[i] = aTEnter;
-      theOutTLeave[i] = aTLeave;
-      aMask |= (1 << i);
-    }
-    else
-    {
-      theOutTEnter[i] = std::numeric_limits<float>::quiet_NaN();
-      theOutTLeave[i] = std::numeric_limits<float>::quiet_NaN();
-    }
-  }
-  return aMask;
-}
-
-//=================================================================================================
-
-RayBox8_Fn GetRayBox8() noexcept
-{
-  static const RayBox8_Fn sFn = []() noexcept -> RayBox8_Fn {
-    switch (Detect())
-    {
-#if defined(BVH_HAS_AVX512_KERNEL)
-      case Level::AVX512:
-        return &RayBox8_AVX512;
-#endif
-#if defined(BVH_HAS_AVX2_KERNEL)
-      case Level::AVX2:
-  #if !defined(BVH_HAS_AVX512_KERNEL)
-      case Level::AVX512:
-  #endif
-        return &RayBox8_AVX2;
-#endif
-#if defined(BVH_HAS_SSE2_KERNEL)
-      case Level::SSE2:
-  #if !defined(BVH_HAS_AVX2_KERNEL)
-      case Level::AVX2:
-  #endif
-  #if !defined(BVH_HAS_AVX512_KERNEL) && !defined(BVH_HAS_AVX2_KERNEL)
-      case Level::AVX512:
-  #endif
-        return &RayBox8_SSE2;
-#endif
-      default:
-        return &RayBox8_Scalar;
-    }
-  }();
-  return sFn;
-}
-
-//=================================================================================================
-
 RayBox4_Fn GetRayBox4() noexcept
 {
   static const RayBox4_Fn sFn = []() noexcept -> RayBox4_Fn {
@@ -343,6 +236,50 @@ RayBox4_Fn GetRayBox4() noexcept
       default:
         return &RayBox4_Scalar;
     }
+  }();
+  return sFn;
+}
+
+//=============================================================================
+// BVH_WideTree<W> dispatchers
+//
+// One explicit specialization per supported width (W=8, W=16). Each chooses
+// the natural-fit SIMD kernel for that width:
+//   - W=8:  AVX2 (__m256, 8 fp32 lanes match ymm exactly)
+//   - W=16: AVX-512 (__m512, 16 fp32 lanes match zmm exactly) -- to be added
+//                   in a follow-up commit
+// Anything narrower than the natural fit (e.g. SSE2 for W=8) wastes pipeline
+// width via lane-packing loops and was measured to lose to scalar+AVX2 in
+// past benches; anything wider (e.g. AVX-512 for W=8) leaves half the zmm
+// lanes idle. So each W gets exactly one SIMD kernel + scalar fallback.
+//=============================================================================
+
+template <>
+RayBoxN_Fn<8> GetRayBoxN<8>() noexcept
+{
+  static const RayBoxN_Fn<8> sFn = []() noexcept -> RayBoxN_Fn<8> {
+    switch (Detect())
+    {
+#if defined(BVH_HAS_AVX2_KERNEL)
+      case Level::AVX512:
+      case Level::AVX2:
+        return &RayBoxN_AVX2_8;
+#endif
+      default:
+        return &RayBoxN_Scalar<8>;
+    }
+  }();
+  return sFn;
+}
+
+template <>
+RayBoxN_Fn<16> GetRayBoxN<16>() noexcept
+{
+  static const RayBoxN_Fn<16> sFn = []() noexcept -> RayBoxN_Fn<16> {
+    // AVX-512 16-wide kernel will be added in a follow-up commit; until then
+    // the scalar fallback satisfies correctness for any host that opts into
+    // BVH_WideTree<16>.
+    return &RayBoxN_Scalar<16>;
   }();
   return sFn;
 }

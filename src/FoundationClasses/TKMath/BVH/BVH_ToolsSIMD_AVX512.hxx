@@ -47,15 +47,14 @@ namespace SIMD
 //! the FMA form -- because parallel-ray NaN propagation differs between
 //! formulations and the random-consistency tests pin the behaviour to the
 //! scalar reference.
-__attribute__((target("avx512f,avx512vl")))
-inline int RayBox4_AVX512(const BVH_Ray4f_Splat& theRay,
-                          const BVH_Box4f_SoA&   theBoxes,
-                          float*                 theOutTEnter,
-                          float*                 theOutTLeave) noexcept
+__attribute__((target("avx512f,avx512vl"))) inline int RayBox4_AVX512(const BVH_Ray4f_Splat& theRay,
+                                                                      const BVH_Box4f_SoA& theBoxes,
+                                                                      float* theOutTEnter,
+                                                                      float* theOutTLeave) noexcept
 {
-  const __m128 anOx = _mm_loadu_ps(theRay.ox);
-  const __m128 anOy = _mm_loadu_ps(theRay.oy);
-  const __m128 anOz = _mm_loadu_ps(theRay.oz);
+  const __m128 anOx  = _mm_loadu_ps(theRay.ox);
+  const __m128 anOy  = _mm_loadu_ps(theRay.oy);
+  const __m128 anOz  = _mm_loadu_ps(theRay.oz);
   const __m128 anIdx = _mm_loadu_ps(theRay.idx);
   const __m128 anIdy = _mm_loadu_ps(theRay.idy);
   const __m128 anIdz = _mm_loadu_ps(theRay.idz);
@@ -96,61 +95,6 @@ inline int RayBox4_AVX512(const BVH_Ray4f_Splat& theRay,
   _mm_storeu_ps(theOutTEnter, aTEnter);
   _mm_storeu_ps(theOutTLeave, aTLeave);
   return static_cast<int>(aHitMask) & 0xF;
-}
-
-//! AVX-512 BVH8 kernel: 1 ray vs 8 AABBs, __m256 lanes + mask register hit.
-//!
-//! Same slab + sign-based corner select as RayBox8_AVX2, but the final
-//! hit predicate goes straight into a __mmask8 via _mm256_cmp_ps_mask
-//! (AVX-512F + VL), saving the movemask/popcount round-trip the AVX2
-//! path needs. At BVH8 fan-out the saving is small (a couple of cycles)
-//! since the 256-bit lanes are already saturated; for BVH16 with __m512
-//! the same pattern would scale to 16 lanes in one instruction.
-__attribute__((target("avx512f,avx512vl")))
-inline int RayBox8_AVX512(const BVH_Ray8f_Splat& theRay,
-                          const BVH_Box8f_SoA&   theBoxes,
-                          float*                 theOutTEnter,
-                          float*                 theOutTLeave) noexcept
-{
-  const __m256 anOx = _mm256_loadu_ps(theRay.ox);
-  const __m256 anOy = _mm256_loadu_ps(theRay.oy);
-  const __m256 anOz = _mm256_loadu_ps(theRay.oz);
-  const __m256 anIdx = _mm256_loadu_ps(theRay.idx);
-  const __m256 anIdy = _mm256_loadu_ps(theRay.idy);
-  const __m256 anIdz = _mm256_loadu_ps(theRay.idz);
-
-  const __m256 aMinX = _mm256_loadu_ps(theBoxes.minX);
-  const __m256 aMaxX = _mm256_loadu_ps(theBoxes.maxX);
-  const __m256 aMinY = _mm256_loadu_ps(theBoxes.minY);
-  const __m256 aMaxY = _mm256_loadu_ps(theBoxes.maxY);
-  const __m256 aMinZ = _mm256_loadu_ps(theBoxes.minZ);
-  const __m256 aMaxZ = _mm256_loadu_ps(theBoxes.maxZ);
-
-  const __m256 aNearX = _mm256_blendv_ps(aMinX, aMaxX, anIdx);
-  const __m256 aFarX  = _mm256_blendv_ps(aMaxX, aMinX, anIdx);
-  const __m256 aNearY = _mm256_blendv_ps(aMinY, aMaxY, anIdy);
-  const __m256 aFarY  = _mm256_blendv_ps(aMaxY, aMinY, anIdy);
-  const __m256 aNearZ = _mm256_blendv_ps(aMinZ, aMaxZ, anIdz);
-  const __m256 aFarZ  = _mm256_blendv_ps(aMaxZ, aMinZ, anIdz);
-
-  const __m256 aTNearX = _mm256_mul_ps(_mm256_sub_ps(aNearX, anOx), anIdx);
-  const __m256 aTFarX  = _mm256_mul_ps(_mm256_sub_ps(aFarX,  anOx), anIdx);
-  const __m256 aTNearY = _mm256_mul_ps(_mm256_sub_ps(aNearY, anOy), anIdy);
-  const __m256 aTFarY  = _mm256_mul_ps(_mm256_sub_ps(aFarY,  anOy), anIdy);
-  const __m256 aTNearZ = _mm256_mul_ps(_mm256_sub_ps(aNearZ, anOz), anIdz);
-  const __m256 aTFarZ  = _mm256_mul_ps(_mm256_sub_ps(aFarZ,  anOz), anIdz);
-
-  const __m256 aTEnter = _mm256_max_ps(_mm256_max_ps(aTNearY, aTNearZ), aTNearX);
-  const __m256 aTLeave = _mm256_min_ps(_mm256_min_ps(aTFarY,  aTFarZ),  aTFarX);
-
-  // Mask-register comparisons go straight to __mmask8.
-  const __mmask8 aLeaveOk  = _mm256_cmp_ps_mask(aTLeave, _mm256_setzero_ps(), _CMP_GE_OQ);
-  const __mmask8 aIntervOk = _mm256_cmp_ps_mask(aTEnter, aTLeave, _CMP_LE_OQ);
-  const __mmask8 aHitMask  = static_cast<__mmask8>(aLeaveOk & aIntervOk);
-
-  _mm256_storeu_ps(theOutTEnter, aTEnter);
-  _mm256_storeu_ps(theOutTLeave, aTLeave);
-  return static_cast<int>(aHitMask);
 }
 
 #endif // BVH_HAS_AVX512_KERNEL

@@ -16,8 +16,8 @@
 #ifndef _BVH_BinaryTree_Header
 #define _BVH_BinaryTree_Header
 
-#include <BVH_OctTree.hxx>
 #include <BVH_QuadTree.hxx>
+#include <BVH_WideTree.hxx>
 
 #include <deque>
 #include <tuple>
@@ -151,11 +151,15 @@ public: //! @name methods specific to binary BVH
   //! 2-nd level of current tree is kept and the rest are discarded.
   BVH_Tree<T, N, BVH_QuadTree>* CollapseToQuadTree() const;
 
-  //! Collapses the tree into a BVH8 (OBVH) and returns it. Each 3rd level
-  //! of the source tree is preserved while the intermediate levels are
-  //! flattened into a single inner node holding 1..8 children. Built so a
-  //! 1-ray-vs-8-AABB SIMD kernel (RayBox8_AVX2) can saturate __m256 lanes.
-  BVH_Tree<T, N, BVH_OctTree>* CollapseToOctTree() const;
+  //! Collapses the tree into a W-wide BVH (BVH8 for W=8, BVH16 for W=16).
+  //! Each log2(W)-th level of the source tree is preserved while the
+  //! intermediate levels are flattened into a single inner node holding
+  //! 1..W children. Built so the matching SIMD kernel saturates its native
+  //! register width:
+  //!   - W=8  -> BVH8,  RayBoxN_AVX2_8 (__m256, ymm)
+  //!   - W=16 -> BVH16, RayBoxN_AVX512_16 (__m512, zmm)
+  template <int W>
+  BVH_Tree<T, N, BVH_WideTree<W>>* CollapseToWide() const;
 };
 
 namespace BVH
@@ -298,8 +302,9 @@ namespace BVH
 {
 //! Walks down a binary subtree at most theDepth levels and records the nodes
 //! it stops at. A node is recorded if it is a leaf or if the descent depth
-//! reached theDepth. Used by CollapseToOctTree to gather up to 8 representatives
-//! of a 3-level binary subtree as the children of one BVH8 inner node.
+//! reached theDepth. Used by CollapseToWide<W> to gather up to 2^Log2W = W
+//! representatives of a Log2W-level binary subtree as the children of one
+//! wide-BVH inner node.
 template <class T, int N>
 void GatherDescendants(const BVH_Tree<T, N, BVH_BinaryTree>* theTree,
                        const int                             theNode,
@@ -317,13 +322,17 @@ void GatherDescendants(const BVH_Tree<T, N, BVH_BinaryTree>* theTree,
 } // namespace BVH
 
 template <class T, int N>
-BVH_Tree<T, N, BVH_OctTree>* BVH_Tree<T, N, BVH_BinaryTree>::CollapseToOctTree() const
+template <int W>
+BVH_Tree<T, N, BVH_WideTree<W>>* BVH_Tree<T, N, BVH_BinaryTree>::CollapseToWide() const
 {
-  BVH_Tree<T, N, BVH_OctTree>* aOBVH = new BVH_Tree<T, N, BVH_OctTree>;
+  static_assert(W == 8 || W == 16, "CollapseToWide<W> only instantiated for W=8 or W=16");
+  constexpr int kLog2W = BVH_WideTree<W>::Log2W;
+
+  BVH_Tree<T, N, BVH_WideTree<W>>* aWBVH = new BVH_Tree<T, N, BVH_WideTree<W>>;
 
   if (this->Length() == 0)
   {
-    return aOBVH;
+    return aWBVH;
   }
 
   // Each queue entry pairs a source-tree node id with the level it sits at
@@ -334,9 +343,9 @@ BVH_Tree<T, N, BVH_OctTree>* BVH_Tree<T, N, BVH_BinaryTree>::CollapseToOctTree()
   {
     const std::pair<int, int> aNode = aQueue.front();
 
-    BVH::Array<T, N>::Append(aOBVH->myMinPointBuffer,
+    BVH::Array<T, N>::Append(aWBVH->myMinPointBuffer,
                              BVH::Array<T, N>::Value(this->myMinPointBuffer, std::get<0>(aNode)));
-    BVH::Array<T, N>::Append(aOBVH->myMaxPointBuffer,
+    BVH::Array<T, N>::Append(aWBVH->myMaxPointBuffer,
                              BVH::Array<T, N>::Value(this->myMaxPointBuffer, std::get<0>(aNode)));
 
     BVH_Vec4i aNodeInfo;
@@ -349,31 +358,29 @@ BVH_Tree<T, N, BVH_OctTree>* BVH_Tree<T, N, BVH_BinaryTree>::CollapseToOctTree()
     }
     else
     {
-      // Walk 3 binary levels down (or stop early at leaves) to harvest up
-      // to 2^3 = 8 representatives that become the children of this BVH8
-      // inner node.
+      // Walk Log2W binary levels down (or stop early at leaves) to harvest
+      // up to 2^Log2W = W representatives that become the children of this
+      // wide-BVH inner node.
       NCollection_Vector<int> aGrandChildren;
-      BVH::GatherDescendants(this, std::get<0>(aNode), 3, aGrandChildren);
+      BVH::GatherDescendants(this, std::get<0>(aNode), kLog2W, aGrandChildren);
 
       for (int aIdx = 0; aIdx < aGrandChildren.Size(); ++aIdx)
       {
         aQueue.push_back(std::make_pair(aGrandChildren(aIdx), std::get<1>(aNode) + 1));
       }
 
-      aNodeInfo = BVH_Vec4i(0 /* inner flag */,
-                            aNbNodes,
-                            aGrandChildren.Size() - 1,
-                            std::get<1>(aNode));
+      aNodeInfo =
+        BVH_Vec4i(0 /* inner flag */, aNbNodes, aGrandChildren.Size() - 1, std::get<1>(aNode));
 
-      aOBVH->myDepth = (std::max)(aOBVH->myDepth, std::get<1>(aNode) + 1);
+      aWBVH->myDepth = (std::max)(aWBVH->myDepth, std::get<1>(aNode) + 1);
       aNbNodes += aGrandChildren.Size();
     }
 
-    BVH::Array<int, 4>::Append(aOBVH->myNodeInfoBuffer, aNodeInfo);
+    BVH::Array<int, 4>::Append(aWBVH->myNodeInfoBuffer, aNodeInfo);
     aQueue.pop_front();
   }
 
-  return aOBVH;
+  return aWBVH;
 }
 
 #endif // _BVH_BinaryTree_Header

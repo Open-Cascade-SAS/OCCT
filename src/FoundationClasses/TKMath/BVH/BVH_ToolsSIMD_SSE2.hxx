@@ -42,9 +42,9 @@ inline int RayBox4_SSE2(const BVH_Ray4f_Splat& theRay,
                         float*                 theOutTEnter,
                         float*                 theOutTLeave) noexcept
 {
-  const __m128 anOx = _mm_loadu_ps(theRay.ox);
-  const __m128 anOy = _mm_loadu_ps(theRay.oy);
-  const __m128 anOz = _mm_loadu_ps(theRay.oz);
+  const __m128 anOx  = _mm_loadu_ps(theRay.ox);
+  const __m128 anOy  = _mm_loadu_ps(theRay.oy);
+  const __m128 anOz  = _mm_loadu_ps(theRay.oz);
   const __m128 anIdx = _mm_loadu_ps(theRay.idx);
   const __m128 anIdy = _mm_loadu_ps(theRay.idy);
   const __m128 anIdz = _mm_loadu_ps(theRay.idz);
@@ -80,66 +80,11 @@ inline int RayBox4_SSE2(const BVH_Ray4f_Splat& theRay,
   const __m128 aTLeave = _mm_min_ps(_mm_min_ps(aTmaxY, aTmaxZ), aTmaxX);
 
   const __m128 aZero    = _mm_setzero_ps();
-  const __m128 aHitMask = _mm_and_ps(_mm_cmple_ps(aTEnter, aTLeave),
-                                     _mm_cmpge_ps(aTLeave, aZero));
+  const __m128 aHitMask = _mm_and_ps(_mm_cmple_ps(aTEnter, aTLeave), _mm_cmpge_ps(aTLeave, aZero));
 
   _mm_storeu_ps(theOutTEnter, aTEnter);
   _mm_storeu_ps(theOutTLeave, aTLeave);
   return _mm_movemask_ps(aHitMask);
-}
-
-//! SSE2 BVH8 kernel: dispatched twice over the 4-wide kernel.
-//! On its own this saves nothing over running RayBox4 twice from outside,
-//! but it lets the 8-wide dispatcher present a uniform API. AVX2 will
-//! genuinely consume the full 8-lane width with __m256 in a later commit.
-inline int RayBox8_SSE2(const BVH_Ray8f_Splat& theRay,
-                        const BVH_Box8f_SoA&   theBoxes,
-                        float*                 theOutTEnter,
-                        float*                 theOutTLeave) noexcept
-{
-  // Lower half: lanes 0..3 -> reuse RayBox4_SSE2.
-  BVH_Ray4f_Splat aRayLo{};
-  BVH_Box4f_SoA   aBoxLo{};
-  for (int i = 0; i < 4; ++i)
-  {
-    aRayLo.ox[i]  = theRay.ox[i];
-    aRayLo.oy[i]  = theRay.oy[i];
-    aRayLo.oz[i]  = theRay.oz[i];
-    aRayLo.idx[i] = theRay.idx[i];
-    aRayLo.idy[i] = theRay.idy[i];
-    aRayLo.idz[i] = theRay.idz[i];
-
-    aBoxLo.minX[i] = theBoxes.minX[i];
-    aBoxLo.minY[i] = theBoxes.minY[i];
-    aBoxLo.minZ[i] = theBoxes.minZ[i];
-    aBoxLo.maxX[i] = theBoxes.maxX[i];
-    aBoxLo.maxY[i] = theBoxes.maxY[i];
-    aBoxLo.maxZ[i] = theBoxes.maxZ[i];
-  }
-  const int aMaskLo = RayBox4_SSE2(aRayLo, aBoxLo, theOutTEnter, theOutTLeave);
-
-  // Upper half: lanes 4..7.
-  BVH_Ray4f_Splat aRayHi{};
-  BVH_Box4f_SoA   aBoxHi{};
-  for (int i = 0; i < 4; ++i)
-  {
-    aRayHi.ox[i]  = theRay.ox[i + 4];
-    aRayHi.oy[i]  = theRay.oy[i + 4];
-    aRayHi.oz[i]  = theRay.oz[i + 4];
-    aRayHi.idx[i] = theRay.idx[i + 4];
-    aRayHi.idy[i] = theRay.idy[i + 4];
-    aRayHi.idz[i] = theRay.idz[i + 4];
-
-    aBoxHi.minX[i] = theBoxes.minX[i + 4];
-    aBoxHi.minY[i] = theBoxes.minY[i + 4];
-    aBoxHi.minZ[i] = theBoxes.minZ[i + 4];
-    aBoxHi.maxX[i] = theBoxes.maxX[i + 4];
-    aBoxHi.maxY[i] = theBoxes.maxY[i + 4];
-    aBoxHi.maxZ[i] = theBoxes.maxZ[i + 4];
-  }
-  const int aMaskHi = RayBox4_SSE2(aRayHi, aBoxHi, theOutTEnter + 4, theOutTLeave + 4);
-
-  return aMaskLo | (aMaskHi << 4);
 }
 
 #endif // BVH_HAS_SSE2_KERNEL

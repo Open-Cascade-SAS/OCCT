@@ -48,15 +48,14 @@ namespace SIMD
 //! buildable on hosts without AVX2; the dispatcher only routes to this
 //! kernel after runtime CPU detection (BVH_SIMDDispatch::Detect) confirms
 //! AVX2 + OS XSAVE support are present.
-__attribute__((target("avx2,fma")))
-inline int RayBox4_AVX2(const BVH_Ray4f_Splat& theRay,
-                        const BVH_Box4f_SoA&   theBoxes,
-                        float*                 theOutTEnter,
-                        float*                 theOutTLeave) noexcept
+__attribute__((target("avx2,fma"))) inline int RayBox4_AVX2(const BVH_Ray4f_Splat& theRay,
+                                                            const BVH_Box4f_SoA&   theBoxes,
+                                                            float*                 theOutTEnter,
+                                                            float* theOutTLeave) noexcept
 {
-  const __m128 anOx = _mm_loadu_ps(theRay.ox);
-  const __m128 anOy = _mm_loadu_ps(theRay.oy);
-  const __m128 anOz = _mm_loadu_ps(theRay.oz);
+  const __m128 anOx  = _mm_loadu_ps(theRay.ox);
+  const __m128 anOy  = _mm_loadu_ps(theRay.oy);
+  const __m128 anOz  = _mm_loadu_ps(theRay.oz);
   const __m128 anIdx = _mm_loadu_ps(theRay.idx);
   const __m128 anIdy = _mm_loadu_ps(theRay.idy);
   const __m128 anIdz = _mm_loadu_ps(theRay.idz);
@@ -87,8 +86,7 @@ inline int RayBox4_AVX2(const BVH_Ray4f_Splat& theRay,
   const __m128 aTLeave = _mm_min_ps(_mm_min_ps(aTmaxY, aTmaxZ), aTmaxX);
 
   const __m128 aZero    = _mm_setzero_ps();
-  const __m128 aHitMask = _mm_and_ps(_mm_cmple_ps(aTEnter, aTLeave),
-                                     _mm_cmpge_ps(aTLeave, aZero));
+  const __m128 aHitMask = _mm_and_ps(_mm_cmple_ps(aTEnter, aTLeave), _mm_cmpge_ps(aTLeave, aZero));
 
   _mm_storeu_ps(theOutTEnter, aTEnter);
   _mm_storeu_ps(theOutTLeave, aTLeave);
@@ -98,8 +96,8 @@ inline int RayBox4_AVX2(const BVH_Ray4f_Splat& theRay,
 //! AVX2 BVH8 kernel: 1 ray vs 8 AABBs in a single 256-bit pass.
 //!
 //! This is the kernel BVH8 was built for -- __m256 holds all 8 lanes so
-//! the entire fan-out is tested per inner-node visit, where the SSE2
-//! BVH8 kernel needed two 4-wide passes.
+//! the entire fan-out is tested per inner-node visit. Selected by the
+//! W=8 dispatcher (BVH::SIMD::GetRayBoxN<8>()) on AVX2-capable hosts.
 //!
 //! Optimisation: tavianator's sign-based corner select. The slab method
 //! normally computes (min - origin)*invDir AND (max - origin)*invDir then
@@ -114,15 +112,14 @@ inline int RayBox4_AVX2(const BVH_Ray4f_Splat& theRay,
 //! still relies on the "min/max returns the second operand on NaN" SSE
 //! semantics, with the same operand ordering as SSE2 so the parallel-axis
 //! NaN gets absorbed by the finite results of the other two axes.
-__attribute__((target("avx2")))
-inline int RayBox8_AVX2(const BVH_Ray8f_Splat& theRay,
-                        const BVH_Box8f_SoA&   theBoxes,
-                        float*                 theOutTEnter,
-                        float*                 theOutTLeave) noexcept
+__attribute__((target("avx2"))) inline int RayBoxN_AVX2_8(const BVH_RayNf_Splat<8>& theRay,
+                                                          const BVH_BoxNf_SoA<8>&   theBoxes,
+                                                          float*                    theOutTEnter,
+                                                          float* theOutTLeave) noexcept
 {
-  const __m256 anOx = _mm256_loadu_ps(theRay.ox);
-  const __m256 anOy = _mm256_loadu_ps(theRay.oy);
-  const __m256 anOz = _mm256_loadu_ps(theRay.oz);
+  const __m256 anOx  = _mm256_loadu_ps(theRay.ox);
+  const __m256 anOy  = _mm256_loadu_ps(theRay.oy);
+  const __m256 anOz  = _mm256_loadu_ps(theRay.oz);
   const __m256 anIdx = _mm256_loadu_ps(theRay.idx);
   const __m256 anIdy = _mm256_loadu_ps(theRay.idy);
   const __m256 anIdz = _mm256_loadu_ps(theRay.idz);
@@ -145,17 +142,17 @@ inline int RayBox8_AVX2(const BVH_Ray8f_Splat& theRay,
   const __m256 aFarZ  = _mm256_blendv_ps(aMaxZ, aMinZ, anIdz);
 
   const __m256 aTNearX = _mm256_mul_ps(_mm256_sub_ps(aNearX, anOx), anIdx);
-  const __m256 aTFarX  = _mm256_mul_ps(_mm256_sub_ps(aFarX,  anOx), anIdx);
+  const __m256 aTFarX  = _mm256_mul_ps(_mm256_sub_ps(aFarX, anOx), anIdx);
   const __m256 aTNearY = _mm256_mul_ps(_mm256_sub_ps(aNearY, anOy), anIdy);
-  const __m256 aTFarY  = _mm256_mul_ps(_mm256_sub_ps(aFarY,  anOy), anIdy);
+  const __m256 aTFarY  = _mm256_mul_ps(_mm256_sub_ps(aFarY, anOy), anIdy);
   const __m256 aTNearZ = _mm256_mul_ps(_mm256_sub_ps(aNearZ, anOz), anIdz);
-  const __m256 aTFarZ  = _mm256_mul_ps(_mm256_sub_ps(aFarZ,  anOz), anIdz);
+  const __m256 aTFarZ  = _mm256_mul_ps(_mm256_sub_ps(aFarZ, anOz), anIdz);
 
   // Operand order matches the SSE2 kernel so NaN propagation is identical:
   // a parallel-axis NaN gets dominated by the finite results of the other
   // two axes via the "min/max returns the second operand on NaN" rule.
   const __m256 aTEnter = _mm256_max_ps(_mm256_max_ps(aTNearY, aTNearZ), aTNearX);
-  const __m256 aTLeave = _mm256_min_ps(_mm256_min_ps(aTFarY,  aTFarZ),  aTFarX);
+  const __m256 aTLeave = _mm256_min_ps(_mm256_min_ps(aTFarY, aTFarZ), aTFarX);
 
   const __m256 aZero    = _mm256_setzero_ps();
   const __m256 aHitMask = _mm256_and_ps(_mm256_cmp_ps(aTEnter, aTLeave, _CMP_LE_OQ),

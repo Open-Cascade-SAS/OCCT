@@ -19,7 +19,6 @@ set(OCCT_BVH_FILES
   BVH_IndexedBoxSet.hxx
   BVH_LinearBuilder.hxx
   BVH_Object.hxx
-  BVH_OctTree.hxx
   BVH_ObjectSet.hxx
   BVH_PairDistance.hxx
   BVH_PrimitiveSet.hxx
@@ -42,11 +41,12 @@ set(OCCT_BVH_FILES
   BVH_Tools.hxx
   BVH_Traverse.hxx
   BVH_Traverse.lxx
-  BVH_TraverseOct.hxx
   BVH_TraverseQuad.hxx
+  BVH_TraverseWide.hxx
   BVH_Tree.hxx
   BVH_BinaryTree.hxx
   BVH_QuadTree.hxx
+  BVH_WideTree.hxx
   BVH_Triangulation.hxx
   BVH_Types.hxx
 )

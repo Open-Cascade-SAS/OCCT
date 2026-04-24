@@ -209,11 +209,11 @@ TEST(BVH_ToolsSIMDTest, SSE2_RandomConsistencyVsScalar)
 namespace
 {
 
-BVH::SIMD::BVH_Ray8f_Splat MakeRay8(float ox, float oy, float oz,
-                                    float dx, float dy, float dz)
+template <int W>
+BVH::SIMD::BVH_RayNf_Splat<W> MakeRayN(float ox, float oy, float oz, float dx, float dy, float dz)
 {
-  BVH::SIMD::BVH_Ray8f_Splat aRay{};
-  for (int i = 0; i < 8; ++i)
+  BVH::SIMD::BVH_RayNf_Splat<W> aRay{};
+  for (int i = 0; i < W; ++i)
   {
     aRay.ox[i]  = ox;
     aRay.oy[i]  = oy;
@@ -225,66 +225,28 @@ BVH::SIMD::BVH_Ray8f_Splat MakeRay8(float ox, float oy, float oz,
   return aRay;
 }
 
-void SetBox8(BVH::SIMD::BVH_Box8f_SoA& theBoxes, int i,
-             float minx, float miny, float minz,
-             float maxx, float maxy, float maxz)
+template <int W>
+void SetBoxN(BVH::SIMD::BVH_BoxNf_SoA<W>& theBoxes,
+             int                          i,
+             float                        minx,
+             float                        miny,
+             float                        minz,
+             float                        maxx,
+             float                        maxy,
+             float                        maxz)
 {
-  theBoxes.minX[i] = minx; theBoxes.minY[i] = miny; theBoxes.minZ[i] = minz;
-  theBoxes.maxX[i] = maxx; theBoxes.maxY[i] = maxy; theBoxes.maxZ[i] = maxz;
+  theBoxes.minX[i] = minx;
+  theBoxes.minY[i] = miny;
+  theBoxes.minZ[i] = minz;
+  theBoxes.maxX[i] = maxx;
+  theBoxes.maxY[i] = maxy;
+  theBoxes.maxZ[i] = maxz;
 }
 
 } // namespace
 
-#if defined(BVH_HAS_AVX512_KERNEL)
-TEST(BVH_ToolsSIMDTest, AVX512_RayBox8_RandomConsistencyVsScalar)
-{
-  if (BVH::SIMD::Detect() < BVH::SIMD::Level::AVX512)
-  {
-    GTEST_SKIP() << "AVX-512 not supported on this CPU";
-  }
-  std::mt19937                          aGen(0xCAFE5512u);
-  std::uniform_real_distribution<float> aPos(-10.0f, 10.0f);
-  std::uniform_real_distribution<float> aSize(0.1f, 5.0f);
-  std::uniform_real_distribution<float> aDir(-1.0f, 1.0f);
-
-  constexpr int   kNumCases = 500;
-  constexpr float kEps      = 1.0e-3f;
-
-  for (int aCase = 0; aCase < kNumCases; ++aCase)
-  {
-    float dx = aDir(aGen), dy = aDir(aGen), dz = aDir(aGen);
-    if (std::abs(dx) < 1.0e-3f && std::abs(dy) < 1.0e-3f && std::abs(dz) < 1.0e-3f)
-      dx = 1.0f;
-    BVH::SIMD::BVH_Ray8f_Splat aRay = MakeRay8(aPos(aGen), aPos(aGen), aPos(aGen), dx, dy, dz);
-
-    BVH::SIMD::BVH_Box8f_SoA aBoxes{};
-    for (int k = 0; k < 8; ++k)
-    {
-      const float cx = aPos(aGen), cy = aPos(aGen), cz = aPos(aGen);
-      const float sx = aSize(aGen), sy = aSize(aGen), sz = aSize(aGen);
-      SetBox8(aBoxes, k, cx - sx, cy - sy, cz - sz, cx + sx, cy + sy, cz + sz);
-    }
-
-    float aSEnter[8]{}, aSLeave[8]{};
-    int   aSMask = BVH::SIMD::RayBox8_Scalar(aRay, aBoxes, aSEnter, aSLeave);
-    float aTEnter[8]{}, aTLeave[8]{};
-    int   aTMask = BVH::SIMD::RayBox8_AVX512(aRay, aBoxes, aTEnter, aTLeave);
-
-    EXPECT_EQ(aSMask, aTMask) << "RayBox8 AVX-512 case " << aCase << " mask mismatch";
-    for (int i = 0; i < 8; ++i)
-    {
-      if (((aSMask >> i) & 1) && ((aTMask >> i) & 1))
-      {
-        EXPECT_NEAR(aSEnter[i], aTEnter[i], kEps);
-        EXPECT_NEAR(aSLeave[i], aTLeave[i], kEps);
-      }
-    }
-  }
-}
-#endif // BVH_HAS_AVX512_KERNEL
-
-#if defined(BVH_HAS_AVX2_KERNEL)
-TEST(BVH_ToolsSIMDTest, AVX2_RayBox8_RandomConsistencyVsScalar)
+  #if defined(BVH_HAS_AVX2_KERNEL)
+TEST(BVH_ToolsSIMDTest, AVX2_RayBoxN8_RandomConsistencyVsScalar)
 {
   if (BVH::SIMD::Detect() < BVH::SIMD::Level::AVX2)
   {
@@ -303,22 +265,22 @@ TEST(BVH_ToolsSIMDTest, AVX2_RayBox8_RandomConsistencyVsScalar)
     float dx = aDir(aGen), dy = aDir(aGen), dz = aDir(aGen);
     if (std::abs(dx) < 1.0e-3f && std::abs(dy) < 1.0e-3f && std::abs(dz) < 1.0e-3f)
       dx = 1.0f;
-    BVH::SIMD::BVH_Ray8f_Splat aRay = MakeRay8(aPos(aGen), aPos(aGen), aPos(aGen), dx, dy, dz);
+    auto aRay = MakeRayN<8>(aPos(aGen), aPos(aGen), aPos(aGen), dx, dy, dz);
 
-    BVH::SIMD::BVH_Box8f_SoA aBoxes{};
+    BVH::SIMD::BVH_BoxNf_SoA<8> aBoxes{};
     for (int k = 0; k < 8; ++k)
     {
       const float cx = aPos(aGen), cy = aPos(aGen), cz = aPos(aGen);
       const float sx = aSize(aGen), sy = aSize(aGen), sz = aSize(aGen);
-      SetBox8(aBoxes, k, cx - sx, cy - sy, cz - sz, cx + sx, cy + sy, cz + sz);
+      SetBoxN<8>(aBoxes, k, cx - sx, cy - sy, cz - sz, cx + sx, cy + sy, cz + sz);
     }
 
     float aSEnter[8]{}, aSLeave[8]{};
-    int   aSMask = BVH::SIMD::RayBox8_Scalar(aRay, aBoxes, aSEnter, aSLeave);
+    int   aSMask = BVH::SIMD::RayBoxN_Scalar<8>(aRay, aBoxes, aSEnter, aSLeave);
     float aTEnter[8]{}, aTLeave[8]{};
-    int   aTMask = BVH::SIMD::RayBox8_AVX2(aRay, aBoxes, aTEnter, aTLeave);
+    int   aTMask = BVH::SIMD::RayBoxN_AVX2_8(aRay, aBoxes, aTEnter, aTLeave);
 
-    EXPECT_EQ(aSMask, aTMask) << "RayBox8 AVX2 case " << aCase << " mask mismatch";
+    EXPECT_EQ(aSMask, aTMask) << "RayBoxN<8> AVX2 case " << aCase << " mask mismatch";
     for (int i = 0; i < 8; ++i)
     {
       if (((aSMask >> i) & 1) && ((aTMask >> i) & 1))
@@ -329,49 +291,7 @@ TEST(BVH_ToolsSIMDTest, AVX2_RayBox8_RandomConsistencyVsScalar)
     }
   }
 }
-#endif // BVH_HAS_AVX2_KERNEL
-
-TEST(BVH_ToolsSIMDTest, SSE2_RayBox8_RandomConsistencyVsScalar)
-{
-  std::mt19937                          aGen(0xBEEF8888u);
-  std::uniform_real_distribution<float> aPos(-10.0f, 10.0f);
-  std::uniform_real_distribution<float> aSize(0.1f, 5.0f);
-  std::uniform_real_distribution<float> aDir(-1.0f, 1.0f);
-
-  constexpr int   kNumCases = 500;
-  constexpr float kEps      = 1.0e-3f;
-
-  for (int aCase = 0; aCase < kNumCases; ++aCase)
-  {
-    float dx = aDir(aGen), dy = aDir(aGen), dz = aDir(aGen);
-    if (std::abs(dx) < 1.0e-3f && std::abs(dy) < 1.0e-3f && std::abs(dz) < 1.0e-3f)
-      dx = 1.0f;
-    BVH::SIMD::BVH_Ray8f_Splat aRay = MakeRay8(aPos(aGen), aPos(aGen), aPos(aGen), dx, dy, dz);
-
-    BVH::SIMD::BVH_Box8f_SoA aBoxes{};
-    for (int k = 0; k < 8; ++k)
-    {
-      const float cx = aPos(aGen), cy = aPos(aGen), cz = aPos(aGen);
-      const float sx = aSize(aGen), sy = aSize(aGen), sz = aSize(aGen);
-      SetBox8(aBoxes, k, cx - sx, cy - sy, cz - sz, cx + sx, cy + sy, cz + sz);
-    }
-
-    float aSEnter[8]{}, aSLeave[8]{};
-    int   aSMask = BVH::SIMD::RayBox8_Scalar(aRay, aBoxes, aSEnter, aSLeave);
-    float aTEnter[8]{}, aTLeave[8]{};
-    int   aTMask = BVH::SIMD::RayBox8_SSE2(aRay, aBoxes, aTEnter, aTLeave);
-
-    EXPECT_EQ(aSMask, aTMask) << "RayBox8 SSE2 case " << aCase << " mask mismatch";
-    for (int i = 0; i < 8; ++i)
-    {
-      if (((aSMask >> i) & 1) && ((aTMask >> i) & 1))
-      {
-        EXPECT_NEAR(aSEnter[i], aTEnter[i], kEps);
-        EXPECT_NEAR(aSLeave[i], aTLeave[i], kEps);
-      }
-    }
-  }
-}
+  #endif // BVH_HAS_AVX2_KERNEL
 
 TEST(BVH_ToolsSIMDTest, Dispatch_PrefersBestKernelOnX86)
 {

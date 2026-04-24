@@ -13,10 +13,10 @@
 
 #include <gtest/gtest.h>
 
-#include <BVH_OctTree.hxx>
 #include <BVH_Ray.hxx>
-#include <BVH_TraverseOct.hxx>
+#include <BVH_TraverseWide.hxx>
 #include <BVH_Tree.hxx>
+#include <BVH_WideTree.hxx>
 
 #include <set>
 
@@ -24,10 +24,10 @@ namespace
 {
 
 //! Builds a flat BVH8 with one inner root and eight leaf children.
-opencascade::handle<BVH_Tree<float, 3, BVH_OctTree>> MakeFlatOBVH(const BVH_Vec3f mins[8],
-                                                                  const BVH_Vec3f maxs[8])
+opencascade::handle<BVH_Tree<float, 3, BVH_WideTree<8>>> MakeFlatWBVH8(const BVH_Vec3f mins[8],
+                                                                       const BVH_Vec3f maxs[8])
 {
-  auto aTree = new BVH_Tree<float, 3, BVH_OctTree>;
+  auto aTree = new BVH_Tree<float, 3, BVH_WideTree<8>>;
 
   BVH_Vec3f aRootMin = mins[0];
   BVH_Vec3f aRootMax = maxs[0];
@@ -59,22 +59,23 @@ opencascade::handle<BVH_Tree<float, 3, BVH_OctTree>> MakeFlatOBVH(const BVH_Vec3
 struct CollectingAcceptor
 {
   std::set<int>* hits;
-  void           operator()(int thePrim, float /*tEnter*/) const { hits->insert(thePrim); }
+
+  void operator()(int thePrim, float /*tEnter*/) const { hits->insert(thePrim); }
 };
 
 } // namespace
 
-TEST(BVH_TraverseOctTest, EmptyTree_NoHits)
+TEST(BVH_TraverseWide8Test, EmptyTree_NoHits)
 {
-  opencascade::handle<BVH_Tree<float, 3, BVH_OctTree>> aTree;
-  BVH_Ray<float, 3>                                    aRay(BVH_Vec3f(0, 0, 0), BVH_Vec3f(1, 0, 0));
-  std::set<int>                                        aHits;
-  CollectingAcceptor                                   aAcc{&aHits};
-  BVH::SIMD::TraverseOct(aTree, aRay, aAcc);
+  opencascade::handle<BVH_Tree<float, 3, BVH_WideTree<8>>> aTree;
+  BVH_Ray<float, 3>  aRay(BVH_Vec3f(0, 0, 0), BVH_Vec3f(1, 0, 0));
+  std::set<int>      aHits;
+  CollectingAcceptor aAcc{&aHits};
+  BVH::SIMD::TraverseWide<8>(aTree, aRay, aAcc);
   EXPECT_TRUE(aHits.empty());
 }
 
-TEST(BVH_TraverseOctTest, FlatRoot_AllEightHit)
+TEST(BVH_TraverseWide8Test, FlatRoot_AllEightHit)
 {
   // 8 unit boxes along +X. Ray on Y=0.5, Z=0.5 hits every one.
   BVH_Vec3f aMins[8], aMaxs[8];
@@ -83,16 +84,16 @@ TEST(BVH_TraverseOctTest, FlatRoot_AllEightHit)
     aMins[i] = BVH_Vec3f(i * 2.0f, 0.0f, 0.0f);
     aMaxs[i] = BVH_Vec3f(i * 2.0f + 1.0f, 1.0f, 1.0f);
   }
-  auto aTree = MakeFlatOBVH(aMins, aMaxs);
+  auto aTree = MakeFlatWBVH8(aMins, aMaxs);
 
   BVH_Ray<float, 3>  aRay(BVH_Vec3f(-1, 0.5f, 0.5f), BVH_Vec3f(1, 0, 0));
   std::set<int>      aHits;
   CollectingAcceptor aAcc{&aHits};
-  BVH::SIMD::TraverseOct(aTree, aRay, aAcc);
+  BVH::SIMD::TraverseWide<8>(aTree, aRay, aAcc);
   EXPECT_EQ(aHits, std::set<int>({0, 1, 2, 3, 4, 5, 6, 7}));
 }
 
-TEST(BVH_TraverseOctTest, FlatRoot_AllMiss)
+TEST(BVH_TraverseWide8Test, FlatRoot_AllMiss)
 {
   BVH_Vec3f aMins[8], aMaxs[8];
   for (int i = 0; i < 8; ++i)
@@ -100,35 +101,35 @@ TEST(BVH_TraverseOctTest, FlatRoot_AllMiss)
     aMins[i] = BVH_Vec3f(i * 2.0f, 0.0f, 0.0f);
     aMaxs[i] = BVH_Vec3f(i * 2.0f + 1.0f, 1.0f, 1.0f);
   }
-  auto aTree = MakeFlatOBVH(aMins, aMaxs);
+  auto aTree = MakeFlatWBVH8(aMins, aMaxs);
 
   BVH_Ray<float, 3>  aRay(BVH_Vec3f(-1, 5.0f, 0.5f), BVH_Vec3f(1, 0, 0));
   std::set<int>      aHits;
   CollectingAcceptor aAcc{&aHits};
-  BVH::SIMD::TraverseOct(aTree, aRay, aAcc);
+  BVH::SIMD::TraverseWide<8>(aTree, aRay, aAcc);
   EXPECT_TRUE(aHits.empty());
 }
 
-TEST(BVH_TraverseOctTest, FlatRoot_8BitMosaic)
+TEST(BVH_TraverseWide8Test, FlatRoot_8BitMosaic)
 {
   // Even-index lanes hit, odd lanes are offset out of plane.
   BVH_Vec3f aMins[8], aMaxs[8];
   for (int i = 0; i < 8; ++i)
   {
     const float dy = (i & 1) ? 5.0f : 0.0f;
-    aMins[i] = BVH_Vec3f(i * 2.0f, dy, 0.0f);
-    aMaxs[i] = BVH_Vec3f(i * 2.0f + 1.0f, dy + 1.0f, 1.0f);
+    aMins[i]       = BVH_Vec3f(i * 2.0f, dy, 0.0f);
+    aMaxs[i]       = BVH_Vec3f(i * 2.0f + 1.0f, dy + 1.0f, 1.0f);
   }
-  auto aTree = MakeFlatOBVH(aMins, aMaxs);
+  auto aTree = MakeFlatWBVH8(aMins, aMaxs);
 
   BVH_Ray<float, 3>  aRay(BVH_Vec3f(-1, 0.5f, 0.5f), BVH_Vec3f(1, 0, 0));
   std::set<int>      aHits;
   CollectingAcceptor aAcc{&aHits};
-  BVH::SIMD::TraverseOct(aTree, aRay, aAcc);
+  BVH::SIMD::TraverseWide<8>(aTree, aRay, aAcc);
   EXPECT_EQ(aHits, std::set<int>({0, 2, 4, 6}));
 }
 
-TEST(BVH_TraverseOctTest, FlatRoot_RayBehindAllBoxes)
+TEST(BVH_TraverseWide8Test, FlatRoot_RayBehindAllBoxes)
 {
   BVH_Vec3f aMins[8], aMaxs[8];
   for (int i = 0; i < 8; ++i)
@@ -136,12 +137,12 @@ TEST(BVH_TraverseOctTest, FlatRoot_RayBehindAllBoxes)
     aMins[i] = BVH_Vec3f(i * 2.0f, 0.0f, 0.0f);
     aMaxs[i] = BVH_Vec3f(i * 2.0f + 1.0f, 1.0f, 1.0f);
   }
-  auto aTree = MakeFlatOBVH(aMins, aMaxs);
+  auto aTree = MakeFlatWBVH8(aMins, aMaxs);
 
   // Origin past every box, ray towards +X => tLeave < 0 for every lane.
   BVH_Ray<float, 3>  aRay(BVH_Vec3f(20, 0.5f, 0.5f), BVH_Vec3f(1, 0, 0));
   std::set<int>      aHits;
   CollectingAcceptor aAcc{&aHits};
-  BVH::SIMD::TraverseOct(aTree, aRay, aAcc);
+  BVH::SIMD::TraverseWide<8>(aTree, aRay, aAcc);
   EXPECT_TRUE(aHits.empty());
 }
