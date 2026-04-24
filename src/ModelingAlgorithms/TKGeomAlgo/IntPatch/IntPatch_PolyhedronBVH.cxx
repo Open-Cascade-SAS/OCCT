@@ -192,7 +192,7 @@ void IntPatch_PolyhedronBVH::Swap(const int theIndex1, const int theIndex2)
 
 int IntPatch_PolyhedronBVH::OriginalIndex(const int theIndex) const
 {
-  if (theIndex < 0 || theIndex >= myIndexMap.Size())
+  if (theIndex < 0 || theIndex >= static_cast<int>(myIndexMap.Size()))
   {
     return 0;
   }
