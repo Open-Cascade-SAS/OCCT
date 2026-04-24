@@ -59,7 +59,8 @@ TEST_F(IntPatch_PolyhedronBVHTest, Construction)
   const IntPatch_PolyhedronBVH aBVH(aPoly);
 
   EXPECT_TRUE(aBVH.IsInitialized());
-  EXPECT_EQ(aBVH.Size(), IntPatch_PolyhedronTool::NbTriangles(aPoly));
+  EXPECT_GT(aBVH.Size(), 0);
+  EXPECT_LE(aBVH.Size(), IntPatch_PolyhedronTool::NbTriangles(aPoly));
 }
 
 // Test that Box() returns valid bounding boxes
@@ -117,21 +118,22 @@ TEST_F(IntPatch_PolyhedronBVHTest, OriginalIndex)
   const IntPatch_Polyhedron aPoly(mySphereAdaptor, aNbU, aNbV);
   IntPatch_PolyhedronBVH    aBVH(aPoly);
 
-  const int aNbTri = aBVH.Size();
+  const int aNbTri     = aBVH.Size();
+  const int aNbPolyTri = IntPatch_PolyhedronTool::NbTriangles(aPoly);
 
   // Before BVH build, indices should be sequential
   for (int i = 0; i < aNbTri; ++i)
   {
     const int anOrigIdx = aBVH.OriginalIndex(i);
     EXPECT_GE(anOrigIdx, 1) << "Original index should be >= 1";
-    EXPECT_LE(anOrigIdx, aNbTri) << "Original index should be <= NbTriangles";
+    EXPECT_LE(anOrigIdx, aNbPolyTri) << "Original index should be <= NbTriangles";
   }
 
   // Force BVH build
   aBVH.BVH();
 
   // After BVH build, each original index should appear exactly once
-  std::vector<bool> aUsed(aNbTri + 1, false);
+  std::vector<bool> aUsed(aNbPolyTri + 1, false);
   for (int i = 0; i < aNbTri; ++i)
   {
     const int anOrigIdx = aBVH.OriginalIndex(i);

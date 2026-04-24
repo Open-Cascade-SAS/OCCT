@@ -13,6 +13,7 @@
 
 #include <IntPatch_PolyhedronBVH.hxx>
 
+#include <Bnd_Box.hxx>
 #include <IntPatch_Polyhedron.hxx>
 #include <IntPatch_PolyhedronTool.hxx>
 #include <gp_Pnt.hxx>
@@ -25,10 +26,8 @@ IntPatch_PolyhedronBVH::IntPatch_PolyhedronBVH()
     : BVH_PrimitiveSet<double, 3>(
         new BVH_LinearBuilder<double, 3>(BVH_Constants_LeafNodeSizeDefault,
                                          BVH_Constants_MaxTreeDepth)),
-      myPoly(nullptr),
-      myIndexMap(1, 1)
+      myPoly(nullptr)
 {
-  myIndexMap.Init(0);
 }
 
 //==================================================================================================
@@ -37,10 +36,8 @@ IntPatch_PolyhedronBVH::IntPatch_PolyhedronBVH(const IntPatch_Polyhedron& thePol
     : BVH_PrimitiveSet<double, 3>(
         new BVH_LinearBuilder<double, 3>(BVH_Constants_LeafNodeSizeDefault,
                                          BVH_Constants_MaxTreeDepth)),
-      myPoly(nullptr),
-      myIndexMap(1, 1)
+      myPoly(nullptr)
 {
-  myIndexMap.Init(0);
   Init(thePoly);
 }
 
@@ -59,19 +56,20 @@ void IntPatch_PolyhedronBVH::Init(const IntPatch_Polyhedron& thePoly)
 
   const int aNbTriangles = IntPatch_PolyhedronTool::NbTriangles(thePoly);
 
-  // Initialize index mapping: 0-based index -> 1-based original index
-  if (aNbTriangles > 0)
+  // Filter out degenerate triangles (those with void component bounding boxes)
+  // by only including triangles with valid boxes in the index mapping.
+  // This matches the behavior of the former Bnd_BoundSortBox-based approach,
+  // which never matched void boxes.
+  const occ::handle<NCollection_HArray1<Bnd_Box>>& aCompBnd =
+    IntPatch_PolyhedronTool::ComponentsBounding(thePoly);
+
+  myIndexMap.Clear();
+  for (int anIdx = 1; anIdx <= aNbTriangles; ++anIdx)
   {
-    myIndexMap.Resize(0, aNbTriangles - 1, false);
-    for (int anIdx = 0; anIdx < aNbTriangles; ++anIdx)
+    if (!aCompBnd->Value(anIdx).IsVoid())
     {
-      myIndexMap.SetValue(anIdx, anIdx + 1); // Map to 1-based index
+      myIndexMap.Append(anIdx); // Store 1-based original index
     }
-  }
-  else
-  {
-    myIndexMap.Resize(0, 0, false);
-    myIndexMap.SetValue(0, 0);
   }
 
   // Mark as dirty to trigger BVH rebuild
@@ -83,8 +81,7 @@ void IntPatch_PolyhedronBVH::Init(const IntPatch_Polyhedron& thePoly)
 void IntPatch_PolyhedronBVH::Clear()
 {
   myPoly = nullptr;
-  myIndexMap.Resize(0, 0, false);
-  myIndexMap.SetValue(0, 0);
+  myIndexMap.Clear();
   MarkDirty();
 }
 
@@ -96,7 +93,7 @@ int IntPatch_PolyhedronBVH::Size() const
   {
     return 0;
   }
-  return IntPatch_PolyhedronTool::NbTriangles(*myPoly);
+  return static_cast<int>(myIndexMap.Size());
 }
 
 //==================================================================================================
@@ -113,27 +110,19 @@ BVH_Box<double, 3> IntPatch_PolyhedronBVH::Box(const int theIndex) const
   // Get original 1-based triangle index
   const int anOrigIdx = myIndexMap.Value(theIndex);
 
-  // Get triangle vertex indices
-  int aP1, aP2, aP3;
-  IntPatch_PolyhedronTool::Triangle(*myPoly, anOrigIdx, aP1, aP2, aP3);
+  // Use pre-computed component bounding boxes from the polyhedron.
+  // These boxes include deflection enlargement, matching the behavior
+  // of the former Bnd_BoundSortBox-based approach. Degenerate triangles
+  // (with void boxes) are already excluded during Init().
+  const occ::handle<NCollection_HArray1<Bnd_Box>>& aCompBnd =
+    IntPatch_PolyhedronTool::ComponentsBounding(*myPoly);
+  const Bnd_Box& aBndBox = aCompBnd->Value(anOrigIdx);
 
-  // Get vertex coordinates
-  const gp_Pnt& aPnt1 = IntPatch_PolyhedronTool::Point(*myPoly, aP1);
-  const gp_Pnt& aPnt2 = IntPatch_PolyhedronTool::Point(*myPoly, aP2);
-  const gp_Pnt& aPnt3 = IntPatch_PolyhedronTool::Point(*myPoly, aP3);
+  double aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
+  aBndBox.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
 
-  // Compute min corner
-  const double aMinX = std::min({aPnt1.X(), aPnt2.X(), aPnt3.X()});
-  const double aMinY = std::min({aPnt1.Y(), aPnt2.Y(), aPnt3.Y()});
-  const double aMinZ = std::min({aPnt1.Z(), aPnt2.Z(), aPnt3.Z()});
-
-  // Compute max corner
-  const double aMaxX = std::max({aPnt1.X(), aPnt2.X(), aPnt3.X()});
-  const double aMaxY = std::max({aPnt1.Y(), aPnt2.Y(), aPnt3.Y()});
-  const double aMaxZ = std::max({aPnt1.Z(), aPnt2.Z(), aPnt3.Z()});
-
-  aBox.Add(BVH_Vec3d(aMinX, aMinY, aMinZ));
-  aBox.Add(BVH_Vec3d(aMaxX, aMaxY, aMaxZ));
+  aBox.Add(BVH_Vec3d(aXmin, aYmin, aZmin));
+  aBox.Add(BVH_Vec3d(aXmax, aYmax, aZmax));
 
   return aBox;
 }
@@ -192,7 +181,7 @@ void IntPatch_PolyhedronBVH::Swap(const int theIndex1, const int theIndex2)
 
 int IntPatch_PolyhedronBVH::OriginalIndex(const int theIndex) const
 {
-  if (theIndex < 0 || theIndex >= static_cast<int>(myIndexMap.Size()))
+  if (theIndex < 0 || theIndex >= Size())
   {
     return 0;
   }
