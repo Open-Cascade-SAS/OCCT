@@ -17,7 +17,7 @@
 #include <BRepGraph_Layer.hxx>
 
 #include <NCollection_DataMap.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <gp_Pnt2d.hxx>
 
 //! @brief Stores vertex-on-curve, vertex-on-surface, and vertex-on-PCurve bindings.
@@ -51,9 +51,9 @@ public:
 
   struct VertexParams
   {
-    NCollection_Vector<PointOnCurveEntry>   PointsOnCurve;
-    NCollection_Vector<PointOnSurfaceEntry> PointsOnSurface;
-    NCollection_Vector<PointOnPCurveEntry>  PointsOnPCurve;
+    NCollection_DynamicArray<PointOnCurveEntry>   PointsOnCurve;
+    NCollection_DynamicArray<PointOnSurfaceEntry> PointsOnSurface;
+    NCollection_DynamicArray<PointOnPCurveEntry>  PointsOnPCurve;
 
     [[nodiscard]] bool IsEmpty() const
     {
@@ -98,7 +98,7 @@ public:
   [[nodiscard]] Standard_EXPORT int              SubscribedKinds() const override;
   Standard_EXPORT void OnNodeModified(const BRepGraph_NodeId theNode) noexcept override;
   Standard_EXPORT void OnNodesModified(
-    const NCollection_Vector<BRepGraph_NodeId>& theModifiedNodes) noexcept override;
+    const NCollection_DynamicArray<BRepGraph_NodeId>& theModifiedNodes) noexcept override;
   Standard_EXPORT void OnNodeRemoved(const BRepGraph_NodeId theNode,
                                      const BRepGraph_NodeId theReplacement) noexcept override;
   Standard_EXPORT void OnCompact(
@@ -140,10 +140,12 @@ private:
                            const BRepGraph_CoEdgeId theCoEdge) noexcept;
 
 private:
-  NCollection_DataMap<BRepGraph_VertexId, VertexParams>                         myVertexParams;
-  NCollection_DataMap<BRepGraph_EdgeId, NCollection_Vector<BRepGraph_VertexId>> myEdgeToVertices;
-  NCollection_DataMap<BRepGraph_FaceId, NCollection_Vector<BRepGraph_VertexId>> myFaceToVertices;
-  NCollection_DataMap<BRepGraph_CoEdgeId, NCollection_Vector<BRepGraph_VertexId>>
+  NCollection_DataMap<BRepGraph_VertexId, VertexParams> myVertexParams;
+  NCollection_DataMap<BRepGraph_EdgeId, NCollection_DynamicArray<BRepGraph_VertexId>>
+    myEdgeToVertices;
+  NCollection_DataMap<BRepGraph_FaceId, NCollection_DynamicArray<BRepGraph_VertexId>>
+    myFaceToVertices;
+  NCollection_DataMap<BRepGraph_CoEdgeId, NCollection_DynamicArray<BRepGraph_VertexId>>
     myCoEdgeToVertices;
 };
 

@@ -186,7 +186,7 @@ private:
           continue;
         }
 
-        const NCollection_Vector<BRepGraph_FaceId>& aFaces =
+        const NCollection_DynamicArray<BRepGraph_FaceId>& aFaces =
           myGraph->Topo().Edges().Faces(aCoEdgeIt.Current().EdgeDefId);
         for (; myDeepIndex < static_cast<uint32_t>(aFaces.Size()); ++myDeepIndex)
         {
@@ -222,8 +222,8 @@ private:
   //! Advance through a reverse-index iterator (e.g. BRepGraph_FacesOfEdge).
   //! Constructs a ParentsOf starting at myIndex for O(1) amortized resumption.
   template <typename TypedIdT>
-  [[nodiscard]] bool advanceParents(const NCollection_Vector<TypedIdT>& theParents,
-                                    const RelationKind                  theRelation)
+  [[nodiscard]] bool advanceParents(const NCollection_DynamicArray<TypedIdT>& theParents,
+                                    const RelationKind                        theRelation)
   {
     BRepGraph_ReverseIterator::ParentsOf<TypedIdT> anIt(*myGraph, theParents, myIndex);
     if (anIt.More())

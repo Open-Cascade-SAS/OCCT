@@ -20,7 +20,7 @@
 #include <Graphic3d_BufferType.hxx>
 #include <NCollection_Vec2.hxx>
 #include <Standard_TypeDef.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <NCollection_Sequence.hxx>
 
 class Image_PixMap;
@@ -114,11 +114,11 @@ public:
   //! @param theDepthStencilTexture depth-stencil texture
   //! @param theNbSamples           MSAA number of samples (0 means normal texture)
   //! @return true on success
-  Standard_EXPORT bool Init(const occ::handle<OpenGl_Context>& theGlCtx,
-                            const NCollection_Vec2<int>&       theSize,
-                            const NCollection_Vector<int>&     theColorFormats,
-                            const occ::handle<OpenGl_Texture>& theDepthStencilTexture,
-                            const int                          theNbSamples = 0);
+  Standard_EXPORT bool Init(const occ::handle<OpenGl_Context>&   theGlCtx,
+                            const NCollection_Vec2<int>&         theSize,
+                            const NCollection_DynamicArray<int>& theColorFormats,
+                            const occ::handle<OpenGl_Texture>&   theDepthStencilTexture,
+                            const int                            theNbSamples = 0);
 
   //! Initialize FBO for rendering into textures.
   //! @param theGlCtx       currently bound OpenGL context
@@ -144,11 +144,11 @@ public:
   //! GL_DEPTH24_STENCIL8
   //! @param theNbSamples    MSAA number of samples (0 means normal texture)
   //! @return true on success
-  Standard_EXPORT bool Init(const occ::handle<OpenGl_Context>& theGlCtx,
-                            const NCollection_Vec2<int>&       theSize,
-                            const NCollection_Vector<int>&     theColorFormats,
-                            const int                          theDepthFormat,
-                            const int                          theNbSamples = 0);
+  Standard_EXPORT bool Init(const occ::handle<OpenGl_Context>&   theGlCtx,
+                            const NCollection_Vec2<int>&         theSize,
+                            const NCollection_DynamicArray<int>& theColorFormats,
+                            const int                            theDepthFormat,
+                            const int                            theNbSamples = 0);
 
   //! (Re-)initialize FBO with specified dimensions.
   Standard_EXPORT bool InitLazy(const occ::handle<OpenGl_Context>& theGlCtx,
@@ -158,11 +158,11 @@ public:
                                 const int                          theNbSamples = 0);
 
   //! (Re-)initialize FBO with specified dimensions.
-  Standard_EXPORT bool InitLazy(const occ::handle<OpenGl_Context>& theGlCtx,
-                                const NCollection_Vec2<int>&       theViewportSize,
-                                const NCollection_Vector<int>&     theColorFormats,
-                                const int                          theDepthFormat,
-                                const int                          theNbSamples = 0);
+  Standard_EXPORT bool InitLazy(const occ::handle<OpenGl_Context>&   theGlCtx,
+                                const NCollection_Vec2<int>&         theViewportSize,
+                                const NCollection_DynamicArray<int>& theColorFormats,
+                                const int                            theDepthFormat,
+                                const int                            theNbSamples = 0);
 
   //! (Re-)initialize FBO with properties taken from another FBO.
   bool InitLazy(const occ::handle<OpenGl_Context>& theGlCtx,
@@ -185,11 +185,11 @@ public:
   //! define only one element
   //! @param theDepthFormat  depth-stencil render buffer sized format, e.g. GL_DEPTH24_STENCIL8
   //! @param theNbSamples    MSAA number of samples (0 means normal render buffer)
-  bool InitRenderBuffer(const occ::handle<OpenGl_Context>& theGlCtx,
-                        const NCollection_Vec2<int>&       theSize,
-                        const NCollection_Vector<int>&     theColorFormats,
-                        const int                          theDepthFormat,
-                        const int                          theNbSamples = 0)
+  bool InitRenderBuffer(const occ::handle<OpenGl_Context>&   theGlCtx,
+                        const NCollection_Vec2<int>&         theSize,
+                        const NCollection_DynamicArray<int>& theColorFormats,
+                        const int                            theDepthFormat,
+                        const int                            theNbSamples = 0)
   {
     return initRenderBuffer(theGlCtx, theSize, theColorFormats, theDepthFormat, theNbSamples, 0);
   }
@@ -273,21 +273,21 @@ public:
   //! @param theNbSamples    MSAA number of samples (0 means normal render buffer)
   //! @param theColorRBufferFromWindow when specified - should be ID of already initialized RB
   //! object, which will be released within this class
-  Standard_EXPORT bool initRenderBuffer(const occ::handle<OpenGl_Context>& theGlCtx,
-                                        const NCollection_Vec2<int>&       theSize,
-                                        const NCollection_Vector<int>&     theColorFormats,
-                                        const int                          theDepthFormat,
-                                        const int                          theNbSamples,
+  Standard_EXPORT bool initRenderBuffer(const occ::handle<OpenGl_Context>&   theGlCtx,
+                                        const NCollection_Vec2<int>&         theSize,
+                                        const NCollection_DynamicArray<int>& theColorFormats,
+                                        const int                            theDepthFormat,
+                                        const int                            theNbSamples,
                                         const unsigned int theColorRBufferFromWindow);
 
   //! Initialize FBO for rendering into single/multiple color buffer and depth textures.
   Standard_DEPRECATED("Obsolete method, use Init() taking NCollection_Vec2<int>")
-  bool Init(const occ::handle<OpenGl_Context>& theGlCtx,
-            const int                          theSizeX,
-            const int                          theSizeY,
-            const NCollection_Vector<int>&     theColorFormats,
-            const occ::handle<OpenGl_Texture>& theDepthStencilTexture,
-            const int                          theNbSamples = 0)
+  bool Init(const occ::handle<OpenGl_Context>&   theGlCtx,
+            const int                            theSizeX,
+            const int                            theSizeY,
+            const NCollection_DynamicArray<int>& theColorFormats,
+            const occ::handle<OpenGl_Texture>&   theDepthStencilTexture,
+            const int                            theNbSamples = 0)
   {
     return Init(theGlCtx,
                 NCollection_Vec2<int>(theSizeX, theSizeY),
@@ -314,12 +314,12 @@ public:
 
   //! Initialize FBO for rendering into single/multiple color buffer and depth textures.
   Standard_DEPRECATED("Obsolete method, use Init() taking NCollection_Vec2<int>")
-  bool Init(const occ::handle<OpenGl_Context>& theGlCtx,
-            const int                          theSizeX,
-            const int                          theSizeY,
-            const NCollection_Vector<int>&     theColorFormats,
-            const int                          theDepthFormat,
-            const int                          theNbSamples = 0)
+  bool Init(const occ::handle<OpenGl_Context>&   theGlCtx,
+            const int                            theSizeX,
+            const int                            theSizeY,
+            const NCollection_DynamicArray<int>& theColorFormats,
+            const int                            theDepthFormat,
+            const int                            theNbSamples = 0)
   {
     return Init(theGlCtx,
                 NCollection_Vec2<int>(theSizeX, theSizeY),
@@ -346,12 +346,12 @@ public:
 
   //! (Re-)initialize FBO with specified dimensions.
   Standard_DEPRECATED("Obsolete method, use InitLazy() taking NCollection_Vec2<int>")
-  bool InitLazy(const occ::handle<OpenGl_Context>& theGlCtx,
-                const int                          theViewportSizeX,
-                const int                          theViewportSizeY,
-                const NCollection_Vector<int>&     theColorFormats,
-                const int                          theDepthFormat,
-                const int                          theNbSamples = 0)
+  bool InitLazy(const occ::handle<OpenGl_Context>&   theGlCtx,
+                const int                            theViewportSizeX,
+                const int                            theViewportSizeY,
+                const NCollection_DynamicArray<int>& theColorFormats,
+                const int                            theDepthFormat,
+                const int                            theNbSamples = 0)
   {
     return InitLazy(theGlCtx,
                     NCollection_Vec2<int>(theViewportSizeX, theViewportSizeY),
@@ -382,7 +382,7 @@ protected:
   bool isValidFrameBuffer() const { return myGlFBufferId != NO_FRAMEBUFFER; }
 
 protected:
-  typedef NCollection_Vector<occ::handle<OpenGl_Texture>> OpenGl_TextureArray;
+  typedef NCollection_DynamicArray<occ::handle<OpenGl_Texture>> OpenGl_TextureArray;
 
 protected:
   // clang-format off
@@ -391,7 +391,7 @@ protected:
   int       myVPSizeX;             //!< viewport width  (should be <= texture width)
   int       myVPSizeY;             //!< viewport height (should be <= texture height)
   int       myNbSamples;           //!< number of MSAA samples
-  NCollection_Vector<int>    myColorFormats;        //!< sized format for color         texture, GL_RGBA8 by default
+  NCollection_DynamicArray<int>    myColorFormats;        //!< sized format for color         texture, GL_RGBA8 by default
   int       myDepthFormat;         //!< sized format for depth-stencil texture, GL_DEPTH24_STENCIL8 by default
   unsigned int           myGlFBufferId;         //!< FBO object ID
   unsigned int           myGlColorRBufferId;    //!< color         Render Buffer object (alternative to myColorTexture)

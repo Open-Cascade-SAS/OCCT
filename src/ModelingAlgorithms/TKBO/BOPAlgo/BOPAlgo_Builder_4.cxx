@@ -58,8 +58,8 @@ const NCollection_List<TopoDS_Shape>& BOPAlgo_Builder::LocGenerated(const TopoDS
 
   // Analyze all types of Interferences which can produce
   // new vertices - Edge/Edge and Edge/Face
-  NCollection_Vector<BOPDS_InterfEE>& aEEs = myDS->InterfEE();
-  NCollection_Vector<BOPDS_InterfEF>& aEFs = myDS->InterfEF();
+  NCollection_DynamicArray<BOPDS_InterfEE>& aEEs = myDS->InterfEE();
+  NCollection_DynamicArray<BOPDS_InterfEF>& aEFs = myDS->InterfEF();
 
   // Fence map to avoid duplicates in the list of Generated;
   NCollection_Map<int> aMFence;

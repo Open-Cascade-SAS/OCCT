@@ -18,6 +18,7 @@
 #include <BRepMesh_IncrementalMesh.hxx>
 #include <GeomAPI_ProjectPointOnSurf.hxx>
 #include <Geom_Surface.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <IMeshTools_Parameters.hxx>
 #include <Poly_Triangulation.hxx>
 #include <Precision.hxx>
@@ -190,8 +191,8 @@ TEST(BRepMesh_BaseMeshAlgoTest, MultipleInternalVertices)
   TopoDS_Face  aFace = BRepBuilderAPI_MakeFace(aPlane, 0.0, aSize, 0.0, aSize);
 
   // Add a grid of internal vertices (5x5 = 25 vertices)
-  const int                  aGridSize = 5;
-  NCollection_Vector<gp_Pnt> anInternalPts;
+  const int                        aGridSize = 5;
+  NCollection_DynamicArray<gp_Pnt> anInternalPts;
   for (int i = 1; i < aGridSize; ++i)
   {
     for (int j = 1; j < aGridSize; ++j)

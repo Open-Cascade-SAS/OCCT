@@ -1742,7 +1742,7 @@ reapprox:;
       aBox2.Add(gp_Pnt2d(aU2f, aV2f));
       aBox2.Add(gp_Pnt2d(aU2l, aV2l));
 
-      NCollection_Vector<double> anArrayOfParameters;
+      NCollection_DynamicArray<double> anArrayOfParameters;
 
       // We consider here that the intersection line is same-parameter-line
       anArrayOfParameters.Append(aC3d->FirstParameter());

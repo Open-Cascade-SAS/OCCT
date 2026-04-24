@@ -18,7 +18,7 @@
 
 #include <BVH_Builder.hxx>
 #include <BVH_BuildThread.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 
 #include <mutex>
 
@@ -240,7 +240,7 @@ void BVH_QueueBuilder<T, N>::Build(BVH_Set<T, N>*       theSet,
     // Reserve the maximum possible number of nodes in the BVH
     theBVH->Reserve(2 * aSetSize - 1);
 
-    NCollection_Vector<occ::handle<BVH_BuildThread>> aThreads;
+    NCollection_DynamicArray<occ::handle<BVH_BuildThread>> aThreads;
 
     // Run BVH build threads
     for (int aThreadIndex = 0; aThreadIndex < myNumOfThreads; ++aThreadIndex)

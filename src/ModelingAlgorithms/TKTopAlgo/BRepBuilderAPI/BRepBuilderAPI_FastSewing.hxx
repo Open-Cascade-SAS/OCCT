@@ -21,7 +21,7 @@
 
 #include <NCollection_List.hxx>
 #include <NCollection_Sequence.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <NCollection_CellFilter.hxx>
 
 #include <TopoDS_Edge.hxx>
@@ -160,8 +160,8 @@ protected:
     };
 
     //! Creates topological members (wire and face)
-    void CreateTopologicalWire(const NCollection_Vector<FS_Edge>& theEdgeVec,
-                               const double                       theToler);
+    void CreateTopologicalWire(const NCollection_DynamicArray<FS_Edge>& theEdgeVec,
+                               const double                             theToler);
     void CreateTopologicalFace();
 
     //! Sets vertex
@@ -217,9 +217,9 @@ protected:
     };
 
     //! Creates topological member (TopoDS_Edge)
-    void CreateTopologicalEdge(const NCollection_Vector<FS_Vertex>& theVertexVec,
-                               const NCollection_Vector<FS_Face>&   theFaceVec,
-                               const double                         theTol);
+    void CreateTopologicalEdge(const NCollection_DynamicArray<FS_Vertex>& theVertexVec,
+                               const NCollection_DynamicArray<FS_Face>&   theFaceVec,
+                               const double                               theTol);
 
     //! Sets vertex
     void SetVertex(const int thePlaceID, const int theVertID)
@@ -264,20 +264,20 @@ protected:
       return Point(thePnt.X() + theTol, thePnt.Y() + theTol, thePnt.Z() + theTol);
     }
 
-    NodeInspector(const NCollection_Vector<FS_Vertex>& theVec,
-                  const gp_Pnt&                        thePnt,
-                  const double                         theTol);
+    NodeInspector(const NCollection_DynamicArray<FS_Vertex>& theVec,
+                  const gp_Pnt&                              thePnt,
+                  const double                               theTol);
 
     Standard_EXPORT NCollection_CellFilter_Action Inspect(const Target theId);
 
     Target GetResult() { return myResID; }
 
   private:
-    NodeInspector&                       operator=(const NodeInspector&) = delete;
-    const NCollection_Vector<FS_Vertex>& myVecOfVertexes;
-    gp_Pnt                               myPoint;
-    double                               mySQToler;
-    Target                               myResID;
+    NodeInspector&                             operator=(const NodeInspector&) = delete;
+    const NCollection_DynamicArray<FS_Vertex>& myVecOfVertexes;
+    gp_Pnt                                     myPoint;
+    double                                     mySQToler;
+    Target                                     myResID;
   };
 
 private:
@@ -286,11 +286,11 @@ private:
   // myFaceVec, myVertexVec and myEdgeVec lists are filled only once!!!!!
 
   //! Vector of faces
-  NCollection_Vector<FS_Face> myFaceVec;
+  NCollection_DynamicArray<FS_Face> myFaceVec;
   //! Vector of Vertices
-  NCollection_Vector<FS_Vertex> myVertexVec;
+  NCollection_DynamicArray<FS_Vertex> myVertexVec;
   //! Vector of edges
-  NCollection_Vector<FS_Edge> myEdgeVec;
+  NCollection_DynamicArray<FS_Edge> myEdgeVec;
 
   //! Tolerance
   double myTolerance;

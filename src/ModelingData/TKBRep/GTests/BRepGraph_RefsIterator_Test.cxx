@@ -174,7 +174,7 @@ TEST_F(BRepGraph_RefsIteratorTest, ChildOfCompound_EnumeratesChildRefs)
     myGraph.Editor().Vertices().Add(gp_Pnt(1.0, 2.0, 3.0), 0.01);
   ASSERT_TRUE(aLooseVertex.IsValid());
 
-  NCollection_Vector<BRepGraph_NodeId> aChildren;
+  NCollection_DynamicArray<BRepGraph_NodeId> aChildren;
   aChildren.Append(BRepGraph_SolidId::Start());
   aChildren.Append(aLooseVertex);
   const BRepGraph_CompoundId aCompound = myGraph.Editor().Compounds().Add(aChildren);
@@ -207,7 +207,7 @@ TEST_F(BRepGraph_RefsIteratorTest, OccurrenceOfProduct_EnumeratesOccurrenceRefs)
 
 TEST_F(BRepGraph_RefsIteratorTest, AuxChildRefsOfShellAndSolid_EnumerateInjectedChildRefs)
 {
-  NCollection_Vector<BRepGraph_NodeId> aShellChildren;
+  NCollection_DynamicArray<BRepGraph_NodeId> aShellChildren;
   aShellChildren.Append(BRepGraph_WireId::Start());
   aShellChildren.Append(BRepGraph_EdgeId::Start());
   const BRepGraph_CompoundId aShellSeed = myGraph.Editor().Compounds().Add(aShellChildren);
@@ -232,7 +232,7 @@ TEST_F(BRepGraph_RefsIteratorTest, AuxChildRefsOfShellAndSolid_EnumerateInjected
   EXPECT_EQ(myGraph.Refs().Children().Entry(aShellIt.CurrentId()).ChildDefId.NodeKind,
             BRepGraph_NodeId::Kind::Edge);
 
-  NCollection_Vector<BRepGraph_NodeId> aSolidChildren;
+  NCollection_DynamicArray<BRepGraph_NodeId> aSolidChildren;
   aSolidChildren.Append(BRepGraph_EdgeId(1));
   aSolidChildren.Append(BRepGraph_VertexId::Start());
   const BRepGraph_CompoundId aSolidSeed = myGraph.Editor().Compounds().Add(aSolidChildren);
@@ -260,7 +260,7 @@ TEST_F(BRepGraph_RefsIteratorTest, AuxChildRefsOfShellAndSolid_EnumerateInjected
 
 TEST_F(BRepGraph_RefsIteratorTest, RemovedWireRef_IsSkipped)
 {
-  const NCollection_Vector<BRepGraph_WireRefId>& aWireRefs =
+  const NCollection_DynamicArray<BRepGraph_WireRefId>& aWireRefs =
     myGraph.Refs().Wires().IdsOf(BRepGraph_FaceId::Start());
   ASSERT_EQ(aWireRefs.Length(), 1);
 

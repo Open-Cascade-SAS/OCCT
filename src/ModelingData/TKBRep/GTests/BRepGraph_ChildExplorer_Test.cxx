@@ -492,11 +492,11 @@ TEST(BRepGraph_ChildExplorerTest, DirectChildren_ShellFaces_CountAndOrder)
   BRepGraph_Builder::Perform(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  const BRepGraph_ShellId                        aShellId(0);
-  const NCollection_Vector<BRepGraph_FaceRefId>& aFaceRefIds =
+  const BRepGraph_ShellId                              aShellId(0);
+  const NCollection_DynamicArray<BRepGraph_FaceRefId>& aFaceRefIds =
     aGraph.Refs().Faces().IdsOf(aShellId);
 
-  NCollection_Vector<int> anExpectedFaceIds;
+  NCollection_DynamicArray<int> anExpectedFaceIds;
   for (const BRepGraph_FaceRefId& aFaceRefId : aFaceRefIds)
   {
     const BRepGraphInc::FaceRef& aRef = aGraph.Refs().Faces().Entry(aFaceRefId);
@@ -504,7 +504,7 @@ TEST(BRepGraph_ChildExplorerTest, DirectChildren_ShellFaces_CountAndOrder)
       anExpectedFaceIds.Append(aRef.FaceDefId.Index);
   }
 
-  NCollection_Vector<int> anActualFaceIds;
+  NCollection_DynamicArray<int> anActualFaceIds;
   for (BRepGraph_ChildExplorer anIt =
          makeDirectChildExplorer(aGraph, aShellId, BRepGraph_NodeId::Kind::Face);
        anIt.More();
@@ -595,7 +595,7 @@ TEST(BRepGraph_ChildExplorerTest, DirectChildren_ProductOccurrences_ExposeOccurr
   ASSERT_TRUE(anOcc0.IsValid());
   ASSERT_TRUE(anOcc1.IsValid());
 
-  const NCollection_Vector<BRepGraph_OccurrenceRefId>& anOccurrenceRefs =
+  const NCollection_DynamicArray<BRepGraph_OccurrenceRefId>& anOccurrenceRefs =
     aGraph.Refs().Occurrences().IdsOf(anAssembly);
   ASSERT_EQ(anOccurrenceRefs.Length(), 2);
 
@@ -618,8 +618,8 @@ TEST(BRepGraph_ChildExplorerTest, DirectChildren_RemovedFaceRef_IsSkipped)
   BRepGraph_Builder::Perform(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  const BRepGraph_ShellId                        aShellId(0);
-  const NCollection_Vector<BRepGraph_FaceRefId>& aFaceRefIds =
+  const BRepGraph_ShellId                              aShellId(0);
+  const NCollection_DynamicArray<BRepGraph_FaceRefId>& aFaceRefIds =
     aGraph.Refs().Faces().IdsOf(aShellId);
   ASSERT_GT(aFaceRefIds.Length(), 0);
 
@@ -651,12 +651,13 @@ TEST(BRepGraph_ChildExplorerTest, DirectChildren_WireChildren_AreCoEdges)
   BRepGraph_Builder::Perform(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  const BRepGraph_FaceId                         aFaceId(0);
-  const NCollection_Vector<BRepGraph_WireRefId>& aWireRefs = aGraph.Refs().Wires().IdsOf(aFaceId);
+  const BRepGraph_FaceId                               aFaceId(0);
+  const NCollection_DynamicArray<BRepGraph_WireRefId>& aWireRefs =
+    aGraph.Refs().Wires().IdsOf(aFaceId);
   ASSERT_GT(aWireRefs.Length(), 0);
 
   const BRepGraph_WireId aWireId = aGraph.Refs().Wires().Entry(aWireRefs.Value(0)).WireDefId;
-  const NCollection_Vector<BRepGraph_CoEdgeRefId>& aCoEdgeRefs =
+  const NCollection_DynamicArray<BRepGraph_CoEdgeRefId>& aCoEdgeRefs =
     aGraph.Refs().CoEdges().IdsOf(aWireId);
 
   // Wire's direct children are CoEdges (no 1:1 collapse).

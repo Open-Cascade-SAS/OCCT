@@ -6553,7 +6553,8 @@ protected:
   {
     AIS_Shape::Compute(thePrsMgr, thePrs, theMode);
 
-    NCollection_DataMap<TopoDS_Face, NCollection_Vector<std::pair<gp_Pnt, gp_Pnt>>> aNormalMap;
+    NCollection_DataMap<TopoDS_Face, NCollection_DynamicArray<std::pair<gp_Pnt, gp_Pnt>>>
+      aNormalMap;
     if (ToUseMesh)
     {
       DBRep_DrawableShape::addMeshNormals(aNormalMap, myshape, NormalLength);
@@ -6568,7 +6569,8 @@ protected:
 
     const double aArrowAngle  = myDrawer->ArrowAspect()->Angle();
     const double aArrowLength = myDrawer->ArrowAspect()->Length();
-    for (NCollection_DataMap<TopoDS_Face, NCollection_Vector<std::pair<gp_Pnt, gp_Pnt>>>::Iterator
+    for (NCollection_DataMap<TopoDS_Face,
+                             NCollection_DynamicArray<std::pair<gp_Pnt, gp_Pnt>>>::Iterator
            aFaceIt(aNormalMap);
          aFaceIt.More();
          aFaceIt.Next())
@@ -6576,7 +6578,7 @@ protected:
       const bool toReverse = ToOrient && aFaceIt.Key().Orientation() == TopAbs_REVERSED;
       occ::handle<Graphic3d_ArrayOfSegments> aSegments =
         new Graphic3d_ArrayOfSegments(2 * aFaceIt.Value().Length());
-      for (NCollection_Vector<std::pair<gp_Pnt, gp_Pnt>>::Iterator aPntIt(aFaceIt.Value());
+      for (NCollection_DynamicArray<std::pair<gp_Pnt, gp_Pnt>>::Iterator aPntIt(aFaceIt.Value());
            aPntIt.More();
            aPntIt.Next())
       {

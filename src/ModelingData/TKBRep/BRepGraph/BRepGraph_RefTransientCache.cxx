@@ -33,7 +33,7 @@ BRepGraph_RefTransientCache::CacheSlot& BRepGraph_RefTransientCache::changeSlot(
   const int aRefKindIdx = static_cast<int>(theRef.RefKind);
   Standard_ASSERT_VOID(aRefKindIdx >= 0 && aRefKindIdx < THE_REF_KIND_COUNT,
                        "BRepGraph_RefTransientCache: RefKind out of range");
-  NCollection_Vector<CacheSlot>& aVec =
+  NCollection_DynamicArray<CacheSlot>& aVec =
     myKinds.ChangeValue(theKindSlot).myRefKinds[aRefKindIdx].mySlots;
   if (theRef.Index >= aVec.Size())
   {
@@ -56,7 +56,7 @@ const BRepGraph_RefTransientCache::CacheSlot* BRepGraph_RefTransientCache::seekS
   const int aRefKindIdx = static_cast<int>(theRef.RefKind);
   Standard_ASSERT_VOID(aRefKindIdx >= 0 && aRefKindIdx < THE_REF_KIND_COUNT,
                        "BRepGraph_RefTransientCache: RefKind out of range");
-  const NCollection_Vector<CacheSlot>& aVec =
+  const NCollection_DynamicArray<CacheSlot>& aVec =
     myKinds.Value(theKindSlot).myRefKinds[aRefKindIdx].mySlots;
   if (!theRef.IsValidIn(aVec))
   {
@@ -129,8 +129,8 @@ void BRepGraph_RefTransientCache::Set(const BRepGraph_RefId                    t
 
   if (myIsReserved.load(std::memory_order_acquire) && theKindSlot < myKinds.Length())
   {
-    const int                      aRefKindIdx = static_cast<int>(theRef.RefKind);
-    NCollection_Vector<CacheSlot>& aVec =
+    const int                            aRefKindIdx = static_cast<int>(theRef.RefKind);
+    NCollection_DynamicArray<CacheSlot>& aVec =
       myKinds.ChangeValue(theKindSlot).myRefKinds[aRefKindIdx].mySlots;
     if (theRef.Index < aVec.Size())
     {
@@ -182,8 +182,8 @@ occ::handle<BRepGraph_CacheValue> BRepGraph_RefTransientCache::Get(
 
   if (myIsReserved.load(std::memory_order_acquire) && theKindSlot < myKinds.Length())
   {
-    const int                            aRefKindIdx = static_cast<int>(theRef.RefKind);
-    const NCollection_Vector<CacheSlot>& aVec =
+    const int                                  aRefKindIdx = static_cast<int>(theRef.RefKind);
+    const NCollection_DynamicArray<CacheSlot>& aVec =
       myKinds.Value(theKindSlot).myRefKinds[aRefKindIdx].mySlots;
     if (theRef.Index < aVec.Size())
     {
@@ -247,8 +247,8 @@ bool BRepGraph_RefTransientCache::Remove(const BRepGraph_RefId theRef, const int
     return false;
   }
 
-  const int                      aRefKindIdx = static_cast<int>(theRef.RefKind);
-  NCollection_Vector<CacheSlot>& aVec =
+  const int                            aRefKindIdx = static_cast<int>(theRef.RefKind);
+  NCollection_DynamicArray<CacheSlot>& aVec =
     myKinds.ChangeValue(theKindSlot).myRefKinds[aRefKindIdx].mySlots;
   if (theRef.Index >= aVec.Size())
   {

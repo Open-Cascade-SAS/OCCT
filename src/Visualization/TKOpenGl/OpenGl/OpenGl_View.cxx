@@ -78,7 +78,7 @@ static bool checkWasFailedFbo(const occ::handle<OpenGl_FrameBuffer>& theFboToChe
 //! Chooses compatible internal color format for OIT frame buffer.
 static bool chooseOitColorConfiguration(const occ::handle<OpenGl_Context>& theGlContext,
                                         const int                          theConfigIndex,
-                                        NCollection_Vector<int>&           theFormats)
+                                        NCollection_DynamicArray<int>&     theFormats)
 {
   theFormats.Clear();
   switch (theConfigIndex)
@@ -1521,7 +1521,7 @@ bool OpenGl_View::prepareFrameBuffers(Graphic3d_Camera::Projection& theProj)
       {
         for (int aPairIter = 0; aPairIter < 2; ++aPairIter)
         {
-          NCollection_Vector<int> aColorFormats;
+          NCollection_DynamicArray<int> aColorFormats;
           aColorFormats.Append(GL_RG32F);
           aColorFormats.Append(GL_RGBA16F);
           aColorFormats.Append(GL_RGBA16F);
@@ -1683,7 +1683,7 @@ bool OpenGl_View::prepareFrameBuffers(Graphic3d_Camera::Projection& theProj)
       const occ::handle<OpenGl_FrameBuffer>& aShadowFbo = aShadow->FrameBuffer();
       if (aShadowFbo->GetVPSizeX() != myRenderParams.ShadowMapResolution && toUseShadowMap)
       {
-        NCollection_Vector<int> aDummy;
+        NCollection_DynamicArray<int> aDummy;
         if (!aShadowFbo->Init(aCtx,
                               NCollection_Vec2<int>(myRenderParams.ShadowMapResolution),
                               aDummy,

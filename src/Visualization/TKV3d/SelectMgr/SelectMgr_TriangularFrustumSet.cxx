@@ -816,7 +816,7 @@ bool SelectMgr_TriangularFrustumSet::OverlapsCircle(const double   theRadius,
 //=================================================================================================
 
 void SelectMgr_TriangularFrustumSet::GetPlanes(
-  NCollection_Vector<NCollection_Vec4<double>>& thePlaneEquations) const
+  NCollection_DynamicArray<NCollection_Vec4<double>>& thePlaneEquations) const
 {
   thePlaneEquations.Clear();
 

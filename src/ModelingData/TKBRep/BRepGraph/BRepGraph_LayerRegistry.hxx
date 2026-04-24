@@ -18,7 +18,7 @@
 #include <BRepGraph_RefId.hxx>
 
 #include <NCollection_DataMap.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_GUID.hxx>
 
@@ -87,8 +87,8 @@ public:
 
   //! Dispatch OnNodesModified to subscribed layers.
   Standard_EXPORT void DispatchNodesModified(
-    const NCollection_Vector<BRepGraph_NodeId>& theModifiedNodes,
-    const int                                   theModifiedKindsMask) noexcept;
+    const NCollection_DynamicArray<BRepGraph_NodeId>& theModifiedNodes,
+    const int                                         theModifiedKindsMask) noexcept;
 
   //! Dispatch OnCompact to all registered layers.
   Standard_EXPORT void DispatchOnCompact(
@@ -110,8 +110,8 @@ public:
 
   //! Dispatch OnRefsModified to subscribed layers (deferred/batch mode).
   Standard_EXPORT void DispatchRefsModified(
-    const NCollection_Vector<BRepGraph_RefId>& theModifiedRefs,
-    const int                                  theModifiedRefKindsMask) noexcept;
+    const NCollection_DynamicArray<BRepGraph_RefId>& theModifiedRefs,
+    const int                                        theModifiedRefKindsMask) noexcept;
 
   //! Clear all registered layer payloads without unregistering them.
   Standard_EXPORT void ClearAll() noexcept;
@@ -123,11 +123,11 @@ private:
   Standard_EXPORT void recomputeSubscribedKindsMask();
 
 private:
-  NCollection_Vector<occ::handle<BRepGraph_Layer>> myLayers;
-  NCollection_DataMap<Standard_GUID, uint32_t>     myGuidToSlot;
-  uint32_t                                         mySubscribedKindsMask    = 0;
-  uint32_t                                         mySubscribedRefKindsMask = 0;
-  BRepGraph*                                       myOwningGraph            = nullptr;
+  NCollection_DynamicArray<occ::handle<BRepGraph_Layer>> myLayers;
+  NCollection_DataMap<Standard_GUID, uint32_t>           myGuidToSlot;
+  uint32_t                                               mySubscribedKindsMask    = 0;
+  uint32_t                                               mySubscribedRefKindsMask = 0;
+  BRepGraph*                                             myOwningGraph            = nullptr;
 };
 
 #endif // _BRepGraph_LayerRegistry_HeaderFile

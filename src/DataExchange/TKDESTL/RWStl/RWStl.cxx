@@ -16,7 +16,7 @@
 #include <RWStl.hxx>
 
 #include <Message_ProgressScope.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <OSD_File.hxx>
 #include <OSD_FileSystem.hxx>
 #include <OSD_OpenFile.hxx>
@@ -112,8 +112,8 @@ protected:
   }
 
 private:
-  NCollection_Vector<gp_XYZ>        myNodes;
-  NCollection_Vector<Poly_Triangle> myTriangles;
+  NCollection_DynamicArray<gp_XYZ>        myNodes;
+  NCollection_DynamicArray<Poly_Triangle> myTriangles;
 };
 
 class MultiDomainReader : public Reader

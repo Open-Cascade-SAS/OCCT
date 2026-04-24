@@ -217,7 +217,7 @@ bool BRepGraph::IsDone() const
 
 //=================================================================================================
 
-const NCollection_Vector<BRepGraph_ProductId>& BRepGraph::RootProductIds() const
+const NCollection_DynamicArray<BRepGraph_ProductId>& BRepGraph::RootProductIds() const
 {
   return myData->myRootProductIds;
 }
@@ -364,7 +364,7 @@ void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
                             + aStorage.NbProducts() + aStorage.NbOccurrences();
   const uint32_t                        aMaxDepth = aNbNodes > 0 ? aNbNodes : 1;
   occ::handle<NCollection_IncAllocator> anAlloc   = new NCollection_IncAllocator();
-  NCollection_Vector<StackEntry>        aStack(64, anAlloc);
+  NCollection_DynamicArray<StackEntry>  aStack(64, anAlloc);
   NCollection_Map<BRepGraph_NodeId>     aVisited(static_cast<size_t>(aNbNodes), anAlloc);
   aStack.Append({theNode, 0});
 
@@ -598,7 +598,7 @@ void BRepGraph::propagateSubtreeGen(const BRepGraph_NodeId theNodeId) noexcept
       // Vertex modifications don't propagate.
       break;
     case BRepGraph_NodeId::Kind::Edge: {
-      const NCollection_Vector<BRepGraph_WireId>* aWires =
+      const NCollection_DynamicArray<BRepGraph_WireId>* aWires =
         aRevIdx.WiresOfEdge(BRepGraph_EdgeId(theNodeId));
       if (aWires != nullptr)
         for (const BRepGraph_WireId& aWireId : *aWires)
@@ -606,7 +606,7 @@ void BRepGraph::propagateSubtreeGen(const BRepGraph_NodeId theNodeId) noexcept
       break;
     }
     case BRepGraph_NodeId::Kind::Wire: {
-      const NCollection_Vector<BRepGraph_FaceId>* aFaces =
+      const NCollection_DynamicArray<BRepGraph_FaceId>* aFaces =
         aRevIdx.FacesOfWire(BRepGraph_WireId(theNodeId));
       if (aFaces != nullptr)
         for (const BRepGraph_FaceId& aFaceId : *aFaces)
@@ -614,7 +614,7 @@ void BRepGraph::propagateSubtreeGen(const BRepGraph_NodeId theNodeId) noexcept
       break;
     }
     case BRepGraph_NodeId::Kind::Face: {
-      const NCollection_Vector<BRepGraph_ShellId>* aShells =
+      const NCollection_DynamicArray<BRepGraph_ShellId>* aShells =
         aRevIdx.ShellsOfFace(BRepGraph_FaceId(theNodeId));
       if (aShells != nullptr)
         for (const BRepGraph_ShellId& aShellId : *aShells)
@@ -622,7 +622,7 @@ void BRepGraph::propagateSubtreeGen(const BRepGraph_NodeId theNodeId) noexcept
       break;
     }
     case BRepGraph_NodeId::Kind::Shell: {
-      const NCollection_Vector<BRepGraph_SolidId>* aSolids =
+      const NCollection_DynamicArray<BRepGraph_SolidId>* aSolids =
         aRevIdx.SolidsOfShell(BRepGraph_ShellId(theNodeId));
       if (aSolids != nullptr)
         for (const BRepGraph_SolidId& aSolidId : *aSolids)
@@ -758,7 +758,7 @@ void BRepGraph::markRepModified(const BRepGraph_RepId theRepId) noexcept
             myData->myMeshCache.FindFaceMesh(aFaceId);
           if (aCached != nullptr)
           {
-            for (NCollection_Vector<BRepGraph_TriangulationRepId>::Iterator aTriIt(
+            for (NCollection_DynamicArray<BRepGraph_TriangulationRepId>::Iterator aTriIt(
                    aCached->TriangulationRepIds);
                  aTriIt.More();
                  aTriIt.Next())
@@ -823,7 +823,7 @@ void BRepGraph::markRepModified(const BRepGraph_RepId theRepId) noexcept
             myData->myMeshCache.FindCoEdgeMesh(aCoEdgeId);
           if (aCached != nullptr)
           {
-            for (NCollection_Vector<BRepGraph_PolygonOnTriRepId>::Iterator aPolyIt(
+            for (NCollection_DynamicArray<BRepGraph_PolygonOnTriRepId>::Iterator aPolyIt(
                    aCached->PolygonOnTriRepIds);
                  aPolyIt.More();
                  aPolyIt.Next())

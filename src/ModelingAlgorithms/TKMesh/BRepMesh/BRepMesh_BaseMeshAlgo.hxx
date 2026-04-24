@@ -29,7 +29,7 @@ class BRepMesh_DataStructureOfDelaun;
 class BRepMesh_BaseMeshAlgo : public IMeshTools_MeshAlgo
 {
 public:
-  typedef NCollection_Shared<NCollection_Vector<gp_Pnt>> VectorOfPnt;
+  typedef NCollection_Shared<NCollection_DynamicArray<gp_Pnt>> VectorOfPnt;
 
   //! Constructor.
   Standard_EXPORT BRepMesh_BaseMeshAlgo();

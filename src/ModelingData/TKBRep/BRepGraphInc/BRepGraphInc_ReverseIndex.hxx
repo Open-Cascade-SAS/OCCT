@@ -16,7 +16,7 @@
 
 #include <BRepGraph_NodeId.hxx>
 #include <NCollection_BaseAllocator.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <Standard_DefineAlloc.hxx>
 
 class BRepGraphInc_Storage;
@@ -91,22 +91,23 @@ public:
   //! @param[in] theSolidRefs  solid ref-entry table (compsolid -> solid reverse)
   //! @param[in] theChildRefs  child ref-entry table (compound child reverse)
   //! @param[in] theVertexRefs vertex ref-entry table (edge vertex resolution)
-  Standard_EXPORT void Build(const NCollection_Vector<BRepGraphInc::VertexDef>&    theVertices,
-                             const NCollection_Vector<BRepGraphInc::EdgeDef>&      theEdges,
-                             const NCollection_Vector<BRepGraphInc::CoEdgeDef>&    theCoEdges,
-                             const NCollection_Vector<BRepGraphInc::WireDef>&      theWires,
-                             const NCollection_Vector<BRepGraphInc::FaceDef>&      theFaces,
-                             const NCollection_Vector<BRepGraphInc::ShellDef>&     theShells,
-                             const NCollection_Vector<BRepGraphInc::SolidDef>&     theSolids,
-                             const NCollection_Vector<BRepGraphInc::CompoundDef>&  theCompounds,
-                             const NCollection_Vector<BRepGraphInc::CompSolidDef>& theCompSolids,
-                             const NCollection_Vector<BRepGraphInc::ShellRef>&     theShellRefs,
-                             const NCollection_Vector<BRepGraphInc::FaceRef>&      theFaceRefs,
-                             const NCollection_Vector<BRepGraphInc::WireRef>&      theWireRefs,
-                             const NCollection_Vector<BRepGraphInc::CoEdgeRef>&    theCoEdgeRefs,
-                             const NCollection_Vector<BRepGraphInc::SolidRef>&     theSolidRefs,
-                             const NCollection_Vector<BRepGraphInc::ChildRef>&     theChildRefs,
-                             const NCollection_Vector<BRepGraphInc::VertexRef>&    theVertexRefs);
+  Standard_EXPORT void Build(
+    const NCollection_DynamicArray<BRepGraphInc::VertexDef>&    theVertices,
+    const NCollection_DynamicArray<BRepGraphInc::EdgeDef>&      theEdges,
+    const NCollection_DynamicArray<BRepGraphInc::CoEdgeDef>&    theCoEdges,
+    const NCollection_DynamicArray<BRepGraphInc::WireDef>&      theWires,
+    const NCollection_DynamicArray<BRepGraphInc::FaceDef>&      theFaces,
+    const NCollection_DynamicArray<BRepGraphInc::ShellDef>&     theShells,
+    const NCollection_DynamicArray<BRepGraphInc::SolidDef>&     theSolids,
+    const NCollection_DynamicArray<BRepGraphInc::CompoundDef>&  theCompounds,
+    const NCollection_DynamicArray<BRepGraphInc::CompSolidDef>& theCompSolids,
+    const NCollection_DynamicArray<BRepGraphInc::ShellRef>&     theShellRefs,
+    const NCollection_DynamicArray<BRepGraphInc::FaceRef>&      theFaceRefs,
+    const NCollection_DynamicArray<BRepGraphInc::WireRef>&      theWireRefs,
+    const NCollection_DynamicArray<BRepGraphInc::CoEdgeRef>&    theCoEdgeRefs,
+    const NCollection_DynamicArray<BRepGraphInc::SolidRef>&     theSolidRefs,
+    const NCollection_DynamicArray<BRepGraphInc::ChildRef>&     theChildRefs,
+    const NCollection_DynamicArray<BRepGraphInc::VertexRef>&    theVertexRefs);
 
   //! Incrementally update reverse indices for entities/ref-parents appended after a previous
   //! ReverseIndex::Build(). Only processes entities from the old counts to the current vector
@@ -121,55 +122,55 @@ public:
   //! @param[in] theOldNbChildRefs  ChildRef count before the append operation
   //! @param[in] theOldNbSolidRefs  SolidRef count before the append operation
   Standard_EXPORT void BuildDelta(
-    const NCollection_Vector<BRepGraphInc::VertexDef>&    theVertices,
-    const NCollection_Vector<BRepGraphInc::EdgeDef>&      theEdges,
-    const NCollection_Vector<BRepGraphInc::CoEdgeDef>&    theCoEdges,
-    const NCollection_Vector<BRepGraphInc::WireDef>&      theWires,
-    const NCollection_Vector<BRepGraphInc::FaceDef>&      theFaces,
-    const NCollection_Vector<BRepGraphInc::ShellDef>&     theShells,
-    const NCollection_Vector<BRepGraphInc::SolidDef>&     theSolids,
-    const NCollection_Vector<BRepGraphInc::CompoundDef>&  theCompounds,
-    const NCollection_Vector<BRepGraphInc::CompSolidDef>& theCompSolids,
-    const NCollection_Vector<BRepGraphInc::ShellRef>&     theShellRefs,
-    const NCollection_Vector<BRepGraphInc::FaceRef>&      theFaceRefs,
-    const NCollection_Vector<BRepGraphInc::WireRef>&      theWireRefs,
-    const NCollection_Vector<BRepGraphInc::CoEdgeRef>&    theCoEdgeRefs,
-    const NCollection_Vector<BRepGraphInc::SolidRef>&     theSolidRefs,
-    const NCollection_Vector<BRepGraphInc::ChildRef>&     theChildRefs,
-    const NCollection_Vector<BRepGraphInc::VertexRef>&    theVertexRefs,
-    const uint32_t                                        theOldNbEdges,
-    const uint32_t                                        theOldNbWires,
-    const uint32_t                                        theOldNbFaces,
-    const uint32_t                                        theOldNbShells,
-    const uint32_t                                        theOldNbSolids,
-    const uint32_t                                        theOldNbCompounds,
-    const uint32_t                                        theOldNbCompSolids,
-    const uint32_t                                        theOldNbChildRefs,
-    const uint32_t                                        theOldNbSolidRefs);
+    const NCollection_DynamicArray<BRepGraphInc::VertexDef>&    theVertices,
+    const NCollection_DynamicArray<BRepGraphInc::EdgeDef>&      theEdges,
+    const NCollection_DynamicArray<BRepGraphInc::CoEdgeDef>&    theCoEdges,
+    const NCollection_DynamicArray<BRepGraphInc::WireDef>&      theWires,
+    const NCollection_DynamicArray<BRepGraphInc::FaceDef>&      theFaces,
+    const NCollection_DynamicArray<BRepGraphInc::ShellDef>&     theShells,
+    const NCollection_DynamicArray<BRepGraphInc::SolidDef>&     theSolids,
+    const NCollection_DynamicArray<BRepGraphInc::CompoundDef>&  theCompounds,
+    const NCollection_DynamicArray<BRepGraphInc::CompSolidDef>& theCompSolids,
+    const NCollection_DynamicArray<BRepGraphInc::ShellRef>&     theShellRefs,
+    const NCollection_DynamicArray<BRepGraphInc::FaceRef>&      theFaceRefs,
+    const NCollection_DynamicArray<BRepGraphInc::WireRef>&      theWireRefs,
+    const NCollection_DynamicArray<BRepGraphInc::CoEdgeRef>&    theCoEdgeRefs,
+    const NCollection_DynamicArray<BRepGraphInc::SolidRef>&     theSolidRefs,
+    const NCollection_DynamicArray<BRepGraphInc::ChildRef>&     theChildRefs,
+    const NCollection_DynamicArray<BRepGraphInc::VertexRef>&    theVertexRefs,
+    const uint32_t                                              theOldNbEdges,
+    const uint32_t                                              theOldNbWires,
+    const uint32_t                                              theOldNbFaces,
+    const uint32_t                                              theOldNbShells,
+    const uint32_t                                              theOldNbSolids,
+    const uint32_t                                              theOldNbCompounds,
+    const uint32_t                                              theOldNbCompSolids,
+    const uint32_t                                              theOldNbChildRefs,
+    const uint32_t                                              theOldNbSolidRefs);
 
   //! Build product-to-occurrences reverse index.
   //! @param[in] theOccurrences occurrence entity vector
   //! @param[in] theNbProducts  total number of products (for pre-sizing)
   Standard_EXPORT void BuildProductOccurrences(
-    const NCollection_Vector<BRepGraphInc::OccurrenceDef>& theOccurrences,
-    const uint32_t                                         theNbProducts);
+    const NCollection_DynamicArray<BRepGraphInc::OccurrenceDef>& theOccurrences,
+    const uint32_t                                               theNbProducts);
 
   //! Return wire indices containing the given edge.
-  [[nodiscard]] const NCollection_Vector<BRepGraph_WireId>* WiresOfEdge(
+  [[nodiscard]] const NCollection_DynamicArray<BRepGraph_WireId>* WiresOfEdge(
     const BRepGraph_EdgeId theEdgeId) const
   {
     return seekVec(myEdgeToWires, theEdgeId.Index);
   }
 
   //! Return face indices containing the given edge (derived from CoEdge.FaceDefId links).
-  [[nodiscard]] const NCollection_Vector<BRepGraph_FaceId>* FacesOfEdge(
+  [[nodiscard]] const NCollection_DynamicArray<BRepGraph_FaceId>* FacesOfEdge(
     const BRepGraph_EdgeId theEdgeId) const
   {
     return seekVec(myEdgeToFaces, theEdgeId.Index);
   }
 
   //! Return coedge indices referencing the given edge.
-  [[nodiscard]] const NCollection_Vector<BRepGraph_CoEdgeId>* CoEdgesOfEdge(
+  [[nodiscard]] const NCollection_DynamicArray<BRepGraph_CoEdgeId>* CoEdgesOfEdge(
     const BRepGraph_EdgeId theEdgeId) const
   {
     return seekVec(myEdgeToCoEdges, theEdgeId.Index);
@@ -179,75 +180,76 @@ public:
   //! Derived directly from the edge-to-faces adjacency vector to keep a single source of truth.
   [[nodiscard]] uint32_t NbFacesOfEdge(const BRepGraph_EdgeId theEdgeId) const
   {
-    const NCollection_Vector<BRepGraph_FaceId>* aFaces = seekVec(myEdgeToFaces, theEdgeId.Index);
+    const NCollection_DynamicArray<BRepGraph_FaceId>* aFaces =
+      seekVec(myEdgeToFaces, theEdgeId.Index);
     return aFaces != nullptr ? static_cast<uint32_t>(aFaces->Size()) : 0u;
   }
 
   //! Return edge indices incident to the given vertex.
-  [[nodiscard]] const NCollection_Vector<BRepGraph_EdgeId>* EdgesOfVertex(
+  [[nodiscard]] const NCollection_DynamicArray<BRepGraph_EdgeId>* EdgesOfVertex(
     const BRepGraph_VertexId theVertexId) const
   {
     return seekVec(myVertexToEdges, theVertexId.Index);
   }
 
   //! Return face indices containing the given wire.
-  [[nodiscard]] const NCollection_Vector<BRepGraph_FaceId>* FacesOfWire(
+  [[nodiscard]] const NCollection_DynamicArray<BRepGraph_FaceId>* FacesOfWire(
     const BRepGraph_WireId theWireId) const
   {
     return seekVec(myWireToFaces, theWireId.Index);
   }
 
   //! Return shell indices containing the given face.
-  [[nodiscard]] const NCollection_Vector<BRepGraph_ShellId>* ShellsOfFace(
+  [[nodiscard]] const NCollection_DynamicArray<BRepGraph_ShellId>* ShellsOfFace(
     const BRepGraph_FaceId theFaceId) const
   {
     return seekVec(myFaceToShells, theFaceId.Index);
   }
 
   //! Return solid indices containing the given shell.
-  [[nodiscard]] const NCollection_Vector<BRepGraph_SolidId>* SolidsOfShell(
+  [[nodiscard]] const NCollection_DynamicArray<BRepGraph_SolidId>* SolidsOfShell(
     const BRepGraph_ShellId theShellId) const
   {
     return seekVec(myShellToSolids, theShellId.Index);
   }
 
   //! Return compound indices containing the given solid as a NodeInstance.
-  [[nodiscard]] const NCollection_Vector<BRepGraph_CompoundId>* CompoundsOfSolid(
+  [[nodiscard]] const NCollection_DynamicArray<BRepGraph_CompoundId>* CompoundsOfSolid(
     const BRepGraph_SolidId theSolidId) const
   {
     return seekVec(myCompoundsOfSolid, theSolidId.Index);
   }
 
   //! Return compsolid indices containing the given solid as a SolidInstance.
-  [[nodiscard]] const NCollection_Vector<BRepGraph_CompSolidId>* CompSolidsOfSolid(
+  [[nodiscard]] const NCollection_DynamicArray<BRepGraph_CompSolidId>* CompSolidsOfSolid(
     const BRepGraph_SolidId theSolidId) const
   {
     return seekVec(myCompSolidsOfSolid, theSolidId.Index);
   }
 
   //! Return compound indices containing the given shell as a NodeInstance.
-  [[nodiscard]] const NCollection_Vector<BRepGraph_CompoundId>* CompoundsOfShell(
+  [[nodiscard]] const NCollection_DynamicArray<BRepGraph_CompoundId>* CompoundsOfShell(
     const BRepGraph_ShellId theShellId) const
   {
     return seekVec(myCompoundsOfShell, theShellId.Index);
   }
 
   //! Return compound indices containing the given face as a NodeInstance.
-  [[nodiscard]] const NCollection_Vector<BRepGraph_CompoundId>* CompoundsOfFace(
+  [[nodiscard]] const NCollection_DynamicArray<BRepGraph_CompoundId>* CompoundsOfFace(
     const BRepGraph_FaceId theFaceId) const
   {
     return seekVec(myCompoundsOfFace, theFaceId.Index);
   }
 
   //! Return compound indices containing the given compound as a NodeInstance.
-  [[nodiscard]] const NCollection_Vector<BRepGraph_CompoundId>* CompoundsOfCompound(
+  [[nodiscard]] const NCollection_DynamicArray<BRepGraph_CompoundId>* CompoundsOfCompound(
     const BRepGraph_CompoundId theCompoundId) const
   {
     return seekVec(myCompoundsOfCompound, theCompoundId.Index);
   }
 
   //! Return compound indices containing the given compsolid as a NodeInstance.
-  [[nodiscard]] const NCollection_Vector<BRepGraph_CompoundId>* CompoundsOfCompSolid(
+  [[nodiscard]] const NCollection_DynamicArray<BRepGraph_CompoundId>* CompoundsOfCompSolid(
     const BRepGraph_CompSolidId theCompSolidId) const
   {
     return seekVec(myCompoundsOfCompSolid, theCompSolidId.Index);
@@ -256,35 +258,35 @@ public:
   //! Return compound indices containing the given wire as a NodeInstance.
   //! OCCT `TopoDS_Compound` can legally hold atomic topology (wire / edge /
   //! vertex); these reverse maps round-trip that case.
-  [[nodiscard]] const NCollection_Vector<BRepGraph_CompoundId>* CompoundsOfWire(
+  [[nodiscard]] const NCollection_DynamicArray<BRepGraph_CompoundId>* CompoundsOfWire(
     const BRepGraph_WireId theWireId) const
   {
     return seekVec(myCompoundsOfWire, theWireId.Index);
   }
 
   //! Return compound indices containing the given edge as a NodeInstance.
-  [[nodiscard]] const NCollection_Vector<BRepGraph_CompoundId>* CompoundsOfEdge(
+  [[nodiscard]] const NCollection_DynamicArray<BRepGraph_CompoundId>* CompoundsOfEdge(
     const BRepGraph_EdgeId theEdgeId) const
   {
     return seekVec(myCompoundsOfEdge, theEdgeId.Index);
   }
 
   //! Return compound indices containing the given vertex as a NodeInstance.
-  [[nodiscard]] const NCollection_Vector<BRepGraph_CompoundId>* CompoundsOfVertex(
+  [[nodiscard]] const NCollection_DynamicArray<BRepGraph_CompoundId>* CompoundsOfVertex(
     const BRepGraph_VertexId theVertexId) const
   {
     return seekVec(myCompoundsOfVertex, theVertexId.Index);
   }
 
   //! Return wire indices containing the given coedge.
-  [[nodiscard]] const NCollection_Vector<BRepGraph_WireId>* WiresOfCoEdge(
+  [[nodiscard]] const NCollection_DynamicArray<BRepGraph_WireId>* WiresOfCoEdge(
     const BRepGraph_CoEdgeId theCoEdgeId) const
   {
     return seekVec(myCoEdgeToWires, theCoEdgeId.Index);
   }
 
   //! Return occurrence indices that reference the given product.
-  [[nodiscard]] const NCollection_Vector<BRepGraph_OccurrenceId>* OccurrencesOfProduct(
+  [[nodiscard]] const NCollection_DynamicArray<BRepGraph_OccurrenceId>* OccurrencesOfProduct(
     const BRepGraph_ProductId theProductId) const
   {
     return seekVec(myProductToOccurrences, theProductId.Index);
@@ -293,49 +295,49 @@ public:
   // --- Safe reference accessors (return empty vector instead of nullptr) ---
 
   //! Return wire indices containing the given edge (safe reference, never null).
-  [[nodiscard]] const NCollection_Vector<BRepGraph_WireId>& WiresOfEdgeRef(
+  [[nodiscard]] const NCollection_DynamicArray<BRepGraph_WireId>& WiresOfEdgeRef(
     const BRepGraph_EdgeId theEdgeId) const
   {
     return seekRef(myEdgeToWires, theEdgeId.Index);
   }
 
   //! Return face indices containing the given edge (safe reference, never null).
-  [[nodiscard]] const NCollection_Vector<BRepGraph_FaceId>& FacesOfEdgeRef(
+  [[nodiscard]] const NCollection_DynamicArray<BRepGraph_FaceId>& FacesOfEdgeRef(
     const BRepGraph_EdgeId theEdgeId) const
   {
     return seekRef(myEdgeToFaces, theEdgeId.Index);
   }
 
   //! Return coedge indices referencing the given edge (safe reference, never null).
-  [[nodiscard]] const NCollection_Vector<BRepGraph_CoEdgeId>& CoEdgesOfEdgeRef(
+  [[nodiscard]] const NCollection_DynamicArray<BRepGraph_CoEdgeId>& CoEdgesOfEdgeRef(
     const BRepGraph_EdgeId theEdgeId) const
   {
     return seekRef(myEdgeToCoEdges, theEdgeId.Index);
   }
 
   //! Return face indices containing the given wire (safe reference, never null).
-  [[nodiscard]] const NCollection_Vector<BRepGraph_FaceId>& FacesOfWireRef(
+  [[nodiscard]] const NCollection_DynamicArray<BRepGraph_FaceId>& FacesOfWireRef(
     const BRepGraph_WireId theWireId) const
   {
     return seekRef(myWireToFaces, theWireId.Index);
   }
 
   //! Return edge indices incident to the given vertex (safe reference, never null).
-  [[nodiscard]] const NCollection_Vector<BRepGraph_EdgeId>& EdgesOfVertexRef(
+  [[nodiscard]] const NCollection_DynamicArray<BRepGraph_EdgeId>& EdgesOfVertexRef(
     const BRepGraph_VertexId theVertexId) const
   {
     return seekRef(myVertexToEdges, theVertexId.Index);
   }
 
   //! Return shell indices containing the given face (safe reference, never null).
-  [[nodiscard]] const NCollection_Vector<BRepGraph_ShellId>& ShellsOfFaceRef(
+  [[nodiscard]] const NCollection_DynamicArray<BRepGraph_ShellId>& ShellsOfFaceRef(
     const BRepGraph_FaceId theFaceId) const
   {
     return seekRef(myFaceToShells, theFaceId.Index);
   }
 
   //! Return solid indices containing the given shell (safe reference, never null).
-  [[nodiscard]] const NCollection_Vector<BRepGraph_SolidId>& SolidsOfShellRef(
+  [[nodiscard]] const NCollection_DynamicArray<BRepGraph_SolidId>& SolidsOfShellRef(
     const BRepGraph_ShellId theShellId) const
   {
     return seekRef(myShellToSolids, theShellId.Index);
@@ -346,22 +348,22 @@ public:
   //! reverse entry exists (edge->wire). Intended for debug validation.
   //! @return true if all forward refs have matching reverse entries
   Standard_EXPORT bool Validate(
-    const NCollection_Vector<BRepGraphInc::VertexDef>&    theVertices,
-    const NCollection_Vector<BRepGraphInc::EdgeDef>&      theEdges,
-    const NCollection_Vector<BRepGraphInc::CoEdgeDef>&    theCoEdges,
-    const NCollection_Vector<BRepGraphInc::WireDef>&      theWires,
-    const NCollection_Vector<BRepGraphInc::FaceDef>&      theFaces,
-    const NCollection_Vector<BRepGraphInc::ShellDef>&     theShells,
-    const NCollection_Vector<BRepGraphInc::SolidDef>&     theSolids,
-    const NCollection_Vector<BRepGraphInc::CompoundDef>&  theCompounds,
-    const NCollection_Vector<BRepGraphInc::CompSolidDef>& theCompSolids,
-    const NCollection_Vector<BRepGraphInc::ShellRef>&     theShellRefs,
-    const NCollection_Vector<BRepGraphInc::FaceRef>&      theFaceRefs,
-    const NCollection_Vector<BRepGraphInc::WireRef>&      theWireRefs,
-    const NCollection_Vector<BRepGraphInc::CoEdgeRef>&    theCoEdgeRefs,
-    const NCollection_Vector<BRepGraphInc::SolidRef>&     theSolidRefs,
-    const NCollection_Vector<BRepGraphInc::ChildRef>&     theChildRefs,
-    const NCollection_Vector<BRepGraphInc::VertexRef>&    theVertexRefs) const;
+    const NCollection_DynamicArray<BRepGraphInc::VertexDef>&    theVertices,
+    const NCollection_DynamicArray<BRepGraphInc::EdgeDef>&      theEdges,
+    const NCollection_DynamicArray<BRepGraphInc::CoEdgeDef>&    theCoEdges,
+    const NCollection_DynamicArray<BRepGraphInc::WireDef>&      theWires,
+    const NCollection_DynamicArray<BRepGraphInc::FaceDef>&      theFaces,
+    const NCollection_DynamicArray<BRepGraphInc::ShellDef>&     theShells,
+    const NCollection_DynamicArray<BRepGraphInc::SolidDef>&     theSolids,
+    const NCollection_DynamicArray<BRepGraphInc::CompoundDef>&  theCompounds,
+    const NCollection_DynamicArray<BRepGraphInc::CompSolidDef>& theCompSolids,
+    const NCollection_DynamicArray<BRepGraphInc::ShellRef>&     theShellRefs,
+    const NCollection_DynamicArray<BRepGraphInc::FaceRef>&      theFaceRefs,
+    const NCollection_DynamicArray<BRepGraphInc::WireRef>&      theWireRefs,
+    const NCollection_DynamicArray<BRepGraphInc::CoEdgeRef>&    theCoEdgeRefs,
+    const NCollection_DynamicArray<BRepGraphInc::SolidRef>&     theSolidRefs,
+    const NCollection_DynamicArray<BRepGraphInc::ChildRef>&     theChildRefs,
+    const NCollection_DynamicArray<BRepGraphInc::VertexRef>&    theVertexRefs) const;
 
   // --- Incremental mutation ---
 
@@ -413,28 +415,28 @@ public:
 private:
   //! Dense vector type: outer index = entity key, inner vector = typed adjacency list.
   template <typename T>
-  using TypedIndexTable = NCollection_Vector<NCollection_Vector<T>>;
+  using TypedIndexTable = NCollection_DynamicArray<NCollection_DynamicArray<T>>;
 
   //! Bounds-checked lookup returning nullptr for out-of-range or empty slots.
   template <typename T>
-  static const NCollection_Vector<T>* seekVec(const TypedIndexTable<T>& theIdx,
-                                              const uint32_t            theKey)
+  static const NCollection_DynamicArray<T>* seekVec(const TypedIndexTable<T>& theIdx,
+                                                    const uint32_t            theKey)
   {
     if (theKey >= theIdx.Size())
       return nullptr;
-    const NCollection_Vector<T>& aVec = theIdx.Value(static_cast<size_t>(theKey));
+    const NCollection_DynamicArray<T>& aVec = theIdx.Value(static_cast<size_t>(theKey));
     return aVec.IsEmpty() ? nullptr : &aVec;
   }
 
   //! Bounds-checked lookup returning a const reference (empty vector for missing keys).
   template <typename T>
-  static const NCollection_Vector<T>& seekRef(const TypedIndexTable<T>& theIdx,
-                                              const uint32_t            theKey)
+  static const NCollection_DynamicArray<T>& seekRef(const TypedIndexTable<T>& theIdx,
+                                                    const uint32_t            theKey)
   {
-    const NCollection_Vector<T>* aPtr = seekVec(theIdx, theKey);
+    const NCollection_DynamicArray<T>* aPtr = seekVec(theIdx, theKey);
     if (aPtr != nullptr)
       return *aPtr;
-    static const NCollection_Vector<T> THE_EMPTY;
+    static const NCollection_DynamicArray<T> THE_EMPTY;
     return THE_EMPTY;
   }
 
@@ -453,7 +455,7 @@ private:
     {
       for (size_t i = theIdx.Size(), aNb = static_cast<size_t>(theSize); i < aNb; ++i)
       {
-        theIdx.Append(NCollection_Vector<T>(16, theAlloc));
+        theIdx.Append(NCollection_DynamicArray<T>(16, theAlloc));
       }
     }
     else
@@ -468,7 +470,7 @@ private:
   //! Ensure theVec has at least theSize elements.
   //! New elements are default-constructed (zero for scalar types).
   template <typename T>
-  static void ensureSize(NCollection_Vector<T>& theVec, const uint32_t theSize)
+  static void ensureSize(NCollection_DynamicArray<T>& theVec, const uint32_t theSize)
   {
     while (theVec.Size() < static_cast<size_t>(theSize))
     {
@@ -494,7 +496,7 @@ private:
     if (theKey >= theIdx.Size())
       ensureSize(theIdx, theKey + 1u);
 
-    NCollection_Vector<T>& aVec = theIdx.ChangeValue(static_cast<size_t>(theKey));
+    NCollection_DynamicArray<T>& aVec = theIdx.ChangeValue(static_cast<size_t>(theKey));
     for (const T& anElem : aVec)
     {
       if (anElem == theVal)

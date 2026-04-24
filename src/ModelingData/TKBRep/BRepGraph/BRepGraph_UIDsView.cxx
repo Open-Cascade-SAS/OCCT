@@ -23,7 +23,7 @@ namespace
 
 void appendRefUIDReverseIndex(BRepGraph_Data& theData, const BRepGraph_RefId::Kind theKind)
 {
-  const NCollection_Vector<BRepGraph_RefUID>& aUIDs = theData.myIncStorage.RefUIDs(theKind);
+  const NCollection_DynamicArray<BRepGraph_RefUID>& aUIDs = theData.myIncStorage.RefUIDs(theKind);
   for (BRepGraph_RefId aRefId = BRepGraph_RefId::Start(theKind); aRefId.IsValidIn(aUIDs); ++aRefId)
   {
     const BRepGraph_RefUID aUID = aUIDs.Value(static_cast<size_t>(aRefId.Index));
@@ -38,7 +38,7 @@ void appendRefUIDReverseIndex(BRepGraph_Data& theData, const BRepGraph_RefId::Ki
 
 void appendUIDReverseIndex(BRepGraph_Data& theData, const BRepGraph_NodeId::Kind theKind)
 {
-  const NCollection_Vector<BRepGraph_UID>& aUIDs = theData.myIncStorage.UIDs(theKind);
+  const NCollection_DynamicArray<BRepGraph_UID>& aUIDs = theData.myIncStorage.UIDs(theKind);
   for (BRepGraph_NodeId aNodeId = BRepGraph_NodeId::Start(theKind); aNodeId.IsValidIn(aUIDs);
        ++aNodeId)
   {
@@ -130,7 +130,7 @@ BRepGraph_UID BRepGraph::UIDsView::Of(const BRepGraph_NodeId theNode) const
   if (aDef == nullptr || aDef->IsRemoved)
     return BRepGraph_UID();
 
-  const NCollection_Vector<BRepGraph_UID>& aVec =
+  const NCollection_DynamicArray<BRepGraph_UID>& aVec =
     myGraph->myData->myIncStorage.UIDs(theNode.NodeKind);
   if (!theNode.IsValidIn(aVec))
     return BRepGraph_UID();
@@ -144,7 +144,7 @@ BRepGraph_RefUID BRepGraph::UIDsView::Of(const BRepGraph_RefId theRefId) const
   if (!theRefId.IsValid())
     return BRepGraph_RefUID();
 
-  const NCollection_Vector<BRepGraph_RefUID>& aVec =
+  const NCollection_DynamicArray<BRepGraph_RefUID>& aVec =
     myGraph->myData->myIncStorage.RefUIDs(theRefId.RefKind);
   if (!theRefId.IsValidIn(aVec))
     return BRepGraph_RefUID();
@@ -239,7 +239,7 @@ BRepGraph_VersionStamp BRepGraph::UIDsView::StampOf(const BRepGraph_NodeId theNo
   if (!theNode.IsValid())
     return BRepGraph_VersionStamp();
 
-  const NCollection_Vector<BRepGraph_UID>& aVec =
+  const NCollection_DynamicArray<BRepGraph_UID>& aVec =
     myGraph->myData->myIncStorage.UIDs(theNode.NodeKind);
   if (!theNode.IsValidIn(aVec))
     return BRepGraph_VersionStamp();
@@ -259,7 +259,7 @@ BRepGraph_VersionStamp BRepGraph::UIDsView::StampOf(const BRepGraph_RefId theRef
   if (!theRefId.IsValid())
     return BRepGraph_VersionStamp();
 
-  const NCollection_Vector<BRepGraph_RefUID>& aUIDs =
+  const NCollection_DynamicArray<BRepGraph_RefUID>& aUIDs =
     myGraph->myData->myIncStorage.RefUIDs(theRefId.RefKind);
   if (!theRefId.IsValidIn(aUIDs))
     return BRepGraph_VersionStamp();

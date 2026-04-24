@@ -25,7 +25,7 @@
 
 #include <NCollection_BaseAllocator.hxx>
 #include <NCollection_DataMap.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <Standard_Assert.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <TopoDS_Shape.hxx>
@@ -670,11 +670,11 @@ public:
   BRepGraph_OccurrenceRefId AppendOccurrenceRef() { return myOccurrenceRefs.Append(); }
 
   //! Return the per-kind UID vector for a given Kind.
-  [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_UID>& UIDs(
+  [[nodiscard]] Standard_EXPORT const NCollection_DynamicArray<BRepGraph_UID>& UIDs(
     const BRepGraph_NodeId::Kind theKind) const;
 
   //! Return the per-kind UID vector for a given Kind (mutable).
-  Standard_EXPORT NCollection_Vector<BRepGraph_UID>& ChangeUIDs(
+  Standard_EXPORT NCollection_DynamicArray<BRepGraph_UID>& ChangeUIDs(
     const BRepGraph_NodeId::Kind theKind);
 
   //! Clear all UID vectors (reset lengths to 0).
@@ -692,11 +692,11 @@ public:
   Standard_EXPORT BRepGraphInc::BaseRef& ChangeBaseRef(const BRepGraph_RefId theRefId);
 
   //! Return the per-kind transitional reference UID vector.
-  [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_RefUID>& RefUIDs(
+  [[nodiscard]] Standard_EXPORT const NCollection_DynamicArray<BRepGraph_RefUID>& RefUIDs(
     const BRepGraph_RefId::Kind theKind) const;
 
   //! Return the per-kind transitional reference UID vector (mutable).
-  Standard_EXPORT NCollection_Vector<BRepGraph_RefUID>& ChangeRefUIDs(
+  Standard_EXPORT NCollection_DynamicArray<BRepGraph_RefUID>& ChangeRefUIDs(
     const BRepGraph_RefId::Kind theKind);
 
   //! Clear all transitional reference UID vectors.
@@ -820,9 +820,9 @@ private:
     using TypeId    = typename EntityT::TypeId;
     using ValueType = EntityT;
 
-    NCollection_Vector<EntityT>       Entities;
-    NCollection_Vector<BRepGraph_UID> UIDs;
-    uint32_t                          NbActive = 0;
+    NCollection_DynamicArray<EntityT>       Entities;
+    NCollection_DynamicArray<BRepGraph_UID> UIDs;
+    uint32_t                                NbActive = 0;
 
     DefStore() = default;
 
@@ -893,8 +893,8 @@ private:
     using TypeId    = typename RepT::TypeId;
     using ValueType = RepT;
 
-    NCollection_Vector<RepT> Entities;
-    uint32_t                 NbActive = 0;
+    NCollection_DynamicArray<RepT> Entities;
+    uint32_t                       NbActive = 0;
 
     RepStore() = default;
 
@@ -973,9 +973,9 @@ private:
     using TypeId    = typename RefT::TypeId;
     using ValueType = RefT;
 
-    NCollection_Vector<RefT>             Refs;
-    NCollection_Vector<BRepGraph_RefUID> UIDs;
-    uint32_t                             NbActive = 0;
+    NCollection_DynamicArray<RefT>             Refs;
+    NCollection_DynamicArray<BRepGraph_RefUID> UIDs;
+    uint32_t                                   NbActive = 0;
 
     RefStore() = default;
 

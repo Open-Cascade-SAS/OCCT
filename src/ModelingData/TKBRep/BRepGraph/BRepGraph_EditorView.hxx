@@ -290,8 +290,8 @@ public:
     //! @param[in] theEdges ordered edge entries
     //! @return typed wire definition identifier, or invalid if any referenced
     //!         edge entry is invalid
-    [[nodiscard]] Standard_EXPORT BRepGraph_WireId
-      Add(const NCollection_Vector<std::pair<BRepGraph_EdgeId, TopAbs_Orientation>>& theEdges);
+    [[nodiscard]] Standard_EXPORT BRepGraph_WireId Add(
+      const NCollection_DynamicArray<std::pair<BRepGraph_EdgeId, TopAbs_Orientation>>& theEdges);
 
     //! Replace one edge with another in a wire definition.
     //! Updates the CoEdge's EdgeIdx to point to the new edge, adjusts orientation
@@ -347,10 +347,10 @@ public:
     //! @return typed face definition identifier, or invalid if any referenced
     //!         wire id is out of range or removed
     [[nodiscard]] Standard_EXPORT BRepGraph_FaceId
-      Add(const occ::handle<Geom_Surface>&            theSurface,
-          const BRepGraph_WireId                      theOuterWire,
-          const NCollection_Vector<BRepGraph_WireId>& theInnerWires,
-          const double                                theTolerance);
+      Add(const occ::handle<Geom_Surface>&                  theSurface,
+          const BRepGraph_WireId                            theOuterWire,
+          const NCollection_DynamicArray<BRepGraph_WireId>& theInnerWires,
+          const double                                      theTolerance);
 
     //! Add a direct INTERNAL/EXTERNAL vertex usage to a face definition.
     //! @param[in] theFaceEntity   typed face definition identifier
@@ -545,7 +545,7 @@ public:
     //! @param[in] theChildEntities child definition NodeIds
     //! @return typed compound definition identifier
     [[nodiscard]] Standard_EXPORT BRepGraph_CompoundId
-      Add(const NCollection_Vector<BRepGraph_NodeId>& theChildEntities);
+      Add(const NCollection_DynamicArray<BRepGraph_NodeId>& theChildEntities);
 
     //! Detach one exact child ref from a compound definition.
     //! Use BRepGraph_RefsChildOfParent::CurrentId() when removing from a compound
@@ -581,7 +581,7 @@ public:
     //! @param[in] theSolidEntities typed child solid definition identifiers
     //! @return typed compsolid definition identifier
     [[nodiscard]] Standard_EXPORT BRepGraph_CompSolidId
-      Add(const NCollection_Vector<BRepGraph_SolidId>& theSolidEntities);
+      Add(const NCollection_DynamicArray<BRepGraph_SolidId>& theSolidEntities);
 
     //! Detach one exact solid ref from a compsolid definition.
     //! Use BRepGraph_RefsSolidOfCompSolid::CurrentId() when removing from a
@@ -767,7 +767,7 @@ public:
                            ModifierT&&                    theModifier,
                            const TCollection_AsciiString& theOpLabel)
     {
-      NCollection_Vector<BRepGraph_NodeId> aReplacements =
+      NCollection_DynamicArray<BRepGraph_NodeId> aReplacements =
         std::forward<ModifierT>(theModifier)(*myGraph, theTarget);
       applyModificationImpl(theTarget, std::move(aReplacements), theOpLabel);
     }
@@ -781,9 +781,9 @@ public:
     }
 
     Standard_EXPORT void applyModificationImpl(
-      const BRepGraph_NodeId                 theTarget,
-      NCollection_Vector<BRepGraph_NodeId>&& theReplacements,
-      const TCollection_AsciiString&         theOpLabel);
+      const BRepGraph_NodeId                       theTarget,
+      NCollection_DynamicArray<BRepGraph_NodeId>&& theReplacements,
+      const TCollection_AsciiString&               theOpLabel);
 
     BRepGraph* myGraph;
   };
@@ -889,7 +889,7 @@ public:
   //! @param[out] theIssues optional destination for detailed issues
   //! @return true if no issues were found
   [[nodiscard]] Standard_EXPORT bool ValidateMutationBoundary(
-    NCollection_Vector<BoundaryIssue>* const theIssues = nullptr) const;
+    NCollection_DynamicArray<BoundaryIssue>* const theIssues = nullptr) const;
 
 private:
   friend class BRepGraph;

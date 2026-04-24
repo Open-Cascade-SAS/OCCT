@@ -46,13 +46,13 @@ namespace
 
 //=================================================================================================
 
-NCollection_Vector<BRepGraph_CoEdgeRefId> coEdgeRefsOfWire(const BRepGraph&       theGraph,
-                                                           const BRepGraph_WireId theWireId)
+NCollection_DynamicArray<BRepGraph_CoEdgeRefId> coEdgeRefsOfWire(const BRepGraph&       theGraph,
+                                                                 const BRepGraph_WireId theWireId)
 {
-  NCollection_Vector<BRepGraph_CoEdgeRefId> aRefIds;
-  const BRepGraph_NodeId                    aParentNode   = theWireId;
-  const BRepGraph::RefsView&                aRefs         = theGraph.Refs();
-  const int                                 aNbCoEdgeRefs = aRefs.CoEdges().Nb();
+  NCollection_DynamicArray<BRepGraph_CoEdgeRefId> aRefIds;
+  const BRepGraph_NodeId                          aParentNode   = theWireId;
+  const BRepGraph::RefsView&                      aRefs         = theGraph.Refs();
+  const int                                       aNbCoEdgeRefs = aRefs.CoEdges().Nb();
   for (BRepGraph_CoEdgeRefId aRefId(0); aRefId.IsValid(aNbCoEdgeRefs); ++aRefId)
   {
     const BRepGraphInc::CoEdgeRef& aRef = aRefs.CoEdges().Entry(aRefId);
@@ -179,7 +179,7 @@ TEST(BRepGraph_ValidateTest, WireConnectivity_DisconnectedEdges)
   ASSERT_TRUE(aTargetWire.IsValid());
 
   // Get the first edge in the wire and corrupt its end vertex.
-  const NCollection_Vector<BRepGraph_CoEdgeRefId> aWireRefIds =
+  const NCollection_DynamicArray<BRepGraph_CoEdgeRefId> aWireRefIds =
     coEdgeRefsOfWire(aGraph, aTargetWire);
   ASSERT_GE(aWireRefIds.Length(), 1);
   const BRepGraphInc::CoEdgeRef& aFirstCR = aGraph.Refs().CoEdges().Entry(aWireRefIds.Value(0));
@@ -392,12 +392,13 @@ TEST(BRepGraph_ValidateTest, Audit_ValidatesCoEdgeUIDsFromBuilderWireCreation)
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Topo().Edges().Nb(), 0);
 
-  NCollection_Vector<std::pair<BRepGraph_EdgeId, TopAbs_Orientation>> anEdges;
+  NCollection_DynamicArray<std::pair<BRepGraph_EdgeId, TopAbs_Orientation>> anEdges;
   anEdges.Append(std::make_pair(BRepGraph_EdgeId::Start(), TopAbs_FORWARD));
   const BRepGraph_WireId aWireId = aGraph.Editor().Wires().Add(anEdges);
   ASSERT_TRUE(aWireId.IsValid());
 
-  const NCollection_Vector<BRepGraph_CoEdgeRefId> aWireRefIds = coEdgeRefsOfWire(aGraph, aWireId);
+  const NCollection_DynamicArray<BRepGraph_CoEdgeRefId> aWireRefIds =
+    coEdgeRefsOfWire(aGraph, aWireId);
   ASSERT_EQ(aWireRefIds.Length(), 1);
   const BRepGraph_NodeId aCoEdgeId =
     BRepGraph_CoEdgeId(aGraph.Refs().CoEdges().Entry(aWireRefIds.Value(0)).CoEdgeDefId.Index);

@@ -148,7 +148,7 @@ TEST_F(BRepGraph_RelatedIteratorTest, EdgeReferencedByFace_RemovedFaceIsSkipped)
   const BRepGraph_EdgeId anEdgeId(0);
 
   // Find the two faces that reference this edge.
-  const NCollection_Vector<BRepGraph_FaceId>& aFaces = myGraph.Topo().Edges().Faces(anEdgeId);
+  const NCollection_DynamicArray<BRepGraph_FaceId>& aFaces = myGraph.Topo().Edges().Faces(anEdgeId);
   ASSERT_EQ(aFaces.Length(), 2);
 
   // Remove the first face.
@@ -262,8 +262,8 @@ TEST_F(BRepGraph_RelatedIteratorTest, EdgeOfBox_AllRelationsSequential)
   const BRepGraph_EdgeId anEdgeId(0);
   const BRepGraph_NodeId anEdgeNode(anEdgeId);
 
-  NCollection_Vector<BRepGraph_NodeId> aFaces;
-  NCollection_Vector<BRepGraph_NodeId> aVertices;
+  NCollection_DynamicArray<BRepGraph_NodeId> aFaces;
+  NCollection_DynamicArray<BRepGraph_NodeId> aVertices;
 
   for (BRepGraph_RelatedIterator anIt(myGraph, anEdgeNode); anIt.More(); anIt.Next())
   {
@@ -296,7 +296,8 @@ TEST_F(BRepGraph_RelatedIteratorTest, EdgeOfBox_RemovedFace_CorrectTransition)
   const BRepGraph_NodeId anEdgeNode(anEdgeId);
 
   // Remove one parent face.
-  const NCollection_Vector<BRepGraph_FaceId>& aParentFaces = myGraph.Topo().Edges().Faces(anEdgeId);
+  const NCollection_DynamicArray<BRepGraph_FaceId>& aParentFaces =
+    myGraph.Topo().Edges().Faces(anEdgeId);
   ASSERT_EQ(aParentFaces.Length(), 2);
   myGraph.Editor().Gen().RemoveNode(aParentFaces.Value(0));
 
@@ -315,7 +316,7 @@ TEST_F(BRepGraph_RelatedIteratorTest, VertexOfBox_AllParentEdgesYielded)
   const BRepGraph_VertexId aVertexId(0);
   const BRepGraph_NodeId   aVertexNode(aVertexId);
 
-  NCollection_Vector<BRepGraph_NodeId> anEdges;
+  NCollection_DynamicArray<BRepGraph_NodeId> anEdges;
   for (BRepGraph_RelatedIterator anIt(myGraph, aVertexNode); anIt.More(); anIt.Next())
   {
     if (anIt.CurrentRelation() == BRepGraph_RelatedIterator::RelationKind::IncidentEdge)

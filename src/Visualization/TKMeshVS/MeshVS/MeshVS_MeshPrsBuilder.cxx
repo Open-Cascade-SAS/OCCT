@@ -28,7 +28,7 @@
 #include <MeshVS_MeshPrsBuilder.hxx>
 #include <MeshVS_SymmetricPairHasher.hxx>
 #include <MeshVS_Tool.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_PointAspect.hxx>
 #include <Prs3d_Presentation.hxx>
@@ -745,7 +745,7 @@ void MeshVS_MeshPrsBuilder::AddFaceWirePrs(
     CalculateCenter(theCoords, theNbNodes, aCenterX, aCenterY, aCenterZ);
   }
 
-  NCollection_Vector<gp_XYZ> aNodes(theNbNodes);
+  NCollection_DynamicArray<gp_XYZ> aNodes(theNbNodes);
 
   for (int aNodeIdx = 0; aNodeIdx < theNbNodes; ++aNodeIdx)
   {
@@ -807,7 +807,7 @@ void MeshVS_MeshPrsBuilder::AddFaceSolidPrs(
     CalculateCenter(theCoords, theNbNodes, aCenterX, aCenterY, aCenterZ);
   }
 
-  NCollection_Vector<gp_XYZ> aVertexNormals(theMaxNodes);
+  NCollection_DynamicArray<gp_XYZ> aVertexNormals(theMaxNodes);
 
   if (theIsShaded)
   {
@@ -828,7 +828,7 @@ void MeshVS_MeshPrsBuilder::AddFaceSolidPrs(
     }
   }
 
-  NCollection_Vector<gp_XYZ> aNodes(theMaxNodes);
+  NCollection_DynamicArray<gp_XYZ> aNodes(theMaxNodes);
 
   for (int aNodeIdx = 0; aNodeIdx < theNbNodes; ++aNodeIdx)
   {

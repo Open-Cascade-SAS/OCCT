@@ -3515,7 +3515,7 @@ void AIS_InteractiveContext::EntityOwners(
       continue;
     }
 
-    for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
+    for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
            aSel->Entities());
          aSelEntIter.More();
          aSelEntIter.Next())

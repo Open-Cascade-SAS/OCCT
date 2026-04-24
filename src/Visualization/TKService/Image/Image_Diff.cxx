@@ -268,7 +268,7 @@ bool Image_Diff::SaveDiffImage(Image_PixMap& theDiffImage) const
     {
       case Image_Format_Gray:
       case Image_Format_Alpha: {
-        for (NCollection_Vector<int>::Iterator aPixelIter(myDiffPixels); aPixelIter.More();
+        for (NCollection_DynamicArray<int>::Iterator aPixelIter(myDiffPixels); aPixelIter.More();
              aPixelIter.Next())
         {
           theDiffImage.ChangeValue<unsigned char>(UnpackY(aPixelIter.Value()),
@@ -282,7 +282,7 @@ bool Image_Diff::SaveDiffImage(Image_PixMap& theDiffImage) const
       case Image_Format_BGR32:
       case Image_Format_RGBA:
       case Image_Format_BGRA: {
-        for (NCollection_Vector<int>::Iterator aPixelIter(myDiffPixels); aPixelIter.More();
+        for (NCollection_DynamicArray<int>::Iterator aPixelIter(myDiffPixels); aPixelIter.More();
              aPixelIter.Next())
         {
           memset(
@@ -293,7 +293,7 @@ bool Image_Diff::SaveDiffImage(Image_PixMap& theDiffImage) const
         break;
       }
       default: {
-        for (NCollection_Vector<int>::Iterator aPixelIter(myDiffPixels); aPixelIter.More();
+        for (NCollection_DynamicArray<int>::Iterator aPixelIter(myDiffPixels); aPixelIter.More();
              aPixelIter.Next())
         {
           theDiffImage.SetPixelColor(UnpackX(aPixelIter.Value()),

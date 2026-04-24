@@ -35,7 +35,7 @@
 #include <BRepExtrema_UnCompatibleShape.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepClass3d_SolidClassifier.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <OSD_Parallel.hxx>
 #include <StdFail_NotDone.hxx>
 
@@ -452,14 +452,14 @@ struct DistancePairFunctor
     return aSize;
   }
 
-  NCollection_Array1<IndexBand>*                                        BandArray;
-  mutable NCollection_Array1<NCollection_Vector<BRepExtrema_CheckPair>> PairList;
-  const NCollection_Array1<Bnd_Box>*                                    LBox1;
-  const NCollection_Array1<Bnd_Box>*                                    LBox2;
-  Message_ProgressScope                                                 Scope;
-  NCollection_Array1<Message_ProgressRange>                             Ranges;
-  double                                                                DistRef;
-  double                                                                Eps;
+  NCollection_Array1<IndexBand>*                                              BandArray;
+  mutable NCollection_Array1<NCollection_DynamicArray<BRepExtrema_CheckPair>> PairList;
+  const NCollection_Array1<Bnd_Box>*                                          LBox1;
+  const NCollection_Array1<Bnd_Box>*                                          LBox2;
+  Message_ProgressScope                                                       Scope;
+  NCollection_Array1<Message_ProgressRange>                                   Ranges;
+  double                                                                      DistRef;
+  double                                                                      Eps;
 };
 
 //=================================================================================================

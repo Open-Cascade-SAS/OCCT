@@ -175,8 +175,8 @@ TEST(BRepGraph_GeometryTest, Box_FindPCurve_AllEdgeFacePairs_Valid)
   int aPCurveCount = 0;
   for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
-    const BRepGraph_EdgeId                        anEdgeId = anEdgeIt.CurrentId();
-    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
+    const BRepGraph_EdgeId                              anEdgeId = anEdgeIt.CurrentId();
+    const NCollection_DynamicArray<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
       aGraph.Topo().Edges().CoEdges(anEdgeId);
     for (const BRepGraph_CoEdgeId& aCoEdgeId : aCoEdgeIdxs)
     {
@@ -198,7 +198,7 @@ TEST(BRepGraph_GeometryTest, CoEdge_FaceDefIdValid)
 
   for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
-    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
+    const NCollection_DynamicArray<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
       aGraph.Topo().Edges().CoEdges(anEdgeIt.CurrentId());
     for (int j = 0; j < aCoEdgeIdxs.Length(); ++j)
     {
@@ -219,7 +219,7 @@ TEST(BRepGraph_GeometryTest, CoEdge_ParamRange_NonZero)
   int aCoEdgeCount = 0;
   for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
-    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
+    const NCollection_DynamicArray<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
       aGraph.Topo().Edges().CoEdges(anEdgeIt.CurrentId());
     for (int j = 0; j < aCoEdgeIdxs.Length(); ++j)
     {
@@ -244,7 +244,7 @@ TEST(BRepGraph_GeometryTest, CoEdge_Continuity_Valid)
   bool hasNonC0Continuity = false;
   for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
-    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
+    const NCollection_DynamicArray<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
       aGraph.Topo().Edges().CoEdges(anEdgeIt.CurrentId());
     for (int j = 0; j < aCoEdgeIdxs.Length(); ++j)
     {
@@ -294,8 +294,8 @@ TEST(BRepGraph_GeometryTest, SameDomainFaces_SimpleBox_Empty)
   // For a simple box each face has a unique surface, so SameDomainFaces is empty.
   for (BRepGraph_FaceIterator aFaceIt(aGraph); aFaceIt.More(); aFaceIt.Next())
   {
-    const BRepGraph_FaceId                     aFaceDefId = aFaceIt.CurrentId();
-    const NCollection_Vector<BRepGraph_FaceId> aSameDomain =
+    const BRepGraph_FaceId                           aFaceDefId = aFaceIt.CurrentId();
+    const NCollection_DynamicArray<BRepGraph_FaceId> aSameDomain =
       aGraph.Topo().Faces().SameDomain(aFaceDefId, aGraph.Allocator());
     EXPECT_EQ(aSameDomain.Length(), 0)
       << "Face def " << aFaceDefId.Index << " has unexpected same-domain faces";
@@ -493,7 +493,7 @@ TEST(BRepGraph_GeometryTest, AllCoEdgesHaveCurve2d)
   int aCount = 0;
   for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
-    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
+    const NCollection_DynamicArray<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
       aGraph.Topo().Edges().CoEdges(anEdgeIt.CurrentId());
     for (const BRepGraph_CoEdgeId& aCoEdgeId : aCoEdgeIdxs)
     {
@@ -514,7 +514,7 @@ TEST(BRepGraph_GeometryTest, CoEdgePCurveAdaptor_FallsBackOnPlaneWhenStoredPCurv
   BRepGraph_EdgeId   anEdgeId;
   for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
-    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdges =
+    const NCollection_DynamicArray<BRepGraph_CoEdgeId>& aCoEdges =
       aGraph.Topo().Edges().CoEdges(anEdgeIt.CurrentId());
     if (aCoEdges.Length() == 0)
     {
@@ -679,7 +679,7 @@ TEST(BRepGraph_GeometryTest, Cylinder_SeamEdge_HasTwoCoEdges)
   bool aFoundSeam = false;
   for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More() && !aFoundSeam; anEdgeIt.Next())
   {
-    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
+    const NCollection_DynamicArray<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
       aGraph.Topo().Edges().CoEdges(anEdgeIt.CurrentId());
     for (const BRepGraph_CoEdgeId& aCoEdgeId : aCoEdgeIdxs)
     {
@@ -708,8 +708,8 @@ TEST(BRepGraph_GeometryTest, Cylinder_SeamEdge_FindPCurve_WithOrientation)
 
   for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
-    const BRepGraph_EdgeId                        anEdgeId = anEdgeIt.CurrentId();
-    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
+    const BRepGraph_EdgeId                              anEdgeId = anEdgeIt.CurrentId();
+    const NCollection_DynamicArray<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
       aGraph.Topo().Edges().CoEdges(anEdgeId);
 
     for (const BRepGraph_CoEdgeId& aCoEdgeId : aCoEdgeIdxs)
@@ -742,8 +742,8 @@ TEST(BRepGraph_GeometryTest, Box_FindPCurve_MatchesToolOverload)
 
   for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
-    const BRepGraph_EdgeId                        anEdgeId = anEdgeIt.CurrentId();
-    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
+    const BRepGraph_EdgeId                              anEdgeId = anEdgeIt.CurrentId();
+    const NCollection_DynamicArray<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
       aGraph.Topo().Edges().CoEdges(anEdgeId);
 
     for (const BRepGraph_CoEdgeId& aCoEdgeId : aCoEdgeIdxs)
@@ -771,7 +771,7 @@ TEST(BRepGraph_GeometryTest, Cylinder_SeamEdge_FindPCurve_DistinguishesOrientati
 
   for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
-    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
+    const NCollection_DynamicArray<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
       aGraph.Topo().Edges().CoEdges(anEdgeIt.CurrentId());
 
     for (const BRepGraph_CoEdgeId& aCoEdgeId : aCoEdgeIdxs)

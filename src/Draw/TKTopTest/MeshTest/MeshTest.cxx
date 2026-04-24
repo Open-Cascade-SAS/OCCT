@@ -743,7 +743,7 @@ static int trianglesinfo(Draw_Interpretor& theDI, int theNbArgs, const char** th
   double aMaxDeflection = 0.0, aMeshingDefl = -1.0, aMeshingAngDefl = -1.0, aMeshingMinSize = -1.0;
   int    aNbFaces = 0, aNbEmptyFaces = 0, aNbTriangles = 0, aNbNodes = 0, aNbRepresentations = 0;
   NCollection_IndexedDataMap<int, TriangulationStat> aLODsStat;
-  NCollection_Vector<int>                            aNbLODs;
+  NCollection_DynamicArray<int>                      aNbLODs;
   for (anExp.Init(aShape, TopAbs_FACE); anExp.More(); anExp.Next())
   {
     TopoDS_Face aFace = TopoDS::Face(anExp.Current());
@@ -878,7 +878,7 @@ static int trianglesinfo(Draw_Interpretor& theDI, int theNbArgs, const char** th
       std::sort(aNbLODs.begin(), aNbLODs.end());
     }
     NCollection_IndexedMap<int> aLODsRange;
-    for (NCollection_Vector<int>::Iterator aNbIter(aNbLODs); aNbIter.More(); aNbIter.Next())
+    for (NCollection_DynamicArray<int>::Iterator aNbIter(aNbLODs); aNbIter.More(); aNbIter.Next())
     {
       if (!aLODsRange.Contains(aNbIter.Value()))
       {

@@ -1121,7 +1121,7 @@ TEST(BRepGraph_BuildTest, RegularityLayer_EdgeMutation_InvalidatesBindings)
   for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More() && !hasBinding; anEdgeIt.Next())
   {
     anEdgeId = anEdgeIt.CurrentId();
-    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdges =
+    const NCollection_DynamicArray<BRepGraph_CoEdgeId>& aCoEdges =
       aGraph.Topo().Edges().CoEdges(anEdgeId);
     BRepGraph_FaceId aFace1;
     BRepGraph_FaceId aFace2;
@@ -1173,7 +1173,7 @@ TEST(BRepGraph_BuildTest, RegularityLayer_FaceMutation_InvalidatesBindings)
   for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More() && !hasBinding; anEdgeIt.Next())
   {
     anEdgeId = anEdgeIt.CurrentId();
-    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdges =
+    const NCollection_DynamicArray<BRepGraph_CoEdgeId>& aCoEdges =
       aGraph.Topo().Edges().CoEdges(anEdgeId);
     BRepGraph_FaceId aFace1;
     BRepGraph_FaceId aFace2;
@@ -1331,7 +1331,7 @@ TEST(BRepGraph_BuildTest, RootProductIds_Box_ReturnsOneProduct)
   ASSERT_TRUE(aGraph.IsDone());
 
   // BRepGraph_Builder::Perform() from a solid should produce exactly one root product.
-  const NCollection_Vector<BRepGraph_ProductId>& aRoots = aGraph.RootProductIds();
+  const NCollection_DynamicArray<BRepGraph_ProductId>& aRoots = aGraph.RootProductIds();
   ASSERT_EQ(aRoots.Length(), 1);
 
   // The product's shape root should be a Solid (for a box).
@@ -1381,7 +1381,7 @@ TEST(BRepGraph_BuildTest, RootProductIds_AppendFlattenedShape_ProductCountUnchan
   ASSERT_TRUE(aGraph.IsDone());
 
   // AppendFlattenedShape does not create new products.
-  const NCollection_Vector<BRepGraph_ProductId>& aRoots = aGraph.RootProductIds();
+  const NCollection_DynamicArray<BRepGraph_ProductId>& aRoots = aGraph.RootProductIds();
   EXPECT_EQ(aRoots.Length(), 1);
 
   // But a new face was appended.

@@ -16,68 +16,68 @@
 
 //=================================================================================================
 
-inline NCollection_Vector<BOPDS_InterfVV>& BOPDS_DS::InterfVV()
+inline NCollection_DynamicArray<BOPDS_InterfVV>& BOPDS_DS::InterfVV()
 {
   return myInterfVV;
 }
 
 //=================================================================================================
 
-inline NCollection_Vector<BOPDS_InterfVE>& BOPDS_DS::InterfVE()
+inline NCollection_DynamicArray<BOPDS_InterfVE>& BOPDS_DS::InterfVE()
 {
   return myInterfVE;
 }
 
 //=================================================================================================
 
-inline NCollection_Vector<BOPDS_InterfVF>& BOPDS_DS::InterfVF()
+inline NCollection_DynamicArray<BOPDS_InterfVF>& BOPDS_DS::InterfVF()
 {
   return myInterfVF;
 } //=================================================================================================
 
-inline NCollection_Vector<BOPDS_InterfEE>& BOPDS_DS::InterfEE()
+inline NCollection_DynamicArray<BOPDS_InterfEE>& BOPDS_DS::InterfEE()
 {
   return myInterfEE;
 }
 
 //=================================================================================================
 
-inline NCollection_Vector<BOPDS_InterfEF>& BOPDS_DS::InterfEF()
+inline NCollection_DynamicArray<BOPDS_InterfEF>& BOPDS_DS::InterfEF()
 {
   return myInterfEF;
 }
 
 //=================================================================================================
 
-inline NCollection_Vector<BOPDS_InterfFF>& BOPDS_DS::InterfFF()
+inline NCollection_DynamicArray<BOPDS_InterfFF>& BOPDS_DS::InterfFF()
 {
   return myInterfFF;
 }
 
 //=================================================================================================
 
-inline NCollection_Vector<BOPDS_InterfVZ>& BOPDS_DS::InterfVZ()
+inline NCollection_DynamicArray<BOPDS_InterfVZ>& BOPDS_DS::InterfVZ()
 {
   return myInterfVZ;
 }
 
 //=================================================================================================
 
-inline NCollection_Vector<BOPDS_InterfEZ>& BOPDS_DS::InterfEZ()
+inline NCollection_DynamicArray<BOPDS_InterfEZ>& BOPDS_DS::InterfEZ()
 {
   return myInterfEZ;
 }
 
 //=================================================================================================
 
-inline NCollection_Vector<BOPDS_InterfFZ>& BOPDS_DS::InterfFZ()
+inline NCollection_DynamicArray<BOPDS_InterfFZ>& BOPDS_DS::InterfFZ()
 {
   return myInterfFZ;
 }
 
 //=================================================================================================
 
-inline NCollection_Vector<BOPDS_InterfZZ>& BOPDS_DS::InterfZZ()
+inline NCollection_DynamicArray<BOPDS_InterfZZ>& BOPDS_DS::InterfZZ()
 {
   return myInterfZZ;
 }

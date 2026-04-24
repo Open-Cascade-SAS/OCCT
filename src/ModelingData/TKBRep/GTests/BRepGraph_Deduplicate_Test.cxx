@@ -113,8 +113,8 @@ int nbPCurveEntries(const BRepGraph& theGraph)
   int aCount = 0;
   for (BRepGraph_EdgeIterator anEdgeIt(theGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
-    const BRepGraph_EdgeId                        anEdgeId = anEdgeIt.CurrentId();
-    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
+    const BRepGraph_EdgeId                              anEdgeId = anEdgeIt.CurrentId();
+    const NCollection_DynamicArray<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
       theGraph.Topo().Edges().CoEdges(anEdgeId);
     for (int i = 0; i < aCoEdgeIdxs.Length(); ++i)
     {
@@ -249,8 +249,8 @@ int nbUniquePCurveNodes(const BRepGraph& theGraph)
   int aCount = 0;
   for (BRepGraph_FullEdgeIterator anEdgeIt(theGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
-    const BRepGraph_EdgeId                        anEdgeId = anEdgeIt.CurrentId();
-    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
+    const BRepGraph_EdgeId                              anEdgeId = anEdgeIt.CurrentId();
+    const NCollection_DynamicArray<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
       theGraph.Topo().Edges().CoEdges(anEdgeId);
     aCount += aCoEdgeIdxs.Length();
   }
@@ -262,8 +262,8 @@ int addDuplicatePCurvesToAllEdges(BRepGraph& theGraph)
   int aDupCount = 0;
   for (BRepGraph_FullEdgeIterator anEdgeIt(theGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
-    const BRepGraph_EdgeId                        anEdgeId = anEdgeIt.CurrentId();
-    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
+    const BRepGraph_EdgeId                              anEdgeId = anEdgeIt.CurrentId();
+    const NCollection_DynamicArray<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
       theGraph.Topo().Edges().CoEdges(anEdgeId);
     if (aCoEdgeIdxs.IsEmpty())
     {
@@ -856,13 +856,13 @@ TEST(BRepGraph_DeduplicateTest, HistoryFindOriginal_TracesBackToCanonical)
   for (size_t aRecIdx = 0; aRecIdx < aGraph.History().NbRecords(); ++aRecIdx)
   {
     const BRepGraph_HistoryRecord& aRec = aGraph.History().Record(aRecIdx);
-    for (NCollection_DataMap<BRepGraph_NodeId, NCollection_Vector<BRepGraph_NodeId>>::Iterator
+    for (NCollection_DataMap<BRepGraph_NodeId, NCollection_DynamicArray<BRepGraph_NodeId>>::Iterator
            aMapIter(aRec.Mapping);
          aMapIter.More();
          aMapIter.Next())
     {
-      const BRepGraph_NodeId&                     anOriginal    = aMapIter.Key();
-      const NCollection_Vector<BRepGraph_NodeId>& aReplacements = aMapIter.Value();
+      const BRepGraph_NodeId&                           anOriginal    = aMapIter.Key();
+      const NCollection_DynamicArray<BRepGraph_NodeId>& aReplacements = aMapIter.Value();
       for (int aReplIdx = 0; aReplIdx < aReplacements.Length(); ++aReplIdx)
       {
         const BRepGraph_NodeId aTraced =
@@ -895,13 +895,13 @@ TEST(BRepGraph_DeduplicateTest, HistoryFindDerived_ContainsCanonicalNode)
   for (size_t aRecIdx = 0; aRecIdx < aGraph.History().NbRecords(); ++aRecIdx)
   {
     const BRepGraph_HistoryRecord& aRec = aGraph.History().Record(aRecIdx);
-    for (NCollection_DataMap<BRepGraph_NodeId, NCollection_Vector<BRepGraph_NodeId>>::Iterator
+    for (NCollection_DataMap<BRepGraph_NodeId, NCollection_DynamicArray<BRepGraph_NodeId>>::Iterator
            aMapIter(aRec.Mapping);
          aMapIter.More();
          aMapIter.Next())
     {
-      const BRepGraph_NodeId&                    anOriginal = aMapIter.Key();
-      const NCollection_Vector<BRepGraph_NodeId> aDerived =
+      const BRepGraph_NodeId&                          anOriginal = aMapIter.Key();
+      const NCollection_DynamicArray<BRepGraph_NodeId> aDerived =
         aGraph.History().FindDerived(anOriginal);
       EXPECT_EQ(aDerived.Length(), 1);
       ++aNbCanonMappings;
@@ -1017,8 +1017,8 @@ TEST(BRepGraph_DeduplicateTest, AfterDedup_AllInlinePCurvesHaveCurve2d)
 
   for (BRepGraph_FullEdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
-    const BRepGraph_EdgeId                        anEdgeId = anEdgeIt.CurrentId();
-    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
+    const BRepGraph_EdgeId                              anEdgeId = anEdgeIt.CurrentId();
+    const NCollection_DynamicArray<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
       aGraph.Topo().Edges().CoEdges(anEdgeId);
     for (int aCEIter = 0; aCEIter < aCoEdgeIdxs.Length(); ++aCEIter)
     {
@@ -1540,12 +1540,12 @@ TEST(BRepGraph_DeduplicateTest, AnalyzeOnly_NoBackRefChangesOrNullification)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Snapshot surface/curve pointers before.
-  NCollection_Vector<const Geom_Surface*> aSurfPtrs;
+  NCollection_DynamicArray<const Geom_Surface*> aSurfPtrs;
   for (BRepGraph_FullFaceIterator aFaceIt(aGraph); aFaceIt.More(); aFaceIt.Next())
   {
     aSurfPtrs.Append(BRepGraph_Tool::Face::Surface(aGraph, aFaceIt.CurrentId()).get());
   }
-  NCollection_Vector<const Geom_Curve*> aCurvePtrs;
+  NCollection_DynamicArray<const Geom_Curve*> aCurvePtrs;
   for (BRepGraph_FullEdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
     aCurvePtrs.Append(BRepGraph_Tool::Edge::Curve(aGraph, anEdgeIt.CurrentId()).get());

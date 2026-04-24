@@ -2678,8 +2678,8 @@ int IFSelect_WorkSession::QueryParent(const occ::handle<Standard_Transient>& ent
 //=================================================================================================
 
 void IFSelect_WorkSession::SetParams(
-  const NCollection_Vector<occ::handle<Standard_Transient>>& params,
-  const NCollection_Vector<int>&                             uselist)
+  const NCollection_DynamicArray<occ::handle<Standard_Transient>>& params,
+  const NCollection_DynamicArray<int>&                             uselist)
 {
   int                               i, nbp = params.Length(), nbu = uselist.Length();
   occ::handle<IFSelect_ParamEditor> editor =

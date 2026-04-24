@@ -130,10 +130,10 @@ TEST_F(BRepGraph_MutationGenTest, SubtreeGen_DeferredPropagatedParent_Incremente
   // Store baselines before mutation.
   const uint32_t aEdgeOwnGenBefore =
     myGraph.Topo().Edges().Definition(BRepGraph_EdgeId::Start()).OwnGen;
-  NCollection_Vector<uint32_t> aWireSubtreeGensBefore;
+  NCollection_DynamicArray<uint32_t> aWireSubtreeGensBefore;
   for (BRepGraph_WireIterator aWireIt(myGraph); aWireIt.More(); aWireIt.Next())
     aWireSubtreeGensBefore.Append(aWireIt.Current().SubtreeGen);
-  NCollection_Vector<uint32_t> aFaceSubtreeGensBefore;
+  NCollection_DynamicArray<uint32_t> aFaceSubtreeGensBefore;
   for (BRepGraph_FaceIterator aFaceIt(myGraph); aFaceIt.More(); aFaceIt.Next())
     aFaceSubtreeGensBefore.Append(aFaceIt.Current().SubtreeGen);
 

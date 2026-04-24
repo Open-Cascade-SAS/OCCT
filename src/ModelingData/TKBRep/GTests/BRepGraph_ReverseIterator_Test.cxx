@@ -100,8 +100,8 @@ TEST_F(BRepGraph_ReverseIteratorTest, WiresOfEdge_BoxEdgeBelongsToTwoWires)
 
 TEST_F(BRepGraph_ReverseIteratorTest, SequentialIteration_SkipsRemovedParent)
 {
-  const BRepGraph_EdgeId                      anEdgeId(0);
-  const NCollection_Vector<BRepGraph_FaceId>& aFaces = myGraph.Topo().Edges().Faces(anEdgeId);
+  const BRepGraph_EdgeId                            anEdgeId(0);
+  const NCollection_DynamicArray<BRepGraph_FaceId>& aFaces = myGraph.Topo().Edges().Faces(anEdgeId);
   ASSERT_EQ(aFaces.Length(), 2);
 
   // Remove one parent face.
@@ -113,8 +113,8 @@ TEST_F(BRepGraph_ReverseIteratorTest, SequentialIteration_SkipsRemovedParent)
 
 TEST_F(BRepGraph_ReverseIteratorTest, IndexedAccess_DoesNotSkipRemoved)
 {
-  const BRepGraph_EdgeId                      anEdgeId(0);
-  const NCollection_Vector<BRepGraph_FaceId>& aFaces = myGraph.Topo().Edges().Faces(anEdgeId);
+  const BRepGraph_EdgeId                            anEdgeId(0);
+  const NCollection_DynamicArray<BRepGraph_FaceId>& aFaces = myGraph.Topo().Edges().Faces(anEdgeId);
   ASSERT_EQ(aFaces.Length(), 2);
 
   myGraph.Editor().Gen().RemoveNode(aFaces.Value(0));
@@ -210,8 +210,9 @@ TEST_F(BRepGraph_ReverseIteratorTest, Definition_ReturnsEdgeDefinition)
 
 TEST_F(BRepGraph_ReverseIteratorTest, SkipsRemovedParent_EdgesOfVertex)
 {
-  const BRepGraph_VertexId                    aVertexId(0);
-  const NCollection_Vector<BRepGraph_EdgeId>& anEdges = myGraph.Topo().Vertices().Edges(aVertexId);
+  const BRepGraph_VertexId                          aVertexId(0);
+  const NCollection_DynamicArray<BRepGraph_EdgeId>& anEdges =
+    myGraph.Topo().Vertices().Edges(aVertexId);
   // Box vertex touches 3 edges.
   ASSERT_EQ(anEdges.Length(), 3);
 
@@ -223,8 +224,8 @@ TEST_F(BRepGraph_ReverseIteratorTest, SkipsRemovedParent_EdgesOfVertex)
 
 TEST_F(BRepGraph_ReverseIteratorTest, SkipsRemovedParent_AllRemoved)
 {
-  const BRepGraph_EdgeId                      anEdgeId(0);
-  const NCollection_Vector<BRepGraph_FaceId>& aFaces = myGraph.Topo().Edges().Faces(anEdgeId);
+  const BRepGraph_EdgeId                            anEdgeId(0);
+  const NCollection_DynamicArray<BRepGraph_FaceId>& aFaces = myGraph.Topo().Edges().Faces(anEdgeId);
   ASSERT_EQ(aFaces.Length(), 2);
 
   myGraph.Editor().Gen().RemoveNode(aFaces.Value(0));
@@ -236,8 +237,9 @@ TEST_F(BRepGraph_ReverseIteratorTest, SkipsRemovedParent_AllRemoved)
 
 TEST_F(BRepGraph_ReverseIteratorTest, StartingIndex_SkipsToPosition)
 {
-  const BRepGraph_VertexId                    aVertexId(0);
-  const NCollection_Vector<BRepGraph_EdgeId>& anEdges = myGraph.Topo().Vertices().Edges(aVertexId);
+  const BRepGraph_VertexId                          aVertexId(0);
+  const NCollection_DynamicArray<BRepGraph_EdgeId>& anEdges =
+    myGraph.Topo().Vertices().Edges(aVertexId);
   ASSERT_EQ(anEdges.Length(), 3);
 
   // Start at index 1 - should yield only edges at index >= 1.

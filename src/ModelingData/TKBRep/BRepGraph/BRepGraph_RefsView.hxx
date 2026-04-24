@@ -81,7 +81,7 @@ public:
 
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::ShellRef& Entry(
       const BRepGraph_ShellRefId theRefId) const;
-    [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_ShellRefId>& IdsOf(
+    [[nodiscard]] Standard_EXPORT const NCollection_DynamicArray<BRepGraph_ShellRefId>& IdsOf(
       const BRepGraph_SolidId theSolid) const;
 
   private:
@@ -108,7 +108,7 @@ public:
 
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::FaceRef& Entry(
       const BRepGraph_FaceRefId theRefId) const;
-    [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_FaceRefId>& IdsOf(
+    [[nodiscard]] Standard_EXPORT const NCollection_DynamicArray<BRepGraph_FaceRefId>& IdsOf(
       const BRepGraph_ShellId theShell) const;
 
   private:
@@ -135,7 +135,7 @@ public:
 
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::WireRef& Entry(
       const BRepGraph_WireRefId theRefId) const;
-    [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_WireRefId>& IdsOf(
+    [[nodiscard]] Standard_EXPORT const NCollection_DynamicArray<BRepGraph_WireRefId>& IdsOf(
       const BRepGraph_FaceId theFace) const;
 
   private:
@@ -162,7 +162,7 @@ public:
 
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::CoEdgeRef& Entry(
       const BRepGraph_CoEdgeRefId theRefId) const;
-    [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_CoEdgeRefId>& IdsOf(
+    [[nodiscard]] Standard_EXPORT const NCollection_DynamicArray<BRepGraph_CoEdgeRefId>& IdsOf(
       const BRepGraph_WireId theWire) const;
 
   private:
@@ -214,7 +214,7 @@ public:
 
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::SolidRef& Entry(
       const BRepGraph_SolidRefId theRefId) const;
-    [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_SolidRefId>& IdsOf(
+    [[nodiscard]] Standard_EXPORT const NCollection_DynamicArray<BRepGraph_SolidRefId>& IdsOf(
       const BRepGraph_CompSolidId theCompSolid) const;
 
   private:
@@ -241,7 +241,7 @@ public:
 
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::ChildRef& Entry(
       const BRepGraph_ChildRefId theRefId) const;
-    [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_ChildRefId>& IdsOf(
+    [[nodiscard]] Standard_EXPORT const NCollection_DynamicArray<BRepGraph_ChildRefId>& IdsOf(
       const BRepGraph_CompoundId theCompound) const;
 
   private:
@@ -274,7 +274,7 @@ public:
 
     [[nodiscard]] Standard_EXPORT const BRepGraphInc::OccurrenceRef& Entry(
       const BRepGraph_OccurrenceRefId theRefId) const;
-    [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_OccurrenceRefId>& IdsOf(
+    [[nodiscard]] Standard_EXPORT const NCollection_DynamicArray<BRepGraph_OccurrenceRefId>& IdsOf(
       const BRepGraph_ProductId theProduct) const;
 
   private:

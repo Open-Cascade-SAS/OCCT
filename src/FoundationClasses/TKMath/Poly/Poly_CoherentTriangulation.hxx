@@ -20,7 +20,7 @@
 #include <Poly_CoherentNode.hxx>
 #include <Poly_CoherentTriangle.hxx>
 #include <Poly_CoherentLink.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 
 class Poly_CoherentTriangulation;
 template <class A>
@@ -89,12 +89,12 @@ class NCollection_List;
  * to Triangles and Links, you can subclass Poly_CoherentTriangulation and use the protected API for
  * your needs.
  *
- * Memory management: All data objects are stored in NCollection_Vector containers that prove to be
- * efficient for the performance. In addition references to triangles are stored in ring lists, with
- * an instance of such list per Poly_CoherentNode. These lists are allocated in a memory allocator
- * that is provided in the constructor of Poly_CoherentTriangulation. By default the standard OCCT
- * allocator (aka NCollection_BaseAllocator) is used. But if you need to increase the performance
- * you can use NCollection_IncAllocator instead.
+ * Memory management: All data objects are stored in NCollection_DynamicArray containers that prove
+ * to be efficient for the performance. In addition references to triangles are stored in ring
+ * lists, with an instance of such list per Poly_CoherentNode. These lists are allocated in a memory
+ * allocator that is provided in the constructor of Poly_CoherentTriangulation. By default the
+ * standard OCCT allocator (aka NCollection_BaseAllocator) is used. But if you need to increase the
+ * performance you can use NCollection_IncAllocator instead.
  * </ul>
  */
 class Poly_CoherentTriangulation : public Standard_Transient
@@ -104,7 +104,7 @@ public:
    * Subclass Iterator - allows to iterate all triangles skipping those that
    * have been removed.
    */
-  class IteratorOfTriangle : public NCollection_Vector<Poly_CoherentTriangle>::Iterator
+  class IteratorOfTriangle : public NCollection_DynamicArray<Poly_CoherentTriangle>::Iterator
   {
   public:
     //! Constructor
@@ -116,7 +116,7 @@ public:
   /**
    * Subclass Iterator - allows to iterate all nodes skipping the free ones.
    */
-  class IteratorOfNode : public NCollection_Vector<Poly_CoherentNode>::Iterator
+  class IteratorOfNode : public NCollection_DynamicArray<Poly_CoherentNode>::Iterator
   {
   public:
     //! Constructor
@@ -128,7 +128,7 @@ public:
   /**
    * Subclass Iterator - allows to iterate all links skipping invalid ones.
    */
-  class IteratorOfLink : public NCollection_Vector<Poly_CoherentLink>::Iterator
+  class IteratorOfLink : public NCollection_DynamicArray<Poly_CoherentLink>::Iterator
   {
   public:
     //! Constructor
@@ -351,11 +351,11 @@ public:
 protected:
   // ---------- PROTECTED FIELDS ----------
 
-  NCollection_Vector<Poly_CoherentTriangle> myTriangles;
-  NCollection_Vector<Poly_CoherentNode>     myNodes;
-  NCollection_Vector<Poly_CoherentLink>     myLinks;
-  occ::handle<NCollection_BaseAllocator>    myAlloc;
-  double                                    myDeflection;
+  NCollection_DynamicArray<Poly_CoherentTriangle> myTriangles;
+  NCollection_DynamicArray<Poly_CoherentNode>     myNodes;
+  NCollection_DynamicArray<Poly_CoherentLink>     myLinks;
+  occ::handle<NCollection_BaseAllocator>          myAlloc;
+  double                                          myDeflection;
 
 public:
   // Declaration of CASCADE RTTI

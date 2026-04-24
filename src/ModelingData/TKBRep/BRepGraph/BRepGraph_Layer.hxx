@@ -17,7 +17,7 @@
 #include <BRepGraph_NodeId.hxx>
 #include <BRepGraph_RefId.hxx>
 #include <NCollection_DataMap.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <Standard_GUID.hxx>
 #include <Standard_Transient.hxx>
 #include <TCollection_AsciiString.hxx>
@@ -117,7 +117,7 @@ public:
   //! Default: no-op.
   //! @param[in] theModifiedNodes all modified, non-removed nodes
   Standard_EXPORT virtual void OnNodesModified(
-    const NCollection_Vector<BRepGraph_NodeId>& theModifiedNodes) noexcept;
+    const NCollection_DynamicArray<BRepGraph_NodeId>& theModifiedNodes) noexcept;
 
   //! Convenience: return bitmask bit for a given Kind.
   static int KindBit(const BRepGraph_NodeId::Kind theKind)
@@ -154,8 +154,8 @@ public:
   //! @param[in] theModifiedRefs     all modified, non-removed refs
   //! @param[in] theModifiedRefKindsMask bitwise OR of all modified ref kinds
   Standard_EXPORT virtual void OnRefsModified(
-    const NCollection_Vector<BRepGraph_RefId>& theModifiedRefs,
-    const int                                  theModifiedRefKindsMask) noexcept;
+    const NCollection_DynamicArray<BRepGraph_RefId>& theModifiedRefs,
+    const int                                        theModifiedRefKindsMask) noexcept;
 
   //! Convenience: return bitmask bit for a given RefId::Kind.
   static int RefKindBit(const BRepGraph_RefId::Kind theKind)

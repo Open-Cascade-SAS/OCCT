@@ -17,7 +17,7 @@
 #include <GeomInt_WLApprox.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <NCollection_Sequence.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <PLib.hxx>
 #include <Precision.hxx>
 #include <NCollection_Array1.hxx>
@@ -328,9 +328,9 @@ void ApproxInt_KnotTools::ComputeKnotInds(const NCollection_LocalArray<double>& 
 
 //=================================================================================================
 
-void ApproxInt_KnotTools::FilterKnots(NCollection_Sequence<int>& theInds,
-                                      const int                  theMinNbPnts,
-                                      NCollection_Vector<int>&   theLKnots)
+void ApproxInt_KnotTools::FilterKnots(NCollection_Sequence<int>&     theInds,
+                                      const int                      theMinNbPnts,
+                                      NCollection_DynamicArray<int>& theLKnots)
 {
   // Maximum number of points per knot interval.
   int aMaxNbPnts = aMaxPntCoeff * theMinNbPnts;
@@ -559,7 +559,7 @@ void ApproxInt_KnotTools::BuildKnots(const NCollection_Array1<gp_Pnt>&   thePnts
                                      const bool                          theApproxU1V1,
                                      const bool                          theApproxU2V2,
                                      const int                           theMinNbPnts,
-                                     NCollection_Vector<int>&            theKnots)
+                                     NCollection_DynamicArray<int>&      theKnots)
 {
   NCollection_Sequence<int> aKnots;
   int                       aDim = 0;

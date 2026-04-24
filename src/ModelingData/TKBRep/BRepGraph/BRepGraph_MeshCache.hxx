@@ -18,7 +18,7 @@
 #include <BRepGraph_RepId.hxx>
 
 #include <NCollection_DataMap.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 
 //! @brief Cached mesh data storage for BRepGraph.
 //!
@@ -55,8 +55,8 @@ namespace BRepGraph_MeshCache
 //! Cached mesh entry for a face: triangulation rep references.
 struct FaceMeshEntry
 {
-  NCollection_Vector<BRepGraph_TriangulationRepId> TriangulationRepIds;
-  int                                              ActiveTriangulationIndex = -1;
+  NCollection_DynamicArray<BRepGraph_TriangulationRepId> TriangulationRepIds;
+  int                                                    ActiveTriangulationIndex = -1;
   uint32_t StoredOwnGen = 0; //!< OwnGen of FaceDef at write time
 
   //! True if this entry contains mesh data.
@@ -82,8 +82,8 @@ struct FaceMeshEntry
 //! Cached mesh entry for a coedge: polygon-on-triangulation and polygon-2D rep references.
 struct CoEdgeMeshEntry
 {
-  BRepGraph_Polygon2DRepId                        Polygon2DRepId;
-  NCollection_Vector<BRepGraph_PolygonOnTriRepId> PolygonOnTriRepIds;
+  BRepGraph_Polygon2DRepId                              Polygon2DRepId;
+  NCollection_DynamicArray<BRepGraph_PolygonOnTriRepId> PolygonOnTriRepIds;
   uint32_t StoredOwnGen = 0; //!< OwnGen of CoEdgeDef at write time
 
   //! True if this entry contains mesh data.
@@ -178,11 +178,11 @@ public:
 private:
   //! Ensure vector has at least theIndex+1 elements.
   template <typename T>
-  static void ensureSize(NCollection_Vector<T>& theVec, const size_t theIndex);
+  static void ensureSize(NCollection_DynamicArray<T>& theVec, const size_t theIndex);
 
-  NCollection_Vector<BRepGraph_MeshCache::FaceMeshEntry>   myFaceMeshes;
-  NCollection_Vector<BRepGraph_MeshCache::CoEdgeMeshEntry> myCoEdgeMeshes;
-  NCollection_Vector<BRepGraph_MeshCache::EdgeMeshEntry>   myEdgeMeshes;
+  NCollection_DynamicArray<BRepGraph_MeshCache::FaceMeshEntry>   myFaceMeshes;
+  NCollection_DynamicArray<BRepGraph_MeshCache::CoEdgeMeshEntry> myCoEdgeMeshes;
+  NCollection_DynamicArray<BRepGraph_MeshCache::EdgeMeshEntry>   myEdgeMeshes;
 };
 
 #endif // _BRepGraph_MeshCache_HeaderFile

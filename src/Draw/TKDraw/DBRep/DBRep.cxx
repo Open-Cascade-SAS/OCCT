@@ -29,7 +29,7 @@
 #include <Message_ProgressRange.hxx>
 #include <Draw_Segment3D.hxx>
 #include <GProp_GProps.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <OSD_FileSystem.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
@@ -1370,7 +1370,7 @@ static int normals(Draw_Interpretor& theDI, int theArgNum, const char** theArgs)
 
   DBRep_WriteColorOrientation();
 
-  NCollection_DataMap<TopoDS_Face, NCollection_Vector<std::pair<gp_Pnt, gp_Pnt>>> aNormals;
+  NCollection_DataMap<TopoDS_Face, NCollection_DynamicArray<std::pair<gp_Pnt, gp_Pnt>>> aNormals;
   if (toUseMesh)
   {
     DBRep_DrawableShape::addMeshNormals(aNormals, aShape, aLength);
@@ -1380,7 +1380,8 @@ static int normals(Draw_Interpretor& theDI, int theArgNum, const char** theArgs)
     DBRep_DrawableShape::addSurfaceNormals(aNormals, aShape, aLength, aNbAlongU, aNbAlongV);
   }
 
-  for (NCollection_DataMap<TopoDS_Face, NCollection_Vector<std::pair<gp_Pnt, gp_Pnt>>>::Iterator
+  for (NCollection_DataMap<TopoDS_Face,
+                           NCollection_DynamicArray<std::pair<gp_Pnt, gp_Pnt>>>::Iterator
          aFaceIt(aNormals);
        aFaceIt.More();
        aFaceIt.Next())
@@ -1391,7 +1392,7 @@ static int normals(Draw_Interpretor& theDI, int theArgNum, const char** theArgs)
     if (aFaceOri == TopAbs_REVERSED)
       bReverse = true;
 
-    for (NCollection_Vector<std::pair<gp_Pnt, gp_Pnt>>::Iterator aNormalsIt(aFaceIt.Value());
+    for (NCollection_DynamicArray<std::pair<gp_Pnt, gp_Pnt>>::Iterator aNormalsIt(aFaceIt.Value());
          aNormalsIt.More();
          aNormalsIt.Next())
     {

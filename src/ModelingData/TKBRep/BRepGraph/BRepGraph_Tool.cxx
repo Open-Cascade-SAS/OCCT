@@ -800,7 +800,7 @@ uint32_t BRepGraph_Tool::Wire::NbCoEdges(const BRepGraph& theGraph, const BRepGr
 BRepGraph_FaceId BRepGraph_Tool::Wire::FaceOf(const BRepGraph&       theGraph,
                                               const BRepGraph_WireId theWire)
 {
-  const NCollection_Vector<BRepGraph_FaceId>& aFaces = theGraph.Topo().Wires().Faces(theWire);
+  const NCollection_DynamicArray<BRepGraph_FaceId>& aFaces = theGraph.Topo().Wires().Faces(theWire);
   if (aFaces.IsEmpty())
     return BRepGraph_FaceId();
   return aFaces.First();
@@ -810,7 +810,7 @@ BRepGraph_FaceId BRepGraph_Tool::Wire::FaceOf(const BRepGraph&       theGraph,
 
 bool BRepGraph_Tool::Wire::IsOuter(const BRepGraph& theGraph, const BRepGraph_WireId theWire)
 {
-  const NCollection_Vector<BRepGraph_FaceId>& aFaces = theGraph.Topo().Wires().Faces(theWire);
+  const NCollection_DynamicArray<BRepGraph_FaceId>& aFaces = theGraph.Topo().Wires().Faces(theWire);
   for (const BRepGraph_FaceId& aFaceId : aFaces)
   {
     if (!aFaceId.IsValid())

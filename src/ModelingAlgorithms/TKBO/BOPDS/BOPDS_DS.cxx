@@ -387,15 +387,16 @@ bool BOPDS_DS::HasInterfSubShapes(const int theIndex1, const int theIndex2) cons
 
 //=================================================================================================
 
-const NCollection_Vector<NCollection_List<occ::handle<BOPDS_PaveBlock>>>& BOPDS_DS::PaveBlocksPool()
-  const
+const NCollection_DynamicArray<NCollection_List<occ::handle<BOPDS_PaveBlock>>>& BOPDS_DS::
+  PaveBlocksPool() const
 {
   return myPaveBlocksPool;
 }
 
 //=================================================================================================
 
-NCollection_Vector<NCollection_List<occ::handle<BOPDS_PaveBlock>>>& BOPDS_DS::ChangePaveBlocksPool()
+NCollection_DynamicArray<NCollection_List<occ::handle<BOPDS_PaveBlock>>>& BOPDS_DS::
+  ChangePaveBlocksPool()
 {
   return myPaveBlocksPool;
 }
@@ -692,7 +693,7 @@ void BOPDS_DS::SetCommonBlock(const occ::handle<BOPDS_PaveBlock>&   thePaveBlock
 
 //=================================================================================================
 
-const NCollection_Vector<BOPDS_FaceInfo>& BOPDS_DS::FaceInfoPool() const
+const NCollection_DynamicArray<BOPDS_FaceInfo>& BOPDS_DS::FaceInfoPool() const
 {
   return myFaceInfoPool;
 }

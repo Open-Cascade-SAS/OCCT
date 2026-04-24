@@ -183,8 +183,8 @@ TEST_F(BRepGraph_ConvenienceTest, ShellFaceRefs_Box_SixFaces)
 
 TEST_F(BRepGraph_ConvenienceTest, ShellFaceRefs_AllValid)
 {
-  const BRepGraph::RefsView&                     aRefs = myGraph.Refs();
-  const NCollection_Vector<BRepGraph_FaceRefId>& aFaceRefIds =
+  const BRepGraph::RefsView&                           aRefs = myGraph.Refs();
+  const NCollection_DynamicArray<BRepGraph_FaceRefId>& aFaceRefIds =
     aRefs.Faces().IdsOf(BRepGraph_ShellId::Start());
   for (int aFaceIter = 0; aFaceIter < aFaceRefIds.Length(); ++aFaceIter)
   {
@@ -215,7 +215,7 @@ TEST_F(BRepGraph_ConvenienceTest, FindPCurve_WithOrientation_SeamEdge)
   // Look for seam edges (coedge with SeamPairId valid).
   for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
-    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
+    const NCollection_DynamicArray<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
       aDefs.Edges().CoEdges(anEdgeIt.CurrentId());
 
     for (const BRepGraph_CoEdgeId& aCoEdgeId : aCoEdgeIdxs)

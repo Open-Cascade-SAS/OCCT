@@ -173,7 +173,7 @@ TEST(BRepGraph_ReplaceVertexTest, ReverseIndex_Rebuilt_VertexToEdge)
   ASSERT_TRUE(aGraph.Editor().Edges().ReplaceVertex(anEdgeId, anOldRefId, aNewVertex).IsValid());
 
   // New vertex must now see anEdgeId in its vertex-to-edge reverse map.
-  const NCollection_Vector<BRepGraph_EdgeId>& aNewEdges =
+  const NCollection_DynamicArray<BRepGraph_EdgeId>& aNewEdges =
     aGraph.Topo().Vertices().Edges(aNewVertex);
   bool aFoundNew = false;
   for (const BRepGraph_EdgeId& anE : aNewEdges)
@@ -188,7 +188,7 @@ TEST(BRepGraph_ReplaceVertexTest, ReverseIndex_Rebuilt_VertexToEdge)
 
   // Old vertex may still be referenced by other edges of the box (shared
   // corners); but it should no longer see anEdgeId through this slot.
-  const NCollection_Vector<BRepGraph_EdgeId>& aOldEdges =
+  const NCollection_DynamicArray<BRepGraph_EdgeId>& aOldEdges =
     aGraph.Topo().Vertices().Edges(aOldVertexId);
   (void)aOldEdges;
 

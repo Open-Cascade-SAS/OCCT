@@ -17,7 +17,7 @@
 #define _BVH_LinearBuilder_Header
 
 #include <BVH_RadixSorter.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <Standard_Assert.hxx>
 
 //! Performs fast BVH construction using LBVH building approach.
@@ -236,7 +236,7 @@ public:
       const int aLftChild = theData.myBVH->NodeInfoBuffer()[theData.myNode].y();
       const int aRghChild = theData.myBVH->NodeInfoBuffer()[theData.myNode].z();
 
-      NCollection_Vector<BoundData<T, N>> aList(2);
+      NCollection_DynamicArray<BoundData<T, N>> aList(2);
       if (!theData.myBVH->IsOuter(aLftChild))
       {
         BoundData<T, N> aBoundData = {theData.mySet,

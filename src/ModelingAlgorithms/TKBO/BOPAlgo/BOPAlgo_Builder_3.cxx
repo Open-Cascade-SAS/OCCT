@@ -43,7 +43,7 @@
 //
 #include <BOPAlgo_Tools.hxx>
 #include <NCollection_IncAllocator.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedMap.hxx>
@@ -392,7 +392,7 @@ private:
 };
 
 // Vector of Solid Builders
-typedef NCollection_Vector<BOPAlgo_SplitSolid> BOPAlgo_VectorOfBuilderSolid;
+typedef NCollection_DynamicArray<BOPAlgo_SplitSolid> BOPAlgo_VectorOfBuilderSolid;
 
 //=================================================================================================
 

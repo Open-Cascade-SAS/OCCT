@@ -349,7 +349,7 @@ Centralized per-node (TransientCache) and per-reference (RefTransientCache) cach
 
 - **Purpose**: ephemeral computed caches (bounding boxes, UV bounds, FClass2d results)
 - **Identity**: cache families are described by `BRepGraph_CacheKind` with stable `Standard_GUID` identity
-- **Storage**: dense `NCollection_Vector<CacheKindSlot>` per cache kind, then per node kind, then per entity index
+- **Storage**: dense `NCollection_DynamicArray<CacheKindSlot>` per cache kind, then per node kind, then per entity index
 - **Granularity**: one cached value per `(node, cache kind)`
 - **Freshness**: SubtreeGen-validated for nodes (each slot stores `StoredSubtreeGen`); OwnGen-validated for refs (refs have no subtree). On read, if the stored generation differs from the entity's current generation, the attribute is marked dirty and recomputed lazily.
 - **Thread safety**: `shared_mutex` (concurrent reads from `OSD_Parallel::For`, exclusive writes)

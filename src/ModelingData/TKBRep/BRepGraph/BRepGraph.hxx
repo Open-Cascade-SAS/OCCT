@@ -33,7 +33,7 @@
 #include <Bnd_Box.hxx>
 #include <gp_Pnt.hxx>
 
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <NCollection_DataMap.hxx>
 
 #include <memory>
@@ -146,8 +146,8 @@ public:
   //! Return root product identifiers (products not referenced by any active occurrence).
   //! Maintained incrementally by Editor/EditorView mutations.
   //! Returns empty vector if the graph has not been built.
-  [[nodiscard]] Standard_EXPORT const NCollection_Vector<BRepGraph_ProductId>& RootProductIds()
-    const;
+  [[nodiscard]] Standard_EXPORT const NCollection_DynamicArray<BRepGraph_ProductId>&
+                                      RootProductIds() const;
 
   //! Replace the internal allocator and re-create all storage.
   Standard_EXPORT void SetAllocator(const occ::handle<NCollection_BaseAllocator>& theAlloc);

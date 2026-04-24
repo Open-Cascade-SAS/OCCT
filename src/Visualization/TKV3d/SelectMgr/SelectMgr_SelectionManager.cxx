@@ -547,7 +547,7 @@ void SelectMgr_SelectionManager::buildBVH(const occ::handle<SelectMgr_Selection>
 {
   if (mySelector->ToPrebuildBVH())
   {
-    for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator anIter(
+    for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator anIter(
            theSelection->Entities());
          anIter.More();
          anIter.Next())

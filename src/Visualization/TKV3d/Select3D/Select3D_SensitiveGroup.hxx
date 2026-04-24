@@ -171,7 +171,7 @@ private:
   bool                     myToCheckOverlapAll;  //!< flag to check overlapping with all entities within rectangular/polygonal selection
   gp_Pnt                               myCenter;             //!< Center of geometry of the group
   mutable Select3D_BndBox3d            myBndBox;             //!< Bounding box of the group
-  NCollection_Vector<int> myBVHPrimIndexes;     //!< Vector of sub-entities indexes for BVH tree build
+  NCollection_DynamicArray<int> myBVHPrimIndexes;     //!< Vector of sub-entities indexes for BVH tree build
   // clang-format on
 };
 

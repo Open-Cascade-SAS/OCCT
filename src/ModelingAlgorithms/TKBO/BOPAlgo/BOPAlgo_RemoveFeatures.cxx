@@ -34,7 +34,7 @@
 
 #include <BRepLib.hxx>
 
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 
 #include <ShapeUpgrade_UnifySameDomain.hxx>
 
@@ -831,7 +831,7 @@ private: //! @name Fields
   // clang-format on
 };
 
-typedef NCollection_Vector<FillGap> VectorOfFillGap;
+typedef NCollection_DynamicArray<FillGap> VectorOfFillGap;
 
 //=======================================================================
 // function: RemoveFeatures

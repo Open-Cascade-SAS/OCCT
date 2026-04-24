@@ -150,7 +150,7 @@ TEST(BRepGraph_PolygonTest, PolyOnTri_Captured_AfterMesh)
   int aNbPolyOnTri = 0;
   for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
-    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
+    const NCollection_DynamicArray<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
       aGraph.Topo().Edges().CoEdges(anEdgeIt.CurrentId());
     for (const BRepGraph_CoEdgeId& aCoEdgeId : aCoEdgeIdxs)
     {
@@ -163,7 +163,7 @@ TEST(BRepGraph_PolygonTest, PolyOnTri_Captured_AfterMesh)
   // Verify PolyOnTri entries have valid context references.
   for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
-    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
+    const NCollection_DynamicArray<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
       aGraph.Topo().Edges().CoEdges(anEdgeIt.CurrentId());
     for (const BRepGraph_CoEdgeId& aCoEdgeId : aCoEdgeIdxs)
     {
@@ -234,7 +234,7 @@ TEST(BRepGraph_PolygonTest, UVPoints_Captured_OnPCurves)
   int aNbNonOriginUV = 0;
   for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
-    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
+    const NCollection_DynamicArray<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
       aGraph.Topo().Edges().CoEdges(anEdgeIt.CurrentId());
     for (const BRepGraph_CoEdgeId& aCoEdgeId : aCoEdgeIdxs)
     {
@@ -425,7 +425,7 @@ TEST(BRepGraph_PolygonTest, SeamEdge_PolyOnTri_TwoEntries)
   bool aFoundSeam = false;
   for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More() && !aFoundSeam; anEdgeIt.Next())
   {
-    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
+    const NCollection_DynamicArray<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
       aGraph.Topo().Edges().CoEdges(anEdgeIt.CurrentId());
     // Count PolyOnTri entries per face via coedges.
     NCollection_DataMap<int, int> aFaceCounts;

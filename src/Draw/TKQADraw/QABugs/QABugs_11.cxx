@@ -68,7 +68,7 @@
 #include <IntRes2d_IntersectionSegment.hxx>
 #include <TDataStd_RealArray.hxx>
 #include <TDF_CopyLabel.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <Standard_Integer.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <gp_Pnt.hxx>
@@ -2856,8 +2856,8 @@ static int OCC7639(Draw_Interpretor& di, int argc, const char** argv)
     return 1;
   }
 
-  int                     i, aValue, aPosition;
-  NCollection_Vector<int> vec;
+  int                           i, aValue, aPosition;
+  NCollection_DynamicArray<int> vec;
   for (i = 0; i < argc - 1; i++)
   {
     i++;
@@ -2865,8 +2865,8 @@ static int OCC7639(Draw_Interpretor& di, int argc, const char** argv)
     aPosition = Draw::Atoi(argv[i + 1]);
     vec.SetValue(aValue, aPosition);
   }
-  NCollection_Vector<int>::Iterator it(vec);
-  int                               j;
+  NCollection_DynamicArray<int>::Iterator it(vec);
+  int                                     j;
   for (j = 0; it.More(); it.Next(), j++)
   {
     // di << it.Value() << "\n";

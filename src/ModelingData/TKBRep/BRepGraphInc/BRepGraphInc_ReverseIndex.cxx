@@ -26,8 +26,8 @@ namespace
 
 template <typename T>
 BRepGraph_VertexId resolveVertexDefId(
-  const NCollection_Vector<BRepGraphInc::VertexRef>& theVertexRefs,
-  const T                                            theRefId)
+  const NCollection_DynamicArray<BRepGraphInc::VertexRef>& theVertexRefs,
+  const T                                                  theRefId)
 {
   if (!theRefId.IsValid(static_cast<uint32_t>(theVertexRefs.Size())))
     return BRepGraph_VertexId();
@@ -35,13 +35,13 @@ BRepGraph_VertexId resolveVertexDefId(
 }
 
 template <typename TKey, typename TVal>
-bool containsIndexInTable(const NCollection_Vector<NCollection_Vector<TVal>>& theIdx,
-                          const TKey                                          theKey,
-                          const TVal                                          theVal)
+bool containsIndexInTable(const NCollection_DynamicArray<NCollection_DynamicArray<TVal>>& theIdx,
+                          const TKey                                                      theKey,
+                          const TVal                                                      theVal)
 {
   if (!theKey.IsValid(static_cast<uint32_t>(theIdx.Size())))
     return false;
-  const NCollection_Vector<TVal>& aVec = theIdx.Value(static_cast<size_t>(theKey.Index));
+  const NCollection_DynamicArray<TVal>& aVec = theIdx.Value(static_cast<size_t>(theKey.Index));
   for (const TVal& anElem : aVec)
     if (anElem == theVal)
       return true;
@@ -49,10 +49,10 @@ bool containsIndexInTable(const NCollection_Vector<NCollection_Vector<TVal>>& th
 }
 
 static bool hasActiveFaceForEdgeInCoEdges(
-  const NCollection_Vector<BRepGraph_CoEdgeId>&      theCoEdgeIds,
-  const NCollection_Vector<BRepGraphInc::CoEdgeDef>& theCoEdges,
-  const BRepGraph_EdgeId                             theEdgeId,
-  const BRepGraph_FaceId                             theFaceId)
+  const NCollection_DynamicArray<BRepGraph_CoEdgeId>&      theCoEdgeIds,
+  const NCollection_DynamicArray<BRepGraphInc::CoEdgeDef>& theCoEdges,
+  const BRepGraph_EdgeId                                   theEdgeId,
+  const BRepGraph_FaceId                                   theFaceId)
 {
   for (const BRepGraph_CoEdgeId& aCoEdgeId : theCoEdgeIds)
   {
@@ -126,22 +126,22 @@ void BRepGraphInc_ReverseIndex::Build(const BRepGraphInc_Storage& theStorage)
 //=================================================================================================
 
 void BRepGraphInc_ReverseIndex::Build(
-  const NCollection_Vector<BRepGraphInc::VertexDef>&    theVertices,
-  const NCollection_Vector<BRepGraphInc::EdgeDef>&      theEdges,
-  const NCollection_Vector<BRepGraphInc::CoEdgeDef>&    theCoEdges,
-  const NCollection_Vector<BRepGraphInc::WireDef>&      theWires,
-  const NCollection_Vector<BRepGraphInc::FaceDef>&      theFaces,
-  const NCollection_Vector<BRepGraphInc::ShellDef>&     theShells,
-  const NCollection_Vector<BRepGraphInc::SolidDef>&     theSolids,
-  const NCollection_Vector<BRepGraphInc::CompoundDef>&  theCompounds,
-  const NCollection_Vector<BRepGraphInc::CompSolidDef>& theCompSolids,
-  const NCollection_Vector<BRepGraphInc::ShellRef>&     theShellRefs,
-  const NCollection_Vector<BRepGraphInc::FaceRef>&      theFaceRefs,
-  const NCollection_Vector<BRepGraphInc::WireRef>&      theWireRefs,
-  const NCollection_Vector<BRepGraphInc::CoEdgeRef>&    theCoEdgeRefs,
-  const NCollection_Vector<BRepGraphInc::SolidRef>&     theSolidRefs,
-  const NCollection_Vector<BRepGraphInc::ChildRef>&     theChildRefs,
-  const NCollection_Vector<BRepGraphInc::VertexRef>&    theVertexRefs)
+  const NCollection_DynamicArray<BRepGraphInc::VertexDef>&    theVertices,
+  const NCollection_DynamicArray<BRepGraphInc::EdgeDef>&      theEdges,
+  const NCollection_DynamicArray<BRepGraphInc::CoEdgeDef>&    theCoEdges,
+  const NCollection_DynamicArray<BRepGraphInc::WireDef>&      theWires,
+  const NCollection_DynamicArray<BRepGraphInc::FaceDef>&      theFaces,
+  const NCollection_DynamicArray<BRepGraphInc::ShellDef>&     theShells,
+  const NCollection_DynamicArray<BRepGraphInc::SolidDef>&     theSolids,
+  const NCollection_DynamicArray<BRepGraphInc::CompoundDef>&  theCompounds,
+  const NCollection_DynamicArray<BRepGraphInc::CompSolidDef>& theCompSolids,
+  const NCollection_DynamicArray<BRepGraphInc::ShellRef>&     theShellRefs,
+  const NCollection_DynamicArray<BRepGraphInc::FaceRef>&      theFaceRefs,
+  const NCollection_DynamicArray<BRepGraphInc::WireRef>&      theWireRefs,
+  const NCollection_DynamicArray<BRepGraphInc::CoEdgeRef>&    theCoEdgeRefs,
+  const NCollection_DynamicArray<BRepGraphInc::SolidRef>&     theSolidRefs,
+  const NCollection_DynamicArray<BRepGraphInc::ChildRef>&     theChildRefs,
+  const NCollection_DynamicArray<BRepGraphInc::VertexRef>&    theVertexRefs)
 {
   myNbIndexedCoEdges = 0;
 
@@ -247,7 +247,7 @@ void BRepGraphInc_ReverseIndex::Build(
   {
     if (theEdges.Value(static_cast<size_t>(anEdgeId.Index)).IsRemoved)
       continue;
-    const NCollection_Vector<BRepGraph_CoEdgeId>* aCoEdgeIdxs =
+    const NCollection_DynamicArray<BRepGraph_CoEdgeId>* aCoEdgeIdxs =
       seekVec(myEdgeToCoEdges, anEdgeId.Index);
     if (aCoEdgeIdxs == nullptr)
       continue;
@@ -443,31 +443,31 @@ void BRepGraphInc_ReverseIndex::Build(
 //=================================================================================================
 
 void BRepGraphInc_ReverseIndex::BuildDelta(
-  const NCollection_Vector<BRepGraphInc::VertexDef>&    theVertices,
-  const NCollection_Vector<BRepGraphInc::EdgeDef>&      theEdges,
-  const NCollection_Vector<BRepGraphInc::CoEdgeDef>&    theCoEdges,
-  const NCollection_Vector<BRepGraphInc::WireDef>&      theWires,
-  const NCollection_Vector<BRepGraphInc::FaceDef>&      theFaces,
-  const NCollection_Vector<BRepGraphInc::ShellDef>&     theShells,
-  const NCollection_Vector<BRepGraphInc::SolidDef>&     theSolids,
-  const NCollection_Vector<BRepGraphInc::CompoundDef>&  theCompounds,
-  const NCollection_Vector<BRepGraphInc::CompSolidDef>& theCompSolids,
-  const NCollection_Vector<BRepGraphInc::ShellRef>&     theShellRefs,
-  const NCollection_Vector<BRepGraphInc::FaceRef>&      theFaceRefs,
-  const NCollection_Vector<BRepGraphInc::WireRef>&      theWireRefs,
-  const NCollection_Vector<BRepGraphInc::CoEdgeRef>&    theCoEdgeRefs,
-  const NCollection_Vector<BRepGraphInc::SolidRef>&     theSolidRefs,
-  const NCollection_Vector<BRepGraphInc::ChildRef>&     theChildRefs,
-  const NCollection_Vector<BRepGraphInc::VertexRef>&    theVertexRefs,
-  const uint32_t                                        theOldNbEdges,
-  const uint32_t                                        theOldNbWires,
-  const uint32_t                                        theOldNbFaces,
-  const uint32_t                                        theOldNbShells,
-  const uint32_t                                        theOldNbSolids,
-  const uint32_t                                        theOldNbCompounds,
-  const uint32_t                                        theOldNbCompSolids,
-  const uint32_t                                        theOldNbChildRefs,
-  const uint32_t                                        theOldNbSolidRefs)
+  const NCollection_DynamicArray<BRepGraphInc::VertexDef>&    theVertices,
+  const NCollection_DynamicArray<BRepGraphInc::EdgeDef>&      theEdges,
+  const NCollection_DynamicArray<BRepGraphInc::CoEdgeDef>&    theCoEdges,
+  const NCollection_DynamicArray<BRepGraphInc::WireDef>&      theWires,
+  const NCollection_DynamicArray<BRepGraphInc::FaceDef>&      theFaces,
+  const NCollection_DynamicArray<BRepGraphInc::ShellDef>&     theShells,
+  const NCollection_DynamicArray<BRepGraphInc::SolidDef>&     theSolids,
+  const NCollection_DynamicArray<BRepGraphInc::CompoundDef>&  theCompounds,
+  const NCollection_DynamicArray<BRepGraphInc::CompSolidDef>& theCompSolids,
+  const NCollection_DynamicArray<BRepGraphInc::ShellRef>&     theShellRefs,
+  const NCollection_DynamicArray<BRepGraphInc::FaceRef>&      theFaceRefs,
+  const NCollection_DynamicArray<BRepGraphInc::WireRef>&      theWireRefs,
+  const NCollection_DynamicArray<BRepGraphInc::CoEdgeRef>&    theCoEdgeRefs,
+  const NCollection_DynamicArray<BRepGraphInc::SolidRef>&     theSolidRefs,
+  const NCollection_DynamicArray<BRepGraphInc::ChildRef>&     theChildRefs,
+  const NCollection_DynamicArray<BRepGraphInc::VertexRef>&    theVertexRefs,
+  const uint32_t                                              theOldNbEdges,
+  const uint32_t                                              theOldNbWires,
+  const uint32_t                                              theOldNbFaces,
+  const uint32_t                                              theOldNbShells,
+  const uint32_t                                              theOldNbSolids,
+  const uint32_t                                              theOldNbCompounds,
+  const uint32_t                                              theOldNbCompSolids,
+  const uint32_t                                              theOldNbChildRefs,
+  const uint32_t                                              theOldNbSolidRefs)
 {
 
   // Helper: resolve a VertexRefId to the corresponding VertexDefId (BRepGraph_VertexId).
@@ -588,7 +588,7 @@ void BRepGraphInc_ReverseIndex::BuildDelta(
   {
     if (theEdges.Value(static_cast<size_t>(anEdgeId.Index)).IsRemoved)
       continue;
-    const NCollection_Vector<BRepGraph_CoEdgeId>* aCoEdgeIdxs =
+    const NCollection_DynamicArray<BRepGraph_CoEdgeId>* aCoEdgeIdxs =
       seekVec(myEdgeToCoEdges, anEdgeId.Index);
     if (aCoEdgeIdxs == nullptr)
       continue;
@@ -862,10 +862,10 @@ void BRepGraphInc_ReverseIndex::UnbindEdgeFromWire(const BRepGraph_EdgeId theEdg
 {
   if (theEdgeId.Index >= myEdgeToWires.Size())
     return;
-  NCollection_Vector<BRepGraph_WireId>& aWires =
+  NCollection_DynamicArray<BRepGraph_WireId>& aWires =
     myEdgeToWires.ChangeValue(static_cast<size_t>(theEdgeId.Index));
   uint32_t anIdx = 0;
-  for (NCollection_Vector<BRepGraph_WireId>::Iterator anIt(aWires); anIt.More();
+  for (NCollection_DynamicArray<BRepGraph_WireId>::Iterator anIt(aWires); anIt.More();
        anIt.Next(), ++anIdx)
   {
     if (anIt.Value() == theWireId)
@@ -885,10 +885,10 @@ void BRepGraphInc_ReverseIndex::UnbindCoEdgeFromWire(const BRepGraph_CoEdgeId th
 {
   if (theCoEdgeId.Index >= myCoEdgeToWires.Size())
     return;
-  NCollection_Vector<BRepGraph_WireId>& aWires =
+  NCollection_DynamicArray<BRepGraph_WireId>& aWires =
     myCoEdgeToWires.ChangeValue(static_cast<size_t>(theCoEdgeId.Index));
   uint32_t anIdx = 0;
-  for (NCollection_Vector<BRepGraph_WireId>::Iterator anIt(aWires); anIt.More();
+  for (NCollection_DynamicArray<BRepGraph_WireId>::Iterator anIt(aWires); anIt.More();
        anIt.Next(), ++anIdx)
   {
     if (anIt.Value() == theWireId)
@@ -926,10 +926,10 @@ void BRepGraphInc_ReverseIndex::UnbindVertexFromEdge(const BRepGraph_VertexId th
 {
   if (theVertexId.Index >= myVertexToEdges.Size())
     return;
-  NCollection_Vector<BRepGraph_EdgeId>& anEdges =
+  NCollection_DynamicArray<BRepGraph_EdgeId>& anEdges =
     myVertexToEdges.ChangeValue(static_cast<size_t>(theVertexId.Index));
   uint32_t anIdx = 0;
-  for (NCollection_Vector<BRepGraph_EdgeId>::Iterator anIt(anEdges); anIt.More();
+  for (NCollection_DynamicArray<BRepGraph_EdgeId>::Iterator anIt(anEdges); anIt.More();
        anIt.Next(), ++anIdx)
   {
     if (anIt.Value() == theEdgeId)
@@ -957,10 +957,10 @@ void BRepGraphInc_ReverseIndex::UnbindEdgeFromCoEdge(const BRepGraph_EdgeId   th
 {
   if (theEdgeId.Index >= myEdgeToCoEdges.Size())
     return;
-  NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdges =
+  NCollection_DynamicArray<BRepGraph_CoEdgeId>& aCoEdges =
     myEdgeToCoEdges.ChangeValue(static_cast<size_t>(theEdgeId.Index));
   uint32_t anIdx = 0;
-  for (NCollection_Vector<BRepGraph_CoEdgeId>::Iterator anIt(aCoEdges); anIt.More();
+  for (NCollection_DynamicArray<BRepGraph_CoEdgeId>::Iterator anIt(aCoEdges); anIt.More();
        anIt.Next(), ++anIdx)
   {
     if (anIt.Value() == theCoEdgeId)
@@ -988,10 +988,10 @@ void BRepGraphInc_ReverseIndex::UnbindEdgeFromFace(const BRepGraph_EdgeId theEdg
 {
   if (theEdgeId.Index >= myEdgeToFaces.Size())
     return;
-  NCollection_Vector<BRepGraph_FaceId>& aFaces =
+  NCollection_DynamicArray<BRepGraph_FaceId>& aFaces =
     myEdgeToFaces.ChangeValue(static_cast<size_t>(theEdgeId.Index));
   uint32_t anIdx = 0;
-  for (NCollection_Vector<BRepGraph_FaceId>::Iterator anIt(aFaces); anIt.More();
+  for (NCollection_DynamicArray<BRepGraph_FaceId>::Iterator anIt(aFaces); anIt.More();
        anIt.Next(), ++anIdx)
   {
     if (anIt.Value() == theFaceId)
@@ -1007,22 +1007,22 @@ void BRepGraphInc_ReverseIndex::UnbindEdgeFromFace(const BRepGraph_EdgeId theEdg
 //=================================================================================================
 
 bool BRepGraphInc_ReverseIndex::Validate(
-  const NCollection_Vector<BRepGraphInc::VertexDef>&    theVertices,
-  const NCollection_Vector<BRepGraphInc::EdgeDef>&      theEdges,
-  const NCollection_Vector<BRepGraphInc::CoEdgeDef>&    theCoEdges,
-  const NCollection_Vector<BRepGraphInc::WireDef>&      theWires,
-  const NCollection_Vector<BRepGraphInc::FaceDef>&      theFaces,
-  const NCollection_Vector<BRepGraphInc::ShellDef>&     theShells,
-  const NCollection_Vector<BRepGraphInc::SolidDef>&     theSolids,
-  const NCollection_Vector<BRepGraphInc::CompoundDef>&  theCompounds,
-  const NCollection_Vector<BRepGraphInc::CompSolidDef>& theCompSolids,
-  const NCollection_Vector<BRepGraphInc::ShellRef>&     theShellRefs,
-  const NCollection_Vector<BRepGraphInc::FaceRef>&      theFaceRefs,
-  const NCollection_Vector<BRepGraphInc::WireRef>&      theWireRefs,
-  const NCollection_Vector<BRepGraphInc::CoEdgeRef>&    theCoEdgeRefs,
-  const NCollection_Vector<BRepGraphInc::SolidRef>&     theSolidRefs,
-  const NCollection_Vector<BRepGraphInc::ChildRef>&     theChildRefs,
-  const NCollection_Vector<BRepGraphInc::VertexRef>&    theVertexRefs) const
+  const NCollection_DynamicArray<BRepGraphInc::VertexDef>&    theVertices,
+  const NCollection_DynamicArray<BRepGraphInc::EdgeDef>&      theEdges,
+  const NCollection_DynamicArray<BRepGraphInc::CoEdgeDef>&    theCoEdges,
+  const NCollection_DynamicArray<BRepGraphInc::WireDef>&      theWires,
+  const NCollection_DynamicArray<BRepGraphInc::FaceDef>&      theFaces,
+  const NCollection_DynamicArray<BRepGraphInc::ShellDef>&     theShells,
+  const NCollection_DynamicArray<BRepGraphInc::SolidDef>&     theSolids,
+  const NCollection_DynamicArray<BRepGraphInc::CompoundDef>&  theCompounds,
+  const NCollection_DynamicArray<BRepGraphInc::CompSolidDef>& theCompSolids,
+  const NCollection_DynamicArray<BRepGraphInc::ShellRef>&     theShellRefs,
+  const NCollection_DynamicArray<BRepGraphInc::FaceRef>&      theFaceRefs,
+  const NCollection_DynamicArray<BRepGraphInc::WireRef>&      theWireRefs,
+  const NCollection_DynamicArray<BRepGraphInc::CoEdgeRef>&    theCoEdgeRefs,
+  const NCollection_DynamicArray<BRepGraphInc::SolidRef>&     theSolidRefs,
+  const NCollection_DynamicArray<BRepGraphInc::ChildRef>&     theChildRefs,
+  const NCollection_DynamicArray<BRepGraphInc::VertexRef>&    theVertexRefs) const
 {
   auto hasActiveWireUsageOfEdge = [&](const BRepGraph_WireId theWireId,
                                       const BRepGraph_EdgeId theEdgeId) -> bool {
@@ -1118,7 +1118,7 @@ bool BRepGraphInc_ReverseIndex::Validate(
       return false;
     }
 
-    const NCollection_Vector<BRepGraph_CoEdgeId>* aCoEdgeIds =
+    const NCollection_DynamicArray<BRepGraph_CoEdgeId>* aCoEdgeIds =
       seekVec(myEdgeToCoEdges, theEdgeId.Index);
     if (aCoEdgeIds == nullptr)
     {
@@ -1552,7 +1552,7 @@ bool BRepGraphInc_ReverseIndex::Validate(
   const uint32_t aNbEdgeToWires = static_cast<uint32_t>(myEdgeToWires.Size());
   for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdgeToWires); ++anEdgeId)
   {
-    const NCollection_Vector<BRepGraph_WireId>& aWires = WiresOfEdgeRef(anEdgeId);
+    const NCollection_DynamicArray<BRepGraph_WireId>& aWires = WiresOfEdgeRef(anEdgeId);
     for (const BRepGraph_WireId& aWireId2 : aWires)
     {
       if (!aWireId2.IsValid(static_cast<uint32_t>(theWires.Size())))
@@ -1569,7 +1569,7 @@ bool BRepGraphInc_ReverseIndex::Validate(
   const uint32_t aNbEdgeToCoEdges = static_cast<uint32_t>(myEdgeToCoEdges.Size());
   for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdgeToCoEdges); ++anEdgeId)
   {
-    const NCollection_Vector<BRepGraph_CoEdgeId>& aCoEdges = CoEdgesOfEdgeRef(anEdgeId);
+    const NCollection_DynamicArray<BRepGraph_CoEdgeId>& aCoEdges = CoEdgesOfEdgeRef(anEdgeId);
     for (const BRepGraph_CoEdgeId& aCoEdgeId2 : aCoEdges)
     {
       if (!aCoEdgeId2.IsValid(static_cast<uint32_t>(theCoEdges.Size())))
@@ -1588,7 +1588,7 @@ bool BRepGraphInc_ReverseIndex::Validate(
   const uint32_t aNbWireToFaces = static_cast<uint32_t>(myWireToFaces.Size());
   for (BRepGraph_WireId aWireId(0); aWireId.IsValid(aNbWireToFaces); ++aWireId)
   {
-    const NCollection_Vector<BRepGraph_FaceId>& aFaces = FacesOfWireRef(aWireId);
+    const NCollection_DynamicArray<BRepGraph_FaceId>& aFaces = FacesOfWireRef(aWireId);
     for (const BRepGraph_FaceId& aFaceId2 : aFaces)
     {
       if (!aFaceId2.IsValid(static_cast<uint32_t>(theFaces.Size())))
@@ -1605,7 +1605,8 @@ bool BRepGraphInc_ReverseIndex::Validate(
   const uint32_t aNbEdgeToFaces = static_cast<uint32_t>(myEdgeToFaces.Size());
   for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdgeToFaces); ++anEdgeId)
   {
-    const NCollection_Vector<BRepGraph_FaceId>* aFaces = seekVec(myEdgeToFaces, anEdgeId.Index);
+    const NCollection_DynamicArray<BRepGraph_FaceId>* aFaces =
+      seekVec(myEdgeToFaces, anEdgeId.Index);
     if (aFaces == nullptr)
     {
       continue;
@@ -1626,7 +1627,7 @@ bool BRepGraphInc_ReverseIndex::Validate(
   const uint32_t aNbFaceToShells = static_cast<uint32_t>(myFaceToShells.Size());
   for (BRepGraph_FaceId aFaceId(0); aFaceId.IsValid(aNbFaceToShells); ++aFaceId)
   {
-    const NCollection_Vector<BRepGraph_ShellId>* aShellsVec =
+    const NCollection_DynamicArray<BRepGraph_ShellId>* aShellsVec =
       seekVec(myFaceToShells, aFaceId.Index);
     if (aShellsVec == nullptr)
     {
@@ -1648,7 +1649,7 @@ bool BRepGraphInc_ReverseIndex::Validate(
   const uint32_t aNbShellToSolids = static_cast<uint32_t>(myShellToSolids.Size());
   for (BRepGraph_ShellId aShellId(0); aShellId.IsValid(aNbShellToSolids); ++aShellId)
   {
-    const NCollection_Vector<BRepGraph_SolidId>* aSolidsVec =
+    const NCollection_DynamicArray<BRepGraph_SolidId>* aSolidsVec =
       seekVec(myShellToSolids, aShellId.Index);
     if (aSolidsVec == nullptr)
     {
@@ -1670,7 +1671,7 @@ bool BRepGraphInc_ReverseIndex::Validate(
   const uint32_t aNbCompoundsOfSolid = static_cast<uint32_t>(myCompoundsOfSolid.Size());
   for (BRepGraph_SolidId aSolidId(0); aSolidId.IsValid(aNbCompoundsOfSolid); ++aSolidId)
   {
-    const NCollection_Vector<BRepGraph_CompoundId>* aCompoundsVec =
+    const NCollection_DynamicArray<BRepGraph_CompoundId>* aCompoundsVec =
       seekVec(myCompoundsOfSolid, aSolidId.Index);
     if (aCompoundsVec == nullptr)
     {
@@ -1692,7 +1693,7 @@ bool BRepGraphInc_ReverseIndex::Validate(
   const uint32_t aNbCompSolidsOfSolid = static_cast<uint32_t>(myCompSolidsOfSolid.Size());
   for (BRepGraph_SolidId aSolidId(0); aSolidId.IsValid(aNbCompSolidsOfSolid); ++aSolidId)
   {
-    const NCollection_Vector<BRepGraph_CompSolidId>* aCompSolidsVec =
+    const NCollection_DynamicArray<BRepGraph_CompSolidId>* aCompSolidsVec =
       seekVec(myCompSolidsOfSolid, aSolidId.Index);
     if (aCompSolidsVec == nullptr)
     {
@@ -1714,7 +1715,7 @@ bool BRepGraphInc_ReverseIndex::Validate(
   const uint32_t aNbCompoundsOfShell = static_cast<uint32_t>(myCompoundsOfShell.Size());
   for (BRepGraph_ShellId aShellId(0); aShellId.IsValid(aNbCompoundsOfShell); ++aShellId)
   {
-    const NCollection_Vector<BRepGraph_CompoundId>* aCompoundsVec =
+    const NCollection_DynamicArray<BRepGraph_CompoundId>* aCompoundsVec =
       seekVec(myCompoundsOfShell, aShellId.Index);
     if (aCompoundsVec == nullptr)
     {
@@ -1736,7 +1737,7 @@ bool BRepGraphInc_ReverseIndex::Validate(
   const uint32_t aNbCompoundsOfFace = static_cast<uint32_t>(myCompoundsOfFace.Size());
   for (BRepGraph_FaceId aFaceId(0); aFaceId.IsValid(aNbCompoundsOfFace); ++aFaceId)
   {
-    const NCollection_Vector<BRepGraph_CompoundId>* aCompoundsVec =
+    const NCollection_DynamicArray<BRepGraph_CompoundId>* aCompoundsVec =
       seekVec(myCompoundsOfFace, aFaceId.Index);
     if (aCompoundsVec == nullptr)
     {
@@ -1759,7 +1760,7 @@ bool BRepGraphInc_ReverseIndex::Validate(
   for (BRepGraph_CompoundId aCompoundId(0); aCompoundId.IsValid(aNbCompoundsOfCompound);
        ++aCompoundId)
   {
-    const NCollection_Vector<BRepGraph_CompoundId>* aCompoundsVec =
+    const NCollection_DynamicArray<BRepGraph_CompoundId>* aCompoundsVec =
       seekVec(myCompoundsOfCompound, aCompoundId.Index);
     if (aCompoundsVec == nullptr)
     {
@@ -1782,7 +1783,7 @@ bool BRepGraphInc_ReverseIndex::Validate(
   for (BRepGraph_CompSolidId aCompSolidId(0); aCompSolidId.IsValid(aNbCompoundsOfCompSolid);
        ++aCompSolidId)
   {
-    const NCollection_Vector<BRepGraph_CompoundId>* aCompoundsVec =
+    const NCollection_DynamicArray<BRepGraph_CompoundId>* aCompoundsVec =
       seekVec(myCompoundsOfCompSolid, aCompSolidId.Index);
     if (aCompoundsVec == nullptr)
     {
@@ -1805,7 +1806,7 @@ bool BRepGraphInc_ReverseIndex::Validate(
   const uint32_t aNbCompoundsOfWire = static_cast<uint32_t>(myCompoundsOfWire.Size());
   for (BRepGraph_WireId aWireId(0); aWireId.IsValid(aNbCompoundsOfWire); ++aWireId)
   {
-    const NCollection_Vector<BRepGraph_CompoundId>* aCompoundsVec =
+    const NCollection_DynamicArray<BRepGraph_CompoundId>* aCompoundsVec =
       seekVec(myCompoundsOfWire, aWireId.Index);
     if (aCompoundsVec == nullptr)
     {
@@ -1828,7 +1829,7 @@ bool BRepGraphInc_ReverseIndex::Validate(
   const uint32_t aNbCompoundsOfEdge = static_cast<uint32_t>(myCompoundsOfEdge.Size());
   for (BRepGraph_EdgeId anEdgeId2(0); anEdgeId2.IsValid(aNbCompoundsOfEdge); ++anEdgeId2)
   {
-    const NCollection_Vector<BRepGraph_CompoundId>* aCompoundsVec =
+    const NCollection_DynamicArray<BRepGraph_CompoundId>* aCompoundsVec =
       seekVec(myCompoundsOfEdge, anEdgeId2.Index);
     if (aCompoundsVec == nullptr)
     {
@@ -1851,7 +1852,7 @@ bool BRepGraphInc_ReverseIndex::Validate(
   const uint32_t aNbCompoundsOfVertex = static_cast<uint32_t>(myCompoundsOfVertex.Size());
   for (BRepGraph_VertexId aVertexId(0); aVertexId.IsValid(aNbCompoundsOfVertex); ++aVertexId)
   {
-    const NCollection_Vector<BRepGraph_CompoundId>* aCompoundsVec =
+    const NCollection_DynamicArray<BRepGraph_CompoundId>* aCompoundsVec =
       seekVec(myCompoundsOfVertex, aVertexId.Index);
     if (aCompoundsVec == nullptr)
     {
@@ -1874,7 +1875,7 @@ bool BRepGraphInc_ReverseIndex::Validate(
   const uint32_t aNbCoEdgeToWires = static_cast<uint32_t>(myCoEdgeToWires.Size());
   for (BRepGraph_CoEdgeId aCoEdgeId2(0); aCoEdgeId2.IsValid(aNbCoEdgeToWires); ++aCoEdgeId2)
   {
-    const NCollection_Vector<BRepGraph_WireId>* aWiresVec =
+    const NCollection_DynamicArray<BRepGraph_WireId>* aWiresVec =
       seekVec(myCoEdgeToWires, aCoEdgeId2.Index);
     if (aWiresVec == nullptr)
     {
@@ -1920,8 +1921,8 @@ bool BRepGraphInc_ReverseIndex::Validate(
 //=================================================================================================
 
 void BRepGraphInc_ReverseIndex::BuildProductOccurrences(
-  const NCollection_Vector<BRepGraphInc::OccurrenceDef>& theOccurrences,
-  const uint32_t                                         theNbProducts)
+  const NCollection_DynamicArray<BRepGraphInc::OccurrenceDef>& theOccurrences,
+  const uint32_t                                               theNbProducts)
 {
   myProductToOccurrences.Clear();
   preSize(myProductToOccurrences, theNbProducts, myAllocator);

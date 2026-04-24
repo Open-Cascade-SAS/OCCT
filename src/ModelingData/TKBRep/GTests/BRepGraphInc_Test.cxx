@@ -396,7 +396,7 @@ TEST(BRepGraphIncTest, Box_ReverseIndex_EdgesToWires)
   const int aNbEdges = aStorage.NbEdges();
   for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
   {
-    const NCollection_Vector<BRepGraph_WireId>* aWires =
+    const NCollection_DynamicArray<BRepGraph_WireId>* aWires =
       aStorage.ReverseIndex().WiresOfEdge(anEdgeId);
     EXPECT_TRUE(aWires != nullptr) << "Edge " << anEdgeId.Index << " not in any wire";
     if (aWires != nullptr)
@@ -421,7 +421,7 @@ TEST(BRepGraphIncTest, Box_ReverseIndex_EdgesToFaces)
   {
     if (aStorage.Edge(anEdgeId).IsDegenerate)
       continue;
-    const NCollection_Vector<BRepGraph_FaceId>* aFaces =
+    const NCollection_DynamicArray<BRepGraph_FaceId>* aFaces =
       aStorage.ReverseIndex().FacesOfEdge(anEdgeId);
     EXPECT_TRUE(aFaces != nullptr) << "Edge " << anEdgeId.Index << " not in any face";
     if (aFaces != nullptr)
@@ -521,7 +521,7 @@ TEST(BRepGraphIncTest, Box_CoEdgeCount)
   const int aNbEdges     = aStorage.NbEdges();
   for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
   {
-    const NCollection_Vector<BRepGraph_CoEdgeId>* aCoEdgeIdxs =
+    const NCollection_DynamicArray<BRepGraph_CoEdgeId>* aCoEdgeIdxs =
       aStorage.ReverseIndex().CoEdgesOfEdge(anEdgeId);
     if (aCoEdgeIdxs != nullptr)
       aCoEdgeCount += aCoEdgeIdxs->Length();
@@ -543,7 +543,7 @@ TEST(BRepGraphIncTest, Cylinder_HasSeamEdges)
   const int aNbEdges       = aStorage.NbEdges();
   for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
   {
-    const NCollection_Vector<BRepGraph_CoEdgeId>* aCoEdgeIdxs =
+    const NCollection_DynamicArray<BRepGraph_CoEdgeId>* aCoEdgeIdxs =
       aStorage.ReverseIndex().CoEdgesOfEdge(anEdgeId);
     if (aCoEdgeIdxs == nullptr)
       continue;
@@ -574,7 +574,7 @@ TEST(BRepGraphIncTest, Cylinder_SeamEdge_ReverseIndex_NoDuplicateFace)
   const int aNbEdges = aStorage.NbEdges();
   for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(aNbEdges); ++anEdgeId)
   {
-    const NCollection_Vector<BRepGraph_FaceId>* aFaces =
+    const NCollection_DynamicArray<BRepGraph_FaceId>* aFaces =
       aStorage.ReverseIndex().FacesOfEdge(anEdgeId);
     if (aFaces == nullptr)
       continue;
@@ -1222,7 +1222,7 @@ TEST(BRepGraphIncTest, ReverseIndex_Validate_CompoundWithAtomicWire)
   ASSERT_GE(aStorage.NbWires(), 1);
 
   // The wire must appear in myCompoundsOfWire.
-  const NCollection_Vector<BRepGraph_CompoundId>* aCmpVec =
+  const NCollection_DynamicArray<BRepGraph_CompoundId>* aCmpVec =
     aStorage.ReverseIndex().CompoundsOfWire(BRepGraph_WireId::Start());
   EXPECT_NE(aCmpVec, nullptr) << "Wire(0) should appear in myCompoundsOfWire";
   if (aCmpVec != nullptr)
@@ -1253,7 +1253,7 @@ TEST(BRepGraphIncTest, ReverseIndex_Validate_CompoundWithAtomicEdge)
   EXPECT_EQ(aStorage.NbCompounds(), 1);
   ASSERT_GE(aStorage.NbEdges(), 1);
 
-  const NCollection_Vector<BRepGraph_CompoundId>* aCmpVec =
+  const NCollection_DynamicArray<BRepGraph_CompoundId>* aCmpVec =
     aStorage.ReverseIndex().CompoundsOfEdge(BRepGraph_EdgeId::Start());
   EXPECT_NE(aCmpVec, nullptr) << "Edge(0) should appear in myCompoundsOfEdge";
   if (aCmpVec != nullptr)
@@ -1283,7 +1283,7 @@ TEST(BRepGraphIncTest, ReverseIndex_Validate_CompoundWithAtomicVertex)
   EXPECT_EQ(aStorage.NbCompounds(), 1);
   ASSERT_GE(aStorage.NbVertices(), 1);
 
-  const NCollection_Vector<BRepGraph_CompoundId>* aCmpVec =
+  const NCollection_DynamicArray<BRepGraph_CompoundId>* aCmpVec =
     aStorage.ReverseIndex().CompoundsOfVertex(BRepGraph_VertexId::Start());
   EXPECT_NE(aCmpVec, nullptr) << "Vertex(0) should appear in myCompoundsOfVertex";
   if (aCmpVec != nullptr)
@@ -1312,7 +1312,7 @@ TEST(BRepGraphIncTest, ReverseIndex_CoEdgeToWire_IsPopulated)
     const BRepGraphInc::CoEdgeDef& aCE = aStorage.CoEdge(aCoEdgeId);
     if (aCE.IsRemoved)
       continue;
-    const NCollection_Vector<BRepGraph_WireId>* aWires =
+    const NCollection_DynamicArray<BRepGraph_WireId>* aWires =
       aStorage.ReverseIndex().WiresOfCoEdge(aCoEdgeId);
     EXPECT_NE(aWires, nullptr) << "CoEdge " << aCoEdgeId.Index << " not in any wire";
     if (aWires != nullptr)
@@ -1351,7 +1351,7 @@ TEST(BRepGraphIncTest, ReverseIndex_CompSolid_ReverseMaintained_AfterBuild)
        aSolidId.IsValid(aStorage.NbSolids());
        ++aSolidId)
   {
-    const NCollection_Vector<BRepGraph_CompSolidId>* aCSVec =
+    const NCollection_DynamicArray<BRepGraph_CompSolidId>* aCSVec =
       aStorage.ReverseIndex().CompSolidsOfSolid(aSolidId);
     EXPECT_NE(aCSVec, nullptr) << "Solid " << aSolidId.Index << " not in any CompSolid";
     if (aCSVec != nullptr)
@@ -1386,7 +1386,7 @@ TEST(BRepGraphIncTest, ReverseIndex_CompSolid_ReverseMaintained_AfterBuildDelta)
 
   EXPECT_TRUE(aStorage.ValidateReverseIndex());
 
-  const NCollection_Vector<BRepGraph_CompSolidId>* aCSVec =
+  const NCollection_DynamicArray<BRepGraph_CompSolidId>* aCSVec =
     aStorage.ReverseIndex().CompSolidsOfSolid(BRepGraph_SolidId::Start());
   EXPECT_NE(aCSVec, nullptr) << "Solid 0 should be indexed in CompSolidsOfSolid";
 }
