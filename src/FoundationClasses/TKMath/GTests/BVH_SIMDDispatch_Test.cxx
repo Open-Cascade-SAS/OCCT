@@ -235,3 +235,48 @@ TEST(BVH_SIMDDispatchTest, GetRayBoxN8ReturnsNonNull)
 {
   EXPECT_NE(BVH::SIMD::GetRayBoxN<8>(), nullptr);
 }
+
+TEST(BVH_SIMDDispatchTest, ScalarRayBoxN16_AllHit)
+{
+  auto                         aRay = MakeRayNSplat<16>(-1.0f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f);
+  BVH::SIMD::BVH_BoxNf_SoA<16> aBoxes{};
+  for (int i = 0; i < 16; ++i)
+  {
+    SetBoxN<16>(aBoxes, i, i * 2.0f, 0.0f, 0.0f, i * 2.0f + 1.0f, 1.0f, 1.0f);
+  }
+  float aTEnter[16]{}, aTLeave[16]{};
+  int   aMask = BVH::SIMD::RayBoxN_Scalar<16>(aRay, aBoxes, aTEnter, aTLeave);
+  EXPECT_EQ(aMask, 0xFFFF);
+}
+
+TEST(BVH_SIMDDispatchTest, ScalarRayBoxN16_AllMiss)
+{
+  auto                         aRay = MakeRayNSplat<16>(-1.0f, 5.0f, 0.5f, 1.0f, 0.0f, 0.0f);
+  BVH::SIMD::BVH_BoxNf_SoA<16> aBoxes{};
+  for (int i = 0; i < 16; ++i)
+  {
+    SetBoxN<16>(aBoxes, i, i * 2.0f, 0.0f, 0.0f, i * 2.0f + 1.0f, 1.0f, 1.0f);
+  }
+  float aTEnter[16]{}, aTLeave[16]{};
+  int   aMask = BVH::SIMD::RayBoxN_Scalar<16>(aRay, aBoxes, aTEnter, aTLeave);
+  EXPECT_EQ(aMask, 0);
+}
+
+TEST(BVH_SIMDDispatchTest, ScalarRayBoxN16_PartialHit_16BitMosaic)
+{
+  auto                         aRay = MakeRayNSplat<16>(-1.0f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f);
+  BVH::SIMD::BVH_BoxNf_SoA<16> aBoxes{};
+  for (int i = 0; i < 16; ++i)
+  {
+    const float dy = (i & 1) ? 5.0f : 0.0f;
+    SetBoxN<16>(aBoxes, i, i * 2.0f, dy, 0.0f, i * 2.0f + 1.0f, dy + 1.0f, 1.0f);
+  }
+  float aTEnter[16]{}, aTLeave[16]{};
+  int   aMask = BVH::SIMD::RayBoxN_Scalar<16>(aRay, aBoxes, aTEnter, aTLeave);
+  EXPECT_EQ(aMask, 0x5555); // 0101 0101 0101 0101 -- even lanes hit
+}
+
+TEST(BVH_SIMDDispatchTest, GetRayBoxN16ReturnsNonNull)
+{
+  EXPECT_NE(BVH::SIMD::GetRayBoxN<16>(), nullptr);
+}
