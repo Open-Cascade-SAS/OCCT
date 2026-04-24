@@ -347,3 +347,139 @@ TEST(BVH_ToolsSIMDBenchmark, DISABLED_RayBoxN8_KernelComparison)
 
   std::cout << std::endl;
 }
+
+namespace
+{
+
+//! 16-wide variant of BenchmarkData / MeasureKernel for the BVH16 kernels
+//! (RayBoxN<16>: scalar reference + AVX-512 natural fit).
+//! Per the "right tool for right job" rule, only the natural-fit kernel
+//! (zmm 16-lane via __m512) is provided; SSE2/AVX2 BVH16 fallbacks would
+//! just loop the smaller kernels and degrade for no benefit.
+struct BenchmarkDataN16
+{
+  std::vector<BVH::SIMD::BVH_RayNf_Splat<16>> rays;
+  std::vector<BVH::SIMD::BVH_BoxNf_SoA<16>>   boxes;
+
+  BenchmarkDataN16()
+  {
+    rays.reserve(kNumCases);
+    boxes.reserve(kNumCases);
+
+    std::mt19937                          aGen(0x12345);
+    std::uniform_real_distribution<float> aPos(-10.0f, 10.0f);
+    std::uniform_real_distribution<float> aSize(0.5f, 4.0f);
+    std::uniform_real_distribution<float> aDir(-1.0f, 1.0f);
+
+    for (int aCase = 0; aCase < kNumCases; ++aCase)
+    {
+      float       dx = aDir(aGen), dy = aDir(aGen), dz = aDir(aGen);
+      const float aLen = std::sqrt(dx * dx + dy * dy + dz * dz);
+      if (aLen < 1.0e-3f)
+      {
+        dx = 1.0f;
+        dy = 0.0f;
+        dz = 0.0f;
+      }
+      else
+      {
+        dx /= aLen;
+        dy /= aLen;
+        dz /= aLen;
+      }
+      const float ox = aPos(aGen), oy = aPos(aGen), oz = aPos(aGen);
+
+      BVH::SIMD::BVH_RayNf_Splat<16> aRay{};
+      for (int i = 0; i < 16; ++i)
+      {
+        aRay.ox[i]  = ox;
+        aRay.oy[i]  = oy;
+        aRay.oz[i]  = oz;
+        aRay.idx[i] = (dx != 0.0f) ? (1.0f / dx) : std::numeric_limits<float>::infinity();
+        aRay.idy[i] = (dy != 0.0f) ? (1.0f / dy) : std::numeric_limits<float>::infinity();
+        aRay.idz[i] = (dz != 0.0f) ? (1.0f / dz) : std::numeric_limits<float>::infinity();
+      }
+      rays.push_back(aRay);
+
+      BVH::SIMD::BVH_BoxNf_SoA<16> aBoxes{};
+      for (int k = 0; k < 16; ++k)
+      {
+        const float cx = aPos(aGen), cy = aPos(aGen), cz = aPos(aGen);
+        const float sx = aSize(aGen), sy = aSize(aGen), sz = aSize(aGen);
+        aBoxes.minX[k] = cx - sx;
+        aBoxes.minY[k] = cy - sy;
+        aBoxes.minZ[k] = cz - sz;
+        aBoxes.maxX[k] = cx + sx;
+        aBoxes.maxY[k] = cy + sy;
+        aBoxes.maxZ[k] = cz + sz;
+      }
+      boxes.push_back(aBoxes);
+    }
+  }
+};
+
+KernelTime MeasureKernelN16(const char*               theName,
+                            BVH::SIMD::RayBoxN_Fn<16> theFn,
+                            const BenchmarkDataN16&   theData)
+{
+  long long aWarmupSink = 0;
+  for (const auto& aRay : theData.rays)
+  {
+    float aTEnter[16]{}, aTLeave[16]{};
+    aWarmupSink += theFn(aRay, theData.boxes[0], aTEnter, aTLeave);
+  }
+  long long aSink = aWarmupSink;
+  auto      t0    = std::chrono::high_resolution_clock::now();
+  for (int aRep = 0; aRep < kNumRepeats; ++aRep)
+  {
+    const auto& aRay = theData.rays[aRep & (kNumCases - 1)];
+    for (int aCase = 0; aCase < kNumCases; ++aCase)
+    {
+      float aTEnter[16]{}, aTLeave[16]{};
+      aSink += theFn(aRay, theData.boxes[aCase], aTEnter, aTLeave);
+    }
+  }
+  auto         t1         = std::chrono::high_resolution_clock::now();
+  const double aTotalNs   = std::chrono::duration<double, std::nano>(t1 - t0).count();
+  const double aPerCallNs = aTotalNs / (static_cast<double>(kNumRepeats) * kNumCases);
+  return {theName, aPerCallNs, aSink};
+}
+
+} // namespace
+
+TEST(BVH_ToolsSIMDBenchmark, DISABLED_RayBoxN16_KernelComparison)
+{
+  BenchmarkDataN16 aData;
+
+  std::cout << "\n=== RayBoxN<16> microbenchmark (BVH16 fan-out) ===" << std::endl;
+  std::cout << "  cases   : " << kNumCases << " (random ray + 16 AABB)" << std::endl;
+  std::cout << "  repeats : " << kNumRepeats << std::endl;
+  std::cout << "  per kernel: " << (static_cast<long long>(kNumCases) * kNumRepeats)
+            << " invocations" << std::endl
+            << std::endl;
+
+  KernelTime aScalar = MeasureKernelN16("Scalar", &BVH::SIMD::RayBoxN_Scalar<16>, aData);
+  PrintRow(aScalar, aScalar.nsPerCall);
+
+#if defined(BVH_HAS_AVX512_KERNEL)
+  if (BVH::SIMD::Detect() >= BVH::SIMD::Level::AVX512)
+  {
+    KernelTime aAVX512 = MeasureKernelN16("AVX-512", &BVH::SIMD::RayBoxN_AVX512_16, aData);
+    PrintRow(aAVX512, aScalar.nsPerCall);
+    // Sanity gate: zmm 16-lane should beat scalar by a healthy margin. If it
+    // does not, suspect that __m512 didn't actually get emitted (verify with
+    // objdump for vmovups %zmm) or that the host throttles AVX-512.
+    EXPECT_LT(aAVX512.nsPerCall, aScalar.nsPerCall * 0.5)
+      << "AVX-512 BVH16 should be at least 2x scalar; check zmm emission with objdump";
+  }
+  else
+  {
+    std::cout << "  AVX-512       (skipped: CPU support absent)" << std::endl;
+  }
+#endif
+
+  KernelTime aDispatched = MeasureKernelN16("Dispatched", BVH::SIMD::GetRayBoxN<16>(), aData);
+  PrintRow(aDispatched, aScalar.nsPerCall);
+
+  std::cout << std::endl;
+}
