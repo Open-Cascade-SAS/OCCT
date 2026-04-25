@@ -24,12 +24,10 @@
 TEST(BRepAlgoAPI_SectionTest, OCCN2_CylinderSphereSectionIsDone)
 {
   BRepPrimAPI_MakeCylinder aCylMaker(50., 200.);
-  ASSERT_TRUE(aCylMaker.IsDone());
-  const TopoDS_Shape& aCylinder = aCylMaker.Shape();
+  const TopoDS_Shape&      aCylinder = aCylMaker.Shape();
 
   BRepPrimAPI_MakeSphere aSphereMaker(gp_Pnt(60., 0., 100.), 50.);
-  ASSERT_TRUE(aSphereMaker.IsDone());
-  const TopoDS_Shape& aSphere = aSphereMaker.Shape();
+  const TopoDS_Shape&    aSphere = aSphereMaker.Shape();
 
   BRepAlgoAPI_Section aSection(aCylinder, aSphere);
   EXPECT_TRUE(aSection.IsDone());

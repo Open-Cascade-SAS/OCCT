@@ -119,8 +119,10 @@ TEST(gp_LinTest, Transform)
 
 TEST(gp_Lin2dTest, ConstructFromEquation_ZeroDirection_ThrowsException)
 {
-  // A=0, B=0 -> direction vector is zero -> must throw
+// A=0, B=0 -> direction vector is zero -> must throw
+#ifndef No_Exception
   EXPECT_THROW(gp_Lin2d(0.0, 0.0, 1.0), Standard_ConstructionError);
+#endif
 }
 
 TEST(gp_Lin2dTest, ConstructFromEquation_ValidCoefficients_CorrectOrigin)

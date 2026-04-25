@@ -937,7 +937,7 @@ TEST_F(Geom_BSplineSurface_Test, WeightsArray_Rational_ReturnsOwning)
 // OCC30990: Foundation Classes - unexpected change in numerical results on bsplines after 0029769
 // Verify that evaluating a B-Spline surface at a knot gives consistent results regardless of
 // which span was evaluated beforehand (i.e., the cache is updated correctly).
-TEST(Geom_BSplineSurface_Test, OCC30990_CacheConsistencyAtKnots)
+TEST_F(Geom_BSplineSurface_Test, OCC30990_CacheConsistencyAtKnots)
 {
   // Build a degree-3 B-Spline surface with 3 interior knots in U (4 spans) and 2 in V (3 spans).
   // Poles: 7 x 5

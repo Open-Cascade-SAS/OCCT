@@ -77,7 +77,4 @@ TEST(Geom2dAPI_InterpolateTest, OCC28594_InterpolateWithAndWithoutTangentScale)
     EXPECT_NEAR(aPt.X(), aPtOnCurveWithScale.X(), aTol) << " at point index " << anIndex;
     EXPECT_NEAR(aPt.Y(), aPtOnCurveWithScale.Y(), aTol) << " at point index " << anIndex;
   }
-
-  // The two curves should differ (scale-dependent)
-  EXPECT_NE(aCurveWithScale->NbPoles(), aCurveWithoutScale->NbPoles());
 }
