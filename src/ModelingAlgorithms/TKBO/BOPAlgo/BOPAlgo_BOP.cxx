@@ -742,49 +742,12 @@ void BOPAlgo_BOP::BuildRC(const Message_ProgressRange& theRange)
     aMCheckExp.Add(aS);
   }
   //
-  // Augment the check set with SD-canonical reps so that legitimate cross-
-  // parent shared regions (e.g. Common(box1, box2)'s overlap, where each
-  // input's split image now preserves its own TShape and the equivalence is
-  // recorded via myShapesSD) still register as "contained in tool". An arg-
-  // image whose canonical lies in the tool's check set IS the same physical
-  // region as something in the tool.
-  const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& aShapesSD =
-    ShapesSD();
-  if (!aShapesSD.IsEmpty())
-  {
-    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aMCheckExpExtra;
-    const int aNbCheck = aMCheckExp.Extent();
-    for (int iC = 1; iC <= aNbCheck; ++iC)
-    {
-      const TopoDS_Shape*  pCanon = aShapesSD.Seek(aMCheckExp(iC));
-      while (pCanon != nullptr)
-      {
-        aMCheckExpExtra.Add(*pCanon);
-        pCanon = aShapesSD.Seek(*pCanon);
-      }
-    }
-    const int aNbExtra = aMCheckExpExtra.Extent();
-    for (int iC = 1; iC <= aNbExtra; ++iC)
-      aMCheckExp.Add(aMCheckExpExtra(iC));
-  }
-  //
   aNb = aMItExp.Extent();
   for (i = 1; i <= aNb; ++i)
   {
     const TopoDS_Shape& aS = aMItExp(i);
     //
     bContains = aMCheckExp.Contains(aS);
-    // Equivalence-aware containment: if aS's SD-canonical lies in the tool
-    // check set, treat aS as contained (same physical region).
-    if (!bContains)
-    {
-      const TopoDS_Shape* pCanon = aShapesSD.Seek(aS);
-      while (!bContains && pCanon != nullptr)
-      {
-        bContains = aMCheckExp.Contains(*pCanon);
-        pCanon    = aShapesSD.Seek(*pCanon);
-      }
-    }
     if (!bContains && aS.ShapeType() == TopAbs_SOLID)
     {
       BOPTools_Set aST;

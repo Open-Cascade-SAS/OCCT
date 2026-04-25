@@ -579,13 +579,15 @@ void BOPAlgo_Builder::BuildSplitSolids(
         //
         const BOPTools_Set& aSTx = aMST.Added(aST);
         const TopoDS_Shape& aSx  = aSTx.Shape();
-        // Preserve aSR as this source's own piece in the image list, regardless
-        // of whether the face-set hash matches an earlier piece. The previous
-        // overwrite (pLSx->Append(aSx)) replaced aSR with the canonical aSx,
-        // erasing this source's own split solid from its image list and letting
-        // BuildRC drop the piece for CUT (bug 33908). Keep aSR; the SD relation
-        // below is what BuildRC uses to recognise legitimate cross-parent
-        // shared regions.
+        // Preserve aSR as this source's own piece in the image list. The
+        // upstream SD merge (faces/edges) made aSR's face TShapes match an
+        // earlier source's split solid aSx; before this change the dedup
+        // overwrite (pLSx->Append(aSx)) replaced aSR with aSx in this
+        // source's images. That overwrite hijacked aS's identity and let
+        // BuildRC drop aS's own piece for CUT (bug 33908). Keep aSR; record
+        // the equivalence in myShapesSD so equivalence-aware containment in
+        // BuildRC still recognises legitimate cross-parent shared regions
+        // (Common(box1, box2)).
         pLSx->Append(aSR);
         //
         NCollection_List<TopoDS_Shape>* pLOr = myOrigins.ChangeSeek(aSR);
@@ -597,30 +599,7 @@ void BOPAlgo_Builder::BuildSplitSolids(
         //
         if (bFlagSD)
         {
-          // Record the SD equivalence aSR ≡ aSx only when face orientations
-          // line up too. The face-set hash in BOPTools_Set is orientation-
-          // agnostic; two split solids with matching face TShapes can bound
-          // the region from opposite sides (one's FORWARD is the other's
-          // REVERSED on the shared faces). That happens for an argument's
-          // "in-tool" half vs a degenerate tool's collapsed-interior piece
-          // (bug 33908): same face TShapes, opposite orientations. They are
-          // not equivalent and must not be bound together.
-          NCollection_DataMap<TopoDS_Shape, TopAbs_Orientation, TopTools_ShapeMapHasher> aOriOfAsx;
-          for (TopExp_Explorer anExpFx(aSx, TopAbs_FACE); anExpFx.More(); anExpFx.Next())
-            aOriOfAsx.Bind(anExpFx.Current(), anExpFx.Current().Orientation());
-          bool bOrientationsAligned = true;
-          for (TopExp_Explorer anExpF(aSR, TopAbs_FACE); anExpF.More() && bOrientationsAligned;
-               anExpF.Next())
-          {
-            TopAbs_Orientation aRefOri;
-            if (aOriOfAsx.Find(anExpF.Current(), aRefOri)
-                && aRefOri != anExpF.Current().Orientation())
-            {
-              bOrientationsAligned = false;
-            }
-          }
-          if (bOrientationsAligned)
-            myShapesSD.Bind(aSR, aSx);
+          myShapesSD.Bind(aSR, aSx);
         }
       }
     }
