@@ -52,3 +52,26 @@ TEST(Expr_GeneralExpression_Test, OCC902_ExpressionDerivative)
   EXPECT_TRUE(isCorrect) << "Derivative result was: " << aDerivativeStr.ToCString()
                          << ", expected either 'Exp(5*x)*5' or '5*Exp(5*x)'";
 }
+
+// Test OCC31697: Expr_GeneralExpression::Derivative for Exp(2*Sin(x^2))
+// Expected derivative: Exp(2*Sin(x^2))*Cos(x^2)*x*4
+TEST(Expr_GeneralExpression_Test, OCC31697_DerivativeOfComplexExpression)
+{
+  occ::handle<ExprIntrp_GenExp> anExprIntrp = ExprIntrp_GenExp::Create();
+  anExprIntrp->Process(TCollection_AsciiString("Exp(2*Sin(x^2))"));
+
+  ASSERT_TRUE(anExprIntrp->IsDone()) << "Expression parsing should succeed";
+
+  occ::handle<Expr_GeneralExpression> anExpr = anExprIntrp->Expression();
+  ASSERT_FALSE(anExpr.IsNull()) << "Expression should not be null";
+
+  occ::handle<Expr_NamedUnknown> aVar = new Expr_NamedUnknown("x");
+  ASSERT_TRUE(anExpr->Contains(aVar)) << "Expression should contain variable x";
+
+  occ::handle<Expr_GeneralExpression> aDer = anExpr->Derivative(aVar);
+  ASSERT_FALSE(aDer.IsNull()) << "Derivative should not be null";
+
+  const TCollection_AsciiString aDerStr = aDer->String();
+  EXPECT_EQ(aDerStr, TCollection_AsciiString("Exp(2*Sin(x^2))*Cos(x^2)*x*4"))
+    << "Derivative result was: " << aDerStr.ToCString();
+}

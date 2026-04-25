@@ -67,9 +67,6 @@
 #include <TDataStd_Name.hxx>
 #include <AppCont_Function.hxx>
 #include <math_ComputeKronrodPointsAndWeights.hxx>
-#include <STEPCAFControl_Writer.hxx>
-#include <STEPCAFControl_Controller.hxx>
-#include <ShapeAnalysis_ShapeContents.hxx>
 
 #include <limits>
 
@@ -2133,262 +2130,6 @@ static int OCC27466(Draw_Interpretor& theDI, int theNArg, const char** theArgVal
   return 0;
 }
 
-#include <GC_MakeParabola2d.hxx>
-#include <gp_Ax22d.hxx>
-#include <Geom2d_Parabola.hxx>
-#include <gp_Parab2d.hxx>
-
-namespace Parab2d_Bug26747
-{
-// Directrix and X-axe direction
-gp_Ax2d Axes;
-
-// Focus
-gp_Pnt2d FocusPoint;
-
-// Focal length
-double FocalLength;
-
-// Coordinates of the vertex
-double VertX, VertY;
-
-// Parameter
-double Parameter;
-
-// Coefficients
-double Coeffs[6];
-} // namespace Parab2d_Bug26747
-
-//========================================================================
-// function : OCC26747_CheckParabola
-// purpose  : Checks if created parabola is correct
-//========================================================================
-static void OCC26747_CheckParabola(Draw_Interpretor& theDI,
-                                   const char*       theName,
-                                   const bool        theSense = true)
-{
-  const double aCompareTol = 1.0e-12;
-
-  //                      Directrix,                    Focus
-  GC_MakeParabola2d aPrb(Parab2d_Bug26747::Axes, Parab2d_Bug26747::FocusPoint, theSense);
-
-  DrawTrSurf::Set(theName, aPrb.Value());
-
-  gp_Pnt2d aVert(aPrb.Value()->Parab2d().Location());
-
-  theDI << "Focal Length: " << aPrb.Value()->Parab2d().Focal() << "\n";
-  theDI << "Vertex (" << aVert.X() << ", " << aVert.Y() << ")\n";
-  theDI << "Parameter = " << aPrb.Value()->Parab2d().Parameter() << "\n";
-
-  double aF[6] = {RealLast(), RealLast(), RealLast(), RealLast(), RealLast(), RealLast()};
-  aPrb.Value()->Parab2d().Coefficients(aF[0], aF[1], aF[2], aF[3], aF[4], aF[5]);
-  theDI << "A = " << aF[0] << ", B = " << aF[1] << ", C = " << aF[2] << ", D = " << aF[3]
-        << ", E = " << aF[4] << ", F = " << aF[5] << "\n";
-
-  if (std::abs(aPrb.Value()->Parab2d().Focal() - Parab2d_Bug26747::FocalLength) > aCompareTol)
-    theDI << "Error in focal length computation!\n";
-
-  if ((std::abs(aVert.X() - Parab2d_Bug26747::VertX) > aCompareTol)
-      || (std::abs(aVert.Y() - Parab2d_Bug26747::VertY) > aCompareTol))
-    theDI << "Error in vertex computation!\n";
-
-  if (std::abs(aPrb.Value()->Parab2d().Parameter() - Parab2d_Bug26747::Parameter) > aCompareTol)
-    theDI << "Error in parameter computation!\n";
-
-  for (int i = 0; i < 6; i++)
-  {
-    if (std::abs(aF[i] - Parab2d_Bug26747::Coeffs[i]) > aCompareTol)
-    {
-      theDI << "Error in " << i << "-th coefficient computation!\n";
-    }
-  }
-}
-
-//========================================================================
-// function : OCC26747_1
-// purpose  : Creates a 2D-parabola for testing
-//========================================================================
-static int OCC26747_1(Draw_Interpretor& theDI, int theNArg, const char** theArgVal)
-{
-  if (theNArg < 2)
-  {
-    theDI << "Use: OCC26747_1 result\n";
-    return 1;
-  }
-
-  // Expected parabola:
-
-  //  ^ Y
-  //  |
-  //  |
-  //  |
-  //  |
-  //  |                 o
-  //  |    A   o   F
-  //  |     o     x
-  //  |        o
-  //  |                 o
-  //  |
-  //  ---------------------------> X
-
-  //  where
-  //  Y-axe is the directrix of the parabola,
-  //  A(0.5, 3.0) is a Vertex of the parabola,
-  //  F(1.0, 3.0) is the focus of the parabola,
-  //  Focal length is 0.5,
-  //  Parameter of the parabola is 1.
-  //  Equation: (y-3)^2=2*p*(x-0.5), i.e. (y-3)^2=2*(x-0.5)
-  //  A * X^2 + B * Y^2 + 2*C*X*Y + 2*D*X    + 2*E*Y    + F = 0.
-  //                  OR
-  //  0 * X^2 + 1 * Y^2 + 2*0*X*Y + 2*(-1)*X + 2*(-3)*Y + 10 = 0.
-
-  Parab2d_Bug26747::Axes = gp_Ax2d(gp_Pnt2d(0.0, 3.0), gp_Dir2d(gp_Dir2d::D::Y));
-  Parab2d_Bug26747::FocusPoint.SetCoord(1.0, 3.0);
-
-  Parab2d_Bug26747::FocalLength = 0.5;
-
-  Parab2d_Bug26747::VertX = 0.5;
-  Parab2d_Bug26747::VertY = 3.0;
-
-  Parab2d_Bug26747::Parameter = 1.0;
-
-  Parab2d_Bug26747::Coeffs[0] = 0.0;
-  Parab2d_Bug26747::Coeffs[1] = 1.0;
-  Parab2d_Bug26747::Coeffs[2] = 0.0;
-  Parab2d_Bug26747::Coeffs[3] = -1.0;
-  Parab2d_Bug26747::Coeffs[4] = -3.0;
-  Parab2d_Bug26747::Coeffs[5] = 10.0;
-
-  OCC26747_CheckParabola(theDI, theArgVal[1]);
-
-  return 0;
-}
-
-//=======================================================================
-// function : OCC26747_2
-// purpose  : Creates a 2D-parabola for testing
-//=======================================================================
-static int OCC26747_2(Draw_Interpretor& theDI, int theNArg, const char** theArgVal)
-{
-  if (theNArg < 2)
-  {
-    theDI << "Use: OCC26747_2 result\n";
-    return 1;
-  }
-
-  // Expected parabola:
-
-  //                          ^ Y
-  //                          |
-  //        o                 |
-  //                 o        |
-  //            F x     o A   |
-  //                 o        |
-  //        o                 |
-  //                          |
-  //  <------------------------
-  //  X
-
-  //  where (in UCS - User Coordinate System, - which
-  //  is shown in the picture):
-  //    Y-axe is the directrix of the parabola,
-  //    A(0.5, 3.0) is a Vertex of the parabola,
-  //    F(1.0, 3.0) is the focus of the parabola.
-  //
-  //  In WCS (World Coordinate System) these points have coordinates:
-  //    A(-0.5, 3.0), F(-1.0, 3.0).
-  //
-  //  Focal length is 0.5,
-  //  Parameter of the parabola is 1.
-  //  Equation (in WCS): (y-3)^2=2*p*(-x-0.5), i.e. (y-3)^2=2*(-x-0.5)
-  //  A * X^2 + B * (Y^2) + 2*C*(X*Y) + 2*D*X + 2*E*Y    + F = 0.
-  //  0 * X^2 + 1 * (Y^2) + 2*0*(X*Y) + 2*1*X + 2*(-3)*Y + 10 = 0.
-
-  Parab2d_Bug26747::Axes = gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(gp_Dir2d::D::Y));
-  Parab2d_Bug26747::FocusPoint.SetCoord(-1.0, 3.0);
-
-  Parab2d_Bug26747::FocalLength = 0.5;
-
-  Parab2d_Bug26747::VertX = -0.5;
-  Parab2d_Bug26747::VertY = 3.0;
-
-  Parab2d_Bug26747::Parameter = 1.0;
-
-  Parab2d_Bug26747::Coeffs[0] = 0.0;
-  Parab2d_Bug26747::Coeffs[1] = 1.0;
-  Parab2d_Bug26747::Coeffs[2] = 0.0;
-  Parab2d_Bug26747::Coeffs[3] = 1.0;
-  Parab2d_Bug26747::Coeffs[4] = -3.0;
-  Parab2d_Bug26747::Coeffs[5] = 10.0;
-
-  OCC26747_CheckParabola(theDI, theArgVal[1], false);
-
-  return 0;
-}
-
-//=======================================================================
-// function : OCC26747_3
-// purpose  : Creates a 2D-parabola for testing
-//=======================================================================
-static int OCC26747_3(Draw_Interpretor& theDI, int theNArg, const char** theArgVal)
-{
-  if (theNArg < 2)
-  {
-    theDI << "Use: OCC26747_2 result\n";
-    return 1;
-  }
-
-  // Expected parabola:
-
-  //                    ^ Y
-  //                    |
-  //        o           |
-  //                 o  |
-  //            F x     o A
-  //                 o  |
-  //        o           |
-  //                    |
-  //  <------------------
-  //  X
-
-  //  where (in UCS - User Coordinate System, - which
-  //  is shown in the picture):
-  //    Y-axe is the directrix of the parabola,
-  //    A(0.0, 3.0) is a Vertex of the parabola,
-  //    F(0.0, 3.0) is the focus of the parabola (the Focus
-  //                matches with the Apex).
-  //
-  //  In WCS (World Coordinate System) these points have coordinates:
-  //    A(0.0, 3.0), F(0.0, 3.0).
-  //
-  //  Focal length is 0.0,
-  //  Parameter of the parabola is 0.0.
-  //  Equation (in WCS): (y-3)^2=2*p*(-x-0.0), i.e. (y-3)^2=0 (looks like a line y=3)
-  //  A * X^2 + B * (Y^2) + 2*C*(X*Y) + 2*D*X + 2*E*Y    + F = 0.
-  //  0 * X^2 + 1 * (Y^2) + 2*0*(X*Y) + 2*0*X + 2*(-3)*Y + 9 = 0.
-
-  Parab2d_Bug26747::Axes = gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(gp_Dir2d::D::Y));
-  Parab2d_Bug26747::FocusPoint.SetCoord(0.0, 3.0);
-
-  Parab2d_Bug26747::FocalLength = 0.0;
-
-  Parab2d_Bug26747::VertX = 0.0;
-  Parab2d_Bug26747::VertY = 3.0;
-
-  Parab2d_Bug26747::Parameter = 0.0;
-
-  Parab2d_Bug26747::Coeffs[0] = 0.0;
-  Parab2d_Bug26747::Coeffs[1] = 1.0;
-  Parab2d_Bug26747::Coeffs[2] = 0.0;
-  Parab2d_Bug26747::Coeffs[3] = 0.0;
-  Parab2d_Bug26747::Coeffs[4] = -3.0;
-  Parab2d_Bug26747::Coeffs[5] = 9.0;
-
-  OCC26747_CheckParabola(theDI, theArgVal[1], false);
-
-  return 0;
-}
-
 #include "Geom2d_BezierCurve.hxx"
 #include "Geom2dGcc_QualifiedCurve.hxx"
 #include "Geom2dAdaptor_Curve.hxx"
@@ -2963,41 +2704,7 @@ static int OCC29064(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
   return 0;
 }
 
-#include <BRepOffsetAPI_MakePipeShell.hxx>
-#include <GC_MakeArcOfCircle.hxx>
 #include <BRepAdaptor_CompCurve.hxx>
-#include <gp_Circ.hxx>
-
-//=================================================================================================
-
-static int OCC29430(Draw_Interpretor& theDI, int /*theNArg*/, const char** theArgVal)
-{
-  const double r45 = M_PI / 4.0, r225 = 3.0 * M_PI / 4.0;
-
-  GC_MakeArcOfCircle arcMaker(
-    gp_Circ(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X)), 1.0),
-    r45,
-    r225,
-    true);
-  BRepBuilderAPI_MakeEdge edgeMaker(arcMaker.Value());
-  BRepBuilderAPI_MakeWire wireMaker(edgeMaker.Edge());
-  const TopoDS_Wire       circle = wireMaker.Wire();
-
-  DBRep::Set(theArgVal[1], circle);
-
-  BRepAdaptor_CompCurve curve(circle);
-  theDI << "Curve.FirstParameter() = " << curve.FirstParameter() << "\n";
-  theDI << "Curve.LastParameter() = " << curve.LastParameter() << "\n";
-  theDI << "Curve.Period() = " << (curve.IsPeriodic() ? curve.Period() : 0.0) << "\n";
-  const gp_Pnt aStartPt = curve.Value(curve.FirstParameter());
-  const gp_Pnt anEndPt  = curve.Value(curve.LastParameter());
-
-  DrawTrSurf::Set(theArgVal[2], aStartPt);
-  DrawTrSurf::Set(theArgVal[3], anEndPt);
-
-  return 0;
-}
-
 #include <STEPCAFControl_Reader.hxx>
 
 //=================================================================================================
@@ -3829,54 +3536,6 @@ static int OCC30990(Draw_Interpretor& theDI, int theNArg, const char** theArgV)
   return 0;
 }
 
-#include <ExprIntrp_GenExp.hxx>
-#include <Expr_GeneralExpression.hxx>
-#include <Expr_NamedUnknown.hxx>
-
-//=================================================================================================
-
-static int OCC31697(Draw_Interpretor& di, int argc, const char** argv)
-{
-  if (argc < 3)
-  {
-    di << "Usage : " << argv[0] << " expression  variable\n";
-    return 1;
-  }
-
-  TCollection_AsciiString anExpStr(argv[1]);
-  TCollection_AsciiString aVarStr(argv[2]);
-
-  occ::handle<ExprIntrp_GenExp> exprIntrp = ExprIntrp_GenExp::Create();
-
-  //
-  // Create the expression
-  exprIntrp->Process(anExpStr);
-
-  if (!exprIntrp->IsDone())
-  {
-    di << "Interpretation of expression " << argv[1] << " failed\n";
-    return 1;
-  }
-
-  occ::handle<Expr_GeneralExpression> anExpr = exprIntrp->Expression();
-  occ::handle<Expr_NamedUnknown>      aVar   = new Expr_NamedUnknown(aVarStr);
-
-  if (!anExpr->Contains(aVar))
-  {
-    di << "Expression " << argv[1] << " does not contain variable " << argv[2] << "\n";
-    return 1;
-  }
-
-  occ::handle<Expr_GeneralExpression> aDer = anExpr->Derivative(aVar);
-
-  TCollection_AsciiString aDerStr = aDer->String();
-
-  di << "The derivative of the " << argv[1] << " by " << argv[2] << " is equal to " << aDerStr
-     << "\n";
-
-  return 0;
-}
-
 #include <TObj_Model.hxx>
 #include <TObj_TModel.hxx>
 #include <TObj_ObjectIterator.hxx>
@@ -4068,116 +3727,6 @@ static int OCC32744(Draw_Interpretor& theDi, int theNbArgs, const char** theArgV
   }
 
   return 0;
-}
-
-static int OCC33657_2(Draw_Interpretor& theDI, int theArgC, const char** theArgV)
-{
-  if (theArgC < 2)
-  {
-    theDI << "Use: " << theArgV[0] << " file\n";
-    return 1;
-  }
-
-  STEPCAFControl_Controller::Init();
-  // Checking readers working in parallel.
-  OSD_Parallel::For(0, 100, [&](int) {
-    STEPControl_Reader aReader;
-    aReader.ReadFile(theArgV[1], DESTEP_Parameters{});
-    aReader.TransferRoots();
-  });
-
-  return 0;
-}
-
-//=================================================================================================
-
-static int OCC33657_4(Draw_Interpretor& theDI, int theArgC, const char** theArgV)
-{
-  if (theArgC < 2)
-  {
-    theDI << "Use: " << theArgV[0] << " file\n";
-    return 1;
-  }
-
-  STEPCAFControl_Controller::Init();
-
-  // Acquire shape to write/read.
-  STEPControl_Reader aReader;
-  aReader.ReadFile(theArgV[1], DESTEP_Parameters{});
-  aReader.TransferRoots();
-  TopoDS_Shape aSourceShape = aReader.OneShape();
-
-  // Analyzer to compare the shape with the same shape after write-read sequence.
-  ShapeAnalysis_ShapeContents aSourceAnalyzer;
-  aSourceAnalyzer.Perform(aSourceShape);
-
-  // Flag is set to false if any error is detected.
-  // Reads and writes to the flag are performed exclusively in relaxed memory order
-  // in order to avoid inter-thread synchronization that can potentially omit some problems.
-  std::atomic_bool anErrorOccurred(false);
-
-  OSD_Parallel::For(0, 100, [&](int) {
-    if (anErrorOccurred.load(std::memory_order_relaxed))
-    {
-      return;
-    }
-
-    // Writing.
-    STEPControl_Writer aWriter;
-    aWriter.Transfer(aSourceShape,
-                     STEPControl_StepModelType::STEPControl_AsIs,
-                     DESTEP_Parameters{});
-    std::stringstream aStream;
-    aWriter.WriteStream(aStream);
-
-    // Reading.
-    STEPControl_Reader aReader;
-    aReader.ReadStream("", DESTEP_Parameters{}, aStream);
-    aReader.TransferRoots();
-    const TopoDS_Shape          aResultShape = aReader.OneShape();
-    ShapeAnalysis_ShapeContents aResultAnalyzer;
-    aResultAnalyzer.Perform(aResultShape);
-
-    // Making sure that shape is unchanged.
-    if (aSourceAnalyzer.NbSolids() != aResultAnalyzer.NbSolids())
-    {
-      theDI << "Error: Wrong number of solids in the result shape.\nExpected: "
-            << aSourceAnalyzer.NbSolids() << "\nActual" << aResultAnalyzer.NbSolids() << "\n";
-      anErrorOccurred.store(true, std::memory_order_relaxed);
-    }
-    if (aSourceAnalyzer.NbShells() != aResultAnalyzer.NbShells())
-    {
-      theDI << "Error: Wrong number of shells in the result shape.\nExpected: "
-            << aSourceAnalyzer.NbShells() << "\nActual" << aResultAnalyzer.NbShells() << "\n";
-      anErrorOccurred.store(true, std::memory_order_relaxed);
-    }
-    if (aSourceAnalyzer.NbFaces() != aResultAnalyzer.NbFaces())
-    {
-      theDI << "Error: Wrong number of faces in the result shape.\nExpected: "
-            << aSourceAnalyzer.NbFaces() << "\nActual" << aResultAnalyzer.NbFaces() << "\n";
-      anErrorOccurred.store(true, std::memory_order_relaxed);
-    }
-    if (aSourceAnalyzer.NbWires() != aResultAnalyzer.NbWires())
-    {
-      theDI << "Error: Wrong number of wires in the result shape.\nExpected: "
-            << aSourceAnalyzer.NbWires() << "\nActual" << aResultAnalyzer.NbWires() << "\n";
-      anErrorOccurred.store(true, std::memory_order_relaxed);
-    }
-    if (aSourceAnalyzer.NbEdges() != aResultAnalyzer.NbEdges())
-    {
-      theDI << "Error: Wrong number of edges in the result shape.\nExpected: "
-            << aSourceAnalyzer.NbEdges() << "\nActual" << aResultAnalyzer.NbEdges() << "\n";
-      anErrorOccurred.store(true, std::memory_order_relaxed);
-    }
-    if (aSourceAnalyzer.NbVertices() != aResultAnalyzer.NbVertices())
-    {
-      theDI << "Error: Wrong number of vertices in the result shape.\nExpected: "
-            << aSourceAnalyzer.NbVertices() << "\nActual" << aResultAnalyzer.NbVertices() << "\n";
-      anErrorOccurred.store(true, std::memory_order_relaxed);
-    }
-  });
-
-  return anErrorOccurred;
 }
 
 //=======================================================================
@@ -4374,9 +3923,6 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands)
   theCommands.Add("OCC27235", "OCC27235", __FILE__, OCC27235, group);
   theCommands.Add("OCC26930", "OCC26930", __FILE__, OCC26930, group);
   theCommands.Add("OCC27466", "OCC27466", __FILE__, OCC27466, group);
-  theCommands.Add("OCC26747_1", "OCC26747_1 result", __FILE__, OCC26747_1, group);
-  theCommands.Add("OCC26747_2", "OCC26747_2 result", __FILE__, OCC26747_2, group);
-  theCommands.Add("OCC26747_3", "OCC26747_3 result", __FILE__, OCC26747_3, group);
   theCommands.Add("OCC26270", "OCC26270 shape result", __FILE__, OCC26270, group);
   theCommands.Add("OCC27875", "OCC27875 curve", __FILE__, OCC27875, group);
   theCommands.Add("OCC27884",
@@ -4392,12 +3938,6 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands)
                   "OCC28131 name: creates face problematic for offset",
                   __FILE__,
                   OCC28131,
-                  group);
-  theCommands.Add("OCC29430",
-                  "OCC29430 <result wire> "
-                  "<result first point> <result last point>",
-                  __FILE__,
-                  OCC29430,
                   group);
   theCommands.Add("OCC29531", "OCC29531 <step file name>", __FILE__, OCC29531, group);
 
@@ -4450,8 +3990,6 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands)
                   OCC30880,
                   group);
 
-  theCommands.Add("OCC31697", "OCC31697 expression variable", __FILE__, OCC31697, group);
-
   theCommands.Add(
     "OCC31320",
     "OCC31320 DocName ObjName : tests remove of the children GetFather method if father is removed",
@@ -4487,18 +4025,6 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands)
                   "increasing tolerances is considered",
                   __FILE__,
                   OCC26441,
-                  group);
-
-  theCommands.Add("OCC33657_2",
-                  "Check performance of STEPControl_Reader in multithreading environment.",
-                  __FILE__,
-                  OCC33657_2,
-                  group);
-
-  theCommands.Add("OCC33657_4",
-                  "Check performance of STEPControl_Reader/Writer in multithreading environment.",
-                  __FILE__,
-                  OCC33657_4,
                   group);
 
   return;

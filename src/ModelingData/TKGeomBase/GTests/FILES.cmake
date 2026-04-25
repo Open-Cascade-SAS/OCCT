@@ -35,6 +35,7 @@ set(OCCT_TKGeomBase_GTests_FILES
   GC_MakeCircle2d_Test.cxx
   GC_MakeConicalSurface_Test.cxx
   GC_MakePlane_Test.cxx
+  GC_MakeParabola2d_Test.cxx
   GC_MakeSegment2d_Test.cxx
   GCPnts_AbscissaPoint_Test.cxx
   GeomConvert_CompCurveToBSplineCurve_Test.cxx
