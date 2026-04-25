@@ -582,33 +582,25 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
 
   occ::handle<NCollection_BaseAllocator> aAllocator = new NCollection_IncAllocator;
 
-  // Map every face that may participate in SD pairing to the parent shell
-  // it belongs to. This lets the pair-iteration loop below reject pairs
-  // whose two faces share a shell -- a topologically distinct boundary
-  // pair within a single 2-manifold cannot be Same-Domain by construction
-  // (bug 33908: degenerate prism with two ~1e-6-coincident parallel faces
-  // both belonging to one shell would otherwise SD-merge into one image
-  // and collapse the tool's split-solid identity downstream).
-  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> aFaceToShell(
+  // Two distinct faces of one solid cannot be Same-Domain: that would
+  // imply a zero-thickness interior in a single operand.
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> aFaceToParent(
     1, aAllocator);
   {
     const int aNbSrc = myDS->NbSourceShapes();
     for (int iSrc = 0; iSrc < aNbSrc; ++iSrc)
     {
       const BOPDS_ShapeInfo& aSI = myDS->ShapeInfo(iSrc);
-      if (aSI.ShapeType() != TopAbs_SHELL)
+      if (aSI.ShapeType() != TopAbs_SOLID)
         continue;
-      const TopoDS_Shape& aShell = aSI.Shape();
-      for (TopExp_Explorer anExpF(aShell, TopAbs_FACE); anExpF.More(); anExpF.Next())
+      const TopoDS_Shape& aSolid = aSI.Shape();
+      for (TopExp_Explorer anExpF(aSolid, TopAbs_FACE); anExpF.More(); anExpF.Next())
       {
         const TopoDS_Shape& aF = anExpF.Current();
-        if (!aFaceToShell.IsBound(aF))
-          aFaceToShell.Bind(aF, aShell);
+        if (!aFaceToParent.IsBound(aF))
+          aFaceToParent.Bind(aF, aSolid);
       }
     }
-    // Propagate parent-shell assignment to split images so the guard works
-    // against whichever face representation lands in the edge-set group
-    // (original face or split piece).
     NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> aPropagation(
       1, aAllocator);
     for (NCollection_DataMap<TopoDS_Shape,
@@ -617,14 +609,14 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
          anItIm.More();
          anItIm.Next())
     {
-      const TopoDS_Shape* pShell = aFaceToShell.Seek(anItIm.Key());
-      if (pShell == nullptr)
+      const TopoDS_Shape* pParent = aFaceToParent.Seek(anItIm.Key());
+      if (pParent == nullptr)
         continue;
       for (NCollection_List<TopoDS_Shape>::Iterator anItPiece(anItIm.Value()); anItPiece.More();
            anItPiece.Next())
       {
-        if (!aFaceToShell.IsBound(anItPiece.Value()))
-          aPropagation.Bind(anItPiece.Value(), *pShell);
+        if (!aFaceToParent.IsBound(anItPiece.Value()))
+          aPropagation.Bind(anItPiece.Value(), *pParent);
       }
     }
     for (NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator
@@ -632,7 +624,7 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
          anItProp.More();
          anItProp.Next())
     {
-      aFaceToShell.Bind(anItProp.Key(), anItProp.Value());
+      aFaceToParent.Bind(anItProp.Key(), anItProp.Value());
     }
   }
 
@@ -744,20 +736,14 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
     {
       const TopoDS_Shape& aF1          = aIt1.Value();
       bool                bCheckPlanar = aMFPlanar.Contains(aF1);
-      const TopoDS_Shape* pShell1      = aFaceToShell.Seek(aF1);
+      const TopoDS_Shape* pParent1     = aFaceToParent.Seek(aF1);
 
       NCollection_List<TopoDS_Shape>::Iterator aIt2 = aIt1;
       for (aIt2.Next(); aIt2.More(); aIt2.Next())
       {
         const TopoDS_Shape& aF2 = aIt2.Value();
-        // Same-shell topological-invariant guard: two distinct boundary
-        // faces of one shell cannot be Same-Domain. Without this, a
-        // degenerate prism (bug 33908) silently merges its two near-
-        // coincident parallel faces here, collapsing the tool's split-
-        // solid identity and causing CUT to drop half of the other operand
-        // downstream.
-        const TopoDS_Shape* pShell2 = aFaceToShell.Seek(aF2);
-        if (pShell1 != nullptr && pShell2 != nullptr && pShell1->IsSame(*pShell2))
+        const TopoDS_Shape* pParent2 = aFaceToParent.Seek(aF2);
+        if (pParent1 != nullptr && pParent2 != nullptr && pParent1->IsSame(*pParent2))
           continue;
         if (bCheckPlanar && aMFPlanar.Contains(aF2))
         {
