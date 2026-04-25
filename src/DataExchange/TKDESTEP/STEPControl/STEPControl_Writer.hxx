@@ -143,10 +143,8 @@ public:
   Standard_EXPORT void SetShapeFixParameters(XSAlgo_ShapeProcessor::ParameterMap&& theParameters);
 
   //! Sets parameters for shape processing.
-  //! Parameters from @p theParameters are copied to the internal map.
-  //! if they are not present in @p theParameters.
+  //! Parameters from @p theParameters are converted and stored in the internal map.
   //! @param theParameters the parameters for shape processing.
-  //! @param theAdditionalParameters the additional parameters for shape processing.
   Standard_EXPORT void SetShapeFixParameters(const DE_ShapeFixParameters& theParameters);
 
   //! Sets parameters for shape processing.
