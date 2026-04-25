@@ -1236,156 +1236,6 @@ static int OCC24834(Draw_Interpretor& di, int n, const char** a)
   return 0;
 }
 
-#include <math_GlobOptMin.hxx>
-#include <math_MultipleVarFunctionWithHessian.hxx>
-
-//=======================================================================
-// function : OCC25004
-// purpose  : Check extremaCC on Branin function.
-//=======================================================================
-// Function is:
-// f(u,v) = a*(v - b*u^2 + c*u-r)^2+s(1-t)*cos(u)+s
-// Standard borders are:
-// -5 <= u <= 10
-//  0 <= v <= 15
-class BraninFunction : public math_MultipleVarFunctionWithHessian
-{
-public:
-  BraninFunction()
-  {
-    a = 1.0;
-    b = 5.1 / (4.0 * M_PI * M_PI);
-    c = 5.0 / M_PI;
-    r = 6.0;
-    s = 10.0;
-    t = 1.0 / (8.0 * M_PI);
-  }
-
-  int NbVariables() const override { return 2; }
-
-  bool Value(const math_Vector& X, double& F) override
-  {
-    double u = X(1);
-    double v = X(2);
-
-    double aSqPt = (v - b * u * u + c * u - r); // Square Part of function.
-    double aLnPt = s * (1 - t) * cos(u);        // Linear part of funcrtion.
-    F            = a * aSqPt * aSqPt + aLnPt + s;
-    return true;
-  }
-
-  bool Gradient(const math_Vector& X, math_Vector& G) override
-  {
-    double u = X(1);
-    double v = X(2);
-
-    double aSqPt = (v - b * u * u + c * u - r); // Square Part of function.
-    G(1)         = 2 * a * aSqPt * (c - 2 * b * u) - s * (1 - t) * sin(u);
-    G(2)         = 2 * a * aSqPt;
-
-    return true;
-  }
-
-  bool Values(const math_Vector& X, double& F, math_Vector& G) override
-  {
-    Value(X, F);
-    Gradient(X, G);
-
-    return true;
-  }
-
-  bool Values(const math_Vector& X, double& F, math_Vector& G, math_Matrix& H) override
-  {
-    Value(X, F);
-    Gradient(X, G);
-
-    double u = X(1);
-    double v = X(2);
-
-    double aSqPt  = (v - b * u * u + c * u - r); // Square Part of function.
-    double aTmpPt = c - 2 * b * u;               // Tmp part.
-    H(1, 1)       = 2 * a * aTmpPt * aTmpPt - 4 * a * b * aSqPt - s * (1 - t) * cos(u);
-    H(1, 2)       = 2 * a * aTmpPt;
-    H(2, 1)       = H(1, 2);
-    H(2, 2)       = 2 * a;
-
-    return true;
-  }
-
-private:
-  // Standard parameters.
-  double a, b, c, r, s, t;
-};
-
-static int OCC25004(Draw_Interpretor& theDI, int /*theNArg*/, const char** /*theArgs*/)
-{
-  BraninFunction aFunc;
-
-  math_Vector aLower(1, 2), aUpper(1, 2);
-  aLower(1) = -5;
-  aLower(2) = 0;
-  aUpper(1) = 10;
-  aUpper(2) = 15;
-
-  int         aGridOrder = 16;
-  math_Vector aFuncValues(1, aGridOrder * aGridOrder);
-
-  double      aLipConst = 0;
-  math_Vector aCurrPnt1(1, 2), aCurrPnt2(1, 2);
-
-  // Get Lipshitz constant estimation on regular grid.
-  int i, j, idx = 1;
-  for (i = 1; i <= aGridOrder; i++)
-  {
-    for (j = 1; j <= aGridOrder; j++)
-    {
-      aCurrPnt1(1) = aLower(1) + (aUpper(1) - aLower(1)) * (i - 1) / (aGridOrder - 1.0);
-      aCurrPnt1(2) = aLower(2) + (aUpper(2) - aLower(2)) * (j - 1) / (aGridOrder - 1.0);
-
-      aFunc.Value(aCurrPnt1, aFuncValues(idx));
-      idx++;
-    }
-  }
-
-  int k, l;
-  int idx1, idx2;
-  for (i = 1; i <= aGridOrder; i++)
-    for (j = 1; j <= aGridOrder; j++)
-      for (k = 1; k <= aGridOrder; k++)
-        for (l = 1; l <= aGridOrder; l++)
-        {
-          if (i == k && j == l)
-            continue;
-
-          aCurrPnt1(1) = aLower(1) + (aUpper(1) - aLower(1)) * (i - 1) / (aGridOrder - 1.0);
-          aCurrPnt1(2) = aLower(2) + (aUpper(2) - aLower(2)) * (j - 1) / (aGridOrder - 1.0);
-          idx1         = (i - 1) * aGridOrder + j;
-
-          aCurrPnt2(1) = aLower(1) + (aUpper(1) - aLower(1)) * (k - 1) / (aGridOrder - 1.0);
-          aCurrPnt2(2) = aLower(2) + (aUpper(2) - aLower(2)) * (l - 1) / (aGridOrder - 1.0);
-          idx2         = (k - 1) * aGridOrder + l;
-
-          aCurrPnt1.Add(-aCurrPnt2);
-          double dist = aCurrPnt1.Norm();
-
-          double C = std::abs(aFuncValues(idx1) - aFuncValues(idx2)) / dist;
-          if (C > aLipConst)
-            aLipConst = C;
-        }
-
-  math_GlobOptMin aFinder(&aFunc, aLower, aUpper, aLipConst);
-  aFinder.Perform();
-  //(-pi , 12.275), (pi , 2.275), (9.42478, 2.475)
-
-  double anExtValue = aFinder.GetF();
-  theDI << "F = " << anExtValue << "\n";
-
-  int aNbExt = aFinder.NbExtrema();
-  theDI << "NbExtrema = " << aNbExt << "\n";
-
-  return 0;
-}
-
 #include <OSD_Environment.hxx>
 #include <Resource_Manager.hxx>
 
@@ -3472,37 +3322,6 @@ static int OCC26396(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
   return 0;
 }
 
-//=================================================================================================
-
-static int OCC26750(Draw_Interpretor& theDI, int /*theNArg*/, const char** /*theArgVal*/)
-{
-  const gp_Vec2d aVec1(1.0, 0.0);
-  const gp_Vec2d aVec2(0.0, -1.0);
-
-  if (aVec1.IsNormal(aVec2, Precision::Angular()))
-  {
-    theDI << "gp_Vec2d OK. Vectors are normal.\n";
-  }
-  else
-  {
-    theDI << "Error in gp_Vec2d. Vectors should be normal.\n";
-  }
-
-  const gp_Dir2d aD1(gp_Dir2d::D::X);
-  const gp_Dir2d aD2(gp_Dir2d::D::NY);
-
-  if (aD1.IsNormal(aD2, Precision::Angular()))
-  {
-    theDI << "gp_Dir2d OK. Vectors are normal.\n";
-  }
-  else
-  {
-    theDI << "Error in gp_Dir2d. Vectors should be normal.\n";
-  }
-
-  return 0;
-}
-
 //=======================================================================
 // function : OCC26746
 // purpose  : Checks if coefficients of the torus are computed properly.
@@ -4020,7 +3839,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands)
   theCommands.Add("OCC23951", "OCC23951 path to saved step file", __FILE__, OCC23951, group);
   theCommands.Add("OCC24931", "OCC24931 path to saved xml file", __FILE__, OCC24931, group);
   theCommands.Add("OCC23950", "OCC23950 step_file", __FILE__, OCC23950, group);
-  theCommands.Add("OCC25004", "OCC25004", __FILE__, OCC25004, group);
   theCommands.Add("OCC24925",
                   "OCC24925 filename [pluginLib=TKXml storageGuid retrievalGuid]"
                   "\nOCAF persistence without setting environment variables",
@@ -4091,7 +3909,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands)
   theCommands.Add("OCC26525", "OCC26525 result edge face ", __FILE__, OCC26525, group);
 
   theCommands.Add("OCC24537", "OCC24537 [file]", __FILE__, OCC24537, group);
-  theCommands.Add("OCC26750", "OCC26750", __FILE__, OCC26750, group);
   theCommands.Add("OCC26746", "OCC26746 torus [toler NbCheckedPoints] ", __FILE__, OCC26746, group);
 
   theCommands.Add("OCC27048",

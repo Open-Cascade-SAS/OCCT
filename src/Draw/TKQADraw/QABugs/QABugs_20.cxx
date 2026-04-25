@@ -3272,51 +3272,6 @@ static int OCC30435(Draw_Interpretor& di, int, const char** a)
 
 //=================================================================================================
 
-#include <GC_MakeCircle2d.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2dConvert_CompCurveToBSplineCurve.hxx>
-
-static int OCC30747(Draw_Interpretor& theDI, int theArgc, const char** theArgV)
-{
-  if (theArgc < 2)
-  {
-    return 1;
-  }
-
-  const occ::handle<Geom2d_Circle> aCirc = GC_MakeCircle2d(gp_Pnt2d(0, 0), 50);
-
-  double                                aF     = aCirc->FirstParameter();
-  double                                aL     = aCirc->LastParameter();
-  double                                aNb    = 10;
-  double                                aDelta = (aF + aL) / aNb;
-  occ::handle<Geom2d_TrimmedCurve>      aFTrim = new Geom2d_TrimmedCurve(aCirc, aF, aDelta);
-  Geom2dConvert_CompCurveToBSplineCurve aRes(aFTrim);
-  for (int anId = 1; anId < aNb; anId++)
-  {
-    occ::handle<Geom2d_TrimmedCurve> aLTrim;
-    if (anId == (aNb - 1))
-    {
-      aLTrim = new Geom2d_TrimmedCurve(aCirc, anId * aDelta, aF);
-    }
-    else
-    {
-      aLTrim = new Geom2d_TrimmedCurve(aCirc, anId * aDelta, (anId + 1) * aDelta);
-    }
-    aRes.Add(aLTrim, Precision::PConfusion());
-  }
-
-  if (!aRes.BSplineCurve()->IsClosed())
-  {
-    theDI << "Error: curve isn't closed";
-    return 1;
-  }
-
-  DrawTrSurf::Set(theArgV[1], aRes.BSplineCurve());
-  return 0;
-}
-
-//=================================================================================================
-
 static int OCC30869(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
 {
   if (theArgc != 2)
@@ -3969,7 +3924,6 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands)
                   OCC29195,
                   group);
   theCommands.Add("OCC30435", "OCC30435 result curve inverse nbit", __FILE__, OCC30435, group);
-  theCommands.Add("OCC30747", "OCC30747: create a closed curve", __FILE__, OCC30747, group);
   theCommands.Add("OCC30990", "OCC30990 surface", __FILE__, OCC30990, group);
 
   theCommands.Add("QAStartsWith", "QAStartsWith string startstring", __FILE__, QAStartsWith, group);
