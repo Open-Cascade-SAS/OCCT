@@ -50,7 +50,7 @@
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <Precision.hxx>
 
-#include <GProp_PrincipalProps.hxx>
+#include <GProp_GProps.hxx>
 
 #include <OSD_Path.hxx>
 #include <Standard_ProgramError.hxx>
@@ -374,34 +374,6 @@ static int OCC295(Draw_Interpretor& di, int argc, const char** argv)
     return 1;
 }
 
-static int OCC49(Draw_Interpretor& di, int argc, const char** argv)
-{
-
-  if (argc != 2)
-  {
-    di << "Usage : " << argv[0] << " name\n";
-    return 1;
-  }
-
-  TopoDS_Shape S = DBRep::Get(argv[1]);
-  if (S.IsNull())
-    return 0;
-
-  GProp_GProps G;
-  BRepGProp::VolumeProperties(S, G);
-  GProp_PrincipalProps Pr     = G.PrincipalProperties();
-  bool                 Result = Pr.HasSymmetryAxis();
-  if (Result)
-  {
-    di << "1\n";
-  }
-  else
-  {
-    di << "0\n";
-  }
-  return 0;
-}
-
 static int OCC405(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 4)
@@ -690,7 +662,6 @@ void QABugs::Commands_16(Draw_Interpretor& theCommands)
   theCommands.Add("BUC60972", "BUC60972 edge edge plane val text ", __FILE__, BUC60972, group);
   theCommands.Add("OCC218", "OCC218 name plane Xlabel Ylabel", __FILE__, OCC218bug, group);
   theCommands.Add("OCC295", "OCC295 edge_result edge1 edge2", __FILE__, OCC295, group);
-  theCommands.Add("OCC49", "OCC49 name", __FILE__, OCC49, group);
   theCommands.Add("OCC405",
                   "OCC405 edge_result edge1 edge2; merge two edges",
                   __FILE__,

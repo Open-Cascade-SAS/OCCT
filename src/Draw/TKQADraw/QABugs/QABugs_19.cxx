@@ -60,17 +60,14 @@
 #include <XCAFDoc_DocumentTool.hxx>
 #include <Draw.hxx>
 #include <GeomInt_IntSS.hxx>
-#include <IntTools_FaceFace.hxx>
-#include <IntTools_PntOn2Faces.hxx>
 #include <NCollection_Sequence.hxx>
-#include <IntTools_Curve.hxx>
-#include <BRepBuilderAPI_MakeEdge.hxx>
-#include <BRepBuilderAPI_MakeWire.hxx>
-#include <Geom_CylindricalSurface.hxx>
 #include <Geom_ConicalSurface.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <Extrema_FuncPSNorm.hxx>
 #include <BRepAdaptor_Curve.hxx>
+#include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRepBuilderAPI_MakeWire.hxx>
 
 #ifdef HAVE_TBB
 Standard_DISABLE_DEPRECATION_WARNINGS
@@ -132,30 +129,6 @@ static int OCC230(Draw_Interpretor& di, int argc, const char** argv)
   GC_MakeSegment2d                        MakeSegment(P1, P2);
   const occ::handle<Geom2d_TrimmedCurve>& TrimmedCurve = MakeSegment.Value();
   DrawTrSurf::Set(argv[1], TrimmedCurve);
-  return 0;
-}
-
-#include <ExprIntrp_GenExp.hxx>
-
-int OCC22611(Draw_Interpretor& di, int argc, const char** argv)
-{
-
-  if (argc != 3)
-  {
-    di << "Usage : " << argv[0] << " string nb\n";
-    return 1;
-  }
-
-  TCollection_AsciiString aToken = argv[1];
-  int                     aNb    = atoi(argv[2]);
-
-  occ::handle<ExprIntrp_GenExp> aGen = ExprIntrp_GenExp::Create();
-  for (int i = 0; i < aNb; i++)
-  {
-    aGen->Process(aToken);
-    occ::handle<Expr_GeneralExpression> aExpr = aGen->Expression();
-  }
-
   return 0;
 }
 
@@ -617,92 +590,6 @@ static int OCC23945(Draw_Interpretor& /*di*/, int n, const char** a)
   if (DrawPoint)
   {
     DrawTrSurf::Set(a[n], P);
-  }
-
-  return 0;
-}
-
-//=================================================================================================
-
-static int OCC24005(Draw_Interpretor& theDI, int theNArg, const char** theArgv)
-{
-  if (theNArg < 2)
-  {
-    theDI << "Wrong a number of arguments!\n";
-    return 1;
-  }
-
-  occ::handle<Geom_Plane>              plane(new Geom_Plane(
-    gp_Ax3(gp_Pnt(-72.948737453424499, 754.30437716359393, 259.52151854671678),
-           gp_Dir(6.2471473085930200e-007, -0.99999999999980493, 0.00000000000000000),
-           gp_Dir(0.99999999999980493, 6.2471473085930200e-007, 0.00000000000000000))));
-  occ::handle<Geom_CylindricalSurface> cylinder(new Geom_CylindricalSurface(
-    gp_Ax3(gp_Pnt(-6.4812490053250649, 753.39408794522092, 279.16400974257465),
-           gp_Dir(1.0000000000000000, 0.0, 0.00000000000000000),
-           gp_Dir(0.0, 1.0000000000000000, 0.00000000000000000)),
-    19.712534607908712));
-
-  DrawTrSurf::Set("pln", plane);
-  theDI << "pln\n";
-  DrawTrSurf::Set("cyl", cylinder);
-  theDI << "cyl\n";
-
-  BRep_Builder builder;
-  TopoDS_Face  face1, face2;
-  builder.MakeFace(face1, plane, Precision::Confusion());
-  builder.MakeFace(face2, cylinder, Precision::Confusion());
-  IntTools_FaceFace anInters;
-  anInters.SetParameters(false, true, true, Precision::Confusion());
-  anInters.Perform(face1, face2);
-
-  if (!anInters.IsDone())
-  {
-    theDI << "No intersections found!\n";
-
-    return 1;
-  }
-
-  // occ::handle<Geom_Curve> aResult;
-  // gp_Pnt             aPoint;
-
-  const NCollection_Sequence<IntTools_Curve>&       aCvsX  = anInters.Lines();
-  const NCollection_Sequence<IntTools_PntOn2Faces>& aPntsX = anInters.Points();
-
-  char buf[1024];
-  int  aNbCurves, aNbPoints;
-
-  aNbCurves = aCvsX.Length();
-  aNbPoints = aPntsX.Length();
-
-  if (aNbCurves >= 2)
-  {
-    for (int i = 1; i <= aNbCurves; ++i)
-    {
-      Sprintf(buf, "%s_%d", theArgv[1], i);
-      theDI << buf << " ";
-
-      const IntTools_Curve&          aIC  = aCvsX(i);
-      const occ::handle<Geom_Curve>& aC3D = aIC.Curve();
-      DrawTrSurf::Set(buf, aC3D);
-    }
-  }
-  else if (aNbCurves == 1)
-  {
-    const IntTools_Curve&          aIC  = aCvsX(1);
-    const occ::handle<Geom_Curve>& aC3D = aIC.Curve();
-    Sprintf(buf, "%s", theArgv[1]);
-    theDI << buf << " ";
-    DrawTrSurf::Set(buf, aC3D);
-  }
-
-  for (int i = 1; i <= aNbPoints; ++i)
-  {
-    const IntTools_PntOn2Faces& aPi = aPntsX(i);
-    const gp_Pnt&               aP  = aPi.P1().Pnt();
-
-    Sprintf(buf, "%s_p_%d", theArgv[1], i);
-    theDI << buf << " ";
-    DrawTrSurf::Set(buf, aP);
   }
 
   return 0;
@@ -2118,80 +2005,6 @@ int OCC26446(Draw_Interpretor& di, int n, const char** a)
 
 //=================================================================================================
 
-#include <BRepBuilderAPI_MakeFace.hxx>
-#include <BRepMesh_IncrementalMesh.hxx>
-#include <TCollection_AsciiString.hxx>
-
-static int OCC26407(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
-{
-  if (theArgNb != 2)
-  {
-    std::cerr << "Error: wrong number of arguments! See usage:\n";
-    theDI.PrintHelp(theArgVec[0]);
-    return 1;
-  }
-
-  // Construct vertices.
-  std::vector<TopoDS_Vertex> wire_vertices;
-  wire_vertices.push_back(
-    BRepBuilderAPI_MakeVertex(gp_Pnt(587.90000000000009094947, 40.6758179230516248026106, 88.5)));
-  wire_vertices.push_back(
-    BRepBuilderAPI_MakeVertex(gp_Pnt(807.824182076948432040808, 260.599999999999965893949, 88.5)));
-  wire_vertices.push_back(BRepBuilderAPI_MakeVertex(
-    gp_Pnt(644.174182076948454778176, 424.249999999999943156581, 88.5000000000000142108547)));
-  wire_vertices.push_back(
-    BRepBuilderAPI_MakeVertex(gp_Pnt(629.978025792618950617907, 424.25, 88.5)));
-  wire_vertices.push_back(
-    BRepBuilderAPI_MakeVertex(gp_Pnt(793.628025792618700506864, 260.599999999999852207111, 88.5)));
-  wire_vertices.push_back(
-    BRepBuilderAPI_MakeVertex(gp_Pnt(587.900000000000204636308, 54.8719742073813492311274, 88.5)));
-  wire_vertices.push_back(
-    BRepBuilderAPI_MakeVertex(gp_Pnt(218.521974207381418864315, 424.250000000000056843419, 88.5)));
-  wire_vertices.push_back(
-    BRepBuilderAPI_MakeVertex(gp_Pnt(204.325817923051886282337, 424.249999999999943156581, 88.5)));
-
-  // Construct wire.
-  BRepBuilderAPI_MakeWire wire_builder;
-  for (size_t i = 0; i < wire_vertices.size(); i++)
-  {
-    const TopoDS_Vertex& v = wire_vertices[i];
-    const TopoDS_Vertex& w = wire_vertices[(i + 1) % wire_vertices.size()];
-
-    wire_builder.Add(BRepBuilderAPI_MakeEdge(v, w));
-  }
-
-  // Create face and triangulate it.
-  // Construct face.
-  gp_Pnt v0 = BRep_Tool::Pnt(wire_vertices[0]);
-  gp_Pnt v1 = BRep_Tool::Pnt(wire_vertices[1]);
-  gp_Pnt v2 = BRep_Tool::Pnt(wire_vertices[wire_vertices.size() - 1]);
-
-  gp_Vec face_normal = gp_Vec(v0, v1).Crossed(gp_Vec(v0, v2));
-
-  TopoDS_Face              face = BRepBuilderAPI_MakeFace(gp_Pln(v0, face_normal), wire_builder);
-  BRepMesh_IncrementalMesh m(face, 1e-7);
-
-  if (m.GetStatusFlags() != 0)
-  {
-    theDI << "Failed. Status for face constructed from vertices: " << m.GetStatusFlags() << "\n";
-    return 1;
-  }
-  DBRep::Set(theArgVec[1], face);
-  char buf[256];
-  Sprintf(buf, "isos %s 0", theArgVec[1]);
-  theDI.Eval(buf);
-
-  Sprintf(buf, "triangles %s", theArgVec[1]);
-  theDI.Eval(buf);
-
-  theDI.Eval("smallview; fit");
-
-  theDI << "Test completed\n";
-  return 0;
-}
-
-//=================================================================================================
-
 #include <Poly.hxx>
 
 static int OCC26485(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
@@ -2680,110 +2493,6 @@ static int OCC26396(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
 }
 
 //=======================================================================
-// function : OCC26746
-// purpose  : Checks if coefficients of the torus are computed properly.
-//=======================================================================
-#include <Geom_ToroidalSurface.hxx>
-#include <Geom_BSplineCurve.hxx>
-
-static int OCC26746(Draw_Interpretor& theDI, int theNArg, const char** theArgVal)
-{
-  if (theNArg < 2)
-  {
-    theDI << "Use: OCC26746 torus [toler NbCheckedPoints]\n";
-    return 1;
-  }
-
-  const occ::handle<Geom_ToroidalSurface> aGtor =
-    occ::down_cast<Geom_ToroidalSurface>(DrawTrSurf::GetSurface(theArgVal[1]));
-
-  const double aToler     = (theNArg >= 3) ? Draw::Atof(theArgVal[2]) : 1.0e-7;
-  const int    aNbPntsMax = (theNArg >= 4) ? Draw::Atoi(theArgVal[3]) : 5;
-
-  const int    aLowIndex = 5;
-  const double aStep     = 2.0 * M_PI / aNbPntsMax;
-
-  NCollection_Array1<double> anArrCoeffs(aLowIndex, aLowIndex + 34);
-  aGtor->Torus().Coefficients(anArrCoeffs);
-
-  double aUpar = 0.0, aVpar = 0.0;
-  for (int aUind = 0; aUind <= aNbPntsMax; aUind++)
-  {
-    for (int aVind = 0; aVind <= aNbPntsMax; aVind++)
-    {
-      const gp_Pnt aPt(aGtor->Value(aUpar, aVpar));
-      const double aX1 = aPt.X();
-      const double aX2 = aX1 * aX1;
-      const double aX3 = aX2 * aX1;
-      const double aX4 = aX2 * aX2;
-      const double aY1 = aPt.Y();
-      const double aY2 = aY1 * aY1;
-      const double aY3 = aY2 * aY1;
-      const double aY4 = aY2 * aY2;
-      const double aZ1 = aPt.Z();
-      const double aZ2 = aZ1 * aZ1;
-      const double aZ3 = aZ2 * aZ1;
-      const double aZ4 = aZ2 * aZ2;
-
-      int i = aLowIndex;
-
-      double aDelta = anArrCoeffs(i++) * aX4;       // 1
-      aDelta += anArrCoeffs(i++) * aY4;             // 2
-      aDelta += anArrCoeffs(i++) * aZ4;             // 3
-      aDelta += anArrCoeffs(i++) * aX3 * aY1;       // 4
-      aDelta += anArrCoeffs(i++) * aX3 * aZ1;       // 5
-      aDelta += anArrCoeffs(i++) * aY3 * aX1;       // 6
-      aDelta += anArrCoeffs(i++) * aY3 * aZ1;       // 7
-      aDelta += anArrCoeffs(i++) * aZ3 * aX1;       // 8
-      aDelta += anArrCoeffs(i++) * aZ3 * aY1;       // 9
-      aDelta += anArrCoeffs(i++) * aX2 * aY2;       // 10
-      aDelta += anArrCoeffs(i++) * aX2 * aZ2;       // 11
-      aDelta += anArrCoeffs(i++) * aY2 * aZ2;       // 12
-      aDelta += anArrCoeffs(i++) * aX2 * aY1 * aZ1; // 13
-      aDelta += anArrCoeffs(i++) * aX1 * aY2 * aZ1; // 14
-      aDelta += anArrCoeffs(i++) * aX1 * aY1 * aZ2; // 15
-      aDelta += anArrCoeffs(i++) * aX3;             // 16
-      aDelta += anArrCoeffs(i++) * aY3;             // 17
-      aDelta += anArrCoeffs(i++) * aZ3;             // 18
-      aDelta += anArrCoeffs(i++) * aX2 * aY1;       // 19
-      aDelta += anArrCoeffs(i++) * aX2 * aZ1;       // 20
-      aDelta += anArrCoeffs(i++) * aY2 * aX1;       // 21
-      aDelta += anArrCoeffs(i++) * aY2 * aZ1;       // 22
-      aDelta += anArrCoeffs(i++) * aZ2 * aX1;       // 23
-      aDelta += anArrCoeffs(i++) * aZ2 * aY1;       // 24
-      aDelta += anArrCoeffs(i++) * aX1 * aY1 * aZ1; // 25
-      aDelta += anArrCoeffs(i++) * aX2;             // 26
-      aDelta += anArrCoeffs(i++) * aY2;             // 27
-      aDelta += anArrCoeffs(i++) * aZ2;             // 28
-      aDelta += anArrCoeffs(i++) * aX1 * aY1;       // 29
-      aDelta += anArrCoeffs(i++) * aX1 * aZ1;       // 30
-      aDelta += anArrCoeffs(i++) * aY1 * aZ1;       // 31
-      aDelta += anArrCoeffs(i++) * aX1;             // 32
-      aDelta += anArrCoeffs(i++) * aY1;             // 33
-      aDelta += anArrCoeffs(i++) * aZ1;             // 34
-      aDelta += anArrCoeffs(i++);                   // 35
-
-      if (std::abs(aDelta) > aToler)
-      {
-        theDI << "(" << aUpar << ", " << aVpar
-              << "): Error in torus coefficients computation (Delta = " << aDelta << ").\n";
-      }
-      else
-      {
-        theDI << "(" << aUpar << ", " << aVpar << "): OK (Delta = " << aDelta << ").\n";
-      }
-
-      aVpar = (aVind == aNbPntsMax) ? 2.0 * M_PI : aVpar + aStep;
-    }
-
-    aVpar = 0.0;
-    aUpar = (aUind == aNbPntsMax) ? 2.0 * M_PI : aUpar + aStep;
-  }
-
-  return 0;
-}
-
-//=======================================================================
 // function : OCC27048
 // purpose  : Calculate value of B-spline surface N times
 //=======================================================================
@@ -3165,7 +2874,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands)
                   group);
 
   theCommands.Add("OCC230", "OCC230 TrimmedCurve Pnt2d Pnt2d", __FILE__, OCC230, group);
-  theCommands.Add("OCC22611", "OCC22611 string nb", __FILE__, OCC22611, group);
   theCommands.Add("OCC23774", "OCC23774 shape1 shape2", __FILE__, OCC23774, group);
   theCommands.Add("OCC23683", "OCC23683 shape", __FILE__, OCC23683, group);
   theCommands.Add("OCC23952sweep", "OCC23952sweep nbupoles shape", __FILE__, OCC23952sweep, group);
@@ -3182,7 +2890,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands)
                   OCC23945,
                   group);
   theCommands.Add("OCC24008", "OCC24008 curve surface", __FILE__, OCC24008, group);
-  theCommands.Add("OCC24005", "OCC24005 result", __FILE__, OCC24005, group);
   theCommands.Add("OCC24137", "OCC24137 face vertex U V [N]", __FILE__, OCC24137, group);
   theCommands.Add("OCC23972", "OCC23972", __FILE__, OCC23972, group);
   theCommands.Add("OCC24370", "OCC24370 edge pcurve surface prec", __FILE__, OCC24370, group);
@@ -3227,7 +2934,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands)
                   group);
   theCommands.Add("OCC26284", "OCC26284", __FILE__, OCC26284, group);
   theCommands.Add("OCC26446", "OCC26446 r c1 c2", __FILE__, OCC26446, group);
-  theCommands.Add("OCC26407", "OCC26407 result_name", __FILE__, OCC26407, group);
   theCommands.Add("OCC26485", "OCC26485 shape", __FILE__, OCC26485, group);
   theCommands.Add("OCC26553", "OCC26553 file_path", __FILE__, OCC26553, group);
   theCommands.Add(
@@ -3251,8 +2957,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands)
   theCommands.Add("OCC26313", "OCC26313 result shape", __FILE__, OCC26313, group);
   theCommands.Add("OCC26396", "OCC26396 shape_file_path", __FILE__, OCC26396, group);
   theCommands.Add("OCC26525", "OCC26525 result edge face ", __FILE__, OCC26525, group);
-
-  theCommands.Add("OCC26746", "OCC26746 torus [toler NbCheckedPoints] ", __FILE__, OCC26746, group);
 
   theCommands.Add("OCC27048",
                   "OCC27048 surf U V N\nCalculate value of surface N times in the point (U, V)",

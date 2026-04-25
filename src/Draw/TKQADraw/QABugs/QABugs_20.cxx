@@ -2459,7 +2459,6 @@ static int OCC28829(Draw_Interpretor&, int, const char**)
   return 0;
 }
 
-#include <BRepAdaptor_CompCurve.hxx>
 #include <STEPCAFControl_Reader.hxx>
 #include <TDocStd_Application.hxx>
 
@@ -3026,48 +3025,6 @@ static int OCC30435(Draw_Interpretor& di, int, const char** a)
   return 0;
 }
 
-//=================================================================================================
-
-static int OCC30869(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
-{
-  if (theArgc != 2)
-  {
-    theDI.PrintHelp(theArgv[0]);
-    return 1;
-  }
-
-  TopoDS_Shape aWire = DBRep::Get(theArgv[1]);
-  if (aWire.IsNull() || aWire.ShapeType() != TopAbs_WIRE)
-  {
-    theDI << theArgv[1] << " is not a wire.\n";
-    return 1;
-  }
-
-  BRepAdaptor_CompCurve aBACC(TopoDS::Wire(aWire));
-
-  double aFirst = aBACC.FirstParameter();
-  double aLast  = aBACC.LastParameter();
-
-  gp_Pnt aPFirst, aPLast;
-  gp_Vec aVFirst, aVLast;
-
-  aBACC.D1(aFirst, aPFirst, aVFirst);
-  aBACC.D1(aLast, aPLast, aVLast);
-
-  if (aVFirst.SquareMagnitude() > gp::Resolution())
-    aVFirst.Normalize();
-  if (aVLast.SquareMagnitude() > gp::Resolution())
-    aVLast.Normalize();
-
-  theDI << aFirst << ": point " << aPFirst.X() << " " << aPFirst.Y() << " " << aPFirst.Z()
-        << ", tangent " << aVFirst.X() << " " << aVFirst.Y() << " " << aVFirst.Z() << "\n";
-
-  theDI << aLast << ": point " << aPLast.X() << " " << aPLast.Y() << " " << aPLast.Z()
-        << ", tangent " << aVLast.X() << " " << aVLast.Y() << " " << aVLast.Z() << "\n";
-
-  return 0;
-}
-
 #include <BRepExtrema_ExtCF.hxx>
 
 //=================================================================================================
@@ -3500,13 +3457,6 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands)
   theCommands.Add("QAStartsWith", "QAStartsWith string startstring", __FILE__, QAStartsWith, group);
 
   theCommands.Add("QAEndsWith", "QAEndsWith string endstring", __FILE__, QAEndsWith, group);
-
-  theCommands.Add("OCC30869",
-                  "Prints bounding points of the given wire and tangent vectors at these points.\n"
-                  "Usage: OCC30869 wire",
-                  __FILE__,
-                  OCC30869,
-                  group);
 
   theCommands.Add("OCC30880",
                   "Looks for extrema between edge and face.\n"

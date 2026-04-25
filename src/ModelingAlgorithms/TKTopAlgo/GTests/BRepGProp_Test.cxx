@@ -11,12 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <BRepAlgoAPI_Cut.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepGProp.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
+#include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <gp_Pnt.hxx>
 #include <GProp_GProps.hxx>
+#include <GProp_PrincipalProps.hxx>
 #include <Precision.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
@@ -114,4 +117,30 @@ TEST(BRepGPropTest, LinearProperties_SkipShared)
   // So total = 240
   EXPECT_NEAR(aPropsNotSkipped.Mass(), 240.0, Precision::Confusion())
     << "Total edge length with SkipShared=false should be double";
+}
+
+// Test OCC49: GProp_PrincipalProps::HasSymmetryAxis - cylinder has symmetry, cut does not.
+// Migrated from QABugs_16.cxx OCC49
+TEST(BRepGPropTest, OCC49_CylinderHasSymmetryAxis)
+{
+  const TopoDS_Shape aCylinder = BRepPrimAPI_MakeCylinder(10., 20.).Shape();
+
+  GProp_GProps          aProps;
+  BRepGProp::VolumeProperties(aCylinder, aProps);
+  const GProp_PrincipalProps aPrincipal = aProps.PrincipalProperties();
+  EXPECT_TRUE(aPrincipal.HasSymmetryAxis());
+}
+
+TEST(BRepGPropTest, OCC49_CutShapeHasNoSymmetryAxis)
+{
+  const TopoDS_Shape aCylinder = BRepPrimAPI_MakeCylinder(10., 20.).Shape();
+  const TopoDS_Shape aBox      = BRepPrimAPI_MakeBox(10., 10., 10.).Shape();
+
+  BRepAlgoAPI_Cut aCut(aCylinder, aBox);
+  ASSERT_TRUE(aCut.IsDone());
+
+  GProp_GProps          aProps;
+  BRepGProp::VolumeProperties(aCut.Shape(), aProps);
+  const GProp_PrincipalProps aPrincipal = aProps.PrincipalProperties();
+  EXPECT_FALSE(aPrincipal.HasSymmetryAxis());
 }

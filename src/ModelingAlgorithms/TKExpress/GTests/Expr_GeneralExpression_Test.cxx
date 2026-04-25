@@ -75,3 +75,17 @@ TEST(Expr_GeneralExpression_Test, OCC31697_DerivativeOfComplexExpression)
   EXPECT_EQ(aDerStr, TCollection_AsciiString("Exp(2*Sin(x^2))*Cos(x^2)*x*4"))
     << "Derivative result was: " << aDerStr.ToCString();
 }
+
+// Test OCC22611: ExprIntrp_GenExp must not leak and must parse numeric literal correctly.
+// Migrated from QABugs_19.cxx OCC22611
+TEST(Expr_GeneralExpression_Test, OCC22611_ParseNumericLiteral)
+{
+  occ::handle<ExprIntrp_GenExp> aGen = ExprIntrp_GenExp::Create();
+  for (int i = 0; i < 10; ++i)
+  {
+    aGen->Process(TCollection_AsciiString("0.1214343"));
+    ASSERT_TRUE(aGen->IsDone()) << "Parsing should succeed on iteration " << i;
+    occ::handle<Expr_GeneralExpression> aExpr = aGen->Expression();
+    EXPECT_FALSE(aExpr.IsNull()) << "Expression should not be null on iteration " << i;
+  }
+}

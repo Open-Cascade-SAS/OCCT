@@ -37,6 +37,9 @@
 #include <Geom2dGcc_Lin2d2Tan.hxx>
 #include <Geom2d_Line.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRepFilletAPI_MakeFillet.hxx>
+#include <ChFi3d_FilletShape.hxx>
+#include <NCollection_Array1.hxx>
 #include <Precision.hxx>
 #include <Geom2d_Circle.hxx>
 #include <Geom2dGcc_QCurve.hxx>
@@ -466,72 +469,6 @@ static int OCC566(Draw_Interpretor& di, int n, const char** a)
   return 0;
 }
 
-#include <BRepFilletAPI_MakeFillet.hxx>
-
-//=================================================================================================
-
-static int OCC570(Draw_Interpretor& di, int argc, const char** argv)
-{
-  if (argc < 2)
-  {
-    di << "Usage: " << argv[0] << " result\n";
-    return 1;
-  }
-
-  BRepPrimAPI_MakeBox mkBox(100., 100., 100.);
-  TopoDS_Shape        aBox = mkBox.Shape();
-
-  TopExp_Explorer aExp;
-  aExp.Init(aBox, TopAbs_WIRE);
-  if (aExp.More())
-  {
-    TopoDS_Shape aWire = aExp.Current();
-
-    aExp.Init(aWire, TopAbs_EDGE);
-    TopoDS_Edge e1 = TopoDS::Edge(aExp.Current());
-    aExp.Next();
-    TopoDS_Edge e2 = TopoDS::Edge(aExp.Current());
-    aExp.Next();
-    TopoDS_Edge e3 = TopoDS::Edge(aExp.Current());
-    aExp.Next();
-    TopoDS_Edge e4 = TopoDS::Edge(aExp.Current());
-
-    try
-    {
-      OCC_CATCH_SIGNALS
-      BRepFilletAPI_MakeFillet mkFillet(aBox);
-      mkFillet.SetContinuity(GeomAbs_C1, .001);
-
-      // Setup variable fillet data
-      NCollection_Array1<gp_Pnt2d> t_pnt(1, 4);
-      t_pnt.SetValue(1, gp_Pnt2d(0.0, 5.0));
-      t_pnt.SetValue(2, gp_Pnt2d(0.3, 15.0));
-      t_pnt.SetValue(3, gp_Pnt2d(0.7, 15.0));
-      t_pnt.SetValue(4, gp_Pnt2d(1.0, 5.0));
-
-      // HERE:
-      // It is impossible to build fillet if at least one edge
-      // with variable radius is added!!! If all are constant, everything is ok.
-      mkFillet.Add(t_pnt, e1);
-      mkFillet.Add(5.0, e2);
-      mkFillet.Add(t_pnt, e3);
-      mkFillet.Add(5.0, e4);
-
-      mkFillet.Build();
-      TopoDS_Shape aFinalShape = mkFillet.Shape();
-
-      DBRep::Set(argv[1], aFinalShape);
-    }
-    catch (Standard_Failure const&)
-    {
-      di << argv[0] << ": Exception in fillet\n";
-      return 2;
-    }
-  }
-
-  return 0;
-}
-
 #include <Law_Interpol.hxx>
 
 static double        tesp       = 1.e-4;
@@ -698,169 +635,6 @@ static int OCC606(Draw_Interpretor& di, int n, const char** a)
     {
       di << "ERROR: Exception in GeomFill_NSections\n";
     }
-  }
-
-  return 0;
-}
-
-//=================================================================================================
-
-static int OCC813(Draw_Interpretor& di, int argc, const char** argv)
-{
-  if (argc < 3)
-  {
-    di << "Usage : " << argv[0] << " U V\n";
-    return 1;
-  }
-
-  const char* str;
-  double      U = Draw::Atof(argv[1]);
-  double      V = Draw::Atof(argv[2]);
-
-  // Between ellipse and point:
-
-  occ::handle<Geom_Ellipse> ell =
-    new Geom_Ellipse(gp_Ax2(gp_Pnt(1262.224429, 425.040878, 363.609716),
-                            gp_Dir(0.173648, 0.984808, 0.000000),
-                            gp_Dir(-0.932169, 0.164367, -0.322560)),
-                     150,
-                     100);
-  occ::handle<Geom_Plane> plne =
-    new Geom_Plane(gp_Ax3(gp_Ax2(gp_Pnt(1262.224429, 425.040878, 363.609716),
-                                 gp_Dir(0.173648, 0.984808, 0.000000),
-                                 gp_Dir(-0.932169, 0.164367, -0.322560))));
-
-  occ::handle<AIS_InteractiveContext> aContext = ViewerTest::GetAISContext();
-
-  gp_Pnt2d pt2d(U, V);
-  gp_Pln   pln = plne->Pln();
-
-  str = "OCC813_pnt";
-  DrawTrSurf::Set(str, pt2d);
-
-  occ::handle<Geom2d_Curve> curve2d = GeomAPI::To2d(ell, pln);
-  Geom2dAdaptor_Curve       acur(curve2d);
-  Geom2dGcc_QualifiedCurve  qcur(acur, GccEnt_outside);
-
-  str = "OCC813_ell";
-  DrawTrSurf::Set(str, curve2d);
-  if (!aContext.IsNull())
-  {
-    occ::handle<AIS_Shape> aisp =
-      new AIS_Shape(BRepBuilderAPI_MakeEdge(GeomAPI::To3d(curve2d, pln)).Edge());
-    aContext->Display(aisp, false);
-  }
-
-  // This does not give any solutions.
-  Geom2dGcc_Lin2d2Tan lintan(qcur, pt2d, 0.1);
-  di << "OCC813 nb of solutions = " << lintan.NbSolutions() << "\n";
-
-  char        abuf[16];
-  const char* st = abuf;
-
-  int i;
-  for (i = 1; i <= lintan.NbSolutions(); i++)
-  {
-    Sprintf(abuf, "lintan_%d", i);
-    occ::handle<Geom2d_Line> glin = new Geom2d_Line(lintan.ThisSolution(i));
-    DrawTrSurf::Set(st, glin);
-    if (!aContext.IsNull())
-    {
-      occ::handle<AIS_Shape> aisp =
-        new AIS_Shape(BRepBuilderAPI_MakeEdge(GeomAPI::To3d(glin, pln)).Edge());
-      aContext->Display(aisp, false);
-    }
-  }
-
-  if (!aContext.IsNull())
-  {
-    aContext->UpdateCurrentViewer();
-  }
-
-  return 0;
-}
-
-//=================================================================================================
-
-static int OCC814(Draw_Interpretor& di, int argc, const char** argv)
-{
-  if (argc > 1)
-  {
-    di << "Usage : " << argv[0] << "\n";
-    return 1;
-  }
-
-  const char* str;
-
-  // Between Ellipse and Circle:
-
-  occ::handle<Geom_Circle>  cir = new Geom_Circle(gp_Ax2(gp_Pnt(823.687192, 502.366825, 478.960440),
-                                                        gp_Dir(0.173648, 0.984808, 0.000000),
-                                                        gp_Dir(-0.932169, 0.164367, -0.322560)),
-                                                 50);
-  occ::handle<Geom_Ellipse> ell =
-    new Geom_Ellipse(gp_Ax2(gp_Pnt(1262.224429, 425.040878, 363.609716),
-                            gp_Dir(0.173648, 0.984808, 0.000000),
-                            gp_Dir(-0.932169, 0.164367, -0.322560)),
-                     150,
-                     100);
-  occ::handle<Geom_Plane> plne =
-    new Geom_Plane(gp_Ax3(gp_Ax2(gp_Pnt(1262.224429, 425.040878, 363.609716),
-                                 gp_Dir(0.173648, 0.984808, 0.000000),
-                                 gp_Dir(-0.932169, 0.164367, -0.322560))));
-
-  occ::handle<AIS_InteractiveContext> aContext = ViewerTest::GetAISContext();
-
-  gp_Pln                    pln         = plne->Pln();
-  occ::handle<Geom2d_Curve> curve2d     = GeomAPI::To2d(ell, pln);
-  occ::handle<Geom2d_Curve> fromcurve2d = GeomAPI::To2d(cir, pln);
-
-  str = "OCC814_cir";
-  DrawTrSurf::Set(str, curve2d);
-  str = "OCC814_ell";
-  DrawTrSurf::Set(str, fromcurve2d);
-  if (!aContext.IsNull())
-  {
-    occ::handle<AIS_Shape> aisp =
-      new AIS_Shape(BRepBuilderAPI_MakeEdge(GeomAPI::To3d(curve2d, pln)).Edge());
-    aContext->Display(aisp, false);
-  }
-  if (!aContext.IsNull())
-  {
-    occ::handle<AIS_Shape> aisp =
-      new AIS_Shape(BRepBuilderAPI_MakeEdge(GeomAPI::To3d(fromcurve2d, pln)).Edge());
-    aContext->Display(aisp, false);
-  }
-
-  Geom2dAdaptor_Curve acur(curve2d), afromcur(fromcurve2d);
-
-  Geom2dGcc_QualifiedCurve qcur(acur, GccEnt_outside);
-  Geom2dGcc_QualifiedCurve qfromcur(afromcur, GccEnt_outside);
-
-  // This does not give any solutions.
-  Geom2dGcc_Lin2d2Tan lintan(qcur, qfromcur, 0.1);
-  di << "OCC814 nb of solutions = " << lintan.NbSolutions() << "\n";
-
-  char        abuf[16];
-  const char* st = abuf;
-
-  int i;
-  for (i = 1; i <= lintan.NbSolutions(); i++)
-  {
-    Sprintf(abuf, "lintan_%d", i);
-    occ::handle<Geom2d_Line> glin = new Geom2d_Line(lintan.ThisSolution(i));
-    DrawTrSurf::Set(st, glin);
-    if (!aContext.IsNull())
-    {
-      occ::handle<AIS_Shape> aisp =
-        new AIS_Shape(BRepBuilderAPI_MakeEdge(GeomAPI::To3d(glin, pln)).Edge());
-      aContext->Display(aisp, false);
-    }
-  }
-
-  if (!aContext.IsNull())
-  {
-    aContext->UpdateCurrentViewer();
   }
 
   return 0;
@@ -1058,88 +832,6 @@ static int OCCN1(Draw_Interpretor& di, int argc, const char** argv)
   DBRep::Set("OCCN1_tface", tface);
   DBRep::Set("OCCN1_slot", S2);
 
-  return 0;
-}
-
-#include <BRepPrimAPI_MakeCylinder.hxx>
-#include <BRepPrimAPI_MakeSphere.hxx>
-#include <BRepAlgoAPI_Section.hxx>
-
-//=================================================================================================
-
-static int OCCN2(Draw_Interpretor& di, int argc, const char** argv)
-{
-  if (argc > 2)
-  {
-    di << "Usage : " << argv[0] << "\n";
-    return 1;
-  }
-
-  occ::handle<AIS_InteractiveContext> aContext = ViewerTest::GetAISContext();
-  if (aContext.IsNull())
-  {
-    di << "use 'vinit' command before " << argv[0] << "\n";
-    return 1;
-  }
-
-  BRepPrimAPI_MakeCylinder cylinder(50, 200);
-  TopoDS_Shape             cylinder_sh = cylinder.Shape();
-
-  BRepPrimAPI_MakeSphere sphere(gp_Pnt(60, 0, 100), 50);
-  TopoDS_Shape           sphere_sh = sphere.Shape();
-
-  di << "BRepAlgoAPI_Section section(cylinder_sh, sphere_sh)\n";
-  BRepAlgoAPI_Section section(cylinder_sh, sphere_sh);
-  if (!section.IsDone())
-  {
-    di << "Error performing intersection: not done.\n";
-  }
-  const TopoDS_Shape& shape = section.Shape();
-
-  DBRep::Set("OCCN2_cylinder", cylinder_sh);
-  DBRep::Set("OCCN2_sphere", sphere_sh);
-  DBRep::Set("OCCN2_section", shape);
-
-  return 0;
-}
-
-#include <gp_Pnt.hxx>
-#include <NCollection_Array1.hxx>
-#include <Geom_BezierCurve.hxx>
-
-static int OCC2569(Draw_Interpretor& di, int argc, const char** argv)
-{
-  occ::handle<AIS_InteractiveContext> aContext = ViewerTest::GetAISContext();
-  if (aContext.IsNull())
-  {
-    di << "use 'vinit' command before " << argv[0] << "\n";
-    return 1;
-  }
-  if (argc != 3)
-  {
-    di << "Usage : " << argv[0] << " nbpoles result\n";
-    return 1;
-  }
-
-  int poles = Draw::Atoi(argv[1]);
-
-  NCollection_Array1<gp_Pnt> arr(1, poles);
-  for (int i = 1; i <= poles; i++)
-    arr.SetValue(i, gp_Pnt(i + 10, i * 2 + 20, i * 3 + 45));
-
-  occ::handle<Geom_BezierCurve> bez = new Geom_BezierCurve(arr);
-  if (bez.IsNull())
-  {
-    di << "\n The curve is not created.\n";
-  }
-  else
-  {
-    di << "\n Degree = " << bez->Degree() << "\n";
-  }
-  TopoDS_Edge            sh  = BRepBuilderAPI_MakeEdge(bez).Edge();
-  occ::handle<AIS_Shape> ais = new AIS_Shape(sh);
-  aContext->Display(ais, true);
-  DrawTrSurf::Set(argv[2], bez);
   return 0;
 }
 
@@ -1357,7 +1049,6 @@ void QABugs::Commands_17(Draw_Interpretor& theCommands)
                   __FILE__,
                   OCC566,
                   group);
-  theCommands.Add("OCC570", "OCC570 result", __FILE__, OCC570, group);
 
   theCommands.Add("OCC570mkevol",
                   "OCC570mkevol result object (then use updatevol) [R/Q/P]; mkevol",
@@ -1382,8 +1073,6 @@ void QABugs::Commands_17(Draw_Interpretor& theCommands)
 
   theCommands.Add("OCC606", "OCC606 result shape [-t]", __FILE__, OCC606, group);
 
-  theCommands.Add("OCC813", "OCC813 U V", __FILE__, OCC813, group);
-  theCommands.Add("OCC814", "OCC814", __FILE__, OCC814, group);
   theCommands.Add("OCC884", "OCC884 result shape [toler [maxtoler]]", __FILE__, OCC884, group);
 
   theCommands.Add("OCCN1",
@@ -1391,10 +1080,6 @@ void QABugs::Commands_17(Draw_Interpretor& theCommands)
                   __FILE__,
                   OCCN1,
                   group);
-  theCommands.Add("OCCN2", "OCCN2", __FILE__, OCCN2, group);
-
-  theCommands.Add("OCC2569", "OCC2569 nbpoles result", __FILE__, OCC2569, group);
-
   theCommands.Add("OCC1642",
                   "OCC1642 FinalWare FinalFace InitWare InitFace shape FixReorder FixDegenerated "
                   "FixConnected FixSelfIntersection",
