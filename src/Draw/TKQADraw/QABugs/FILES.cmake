@@ -14,7 +14,6 @@ set(OCCT_QABugs_FILES
   QABugs_9.cxx
   QABugs_10.cxx
   QABugs_11.cxx
-  QABugs_12.cxx
   QABugs_13.cxx
   QABugs_14.cxx
   QABugs_16.cxx

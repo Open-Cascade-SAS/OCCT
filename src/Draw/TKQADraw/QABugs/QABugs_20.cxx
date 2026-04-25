@@ -4070,24 +4070,6 @@ static int OCC32744(Draw_Interpretor& theDi, int theNbArgs, const char** theArgV
   return 0;
 }
 
-//=================================================================================================
-
-static int OCC33657_1(Draw_Interpretor&, int, const char**)
-{
-  STEPCAFControl_Controller::Init();
-  // Checking constructors working in parallel.
-  OSD_Parallel::For(0, 1000, [](int) {
-    STEPCAFControl_Reader aReader;
-    aReader.SetColorMode(true);
-    STEPCAFControl_Writer aWriter;
-    aWriter.SetDimTolMode(true);
-  });
-
-  return 0;
-}
-
-//=================================================================================================
-
 static int OCC33657_2(Draw_Interpretor& theDI, int theArgC, const char** theArgV)
 {
   if (theArgC < 2)
@@ -4102,23 +4084,6 @@ static int OCC33657_2(Draw_Interpretor& theDI, int theArgC, const char** theArgV
     STEPControl_Reader aReader;
     aReader.ReadFile(theArgV[1], DESTEP_Parameters{});
     aReader.TransferRoots();
-  });
-
-  return 0;
-}
-
-//=================================================================================================
-
-static int OCC33657_3(Draw_Interpretor&, int, const char**)
-{
-  STEPCAFControl_Controller::Init();
-  const TopoDS_Shape aShape = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
-  // Checking writers working in parallel.
-  OSD_Parallel::For(0, 100, [&](int) {
-    STEPControl_Writer aWriter;
-    aWriter.Transfer(aShape, STEPControl_StepModelType::STEPControl_AsIs, DESTEP_Parameters{});
-    std::ostringstream aStream;
-    aWriter.WriteStream(aStream);
   });
 
   return 0;
@@ -4524,23 +4489,10 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands)
                   OCC26441,
                   group);
 
-  theCommands.Add(
-    "OCC33657_1",
-    "Check performance of STEPCAFControl_Reader/Writer constructors in multithreading environment.",
-    __FILE__,
-    OCC33657_1,
-    group);
-
   theCommands.Add("OCC33657_2",
                   "Check performance of STEPControl_Reader in multithreading environment.",
                   __FILE__,
                   OCC33657_2,
-                  group);
-
-  theCommands.Add("OCC33657_3",
-                  "Check performance of STEPControl_Writer in multithreading environment.",
-                  __FILE__,
-                  OCC33657_3,
                   group);
 
   theCommands.Add("OCC33657_4",

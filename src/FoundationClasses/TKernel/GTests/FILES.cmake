@@ -32,6 +32,7 @@ set(OCCT_TKernel_GTests_FILES
   NCollection_Vec4_Test.cxx
   OSD_Path_Test.cxx
   OSD_PerfMeter_Test.cxx
+  Resource_Manager_Test.cxx
   Quantity_Color_Test.cxx
   Quantity_ColorRGBA_Test.cxx
   Quantity_Date_Test.cxx
