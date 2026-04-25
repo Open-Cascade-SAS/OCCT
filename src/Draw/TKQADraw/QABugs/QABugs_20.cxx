@@ -4148,7 +4148,7 @@ static int OCC33657_4(Draw_Interpretor& theDI, int theArgC, const char** theArgV
 
   // Flag is set to false if any error is detected.
   // Reads and writes to the flag are performed exclusively in relaxed memory order
-  // in order to avoid inter-thread syncronization that can potentially omit some problems.
+  // in order to avoid inter-thread synchronization that can potentially omit some problems.
   std::atomic_bool anErrorOccurred(false);
 
   OSD_Parallel::For(0, 100, [&](int) {

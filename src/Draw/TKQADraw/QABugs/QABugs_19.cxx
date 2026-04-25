@@ -1208,7 +1208,7 @@ static int OCC24834(Draw_Interpretor& di, int n, const char** a)
   }
   catch (...)
   {
-    di << "skept out of memory for large blocks: Error\n";
+    di << "skipped out of memory for large blocks: Error\n";
   }
 
   // allocate small blocks
@@ -1225,7 +1225,7 @@ static int OCC24834(Draw_Interpretor& di, int n, const char** a)
   }
   catch (...)
   {
-    di << "skept out of memory for small blocks: Error\n";
+    di << "skipped out of memory for small blocks: Error\n";
   }
 
   // release all allocated blocks
@@ -1555,7 +1555,7 @@ static int OCC24606(Draw_Interpretor& theDI, int theArgNb, const char** theArgVe
   occ::handle<V3d_View> aView = ViewerTest::CurrentView();
   if (aView.IsNull())
   {
-    std::cerr << "Errro: no active view, please call 'vinit'.\n";
+    std::cerr << "Error: no active view, please call 'vinit'.\n";
     return 1;
   }
 
