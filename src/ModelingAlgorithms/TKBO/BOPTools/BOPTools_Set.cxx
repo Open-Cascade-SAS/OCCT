@@ -108,8 +108,8 @@ bool BOPTools_Set::IsEqual(const BOPTools_Set& theOther) const
   {
     return false;
   }
-
-  NCollection_Map<TopoDS_Shape> aM1;
+  //
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aM1;
   //
   for (int i = 0; i < myShapes.Length(); ++i)
   {
