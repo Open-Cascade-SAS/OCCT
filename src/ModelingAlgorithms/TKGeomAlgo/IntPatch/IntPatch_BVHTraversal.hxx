@@ -15,7 +15,7 @@
 #define IntPatch_BVHTraversal_HeaderFile
 
 #include <BVH_Traverse.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 
 class IntPatch_PolyhedronBVH;
 
@@ -60,7 +60,7 @@ public:
                               bool                    theSelfInterference = false);
 
   //! Returns the collected triangle pairs.
-  const NCollection_Vector<TrianglePair>& Pairs() const { return myPairs; }
+  const NCollection_DynamicArray<TrianglePair>& Pairs() const { return myPairs; }
 
   //! Clears the collected pairs.
   void Clear() { myPairs.Clear(); }
@@ -86,10 +86,10 @@ public: //! @name BVH_PairTraverse interface implementation
   Standard_EXPORT virtual bool Accept(const int theIndex1, const int theIndex2) override;
 
 private:
-  IntPatch_PolyhedronBVH*          mySet1;             //!< First BVH set
-  IntPatch_PolyhedronBVH*          mySet2;             //!< Second BVH set
-  bool                             mySelfInterference; //!< Self-interference mode flag
-  NCollection_Vector<TrianglePair> myPairs;            //!< Collected triangle pairs
+  IntPatch_PolyhedronBVH*                mySet1;             //!< First BVH set
+  IntPatch_PolyhedronBVH*                mySet2;             //!< Second BVH set
+  bool                                   mySelfInterference; //!< Self-interference mode flag
+  NCollection_DynamicArray<TrianglePair> myPairs;            //!< Collected triangle pairs
 };
 
 #endif // IntPatch_BVHTraversal_HeaderFile
