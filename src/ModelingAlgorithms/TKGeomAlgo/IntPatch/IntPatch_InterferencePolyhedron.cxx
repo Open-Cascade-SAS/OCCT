@@ -130,7 +130,7 @@ void IntPatch_InterferencePolyhedron::Interference(const IntPatch_Polyhedron& th
   aTraversal.Perform(aSet1, aSet2, SelfIntf);
 
   // Process each candidate pair
-  const NCollection_Vector<IntPatch_BVHTraversal::TrianglePair>& aPairs = aTraversal.Pairs();
+  const NCollection_DynamicArray<IntPatch_BVHTraversal::TrianglePair>& aPairs = aTraversal.Pairs();
   for (const auto& aPair : aPairs)
   {
     Intersect(aPair.First, theFirstPol, aPair.Second, theSecondPol);
