@@ -69,7 +69,6 @@
 
 #include <limits>
 
-
 //=======================================================================
 // function : OCC27021
 // purpose  : Tests performance of obtaining geometry (points) via topological
@@ -638,7 +637,6 @@ static int OCC28389(Draw_Interpretor& di, int argc, const char** argv)
   di << argv[2] << " OK";
   return 0;
 }
-
 
 static int OCC28784(Draw_Interpretor&, int argc, const char** argv)
 {

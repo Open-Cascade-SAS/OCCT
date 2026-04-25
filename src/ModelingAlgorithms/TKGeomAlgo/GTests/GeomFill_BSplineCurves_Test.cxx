@@ -48,7 +48,8 @@
 namespace
 {
 
-//! Builds the filled face from 3 boundary BSpline/Bezier curves (common setup for all OCC28131 tests).
+//! Builds the filled face from 3 boundary BSpline/Bezier curves (common setup for all OCC28131
+//! tests).
 TopoDS_Shape createOCC28131Face()
 {
   const double aHeight = 8.5;
@@ -153,11 +154,12 @@ TEST(GeomFill_BSplineCurvesTest, OCC28131_StandardOffsetOfFilledFace)
   ASSERT_FALSE(aFace.IsNull());
 
   BRepOffset_MakeOffset aMaker;
-  aMaker.Initialize(aFace, 10.0, Precision::Confusion(), BRepOffset_Skin, false, false, GeomAbs_Arc);
+  aMaker
+    .Initialize(aFace, 10.0, Precision::Confusion(), BRepOffset_Skin, false, false, GeomAbs_Arc);
   aMaker.MakeOffsetShape();
   ASSERT_FALSE(aMaker.Shape().IsNull());
 
-  // The Draw test runs fixshape before checking — apply ShapeFix_Shape likewise
+  // The Draw test runs fixshape before checking - apply ShapeFix_Shape likewise
   occ::handle<ShapeFix_Shape> aFixer = new ShapeFix_Shape(aMaker.Shape());
   aFixer->Perform();
   const TopoDS_Shape aResult = aFixer->Shape();

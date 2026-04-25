@@ -1252,7 +1252,6 @@ static int OCC369(Draw_Interpretor& di, int argc, const char** argv)
 #include <math_Matrix.hxx>
 #include <math_Vector.hxx>
 
-
 #include <GeomPlate_BuildPlateSurface.hxx>
 
 //=================================================================================================
@@ -1910,7 +1909,6 @@ static int OCC5739_UniAbs(Draw_Interpretor& di, int argc, const char** argv)
   delete adapCurve;
   return res;
 }
-
 
 static int OCC5698(Draw_Interpretor& di, int argc, const char** argv)
 {
@@ -2746,8 +2744,6 @@ static int OCC10138(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-
-
 static int OCC7068(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 1)
@@ -2884,7 +2880,6 @@ int OCC14376(Draw_Interpretor& di, int argc, const char** argv)
   }
   return 0;
 }
-
 
 static int OCC15755(Draw_Interpretor& di, int argc, const char** argv)
 {

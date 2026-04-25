@@ -916,7 +916,7 @@ TEST(NCollection_DynamicArrayTest, IntAndSizeTOverloadsAgree)
 // (sparse / rare data) correctly and preserve all assigned values.
 // The draw test called: OCC7639 0 1  2 500  1 2
 //   SetValue(0, 1), SetValue(2, 500), SetValue(1, 2)
-// Expected iterator output (j, value): 0→1, 1→2, 2→500
+// Expected iterator output (j, value): 0->1, 1->2, 2->500
 
 TEST(NCollection_DynamicArrayTest, SetValue_OutOfOrderIndices_CorrectValues)
 {

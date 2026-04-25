@@ -51,8 +51,8 @@ protected:
 //! Sets CSF_<theFileName>UserDefaults environment variable to theDir.
 static void setUserDefaultsEnv(const std::string& theFileName, const std::filesystem::path& theDir)
 {
-  const std::string        anEnvName = "CSF_" + theFileName + "UserDefaults";
-  OSD_Environment          anEnv(anEnvName.c_str());
+  const std::string anEnvName = "CSF_" + theFileName + "UserDefaults";
+  OSD_Environment   anEnv(anEnvName.c_str());
   anEnv.SetValue(TCollection_AsciiString(theDir.string().c_str()));
   anEnv.Build();
 }
@@ -84,8 +84,7 @@ TEST_F(Resource_ManagerTest, OCC27849_PathsWithSpecialChars)
 
     Resource_Manager aManager(aResourceName.c_str());
 
-    EXPECT_TRUE(aManager.Find(aKey.c_str()))
-      << "Resource key not found in path: " << aDir.string();
+    EXPECT_TRUE(aManager.Find(aKey.c_str())) << "Resource key not found in path: " << aDir.string();
 
     if (aManager.Find(aKey.c_str()))
     {

@@ -133,22 +133,22 @@ TEST(gp_QuaternionTest, OCC25574_ExtrinsicIntrinsicCorrespondence)
 // angles via gp_YawPitchRoll must reproduce the original angles.
 TEST(gp_QuaternionTest, OCC25574_YawPitchRollRoundTrip)
 {
-  const gp_Ax2   aWorld;
-  const double   aAlpha = 0.0;
-  const double   aBeta  = -35.0 / 180.0 * M_PI;
-  const double   aGamma = 90.0 / 180.0 * M_PI;
+  const gp_Ax2 aWorld;
+  const double aAlpha = 0.0;
+  const double aBeta  = -35.0 / 180.0 * M_PI;
+  const double aGamma = 90.0 / 180.0 * M_PI;
 
   // Build the rotated frame step by step (yaw-pitch-roll convention)
   const gp_Quaternion aRotZ(aWorld.Direction(), aAlpha);
-  const gp_Vec        aRotY    = aRotZ.Multiply(aWorld.YDirection());
-  const gp_Vec        aRotX    = aRotZ.Multiply(aWorld.XDirection());
+  const gp_Vec        aRotY = aRotZ.Multiply(aWorld.YDirection());
+  const gp_Vec        aRotX = aRotZ.Multiply(aWorld.XDirection());
 
   const gp_Quaternion aRotYaw(aRotY, aBeta);
-  const gp_Vec        aRotZ2  = aRotYaw.Multiply(aWorld.Direction());
-  const gp_Vec        aRotX2  = aRotYaw.Multiply(aRotX);
+  const gp_Vec        aRotZ2 = aRotYaw.Multiply(aWorld.Direction());
+  const gp_Vec        aRotX2 = aRotYaw.Multiply(aRotX);
 
   const gp_Quaternion aRotRoll(aRotX2, aGamma);
-  const gp_Vec        aRotZ3  = aRotRoll.Multiply(aRotZ2);
+  const gp_Vec        aRotZ3 = aRotRoll.Multiply(aRotZ2);
 
   const gp_Ax2 aResult(gp_Pnt(0., 0., 0.), aRotZ3, aRotX2);
 

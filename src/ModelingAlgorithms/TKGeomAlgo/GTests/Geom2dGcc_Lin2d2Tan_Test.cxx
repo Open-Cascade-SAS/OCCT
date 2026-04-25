@@ -33,8 +33,8 @@ TEST(Geom2dGcc_Lin2d2TanTest, OCC813_EllipseAndPoint)
 {
   // Construct 3D ellipse and projection plane
   const gp_Ax2 anAx2(gp_Pnt(1262.224429, 425.040878, 363.609716),
-                      gp_Dir(0.173648, 0.984808, 0.000000),
-                      gp_Dir(-0.932169, 0.164367, -0.322560));
+                     gp_Dir(0.173648, 0.984808, 0.000000),
+                     gp_Dir(-0.932169, 0.164367, -0.322560));
 
   Handle(Geom_Ellipse) anEll  = new Geom_Ellipse(anAx2, 150, 100);
   Handle(Geom_Plane)   aPlane = new Geom_Plane(gp_Ax3(anAx2));
@@ -46,7 +46,7 @@ TEST(Geom2dGcc_Lin2d2TanTest, OCC813_EllipseAndPoint)
   Geom2dGcc_QualifiedCurve aQCurve(anAdapt, GccEnt_outside);
 
   // Query tangent line from 2D point to the projected ellipse
-  const gp_Pnt2d           aPnt2d(200.0, 200.0);
+  const gp_Pnt2d      aPnt2d(200.0, 200.0);
   Geom2dGcc_Lin2d2Tan aLinTan(aQCurve, aPnt2d, 0.1);
 
   EXPECT_GT(aLinTan.NbSolutions(), 0) << "Expected at least one tangent line solution";
@@ -57,13 +57,13 @@ TEST(Geom2dGcc_Lin2d2TanTest, OCC813_EllipseAndPoint)
 TEST(Geom2dGcc_Lin2d2TanTest, OCC814_CircleAndEllipse)
 {
   const gp_Ax2 anAx2(gp_Pnt(1262.224429, 425.040878, 363.609716),
-                      gp_Dir(0.173648, 0.984808, 0.000000),
-                      gp_Dir(-0.932169, 0.164367, -0.322560));
+                     gp_Dir(0.173648, 0.984808, 0.000000),
+                     gp_Dir(-0.932169, 0.164367, -0.322560));
 
   Handle(Geom_Circle)  aCir   = new Geom_Circle(gp_Ax2(gp_Pnt(823.687192, 502.366825, 478.960440),
-                                                        gp_Dir(0.173648, 0.984808, 0.000000),
-                                                        gp_Dir(-0.932169, 0.164367, -0.322560)),
-                                                50);
+                                                    gp_Dir(0.173648, 0.984808, 0.000000),
+                                                    gp_Dir(-0.932169, 0.164367, -0.322560)),
+                                             50);
   Handle(Geom_Ellipse) anEll  = new Geom_Ellipse(anAx2, 150, 100);
   Handle(Geom_Plane)   aPlane = new Geom_Plane(gp_Ax3(anAx2));
   const gp_Pln         aPln   = aPlane->Pln();

@@ -34,7 +34,7 @@ TEST(Geom2dConvert_CompCurveToBSplineCurveTest, OCC30747_ClosedContourFromCircle
   const int    aNb    = 10;
   const double aDelta = (aF + aL) / aNb;
 
-  occ::handle<Geom2d_TrimmedCurve> aFTrim = new Geom2d_TrimmedCurve(aCirc, aF, aDelta);
+  occ::handle<Geom2d_TrimmedCurve>      aFTrim = new Geom2d_TrimmedCurve(aCirc, aF, aDelta);
   Geom2dConvert_CompCurveToBSplineCurve aRes(aFTrim);
 
   for (int anId = 1; anId < aNb; anId++)
@@ -53,5 +53,6 @@ TEST(Geom2dConvert_CompCurveToBSplineCurveTest, OCC30747_ClosedContourFromCircle
 
   const occ::handle<Geom2d_BSplineCurve> aBSpline = aRes.BSplineCurve();
   ASSERT_FALSE(aBSpline.IsNull());
-  EXPECT_TRUE(aBSpline->IsClosed()) << "Assembled BSpline curve from closed circle arcs must be closed";
+  EXPECT_TRUE(aBSpline->IsClosed())
+    << "Assembled BSpline curve from closed circle arcs must be closed";
 }

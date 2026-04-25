@@ -65,7 +65,7 @@ TEST(STEPCAFControl_ControllerTest, OCC33657_ParallelWritersToBuffer)
   std::atomic<bool> allOk{true};
   EXPECT_NO_FATAL_FAILURE(OSD_Parallel::For(0, 100, [&](int) {
     const TopoDS_Shape aShape = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
-    STEPControl_Writer  aWriter;
+    STEPControl_Writer aWriter;
     aWriter.SetShapeFixParameters(DESTEP_Parameters::GetDefaultShapeFixParameters());
     aWriter.Transfer(aShape, STEPControl_StepModelType::STEPControl_AsIs, DESTEP_Parameters{});
     std::ostringstream aStream;
@@ -105,7 +105,7 @@ TEST(STEPCAFControl_ControllerTest, OCC33657_ParallelReadersAndWriters)
   STEPCAFControl_Controller::Init();
 
   // Acquire source shape and analyze its topology.
-  const TopoDS_Shape aSourceShape = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
+  const TopoDS_Shape          aSourceShape = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
   ShapeAnalysis_ShapeContents aSourceAnalyzer;
   aSourceAnalyzer.Perform(aSourceShape);
 
@@ -116,13 +116,15 @@ TEST(STEPCAFControl_ControllerTest, OCC33657_ParallelReadersAndWriters)
 
     // Write source shape to a per-thread stream.
     STEPControl_Writer aWriter;
-    aWriter.Transfer(aSourceShape, STEPControl_StepModelType::STEPControl_AsIs, DESTEP_Parameters{});
+    aWriter.Transfer(aSourceShape,
+                     STEPControl_StepModelType::STEPControl_AsIs,
+                     DESTEP_Parameters{});
     std::ostringstream anOutStream;
     aWriter.WriteStream(anOutStream);
 
     // Read it back and compare topology counts.
-    std::istringstream      anInStream(anOutStream.str());
-    STEPControl_Reader      aReader;
+    std::istringstream anInStream(anOutStream.str());
+    STEPControl_Reader aReader;
     aReader.ReadStream("", DESTEP_Parameters{}, anInStream);
     aReader.TransferRoots();
     const TopoDS_Shape aResultShape = aReader.OneShape();
@@ -150,7 +152,7 @@ TEST(STEPCAFControl_ControllerTest, OCC23951_WriteDocumentWithVisibility)
   STEPCAFControl_Controller::Init();
 
   occ::handle<TDocStd_Document> aDoc = new TDocStd_Document("dummy");
-  const TopoDS_Shape             aBox = BRepPrimAPI_MakeBox(1, 1, 1).Shape();
+  const TopoDS_Shape            aBox = BRepPrimAPI_MakeBox(1, 1, 1).Shape();
 
   occ::handle<XCAFDoc_ShapeTool> aShapeTool = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main());
   TDF_Label                      aLab1      = aShapeTool->NewShape();
@@ -186,8 +188,7 @@ TEST(STEPCAFControl_ControllerTest, OCC23951_WriteDocumentWithVisibility)
     << "ReadStream failed on written STEP content";
   ASSERT_TRUE(aCafReader.Transfer(aReadDoc)) << "Transfer to XCAF document failed";
 
-  occ::handle<XCAFDoc_ShapeTool> aReadShapeTool =
-    XCAFDoc_DocumentTool::ShapeTool(aReadDoc->Main());
+  occ::handle<XCAFDoc_ShapeTool> aReadShapeTool = XCAFDoc_DocumentTool::ShapeTool(aReadDoc->Main());
   NCollection_Sequence<TDF_Label> aRoots;
   aReadShapeTool->GetFreeShapes(aRoots);
   ASSERT_FALSE(aRoots.IsEmpty()) << "No shapes in read-back document";
@@ -198,20 +199,19 @@ TEST(STEPCAFControl_ControllerTest, OCC23951_WriteDocumentWithVisibility)
   aSourceAnalyzer.Perform(aBox);
   ShapeAnalysis_ShapeContents aResultAnalyzer;
   aResultAnalyzer.Perform(aResult);
-  EXPECT_EQ(aResultAnalyzer.NbSolids(),   aSourceAnalyzer.NbSolids())   << "Solid count mismatch";
-  EXPECT_EQ(aResultAnalyzer.NbFaces(),    aSourceAnalyzer.NbFaces())    << "Face count mismatch";
-  EXPECT_EQ(aResultAnalyzer.NbEdges(),    aSourceAnalyzer.NbEdges())    << "Edge count mismatch";
+  EXPECT_EQ(aResultAnalyzer.NbSolids(), aSourceAnalyzer.NbSolids()) << "Solid count mismatch";
+  EXPECT_EQ(aResultAnalyzer.NbFaces(), aSourceAnalyzer.NbFaces()) << "Face count mismatch";
+  EXPECT_EQ(aResultAnalyzer.NbEdges(), aSourceAnalyzer.NbEdges()) << "Edge count mismatch";
   EXPECT_EQ(aResultAnalyzer.NbVertices(), aSourceAnalyzer.NbVertices()) << "Vertex count mismatch";
 
   // Verify yellow color is present on faces of the read-back shape.
-  occ::handle<XCAFDoc_ColorTool> aColorTool =
-    XCAFDoc_DocumentTool::ColorTool(aReadDoc->Main());
-  bool           aFoundColor = false;
-  Quantity_Color aReadColor;
+  occ::handle<XCAFDoc_ColorTool> aColorTool  = XCAFDoc_DocumentTool::ColorTool(aReadDoc->Main());
+  bool                           aFoundColor = false;
+  Quantity_Color                 aReadColor;
   for (TopExp_Explorer anFaceExp(aResult, TopAbs_FACE); anFaceExp.More(); anFaceExp.Next())
   {
-    if (aColorTool->GetColor(anFaceExp.Current(), XCAFDoc_ColorSurf, aReadColor) ||
-        aColorTool->GetColor(anFaceExp.Current(), XCAFDoc_ColorGen, aReadColor))
+    if (aColorTool->GetColor(anFaceExp.Current(), XCAFDoc_ColorSurf, aReadColor)
+        || aColorTool->GetColor(anFaceExp.Current(), XCAFDoc_ColorGen, aReadColor))
     {
       aFoundColor = true;
       break;
@@ -220,15 +220,15 @@ TEST(STEPCAFControl_ControllerTest, OCC23951_WriteDocumentWithVisibility)
   if (!aFoundColor)
   {
     // If not found on faces, try on the solid shape itself
-    aFoundColor = aColorTool->GetColor(aResult, XCAFDoc_ColorGen, aReadColor) ||
-                  aColorTool->GetColor(aResult, XCAFDoc_ColorSurf, aReadColor);
+    aFoundColor = aColorTool->GetColor(aResult, XCAFDoc_ColorGen, aReadColor)
+                  || aColorTool->GetColor(aResult, XCAFDoc_ColorSurf, aReadColor);
   }
   EXPECT_TRUE(aFoundColor) << "Yellow color not found on read-back shape";
   if (aFoundColor)
   {
-    EXPECT_NEAR(aReadColor.Red(),   aYellow.Red(),   0.05) << "Color red channel mismatch";
+    EXPECT_NEAR(aReadColor.Red(), aYellow.Red(), 0.05) << "Color red channel mismatch";
     EXPECT_NEAR(aReadColor.Green(), aYellow.Green(), 0.05) << "Color green channel mismatch";
-    EXPECT_NEAR(aReadColor.Blue(),  aYellow.Blue(),  0.05) << "Color blue channel mismatch";
+    EXPECT_NEAR(aReadColor.Blue(), aYellow.Blue(), 0.05) << "Color blue channel mismatch";
   }
 }
 
@@ -238,10 +238,10 @@ TEST(STEPCAFControl_ControllerTest, OCC23950_WriteDocumentWithVertexName)
 {
   STEPCAFControl_Controller::Init();
 
-  occ::handle<TDocStd_Document> aDoc = new TDocStd_Document("dummy");
-  const TopoDS_Shape    aVertex = BRepBuilderAPI_MakeVertex(gp_Pnt(75, 0, 0));
-  const gp_Trsf         aTrsf;
-  const TopLoc_Location aLoc(aTrsf);
+  occ::handle<TDocStd_Document> aDoc    = new TDocStd_Document("dummy");
+  const TopoDS_Shape            aVertex = BRepBuilderAPI_MakeVertex(gp_Pnt(75, 0, 0));
+  const gp_Trsf                 aTrsf;
+  const TopLoc_Location         aLoc(aTrsf);
 
   occ::handle<XCAFDoc_ShapeTool> aShapeTool = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main());
 
@@ -256,7 +256,8 @@ TEST(STEPCAFControl_ControllerTest, OCC23950_WriteDocumentWithVertexName)
   aShapeTool->UpdateAssemblies();
 
   Quantity_Color aYellow(Quantity_NOC_YELLOW);
-  XCAFDoc_DocumentTool::ColorTool(aDoc->Main())->SetColor(aComponentLabel, aYellow, XCAFDoc_ColorGen);
+  XCAFDoc_DocumentTool::ColorTool(aDoc->Main())
+    ->SetColor(aComponentLabel, aYellow, XCAFDoc_ColorGen);
   XCAFDoc_DocumentTool::ColorTool(aDoc->Main())->SetVisibility(aComponentLabel, false);
 
   // Enable writing of individual vertex names
@@ -291,8 +292,7 @@ TEST(STEPCAFControl_ControllerTest, OCC23950_WriteDocumentWithVertexName)
     << "ReadStream failed on written STEP content";
   ASSERT_TRUE(aCafReader.Transfer(aReadDoc)) << "Transfer to XCAF document failed";
 
-  occ::handle<XCAFDoc_ShapeTool> aReadShapeTool =
-    XCAFDoc_DocumentTool::ShapeTool(aReadDoc->Main());
+  occ::handle<XCAFDoc_ShapeTool> aReadShapeTool = XCAFDoc_DocumentTool::ShapeTool(aReadDoc->Main());
   NCollection_Sequence<TDF_Label> aRoots;
   aReadShapeTool->GetFreeShapes(aRoots);
   ASSERT_FALSE(aRoots.IsEmpty()) << "No shapes in read-back document";
@@ -303,6 +303,6 @@ TEST(STEPCAFControl_ControllerTest, OCC23950_WriteDocumentWithVertexName)
   ASSERT_TRUE(anExp.More()) << "No vertex found in read-back shape";
   const gp_Pnt aPnt = BRep_Tool::Pnt(TopoDS::Vertex(anExp.Current()));
   EXPECT_NEAR(aPnt.X(), 75.0, Precision::Confusion()) << "Vertex X coordinate mismatch";
-  EXPECT_NEAR(aPnt.Y(),  0.0, Precision::Confusion()) << "Vertex Y coordinate mismatch";
-  EXPECT_NEAR(aPnt.Z(),  0.0, Precision::Confusion()) << "Vertex Z coordinate mismatch";
+  EXPECT_NEAR(aPnt.Y(), 0.0, Precision::Confusion()) << "Vertex Y coordinate mismatch";
+  EXPECT_NEAR(aPnt.Z(), 0.0, Precision::Confusion()) << "Vertex Z coordinate mismatch";
 }

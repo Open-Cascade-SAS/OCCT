@@ -84,11 +84,11 @@ TEST(BRepAdaptor_CompCurve_Test, OCC29430_ArcBoundaryPoints)
     true);
   BRepBuilderAPI_MakeEdge edgeMaker(arcMaker.Value());
   BRepBuilderAPI_MakeWire wireMaker(edgeMaker.Edge());
-  const TopoDS_Wire aWire = wireMaker.Wire();
+  const TopoDS_Wire       aWire = wireMaker.Wire();
 
   BRepAdaptor_CompCurve aCurve(aWire);
-  const gp_Pnt aStartPt = aCurve.Value(aCurve.FirstParameter());
-  const gp_Pnt anEndPt  = aCurve.Value(aCurve.LastParameter());
+  const gp_Pnt          aStartPt = aCurve.Value(aCurve.FirstParameter());
+  const gp_Pnt          anEndPt  = aCurve.Value(aCurve.LastParameter());
 
   // Collect wire vertices
   NCollection_List<gp_Pnt> aVertices;
@@ -120,11 +120,11 @@ TEST(BRepAdaptor_CompCurve_Test, OCC29430_ArcBoundaryPoints)
 TEST(BRepAdaptor_CompCurve_Test, OCC30869_ReversedEdgeBoundaryPoints)
 {
   // Build a circle: center(1,0,0), Z-axis(0,-1,0), X-axis(0,0,-1), radius=1
-  const gp_Ax2 anAx2(gp_Pnt(1., 0., 0.), gp_Dir(0., -1., 0.), gp_Dir(0., 0., -1.));
+  const gp_Ax2        anAx2(gp_Pnt(1., 0., 0.), gp_Dir(0., -1., 0.), gp_Dir(0., 0., -1.));
   Handle(Geom_Circle) aCircle = new Geom_Circle(anAx2, 1.0);
 
-  const double t1 = M_PI / 2.0;         // 1.5707963267949
-  const double t2 = 3.0 * M_PI / 2.0;   // 4.71238898038469
+  const double t1 = M_PI / 2.0;       // 1.5707963267949
+  const double t2 = 3.0 * M_PI / 2.0; // 4.71238898038469
 
   Handle(Geom_TrimmedCurve) aTrimmed = new Geom_TrimmedCurve(aCircle, t1, t2);
   TopoDS_Edge               anEdge   = BRepBuilderAPI_MakeEdge(aTrimmed).Edge();
@@ -148,7 +148,7 @@ TEST(BRepAdaptor_CompCurve_Test, OCC30869_ReversedEdgeBoundaryPoints)
     aVLast.Normalize();
 
   // Reference: inverse circle (normal = (0,1,0)), evaluated at the same parameters
-  const gp_Ax2 anAx2Ref(gp_Pnt(1., 0., 0.), gp_Dir(0., 1., 0.), gp_Dir(0., 0., -1.));
+  const gp_Ax2        anAx2Ref(gp_Pnt(1., 0., 0.), gp_Dir(0., 1., 0.), gp_Dir(0., 0., -1.));
   Handle(Geom_Circle) aCircleRef = new Geom_Circle(anAx2Ref, 1.0);
 
   gp_Pnt aRefP1, aRefP2;

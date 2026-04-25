@@ -38,6 +38,7 @@ public:
   }
 
   int Begin() const { return 0; }
+
   int End() const { return myX.Length(); }
 
   void operator()(int theIndex) const { myY(theIndex) = myScalar * myX(theIndex) + myY(theIndex); }
@@ -70,6 +71,7 @@ public:
   }
 
   int Begin() const { return 0; }
+
   int End() const { return myNbBatches; }
 
   void operator()(int theBatchIndex) const
@@ -108,6 +110,7 @@ public:
   }
 
   int Begin() const { return 0; }
+
   int End() const { return mySize; }
 
   void operator()(int theIndex) const
@@ -169,7 +172,7 @@ TEST(OSD_ParallelTest, OCC24826_SaxpyParallelMatchesSequential)
     NCollection_Array1<double> anY = aX;
     for (int i = 0; i < aLength; ++i)
       anY(i) = static_cast<double>(i);
-    SaxpyFunctor           aFunctor(aX, anY, 1e-6);
+    SaxpyFunctor             aFunctor(aX, anY, 1e-6);
     OSD_ThreadPool::Launcher aLauncher(*OSD_ThreadPool::DefaultPool());
     aLauncher.Perform(aFunctor.Begin(), aFunctor.End(), aFunctor);
     for (int i = 0; i < aLength; ++i)

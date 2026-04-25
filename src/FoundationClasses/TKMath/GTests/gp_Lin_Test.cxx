@@ -119,7 +119,7 @@ TEST(gp_LinTest, Transform)
 
 TEST(gp_Lin2dTest, ConstructFromEquation_ZeroDirection_ThrowsException)
 {
-  // A=0, B=0 → direction vector is zero → must throw
+  // A=0, B=0 -> direction vector is zero -> must throw
   EXPECT_THROW(gp_Lin2d(0.0, 0.0, 1.0), Standard_ConstructionError);
 }
 
@@ -127,7 +127,7 @@ TEST(gp_Lin2dTest, ConstructFromEquation_ValidCoefficients_CorrectOrigin)
 {
   // A=1e-20, B=-1, C=2 gives the line   1e-20 * x - y + 2 = 0
   // Origin (closest point to global origin on the line) must be
-  // X_0 ≈ -1.9999999999999999e-20, Y_0 ≈ 2
+  // X_0 ~= -1.9999999999999999e-20, Y_0 ~= 2
   const gp_Lin2d aLin2d(1e-20, -1.0, 2.0);
   const gp_Pnt2d anOrigin = aLin2d.Location();
   EXPECT_NEAR(anOrigin.X(), -1.9999999999999999e-20, 1e-25);

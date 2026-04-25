@@ -49,14 +49,12 @@ TEST(BRepMesh_CircleTool_Test, OCC24923_CircumCirclePassesThroughAllVertices)
   {
     gp_XY p[3];
     for (int j = 0; j < 3; ++j)
-      p[j].SetCoord(static_cast<double>(rand()) / RAND_MAX,
-                    static_cast<double>(rand()) / RAND_MAX);
+      p[j].SetCoord(static_cast<double>(rand()) / RAND_MAX, static_cast<double>(rand()) / RAND_MAX);
 
-    // Skip degenerate (nearly collinear) triangles — retry like the original.
+    // Skip degenerate (nearly collinear) triangles - retry like the original.
     const gp_XY aV1 = p[1] - p[0];
     const gp_XY aV2 = p[2] - p[0];
-    if (aV1.SquareModulus() <= aSqPrec || aV2.SquareModulus() <= aSqPrec
-        || (aV1 ^ aV2) <= aMinArea)
+    if (aV1.SquareModulus() <= aSqPrec || aV2.SquareModulus() <= aSqPrec || (aV1 ^ aV2) <= aMinArea)
       continue;
 
     ++i;
@@ -76,5 +74,5 @@ TEST(BRepMesh_CircleTool_Test, OCC24923_CircumCirclePassesThroughAllVertices)
   // Allow at most 1% failure rate (same threshold as the original Draw test).
   const double aFailRate = static_cast<double>(aNbFailed) / static_cast<double>(aNbTests);
   EXPECT_LE(aFailRate, 0.01) << "Too many bad circumscribed circles: " << aNbFailed << " / "
-                              << aNbTests;
+                             << aNbTests;
 }

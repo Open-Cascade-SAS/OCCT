@@ -865,16 +865,16 @@ TEST(MathVectorTest, Resize_NegativeLowerBound)
 // OCC524: math_Vector::Multiply(vector, matrix) and TMultiply(vector, matrix).
 // Reference values from the original Draw Harness test:
 //   Vector(1..6) filled with 5.0, Matrix(1..6, 1..6) filled with 4.0
-//   Vector1 = Vector * Matrix  → each component = 6 * 5 * 4 = 120
-//   After Matrix(2,1) += 1 (→ 5):
-//   Vector2 = Vector * Matrix^T → component 2 = 5*5 + 5*4*5 = 25+100 = 125, rest = 120
+//   Vector1 = Vector * Matrix  -> each component = 6 * 5 * 4 = 120
+//   After Matrix(2,1) += 1 (-> 5):
+//   Vector2 = Vector * Matrix^T -> component 2 = 5*5 + 5*4*5 = 25+100 = 125, rest = 120
 
 TEST(MathVectorTest, Multiply_RowVectorByMatrix_AllComponentsEqual)
 {
-  const int    aLow = 1, aHigh = 6;
-  math_Vector  aVec(aLow, aHigh, 5.0);
-  math_Matrix  aMat(aLow, aHigh, aLow, aHigh, 4.0);
-  math_Vector  aResult(aLow, aHigh);
+  const int   aLow = 1, aHigh = 6;
+  math_Vector aVec(aLow, aHigh, 5.0);
+  math_Matrix aMat(aLow, aHigh, aLow, aHigh, 4.0);
+  math_Vector aResult(aLow, aHigh);
 
   aResult.Multiply(aVec, aMat);
 
@@ -886,10 +886,10 @@ TEST(MathVectorTest, Multiply_RowVectorByMatrix_AllComponentsEqual)
 
 TEST(MathVectorTest, TMultiply_RowVectorByTransposedMatrix_ModifiedComponent)
 {
-  const int    aLow = 1, aHigh = 6;
-  math_Vector  aVec(aLow, aHigh, 5.0);
-  math_Matrix  aMat(aLow, aHigh, aLow, aHigh, 4.0);
-  math_Vector  aResult(aLow, aHigh);
+  const int   aLow = 1, aHigh = 6;
+  math_Vector aVec(aLow, aHigh, 5.0);
+  math_Matrix aMat(aLow, aHigh, aLow, aHigh, 4.0);
+  math_Vector aResult(aLow, aHigh);
 
   // Modify one element to create an asymmetry in the transposed multiply
   aMat(aLow + 1, aLow) += 1.0;

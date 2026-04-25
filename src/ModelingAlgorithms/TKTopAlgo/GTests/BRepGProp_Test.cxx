@@ -130,7 +130,7 @@ TEST(BRepGPropTest, OCC49_CylinderHasSymmetryAxis)
 {
   const TopoDS_Shape aCylinder = BRepPrimAPI_MakeCylinder(10., 20.).Shape();
 
-  GProp_GProps          aProps;
+  GProp_GProps aProps;
   BRepGProp::VolumeProperties(aCylinder, aProps);
   const GProp_PrincipalProps aPrincipal = aProps.PrincipalProperties();
   EXPECT_TRUE(aPrincipal.HasSymmetryAxis());
@@ -144,7 +144,7 @@ TEST(BRepGPropTest, OCC49_CutShapeHasNoSymmetryAxis)
   BRepAlgoAPI_Cut aCut(aCylinder, aBox);
   ASSERT_TRUE(aCut.IsDone());
 
-  GProp_GProps          aProps;
+  GProp_GProps aProps;
   BRepGProp::VolumeProperties(aCut.Shape(), aProps);
   const GProp_PrincipalProps aPrincipal = aProps.PrincipalProperties();
   EXPECT_FALSE(aPrincipal.HasSymmetryAxis());
@@ -175,8 +175,7 @@ TEST(BRepGPropTest, OCC8797_BSplineLengthConsistencyAbscissaVsLinearProperties)
   aMults(1) = 3;
   aMults(2) = 4;
 
-  occ::handle<Geom_BSplineCurve> aSpline =
-    new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
+  occ::handle<Geom_BSplineCurve> aSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
   ASSERT_FALSE(aSpline.IsNull());
   EXPECT_EQ(aSpline->NbPoles(), 7);
   EXPECT_EQ(aSpline->NbKnots(), 3);

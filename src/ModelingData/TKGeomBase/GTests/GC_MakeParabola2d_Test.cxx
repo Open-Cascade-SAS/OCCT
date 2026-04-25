@@ -22,14 +22,14 @@
 namespace
 {
 // Helper: verify a parabola built from directrix+focus against expected values.
-void CheckParabola2d(const gp_Ax2d& theAxes,
+void CheckParabola2d(const gp_Ax2d&  theAxes,
                      const gp_Pnt2d& theFocus,
-                     bool             theSense,
-                     double           theExpectedFocal,
-                     double           theExpectedVertX,
-                     double           theExpectedVertY,
-                     double           theExpectedParam,
-                     const double     theExpectedCoeffs[6])
+                     bool            theSense,
+                     double          theExpectedFocal,
+                     double          theExpectedVertX,
+                     double          theExpectedVertY,
+                     double          theExpectedParam,
+                     const double    theExpectedCoeffs[6])
 {
   const double aCompareTol = 1.0e-12;
 
@@ -49,8 +49,7 @@ void CheckParabola2d(const gp_Ax2d& theAxes,
   for (int i = 0; i < 6; ++i)
   {
     EXPECT_NEAR(aF[i], theExpectedCoeffs[i], aCompareTol)
-      << "Wrong coefficient [" << i << "]: got " << aF[i] << ", expected "
-      << theExpectedCoeffs[i];
+      << "Wrong coefficient [" << i << "]: got " << aF[i] << ", expected " << theExpectedCoeffs[i];
   }
 }
 } // namespace
@@ -60,9 +59,9 @@ void CheckParabola2d(const gp_Ax2d& theAxes,
 // Equation: (y-3)^2 = 2*(x-0.5), i.e. 1*Y^2 + 2*(-1)*X + 2*(-3)*Y + 10 = 0.
 TEST(GC_MakeParabola2d_Test, OCC26747_1_ParabolaOpeningRight)
 {
-  const gp_Ax2d   anAxes(gp_Pnt2d(0.0, 3.0), gp_Dir2d(gp_Dir2d::D::Y));
-  const gp_Pnt2d  aFocus(1.0, 3.0);
-  const double    aCoeffs[6] = {0.0, 1.0, 0.0, -1.0, -3.0, 10.0};
+  const gp_Ax2d  anAxes(gp_Pnt2d(0.0, 3.0), gp_Dir2d(gp_Dir2d::D::Y));
+  const gp_Pnt2d aFocus(1.0, 3.0);
+  const double   aCoeffs[6] = {0.0, 1.0, 0.0, -1.0, -3.0, 10.0};
   CheckParabola2d(anAxes, aFocus, true, 0.5, 0.5, 3.0, 1.0, aCoeffs);
 }
 
@@ -71,9 +70,9 @@ TEST(GC_MakeParabola2d_Test, OCC26747_1_ParabolaOpeningRight)
 // Equation (WCS): (y-3)^2 = 2*(-x-0.5), i.e. 1*Y^2 + 2*1*X + 2*(-3)*Y + 10 = 0.
 TEST(GC_MakeParabola2d_Test, OCC26747_2_ParabolaOpeningLeft)
 {
-  const gp_Ax2d   anAxes(gp_Pnt2d(0.0, 0.0), gp_Dir2d(gp_Dir2d::D::Y));
-  const gp_Pnt2d  aFocus(-1.0, 3.0);
-  const double    aCoeffs[6] = {0.0, 1.0, 0.0, 1.0, -3.0, 10.0};
+  const gp_Ax2d  anAxes(gp_Pnt2d(0.0, 0.0), gp_Dir2d(gp_Dir2d::D::Y));
+  const gp_Pnt2d aFocus(-1.0, 3.0);
+  const double   aCoeffs[6] = {0.0, 1.0, 0.0, 1.0, -3.0, 10.0};
   CheckParabola2d(anAxes, aFocus, false, 0.5, -0.5, 3.0, 1.0, aCoeffs);
 }
 
@@ -82,8 +81,8 @@ TEST(GC_MakeParabola2d_Test, OCC26747_2_ParabolaOpeningLeft)
 // Focal length = 0, parameter = 0. Equation: Y^2 + 2*(-3)*Y + 9 = 0 (line y=3).
 TEST(GC_MakeParabola2d_Test, OCC26747_3_DegenerateParabola)
 {
-  const gp_Ax2d   anAxes(gp_Pnt2d(0.0, 0.0), gp_Dir2d(gp_Dir2d::D::Y));
-  const gp_Pnt2d  aFocus(0.0, 3.0);
-  const double    aCoeffs[6] = {0.0, 1.0, 0.0, 0.0, -3.0, 9.0};
+  const gp_Ax2d  anAxes(gp_Pnt2d(0.0, 0.0), gp_Dir2d(gp_Dir2d::D::Y));
+  const gp_Pnt2d aFocus(0.0, 3.0);
+  const double   aCoeffs[6] = {0.0, 1.0, 0.0, 0.0, -3.0, 9.0};
   CheckParabola2d(anAxes, aFocus, false, 0.0, 0.0, 3.0, 0.0, aCoeffs);
 }

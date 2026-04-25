@@ -32,16 +32,16 @@
 #include <gp_Pnt.hxx>
 #include <TopoDS_Shape.hxx>
 
-// OCC822_1: BRepMesh_IncrementalMesh correctness test - boolean operations with cylinders and cones.
-// Creates two pairs (inner/outer) of cylinders and cones, fuses each pair, then cuts inner from
-// outer.
+// OCC822_1: BRepMesh_IncrementalMesh correctness test - boolean operations with cylinders and
+// cones. Creates two pairs (inner/outer) of cylinders and cones, fuses each pair, then cuts inner
+// from outer.
 TEST(BRepAlgoAPI_FuseTest, CylinderAndCone_FuseThenCut)
 {
-  const gp_Ax2 anAxis1(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
+  const gp_Ax2       anAxis1(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
   const TopoDS_Shape aCylIn  = BRepPrimAPI_MakeCylinder(anAxis1, 40, 110).Shape();
   const TopoDS_Shape aCylOut = BRepPrimAPI_MakeCylinder(anAxis1, 50, 100).Shape();
 
-  const gp_Ax2 anAxis2(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::NZ));
+  const gp_Ax2       anAxis2(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::NZ));
   const TopoDS_Shape aConIn  = BRepPrimAPI_MakeCone(anAxis2, 40, 60, 110).Shape();
   const TopoDS_Shape aConOut = BRepPrimAPI_MakeCone(anAxis2, 50, 70, 100).Shape();
 
@@ -68,8 +68,7 @@ TEST(BRepAlgoAPI_FuseTest, CylinderAndCone_FuseThenCut)
 // OCC822_2: BRepMesh_IncrementalMesh correctness test - fuse of box and sphere.
 TEST(BRepAlgoAPI_FuseTest, BoxAndSphere)
 {
-  const TopoDS_Shape aBox =
-    BRepPrimAPI_MakeBox(gp_Pnt(0, 0, 0), gp_Pnt(100, 100, 100)).Shape();
+  const TopoDS_Shape aBox    = BRepPrimAPI_MakeBox(gp_Pnt(0, 0, 0), gp_Pnt(100, 100, 100)).Shape();
   const TopoDS_Shape aSphere = BRepPrimAPI_MakeSphere(gp_Pnt(100, 50, 50), 25.0).Shape();
 
   BRepAlgoAPI_Fuse aFuse(aBox, aSphere);
@@ -89,11 +88,11 @@ TEST(BRepAlgoAPI_FuseTest, BoxAndSphere)
 // OCC823: BRepAlgoAPI_Fuse correctness test - fuse of two nearly-parallel cylinders.
 TEST(BRepAlgoAPI_FuseTest, TwoCylinders)
 {
-  const gp_Ax2 anAxis1(gp_Pnt(40, 50, 0), gp_Dir(100, 0, 0));
+  const gp_Ax2       anAxis1(gp_Pnt(40, 50, 0), gp_Dir(100, 0, 0));
   const TopoDS_Shape aCyl1 = BRepPrimAPI_MakeCylinder(anAxis1, 20, 100).Shape();
 
-  constexpr double aSize    = 0.001;
-  const gp_Ax2     anAxis2(gp_Pnt(100, 50, aSize), gp_Dir(0, aSize, 80));
+  constexpr double   aSize = 0.001;
+  const gp_Ax2       anAxis2(gp_Pnt(100, 50, aSize), gp_Dir(0, aSize, 80));
   const TopoDS_Shape aCyl2 = BRepPrimAPI_MakeCylinder(anAxis2, 20, 80).Shape();
 
   BRepAlgoAPI_Fuse aFuse(aCyl2, aCyl1);
@@ -113,8 +112,8 @@ TEST(BRepAlgoAPI_FuseTest, TwoCylinders)
 // OCC824: BRepAlgoAPI_Fuse correctness test - fuse of cylinder and sphere.
 TEST(BRepAlgoAPI_FuseTest, CylinderAndSphere)
 {
-  const gp_Pnt     aCenter(100, 0, 0);
-  const gp_Ax2     anAxis(aCenter, gp_Dir(gp_Dir::D::NX));
+  const gp_Pnt       aCenter(100, 0, 0);
+  const gp_Ax2       anAxis(aCenter, gp_Dir(gp_Dir::D::NX));
   const TopoDS_Shape aCyl    = BRepPrimAPI_MakeCylinder(anAxis, 20, 100).Shape();
   const TopoDS_Shape aSphere = BRepPrimAPI_MakeSphere(aCenter, 20.0).Shape();
 
@@ -145,12 +144,11 @@ TEST(BRepAlgoAPI_FuseTest, RevolvedFaceAndSphere)
   aWire.Add(gp_Pnt(aX1, aY2, 0));
   aWire.Add(gp_Pnt(aX1, aY1, 0));
 
-  const TopoDS_Face aFace    = BRepBuilderAPI_MakeFace(aWire.Wire(), false);
-  const gp_Ax1      anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 30, 0));
-  const TopoDS_Shape aRevol   = BRepPrimAPI_MakeRevol(aFace, anAxis, 2.0 * M_PI).Shape();
-  const TopoDS_Shape aSphere  = BRepPrimAPI_MakeSphere(gp_Pnt(166.373, 77.0402, 96.0555),
-                                                        23.218586)
-                                   .Shape();
+  const TopoDS_Face  aFace = BRepBuilderAPI_MakeFace(aWire.Wire(), false);
+  const gp_Ax1       anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 30, 0));
+  const TopoDS_Shape aRevol = BRepPrimAPI_MakeRevol(aFace, anAxis, 2.0 * M_PI).Shape();
+  const TopoDS_Shape aSphere =
+    BRepPrimAPI_MakeSphere(gp_Pnt(166.373, 77.0402, 96.0555), 23.218586).Shape();
 
   BRepAlgoAPI_Fuse aFuse(aRevol, aSphere);
   ASSERT_TRUE(aFuse.IsDone());
@@ -176,7 +174,7 @@ TEST(BRepAlgoAPI_FuseTest, RevolvedSolidAndTwoTori)
   aWire.Add(gp_Pnt(10, 0, 50));
   aWire.Add(gp_Pnt(10, 0, 0));
 
-  const TopoDS_Face  aFace  = BRepBuilderAPI_MakeFace(aWire.Wire(), false);
+  const TopoDS_Face  aFace = BRepBuilderAPI_MakeFace(aWire.Wire(), false);
   const gp_Ax1       anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 30));
   const TopoDS_Shape aRevol = BRepPrimAPI_MakeRevol(aFace, anAxis, 2.0 * M_PI).Shape();
 

@@ -60,13 +60,12 @@ TEST(BRepMesh_IncrementalMeshTest, OCC26407_PlanarPolygonMeshStatus)
   }
   ASSERT_TRUE(aWireBuilder.IsDone()) << "Wire construction failed";
 
-  const gp_Pnt& aV0 = aPnts[0];
-  const gp_Pnt& aV1 = aPnts[1];
-  const gp_Pnt& aV2 = aPnts[aPnts.size() - 1];
+  const gp_Pnt& aV0         = aPnts[0];
+  const gp_Pnt& aV1         = aPnts[1];
+  const gp_Pnt& aV2         = aPnts[aPnts.size() - 1];
   const gp_Vec  aFaceNormal = gp_Vec(aV0, aV1).Crossed(gp_Vec(aV0, aV2));
 
-  const TopoDS_Face aFace =
-    BRepBuilderAPI_MakeFace(gp_Pln(aV0, aFaceNormal), aWireBuilder.Wire());
+  const TopoDS_Face aFace = BRepBuilderAPI_MakeFace(gp_Pln(aV0, aFaceNormal), aWireBuilder.Wire());
 
   BRepMesh_IncrementalMesh aMesher(aFace, 1.e-7);
   EXPECT_EQ(aMesher.GetStatusFlags(), 0)

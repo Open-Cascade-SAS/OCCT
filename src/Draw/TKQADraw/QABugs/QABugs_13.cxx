@@ -783,7 +783,6 @@ static int OCC544(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-
 void QABugs::Commands_13(Draw_Interpretor& theCommands)
 {
   const char* group = "QABugs";

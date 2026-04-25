@@ -180,8 +180,7 @@ TEST(BRepAlgoAPI_CutTest, HollowBox_VolumeAccuracy_Delta30)
 // Outer 30x30x30 has area 6*900=5400; inner 10x10x10 hole adds 6*100=600; total=6000.
 TEST(BRepAlgoAPI_CutTest, HollowBox_SurfaceAreaAndValidity)
 {
-  const TopoDS_Solid aFullSolid =
-    BRepPrimAPI_MakeBox(gp_Pnt(0, 0, 0), 30.0, 30.0, 30.0).Solid();
+  const TopoDS_Solid aFullSolid = BRepPrimAPI_MakeBox(gp_Pnt(0, 0, 0), 30.0, 30.0, 30.0).Solid();
   const TopoDS_Solid anInnerSolid =
     BRepPrimAPI_MakeBox(gp_Pnt(10, 10, 10), 10.0, 10.0, 10.0).Solid();
 

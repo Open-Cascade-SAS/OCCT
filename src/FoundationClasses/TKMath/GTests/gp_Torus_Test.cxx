@@ -33,17 +33,16 @@ TEST(gp_TorusTest, OCC26746_CoefficientsCorrect)
   //          0.37231784651136368 0.58886674834874120 0.71736697293527607
   //          0.80682335496555135 0.17666016102759910 -0.56376170618524390
   //          87.08479625 23.14682176
-  const gp_Ax3 anAx3(
-    gp_Pnt(55.52514413, 2.070076585, 73.83409062),
-    gp_Dir(0.37231784651136368, 0.58886674834874120, 0.71736697293527607),
-    gp_Dir(0.80682335496555135, 0.17666016102759910, -0.56376170618524390));
+  const gp_Ax3 anAx3(gp_Pnt(55.52514413, 2.070076585, 73.83409062),
+                     gp_Dir(0.37231784651136368, 0.58886674834874120, 0.71736697293527607),
+                     gp_Dir(0.80682335496555135, 0.17666016102759910, -0.56376170618524390));
 
   Handle(Geom_ToroidalSurface) aTorus = new Geom_ToroidalSurface(anAx3, 87.08479625, 23.14682176);
 
-  const double aTolerance  = 3.0e-7;
-  const int    aNbPtsMax   = 5;
-  const int    aLowIndex   = 5;
-  const double aStep       = 2.0 * M_PI / aNbPtsMax;
+  const double aTolerance = 3.0e-7;
+  const int    aNbPtsMax  = 5;
+  const int    aLowIndex  = 5;
+  const double aStep      = 2.0 * M_PI / aNbPtsMax;
 
   NCollection_Array1<double> aCoeffs(aLowIndex, aLowIndex + 34);
   aTorus->Torus().Coefficients(aCoeffs);

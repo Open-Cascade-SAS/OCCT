@@ -581,6 +581,7 @@ TEST(MathGlobOptMinTest, SmallSearchSpace)
   EXPECT_NEAR(aSol(1), 1.0, 0.02) << "Should find solution close to global minimum";
   EXPECT_NEAR(aSol(2), 2.0, 0.02) << "Should find solution close to global minimum";
 }
+
 TEST(MathGlobOptMinTest, OCC25004_BraninFunctionGlobalOptimum)
 {
   // OCC25004: Extrema_ExtCC incorrect result. Tests math_GlobOptMin on Branin benchmark.
@@ -619,10 +620,10 @@ TEST(MathGlobOptMinTest, OCC25004_BraninFunctionGlobalOptimum)
         {
           if (i == k && j == l)
             continue;
-          aCurrPnt1(1) = aLower(1) + (aUpper(1) - aLower(1)) * (i - 1) / (aGridOrder - 1.0);
-          aCurrPnt1(2) = aLower(2) + (aUpper(2) - aLower(2)) * (j - 1) / (aGridOrder - 1.0);
-          aCurrPnt2(1) = aLower(1) + (aUpper(1) - aLower(1)) * (k - 1) / (aGridOrder - 1.0);
-          aCurrPnt2(2) = aLower(2) + (aUpper(2) - aLower(2)) * (l - 1) / (aGridOrder - 1.0);
+          aCurrPnt1(1)   = aLower(1) + (aUpper(1) - aLower(1)) * (i - 1) / (aGridOrder - 1.0);
+          aCurrPnt1(2)   = aLower(2) + (aUpper(2) - aLower(2)) * (j - 1) / (aGridOrder - 1.0);
+          aCurrPnt2(1)   = aLower(1) + (aUpper(1) - aLower(1)) * (k - 1) / (aGridOrder - 1.0);
+          aCurrPnt2(2)   = aLower(2) + (aUpper(2) - aLower(2)) * (l - 1) / (aGridOrder - 1.0);
           const int idx1 = (i - 1) * aGridOrder + j;
           const int idx2 = (k - 1) * aGridOrder + l;
           // Use subtracted vector norm for Lipschitz estimation

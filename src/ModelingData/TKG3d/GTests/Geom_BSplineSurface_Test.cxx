@@ -941,14 +941,15 @@ TEST(Geom_BSplineSurface_Test, OCC30990_CacheConsistencyAtKnots)
 {
   // Build a degree-3 B-Spline surface with 3 interior knots in U (4 spans) and 2 in V (3 spans).
   // Poles: 7 x 5
-  const int aNbU = 7;
-  const int aNbV = 5;
+  const int                  aNbU = 7;
+  const int                  aNbV = 5;
   NCollection_Array2<gp_Pnt> aPoles(1, aNbU, 1, aNbV);
   for (int i = 1; i <= aNbU; ++i)
     for (int j = 1; j <= aNbV; ++j)
-      aPoles(i, j) = gp_Pnt(static_cast<double>(i - 1),
-                             static_cast<double>(j - 1),
-                             std::sin(static_cast<double>(i) * 0.5) * std::cos(static_cast<double>(j) * 0.7));
+      aPoles(i, j) =
+        gp_Pnt(static_cast<double>(i - 1),
+               static_cast<double>(j - 1),
+               std::sin(static_cast<double>(i) * 0.5) * std::cos(static_cast<double>(j) * 0.7));
 
   // Knot vector in U: [0, 0.25, 0.5, 0.75, 1] with multiplicities [4, 1, 1, 1, 4]
   NCollection_Array1<double> aUKnots(1, 5);
@@ -992,9 +993,9 @@ TEST(Geom_BSplineSurface_Test, OCC30990_CacheConsistencyAtKnots)
     for (int j = 1; j < aSurf->NbVKnots(); ++j)
     {
       const double aV = 0.5 * (aSurf->VKnot(j) + aSurf->VKnot(j + 1));
-      aAdaptor.Value(aUprev, aV);           // populate cache from span before
+      aAdaptor.Value(aUprev, aV); // populate cache from span before
       const gp_Pnt aP1 = aAdaptor.Value(aUknot, aV);
-      aAdaptor.Value(aUnext, aV);           // populate cache from span after
+      aAdaptor.Value(aUnext, aV); // populate cache from span after
       const gp_Pnt aP2 = aAdaptor.Value(aUknot, aV);
 
       if (aP1.X() != aP2.X() || aP1.Y() != aP2.Y() || aP1.Z() != aP2.Z())

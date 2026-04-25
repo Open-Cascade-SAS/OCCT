@@ -67,13 +67,15 @@ TEST(Geom2dGcc_Circ2d2TanRadTest, BUC60897_TangentToLineAndBezier)
     aGccCirc2d.Tangency2(i, aParSol2, aParArg2, aPntSol2);
 
     // Distance from tangency point 1 to circle center must equal radius within 1%
-    const double aD1    = aPntSol1.Distance(aCenter);
+    const double aD1     = aPntSol1.Distance(aCenter);
     const double aDelta1 = std::abs(aD1 - aR) / aR * 100.0;
-    EXPECT_LE(aDelta1, aMaxDeltaPercent) << "Solution " << i << ": tangency1 distance error " << aDelta1 << "% exceeds 1%";
+    EXPECT_LE(aDelta1, aMaxDeltaPercent)
+      << "Solution " << i << ": tangency1 distance error " << aDelta1 << "% exceeds 1%";
 
     // Distance from tangency point 2 to circle center must equal radius within 1%
-    const double aD2    = aPntSol2.Distance(aCenter);
+    const double aD2     = aPntSol2.Distance(aCenter);
     const double aDelta2 = std::abs(aD2 - aR) / aR * 100.0;
-    EXPECT_LE(aDelta2, aMaxDeltaPercent) << "Solution " << i << ": tangency2 distance error " << aDelta2 << "% exceeds 1%";
+    EXPECT_LE(aDelta2, aMaxDeltaPercent)
+      << "Solution " << i << ": tangency2 distance error " << aDelta2 << "% exceeds 1%";
   }
 }

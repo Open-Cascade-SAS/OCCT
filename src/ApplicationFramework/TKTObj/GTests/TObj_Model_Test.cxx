@@ -525,7 +525,7 @@ TEST_F(TObj_ObjectTest, OCC31320_GetFatherObject_ReturnsNull_AfterParentDetach)
   ASSERT_FALSE(aChild.IsNull());
   myModel->CommitCommand();
 
-  // Detach the parent — this is what the original bug was about.
+  // Detach the parent - this is what the original bug was about.
   myModel->OpenCommand();
   EXPECT_TRUE(aParent->Detach());
   myModel->CommitCommand();

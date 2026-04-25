@@ -2279,7 +2279,6 @@ int OCC26525(Draw_Interpretor& di, int n, const char** a)
   return 0;
 }
 
-
 #include <BRepOffsetAPI_DraftAngle.hxx>
 
 static TopoDS_Shape taper(const TopoDS_Shape& shape,
