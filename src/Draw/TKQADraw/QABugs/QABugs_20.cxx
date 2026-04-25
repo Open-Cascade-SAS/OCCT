@@ -61,7 +61,6 @@
 
 #include <Bnd_OBB.hxx>
 #include <BRepBndLib.hxx>
-#include <OSD_MemInfo.hxx>
 #include <OSD_Timer.hxx>
 #include <TDataStd_AsciiString.hxx>
 #include <TDataStd_Name.hxx>
@@ -2182,31 +2181,6 @@ static int OCC26270(Draw_Interpretor& theDI, int theNArg, const char** theArgVal
   return 0;
 }
 
-#include <NCollection_IncAllocator.hxx>
-
-static int OCC27875(Draw_Interpretor& theDI, int theNArg, const char** theArgVal)
-{
-  if (theNArg < 2)
-  {
-    theDI << "Use: OCC27875 curve\n";
-  }
-
-  NCollection_Sequence<occ::handle<Geom_Curve>> aNC(new NCollection_IncAllocator());
-
-  const occ::handle<Geom_Curve> aC = occ::down_cast<Geom_Curve>(DrawTrSurf::Get(theArgVal[1]));
-
-  aNC.Append(aC);
-
-  GeomFill_NSections aNS(aNC);
-
-  if (aNS.BSplineSurface().IsNull())
-  {
-    theDI << "GeomFill_NSections is not done.\n";
-  }
-
-  return 0;
-}
-
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepClass_FaceClassifier.hxx>
@@ -2451,57 +2425,6 @@ static int OCC28389(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-#include <gp_Pnt2d.hxx>
-#include <NCollection_HArray1.hxx>
-#include <Geom2d_BSplineCurve.hxx>
-#include <Geom2dAPI_Interpolate.hxx>
-#include <GeomAPI.hxx>
-
-static int OCC28594(Draw_Interpretor& di, int argc, const char** argv)
-{
-  if (argc != 3)
-  {
-    di << "Usage :" << argv[0] << " curve_with_scale curve_without_scale\n";
-    return 0;
-  }
-  occ::handle<NCollection_HArray1<gp_Pnt2d>> points_2d = new NCollection_HArray1<gp_Pnt2d>(1, 6);
-  (*points_2d)(1)                                      = gp_Pnt2d(-30.4, 8);
-  (*points_2d)(2)                                      = gp_Pnt2d(-16.689912, 17.498217);
-  (*points_2d)(3)                                      = gp_Pnt2d(-23.803064, 24.748543);
-  (*points_2d)(4)                                      = gp_Pnt2d(-16.907466, 32.919615);
-  (*points_2d)(5)                                      = gp_Pnt2d(-8.543829, 26.549421);
-  (*points_2d)(6)                                      = gp_Pnt2d(0, 39.200000);
-
-  NCollection_Array1<gp_Vec2d> tangent_2d(1, 6);
-  (tangent_2d)(1) = gp_Vec2d(0.3, 0.4);
-  (tangent_2d)(2) = gp_Vec2d(0, 0);
-  (tangent_2d)(3) = gp_Vec2d(0, 0);
-  (tangent_2d)(4) = gp_Vec2d(0, 0);
-  (tangent_2d)(5) = gp_Vec2d(0, 0);
-  (tangent_2d)(6) = gp_Vec2d(1, 0);
-
-  occ::handle<NCollection_HArray1<bool>> tangent_flags = new NCollection_HArray1<bool>(1, 6);
-  (*tangent_flags)(1)                                  = true;
-  (*tangent_flags)(2)                                  = false;
-  (*tangent_flags)(3)                                  = false;
-  (*tangent_flags)(4)                                  = false;
-  (*tangent_flags)(5)                                  = false;
-  (*tangent_flags)(6)                                  = true;
-
-  Geom2dAPI_Interpolate interp_2d_with_scale(points_2d, false, Precision::Confusion());
-  interp_2d_with_scale.Load(tangent_2d, tangent_flags);
-  interp_2d_with_scale.Perform();
-  occ::handle<Geom2d_BSplineCurve> curve_2d_with_scale = interp_2d_with_scale.Curve();
-
-  Geom2dAPI_Interpolate interp_2d_without_scale(points_2d, false, Precision::Confusion());
-  interp_2d_without_scale.Load(tangent_2d, tangent_flags, false);
-  interp_2d_without_scale.Perform();
-  occ::handle<Geom2d_BSplineCurve> curve_2d_without_scale = interp_2d_without_scale.Curve();
-
-  DrawTrSurf::Set(argv[1], curve_2d_with_scale);
-  DrawTrSurf::Set(argv[2], curve_2d_without_scale);
-  return 0;
-}
 
 static int OCC28784(Draw_Interpretor&, int argc, const char** argv)
 {
@@ -2536,176 +2459,9 @@ static int OCC28829(Draw_Interpretor&, int, const char**)
   return 0;
 }
 
-#include <NCollection_Buffer.hxx>
-#include <DDocStd_DrawDocument.hxx>
-#include <OSD_FileSystem.hxx>
-#include <TDocStd_Application.hxx>
-
-#ifdef max
-  #undef max
-#endif
-
-static int OCC28131(Draw_Interpretor&, int theNbArgs, const char** theArgVec)
-{
-  if (theNbArgs != 2)
-  {
-    std::cerr << "Error: wrong number of arguments" << std::endl;
-    return 1;
-  }
-
-  double height         = 8.5;
-  gp_Pnt JiZhunXian2_v0 = gp_Pnt(-17.6, 0.0, 0.0);
-  gp_Pnt JiZhunXian2_v1 = gp_Pnt(0, 32.8, 0.0);
-
-  // Outline
-  NCollection_Array1<gp_Pnt> outer_e_bzr_geom_v(1, 4);
-  {
-    outer_e_bzr_geom_v(1) = JiZhunXian2_v0;
-    outer_e_bzr_geom_v(4) = JiZhunXian2_v1;
-
-    double ratio1 = 5.4 / 13.2;
-    outer_e_bzr_geom_v(2) =
-      gp_Pnt(outer_e_bzr_geom_v(1).X(), ratio1 * outer_e_bzr_geom_v(4).Y(), 0);
-    double ratio2 = 6.0 / 6.8;
-    outer_e_bzr_geom_v(3) =
-      gp_Pnt(ratio2 * outer_e_bzr_geom_v(1).X(), outer_e_bzr_geom_v(4).Y(), 0);
-  }
-
-  occ::handle<Geom_BezierCurve>  outer_e_bzr_geom = new Geom_BezierCurve(outer_e_bzr_geom_v);
-  occ::handle<Geom_BSplineCurve> outer_e_bsp_geom =
-    GeomConvert::CurveToBSplineCurve(outer_e_bzr_geom);
-  TopoDS_Edge outer_e = BRepBuilderAPI_MakeEdge(outer_e_bsp_geom);
-
-  occ::handle<Geom_BSplineCurve> curve1;
-  {
-    occ::handle<NCollection_HArray1<gp_Pnt2d>> harray =
-      new NCollection_HArray1<gp_Pnt2d>(1, 2); // sizing harray
-    harray->SetValue(1, gp_Pnt2d(-JiZhunXian2_v1.Y(), 0));
-    harray->SetValue(2, gp_Pnt2d(0, height + height / 2));
-
-    Geom2dAPI_Interpolate anInterpolation(harray, false, 1e-6);
-
-    gp_Vec2d vtangent1(0, 1);
-    gp_Vec2d vtangent2(1, 0);
-    anInterpolation.Load(vtangent1, vtangent2);
-    anInterpolation.Perform();
-
-    occ::handle<Geom2d_BSplineCurve> c = anInterpolation.Curve();
-
-    gp_Pln pln{gp_Ax3(gp_Pnt(), gp_Dir(gp_Dir::D::X), gp_Dir(gp_Dir::D::NY))};
-
-    occ::handle<Geom_BSplineCurve> c3d = occ::down_cast<Geom_BSplineCurve>(GeomAPI::To3d(c, pln));
-    curve1                             = c3d;
-  }
-
-  occ::handle<Geom_BSplineCurve> curve2;
-  {
-    occ::handle<NCollection_HArray1<gp_Pnt2d>> harray =
-      new NCollection_HArray1<gp_Pnt2d>(1, 3); // sizing harray
-    harray->SetValue(1, gp_Pnt2d(-JiZhunXian2_v0.X(), 0));
-    harray->SetValue(2, gp_Pnt2d(-JiZhunXian2_v0.X() - 2.6, height));
-    harray->SetValue(3, gp_Pnt2d(0, height + height / 2));
-
-    Geom2dAPI_Interpolate anInterpolation(harray, false, 1e-6);
-    anInterpolation.Perform();
-
-    occ::handle<Geom2d_BSplineCurve> c = anInterpolation.Curve();
-    gp_Pln pln{gp_Ax3(gp_Pnt(), gp_Dir(gp_Dir::D::NY), gp_Dir(gp_Dir::D::NX))};
-    occ::handle<Geom_BSplineCurve> c3d = occ::down_cast<Geom_BSplineCurve>(GeomAPI::To3d(c, pln));
-    curve2                             = c3d;
-  }
-
-  //////////////////////////////////////
-  GeomFill_BSplineCurves fill2;
-  fill2.Init(outer_e_bsp_geom, curve1, curve2, GeomFill_CoonsStyle);
-
-  const occ::handle<Geom_BSplineSurface>& surf_geom = fill2.Surface();
-
-  TopoDS_Shape filled_face = BRepBuilderAPI_MakeFace(surf_geom, 0);
-
-  DBRep::Set(theArgVec[1], filled_face);
-
-  /*
-    ///////////////////////////////////////////////////////////////////////
-    TopoDS_Solid first_solid;
-    {
-      BRepOffset_MakeOffset myOffsetShape(filled_face, -offset_thick, 1e-4,
-        BRepOffset_Skin, //Mode
-        false, //Intersection
-        false, //SelfInter
-        GeomAbs_Intersection, //Join
-        true, //Thickening
-        false //RemoveIntEdges
-        ); //RemoveInvalidFaces
-      first_solid = TopoDS::Solid(myOffsetShape.Shape());
-    }
-  */
-  return 0;
-}
-
-#include <math_NewtonFunctionRoot.hxx>
-#include <math_TrigonometricEquationFunction.hxx>
-#include <gp_Elips2d.hxx>
-
-#include <NCollection_DoubleMap.hxx>
-#include <NCollection_IndexedMap.hxx>
-#include <NCollection_DataMap.hxx>
-#include <NCollection_IndexedDataMap.hxx>
-
-// check that copying of empty maps does not allocate extra memory
-template <typename T>
-void AllocDummyArr(Draw_Interpretor& theDI, int theN1, int theN2)
-{
-  NCollection_Array1<T> aMapArr1(0, theN1), aMapArr2(0, theN2);
-
-  OSD_MemInfo aMemTool;
-  size_t      aMem0 = aMemTool.Value(OSD_MemInfo::MemHeapUsage);
-
-  for (int i = 1; i < theN1; i++)
-    aMapArr1(i) = aMapArr1(i - 1);
-  for (int i = 1; i < theN2; i++)
-    aMapArr2(i) = aMapArr2(0);
-
-  aMemTool.Update();
-  size_t aMem1 = aMemTool.Value(OSD_MemInfo::MemHeapUsage);
-
-  theDI << "Heap usage before copy = " << (int)aMem0 << ", after = " << (int)aMem1 << "\n";
-
-  if (aMem1 > aMem0)
-    theDI << "Error: memory increased by " << (int)(aMem1 - aMem0) << " bytes\n";
-}
-
-static int OCC29064(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
-{
-  if (theArgc < 2)
-  {
-    std::cout << "Error: give argument indicating type of map (map, doublemap, datamap, "
-                 "indexedmap, indexeddatamap)"
-              << std::endl;
-    return 1;
-  }
-
-  const int nbm1 = 10000, nbm2 = 10000;
-  if (strcasecmp(theArgv[1], "map") == 0)
-    AllocDummyArr<NCollection_Map<int>>(theDI, nbm1, nbm2);
-  else if (strcasecmp(theArgv[1], "doublemap") == 0)
-    AllocDummyArr<NCollection_DoubleMap<int, int>>(theDI, nbm1, nbm2);
-  else if (strcasecmp(theArgv[1], "datamap") == 0)
-    AllocDummyArr<NCollection_DataMap<int, int>>(theDI, nbm1, nbm2);
-  else if (strcasecmp(theArgv[1], "indexedmap") == 0)
-    AllocDummyArr<NCollection_IndexedMap<int>>(theDI, nbm1, nbm2);
-  else if (strcasecmp(theArgv[1], "indexeddatamap") == 0)
-    AllocDummyArr<NCollection_IndexedDataMap<int, int>>(theDI, nbm1, nbm2);
-  else
-  {
-    std::cout << "Error: unrecognized argument " << theArgv[1] << std::endl;
-    return 1;
-  }
-  return 0;
-}
-
 #include <BRepAdaptor_CompCurve.hxx>
 #include <STEPCAFControl_Reader.hxx>
+#include <TDocStd_Application.hxx>
 
 //=================================================================================================
 
@@ -3381,178 +3137,6 @@ static int OCC30880(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
   return 0;
 }
 
-#include <BRepPrimAPI_MakeBox.hxx>
-
-//=======================================================================
-// function : OCC30990
-// purpose  : check consistency of implementation of cache in B-Spline surfaces
-//           with respect to update of the cache for points located exactly
-//           on boundary between bspline spans (i.e. at knots)
-//=======================================================================
-static int OCC30990(Draw_Interpretor& theDI, int theNArg, const char** theArgV)
-{
-  if (theNArg != 2)
-  {
-    std::cerr << "Use: " << theArgV[0] << "surface\n";
-    return 1;
-  }
-
-  const occ::handle<Geom_BSplineSurface> aSurf =
-    occ::down_cast<Geom_BSplineSurface>(DrawTrSurf::GetSurface(theArgV[1]));
-  if (aSurf.IsNull())
-  {
-    theDI << "Error: " << theArgV[1] << " is not a B-Spline surface";
-    return 0;
-  }
-  GeomAdaptor_Surface aS(aSurf);
-
-  // Evaluate points for U and V located exactly at b-spline knots,
-  // after evaluation of points inside the spans before and after the knot,
-  // and ensure that result at the knot is exactly the same regardless
-  // of previous evaluation (i.e. the cache is updated as necessary).
-  // Note: the points (D0) computed on different spans are slightly different
-  // due to rounding, which allows us to detect this situation without
-  // analysis of higher derivatives (which would show non-negligible difference).
-  int aNbErr = 0;
-
-  theDI << "U knots: ";
-  for (int i = 1; i <= aSurf->NbUKnots(); i++)
-  {
-    theDI << aSurf->UKnot(i);
-    if (i < aSurf->NbUKnots())
-      theDI << ",";
-  }
-  theDI << "\n";
-  for (int i = 2; i < aSurf->NbUKnots(); i++)
-  {
-    double aUknot = aSurf->UKnot(i);
-    double aUprev = 0.5 * (aUknot + aSurf->UKnot(i - 1));
-    double aUnext = 0.5 * (aUknot + aSurf->UKnot(i + 1));
-    for (int j = 1; j < aSurf->NbVKnots(); j++)
-    {
-      double aV = 0.5 * (aSurf->VKnot(j) + aSurf->VKnot(j + 1));
-      aS.Value(aUprev, aV);
-      gp_Pnt aValue1 = aS.Value(aUknot, aV);
-      aS.Value(aUnext, aV);
-      gp_Pnt aValue2 = aS.Value(aUknot, aV);
-      for (int k = 1; k <= 3; k++)
-      {
-        if (aValue1.Coord(k) != aValue2.Coord(k))
-        {
-          Standard_SStream aStr;
-          aStr.precision(20);
-          aStr << "Error evaluating point at UV = (" << aUknot << ", " << aV << "):\n";
-          aStr << "probe 1: " << (char)('X' + k - 1) << " = " << aValue1.Coord(k) << "\n";
-          aStr << "probe 2: " << (char)('X' + k - 1) << " = " << aValue2.Coord(k) << "\n";
-          theDI << aStr.str().c_str();
-          aNbErr++;
-        }
-      }
-    }
-  }
-
-  theDI << "V knots: ";
-  for (int j = 1; j <= aSurf->NbVKnots(); j++)
-  {
-    theDI << aSurf->VKnot(j);
-    if (j < aSurf->NbVKnots())
-      theDI << ",";
-  }
-  theDI << "\n";
-  for (int j = 2; j < aSurf->NbVKnots(); j++)
-  {
-    double aVknot = aSurf->VKnot(j);
-    double aVprev = 0.5 * (aVknot + aSurf->VKnot(j - 1));
-    double aVnext = 0.5 * (aVknot + aSurf->VKnot(j + 1));
-    for (int i = 1; i < aSurf->NbUKnots(); i++)
-    {
-      double aU = 0.5 * (aSurf->UKnot(i) + aSurf->UKnot(i + 1));
-      aS.Value(aU, aVprev);
-      gp_Pnt aValue1 = aS.Value(aU, aVknot);
-      aS.Value(aU, aVnext);
-      gp_Pnt aValue2 = aS.Value(aU, aVknot);
-      for (int k = 1; k <= 3; k++)
-      {
-        if (aValue1.Coord(k) != aValue2.Coord(k))
-        {
-          Standard_SStream aStr;
-          aStr.precision(20);
-          aStr << "Error evaluating point at UV = (" << aU << ", " << aVknot << "):\n";
-          aStr << "probe 1: " << (char)('X' + k - 1) << " = " << aValue1.Coord(k) << "\n";
-          aStr << "probe 2: " << (char)('X' + k - 1) << " = " << aValue2.Coord(k) << "\n";
-          theDI << aStr.str().c_str();
-          aNbErr++;
-        }
-      }
-    }
-  }
-
-  theDI << "Total " << aNbErr << " deviations detected";
-  return 0;
-}
-
-#include <TObj_Model.hxx>
-#include <TObj_TModel.hxx>
-#include <TObj_ObjectIterator.hxx>
-
-//=================================================================================================
-
-static int OCC31320(Draw_Interpretor& di, int argc, const char** argv)
-{
-  if (argc < 3)
-  {
-    di << "Usage : " << argv[0] << " DocName ObjName\n";
-    return 1;
-  }
-  occ::handle<TObj_Model>       aModel;
-  occ::handle<TDocStd_Document> D;
-  if (!DDocStd::GetDocument(argv[1], D))
-  {
-    di << "Error: document " << argv[1] << " not found\n";
-    return 1;
-  }
-
-  TDF_Label                aLabel = D->Main();
-  occ::handle<TObj_TModel> aModelAttr;
-  if (!aLabel.IsNull() && aLabel.FindAttribute(TObj_TModel::GetID(), aModelAttr))
-    aModel = aModelAttr->Model();
-
-  if (aModel.IsNull())
-  {
-    di << "Error: TObj model " << argv[1] << " not found\n";
-    return 1;
-  }
-
-  occ::handle<TCollection_HExtendedString> aName = new TCollection_HExtendedString(argv[2]);
-  occ::handle<TObj_TNameContainer>         aDict;
-  occ::handle<TObj_Object>                 anObj = aModel->FindObject(aName, aDict);
-
-  if (aModel.IsNull())
-  {
-    di << "Error: object " << argv[2] << " not found\n";
-    return 1;
-  }
-
-  // do a test: find the first child of an object, remove object and get the father of this child
-  occ::handle<TObj_ObjectIterator> aChildrenIter = anObj->GetChildren();
-  if (!aChildrenIter->More())
-  {
-    di << "Error: object " << argv[2] << " has no children\n";
-    return 1;
-  }
-
-  occ::handle<TObj_Object> aChild = aChildrenIter->Value();
-  anObj->Detach();
-  occ::handle<TObj_Object> aFather = aChild->GetFatherObject();
-  if (!aFather.IsNull())
-  {
-    di << "Error: father is not null\n";
-    return 1;
-  }
-
-  return 0;
-}
-
 #include <BinXCAFDrivers.hxx>
 #include <Message.hxx>
 
@@ -3879,28 +3463,16 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands)
   theCommands.Add("OCC26930", "OCC26930", __FILE__, OCC26930, group);
   theCommands.Add("OCC27466", "OCC27466", __FILE__, OCC27466, group);
   theCommands.Add("OCC26270", "OCC26270 shape result", __FILE__, OCC26270, group);
-  theCommands.Add("OCC27875", "OCC27875 curve", __FILE__, OCC27875, group);
   theCommands.Add("OCC27884",
                   "OCC27884: Possible improvement for 2d classifier",
                   __FILE__,
                   OCC27884,
                   group);
   theCommands.Add("OCC28389", "OCC28389", __FILE__, OCC28389, group);
-  theCommands.Add("OCC28594", "OCC28594", __FILE__, OCC28594, group);
   theCommands.Add("OCC28784", "OCC28784 result shape", __FILE__, OCC28784, group);
   theCommands.Add("OCC28829", "OCC28829: perform invalid FPE operation", __FILE__, OCC28829, group);
-  theCommands.Add("OCC28131",
-                  "OCC28131 name: creates face problematic for offset",
-                  __FILE__,
-                  OCC28131,
-                  group);
   theCommands.Add("OCC29531", "OCC29531 <step file name>", __FILE__, OCC29531, group);
 
-  theCommands.Add("OCC29064",
-                  "OCC29064: test memory usage by copying empty maps",
-                  __FILE__,
-                  OCC29064,
-                  group);
   theCommands.Add("OCC29807", "OCC29807 surface1 surface2 u1 v1 u2 v2", __FILE__, OCC29807, group);
   theCommands.Add("OCC29311",
                   "OCC29311 shape counter nbiter: check performance of OBB calculation",
@@ -3924,7 +3496,6 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands)
                   OCC29195,
                   group);
   theCommands.Add("OCC30435", "OCC30435 result curve inverse nbit", __FILE__, OCC30435, group);
-  theCommands.Add("OCC30990", "OCC30990 surface", __FILE__, OCC30990, group);
 
   theCommands.Add("QAStartsWith", "QAStartsWith string startstring", __FILE__, QAStartsWith, group);
 
@@ -3943,13 +3514,6 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands)
                   __FILE__,
                   OCC30880,
                   group);
-
-  theCommands.Add(
-    "OCC31320",
-    "OCC31320 DocName ObjName : tests remove of the children GetFather method if father is removed",
-    __FILE__,
-    OCC31320,
-    group);
 
   theCommands.Add("OCC31785",
                   "OCC31785 file.xbf : test reading XBF file in another thread",

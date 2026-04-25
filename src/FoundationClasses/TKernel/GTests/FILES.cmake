@@ -2,6 +2,7 @@
 set(OCCT_TKernel_GTests_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_TKernel_GTests_FILES
+  FSD_BinaryFile_Test.cxx
   Handle_Advanced_Test.cxx
   Handle_Operations_Test.cxx
   Message_Messenger_Test.cxx
@@ -30,6 +31,7 @@ set(OCCT_TKernel_GTests_FILES
   NCollection_SparseArray_Test.cxx
   NCollection_UBTree_Test.cxx
   NCollection_Vec4_Test.cxx
+  OSD_Parallel_Test.cxx
   OSD_Path_Test.cxx
   OSD_PerfMeter_Test.cxx
   Resource_Manager_Test.cxx

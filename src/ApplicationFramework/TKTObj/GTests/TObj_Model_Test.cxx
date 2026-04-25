@@ -507,3 +507,31 @@ TEST_F(TObj_ObjectTest, FindObject_ByName)
   ASSERT_FALSE(aFound.IsNull());
   EXPECT_EQ(anObj.get(), aFound.get());
 }
+
+// OCC31320: TObj - method TObj_Object::GetFatherObject() is not protected against deleted object
+// After detaching a parent object, GetFatherObject() on its child must return null.
+TEST_F(TObj_ObjectTest, OCC31320_GetFatherObject_ReturnsNull_AfterParentDetach)
+{
+  // Create the parent object inside the model partition.
+  myModel->OpenCommand();
+  occ::handle<TObj_TestObject> aParent = createObject();
+  ASSERT_FALSE(aParent.IsNull());
+  myModel->CommitCommand();
+
+  // Create a child object on a sub-label of the parent's child collection.
+  myModel->OpenCommand();
+  TDF_Label                    aChildLabel = aParent->GetChildLabel().NewChild();
+  occ::handle<TObj_TestObject> aChild      = new TObj_TestObject(aChildLabel);
+  ASSERT_FALSE(aChild.IsNull());
+  myModel->CommitCommand();
+
+  // Detach the parent — this is what the original bug was about.
+  myModel->OpenCommand();
+  EXPECT_TRUE(aParent->Detach());
+  myModel->CommitCommand();
+
+  // After the parent is detached its TObj attributes are gone,
+  // so GetFatherObject() traversing up must return null, not crash.
+  occ::handle<TObj_Object> aFather = aChild->GetFatherObject();
+  EXPECT_TRUE(aFather.IsNull());
+}

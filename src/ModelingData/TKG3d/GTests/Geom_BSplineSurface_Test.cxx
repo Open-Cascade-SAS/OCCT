@@ -17,6 +17,7 @@
 
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Trsf.hxx>
@@ -931,4 +932,95 @@ TEST_F(Geom_BSplineSurface_Test, WeightsArray_Rational_ReturnsOwning)
   EXPECT_DOUBLE_EQ(aWeights(2, 2), 2.0);
   EXPECT_DOUBLE_EQ(aWeights(1, 1), 1.0);
   EXPECT_EQ(&aWeights, &aRational->WeightsArray());
+}
+
+// OCC30990: Foundation Classes - unexpected change in numerical results on bsplines after 0029769
+// Verify that evaluating a B-Spline surface at a knot gives consistent results regardless of
+// which span was evaluated beforehand (i.e., the cache is updated correctly).
+TEST(Geom_BSplineSurface_Test, OCC30990_CacheConsistencyAtKnots)
+{
+  // Build a degree-3 B-Spline surface with 3 interior knots in U (4 spans) and 2 in V (3 spans).
+  // Poles: 7 x 5
+  const int aNbU = 7;
+  const int aNbV = 5;
+  NCollection_Array2<gp_Pnt> aPoles(1, aNbU, 1, aNbV);
+  for (int i = 1; i <= aNbU; ++i)
+    for (int j = 1; j <= aNbV; ++j)
+      aPoles(i, j) = gp_Pnt(static_cast<double>(i - 1),
+                             static_cast<double>(j - 1),
+                             std::sin(static_cast<double>(i) * 0.5) * std::cos(static_cast<double>(j) * 0.7));
+
+  // Knot vector in U: [0, 0.25, 0.5, 0.75, 1] with multiplicities [4, 1, 1, 1, 4]
+  NCollection_Array1<double> aUKnots(1, 5);
+  aUKnots(1) = 0.0;
+  aUKnots(2) = 0.25;
+  aUKnots(3) = 0.5;
+  aUKnots(4) = 0.75;
+  aUKnots(5) = 1.0;
+  NCollection_Array1<int> aUMults(1, 5);
+  aUMults(1) = 4;
+  aUMults(2) = 1;
+  aUMults(3) = 1;
+  aUMults(4) = 1;
+  aUMults(5) = 4;
+
+  // Knot vector in V: [0, 0.5, 1] with multiplicities [4, 1, 4]
+  NCollection_Array1<double> aVKnots(1, 3);
+  aVKnots(1) = 0.0;
+  aVKnots(2) = 0.5;
+  aVKnots(3) = 1.0;
+  NCollection_Array1<int> aVMults(1, 3);
+  aVMults(1) = 4;
+  aVMults(2) = 1;
+  aVMults(3) = 4;
+
+  const occ::handle<Geom_BSplineSurface> aSurf =
+    new Geom_BSplineSurface(aPoles, aUKnots, aVKnots, aUMults, aVMults, 3, 3);
+  ASSERT_FALSE(aSurf.IsNull());
+
+  GeomAdaptor_Surface aAdaptor(aSurf);
+
+  // For each interior U knot, verify that evaluation at the knot is consistent
+  // regardless of whether the previous evaluation was in the span before or after.
+  int aNbErr = 0;
+  for (int i = 2; i < aSurf->NbUKnots(); ++i)
+  {
+    const double aUknot = aSurf->UKnot(i);
+    const double aUprev = 0.5 * (aUknot + aSurf->UKnot(i - 1));
+    const double aUnext = 0.5 * (aUknot + aSurf->UKnot(i + 1));
+
+    for (int j = 1; j < aSurf->NbVKnots(); ++j)
+    {
+      const double aV = 0.5 * (aSurf->VKnot(j) + aSurf->VKnot(j + 1));
+      aAdaptor.Value(aUprev, aV);           // populate cache from span before
+      const gp_Pnt aP1 = aAdaptor.Value(aUknot, aV);
+      aAdaptor.Value(aUnext, aV);           // populate cache from span after
+      const gp_Pnt aP2 = aAdaptor.Value(aUknot, aV);
+
+      if (aP1.X() != aP2.X() || aP1.Y() != aP2.Y() || aP1.Z() != aP2.Z())
+        ++aNbErr;
+    }
+  }
+
+  // Same check for interior V knots
+  for (int j = 2; j < aSurf->NbVKnots(); ++j)
+  {
+    const double aVknot = aSurf->VKnot(j);
+    const double aVprev = 0.5 * (aVknot + aSurf->VKnot(j - 1));
+    const double aVnext = 0.5 * (aVknot + aSurf->VKnot(j + 1));
+
+    for (int i = 1; i < aSurf->NbUKnots(); ++i)
+    {
+      const double aU = 0.5 * (aSurf->UKnot(i) + aSurf->UKnot(i + 1));
+      aAdaptor.Value(aU, aVprev);
+      const gp_Pnt aP1 = aAdaptor.Value(aU, aVknot);
+      aAdaptor.Value(aU, aVnext);
+      const gp_Pnt aP2 = aAdaptor.Value(aU, aVknot);
+
+      if (aP1.X() != aP2.X() || aP1.Y() != aP2.Y() || aP1.Z() != aP2.Z())
+        ++aNbErr;
+    }
+  }
+
+  EXPECT_EQ(0, aNbErr) << "BSpline surface cache is inconsistent at span knots";
 }
