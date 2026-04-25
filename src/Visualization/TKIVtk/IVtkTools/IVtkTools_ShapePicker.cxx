@@ -29,23 +29,14 @@
   #pragma warning(pop)
 #endif
 
-//! @class IVtkTools_ShapePicker
-//! VTK picker implementation for OCCT shapes.
-//! Can pick either whole shapes or sub-shapes.
-//! The kind of selectable entities is defined by the current selection mode.
-//! NOTE: For performance reasons, setRenderer() method should be called in advance,
-//! before the user starts to select interactively, in order for the OCCT selection
-//! algorithm to prepare its internal selection data.
-
 vtkStandardNewMacro(IVtkTools_ShapePicker)
 
-  //============================================================================
-  //  Method: IVtkTools_ShapePicker
-  // Purpose: Constructs the picker with empty renderer and ready for point selection.
-  //============================================================================
-  IVtkTools_ShapePicker::IVtkTools_ShapePicker()
+//=================================================================================================
+
+IVtkTools_ShapePicker::IVtkTools_ShapePicker()
     : myRenderer(nullptr),
-      myIsRectSelection(false)
+      myIsRectSelection(false),
+      myIsPolySelection(false)
 {
   myOccPickerAlgo = new IVtkOCC_ShapePickerAlgo();
 }
@@ -68,10 +59,8 @@ int IVtkTools_ShapePicker::PixelTolerance() const
   return myOccPickerAlgo->PixelTolerance();
 }
 
-//============================================================================
-//  Method: convertDisplayToWorld
-// Purpose: Convert display coordinates to world coordinates
-//============================================================================
+//=================================================================================================
+
 bool IVtkTools_ShapePicker::convertDisplayToWorld(vtkRenderer* theRenderer,
                                                   double       theDisplayCoord[3],
                                                   double       theWorldCoord[3])
@@ -95,10 +84,8 @@ bool IVtkTools_ShapePicker::convertDisplayToWorld(vtkRenderer* theRenderer,
   return true;
 }
 
-//============================================================================
-// Method:  Pick
-// Purpose: Pick entities in the given point.
-//============================================================================
+//=================================================================================================
+
 int IVtkTools_ShapePicker::Pick(double theX, double theY, double /*theZ*/, vtkRenderer* theRenderer)
 {
   double aPos[2]    = {theX, theY};
@@ -107,10 +94,8 @@ int IVtkTools_ShapePicker::Pick(double theX, double theY, double /*theZ*/, vtkRe
   return pick(aPos, theRenderer);
 }
 
-//============================================================================
-//  Method: pick
-// Purpose: Pick entities in the given rectangle area.
-//============================================================================
+//=================================================================================================
+
 int IVtkTools_ShapePicker::Pick(double       theXPMin,
                                 double       theYPMin,
                                 double       theXPMax,
@@ -123,10 +108,8 @@ int IVtkTools_ShapePicker::Pick(double       theXPMin,
   return pick(aPos, theRenderer);
 }
 
-//============================================================================
-//  Method: pick
-// Purpose: Pick entities in the given polygonal area.
-//============================================================================
+//=================================================================================================
+
 int IVtkTools_ShapePicker::Pick(double       thePoly[][3],
                                 const int    theNbPoints,
                                 vtkRenderer* theRenderer)
@@ -136,10 +119,8 @@ int IVtkTools_ShapePicker::Pick(double       thePoly[][3],
   return pick((double*)thePoly, theRenderer, theNbPoints);
 }
 
-//============================================================================
-//  Method: pick
-// Purpose: Pick entities in the given point or area.
-//============================================================================
+//=================================================================================================
+
 int IVtkTools_ShapePicker::pick(double* thePos, vtkRenderer* theRenderer, const int theNbPoints)
 {
   //  Initialize picking process
@@ -165,10 +146,8 @@ int IVtkTools_ShapePicker::pick(double* thePos, vtkRenderer* theRenderer, const 
   return myOccPickerAlgo->NbPicked();
 }
 
-//============================================================================
-//  Method: doPickImpl
-// Purpose: Implementation of picking algorithm.
-//============================================================================
+//=================================================================================================
+
 void IVtkTools_ShapePicker::doPickImpl(double*      thePos,
                                        vtkRenderer* theRenderer,
                                        const int    theNbPoints)
@@ -194,10 +173,8 @@ void IVtkTools_ShapePicker::doPickImpl(double*      thePos,
   PickPosition[2] = myOccPickerAlgo->TopPickedPoint().Z();
 }
 
-//============================================================================
-//  Method: SetRenderer
-// Purpose: Sets the renderer to be used by OCCT selection algorithm
-//============================================================================
+//=================================================================================================
+
 void IVtkTools_ShapePicker::SetRenderer(vtkRenderer* theRenderer)
 {
   if (theRenderer == myRenderer.GetPointer())
@@ -220,20 +197,16 @@ void IVtkTools_ShapePicker::SetAreaSelection(bool theIsOn)
   myIsRectSelection = theIsOn;
 }
 
-//============================================================================
-//  Method: GetSelectionModes
-// Purpose: Get activated selection modes for a shape.
-//============================================================================
+//=================================================================================================
+
 NCollection_List<IVtk_SelectionMode> IVtkTools_ShapePicker::GetSelectionModes(
   const IVtk_IShape::Handle& theShape) const
 {
   return myOccPickerAlgo->GetSelectionModes(theShape);
 }
 
-//============================================================================
-//  Method: GetSelectionModes
-// Purpose: Get activated selection modes for a shape actor.
-//============================================================================
+//=================================================================================================
+
 NCollection_List<IVtk_SelectionMode> IVtkTools_ShapePicker::GetSelectionModes(
   vtkActor* theShapeActor) const
 {
@@ -246,10 +219,8 @@ NCollection_List<IVtk_SelectionMode> IVtkTools_ShapePicker::GetSelectionModes(
   return aRes;
 }
 
-//============================================================================
-//  Method: SetSelectionMode
-// Purpose: Turn on/off a selection mode for a shape.
-//============================================================================
+//=================================================================================================
+
 void IVtkTools_ShapePicker::SetSelectionMode(const IVtk_IShape::Handle& theShape,
                                              const IVtk_SelectionMode   theMode,
                                              const bool                 theIsTurnOn) const
@@ -257,10 +228,8 @@ void IVtkTools_ShapePicker::SetSelectionMode(const IVtk_IShape::Handle& theShape
   myOccPickerAlgo->SetSelectionMode(theShape, theMode, theIsTurnOn);
 }
 
-//============================================================================
-//  Method: SetSelectionMode
-// Purpose: Turn on/off a selection mode for a shape actor.
-//============================================================================
+//=================================================================================================
+
 void IVtkTools_ShapePicker::SetSelectionMode(vtkActor*                theShapeActor,
                                              const IVtk_SelectionMode theMode,
                                              const bool               theIsTurnOn) const
@@ -272,10 +241,8 @@ void IVtkTools_ShapePicker::SetSelectionMode(vtkActor*                theShapeAc
   }
 }
 
-//============================================================================
-//  Method: SetSelectionMode
-// Purpose: Sets the current selection mode for all visible shape objects.
-//============================================================================
+//=================================================================================================
+
 void IVtkTools_ShapePicker::SetSelectionMode(const IVtk_SelectionMode theMode,
                                              const bool               theIsTurnOn) const
 {
@@ -303,10 +270,8 @@ void IVtkTools_ShapePicker::SetSelectionMode(const IVtk_SelectionMode theMode,
   }
 }
 
-//============================================================================
-//  Method: GetPickedShapesIds
-// Purpose: Access to the list of top-level shapes picked.
-//============================================================================
+//=================================================================================================
+
 NCollection_List<IVtk_IdType> IVtkTools_ShapePicker::GetPickedShapesIds(bool theIsAll) const
 {
   if (theIsAll || myIsRectSelection)
@@ -323,19 +288,15 @@ NCollection_List<IVtk_IdType> IVtkTools_ShapePicker::GetPickedShapesIds(bool the
   return aRes;
 }
 
-//============================================================================
-//  Method: RemoveSelectableActor
-// Purpose: Remove selectable object from the picker (from internal maps).
-//============================================================================
+//=================================================================================================
+
 void IVtkTools_ShapePicker::RemoveSelectableObject(const IVtk_IShape::Handle& theShape)
 {
   myOccPickerAlgo->RemoveSelectableObject(theShape);
 }
 
-//============================================================================
-//  Method: RemoveSelectableActor
-// Purpose: Remove selectable object from the picker (from internal maps).
-//============================================================================
+//=================================================================================================
+
 void IVtkTools_ShapePicker::RemoveSelectableActor(vtkActor* theShapeActor)
 {
   IVtk_IShape::Handle aShape = IVtkTools_ShapeObject::GetOccShape(theShapeActor);
@@ -345,10 +306,8 @@ void IVtkTools_ShapePicker::RemoveSelectableActor(vtkActor* theShapeActor)
   }
 }
 
-//============================================================================
-//  Method: GetPickedSubShapesIds
-// Purpose: Access to the list of sub-shapes ids picked.
-//============================================================================
+//=================================================================================================
+
 NCollection_List<IVtk_IdType> IVtkTools_ShapePicker::GetPickedSubShapesIds(const IVtk_IdType theId,
                                                                            bool theIsAll) const
 {
@@ -369,10 +328,8 @@ NCollection_List<IVtk_IdType> IVtkTools_ShapePicker::GetPickedSubShapesIds(const
   return aRes;
 }
 
-//============================================================================
-//  Method: GetPickedActors
-// Purpose: Access to the list of actors picked.
-//============================================================================
+//=================================================================================================
+
 vtkSmartPointer<vtkActorCollection> IVtkTools_ShapePicker::GetPickedActors(bool theIsAll) const
 {
   vtkSmartPointer<vtkActorCollection> aRes  = vtkSmartPointer<vtkActorCollection>::New();
