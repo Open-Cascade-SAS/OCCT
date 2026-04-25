@@ -582,6 +582,59 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
 
   occ::handle<NCollection_BaseAllocator> aAllocator = new NCollection_IncAllocator;
 
+  // Build a face -> parent-shell map for the SD invariant: two sub-shapes of
+  // the same parent-shell are distinct boundary slots BY DEFINITION of the
+  // shell's topology -- they cannot be Same-Domain. Without this guard, two
+  // near-coincident parallel faces of one shell (e.g. a degenerate prism's two
+  // sides) get SD-merged into one image, collapsing the shell and downstream
+  // hijacking the other operand's split-solid identity (bug 33908).
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> aFaceToShell(
+    1, aAllocator);
+  {
+    const int aNbSrc = myDS->NbSourceShapes();
+    for (int iSrc = 0; iSrc < aNbSrc; ++iSrc)
+    {
+      const BOPDS_ShapeInfo& aSI = myDS->ShapeInfo(iSrc);
+      if (aSI.ShapeType() != TopAbs_SHELL)
+        continue;
+      const TopoDS_Shape& aShell = aSI.Shape();
+      for (TopExp_Explorer anExpF(aShell, TopAbs_FACE); anExpF.More(); anExpF.Next())
+      {
+        const TopoDS_Shape& aF = anExpF.Current();
+        if (!aFaceToShell.IsBound(aF))
+          aFaceToShell.Bind(aF, aShell);
+      }
+    }
+    // Propagate the parent-shell mapping to split pieces via myImages, so the
+    // pair check below works on whichever face representation lands in the
+    // edge-set group (original face or split image).
+    NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> aPropagation(
+      1, aAllocator);
+    for (NCollection_DataMap<TopoDS_Shape,
+                             NCollection_List<TopoDS_Shape>,
+                             TopTools_ShapeMapHasher>::Iterator anItIm(myImages);
+         anItIm.More();
+         anItIm.Next())
+    {
+      const TopoDS_Shape* pShell = aFaceToShell.Seek(anItIm.Key());
+      if (pShell == nullptr)
+        continue;
+      for (NCollection_List<TopoDS_Shape>::Iterator anItPiece(anItIm.Value()); anItPiece.More();
+           anItPiece.Next())
+      {
+        if (!aFaceToShell.IsBound(anItPiece.Value()))
+          aPropagation.Bind(anItPiece.Value(), *pShell);
+      }
+    }
+    for (NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator
+           anItProp(aPropagation);
+         anItProp.More();
+         anItProp.Next())
+    {
+      aFaceToShell.Bind(anItProp.Key(), anItProp.Value());
+    }
+  }
+
   // Vector to store the indices of faces for future sorting
   // for making the SD face for the group from the face with
   // smallest index in Data structure
@@ -690,11 +743,18 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
     {
       const TopoDS_Shape& aF1          = aIt1.Value();
       bool                bCheckPlanar = aMFPlanar.Contains(aF1);
+      const TopoDS_Shape* pShell1      = aFaceToShell.Seek(aF1);
 
       NCollection_List<TopoDS_Shape>::Iterator aIt2 = aIt1;
       for (aIt2.Next(); aIt2.More(); aIt2.Next())
       {
         const TopoDS_Shape& aF2 = aIt2.Value();
+        // Same-shell guard: two faces of the same parent shell are distinct
+        // boundary slots and cannot be Same-Domain. Skip the pair entirely
+        // (planar bypass and geometric pair-check both).
+        const TopoDS_Shape* pShell2 = aFaceToShell.Seek(aF2);
+        if (pShell1 != nullptr && pShell2 != nullptr && pShell1->IsSame(*pShell2))
+          continue;
         if (bCheckPlanar && aMFPlanar.Contains(aF2))
         {
           // Consider planar bounded faces as Same Domain without additional check
