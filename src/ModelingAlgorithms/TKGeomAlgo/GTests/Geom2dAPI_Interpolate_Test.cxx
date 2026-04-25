@@ -70,12 +70,12 @@ TEST(Geom2dAPI_InterpolateTest, OCC28594_InterpolateWithAndWithoutTangentScale)
 
   // Both curves must pass through all given points
   const double aTol = Precision::Confusion() * 10;
-  for (const gp_Pnt2d& aPt : aPoints->Array1())
+  for (int anIndex = 1; anIndex <= aPoints->Length(); ++anIndex)
   {
-    gp_Pnt2d aPtOnCurveWithScale;
-    aCurveWithScale->D0(aCurveWithScale->Knot(i), aPtOnCurveWithScale);
-    EXPECT_NEAR(aPt.X(), aPtOnCurveWithScale.X(), aTol) << " at point index " << i;
-    EXPECT_NEAR(aPt.Y(), aPtOnCurveWithScale.Y(), aTol) << " at point index " << i;
+    const gp_Pnt2d  aPtOnCurveWithScale = aCurveWithScale->EvalD0(aCurveWithScale->Knot(anIndex));
+    const gp_Pnt2d& aPt                 = aPointsArray(anIndex);
+    EXPECT_NEAR(aPt.X(), aPtOnCurveWithScale.X(), aTol) << " at point index " << anIndex;
+    EXPECT_NEAR(aPt.Y(), aPtOnCurveWithScale.Y(), aTol) << " at point index " << anIndex;
   }
 
   // The two curves should differ (scale-dependent)
