@@ -26,13 +26,14 @@
 
 TEST(Geom2dAPI_InterpolateTest, OCC28594_InterpolateWithAndWithoutTangentScale)
 {
-  occ::handle<NCollection_HArray1<gp_Pnt2d>> aPoints = new NCollection_HArray1<gp_Pnt2d>(1, 6);
-  (*aPoints)(1)                                      = gp_Pnt2d(-30.4, 8);
-  (*aPoints)(2)                                      = gp_Pnt2d(-16.689912, 17.498217);
-  (*aPoints)(3)                                      = gp_Pnt2d(-23.803064, 24.748543);
-  (*aPoints)(4)                                      = gp_Pnt2d(-16.907466, 32.919615);
-  (*aPoints)(5)                                      = gp_Pnt2d(-8.543829, 26.549421);
-  (*aPoints)(6)                                      = gp_Pnt2d(0, 39.200000);
+  occ::handle<NCollection_HArray1<gp_Pnt2d>> aPoints      = new NCollection_HArray1<gp_Pnt2d>(1, 6);
+  NCollection_Array1<gp_Pnt2d>&              aPointsArray = aPoints->ChangeArray1();
+  aPointsArray(1)                                         = gp_Pnt2d(-30.4, 8);
+  aPointsArray(2)                                         = gp_Pnt2d(-16.689912, 17.498217);
+  aPointsArray(3)                                         = gp_Pnt2d(-23.803064, 24.748543);
+  aPointsArray(4)                                         = gp_Pnt2d(-16.907466, 32.919615);
+  aPointsArray(5)                                         = gp_Pnt2d(-8.543829, 26.549421);
+  aPointsArray(6)                                         = gp_Pnt2d(0, 39.200000);
 
   NCollection_Array1<gp_Vec2d> aTangents(1, 6);
   aTangents(1) = gp_Vec2d(0.3, 0.4);
@@ -42,13 +43,14 @@ TEST(Geom2dAPI_InterpolateTest, OCC28594_InterpolateWithAndWithoutTangentScale)
   aTangents(5) = gp_Vec2d(0, 0);
   aTangents(6) = gp_Vec2d(1, 0);
 
-  occ::handle<NCollection_HArray1<bool>> aTangentFlags = new NCollection_HArray1<bool>(1, 6);
-  (*aTangentFlags)(1)                                  = true;
-  (*aTangentFlags)(2)                                  = false;
-  (*aTangentFlags)(3)                                  = false;
-  (*aTangentFlags)(4)                                  = false;
-  (*aTangentFlags)(5)                                  = false;
-  (*aTangentFlags)(6)                                  = true;
+  occ::handle<NCollection_HArray1<bool>> aTangentFlags      = new NCollection_HArray1<bool>(1, 6);
+  NCollection_Array1<bool>&              aTangentFlagsArray = aTangentFlags->ChangeArray1();
+  aTangentFlagsArray(1)                                     = true;
+  aTangentFlagsArray(2)                                     = false;
+  aTangentFlagsArray(3)                                     = false;
+  aTangentFlagsArray(4)                                     = false;
+  aTangentFlagsArray(5)                                     = false;
+  aTangentFlagsArray(6)                                     = true;
 
   // Interpolation with tangent scale
   Geom2dAPI_Interpolate anInterpWithScale(aPoints, false, Precision::Confusion());
@@ -68,10 +70,8 @@ TEST(Geom2dAPI_InterpolateTest, OCC28594_InterpolateWithAndWithoutTangentScale)
 
   // Both curves must pass through all given points
   const double aTol = Precision::Confusion() * 10;
-  for (int i = 1; i <= aPoints->Size(); ++i)
+  for (const gp_Pnt2d& aPt : aPoints->Array1())
   {
-    const gp_Pnt2d& aPt = (*aPoints)(i);
-
     gp_Pnt2d aPtOnCurveWithScale;
     aCurveWithScale->D0(aCurveWithScale->Knot(i), aPtOnCurveWithScale);
     EXPECT_NEAR(aPt.X(), aPtOnCurveWithScale.X(), aTol) << " at point index " << i;
