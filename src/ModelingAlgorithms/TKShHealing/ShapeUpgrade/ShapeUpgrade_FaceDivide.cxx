@@ -81,12 +81,6 @@ bool ShapeUpgrade_FaceDivide::Perform(const double theArea)
   myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
   if (myFace.IsNull())
     return false;
-  // Ensure context is initialized - SplitCurves() and SplitSurface()
-  // call Context()->Apply() which dereferences a null handle if no
-  // context was set. ShapeUpgrade_ShapeDivide handles this in its own
-  // Perform(), but FaceDivide inherits directly from ShapeUpgrade_Tool
-  // which does not allocate a default context.
-  // See: https://github.com/Open-Cascade-SAS/OCCT/issues/1179
   if (Context().IsNull())
     SetContext(new ShapeBuild_ReShape);
   myResult = myFace;

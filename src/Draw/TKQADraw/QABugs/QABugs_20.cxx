@@ -4036,7 +4036,6 @@ static int QANullifyShape(Draw_Interpretor& di, int n, const char** a)
 
 #include <BRepCheck_Analyzer.hxx>
 #include <GCPnts_UniformDeflection.hxx>
-#include <ShapeUpgrade_FaceDivide.hxx>
 
 static int OCC32744(Draw_Interpretor& theDi, int theNbArgs, const char** theArgVec)
 {
@@ -4401,60 +4400,6 @@ static int OCC26441(Draw_Interpretor& theDi, int theNbArgs, const char** theArgV
   return 0;
 }
 
-//=================================================================================================
-// OCC1179: ShapeUpgrade_FaceDivide crashes when Context() is null.
-// ShapeUpgrade_FaceDivide::Perform() calls Context()->Apply() in SplitCurves()
-// without initializing myContext. This test verifies the fix: lazy context init.
-//=================================================================================================
-
-static int OCC1179(Draw_Interpretor& theDI, int, const char**)
-{
-  // Single-threaded test: create box, extract face, run FaceDivide.
-  // Without the fix, this crashes with null pointer dereference.
-  for (int i = 0; i < 10; ++i)
-  {
-    const double       aSize = 10.0 + i * 0.5;
-    const TopoDS_Shape aBox  = BRepPrimAPI_MakeBox(aSize, aSize + 5, aSize + 10).Shape();
-    TopExp_Explorer    anExp(aBox, TopAbs_FACE);
-    if (!anExp.More())
-    {
-      theDI << "Error: no faces in box\n";
-      return 1;
-    }
-    ShapeUpgrade_FaceDivide aDivider(TopoDS::Face(anExp.Current()));
-    aDivider.Perform();
-  }
-  theDI << "Single-threaded: OK\n";
-
-  // Parallel test: run FaceDivide on independent faces concurrently.
-  std::atomic<bool> anError{false};
-  OSD_Parallel::For(0, 300, [&](int theIndex) {
-    const double       aSize = 10.0 + theIndex * 0.03;
-    const TopoDS_Shape aBox  = BRepPrimAPI_MakeBox(aSize, aSize + 5, aSize + 10).Shape();
-    TopExp_Explorer    anExp(aBox, TopAbs_FACE);
-    if (anExp.More())
-    {
-      try
-      {
-        ShapeUpgrade_FaceDivide aDivider(TopoDS::Face(anExp.Current()));
-        aDivider.Perform();
-      }
-      catch (...)
-      {
-        anError.store(true, std::memory_order_relaxed);
-      }
-    }
-  });
-
-  if (anError.load())
-  {
-    theDI << "Error: parallel FaceDivide failed\n";
-    return 1;
-  }
-  theDI << "Parallel (300 tasks): OK\n";
-  return 0;
-}
-
 void QABugs::Commands_20(Draw_Interpretor& theCommands)
 {
   const char* group = "QABugs";
@@ -4602,12 +4547,6 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands)
                   "Check performance of STEPControl_Reader/Writer in multithreading environment.",
                   __FILE__,
                   OCC33657_4,
-                  group);
-
-  theCommands.Add("OCC1179",
-                  "Test ShapeUpgrade_FaceDivide with no pre-set context (single and parallel).",
-                  __FILE__,
-                  OCC1179,
                   group);
 
   return;
