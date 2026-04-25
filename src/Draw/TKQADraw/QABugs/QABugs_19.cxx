@@ -106,32 +106,6 @@ Standard_DISABLE_DEPRECATION_WARNINGS
   return new Geom_ConicalSurface(anAxis, theSemiAngle, theR);
 }
 
-static int OCC230(Draw_Interpretor& di, int argc, const char** argv)
-{
-  if (argc != 4)
-  {
-    di << "ERROR OCC230: Usage : " << argv[0] << " TrimmedCurve Pnt2d Pnt2d\n";
-    return 1;
-  }
-
-  gp_Pnt2d P1, P2;
-  if (!DrawTrSurf::GetPoint2d(argv[2], P1))
-  {
-    di << "ERROR OCC230: " << argv[2] << " is not Pnt2d\n";
-    return 1;
-  }
-  if (!DrawTrSurf::GetPoint2d(argv[3], P2))
-  {
-    di << "ERROR OCC230: " << argv[3] << " is not Pnt2d\n";
-    return 1;
-  }
-
-  GC_MakeSegment2d                        MakeSegment(P1, P2);
-  const occ::handle<Geom2d_TrimmedCurve>& TrimmedCurve = MakeSegment.Value();
-  DrawTrSurf::Set(argv[1], TrimmedCurve);
-  return 0;
-}
-
 #include <TopoDS_Face.hxx>
 #include <TopoDS.hxx>
 #include <BRepBuilderAPI_Transform.hxx>
@@ -828,100 +802,6 @@ struct QABugs_NHandleClass
     return 0;
   }
 };
-
-#include <XCAFDoc_ColorTool.hxx>
-#include <STEPCAFControl_Writer.hxx>
-
-static int OCC23951(Draw_Interpretor& di, int argc, const char** argv)
-{
-  if (argc != 2)
-  {
-    di << "Usage: " << argv[0] << " invalid number of arguments\n";
-    return 1;
-  }
-  occ::handle<TDocStd_Document> aDoc = new TDocStd_Document("dummy");
-  TopoDS_Shape                  s1   = BRepPrimAPI_MakeBox(1, 1, 1).Shape();
-  TDF_Label                     lab1 = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main())->NewShape();
-  XCAFDoc_DocumentTool::ShapeTool(aDoc->Main())->SetShape(lab1, s1);
-  TDataStd_Name::Set(lab1, "Box1");
-
-  Quantity_Color yellow(Quantity_NOC_YELLOW);
-  XCAFDoc_DocumentTool::ColorTool(aDoc->Main())->SetColor(lab1, yellow, XCAFDoc_ColorGen);
-  XCAFDoc_DocumentTool::ColorTool(aDoc->Main())->SetVisibility(lab1, false);
-
-  STEPControl_StepModelType mode = STEPControl_AsIs;
-  STEPCAFControl_Writer     writer;
-  if (!writer.Transfer(aDoc, mode))
-  {
-    di << "The document cannot be translated or gives no result" << "\n";
-    return 1;
-  }
-
-  const occ::handle<Message_Messenger>&              aMsgMgr = Message::DefaultMessenger();
-  NCollection_Sequence<occ::handle<Message_Printer>> aPrinters;
-  aPrinters.Append(aMsgMgr->ChangePrinters());
-  aMsgMgr->AddPrinter(new Draw_Printer(di));
-
-  writer.Write(argv[1]);
-
-  aMsgMgr->RemovePrinters(STANDARD_TYPE(Draw_Printer));
-  aMsgMgr->ChangePrinters().Append(aPrinters);
-
-  return 0;
-}
-
-//=================================================================================================
-
-static int OCC23950(Draw_Interpretor& di, int argc, const char** argv)
-{
-  if (argc != 2)
-  {
-    di << "Usage : " << argv[0] << " step_file\n";
-    return 1;
-  }
-
-  occ::handle<TDocStd_Document> aDoc = new TDocStd_Document("dummy");
-  TopoDS_Shape                  s6   = BRepBuilderAPI_MakeVertex(gp_Pnt(75, 0, 0));
-  gp_Trsf                       t0;
-  TopLoc_Location               location0(t0);
-
-  TDF_Label lab1 = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main())->NewShape();
-  XCAFDoc_DocumentTool::ShapeTool(aDoc->Main())->SetShape(lab1, s6);
-  TDataStd_Name::Set(lab1, "Point1");
-
-  TDF_Label labelA0 = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main())->NewShape();
-  TDataStd_Name::Set(labelA0, "ASSEMBLY");
-
-  TDF_Label component01 =
-    XCAFDoc_DocumentTool::ShapeTool(aDoc->Main())->AddComponent(labelA0, lab1, location0);
-  XCAFDoc_DocumentTool::ShapeTool(aDoc->Main())->UpdateAssemblies();
-
-  Quantity_Color yellow(Quantity_NOC_YELLOW);
-  XCAFDoc_DocumentTool::ColorTool(labelA0)->SetColor(component01, yellow, XCAFDoc_ColorGen);
-  XCAFDoc_DocumentTool::ColorTool(labelA0)->SetVisibility(component01, false);
-
-  STEPControl_StepModelType mode = STEPControl_AsIs;
-  STEPCAFControl_Writer     writer;
-  if (!writer.Transfer(aDoc, mode))
-  {
-    di << "The document cannot be translated or gives no result\n";
-    return 1;
-  }
-
-  const occ::handle<Message_Messenger>&              aMsgMgr = Message::DefaultMessenger();
-  NCollection_Sequence<occ::handle<Message_Printer>> aPrinters;
-  aPrinters.Append(aMsgMgr->ChangePrinters());
-  aMsgMgr->AddPrinter(new Draw_Printer(di));
-
-  writer.Write(argv[1]);
-
-  aMsgMgr->RemovePrinters(STANDARD_TYPE(Draw_Printer));
-  aMsgMgr->ChangePrinters().Append(aPrinters);
-
-  return 0;
-}
-
-//=================================================================================================
 
 static int OCC24667(Draw_Interpretor& di, int n, const char** a)
 {
@@ -2873,7 +2753,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands)
                   &QABugs_NHandleClass::NHandleProc,
                   group);
 
-  theCommands.Add("OCC230", "OCC230 TrimmedCurve Pnt2d Pnt2d", __FILE__, OCC230, group);
   theCommands.Add("OCC23774", "OCC23774 shape1 shape2", __FILE__, OCC23774, group);
   theCommands.Add("OCC23683", "OCC23683 shape", __FILE__, OCC23683, group);
   theCommands.Add("OCC23952sweep", "OCC23952sweep nbupoles shape", __FILE__, OCC23952sweep, group);
@@ -2900,9 +2779,7 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands)
                   OCC24667,
                   group);
   theCommands.Add("OCC24834", "OCC24834", __FILE__, OCC24834, group);
-  theCommands.Add("OCC23951", "OCC23951 path to saved step file", __FILE__, OCC23951, group);
   theCommands.Add("OCC24931", "OCC24931 path to saved xml file", __FILE__, OCC24931, group);
-  theCommands.Add("OCC23950", "OCC23950 step_file", __FILE__, OCC23950, group);
   theCommands.Add("OCC24925",
                   "OCC24925 filename [pluginLib=TKXml storageGuid retrievalGuid]"
                   "\nOCAF persistence without setting environment variables",

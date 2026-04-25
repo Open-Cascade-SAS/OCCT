@@ -911,3 +911,22 @@ TEST(NCollection_DynamicArrayTest, IntAndSizeTOverloadsAgree)
     EXPECT_EQ(aVecInt.Value(i), aVecSize.Value(static_cast<size_t>(i)));
   }
 }
+
+// OCC7639: NCollection_DynamicArray must handle out-of-order SetValue calls
+// (sparse / rare data) correctly and preserve all assigned values.
+// The draw test called: OCC7639 0 1  2 500  1 2
+//   SetValue(0, 1), SetValue(2, 500), SetValue(1, 2)
+// Expected iterator output (j, value): 0→1, 1→2, 2→500
+
+TEST(NCollection_DynamicArrayTest, SetValue_OutOfOrderIndices_CorrectValues)
+{
+  NCollection_DynamicArray<int> aVec;
+  aVec.SetValue(0, 1);
+  aVec.SetValue(2, 500);
+  aVec.SetValue(1, 2);
+
+  ASSERT_EQ(aVec.Size(), 3);
+  EXPECT_EQ(aVec.Value(0), 1);
+  EXPECT_EQ(aVec.Value(1), 2);
+  EXPECT_EQ(aVec.Value(2), 500);
+}

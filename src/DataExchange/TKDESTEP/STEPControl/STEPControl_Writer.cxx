@@ -228,6 +228,17 @@ void STEPControl_Writer::SetShapeFixParameters(XSAlgo_ShapeProcessor::ParameterM
 
 //=============================================================================
 
+void STEPControl_Writer::SetShapeFixParameters(const DE_ShapeFixParameters& theParameters)
+{
+  XSAlgo_ShapeProcessor::ParameterMap anAdditionalParameters;
+  if (occ::handle<Transfer_ActorOfFinderProcess> anActor = GetActor())
+  {
+    anActor->SetShapeFixParameters(theParameters, anAdditionalParameters);
+  }
+}
+
+//=============================================================================
+
 void STEPControl_Writer::SetShapeFixParameters(
   const DE_ShapeFixParameters&               theParameters,
   const XSAlgo_ShapeProcessor::ParameterMap& theAdditionalParameters)

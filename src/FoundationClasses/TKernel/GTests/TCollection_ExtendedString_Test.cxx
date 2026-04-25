@@ -1086,3 +1086,39 @@ TEST(TCollection_ExtendedStringTest, EndsWith_ZeroLength)
   // Any string ends with empty string
   EXPECT_TRUE(aString.EndsWith(nullptr, 0));
 }
+
+// ========================================
+// Tests for StartsWith/EndsWith bug fix (0030536)
+// ========================================
+
+TEST(TCollection_ExtendedStringTest, StartsWith_NoMatchLongerPrefix)
+{
+  // "hello" does NOT start with "help"
+  const TCollection_ExtendedString aStr("hello");
+  const TCollection_ExtendedString aPrefix("help");
+  EXPECT_FALSE(aStr.StartsWith(aPrefix));
+}
+
+TEST(TCollection_ExtendedStringTest, StartsWith_Match)
+{
+  // "hello" DOES start with "he"
+  const TCollection_ExtendedString aStr("hello");
+  const TCollection_ExtendedString aPrefix("he");
+  EXPECT_TRUE(aStr.StartsWith(aPrefix));
+}
+
+TEST(TCollection_ExtendedStringTest, EndsWith_NoMatchMiddlePart)
+{
+  // "hello" does NOT end with "ll"
+  const TCollection_ExtendedString aStr("hello");
+  const TCollection_ExtendedString aSuffix("ll");
+  EXPECT_FALSE(aStr.EndsWith(aSuffix));
+}
+
+TEST(TCollection_ExtendedStringTest, EndsWith_Match)
+{
+  // "hello" DOES end with "lo"
+  const TCollection_ExtendedString aStr("hello");
+  const TCollection_ExtendedString aSuffix("lo");
+  EXPECT_TRUE(aStr.EndsWith(aSuffix));
+}
