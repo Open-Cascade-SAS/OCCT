@@ -579,12 +579,21 @@ void BOPAlgo_Builder::BuildSplitSolids(
         //
         const BOPTools_Set& aSTx = aMST.Added(aST);
         const TopoDS_Shape& aSx  = aSTx.Shape();
-        pLSx->Append(aSx);
+        // Preserve aSR as this source's own piece in the image list. The
+        // upstream SD merge (faces/edges) made aSR's face TShapes match an
+        // earlier source's split solid aSx; before this change the dedup
+        // overwrite (pLSx->Append(aSx)) replaced aSR with aSx in this
+        // source's images. That overwrite hijacked aS's identity and let
+        // BuildRC drop aS's own piece for CUT (bug 33908). Keep aSR; record
+        // the equivalence in myShapesSD so equivalence-aware containment in
+        // BuildRC still recognises legitimate cross-parent shared regions
+        // (Common(box1, box2)).
+        pLSx->Append(aSR);
         //
-        NCollection_List<TopoDS_Shape>* pLOr = myOrigins.ChangeSeek(aSx);
+        NCollection_List<TopoDS_Shape>* pLOr = myOrigins.ChangeSeek(aSR);
         if (!pLOr)
         {
-          pLOr = myOrigins.Bound(aSx, NCollection_List<TopoDS_Shape>());
+          pLOr = myOrigins.Bound(aSR, NCollection_List<TopoDS_Shape>());
         }
         pLOr->Append(aS);
         //

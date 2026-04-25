@@ -36,8 +36,6 @@
 #include <BRep_Builder.hxx>
 #include <BRepLib.hxx>
 #include <BRep_Tool.hxx>
-#include <Precision.hxx>
-#include <gp_Pln.hxx>
 #include <GeomLib.hxx>
 #include <NCollection_IncAllocator.hxx>
 #include <IntTools_Context.hxx>
@@ -699,29 +697,8 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
         const TopoDS_Shape& aF2 = aIt2.Value();
         if (bCheckPlanar && aMFPlanar.Contains(aF2))
         {
-          // Two planar bounded faces share the same edge set. The cheap
-          // edge-set match is necessary but NOT sufficient -- two physically
-          // distinct planes (e.g. the two opposite faces of a thin prism,
-          // ~1e-6 apart) can end up with congruent edge sets after BOP
-          // splitting and would otherwise be merged into one Same-Domain
-          // image, collapsing the tool's shell and causing CUT to drop half
-          // of the other operand (bug 33908). Verify the underlying planes
-          // are geometrically coincident within combined face tolerance.
-          // The planar verdict is decisive in BOTH directions: when the
-          // planes are not coincident the pair is not added to the geometric
-          // pair-check set either, because that downstream check uses
-          // edge-tolerance-bumped tolerances and would re-merge the same
-          // distinct planes.
-          const gp_Pln aPln1     = myContext->SurfaceAdaptor(TopoDS::Face(aF1)).Plane();
-          const gp_Pln aPln2     = myContext->SurfaceAdaptor(TopoDS::Face(aF2)).Plane();
-          const double aTolPlanes = BRep_Tool::Tolerance(TopoDS::Face(aF1))
-                                    + BRep_Tool::Tolerance(TopoDS::Face(aF2)) + myFuzzyValue;
-          const bool bSameDir =
-            aPln1.Axis().Direction().IsParallel(aPln2.Axis().Direction(), Precision::Angular());
-          if (bSameDir && aPln1.Distance(aPln2.Location()) <= aTolPlanes)
-          {
-            BOPAlgo_Tools::FillMap(aF1, aF2, aDMSLS, aAllocator);
-          }
+          // Consider planar bounded faces as Same Domain without additional check
+          BOPAlgo_Tools::FillMap(aF1, aF2, aDMSLS, aAllocator);
           continue;
         }
         // Add pair for analysis
