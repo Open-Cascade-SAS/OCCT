@@ -81,6 +81,8 @@ bool ShapeUpgrade_FaceDivide::Perform(const double theArea)
   myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
   if (myFace.IsNull())
     return false;
+  if (Context().IsNull())
+    SetContext(new ShapeBuild_ReShape);
   myResult = myFace;
   SplitSurface(theArea);
   SplitCurves();
