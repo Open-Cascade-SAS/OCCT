@@ -29,7 +29,7 @@
   #pragma warning(pop)
 #endif
 
-vtkStandardNewMacro(IVtkTools_ShapePicker)
+vtkStandardNewMacro(IVtkTools_ShapePicker);
 
 //=================================================================================================
 
