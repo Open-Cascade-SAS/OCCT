@@ -16,7 +16,7 @@
 
 #include <BVH_PrimitiveSet.hxx>
 #include <BVH_LinearBuilder.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 
 class IntPatch_Polyhedron;
 
@@ -78,8 +78,8 @@ public: //! @name Additional methods
   bool IsInitialized() const { return myPoly != nullptr; }
 
 private:
-  const IntPatch_Polyhedron* myPoly;     //!< Reference to the wrapped polyhedron
-  NCollection_Vector<int>    myIndexMap; //!< Maps current indices to original 1-based indices
+  const IntPatch_Polyhedron*    myPoly;     //!< Reference to the wrapped polyhedron
+  NCollection_DynamicArray<int> myIndexMap; //!< Maps current indices to original 1-based indices
 };
 
 #endif // IntPatch_PolyhedronBVH_HeaderFile
