@@ -25,7 +25,7 @@ template <int size>
 inline const unsigned char* SizeRef();
 
 template <>
-inline const unsigned char* SizeRef<8>()
+[[maybe_unused]] inline const unsigned char* SizeRef<8>()
 {
   static const unsigned char aSizeRef[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02,
@@ -37,7 +37,7 @@ inline const unsigned char* SizeRef<8>()
 }
 
 template <>
-inline const unsigned char* SizeRef<4>()
+[[maybe_unused]] inline const unsigned char* SizeRef<4>()
 {
   static const unsigned char aSizeRef[] = {
     0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x03, 0x00, 0x00,
