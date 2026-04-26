@@ -12,29 +12,31 @@
 // commercial license or contractual agreement.
 
 #include <BSplSLib_Cache.hxx>
+#include <BSplCLib.hxx>
 #include <BSplSLib.hxx>
 
 #include <NCollection_LocalArray.hxx>
 
 #include <gp_Pnt.hxx>
 #include <NCollection_Array2.hxx>
-#include <NCollection_HArray2.hxx>
 
 #include <utility>
 
 IMPLEMENT_STANDARD_RTTIEXT(BSplSLib_Cache, Standard_Transient)
 
+static_assert(BSplSLib_Cache::THE_MAX_DEGREE == BSplCLib::MaxDegree(),
+              "BSplSLib_Cache::THE_MAX_DEGREE must match BSplCLib::MaxDegree()");
+
 namespace
 {
 
-//! Converts handle of array of double into the pointer to double
-double* ConvertArray(const occ::handle<NCollection_HArray2<double>>& theHArray)
-{
-  const NCollection_Array2<double>& anArray = theHArray->Array2();
-  return (double*)&(anArray(anArray.LowerRow(), anArray.LowerCol()));
-}
-
-//=================================================================================================
+// Maximum cache columns: MaxPoleDim * MaxOrder = 4 * 26 = 104
+constexpr int THE_MAX_CACHE_COLS =
+  BSplSLib_Cache::THE_MAX_POLE_DIMENSION * BSplSLib_Cache::THE_MAX_ORDER;
+// Maximum transient array size for EvaluatePolynomials: (D2MaxDeriv+1) * MaxCacheCols = 3 * 104
+constexpr int THE_MAX_TRANSIENT_SIZE = 3 * THE_MAX_CACHE_COLS;
+// Maximum result size for RationalDerivative: (D2+1)^2 * 3 = 27
+constexpr int THE_MAX_RATIONAL_RESULT = 3 * 3 * 3;
 
 //! Computes local UV parameters for D0 evaluation (no derivative scaling needed).
 //! BSplSLib uses different convention for span parameters than BSplCLib
@@ -79,7 +81,8 @@ std::pair<double, double> toLocalParams(double                      theU,
 //=================================================================================================
 
 //! Evaluates the polynomials and their derivatives.
-//! @param[in] thePolesWeights handle to the array of poles and weights
+//! @param[in] thePolesArray pointer to the inline poles/weights buffer
+//! @param[in] theCacheCols  number of columns in the cache (row length)
 //! @param[in] theParamsU parameters for U direction
 //! @param[in] theParamsV parameters for V direction
 //! @param[in] theIsRational flag indicating if the surface is rational
@@ -88,19 +91,20 @@ std::pair<double, double> toLocalParams(double                      theU,
 //! @param[in] theUDerivMax maximum U derivative
 //! @param[in] theVDerivMax maximum V derivative
 //! @param[out] theResultArray array to store the results
-void EvaluatePolynomials(const occ::handle<NCollection_HArray2<double>>& thePolesWeights,
-                         const BSplCLib_CacheParams&                     theParamsU,
-                         const BSplCLib_CacheParams&                     theParamsV,
-                         const bool                                      theIsRational,
-                         double                                          theLocalU,
-                         double                                          theLocalV,
-                         int                                             theUDerivMax,
-                         int                                             theVDerivMax,
-                         double*                                         theResultArray)
+void EvaluatePolynomials(const double*               thePolesArray,
+                         int                         theCacheCols,
+                         const BSplCLib_CacheParams& theParamsU,
+                         const BSplCLib_CacheParams& theParamsV,
+                         const bool                  theIsRational,
+                         double                      theLocalU,
+                         double                      theLocalV,
+                         int                         theUDerivMax,
+                         int                         theVDerivMax,
+                         double*                     theResultArray)
 {
-  double* const aPolesArray = ConvertArray(thePolesWeights);
+  double* const aPolesArray = const_cast<double*>(thePolesArray);
   const int     aDimension  = theIsRational ? 4 : 3;
-  const int     aCacheCols  = thePolesWeights->RowLength();
+  const int     aCacheCols  = theCacheCols;
 
   const bool isMaxU = (theParamsU.Degree > theParamsV.Degree);
   const auto [aMinParam, aMaxParam] =
@@ -118,7 +122,7 @@ void EvaluatePolynomials(const occ::handle<NCollection_HArray2<double>>& thePole
   // Transient coefficients array size:
   // (aMaxDeriv + 1) * CacheCols  for the first evaluation (along max degree parameter)
   // (aMinDeriv + 1) * Dimension for the second evaluation (along min degree parameter)
-  NCollection_LocalArray<double> aTransientCoeffs(std::max((aMaxDeriv + 1) * aCacheCols, (aMinDeriv + 1) * aDimension));
+  NCollection_LocalArray<double, THE_MAX_TRANSIENT_SIZE> aTransientCoeffs(std::max((aMaxDeriv + 1) * aCacheCols, (aMinDeriv + 1) * aDimension));
   // clang-format on
 
   // Calculate intermediate values and derivatives of bivariate polynomial along variable with
@@ -193,8 +197,8 @@ void EvaluatePolynomials(const occ::handle<NCollection_HArray2<double>>& thePole
     // RationalDerivative is NOT safe for in-place operation because it reads 4-component data
     // and writes 3-component data to potentially overlapping memory locations.
     // We need a separate temporary storage for the output.
-    const int                      aResultSize = (theUDerivMax + 1) * (theVDerivMax + 1) * 3;
-    NCollection_LocalArray<double> aTempStorage(aResultSize);
+    const int aResultSize = (theUDerivMax + 1) * (theVDerivMax + 1) * 3;
+    NCollection_LocalArray<double, THE_MAX_RATIONAL_RESULT> aTempStorage(aResultSize);
 
     if (isMaxU)
     {
@@ -229,6 +233,15 @@ void EvaluatePolynomials(const occ::handle<NCollection_HArray2<double>>& thePole
 
 //=================================================================================================
 
+BSplSLib_Cache::BSplSLib_Cache()
+    : myIsRational(false),
+      myNbRows(0),
+      myNbCols(0)
+{
+}
+
+//=================================================================================================
+
 BSplSLib_Cache::BSplSLib_Cache(const int&                        theDegreeU,
                                const bool&                       thePeriodicU,
                                const NCollection_Array1<double>& theFlatKnotsU,
@@ -237,14 +250,32 @@ BSplSLib_Cache::BSplSLib_Cache(const int&                        theDegreeU,
                                const NCollection_Array1<double>& theFlatKnotsV,
                                const NCollection_Array2<double>* theWeights)
     : myIsRational(theWeights != nullptr),
+      myNbRows(std::max(theDegreeU, theDegreeV) + 1),
+      myNbCols((myIsRational ? 4 : 3) * (std::min(theDegreeU, theDegreeV) + 1)),
       myParamsU(theDegreeU, thePeriodicU, theFlatKnotsU),
       myParamsV(theDegreeV, thePeriodicV, theFlatKnotsV)
 {
-  int aMinDegree   = std::min(theDegreeU, theDegreeV);
-  int aMaxDegree   = std::max(theDegreeU, theDegreeV);
-  int aPWColNumber = (myIsRational ? 4 : 3);
-  myPolesWeights =
-    new NCollection_HArray2<double>(1, aMaxDegree + 1, 1, aPWColNumber * (aMinDegree + 1));
+  Standard_ASSERT_RAISE(myNbRows * myNbCols <= THE_MAX_CACHE_SIZE,
+                        "BSplSLib_Cache: degree too high for inline buffer");
+}
+
+//=================================================================================================
+
+void BSplSLib_Cache::Init(const int&                        theDegreeU,
+                           const bool&                       thePeriodicU,
+                           const NCollection_Array1<double>& theFlatKnotsU,
+                           const int&                        theDegreeV,
+                           const bool&                       thePeriodicV,
+                           const NCollection_Array1<double>& theFlatKnotsV,
+                           const NCollection_Array2<double>* theWeights)
+{
+  myIsRational = (theWeights != nullptr);
+  myNbRows     = std::max(theDegreeU, theDegreeV) + 1;
+  myNbCols     = (myIsRational ? 4 : 3) * (std::min(theDegreeU, theDegreeV) + 1);
+  myParamsU.Init(theDegreeU, thePeriodicU, theFlatKnotsU);
+  myParamsV.Init(theDegreeV, thePeriodicV, theFlatKnotsV);
+  Standard_ASSERT_RAISE(myNbRows * myNbCols <= THE_MAX_CACHE_SIZE,
+                        "BSplSLib_Cache: degree too high for inline buffer");
 }
 
 //=================================================================================================
@@ -278,6 +309,9 @@ void BSplSLib_Cache::BuildCache(const double&                     theParameterU,
   double aSpanLengthV = 0.5 * myParamsV.SpanLength;
   double aSpanStartV  = myParamsV.SpanStart + aSpanLengthV;
 
+  // Create array wrapper referencing the inline buffer
+  NCollection_Array2<double> aPolesWeights(myPolesWeightsBuffer[0], 1, myNbRows, 1, myNbCols);
+
   // Calculate new cache data
   BSplSLib::BuildCache(aSpanStartU,
                        aSpanStartV,
@@ -293,7 +327,7 @@ void BSplSLib_Cache::BuildCache(const double&                     theParameterU,
                        theFlatKnotsV,
                        thePoles,
                        theWeights,
-                       myPolesWeights->ChangeArray2());
+                       aPolesWeights);
 }
 
 //=================================================================================================
@@ -308,18 +342,18 @@ void BSplSLib_Cache::D0(const double& theU, const double& theV, gp_Pnt& thePoint
 
 void BSplSLib_Cache::D0Local(double theLocalU, double theLocalV, gp_Pnt& thePoint) const
 {
-  double* aPolesArray = ConvertArray(myPolesWeights);
+  double* aPolesArray = const_cast<double*>(myPolesWeightsBuffer);
   double  aPoint[4]   = {};
 
   const int  aDimension               = myIsRational ? 4 : 3;
-  const int  aCacheCols               = myPolesWeights->RowLength();
+  const int  aCacheCols               = myNbCols;
   const bool isMaxU                   = (myParamsU.Degree > myParamsV.Degree);
   const auto [aMinDegree, aMaxDegree] = std::minmax(myParamsU.Degree, myParamsV.Degree);
   const auto [aMinParam, aMaxParam] =
     isMaxU ? std::make_pair(theLocalV, theLocalU) : std::make_pair(theLocalU, theLocalV);
 
   // Array for intermediate results
-  NCollection_LocalArray<double> aTransientCoeffs(aCacheCols);
+  NCollection_LocalArray<double, THE_MAX_CACHE_COLS> aTransientCoeffs(aCacheCols);
 
   // Calculate intermediate value of cached polynomial along variable with maximal degree
   PLib::NoDerivativeEvalPolynomial(aMaxParam,
@@ -353,7 +387,8 @@ void BSplSLib_Cache::D1Local(double  theLocalU,
                              gp_Vec& theTangentV) const
 {
   double aPntDeriv[16] = {}; // Result storage for D1, zero-initialized
-  EvaluatePolynomials(myPolesWeights,
+  EvaluatePolynomials(myPolesWeightsBuffer,
+                      myNbCols,
                       myParamsU,
                       myParamsV,
                       myIsRational,
@@ -411,7 +446,8 @@ void BSplSLib_Cache::D2Local(double  theLocalU,
                              gp_Vec& theCurvatureUV) const
 {
   double aPntDeriv[36] = {}; // Result storage for D2, zero-initialized
-  EvaluatePolynomials(myPolesWeights,
+  EvaluatePolynomials(myPolesWeightsBuffer,
+                      myNbCols,
                       myParamsU,
                       myParamsV,
                       myIsRational,
@@ -484,7 +520,8 @@ void BSplSLib_Cache::D1(const double& theU,
   const auto [aLocalU, aLocalV] = toLocalParams(theU, theV, myParamsU, myParamsV, anInvU, anInvV);
 
   double aPntDeriv[16] = {};
-  EvaluatePolynomials(myPolesWeights,
+  EvaluatePolynomials(myPolesWeightsBuffer,
+                      myNbCols,
                       myParamsU,
                       myParamsV,
                       myIsRational,
@@ -538,7 +575,8 @@ void BSplSLib_Cache::D2(const double& theU,
   const auto [aLocalU, aLocalV] = toLocalParams(theU, theV, myParamsU, myParamsV, anInvU, anInvV);
 
   double aPntDeriv[36] = {};
-  EvaluatePolynomials(myPolesWeights,
+  EvaluatePolynomials(myPolesWeightsBuffer,
+                      myNbCols,
                       myParamsU,
                       myParamsV,
                       myIsRational,

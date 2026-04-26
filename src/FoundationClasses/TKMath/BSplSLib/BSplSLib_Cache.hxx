@@ -15,7 +15,6 @@
 #define _BSplSLib_Cache_Headerfile
 
 #include <NCollection_Array2.hxx>
-#include <NCollection_HArray2.hxx>
 
 #include <BSplCLib_CacheParams.hxx>
 
@@ -26,6 +25,20 @@
 class BSplSLib_Cache : public Standard_Transient
 {
 public:
+  //! Maximum supported B-spline degree (must match BSplCLib::THE_MAX_DEGREE)
+  static constexpr int THE_MAX_DEGREE = 25;
+  //! Maximum order (degree + 1)
+  static constexpr int THE_MAX_ORDER = THE_MAX_DEGREE + 1;
+  //! Maximum number of components per pole: 4 for rational (x, y, z, w), 3 for non-rational
+  static constexpr int THE_MAX_POLE_DIMENSION = 4;
+  //! Maximum inline buffer size: MaxOrder * MaxPoleDim * MaxOrder
+  //! Covers the worst case of degree-25 rational surface with equal degrees in U and V
+  static constexpr int THE_MAX_CACHE_SIZE = THE_MAX_ORDER * THE_MAX_POLE_DIMENSION * THE_MAX_ORDER;
+
+  //! Default constructor, creates an uninitialized cache.
+  //! Must call Init() before use.
+  Standard_EXPORT BSplSLib_Cache();
+
   //! Constructor for caching of the span for the surface
   //! \param theDegreeU    degree along the first parameter (U) of the surface
   //! \param thePeriodicU  identify the surface is periodical along U axis
@@ -41,6 +54,22 @@ public:
                                  const bool&                       thePeriodicV,
                                  const NCollection_Array1<double>& theFlatKnotsV,
                                  const NCollection_Array2<double>* theWeights = nullptr);
+
+  //! Initialize for caching of the span for the surface (re-usable after default construction).
+  //! \param theDegreeU    degree along the first parameter (U) of the surface
+  //! \param thePeriodicU  identify the surface is periodical along U axis
+  //! \param theFlatKnotsU knots of the surface (with repetition) along U axis
+  //! \param theDegreeV    degree along the second parameter (V) of the surface
+  //! \param thePeriodicV  identify the surface is periodical along V axis
+  //! \param theFlatKnotsV knots of the surface (with repetition) along V axis
+  //! \param theWeights    array of weights of corresponding poles
+  Standard_EXPORT void Init(const int&                        theDegreeU,
+                             const bool&                       thePeriodicU,
+                             const NCollection_Array1<double>& theFlatKnotsU,
+                             const int&                        theDegreeV,
+                             const bool&                       thePeriodicV,
+                             const NCollection_Array1<double>& theFlatKnotsV,
+                             const NCollection_Array2<double>* theWeights = nullptr);
 
   //! Verifies validity of the cache using parameters of the point
   //! \param theParameterU  first parameter of the point placed in the span
@@ -150,13 +179,16 @@ private:
 private:
   // clang-format off
   bool myIsRational;                //!< identifies the rationality of Bezier/B-spline surface
+  int myNbRows;                     //!< number of rows in cache: max(degU, degV) + 1
+  int myNbCols;                     //!< number of columns in cache: (3 or 4) * (min(degU, degV) + 1)
   BSplCLib_CacheParams myParamsU, myParamsV;    //!< cache parameters by U and V directions
-  occ::handle<NCollection_HArray2<double>> myPolesWeights; //!< array of poles and weights of calculated cache
-                                                // the array has following structure:
-                                                //       x11 y11 z11 [w11] x12 y12 z12 [w12] ...
-                                                //       x21 y21 z21 [w21] x22 y22 z22 [w22] etc
-                                                // for non-rational surfaces there is no weight;
-                                                // size of array: (max(myDegree)+1) * A*(min(myDegree)+1), where A = 4 or 3
+  //! Inline buffer for poles and weights of calculated cache.
+  //! The array has following structure:
+  //!   x11 y11 z11 [w11] x12 y12 z12 [w12] ...
+  //!   x21 y21 z21 [w21] x22 y22 z22 [w22] etc
+  //! For non-rational surfaces there is no weight.
+  //! Size of array: (max(myDegree)+1) * A*(min(myDegree)+1), where A = 4 or 3.
+  double myPolesWeightsBuffer[THE_MAX_CACHE_SIZE];
   // clang-format on
 };
 

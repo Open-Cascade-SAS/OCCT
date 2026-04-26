@@ -24,17 +24,31 @@
 //! and data of the current span for its caching
 struct BSplCLib_CacheParams
 {
-  const int    Degree;         ///< degree of Bezier/B-spline
-  const bool   IsPeriodic;     ///< true of the B-spline is periodic
-  const double FirstParameter; ///< first valid parameter
-  const double LastParameter;  ///< last valid parameter
+  int    Degree;         ///< degree of Bezier/B-spline
+  bool   IsPeriodic;     ///< true of the B-spline is periodic
+  double FirstParameter; ///< first valid parameter
+  double LastParameter;  ///< last valid parameter
 
-  const int SpanIndexMin; ///< minimal index of span
-  const int SpanIndexMax; ///< maximal index of span
+  int SpanIndexMin; ///< minimal index of span
+  int SpanIndexMax; ///< maximal index of span
 
   double SpanStart;  ///< parameter for the frst point of the span
   double SpanLength; ///< length of the span
   int    SpanIndex;  ///< index of the span
+
+  //! Default constructor, zero-initializes all fields.
+  BSplCLib_CacheParams()
+      : Degree(0),
+        IsPeriodic(false),
+        FirstParameter(0.0),
+        LastParameter(0.0),
+        SpanIndexMin(0),
+        SpanIndexMax(0),
+        SpanStart(0.0),
+        SpanLength(0.0),
+        SpanIndex(0)
+  {
+  }
 
   //! Constructor, prepares data structures for caching.
   //! \param theDegree     degree of the B-spline (or Bezier)
@@ -53,6 +67,23 @@ struct BSplCLib_CacheParams
         SpanLength(0.0),
         SpanIndex(0)
   {
+  }
+
+  //! Reinitialize with new parameters (same as constructor but on existing object).
+  //! \param theDegree     degree of the B-spline (or Bezier)
+  //! \param thePeriodic   identify whether the B-spline is periodic
+  //! \param theFlatKnots  knots of Bezier / B-spline parameterization
+  void Init(int theDegree, bool thePeriodic, const NCollection_Array1<double>& theFlatKnots)
+  {
+    Degree         = theDegree;
+    IsPeriodic     = thePeriodic;
+    FirstParameter = theFlatKnots.Value(theFlatKnots.Lower() + theDegree);
+    LastParameter  = theFlatKnots.Value(theFlatKnots.Upper() - theDegree);
+    SpanIndexMin   = theFlatKnots.Lower() + theDegree;
+    SpanIndexMax   = theFlatKnots.Upper() - theDegree - 1;
+    SpanStart      = 0.0;
+    SpanLength     = 0.0;
+    SpanIndex      = 0;
   }
 
   //! Normalizes the parameter for periodic B-splines

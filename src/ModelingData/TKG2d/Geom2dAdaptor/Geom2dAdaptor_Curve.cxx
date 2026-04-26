@@ -27,6 +27,7 @@
 #include <BSplCLib.hxx>
 #include <ElCLib.hxx>
 #include <BSplCLib_Cache.hxx>
+#include <BSplCLib_CacheGrid.hxx>
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_Circle.hxx>
@@ -342,7 +343,7 @@ void Geom2dAdaptor_Curve::load(const occ::handle<Geom2d_Curve>& C,
     // Same curve but potentially different parameters - invalidate cache
     if (auto* aBSplineData = std::get_if<BSplineData>(&myCurveData))
     {
-      aBSplineData->Cache.Nullify();
+      aBSplineData->CacheGrid.Nullify();
     }
     else if (auto* aBezierData = std::get_if<BezierData>(&myCurveData))
     {
@@ -624,19 +625,15 @@ void Geom2dAdaptor_Curve::RebuildCache(const double theParameter) const
   }
   else if (myTypeCurve == GeomAbs_BSplineCurve)
   {
-    // Create cache for B-spline
+    // Create cache grid for B-spline
     auto&       aBSplineData = std::get<BSplineData>(myCurveData);
     const auto& aBSpline     = aBSplineData.Curve;
-    if (aBSplineData.Cache.IsNull())
-      aBSplineData.Cache = new BSplCLib_Cache(aBSpline->Degree(),
-                                              aBSpline->IsPeriodic(),
-                                              aBSpline->KnotSequence(),
-                                              aBSpline->Poles(),
-                                              aBSpline->Weights());
-    aBSplineData.Cache->BuildCache(theParameter,
-                                   aBSpline->KnotSequence(),
-                                   aBSpline->Poles(),
-                                   aBSpline->Weights());
+    if (aBSplineData.CacheGrid.IsNull())
+      aBSplineData.CacheGrid = new BSplCLib_CacheGrid(aBSpline->Degree(),
+                                                      aBSpline->IsPeriodic(),
+                                                      aBSpline->KnotSequence(),
+                                                      aBSpline->Poles(),
+                                                      aBSpline->Weights());
   }
 }
 
@@ -739,9 +736,9 @@ gp_Pnt2d Geom2dAdaptor_Curve::EvalD0(const double theU) const
       }
       else
       {
-        if (aBSplineData.Cache.IsNull() || !aBSplineData.Cache->IsCacheValid(U))
+        if (aBSplineData.CacheGrid.IsNull())
           RebuildCache(U);
-        aBSplineData.Cache->D0(U, P);
+        aBSplineData.CacheGrid->D0(U, P);
       }
       return P;
     }
@@ -829,9 +826,9 @@ Geom2d_Curve::ResD1 Geom2dAdaptor_Curve::EvalD1(const double theU) const
       }
       else
       {
-        if (aBSplineData.Cache.IsNull() || !aBSplineData.Cache->IsCacheValid(U))
+        if (aBSplineData.CacheGrid.IsNull())
           RebuildCache(U);
-        aBSplineData.Cache->D1(U, aResult.Point, aResult.D1);
+        aBSplineData.CacheGrid->D1(U, aResult.Point, aResult.D1);
       }
       return aResult;
     }
@@ -922,9 +919,9 @@ Geom2d_Curve::ResD2 Geom2dAdaptor_Curve::EvalD2(const double theU) const
       }
       else
       {
-        if (aBSplineData.Cache.IsNull() || !aBSplineData.Cache->IsCacheValid(U))
+        if (aBSplineData.CacheGrid.IsNull())
           RebuildCache(U);
-        aBSplineData.Cache->D2(U, aResult.Point, aResult.D1, aResult.D2);
+        aBSplineData.CacheGrid->D2(U, aResult.Point, aResult.D1, aResult.D2);
       }
       return aResult;
     }
@@ -1039,9 +1036,9 @@ Geom2d_Curve::ResD3 Geom2dAdaptor_Curve::EvalD3(const double theU) const
       }
       else
       {
-        if (aBSplineData.Cache.IsNull() || !aBSplineData.Cache->IsCacheValid(U))
+        if (aBSplineData.CacheGrid.IsNull())
           RebuildCache(U);
-        aBSplineData.Cache->D3(U, aResult.Point, aResult.D1, aResult.D2, aResult.D3);
+        aBSplineData.CacheGrid->D3(U, aResult.Point, aResult.D1, aResult.D2, aResult.D3);
       }
       return aResult;
     }

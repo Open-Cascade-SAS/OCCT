@@ -45,6 +45,9 @@ typedef gp_Vec                     Vec;
 typedef NCollection_Array1<double> Array1OfReal;
 typedef NCollection_Array1<int>    Array1OfInteger;
 
+// Maximum Eval working array: (MaxDegree+1) * max_dimension(4+1=5) = 130.
+static constexpr int THE_MAX_EVAL_ARRAY = (BSplCLib::MaxDegree() + 1) * 5;
+
 //=======================================================================
 // class : BSplCLib_LocalMatrix
 // purpose: Auxiliary class optimizing creation of matrix buffer for
@@ -3357,7 +3360,7 @@ void BSplCLib::Eval(const double                      Parameter,
     {
       NewRequest = Degree;
     }
-    NCollection_LocalArray<double> LocalRealArray((LocalRequest + 1) * ArrayDimension);
+    NCollection_LocalArray<double, THE_MAX_EVAL_ARRAY> LocalRealArray((LocalRequest + 1) * ArrayDimension);
     Index   = 0;
     Inverse = 1.0e0;
 
@@ -3534,7 +3537,7 @@ void BSplCLib::Eval(const double                      Parameter,
     {
       NewRequest = Degree;
     }
-    NCollection_LocalArray<double> LocalRealArray((LocalRequest + 1) * ArrayDimension);
+    NCollection_LocalArray<double, THE_MAX_EVAL_ARRAY> LocalRealArray((LocalRequest + 1) * ArrayDimension);
 
     Index   = 0;
     Inverse = 1.0e0;
