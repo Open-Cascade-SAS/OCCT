@@ -100,7 +100,9 @@ occ::handle<Graphic3d_ShaderObject> Graphic3d_ShaderObject::CreateFromSource(
   const ShaderVariableList&      theStageInOuts,
   const TCollection_AsciiString& theInName,
   const TCollection_AsciiString& theOutName,
-  int                            theNbGeomInputVerts)
+  int                            theNbGeomInputVerts,
+  int                            theNbGeomOutputVerts,
+  Graphic3d_TypeOfPrimitiveArray theGeometryInputType)
 {
   if (theSource.IsEmpty())
   {
@@ -136,7 +138,7 @@ occ::handle<Graphic3d_ShaderObject> Graphic3d_ShaderObject::CreateFromSource(
       continue;
     }
 
-    const bool hasGeomStage = theNbGeomInputVerts > 0 && aStageLower < Graphic3d_TOS_GEOMETRY
+    const bool hasGeomStage = theNbGeomOutputVerts > 0 && aStageLower < Graphic3d_TOS_GEOMETRY
                               && aStageUpper >= Graphic3d_TOS_GEOMETRY;
     const bool isAllStagesVar =
       aStageLower == Graphic3d_TOS_VERTEX && aStageUpper == Graphic3d_TOS_FRAGMENT;
@@ -186,10 +188,30 @@ occ::handle<Graphic3d_ShaderObject> Graphic3d_ShaderObject::CreateFromSource(
 
   if (theType == Graphic3d_TOS_GEOMETRY)
   {
+    TCollection_AsciiString aGeomShaderInput;
+
+    switch (theGeometryInputType) {
+      case Graphic3d_TOPA_POLYLINES:
+      case Graphic3d_TOPA_SEGMENTS:
+        aGeomShaderInput = "lines";
+        break;
+      case Graphic3d_TOPA_LINE_STRIP_ADJACENCY:
+      case Graphic3d_TOPA_LINES_ADJACENCY:
+        aGeomShaderInput = "lines_adjacency";
+        break;
+      case Graphic3d_TOPA_POINTS:
+        aGeomShaderInput = "points";
+        break;
+      case Graphic3d_TOPA_TRIANGLES:
+      default:
+        aGeomShaderInput = "triangles";
+        break;
+    }
+
     aSrcUniforms.Prepend(TCollection_AsciiString()
-                         + "\nlayout (triangles) in;"
+                         + "\nlayout (" + aGeomShaderInput + ") in;"
                            "\nlayout (triangle_strip, max_vertices = "
-                         + theNbGeomInputVerts + ") out;");
+                         + theNbGeomOutputVerts + ") out;");
   }
   if (!aSrcInStructs.IsEmpty() && theType == Graphic3d_TOS_GEOMETRY)
   {
