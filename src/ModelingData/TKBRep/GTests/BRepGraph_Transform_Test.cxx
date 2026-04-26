@@ -14,6 +14,9 @@
 #include <BRepBuilderAPI_Transform.hxx>
 #include <BRepGProp.hxx>
 #include <BRepGraph.hxx>
+#include <BRepGraph_EditorView.hxx>
+#include <BRepGraph_MeshCache.hxx>
+#include <BRepGraph_MeshView.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_TopoView.hxx>
@@ -25,7 +28,10 @@
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <GProp_GProps.hxx>
 #include <OSD_Timer.hxx>
+#include <Poly_Triangulation.hxx>
+#include <Poly_Triangle.hxx>
 #include <Precision.hxx>
+#include <Standard_Handle.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <gp_Trsf.hxx>
@@ -206,4 +212,94 @@ TEST(BRepGraph_TransformTest, TransformSingleFace)
     BRepGraph_Transform::TransformFace(aGraph, BRepGraph_FaceId::Start(), aTrsf, true);
   ASSERT_TRUE(aResultGraph.IsDone());
   EXPECT_EQ(aResultGraph.Topo().Faces().Nb(), 1);
+}
+
+TEST(BRepGraph_TransformTest, CopyMesh_TriangulationNodesTransformed)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+
+  BRepGraph aGraph;
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes =
+    BRepGraph_Builder::Add(aGraph, aBox);
+  ASSERT_TRUE(aGraph.IsDone());
+  ASSERT_GE(aGraph.Topo().Faces().Nb(), 1);
+
+  // Manually create a triangulation with known node positions on the first face.
+  const BRepGraph_FaceId aFaceId = BRepGraph_FaceId::Start();
+  occ::handle<Poly_Triangulation> aSrcTri = new Poly_Triangulation(3, 1, false);
+  aSrcTri->SetNode(1, gp_Pnt(1.0, 2.0, 3.0));
+  aSrcTri->SetNode(2, gp_Pnt(4.0, 5.0, 6.0));
+  aSrcTri->SetNode(3, gp_Pnt(7.0, 8.0, 9.0));
+  aSrcTri->SetTriangle(1, Poly_Triangle(1, 2, 3));
+  aSrcTri->Deflection(0.1);
+
+  const BRepGraph_TriangulationRepId aTriRepId =
+    BRepGraph_Tool::Mesh::CreateTriangulationRep(aGraph, aSrcTri);
+  aGraph.Editor().Faces().SetTriangulationRep(aFaceId, aTriRepId);
+  BRepGraph_Tool::Mesh::AppendCachedTriangulation(aGraph, aFaceId, aTriRepId);
+
+  const double aDx = 5.0, aDy = 10.0, aDz = 15.0;
+  gp_Trsf      aTrsf;
+  aTrsf.SetTranslation(gp_Vec(aDx, aDy, aDz));
+
+  // Transform with theCopyMesh = true.
+  BRepGraph aResult = BRepGraph_Transform::Perform(aGraph, aTrsf, true, true);
+  ASSERT_TRUE(aResult.IsDone());
+
+  // The persistent triangulation on the first face must be present and transformed.
+  const BRepGraph_TriangulationRepId aNewTriRepId =
+    aResult.Topo().Faces().Definition(aFaceId).TriangulationRepId;
+  ASSERT_TRUE(aNewTriRepId.IsValid(aResult.Mesh().Poly().NbTriangulations()));
+
+  const occ::handle<Poly_Triangulation>& aNewTri =
+    aResult.Mesh().Poly().TriangulationRep(aNewTriRepId).Triangulation;
+  ASSERT_FALSE(aNewTri.IsNull());
+  ASSERT_EQ(aNewTri->NbNodes(), 3);
+
+  EXPECT_NEAR(aNewTri->Node(1).X(), 1.0 + aDx, Precision::Confusion());
+  EXPECT_NEAR(aNewTri->Node(1).Y(), 2.0 + aDy, Precision::Confusion());
+  EXPECT_NEAR(aNewTri->Node(1).Z(), 3.0 + aDz, Precision::Confusion());
+  EXPECT_NEAR(aNewTri->Node(3).X(), 7.0 + aDx, Precision::Confusion());
+
+  // The source triangulation must not be mutated.
+  EXPECT_NEAR(aSrcTri->Node(1).X(), 1.0, Precision::Confusion());
+
+  // Deflection must scale (translation has scale = 1, so no change).
+  EXPECT_NEAR(aNewTri->Deflection(), 0.1, Precision::Confusion());
+}
+
+TEST(BRepGraph_TransformTest, CopyMesh_False_TriangulationInvalidated)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+
+  BRepGraph aGraph;
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes =
+    BRepGraph_Builder::Add(aGraph, aBox);
+  ASSERT_TRUE(aGraph.IsDone());
+
+  const BRepGraph_FaceId aFaceId = BRepGraph_FaceId::Start();
+  occ::handle<Poly_Triangulation> aTri = new Poly_Triangulation(3, 1, false);
+  aTri->SetNode(1, gp_Pnt(0, 0, 0));
+  aTri->SetNode(2, gp_Pnt(1, 0, 0));
+  aTri->SetNode(3, gp_Pnt(0, 1, 0));
+  aTri->SetTriangle(1, Poly_Triangle(1, 2, 3));
+  const BRepGraph_TriangulationRepId aTriRepId =
+    BRepGraph_Tool::Mesh::CreateTriangulationRep(aGraph, aTri);
+  aGraph.Editor().Faces().SetTriangulationRep(aFaceId, aTriRepId);
+
+  gp_Trsf aTrsf;
+  aTrsf.SetTranslation(gp_Vec(1.0, 0.0, 0.0));
+
+  // Default: theCopyMesh = false -> triangulations are discarded.
+  BRepGraph aResult = BRepGraph_Transform::Perform(aGraph, aTrsf, true, false);
+  ASSERT_TRUE(aResult.IsDone());
+
+  const BRepGraph_TriangulationRepId aResultTriRepId =
+    aResult.Topo().Faces().Definition(aFaceId).TriangulationRepId;
+  EXPECT_FALSE(aResultTriRepId.IsValid());
+  EXPECT_FALSE(aResult.Mesh().Faces().HasTriangulation(aFaceId));
 }

@@ -26,12 +26,20 @@
 //! Produces a new BRepGraph by copying and then applying a geometric
 //! transformation to vertex points and geometry node locations.
 //!
-//! Two modes (matching BRepBuilderAPI_Transform semantics):
+//! Two geometry modes (matching BRepBuilderAPI_Transform semantics):
 //! - theCopyGeom = true  (geometry-level): deep-copy geometry, transform handles
 //!   in-place via Geom_Surface::Transform() etc., reset locations to identity.
-//!   Triangulations are invalidated.
 //! - theCopyGeom = false (root-level): light-copy with shared geometry, apply
-//!   transform via location modification only. Triangulations remain valid.
+//!   transform via location modification only.
+//!
+//! Mesh handling (theCopyMesh parameter):
+//! - theCopyMesh = false (default): triangulations and polygons are discarded
+//!   after a geometry-level transform and must be recomputed.
+//! - theCopyMesh = true: all mesh data (Poly_Triangulation on FaceDefs and the
+//!   MeshLayer cache, Poly_Polygon3D on edges, Poly_PolygonOnTriangulation on
+//!   coedges) is copied and transformed in sync with the geometry.
+//!   In location-only mode the mesh data is copied as-is (nodes stay in the
+//!   graph coordinate system, which is unaffected by a pure location compose).
 //!
 //! @note Returns BRepGraph directly (not a Result struct) because this is an
 //! immutable operation producing a new graph. Check IsDone() for success.
@@ -55,21 +63,26 @@ public:
   //! @param[in] theTrsf     the transformation to apply
   //! @param[in] theCopyGeom if true, geometry is deep-copied before transforming;
   //!                        if false, light-copy then transform locations/points only
+  //! @param[in] theCopyMesh if true, mesh data (triangulations, polygons) is copied and
+  //!                        transformed; if false, meshes are discarded after transform
   //! @return a new BRepGraph with the transformation applied
   [[nodiscard]] Standard_EXPORT static BRepGraph Perform(const BRepGraph& theGraph,
                                                          const gp_Trsf&   theTrsf,
-                                                         const bool       theCopyGeom = true);
+                                                         const bool       theCopyGeom = true,
+                                                         const bool       theCopyMesh = false);
 
   //! Transform a single face sub-graph.
   //! @param[in] theGraph    a pre-built BRepGraph
   //! @param[in] theFace     face definition identifier in the graph
   //! @param[in] theTrsf     the transformation to apply
   //! @param[in] theCopyGeom if true, geometry is deep-copied before transforming
+  //! @param[in] theCopyMesh if true, mesh data is copied and transformed
   //! @return a new BRepGraph containing only the specified face, transformed
   [[nodiscard]] Standard_EXPORT static BRepGraph TransformFace(const BRepGraph&       theGraph,
                                                                const BRepGraph_FaceId theFace,
                                                                const gp_Trsf&         theTrsf,
-                                                               const bool theCopyGeom = true);
+                                                               const bool theCopyGeom = true,
+                                                               const bool theCopyMesh = false);
 
 private:
   //! Apply location-only transform by storing per-node locations.
