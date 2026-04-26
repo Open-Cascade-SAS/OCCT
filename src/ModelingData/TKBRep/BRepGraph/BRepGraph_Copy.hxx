@@ -54,18 +54,6 @@ public:
   [[nodiscard]] Standard_EXPORT static BRepGraph Perform(const BRepGraph& theGraph,
                                                          const bool       theCopyGeom = true);
 
-  //! Copy a single face sub-graph.
-  //! @param[in] theGraph        a pre-built BRepGraph
-  //! @param[in] theFace         face definition identifier in the graph
-  //! @param[in] theCopyGeom     if true, geometry is deep-copied
-  //! @param[in] theReserveCache if true (default), pre-allocates transient cache;
-  //!                            pass false for short-lived temporary graphs
-  //! @return a new BRepGraph containing only the specified face and its dependencies
-  [[nodiscard]] Standard_EXPORT static BRepGraph CopyFace(const BRepGraph&       theGraph,
-                                                          const BRepGraph_FaceId theFace,
-                                                          const bool             theCopyGeom = true,
-                                                          const bool theReserveCache = true);
-
   //! Copy a single node sub-graph of any kind (Face, Shell, Solid, Wire, Edge, Vertex, etc.).
   //! The new graph contains only the specified node and all entities it references.
   //! @param[in] theGraph        a pre-built BRepGraph
@@ -79,8 +67,14 @@ public:
                                                           const bool theReserveCache = false);
 
 private:
+  //! Copy a single face sub-graph (used internally by CopyNode).
+  static BRepGraph CopyFace(const BRepGraph&       theGraph,
+                            const BRepGraph_FaceId theFace,
+                            const bool             theCopyGeom     = true,
+                            const bool             theReserveCache = true);
+
   //! Pre-allocate transient cache for lock-free parallel access.
-  Standard_EXPORT static void reserveTransientCache(BRepGraph& theGraph);
+  static void reserveTransientCache(BRepGraph& theGraph);
 
   BRepGraph_Copy() = delete;
 };

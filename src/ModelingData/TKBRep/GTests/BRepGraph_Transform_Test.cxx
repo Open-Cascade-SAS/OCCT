@@ -212,8 +212,9 @@ TEST(BRepGraph_TransformTest, TransformSingleFace)
   gp_Trsf aTrsf;
   aTrsf.SetTranslation(gp_Vec(10.0, 20.0, 30.0));
 
-  BRepGraph aResultGraph =
-    BRepGraph_Transform::TransformFace(aGraph, BRepGraph_FaceId::Start(), aTrsf, true);
+  const BRepGraph_FaceId aFaceId  = BRepGraph_FaceId::Start();
+  const BRepGraph_NodeId aFaceNode(BRepGraph_NodeId::Kind::Face, aFaceId.Index);
+  BRepGraph aResultGraph = BRepGraph_Transform::TransformNode(aGraph, aFaceNode, aTrsf, true);
   ASSERT_TRUE(aResultGraph.IsDone());
   EXPECT_EQ(aResultGraph.Topo().Faces().Nb(), 1);
 }
@@ -361,38 +362,33 @@ TEST(BRepGraph_TransformTest, MoveRef_ScaleRejected)
   EXPECT_TRUE(aGraph.Refs().Shells().Entry(aShellRef).LocalLocation.IsIdentity());
 }
 
-TEST(BRepGraph_TransformTest, TransformNode_FaceKind_MatchesTransformFace)
+TEST(BRepGraph_TransformTest, TransformNode_FaceKind_VertexPointsShifted)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   BRepGraph           aGraph;
   [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes = BRepGraph_Builder::Add(aGraph, aBoxMaker.Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  gp_Trsf aTrsf;
-  aTrsf.SetTranslation(gp_Vec(5.0, 10.0, 15.0));
+  const double aDx = 5.0, aDy = 10.0, aDz = 15.0;
+  gp_Trsf      aTrsf;
+  aTrsf.SetTranslation(gp_Vec(aDx, aDy, aDz));
 
-  const BRepGraph_FaceId aFaceId = BRepGraph_FaceId::Start();
+  const BRepGraph_FaceId aFaceId  = BRepGraph_FaceId::Start();
   const BRepGraph_NodeId aFaceNode(BRepGraph_NodeId::Kind::Face, aFaceId.Index);
 
-  BRepGraph aByNode = BRepGraph_Transform::TransformNode(aGraph, aFaceNode, aTrsf, true, false);
-  BRepGraph aByFace = BRepGraph_Transform::TransformFace(aGraph, aFaceId, aTrsf, true, false);
+  BRepGraph aResult = BRepGraph_Transform::TransformNode(aGraph, aFaceNode, aTrsf, true, false);
+  ASSERT_TRUE(aResult.IsDone());
+  EXPECT_EQ(aResult.Topo().Faces().Nb(), 1);
 
-  ASSERT_TRUE(aByNode.IsDone());
-  ASSERT_TRUE(aByFace.IsDone());
-
-  // Both should contain exactly 1 face with the same vertex positions.
-  EXPECT_EQ(aByNode.Topo().Faces().Nb(), 1);
-  EXPECT_EQ(aByFace.Topo().Faces().Nb(), 1);
-
-  const int aNbV = aByNode.Topo().Vertices().Nb();
-  EXPECT_EQ(aNbV, aByFace.Topo().Vertices().Nb());
+  const int aNbV = aResult.Topo().Vertices().Nb();
+  ASSERT_GT(aNbV, 0);
   for (BRepGraph_VertexId aVId(0); aVId.IsValid(aNbV); ++aVId)
   {
-    const gp_Pnt aPtNode = BRepGraph_Tool::Vertex::Pnt(aByNode, aVId);
-    const gp_Pnt aPtFace = BRepGraph_Tool::Vertex::Pnt(aByFace, aVId);
-    EXPECT_NEAR(aPtNode.X(), aPtFace.X(), Precision::Confusion());
-    EXPECT_NEAR(aPtNode.Y(), aPtFace.Y(), Precision::Confusion());
-    EXPECT_NEAR(aPtNode.Z(), aPtFace.Z(), Precision::Confusion());
+    const gp_Pnt anOrig = BRepGraph_Tool::Vertex::Pnt(aGraph, aVId);
+    const gp_Pnt aTrans = BRepGraph_Tool::Vertex::Pnt(aResult, aVId);
+    EXPECT_NEAR(aTrans.X(), anOrig.X() + aDx, Precision::Confusion());
+    EXPECT_NEAR(aTrans.Y(), anOrig.Y() + aDy, Precision::Confusion());
+    EXPECT_NEAR(aTrans.Z(), anOrig.Z() + aDz, Precision::Confusion());
   }
 }
 

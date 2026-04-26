@@ -71,20 +71,6 @@ public:
                                                          const bool       theCopyGeom = true,
                                                          const bool       theCopyMesh = false);
 
-  //! Transform a single face sub-graph.
-  //! @param[in] theGraph    a pre-built BRepGraph
-  //! @param[in] theFace     face definition identifier in the graph
-  //! @param[in] theTrsf     the transformation to apply
-  //! @param[in] theCopyGeom if true, geometry is deep-copied before transforming
-  //! @param[in] theCopyMesh if true, mesh data is copied and transformed
-  //! @return a new BRepGraph containing only the specified face, transformed
-  //! @deprecated Use TransformNode() with a Face kind NodeId instead.
-  [[nodiscard]] Standard_EXPORT static BRepGraph TransformFace(const BRepGraph&       theGraph,
-                                                               const BRepGraph_FaceId theFace,
-                                                               const gp_Trsf&         theTrsf,
-                                                               const bool theCopyGeom = true,
-                                                               const bool theCopyMesh = false);
-
   //! Transform a single node sub-graph of any kind (Face, Shell, Solid, Wire, Edge, Vertex).
   //! Produces a new BRepGraph containing only the specified node and its referenced sub-graph.
   //! The transform is applied to all copied geometry (same rules as Perform()).

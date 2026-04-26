@@ -392,45 +392,6 @@ BRepGraph BRepGraph_Transform::Perform(const BRepGraph& theGraph,
 
 //=================================================================================================
 
-BRepGraph BRepGraph_Transform::TransformFace(const BRepGraph&       theGraph,
-                                             const BRepGraph_FaceId theFace,
-                                             const gp_Trsf&         theTrsf,
-                                             const bool             theCopyGeom,
-                                             const bool             theCopyMesh)
-{
-  if (!theGraph.IsDone() || !theFace.IsValidIn(theGraph.Topo().Faces()))
-    return BRepGraph();
-
-  const bool useGeomModif =
-    theCopyGeom || theTrsf.IsNegative()
-    || (std::abs(std::abs(theTrsf.ScaleFactor()) - 1.) > TopLoc_Location::ScalePrec());
-
-  // Skip transient cache reservation for temporary transform graphs
-  // that are only used for reconstruction and then discarded.
-  constexpr bool THE_RESERVE_CACHE = false;
-
-  if (useGeomModif)
-  {
-    BRepGraph aResult = BRepGraph_Copy::CopyFace(theGraph, theFace, true, THE_RESERVE_CACHE);
-    if (!aResult.IsDone())
-      return aResult;
-
-    applyGeometryTransform(theGraph, aResult, theTrsf, theCopyMesh);
-    return aResult;
-  }
-
-  BRepGraph aResult = BRepGraph_Copy::CopyFace(theGraph, theFace, false, THE_RESERVE_CACHE);
-  if (!aResult.IsDone())
-    return aResult;
-
-  applyLocationTransform(aResult, theTrsf);
-  if (theCopyMesh)
-    applyMeshCopy(theGraph, aResult, theTrsf, false);
-  return aResult;
-}
-
-//=================================================================================================
-
 BRepGraph BRepGraph_Transform::TransformNode(const BRepGraph&       theGraph,
                                              const BRepGraph_NodeId theNodeId,
                                              const gp_Trsf&         theTrsf,

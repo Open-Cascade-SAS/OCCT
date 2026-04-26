@@ -23,6 +23,7 @@
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_UIDsView.hxx>
 #include <BRepGraph_Copy.hxx>
+#include <BRepGraph_NodeId.hxx>
 #include <BRepGraph_TransientCache.hxx>
 #include <BRepGraph_Builder.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
@@ -300,7 +301,9 @@ TEST(BRepGraph_CopyTest, CopySingleFace)
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Topo().Faces().Nb(), 0);
 
-  BRepGraph aCopyGraph = BRepGraph_Copy::CopyFace(aGraph, BRepGraph_FaceId::Start(), true);
+  const BRepGraph_FaceId aFaceId = BRepGraph_FaceId::Start();
+  const BRepGraph_NodeId aFaceNode(BRepGraph_NodeId::Kind::Face, aFaceId.Index);
+  BRepGraph aCopyGraph = BRepGraph_Copy::CopyNode(aGraph, aFaceNode, true);
   ASSERT_TRUE(aCopyGraph.IsDone());
   EXPECT_EQ(aCopyGraph.Topo().Faces().Nb(), 1);
 
