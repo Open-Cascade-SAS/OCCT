@@ -29,8 +29,6 @@
 #include <gp_Ax1.hxx>
 #include <BRepPrimAPI_MakeRevol.hxx>
 
-#include <BRepAlgoAPI_Fuse.hxx>
-
 #include <GProp_GProps.hxx>
 #include <BRepGProp.hxx>
 #include <TopExp_Explorer.hxx>
@@ -39,10 +37,11 @@
 #include <BRep_Tool.hxx>
 #include <Poly_Triangulation.hxx>
 #include <TopExp.hxx>
-#include <BRepFilletAPI_MakeFillet.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Geom_BSplineSurface.hxx>
 
+#include <BRepAlgoAPI_Fuse.hxx>
+#include <BRepFilletAPI_MakeFillet.hxx>
 #include <ShapeUpgrade_UnifySameDomain.hxx>
 
 static int OCC426(Draw_Interpretor& di, int argc, const char** argv)
@@ -478,246 +477,23 @@ int performTriangulation(const TopoDS_Shape& aShape, Draw_Interpretor& di)
   return 0;
 }
 
-#include <BRepPrimAPI_MakeCylinder.hxx>
-#include <BRepPrimAPI_MakeCone.hxx>
 #include <BRepAlgoAPI_Cut.hxx>
 
 //=================================================================================================
 
-static int OCC822_1(Draw_Interpretor& di, int argc, const char** argv)
-{
-
-  if (argc != 4)
-  {
-    di << "Usage : " << argv[0] << " name1 name2 result\n";
-    return 1;
-  }
-
-  int index = 1;
-
-  gp_Pnt P1(0, 0, 0);
-  gp_Dir D1(gp_Dir::D::Z);
-  gp_Ax2 A1(P1, D1);
-
-  BRepPrimAPI_MakeCylinder cylMakerIn(A1, 40, 110);
-  BRepPrimAPI_MakeCylinder cylMakerOut(A1, 50, 100);
-  TopoDS_Shape             cylIn  = cylMakerIn.Shape();
-  TopoDS_Shape             cylOut = cylMakerOut.Shape();
-
-  gp_Pnt P2(0, 0, 0);
-  gp_Dir D2(gp_Dir::D::NZ);
-  gp_Ax2 A2(P2, D2);
-
-  BRepPrimAPI_MakeCone conMakerIn(A2, 40, 60, 110);
-  BRepPrimAPI_MakeCone conMakerOut(A2, 50, 70, 100);
-  TopoDS_Shape         conIn  = conMakerIn.Shape();
-  TopoDS_Shape         conOut = conMakerOut.Shape();
-
-  di << "All primitives created.....  Creating Boolean\n";
-
-  try
-  {
-    OCC_CATCH_SIGNALS
-
-    di << "theIn = BRepAlgoAPI_Fuse(cylIn, conIn)\n";
-    di << "theOut = BRepAlgoAPI_Fuse(cylOut, conOut)\n";
-    di << "theRes = BRepAlgoAPI_Cut(theOut, theIn)\n";
-    TopoDS_Shape theIn  = BRepAlgoAPI_Fuse(cylIn, conIn).Shape();
-    TopoDS_Shape theOut = BRepAlgoAPI_Fuse(cylOut, conOut).Shape();
-    TopoDS_Shape theRes = BRepAlgoAPI_Cut(theOut, theIn).Shape();
-
-    if (index < argc)
-      DBRep::Set(argv[index++], theIn);
-    if (index < argc)
-      DBRep::Set(argv[index++], theOut);
-    if (index < argc)
-      DBRep::Set(argv[index++], theRes);
-    di << "Booleans Created !    Triangulating !\n";
-
-    performTriangulation(theRes, di);
-  }
-  catch (Standard_Failure const&)
-  {
-    di << "*********************************************************\n";
-    di << "*****                                              ******\n";
-    di << "***** Standard_Failure : Exception in Shoe Function *****\n";
-    di << "*****                                              ******\n";
-    di << "*********************************************************\n";
-    return 1;
-  }
-  return 0;
-}
-
-#include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
 
 //=======================================================================
 //  OCC822_2
 //=======================================================================
 
-static int OCC822_2(Draw_Interpretor& di, int argc, const char** argv)
-{
-  if (argc != 4)
-  {
-    di << "Usage : " << argv[0] << " name1 name2 result\n";
-    return 1;
-  }
-
-  int index = 1;
-
-  gp_Dir              xDir(gp_Dir::D::X);
-  gp_Dir              zDir(gp_Dir::D::Z);
-  gp_Pnt              cen1(0, 0, 0);
-  gp_Ax2              cor1(cen1, zDir, xDir);
-  BRepPrimAPI_MakeBox boxMaker(cor1, 100, 100, 100);
-  TopoDS_Shape        box = boxMaker.Shape();
-  if (index < argc)
-    DBRep::Set(argv[index++], box);
-
-  BRepPrimAPI_MakeSphere sphereMaker(gp_Pnt(100.0, 50.0, 50.0), 25.0);
-  TopoDS_Shape           sph = sphereMaker.Shape();
-  if (index < argc)
-    DBRep::Set(argv[index++], sph);
-
-  di << "All primitives created.....  Creating Cut Objects\n";
-
-  try
-  {
-    OCC_CATCH_SIGNALS
-
-    di << "fuse = BRepAlgoAPI_Fuse(box, sph)\n";
-    TopoDS_Shape fuse = BRepAlgoAPI_Fuse(box, sph).Shape();
-
-    if (index < argc)
-      DBRep::Set(argv[index++], fuse);
-    di << "Object Created !   Now Triangulating !";
-
-    performTriangulation(fuse, di);
-  }
-  catch (Standard_Failure const&)
-  {
-    di << "*********************************************************\n";
-    di << "*****                                              ******\n";
-    di << "***** Standard_Failure : Exception in HSP Function ******\n";
-    di << "*****                                              ******\n";
-    di << "*********************************************************\n";
-    return 1;
-  }
-
-  return 0;
-}
-
 //=======================================================================
 //  OCC823
 //=======================================================================
 
-static int OCC823(Draw_Interpretor& di, int argc, const char** argv)
-{
-  if (argc != 4)
-  {
-    di << "Usage : " << argv[0] << " name1 name2 result\n";
-    return 1;
-  }
-
-  int    index = 1;
-  double size  = 0.001;
-
-  gp_Pnt                   P1(40, 50, 0);
-  gp_Dir                   D1(100, 0, 0);
-  gp_Ax2                   A1(P1, D1);
-  BRepPrimAPI_MakeCylinder mkCyl1(A1, 20, 100);
-  TopoDS_Shape             cyl1 = mkCyl1.Shape();
-  if (index < argc)
-    DBRep::Set(argv[index++], cyl1);
-
-  gp_Pnt                   P2(100, 50, size);
-  gp_Dir                   D2(0, size, 80);
-  gp_Ax2                   A2(P2, D2);
-  BRepPrimAPI_MakeCylinder mkCyl2(A2, 20, 80);
-  TopoDS_Shape             cyl2 = mkCyl2.Shape();
-  if (index < argc)
-    DBRep::Set(argv[index++], cyl2);
-
-  di << "All primitives created.....  Creating Boolean\n";
-
-  try
-  {
-    OCC_CATCH_SIGNALS
-
-    di << "fuse = BRepAlgoAPI_Fuse(cyl2, cyl1)\n";
-    TopoDS_Shape fuse = BRepAlgoAPI_Fuse(cyl2, cyl1).Shape();
-
-    if (index < argc)
-      DBRep::Set(argv[index++], fuse);
-    di << "Fuse Created !    Triangulating !\n";
-
-    performTriangulation(fuse, di);
-  }
-  catch (Standard_Failure const&)
-  {
-    di << "*********************************************************\n";
-    di << "*****                                              ******\n";
-    di << "***** Standard_Failure : Exception in TEE Function ******\n";
-    di << "*****                                              ******\n";
-    di << "*********************************************************\n";
-    return 1;
-  }
-  return 0;
-}
-
 //=======================================================================
 //  OCC824
 //=======================================================================
-
-static int OCC824(Draw_Interpretor& di, int argc, const char** argv)
-{
-  if (argc != 4)
-  {
-    di << "Usage : " << argv[0] << " name1 name2 result\n";
-    return 1;
-  }
-
-  int index = 1;
-
-  gp_Pnt                   P1(100, 0, 0);
-  gp_Dir                   D1(gp_Dir::D::NX);
-  gp_Ax2                   A1(P1, D1);
-  BRepPrimAPI_MakeCylinder mkCyl(A1, 20, 100);
-  TopoDS_Shape             cyl = mkCyl.Shape();
-  if (index < argc)
-    DBRep::Set(argv[index++], cyl);
-
-  BRepPrimAPI_MakeSphere sphere(P1, 20.0);
-  TopoDS_Shape           sph = sphere.Shape();
-  if (index < argc)
-    DBRep::Set(argv[index++], sph);
-
-  di << "All primitives created.....  Creating Boolean\n";
-
-  try
-  {
-    OCC_CATCH_SIGNALS
-
-    di << "fuse = BRepAlgoAPI_Fuse(cyl, sph)\n";
-    TopoDS_Shape fuse = BRepAlgoAPI_Fuse(cyl, sph).Shape();
-
-    di << "Fuse Created !    Triangulating !\n";
-    if (index < argc)
-      DBRep::Set(argv[index++], fuse);
-
-    performTriangulation(fuse, di);
-  }
-  catch (Standard_Failure const&)
-  {
-    di << "*********************************************************\n";
-    di << "*****                                              ******\n";
-    di << "***** Standard_Failure : Exception in YOU Function ******\n";
-    di << "*****                                              ******\n";
-    di << "*********************************************************\n";
-    return 1;
-  }
-  return 0;
-}
 
 #include <NCollection_Array2.hxx>
 #include <GeomConvert.hxx>
@@ -822,206 +598,12 @@ static int OCC825(Draw_Interpretor& di, int argc, const char** argv)
 //  OCC826
 //=======================================================================
 
-static int OCC826(Draw_Interpretor& di, int argc, const char** argv)
-{
-  if (argc != 4)
-  {
-    di << "Usage : " << argv[0] << " name1 name2 result\n";
-    return 1;
-  }
-
-  int index = 1;
-
-  double x1 = 181.82808;
-  double x2 = 202.39390;
-  double y1 = 31.011970;
-  double y2 = 123.06856;
-
-  BRepBuilderAPI_MakePolygon W1;
-  W1.Add(gp_Pnt(x1, y1, 0));
-  W1.Add(gp_Pnt(x2, y1, 0));
-  W1.Add(gp_Pnt(x2, y2, 0));
-  W1.Add(gp_Pnt(x1, y2, 0));
-  W1.Add(gp_Pnt(x1, y1, 0));
-
-  bool        myFalse = false;
-  TopoDS_Face F1      = BRepBuilderAPI_MakeFace(W1.Wire(), myFalse);
-
-  gp_Pnt       P1(0, 0, 0);
-  gp_Dir       D1(0, 30, 0);
-  gp_Ax1       A1(P1, D1);
-  double       angle1 = 360 * (M_PI / 180.0);
-  TopoDS_Shape rev    = BRepPrimAPI_MakeRevol(F1, A1, angle1);
-  if (index < argc)
-    DBRep::Set(argv[index++], rev);
-
-  BRepPrimAPI_MakeSphere sphere(gp_Pnt(166.373, 77.0402, 96.0555), 23.218586);
-  TopoDS_Shape           sph = sphere.Shape();
-  if (index < argc)
-    DBRep::Set(argv[index++], sph);
-
-  di << "All primitives created.....  Creating Boolean\n";
-
-  try
-  {
-    OCC_CATCH_SIGNALS
-
-    di << "fuse = BRepAlgoAPI_Fuse(rev, sph)\n";
-    TopoDS_Shape fuse = BRepAlgoAPI_Fuse(rev, sph).Shape();
-
-    if (index < argc)
-      DBRep::Set(argv[index++], fuse);
-    di << "Fuse Created !   Triangulating !\n";
-    performTriangulation(fuse, di);
-  }
-  catch (Standard_Failure const&)
-  {
-    di << "*********************************************************\n";
-    di << "*****                                              ******\n";
-    di << "***** Standard_Failure : Exception in SPH Function ******\n";
-    di << "*****                                              ******\n";
-    di << "*********************************************************\n";
-    return 1;
-  }
-  return 0;
-}
-
-#include <BRepPrimAPI_MakeTorus.hxx>
-
 //=======================================================================
 //  OCC827
 //=======================================================================
 
-static int OCC827(Draw_Interpretor& di, int argc, const char** argv)
-{
-  if (argc != 6)
-  {
-    di << "Usage : " << argv[0] << " name1 name2 name3 result1 result2\n";
-    return 1;
-  }
-
-  int index = 1;
-
-  BRepBuilderAPI_MakePolygon W1;
-  W1.Add(gp_Pnt(10, 0, 0));
-  W1.Add(gp_Pnt(20, 0, 0));
-  W1.Add(gp_Pnt(20, 0, 50));
-  W1.Add(gp_Pnt(10, 0, 50));
-  W1.Add(gp_Pnt(10, 0, 0));
-
-  bool        myFalse = false;
-  TopoDS_Face F1      = BRepBuilderAPI_MakeFace(W1.Wire(), myFalse);
-
-  gp_Pnt       P1(0, 0, 0);
-  gp_Dir       D1(0, 0, 30);
-  gp_Ax1       A1(P1, D1);
-  double       angle1 = 360 * (M_PI / 180.0);
-  TopoDS_Shape rev    = BRepPrimAPI_MakeRevol(F1, A1, angle1);
-  if (index < argc)
-    DBRep::Set(argv[index++], rev);
-
-  gp_Pnt                P2(0, 0, 50);
-  gp_Dir                D2(0, 0, 30);
-  gp_Ax2                A2(P2, D2);
-  double                majRad = 15;
-  double                minRad = 5;
-  BRepPrimAPI_MakeTorus Torus1(A2, majRad, minRad);
-  TopoDS_Shape          tor1 = Torus1.Shape();
-  if (index < argc)
-    DBRep::Set(argv[index++], tor1);
-
-  gp_Pnt                P3(0, 0, 10);
-  gp_Dir                D3(0, 0, 30);
-  gp_Ax2                A3(P3, D3);
-  BRepPrimAPI_MakeTorus Torus2(A3, majRad, minRad);
-  TopoDS_Shape          tor2 = Torus2.Shape();
-  if (index < argc)
-    DBRep::Set(argv[index++], tor2);
-
-  di << "All primitives created.....  Creating Boolean\n";
-
-  try
-  {
-    OCC_CATCH_SIGNALS
-
-    di << "Fuse1 = BRepAlgoAPI_Fuse(tor1, rev)\n";
-    TopoDS_Shape fuse1 = BRepAlgoAPI_Fuse(tor1, rev).Shape();
-
-    if (index < argc)
-      DBRep::Set(argv[index++], fuse1);
-    di << "Fuse1 Created !    Creating Fuse 2\n";
-
-    di << "Fuse2 = BRepAlgoAPI_Fuse(tor2, fuse1)\n";
-    TopoDS_Shape fuse2 = BRepAlgoAPI_Fuse(tor2, fuse1).Shape();
-
-    if (index < argc)
-      DBRep::Set(argv[index++], fuse2);
-    di << "Fuse2 Created !    Triangulating !\n";
-
-    performTriangulation(fuse2, di);
-  }
-  catch (Standard_Failure const&)
-  {
-    di << "*********************************************************\n";
-    di << "*****                                              ******\n";
-    di << "***** Standard_Failure : Exception in REV Function ******\n";
-    di << "*****                                              ******\n";
-    di << "*********************************************************\n";
-    return 1;
-  }
-  return 0;
-}
-
 //=======================================================================
 //  performBlend
-//=======================================================================
-
-int performBlend(const TopoDS_Shape& aShape, double rad, TopoDS_Shape& bShape, Draw_Interpretor& di)
-{
-  int          status = 0;
-  TopoDS_Shape newShape;
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-    edgemap;
-  TopExp::MapShapesAndAncestors(aShape, TopAbs_EDGE, TopAbs_SOLID, edgemap);
-  di << "Blending All Edges: No. of Edges: " << edgemap.Extent() << "\n";
-  ChFi3d_FilletShape       FShape = ChFi3d_Rational;
-  BRepFilletAPI_MakeFillet blend(aShape, FShape);
-  for (int i = 1; i <= edgemap.Extent(); i++)
-  {
-    TopoDS_Edge edg = TopoDS::Edge(edgemap.FindKey(i));
-    if (!edg.IsNull())
-      blend.Add(rad, edg);
-  }
-
-  try
-  {
-    OCC_CATCH_SIGNALS
-    blend.Build();
-    if (!blend.HasResult() || blend.Shape().IsNull())
-    {
-      status = 1;
-    }
-  }
-  catch (Standard_Failure const&)
-  {
-    status = 1;
-  }
-  if (status)
-  {
-    di << "*******************************************************\n";
-    di << "******                                          *******\n";
-    di << "****** Blending Failed (Radius = " << rad << ") *******\n";
-    di << "******                                          *******\n";
-    di << "*******************************************************\n";
-    return 1;
-  }
-  else
-  {
-    di << "Blending successfully performed on all Edges: \n\n";
-  }
-  bShape = blend.Shape();
-  return 0;
-}
 
 #include <GC_MakeSegment.hxx>
 
@@ -1138,13 +720,7 @@ void QABugs::Commands_10(Draw_Interpretor& theCommands)
                   group);
   theCommands.Add("OCC486", "Use : OCC486 surf x y z du dv ", __FILE__, OCC486, group);
   theCommands.Add("OCC712", "OCC712 draftAngle slabThick", __FILE__, OCC712, group);
-  theCommands.Add("OCC822_1", "OCC822_1 name1 name2 result", __FILE__, OCC822_1, group);
-  theCommands.Add("OCC822_2", "OCC822_2 name1 name2 result", __FILE__, OCC822_2, group);
-  theCommands.Add("OCC823", "OCC823 name1 name2 result", __FILE__, OCC823, group);
-  theCommands.Add("OCC824", "OCC824 name1 name2 result", __FILE__, OCC824, group);
   theCommands.Add("OCC825", "OCC825 name1 name2 name3 name4 name5", __FILE__, OCC825, group);
-  theCommands.Add("OCC826", "OCC826 name1 name2 result", __FILE__, OCC826, group);
-  theCommands.Add("OCC827", "OCC827 name1 name2 name3 result1 result2", __FILE__, OCC827, group);
   theCommands.Add("OCC828", "OCC828 redius shape result ", __FILE__, OCC828, group);
 
   return;

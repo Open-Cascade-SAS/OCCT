@@ -1252,63 +1252,6 @@ static int OCC369(Draw_Interpretor& di, int argc, const char** argv)
 #include <math_Matrix.hxx>
 #include <math_Vector.hxx>
 
-static int OCC524(Draw_Interpretor& di, int argc, const char** argv)
-{
-  if (argc != 9)
-  {
-    di << "Usage : " << argv[0]
-       << " LowerVector UpperVector InitialValueVector LowerRowMatrix UpperRowMatrix "
-          "LowerColMatrix UpperColMatrix InitialValueMatrix\n";
-    return 1;
-  }
-  int    LowerVector        = Draw::Atoi(argv[1]);
-  int    UpperVector        = Draw::Atoi(argv[2]);
-  double InitialValueVector = Draw::Atof(argv[3]);
-  int    LowerRowMatrix     = Draw::Atoi(argv[4]);
-  int    UpperRowMatrix     = Draw::Atoi(argv[5]);
-  int    LowerColMatrix     = Draw::Atoi(argv[6]);
-  int    UpperColMatrix     = Draw::Atoi(argv[7]);
-  double InitialValueMatrix = Draw::Atof(argv[8]);
-
-  math_Vector Vector1(LowerVector, UpperVector);
-  math_Vector Vector2(LowerVector, UpperVector);
-
-  math_Vector Vector(LowerVector, UpperVector, InitialValueVector);
-  math_Matrix Matrix(LowerRowMatrix,
-                     UpperRowMatrix,
-                     LowerColMatrix,
-                     UpperColMatrix,
-                     InitialValueMatrix);
-
-  // Vector.Dump(std::cout);
-  // std::cout<<std::endl;
-
-  // Matrix.Dump(std::cout);
-  // std::cout<<std::endl;
-
-  Vector1.Multiply(Vector, Matrix);
-
-  // Vector1.Dump(std::cout);
-  Standard_SStream aSStream1;
-  Vector1.Dump(aSStream1);
-  di << aSStream1;
-  di << "\n";
-
-  if (Matrix.RowNumber() > 1)
-  {
-    Matrix(Matrix.LowerRow() + 1, Matrix.LowerCol()) += 1.;
-  }
-  Vector2.TMultiply(Vector, Matrix);
-
-  // Vector2.Dump(std::cout);
-  Standard_SStream aSStream2;
-  Vector2.Dump(aSStream2);
-  di << aSStream2;
-  di << "\n";
-
-  return 0;
-}
-
 #include <GeomPlate_BuildPlateSurface.hxx>
 
 //=================================================================================================
@@ -1965,50 +1908,6 @@ static int OCC5739_UniAbs(Draw_Interpretor& di, int argc, const char** argv)
   }
   delete adapCurve;
   return res;
-}
-
-static int OCC6046(Draw_Interpretor& di, int argc, const char** argv)
-{
-  if (argc != 3)
-  {
-    di << "Usage : " << argv[0] << " nb_of_vectors size\n";
-    return 1;
-  }
-
-  int           nb  = Draw::Atoi(argv[1]);
-  int           sz  = Draw::Atoi(argv[2]);
-  double        val = 10;
-  math_Vector** pv  = new math_Vector*[nb];
-
-  di << "creating " << nb << " vectors " << sz << " elements each...\n";
-  int i;
-  for (i = 0; i < nb; i++)
-  {
-    pv[i] = new math_Vector(1, sz, val);
-    if ((i % (nb / 10)) == 0)
-    {
-      di << " " << i;
-      // std::cout.flush();
-      di << "\n";
-    }
-  }
-  di << " done\n";
-  di << "deleting them ...\n";
-  for (i = 0; i < nb; i++)
-  {
-    delete pv[i];
-    if ((i % (nb / 10)) == 0)
-    {
-      di << " " << i;
-      // std::cout.flush();
-      di << "\n";
-    }
-  }
-  di << " done\n";
-
-  delete[] pv;
-
-  return 0;
 }
 
 static int OCC5698(Draw_Interpretor& di, int argc, const char** argv)
@@ -2845,99 +2744,6 @@ static int OCC10138(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-static int OCC7639(Draw_Interpretor& di, int argc, const char** argv)
-{
-  bool IsEvenArgc = true;
-  IsEvenArgc      = argc % 2 == 0;
-
-  if (argc < 3 || IsEvenArgc)
-  {
-    di << "Usage : " << argv[0] << " index1 value1 ... [indexN valueN]\n";
-    return 1;
-  }
-
-  int                           i, aValue, aPosition;
-  NCollection_DynamicArray<int> vec;
-  for (i = 0; i < argc - 1; i++)
-  {
-    i++;
-    aValue    = Draw::Atoi(argv[i]);
-    aPosition = Draw::Atoi(argv[i + 1]);
-    vec.SetValue(aValue, aPosition);
-  }
-  NCollection_DynamicArray<int>::Iterator it(vec);
-  int                                     j;
-  for (j = 0; it.More(); it.Next(), j++)
-  {
-    // di << it.Value() << "\n";
-    di << j << " " << it.Value() << "\n";
-  }
-
-  return 0;
-}
-
-static int OCC8797(Draw_Interpretor& di, int argc, const char** argv)
-{
-  if (argc != 1)
-  {
-    di << "Usage : " << argv[0] << "\n";
-    return 1;
-  }
-
-  gp_Pnt point(0.0, 0.0, 0.0);
-
-  NCollection_Array1<gp_Pnt> poles(0, 6);
-  poles(0) = point;
-
-  point.SetCoord(1.0, 1.0, 0.0);
-  poles(1) = point;
-
-  point.SetCoord(2.0, 1.0, 0.0);
-  poles(2) = point;
-
-  point.SetCoord(3.0, 0.0, 0.0);
-  poles(3) = point;
-
-  point.SetCoord(4.0, 1.0, 0.0);
-  poles(4) = point;
-
-  point.SetCoord(5.0, 1.0, 0.0);
-  poles(5) = point;
-
-  point.SetCoord(6.0, 0.0, 0.0);
-  poles(6) = point;
-
-  NCollection_Array1<double> knots(0, 2);
-  knots(0) = 0.0;
-  knots(1) = 0.5;
-  knots(2) = 1.0;
-
-  NCollection_Array1<int> multi(0, 2);
-  multi(0) = 4;
-  multi(1) = 3;
-  multi(2) = 4;
-
-  occ::handle<Geom_BSplineCurve> spline = new Geom_BSplineCurve(poles, knots, multi, 3);
-
-  // length!! 1.
-  double               l_abcissa, l_gprop;
-  GeomAdaptor_Curve    adaptor_spline(spline);
-  GCPnts_AbscissaPoint temp;
-  l_abcissa = GCPnts_AbscissaPoint::Length(adaptor_spline);
-  std::cout << "Length Spline(abcissa_Pnt): " << l_abcissa << std::endl;
-
-  // length!! 2.
-  TopoDS_Edge  edge = BRepBuilderAPI_MakeEdge(spline);
-  GProp_GProps prop;
-  BRepGProp::LinearProperties(edge, prop);
-  l_gprop = prop.Mass();
-  std::cout << "Length Spline(GProp_GProps): " << l_gprop << std::endl;
-
-  std::cout << "Difference (abcissa_Pnt<->GProp_GProps): " << l_gprop - l_abcissa << std::endl;
-
-  return 0;
-}
-
 static int OCC7068(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 1)
@@ -3071,26 +2877,6 @@ int OCC14376(Draw_Interpretor& di, int argc, const char** argv)
     di << argv[0] << " : OK\n";
     di << "NbNodes=" << aTriang->NbNodes() << "\n";
     di << "NbTriangles=" << aTriang->NbTriangles() << "\n";
-  }
-  return 0;
-}
-
-static int OCC15489(Draw_Interpretor& di, int argc, const char** argv)
-{
-  if (argc != 4)
-  {
-    di << "Usage : " << argv[0] << " A B C\n";
-    return 1;
-  }
-  try
-  {
-    gp_Lin2d aLin2d(Draw::Atof(argv[1]), Draw::Atof(argv[2]), Draw::Atof(argv[3]));
-    gp_Pnt2d anOrigin = aLin2d.Location();
-    di << "X_0 = " << anOrigin.X() << "   Y_0 = " << anOrigin.Y() << "\n";
-  }
-  catch (Standard_ConstructionError const&)
-  {
-    di << argv[0] << " Exception: Sqrt(A*A + B*B) <= Resolution from gp\n";
   }
   return 0;
 }
@@ -4925,12 +4711,6 @@ void QABugs::Commands_11(Draw_Interpretor& theCommands)
                   OCC24,
                   group);
   theCommands.Add("OCC369", "OCC369 Shape", __FILE__, OCC369, group);
-  theCommands.Add("OCC524",
-                  "OCC524 LowerVector UpperVector InitialValueVector LowerRowMatrix UpperRowMatrix "
-                  "LowerColMatrix UpperColMatrix InitialValueMatrix",
-                  __FILE__,
-                  OCC524,
-                  group);
   // theCommands.Add("OCC578", "OCC578 shape1 shape2 shape3", __FILE__, OCC578, group);
   theCommands.Add("OCC578", "OCC578 shape1 shape2 shape3", __FILE__, OCC578, group);
   theCommands.Add("OCC708",
@@ -4978,7 +4758,6 @@ void QABugs::Commands_11(Draw_Interpretor& theCommands)
 
   theCommands.Add("OCC1077", "OCC1077 result", __FILE__, OCC1077, group);
   theCommands.Add("OCC5739", "OCC5739 name shape step", __FILE__, OCC5739_UniAbs, group);
-  theCommands.Add("OCC6046", "OCC6046 nb_of_vectors size", __FILE__, OCC6046, group);
   theCommands.Add("OCC5698", "OCC5698 wire", __FILE__, OCC5698, group);
   theCommands.Add("OCC6143", "OCC6143 catching signals", __FILE__, OCC6143, group);
   theCommands.Add("OCC30762", "OCC30762 printing backtrace", __FILE__, OCC30762, group);
@@ -4986,8 +4765,6 @@ void QABugs::Commands_11(Draw_Interpretor& theCommands)
   theCommands.Add("OCC7372", "OCC7372", __FILE__, OCC7372, group);
   theCommands.Add("OCC8169", "OCC8169 edge1 edge2 plane", __FILE__, OCC8169, group);
   theCommands.Add("OCC10138", "OCC10138 lower upper", __FILE__, OCC10138, group);
-  theCommands.Add("OCC7639", "OCC7639 index1 value1 ... [indexN valueN]", __FILE__, OCC7639, group);
-  theCommands.Add("OCC8797", "OCC8797", __FILE__, OCC8797, group);
   theCommands.Add("OCC7068", "OCC7068", __FILE__, OCC7068, group);
   theCommands.Add("OCC11457",
                   "OCC11457 polygon lastedge x1 y1 z1 x2 y2 z2 ...",
@@ -5000,7 +4777,6 @@ void QABugs::Commands_11(Draw_Interpretor& theCommands)
                   OCC13963,
                   group);
   theCommands.Add("OCC14376", "OCC14376 shape [deflection]", __FILE__, OCC14376, group);
-  theCommands.Add("OCC15489", "OCC15489 A B C", __FILE__, OCC15489, group);
   theCommands.Add("OCC15755", "OCC15755 file shape", __FILE__, OCC15755, group);
   theCommands.Add("OCC16782", "OCC16782 file.std file.xml file.cbf", __FILE__, OCC16782, group);
   theCommands.Add("OCC12584", "OCC12584 [mode = 0/1/2]", __FILE__, OCC12584, group);
