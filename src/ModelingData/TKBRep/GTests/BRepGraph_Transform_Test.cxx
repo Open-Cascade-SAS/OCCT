@@ -42,7 +42,9 @@ TEST(BRepGraph_TransformTest, TranslateBox_FaceCount)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes1 = BRepGraph_Builder::Add(aGraph, aBox);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes1 =
+    BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
   gp_Trsf aTrsf;
@@ -64,7 +66,9 @@ TEST(BRepGraph_TransformTest, TranslateBox_AreaPreserved)
   const double anOrigArea = aOrigProps.Mass();
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes2 = BRepGraph_Builder::Add(aGraph, aBox);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes2 =
+    BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
   gp_Trsf aTrsf;
@@ -93,7 +97,9 @@ TEST(BRepGraph_TransformTest, TranslateBox_VertexPointsShifted)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes3 = BRepGraph_Builder::Add(aGraph, aBox);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes3 =
+    BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Topo().Vertices().Nb(), 0);
 
@@ -126,7 +132,9 @@ TEST(BRepGraph_TransformTest, LocationOnly_NoCopyGeom)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes4 = BRepGraph_Builder::Add(aGraph, aBox);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes4 =
+    BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Topo().Vertices().Nb(), 0);
 
@@ -185,7 +193,9 @@ TEST(BRepGraph_TransformTest, TransformSingleFace)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes5 = BRepGraph_Builder::Add(aGraph, aBox);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes5 =
+    BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Topo().Faces().Nb(), 0);
 

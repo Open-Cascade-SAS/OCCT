@@ -93,7 +93,9 @@ TEST(BRepGraph_BenchmarkTest, Smoke_BuildReconstructAndAdjacency)
   const TopoDS_Compound aFaces = makeFaceCloud(120);
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes1 = BRepGraph_Builder::Add(aGraph, aFaces);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes1 =
+    BRepGraph_Builder::Add(aGraph, aFaces);
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Topo().Faces().Nb(), 0);
 
@@ -112,7 +114,9 @@ TEST(BRepGraph_BenchmarkTest, DISABLED_Build_100Faces)
   const TopoDS_Compound aFaces = makeFaceCloud(100);
   const double          aAvg   = runBenchmark("Build 100 faces", [&]() {
     BRepGraph aGraph;
-    aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes2 = BRepGraph_Builder::Add(aGraph, aFaces);
+    aGraph.Clear();
+    [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes2 =
+      BRepGraph_Builder::Add(aGraph, aFaces);
     EXPECT_TRUE(aGraph.IsDone());
   });
   EXPECT_GT(aAvg, 0.0);
@@ -123,7 +127,9 @@ TEST(BRepGraph_BenchmarkTest, DISABLED_Build_1000Faces)
   const TopoDS_Compound aFaces = makeFaceCloud(1000);
   const double          aAvg   = runBenchmark("Build 1000 faces", [&]() {
     BRepGraph aGraph;
-    aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes3 = BRepGraph_Builder::Add(aGraph, aFaces);
+    aGraph.Clear();
+    [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes3 =
+      BRepGraph_Builder::Add(aGraph, aFaces);
     EXPECT_TRUE(aGraph.IsDone());
   });
   EXPECT_GT(aAvg, 0.0);
@@ -134,7 +140,9 @@ TEST(BRepGraph_BenchmarkTest, DISABLED_Build_10000Faces)
   const TopoDS_Compound aFaces = makeFaceCloud(10000);
   const double          aAvg   = runBenchmark("Build 10000 faces", [&]() {
     BRepGraph aGraph;
-    aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes4 = BRepGraph_Builder::Add(aGraph, aFaces);
+    aGraph.Clear();
+    [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes4 =
+      BRepGraph_Builder::Add(aGraph, aFaces);
     EXPECT_TRUE(aGraph.IsDone());
   });
   EXPECT_GT(aAvg, 0.0);
@@ -145,7 +153,9 @@ TEST(BRepGraph_BenchmarkTest, DISABLED_Build_1000Faces_Parallel)
   const TopoDS_Compound aFaces = makeFaceCloud(1000);
   const double          aAvg   = runBenchmark("Build 1000 faces parallel", [&]() {
     BRepGraph aGraph;
-    aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes5 = BRepGraph_Builder::Add(aGraph, aFaces, BRepGraph_Builder::Options{ {}, true, false, true });
+    aGraph.Clear();
+    [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes5 =
+      BRepGraph_Builder::Add(aGraph, aFaces, BRepGraph_Builder::Options{{}, true, false, true});
     EXPECT_TRUE(aGraph.IsDone());
   });
   EXPECT_GT(aAvg, 0.0);
@@ -156,7 +166,9 @@ TEST(BRepGraph_BenchmarkTest, DISABLED_Build_10000Faces_Parallel)
   const TopoDS_Compound aFaces = makeFaceCloud(10000);
   const double          aAvg   = runBenchmark("Build 10000 faces parallel", [&]() {
     BRepGraph aGraph;
-    aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes6 = BRepGraph_Builder::Add(aGraph, aFaces, BRepGraph_Builder::Options{ {}, true, false, true });
+    aGraph.Clear();
+    [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes6 =
+      BRepGraph_Builder::Add(aGraph, aFaces, BRepGraph_Builder::Options{{}, true, false, true});
     EXPECT_TRUE(aGraph.IsDone());
   });
   EXPECT_GT(aAvg, 0.0);
@@ -166,7 +178,9 @@ TEST(BRepGraph_BenchmarkTest, DISABLED_Reconstruct_RoundTrip)
 {
   const TopoDS_Compound aFaces = makeFaceCloud(10000);
   BRepGraph             aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes7 = BRepGraph_Builder::Add(aGraph, aFaces);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes7 =
+    BRepGraph_Builder::Add(aGraph, aFaces);
   ASSERT_TRUE(aGraph.IsDone());
 
   const int aNbFaces = aGraph.Topo().Faces().Nb();
@@ -190,7 +204,9 @@ TEST(BRepGraph_BenchmarkTest, DISABLED_SpatialQuery_Throughput)
 {
   const TopoDS_Compound aFaces = makeFaceCloud(10000);
   BRepGraph             aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes8 = BRepGraph_Builder::Add(aGraph, aFaces);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes8 =
+    BRepGraph_Builder::Add(aGraph, aFaces);
   ASSERT_TRUE(aGraph.IsDone());
 
   const int aNbFaces = aGraph.Topo().Faces().Nb();

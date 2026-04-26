@@ -202,9 +202,9 @@ void BRepGraph_Builder::populateUIDs(BRepGraph& theGraph)
 
 //=================================================================================================
 
-void BRepGraph_Builder::appendImpl(BRepGraph&                                 theGraph,
-                                   const TopoDS_Shape&                        theShape,
-                                   const Options&                             theOptions,
+void BRepGraph_Builder::appendImpl(BRepGraph&                                  theGraph,
+                                   const TopoDS_Shape&                         theShape,
+                                   const Options&                              theOptions,
                                    NCollection_DynamicArray<BRepGraph_NodeId>* theOutFlatRoots)
 {
   BRepGraphInc_Storage& aStorage        = theGraph.myData->myIncStorage;
@@ -293,8 +293,7 @@ void BRepGraph_Builder::appendImpl(BRepGraph&                                 th
 
 //=================================================================================================
 
-BRepGraph_Builder::Result BRepGraph_Builder::Add(BRepGraph&          theGraph,
-                                                 const TopoDS_Shape& theShape)
+BRepGraph_Builder::Result BRepGraph_Builder::Add(BRepGraph& theGraph, const TopoDS_Shape& theShape)
 {
   return Add(theGraph, theShape, Options{});
 }
@@ -328,8 +327,8 @@ BRepGraph_Builder::Result BRepGraph_Builder::Add(BRepGraph&          theGraph,
                                                                aResult.TopologyRoot,
                                                                theShape.Location(),
                                                                /*registerAsRoot*/ true);
-    aResult.Product    = aBundle.Product;
-    aResult.Occurrence = aBundle.Occurrence;
+    aResult.Product             = aBundle.Product;
+    aResult.Occurrence          = aBundle.Occurrence;
     theGraph.myData->myIncStorage.BuildReverseIndex();
   }
 
@@ -337,16 +336,16 @@ BRepGraph_Builder::Result BRepGraph_Builder::Add(BRepGraph&          theGraph,
   {
     BRepGraphInc_Storage& aStorage = theGraph.myData->myIncStorage;
     int                   aCounts[BRepGraph_TransientCache::THE_KIND_COUNT] = {};
-    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Vertex)]    = aStorage.NbVertices();
-    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Edge)]      = aStorage.NbEdges();
-    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::CoEdge)]    = aStorage.NbCoEdges();
-    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Wire)]      = aStorage.NbWires();
-    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Face)]      = aStorage.NbFaces();
-    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Shell)]     = aStorage.NbShells();
-    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Solid)]     = aStorage.NbSolids();
-    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Compound)]  = aStorage.NbCompounds();
-    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::CompSolid)] = aStorage.NbCompSolids();
-    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Product)]   = aStorage.NbProducts();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Vertex)]               = aStorage.NbVertices();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Edge)]                 = aStorage.NbEdges();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::CoEdge)]               = aStorage.NbCoEdges();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Wire)]                 = aStorage.NbWires();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Face)]                 = aStorage.NbFaces();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Shell)]                = aStorage.NbShells();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Solid)]                = aStorage.NbSolids();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Compound)]   = aStorage.NbCompounds();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::CompSolid)]  = aStorage.NbCompSolids();
+    aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Product)]    = aStorage.NbProducts();
     aCounts[static_cast<int>(BRepGraph_NodeId::Kind::Occurrence)] = aStorage.NbOccurrences();
     int       aReservedKindCount   = BRepGraph_TransientCache::THE_DEFAULT_RESERVED_KIND_COUNT;
     const int aRegisteredKindCount = BRepGraph_CacheKindRegistry::NbRegistered();
@@ -357,8 +356,8 @@ BRepGraph_Builder::Result BRepGraph_Builder::Add(BRepGraph&          theGraph,
     theGraph.myTransientCache.Reserve(aReservedKindCount, aCounts);
   }
 
-  aResult.Ok = aResult.TopologyRoot.IsValid()
-               || (theOptions.CreateAutoProduct && aResult.Product.IsValid());
+  aResult.Ok =
+    aResult.TopologyRoot.IsValid() || (theOptions.CreateAutoProduct && aResult.Product.IsValid());
   return aResult;
 }
 
@@ -384,7 +383,7 @@ BRepGraph_Builder::Result BRepGraph_Builder::Add(BRepGraph&             theGraph
 
   const uint32_t anOldCount = snapshotCountForKind(theGraph, theShape.ShapeType());
 
-  Options anInner          = theOptions;
+  Options anInner           = theOptions;
   anInner.CreateAutoProduct = false;
 
   NCollection_DynamicArray<BRepGraph_NodeId> aFlatRoots;
@@ -404,9 +403,9 @@ BRepGraph_Builder::Result BRepGraph_Builder::Add(BRepGraph&             theGraph
   {
     case BRepGraph_NodeId::Kind::Product: {
       const ProductBundle aBundle = createRootProductForTopology(theGraph,
-                                                                  aResult.TopologyRoot,
-                                                                  TopLoc_Location(),
-                                                                  /*registerAsRoot*/ false);
+                                                                 aResult.TopologyRoot,
+                                                                 TopLoc_Location(),
+                                                                 /*registerAsRoot*/ false);
       if (!aBundle.Product.IsValid())
         return aResult;
 
@@ -448,9 +447,7 @@ BRepGraph_Builder::Result BRepGraph_Builder::Add(BRepGraph&             theGraph
         return aResult;
       }
       const BRepGraph_ChildRefId aRid =
-        theGraph.Editor().Shells().AddChild(aShell,
-                                            aResult.TopologyRoot,
-                                            theShape.Orientation());
+        theGraph.Editor().Shells().AddChild(aShell, aResult.TopologyRoot, theShape.Orientation());
       if (!aRid.IsValid())
         return aResult;
       aResult.InsertedRef = BRepGraph_RefId(aRid);
@@ -472,9 +469,7 @@ BRepGraph_Builder::Result BRepGraph_Builder::Add(BRepGraph&             theGraph
         return aResult;
       }
       const BRepGraph_ChildRefId aRid =
-        theGraph.Editor().Solids().AddChild(aSolid,
-                                            aResult.TopologyRoot,
-                                            theShape.Orientation());
+        theGraph.Editor().Solids().AddChild(aSolid, aResult.TopologyRoot, theShape.Orientation());
       if (!aRid.IsValid())
         return aResult;
       aResult.InsertedRef = BRepGraph_RefId(aRid);

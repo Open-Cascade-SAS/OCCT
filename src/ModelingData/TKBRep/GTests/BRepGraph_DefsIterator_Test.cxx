@@ -99,7 +99,9 @@ protected:
   void SetUp() override
   {
     BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
-    myGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes1 = BRepGraph_Builder::Add(myGraph, aBoxMaker.Shape());
+    myGraph.Clear();
+    [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes1 =
+      BRepGraph_Builder::Add(myGraph, aBoxMaker.Shape());
   }
 
   BRepGraph myGraph;
@@ -135,7 +137,9 @@ TEST_F(BRepGraph_DefsIteratorTest, CoEdgeOfWire_YieldsCoEdgeDefinitions)
 TEST(BRepGraph_DefsIteratorTestStandalone, VertexOfEdge_IncludesInternalVertices)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes2 = BRepGraph_Builder::Add(aGraph, wrapEdgeInFace(makeEdgeWithInternalVertex()));
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes2 =
+    BRepGraph_Builder::Add(aGraph, wrapEdgeInFace(makeEdgeWithInternalVertex()));
 
   BRepGraph_EdgeId aEdgeWithInternal;
   for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
@@ -168,7 +172,9 @@ TEST(BRepGraph_DefsIteratorTestStandalone, VertexOfEdge_IncludesInternalVertices
 TEST(BRepGraph_DefsIteratorTestStandalone, VertexOfFace_EnumeratesDirectVertices)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes3 = BRepGraph_Builder::Add(aGraph, makeFaceWithDirectVertex());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes3 =
+    BRepGraph_Builder::Add(aGraph, makeFaceWithDirectVertex());
 
   ASSERT_EQ(countIterator(BRepGraph_DefsWireOfFace(aGraph, BRepGraph_FaceId::Start())), 1);
   ASSERT_EQ(countIterator(BRepGraph_DefsVertexOfFace(aGraph, BRepGraph_FaceId::Start())), 1);
@@ -217,7 +223,8 @@ TEST_F(BRepGraph_DefsIteratorTest, SolidOfCompSolid_EnumeratesDirectSolids)
 
 TEST_F(BRepGraph_DefsIteratorTest, OccurrenceOfProduct_EnumeratesDirectOccurrences)
 {
-  const BRepGraph_ProductId aPart = myGraph.Editor().Products().LinkProductToTopology(BRepGraph_SolidId::Start());
+  const BRepGraph_ProductId aPart =
+    myGraph.Editor().Products().LinkProductToTopology(BRepGraph_SolidId::Start());
   const BRepGraph_ProductId anAssembly = myGraph.Editor().Products().CreateEmptyProduct();
   ASSERT_TRUE(aPart.IsValid());
   ASSERT_TRUE(anAssembly.IsValid());

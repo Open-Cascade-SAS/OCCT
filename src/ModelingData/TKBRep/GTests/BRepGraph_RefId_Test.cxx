@@ -198,7 +198,9 @@ TEST(BRepGraph_RefIdTest, RefUID_Equality_IgnoresGeneration)
 TEST(BRepGraph_RefIdTest, RefsView_AfterBuild_HasFaceRefs)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes1 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes1 =
+    BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
   const int aFaceRefCount = aGraph.Refs().Faces().Nb();
   EXPECT_GE(aFaceRefCount, 0);
@@ -219,7 +221,9 @@ TEST(BRepGraph_RefIdTest, RefsView_AfterBuild_HasFaceRefs)
 TEST(BRepGraph_RefIdTest, RefDomain_StampGUIDGeneration_IfSupported)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes2 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes2 =
+    BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   if (aGraph.Refs().Faces().Nb() <= 0)
@@ -244,7 +248,9 @@ TEST(BRepGraph_RefIdTest, RefDomain_StampGUIDGeneration_IfSupported)
 TEST(BRepGraph_RefIdTest, RefsView_AfterBuild_CountsMatchInlineStorage)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes3 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes3 =
+    BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   EXPECT_EQ(aGraph.Refs().Faces().Nb(), countInlineFaceRefs(aGraph));
@@ -259,7 +265,9 @@ TEST(BRepGraph_RefIdTest, RefsView_AfterBuild_CountsMatchInlineStorage)
 TEST(BRepGraph_RefIdTest, RefsView_AfterBuild_UIDRoundtripAndParentKinds)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes4 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes4 =
+    BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   for (BRepGraph_FaceRefId aFaceRefId = BRepGraph_FaceRefId::Start();
@@ -396,7 +404,9 @@ TEST(BRepGraph_RefIdTest, StaleRefUID_HasReturnsFalseAndLookupBecomesInvalidAfte
   BRepPrimAPI_MakeBox aBoxMaker2(11.0, 21.0, 31.0);
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes5 = BRepGraph_Builder::Add(aGraph, aBoxMaker1.Shape());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes5 =
+    BRepGraph_Builder::Add(aGraph, aBoxMaker1.Shape());
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Refs().Faces().Nb(), 0);
 
@@ -404,7 +414,9 @@ TEST(BRepGraph_RefIdTest, StaleRefUID_HasReturnsFalseAndLookupBecomesInvalidAfte
   ASSERT_TRUE(anOldUID.IsValid());
   ASSERT_TRUE(aGraph.UIDs().Has(anOldUID));
 
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes6 = BRepGraph_Builder::Add(aGraph, aBoxMaker2.Shape());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes6 =
+    BRepGraph_Builder::Add(aGraph, aBoxMaker2.Shape());
 
   EXPECT_FALSE(aGraph.UIDs().Has(anOldUID));
   EXPECT_FALSE(aGraph.UIDs().RefIdFrom(anOldUID).IsValid());
@@ -413,7 +425,9 @@ TEST(BRepGraph_RefIdTest, StaleRefUID_HasReturnsFalseAndLookupBecomesInvalidAfte
 TEST(BRepGraph_RefIdTest, MutFaceRef_UpdatesRefStampAndParentModifiedFlag)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes7 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes7 =
+    BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   if (aGraph.Refs().Faces().Nb() <= 0)
@@ -448,7 +462,9 @@ TEST(BRepGraph_RefIdTest, MutFaceRef_UpdatesRefStampAndParentModifiedFlag)
 TEST(BRepGraph_RefIdTest, MutFaceRef_MarkRemoved_PersistsAndInvalidatesStamp)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes8 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes8 =
+    BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   if (aGraph.Refs().Faces().Nb() <= 0)
@@ -475,7 +491,9 @@ TEST(BRepGraph_RefIdTest, MutFaceRef_MarkRemoved_PersistsAndInvalidatesStamp)
 TEST(BRepGraph_RefIdTest, ChildRefs_CompoundEntriesAreValid)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes9 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes9 =
+    BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   const BRepGraph::RefsView& aRefs = aGraph.Refs();

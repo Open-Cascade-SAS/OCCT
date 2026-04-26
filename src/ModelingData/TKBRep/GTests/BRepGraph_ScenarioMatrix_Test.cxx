@@ -102,7 +102,9 @@ TEST(BRepGraph_ScenarioMatrix, Box_MutateVertex_ValidateReconstructPopulateRound
 
   // --- Build BRepGraph ---
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes1 = BRepGraph_Builder::Add(aGraph, aBox);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes1 =
+    BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
   // --- Validate clean graph (full audit) ---
@@ -192,7 +194,9 @@ TEST(BRepGraph_ScenarioMatrix, Cylinder_SeamEdge_MutationAndBothSubsystemsConsis
 
   // --- Build both representations from the original shape ---
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes2 = BRepGraph_Builder::Add(aGraph, aCyl);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes2 =
+    BRepGraph_Builder::Add(aGraph, aCyl);
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraphInc_Storage aOrigStorage;
@@ -324,7 +328,9 @@ TEST(BRepGraph_ScenarioMatrix, CompSolid_TwoBoxes_BothSubsystemsMutateReconstruc
 
   // --- BRepGraph build ---
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes3 = BRepGraph_Builder::Add(aGraph, aCompSolid);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes3 =
+    BRepGraph_Builder::Add(aGraph, aCompSolid);
   ASSERT_TRUE(aGraph.IsDone());
 
   // --- Validate(Audit) clean graph ---
@@ -376,7 +382,9 @@ TEST(BRepGraph_ScenarioMatrix, Assembly_TwoOccurrences_ValidateDAGReconstructPar
 {
   // Build the graph from a simple solid.
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes4 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(8.0, 8.0, 8.0).Shape());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes4 =
+    BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(8.0, 8.0, 8.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   const int anOrigFaces =
@@ -470,7 +478,9 @@ TEST(BRepGraph_ScenarioMatrix, Compound_FreeWireFreeEdgeFreeVertex_ValidateAndPo
 
   // --- BRepGraph build ---
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes5 = BRepGraph_Builder::Add(aGraph, aCompound);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes5 =
+    BRepGraph_Builder::Add(aGraph, aCompound);
   ASSERT_TRUE(aGraph.IsDone());
 
   EXPECT_EQ(aGraph.Topo().Compounds().Nb(), 1);
@@ -591,7 +601,9 @@ TEST(BRepGraph_ScenarioMatrix, Compound_BoxAndCylinder_MutationReconstructAreaRe
 
   // --- BRepGraph build ---
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes6 = BRepGraph_Builder::Add(aGraph, aCompound);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes6 =
+    BRepGraph_Builder::Add(aGraph, aCompound);
   ASSERT_TRUE(aGraph.IsDone());
   EXPECT_EQ(aGraph.Topo().Solids().Nb(), 2);
 
@@ -668,7 +680,9 @@ TEST(BRepGraph_ScenarioMatrix, Compound_BoxAndCylinder_MutationReconstructAreaRe
 TEST(BRepGraph_ScenarioMatrix, Assembly_ThreeLevelNesting_CleanAudit_CycleDetection)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes7 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes7 =
+    BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   // Four-level chain: Top -> Root -> Mid -> Leaf (leaf is the auto-built part).
@@ -738,7 +752,9 @@ TEST(BRepGraph_ScenarioMatrix, Assembly_ThreeLevelNesting_CleanAudit_CycleDetect
 TEST(BRepGraph_ScenarioMatrix, Assembly_SharedPartBetweenTwoRootAssemblies)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes8 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(5.0, 5.0, 5.0).Shape());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes8 =
+    BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(5.0, 5.0, 5.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   // Snapshot topology entity counts before any assembly wiring.
@@ -838,7 +854,9 @@ TEST(BRepGraph_ScenarioMatrix, Compound_MixedAtomicChildren_ReverseIndexCoverage
   aBB.Add(aCompound, aFreeVertex); // free vertex
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes9 = BRepGraph_Builder::Add(aGraph, aCompound);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes9 =
+    BRepGraph_Builder::Add(aGraph, aCompound);
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Topo().Compounds().Nb(), 0);
 
@@ -933,7 +951,9 @@ TEST(BRepGraph_ScenarioMatrix, CompSolid_ThreeBoxes_ReverseIndexPerSolid)
   aBB.Add(aCompSolid, BRepPrimAPI_MakeBox(gp_Pnt(40.0, 0.0, 0.0), 5.0, 5.0, 5.0).Shape());
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes10 = BRepGraph_Builder::Add(aGraph, aCompSolid);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes10 =
+    BRepGraph_Builder::Add(aGraph, aCompSolid);
   ASSERT_TRUE(aGraph.IsDone());
 
   EXPECT_TRUE(BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit()).IsValid())
@@ -993,7 +1013,9 @@ TEST(BRepGraph_ScenarioMatrix, Sphere_SeamCoEdgePair_Bidirectional)
 
   // Build the graph, audit, reconstruct, repopulate, re-verify bidirectionality.
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes11 = BRepGraph_Builder::Add(aGraph, aSphere);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes11 =
+    BRepGraph_Builder::Add(aGraph, aSphere);
   ASSERT_TRUE(aGraph.IsDone());
   EXPECT_TRUE(BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit()).IsValid())
     << "Sphere graph must pass full audit";
@@ -1029,7 +1051,9 @@ TEST(BRepGraph_ScenarioMatrix, Sphere_SeamCoEdgePair_Bidirectional)
 TEST(BRepGraph_ScenarioMatrix, Validate_OrphanCurve3DRep_FlaggedByAudit)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes12 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes12 =
+    BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   // Find an edge with a Curve3DRepId.
@@ -1084,7 +1108,9 @@ TEST(BRepGraph_ScenarioMatrix, Validate_OrphanCurve3DRep_FlaggedByAudit)
 TEST(BRepGraph_ScenarioMatrix, Cylinder_SeamEdgeSplit_AuditStable)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes13 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeCylinder(5.0, 15.0).Shape());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes13 =
+    BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeCylinder(5.0, 15.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   // Locate a seam edge: an edge with at least one seam-paired coedge.
@@ -1158,7 +1184,9 @@ TEST(BRepGraph_ScenarioMatrix, Cylinder_SeamEdgeSplit_AuditStable)
 TEST(BRepGraph_ScenarioMatrix, Cylinder_SeamEdgeSplit_CoEdgeFaceIncidence)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes14 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeCylinder(5.0, 15.0).Shape());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes14 =
+    BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeCylinder(5.0, 15.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph_EdgeId aSeamEdgeId;
@@ -1227,7 +1255,9 @@ TEST(BRepGraph_ScenarioMatrix, Cylinder_SeamEdgeSplit_CoEdgeFaceIncidence)
 TEST(BRepGraph_ScenarioMatrix, BoxEdgeSplit_BoundaryVertexRetirement)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes15 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes15 =
+    BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph_EdgeId anEdgeId;
@@ -1277,7 +1307,9 @@ TEST(BRepGraph_ScenarioMatrix, BoxEdgeSplit_BoundaryVertexRetirement)
 TEST(BRepGraph_ScenarioMatrix, BoxEdgeSplit_SubEdgesHaveNoOriginal)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes16 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes16 =
+    BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph_EdgeId anEdgeId;
@@ -1316,7 +1348,9 @@ TEST(BRepGraph_ScenarioMatrix, BoxEdgeSplit_SubEdgesHaveNoOriginal)
 TEST(BRepGraph_ScenarioMatrix, BoxEdgeSplit_ShapeReconstructsSubEdge)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes17 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes17 =
+    BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph_EdgeId anEdgeId;
@@ -1350,7 +1384,9 @@ TEST(BRepGraph_ScenarioMatrix, BoxEdgeSplit_ShapeReconstructsSubEdge)
 TEST(BRepGraph_ScenarioMatrix, EditorAddedVertex_HasNoOriginal)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes18 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes18 =
+    BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   const BRepGraph_VertexId aFreshVertex =

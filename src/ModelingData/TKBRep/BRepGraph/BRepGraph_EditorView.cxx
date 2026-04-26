@@ -948,8 +948,7 @@ BRepGraph_ChildRefId BRepGraph::EditorView::CompoundOps::AddChild(
   const TopAbs_Orientation   theOri)
 {
   BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
-  if (!isActiveNode(aStorage, theCompoundEntity)
-      || !isActiveTopologyNode(aStorage, theChildEntity))
+  if (!isActiveNode(aStorage, theCompoundEntity) || !isActiveTopologyNode(aStorage, theChildEntity))
   {
     return BRepGraph_ChildRefId();
   }

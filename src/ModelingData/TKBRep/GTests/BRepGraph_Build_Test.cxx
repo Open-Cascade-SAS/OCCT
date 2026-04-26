@@ -91,7 +91,9 @@ TEST(BRepGraph_BuildTest, Sphere_IsDone)
   ASSERT_TRUE(aMaker.IsDone());
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes1 = BRepGraph_Builder::Add(aGraph, aShape);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes1 =
+    BRepGraph_Builder::Add(aGraph, aShape);
   EXPECT_TRUE(aGraph.IsDone());
 }
 
@@ -101,7 +103,9 @@ TEST(BRepGraph_BuildTest, Sphere_DefCounts_MatchTopExp)
   const TopoDS_Shape     aShape = aMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes2 = BRepGraph_Builder::Add(aGraph, aShape);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes2 =
+    BRepGraph_Builder::Add(aGraph, aShape);
   ASSERT_TRUE(aGraph.IsDone());
 
   EXPECT_EQ(aGraph.Topo().Solids().Nb(), countUnique(aShape, TopAbs_SOLID));
@@ -118,7 +122,9 @@ TEST(BRepGraph_BuildTest, Sphere_SurfaceType)
   const TopoDS_Shape     aShape = aMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes3 = BRepGraph_Builder::Add(aGraph, aShape);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes3 =
+    BRepGraph_Builder::Add(aGraph, aShape);
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GE(aGraph.Topo().Faces().Nb(), 1);
 
@@ -141,7 +147,9 @@ TEST(BRepGraph_BuildTest, Sphere_HasDegenerateEdges)
   const TopoDS_Shape     aShape = aMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes4 = BRepGraph_Builder::Add(aGraph, aShape);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes4 =
+    BRepGraph_Builder::Add(aGraph, aShape);
   ASSERT_TRUE(aGraph.IsDone());
 
   // A sphere has degenerate edges at poles.
@@ -167,7 +175,9 @@ TEST(BRepGraph_BuildTest, Cylinder_IsDone)
   ASSERT_TRUE(aMaker.IsDone());
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes5 = BRepGraph_Builder::Add(aGraph, aShape);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes5 =
+    BRepGraph_Builder::Add(aGraph, aShape);
   EXPECT_TRUE(aGraph.IsDone());
 }
 
@@ -177,7 +187,9 @@ TEST(BRepGraph_BuildTest, Cylinder_DefCounts_MatchTopExp)
   const TopoDS_Shape       aShape = aMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes6 = BRepGraph_Builder::Add(aGraph, aShape);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes6 =
+    BRepGraph_Builder::Add(aGraph, aShape);
   ASSERT_TRUE(aGraph.IsDone());
 
   EXPECT_EQ(aGraph.Topo().Faces().Nb(), countUnique(aShape, TopAbs_FACE));
@@ -191,7 +203,9 @@ TEST(BRepGraph_BuildTest, Cylinder_SurfaceType)
   const TopoDS_Shape       aShape = aMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes7 = BRepGraph_Builder::Add(aGraph, aShape);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes7 =
+    BRepGraph_Builder::Add(aGraph, aShape);
   ASSERT_TRUE(aGraph.IsDone());
 
   bool aHasCylindrical = false;
@@ -218,7 +232,9 @@ TEST(BRepGraph_BuildTest, Cone_IsDone)
   ASSERT_TRUE(aMaker.IsDone());
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes8 = BRepGraph_Builder::Add(aGraph, aShape);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes8 =
+    BRepGraph_Builder::Add(aGraph, aShape);
   EXPECT_TRUE(aGraph.IsDone());
 }
 
@@ -228,7 +244,9 @@ TEST(BRepGraph_BuildTest, Cone_DefCounts_MatchTopExp)
   const TopoDS_Shape   aShape = aMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes9 = BRepGraph_Builder::Add(aGraph, aShape);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes9 =
+    BRepGraph_Builder::Add(aGraph, aShape);
   ASSERT_TRUE(aGraph.IsDone());
 
   EXPECT_EQ(aGraph.Topo().Faces().Nb(), countUnique(aShape, TopAbs_FACE));
@@ -242,7 +260,9 @@ TEST(BRepGraph_BuildTest, Cone_SurfaceType)
   const TopoDS_Shape   aShape = aMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes10 = BRepGraph_Builder::Add(aGraph, aShape);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes10 =
+    BRepGraph_Builder::Add(aGraph, aShape);
   ASSERT_TRUE(aGraph.IsDone());
 
   bool aHasConical = false;
@@ -265,7 +285,9 @@ TEST(BRepGraph_BuildTest, Cone_HasDegenerateEdge)
   const TopoDS_Shape   aShape = aMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes11 = BRepGraph_Builder::Add(aGraph, aShape);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes11 =
+    BRepGraph_Builder::Add(aGraph, aShape);
   ASSERT_TRUE(aGraph.IsDone());
 
   int aDegCount = 0;
@@ -290,7 +312,9 @@ TEST(BRepGraph_BuildTest, Torus_IsDone)
   ASSERT_TRUE(aMaker.IsDone());
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes12 = BRepGraph_Builder::Add(aGraph, aShape);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes12 =
+    BRepGraph_Builder::Add(aGraph, aShape);
   EXPECT_TRUE(aGraph.IsDone());
 }
 
@@ -300,7 +324,9 @@ TEST(BRepGraph_BuildTest, Torus_DefCounts_MatchTopExp)
   const TopoDS_Shape    aShape = aMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes13 = BRepGraph_Builder::Add(aGraph, aShape);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes13 =
+    BRepGraph_Builder::Add(aGraph, aShape);
   ASSERT_TRUE(aGraph.IsDone());
 
   EXPECT_EQ(aGraph.Topo().Faces().Nb(), countUnique(aShape, TopAbs_FACE));
@@ -314,7 +340,9 @@ TEST(BRepGraph_BuildTest, Torus_SurfaceType)
   const TopoDS_Shape    aShape = aMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes14 = BRepGraph_Builder::Add(aGraph, aShape);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes14 =
+    BRepGraph_Builder::Add(aGraph, aShape);
   ASSERT_TRUE(aGraph.IsDone());
 
   bool aHasToroidal = false;
@@ -341,7 +369,9 @@ TEST(BRepGraph_BuildTest, Wedge_IsDone)
   ASSERT_TRUE(aMaker.IsDone());
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes15 = BRepGraph_Builder::Add(aGraph, aShape);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes15 =
+    BRepGraph_Builder::Add(aGraph, aShape);
   EXPECT_TRUE(aGraph.IsDone());
 }
 
@@ -351,7 +381,9 @@ TEST(BRepGraph_BuildTest, Wedge_DefCounts_MatchTopExp)
   const TopoDS_Shape    aShape = aMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes16 = BRepGraph_Builder::Add(aGraph, aShape);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes16 =
+    BRepGraph_Builder::Add(aGraph, aShape);
   ASSERT_TRUE(aGraph.IsDone());
 
   EXPECT_EQ(aGraph.Topo().Solids().Nb(), countUnique(aShape, TopAbs_SOLID));
@@ -368,7 +400,9 @@ TEST(BRepGraph_BuildTest, Wedge_AllPlanarSurfaces)
   const TopoDS_Shape    aShape = aMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes17 = BRepGraph_Builder::Add(aGraph, aShape);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes17 =
+    BRepGraph_Builder::Add(aGraph, aShape);
   ASSERT_TRUE(aGraph.IsDone());
 
   for (BRepGraph_FaceIterator aFaceIt(aGraph); aFaceIt.More(); aFaceIt.Next())
@@ -400,7 +434,9 @@ TEST(BRepGraph_BuildTest, Compound_TwoPrimitives_IsDone)
   aBuilder.Add(aCompound, aSphere);
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes18 = BRepGraph_Builder::Add(aGraph, aCompound);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes18 =
+    BRepGraph_Builder::Add(aGraph, aCompound);
   EXPECT_TRUE(aGraph.IsDone());
 }
 
@@ -419,7 +455,9 @@ TEST(BRepGraph_BuildTest, Compound_TwoPrimitives_DefCountsAddUp)
   aBuilder.Add(aCompound, aSphere);
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes19 = BRepGraph_Builder::Add(aGraph, aCompound);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes19 =
+    BRepGraph_Builder::Add(aGraph, aCompound);
   ASSERT_TRUE(aGraph.IsDone());
 
   EXPECT_EQ(aGraph.Topo().Faces().Nb(), countUnique(aCompound, TopAbs_FACE));
@@ -441,7 +479,9 @@ TEST(BRepGraph_BuildTest, Compound_ThreeBoxes_DefCounts)
   }
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes20 = BRepGraph_Builder::Add(aGraph, aCompound);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes20 =
+    BRepGraph_Builder::Add(aGraph, aCompound);
   ASSERT_TRUE(aGraph.IsDone());
 
   EXPECT_EQ(aGraph.Topo().Solids().Nb(), countUnique(aCompound, TopAbs_SOLID));
@@ -468,7 +508,9 @@ TEST(BRepGraph_BuildTest, Compound_Nested_DefCounts)
   aBuilder.Add(anOuter, aCyl);
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes21 = BRepGraph_Builder::Add(aGraph, anOuter);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes21 =
+    BRepGraph_Builder::Add(aGraph, anOuter);
   ASSERT_TRUE(aGraph.IsDone());
 
   EXPECT_EQ(aGraph.Topo().Faces().Nb(), countUnique(anOuter, TopAbs_FACE));
@@ -487,7 +529,9 @@ TEST(BRepGraph_BuildTest, SinglePlanarFace_IsDone)
   const TopoDS_Shape      aShape = aFaceMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes22 = BRepGraph_Builder::Add(aGraph, aShape);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes22 =
+    BRepGraph_Builder::Add(aGraph, aShape);
   EXPECT_TRUE(aGraph.IsDone());
 }
 
@@ -498,7 +542,9 @@ TEST(BRepGraph_BuildTest, SinglePlanarFace_Counts)
   const TopoDS_Shape      aShape = aFaceMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes23 = BRepGraph_Builder::Add(aGraph, aShape);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes23 =
+    BRepGraph_Builder::Add(aGraph, aShape);
   ASSERT_TRUE(aGraph.IsDone());
 
   EXPECT_EQ(aGraph.Topo().Faces().Nb(), 1);
@@ -521,7 +567,9 @@ TEST(BRepGraph_BuildTest, SingleEdge_HandlesGracefully)
   const TopoDS_Shape aShape = anEdgeMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes24 = BRepGraph_Builder::Add(aGraph, aShape);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes24 =
+    BRepGraph_Builder::Add(aGraph, aShape);
 
   // BRepGraph is face-level; standalone edges may produce zero counts.
   // Verify it does not crash and returns consistent state.
@@ -535,7 +583,9 @@ TEST(BRepGraph_BuildTest, SingleVertex_HandlesGracefully)
   const TopoDS_Shape        aShape = aVertexMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes25 = BRepGraph_Builder::Add(aGraph, aShape);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes25 =
+    BRepGraph_Builder::Add(aGraph, aShape);
 
   // BRepGraph is face-level; standalone vertices may produce zero counts.
   EXPECT_EQ(aGraph.Topo().Faces().Nb(), 0);
@@ -552,7 +602,9 @@ TEST(BRepGraph_BuildTest, Box_FaceDefCount_MatchesTopExp)
   const TopoDS_Shape  aBox = aMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes26 = BRepGraph_Builder::Add(aGraph, aBox);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes26 =
+    BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
   EXPECT_EQ(aGraph.Topo().Faces().Nb(), countUnique(aBox, TopAbs_FACE));
@@ -565,7 +617,9 @@ TEST(BRepGraph_BuildTest, Box_EdgeDefCount_MatchesTopExp)
   const TopoDS_Shape  aBox = aMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes27 = BRepGraph_Builder::Add(aGraph, aBox);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes27 =
+    BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
   EXPECT_EQ(aGraph.Topo().Edges().Nb(), countUnique(aBox, TopAbs_EDGE));
@@ -578,7 +632,9 @@ TEST(BRepGraph_BuildTest, Box_VertexDefCount_MatchesTopExp)
   const TopoDS_Shape  aBox = aMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes28 = BRepGraph_Builder::Add(aGraph, aBox);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes28 =
+    BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
   EXPECT_EQ(aGraph.Topo().Vertices().Nb(), countUnique(aBox, TopAbs_VERTEX));
@@ -591,7 +647,9 @@ TEST(BRepGraph_BuildTest, Box_VertexPoints_MatchBRepTool)
   const TopoDS_Shape  aBox = aMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes29 = BRepGraph_Builder::Add(aGraph, aBox);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes29 =
+    BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
   // Collect all vertex points from TopExp.
@@ -628,7 +686,9 @@ TEST(BRepGraph_BuildTest, Box_FaceTolerances_MatchBRepTool)
   const TopoDS_Shape  aBox = aMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes30 = BRepGraph_Builder::Add(aGraph, aBox);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes30 =
+    BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aFaceMap;
@@ -661,7 +721,9 @@ TEST(BRepGraph_BuildTest, Box_EdgeTolerances_MatchBRepTool)
   const TopoDS_Shape  aBox = aMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes31 = BRepGraph_Builder::Add(aGraph, aBox);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes31 =
+    BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> anEdgeMap;
@@ -693,7 +755,9 @@ TEST(BRepGraph_BuildTest, Box_AllSurfacesArePlanes)
   const TopoDS_Shape  aBox = aMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes32 = BRepGraph_Builder::Add(aGraph, aBox);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes32 =
+    BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
   ASSERT_EQ(aGraph.Topo().Faces().Nb(), 6);
@@ -713,7 +777,9 @@ TEST(BRepGraph_BuildTest, Box_NoDegenerateEdges)
   const TopoDS_Shape  aBox = aMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes33 = BRepGraph_Builder::Add(aGraph, aBox);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes33 =
+    BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
   for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
@@ -729,7 +795,9 @@ TEST(BRepGraph_BuildTest, Box_EdgeVertexDefsAreValid)
   const TopoDS_Shape  aBox = aMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes34 = BRepGraph_Builder::Add(aGraph, aBox);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes34 =
+    BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
   for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
@@ -753,7 +821,9 @@ TEST(BRepGraph_BuildTest, Box_FaceSurfacesAreValid)
   const TopoDS_Shape  aBox = aMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes35 = BRepGraph_Builder::Add(aGraph, aBox);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes35 =
+    BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
   for (BRepGraph_FaceIterator aFaceIt(aGraph); aFaceIt.More(); aFaceIt.Next())
@@ -769,7 +839,9 @@ TEST(BRepGraph_BuildTest, Box_EdgeParamRange_IsNonDegenerate)
   const TopoDS_Shape  aBox = aMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes36 = BRepGraph_Builder::Add(aGraph, aBox);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes36 =
+    BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
   for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
@@ -787,8 +859,9 @@ TEST(BRepGraph_BuildTest, AddFlatten_OnEmptyGraph_BuildsFlattenedGraph)
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
-  BRepGraph aGraph;
-  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes37 = BRepGraph_Builder::Add(aGraph, aBox, BRepGraph_Builder::Options{ {}, false, true, false });
+  BRepGraph                                        aGraph;
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes37 =
+    BRepGraph_Builder::Add(aGraph, aBox, BRepGraph_Builder::Options{{}, false, true, false});
 
   EXPECT_TRUE(aGraph.IsDone());
   EXPECT_EQ(aGraph.Topo().Solids().Nb(), 0);
@@ -811,7 +884,9 @@ TEST(BRepGraph_BuildTest, Build_MutationBoundary_IsValid)
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes38 = BRepGraph_Builder::Add(aGraph, aBoxMaker.Shape());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes38 =
+    BRepGraph_Builder::Add(aGraph, aBoxMaker.Shape());
 
   ASSERT_TRUE(aGraph.IsDone());
   EXPECT_TRUE(aGraph.Editor().ValidateMutationBoundary());
@@ -826,9 +901,11 @@ TEST(BRepGraph_BuildTest, AddFlatten_SameFaceTwice_DedupsDefinition)
   ASSERT_TRUE(anExp.More());
   const TopoDS_Face aFace = TopoDS::Face(anExp.Current());
 
-  BRepGraph aGraph;
-  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes39 = BRepGraph_Builder::Add(aGraph, aFace, BRepGraph_Builder::Options{ {}, false, true, false });
-  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes40 = BRepGraph_Builder::Add(aGraph, aFace, BRepGraph_Builder::Options{ {}, false, true, false });
+  BRepGraph                                        aGraph;
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes39 =
+    BRepGraph_Builder::Add(aGraph, aFace, BRepGraph_Builder::Options{{}, false, true, false});
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes40 =
+    BRepGraph_Builder::Add(aGraph, aFace, BRepGraph_Builder::Options{{}, false, true, false});
 
   ASSERT_TRUE(aGraph.IsDone());
   // Same TShape appended twice: definition is deduplicated.
@@ -841,13 +918,18 @@ TEST(BRepGraph_BuildTest, AddFlatten_AfterBuild_DoesNotCreateNewSolidDefs)
   BRepPrimAPI_MakeBox aBox2Maker(15.0, 25.0, 35.0);
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes41 = BRepGraph_Builder::Add(aGraph, aBox1Maker.Shape());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes41 =
+    BRepGraph_Builder::Add(aGraph, aBox1Maker.Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   const int aNbSolidsBefore = aGraph.Topo().Solids().Nb();
   const int aNbFacesBefore  = aGraph.Topo().Faces().Nb();
 
-  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes42 = BRepGraph_Builder::Add(aGraph, aBox2Maker.Shape(), BRepGraph_Builder::Options{ {}, false, true, false });
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes42 =
+    BRepGraph_Builder::Add(aGraph,
+                           aBox2Maker.Shape(),
+                           BRepGraph_Builder::Options{{}, false, true, false});
 
   EXPECT_EQ(aGraph.Topo().Solids().Nb(), aNbSolidsBefore);
   EXPECT_EQ(aGraph.Topo().Faces().Nb(), aNbFacesBefore + 6);
@@ -863,10 +945,13 @@ TEST(BRepGraph_BuildTest, AddFull_MutationBoundary_IsValid)
   BRepPrimAPI_MakeSphere aSphereMaker(5.0);
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes43 = BRepGraph_Builder::Add(aGraph, aBoxMaker.Shape());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes43 =
+    BRepGraph_Builder::Add(aGraph, aBoxMaker.Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes44 = BRepGraph_Builder::Add(aGraph, aSphereMaker.Shape());
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes44 =
+    BRepGraph_Builder::Add(aGraph, aSphereMaker.Shape());
 
   ASSERT_TRUE(aGraph.IsDone());
   EXPECT_TRUE(aGraph.Editor().ValidateMutationBoundary());
@@ -881,8 +966,9 @@ TEST(BRepGraph_BuildTest, AddFlatten_AppendedFaceHasNoParentShell)
   ASSERT_TRUE(anExp.More());
   const TopoDS_Face aFace = TopoDS::Face(anExp.Current());
 
-  BRepGraph aGraph;
-  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes45 = BRepGraph_Builder::Add(aGraph, aFace, BRepGraph_Builder::Options{ {}, false, true, false });
+  BRepGraph                                        aGraph;
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes45 =
+    BRepGraph_Builder::Add(aGraph, aFace, BRepGraph_Builder::Options{{}, false, true, false});
 
   ASSERT_EQ(aGraph.Topo().Faces().Nb(), 1);
   // Appended face should not be part of any shell.
@@ -895,7 +981,9 @@ TEST(BRepGraph_BuildTest, AddFlatten_PreservesExistingUIDs)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes46 = BRepGraph_Builder::Add(aGraph, aBox);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes46 =
+    BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Topo().Edges().Nb(), 0);
 
@@ -904,9 +992,10 @@ TEST(BRepGraph_BuildTest, AddFlatten_PreservesExistingUIDs)
   ASSERT_TRUE(anOrigUID.IsValid());
 
   // Append a sphere.
-  BRepPrimAPI_MakeSphere aSphereMaker(5.0);
-  const TopoDS_Shape&    aSphere = aSphereMaker.Shape();
-  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes47 = BRepGraph_Builder::Add(aGraph, aSphere, BRepGraph_Builder::Options{ {}, false, true, false });
+  BRepPrimAPI_MakeSphere                           aSphereMaker(5.0);
+  const TopoDS_Shape&                              aSphere = aSphereMaker.Shape();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes47 =
+    BRepGraph_Builder::Add(aGraph, aSphere, BRepGraph_Builder::Options{{}, false, true, false});
   ASSERT_TRUE(aGraph.IsDone());
 
   // Verify original edge UID is unchanged.
@@ -917,13 +1006,18 @@ TEST(BRepGraph_BuildTest, AddFlatten_PreservesExistingUIDs)
 TEST(BRepGraph_BuildTest, AddFlatten_StandaloneVertex_AppendsIntoNonEmptyGraph)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes48 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes48 =
+    BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   const int          aNbVerticesBefore = aGraph.Topo().Vertices().Nb();
   const TopoDS_Shape aVertexShape      = BRepBuilderAPI_MakeVertex(gp_Pnt(100.0, 0.0, 0.0)).Shape();
 
-  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes49 = BRepGraph_Builder::Add(aGraph, aVertexShape, BRepGraph_Builder::Options{ {}, false, true, false });
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes49 =
+    BRepGraph_Builder::Add(aGraph,
+                           aVertexShape,
+                           BRepGraph_Builder::Options{{}, false, true, false});
 
   ASSERT_TRUE(aGraph.IsDone());
   EXPECT_EQ(aGraph.Topo().Vertices().Nb(), aNbVerticesBefore + 1);
@@ -936,14 +1030,17 @@ TEST(BRepGraph_BuildTest, AddFlatten_StandaloneVertex_AppendsIntoNonEmptyGraph)
 TEST(BRepGraph_BuildTest, AddFlatten_StandaloneEdge_AppendsIntoNonEmptyGraph)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes50 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes50 =
+    BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   const int          aNbEdgesBefore = aGraph.Topo().Edges().Nb();
   const TopoDS_Shape anEdgeShape =
     BRepBuilderAPI_MakeEdge(gp_Pnt(100.0, 0.0, 0.0), gp_Pnt(120.0, 0.0, 0.0)).Shape();
 
-  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes51 = BRepGraph_Builder::Add(aGraph, anEdgeShape, BRepGraph_Builder::Options{ {}, false, true, false });
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes51 =
+    BRepGraph_Builder::Add(aGraph, anEdgeShape, BRepGraph_Builder::Options{{}, false, true, false});
 
   ASSERT_TRUE(aGraph.IsDone());
   EXPECT_EQ(aGraph.Topo().Edges().Nb(), aNbEdgesBefore + 1);
@@ -956,13 +1053,16 @@ TEST(BRepGraph_BuildTest, AddFlatten_StandaloneEdge_AppendsIntoNonEmptyGraph)
 TEST(BRepGraph_BuildTest, AddFlatten_StandaloneWire_AppendsIntoNonEmptyGraph)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes52 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes52 =
+    BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   const int          aNbWiresBefore = aGraph.Topo().Wires().Nb();
   const TopoDS_Shape aWireShape     = makeStandaloneWire();
 
-  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes53 = BRepGraph_Builder::Add(aGraph, aWireShape, BRepGraph_Builder::Options{ {}, false, true, false });
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes53 =
+    BRepGraph_Builder::Add(aGraph, aWireShape, BRepGraph_Builder::Options{{}, false, true, false});
 
   ASSERT_TRUE(aGraph.IsDone());
   EXPECT_EQ(aGraph.Topo().Wires().Nb(), aNbWiresBefore + 1);
@@ -975,7 +1075,9 @@ TEST(BRepGraph_BuildTest, AddFlatten_StandaloneWire_AppendsIntoNonEmptyGraph)
 TEST(BRepGraph_BuildTest, AddFlatten_CompoundWithStandaloneShapes)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes54 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes54 =
+    BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   BRep_Builder    aBuilder;
@@ -987,7 +1089,8 @@ TEST(BRepGraph_BuildTest, AddFlatten_CompoundWithStandaloneShapes)
 
   const int aNbVerticesBefore = aGraph.Topo().Vertices().Nb();
   const int aNbEdgesBefore    = aGraph.Topo().Edges().Nb();
-  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes55 = BRepGraph_Builder::Add(aGraph, aCompound, BRepGraph_Builder::Options{ {}, false, true, false });
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes55 =
+    BRepGraph_Builder::Add(aGraph, aCompound, BRepGraph_Builder::Options{{}, false, true, false});
   ASSERT_TRUE(aGraph.IsDone());
   // The compound should add at least 1 vertex and 1 edge.
   EXPECT_GT(aGraph.Topo().Vertices().Nb(), aNbVerticesBefore);
@@ -1005,7 +1108,13 @@ TEST(BRepGraph_BuildTest, Build_WithoutPostPasses_BasicQueriesWork)
 
   BRepGraph aGraph;
   registerStandardLayers(aGraph);
-  aGraph.Clear(); { BRepGraph_Builder::Options anOpts__ = anOpts; anOpts__.Parallel = false; [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes56 = BRepGraph_Builder::Add(aGraph, aBox, anOpts__); };
+  aGraph.Clear();
+  {
+    BRepGraph_Builder::Options anOpts__ = anOpts;
+    anOpts__.Parallel                   = false;
+    [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes56 =
+      BRepGraph_Builder::Add(aGraph, aBox, anOpts__);
+  };
   ASSERT_TRUE(aGraph.IsDone());
   const occ::handle<BRepGraph_LayerParam> aParamLayer =
     aGraph.LayerRegistry().FindLayer<BRepGraph_LayerParam>();
@@ -1037,7 +1146,9 @@ TEST(BRepGraph_BuildTest, ParamLayer_EdgeMutation_InvalidatesVertexBindings)
 {
   BRepGraph aGraph;
   registerStandardLayers(aGraph);
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes57 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes57 =
+    BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
   const occ::handle<BRepGraph_LayerParam> aParamLayer =
     aGraph.LayerRegistry().FindLayer<BRepGraph_LayerParam>();
@@ -1060,7 +1171,9 @@ TEST(BRepGraph_BuildTest, ParamLayer_FaceMutation_InvalidatesVertexBindings)
 {
   BRepGraph aGraph;
   registerStandardLayers(aGraph);
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes58 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes58 =
+    BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
   const occ::handle<BRepGraph_LayerParam> aParamLayer =
     aGraph.LayerRegistry().FindLayer<BRepGraph_LayerParam>();
@@ -1086,7 +1199,9 @@ TEST(BRepGraph_BuildTest, ParamLayer_CoEdgeMutation_InvalidatesPCurveBindings)
 {
   BRepGraph aGraph;
   registerStandardLayers(aGraph);
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes59 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes59 =
+    BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
   const occ::handle<BRepGraph_LayerParam> aParamLayer =
     aGraph.LayerRegistry().FindLayer<BRepGraph_LayerParam>();
@@ -1109,7 +1224,9 @@ TEST(BRepGraph_BuildTest, RegularityLayer_EdgeMutation_InvalidatesBindings)
 {
   BRepGraph aGraph;
   registerStandardLayers(aGraph);
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes60 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes60 =
+    BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
   const occ::handle<BRepGraph_LayerRegularity> aRegularityLayer =
     aGraph.LayerRegistry().FindLayer<BRepGraph_LayerRegularity>();
@@ -1161,7 +1278,9 @@ TEST(BRepGraph_BuildTest, RegularityLayer_FaceMutation_InvalidatesBindings)
 {
   BRepGraph aGraph;
   registerStandardLayers(aGraph);
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes61 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes61 =
+    BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
   const occ::handle<BRepGraph_LayerRegularity> aRegularityLayer =
     aGraph.LayerRegistry().FindLayer<BRepGraph_LayerRegularity>();
@@ -1327,7 +1446,9 @@ TEST(BRepGraph_BuildTest, RootProductIds_Box_ReturnsOneProduct)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes62 = BRepGraph_Builder::Add(aGraph, aBox);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes62 =
+    BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
   // BRepGraph_Builder::Add() from a solid should produce exactly one root product.
@@ -1351,7 +1472,13 @@ TEST(BRepGraph_BuildTest, BuildOptions_DisableAutoProduct_DoesNotCreateProducts)
   anOptions.CreateAutoProduct = false;
 
   BRepGraph aGraph;
-  aGraph.Clear(); { BRepGraph_Builder::Options anOpts__ = anOptions; anOpts__.Parallel = false; [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes63 = BRepGraph_Builder::Add(aGraph, aBox, anOpts__); };
+  aGraph.Clear();
+  {
+    BRepGraph_Builder::Options anOpts__ = anOptions;
+    anOpts__.Parallel                   = false;
+    [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes63 =
+      BRepGraph_Builder::Add(aGraph, aBox, anOpts__);
+  };
   ASSERT_TRUE(aGraph.IsDone());
 
   EXPECT_EQ(aGraph.Topo().Products().Nb(), 0);
@@ -1365,7 +1492,9 @@ TEST(BRepGraph_BuildTest, RootProductIds_AddFlatten_ProductCountUnchanged)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes64 = BRepGraph_Builder::Add(aGraph, aBox);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes64 =
+    BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_EQ(aGraph.RootProductIds().Length(), 1);
 
@@ -1377,7 +1506,8 @@ TEST(BRepGraph_BuildTest, RootProductIds_AddFlatten_ProductCountUnchanged)
   ASSERT_TRUE(anExp.More());
   const TopoDS_Face aFace = TopoDS::Face(anExp.Current());
 
-  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes65 = BRepGraph_Builder::Add(aGraph, aFace, BRepGraph_Builder::Options{ {}, false, true, false });
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes65 =
+    BRepGraph_Builder::Add(aGraph, aFace, BRepGraph_Builder::Options{{}, false, true, false});
   ASSERT_TRUE(aGraph.IsDone());
 
   // Flatten Add does not create new products.

@@ -19,6 +19,8 @@
 #include <BRepGraph_RefId.hxx>
 #include <NCollection_DynamicArray.hxx>
 #include <Standard_DefineAlloc.hxx>
+#include <TopAbs_ShapeEnum.hxx>
+#include <TopLoc_Location.hxx>
 
 class BRepGraph;
 class TopoDS_Shape;
@@ -136,9 +138,9 @@ private:
   //! Flatten/Parallel/Populate options.
   //! When theOptions.Flatten is true, the face-level roots appended by the flatten
   //! pass are accumulated into theOutFlatRoots (if non-null).
-  static void appendImpl(BRepGraph&                              theGraph,
-                         const TopoDS_Shape&                     theShape,
-                         const Options&                          theOptions,
+  static void appendImpl(BRepGraph&                                  theGraph,
+                         const TopoDS_Shape&                         theShape,
+                         const Options&                              theOptions,
                          NCollection_DynamicArray<BRepGraph_NodeId>* theOutFlatRoots = nullptr);
 
   //! Identify the topology root introduced by appendImpl for a shape of the

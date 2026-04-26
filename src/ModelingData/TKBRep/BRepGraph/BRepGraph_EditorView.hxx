@@ -649,9 +649,9 @@ public:
     //! @param[in] thePlacement local placement to store on the root OccurrenceRef
     //! @return typed product definition identifier, or invalid if the root is
     //!         not an active topology definition node
-    [[nodiscard]] Standard_EXPORT BRepGraph_ProductId LinkProductToTopology(
-      const BRepGraph_NodeId theShapeRoot,
-      const TopLoc_Location& thePlacement = TopLoc_Location());
+    [[nodiscard]] Standard_EXPORT BRepGraph_ProductId
+      LinkProductToTopology(const BRepGraph_NodeId theShapeRoot,
+                            const TopLoc_Location& thePlacement = TopLoc_Location());
 
     //! Reconstruction primitive: create a Product with no direct shape root.
     //! It can later own child occurrences and may itself be referenced by an

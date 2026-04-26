@@ -89,7 +89,9 @@ protected:
   {
     BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
     const TopoDS_Shape& aBox = aBoxMaker.Shape();
-    myGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes1 = BRepGraph_Builder::Add(myGraph, aBox);
+    myGraph.Clear();
+    [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes1 =
+      BRepGraph_Builder::Add(myGraph, aBox);
   }
 
   BRepGraph myGraph;
@@ -460,9 +462,9 @@ TEST_F(BRepGraph_ViewsTest, TopoView_GroupedProductAndOccurrenceOps_Parity)
     myGraph.Editor().Products().LinkProducts(aRootAssembly, aSubAssembly, TopLoc_Location());
   const BRepGraph_OccurrenceId aPartOccurrence =
     myGraph.Editor().Products().LinkProducts(aSubAssembly,
-                                              aPartProduct,
-                                              TopLoc_Location(),
-                                              aSubOccurrence);
+                                             aPartProduct,
+                                             TopLoc_Location(),
+                                             aSubOccurrence);
   ASSERT_TRUE(aSubOccurrence.IsValid());
   ASSERT_TRUE(aPartOccurrence.IsValid());
 

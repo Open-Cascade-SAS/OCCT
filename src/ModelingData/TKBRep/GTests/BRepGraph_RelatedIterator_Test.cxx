@@ -68,7 +68,9 @@ protected:
   void SetUp() override
   {
     BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
-    myGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes1 = BRepGraph_Builder::Add(myGraph, aBoxMaker.Shape());
+    myGraph.Clear();
+    [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes1 =
+      BRepGraph_Builder::Add(myGraph, aBoxMaker.Shape());
   }
 
   BRepGraph myGraph;
@@ -227,7 +229,9 @@ TEST(BRepGraph_RelatedIteratorStandalone, Compound_YieldsNoRelations)
   aBuilder.Add(aCompound, BRepPrimAPI_MakeBox(20.0, 20.0, 20.0).Shape());
 
   BRepGraph aGraph;
-  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes2 = BRepGraph_Builder::Add(aGraph, aCompound);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes2 =
+    BRepGraph_Builder::Add(aGraph, aCompound);
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph_CompoundId aCompoundId;
