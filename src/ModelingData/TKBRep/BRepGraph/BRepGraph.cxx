@@ -21,11 +21,34 @@
 #include <BRepGraph_Builder.hxx>
 #include <BRepGraphInc_ReverseIndex.hxx>
 
+#include <MathUtils_Random.hxx>
 #include <NCollection_IncAllocator.hxx>
 #include <NCollection_Map.hxx>
+#include <Standard_GUID.hxx>
 #include <Standard_ProgramError.hxx>
 
+#include <random>
 #include <shared_mutex>
+
+namespace
+{
+
+static Standard_GUID generateRandomGUID()
+{
+  std::random_device         aRD;
+  MathUtils::RandomGenerator aRNG(aRD());
+  const uint64_t             aRand1 = aRNG.NextInt();
+  const uint64_t             aRand2 = aRNG.NextInt();
+  Standard_UUID              aUUID;
+  aUUID.Data1 = static_cast<uint32_t>(aRand1);
+  aUUID.Data2 = static_cast<uint16_t>(aRand1 >> 32);
+  aUUID.Data3 = static_cast<uint16_t>(aRand1 >> 48);
+  for (int i = 0; i < 8; ++i)
+    aUUID.Data4[i] = static_cast<uint8_t>(aRand2 >> (i * 8));
+  return Standard_GUID(aUUID);
+}
+
+} // namespace
 
 //=================================================================================================
 
@@ -206,6 +229,34 @@ BRepGraph_RefUID BRepGraph::allocateRefUID(const BRepGraph_RefId theRefId)
   }
   myData->myNextUIDCounter.fetch_add(1, std::memory_order_relaxed);
   return aUID;
+}
+
+//=================================================================================================
+
+void BRepGraph::Clear()
+{
+  myData->myIncStorage.Clear();
+  myData->myHistoryLog.Clear();
+  myData->myCurrentShapes.Clear();
+  myData->myRootProductIds.Clear();
+  myTransientCache.Clear();
+  {
+    std::unique_lock<std::shared_mutex> aUIDLock(myData->myUIDToNodeIdMutex);
+    myData->myUIDToNodeId.Clear();
+    myData->myUIDToNodeIdDirty      = true;
+    myData->myUIDToNodeIdGeneration = myData->myGeneration.load();
+  }
+  {
+    std::unique_lock<std::shared_mutex> aRefUIDLock(myData->myRefUIDToRefIdMutex);
+    myData->myRefUIDToRefId.Clear();
+    myData->myRefUIDToRefIdDirty      = true;
+    myData->myRefUIDToRefIdGeneration = myData->myGeneration.load();
+  }
+  ++myData->myGeneration;
+  myData->myGraphGUID = generateRandomGUID();
+  myData->myIsDone    = false;
+
+  myLayerRegistry.ClearAll();
 }
 
 //=================================================================================================
@@ -849,7 +900,7 @@ void BRepGraph::markRepModified(const BRepGraph_RepId theRepId) noexcept
 void BRepGraph::SetAllocator(const occ::handle<NCollection_BaseAllocator>& theAlloc)
 {
   Standard_ASSERT_VOID(!myData->myIsDone,
-                       "SetAllocator: must be called before BRepGraph_Builder::Perform() - "
+                       "SetAllocator: must be called before BRepGraph_Builder::Add() - "
                        "existing graph state will be lost");
 
   myData->myAllocator =

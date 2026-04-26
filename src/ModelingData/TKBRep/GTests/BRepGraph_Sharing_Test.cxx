@@ -40,7 +40,9 @@ protected:
   {
     BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
     const TopoDS_Shape& aBox = aBoxMaker.Shape();
-    BRepGraph_Builder::Perform(myGraph, aBox);
+    myGraph.Clear();
+    [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes1 =
+      BRepGraph_Builder::Add(myGraph, aBox);
   }
 
   BRepGraph myGraph;
@@ -234,7 +236,9 @@ TEST_F(BRepGraph_SharingTest, CompoundTwoIdenticalBoxes)
   aBuilder.Add(aCompound, aBox);
 
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, aCompound);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes2 =
+    BRepGraph_Builder::Add(aGraph, aCompound);
   ASSERT_TRUE(aGraph.IsDone());
 
   // Same TShape added twice to compound: definition is shared (1 solid def),
@@ -269,7 +273,9 @@ TEST_F(BRepGraph_SharingTest, CompoundTwoDistinctBoxes)
   aBuilder.Add(aCompound, aBox2);
 
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, aCompound);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes3 =
+    BRepGraph_Builder::Add(aGraph, aCompound);
   ASSERT_TRUE(aGraph.IsDone());
 
   // Two different TShapes: no sharing, definitions are independent
@@ -295,7 +301,9 @@ TEST_F(BRepGraph_SharingTest, CompoundWithLocation_MoreUsagesThanDefs)
   aBuilder.Add(aCompound, aMovedBox);
 
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, aCompound);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes4 =
+    BRepGraph_Builder::Add(aGraph, aCompound);
   ASSERT_TRUE(aGraph.IsDone());
 
   // Same TShape with different locations: defs are shared.
@@ -320,7 +328,9 @@ TEST_F(BRepGraph_SharingTest, TranslatedCopy_SameTShape_SharedDefs)
   aBuilder.Add(aCompound, aCopy);
 
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, aCompound);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes5 =
+    BRepGraph_Builder::Add(aGraph, aCompound);
   ASSERT_TRUE(aGraph.IsDone());
 
   // Moved() preserves TShape, so all definitions are shared (1 solid def).

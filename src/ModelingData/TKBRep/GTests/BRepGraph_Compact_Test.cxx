@@ -125,7 +125,9 @@ TEST(BRepGraph_CompactTest, NoRemovedNodes_Noop)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, aBox);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes1 =
+    BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
   const uint32_t aNbVerticesBefore = aGraph.Topo().Vertices().Nb();
@@ -146,7 +148,9 @@ TEST(BRepGraph_CompactTest, NoRemovedNodes_Noop)
 TEST(BRepGraph_CompactTest, AfterDeduplicate_RemovesNodes)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes2 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   // Run geometry dedup which replaces duplicate surface/curve handles directly.
@@ -166,7 +170,9 @@ TEST(BRepGraph_CompactTest, AfterDeduplicate_RemovesNodes)
 TEST(BRepGraph_CompactTest, IndexDensity_NoGaps)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes3 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   (void)BRepGraph_Deduplicate::Perform(aGraph);
@@ -194,7 +200,9 @@ TEST(BRepGraph_CompactTest, IndexDensity_NoGaps)
 TEST(BRepGraph_CompactTest, CrossReferences_Valid)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes4 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   (void)BRepGraph_Deduplicate::Perform(aGraph);
@@ -207,7 +215,9 @@ TEST(BRepGraph_CompactTest, CrossReferences_Valid)
 TEST(BRepGraph_CompactTest, HistoryMode_RecordsMapping)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes5 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   // Use full entity merge so that duplicate topology nodes are actually removed.
@@ -230,7 +240,9 @@ TEST(BRepGraph_CompactTest, HistoryMode_RecordsMapping)
 TEST(BRepGraph_CompactTest, FullPipeline_Deduplicate_Compact_Validate)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes6 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   // Full dedup (replaces duplicate handles directly on defs).
@@ -252,7 +264,9 @@ TEST(BRepGraph_CompactTest, RemovalCompact_PreservesBounds_AndDoesNotGrowTopolog
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, aBox);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes7 =
+    BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Topo().CoEdges().Nb(), 0);
   ASSERT_GT(aGraph.Topo().Faces().Nb(), 2);
@@ -279,7 +293,9 @@ TEST(BRepGraph_CompactTest, RemovalCompact_PreservesBounds_AndDoesNotGrowTopolog
 TEST(BRepGraph_CompactTest, RemovalCompact_PreservesClosedTopologyAndValidShape)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeBoxWithLooseEdge());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes8 =
+    BRepGraph_Builder::Add(aGraph, makeBoxWithLooseEdge());
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph_EdgeId aLooseEdge;
@@ -320,7 +336,9 @@ TEST(BRepGraph_CompactTest, RemovalCompact_PreservesClosedTopologyAndValidShape)
 TEST(BRepGraph_CompactTest, AuditMode_PassesAfterDedupCompact)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes9 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedFaces());
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_TRUE(BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Mode::Audit).IsValid());
 
@@ -333,7 +351,9 @@ TEST(BRepGraph_CompactTest, AuditMode_PassesAfterDedupCompact)
 TEST(BRepGraph_CompactTest, AuditMode_PassesAfterRemovalCompact)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeBoxWithLooseEdge());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes10 =
+    BRepGraph_Builder::Add(aGraph, makeBoxWithLooseEdge());
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph_EdgeId aLooseEdge;
@@ -356,7 +376,9 @@ TEST(BRepGraph_CompactTest, AuditMode_PassesAfterRemovalCompact)
 TEST(BRepGraph_CompactTest, Compact_PreservesTopologyUIDs)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes11 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   // Collect the set of all original topology UIDs before dedup+compact.
@@ -443,7 +465,9 @@ TEST(BRepGraph_CompactTest, OwnGen_SurvivesCompact)
   constexpr uint32_t THE_EXPECTED_OWN_GEN       = 2;
 
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes12 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   // Mutate edge 0 twice so OwnGen == THE_EXPECTED_OWN_GEN.
@@ -481,7 +505,9 @@ TEST(BRepGraph_CompactTest, UIDRoundTrip_AfterCompaction)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, aBox);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes13 =
+    BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GE(aGraph.Topo().Faces().Nb(), 3);
   ASSERT_GE(aGraph.Topo().Edges().Nb(), 3);
@@ -529,7 +555,9 @@ TEST(BRepGraph_CompactTest, CoEdgeUID_AfterCompaction)
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
 
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, aBoxMaker.Shape());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes14 =
+    BRepGraph_Builder::Add(aGraph, aBoxMaker.Shape());
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GE(aGraph.Topo().Wires().Nb(), 1);
 
@@ -570,7 +598,9 @@ TEST(BRepGraph_CompactTest, UIDRoundTrip_RefUIDs_AfterCompaction)
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
 
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, aBoxMaker.Shape());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes15 =
+    BRepGraph_Builder::Add(aGraph, aBoxMaker.Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   // VertexRef - from Edge 0 start vertex ref.
@@ -701,12 +731,14 @@ TEST(BRepGraph_CompactTest, FindNodeStillWorksAfterCompact)
 {
   // Regression for Bug B2: BRepGraph_Compact must preserve the TShape-to-NodeId
   // bindings so that BRepGraph::Shapes().FindNode() / HasNode() still resolves
-  // original BRepGraph_Builder::Perform()-time shapes after compaction.
+  // original BRepGraph_Builder::Add()-time shapes after compaction.
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, aBox);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes16 =
+    BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
   // Pick one face from the original build input.

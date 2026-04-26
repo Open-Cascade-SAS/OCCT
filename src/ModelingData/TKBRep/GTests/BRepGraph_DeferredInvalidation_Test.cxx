@@ -37,7 +37,9 @@ protected:
   {
     BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
     const TopoDS_Shape& aBox = aBoxMaker.Shape();
-    BRepGraph_Builder::Perform(myGraph, aBox);
+    myGraph.Clear();
+    [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes1 =
+      BRepGraph_Builder::Add(myGraph, aBox);
     ASSERT_TRUE(myGraph.IsDone());
   }
 
@@ -310,9 +312,9 @@ TEST_F(BRepGraph_DeferredInvalidationTest,
 {
   // Build an assembly: root product + child occurrence referencing it.
   const BRepGraph_ProductId    aPartId     = BRepGraph_ProductId::Start();
-  const BRepGraph_ProductId    aAssemblyId = myGraph.Editor().Products().AddAssembly();
+  const BRepGraph_ProductId    aAssemblyId = myGraph.Editor().Products().CreateEmptyProduct();
   const BRepGraph_OccurrenceId anOccId =
-    myGraph.Editor().Products().AddOccurrence(aAssemblyId, aPartId, TopLoc_Location());
+    myGraph.Editor().Products().LinkProducts(aAssemblyId, aPartId, TopLoc_Location());
   ASSERT_TRUE(anOccId.IsValid());
 
   // Verify parent product starts clean.
@@ -329,8 +331,7 @@ TEST_F(BRepGraph_DeferredInvalidationTest,
   {
     gp_Trsf aTrsf;
     aTrsf.SetTranslation(gp_Vec(100.0, 0.0, 0.0));
-    myGraph.Editor().Products().MutOccurrenceRef(anOccRefId)->LocalLocation =
-      TopLoc_Location(aTrsf);
+    myGraph.Editor().Occurrences().MutRef(anOccRefId)->LocalLocation = TopLoc_Location(aTrsf);
   }
 
   // During deferred mode: ref modified.

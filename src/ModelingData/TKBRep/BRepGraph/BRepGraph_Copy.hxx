@@ -36,7 +36,7 @@
 //! ## Typical usage
 //! @code
 //!   BRepGraph aGraph;
-//!   BRepGraph_Builder::Perform(aGraph, myShape);
+//!   BRepGraph_Builder::Add(aGraph, myShape);
 //!   BRepGraph aCopy = BRepGraph_Copy::Perform(aGraph);
 //!   TopoDS_Shape aShape = aCopy.Shapes().Shape();
 //! @endcode

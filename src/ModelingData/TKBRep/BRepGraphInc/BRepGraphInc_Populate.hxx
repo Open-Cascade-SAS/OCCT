@@ -29,7 +29,7 @@ class BRepGraph_LayerRegularity;
 //!
 //! This class is part of the BRepGraphInc backend and is intended for
 //! backend maintenance, tests, and low-level infrastructure only.
-//! External code should enter through BRepGraph_Builder::Perform(), which owns the
+//! External code should enter through BRepGraph_Builder::Add(), which owns the
 //! public lifecycle, cache invalidation, and layer coordination.
 //!
 //! Adapted from BRepGraph_Builder, but writes to incidence-table storage

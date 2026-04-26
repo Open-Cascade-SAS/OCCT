@@ -36,7 +36,7 @@
 //! differs from the reference's current OwnGen the cached value is considered stale.
 //!
 //! ## Lifecycle
-//! NOT a Layer. Cleared on BRepGraph_Builder::Perform() and Compact(). No explicit removal callback
+//! NOT a Layer. Cleared on BRepGraph_Builder::Add() and Compact(). No explicit removal callback
 //! - stale data is auto-detected by OwnGen mismatch.
 //!
 //! ## Thread safety
@@ -48,7 +48,7 @@ public:
   //! Number of BRepGraph_RefId::Kind enum values (Shell..Occurrence = 0..7).
   static constexpr int THE_REF_KIND_COUNT = 8;
 
-  //! Default number of cache-kind slots reserved after BRepGraph_Builder::Perform().
+  //! Default number of cache-kind slots reserved after BRepGraph_Builder::Add().
   static constexpr int THE_DEFAULT_RESERVED_KIND_COUNT = 16;
 
   //! Per-slot storage: cached value handle + OwnGen stamp.
@@ -114,7 +114,7 @@ public:
     return myIsReserved.load(std::memory_order_acquire);
   }
 
-  //! Clear all cached data. Called on BRepGraph_Builder::Perform() and Compact().
+  //! Clear all cached data. Called on BRepGraph_Builder::Add() and Compact().
   Standard_EXPORT void Clear() noexcept;
 
   //! Move constructor: transfers data, creates fresh mutex.

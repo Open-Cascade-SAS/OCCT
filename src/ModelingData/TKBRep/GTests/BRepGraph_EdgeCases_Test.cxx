@@ -32,7 +32,9 @@ TEST(BRepGraph_EdgeCasesTest, Build_NullShape_IsDoneFalse)
 {
   BRepGraph    aGraph;
   TopoDS_Shape aNullShape;
-  BRepGraph_Builder::Perform(aGraph, aNullShape);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes1 =
+    BRepGraph_Builder::Add(aGraph, aNullShape);
   EXPECT_FALSE(aGraph.IsDone());
 }
 
@@ -42,7 +44,9 @@ TEST(BRepGraph_EdgeCasesTest, Build_EmptyCompound_IsDoneZeroCounts)
   BRep_Builder    aBuilder;
   TopoDS_Compound aCompound;
   aBuilder.MakeCompound(aCompound);
-  BRepGraph_Builder::Perform(aGraph, aCompound);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes2 =
+    BRepGraph_Builder::Add(aGraph, aCompound);
 
   // Whether IsDone is true or false for an empty compound is implementation-defined;
   // the key invariant is that all definition counts are zero.
@@ -60,7 +64,9 @@ TEST(BRepGraph_EdgeCasesTest, Shape_InvalidNodeId_ReturnsNull)
 {
   BRepGraph           aGraph;
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
-  BRepGraph_Builder::Perform(aGraph, aBoxMaker.Shape());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes3 =
+    BRepGraph_Builder::Add(aGraph, aBoxMaker.Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   const BRepGraph_NodeId anInvalidId; // default: Index = -1
@@ -72,7 +78,9 @@ TEST(BRepGraph_EdgeCasesTest, ReconstructShape_InvalidNodeId_ReturnsNull)
 {
   BRepGraph           aGraph;
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
-  BRepGraph_Builder::Perform(aGraph, aBoxMaker.Shape());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes4 =
+    BRepGraph_Builder::Add(aGraph, aBoxMaker.Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   const BRepGraph_NodeId anInvalidId;
@@ -84,7 +92,9 @@ TEST(BRepGraph_EdgeCasesTest, TopoEntity_InvalidNodeId_ReturnsNull)
 {
   BRepGraph           aGraph;
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
-  BRepGraph_Builder::Perform(aGraph, aBoxMaker.Shape());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes5 =
+    BRepGraph_Builder::Add(aGraph, aBoxMaker.Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   const BRepGraph_NodeId       anInvalidId;
@@ -109,11 +119,15 @@ TEST(BRepGraph_EdgeCasesTest, Build_TwiceOnSameGraph_GenerationIncrements)
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape  aBox = aBoxMaker.Shape();
 
-  BRepGraph_Builder::Perform(aGraph, aBox);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes6 =
+    BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
   const uint32_t aFirstGen = aGraph.UIDs().Generation();
 
-  BRepGraph_Builder::Perform(aGraph, aBox);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes7 =
+    BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
   const uint32_t aSecondGen = aGraph.UIDs().Generation();
 
@@ -128,7 +142,9 @@ TEST(BRepGraph_EdgeCasesTest, Build_TwiceOnSameGraph_OldUIDsInvalidated)
   const TopoDS_Shape  aBox = aBoxMaker.Shape();
 
   // First build: collect total UID counter used.
-  BRepGraph_Builder::Perform(aGraph, aBox);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes8 =
+    BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
   const uint32_t aFirstGen = aGraph.UIDs().Generation();
 
@@ -137,7 +153,9 @@ TEST(BRepGraph_EdgeCasesTest, Build_TwiceOnSameGraph_OldUIDsInvalidated)
   ASSERT_GT(aTotalFirstBuild, 0u);
 
   // Second build.
-  BRepGraph_Builder::Perform(aGraph, aBox);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes9 =
+    BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
   const uint32_t aSecondGen = aGraph.UIDs().Generation();
   EXPECT_NE(aFirstGen, aSecondGen);
@@ -156,7 +174,9 @@ TEST(BRepGraph_EdgeCasesTest, Build_TwiceOnSameGraph_CountsResetCorrectly)
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
   const TopoDS_Shape  aBox = aBoxMaker.Shape();
 
-  BRepGraph_Builder::Perform(aGraph, aBox);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes10 =
+    BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
   const int aSolids1 = aGraph.Topo().Solids().Nb();
@@ -169,7 +189,9 @@ TEST(BRepGraph_EdgeCasesTest, Build_TwiceOnSameGraph_CountsResetCorrectly)
   const int aCurves1 = aGraph.Topo().Edges().Nb();
 
   // Rebuild with same shape.
-  BRepGraph_Builder::Perform(aGraph, aBox);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes11 =
+    BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
   EXPECT_EQ(aGraph.Topo().Solids().Nb(), aSolids1);
@@ -191,7 +213,9 @@ TEST(BRepGraph_EdgeCasesTest, UID_AlwaysEnabled_AfterBuild)
   BRepGraph aGraph;
 
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
-  BRepGraph_Builder::Perform(aGraph, aBoxMaker.Shape());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes12 =
+    BRepGraph_Builder::Add(aGraph, aBoxMaker.Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   const BRepGraph_NodeId aSolidId(BRepGraph_NodeId::Kind::Solid, 0);
@@ -209,11 +233,15 @@ TEST(BRepGraph_EdgeCasesTest, ParallelBuild_Sphere_SameAsSequential)
   const TopoDS_Shape     aSphere = aSphereMaker.Shape();
 
   BRepGraph aSeqGraph;
-  BRepGraph_Builder::Perform(aSeqGraph, aSphere, false);
+  aSeqGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes13 =
+    BRepGraph_Builder::Add(aSeqGraph, aSphere, BRepGraph_Builder::Options{{}, true, false, false});
   ASSERT_TRUE(aSeqGraph.IsDone());
 
   BRepGraph aParGraph;
-  BRepGraph_Builder::Perform(aParGraph, aSphere, true);
+  aParGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes14 =
+    BRepGraph_Builder::Add(aParGraph, aSphere, BRepGraph_Builder::Options{{}, true, false, true});
   ASSERT_TRUE(aParGraph.IsDone());
 
   EXPECT_EQ(aParGraph.Topo().Solids().Nb(), aSeqGraph.Topo().Solids().Nb());
@@ -242,11 +270,17 @@ TEST(BRepGraph_EdgeCasesTest, ParallelBuild_Compound_SameAsSequential)
   aBuilder.Add(aCompound, aBox3.Shape());
 
   BRepGraph aSeqGraph;
-  BRepGraph_Builder::Perform(aSeqGraph, aCompound, false);
+  aSeqGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes15 =
+    BRepGraph_Builder::Add(aSeqGraph,
+                           aCompound,
+                           BRepGraph_Builder::Options{{}, true, false, false});
   ASSERT_TRUE(aSeqGraph.IsDone());
 
   BRepGraph aParGraph;
-  BRepGraph_Builder::Perform(aParGraph, aCompound, true);
+  aParGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes16 =
+    BRepGraph_Builder::Add(aParGraph, aCompound, BRepGraph_Builder::Options{{}, true, false, true});
   ASSERT_TRUE(aParGraph.IsDone());
 
   EXPECT_EQ(aParGraph.Topo().Solids().Nb(), aSeqGraph.Topo().Solids().Nb());

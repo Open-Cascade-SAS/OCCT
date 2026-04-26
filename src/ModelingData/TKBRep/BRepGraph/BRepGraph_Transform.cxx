@@ -109,7 +109,7 @@ void BRepGraph_Transform::applyLocationTransform(BRepGraph& theGraph, const gp_T
       if (aOccRef.IsRemoved)
         continue;
       BRepGraph_MutGuard<BRepGraphInc::OccurrenceRef> aMutRef =
-        theGraph.Editor().Products().MutOccurrenceRef(aRefId);
+        theGraph.Editor().Occurrences().MutRef(aRefId);
       aMutRef->LocalLocation = aLoc * aMutRef->LocalLocation;
     }
   });

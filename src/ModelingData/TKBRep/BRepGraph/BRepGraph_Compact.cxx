@@ -937,13 +937,31 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
       const BRepGraph_NodeId aNewShapeRoot = remapId(anOldShapeRoot);
       if (aNewShapeRoot.IsValid())
       {
-        aNewProductId = aNewGraph.Editor().Products().Add(aNewShapeRoot);
+        // Find the old part-root occurrence ref to preserve its placement.
+        TopLoc_Location anOldRootLoc;
+        for (const BRepGraph_OccurrenceRefId& anOldOccRefId : anOldProduct.OccurrenceRefIds)
+        {
+          const BRepGraphInc::OccurrenceRef& anOldOccRef =
+            theGraph.Refs().Occurrences().Entry(anOldOccRefId);
+          if (anOldOccRef.IsRemoved)
+            continue;
+          const BRepGraphInc::OccurrenceDef& anOldOccDef =
+            theGraph.Topo().Occurrences().Definition(anOldOccRef.OccurrenceDefId);
+          if (!anOldOccDef.IsRemoved && anOldOccDef.ChildDefId.IsValid()
+              && BRepGraph_NodeId::IsTopologyKind(anOldOccDef.ChildDefId.NodeKind))
+          {
+            anOldRootLoc = anOldOccRef.LocalLocation;
+            break;
+          }
+        }
+        aNewProductId =
+          aNewGraph.Editor().Products().LinkProductToTopology(aNewShapeRoot, anOldRootLoc);
       }
     }
 
     if (!aNewProductId.IsValid())
     {
-      aNewProductId = aNewGraph.Editor().Products().AddAssembly();
+      aNewProductId = aNewGraph.Editor().Products().CreateEmptyProduct();
     }
 
     if (!aNewProductId.IsValid())
@@ -1059,9 +1077,9 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
       }
 
       const BRepGraph_OccurrenceId aNewOccId =
-        aNewGraph.Editor().Products().AddOccurrence(*aNewParentId,
-                                                    *aNewChildId,
-                                                    anOldOccRef.LocalLocation);
+        aNewGraph.Editor().Products().LinkProducts(*aNewParentId,
+                                                   *aNewChildId,
+                                                   anOldOccRef.LocalLocation);
 
       if (aNewOccId.IsValid())
       {
@@ -1222,8 +1240,6 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
     aGraphData->myNextUIDCounter.load(std::memory_order_relaxed),
     std::memory_order_relaxed);
   // Preserve graph generation so transferred UIDs remain valid after compaction.
-  // Compact rewrites ids and clears caches explicitly; it is not a new BRepGraph_Builder::Perform()
-  // cycle.
   aNewGraphData->myGeneration.store(aGraphData->myGeneration.load(std::memory_order_relaxed),
                                     std::memory_order_relaxed);
   aNewGraphData->myIsDone = true;
@@ -1231,11 +1247,7 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
   // Save layers before swap (default move would transfer empty layers from aNewGraph).
   BRepGraph_LayerRegistry aSavedLayerRegistry = std::move(theGraph.layerRegistry());
 
-  // Save TShape-to-NodeId and NodeId-to-OriginalShape bindings before swap.
-  // These maps are populated by BRepGraphInc_Populate during BRepGraph_Builder::Perform() with
-  // TopoDS_Shape data. The rebuilt aNewGraph has no TopoDS_Shape bindings, so they must be
-  // transferred here. We capture into local vectors using the ForEach API, then remap keys/values
-  // after the swap.
+  // Transfer TShape-to-NodeId and NodeId-to-OriginalShape bindings: the rebuilt graph has none.
   NCollection_DynamicArray<std::pair<const TopoDS_TShape*, BRepGraph_NodeId>> aTShapeBindings;
   NCollection_DynamicArray<std::pair<BRepGraph_NodeId, TopoDS_Shape>>         aOriginalBindings;
   aGraphData->myIncStorage.ForEachTShapeBinding(

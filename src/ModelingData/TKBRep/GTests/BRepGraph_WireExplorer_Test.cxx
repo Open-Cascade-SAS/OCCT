@@ -27,7 +27,9 @@ protected:
   void SetUp() override
   {
     BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
-    BRepGraph_Builder::Perform(myGraph, aBoxMaker.Shape());
+    myGraph.Clear();
+    [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes1 =
+      BRepGraph_Builder::Add(myGraph, aBoxMaker.Shape());
   }
 
   BRepGraph myGraph;

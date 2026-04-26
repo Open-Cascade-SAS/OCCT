@@ -68,7 +68,9 @@ protected:
   void SetUp() override
   {
     BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
-    BRepGraph_Builder::Perform(myGraph, aBoxMaker.Shape());
+    myGraph.Clear();
+    [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes1 =
+      BRepGraph_Builder::Add(myGraph, aBoxMaker.Shape());
   }
 
   BRepGraph myGraph;
@@ -118,13 +120,13 @@ TEST_F(BRepGraph_RelatedIteratorTest, AssemblyNodes_YieldNoRelations)
 {
   // Assembly/container nodes have no topological relations - use ChildExplorer instead.
   const BRepGraph_ProductId aPartProduct =
-    myGraph.Editor().Products().Add(BRepGraph_NodeId(BRepGraph_SolidId::Start()));
-  const BRepGraph_ProductId aRootAssembly = myGraph.Editor().Products().AddAssembly();
+    myGraph.Editor().Products().LinkProductToTopology(BRepGraph_NodeId(BRepGraph_SolidId::Start()));
+  const BRepGraph_ProductId aRootAssembly = myGraph.Editor().Products().CreateEmptyProduct();
 
   gp_Trsf aTrsf;
   aTrsf.SetTranslation(gp_Vec(1.0, 2.0, 3.0));
   const BRepGraph_OccurrenceId anOccurrenceId =
-    myGraph.Editor().Products().AddOccurrence(aRootAssembly, aPartProduct, TopLoc_Location(aTrsf));
+    myGraph.Editor().Products().LinkProducts(aRootAssembly, aPartProduct, TopLoc_Location(aTrsf));
   ASSERT_TRUE(anOccurrenceId.IsValid());
 
   BRepGraph_RelatedIterator aProductIt(myGraph, BRepGraph_NodeId(aRootAssembly));
@@ -227,7 +229,9 @@ TEST(BRepGraph_RelatedIteratorStandalone, Compound_YieldsNoRelations)
   aBuilder.Add(aCompound, BRepPrimAPI_MakeBox(20.0, 20.0, 20.0).Shape());
 
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, aCompound);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes2 =
+    BRepGraph_Builder::Add(aGraph, aCompound);
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph_CompoundId aCompoundId;

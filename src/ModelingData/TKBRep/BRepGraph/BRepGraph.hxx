@@ -64,7 +64,7 @@ class BRepGraph_History;
 //!   Curve3D, Curve2D, Triangulation, Polygon) decoupled from topology nodes.
 //! - **CoEdge**: half-edge entity owning PCurve data for each edge-face binding;
 //!   seam edges use paired CoEdges with opposite Orientation (Parasolid convention).
-//! - **Lifecycle**: BRepGraph_Builder::Perform() populates from TopoDS_Shape;
+//! - **Lifecycle**: BRepGraph_Builder::Add() populates from TopoDS_Shape;
 //!   Editor() is the single mutation entry point for both structural creation/removal
 //!   (Add*, Remove*, Append*) and field-level RAII-scoped mutation (Mut*()) with
 //!   automatic cache invalidation and upward SubtreeGen propagation.
@@ -82,11 +82,11 @@ class BRepGraph_History;
 //! Deferred invalidation (BRepGraph_DeferredScope) batches SubtreeGen propagation;
 //! concurrent Editor().Mut*() calls during deferred mode still require external
 //! serialization.
-//! BRepGraph_Builder::Perform() is internally parallel when requested.
+//! BRepGraph_Builder::Add() is internally parallel when requested.
 //!
 //! ## UID persistence
 //! UIDs use monotonic counters (not vector indices), persisting across Compact()
-//! and node removal. Only BRepGraph_Builder::Perform() resets counters (new generation).
+//! and node removal. Only BRepGraph::Clear() resets counters (new generation).
 //! See BRepGraph_UID.hxx for the serialization contract.
 //!
 //! ## Extension model
@@ -139,6 +139,9 @@ public:
   Standard_EXPORT BRepGraph(BRepGraph&&) noexcept;
   //! Move assignment operator.
   Standard_EXPORT BRepGraph& operator=(BRepGraph&&) noexcept;
+
+  //! Reset the graph to an empty state. Increments generation and regenerates the graph GUID.
+  Standard_EXPORT void Clear();
 
   //! Return true if the graph was successfully built.
   [[nodiscard]] Standard_EXPORT bool IsDone() const;

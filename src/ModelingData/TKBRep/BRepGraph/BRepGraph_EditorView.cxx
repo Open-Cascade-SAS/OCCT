@@ -942,6 +942,42 @@ BRepGraph_CompoundId BRepGraph::EditorView::CompoundOps::Add(
 
 //=================================================================================================
 
+BRepGraph_ChildRefId BRepGraph::EditorView::CompoundOps::AddChild(
+  const BRepGraph_CompoundId theCompoundEntity,
+  const BRepGraph_NodeId     theChildEntity,
+  const TopAbs_Orientation   theOri)
+{
+  BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
+  if (!isActiveNode(aStorage, theCompoundEntity) || !isActiveTopologyNode(aStorage, theChildEntity))
+  {
+    return BRepGraph_ChildRefId();
+  }
+
+  const uint32_t             anOldNbChildRefs = static_cast<uint32_t>(aStorage.NbChildRefs());
+  const BRepGraph_ChildRefId aChildRefId(aStorage.NbChildRefs());
+  aStorage.AppendChildRef();
+  BRepGraphInc::ChildRef& aChildRef = aStorage.ChangeChildRef(aChildRefId);
+  aChildRef.ParentId                = theCompoundEntity;
+  aChildRef.ChildDefId              = theChildEntity;
+  aChildRef.Orientation             = theOri;
+  myGraph->allocateRefUID(aChildRefId);
+  aStorage.ChangeCompound(theCompoundEntity).ChildRefIds.Append(aChildRefId);
+
+  aStorage.BuildDeltaReverseIndex(static_cast<uint32_t>(aStorage.NbEdges()),
+                                  static_cast<uint32_t>(aStorage.NbWires()),
+                                  static_cast<uint32_t>(aStorage.NbFaces()),
+                                  static_cast<uint32_t>(aStorage.NbShells()),
+                                  static_cast<uint32_t>(aStorage.NbSolids()),
+                                  static_cast<uint32_t>(aStorage.NbCompounds()),
+                                  static_cast<uint32_t>(aStorage.NbCompSolids()),
+                                  anOldNbChildRefs,
+                                  static_cast<uint32_t>(aStorage.NbSolidRefs()));
+  myGraph->markModified(theCompoundEntity);
+  return aChildRefId;
+}
+
+//=================================================================================================
+
 BRepGraph_CompSolidId BRepGraph::EditorView::CompSolidOps::Add(
   const NCollection_DynamicArray<BRepGraph_SolidId>& theSolidEntities)
 {
@@ -975,7 +1011,45 @@ BRepGraph_CompSolidId BRepGraph::EditorView::CompSolidOps::Add(
 
 //=================================================================================================
 
-BRepGraph_ProductId BRepGraph::EditorView::ProductOps::Add(const BRepGraph_NodeId theShapeRoot)
+BRepGraph_SolidRefId BRepGraph::EditorView::CompSolidOps::AddSolid(
+  const BRepGraph_CompSolidId theCompSolidEntity,
+  const BRepGraph_SolidId     theSolidEntity,
+  const TopAbs_Orientation    theOri)
+{
+  BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
+  if (!isActiveNode(aStorage, theCompSolidEntity) || !isActiveNode(aStorage, theSolidEntity))
+  {
+    return BRepGraph_SolidRefId();
+  }
+
+  const uint32_t             anOldNbSolidRefs = static_cast<uint32_t>(aStorage.NbSolidRefs());
+  const BRepGraph_SolidRefId aSolidRefId(aStorage.NbSolidRefs());
+  aStorage.AppendSolidRef();
+  BRepGraphInc::SolidRef& aSREntry = aStorage.ChangeSolidRef(aSolidRefId);
+  aSREntry.ParentId                = theCompSolidEntity;
+  aSREntry.SolidDefId              = theSolidEntity;
+  aSREntry.Orientation             = theOri;
+  myGraph->allocateRefUID(aSolidRefId);
+  aStorage.ChangeCompSolid(theCompSolidEntity).SolidRefIds.Append(aSolidRefId);
+
+  aStorage.BuildDeltaReverseIndex(static_cast<uint32_t>(aStorage.NbEdges()),
+                                  static_cast<uint32_t>(aStorage.NbWires()),
+                                  static_cast<uint32_t>(aStorage.NbFaces()),
+                                  static_cast<uint32_t>(aStorage.NbShells()),
+                                  static_cast<uint32_t>(aStorage.NbSolids()),
+                                  static_cast<uint32_t>(aStorage.NbCompounds()),
+                                  static_cast<uint32_t>(aStorage.NbCompSolids()),
+                                  static_cast<uint32_t>(aStorage.NbChildRefs()),
+                                  anOldNbSolidRefs);
+  myGraph->markModified(theCompSolidEntity);
+  return aSolidRefId;
+}
+
+//=================================================================================================
+
+BRepGraph_ProductId BRepGraph::EditorView::ProductOps::LinkProductToTopology(
+  const BRepGraph_NodeId theShapeRoot,
+  const TopLoc_Location& thePlacement)
 {
   BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
   if (!isActiveTopologyNode(aStorage, theShapeRoot))
@@ -994,7 +1068,7 @@ BRepGraph_ProductId BRepGraph::EditorView::ProductOps::Add(const BRepGraph_NodeI
   BRepGraphInc::OccurrenceDef& anOccDef = aStorage.ChangeOccurrence(anOccId);
   anOccDef.ChildDefId                   = theShapeRoot;
   Standard_ASSERT_RETURN(isValidOccurrenceChildKind(anOccDef.ChildDefId.NodeKind),
-                         "ProductOps::Add: invalid occurrence child kind",
+                         "ProductOps::LinkProductToTopology: invalid occurrence child kind",
                          BRepGraph_ProductId());
   myGraph->allocateUID(anOccId);
 
@@ -1003,6 +1077,7 @@ BRepGraph_ProductId BRepGraph::EditorView::ProductOps::Add(const BRepGraph_NodeI
   BRepGraphInc::OccurrenceRef& anOccRef = aStorage.ChangeOccurrenceRef(anOccRefId);
   anOccRef.ParentId                     = aProductId;
   anOccRef.OccurrenceDefId              = anOccId;
+  anOccRef.LocalLocation                = thePlacement;
   myGraph->allocateRefUID(anOccRefId);
   aProductDef.OccurrenceRefIds.Append(anOccRefId);
 
@@ -1014,7 +1089,7 @@ BRepGraph_ProductId BRepGraph::EditorView::ProductOps::Add(const BRepGraph_NodeI
 
 //=================================================================================================
 
-BRepGraph_ProductId BRepGraph::EditorView::ProductOps::AddAssembly()
+BRepGraph_ProductId BRepGraph::EditorView::ProductOps::CreateEmptyProduct()
 {
   BRepGraphInc_Storage&     aStorage = myGraph->myData->myIncStorage;
   const BRepGraph_ProductId aProductId(aStorage.NbProducts());
@@ -1028,21 +1103,20 @@ BRepGraph_ProductId BRepGraph::EditorView::ProductOps::AddAssembly()
 
 //=================================================================================================
 
-BRepGraph_OccurrenceId BRepGraph::EditorView::ProductOps::AddOccurrence(
+BRepGraph_OccurrenceId BRepGraph::EditorView::ProductOps::LinkProducts(
   const BRepGraph_ProductId theParentProduct,
   const BRepGraph_ProductId theReferencedProduct,
   const TopLoc_Location&    thePlacement)
 {
-  // Delegate with no parent occurrence (top-level).
-  return AddOccurrence(theParentProduct,
-                       theReferencedProduct,
-                       thePlacement,
-                       BRepGraph_OccurrenceId());
+  return LinkProducts(theParentProduct,
+                      theReferencedProduct,
+                      thePlacement,
+                      BRepGraph_OccurrenceId());
 }
 
 //=================================================================================================
 
-BRepGraph_OccurrenceId BRepGraph::EditorView::ProductOps::AddOccurrence(
+BRepGraph_OccurrenceId BRepGraph::EditorView::ProductOps::LinkProducts(
   const BRepGraph_ProductId    theParentProduct,
   const BRepGraph_ProductId    theReferencedProduct,
   const TopLoc_Location&       thePlacement,
@@ -1072,7 +1146,7 @@ BRepGraph_OccurrenceId BRepGraph::EditorView::ProductOps::AddOccurrence(
   BRepGraphInc::OccurrenceDef& anOccDef = aStorage.ChangeOccurrence(anOccId);
   anOccDef.ChildDefId                   = theReferencedProduct;
   Standard_ASSERT_RETURN(isValidOccurrenceChildKind(anOccDef.ChildDefId.NodeKind),
-                         "ProductOps::AddOccurrence: invalid occurrence child kind",
+                         "ProductOps::LinkProducts: invalid occurrence child kind",
                          BRepGraph_OccurrenceId());
   myGraph->allocateUID(anOccId);
 
@@ -1095,24 +1169,6 @@ BRepGraph_OccurrenceId BRepGraph::EditorView::ProductOps::AddOccurrence(
                                                         aStorage.NbProducts());
 
   return anOccId;
-}
-
-//=================================================================================================
-
-void BRepGraph::EditorView::AppendFlattenedShape(const TopoDS_Shape&                   theShape,
-                                                 const bool                            theParallel,
-                                                 const BRepGraphInc_Populate::Options& theOptions)
-{
-  BRepGraph_Builder::AppendFlattened(*myGraph, theShape, theParallel, theOptions);
-}
-
-//=================================================================================================
-
-void BRepGraph::EditorView::AppendFullShape(const TopoDS_Shape&                   theShape,
-                                            const bool                            theParallel,
-                                            const BRepGraphInc_Populate::Options& theOptions)
-{
-  BRepGraph_Builder::AppendFull(*myGraph, theShape, theParallel, theOptions);
 }
 
 //=================================================================================================
@@ -2233,8 +2289,6 @@ void BRepGraph::EditorView::WireOps::ReplaceEdge(const BRepGraph_WireId theWireD
       aRevIdx.BindEdgeToCoEdge(theNewEdgeEntity, aCoEdgeDefId);
 
       // Update edge-to-face: bind new edge, unbind old edge for all faces of this wire.
-      // Wire-to-face mappings are built from FaceDef.WireRefs during BRepGraph_Builder::Perform()
-      // and are stable across edge mutations - only face-level operations modify them.
       const NCollection_DynamicArray<BRepGraph_FaceId>* aFaces = aRevIdx.FacesOfWire(theWireDefId);
       if (aFaces != nullptr)
       {

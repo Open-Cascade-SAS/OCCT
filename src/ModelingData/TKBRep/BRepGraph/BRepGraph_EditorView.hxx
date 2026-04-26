@@ -38,8 +38,8 @@ class Geom2d_Curve;
 //!   ProductOps, GenOps) to create topology definition nodes (vertices, edges, wires,
 //!   faces, shells, solids, compounds) and assembly nodes (products, occurrences)
 //!   without an existing TopoDS_Shape.
-//! - Field-level RAII-scoped mutation via Mut*() guards (MutEdge, MutFace, MutCoEdge,
-//!   MutProduct, MutOccurrence, MutSurface, etc.) with automatic cache invalidation
+//! - Field-level RAII-scoped mutation via Mut*() guards (Edges().Mut, Faces().Mut,
+//!   Products().Mut, Occurrences().Mut, Reps().MutSurface, etc.) with automatic cache invalidation
 //!   and upward SubtreeGen propagation on guard destruction.
 //! - Incremental shape appending, soft-deletion of nodes, and deferred invalidation
 //!   mode for batched structural edit loops under external serialization.
@@ -547,6 +547,16 @@ public:
     [[nodiscard]] Standard_EXPORT BRepGraph_CompoundId
       Add(const NCollection_DynamicArray<BRepGraph_NodeId>& theChildEntities);
 
+    //! Append a single child to an existing compound definition.
+    //! @param[in] theCompoundEntity typed compound definition identifier
+    //! @param[in] theChildEntity    typed child topology definition identifier
+    //! @param[in] theOri            orientation of the child in the compound
+    //! @return typed child reference identifier, or invalid if inputs are not active
+    [[nodiscard]] Standard_EXPORT BRepGraph_ChildRefId
+      AddChild(const BRepGraph_CompoundId theCompoundEntity,
+               const BRepGraph_NodeId     theChildEntity,
+               const TopAbs_Orientation   theOri = TopAbs_FORWARD);
+
     //! Detach one exact child ref from a compound definition.
     //! Use BRepGraph_RefsChildOfParent::CurrentId() when removing from a compound
     //! iterator. The method removes the exact ChildRef entry, erases it from the
@@ -583,6 +593,16 @@ public:
     [[nodiscard]] Standard_EXPORT BRepGraph_CompSolidId
       Add(const NCollection_DynamicArray<BRepGraph_SolidId>& theSolidEntities);
 
+    //! Append a single solid to an existing compsolid definition.
+    //! @param[in] theCompSolidEntity typed compsolid definition identifier
+    //! @param[in] theSolidEntity     typed solid definition identifier
+    //! @param[in] theOri             orientation of the solid in the compsolid
+    //! @return typed solid reference identifier, or invalid if inputs are not active
+    [[nodiscard]] Standard_EXPORT BRepGraph_SolidRefId
+      AddSolid(const BRepGraph_CompSolidId theCompSolidEntity,
+               const BRepGraph_SolidId     theSolidEntity,
+               const TopAbs_Orientation    theOri = TopAbs_FORWARD);
+
     //! Detach one exact solid ref from a compsolid definition.
     //! Use BRepGraph_RefsSolidOfCompSolid::CurrentId() when removing from a
     //! compsolid iterator. The method removes the exact SolidRef entry, erases it
@@ -609,50 +629,47 @@ public:
     BRepGraph* myGraph;
   };
 
-  //! @brief Product and assembly creation and editing operations.
+  //! @brief Product and assembly low-level reconstruction primitives.
+  //! Wire two existing entities together; for shape ingestion use BRepGraph_Builder::Add().
   class ProductOps
   {
   public:
-    //! Add a part product with a root shape node.
+    //! Create a Product wrapping an existing topology root via an Occurrence.
     //! @param[in] theShapeRoot root topology NodeId for the part
+    //! @param[in] thePlacement local placement stored on the root OccurrenceRef
     //! @return typed product definition identifier, or invalid if the root is
     //!         not an active topology definition node
-    [[nodiscard]] Standard_EXPORT BRepGraph_ProductId Add(const BRepGraph_NodeId theShapeRoot);
+    [[nodiscard]] Standard_EXPORT BRepGraph_ProductId
+      LinkProductToTopology(const BRepGraph_NodeId theShapeRoot,
+                            const TopLoc_Location& thePlacement = TopLoc_Location());
 
-    //! Add a product without a direct shape root.
-    //! It can later own child occurrences and may itself be referenced by an
-    //! occurrence like any other product.
+    //! Create a Product with no direct shape root; can later own child occurrences.
     //! @return typed product definition identifier
-    [[nodiscard]] Standard_EXPORT BRepGraph_ProductId AddAssembly();
+    [[nodiscard]] Standard_EXPORT BRepGraph_ProductId CreateEmptyProduct();
 
-    //! Add an occurrence linking a parent product to a referenced (child) product.
-    //! ParentOccurrenceIdx is set to -1 (top-level).
+    //! Link two existing Products via a fresh top-level Occurrence.
     //! @param[in] theParentProduct     typed parent product identifier
     //! @param[in] theReferencedProduct typed child product identifier being instantiated
     //! @param[in] thePlacement         local placement relative to parent
     //! @return typed occurrence definition identifier, or invalid unless the
-    //!         parent is an active product with no direct shape root and the
-    //!         referenced product is active
+    //!         parent and referenced products are both active and not equal
     [[nodiscard]] Standard_EXPORT BRepGraph_OccurrenceId
-      AddOccurrence(const BRepGraph_ProductId theParentProduct,
-                    const BRepGraph_ProductId theReferencedProduct,
-                    const TopLoc_Location&    thePlacement);
+      LinkProducts(const BRepGraph_ProductId theParentProduct,
+                   const BRepGraph_ProductId theReferencedProduct,
+                   const TopLoc_Location&    thePlacement);
 
-    //! Add an occurrence with an explicit parent occurrence for nested assembly chains.
-    //! This establishes a tree-structured placement path for unambiguous
-    //! GlobalLocation() / GlobalOrientation() computation even when products are shared (DAG).
+    //! Link two existing Products via a fresh Occurrence inside an explicit parent occurrence
+    //! (for nested assembly chains with unambiguous GlobalLocation in DAGs).
     //! @param[in] theParentProduct     typed parent product identifier
     //! @param[in] theReferencedProduct typed child product identifier being instantiated
     //! @param[in] thePlacement         local placement relative to parent
     //! @param[in] theParentOccurrence  typed occurrence that placed the parent product
-    //! @return typed occurrence definition identifier, or invalid unless the
-    //!         parent product, referenced product, and explicit parent occurrence
-    //!         form a valid active assembly chain
+    //! @return typed occurrence definition identifier, or invalid unless the chain is active
     [[nodiscard]] Standard_EXPORT BRepGraph_OccurrenceId
-      AddOccurrence(const BRepGraph_ProductId    theParentProduct,
-                    const BRepGraph_ProductId    theReferencedProduct,
-                    const TopLoc_Location&       thePlacement,
-                    const BRepGraph_OccurrenceId theParentOccurrence);
+      LinkProducts(const BRepGraph_ProductId    theParentProduct,
+                   const BRepGraph_ProductId    theReferencedProduct,
+                   const TopLoc_Location&       thePlacement,
+                   const BRepGraph_OccurrenceId theParentOccurrence);
 
     //! Detach one exact occurrence ref from a product definition.
     //! Use BRepGraph_RefsOccurrenceOfProduct::CurrentId() when removing from a
@@ -679,20 +696,33 @@ public:
     [[nodiscard]] Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::ProductDef> Mut(
       const BRepGraph_ProductId theProduct);
 
-    //! Return scoped mutable occurrence definition guard. (Occurrences live under
-    //! products and their lifecycle is co-located with `AddOccurrence` /
-    //! `RemoveOccurrence`, hence the Mut accessor is on ProductOps.)
-    [[nodiscard]] Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::OccurrenceDef> MutOccurrence(
+  private:
+    friend class EditorView;
+
+    explicit ProductOps(BRepGraph* theGraph)
+        : myGraph(theGraph)
+    {
+    }
+
+    BRepGraph* myGraph;
+  };
+
+  //! @brief Occurrence mutation operations.
+  class OccurrenceOps
+  {
+  public:
+    //! Return scoped mutable occurrence definition guard.
+    [[nodiscard]] Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::OccurrenceDef> Mut(
       const BRepGraph_OccurrenceId theOccurrence);
 
     //! Return scoped mutable occurrence reference guard.
-    [[nodiscard]] Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::OccurrenceRef> MutOccurrenceRef(
+    [[nodiscard]] Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::OccurrenceRef> MutRef(
       const BRepGraph_OccurrenceRefId theOccurrenceRef);
 
   private:
     friend class EditorView;
 
-    explicit ProductOps(BRepGraph* theGraph)
+    explicit OccurrenceOps(BRepGraph* theGraph)
         : myGraph(theGraph)
     {
     }
@@ -819,32 +849,14 @@ public:
   //! Return product and assembly creation and editing operations.
   [[nodiscard]] ProductOps& Products() { return myProductOps; }
 
+  //! Return occurrence mutation operations.
+  [[nodiscard]] OccurrenceOps& Occurrences() { return myOccurrenceOps; }
+
   //! Return generic node, reference, and representation removal operations.
   [[nodiscard]] GenOps& Gen() { return myGenOps; }
 
   //! Return representation (surface, curve, triangulation, polygon) mutation operations.
   [[nodiscard]] RepOps& Reps() { return myRepOps; }
-
-  //! Append a shape to the existing graph without clearing.
-  //! Compound/CompSolid/Solid/Shell inputs are flattened to appended face roots.
-  //! @param[in] theShape    shape to add
-  //! @param[in] theParallel if true, per-face geometry extraction is parallel
-  //! @param[in] theOptions  backend extraction options
-  Standard_EXPORT void AppendFlattenedShape(
-    const TopoDS_Shape&                   theShape,
-    const bool                            theParallel = false,
-    const BRepGraphInc_Populate::Options& theOptions  = BRepGraphInc_Populate::Options());
-
-  //! Append a shape to the graph preserving the full topology hierarchy.
-  //! Solid/Shell/Compound/CompSolid nodes are created alongside Face/Edge/Vertex nodes.
-  //! Shapes already in the graph (same TShape pointer) are deduplicated.
-  //! @param[in] theShape    shape to add
-  //! @param[in] theParallel if true, per-face geometry extraction is parallel
-  //! @param[in] theOptions  backend extraction options
-  Standard_EXPORT void AppendFullShape(
-    const TopoDS_Shape&                   theShape,
-    const bool                            theParallel = false,
-    const BRepGraphInc_Populate::Options& theOptions  = BRepGraphInc_Populate::Options());
 
   //! Begin deferred invalidation mode.
   //! While active, markModified() only increments OwnGen + SubtreeGen and
@@ -907,24 +919,26 @@ private:
         myCompoundOps(theGraph),
         myCompSolidOps(theGraph),
         myProductOps(theGraph),
+        myOccurrenceOps(theGraph),
         myGenOps(theGraph),
         myRepOps(theGraph)
   {
   }
 
-  BRepGraph*   myGraph;
-  VertexOps    myVertexOps;
-  EdgeOps      myEdgeOps;
-  CoEdgeOps    myCoEdgeOps;
-  WireOps      myWireOps;
-  FaceOps      myFaceOps;
-  ShellOps     myShellOps;
-  SolidOps     mySolidOps;
-  CompoundOps  myCompoundOps;
-  CompSolidOps myCompSolidOps;
-  ProductOps   myProductOps;
-  GenOps       myGenOps;
-  RepOps       myRepOps;
+  BRepGraph*    myGraph;
+  VertexOps     myVertexOps;
+  EdgeOps       myEdgeOps;
+  CoEdgeOps     myCoEdgeOps;
+  WireOps       myWireOps;
+  FaceOps       myFaceOps;
+  ShellOps      myShellOps;
+  SolidOps      mySolidOps;
+  CompoundOps   myCompoundOps;
+  CompSolidOps  myCompSolidOps;
+  ProductOps    myProductOps;
+  OccurrenceOps myOccurrenceOps;
+  GenOps        myGenOps;
+  RepOps        myRepOps;
 };
 
 #endif // _BRepGraph_EditorView_HeaderFile

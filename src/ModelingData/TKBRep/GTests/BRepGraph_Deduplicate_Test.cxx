@@ -293,7 +293,9 @@ int addDuplicatePCurvesToAllEdges(BRepGraph& theGraph)
 TEST(BRepGraph_DeduplicateTest, AnalyzeOnly_DoesNotRewrite)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedIdenticalFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes1 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   ASSERT_EQ(nbUniqueFaceSurfaceDefs(aGraph), 2);
@@ -310,7 +312,9 @@ TEST(BRepGraph_DeduplicateTest, AnalyzeOnly_DoesNotRewrite)
 TEST(BRepGraph_DeduplicateTest, AnalyzeOnly_ReportsCanonicalCandidates)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedIdenticalFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes2 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph_Deduplicate::Options anOpts;
@@ -327,7 +331,9 @@ TEST(BRepGraph_DeduplicateTest, AnalyzeOnly_ReportsCanonicalCandidates)
 TEST(BRepGraph_DeduplicateTest, CanonicalizeSurfaces_RewritesAndRecordsHistory)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedIdenticalFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes3 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   ASSERT_EQ(nbUniqueFaceSurfaceDefs(aGraph), 2);
@@ -348,7 +354,9 @@ TEST(BRepGraph_DeduplicateTest, CanonicalizeSurfaces_RewritesAndRecordsHistory)
 TEST(BRepGraph_DeduplicateTest, CanonicalizeCurves_RewritesAndReducesUnique)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedIdenticalFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes4 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   ASSERT_EQ(nbUniqueEdgeCurveDefs(aGraph), 8);
@@ -364,7 +372,9 @@ TEST(BRepGraph_DeduplicateTest, CanonicalizeCurves_RewritesAndReducesUnique)
 TEST(BRepGraph_DeduplicateTest, HistoryModeOff_DoesNotAddHistory)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedIdenticalFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes5 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   ASSERT_EQ(aGraph.History().NbRecords(), 0);
@@ -381,7 +391,9 @@ TEST(BRepGraph_DeduplicateTest, HistoryModeOff_DoesNotAddHistory)
 TEST(BRepGraph_DeduplicateTest, RestoresHistoryEnabledFlag)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedIdenticalFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes6 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   aGraph.History().SetEnabled(false);
@@ -397,7 +409,9 @@ TEST(BRepGraph_DeduplicateTest, RestoresHistoryEnabledFlag)
 TEST(BRepGraph_DeduplicateTest, DefaultOverload_PerformWorks)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedIdenticalFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes7 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   const BRepGraph_Deduplicate::Result aRes = BRepGraph_Deduplicate::Perform(aGraph);
@@ -417,7 +431,9 @@ TEST(BRepGraph_DeduplicateTest, SingleFace_NoSurfaceRewrite)
   ASSERT_TRUE(anExp.More());
 
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, anExp.Current());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes8 =
+    BRepGraph_Builder::Add(aGraph, anExp.Current());
   ASSERT_TRUE(aGraph.IsDone());
 
   const BRepGraph_Deduplicate::Result aRes = BRepGraph_Deduplicate::Perform(aGraph);
@@ -429,7 +445,7 @@ TEST(BRepGraph_DeduplicateTest, SingleFace_NoSurfaceRewrite)
 TEST(BRepGraph_DeduplicateTest, NotDoneGraph_ReturnsEmptyResult)
 {
   BRepGraph aGraph;
-  // Do not call BRepGraph_Builder::Perform() - graph is not done.
+  // Do not call BRepGraph_Builder::Add() - graph is not done.
   ASSERT_FALSE(aGraph.IsDone());
 
   const BRepGraph_Deduplicate::Result aRes = BRepGraph_Deduplicate::Perform(aGraph);
@@ -446,7 +462,9 @@ TEST(BRepGraph_DeduplicateTest, NotDoneGraph_ReturnsEmptyResult)
 TEST(BRepGraph_DeduplicateTest, Idempotent_SecondRunNoRewrites)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedIdenticalFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes9 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   const BRepGraph_Deduplicate::Result aRes1 = BRepGraph_Deduplicate::Perform(aGraph);
@@ -472,7 +490,9 @@ TEST(BRepGraph_DeduplicateTest, FullBox_AllSurfacesUnique)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, aBox);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes10 =
+    BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
   // A box has 6 faces with 6 distinct Geom_Plane instances (different origins/normals).
@@ -485,7 +505,9 @@ TEST(BRepGraph_DeduplicateTest, FullBox_AllSurfacesUnique)
 TEST(BRepGraph_DeduplicateTest, ResultCountersConsistency)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedIdenticalFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes11 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   // TwoCopiedFaces: 2 surfaces, 8 curves, 8 PCurves.
@@ -514,7 +536,9 @@ TEST(BRepGraph_DeduplicateTest, EmptyCompound_NoRewrites)
   aBuilder.MakeCompound(aCompound);
 
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, aCompound);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes12 =
+    BRepGraph_Builder::Add(aGraph, aCompound);
   ASSERT_TRUE(aGraph.IsDone());
 
   const BRepGraph_Deduplicate::Result aRes = BRepGraph_Deduplicate::Perform(aGraph);
@@ -526,7 +550,9 @@ TEST(BRepGraph_DeduplicateTest, MultipleCopies_NWayDedup)
 {
   const int aNbCopies = 4;
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeNCopiedIdenticalFaces(aNbCopies));
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes13 =
+    BRepGraph_Builder::Add(aGraph, makeNCopiedIdenticalFaces(aNbCopies));
   ASSERT_TRUE(aGraph.IsDone());
 
   ASSERT_EQ(aGraph.Topo().Faces().Nb(), aNbCopies);
@@ -540,7 +566,9 @@ TEST(BRepGraph_DeduplicateTest, MultipleCopies_NWayDedup)
 TEST(BRepGraph_DeduplicateTest, MixedGeometry_OnlyIdenticalDeduped)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeMixedCompound());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes14 =
+    BRepGraph_Builder::Add(aGraph, makeMixedCompound());
   ASSERT_TRUE(aGraph.IsDone());
 
   // 2 box face copies + 1 cylinder face = 3 faces, 3 surfaces, 11 curves.
@@ -564,7 +592,9 @@ TEST(BRepGraph_DeduplicateTest, AfterDedup_AllCopiedFacesShareCanonicalSurface)
 {
   const int aNbCopies = 3;
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeNCopiedIdenticalFaces(aNbCopies));
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes15 =
+    BRepGraph_Builder::Add(aGraph, makeNCopiedIdenticalFaces(aNbCopies));
   ASSERT_TRUE(aGraph.IsDone());
 
   (void)BRepGraph_Deduplicate::Perform(aGraph);
@@ -586,7 +616,9 @@ TEST(BRepGraph_DeduplicateTest, AfterDedup_AllCopiedFacesShareCanonicalSurface)
 TEST(BRepGraph_DeduplicateTest, HistoryRecordNames_MatchExpectedOps)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedIdenticalFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes16 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph_Deduplicate::Options anOpts;
@@ -610,7 +642,9 @@ TEST(BRepGraph_DeduplicateTest, HistoryRecordNames_MatchExpectedOps)
 TEST(BRepGraph_DeduplicateTest, AnalyzeOnly_CurveAndPCurveCountsReported)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedIdenticalFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes17 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph_Deduplicate::Options anOpts;
@@ -657,7 +691,9 @@ TEST(BRepGraph_DeduplicateTest, DefaultResultStruct_AllZeroed)
 TEST(BRepGraph_DeduplicateTest, MergeDefsWhenSafe_MergesVertices)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedIdenticalFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes18 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   const int aNbVerticesBefore = aGraph.Topo().Vertices().Nb();
@@ -679,7 +715,9 @@ TEST(BRepGraph_DeduplicateTest, MergeDefsWhenSafe_MergesVertices)
 TEST(BRepGraph_DeduplicateTest, NestedCompound_AllCopiesDeduped)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeNestedCompound());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes19 =
+    BRepGraph_Builder::Add(aGraph, makeNestedCompound());
   ASSERT_TRUE(aGraph.IsDone());
 
   // 3 copies of the same face across nested compounds: 3 surfaces, 12 curves.
@@ -702,7 +740,9 @@ TEST(BRepGraph_DeduplicateTest, NestedCompound_AllCopiesDeduped)
 TEST(BRepGraph_DeduplicateTest, ThreeDistinctPrimitives_MinimalDedup)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeThreeDistinctPrimitives());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes20 =
+    BRepGraph_Builder::Add(aGraph, makeThreeDistinctPrimitives());
   ASSERT_TRUE(aGraph.IsDone());
 
   // Box(6 faces) + Sphere(1 face) + Cone(3 faces) = 10 faces, 18 edges.
@@ -721,7 +761,9 @@ TEST(BRepGraph_DeduplicateTest, ThreeDistinctPrimitives_MinimalDedup)
 TEST(BRepGraph_DeduplicateTest, TwoIdenticalBoxes_SurfacesAndCurvesDeduped)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoIdenticalBoxes());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes21 =
+    BRepGraph_Builder::Add(aGraph, makeTwoIdenticalBoxes());
   ASSERT_TRUE(aGraph.IsDone());
 
   // Two identical boxes: 12 faces, 24 edges, 12 geom surfaces, 24 geom curves.
@@ -748,7 +790,9 @@ TEST(BRepGraph_DeduplicateTest, TwoIdenticalBoxes_SurfacesAndCurvesDeduped)
 TEST(BRepGraph_DeduplicateTest, CurveRewriteCount_MatchesDuplicateEdgeCurves)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedIdenticalFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes22 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   // TwoCopiedFaces: 8 geom curves, 4 canonical -> 4 duplicates.
@@ -768,7 +812,9 @@ TEST(BRepGraph_DeduplicateTest, CurveRewriteCount_MatchesDuplicateEdgeCurves)
 TEST(BRepGraph_DeduplicateTest, AfterDedup_AllCopiedEdgesShareCanonicalCurve)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedIdenticalFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes23 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   ASSERT_EQ(nbUniqueEdgeCurveDefs(aGraph), 8);
@@ -790,7 +836,9 @@ TEST(BRepGraph_DeduplicateTest, MultiplePCurveDups_AllEdgesDeduped)
   BRepBuilderAPI_Copy aCopy(anExp.Current(), true);
 
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, aCopy.Shape());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes24 =
+    BRepGraph_Builder::Add(aGraph, aCopy.Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   const int aDupCount = addDuplicatePCurvesToAllEdges(aGraph);
@@ -806,7 +854,9 @@ TEST(BRepGraph_DeduplicateTest, PCurveDup_AnalyzeOnly_CountsButNoRewrite)
   BRepBuilderAPI_Copy aCopy(anExp.Current(), true);
 
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, aCopy.Shape());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes25 =
+    BRepGraph_Builder::Add(aGraph, aCopy.Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   const int aDupCount = addDuplicatePCurvesToAllEdges(aGraph);
@@ -830,7 +880,9 @@ TEST(BRepGraph_DeduplicateTest, NoPCurveDuplicates_ZeroPCurveRewrites)
   BRepBuilderAPI_Copy aCopy(anExp.Current(), true);
 
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, aCopy.Shape());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes26 =
+    BRepGraph_Builder::Add(aGraph, aCopy.Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   const BRepGraph_Deduplicate::Result aRes = BRepGraph_Deduplicate::Perform(aGraph);
@@ -843,7 +895,9 @@ TEST(BRepGraph_DeduplicateTest, NoPCurveDuplicates_ZeroPCurveRewrites)
 TEST(BRepGraph_DeduplicateTest, HistoryFindOriginal_TracesBackToCanonical)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedIdenticalFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes27 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph_Deduplicate::Options anOpts;
@@ -879,7 +933,9 @@ TEST(BRepGraph_DeduplicateTest, HistoryFindOriginal_TracesBackToCanonical)
 TEST(BRepGraph_DeduplicateTest, HistoryFindDerived_ContainsCanonicalNode)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedIdenticalFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes28 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph_Deduplicate::Options anOpts;
@@ -913,7 +969,9 @@ TEST(BRepGraph_DeduplicateTest, HistoryFindDerived_ContainsCanonicalNode)
 TEST(BRepGraph_DeduplicateTest, HistoryRecordSequenceNumbers_AreMonotonic)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedIdenticalFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes29 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph_Deduplicate::Options anOpts;
@@ -938,7 +996,9 @@ TEST(BRepGraph_DeduplicateTest, HistoryRecordSequenceNumbers_AreMonotonic)
 TEST(BRepGraph_DeduplicateTest, HistoryOff_NbRecordsUnchanged)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedIdenticalFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes30 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   // Run once with history to get 5 records (1 surface + 4 curve canonicalizes).
@@ -949,7 +1009,9 @@ TEST(BRepGraph_DeduplicateTest, HistoryOff_NbRecordsUnchanged)
 
   // Fresh graph, run with history off - no records should be added.
   BRepGraph aGraph2;
-  BRepGraph_Builder::Perform(aGraph2, makeTwoCopiedIdenticalFaces());
+  aGraph2.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes31 =
+    BRepGraph_Builder::Add(aGraph2, makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph2.IsDone());
 
   BRepGraph_Deduplicate::Options anOpts2;
@@ -968,7 +1030,9 @@ TEST(BRepGraph_DeduplicateTest, HistoryOff_NbRecordsUnchanged)
 TEST(BRepGraph_DeduplicateTest, AfterDedup_AllSurfacesValid)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedIdenticalFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes32 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   (void)BRepGraph_Deduplicate::Perform(aGraph);
@@ -985,7 +1049,9 @@ TEST(BRepGraph_DeduplicateTest, AfterDedup_AllSurfacesValid)
 TEST(BRepGraph_DeduplicateTest, AfterDedup_AllCurve3dsValid)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedIdenticalFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes33 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   (void)BRepGraph_Deduplicate::Perform(aGraph);
@@ -1009,7 +1075,9 @@ TEST(BRepGraph_DeduplicateTest, AfterDedup_AllInlinePCurvesHaveCurve2d)
   BRepBuilderAPI_Copy aCopy(anExp.Current(), true);
 
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, aCopy.Shape());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes34 =
+    BRepGraph_Builder::Add(aGraph, aCopy.Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   (void)addDuplicatePCurvesToAllEdges(aGraph);
@@ -1033,7 +1101,9 @@ TEST(BRepGraph_DeduplicateTest, AfterDedup_AllInlinePCurvesHaveCurve2d)
 TEST(BRepGraph_DeduplicateTest, AfterDedup_CanonicalSurfaceGeomNotNull)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeNCopiedIdenticalFaces(4));
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes35 =
+    BRepGraph_Builder::Add(aGraph, makeNCopiedIdenticalFaces(4));
   ASSERT_TRUE(aGraph.IsDone());
 
   (void)BRepGraph_Deduplicate::Perform(aGraph);
@@ -1051,7 +1121,9 @@ TEST(BRepGraph_DeduplicateTest, AfterDedup_CanonicalSurfaceGeomNotNull)
 TEST(BRepGraph_DeduplicateTest, AfterDedup_CanonicalCurveGeomNotNull)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedIdenticalFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes36 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   (void)BRepGraph_Deduplicate::Perform(aGraph);
@@ -1077,11 +1149,17 @@ TEST(BRepGraph_DeduplicateTest, ParallelBuild_SameResultAsSequential)
   const TopoDS_Compound aCompound = makeTwoCopiedIdenticalFaces();
 
   BRepGraph aGraphSeq;
-  BRepGraph_Builder::Perform(aGraphSeq, aCompound, false);
+  aGraphSeq.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes37 =
+    BRepGraph_Builder::Add(aGraphSeq,
+                           aCompound,
+                           BRepGraph_Builder::Options{{}, true, false, false});
   ASSERT_TRUE(aGraphSeq.IsDone());
 
   BRepGraph aGraphPar;
-  BRepGraph_Builder::Perform(aGraphPar, aCompound, true);
+  aGraphPar.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes38 =
+    BRepGraph_Builder::Add(aGraphPar, aCompound, BRepGraph_Builder::Options{{}, true, false, true});
   ASSERT_TRUE(aGraphPar.IsDone());
 
   const BRepGraph_Deduplicate::Result aResSeq = BRepGraph_Deduplicate::Perform(aGraphSeq);
@@ -1106,7 +1184,9 @@ TEST(BRepGraph_DeduplicateTest, TenCopies_AllDeduplicatedToOneSurface)
 {
   const int aNbCopies = 10;
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeNCopiedIdenticalFaces(aNbCopies));
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes39 =
+    BRepGraph_Builder::Add(aGraph, makeNCopiedIdenticalFaces(aNbCopies));
   ASSERT_TRUE(aGraph.IsDone());
 
   ASSERT_EQ(aGraph.Topo().Faces().Nb(), aNbCopies);
@@ -1120,7 +1200,9 @@ TEST(BRepGraph_DeduplicateTest, TenCopies_AllDeduplicatedToOneSurface)
 TEST(BRepGraph_DeduplicateTest, TwoCopies_CurveCanonicalCountLessThanTotal)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedIdenticalFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes40 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   // 8 geom curves, 4 canonical.
@@ -1140,7 +1222,9 @@ TEST(BRepGraph_DeduplicateTest, TwoCopies_CurveCanonicalCountLessThanTotal)
 TEST(BRepGraph_DeduplicateTest, Idempotent_MixedCompound_SurfacesAndCurves)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeMixedCompound());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes41 =
+    BRepGraph_Builder::Add(aGraph, makeMixedCompound());
   ASSERT_TRUE(aGraph.IsDone());
 
   const BRepGraph_Deduplicate::Result aRes1 = BRepGraph_Deduplicate::Perform(aGraph);
@@ -1161,7 +1245,9 @@ TEST(BRepGraph_DeduplicateTest, Idempotent_MixedCompound_SurfacesAndCurves)
 TEST(BRepGraph_DeduplicateTest, Idempotent_TwoIdenticalBoxes)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoIdenticalBoxes());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes42 =
+    BRepGraph_Builder::Add(aGraph, makeTwoIdenticalBoxes());
   ASSERT_TRUE(aGraph.IsDone());
 
   const BRepGraph_Deduplicate::Result aRes1 = BRepGraph_Deduplicate::Perform(aGraph);
@@ -1186,7 +1272,9 @@ TEST(BRepGraph_DeduplicateTest, DISABLED_PCurveDedup_RewritesReduceUniquePCurveN
   BRepBuilderAPI_Copy aCopy(anExp.Current(), true);
 
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, aCopy.Shape());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes43 =
+    BRepGraph_Builder::Add(aGraph, aCopy.Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   (void)addDuplicatePCurvesToAllEdges(aGraph);
@@ -1206,7 +1294,9 @@ TEST(BRepGraph_DeduplicateTest, DISABLED_PCurveDedup_RewritesReduceUniquePCurveN
 TEST(BRepGraph_DeduplicateTest, RestoresHistoryFlag_WhenHistoryModeOff)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedIdenticalFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes44 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   aGraph.History().SetEnabled(true);
@@ -1223,7 +1313,9 @@ TEST(BRepGraph_DeduplicateTest, RestoresHistoryFlag_WhenHistoryModeOff)
 TEST(BRepGraph_DeduplicateTest, RestoresHistoryFlag_AnalyzeOnlyPath)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedIdenticalFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes45 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   aGraph.History().SetEnabled(true);
@@ -1244,7 +1336,9 @@ TEST(BRepGraph_DeduplicateTest, RestoresHistoryFlag_AnalyzeOnlyPath)
 TEST(BRepGraph_DeduplicateTest, GeomCountsUnchanged_AfterDedup)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedIdenticalFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes46 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   // TwoCopiedFaces: 2 surfaces, 8 curves, 8 PCurves.
@@ -1263,7 +1357,9 @@ TEST(BRepGraph_DeduplicateTest, GeomCountsUnchanged_AfterDedup)
 TEST(BRepGraph_DeduplicateTest, DefCountsUnchanged_AfterDedup)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedIdenticalFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes47 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   // TwoCopiedFaces: 2 face defs, 8 edge defs.
@@ -1284,7 +1380,9 @@ TEST(BRepGraph_DeduplicateTest, PCurveEntryCount_UnchangedAfterDedup)
   BRepBuilderAPI_Copy aCopy(anExp.Current(), true);
 
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, aCopy.Shape());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes48 =
+    BRepGraph_Builder::Add(aGraph, aCopy.Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   (void)addDuplicatePCurvesToAllEdges(aGraph);
@@ -1320,7 +1418,9 @@ TEST(BRepGraph_DeduplicateTest, TwoCopiedSphereFaces_Deduped)
   aBuilder.Add(aCompound, aCopy2.Shape());
 
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, aCompound);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes49 =
+    BRepGraph_Builder::Add(aGraph, aCompound);
   ASSERT_TRUE(aGraph.IsDone());
 
   // Two sphere face copies: 2 faces, 6 edges.
@@ -1355,7 +1455,9 @@ TEST(BRepGraph_DeduplicateTest, TwoCopiedCylinderFaces_Deduped)
   aBuilder.Add(aCompound, aCopy2.Shape());
 
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, aCompound);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes50 =
+    BRepGraph_Builder::Add(aGraph, aCompound);
   ASSERT_TRUE(aGraph.IsDone());
 
   // Two cylinder face copies: 2 faces, 6 edges, 2 surfaces, 6 curves, 12 PCurves.
@@ -1389,7 +1491,9 @@ TEST(BRepGraph_DeduplicateTest, DifferentSizedCylinders_NotDeduped)
   aBuilder.Add(aCompound, anExp2.Current());
 
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, aCompound);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes51 =
+    BRepGraph_Builder::Add(aGraph, aCompound);
   ASSERT_TRUE(aGraph.IsDone());
 
   // Two distinct cylinder faces: 2 surfaces, 6 curves.
@@ -1414,7 +1518,9 @@ TEST(BRepGraph_DeduplicateTest, DifferentSizedCylinders_NotDeduped)
 TEST(BRepGraph_DeduplicateTest, BackRefs_SurfaceRewrite_UpdatesFaceDefUsers)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedIdenticalFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes52 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   // Before dedup: each face has its own surface handle.
@@ -1432,7 +1538,9 @@ TEST(BRepGraph_DeduplicateTest, BackRefs_SurfaceRewrite_UpdatesFaceDefUsers)
 TEST(BRepGraph_DeduplicateTest, BackRefs_CurveRewrite_UpdatesEdgeDefUsers)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedIdenticalFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes53 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   // Before dedup: 8 edges, each with its own curve handle.
@@ -1457,7 +1565,9 @@ TEST(BRepGraph_DeduplicateTest, BackRefs_CurveRewrite_UpdatesEdgeDefUsers)
 TEST(BRepGraph_DeduplicateTest, FacesOnSurface_AfterDedup_ReturnsCorrectDefs)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedIdenticalFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes54 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   (void)BRepGraph_Deduplicate::Perform(aGraph);
@@ -1473,7 +1583,9 @@ TEST(BRepGraph_DeduplicateTest, FacesOnSurface_AfterDedup_ReturnsCorrectDefs)
 TEST(BRepGraph_DeduplicateTest, Nullify_OrphanedSurface_HandleIsNull)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedIdenticalFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes55 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   const BRepGraph_Deduplicate::Result aRes = BRepGraph_Deduplicate::Perform(aGraph);
@@ -1492,7 +1604,9 @@ TEST(BRepGraph_DeduplicateTest, Nullify_OrphanedSurface_HandleIsNull)
 TEST(BRepGraph_DeduplicateTest, Nullify_OrphanedCurve_HandleIsNull)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedIdenticalFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes56 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   const BRepGraph_Deduplicate::Result aRes = BRepGraph_Deduplicate::Perform(aGraph);
@@ -1521,7 +1635,9 @@ TEST(BRepGraph_DeduplicateTest, Nullify_OrphanedPCurve_HandleIsNull)
   BRepBuilderAPI_Copy aCopy(anExp.Current(), true);
 
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, aCopy.Shape());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes57 =
+    BRepGraph_Builder::Add(aGraph, aCopy.Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   const int aDupCount = addDuplicatePCurvesToAllEdges(aGraph);
@@ -1536,7 +1652,9 @@ TEST(BRepGraph_DeduplicateTest, Nullify_OrphanedPCurve_HandleIsNull)
 TEST(BRepGraph_DeduplicateTest, AnalyzeOnly_NoBackRefChangesOrNullification)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedIdenticalFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes58 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   // Snapshot surface/curve pointers before.
@@ -1598,7 +1716,9 @@ TEST(BRepGraph_DeduplicateTest, RoundTrip_TwoCopiedFaces_FewerSurfaces)
 
   // First graph: build and dedup.
   BRepGraph aGraph1;
-  BRepGraph_Builder::Perform(aGraph1, aCompound);
+  aGraph1.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes59 =
+    BRepGraph_Builder::Add(aGraph1, aCompound);
   ASSERT_TRUE(aGraph1.IsDone());
   ASSERT_EQ(aGraph1.Topo().Faces().Nb(), 2);
 
@@ -1619,7 +1739,9 @@ TEST(BRepGraph_DeduplicateTest, RoundTrip_TwoCopiedFaces_FewerSurfaces)
 
   // Second graph: build from reconstructed shape.
   BRepGraph aGraph2;
-  BRepGraph_Builder::Perform(aGraph2, aReconstructed);
+  aGraph2.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes60 =
+    BRepGraph_Builder::Add(aGraph2, aReconstructed);
   ASSERT_TRUE(aGraph2.IsDone());
 
   // Face defs count stays 2 (topology defs, not geometry nodes).
@@ -1634,7 +1756,9 @@ TEST(BRepGraph_DeduplicateTest, RoundTrip_TwoCopiedFaces_FewerCurves)
   const TopoDS_Compound aCompound = makeTwoCopiedIdenticalFaces();
 
   BRepGraph aGraph1;
-  BRepGraph_Builder::Perform(aGraph1, aCompound);
+  aGraph1.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes61 =
+    BRepGraph_Builder::Add(aGraph1, aCompound);
   ASSERT_TRUE(aGraph1.IsDone());
   ASSERT_EQ(aGraph1.Topo().Edges().Nb(), 8);
 
@@ -1654,7 +1778,9 @@ TEST(BRepGraph_DeduplicateTest, RoundTrip_TwoCopiedFaces_FewerCurves)
   }
 
   BRepGraph aGraph2;
-  BRepGraph_Builder::Perform(aGraph2, aReconstructed);
+  aGraph2.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes62 =
+    BRepGraph_Builder::Add(aGraph2, aReconstructed);
   ASSERT_TRUE(aGraph2.IsDone());
 
   // Edge defs count stays 8 (topology defs, not geometry nodes).
@@ -1682,7 +1808,9 @@ TEST(BRepGraph_DeduplicateTest, Build_SharedTFace_OneSurfaceNode)
   aBuilder.Add(aCompound, aFace1);
 
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, aCompound);
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes63 =
+    BRepGraph_Builder::Add(aGraph, aCompound);
   ASSERT_TRUE(aGraph.IsDone());
 
   // Both face usages share the same TFace -> same raw surface pointer -> one surface node.
@@ -1694,7 +1822,9 @@ TEST(BRepGraph_DeduplicateTest, RoundTrip_TwoBoxes_GeomReduction)
   const TopoDS_Compound aCompound = makeTwoIdenticalBoxes();
 
   BRepGraph aGraph1;
-  BRepGraph_Builder::Perform(aGraph1, aCompound);
+  aGraph1.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes64 =
+    BRepGraph_Builder::Add(aGraph1, aCompound);
   ASSERT_TRUE(aGraph1.IsDone());
 
   const int aSurfsBefore  = aGraph1.Topo().Faces().Nb();
@@ -1711,7 +1841,9 @@ TEST(BRepGraph_DeduplicateTest, RoundTrip_TwoBoxes_GeomReduction)
 
   // Build second graph.
   BRepGraph aGraph2;
-  BRepGraph_Builder::Perform(aGraph2, aReconstructed);
+  aGraph2.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes65 =
+    BRepGraph_Builder::Add(aGraph2, aReconstructed);
   ASSERT_TRUE(aGraph2.IsDone());
 
   // Face/edge def counts stay the same (topology defs, not geometry nodes).
@@ -1731,7 +1863,9 @@ TEST(BRepGraph_DeduplicateTest, RoundTrip_TwoBoxes_GeomReduction)
 TEST(BRepGraph_DeduplicateTest, MergeVertices_SharedVerticesReduced)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedIdenticalFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes66 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   const int aNbVerticesBefore = aGraph.Topo().Vertices().Nb();
@@ -1755,7 +1889,9 @@ TEST(BRepGraph_DeduplicateTest, MergeVertices_SharedVerticesReduced)
 TEST(BRepGraph_DeduplicateTest, MergeEdges_SharedEdgesReduced)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedIdenticalFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes67 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph_Deduplicate::Options anOpts;
@@ -1768,7 +1904,9 @@ TEST(BRepGraph_DeduplicateTest, MergeEdges_SharedEdgesReduced)
 TEST(BRepGraph_DeduplicateTest, MergeWires_IdenticalWiresMerged)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedIdenticalFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes68 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph_Deduplicate::Options anOpts;
@@ -1782,7 +1920,9 @@ TEST(BRepGraph_DeduplicateTest, MergeWires_IdenticalWiresMerged)
 TEST(BRepGraph_DeduplicateTest, MergeFaces_IdenticalFacesMerged)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedIdenticalFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes69 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph_Deduplicate::Options anOpts;
@@ -1796,7 +1936,9 @@ TEST(BRepGraph_DeduplicateTest, MergeFaces_IdenticalFacesMerged)
 TEST(BRepGraph_DeduplicateTest, MergeDefsWhenSafe_False_NoMerge)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedIdenticalFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes70 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   // Default: MergeEntitiesWhenSafe = false.
@@ -1811,7 +1953,9 @@ TEST(BRepGraph_DeduplicateTest, MergeDefsWhenSafe_False_NoMerge)
 TEST(BRepGraph_DeduplicateTest, AnalyzeOnly_MergeDefsWhenSafe_CountsOnly)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedIdenticalFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes71 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   const int aNbVerticesBefore = aGraph.Topo().Vertices().Nb();
@@ -1831,7 +1975,9 @@ TEST(BRepGraph_DeduplicateTest, AnalyzeOnly_MergeDefsWhenSafe_CountsOnly)
 TEST(BRepGraph_DeduplicateTest, HistoryRecords_MergePhases)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedIdenticalFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes72 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph_Deduplicate::Options anOpts;
@@ -1852,7 +1998,9 @@ TEST(BRepGraph_DeduplicateTest, HistoryRecords_MergePhases)
 TEST(BRepGraph_DeduplicateTest, AfterMerge_Validate_NoIssues)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedIdenticalFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes73 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph_Deduplicate::Options anOpts;
@@ -1876,7 +2024,9 @@ TEST(BRepGraph_DeduplicateTest, VertexMerge_UpdatesInternalEdgeVertexRefs)
   // Regression for Bug A1: Phase 1 vertex merge must update EdgeDef.InternalVertexRefIds.
   // Without the fix, BRepGraph_Compact would silently drop the internal vertex ref.
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedIdenticalFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes74 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Topo().Edges().Nb(), 0);
   ASSERT_GT(aGraph.Topo().Vertices().Nb(), 0);
@@ -1935,7 +2085,9 @@ TEST(BRepGraph_DeduplicateTest, VertexMerge_UpdatesFaceDirectVertexRefs)
   // Regression for Bug A2: Phase 1 vertex merge must update FaceDef.VertexRefIds.
   // Without the fix, BRepGraph_Compact would silently drop the direct face vertex ref.
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedIdenticalFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes75 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Topo().Faces().Nb(), 0);
   ASSERT_GT(aGraph.Topo().Vertices().Nb(), 0);
@@ -1994,7 +2146,9 @@ TEST(BRepGraph_DeduplicateTest, WireDedup_PreservesShellAuxChildRefs)
   // Regression for Bug A3: Phase 3 wire merge must update ShellDef.AuxChildRefIds.
   // Deduplicate redirects AuxChildRef from the removed (old) wire to the canonical wire.
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeTwoCopiedIdenticalFaces());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes76 =
+    BRepGraph_Builder::Add(aGraph, makeTwoCopiedIdenticalFaces());
   ASSERT_TRUE(aGraph.IsDone());
 
   // Two wires are built (one outer wire per copied face).

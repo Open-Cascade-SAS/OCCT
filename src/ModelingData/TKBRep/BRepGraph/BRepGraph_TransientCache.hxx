@@ -217,7 +217,7 @@ private:
 //! considered stale - the caller decides how to handle it.
 //!
 //! ## Lifecycle
-//! NOT a Layer. Cleared on BRepGraph_Builder::Perform() and Compact(). No OnNodeRemoved handling -
+//! NOT a Layer. Cleared on BRepGraph_Builder::Add() and Compact(). No OnNodeRemoved handling -
 //! stale data is auto-detected by SubtreeGen mismatch.
 //!
 //! ## Thread safety
@@ -230,7 +230,7 @@ public:
   //! Number of Kind enum slots to cover (0..11, with gap at 9).
   static constexpr int THE_KIND_COUNT = BRepGraph_NodeId::THE_KIND_COUNT;
 
-  //! Default number of cache-kind slots reserved after BRepGraph_Builder::Perform().
+  //! Default number of cache-kind slots reserved after BRepGraph_Builder::Add().
   static constexpr int THE_DEFAULT_RESERVED_KIND_COUNT = 16;
 
   //! Per-slot storage: cached value handle + SubtreeGen stamp.
@@ -299,7 +299,7 @@ public:
     return myIsReserved.load(std::memory_order_acquire);
   }
 
-  //! Clear all cached data. Called on BRepGraph_Builder::Perform() and Compact().
+  //! Clear all cached data. Called on BRepGraph_Builder::Add() and Compact().
   Standard_EXPORT void Clear() noexcept;
 
   //! Move constructor: transfers data, creates fresh mutex.
