@@ -280,8 +280,8 @@ BRepGraph_Builder::Result BRepGraph_Builder::Add(BRepGraph&          theGraph,
 
   if (theOptions.CreateAutoProduct && aResult.TopologyRoot.IsValid())
   {
-    aResult.Product = theGraph.Editor().Products().LinkProductToTopology(aResult.TopologyRoot,
-                                                                         theShape.Location());
+    aResult.Product =
+      theGraph.Editor().Products().LinkProductToTopology(aResult.TopologyRoot, theShape.Location());
     if (aResult.Product.IsValid())
     {
       const BRepGraphInc::ProductDef& aProductDef =
@@ -367,8 +367,7 @@ BRepGraph_Builder::Result BRepGraph_Builder::Add(BRepGraph&             theGraph
   {
     case BRepGraph_NodeId::Kind::Product: {
       const BRepGraph_ProductId aChildProduct =
-        theGraph.Editor().Products().LinkProductToTopology(aResult.TopologyRoot,
-                                                           TopLoc_Location());
+        theGraph.Editor().Products().LinkProductToTopology(aResult.TopologyRoot, TopLoc_Location());
       if (!aChildProduct.IsValid())
         return aResult;
 

@@ -35,7 +35,7 @@ public:
   struct Options
   {
     BRepGraphInc_Populate::Options Populate{};
-    bool CreateAutoProduct = true; //!< wrap topology root in a Product (unparented Add only)
+    bool CreateAutoProduct = true;  //!< wrap topology root in a Product (unparented Add only)
     bool Flatten           = false; //!< drop hierarchy containers, append faces as roots
     bool Parallel          = false; //!< run face-level construction in parallel
   };
