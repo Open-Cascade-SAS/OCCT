@@ -1240,8 +1240,6 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
     aGraphData->myNextUIDCounter.load(std::memory_order_relaxed),
     std::memory_order_relaxed);
   // Preserve graph generation so transferred UIDs remain valid after compaction.
-  // Compact rewrites ids and clears caches explicitly; it is not a new BRepGraph_Builder::Add()
-  // cycle.
   aNewGraphData->myGeneration.store(aGraphData->myGeneration.load(std::memory_order_relaxed),
                                     std::memory_order_relaxed);
   aNewGraphData->myIsDone = true;
@@ -1249,11 +1247,7 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
   // Save layers before swap (default move would transfer empty layers from aNewGraph).
   BRepGraph_LayerRegistry aSavedLayerRegistry = std::move(theGraph.layerRegistry());
 
-  // Save TShape-to-NodeId and NodeId-to-OriginalShape bindings before swap.
-  // These maps are populated by BRepGraphInc_Populate during BRepGraph_Builder::Add() with
-  // TopoDS_Shape data. The rebuilt aNewGraph has no TopoDS_Shape bindings, so they must be
-  // transferred here. We capture into local vectors using the ForEach API, then remap keys/values
-  // after the swap.
+  // Transfer TShape-to-NodeId and NodeId-to-OriginalShape bindings: the rebuilt graph has none.
   NCollection_DynamicArray<std::pair<const TopoDS_TShape*, BRepGraph_NodeId>> aTShapeBindings;
   NCollection_DynamicArray<std::pair<BRepGraph_NodeId, TopoDS_Shape>>         aOriginalBindings;
   aGraphData->myIncStorage.ForEachTShapeBinding(

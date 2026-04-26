@@ -548,10 +548,8 @@ public:
       Add(const NCollection_DynamicArray<BRepGraph_NodeId>& theChildEntities);
 
     //! Append a single child to an existing compound definition.
-    //! Allowed child kinds are any topology kind: Vertex, Edge, Wire, Face, Shell,
-    //! Solid, CompSolid, Compound.
     //! @param[in] theCompoundEntity typed compound definition identifier
-    //! @param[in] theChildEntity    typed child definition identifier
+    //! @param[in] theChildEntity    typed child topology definition identifier
     //! @param[in] theOri            orientation of the child in the compound
     //! @return typed child reference identifier, or invalid if inputs are not active
     [[nodiscard]] Standard_EXPORT BRepGraph_ChildRefId
@@ -631,37 +629,25 @@ public:
     BRepGraph* myGraph;
   };
 
-  //! @brief Product and assembly creation and editing operations.
-  //!
-  //! These methods are reconstruction primitives. The standard ingestion path
-  //! for a TopoDS_Shape is BRepGraph_Builder::Add(); these primitives are used
-  //! by Builder::Add internally and by BRepGraph_Compact when rebuilding the
-  //! product DAG after compaction. Callers wiring two existing entities
-  //! together use the Link* family directly.
+  //! @brief Product and assembly low-level reconstruction primitives.
+  //! Wire two existing entities together; for shape ingestion use BRepGraph_Builder::Add().
   class ProductOps
   {
   public:
-    //! Reconstruction primitive: create a new part Product wrapping an existing
-    //! topology root via an Occurrence. Used by graph reconstruction
-    //! (BRepGraph_Compact) and by BRepGraph_Builder::Add internally. For the
-    //! standard shape-loading workflow use BRepGraph_Builder::Add() instead.
+    //! Create a Product wrapping an existing topology root via an Occurrence.
     //! @param[in] theShapeRoot root topology NodeId for the part
-    //! @param[in] thePlacement local placement to store on the root OccurrenceRef
+    //! @param[in] thePlacement local placement stored on the root OccurrenceRef
     //! @return typed product definition identifier, or invalid if the root is
     //!         not an active topology definition node
     [[nodiscard]] Standard_EXPORT BRepGraph_ProductId
       LinkProductToTopology(const BRepGraph_NodeId theShapeRoot,
                             const TopLoc_Location& thePlacement = TopLoc_Location());
 
-    //! Reconstruction primitive: create a Product with no direct shape root.
-    //! It can later own child occurrences and may itself be referenced by an
-    //! occurrence like any other product.
+    //! Create a Product with no direct shape root; can later own child occurrences.
     //! @return typed product definition identifier
     [[nodiscard]] Standard_EXPORT BRepGraph_ProductId CreateEmptyProduct();
 
-    //! Link two existing Products via a fresh Occurrence. ParentOccurrenceIdx
-    //! is set to -1 (top-level). Any active Product may serve as the parent
-    //! (not limited to assembly products), allowing mixed part/assembly hierarchies.
+    //! Link two existing Products via a fresh top-level Occurrence.
     //! @param[in] theParentProduct     typed parent product identifier
     //! @param[in] theReferencedProduct typed child product identifier being instantiated
     //! @param[in] thePlacement         local placement relative to parent
@@ -672,17 +658,13 @@ public:
                    const BRepGraph_ProductId theReferencedProduct,
                    const TopLoc_Location&    thePlacement);
 
-    //! Reconstruction primitive: link two existing Products via a fresh
-    //! Occurrence with an explicit parent occurrence for nested assembly chains.
-    //! This establishes a tree-structured placement path for unambiguous
-    //! GlobalLocation() / GlobalOrientation() computation even when products are shared (DAG).
+    //! Link two existing Products via a fresh Occurrence inside an explicit parent occurrence
+    //! (for nested assembly chains with unambiguous GlobalLocation in DAGs).
     //! @param[in] theParentProduct     typed parent product identifier
     //! @param[in] theReferencedProduct typed child product identifier being instantiated
     //! @param[in] thePlacement         local placement relative to parent
     //! @param[in] theParentOccurrence  typed occurrence that placed the parent product
-    //! @return typed occurrence definition identifier, or invalid unless the
-    //!         parent product, referenced product, and explicit parent occurrence
-    //!         form a valid active assembly chain
+    //! @return typed occurrence definition identifier, or invalid unless the chain is active
     [[nodiscard]] Standard_EXPORT BRepGraph_OccurrenceId
       LinkProducts(const BRepGraph_ProductId    theParentProduct,
                    const BRepGraph_ProductId    theReferencedProduct,
@@ -726,9 +708,6 @@ public:
   };
 
   //! @brief Occurrence mutation operations.
-  //!
-  //! Occurrences are created by ProductOps::LinkProducts; this class exposes
-  //! field-level mutation guards on existing occurrence definitions and refs.
   class OccurrenceOps
   {
   public:

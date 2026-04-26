@@ -26,23 +26,6 @@ class BRepGraph;
 class TopoDS_Shape;
 
 //! @brief Static helper that ingests a TopoDS_Shape into a BRepGraph.
-//!
-//! Single public entry point: BRepGraph_Builder::Add(graph, shape[, parent]).
-//!
-//! Same verb, different layers:
-//!   BRepGraph_Builder::Add(graph, shape[, parent])
-//!     Ingest a TopoDS_Shape into the graph. Always creates one or more
-//!     subgraphs, possibly wrapping the topology in a Product. The shape
-//!     is the input; ids are outputs.
-//!
-//!   graph.Editor().<X>Ops().Add(...)
-//!     Build a single typed definition node from primitives (gp_Pnt,
-//!     Geom curves/surfaces, child NodeIds). The inputs are already-typed
-//!     graph data; ids are outputs.
-//!
-//!   graph.Editor().Products().LinkProductToTopology / LinkProducts(...)
-//!     Reconstruction primitives. Wire two existing entities together.
-//!     Used by BRepGraph_Compact and inside BRepGraph_Builder::Add itself.
 class BRepGraph_Builder
 {
 public:
@@ -51,20 +34,10 @@ public:
   //! Build-time options.
   struct Options
   {
-    //! Backend extraction passes executed during shape population.
     BRepGraphInc_Populate::Options Populate{};
-
-    //! Auto-create a root Product wrapping the imported top-level topology.
-    //! Disable when a higher-level builder manages Product creation.
-    //! Only consulted by the unparented Add overload.
-    bool CreateAutoProduct = true;
-
-    //! When true, drop hierarchy containers and append faces as roots.
-    //! TopologyRoot in the returned Result will be the first appended face.
-    bool Flatten = false;
-
-    //! When true, run face-level construction in parallel.
-    bool Parallel = false;
+    bool CreateAutoProduct = true; //!< wrap topology root in a Product (unparented Add only)
+    bool Flatten           = false; //!< drop hierarchy containers, append faces as roots
+    bool Parallel          = false; //!< run face-level construction in parallel
   };
 
   //! Outcome of a single Add() call.
@@ -77,10 +50,7 @@ public:
     bool                   Ok = false;
   };
 
-  //! Ingest a TopoDS_Shape as a new root subgraph. Mirrors
-  //! BRep_Builder::Add(child) -- no parent given. Wraps the topology root
-  //! in a fresh Product carrying shape.Location() on a root OccurrenceRef
-  //! and registers the Product as a root product.
+  //! Ingest a TopoDS_Shape as a new root subgraph, wrapping the topology root in a Product.
   //! @param[in,out] theGraph graph to populate
   //! @param[in]     theShape shape to ingest
   //! @return Result with TopologyRoot, Product and Occurrence set on success.
@@ -97,22 +67,20 @@ public:
                                                   const TopoDS_Shape& theShape,
                                                   const Options&      theOptions);
 
-  //! Ingest a TopoDS_Shape under an existing parent. Mirrors
-  //! BRep_Builder::Add(parent, child).
+  //! Ingest a TopoDS_Shape under an existing parent.
   //!
   //! Parent kind dispatch:
-  //!   - Product:   creates a child part-product wrapping the topology root,
-  //!                then a parent->child Occurrence with shape.Location().
-  //!   - Compound:  appends the topology root as a child reference.
-  //!   - Shell:     appends Face shape as a FaceRef; other shapes via AddChild.
-  //!   - Solid:     appends Shell shape as a ShellRef; other shapes via AddChild.
-  //!   - CompSolid: appends Solid shape as a SolidRef.
+  //!   - Product:   creates a child part-product, links via Occurrence with shape.Location().
+  //!   - Compound:  appends topology root as a child reference.
+  //!   - Shell:     appends a Face as a FaceRef; other shapes via AddChild.
+  //!   - Solid:     appends a Shell as a ShellRef; other shapes via AddChild.
+  //!   - CompSolid: appends a Solid as a SolidRef.
   //!   Other parent kinds yield an invalid Result.
   //! @param[in,out] theGraph  graph to populate
   //! @param[in]     theShape  shape to ingest
   //! @param[in]     theParent parent node receiving the topology
-  //! @return Result with TopologyRoot, plus either (Product, Occurrence) for
-  //!         Product parents or InsertedRef for topology container parents.
+  //! @return Result with TopologyRoot set, plus (Product, Occurrence) for Product parents
+  //!         or InsertedRef for topology container parents.
   [[nodiscard]] static Standard_EXPORT Result Add(BRepGraph&             theGraph,
                                                   const TopoDS_Shape&    theShape,
                                                   const BRepGraph_NodeId theParent);
@@ -125,33 +93,20 @@ public:
                                                   const Options&         theOptions);
 
 private:
-  //! Append topology only (no Product creation, no Clear). Honours
-  //! Flatten/Parallel/Populate options.
-  //! When theOptions.Flatten is true, the face-level roots appended by the flatten
-  //! pass are accumulated into theOutFlatRoots (if non-null).
   static void appendImpl(BRepGraph&                                  theGraph,
                          const TopoDS_Shape&                         theShape,
                          const Options&                              theOptions,
                          NCollection_DynamicArray<BRepGraph_NodeId>* theOutFlatRoots = nullptr);
 
-  //! Identify the topology root introduced by appendImpl for a shape of the
-  //! given top-level kind, given the count of entities of that kind captured
-  //! before append. Returns invalid if no entity of the expected kind was
-  //! appended.
   static BRepGraph_NodeId detectTopologyRoot(const BRepGraph&       theGraph,
                                              const TopAbs_ShapeEnum theShapeType,
                                              const uint32_t         theOldCountOfShapeKind);
 
-  //! Capture the entity count corresponding to theShapeType at the moment of
-  //! the call. Used as the "before" baseline for detectTopologyRoot.
   static uint32_t snapshotCountForKind(const BRepGraph&       theGraph,
                                        const TopAbs_ShapeEnum theShapeType);
 
-  //! Allocate UIDs for all incidence entities after BRepGraphInc_Populate
-  //! has filled the storage.
   static void populateUIDs(BRepGraph& theGraph);
 
-  //! Allocate UIDs only for entities in range [theOld, current) per kind.
   static void populateUIDsIncremental(BRepGraph& theGraph,
                                       const int  theOldVtx,
                                       const int  theOldEdge,

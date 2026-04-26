@@ -140,10 +140,7 @@ public:
   //! Move assignment operator.
   Standard_EXPORT BRepGraph& operator=(BRepGraph&&) noexcept;
 
-  //! Reset the graph to an empty state. Clears storage, history, root products,
-  //! transient caches, and notifies all registered layers. Increments generation
-  //! and regenerates the graph GUID. After Clear(), IsDone() returns false; pass
-  //! the graph to BRepGraph_Builder::Add() to repopulate.
+  //! Reset the graph to an empty state. Increments generation and regenerates the graph GUID.
   Standard_EXPORT void Clear();
 
   //! Return true if the graph was successfully built.

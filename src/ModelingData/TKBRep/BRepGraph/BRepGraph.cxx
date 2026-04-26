@@ -33,8 +33,6 @@
 namespace
 {
 
-//! Generate a random Standard_GUID using MathUtils::RandomGenerator
-//! seeded with std::random_device for platform entropy.
 static Standard_GUID generateRandomGUID()
 {
   std::random_device         aRD;

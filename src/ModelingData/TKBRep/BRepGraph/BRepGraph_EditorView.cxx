@@ -2289,8 +2289,6 @@ void BRepGraph::EditorView::WireOps::ReplaceEdge(const BRepGraph_WireId theWireD
       aRevIdx.BindEdgeToCoEdge(theNewEdgeEntity, aCoEdgeDefId);
 
       // Update edge-to-face: bind new edge, unbind old edge for all faces of this wire.
-      // Wire-to-face mappings are built from FaceDef.WireRefs during BRepGraph_Builder::Add()
-      // and are stable across edge mutations - only face-level operations modify them.
       const NCollection_DynamicArray<BRepGraph_FaceId>* aFaces = aRevIdx.FacesOfWire(theWireDefId);
       if (aFaces != nullptr)
       {
