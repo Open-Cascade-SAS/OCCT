@@ -14,6 +14,7 @@
 #include <gtest/gtest.h>
 
 #include <gp_Ax2.hxx>
+#include <gp_Ax3.hxx>
 #include <gp_Mat.hxx>
 #include <gp_Quaternion.hxx>
 #include <gp_Trsf.hxx>
