@@ -85,7 +85,7 @@ TEST(BRepGraphIncTest, Box_EntityCounts_MatchDefCounts)
 
   // Build BRepGraph for parity checks.
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aBox);
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes1 = BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
   // Build incidence storage.
@@ -108,7 +108,7 @@ TEST(BRepGraphIncTest, Cylinder_EntityCounts_MatchDefCounts)
   const TopoDS_Shape&      aCyl = aCylMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aCyl);
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes2 = BRepGraph_Builder::Add(aGraph, aCyl);
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraphInc_Storage aStorage;
@@ -129,7 +129,7 @@ TEST(BRepGraphIncTest, Sphere_EntityCounts_MatchDefCounts)
   const TopoDS_Shape&    aSph = aSphMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aSph);
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes3 = BRepGraph_Builder::Add(aGraph, aSph);
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraphInc_Storage aStorage;

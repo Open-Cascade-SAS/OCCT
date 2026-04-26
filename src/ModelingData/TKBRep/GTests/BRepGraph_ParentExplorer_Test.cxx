@@ -27,7 +27,7 @@
 TEST(BRepGraph_ParentExplorerTest, FaceParents_All_CountAndOrder)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes1 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph_ParentExplorer anExp(aGraph, BRepGraph_FaceId::Start());
@@ -49,7 +49,7 @@ TEST(BRepGraph_ParentExplorerTest, FaceParents_All_CountAndOrder)
 TEST(BRepGraph_ParentExplorerTest, FaceParents_TypedSolid_OneResult)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes2 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph_ParentExplorer anExp(aGraph, BRepGraph_FaceId::Start(), BRepGraph_NodeId::Kind::Solid);
@@ -63,7 +63,7 @@ TEST(BRepGraph_ParentExplorerTest, FaceParents_TypedSolid_OneResult)
 TEST(BRepGraph_ParentExplorerTest, FaceParents_DirectParents_StopsAtImmediateShell)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes3 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph_ParentExplorer anExp(aGraph,
@@ -79,7 +79,7 @@ TEST(BRepGraph_ParentExplorerTest, FaceParents_DirectParents_StopsAtImmediateShe
 TEST(BRepGraph_ParentExplorerTest, FaceParents_DirectParents_ExposeChildAndRef)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes4 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph_ParentExplorer anExp(aGraph,
@@ -98,7 +98,7 @@ TEST(BRepGraph_ParentExplorerTest, FaceParents_DirectParents_ExposeChildAndRef)
 TEST(BRepGraph_ParentExplorerTest, AvoidKind_Solid_PrunesProducts)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes5 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph_ParentExplorer anExp(aGraph,
@@ -112,7 +112,7 @@ TEST(BRepGraph_ParentExplorerTest, AvoidKind_Solid_PrunesProducts)
 TEST(BRepGraph_ParentExplorerTest, AvoidKind_EmitBoundary_ReturnsSolidInsteadOfProducts)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes6 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph_ParentExplorer anExp(aGraph,
@@ -130,7 +130,7 @@ TEST(BRepGraph_ParentExplorerTest, AvoidKind_EmitBoundary_ReturnsSolidInsteadOfP
 TEST(BRepGraph_ParentExplorerTest, AvoidKind_SameAsTarget_IsIgnored)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes7 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph_ParentExplorer anExp(aGraph,
@@ -148,7 +148,7 @@ TEST(BRepGraph_ParentExplorerTest, AvoidKind_SameAsTarget_IsIgnored)
 TEST(BRepGraph_ParentExplorerTest, AllParents_AvoidSolid_PrunesProducts)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes8 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph_ParentExplorer anExp(aGraph,
@@ -165,7 +165,7 @@ TEST(BRepGraph_ParentExplorerTest, AllParents_AvoidSolid_PrunesProducts)
 TEST(BRepGraph_ParentExplorerTest, AllParents_AvoidSolidEmitBoundary_ReturnsShellAndSolid)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes9 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph_ParentExplorer anExp(aGraph,
@@ -186,7 +186,7 @@ TEST(BRepGraph_ParentExplorerTest, AllParents_AvoidSolidEmitBoundary_ReturnsShel
 TEST(BRepGraph_ParentExplorerTest, SharedProduct_ProductParentsKeepDistinctContexts)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes10 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   const BRepGraph_ProductId aPart      = aGraph.Editor().Products().LinkProductToTopology(BRepGraph_SolidId::Start());
@@ -234,7 +234,7 @@ TEST(BRepGraph_ParentExplorerTest, SharedProduct_ProductParentsKeepDistinctConte
 TEST(BRepGraph_ParentExplorerTest, ShapeRootProductParent_HasChildButNoRef)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes11 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   // BRepGraph_Builder::Add() auto-creates a root Product for the shape root node.
@@ -259,7 +259,7 @@ TEST(BRepGraph_ParentExplorerTest, ShapeRootProductParent_HasChildButNoRef)
 TEST(BRepGraph_ParentExplorerTest, OccurrenceParent_ExposeOccurrenceRef)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes12 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   const BRepGraph_ProductId aPart      = aGraph.Editor().Products().LinkProductToTopology(BRepGraph_SolidId::Start());
@@ -288,7 +288,7 @@ TEST(BRepGraph_ParentExplorerTest, OccurrenceParent_ExposeOccurrenceRef)
 TEST(BRepGraph_ParentExplorerTest, ProductParents_ImmediateOccurrence_IsStructural)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes13 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   const BRepGraph_ProductId aPart      = aGraph.Editor().Products().LinkProductToTopology(BRepGraph_SolidId::Start());
@@ -313,7 +313,7 @@ TEST(BRepGraph_ParentExplorerTest, ProductParents_ImmediateOccurrence_IsStructur
 TEST(BRepGraph_ParentExplorerTest, CoEdgeParents_ImmediateWireIsVisible)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes14 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   const NCollection_DynamicArray<BRepGraph_WireRefId>& aWireRefIds =
@@ -339,7 +339,7 @@ TEST(BRepGraph_ParentExplorerTest, CoEdgeParents_ImmediateWireIsVisible)
 TEST(BRepGraph_ParentExplorerTest, ProductRoot_HasNoParents)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes15 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   const BRepGraph_ProductId aRootProduct = aGraph.Editor().Products().CreateEmptyProduct();

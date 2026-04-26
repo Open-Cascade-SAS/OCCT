@@ -23,7 +23,7 @@
 //! @brief Snapshot of an entity/ref identity and version at a point in time.
 //!
 //! Combines a persistent UID (entity or reference entry) with
-//! OwnGen (own-data version counter) and graph Generation (BRepGraph_Builder::Add() cycle).
+//! OwnGen (own-data version counter) and graph Generation (BRepGraph::Clear() cycle).
 //! Computed on demand via BRepGraph::UIDs().StampOf().
 //!
 //! Usage pattern:
@@ -48,7 +48,7 @@ struct BRepGraph_VersionStamp
   BRepGraph_RefUID myRefUID; //!< Reference identity for ref-domain stamps.
   uint32_t
     myMutationGen; //!< OwnGen counter at snapshot time (maps to BaseDef::OwnGen / BaseRef::OwnGen).
-  uint32_t myGeneration; //!< Graph BRepGraph_Builder::Add() generation at snapshot time.
+  uint32_t myGeneration; //!< Graph BRepGraph::Clear() generation at snapshot time.
   Domain   myDomain;     //!< Active identity domain.
 
   //! Default constructor. Creates an invalid stamp (invalid UID, zero counters).
@@ -64,7 +64,7 @@ struct BRepGraph_VersionStamp
   //! Construct an entity-domain stamp from components.
   //! @param[in] theUID        persistent entity identity
   //! @param[in] theMutationGen OwnGen counter (own-data mutation counter)
-  //! @param[in] theGeneration  graph BRepGraph_Builder::Add() generation
+  //! @param[in] theGeneration  graph BRepGraph::Clear() generation
   BRepGraph_VersionStamp(const BRepGraph_UID& theUID,
                          const uint32_t       theMutationGen,
                          const uint32_t       theGeneration)
@@ -79,7 +79,7 @@ struct BRepGraph_VersionStamp
   //! Construct a reference-domain stamp from components.
   //! @param[in] theRefUID      persistent reference identity
   //! @param[in] theMutationGen OwnGen counter (own-data mutation counter)
-  //! @param[in] theGeneration  graph BRepGraph_Builder::Add() generation
+  //! @param[in] theGeneration  graph BRepGraph::Clear() generation
   BRepGraph_VersionStamp(const BRepGraph_RefUID& theRefUID,
                          const uint32_t          theMutationGen,
                          const uint32_t          theGeneration)

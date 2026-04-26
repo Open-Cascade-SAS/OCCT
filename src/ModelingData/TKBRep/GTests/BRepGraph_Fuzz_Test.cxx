@@ -179,7 +179,7 @@ TEST_P(BRepGraph_FuzzSeedTest, BoxSeed_RandomMutations_RemainValid)
   const uint32_t aSeed = GetParam();
 
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes1 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_TRUE(BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit()).IsValid())
     << "Seed graph must be clean before fuzzing";
@@ -194,7 +194,7 @@ TEST_P(BRepGraph_FuzzSeedTest, CylinderSeed_RandomMutations_RemainValid)
   const uint32_t aSeed = GetParam();
 
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeCylinder(5.0, 15.0).Shape());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes2 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeCylinder(5.0, 15.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_TRUE(BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit()).IsValid());
 

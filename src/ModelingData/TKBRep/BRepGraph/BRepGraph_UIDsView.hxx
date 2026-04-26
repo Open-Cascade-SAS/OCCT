@@ -24,7 +24,7 @@ class Standard_GUID;
 //! UIDs are (Kind, Counter) pairs that persist across graph mutations
 //! (Compact, node removal). Each UID is assigned exactly once and never
 //! reused. Counters are monotonic and independent of vector indices,
-//! so UIDs survive Compact() index remapping. Only BRepGraph_Builder::Add() resets
+//! so UIDs survive Compact() index remapping. Only BRepGraph::Clear() resets
 //! counters (new generation). The Generation field enables stale-reference
 //! detection when a graph is rebuilt.
 //! Provides bidirectional NodeId/UID resolution.
@@ -63,12 +63,12 @@ public:
   //! @return true if the RefUID resolves to an active reference in this graph generation
   [[nodiscard]] Standard_EXPORT bool Has(const BRepGraph_RefUID& theUID) const;
 
-  //! Return the current generation counter (incremented on each BRepGraph_Builder::Add()).
+  //! Return the current generation counter (incremented on each BRepGraph::Clear()).
   //! @return graph generation number
   [[nodiscard]] Standard_EXPORT uint32_t Generation() const;
 
   //! Return the graph-level identity GUID.
-  //! Generated randomly at BRepGraph_Builder::Add() time; changes on each rebuild.
+  //! Generated randomly at BRepGraph::Clear() time; changes on each rebuild.
   //! @return reference to the graph identity GUID
   [[nodiscard]] Standard_EXPORT const Standard_GUID& GraphGUID() const;
 

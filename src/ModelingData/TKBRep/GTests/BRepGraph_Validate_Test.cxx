@@ -70,7 +70,7 @@ TEST(BRepGraph_ValidateTest, CleanGraph_NoIssues)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aBox);
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes1 = BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
   const BRepGraph_Validate::Result aResult = BRepGraph_Validate::Perform(aGraph);
@@ -107,7 +107,7 @@ TEST(BRepGraph_ValidateTest, AfterGeomDeduplicate_NoIssues)
   aBuilder.Add(aCompound, aCopy2.Shape());
 
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aCompound);
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes2 = BRepGraph_Builder::Add(aGraph, aCompound);
   ASSERT_TRUE(aGraph.IsDone());
 
   (void)BRepGraph_Deduplicate::Perform(aGraph);
@@ -123,7 +123,7 @@ TEST(BRepGraph_ValidateTest, DetectsRemovedNodeReference)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aBox);
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes3 = BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Topo().Vertices().Nb(), 0);
 
@@ -160,7 +160,7 @@ TEST(BRepGraph_ValidateTest, WireConnectivity_DisconnectedEdges)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aBox);
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes4 = BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Topo().Wires().Nb(), 0);
 
@@ -239,7 +239,7 @@ TEST(BRepGraph_ValidateTest, BoundsCheck_InvalidIndex)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aBox);
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes5 = BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Topo().Edges().Nb(), 0);
 
@@ -260,7 +260,7 @@ TEST(BRepGraph_ValidateTest, AfterSplitEdge_ProducesSubEdges)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aBox);
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes6 = BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
   const int anOrigEdgeCount = aGraph.Topo().Edges().Nb();
 
@@ -313,7 +313,7 @@ TEST(BRepGraph_ValidateTest, CorruptedPCurve_FaceDefIdOutOfBounds)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aBox);
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes7 = BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Topo().Edges().Nb(), 0);
 
@@ -338,7 +338,7 @@ TEST(BRepGraph_ValidateTest, CorruptedPCurve_FaceDefIdOutOfBounds)
 TEST(BRepGraph_ValidateTest, LightweightAndAudit_DetectActiveCountDrift)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes8 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   const int aNbActiveFacesBefore = aGraph.Topo().Faces().NbActive();
@@ -388,7 +388,7 @@ TEST(BRepGraph_ValidateTest, LightweightAndAudit_DetectActiveCountDrift)
 TEST(BRepGraph_ValidateTest, Audit_ValidatesCoEdgeUIDsFromBuilderWireCreation)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes9 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Topo().Edges().Nb(), 0);
 
@@ -430,7 +430,7 @@ TEST(BRepGraph_ValidateTest, AssemblyGraph_ValidProduct_NoIssuesInAudit)
   const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aBox);
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes10 = BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GE(aGraph.Topo().Products().Nb(), 1);
 
@@ -481,7 +481,7 @@ TEST(BRepGraph_ValidateTest, AssemblyGraph_CorruptedOccurrenceChildDefId_Detecte
   const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aBox);
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes11 = BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GE(aGraph.Topo().Products().Nb(), 1);
   ASSERT_GE(aGraph.Topo().Occurrences().Nb(), 1);
@@ -519,7 +519,7 @@ TEST(BRepGraph_ValidateTest,
   const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aBox);
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes12 = BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
   // Create an assembly with one occurrence.
@@ -566,7 +566,7 @@ TEST(BRepGraph_ValidateTest, AssemblyGraph_OccurrenceChildRefersToOccurrence_Det
   const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aBox);
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes13 = BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Topo().Occurrences().Nb(), 0);
 
@@ -600,7 +600,7 @@ TEST(BRepGraph_ValidateTest, LightweightVsAudit_RemovedVertexReference_Different
   // RemoveNode(vertex) correctly updates active counts (Lightweight passes)
   // but leaves edges referencing the removed vertex (Audit detects).
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes14 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Topo().Vertices().Nb(), 0);
 
@@ -656,7 +656,7 @@ TEST(BRepGraph_ValidateTest, Audit_DetectsOrphanWireRef_AfterFaceRemoval)
   // at a removed face index. The new audit block for orphan WireRefs must flag it.
   BRepGraph          aGraph;
   const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape();
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aBox);
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes15 = BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
   // Find a live wire ref and rewrite its ParentId to a definitely-invalid Face id.

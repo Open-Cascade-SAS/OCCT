@@ -29,7 +29,7 @@ protected:
   {
     BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
     const TopoDS_Shape& aBox = aBoxMaker.Shape();
-    myGraph.Clear(); (void)BRepGraph_Builder::Add(myGraph, aBox);
+    myGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes1 = BRepGraph_Builder::Add(myGraph, aBox);
     ASSERT_TRUE(myGraph.IsDone());
   }
 
@@ -95,7 +95,7 @@ TEST_F(BRepGraph_VersionStampTest, IsStale_DifferentGeneration_ReturnsTrue)
 
   // Rebuild the graph - generation changes.
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
-  myGraph.Clear(); (void)BRepGraph_Builder::Add(myGraph, aBoxMaker.Shape());
+  myGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes2 = BRepGraph_Builder::Add(myGraph, aBoxMaker.Shape());
   ASSERT_TRUE(myGraph.IsDone());
 
   EXPECT_TRUE(myGraph.UIDs().IsStale(aStamp));
@@ -181,7 +181,7 @@ TEST_F(BRepGraph_VersionStampTest, GraphGUID_Rebuild_Changes)
   const Standard_GUID aGUID1 = myGraph.UIDs().GraphGUID();
 
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
-  myGraph.Clear(); (void)BRepGraph_Builder::Add(myGraph, aBoxMaker.Shape());
+  myGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes3 = BRepGraph_Builder::Add(myGraph, aBoxMaker.Shape());
   ASSERT_TRUE(myGraph.IsDone());
 
   const Standard_GUID aGUID2 = myGraph.UIDs().GraphGUID();

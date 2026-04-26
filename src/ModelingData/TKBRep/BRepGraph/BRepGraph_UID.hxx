@@ -26,7 +26,7 @@
 //! counter value but their UIDs are distinct.  Within one kind, counter
 //! values never repeat (monotonic, never resets).
 //!
-//! Generation is NOT part of identity; it indicates which BRepGraph_Builder::Add() cycle
+//! Generation is NOT part of identity; it indicates which BRepGraph::Clear() cycle
 //! produced this UID (for stale-reference detection).
 //!
 //! Trivially copyable, cheap to pass by value.
@@ -110,7 +110,7 @@ struct BRepGraph_UID
 private:
   size_t                 myCounter; //!< 0 = invalid sentinel; valid counters start at 1.
   BRepGraph_NodeId::Kind myKind;    //!< Node kind.
-  uint32_t myGeneration;            //!< BRepGraph_Builder::Add() cycle that produced this UID.
+  uint32_t myGeneration;            //!< BRepGraph::Clear() cycle that produced this UID.
 };
 
 //! std::hash specialization for NCollection_DefaultHasher support.

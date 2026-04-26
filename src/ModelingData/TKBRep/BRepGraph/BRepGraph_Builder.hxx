@@ -17,6 +17,7 @@
 #include <BRepGraphInc_Populate.hxx>
 #include <BRepGraph_NodeId.hxx>
 #include <BRepGraph_RefId.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <Standard_DefineAlloc.hxx>
 
 class BRepGraph;
@@ -49,7 +50,7 @@ public:
   struct Options
   {
     //! Backend extraction passes executed during shape population.
-    BRepGraphInc_Populate::Options Populate;
+    BRepGraphInc_Populate::Options Populate{};
 
     //! Auto-create a root Product wrapping the imported top-level topology.
     //! Disable when a higher-level builder manages Product creation.
@@ -57,6 +58,7 @@ public:
     bool CreateAutoProduct = true;
 
     //! When true, drop hierarchy containers and append faces as roots.
+    //! TopologyRoot in the returned Result will be the first appended face.
     bool Flatten = false;
 
     //! When true, run face-level construction in parallel.
@@ -65,6 +67,8 @@ public:
 
   //! Outcome of a single Add() call.
   //! TopologyRoot identifies the topology entity the populate pass produced.
+  //! When Options::Flatten is true, TopologyRoot is set to the first appended face
+  //! (the only available root after container hierarchy is dropped).
   //! Product is set when a Product node is created (root Add with
   //! CreateAutoProduct, or Product-parented Add). Occurrence is set when an
   //! OccurrenceDef is created linking parent and child products. InsertedRef
@@ -72,11 +76,11 @@ public:
   //! ref.
   struct Result
   {
-    BRepGraph_NodeId    TopologyRoot;
-    BRepGraph_ProductId Product;
-    BRepGraph_NodeId    Occurrence;
-    BRepGraph_RefId     InsertedRef;
-    bool                Ok = false;
+    BRepGraph_NodeId       TopologyRoot;
+    BRepGraph_ProductId    Product;
+    BRepGraph_OccurrenceId Occurrence;
+    BRepGraph_RefId        InsertedRef;
+    bool                   Ok = false;
   };
 
   //! Ingest a TopoDS_Shape as a new root subgraph. Mirrors
@@ -130,9 +134,12 @@ public:
 private:
   //! Append topology only (no Product creation, no Clear). Honours
   //! Flatten/Parallel/Populate options.
-  static void appendImpl(BRepGraph&          theGraph,
-                         const TopoDS_Shape& theShape,
-                         const Options&      theOptions);
+  //! When theOptions.Flatten is true, the face-level roots appended by the flatten
+  //! pass are accumulated into theOutFlatRoots (if non-null).
+  static void appendImpl(BRepGraph&                              theGraph,
+                         const TopoDS_Shape&                     theShape,
+                         const Options&                          theOptions,
+                         NCollection_DynamicArray<BRepGraph_NodeId>* theOutFlatRoots = nullptr);
 
   //! Identify the topology root introduced by appendImpl for a shape of the
   //! given top-level kind, given the count of entities of that kind captured
@@ -147,16 +154,21 @@ private:
   static uint32_t snapshotCountForKind(const BRepGraph&       theGraph,
                                        const TopAbs_ShapeEnum theShapeType);
 
+  //! Result bundle returned by createRootProductForTopology.
+  struct ProductBundle
+  {
+    BRepGraph_ProductId       Product;
+    BRepGraph_OccurrenceId    Occurrence;
+    BRepGraph_OccurrenceRefId OccurrenceRef;
+  };
+
   //! Wrap a topology root in a Product + Occurrence + OccurrenceRef.
   //! When theRegisterAsRoot is true, the Product is appended to RootProductIds.
-  //! @return (Product, Occurrence, OccurrenceRef) bundle via out params
-  static void createRootProductForTopology(BRepGraph&                 theGraph,
-                                           const BRepGraph_NodeId     theTopologyRoot,
-                                           const TopLoc_Location&     thePlacement,
-                                           const bool                 theRegisterAsRoot,
-                                           BRepGraph_ProductId&       theOutProduct,
-                                           BRepGraph_OccurrenceId&    theOutOccurrence,
-                                           BRepGraph_OccurrenceRefId& theOutOccurrenceRef);
+  //! @return ProductBundle with all three ids set on success; Product is invalid on failure.
+  static ProductBundle createRootProductForTopology(BRepGraph&             theGraph,
+                                                    const BRepGraph_NodeId theTopologyRoot,
+                                                    const TopLoc_Location& thePlacement,
+                                                    const bool             theRegisterAsRoot);
 
   //! Allocate UIDs for all incidence entities after BRepGraphInc_Populate
   //! has filled the storage.

@@ -34,7 +34,7 @@ protected:
   {
     BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
     const TopoDS_Shape& aBox = aBoxMaker.Shape();
-    myGraph.Clear(); (void)BRepGraph_Builder::Add(myGraph, aBox);
+    myGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes1 = BRepGraph_Builder::Add(myGraph, aBox);
   }
 
   BRepGraph myGraph;
@@ -207,7 +207,7 @@ TEST_F(BRepGraph_ConvenienceTest, FindPCurve_WithOrientation_SeamEdge)
   const TopoDS_Shape&      aCyl = aCylMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aCyl);
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes2 = BRepGraph_Builder::Add(aGraph, aCyl);
   ASSERT_TRUE(aGraph.IsDone());
 
   const BRepGraph::TopoView aDefs = aGraph.Topo();

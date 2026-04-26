@@ -98,7 +98,7 @@ protected:
   void SetUp() override
   {
     BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
-    myGraph.Clear(); (void)BRepGraph_Builder::Add(myGraph, aBoxMaker.Shape());
+    myGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes1 = BRepGraph_Builder::Add(myGraph, aBoxMaker.Shape());
   }
 
   BRepGraph myGraph;
@@ -125,7 +125,7 @@ TEST_F(BRepGraph_RefsIteratorTest, CurrentId_ResolvesToExpectedEntry)
 TEST(BRepGraph_RefsIteratorTestStandalone, VertexOfEdge_ExposesInternalVertexRef)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, wrapEdgeInFace(makeEdgeWithInternalVertex()));
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes2 = BRepGraph_Builder::Add(aGraph, wrapEdgeInFace(makeEdgeWithInternalVertex()));
 
   BRepGraph_EdgeId aEdgeWithInternal;
   for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
@@ -158,7 +158,7 @@ TEST(BRepGraph_RefsIteratorTestStandalone, VertexOfEdge_ExposesInternalVertexRef
 TEST(BRepGraph_RefsIteratorTestStandalone, VertexOfFace_ExposesDirectVertexRef)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, makeFaceWithDirectVertex());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes3 = BRepGraph_Builder::Add(aGraph, makeFaceWithDirectVertex());
 
   BRepGraph_RefsVertexOfFace anIt(aGraph, BRepGraph_FaceId::Start());
   ASSERT_TRUE(anIt.More());

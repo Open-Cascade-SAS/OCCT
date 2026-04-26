@@ -78,9 +78,7 @@ BRepGraph_NodeId BRepGraph_Builder::detectTopologyRoot(const BRepGraph&       th
                                                        const TopAbs_ShapeEnum theShapeType,
                                                        const uint32_t theOldCountOfShapeKind)
 {
-  const BRepGraphInc_Storage& aStorage = theGraph.myData->myIncStorage;
-  const uint32_t              aNewCount =
-    snapshotCountForKind(theGraph, theShapeType);
+  const uint32_t aNewCount = snapshotCountForKind(theGraph, theShapeType);
   if (aNewCount <= theOldCountOfShapeKind)
     return BRepGraph_NodeId();
 
@@ -103,23 +101,20 @@ BRepGraph_NodeId BRepGraph_Builder::detectTopologyRoot(const BRepGraph&       th
     case TopAbs_VERTEX:
       return BRepGraph_VertexId(theOldCountOfShapeKind);
     default:
-      (void)aStorage;
       return BRepGraph_NodeId();
   }
 }
 
 //=================================================================================================
 
-void BRepGraph_Builder::createRootProductForTopology(
-  BRepGraph&                 theGraph,
-  const BRepGraph_NodeId     theTopologyRoot,
-  const TopLoc_Location&     thePlacement,
-  const bool                 theRegisterAsRoot,
-  BRepGraph_ProductId&       theOutProduct,
-  BRepGraph_OccurrenceId&    theOutOccurrence,
-  BRepGraph_OccurrenceRefId& theOutOccurrenceRef)
+BRepGraph_Builder::ProductBundle BRepGraph_Builder::createRootProductForTopology(
+  BRepGraph&             theGraph,
+  const BRepGraph_NodeId theTopologyRoot,
+  const TopLoc_Location& thePlacement,
+  const bool             theRegisterAsRoot)
 {
   BRepGraphInc_Storage& aStorage = theGraph.myData->myIncStorage;
+  ProductBundle         aBundle;
 
   const BRepGraph_ProductId aProductId = aStorage.AppendProduct();
   BRepGraphInc::ProductDef& aProduct   = aStorage.ChangeProduct(aProductId);
@@ -140,8 +135,8 @@ void BRepGraph_Builder::createRootProductForTopology(
     theGraph.allocateRefUID(anOccRefId);
     aProduct.OccurrenceRefIds.Append(anOccRefId);
 
-    theOutOccurrence    = anOccId;
-    theOutOccurrenceRef = anOccRefId;
+    aBundle.Occurrence    = anOccId;
+    aBundle.OccurrenceRef = anOccRefId;
   }
 
   if (theRegisterAsRoot)
@@ -149,7 +144,8 @@ void BRepGraph_Builder::createRootProductForTopology(
     theGraph.myData->myRootProductIds.Append(aProductId);
   }
 
-  theOutProduct = aProductId;
+  aBundle.Product = aProductId;
+  return aBundle;
 }
 
 //=================================================================================================
@@ -206,9 +202,10 @@ void BRepGraph_Builder::populateUIDs(BRepGraph& theGraph)
 
 //=================================================================================================
 
-void BRepGraph_Builder::appendImpl(BRepGraph&          theGraph,
-                                   const TopoDS_Shape& theShape,
-                                   const Options&      theOptions)
+void BRepGraph_Builder::appendImpl(BRepGraph&                                 theGraph,
+                                   const TopoDS_Shape&                        theShape,
+                                   const Options&                             theOptions,
+                                   NCollection_DynamicArray<BRepGraph_NodeId>* theOutFlatRoots)
 {
   BRepGraphInc_Storage& aStorage        = theGraph.myData->myIncStorage;
   const int             anOldVtx        = aStorage.NbVertices();
@@ -247,6 +244,11 @@ void BRepGraph_Builder::appendImpl(BRepGraph&          theGraph,
                                            aParamLayer.get(),
                                            aRegularityLayer.get(),
                                            aTmpAlloc);
+    if (theOutFlatRoots != nullptr)
+    {
+      for (const BRepGraph_NodeId& anId : aAppendedRoots)
+        theOutFlatRoots->Append(anId);
+    }
   }
   else
   {
@@ -309,25 +311,25 @@ BRepGraph_Builder::Result BRepGraph_Builder::Add(BRepGraph&          theGraph,
 
   const uint32_t anOldCount = snapshotCountForKind(theGraph, theShape.ShapeType());
 
-  appendImpl(theGraph, theShape, theOptions);
+  NCollection_DynamicArray<BRepGraph_NodeId> aFlatRoots;
+  appendImpl(theGraph, theShape, theOptions, theOptions.Flatten ? &aFlatRoots : nullptr);
 
   if (!theGraph.myData->myIncStorage.GetIsDone())
     return aResult;
 
-  aResult.TopologyRoot = detectTopologyRoot(theGraph, theShape.ShapeType(), anOldCount);
+  if (theOptions.Flatten && !aFlatRoots.IsEmpty())
+    aResult.TopologyRoot = aFlatRoots.First();
+  else
+    aResult.TopologyRoot = detectTopologyRoot(theGraph, theShape.ShapeType(), anOldCount);
 
   if (theOptions.CreateAutoProduct)
   {
-    BRepGraph_OccurrenceId    anOccId;
-    BRepGraph_OccurrenceRefId anOccRefId;
-    createRootProductForTopology(theGraph,
-                                 aResult.TopologyRoot,
-                                 theShape.Location(),
-                                 /*registerAsRoot*/ true,
-                                 aResult.Product,
-                                 anOccId,
-                                 anOccRefId);
-    aResult.Occurrence = BRepGraph_NodeId(anOccId);
+    const ProductBundle aBundle = createRootProductForTopology(theGraph,
+                                                               aResult.TopologyRoot,
+                                                               theShape.Location(),
+                                                               /*registerAsRoot*/ true);
+    aResult.Product    = aBundle.Product;
+    aResult.Occurrence = aBundle.Occurrence;
     theGraph.myData->myIncStorage.BuildReverseIndex();
   }
 
@@ -384,40 +386,39 @@ BRepGraph_Builder::Result BRepGraph_Builder::Add(BRepGraph&             theGraph
 
   Options anInner          = theOptions;
   anInner.CreateAutoProduct = false;
-  appendImpl(theGraph, theShape, anInner);
+
+  NCollection_DynamicArray<BRepGraph_NodeId> aFlatRoots;
+  appendImpl(theGraph, theShape, anInner, anInner.Flatten ? &aFlatRoots : nullptr);
 
   if (!theGraph.myData->myIncStorage.GetIsDone())
     return aResult;
 
-  aResult.TopologyRoot = detectTopologyRoot(theGraph, theShape.ShapeType(), anOldCount);
+  if (anInner.Flatten && !aFlatRoots.IsEmpty())
+    aResult.TopologyRoot = aFlatRoots.First();
+  else
+    aResult.TopologyRoot = detectTopologyRoot(theGraph, theShape.ShapeType(), anOldCount);
   if (!aResult.TopologyRoot.IsValid())
     return aResult;
 
   switch (theParent.NodeKind)
   {
     case BRepGraph_NodeId::Kind::Product: {
-      BRepGraph_ProductId       aChildProduct;
-      BRepGraph_OccurrenceId    anUnusedOccurrence;
-      BRepGraph_OccurrenceRefId anUnusedOccurrenceRef;
-      createRootProductForTopology(theGraph,
-                                   aResult.TopologyRoot,
-                                   TopLoc_Location(),
-                                   /*registerAsRoot*/ false,
-                                   aChildProduct,
-                                   anUnusedOccurrence,
-                                   anUnusedOccurrenceRef);
-      if (!aChildProduct.IsValid())
+      const ProductBundle aBundle = createRootProductForTopology(theGraph,
+                                                                  aResult.TopologyRoot,
+                                                                  TopLoc_Location(),
+                                                                  /*registerAsRoot*/ false);
+      if (!aBundle.Product.IsValid())
         return aResult;
 
       const BRepGraph_OccurrenceId anOccId =
         theGraph.Editor().Products().LinkProducts(BRepGraph_ProductId(theParent),
-                                                  aChildProduct,
+                                                  aBundle.Product,
                                                   theShape.Location());
       if (!anOccId.IsValid())
         return aResult;
       theGraph.myData->myIncStorage.BuildReverseIndex();
-      aResult.Product    = aChildProduct;
-      aResult.Occurrence = BRepGraph_NodeId(anOccId);
+      aResult.Product    = aBundle.Product;
+      aResult.Occurrence = anOccId;
       aResult.Ok         = true;
       return aResult;
     }

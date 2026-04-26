@@ -86,7 +86,7 @@ class BRepGraph_History;
 //!
 //! ## UID persistence
 //! UIDs use monotonic counters (not vector indices), persisting across Compact()
-//! and node removal. Only BRepGraph_Builder::Add() resets counters (new generation).
+//! and node removal. Only BRepGraph::Clear() resets counters (new generation).
 //! See BRepGraph_UID.hxx for the serialization contract.
 //!
 //! ## Extension model

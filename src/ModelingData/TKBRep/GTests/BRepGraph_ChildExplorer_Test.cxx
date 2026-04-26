@@ -64,7 +64,7 @@ static BRepGraph_ChildExplorer makeDirectChildExplorer(const BRepGraph&         
 TEST(BRepGraph_ChildExplorerTest, Box_EdgeOccurrences_Count24)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes1 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   int aCount = 0;
@@ -81,7 +81,7 @@ TEST(BRepGraph_ChildExplorerTest, Box_EdgeOccurrences_Count24)
 TEST(BRepGraph_ChildExplorerTest, Box_FaceOccurrences_Count6)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes2 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   int aFaceCount = 0;
@@ -97,7 +97,7 @@ TEST(BRepGraph_ChildExplorerTest, Box_FaceOccurrences_Count6)
 TEST(BRepGraph_ChildExplorerTest, Box_VertexOccurrences)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes3 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   // Count unique vertices.
@@ -119,7 +119,7 @@ TEST(BRepGraph_ChildExplorerTest, Box_VertexOccurrences)
 TEST(BRepGraph_ChildExplorerTest, Face_EdgeOccurrences_4)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes4 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   int aCount = 0;
@@ -135,7 +135,7 @@ TEST(BRepGraph_ChildExplorerTest, Face_EdgeOccurrences_4)
 TEST(BRepGraph_ChildExplorerTest, InvalidRoot_Empty)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes5 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph_ChildExplorer anExp(aGraph, BRepGraph_NodeId(), BRepGraph_NodeId::Kind::Edge);
@@ -145,7 +145,7 @@ TEST(BRepGraph_ChildExplorerTest, InvalidRoot_Empty)
 TEST(BRepGraph_ChildExplorerTest, RootEqualsTarget_ReturnsSelf)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes6 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph_ChildExplorer anExp(aGraph, BRepGraph_FaceId::Start(), BRepGraph_NodeId::Kind::Face);
@@ -158,7 +158,7 @@ TEST(BRepGraph_ChildExplorerTest, RootEqualsTarget_ReturnsSelf)
 TEST(BRepGraph_ChildExplorerTest, AvoidKind_Shell_SkipsContainedFaces)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes7 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph_ChildExplorer anExp(aGraph,
@@ -172,7 +172,7 @@ TEST(BRepGraph_ChildExplorerTest, AvoidKind_Shell_SkipsContainedFaces)
 TEST(BRepGraph_ChildExplorerTest, AvoidKind_EmitBoundary_ReturnsFacesInsteadOfEdges)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes8 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   int aFaceCount = 0;
@@ -193,7 +193,7 @@ TEST(BRepGraph_ChildExplorerTest, AvoidKind_EmitBoundary_ReturnsFacesInsteadOfEd
 TEST(BRepGraph_ChildExplorerTest, AvoidKind_SameAsTarget_IsIgnored)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes9 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   int aFaceCount = 0;
@@ -214,7 +214,7 @@ TEST(BRepGraph_ChildExplorerTest, AvoidKind_SameAsTarget_IsIgnored)
 TEST(BRepGraph_ChildExplorerTest, AllDescendants_Recursive_YieldsAllKinds)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes10 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   int aShellCount  = 0;
@@ -263,7 +263,7 @@ TEST(BRepGraph_ChildExplorerTest, AllDescendants_Recursive_YieldsAllKinds)
 TEST(BRepGraph_ChildExplorerTest, AllDescendants_AvoidFaceBoundary_StopsBelowFaces)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes11 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   int aShellCount = 0;
@@ -294,7 +294,7 @@ TEST(BRepGraph_ChildExplorerTest, AllDescendants_AvoidFaceBoundary_StopsBelowFac
 TEST(BRepGraph_ChildExplorerTest, NoCumLoc_IdentityLocation)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes12 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   for (BRepGraph_ChildExplorer
@@ -309,7 +309,7 @@ TEST(BRepGraph_ChildExplorerTest, NoCumLoc_IdentityLocation)
 TEST(BRepGraph_ChildExplorerTest, NoCumOri_ForwardOrientation)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes13 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   for (BRepGraph_ChildExplorer
@@ -326,7 +326,7 @@ TEST(BRepGraph_ChildExplorerTest, NoCumOri_ForwardOrientation)
 TEST(BRepGraph_ChildExplorerTest, GlobalLocation_Box_Identity)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes14 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   // All paths in a simple box should compose to identity.
@@ -340,7 +340,7 @@ TEST(BRepGraph_ChildExplorerTest, GlobalLocation_Box_Identity)
 TEST(BRepGraph_ChildExplorerTest, GlobalOrientation_BoxEdges_ForwardOrReversed)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes15 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph_ChildExplorer anExp(aGraph, BRepGraph_SolidId::Start(), BRepGraph_NodeId::Kind::Edge);
@@ -363,7 +363,7 @@ TEST(BRepGraph_ChildExplorerTest, Compound_FaceCount)
   aBB.Add(aComp, BRepPrimAPI_MakeBox(20, 20, 20).Shape());
 
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aComp);
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes16 = BRepGraph_Builder::Add(aGraph, aComp);
   ASSERT_TRUE(aGraph.IsDone());
 
   int aCount = 0;
@@ -381,7 +381,7 @@ TEST(BRepGraph_ChildExplorerTest, Compound_FaceCount)
 TEST(BRepGraph_ChildExplorerTest, NodeOf_Kind_Face)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes17 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph_ChildExplorer anExp(aGraph, BRepGraph_SolidId::Start(), BRepGraph_NodeId::Kind::Edge);
@@ -408,7 +408,7 @@ TEST(BRepGraph_ChildExplorerTest, DeepCompound_NoStackOverflow)
     aInner = aComp;
   }
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aInner);
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes18 = BRepGraph_Builder::Add(aGraph, aInner);
   ASSERT_TRUE(aGraph.IsDone());
 
   // Should not crash (stack overflow) and should find the box's faces.
@@ -425,7 +425,7 @@ TEST(BRepGraph_ChildExplorerTest, DeepCompound_NoStackOverflow)
 TEST(BRepGraph_ChildExplorerTest, Recreate_ResetAndReexplore)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes19 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   int                     aFaceCount = 0;
@@ -450,7 +450,7 @@ TEST(BRepGraph_ChildExplorerTest, Recreate_ResetAndReexplore)
 TEST(BRepGraph_ChildExplorerTest, CoEdgeTarget_Reachable)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes20 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   // CoEdge target from Solid must find all coedges (24 edge occurrences = 24 coedges).
@@ -470,7 +470,7 @@ TEST(BRepGraph_ChildExplorerTest, CoEdgeTarget_Reachable)
 TEST(BRepGraph_ChildExplorerTest, CoEdgeTarget_FromFace_Count4)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes21 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   int aCount = 0;
@@ -489,7 +489,7 @@ TEST(BRepGraph_ChildExplorerTest, CoEdgeTarget_FromFace_Count4)
 TEST(BRepGraph_ChildExplorerTest, DirectChildren_ShellFaces_CountAndOrder)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes22 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   const BRepGraph_ShellId                              aShellId(0);
@@ -522,7 +522,7 @@ TEST(BRepGraph_ChildExplorerTest, DirectChildren_ShellFaces_CountAndOrder)
 TEST(BRepGraph_ChildExplorerTest, DirectChildren_ShellFaces_ExposeParentAndRef)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes23 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   const BRepGraph_ShellId aShellId(0);
@@ -542,7 +542,7 @@ TEST(BRepGraph_ChildExplorerTest, DirectChildren_ShellFaces_ExposeParentAndRef)
 TEST(BRepGraph_ChildExplorerTest, DirectChildren_ProductShapeRoot_ViaOccurrenceRef)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes24 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   const BRepGraph_ProductId aProductId = aGraph.Editor().Products().LinkProductToTopology(BRepGraph_SolidId::Start());
@@ -567,7 +567,7 @@ TEST(BRepGraph_ChildExplorerTest, DirectChildren_ProductShapeRoot_ViaOccurrenceR
 TEST(BRepGraph_ChildExplorerTest, RootEqualsTarget_LinkKindNone)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes25 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph_ChildExplorer anExp(aGraph, BRepGraph_FaceId::Start(), BRepGraph_NodeId::Kind::Face);
@@ -580,7 +580,7 @@ TEST(BRepGraph_ChildExplorerTest, RootEqualsTarget_LinkKindNone)
 TEST(BRepGraph_ChildExplorerTest, DirectChildren_ProductOccurrences_ExposeOccurrenceRefs)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes26 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   const BRepGraph_ProductId aPart      = aGraph.Editor().Products().LinkProductToTopology(BRepGraph_SolidId::Start());
@@ -615,7 +615,7 @@ TEST(BRepGraph_ChildExplorerTest, DirectChildren_ProductOccurrences_ExposeOccurr
 TEST(BRepGraph_ChildExplorerTest, DirectChildren_RemovedFaceRef_IsSkipped)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes27 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   const BRepGraph_ShellId                              aShellId(0);
@@ -648,7 +648,7 @@ TEST(BRepGraph_ChildExplorerTest, DirectChildren_RemovedFaceRef_IsSkipped)
 TEST(BRepGraph_ChildExplorerTest, DirectChildren_WireChildren_AreCoEdges)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes28 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   const BRepGraph_FaceId                               aFaceId(0);
@@ -683,7 +683,7 @@ TEST(BRepGraph_ChildExplorerTest, DirectChildren_CompoundChildren_Basic)
   aBuilder.Add(aComp, BRepPrimAPI_MakeBox(20, 20, 20).Shape());
 
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aComp);
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes29 = BRepGraph_Builder::Add(aGraph, aComp);
   ASSERT_TRUE(aGraph.IsDone());
 
   int aCount = 0;
@@ -714,7 +714,7 @@ TEST(BRepGraph_ChildExplorerTest, DirectChildren_ChainedTraversal_ParityWithRecu
   aBuilder.Add(aComp, aBox);
 
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aComp);
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes30 = BRepGraph_Builder::Add(aGraph, aComp);
   ASSERT_TRUE(aGraph.IsDone());
 
   NCollection_DataMap<int, TopLoc_Location>    aExpectedLoc;
@@ -775,7 +775,7 @@ TEST(BRepGraph_ChildExplorerTest, DirectChildren_ChainedTraversal_ParityWithRecu
 TEST(BRepGraph_ChildExplorerTest, Recursive_SharedProduct_ChildrenHaveDistinctContexts)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes31 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   const BRepGraph_ProductId aPart = aGraph.Editor().Products().LinkProductToTopology(BRepGraph_SolidId::Start());
@@ -817,7 +817,7 @@ TEST(BRepGraph_ChildExplorerTest, Recursive_SharedProduct_ChildrenHaveDistinctCo
 TEST(BRepGraph_ChildExplorerTest, Recursive_ProductPartRootContext_ComposedWithOccurrence)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes32 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   const BRepGraph_ProductId aPart = aGraph.Editor().Products().LinkProductToTopology(BRepGraph_SolidId::Start());
@@ -885,7 +885,7 @@ TEST(BRepGraph_ChildExplorerTest, DirectChildren_HighFanout_DirectChildrenComple
     aBuilder.Add(aComp, BRepPrimAPI_MakeBox(1.0 + i, 2.0, 3.0).Shape());
 
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aComp);
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes33 = BRepGraph_Builder::Add(aGraph, aComp);
   ASSERT_TRUE(aGraph.IsDone());
 
   int aCount = 0;
@@ -910,7 +910,7 @@ TEST(BRepGraph_ChildExplorerTest, HighFanout_CompletesAllChildren)
     aBB.Add(aComp, BRepPrimAPI_MakeBox(1, 1, 1).Shape());
 
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aComp);
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes34 = BRepGraph_Builder::Add(aGraph, aComp);
   ASSERT_TRUE(aGraph.IsDone());
 
   int aFaceCount = 0;
@@ -938,7 +938,7 @@ TEST(BRepGraph_ChildExplorerTest, StructuredBindings_NodeInstance)
   aBuilder.Add(aComp, aBox);
 
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aComp);
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes35 = BRepGraph_Builder::Add(aGraph, aComp);
   ASSERT_TRUE(aGraph.IsDone());
 
   int aCount = 0;
@@ -960,7 +960,7 @@ TEST(BRepGraph_ChildExplorerTest, StructuredBindings_NodeInstance)
 TEST(BRepGraph_ChildExplorerTest, RangeFor_NodeInstance)
 {
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes36 = BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   int aCount = 0;

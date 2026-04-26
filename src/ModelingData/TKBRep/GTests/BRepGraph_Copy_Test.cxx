@@ -66,7 +66,7 @@ TEST(BRepGraph_CopyTest, CopyBox_FaceCount)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aBox);
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes1 = BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph aCopyGraph = BRepGraph_Copy::Perform(aGraph, true);
@@ -94,7 +94,7 @@ TEST(BRepGraph_CopyTest, CopyBox_AreaPreserved)
   const double anOrigArea = aOrigProps.Mass();
 
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aBox);
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes2 = BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph aCopyGraph = BRepGraph_Copy::Perform(aGraph, true);
@@ -121,7 +121,7 @@ TEST(BRepGraph_CopyTest, CopyBox_GeometryIsIndependent)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aBox);
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes3 = BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph aCopyGraph = BRepGraph_Copy::Perform(aGraph, true);
@@ -140,7 +140,7 @@ TEST(BRepGraph_CopyTest, CopyBox_SharedGeometry)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aBox);
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes4 = BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
   // theCopyGeom = false: geometry is shared.
@@ -160,7 +160,7 @@ TEST(BRepGraph_CopyTest, CopyBox_PreservesFreshNodeCache)
   const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aBox);
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes5 = BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
   const BRepGraph_FaceId                  aFaceId(0);
@@ -181,7 +181,7 @@ TEST(BRepGraph_CopyTest, CopyBox_DoesNotPreserveStaleNodeCache)
   const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aBox);
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes6 = BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
   const BRepGraph_FaceId aFaceId(0);
@@ -210,7 +210,7 @@ TEST(BRepGraph_CopyTest, CopyBox_PreservesFreshFaceRefCache)
   const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aBox);
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes7 = BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Refs().Faces().Nb(), 0);
 
@@ -231,7 +231,7 @@ TEST(BRepGraph_CopyTest, CopyBox_DoesNotPreserveStaleFaceRefCache)
   const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aBox);
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes8 = BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Refs().Faces().Nb(), 0);
 
@@ -262,7 +262,7 @@ TEST(BRepGraph_CopyTest, CopyCylinder_FaceCount)
   const TopoDS_Shape&      aCyl = aCylMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aCyl);
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes9 = BRepGraph_Builder::Add(aGraph, aCyl);
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph aCopyGraph = BRepGraph_Copy::Perform(aGraph, true);
@@ -276,7 +276,7 @@ TEST(BRepGraph_CopyTest, CopySingleFace)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aBox);
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes10 = BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Topo().Faces().Nb(), 0);
 
@@ -318,7 +318,7 @@ TEST(BRepGraph_CopyTest, CopyFacesOnly_Compound)
   }
 
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aCompound);
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes11 = BRepGraph_Builder::Add(aGraph, aCompound);
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_EQ(aGraph.Topo().Faces().Nb(), 6);
   ASSERT_EQ(aGraph.Topo().Solids().Nb(), 0);
@@ -340,7 +340,7 @@ TEST(BRepGraph_CopyTest, CopyBox_SameParameter_Preserved)
   const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aBox);
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes12 = BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph aCopyGraph = BRepGraph_Copy::Perform(aGraph, true);
@@ -376,7 +376,7 @@ TEST(BRepGraph_CopyTest, FusedBoxes_Regularity_AreaPreserved)
   const double anOrigArea = aOrigProps.Mass();
 
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aFused);
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes13 = BRepGraph_Builder::Add(aGraph, aFused);
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph aCopyGraph = BRepGraph_Copy::Perform(aGraph, true);
@@ -408,7 +408,7 @@ TEST(BRepGraph_CopyTest, CopyBox_UIDsPreserved)
   const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
 
   BRepGraph aGraph;
-  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aBox);
+  aGraph.Clear(); [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes14 = BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph aCopyGraph = BRepGraph_Copy::Perform(aGraph, true);

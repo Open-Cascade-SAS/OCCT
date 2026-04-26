@@ -659,13 +659,14 @@ public:
     //! @return typed product definition identifier
     [[nodiscard]] Standard_EXPORT BRepGraph_ProductId CreateEmptyProduct();
 
-    //! Reconstruction primitive: link two existing Products via a fresh
-    //! Occurrence. ParentOccurrenceIdx is set to -1 (top-level).
+    //! Link two existing Products via a fresh Occurrence. ParentOccurrenceIdx
+    //! is set to -1 (top-level). Any active Product may serve as the parent
+    //! (not limited to assembly products), allowing mixed part/assembly hierarchies.
     //! @param[in] theParentProduct     typed parent product identifier
     //! @param[in] theReferencedProduct typed child product identifier being instantiated
     //! @param[in] thePlacement         local placement relative to parent
     //! @return typed occurrence definition identifier, or invalid unless the
-    //!         parent and referenced products are both active
+    //!         parent and referenced products are both active and not equal
     [[nodiscard]] Standard_EXPORT BRepGraph_OccurrenceId
       LinkProducts(const BRepGraph_ProductId theParentProduct,
                    const BRepGraph_ProductId theReferencedProduct,
