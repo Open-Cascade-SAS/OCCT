@@ -860,22 +860,7 @@ void BRepGraphInc_ReverseIndex::BindCoEdgeToWire(const BRepGraph_CoEdgeId theCoE
 void BRepGraphInc_ReverseIndex::UnbindEdgeFromWire(const BRepGraph_EdgeId theEdgeId,
                                                    const BRepGraph_WireId theWireId)
 {
-  if (theEdgeId.Index >= myEdgeToWires.Size())
-    return;
-  NCollection_DynamicArray<BRepGraph_WireId>& aWires =
-    myEdgeToWires.ChangeValue(static_cast<size_t>(theEdgeId.Index));
-  uint32_t anIdx = 0;
-  for (NCollection_DynamicArray<BRepGraph_WireId>::Iterator anIt(aWires); anIt.More();
-       anIt.Next(), ++anIdx)
-  {
-    if (anIt.Value() == theWireId)
-    {
-      if (anIdx < static_cast<uint32_t>(aWires.Size()) - 1u)
-        aWires.ChangeValue(static_cast<size_t>(anIdx)) = aWires.Value(aWires.Size() - 1u);
-      aWires.EraseLast();
-      break;
-    }
-  }
+  eraseSwapLast(myEdgeToWires, theEdgeId.Index, theWireId);
 }
 
 //=================================================================================================
@@ -883,22 +868,7 @@ void BRepGraphInc_ReverseIndex::UnbindEdgeFromWire(const BRepGraph_EdgeId theEdg
 void BRepGraphInc_ReverseIndex::UnbindCoEdgeFromWire(const BRepGraph_CoEdgeId theCoEdgeId,
                                                      const BRepGraph_WireId   theWireId)
 {
-  if (theCoEdgeId.Index >= myCoEdgeToWires.Size())
-    return;
-  NCollection_DynamicArray<BRepGraph_WireId>& aWires =
-    myCoEdgeToWires.ChangeValue(static_cast<size_t>(theCoEdgeId.Index));
-  uint32_t anIdx = 0;
-  for (NCollection_DynamicArray<BRepGraph_WireId>::Iterator anIt(aWires); anIt.More();
-       anIt.Next(), ++anIdx)
-  {
-    if (anIt.Value() == theWireId)
-    {
-      if (anIdx < static_cast<uint32_t>(aWires.Size()) - 1u)
-        aWires.ChangeValue(static_cast<size_t>(anIdx)) = aWires.Value(aWires.Size() - 1u);
-      aWires.EraseLast();
-      break;
-    }
-  }
+  eraseSwapLast(myCoEdgeToWires, theCoEdgeId.Index, theWireId);
 }
 
 //=================================================================================================
@@ -924,22 +894,7 @@ void BRepGraphInc_ReverseIndex::BindVertexToEdge(const BRepGraph_VertexId theVer
 void BRepGraphInc_ReverseIndex::UnbindVertexFromEdge(const BRepGraph_VertexId theVertexId,
                                                      const BRepGraph_EdgeId   theEdgeId)
 {
-  if (theVertexId.Index >= myVertexToEdges.Size())
-    return;
-  NCollection_DynamicArray<BRepGraph_EdgeId>& anEdges =
-    myVertexToEdges.ChangeValue(static_cast<size_t>(theVertexId.Index));
-  uint32_t anIdx = 0;
-  for (NCollection_DynamicArray<BRepGraph_EdgeId>::Iterator anIt(anEdges); anIt.More();
-       anIt.Next(), ++anIdx)
-  {
-    if (anIt.Value() == theEdgeId)
-    {
-      if (anIdx < static_cast<uint32_t>(anEdges.Size()) - 1u)
-        anEdges.ChangeValue(static_cast<size_t>(anIdx)) = anEdges.Value(anEdges.Size() - 1u);
-      anEdges.EraseLast();
-      break;
-    }
-  }
+  eraseSwapLast(myVertexToEdges, theVertexId.Index, theEdgeId);
 }
 
 //=================================================================================================
@@ -955,22 +910,7 @@ void BRepGraphInc_ReverseIndex::BindEdgeToCoEdge(const BRepGraph_EdgeId   theEdg
 void BRepGraphInc_ReverseIndex::UnbindEdgeFromCoEdge(const BRepGraph_EdgeId   theEdgeId,
                                                      const BRepGraph_CoEdgeId theCoEdgeId)
 {
-  if (theEdgeId.Index >= myEdgeToCoEdges.Size())
-    return;
-  NCollection_DynamicArray<BRepGraph_CoEdgeId>& aCoEdges =
-    myEdgeToCoEdges.ChangeValue(static_cast<size_t>(theEdgeId.Index));
-  uint32_t anIdx = 0;
-  for (NCollection_DynamicArray<BRepGraph_CoEdgeId>::Iterator anIt(aCoEdges); anIt.More();
-       anIt.Next(), ++anIdx)
-  {
-    if (anIt.Value() == theCoEdgeId)
-    {
-      if (anIdx < static_cast<uint32_t>(aCoEdges.Size()) - 1u)
-        aCoEdges.ChangeValue(static_cast<size_t>(anIdx)) = aCoEdges.Value(aCoEdges.Size() - 1u);
-      aCoEdges.EraseLast();
-      break;
-    }
-  }
+  eraseSwapLast(myEdgeToCoEdges, theEdgeId.Index, theCoEdgeId);
 }
 
 //=================================================================================================
@@ -986,22 +926,160 @@ void BRepGraphInc_ReverseIndex::BindEdgeToFace(const BRepGraph_EdgeId theEdgeId,
 void BRepGraphInc_ReverseIndex::UnbindEdgeFromFace(const BRepGraph_EdgeId theEdgeId,
                                                    const BRepGraph_FaceId theFaceId)
 {
-  if (theEdgeId.Index >= myEdgeToFaces.Size())
-    return;
-  NCollection_DynamicArray<BRepGraph_FaceId>& aFaces =
-    myEdgeToFaces.ChangeValue(static_cast<size_t>(theEdgeId.Index));
-  uint32_t anIdx = 0;
-  for (NCollection_DynamicArray<BRepGraph_FaceId>::Iterator anIt(aFaces); anIt.More();
-       anIt.Next(), ++anIdx)
+  eraseSwapLast(myEdgeToFaces, theEdgeId.Index, theFaceId);
+}
+
+//=================================================================================================
+
+void BRepGraphInc_ReverseIndex::BindWireToFace(const BRepGraph_WireId theWireId,
+                                               const BRepGraph_FaceId theFaceId)
+{
+  appendUnique(myWireToFaces, theWireId.Index, theFaceId);
+}
+
+//=================================================================================================
+
+void BRepGraphInc_ReverseIndex::UnbindWireFromFace(const BRepGraph_WireId theWireId,
+                                                   const BRepGraph_FaceId theFaceId)
+{
+  eraseSwapLast(myWireToFaces, theWireId.Index, theFaceId);
+}
+
+//=================================================================================================
+
+void BRepGraphInc_ReverseIndex::BindFaceToShell(const BRepGraph_FaceId  theFaceId,
+                                                const BRepGraph_ShellId theShellId)
+{
+  appendUnique(myFaceToShells, theFaceId.Index, theShellId);
+}
+
+//=================================================================================================
+
+void BRepGraphInc_ReverseIndex::UnbindFaceFromShell(const BRepGraph_FaceId  theFaceId,
+                                                    const BRepGraph_ShellId theShellId)
+{
+  eraseSwapLast(myFaceToShells, theFaceId.Index, theShellId);
+}
+
+//=================================================================================================
+
+void BRepGraphInc_ReverseIndex::BindShellToSolid(const BRepGraph_ShellId theShellId,
+                                                 const BRepGraph_SolidId theSolidId)
+{
+  appendUnique(myShellToSolids, theShellId.Index, theSolidId);
+}
+
+//=================================================================================================
+
+void BRepGraphInc_ReverseIndex::UnbindShellFromSolid(const BRepGraph_ShellId theShellId,
+                                                     const BRepGraph_SolidId theSolidId)
+{
+  eraseSwapLast(myShellToSolids, theShellId.Index, theSolidId);
+}
+
+//=================================================================================================
+
+void BRepGraphInc_ReverseIndex::BindSolidToCompSolid(const BRepGraph_SolidId     theSolidId,
+                                                     const BRepGraph_CompSolidId theCompSolidId)
+{
+  appendUnique(myCompSolidsOfSolid, theSolidId.Index, theCompSolidId);
+}
+
+//=================================================================================================
+
+void BRepGraphInc_ReverseIndex::UnbindSolidFromCompSolid(const BRepGraph_SolidId     theSolidId,
+                                                         const BRepGraph_CompSolidId theCompSolidId)
+{
+  eraseSwapLast(myCompSolidsOfSolid, theSolidId.Index, theCompSolidId);
+}
+
+//=================================================================================================
+
+void BRepGraphInc_ReverseIndex::BindCompoundChild(const BRepGraph_NodeId     theChildDefId,
+                                                  const BRepGraph_CompoundId theCompoundId)
+{
+  switch (theChildDefId.NodeKind)
   {
-    if (anIt.Value() == theFaceId)
-    {
-      if (anIdx < static_cast<uint32_t>(aFaces.Size()) - 1u)
-        aFaces.ChangeValue(static_cast<size_t>(anIdx)) = aFaces.Value(aFaces.Size() - 1u);
-      aFaces.EraseLast();
+    case BRepGraph_NodeId::Kind::Solid:
+      appendUnique(myCompoundsOfSolid, theChildDefId.Index, theCompoundId);
       break;
-    }
+    case BRepGraph_NodeId::Kind::Shell:
+      appendUnique(myCompoundsOfShell, theChildDefId.Index, theCompoundId);
+      break;
+    case BRepGraph_NodeId::Kind::Face:
+      appendUnique(myCompoundsOfFace, theChildDefId.Index, theCompoundId);
+      break;
+    case BRepGraph_NodeId::Kind::Compound:
+      appendUnique(myCompoundsOfCompound, theChildDefId.Index, theCompoundId);
+      break;
+    case BRepGraph_NodeId::Kind::CompSolid:
+      appendUnique(myCompoundsOfCompSolid, theChildDefId.Index, theCompoundId);
+      break;
+    case BRepGraph_NodeId::Kind::Wire:
+      appendUnique(myCompoundsOfWire, theChildDefId.Index, theCompoundId);
+      break;
+    case BRepGraph_NodeId::Kind::Edge:
+      appendUnique(myCompoundsOfEdge, theChildDefId.Index, theCompoundId);
+      break;
+    case BRepGraph_NodeId::Kind::Vertex:
+      appendUnique(myCompoundsOfVertex, theChildDefId.Index, theCompoundId);
+      break;
+    default:
+      break;
   }
+}
+
+//=================================================================================================
+
+void BRepGraphInc_ReverseIndex::UnbindCompoundChild(const BRepGraph_NodeId     theChildDefId,
+                                                    const BRepGraph_CompoundId theCompoundId)
+{
+  switch (theChildDefId.NodeKind)
+  {
+    case BRepGraph_NodeId::Kind::Solid:
+      eraseSwapLast(myCompoundsOfSolid, theChildDefId.Index, theCompoundId);
+      break;
+    case BRepGraph_NodeId::Kind::Shell:
+      eraseSwapLast(myCompoundsOfShell, theChildDefId.Index, theCompoundId);
+      break;
+    case BRepGraph_NodeId::Kind::Face:
+      eraseSwapLast(myCompoundsOfFace, theChildDefId.Index, theCompoundId);
+      break;
+    case BRepGraph_NodeId::Kind::Compound:
+      eraseSwapLast(myCompoundsOfCompound, theChildDefId.Index, theCompoundId);
+      break;
+    case BRepGraph_NodeId::Kind::CompSolid:
+      eraseSwapLast(myCompoundsOfCompSolid, theChildDefId.Index, theCompoundId);
+      break;
+    case BRepGraph_NodeId::Kind::Wire:
+      eraseSwapLast(myCompoundsOfWire, theChildDefId.Index, theCompoundId);
+      break;
+    case BRepGraph_NodeId::Kind::Edge:
+      eraseSwapLast(myCompoundsOfEdge, theChildDefId.Index, theCompoundId);
+      break;
+    case BRepGraph_NodeId::Kind::Vertex:
+      eraseSwapLast(myCompoundsOfVertex, theChildDefId.Index, theCompoundId);
+      break;
+    default:
+      break;
+  }
+}
+
+//=================================================================================================
+
+void BRepGraphInc_ReverseIndex::BindProductOccurrence(const BRepGraph_OccurrenceId theOccurrenceId,
+                                                      const BRepGraph_ProductId    theProductId)
+{
+  appendUnique(myProductToOccurrences, theProductId.Index, theOccurrenceId);
+}
+
+//=================================================================================================
+
+void BRepGraphInc_ReverseIndex::UnbindProductOccurrence(
+  const BRepGraph_OccurrenceId theOccurrenceId,
+  const BRepGraph_ProductId    theProductId)
+{
+  eraseSwapLast(myProductToOccurrences, theProductId.Index, theOccurrenceId);
 }
 
 //=================================================================================================

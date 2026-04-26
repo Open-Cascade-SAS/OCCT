@@ -136,7 +136,7 @@ struct EdgeDef : public BaseDef
 //! Each coedge represents one edge-face binding with its parametric curve.
 //! Wires reference coedges rather than edges directly.
 //! For seam edges, two coedges exist on the same face with opposite Orientation,
-//! linked by SeamPairIdx.
+//! linked by SeamPairId.
 struct CoEdgeDef : public BaseDef
 {
   using TypeId = BRepGraph_CoEdgeId;

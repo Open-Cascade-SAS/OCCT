@@ -82,6 +82,11 @@ struct BRepGraph_Data
   //! parents in the same propagation wave (O(1) re-visit guard).
   std::atomic<uint32_t> myPropagationWave{0};
 
+  //! Recursion depth of EditorView::GenOps::RemoveSubgraph. Outermost call (depth==0)
+  //! triggers a single reverse-index rebuild after cascade so individual cascade-prune
+  //! steps avoid maintaining per-kind unbinds for every removed node.
+  uint32_t myRemoveSubgraphDepth = 0;
+
   //! NodeIds accumulated during deferred mode. Processed by EndDeferredInvalidation().
   NCollection_DynamicArray<BRepGraph_NodeId> myDeferredModified;
 

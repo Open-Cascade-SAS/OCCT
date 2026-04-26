@@ -412,6 +412,55 @@ public:
   Standard_EXPORT void UnbindEdgeFromFace(const BRepGraph_EdgeId theEdgeId,
                                           const BRepGraph_FaceId theFaceId);
 
+  //! Register a wire as belonging to a face (O(1) amortized, deduplicates).
+  Standard_EXPORT void BindWireToFace(const BRepGraph_WireId theWireId,
+                                      const BRepGraph_FaceId theFaceId);
+
+  //! Remove a face from the wire-to-face index for a given wire.
+  Standard_EXPORT void UnbindWireFromFace(const BRepGraph_WireId theWireId,
+                                          const BRepGraph_FaceId theFaceId);
+
+  //! Register a face as belonging to a shell (O(1) amortized, deduplicates).
+  Standard_EXPORT void BindFaceToShell(const BRepGraph_FaceId  theFaceId,
+                                       const BRepGraph_ShellId theShellId);
+
+  //! Remove a shell from the face-to-shell index for a given face.
+  Standard_EXPORT void UnbindFaceFromShell(const BRepGraph_FaceId  theFaceId,
+                                           const BRepGraph_ShellId theShellId);
+
+  //! Register a shell as belonging to a solid (O(1) amortized, deduplicates).
+  Standard_EXPORT void BindShellToSolid(const BRepGraph_ShellId theShellId,
+                                        const BRepGraph_SolidId theSolidId);
+
+  //! Remove a solid from the shell-to-solid index for a given shell.
+  Standard_EXPORT void UnbindShellFromSolid(const BRepGraph_ShellId theShellId,
+                                            const BRepGraph_SolidId theSolidId);
+
+  //! Register a solid as belonging to a compsolid (O(1) amortized, deduplicates).
+  Standard_EXPORT void BindSolidToCompSolid(const BRepGraph_SolidId     theSolidId,
+                                            const BRepGraph_CompSolidId theCompSolidId);
+
+  //! Remove a compsolid from the solid-to-compsolid index for a given solid.
+  Standard_EXPORT void UnbindSolidFromCompSolid(const BRepGraph_SolidId     theSolidId,
+                                                const BRepGraph_CompSolidId theCompSolidId);
+
+  //! Register a child node as belonging to a compound (dispatched on NodeKind).
+  //! Routes to the appropriate per-kind compound reverse map. No-op for unsupported kinds.
+  Standard_EXPORT void BindCompoundChild(const BRepGraph_NodeId     theChildDefId,
+                                         const BRepGraph_CompoundId theCompoundId);
+
+  //! Remove a compound from the per-kind compound reverse map for a given child node.
+  Standard_EXPORT void UnbindCompoundChild(const BRepGraph_NodeId     theChildDefId,
+                                           const BRepGraph_CompoundId theCompoundId);
+
+  //! Register an occurrence as referencing a product (O(1) amortized, deduplicates).
+  Standard_EXPORT void BindProductOccurrence(const BRepGraph_OccurrenceId theOccurrenceId,
+                                             const BRepGraph_ProductId    theProductId);
+
+  //! Remove an occurrence from the product-to-occurrences index for a given product.
+  Standard_EXPORT void UnbindProductOccurrence(const BRepGraph_OccurrenceId theOccurrenceId,
+                                               const BRepGraph_ProductId    theProductId);
+
 private:
   //! Dense vector type: outer index = entity key, inner vector = typed adjacency list.
   template <typename T>
@@ -514,6 +563,27 @@ private:
       ensureSize(theIdx, theKey + 1u);
 
     theIdx.ChangeValue(static_cast<size_t>(theKey)).Append(theVal);
+  }
+
+  //! Remove first occurrence of theVal from the vector at theKey via swap-with-last + erase-last.
+  //! No-op if theKey is out of range or theVal is absent. O(N) lookup, O(1) removal.
+  template <typename T>
+  static void eraseSwapLast(TypedIndexTable<T>& theIdx, const uint32_t theKey, const T theVal)
+  {
+    if (theKey >= theIdx.Size())
+      return;
+    NCollection_DynamicArray<T>& aVec = theIdx.ChangeValue(static_cast<size_t>(theKey));
+    const size_t                 aNb  = aVec.Size();
+    for (size_t i = 0; i < aNb; ++i)
+    {
+      if (aVec.Value(i) == theVal)
+      {
+        if (i + 1u < aNb)
+          aVec.ChangeValue(i) = aVec.Value(aNb - 1u);
+        aVec.EraseLast();
+        return;
+      }
+    }
   }
 
   occ::handle<NCollection_BaseAllocator> myAllocator;
