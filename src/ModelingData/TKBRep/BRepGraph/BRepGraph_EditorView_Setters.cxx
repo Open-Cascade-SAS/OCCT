@@ -202,3 +202,120 @@ void BRepGraph::EditorView::OccurrenceOps::SetRefLocalLocation(
   theMut.Internal().LocalLocation = theLoc;
   theMut.MarkDirty();
 }
+
+//=================================================================================================
+
+void BRepGraph::EditorView::VertexOps::SetRefLocalLocation(
+  const BRepGraph_VertexRefId theVertexRef,
+  const TopLoc_Location&      theLoc)
+{
+  myGraph->myData->myIncStorage.ChangeVertexRef(theVertexRef).LocalLocation = theLoc;
+  myGraph->markRefModified(theVertexRef);
+}
+
+//=================================================================================================
+
+void BRepGraph::EditorView::VertexOps::SetRefLocalLocation(
+  BRepGraph_MutGuard<BRepGraphInc::VertexRef>& theMut,
+  const TopLoc_Location&                       theLoc)
+{
+  theMut.Internal().LocalLocation = theLoc;
+  theMut.MarkDirty();
+}
+
+//=================================================================================================
+
+void BRepGraph::EditorView::CoEdgeOps::SetRefLocalLocation(
+  const BRepGraph_CoEdgeRefId theCoEdgeRef,
+  const TopLoc_Location&      theLoc)
+{
+  myGraph->myData->myIncStorage.ChangeCoEdgeRef(theCoEdgeRef).LocalLocation = theLoc;
+  myGraph->markRefModified(theCoEdgeRef);
+}
+
+//=================================================================================================
+
+void BRepGraph::EditorView::CoEdgeOps::SetRefLocalLocation(
+  BRepGraph_MutGuard<BRepGraphInc::CoEdgeRef>& theMut,
+  const TopLoc_Location&                       theLoc)
+{
+  theMut.Internal().LocalLocation = theLoc;
+  theMut.MarkDirty();
+}
+
+//=================================================================================================
+
+void BRepGraph::EditorView::WireOps::SetRefLocalLocation(const BRepGraph_WireRefId theWireRef,
+                                                         const TopLoc_Location&    theLoc)
+{
+  myGraph->myData->myIncStorage.ChangeWireRef(theWireRef).LocalLocation = theLoc;
+  myGraph->markRefModified(theWireRef);
+}
+
+//=================================================================================================
+
+void BRepGraph::EditorView::WireOps::SetRefLocalLocation(
+  BRepGraph_MutGuard<BRepGraphInc::WireRef>& theMut,
+  const TopLoc_Location&                     theLoc)
+{
+  theMut.Internal().LocalLocation = theLoc;
+  theMut.MarkDirty();
+}
+
+//=================================================================================================
+
+void BRepGraph::EditorView::ShellOps::SetRefLocalLocation(const BRepGraph_ShellRefId theShellRef,
+                                                          const TopLoc_Location&     theLoc)
+{
+  myGraph->myData->myIncStorage.ChangeShellRef(theShellRef).LocalLocation = theLoc;
+  myGraph->markRefModified(theShellRef);
+}
+
+//=================================================================================================
+
+void BRepGraph::EditorView::ShellOps::SetRefLocalLocation(
+  BRepGraph_MutGuard<BRepGraphInc::ShellRef>& theMut,
+  const TopLoc_Location&                      theLoc)
+{
+  theMut.Internal().LocalLocation = theLoc;
+  theMut.MarkDirty();
+}
+
+//=================================================================================================
+
+void BRepGraph::EditorView::SolidOps::SetRefLocalLocation(const BRepGraph_SolidRefId theSolidRef,
+                                                          const TopLoc_Location&     theLoc)
+{
+  myGraph->myData->myIncStorage.ChangeSolidRef(theSolidRef).LocalLocation = theLoc;
+  myGraph->markRefModified(theSolidRef);
+}
+
+//=================================================================================================
+
+void BRepGraph::EditorView::SolidOps::SetRefLocalLocation(
+  BRepGraph_MutGuard<BRepGraphInc::SolidRef>& theMut,
+  const TopLoc_Location&                      theLoc)
+{
+  theMut.Internal().LocalLocation = theLoc;
+  theMut.MarkDirty();
+}
+
+//=================================================================================================
+
+void BRepGraph::EditorView::GenOps::SetChildRefLocalLocation(
+  const BRepGraph_ChildRefId theChildRef,
+  const TopLoc_Location&     theLoc)
+{
+  myGraph->myData->myIncStorage.ChangeChildRef(theChildRef).LocalLocation = theLoc;
+  myGraph->markRefModified(theChildRef);
+}
+
+//=================================================================================================
+
+void BRepGraph::EditorView::GenOps::SetChildRefLocalLocation(
+  BRepGraph_MutGuard<BRepGraphInc::ChildRef>& theMut,
+  const TopLoc_Location&                      theLoc)
+{
+  theMut.Internal().LocalLocation = theLoc;
+  theMut.MarkDirty();
+}

@@ -26,6 +26,8 @@
 #include <NCollection_Map.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_MeshCache.hxx>
+#include <BRepGraph_RefId.hxx>
+#include <BRepGraph_RefsIterator.hxx>
 #include <Poly_PolygonOnTriangulation.hxx>
 #include <gp_GTrsf2d.hxx>
 #include <Poly_Polygon3D.hxx>
@@ -425,4 +427,119 @@ BRepGraph BRepGraph_Transform::TransformFace(const BRepGraph&       theGraph,
   if (theCopyMesh)
     applyMeshCopy(theGraph, aResult, theTrsf, false);
   return aResult;
+}
+
+//=================================================================================================
+
+BRepGraph BRepGraph_Transform::TransformNode(const BRepGraph&       theGraph,
+                                             const BRepGraph_NodeId theNodeId,
+                                             const gp_Trsf&         theTrsf,
+                                             const bool             theCopyGeom,
+                                             const bool             theCopyMesh)
+{
+  if (!theGraph.IsDone())
+    return BRepGraph();
+
+  const bool useGeomModif =
+    theCopyGeom || theTrsf.IsNegative()
+    || (std::abs(std::abs(theTrsf.ScaleFactor()) - 1.) > TopLoc_Location::ScalePrec());
+
+  constexpr bool THE_RESERVE_CACHE = false;
+
+  BRepGraph aSubgraph =
+    BRepGraph_Copy::CopyNode(theGraph, theNodeId, theCopyGeom, THE_RESERVE_CACHE);
+  if (!aSubgraph.IsDone())
+    return aSubgraph;
+
+  if (useGeomModif)
+  {
+    applyGeometryTransform(aSubgraph, aSubgraph, theTrsf, theCopyMesh);
+  }
+  else
+  {
+    applyLocationTransform(aSubgraph, theTrsf);
+    if (theCopyMesh)
+      applyMeshCopy(theGraph, aSubgraph, theTrsf, false);
+  }
+  return aSubgraph;
+}
+
+//=================================================================================================
+
+bool BRepGraph_Transform::MoveRef(BRepGraph&             theGraph,
+                                  const BRepGraph_RefId& theRefId,
+                                  const gp_Trsf&         theTrsf)
+{
+  if (std::abs(std::abs(theTrsf.ScaleFactor()) - 1.) > TopLoc_Location::ScalePrec())
+    return false;
+
+  const TopLoc_Location  aLoc     = TopLoc_Location(theTrsf);
+  BRepGraph::EditorView& anEditor = theGraph.Editor();
+
+  switch (theRefId.RefKind)
+  {
+    case BRepGraph_RefId::Kind::Shell:
+    {
+      const BRepGraph_ShellRefId aShellRef = BRepGraph_ShellRefId::FromRefId(theRefId);
+      const TopLoc_Location      aOldLoc   = theGraph.Refs().Shells().Entry(aShellRef).LocalLocation;
+      anEditor.Shells().SetRefLocalLocation(aShellRef, aLoc * aOldLoc);
+      return true;
+    }
+    case BRepGraph_RefId::Kind::Face:
+    {
+      const BRepGraph_FaceRefId aFaceRef = BRepGraph_FaceRefId::FromRefId(theRefId);
+      const TopLoc_Location     aOldLoc  = theGraph.Refs().Faces().Entry(aFaceRef).LocalLocation;
+      anEditor.Faces().SetRefLocalLocation(aFaceRef, aLoc * aOldLoc);
+      return true;
+    }
+    case BRepGraph_RefId::Kind::Wire:
+    {
+      const BRepGraph_WireRefId aWireRef = BRepGraph_WireRefId::FromRefId(theRefId);
+      const TopLoc_Location     aOldLoc  = theGraph.Refs().Wires().Entry(aWireRef).LocalLocation;
+      anEditor.Wires().SetRefLocalLocation(aWireRef, aLoc * aOldLoc);
+      return true;
+    }
+    case BRepGraph_RefId::Kind::CoEdge:
+    {
+      const BRepGraph_CoEdgeRefId aCoEdgeRef = BRepGraph_CoEdgeRefId::FromRefId(theRefId);
+      const TopLoc_Location       aOldLoc =
+        theGraph.Refs().CoEdges().Entry(aCoEdgeRef).LocalLocation;
+      anEditor.CoEdges().SetRefLocalLocation(aCoEdgeRef, aLoc * aOldLoc);
+      return true;
+    }
+    case BRepGraph_RefId::Kind::Vertex:
+    {
+      const BRepGraph_VertexRefId aVertexRef = BRepGraph_VertexRefId::FromRefId(theRefId);
+      const TopLoc_Location       aOldLoc =
+        theGraph.Refs().Vertices().Entry(aVertexRef).LocalLocation;
+      anEditor.Vertices().SetRefLocalLocation(aVertexRef, aLoc * aOldLoc);
+      return true;
+    }
+    case BRepGraph_RefId::Kind::Solid:
+    {
+      const BRepGraph_SolidRefId aSolidRef = BRepGraph_SolidRefId::FromRefId(theRefId);
+      const TopLoc_Location      aOldLoc =
+        theGraph.Refs().Solids().Entry(aSolidRef).LocalLocation;
+      anEditor.Solids().SetRefLocalLocation(aSolidRef, aLoc * aOldLoc);
+      return true;
+    }
+    case BRepGraph_RefId::Kind::Child:
+    {
+      const BRepGraph_ChildRefId aChildRef = BRepGraph_ChildRefId::FromRefId(theRefId);
+      const TopLoc_Location      aOldLoc =
+        theGraph.Refs().Children().Entry(aChildRef).LocalLocation;
+      anEditor.Gen().SetChildRefLocalLocation(aChildRef, aLoc * aOldLoc);
+      return true;
+    }
+    case BRepGraph_RefId::Kind::Occurrence:
+    {
+      const BRepGraph_OccurrenceRefId aOccRef =
+        BRepGraph_OccurrenceRefId::FromRefId(theRefId);
+      const TopLoc_Location aOldLoc =
+        theGraph.Refs().Occurrences().Entry(aOccRef).LocalLocation;
+      anEditor.Occurrences().SetRefLocalLocation(aOccRef, aLoc * aOldLoc);
+      return true;
+    }
+  }
+  return false;
 }

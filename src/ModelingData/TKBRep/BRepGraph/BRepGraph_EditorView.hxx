@@ -136,6 +136,18 @@ public:
     Standard_EXPORT void SetPoint(BRepGraph_MutGuard<BRepGraphInc::VertexDef>& theMut,
                                   const gp_Pnt&                                thePoint);
 
+    //! Set the local location of a vertex reference and fire immediate notification.
+    //! @param[in] theVertexRef typed vertex reference identifier
+    //! @param[in] theLoc       new local location
+    Standard_EXPORT void SetRefLocalLocation(const BRepGraph_VertexRefId theVertexRef,
+                                             const TopLoc_Location&      theLoc);
+
+    //! Set the local location of a vertex reference inside a batched mutation scope.
+    //! @param[in] theMut active mutable vertex reference guard
+    //! @param[in] theLoc new local location
+    Standard_EXPORT void SetRefLocalLocation(BRepGraph_MutGuard<BRepGraphInc::VertexRef>& theMut,
+                                             const TopLoc_Location&                       theLoc);
+
   private:
     friend class EditorView;
 
@@ -309,6 +321,19 @@ public:
                                        double                                        theFirst,
                                        double                                        theLast);
 
+    //! Set the local location of a coedge reference and fire immediate notification.
+    //! @param[in] theCoEdgeRef typed coedge reference identifier
+    //! @param[in] theLoc       new local location
+    Standard_EXPORT void SetRefLocalLocation(const BRepGraph_CoEdgeRefId theCoEdgeRef,
+                                             const TopLoc_Location&      theLoc);
+
+    //! Set the local location of a coedge reference inside a batched mutation scope.
+    //! @param[in] theMut active mutable coedge reference guard
+    //! @param[in] theLoc new local location
+    Standard_EXPORT void SetRefLocalLocation(
+      BRepGraph_MutGuard<BRepGraphInc::CoEdgeRef>& theMut,
+      const TopLoc_Location&                       theLoc);
+
   private:
     friend class EditorView;
 
@@ -373,6 +398,18 @@ public:
     //! @param[in] theIsClosed new closed state
     Standard_EXPORT void SetIsClosed(BRepGraph_MutGuard<BRepGraphInc::WireDef>& theMut,
                                      bool                                        theIsClosed);
+
+    //! Set the local location of a wire reference and fire immediate notification.
+    //! @param[in] theWireRef typed wire reference identifier
+    //! @param[in] theLoc     new local location
+    Standard_EXPORT void SetRefLocalLocation(const BRepGraph_WireRefId theWireRef,
+                                             const TopLoc_Location&    theLoc);
+
+    //! Set the local location of a wire reference inside a batched mutation scope.
+    //! @param[in] theMut active mutable wire reference guard
+    //! @param[in] theLoc new local location
+    Standard_EXPORT void SetRefLocalLocation(BRepGraph_MutGuard<BRepGraphInc::WireRef>& theMut,
+                                             const TopLoc_Location&                     theLoc);
 
   private:
     friend class EditorView;
@@ -563,6 +600,18 @@ public:
     [[nodiscard]] Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::ShellRef> MutRef(
       const BRepGraph_ShellRefId theShellRef);
 
+    //! Set the local location of a shell reference and fire immediate notification.
+    //! @param[in] theShellRef typed shell reference identifier
+    //! @param[in] theLoc      new local location
+    Standard_EXPORT void SetRefLocalLocation(const BRepGraph_ShellRefId theShellRef,
+                                             const TopLoc_Location&     theLoc);
+
+    //! Set the local location of a shell reference inside a batched mutation scope.
+    //! @param[in] theMut active mutable shell reference guard
+    //! @param[in] theLoc new local location
+    Standard_EXPORT void SetRefLocalLocation(BRepGraph_MutGuard<BRepGraphInc::ShellRef>& theMut,
+                                             const TopLoc_Location&                      theLoc);
+
   private:
     friend class EditorView;
 
@@ -630,6 +679,18 @@ public:
     //! Return scoped mutable solid reference guard.
     [[nodiscard]] Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::SolidRef> MutRef(
       const BRepGraph_SolidRefId theSolidRef);
+
+    //! Set the local location of a solid reference and fire immediate notification.
+    //! @param[in] theSolidRef typed solid reference identifier
+    //! @param[in] theLoc      new local location
+    Standard_EXPORT void SetRefLocalLocation(const BRepGraph_SolidRefId theSolidRef,
+                                             const TopLoc_Location&     theLoc);
+
+    //! Set the local location of a solid reference inside a batched mutation scope.
+    //! @param[in] theMut active mutable solid reference guard
+    //! @param[in] theLoc new local location
+    Standard_EXPORT void SetRefLocalLocation(BRepGraph_MutGuard<BRepGraphInc::SolidRef>& theMut,
+                                             const TopLoc_Location&                      theLoc);
 
   private:
     friend class EditorView;
@@ -905,6 +966,19 @@ public:
     //! cross-kind Gen() rather than on a per-kind Ops.
     [[nodiscard]] Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::ChildRef> MutChildRef(
       const BRepGraph_ChildRefId theChildRef);
+
+    //! Set the local location of a child reference and fire immediate notification.
+    //! @param[in] theChildRef typed child reference identifier
+    //! @param[in] theLoc      new local location
+    Standard_EXPORT void SetChildRefLocalLocation(const BRepGraph_ChildRefId theChildRef,
+                                                  const TopLoc_Location&     theLoc);
+
+    //! Set the local location of a child reference inside a batched mutation scope.
+    //! @param[in] theMut active mutable child reference guard
+    //! @param[in] theLoc new local location
+    Standard_EXPORT void SetChildRefLocalLocation(
+      BRepGraph_MutGuard<BRepGraphInc::ChildRef>& theMut,
+      const TopLoc_Location&                      theLoc);
 
     //! Apply a modification operation and record history.
     //! @param[in] theTarget   node to modify

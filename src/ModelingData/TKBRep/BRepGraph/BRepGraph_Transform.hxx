@@ -78,11 +78,41 @@ public:
   //! @param[in] theCopyGeom if true, geometry is deep-copied before transforming
   //! @param[in] theCopyMesh if true, mesh data is copied and transformed
   //! @return a new BRepGraph containing only the specified face, transformed
+  //! @deprecated Use TransformNode() with a Face kind NodeId instead.
   [[nodiscard]] Standard_EXPORT static BRepGraph TransformFace(const BRepGraph&       theGraph,
                                                                const BRepGraph_FaceId theFace,
                                                                const gp_Trsf&         theTrsf,
                                                                const bool theCopyGeom = true,
                                                                const bool theCopyMesh = false);
+
+  //! Transform a single node sub-graph of any kind (Face, Shell, Solid, Wire, Edge, Vertex).
+  //! Produces a new BRepGraph containing only the specified node and its referenced sub-graph.
+  //! The transform is applied to all copied geometry (same rules as Perform()).
+  //! @param[in] theGraph    a pre-built BRepGraph
+  //! @param[in] theNodeId   node identifier (any kind: Face, Shell, Solid, Wire, Edge, Vertex,
+  //!                        Compound, CompSolid, Product, Occurrence)
+  //! @param[in] theTrsf     the transformation to apply
+  //! @param[in] theCopyGeom if true, geometry is deep-copied before transforming
+  //! @param[in] theCopyMesh if true, mesh data is copied and transformed
+  //! @return a new BRepGraph containing only the specified sub-graph, transformed
+  [[nodiscard]] Standard_EXPORT static BRepGraph TransformNode(const BRepGraph&       theGraph,
+                                                               const BRepGraph_NodeId theNodeId,
+                                                               const gp_Trsf&         theTrsf,
+                                                               const bool theCopyGeom = true,
+                                                               const bool theCopyMesh = false);
+
+  //! Apply an in-place location-only transform to a single reference.
+  //! Composes theTrsf into the reference's LocalLocation field without copying
+  //! any geometry. This is O(1) and equivalent to TopoDS_Shape::Moved(trsf).
+  //! @note Only pure rotation/translation transforms (scale == 1) are supported.
+  //!       The method is a no-op and returns false if |scaleFactor| != 1.
+  //! @param[in] theGraph  the graph containing the reference
+  //! @param[in] theRefId  reference to move (any ref kind)
+  //! @param[in] theTrsf   the transformation to compose into the location
+  //! @return true on success; false if theTrsf has a non-unit scale factor
+  Standard_EXPORT static bool MoveRef(BRepGraph&             theGraph,
+                                      const BRepGraph_RefId& theRefId,
+                                      const gp_Trsf&         theTrsf);
 
 private:
   //! Apply location-only transform by storing per-node locations.
