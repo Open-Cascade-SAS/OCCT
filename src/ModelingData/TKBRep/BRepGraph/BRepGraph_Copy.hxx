@@ -67,11 +67,37 @@ public:
                                                           const bool theReserveCache = false);
 
 private:
-  //! Copy a single face sub-graph (used internally by CopyNode).
-  static BRepGraph CopyFace(const BRepGraph&       theGraph,
-                            const BRepGraph_FaceId theFace,
-                            const bool             theCopyGeom     = true,
-                            const bool             theReserveCache = true);
+  // Per-kind sub-graph copy helpers called from CopyNode.
+  // OCCT convention: private methods use camelCase.
+  [[nodiscard]] static BRepGraph copyVertex(const BRepGraph&   theGraph,
+                                            BRepGraph_VertexId theId,
+                                            bool               theCopyGeom,
+                                            bool               theReserveCache);
+
+  [[nodiscard]] static BRepGraph copyEdge(const BRepGraph& theGraph,
+                                          BRepGraph_EdgeId theId,
+                                          bool             theCopyGeom,
+                                          bool             theReserveCache);
+
+  [[nodiscard]] static BRepGraph copyWire(const BRepGraph& theGraph,
+                                          BRepGraph_WireId theId,
+                                          bool             theCopyGeom,
+                                          bool             theReserveCache);
+
+  [[nodiscard]] static BRepGraph copyFace(const BRepGraph& theGraph,
+                                          BRepGraph_FaceId theId,
+                                          bool             theCopyGeom,
+                                          bool             theReserveCache);
+
+  [[nodiscard]] static BRepGraph copyShell(const BRepGraph&  theGraph,
+                                           BRepGraph_ShellId theId,
+                                           bool              theCopyGeom,
+                                           bool              theReserveCache);
+
+  [[nodiscard]] static BRepGraph copySolid(const BRepGraph&  theGraph,
+                                           BRepGraph_SolidId theId,
+                                           bool              theCopyGeom,
+                                           bool              theReserveCache);
 
   //! Pre-allocate transient cache for lock-free parallel access.
   static void reserveTransientCache(BRepGraph& theGraph);
