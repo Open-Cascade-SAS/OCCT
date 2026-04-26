@@ -87,9 +87,11 @@ static occ::handle<Geom_Curve> newCurve(
 
   TopLoc_Location         aLoc;
   occ::handle<Geom_Curve> aCurve = BRep_Tool::Curve(theEdge, aLoc, theFirst, theLast);
-  if (!aCurve.IsNull() && theMap.Contains(aCurve))
+  const occ::handle<Standard_Transient>* aFound =
+    (!aCurve.IsNull()) ? theMap.Seek(aCurve) : nullptr;
+  if (aFound != nullptr)
   {
-    aNewCurve = occ::down_cast<Geom_Curve>(theMap.FindFromKey(aCurve));
+    aNewCurve = occ::down_cast<Geom_Curve>(*aFound);
     aNewCurve = occ::down_cast<Geom_Curve>(aNewCurve->Transformed(aLoc.Transformation()));
   }
   return aNewCurve;
@@ -105,9 +107,9 @@ static occ::handle<Geom2d_Curve> newCurve(
   double&                                                            theLast)
 {
   occ::handle<Geom2d_Curve> aC2d = BRep_Tool::CurveOnSurface(theEdge, theFace, theFirst, theLast);
-  return (!aC2d.IsNull() && theMap.Contains(aC2d))
-           ? occ::down_cast<Geom2d_Curve>(theMap.FindFromKey(aC2d))
-           : occ::handle<Geom2d_Curve>();
+  const occ::handle<Standard_Transient>* aC2dFound = (!aC2d.IsNull()) ? theMap.Seek(aC2d) : nullptr;
+  return (aC2dFound != nullptr) ? occ::down_cast<Geom2d_Curve>(*aC2dFound)
+                                : occ::handle<Geom2d_Curve>();
 }
 
 // find surface from theFace in theMap, and return the transformed surface or NULL
@@ -118,11 +120,13 @@ static occ::handle<Geom_Surface> newSurface(
 {
   occ::handle<Geom_Surface> aNewSurf;
 
-  TopLoc_Location           aLoc;
-  occ::handle<Geom_Surface> aSurf = BRep_Tool::Surface(theFace, aLoc);
-  if (!aSurf.IsNull() && theMap.Contains(aSurf))
+  TopLoc_Location                        aLoc;
+  occ::handle<Geom_Surface>              aSurf = BRep_Tool::Surface(theFace, aLoc);
+  const occ::handle<Standard_Transient>* aSurfFound =
+    (!aSurf.IsNull()) ? theMap.Seek(aSurf) : nullptr;
+  if (aSurfFound != nullptr)
   {
-    aNewSurf = occ::down_cast<Geom_Surface>(theMap.FindFromKey(aSurf));
+    aNewSurf = occ::down_cast<Geom_Surface>(*aSurfFound);
     aNewSurf = occ::down_cast<Geom_Surface>(aNewSurf->Transformed(aLoc.Transformation()));
   }
   return aNewSurf;

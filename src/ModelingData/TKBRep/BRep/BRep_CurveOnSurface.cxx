@@ -31,9 +31,19 @@ IMPLEMENT_STANDARD_RTTIEXT(BRep_CurveOnSurface, BRep_GCurve)
 BRep_CurveOnSurface::BRep_CurveOnSurface(const occ::handle<Geom2d_Curve>& PC,
                                          const occ::handle<Geom_Surface>& S,
                                          const TopLoc_Location&           L)
-    : BRep_GCurve(L, PC->FirstParameter(), PC->LastParameter()),
-      myPCurve(PC),
-      mySurface(S)
+    : BRep_CurveOnSurface(Type_CurveOnSurface, PC, S, L)
+{
+}
+
+//=================================================================================================
+
+BRep_CurveOnSurface::BRep_CurveOnSurface(TypeEnum                         theType,
+                                         const occ::handle<Geom2d_Curve>& thePCurve,
+                                         const occ::handle<Geom_Surface>& theSurface,
+                                         const TopLoc_Location&           theLocation)
+    : BRep_GCurve(theType, theLocation, thePCurve->FirstParameter(), thePCurve->LastParameter()),
+      myPCurve(thePCurve),
+      mySurface(theSurface)
 {
 }
 
@@ -46,15 +56,6 @@ void BRep_CurveOnSurface::D0(const double U, gp_Pnt& P) const
   P            = mySurface->Value(P2d.X(), P2d.Y());
   P.Transform(myLocation.Transformation());
 }
-
-//=================================================================================================
-
-bool BRep_CurveOnSurface::IsCurveOnSurface() const
-{
-  return true;
-}
-
-//=================================================================================================
 
 bool BRep_CurveOnSurface::IsCurveOnSurface(const occ::handle<Geom_Surface>& S,
                                            const TopLoc_Location&           L) const

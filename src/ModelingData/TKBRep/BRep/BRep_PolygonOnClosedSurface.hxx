@@ -37,9 +37,6 @@ public:
                                               const occ::handle<Geom_Surface>&   S,
                                               const TopLoc_Location&             L);
 
-  //! returns True.
-  Standard_EXPORT bool IsPolygonOnClosedSurface() const override;
-
   Standard_EXPORT const occ::handle<Poly_Polygon2D>& Polygon2() const override;
 
   Standard_EXPORT void Polygon2(const occ::handle<Poly_Polygon2D>& P) override;

@@ -34,6 +34,8 @@ class BRep_CurveOnSurface : public BRep_GCurve
 {
 
 public:
+  using BRep_CurveRepresentation::IsCurveOnSurface;
+
   Standard_EXPORT BRep_CurveOnSurface(const occ::handle<Geom2d_Curve>& PC,
                                       const occ::handle<Geom_Surface>& S,
                                       const TopLoc_Location&           L);
@@ -44,9 +46,6 @@ public:
 
   //! Computes the point at parameter U.
   Standard_EXPORT void D0(const double U, gp_Pnt& P) const override;
-
-  //! Returns True.
-  Standard_EXPORT bool IsCurveOnSurface() const override;
 
   //! A curve in the parametric space of a surface.
   Standard_EXPORT bool IsCurveOnSurface(const occ::handle<Geom_Surface>& S,
@@ -71,6 +70,11 @@ public:
   DEFINE_STANDARD_RTTIEXT(BRep_CurveOnSurface, BRep_GCurve)
 
 protected:
+  Standard_EXPORT BRep_CurveOnSurface(TypeEnum                         theType,
+                                      const occ::handle<Geom2d_Curve>& thePCurve,
+                                      const occ::handle<Geom_Surface>& theSurface,
+                                      const TopLoc_Location&           theLocation);
+
   gp_Pnt2d myUV1;
   gp_Pnt2d myUV2;
 

@@ -31,12 +31,11 @@ class BRep_PolygonOnTriangulation : public BRep_CurveRepresentation
 {
 
 public:
+  using BRep_CurveRepresentation::IsPolygonOnTriangulation;
+
   Standard_EXPORT BRep_PolygonOnTriangulation(const occ::handle<Poly_PolygonOnTriangulation>& P,
                                               const occ::handle<Poly_Triangulation>&          T,
                                               const TopLoc_Location&                          L);
-
-  //! returns True.
-  Standard_EXPORT bool IsPolygonOnTriangulation() const override;
 
   //! Is it a polygon in the definition of <T> with
   //! location <L>.
@@ -59,6 +58,13 @@ public:
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(BRep_PolygonOnTriangulation, BRep_CurveRepresentation)
+
+protected:
+  Standard_EXPORT BRep_PolygonOnTriangulation(
+    TypeEnum                                        theType,
+    const occ::handle<Poly_PolygonOnTriangulation>& thePolygon,
+    const occ::handle<Poly_Triangulation>&          theTriangulation,
+    const TopLoc_Location&                          theLocation);
 
 private:
   occ::handle<Poly_PolygonOnTriangulation> myPolygon;

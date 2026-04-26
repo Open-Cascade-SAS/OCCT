@@ -29,14 +29,13 @@ class BRep_CurveOn2Surfaces : public BRep_CurveRepresentation
 {
 
 public:
+  using BRep_CurveRepresentation::IsRegularity;
+
   Standard_EXPORT BRep_CurveOn2Surfaces(const occ::handle<Geom_Surface>& S1,
                                         const occ::handle<Geom_Surface>& S2,
                                         const TopLoc_Location&           L1,
                                         const TopLoc_Location&           L2,
                                         const GeomAbs_Shape              C);
-
-  //! Returns True.
-  Standard_EXPORT bool IsRegularity() const override;
 
   //! A curve on two surfaces (continuity).
   Standard_EXPORT bool IsRegularity(const occ::handle<Geom_Surface>& S1,

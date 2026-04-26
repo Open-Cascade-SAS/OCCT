@@ -32,27 +32,11 @@ BRep_CurveOnClosedSurface::BRep_CurveOnClosedSurface(const occ::handle<Geom2d_Cu
                                                      const occ::handle<Geom_Surface>& S,
                                                      const TopLoc_Location&           L,
                                                      const GeomAbs_Shape              C)
-    : BRep_CurveOnSurface(PC1, S, L),
+    : BRep_CurveOnSurface(Type_CurveOnClosedSurface, PC1, S, L),
       myPCurve2(PC2),
       myContinuity(C)
 {
 }
-
-//=================================================================================================
-
-bool BRep_CurveOnClosedSurface::IsCurveOnClosedSurface() const
-{
-  return true;
-}
-
-//=================================================================================================
-
-bool BRep_CurveOnClosedSurface::IsRegularity() const
-{
-  return true;
-}
-
-//=================================================================================================
 
 bool BRep_CurveOnClosedSurface::IsRegularity(const occ::handle<Geom_Surface>& S1,
                                              const occ::handle<Geom_Surface>& S2,

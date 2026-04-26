@@ -174,13 +174,13 @@ const occ::handle<Geom_Curve>& BRep_Tool::Curve(const TopoDS_Edge& E,
 
   while (itcr.More())
   {
-    const occ::handle<BRep_CurveRepresentation>& cr = itcr.Value();
-    if (cr->IsCurve3D())
+    const occ::handle<BRep_CurveRepresentation>& aCurveRepresentation = itcr.Value();
+    if (aCurveRepresentation->IsCurve3D())
     {
-      const BRep_Curve3D* GC = static_cast<const BRep_Curve3D*>(cr.get());
-      L                      = E.Location() * GC->Location();
-      GC->Range(First, Last);
-      return GC->Curve3D();
+      const BRep_Curve3D* aCurve3D = static_cast<const BRep_Curve3D*>(aCurveRepresentation.get());
+      L                            = E.Location() * aCurve3D->Location();
+      aCurve3D->Range(First, Last);
+      return aCurve3D->Curve3D();
     }
     itcr.Next();
   }
@@ -216,6 +216,7 @@ occ::handle<Geom_Curve> BRep_Tool::Curve(const TopoDS_Edge& E, double& First, do
 // function : IsGeometric
 // purpose  : Returns True if <F> has a surface.
 //=================================================================================================
+
 bool BRep_Tool::IsGeometric(const TopoDS_Face& F)
 {
   const BRep_TFace*                TF = static_cast<const BRep_TFace*>(F.TShape().get());
@@ -237,14 +238,14 @@ bool BRep_Tool::IsGeometric(const TopoDS_Edge& E)
 
   while (itcr.More())
   {
-    const occ::handle<BRep_CurveRepresentation>& cr = itcr.Value();
-    if (cr->IsCurve3D())
+    const occ::handle<BRep_CurveRepresentation>& aCurveRepresentation = itcr.Value();
+    if (aCurveRepresentation->IsCurve3D())
     {
-      occ::handle<BRep_Curve3D> GC(occ::down_cast<BRep_Curve3D>(cr));
-      if (!GC.IsNull() && !GC->Curve3D().IsNull())
+      const occ::handle<BRep_Curve3D> aCurve3D = occ::down_cast<BRep_Curve3D>(aCurveRepresentation);
+      if (!aCurve3D.IsNull() && !aCurve3D->Curve3D().IsNull())
         return true;
     }
-    else if (cr->IsCurveOnSurface())
+    else if (aCurveRepresentation->IsCurveOnSurface())
       return true;
     itcr.Next();
   }
@@ -267,12 +268,13 @@ const occ::handle<Poly_Polygon3D>& BRep_Tool::Polygon3D(const TopoDS_Edge& E, To
 
   while (itcr.More())
   {
-    const occ::handle<BRep_CurveRepresentation>& cr = itcr.Value();
-    if (cr->IsPolygon3D())
+    const occ::handle<BRep_CurveRepresentation>& aCurveRepresentation = itcr.Value();
+    if (aCurveRepresentation->IsPolygon3D())
     {
-      const BRep_Polygon3D* GC = static_cast<const BRep_Polygon3D*>(cr.get());
-      L                        = E.Location() * GC->Location();
-      return GC->Polygon3D();
+      const BRep_Polygon3D* aPolygon3D =
+        static_cast<const BRep_Polygon3D*>(aCurveRepresentation.get());
+      L = E.Location() * aPolygon3D->Location();
+      return aPolygon3D->Polygon3D();
     }
     itcr.Next();
   }
@@ -334,15 +336,15 @@ occ::handle<Geom2d_Curve> BRep_Tool::CurveOnSurface(const TopoDS_Edge&          
 
     while (itcr.More())
     {
-      const occ::handle<BRep_CurveRepresentation>& cr = itcr.Value();
-      if (cr->IsCurveOnSurface(S, loc))
+      const occ::handle<BRep_CurveRepresentation>& aCurveRepresentation = itcr.Value();
+      if (aCurveRepresentation->IsCurveOnSurface(S, loc))
       {
-        const BRep_GCurve* GC = static_cast<const BRep_GCurve*>(cr.get());
-        GC->Range(First, Last);
-        if (GC->IsCurveOnClosedSurface() && Eisreversed)
-          return GC->PCurve2();
+        const BRep_GCurve* aGCurve = static_cast<const BRep_GCurve*>(aCurveRepresentation.get());
+        aGCurve->Range(First, Last);
+        if (aCurveRepresentation->IsCurveOnClosedSurface() && Eisreversed)
+          return aGCurve->PCurve2();
         else
-          return GC->PCurve();
+          return aGCurve->PCurve();
       }
       itcr.Next();
     }
@@ -358,6 +360,7 @@ occ::handle<Geom2d_Curve> BRep_Tool::CurveOnSurface(const TopoDS_Edge&          
 // function : CurveOnPlane
 // purpose  : For planar surface returns projection of the edge on the plane
 //=================================================================================================
+
 occ::handle<Geom2d_Curve> BRep_Tool::CurveOnPlane(const TopoDS_Edge&               E,
                                                   const occ::handle<Geom_Surface>& S,
                                                   const TopLoc_Location&           L,
@@ -438,14 +441,14 @@ void BRep_Tool::CurveOnSurface(const TopoDS_Edge&         E,
 
   while (itcr.More())
   {
-    const occ::handle<BRep_CurveRepresentation>& cr = itcr.Value();
-    if (cr->IsCurveOnSurface())
+    const occ::handle<BRep_CurveRepresentation>& aCurveRepresentation = itcr.Value();
+    if (aCurveRepresentation->IsCurveOnSurface())
     {
-      const BRep_GCurve* GC = static_cast<const BRep_GCurve*>(cr.get());
-      C                     = GC->PCurve();
-      S                     = GC->Surface();
-      L                     = E.Location() * GC->Location();
-      GC->Range(First, Last);
+      const BRep_GCurve* aGCurve = static_cast<const BRep_GCurve*>(aCurveRepresentation.get());
+      C                          = aGCurve->PCurve();
+      S                          = aGCurve->Surface();
+      L                          = E.Location() * aGCurve->Location();
+      aGCurve->Range(First, Last);
       return;
     }
     itcr.Next();
@@ -476,23 +479,23 @@ void BRep_Tool::CurveOnSurface(const TopoDS_Edge&         E,
   NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(TE->Curves());
   for (; itcr.More(); itcr.Next())
   {
-    const occ::handle<BRep_CurveRepresentation>& cr = itcr.Value();
-    if (cr->IsCurveOnSurface())
+    const occ::handle<BRep_CurveRepresentation>& aCurveRepresentation = itcr.Value();
+    if (aCurveRepresentation->IsCurveOnSurface())
     {
-      const BRep_GCurve* GC = static_cast<const BRep_GCurve*>(cr.get());
+      const BRep_GCurve* aGCurve = static_cast<const BRep_GCurve*>(aCurveRepresentation.get());
       ++i;
       // Compare index taking into account the fact that for the curves on
       // closed surfaces there are two PCurves
       if (i == Index)
-        C = GC->PCurve();
-      else if (GC->IsCurveOnClosedSurface() && (++i == Index))
-        C = GC->PCurve2();
+        C = aGCurve->PCurve();
+      else if (aCurveRepresentation->IsCurveOnClosedSurface() && (++i == Index))
+        C = aGCurve->PCurve2();
       else
         continue;
 
-      S = GC->Surface();
-      L = E.Location() * GC->Location();
-      GC->Range(First, Last);
+      S = aGCurve->Surface();
+      L = E.Location() * aGCurve->Location();
+      aGCurve->Range(First, Last);
       return;
     }
   }
@@ -548,13 +551,13 @@ occ::handle<Poly_Polygon2D> BRep_Tool::PolygonOnSurface(const TopoDS_Edge&      
 
   while (itcr.More())
   {
-    const occ::handle<BRep_CurveRepresentation>& cr = itcr.Value();
-    if (cr->IsPolygonOnSurface(S, l))
+    const occ::handle<BRep_CurveRepresentation>& aCurveRepresentation = itcr.Value();
+    if (aCurveRepresentation->IsPolygonOnSurface(S, l))
     {
-      if (cr->IsPolygonOnClosedSurface() && Eisreversed)
-        return cr->Polygon2();
+      if (aCurveRepresentation->IsPolygonOnClosedSurface() && Eisreversed)
+        return aCurveRepresentation->Polygon2();
       else
-        return cr->Polygon();
+        return aCurveRepresentation->Polygon();
     }
     itcr.Next();
   }
@@ -575,13 +578,14 @@ void BRep_Tool::PolygonOnSurface(const TopoDS_Edge&           E,
 
   while (itcr.More())
   {
-    const occ::handle<BRep_CurveRepresentation>& cr = itcr.Value();
-    if (cr->IsPolygonOnSurface())
+    const occ::handle<BRep_CurveRepresentation>& aCurveRepresentation = itcr.Value();
+    if (aCurveRepresentation->IsPolygonOnSurface())
     {
-      const BRep_PolygonOnSurface* PS = static_cast<const BRep_PolygonOnSurface*>(cr.get());
-      P                               = PS->Polygon();
-      S                               = PS->Surface();
-      L                               = E.Location() * PS->Location();
+      const BRep_PolygonOnSurface* aPolygonOnSurface =
+        static_cast<const BRep_PolygonOnSurface*>(aCurveRepresentation.get());
+      P = aPolygonOnSurface->Polygon();
+      S = aPolygonOnSurface->Surface();
+      L = E.Location() * aPolygonOnSurface->Location();
       return;
     }
     itcr.Next();
@@ -608,18 +612,19 @@ void BRep_Tool::PolygonOnSurface(const TopoDS_Edge&           E,
 
   while (itcr.More())
   {
-    const occ::handle<BRep_CurveRepresentation>& cr = itcr.Value();
-    if (cr->IsPolygonOnSurface())
+    const occ::handle<BRep_CurveRepresentation>& aCurveRepresentation = itcr.Value();
+    if (aCurveRepresentation->IsPolygonOnSurface())
     {
-      const BRep_PolygonOnSurface* PS = static_cast<const BRep_PolygonOnSurface*>(cr.get());
+      const BRep_PolygonOnSurface* aPolygonOnSurface =
+        static_cast<const BRep_PolygonOnSurface*>(aCurveRepresentation.get());
       i++;
       if (i > Index)
         break;
       if (i == Index)
       {
-        P = PS->Polygon();
-        S = PS->Surface();
-        L = E.Location() * PS->Location();
+        P = aPolygonOnSurface->Polygon();
+        S = aPolygonOnSurface->Surface();
+        L = E.Location() * aPolygonOnSurface->Location();
         return;
       }
     }
@@ -654,13 +659,15 @@ const occ::handle<Poly_PolygonOnTriangulation>& BRep_Tool::PolygonOnTriangulatio
 
   while (itcr.More())
   {
-    const occ::handle<BRep_CurveRepresentation>& cr = itcr.Value();
-    if (cr->IsPolygonOnTriangulation(T, l))
+    const occ::handle<BRep_CurveRepresentation>& aCurveRepresentation = itcr.Value();
+    if (aCurveRepresentation->IsPolygonOnTriangulation(T, l))
     {
-      if (cr->IsPolygonOnClosedTriangulation() && Eisreversed)
-        return cr->PolygonOnTriangulation2();
+      if (aCurveRepresentation->Type()
+            == BRep_CurveRepresentation::Type_PolygonOnClosedTriangulation
+          && Eisreversed)
+        return aCurveRepresentation->PolygonOnTriangulation2();
       else
-        return cr->PolygonOnTriangulation();
+        return aCurveRepresentation->PolygonOnTriangulation();
     }
     itcr.Next();
   }
@@ -681,14 +688,14 @@ void BRep_Tool::PolygonOnTriangulation(const TopoDS_Edge&                       
 
   while (itcr.More())
   {
-    const occ::handle<BRep_CurveRepresentation>& cr = itcr.Value();
-    if (cr->IsPolygonOnTriangulation())
+    const occ::handle<BRep_CurveRepresentation>& aCurveRepresentation = itcr.Value();
+    if (aCurveRepresentation->IsPolygonOnTriangulation())
     {
-      const BRep_PolygonOnTriangulation* PT =
-        static_cast<const BRep_PolygonOnTriangulation*>(cr.get());
-      P = PT->PolygonOnTriangulation();
-      T = PT->Triangulation();
-      L = E.Location() * PT->Location();
+      const BRep_PolygonOnTriangulation* aPolygonOnTriangulation =
+        static_cast<const BRep_PolygonOnTriangulation*>(aCurveRepresentation.get());
+      P = aPolygonOnTriangulation->PolygonOnTriangulation();
+      T = aPolygonOnTriangulation->Triangulation();
+      L = E.Location() * aPolygonOnTriangulation->Location();
       return;
     }
     itcr.Next();
@@ -715,19 +722,19 @@ void BRep_Tool::PolygonOnTriangulation(const TopoDS_Edge&                       
 
   while (itcr.More())
   {
-    const occ::handle<BRep_CurveRepresentation>& cr = itcr.Value();
-    if (cr->IsPolygonOnTriangulation())
+    const occ::handle<BRep_CurveRepresentation>& aCurveRepresentation = itcr.Value();
+    if (aCurveRepresentation->IsPolygonOnTriangulation())
     {
-      const BRep_PolygonOnTriangulation* PT =
-        static_cast<const BRep_PolygonOnTriangulation*>(cr.get());
+      const BRep_PolygonOnTriangulation* aPolygonOnTriangulation =
+        static_cast<const BRep_PolygonOnTriangulation*>(aCurveRepresentation.get());
       i++;
       if (i > Index)
         break;
       if (i == Index)
       {
-        T = PT->Triangulation();
-        P = PT->PolygonOnTriangulation();
-        L = E.Location() * PT->Location();
+        T = aPolygonOnTriangulation->Triangulation();
+        P = aPolygonOnTriangulation->PolygonOnTriangulation();
+        L = E.Location() * aPolygonOnTriangulation->Location();
         return;
       }
     }
@@ -782,8 +789,9 @@ bool BRep_Tool::IsClosed(const TopoDS_Edge&               E,
 
   while (itcr.More())
   {
-    const occ::handle<BRep_CurveRepresentation>& cr = itcr.Value();
-    if (cr->IsCurveOnSurface(S, l) && cr->IsCurveOnClosedSurface())
+    const occ::handle<BRep_CurveRepresentation>& aCurveRepresentation = itcr.Value();
+    if (aCurveRepresentation->IsCurveOnClosedSurface()
+        && aCurveRepresentation->IsCurveOnSurface(S, l))
       return true;
     itcr.Next();
   }
@@ -813,8 +821,9 @@ bool BRep_Tool::IsClosed(const TopoDS_Edge&                     E,
 
   while (itcr.More())
   {
-    const occ::handle<BRep_CurveRepresentation>& cr = itcr.Value();
-    if (cr->IsPolygonOnTriangulation(T, l) && cr->IsPolygonOnClosedTriangulation())
+    const occ::handle<BRep_CurveRepresentation>& aCurveRepresentation = itcr.Value();
+    if (aCurveRepresentation->IsPolygonOnClosedTriangulation()
+        && aCurveRepresentation->IsPolygonOnTriangulation(T, l))
       return true;
     itcr.Next();
   }
@@ -880,22 +889,22 @@ void BRep_Tool::Range(const TopoDS_Edge& E, double& First, double& Last)
 
   while (itcr.More())
   {
-    const occ::handle<BRep_CurveRepresentation>& cr = itcr.Value();
-    if (cr->IsCurve3D())
+    const occ::handle<BRep_CurveRepresentation>& aCurveRepresentation = itcr.Value();
+    if (aCurveRepresentation->IsCurve3D())
     {
-      const BRep_Curve3D* CR = static_cast<const BRep_Curve3D*>(cr.get());
-      if (!CR->Curve3D().IsNull())
+      const BRep_Curve3D* aCurve3D = static_cast<const BRep_Curve3D*>(aCurveRepresentation.get());
+      if (!aCurve3D->Curve3D().IsNull())
       {
-        First = CR->First();
-        Last  = CR->Last();
+        First = aCurve3D->First();
+        Last  = aCurve3D->Last();
         return;
       }
     }
-    else if (cr->IsCurveOnSurface())
+    else if (aCurveRepresentation->IsCurveOnSurface())
     {
-      const BRep_GCurve* CR = static_cast<const BRep_GCurve*>(cr.get());
-      First                 = CR->First();
-      Last                  = CR->Last();
+      const BRep_GCurve* aGCurve = static_cast<const BRep_GCurve*>(aCurveRepresentation.get());
+      First                      = aGCurve->First();
+      Last                       = aGCurve->Last();
       return;
     }
     itcr.Next();
@@ -919,11 +928,12 @@ void BRep_Tool::Range(const TopoDS_Edge&               E,
 
   while (itcr.More())
   {
-    const occ::handle<BRep_CurveRepresentation>& cr = itcr.Value();
-    if (cr->IsCurveOnSurface(S, l))
+    const occ::handle<BRep_CurveRepresentation>& aCurveRepresentation = itcr.Value();
+    if (aCurveRepresentation->IsCurveOnSurface(S, l))
     {
-      const BRep_CurveOnSurface* CR = static_cast<const BRep_CurveOnSurface*>(cr.get());
-      CR->Range(First, Last);
+      const BRep_CurveOnSurface* aCurveOnSurface =
+        static_cast<const BRep_CurveOnSurface*>(aCurveRepresentation.get());
+      aCurveOnSurface->Range(First, Last);
       break;
     }
     itcr.Next();
@@ -961,19 +971,20 @@ void BRep_Tool::UVPoints(const TopoDS_Edge&               E,
 
   while (itcr.More())
   {
-    const occ::handle<BRep_CurveRepresentation>& cr = itcr.Value();
-    if (cr->IsCurveOnSurface(S, l))
+    const occ::handle<BRep_CurveRepresentation>& aCurveRepresentation = itcr.Value();
+    if (aCurveRepresentation->IsCurveOnSurface(S, l))
     {
-      if (cr->IsCurveOnClosedSurface() && Eisreversed)
+      if (aCurveRepresentation->IsCurveOnClosedSurface() && Eisreversed)
       {
-        const BRep_CurveOnClosedSurface* CR =
-          static_cast<const BRep_CurveOnClosedSurface*>(cr.get());
-        CR->UVPoints2(PFirst, PLast);
+        const BRep_CurveOnClosedSurface* aCurveOnClosedSurface =
+          static_cast<const BRep_CurveOnClosedSurface*>(aCurveRepresentation.get());
+        aCurveOnClosedSurface->UVPoints2(PFirst, PLast);
       }
       else
       {
-        const BRep_CurveOnSurface* CR = static_cast<const BRep_CurveOnSurface*>(cr.get());
-        CR->UVPoints(PFirst, PLast);
+        const BRep_CurveOnSurface* aCurveOnSurface =
+          static_cast<const BRep_CurveOnSurface*>(aCurveRepresentation.get());
+        aCurveOnSurface->UVPoints(PFirst, PLast);
       }
       return;
     }
@@ -1063,18 +1074,20 @@ void BRep_Tool::SetUVPoints(const TopoDS_Edge&               E,
 
   while (itcr.More())
   {
-    occ::handle<BRep_CurveRepresentation> cr = itcr.Value();
-    if (cr->IsCurveOnSurface(S, l))
+    occ::handle<BRep_CurveRepresentation> aCurveRepresentation = itcr.Value();
+    if (aCurveRepresentation->IsCurveOnSurface(S, l))
     {
-      if (cr->IsCurveOnClosedSurface() && Eisreversed)
+      if (aCurveRepresentation->IsCurveOnClosedSurface() && Eisreversed)
       {
-        BRep_CurveOnClosedSurface* CS = static_cast<BRep_CurveOnClosedSurface*>(cr.get());
-        CS->SetUVPoints2(PFirst, PLast);
+        BRep_CurveOnClosedSurface* aCurveOnClosedSurface =
+          static_cast<BRep_CurveOnClosedSurface*>(aCurveRepresentation.get());
+        aCurveOnClosedSurface->SetUVPoints2(PFirst, PLast);
       }
       else
       {
-        BRep_CurveOnSurface* CS = static_cast<BRep_CurveOnSurface*>(cr.get());
-        CS->SetUVPoints(PFirst, PLast);
+        BRep_CurveOnSurface* aCurveOnSurface =
+          static_cast<BRep_CurveOnSurface*>(aCurveRepresentation.get());
+        aCurveOnSurface->SetUVPoints(PFirst, PLast);
       }
     }
     itcr.Next();
@@ -1148,8 +1161,8 @@ bool BRep_Tool::HasContinuity(const TopoDS_Edge&               E,
 
   while (itcr.More())
   {
-    const occ::handle<BRep_CurveRepresentation>& cr = itcr.Value();
-    if (cr->IsRegularity(S1, S2, l1, l2))
+    const occ::handle<BRep_CurveRepresentation>& aCurveRepresentation = itcr.Value();
+    if (aCurveRepresentation->IsRegularity(S1, S2, l1, l2))
       return true;
     itcr.Next();
   }
@@ -1173,9 +1186,9 @@ GeomAbs_Shape BRep_Tool::Continuity(const TopoDS_Edge&               E,
 
   while (itcr.More())
   {
-    const occ::handle<BRep_CurveRepresentation>& cr = itcr.Value();
-    if (cr->IsRegularity(S1, S2, l1, l2))
-      return cr->Continuity();
+    const occ::handle<BRep_CurveRepresentation>& aCurveRepresentation = itcr.Value();
+    if (aCurveRepresentation->IsRegularity(S1, S2, l1, l2))
+      return aCurveRepresentation->Continuity();
     itcr.Next();
   }
   return GeomAbs_C0;
@@ -1193,8 +1206,8 @@ bool BRep_Tool::HasContinuity(const TopoDS_Edge& E)
 
   for (; itcr.More(); itcr.Next())
   {
-    const occ::handle<BRep_CurveRepresentation>& CR = itcr.Value();
-    if (CR->IsRegularity())
+    const occ::handle<BRep_CurveRepresentation>& aCurveRepresentation = itcr.Value();
+    if (aCurveRepresentation->IsRegularity())
       return true;
   }
   return false;

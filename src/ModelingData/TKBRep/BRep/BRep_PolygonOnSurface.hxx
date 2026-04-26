@@ -31,13 +31,11 @@ class BRep_PolygonOnSurface : public BRep_CurveRepresentation
 {
 
 public:
+  using BRep_CurveRepresentation::IsPolygonOnSurface;
+
   Standard_EXPORT BRep_PolygonOnSurface(const occ::handle<Poly_Polygon2D>& P,
                                         const occ::handle<Geom_Surface>&   S,
                                         const TopLoc_Location&             L);
-
-  //! A 2D polygon representation in the parametric
-  //! space of a surface.
-  Standard_EXPORT bool IsPolygonOnSurface() const override;
 
   //! A 2D polygon representation in the parametric
   //! space of a surface.
@@ -57,6 +55,12 @@ public:
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(BRep_PolygonOnSurface, BRep_CurveRepresentation)
+
+protected:
+  Standard_EXPORT BRep_PolygonOnSurface(TypeEnum                           theType,
+                                        const occ::handle<Poly_Polygon2D>& thePolygon,
+                                        const occ::handle<Geom_Surface>&   theSurface,
+                                        const TopLoc_Location&             theLocation);
 
 private:
   occ::handle<Poly_Polygon2D> myPolygon2D;

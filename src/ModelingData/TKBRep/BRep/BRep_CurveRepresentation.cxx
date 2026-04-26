@@ -29,40 +29,11 @@ IMPLEMENT_STANDARD_RTTIEXT(BRep_CurveRepresentation, Standard_Transient)
 
 //=================================================================================================
 
-BRep_CurveRepresentation::BRep_CurveRepresentation(const TopLoc_Location& L)
-    : myLocation(L)
+BRep_CurveRepresentation::BRep_CurveRepresentation(TypeEnum theType, const TopLoc_Location& L)
+    : myLocation(L),
+      myType(theType)
 {
 }
-
-//=================================================================================================
-
-bool BRep_CurveRepresentation::IsCurve3D() const
-{
-  return false;
-}
-
-//=================================================================================================
-
-bool BRep_CurveRepresentation::IsCurveOnSurface() const
-{
-  return false;
-}
-
-//=================================================================================================
-
-bool BRep_CurveRepresentation::IsCurveOnClosedSurface() const
-{
-  return false;
-}
-
-//=================================================================================================
-
-bool BRep_CurveRepresentation::IsRegularity() const
-{
-  return false;
-}
-
-//=================================================================================================
 
 bool BRep_CurveRepresentation::IsCurveOnSurface(const occ::handle<Geom_Surface>&,
                                                 const TopLoc_Location&) const
@@ -80,45 +51,8 @@ bool BRep_CurveRepresentation::IsRegularity(const occ::handle<Geom_Surface>&,
   return false;
 }
 
-//=================================================================================================
-
-bool BRep_CurveRepresentation::IsPolygon3D() const
-{
-  return false;
-}
-
-//=================================================================================================
-
-bool BRep_CurveRepresentation::IsPolygonOnTriangulation() const
-{
-  return false;
-}
-
-//=================================================================================================
-
 bool BRep_CurveRepresentation::IsPolygonOnTriangulation(const occ::handle<Poly_Triangulation>&,
                                                         const TopLoc_Location&) const
-{
-  return false;
-}
-
-//=================================================================================================
-
-bool BRep_CurveRepresentation::IsPolygonOnClosedTriangulation() const
-{
-  return false;
-}
-
-//=================================================================================================
-
-bool BRep_CurveRepresentation::IsPolygonOnClosedSurface() const
-{
-  return false;
-}
-
-//=================================================================================================
-
-bool BRep_CurveRepresentation::IsPolygonOnSurface() const
 {
   return false;
 }

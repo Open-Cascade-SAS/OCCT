@@ -36,9 +36,6 @@ public:
   //! Computes the point at parameter U.
   Standard_EXPORT void D0(const double U, gp_Pnt& P) const override;
 
-  //! Returns True.
-  Standard_EXPORT bool IsCurve3D() const override;
-
   Standard_EXPORT const occ::handle<Geom_Curve>& Curve3D() const override;
 
   Standard_EXPORT void Curve3D(const occ::handle<Geom_Curve>& C) override;

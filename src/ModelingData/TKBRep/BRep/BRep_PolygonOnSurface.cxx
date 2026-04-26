@@ -29,20 +29,21 @@ IMPLEMENT_STANDARD_RTTIEXT(BRep_PolygonOnSurface, BRep_CurveRepresentation)
 BRep_PolygonOnSurface::BRep_PolygonOnSurface(const occ::handle<Poly_Polygon2D>& P,
                                              const occ::handle<Geom_Surface>&   S,
                                              const TopLoc_Location&             L)
-    : BRep_CurveRepresentation(L),
-      myPolygon2D(P),
-      mySurface(S)
+    : BRep_PolygonOnSurface(Type_PolygonOnSurface, P, S, L)
 {
 }
 
 //=================================================================================================
 
-bool BRep_PolygonOnSurface::IsPolygonOnSurface() const
+BRep_PolygonOnSurface::BRep_PolygonOnSurface(TypeEnum                           theType,
+                                             const occ::handle<Poly_Polygon2D>& thePolygon,
+                                             const occ::handle<Geom_Surface>&   theSurface,
+                                             const TopLoc_Location&             theLocation)
+    : BRep_CurveRepresentation(theType, theLocation),
+      myPolygon2D(thePolygon),
+      mySurface(theSurface)
 {
-  return true;
 }
-
-//=================================================================================================
 
 bool BRep_PolygonOnSurface::IsPolygonOnSurface(const occ::handle<Geom_Surface>& S,
                                                const TopLoc_Location&           L) const

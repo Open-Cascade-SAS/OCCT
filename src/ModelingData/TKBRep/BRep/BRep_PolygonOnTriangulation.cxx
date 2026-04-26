@@ -29,20 +29,22 @@ BRep_PolygonOnTriangulation::BRep_PolygonOnTriangulation(
   const occ::handle<Poly_PolygonOnTriangulation>& P,
   const occ::handle<Poly_Triangulation>&          T,
   const TopLoc_Location&                          L)
-    : BRep_CurveRepresentation(L),
-      myPolygon(P),
-      myTriangulation(T)
+    : BRep_PolygonOnTriangulation(Type_PolygonOnTriangulation, P, T, L)
 {
 }
 
 //=================================================================================================
 
-bool BRep_PolygonOnTriangulation::IsPolygonOnTriangulation() const
+BRep_PolygonOnTriangulation::BRep_PolygonOnTriangulation(
+  TypeEnum                                        theType,
+  const occ::handle<Poly_PolygonOnTriangulation>& thePolygon,
+  const occ::handle<Poly_Triangulation>&          theTriangulation,
+  const TopLoc_Location&                          theLocation)
+    : BRep_CurveRepresentation(theType, theLocation),
+      myPolygon(thePolygon),
+      myTriangulation(theTriangulation)
 {
-  return true;
 }
-
-//=================================================================================================
 
 bool BRep_PolygonOnTriangulation::IsPolygonOnTriangulation(const occ::handle<Poly_Triangulation>& T,
                                                            const TopLoc_Location& L) const

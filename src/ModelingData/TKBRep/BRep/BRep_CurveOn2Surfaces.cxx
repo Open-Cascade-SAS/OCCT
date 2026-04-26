@@ -31,7 +31,7 @@ BRep_CurveOn2Surfaces::BRep_CurveOn2Surfaces(const occ::handle<Geom_Surface>& S1
                                              const TopLoc_Location&           L1,
                                              const TopLoc_Location&           L2,
                                              const GeomAbs_Shape              C)
-    : BRep_CurveRepresentation(L1),
+    : BRep_CurveRepresentation(Type_CurveOn2Surfaces, L1),
       mySurface(S1),
       mySurface2(S2),
       myLocation2(L2),
@@ -45,15 +45,6 @@ void BRep_CurveOn2Surfaces::D0(const double, gp_Pnt&) const
 {
   throw Standard_NullObject("BRep_CurveOn2Surfaces::D0");
 }
-
-//=================================================================================================
-
-bool BRep_CurveOn2Surfaces::IsRegularity() const
-{
-  return true;
-}
-
-//=================================================================================================
 
 bool BRep_CurveOn2Surfaces::IsRegularity(const occ::handle<Geom_Surface>& S1,
                                          const occ::handle<Geom_Surface>& S2,

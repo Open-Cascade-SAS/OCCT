@@ -264,17 +264,14 @@ void TopExp::Vertices(const TopoDS_Wire& W, TopoDS_Vertex& Vfirst, TopoDS_Vertex
   }
   else if (vmap.Extent() == 2)
   { // open
-    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator ite(vmap);
-
-    while (ite.More() && ite.Key().Orientation() != TopAbs_FORWARD)
-      ite.Next();
-    if (ite.More())
-      Vfirst = TopoDS::Vertex(ite.Key());
-    ite.Initialize(vmap);
-    while (ite.More() && ite.Key().Orientation() != TopAbs_REVERSED)
-      ite.Next();
-    if (ite.More())
-      Vlast = TopoDS::Vertex(ite.Key());
+    for (NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator ite(vmap); ite.More();
+         ite.Next())
+    {
+      if (ite.Key().Orientation() == TopAbs_FORWARD)
+        Vfirst = TopoDS::Vertex(ite.Key());
+      else if (ite.Key().Orientation() == TopAbs_REVERSED)
+        Vlast = TopoDS::Vertex(ite.Key());
+    }
   }
 }
 

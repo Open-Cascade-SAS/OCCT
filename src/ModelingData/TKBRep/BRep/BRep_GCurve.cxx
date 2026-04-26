@@ -22,11 +22,13 @@ IMPLEMENT_STANDARD_RTTIEXT(BRep_GCurve, BRep_CurveRepresentation)
 
 //=================================================================================================
 
-BRep_GCurve::BRep_GCurve(const TopLoc_Location& L, const double First, const double Last)
-    : BRep_CurveRepresentation(L),
+BRep_GCurve::BRep_GCurve(TypeEnum               theType,
+                         const TopLoc_Location& L,
+                         const double           First,
+                         const double           Last)
+    : BRep_CurveRepresentation(theType, L),
       myFirst(First),
       myLast(Last)
-
 {
 }
 
