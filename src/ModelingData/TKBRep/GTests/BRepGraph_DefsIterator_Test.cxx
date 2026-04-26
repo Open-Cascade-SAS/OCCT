@@ -99,7 +99,7 @@ protected:
   void SetUp() override
   {
     BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
-    BRepGraph_Builder::Perform(myGraph, aBoxMaker.Shape());
+    myGraph.Clear(); (void)BRepGraph_Builder::Add(myGraph, aBoxMaker.Shape());
   }
 
   BRepGraph myGraph;
@@ -135,7 +135,7 @@ TEST_F(BRepGraph_DefsIteratorTest, CoEdgeOfWire_YieldsCoEdgeDefinitions)
 TEST(BRepGraph_DefsIteratorTestStandalone, VertexOfEdge_IncludesInternalVertices)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, wrapEdgeInFace(makeEdgeWithInternalVertex()));
+  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, wrapEdgeInFace(makeEdgeWithInternalVertex()));
 
   BRepGraph_EdgeId aEdgeWithInternal;
   for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
@@ -168,7 +168,7 @@ TEST(BRepGraph_DefsIteratorTestStandalone, VertexOfEdge_IncludesInternalVertices
 TEST(BRepGraph_DefsIteratorTestStandalone, VertexOfFace_EnumeratesDirectVertices)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, makeFaceWithDirectVertex());
+  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, makeFaceWithDirectVertex());
 
   ASSERT_EQ(countIterator(BRepGraph_DefsWireOfFace(aGraph, BRepGraph_FaceId::Start())), 1);
   ASSERT_EQ(countIterator(BRepGraph_DefsVertexOfFace(aGraph, BRepGraph_FaceId::Start())), 1);
@@ -217,15 +217,15 @@ TEST_F(BRepGraph_DefsIteratorTest, SolidOfCompSolid_EnumeratesDirectSolids)
 
 TEST_F(BRepGraph_DefsIteratorTest, OccurrenceOfProduct_EnumeratesDirectOccurrences)
 {
-  const BRepGraph_ProductId aPart = myGraph.Editor().Products().Add(BRepGraph_SolidId::Start());
-  const BRepGraph_ProductId anAssembly = myGraph.Editor().Products().AddAssembly();
+  const BRepGraph_ProductId aPart = myGraph.Editor().Products().LinkProductToTopology(BRepGraph_SolidId::Start());
+  const BRepGraph_ProductId anAssembly = myGraph.Editor().Products().CreateEmptyProduct();
   ASSERT_TRUE(aPart.IsValid());
   ASSERT_TRUE(anAssembly.IsValid());
 
   EXPECT_TRUE(
-    myGraph.Editor().Products().AddOccurrence(anAssembly, aPart, TopLoc_Location()).IsValid());
+    myGraph.Editor().Products().LinkProducts(anAssembly, aPart, TopLoc_Location()).IsValid());
   EXPECT_TRUE(
-    myGraph.Editor().Products().AddOccurrence(anAssembly, aPart, TopLoc_Location()).IsValid());
+    myGraph.Editor().Products().LinkProducts(anAssembly, aPart, TopLoc_Location()).IsValid());
 
   EXPECT_EQ(countIterator(BRepGraph_DefsOccurrenceOfProduct(myGraph, anAssembly)), 2);
 }

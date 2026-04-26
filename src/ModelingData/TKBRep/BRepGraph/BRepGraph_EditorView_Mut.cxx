@@ -378,7 +378,7 @@ BRepGraph_MutGuard<BRepGraphInc::ProductDef> BRepGraph::EditorView::ProductOps::
 
 //==================================================================================================
 
-BRepGraph_MutGuard<BRepGraphInc::OccurrenceDef> BRepGraph::EditorView::ProductOps::MutOccurrence(
+BRepGraph_MutGuard<BRepGraphInc::OccurrenceDef> BRepGraph::EditorView::OccurrenceOps::Mut(
   const BRepGraph_OccurrenceId theOccurrence)
 {
   BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
@@ -474,7 +474,7 @@ BRepGraph_MutGuard<BRepGraphInc::ChildRef> BRepGraph::EditorView::GenOps::MutChi
 
 //==================================================================================================
 
-BRepGraph_MutGuard<BRepGraphInc::OccurrenceRef> BRepGraph::EditorView::ProductOps::MutOccurrenceRef(
+BRepGraph_MutGuard<BRepGraphInc::OccurrenceRef> BRepGraph::EditorView::OccurrenceOps::MutRef(
   const BRepGraph_OccurrenceRefId theOccurrenceRef)
 {
   BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;

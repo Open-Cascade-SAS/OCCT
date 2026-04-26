@@ -27,7 +27,7 @@ protected:
   {
     BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
     const TopoDS_Shape& aBox = aBoxMaker.Shape();
-    BRepGraph_Builder::Perform(myGraph, aBox);
+    myGraph.Clear(); (void)BRepGraph_Builder::Add(myGraph, aBox);
     ASSERT_TRUE(myGraph.IsDone());
   }
 

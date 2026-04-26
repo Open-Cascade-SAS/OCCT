@@ -61,7 +61,7 @@ struct BRepGraph_Data
   std::atomic<size_t> myNextUIDCounter{
     1}; //!< Starts at 1; counter=0 is BRepGraph_UID invalid sentinel.
   std::atomic<uint32_t> myGeneration{0};
-  Standard_GUID myGraphGUID; //!< Random graph identity, generated at BRepGraph_Builder::Perform().
+  Standard_GUID myGraphGUID; //!< Random graph identity, generated at BRepGraph_Builder::Add().
 
   //! History subsystem.
   BRepGraph_History myHistoryLog;

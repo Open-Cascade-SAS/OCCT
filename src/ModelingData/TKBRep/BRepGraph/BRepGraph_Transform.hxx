@@ -39,7 +39,7 @@
 //! ## Typical usage
 //! @code
 //!   BRepGraph aGraph;
-//!   BRepGraph_Builder::Perform(aGraph, myShape);
+//!   BRepGraph_Builder::Add(aGraph, myShape);
 //!   gp_Trsf aTrsf;
 //!   aTrsf.SetTranslation(gp_Vec(10.0, 0.0, 0.0));
 //!   BRepGraph aTransformed = BRepGraph_Transform::Perform(aGraph, aTrsf);

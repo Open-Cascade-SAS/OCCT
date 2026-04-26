@@ -565,7 +565,7 @@ void BRepGraphInc_Storage::BuildDeltaReverseIndex(const uint32_t theOldNbEdges,
   // Ensure allocator is set for reverse index inner vectors.
   // BuildReverseIndex() always calls SetAllocator(), but when
   // AppendFlattened/AppendFull is the first operation on a fresh
-  // graph (no prior BRepGraph_Builder::Perform()), the allocator has not been set yet.
+  // graph (no prior BRepGraph_Builder::Add()), the allocator has not been set yet.
   myReverseIdx.SetAllocator(myAllocator);
   myReverseIdx.BuildDelta(myVertices.Entities,
                           myEdges.Entities,

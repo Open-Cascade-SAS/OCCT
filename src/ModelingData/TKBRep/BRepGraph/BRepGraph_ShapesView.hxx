@@ -26,7 +26,7 @@
 //! NodeIds via TShape pointer comparison. Shape() is the stable cached public
 //! route for repeated access; Reconstruct() forces a fresh rebuild with the
 //! same node-kind semantics and bypasses the persistent reconstructed-shape cache.
-//! BRepGraph_Builder::Perform() and Compact() clear the persistent reconstructed-shape cache.
+//! BRepGraph_Builder::Add() and Compact() clear the persistent reconstructed-shape cache.
 //! Obtained via BRepGraph::Shapes().
 class BRepGraph::ShapesView
 {

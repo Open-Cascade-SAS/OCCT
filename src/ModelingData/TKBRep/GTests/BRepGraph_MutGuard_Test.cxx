@@ -38,7 +38,7 @@ namespace
 BRepGraph makeBoxGraph()
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
   return aGraph;
 }
 

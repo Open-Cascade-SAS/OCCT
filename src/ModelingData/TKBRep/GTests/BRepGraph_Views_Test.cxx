@@ -89,7 +89,7 @@ protected:
   {
     BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
     const TopoDS_Shape& aBox = aBoxMaker.Shape();
-    BRepGraph_Builder::Perform(myGraph, aBox);
+    myGraph.Clear(); (void)BRepGraph_Builder::Add(myGraph, aBox);
   }
 
   BRepGraph myGraph;
@@ -449,17 +449,17 @@ TEST_F(BRepGraph_ViewsTest, TopoView_GroupedCoEdgeOps_Parity)
 TEST_F(BRepGraph_ViewsTest, TopoView_GroupedProductAndOccurrenceOps_Parity)
 {
   const BRepGraph_ProductId aPartProduct =
-    myGraph.Editor().Products().Add(BRepGraph_NodeId(BRepGraph_SolidId::Start()));
-  const BRepGraph_ProductId aSubAssembly  = myGraph.Editor().Products().AddAssembly();
-  const BRepGraph_ProductId aRootAssembly = myGraph.Editor().Products().AddAssembly();
+    myGraph.Editor().Products().LinkProductToTopology(BRepGraph_NodeId(BRepGraph_SolidId::Start()));
+  const BRepGraph_ProductId aSubAssembly  = myGraph.Editor().Products().CreateEmptyProduct();
+  const BRepGraph_ProductId aRootAssembly = myGraph.Editor().Products().CreateEmptyProduct();
   ASSERT_TRUE(aPartProduct.IsValid());
   ASSERT_TRUE(aSubAssembly.IsValid());
   ASSERT_TRUE(aRootAssembly.IsValid());
 
   const BRepGraph_OccurrenceId aSubOccurrence =
-    myGraph.Editor().Products().AddOccurrence(aRootAssembly, aSubAssembly, TopLoc_Location());
+    myGraph.Editor().Products().LinkProducts(aRootAssembly, aSubAssembly, TopLoc_Location());
   const BRepGraph_OccurrenceId aPartOccurrence =
-    myGraph.Editor().Products().AddOccurrence(aSubAssembly,
+    myGraph.Editor().Products().LinkProducts(aSubAssembly,
                                               aPartProduct,
                                               TopLoc_Location(),
                                               aSubOccurrence);
@@ -482,7 +482,7 @@ TEST_F(BRepGraph_ViewsTest, TopoView_GroupedProductAndOccurrenceOps_Parity)
   ASSERT_EQ(aOccurrenceRefs.Length(), 1);
   {
     BRepGraph_MutGuard<BRepGraphInc::OccurrenceRef> anOccurrenceRef =
-      myGraph.Editor().Products().MutOccurrenceRef(aOccurrenceRefs.Value(0));
+      myGraph.Editor().Occurrences().MutRef(aOccurrenceRefs.Value(0));
     anOccurrenceRef->IsRemoved = true;
   }
 
@@ -865,8 +865,8 @@ TEST_F(BRepGraph_ViewsTest, RefsView_RefAtStep_RoundTrip)
 TEST_F(BRepGraph_ViewsTest, RefsView_GenericRefHelpers_OccurrenceDefaults)
 {
   const BRepGraph_ProductId aPartProduct =
-    myGraph.Editor().Products().Add(BRepGraph_NodeId(BRepGraph_SolidId::Start()));
-  const BRepGraph_ProductId anAssembly = myGraph.Editor().Products().AddAssembly();
+    myGraph.Editor().Products().LinkProductToTopology(BRepGraph_NodeId(BRepGraph_SolidId::Start()));
+  const BRepGraph_ProductId anAssembly = myGraph.Editor().Products().CreateEmptyProduct();
   ASSERT_TRUE(aPartProduct.IsValid());
   ASSERT_TRUE(anAssembly.IsValid());
 
@@ -874,7 +874,7 @@ TEST_F(BRepGraph_ViewsTest, RefsView_GenericRefHelpers_OccurrenceDefaults)
   aTrsf.SetTranslation(gp_Vec(4.0, 5.0, 6.0));
   ASSERT_TRUE(myGraph.Editor()
                 .Products()
-                .AddOccurrence(anAssembly, aPartProduct, TopLoc_Location(aTrsf))
+                .LinkProducts(anAssembly, aPartProduct, TopLoc_Location(aTrsf))
                 .IsValid());
 
   const NCollection_DynamicArray<BRepGraph_OccurrenceRefId>& anOccurrenceRefs =

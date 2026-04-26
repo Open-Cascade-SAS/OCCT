@@ -42,7 +42,7 @@ TEST(BRepGraph_TransformTest, TranslateBox_FaceCount)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, aBox);
+  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
   gp_Trsf aTrsf;
@@ -64,7 +64,7 @@ TEST(BRepGraph_TransformTest, TranslateBox_AreaPreserved)
   const double anOrigArea = aOrigProps.Mass();
 
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, aBox);
+  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
   gp_Trsf aTrsf;
@@ -93,7 +93,7 @@ TEST(BRepGraph_TransformTest, TranslateBox_VertexPointsShifted)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, aBox);
+  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Topo().Vertices().Nb(), 0);
 
@@ -126,7 +126,7 @@ TEST(BRepGraph_TransformTest, LocationOnly_NoCopyGeom)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, aBox);
+  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Topo().Vertices().Nb(), 0);
 
@@ -185,7 +185,7 @@ TEST(BRepGraph_TransformTest, TransformSingleFace)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, aBox);
+  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Topo().Faces().Nb(), 0);
 

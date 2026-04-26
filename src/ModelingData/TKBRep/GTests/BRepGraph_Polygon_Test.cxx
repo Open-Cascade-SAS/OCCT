@@ -56,7 +56,7 @@ TEST(BRepGraph_PolygonTest, MultiTriangulation_Roundtrip_PreservesAll)
   BRepMesh_IncrementalMesh aMesher(aBox, 0.5);
 
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, aBox);
+  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
   // Verify triangulations were captured on face definitions.
@@ -99,7 +99,7 @@ TEST(BRepGraph_PolygonTest, Polygon3D_Captured_WhenPresent)
   BRepMesh_IncrementalMesh aMesher(aBox, 0.5);
 
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, aBox);
+  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
   // Count Polygon3D on edges - matches what BRep_Tool reports for the original shape.
@@ -143,7 +143,7 @@ TEST(BRepGraph_PolygonTest, PolyOnTri_Captured_AfterMesh)
   BRepMesh_IncrementalMesh aMesher(aBox, 0.5);
 
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, aBox);
+  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
   // Count PolygonOnTriangulation entries on coedges.
@@ -187,7 +187,7 @@ TEST(BRepGraph_PolygonTest, PolyOnTri_Roundtrip_PreservedOnReconstruct)
   BRepMesh_IncrementalMesh aMesher(aBox, 0.5);
 
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, aBox);
+  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
   // Reconstruct solid and verify polygon-on-triangulation is re-attached.
@@ -227,7 +227,7 @@ TEST(BRepGraph_PolygonTest, UVPoints_Captured_OnPCurves)
   TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10., 20., 30.).Shape();
 
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, aBox);
+  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
   // At least some CoEdge entries should have non-origin UV points.
@@ -331,7 +331,7 @@ TEST(BRepGraph_PolygonTest, VertexPointRepresentations_StructurallyValid)
 
   BRepGraph aGraph;
   registerStandardLayers(aGraph);
-  BRepGraph_Builder::Perform(aGraph, aShape);
+  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aShape);
   ASSERT_TRUE(aGraph.IsDone());
   const occ::handle<BRepGraph_LayerParam> aParamLayer =
     aGraph.LayerRegistry().FindLayer<BRepGraph_LayerParam>();
@@ -391,7 +391,7 @@ TEST(BRepGraph_PolygonTest, EdgeRegularity_MatchesOriginal)
 
   BRepGraph aGraph;
   registerStandardLayers(aGraph);
-  BRepGraph_Builder::Perform(aGraph, aCyl);
+  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aCyl);
   ASSERT_TRUE(aGraph.IsDone());
   const occ::handle<BRepGraph_LayerRegularity> aRegularityLayer =
     aGraph.LayerRegistry().FindLayer<BRepGraph_LayerRegularity>();
@@ -418,7 +418,7 @@ TEST(BRepGraph_PolygonTest, SeamEdge_PolyOnTri_TwoEntries)
   BRepMesh_IncrementalMesh aMesher(aCyl, 0.1);
 
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, aCyl);
+  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aCyl);
   ASSERT_TRUE(aGraph.IsDone());
 
   // Find an edge with two PolyOnTri entries for the same face (seam edge pattern).

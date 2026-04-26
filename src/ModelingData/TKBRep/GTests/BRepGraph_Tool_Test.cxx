@@ -30,10 +30,10 @@ protected:
   void SetUp() override
   {
     BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
-    BRepGraph_Builder::Perform(myBoxGraph, aBoxMaker.Shape());
+    myBoxGraph.Clear(); (void)BRepGraph_Builder::Add(myBoxGraph, aBoxMaker.Shape());
 
     BRepPrimAPI_MakeCylinder aCylMaker(5.0, 15.0);
-    BRepGraph_Builder::Perform(myCylGraph, aCylMaker.Shape());
+    myCylGraph.Clear(); (void)BRepGraph_Builder::Add(myCylGraph, aCylMaker.Shape());
   }
 
   BRepGraph myBoxGraph;

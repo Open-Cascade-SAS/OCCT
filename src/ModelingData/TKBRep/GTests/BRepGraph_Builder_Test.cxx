@@ -205,7 +205,7 @@ TEST(BRepGraph_BuilderTest, AddShellAndSolid)
 }
 
 // ============================================================
-// Task 2B: Incremental Build (AppendFlattenedShape)
+// Incremental Build (flattened Add)
 // ============================================================
 
 TEST(BRepGraph_BuilderTest, AppendTwoBoxFaces)
@@ -224,12 +224,12 @@ TEST(BRepGraph_BuilderTest, AppendTwoBoxFaces)
   BRepBuilderAPI_Copy aCopy2(aFace2, true);
 
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, aCopy1.Shape());
+  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aCopy1.Shape());
   ASSERT_TRUE(aGraph.IsDone());
   EXPECT_EQ(aGraph.Topo().Faces().Nb(), 1);
 
   // Append second face.
-  aGraph.Editor().AppendFlattenedShape(aCopy2.Shape());
+  (void)BRepGraph_Builder::Add(aGraph, aCopy2.Shape(), BRepGraph_Builder::Options{ {}, false, true, false });
   EXPECT_EQ(aGraph.Topo().Faces().Nb(), 2);
   EXPECT_TRUE(aGraph.IsDone());
 }
@@ -254,7 +254,7 @@ TEST(BRepGraph_BuilderTest, RemoveFaceFromBox)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, aBox);
+  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_EQ(aGraph.Topo().Faces().Nb(), 6);
 
@@ -471,7 +471,7 @@ TEST(BRepGraph_BuilderTest, MutableFaceDefinition_ChangesTolerance)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, aBox);
+  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Topo().Faces().Nb(), 0);
 
@@ -492,7 +492,7 @@ TEST(BRepGraph_BuilderTest, MutableShellDefinition)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, aBox);
+  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Topo().Shells().Nb(), 0);
 
@@ -509,7 +509,7 @@ TEST(BRepGraph_BuilderTest, MutableSolidDefinition)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, aBox);
+  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Topo().Solids().Nb(), 0);
 
@@ -558,7 +558,7 @@ TEST(BRepGraph_BuilderTest, SkipsRemovedFaces)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, aBox);
+  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_EQ(aGraph.Topo().Faces().Nb(), 6);
 
@@ -582,7 +582,7 @@ TEST(BRepGraph_BuilderTest, SkipsRemovedEdges)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, aBox);
+  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
   const int aNbEdges = aGraph.Topo().Edges().Nb();
   ASSERT_GT(aNbEdges, 0);
@@ -674,7 +674,7 @@ TEST(BRepGraph_BuilderTest, RemoveSolid_CascadesToFaces)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, aBox);
+  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph_SolidId aSolidId(0);
@@ -701,7 +701,7 @@ TEST(BRepGraph_BuilderTest, RemoveSubgraph_SharedFace_PreservesSharedEdgesAndVer
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, aBox);
+  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
   const int aNbFaces    = aGraph.Topo().Faces().Nb();
@@ -744,7 +744,7 @@ TEST(BRepGraph_BuilderTest, FacesOfEdge_BoxSharedEdge)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, aBox);
+  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
   // Every edge in a box is shared by exactly 2 faces.
@@ -763,7 +763,7 @@ TEST(BRepGraph_BuilderTest, SharedEdges_AdjacentBoxFaces)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, aBox);
+  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_EQ(aGraph.Topo().Faces().Nb(), 6);
 
@@ -790,7 +790,7 @@ TEST(BRepGraph_BuilderTest, AdjacentFaces_BoxFace)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
 
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, aBox);
+  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_EQ(aGraph.Topo().Faces().Nb(), 6);
 
@@ -824,7 +824,7 @@ TEST(BRepGraph_BuilderTest, FacesOfEdge_NoFaces_Programmatic)
 TEST(BRepGraph_BuilderTest, EdgesOfFace_Box_HasEdges)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   // Each box face has 4 edges (rectangular loop).
@@ -841,7 +841,7 @@ TEST(BRepGraph_BuilderTest, EdgesOfFace_Box_HasEdges)
 TEST(BRepGraph_BuilderTest, VerticesOfEdge_Box_HasTwoVertices)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   int aNbVertices = 0;
@@ -857,7 +857,7 @@ TEST(BRepGraph_BuilderTest, VerticesOfEdge_Box_HasTwoVertices)
 TEST(BRepGraph_BuilderTest, EdgesOfVertex_Box_ThreeEdges)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   // Each box corner vertex is shared by 3 edges.
@@ -869,7 +869,7 @@ TEST(BRepGraph_BuilderTest, EdgesOfVertex_Box_ThreeEdges)
 TEST(BRepGraph_BuilderTest, AdjacentEdges_Box_SharedVertex)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   // Box edge shares 2 vertices, each with 3 incident edges.
@@ -882,7 +882,7 @@ TEST(BRepGraph_BuilderTest, AdjacentEdges_Box_SharedVertex)
 TEST(BRepGraph_BuilderTest, NbFacesOfEdge_Box_TwoFaces)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   // Every box edge is shared by exactly 2 faces (manifold).
@@ -892,7 +892,7 @@ TEST(BRepGraph_BuilderTest, NbFacesOfEdge_Box_TwoFaces)
 TEST(BRepGraph_BuilderTest, IsManifoldEdge_Box_True)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   EXPECT_TRUE(aGraph.Topo().Edges().IsManifold(BRepGraph_EdgeId::Start()));
@@ -902,7 +902,7 @@ TEST(BRepGraph_BuilderTest, IsManifoldEdge_Box_True)
 TEST(BRepGraph_BuilderTest, InvalidInput_ReturnsEmpty)
 {
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   // Out-of-range typed ids return empty results.

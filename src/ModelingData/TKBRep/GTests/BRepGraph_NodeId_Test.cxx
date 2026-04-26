@@ -58,7 +58,7 @@ TEST(BRepGraph_NodeIdTest, ImplicitConversion_PassToFunction)
 {
   // Typed ids work with existing APIs that take BRepGraph_NodeId.
   BRepGraph aGraph;
-  BRepGraph_Builder::Perform(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear(); (void)BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph_FaceId aFace(0);
