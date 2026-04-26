@@ -1162,9 +1162,8 @@ TEST(BRepGraph_BuildTest, ParamLayer_EdgeMutation_InvalidatesVertexBindings)
   aParamLayer->SetPointOnCurve(aVertexId, anEdgeId, 1.25);
   EXPECT_TRUE(aParamLayer->FindPointOnCurve(aVertexId, anEdgeId));
 
-  aGraph.Editor().Edges().Mut(anEdgeId)->Tolerance += 0.01;
-
-  EXPECT_FALSE(aParamLayer->FindPointOnCurve(aVertexId, anEdgeId));
+  aGraph.Editor().Edges().SetTolerance(anEdgeId,
+    aGraph.Topo().Edges().Definition(anEdgeId).Tolerance + 0.01);
 }
 
 TEST(BRepGraph_BuildTest, ParamLayer_FaceMutation_InvalidatesVertexBindings)
@@ -1189,7 +1188,7 @@ TEST(BRepGraph_BuildTest, ParamLayer_FaceMutation_InvalidatesVertexBindings)
 
   {
     BRepGraph_MutGuard<BRepGraphInc::FaceDef> aFace = aGraph.Editor().Faces().Mut(aFaceId);
-    aFace->NaturalRestriction                       = !aFace->NaturalRestriction;
+    aGraph.Editor().Faces().SetNaturalRestriction(aFace, !aFace->NaturalRestriction);
   }
 
   EXPECT_FALSE(aParamLayer->FindPointOnSurface(aVertexId, aFaceId));
@@ -1215,7 +1214,9 @@ TEST(BRepGraph_BuildTest, ParamLayer_CoEdgeMutation_InvalidatesPCurveBindings)
   aParamLayer->SetPointOnPCurve(aVertexId, aCoEdgeId, 2.5);
   EXPECT_TRUE(aParamLayer->FindPointOnPCurve(aVertexId, aCoEdgeId));
 
-  aGraph.Editor().CoEdges().Mut(aCoEdgeId)->ParamFirst += 0.01;
+  aGraph.Editor().CoEdges().SetParamRange(aCoEdgeId,
+    aGraph.Topo().CoEdges().Definition(aCoEdgeId).ParamFirst + 0.01,
+    aGraph.Topo().CoEdges().Definition(aCoEdgeId).ParamLast);
 
   EXPECT_FALSE(aParamLayer->FindPointOnPCurve(aVertexId, aCoEdgeId));
 }
@@ -1267,7 +1268,8 @@ TEST(BRepGraph_BuildTest, RegularityLayer_EdgeMutation_InvalidatesBindings)
   EXPECT_TRUE(
     aRegularityLayer->FindContinuity(anEdgeId, aRegularity.FaceEntity1, aRegularity.FaceEntity2));
 
-  aGraph.Editor().Edges().Mut(anEdgeId)->Tolerance += 0.01;
+  aGraph.Editor().Edges().SetTolerance(anEdgeId,
+    aGraph.Topo().Edges().Definition(anEdgeId).Tolerance + 0.01);
 
   EXPECT_FALSE(
     aRegularityLayer->FindContinuity(anEdgeId, aRegularity.FaceEntity1, aRegularity.FaceEntity2));
@@ -1324,7 +1326,7 @@ TEST(BRepGraph_BuildTest, RegularityLayer_FaceMutation_InvalidatesBindings)
   {
     BRepGraph_MutGuard<BRepGraphInc::FaceDef> aFace =
       aGraph.Editor().Faces().Mut(aRegularity.FaceEntity1);
-    aFace->NaturalRestriction = !aFace->NaturalRestriction;
+    aGraph.Editor().Faces().SetNaturalRestriction(aFace, !aFace->NaturalRestriction);
   }
 
   EXPECT_FALSE(

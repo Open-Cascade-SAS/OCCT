@@ -685,7 +685,7 @@ TEST(BRepGraph_ChildExplorerTest, DirectChildren_RemovedFaceRef_IsSkipped)
   {
     BRepGraph_MutGuard<BRepGraphInc::FaceRef> aFaceRef =
       aGraph.Editor().Faces().MutRef(aRemovedRef);
-    aFaceRef->IsRemoved = true;
+    aGraph.Editor().Gen().RemoveRef(aRemovedRef);
   }
 
   int aCount = 0;
@@ -913,7 +913,7 @@ TEST(BRepGraph_ChildExplorerTest, Recursive_ProductPartRootContext_ComposedWithO
       {
         BRepGraph_MutGuard<BRepGraphInc::OccurrenceRef> aMutRef =
           aGraph.Editor().Occurrences().MutRef(aRefId);
-        aMutRef->LocalLocation = TopLoc_Location(aRootTrsf);
+        aGraph.Editor().Occurrences().SetRefLocalLocation(aMutRef, TopLoc_Location(aRootTrsf));
         break;
       }
     }

@@ -202,7 +202,7 @@ TEST(BRepGraph_CopyTest, CopyBox_DoesNotPreserveStaleNodeCache)
 
   {
     BRepGraph_MutGuard<BRepGraphInc::FaceDef> aFace = aGraph.Editor().Faces().Mut(aFaceId);
-    aFace->Tolerance += 0.1;
+    aGraph.Editor().Faces().SetTolerance(aFace, aFace->Tolerance + 0.1);
   }
 
   ASSERT_FALSE(aGraph.Cache().Has(aFaceId, copyTestCacheKind()));
@@ -257,7 +257,7 @@ TEST(BRepGraph_CopyTest, CopyBox_DoesNotPreserveStaleFaceRefCache)
 
   {
     BRepGraph_MutGuard<BRepGraphInc::FaceRef> aRef = aGraph.Editor().Faces().MutRef(aFaceRef);
-    aRef->Orientation                              = TopAbs::Reverse(aRef->Orientation);
+    aGraph.Editor().Faces().SetRefOrientation(aRef, TopAbs::Reverse(aRef->Orientation));
   }
 
   ASSERT_FALSE(aGraph.Cache().Has(aFaceRef, copyTestCacheKind()));

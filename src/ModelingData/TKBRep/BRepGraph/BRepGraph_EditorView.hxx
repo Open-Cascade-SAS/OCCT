@@ -124,6 +124,18 @@ public:
     [[nodiscard]] Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::VertexRef> MutRef(
       const BRepGraph_VertexRefId theVertexRef);
 
+    //! Set the 3D point of a vertex definition and fire immediate notification.
+    //! @param[in] theVertex typed vertex definition identifier
+    //! @param[in] thePoint  new 3D coordinates
+    Standard_EXPORT void SetPoint(const BRepGraph_VertexId theVertex, const gp_Pnt& thePoint);
+
+    //! Set the 3D point of a vertex definition inside a batched mutation scope.
+    //! Marks the guard dirty so the destructor fires a single notification.
+    //! @param[in] theMut   active mutable vertex guard
+    //! @param[in] thePoint new 3D coordinates
+    Standard_EXPORT void SetPoint(BRepGraph_MutGuard<BRepGraphInc::VertexDef>& theMut,
+                                  const gp_Pnt&                                thePoint);
+
   private:
     friend class EditorView;
 
@@ -208,6 +220,17 @@ public:
     [[nodiscard]] Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::EdgeDef> Mut(
       const BRepGraph_EdgeId theEdge);
 
+    //! Set the tolerance of an edge definition and fire immediate notification.
+    //! @param[in] theEdge      typed edge definition identifier
+    //! @param[in] theTolerance new tolerance value
+    Standard_EXPORT void SetTolerance(const BRepGraph_EdgeId theEdge, double theTolerance);
+
+    //! Set the tolerance of an edge definition inside a batched mutation scope.
+    //! @param[in] theMut       active mutable edge guard
+    //! @param[in] theTolerance new tolerance value
+    Standard_EXPORT void SetTolerance(BRepGraph_MutGuard<BRepGraphInc::EdgeDef>& theMut,
+                                      double                                      theTolerance);
+
   private:
     friend class EditorView;
 
@@ -270,6 +293,22 @@ public:
     [[nodiscard]] Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::CoEdgeRef> MutRef(
       const BRepGraph_CoEdgeRefId theCoEdgeRef);
 
+    //! Set the parametric range of a coedge definition and fire immediate notification.
+    //! @param[in] theCoEdge  typed coedge definition identifier
+    //! @param[in] theFirst   new first parameter value
+    //! @param[in] theLast    new last parameter value
+    Standard_EXPORT void SetParamRange(const BRepGraph_CoEdgeId theCoEdge,
+                                       double                   theFirst,
+                                       double                   theLast);
+
+    //! Set the parametric range of a coedge definition inside a batched mutation scope.
+    //! @param[in] theMut   active mutable coedge guard
+    //! @param[in] theFirst new first parameter value
+    //! @param[in] theLast  new last parameter value
+    Standard_EXPORT void SetParamRange(BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef>& theMut,
+                                       double                                        theFirst,
+                                       double                                        theLast);
+
   private:
     friend class EditorView;
 
@@ -323,6 +362,17 @@ public:
     //! Return scoped mutable wire reference guard.
     [[nodiscard]] Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::WireRef> MutRef(
       const BRepGraph_WireRefId theWireRef);
+
+    //! Set the IsClosed flag of a wire definition and fire immediate notification.
+    //! @param[in] theWire     typed wire definition identifier
+    //! @param[in] theIsClosed new closed state
+    Standard_EXPORT void SetIsClosed(const BRepGraph_WireId theWire, bool theIsClosed);
+
+    //! Set the IsClosed flag of a wire definition inside a batched mutation scope.
+    //! @param[in] theMut      active mutable wire guard
+    //! @param[in] theIsClosed new closed state
+    Standard_EXPORT void SetIsClosed(BRepGraph_MutGuard<BRepGraphInc::WireDef>& theMut,
+                                     bool                                        theIsClosed);
 
   private:
     friend class EditorView;
@@ -389,6 +439,61 @@ public:
     //! Return scoped mutable face reference guard.
     [[nodiscard]] Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::FaceRef> MutRef(
       const BRepGraph_FaceRefId theFaceRef);
+
+    //! Set the tolerance of a face definition and fire immediate notification.
+    //! @param[in] theFace      typed face definition identifier
+    //! @param[in] theTolerance new tolerance value
+    Standard_EXPORT void SetTolerance(const BRepGraph_FaceId theFace, double theTolerance);
+
+    //! Set the tolerance of a face definition inside a batched mutation scope.
+    //! @param[in] theMut       active mutable face guard
+    //! @param[in] theTolerance new tolerance value
+    Standard_EXPORT void SetTolerance(BRepGraph_MutGuard<BRepGraphInc::FaceDef>& theMut,
+                                      double                                      theTolerance);
+
+    //! Set the NaturalRestriction flag of a face definition and fire immediate notification.
+    //! @param[in] theFace               typed face definition identifier
+    //! @param[in] theNaturalRestriction new flag value
+    Standard_EXPORT void SetNaturalRestriction(const BRepGraph_FaceId theFace,
+                                               bool                   theNaturalRestriction);
+
+    //! Set the NaturalRestriction flag inside a batched mutation scope.
+    //! @param[in] theMut                active mutable face guard
+    //! @param[in] theNaturalRestriction new flag value
+    Standard_EXPORT void
+      SetNaturalRestriction(BRepGraph_MutGuard<BRepGraphInc::FaceDef>& theMut,
+                            bool                                        theNaturalRestriction);
+
+    //! Set the triangulation representation id and fire immediate notification.
+    //! Pass an invalid id to clear the triangulation binding.
+    //! @param[in] theFace typed face definition identifier
+    //! @param[in] theRep  new triangulation rep identifier (may be invalid to clear)
+    Standard_EXPORT void SetTriangulationRep(const BRepGraph_FaceId             theFace,
+                                             const BRepGraph_TriangulationRepId theRep);
+
+    //! Set the orientation of a face reference and fire immediate notification.
+    //! @param[in] theFaceRef     typed face reference identifier
+    //! @param[in] theOrientation new orientation value
+    Standard_EXPORT void SetRefOrientation(const BRepGraph_FaceRefId theFaceRef,
+                                           TopAbs_Orientation        theOrientation);
+
+    //! Set the orientation of a face reference inside a batched mutation scope.
+    //! @param[in] theMut         active mutable face reference guard
+    //! @param[in] theOrientation new orientation value
+    Standard_EXPORT void SetRefOrientation(BRepGraph_MutGuard<BRepGraphInc::FaceRef>& theMut,
+                                           TopAbs_Orientation theOrientation);
+
+    //! Set the local location of a face reference and fire immediate notification.
+    //! @param[in] theFaceRef typed face reference identifier
+    //! @param[in] theLoc     new local location
+    Standard_EXPORT void SetRefLocalLocation(const BRepGraph_FaceRefId  theFaceRef,
+                                             const TopLoc_Location&     theLoc);
+
+    //! Set the local location of a face reference inside a batched mutation scope.
+    //! @param[in] theMut active mutable face reference guard
+    //! @param[in] theLoc new local location
+    Standard_EXPORT void SetRefLocalLocation(BRepGraph_MutGuard<BRepGraphInc::FaceRef>& theMut,
+                                             const TopLoc_Location&                     theLoc);
 
   private:
     friend class EditorView;
@@ -718,6 +823,19 @@ public:
     //! Return scoped mutable occurrence reference guard.
     [[nodiscard]] Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::OccurrenceRef> MutRef(
       const BRepGraph_OccurrenceRefId theOccurrenceRef);
+
+    //! Set the local location of an occurrence reference and fire immediate notification.
+    //! @param[in] theOccurrenceRef typed occurrence reference identifier
+    //! @param[in] theLoc           new local location
+    Standard_EXPORT void SetRefLocalLocation(const BRepGraph_OccurrenceRefId theOccurrenceRef,
+                                             const TopLoc_Location&          theLoc);
+
+    //! Set the local location of an occurrence reference inside a batched mutation scope.
+    //! @param[in] theMut active mutable occurrence reference guard
+    //! @param[in] theLoc new local location
+    Standard_EXPORT void
+      SetRefLocalLocation(BRepGraph_MutGuard<BRepGraphInc::OccurrenceRef>& theMut,
+                          const TopLoc_Location&                           theLoc);
 
   private:
     friend class EditorView;

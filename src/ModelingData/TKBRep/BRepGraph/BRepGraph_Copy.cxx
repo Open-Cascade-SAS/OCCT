@@ -200,9 +200,10 @@ BRepGraph BRepGraph_Copy::Perform(const BRepGraph& theGraph, const bool theCopyG
 
     {
       BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aNewEdge = aResult.Editor().Edges().Mut(anEdgeId);
-      aNewEdge->IsDegenerate                             = anEdge.IsDegenerate;
-      aNewEdge->SameParameter                            = anEdge.SameParameter;
-      aNewEdge->SameRange                                = anEdge.SameRange;
+      aNewEdge.Internal().IsDegenerate                   = anEdge.IsDegenerate;
+      aNewEdge.Internal().SameParameter                  = anEdge.SameParameter;
+      aNewEdge.Internal().SameRange                      = anEdge.SameRange;
+      aNewEdge.MarkDirty();
     }
     aDeferred.DeferNode(theGraph, anEdgeId, anEdgeId);
   }
@@ -253,8 +254,9 @@ BRepGraph BRepGraph_Copy::Perform(const BRepGraph& theGraph, const bool theCopyG
 
     {
       BRepGraph_MutGuard<BRepGraphInc::FaceDef> aNewFace = aResult.Editor().Faces().Mut(aFaceId);
-      aNewFace->NaturalRestriction                       = aFace.NaturalRestriction;
-      aNewFace->TriangulationRepId                       = aFace.TriangulationRepId;
+      aNewFace.Internal().NaturalRestriction             = aFace.NaturalRestriction;
+      aNewFace.Internal().TriangulationRepId             = aFace.TriangulationRepId;
+      aNewFace.MarkDirty();
     }
     // Copy cached mesh data if present.
     const BRepGraph_MeshCache::FaceMeshEntry* aCachedFace =
@@ -568,9 +570,10 @@ BRepGraph BRepGraph_Copy::CopyFace(const BRepGraph&       theGraph,
 
     {
       BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aNewEdge = aResult.Editor().Edges().Mut(aNewEdgeId);
-      aNewEdge->IsDegenerate                             = anEdge.IsDegenerate;
-      aNewEdge->SameParameter                            = anEdge.SameParameter;
-      aNewEdge->SameRange                                = anEdge.SameRange;
+      aNewEdge.Internal().IsDegenerate                   = anEdge.IsDegenerate;
+      aNewEdge.Internal().SameParameter                  = anEdge.SameParameter;
+      aNewEdge.Internal().SameRange                      = anEdge.SameRange;
+      aNewEdge.MarkDirty();
     }
     aDeferred.DeferNode(theGraph, anOldEdgeId, aNewEdgeId);
   }
@@ -620,8 +623,9 @@ BRepGraph BRepGraph_Copy::CopyFace(const BRepGraph&       theGraph,
   {
     BRepGraph_MutGuard<BRepGraphInc::FaceDef> aNewFace =
       aResult.Editor().Faces().Mut(BRepGraph_FaceId::Start());
-    aNewFace->NaturalRestriction = aFaceDef.NaturalRestriction;
-    aNewFace->TriangulationRepId = aFaceDef.TriangulationRepId;
+    aNewFace.Internal().NaturalRestriction = aFaceDef.NaturalRestriction;
+    aNewFace.Internal().TriangulationRepId = aFaceDef.TriangulationRepId;
+    aNewFace.MarkDirty();
   }
   // Copy cached mesh data if present.
   const BRepGraph_MeshCache::FaceMeshEntry* aCachedFace =

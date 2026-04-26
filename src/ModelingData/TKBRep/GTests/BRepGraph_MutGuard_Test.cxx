@@ -88,10 +88,11 @@ TEST(BRepGraph_MutGuardTest, MoveAssignmentFlushesThenTransfers)
   {
     BRepGraph_MutGuard<BRepGraphInc::VertexDef> aFirst =
       aGraph.Editor().Vertices().Mut(BRepGraph_VertexId::Start());
-    aFirst->Point = gp_Pnt(1.0, 2.0, 3.0);
+    aGraph.Editor().Vertices().SetPoint(aFirst, gp_Pnt(1.0, 2.0, 3.0));
 
     BRepGraph_MutGuard<BRepGraphInc::VertexDef> aSecond =
       aGraph.Editor().Vertices().Mut(BRepGraph_VertexId(1));
+    aSecond.MarkDirty();
     aSecond = std::move(aFirst);
     // aFirst now inert; aSecond owns what was aFirst.
     EXPECT_FALSE(static_cast<bool>(aFirst));
@@ -118,7 +119,7 @@ TEST(BRepGraph_MutGuardTest, ExceptionInsideScope_StillNotifies)
   {
     BRepGraph_MutGuard<BRepGraphInc::VertexDef> aGuard =
       aGraph.Editor().Vertices().Mut(BRepGraph_VertexId::Start());
-    aGuard->Point = gp_Pnt(9.0, 9.0, 9.0);
+    aGraph.Editor().Vertices().SetPoint(aGuard, gp_Pnt(9.0, 9.0, 9.0));
     throw std::runtime_error("test: throw mid-scope");
   }
   catch (const std::runtime_error&)
@@ -144,6 +145,7 @@ TEST(BRepGraph_MutGuardTest, MovedFrom_DoesNotDoubleNotify)
   {
     BRepGraph_MutGuard<BRepGraphInc::VertexDef> aSrc =
       aGraph.Editor().Vertices().Mut(BRepGraph_VertexId::Start());
+    aSrc.MarkDirty();
     BRepGraph_MutGuard<BRepGraphInc::VertexDef> aDst(std::move(aSrc));
     // Only aDst's destructor should notify; aSrc's destructor must be a no-op.
   }

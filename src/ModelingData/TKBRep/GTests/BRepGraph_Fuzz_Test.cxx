@@ -112,7 +112,7 @@ bool applyOne(BRepGraph& theGraph, std::mt19937& theRng)
       if (!pickActiveEdge(anEdgeId))
         return false;
       BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut = theGraph.Editor().Edges().Mut(anEdgeId);
-      aMut->Tolerance                                = aMut->Tolerance + 1.0e-4;
+      theGraph.Editor().Edges().SetTolerance(aMut, aMut->Tolerance + 1.0e-4);
       return true;
     }
     case MutationKind::MutateVertexPoint: {
@@ -122,8 +122,8 @@ bool applyOne(BRepGraph& theGraph, std::mt19937& theRng)
       BRepGraph_MutGuard<BRepGraphInc::VertexDef> aMut = theGraph.Editor().Vertices().Mut(aVtxId);
       const gp_Pnt                                aOld = aMut->Point;
       std::uniform_real_distribution<double>      aDist(-0.1, 0.1);
-      aMut->Point =
-        gp_Pnt(aOld.X() + aDist(theRng), aOld.Y() + aDist(theRng), aOld.Z() + aDist(theRng));
+      theGraph.Editor().Vertices().SetPoint(aMut,
+        gp_Pnt(aOld.X() + aDist(theRng), aOld.Y() + aDist(theRng), aOld.Z() + aDist(theRng)));
       return true;
     }
     case MutationKind::BumpFaceTolerance: {
@@ -134,7 +134,7 @@ bool applyOne(BRepGraph& theGraph, std::mt19937& theRng)
       if (theGraph.Topo().Faces().Definition(aFaceId).IsRemoved)
         return false;
       BRepGraph_MutGuard<BRepGraphInc::FaceDef> aMut = theGraph.Editor().Faces().Mut(aFaceId);
-      aMut->Tolerance                                = aMut->Tolerance + 1.0e-4;
+      theGraph.Editor().Faces().SetTolerance(aMut, aMut->Tolerance + 1.0e-4);
       return true;
     }
     default:

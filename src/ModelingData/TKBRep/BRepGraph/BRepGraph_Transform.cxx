@@ -51,7 +51,10 @@ void applyGeometryTransform(BRepGraph& theGraph, const gp_Trsf& theTrsf)
   // Transform absolute vertex points.
   for (BRepGraph_VertexIterator aVertexIt(theGraph); aVertexIt.More(); aVertexIt.Next())
   {
-    theGraph.Editor().Vertices().Mut(aVertexIt.CurrentId())->Point.Transform(theTrsf);
+    const BRepGraph_VertexId aVertId = aVertexIt.CurrentId();
+    gp_Pnt                   aPnt    = theGraph.Topo().Vertices().Definition(aVertId).Point;
+    aPnt.Transform(theTrsf);
+    theGraph.Editor().Vertices().SetPoint(aVertId, aPnt);
   }
 
   // Transform surface geometry handles directly on surface reps.
@@ -66,10 +69,13 @@ void applyGeometryTransform(BRepGraph& theGraph, const gp_Trsf& theTrsf)
     {
       const occ::handle<Geom_Surface>& aSurf = BRepGraph_Tool::Face::Surface(theGraph, aFaceId);
       if (!aSurf.IsNull())
+      {
         aSurf->Transform(theTrsf);
+        aFace.MarkDirty(); // geometry changed in-place; notify downstream caches
+      }
     }
     // Invalidate triangulations - meshes are no longer valid after geometry transform.
-    aFace->TriangulationRepId = BRepGraph_TriangulationRepId();
+    theGraph.Editor().Faces().SetTriangulationRep(aFaceId, BRepGraph_TriangulationRepId());
     // Also invalidate cached mesh data.
     BRepGraph_Tool::Mesh::ClearFaceCache(theGraph, aFaceId);
   }
@@ -85,7 +91,10 @@ void applyGeometryTransform(BRepGraph& theGraph, const gp_Trsf& theTrsf)
     {
       const occ::handle<Geom_Curve>& aCurve3d = BRepGraph_Tool::Edge::Curve(theGraph, anEdgeId);
       if (!aCurve3d.IsNull())
+      {
         aCurve3d->Transform(theTrsf);
+        anEdge.MarkDirty(); // geometry changed in-place; notify downstream caches
+      }
     }
   }
   // PCurves are in UV space - they are not affected by 3D transforms.
@@ -110,7 +119,8 @@ void BRepGraph_Transform::applyLocationTransform(BRepGraph& theGraph, const gp_T
         continue;
       BRepGraph_MutGuard<BRepGraphInc::OccurrenceRef> aMutRef =
         theGraph.Editor().Occurrences().MutRef(aRefId);
-      aMutRef->LocalLocation = aLoc * aMutRef->LocalLocation;
+      theGraph.Editor().Occurrences().SetRefLocalLocation(aMutRef,
+                                                         aLoc * aMutRef->LocalLocation);
     }
   });
 }

@@ -485,7 +485,7 @@ TEST_F(BRepGraph_ViewsTest, TopoView_GroupedProductAndOccurrenceOps_Parity)
   {
     BRepGraph_MutGuard<BRepGraphInc::OccurrenceRef> anOccurrenceRef =
       myGraph.Editor().Occurrences().MutRef(aOccurrenceRefs.Value(0));
-    anOccurrenceRef->IsRemoved = true;
+    myGraph.Editor().Gen().RemoveRef(aOccurrenceRefs.Value(0));
   }
 
   EXPECT_EQ(myGraph.Topo().Products().NbComponents(aSubAssembly), 0);
@@ -683,7 +683,7 @@ TEST_F(BRepGraph_ViewsTest, AttrsView_MutFace_InvalidatesEntry)
   {
     BRepGraph_MutGuard<BRepGraphInc::FaceDef> aFace =
       myGraph.Editor().Faces().Mut(BRepGraph_FaceId::Start());
-    aFace->Tolerance += 0.1;
+    myGraph.Editor().Faces().SetTolerance(aFace, aFace->Tolerance + 0.1);
   }
 
   EXPECT_FALSE(myGraph.Cache().Has(aFaceId, testUserAttrKind()));
@@ -714,7 +714,7 @@ TEST_F(BRepGraph_ViewsTest, AttrsView_MutFaceRef_InvalidatesEntry)
 
   {
     BRepGraph_MutGuard<BRepGraphInc::FaceRef> aFaceRef = myGraph.Editor().Faces().MutRef(aRef);
-    aFaceRef->Orientation                              = TopAbs::Reverse(aFaceRef->Orientation);
+    myGraph.Editor().Faces().SetRefOrientation(aFaceRef, TopAbs::Reverse(aFaceRef->Orientation));
   }
 
   EXPECT_FALSE(myGraph.Cache().Has(aRef, testUserAttrKind()));
@@ -730,7 +730,7 @@ TEST_F(BRepGraph_ViewsTest, AttrsView_RemoveFaceRef_HidesCacheKindIterator)
 
   {
     BRepGraph_MutGuard<BRepGraphInc::FaceRef> aFaceRef = myGraph.Editor().Faces().MutRef(aRef);
-    aFaceRef->IsRemoved                                = true;
+    myGraph.Editor().Gen().RemoveRef(aRef);
   }
 
   EXPECT_FALSE(myGraph.Cache().Has(aRef, testUserAttrKind()));
@@ -792,7 +792,7 @@ TEST_F(BRepGraph_ViewsTest, RefsView_FaceRefIdsOf_LocalFilteringHandlesRemoved)
   {
     BRepGraph_MutGuard<BRepGraphInc::FaceRef> aFaceRef =
       myGraph.Editor().Faces().MutRef(aFaceRefs.Value(0));
-    aFaceRef->IsRemoved = true;
+    myGraph.Editor().Gen().RemoveRef(aFaceRefs.Value(0));
   }
 
   EXPECT_EQ(
@@ -831,8 +831,8 @@ TEST_F(BRepGraph_ViewsTest, RefsView_GenericRefHelpers_RoundTripForTypedRef)
   {
     BRepGraph_MutGuard<BRepGraphInc::FaceRef> aFaceRef =
       myGraph.Editor().Faces().MutRef(aFaceRefId);
-    aFaceRef->LocalLocation = TopLoc_Location(aTrsf);
-    aFaceRef->Orientation   = TopAbs_REVERSED;
+    myGraph.Editor().Faces().SetRefLocalLocation(aFaceRef, TopLoc_Location(aTrsf));
+    myGraph.Editor().Faces().SetRefOrientation(aFaceRef, TopAbs_REVERSED);
   }
 
   const BRepGraphInc::FaceRef& aFaceRefEntry = myGraph.Refs().Faces().Entry(aFaceRefId);
@@ -907,7 +907,7 @@ TEST_F(BRepGraph_ViewsTest, RefsView_GenericRefHelpers_InvalidAndRemoved)
   {
     BRepGraph_MutGuard<BRepGraphInc::FaceRef> aFaceRef =
       myGraph.Editor().Faces().MutRef(aFaceRefId);
-    aFaceRef->IsRemoved = true;
+    myGraph.Editor().Gen().RemoveRef(aFaceRefId);
   }
 
   EXPECT_TRUE(myGraph.Refs().IsRemoved(aFaceRefId));
@@ -998,6 +998,7 @@ TEST_F(BRepGraph_ViewsTest, MutView_EdgeDef_IncrementsOwnGen)
   {
     BRepGraph_MutGuard<BRepGraphInc::EdgeDef> anEdge =
       myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start());
+    anEdge.MarkDirty();
   }
   EXPECT_GT(myGraph.Topo().Edges().Definition(BRepGraph_EdgeId::Start()).OwnGen, 0u);
 }

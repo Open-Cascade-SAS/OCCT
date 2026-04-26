@@ -460,7 +460,7 @@ TEST_F(BRepGraph_HistoryTest, SplitEdge_IgnoresRemovedCoEdgeRefEntries)
   {
     BRepGraph_MutGuard<BRepGraphInc::CoEdgeRef> aMut =
       myGraph.Editor().CoEdges().MutRef(aRefToRemove);
-    aMut->IsRemoved = true;
+    myGraph.Editor().Gen().RemoveRef(aRefToRemove);
   }
   ASSERT_TRUE(myGraph.Refs().CoEdges().Entry(aRefToRemove).IsRemoved);
   const BRepGraph_CoEdgeId aRemovedCoEdgeId =
