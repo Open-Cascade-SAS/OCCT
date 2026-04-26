@@ -953,6 +953,7 @@ BRepGraph_ChildRefId BRepGraph::EditorView::CompoundOps::AddChild(
     return BRepGraph_ChildRefId();
   }
 
+  const uint32_t             anOldNbChildRefs = static_cast<uint32_t>(aStorage.NbChildRefs());
   const BRepGraph_ChildRefId aChildRefId(aStorage.NbChildRefs());
   aStorage.AppendChildRef();
   BRepGraphInc::ChildRef& aChildRef = aStorage.ChangeChildRef(aChildRefId);
@@ -962,7 +963,15 @@ BRepGraph_ChildRefId BRepGraph::EditorView::CompoundOps::AddChild(
   myGraph->allocateRefUID(aChildRefId);
   aStorage.ChangeCompound(theCompoundEntity).ChildRefIds.Append(aChildRefId);
 
-  aStorage.BuildReverseIndex();
+  aStorage.BuildDeltaReverseIndex(static_cast<uint32_t>(aStorage.NbEdges()),
+                                  static_cast<uint32_t>(aStorage.NbWires()),
+                                  static_cast<uint32_t>(aStorage.NbFaces()),
+                                  static_cast<uint32_t>(aStorage.NbShells()),
+                                  static_cast<uint32_t>(aStorage.NbSolids()),
+                                  static_cast<uint32_t>(aStorage.NbCompounds()),
+                                  static_cast<uint32_t>(aStorage.NbCompSolids()),
+                                  anOldNbChildRefs,
+                                  static_cast<uint32_t>(aStorage.NbSolidRefs()));
   myGraph->markModified(theCompoundEntity);
   return aChildRefId;
 }
@@ -1013,6 +1022,7 @@ BRepGraph_SolidRefId BRepGraph::EditorView::CompSolidOps::AddSolid(
     return BRepGraph_SolidRefId();
   }
 
+  const uint32_t             anOldNbSolidRefs = static_cast<uint32_t>(aStorage.NbSolidRefs());
   const BRepGraph_SolidRefId aSolidRefId(aStorage.NbSolidRefs());
   aStorage.AppendSolidRef();
   BRepGraphInc::SolidRef& aSREntry = aStorage.ChangeSolidRef(aSolidRefId);
@@ -1022,7 +1032,15 @@ BRepGraph_SolidRefId BRepGraph::EditorView::CompSolidOps::AddSolid(
   myGraph->allocateRefUID(aSolidRefId);
   aStorage.ChangeCompSolid(theCompSolidEntity).SolidRefIds.Append(aSolidRefId);
 
-  aStorage.BuildReverseIndex();
+  aStorage.BuildDeltaReverseIndex(static_cast<uint32_t>(aStorage.NbEdges()),
+                                  static_cast<uint32_t>(aStorage.NbWires()),
+                                  static_cast<uint32_t>(aStorage.NbFaces()),
+                                  static_cast<uint32_t>(aStorage.NbShells()),
+                                  static_cast<uint32_t>(aStorage.NbSolids()),
+                                  static_cast<uint32_t>(aStorage.NbCompounds()),
+                                  static_cast<uint32_t>(aStorage.NbCompSolids()),
+                                  static_cast<uint32_t>(aStorage.NbChildRefs()),
+                                  anOldNbSolidRefs);
   myGraph->markModified(theCompSolidEntity);
   return aSolidRefId;
 }

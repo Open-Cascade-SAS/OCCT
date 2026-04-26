@@ -107,49 +107,6 @@ BRepGraph_NodeId BRepGraph_Builder::detectTopologyRoot(const BRepGraph&       th
 
 //=================================================================================================
 
-BRepGraph_Builder::ProductBundle BRepGraph_Builder::createRootProductForTopology(
-  BRepGraph&             theGraph,
-  const BRepGraph_NodeId theTopologyRoot,
-  const TopLoc_Location& thePlacement,
-  const bool             theRegisterAsRoot)
-{
-  BRepGraphInc_Storage& aStorage = theGraph.myData->myIncStorage;
-  ProductBundle         aBundle;
-
-  const BRepGraph_ProductId aProductId = aStorage.AppendProduct();
-  BRepGraphInc::ProductDef& aProduct   = aStorage.ChangeProduct(aProductId);
-  theGraph.allocateUID(aProductId);
-
-  if (theTopologyRoot.IsValid())
-  {
-    const BRepGraph_OccurrenceId anOccId  = aStorage.AppendOccurrence();
-    BRepGraphInc::OccurrenceDef& anOccDef = aStorage.ChangeOccurrence(anOccId);
-    anOccDef.ChildDefId                   = theTopologyRoot;
-    theGraph.allocateUID(anOccId);
-
-    const BRepGraph_OccurrenceRefId anOccRefId = aStorage.AppendOccurrenceRef();
-    BRepGraphInc::OccurrenceRef&    anOccRef   = aStorage.ChangeOccurrenceRef(anOccRefId);
-    anOccRef.ParentId                          = BRepGraph_NodeId(aProductId);
-    anOccRef.OccurrenceDefId                   = anOccId;
-    anOccRef.LocalLocation                     = thePlacement;
-    theGraph.allocateRefUID(anOccRefId);
-    aProduct.OccurrenceRefIds.Append(anOccRefId);
-
-    aBundle.Occurrence    = anOccId;
-    aBundle.OccurrenceRef = anOccRefId;
-  }
-
-  if (theRegisterAsRoot)
-  {
-    theGraph.myData->myRootProductIds.Append(aProductId);
-  }
-
-  aBundle.Product = aProductId;
-  return aBundle;
-}
-
-//=================================================================================================
-
 void BRepGraph_Builder::populateUIDs(BRepGraph& theGraph)
 {
   BRepGraphInc_Storage& aStorage = theGraph.myData->myIncStorage;
@@ -321,15 +278,22 @@ BRepGraph_Builder::Result BRepGraph_Builder::Add(BRepGraph&          theGraph,
   else
     aResult.TopologyRoot = detectTopologyRoot(theGraph, theShape.ShapeType(), anOldCount);
 
-  if (theOptions.CreateAutoProduct)
+  if (theOptions.CreateAutoProduct && aResult.TopologyRoot.IsValid())
   {
-    const ProductBundle aBundle = createRootProductForTopology(theGraph,
-                                                               aResult.TopologyRoot,
-                                                               theShape.Location(),
-                                                               /*registerAsRoot*/ true);
-    aResult.Product             = aBundle.Product;
-    aResult.Occurrence          = aBundle.Occurrence;
-    theGraph.myData->myIncStorage.BuildReverseIndex();
+    aResult.Product = theGraph.Editor().Products().LinkProductToTopology(aResult.TopologyRoot,
+                                                                         theShape.Location());
+    if (aResult.Product.IsValid())
+    {
+      const BRepGraphInc::ProductDef& aProductDef =
+        theGraph.myData->myIncStorage.Product(aResult.Product);
+      if (!aProductDef.OccurrenceRefIds.IsEmpty())
+      {
+        const BRepGraph_OccurrenceRefId anOccRefId = aProductDef.OccurrenceRefIds.First();
+        const BRepGraph_OccurrenceId    anOccId =
+          theGraph.myData->myIncStorage.OccurrenceRef(anOccRefId).OccurrenceDefId;
+        aResult.Occurrence = anOccId;
+      }
+    }
   }
 
   // Pre-allocate transient cache for lock-free parallel access.
@@ -402,21 +366,19 @@ BRepGraph_Builder::Result BRepGraph_Builder::Add(BRepGraph&             theGraph
   switch (theParent.NodeKind)
   {
     case BRepGraph_NodeId::Kind::Product: {
-      const ProductBundle aBundle = createRootProductForTopology(theGraph,
-                                                                 aResult.TopologyRoot,
-                                                                 TopLoc_Location(),
-                                                                 /*registerAsRoot*/ false);
-      if (!aBundle.Product.IsValid())
+      const BRepGraph_ProductId aChildProduct =
+        theGraph.Editor().Products().LinkProductToTopology(aResult.TopologyRoot,
+                                                           TopLoc_Location());
+      if (!aChildProduct.IsValid())
         return aResult;
 
       const BRepGraph_OccurrenceId anOccId =
         theGraph.Editor().Products().LinkProducts(BRepGraph_ProductId(theParent),
-                                                  aBundle.Product,
+                                                  aChildProduct,
                                                   theShape.Location());
       if (!anOccId.IsValid())
         return aResult;
-      theGraph.myData->myIncStorage.BuildReverseIndex();
-      aResult.Product    = aBundle.Product;
+      aResult.Product    = aChildProduct;
       aResult.Occurrence = anOccId;
       aResult.Ok         = true;
       return aResult;
