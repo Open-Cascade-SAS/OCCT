@@ -415,6 +415,38 @@ void BOPAlgo_PaveFiller::PerformFF(const Message_ProgressRange& theRange)
           BRep_Tool::Triangulation(aF2, aLocation2);
         const bool anIsPlane2 = IsPlaneFF(aSurface2);
 
+        // Pre-compute edge closedness for each face to avoid redundant IsClosedFF calls
+        // in the inner loop (O(N1*N2) -> O(N1+N2) + O(1) lookups).
+        NCollection_DataMap<int, bool> aClosedMap1, aClosedMap2;
+        for (TopoDS_Iterator aItW(aF1); aItW.More(); aItW.Next())
+        {
+          for (TopoDS_Iterator aItE(aItW.Value()); aItE.More(); aItE.Next())
+          {
+            const TopoDS_Edge& anEdge    = TopoDS::Edge(aItE.Value());
+            const int          anEdgeIdx = myDS->Index(anEdge);
+            if (!aClosedMap1.IsBound(anEdgeIdx))
+            {
+              aClosedMap1.Bind(
+                anEdgeIdx,
+                IsClosedFF(anEdge, aSurface1, aTriangulation1, aLocation1, anIsPlane1));
+            }
+          }
+        }
+        for (TopoDS_Iterator aItW(aF2); aItW.More(); aItW.Next())
+        {
+          for (TopoDS_Iterator aItE(aItW.Value()); aItE.More(); aItE.Next())
+          {
+            const TopoDS_Edge& anEdge    = TopoDS::Edge(aItE.Value());
+            const int          anEdgeIdx = myDS->Index(anEdge);
+            if (!aClosedMap2.IsBound(anEdgeIdx))
+            {
+              aClosedMap2.Bind(
+                anEdgeIdx,
+                IsClosedFF(anEdge, aSurface2, aTriangulation2, aLocation2, anIsPlane2));
+            }
+          }
+        }
+
         bool anIsFound = false;
         for (TopoDS_Iterator aItW1(aF1); !anIsFound && aItW1.More(); aItW1.Next())
         {
@@ -430,10 +462,8 @@ void BOPAlgo_PaveFiller::PerformFF(const Message_ProgressRange& theRange)
                 const TopoDS_Edge& anEdge2      = TopoDS::Edge(aItE2.Value());
                 const int          anEdgeIndex2 = myDS->Index(anEdge2);
 
-                const bool anIsClosed1 =
-                  IsClosedFF(anEdge1, aSurface1, aTriangulation1, aLocation1, anIsPlane1);
-                const bool anIsClosed2 =
-                  IsClosedFF(anEdge2, aSurface2, aTriangulation2, aLocation2, anIsPlane2);
+                const bool anIsClosed1 = aClosedMap1.Find(anEdgeIndex1);
+                const bool anIsClosed2 = aClosedMap2.Find(anEdgeIndex2);
                 if (!anIsClosed1 && !anIsClosed2)
                 {
                   continue;

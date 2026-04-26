@@ -34,6 +34,14 @@ struct Draw_XSegment
 {
   NCollection_Vec2<short> Points[2]; // same as XSegment
 
+  Draw_XSegment() = default;
+
+  Draw_XSegment(short theXStart, short theYStart, short theXEnd, short theYEnd)
+      : Points{NCollection_Vec2<short>(theXStart, theYStart),
+               NCollection_Vec2<short>(theXEnd, theYEnd)}
+  {
+  }
+
   NCollection_Vec2<short>& operator[](int theIndex) { return Points[theIndex]; }
 
   const NCollection_Vec2<short>& operator[](int theIndex) const { return Points[theIndex]; }
