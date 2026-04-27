@@ -253,7 +253,6 @@ TEST_F(BRepGraph_DefsIteratorTest, AuxChildrenOfShellAndSolid_EnumerateInjectedC
     {
       aShell.Internal().AuxChildRefIds.Append(aRefId);
     }
-    aShell.MarkDirty();
   }
 
   BRepGraph_DefsChildOfShell aShellIt(myGraph, BRepGraph_ShellId::Start());
@@ -277,7 +276,6 @@ TEST_F(BRepGraph_DefsIteratorTest, AuxChildrenOfShellAndSolid_EnumerateInjectedC
     {
       aSolid.Internal().AuxChildRefIds.Append(aRefId);
     }
-    aSolid.MarkDirty();
   }
 
   BRepGraph_DefsChildOfSolid aSolidIt(myGraph, BRepGraph_SolidId::Start());

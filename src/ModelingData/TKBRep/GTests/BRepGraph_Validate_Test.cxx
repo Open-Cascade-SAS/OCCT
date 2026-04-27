@@ -213,7 +213,6 @@ TEST(BRepGraph_ValidateTest, WireConnectivity_DisconnectedEdges)
       BRepGraph_MutGuard<BRepGraphInc::VertexRef> aMutEndRef =
         aGraph.Editor().Vertices().MutRef(aFirstEdge->EndVertexRefId);
       aMutEndRef.Internal().VertexDefId = aVertexId;
-      aMutEndRef.MarkDirty();
       break;
     }
   }
@@ -258,7 +257,6 @@ TEST(BRepGraph_ValidateTest, BoundsCheck_InvalidIndex)
   BRepGraph_MutGuard<BRepGraphInc::EdgeDef> anEdge =
     aGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start());
   anEdge.Internal().Curve3DRepId = BRepGraph_Curve3DRepId();
-  anEdge.MarkDirty();
 
   const BRepGraph_Validate::Result aResult =
     BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit());
@@ -338,7 +336,6 @@ TEST(BRepGraph_ValidateTest, CorruptedPCurve_FaceDefIdOutOfBounds)
   BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef> aCoEdgeDef =
     aGraph.Editor().CoEdges().Mut(BRepGraph_CoEdgeId::Start());
   aCoEdgeDef.Internal().FaceDefId = BRepGraph_FaceId(aGraph.Topo().Faces().Nb() + 999);
-  aCoEdgeDef.MarkDirty();
 
   const BRepGraph_Validate::Result aDefaultResult = BRepGraph_Validate::Perform(aGraph);
   EXPECT_FALSE(aDefaultResult.IsValid());
@@ -367,7 +364,6 @@ TEST(BRepGraph_ValidateTest, LightweightAndAudit_DetectActiveCountDrift)
   BRepGraph_MutGuard<BRepGraphInc::FaceDef> aFaceDef =
     aGraph.Editor().Faces().Mut(BRepGraph_FaceId::Start());
   aFaceDef.Internal().IsRemoved = true;
-  aFaceDef.MarkDirty();
 
   const BRepGraph_Validate::Result aLightResult =
     BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Lightweight());
@@ -515,7 +511,6 @@ TEST(BRepGraph_ValidateTest, AssemblyGraph_CorruptedOccurrenceChildDefId_Detecte
     aGraph.Editor().Occurrences().Mut(BRepGraph_OccurrenceId::Start());
   anOccDef.Internal().ChildDefId =
     BRepGraph_NodeId(BRepGraph_NodeId::Kind::Solid, aGraph.Topo().Solids().Nb() + 999);
-  anOccDef.MarkDirty();
 
   const BRepGraph_Validate::Result aAuditResult =
     BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit());
@@ -566,7 +561,6 @@ TEST(BRepGraph_ValidateTest,
     aGraph.Editor().Occurrences().Mut(anOccId);
   anOccDef.Internal().ChildDefId =
     BRepGraph_NodeId(BRepGraph_NodeId::Kind::Product, aGraph.Topo().Products().Nb() + 999);
-  anOccDef.MarkDirty();
 
   const BRepGraph_Validate::Result aAuditResult =
     BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit());
@@ -603,7 +597,6 @@ TEST(BRepGraph_ValidateTest, AssemblyGraph_OccurrenceChildRefersToOccurrence_Det
   BRepGraph_MutGuard<BRepGraphInc::OccurrenceDef> anOccDef =
     aGraph.Editor().Occurrences().Mut(BRepGraph_OccurrenceId::Start());
   anOccDef.Internal().ChildDefId = BRepGraph_OccurrenceId::Start();
-  anOccDef.MarkDirty();
 
   const BRepGraph_Validate::Result aAuditResult =
     BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit());
@@ -706,7 +699,6 @@ TEST(BRepGraph_ValidateTest, Audit_DetectsOrphanWireRef_AfterFaceRemoval)
       continue;
     BRepGraph_MutGuard<BRepGraphInc::WireRef> aMut = aGraph.Editor().Wires().MutRef(aRefId);
     aMut.Internal().ParentId = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, 9999);
-    aMut.MarkDirty();
     aDidCorrupt    = true;
   }
   ASSERT_TRUE(aDidCorrupt);

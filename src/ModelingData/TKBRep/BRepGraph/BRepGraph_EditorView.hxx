@@ -21,6 +21,8 @@
 #include <BRepGraphInc_Reference.hxx>
 #include <BRepGraphInc_Representation.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <GeomAbs_Shape.hxx>
+#include <gp_Pnt2d.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopLoc_Location.hxx>
 
@@ -29,6 +31,10 @@
 class Geom_Surface;
 class Geom_Curve;
 class Geom2d_Curve;
+class Poly_Triangulation;
+class Poly_Polygon3D;
+class Poly_Polygon2D;
+class Poly_PolygonOnTriangulation;
 
 //! @brief Non-const view for programmatic graph construction and structural editing.
 //!
@@ -94,6 +100,58 @@ public:
     [[nodiscard]] Standard_EXPORT BRepGraph_MutGuard<BRepGraphInc::PolygonOnTriRep> MutPolygonOnTri(
       const BRepGraph_PolygonOnTriRepId thePolygon);
 
+    //! Set the surface handle on a SurfaceRep.
+    Standard_EXPORT void SetSurface(const BRepGraph_SurfaceRepId     theRep,
+                                    const occ::handle<Geom_Surface>& theSurface);
+    Standard_EXPORT void SetSurface(BRepGraph_MutGuard<BRepGraphInc::SurfaceRep>& theMut,
+                                    const occ::handle<Geom_Surface>&              theSurface);
+
+    //! Set the 3D curve handle on a Curve3DRep.
+    Standard_EXPORT void SetCurve3D(const BRepGraph_Curve3DRepId   theRep,
+                                    const occ::handle<Geom_Curve>& theCurve);
+    Standard_EXPORT void SetCurve3D(BRepGraph_MutGuard<BRepGraphInc::Curve3DRep>& theMut,
+                                    const occ::handle<Geom_Curve>&                theCurve);
+
+    //! Set the 2D curve handle on a Curve2DRep.
+    Standard_EXPORT void SetCurve2D(const BRepGraph_Curve2DRepId     theRep,
+                                    const occ::handle<Geom2d_Curve>& theCurve);
+    Standard_EXPORT void SetCurve2D(BRepGraph_MutGuard<BRepGraphInc::Curve2DRep>& theMut,
+                                    const occ::handle<Geom2d_Curve>&              theCurve);
+
+    //! Set the triangulation handle on a TriangulationRep.
+    Standard_EXPORT void SetTriangulation(const BRepGraph_TriangulationRepId     theRep,
+                                          const occ::handle<Poly_Triangulation>& theTri);
+    Standard_EXPORT void SetTriangulation(
+      BRepGraph_MutGuard<BRepGraphInc::TriangulationRep>& theMut,
+      const occ::handle<Poly_Triangulation>&              theTri);
+
+    //! Set the polygon handle on a Polygon3DRep.
+    Standard_EXPORT void SetPolygon3D(const BRepGraph_Polygon3DRepId     theRep,
+                                      const occ::handle<Poly_Polygon3D>& thePolygon);
+    Standard_EXPORT void SetPolygon3D(BRepGraph_MutGuard<BRepGraphInc::Polygon3DRep>& theMut,
+                                      const occ::handle<Poly_Polygon3D>& thePolygon);
+
+    //! Set the polygon handle on a Polygon2DRep.
+    Standard_EXPORT void SetPolygon2D(const BRepGraph_Polygon2DRepId     theRep,
+                                      const occ::handle<Poly_Polygon2D>& thePolygon);
+    Standard_EXPORT void SetPolygon2D(BRepGraph_MutGuard<BRepGraphInc::Polygon2DRep>& theMut,
+                                      const occ::handle<Poly_Polygon2D>& thePolygon);
+
+    //! Set the polygon-on-triangulation handle on a PolygonOnTriRep.
+    Standard_EXPORT void SetPolygonOnTri(const BRepGraph_PolygonOnTriRepId               theRep,
+                                         const occ::handle<Poly_PolygonOnTriangulation>& thePolygon);
+    Standard_EXPORT void SetPolygonOnTri(
+      BRepGraph_MutGuard<BRepGraphInc::PolygonOnTriRep>& theMut,
+      const occ::handle<Poly_PolygonOnTriangulation>&    thePolygon);
+
+    //! Set the triangulation rep id linked to a PolygonOnTriRep.
+    Standard_EXPORT void SetPolygonOnTriTriangulationId(
+      const BRepGraph_PolygonOnTriRepId  theRep,
+      const BRepGraph_TriangulationRepId theTriRep);
+    Standard_EXPORT void SetPolygonOnTriTriangulationId(
+      BRepGraph_MutGuard<BRepGraphInc::PolygonOnTriRep>& theMut,
+      const BRepGraph_TriangulationRepId                 theTriRep);
+
   private:
     friend class EditorView;
 
@@ -135,6 +193,22 @@ public:
     //! @param[in] thePoint new 3D coordinates
     Standard_EXPORT void SetPoint(BRepGraph_MutGuard<BRepGraphInc::VertexDef>& theMut,
                                   const gp_Pnt&                                thePoint);
+
+    //! Set the tolerance of a vertex definition.
+    Standard_EXPORT void SetTolerance(const BRepGraph_VertexId theVertex,
+                                      const double             theTolerance);
+
+    //! Set the tolerance inside a batched mutation scope.
+    Standard_EXPORT void SetTolerance(BRepGraph_MutGuard<BRepGraphInc::VertexDef>& theMut,
+                                      const double                                 theTolerance);
+
+    //! Set the orientation of a vertex reference.
+    Standard_EXPORT void SetRefOrientation(const BRepGraph_VertexRefId theVertexRef,
+                                           const TopAbs_Orientation    theOrientation);
+
+    //! Set the orientation inside a batched mutation scope.
+    Standard_EXPORT void SetRefOrientation(BRepGraph_MutGuard<BRepGraphInc::VertexRef>& theMut,
+                                           const TopAbs_Orientation theOrientation);
 
     //! Set the local location of a vertex reference and fire immediate notification.
     //! @param[in] theVertexRef typed vertex reference identifier
@@ -243,6 +317,47 @@ public:
     Standard_EXPORT void SetTolerance(BRepGraph_MutGuard<BRepGraphInc::EdgeDef>& theMut,
                                       double                                      theTolerance);
 
+    //! Set the parametric range of an edge definition.
+    Standard_EXPORT void SetParamRange(const BRepGraph_EdgeId theEdge,
+                                       const double           theFirst,
+                                       const double           theLast);
+    Standard_EXPORT void SetParamRange(BRepGraph_MutGuard<BRepGraphInc::EdgeDef>& theMut,
+                                       const double                               theFirst,
+                                       const double                               theLast);
+
+    //! Set the SameParameter flag of an edge definition.
+    Standard_EXPORT void SetSameParameter(const BRepGraph_EdgeId theEdge,
+                                          const bool             theSameParameter);
+    Standard_EXPORT void SetSameParameter(BRepGraph_MutGuard<BRepGraphInc::EdgeDef>& theMut,
+                                          const bool theSameParameter);
+
+    //! Set the SameRange flag of an edge definition.
+    Standard_EXPORT void SetSameRange(const BRepGraph_EdgeId theEdge, const bool theSameRange);
+    Standard_EXPORT void SetSameRange(BRepGraph_MutGuard<BRepGraphInc::EdgeDef>& theMut,
+                                      const bool                                 theSameRange);
+
+    //! Set the IsDegenerate flag of an edge definition.
+    Standard_EXPORT void SetDegenerate(const BRepGraph_EdgeId theEdge, const bool theIsDegenerate);
+    Standard_EXPORT void SetDegenerate(BRepGraph_MutGuard<BRepGraphInc::EdgeDef>& theMut,
+                                       const bool                                 theIsDegenerate);
+
+    //! Set the Curve3DRep id bound to an edge (invalid id clears the binding).
+    Standard_EXPORT void SetCurve3DRepId(const BRepGraph_EdgeId       theEdge,
+                                         const BRepGraph_Curve3DRepId theRep);
+    Standard_EXPORT void SetCurve3DRepId(BRepGraph_MutGuard<BRepGraphInc::EdgeDef>& theMut,
+                                         const BRepGraph_Curve3DRepId               theRep);
+
+    //! Set the Polygon3DRep id bound to an edge (invalid id clears the binding).
+    Standard_EXPORT void SetPolygon3DRepId(const BRepGraph_EdgeId         theEdge,
+                                           const BRepGraph_Polygon3DRepId theRep);
+    Standard_EXPORT void SetPolygon3DRepId(BRepGraph_MutGuard<BRepGraphInc::EdgeDef>& theMut,
+                                           const BRepGraph_Polygon3DRepId             theRep);
+
+    //! Set the IsClosed flag (StartVertex == EndVertex topology) of an edge.
+    Standard_EXPORT void SetIsClosed(const BRepGraph_EdgeId theEdge, const bool theIsClosed);
+    Standard_EXPORT void SetIsClosed(BRepGraph_MutGuard<BRepGraphInc::EdgeDef>& theMut,
+                                     const bool                                 theIsClosed);
+
   private:
     friend class EditorView;
 
@@ -334,6 +449,61 @@ public:
       BRepGraph_MutGuard<BRepGraphInc::CoEdgeRef>& theMut,
       const TopLoc_Location&                       theLoc);
 
+    //! Set the orientation of a coedge definition.
+    Standard_EXPORT void SetOrientation(const BRepGraph_CoEdgeId theCoEdge,
+                                        const TopAbs_Orientation theOrientation);
+    Standard_EXPORT void SetOrientation(BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef>& theMut,
+                                        const TopAbs_Orientation theOrientation);
+
+    //! Set the UV box (UV1 = at ParamFirst, UV2 = at ParamLast) of a coedge definition.
+    Standard_EXPORT void SetUVBox(const BRepGraph_CoEdgeId theCoEdge,
+                                  const gp_Pnt2d&          theUV1,
+                                  const gp_Pnt2d&          theUV2);
+    Standard_EXPORT void SetUVBox(BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef>& theMut,
+                                  const gp_Pnt2d&                              theUV1,
+                                  const gp_Pnt2d&                              theUV2);
+
+    //! Set the geometric continuity of a coedge definition.
+    Standard_EXPORT void SetContinuity(const BRepGraph_CoEdgeId theCoEdge,
+                                       const GeomAbs_Shape      theContinuity);
+    Standard_EXPORT void SetContinuity(BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef>& theMut,
+                                       const GeomAbs_Shape theContinuity);
+
+    //! Set the seam-pair continuity of a coedge definition.
+    Standard_EXPORT void SetSeamContinuity(const BRepGraph_CoEdgeId theCoEdge,
+                                           const GeomAbs_Shape      theContinuity);
+    Standard_EXPORT void SetSeamContinuity(BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef>& theMut,
+                                           const GeomAbs_Shape theContinuity);
+
+    //! Set the Curve2DRep id bound to a coedge (invalid id clears the binding).
+    Standard_EXPORT void SetCurve2DRepId(const BRepGraph_CoEdgeId     theCoEdge,
+                                         const BRepGraph_Curve2DRepId theRep);
+    Standard_EXPORT void SetCurve2DRepId(BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef>& theMut,
+                                         const BRepGraph_Curve2DRepId                 theRep);
+
+    //! Set the Polygon2DRep id bound to a coedge.
+    Standard_EXPORT void SetPolygon2DRepId(const BRepGraph_CoEdgeId       theCoEdge,
+                                           const BRepGraph_Polygon2DRepId theRep);
+    Standard_EXPORT void SetPolygon2DRepId(BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef>& theMut,
+                                           const BRepGraph_Polygon2DRepId               theRep);
+
+    //! Set the PolygonOnTriRep id bound to a coedge.
+    Standard_EXPORT void SetPolygonOnTriRepId(const BRepGraph_CoEdgeId          theCoEdge,
+                                              const BRepGraph_PolygonOnTriRepId theRep);
+    Standard_EXPORT void SetPolygonOnTriRepId(BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef>& theMut,
+                                              const BRepGraph_PolygonOnTriRepId            theRep);
+
+    //! Drop face-bound parametric payload (PCurve, param range, continuity, UVs)
+    //! while keeping structural links — used when the owning face is removed.
+    Standard_EXPORT void ClearPCurveBinding(const BRepGraph_CoEdgeId theCoEdge);
+    Standard_EXPORT void ClearPCurveBinding(BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef>& theMut);
+
+    //! Set the seam-pair id linking two coedges of a seam edge (invalid breaks the link).
+    Standard_EXPORT void SetSeamPairId(const BRepGraph_CoEdgeId theCoEdge,
+                                       const BRepGraph_CoEdgeId theSeamPairId);
+    Standard_EXPORT void SetSeamPairId(BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef>& theMut,
+                                       const BRepGraph_CoEdgeId theSeamPairId);
+
   private:
     friend class EditorView;
 
@@ -410,6 +580,17 @@ public:
     //! @param[in] theLoc new local location
     Standard_EXPORT void SetRefLocalLocation(BRepGraph_MutGuard<BRepGraphInc::WireRef>& theMut,
                                              const TopLoc_Location&                     theLoc);
+
+    //! Set the IsOuter flag on a wire reference.
+    Standard_EXPORT void SetRefIsOuter(const BRepGraph_WireRefId theWireRef, const bool theIsOuter);
+    Standard_EXPORT void SetRefIsOuter(BRepGraph_MutGuard<BRepGraphInc::WireRef>& theMut,
+                                       const bool                                 theIsOuter);
+
+    //! Set the orientation of a wire reference.
+    Standard_EXPORT void SetRefOrientation(const BRepGraph_WireRefId theWireRef,
+                                           const TopAbs_Orientation  theOrientation);
+    Standard_EXPORT void SetRefOrientation(BRepGraph_MutGuard<BRepGraphInc::WireRef>& theMut,
+                                           const TopAbs_Orientation theOrientation);
 
   private:
     friend class EditorView;
@@ -507,6 +688,15 @@ public:
     //! @param[in] theRep  new triangulation rep identifier (may be invalid to clear)
     Standard_EXPORT void SetTriangulationRep(const BRepGraph_FaceId             theFace,
                                              const BRepGraph_TriangulationRepId theRep);
+
+    Standard_EXPORT void SetTriangulationRep(BRepGraph_MutGuard<BRepGraphInc::FaceDef>& theMut,
+                                             const BRepGraph_TriangulationRepId         theRep);
+
+    //! Set the SurfaceRep id bound to a face (invalid id clears the binding).
+    Standard_EXPORT void SetSurfaceRepId(const BRepGraph_FaceId       theFace,
+                                         const BRepGraph_SurfaceRepId theRep);
+    Standard_EXPORT void SetSurfaceRepId(BRepGraph_MutGuard<BRepGraphInc::FaceDef>& theMut,
+                                         const BRepGraph_SurfaceRepId               theRep);
 
     //! Set the orientation of a face reference and fire immediate notification.
     //! @param[in] theFaceRef     typed face reference identifier
@@ -612,6 +802,21 @@ public:
     Standard_EXPORT void SetRefLocalLocation(BRepGraph_MutGuard<BRepGraphInc::ShellRef>& theMut,
                                              const TopLoc_Location&                      theLoc);
 
+    //! Set the orientation of a shell reference.
+    Standard_EXPORT void SetRefOrientation(const BRepGraph_ShellRefId theShellRef,
+                                           const TopAbs_Orientation   theOrientation);
+
+    //! Set the orientation inside a batched mutation scope.
+    Standard_EXPORT void SetRefOrientation(BRepGraph_MutGuard<BRepGraphInc::ShellRef>& theMut,
+                                           const TopAbs_Orientation theOrientation);
+
+    //! Set the IsClosed flag of a shell definition.
+    Standard_EXPORT void SetIsClosed(const BRepGraph_ShellId theShell, const bool theIsClosed);
+
+    //! Set the IsClosed flag inside a batched mutation scope.
+    Standard_EXPORT void SetIsClosed(BRepGraph_MutGuard<BRepGraphInc::ShellDef>& theMut,
+                                     const bool                                  theIsClosed);
+
   private:
     friend class EditorView;
 
@@ -691,6 +896,14 @@ public:
     //! @param[in] theLoc new local location
     Standard_EXPORT void SetRefLocalLocation(BRepGraph_MutGuard<BRepGraphInc::SolidRef>& theMut,
                                              const TopLoc_Location&                      theLoc);
+
+    //! Set the orientation of a solid reference.
+    Standard_EXPORT void SetRefOrientation(const BRepGraph_SolidRefId theSolidRef,
+                                           const TopAbs_Orientation   theOrientation);
+
+    //! Set the orientation inside a batched mutation scope.
+    Standard_EXPORT void SetRefOrientation(BRepGraph_MutGuard<BRepGraphInc::SolidRef>& theMut,
+                                           const TopAbs_Orientation theOrientation);
 
   private:
     friend class EditorView;
@@ -898,6 +1111,16 @@ public:
       SetRefLocalLocation(BRepGraph_MutGuard<BRepGraphInc::OccurrenceRef>& theMut,
                           const TopLoc_Location&                           theLoc);
 
+    //! Set the child node referenced by an occurrence definition.
+    //! The child kind must be a topology root or a Product — invalid kinds are
+    //! accepted but the resulting graph will fail Validate.
+    Standard_EXPORT void SetChildDefId(const BRepGraph_OccurrenceId theOccurrence,
+                                       const BRepGraph_NodeId       theChildDefId);
+
+    //! Set the child node id inside a batched mutation scope.
+    Standard_EXPORT void SetChildDefId(BRepGraph_MutGuard<BRepGraphInc::OccurrenceDef>& theMut,
+                                       const BRepGraph_NodeId theChildDefId);
+
   private:
     friend class EditorView;
 
@@ -972,6 +1195,14 @@ public:
     //! @param[in] theLoc      new local location
     Standard_EXPORT void SetChildRefLocalLocation(const BRepGraph_ChildRefId theChildRef,
                                                   const TopLoc_Location&     theLoc);
+
+    //! Set the orientation of a child reference.
+    Standard_EXPORT void SetChildRefOrientation(const BRepGraph_ChildRefId theChildRef,
+                                                const TopAbs_Orientation   theOrientation);
+
+    //! Set the orientation inside a batched mutation scope.
+    Standard_EXPORT void SetChildRefOrientation(BRepGraph_MutGuard<BRepGraphInc::ChildRef>& theMut,
+                                                const TopAbs_Orientation theOrientation);
 
     //! Set the local location of a child reference inside a batched mutation scope.
     //! @param[in] theMut active mutable child reference guard

@@ -59,11 +59,14 @@ public:
   //! @param[in] theGraph        a pre-built BRepGraph
   //! @param[in] theNodeId       node identifier (any kind)
   //! @param[in] theCopyGeom     if true, geometry handles are deep-copied
+  //! @param[in] theCopyMesh     if true, cached mesh entries are propagated to the result;
+  //!                            if false, mesh references are dropped on copied faces
   //! @param[in] theReserveCache if true, pre-allocates transient cache
   //! @return a new BRepGraph containing only the specified sub-graph
   [[nodiscard]] Standard_EXPORT static BRepGraph CopyNode(const BRepGraph&       theGraph,
                                                           const BRepGraph_NodeId theNodeId,
                                                           const bool             theCopyGeom = true,
+                                                          const bool             theCopyMesh = true,
                                                           const bool theReserveCache = false);
 
 private:

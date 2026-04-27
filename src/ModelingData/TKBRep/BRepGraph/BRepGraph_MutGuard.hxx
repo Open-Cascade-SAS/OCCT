@@ -26,12 +26,10 @@ class BRepGraph;
 //! @brief RAII scope token batching mutation notifications for a single entity.
 //!
 //! Obtained via BRepGraph::Editor().<Ops>().Mut() / MutRef() / MutSurface() etc.
-//! Field access is read-only via const operator-> / operator*; field writes
-//! must go through the Editor's typed setters that accept this guard. Those
-//! setters flag the guard as modified, and the destructor fires the
-//! appropriate markModified() / markRefModified() / markRepModified() exactly
-//! once on scope exit, but only if at least one setter (or external code via
-//! `MarkDirty()`) flagged the entity modified.
+//! Reads via `operator->()` / `operator*()`; writes via Editor's typed setters
+//! (or `Internal()` for in-tree structural remaps). Any call to `Internal()`
+//! flags the guard dirty and the destructor fires `markModified` /
+//! `markRefModified` / `markRepModified` once on scope exit.
 //!
 //! Move-only; non-copyable. After a move, the source guard becomes inert.
 //!
@@ -158,19 +156,21 @@ public:
   //! Owning graph pointer (nullptr after move).
   [[nodiscard]] BRepGraph* Graph() const noexcept { return myGraph; }
 
-  //! Flag the guarded entity as modified; ~MutGuard fires the appropriate
-  //! notification once. Idempotent. Used by Editor's typed setters and by
-  //! callers that intentionally need to bump notification without changing
-  //! a tracked field.
+  //! Flag the guarded entity as modified without writing through `Internal()`.
+  //! Use when an external mutation (e.g. in-place geometry transform on a shared
+  //! Geom handle) is not visible to the guard.
   void MarkDirty() noexcept { myDirty = true; }
 
-  //! True if at least one setter (or `MarkDirty`) flagged the entity modified.
+  //! True if `Internal()` or `MarkDirty()` flagged the entity modified.
   [[nodiscard]] bool IsDirty() const noexcept { return myDirty; }
 
-  //! Internal mutable accessor; intended for Editor setter implementations.
-  //! Not part of the public mutation surface — external callers should use
-  //! the Editor's typed setters that internally call this and `MarkDirty()`.
-  [[nodiscard]] T& Internal() const noexcept { return *myEntity; }
+  //! INTERNAL USE ONLY. Mutable accessor; auto-flags dirty. External code MUST go
+  //! through Editor's typed setters. Use `operator->()` / `operator*()` for reads.
+  [[nodiscard]] T& Internal() noexcept
+  {
+    myDirty = true;
+    return *myEntity;
+  }
 
 private:
   BRepGraph* myGraph;  //!< Owning graph (nullptr after move).

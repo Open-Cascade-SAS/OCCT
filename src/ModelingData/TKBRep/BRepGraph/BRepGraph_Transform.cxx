@@ -291,7 +291,7 @@ void applyGeometryTransform(const BRepGraph& theSource,
       if (!aSurf.IsNull())
       {
         aSurf->Transform(theTrsf);
-        aFace.MarkDirty(); // geometry changed in-place; notify downstream caches
+        aFace.MarkDirty();
       }
     }
     if (!theCopyMesh)
@@ -315,7 +315,7 @@ void applyGeometryTransform(const BRepGraph& theSource,
       if (!aCurve3d.IsNull())
       {
         aCurve3d->Transform(theTrsf);
-        anEdge.MarkDirty(); // geometry changed in-place; notify downstream caches
+        anEdge.MarkDirty();
       }
     }
     if (!theCopyMesh)
@@ -407,8 +407,11 @@ BRepGraph BRepGraph_Transform::TransformNode(const BRepGraph&       theGraph,
 
   constexpr bool THE_RESERVE_CACHE = false;
 
+  // Pull mesh data through the copy only when the caller asked for it: the
+  // geometry-transform path otherwise clears triangulations face-by-face, and
+  // skipping the inbound copy keeps allocations down.
   BRepGraph aSubgraph =
-    BRepGraph_Copy::CopyNode(theGraph, theNodeId, theCopyGeom, THE_RESERVE_CACHE);
+    BRepGraph_Copy::CopyNode(theGraph, theNodeId, theCopyGeom, theCopyMesh, THE_RESERVE_CACHE);
   if (!aSubgraph.IsDone())
     return aSubgraph;
 

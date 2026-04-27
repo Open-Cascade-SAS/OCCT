@@ -27,6 +27,8 @@
 #include <BRepGraphInc_Reconstruct.hxx>
 #include <BRepGraphInc_Storage.hxx>
 #include <BRepGraph_Builder.hxx>
+#include <BRepGraph_EditorView.hxx>
+#include <BRepGraph_Iterator.hxx>
 #include <BRepGProp.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
@@ -1428,4 +1430,102 @@ TEST(BRepGraphIncTest, ReverseIndex_Validate_Compound_FullConsistency)
   ASSERT_TRUE(aStorage.GetIsDone());
 
   EXPECT_TRUE(aStorage.ValidateReverseIndex());
+}
+
+TEST(BRepGraphIncTest, ReverseIndex_AfterEditorMutations_StaysConsistent)
+{
+  // Verify the incremental Bind/Unbind mutation path keeps the reverse index
+  // consistent with the forward entity / reference-entry tables across a
+  // sequence of RemoveWire / RemoveFace / RemoveShell mutations.
+  BRep_Builder    aBB;
+  TopoDS_Compound aCompound;
+  aBB.MakeCompound(aCompound);
+  BRepPrimAPI_MakeBox      aBoxMaker(10.0, 20.0, 30.0);
+  BRepPrimAPI_MakeCylinder aCylMaker(5.0, 12.0);
+  aBB.Add(aCompound, aBoxMaker.Shape());
+  aBB.Add(aCompound, aCylMaker.Shape());
+
+  BRepGraph aGraph;
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes =
+    BRepGraph_Builder::Add(aGraph, aCompound);
+  ASSERT_TRUE(aGraph.IsDone());
+  ASSERT_TRUE(aGraph.ValidateReverseIndex());
+
+  // Remove an inner wire from the first face that owns more than one wire
+  // (or the only wire if all faces have a single wire).
+  for (BRepGraph_FaceIterator aFaceIt(aGraph); aFaceIt.More(); aFaceIt.Next())
+  {
+    const BRepGraph_FaceId aFaceId = aFaceIt.CurrentId();
+    const NCollection_DynamicArray<BRepGraph_WireRefId> aWireRefs =
+      BRepGraph_TestTools::WireRefsOfFace(aGraph, aFaceId);
+    if (aWireRefs.IsEmpty())
+      continue;
+    ASSERT_TRUE(aGraph.Editor().Faces().RemoveWire(aFaceId, aWireRefs.Value(0)));
+    break;
+  }
+  EXPECT_TRUE(aGraph.ValidateReverseIndex())
+    << "Reverse index inconsistent after RemoveWire";
+
+  // Remove the first face from the first shell.
+  const NCollection_DynamicArray<BRepGraph_FaceRefId> aFaceRefs =
+    BRepGraph_TestTools::FaceRefsOfShell(aGraph, BRepGraph_ShellId::Start());
+  ASSERT_GE(aFaceRefs.Length(), 1);
+  ASSERT_TRUE(aGraph.Editor().Shells().RemoveFace(BRepGraph_ShellId::Start(), aFaceRefs.Value(0)));
+  EXPECT_TRUE(aGraph.ValidateReverseIndex())
+    << "Reverse index inconsistent after RemoveFace";
+
+  // Remove the first shell from the first solid.
+  const NCollection_DynamicArray<BRepGraph_ShellRefId> aShellRefs =
+    BRepGraph_TestTools::ShellRefsOfSolid(aGraph, BRepGraph_SolidId::Start());
+  ASSERT_GE(aShellRefs.Length(), 1);
+  ASSERT_TRUE(
+    aGraph.Editor().Solids().RemoveShell(BRepGraph_SolidId::Start(), aShellRefs.Value(0)));
+  EXPECT_TRUE(aGraph.ValidateReverseIndex())
+    << "Reverse index inconsistent after RemoveShell";
+
+  EXPECT_TRUE(aGraph.Editor().ValidateMutationBoundary());
+}
+
+TEST(BRepGraphIncTest, ReverseIndex_BulkBuild_TwiceProducesEqualState)
+{
+  // Bulk Populate must be deterministic: building the same shape twice into
+  // independent storages must yield byte-equal reverse-index views as observed
+  // through the public per-entity accessors.
+  BRepPrimAPI_MakeBox aBoxMaker(7.0, 11.0, 13.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+
+  BRepGraphInc_Storage aStorageA;
+  BRepGraphInc_Storage aStorageB;
+  BRepGraphInc_Populate::Perform(aStorageA, aBox, false);
+  BRepGraphInc_Populate::Perform(aStorageB, aBox, false);
+  ASSERT_TRUE(aStorageA.GetIsDone());
+  ASSERT_TRUE(aStorageB.GetIsDone());
+  ASSERT_EQ(aStorageA.NbEdges(), aStorageB.NbEdges());
+
+  for (uint32_t anIdx = 0; anIdx < aStorageA.NbEdges(); ++anIdx)
+  {
+    const BRepGraph_EdgeId                                  anEdgeId(anIdx);
+    const NCollection_DynamicArray<BRepGraph_WireId>* aWiresA =
+      aStorageA.ReverseIndex().WiresOfEdge(anEdgeId);
+    const NCollection_DynamicArray<BRepGraph_WireId>* aWiresB =
+      aStorageB.ReverseIndex().WiresOfEdge(anEdgeId);
+    ASSERT_EQ(aWiresA == nullptr, aWiresB == nullptr);
+    if (aWiresA == nullptr)
+      continue;
+    ASSERT_EQ(aWiresA->Size(), aWiresB->Size());
+    for (size_t i = 0; i < aWiresA->Size(); ++i)
+      EXPECT_EQ(aWiresA->Value(i), aWiresB->Value(i));
+
+    const NCollection_DynamicArray<BRepGraph_FaceId>* aFacesA =
+      aStorageA.ReverseIndex().FacesOfEdge(anEdgeId);
+    const NCollection_DynamicArray<BRepGraph_FaceId>* aFacesB =
+      aStorageB.ReverseIndex().FacesOfEdge(anEdgeId);
+    ASSERT_EQ(aFacesA == nullptr, aFacesB == nullptr);
+    if (aFacesA == nullptr)
+      continue;
+    ASSERT_EQ(aFacesA->Size(), aFacesB->Size());
+    for (size_t i = 0; i < aFacesA->Size(); ++i)
+      EXPECT_EQ(aFacesA->Value(i), aFacesB->Value(i));
+  }
 }

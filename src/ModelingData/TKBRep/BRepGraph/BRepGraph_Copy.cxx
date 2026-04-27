@@ -137,6 +137,7 @@ struct CopyContext
   const BRepGraph&            Source;
   BRepGraph                   Result;
   bool                        CopyGeom;
+  bool                        CopyMesh;
   bool                        ReserveCache;
   DeferredCacheTransfers      Deferred;
   const BRepGraphInc_Storage* SrcStorage = nullptr;
@@ -156,8 +157,14 @@ struct CopyContext
   NCollection_DataMap<BRepGraph_OccurrenceId,    BRepGraph_OccurrenceId>    Occurrences;
   NCollection_DataMap<BRepGraph_OccurrenceRefId, BRepGraph_OccurrenceRefId> OccurrenceRefs;
 
-  explicit CopyContext(const BRepGraph& theSrc, bool theCopyGeom, bool theReserveCache)
-      : Source(theSrc), CopyGeom(theCopyGeom), ReserveCache(theReserveCache)
+  explicit CopyContext(const BRepGraph& theSrc,
+                       bool             theCopyGeom,
+                       bool             theCopyMesh,
+                       bool             theReserveCache)
+      : Source(theSrc),
+        CopyGeom(theCopyGeom),
+        CopyMesh(theCopyMesh),
+        ReserveCache(theReserveCache)
   {
   }
 };
@@ -281,10 +288,9 @@ BRepGraph_EdgeId ensureEdge(CopyContext& ctx, BRepGraph_EdgeId srcId)
     aNewStart, aNewEnd, aCurve, anEdge.ParamFirst, anEdge.ParamLast, anEdge.Tolerance);
   {
     BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aG = ctx.Result.Editor().Edges().Mut(aNewId);
-    aG.Internal().IsDegenerate  = anEdge.IsDegenerate;
-    aG.Internal().SameParameter = anEdge.SameParameter;
-    aG.Internal().SameRange     = anEdge.SameRange;
-    aG.MarkDirty();
+    ctx.Result.Editor().Edges().SetDegenerate(aG, anEdge.IsDegenerate);
+    ctx.Result.Editor().Edges().SetSameParameter(aG, anEdge.SameParameter);
+    ctx.Result.Editor().Edges().SetSameRange(aG, anEdge.SameRange);
   }
   ctx.Edges.Bind(srcId, aNewId);
   ctx.Deferred.DeferNode(ctx.Source, srcId, aNewId);
@@ -374,14 +380,17 @@ BRepGraph_FaceId ensureFace(CopyContext& ctx, BRepGraph_FaceId srcId)
     ctx.Result.Editor().Faces().Add(aSurf, anOuterWire, anInnerWires, aFace.Tolerance);
   {
     BRepGraph_MutGuard<BRepGraphInc::FaceDef> aG = ctx.Result.Editor().Faces().Mut(aNewId);
-    aG.Internal().NaturalRestriction = aFace.NaturalRestriction;
-    aG.Internal().TriangulationRepId = aFace.TriangulationRepId;
-    aG.MarkDirty();
+    ctx.Result.Editor().Faces().SetNaturalRestriction(aG, aFace.NaturalRestriction);
+    if (ctx.CopyMesh)
+      ctx.Result.Editor().Faces().SetTriangulationRep(aG, aFace.TriangulationRepId);
   }
 
-  const BRepGraph_MeshCache::FaceMeshEntry* aCached = ctx.Source.Mesh().Faces().CachedMesh(srcId);
-  if (aCached != nullptr)
-    ctx.DstMesh->ChangeFaceMesh(aNewId) = *aCached;
+  if (ctx.CopyMesh)
+  {
+    const BRepGraph_MeshCache::FaceMeshEntry* aCached = ctx.Source.Mesh().Faces().CachedMesh(srcId);
+    if (aCached != nullptr)
+      ctx.DstMesh->ChangeFaceMesh(aNewId) = *aCached;
+  }
 
   ctx.Faces.Bind(srcId, aNewId);
   ctx.Deferred.DeferNode(ctx.Source, srcId, aNewId);
@@ -405,8 +414,7 @@ BRepGraph_ShellId ensureShell(CopyContext& ctx, BRepGraph_ShellId srcId)
   const BRepGraph_ShellId       aNewId    = ctx.Result.Editor().Shells().Add();
   {
     BRepGraph_MutGuard<BRepGraphInc::ShellDef> aG = ctx.Result.Editor().Shells().Mut(aNewId);
-    aG.Internal().IsClosed = aShellDef.IsClosed;
-    aG.MarkDirty();
+    ctx.Result.Editor().Shells().SetIsClosed(aG, aShellDef.IsClosed);
   }
   ctx.Shells.Bind(srcId, aNewId);
   ctx.Deferred.DeferNode(ctx.Source, srcId, aNewId);
@@ -681,10 +689,9 @@ BRepGraph BRepGraph_Copy::Perform(const BRepGraph& theGraph, const bool theCopyG
 
     {
       BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aNewEdge = aResult.Editor().Edges().Mut(anEdgeId);
-      aNewEdge.Internal().IsDegenerate                   = anEdge.IsDegenerate;
-      aNewEdge.Internal().SameParameter                  = anEdge.SameParameter;
-      aNewEdge.Internal().SameRange                      = anEdge.SameRange;
-      aNewEdge.MarkDirty();
+      aResult.Editor().Edges().SetDegenerate(aNewEdge, anEdge.IsDegenerate);
+      aResult.Editor().Edges().SetSameParameter(aNewEdge, anEdge.SameParameter);
+      aResult.Editor().Edges().SetSameRange(aNewEdge, anEdge.SameRange);
     }
     aDeferred.DeferNode(theGraph, anEdgeId, anEdgeId);
   }
@@ -735,9 +742,8 @@ BRepGraph BRepGraph_Copy::Perform(const BRepGraph& theGraph, const bool theCopyG
 
     {
       BRepGraph_MutGuard<BRepGraphInc::FaceDef> aNewFace = aResult.Editor().Faces().Mut(aFaceId);
-      aNewFace.Internal().NaturalRestriction             = aFace.NaturalRestriction;
-      aNewFace.Internal().TriangulationRepId             = aFace.TriangulationRepId;
-      aNewFace.MarkDirty();
+      aResult.Editor().Faces().SetNaturalRestriction(aNewFace, aFace.NaturalRestriction);
+      aResult.Editor().Faces().SetTriangulationRep(aNewFace, aFace.TriangulationRepId);
     }
     // Copy cached mesh data if present.
     const BRepGraph_MeshCache::FaceMeshEntry* aCachedFace =
@@ -950,12 +956,13 @@ BRepGraph BRepGraph_Copy::Perform(const BRepGraph& theGraph, const bool theCopyG
 BRepGraph BRepGraph_Copy::CopyNode(const BRepGraph&       theGraph,
                                    const BRepGraph_NodeId theNodeId,
                                    const bool             theCopyGeom,
+                                   const bool             theCopyMesh,
                                    const bool             theReserveCache)
 {
   if (!theGraph.IsDone())
     return BRepGraph();
 
-  CopyContext ctx(theGraph, theCopyGeom, theReserveCache);
+  CopyContext ctx(theGraph, theCopyGeom, theCopyMesh, theReserveCache);
   ctx.SrcStorage = &theGraph.incStorage();
   ctx.DstStorage = &ctx.Result.incStorage();
   ctx.DstMesh    = &ctx.Result.meshCache();

@@ -1470,7 +1470,6 @@ void BRepGraph::EditorView::CoEdgeOps::SetPCurve(const BRepGraph_CoEdgeId       
   BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef> aCoEdge = myGraph->Editor().CoEdges().Mut(theCoEdge);
   aCoEdge.Internal().Curve2DRepId =
     theCurve2d.IsNull() ? BRepGraph_Curve2DRepId() : CreateCurve2DRep(theCurve2d);
-  aCoEdge.MarkDirty();
 }
 
 //=================================================================================================

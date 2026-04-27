@@ -29,6 +29,10 @@
 #include <BRepGraphInc_Reference.hxx>
 #include <BRepGraph_Transform.hxx>
 #include <BRepGraph_Builder.hxx>
+#include <BRepGraph_Iterator.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_CompSolid.hxx>
+#include <BRep_Builder.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <GProp_GProps.hxx>
 #include <OSD_Timer.hxx>
@@ -480,4 +484,118 @@ TEST(BRepGraph_TransformTest, TransformNode_VertexKind)
   EXPECT_NEAR(aTransPt.X(), anOrigPt.X() + 1.0, Precision::Confusion());
   EXPECT_NEAR(aTransPt.Y(), anOrigPt.Y() + 2.0, Precision::Confusion());
   EXPECT_NEAR(aTransPt.Z(), anOrigPt.Z() + 3.0, Precision::Confusion());
+}
+
+TEST(BRepGraph_TransformTest, TransformNode_CompoundKind)
+{
+  // ensureCompound must walk children, transform each, and preserve count.
+  BRep_Builder    aBB;
+  TopoDS_Compound aCompound;
+  aBB.MakeCompound(aCompound);
+  BRepPrimAPI_MakeBox aBox1(5.0, 5.0, 5.0);
+  BRepPrimAPI_MakeBox aBox2(3.0, 3.0, 3.0);
+  aBB.Add(aCompound, aBox1.Shape());
+  aBB.Add(aCompound, aBox2.Shape());
+
+  BRepGraph aGraph;
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes =
+    BRepGraph_Builder::Add(aGraph, aCompound);
+  ASSERT_TRUE(aGraph.IsDone());
+  ASSERT_GE(aGraph.Topo().Compounds().Nb(), 1);
+
+  const BRepGraph_CompoundId aCompoundId = BRepGraph_CompoundId::Start();
+  const BRepGraph_NodeId     aCompoundNode(BRepGraph_NodeId::Kind::Compound, aCompoundId.Index);
+
+  gp_Trsf aTrsf;
+  aTrsf.SetTranslation(gp_Vec(20.0, 0.0, 0.0));
+
+  BRepGraph aResult =
+    BRepGraph_Transform::TransformNode(aGraph, aCompoundNode, aTrsf, true, false);
+  ASSERT_TRUE(aResult.IsDone());
+
+  EXPECT_EQ(aResult.Topo().Compounds().Nb(), 1);
+  EXPECT_EQ(aResult.Topo().Solids().Nb(), aGraph.Topo().Solids().Nb());
+  EXPECT_EQ(aResult.Topo().Faces().Nb(), aGraph.Topo().Faces().Nb());
+
+  const int aNbV = aGraph.Topo().Vertices().Nb();
+  EXPECT_EQ(aResult.Topo().Vertices().Nb(), aNbV);
+  for (BRepGraph_VertexId aVId(0); aVId.IsValid(aNbV); ++aVId)
+  {
+    const gp_Pnt anOrig = BRepGraph_Tool::Vertex::Pnt(aGraph, aVId);
+    const gp_Pnt aTrans = BRepGraph_Tool::Vertex::Pnt(aResult, aVId);
+    EXPECT_NEAR(aTrans.X(), anOrig.X() + 20.0, Precision::Confusion());
+    EXPECT_NEAR(aTrans.Y(), anOrig.Y(), Precision::Confusion());
+  }
+}
+
+TEST(BRepGraph_TransformTest, TransformNode_CompSolidKind)
+{
+  // ensureCompSolid must walk solid refs and transform each.
+  BRep_Builder     aBB;
+  TopoDS_CompSolid aCompSolid;
+  aBB.MakeCompSolid(aCompSolid);
+  BRepPrimAPI_MakeBox aBoxMaker(4.0, 4.0, 4.0);
+  aBB.Add(aCompSolid, aBoxMaker.Shape());
+
+  BRepGraph aGraph;
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes =
+    BRepGraph_Builder::Add(aGraph, aCompSolid);
+  ASSERT_TRUE(aGraph.IsDone());
+  ASSERT_GE(aGraph.Topo().CompSolids().Nb(), 1);
+
+  const BRepGraph_CompSolidId aCompSolidId = BRepGraph_CompSolidId::Start();
+  const BRepGraph_NodeId      aCompSolidNode(BRepGraph_NodeId::Kind::CompSolid,
+                                        aCompSolidId.Index);
+
+  gp_Trsf aTrsf;
+  aTrsf.SetTranslation(gp_Vec(0.0, 0.0, 7.0));
+
+  BRepGraph aResult =
+    BRepGraph_Transform::TransformNode(aGraph, aCompSolidNode, aTrsf, true, false);
+  ASSERT_TRUE(aResult.IsDone());
+
+  EXPECT_EQ(aResult.Topo().CompSolids().Nb(), 1);
+  EXPECT_EQ(aResult.Topo().Solids().Nb(), aGraph.Topo().Solids().Nb());
+
+  const int aNbV = aGraph.Topo().Vertices().Nb();
+  for (BRepGraph_VertexId aVId(0); aVId.IsValid(aNbV); ++aVId)
+  {
+    const gp_Pnt anOrig = BRepGraph_Tool::Vertex::Pnt(aGraph, aVId);
+    const gp_Pnt aTrans = BRepGraph_Tool::Vertex::Pnt(aResult, aVId);
+    EXPECT_NEAR(aTrans.Z(), anOrig.Z() + 7.0, Precision::Confusion());
+  }
+}
+
+TEST(BRepGraph_TransformTest, TransformNode_NegativeScale_VertexPointsMirrored)
+{
+  // Smoke-tests the negative-scale geometry path through TransformNode: every
+  // vertex point should be mirrored about the origin and the result graph must
+  // remain coherent (same face/edge/vertex counts, valid IsDone).
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 10.0, 10.0);
+  BRepGraph           aGraph;
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes =
+    BRepGraph_Builder::Add(aGraph, aBoxMaker.Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+
+  const BRepGraph_SolidId aSolidId = BRepGraph_SolidId::Start();
+  const BRepGraph_NodeId  aSolidNode(BRepGraph_NodeId::Kind::Solid, aSolidId.Index);
+
+  gp_Trsf aTrsf;
+  aTrsf.SetMirror(gp_Pnt(0.0, 0.0, 0.0));
+
+  BRepGraph aResult =
+    BRepGraph_Transform::TransformNode(aGraph, aSolidNode, aTrsf, true, false);
+  ASSERT_TRUE(aResult.IsDone());
+  EXPECT_EQ(aResult.Topo().Faces().Nb(), aGraph.Topo().Faces().Nb());
+  EXPECT_EQ(aResult.Topo().Vertices().Nb(), aGraph.Topo().Vertices().Nb());
+
+  const int aNbV = aGraph.Topo().Vertices().Nb();
+  for (BRepGraph_VertexId aVId(0); aVId.IsValid(aNbV); ++aVId)
+  {
+    const gp_Pnt anOrig = BRepGraph_Tool::Vertex::Pnt(aGraph, aVId);
+    const gp_Pnt aTrans = BRepGraph_Tool::Vertex::Pnt(aResult, aVId);
+    EXPECT_NEAR(aTrans.X(), -anOrig.X(), Precision::Confusion());
+    EXPECT_NEAR(aTrans.Y(), -anOrig.Y(), Precision::Confusion());
+    EXPECT_NEAR(aTrans.Z(), -anOrig.Z(), Precision::Confusion());
+  }
 }
