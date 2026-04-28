@@ -13,6 +13,7 @@
 
 #include <BRepGraph.hxx>
 #include <BRepGraph_TopoView.hxx>
+#include <BRepGraph_Builder.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 
 #include <gtest/gtest.h>
@@ -57,12 +58,14 @@ TEST(BRepGraph_NodeIdTest, ImplicitConversion_PassToFunction)
 {
   // Typed ids work with existing APIs that take BRepGraph_NodeId.
   BRepGraph aGraph;
-  aGraph.Build(BRepPrimAPI_MakeBox(10, 20, 30).Shape());
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes1 =
+    BRepGraph_Builder::Add(aGraph, BRepPrimAPI_MakeBox(10, 20, 30).Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   BRepGraph_FaceId aFace(0);
   // AdjacentFaces takes BRepGraph_FaceId - typed id works directly.
-  NCollection_Vector<BRepGraph_FaceId> aAdj =
+  NCollection_DynamicArray<BRepGraph_FaceId> aAdj =
     aGraph.Topo().Faces().Adjacent(aFace, aGraph.Allocator());
   EXPECT_GT(aAdj.Length(), 0);
 }

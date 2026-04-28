@@ -14,20 +14,20 @@
 //! @file BOPDS_VectorOfInterfFF.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_Vector<BOPDS_InterfFF> directly instead.
+//!             Use NCollection_DynamicArray<BOPDS_InterfFF> directly instead.
 
 #ifndef _BOPDS_VectorOfInterfFF_hxx
 #define _BOPDS_VectorOfInterfFF_hxx
 
 #include <Standard_Macro.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <BOPDS_Interf.hxx>
 
 Standard_HEADER_DEPRECATED("BOPDS_VectorOfInterfFF.hxx is deprecated since OCCT 8.0.0. Use "
-                           "NCollection_Vector<BOPDS_InterfFF> directly.")
+                           "NCollection_DynamicArray<BOPDS_InterfFF> directly.")
 
   Standard_DEPRECATED(
-    "BOPDS_VectorOfInterfFF is deprecated, use NCollection_Vector<BOPDS_InterfFF> directly")
-typedef NCollection_Vector<BOPDS_InterfFF> BOPDS_VectorOfInterfFF;
+    "BOPDS_VectorOfInterfFF is deprecated, use NCollection_DynamicArray<BOPDS_InterfFF> directly")
+typedef NCollection_DynamicArray<BOPDS_InterfFF> BOPDS_VectorOfInterfFF;
 
 #endif // _BOPDS_VectorOfInterfFF_hxx

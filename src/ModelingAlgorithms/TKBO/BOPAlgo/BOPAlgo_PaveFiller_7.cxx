@@ -32,7 +32,7 @@
 #include <BOPDS_Pave.hxx>
 #include <BOPDS_PaveBlock.hxx>
 #include <BOPDS_ShapeInfo.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <BOPTools_AlgoTools.hxx>
 #include <BOPTools_AlgoTools2D.hxx>
 #include <BOPTools_Parallel.hxx>
@@ -160,7 +160,7 @@ protected:
 
 //
 //=======================================================================
-typedef NCollection_Vector<BOPAlgo_SplitEdge> BOPAlgo_VectorOfSplitEdge;
+typedef NCollection_DynamicArray<BOPAlgo_SplitEdge> BOPAlgo_VectorOfSplitEdge;
 
 //=================================================================================================
 
@@ -305,7 +305,7 @@ protected:
 
 //
 //=======================================================================
-typedef NCollection_Vector<BOPAlgo_MPC> BOPAlgo_VectorOfMPC;
+typedef NCollection_DynamicArray<BOPAlgo_MPC> BOPAlgo_VectorOfMPC;
 
 //=================================================================================================
 
@@ -356,13 +356,13 @@ private:
 };
 
 //=======================================================================
-typedef NCollection_Vector<BOPAlgo_BPC> BOPAlgo_VectorOfBPC;
+typedef NCollection_DynamicArray<BOPAlgo_BPC> BOPAlgo_VectorOfBPC;
 
 //=================================================================================================
 
 void BOPAlgo_PaveFiller::MakeSplitEdges(const Message_ProgressRange& theRange)
 {
-  NCollection_Vector<NCollection_List<occ::handle<BOPDS_PaveBlock>>>& aPBP =
+  NCollection_DynamicArray<NCollection_List<occ::handle<BOPDS_PaveBlock>>>& aPBP =
     myDS->ChangePaveBlocksPool();
   int                   aNbPBP = aPBP.Length();
   Message_ProgressScope aPSOuter(theRange, nullptr, 1);
@@ -585,7 +585,7 @@ void BOPAlgo_PaveFiller::MakePCurves(const Message_ProgressRange& theRange)
   BOPAlgo_VectorOfMPC                                      aVMPC;
   //
   // 1. Process Common Blocks
-  const NCollection_Vector<BOPDS_FaceInfo>& aFIP = myDS->FaceInfoPool();
+  const NCollection_DynamicArray<BOPDS_FaceInfo>& aFIP = myDS->FaceInfoPool();
   //
   aNbFI = aFIP.Length();
   for (i = 0; i < aNbFI; ++i)
@@ -692,14 +692,14 @@ void BOPAlgo_PaveFiller::MakePCurves(const Message_ProgressRange& theRange)
   if (bPCurveOnS[0] || bPCurveOnS[1])
   {
     // container to remember already added edge-face pairs
-    NCollection_Map<BOPDS_Pair>         anEFPairs;
-    NCollection_Vector<BOPDS_InterfFF>& aFFs = myDS->InterfFF();
-    aNbFF                                    = aFFs.Length();
+    NCollection_Map<BOPDS_Pair>               anEFPairs;
+    NCollection_DynamicArray<BOPDS_InterfFF>& aFFs = myDS->InterfFF();
+    aNbFF                                          = aFFs.Length();
     for (i = 0; i < aNbFF; ++i)
     {
-      const BOPDS_InterfFF&                  aFF  = aFFs(i);
-      const NCollection_Vector<BOPDS_Curve>& aVNC = aFF.Curves();
-      aNbC                                        = aVNC.Length();
+      const BOPDS_InterfFF&                        aFF  = aFFs(i);
+      const NCollection_DynamicArray<BOPDS_Curve>& aVNC = aFF.Curves();
+      aNbC                                              = aVNC.Length();
       if (aNbC == 0)
         continue;
       int nF[2];

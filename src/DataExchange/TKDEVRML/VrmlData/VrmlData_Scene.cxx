@@ -32,7 +32,7 @@
 #include <VrmlData_TextureCoordinate.hxx>
 #include <VrmlData_UnknownNode.hxx>
 // #include <VrmlData_WorldInfo.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <TopoDS.hxx>
 #include <TopExp_Explorer.hxx>
 #include <BRep_Builder.hxx>
@@ -825,10 +825,10 @@ VrmlData_ErrorStatus VrmlData_Scene::ReadArrIndex(VrmlData_InBuffer& theBuffer,
     else
     {
       theBuffer.LinePtr++;
-      NCollection_Vector<const int*> vecIndice;
-      NCollection_Vector<int>        vecInt;
-      bool                           isMore(true);
-      long                           anIntValue;
+      NCollection_DynamicArray<const int*> vecIndice;
+      NCollection_DynamicArray<int>        vecInt;
+      bool                                 isMore(true);
+      long                                 anIntValue;
 
       // Loop reading integers from the stream
       while (isMore && VrmlData_Node::OK(aStatus, ReadLine(theBuffer)))

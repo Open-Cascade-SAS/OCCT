@@ -31,7 +31,7 @@ Graphic3d_BvhCStructureSetTrsfPers::Graphic3d_BvhCStructureSetTrsfPers(
 
 int Graphic3d_BvhCStructureSetTrsfPers::Size() const
 {
-  return myStructs.Size();
+  return myStructs.Length();
 }
 
 //=================================================================================================
@@ -64,7 +64,7 @@ void Graphic3d_BvhCStructureSetTrsfPers::Swap(const int theIdx1, const int theId
 
 bool Graphic3d_BvhCStructureSetTrsfPers::Add(const Graphic3d_CStructure* theStruct)
 {
-  const int aSize = myStructs.Size();
+  const int aSize = myStructs.Length();
 
   if (myStructs.Add(theStruct) > aSize) // new structure?
   {
@@ -124,9 +124,9 @@ const opencascade::handle<BVH_Tree<double, 3>>& Graphic3d_BvhCStructureSetTrsfPe
     return myBVH;
   }
 
-  myStructBoxes.ReSize(myStructs.Size());
+  myStructBoxes.ReSize(myStructs.Length());
 
-  for (int aStructIdx = 1; aStructIdx <= myStructs.Size(); ++aStructIdx)
+  for (int aStructIdx = 1; aStructIdx <= myStructs.Length(); ++aStructIdx)
   {
     const Graphic3d_CStructure* aStructure = myStructs(aStructIdx);
 

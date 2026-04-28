@@ -220,8 +220,14 @@ public:
   //! Enables or disables IBL (Image Based Lighting) from background cubemap.
   //! Has no effect if PBR is not used.
   //! @param[in] theToEnableIBL enable or disable IBL from background cubemap
-  //! @param[in] theToUpdate redraw the view
   Standard_EXPORT void SetImageBasedLighting(bool theToEnableIBL) override;
+
+  //! Display a shader-rendered infinite grid on the given plane.
+  Standard_EXPORT void GridDisplay(const Aspect_GridParams& theParams,
+                                   const gp_Ax3&            thePlane) override;
+
+  //! Erase the shader-rendered infinite grid.
+  Standard_EXPORT void GridErase() override;
 
   //! Returns number of mipmap levels used in specular IBL map.
   //! 0 if PBR environment is not created.
@@ -424,6 +430,10 @@ protected: //! @name Rendering of GL graphics (with prepared drawing buffer).
   //! Renders frame statistics.
   void renderFrameStats();
 
+  //! Render the shader-based infinite grid.
+  //! No-op unless GridDisplay() has been called and the GAPI supports the grid shader.
+  void renderGrid();
+
 private:
   //! Adds the structure to display lists of the view.
   Standard_EXPORT void displayStructure(const occ::handle<Graphic3d_CStructure>& theStructure,
@@ -504,7 +514,7 @@ protected: //! @name Rendering properties
   GLint myFboColorFormat;                         //!< sized format for color attachments
                                                   // clang-format off
   GLint                      myFboDepthFormat;        //!< sized format for depth-stencil attachments
-  NCollection_Vector<int>        myFboOitColorConfig;     //!< selected color format configuration for OIT color attachments
+  NCollection_DynamicArray<int>        myFboOitColorConfig;     //!< selected color format configuration for OIT color attachments
   occ::handle<OpenGl_FrameBuffer> myMainSceneFbos[2];
   occ::handle<OpenGl_FrameBuffer> myMainSceneFbosOit[2];      //!< Additional buffers for transparent draw of main layer.
   occ::handle<OpenGl_FrameBuffer> myImmediateSceneFbos[2];    //!< Additional buffers for immediate layer in stereo mode.
@@ -529,6 +539,11 @@ protected: //! @name Background parameters
   OpenGl_Aspects*            myTextureParams;                     //!< Stores texture and its parameters for textured background
   OpenGl_Aspects*            myCubeMapParams;                     //!< Stores cubemap and its parameters for cubemap background
   OpenGl_Aspects*            myColoredQuadParams;                 //!< Stores parameters for gradient (corner mode) background
+  Aspect_GridParams          myGridParams;                        //!< parameters of shader infinite grid
+  gp_Ax3                     myGridPlane;                         //!< grid plane in world coordinates
+  NCollection_Mat4<float>    myGridRefViewMatrix;                 //!< worldview captured at GridDisplay() for pan/rotate compensation
+  unsigned int               myGridVao;                           //!< dedicated VAO for textureless grid draw
+  bool                       myToShowGrid;                        //!< flag indicating the grid is active
   OpenGl_BackgroundArray*    myBackgrounds[Graphic3d_TypeOfBackground_NB]; //!< Array of primitive arrays of different background types
                                                   // clang-format on
   occ::handle<OpenGl_TextureSet> myTextureEnv;

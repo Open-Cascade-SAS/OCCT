@@ -76,7 +76,7 @@ void OpenGl_Font::Release(OpenGl_Context* theCtx)
 size_t OpenGl_Font::EstimatedDataSize() const
 {
   size_t aSize = 0;
-  for (NCollection_Vector<occ::handle<OpenGl_Texture>>::Iterator aTexIter(myTextures);
+  for (NCollection_DynamicArray<occ::handle<OpenGl_Texture>>::Iterator aTexIter(myTextures);
        aTexIter.More();
        aTexIter.Next())
   {
@@ -135,7 +135,7 @@ bool OpenGl_Font::createTexture(const occ::handle<OpenGl_Context>& theCtx)
   aParams->SetFilter(Graphic3d_TOTF_BILINEAR);
   aParams->SetAnisoFilter(Graphic3d_LOTA_OFF);
 
-  myTextures.Append(new OpenGl_Texture(myKey + "_texture" + myTextures.Size(), aParams));
+  myTextures.Append(new OpenGl_Texture(myKey + "_texture" + myTextures.Length(), aParams));
   occ::handle<OpenGl_Texture>& aTexture = myTextures.ChangeLast();
 
   Image_PixMap aBlackImg;

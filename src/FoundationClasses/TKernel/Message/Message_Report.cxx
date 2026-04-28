@@ -213,7 +213,7 @@ void Message_Report::RemoveLevel(Message_Level* theLevel)
 {
   std::lock_guard<std::mutex> aLock(myMutex);
 
-  for (int aLevelIndex = myAlertLevels.Size(); aLevelIndex >= 1; aLevelIndex--)
+  for (int aLevelIndex = myAlertLevels.Length(); aLevelIndex >= 1; aLevelIndex--)
   {
     Message_Level* aLevel = myAlertLevels.Value(aLevelIndex);
     Message_AttributeMeter::StopAlert(aLevel->RootAlert());
@@ -448,7 +448,7 @@ void Message_Report::DumpJson(Standard_OStream& theOStream, int theDepth) const
     OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, myCompositAlerts.get())
   }
 
-  int anAlertLevels = myAlertLevels.Size();
+  int anAlertLevels = myAlertLevels.Length();
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, anAlertLevels)
 
   int anInc = 1;

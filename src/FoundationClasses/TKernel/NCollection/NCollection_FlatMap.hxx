@@ -192,7 +192,7 @@ public:
   }
 
   //! Constructor with initial capacity hint
-  explicit NCollection_FlatMap(const int theNbBuckets)
+  explicit NCollection_FlatMap(const size_t theNbBuckets)
       : mySlots(nullptr),
         myCapacity(0),
         mySize(0)
@@ -206,7 +206,7 @@ public:
   //! Constructor with custom hasher (copy).
   //! @param theHasher custom hasher instance
   //! @param theNbBuckets initial capacity hint
-  explicit NCollection_FlatMap(const Hasher& theHasher, const int theNbBuckets = 0)
+  explicit NCollection_FlatMap(const Hasher& theHasher, const size_t theNbBuckets = 0)
       : mySlots(nullptr),
         myCapacity(0),
         mySize(0),
@@ -221,7 +221,7 @@ public:
   //! Constructor with custom hasher (move).
   //! @param theHasher custom hasher instance (moved)
   //! @param theNbBuckets initial capacity hint
-  explicit NCollection_FlatMap(Hasher&& theHasher, const int theNbBuckets = 0)
+  explicit NCollection_FlatMap(Hasher&& theHasher, const size_t theNbBuckets = 0)
       : mySlots(nullptr),
         myCapacity(0),
         mySize(0),
@@ -330,11 +330,8 @@ public:
 public:
   // **************** Query methods ****************
 
-  //! Returns number of elements
-  int Size() const noexcept { return static_cast<int>(mySize); }
-
-  //! Returns number of elements
-  int Extent() const noexcept { return static_cast<int>(mySize); }
+  //! Returns number of elements.
+  size_t Size() const noexcept { return mySize; }
 
   //! Returns true if map is empty
   bool IsEmpty() const noexcept { return mySize == 0; }

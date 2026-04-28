@@ -367,9 +367,9 @@ bool Interface_InterfaceModel::SetReportEntity(const int                        
   }
   if (!thereports.IsBound(nm))
   {
-    int maxrep = thereports.NbBuckets();
-    if (thereports.Extent() > maxrep - 10)
-      thereports.ReSize(maxrep * 3 / 2);
+    const size_t aMaxRep = thereports.NbBuckets();
+    if (aMaxRep <= static_cast<size_t>(thereports.Extent() + 10))
+      thereports.ReSize(aMaxRep * 3 / 2);
   }
   if (nm <= 0)
     return false;
@@ -483,10 +483,10 @@ const occ::handle<Interface_Check>& Interface_InterfaceModel::Check(const int  n
 
 void Interface_InterfaceModel::Reservate(const int nbent)
 {
-  if (nbent > theentities.NbBuckets())
-    theentities.ReSize(nbent);
-  if (nbent < -thereports.NbBuckets())
-    thereports.ReSize(-nbent);
+  if (nbent > 0 && static_cast<size_t>(nbent) > theentities.NbBuckets())
+    theentities.ReSize(static_cast<size_t>(nbent));
+  if (nbent < 0 && static_cast<size_t>(-nbent) > thereports.NbBuckets())
+    thereports.ReSize(static_cast<size_t>(-nbent));
 }
 
 //=================================================================================================
@@ -501,9 +501,9 @@ void Interface_InterfaceModel::AddEntity(const occ::handle<Standard_Transient>& 
   {
     occ::handle<Interface_ReportEntity> rep = occ::down_cast<Interface_ReportEntity>(anentity);
     AddEntity(rep->Concerned());
-    int maxrep = thereports.NbBuckets();
-    if (thereports.Extent() > maxrep - 10)
-      thereports.ReSize(maxrep * 3 / 2);
+    const size_t aMaxRep = thereports.NbBuckets();
+    if (aMaxRep <= static_cast<size_t>(thereports.Extent() + 10))
+      thereports.ReSize(aMaxRep * 3 / 2);
     thereports.Bind(Number(rep->Concerned()), rep);
   }
 }

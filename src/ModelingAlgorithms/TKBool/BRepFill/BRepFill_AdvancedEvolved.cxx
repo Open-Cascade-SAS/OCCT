@@ -114,7 +114,7 @@ void BRepFill_AdvancedEvolved::GetSpineAndProfile(const TopoDS_Wire& theSpine,
   gp_Vec aN2;
   gp_Pnt aLoc;
 
-  for (int i = 1; i <= aMVEP.Size(); i++)
+  for (int i = 1; i <= aMVEP.Length(); i++)
   {
     const TopoDS_Vertex& aVC = TopoDS::Vertex(aMVEP.FindKey(i));
 
@@ -544,7 +544,7 @@ void BRepFill_AdvancedEvolved::GetLids()
   gp_Vec aTan;
 
   double aDPMax = 0.;
-  for (int i = 1; i <= aMapEF.Size(); i++)
+  for (int i = 1; i <= aMapEF.Length(); i++)
   {
     NCollection_List<TopoDS_Shape>& aListF = aMapEF(i);
 
@@ -618,7 +618,7 @@ void BRepFill_AdvancedEvolved::GetLids()
 
       bool isFound = false;
 
-      for (int i = 1; i <= aMapV.Size(); i++)
+      for (int i = 1; i <= aMapV.Length(); i++)
       {
         const TopoDS_Vertex aV = TopoDS::Vertex(aMapV.FindKey(i));
         const gp_XYZ        aP = BRep_Tool::Pnt(aV).XYZ();

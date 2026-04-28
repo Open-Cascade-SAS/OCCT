@@ -138,7 +138,7 @@ void BOPAlgo_PaveFiller::FindPaveBlocks(
   auto processPaveBlocks =
     [thePaveIndex, &theFoundBlocks](
       const NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>& thePaveBlocksMap) {
-      for (int aBlockIndex = 1; aBlockIndex <= thePaveBlocksMap.Size(); ++aBlockIndex)
+      for (int aBlockIndex = 1; aBlockIndex <= thePaveBlocksMap.Length(); ++aBlockIndex)
       {
         const occ::handle<BOPDS_PaveBlock>& aPaveBlock = thePaveBlocksMap(aBlockIndex);
         int                                 nV1, nV2;

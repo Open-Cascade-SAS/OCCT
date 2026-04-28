@@ -21,7 +21,7 @@
 #include <math_Matrix.hxx>
 #include <MathUtils_GaussKronrodWeights.hxx>
 
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 
 #include <cmath>
 #include <functional>
@@ -97,9 +97,9 @@ IntegResult GaussMultiple(Func&                     theFunc,
   }
 
   // Get Gauss points and weights for each variable
-  // Use NCollection_Vector since math_Vector has no default constructor
-  NCollection_Vector<math_Vector> aGaussPoints;
-  NCollection_Vector<math_Vector> aGaussWeights;
+  // Use NCollection_DynamicArray since math_Vector has no default constructor
+  NCollection_DynamicArray<math_Vector> aGaussPoints;
+  NCollection_DynamicArray<math_Vector> aGaussWeights;
 
   for (int i = 0; i < theNVars; ++i)
   {

@@ -231,7 +231,7 @@ void BOPAlgo_Builder::PerformInternal(const BOPAlgo_PaveFiller&    theFiller,
 BOPAlgo_Builder::NbShapes BOPAlgo_Builder::getNbShapes() const
 {
   NbShapes aCounter;
-  aCounter.NbVertices() = myDS->ShapesSD().Size();
+  aCounter.NbVertices() = myDS->ShapesSD().Length();
   for (int i = 0; i < myDS->NbSourceShapes(); ++i)
   {
     const BOPDS_ShapeInfo& aSI = myDS->ShapeInfo(i);

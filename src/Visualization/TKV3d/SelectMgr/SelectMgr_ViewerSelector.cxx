@@ -20,6 +20,8 @@
 #include <BVH_Tree.hxx>
 #include <gp_GTrsf.hxx>
 #include <gp_Pnt.hxx>
+#include <Graphic3d_Flipper.hxx>
+#include <Graphic3d_TransformUtils.hxx>
 #include <OSD_Environment.hxx>
 #include <Select3D_SensitiveEntity.hxx>
 #include <SelectBasics_PickResult.hxx>
@@ -199,7 +201,7 @@ void SelectMgr_ViewerSelector::SetPixelTolerance(const int theTolerance)
 
 void SelectMgr_ViewerSelector::Activate(const occ::handle<SelectMgr_Selection>& theSelection)
 {
-  for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
+  for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
          theSelection->Entities());
        aSelEntIter.More();
        aSelEntIter.Next())
@@ -219,7 +221,7 @@ void SelectMgr_ViewerSelector::Activate(const occ::handle<SelectMgr_Selection>& 
 
 void SelectMgr_ViewerSelector::Deactivate(const occ::handle<SelectMgr_Selection>& theSelection)
 {
-  for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
+  for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
          theSelection->Entities());
        aSelEntIter.More();
        aSelEntIter.Next())
@@ -410,6 +412,7 @@ void SelectMgr_ViewerSelector::traverseObject(
   }
 
   const bool hasEntityTrsfPers = anEntitySet->HasEntityWithPersistence() && !theCamera.IsNull();
+  const bool hasEntityFlipped  = anEntitySet->HasEntityWithFlipping();
   const opencascade::handle<BVH_Tree<double, 3>>& aSensitivesTree = anEntitySet->BVH();
   gp_GTrsf                                        aInversedTrsf;
   if (theObject->HasTransformation() || !theObject->TransformPersistence().IsNull())
@@ -440,7 +443,7 @@ void SelectMgr_ViewerSelector::traverseObject(
   SelectMgr_SelectingVolumeManager aMgr = aInversedTrsf.Form() != gp_Identity
                                             ? theMgr.ScaleAndTransform(1, aInversedTrsf, nullptr)
                                             : theMgr;
-  if (!hasEntityTrsfPers
+  if (!hasEntityTrsfPers && !hasEntityFlipped
       && !aMgr.OverlapsBox(aSensitivesTree->MinPoint(0), aSensitivesTree->MaxPoint(0)))
   {
     return;
@@ -528,10 +531,10 @@ void SelectMgr_ViewerSelector::traverseObject(
     {
       const int  aLeftChildIdx  = aSensitivesTree->Child<0>(aNode);
       const int  aRightChildIdx = aSensitivesTree->Child<1>(aNode);
-      const bool isLeftChildIn  = hasEntityTrsfPers
+      const bool isLeftChildIn  = hasEntityTrsfPers || hasEntityFlipped
                                  || aMgr.OverlapsBox(aSensitivesTree->MinPoint(aLeftChildIdx),
                                                      aSensitivesTree->MaxPoint(aLeftChildIdx));
-      const bool isRightChildIn = hasEntityTrsfPers
+      const bool isRightChildIn = hasEntityTrsfPers || hasEntityFlipped
                                   || aMgr.OverlapsBox(aSensitivesTree->MinPoint(aRightChildIdx),
                                                       aSensitivesTree->MaxPoint(aRightChildIdx));
       if (isLeftChildIn && isRightChildIn)
@@ -624,8 +627,32 @@ void SelectMgr_ViewerSelector::traverseObject(
             aInvSensTrsf = (aTPers * gp_GTrsf(theObject->Transformation())).Inverted();
           }
 
-          computeFrustum(anEnt, theMgr, aMgr, aInvSensTrsf, aScaledTrnsfFrustums, aTmpMgr);
-          checkOverlap(anEnt, aInvSensTrsf, aTmpMgr);
+          // Fold the object's Transformation() into the MV matrix passed to Flipper::Compute
+          // so that isReversedX/Y/Z agrees with OpenGl_Flipper::Render() which uses
+          // WorldView * ModelWorld. Without this, rotated objects near a flip boundary
+          // produce a different flip decision on the selection side than on the render side.
+          // TODO: group-level Graphic3d_Group::Transformation() is not available here
+          // (the sensitive entity does not carry a reference to its host group). For
+          // consumers that set a non-identity group trsf on the flipping group, the
+          // decision can still differ from render time near the flip boundary.
+          NCollection_Mat4<double> aMVForFlip = theWorldViewMat;
+          if (theObject->HasTransformation())
+          {
+            NCollection_Mat4<double> anObjTrsfMat;
+            Graphic3d_TransformUtils::Convert<double>(theObject->Transformation(), anObjTrsfMat);
+            aMVForFlip = theWorldViewMat * anObjTrsfMat;
+          }
+
+          gp_GTrsf aFlippingTrsf;
+          if (!anEnt->Flipper().IsNull())
+          {
+            const NCollection_Mat4<double> aMat = anEnt->Flipper()->Compute(aMVForFlip);
+            aFlippingTrsf.SetMat4(aMat);
+          }
+
+          gp_GTrsf aInvFlippingAndPers = aFlippingTrsf * aInvSensTrsf;
+          computeFrustum(anEnt, theMgr, aMgr, aInvFlippingAndPers, aScaledTrnsfFrustums, aTmpMgr);
+          checkOverlap(anEnt, aInvFlippingAndPers, aTmpMgr);
         }
       }
       if (aHead < 0)

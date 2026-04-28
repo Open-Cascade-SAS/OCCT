@@ -35,9 +35,11 @@ set(OCCT_TKGeomBase_GTests_FILES
   GC_MakeCircle2d_Test.cxx
   GC_MakeConicalSurface_Test.cxx
   GC_MakePlane_Test.cxx
+  GC_MakeParabola2d_Test.cxx
   GC_MakeSegment2d_Test.cxx
   GCPnts_AbscissaPoint_Test.cxx
   GeomConvert_CompCurveToBSplineCurve_Test.cxx
+  Geom2dConvert_CompCurveToBSplineCurve_Test.cxx
   GeomConvert_Test.cxx
   Hermit_Test.cxx
   IntAna_IntQuadQuad_Test.cxx

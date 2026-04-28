@@ -22,11 +22,11 @@
 //! for repeated access. Topology nodes are delegated to the incidence-table
 //! reconstruction backend, while Product / Occurrence nodes are assembled at
 //! the facade level using product-local roots and occurrence placement chains.
-//! Provides lookup from original Build()-time shapes back to their graph
+//! Provides lookup from original construction-time shapes back to their graph
 //! NodeIds via TShape pointer comparison. Shape() is the stable cached public
 //! route for repeated access; Reconstruct() forces a fresh rebuild with the
 //! same node-kind semantics and bypasses the persistent reconstructed-shape cache.
-//! Build() and Compact() clear the persistent reconstructed-shape cache.
+//! BRepGraph_Builder::Add() and Compact() clear the persistent reconstructed-shape cache.
 //! Obtained via BRepGraph::Shapes().
 class BRepGraph::ShapesView
 {
@@ -39,20 +39,25 @@ public:
   //! Product nodes are reconstructed in product-local coordinates.
   //! Occurrence nodes are reconstructed with cumulative occurrence placement.
   //! @param[in] theNode node identifier
-  //! @return corresponding TopoDS_Shape
+  //! @return corresponding TopoDS_Shape, or null shape for invalid/removed nodes
   [[nodiscard]] Standard_EXPORT TopoDS_Shape Shape(const BRepGraph_NodeId theNode) const;
 
-  //! Check if the node has an original shape from Build().
-  //! Nodes created programmatically through Builder().Add*() do not have an
-  //! original Build()/AppendFlattenedShape() shape.
+  //! Check if the node has an original shape from graph construction.
+  //! Editor-created and mutation-derived nodes have no original.
   //! @param[in] theNode node identifier
   //! @return true if an original shape exists
   [[nodiscard]] Standard_EXPORT bool HasOriginal(const BRepGraph_NodeId theNode) const;
 
-  //! Return the original TopoDS_Shape stored during Build().
+  //! Return a pointer to the original TopoDS_Shape stored during graph construction.
+  //! This is the non-throw lookup counterpart of OriginalOf().
   //! @param[in] theNode node identifier
-  //! @return reference to the exact TopoDS_Shape stored during Build() or
-  //!         AppendFlattenedShape()
+  //! @return pointer to original shape for an active node, or nullptr when absent/invalid/removed
+  [[nodiscard]] Standard_EXPORT const TopoDS_Shape* FindOriginal(
+    const BRepGraph_NodeId theNode) const;
+
+  //! Return the original TopoDS_Shape stored during graph construction.
+  //! @param[in] theNode node identifier
+  //! @return reference to the exact TopoDS_Shape stored during graph construction
   //! @exception Standard_ProgramError if no original shape exists
   [[nodiscard]] Standard_EXPORT const TopoDS_Shape& OriginalOf(
     const BRepGraph_NodeId theNode) const;
@@ -65,27 +70,27 @@ public:
   //! Product nodes are reconstructed in product-local coordinates.
   //! Occurrence nodes are reconstructed with cumulative occurrence placement.
   //! @param[in] theRoot definition node identifier
-  //! @return reconstructed shape
+  //! @return reconstructed shape, or null shape for invalid/removed nodes
   [[nodiscard]] Standard_EXPORT TopoDS_Shape Reconstruct(const BRepGraph_NodeId theRoot) const;
 
-  //! Look up the definition NodeId for a shape from the Build() input.
+  //! Look up the definition NodeId for a shape from graph construction input.
   //! Uses TShape pointer comparison (same semantics as IsSame()).
   //! Synthetic Product / Occurrence reconstructions are not given dedicated
-  //! TShape bindings, so lookup is only guaranteed for Build()-time topology.
+  //! TShape bindings, so lookup is only guaranteed for construction-time topology.
   //! Programmatically created Builder().Add*() nodes can still be located by
   //! UID or by direct iteration over Topo() definitions.
   //! @param[in] theShape shape to look up
-  //! @return node identifier, or invalid NodeId if the shape is not in the graph
+  //! @return active node identifier, or invalid NodeId if the shape is absent or removed
   [[nodiscard]] Standard_EXPORT BRepGraph_NodeId FindNode(const TopoDS_Shape& theShape) const;
 
-  //! Check if a shape is known to the graph (was part of the Build() input).
+  //! Check if a shape is known to the graph (was part of construction input).
   //! Uses TShape pointer comparison (same semantics as IsSame()).
   //! Synthetic Product / Occurrence reconstructions are not given dedicated
-  //! TShape bindings, so this is only guaranteed for Build()-time topology.
+  //! TShape bindings, so this is only guaranteed for construction-time topology.
   //! Programmatically created Builder().Add*() nodes can still be located by
   //! UID or by direct iteration over Topo() definitions.
   //! @param[in] theShape shape to check
-  //! @return true if the shape has a corresponding definition node
+  //! @return true if the shape has a corresponding active definition node
   [[nodiscard]] Standard_EXPORT bool HasNode(const TopoDS_Shape& theShape) const;
 
 private:

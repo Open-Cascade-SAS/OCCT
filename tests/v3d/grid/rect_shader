@@ -1,0 +1,29 @@
+puts "=================================================================="
+puts "0030979: classical vgrid -type rect now renders through the shader"
+puts "=================================================================="
+
+pload MODELING VISUALIZATION
+
+vclear
+vinit View1
+vaxo
+
+box b 1 2 3
+vdisplay b -dispMode 1
+vfit
+vzoom 0.2
+
+# Classical rectangular grid, routed through the infinite-grid shader:
+#   XStep/YStep map to Scale/ScaleY, RotationAngle rotates in-plane basis.
+vgrid -type rect -step 0.5 0.5 -rotAngle 0
+vdump $imagedir/${casename}_rect.png
+
+# Non-isotropic step (different X and Y spacing)
+vgrid -type rect -step 0.5 1.0
+vdump $imagedir/${casename}_rect_aniso.png
+
+# In-plane rotation
+vgrid -type rect -step 0.5 0.5 -rotAngle 0.5
+vdump $imagedir/${casename}_rect_rotated.png
+
+vgrid off

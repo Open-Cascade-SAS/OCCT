@@ -51,6 +51,7 @@
 #include <gp_Cylinder.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Sphere.hxx>
+#include <MathRoot_Brent.hxx>
 #include <math_Matrix.hxx>
 #include <math_Vector.hxx>
 
@@ -4210,6 +4211,10 @@ ComputationMethods::stCoeffsValue::stCoeffsValue(const gp_Cylinder& theCyl1,
   mC /= aA;
 }
 
+// Cyl-cyl-specific helper: constructed only by IntCyCy (see ~line 8495/8517)
+// and relies on cylinder-cylinder coefficient tables (ComputationMethods::
+// stCoeffsValue) for both SearchOnVBounds' Newton system and the analytical
+// CylCylComputeParameters evaluators used downstream.
 class WorkWithBoundaries
 {
 public:
@@ -4295,8 +4300,13 @@ public:
   // Returns UV-bounds of 2nd surface
   const Bnd_Box2d& UVS2() const { return myUVSurf2; }
 
+  // theU1Prev is the walker's previous U1 sample. Together with theU1 it
+  // forms the bracket across which the straddle on V_bound was detected and
+  // in which the V-boundary crossing is resolved by 1D branch-aware
+  // bisection on the analytical intersection curve.
   void AddBoundaryPoint(const occ::handle<IntPatch_WLine>& theWL,
                         const double                       theU1,
+                        const double                       theU1Prev,
                         const double                       theU1Min,
                         const double                       theU2,
                         const double                       theV1,
@@ -4318,17 +4328,6 @@ public:
                           Bnd_Range&         theOutBoxS2) const;
 
 protected:
-  // Solves equation (2) (see declaration of ComputationMethods class) in case,
-  // when V1 or V2 (is set by theSBType argument) is known (corresponds to the boundary
-  // and equal to theVzad) but U1 is unknown. Computation is made by numeric methods and
-  // requires initial values (theVInit, theInitU2 and theInitMainVar).
-  bool SearchOnVBounds(const SearchBoundType theSBType,
-                       const double          theVzad,
-                       const double          theVInit,
-                       const double          theInitU2,
-                       const double          theInitMainVar,
-                       double&               theMainVariableValue) const;
-
   const WorkWithBoundaries& operator=(const WorkWithBoundaries&);
 
 private:
@@ -5386,129 +5385,6 @@ bool ComputationMethods::CylCylComputeParameters(const double         theU1par,
   return true;
 }
 
-//=================================================================================================
-
-bool WorkWithBoundaries::SearchOnVBounds(const SearchBoundType theSBType,
-                                         const double          theVzad,
-                                         const double          theVInit,
-                                         const double          theInitU2,
-                                         const double          theInitMainVar,
-                                         double&               theMainVariableValue) const
-{
-  const int    aNbDim    = 3;
-  const double aMaxError = 4.0 * M_PI; // two periods
-
-  theMainVariableValue      = theInitMainVar;
-  const double aTol2        = 1.0e-18;
-  double       aMainVarPrev = theInitMainVar, aU2Prev = theInitU2, anOtherVar = theVInit;
-
-  // Structure of aMatr:
-  //   C_{1}*U_{1} & C_{2}*U_{2} & C_{3}*V_{*},
-  // where C_{1}, C_{2} and C_{3} are math_Vector.
-  math_Matrix aMatr(1, aNbDim, 1, aNbDim);
-
-  double anError     = RealLast();
-  double anErrorPrev = anError;
-  int    aNbIter     = 0;
-  do
-  {
-    if (++aNbIter > 1000)
-      return false;
-
-    const double aSinU1 = sin(aMainVarPrev), aCosU1 = cos(aMainVarPrev), aSinU2 = sin(aU2Prev),
-                 aCosU2 = cos(aU2Prev);
-
-    math_Vector aVecFreeMem = (myCoeffs.mVecA2 * aU2Prev + myCoeffs.mVecB2) * aSinU2
-                              - (myCoeffs.mVecB2 * aU2Prev - myCoeffs.mVecA2) * aCosU2
-                              + (myCoeffs.mVecA1 * aMainVarPrev + myCoeffs.mVecB1) * aSinU1
-                              - (myCoeffs.mVecB1 * aMainVarPrev - myCoeffs.mVecA1) * aCosU1
-                              + myCoeffs.mVecD;
-
-    math_Vector aMSum(1, 3);
-
-    switch (theSBType)
-    {
-      case SearchV1:
-        aMatr.SetCol(3, myCoeffs.mVecC2);
-        aMSum = myCoeffs.mVecC1 * theVzad;
-        aVecFreeMem -= aMSum;
-        aMSum += myCoeffs.mVecC2 * anOtherVar;
-        break;
-
-      case SearchV2:
-        aMatr.SetCol(3, myCoeffs.mVecC1);
-        aMSum = myCoeffs.mVecC2 * theVzad;
-        aVecFreeMem -= aMSum;
-        aMSum += myCoeffs.mVecC1 * anOtherVar;
-        break;
-
-      default:
-        return false;
-    }
-
-    aMatr.SetCol(1, myCoeffs.mVecA1 * aSinU1 - myCoeffs.mVecB1 * aCosU1);
-    aMatr.SetCol(2, myCoeffs.mVecA2 * aSinU2 - myCoeffs.mVecB2 * aCosU2);
-
-    double aDetMainSyst = aMatr.Determinant();
-
-    if (std::abs(aDetMainSyst) < aNulValue)
-    {
-      return false;
-    }
-
-    math_Matrix aM1(aMatr), aM2(aMatr), aM3(aMatr);
-    aM1.SetCol(1, aVecFreeMem);
-    aM2.SetCol(2, aVecFreeMem);
-    aM3.SetCol(3, aVecFreeMem);
-
-    const double aDetMainVar = aM1.Determinant();
-    const double aDetVar1    = aM2.Determinant();
-    const double aDetVar2    = aM3.Determinant();
-
-    double aDelta = aDetMainVar / aDetMainSyst - aMainVarPrev;
-
-    if (std::abs(aDelta) > aMaxError)
-      return false;
-
-    anError = aDelta * aDelta;
-    aMainVarPrev += aDelta;
-
-    ///
-    aDelta = aDetVar1 / aDetMainSyst - aU2Prev;
-
-    if (std::abs(aDelta) > aMaxError)
-      return false;
-
-    anError += aDelta * aDelta;
-    aU2Prev += aDelta;
-
-    ///
-    aDelta = aDetVar2 / aDetMainSyst - anOtherVar;
-    anError += aDelta * aDelta;
-    anOtherVar += aDelta;
-
-    if (anError > anErrorPrev)
-    { // Method diverges. Keep the best result
-      const double aSinU1Last = sin(aMainVarPrev), aCosU1Last = cos(aMainVarPrev),
-                   aSinU2Last = sin(aU2Prev), aCosU2Last = cos(aU2Prev);
-      aMSum -= (myCoeffs.mVecA1 * aCosU1Last + myCoeffs.mVecB1 * aSinU1Last
-                + myCoeffs.mVecA2 * aCosU2Last + myCoeffs.mVecB2 * aSinU2Last + myCoeffs.mVecD);
-      const double aSQNorm = aMSum.Norm2();
-      return (aSQNorm < aTol2);
-    }
-    else
-    {
-      theMainVariableValue = aMainVarPrev;
-    }
-
-    anErrorPrev = anError;
-  } while (anError > aTol2);
-
-  theMainVariableValue = aMainVarPrev;
-
-  return true;
-}
-
 //=======================================================================
 // function : InscribePoint
 // purpose  : If theFlForce==TRUE theUGiven will be changed forcefully
@@ -5859,6 +5735,7 @@ static bool AddPointIntoWL(const IntSurf_Quadric&                   theQuad1,
 //=======================================================================
 void WorkWithBoundaries::AddBoundaryPoint(const occ::handle<IntPatch_WLine>& theWL,
                                           const double                       theU1,
+                                          const double                       theU1Prev,
                                           const double                       theU1Min,
                                           const double                       theU2,
                                           const double                       theV1,
@@ -5883,6 +5760,65 @@ void WorkWithBoundaries::AddBoundaryPoint(const occ::handle<IntPatch_WLine>& the
 
   StPInfo aUVPoint[aSize];
 
+  // Branch-aware 1D root-finder for V(U1) = V_bound on the analytical
+  // intersection curve, used in place of the original rank-deficient 3x3
+  // Newton (SearchOnVBounds). The intersection curve is 1D in U1 on each
+  // arccos branch, so the correct numerical tool is a bracketed 1D root
+  // finder. We use MathRoot::Brent, which converges robustly even when the
+  // curve grazes V_bound at a near-tangent (two close crossings on opposite
+  // sides of a V-extremum) -- the configuration that makes the 3x3 Newton
+  // Jacobian rank-deficient. The only tolerance is Precision::PConfusion()
+  // (OCCT standard parametric equality) for termination on U.
+  struct VBoundDelta
+  {
+    const ComputationMethods::stCoeffsValue& Coeffs;
+    int                                      WLIndex;
+    bool                                     IsV1;
+    double                                   VBound;
+
+    bool Value(double theX, double& theF) const
+    {
+      double aU2 = 0.0, aV1 = 0.0, aV2 = 0.0;
+      if (!ComputationMethods::CylCylComputeParameters(theX, WLIndex, Coeffs, aU2, aV1, aV2))
+        return false;
+      theF = (IsV1 ? aV1 : aV2) - VBound;
+      return true;
+    }
+  };
+
+  auto findVBoundCrossing = [this, theWLIndex](const bool   theIsV1,
+                                               const double theVBound,
+                                               const double theULo,
+                                               const double theUHi,
+                                               double&      theU1Star) -> bool {
+    if (!(theULo < theUHi))
+      return false;
+    VBoundDelta aFunc{myCoeffs, theWLIndex, theIsV1, theVBound};
+    double      aFlo = 0.0, aFhi = 0.0;
+    if (!aFunc.Value(theULo, aFlo) || !aFunc.Value(theUHi, aFhi))
+      return false;
+    if (aFlo == 0.0)
+    {
+      theU1Star = theULo;
+      return true;
+    }
+    if (aFhi == 0.0)
+    {
+      theU1Star = theUHi;
+      return true;
+    }
+    if (aFlo * aFhi > 0.0)
+      return false; // no bracketed crossing
+
+    MathUtils::Config aCfg;
+    aCfg.XTolerance                    = Precision::PConfusion();
+    const MathUtils::ScalarResult aRes = MathRoot::Brent(aFunc, theULo, theUHi, aCfg);
+    if (aRes.Status != MathUtils::Status::OK || !aRes.Root.has_value())
+      return false;
+    theU1Star = *aRes.Root;
+    return true;
+  };
+
   for (int anIDSurf = 0; anIDSurf < 4; anIDSurf += 2)
   {
     const double aVf = (anIDSurf == 0) ? theV1 : theV2,
@@ -5902,16 +5838,12 @@ void WorkWithBoundaries::AddBoundaryPoint(const occ::handle<IntPatch_WLine>& the
         continue;
       }
 
-      // Segment [aVf, aVl] intersects at least one V-boundary (first or last)
-      //  (in general, case is possible, when aVf > aVl).
-
-      // Precise intersection point
-      const bool aRes = SearchOnVBounds(aTS,
-                                        anArrVzad[anIndex],
-                                        (anIDSurf == 0) ? theV2 : theV1,
-                                        theU2,
-                                        theU1,
-                                        aUVPoint[anIndex].myU1);
+      // Segment [aVf, aVl] intersects at least one V-boundary (first or last).
+      // Resolve the crossing by 1D bisection on the analytical curve.
+      const double aULo = std::min(theU1Prev, theU1);
+      const double aUHi = std::max(theU1Prev, theU1);
+      const bool   aRes =
+        findVBoundCrossing(aTS == SearchV1, anArrVzad[anIndex], aULo, aUHi, aUVPoint[anIndex].myU1);
 
       // aUVPoint[anIndex].myU1 is considered to be nearer to theU1 than
       // to theU1+/-Period
@@ -6432,8 +6364,6 @@ static void CriticalPointsComputing(const ComputationMethods::stCoeffsValue& the
     // Out of "while(theNbCritPointsMax > 0)" cycle.
     break;
   }
-
-  // Attention! Here theU1crit may be unsorted.
 }
 
 //=======================================================================
@@ -6657,10 +6587,9 @@ static IntPatch_ImpImpIntersection::IntStatus CyCyNoGeometric(
                                           Precision::Infinite(),
                                           Precision::Infinite()};
 
-  // This list of critical points is not full because it does not contain any points
-  // which intersection line goes through V-bounds of cylinders in.
-  // They are computed by numerical methods on - line (during algorithm working).
-  // The moment is caught, when intersection line goes through V-bounds of any cylinder.
+  // V-boundary points (both crossings and tangencies) are caught on-the-fly
+  // by the walker via AddBoundaryPoint; see the 1D branch-aware root-finder
+  // it uses in place of the rank-deficient 3x3 Newton SearchOnVBounds.
 
   int aNbCritPoints = aNbCritPointsMax;
   CriticalPointsComputing(anEquationCoeffs,
@@ -6743,7 +6672,8 @@ static IntPatch_ImpImpIntersection::IntStatus CyCyNoGeometric(
       }
 
       double anU1 = anUf, aMinCriticalParam = anUf;
-      bool   isFirst = true;
+      double anU1Prev = anUf;
+      bool   isFirst  = true;
 
       while (anU1 <= anUl)
       {
@@ -6974,6 +6904,7 @@ static IntPatch_ImpImpIntersection::IntStatus CyCyNoGeometric(
 
           theBW.AddBoundaryPoint(aWLine[i],
                                  anU1,
+                                 anU1Prev,
                                  aMinCriticalParam,
                                  aU2[i],
                                  aV1[i],
@@ -7098,6 +7029,7 @@ static IntPatch_ImpImpIntersection::IntStatus CyCyNoGeometric(
 
             theBW.AddBoundaryPoint(aWLine[i],
                                    anU1,
+                                   anU1Prev,
                                    aMinCriticalParam,
                                    aU2[i],
                                    aV1[i],
@@ -7326,7 +7258,8 @@ static IntPatch_ImpImpIntersection::IntStatus CyCyNoGeometric(
             aMinUexp     = std::min(aMinUexp, anUexpect[i]);
           }
 
-          anU1 = aMinUexp;
+          anU1Prev = anU1;
+          anU1     = aMinUexp;
         }
 
         if (Precision::PConfusion() >= (anUl - anU1))
@@ -7779,6 +7712,14 @@ IntPatch_ImpImpIntersection::IntStatus IntCyCy(
     {
       return IntPatch_ImpImpIntersection::IntStatus_OK;
     }
+
+    // Analytical handler declined: discard anything it may have appended
+    // or flipped so the numerical path starts from a clean output state.
+    isTheEmpty         = true;
+    isTheSameSurface   = false;
+    isTheMultiplePoint = false;
+    theSlin.Clear();
+    theSPnt.Clear();
   }
 
   // Here, intersection line is not an analytical curve(line, circle, ellipsis etc.)

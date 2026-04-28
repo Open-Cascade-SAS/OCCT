@@ -37,6 +37,7 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedMap.hxx>
 #include <NCollection_Map.hxx>
+#include <Precision.hxx>
 
 static TopAbs_ShapeEnum TypeToExplore(const int theDim);
 //

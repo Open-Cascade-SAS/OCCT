@@ -407,7 +407,7 @@ void SelectMgr_TriangularFrustum::Clear()
 //=================================================================================================
 
 void SelectMgr_TriangularFrustum::GetPlanes(
-  NCollection_Vector<NCollection_Vec4<double>>& thePlaneEquations) const
+  NCollection_DynamicArray<NCollection_Vec4<double>>& thePlaneEquations) const
 {
   NCollection_Vec4<double> aPlaneEquation;
   for (int aPlaneIdx = 0; aPlaneIdx < 5; ++aPlaneIdx)

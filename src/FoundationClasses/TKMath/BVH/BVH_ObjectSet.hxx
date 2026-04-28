@@ -27,7 +27,7 @@ class BVH_ObjectSet : public BVH_Set<T, N>
 {
 public:
   //! Type of array of geometric objects.
-  typedef NCollection_Vector<opencascade::handle<BVH_Object<T, N>>> BVH_ObjectList;
+  typedef NCollection_DynamicArray<opencascade::handle<BVH_Object<T, N>>> BVH_ObjectList;
 
 public:
   //! Creates new set of geometric objects.
@@ -56,7 +56,7 @@ public:
 
 public:
   //! Return total number of objects.
-  int Size() const override { return myObjects.Size(); }
+  int Size() const override { return myObjects.Length(); }
 
   //! Returns AABB of entire set of objects.
   using BVH_Set<T, N>::Box;

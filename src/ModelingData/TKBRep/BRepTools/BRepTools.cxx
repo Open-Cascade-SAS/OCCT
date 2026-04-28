@@ -979,7 +979,7 @@ bool BRepTools::LoadTriangulation(const TopoDS_Shape&                theShape,
     {
       const NCollection_List<occ::handle<Poly_Triangulation>>& aTriangulations =
         BRep_Tool::Triangulations(aFace, aDummyLoc);
-      if (theTriangulationIdx >= aTriangulations.Size())
+      if (theTriangulationIdx >= aTriangulations.Length())
       {
         // triangulation index is out of range
         continue;
@@ -1067,7 +1067,7 @@ bool BRepTools::UnloadTriangulation(const TopoDS_Shape& theShape, const int theT
       int                                                      aTriangulationIdx = 0;
       const NCollection_List<occ::handle<Poly_Triangulation>>& aTriangulations =
         BRep_Tool::Triangulations(aFace, aDummyLoc);
-      if (theTriangulationIdx >= aTriangulations.Size())
+      if (theTriangulationIdx >= aTriangulations.Length())
       {
         // triangulation index is out of range
         continue;
@@ -1138,7 +1138,7 @@ bool BRepTools::ActivateTriangulation(const TopoDS_Shape& theShape,
     int                aTriangulationIdx = theTriangulationIdx;
     const NCollection_List<occ::handle<Poly_Triangulation>>& aTriangulations =
       BRep_Tool::Triangulations(aFace, aDummyLoc);
-    const int aTriangulationsNb = aTriangulations.Size();
+    const int aTriangulationsNb = aTriangulations.Length();
     if (theTriangulationIdx >= aTriangulationsNb)
     {
       // triangulation index is out of range

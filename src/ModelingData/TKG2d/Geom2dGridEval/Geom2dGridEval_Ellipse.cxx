@@ -27,7 +27,7 @@ NCollection_Array1<gp_Pnt2d> Geom2dGridEval_Ellipse::EvaluateGrid(
     return NCollection_Array1<gp_Pnt2d>();
   }
 
-  const int                    aNb = theParams.Size();
+  const int                    aNb = theParams.Length();
   NCollection_Array1<gp_Pnt2d> aResult(1, aNb);
 
   const gp_Elips2d& anElips = myGeom->Elips2d();
@@ -68,7 +68,7 @@ NCollection_Array1<Geom2dGridEval::CurveD1> Geom2dGridEval_Ellipse::EvaluateGrid
     return NCollection_Array1<Geom2dGridEval::CurveD1>();
   }
 
-  const int                                   aNb = theParams.Size();
+  const int                                   aNb = theParams.Length();
   NCollection_Array1<Geom2dGridEval::CurveD1> aResult(1, aNb);
 
   const gp_Elips2d& anElips = myGeom->Elips2d();
@@ -112,7 +112,7 @@ NCollection_Array1<Geom2dGridEval::CurveD2> Geom2dGridEval_Ellipse::EvaluateGrid
     return NCollection_Array1<Geom2dGridEval::CurveD2>();
   }
 
-  const int                                   aNb = theParams.Size();
+  const int                                   aNb = theParams.Length();
   NCollection_Array1<Geom2dGridEval::CurveD2> aResult(1, aNb);
 
   const gp_Elips2d& anElips = myGeom->Elips2d();
@@ -158,7 +158,7 @@ NCollection_Array1<Geom2dGridEval::CurveD3> Geom2dGridEval_Ellipse::EvaluateGrid
     return NCollection_Array1<Geom2dGridEval::CurveD3>();
   }
 
-  const int                                   aNb = theParams.Size();
+  const int                                   aNb = theParams.Length();
   NCollection_Array1<Geom2dGridEval::CurveD3> aResult(1, aNb);
 
   const gp_Elips2d& anElips = myGeom->Elips2d();
@@ -207,7 +207,7 @@ NCollection_Array1<gp_Vec2d> Geom2dGridEval_Ellipse::EvaluateGridDN(
     return NCollection_Array1<gp_Vec2d>();
   }
 
-  const int                    aNb = theParams.Size();
+  const int                    aNb = theParams.Length();
   NCollection_Array1<gp_Vec2d> aResult(1, aNb);
 
   const gp_Elips2d& anElips = myGeom->Elips2d();

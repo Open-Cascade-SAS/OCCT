@@ -244,7 +244,7 @@ void Graphic3d_StructureManager::UnIdentification(Graphic3d_CView* theView)
 {
   if (myDefinedViews.Contains(theView))
   {
-    myDefinedViews.Swap(myDefinedViews.FindIndex(theView), myDefinedViews.Size());
+    myDefinedViews.Swap(myDefinedViews.FindIndex(theView), myDefinedViews.Length());
     myDefinedViews.RemoveLast();
     myViewGenId.Free(theView->Identification());
   }

@@ -87,7 +87,7 @@ void Poly_MergeNodesTool::MergedNodesMap::SetMergeTolerance(double theTolerance)
 
 inline size_t Poly_MergeNodesTool::MergedNodesMap::vec3iHashCode(
   const Poly_MergeNodesTool::MergedNodesMap::CellVec3i& theVec,
-  const int                                             theUpper)
+  const size_t                                          theUpper)
 {
   // copied from NCollection_CellFilter
   constexpr uint64_t aShiftBits = (CHAR_BIT * sizeof(int64_t) - 1) / 3;
@@ -102,7 +102,7 @@ inline size_t Poly_MergeNodesTool::MergedNodesMap::vec3iHashCode(
 
 inline size_t Poly_MergeNodesTool::MergedNodesMap::hashCode(const NCollection_Vec3<float>& thePos,
                                                             const NCollection_Vec3<float>& theNorm,
-                                                            const int theUpper) const
+                                                            const size_t theUpper) const
 {
   (void)theNorm;
   if (myInvTol <= 0.0f)
@@ -240,12 +240,12 @@ inline void Poly_MergeNodesTool::MergedNodesMap::ReSize(const int theSize)
 {
   NCollection_ListNode** aNewData   = nullptr;
   NCollection_ListNode** aDummy     = nullptr;
-  int                    aNbNewBuck = 0;
-  if (BeginResize(theSize, aNbNewBuck, aNewData, aDummy))
+  size_t                 aNbNewBuck = 0;
+  if (BeginResize(static_cast<size_t>(theSize < 0 ? 0 : theSize), aNbNewBuck, aNewData, aDummy))
   {
     if (DataMapNode** anOldData = (DataMapNode**)myData1)
     {
-      for (int anOldBuckIter = 0; anOldBuckIter <= NbBuckets(); ++anOldBuckIter)
+      for (size_t anOldBuckIter = 0; anOldBuckIter <= NbBuckets(); ++anOldBuckIter)
       {
         for (DataMapNode* anOldNodeIter = anOldData[anOldBuckIter]; anOldNodeIter != nullptr;)
         {
@@ -257,7 +257,7 @@ inline void Poly_MergeNodesTool::MergedNodesMap::ReSize(const int theSize)
         }
       }
     }
-    EndResize(theSize, aNbNewBuck, aNewData, aDummy);
+    EndResize(static_cast<size_t>(theSize < 0 ? 0 : theSize), aNbNewBuck, aNewData, aDummy);
   }
 }
 

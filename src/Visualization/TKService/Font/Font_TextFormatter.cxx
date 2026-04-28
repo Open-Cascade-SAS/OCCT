@@ -26,10 +26,10 @@ namespace
 typedef NCollection_Vec2<float> Vec2f;
 
 //! Auxiliary function to translate corners by the vector.
-inline void move(NCollection_Vector<Vec2f>& theCorners,
-                 const Vec2f&               theMoveVec,
-                 int                        theCharLower,
-                 const int                  theCharUpper)
+inline void move(NCollection_DynamicArray<Vec2f>& theCorners,
+                 const Vec2f&                     theMoveVec,
+                 int                              theCharLower,
+                 const int                        theCharUpper)
 {
   for (; theCharLower <= theCharUpper; ++theCharLower)
   {
@@ -38,10 +38,10 @@ inline void move(NCollection_Vector<Vec2f>& theCorners,
 }
 
 //! Auxiliary function to translate corners in vertical direction.
-inline void moveY(NCollection_Vector<Vec2f>& theCorners,
-                  const float                theMoveVec,
-                  int                        theCharLower,
-                  const int                  theCharUpper)
+inline void moveY(NCollection_DynamicArray<Vec2f>& theCorners,
+                  const float                      theMoveVec,
+                  int                              theCharLower,
+                  const int                        theCharUpper)
 {
   for (; theCharLower <= theCharUpper; ++theCharLower)
   {
@@ -230,12 +230,12 @@ void Font_TextFormatter::Format()
     }
     else
     {
-      for (int aLineIt = 0; aLineIt < myNewLines.Size(); aLineIt++)
+      for (int aLineIt = 0; aLineIt < myNewLines.Length(); aLineIt++)
       {
         aMaxLineWidth = std::max(aMaxLineWidth, LineWidth(aLineIt));
       }
       // clang-format off
-      aMaxLineWidth = std::max(aMaxLineWidth, LineWidth (myNewLines.Size())); // processing the last line also
+      aMaxLineWidth = std::max(aMaxLineWidth, LineWidth (myNewLines.Length())); // processing the last line also
       // clang-format on
     }
   }
@@ -316,7 +316,7 @@ void Font_TextFormatter::Format()
 
 bool Font_TextFormatter::GlyphBoundingBox(const int theIndex, Font_Rect& theBndBox) const
 {
-  if (theIndex < 0 || theIndex >= Corners().Size())
+  if (theIndex < 0 || theIndex >= Corners().Length())
   {
     return false;
   }

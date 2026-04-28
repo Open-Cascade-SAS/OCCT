@@ -1,0 +1,26 @@
+puts "=================================================="
+puts "0030979: Visualization - shader-based infinite grid"
+puts "Perspective projection"
+puts "=================================================="
+
+pload MODELING VISUALIZATION
+
+vclear
+vinit View1
+vaxo
+
+box b 1 2 3
+vdisplay b -dispMode 1
+
+vcamera -persp
+vfit
+vzoom 0.1
+
+vgrid -type inf
+vdump $imagedir/${casename}_0.png
+
+vgrid off
+vgrid -type inf -background 1 -drawAxis 0 -color 0 0 1 -origin 1 1 -inf 1 -lineThickness 0.05
+vdump $imagedir/${casename}_1.png
+
+vgrid off

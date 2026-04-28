@@ -138,8 +138,8 @@ void Transfer_ProcessForTransient::Clean()
 
 void Transfer_ProcessForTransient::Resize(const int nb)
 {
-  if (nb > themap.NbBuckets())
-    themap.ReSize(nb);
+  if (static_cast<size_t>(nb) > themap.NbBuckets())
+    themap.ReSize(static_cast<size_t>(nb));
 }
 
 //=================================================================================================

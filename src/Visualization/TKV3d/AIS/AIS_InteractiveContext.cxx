@@ -2933,7 +2933,7 @@ AIS_StatusOfPick AIS_InteractiveContext::Select(
   const AIS_SelectionScheme                                     theSelScheme)
 {
   NCollection_IndexedMap<occ::handle<SelectMgr_EntityOwner>> aSelOwnerMap(
-    myAutoHilight ? mySelection->Objects().Size() : 0);
+    myAutoHilight ? mySelection->Objects().Length() : 0);
   if (myAutoHilight)
   {
     clearDynamicHighlight();
@@ -3515,7 +3515,7 @@ void AIS_InteractiveContext::EntityOwners(
       continue;
     }
 
-    for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
+    for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
            aSel->Entities());
          aSelEntIter.More();
          aSelEntIter.Next())

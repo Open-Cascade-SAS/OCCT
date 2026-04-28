@@ -173,7 +173,7 @@ void BOPAlgo_PaveFiller::UpdateCommonBlocksWithSDVertices()
   }
   int aNbPBP;
   //
-  NCollection_Vector<NCollection_List<occ::handle<BOPDS_PaveBlock>>>& aPBP =
+  NCollection_DynamicArray<NCollection_List<occ::handle<BOPDS_PaveBlock>>>& aPBP =
     myDS->ChangePaveBlocksPool();
   aNbPBP = aPBP.Length();
   if (!aNbPBP)
@@ -219,7 +219,7 @@ namespace
 //=================================================================================================
 
 template <class InterfType>
-void UpdateIntfsWithSDVertices(BOPDS_PDS theDS, NCollection_Vector<InterfType>& theInterfs)
+void UpdateIntfsWithSDVertices(BOPDS_PDS theDS, NCollection_DynamicArray<InterfType>& theInterfs)
 {
   for (int i = 0; i < theInterfs.Length(); i++)
   {

@@ -130,6 +130,9 @@ public:
     load(theCurve, theUFirst, theULast);
   }
 
+  //! Returns true if the adaptor has been loaded with a curve.
+  bool IsInitialized() const { return !myCurve.IsNull(); }
+
   const occ::handle<Geom2d_Curve>& Curve() const { return myCurve; }
 
   double FirstParameter() const override { return myFirst; }

@@ -145,14 +145,14 @@ occ::handle<Poly_Triangulation> RWObj_TriangulationReader::GetTriangulation()
 
   occ::handle<Poly_Triangulation> aPoly =
     new Poly_Triangulation(myNodes.Length(), myTriangles.Length(), hasUV);
-  for (int aNodeIter = 0; aNodeIter < myNodes.Size(); ++aNodeIter)
+  for (int aNodeIter = 0; aNodeIter < myNodes.Length(); ++aNodeIter)
   {
     const gp_Pnt& aNode = myNodes.Value(aNodeIter);
     aPoly->SetNode(aNodeIter + 1, aNode);
   }
   if (hasUV)
   {
-    for (int aNodeIter = 0; aNodeIter < myNodes.Size(); ++aNodeIter)
+    for (int aNodeIter = 0; aNodeIter < myNodes.Length(); ++aNodeIter)
     {
       const NCollection_Vec2<float>& aNode = myNodesUV.Value(aNodeIter);
       aPoly->SetUVNode(aNodeIter + 1, gp_Pnt2d(aNode.x(), aNode.y()));
@@ -162,7 +162,7 @@ occ::handle<Poly_Triangulation> RWObj_TriangulationReader::GetTriangulation()
   {
     aPoly->AddNormals();
     int aNbInvalid = 0;
-    for (int aNodeIter = 0; aNodeIter < myNodes.Size(); ++aNodeIter)
+    for (int aNodeIter = 0; aNodeIter < myNodes.Length(); ++aNodeIter)
     {
       const NCollection_Vec3<float>& aNorm = myNormals.Value(aNodeIter);
       const float                    aMod2 = aNorm.SquareModulus();
@@ -182,7 +182,7 @@ occ::handle<Poly_Triangulation> RWObj_TriangulationReader::GetTriangulation()
     }
   }
 
-  for (int aTriIter = 0; aTriIter < myTriangles.Size(); ++aTriIter)
+  for (int aTriIter = 0; aTriIter < myTriangles.Length(); ++aTriIter)
   {
     aPoly->SetTriangle(aTriIter + 1, myTriangles[aTriIter]);
   }

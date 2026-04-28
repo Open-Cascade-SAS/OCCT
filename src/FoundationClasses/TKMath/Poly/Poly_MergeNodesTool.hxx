@@ -279,15 +279,15 @@ private:
     //! Hash code for integer vec3.
     Standard_EXPORT static size_t vec3iHashCode(
       const Poly_MergeNodesTool::MergedNodesMap::CellVec3i& theVec,
-      const int                                             theUpper);
+      const size_t                                          theUpper);
 
     //! Compute hash code.
     Standard_EXPORT size_t hashCode(const NCollection_Vec3<float>& thePos,
                                     const NCollection_Vec3<float>& theNorm,
-                                    const int                      theUpper) const;
+                                    const size_t                   theUpper) const;
 
     //! Compute hash code.
-    size_t hashCode(const Vec3AndNormal& theKey, const int theUpper) const
+    size_t hashCode(const Vec3AndNormal& theKey, const size_t theUpper) const
     {
       return hashCode(theKey.Pos, theKey.Norm, theUpper);
     }

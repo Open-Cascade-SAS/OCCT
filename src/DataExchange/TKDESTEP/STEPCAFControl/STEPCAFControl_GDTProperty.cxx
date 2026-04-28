@@ -238,13 +238,13 @@ occ::handle<StepVisual_ComplexTriangulatedSurfaceSet> GenerateComplexTriangulate
 occ::handle<StepVisual_TessellatedCurveSet> GenerateTessellatedCurveSet(
   const TopoDS_Shape& theShape)
 {
-  NCollection_Handle<NCollection_Vector<occ::handle<NCollection_HSequence<int>>>> aLineStrips =
-    new NCollection_Vector<occ::handle<NCollection_HSequence<int>>>;
+  NCollection_Handle<NCollection_DynamicArray<occ::handle<NCollection_HSequence<int>>>>
+    aLineStrips = new NCollection_DynamicArray<occ::handle<NCollection_HSequence<int>>>;
   // Temporary contanier for points. We need points in NCollection_HArray1<gp_XYZ> type of
   // container, however in order to create it we need to know it's size.
   // Currently number of points is unknown, so we will put all the points in a
   // temporary container and then just copy them after all edges will be processed.
-  NCollection_Vector<gp_XYZ> aTmpPointsContainer;
+  NCollection_DynamicArray<gp_XYZ> aTmpPointsContainer;
   for (TopExp_Explorer aCurveIt(theShape, TopAbs_EDGE); aCurveIt.More(); aCurveIt.Next())
   {
     // Find out type of edge curve
@@ -262,7 +262,7 @@ occ::handle<StepVisual_TessellatedCurveSet> GenerateTessellatedCurveSet(
            aVertIt.Next())
       {
         aTmpPointsContainer.Append(BRep_Tool::Pnt(TopoDS::Vertex(aVertIt.Current())).XYZ());
-        aCurrentCurve->Append(aTmpPointsContainer.Size());
+        aCurrentCurve->Append(aTmpPointsContainer.Length());
       }
     }
     else // BSpline
@@ -273,7 +273,7 @@ occ::handle<StepVisual_TessellatedCurveSet> GenerateTessellatedCurveSet(
       for (int aPoleIndex = 1; aPoleIndex <= aBSCurve->NbPoles(); ++aPoleIndex)
       {
         aTmpPointsContainer.Append(aBSCurve->Pole(aPoleIndex).XYZ());
-        aCurrentCurve->Append(aTmpPointsContainer.Size());
+        aCurrentCurve->Append(aTmpPointsContainer.Length());
       }
     }
     aLineStrips->Append(aCurrentCurve);
@@ -285,8 +285,8 @@ occ::handle<StepVisual_TessellatedCurveSet> GenerateTessellatedCurveSet(
   }
 
   occ::handle<NCollection_HArray1<gp_XYZ>> aPoints =
-    new NCollection_HArray1<gp_XYZ>(1, aTmpPointsContainer.Size());
-  for (int aPointIndex = 1; aPointIndex <= aPoints->Size(); ++aPointIndex)
+    new NCollection_HArray1<gp_XYZ>(1, aTmpPointsContainer.Length());
+  for (int aPointIndex = 1; aPointIndex <= aPoints->Length(); ++aPointIndex)
   {
     aPoints->SetValue(aPointIndex, aTmpPointsContainer.Value(aPointIndex - 1));
   }

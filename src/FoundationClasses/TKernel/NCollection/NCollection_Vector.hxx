@@ -16,12 +16,13 @@
 #ifndef NCollection_Vector_HeaderFile
 #define NCollection_Vector_HeaderFile
 
+#include <Standard_Macro.hxx>
 #include <NCollection_DynamicArray.hxx>
 
+Standard_HEADER_DEPRECATED("NCollection_Vector.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_DynamicArray.hxx directly.");
+
 //! Class NCollection_Vector (dynamic array of objects)
-//!
-//! This class is similar to NCollection_Vector though the indices always start
-//! at 0 (in Array1 the first index must be specified)
 //!
 //! The Vector is always created with 0 length. It can be enlarged by two means:
 //!  1. Calling the method Append (val) - then "val" is added to the end of the
@@ -40,6 +41,7 @@
 //! at index 0 and stops at the index equal to (remembered_length-1). It is OK
 //! to enlarge the vector during the iteration.
 template <class TheItemType>
-using NCollection_Vector = NCollection_DynamicArray<TheItemType>;
+using NCollection_Vector = NCollection_DynamicArray<TheItemType> Standard_DEPRECATED(
+  "NCollection_Vector is deprecated, use NCollection_DynamicArray directly");
 
 #endif // NCollection_Vector_HeaderFile

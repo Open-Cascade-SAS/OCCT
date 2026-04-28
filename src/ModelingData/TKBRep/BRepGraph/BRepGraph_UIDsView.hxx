@@ -22,52 +22,50 @@ class Standard_GUID;
 //! @brief Read-only view for persistent unique identifiers.
 //!
 //! UIDs are (Kind, Counter) pairs that persist across graph mutations
-//! (Compact, node removal). Each UID is assigned exactly once and never
-//! reused. Counters are monotonic and independent of vector indices,
-//! so UIDs survive Compact() index remapping. Only Build() resets
-//! counters (new generation). The Generation field enables stale-reference
-//! detection when a graph is rebuilt.
-//! Provides bidirectional NodeId/UID resolution.
-//! Obtained via BRepGraph::UIDs().
+//! (Compact, node removal). Counters are monotonic and independent of vector
+//! indices. Clear() starts a new graph generation and refreshes the graph
+//! GUID, enabling stale-reference detection when a graph is rebuilt.
+//! Provides bidirectional NodeId/UID resolution. Obtained via BRepGraph::UIDs().
 class BRepGraph::UIDsView
 {
 public:
   //! Return the UID assigned to a node.
   //! @param[in] theNode node identifier
-  //! @return UID for the node, or invalid UID if theNode is out of bounds
+  //! @return UID for the active node, or invalid UID if theNode is out of bounds or removed
   [[nodiscard]] Standard_EXPORT BRepGraph_UID Of(const BRepGraph_NodeId theNode) const;
 
   //! Return the RefUID assigned to a reference.
   //! @param[in] theRefId reference identifier
-  //! @return RefUID for the reference, or invalid RefUID if theRefId is out of bounds
+  //! @return RefUID for the active reference, or invalid RefUID if theRefId is out of bounds or
+  //! removed
   [[nodiscard]] Standard_EXPORT BRepGraph_RefUID Of(const BRepGraph_RefId theRefId) const;
 
   //! Resolve a UID back to a NodeId using the internal reverse index.
   //! @param[in] theUID unique identifier to resolve
-  //! @return corresponding NodeId, or invalid NodeId if not found
+  //! @return corresponding active NodeId, or invalid NodeId if not found/removed
   [[nodiscard]] Standard_EXPORT BRepGraph_NodeId NodeIdFrom(const BRepGraph_UID& theUID) const;
 
   //! Resolve a RefUID back to a RefId using the internal reverse index.
   //! @param[in] theUID unique reference identifier to resolve
-  //! @return corresponding RefId, or invalid RefId if not found
+  //! @return corresponding active RefId, or invalid RefId if not found/removed
   [[nodiscard]] Standard_EXPORT BRepGraph_RefId RefIdFrom(const BRepGraph_RefUID& theUID) const;
 
   //! Check if a UID is valid and exists in this graph generation.
   //! @param[in] theUID unique identifier to check
-  //! @return true if the UID belongs to this graph generation
+  //! @return true if the UID resolves to an active node in this graph generation
   [[nodiscard]] Standard_EXPORT bool Has(const BRepGraph_UID& theUID) const;
 
   //! Check if a RefUID is valid and exists in this graph generation.
   //! @param[in] theUID unique reference identifier to check
-  //! @return true if the RefUID belongs to this graph generation
+  //! @return true if the RefUID resolves to an active reference in this graph generation
   [[nodiscard]] Standard_EXPORT bool Has(const BRepGraph_RefUID& theUID) const;
 
-  //! Return the current generation counter (incremented on each Build).
+  //! Return the current generation counter (incremented on each BRepGraph::Clear()).
   //! @return graph generation number
   [[nodiscard]] Standard_EXPORT uint32_t Generation() const;
 
   //! Return the graph-level identity GUID.
-  //! Generated randomly at Build() time; changes on each rebuild.
+  //! Generated randomly at BRepGraph::Clear() time; changes on each rebuild.
   //! @return reference to the graph identity GUID
   [[nodiscard]] Standard_EXPORT const Standard_GUID& GraphGUID() const;
 

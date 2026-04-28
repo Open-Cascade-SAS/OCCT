@@ -12,15 +12,16 @@
 // commercial license or contractual agreement.
 
 #include <BRepGraph.hxx>
+#include <BRepGraph_EditorView.hxx>
 #include <BRepGraphInc_Definition.hxx>
 #include <BRepGraphInc_Reference.hxx>
 #include <BRepGraphInc_Representation.hxx>
-#include <BRepGraph_BuilderView.hxx>
 #include <BRepGraph_History.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include "BRepGraph_RefTestTools.hxx"
+#include <BRepGraph_Builder.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <Standard_Failure.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <gp_Pnt.hxx>
@@ -33,7 +34,9 @@ protected:
   void SetUp() override
   {
     BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
-    myGraph.Build(aBoxMaker.Shape());
+    myGraph.Clear();
+    [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes1 =
+      BRepGraph_Builder::Add(myGraph, aBoxMaker.Shape());
   }
 
   BRepGraph myGraph;
@@ -50,24 +53,24 @@ TEST_F(BRepGraph_HistoryTest, FindOriginal_ChainABC_ReturnsA)
   BRepGraph_NodeId       anEdge1;
   BRepGraph_NodeId       anEdge2;
 
-  myGraph.Builder().ApplyModification(
+  myGraph.Editor().Gen().ApplyModification(
     anEdge0,
     [&](BRepGraph& theGraph,
-        BRepGraph_NodeId /*theTarget*/) -> NCollection_Vector<BRepGraph_NodeId> {
+        BRepGraph_NodeId /*theTarget*/) -> NCollection_DynamicArray<BRepGraph_NodeId> {
       // Simulate producing a new edge node at index NbEdgeDefs.
       anEdge1 = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, theGraph.Topo().Edges().Nb());
-      NCollection_Vector<BRepGraph_NodeId> aResult;
+      NCollection_DynamicArray<BRepGraph_NodeId> aResult;
       aResult.Append(anEdge1);
       return aResult;
     },
     "Step1");
 
-  myGraph.Builder().ApplyModification(
+  myGraph.Editor().Gen().ApplyModification(
     anEdge1,
     [&](BRepGraph& theGraph,
-        BRepGraph_NodeId /*theTarget*/) -> NCollection_Vector<BRepGraph_NodeId> {
+        BRepGraph_NodeId /*theTarget*/) -> NCollection_DynamicArray<BRepGraph_NodeId> {
       anEdge2 = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, theGraph.Topo().Edges().Nb());
-      NCollection_Vector<BRepGraph_NodeId> aResult;
+      NCollection_DynamicArray<BRepGraph_NodeId> aResult;
       aResult.Append(anEdge2);
       return aResult;
     },
@@ -84,29 +87,30 @@ TEST_F(BRepGraph_HistoryTest, FindDerived_ChainABC_ContainsBAndC)
   BRepGraph_NodeId       anEdge1;
   BRepGraph_NodeId       anEdge2;
 
-  myGraph.Builder().ApplyModification(
+  myGraph.Editor().Gen().ApplyModification(
     anEdge0,
-    [&](BRepGraph& theGraph, BRepGraph_NodeId) -> NCollection_Vector<BRepGraph_NodeId> {
+    [&](BRepGraph& theGraph, BRepGraph_NodeId) -> NCollection_DynamicArray<BRepGraph_NodeId> {
       anEdge1 = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, theGraph.Topo().Edges().Nb());
-      NCollection_Vector<BRepGraph_NodeId> aResult;
+      NCollection_DynamicArray<BRepGraph_NodeId> aResult;
       aResult.Append(anEdge1);
       return aResult;
     },
     "Step1");
 
-  myGraph.Builder().ApplyModification(
+  myGraph.Editor().Gen().ApplyModification(
     anEdge1,
-    [&](BRepGraph& theGraph, BRepGraph_NodeId) -> NCollection_Vector<BRepGraph_NodeId> {
+    [&](BRepGraph& theGraph, BRepGraph_NodeId) -> NCollection_DynamicArray<BRepGraph_NodeId> {
       anEdge2 = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, theGraph.Topo().Edges().Nb());
-      NCollection_Vector<BRepGraph_NodeId> aResult;
+      NCollection_DynamicArray<BRepGraph_NodeId> aResult;
       aResult.Append(anEdge2);
       return aResult;
     },
     "Step2");
 
-  const NCollection_Vector<BRepGraph_NodeId> aDerived = myGraph.History().FindDerived(anEdge0);
-  bool                                       hasEdge1 = false;
-  bool                                       hasEdge2 = false;
+  const NCollection_DynamicArray<BRepGraph_NodeId> aDerived =
+    myGraph.History().FindDerived(anEdge0);
+  bool hasEdge1 = false;
+  bool hasEdge2 = false;
   for (const BRepGraph_NodeId& aDerivedId : aDerived)
   {
     if (aDerivedId == anEdge1)
@@ -129,18 +133,18 @@ TEST_F(BRepGraph_HistoryTest, FindOriginal_UnmodifiedNode_ReturnsSelf)
 
 TEST_F(BRepGraph_HistoryTest, FindDerived_UnmodifiedNode_ReturnsEmpty)
 {
-  const BRepGraph_NodeId                     aFace(BRepGraph_NodeId::Kind::Face, 0);
-  const NCollection_Vector<BRepGraph_NodeId> aDerived = myGraph.History().FindDerived(aFace);
+  const BRepGraph_NodeId                           aFace(BRepGraph_NodeId::Kind::Face, 0);
+  const NCollection_DynamicArray<BRepGraph_NodeId> aDerived = myGraph.History().FindDerived(aFace);
   EXPECT_EQ(aDerived.Length(), 0);
 }
 
 TEST_F(BRepGraph_HistoryTest, Disabled_RecordHistory_NoRecordStored)
 {
-  const int aNbBefore = myGraph.History().NbRecords();
+  const size_t aNbBefore = myGraph.History().NbRecords();
   myGraph.History().SetEnabled(false);
 
-  const BRepGraph_NodeId               anEdge0(BRepGraph_NodeId::Kind::Edge, 0);
-  NCollection_Vector<BRepGraph_NodeId> aReplacements;
+  const BRepGraph_NodeId                     anEdge0(BRepGraph_NodeId::Kind::Edge, 0);
+  NCollection_DynamicArray<BRepGraph_NodeId> aReplacements;
   aReplacements.Append(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, 1));
   myGraph.History().Record("Disabled", anEdge0, aReplacements);
 
@@ -153,11 +157,11 @@ TEST_F(BRepGraph_HistoryTest, Disabled_ApplyModification_ModifierStillRuns)
   bool aModifierRan = false;
 
   const BRepGraph_NodeId anEdge0(BRepGraph_NodeId::Kind::Edge, 0);
-  myGraph.Builder().ApplyModification(
+  myGraph.Editor().Gen().ApplyModification(
     anEdge0,
-    [&](BRepGraph&, BRepGraph_NodeId) -> NCollection_Vector<BRepGraph_NodeId> {
+    [&](BRepGraph&, BRepGraph_NodeId) -> NCollection_DynamicArray<BRepGraph_NodeId> {
       aModifierRan = true;
-      return NCollection_Vector<BRepGraph_NodeId>();
+      return NCollection_DynamicArray<BRepGraph_NodeId>();
     },
     "DisabledOp");
 
@@ -172,9 +176,9 @@ TEST_F(BRepGraph_HistoryTest, ReEnabled_RecordsAfterReEnable)
   myGraph.History().SetEnabled(true);
   EXPECT_TRUE(myGraph.History().IsEnabled());
 
-  const int                            aNbBefore = myGraph.History().NbRecords();
-  const BRepGraph_NodeId               anEdge0(BRepGraph_NodeId::Kind::Edge, 0);
-  NCollection_Vector<BRepGraph_NodeId> aReplacements;
+  const size_t                               aNbBefore = myGraph.History().NbRecords();
+  const BRepGraph_NodeId                     anEdge0(BRepGraph_NodeId::Kind::Edge, 0);
+  NCollection_DynamicArray<BRepGraph_NodeId> aReplacements;
   aReplacements.Append(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, 1));
   myGraph.History().Record("ReEnabled", anEdge0, aReplacements);
 
@@ -184,12 +188,12 @@ TEST_F(BRepGraph_HistoryTest, ReEnabled_RecordsAfterReEnable)
 TEST_F(BRepGraph_HistoryTest, ApplyModification_EmptyReplacements)
 {
   const BRepGraph_NodeId anEdge0(BRepGraph_NodeId::Kind::Edge, 0);
-  const int              aNbBefore = myGraph.History().NbRecords();
+  const size_t           aNbBefore = myGraph.History().NbRecords();
 
-  myGraph.Builder().ApplyModification(
+  myGraph.Editor().Gen().ApplyModification(
     anEdge0,
-    [](BRepGraph&, BRepGraph_NodeId) -> NCollection_Vector<BRepGraph_NodeId> {
-      return NCollection_Vector<BRepGraph_NodeId>();
+    [](BRepGraph&, BRepGraph_NodeId) -> NCollection_DynamicArray<BRepGraph_NodeId> {
+      return NCollection_DynamicArray<BRepGraph_NodeId>();
     },
     "Delete");
 
@@ -204,22 +208,23 @@ TEST_F(BRepGraph_HistoryTest, ApplyModification_MultipleReplacements)
   BRepGraph_NodeId       aNew1;
   BRepGraph_NodeId       aNew2;
 
-  myGraph.Builder().ApplyModification(
+  myGraph.Editor().Gen().ApplyModification(
     anEdge0,
-    [&](BRepGraph& theGraph, BRepGraph_NodeId) -> NCollection_Vector<BRepGraph_NodeId> {
+    [&](BRepGraph& theGraph, BRepGraph_NodeId) -> NCollection_DynamicArray<BRepGraph_NodeId> {
       const int aBase = theGraph.Topo().Edges().Nb();
       aNew1           = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, aBase);
       aNew2           = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, aBase + 1);
-      NCollection_Vector<BRepGraph_NodeId> aResult;
+      NCollection_DynamicArray<BRepGraph_NodeId> aResult;
       aResult.Append(aNew1);
       aResult.Append(aNew2);
       return aResult;
     },
     "Split");
 
-  const NCollection_Vector<BRepGraph_NodeId> aDerived = myGraph.History().FindDerived(anEdge0);
-  bool                                       hasNew1  = false;
-  bool                                       hasNew2  = false;
+  const NCollection_DynamicArray<BRepGraph_NodeId> aDerived =
+    myGraph.History().FindDerived(anEdge0);
+  bool hasNew1 = false;
+  bool hasNew2 = false;
   for (const BRepGraph_NodeId& aDerivedId : aDerived)
   {
     if (aDerivedId == aNew1)
@@ -233,9 +238,9 @@ TEST_F(BRepGraph_HistoryTest, ApplyModification_MultipleReplacements)
 
 TEST_F(BRepGraph_HistoryTest, RecordHistory_EmptyReplacements_Stored)
 {
-  const int                            aNbBefore = myGraph.History().NbRecords();
-  const BRepGraph_NodeId               anEdge0(BRepGraph_NodeId::Kind::Edge, 0);
-  NCollection_Vector<BRepGraph_NodeId> anEmpty;
+  const size_t                               aNbBefore = myGraph.History().NbRecords();
+  const BRepGraph_NodeId                     anEdge0(BRepGraph_NodeId::Kind::Edge, 0);
+  NCollection_DynamicArray<BRepGraph_NodeId> anEmpty;
   myGraph.History().Record("Erase", anEdge0, anEmpty);
 
   EXPECT_EQ(myGraph.History().NbRecords(), aNbBefore + 1);
@@ -247,15 +252,15 @@ TEST_F(BRepGraph_HistoryTest, HistoryRecord_SequenceNumber_Monotonic)
   const BRepGraph_NodeId anEdge1(BRepGraph_NodeId::Kind::Edge, 1);
   const BRepGraph_NodeId anEdge2(BRepGraph_NodeId::Kind::Edge, 2);
 
-  NCollection_Vector<BRepGraph_NodeId> aRepl;
+  NCollection_DynamicArray<BRepGraph_NodeId> aRepl;
   aRepl.Append(anEdge1);
   myGraph.History().Record("Op1", anEdge0, aRepl);
 
-  NCollection_Vector<BRepGraph_NodeId> aRepl2;
+  NCollection_DynamicArray<BRepGraph_NodeId> aRepl2;
   aRepl2.Append(anEdge2);
   myGraph.History().Record("Op2", anEdge1, aRepl2);
 
-  const int aNb = myGraph.History().NbRecords();
+  const size_t aNb = myGraph.History().NbRecords();
   ASSERT_GE(aNb, 2);
   const BRepGraph_HistoryRecord& aRec1 = myGraph.History().Record(aNb - 2);
   const BRepGraph_HistoryRecord& aRec2 = myGraph.History().Record(aNb - 1);
@@ -264,8 +269,8 @@ TEST_F(BRepGraph_HistoryTest, HistoryRecord_SequenceNumber_Monotonic)
 
 TEST_F(BRepGraph_HistoryTest, HistoryRecord_OperationName_Stored)
 {
-  const BRepGraph_NodeId               anEdge0(BRepGraph_NodeId::Kind::Edge, 0);
-  NCollection_Vector<BRepGraph_NodeId> aRepl;
+  const BRepGraph_NodeId                     anEdge0(BRepGraph_NodeId::Kind::Edge, 0);
+  NCollection_DynamicArray<BRepGraph_NodeId> aRepl;
   aRepl.Append(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, 1));
   myGraph.History().Record("MyCustomOp", anEdge0, aRepl);
 
@@ -275,10 +280,10 @@ TEST_F(BRepGraph_HistoryTest, HistoryRecord_OperationName_Stored)
 
 TEST_F(BRepGraph_HistoryTest, NbHistoryRecords_AfterMultipleOps_Correct)
 {
-  const int aNbBefore = myGraph.History().NbRecords();
+  const size_t aNbBefore = myGraph.History().NbRecords();
 
-  const BRepGraph_NodeId               anEdge0(BRepGraph_NodeId::Kind::Edge, 0);
-  NCollection_Vector<BRepGraph_NodeId> aRepl;
+  const BRepGraph_NodeId                     anEdge0(BRepGraph_NodeId::Kind::Edge, 0);
+  NCollection_DynamicArray<BRepGraph_NodeId> aRepl;
   aRepl.Append(BRepGraph_NodeId(BRepGraph_NodeId::Kind::Edge, 1));
 
   myGraph.History().Record("A", anEdge0, aRepl);
@@ -294,21 +299,21 @@ TEST_F(BRepGraph_HistoryTest, FindOriginal_TwoApply_TransitiveTrace)
   BRepGraph_NodeId       aVtx1;
   BRepGraph_NodeId       aVtx2;
 
-  myGraph.Builder().ApplyModification(
+  myGraph.Editor().Gen().ApplyModification(
     aVtx0,
-    [&](BRepGraph& theGraph, BRepGraph_NodeId) -> NCollection_Vector<BRepGraph_NodeId> {
+    [&](BRepGraph& theGraph, BRepGraph_NodeId) -> NCollection_DynamicArray<BRepGraph_NodeId> {
       aVtx1 = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Vertex, theGraph.Topo().Vertices().Nb());
-      NCollection_Vector<BRepGraph_NodeId> aResult;
+      NCollection_DynamicArray<BRepGraph_NodeId> aResult;
       aResult.Append(aVtx1);
       return aResult;
     },
     "Move1");
 
-  myGraph.Builder().ApplyModification(
+  myGraph.Editor().Gen().ApplyModification(
     aVtx1,
-    [&](BRepGraph& theGraph, BRepGraph_NodeId) -> NCollection_Vector<BRepGraph_NodeId> {
+    [&](BRepGraph& theGraph, BRepGraph_NodeId) -> NCollection_DynamicArray<BRepGraph_NodeId> {
       aVtx2 = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Vertex, theGraph.Topo().Vertices().Nb());
-      NCollection_Vector<BRepGraph_NodeId> aResult;
+      NCollection_DynamicArray<BRepGraph_NodeId> aResult;
       aResult.Append(aVtx2);
       return aResult;
     },
@@ -327,14 +332,14 @@ TEST_F(BRepGraph_HistoryTest, FindOriginal_TwoApply_TransitiveTrace)
 
 TEST_F(BRepGraph_HistoryTest, ApplyModification_WhenModifierThrows_DoesNotRecordHistory)
 {
-  const int aNbRecordsBefore = myGraph.History().NbRecords();
+  const size_t aNbRecordsBefore = myGraph.History().NbRecords();
 
   const BRepGraph_NodeId anEdge(BRepGraph_NodeId::Kind::Edge, 0);
 
 #if !defined(No_Exception)
-  EXPECT_THROW(myGraph.Builder().ApplyModification(
+  EXPECT_THROW(myGraph.Editor().Gen().ApplyModification(
                  anEdge,
-                 [](BRepGraph&, BRepGraph_NodeId) -> NCollection_Vector<BRepGraph_NodeId> {
+                 [](BRepGraph&, BRepGraph_NodeId) -> NCollection_DynamicArray<BRepGraph_NodeId> {
                    throw Standard_Failure("Synthetic failure");
                  },
                  "ThrowingModification"),
@@ -349,29 +354,28 @@ TEST_F(BRepGraph_HistoryTest, SplitEdge_RewritesAllContainingWires)
   ASSERT_GT(myGraph.Topo().Edges().Nb(), 0);
 
   const BRepGraph_EdgeId       anEdgeId(0);
-  const BRepGraphInc::EdgeDef& anEdgeDef =
-    myGraph.Topo().Edges().Definition(BRepGraph_EdgeId(anEdgeId.Index));
+  const BRepGraphInc::EdgeDef& anEdgeDef = myGraph.Topo().Edges().Definition(anEdgeId);
 
   const double aSplitParam = 0.5 * (anEdgeDef.ParamFirst + anEdgeDef.ParamLast);
 
   const int                aNbVerticesBefore = myGraph.Topo().Vertices().Nb();
   const gp_Pnt             aSplitPoint(1.0, 2.0, 3.0);
-  const BRepGraph_VertexId aSplitVertex = myGraph.Builder().AddVertex(aSplitPoint, 1.0e-7);
+  const BRepGraph_VertexId aSplitVertex = myGraph.Editor().Vertices().Add(aSplitPoint, 1.0e-7);
 
   ASSERT_TRUE(aSplitVertex.IsValid());
   EXPECT_EQ(myGraph.Topo().Vertices().Nb(), aNbVerticesBefore + 1);
 
-  const NCollection_Vector<BRepGraph_WireId>& aWireIndices =
-    myGraph.Topo().Edges().Wires(BRepGraph_EdgeId(anEdgeId.Index));
+  const NCollection_DynamicArray<BRepGraph_WireId>& aWireIndices =
+    myGraph.Topo().Edges().Wires(anEdgeId);
   ASSERT_GT(aWireIndices.Length(), 0);
 
-  const int aNbEdgesBefore       = myGraph.Topo().Edges().Nb();
-  const int aNbActiveEdgesBefore = myGraph.Topo().Edges().NbActive();
+  const uint32_t aNbEdgesBefore       = myGraph.Topo().Edges().Nb();
+  const uint32_t aNbActiveEdgesBefore = myGraph.Topo().Edges().NbActive();
 
   BRepGraph_EdgeId aSubA;
   BRepGraph_EdgeId aSubB;
 
-  myGraph.Builder().SplitEdge(anEdgeId, aSplitVertex, aSplitParam, aSubA, aSubB);
+  myGraph.Editor().Edges().Split(anEdgeId, aSplitVertex, aSplitParam, aSubA, aSubB);
 
   ASSERT_TRUE(aSubA.IsValid());
   ASSERT_TRUE(aSubB.IsValid());
@@ -380,7 +384,7 @@ TEST_F(BRepGraph_HistoryTest, SplitEdge_RewritesAllContainingWires)
 
   for (const BRepGraph_WireId& aWireId : aWireIndices)
   {
-    const NCollection_Vector<BRepGraph_CoEdgeRefId> aCoEdgeRefs =
+    const NCollection_DynamicArray<BRepGraph_CoEdgeRefId> aCoEdgeRefs =
       BRepGraph_TestTools::CoEdgeRefsOfWire(myGraph, aWireId);
 
     bool hasOld   = false;
@@ -424,16 +428,15 @@ TEST_F(BRepGraph_HistoryTest, SplitEdge_IgnoresRemovedCoEdgeRefEntries)
   ASSERT_GT(myGraph.Topo().Edges().Nb(), 0);
 
   const BRepGraph_EdgeId       anEdgeId(0);
-  const BRepGraphInc::EdgeDef& anEdgeDef =
-    myGraph.Topo().Edges().Definition(BRepGraph_EdgeId(anEdgeId.Index));
-  const double aSplitParam = 0.5 * (anEdgeDef.ParamFirst + anEdgeDef.ParamLast);
+  const BRepGraphInc::EdgeDef& anEdgeDef   = myGraph.Topo().Edges().Definition(anEdgeId);
+  const double                 aSplitParam = 0.5 * (anEdgeDef.ParamFirst + anEdgeDef.ParamLast);
 
-  const NCollection_Vector<BRepGraph_WireId>& aWireIndices =
-    myGraph.Topo().Edges().Wires(BRepGraph_EdgeId(anEdgeId.Index));
+  const NCollection_DynamicArray<BRepGraph_WireId>& aWireIndices =
+    myGraph.Topo().Edges().Wires(anEdgeId);
   ASSERT_GT(aWireIndices.Length(), 1);
 
-  const BRepGraph_WireId                          aWireId = aWireIndices.Value(0);
-  const NCollection_Vector<BRepGraph_CoEdgeRefId> aWireRefsBefore =
+  const BRepGraph_WireId                                aWireId = aWireIndices.Value(0);
+  const NCollection_DynamicArray<BRepGraph_CoEdgeRefId> aWireRefsBefore =
     BRepGraph_TestTools::CoEdgeRefsOfWire(myGraph, aWireId);
   ASSERT_GT(aWireRefsBefore.Length(), 0);
 
@@ -444,7 +447,7 @@ TEST_F(BRepGraph_HistoryTest, SplitEdge_IgnoresRemovedCoEdgeRefEntries)
     const BRepGraph_CoEdgeRefId    aRefId  = aWireRefsBefore.Value(aRefOrd);
     const BRepGraphInc::CoEdgeRef& aRef    = myGraph.Refs().CoEdges().Entry(aRefId);
     const BRepGraphInc::CoEdgeDef& aCoEdge = myGraph.Topo().CoEdges().Definition(aRef.CoEdgeDefId);
-    if (aCoEdge.EdgeDefId == BRepGraph_EdgeId(anEdgeId.Index))
+    if (aCoEdge.EdgeDefId == anEdgeId)
     {
       aRefToRemove = aRefId;
       aRemovedOrd  = aRefOrd;
@@ -455,8 +458,9 @@ TEST_F(BRepGraph_HistoryTest, SplitEdge_IgnoresRemovedCoEdgeRefEntries)
   ASSERT_GE(aRemovedOrd, 0);
 
   {
-    BRepGraph_MutGuard<BRepGraphInc::CoEdgeRef> aMut = myGraph.Builder().MutCoEdgeRef(aRefToRemove);
-    aMut->IsRemoved                                  = true;
+    BRepGraph_MutGuard<BRepGraphInc::CoEdgeRef> aMut =
+      myGraph.Editor().CoEdges().MutRef(aRefToRemove);
+    aMut->IsRemoved = true;
   }
   ASSERT_TRUE(myGraph.Refs().CoEdges().Entry(aRefToRemove).IsRemoved);
   const BRepGraph_CoEdgeId aRemovedCoEdgeId =
@@ -466,12 +470,12 @@ TEST_F(BRepGraph_HistoryTest, SplitEdge_IgnoresRemovedCoEdgeRefEntries)
     BRepGraph_TestTools::CountCoEdgeRefsOfWire(myGraph, aWireId);
 
   const BRepGraph_VertexId aSplitVertex =
-    myGraph.Builder().AddVertex(gp_Pnt(4.0, 5.0, 6.0), 1.0e-7);
+    myGraph.Editor().Vertices().Add(gp_Pnt(4.0, 5.0, 6.0), 1.0e-7);
   ASSERT_TRUE(aSplitVertex.IsValid());
 
   BRepGraph_EdgeId aSubA;
   BRepGraph_EdgeId aSubB;
-  myGraph.Builder().SplitEdge(anEdgeId, aSplitVertex, aSplitParam, aSubA, aSubB);
+  myGraph.Editor().Edges().Split(anEdgeId, aSplitVertex, aSplitParam, aSubA, aSubB);
   ASSERT_TRUE(aSubA.IsValid());
   ASSERT_TRUE(aSubB.IsValid());
 
@@ -480,12 +484,13 @@ TEST_F(BRepGraph_HistoryTest, SplitEdge_IgnoresRemovedCoEdgeRefEntries)
             aRemovedWireNbActiveBefore);
   const BRepGraphInc::CoEdgeDef& aRemovedCoEdgeAfter =
     myGraph.Topo().CoEdges().Definition(aRemovedCoEdgeId);
-  EXPECT_EQ(aRemovedCoEdgeAfter.EdgeDefId, BRepGraph_EdgeId(anEdgeId.Index));
+  EXPECT_EQ(aRemovedCoEdgeAfter.EdgeDefId, anEdgeId);
 
-  bool      hasSubA       = false;
-  bool      hasSubB       = false;
-  const int aNbCoEdgeRefs = myGraph.Refs().CoEdges().Nb();
-  for (BRepGraph_CoEdgeRefId aRefId(0); aRefId.IsValid(aNbCoEdgeRefs); ++aRefId)
+  bool hasSubA = false;
+  bool hasSubB = false;
+  for (BRepGraph_CoEdgeRefId aRefId = BRepGraph_CoEdgeRefId::Start();
+       aRefId.IsValid(myGraph.Refs().CoEdges().Nb());
+       ++aRefId)
   {
     const BRepGraphInc::CoEdgeRef& aRef = myGraph.Refs().CoEdges().Entry(aRefId);
     if (aRef.IsRemoved || !aRef.CoEdgeDefId.IsValid(myGraph.Topo().CoEdges().Nb()))
@@ -505,36 +510,37 @@ TEST_F(BRepGraph_HistoryTest, ApplyModification_SplitEdge_RecordsBothDerivedNode
   ASSERT_GT(myGraph.Topo().Edges().Nb(), 0);
 
   const BRepGraph_EdgeId       anEdgeId(0);
-  const BRepGraphInc::EdgeDef& anEdgeDef =
-    myGraph.Topo().Edges().Definition(BRepGraph_EdgeId(anEdgeId.Index));
-  const double aSplitParam = 0.5 * (anEdgeDef.ParamFirst + anEdgeDef.ParamLast);
+  const BRepGraphInc::EdgeDef& anEdgeDef   = myGraph.Topo().Edges().Definition(anEdgeId);
+  const double                 aSplitParam = 0.5 * (anEdgeDef.ParamFirst + anEdgeDef.ParamLast);
 
   const BRepGraph_VertexId aSplitVertex =
-    myGraph.Builder().AddVertex(gp_Pnt(4.0, 5.0, 6.0), 1.0e-7);
+    myGraph.Editor().Vertices().Add(gp_Pnt(4.0, 5.0, 6.0), 1.0e-7);
   ASSERT_TRUE(aSplitVertex.IsValid());
 
-  const int aNbRecordsBefore = myGraph.History().NbRecords();
+  const size_t aNbRecordsBefore = myGraph.History().NbRecords();
 
-  myGraph.Builder().ApplyModification(
+  myGraph.Editor().Gen().ApplyModification(
     anEdgeId,
-    [&](BRepGraph& theGraph, BRepGraph_NodeId theTarget) -> NCollection_Vector<BRepGraph_NodeId> {
+    [&](BRepGraph&       theGraph,
+        BRepGraph_NodeId theTarget) -> NCollection_DynamicArray<BRepGraph_NodeId> {
       BRepGraph_EdgeId aSubA;
       BRepGraph_EdgeId aSubB;
-      theGraph.Builder().SplitEdge(BRepGraph_EdgeId::FromNodeId(theTarget),
-                                   aSplitVertex,
-                                   aSplitParam,
-                                   aSubA,
-                                   aSubB);
+      theGraph.Editor().Edges().Split(BRepGraph_EdgeId::FromNodeId(theTarget),
+                                      aSplitVertex,
+                                      aSplitParam,
+                                      aSubA,
+                                      aSubB);
 
-      NCollection_Vector<BRepGraph_NodeId> aResult;
+      NCollection_DynamicArray<BRepGraph_NodeId> aResult;
       aResult.Append(aSubA);
       aResult.Append(aSubB);
       return aResult;
     },
-    "SplitEdge");
+    "Split");
 
   EXPECT_EQ(myGraph.History().NbRecords(), aNbRecordsBefore + 1);
 
-  const NCollection_Vector<BRepGraph_NodeId> aDerived = myGraph.History().FindDerived(anEdgeId);
+  const NCollection_DynamicArray<BRepGraph_NodeId> aDerived =
+    myGraph.History().FindDerived(anEdgeId);
   EXPECT_GE(aDerived.Length(), 2);
 }

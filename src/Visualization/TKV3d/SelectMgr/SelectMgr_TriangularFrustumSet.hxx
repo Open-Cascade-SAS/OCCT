@@ -84,8 +84,8 @@ public:
                                      const SelectMgr_ViewClipRange& theClipRange,
                                      SelectBasics_PickResult&       thePickResult) const override;
 
-  //! Always returns FALSE (not applicable to this selector).
-  bool OverlapsPoint(const gp_Pnt&) const override { return false; }
+  //! Returns TRUE when the point's near-plane projection lies inside the polyline loop.
+  Standard_EXPORT bool OverlapsPoint(const gp_Pnt& thePnt) const override;
 
   Standard_EXPORT bool OverlapsPolygon(const NCollection_Array1<gp_Pnt>& theArrayOfPnts,
                                        Select3D_TypeOfSensitivity        theSensType,
@@ -159,7 +159,7 @@ public:
   //! Stores plane equation coefficients (in the following form:
   //! Ax + By + Cz + D = 0) to the given vector
   Standard_EXPORT void GetPlanes(
-    NCollection_Vector<NCollection_Vec4<double>>& thePlaneEquations) const override;
+    NCollection_DynamicArray<NCollection_Vec4<double>>& thePlaneEquations) const override;
 
   //! If theIsToAllow is false, only fully included sensitives will be detected, otherwise the
   //! algorithm will mark both included and overlapped entities as matched
@@ -169,6 +169,12 @@ public:
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
 private:
+  //! Returns TRUE when the given world-space point lies inside any of the
+  //! triangular frustums of the polyline prism. Delegates to the SAT-based
+  //! hasPointOverlap() on each child frustum, which is correct for both
+  //! orthographic and perspective cameras.
+  Standard_EXPORT bool isPointInsideAnyFrustum(const gp_Pnt& thePnt) const;
+
   //! Checks whether the segment intersects with the boundary of the current volume selection
   Standard_EXPORT bool isIntersectBoundary(const gp_Pnt& thePnt1, const gp_Pnt& thePnt2) const;
 

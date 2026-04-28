@@ -18,7 +18,7 @@
 #include <BRepGraphInc_Definition.hxx>
 #include <BRepGraphInc_Reference.hxx>
 #include <BRepGraphInc_Representation.hxx>
-#include <BRepGraphInc_Usage.hxx>
+#include <BRepGraphInc_Instance.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <GeomAdaptor_TransformedCurve.hxx>
 #include <GeomAdaptor_TransformedSurface.hxx>
@@ -39,10 +39,10 @@ class Adaptor3d_CurveOnSurface;
 //!
 //! Geometry in BRepGraph is stored in the definition frame (representation
 //! Location baked via applyRepresentationLocation). Instance Locations live
-//! on topology Usage/Ref structs (VertexUsage, CoEdgeUsage, WireUsage,
-//! FaceUsage, ShellUsage, SolidUsage, OccurrenceUsage). This class applies
+//! on topology Instance/Ref structs (VertexInstance, CoEdgeInstance, WireInstance,
+//! FaceInstance, ShellInstance, SolidInstance, OccurrenceInstance). This class applies
 //! ref Locations automatically when accessing 3D geometry.
-//! Usage structs are lightweight read-only projections produced during
+//! Instance structs are lightweight read-only projections produced during
 //! traversal, while Ref structs are stored reference entries from RefsView;
 //! this API accepts whichever form naturally carries the required context for
 //! the queried property.
@@ -52,8 +52,8 @@ class Adaptor3d_CurveOnSurface;
 class BRepGraph_Tool
 {
 public:
-  using VertexUsage = BRepGraphInc::VertexUsage;
-  using CoEdgeUsage = BRepGraphInc::CoEdgeUsage;
+  using VertexUsage = BRepGraphInc::VertexInstance;
+  using CoEdgeUsage = BRepGraphInc::CoEdgeInstance;
   using VertexRef   = BRepGraphInc::VertexRef;
   using WireRef     = BRepGraphInc::WireRef;
   using CoEdgeDef   = BRepGraphInc::CoEdgeDef;
@@ -116,6 +116,13 @@ public:
     [[nodiscard]] Standard_EXPORT static double PCurveParameter(const BRepGraph&         theGraph,
                                                                 const BRepGraph_VertexId theVertex,
                                                                 const BRepGraph_CoEdgeId theCoEdge);
+
+    //! Returns the number of edges that reference this vertex.
+    //! @param[in] theGraph  source graph
+    //! @param[in] theVertex typed vertex definition identifier
+    //! @return edge count
+    [[nodiscard]] Standard_EXPORT static uint32_t NbEdges(const BRepGraph&         theGraph,
+                                                          const BRepGraph_VertexId theVertex);
   };
 
   //! @brief Edge geometry, curve, polygon, and continuity accessors.
@@ -127,8 +134,6 @@ public:
   class Edge
   {
   public:
-    //! @name Properties
-
     //! Returns the edge tolerance.
     //! @param[in] theGraph source graph
     //! @param[in] theEdge  typed edge definition identifier
@@ -169,7 +174,7 @@ public:
     //! @param[in] theGraph source graph
     //! @param[in] theEdge  typed edge definition identifier
     //! @return const reference to the start VertexRef
-    [[nodiscard]] Standard_EXPORT static const VertexRef& StartVertex(
+    [[nodiscard]] Standard_EXPORT static const VertexRef& StartVertexRef(
       const BRepGraph&       theGraph,
       const BRepGraph_EdgeId theEdge);
 
@@ -177,10 +182,27 @@ public:
     //! @param[in] theGraph source graph
     //! @param[in] theEdge  typed edge definition identifier
     //! @return const reference to the end VertexRef
-    [[nodiscard]] Standard_EXPORT static const VertexRef& EndVertex(const BRepGraph&       theGraph,
-                                                                    const BRepGraph_EdgeId theEdge);
+    [[nodiscard]] Standard_EXPORT static const VertexRef& EndVertexRef(
+      const BRepGraph&       theGraph,
+      const BRepGraph_EdgeId theEdge);
 
-    //! @name 3D Curve
+    //! Returns the start vertex definition id directly (shortcut for
+    //! `StartVertexRef(...).VertexDefId`). Invalid if the edge has no start vertex.
+    //! @param[in] theGraph source graph
+    //! @param[in] theEdge  typed edge definition identifier
+    //! @return start vertex id
+    [[nodiscard]] Standard_EXPORT static BRepGraph_VertexId StartVertexId(
+      const BRepGraph&       theGraph,
+      const BRepGraph_EdgeId theEdge);
+
+    //! Returns the end vertex definition id directly (shortcut for
+    //! `EndVertexRef(...).VertexDefId`). Invalid if the edge has no end vertex.
+    //! @param[in] theGraph source graph
+    //! @param[in] theEdge  typed edge definition identifier
+    //! @return end vertex id
+    [[nodiscard]] Standard_EXPORT static BRepGraph_VertexId EndVertexId(
+      const BRepGraph&       theGraph,
+      const BRepGraph_EdgeId theEdge);
 
     //! Returns true if the edge has a 3D curve representation.
     //! @param[in] theGraph source graph
@@ -221,8 +243,6 @@ public:
       const BRepGraph&   theGraph,
       const CoEdgeUsage& theRef);
 
-    //! @name 3D Polygon
-
     //! Returns true if the edge has a 3D polygon discretization.
     //! @param[in] theGraph source graph
     //! @param[in] theEdge  typed edge definition identifier
@@ -237,8 +257,6 @@ public:
     [[nodiscard]] Standard_EXPORT static const occ::handle<Poly_Polygon3D>& Polygon3D(
       const BRepGraph&       theGraph,
       const BRepGraph_EdgeId theEdge);
-
-    //! @name Continuity
 
     //! Returns true if the edge has continuity info between two faces.
     //! @param[in] theGraph source graph
@@ -270,7 +288,26 @@ public:
       const BRepGraph&       theGraph,
       const BRepGraph_EdgeId theEdge);
 
-    //! @name PCurve lookup (edge-face context)
+    //! Returns the number of faces that reference this edge via coedges.
+    //! @param[in] theGraph source graph
+    //! @param[in] theEdge  typed edge definition identifier
+    //! @return face count
+    [[nodiscard]] Standard_EXPORT static uint32_t NbFaces(const BRepGraph&       theGraph,
+                                                          const BRepGraph_EdgeId theEdge);
+
+    //! Returns true if the edge is shared by exactly two faces (manifold).
+    //! @param[in] theGraph source graph
+    //! @param[in] theEdge  typed edge definition identifier
+    //! @return true if manifold
+    [[nodiscard]] Standard_EXPORT static bool IsManifold(const BRepGraph&       theGraph,
+                                                         const BRepGraph_EdgeId theEdge);
+
+    //! Returns true if the edge belongs to exactly one face (boundary / free edge).
+    //! @param[in] theGraph source graph
+    //! @param[in] theEdge  typed edge definition identifier
+    //! @return true if boundary
+    [[nodiscard]] Standard_EXPORT static bool IsBoundary(const BRepGraph&       theGraph,
+                                                         const BRepGraph_EdgeId theEdge);
 
     //! Returns true if the edge has two PCurves on a face (seam/closed surface).
     //! @param[in] theGraph source graph
@@ -303,8 +340,6 @@ public:
       const BRepGraph_FaceId   theFace,
       const TopAbs_Orientation theOri);
 
-    //! @name CurveOnSurface
-
     //! Returns a CurveOnSurface adaptor built from a CoEdgeUsage and face.
     //! @param[in] theGraph source graph
     //! @param[in] theRef   coedge incidence reference
@@ -324,6 +359,47 @@ public:
   class CoEdge
   {
   public:
+    //! Returns the coedge orientation relative to its parent edge.
+    //! @param[in] theGraph  source graph
+    //! @param[in] theCoEdge typed coedge definition identifier
+    //! @return orientation enum
+    [[nodiscard]] Standard_EXPORT static TopAbs_Orientation Orientation(
+      const BRepGraph&         theGraph,
+      const BRepGraph_CoEdgeId theCoEdge);
+
+    //! Returns true if the coedge is REVERSED relative to its parent edge.
+    //! Convenience shortcut for `Orientation(...) == TopAbs_REVERSED`.
+    [[nodiscard]] Standard_EXPORT static bool IsReversed(const BRepGraph&         theGraph,
+                                                         const BRepGraph_CoEdgeId theCoEdge);
+
+    //! Returns the parent edge definition id this coedge uses.
+    //! @param[in] theGraph  source graph
+    //! @param[in] theCoEdge typed coedge definition identifier
+    //! @return parent edge id (invalid for removed coedges)
+    [[nodiscard]] Standard_EXPORT static BRepGraph_EdgeId EdgeOf(
+      const BRepGraph&         theGraph,
+      const BRepGraph_CoEdgeId theCoEdge);
+
+    //! Returns the owning face definition id for this coedge.
+    //! @param[in] theGraph  source graph
+    //! @param[in] theCoEdge typed coedge definition identifier
+    //! @return owning face id (invalid for free-wire coedges)
+    [[nodiscard]] Standard_EXPORT static BRepGraph_FaceId FaceOf(
+      const BRepGraph&         theGraph,
+      const BRepGraph_CoEdgeId theCoEdge);
+
+    //! Returns the seam-pair coedge for closed/seam edges.
+    //! @param[in] theGraph  source graph
+    //! @param[in] theCoEdge typed coedge definition identifier
+    //! @return paired coedge id, or invalid if this coedge is not a seam half
+    [[nodiscard]] Standard_EXPORT static BRepGraph_CoEdgeId SeamPair(
+      const BRepGraph&         theGraph,
+      const BRepGraph_CoEdgeId theCoEdge);
+
+    //! Returns true if this coedge is one half of a seam pair.
+    [[nodiscard]] Standard_EXPORT static bool IsSeam(const BRepGraph&         theGraph,
+                                                     const BRepGraph_CoEdgeId theCoEdge);
+
     //! Returns true if the coedge has a PCurve representation.
     //! @param[in] theGraph  source graph
     //! @param[in] theCoEdge typed coedge definition identifier
@@ -443,6 +519,15 @@ public:
     [[nodiscard]] Standard_EXPORT static const WireRef* OuterWire(const BRepGraph&       theGraph,
                                                                   const BRepGraph_FaceId theFace);
 
+    //! Returns the outer wire definition id directly (shortcut for
+    //! `OuterWire(...)->WireDefId`). Invalid if the face has no outer wire.
+    //! @param[in] theGraph source graph
+    //! @param[in] theFace  typed face definition identifier
+    //! @return outer wire id
+    [[nodiscard]] Standard_EXPORT static BRepGraph_WireId OuterWireId(
+      const BRepGraph&       theGraph,
+      const BRepGraph_FaceId theFace);
+
     //! Returns the raw surface handle (definition frame, no copy).
     //! @param[in] theGraph source graph
     //! @param[in] theFace  typed face definition identifier
@@ -482,11 +567,35 @@ public:
     [[nodiscard]] Standard_EXPORT static const occ::handle<Poly_Triangulation>& Triangulation(
       const BRepGraph&       theGraph,
       const BRepGraph_FaceId theFace);
+
+    //! Returns the number of wire references on the face (outer + holes).
+    //! @param[in] theGraph source graph
+    //! @param[in] theFace  typed face definition identifier
+    //! @return wire count (includes removed refs)
+    [[nodiscard]] Standard_EXPORT static uint32_t NbWires(const BRepGraph&       theGraph,
+                                                          const BRepGraph_FaceId theFace);
+
+    //! Returns the UV parameter bounds of the face surface.
+    //! For faces with NaturalRestriction the bounds come directly from the surface.
+    //! Fills out-parameters with the surface bounds; all values are set to 0.0 if
+    //! the face has no surface.
+    //! @param[in]  theGraph  source graph
+    //! @param[in]  theFace   typed face definition identifier
+    //! @param[out] theUMin   minimum U parameter
+    //! @param[out] theUMax   maximum U parameter
+    //! @param[out] theVMin   minimum V parameter
+    //! @param[out] theVMax   maximum V parameter
+    Standard_EXPORT static void Bounds(const BRepGraph&       theGraph,
+                                       const BRepGraph_FaceId theFace,
+                                       double&                theUMin,
+                                       double&                theUMax,
+                                       double&                theVMin,
+                                       double&                theVMax);
   };
 
   //! @brief Wire property accessors.
   //!
-  //! Provides wire closure and size queries.
+  //! Provides wire closure, size, and ownership queries.
   //! For ordered edge traversal, use BRepGraphInc_WireExplorer or access
   //! the WireDef::CoEdgeRefIds vector directly via TopoView.
   class Wire
@@ -503,8 +612,107 @@ public:
     //! @param[in] theGraph source graph
     //! @param[in] theWire  typed wire definition identifier
     //! @return number of coedge entries
-    [[nodiscard]] Standard_EXPORT static int NbCoEdges(const BRepGraph&       theGraph,
-                                                       const BRepGraph_WireId theWire);
+    [[nodiscard]] Standard_EXPORT static uint32_t NbCoEdges(const BRepGraph&       theGraph,
+                                                            const BRepGraph_WireId theWire);
+
+    //! Returns the first owning face for this wire via the reverse-index table.
+    //! Returns an invalid id if the wire has no owning face (free wire).
+    //! @param[in] theGraph source graph
+    //! @param[in] theWire  typed wire definition identifier
+    //! @return owning face id, or invalid
+    [[nodiscard]] Standard_EXPORT static BRepGraph_FaceId FaceOf(const BRepGraph&       theGraph,
+                                                                 const BRepGraph_WireId theWire);
+
+    //! Returns true if this wire is the outer boundary (IsOuter flag) of its owning face.
+    //! Scans WireRefs that reference this wire.
+    //! Returns false for free wires (no owning face).
+    //! @param[in] theGraph source graph
+    //! @param[in] theWire  typed wire definition identifier
+    //! @return true if outer wire
+    [[nodiscard]] Standard_EXPORT static bool IsOuter(const BRepGraph&       theGraph,
+                                                      const BRepGraph_WireId theWire);
+  };
+
+  //! @brief Shell property accessors.
+  //!
+  //! Provides shell closure and face count queries.
+  class Shell
+  {
+  public:
+    //! Returns true if the shell is topologically closed (watertight boundary).
+    //! @param[in] theGraph source graph
+    //! @param[in] theShell typed shell definition identifier
+    //! @return true if closed
+    [[nodiscard]] Standard_EXPORT static bool IsClosed(const BRepGraph&        theGraph,
+                                                       const BRepGraph_ShellId theShell);
+
+    //! Returns the number of face references in the shell.
+    //! @param[in] theGraph source graph
+    //! @param[in] theShell typed shell definition identifier
+    //! @return number of face entries (including removed)
+    [[nodiscard]] Standard_EXPORT static uint32_t NbFaces(const BRepGraph&        theGraph,
+                                                          const BRepGraph_ShellId theShell);
+  };
+
+  //! @brief Mesh cache writes and representation creation.
+  //!
+  //! Static methods for creating mesh representations in storage and
+  //! writing to the mesh cache. These do NOT trigger markModified()
+  //! or mutation tracking -- mesh data is derived, not model data.
+  class Mesh
+  {
+  public:
+    //! Create a new TriangulationRep in storage.
+    //! @return typed identifier, or invalid if the handle is null
+    [[nodiscard]] Standard_EXPORT static BRepGraph_TriangulationRepId CreateTriangulationRep(
+      BRepGraph&                             theGraph,
+      const occ::handle<Poly_Triangulation>& theTriangulation);
+
+    //! Create a new Polygon3DRep in storage.
+    //! @return typed identifier, or invalid if the handle is null
+    [[nodiscard]] Standard_EXPORT static BRepGraph_Polygon3DRepId CreatePolygon3DRep(
+      BRepGraph&                         theGraph,
+      const occ::handle<Poly_Polygon3D>& thePolygon);
+
+    //! Create a new PolygonOnTriRep in storage.
+    //! @return typed identifier, or invalid if polygon is null or theTriRepId is invalid
+    [[nodiscard]] Standard_EXPORT static BRepGraph_PolygonOnTriRepId CreatePolygonOnTriRep(
+      BRepGraph&                                      theGraph,
+      const occ::handle<Poly_PolygonOnTriangulation>& thePolygon,
+      const BRepGraph_TriangulationRepId              theTriRepId);
+
+    //! Append a triangulation rep to the face's cached mesh (multi-LOD support).
+    Standard_EXPORT static void AppendCachedTriangulation(
+      BRepGraph&                         theGraph,
+      const BRepGraph_FaceId             theFace,
+      const BRepGraph_TriangulationRepId theTriRepId);
+
+    //! Set the active triangulation index in the face's cached mesh.
+    Standard_EXPORT static void SetCachedActiveIndex(BRepGraph&             theGraph,
+                                                     const BRepGraph_FaceId theFace,
+                                                     const int              theActiveIndex);
+
+    //! Clear cached mesh for a face and its coedges.
+    Standard_EXPORT static void ClearFaceCache(BRepGraph& theGraph, const BRepGraph_FaceId theFace);
+
+    //! Set the polygon-3D rep in the edge's cached mesh.
+    Standard_EXPORT static void SetCachedPolygon3D(BRepGraph&                     theGraph,
+                                                   const BRepGraph_EdgeId         theEdge,
+                                                   const BRepGraph_Polygon3DRepId thePolyRepId);
+
+    //! Clear cached mesh for an edge.
+    Standard_EXPORT static void ClearEdgeCache(BRepGraph& theGraph, const BRepGraph_EdgeId theEdge);
+
+    //! Append a polygon-on-tri rep to the coedge's cached mesh (seam edge support).
+    Standard_EXPORT static void AppendCachedPolygonOnTri(
+      BRepGraph&                        theGraph,
+      const BRepGraph_CoEdgeId          theCoEdge,
+      const BRepGraph_PolygonOnTriRepId thePolyRepId);
+
+    //! Set the polygon-2D rep in the coedge's cached mesh.
+    Standard_EXPORT static void SetCachedPolygon2D(BRepGraph&                     theGraph,
+                                                   const BRepGraph_CoEdgeId       theCoEdge,
+                                                   const BRepGraph_Polygon2DRepId thePolyRepId);
   };
 
 private:

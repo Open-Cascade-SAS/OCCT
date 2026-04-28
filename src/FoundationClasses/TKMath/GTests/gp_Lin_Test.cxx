@@ -15,10 +15,13 @@
 #include <gp_Ax2.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Lin.hxx>
+#include <gp_Lin2d.hxx>
 #include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
 
 #include <gtest/gtest.h>
 
@@ -108,4 +111,27 @@ TEST(gp_LinTest, Transform)
   aTrsf.SetTranslation(gp_Vec(0.0, 0.0, 10.0));
   gp_Lin aTransformed = aLin.Transformed(aTrsf);
   EXPECT_NEAR(aTransformed.Location().Z(), 10.0, Precision::Confusion());
+}
+
+// OCC15489: gp_Lin2d construction from implicit line equation A*x + B*y + C = 0.
+// The constructor must throw Standard_ConstructionError when the direction
+// vector is zero (sqrt(A*A + B*B) <= gp::Resolution()).
+
+TEST(gp_Lin2dTest, ConstructFromEquation_ZeroDirection_ThrowsException)
+{
+// A=0, B=0 -> direction vector is zero -> must throw
+#ifndef No_Exception
+  EXPECT_THROW(gp_Lin2d(0.0, 0.0, 1.0), Standard_ConstructionError);
+#endif
+}
+
+TEST(gp_Lin2dTest, ConstructFromEquation_ValidCoefficients_CorrectOrigin)
+{
+  // A=1e-20, B=-1, C=2 gives the line   1e-20 * x - y + 2 = 0
+  // Origin (closest point to global origin on the line) must be
+  // X_0 ~= -1.9999999999999999e-20, Y_0 ~= 2
+  const gp_Lin2d aLin2d(1e-20, -1.0, 2.0);
+  const gp_Pnt2d anOrigin = aLin2d.Location();
+  EXPECT_NEAR(anOrigin.X(), -1.9999999999999999e-20, 1e-25);
+  EXPECT_NEAR(anOrigin.Y(), 2.0, 0.001);
 }

@@ -1,4 +1,0 @@
-# Check performance of STEPControl_Reader in multithreading environment.
-# If no crash occurs, its fine.
-pload QAcommands
-OCC33657_2 [locate_data_file bug21802_as1-oc-214.stp]

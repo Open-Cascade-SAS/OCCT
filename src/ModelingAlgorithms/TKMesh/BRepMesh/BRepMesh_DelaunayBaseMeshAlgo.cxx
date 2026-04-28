@@ -34,13 +34,13 @@ void BRepMesh_DelaunayBaseMeshAlgo::generateMesh(const Message_ProgressRange& th
   const occ::handle<BRepMesh_DataStructureOfDelaun>& aStructure = getStructure();
   const occ::handle<VectorOfPnt>&                    aNodesMap  = getNodesMap();
 
-  IMeshData::VectorOfInteger aVerticesOrder(aNodesMap->Size(), getAllocator());
-  for (int i = 1; i <= aNodesMap->Size(); ++i)
+  IMeshData::VectorOfInteger aVerticesOrder(aNodesMap->Length(), getAllocator());
+  for (int i = 1; i <= aNodesMap->Length(); ++i)
   {
     aVerticesOrder.Append(i);
   }
 
-  std::pair<int, int> aCellsCount = getCellsCount(aVerticesOrder.Size());
+  std::pair<int, int> aCellsCount = getCellsCount(aVerticesOrder.Length());
   BRepMesh_Delaun     aMesher(aStructure, aVerticesOrder, aCellsCount.first, aCellsCount.second);
   BRepMesh_MeshTool   aCleaner(aStructure);
   aCleaner.EraseFreeLinks();

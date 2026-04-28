@@ -1601,7 +1601,7 @@ TEST(NCollection_KDTreeTest, RangeSearch2D_ValidIndices)
   NCollection_KDTree<TestPoint2D, 2> aTree;
   aTree.Build(aPoints, THE_N);
   const NCollection_DynamicArray<size_t> aResult = aTree.RangeSearch({0, 0}, 15.0);
-  for (int i = 0; i < aResult.Size(); ++i)
+  for (size_t i = 0; i < aResult.Size(); ++i)
   {
     EXPECT_GE(aResult[i], 1u);
     EXPECT_LE(aResult[i], static_cast<size_t>(THE_N));
@@ -1654,7 +1654,7 @@ TEST(NCollection_KDTreeTest, RangeSearch2D_VerifyPointsInRange)
   const double                           aRadius = 10.0;
   const NCollection_DynamicArray<size_t> aResult = aTree.RangeSearch(aQuery, aRadius);
   // Verify every returned point is actually within radius
-  for (int i = 0; i < aResult.Size(); ++i)
+  for (size_t i = 0; i < aResult.Size(); ++i)
   {
     const double aDist = sqDist2D(aQuery, aTree.Point(aResult[i]));
     EXPECT_LE(aDist, aRadius * aRadius + 1e-10);
@@ -1763,7 +1763,7 @@ TEST(NCollection_KDTreeTest, BoxSearch2D_VerifyPointsInBox)
   TestPoint2D                            aMin(-5, -5);
   TestPoint2D                            aMax(5, 5);
   const NCollection_DynamicArray<size_t> aResult = aTree.BoxSearch(aMin, aMax);
-  for (int i = 0; i < aResult.Size(); ++i)
+  for (size_t i = 0; i < aResult.Size(); ++i)
   {
     const TestPoint2D& aP = aTree.Point(aResult[i]);
     EXPECT_GE(aP.X, -5.0);
@@ -1878,7 +1878,7 @@ TEST(NCollection_KDTreeTest, RangeSearch_IndicesMatchPoints)
   const double                           aRadius = 10.0;
   const NCollection_DynamicArray<size_t> aResult = aTree.RangeSearch(aQuery, aRadius);
   // Verify every returned index maps to a point within radius
-  for (int i = 0; i < aResult.Size(); ++i)
+  for (size_t i = 0; i < aResult.Size(); ++i)
   {
     const size_t anIdx = aResult[i];
     EXPECT_GE(anIdx, 1u);
@@ -1912,7 +1912,7 @@ TEST(NCollection_KDTreeTest, BoxSearch_IndicesMatchPoints)
   TestPoint2D                            aMin(-10, -10);
   TestPoint2D                            aMax(10, 10);
   const NCollection_DynamicArray<size_t> aResult = aTree.BoxSearch(aMin, aMax);
-  for (int i = 0; i < aResult.Size(); ++i)
+  for (size_t i = 0; i < aResult.Size(); ++i)
   {
     const size_t       anIdx = aResult[i];
     const TestPoint2D& aP    = aTree.Point(anIdx);
@@ -2748,7 +2748,7 @@ TEST(NCollection_KDTreeTest, NearestPoints_ValidIndices)
   double                                 aSqDist = 0.0;
   const NCollection_DynamicArray<size_t> aResult = aTree.NearestPoints({0, 0}, 0.5, aSqDist);
   EXPECT_GE(aResult.Size(), 1u);
-  for (int i = 0; i < aResult.Size(); ++i)
+  for (size_t i = 0; i < aResult.Size(); ++i)
   {
     EXPECT_GE(aResult[i], 1u);
     EXPECT_LE(aResult[i], static_cast<size_t>(THE_N));
@@ -2966,7 +2966,7 @@ TEST(NCollection_KDTreeRadiiTest, ContainingSearch_MultipleSpheres)
   EXPECT_EQ(aResult.Size(), 2);
   // Verify both found indices correspond to the first two points
   std::set<size_t> aFoundIndices;
-  for (int i = 0; i < aResult.Size(); ++i)
+  for (size_t i = 0; i < aResult.Size(); ++i)
   {
     aFoundIndices.insert(aResult[i]);
   }
@@ -3176,7 +3176,7 @@ TEST(NCollection_KDTreeRadiiTest, BruteForce_ContainingSearch)
     EXPECT_EQ(static_cast<size_t>(aResult.Size()), aBruteForce.size())
       << "Query (" << aQuery.X << ", " << aQuery.Y << ")";
     std::set<size_t> aTreeResult;
-    for (int i = 0; i < aResult.Size(); ++i)
+    for (size_t i = 0; i < aResult.Size(); ++i)
     {
       aTreeResult.insert(aResult[i]);
     }

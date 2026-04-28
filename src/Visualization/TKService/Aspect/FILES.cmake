@@ -29,6 +29,7 @@ set(OCCT_Aspect_FILES
   Aspect_Grid.cxx
   Aspect_Grid.hxx
   Aspect_GridDrawMode.hxx
+  Aspect_GridParams.hxx
   Aspect_GridType.hxx
   Aspect_NeutralWindow.cxx
   Aspect_NeutralWindow.hxx

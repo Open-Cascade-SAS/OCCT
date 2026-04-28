@@ -36,7 +36,7 @@ NCollection_Array1<gp_Pnt> GeomGridEval_OffsetCurve::EvaluateGrid(
     return NCollection_Array1<gp_Pnt>();
   }
 
-  const int                  aNbParams = theParams.Size();
+  const int                  aNbParams = theParams.Length();
   NCollection_Array1<gp_Pnt> aResult(1, aNbParams);
 
   const gp_XYZ aDirXYZ = myDirection.XYZ();
@@ -73,7 +73,7 @@ NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_OffsetCurve::EvaluateGrid
     return NCollection_Array1<GeomGridEval::CurveD1>();
   }
 
-  const int                                 aNbParams = theParams.Size();
+  const int                                 aNbParams = theParams.Length();
   NCollection_Array1<GeomGridEval::CurveD1> aResult(1, aNbParams);
 
   const gp_XYZ aDirXYZ = myDirection.XYZ();
@@ -111,7 +111,7 @@ NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_OffsetCurve::EvaluateGrid
     return NCollection_Array1<GeomGridEval::CurveD2>();
   }
 
-  const int                                 aNbParams = theParams.Size();
+  const int                                 aNbParams = theParams.Length();
   NCollection_Array1<GeomGridEval::CurveD2> aResult(1, aNbParams);
 
   const gp_XYZ aDirXYZ = myDirection.XYZ();
@@ -174,7 +174,7 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_OffsetCurve::EvaluateGrid
     return NCollection_Array1<GeomGridEval::CurveD3>();
   }
 
-  const int                                 aNbParams = theParams.Size();
+  const int                                 aNbParams = theParams.Length();
   NCollection_Array1<GeomGridEval::CurveD3> aResult(1, aNbParams);
 
   const gp_XYZ aDirXYZ = myDirection.XYZ();
@@ -231,7 +231,7 @@ NCollection_Array1<gp_Vec> GeomGridEval_OffsetCurve::EvaluateGridDN(
     return NCollection_Array1<gp_Vec>();
   }
 
-  const int aNbParams = theParams.Size();
+  const int aNbParams = theParams.Length();
 
   // Reuse optimized grid evaluators for orders 1-3
   if (theN == 1)

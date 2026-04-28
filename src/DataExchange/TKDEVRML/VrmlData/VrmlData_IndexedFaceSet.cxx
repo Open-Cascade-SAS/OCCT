@@ -24,7 +24,7 @@
 #include <VrmlData_TextureCoordinate.hxx>
 #include <VrmlData_Scene.hxx>
 #include <Precision.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <NCollection_DataMap.hxx>
 #include <Poly.hxx>
 #include <Standard_ShortReal.hxx>
@@ -159,8 +159,8 @@ const occ::handle<TopoDS_TShape>& VrmlData_IndexedFaceSet::TShape()
     return myTShape;
   }
   // prepare vector of nodes
-  NCollection_Vector<gp_XYZ>    aNodes;
-  NCollection_DataMap<int, int> mapIdId;
+  NCollection_DynamicArray<gp_XYZ> aNodes;
+  NCollection_DataMap<int, int>    mapIdId;
   for (i = 0; i < nNodes; i++)
   {
     if (mapNodeId.Contains(i))

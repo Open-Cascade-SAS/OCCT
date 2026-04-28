@@ -18,11 +18,11 @@
 
 #include <Standard_Integer.hxx>
 #include <NCollection_List.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <gp_XYZ.hxx>
 #include <NCollection_CellFilter.hxx>
 
-typedef NCollection_Vector<gp_XYZ> VectorOfPoint;
+typedef NCollection_DynamicArray<gp_XYZ> VectorOfPoint;
 
 //! Inspector for CellFilter algorithm working with gp_XYZ points in 3d space.
 //! Used in search of coincidence points with a certain tolerance.

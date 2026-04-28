@@ -20,6 +20,7 @@
 #include <NCollection_TListNode.hxx>
 #include <Standard_MultiplyDefined.hxx>
 #include <Standard_NoSuchObject.hxx>
+#include <Standard_OutOfRange.hxx>
 
 #include <NCollection_DefaultHasher.hxx>
 
@@ -185,9 +186,17 @@ public:
 
   //! Constructor
   explicit NCollection_DoubleMap(
-    const int                                     theNbBuckets,
+    const size_t                                  theNbBuckets,
     const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
       : NCollection_BaseMap(theNbBuckets, false, theAllocator)
+  {
+  }
+
+  //! Constructor (legacy int-taking).
+  explicit NCollection_DoubleMap(
+    const int                                     theNbBuckets,
+    const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
+      : NCollection_DoubleMap(NCollection_BaseMap::NbBucketsFromInt(theNbBuckets), theAllocator)
   {
   }
 
@@ -238,17 +247,17 @@ public:
   }
 
   //! ReSize
-  void ReSize(const int N)
+  void ReSize(const size_t N)
   {
     NCollection_ListNode** ppNewData1 = nullptr;
     NCollection_ListNode** ppNewData2 = nullptr;
-    int                    newBuck;
+    size_t                 newBuck;
     if (BeginResize(N, newBuck, ppNewData1, ppNewData2))
     {
       if (myData1)
       {
         DoubleMapNode *p, *q;
-        for (int i = 0; i <= NbBuckets(); i++)
+        for (size_t i = 0; i <= NbBuckets(); ++i)
         {
           if (myData1[i])
           {
@@ -269,6 +278,12 @@ public:
       }
       EndResize(N, newBuck, ppNewData1, ppNewData2);
     }
+  }
+
+  void ReSize(const int N)
+  {
+    Standard_OutOfRange_Raise_if(N < 0, "NCollection_DoubleMap::ReSize: negative size");
+    ReSize(static_cast<size_t>(N));
   }
 
   //! Bind binds the pair (Key1, Key2).
@@ -605,16 +620,13 @@ public:
   //! Destructor
   ~NCollection_DoubleMap() override { Clear(true); }
 
-  //! Size
-  int Size() const noexcept { return Extent(); }
-
 protected:
   bool IsEqual1(const TheKey1Type& theKey1, const TheKey1Type& theKey2) const
   {
     return myHasher1(theKey1, theKey2);
   }
 
-  size_t HashCode1(const TheKey1Type& theKey, const int theUpperBound) const
+  size_t HashCode1(const TheKey1Type& theKey, const size_t theUpperBound) const
   {
     return myHasher1(theKey) % theUpperBound + 1;
   }
@@ -624,7 +636,7 @@ protected:
     return myHasher2(theKey1, theKey2);
   }
 
-  size_t HashCode2(const TheKey2Type& theKey, const int theUpperBound) const
+  size_t HashCode2(const TheKey2Type& theKey, const size_t theUpperBound) const
   {
     return myHasher2(theKey) % theUpperBound + 1;
   }

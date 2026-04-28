@@ -63,10 +63,12 @@ public:
   //! @return Number of detected entities.
   int Pick(double poly[][3], const int theNbPoints, vtkRenderer* theRenderer = nullptr);
 
-  //! Setter for tolerance of picking.
-  void SetTolerance(float theTolerance);
-  //! Getter for tolerance of picking.
-  float GetTolerance() const;
+  //! Sets the pixel-space selection tolerance applied on every subsequent
+  //! Pick. Forwards to SelectMgr_ViewerSelector::SetPixelTolerance via the
+  //! underlying picker algorithm.
+  void SetPixelTolerance(const int theTolerance);
+  //! Returns the current pixel-space selection tolerance.
+  int PixelTolerance() const;
 
   //! Sets the renderer to be used by OCCT selection algorithm
   void SetRenderer(vtkRenderer* theRenderer);
@@ -169,7 +171,6 @@ private:
   vtkSmartPointer<vtkRenderer>    myRenderer;        //!< VTK renderer
   bool                            myIsRectSelection; //!< Rectangle selection mode flag
   bool                            myIsPolySelection; //!< Polyline selection mode flag
-  float                           myTolerance;       //!< Selection tolerance
 };
 
 #ifdef _MSC_VER

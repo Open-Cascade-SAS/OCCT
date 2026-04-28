@@ -25,13 +25,6 @@
 #include <AIS_Shape.hxx>
 #include <TopoDS_Shape.hxx>
 
-#include <Geom2d_Line.hxx>
-#include <gp_Pnt2d.hxx>
-#include <NCollection_Array1.hxx>
-#include <Geom2d_BezierCurve.hxx>
-#include <Geom2dGcc_QualifiedCurve.hxx>
-#include <Geom2dGcc_Circ2d2TanRad.hxx>
-#include <Geom2d_Circle.hxx>
 #include <TopoDS.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <gp_Lin.hxx>
@@ -63,54 +56,6 @@
 #include <V3d_View.hxx>
 #include <TDF_Label.hxx>
 #include <TDataStd_Expression.hxx>
-
-static int BUC60897(Draw_Interpretor& di, int /*argc*/, const char** /*argv*/)
-{
-  char abuf[16];
-
-  occ::handle<Geom2d_Line> aLine = new Geom2d_Line(gp_Pnt2d(100, 0), gp_Dir2d(gp_Dir2d::D::NX));
-  Sprintf(abuf, "line");
-  const char* st = abuf;
-  DrawTrSurf::Set(st, aLine);
-
-  NCollection_Array1<gp_Pnt2d> aPoints(1, 3);
-  aPoints.SetValue(1, gp_Pnt2d(0, 0));
-  aPoints.SetValue(2, gp_Pnt2d(50, 50));
-  aPoints.SetValue(3, gp_Pnt2d(0, 100));
-  occ::handle<Geom2d_BezierCurve> aCurve = new Geom2d_BezierCurve(aPoints);
-  Sprintf(abuf, "curve");
-  DrawTrSurf::Set(st, aCurve);
-
-  Geom2dAdaptor_Curve      aCLine(aLine);
-  Geom2dAdaptor_Curve      aCCurve(aCurve);
-  Geom2dGcc_QualifiedCurve aQualifCurve1(aCLine, GccEnt_outside);
-  Geom2dGcc_QualifiedCurve aQualifCurve2(aCCurve, GccEnt_outside);
-  Geom2dGcc_Circ2d2TanRad  aGccCirc2d(aQualifCurve1, aQualifCurve2, 10, 1e-7);
-  if (!aGccCirc2d.IsDone())
-  {
-    di << "Faulty: can not create a circle.\n";
-    return 1;
-  }
-  for (int i = 1; i <= aGccCirc2d.NbSolutions(); i++)
-  {
-    gp_Circ2d aCirc2d = aGccCirc2d.ThisSolution(i);
-    di << "circle : X " << aCirc2d.Location().X() << " Y " << aCirc2d.Location().Y() << " R "
-       << aCirc2d.Radius();
-    double   aTmpR1, aTmpR2;
-    gp_Pnt2d aPnt2d1, aPnt2d2;
-    aGccCirc2d.Tangency1(i, aTmpR1, aTmpR2, aPnt2d1);
-    aGccCirc2d.Tangency2(i, aTmpR1, aTmpR2, aPnt2d2);
-    di << "\ntangency1 : X " << aPnt2d1.X() << " Y " << aPnt2d1.Y();
-    di << "\ntangency2 : X " << aPnt2d2.X() << " Y " << aPnt2d2.Y() << "\n";
-
-    Sprintf(abuf, "circle_%d", i);
-    occ::handle<Geom2d_Curve> circ_res = new Geom2d_Circle(aCirc2d);
-    DrawTrSurf::Set(st, circ_res);
-  }
-
-  di << "done\n";
-  return 0;
-}
 
 static int BUC60889(Draw_Interpretor& di, int argc, const char** argv)
 {
@@ -318,71 +263,6 @@ static int BUC60854(Draw_Interpretor& /*di*/, int argc, const char** argv)
     BB.Add(aShell, anIter.Value());
   aShell.Closed(BRep_Tool::IsClosed(aShell));
   DBRep::Set(argv[1], aShell);
-  return 0;
-}
-
-static int BUC60870(Draw_Interpretor& di, int argc, const char** argv)
-{
-  int i1;
-  if (argc != 5)
-  {
-    di << "Usage : " << argv[0] << " result name_of_shape_1 name_of_shape_2 dev\n";
-    return 1;
-  }
-  const char *               ns1 = (argv[2]), *ns2 = (argv[3]), *ns0 = (argv[1]);
-  TopoDS_Shape               S1(DBRep::Get(ns1)), S2(DBRep::Get(ns2));
-  double                     dev = Draw::Atof(argv[4]);
-  BRepExtrema_DistShapeShape dst(S1, S2, dev);
-  if (dst.IsDone())
-  {
-    char named[100];
-    Sprintf(named, "%s%s", ns0, "_val");
-    char* tempd = named;
-    Draw::Set(tempd, dst.Value());
-    di << named << " ";
-    for (i1 = 1; i1 <= dst.NbSolution(); i1++)
-    {
-      gp_Pnt P1, P2;
-      P1 = (dst.PointOnShape1(i1));
-      P2 = (dst.PointOnShape2(i1));
-      if (dst.Value() <= 1.e-9)
-      {
-        TopoDS_Vertex V = BRepLib_MakeVertex(P1);
-        char          namev[100];
-        if (i1 == 1)
-        {
-          Sprintf(namev, "%s", ns0);
-        }
-        else
-        {
-          Sprintf(namev, "%s%d", ns0, i1);
-        }
-        char* tempv = namev;
-        DBRep::Set(tempv, V);
-        di << namev << " ";
-      }
-      else
-      {
-        char        name[100];
-        TopoDS_Edge E = BRepLib_MakeEdge(P1, P2);
-        if (i1 == 1)
-        {
-          Sprintf(name, "%s", ns0);
-        }
-        else
-        {
-          Sprintf(name, "%s%d", ns0, i1);
-        }
-        char* temp = name;
-        DBRep::Set(temp, E);
-        di << name << " ";
-      }
-    }
-  }
-  else
-  {
-    di << "Faulty : found a problem\n";
-  }
   return 0;
 }
 
@@ -1045,7 +925,6 @@ void QABugs::Commands_14(Draw_Interpretor& theCommands)
 {
   const char* group = "QABugs";
 
-  theCommands.Add("BUC60897", "BUC60897", __FILE__, BUC60897, group);
   theCommands.Add("BUC60889",
                   "BUC60889 point_1 point_2 name_of_edge bndbox_X1 bndbox_Y1 bndbox_Z1 bndbox_X2 "
                   "bndbox_Y2 bndbox_Z2",
@@ -1065,11 +944,6 @@ void QABugs::Commands_14(Draw_Interpretor& theCommands)
                   "edge_on_shape edge_on_wire ... ] ] [ # L/R ]",
                   __FILE__,
                   BUC60854,
-                  group);
-  theCommands.Add("BUC60870",
-                  "BUC60870 result name_of_shape_1 name_of_shape_2 dev",
-                  __FILE__,
-                  BUC60870,
                   group);
   theCommands.Add("BUC60944", "BUC60944 path", __FILE__, BUC60944, group);
   theCommands.Add("BUC60868", "BUC60868 Result Shell", __FILE__, BUC60868, group);

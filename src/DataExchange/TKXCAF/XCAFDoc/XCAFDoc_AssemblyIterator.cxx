@@ -59,7 +59,7 @@ XCAFDoc_AssemblyIterator::XCAFDoc_AssemblyIterator(const occ::handle<TDocStd_Doc
                                                    const XCAFDoc_AssemblyItemId&        theRoot,
                                                    const int                            theLevel)
     : myMaxLevel(theLevel),
-      mySeedLevel(theRoot.GetPath().Size())
+      mySeedLevel(theRoot.GetPath().Length())
 {
   Standard_NullObject_Raise_if(theDoc.IsNull(), "Null document!");
 
@@ -118,10 +118,10 @@ void XCAFDoc_AssemblyIterator::Next()
 
   // Pop item
   AuxAssemblyItem aCurrent = myFringe.Last();
-  myFringe.Remove(myFringe.Size());
+  myFringe.Remove(myFringe.Length());
 
   // Check current depth of iteration (root level is 0-level by convention)
-  const int aCurrentDepth = aCurrent.myItem.GetPath().Size() - mySeedLevel;
+  const int aCurrentDepth = aCurrent.myItem.GetPath().Length() - mySeedLevel;
 
   if (aCurrentDepth < myMaxLevel)
   {

@@ -56,6 +56,36 @@ public:
   //! returns the x step of the grid.
   Standard_EXPORT int DivisionNumber() const;
 
+  //! Set the circular grid radius (plane-local units). 0.0 (default) means
+  //! unbounded - the shader draws the grid to the horizon.
+  Standard_EXPORT void SetRadius(const double theRadius);
+
+  //! Return the bounded radius. 0.0 means unbounded.
+  double Radius() const { return myRadius; }
+
+  //! Set signed offset along the plane normal for display only; snap math
+  //! stays on the plane. Use a small negative value to avoid z-fighting with
+  //! coplanar geometry.
+  Standard_EXPORT void SetZOffset(const double theOffset);
+
+  //! Return the display-time Z-offset along the plane normal.
+  double ZOffset() const { return myZOffset; }
+
+  //! Restrict the grid to an angular wedge, walking counter-clockwise from
+  //! @p theStart to @p theEnd (radians, measured from the rotated plane X
+  //! axis). Setting both values equal (e.g. both 0.0) returns to full-circle
+  //! rendering - the sentinel used for unbounded.
+  Standard_EXPORT void SetArcRange(const double theStart, const double theEnd);
+
+  //! Return the arc start angle (radians). Meaningful only when IsArc() is true.
+  double AngleStart() const { return myAngleStart; }
+
+  //! Return the arc end angle (radians). Meaningful only when IsArc() is true.
+  double AngleEnd() const { return myAngleEnd; }
+
+  //! Return TRUE when the grid is restricted to an angular wedge.
+  bool IsArc() const { return myAngleStart != myAngleEnd; }
+
   Standard_EXPORT void Init() override;
 
   //! Dumps the content of me into the stream
@@ -67,6 +97,10 @@ private:
   double myAlpha;
   double myA1;
   double myB1;
+  double myRadius;
+  double myZOffset;
+  double myAngleStart;
+  double myAngleEnd;
 };
 
 #endif // _Aspect_CircularGrid_HeaderFile

@@ -4504,7 +4504,7 @@ int BSplCLib::Intervals(const NCollection_Array1<double>& theKnots,
   // remove all knots with multiplicity less or equal than (degree - continuity) except first and
   // last
   int aFirstIndex = isPeriodic ? 1 : FirstUKnotIndex(theDegree, theMults);
-  int aLastIndex  = isPeriodic ? theKnots.Size() : LastUKnotIndex(theDegree, theMults);
+  int aLastIndex  = isPeriodic ? theKnots.Length() : LastUKnotIndex(theDegree, theMults);
   NCollection_Array1<double> aNewKnots(1, aLastIndex - aFirstIndex + 1);
   int                        aNbNewKnots = 0;
   for (int anIndex = aFirstIndex; anIndex <= aLastIndex; anIndex++)
@@ -4595,14 +4595,14 @@ int BSplCLib::Intervals(const NCollection_Array1<double>& theKnots,
     {
       int anIndex = 1;
       // part from the begging of range to the end of the first period
-      for (int i = anIndex1; i < aNewKnots.Size(); i++, anIndex++)
+      for (int i = anIndex1; i < aNewKnots.Length(); i++, anIndex++)
       {
         theIntervals->ChangeValue(anIndex) = aNewKnots[i] + aFirstPeriod * aPeriod;
       }
       // full periods
       for (int aPeriodNum = aFirstPeriod + 1; aPeriodNum < aLastPeriod; aPeriodNum++)
       {
-        for (int i = 1; i < aNewKnots.Size(); i++, anIndex++)
+        for (int i = 1; i < aNewKnots.Length(); i++, anIndex++)
         {
           theIntervals->ChangeValue(anIndex) = aNewKnots[i] + aPeriodNum * aPeriod;
         }

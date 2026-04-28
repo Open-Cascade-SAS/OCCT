@@ -174,6 +174,7 @@ void OpenGl_ShaderManager::clear()
   myBlitPrograms[1].Init(occ::handle<OpenGl_ShaderProgram>());
   myBoundBoxProgram.Nullify();
   myBoundBoxVertBuffer.Nullify();
+  myGridProgram.Nullify();
   for (int aModeIter = 0; aModeIter < Graphic3d_StereoMode_NB; ++aModeIter)
   {
     myStereoPrograms[aModeIter].Nullify();
@@ -430,7 +431,7 @@ void OpenGl_ShaderManager::pushLightSourceState(
     return;
   }
 
-  if (myLightTypeArray.Size() < aNbLightsMax)
+  if (myLightTypeArray.Length() < aNbLightsMax)
   {
     myLightTypeArray.Resize(0, aNbLightsMax - 1, false);
     myLightParamsArray.Resize(0, aNbLightsMax - 1, false);
@@ -581,7 +582,7 @@ void OpenGl_ShaderManager::pushLightSourceState(
   if (const OpenGl_ShaderUniformLocation aShadowMatLoc =
         theProgram->GetStateLocation(OpenGl_OCC_LIGHT_SHADOWMAP_MATRICES))
   {
-    if (myShadowMatArray.Size() < theProgram->NbShadowMaps())
+    if (myShadowMatArray.Length() < theProgram->NbShadowMaps())
     {
       myShadowMatArray.Resize(0, theProgram->NbShadowMaps() - 1, false);
     }
@@ -593,7 +594,7 @@ void OpenGl_ShaderManager::pushLightSourceState(
                             / (float)myLightSourceState.ShadowMaps()->First()->Texture()->SizeX(),
                           myLightSourceState.ShadowMaps()->First()->ShadowMapBias());
       const int aNbShadows =
-        std::min(theProgram->NbShadowMaps(), myLightSourceState.ShadowMaps()->Size());
+        std::min(theProgram->NbShadowMaps(), myLightSourceState.ShadowMaps()->Length());
       for (int aShadowIter = 0; aShadowIter < aNbShadows; ++aShadowIter)
       {
         const occ::handle<OpenGl_ShadowMap>& aShadow =
@@ -769,7 +770,7 @@ void OpenGl_ShaderManager::pushClippingState(
     }
 
     const int aNbMaxPlanes = myContext->MaxClipPlanes();
-    if (myClipPlaneArrayFfp.Size() < aNbMaxPlanes)
+    if (myClipPlaneArrayFfp.Length() < aNbMaxPlanes)
     {
       myClipPlaneArrayFfp.Resize(0, aNbMaxPlanes - 1, false);
     }
@@ -852,7 +853,7 @@ void OpenGl_ShaderManager::pushClippingState(
     return;
   }
 
-  if (myClipPlaneArray.Size() < aNbClipPlanesMax)
+  if (myClipPlaneArray.Length() < aNbClipPlanesMax)
   {
     myClipPlaneArray.Resize(0, aNbClipPlanesMax - 1, false);
     myClipChainArray.Resize(0, aNbClipPlanesMax - 1, false);
@@ -1472,6 +1473,36 @@ const occ::handle<Graphic3d_ShaderProgram>& OpenGl_ShaderManager::GetColoredQuad
     myColoredQuadProgram = getColoredQuadProgram();
   }
   return myColoredQuadProgram;
+}
+
+//=================================================================================================
+
+bool OpenGl_ShaderManager::BindGridProgram()
+{
+  if (myGridProgram.IsNull())
+  {
+    occ::handle<Graphic3d_ShaderProgram> aProgramSrc = getGridProgram();
+    TCollection_AsciiString              aKey;
+    if (!Create(aProgramSrc, aKey, myGridProgram))
+    {
+      myContext->PushMessage(GL_DEBUG_SOURCE_APPLICATION,
+                             GL_DEBUG_TYPE_ERROR,
+                             0,
+                             GL_DEBUG_SEVERITY_HIGH,
+                             "Error: infinite-grid shader failed to compile/link");
+      myGridProgram = new OpenGl_ShaderProgram(); // mark as invalid so we don't retry every frame
+      return false;
+    }
+  }
+  if (!myGridProgram->IsValid())
+  {
+    return false;
+  }
+  // Route through bindProgramWithState so OCCT built-in uniforms (occProjectionMatrix,
+  // occWorldViewMatrix, occModelWorldMatrix, their inverses, viewport, etc.) are uploaded
+  // to the grid program. The shader's unproject() path depends on these matrices; without
+  // PushState they stay at zero and every fragment is discarded (the grid never draws).
+  return bindProgramWithState(myGridProgram, Graphic3d_TypeOfShadingModel_Unlit);
 }
 
 //=================================================================================================

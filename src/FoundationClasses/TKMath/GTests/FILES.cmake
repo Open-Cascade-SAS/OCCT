@@ -45,11 +45,14 @@ set(OCCT_TKMath_GTests_FILES
   gp_Circ_Test.cxx
   gp_Dir_Test.cxx
   gp_Dir2d_Test.cxx
+  gp_GTrsf_Test.cxx
   gp_Lin_Test.cxx
   gp_Mat_Test.cxx
   gp_Pln_Test.cxx
   gp_Pnt_Test.cxx
   gp_Pnt2d_Test.cxx
+  gp_Quaternion_Test.cxx
+  gp_Torus_Test.cxx
   gp_Trsf_Test.cxx
   gp_Vec_Test.cxx
   gp_Vec2d_Test.cxx

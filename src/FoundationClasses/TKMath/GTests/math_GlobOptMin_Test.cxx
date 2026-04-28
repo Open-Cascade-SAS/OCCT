@@ -13,6 +13,8 @@
 
 #include <math_GlobOptMin.hxx>
 #include <math_MultipleVarFunction.hxx>
+#include <math_MultipleVarFunctionWithHessian.hxx>
+#include <math_Matrix.hxx>
 #include <math_Vector.hxx>
 
 #include <gtest/gtest.h>
@@ -98,6 +100,71 @@ public:
     theF = theX(1) + theX(2);
     return true;
   }
+};
+
+// Branin function: standard global optimization benchmark with 3 global minima.
+// f(x,y) = a*(y - b*x^2 + c*x - r)^2 + s*(1-t)*cos(x) + s
+// Standard parameters: a=1, b=5.1/(4pi^2), c=5/pi, r=6, s=10, t=1/(8pi)
+// Global minimum value: ~0.397887 at 3 locations: (-pi,12.275), (pi,2.275), (9.42478,2.475)
+class BraninFunction : public math_MultipleVarFunctionWithHessian
+{
+public:
+  BraninFunction()
+  {
+    a = 1.0;
+    b = 5.1 / (4.0 * M_PI * M_PI);
+    c = 5.0 / M_PI;
+    r = 6.0;
+    s = 10.0;
+    t = 1.0 / (8.0 * M_PI);
+  }
+
+  int NbVariables() const override { return 2; }
+
+  bool Value(const math_Vector& theX, double& theF) override
+  {
+    const double u     = theX(1);
+    const double v     = theX(2);
+    const double aSqPt = (v - b * u * u + c * u - r);
+    const double aLnPt = s * (1 - t) * cos(u);
+    theF               = a * aSqPt * aSqPt + aLnPt + s;
+    return true;
+  }
+
+  bool Gradient(const math_Vector& theX, math_Vector& theG) override
+  {
+    const double u     = theX(1);
+    const double v     = theX(2);
+    const double aSqPt = (v - b * u * u + c * u - r);
+    theG(1)            = 2 * a * aSqPt * (c - 2 * b * u) - s * (1 - t) * sin(u);
+    theG(2)            = 2 * a * aSqPt;
+    return true;
+  }
+
+  bool Values(const math_Vector& theX, double& theF, math_Vector& theG) override
+  {
+    Value(theX, theF);
+    Gradient(theX, theG);
+    return true;
+  }
+
+  bool Values(const math_Vector& theX, double& theF, math_Vector& theG, math_Matrix& theH) override
+  {
+    Value(theX, theF);
+    Gradient(theX, theG);
+    const double u      = theX(1);
+    const double v      = theX(2);
+    const double aSqPt  = (v - b * u * u + c * u - r);
+    const double aTmpPt = c - 2 * b * u;
+    theH(1, 1)          = 2 * a * aTmpPt * aTmpPt - 4 * a * b * aSqPt - s * (1 - t) * cos(u);
+    theH(1, 2)          = 2 * a * aTmpPt;
+    theH(2, 1)          = theH(1, 2);
+    theH(2, 2)          = 2 * a;
+    return true;
+  }
+
+private:
+  double a, b, c, r, s, t;
 };
 
 } // anonymous namespace
@@ -513,4 +580,67 @@ TEST(MathGlobOptMinTest, SmallSearchSpace)
   aSolver.Points(1, aSol);
   EXPECT_NEAR(aSol(1), 1.0, 0.02) << "Should find solution close to global minimum";
   EXPECT_NEAR(aSol(2), 2.0, 0.02) << "Should find solution close to global minimum";
+}
+
+TEST(MathGlobOptMinTest, OCC25004_BraninFunctionGlobalOptimum)
+{
+  // OCC25004: Extrema_ExtCC incorrect result. Tests math_GlobOptMin on Branin benchmark.
+  // The Branin function has exactly 3 global minima at ~(-pi,12.275), (pi,2.275), (9.42478,2.475).
+  // Expected minimum value: ~0.39788735772.
+  BraninFunction aFunc;
+
+  math_Vector aLower(1, 2), aUpper(1, 2);
+  aLower(1) = -5;
+  aLower(2) = 0;
+  aUpper(1) = 10;
+  aUpper(2) = 15;
+
+  // Estimate Lipschitz constant on a regular 16x16 grid.
+  const int   aGridOrder = 16;
+  math_Vector aFuncValues(1, aGridOrder * aGridOrder);
+  double      aLipConst = 0;
+  math_Vector aCurrPnt1(1, 2), aCurrPnt2(1, 2);
+
+  int idx = 1;
+  for (int i = 1; i <= aGridOrder; i++)
+  {
+    for (int j = 1; j <= aGridOrder; j++)
+    {
+      aCurrPnt1(1) = aLower(1) + (aUpper(1) - aLower(1)) * (i - 1) / (aGridOrder - 1.0);
+      aCurrPnt1(2) = aLower(2) + (aUpper(2) - aLower(2)) * (j - 1) / (aGridOrder - 1.0);
+      aFunc.Value(aCurrPnt1, aFuncValues(idx));
+      idx++;
+    }
+  }
+
+  for (int i = 1; i <= aGridOrder; i++)
+    for (int j = 1; j <= aGridOrder; j++)
+      for (int k = 1; k <= aGridOrder; k++)
+        for (int l = 1; l <= aGridOrder; l++)
+        {
+          if (i == k && j == l)
+            continue;
+          aCurrPnt1(1)   = aLower(1) + (aUpper(1) - aLower(1)) * (i - 1) / (aGridOrder - 1.0);
+          aCurrPnt1(2)   = aLower(2) + (aUpper(2) - aLower(2)) * (j - 1) / (aGridOrder - 1.0);
+          aCurrPnt2(1)   = aLower(1) + (aUpper(1) - aLower(1)) * (k - 1) / (aGridOrder - 1.0);
+          aCurrPnt2(2)   = aLower(2) + (aUpper(2) - aLower(2)) * (l - 1) / (aGridOrder - 1.0);
+          const int idx1 = (i - 1) * aGridOrder + j;
+          const int idx2 = (k - 1) * aGridOrder + l;
+          // Use subtracted vector norm for Lipschitz estimation
+          aCurrPnt1.Add(-aCurrPnt2);
+          const double aDist = aCurrPnt1.Norm();
+          if (aDist > 0.0)
+          {
+            const double aC = std::abs(aFuncValues(idx1) - aFuncValues(idx2)) / aDist;
+            if (aC > aLipConst)
+              aLipConst = aC;
+          }
+        }
+
+  math_GlobOptMin aFinder(&aFunc, aLower, aUpper, aLipConst);
+  aFinder.Perform();
+
+  EXPECT_TRUE(aFinder.isDone()) << "Optimizer must converge on Branin function";
+  EXPECT_NEAR(aFinder.GetF(), 0.39788735772, 0.1) << "Minimum value of Branin function";
+  EXPECT_EQ(aFinder.NbExtrema(), 3) << "Branin function has exactly 3 global minima";
 }

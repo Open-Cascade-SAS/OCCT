@@ -16,6 +16,7 @@
 
 #include <BRepGraph.hxx>
 #include <BRepGraph_NodeId.hxx>
+#include <BRepGraph_Builder.hxx>
 
 #include <Standard_DefineAlloc.hxx>
 #include <gp_Trsf.hxx>
@@ -38,7 +39,7 @@
 //! ## Typical usage
 //! @code
 //!   BRepGraph aGraph;
-//!   aGraph.Build(myShape);
+//!   BRepGraph_Builder::Add(aGraph, myShape);
 //!   gp_Trsf aTrsf;
 //!   aTrsf.SetTranslation(gp_Vec(10.0, 0.0, 0.0));
 //!   BRepGraph aTransformed = BRepGraph_Transform::Perform(aGraph, aTrsf);

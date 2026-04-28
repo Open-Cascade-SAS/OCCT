@@ -292,7 +292,7 @@ int ShapeFix_Wire::NbEdges() const
 //           are limited if order of edges in the wire is not OK
 //=======================================================================
 
-bool ShapeFix_Wire::Perform()
+bool ShapeFix_Wire::Perform(const Message_ProgressRange& theProgress)
 {
   ClearStatuses();
   if (!IsLoaded())
@@ -316,6 +316,9 @@ bool ShapeFix_Wire::Perform()
     ReorderOK = !StatusReorder(ShapeExtend_FAIL);
   }
 
+  if (theProgress.UserBreak())
+    return false;
+
   // FixSmall is allowed to change topology only if mode is set and FixReorder
   // did not failed
   if (NeedFix(myFixSmallMode, myTopoMode))
@@ -332,11 +335,17 @@ bool ShapeFix_Wire::Perform()
     }
   }
 
+  if (theProgress.UserBreak())
+    return false;
+
   if (NeedFix(myFixConnectedMode, ReorderOK))
   {
     if (FixConnected())
       Fixed = true;
   }
+
+  if (theProgress.UserBreak())
+    return false;
 
   if (NeedFix(myFixEdgeCurvesMode))
   {
@@ -349,11 +358,17 @@ bool ShapeFix_Wire::Perform()
     myFixShiftedMode = savFixShiftedMode;
   }
 
+  if (theProgress.UserBreak())
+    return false;
+
   if (NeedFix(myFixDegeneratedMode))
   {
     if (FixDegenerated())
       Fixed = true; // ?? if ! ReorderOK ??
   }
+
+  if (theProgress.UserBreak())
+    return false;
 
   // pdn - temporary to test
   if (myFixTailMode <= 0 && NeedFix(myFixNotchedEdgesMode, ReorderOK))
@@ -363,6 +378,9 @@ bool ShapeFix_Wire::Perform()
       FixShifted(); // skl 07.03.2002 for OCC180
   }
 
+  if (theProgress.UserBreak())
+    return false;
+
   if (myFixTailMode != 0)
   {
     if (FixTails())
@@ -371,6 +389,9 @@ bool ShapeFix_Wire::Perform()
       FixShifted();
     }
   }
+
+  if (theProgress.UserBreak())
+    return false;
 
   if (NeedFix(myFixSelfIntersectionMode, myClosedMode))
   {
@@ -384,19 +405,30 @@ bool ShapeFix_Wire::Perform()
     myFixIntersectingEdgesMode = savFixIntersectingEdgesMode;
   }
 
+  if (theProgress.UserBreak())
+    return false;
+
   if (NeedFix(myFixLackingMode, ReorderOK))
   {
     if (FixLacking())
       Fixed = true;
   }
 
+  if (theProgress.UserBreak())
+    return false;
+
   // TEMPORARILY without special mode !!!
   occ::handle<ShapeExtend_WireData> sbwd = WireData();
   for (int iedge = 1; iedge <= sbwd->NbEdges(); iedge++)
+  {
     if (myFixEdge->FixVertexTolerance(sbwd->Edge(iedge), Face()))
     {
       Fixed = true;
     }
+  }
+
+  if (theProgress.UserBreak())
+    return false;
 
   if (!Context().IsNull())
     UpdateWire();
@@ -483,9 +515,15 @@ bool ShapeFix_Wire::FixConnected(const double prec)
   int stop = (myClosedMode ? 0 : 1);
   for (int i = NbEdges(); i > stop; i--)
   {
-    FixConnected(i, prec);
+    // Call without UpdateWire to avoid O(n^2) behavior in the loop
+    FixConnected(i, prec, false);
     myStatusConnected |= myLastFixStatus;
   }
+
+  // Update wire once after all connections are fixed
+  // Using Value() in UpdateWire() prevents edge explosion from replacement chains
+  if (!Context().IsNull())
+    UpdateWire();
 
   return StatusConnected(ShapeExtend_DONE);
 }
@@ -1240,14 +1278,13 @@ bool ShapeFix_Wire::FixSmall(const int num, const bool lockvtx, const double pre
 
 //=================================================================================================
 
-bool ShapeFix_Wire::FixConnected(const int num, const double prec)
+bool ShapeFix_Wire::FixConnected(const int num, const double prec, const bool theUpdateWire)
 {
   myLastFixStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
   if (!IsLoaded() || NbEdges() <= 0)
     return false;
 
   // analysis
-
   myAnalyzer->CheckConnected(num, prec < 0 ? MaxTolerance() : prec);
   if (myAnalyzer->LastCheckStatus(ShapeExtend_FAIL))
   {
@@ -1257,7 +1294,6 @@ bool ShapeFix_Wire::FixConnected(const int num, const double prec)
     return false;
 
   // action: replacing vertex
-
   occ::handle<ShapeExtend_WireData> sbwd = WireData();
   int                               n2   = (num > 0 ? num : sbwd->NbEdges());
   int                               n1   = (n2 > 1 ? n2 - 1 : sbwd->NbEdges());
@@ -1351,7 +1387,9 @@ bool ShapeFix_Wire::FixConnected(const int num, const double prec)
       }
     }
   }
-  if (!Context().IsNull())
+
+  // Optionally update wire data with context replacements
+  if (theUpdateWire && !Context().IsNull())
     UpdateWire();
 
   return true;
@@ -3772,9 +3810,11 @@ void ShapeFix_Wire::UpdateWire()
   occ::handle<ShapeExtend_WireData> sbwd = WireData();
   for (int i = 1; i <= sbwd->NbEdges(); i++)
   {
-    TopoDS_Edge  E = sbwd->Edge(i);
-    TopoDS_Shape S = Context()->Apply(E);
-    if (S == E)
+    TopoDS_Edge E = sbwd->Edge(i);
+    // ValueLeaf follows the replacement chain without descending into sub-shapes,
+    // so a previously-split edge is not re-expanded on subsequent Perform() passes.
+    TopoDS_Shape S = Context()->ValueLeaf(E);
+    if (!S.IsNull() && S.IsEqual(E))
       continue;
     for (TopExp_Explorer exp(S, TopAbs_EDGE); exp.More(); exp.Next())
       sbwd->Add(exp.Current(), i++);
