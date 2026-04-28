@@ -22,7 +22,7 @@
 #include <Standard_Macro.hxx>
 #include <GC_Root.hxx>
 
-using GCE2d_Root Standard_DEPRECATED(
+using GCE2d_Root Standard_DEPRECATED_STD(
   "GCE2d_Root is deprecated since OCCT 8.0.0. Use GC_Root instead.")
 = GC_Root;
 

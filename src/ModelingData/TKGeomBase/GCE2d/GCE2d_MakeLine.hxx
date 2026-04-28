@@ -22,7 +22,7 @@
 #include <Standard_Macro.hxx>
 #include <GC_MakeLine2d.hxx>
 
-using GCE2d_MakeLine Standard_DEPRECATED(
+using GCE2d_MakeLine Standard_DEPRECATED_STD(
   "GCE2d_MakeLine is deprecated since OCCT 8.0.0. Use GC_MakeLine2d instead.")
 = GC_MakeLine2d;
 

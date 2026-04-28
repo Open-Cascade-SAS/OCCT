@@ -22,7 +22,7 @@
 #include <Standard_Macro.hxx>
 #include <GC_MakeEllipse2d.hxx>
 
-using GCE2d_MakeEllipse Standard_DEPRECATED(
+using GCE2d_MakeEllipse Standard_DEPRECATED_STD(
   "GCE2d_MakeEllipse is deprecated since OCCT 8.0.0. Use GC_MakeEllipse2d instead.")
 = GC_MakeEllipse2d;
 

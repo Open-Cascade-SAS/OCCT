@@ -22,7 +22,7 @@
 #include <Standard_Macro.hxx>
 #include <GC_MakeRotation2d.hxx>
 
-using GCE2d_MakeRotation Standard_DEPRECATED(
+using GCE2d_MakeRotation Standard_DEPRECATED_STD(
   "GCE2d_MakeRotation is deprecated since OCCT 8.0.0. Use GC_MakeRotation2d instead.")
 = GC_MakeRotation2d;
 

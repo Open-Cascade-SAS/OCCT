@@ -22,7 +22,7 @@
 #include <Standard_Macro.hxx>
 #include <GC_MakeHyperbola2d.hxx>
 
-using GCE2d_MakeHyperbola Standard_DEPRECATED(
+using GCE2d_MakeHyperbola Standard_DEPRECATED_STD(
   "GCE2d_MakeHyperbola is deprecated since OCCT 8.0.0. Use GC_MakeHyperbola2d instead.")
 = GC_MakeHyperbola2d;
 

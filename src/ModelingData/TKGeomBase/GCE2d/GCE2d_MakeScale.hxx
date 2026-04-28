@@ -22,7 +22,7 @@
 #include <Standard_Macro.hxx>
 #include <GC_MakeScale2d.hxx>
 
-using GCE2d_MakeScale Standard_DEPRECATED(
+using GCE2d_MakeScale Standard_DEPRECATED_STD(
   "GCE2d_MakeScale is deprecated since OCCT 8.0.0. Use GC_MakeScale2d instead.")
 = GC_MakeScale2d;
 
