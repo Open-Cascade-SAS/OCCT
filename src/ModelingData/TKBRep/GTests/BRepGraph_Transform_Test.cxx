@@ -599,3 +599,67 @@ TEST(BRepGraph_TransformTest, TransformNode_NegativeScale_VertexPointsMirrored)
     EXPECT_NEAR(aTrans.Z(), -anOrig.Z(), Precision::Confusion());
   }
 }
+
+TEST(BRepGraph_TransformTest, TransformNode_CopyGeomAndMesh_LODCacheSurvives)
+{
+  // Regression test for self-aliasing bug in applyMeshCopy: when TransformNode is called
+  // with theCopyGeom=true and theCopyMesh=true, the LOD face cache entries must survive.
+  // Previously, applyMeshCopy(aSubgraph, aSubgraph, ...) would clear the face cache before
+  // reading from it (source==dest), silently dropping all cached LOD triangulation entries.
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 10.0, 10.0);
+  BRepGraph           aGraph;
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes =
+    BRepGraph_Builder::Add(aGraph, aBoxMaker.Shape());
+  ASSERT_TRUE(aGraph.IsDone());
+  ASSERT_GE(aGraph.Topo().Faces().Nb(), 1);
+
+  // Attach a LOD cache entry on the first face.
+  const BRepGraph_FaceId          aFaceId  = BRepGraph_FaceId::Start();
+  occ::handle<Poly_Triangulation> aLodTri1 = new Poly_Triangulation(3, 1, false);
+  aLodTri1->SetNode(1, gp_Pnt(0.0, 0.0, 0.0));
+  aLodTri1->SetNode(2, gp_Pnt(1.0, 0.0, 0.0));
+  aLodTri1->SetNode(3, gp_Pnt(0.0, 1.0, 0.0));
+  aLodTri1->SetTriangle(1, Poly_Triangle(1, 2, 3));
+  aLodTri1->Deflection(0.5);
+  occ::handle<Poly_Triangulation> aLodTri2 = new Poly_Triangulation(3, 1, false);
+  aLodTri2->SetNode(1, gp_Pnt(0.0, 0.0, 0.0));
+  aLodTri2->SetNode(2, gp_Pnt(2.0, 0.0, 0.0));
+  aLodTri2->SetNode(3, gp_Pnt(0.0, 2.0, 0.0));
+  aLodTri2->SetTriangle(1, Poly_Triangle(1, 2, 3));
+  aLodTri2->Deflection(1.0);
+
+  const BRepGraph_TriangulationRepId aRep1 =
+    BRepGraph_Tool::Mesh::CreateTriangulationRep(aGraph, aLodTri1);
+  const BRepGraph_TriangulationRepId aRep2 =
+    BRepGraph_Tool::Mesh::CreateTriangulationRep(aGraph, aLodTri2);
+  BRepGraph_Tool::Mesh::AppendCachedTriangulation(aGraph, aFaceId, aRep1);
+  BRepGraph_Tool::Mesh::AppendCachedTriangulation(aGraph, aFaceId, aRep2);
+  BRepGraph_Tool::Mesh::SetCachedActiveIndex(aGraph, aFaceId, 1);
+
+  const BRepGraph_SolidId aSolidId   = BRepGraph_SolidId::Start();
+  const BRepGraph_NodeId  aSolidNode = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Solid,
+                                                        aSolidId.Index);
+  gp_Trsf aTrsf;
+  aTrsf.SetTranslation(gp_Vec(5.0, 0.0, 0.0));
+
+  // This is the previously failing path: theCopyGeom=true, theCopyMesh=true.
+  BRepGraph aResult =
+    BRepGraph_Transform::TransformNode(aGraph, aSolidNode, aTrsf, true, true);
+  ASSERT_TRUE(aResult.IsDone());
+
+  // Both LOD cache entries must survive the transform.
+  const BRepGraph_MeshCache::FaceMeshEntry* aEntry =
+    aResult.Mesh().Faces().CachedMesh(aFaceId);
+  ASSERT_NE(aEntry, nullptr);
+  EXPECT_TRUE(aEntry->IsPresent());
+  EXPECT_EQ(aEntry->TriangulationRepIds.Length(), 2);
+  EXPECT_EQ(aEntry->ActiveTriangulationIndex, 1);
+
+  // The cached triangulation nodes must be shifted by the translation.
+  const BRepGraph_TriangulationRepId aResRep1 = aEntry->TriangulationRepIds.Value(0);
+  ASSERT_TRUE(aResRep1.IsValid(aResult.Mesh().Poly().NbTriangulations()));
+  const occ::handle<Poly_Triangulation>& aResTri1 =
+    aResult.Mesh().Poly().TriangulationRep(aResRep1).Triangulation;
+  ASSERT_FALSE(aResTri1.IsNull());
+  EXPECT_NEAR(aResTri1->Node(2).X(), 1.0 + 5.0, Precision::Confusion());
+}

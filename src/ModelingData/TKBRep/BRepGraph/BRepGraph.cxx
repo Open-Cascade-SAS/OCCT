@@ -34,7 +34,7 @@
 namespace
 {
 
-static Standard_GUID generateRandomGUID()
+Standard_GUID generateRandomGUID()
 {
   std::random_device         aRD;
   MathUtils::RandomGenerator aRNG(aRD());

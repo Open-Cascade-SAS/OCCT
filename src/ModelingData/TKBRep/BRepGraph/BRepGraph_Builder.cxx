@@ -82,6 +82,10 @@ BRepGraph_NodeId BRepGraph_Builder::detectTopologyRoot(const BRepGraph&       th
   if (aNewCount <= theOldCountOfShapeKind)
     return BRepGraph_NodeId();
 
+  // BRepGraphInc_Populate::Append appends entities in declaration order, so the first entity
+  // appended for a given shape type is always the shape root (index == pre-append count).
+  // This assumption holds as long as no intermediate entities of the same type are inserted
+  // before the root node during population.
   switch (theShapeType)
   {
     case TopAbs_COMPOUND:
@@ -371,15 +375,20 @@ BRepGraph_Builder::Result BRepGraph_Builder::Add(BRepGraph&             theGraph
       if (!aChildProduct.IsValid())
         return aResult;
 
+      // Snapshot the count before LinkProducts so we can recover the newly created OccurrenceRefId.
+      const BRepGraph_OccurrenceRefId anOccRefId(
+        static_cast<uint32_t>(theGraph.myData->myIncStorage.NbOccurrenceRefs()));
+
       const BRepGraph_OccurrenceId anOccId =
         theGraph.Editor().Products().LinkProducts(BRepGraph_ProductId(theParent),
                                                   aChildProduct,
                                                   theShape.Location());
       if (!anOccId.IsValid())
         return aResult;
-      aResult.Product    = aChildProduct;
-      aResult.Occurrence = anOccId;
-      aResult.Ok         = true;
+      aResult.Product     = aChildProduct;
+      aResult.Occurrence  = anOccId;
+      aResult.InsertedRef = BRepGraph_RefId(anOccRefId);
+      aResult.Ok          = true;
       return aResult;
     }
     case BRepGraph_NodeId::Kind::Compound: {

@@ -389,7 +389,13 @@ BRepGraph_FaceId ensureFace(CopyContext& ctx, BRepGraph_FaceId srcId)
   {
     const BRepGraph_MeshCache::FaceMeshEntry* aCached = ctx.Source.Mesh().Faces().CachedMesh(srcId);
     if (aCached != nullptr)
-      ctx.DstMesh->ChangeFaceMesh(aNewId) = *aCached;
+    {
+      BRepGraph_MeshCache::FaceMeshEntry& aNewEntry = ctx.DstMesh->ChangeFaceMesh(aNewId);
+      aNewEntry = *aCached;
+      // Update StoredOwnGen to the destination face's generation so that freshness checks pass.
+      // The raw copy carries the source OwnGen, which differs from the newly created face.
+      aNewEntry.StoredOwnGen = ctx.DstStorage->Face(aNewId).OwnGen;
+    }
   }
 
   ctx.Faces.Bind(srcId, aNewId);

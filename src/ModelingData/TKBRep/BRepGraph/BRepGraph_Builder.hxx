@@ -75,12 +75,13 @@ public:
   //!   - Shell:     appends a Face as a FaceRef; other shapes via AddChild.
   //!   - Solid:     appends a Shell as a ShellRef; other shapes via AddChild.
   //!   - CompSolid: appends a Solid as a SolidRef.
-  //!   Other parent kinds yield an invalid Result.
+  //!   Other parent kinds (Wire, Edge, Vertex, Occurrence) are not supported and yield
+  //!   an invalid Result (Result::Ok == false) without modification to the graph.
   //! @param[in,out] theGraph  graph to populate
   //! @param[in]     theShape  shape to ingest
   //! @param[in]     theParent parent node receiving the topology
-  //! @return Result with TopologyRoot set, plus (Product, Occurrence) for Product parents
-  //!         or InsertedRef for topology container parents.
+  //! @return Result with TopologyRoot set, plus (Product, Occurrence, InsertedRef) for Product
+  //!         parents or InsertedRef for topology container parents.
   [[nodiscard]] static Standard_EXPORT Result Add(BRepGraph&             theGraph,
                                                   const TopoDS_Shape&    theShape,
                                                   const BRepGraph_NodeId theParent);

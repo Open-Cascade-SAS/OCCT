@@ -124,16 +124,30 @@ void transformPolygon3D(const occ::handle<Poly_Polygon3D>& thePoly, const gp_Trs
 //!  - PolygonOnTriangulation reps (coedge mesh cache); TriangulationRepId references
 //!    are remapped to point to the newly created triangulation reps.
 //!
-//! @param[in] theSource   source graph (pre-transform)
-//! @param[in] theDest     destination graph (post-copy, mesh storage is empty)
-//! @param[in] theTrsf     transformation to apply (ignored when !theDoTransform)
-//! @param[in] theDoTransform  true: copy + transform; false: copy only (location-only mode)
-void applyMeshCopy(const BRepGraph& theSource,
-                   BRepGraph&       theDest,
-                   const gp_Trsf&   theTrsf,
-                   const bool       theDoTransform)
+//! @param[in] theSource      source graph whose face IDs and mesh cache are iterated
+//! @param[in] theDest        destination graph (mesh storage is populated by this call)
+//! @param[in] theTrsf        transformation to apply (ignored when !theDoTransform)
+//! @param[in] theDoTransform true: copy + transform; false: copy only (location-only mode)
+//! @param[in] thePolySource  graph whose poly storage is used for TriangulationRep lookups;
+//!                           when nullptr, theSource is used.  Pass the original source graph
+//!                           when theSource is a CopyNode result whose poly storage is empty
+//!                           yet its FaceMeshEntry TriangulationRepIds still reference the
+//!                           original graph's poly storage.
+//! @param[in] theSourceCache raw mesh cache storage to read LOD entries from, bypassing the
+//!                           OwnGen freshness check.  Use when theSource's face OwnGens may
+//!                           have been bumped since the LOD entries were stored (e.g. by
+//!                           Mut guards in the geometry-transform pass that runs before this
+//!                           call).  When nullptr, theSource.Mesh().Faces().CachedMesh() is
+//!                           used (includes the freshness check).
+void applyMeshCopy(const BRepGraph&              theSource,
+                   BRepGraph&                    theDest,
+                   const gp_Trsf&                theTrsf,
+                   const bool                    theDoTransform,
+                   const BRepGraph*              thePolySource   = nullptr,
+                   const BRepGraph_MeshCacheStorage* theSourceCache = nullptr)
 {
-  const BRepGraph::MeshView::PolyOps& aSrcPoly = theSource.Mesh().Poly();
+  const BRepGraph::MeshView::PolyOps& aSrcPoly =
+    thePolySource != nullptr ? thePolySource->Mesh().Poly() : theSource.Mesh().Poly();
 
   // Old TriangulationRepId.Index -> new TriangulationRepId in theDest storage.
   NCollection_DataMap<uint32_t, BRepGraph_TriangulationRepId> aTriRepMap;
@@ -142,6 +156,27 @@ void applyMeshCopy(const BRepGraph& theSource,
   for (BRepGraph_FaceIterator aFaceIt(theSource); aFaceIt.More(); aFaceIt.Next())
   {
     const BRepGraph_FaceId aFaceId = aFaceIt.CurrentId();
+
+    // Snapshot LOD cache entries.  When theSourceCache is provided it is used directly
+    // (bypassing the OwnGen freshness check) because the geometry-transform Mut guards
+    // may have bumped the face OwnGen since the entries were stored, making them appear
+    // stale to CachedMesh() even though the triangulation data is still intact.
+    // The snapshot is also required for the self-aliasing case (theSource == theDest):
+    // ClearFaceCache below would invalidate a raw pointer into the same storage.
+    NCollection_DynamicArray<BRepGraph_TriangulationRepId> aSrcLODs;
+    int                                                    aSrcActiveIdx = -1;
+    {
+      const BRepGraph_MeshCache::FaceMeshEntry* aSrcEntry =
+        theSourceCache != nullptr ? theSourceCache->FindFaceMesh(aFaceId)
+                                  : theSource.Mesh().Faces().CachedMesh(aFaceId);
+      if (aSrcEntry != nullptr && aSrcEntry->IsPresent())
+      {
+        for (int i = 0; i < aSrcEntry->TriangulationRepIds.Length(); ++i)
+          aSrcLODs.Append(aSrcEntry->TriangulationRepIds.Value(i));
+        aSrcActiveIdx = aSrcEntry->ActiveTriangulationIndex;
+      }
+    }
+
     BRepGraph_Tool::Mesh::ClearFaceCache(theDest, aFaceId);
 
     // Helper lambda: copy one triangulation from source, optionally transform, register in dest.
@@ -169,27 +204,21 @@ void applyMeshCopy(const BRepGraph& theSource,
       return aNewRepId;
     };
 
-    // Persistent triangulation stored on FaceDef.
+    // Persistent triangulation stored on FaceDef (not in the cache; safe to read after clear).
     const BRepGraph_TriangulationRepId aSrcPersistId =
       theSource.Topo().Faces().Definition(aFaceId).TriangulationRepId;
     const BRepGraph_TriangulationRepId aNewPersistId = copyOneTri(aSrcPersistId);
     theDest.Editor().Faces().SetTriangulationRep(aFaceId, aNewPersistId);
 
-    // Cached LOD entries (MeshLayer).
-    const BRepGraph_MeshCache::FaceMeshEntry* aSrcEntry =
-      theSource.Mesh().Faces().CachedMesh(aFaceId);
-    if (aSrcEntry == nullptr || !aSrcEntry->IsPresent())
-      continue;
-
-    for (int i = 0; i < aSrcEntry->TriangulationRepIds.Length(); ++i)
+    // Cached LOD entries (MeshLayer) — use the pre-clear snapshot.
+    for (int i = 0; i < aSrcLODs.Length(); ++i)
     {
-      const BRepGraph_TriangulationRepId aNewRepId =
-        copyOneTri(aSrcEntry->TriangulationRepIds.Value(i));
+      const BRepGraph_TriangulationRepId aNewRepId = copyOneTri(aSrcLODs.Value(i));
       if (aNewRepId.IsValid())
         BRepGraph_Tool::Mesh::AppendCachedTriangulation(theDest, aFaceId, aNewRepId);
     }
-    BRepGraph_Tool::Mesh::SetCachedActiveIndex(theDest, aFaceId,
-                                               aSrcEntry->ActiveTriangulationIndex);
+    if (aSrcActiveIdx >= 0)
+      BRepGraph_Tool::Mesh::SetCachedActiveIndex(theDest, aFaceId, aSrcActiveIdx);
   }
 
   // -- Polygon3D (edges) --
@@ -263,10 +292,14 @@ void applyMeshCopy(const BRepGraph& theSource,
 //! Matches BRepBuilderAPI_Transform with theCopyGeom=true.
 //! When theCopyMesh=true triangulations are copied and transformed;
 //! otherwise they are invalidated.
-void applyGeometryTransform(const BRepGraph& theSource,
-                            BRepGraph&       theGraph,
-                            const gp_Trsf&   theTrsf,
-                            const bool       theCopyMesh)
+//! @param[in] thePolySource   forwarded to applyMeshCopy; see that function's documentation.
+//! @param[in] theSourceCache  forwarded to applyMeshCopy; see that function's documentation.
+void applyGeometryTransform(const BRepGraph&              theSource,
+                            BRepGraph&                    theGraph,
+                            const gp_Trsf&                theTrsf,
+                            const bool                    theCopyMesh,
+                            const BRepGraph*              thePolySource   = nullptr,
+                            const BRepGraph_MeshCacheStorage* theSourceCache = nullptr)
 {
   // Transform absolute vertex points.
   for (BRepGraph_VertexIterator aVertexIt(theGraph); aVertexIt.More(); aVertexIt.Next())
@@ -324,7 +357,7 @@ void applyGeometryTransform(const BRepGraph& theSource,
   // PCurves are in UV space - they are not affected by 3D transforms.
 
   if (theCopyMesh)
-    applyMeshCopy(theSource, theGraph, theTrsf, true);
+    applyMeshCopy(theSource, theGraph, theTrsf, true, thePolySource, theSourceCache);
 }
 
 } // namespace
@@ -417,7 +450,17 @@ BRepGraph BRepGraph_Transform::TransformNode(const BRepGraph&       theGraph,
 
   if (useGeomModif)
   {
-    applyGeometryTransform(aSubgraph, aSubgraph, theTrsf, theCopyMesh);
+    // Pass theGraph as the poly source: CopyNode does not copy the poly triangulation rep
+    // storage, so aSubgraph.Mesh().Poly() is empty.  The TriangulationRepIds stored in
+    // aSubgraph's FaceDef and FaceMeshEntry still reference theGraph's poly storage, so
+    // applyMeshCopy must look them up there.
+    //
+    // Also pass aSubgraph's raw mesh cache to applyMeshCopy: the geometry-transform
+    // Mut guards bump each face's OwnGen, which makes the FaceMeshEntry entries written
+    // by CopyNode appear stale to CachedMesh().  Providing the raw cache directly lets
+    // applyMeshCopy bypass the freshness check and still see those entries.
+    const BRepGraph_MeshCacheStorage& aSubgraphCache = aSubgraph.meshCache();
+    applyGeometryTransform(aSubgraph, aSubgraph, theTrsf, theCopyMesh, &theGraph, &aSubgraphCache);
   }
   else
   {
