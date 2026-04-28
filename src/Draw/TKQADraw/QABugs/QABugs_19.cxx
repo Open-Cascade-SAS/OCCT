@@ -61,7 +61,6 @@
 #include <Draw.hxx>
 #include <GeomInt_IntSS.hxx>
 #include <NCollection_Sequence.hxx>
-#include <Geom_ConicalSurface.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <Extrema_FuncPSNorm.hxx>
 #include <BRepAdaptor_Curve.hxx>
@@ -93,28 +92,16 @@ Standard_DISABLE_DEPRECATION_WARNINGS
     std::cout << "Error: " #val " is false\n";                                                     \
   }
 
-  // Helper function to create conical surface
-  static occ::handle<Geom_Surface>
-  CreateCone(const gp_Pnt& theApex,
-             const gp_Dir& theDir,
-             const gp_Dir& theXDir,
-             double        theR,
-             double        theSemiAngle,
-             double /*theH*/)
-{
-  gp_Ax3 anAxis(theApex, theDir, theXDir);
-  return new Geom_ConicalSurface(anAxis, theSemiAngle, theR);
-}
-
 #include <TopoDS_Face.hxx>
 #include <TopoDS.hxx>
 #include <BRepBuilderAPI_Transform.hxx>
 #include <BRepExtrema_DistShapeShape.hxx>
 #include <BRepTools.hxx>
 
-static bool OCC23774Test(const TopoDS_Face&  grossPlateFace,
-                         const TopoDS_Shape& originalWire,
-                         Draw_Interpretor&   di)
+  static bool
+  OCC23774Test(const TopoDS_Face&  grossPlateFace,
+               const TopoDS_Shape& originalWire,
+               Draw_Interpretor&   di)
 {
   BRepExtrema_DistShapeShape distShapeShape(grossPlateFace, originalWire, Extrema_ExtFlag_MIN);
   if (!distShapeShape.IsDone())
@@ -679,35 +666,6 @@ static int OCC24137(Draw_Interpretor& theDI, int theNArg, const char** theArgv)
 
   aSurf.D0(aRoot.Root()(1), aRoot.Root()(2), aRes);
   DBRep::Set("result", BRepBuilderAPI_MakeVertex(aRes));
-  return 0;
-}
-
-//! Check boolean operations on NCollection_Map
-static int OCC23972(Draw_Interpretor& /*theDI*/, int theNArg, const char** theArgs)
-{
-  if (theNArg != 3)
-    return 1;
-
-  // process specific cones, cannot read them from files because
-  // due to rounding the original error in math_FunctionRoots gets hidden
-  const occ::handle<Geom_Surface> aS1 =
-    CreateCone(gp_Pnt(123.694345356663, 789.9, 68.15),
-               gp_Dir(-1, 3.48029791472957e-016, -8.41302743359754e-017),
-               gp_Dir(-3.48029791472957e-016, -1, -3.17572289932207e-016),
-               3.28206830417112,
-               0.780868809443031,
-               0.624695047554424);
-  const occ::handle<Geom_Surface> aS2 =
-    CreateCone(gp_Pnt(123.694345356663, 784.9, 68.15),
-               gp_Dir(-1, -2.5209507537117e-016, -1.49772808948866e-016),
-               gp_Dir(1.49772808948866e-016, 3.17572289932207e-016, -1),
-               3.28206830417112,
-               0.780868809443031,
-               0.624695047554424);
-
-  DrawTrSurf::Set(theArgs[1], aS1);
-  DrawTrSurf::Set(theArgs[2], aS2);
-
   return 0;
 }
 
@@ -2769,7 +2727,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands)
                   group);
   theCommands.Add("OCC24008", "OCC24008 curve surface", __FILE__, OCC24008, group);
   theCommands.Add("OCC24137", "OCC24137 face vertex U V [N]", __FILE__, OCC24137, group);
-  theCommands.Add("OCC23972", "OCC23972", __FILE__, OCC23972, group);
   theCommands.Add("OCC24370", "OCC24370 edge pcurve surface prec", __FILE__, OCC24370, group);
   theCommands.Add("OCC24086", "OCC24086 face wire", __FILE__, OCC24086, group);
   theCommands.Add("OCC24667",

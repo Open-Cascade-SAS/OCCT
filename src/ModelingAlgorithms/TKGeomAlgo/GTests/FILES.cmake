@@ -31,5 +31,7 @@ set(OCCT_TKGeomAlgo_GTests_FILES
   IntSurf_LineOn2S_Test.cxx
   IntSurf_Quadric_Test.cxx
   GeomAPI_IntSS_Test.cxx
+  GeomAPI_ProjectPointOnSurf_Test.cxx
+  Geom2dConvert_BSplineCurveToBezierCurve_Test.cxx
   TopTrans_SurfaceTransition_Test.cxx
 )

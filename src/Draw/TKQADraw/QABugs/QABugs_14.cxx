@@ -266,71 +266,6 @@ static int BUC60854(Draw_Interpretor& /*di*/, int argc, const char** argv)
   return 0;
 }
 
-static int BUC60870(Draw_Interpretor& di, int argc, const char** argv)
-{
-  int i1;
-  if (argc != 5)
-  {
-    di << "Usage : " << argv[0] << " result name_of_shape_1 name_of_shape_2 dev\n";
-    return 1;
-  }
-  const char *               ns1 = (argv[2]), *ns2 = (argv[3]), *ns0 = (argv[1]);
-  TopoDS_Shape               S1(DBRep::Get(ns1)), S2(DBRep::Get(ns2));
-  double                     dev = Draw::Atof(argv[4]);
-  BRepExtrema_DistShapeShape dst(S1, S2, dev);
-  if (dst.IsDone())
-  {
-    char named[100];
-    Sprintf(named, "%s%s", ns0, "_val");
-    char* tempd = named;
-    Draw::Set(tempd, dst.Value());
-    di << named << " ";
-    for (i1 = 1; i1 <= dst.NbSolution(); i1++)
-    {
-      gp_Pnt P1, P2;
-      P1 = (dst.PointOnShape1(i1));
-      P2 = (dst.PointOnShape2(i1));
-      if (dst.Value() <= 1.e-9)
-      {
-        TopoDS_Vertex V = BRepLib_MakeVertex(P1);
-        char          namev[100];
-        if (i1 == 1)
-        {
-          Sprintf(namev, "%s", ns0);
-        }
-        else
-        {
-          Sprintf(namev, "%s%d", ns0, i1);
-        }
-        char* tempv = namev;
-        DBRep::Set(tempv, V);
-        di << namev << " ";
-      }
-      else
-      {
-        char        name[100];
-        TopoDS_Edge E = BRepLib_MakeEdge(P1, P2);
-        if (i1 == 1)
-        {
-          Sprintf(name, "%s", ns0);
-        }
-        else
-        {
-          Sprintf(name, "%s%d", ns0, i1);
-        }
-        char* temp = name;
-        DBRep::Set(temp, E);
-        di << name << " ";
-      }
-    }
-  }
-  else
-  {
-    di << "Faulty : found a problem\n";
-  }
-  return 0;
-}
-
 static int BUC60944(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 2)
@@ -1009,11 +944,6 @@ void QABugs::Commands_14(Draw_Interpretor& theCommands)
                   "edge_on_shape edge_on_wire ... ] ] [ # L/R ]",
                   __FILE__,
                   BUC60854,
-                  group);
-  theCommands.Add("BUC60870",
-                  "BUC60870 result name_of_shape_1 name_of_shape_2 dev",
-                  __FILE__,
-                  BUC60870,
                   group);
   theCommands.Add("BUC60944", "BUC60944 path", __FILE__, BUC60944, group);
   theCommands.Add("BUC60868", "BUC60868 Result Shell", __FILE__, BUC60868, group);

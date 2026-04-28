@@ -13,6 +13,7 @@
 
 #include <TCollection_ExtendedString.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <NCollection_DataMap.hxx>
 #include <Standard_OutOfRange.hxx>
 
 #include <gtest/gtest.h>
@@ -1121,4 +1122,19 @@ TEST(TCollection_ExtendedStringTest, EndsWith_Match)
   const TCollection_ExtendedString aStr("hello");
   const TCollection_ExtendedString aSuffix("lo");
   EXPECT_TRUE(aStr.EndsWith(aSuffix));
+}
+
+// OCC22744: A TCollection_ExtendedString containing a non-ASCII character must report
+// IsAscii() == false, and must be usable as a key in NCollection_DataMap without crash.
+TEST(TCollection_ExtendedStringTest, OCC22744_NonAsciiCharIsNotAsciiAndCanBeUsedAsMapKey)
+{
+  TCollection_ExtendedString anExtString;
+  const char16_t             aNonAsciiChar = 0x0f00;
+  anExtString.Insert(1, aNonAsciiChar);
+
+  EXPECT_FALSE(anExtString.IsAscii());
+
+  NCollection_DataMap<TCollection_ExtendedString, int> aMap;
+  EXPECT_NO_THROW(aMap.Bind(anExtString, 0));
+  EXPECT_EQ(aMap.Size(), 1);
 }

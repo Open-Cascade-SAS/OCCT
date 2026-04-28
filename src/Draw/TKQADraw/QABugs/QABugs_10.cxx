@@ -22,150 +22,13 @@
 #include <AIS_InteractiveContext.hxx>
 #include <TopoDS_Shape.hxx>
 
-#include <BRepBuilderAPI_MakePolygon.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Dir.hxx>
-#include <gp_Ax1.hxx>
-#include <BRepPrimAPI_MakeRevol.hxx>
-
-#include <GProp_GProps.hxx>
-#include <BRepGProp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
-#include <BRepMesh_IncrementalMesh.hxx>
 #include <BRep_Tool.hxx>
-#include <Poly_Triangulation.hxx>
-#include <TopExp.hxx>
 #include <Standard_ErrorHandler.hxx>
-#include <Geom_BSplineSurface.hxx>
-
-#include <BRepAlgoAPI_Fuse.hxx>
-#include <BRepFilletAPI_MakeFillet.hxx>
-#include <ShapeUpgrade_UnifySameDomain.hxx>
-
-static int OCC426(Draw_Interpretor& di, int argc, const char** argv)
-{
-  if (argc != 8)
-  {
-    di << "Usage : " << argv[0] << " shape1 shape2 shape3 shape4 shape5 shape6 shape7\n";
-    return 1;
-  }
-
-  BRepBuilderAPI_MakePolygon W1;
-  W1.Add(gp_Pnt(10, 0, 0));
-  W1.Add(gp_Pnt(20, 0, 0));
-  W1.Add(gp_Pnt(20, 0, 10));
-  W1.Add(gp_Pnt(10, 0, 10));
-  W1.Add(gp_Pnt(10, 0, 0));
-
-  bool        OnlyPlane1 = false;
-  TopoDS_Face F1         = BRepBuilderAPI_MakeFace(W1.Wire(), OnlyPlane1);
-
-  gp_Pnt       P1(0, 0, 0);
-  gp_Dir       D1(0, 0, 30);
-  gp_Ax1       A1(P1, D1);
-  double       angle1 = 360 * (M_PI / 180.0);
-  TopoDS_Shape rs1    = BRepPrimAPI_MakeRevol(F1, A1, angle1);
-
-  BRepBuilderAPI_MakePolygon W2;
-  double                     f1 = 7.0710678118654752440;
-  double                     f2 = 14.1421356237309504880;
-  W2.Add(gp_Pnt(f1, f1, 10));
-  W2.Add(gp_Pnt(f2, f2, 10));
-  W2.Add(gp_Pnt(f2, f2, 20));
-  W2.Add(gp_Pnt(f1, f1, 20));
-  W2.Add(gp_Pnt(f1, f1, 10));
-
-  bool        OnlyPlane2 = false;
-  TopoDS_Face F2         = BRepBuilderAPI_MakeFace(W2.Wire(), OnlyPlane2);
-
-  gp_Pnt       P2(0, 0, 0);
-  gp_Dir       D2(0, 0, 30);
-  gp_Ax1       A2(P2, D2);
-  double       angle2 = 270 * (M_PI / 180.0);
-  TopoDS_Shape rs2    = BRepPrimAPI_MakeRevol(F2, A2, angle2);
-
-  BRepBuilderAPI_MakePolygon W3;
-  W3.Add(gp_Pnt(10, 0, 20));
-  W3.Add(gp_Pnt(20, 0, 20));
-  W3.Add(gp_Pnt(20, 0, 30));
-  W3.Add(gp_Pnt(10, 0, 30));
-  W3.Add(gp_Pnt(10, 0, 20));
-
-  bool        OnlyPlane3 = false;
-  TopoDS_Face F3         = BRepBuilderAPI_MakeFace(W3.Wire(), OnlyPlane3);
-
-  gp_Pnt       P3(0, 0, 0);
-  gp_Dir       D3(0, 0, 30);
-  gp_Ax1       A3(P3, D3);
-  double       angle3 = 360 * (M_PI / 180.0);
-  TopoDS_Shape rs3    = BRepPrimAPI_MakeRevol(F3, A3, angle3);
-
-  di << "fuse32 = BRepAlgoAPI_Fuse(rs3, rs2)\n";
-  di << "fuse321 = BRepAlgoAPI_Fuse(fuse32, rs1)\n";
-  TopoDS_Shape fuse32  = BRepAlgoAPI_Fuse(rs3, rs2).Shape();
-  TopoDS_Shape fuse321 = BRepAlgoAPI_Fuse(fuse32, rs1).Shape();
-
-  // unify the faces of the Fuse result
-  ShapeUpgrade_UnifySameDomain anUnify(fuse321, true, true, true);
-  anUnify.Build();
-  const TopoDS_Shape& aFuseUnif = anUnify.Shape();
-
-  // Give the mass calculation of the shape "aFuseUnif"
-  GProp_GProps G;
-  BRepGProp::VolumeProperties(aFuseUnif, G);
-  di << " \n";
-  di << "Mass: " << G.Mass() << "\n\n";
-
-  di << "Trianglating Faces .....\n";
-  TopExp_Explorer ExpFace;
-
-  for (ExpFace.Init(aFuseUnif, TopAbs_FACE); ExpFace.More(); ExpFace.Next())
-  {
-    TopoDS_Face TopologicalFace = TopoDS::Face(ExpFace.Current());
-    TopologicalFace.Orientation(TopAbs_FORWARD);
-    BRepMesh_IncrementalMesh        IM(TopologicalFace, 1);
-    TopLoc_Location                 loc;
-    occ::handle<Poly_Triangulation> facing = BRep_Tool::Triangulation(TopologicalFace, loc);
-    if (facing.IsNull())
-    {
-      di << "Triangulation FAILED for this face\n";
-      continue;
-    }
-    di << "No of Triangles = " << facing->NbTriangles() << "\n";
-  }
-  di << "Triangulation of all Faces Completed. \n\n";
-
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-    edgemap;
-  TopExp::MapShapesAndAncestors(aFuseUnif, TopAbs_EDGE, TopAbs_SOLID, edgemap);
-  di << "No. of Edges: " << edgemap.Extent() << "\n";
-  ChFi3d_FilletShape       FShape = ChFi3d_Rational;
-  BRepFilletAPI_MakeFillet blend(aFuseUnif, FShape);
-  di << "Adding Edges ..... \n";
-  for (int i = 1; i <= edgemap.Extent(); i++)
-  {
-    // std::cout << "Adding Edge : " << i << std::endl;
-    TopoDS_Edge edg = TopoDS::Edge(edgemap.FindKey(i));
-    if (!edg.IsNull())
-      blend.Add(1, edg);
-  }
-  di << "All Edges added !  Now Building the Blend ... \n";
-  di << " \n";
-  blend.Build();
-
-  // DBRep::Set ( argv[1], fuse321 );
-  DBRep::Set(argv[1], blend);
-  DBRep::Set(argv[2], rs1);
-  DBRep::Set(argv[3], rs2);
-  DBRep::Set(argv[4], rs3);
-  DBRep::Set(argv[5], fuse32);
-  DBRep::Set(argv[6], fuse321);
-  DBRep::Set(argv[7], aFuseUnif);
-
-  return 0;
-}
 
 #include <Geom_SurfaceOfRevolution.hxx>
 
@@ -417,10 +280,10 @@ static int OCC712(Draw_Interpretor& di, int argc, const char** argv)
         }
       }
 
-      di << "All Faces added. Building... \n"; // std::cout.flush();
+      di << "All Faces added. Building... \n";
       draftSlab.Build();
-      di << "Build done...\n"; // std::cout.flush();
-      if (!draftSlab.IsDone()) //--------------> STEP:1
+      di << "Build done...\n";
+      if (!draftSlab.IsDone())
       {
         di << " Error in Build \n";
         return 1;
@@ -428,272 +291,6 @@ static int OCC712(Draw_Interpretor& di, int argc, const char** argv)
       slabShape = draftSlab.Shape();
       DBRep::Set(argv[1], slabShape);
     }
-  }
-  catch (Standard_Failure const&) //--------------------> STEP:2
-  {
-    di << " Error in Draft Slab \n";
-    return 1;
-  }
-  return 0;
-}
-
-//=======================================================================
-//  performTriangulation
-//=======================================================================
-
-int performTriangulation(const TopoDS_Shape& aShape, Draw_Interpretor& di)
-{
-  int                             failed = 0, total = 0;
-  TopExp_Explorer                 ExpFace;
-  occ::handle<Poly_Triangulation> facing;
-
-  for (ExpFace.Init(aShape, TopAbs_FACE); ExpFace.More(); ExpFace.Next())
-  {
-    total++;
-    TopoDS_Face TopologicalFace = TopoDS::Face(ExpFace.Current());
-    TopologicalFace.Orientation(TopAbs_FORWARD);
-    BRepMesh_IncrementalMesh IM(TopologicalFace, 1);
-    TopLoc_Location          loc;
-    facing = BRep_Tool::Triangulation(TopologicalFace, loc);
-    di << "Face " << total << " - ";
-    if (facing.IsNull())
-    {
-      failed++;
-      di << "******************** FAILED during Triangulation \n";
-    }
-    else
-    {
-      di << facing->NbTriangles() << " Triangles\n";
-    }
-  }
-  di << "Triangulation of all Faces Completed: \n\n";
-  if (failed == 0)
-    return 1;
-  di << "***************************************************\n";
-  di << "*******                                    ********\n";
-  di << "***** Triangulation FAILED for " << failed << " of " << total << " Faces ******\n";
-  di << "*******                                    ********\n";
-  di << "***************************************************\n";
-  return 0;
-}
-
-#include <BRepAlgoAPI_Cut.hxx>
-
-//=================================================================================================
-
-#include <BRepPrimAPI_MakeSphere.hxx>
-
-//=======================================================================
-//  OCC822_2
-//=======================================================================
-
-//=======================================================================
-//  OCC823
-//=======================================================================
-
-//=======================================================================
-//  OCC824
-//=======================================================================
-
-#include <NCollection_Array2.hxx>
-#include <GeomConvert.hxx>
-#include <Geom_BezierSurface.hxx>
-#include <BRepPrimAPI_MakeHalfSpace.hxx>
-
-//=======================================================================
-//  OCC825
-//=======================================================================
-
-static int OCC825(Draw_Interpretor& di, int argc, const char** argv)
-{
-  if (argc != 6)
-  {
-    di << "Usage : " << argv[0] << " name1 name2 name3 result1 result2\n";
-    return 1;
-  }
-
-  int index = 1;
-
-  double                     size = 50;
-  NCollection_Array2<gp_Pnt> poles(1, 2, 1, 2);
-
-  poles(1, 1).SetCoord(-size, 0, -size);
-  poles(1, 2).SetCoord(-size, 0, size);
-  poles(2, 1).SetCoord(size, 0, -size);
-  poles(2, 2).SetCoord(size, 0, size);
-
-  occ::handle<Geom_BezierSurface>  BezSurf = new Geom_BezierSurface(poles);
-  occ::handle<Geom_BSplineSurface> BSpSurf = GeomConvert::SurfaceToBSplineSurface(BezSurf);
-  BRepBuilderAPI_MakeFace          faceMaker(BSpSurf, Precision::Confusion());
-  const TopoDS_Face&               face = faceMaker.Face();
-
-  gp_Pnt                     pnt(0, size, 0);
-  BRepPrimAPI_MakeHalfSpace* hSpace = new BRepPrimAPI_MakeHalfSpace(face, pnt);
-  TopoDS_Shape               hsp    = hSpace->Solid();
-  if (index < argc)
-    DBRep::Set(argv[index++], hsp);
-
-  BRepPrimAPI_MakeSphere sphere1(gp_Pnt(0.0, 0.0, 0.0), 25.0);
-  TopoDS_Shape           sph1 = sphere1.Shape();
-  if (index < argc)
-    DBRep::Set(argv[index++], sph1);
-
-  BRepPrimAPI_MakeSphere sphere2(gp_Pnt(0.0, 0.00001, 0.0), 25.0);
-  TopoDS_Shape           sph2 = sphere2.Shape();
-  if (index < argc)
-    DBRep::Set(argv[index++], sph2);
-
-  di << "All primitives created.....  Creating Cut Objects\n";
-
-  try
-  {
-    OCC_CATCH_SIGNALS
-
-    di << "cut1 = BRepAlgoAPI_Cut(sph1, hsp)\n";
-    TopoDS_Shape cut1 = BRepAlgoAPI_Cut(sph1, hsp).Shape();
-
-    if (index < argc)
-      DBRep::Set(argv[index++], cut1);
-    di << "CUT 1 Created !   ";
-
-    di << "cut2 = BRepAlgoAPI_Cut(sph2, hsp)\n";
-    TopoDS_Shape cut2 = BRepAlgoAPI_Cut(sph2, hsp).Shape();
-
-    if (index < argc)
-      DBRep::Set(argv[index++], cut2);
-    di << "CUT 2 Created !\n\n";
-
-    GProp_GProps G;
-    BRepGProp::VolumeProperties(cut1, G);
-    di << "CUT 1 Mass = " << G.Mass() << "\n\n";
-    BRepGProp::VolumeProperties(cut2, G);
-    di << "CUT 2 Mass = " << G.Mass() << "\n\n";
-
-    di << "Trianglating Faces of CUT 1 .....\n";
-    performTriangulation(cut1, di);
-
-    di << "Trianglating Faces of CUT 2 .....\n";
-    performTriangulation(cut2, di);
-  }
-  catch (Standard_Failure const&)
-  {
-    di << "*********************************************************\n";
-    di << "*****                                              ******\n";
-    di << "***** Standard_Failure : Exception in HSP Function ******\n";
-    di << "*****                                              ******\n";
-    di << "*********************************************************\n";
-    return 1;
-  }
-
-  di << "*************************************************************\n";
-  di << " CUT 1 and CUT 2 gives entirely different results during\n";
-  di << " mass computation and face triangulation, even though the\n";
-  di << " two spheres are located more or less at the same position.\n";
-  di << "*************************************************************\n";
-
-  return 0;
-}
-
-//=======================================================================
-//  OCC826
-//=======================================================================
-
-//=======================================================================
-//  OCC827
-//=======================================================================
-
-//=======================================================================
-//  performBlend
-
-#include <GC_MakeSegment.hxx>
-
-//=======================================================================
-//  OCC828
-//=======================================================================
-
-static int OCC828(Draw_Interpretor& di, int argc, const char** argv)
-{
-  if (argc != 2)
-  {
-    di << "Usage : " << argv[0] << " shape\n";
-  }
-  int index = 1;
-
-  double slabThick = 111;
-
-  gp_Pnt             p11(-27.598139, -7.0408573, 0.0);
-  gp_Pnt             p12(-28.483755, -17.487625, 0.0);
-  gp_Pnt             p13(-19.555504, -22.983587, 0.0);
-  GC_MakeArcOfCircle arc1(p11, p12, p13);
-
-  gp_Pnt             p21(12.125083, -22.983587, 0.0);
-  gp_Pnt             p22(21.1572, -17.27554, 0.0);
-  gp_Pnt             p23(19.878168, -6.6677585, 0.0);
-  GC_MakeArcOfCircle arc2(p21, p22, p23);
-
-  gp_Pnt             p31(3.265825, 13.724955, 0.0);
-  gp_Pnt             p32(-4.7233953, 17.406338, 0.0);
-  gp_Pnt             p33(-12.529893, 13.351856, 0.0);
-  GC_MakeArcOfCircle arc3(p31, p32, p33);
-
-  GC_MakeSegment ln1(p13, p21);
-  GC_MakeSegment ln2(p23, p31);
-  GC_MakeSegment ln3(p33, p11);
-
-  TopoDS_Edge e1 = BRepBuilderAPI_MakeEdge(arc1.Value());
-  TopoDS_Edge e2 = BRepBuilderAPI_MakeEdge(arc2.Value());
-  TopoDS_Edge e3 = BRepBuilderAPI_MakeEdge(arc3.Value());
-
-  TopoDS_Edge e4 = BRepBuilderAPI_MakeEdge(ln1.Value());
-  TopoDS_Edge e5 = BRepBuilderAPI_MakeEdge(ln2.Value());
-  TopoDS_Edge e6 = BRepBuilderAPI_MakeEdge(ln3.Value());
-
-  BRepBuilderAPI_MakeWire MW;
-  MW.Add(e1);
-  MW.Add(e4);
-  MW.Add(e2);
-  MW.Add(e5);
-  MW.Add(e3);
-  MW.Add(e6);
-
-  if (!MW.IsDone())
-  {
-    di << "my Wire not done\n";
-    return 1;
-  }
-
-  TopoDS_Wire W = MW.Wire();
-  TopoDS_Face F = BRepBuilderAPI_MakeFace(W);
-  if (F.IsNull())
-  {
-    di << " Error in Face creation \n";
-    return 1;
-  }
-
-  try
-  {
-    OCC_CATCH_SIGNALS
-    gp_Dir slabDir(gp_Dir::D::Z);
-    gp_Vec slabVect(slabDir);
-    slabVect *= slabThick;
-
-    BRepPrimAPI_MakePrism slab(F, slabVect, true);
-    if (!slab.IsDone())
-    {
-      di << " Error in Slab creation \n";
-      return 1;
-    }
-    if (index < argc)
-      DBRep::Set(argv[index++], slab.Shape());
-
-    //       std::cout << "Slab Successfully Created !   Now Blending ..." << std::endl;
-    //       TopoDS_Shape aShape;
-    //       int ret = performBlend(slab.Shape(), radius, aShape);
-    //       if (ret) return 1;
-    //       if (index < argc) DBRep::Set(argv[index++], aShape);
-
-    //       std::cout << "Blending Successfully Done !   Now Triangulating ..." << std::endl;
-    //       performTriangulation(aShape);
   }
   catch (Standard_Failure const&)
   {
@@ -707,12 +304,6 @@ void QABugs::Commands_10(Draw_Interpretor& theCommands)
 {
   const char* group = "QABugs";
 
-  theCommands.Add("OCC426",
-                  "OCC426 shape1 shape2 shape3 shape4 shape5 shape6 shape7",
-                  __FILE__,
-                  OCC426,
-                  group);
-
   theCommands.Add("isperiodic",
                   "Use : isperiodic surfaceOfRevolution",
                   __FILE__,
@@ -720,8 +311,6 @@ void QABugs::Commands_10(Draw_Interpretor& theCommands)
                   group);
   theCommands.Add("OCC486", "Use : OCC486 surf x y z du dv ", __FILE__, OCC486, group);
   theCommands.Add("OCC712", "OCC712 draftAngle slabThick", __FILE__, OCC712, group);
-  theCommands.Add("OCC825", "OCC825 name1 name2 name3 name4 name5", __FILE__, OCC825, group);
-  theCommands.Add("OCC828", "OCC828 redius shape result ", __FILE__, OCC828, group);
 
   return;
 }
