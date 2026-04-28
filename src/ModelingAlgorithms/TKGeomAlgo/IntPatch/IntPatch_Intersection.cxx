@@ -2136,8 +2136,7 @@ bool IntPatch_Intersection::CheckSingularPoints(const occ::handle<Adaptor3d_Surf
   {
     occ::handle<Adaptor2d_Curve2d> aBnd = theD1->Value();
     double                         pinf = aBnd->FirstParameter(), psup = aBnd->LastParameter();
-    if (Precision::IsNegativeInfinite(pinf) || Precision::IsPositiveInfinite(psup)
-        || (std::abs(pinf) < Precision::PConfusion() && std::abs(psup) < Precision::PConfusion()))
+    if (Precision::IsNegativeInfinite(pinf) || Precision::IsPositiveInfinite(psup))
     {
       continue;
     }

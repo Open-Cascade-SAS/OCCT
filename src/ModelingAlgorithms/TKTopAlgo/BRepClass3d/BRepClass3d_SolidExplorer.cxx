@@ -89,12 +89,9 @@ bool BRepClass3d_SolidExplorer::FindAPointInTheFace(const TopoDS_Face& _face,
   {
     TopoDS_Edge         Edge = TopoDS::Edge(faceexplorer.Current());
     BRepAdaptor_Curve2d c(Edge, face);
-    if (c.Curve().IsNull()
-        || (std::abs(c.FirstParameter()) < Precision::PConfusion()
-            && std::abs(c.LastParameter()) < Precision::PConfusion()))
-    {
+    if (c.Curve().IsNull())
       continue;
-    }
+
     c.D1((c.LastParameter() - c.FirstParameter()) * param_ + c.FirstParameter(), P, T);
 
     double x = T.X();

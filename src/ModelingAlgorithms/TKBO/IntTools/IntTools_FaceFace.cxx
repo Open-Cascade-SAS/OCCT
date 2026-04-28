@@ -621,8 +621,8 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
     myHS2->Load(S2, umin, umax, vmin, vmax);
   }
 
-  const occ::handle<Adaptor3d_TopolTool> dom1 = new IntTools_TopolTool(myHS1);
-  const occ::handle<Adaptor3d_TopolTool> dom2 = new IntTools_TopolTool(myHS2);
+  const occ::handle<IntTools_TopolTool> dom1 = new IntTools_TopolTool(myHS1);
+  const occ::handle<IntTools_TopolTool> dom2 = new IntTools_TopolTool(myHS2);
 
   myLConstruct.Load(dom1, dom2, myHS1, myHS2);
 
@@ -938,25 +938,6 @@ reapprox:;
       {
         newc = new Geom_Hyperbola(occ::down_cast<IntPatch_GLine>(L)->Hyperbola());
       }
-
-      // Compute maximum vertex tolerance from GLine vertices.
-      // This tolerance accounts for boundary intersection computation errors
-      // (e.g., pcurve-to-3D-curve deviation) and must be propagated to the curve
-      // to ensure vertices from different FF intersections can be unified.
-      double aMaxVertTol = 0.0;
-      if (myHS1->GetType() == GeomAbs_Cylinder || myHS2->GetType() == GeomAbs_Cylinder)
-      {
-        occ::handle<IntPatch_GLine> aGL    = occ::down_cast<IntPatch_GLine>(L);
-        int                         aNbVtx = aGL->NbVertex();
-        for (int iv = 1; iv <= aNbVtx; ++iv)
-        {
-          const IntPatch_Point& aVtx = aGL->Vertex(iv);
-          if (aVtx.Tolerance() > aMaxVertTol)
-          {
-            aMaxVertTol = aVtx.Tolerance();
-          }
-        }
-      }
       //
       aNbParts = myLConstruct.NbParts();
       for (i = 1; i <= aNbParts; i++)
@@ -1006,11 +987,6 @@ reapprox:;
 
             aCurve.SetSecondCurve2d(new Geom2d_TrimmedCurve(C2d, fprm, lprm));
           }
-          // Ensure curve tolerance is at least the maximum vertex tolerance
-          if (aCurve.Tolerance() < aMaxVertTol)
-          {
-            aCurve.SetTolerance(aMaxVertTol);
-          }
           //
           mySeqOfCurve.Append(aCurve);
         } // if (!bFNIt && !bLPIt) {
@@ -1044,12 +1020,7 @@ reapprox:;
               || typS2 == GeomAbs_OffsetSurface || typS2 == GeomAbs_SurfaceOfRevolution)
           {
             occ::handle<Geom2d_BSplineCurve> H1;
-            IntTools_Curve                   aCurve(newc, H1, H1);
-            if (aCurve.Tolerance() < aMaxVertTol)
-            {
-              aCurve.SetTolerance(aMaxVertTol);
-            }
-            mySeqOfCurve.Append(aCurve);
+            mySeqOfCurve.Append(IntTools_Curve(newc, H1, H1));
             continue;
           }
 
