@@ -1090,29 +1090,19 @@ public:
     //! @return typed product definition identifier
     [[nodiscard]] Standard_EXPORT BRepGraph_ProductId CreateEmptyProduct();
 
-    //! Link two existing Products via a fresh top-level Occurrence.
-    //! @param[in] theParentProduct     typed parent product identifier
-    //! @param[in] theReferencedProduct typed child product identifier being instantiated
-    //! @param[in] thePlacement         local placement relative to parent
-    //! @return typed occurrence definition identifier, or invalid unless the
-    //!         parent and referenced products are both active and not equal
-    [[nodiscard]] Standard_EXPORT BRepGraph_OccurrenceId
-      LinkProducts(const BRepGraph_ProductId theParentProduct,
-                   const BRepGraph_ProductId theReferencedProduct,
-                   const TopLoc_Location&    thePlacement);
-
-    //! Link two existing Products via a fresh Occurrence inside an explicit parent occurrence
-    //! (for nested assembly chains with unambiguous GlobalLocation in DAGs).
-    //! @param[in] theParentProduct     typed parent product identifier
-    //! @param[in] theReferencedProduct typed child product identifier being instantiated
-    //! @param[in] thePlacement         local placement relative to parent
-    //! @param[in] theParentOccurrence  typed occurrence that placed the parent product
-    //! @return typed occurrence definition identifier, or invalid unless the chain is active
+    //! Link two existing Products via a fresh Occurrence.
+    //! @param[in] theParentProduct       typed parent product identifier
+    //! @param[in] theReferencedProduct   typed child product identifier being instantiated
+    //! @param[in] thePlacement           local placement relative to parent
+    //! @param[in] theParentOccurrence    optional placing occurrence (nested assembly chains)
+    //! @param[out] theOutOccurrenceRefId optional out: typed ref id of the inserted OccurrenceRef
+    //! @return typed occurrence definition identifier, or invalid if the chain is not active
     [[nodiscard]] Standard_EXPORT BRepGraph_OccurrenceId
       LinkProducts(const BRepGraph_ProductId    theParentProduct,
                    const BRepGraph_ProductId    theReferencedProduct,
                    const TopLoc_Location&       thePlacement,
-                   const BRepGraph_OccurrenceId theParentOccurrence);
+                   const BRepGraph_OccurrenceId theParentOccurrence    = BRepGraph_OccurrenceId(),
+                   BRepGraph_OccurrenceRefId*   theOutOccurrenceRefId = nullptr);
 
     //! Detach one exact occurrence ref from a product definition.
     //! Use BRepGraph_RefsOccurrenceOfProduct::CurrentId() when removing from a

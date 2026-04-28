@@ -510,22 +510,26 @@ BRepGraph_CompoundId ensureCompound(GraphCopyContext& ctx, BRepGraph_CompoundId 
   if (anExisting != nullptr)
     return *anExisting;
 
-  // Bind a placeholder before recursing so cycles in the ref graph do not loop.
-  // The actual value is replaced after Add() returns the real ID.
-  NCollection_DynamicArray<BRepGraph_NodeId> aNewChildIds;
+  // Pre-allocate an empty compound and bind it BEFORE recursing into children so a
+  // self-referencing compound chain (A->B->A or A->A) terminates instead of recursing
+  // infinitely. Children are appended one at a time after recursion resolves them.
+  const NCollection_DynamicArray<BRepGraph_NodeId> aEmpty;
+  const BRepGraph_CompoundId aNewId = ctx.Result.Editor().Compounds().Add(aEmpty);
+  ctx.Compounds.Bind(srcId, aNewId);
+  ctx.Deferred.DeferNode(ctx.Source, srcId, aNewId);
+
   for (BRepGraph_RefsChildOfCompound aCRIt(ctx.Source, srcId); aCRIt.More(); aCRIt.Next())
   {
-    const BRepGraph_NodeId aSrcChild =
-      ctx.Source.Refs().Children().Entry(aCRIt.CurrentId()).ChildDefId;
+    const BRepGraphInc::ChildRef& aChildRef =
+      ctx.Source.Refs().Children().Entry(aCRIt.CurrentId());
+    const BRepGraph_NodeId aSrcChild = aChildRef.ChildDefId;
     ensureNode(ctx, aSrcChild);
     const BRepGraph_NodeId aMapped = mappedNode(ctx, aSrcChild);
     if (aMapped.IsValid())
-      aNewChildIds.Append(aMapped);
+    {
+      (void)ctx.Result.Editor().Compounds().AddChild(aNewId, aMapped, aChildRef.Orientation);
+    }
   }
-
-  const BRepGraph_CompoundId aNewId = ctx.Result.Editor().Compounds().Add(aNewChildIds);
-  ctx.Compounds.Bind(srcId, aNewId);
-  ctx.Deferred.DeferNode(ctx.Source, srcId, aNewId);
   return aNewId;
 }
 

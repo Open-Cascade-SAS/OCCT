@@ -854,8 +854,8 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
           theGraph.Refs().Children().Entry(anOldChildRefs.Value(aRefIdx));
         BRepGraph_MutGuard<BRepGraphInc::ChildRef> aNewRef =
           aNewGraph.Editor().Gen().MutChildRef(aNewChildRefs.Value(aRefIdx));
-        aNewRef.Internal().Orientation   = anOldRef.Orientation;
-        aNewRef.Internal().LocalLocation = anOldRef.LocalLocation;
+        aNewGraph.Editor().Gen().SetChildRefOrientation(aNewRef, anOldRef.Orientation);
+        aNewGraph.Editor().Gen().SetChildRefLocalLocation(aNewRef, anOldRef.LocalLocation);
         aChildRefMap.Bind(anOldChildRefs.Value(aRefIdx), aNewChildRefs.Value(aRefIdx));
       }
     }
@@ -895,8 +895,8 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
           theGraph.Refs().Solids().Entry(anOldSolidRefs.Value(aRefIdx));
         BRepGraph_MutGuard<BRepGraphInc::SolidRef> aNewRef =
           aNewGraph.Editor().Solids().MutRef(aNewSolidRefs.Value(aRefIdx));
-        aNewRef.Internal().Orientation   = anOldRef.Orientation;
-        aNewRef.Internal().LocalLocation = anOldRef.LocalLocation;
+        aNewGraph.Editor().Solids().SetRefOrientation(aNewRef, anOldRef.Orientation);
+        aNewGraph.Editor().Solids().SetRefLocalLocation(aNewRef, anOldRef.LocalLocation);
         aSolidRefMap.Bind(anOldSolidRefs.Value(aRefIdx), aNewSolidRefs.Value(aRefIdx));
       }
     }

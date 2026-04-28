@@ -90,6 +90,9 @@ public:
   //! Apply an in-place location-only transform to a single reference.
   //! Composes theTrsf into the reference's LocalLocation field without copying
   //! any geometry. This is O(1) and equivalent to TopoDS_Shape::Moved(trsf).
+  //! Cached mesh data on entities downstream of the moved ref is stored in the
+  //! entity's local frame and is unaffected; callers that bake a world transform
+  //! into a cache key own the invalidation responsibility.
   //! @note Only pure rotation/translation transforms (scale == 1) are supported.
   //!       The method is a no-op and returns false if |scaleFactor| != 1.
   //! @param[in] theGraph  the graph containing the reference

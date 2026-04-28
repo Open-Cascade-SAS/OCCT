@@ -329,7 +329,9 @@ void applyGeometryTransform(const BRepGraph&                  theSource,
     if (!theCopyMesh)
     {
       // Invalidate triangulations - meshes are no longer valid after geometry transform.
-      theGraph.Editor().Faces().SetTriangulationRep(aFaceId, BRepGraph_TriangulationRepId());
+      // Use the MutGuard overload so the clear is folded into the open guard scope and
+      // the destructor fires a single markModified for the face.
+      theGraph.Editor().Faces().SetTriangulationRep(aFace, BRepGraph_TriangulationRepId());
       BRepGraph_Tool::Mesh::ClearFaceCache(theGraph, aFaceId);
     }
   }
@@ -436,6 +438,17 @@ BRepGraph BRepGraph_Transform::TransformNode(const BRepGraph&       theGraph,
     theCopyGeom || theTrsf.IsNegative()
     || (std::abs(std::abs(theTrsf.ScaleFactor()) - 1.) > TopLoc_Location::ScalePrec());
 
+  // Assembly nodes (Product / Occurrence) carry topology only via locations on
+  // OccurrenceRef. The geometry-modification path warps shared geometry but never
+  // updates locations, producing an inconsistent result regardless of traversal mode.
+  // Reject the combination explicitly rather than silently mis-transforming.
+  if (useGeomModif
+      && (theNodeId.NodeKind == BRepGraph_NodeId::Kind::Product
+          || theNodeId.NodeKind == BRepGraph_NodeId::Kind::Occurrence))
+  {
+    return BRepGraph();
+  }
+
   constexpr bool THE_RESERVE_CACHE = false;
 
   // Pull mesh data through the copy only when the caller asked for it: the
@@ -448,15 +461,9 @@ BRepGraph BRepGraph_Transform::TransformNode(const BRepGraph&       theGraph,
 
   if (useGeomModif)
   {
-    // Pass theGraph as the poly source: CopyNode does not copy the poly triangulation rep
-    // storage, so aSubgraph.Mesh().Poly() is empty.  The TriangulationRepIds stored in
-    // aSubgraph's FaceDef and FaceMeshEntry still reference theGraph's poly storage, so
-    // applyMeshCopy must look them up there.
-    //
-    // Also pass aSubgraph's raw mesh cache to applyMeshCopy: the geometry-transform
-    // Mut guards bump each face's OwnGen, which makes the FaceMeshEntry entries written
-    // by CopyNode appear stale to CachedMesh().  Providing the raw cache directly lets
-    // applyMeshCopy bypass the freshness check and still see those entries.
+    // theGraph supplies the poly storage (CopyNode does not duplicate it); aSubgraph
+    // raw cache bypasses the OwnGen freshness check that geometry-transform Mut guards
+    // would otherwise invalidate.
     const BRepGraph_MeshCacheStorage& aSubgraphCache = aSubgraph.meshCache();
     applyGeometryTransform(aSubgraph, aSubgraph, theTrsf, theCopyMesh, &theGraph, &aSubgraphCache);
   }

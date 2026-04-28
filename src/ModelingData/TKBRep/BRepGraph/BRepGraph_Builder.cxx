@@ -375,14 +375,13 @@ BRepGraph_Builder::Result BRepGraph_Builder::Add(BRepGraph&             theGraph
       if (!aChildProduct.IsValid())
         return aResult;
 
-      // Snapshot the count before LinkProducts so we can recover the newly created OccurrenceRefId.
-      const BRepGraph_OccurrenceRefId anOccRefId(
-        static_cast<uint32_t>(theGraph.myData->myIncStorage.NbOccurrenceRefs()));
-
+      BRepGraph_OccurrenceRefId    anOccRefId;
       const BRepGraph_OccurrenceId anOccId =
         theGraph.Editor().Products().LinkProducts(BRepGraph_ProductId(theParent),
                                                   aChildProduct,
-                                                  theShape.Location());
+                                                  theShape.Location(),
+                                                  BRepGraph_OccurrenceId(),
+                                                  &anOccRefId);
       if (!anOccId.IsValid())
         return aResult;
       aResult.Product     = aChildProduct;
