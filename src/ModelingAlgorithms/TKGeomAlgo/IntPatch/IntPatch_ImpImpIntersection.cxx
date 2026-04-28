@@ -56,51 +56,6 @@
 #include <math_Vector.hxx>
 
 #include <algorithm>
-#include <cstdio>
-#include <cstdlib>
-#include <limits>
-
-// =========================== OCCT_DEBUG_CYCY INSTRUMENTATION ===========================
-// Env-gated CSV instrumentation for cyl-cyl walker / SearchOnVBounds. Enabled by
-// setting environment variable OCCT_DEBUG_CYCY=1. Output is written to
-// /tmp/cycy_walk.csv (walker) and /tmp/cycy_solver.csv (SearchOnVBounds).
-// This is temporary diagnostic code and will be removed before commit.
-namespace
-{
-FILE* CyCyDebugWalkerCsv()
-{
-  static FILE* aFile = nullptr;
-  static bool  aInit = false;
-  if (!aInit)
-  {
-    aInit = true;
-    if (std::getenv("OCCT_DEBUG_CYCY") != nullptr)
-    {
-      aFile = std::fopen("/tmp/cycy_walk.csv", "w");
-      if (aFile)
-      {
-        std::fprintf(aFile,
-                     "entry,pass,step,anU1,aU2,aV1,aV2,aV1Prev,aV2Prev,"
-                     "aVSurf1f,aVSurf1l,aVSurf2f,aVSurf2l,isFound1,isFound2\n");
-        std::fflush(aFile);
-      }
-    }
-  }
-  return aFile;
-}
-
-int CyCyDebugStepCounter(bool reset = false)
-{
-  static int aCounter = 0;
-  if (reset)
-  {
-    aCounter = 0;
-    return 0;
-  }
-  return ++aCounter;
-}
-} // namespace
-// ========================= END INSTRUMENTATION ==========================================
 
 static void PutPointsOnLine(const occ::handle<Adaptor3d_Surface>& S1,
                             const occ::handle<Adaptor3d_Surface>& S2,
@@ -1325,14 +1280,14 @@ bool FindLine(gp_Pnt&                                                 Psurf,
           // #endif
           gp_Pnt CopiePsurf    = Psurf;
           bool   IntersectIsOk = IntersectionWithAnArc(CopiePsurf,
-                                                     alin,
-                                                     para,
-                                                     thearc,
-                                                     theparamonarc,
-                                                     thepointonarc,
-                                                     QuadSurf1,
-                                                     lower,
-                                                     upper);
+                                                       alin,
+                                                       para,
+                                                       thearc,
+                                                       theparamonarc,
+                                                       thepointonarc,
+                                                       QuadSurf1,
+                                                       lower,
+                                                       upper);
           aSqDist              = CopiePsurf.SquareDistance(Psurf);
           if (IntersectIsOk)
           {
@@ -5430,7 +5385,6 @@ bool ComputationMethods::CylCylComputeParameters(const double         theU1par,
   return true;
 }
 
-
 //=======================================================================
 // function : InscribePoint
 // purpose  : If theFlForce==TRUE theUGiven will be changed forcefully
@@ -5821,6 +5775,7 @@ void WorkWithBoundaries::AddBoundaryPoint(const occ::handle<IntPatch_WLine>& the
     int                                      WLIndex;
     bool                                     IsV1;
     double                                   VBound;
+
     bool Value(double theX, double& theF) const
     {
       double aU2 = 0.0, aV1 = 0.0, aV2 = 0.0;
@@ -5856,7 +5811,7 @@ void WorkWithBoundaries::AddBoundaryPoint(const occ::handle<IntPatch_WLine>& the
       return false; // no bracketed crossing
 
     MathUtils::Config aCfg;
-    aCfg.XTolerance = Precision::PConfusion();
+    aCfg.XTolerance                    = Precision::PConfusion();
     const MathUtils::ScalarResult aRes = MathRoot::Brent(aFunc, theULo, theUHi, aCfg);
     if (aRes.Status != MathUtils::Status::OK || !aRes.Root.has_value())
       return false;
@@ -6409,7 +6364,6 @@ static void CriticalPointsComputing(const ComputationMethods::stCoeffsValue& the
     // Out of "while(theNbCritPointsMax > 0)" cycle.
     break;
   }
-
 }
 
 //=======================================================================
@@ -6719,7 +6673,7 @@ static IntPatch_ImpImpIntersection::IntStatus CyCyNoGeometric(
 
       double anU1 = anUf, aMinCriticalParam = anUf;
       double anU1Prev = anUf;
-      bool   isFirst = true;
+      bool   isFirst  = true;
 
       while (anU1 <= anUl)
       {
@@ -6961,29 +6915,6 @@ static IntPatch_ImpImpIntersection::IntStatus CyCyNoGeometric(
                                  isForce,
                                  isFound1,
                                  isFound2);
-
-          if (FILE* f = CyCyDebugWalkerCsv())
-          {
-            const int aStep = CyCyDebugStepCounter();
-            std::fprintf(f,
-                         "A,%d,%d,%.17g,%.17g,%.17g,%.17g,%.17g,%.17g,"
-                         "%.17g,%.17g,%.17g,%.17g,%d,%d\n",
-                         i,
-                         aStep,
-                         anU1,
-                         aU2[i],
-                         aV1[i],
-                         aV2[i],
-                         aV1Prev[i],
-                         aV2Prev[i],
-                         aVSurf1f,
-                         aVSurf1l,
-                         aVSurf2f,
-                         aVSurf2l,
-                         isFound1 ? 1 : 0,
-                         isFound2 ? 1 : 0);
-            std::fflush(f);
-          }
 
           const bool isPrevVBound = !isVIntersect
                                     && ((std::abs(aV1Prev[i] - aVSurf1f) <= aTol2D)
@@ -7620,11 +7551,11 @@ static IntPatch_ImpImpIntersection::IntStatus CyCyNoGeometric(
         double anUC = 0.5 * (anUf + anUl);
         double aU2 = 0.0, aV1 = 0.0, aV2 = 0.0;
         bool   isDone = ComputationMethods::CylCylComputeParameters(anUC,
-                                                                  anIndex,
-                                                                  anEquationCoeffs,
-                                                                  aU2,
-                                                                  aV1,
-                                                                  aV2);
+                                                                    anIndex,
+                                                                    anEquationCoeffs,
+                                                                    aU2,
+                                                                    aV1,
+                                                                    aV2);
 
         if (isDone)
         {
