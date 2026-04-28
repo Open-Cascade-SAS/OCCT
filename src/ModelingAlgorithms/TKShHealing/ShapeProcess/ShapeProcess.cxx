@@ -189,9 +189,9 @@ bool ShapeProcess::Perform(const occ::handle<ShapeProcess_Context>& theContext,
     return false;
   }
 
-  std::vector<std::pair<const char*, occ::handle<ShapeProcess_Operator>>> anOperators =
+  NCollection_LinearVector<std::pair<const char*, occ::handle<ShapeProcess_Operator>>> anOperators =
     getOperators(theOperations);
-  if (anOperators.empty())
+  if (anOperators.IsEmpty())
   {
     return false;
   }
@@ -199,7 +199,7 @@ bool ShapeProcess::Perform(const occ::handle<ShapeProcess_Context>& theContext,
   bool                  anIsAnySuccess = false;
   Message_ProgressScope aProgressScope(theProgress,
                                        nullptr,
-                                       static_cast<double>(anOperators.size()));
+                                       static_cast<double>(anOperators.Size()));
   for (const auto& anOperator : anOperators)
   {
     const char*                               anOperationName = anOperator.first;
@@ -245,10 +245,10 @@ std::pair<ShapeProcess::Operation, bool> ShapeProcess::ToOperationFlag(const cha
 
 //=================================================================================================
 
-std::vector<std::pair<const char*, occ::handle<ShapeProcess_Operator>>> ShapeProcess::getOperators(
+NCollection_LinearVector<std::pair<const char*, occ::handle<ShapeProcess_Operator>>> ShapeProcess::getOperators(
   const ShapeProcess::OperationsFlags& theFlags)
 {
-  std::vector<std::pair<const char*, occ::handle<ShapeProcess_Operator>>> aResult;
+  NCollection_LinearVector<std::pair<const char*, occ::handle<ShapeProcess_Operator>>> aResult;
   for (std::underlying_type<Operation>::type anOperation = Operation::First;
        anOperation <= Operation::Last;
        ++anOperation)
@@ -263,7 +263,7 @@ std::vector<std::pair<const char*, occ::handle<ShapeProcess_Operator>>> ShapePro
       occ::handle<ShapeProcess_Operator> anOperator;
       if (FindOperator(anOperationName, anOperator))
       {
-        aResult.emplace_back(anOperationName, anOperator);
+        aResult.EmplaceAppend(anOperationName, anOperator);
       }
     }
   }

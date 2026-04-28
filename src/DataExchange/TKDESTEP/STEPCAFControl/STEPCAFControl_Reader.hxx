@@ -17,6 +17,7 @@
 #define _STEPCAFControl_Reader_HeaderFile
 
 #include <STEPControl_Reader.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <StepData_Factors.hxx>
 #include <IFSelect_ReturnStatus.hxx>
 #include <TDF_Label.hxx>
@@ -474,7 +475,7 @@ private:
   //! @param theWorkSession The work session to use for collecting property definitions.
   //! @param theGeneralProperty The general property from which to collect property definitions.
   //! @return A vector of collected property definitions.
-  std::vector<occ::handle<StepRepr_PropertyDefinition>> collectPropertyDefinitions(
+  NCollection_LinearVector<occ::handle<StepRepr_PropertyDefinition>> collectPropertyDefinitions(
     const occ::handle<XSControl_WorkSession>& theWorkSession,
     const occ::handle<Standard_Transient>&    theGeneralProperty) const;
 
@@ -483,7 +484,7 @@ private:
   //! @param theTransferProcess The transfer process to use for collecting shape labels.
   //! @param theSource The property definition from which to collect shape labels.
   //! @return A vector of collected shape labels.
-  std::vector<TDF_Label> collectShapeLabels(
+  NCollection_LinearVector<TDF_Label> collectShapeLabels(
     const occ::handle<XSControl_WorkSession>&       theWorkSession,
     const occ::handle<Transfer_TransientProcess>&   theTransferProcess,
     const occ::handle<StepRepr_PropertyDefinition>& theSource) const;
@@ -493,7 +494,7 @@ private:
   //! @param theWorkSession The work session to use for collecting related property definitions.
   //! @param theProperty The property definition from which to collect related property definitions.
   //! @return A vector of collected related property definitions.
-  std::vector<occ::handle<StepRepr_PropertyDefinition>> collectRelatedPropertyDefinitions(
+  NCollection_LinearVector<occ::handle<StepRepr_PropertyDefinition>> collectRelatedPropertyDefinitions(
     const occ::handle<XSControl_WorkSession>&       theWorkSession,
     const occ::handle<StepRepr_PropertyDefinition>& theProperty) const;
 

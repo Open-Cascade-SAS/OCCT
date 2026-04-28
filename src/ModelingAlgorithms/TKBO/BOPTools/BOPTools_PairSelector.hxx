@@ -17,8 +17,8 @@
 
 #include <BVH_Traverse.hxx>
 #include <BVH_BoxSet.hxx>
+#include <NCollection_LinearVector.hxx>
 
-#include <Standard_Integer.hxx>
 #include <algorithm>
 
 //! Template Selector for selection of the elements from two BVH trees.
@@ -56,7 +56,7 @@ public: //! @name Constructor
 
 public: //! @name public interfaces
   //! Clears the indices
-  void Clear() { myPairs.clear(); }
+  void Clear() { myPairs.Clear(); }
 
   //! Sorts the indices
   void Sort() { std::sort(myPairs.begin(), myPairs.end()); }
@@ -71,7 +71,7 @@ public: //! @name public interfaces
   void SetSame(const bool theIsSame) { mySameBVHs = theIsSame; }
 
   //! Returns the list of accepted indices
-  const std::vector<PairIDs>& Pairs() const { return myPairs; }
+  const NCollection_LinearVector<PairIDs>& Pairs() const { return myPairs; }
 
 public: //! @name Rejection/Acceptance rules
   //! Basing on the bounding boxes of the nodes checks if the pair of nodes should be rejected.
@@ -96,7 +96,7 @@ public: //! @name Rejection/Acceptance rules
   {
     if (!RejectElement(theID1, theID2))
     {
-      myPairs.push_back(
+      myPairs.Append(
         PairIDs(this->myBVHSet1->Element(theID1), this->myBVHSet2->Element(theID2)));
       return true;
     }
@@ -104,7 +104,7 @@ public: //! @name Rejection/Acceptance rules
   }
 
 protected:                         //! @name Fields
-  std::vector<PairIDs> myPairs;    //!< Selected pairs of indices
+  NCollection_LinearVector<PairIDs> myPairs;    //!< Selected pairs of indices
   bool                 mySameBVHs; //!< Selection is performed from the same BVH trees
 };
 

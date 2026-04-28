@@ -16,6 +16,7 @@
 
 #include <Message_ProgressScope.hxx>
 #include <NCollection_DataMap.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 #include <NCollection_Map.hxx>
@@ -54,10 +55,10 @@ public:
   //! Mesh
   struct Mesh
   {
-    std::vector<NCollection_Vec3<float>> NodesVec;     //!< vector for mesh nodes
-    std::vector<NCollection_Vec3<float>> NormalsVec;   //!< vector for mesh normals
-    std::vector<NCollection_Vec2<float>> TexCoordsVec; //!< vector for mesh texture UV coordinates
-    std::vector<Poly_Triangle>           IndicesVec;   //!< vector for mesh indices
+    NCollection_LinearVector<NCollection_Vec3<float>> NodesVec;     //!< vector for mesh nodes
+    NCollection_LinearVector<NCollection_Vec3<float>> NormalsVec;   //!< vector for mesh normals
+    NCollection_LinearVector<NCollection_Vec2<float>> TexCoordsVec; //!< vector for mesh texture UV coordinates
+    NCollection_LinearVector<Poly_Triangle>           IndicesVec;   //!< vector for mesh indices
   };
 
   //! Main constructor.
@@ -537,7 +538,7 @@ protected:
   ShapeToGltfFaceMap                            myBinDataMap;        //!< map for TopoDS_Face to glTF face (merging duplicates)
   int64_t                                       myBinDataLen64;      //!< length of binary file
 
-  std::vector<RWGltf_GltfBufferView>            myBuffViewsDraco;    //!< vector of buffers view with compression data
+  NCollection_LinearVector<RWGltf_GltfBufferView>               myBuffViewsDraco;    //!< vector of buffers view with compression data
   bool                              myToParallel;        //!< flag to use multithreading; FALSE by default
                                             // clang-format on
   RWGltf_DracoParameters myDracoParameters; //!< Draco parameters

@@ -21,7 +21,7 @@
 #ifndef _OpenGl_HaltonSampler_H
 #define _OpenGl_HaltonSampler_H
 
-#include <vector>
+#include <NCollection_LinearVector.hxx>
 
 //! Compute points of the Halton sequence with digit-permutations for different bases.
 class OpenGl_HaltonSampler
@@ -55,10 +55,10 @@ private:
   //! Init the permutation arrays using Faure-permutations.
   void initFaure();
 
-  static unsigned short invert(unsigned short                     theBase,
-                               unsigned short                     theDigits,
-                               unsigned short                     theIndex,
-                               const std::vector<unsigned short>& thePerm)
+  static unsigned short invert(unsigned short                                  theBase,
+                               unsigned short                                  theDigits,
+                               unsigned short                                  theIndex,
+                               const NCollection_LinearVector<unsigned short>& thePerm)
   {
     unsigned short aResult = 0;
     for (unsigned short i = 0; i < theDigits; ++i)
@@ -69,7 +69,7 @@ private:
     return aResult;
   }
 
-  void initTables(const std::vector<std::vector<unsigned short>>& thePerm)
+  void initTables(const NCollection_LinearVector<NCollection_LinearVector<unsigned short>>& thePerm)
   {
     for (unsigned short i = 0; i < 243; ++i)
     {
@@ -119,11 +119,12 @@ private:
 
 inline void OpenGl_HaltonSampler::initFaure()
 {
-  const unsigned                           THE_MAX_BASE = 5u;
-  std::vector<std::vector<unsigned short>> aPerms(THE_MAX_BASE + 1);
+  const unsigned                                              THE_MAX_BASE = 5u;
+  NCollection_LinearVector<NCollection_LinearVector<unsigned short>> aPerms;
+  aPerms.Resize(THE_MAX_BASE + 1);
   for (unsigned k = 1; k <= 3; ++k) // Keep identity permutations for base 1, 2, 3.
   {
-    aPerms[k].resize(k);
+    aPerms[k].Resize(k);
     for (unsigned i = 0; i < k; ++i)
     {
       aPerms[k][i] = static_cast<unsigned short>(i);
@@ -132,7 +133,7 @@ inline void OpenGl_HaltonSampler::initFaure()
 
   for (unsigned aBase = 4; aBase <= THE_MAX_BASE; ++aBase)
   {
-    aPerms[aBase].resize(aBase);
+    aPerms[aBase].Resize(aBase);
     const unsigned b = aBase / 2;
     if (aBase & 1) // odd
     {

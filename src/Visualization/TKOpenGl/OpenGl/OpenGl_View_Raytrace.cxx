@@ -28,6 +28,7 @@
 #include <OSD_File.hxx>
 #include <NCollection_MapAlgo.hxx>
 #include <NCollection_DynamicArray.hxx>
+#include <NCollection_LinearVector.hxx>
 
 #include "../../TKService/Shaders/Shaders_RaytraceBase_vs.pxx"
 #include "../../TKService/Shaders/Shaders_RaytraceBase_fs.pxx"
@@ -523,10 +524,10 @@ bool OpenGl_View::addRaytraceGroups(const OpenGl_Structure*            theStruct
       aGroupMaterial = convertMaterial(aGroupIter.Value()->GlAspects(), theGlContext);
     }
 
-    int aMatID = static_cast<int>(myRaytraceGeometry.Materials.size());
+    int aMatID = static_cast<int>(myRaytraceGeometry.Materials.Size());
 
     // Use group material if available, otherwise use structure material
-    myRaytraceGeometry.Materials.push_back(
+    myRaytraceGeometry.Materials.Append(
       aGroupIter.Value()->GlAspects() != nullptr ? aGroupMaterial : theStructMat);
 
     // Add OpenGL elements from group (extract primitives arrays and aspects)
@@ -537,11 +538,11 @@ bool OpenGl_View::addRaytraceGroups(const OpenGl_Structure*            theStruct
 
       if (anAspect != nullptr)
       {
-        aMatID = static_cast<int>(myRaytraceGeometry.Materials.size());
+        aMatID = static_cast<int>(myRaytraceGeometry.Materials.Size());
 
         OpenGl_RaytraceMaterial aMaterial = convertMaterial(anAspect, theGlContext);
 
-        myRaytraceGeometry.Materials.push_back(aMaterial);
+        myRaytraceGeometry.Materials.Append(aMaterial);
       }
       else
       {
@@ -679,7 +680,7 @@ occ::handle<OpenGl_TriangleSet> OpenGl_View::addRaytracePrimitiveArray(
     {
       for (int aVertIter = 0; aVertIter < anAttribs->NbElements; ++aVertIter)
       {
-        aSet->Normals.emplace_back();
+        aSet->Normals.EmplaceAppend();
       }
     }
 
@@ -687,7 +688,7 @@ occ::handle<OpenGl_TriangleSet> OpenGl_View::addRaytracePrimitiveArray(
     {
       for (int aVertIter = 0; aVertIter < anAttribs->NbElements; ++aVertIter)
       {
-        aSet->TexCrds.emplace_back();
+        aSet->TexCrds.EmplaceAppend();
       }
     }
 
@@ -806,7 +807,7 @@ bool OpenGl_View::addRaytraceTriangleArray(OpenGl_TriangleSet&                  
   {
     for (int aVert = theOffset; aVert < theOffset + theCount - 2; aVert += 3)
     {
-      theSet.Elements.emplace_back(theIndices->Index(aVert + 0),
+      theSet.Elements.EmplaceAppend(theIndices->Index(aVert + 0),
                                    theIndices->Index(aVert + 1),
                                    theIndices->Index(aVert + 2),
                                    theMatID);
@@ -816,7 +817,7 @@ bool OpenGl_View::addRaytraceTriangleArray(OpenGl_TriangleSet&                  
   {
     for (int aVert = theOffset; aVert < theOffset + theCount - 2; aVert += 3)
     {
-      theSet.Elements.emplace_back(aVert + 0, aVert + 1, aVert + 2, theMatID);
+      theSet.Elements.EmplaceAppend(aVert + 0, aVert + 1, aVert + 2, theMatID);
     }
   }
 
@@ -844,7 +845,7 @@ bool OpenGl_View::addRaytraceTriangleFanArray(OpenGl_TriangleSet&               
   {
     for (int aVert = theOffset; aVert < theOffset + theCount - 2; ++aVert)
     {
-      theSet.Elements.emplace_back(theIndices->Index(theOffset),
+      theSet.Elements.EmplaceAppend(theIndices->Index(theOffset),
                                    theIndices->Index(aVert + 1),
                                    theIndices->Index(aVert + 2),
                                    theMatID);
@@ -854,7 +855,7 @@ bool OpenGl_View::addRaytraceTriangleFanArray(OpenGl_TriangleSet&               
   {
     for (int aVert = theOffset; aVert < theOffset + theCount - 2; ++aVert)
     {
-      theSet.Elements.emplace_back(theOffset, aVert + 1, aVert + 2, theMatID);
+      theSet.Elements.EmplaceAppend(theOffset, aVert + 1, aVert + 2, theMatID);
     }
   }
 
@@ -884,7 +885,7 @@ bool OpenGl_View::addRaytraceTriangleStripArray(
     for (int aVert = theOffset, aCW = 0; aVert < theOffset + theCount - 2;
          ++aVert, aCW               = (aCW + 1) % 2)
     {
-      theSet.Elements.emplace_back(theIndices->Index(aVert + (aCW ? 1 : 0)),
+      theSet.Elements.EmplaceAppend(theIndices->Index(aVert + (aCW ? 1 : 0)),
                                    theIndices->Index(aVert + (aCW ? 0 : 1)),
                                    theIndices->Index(aVert + 2),
                                    theMatID);
@@ -895,7 +896,7 @@ bool OpenGl_View::addRaytraceTriangleStripArray(
     for (int aVert = theOffset, aCW = 0; aVert < theOffset + theCount - 2;
          ++aVert, aCW               = (aCW + 1) % 2)
     {
-      theSet.Elements.emplace_back(aVert + (aCW ? 1 : 0),
+      theSet.Elements.EmplaceAppend(aVert + (aCW ? 1 : 0),
                                    aVert + (aCW ? 0 : 1),
                                    aVert + 2,
                                    theMatID);
@@ -926,11 +927,11 @@ bool OpenGl_View::addRaytraceQuadrangleArray(OpenGl_TriangleSet&                
   {
     for (int aVert = theOffset; aVert < theOffset + theCount - 3; aVert += 4)
     {
-      theSet.Elements.emplace_back(theIndices->Index(aVert + 0),
+      theSet.Elements.EmplaceAppend(theIndices->Index(aVert + 0),
                                    theIndices->Index(aVert + 1),
                                    theIndices->Index(aVert + 2),
                                    theMatID);
-      theSet.Elements.emplace_back(theIndices->Index(aVert + 0),
+      theSet.Elements.EmplaceAppend(theIndices->Index(aVert + 0),
                                    theIndices->Index(aVert + 2),
                                    theIndices->Index(aVert + 3),
                                    theMatID);
@@ -940,8 +941,8 @@ bool OpenGl_View::addRaytraceQuadrangleArray(OpenGl_TriangleSet&                
   {
     for (int aVert = theOffset; aVert < theOffset + theCount - 3; aVert += 4)
     {
-      theSet.Elements.emplace_back(aVert + 0, aVert + 1, aVert + 2, theMatID);
-      theSet.Elements.emplace_back(aVert + 0, aVert + 2, aVert + 3, theMatID);
+      theSet.Elements.EmplaceAppend(aVert + 0, aVert + 1, aVert + 2, theMatID);
+      theSet.Elements.EmplaceAppend(aVert + 0, aVert + 2, aVert + 3, theMatID);
     }
   }
 
@@ -970,12 +971,12 @@ bool OpenGl_View::addRaytraceQuadrangleStripArray(
   {
     for (int aVert = theOffset; aVert < theOffset + theCount - 3; aVert += 2)
     {
-      theSet.Elements.emplace_back(theIndices->Index(aVert + 0),
+      theSet.Elements.EmplaceAppend(theIndices->Index(aVert + 0),
                                    theIndices->Index(aVert + 1),
                                    theIndices->Index(aVert + 2),
                                    theMatID);
 
-      theSet.Elements.emplace_back(theIndices->Index(aVert + 1),
+      theSet.Elements.EmplaceAppend(theIndices->Index(aVert + 1),
                                    theIndices->Index(aVert + 3),
                                    theIndices->Index(aVert + 2),
                                    theMatID);
@@ -985,9 +986,9 @@ bool OpenGl_View::addRaytraceQuadrangleStripArray(
   {
     for (int aVert = theOffset; aVert < theOffset + theCount - 3; aVert += 2)
     {
-      theSet.Elements.emplace_back(aVert + 0, aVert + 1, aVert + 2, theMatID);
+      theSet.Elements.EmplaceAppend(aVert + 0, aVert + 1, aVert + 2, theMatID);
 
-      theSet.Elements.emplace_back(aVert + 1, aVert + 3, aVert + 2, theMatID);
+      theSet.Elements.EmplaceAppend(aVert + 1, aVert + 3, aVert + 2, theMatID);
     }
   }
 
@@ -1015,7 +1016,7 @@ bool OpenGl_View::addRaytracePolygonArray(OpenGl_TriangleSet&                   
   {
     for (int aVert = theOffset; aVert < theOffset + theCount - 2; ++aVert)
     {
-      theSet.Elements.emplace_back(theIndices->Index(theOffset),
+      theSet.Elements.EmplaceAppend(theIndices->Index(theOffset),
                                    theIndices->Index(aVert + 1),
                                    theIndices->Index(aVert + 2),
                                    theMatID);
@@ -1025,7 +1026,7 @@ bool OpenGl_View::addRaytracePolygonArray(OpenGl_TriangleSet&                   
   {
     for (int aVert = theOffset; aVert < theOffset + theCount - 2; ++aVert)
     {
-      theSet.Elements.emplace_back(theOffset, aVert + 1, aVert + 2, theMatID);
+      theSet.Elements.EmplaceAppend(theOffset, aVert + 1, aVert + 2, theMatID);
     }
   }
 
@@ -2508,12 +2509,12 @@ bool OpenGl_View::uploadRaytraceData(const occ::handle<OpenGl_Context>& theGlCon
   /////////////////////////////////////////////////////////////////////////////
   // Write material buffer
 
-  if (!myRaytraceGeometry.Materials.empty())
+  if (!myRaytraceGeometry.Materials.IsEmpty())
   {
     aResult &= myRaytraceMaterialTexture->Init(theGlContext,
                                                4,
-                                               GLsizei(myRaytraceGeometry.Materials.size() * 19),
-                                               myRaytraceGeometry.Materials.front().Packed());
+                                               GLsizei(myRaytraceGeometry.Materials.Size() * 19),
+                                               myRaytraceGeometry.Materials[0].Packed());
 
     if (!aResult)
     {
@@ -2570,14 +2571,14 @@ bool OpenGl_View::uploadRaytraceData(const occ::handle<OpenGl_Context>& theGlCon
 bool OpenGl_View::updateRaytraceLightSources(const NCollection_Mat4<float>&     theInvModelView,
                                              const occ::handle<OpenGl_Context>& theGlContext)
 {
-  std::vector<occ::handle<Graphic3d_CLight>> aLightSources;
+  NCollection_LinearVector<occ::handle<Graphic3d_CLight>> aLightSources;
   NCollection_Vec4<float>                    aNewAmbient(0.0f);
   if (myRenderParams.ShadingModel != Graphic3d_TypeOfShadingModel_Unlit && !myLights.IsNull())
   {
     aNewAmbient.SetValues(myLights->AmbientColor().rgb(), 0.0f);
 
     // move positional light sources at the front of the list
-    aLightSources.reserve(myLights->Extent());
+    aLightSources.Reserve(myLights->Extent());
     for (Graphic3d_LightSet::Iterator aLightIter(
            myLights,
            Graphic3d_LightSet::IterationFilter_ExcludeDisabledAndAmbient);
@@ -2587,7 +2588,7 @@ bool OpenGl_View::updateRaytraceLightSources(const NCollection_Mat4<float>&     
       const Graphic3d_CLight& aLight = *aLightIter.Value();
       if (aLight.Type() != Graphic3d_TypeOfLightSource_Directional)
       {
-        aLightSources.push_back(aLightIter.Value());
+        aLightSources.Append(aLightIter.Value());
       }
     }
 
@@ -2599,7 +2600,7 @@ bool OpenGl_View::updateRaytraceLightSources(const NCollection_Mat4<float>&     
     {
       if (aLightIter.Value()->Type() == Graphic3d_TypeOfLightSource_Directional)
       {
-        aLightSources.push_back(aLightIter.Value());
+        aLightSources.Append(aLightIter.Value());
       }
     }
   }
@@ -2611,14 +2612,14 @@ bool OpenGl_View::updateRaytraceLightSources(const NCollection_Mat4<float>&     
   }
 
   // get number of 'real' (not ambient) light sources
-  const size_t aNbLights  = aLightSources.size();
-  bool         wasUpdated = myRaytraceGeometry.Sources.size() != aNbLights;
+  const size_t aNbLights  = aLightSources.Size();
+  bool         wasUpdated = myRaytraceGeometry.Sources.Size() != aNbLights;
   if (wasUpdated)
   {
-    myRaytraceGeometry.Sources.resize(aNbLights);
+    myRaytraceGeometry.Sources.Resize(aNbLights);
   }
 
-  for (size_t aLightIdx = 0, aRealIdx = 0; aLightIdx < aLightSources.size(); ++aLightIdx)
+  for (size_t aLightIdx = 0, aRealIdx = 0; aLightIdx < aLightSources.Size(); ++aLightIdx)
   {
     const Graphic3d_CLight&        aLight      = *aLightSources[aLightIdx];
     const NCollection_Vec4<float>& aLightColor = aLight.PackedColor();
@@ -2673,12 +2674,12 @@ bool OpenGl_View::updateRaytraceLightSources(const NCollection_Mat4<float>&     
     myRaytraceLightSrcTexture = new OpenGl_TextureBuffer();
   }
 
-  if (!myRaytraceGeometry.Sources.empty() && wasUpdated)
+  if (!myRaytraceGeometry.Sources.IsEmpty() && wasUpdated)
   {
-    const GLfloat* aDataPtr = myRaytraceGeometry.Sources.front().Packed();
+    const GLfloat* aDataPtr = myRaytraceGeometry.Sources[0].Packed();
     if (!myRaytraceLightSrcTexture->Init(theGlContext,
                                          4,
-                                         GLsizei(myRaytraceGeometry.Sources.size() * 2),
+                                         GLsizei(myRaytraceGeometry.Sources.Size() * 2),
                                          aDataPtr))
     {
       Message::SendTrace() << "Error: Failed to upload light source buffer";
@@ -2808,7 +2809,7 @@ bool OpenGl_View::setUniformState(const int                          theProgramI
                          myRaytraceSceneEpsilon);
 
   // Set light source parameters
-  const int aLightSourceBufferSize = static_cast<int>(myRaytraceGeometry.Sources.size());
+  const int aLightSourceBufferSize = static_cast<int>(myRaytraceGeometry.Sources.Size());
 
   theProgram->SetUniform(theGlContext,
                          myUniformLocations[theProgramId][OpenGl_RT_uLightCount],
@@ -2817,13 +2818,13 @@ bool OpenGl_View::setUniformState(const int                          theProgramI
   // Set array of 64-bit texture handles
   if (theGlContext->arbTexBindless != nullptr && myRaytraceGeometry.HasTextures())
   {
-    const std::vector<GLuint64>& aTextures = myRaytraceGeometry.TextureHandles();
+    const NCollection_LinearVector<GLuint64>& aTextures = myRaytraceGeometry.TextureHandles();
 
     theProgram->SetUniform(
       theGlContext,
       myUniformLocations[theProgramId][OpenGl_RT_uTexSamplersArray],
-      static_cast<GLsizei>(aTextures.size()),
-      reinterpret_cast<const NCollection_Vec2<unsigned int>*>(&aTextures.front()));
+      static_cast<GLsizei>(aTextures.Size()),
+      reinterpret_cast<const NCollection_Vec2<unsigned int>*>(aTextures.Data()));
   }
 
   // Set background colors (only vertical gradient background supported)

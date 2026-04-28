@@ -15,6 +15,7 @@
 
 #include <BRepMesh_DelabellaBaseMeshAlgo.hxx>
 
+#include <NCollection_LinearVector.hxx>
 #include <BRepMesh_MeshTool.hxx>
 #include <BRepMesh_Delaun.hxx>
 #include <Message.hxx>
@@ -73,7 +74,8 @@ void BRepMesh_DelabellaBaseMeshAlgo::buildBaseTriangulation()
 
   Bnd_B2d             aBox;
   const int           aNodesNb = aStructure->NbNodes();
-  std::vector<double> aPoints(2 * (aNodesNb + 4));
+  NCollection_LinearVector<double> aPoints;
+  aPoints.Resize(2 * (aNodesNb + 4));
   for (int aNodeIt = 0; aNodeIt < aNodesNb; ++aNodeIt)
   {
     const BRepMesh_Vertex& aVertex = aStructure->GetNode(aNodeIt + 1);

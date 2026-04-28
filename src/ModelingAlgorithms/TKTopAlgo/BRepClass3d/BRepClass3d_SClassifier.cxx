@@ -31,8 +31,7 @@
 #include <TopExp.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <Extrema_ExtPS.hxx>
-
-#include <vector>
+#include <NCollection_LinearVector.hxx>
 
 // modified by NIZHNY-MKK  Mon Jun 21 15:13:40 2004
 static bool FaceNormal(const TopoDS_Face& aF, const double U, const double V, gp_Dir& aDN);
@@ -112,12 +111,12 @@ void BRepClass3d_SClassifier::PerformInfinitePoint(BRepClass3d_SolidExplorer& aS
   myState = 2;
 
   // Collect faces in sequence to iterate
-  std::vector<TopoDS_Face> aFaces;
+  NCollection_LinearVector<TopoDS_Face> aFaces;
   for (aSE.InitShell(); aSE.MoreShell(); aSE.NextShell())
   {
     for (aSE.InitFace(); aSE.MoreFace(); aSE.NextFace())
     {
-      aFaces.push_back(aSE.CurrentFace());
+      aFaces.Append(aSE.CurrentFace());
     }
   }
 
@@ -125,9 +124,9 @@ void BRepClass3d_SClassifier::PerformInfinitePoint(BRepClass3d_SolidExplorer& aS
   const int NB_MAX_POINTS_PER_FACE = 10;
   for (int itry = 0; itry < NB_MAX_POINTS_PER_FACE; itry++)
   {
-    for (std::vector<TopoDS_Face>::iterator iFace = aFaces.begin(); iFace != aFaces.end(); ++iFace)
+    for (size_t iFace = 0; iFace < aFaces.Size(); ++iFace)
     {
-      TopoDS_Face aF = *iFace;
+      TopoDS_Face aF = aFaces[iFace];
 
       TopAbs_State                      aState      = TopAbs_OUT;
       IntCurveSurface_TransitionOnCurve aTransition = IntCurveSurface_Tangent;

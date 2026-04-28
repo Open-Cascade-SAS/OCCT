@@ -1145,8 +1145,8 @@ void BOPAlgo_Tools::IntersectVertices(
   aPairSelector.Select();
 
   // Treat the selected pairs
-  const std::vector<BOPTools_BoxPairSelector::PairIDs>& aPairs   = aPairSelector.Pairs();
-  const int                                             aNbPairs = static_cast<int>(aPairs.size());
+  const NCollection_LinearVector<BOPTools_BoxPairSelector::PairIDs>& aPairs   = aPairSelector.Pairs();
+  const int                                             aNbPairs = static_cast<int>(aPairs.Size());
 
   // Collect interfering pairs
   occ::handle<NCollection_IncAllocator>                  anAlloc = new NCollection_IncAllocator;

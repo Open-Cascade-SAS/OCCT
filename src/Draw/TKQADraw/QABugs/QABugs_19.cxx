@@ -36,6 +36,7 @@
 #include <Message_PrinterOStream.hxx>
 #include <NCollection_Handle.hxx>
 #include <NCollection_Map.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <OSD_PerfMeter.hxx>
 #include <OSD_Timer.hxx>
 #include <Precision.hxx>
@@ -81,7 +82,6 @@ Standard_DISABLE_DEPRECATION_WARNINGS
 #include <cmath>
 #include <iostream>
 #include <random>
-#include <vector>
 
 #define QCOMPARE(val1, val2)                                                                       \
   di << "Checking " #val1 " == " #val2 << ((val1) == (val2) ? ": OK\n" : ": Error\n")
@@ -2261,7 +2261,7 @@ static TopoDS_Shape taper(const TopoDS_Shape& shape,
   return drafter.Shape();
 }
 
-static void dumpShapeVertices(const TopoDS_Shape& shape, std::vector<double>& coords)
+static void dumpShapeVertices(const TopoDS_Shape& shape, NCollection_LinearVector<double>& coords)
 {
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> shape_vertices;
   TopExp::MapShapes(shape, TopAbs_VERTEX, shape_vertices);
@@ -2269,13 +2269,13 @@ static void dumpShapeVertices(const TopoDS_Shape& shape, std::vector<double>& co
   for (int i = 1; i <= shape_vertices.Extent(); i++)
   {
     gp_Pnt p = BRep_Tool::Pnt(TopoDS::Vertex(shape_vertices(i)));
-    coords.push_back(p.X());
-    coords.push_back(p.Y());
-    coords.push_back(p.Z());
+    coords.Append(p.X());
+    coords.Append(p.Y());
+    coords.Append(p.Z());
   }
 }
 
-static void GetCoords(const char* const path_to_file, std::vector<double>& coords)
+static void GetCoords(const char* const path_to_file, NCollection_LinearVector<double>& coords)
 {
   TopoDS_Shape shape;
   BRep_Builder builder;
@@ -2297,29 +2297,29 @@ static int OCC26396(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
 
   const int maxInd = 50;
 
-  std::vector<double> ref_coords;
-  ref_coords.reserve(100);
+  NCollection_LinearVector<double> ref_coords;
+  ref_coords.Reserve(100);
   bool Stat = true;
 
   GetCoords(theArgv[1], ref_coords);
 
-  std::vector<double> coords;
-  coords.reserve(100);
+  NCollection_LinearVector<double> coords;
+  coords.Reserve(100);
   for (int i = 1; i < maxInd; i++)
   {
     GetCoords(theArgv[1], coords);
-    if (coords.size() != ref_coords.size())
+    if (coords.Size() != ref_coords.Size())
     {
       Stat = false;
       break;
     }
-    for (size_t j = 0; j < coords.size(); j++)
+    for (size_t j = 0; j < coords.Size(); j++)
       if (std::abs(ref_coords[j] - coords[j]) > RealEpsilon())
       {
         Stat = false;
         break;
       }
-    coords.clear();
+    coords.Clear();
   }
   if (!Stat)
     theDI << "Error: unstable results";

@@ -31,10 +31,10 @@
 #include <BRepMesh_Triangle.hxx>
 
 #include <NCollection_DynamicArray.hxx>
+#include <NCollection_LinearVector.hxx>
 
 #include <algorithm>
 #include <stack>
-#include <vector>
 
 const double AngDeviation1Deg  = M_PI / 180.;
 const double AngDeviation90Deg = 90 * AngDeviation1Deg;
@@ -117,7 +117,7 @@ public:
   // Note that the range is [theFrameStart, theFrameEnd).
   inline void PushFrame(const int theFrameStart, const int theFrameEnd)
   {
-    myFrames.emplace_back(theFrameStart, theFrameEnd);
+    myFrames.EmplaceAppend(theFrameStart, theFrameEnd);
   }
 
   // Returns the index of the current element of the top frame
@@ -126,19 +126,19 @@ public:
   // Precondition: the stack is not empty.
   inline int PopElement()
   {
-    Frame&    aFrame = myFrames.back();
+    Frame&    aFrame = myFrames.ChangeLast();
     const int anElem = aFrame.Advance();
     if (aFrame.IsEmpty())
-      myFrames.pop_back();
+      myFrames.EraseLast();
 
     return anElem;
   }
 
   // Check if the stack is empty.
-  inline bool IsEmpty() const { return myFrames.empty(); }
+  inline bool IsEmpty() const { return myFrames.IsEmpty(); }
 
 private:
-  std::vector<Frame, NCollection_Allocator<Frame>> myFrames; // Container of frames.
+  NCollection_LinearVector<Frame> myFrames; // Container of frames.
 };
 } // anonymous namespace
 

@@ -68,9 +68,9 @@
 #include <TDataStd_ReferenceArray.hxx>
 #include <TDataStd_ExtStringList.hxx>
 #include <TDataStd_ReferenceList.hxx>
+#include <NCollection_LinearVector.hxx>
 
 #include <algorithm>
-#include <vector>
 
 #define MAXLENGTH 10
 
@@ -3787,18 +3787,17 @@ static int DDataStd_GetNDStrings(Draw_Interpretor& di, int nb, const char** arg)
     const NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString>& aMap =
       anAtt->GetStringsContainer();
 
-    std::vector<DDataStd_GetNDStrings_Property> aProperties;
+    NCollection_LinearVector<DDataStd_GetNDStrings_Property> aProperties;
     for (NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString>::Iterator aIt(
            aMap);
          aIt.More();
          aIt.Next())
     {
-      aProperties.push_back(DDataStd_GetNDStrings_Property(aIt.Key(), aIt.Value()));
+      aProperties.Append(DDataStd_GetNDStrings_Property(aIt.Key(), aIt.Value()));
     }
     std::sort(aProperties.begin(), aProperties.end(), isLess);
 
-    for (std::vector<DDataStd_GetNDStrings_Property>::size_type aI = 0; aI < aProperties.size();
-         ++aI)
+    for (size_t aI = 0; aI < aProperties.Size(); ++aI)
     {
       di << "Key = " << aProperties[aI].first << " Value = " << aProperties[aI].second << "\n";
     }

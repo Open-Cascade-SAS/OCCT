@@ -92,19 +92,19 @@ static void writeVertex(std::ostream& theStream, const T& theVertex)
 #ifdef HAVE_DRACO
 //! Write nodes to Draco mesh
 static void writeNodesToDracoMesh(draco::Mesh&                                theMesh,
-                                  const std::vector<NCollection_Vec3<float>>& theNodes)
+                                  const NCollection_LinearVector<NCollection_Vec3<float>>& theNodes)
 {
-  if (theNodes.empty())
+  if (theNodes.IsEmpty())
   {
     return;
   }
 
   draco::PointAttribute anAttr;
   anAttr.Init(draco::GeometryAttribute::POSITION, 3, draco::DT_FLOAT32, false, sizeof(float) * 3);
-  const int              anId = theMesh.AddAttribute(anAttr, true, uint32_t(theNodes.size()));
+  const int              anId = theMesh.AddAttribute(anAttr, true, uint32_t(theNodes.Size()));
   draco::PointAttribute* aPtr = theMesh.attribute(anId);
   draco::PointIndex      anIndex(0);
-  for (size_t aNodeInd = 0; aNodeInd < theNodes.size(); ++aNodeInd, ++anIndex)
+  for (size_t aNodeInd = 0; aNodeInd < theNodes.Size(); ++aNodeInd, ++anIndex)
   {
     aPtr->SetAttributeValue(aPtr->mapped_index(anIndex), theNodes[aNodeInd].GetData());
   }
@@ -112,19 +112,19 @@ static void writeNodesToDracoMesh(draco::Mesh&                                th
 
 //! Write normals to Draco mesh
 static void writeNormalsToDracoMesh(draco::Mesh&                                theMesh,
-                                    const std::vector<NCollection_Vec3<float>>& theNormals)
+                                    const NCollection_LinearVector<NCollection_Vec3<float>>& theNormals)
 {
-  if (theNormals.empty())
+  if (theNormals.IsEmpty())
   {
     return;
   }
 
   draco::PointAttribute anAttr;
   anAttr.Init(draco::GeometryAttribute::NORMAL, 3, draco::DT_FLOAT32, false, sizeof(float) * 3);
-  const int              anId = theMesh.AddAttribute(anAttr, true, uint32_t(theNormals.size()));
+  const int              anId = theMesh.AddAttribute(anAttr, true, uint32_t(theNormals.Size()));
   draco::PointAttribute* aPtr = theMesh.attribute(anId);
   draco::PointIndex      anIndex(0);
-  for (size_t aNormInd = 0; aNormInd < theNormals.size(); ++aNormInd, ++anIndex)
+  for (size_t aNormInd = 0; aNormInd < theNormals.Size(); ++aNormInd, ++anIndex)
   {
     aPtr->SetAttributeValue(aPtr->mapped_index(anIndex), theNormals[aNormInd].GetData());
   }
@@ -132,19 +132,19 @@ static void writeNormalsToDracoMesh(draco::Mesh&                                
 
 //! Write texture UV coordinates to Draco mesh
 static void writeTexCoordsToDracoMesh(draco::Mesh&                                theMesh,
-                                      const std::vector<NCollection_Vec2<float>>& theTexCoord)
+                                      const NCollection_LinearVector<NCollection_Vec2<float>>& theTexCoord)
 {
-  if (theTexCoord.empty())
+  if (theTexCoord.IsEmpty())
   {
     return;
   }
 
   draco::PointAttribute anAttr;
   anAttr.Init(draco::GeometryAttribute::TEX_COORD, 2, draco::DT_FLOAT32, false, sizeof(float) * 2);
-  const int              anId = theMesh.AddAttribute(anAttr, true, uint32_t(theTexCoord.size()));
+  const int              anId = theMesh.AddAttribute(anAttr, true, uint32_t(theTexCoord.Size()));
   draco::PointAttribute* aPtr = theMesh.attribute(anId);
   draco::PointIndex      anIndex(0);
-  for (size_t aTexInd = 0; aTexInd < theTexCoord.size(); ++aTexInd, ++anIndex)
+  for (size_t aTexInd = 0; aTexInd < theTexCoord.Size(); ++aTexInd, ++anIndex)
   {
     aPtr->SetAttributeValue(aPtr->mapped_index(anIndex), theTexCoord[aTexInd].GetData());
   }
@@ -152,11 +152,11 @@ static void writeTexCoordsToDracoMesh(draco::Mesh&                              
 
 //! Write indices to Draco mesh
 static void writeIndicesToDracoMesh(draco::Mesh&                      theMesh,
-                                    const std::vector<Poly_Triangle>& theIndices)
+                                    const NCollection_LinearVector<Poly_Triangle>& theIndices)
 {
   draco::Mesh::Face aFace;
   int               anIndex = 0;
-  for (size_t anInd = 0; anInd < theIndices.size(); ++anInd, ++anIndex)
+  for (size_t anInd = 0; anInd < theIndices.Size(); ++anInd, ++anIndex)
   {
     const Poly_Triangle& anElem = theIndices[anInd];
     aFace[0]                    = anElem.Value(1);
@@ -192,7 +192,7 @@ public:
   void operator()(int theMeshIndex) const
   {
     const std::shared_ptr<RWGltf_CafWriter::Mesh>& aCurrentMesh = myMeshes->at(theMeshIndex);
-    if (aCurrentMesh->NodesVec.empty())
+    if (aCurrentMesh->NodesVec.IsEmpty())
     {
       return;
     }
@@ -202,12 +202,12 @@ public:
     draco::Mesh aMesh;
     writeNodesToDracoMesh(aMesh, aCurrentMesh->NodesVec);
 
-    if (!aCurrentMesh->NormalsVec.empty())
+    if (!aCurrentMesh->NormalsVec.IsEmpty())
     {
       writeNormalsToDracoMesh(aMesh, aCurrentMesh->NormalsVec);
     }
 
-    if (!aCurrentMesh->TexCoordsVec.empty())
+    if (!aCurrentMesh->TexCoordsVec.IsEmpty())
     {
       writeTexCoordsToDracoMesh(aMesh, aCurrentMesh->TexCoordsVec);
     }
@@ -352,7 +352,7 @@ void RWGltf_CafWriter::saveNodes(RWGltf_GltfFace&                               
     theGltfFace.NodePos.BndBox.Add(NCollection_Vec3<double>(aNode.X(), aNode.Y(), aNode.Z()));
     if (theMesh.get() != nullptr && hasTriangulation(theGltfFace))
     {
-      theMesh->NodesVec.push_back(
+      theMesh->NodesVec.Append(
         NCollection_Vec3<float>(float(aNode.X()), float(aNode.Y()), float(aNode.Z())));
     }
     else
@@ -401,7 +401,7 @@ void RWGltf_CafWriter::saveNormals(RWGltf_GltfFace&                             
     myCSTrsf.TransformNormal(aVecNormal);
     if (theMesh.get() != nullptr)
     {
-      theMesh->NormalsVec.push_back(aVecNormal);
+      theMesh->NormalsVec.Append(aVecNormal);
     }
     else
     {
@@ -464,7 +464,7 @@ void RWGltf_CafWriter::saveTextCoords(RWGltf_GltfFace&                          
     aTexCoord.SetY(1.0 - aTexCoord.Y());
     if (theMesh.get() != nullptr)
     {
-      theMesh->TexCoordsVec.push_back(
+      theMesh->TexCoordsVec.Append(
         NCollection_Vec2<float>((float)aTexCoord.X(), (float)aTexCoord.Y()));
     }
     else
@@ -493,7 +493,7 @@ void RWGltf_CafWriter::saveTriangleIndices(RWGltf_GltfFace&           theGltfFac
     aTri(3) += aNodeFirst;
     if (theMesh.get() != nullptr)
     {
-      theMesh->IndicesVec.push_back(aTri);
+      theMesh->IndicesVec.Append(aTri);
     }
     else
     {
@@ -839,7 +839,7 @@ bool RWGltf_CafWriter::writeBinData(const occ::handle<TDocStd_Document>&        
   myBuffViewInd.ByteLength = 0;
   myBuffViewInd.Target     = RWGltf_GltfBufferViewTarget_ELEMENT_ARRAY_BUFFER;
 
-  myBuffViewsDraco.clear();
+  myBuffViewsDraco.Clear();
 
   myBinDataMap.Clear();
   myBinDataLen64 = 0;
@@ -1146,7 +1146,7 @@ bool RWGltf_CafWriter::writeBinData(const occ::handle<TDocStd_Document>&        
       }
 
       aBuffViewDraco.ByteLength = aLength - aBuffViewDraco.ByteOffset;
-      myBuffViewsDraco.push_back(aBuffViewDraco);
+      myBuffViewsDraco.Append(aBuffViewDraco);
     }
     aDracoTimer.Stop();
     Message::SendInfo(TCollection_AsciiString("Draco compression time: ")
@@ -1848,7 +1848,7 @@ void RWGltf_CafWriter::writeBufferViews(const int theBinDataBufferId)
   }
   if (myDracoParameters.DracoCompression)
   {
-    for (size_t aBufInd = 0; aBufInd != myBuffViewsDraco.size(); ++aBufInd)
+    for (size_t aBufInd = 0; aBufInd != myBuffViewsDraco.Size(); ++aBufInd)
     {
       if (myBuffViewsDraco[aBufInd].Id != RWGltf_GltfAccessor::INVALID_ID)
       {

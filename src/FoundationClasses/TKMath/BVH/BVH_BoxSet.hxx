@@ -17,6 +17,7 @@
 #define _BVH_BoxSet_Header
 
 #include <BVH_PrimitiveSet.hxx>
+#include <NCollection_LinearVector.hxx>
 
 //! Implements easy to use interfaces for adding the elements into
 //! BVH tree and its following construction.
@@ -50,16 +51,16 @@ public: //! @name Setting expected size of the BVH
   //! Sets the expected size of BVH tree
   virtual void SetSize(const size_t theSize)
   {
-    myElements.reserve(theSize);
-    myBoxes.reserve(theSize);
+    myElements.Reserve(theSize);
+    myBoxes.Reserve(theSize);
   }
 
 public: //! @name Adding elements in BVH
   //! Adds the element into BVH
   virtual void Add(const DataType& theElement, const BVH_Box<NumType, Dimension>& theBox)
   {
-    myElements.push_back(theElement);
-    myBoxes.push_back(theBox);
+    myElements.Append(theElement);
+    myBoxes.Append(theBox);
     BVH_Object<NumType, Dimension>::myIsDirty = true;
   }
 
@@ -71,8 +72,8 @@ public: //! @name Clearing the elements and boxes
   //! Clears the vectors of elements and boxes
   virtual void Clear()
   {
-    myElements.clear();
-    myBoxes.clear();
+    myElements.Clear();
+    myBoxes.Clear();
     BVH_Object<NumType, Dimension>::myIsDirty = true;
   }
 
@@ -90,7 +91,7 @@ public: //! @name Necessary overrides for BVH construction
   }
 
   //! Returns the number of boxes.
-  int Size() const override { return static_cast<int>(myBoxes.size()); }
+  int Size() const override { return static_cast<int>(myBoxes.Size()); }
 
   //! Swaps indices of two specified boxes.
   void Swap(const int theIndex1, const int theIndex2) override
@@ -103,8 +104,8 @@ public: //! @name Necessary overrides for BVH construction
   virtual DataType Element(const int theIndex) const { return myElements[theIndex]; }
 
 protected:                                             //! @name Fields
-  std::vector<DataType>                    myElements; //!< Elements
-  std::vector<BVH_Box<NumType, Dimension>> myBoxes;    //!< Boxes for the elements
+  NCollection_LinearVector<DataType>                    myElements; //!< Elements
+  NCollection_LinearVector<BVH_Box<NumType, Dimension>> myBoxes;    //!< Boxes for the elements
 };
 
 #endif // _BVH_BoxSet_Header

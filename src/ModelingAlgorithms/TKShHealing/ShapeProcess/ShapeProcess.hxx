@@ -20,9 +20,10 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
+#include <NCollection_LinearVector.hxx>
 
 #include <bitset>
-#include <vector>
+#include <utility>
 
 class ShapeProcess_Operator;
 class ShapeProcess_Context;
@@ -111,7 +112,7 @@ private:
   //! Returns operators to be performed according to the specified flags.
   //! @param theFlags Bitset of operations flags.
   //! @return List of operators to perform: pairs of operator name and operator handle.
-  static std::vector<std::pair<const char*, occ::handle<ShapeProcess_Operator>>> getOperators(
+  static NCollection_LinearVector<std::pair<const char*, occ::handle<ShapeProcess_Operator>>> getOperators(
     const OperationsFlags& theFlags);
 
   //! Converts operation flag to its name.

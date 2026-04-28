@@ -18,8 +18,7 @@
 #include <Graphic3d_FrameStatsCounter.hxx>
 #include <Graphic3d_FrameStatsTimer.hxx>
 #include <OSD_Timer.hxx>
-
-#include <vector>
+#include <NCollection_LinearVector.hxx>
 
 //! Data frame definition.
 class Graphic3d_FrameStatsData
@@ -81,10 +80,10 @@ public:
   Standard_EXPORT void FillMax(const Graphic3d_FrameStatsData& theOther);
 
 protected:
-  std::vector<size_t> myCounters;        //!< counters
-  std::vector<double> myTimers;          //!< timers
-  std::vector<double> myTimersMin;       //!< minimal values of timers
-  std::vector<double> myTimersMax;       //!< maximum values of timers
+  NCollection_LinearVector<size_t> myCounters;        //!< counters
+  NCollection_LinearVector<double> myTimers;          //!< timers
+  NCollection_LinearVector<double> myTimersMin;       //!< minimal values of timers
+  NCollection_LinearVector<double> myTimersMax;       //!< maximum values of timers
   double              myFps;             //!< FPS     meter (frames per seconds, elapsed time)
   double              myFpsCpu;          //!< CPU FPS meter (frames per seconds, CPU time)
   double              myFpsImmediate;    //!< FPS     meter for immediate redraws
@@ -138,8 +137,8 @@ public:
   double& operator[](Graphic3d_FrameStatsTimer theIndex) { return ChangeTimerValue(theIndex); }
 
 protected:
-  std::vector<OSD_Timer> myOsdTimers;  //!< precise timers for time measurements
-  std::vector<double>    myTimersPrev; //!< previous timers values
+  NCollection_LinearVector<OSD_Timer> myOsdTimers;  //!< precise timers for time measurements
+  NCollection_LinearVector<double>    myTimersPrev; //!< previous timers values
 };
 
 #endif // _Graphic3d_FrameStatsData_HeaderFile

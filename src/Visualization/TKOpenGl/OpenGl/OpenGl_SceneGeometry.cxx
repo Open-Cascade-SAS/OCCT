@@ -144,14 +144,8 @@ void OpenGl_RaytraceGeometry::Clear()
 {
   BVH_Geometry<float, 3>::BVH_Geometry::Clear();
 
-  std::vector<OpenGl_RaytraceLight, NCollection_OccAllocator<OpenGl_RaytraceLight>> anEmptySources;
-
-  Sources.swap(anEmptySources);
-
-  std::vector<OpenGl_RaytraceMaterial, NCollection_OccAllocator<OpenGl_RaytraceMaterial>>
-    anEmptyMaterials;
-
-  Materials.swap(anEmptyMaterials);
+  Sources.Clear(true);
+  Materials.Clear(true);
 }
 
 struct OpenGL_BVHParallelBuilder
@@ -446,7 +440,7 @@ bool OpenGl_RaytraceGeometry::ReleaseTextures(const occ::handle<OpenGl_Context>&
     return true;
   }
 
-  for (size_t aTexIter = 0; aTexIter < myTextureHandles.size(); ++aTexIter)
+  for (size_t aTexIter = 0; aTexIter < myTextureHandles.Size(); ++aTexIter)
   {
     theContext->arbTexBindless->glMakeTextureHandleNonResidentARB(myTextureHandles[aTexIter]);
     const GLenum anErr = theContext->core11fwd->glGetError();

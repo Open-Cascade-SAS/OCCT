@@ -162,20 +162,20 @@ public:
   {
     if (!myBVHSet1->Box(theID1).IsOut(myBVHSet2->Box(theID2)))
     {
-      myPairs.emplace_back(myBVHSet1->Element(theID1), myBVHSet2->Element(theID2));
+      myPairs.EmplaceAppend(myBVHSet1->Element(theID1), myBVHSet2->Element(theID2));
       return true;
     }
     return false;
   }
 
   //! Returns indices
-  const std::vector<PairIDs>& Pairs() const { return myPairs; }
+  const NCollection_LinearVector<PairIDs>& Pairs() const { return myPairs; }
 
   //! Sorts the resulting indices
   void Sort() { std::sort(myPairs.begin(), myPairs.end()); }
 
 private:
-  std::vector<PairIDs> myPairs;
+  NCollection_LinearVector<PairIDs> myPairs;
 };
 
 //=======================================================================
@@ -227,8 +227,8 @@ static void GetInterferingTriangles(IntPolyh_ArrayOfTriangles&                  
   aSelector.Select();
   aSelector.Sort();
 
-  const std::vector<IntPolyh_BoxBndTreeSelector::PairIDs>& aPairs = aSelector.Pairs();
-  const int aNbPairs                                              = static_cast<int>(aPairs.size());
+  const NCollection_LinearVector<IntPolyh_BoxBndTreeSelector::PairIDs>& aPairs = aSelector.Pairs();
+  const int aNbPairs                                              = static_cast<int>(aPairs.Size());
 
   for (int i = 0; i < aNbPairs; ++i)
   {
