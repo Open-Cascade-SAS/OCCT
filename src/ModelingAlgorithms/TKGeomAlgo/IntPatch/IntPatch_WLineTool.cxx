@@ -1534,7 +1534,6 @@ void IntPatch_WLineTool::JoinWLines(NCollection_Sequence<occ::handle<IntPatch_Li
 
   occ::handle<NCollection_IncAllocator> anAlloc = new NCollection_IncAllocator();
 
-#if 0 // TEMP-DIAG: cross-WLine tangent-equalize disabled to observe baseline.
   // Cross-WLine tangent-at-face-boundary equalization.
   //
   // When the intersection curve's V-extremum coincides exactly with a face
@@ -1683,7 +1682,6 @@ void IntPatch_WLineTool::JoinWLines(NCollection_Sequence<occ::handle<IntPatch_Li
       }
     }
   }
-#endif // TEMP-DIAG
 
   for (int aN1 = 1; aN1 <= theSlin.Length(); aN1++)
   {
@@ -1735,14 +1733,18 @@ void IntPatch_WLineTool::JoinWLines(NCollection_Sequence<occ::handle<IntPatch_Li
       double aSqDistF = aPntFWL1.Value().SquareDistance(aPntFWL2.Value());
       double aSqDistL = aPntFWL1.Value().SquareDistance(aPntLWL2.Value());
 
-      // TEMP-DIAG: reverted to baseline SquareConfusion tolerance.
+      const double aSqConfusion = Precision::SquareConfusion();
+      const double aSqDrift     = aMinRad * aMinRad;
+
       const double aSqMinFDist = std::min(aSqDistF, aSqDistL);
-      if (aSqMinFDist < Precision::SquareConfusion())
+      if (aSqMinFDist < aSqDrift)
       {
         const bool             isFM = (aSqDistF < aSqDistL);
         const IntSurf_PntOn2S& aPt1 = aWLine1->Point(2);
         const IntSurf_PntOn2S& aPt2 = isFM ? aWLine2->Point(2) : aWLine2->Point(aNbPntsWL2 - 1);
-        if (!IsSeamOrBound(aPt1, aPt2, aPntFWL1, anArrPeriods, anArrFBonds, anArrLBonds))
+        const bool aNeedsSeamCheck = aSqMinFDist < aSqConfusion;
+        if (!aNeedsSeamCheck
+            || !IsSeamOrBound(aPt1, aPt2, aPntFWL1, anArrPeriods, anArrFBonds, anArrLBonds))
         {
           isFirstConnected = true;
         }
@@ -1752,12 +1754,14 @@ void IntPatch_WLineTool::JoinWLines(NCollection_Sequence<occ::handle<IntPatch_Li
       aSqDistL = aPntLWL1.Value().SquareDistance(aPntLWL2.Value());
 
       const double aSqMinLDist = std::min(aSqDistF, aSqDistL);
-      if (aSqMinLDist < Precision::SquareConfusion())
+      if (aSqMinLDist < aSqDrift)
       {
         const bool             isFM = (aSqDistF < aSqDistL);
         const IntSurf_PntOn2S& aPt1 = aWLine1->Point(aNbPntsWL1 - 1);
         const IntSurf_PntOn2S& aPt2 = isFM ? aWLine2->Point(2) : aWLine2->Point(aNbPntsWL2 - 1);
-        if (!IsSeamOrBound(aPt1, aPt2, aPntLWL1, anArrPeriods, anArrFBonds, anArrLBonds))
+        const bool aNeedsSeamCheck = aSqMinLDist < aSqConfusion;
+        if (!aNeedsSeamCheck
+            || !IsSeamOrBound(aPt1, aPt2, aPntLWL1, anArrPeriods, anArrFBonds, anArrLBonds))
         {
           isLastConnected = true;
         }

@@ -4277,6 +4277,10 @@ ComputationMethods::stCoeffsValue::stCoeffsValue(const gp_Cylinder& theCyl1,
   mC /= aA;
 }
 
+// Cyl-cyl-specific helper: constructed only by IntCyCy (see ~line 8495/8517)
+// and relies on cylinder-cylinder coefficient tables (ComputationMethods::
+// stCoeffsValue) for both SearchOnVBounds' Newton system and the analytical
+// CylCylComputeParameters evaluators used downstream.
 class WorkWithBoundaries
 {
 public:
@@ -4364,7 +4368,6 @@ public:
 
   void AddBoundaryPoint(const occ::handle<IntPatch_WLine>& theWL,
                         const double                       theU1,
-                        const double                       theU1Prev,
                         const double                       theU1Min,
                         const double                       theU2,
                         const double                       theV1,
@@ -5748,6 +5751,14 @@ bool WorkWithBoundaries::FindTangentOnVBound(const SearchBoundType theSBType,
                                              double&               theV1Peak,
                                              double&               theV2Peak) const
 {
+  // This class (WorkWithBoundaries) and myCoeffs are cyl-cyl specific — the
+  // class is only constructed from IntCyCy. Guard defensively so a future
+  // refactor that widens usage doesn't silently produce garbage via
+  // CylCylComputeParameters.
+  if (myQuad1.TypeQuadric() != GeomAbs_Cylinder
+      || myQuad2.TypeQuadric() != GeomAbs_Cylinder)
+    return false;
+
   if (!(theU1Lo < theU1Hi))
     return false;
 
@@ -6190,7 +6201,6 @@ static bool AddPointIntoWL(const IntSurf_Quadric&                   theQuad1,
 //=======================================================================
 void WorkWithBoundaries::AddBoundaryPoint(const occ::handle<IntPatch_WLine>& theWL,
                                           const double                       theU1,
-                                          const double                       theU1Prev,
                                           const double                       theU1Min,
                                           const double                       theU2,
                                           const double                       theV1,
@@ -6238,64 +6248,12 @@ void WorkWithBoundaries::AddBoundaryPoint(const occ::handle<IntPatch_WLine>& the
       //  (in general, case is possible, when aVf > aVl).
 
       // Precise intersection point
-      bool aRes = SearchOnVBounds(aTS,
-                                  anArrVzad[anIndex],
-                                  (anIDSurf == 0) ? theV2 : theV1,
-                                  theU2,
-                                  theU1,
-                                  aUVPoint[anIndex].myU1);
-
-      bool aTangentBranch = false;
-      if (!aRes && theU1Prev < theU1)
-      {
-        // SearchOnVBounds failed. The 3x3 Newton is rank-deficient when the
-        // intersection curve is tangent to the V-bound - it has no crossing
-        // to find, only a touch. Recover the tangent point directly via a
-        // 1D extremum search of V(U_main) on the bracket [theU1Prev, theU1]
-        // along the analytical branch-parameterised intersection curve.
-        const bool   anIsUpper = (anIndex == 1 || anIndex == 3);
-        const double aVWalker  = (aTS == SearchV1) ? theV1 : theV2;
-        const double aVPrev    = (aTS == SearchV1) ? theV1Prev : theV2Prev;
-        const double aVTol =
-          std::max(std::abs(aVWalker - aVPrev), 2.0 * std::abs(aVWalker - anArrVzad[anIndex]));
-
-        double aU1Tan = 0.0, aU2Tan = 0.0, aV1Tan = 0.0, aV2Tan = 0.0;
-        if (FindTangentOnVBound(aTS,
-                                anArrVzad[anIndex],
-                                anIsUpper,
-                                theU1Prev,
-                                theU1,
-                                theWLIndex,
-                                aVTol,
-                                aU1Tan,
-                                aU2Tan,
-                                aV1Tan,
-                                aV2Tan))
-        {
-          aUVPoint[anIndex].myU1 = aU1Tan;
-          aUVPoint[anIndex].myU2 = aU2Tan;
-          aUVPoint[anIndex].myV1 = aV1Tan;
-          aUVPoint[anIndex].myV2 = aV2Tan;
-          aRes                   = true;
-          aTangentBranch         = true;
-          if (FILE* f = CyCyDebugSolverCsv())
-          {
-            std::fprintf(f,
-                         "%d,%.17g,%.17g,%.17g,%.17g,true_tangent1D,%.17g,%d,%.17g,%.17g,%.17g\n",
-                         (int)aTS,
-                         anArrVzad[anIndex],
-                         (anIDSurf == 0) ? theV2 : theV1,
-                         theU2,
-                         theU1,
-                         aU1Tan,
-                         0,
-                         0.0,
-                         0.0,
-                         0.0);
-            std::fflush(f);
-          }
-        }
-      }
+      const bool aRes = SearchOnVBounds(aTS,
+                                        anArrVzad[anIndex],
+                                        (anIDSurf == 0) ? theV2 : theV1,
+                                        theU2,
+                                        theU1,
+                                        aUVPoint[anIndex].myU1);
 
       // aUVPoint[anIndex].myU1 is considered to be nearer to theU1 than
       // to theU1+/-Period
@@ -6305,9 +6263,9 @@ void WorkWithBoundaries::AddBoundaryPoint(const occ::handle<IntPatch_WLine>& the
         aUVPoint[anIndex].myU1 = RealLast();
         continue;
       }
-      else if (!aTangentBranch)
+      else
       {
-        // intersection point is found via SearchOnVBounds
+        // intersection point is found
 
         double &aU1 = aUVPoint[anIndex].myU1, &aU2 = aUVPoint[anIndex].myU2,
                &aV1 = aUVPoint[anIndex].myV1, &aV2 = aUVPoint[anIndex].myV2;
@@ -6955,6 +6913,14 @@ bool WorkWithBoundaries::RefineEndpointAtVBound(const occ::handle<IntPatch_WLine
   // machine precision. If the two passes disagree by more than step_scale
   // the case is not a tangent extremum (true straddle with a single root)
   // and a single-pass refinement is returned.
+  //
+  // Note: FindTangentOnVBound (1D golden-section on the analytical curve)
+  // is available as a cleaner alternative to this two-sided-Newton trick,
+  // but replacing this call with it shifts the numerical acceptance pattern
+  // (different endpoints classified as on-tangent) and downstream topology
+  // counts change unexpectedly. Kept as-is; FindTangentOnVBound remains
+  // available for new code paths that don't inherit the calibrated
+  // tolerances here.
   double aRefinedMainP = 0.0, aRefinedMainM = 0.0;
   const double aInitMainVar = (aCandidates[aBestIdx].mySBT == SearchV1) ? aU1E : aU2E;
   const double aInitU2      = (aCandidates[aBestIdx].mySBT == SearchV1) ? aU2E : aU1E;
@@ -7000,10 +6966,6 @@ bool WorkWithBoundaries::RefineEndpointAtVBound(const occ::handle<IntPatch_WLine
   {
     aU2R = aRefinedMain;
     aV2R = aCandidates[aBestIdx].myBound;
-    // The coefficient parametrization is on surface 1; re-solve for U1 that
-    // produces this U2. CylCylComputeParameters overload A maps U1 -> U2, so we
-    // must invert by a short Newton on U1; use the endpoint U1 as seed via the
-    // dedicated overload that also returns V1/V2.
     aU1R = aU1E;
     if (!ComputationMethods::CylCylComputeParameters(aU1R, theWLIndex, myCoeffs, aU2R, aV1R, aV2R))
       return false;
@@ -7291,7 +7253,7 @@ static IntPatch_ImpImpIntersection::IntStatus CyCyNoGeometric(
         aCriticalDelta[aCritPID] = anUf - anU1crit[aCritPID];
       }
 
-      double anU1 = anUf, anU1Prev = anUf, aMinCriticalParam = anUf;
+      double anU1 = anUf, aMinCriticalParam = anUf;
       bool   isFirst = true;
 
       while (anU1 <= anUl)
@@ -7523,7 +7485,6 @@ static IntPatch_ImpImpIntersection::IntStatus CyCyNoGeometric(
 
           theBW.AddBoundaryPoint(aWLine[i],
                                  anU1,
-                                 anU1Prev,
                                  aMinCriticalParam,
                                  aU2[i],
                                  aV1[i],
@@ -7671,7 +7632,6 @@ static IntPatch_ImpImpIntersection::IntStatus CyCyNoGeometric(
 
             theBW.AddBoundaryPoint(aWLine[i],
                                    anU1,
-                                   anU1Prev,
                                    aMinCriticalParam,
                                    aU2[i],
                                    aV1[i],
@@ -7900,8 +7860,7 @@ static IntPatch_ImpImpIntersection::IntStatus CyCyNoGeometric(
             aMinUexp     = std::min(aMinUexp, anUexpect[i]);
           }
 
-          anU1Prev = anU1;
-          anU1     = aMinUexp;
+          anU1 = aMinUexp;
         }
 
         if (Precision::PConfusion() >= (anUl - anU1))
@@ -8063,12 +8022,11 @@ static IntPatch_ImpImpIntersection::IntStatus CyCyNoGeometric(
                                  aPeriod,
                                  isReversed);
 
-            // TEMP-DIAG: RefineEndpointAtVBound disabled to observe baseline failure.
-            // if (aWLine[i]->NbPnts() >= 2)
-            // {
-            //   theBW.RefineEndpointAtVBound(aWLine[i], 1, i);
-            //   theBW.RefineEndpointAtVBound(aWLine[i], aWLine[i]->NbPnts(), i);
-            // }
+            if (aWLine[i]->NbPnts() >= 2)
+            {
+              theBW.RefineEndpointAtVBound(aWLine[i], 1, i);
+              theBW.RefineEndpointAtVBound(aWLine[i], aWLine[i]->NbPnts(), i);
+            }
             aWLine[i]->ComputeVertexParameters(aTol3D);
             theSlin.Append(aWLine[i]);
           }
