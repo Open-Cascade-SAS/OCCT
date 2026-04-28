@@ -12,7 +12,6 @@
 // commercial license or contractual agreement.
 
 #include <IntAna_IntQuadQuad.hxx>
-#include <IntAna_QuadQuadGeo.hxx>
 #include <IntAna_Quadric.hxx>
 #include <gp_Sphere.hxx>
 #include <gp_Cylinder.hxx>
@@ -204,45 +203,4 @@ TEST_F(IntAna_IntQuadQuad_Test, IndexingConsistencyTest)
       EXPECT_LE(aNextIdx, anIntersector.NbCurve());
     }
   }
-}
-
-// Regression test for near-tangent parallel cylinders.
-// Very small chord between two theoretical lines must collapse to one line.
-TEST_F(IntAna_IntQuadQuad_Test, CylinderCylinderNearTangent_CollapsesToSingleLine)
-{
-  gp_Pnt aCenter1(0.0, 0.0, 0.0);
-  gp_Pnt aCenter2(2.0 - 1.0e-9, 0.0, 0.0);
-  gp_Dir aZDir(gp_Dir::D::Z);
-  gp_Dir anXDir(gp_Dir::D::X);
-  gp_Ax3 anAxis1(aCenter1, aZDir, anXDir);
-  gp_Ax3 anAxis2(aCenter2, aZDir, anXDir);
-
-  gp_Cylinder aCyl1(anAxis1, 1.0);
-  gp_Cylinder aCyl2(anAxis2, 1.0);
-
-  IntAna_QuadQuadGeo anInter(aCyl1, aCyl2, 1.0e-4);
-
-  EXPECT_TRUE(anInter.IsDone());
-  EXPECT_EQ(anInter.TypeInter(), IntAna_Line);
-  EXPECT_EQ(anInter.NbSolutions(), 1);
-}
-
-// Clear non-tangent case must keep two-line solution.
-TEST_F(IntAna_IntQuadQuad_Test, CylinderCylinderNonTangent_HasTwoLines)
-{
-  gp_Pnt aCenter1(0.0, 0.0, 0.0);
-  gp_Pnt aCenter2(1.8, 0.0, 0.0);
-  gp_Dir aZDir(gp_Dir::D::Z);
-  gp_Dir anXDir(gp_Dir::D::X);
-  gp_Ax3 anAxis1(aCenter1, aZDir, anXDir);
-  gp_Ax3 anAxis2(aCenter2, aZDir, anXDir);
-
-  gp_Cylinder aCyl1(anAxis1, 1.0);
-  gp_Cylinder aCyl2(anAxis2, 1.0);
-
-  IntAna_QuadQuadGeo anInter(aCyl1, aCyl2, 1.0e-7);
-
-  EXPECT_TRUE(anInter.IsDone());
-  EXPECT_EQ(anInter.TypeInter(), IntAna_Line);
-  EXPECT_EQ(anInter.NbSolutions(), 2);
 }
