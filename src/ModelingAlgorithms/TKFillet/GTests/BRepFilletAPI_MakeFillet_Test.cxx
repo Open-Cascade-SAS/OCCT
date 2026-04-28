@@ -196,19 +196,19 @@ TEST(BRepFilletAPI_MakeFilletTest, OCC570_MixedVariableConstantRadius)
 // line segments (trefoil-like profile). Bug: BRepFilletAPI_MakeFillet failed on this prism.
 TEST(BRepFilletAPI_MakeFilletTest, Bug828_FilletOnComplexPrism)
 {
-  const gp_Pnt aPnt11(-27.598139, -7.0408573, 0.0);
-  const gp_Pnt aPnt12(-28.483755, -17.487625, 0.0);
-  const gp_Pnt aPnt13(-19.555504, -22.983587, 0.0);
+  const gp_Pnt       aPnt11(-27.598139, -7.0408573, 0.0);
+  const gp_Pnt       aPnt12(-28.483755, -17.487625, 0.0);
+  const gp_Pnt       aPnt13(-19.555504, -22.983587, 0.0);
   GC_MakeArcOfCircle anArc1(aPnt11, aPnt12, aPnt13);
 
-  const gp_Pnt aPnt21(12.125083, -22.983587, 0.0);
-  const gp_Pnt aPnt22(21.1572, -17.27554, 0.0);
-  const gp_Pnt aPnt23(19.878168, -6.6677585, 0.0);
+  const gp_Pnt       aPnt21(12.125083, -22.983587, 0.0);
+  const gp_Pnt       aPnt22(21.1572, -17.27554, 0.0);
+  const gp_Pnt       aPnt23(19.878168, -6.6677585, 0.0);
   GC_MakeArcOfCircle anArc2(aPnt21, aPnt22, aPnt23);
 
-  const gp_Pnt aPnt31(3.265825, 13.724955, 0.0);
-  const gp_Pnt aPnt32(-4.7233953, 17.406338, 0.0);
-  const gp_Pnt aPnt33(-12.529893, 13.351856, 0.0);
+  const gp_Pnt       aPnt31(3.265825, 13.724955, 0.0);
+  const gp_Pnt       aPnt32(-4.7233953, 17.406338, 0.0);
+  const gp_Pnt       aPnt33(-12.529893, 13.351856, 0.0);
   GC_MakeArcOfCircle anArc3(aPnt31, aPnt32, aPnt33);
 
   GC_MakeSegment aSegment1(aPnt13, aPnt21);
@@ -228,7 +228,7 @@ TEST(BRepFilletAPI_MakeFilletTest, Bug828_FilletOnComplexPrism)
   const TopoDS_Face aFace = BRepBuilderAPI_MakeFace(aWire);
   ASSERT_FALSE(aFace.IsNull());
 
-  constexpr double aSlabThick = 111.0;
+  constexpr double      aSlabThick = 111.0;
   BRepPrimAPI_MakePrism aSlab(aFace, gp_Vec(0, 0, aSlabThick), true);
   ASSERT_TRUE(aSlab.IsDone());
   const TopoDS_Shape aSlabShape = aSlab.Shape();
@@ -309,9 +309,9 @@ TEST(BRepFilletAPI_MakeFilletTest, Bug828_FilletOnComplexPrism)
     }
   }
 
-  ASSERT_TRUE(hasMatchingPair) << "Failed to reproduce the original OCC828 fillet result; closest pair="
-                               << aBestEdgeIndex1 << "," << aBestEdgeIndex2
-                               << " area=" << aBestArea;
+  ASSERT_TRUE(hasMatchingPair)
+    << "Failed to reproduce the original OCC828 fillet result; closest pair=" << aBestEdgeIndex1
+    << "," << aBestEdgeIndex2 << " area=" << aBestArea;
 
   BRepCheck_Analyzer aResultChecker(aResult);
   EXPECT_TRUE(aResultChecker.IsValid()) << "Fillet result shape should be valid";
@@ -330,12 +330,12 @@ namespace
 //! Apply fillet of given radius to all section edges of a boolean operation.
 TopoDS_Shape occ1077BoolBl(BRepAlgoAPI_BooleanOperation& theBoolOp, double theRadius)
 {
-  const double     aTesp     = 1.e-4;
-  const double     aT3d      = 1.e-4;
-  const double     aT2d      = 1.e-5;
-  const double     aTa       = 1.e-2;
-  const double     aFl       = 1.e-3;
-  const double     aTappAngl = 1.e-2;
+  const double        aTesp      = 1.e-4;
+  const double        aT3d       = 1.e-4;
+  const double        aT2d       = 1.e-5;
+  const double        aTa        = 1.e-2;
+  const double        aFl        = 1.e-3;
+  const double        aTappAngl  = 1.e-2;
   const GeomAbs_Shape aBlendCont = GeomAbs_C1;
 
   const TopoDS_Shape aShapeCut = theBoolOp.Shape();
@@ -369,8 +369,8 @@ TopoDS_Shape occ1077BoolBl(BRepAlgoAPI_BooleanOperation& theBoolOp, double theRa
 
 //! Cut theShapeToCut with aTool and fillet the section edges with given radius.
 TopoDS_Shape occ1077CutBlend(const TopoDS_Shape& theShapeToCut,
-                              const TopoDS_Shape& theTool,
-                              double              theRadius)
+                             const TopoDS_Shape& theTool,
+                             double              theRadius)
 {
   BRepAlgoAPI_Cut aCut(theShapeToCut, theTool);
   return occ1077BoolBl(aCut, theRadius);
@@ -397,7 +397,7 @@ TEST(BRepFilletAPI_MakeFilletTest, OCC1077_BooleanCutFillet)
   const TopoDS_Shape aCyl3 =
     BRepPrimAPI_MakeCylinder(gp_Ax2(gp_Pnt(0, -10, 0), gp_Dir(gp_Dir::D::Y)), 3, 20).Shape();
 
-  TopoDS_Shape aTmp1 = occ1077CutBlend(aCommon, aCyl1, 0.7);
+  TopoDS_Shape                aTmp1  = occ1077CutBlend(aCommon, aCyl1, 0.7);
   occ::handle<ShapeFix_Shape> aFixer = new ShapeFix_Shape(aTmp1);
   aFixer->Perform();
   aTmp1 = aFixer->Shape();
@@ -438,21 +438,21 @@ TEST(BRepFilletAPI_MakeFilletTest, OCC426_RevolveFuseUnifyFillet)
   aW1.Add(gp_Pnt(20, 0, 10));
   aW1.Add(gp_Pnt(10, 0, 10));
   aW1.Add(gp_Pnt(10, 0, 0));
-  const TopoDS_Face aF1       = BRepBuilderAPI_MakeFace(aW1.Wire(), false);
-  const gp_Ax1      aAxis1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  const TopoDS_Face  aF1 = BRepBuilderAPI_MakeFace(aW1.Wire(), false);
+  const gp_Ax1       aAxis1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   const TopoDS_Shape aRs1 = BRepPrimAPI_MakeRevol(aF1, aAxis1, 2.0 * M_PI);
 
   // --- Solid 2: 270-degree ring at 45-degree radius offset, Z=[10..20] ---
-  const double       aF1Val = 7.0710678118654752440;
-  const double       aF2Val = 14.1421356237309504880;
+  const double               aF1Val = 7.0710678118654752440;
+  const double               aF2Val = 14.1421356237309504880;
   BRepBuilderAPI_MakePolygon aW2;
   aW2.Add(gp_Pnt(aF1Val, aF1Val, 10));
   aW2.Add(gp_Pnt(aF2Val, aF2Val, 10));
   aW2.Add(gp_Pnt(aF2Val, aF2Val, 20));
   aW2.Add(gp_Pnt(aF1Val, aF1Val, 20));
   aW2.Add(gp_Pnt(aF1Val, aF1Val, 10));
-  const TopoDS_Face aF2       = BRepBuilderAPI_MakeFace(aW2.Wire(), false);
-  const gp_Ax1      aAxis2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  const TopoDS_Face  aF2 = BRepBuilderAPI_MakeFace(aW2.Wire(), false);
+  const gp_Ax1       aAxis2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   const TopoDS_Shape aRs2 = BRepPrimAPI_MakeRevol(aF2, aAxis2, 270.0 * M_PI / 180.0);
 
   // --- Solid 3: full 360-degree ring, Z=[20..30], R=[10..20] ---
@@ -462,8 +462,8 @@ TEST(BRepFilletAPI_MakeFilletTest, OCC426_RevolveFuseUnifyFillet)
   aW3.Add(gp_Pnt(20, 0, 30));
   aW3.Add(gp_Pnt(10, 0, 30));
   aW3.Add(gp_Pnt(10, 0, 20));
-  const TopoDS_Face aF3       = BRepBuilderAPI_MakeFace(aW3.Wire(), false);
-  const gp_Ax1      aAxis3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  const TopoDS_Face  aF3 = BRepBuilderAPI_MakeFace(aW3.Wire(), false);
+  const gp_Ax1       aAxis3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   const TopoDS_Shape aRs3 = BRepPrimAPI_MakeRevol(aF3, aAxis3, 2.0 * M_PI);
 
   // Validate intermediate solids

@@ -69,13 +69,13 @@ double wireLength(const TopoDS_Wire& theWire)
 //! @param[out] theWallSolid      resulting tube wall solid
 //! @param[out] theGasSolid       resulting inner gas solid
 //! @return false if any construction step fails
-bool buildBentTube(double         theWallThickness,
-                   double         theDia1,
-                   double         theDia2,
-                   double         theMajorRadius,
-                   double         theLength,
-                   TopoDS_Solid&  theWallSolid,
-                   TopoDS_Shape&  theGasSolid)
+bool buildBentTube(double        theWallThickness,
+                   double        theDia1,
+                   double        theDia2,
+                   double        theMajorRadius,
+                   double        theLength,
+                   TopoDS_Solid& theWallSolid,
+                   TopoDS_Shape& theGasSolid)
 {
   const double aBendAngle = theLength / theMajorRadius;
   if (aBendAngle >= M_PI)
@@ -86,7 +86,7 @@ bool buildBentTube(double         theWallThickness,
 
   gp_Ax2 anOrigin(gp_Pnt(5000.0, -300.0, 1000.0), gp_Dir(0.0, -1.0, -1.0));
 
-  gp_Pln aCirc1Plane(anOrigin.Location(), anOrigin.Direction());
+  gp_Pln  aCirc1Plane(anOrigin.Location(), anOrigin.Direction());
   gp_Circ aFaceCircle(anOrigin, aRadiusL);
   gp_Circ anOutFaceCircle(anOrigin, aRadiusL + theWallThickness);
 
@@ -196,8 +196,8 @@ TEST(BRepOffsetAPI_MakePipeShellTest, Bug332_BentTubeWithScalingLaw)
 
   TopoDS_Solid aWallSolid;
   TopoDS_Shape aGasSolid;
-  const bool   aBuilt = buildBentTube(aWallThickness, aDia1, aDia2, aMajorRadius, aLength,
-                                      aWallSolid, aGasSolid);
+  const bool   aBuilt =
+    buildBentTube(aWallThickness, aDia1, aDia2, aMajorRadius, aLength, aWallSolid, aGasSolid);
   ASSERT_TRUE(aBuilt) << "buildBentTube construction failed";
 
   // Validate both solids
@@ -218,16 +218,15 @@ TEST(BRepOffsetAPI_MakePipeShellTest, Bug332_BentTubeWithScalingLaw)
   //   Wire3 in TCL: pi * (dia1 + 2*wall)            = pi * 50 (outer start, radius=25)
   //   Wire6 in TCL: pi * dia2                       = pi * 50 (inner end, radius=25)
   //   Wire5 in TCL: pi * (dia2 + 2*wall)            = pi * 70 (outer end, radius=35)
-  const double aPi = M_PI;
-  const double aExpLen1 = aPi * aDia1;                           // pi*30  ~ 94.25
-  const double aExpLen2 = aPi * (aDia1 + 2.0 * aWallThickness);  // pi*50  ~ 157.08
+  const double aPi      = M_PI;
+  const double aExpLen1 = aPi * aDia1;                          // pi*30  ~ 94.25
+  const double aExpLen2 = aPi * (aDia1 + 2.0 * aWallThickness); // pi*50  ~ 157.08
   // aExpLen3 = pi*dia2 = pi*50, which equals aExpLen2 when dia2/2 == dia1/2 + wall
-  const double aExpLen4 = aPi * (aDia2 + 2.0 * aWallThickness);  // pi*70  ~ 219.91
+  const double aExpLen4 = aPi * (aDia2 + 2.0 * aWallThickness); // pi*70  ~ 219.91
 
   const double aTol = 0.001; // 0.1% relative tolerance
 
-  auto countMatching = [&](double theExpected) -> int
-  {
+  auto countMatching = [&](double theExpected) -> int {
     int aCount = 0;
     for (const double aLen : aWireLengths)
     {

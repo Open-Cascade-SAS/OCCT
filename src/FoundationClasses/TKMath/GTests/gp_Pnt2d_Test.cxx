@@ -164,7 +164,7 @@ TEST(gp_Pnt2dTest, OCC22736_TwoIdenticalMirrorCompositionIsIdentity)
   EXPECT_NEAR(aP1MirrorM1M2.Y(), aP1.Y(), Precision::Confusion());
 
   // Composing M2*M1 must also be identity on p1
-  const gp_Trsf2d aComp = aM2.Multiplied(aM1);
+  const gp_Trsf2d aComp   = aM2.Multiplied(aM1);
   const gp_Pnt2d  aP1Comp = aP1.Transformed(aComp);
   EXPECT_NEAR(aP1Comp.X(), aP1.X(), Precision::Confusion());
   EXPECT_NEAR(aP1Comp.Y(), aP1.Y(), Precision::Confusion());

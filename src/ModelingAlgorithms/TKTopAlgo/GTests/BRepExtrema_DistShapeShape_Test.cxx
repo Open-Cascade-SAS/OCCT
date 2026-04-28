@@ -28,8 +28,8 @@
 // The theoretical minimum distance is 1.0 (perpendicular from (0,0.3,1) to (0,0.3,0)).
 TEST(BRepExtrema_DistShapeShapeTest, BUC60870_EdgeToVertexMinimumDistance)
 {
-  const TopoDS_Edge   anEdge   = BRepBuilderAPI_MakeEdge(gp_Pnt(0, 0, 0), gp_Pnt(0, 1, 0)).Edge();
-  const TopoDS_Vertex aVertex  = BRepBuilderAPI_MakeVertex(gp_Pnt(0, 0.3, 1)).Vertex();
+  const TopoDS_Edge   anEdge  = BRepBuilderAPI_MakeEdge(gp_Pnt(0, 0, 0), gp_Pnt(0, 1, 0)).Edge();
+  const TopoDS_Vertex aVertex = BRepBuilderAPI_MakeVertex(gp_Pnt(0, 0.3, 1)).Vertex();
 
   BRepExtrema_DistShapeShape aDist(anEdge, aVertex, 2.0);
 

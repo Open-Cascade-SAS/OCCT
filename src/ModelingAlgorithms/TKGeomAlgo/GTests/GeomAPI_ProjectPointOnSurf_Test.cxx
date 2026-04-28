@@ -27,8 +27,7 @@
 // (U:[0,4]) to reproduce the original bug scenario.
 TEST(GeomAPI_ProjectPointOnSurfTest, Bug867_InitWithTightBoundsNoException)
 {
-  const occ::handle<Geom_CylindricalSurface> aCyl =
-    new Geom_CylindricalSurface(gp::XOY(), 10.0);
+  const occ::handle<Geom_CylindricalSurface> aCyl = new Geom_CylindricalSurface(gp::XOY(), 10.0);
   const occ::handle<Geom_RectangularTrimmedSurface> aTrimSurf =
     new Geom_RectangularTrimmedSurface(aCyl, 0.0, 4.0, 0.0, 2.0);
 

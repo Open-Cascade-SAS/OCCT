@@ -3582,21 +3582,21 @@ TEST(GeomAPI_IntSSTest, OCC23972_TwoConesIntersection)
   // Cannot read these from files: slight rounding would hide the bug.
   const occ::handle<Geom_ConicalSurface> aCone1 =
     new Geom_ConicalSurface(gp_Ax3(gp_Pnt(123.694345356663, 789.9, 68.15),
-                                    gp_Dir(-1, 3.48029791472957e-016, -8.41302743359754e-017),
-                                    gp_Dir(-3.48029791472957e-016, -1, -3.17572289932207e-016)),
-                             0.780868809443031,
-                             3.28206830417112);
+                                   gp_Dir(-1, 3.48029791472957e-016, -8.41302743359754e-017),
+                                   gp_Dir(-3.48029791472957e-016, -1, -3.17572289932207e-016)),
+                            0.780868809443031,
+                            3.28206830417112);
 
   const occ::handle<Geom_ConicalSurface> aCone2 =
     new Geom_ConicalSurface(gp_Ax3(gp_Pnt(123.694345356663, 784.9, 68.15),
-                                    gp_Dir(-1, -2.5209507537117e-016, -1.49772808948866e-016),
-                                    gp_Dir(1.49772808948866e-016, 3.17572289932207e-016, -1)),
-                             0.780868809443031,
-                             3.28206830417112);
+                                   gp_Dir(-1, -2.5209507537117e-016, -1.49772808948866e-016),
+                                   gp_Dir(1.49772808948866e-016, 3.17572289932207e-016, -1)),
+                            0.780868809443031,
+                            3.28206830417112);
 
   // Trim to a finite V range so that GeomAPI_IntSS does not search an infinite domain.
   // The two cones are offset by 5 units in Y with half-angle ~44.7 deg and base R ~3.28,
-  // so intersection curves lie within V ∈ [0, 10].
+  // so intersection curves lie within V [0, 10].
   const occ::handle<Geom_Surface> aS1 =
     new Geom_RectangularTrimmedSurface(aCone1, 0.0, 2.0 * M_PI, 0.0, 10.0);
   const occ::handle<Geom_Surface> aS2 =
@@ -3619,8 +3619,10 @@ TEST(GeomAPI_IntSSTest, OCC23972_TwoConesIntersection)
     double aU2 = aCurve->LastParameter();
     // Intersection of two cones yields hyperbolic curves which may be unbounded;
     // clamp to a finite window to verify the span is non-degenerate.
-    if (aU1 < -20.0) aU1 = -20.0;
-    if (aU2 >  20.0) aU2 =  20.0;
+    if (aU1 < -20.0)
+      aU1 = -20.0;
+    if (aU2 > 20.0)
+      aU2 = 20.0;
 
     ASSERT_GT(aU2 - aU1, 1.0e-20) << "Degenerate parameter range for curve " << anIdx;
   }

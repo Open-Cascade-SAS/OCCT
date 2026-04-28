@@ -1848,5 +1848,4 @@ TEST(BRepAlgoAPI_CutTest, Bug825_SphereHalfSpaceCut)
   EXPECT_EQ(countSubShapes(aResult2, TopAbs_SHELL), 1);
   EXPECT_EQ(countSubShapes(aResult2, TopAbs_SOLID), 1);
   EXPECT_EQ(aResult2.ShapeType(), TopAbs_COMPOUND);
-
 }

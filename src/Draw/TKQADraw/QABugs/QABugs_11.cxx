@@ -1712,7 +1712,6 @@ static int OCC1487(Draw_Interpretor& di, int argc, const char** argv)
 
 #include <NCollection_List.hxx>
 
-
 //////////////////////////////////////////////////////////////
 /*!
  * Compute uniform distribution of points using GCPnts_UniformAbscissa

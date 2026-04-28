@@ -98,9 +98,10 @@ Standard_DISABLE_DEPRECATION_WARNINGS
 #include <BRepExtrema_DistShapeShape.hxx>
 #include <BRepTools.hxx>
 
-static bool OCC23774Test(const TopoDS_Face&  grossPlateFace,
-                         const TopoDS_Shape& originalWire,
-                         Draw_Interpretor&   di)
+  static bool
+  OCC23774Test(const TopoDS_Face&  grossPlateFace,
+               const TopoDS_Shape& originalWire,
+               Draw_Interpretor&   di)
 {
   BRepExtrema_DistShapeShape distShapeShape(grossPlateFace, originalWire, Extrema_ExtFlag_MIN);
   if (!distShapeShape.IsDone())
