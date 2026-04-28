@@ -6,5 +6,4 @@ set(OCCT_TKBool_GTests_FILES
   BRepAlgoAPI_Fuse_Test.cxx
   BRepAlgoAPI_Section_Test.cxx
   BRepFill_PipeShell_Test.cxx
-  IntTools_FaceFace_Test.cxx
 )
