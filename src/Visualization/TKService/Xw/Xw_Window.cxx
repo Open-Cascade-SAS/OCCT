@@ -75,18 +75,19 @@ Xw_Window::Xw_Window(const occ::handle<Aspect_DisplayConnection>& theXDisplay,
   aWinAttr.border_pixel      = 0;
   aWinAttr.override_redirect = False;
 
-  myXWindow = (Window)XCreateWindow(aDisp,
-                                    aParent,
-                                    myXLeft,
-                                    myYTop,
-                                    thePxWidth,
-                                    thePxHeight,
-                                    0,
-                                    aVisInfo != nullptr ? aVisInfo->depth : CopyFromParent,
-                                    InputOutput,
-                                    aVisInfo != nullptr ? aVisInfo->visual : CopyFromParent,
-                                    CWBorderPixel | CWColormap | CWEventMask | CWOverrideRedirect,
-                                    &aWinAttr);
+  myXWindow =
+    (Window)XCreateWindow(aDisp,
+                          aParent,
+                          myXLeft,
+                          myYTop,
+                          thePxWidth,
+                          thePxHeight,
+                          0,
+                          aVisInfo != nullptr ? aVisInfo->depth : CopyFromParent,
+                          InputOutput,
+                          aVisInfo != nullptr ? aVisInfo->visual : static_cast<Visual*>(nullptr),
+                          CWBorderPixel | CWColormap | CWEventMask | CWOverrideRedirect,
+                          &aWinAttr);
   if (myXWindow == 0)
   {
     throw Aspect_WindowDefinitionError("Xw_Window, Unable to create window");

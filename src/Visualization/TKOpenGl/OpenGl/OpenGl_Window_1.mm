@@ -76,7 +76,7 @@ void OpenGl_Window::Init (const occ::handle<OpenGl_GraphicDriver>& theDriver,
                           const occ::handle<OpenGl_Context>& theShareCtx)
 {
   myGlContext = new OpenGl_Context (theCaps);
-  myOwnGContext = (theGContext == 0);
+  myOwnGContext = (theGContext == nullptr);
   myPlatformWindow = thePlatformWindow;
   mySizeWindow = theSizeWindow;
 #if defined(__APPLE__) && defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE

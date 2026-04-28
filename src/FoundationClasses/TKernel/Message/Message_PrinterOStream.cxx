@@ -218,7 +218,7 @@ void Message_PrinterOStream::SetConsoleTextColor(Standard_OStream*    theOStream
     return;
   }
 
-  const char* aCode;
+  const char* aCode = "";
   switch (theTextColor)
   {
     case Message_ConsoleColor_Default:
