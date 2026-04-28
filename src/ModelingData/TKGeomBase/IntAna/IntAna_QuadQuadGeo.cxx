@@ -1258,7 +1258,17 @@ void IntAna_QuadQuadGeo::Perform(const gp_Cylinder& Cyl1, const gp_Cylinder& Cyl
     }
     else
     {
-      if (std::abs(DistA1A2 - Cyl1.Radius() - Cyl2.Radius()) < Tol)
+      // Tangency tolerance must not exceed the available geometric headroom. For
+      // internal tangency the separation to the non-tangent regimes is bounded by
+      // RmR itself (DistA1A2 == 0 means concentric axes, DistA1A2 == R1+R2 means
+      // external tangency). A caller-supplied Tol that exceeds half of RmR would
+      // classify arbitrary perpendicular-skew configurations as tangent. Cap it.
+      const double aTangentTol     = std::min(Tol, 0.5 * RmR);
+      const bool   isExternalTangent = std::abs(DistA1A2 - (R1 + R2)) < Tol;
+      const bool   isInternalTangent = !isExternalTangent && (RmR > 0.0)
+                                     && std::abs(DistA1A2 - RmR) < aTangentTol;
+
+      if (isExternalTangent || isInternalTangent)
       {
         typeres = IntAna_Point;
         double d, p1, p2;
@@ -1275,9 +1285,16 @@ void IntAna_QuadQuadGeo::Perform(const gp_Cylinder& Cyl1, const gp_Cylinder& Cyl
 
         gp_Vec P1P2(P1, P2);
         D1 = gp_Dir(P1P2);
-        p1 = Cyl1.Radius();
 
-        pt1.SetCoord(P1.X() + p1 * D1.X(), P1.Y() + p1 * D1.Y(), P1.Z() + p1 * D1.Z());
+        // External tangency: tangent point sits between P1 and P2, at distance R1 from P1.
+        // Internal tangency: the smaller cylinder is inside the larger; tangent point lies
+        // on the far side of the smaller axis from the larger axis. With dir = P1->P2,
+        // that is P1 + R1*dir when R1 >= R2 and P1 - R1*dir when R1 < R2.
+        const double aSignedR1 = (isInternalTangent && R1 < R2) ? -R1 : R1;
+
+        pt1.SetCoord(P1.X() + aSignedR1 * D1.X(),
+                     P1.Y() + aSignedR1 * D1.Y(),
+                     P1.Z() + aSignedR1 * D1.Z());
         nbint = 1;
       }
       else

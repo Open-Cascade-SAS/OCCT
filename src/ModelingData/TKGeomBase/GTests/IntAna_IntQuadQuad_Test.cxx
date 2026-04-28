@@ -19,6 +19,7 @@
 #include <gp_Cone.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Ax3.hxx>
+#include <gp_Lin.hxx>
 
 #include <gtest/gtest.h>
 
@@ -245,4 +246,83 @@ TEST_F(IntAna_IntQuadQuad_Test, CylinderCylinderNonTangent_HasTwoLines)
   EXPECT_TRUE(anInter.IsDone());
   EXPECT_EQ(anInter.TypeInter(), IntAna_Line);
   EXPECT_EQ(anInter.NbSolutions(), 2);
+}
+
+// Skew cylinders, internally tangent: smaller cylinder inside larger,
+// axes perpendicular (Z and X directions, offset along Y so they do
+// not intersect), distance between axes equals |R1 - R2|.
+// Must be classified as IntAna_Point with the tangent point lying on
+// both cylinder surfaces.
+TEST_F(IntAna_IntQuadQuad_Test, CylinderCylinderSkewInternallyTangent_HasPoint)
+{
+  const double aR1 = 5.0;
+  const double aR2 = 2.0;
+  const double aDist = aR1 - aR2;
+
+  gp_Ax3 anAxis1(gp_Pnt(0.0, 0.0, 0.0), gp_Dir::D::Z, gp_Dir::D::X);
+  gp_Ax3 anAxis2(gp_Pnt(0.0, aDist, 0.0), gp_Dir::D::X, gp_Dir::D::Y);
+
+  gp_Cylinder aCyl1(anAxis1, aR1);
+  gp_Cylinder aCyl2(anAxis2, aR2);
+
+  IntAna_QuadQuadGeo anInter(aCyl1, aCyl2, 1.0e-7);
+
+  ASSERT_TRUE(anInter.IsDone());
+  ASSERT_EQ(anInter.TypeInter(), IntAna_Point);
+  ASSERT_EQ(anInter.NbSolutions(), 1);
+
+  const gp_Pnt aP = anInter.Point(1);
+  const double aDistToAxis1 = gp_Lin(aCyl1.Axis()).Distance(aP);
+  const double aDistToAxis2 = gp_Lin(aCyl2.Axis()).Distance(aP);
+  EXPECT_NEAR(aDistToAxis1, aR1, 1.0e-7);
+  EXPECT_NEAR(aDistToAxis2, aR2, 1.0e-7);
+}
+
+// Same geometry with swapped radius order (smaller cylinder first) must
+// produce the same tangent-point classification and a consistent point.
+TEST_F(IntAna_IntQuadQuad_Test, CylinderCylinderSkewInternallyTangent_SwappedRadii)
+{
+  const double aR1 = 2.0;
+  const double aR2 = 5.0;
+  const double aDist = aR2 - aR1;
+
+  gp_Ax3 anAxis1(gp_Pnt(0.0, 0.0, 0.0), gp_Dir::D::Z, gp_Dir::D::X);
+  gp_Ax3 anAxis2(gp_Pnt(0.0, aDist, 0.0), gp_Dir::D::X, gp_Dir::D::Y);
+
+  gp_Cylinder aCyl1(anAxis1, aR1);
+  gp_Cylinder aCyl2(anAxis2, aR2);
+
+  IntAna_QuadQuadGeo anInter(aCyl1, aCyl2, 1.0e-7);
+
+  ASSERT_TRUE(anInter.IsDone());
+  ASSERT_EQ(anInter.TypeInter(), IntAna_Point);
+  ASSERT_EQ(anInter.NbSolutions(), 1);
+
+  const gp_Pnt aP = anInter.Point(1);
+  EXPECT_NEAR(gp_Lin(aCyl1.Axis()).Distance(aP), aR1, 1.0e-7);
+  EXPECT_NEAR(gp_Lin(aCyl2.Axis()).Distance(aP), aR2, 1.0e-7);
+}
+
+// Sanity regression for the pre-existing skew external-tangent branch.
+TEST_F(IntAna_IntQuadQuad_Test, CylinderCylinderSkewExternallyTangent_HasPoint)
+{
+  const double aR1 = 3.0;
+  const double aR2 = 2.0;
+  const double aDist = aR1 + aR2;
+
+  gp_Ax3 anAxis1(gp_Pnt(0.0, 0.0, 0.0), gp_Dir::D::Z, gp_Dir::D::X);
+  gp_Ax3 anAxis2(gp_Pnt(0.0, aDist, 0.0), gp_Dir::D::X, gp_Dir::D::Y);
+
+  gp_Cylinder aCyl1(anAxis1, aR1);
+  gp_Cylinder aCyl2(anAxis2, aR2);
+
+  IntAna_QuadQuadGeo anInter(aCyl1, aCyl2, 1.0e-7);
+
+  ASSERT_TRUE(anInter.IsDone());
+  ASSERT_EQ(anInter.TypeInter(), IntAna_Point);
+  ASSERT_EQ(anInter.NbSolutions(), 1);
+
+  const gp_Pnt aP = anInter.Point(1);
+  EXPECT_NEAR(gp_Lin(aCyl1.Axis()).Distance(aP), aR1, 1.0e-7);
+  EXPECT_NEAR(gp_Lin(aCyl2.Axis()).Distance(aP), aR2, 1.0e-7);
 }

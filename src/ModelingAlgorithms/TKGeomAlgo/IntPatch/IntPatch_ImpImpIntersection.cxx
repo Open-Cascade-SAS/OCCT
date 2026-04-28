@@ -4317,6 +4317,16 @@ public:
                           Bnd_Range&         theOutBoxS1,
                           Bnd_Range&         theOutBoxS2) const;
 
+  // Refine a WLine endpoint that lies near a face V-boundary but is drifted
+  // along U (tangent-at-face-boundary case). Uses the existing Newton solver
+  // SearchOnVBounds to find the exact (U1, U2) on the intersection curve where
+  // V1 or V2 equals the nearest V-bound. Replaces the point in place if a
+  // converged refinement is found within step-scale of the original point.
+  // Returns true if the endpoint was refined.
+  bool RefineEndpointAtVBound(const occ::handle<IntPatch_WLine>& theWL,
+                              const int                          theEndpointIdx,
+                              const int                          theWLIndex) const;
+
 protected:
   // Solves equation (2) (see declaration of ComputationMethods class) in case,
   // when V1 or V2 (is set by theSBType argument) is known (corresponds to the boundary
@@ -6498,6 +6508,171 @@ void WorkWithBoundaries::BoundaryEstimation(const gp_Cylinder& theCy1,
 
 //=================================================================================================
 
+bool WorkWithBoundaries::RefineEndpointAtVBound(const occ::handle<IntPatch_WLine>& theWL,
+                                                const int                          theEndpointIdx,
+                                                const int                          theWLIndex) const
+{
+  if (theWL.IsNull() || theWL->NbPnts() < 2)
+    return false;
+
+  double aUSurf1f = 0.0, aUSurf1l = 0.0, aUSurf2f = 0.0, aUSurf2l = 0.0;
+  double aVSurf1f = 0.0, aVSurf1l = 0.0, aVSurf2f = 0.0, aVSurf2l = 0.0;
+  myUVSurf1.Get(aUSurf1f, aVSurf1f, aUSurf1l, aVSurf1l);
+  myUVSurf2.Get(aUSurf2f, aVSurf2f, aUSurf2l, aVSurf2l);
+
+  // Extract the endpoint and its step-scale neighbour.
+  const int              aNeighbourIdx = (theEndpointIdx == 1) ? 2 : theWL->NbPnts() - 1;
+  const IntSurf_PntOn2S& aPt           = theWL->Point(theEndpointIdx);
+  const IntSurf_PntOn2S& aNeighbour    = theWL->Point(aNeighbourIdx);
+  double                 aU1E, aV1E, aU2E, aV2E;
+  double                 aU1N, aV1N, aU2N, aV2N;
+  aPt.Parameters(aU1E, aV1E, aU2E, aV2E);
+  aNeighbour.Parameters(aU1N, aV1N, aU2N, aV2N);
+
+  const double aV1Step = std::abs(aV1E - aV1N);
+  const double aV2Step = std::abs(aV2E - aV2N);
+
+  // Four candidate V-bounds: (surf1 first/last, surf2 first/last).
+  struct
+  {
+    SearchBoundType mySBT;
+    double          myBound;
+    double          myCurrentV; // V on the surface whose bound this is
+    double          myStep;
+  } aCandidates[4] = {
+    {SearchV1, aVSurf1f, aV1E, aV1Step},
+    {SearchV1, aVSurf1l, aV1E, aV1Step},
+    {SearchV2, aVSurf2f, aV2E, aV2Step},
+    {SearchV2, aVSurf2l, aV2E, aV2Step},
+  };
+
+  // Pick the bound closest to the endpoint within step-scale. If the endpoint
+  // is already exactly on a bound (within PConfusion), no refinement needed.
+  int    aBestIdx = -1;
+  double aBestDV  = RealLast();
+  for (int i = 0; i < 4; ++i)
+  {
+    const double aDV = std::abs(aCandidates[i].myCurrentV - aCandidates[i].myBound);
+    if (aDV >= aBestDV)
+      continue;
+    aBestDV  = aDV;
+    aBestIdx = i;
+  }
+  if (aBestIdx < 0)
+    return false;
+
+  // If already exactly at the bound the endpoint may still be drifted in U;
+  // refine anyway (SearchOnVBounds converges to the unique analytic tangent
+  // point that lies on both surfaces with V=bound). Skip only if the bound is
+  // clearly not relevant: distance greater than walker step-scale in V.
+  const double aStepRef = std::max(aCandidates[aBestIdx].myStep, Precision::Confusion());
+  if (aBestDV > 10.0 * aStepRef && aBestDV > Precision::PConfusion())
+    return false;
+
+  // Two-sided Newton to locate the tangent V-extremum accurately.
+  //
+  // SearchOnVBounds uses a linearized Newton on the 3x3 system {V1=bound,
+  // cyl-cyl implicit} and terminates when the step magnitude squared drops
+  // below 1e-18. At a V-extremum where dV/dU = 0 the function V(U) is flat
+  // on the order of O((U - U_peak)^2) near the peak, so Newton declares
+  // convergence at a U offset from the true peak. Two Newton passes seeded
+  // at U_endpoint and U_endpoint + step_scale converge to U_peak - eps and
+  // U_peak + eps respectively; their midpoint is the true U_peak to
+  // machine precision. If the two passes disagree by more than step_scale
+  // the case is not a tangent extremum (true straddle with a single root)
+  // and a single-pass refinement is returned.
+  double aRefinedMainP = 0.0, aRefinedMainM = 0.0;
+  const double aInitMainVar = (aCandidates[aBestIdx].mySBT == SearchV1) ? aU1E : aU2E;
+  const double aInitU2      = (aCandidates[aBestIdx].mySBT == SearchV1) ? aU2E : aU1E;
+  const double aInitVOther  = (aCandidates[aBestIdx].mySBT == SearchV1) ? aV2E : aV1E;
+
+  const bool aResP = SearchOnVBounds(aCandidates[aBestIdx].mySBT,
+                                     aCandidates[aBestIdx].myBound,
+                                     aInitVOther,
+                                     aInitU2,
+                                     aInitMainVar,
+                                     aRefinedMainP);
+  if (!aResP)
+    return false;
+
+  // Second pass with perturbed initial guess on the opposite side.
+  const double aProbeStep = std::max(aCandidates[aBestIdx].myStep, 1.0e-4);
+  const double aInitMainVarM = aInitMainVar + 2.0 * (aRefinedMainP - aInitMainVar) + aProbeStep;
+  const bool   aResM         = SearchOnVBounds(aCandidates[aBestIdx].mySBT,
+                                     aCandidates[aBestIdx].myBound,
+                                     aInitVOther,
+                                     aInitU2,
+                                     aInitMainVarM,
+                                     aRefinedMainM);
+
+  double aRefinedMain = aRefinedMainP;
+  if (aResM && std::abs(aRefinedMainM - aRefinedMainP) < std::max(aProbeStep, 1.0e-2))
+  {
+    // Both sides converged to points bracketing the tangent. Average them.
+    aRefinedMain = 0.5 * (aRefinedMainP + aRefinedMainM);
+  }
+
+  // Recompute the other parameters from the refined main variable.
+  double aU1R, aV1R, aU2R, aV2R;
+  if (aCandidates[aBestIdx].mySBT == SearchV1)
+  {
+    aU1R = aRefinedMain;
+    aV1R = aCandidates[aBestIdx].myBound;
+    if (!ComputationMethods::CylCylComputeParameters(aU1R, theWLIndex, myCoeffs, aU2R, aV1R, aV2R))
+      return false;
+    aV1R = aCandidates[aBestIdx].myBound;
+  }
+  else
+  {
+    aU2R = aRefinedMain;
+    aV2R = aCandidates[aBestIdx].myBound;
+    // The coefficient parametrization is on surface 1; re-solve for U1 that
+    // produces this U2. CylCylComputeParameters overload A maps U1 -> U2, so we
+    // must invert by a short Newton on U1; use the endpoint U1 as seed via the
+    // dedicated overload that also returns V1/V2.
+    aU1R = aU1E;
+    if (!ComputationMethods::CylCylComputeParameters(aU1R, theWLIndex, myCoeffs, aU2R, aV1R, aV2R))
+      return false;
+    aV2R = aCandidates[aBestIdx].myBound;
+  }
+
+  // Reject the refinement if it moved the endpoint more than step-scale in 3D.
+  gp_Pnt aPRef1, aPRef2;
+  if (myQuad1.TypeQuadric() == GeomAbs_Cylinder)
+    ElSLib::D0(aU1R, aV1R, myQuad1.Cylinder(), aPRef1);
+  else if (myQuad1.TypeQuadric() == GeomAbs_Plane)
+    ElSLib::D0(aU1R, aV1R, myQuad1.Plane(), aPRef1);
+  else
+    return false;
+  if (myQuad2.TypeQuadric() == GeomAbs_Cylinder)
+    ElSLib::D0(aU2R, aV2R, myQuad2.Cylinder(), aPRef2);
+  else if (myQuad2.TypeQuadric() == GeomAbs_Plane)
+    ElSLib::D0(aU2R, aV2R, myQuad2.Plane(), aPRef2);
+  else
+    return false;
+
+  if (aPRef1.SquareDistance(aPRef2) > myTol3D * myTol3D * 100.0)
+    return false;
+
+  const gp_Pnt aPRefMid(0.5 * (aPRef1.X() + aPRef2.X()),
+                        0.5 * (aPRef1.Y() + aPRef2.Y()),
+                        0.5 * (aPRef1.Z() + aPRef2.Z()));
+
+  // Reject if refined point drifts beyond step-scale from original (avoid
+  // over-correcting when SearchOnVBounds converges to the wrong branch).
+  const double aMinRad = 1.0e-3 * std::min(myQuad1.Cylinder().Radius(), myQuad2.Cylinder().Radius());
+  if (aPt.Value().SquareDistance(aPRefMid) > aMinRad * aMinRad * 10.0)
+    return false;
+
+  IntSurf_PntOn2S aRefined;
+  aRefined.SetValue(aPRefMid, aU1R, aV1R, aU2R, aV2R);
+  theWL->Curve()->Value(theEndpointIdx, aRefined);
+
+  return true;
+}
+
+//=================================================================================================
+
 static IntPatch_ImpImpIntersection::IntStatus CyCyNoGeometric(
   const gp_Cylinder&                                theCyl1,
   const gp_Cylinder&                                theCyl2,
@@ -7488,6 +7663,19 @@ static IntPatch_ImpImpIntersection::IntStatus CyCyNoGeometric(
                                  aPeriod,
                                  isReversed);
 
+            // Refine tangent-at-face-boundary endpoints using the existing
+            // Newton solver (SearchOnVBounds). For WLines whose endpoint lies
+            // on a face V-boundary where the intersection curve is tangent
+            // (dV/dU = 0), walker discretization can leave U drifted even
+            // though V equals the bound. The refinement recomputes the exact
+            // analytical (U, V_bound) pair on the intersection curve so
+            // parallel walker runs converging to the same tangent produce
+            // consistent endpoints.
+            if (aWLine[i]->NbPnts() >= 2)
+            {
+              theBW.RefineEndpointAtVBound(aWLine[i], 1, i);
+              theBW.RefineEndpointAtVBound(aWLine[i], aWLine[i]->NbPnts(), i);
+            }
             aWLine[i]->ComputeVertexParameters(aTol3D);
             theSlin.Append(aWLine[i]);
           }
@@ -7779,6 +7967,14 @@ IntPatch_ImpImpIntersection::IntStatus IntCyCy(
     {
       return IntPatch_ImpImpIntersection::IntStatus_OK;
     }
+
+    // Analytical handler declined: discard anything it may have appended
+    // or flipped so the numerical path starts from a clean output state.
+    isTheEmpty         = true;
+    isTheSameSurface   = false;
+    isTheMultiplePoint = false;
+    theSlin.Clear();
+    theSPnt.Clear();
   }
 
   // Here, intersection line is not an analytical curve(line, circle, ellipsis etc.)
@@ -7800,11 +7996,14 @@ IntPatch_ImpImpIntersection::IntStatus IntCyCy(
   const int aNbOfBoundaries = 2;
   Bnd_Range anURange[2][aNbOfBoundaries]; // const
 
+  // Failure to compute boundaries means the intersection could not be determined;
+  // it is not a proof that the surfaces are disjoint. Report it as Fail so the
+  // caller can decide to fall back rather than treat the result as "empty".
   if (!WorkWithBoundaries::BoundariesComputing(anEquationCoeffs1, aPeriod, anURange[0]))
-    return IntPatch_ImpImpIntersection::IntStatus_OK;
+    return IntPatch_ImpImpIntersection::IntStatus_Fail;
 
   if (!WorkWithBoundaries::BoundariesComputing(anEquationCoeffs2, aPeriod, anURange[1]))
-    return IntPatch_ImpImpIntersection::IntStatus_OK;
+    return IntPatch_ImpImpIntersection::IntStatus_Fail;
 
   // anURange[*] can be in different periodic regions in
   // compare with First-Last surface. E.g. the surface
@@ -7899,7 +8098,11 @@ IntPatch_ImpImpIntersection::IntStatus IntCyCy(
   // On the other hand, there is no point in reversing in case of
   // analytical intersection (when result is line, ellipse, point...).
   // This result is independent of the arguments order.
-  const bool isToReverse = (aSumRange[1] > aSumRange[0]);
+  // Strict '>' on float sums can flip the driver choice for geometrically symmetric
+  // inputs solely due to rounding noise between (Cyl1, Cyl2) and (Cyl2, Cyl1) coefficient
+  // constructions; guard with theTol2D so micro-differences resolve deterministically
+  // to the original argument order.
+  const bool isToReverse = (aSumRange[1] > aSumRange[0] + theTol2D);
 
   if (isToReverse)
   {

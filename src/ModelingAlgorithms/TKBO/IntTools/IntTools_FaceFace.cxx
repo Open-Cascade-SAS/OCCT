@@ -128,114 +128,6 @@ static double distancePointToLine(const gp_Pnt& thePoint,
   return thePoint.Distance(aClosest);
 }
 
-//! Checks if a boundary circle of one perpendicular cylinder touches the other cylinder's surface.
-//! For perpendicular cylinders: the boundary circle lies in a plane perpendicular to the first
-//! cylinder's axis. Since the axes are perpendicular, the second axis direction lies IN this plane.
-//! The boundary circle extends perpendicular to the direction towards the other axis, so it doesn't
-//! get any closer - the minimum distance from the circle to the other axis equals the distance
-//! from the circle's center (axis endpoint) to that axis.
-//! Touch occurs when this distance equals R2 (the other cylinder's radius).
-//! @param[in] theAxisPoint point on first cylinder's axis (at V-boundary) - center of boundary
-//! circle
-//! @param[in] theLoc2      location of second cylinder's axis (at V=0)
-//! @param[in] theDir2      direction of second cylinder's axis
-//! @param[in] theV2Min     minimum V parameter of second cylinder
-//! @param[in] theV2Max     maximum V parameter of second cylinder
-//! @param[in] theR2        radius of second cylinder (touch distance)
-//! @param[in] theTol       tolerance for touch detection
-//! @return true if boundary circle touches the other cylinder's surface
-static bool checkBoundaryTouch(const gp_Pnt& theAxisPoint,
-                               const gp_Pnt& theLoc2,
-                               const gp_Dir& theDir2,
-                               const double  theV2Min,
-                               const double  theV2Max,
-                               const double  theR2,
-                               const double  theTol)
-{
-  // Compute distance from axis endpoint to second cylinder's axis
-  double       aParam = 0.0;
-  const double aDist  = distancePointToLine(theAxisPoint, theLoc2, theDir2, aParam);
-
-  // Check if projection falls within second cylinder's V-bounds
-  if (aParam < theV2Min - theTol || aParam > theV2Max + theTol)
-  {
-    return false;
-  }
-
-  // For perpendicular cylinders: boundary circle touches when center is at distance R2 from axis
-  return std::abs(aDist - theR2) < theTol;
-}
-
-//! Checks if cylinder-cylinder intersection should use analytical treatment.
-//! Disables analytical treatment for perpendicular cylinders that touch (tangent case).
-//! Handles both interior touch and boundary touch cases.
-//! @param[in] theBAS1 first cylinder surface adaptor (with UV bounds)
-//! @param[in] theBAS2 second cylinder surface adaptor (with UV bounds)
-//! @param[in] theTol  tolerance
-//! @return true if analytical treatment is appropriate, false to disable it
-static bool treatCylinderCylinder(const BRepAdaptor_Surface& theBAS1,
-                                  const BRepAdaptor_Surface& theBAS2,
-                                  const double               theTol)
-{
-  const gp_Cylinder aCyl1 = theBAS1.Cylinder();
-  const gp_Cylinder aCyl2 = theBAS2.Cylinder();
-
-  const gp_Ax3& aPos1 = aCyl1.Position();
-  const gp_Ax3& aPos2 = aCyl2.Position();
-  const gp_Dir& aDir1 = aPos1.Direction();
-  const gp_Dir& aDir2 = aPos2.Direction();
-
-  // Check axis relationship using angular tolerance
-  const double aDot       = std::abs(aDir1.Dot(aDir2));
-  const bool   isParallel = (1.0 - aDot) < Precision::Angular();
-  const bool   isPerp     = aDot < Precision::Angular();
-
-  if (isParallel)
-  {
-    // Parallel cylinders - use default analytical treatment
-    return true;
-  }
-
-  if (!isPerp)
-  {
-    // Non-perpendicular, non-parallel - use analytical treatment
-    return true;
-  }
-
-  // Get V-parameter bounds (height along axis)
-  const double aV1Min = theBAS1.FirstVParameter();
-  const double aV1Max = theBAS1.LastVParameter();
-  const double aV2Min = theBAS2.FirstVParameter();
-  const double aV2Max = theBAS2.LastVParameter();
-
-  // Check for infinite bounds
-  if (Precision::IsNegativeInfinite(aV1Min) || Precision::IsPositiveInfinite(aV1Max)
-      || Precision::IsNegativeInfinite(aV2Min) || Precision::IsPositiveInfinite(aV2Max))
-  {
-    return true;
-  }
-
-  const double aR2 = aCyl2.Radius();
-
-  // Compute axis locations (at V=0)
-  const gp_Pnt& aLoc1 = aPos1.Location();
-  const gp_Pnt& aLoc2 = aPos2.Location();
-
-  // Compute axis segment endpoints
-  const gp_Pnt aP1Min = aLoc1.Translated(gp_Vec(aDir1) * aV1Min);
-  const gp_Pnt aP1Max = aLoc1.Translated(gp_Vec(aDir1) * aV1Max);
-
-  // Check boundary touch: endpoint of cylinder 1's axis touching cylinder 2's surface
-  if (checkBoundaryTouch(aP1Min, aLoc2, aDir2, aV2Min, aV2Max, aR2, theTol)
-      || checkBoundaryTouch(aP1Max, aLoc2, aDir2, aV2Min, aV2Max, aR2, theTol))
-  {
-    return false; // Touch detected - disable analytical
-  }
-
-  // No boundary touch detected - allow analytical treatment
-  return true;
-}
-
 //! Determines if analytical intersection treatment is appropriate for the given surfaces.
 //! @param[in] theBAS1 first surface adaptor
 //! @param[in] theBAS2 second surface adaptor
@@ -262,12 +154,6 @@ static bool isTreatAnalityc(const BRepAdaptor_Surface& theBAS1,
     }
 
     return treatPlaneCylinder(aPlaneAdaptor.Plane(), aCylAdaptor.Cylinder(), aHeight, theTol);
-  }
-
-  // Handle Cylinder-Cylinder case (including perpendicular touching)
-  if (aType1 == GeomAbs_Cylinder && aType2 == GeomAbs_Cylinder)
-  {
-    return treatCylinderCylinder(theBAS1, theBAS2, theTol * 10.);
   }
 
   // Default: use analytical treatment for unhandled cases
