@@ -89,28 +89,6 @@ FILE* CyCyDebugWalkerCsv()
   return aFile;
 }
 
-FILE* CyCyDebugSolverCsv()
-{
-  static FILE* aFile = nullptr;
-  static bool  aInit = false;
-  if (!aInit)
-  {
-    aInit = true;
-    if (std::getenv("OCCT_DEBUG_CYCY") != nullptr)
-    {
-      aFile = std::fopen("/tmp/cycy_solver.csv", "w");
-      if (aFile)
-      {
-        std::fprintf(
-          aFile,
-          "SBType,Vzad,VInit,InitU2,InitMain,result,mainOut,nbIter,lastDet,lastErr,lastResSq\n");
-        std::fflush(aFile);
-      }
-    }
-  }
-  return aFile;
-}
-
 int CyCyDebugStepCounter(bool reset = false)
 {
   static int aCounter = 0;
