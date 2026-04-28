@@ -1534,155 +1534,6 @@ void IntPatch_WLineTool::JoinWLines(NCollection_Sequence<occ::handle<IntPatch_Li
 
   occ::handle<NCollection_IncAllocator> anAlloc = new NCollection_IncAllocator();
 
-  // Cross-WLine tangent-at-face-boundary equalization.
-  //
-  // When the intersection curve's V-extremum coincides exactly with a face
-  // V-boundary, two parallel walker passes approach the same tangent point
-  // from opposite U directions. SearchOnVBounds converges each pass to the
-  // edge of its own basin of attraction (Newton stalls at the flat peak
-  // where dV/dU = 0), so the two endpoints symmetrically bracket the true
-  // tangent: average-U = tangent. Truncate the drifted flat-peak points on
-  // each WLine and replace each endpoint with the exact tangent point,
-  // recomputing UV consistently from the surface parametric equations.
-  //
-  // This is not a tolerance widening. It uses the fact that two-sided
-  // Newton converges symmetrically around a quadratic extremum to recover
-  // the peak exactly from the two converged results.
-  if (theS1->GetType() == GeomAbs_Cylinder && theS2->GetType() == GeomAbs_Cylinder)
-  {
-    const double aSqMatch = aMinRad * aMinRad;
-    auto nearBoundId = [&](const double theV, const int theParamIdx) -> int {
-      const double aRange     = std::abs(anArrLBonds[theParamIdx] - anArrFBonds[theParamIdx]);
-      const double aVBoundTol = std::max(1.0e-9, 1.0e-6 * std::max(1.0, aRange));
-      if (std::abs(theV - anArrFBonds[theParamIdx]) < aVBoundTol)
-        return 1;
-      if (std::abs(theV - anArrLBonds[theParamIdx]) < aVBoundTol)
-        return 2;
-      return 0;
-    };
-
-    for (int aA = 1; aA <= theSlin.Length(); ++aA)
-    {
-      occ::handle<IntPatch_WLine> aWLA(occ::down_cast<IntPatch_WLine>(theSlin.Value(aA)));
-      if (aWLA.IsNull())
-        continue;
-      for (int aSideA = 0; aSideA < 2; ++aSideA)
-      {
-        const int aNbA  = aWLA->NbPnts();
-        const int aIdxA = (aSideA == 0) ? 1 : aNbA;
-        double    aU1A, aV1A, aU2A, aV2A;
-        aWLA->Point(aIdxA).Parameters(aU1A, aV1A, aU2A, aV2A);
-        const int aV1BoundA = nearBoundId(aV1A, 1);
-        const int aV2BoundA = nearBoundId(aV2A, 3);
-        if (aV1BoundA == 0 && aV2BoundA == 0)
-          continue;
-
-        int    aBestB = -1, aBestSideB = -1;
-        double aBestSqD = aSqMatch;
-        for (int aB = aA + 1; aB <= theSlin.Length(); ++aB)
-        {
-          occ::handle<IntPatch_WLine> aWLB(occ::down_cast<IntPatch_WLine>(theSlin.Value(aB)));
-          if (aWLB.IsNull())
-            continue;
-          for (int aSideB = 0; aSideB < 2; ++aSideB)
-          {
-            const int              aIdxB = (aSideB == 0) ? 1 : aWLB->NbPnts();
-            const IntSurf_PntOn2S& aPtB  = aWLB->Point(aIdxB);
-            double                 aU1B, aV1B, aU2B, aV2B;
-            aPtB.Parameters(aU1B, aV1B, aU2B, aV2B);
-            const int  aV1BoundB = nearBoundId(aV1B, 1);
-            const int  aV2BoundB = nearBoundId(aV2B, 3);
-            const bool aShareV1  = (aV1BoundA != 0 && aV1BoundA == aV1BoundB);
-            const bool aShareV2  = (aV2BoundA != 0 && aV2BoundA == aV2BoundB);
-            if (!aShareV1 && !aShareV2)
-              continue;
-            const double aSqD = aWLA->Point(aIdxA).Value().SquareDistance(aPtB.Value());
-            if (aSqD < Precision::SquareConfusion() || aSqD >= aBestSqD)
-              continue;
-            aBestSqD   = aSqD;
-            aBestB     = aB;
-            aBestSideB = aSideB;
-          }
-        }
-        if (aBestB < 0)
-          continue;
-
-        occ::handle<IntPatch_WLine> aWLB(occ::down_cast<IntPatch_WLine>(theSlin.Value(aBestB)));
-        const int              aIdxB = (aBestSideB == 0) ? 1 : aWLB->NbPnts();
-        const IntSurf_PntOn2S& aPtA  = aWLA->Point(aIdxA);
-        const IntSurf_PntOn2S& aPtB  = aWLB->Point(aIdxB);
-        const gp_Pnt aPMid(0.5 * (aPtA.Value().X() + aPtB.Value().X()),
-                           0.5 * (aPtA.Value().Y() + aPtB.Value().Y()),
-                           0.5 * (aPtA.Value().Z() + aPtB.Value().Z()));
-
-        // Re-parameterize midpoint on each cylinder; align periodic branch to
-        // each endpoint's current U so WLine U-monotonicity is preserved.
-        auto reparam = [](const gp_Cylinder& theCyl,
-                          const gp_Pnt&      theP,
-                          const double       theUSeed,
-                          double&            theU,
-                          double&            theV) {
-          ElSLib::Parameters(theCyl, theP, theU, theV);
-          const double aPeriod = 2.0 * M_PI;
-          while (theU - theUSeed > 0.5 * aPeriod)
-            theU -= aPeriod;
-          while (theU - theUSeed < -0.5 * aPeriod)
-            theU += aPeriod;
-        };
-
-        // For periodic U, align the snapped endpoint's U to the neighbor
-        // point's U (one step into the WLine) rather than the endpoint's
-        // own U. This keeps the WLine's U sequence monotonic across a
-        // periodic seam: the walker may have crossed U=0/2pi inside the
-        // flat peak region, so the endpoint U and its neighbor U can sit
-        // on opposite sides of the seam.
-        const int aNeighA = (aSideA == 0) ? 2 : aWLA->NbPnts() - 1;
-        double aU1AN, aV1AN, aU2AN, aV2AN;
-        aWLA->Point(aNeighA).Parameters(aU1AN, aV1AN, aU2AN, aV2AN);
-        double aU1Anew, aV1Anew, aU2Anew, aV2Anew;
-        reparam(theS1->Cylinder(), aPMid, aU1AN, aU1Anew, aV1Anew);
-        reparam(theS2->Cylinder(), aPMid, aU2AN, aU2Anew, aV2Anew);
-        if (aV1BoundA == 1)
-          aV1Anew = anArrFBonds[1];
-        else if (aV1BoundA == 2)
-          aV1Anew = anArrLBonds[1];
-        if (aV2BoundA == 1)
-          aV2Anew = anArrFBonds[3];
-        else if (aV2BoundA == 2)
-          aV2Anew = anArrLBonds[3];
-
-        double aU1B, aV1B, aU2B, aV2B;
-        aPtB.Parameters(aU1B, aV1B, aU2B, aV2B);
-        const int aNeighB = (aBestSideB == 0) ? 2 : aWLB->NbPnts() - 1;
-        double aU1BN, aV1BN, aU2BN, aV2BN;
-        aWLB->Point(aNeighB).Parameters(aU1BN, aV1BN, aU2BN, aV2BN);
-        double aU1Bnew, aV1Bnew, aU2Bnew, aV2Bnew;
-        reparam(theS1->Cylinder(), aPMid, aU1BN, aU1Bnew, aV1Bnew);
-        reparam(theS2->Cylinder(), aPMid, aU2BN, aU2Bnew, aV2Bnew);
-        if (aV1BoundA == 1)
-          aV1Bnew = anArrFBonds[1];
-        else if (aV1BoundA == 2)
-          aV1Bnew = anArrLBonds[1];
-        if (aV2BoundA == 1)
-          aV2Bnew = anArrFBonds[3];
-        else if (aV2BoundA == 2)
-          aV2Bnew = anArrLBonds[3];
-
-        const int aIdxAafter = (aSideA == 0) ? 1 : aWLA->NbPnts();
-        const int aIdxBafter = (aBestSideB == 0) ? 1 : aWLB->NbPnts();
-
-        IntSurf_PntOn2S aSnA;
-        aSnA.SetValue(aPMid, aU1Anew, aV1Anew, aU2Anew, aV2Anew);
-        aWLA->Curve()->Value(aIdxAafter, aSnA);
-
-        IntSurf_PntOn2S aSnB;
-        aSnB.SetValue(aPMid, aU1Bnew, aV1Bnew, aU2Bnew, aV2Bnew);
-        aWLB->Curve()->Value(aIdxBafter, aSnB);
-
-      }
-    }
-  }
-
   for (int aN1 = 1; aN1 <= theSlin.Length(); aN1++)
   {
     occ::handle<IntPatch_WLine> aWLine1(occ::down_cast<IntPatch_WLine>(theSlin.Value(aN1)));
@@ -1733,18 +1584,13 @@ void IntPatch_WLineTool::JoinWLines(NCollection_Sequence<occ::handle<IntPatch_Li
       double aSqDistF = aPntFWL1.Value().SquareDistance(aPntFWL2.Value());
       double aSqDistL = aPntFWL1.Value().SquareDistance(aPntLWL2.Value());
 
-      const double aSqConfusion = Precision::SquareConfusion();
-      const double aSqDrift     = aMinRad * aMinRad;
-
       const double aSqMinFDist = std::min(aSqDistF, aSqDistL);
-      if (aSqMinFDist < aSqDrift)
+      if (aSqMinFDist < Precision::SquareConfusion())
       {
         const bool             isFM = (aSqDistF < aSqDistL);
         const IntSurf_PntOn2S& aPt1 = aWLine1->Point(2);
         const IntSurf_PntOn2S& aPt2 = isFM ? aWLine2->Point(2) : aWLine2->Point(aNbPntsWL2 - 1);
-        const bool aNeedsSeamCheck = aSqMinFDist < aSqConfusion;
-        if (!aNeedsSeamCheck
-            || !IsSeamOrBound(aPt1, aPt2, aPntFWL1, anArrPeriods, anArrFBonds, anArrLBonds))
+        if (!IsSeamOrBound(aPt1, aPt2, aPntFWL1, anArrPeriods, anArrFBonds, anArrLBonds))
         {
           isFirstConnected = true;
         }
@@ -1754,14 +1600,12 @@ void IntPatch_WLineTool::JoinWLines(NCollection_Sequence<occ::handle<IntPatch_Li
       aSqDistL = aPntLWL1.Value().SquareDistance(aPntLWL2.Value());
 
       const double aSqMinLDist = std::min(aSqDistF, aSqDistL);
-      if (aSqMinLDist < aSqDrift)
+      if (aSqMinLDist < Precision::SquareConfusion())
       {
         const bool             isFM = (aSqDistF < aSqDistL);
         const IntSurf_PntOn2S& aPt1 = aWLine1->Point(aNbPntsWL1 - 1);
         const IntSurf_PntOn2S& aPt2 = isFM ? aWLine2->Point(2) : aWLine2->Point(aNbPntsWL2 - 1);
-        const bool aNeedsSeamCheck = aSqMinLDist < aSqConfusion;
-        if (!aNeedsSeamCheck
-            || !IsSeamOrBound(aPt1, aPt2, aPntLWL1, anArrPeriods, anArrFBonds, anArrLBonds))
+        if (!IsSeamOrBound(aPt1, aPt2, aPntLWL1, anArrPeriods, anArrFBonds, anArrLBonds))
         {
           isLastConnected = true;
         }
