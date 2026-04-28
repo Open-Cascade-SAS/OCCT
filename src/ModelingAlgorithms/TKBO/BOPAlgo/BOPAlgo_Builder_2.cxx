@@ -585,7 +585,8 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
   // Two distinct faces of one solid cannot be Same-Domain: that would
   // imply a zero-thickness interior in a single operand.
   NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> aFaceToParent(
-    1, aAllocator);
+    1,
+    aAllocator);
   {
     const int aNbSrc = myDS->NbSourceShapes();
     for (int iSrc = 0; iSrc < aNbSrc; ++iSrc)
@@ -602,7 +603,8 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
       }
     }
     NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> aPropagation(
-      1, aAllocator);
+      1,
+      aAllocator);
     for (NCollection_DataMap<TopoDS_Shape,
                              NCollection_List<TopoDS_Shape>,
                              TopTools_ShapeMapHasher>::Iterator anItIm(myImages);
@@ -741,7 +743,7 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
       NCollection_List<TopoDS_Shape>::Iterator aIt2 = aIt1;
       for (aIt2.Next(); aIt2.More(); aIt2.Next())
       {
-        const TopoDS_Shape& aF2 = aIt2.Value();
+        const TopoDS_Shape& aF2      = aIt2.Value();
         const TopoDS_Shape* pParent2 = aFaceToParent.Seek(aF2);
         if (pParent1 != nullptr && pParent2 != nullptr && pParent1->IsSame(*pParent2))
           continue;
