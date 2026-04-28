@@ -82,6 +82,10 @@ BRepGraph_NodeId BRepGraph_Builder::detectTopologyRoot(const BRepGraph&       th
   if (aNewCount <= theOldCountOfShapeKind)
     return BRepGraph_NodeId();
 
+  // BRepGraphInc_Populate::Append appends entities in declaration order, so the first entity
+  // appended for a given shape type is always the shape root (index == pre-append count).
+  // This assumption holds as long as no intermediate entities of the same type are inserted
+  // before the root node during population.
   switch (theShapeType)
   {
     case TopAbs_COMPOUND:
@@ -371,15 +375,19 @@ BRepGraph_Builder::Result BRepGraph_Builder::Add(BRepGraph&             theGraph
       if (!aChildProduct.IsValid())
         return aResult;
 
+      BRepGraph_OccurrenceRefId    anOccRefId;
       const BRepGraph_OccurrenceId anOccId =
         theGraph.Editor().Products().LinkProducts(BRepGraph_ProductId(theParent),
                                                   aChildProduct,
-                                                  theShape.Location());
+                                                  theShape.Location(),
+                                                  BRepGraph_OccurrenceId(),
+                                                  &anOccRefId);
       if (!anOccId.IsValid())
         return aResult;
-      aResult.Product    = aChildProduct;
-      aResult.Occurrence = anOccId;
-      aResult.Ok         = true;
+      aResult.Product     = aChildProduct;
+      aResult.Occurrence  = anOccId;
+      aResult.InsertedRef = anOccRefId;
+      aResult.Ok          = true;
       return aResult;
     }
     case BRepGraph_NodeId::Kind::Compound: {
@@ -389,7 +397,7 @@ BRepGraph_Builder::Result BRepGraph_Builder::Add(BRepGraph&             theGraph
                                                theShape.Orientation());
       if (!aRid.IsValid())
         return aResult;
-      aResult.InsertedRef = BRepGraph_RefId(aRid);
+      aResult.InsertedRef = aRid;
       aResult.Ok          = true;
       return aResult;
     }
@@ -403,7 +411,7 @@ BRepGraph_Builder::Result BRepGraph_Builder::Add(BRepGraph&             theGraph
                                              theShape.Orientation());
         if (!aRid.IsValid())
           return aResult;
-        aResult.InsertedRef = BRepGraph_RefId(aRid);
+        aResult.InsertedRef = aRid;
         aResult.Ok          = true;
         return aResult;
       }
@@ -411,7 +419,7 @@ BRepGraph_Builder::Result BRepGraph_Builder::Add(BRepGraph&             theGraph
         theGraph.Editor().Shells().AddChild(aShell, aResult.TopologyRoot, theShape.Orientation());
       if (!aRid.IsValid())
         return aResult;
-      aResult.InsertedRef = BRepGraph_RefId(aRid);
+      aResult.InsertedRef = aRid;
       aResult.Ok          = true;
       return aResult;
     }
@@ -425,7 +433,7 @@ BRepGraph_Builder::Result BRepGraph_Builder::Add(BRepGraph&             theGraph
                                               theShape.Orientation());
         if (!aRid.IsValid())
           return aResult;
-        aResult.InsertedRef = BRepGraph_RefId(aRid);
+        aResult.InsertedRef = aRid;
         aResult.Ok          = true;
         return aResult;
       }
@@ -433,7 +441,7 @@ BRepGraph_Builder::Result BRepGraph_Builder::Add(BRepGraph&             theGraph
         theGraph.Editor().Solids().AddChild(aSolid, aResult.TopologyRoot, theShape.Orientation());
       if (!aRid.IsValid())
         return aResult;
-      aResult.InsertedRef = BRepGraph_RefId(aRid);
+      aResult.InsertedRef = aRid;
       aResult.Ok          = true;
       return aResult;
     }
@@ -446,7 +454,7 @@ BRepGraph_Builder::Result BRepGraph_Builder::Add(BRepGraph&             theGraph
                                                 theShape.Orientation());
       if (!aRid.IsValid())
         return aResult;
-      aResult.InsertedRef = BRepGraph_RefId(aRid);
+      aResult.InsertedRef = aRid;
       aResult.Ok          = true;
       return aResult;
     }

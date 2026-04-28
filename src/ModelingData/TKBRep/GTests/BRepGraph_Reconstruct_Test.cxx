@@ -575,7 +575,8 @@ TEST(BRepGraph_ReconstructTest, AfterVertexMutation_ModifiedFlagAndPointChanged)
   {
     BRepGraph_MutGuard<BRepGraphInc::VertexDef> aMutVtx =
       aGraph.Editor().Vertices().Mut(BRepGraph_VertexId(aVertIdx));
-    aMutVtx->Point = gp_Pnt(anOldPt.X(), anOldPt.Y(), anOldPt.Z() + 5.0);
+    aGraph.Editor().Vertices().SetPoint(aMutVtx,
+                                        gp_Pnt(anOldPt.X(), anOldPt.Y(), anOldPt.Z() + 5.0));
   }
 
   // Verify the OwnGen is incremented on the vertex def (directly mutated).
@@ -606,7 +607,7 @@ TEST(BRepGraph_ReconstructTest, AfterToleranceMutation_NewTShape)
   {
     BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMutEdge =
       aGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start());
-    aMutEdge->Tolerance = aMutEdge->Tolerance + 1.0;
+    aGraph.Editor().Edges().SetTolerance(aMutEdge, aMutEdge->Tolerance + 1.0);
   }
 
   // After mutation, Shape() should return a reconstructed shape with a different TShape.

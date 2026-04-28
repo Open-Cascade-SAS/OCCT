@@ -446,7 +446,9 @@ TEST(BRepGraph_RefIdTest, MutFaceRef_UpdatesRefStampAndParentModifiedFlag)
 
   {
     BRepGraph_MutGuard<BRepGraphInc::FaceRef> aMut = aGraph.Editor().Faces().MutRef(aFaceRefId);
-    aMut->Orientation = (anBeforeOri == TopAbs_FORWARD) ? TopAbs_REVERSED : TopAbs_FORWARD;
+    aGraph.Editor().Faces().SetRefOrientation(aMut,
+                                              (anBeforeOri == TopAbs_FORWARD) ? TopAbs_REVERSED
+                                                                              : TopAbs_FORWARD);
   }
 
   const BRepGraphInc::FaceRef& aAfterEntry = aGraph.Refs().Faces().Entry(aFaceRefId);
@@ -477,10 +479,7 @@ TEST(BRepGraph_RefIdTest, MutFaceRef_MarkRemoved_PersistsAndInvalidatesStamp)
   ASSERT_TRUE(aBeforeStamp.IsValid());
   ASSERT_TRUE(aBeforeStamp.IsRefStamp());
 
-  {
-    BRepGraph_MutGuard<BRepGraphInc::FaceRef> aMut = aGraph.Editor().Faces().MutRef(aFaceRefId);
-    aMut->IsRemoved                                = true;
-  }
+  aGraph.Editor().Gen().RemoveRef(aFaceRefId);
 
   const BRepGraphInc::FaceRef& aAfterEntry = aGraph.Refs().Faces().Entry(aFaceRefId);
   EXPECT_TRUE(aAfterEntry.IsRemoved);

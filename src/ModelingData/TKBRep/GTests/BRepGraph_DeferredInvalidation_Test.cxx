@@ -51,7 +51,7 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_EdgeMutation_IncrementsO
   EXPECT_EQ(myGraph.Topo().Edges().Definition(BRepGraph_EdgeId::Start()).OwnGen, 0u);
 
   myGraph.Editor().BeginDeferredInvalidation();
-  myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start())->Tolerance = 0.5;
+  myGraph.Editor().Edges().SetTolerance(BRepGraph_EdgeId::Start(), 0.5);
   // In deferred mode, the entity's OwnGen is incremented.
   EXPECT_GT(myGraph.Topo().Edges().Definition(BRepGraph_EdgeId::Start()).OwnGen, 0u);
   myGraph.Editor().EndDeferredInvalidation();
@@ -60,7 +60,7 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_EdgeMutation_IncrementsO
 TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_PropagatesUpOnFlush)
 {
   myGraph.Editor().BeginDeferredInvalidation();
-  myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start())->Tolerance = 0.5;
+  myGraph.Editor().Edges().SetTolerance(BRepGraph_EdgeId::Start(), 0.5);
 
   // During deferred mode: edge is mutated, but parent wire/face are NOT yet.
   const NCollection_DynamicArray<BRepGraph_WireId>& aWires =
@@ -91,7 +91,7 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_PropagatesUpOnFlush)
 TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_DirectFaceMutation_PropagatesUp)
 {
   myGraph.Editor().BeginDeferredInvalidation();
-  (void)myGraph.Editor().Faces().Mut(BRepGraph_FaceId::Start());
+  myGraph.Editor().Faces().Mut(BRepGraph_FaceId::Start()).MarkDirty();
 
   // Face was directly mutated: OwnGen incremented.
   EXPECT_GT(myGraph.Topo().Faces().Definition(BRepGraph_FaceId::Start()).OwnGen, 0u);
@@ -108,7 +108,7 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_DirectFaceMutation_Propa
 TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_DirectShellMutation_PropagatesUp)
 {
   myGraph.Editor().BeginDeferredInvalidation();
-  (void)myGraph.Editor().Shells().Mut(BRepGraph_ShellId::Start());
+  myGraph.Editor().Shells().Mut(BRepGraph_ShellId::Start()).MarkDirty();
 
   // Shell was directly mutated: OwnGen incremented.
   EXPECT_GT(myGraph.Topo().Shells().Definition(BRepGraph_ShellId::Start()).OwnGen, 0u);
@@ -127,7 +127,7 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_MultipleEdges_BatchPropa
 
   for (BRepGraph_EdgeIterator anEdgeIt(myGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
-    myGraph.Editor().Edges().Mut(anEdgeIt.CurrentId())->Tolerance = 0.1;
+    myGraph.Editor().Edges().SetTolerance(anEdgeIt.CurrentId(), 0.1);
   }
 
   // During deferred mode: all edges mutated, but no parent propagation yet.
@@ -155,7 +155,7 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_ReconstructAfterFlush_Su
 {
   // Modify an edge in deferred mode and verify reconstruction still works.
   myGraph.Editor().BeginDeferredInvalidation();
-  myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start())->Tolerance = 0.5;
+  myGraph.Editor().Edges().SetTolerance(BRepGraph_EdgeId::Start(), 0.5);
   myGraph.Editor().EndDeferredInvalidation();
 
   // Reconstruction should succeed (shape cache was cleared on flush).
@@ -179,7 +179,7 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_ParallelMutation_WithExt
     aNbEdges,
     [&](int theIdx) {
       std::lock_guard<std::mutex> aLock(aMutex);
-      myGraph.Editor().Edges().Mut(BRepGraph_EdgeId(theIdx))->Tolerance = 0.1 + theIdx * 0.01;
+      myGraph.Editor().Edges().SetTolerance(BRepGraph_EdgeId(theIdx), 0.1 + theIdx * 0.01);
     },
     false);
   myGraph.Editor().EndDeferredInvalidation();
@@ -241,7 +241,7 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredScope_NestedGuards_FlushOnlyO
     {
       BRepGraph_DeferredScope anInnerScope(myGraph);
       EXPECT_TRUE(myGraph.Editor().IsDeferredMode());
-      myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start())->Tolerance = 0.5;
+      myGraph.Editor().Edges().SetTolerance(BRepGraph_EdgeId::Start(), 0.5);
     }
 
     EXPECT_TRUE(myGraph.Editor().IsDeferredMode());
@@ -255,7 +255,7 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredScope_NestedGuards_FlushOnlyO
 TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_DoubleEnd_IsIdempotent)
 {
   myGraph.Editor().BeginDeferredInvalidation();
-  myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start())->Tolerance = 0.5;
+  myGraph.Editor().Edges().SetTolerance(BRepGraph_EdgeId::Start(), 0.5);
   myGraph.Editor().EndDeferredInvalidation();
 
   // Second End should be a safe no-op.
@@ -266,8 +266,8 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_DoubleEnd_IsIdempotent)
 TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_SameEdgeMutatedTwice)
 {
   myGraph.Editor().BeginDeferredInvalidation();
-  myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start())->Tolerance = 0.1;
-  myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start())->Tolerance = 0.5;
+  myGraph.Editor().Edges().SetTolerance(BRepGraph_EdgeId::Start(), 0.1);
+  myGraph.Editor().Edges().SetTolerance(BRepGraph_EdgeId::Start(), 0.5);
   myGraph.Editor().EndDeferredInvalidation();
 
   // Last write wins.
@@ -282,7 +282,7 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_SameEdgeMutatedTwice)
 TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_DirectWireMutation_PropagatesUp)
 {
   myGraph.Editor().BeginDeferredInvalidation();
-  (void)myGraph.Editor().Wires().Mut(BRepGraph_WireId::Start());
+  myGraph.Editor().Wires().Mut(BRepGraph_WireId::Start()).MarkDirty();
 
   // Wire was directly mutated: OwnGen incremented.
   EXPECT_GT(myGraph.Topo().Wires().Definition(BRepGraph_WireId::Start()).OwnGen, 0u);
@@ -331,7 +331,7 @@ TEST_F(BRepGraph_DeferredInvalidationTest,
   {
     gp_Trsf aTrsf;
     aTrsf.SetTranslation(gp_Vec(100.0, 0.0, 0.0));
-    myGraph.Editor().Occurrences().MutRef(anOccRefId)->LocalLocation = TopLoc_Location(aTrsf);
+    myGraph.Editor().Occurrences().SetRefLocalLocation(anOccRefId, TopLoc_Location(aTrsf));
   }
 
   // During deferred mode: ref modified.

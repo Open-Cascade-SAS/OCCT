@@ -118,7 +118,7 @@ TEST(BRepGraph_ScenarioMatrix, Box_MutateVertex_ValidateReconstructPopulateRound
   {
     BRepGraph_MutGuard<BRepGraphInc::VertexDef> aMut =
       aGraph.Editor().Vertices().Mut(BRepGraph_VertexId::Start());
-    aMut->Point = gp_Pnt(anOldPt.X() + 50.0, anOldPt.Y(), anOldPt.Z());
+    aGraph.Editor().Vertices().SetPoint(aMut, gp_Pnt(anOldPt.X() + 50.0, anOldPt.Y(), anOldPt.Z()));
   }
 
   // --- Audit again: structural invariants must survive a point-data mutation ---
@@ -233,7 +233,7 @@ TEST(BRepGraph_ScenarioMatrix, Cylinder_SeamEdge_MutationAndBothSubsystemsConsis
   const double anOldTol = aGraph.Topo().Edges().Definition(aSeamEdgeId).Tolerance;
   {
     BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut = aGraph.Editor().Edges().Mut(aSeamEdgeId);
-    aMut->Tolerance                                = anOldTol + 0.5;
+    aGraph.Editor().Edges().SetTolerance(aMut, anOldTol + 0.5);
   }
 
   // --- Validate(Audit): structural integrity must survive a tolerance mutation ---
@@ -342,7 +342,7 @@ TEST(BRepGraph_ScenarioMatrix, CompSolid_TwoBoxes_BothSubsystemsMutateReconstruc
   {
     BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut =
       aGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start());
-    aMut->Tolerance = aMut->Tolerance + 1.0;
+    aGraph.Editor().Edges().SetTolerance(aMut, aMut->Tolerance + 1.0);
   }
 
   // --- Validate(Audit) after mutation ---
@@ -616,7 +616,7 @@ TEST(BRepGraph_ScenarioMatrix, Compound_BoxAndCylinder_MutationReconstructAreaRe
   {
     BRepGraph_MutGuard<BRepGraphInc::FaceDef> aMut =
       aGraph.Editor().Faces().Mut(BRepGraph_FaceId::Start());
-    aMut->Tolerance = aMut->Tolerance + 0.5;
+    aGraph.Editor().Faces().SetTolerance(aMut, aMut->Tolerance + 0.5);
   }
 
   // --- Validate(Audit) after mutation ---

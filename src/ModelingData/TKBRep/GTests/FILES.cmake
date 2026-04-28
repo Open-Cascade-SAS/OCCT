@@ -19,6 +19,7 @@ set(OCCT_TKBRep_GTests_FILES
   BRepGraph_Fuzz_Test.cxx
   BRepGraph_MeshCache_Test.cxx
   BRepGraph_MutGuard_Test.cxx
+  BRepGraph_PermissionUpdate_Test.cxx
   BRepGraph_ReplaceVertex_Test.cxx
   BRepGraph_MutationGen_Test.cxx
   BRepGraph_Convenience_Test.cxx

@@ -77,7 +77,7 @@ TEST_F(BRepGraph_VersionStampTest, IsStale_MutatedNode_ReturnsTrue)
   const BRepGraph_VersionStamp aStamp = myGraph.UIDs().StampOf(BRepGraph_FaceId::Start());
 
   // Mutate the face.
-  myGraph.Editor().Faces().Mut(BRepGraph_FaceId::Start())->NaturalRestriction = true;
+  myGraph.Editor().Faces().SetNaturalRestriction(BRepGraph_FaceId::Start(), true);
 
   EXPECT_TRUE(myGraph.UIDs().IsStale(aStamp));
 }
@@ -111,7 +111,7 @@ TEST_F(BRepGraph_VersionStampTest, IsStale_DeferredMode_TracksCorrectly)
 
   // Mutate in deferred mode.
   myGraph.Editor().BeginDeferredInvalidation();
-  myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start())->Tolerance = 0.5;
+  myGraph.Editor().Edges().SetTolerance(BRepGraph_EdgeId::Start(), 0.5);
   myGraph.Editor().EndDeferredInvalidation();
 
   EXPECT_TRUE(myGraph.UIDs().IsStale(aStamp));
@@ -150,7 +150,7 @@ TEST_F(BRepGraph_VersionStampTest, IsSameNode_DifferentVersion_StillSameNode)
 {
   const BRepGraph_VersionStamp aStampBefore = myGraph.UIDs().StampOf(BRepGraph_FaceId::Start());
 
-  myGraph.Editor().Faces().Mut(BRepGraph_FaceId::Start())->NaturalRestriction = true;
+  myGraph.Editor().Faces().SetNaturalRestriction(BRepGraph_FaceId::Start(), true);
 
   const BRepGraph_VersionStamp aStampAfter = myGraph.UIDs().StampOf(BRepGraph_FaceId::Start());
 
@@ -212,7 +212,7 @@ TEST_F(BRepGraph_VersionStampTest, ToGUID_DifferentMutationGen_DifferentGUID)
   const Standard_GUID&         aGraph       = myGraph.UIDs().GraphGUID();
   const Standard_GUID          aGUIDBefore  = aStampBefore.ToGUID(aGraph);
 
-  myGraph.Editor().Faces().Mut(BRepGraph_FaceId::Start())->NaturalRestriction = true;
+  myGraph.Editor().Faces().SetNaturalRestriction(BRepGraph_FaceId::Start(), true);
 
   const BRepGraph_VersionStamp aStampAfter = myGraph.UIDs().StampOf(BRepGraph_FaceId::Start());
   const Standard_GUID          aGUIDAfter  = aStampAfter.ToGUID(aGraph);

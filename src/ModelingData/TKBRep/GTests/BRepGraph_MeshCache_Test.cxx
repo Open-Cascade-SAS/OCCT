@@ -73,7 +73,7 @@ TEST(BRepGraph_MeshCacheTest, CacheStaleAfterFaceMutation)
 
   {
     BRepGraph_MutGuard<BRepGraphInc::FaceDef> aGuard = aGraph.Editor().Faces().Mut(aFaceId);
-    aGuard->Tolerance += 1.0e-6;
+    aGraph.Editor().Faces().SetTolerance(aGuard, aGuard->Tolerance + 1.0e-6);
   }
 
   const BRepGraph_MeshCache::FaceMeshEntry* aAfter = aGraph.Mesh().Faces().CachedMesh(aFaceId);
@@ -104,7 +104,7 @@ TEST(BRepGraph_MeshCacheTest, CacheStaleAfterSurfaceRepMutation)
   {
     BRepGraph_MutGuard<BRepGraphInc::SurfaceRep> aGuard =
       aGraph.Editor().Reps().MutSurface(aSurfaceRepId);
-    (void)aGuard;
+    aGuard.MarkDirty();
   }
 
   EXPECT_EQ(aGraph.Mesh().Faces().CachedMesh(aFaceId), nullptr)
@@ -133,7 +133,7 @@ TEST(BRepGraph_MeshCacheTest, CacheSurvivesUnrelatedMutation)
 
   {
     BRepGraph_MutGuard<BRepGraphInc::FaceDef> aGuard = aGraph.Editor().Faces().Mut(anOtherFaceId);
-    aGuard->Tolerance += 1.0e-6;
+    aGraph.Editor().Faces().SetTolerance(aGuard, aGuard->Tolerance + 1.0e-6);
   }
 
   EXPECT_NE(aGraph.Mesh().Faces().CachedMesh(aFaceId), nullptr)

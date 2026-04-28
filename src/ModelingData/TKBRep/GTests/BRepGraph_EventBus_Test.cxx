@@ -220,7 +220,7 @@ TEST_F(BRepGraph_EventBusTest, ZeroCost_NoSubscribers)
   {
     BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut =
       myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start());
-    aMut->Tolerance = 0.5;
+    myGraph.Editor().Edges().SetTolerance(aMut, 0.5);
   }
   EXPECT_GT(myGraph.Topo().Edges().Definition(BRepGraph_EdgeId::Start()).OwnGen, 0u);
 }
@@ -239,7 +239,7 @@ TEST_F(BRepGraph_EventBusTest, ImmediateMode_SingleEdge)
   {
     BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut =
       myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start());
-    aMut->Tolerance = 0.5;
+    myGraph.Editor().Edges().SetTolerance(aMut, 0.5);
   }
 
   // Edge(0) should have an immediate event.
@@ -262,7 +262,7 @@ TEST_F(BRepGraph_EventBusTest, ImmediateMode_UpwardPropagation)
   {
     BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut =
       myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start());
-    aMut->Tolerance = 0.5;
+    myGraph.Editor().Edges().SetTolerance(aMut, 0.5);
   }
 
   // Only directly mutated node gets immediate dispatch.
@@ -288,7 +288,7 @@ TEST_F(BRepGraph_EventBusTest, ImmediateMode_KindFilter)
   {
     BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut =
       myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start());
-    aMut->Tolerance = 0.5;
+    myGraph.Editor().Edges().SetTolerance(aMut, 0.5);
   }
 
   // No face dispatch from upward propagation (mutex-free SubtreeGen only).
@@ -311,9 +311,9 @@ TEST_F(BRepGraph_EventBusTest, DeferredMode_BatchDispatch)
   myGraph.LayerRegistry().RegisterLayer(aLayer);
 
   myGraph.Editor().BeginDeferredInvalidation();
-  myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start())->Tolerance = 0.5;
-  myGraph.Editor().Edges().Mut(BRepGraph_EdgeId(1))->Tolerance       = 0.6;
-  myGraph.Editor().Edges().Mut(BRepGraph_EdgeId(2))->Tolerance       = 0.7;
+  myGraph.Editor().Edges().SetTolerance(BRepGraph_EdgeId::Start(), 0.5);
+  myGraph.Editor().Edges().SetTolerance(BRepGraph_EdgeId(1), 0.6);
+  myGraph.Editor().Edges().SetTolerance(BRepGraph_EdgeId(2), 0.7);
   myGraph.Editor().EndDeferredInvalidation();
 
   // OnNodesModified called exactly once.
@@ -333,7 +333,7 @@ TEST_F(BRepGraph_EventBusTest, DeferredMode_NoImmediateDispatch)
   myGraph.LayerRegistry().RegisterLayer(aLayer);
 
   myGraph.Editor().BeginDeferredInvalidation();
-  myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start())->Tolerance = 0.5;
+  myGraph.Editor().Edges().SetTolerance(BRepGraph_EdgeId::Start(), 0.5);
 
   // During deferred mode: OnNodeModified must NOT be called.
   EXPECT_EQ(aLayer->myImmediateEvents.Length(), 0);
@@ -356,7 +356,7 @@ TEST_F(BRepGraph_EventBusTest, UnregisterLayer_FlagUpdate)
   {
     BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut =
       myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start());
-    aMut->Tolerance = 0.5;
+    myGraph.Editor().Edges().SetTolerance(aMut, 0.5);
   }
   EXPECT_GT(aLayer->myImmediateEvents.Length(), 0);
 
@@ -368,7 +368,7 @@ TEST_F(BRepGraph_EventBusTest, UnregisterLayer_FlagUpdate)
   {
     BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut =
       myGraph.Editor().Edges().Mut(BRepGraph_EdgeId(1));
-    aMut->Tolerance = 0.6;
+    myGraph.Editor().Edges().SetTolerance(aMut, 0.6);
   }
   EXPECT_EQ(aLayer->myImmediateEvents.Length(), 0);
 }
@@ -449,7 +449,7 @@ TEST_F(BRepGraph_EventBusTest, MultipleSubscribers)
   {
     BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut =
       myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start());
-    aMut->Tolerance = 0.5;
+    myGraph.Editor().Edges().SetTolerance(aMut, 0.5);
   }
 
   // Edge layer gets edge events (directly mutated), no face events.
@@ -474,7 +474,7 @@ TEST_F(BRepGraph_EventBusTest, DefaultSubscribedKinds_Zero)
   {
     BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut =
       myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start());
-    aMut->Tolerance = 0.5;
+    myGraph.Editor().Edges().SetTolerance(aMut, 0.5);
   }
   EXPECT_GT(myGraph.Topo().Edges().Definition(BRepGraph_EdgeId::Start()).OwnGen, 0u);
 }
@@ -488,7 +488,7 @@ TEST_F(BRepGraph_EventBusTest, DeferredScope_DispatchesOnDestruction)
 
   {
     BRepGraph_DeferredScope aScope(myGraph);
-    myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start())->Tolerance = 0.5;
+    myGraph.Editor().Edges().SetTolerance(BRepGraph_EdgeId::Start(), 0.5);
 
     // During guard scope: no batch dispatch yet.
     EXPECT_EQ(aLayer->myBatchCallCount, 0);
@@ -622,7 +622,7 @@ TEST_F(BRepGraph_EventBusTest, OverlappingSubscription_EdgeAndFace)
   {
     BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut =
       myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start());
-    aMut->Tolerance = 0.5;
+    myGraph.Editor().Edges().SetTolerance(aMut, 0.5);
   }
 
   // Edge events from direct mutation; NO face events (no parent dispatch).
