@@ -96,16 +96,15 @@ public: //! @name Rejection/Acceptance rules
   {
     if (!RejectElement(theID1, theID2))
     {
-      myPairs.Append(
-        PairIDs(this->myBVHSet1->Element(theID1), this->myBVHSet2->Element(theID2)));
+      myPairs.Append(PairIDs(this->myBVHSet1->Element(theID1), this->myBVHSet2->Element(theID2)));
       return true;
     }
     return false;
   }
 
-protected:                         //! @name Fields
+protected:                                      //! @name Fields
   NCollection_LinearVector<PairIDs> myPairs;    //!< Selected pairs of indices
-  bool                 mySameBVHs; //!< Selection is performed from the same BVH trees
+  bool                              mySameBVHs; //!< Selection is performed from the same BVH trees
 };
 
 #endif

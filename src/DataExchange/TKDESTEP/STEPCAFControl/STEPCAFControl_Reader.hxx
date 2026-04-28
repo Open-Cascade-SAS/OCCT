@@ -494,9 +494,10 @@ private:
   //! @param theWorkSession The work session to use for collecting related property definitions.
   //! @param theProperty The property definition from which to collect related property definitions.
   //! @return A vector of collected related property definitions.
-  NCollection_LinearVector<occ::handle<StepRepr_PropertyDefinition>> collectRelatedPropertyDefinitions(
-    const occ::handle<XSControl_WorkSession>&       theWorkSession,
-    const occ::handle<StepRepr_PropertyDefinition>& theProperty) const;
+  NCollection_LinearVector<occ::handle<StepRepr_PropertyDefinition>>
+    collectRelatedPropertyDefinitions(
+      const occ::handle<XSControl_WorkSession>&       theWorkSession,
+      const occ::handle<StepRepr_PropertyDefinition>& theProperty) const;
 
   //! Helper method to get NamedData attribute assigned to the given label.
   //! @param theLabel The label to get NamedData attribute from.

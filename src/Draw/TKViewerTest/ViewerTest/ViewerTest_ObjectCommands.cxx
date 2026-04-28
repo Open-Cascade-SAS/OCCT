@@ -5880,7 +5880,7 @@ static int VFont(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
       TCollection_AsciiString aResult;
       if (toFindAll || aFontName.Search("*") != -1)
       {
-        const NCollection_List<occ::handle<Font_SystemFont>> aFonts = aMgr->GetAvailableFonts();
+        const NCollection_List<occ::handle<Font_SystemFont>>   aFonts = aMgr->GetAvailableFonts();
         NCollection_LinearVector<occ::handle<Font_SystemFont>> aFontsSorted;
         aFontsSorted.Reserve(aFonts.Size());
         for (NCollection_List<occ::handle<Font_SystemFont>>::Iterator aFontIter(aFonts);
@@ -5893,217 +5893,216 @@ static int VFont(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
         for (const occ::handle<Font_SystemFont>& aFont : aFontsSorted)
           const TCollection_AsciiString aCheck = TCollection_AsciiString("string match -nocase \"")
                                                  + aFontName + "\" \"" + aFont->FontName() + "\"";
-          if (theDI.Eval(aCheck.ToCString()) == 0 && *theDI.Result() != '1')
-          {
-            theDI.Reset();
-            continue;
-          }
-
-          theDI.Reset();
-          if (!aResult.IsEmpty())
-          {
-            aResult += "\n";
-          }
-
-          aResult += toPrintInfo ? aFont->ToString() : aFont->FontName();
-          if (!toFindAll)
-          {
-            break;
-          }
-        }
-      }
-      else if (occ::handle<Font_SystemFont> aFont =
-                 aMgr->FindFont(aFontName, aStrictLevel, aFontAspect))
-      {
-        aResult = toPrintInfo ? aFont->ToString() : aFont->FontName();
-      }
-
-      if (!aResult.IsEmpty())
-      {
-        theDI << aResult;
-      }
-      else
-      {
-        Message::SendFail() << "Error: font '" << aFontName << "' is not found";
-      }
-    }
-    else if (anArgIter + 1 < theArgNb
-             && (anArgCase == "-add" || anArgCase == "add" || anArgCase == "-register"
-                 || anArgCase == "register"))
-    {
-      ++anArgIter;
-      const char*             aFontPath = theArgVec[anArgIter++];
-      TCollection_AsciiString aFontName;
-      Font_FontAspect         aFontAspect    = Font_FA_Undefined;
-      int                     isSingelStroke = -1;
-      for (; anArgIter < theArgNb; ++anArgIter)
-      {
-        anArgCase = theArgVec[anArgIter];
-        anArgCase.LowerCase();
-        if (aFontAspect == Font_FontAspect_UNDEFINED && parseFontStyle(anArgCase, aFontAspect))
+        if (theDI.Eval(aCheck.ToCString()) == 0 && *theDI.Result() != '1')
         {
+          theDI.Reset();
           continue;
         }
-        else if (anArgCase == "singlestroke" || anArgCase == "singleline" || anArgCase == "oneline")
+
+        theDI.Reset();
+        if (!aResult.IsEmpty())
         {
-          isSingelStroke = 1;
+          aResult += "\n";
         }
-        else if (aFontName.IsEmpty())
+
+        aResult += toPrintInfo ? aFont->ToString() : aFont->FontName();
+        if (!toFindAll)
         {
-          aFontName = theArgVec[anArgIter];
-        }
-        else
-        {
-          --anArgIter;
           break;
         }
       }
+    }
+    else if (occ::handle<Font_SystemFont> aFont =
+               aMgr->FindFont(aFontName, aStrictLevel, aFontAspect))
+    {
+      aResult = toPrintInfo ? aFont->ToString() : aFont->FontName();
+    }
 
-      occ::handle<Font_SystemFont> aFont = aMgr->CheckFont(aFontPath);
-      if (aFont.IsNull())
-      {
-        Message::SendFail() << "Error: font '" << aFontPath << "' is not found!";
-        continue;
-      }
-
-      if (aFontAspect != Font_FontAspect_UNDEFINED || !aFontName.IsEmpty())
-      {
-        TCollection_AsciiString aName = aFont->FontName();
-        if (!aFontName.IsEmpty())
-        {
-          aName = aFontName;
-        }
-        occ::handle<Font_SystemFont> aFont2 = new Font_SystemFont(aName);
-        if (aFontAspect != Font_FontAspect_UNDEFINED)
-        {
-          aFont2->SetFontPath(aFontAspect, aFontPath, 0);
-        }
-        else
-        {
-          for (int anAspectIter = 0; anAspectIter < Font_FontAspect_NB; ++anAspectIter)
-          {
-            aFont2->SetFontPath((Font_FontAspect)anAspectIter,
-                                aFont->FontPath((Font_FontAspect)anAspectIter),
-                                aFont->FontFaceId((Font_FontAspect)anAspectIter));
-          }
-        }
-        aFont = aFont2;
-      }
-      if (isSingelStroke != -1)
-      {
-        aFont->SetSingleStrokeFont(isSingelStroke == 1);
-      }
-
-      aMgr->RegisterFont(aFont, true);
-      theDI << aFont->ToString();
-    }
-    else if (anArgCase == "-aliases")
+    if (!aResult.IsEmpty())
     {
-      TCollection_AsciiString                                     anAliasName;
-      NCollection_Sequence<occ::handle<TCollection_HAsciiString>> aNames;
-      if (anArgIter + 1 < theArgNb && *theArgVec[anArgIter + 1] != '-')
-      {
-        anAliasName = theArgVec[++anArgIter];
-      }
-      if (!anAliasName.IsEmpty())
-      {
-        aMgr->GetFontAliases(aNames, anAliasName);
-      }
-      else
-      {
-        aMgr->GetAllAliases(aNames);
-      }
-      for (NCollection_Sequence<occ::handle<TCollection_HAsciiString>>::Iterator aNameIter(aNames);
-           aNameIter.More();
-           aNameIter.Next())
-      {
-        theDI << "{" << aNameIter.Value()->String() << "} ";
-      }
-    }
-    else if (anArgIter + 2 < theArgNb && anArgCase == "-addalias")
-    {
-      TCollection_AsciiString anAliasName(theArgVec[++anArgIter]);
-      TCollection_AsciiString aFontName(theArgVec[++anArgIter]);
-      aMgr->AddFontAlias(anAliasName, aFontName);
-    }
-    else if (anArgIter + 2 < theArgNb && anArgCase == "-removealias")
-    {
-      TCollection_AsciiString anAliasName(theArgVec[++anArgIter]);
-      TCollection_AsciiString aFontName(theArgVec[++anArgIter]);
-      aMgr->RemoveFontAlias(anAliasName, aFontName);
-    }
-    else if (anArgIter + 1 < theArgNb && anArgCase == "-clearalias")
-    {
-      TCollection_AsciiString anAliasName(theArgVec[++anArgIter]);
-      aMgr->RemoveFontAlias(anAliasName, "");
-    }
-    else if (anArgCase == "-clearaliases")
-    {
-      aMgr->RemoveFontAlias("", "");
-    }
-    else if (anArgCase == "-verbose" || anArgCase == "-trace")
-    {
-      bool toEnable = true;
-      if (anArgIter + 1 < theArgNb && Draw::ParseOnOff(theArgVec[anArgIter + 1], toEnable))
-      {
-        ++anArgIter;
-      }
-      aMgr->SetTraceAliases(toEnable);
-    }
-    else if (anArgCase == "-unicodefallback" || anArgCase == "-fallback"
-             || anArgCase == "-touseunicodesubsetfallback")
-    {
-      bool toEnable = true;
-      if (anArgIter + 1 < theArgNb && Draw::ParseOnOff(theArgVec[anArgIter + 1], toEnable))
-      {
-        ++anArgIter;
-      }
-      Font_FontMgr::ToUseUnicodeSubsetFallback() = toEnable;
+      theDI << aResult;
     }
     else
     {
-      Message::SendFail() << "Warning! Unknown argument '" << anArg << "'";
+      Message::SendFail() << "Error: font '" << aFontName << "' is not found";
     }
   }
-
-  if (toPrintList)
+  else if (anArgIter + 1 < theArgNb
+           && (anArgCase == "-add" || anArgCase == "add" || anArgCase == "-register"
+               || anArgCase == "register"))
   {
-    // just print the list of available fonts
-    bool                                                 isFirst = true;
-    const NCollection_List<occ::handle<Font_SystemFont>> aFonts  = aMgr->GetAvailableFonts();
-    NCollection_LinearVector<occ::handle<Font_SystemFont>> aFontsSorted;
-    aFontsSorted.Reserve(aFonts.Size());
-    for (NCollection_List<occ::handle<Font_SystemFont>>::Iterator aFontIter(aFonts);
-         aFontIter.More();
-         aFontIter.Next())
+    ++anArgIter;
+    const char*             aFontPath = theArgVec[anArgIter++];
+    TCollection_AsciiString aFontName;
+    Font_FontAspect         aFontAspect    = Font_FA_Undefined;
+    int                     isSingelStroke = -1;
+    for (; anArgIter < theArgNb; ++anArgIter)
     {
-      aFontsSorted.Append(aFontIter.Value());
-    }
-    std::stable_sort(aFontsSorted.begin(), aFontsSorted.end(), FontComparator());
-    for (const occ::handle<Font_SystemFont>& aFont : aFontsSorted)
-
-      if (toPrintNames)
+      anArgCase = theArgVec[anArgIter];
+      anArgCase.LowerCase();
+      if (aFontAspect == Font_FontAspect_UNDEFINED && parseFontStyle(anArgCase, aFontAspect))
       {
-        if (!isFirst)
-        {
-          theDI << "\n";
-        }
-        theDI << "\"" << aFont->FontName() << "\"";
+        continue;
+      }
+      else if (anArgCase == "singlestroke" || anArgCase == "singleline" || anArgCase == "oneline")
+      {
+        isSingelStroke = 1;
+      }
+      else if (aFontName.IsEmpty())
+      {
+        aFontName = theArgVec[anArgIter];
       }
       else
       {
-        if (!isFirst)
-        {
-          theDI << "\n";
-        }
-        theDI << aFont->ToString();
+        --anArgIter;
+        break;
       }
-      isFirst = false;
     }
-    return 0;
-  }
 
-  return 0;
+    occ::handle<Font_SystemFont> aFont = aMgr->CheckFont(aFontPath);
+    if (aFont.IsNull())
+    {
+      Message::SendFail() << "Error: font '" << aFontPath << "' is not found!";
+      continue;
+    }
+
+    if (aFontAspect != Font_FontAspect_UNDEFINED || !aFontName.IsEmpty())
+    {
+      TCollection_AsciiString aName = aFont->FontName();
+      if (!aFontName.IsEmpty())
+      {
+        aName = aFontName;
+      }
+      occ::handle<Font_SystemFont> aFont2 = new Font_SystemFont(aName);
+      if (aFontAspect != Font_FontAspect_UNDEFINED)
+      {
+        aFont2->SetFontPath(aFontAspect, aFontPath, 0);
+      }
+      else
+      {
+        for (int anAspectIter = 0; anAspectIter < Font_FontAspect_NB; ++anAspectIter)
+        {
+          aFont2->SetFontPath((Font_FontAspect)anAspectIter,
+                              aFont->FontPath((Font_FontAspect)anAspectIter),
+                              aFont->FontFaceId((Font_FontAspect)anAspectIter));
+        }
+      }
+      aFont = aFont2;
+    }
+    if (isSingelStroke != -1)
+    {
+      aFont->SetSingleStrokeFont(isSingelStroke == 1);
+    }
+
+    aMgr->RegisterFont(aFont, true);
+    theDI << aFont->ToString();
+  }
+  else if (anArgCase == "-aliases")
+  {
+    TCollection_AsciiString                                     anAliasName;
+    NCollection_Sequence<occ::handle<TCollection_HAsciiString>> aNames;
+    if (anArgIter + 1 < theArgNb && *theArgVec[anArgIter + 1] != '-')
+    {
+      anAliasName = theArgVec[++anArgIter];
+    }
+    if (!anAliasName.IsEmpty())
+    {
+      aMgr->GetFontAliases(aNames, anAliasName);
+    }
+    else
+    {
+      aMgr->GetAllAliases(aNames);
+    }
+    for (NCollection_Sequence<occ::handle<TCollection_HAsciiString>>::Iterator aNameIter(aNames);
+         aNameIter.More();
+         aNameIter.Next())
+    {
+      theDI << "{" << aNameIter.Value()->String() << "} ";
+    }
+  }
+  else if (anArgIter + 2 < theArgNb && anArgCase == "-addalias")
+  {
+    TCollection_AsciiString anAliasName(theArgVec[++anArgIter]);
+    TCollection_AsciiString aFontName(theArgVec[++anArgIter]);
+    aMgr->AddFontAlias(anAliasName, aFontName);
+  }
+  else if (anArgIter + 2 < theArgNb && anArgCase == "-removealias")
+  {
+    TCollection_AsciiString anAliasName(theArgVec[++anArgIter]);
+    TCollection_AsciiString aFontName(theArgVec[++anArgIter]);
+    aMgr->RemoveFontAlias(anAliasName, aFontName);
+  }
+  else if (anArgIter + 1 < theArgNb && anArgCase == "-clearalias")
+  {
+    TCollection_AsciiString anAliasName(theArgVec[++anArgIter]);
+    aMgr->RemoveFontAlias(anAliasName, "");
+  }
+  else if (anArgCase == "-clearaliases")
+  {
+    aMgr->RemoveFontAlias("", "");
+  }
+  else if (anArgCase == "-verbose" || anArgCase == "-trace")
+  {
+    bool toEnable = true;
+    if (anArgIter + 1 < theArgNb && Draw::ParseOnOff(theArgVec[anArgIter + 1], toEnable))
+    {
+      ++anArgIter;
+    }
+    aMgr->SetTraceAliases(toEnable);
+  }
+  else if (anArgCase == "-unicodefallback" || anArgCase == "-fallback"
+           || anArgCase == "-touseunicodesubsetfallback")
+  {
+    bool toEnable = true;
+    if (anArgIter + 1 < theArgNb && Draw::ParseOnOff(theArgVec[anArgIter + 1], toEnable))
+    {
+      ++anArgIter;
+    }
+    Font_FontMgr::ToUseUnicodeSubsetFallback() = toEnable;
+  }
+  else
+  {
+    Message::SendFail() << "Warning! Unknown argument '" << anArg << "'";
+  }
+}
+
+if (toPrintList)
+{
+  // just print the list of available fonts
+  bool                                                   isFirst = true;
+  const NCollection_List<occ::handle<Font_SystemFont>>   aFonts  = aMgr->GetAvailableFonts();
+  NCollection_LinearVector<occ::handle<Font_SystemFont>> aFontsSorted;
+  aFontsSorted.Reserve(aFonts.Size());
+  for (NCollection_List<occ::handle<Font_SystemFont>>::Iterator aFontIter(aFonts); aFontIter.More();
+       aFontIter.Next())
+  {
+    aFontsSorted.Append(aFontIter.Value());
+  }
+  std::stable_sort(aFontsSorted.begin(), aFontsSorted.end(), FontComparator());
+  for (const occ::handle<Font_SystemFont>& aFont : aFontsSorted)
+
+    if (toPrintNames)
+    {
+      if (!isFirst)
+      {
+        theDI << "\n";
+      }
+      theDI << "\"" << aFont->FontName() << "\"";
+    }
+    else
+    {
+      if (!isFirst)
+      {
+        theDI << "\n";
+      }
+      theDI << aFont->ToString();
+    }
+  isFirst = false;
+}
+return 0;
+}
+
+return 0;
 }
 
 //=======================================================================

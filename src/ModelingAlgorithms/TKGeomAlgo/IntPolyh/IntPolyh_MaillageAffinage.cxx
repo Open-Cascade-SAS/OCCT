@@ -228,7 +228,7 @@ static void GetInterferingTriangles(IntPolyh_ArrayOfTriangles&                  
   aSelector.Sort();
 
   const NCollection_LinearVector<IntPolyh_BoxBndTreeSelector::PairIDs>& aPairs = aSelector.Pairs();
-  const int aNbPairs                                              = static_cast<int>(aPairs.Size());
+  const int aNbPairs = static_cast<int>(aPairs.Size());
 
   for (int i = 0; i < aNbPairs; ++i)
   {

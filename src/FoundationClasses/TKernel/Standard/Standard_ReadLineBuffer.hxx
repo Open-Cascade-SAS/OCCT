@@ -158,7 +158,7 @@ public:
             }
             else
             {
-              const size_t aCnt      = aBufferPos - aStartLinePos;
+              const size_t aCnt = aBufferPos - aStartLinePos;
               myReadBufferLastStr.Resize(aCnt);
               std::memcpy(myReadBufferLastStr.Data(), myReadBuffer.Data() + aStartLinePos, aCnt);
               myUseReadBufferLastStr = true;
@@ -256,7 +256,7 @@ public:
           }
           else
           {
-            const size_t aCnt      = myBufferPos - aStartLinePos;
+            const size_t aCnt = myBufferPos - aStartLinePos;
             myReadBufferLastStr.Resize(aCnt);
             std::memcpy(myReadBufferLastStr.Data(), myReadBuffer.Data() + aStartLinePos, aCnt);
             myUseReadBufferLastStr = true;

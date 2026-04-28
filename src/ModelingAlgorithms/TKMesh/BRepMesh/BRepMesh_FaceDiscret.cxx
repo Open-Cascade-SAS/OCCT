@@ -61,8 +61,8 @@ public:
   }
 
 private:
-  mutable BRepMesh_FaceDiscret*      myAlgo;
-  Message_ProgressScope              myScope;
+  mutable BRepMesh_FaceDiscret*                   myAlgo;
+  Message_ProgressScope                           myScope;
   NCollection_LinearVector<Message_ProgressRange> myRanges;
 };
 

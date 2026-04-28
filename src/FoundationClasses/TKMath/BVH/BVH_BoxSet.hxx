@@ -103,7 +103,7 @@ public: //! @name Necessary overrides for BVH construction
   //! Returns the Element with the index theIndex.
   virtual DataType Element(const int theIndex) const { return myElements[theIndex]; }
 
-protected:                                             //! @name Fields
+protected:                                                          //! @name Fields
   NCollection_LinearVector<DataType>                    myElements; //!< Elements
   NCollection_LinearVector<BVH_Box<NumType, Dimension>> myBoxes;    //!< Boxes for the elements
 };

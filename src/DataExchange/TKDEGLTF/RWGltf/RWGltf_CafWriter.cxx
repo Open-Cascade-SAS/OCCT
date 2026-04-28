@@ -91,7 +91,7 @@ static void writeVertex(std::ostream& theStream, const T& theVertex)
 
 #ifdef HAVE_DRACO
 //! Write nodes to Draco mesh
-static void writeNodesToDracoMesh(draco::Mesh&                                theMesh,
+static void writeNodesToDracoMesh(draco::Mesh&                                             theMesh,
                                   const NCollection_LinearVector<NCollection_Vec3<float>>& theNodes)
 {
   if (theNodes.IsEmpty())
@@ -111,8 +111,9 @@ static void writeNodesToDracoMesh(draco::Mesh&                                th
 }
 
 //! Write normals to Draco mesh
-static void writeNormalsToDracoMesh(draco::Mesh&                                theMesh,
-                                    const NCollection_LinearVector<NCollection_Vec3<float>>& theNormals)
+static void writeNormalsToDracoMesh(
+  draco::Mesh&                                             theMesh,
+  const NCollection_LinearVector<NCollection_Vec3<float>>& theNormals)
 {
   if (theNormals.IsEmpty())
   {
@@ -131,8 +132,9 @@ static void writeNormalsToDracoMesh(draco::Mesh&                                
 }
 
 //! Write texture UV coordinates to Draco mesh
-static void writeTexCoordsToDracoMesh(draco::Mesh&                                theMesh,
-                                      const NCollection_LinearVector<NCollection_Vec2<float>>& theTexCoord)
+static void writeTexCoordsToDracoMesh(
+  draco::Mesh&                                             theMesh,
+  const NCollection_LinearVector<NCollection_Vec2<float>>& theTexCoord)
 {
   if (theTexCoord.IsEmpty())
   {
@@ -151,7 +153,7 @@ static void writeTexCoordsToDracoMesh(draco::Mesh&                              
 }
 
 //! Write indices to Draco mesh
-static void writeIndicesToDracoMesh(draco::Mesh&                      theMesh,
+static void writeIndicesToDracoMesh(draco::Mesh&                                   theMesh,
                                     const NCollection_LinearVector<Poly_Triangle>& theIndices)
 {
   draco::Mesh::Face aFace;

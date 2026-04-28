@@ -2441,7 +2441,7 @@ static void MergeSolutions(const NCollection_List<IntTools_CurveRangeSample>&   
 {
   NCollection_IndexedMap<IntTools_SurfaceRangeSample> aMapToAvoid;
 
-  NCollection_DataMap<int, NCollection_List<int>> aCurveIdMap;
+  NCollection_DataMap<int, NCollection_List<int>>     aCurveIdMap;
   NCollection_LinearVector<IntTools_CurveRangeSample> aCurveRangeVector;
   aCurveRangeVector.Reserve(theListCurveRange.Size());
 

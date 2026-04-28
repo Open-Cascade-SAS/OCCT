@@ -119,7 +119,7 @@ public:
 
 private:
   NCollection_LinearVector<Bnd_Range> myClipRanges;
-  Bnd_Range              myUnclipRange;
+  Bnd_Range                           myUnclipRange;
 };
 
 #endif // _SelectMgr_ViewClipRange_HeaderFile

@@ -245,8 +245,8 @@ std::pair<ShapeProcess::Operation, bool> ShapeProcess::ToOperationFlag(const cha
 
 //=================================================================================================
 
-NCollection_LinearVector<std::pair<const char*, occ::handle<ShapeProcess_Operator>>> ShapeProcess::getOperators(
-  const ShapeProcess::OperationsFlags& theFlags)
+NCollection_LinearVector<std::pair<const char*, occ::handle<ShapeProcess_Operator>>> ShapeProcess::
+  getOperators(const ShapeProcess::OperationsFlags& theFlags)
 {
   NCollection_LinearVector<std::pair<const char*, occ::handle<ShapeProcess_Operator>>> aResult;
   for (std::underlying_type<Operation>::type anOperation = Operation::First;

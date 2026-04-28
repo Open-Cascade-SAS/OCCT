@@ -119,7 +119,7 @@ private:
 
 inline void OpenGl_HaltonSampler::initFaure()
 {
-  const unsigned                                              THE_MAX_BASE = 5u;
+  const unsigned                                                     THE_MAX_BASE = 5u;
   NCollection_LinearVector<NCollection_LinearVector<unsigned short>> aPerms;
   aPerms.Resize(THE_MAX_BASE + 1);
   for (unsigned k = 1; k <= 3; ++k) // Keep identity permutations for base 1, 2, 3.

@@ -382,7 +382,7 @@ protected:
   NCollection_DataMap<TCollection_AsciiString, RWObj_Material>
     myMaterials; //!< map of known materials
 
-  RWObj_SubMesh    myActiveSubMesh; //!< active sub-mesh definition
+  RWObj_SubMesh                 myActiveSubMesh; //!< active sub-mesh definition
   NCollection_LinearVector<int> myCurrElem;      //!< indices for the current element
 };
 

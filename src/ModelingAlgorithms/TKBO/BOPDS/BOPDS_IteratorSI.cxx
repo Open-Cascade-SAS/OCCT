@@ -86,8 +86,8 @@ void BOPDS_IteratorSI::Intersect(const occ::handle<IntTools_Context>& theCtx,
   aPairSelector.Sort();
 
   // Treat the selected pairs
-  const NCollection_LinearVector<BOPTools_BoxPairSelector::PairIDs>& aPairs   = aPairSelector.Pairs();
-  const int                                             aNbPairs = static_cast<int>(aPairs.Size());
+  const NCollection_LinearVector<BOPTools_BoxPairSelector::PairIDs>& aPairs = aPairSelector.Pairs();
+  const int aNbPairs = static_cast<int>(aPairs.Size());
 
   for (int iPair = 0; iPair < aNbPairs; ++iPair)
   {

@@ -112,8 +112,8 @@ private:
   //! Returns operators to be performed according to the specified flags.
   //! @param theFlags Bitset of operations flags.
   //! @return List of operators to perform: pairs of operator name and operator handle.
-  static NCollection_LinearVector<std::pair<const char*, occ::handle<ShapeProcess_Operator>>> getOperators(
-    const OperationsFlags& theFlags);
+  static NCollection_LinearVector<std::pair<const char*, occ::handle<ShapeProcess_Operator>>>
+    getOperators(const OperationsFlags& theFlags);
 
   //! Converts operation flag to its name.
   //! @param theOperation Operation flag.

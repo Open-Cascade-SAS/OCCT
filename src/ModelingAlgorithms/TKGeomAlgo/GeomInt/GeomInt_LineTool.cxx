@@ -409,7 +409,7 @@ bool GeomInt_LineTool::DecompositionOfWLine(
   const GeomInt_LineConstructor&                    theLConstructor,
   NCollection_Sequence<occ::handle<IntPatch_Line>>& theNewLines)
 {
-  typedef NCollection_List<int>           ListOfInteger;
+  typedef NCollection_List<int>                   ListOfInteger;
   typedef NCollection_LinearVector<ListOfInteger> ArrayOfListOfInteger;
 
   bool   bIsPrevPointOnBoundary, bIsCurrentPointOnBoundary;
@@ -436,7 +436,7 @@ bool GeomInt_LineTool::DecompositionOfWLine(
     return false;
   }
   //
-  occ::handle<NCollection_IncAllocator>   anIncAlloc = new NCollection_IncAllocator();
+  occ::handle<NCollection_IncAllocator> anIncAlloc = new NCollection_IncAllocator();
   const ListOfInteger  aDummy(anIncAlloc); // empty list to be copy constructed from
   ArrayOfListOfInteger anArrayOfLines(aNbPnts + 1, aDummy);
 

@@ -441,9 +441,9 @@ const NCollection_List<int>& Bnd_BoundSortBox::Compare(const Bnd_Box& theBox)
   // intersection occurs.
   NCollection_LinearVector<uint8_t> aResultIndices;
   aResultIndices.Resize(myBoxes->Upper() + 1, 0);
-  constexpr uint8_t    anOccupiedX  = 0b01;
-  constexpr uint8_t    anOccupiedY  = 0b10;
-  constexpr uint8_t    anOccupiedXY = 0b11;
+  constexpr uint8_t anOccupiedX  = 0b01;
+  constexpr uint8_t anOccupiedY  = 0b10;
+  constexpr uint8_t anOccupiedXY = 0b11;
 
   // Checking the voxels along X-axis.
   for (int aVoxelX = aMinVoxelX; aVoxelX <= aMaxVoxelX; ++aVoxelX)

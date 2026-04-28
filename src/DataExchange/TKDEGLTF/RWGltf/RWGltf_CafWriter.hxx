@@ -55,10 +55,11 @@ public:
   //! Mesh
   struct Mesh
   {
-    NCollection_LinearVector<NCollection_Vec3<float>> NodesVec;     //!< vector for mesh nodes
-    NCollection_LinearVector<NCollection_Vec3<float>> NormalsVec;   //!< vector for mesh normals
-    NCollection_LinearVector<NCollection_Vec2<float>> TexCoordsVec; //!< vector for mesh texture UV coordinates
-    NCollection_LinearVector<Poly_Triangle>           IndicesVec;   //!< vector for mesh indices
+    NCollection_LinearVector<NCollection_Vec3<float>> NodesVec;   //!< vector for mesh nodes
+    NCollection_LinearVector<NCollection_Vec3<float>> NormalsVec; //!< vector for mesh normals
+    NCollection_LinearVector<NCollection_Vec2<float>>
+      TexCoordsVec;                                     //!< vector for mesh texture UV coordinates
+    NCollection_LinearVector<Poly_Triangle> IndicesVec; //!< vector for mesh indices
   };
 
   //! Main constructor.

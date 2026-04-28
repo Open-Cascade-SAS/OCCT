@@ -665,7 +665,7 @@ bool OpenGl_ShaderProgram::Initialize(
   {
     NCollection_LinearVector<GLint> aShadowSamplers;
     aShadowSamplers.Resize(myNbShadowMaps);
-    const GLint                     aSamplFrom = GLint(theCtx->ShadowMapTexUnit()) - myNbShadowMaps + 1;
+    const GLint aSamplFrom = GLint(theCtx->ShadowMapTexUnit()) - myNbShadowMaps + 1;
     for (int aSamplerIter = 0; aSamplerIter < myNbShadowMaps; ++aSamplerIter)
     {
       aShadowSamplers[aSamplerIter] = aSamplFrom + aSamplerIter;

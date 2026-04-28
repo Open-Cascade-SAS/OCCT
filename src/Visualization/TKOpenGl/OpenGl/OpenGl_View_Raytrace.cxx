@@ -527,8 +527,8 @@ bool OpenGl_View::addRaytraceGroups(const OpenGl_Structure*            theStruct
     int aMatID = static_cast<int>(myRaytraceGeometry.Materials.Size());
 
     // Use group material if available, otherwise use structure material
-    myRaytraceGeometry.Materials.Append(
-      aGroupIter.Value()->GlAspects() != nullptr ? aGroupMaterial : theStructMat);
+    myRaytraceGeometry.Materials.Append(aGroupIter.Value()->GlAspects() != nullptr ? aGroupMaterial
+                                                                                   : theStructMat);
 
     // Add OpenGL elements from group (extract primitives arrays and aspects)
     for (const OpenGl_ElementNode* aNode = aGroupIter.Value()->FirstNode(); aNode != nullptr;
@@ -808,9 +808,9 @@ bool OpenGl_View::addRaytraceTriangleArray(OpenGl_TriangleSet&                  
     for (int aVert = theOffset; aVert < theOffset + theCount - 2; aVert += 3)
     {
       theSet.Elements.EmplaceAppend(theIndices->Index(aVert + 0),
-                                   theIndices->Index(aVert + 1),
-                                   theIndices->Index(aVert + 2),
-                                   theMatID);
+                                    theIndices->Index(aVert + 1),
+                                    theIndices->Index(aVert + 2),
+                                    theMatID);
     }
   }
   else
@@ -846,9 +846,9 @@ bool OpenGl_View::addRaytraceTriangleFanArray(OpenGl_TriangleSet&               
     for (int aVert = theOffset; aVert < theOffset + theCount - 2; ++aVert)
     {
       theSet.Elements.EmplaceAppend(theIndices->Index(theOffset),
-                                   theIndices->Index(aVert + 1),
-                                   theIndices->Index(aVert + 2),
-                                   theMatID);
+                                    theIndices->Index(aVert + 1),
+                                    theIndices->Index(aVert + 2),
+                                    theMatID);
     }
   }
   else
@@ -886,9 +886,9 @@ bool OpenGl_View::addRaytraceTriangleStripArray(
          ++aVert, aCW               = (aCW + 1) % 2)
     {
       theSet.Elements.EmplaceAppend(theIndices->Index(aVert + (aCW ? 1 : 0)),
-                                   theIndices->Index(aVert + (aCW ? 0 : 1)),
-                                   theIndices->Index(aVert + 2),
-                                   theMatID);
+                                    theIndices->Index(aVert + (aCW ? 0 : 1)),
+                                    theIndices->Index(aVert + 2),
+                                    theMatID);
     }
   }
   else
@@ -897,9 +897,9 @@ bool OpenGl_View::addRaytraceTriangleStripArray(
          ++aVert, aCW               = (aCW + 1) % 2)
     {
       theSet.Elements.EmplaceAppend(aVert + (aCW ? 1 : 0),
-                                   aVert + (aCW ? 0 : 1),
-                                   aVert + 2,
-                                   theMatID);
+                                    aVert + (aCW ? 0 : 1),
+                                    aVert + 2,
+                                    theMatID);
     }
   }
 
@@ -928,13 +928,13 @@ bool OpenGl_View::addRaytraceQuadrangleArray(OpenGl_TriangleSet&                
     for (int aVert = theOffset; aVert < theOffset + theCount - 3; aVert += 4)
     {
       theSet.Elements.EmplaceAppend(theIndices->Index(aVert + 0),
-                                   theIndices->Index(aVert + 1),
-                                   theIndices->Index(aVert + 2),
-                                   theMatID);
+                                    theIndices->Index(aVert + 1),
+                                    theIndices->Index(aVert + 2),
+                                    theMatID);
       theSet.Elements.EmplaceAppend(theIndices->Index(aVert + 0),
-                                   theIndices->Index(aVert + 2),
-                                   theIndices->Index(aVert + 3),
-                                   theMatID);
+                                    theIndices->Index(aVert + 2),
+                                    theIndices->Index(aVert + 3),
+                                    theMatID);
     }
   }
   else
@@ -972,14 +972,14 @@ bool OpenGl_View::addRaytraceQuadrangleStripArray(
     for (int aVert = theOffset; aVert < theOffset + theCount - 3; aVert += 2)
     {
       theSet.Elements.EmplaceAppend(theIndices->Index(aVert + 0),
-                                   theIndices->Index(aVert + 1),
-                                   theIndices->Index(aVert + 2),
-                                   theMatID);
+                                    theIndices->Index(aVert + 1),
+                                    theIndices->Index(aVert + 2),
+                                    theMatID);
 
       theSet.Elements.EmplaceAppend(theIndices->Index(aVert + 1),
-                                   theIndices->Index(aVert + 3),
-                                   theIndices->Index(aVert + 2),
-                                   theMatID);
+                                    theIndices->Index(aVert + 3),
+                                    theIndices->Index(aVert + 2),
+                                    theMatID);
     }
   }
   else
@@ -1017,9 +1017,9 @@ bool OpenGl_View::addRaytracePolygonArray(OpenGl_TriangleSet&                   
     for (int aVert = theOffset; aVert < theOffset + theCount - 2; ++aVert)
     {
       theSet.Elements.EmplaceAppend(theIndices->Index(theOffset),
-                                   theIndices->Index(aVert + 1),
-                                   theIndices->Index(aVert + 2),
-                                   theMatID);
+                                    theIndices->Index(aVert + 1),
+                                    theIndices->Index(aVert + 2),
+                                    theMatID);
     }
   }
   else
@@ -2572,7 +2572,7 @@ bool OpenGl_View::updateRaytraceLightSources(const NCollection_Mat4<float>&     
                                              const occ::handle<OpenGl_Context>& theGlContext)
 {
   NCollection_LinearVector<occ::handle<Graphic3d_CLight>> aLightSources;
-  NCollection_Vec4<float>                    aNewAmbient(0.0f);
+  NCollection_Vec4<float>                                 aNewAmbient(0.0f);
   if (myRenderParams.ShadingModel != Graphic3d_TypeOfShadingModel_Unlit && !myLights.IsNull())
   {
     aNewAmbient.SetValues(myLights->AmbientColor().rgb(), 0.0f);

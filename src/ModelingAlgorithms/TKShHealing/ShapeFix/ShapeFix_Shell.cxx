@@ -55,10 +55,9 @@ IMPLEMENT_STANDARD_RTTIEXT(ShapeFix_Shell, ShapeFix_Root)
 namespace
 {
 // Type aliases for DataMaps with shape hasher
-using FaceEdgesMap  = NCollection_IndexedDataMap<TopoDS_Face, NCollection_Array1<TopoDS_Edge>>;
-using EdgeFacesMap  = NCollection_DataMap<TopoDS_Edge,
-                                          NCollection_DynamicArray<TopoDS_Face>,
-                                          TopTools_ShapeMapHasher>;
+using FaceEdgesMap = NCollection_IndexedDataMap<TopoDS_Face, NCollection_Array1<TopoDS_Edge>>;
+using EdgeFacesMap =
+  NCollection_DataMap<TopoDS_Edge, NCollection_DynamicArray<TopoDS_Face>, TopTools_ShapeMapHasher>;
 
 // Default increment for dynamic array of faces per edge
 constexpr int DEFAULT_EDGE_FACES_INCREMENT = 5;
@@ -313,9 +312,8 @@ static bool GetShells(
 
   // Using STL containers because number of faces or edges can be too high
   // to keep them on flat basket OCCT map
-  using EdgeOrientedMap = NCollection_DataMap<TopoDS_Edge,
-                                             std::pair<bool, bool>,
-                                             TopTools_ShapeMapHasher>;
+  using EdgeOrientedMap =
+    NCollection_DataMap<TopoDS_Edge, std::pair<bool, bool>, TopTools_ShapeMapHasher>;
   using TempProcessedEdges =
     NCollection_DataMap<TopoDS_Edge, std::pair<bool, bool>, TopTools_ShapeMapHasher>;
 

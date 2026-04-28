@@ -128,8 +128,8 @@ void BOPDS_SubIterator::Intersect()
   aPairSelector.Sort();
 
   // Treat the selected pairs
-  const NCollection_LinearVector<BOPTools_BoxPairSelector::PairIDs>& aPairs   = aPairSelector.Pairs();
-  const int                                             aNbPairs = static_cast<int>(aPairs.Size());
+  const NCollection_LinearVector<BOPTools_BoxPairSelector::PairIDs>& aPairs = aPairSelector.Pairs();
+  const int aNbPairs = static_cast<int>(aPairs.Size());
 
   // Fence map
   NCollection_Map<BOPDS_Pair> aMPKFence;

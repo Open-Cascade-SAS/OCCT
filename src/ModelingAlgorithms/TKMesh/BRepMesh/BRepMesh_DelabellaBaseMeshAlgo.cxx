@@ -72,8 +72,8 @@ void BRepMesh_DelabellaBaseMeshAlgo::buildBaseTriangulation()
 {
   const occ::handle<BRepMesh_DataStructureOfDelaun>& aStructure = this->getStructure();
 
-  Bnd_B2d             aBox;
-  const int           aNodesNb = aStructure->NbNodes();
+  Bnd_B2d                          aBox;
+  const int                        aNodesNb = aStructure->NbNodes();
   NCollection_LinearVector<double> aPoints;
   aPoints.Resize(2 * (aNodesNb + 4));
   for (int aNodeIt = 0; aNodeIt < aNodesNb; ++aNodeIt)

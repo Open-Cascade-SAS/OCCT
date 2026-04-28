@@ -80,14 +80,14 @@ public:
   Standard_EXPORT void FillMax(const Graphic3d_FrameStatsData& theOther);
 
 protected:
-  NCollection_LinearVector<size_t> myCounters;        //!< counters
-  NCollection_LinearVector<double> myTimers;          //!< timers
-  NCollection_LinearVector<double> myTimersMin;       //!< minimal values of timers
-  NCollection_LinearVector<double> myTimersMax;       //!< maximum values of timers
-  double              myFps;             //!< FPS     meter (frames per seconds, elapsed time)
-  double              myFpsCpu;          //!< CPU FPS meter (frames per seconds, CPU time)
-  double              myFpsImmediate;    //!< FPS     meter for immediate redraws
-  double              myFpsCpuImmediate; //!< CPU FPS meter for immediate redraws
+  NCollection_LinearVector<size_t> myCounters;  //!< counters
+  NCollection_LinearVector<double> myTimers;    //!< timers
+  NCollection_LinearVector<double> myTimersMin; //!< minimal values of timers
+  NCollection_LinearVector<double> myTimersMax; //!< maximum values of timers
+  double                           myFps;    //!< FPS     meter (frames per seconds, elapsed time)
+  double                           myFpsCpu; //!< CPU FPS meter (frames per seconds, CPU time)
+  double                           myFpsImmediate;    //!< FPS     meter for immediate redraws
+  double                           myFpsCpuImmediate; //!< CPU FPS meter for immediate redraws
 };
 
 //! Temporary data frame definition.
