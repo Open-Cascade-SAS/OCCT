@@ -51,6 +51,7 @@
 #include <gp_Cylinder.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Sphere.hxx>
+#include <MathRoot_Brent.hxx>
 #include <math_Matrix.hxx>
 #include <math_Vector.hxx>
 
@@ -4366,8 +4367,13 @@ public:
   // Returns UV-bounds of 2nd surface
   const Bnd_Box2d& UVS2() const { return myUVSurf2; }
 
+  // theU1Prev is the walker's previous U1 sample. Together with theU1 it
+  // forms the bracket across which the straddle on V_bound was detected and
+  // in which the V-boundary crossing is resolved by 1D branch-aware
+  // bisection on the analytical intersection curve.
   void AddBoundaryPoint(const occ::handle<IntPatch_WLine>& theWL,
                         const double                       theU1,
+                        const double                       theU1Prev,
                         const double                       theU1Min,
                         const double                       theU2,
                         const double                       theV1,
@@ -4389,17 +4395,6 @@ public:
                           Bnd_Range&         theOutBoxS2) const;
 
 protected:
-  // Solves equation (2) (see declaration of ComputationMethods class) in case,
-  // when V1 or V2 (is set by theSBType argument) is known (corresponds to the boundary
-  // and equal to theVzad) but U1 is unknown. Computation is made by numeric methods and
-  // requires initial values (theVInit, theInitU2 and theInitMainVar).
-  bool SearchOnVBounds(const SearchBoundType theSBType,
-                       const double          theVzad,
-                       const double          theVInit,
-                       const double          theInitU2,
-                       const double          theInitMainVar,
-                       double&               theMainVariableValue) const;
-
   const WorkWithBoundaries& operator=(const WorkWithBoundaries&);
 
 private:
@@ -5457,246 +5452,6 @@ bool ComputationMethods::CylCylComputeParameters(const double         theU1par,
   return true;
 }
 
-//=================================================================================================
-
-bool WorkWithBoundaries::SearchOnVBounds(const SearchBoundType theSBType,
-                                         const double          theVzad,
-                                         const double          theVInit,
-                                         const double          theInitU2,
-                                         const double          theInitMainVar,
-                                         double&               theMainVariableValue) const
-{
-  const int    aNbDim    = 3;
-  const double aMaxError = 4.0 * M_PI; // two periods
-
-  theMainVariableValue      = theInitMainVar;
-  const double aTol2        = 1.0e-18;
-  double       aMainVarPrev = theInitMainVar, aU2Prev = theInitU2, anOtherVar = theVInit;
-
-  // Structure of aMatr:
-  //   C_{1}*U_{1} & C_{2}*U_{2} & C_{3}*V_{*},
-  // where C_{1}, C_{2} and C_{3} are math_Vector.
-  math_Matrix aMatr(1, aNbDim, 1, aNbDim);
-
-  double anError     = RealLast();
-  double anErrorPrev = anError;
-  int    aNbIter     = 0;
-  double aLastDet    = 0.0;
-  double aLastResSq  = 0.0;
-  do
-  {
-    if (++aNbIter > 1000)
-    {
-      if (FILE* f = CyCyDebugSolverCsv())
-      {
-        std::fprintf(f,
-                     "%d,%.17g,%.17g,%.17g,%.17g,false_iterMax,%.17g,%d,%.17g,%.17g,%.17g\n",
-                     (int)theSBType,
-                     theVzad,
-                     theVInit,
-                     theInitU2,
-                     theInitMainVar,
-                     theMainVariableValue,
-                     aNbIter,
-                     aLastDet,
-                     anError,
-                     aLastResSq);
-        std::fflush(f);
-      }
-      return false;
-    }
-
-    const double aSinU1 = sin(aMainVarPrev), aCosU1 = cos(aMainVarPrev), aSinU2 = sin(aU2Prev),
-                 aCosU2 = cos(aU2Prev);
-
-    math_Vector aVecFreeMem = (myCoeffs.mVecA2 * aU2Prev + myCoeffs.mVecB2) * aSinU2
-                              - (myCoeffs.mVecB2 * aU2Prev - myCoeffs.mVecA2) * aCosU2
-                              + (myCoeffs.mVecA1 * aMainVarPrev + myCoeffs.mVecB1) * aSinU1
-                              - (myCoeffs.mVecB1 * aMainVarPrev - myCoeffs.mVecA1) * aCosU1
-                              + myCoeffs.mVecD;
-
-    math_Vector aMSum(1, 3);
-
-    switch (theSBType)
-    {
-      case SearchV1:
-        aMatr.SetCol(3, myCoeffs.mVecC2);
-        aMSum = myCoeffs.mVecC1 * theVzad;
-        aVecFreeMem -= aMSum;
-        aMSum += myCoeffs.mVecC2 * anOtherVar;
-        break;
-
-      case SearchV2:
-        aMatr.SetCol(3, myCoeffs.mVecC1);
-        aMSum = myCoeffs.mVecC2 * theVzad;
-        aVecFreeMem -= aMSum;
-        aMSum += myCoeffs.mVecC1 * anOtherVar;
-        break;
-
-      default:
-        return false;
-    }
-
-    aMatr.SetCol(1, myCoeffs.mVecA1 * aSinU1 - myCoeffs.mVecB1 * aCosU1);
-    aMatr.SetCol(2, myCoeffs.mVecA2 * aSinU2 - myCoeffs.mVecB2 * aCosU2);
-
-    double aDetMainSyst = aMatr.Determinant();
-    aLastDet            = aDetMainSyst;
-
-    if (std::abs(aDetMainSyst) < aNulValue)
-    {
-      // Evaluate residual before rejecting so instrumentation records whether
-      // the iterate is already at the tangent (small residual) or genuinely bad.
-      const double aSinU1z = sin(aMainVarPrev), aCosU1z = cos(aMainVarPrev),
-                   aSinU2z = sin(aU2Prev), aCosU2z = cos(aU2Prev);
-      math_Vector aResVec  = aMSum
-                            - (myCoeffs.mVecA1 * aCosU1z + myCoeffs.mVecB1 * aSinU1z
-                               + myCoeffs.mVecA2 * aCosU2z + myCoeffs.mVecB2 * aSinU2z
-                               + myCoeffs.mVecD);
-      aLastResSq = aResVec.Norm2();
-      if (FILE* f = CyCyDebugSolverCsv())
-      {
-        std::fprintf(f,
-                     "%d,%.17g,%.17g,%.17g,%.17g,false_detZero,%.17g,%d,%.17g,%.17g,%.17g\n",
-                     (int)theSBType,
-                     theVzad,
-                     theVInit,
-                     theInitU2,
-                     theInitMainVar,
-                     theMainVariableValue,
-                     aNbIter,
-                     aLastDet,
-                     anError,
-                     aLastResSq);
-        std::fflush(f);
-      }
-      return false;
-    }
-
-    math_Matrix aM1(aMatr), aM2(aMatr), aM3(aMatr);
-    aM1.SetCol(1, aVecFreeMem);
-    aM2.SetCol(2, aVecFreeMem);
-    aM3.SetCol(3, aVecFreeMem);
-
-    const double aDetMainVar = aM1.Determinant();
-    const double aDetVar1    = aM2.Determinant();
-    const double aDetVar2    = aM3.Determinant();
-
-    double aDelta = aDetMainVar / aDetMainSyst - aMainVarPrev;
-
-    if (std::abs(aDelta) > aMaxError)
-    {
-      if (FILE* f = CyCyDebugSolverCsv())
-      {
-        std::fprintf(f,
-                     "%d,%.17g,%.17g,%.17g,%.17g,false_maxError1,%.17g,%d,%.17g,%.17g,%.17g\n",
-                     (int)theSBType,
-                     theVzad,
-                     theVInit,
-                     theInitU2,
-                     theInitMainVar,
-                     theMainVariableValue,
-                     aNbIter,
-                     aLastDet,
-                     anError,
-                     aLastResSq);
-        std::fflush(f);
-      }
-      return false;
-    }
-
-    anError = aDelta * aDelta;
-    aMainVarPrev += aDelta;
-
-    ///
-    aDelta = aDetVar1 / aDetMainSyst - aU2Prev;
-
-    if (std::abs(aDelta) > aMaxError)
-    {
-      if (FILE* f = CyCyDebugSolverCsv())
-      {
-        std::fprintf(f,
-                     "%d,%.17g,%.17g,%.17g,%.17g,false_maxError2,%.17g,%d,%.17g,%.17g,%.17g\n",
-                     (int)theSBType,
-                     theVzad,
-                     theVInit,
-                     theInitU2,
-                     theInitMainVar,
-                     theMainVariableValue,
-                     aNbIter,
-                     aLastDet,
-                     anError,
-                     aLastResSq);
-        std::fflush(f);
-      }
-      return false;
-    }
-
-    anError += aDelta * aDelta;
-    aU2Prev += aDelta;
-
-    ///
-    aDelta = aDetVar2 / aDetMainSyst - anOtherVar;
-    anError += aDelta * aDelta;
-    anOtherVar += aDelta;
-
-    if (anError > anErrorPrev)
-    { // Method diverges. Keep the best result
-      const double aSinU1Last = sin(aMainVarPrev), aCosU1Last = cos(aMainVarPrev),
-                   aSinU2Last = sin(aU2Prev), aCosU2Last = cos(aU2Prev);
-      aMSum -= (myCoeffs.mVecA1 * aCosU1Last + myCoeffs.mVecB1 * aSinU1Last
-                + myCoeffs.mVecA2 * aCosU2Last + myCoeffs.mVecB2 * aSinU2Last + myCoeffs.mVecD);
-      const double aSQNorm = aMSum.Norm2();
-      aLastResSq           = aSQNorm;
-      const bool aOk       = (aSQNorm < aTol2);
-      if (FILE* f = CyCyDebugSolverCsv())
-      {
-        std::fprintf(f,
-                     "%d,%.17g,%.17g,%.17g,%.17g,%s_diverge,%.17g,%d,%.17g,%.17g,%.17g\n",
-                     (int)theSBType,
-                     theVzad,
-                     theVInit,
-                     theInitU2,
-                     theInitMainVar,
-                     aOk ? "true" : "false",
-                     theMainVariableValue,
-                     aNbIter,
-                     aLastDet,
-                     anError,
-                     aLastResSq);
-        std::fflush(f);
-      }
-      return aOk;
-    }
-    else
-    {
-      theMainVariableValue = aMainVarPrev;
-    }
-
-    anErrorPrev = anError;
-  } while (anError > aTol2);
-
-  theMainVariableValue = aMainVarPrev;
-
-  if (FILE* f = CyCyDebugSolverCsv())
-  {
-    std::fprintf(f,
-                 "%d,%.17g,%.17g,%.17g,%.17g,true_converged,%.17g,%d,%.17g,%.17g,%.17g\n",
-                 (int)theSBType,
-                 theVzad,
-                 theVInit,
-                 theInitU2,
-                 theInitMainVar,
-                 theMainVariableValue,
-                 aNbIter,
-                 aLastDet,
-                 anError,
-                 aLastResSq);
-    std::fflush(f);
-  }
-
-  return true;
-}
 
 //=======================================================================
 // function : InscribePoint
@@ -6048,6 +5803,7 @@ static bool AddPointIntoWL(const IntSurf_Quadric&                   theQuad1,
 //=======================================================================
 void WorkWithBoundaries::AddBoundaryPoint(const occ::handle<IntPatch_WLine>& theWL,
                                           const double                       theU1,
+                                          const double                       theU1Prev,
                                           const double                       theU1Min,
                                           const double                       theU2,
                                           const double                       theV1,
@@ -6072,6 +5828,64 @@ void WorkWithBoundaries::AddBoundaryPoint(const occ::handle<IntPatch_WLine>& the
 
   StPInfo aUVPoint[aSize];
 
+  // Branch-aware 1D root-finder for V(U1) = V_bound on the analytical
+  // intersection curve, used in place of the original rank-deficient 3x3
+  // Newton (SearchOnVBounds). The intersection curve is 1D in U1 on each
+  // arccos branch, so the correct numerical tool is a bracketed 1D root
+  // finder. We use MathRoot::Brent, which converges robustly even when the
+  // curve grazes V_bound at a near-tangent (two close crossings on opposite
+  // sides of a V-extremum) -- the configuration that makes the 3x3 Newton
+  // Jacobian rank-deficient. The only tolerance is Precision::PConfusion()
+  // (OCCT standard parametric equality) for termination on U.
+  struct VBoundDelta
+  {
+    const ComputationMethods::stCoeffsValue& Coeffs;
+    int                                      WLIndex;
+    bool                                     IsV1;
+    double                                   VBound;
+    bool Value(double theX, double& theF) const
+    {
+      double aU2 = 0.0, aV1 = 0.0, aV2 = 0.0;
+      if (!ComputationMethods::CylCylComputeParameters(theX, WLIndex, Coeffs, aU2, aV1, aV2))
+        return false;
+      theF = (IsV1 ? aV1 : aV2) - VBound;
+      return true;
+    }
+  };
+
+  auto findVBoundCrossing = [this, theWLIndex](const bool   theIsV1,
+                                               const double theVBound,
+                                               const double theULo,
+                                               const double theUHi,
+                                               double&      theU1Star) -> bool {
+    if (!(theULo < theUHi))
+      return false;
+    VBoundDelta aFunc{myCoeffs, theWLIndex, theIsV1, theVBound};
+    double      aFlo = 0.0, aFhi = 0.0;
+    if (!aFunc.Value(theULo, aFlo) || !aFunc.Value(theUHi, aFhi))
+      return false;
+    if (aFlo == 0.0)
+    {
+      theU1Star = theULo;
+      return true;
+    }
+    if (aFhi == 0.0)
+    {
+      theU1Star = theUHi;
+      return true;
+    }
+    if (aFlo * aFhi > 0.0)
+      return false; // no bracketed crossing
+
+    MathUtils::Config aCfg;
+    aCfg.XTolerance = Precision::PConfusion();
+    const MathUtils::ScalarResult aRes = MathRoot::Brent(aFunc, theULo, theUHi, aCfg);
+    if (aRes.Status != MathUtils::Status::OK || !aRes.Root.has_value())
+      return false;
+    theU1Star = *aRes.Root;
+    return true;
+  };
+
   for (int anIDSurf = 0; anIDSurf < 4; anIDSurf += 2)
   {
     const double aVf = (anIDSurf == 0) ? theV1 : theV2,
@@ -6091,16 +5905,12 @@ void WorkWithBoundaries::AddBoundaryPoint(const occ::handle<IntPatch_WLine>& the
         continue;
       }
 
-      // Segment [aVf, aVl] intersects at least one V-boundary (first or last)
-      //  (in general, case is possible, when aVf > aVl).
-
-      // Precise intersection point
-      const bool aRes = SearchOnVBounds(aTS,
-                                        anArrVzad[anIndex],
-                                        (anIDSurf == 0) ? theV2 : theV1,
-                                        theU2,
-                                        theU1,
-                                        aUVPoint[anIndex].myU1);
+      // Segment [aVf, aVl] intersects at least one V-boundary (first or last).
+      // Resolve the crossing by 1D bisection on the analytical curve.
+      const double aULo = std::min(theU1Prev, theU1);
+      const double aUHi = std::max(theU1Prev, theU1);
+      const bool   aRes =
+        findVBoundCrossing(aTS == SearchV1, anArrVzad[anIndex], aULo, aUHi, aUVPoint[anIndex].myU1);
 
       // aUVPoint[anIndex].myU1 is considered to be nearer to theU1 than
       // to theU1+/-Period
@@ -6502,40 +6312,18 @@ bool WorkWithBoundaries::BoundariesComputing(const ComputationMethods::stCoeffsV
 
 //=======================================================================
 // function : CriticalPointsComputing
-// purpose  : theNbCritPointsMax contains the array capacity on entry and the
-//            number of significant (non-infinite) critical points on exit.
-//            Capacity must be >= 12 for the base set; extra slots are used
-//            for V-boundary tangency points (see step 2 below).
+// purpose  : theNbCritPointsMax contains true number of critical points.
+//            It must be initialized correctly before function calling
 //=======================================================================
-// Identifier for the face V-boundary a critical point is tangent to. Used
-// by the walker to snap the evaluated V to the exact analytical value when
-// the walker forces U1 to a tangency critical point (the arccos branch-
-// merge at a tangent contaminates the direct evaluation of V by sqrt(eps)-
-// scale noise). A value of 0 means "base critical point, not a tangency".
-enum CriticalVBoundId
-{
-  CriticalVBound_None = 0,
-  CriticalVBound_V1f  = 1,
-  CriticalVBound_V1l  = 2,
-  CriticalVBound_V2f  = 3,
-  CriticalVBound_V2l  = 4
-};
-
 static void CriticalPointsComputing(const ComputationMethods::stCoeffsValue& theCoeffs,
                                     const double                             theUSurf1f,
                                     const double                             theUSurf1l,
                                     const double                             theUSurf2f,
                                     const double                             theUSurf2l,
-                                    const double                             theVSurf1f,
-                                    const double                             theVSurf1l,
-                                    const double                             theVSurf2f,
-                                    const double                             theVSurf2l,
                                     const double                             thePeriod,
                                     const double                             theTol2D,
-                                    const double                             theTol3D,
                                     int&                                     theNbCritPointsMax,
-                                    double                                   theU1crit[],
-                                    int                                      theU1critVBoundId[])
+                                    double                                   theU1crit[])
 {
   //[0...1] - in these points parameter U1 goes through
   //          the seam-edge of the first cylinder.
@@ -6546,15 +6334,6 @@ static void CriticalPointsComputing(const ComputationMethods::stCoeffsValue& the
   //          U-boundaries of the second surface.
   //[10...11] - Boundary of monotonicity interval of U2(U1) function
   //            (see CylCylMonotonicity() function)
-  //[12...]  - V-boundary tangency points: values of U1 where the analytical
-  //            intersection curve touches a face V-boundary (V1=V1f/V1l or
-  //            V2=V2f/V2l) at a V-extremum without crossing it. Found by
-  //            1D extremum search on each sub-interval of the already-sorted
-  //            base critical set, per arccos branch. Tangency configurations
-  //            make SearchOnVBounds's 3x3 Newton rank-deficient; catching
-  //            them here as first-class critical points makes the walker
-  //            force U1 exactly to the tangent and emit the analytical
-  //            vertex via its existing AddPointIntoWL pathway.
 
   theU1crit[0] = 0.0;
   theU1crit[1] = thePeriod;
@@ -6597,23 +6376,6 @@ static void CriticalPointsComputing(const ComputationMethods::stCoeffsValue& the
   theU1crit[10] = theCoeffs.mFI1;
   theU1crit[11] = M_PI + theCoeffs.mFI1;
 
-  // Initialize tangency slots [12..theNbCritPointsMax-1] as infinite.
-  for (int i = 12; i < theNbCritPointsMax; i++)
-  {
-    theU1crit[i] = Precision::Infinite();
-  }
-  for (int i = 0; i < theNbCritPointsMax; i++)
-  {
-    theU1critVBoundId[i] = CriticalVBound_None;
-  }
-
-  // Record of tangency (U1*, V-bound id) pairs as we detect them; used after
-  // sort/dedupe to re-associate surviving critical U1 values with their
-  // V-bound target by exact parametric equality (Precision::PConfusion()).
-  struct TangencyEntry { double U1; int VBoundId; };
-  TangencyEntry aTangencyList[32];
-  int           aTangencyCount = 0;
-
   // preparative treatment of array. This array must have faled to contain negative
   // infinity number
 
@@ -6630,121 +6392,6 @@ static void CriticalPointsComputing(const ComputationMethods::stCoeffsValue& the
   }
 
   // Here all not infinite elements of theU1crit are in [0, thePeriod) range
-
-  // V-boundary tangency detection.
-  //
-  // Sort the base set so it partitions [0, thePeriod) into sub-intervals on
-  // which V(U1) is unimodal on each arccos branch. On each sub-interval,
-  // find the interior extremum of V1(U1) and V2(U1); if it touches one of
-  // the face V-bounds within Precision::Confusion(), append its U1 to the
-  // critical list. The 1D search is branch-aware golden section using
-  // ComputationMethods::CylCylComputeParameters.
-  if (theNbCritPointsMax > 12)
-  {
-    std::sort(theU1crit, theU1crit + 12);
-
-    const double aVBound[4] = {theVSurf1f, theVSurf1l, theVSurf2f, theVSurf2l};
-    int          iSlot      = 12;
-
-    for (int iBranch = 0; iBranch < 2 && iSlot < theNbCritPointsMax; ++iBranch)
-    {
-      for (int iVBnd = 0; iVBnd < 4 && iSlot < theNbCritPointsMax; ++iVBnd)
-      {
-        const bool   isV1     = (iVBnd < 2);
-        const bool   isUpper  = ((iVBnd % 2) == 1);
-        const double aVtarget = aVBound[iVBnd];
-        const double aSign    = isUpper ? 1.0 : -1.0;
-
-        auto evalV = [&](const double theU, double& theVOut) -> bool {
-          double aU2 = 0.0, aV1v = 0.0, aV2v = 0.0;
-          if (!ComputationMethods::CylCylComputeParameters(theU,
-                                                           iBranch,
-                                                           theCoeffs,
-                                                           aU2,
-                                                           aV1v,
-                                                           aV2v))
-            return false;
-          theVOut = isV1 ? aV1v : aV2v;
-          return true;
-        };
-
-        for (int k = 0; k + 1 < 12 && iSlot < theNbCritPointsMax; ++k)
-        {
-          const double aUa = theU1crit[k];
-          const double aUb = theU1crit[k + 1];
-          if (Precision::IsInfinite(aUa) || Precision::IsInfinite(aUb))
-            continue;
-          if (aUb - aUa < std::max(theTol2D, Precision::PConfusion()))
-            continue;
-
-          double aVa = 0.0, aVb = 0.0, aVm = 0.0;
-          const double aUm = 0.5 * (aUa + aUb);
-          if (!evalV(aUa, aVa) || !evalV(aUb, aVb) || !evalV(aUm, aVm))
-            continue;
-
-          // Interior extremum required (mid in the target direction vs both ends).
-          if (isUpper ? !(aVm > aVa && aVm > aVb) : !(aVm < aVa && aVm < aVb))
-            continue;
-
-          // Golden-section on maximize(aSign*V).
-          constexpr double kPhi = 0.6180339887498949; // (sqrt(5)-1)/2
-          double           a    = aUa;
-          double           b    = aUb;
-          double           c    = b - kPhi * (b - a);
-          double           d    = a + kPhi * (b - a);
-          double           fc   = 0.0;
-          double           fd   = 0.0;
-          double           aTmp = 0.0;
-          const double     aBad = -std::numeric_limits<double>::infinity();
-          fc                    = evalV(c, aTmp) ? aSign * aTmp : aBad;
-          fd                    = evalV(d, aTmp) ? aSign * aTmp : aBad;
-          const double aTolU    = Precision::PConfusion();
-          for (int iter = 0; iter < 120; ++iter)
-          {
-            if (std::abs(b - a) < aTolU)
-              break;
-            if (fc > fd)
-            {
-              b  = d;
-              d  = c;
-              fd = fc;
-              c  = b - kPhi * (b - a);
-              fc = evalV(c, aTmp) ? aSign * aTmp : aBad;
-            }
-            else
-            {
-              a  = c;
-              c  = d;
-              fc = fd;
-              d  = a + kPhi * (b - a);
-              fd = evalV(d, aTmp) ? aSign * aTmp : aBad;
-            }
-          }
-          const double aUStar = 0.5 * (a + b);
-          double       aVStar = 0.0;
-          if (!evalV(aUStar, aVStar))
-            continue;
-          if (std::abs(aVStar - aVtarget) > Precision::Confusion())
-            continue;
-          if (aUStar - aUa < theTol2D || aUb - aUStar < theTol2D)
-            continue;
-
-          const int aBoundId = (iVBnd == 0) ? CriticalVBound_V1f
-                               : (iVBnd == 1) ? CriticalVBound_V1l
-                               : (iVBnd == 2) ? CriticalVBound_V2f
-                                              : CriticalVBound_V2l;
-          theU1crit[iSlot++] = aUStar;
-          if (aTangencyCount
-              < static_cast<int>(sizeof(aTangencyList) / sizeof(aTangencyList[0])))
-          {
-            aTangencyList[aTangencyCount].U1       = aUStar;
-            aTangencyList[aTangencyCount].VBoundId = aBoundId;
-            aTangencyCount++;
-          }
-        }
-      }
-    }
-  }
 
   do
   {
@@ -6785,58 +6432,6 @@ static void CriticalPointsComputing(const ComputationMethods::stCoeffsValue& the
     break;
   }
 
-  // Assign V-bound id per arccos branch at each surviving critical point.
-  //
-  // At a critical U1, the two arccos branches evaluate to distinct (U2,V1,V2)
-  // in general, so the V-bound id must be tracked per branch. The packed
-  // layout stores branch-0 id in the low 16 bits and branch-1 id in the high
-  // 16 bits of theU1critVBoundId[k].
-  //
-  // V has distance units (axial coordinate on cylinder), so theTol3D is the
-  // natural V-match tolerance: it scales with fuzzy and matches downstream
-  // BOP geometric tolerance.
-  (void)aTangencyList;
-  (void)aTangencyCount;
-  for (int k = 0; k < theNbCritPointsMax; ++k)
-  {
-    theU1critVBoundId[k] = CriticalVBound_None;
-    if (Precision::IsInfinite(theU1crit[k]))
-      continue;
-    for (int iBranch = 0; iBranch < 2; ++iBranch)
-    {
-      double aU2Eval = 0.0, aV1Eval = 0.0, aV2Eval = 0.0;
-      if (!ComputationMethods::CylCylComputeParameters(theU1crit[k],
-                                                       iBranch,
-                                                       theCoeffs,
-                                                       aU2Eval,
-                                                       aV1Eval,
-                                                       aV2Eval))
-        continue;
-      int aId = CriticalVBound_None;
-      if (std::abs(aV1Eval - theVSurf1f) < theTol3D)
-        aId = CriticalVBound_V1f;
-      else if (std::abs(aV1Eval - theVSurf1l) < theTol3D)
-        aId = CriticalVBound_V1l;
-      else if (std::abs(aV2Eval - theVSurf2f) < theTol3D)
-        aId = CriticalVBound_V2f;
-      else if (std::abs(aV2Eval - theVSurf2l) < theTol3D)
-        aId = CriticalVBound_V2l;
-      theU1critVBoundId[k] |= (aId << (iBranch * 16));
-    }
-  }
-
-  // Attention! Here theU1crit may be unsorted.
-
-  if (std::getenv("OCCT_DEBUG_CYCY") != nullptr)
-  {
-    std::fprintf(stderr, "[CyCyCrit] bounds V1=[%.4f,%.4f] V2=[%.4f,%.4f] FI1=%.4f FI2=%.4f B=%.4f C=%.4f\n",
-                 theVSurf1f, theVSurf1l, theVSurf2f, theVSurf2l,
-                 theCoeffs.mFI1, theCoeffs.mFI2, theCoeffs.mB, theCoeffs.mC);
-    std::fprintf(stderr, "[CyCyCrit] %d crits:", theNbCritPointsMax);
-    for (int i = 0; i < theNbCritPointsMax; ++i)
-      std::fprintf(stderr, " %.6f(id=%d)", theU1crit[i], theU1critVBoundId[i]);
-    std::fprintf(stderr, "\n");
-  }
 }
 
 //=======================================================================
@@ -7046,22 +6641,23 @@ static IntPatch_ImpImpIntersection::IntStatus CyCyNoGeometric(
   // After that, the WL is broken (next U1 value will be correspond to the new WL).
 
   // See CriticalPointsComputing(...) function to get detail information about this array.
-  // Capacity 24 = 12 base critical points + up to 12 V-boundary tangency points.
-  const int aNbCritPointsMax = 24;
-  double    anU1crit[aNbCritPointsMax];
-  int       anU1critVBoundId[aNbCritPointsMax];
-  for (int iInit = 0; iInit < aNbCritPointsMax; ++iInit)
-  {
-    anU1crit[iInit]         = Precision::Infinite();
-    anU1critVBoundId[iInit] = CriticalVBound_None;
-  }
+  const int aNbCritPointsMax           = 12;
+  double    anU1crit[aNbCritPointsMax] = {Precision::Infinite(),
+                                          Precision::Infinite(),
+                                          Precision::Infinite(),
+                                          Precision::Infinite(),
+                                          Precision::Infinite(),
+                                          Precision::Infinite(),
+                                          Precision::Infinite(),
+                                          Precision::Infinite(),
+                                          Precision::Infinite(),
+                                          Precision::Infinite(),
+                                          Precision::Infinite(),
+                                          Precision::Infinite()};
 
-  // V-boundary crossings are caught on-the-fly by the walker (AddBoundaryPoint
-  // + SearchOnVBounds). V-boundary tangencies are appended here by
-  // CriticalPointsComputing; the walker treats them as first-class critical
-  // points and emits the analytical tangent vertex directly, using
-  // anU1critVBoundId[i] to bind the evaluated V to the exact V-bound value
-  // without relying on a numerical tolerance test on the walker-evaluated V.
+  // V-boundary points (both crossings and tangencies) are caught on-the-fly
+  // by the walker via AddBoundaryPoint; see the 1D branch-aware root-finder
+  // it uses in place of the rank-deficient 3x3 Newton SearchOnVBounds.
 
   int aNbCritPoints = aNbCritPointsMax;
   CriticalPointsComputing(anEquationCoeffs,
@@ -7069,16 +6665,10 @@ static IntPatch_ImpImpIntersection::IntStatus CyCyNoGeometric(
                           aUSurf1l,
                           aUSurf2f,
                           aUSurf2l,
-                          aVSurf1f,
-                          aVSurf1l,
-                          aVSurf2f,
-                          aVSurf2l,
                           aPeriod,
                           aTol2D,
-                          aTol3D,
                           aNbCritPoints,
-                          anU1crit,
-                          anU1critVBoundId);
+                          anU1crit);
 
   // Getting Walking-line
 
@@ -7107,28 +6697,13 @@ static IntPatch_ImpImpIntersection::IntStatus CyCyNoGeometric(
 
     const bool isDeltaPeriod = IsEqual(anUl - anUf, aPeriod);
 
-    // Inscribe and sort critical points. Sort the parallel V-bound-id array
-    // in sync so that anU1critVBoundId[i] remains bound to anU1crit[i].
+    // Inscribe and sort critical points
     for (int i = 0; i < aNbCritPoints; i++)
     {
       InscribePoint(anUf, anUl, anU1crit[i], 0.0, aPeriod, false);
     }
-    {
-      struct CritSortPair { double U; int Id; };
-      CritSortPair aPairs[aNbCritPointsMax];
-      for (int i = 0; i < aNbCritPoints; ++i)
-      {
-        aPairs[i].U  = anU1crit[i];
-        aPairs[i].Id = anU1critVBoundId[i];
-      }
-      std::sort(aPairs, aPairs + aNbCritPoints,
-                [](const CritSortPair& a, const CritSortPair& b) { return a.U < b.U; });
-      for (int i = 0; i < aNbCritPoints; ++i)
-      {
-        anU1crit[i]         = aPairs[i].U;
-        anU1critVBoundId[i] = aPairs[i].Id;
-      }
-    }
+
+    std::sort(anU1crit, anU1crit + aNbCritPoints);
 
     while (anUf < anUl)
     {
@@ -7165,6 +6740,7 @@ static IntPatch_ImpImpIntersection::IntStatus CyCyNoGeometric(
       }
 
       double anU1 = anUf, aMinCriticalParam = anUf;
+      double anU1Prev = anUf;
       bool   isFirst = true;
 
       while (anU1 <= anUl)
@@ -7174,22 +6750,12 @@ static IntPatch_ImpImpIntersection::IntStatus CyCyNoGeometric(
         // can be broken if WL goes though some critical point.
         // Step is computed adaptively (see comments below).
 
-        // Track which critical point (if any) the walker has just snapped to
-        // (or is resuming at, after a snap-break restart). This drives the
-        // V-tangency snap below so the walker's V value at a tangency
-        // critical point is bound to the exact V-bound analytical value
-        // rather than the branch-merge-contaminated arccos evaluation.
-        int aCriticalSnapId = CriticalVBound_None;
         for (int i = 0; i < aNbCritPoints; i++)
         {
           if ((anU1 - anU1crit[i]) * aCriticalDelta[i] < 0.0)
           {
-            if (std::getenv("OCCT_DEBUG_CYCY") != nullptr)
-              std::fprintf(stderr, "[CyCySnap] crit[%d]=%.9f hit at anU1=%.9f\n",
-                           i, anU1crit[i], anU1);
             // WL has gone through i-th critical point
-            anU1            = anU1crit[i];
-            aCriticalSnapId = anU1critVBoundId[i];
+            anU1 = anU1crit[i];
 
             for (int j = 0; j < aNbWLines; j++)
             {
@@ -7198,23 +6764,6 @@ static IntPatch_ImpImpIntersection::IntStatus CyCyNoGeometric(
             }
 
             break;
-          }
-        }
-
-        // The walker also enters the inner loop with anU1 == anUf after a
-        // snap-break restart, in which case the critical-cross check above
-        // cannot fire (the product is zero, not negative). Detect this by
-        // exact parametric equality (Precision::PConfusion()) to any
-        // critical U1.
-        if (aCriticalSnapId == CriticalVBound_None)
-        {
-          for (int i = 0; i < aNbCritPoints; i++)
-          {
-            if (std::abs(anU1 - anU1crit[i]) < Precision::PConfusion())
-            {
-              aCriticalSnapId = anU1critVBoundId[i];
-              break;
-            }
           }
         }
 
@@ -7342,36 +6891,6 @@ static IntPatch_ImpImpIntersection::IntStatus CyCyNoGeometric(
                                                       aV1[i],
                                                       aV2[i]);
 
-          // V-boundary tangency snap.
-          //
-          // When the walker is at a V-tangency critical point, the analytical
-          // V equals V_bound by construction on whichever arccos branch hits
-          // it. Direct evaluation of V via U2 = FI2 +/- arccos(...) carries
-          // the arccos branch-merge noise, so evaluated V can drift away from
-          // V_bound and trip AddPointIntoWL's V-range check. Bind V to the
-          // exact analytical V-bound using the branch-specific id that
-          // CriticalPointsComputing stored for this critical point. No
-          // tolerance is involved at walker time: the binding is identity-
-          // based, not proximity-based.
-          const int aBranchId = (aCriticalSnapId >> (i * 16)) & 0xFFFF;
-          switch (aBranchId)
-          {
-            case CriticalVBound_V1f:
-              aV1[i] = aVSurf1f;
-              break;
-            case CriticalVBound_V1l:
-              aV1[i] = aVSurf1l;
-              break;
-            case CriticalVBound_V2f:
-              aV2[i] = aVSurf2f;
-              break;
-            case CriticalVBound_V2l:
-              aV2[i] = aVSurf2l;
-              break;
-            default:
-              break;
-          }
-
           if (isFirst)
           {
             aV1Prev[i] = aV1[i];
@@ -7453,6 +6972,7 @@ static IntPatch_ImpImpIntersection::IntStatus CyCyNoGeometric(
 
           theBW.AddBoundaryPoint(aWLine[i],
                                  anU1,
+                                 anU1Prev,
                                  aMinCriticalParam,
                                  aU2[i],
                                  aV1[i],
@@ -7600,6 +7120,7 @@ static IntPatch_ImpImpIntersection::IntStatus CyCyNoGeometric(
 
             theBW.AddBoundaryPoint(aWLine[i],
                                    anU1,
+                                   anU1Prev,
                                    aMinCriticalParam,
                                    aU2[i],
                                    aV1[i],
@@ -7828,7 +7349,8 @@ static IntPatch_ImpImpIntersection::IntStatus CyCyNoGeometric(
             aMinUexp     = std::min(aMinUexp, anUexpect[i]);
           }
 
-          anU1 = aMinUexp;
+          anU1Prev = anU1;
+          anU1     = aMinUexp;
         }
 
         if (Precision::PConfusion() >= (anUl - anU1))
