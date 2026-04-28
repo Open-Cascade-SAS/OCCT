@@ -320,8 +320,8 @@ void BVH_LinearBuilder<T, N>::Build(BVH_Set<T, N>*       theSet,
   emitHierachy(theBVH, aRadixSorter.EncodedLinks(), 29, 0, 0, theSet->Size());
 
   // Step 3 -- Compute bounding boxes of BVH nodes
-  theBVH->MinPointBuffer().resize(theBVH->NodeInfoBuffer().size());
-  theBVH->MaxPointBuffer().resize(theBVH->NodeInfoBuffer().size());
+  theBVH->MinPointBuffer().Resize(theBVH->NodeInfoBuffer().Size());
+  theBVH->MaxPointBuffer().Resize(theBVH->NodeInfoBuffer().Size());
 
   int                        aHeight    = 0;
   BVH::BoundData<T, N>       aBoundData = {theSet, theBVH, 0, 0, &aHeight};

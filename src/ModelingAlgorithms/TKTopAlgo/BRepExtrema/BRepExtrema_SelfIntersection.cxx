@@ -265,10 +265,10 @@ BRepExtrema_ElementFilter::FilterResult BRepExtrema_SelfIntersection::PreCheckEl
                                aTrng0Vtxs[3 - aSharedVtxs[0].first - aSharedVtxs[1].first],
                                aTrng1Vtxs[3 - aSharedVtxs[0].second - aSharedVtxs[1].second]);
   }
-  else if (aSharedVtxs.size() == 1) // check shared vertex
+  else if (aSharedVtxs.Size() == 1) // check shared vertex
   {
-    std::swap(*aTrng0Vtxs, aTrng0Vtxs[aSharedVtxs.front().first]);
-    std::swap(*aTrng1Vtxs, aTrng1Vtxs[aSharedVtxs.front().second]);
+    std::swap(*aTrng0Vtxs, aTrng0Vtxs[aSharedVtxs.First().first]);
+    std::swap(*aTrng1Vtxs, aTrng1Vtxs[aSharedVtxs.First().second]);
 
     return isRegularSharedVertex(aTrng0Vtxs[0],
                                  aTrng0Vtxs[1],

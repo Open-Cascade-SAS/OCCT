@@ -10497,6 +10497,7 @@ static int VLight(Draw_Interpretor& theDi, int theArgsNb, const char** theArgVec
 
     int aTopStack = 0;
     for (const occ::handle<AIS_LightSource>& aLightPrs2 : aLightPrsVec)
+    {
       if (!aLightPrs2->TransformPersistence().IsNull()
           && aLightPrs2->TransformPersistence()->IsTrihedronOr2d())
       {
@@ -10505,12 +10506,12 @@ static int VLight(Draw_Interpretor& theDi, int theArgsNb, const char** theArgVec
           NCollection_Vec2<int>(aTopStack + aPrsSize, aPrsSize));
         aTopStack += aPrsSize + aPrsSize / 2;
       }
-    aCtx->Redisplay(aLightPrs2, false);
-    aCtx->SetTransformPersistence(aLightPrs2, aLightPrs2->TransformPersistence());
+      aCtx->Redisplay(aLightPrs2, false);
+      aCtx->SetTransformPersistence(aLightPrs2, aLightPrs2->TransformPersistence());
+    }
   }
-}
 
-return 0;
+  return 0;
 }
 
 //=================================================================================================

@@ -175,17 +175,20 @@ static void writeIndicesToDracoMesh(draco::Mesh&                                
 class DracoEncodingFunctor
 {
 public:
-  DracoEncodingFunctor(const Message_ProgressRange&                                theProgress,
-                       draco::Encoder&                                             theDracoEncoder,
-                       const std::vector<std::shared_ptr<RWGltf_CafWriter::Mesh>>& theMeshes,
-                       std::vector<std::shared_ptr<draco::EncoderBuffer>>& theEncoderBuffers)
-      : myProgress(theProgress, "Draco compression", std::max(1, int(theMeshes.size()))),
+  using MeshVector = NCollection_LinearVector<std::shared_ptr<RWGltf_CafWriter::Mesh>>;
+  using EncoderBufferVector = NCollection_LinearVector<std::shared_ptr<draco::EncoderBuffer>>;
+
+  DracoEncodingFunctor(const Message_ProgressRange& theProgress,
+                       draco::Encoder&              theDracoEncoder,
+                       const MeshVector&            theMeshes,
+                       EncoderBufferVector&         theEncoderBuffers)
+      : myProgress(theProgress, "Draco compression", std::max(1, int(theMeshes.Size()))),
         myDracoEncoder(&theDracoEncoder),
-        myRanges(0, int(theMeshes.size()) - 1),
+        myRanges(0, int(theMeshes.Size()) - 1),
         myMeshes(&theMeshes),
         myEncoderBuffers(&theEncoderBuffers)
   {
-    for (int anIndex = 0; anIndex != int(theMeshes.size()); ++anIndex)
+    for (int anIndex = 0; anIndex != int(theMeshes.Size()); ++anIndex)
     {
       myRanges.SetValue(anIndex, myProgress.Next());
     }
@@ -193,7 +196,7 @@ public:
 
   void operator()(int theMeshIndex) const
   {
-    const std::shared_ptr<RWGltf_CafWriter::Mesh>& aCurrentMesh = myMeshes->at(theMeshIndex);
+    const std::shared_ptr<RWGltf_CafWriter::Mesh>& aCurrentMesh = myMeshes->Value(theMeshIndex);
     if (aCurrentMesh->NodesVec.IsEmpty())
     {
       return;
@@ -221,7 +224,7 @@ public:
     draco::Status aStatus = myDracoEncoder->EncodeMeshToBuffer(aMesh, anEncoderBuffer.get());
     if (aStatus.ok())
     {
-      myEncoderBuffers->at(theMeshIndex) = anEncoderBuffer;
+      myEncoderBuffers->ChangeValue(theMeshIndex) = anEncoderBuffer;
     }
 
     aScope.Next();
@@ -231,8 +234,8 @@ private:
   Message_ProgressScope                                       myProgress;
   draco::Encoder*                                             myDracoEncoder;
   NCollection_Array1<Message_ProgressRange>                   myRanges;
-  const std::vector<std::shared_ptr<RWGltf_CafWriter::Mesh>>* myMeshes;
-  std::vector<std::shared_ptr<draco::EncoderBuffer>>*         myEncoderBuffers;
+  const MeshVector*                                           myMeshes;
+  EncoderBufferVector*                                        myEncoderBuffers;
 };
 #endif
 
@@ -896,8 +899,8 @@ bool RWGltf_CafWriter::writeBinData(const occ::handle<TDocStd_Document>&        
     }
   }
 
-  std::vector<std::shared_ptr<RWGltf_CafWriter::Mesh>> aMeshes;
-  int                                                  aNbAccessors = 0;
+  NCollection_LinearVector<std::shared_ptr<RWGltf_CafWriter::Mesh>> aMeshes;
+  int                                                                aNbAccessors = 0;
   NCollection_Map<occ::handle<NCollection_Shared<NCollection_List<occ::handle<RWGltf_GltfFace>>>>>
     aWrittenFaces;
   NCollection_DataMap<TopoDS_Shape, occ::handle<RWGltf_GltfFace>, TopTools_ShapeMapHasher>
@@ -954,14 +957,13 @@ bool RWGltf_CafWriter::writeBinData(const occ::handle<TDocStd_Document>&        
         ++aMeshIndex;
         if (myDracoParameters.DracoCompression)
         {
-          if (aMeshIndex <= aMeshes.size())
+          if (aMeshIndex <= aMeshes.Size())
           {
-            aMeshPtr = aMeshes.at(aMeshIndex - 1);
+            aMeshPtr = aMeshes.Value(aMeshIndex - 1);
           }
           else
           {
-            aMeshes.push_back(std::make_shared<RWGltf_CafWriter::Mesh>(RWGltf_CafWriter::Mesh()));
-            aMeshPtr = aMeshes.back();
+            aMeshPtr = aMeshes.Append(std::make_shared<RWGltf_CafWriter::Mesh>());
           }
         }
 #endif
@@ -1109,14 +1111,16 @@ bool RWGltf_CafWriter::writeBinData(const occ::handle<TDocStd_Document>&        
     aDracoEncoder.SetSpeedOptions(myDracoParameters.CompressionLevel,
                                   myDracoParameters.CompressionLevel);
 
-    std::vector<std::shared_ptr<draco::EncoderBuffer>> anEncoderBuffers(aMeshes.size());
+    NCollection_LinearVector<std::shared_ptr<draco::EncoderBuffer>> anEncoderBuffers(
+      aMeshes.Size(),
+      std::shared_ptr<draco::EncoderBuffer>());
     DracoEncodingFunctor aFunctor(aScope.Next(), aDracoEncoder, aMeshes, anEncoderBuffers);
-    OSD_Parallel::For(0, int(aMeshes.size()), aFunctor, !myToParallel);
+    OSD_Parallel::For(0, int(aMeshes.Size()), aFunctor, !myToParallel);
 
     int aNbSkippedBuffers = 0;
-    for (size_t aBuffInd = 0; aBuffInd != anEncoderBuffers.size(); ++aBuffInd)
+    for (size_t aBuffInd = 0; aBuffInd != anEncoderBuffers.Size(); ++aBuffInd)
     {
-      if (anEncoderBuffers.at(aBuffInd).get() == nullptr)
+      if (anEncoderBuffers.Value(aBuffInd).get() == nullptr)
       {
         if (aBuffViewId == 0)
         {
@@ -1131,7 +1135,7 @@ bool RWGltf_CafWriter::writeBinData(const occ::handle<TDocStd_Document>&        
       RWGltf_GltfBufferView aBuffViewDraco;
       aBuffViewDraco.Id                         = (int)aBuffInd + aBuffViewId - aNbSkippedBuffers;
       aBuffViewDraco.ByteOffset                 = aBinFile->tellp();
-      const draco::EncoderBuffer& anEncoderBuff = *anEncoderBuffers.at(aBuffInd);
+      const draco::EncoderBuffer& anEncoderBuff = *anEncoderBuffers.Value(aBuffInd);
       aBinFile->write(anEncoderBuff.data(), std::streamsize(anEncoderBuff.size()));
       if (!aBinFile->good())
       {

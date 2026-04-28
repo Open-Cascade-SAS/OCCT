@@ -17,6 +17,7 @@
 #include <Interface_Graph.hxx>
 #include <NCollection_Allocator.hxx>
 #include <NCollection_DataMap.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <Standard_HashUtils.hxx>
 #include <XSControl_WorkSession.hxx>
 #include <Standard_Transient.hxx>
@@ -45,9 +46,9 @@ class StepTidy_EntityReducer
 {
 protected:
   // Map of duplicate entities. Key is the first processed entity, value is a list of duplicates.
-  using DuplicateMap = NCollection_DataMap<occ::handle<ProcessedType>,
-                                           std::vector<occ::handle<ProcessedType>>,
-                                           ProcessedTypeHasher>;
+  using DuplicateList = NCollection_LinearVector<occ::handle<ProcessedType>>;
+  using DuplicateMap =
+    NCollection_DataMap<occ::handle<ProcessedType>, DuplicateList, ProcessedTypeHasher>;
   // Function to replace an entity in sharings. First argument is the old entity, second is the new
   // entity, third is the sharing in which the entity should be replaced. Returns true if the entity
   // was replaced, false otherwise.
@@ -145,17 +146,17 @@ bool StepTidy_EntityReducer<ProcessedType, ProcessedTypeHasher>::ProcessEntity(
     aGraph.GetSharings(anEntity);
   if (hasAllReplacers(aSharings))
   {
-    std::vector<occ::handle<ProcessedType>>* anIter = myDuplicateMap.ChangeSeek(anEntity);
-    if (anIter == nullptr)
-    {
-      // Add as a new key.
-      myDuplicateMap.Bind(anEntity, std::vector<occ::handle<ProcessedType>>{});
-    }
-    else
-    {
-      // Add as a value.
-      anIter->push_back(anEntity);
-    }
+      DuplicateList* anIter = myDuplicateMap.ChangeSeek(anEntity);
+      if (anIter == nullptr)
+      {
+        // Add as a new key.
+        myDuplicateMap.Bind(anEntity, DuplicateList());
+      }
+      else
+      {
+        // Add as a value.
+        anIter->Append(anEntity);
+      }
   }
 
   return true;
@@ -169,9 +170,9 @@ void StepTidy_EntityReducer<ProcessedType, ProcessedTypeHasher>::Perform(
 {
   for (typename DuplicateMap::Iterator anIter(myDuplicateMap); anIter.More(); anIter.Next())
   {
-    const occ::handle<ProcessedType>&              anEntity    = anIter.Key();
-    const std::vector<occ::handle<ProcessedType>>& aDuplicates = anIter.Value();
-    if (aDuplicates.empty())
+    const occ::handle<ProcessedType>& anEntity     = anIter.Key();
+    const DuplicateList&              aDuplicates  = anIter.Value();
+    if (aDuplicates.IsEmpty())
     {
       continue;
     }

@@ -17,6 +17,7 @@
 #define _BVH_BinaryTree_Header
 
 #include <BVH_QuadTree.hxx>
+#include <NCollection_DynamicArray.hxx>
 
 #include <deque>
 #include <tuple>

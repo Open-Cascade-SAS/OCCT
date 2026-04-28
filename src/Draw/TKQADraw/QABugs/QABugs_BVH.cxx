@@ -688,12 +688,12 @@ public:
       BVH_Vec3d aBVHP2(aP2.X(), aP2.Y(), aP2.Z());
       BVH_Vec3d aBVHP3(aP3.X(), aP3.Y(), aP3.Z());
 
-      int id = static_cast<int>(Vertices.size()) - 1;
-      Vertices.push_back(aBVHP1);
-      Vertices.push_back(aBVHP2);
-      Vertices.push_back(aBVHP3);
+      int id = static_cast<int>(Vertices.Size()) - 1;
+      Vertices.Append(aBVHP1);
+      Vertices.Append(aBVHP2);
+      Vertices.Append(aBVHP3);
 
-      Elements.push_back(BVH_Vec4i(id + 1, id + 2, id + 3, iT));
+      Elements.Append(BVH_Vec4i(id + 1, id + 2, id + 3, iT));
     }
 
     MarkDirty();

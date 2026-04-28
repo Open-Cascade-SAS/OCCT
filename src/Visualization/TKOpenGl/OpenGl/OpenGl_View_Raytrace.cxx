@@ -624,11 +624,11 @@ occ::handle<OpenGl_TriangleSet> OpenGl_View::addRaytracePrimitiveArray(
   occ::handle<OpenGl_TriangleSet> aSet =
     new OpenGl_TriangleSet(theArray->GetUID(), myRaytraceBVHBuilder);
   {
-    aSet->Vertices.reserve(anAttribs->NbElements);
-    aSet->Normals.reserve(anAttribs->NbElements);
-    aSet->TexCrds.reserve(anAttribs->NbElements);
+    aSet->Vertices.Reserve(anAttribs->NbElements);
+    aSet->Normals.Reserve(anAttribs->NbElements);
+    aSet->TexCrds.Reserve(anAttribs->NbElements);
 
-    const size_t aVertFrom = aSet->Vertices.size();
+    const size_t aVertFrom = aSet->Vertices.Size();
 
     int    anAttribIndex  = 0;
     size_t anAttribStride = 0;
@@ -643,9 +643,9 @@ occ::handle<OpenGl_TriangleSet> OpenGl_View::addRaytracePrimitiveArray(
         {
           const float* aCoords =
             reinterpret_cast<const float*>(aPosData + anAttribStride * aVertIter);
-          aSet->Vertices.emplace_back(aCoords[0],
-                                      aCoords[1],
-                                      anAttrib.DataType != Graphic3d_TOD_VEC2 ? aCoords[2] : 0.0f);
+          aSet->Vertices.EmplaceAppend(aCoords[0],
+                                       aCoords[1],
+                                       anAttrib.DataType != Graphic3d_TOD_VEC2 ? aCoords[2] : 0.0f);
         }
       }
     }
@@ -657,7 +657,7 @@ occ::handle<OpenGl_TriangleSet> OpenGl_View::addRaytracePrimitiveArray(
       {
         for (int aVertIter = 0; aVertIter < anAttribs->NbElements; ++aVertIter)
         {
-          aSet->Normals.push_back(*reinterpret_cast<const NCollection_Vec3<float>*>(
+          aSet->Normals.Append(*reinterpret_cast<const NCollection_Vec3<float>*>(
             aNormData + anAttribStride * aVertIter));
         }
       }
@@ -670,13 +670,13 @@ occ::handle<OpenGl_TriangleSet> OpenGl_View::addRaytracePrimitiveArray(
       {
         for (int aVertIter = 0; aVertIter < anAttribs->NbElements; ++aVertIter)
         {
-          aSet->TexCrds.push_back(*reinterpret_cast<const NCollection_Vec2<float>*>(
+          aSet->TexCrds.Append(*reinterpret_cast<const NCollection_Vec2<float>*>(
             aTexData + anAttribStride * aVertIter));
         }
       }
     }
 
-    if (aSet->Normals.size() != aSet->Vertices.size())
+    if (aSet->Normals.Size() != aSet->Vertices.Size())
     {
       for (int aVertIter = 0; aVertIter < anAttribs->NbElements; ++aVertIter)
       {
@@ -684,7 +684,7 @@ occ::handle<OpenGl_TriangleSet> OpenGl_View::addRaytracePrimitiveArray(
       }
     }
 
-    if (aSet->TexCrds.size() != aSet->Vertices.size())
+    if (aSet->TexCrds.Size() != aSet->Vertices.Size())
     {
       for (int aVertIter = 0; aVertIter < anAttribs->NbElements; ++aVertIter)
       {
@@ -694,7 +694,7 @@ occ::handle<OpenGl_TriangleSet> OpenGl_View::addRaytracePrimitiveArray(
 
     if (theTransform != nullptr)
     {
-      for (size_t aVertIter = aVertFrom; aVertIter < aSet->Vertices.size(); ++aVertIter)
+      for (size_t aVertIter = aVertFrom; aVertIter < aSet->Vertices.Size(); ++aVertIter)
       {
         BVH_Vec3f& aVertex = aSet->Vertices[aVertIter];
 
@@ -703,7 +703,7 @@ occ::handle<OpenGl_TriangleSet> OpenGl_View::addRaytracePrimitiveArray(
 
         aVertex = BVH_Vec3f(aTransVertex.x(), aTransVertex.y(), aTransVertex.z());
       }
-      for (size_t aVertIter = aVertFrom; aVertIter < aSet->Normals.size(); ++aVertIter)
+      for (size_t aVertIter = aVertFrom; aVertIter < aSet->Normals.Size(); ++aVertIter)
       {
         BVH_Vec3f& aNormal = aSet->Normals[aVertIter];
 
@@ -801,7 +801,7 @@ bool OpenGl_View::addRaytraceTriangleArray(OpenGl_TriangleSet&                  
     return true;
   }
 
-  theSet.Elements.reserve(theSet.Elements.size() + theCount / 3);
+  theSet.Elements.Reserve(theSet.Elements.Size() + theCount / 3);
 
   if (!theIndices.IsNull())
   {
@@ -839,7 +839,7 @@ bool OpenGl_View::addRaytraceTriangleFanArray(OpenGl_TriangleSet&               
     return true;
   }
 
-  theSet.Elements.reserve(theSet.Elements.size() + theCount - 2);
+  theSet.Elements.Reserve(theSet.Elements.Size() + theCount - 2);
 
   if (!theIndices.IsNull())
   {
@@ -878,7 +878,7 @@ bool OpenGl_View::addRaytraceTriangleStripArray(
     return true;
   }
 
-  theSet.Elements.reserve(theSet.Elements.size() + theCount - 2);
+  theSet.Elements.Reserve(theSet.Elements.Size() + theCount - 2);
 
   if (!theIndices.IsNull())
   {
@@ -921,7 +921,7 @@ bool OpenGl_View::addRaytraceQuadrangleArray(OpenGl_TriangleSet&                
     return true;
   }
 
-  theSet.Elements.reserve(theSet.Elements.size() + theCount / 2);
+  theSet.Elements.Reserve(theSet.Elements.Size() + theCount / 2);
 
   if (!theIndices.IsNull())
   {
@@ -965,7 +965,7 @@ bool OpenGl_View::addRaytraceQuadrangleStripArray(
     return true;
   }
 
-  theSet.Elements.reserve(theSet.Elements.size() + 2 * theCount - 6);
+  theSet.Elements.Reserve(theSet.Elements.Size() + 2 * theCount - 6);
 
   if (!theIndices.IsNull())
   {
@@ -1010,7 +1010,7 @@ bool OpenGl_View::addRaytracePolygonArray(OpenGl_TriangleSet&                   
     return true;
   }
 
-  theSet.Elements.reserve(theSet.Elements.size() + theCount - 2);
+  theSet.Elements.Reserve(theSet.Elements.Size() + theCount - 2);
 
   if (!theIndices.IsNull())
   {
@@ -2328,17 +2328,17 @@ bool OpenGl_View::uploadRaytraceData(const occ::handle<OpenGl_Context>& theGlCon
                            "Error: Failed to get triangulation of OpenGL element",
                            false);
 
-    aTotalVerticesNb += aTriangleSet->Vertices.size();
-    aTotalElementsNb += aTriangleSet->Elements.size();
+    aTotalVerticesNb += aTriangleSet->Vertices.Size();
+    aTotalElementsNb += aTriangleSet->Elements.Size();
 
     Standard_ASSERT_RETURN(!aTriangleSet->QuadBVH().IsNull(),
                            "Error: Failed to get bottom-level BVH of OpenGL element",
                            false);
 
-    aTotalBVHNodesNb += aTriangleSet->QuadBVH()->NodeInfoBuffer().size();
+    aTotalBVHNodesNb += aTriangleSet->QuadBVH()->NodeInfoBuffer().Size();
   }
 
-  aTotalBVHNodesNb += myRaytraceGeometry.QuadBVH()->NodeInfoBuffer().size();
+  aTotalBVHNodesNb += myRaytraceGeometry.QuadBVH()->NodeInfoBuffer().Size();
 
   if (aTotalBVHNodesNb != 0)
   {
@@ -2400,17 +2400,17 @@ bool OpenGl_View::uploadRaytraceData(const occ::handle<OpenGl_Context>& theGlCon
       theGlContext,
       0,
       aBVH->Length(),
-      reinterpret_cast<const GLuint*>(&aBVH->NodeInfoBuffer().front()));
+      reinterpret_cast<const GLuint*>(aBVH->NodeInfoBuffer().Data()));
     aResult &= mySceneMinPointTexture->SubData(
       theGlContext,
       0,
       aBVH->Length(),
-      reinterpret_cast<const GLfloat*>(&aBVH->MinPointBuffer().front()));
+      reinterpret_cast<const GLfloat*>(aBVH->MinPointBuffer().Data()));
     aResult &= mySceneMaxPointTexture->SubData(
       theGlContext,
       0,
       aBVH->Length(),
-      reinterpret_cast<const GLfloat*>(&aBVH->MaxPointBuffer().front()));
+      reinterpret_cast<const GLfloat*>(aBVH->MaxPointBuffer().Data()));
   }
 
   for (int aNodeIdx = 0; aNodeIdx < aBVH->Length(); ++aNodeIdx)
@@ -2438,17 +2438,17 @@ bool OpenGl_View::uploadRaytraceData(const occ::handle<OpenGl_Context>& theGlCon
         theGlContext,
         aBVHOffset,
         aBvhBuffersSize,
-        reinterpret_cast<const GLuint*>(&aTriangleSet->QuadBVH()->NodeInfoBuffer().front()));
+        reinterpret_cast<const GLuint*>(aTriangleSet->QuadBVH()->NodeInfoBuffer().Data()));
       aResult &= mySceneMinPointTexture->SubData(
         theGlContext,
         aBVHOffset,
         aBvhBuffersSize,
-        reinterpret_cast<const GLfloat*>(&aTriangleSet->QuadBVH()->MinPointBuffer().front()));
+        reinterpret_cast<const GLfloat*>(aTriangleSet->QuadBVH()->MinPointBuffer().Data()));
       aResult &= mySceneMaxPointTexture->SubData(
         theGlContext,
         aBVHOffset,
         aBvhBuffersSize,
-        reinterpret_cast<const GLfloat*>(&aTriangleSet->QuadBVH()->MaxPointBuffer().front()));
+        reinterpret_cast<const GLfloat*>(aTriangleSet->QuadBVH()->MaxPointBuffer().Data()));
 
       if (!aResult)
       {
@@ -2464,23 +2464,23 @@ bool OpenGl_View::uploadRaytraceData(const occ::handle<OpenGl_Context>& theGlCon
       "Error: Failed to get offset for triangulation vertices of OpenGL element",
       false);
 
-    if (!aTriangleSet->Vertices.empty())
+    if (!aTriangleSet->Vertices.IsEmpty())
     {
       aResult &= myGeometryNormalTexture->SubData(
         theGlContext,
         aVerticesOffset,
-        GLsizei(aTriangleSet->Normals.size()),
-        reinterpret_cast<const GLfloat*>(&aTriangleSet->Normals.front()));
+        GLsizei(aTriangleSet->Normals.Size()),
+        reinterpret_cast<const GLfloat*>(aTriangleSet->Normals.Data()));
       aResult &= myGeometryTexCrdTexture->SubData(
         theGlContext,
         aVerticesOffset,
-        GLsizei(aTriangleSet->TexCrds.size()),
-        reinterpret_cast<const GLfloat*>(&aTriangleSet->TexCrds.front()));
+        GLsizei(aTriangleSet->TexCrds.Size()),
+        reinterpret_cast<const GLfloat*>(aTriangleSet->TexCrds.Data()));
       aResult &= myGeometryVertexTexture->SubData(
         theGlContext,
         aVerticesOffset,
-        GLsizei(aTriangleSet->Vertices.size()),
-        reinterpret_cast<const GLfloat*>(&aTriangleSet->Vertices.front()));
+        GLsizei(aTriangleSet->Vertices.Size()),
+        reinterpret_cast<const GLfloat*>(aTriangleSet->Vertices.Data()));
     }
 
     const int anElementsOffset = myRaytraceGeometry.ElementsOffset(aNodeIdx);
@@ -2490,13 +2490,13 @@ bool OpenGl_View::uploadRaytraceData(const occ::handle<OpenGl_Context>& theGlCon
       "Error: Failed to get offset for triangulation elements of OpenGL element",
       false);
 
-    if (!aTriangleSet->Elements.empty())
+    if (!aTriangleSet->Elements.IsEmpty())
     {
       aResult &= myGeometryTriangTexture->SubData(
         theGlContext,
         anElementsOffset,
-        GLsizei(aTriangleSet->Elements.size()),
-        reinterpret_cast<const GLuint*>(&aTriangleSet->Elements.front()));
+        GLsizei(aTriangleSet->Elements.Size()),
+        reinterpret_cast<const GLuint*>(aTriangleSet->Elements.Data()));
     }
 
     if (!aResult)
@@ -2535,25 +2535,25 @@ bool OpenGl_View::uploadRaytraceData(const occ::handle<OpenGl_Context>& theGlCon
     OpenGl_TriangleSet* aTriangleSet =
       dynamic_cast<OpenGl_TriangleSet*>(myRaytraceGeometry.Objects()(anElemIdx).get());
 
-    aMemTrgUsed += static_cast<float>(aTriangleSet->Vertices.size() * sizeof(BVH_Vec3f));
-    aMemTrgUsed += static_cast<float>(aTriangleSet->Normals.size() * sizeof(BVH_Vec3f));
-    aMemTrgUsed += static_cast<float>(aTriangleSet->TexCrds.size() * sizeof(BVH_Vec2f));
-    aMemTrgUsed += static_cast<float>(aTriangleSet->Elements.size() * sizeof(BVH_Vec4i));
+    aMemTrgUsed += static_cast<float>(aTriangleSet->Vertices.Size() * sizeof(BVH_Vec3f));
+    aMemTrgUsed += static_cast<float>(aTriangleSet->Normals.Size() * sizeof(BVH_Vec3f));
+    aMemTrgUsed += static_cast<float>(aTriangleSet->TexCrds.Size() * sizeof(BVH_Vec2f));
+    aMemTrgUsed += static_cast<float>(aTriangleSet->Elements.Size() * sizeof(BVH_Vec4i));
 
     aMemBvhUsed +=
-      static_cast<float>(aTriangleSet->QuadBVH()->NodeInfoBuffer().size() * sizeof(BVH_Vec4i));
+      static_cast<float>(aTriangleSet->QuadBVH()->NodeInfoBuffer().Size() * sizeof(BVH_Vec4i));
     aMemBvhUsed +=
-      static_cast<float>(aTriangleSet->QuadBVH()->MinPointBuffer().size() * sizeof(BVH_Vec3f));
+      static_cast<float>(aTriangleSet->QuadBVH()->MinPointBuffer().Size() * sizeof(BVH_Vec3f));
     aMemBvhUsed +=
-      static_cast<float>(aTriangleSet->QuadBVH()->MaxPointBuffer().size() * sizeof(BVH_Vec3f));
+      static_cast<float>(aTriangleSet->QuadBVH()->MaxPointBuffer().Size() * sizeof(BVH_Vec3f));
   }
 
   aMemBvhUsed +=
-    static_cast<float>(myRaytraceGeometry.QuadBVH()->NodeInfoBuffer().size() * sizeof(BVH_Vec4i));
+    static_cast<float>(myRaytraceGeometry.QuadBVH()->NodeInfoBuffer().Size() * sizeof(BVH_Vec4i));
   aMemBvhUsed +=
-    static_cast<float>(myRaytraceGeometry.QuadBVH()->MinPointBuffer().size() * sizeof(BVH_Vec3f));
+    static_cast<float>(myRaytraceGeometry.QuadBVH()->MinPointBuffer().Size() * sizeof(BVH_Vec3f));
   aMemBvhUsed +=
-    static_cast<float>(myRaytraceGeometry.QuadBVH()->MaxPointBuffer().size() * sizeof(BVH_Vec3f));
+    static_cast<float>(myRaytraceGeometry.QuadBVH()->MaxPointBuffer().Size() * sizeof(BVH_Vec3f));
 
   std::cout << "GPU Memory Used (Mb):\n"
             << "\tFor mesh: " << aMemTrgUsed / 1048576 << "\n"

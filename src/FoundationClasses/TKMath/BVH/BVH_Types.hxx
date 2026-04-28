@@ -16,23 +16,13 @@
 #ifndef BVH_Types_HeaderFile
 #define BVH_Types_HeaderFile
 
-// Use this macro to switch between STL and OCCT vector types
-#define _BVH_USE_STD_VECTOR_
-
-#include <vector>
-
 #include <Bnd_Box.hxx>
 #include <NCollection_Mat4.hxx>
 #include <NCollection_Vec2.hxx>
 #include <NCollection_Vec3.hxx>
-#include <NCollection_DynamicArray.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_Type.hxx>
-
-// GCC supports shrink function only in C++11 mode
-#if defined(_BVH_USE_STD_VECTOR_) && defined(_MSC_VER) && !defined(__INTEL_COMPILER)
-  #define _STD_VECTOR_SHRINK
-#endif
 
 namespace BVH
 {
@@ -110,17 +100,13 @@ struct MatrixType<T, 4>
   typedef NCollection_Mat4<T> Type;
 };
 
-//! Tool class for selecting type of array of vectors (STD or NCollection vector).
+//! Tool class for selecting type of array of vectors.
 //! \tparam T Numeric data type
 //! \tparam N Component number
 template <class T, int N = 1>
 struct ArrayType
 {
-#ifndef _BVH_USE_STD_VECTOR_
-  typedef NCollection_DynamicArray<typename VectorType<T, N>::Type> Type;
-#else
-  typedef std::vector<typename VectorType<T, N>::Type> Type;
-#endif
+  typedef NCollection_LinearVector<typename VectorType<T, N>::Type> Type;
 };
 } // namespace BVH
 
@@ -217,8 +203,7 @@ struct VecComp<T, 4>
   }
 };
 
-//! Tool class providing typical operations on the array. It allows
-//! for interoperability between STD vector and NCollection vector.
+//! Tool class providing typical operations on the array.
 //! \tparam T Numeric data type
 //! \tparam N Component number
 template <class T, int N = 1>
@@ -230,74 +215,40 @@ struct Array
   static inline const typename BVH::VectorType<T, N>::Type& Value(const BVH_ArrayNt& theArray,
                                                                   const int          theIndex)
   {
-#ifdef _BVH_USE_STD_VECTOR_
-    return theArray[theIndex];
-#else
     return theArray.Value(theIndex);
-#endif
   }
 
   //! Returns a reference to the element with the given index.
   static inline typename BVH::VectorType<T, N>::Type& ChangeValue(BVH_ArrayNt& theArray,
                                                                   const int    theIndex)
   {
-#ifdef _BVH_USE_STD_VECTOR_
-    return theArray[theIndex];
-#else
     return theArray.ChangeValue(theIndex);
-#endif
   }
 
   //! Adds the new element at the end of the array.
   static inline void Append(BVH_ArrayNt&                                theArray,
                             const typename BVH::VectorType<T, N>::Type& theElement)
   {
-#ifdef _BVH_USE_STD_VECTOR_
-    theArray.push_back(theElement);
-#else
     theArray.Append(theElement);
-#endif
   }
 
   //! Returns the number of elements in the given array.
   static inline int Size(const BVH_ArrayNt& theArray)
   {
-#ifdef _BVH_USE_STD_VECTOR_
-    return static_cast<int>(theArray.size());
-#else
     return static_cast<int>(theArray.Size());
-#endif
   }
 
   //! Removes all elements from the given array.
   static inline void Clear(BVH_ArrayNt& theArray)
   {
-#ifdef _BVH_USE_STD_VECTOR_
-    theArray.clear();
-#else
     theArray.Clear();
-#endif
   }
 
   //! Requests that the array capacity be at least enough to
-  //! contain given number of elements. This function has no
-  //! effect in case of NCollection based array.
+  //! contain given number of elements.
   static inline void Reserve(BVH_ArrayNt& theArray, const int theCount)
   {
-#ifdef _BVH_USE_STD_VECTOR_
-    if (Size(theArray) == theCount)
-    {
-  #ifdef _STD_VECTOR_SHRINK
-      theArray.shrink_to_fit();
-  #endif
-    }
-    else
-    {
-      theArray.reserve(theCount);
-    }
-#else
-      // do nothing
-#endif
+    theArray.Reserve(theCount);
   }
 };
 

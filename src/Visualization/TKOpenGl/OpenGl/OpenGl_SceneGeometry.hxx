@@ -113,18 +113,18 @@ public:
   //! Returns material index of triangle set.
   int MaterialIndex() const
   {
-    if (Elements.empty())
+    if (Elements.IsEmpty())
     {
       return INVALID_MATERIAL;
     }
 
-    return Elements.front().w();
+    return Elements.First().w();
   }
 
   //! Sets material index for entire triangle set.
   void SetMaterialIndex(int theMatID)
   {
-    for (size_t anIdx = 0; anIdx < Elements.size(); ++anIdx)
+    for (size_t anIdx = 0; anIdx < Elements.Size(); ++anIdx)
     {
       Elements[anIdx].w() = theMatID;
     }

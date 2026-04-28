@@ -113,7 +113,7 @@ void BRepMesh_DelabellaBaseMeshAlgo::buildBaseTriangulation()
 
   const double aDiffX = (aMax.X() - aMin.X());
   const double aDiffY = (aMax.Y() - aMin.Y());
-  for (size_t i = 0; i < aPoints.size(); i += 2)
+  for (size_t i = 0; i < aPoints.Size(); i += 2)
   {
     aPoints[i + 0] = (aPoints[i + 0] - aMin.X()) / aDiffX - 0.5;
     aPoints[i + 1] = (aPoints[i + 1] - aMin.Y()) / aDiffY - 0.5;
@@ -129,7 +129,7 @@ void BRepMesh_DelabellaBaseMeshAlgo::buildBaseTriangulation()
   aTriangulator->SetErrLog(logDelabella2Occ, nullptr);
   try
   {
-    const int aVerticesNb = aTriangulator->Triangulate(static_cast<int>(aPoints.size() / 2),
+    const int aVerticesNb = aTriangulator->Triangulate(static_cast<int>(aPoints.Size() / 2),
                                                        &aPoints[0],
                                                        &aPoints[1],
                                                        2 * sizeof(double));
