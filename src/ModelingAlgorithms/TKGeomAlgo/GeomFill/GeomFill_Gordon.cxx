@@ -432,7 +432,7 @@ bool reparamCurve(occ::handle<Geom_BSplineCurve>&   theCurve,
 
 //=================================================================================================
 
-GeomFill_Gordon::GeomFill_Gordon() {}
+GeomFill_Gordon::GeomFill_Gordon() = default;
 
 //=================================================================================================
 

@@ -208,7 +208,7 @@ public:
         }
         else
         {
-          if (myReadBufferLastStr.size() > 0)
+          if (!myReadBufferLastStr.empty())
           {
             myReadBufferLastStr.clear();
           }

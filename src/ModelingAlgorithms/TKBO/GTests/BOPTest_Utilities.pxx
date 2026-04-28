@@ -415,7 +415,7 @@ public:
           break;
 
         case ProfileCmd::X: // Translate along X
-          if (op.params.size() >= 1)
+          if (!op.params.empty())
           {
             // If first point not set, implicitly start at (0,0)
             if (!aFirstSet)
@@ -436,7 +436,7 @@ public:
           break;
 
         case ProfileCmd::Y: // Translate along Y
-          if (op.params.size() >= 1)
+          if (!op.params.empty())
           {
             // If first point not set, implicitly start at (0,0)
             if (!aFirstSet)
@@ -565,9 +565,9 @@ public:
   {
     std::vector<gp_Pnt> aPoints;
     aPoints.push_back(theCorner);
-    aPoints.push_back(gp_Pnt(theCorner.X() + theX, theCorner.Y(), theCorner.Z()));
-    aPoints.push_back(gp_Pnt(theCorner.X() + theX, theCorner.Y() + theY, theCorner.Z()));
-    aPoints.push_back(gp_Pnt(theCorner.X(), theCorner.Y() + theY, theCorner.Z()));
+    aPoints.emplace_back(theCorner.X() + theX, theCorner.Y(), theCorner.Z());
+    aPoints.emplace_back(theCorner.X() + theX, theCorner.Y() + theY, theCorner.Z());
+    aPoints.emplace_back(theCorner.X(), theCorner.Y() + theY, theCorner.Z());
     return CreatePolygonWire(aPoints, true);
   }
 

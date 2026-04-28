@@ -642,10 +642,9 @@ occ::handle<OpenGl_TriangleSet> OpenGl_View::addRaytracePrimitiveArray(
         {
           const float* aCoords =
             reinterpret_cast<const float*>(aPosData + anAttribStride * aVertIter);
-          aSet->Vertices.push_back(
-            BVH_Vec3f(aCoords[0],
-                      aCoords[1],
-                      anAttrib.DataType != Graphic3d_TOD_VEC2 ? aCoords[2] : 0.0f));
+          aSet->Vertices.emplace_back(aCoords[0],
+                                      aCoords[1],
+                                      anAttrib.DataType != Graphic3d_TOD_VEC2 ? aCoords[2] : 0.0f);
         }
       }
     }
@@ -680,7 +679,7 @@ occ::handle<OpenGl_TriangleSet> OpenGl_View::addRaytracePrimitiveArray(
     {
       for (int aVertIter = 0; aVertIter < anAttribs->NbElements; ++aVertIter)
       {
-        aSet->Normals.push_back(BVH_Vec3f());
+        aSet->Normals.emplace_back();
       }
     }
 
@@ -688,7 +687,7 @@ occ::handle<OpenGl_TriangleSet> OpenGl_View::addRaytracePrimitiveArray(
     {
       for (int aVertIter = 0; aVertIter < anAttribs->NbElements; ++aVertIter)
       {
-        aSet->TexCrds.push_back(BVH_Vec2f());
+        aSet->TexCrds.emplace_back();
       }
     }
 
@@ -807,17 +806,17 @@ bool OpenGl_View::addRaytraceTriangleArray(OpenGl_TriangleSet&                  
   {
     for (int aVert = theOffset; aVert < theOffset + theCount - 2; aVert += 3)
     {
-      theSet.Elements.push_back(BVH_Vec4i(theIndices->Index(aVert + 0),
-                                          theIndices->Index(aVert + 1),
-                                          theIndices->Index(aVert + 2),
-                                          theMatID));
+      theSet.Elements.emplace_back(theIndices->Index(aVert + 0),
+                                   theIndices->Index(aVert + 1),
+                                   theIndices->Index(aVert + 2),
+                                   theMatID);
     }
   }
   else
   {
     for (int aVert = theOffset; aVert < theOffset + theCount - 2; aVert += 3)
     {
-      theSet.Elements.push_back(BVH_Vec4i(aVert + 0, aVert + 1, aVert + 2, theMatID));
+      theSet.Elements.emplace_back(aVert + 0, aVert + 1, aVert + 2, theMatID);
     }
   }
 
@@ -845,17 +844,17 @@ bool OpenGl_View::addRaytraceTriangleFanArray(OpenGl_TriangleSet&               
   {
     for (int aVert = theOffset; aVert < theOffset + theCount - 2; ++aVert)
     {
-      theSet.Elements.push_back(BVH_Vec4i(theIndices->Index(theOffset),
-                                          theIndices->Index(aVert + 1),
-                                          theIndices->Index(aVert + 2),
-                                          theMatID));
+      theSet.Elements.emplace_back(theIndices->Index(theOffset),
+                                   theIndices->Index(aVert + 1),
+                                   theIndices->Index(aVert + 2),
+                                   theMatID);
     }
   }
   else
   {
     for (int aVert = theOffset; aVert < theOffset + theCount - 2; ++aVert)
     {
-      theSet.Elements.push_back(BVH_Vec4i(theOffset, aVert + 1, aVert + 2, theMatID));
+      theSet.Elements.emplace_back(theOffset, aVert + 1, aVert + 2, theMatID);
     }
   }
 
@@ -885,10 +884,10 @@ bool OpenGl_View::addRaytraceTriangleStripArray(
     for (int aVert = theOffset, aCW = 0; aVert < theOffset + theCount - 2;
          ++aVert, aCW               = (aCW + 1) % 2)
     {
-      theSet.Elements.push_back(BVH_Vec4i(theIndices->Index(aVert + (aCW ? 1 : 0)),
-                                          theIndices->Index(aVert + (aCW ? 0 : 1)),
-                                          theIndices->Index(aVert + 2),
-                                          theMatID));
+      theSet.Elements.emplace_back(theIndices->Index(aVert + (aCW ? 1 : 0)),
+                                   theIndices->Index(aVert + (aCW ? 0 : 1)),
+                                   theIndices->Index(aVert + 2),
+                                   theMatID);
     }
   }
   else
@@ -896,8 +895,10 @@ bool OpenGl_View::addRaytraceTriangleStripArray(
     for (int aVert = theOffset, aCW = 0; aVert < theOffset + theCount - 2;
          ++aVert, aCW               = (aCW + 1) % 2)
     {
-      theSet.Elements.push_back(
-        BVH_Vec4i(aVert + (aCW ? 1 : 0), aVert + (aCW ? 0 : 1), aVert + 2, theMatID));
+      theSet.Elements.emplace_back(aVert + (aCW ? 1 : 0),
+                                   aVert + (aCW ? 0 : 1),
+                                   aVert + 2,
+                                   theMatID);
     }
   }
 
@@ -925,22 +926,22 @@ bool OpenGl_View::addRaytraceQuadrangleArray(OpenGl_TriangleSet&                
   {
     for (int aVert = theOffset; aVert < theOffset + theCount - 3; aVert += 4)
     {
-      theSet.Elements.push_back(BVH_Vec4i(theIndices->Index(aVert + 0),
-                                          theIndices->Index(aVert + 1),
-                                          theIndices->Index(aVert + 2),
-                                          theMatID));
-      theSet.Elements.push_back(BVH_Vec4i(theIndices->Index(aVert + 0),
-                                          theIndices->Index(aVert + 2),
-                                          theIndices->Index(aVert + 3),
-                                          theMatID));
+      theSet.Elements.emplace_back(theIndices->Index(aVert + 0),
+                                   theIndices->Index(aVert + 1),
+                                   theIndices->Index(aVert + 2),
+                                   theMatID);
+      theSet.Elements.emplace_back(theIndices->Index(aVert + 0),
+                                   theIndices->Index(aVert + 2),
+                                   theIndices->Index(aVert + 3),
+                                   theMatID);
     }
   }
   else
   {
     for (int aVert = theOffset; aVert < theOffset + theCount - 3; aVert += 4)
     {
-      theSet.Elements.push_back(BVH_Vec4i(aVert + 0, aVert + 1, aVert + 2, theMatID));
-      theSet.Elements.push_back(BVH_Vec4i(aVert + 0, aVert + 2, aVert + 3, theMatID));
+      theSet.Elements.emplace_back(aVert + 0, aVert + 1, aVert + 2, theMatID);
+      theSet.Elements.emplace_back(aVert + 0, aVert + 2, aVert + 3, theMatID);
     }
   }
 
@@ -969,24 +970,24 @@ bool OpenGl_View::addRaytraceQuadrangleStripArray(
   {
     for (int aVert = theOffset; aVert < theOffset + theCount - 3; aVert += 2)
     {
-      theSet.Elements.push_back(BVH_Vec4i(theIndices->Index(aVert + 0),
-                                          theIndices->Index(aVert + 1),
-                                          theIndices->Index(aVert + 2),
-                                          theMatID));
+      theSet.Elements.emplace_back(theIndices->Index(aVert + 0),
+                                   theIndices->Index(aVert + 1),
+                                   theIndices->Index(aVert + 2),
+                                   theMatID);
 
-      theSet.Elements.push_back(BVH_Vec4i(theIndices->Index(aVert + 1),
-                                          theIndices->Index(aVert + 3),
-                                          theIndices->Index(aVert + 2),
-                                          theMatID));
+      theSet.Elements.emplace_back(theIndices->Index(aVert + 1),
+                                   theIndices->Index(aVert + 3),
+                                   theIndices->Index(aVert + 2),
+                                   theMatID);
     }
   }
   else
   {
     for (int aVert = theOffset; aVert < theOffset + theCount - 3; aVert += 2)
     {
-      theSet.Elements.push_back(BVH_Vec4i(aVert + 0, aVert + 1, aVert + 2, theMatID));
+      theSet.Elements.emplace_back(aVert + 0, aVert + 1, aVert + 2, theMatID);
 
-      theSet.Elements.push_back(BVH_Vec4i(aVert + 1, aVert + 3, aVert + 2, theMatID));
+      theSet.Elements.emplace_back(aVert + 1, aVert + 3, aVert + 2, theMatID);
     }
   }
 
@@ -1014,17 +1015,17 @@ bool OpenGl_View::addRaytracePolygonArray(OpenGl_TriangleSet&                   
   {
     for (int aVert = theOffset; aVert < theOffset + theCount - 2; ++aVert)
     {
-      theSet.Elements.push_back(BVH_Vec4i(theIndices->Index(theOffset),
-                                          theIndices->Index(aVert + 1),
-                                          theIndices->Index(aVert + 2),
-                                          theMatID));
+      theSet.Elements.emplace_back(theIndices->Index(theOffset),
+                                   theIndices->Index(aVert + 1),
+                                   theIndices->Index(aVert + 2),
+                                   theMatID);
     }
   }
   else
   {
     for (int aVert = theOffset; aVert < theOffset + theCount - 2; ++aVert)
     {
-      theSet.Elements.push_back(BVH_Vec4i(theOffset, aVert + 1, aVert + 2, theMatID));
+      theSet.Elements.emplace_back(theOffset, aVert + 1, aVert + 2, theMatID);
     }
   }
 
@@ -2507,7 +2508,7 @@ bool OpenGl_View::uploadRaytraceData(const occ::handle<OpenGl_Context>& theGlCon
   /////////////////////////////////////////////////////////////////////////////
   // Write material buffer
 
-  if (myRaytraceGeometry.Materials.size() != 0)
+  if (!myRaytraceGeometry.Materials.empty())
   {
     aResult &= myRaytraceMaterialTexture->Init(theGlContext,
                                                4,
@@ -2672,7 +2673,7 @@ bool OpenGl_View::updateRaytraceLightSources(const NCollection_Mat4<float>&     
     myRaytraceLightSrcTexture = new OpenGl_TextureBuffer();
   }
 
-  if (myRaytraceGeometry.Sources.size() != 0 && wasUpdated)
+  if (!myRaytraceGeometry.Sources.empty() && wasUpdated)
   {
     const GLfloat* aDataPtr = myRaytraceGeometry.Sources.front().Packed();
     if (!myRaytraceLightSrcTexture->Init(theGlContext,

@@ -258,7 +258,7 @@ bool BRepExtrema_ProximityValueTool::getEdgeAdditionalVertices(
     double aPar = aGCPnts.Parameter(aVertIdx);
     gp_Pnt aP   = aBAC.Value(aPar);
 
-    theAddVertices.push_back(BVH_Vec3d(aP.X(), aP.Y(), aP.Z()));
+    theAddVertices.emplace_back(aP.X(), aP.Y(), aP.Z());
     theAddStatuses.Append(ProxPnt_Status::ProxPnt_Status_MIDDLE);
   }
 

@@ -265,7 +265,7 @@ BVH_Tree<T, N, BVH_QuadTree>* BVH_Tree<T, N, BVH_BinaryTree>::CollapseToQuadTree
 
       for (int aNodeIdx = 0; aNodeIdx < aGrandChildNodes.Length(); ++aNodeIdx)
       {
-        aQueue.push_back(std::make_pair(aGrandChildNodes(aNodeIdx), std::get<1>(aNode) + 1));
+        aQueue.emplace_back(aGrandChildNodes(aNodeIdx), std::get<1>(aNode) + 1);
       }
 
       aNodeInfo = BVH_Vec4i(0 /* inner flag */,

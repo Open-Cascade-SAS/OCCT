@@ -47,15 +47,7 @@ BOPTools_Set::BOPTools_Set(const occ::handle<NCollection_BaseAllocator>& theAllo
 
 //=================================================================================================
 
-BOPTools_Set::BOPTools_Set(const BOPTools_Set& theOther)
-    : myAllocator(theOther.myAllocator),
-      myShapes(theOther.myShapes),
-      myShape(theOther.myShape),
-      myNbShapes(theOther.myNbShapes),
-      mySum(theOther.mySum),
-      myUpper(theOther.myUpper)
-{
-}
+BOPTools_Set::BOPTools_Set(const BOPTools_Set& theOther) = default;
 
 //=================================================================================================
 

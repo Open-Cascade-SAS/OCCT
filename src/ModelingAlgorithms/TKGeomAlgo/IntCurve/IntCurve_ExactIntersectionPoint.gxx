@@ -238,7 +238,7 @@ void IntCurve_ExactIntersectionPoint::Roots(double& U, double& V)
 
 //=================================================================================================
 
-void IntCurve_ExactIntersectionPoint::MathPerform(void)
+void IntCurve_ExactIntersectionPoint::MathPerform()
 {
   math_FunctionSetRoot Fct(FctDist, ToleranceVector, 60);
   Fct.Perform(FctDist, StartingPoint, BInfVector, BSupVector);

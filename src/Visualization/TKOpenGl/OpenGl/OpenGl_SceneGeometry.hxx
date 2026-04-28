@@ -113,7 +113,7 @@ public:
   //! Returns material index of triangle set.
   int MaterialIndex() const
   {
-    if (Elements.size() == 0)
+    if (Elements.empty())
     {
       return INVALID_MATERIAL;
     }

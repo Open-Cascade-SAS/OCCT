@@ -162,7 +162,7 @@ public:
   {
     if (!myBVHSet1->Box(theID1).IsOut(myBVHSet2->Box(theID2)))
     {
-      myPairs.push_back(PairIDs(myBVHSet1->Element(theID1), myBVHSet2->Element(theID2)));
+      myPairs.emplace_back(myBVHSet1->Element(theID1), myBVHSet2->Element(theID2));
       return true;
     }
     return false;

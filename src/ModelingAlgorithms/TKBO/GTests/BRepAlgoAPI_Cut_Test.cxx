@@ -912,14 +912,14 @@ TEST_F(BCutSimpleTest, ComplexPolygonPrismMinusBox_H1)
   // Create custom polygon from H1 test vertices: v1(0,0,0) v2(1,0,0) v3(1,3,0) v4(2,3,0) v5(2,0,0)
   // v6(3,0,0) v7(3,5,0) v8(0,5,0)
   std::vector<gp_Pnt> aPoints;
-  aPoints.push_back(gp_Pnt(0, 0, 0)); // v1
-  aPoints.push_back(gp_Pnt(1, 0, 0)); // v2
-  aPoints.push_back(gp_Pnt(1, 3, 0)); // v3
-  aPoints.push_back(gp_Pnt(2, 3, 0)); // v4
-  aPoints.push_back(gp_Pnt(2, 0, 0)); // v5
-  aPoints.push_back(gp_Pnt(3, 0, 0)); // v6
-  aPoints.push_back(gp_Pnt(3, 5, 0)); // v7
-  aPoints.push_back(gp_Pnt(0, 5, 0)); // v8
+  aPoints.emplace_back(0, 0, 0); // v1
+  aPoints.emplace_back(1, 0, 0); // v2
+  aPoints.emplace_back(1, 3, 0); // v3
+  aPoints.emplace_back(2, 3, 0); // v4
+  aPoints.emplace_back(2, 0, 0); // v5
+  aPoints.emplace_back(3, 0, 0); // v6
+  aPoints.emplace_back(3, 5, 0); // v7
+  aPoints.emplace_back(0, 5, 0); // v8
 
   // Create wire and extrude to solid (prism sol p 0 0 2)
   TopoDS_Wire        aWire  = BOPTest_Utilities::CreatePolygonWire(aPoints, true);
@@ -941,14 +941,14 @@ TEST_F(BCutSimpleTest, ComplexPolygonPrismMinusBox_H2)
   // Create custom polygon from H2 test vertices (same as H1): v1(0,0,0) v2(1,0,0) v3(1,3,0)
   // v4(2,3,0) v5(2,0,0) v6(3,0,0) v7(3,5,0) v8(0,5,0)
   std::vector<gp_Pnt> aPoints;
-  aPoints.push_back(gp_Pnt(0, 0, 0)); // v1
-  aPoints.push_back(gp_Pnt(1, 0, 0)); // v2
-  aPoints.push_back(gp_Pnt(1, 3, 0)); // v3
-  aPoints.push_back(gp_Pnt(2, 3, 0)); // v4
-  aPoints.push_back(gp_Pnt(2, 0, 0)); // v5
-  aPoints.push_back(gp_Pnt(3, 0, 0)); // v6
-  aPoints.push_back(gp_Pnt(3, 5, 0)); // v7
-  aPoints.push_back(gp_Pnt(0, 5, 0)); // v8
+  aPoints.emplace_back(0, 0, 0); // v1
+  aPoints.emplace_back(1, 0, 0); // v2
+  aPoints.emplace_back(1, 3, 0); // v3
+  aPoints.emplace_back(2, 3, 0); // v4
+  aPoints.emplace_back(2, 0, 0); // v5
+  aPoints.emplace_back(3, 0, 0); // v6
+  aPoints.emplace_back(3, 5, 0); // v7
+  aPoints.emplace_back(0, 5, 0); // v8
 
   // Create wire and extrude to solid (prism sol p 0 0 2)
   TopoDS_Wire        aWire  = BOPTest_Utilities::CreatePolygonWire(aPoints, true);

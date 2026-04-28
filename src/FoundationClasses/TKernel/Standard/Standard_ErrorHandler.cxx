@@ -105,7 +105,7 @@ Standard_ErrorHandler* Standard_ErrorHandler::FindHandler()
 
 #if defined(OCC_CONVERT_SIGNALS)
 
-Standard_ErrorHandler::Callback::Callback() {}
+Standard_ErrorHandler::Callback::Callback() = default;
 
 Standard_ErrorHandler::Callback::~Callback()
 {

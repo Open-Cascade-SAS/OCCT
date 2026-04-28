@@ -53,9 +53,7 @@ struct BRepGraph_VersionStamp
 
   //! Default constructor. Creates an invalid stamp (invalid UID, zero counters).
   BRepGraph_VersionStamp()
-      : myUID(),
-        myRefUID(),
-        myMutationGen(0),
+      : myMutationGen(0),
         myGeneration(0),
         myDomain(Domain::None)
   {
@@ -69,7 +67,6 @@ struct BRepGraph_VersionStamp
                          const uint32_t       theMutationGen,
                          const uint32_t       theGeneration)
       : myUID(theUID),
-        myRefUID(),
         myMutationGen(theMutationGen),
         myGeneration(theGeneration),
         myDomain(Domain::Entity)
@@ -83,8 +80,7 @@ struct BRepGraph_VersionStamp
   BRepGraph_VersionStamp(const BRepGraph_RefUID& theRefUID,
                          const uint32_t          theMutationGen,
                          const uint32_t          theGeneration)
-      : myUID(),
-        myRefUID(theRefUID),
+      : myRefUID(theRefUID),
         myMutationGen(theMutationGen),
         myGeneration(theGeneration),
         myDomain(Domain::Ref)

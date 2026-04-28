@@ -59,7 +59,7 @@ extern "C++"
   class FlexLexer
   {
   public:
-    virtual ~FlexLexer() {}
+    virtual ~FlexLexer() = default;
 
     const char* YYText() const { return yytext; }
 
@@ -191,7 +191,7 @@ extern "C++"
     size_t            yy_buffer_stack_top; /**< index of top of stack. */
     size_t            yy_buffer_stack_max; /**< capacity of stack. */
     yy_buffer_state** yy_buffer_stack;     /**< Stack as an array. */
-    void              yyensure_buffer_stack(void);
+    void              yyensure_buffer_stack();
 
     // The following are not always needed, but may be depending
     // on use of certain flex features (like REJECT or yymore()).
