@@ -488,7 +488,7 @@ TEST(BRepGraph_BuilderTest, MutableFaceDefinition_ChangesTolerance)
   {
     BRepGraph_MutGuard<BRepGraphInc::FaceDef> aFaceDef =
       aGraph.Editor().Faces().Mut(BRepGraph_FaceId::Start());
-    aFaceDef->Tolerance = 0.5;
+    aGraph.Editor().Faces().SetTolerance(aFaceDef, 0.5);
   }
   EXPECT_NEAR(BRepGraph_Tool::Face::Tolerance(aGraph, BRepGraph_FaceId::Start()), 0.5, 1e-10);
   EXPECT_GT(aGraph.Topo().Faces().Definition(BRepGraph_FaceId::Start()).OwnGen, 0u);
@@ -510,6 +510,7 @@ TEST(BRepGraph_BuilderTest, MutableShellDefinition)
   {
     BRepGraph_MutGuard<BRepGraphInc::ShellDef> aShellDef =
       aGraph.Editor().Shells().Mut(BRepGraph_ShellId::Start());
+    aShellDef.MarkDirty();
   }
   EXPECT_GT(aGraph.Topo().Shells().Definition(BRepGraph_ShellId::Start()).OwnGen, 0u);
 }
@@ -529,6 +530,7 @@ TEST(BRepGraph_BuilderTest, MutableSolidDefinition)
   {
     BRepGraph_MutGuard<BRepGraphInc::SolidDef> aSolidDef =
       aGraph.Editor().Solids().Mut(BRepGraph_SolidId::Start());
+    aSolidDef.MarkDirty();
   }
   EXPECT_GT(aGraph.Topo().Solids().Definition(BRepGraph_SolidId::Start()).OwnGen, 0u);
 }
@@ -543,6 +545,7 @@ TEST(BRepGraph_BuilderTest, MutableCompoundDefinition)
   {
     BRepGraph_MutGuard<BRepGraphInc::CompoundDef> aCompDef =
       aGraph.Editor().Compounds().Mut(BRepGraph_CompoundId::Start());
+    aCompDef.MarkDirty();
   }
   EXPECT_GT(aGraph.Topo().Compounds().Definition(BRepGraph_CompoundId::Start()).OwnGen, 0u);
 }
@@ -557,6 +560,7 @@ TEST(BRepGraph_BuilderTest, MutableCompSolidDefinition)
   {
     BRepGraph_MutGuard<BRepGraphInc::CompSolidDef> aCSolDef =
       aGraph.Editor().CompSolids().Mut(BRepGraph_CompSolidId::Start());
+    aCSolDef.MarkDirty();
   }
   EXPECT_GT(aGraph.Topo().CompSolids().Definition(BRepGraph_CompSolidId::Start()).OwnGen, 0u);
 }

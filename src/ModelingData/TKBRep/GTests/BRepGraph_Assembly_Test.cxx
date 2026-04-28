@@ -498,7 +498,7 @@ TEST(BRepGraph_AssemblyTest, MutProduct_RAII)
     BRepGraph_MutGuard<BRepGraphInc::ProductDef> aMutProd =
       aGraph.Editor().Products().Mut(BRepGraph_ProductId::Start());
     // Trigger a mutation (any field write suffices).
-    aMutProd->IsRemoved = false;
+    aMutProd.MarkDirty();
   } // markModified fires here
 
   EXPECT_GT(aGraph.Topo().Products().Definition(BRepGraph_ProductId::Start()).OwnGen, 0u);
@@ -534,7 +534,7 @@ TEST(BRepGraph_AssemblyTest, MutOccurrenceRef_LocalLocation)
   {
     BRepGraph_MutGuard<BRepGraphInc::OccurrenceRef> aMutRef =
       aGraph.Editor().Occurrences().MutRef(anOccRefId);
-    aMutRef->LocalLocation = TopLoc_Location(aTrsf);
+    aGraph.Editor().Occurrences().SetRefLocalLocation(aMutRef, TopLoc_Location(aTrsf));
   } // markRefModified fires here
 
   const gp_Trsf& aStoredTrsf =

@@ -23,6 +23,7 @@
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_UIDsView.hxx>
 #include <BRepGraph_Copy.hxx>
+#include <BRepGraph_NodeId.hxx>
 #include <BRepGraph_TransientCache.hxx>
 #include <BRepGraph_Builder.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
@@ -202,7 +203,7 @@ TEST(BRepGraph_CopyTest, CopyBox_DoesNotPreserveStaleNodeCache)
 
   {
     BRepGraph_MutGuard<BRepGraphInc::FaceDef> aFace = aGraph.Editor().Faces().Mut(aFaceId);
-    aFace->Tolerance += 0.1;
+    aGraph.Editor().Faces().SetTolerance(aFace, aFace->Tolerance + 0.1);
   }
 
   ASSERT_FALSE(aGraph.Cache().Has(aFaceId, copyTestCacheKind()));
@@ -257,7 +258,7 @@ TEST(BRepGraph_CopyTest, CopyBox_DoesNotPreserveStaleFaceRefCache)
 
   {
     BRepGraph_MutGuard<BRepGraphInc::FaceRef> aRef = aGraph.Editor().Faces().MutRef(aFaceRef);
-    aRef->Orientation                              = TopAbs::Reverse(aRef->Orientation);
+    aGraph.Editor().Faces().SetRefOrientation(aRef, TopAbs::Reverse(aRef->Orientation));
   }
 
   ASSERT_FALSE(aGraph.Cache().Has(aFaceRef, copyTestCacheKind()));
@@ -300,7 +301,9 @@ TEST(BRepGraph_CopyTest, CopySingleFace)
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GT(aGraph.Topo().Faces().Nb(), 0);
 
-  BRepGraph aCopyGraph = BRepGraph_Copy::CopyFace(aGraph, BRepGraph_FaceId::Start(), true);
+  const BRepGraph_FaceId aFaceId = BRepGraph_FaceId::Start();
+  const BRepGraph_NodeId aFaceNode(BRepGraph_NodeId::Kind::Face, aFaceId.Index);
+  BRepGraph aCopyGraph = BRepGraph_Copy::CopyNode(aGraph, aFaceNode, true);
   ASSERT_TRUE(aCopyGraph.IsDone());
   EXPECT_EQ(aCopyGraph.Topo().Faces().Nb(), 1);
 

@@ -76,8 +76,8 @@ void appendFaceRef(BRepGraphInc_Storage&             theStorage,
 {
   const BRepGraph_FaceRefId aRefId  = theStorage.AppendFaceRef();
   BRepGraphInc::FaceRef&    anEntry = theStorage.ChangeFaceRef(aRefId);
-  anEntry.ParentId                  = theParentShellId;
-  anEntry.FaceDefId                 = theRef.DefId;
+  anEntry.ParentId = theParentShellId;
+  anEntry.FaceDefId = theRef.DefId;
   anEntry.Orientation               = theRef.Orientation;
   anEntry.LocalLocation             = theRef.Location;
   theStorage.ChangeShell(theParentShellId).FaceRefIds.Append(aRefId);
@@ -91,8 +91,8 @@ void appendWireRef(BRepGraphInc_Storage&             theStorage,
 {
   const BRepGraph_WireRefId aRefId  = theStorage.AppendWireRef();
   BRepGraphInc::WireRef&    anEntry = theStorage.ChangeWireRef(aRefId);
-  anEntry.ParentId                  = theParentFaceId;
-  anEntry.WireDefId                 = theRef.DefId;
+  anEntry.ParentId = theParentFaceId;
+  anEntry.WireDefId = theRef.DefId;
   anEntry.IsOuter                   = theRef.IsOuter;
   anEntry.Orientation               = theRef.Orientation;
   anEntry.LocalLocation             = theRef.Location;
@@ -107,8 +107,8 @@ void appendCoEdgeRef(BRepGraphInc_Storage&               theStorage,
 {
   const BRepGraph_CoEdgeRefId aRefId  = theStorage.AppendCoEdgeRef();
   BRepGraphInc::CoEdgeRef&    anEntry = theStorage.ChangeCoEdgeRef(aRefId);
-  anEntry.ParentId                    = theParentWireId;
-  anEntry.CoEdgeDefId                 = theRef.DefId;
+  anEntry.ParentId = theParentWireId;
+  anEntry.CoEdgeDefId = theRef.DefId;
   anEntry.LocalLocation               = theRef.Location;
   theStorage.ChangeWire(theParentWireId).CoEdgeRefIds.Append(aRefId);
 }
@@ -121,8 +121,8 @@ BRepGraph_VertexRefId appendVertexRef(BRepGraphInc_Storage&               theSto
 {
   const BRepGraph_VertexRefId aRefId  = theStorage.AppendVertexRef();
   BRepGraphInc::VertexRef&    anEntry = theStorage.ChangeVertexRef(aRefId);
-  anEntry.ParentId                    = theParentId;
-  anEntry.VertexDefId                 = theRef.DefId;
+  anEntry.ParentId = theParentId;
+  anEntry.VertexDefId = theRef.DefId;
   anEntry.Orientation                 = theRef.Orientation;
   anEntry.LocalLocation               = theRef.Location;
   return aRefId;
@@ -136,8 +136,8 @@ void appendShellRef(BRepGraphInc_Storage&              theStorage,
 {
   const BRepGraph_ShellRefId aRefId  = theStorage.AppendShellRef();
   BRepGraphInc::ShellRef&    anEntry = theStorage.ChangeShellRef(aRefId);
-  anEntry.ParentId                   = theParentSolidId;
-  anEntry.ShellDefId                 = theRef.DefId;
+  anEntry.ParentId = theParentSolidId;
+  anEntry.ShellDefId = theRef.DefId;
   anEntry.Orientation                = theRef.Orientation;
   anEntry.LocalLocation              = theRef.Location;
   theStorage.ChangeSolid(theParentSolidId).ShellRefIds.Append(aRefId);
@@ -151,8 +151,8 @@ void appendSolidRef(BRepGraphInc_Storage&              theStorage,
 {
   const BRepGraph_SolidRefId aRefId  = theStorage.AppendSolidRef();
   BRepGraphInc::SolidRef&    anEntry = theStorage.ChangeSolidRef(aRefId);
-  anEntry.ParentId                   = theParentCompSolidId;
-  anEntry.SolidDefId                 = theRef.DefId;
+  anEntry.ParentId = theParentCompSolidId;
+  anEntry.SolidDefId = theRef.DefId;
   anEntry.Orientation                = theRef.Orientation;
   anEntry.LocalLocation              = theRef.Location;
   theStorage.ChangeCompSolid(theParentCompSolidId).SolidRefIds.Append(aRefId);
@@ -166,8 +166,8 @@ BRepGraph_ChildRefId appendChildRef(BRepGraphInc_Storage&             theStorage
 {
   const BRepGraph_ChildRefId aRefId  = theStorage.AppendChildRef();
   BRepGraphInc::ChildRef&    anEntry = theStorage.ChangeChildRef(aRefId);
-  anEntry.ParentId                   = theParentId;
-  anEntry.ChildDefId                 = theRef.DefId;
+  anEntry.ParentId = theParentId;
+  anEntry.ChildDefId = theRef.DefId;
   anEntry.Orientation                = theRef.Orientation;
   anEntry.LocalLocation              = theRef.Location;
   if (theParentId.NodeKind == BRepGraph_NodeId::Kind::Compound)
@@ -1148,8 +1148,8 @@ void registerFaceData(BRepGraphInc_Storage&                          theStorage,
           // Create the forward CoEdge.
           aFwdCoEdgeId                     = theStorage.AppendCoEdge();
           BRepGraphInc::CoEdgeDef& aCoEdge = theStorage.ChangeCoEdge(aFwdCoEdgeId);
-          aCoEdge.EdgeDefId                = anEdgeIdx;
-          aCoEdge.FaceDefId                = aFaceId;
+          aCoEdge.EdgeDefId = anEdgeIdx;
+          aCoEdge.FaceDefId = aFaceId;
           aCoEdge.Orientation              = anEdgeData.OrientationInWire;
 
           // Populate CoEdge with PCurve and polygon data for this face context.
@@ -1171,8 +1171,8 @@ void registerFaceData(BRepGraphInc_Storage&                          theStorage,
           {
             aSeamCoEdgeId                        = theStorage.AppendCoEdge();
             BRepGraphInc::CoEdgeDef& aSeamCoEdge = theStorage.ChangeCoEdge(aSeamCoEdgeId);
-            aSeamCoEdge.EdgeDefId                = anEdgeIdx;
-            aSeamCoEdge.FaceDefId                = aFaceId;
+            aSeamCoEdge.EdgeDefId = anEdgeIdx;
+            aSeamCoEdge.FaceDefId = aFaceId;
             aSeamCoEdge.Orientation              = TopAbs_REVERSED;
             aSeamCoEdge.Curve2DRepId =
               getOrCreateCurve2DRep(theStorage, theRepDedup, anEdgeData.PCurve2dReversed);
@@ -1186,7 +1186,7 @@ void registerFaceData(BRepGraphInc_Storage&                          theStorage,
             // Link seam pair.
             // Note: aCoEdge ref may be invalidated by AppendCoEdge, re-fetch.
             theStorage.ChangeCoEdge(aFwdCoEdgeId).SeamPairId = aSeamCoEdgeId;
-            aSeamCoEdge.SeamPairId                           = aFwdCoEdgeId;
+            aSeamCoEdge.SeamPairId = aFwdCoEdgeId;
           }
 
           // Add CoEdgeUsage to wire with edge-in-wire Location.
@@ -1492,7 +1492,7 @@ void traverseHierarchy(BRepGraphInc_Storage&                    theStorage,
           // Create CoEdge for free wire (no face context).
           const BRepGraph_CoEdgeId aCoEdgeId = theStorage.AppendCoEdge();
           BRepGraphInc::CoEdgeDef& aCoEdge   = theStorage.ChangeCoEdge(aCoEdgeId);
-          aCoEdge.EdgeDefId                  = BRepGraph_EdgeId::FromNodeId(*anEdgeNodeId);
+          aCoEdge.EdgeDefId = BRepGraph_EdgeId::FromNodeId(*anEdgeNodeId);
           aCoEdge.Orientation                = anEdge.Orientation();
           // FaceDefId left invalid for free wires.
           // Curve2d left null for free wires.

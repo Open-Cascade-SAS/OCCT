@@ -251,7 +251,7 @@ TEST_F(BRepGraph_DefsIteratorTest, AuxChildrenOfShellAndSolid_EnumerateInjectedC
     for (const BRepGraph_ChildRefId& aRefId :
          myGraph.Topo().Compounds().Definition(aShellSeed).ChildRefIds)
     {
-      aShell->AuxChildRefIds.Append(aRefId);
+      aShell.Internal().AuxChildRefIds.Append(aRefId);
     }
   }
 
@@ -274,7 +274,7 @@ TEST_F(BRepGraph_DefsIteratorTest, AuxChildrenOfShellAndSolid_EnumerateInjectedC
     for (const BRepGraph_ChildRefId& aRefId :
          myGraph.Topo().Compounds().Definition(aSolidSeed).ChildRefIds)
     {
-      aSolid->AuxChildRefIds.Append(aRefId);
+      aSolid.Internal().AuxChildRefIds.Append(aRefId);
     }
   }
 
@@ -292,11 +292,7 @@ TEST_F(BRepGraph_DefsIteratorTest, RemovedWireRef_IsSkipped)
     myGraph.Refs().Wires().IdsOf(BRepGraph_FaceId::Start());
   ASSERT_EQ(aWireRefs.Length(), 1);
 
-  {
-    BRepGraph_MutGuard<BRepGraphInc::WireRef> aWireRef =
-      myGraph.Editor().Wires().MutRef(aWireRefs.Value(0));
-    aWireRef->IsRemoved = true;
-  }
+  myGraph.Editor().Gen().RemoveRef(aWireRefs.Value(0));
 
   EXPECT_EQ(countIterator(BRepGraph_DefsWireOfFace(myGraph, BRepGraph_FaceId::Start())), 0);
 }

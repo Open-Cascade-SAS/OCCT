@@ -41,7 +41,7 @@ TEST_F(BRepGraph_MutationGenTest, OwnGen_IncrementedOnMutation)
   EXPECT_EQ(myGraph.Topo().Edges().Definition(BRepGraph_EdgeId::Start()).OwnGen, 0u);
   EXPECT_EQ(myGraph.Topo().Edges().Definition(BRepGraph_EdgeId::Start()).SubtreeGen, 0u);
 
-  myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start())->Tolerance = 0.5;
+  myGraph.Editor().Edges().SetTolerance(BRepGraph_EdgeId::Start(), 0.5);
 
   EXPECT_EQ(myGraph.Topo().Edges().Definition(BRepGraph_EdgeId::Start()).OwnGen, 1u);
   EXPECT_EQ(myGraph.Topo().Edges().Definition(BRepGraph_EdgeId::Start()).SubtreeGen, 1u);
@@ -49,8 +49,8 @@ TEST_F(BRepGraph_MutationGenTest, OwnGen_IncrementedOnMutation)
 
 TEST_F(BRepGraph_MutationGenTest, OwnGen_MultipleIncrements)
 {
-  myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start())->Tolerance = 0.1;
-  myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start())->Tolerance = 0.2;
+  myGraph.Editor().Edges().SetTolerance(BRepGraph_EdgeId::Start(), 0.1);
+  myGraph.Editor().Edges().SetTolerance(BRepGraph_EdgeId::Start(), 0.2);
 
   EXPECT_EQ(myGraph.Topo().Edges().Definition(BRepGraph_EdgeId::Start()).OwnGen, 2u);
 }
@@ -58,7 +58,7 @@ TEST_F(BRepGraph_MutationGenTest, OwnGen_MultipleIncrements)
 TEST_F(BRepGraph_MutationGenTest, OwnGen_DeferredMode)
 {
   myGraph.Editor().BeginDeferredInvalidation();
-  myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start())->Tolerance = 0.5;
+  myGraph.Editor().Edges().SetTolerance(BRepGraph_EdgeId::Start(), 0.5);
 
   // OwnGen is incremented even in deferred mode.
   EXPECT_EQ(myGraph.Topo().Edges().Definition(BRepGraph_EdgeId::Start()).OwnGen, 1u);
@@ -74,7 +74,7 @@ TEST_F(BRepGraph_MutationGenTest, SubtreeGen_PropagatedParent_Incremented)
   // Mutate an edge - parent wire/face/shell/solid get SubtreeGen incremented
   // via propagation, enabling generation-based cache freshness on parents.
   // Parent OwnGen must NOT change (only the edge itself was directly mutated).
-  myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start())->Tolerance = 0.5;
+  myGraph.Editor().Edges().SetTolerance(BRepGraph_EdgeId::Start(), 0.5);
 
   EXPECT_EQ(myGraph.Topo().Edges().Definition(BRepGraph_EdgeId::Start()).OwnGen, 1u);
   EXPECT_EQ(myGraph.Topo().Edges().Definition(BRepGraph_EdgeId::Start()).SubtreeGen, 1u);
@@ -141,7 +141,7 @@ TEST_F(BRepGraph_MutationGenTest, SubtreeGen_DeferredPropagatedParent_Incremente
 
   // Deferred mutation + flush.
   myGraph.Editor().BeginDeferredInvalidation();
-  myGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start())->Tolerance = 0.5;
+  myGraph.Editor().Edges().SetTolerance(BRepGraph_EdgeId::Start(), 0.5);
   myGraph.Editor().EndDeferredInvalidation();
 
   // Directly mutated edge: OwnGen incremented by exactly 1.
@@ -176,7 +176,7 @@ TEST_F(BRepGraph_MutationGenTest, RepMutation_SurfacePropagatesSubtreeGenToFace)
   {
     BRepGraph_MutGuard<BRepGraphInc::SurfaceRep> aGuard =
       myGraph.Editor().Reps().MutSurface(aSurfId);
-    (void)aGuard;
+    aGuard.MarkDirty();
   }
 
   // Surface is the face's own geometry - rep mutation IS an own-data change.
@@ -197,7 +197,7 @@ TEST_F(BRepGraph_MutationGenTest, RepMutation_Curve3DPropagatesSubtreeGenToEdge)
   {
     BRepGraph_MutGuard<BRepGraphInc::Curve3DRep> aGuard =
       myGraph.Editor().Reps().MutCurve3D(aCurveId);
-    (void)aGuard;
+    aGuard.MarkDirty();
   }
 
   // Curve3D is the edge's own geometry - rep mutation IS an own-data change.
@@ -221,7 +221,7 @@ TEST_F(BRepGraph_MutationGenTest, RepMutation_Curve2DPropagatesSubtreeGenToCoEdg
     {
       BRepGraph_MutGuard<BRepGraphInc::Curve2DRep> aGuard =
         myGraph.Editor().Reps().MutCurve2D(aCurveId);
-      (void)aGuard;
+      aGuard.MarkDirty();
     }
 
     // Curve2D is the coedge's own geometry - rep mutation IS an own-data change.
@@ -248,7 +248,7 @@ TEST_F(BRepGraph_MutationGenTest, RepMutation_TriangulationPropagatesSubtreeGenT
     {
       BRepGraph_MutGuard<BRepGraphInc::TriangulationRep> aGuard =
         myGraph.Editor().Reps().MutTriangulation(aTriId);
-      (void)aGuard;
+      aGuard.MarkDirty();
     }
 
     // Triangulation is the face's own mesh - rep mutation IS an own-data change.
@@ -274,7 +274,7 @@ TEST_F(BRepGraph_MutationGenTest, RepMutation_Polygon3DPropagatesSubtreeGenToEdg
     {
       BRepGraph_MutGuard<BRepGraphInc::Polygon3DRep> aGuard =
         myGraph.Editor().Reps().MutPolygon3D(aPolyId);
-      (void)aGuard;
+      aGuard.MarkDirty();
     }
 
     // Polygon3D is the edge's own mesh - rep mutation IS an own-data change.

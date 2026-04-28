@@ -11,6 +11,7 @@ set(OCCT_BRepGraph_FILES
   BRepGraph_EditorView.cxx
   BRepGraph_EditorView.hxx
   BRepGraph_EditorView_Mut.cxx
+  BRepGraph_EditorView_Setters.cxx
   BRepGraph_DefsIterator.hxx
   BRepGraph_ChildExplorer.cxx
   BRepGraph_ChildExplorer.hxx

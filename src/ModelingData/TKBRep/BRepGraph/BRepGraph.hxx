@@ -146,6 +146,11 @@ public:
   //! Return true if the graph was successfully built.
   [[nodiscard]] Standard_EXPORT bool IsDone() const;
 
+  //! Verify reverse-index consistency against forward entity / reference-entry tables.
+  //! Intended for debug builds and regression tests of incremental mutation paths.
+  //! @return true when every forward ref has a matching reverse entry.
+  [[nodiscard]] Standard_EXPORT bool ValidateReverseIndex() const;
+
   //! Return root product identifiers (products not referenced by any active occurrence).
   //! Maintained incrementally by Editor/EditorView mutations.
   //! Returns empty vector if the graph has not been built.

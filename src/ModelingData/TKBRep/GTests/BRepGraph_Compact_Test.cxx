@@ -471,8 +471,8 @@ TEST(BRepGraph_CompactTest, OwnGen_SurvivesCompact)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Mutate edge 0 twice so OwnGen == THE_EXPECTED_OWN_GEN.
-  aGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start())->Tolerance = 0.1;
-  aGraph.Editor().Edges().Mut(BRepGraph_EdgeId::Start())->Tolerance = THE_MUTATED_EDGE_TOLERANCE;
+  aGraph.Editor().Edges().SetTolerance(BRepGraph_EdgeId::Start(), 0.1);
+  aGraph.Editor().Edges().SetTolerance(BRepGraph_EdgeId::Start(), THE_MUTATED_EDGE_TOLERANCE);
   ASSERT_EQ(aGraph.Topo().Edges().Definition(BRepGraph_EdgeId::Start()).OwnGen,
             THE_EXPECTED_OWN_GEN);
 

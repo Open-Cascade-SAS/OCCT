@@ -20,6 +20,7 @@
 
 #include <BRepGraph_Builder.hxx>
 #include <BRepGraphInc_ReverseIndex.hxx>
+#include <BRepGraphInc_Storage.hxx>
 
 #include <MathUtils_Random.hxx>
 #include <NCollection_IncAllocator.hxx>
@@ -33,7 +34,7 @@
 namespace
 {
 
-static Standard_GUID generateRandomGUID()
+Standard_GUID generateRandomGUID()
 {
   std::random_device         aRD;
   MathUtils::RandomGenerator aRNG(aRD());
@@ -264,6 +265,13 @@ void BRepGraph::Clear()
 bool BRepGraph::IsDone() const
 {
   return myData->myIsDone;
+}
+
+//=================================================================================================
+
+bool BRepGraph::ValidateReverseIndex() const
+{
+  return myData->myIncStorage.ValidateReverseIndex();
 }
 
 //=================================================================================================
