@@ -13,6 +13,8 @@
 // commercial license or contractual agreement.
 
 #include <cstdio>
+#include <cstdlib>
+#include <iostream>
 #include <IntPatch_Intersection.hxx>
 
 #include <Adaptor3d_Surface.hxx>
@@ -1188,8 +1190,11 @@ void IntPatch_Intersection::Perform(const occ::handle<Adaptor3d_Surface>&   theS
   {
     NCollection_List<IntSurf_PntOn2S> ListOfPnts;
     ListOfPnts.Clear();
-    if (isGeomInt)
+    // TEMP-DIAG: OCCT_FORCE_PARAM forces non-analytical path for comparison.
+    const bool aForceParam = (std::getenv("OCCT_FORCE_PARAM") != nullptr);
+    if (isGeomInt && !aForceParam)
     {
+      std::cerr << "[CyCyDbg] dispatch=GeomGeomPerfom (analytical)\n";
       GeomGeomPerfom(theS1,
                      theD1,
                      theS2,
@@ -1203,6 +1208,7 @@ void IntPatch_Intersection::Perform(const occ::handle<Adaptor3d_Surface>&   theS
     }
     else
     {
+      std::cerr << "[CyCyDbg] dispatch=ParamParamPerfom (numerical)\n";
       ParamParamPerfom(theS1, theD1, theS2, theD2, TolArc, TolTang, ListOfPnts, typs1, typs2);
     }
   }
@@ -1244,6 +1250,42 @@ void IntPatch_Intersection::Perform(const occ::handle<Adaptor3d_Surface>&   theS
 
     slin.InsertAfter(i, aRW);
     slin.Remove(i);
+  }
+
+  // TEMP-DIAG: dump final WLine structure for comparison between analytical and
+  // non-analytical dispatch.
+  if (std::getenv("OCCT_DEBUG_CYCY") != nullptr)
+  {
+    std::cerr << "[CyCyDbg] Perform done: " << slin.Length() << " lines emitted\n";
+    for (int i = 1; i <= slin.Length(); ++i)
+    {
+      occ::handle<IntPatch_WLine> aWL = occ::down_cast<IntPatch_WLine>(slin.Value(i));
+      if (aWL.IsNull())
+      {
+        std::cerr << "  line[" << i << "] not a WLine\n";
+        continue;
+      }
+      const int aNb = aWL->NbPnts();
+      std::cerr << "  WLine[" << i << "] " << aNb << " pts";
+      if (aNb >= 1)
+      {
+        double u1, v1, u2, v2;
+        aWL->Point(1).Parameters(u1, v1, u2, v2);
+        const gp_Pnt& pf = aWL->Point(1).Value();
+        std::cerr.precision(10);
+        std::cerr << " first=(U1=" << u1 << ", V1=" << v1 << ", U2=" << u2 << ", V2=" << v2
+                  << ", P=[" << pf.X() << "," << pf.Y() << "," << pf.Z() << "])";
+      }
+      if (aNb >= 2)
+      {
+        double u1, v1, u2, v2;
+        aWL->Point(aNb).Parameters(u1, v1, u2, v2);
+        const gp_Pnt& pl = aWL->Point(aNb).Value();
+        std::cerr << " last=(U1=" << u1 << ", V1=" << v1 << ", U2=" << u2 << ", V2=" << v2
+                  << ", P=[" << pl.X() << "," << pl.Y() << "," << pl.Z() << "])";
+      }
+      std::cerr << "\n";
+    }
   }
 }
 
@@ -1467,20 +1509,26 @@ void IntPatch_Intersection::Perform(const occ::handle<Adaptor3d_Surface>&   theS
   //                              2. ts1 != ts2      <Geom-Param>
   //                              3. ts1 == ts2 == 0 <Param-Param>
 
-  if (!isGeomInt)
+  // TEMP-DIAG: OCCT_FORCE_PARAM forces non-analytical path for comparison.
+  const bool aForceParamB = (std::getenv("OCCT_FORCE_PARAM") != nullptr);
+  if (!isGeomInt || aForceParamB)
   {
+    std::cerr << "[CyCyDbg] dispatch=ParamParamPerfom (numerical)\n";
     ParamParamPerfom(theS1, theD1, theS2, theD2, TolArc, TolTang, ListOfPnts, typs1, typs2);
   }
   else if (ts1 != ts2)
   {
+    std::cerr << "[CyCyDbg] dispatch=GeomParamPerfom\n";
     GeomParamPerfom(theS1, theD1, theS2, theD2, ts1 == 0, typs1, typs2);
   }
   else if (ts1 == 0)
   {
+    std::cerr << "[CyCyDbg] dispatch=ParamParamPerfom (ts1==0)\n";
     ParamParamPerfom(theS1, theD1, theS2, theD2, TolArc, TolTang, ListOfPnts, typs1, typs2);
   }
   else if (ts1 == 1)
   {
+    std::cerr << "[CyCyDbg] dispatch=GeomGeomPerfom (analytical)\n";
     GeomGeomPerfom(theS1,
                    theD1,
                    theS2,
@@ -1515,6 +1563,43 @@ void IntPatch_Intersection::Perform(const occ::handle<Adaptor3d_Surface>&   theS
 
     slin.InsertAfter(i, aRW);
     slin.Remove(i);
+  }
+
+  // TEMP-DIAG: dump final WLine structure for comparison between analytical and
+  // non-analytical dispatch.
+  if (std::getenv("OCCT_DEBUG_CYCY") != nullptr)
+  {
+    std::cerr << "[CyCyDbg] Perform(3-surf-overload) done: " << slin.Length()
+              << " lines emitted\n";
+    for (int i = 1; i <= slin.Length(); ++i)
+    {
+      occ::handle<IntPatch_WLine> aWL = occ::down_cast<IntPatch_WLine>(slin.Value(i));
+      if (aWL.IsNull())
+      {
+        std::cerr << "  line[" << i << "] not a WLine\n";
+        continue;
+      }
+      const int aNb = aWL->NbPnts();
+      std::cerr << "  WLine[" << i << "] " << aNb << " pts";
+      std::cerr.precision(10);
+      if (aNb >= 1)
+      {
+        double u1, v1, u2, v2;
+        aWL->Point(1).Parameters(u1, v1, u2, v2);
+        const gp_Pnt& pf = aWL->Point(1).Value();
+        std::cerr << " first=(U1=" << u1 << ", V1=" << v1 << ", U2=" << u2 << ", V2=" << v2
+                  << ", P=[" << pf.X() << "," << pf.Y() << "," << pf.Z() << "])";
+      }
+      if (aNb >= 2)
+      {
+        double u1, v1, u2, v2;
+        aWL->Point(aNb).Parameters(u1, v1, u2, v2);
+        const gp_Pnt& pl = aWL->Point(aNb).Value();
+        std::cerr << " last=(U1=" << u1 << ", V1=" << v1 << ", U2=" << u2 << ", V2=" << v2
+                  << ", P=[" << pl.X() << "," << pl.Y() << "," << pl.Z() << "])";
+      }
+      std::cerr << "\n";
+    }
   }
 }
 

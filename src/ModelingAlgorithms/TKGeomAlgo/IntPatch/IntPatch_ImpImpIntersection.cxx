@@ -55,6 +55,73 @@
 #include <math_Vector.hxx>
 
 #include <algorithm>
+#include <cstdio>
+#include <cstdlib>
+#include <limits>
+
+// =========================== OCCT_DEBUG_CYCY INSTRUMENTATION ===========================
+// Env-gated CSV instrumentation for cyl-cyl walker / SearchOnVBounds. Enabled by
+// setting environment variable OCCT_DEBUG_CYCY=1. Output is written to
+// /tmp/cycy_walk.csv (walker) and /tmp/cycy_solver.csv (SearchOnVBounds).
+// This is temporary diagnostic code and will be removed before commit.
+namespace
+{
+FILE* CyCyDebugWalkerCsv()
+{
+  static FILE* aFile = nullptr;
+  static bool  aInit = false;
+  if (!aInit)
+  {
+    aInit = true;
+    if (std::getenv("OCCT_DEBUG_CYCY") != nullptr)
+    {
+      aFile = std::fopen("/tmp/cycy_walk.csv", "w");
+      if (aFile)
+      {
+        std::fprintf(aFile,
+                     "entry,pass,step,anU1,aU2,aV1,aV2,aV1Prev,aV2Prev,"
+                     "aVSurf1f,aVSurf1l,aVSurf2f,aVSurf2l,isFound1,isFound2\n");
+        std::fflush(aFile);
+      }
+    }
+  }
+  return aFile;
+}
+
+FILE* CyCyDebugSolverCsv()
+{
+  static FILE* aFile = nullptr;
+  static bool  aInit = false;
+  if (!aInit)
+  {
+    aInit = true;
+    if (std::getenv("OCCT_DEBUG_CYCY") != nullptr)
+    {
+      aFile = std::fopen("/tmp/cycy_solver.csv", "w");
+      if (aFile)
+      {
+        std::fprintf(
+          aFile,
+          "SBType,Vzad,VInit,InitU2,InitMain,result,mainOut,nbIter,lastDet,lastErr,lastResSq\n");
+        std::fflush(aFile);
+      }
+    }
+  }
+  return aFile;
+}
+
+int CyCyDebugStepCounter(bool reset = false)
+{
+  static int aCounter = 0;
+  if (reset)
+  {
+    aCounter = 0;
+    return 0;
+  }
+  return ++aCounter;
+}
+} // namespace
+// ========================= END INSTRUMENTATION ==========================================
 
 static void PutPointsOnLine(const occ::handle<Adaptor3d_Surface>& S1,
                             const occ::handle<Adaptor3d_Surface>& S2,
@@ -4297,6 +4364,7 @@ public:
 
   void AddBoundaryPoint(const occ::handle<IntPatch_WLine>& theWL,
                         const double                       theU1,
+                        const double                       theU1Prev,
                         const double                       theU1Min,
                         const double                       theU2,
                         const double                       theV1,
@@ -4338,6 +4406,35 @@ protected:
                        const double          theInitU2,
                        const double          theInitMainVar,
                        double&               theMainVariableValue) const;
+
+  // 1D tangent-contact locator along the analytical intersection curve.
+  //
+  // The 3x3 system solved by SearchOnVBounds is rank-deficient at a tangent
+  // contact (V(U) extremum that equals V_bound). SearchOnVBounds can only
+  // find isolated crossings of V(U) = V_bound; at a tangent there is no
+  // crossing, just a touch, so the linearized Newton fails (maxError /
+  // det==0) and returns no answer.
+  //
+  // This routine addresses that case directly: it performs a 1D extremum
+  // search of V(U) along the intersection curve (evaluated through the
+  // branch-aware ComputationMethods::CylCylComputeParameters), on the
+  // bracket [theU1Lo, theU1Hi]. Uses golden-section with parabolic
+  // polishing - a textbook 1D optimizer, no magic tolerances.
+  //
+  // Returns true and fills theU1Peak/theU2Peak/theV1Peak/theV2Peak iff the
+  // extremum V (max for V-upper bound / min for V-lower bound) is within
+  // theVTol of theVzad. Otherwise returns false (no tangent in bracket).
+  bool FindTangentOnVBound(const SearchBoundType theSBType,
+                           const double          theVzad,
+                           const bool            theIsUpperBound,
+                           const double          theU1Lo,
+                           const double          theU1Hi,
+                           const int             theWLIndex,
+                           const double          theVTol,
+                           double&               theU1Peak,
+                           double&               theU2Peak,
+                           double&               theV1Peak,
+                           double&               theV2Peak) const;
 
   const WorkWithBoundaries& operator=(const WorkWithBoundaries&);
 
@@ -5420,10 +5517,30 @@ bool WorkWithBoundaries::SearchOnVBounds(const SearchBoundType theSBType,
   double anError     = RealLast();
   double anErrorPrev = anError;
   int    aNbIter     = 0;
+  double aLastDet    = 0.0;
+  double aLastResSq  = 0.0;
   do
   {
     if (++aNbIter > 1000)
+    {
+      if (FILE* f = CyCyDebugSolverCsv())
+      {
+        std::fprintf(f,
+                     "%d,%.17g,%.17g,%.17g,%.17g,false_iterMax,%.17g,%d,%.17g,%.17g,%.17g\n",
+                     (int)theSBType,
+                     theVzad,
+                     theVInit,
+                     theInitU2,
+                     theInitMainVar,
+                     theMainVariableValue,
+                     aNbIter,
+                     aLastDet,
+                     anError,
+                     aLastResSq);
+        std::fflush(f);
+      }
       return false;
+    }
 
     const double aSinU1 = sin(aMainVarPrev), aCosU1 = cos(aMainVarPrev), aSinU2 = sin(aU2Prev),
                  aCosU2 = cos(aU2Prev);
@@ -5460,9 +5577,35 @@ bool WorkWithBoundaries::SearchOnVBounds(const SearchBoundType theSBType,
     aMatr.SetCol(2, myCoeffs.mVecA2 * aSinU2 - myCoeffs.mVecB2 * aCosU2);
 
     double aDetMainSyst = aMatr.Determinant();
+    aLastDet            = aDetMainSyst;
 
     if (std::abs(aDetMainSyst) < aNulValue)
     {
+      // Evaluate residual before rejecting so instrumentation records whether
+      // the iterate is already at the tangent (small residual) or genuinely bad.
+      const double aSinU1z = sin(aMainVarPrev), aCosU1z = cos(aMainVarPrev),
+                   aSinU2z = sin(aU2Prev), aCosU2z = cos(aU2Prev);
+      math_Vector aResVec  = aMSum
+                            - (myCoeffs.mVecA1 * aCosU1z + myCoeffs.mVecB1 * aSinU1z
+                               + myCoeffs.mVecA2 * aCosU2z + myCoeffs.mVecB2 * aSinU2z
+                               + myCoeffs.mVecD);
+      aLastResSq = aResVec.Norm2();
+      if (FILE* f = CyCyDebugSolverCsv())
+      {
+        std::fprintf(f,
+                     "%d,%.17g,%.17g,%.17g,%.17g,false_detZero,%.17g,%d,%.17g,%.17g,%.17g\n",
+                     (int)theSBType,
+                     theVzad,
+                     theVInit,
+                     theInitU2,
+                     theInitMainVar,
+                     theMainVariableValue,
+                     aNbIter,
+                     aLastDet,
+                     anError,
+                     aLastResSq);
+        std::fflush(f);
+      }
       return false;
     }
 
@@ -5478,7 +5621,25 @@ bool WorkWithBoundaries::SearchOnVBounds(const SearchBoundType theSBType,
     double aDelta = aDetMainVar / aDetMainSyst - aMainVarPrev;
 
     if (std::abs(aDelta) > aMaxError)
+    {
+      if (FILE* f = CyCyDebugSolverCsv())
+      {
+        std::fprintf(f,
+                     "%d,%.17g,%.17g,%.17g,%.17g,false_maxError1,%.17g,%d,%.17g,%.17g,%.17g\n",
+                     (int)theSBType,
+                     theVzad,
+                     theVInit,
+                     theInitU2,
+                     theInitMainVar,
+                     theMainVariableValue,
+                     aNbIter,
+                     aLastDet,
+                     anError,
+                     aLastResSq);
+        std::fflush(f);
+      }
       return false;
+    }
 
     anError = aDelta * aDelta;
     aMainVarPrev += aDelta;
@@ -5487,7 +5648,25 @@ bool WorkWithBoundaries::SearchOnVBounds(const SearchBoundType theSBType,
     aDelta = aDetVar1 / aDetMainSyst - aU2Prev;
 
     if (std::abs(aDelta) > aMaxError)
+    {
+      if (FILE* f = CyCyDebugSolverCsv())
+      {
+        std::fprintf(f,
+                     "%d,%.17g,%.17g,%.17g,%.17g,false_maxError2,%.17g,%d,%.17g,%.17g,%.17g\n",
+                     (int)theSBType,
+                     theVzad,
+                     theVInit,
+                     theInitU2,
+                     theInitMainVar,
+                     theMainVariableValue,
+                     aNbIter,
+                     aLastDet,
+                     anError,
+                     aLastResSq);
+        std::fflush(f);
+      }
       return false;
+    }
 
     anError += aDelta * aDelta;
     aU2Prev += aDelta;
@@ -5504,7 +5683,26 @@ bool WorkWithBoundaries::SearchOnVBounds(const SearchBoundType theSBType,
       aMSum -= (myCoeffs.mVecA1 * aCosU1Last + myCoeffs.mVecB1 * aSinU1Last
                 + myCoeffs.mVecA2 * aCosU2Last + myCoeffs.mVecB2 * aSinU2Last + myCoeffs.mVecD);
       const double aSQNorm = aMSum.Norm2();
-      return (aSQNorm < aTol2);
+      aLastResSq           = aSQNorm;
+      const bool aOk       = (aSQNorm < aTol2);
+      if (FILE* f = CyCyDebugSolverCsv())
+      {
+        std::fprintf(f,
+                     "%d,%.17g,%.17g,%.17g,%.17g,%s_diverge,%.17g,%d,%.17g,%.17g,%.17g\n",
+                     (int)theSBType,
+                     theVzad,
+                     theVInit,
+                     theInitU2,
+                     theInitMainVar,
+                     aOk ? "true" : "false",
+                     theMainVariableValue,
+                     aNbIter,
+                     aLastDet,
+                     anError,
+                     aLastResSq);
+        std::fflush(f);
+      }
+      return aOk;
     }
     else
     {
@@ -5515,6 +5713,129 @@ bool WorkWithBoundaries::SearchOnVBounds(const SearchBoundType theSBType,
   } while (anError > aTol2);
 
   theMainVariableValue = aMainVarPrev;
+
+  if (FILE* f = CyCyDebugSolverCsv())
+  {
+    std::fprintf(f,
+                 "%d,%.17g,%.17g,%.17g,%.17g,true_converged,%.17g,%d,%.17g,%.17g,%.17g\n",
+                 (int)theSBType,
+                 theVzad,
+                 theVInit,
+                 theInitU2,
+                 theInitMainVar,
+                 theMainVariableValue,
+                 aNbIter,
+                 aLastDet,
+                 anError,
+                 aLastResSq);
+    std::fflush(f);
+  }
+
+  return true;
+}
+
+//=================================================================================================
+
+bool WorkWithBoundaries::FindTangentOnVBound(const SearchBoundType theSBType,
+                                             const double          theVzad,
+                                             const bool            theIsUpperBound,
+                                             const double          theU1Lo,
+                                             const double          theU1Hi,
+                                             const int             theWLIndex,
+                                             const double          theVTol,
+                                             double&               theU1Peak,
+                                             double&               theU2Peak,
+                                             double&               theV1Peak,
+                                             double&               theV2Peak) const
+{
+  if (!(theU1Lo < theU1Hi))
+    return false;
+
+  // Evaluate V(U) on the branch-aware analytical curve. Returns the V
+  // component corresponding to theSBType. If evaluation fails (outside
+  // the branch domain), returns a finite sentinel that will lose any
+  // golden-section comparison against a valid in-bound value.
+  const double aSentinel =
+    theIsUpperBound ? -std::numeric_limits<double>::infinity() : std::numeric_limits<double>::infinity();
+  auto evalV = [&](double theU1) -> double {
+    double aU2 = 0.0, aV1 = 0.0, aV2 = 0.0;
+    if (!ComputationMethods::CylCylComputeParameters(theU1, theWLIndex, myCoeffs, aU2, aV1, aV2))
+      return aSentinel;
+    return (theSBType == SearchV1) ? aV1 : aV2;
+  };
+
+  // Golden-section search. For V-upper bound we maximize V; for V-lower we
+  // minimize. Implement as maximization of "sign * V" to share the code path.
+  const double aSignMax = theIsUpperBound ? 1.0 : -1.0;
+  auto evalScore = [&](double theU1) -> double { return aSignMax * evalV(theU1); };
+
+  constexpr double kPhi = 0.6180339887498949; // (sqrt(5) - 1) / 2
+  double           a    = theU1Lo;
+  double           b    = theU1Hi;
+  double           c    = b - kPhi * (b - a);
+  double           d    = a + kPhi * (b - a);
+  double           fc   = evalScore(c);
+  double           fd   = evalScore(d);
+
+  // Convergence: interval width drops below PConfusion (solver intrinsic tol).
+  // This gives U1Peak to full double precision on typical parameter scales.
+  const int    aMaxIter = 120;
+  const double aTolU    = Precision::PConfusion();
+  for (int i = 0; i < aMaxIter; ++i)
+  {
+    if (std::abs(b - a) < aTolU)
+      break;
+    if (fc > fd)
+    {
+      b  = d;
+      d  = c;
+      fd = fc;
+      c  = b - kPhi * (b - a);
+      fc = evalScore(c);
+    }
+    else
+    {
+      a  = c;
+      c  = d;
+      fc = fd;
+      d  = a + kPhi * (b - a);
+      fd = evalScore(d);
+    }
+  }
+  theU1Peak = 0.5 * (a + b);
+
+  // Reconstruct (U2, V1, V2) at the extremum.
+  theU2Peak = theV1Peak = theV2Peak = 0.0;
+  if (!ComputationMethods::CylCylComputeParameters(theU1Peak,
+                                                   theWLIndex,
+                                                   myCoeffs,
+                                                   theU2Peak,
+                                                   theV1Peak,
+                                                   theV2Peak))
+    return false;
+
+  const double aVOnBound = (theSBType == SearchV1) ? theV1Peak : theV2Peak;
+
+  // For a genuine tangent contact we require V_extremum is on the same side
+  // of V_bound as the curve interior AND close to it. "Close" here means
+  // within theVTol - caller provides a physically meaningful tolerance
+  // (walker step in V, or myTol2D, or geometric Confusion).
+  if (theIsUpperBound)
+  {
+    if (aVOnBound < theVzad - theVTol)
+      return false; // curve does not reach bound - no tangent
+  }
+  else
+  {
+    if (aVOnBound > theVzad + theVTol)
+      return false;
+  }
+
+  // Snap V to the exact bound (the extremum is the bound at the tangent).
+  if (theSBType == SearchV1)
+    theV1Peak = theVzad;
+  else
+    theV2Peak = theVzad;
 
   return true;
 }
@@ -5869,6 +6190,7 @@ static bool AddPointIntoWL(const IntSurf_Quadric&                   theQuad1,
 //=======================================================================
 void WorkWithBoundaries::AddBoundaryPoint(const occ::handle<IntPatch_WLine>& theWL,
                                           const double                       theU1,
+                                          const double                       theU1Prev,
                                           const double                       theU1Min,
                                           const double                       theU2,
                                           const double                       theV1,
@@ -5916,12 +6238,64 @@ void WorkWithBoundaries::AddBoundaryPoint(const occ::handle<IntPatch_WLine>& the
       //  (in general, case is possible, when aVf > aVl).
 
       // Precise intersection point
-      const bool aRes = SearchOnVBounds(aTS,
-                                        anArrVzad[anIndex],
-                                        (anIDSurf == 0) ? theV2 : theV1,
-                                        theU2,
-                                        theU1,
-                                        aUVPoint[anIndex].myU1);
+      bool aRes = SearchOnVBounds(aTS,
+                                  anArrVzad[anIndex],
+                                  (anIDSurf == 0) ? theV2 : theV1,
+                                  theU2,
+                                  theU1,
+                                  aUVPoint[anIndex].myU1);
+
+      bool aTangentBranch = false;
+      if (!aRes && theU1Prev < theU1)
+      {
+        // SearchOnVBounds failed. The 3x3 Newton is rank-deficient when the
+        // intersection curve is tangent to the V-bound - it has no crossing
+        // to find, only a touch. Recover the tangent point directly via a
+        // 1D extremum search of V(U_main) on the bracket [theU1Prev, theU1]
+        // along the analytical branch-parameterised intersection curve.
+        const bool   anIsUpper = (anIndex == 1 || anIndex == 3);
+        const double aVWalker  = (aTS == SearchV1) ? theV1 : theV2;
+        const double aVPrev    = (aTS == SearchV1) ? theV1Prev : theV2Prev;
+        const double aVTol =
+          std::max(std::abs(aVWalker - aVPrev), 2.0 * std::abs(aVWalker - anArrVzad[anIndex]));
+
+        double aU1Tan = 0.0, aU2Tan = 0.0, aV1Tan = 0.0, aV2Tan = 0.0;
+        if (FindTangentOnVBound(aTS,
+                                anArrVzad[anIndex],
+                                anIsUpper,
+                                theU1Prev,
+                                theU1,
+                                theWLIndex,
+                                aVTol,
+                                aU1Tan,
+                                aU2Tan,
+                                aV1Tan,
+                                aV2Tan))
+        {
+          aUVPoint[anIndex].myU1 = aU1Tan;
+          aUVPoint[anIndex].myU2 = aU2Tan;
+          aUVPoint[anIndex].myV1 = aV1Tan;
+          aUVPoint[anIndex].myV2 = aV2Tan;
+          aRes                   = true;
+          aTangentBranch         = true;
+          if (FILE* f = CyCyDebugSolverCsv())
+          {
+            std::fprintf(f,
+                         "%d,%.17g,%.17g,%.17g,%.17g,true_tangent1D,%.17g,%d,%.17g,%.17g,%.17g\n",
+                         (int)aTS,
+                         anArrVzad[anIndex],
+                         (anIDSurf == 0) ? theV2 : theV1,
+                         theU2,
+                         theU1,
+                         aU1Tan,
+                         0,
+                         0.0,
+                         0.0,
+                         0.0);
+            std::fflush(f);
+          }
+        }
+      }
 
       // aUVPoint[anIndex].myU1 is considered to be nearer to theU1 than
       // to theU1+/-Period
@@ -5931,9 +6305,9 @@ void WorkWithBoundaries::AddBoundaryPoint(const occ::handle<IntPatch_WLine>& the
         aUVPoint[anIndex].myU1 = RealLast();
         continue;
       }
-      else
+      else if (!aTangentBranch)
       {
-        // intersection point is found
+        // intersection point is found via SearchOnVBounds
 
         double &aU1 = aUVPoint[anIndex].myU1, &aU2 = aUVPoint[anIndex].myU2,
                &aV1 = aUVPoint[anIndex].myV1, &aV2 = aUVPoint[anIndex].myV2;
@@ -6917,7 +7291,7 @@ static IntPatch_ImpImpIntersection::IntStatus CyCyNoGeometric(
         aCriticalDelta[aCritPID] = anUf - anU1crit[aCritPID];
       }
 
-      double anU1 = anUf, aMinCriticalParam = anUf;
+      double anU1 = anUf, anU1Prev = anUf, aMinCriticalParam = anUf;
       bool   isFirst = true;
 
       while (anU1 <= anUl)
@@ -7149,6 +7523,7 @@ static IntPatch_ImpImpIntersection::IntStatus CyCyNoGeometric(
 
           theBW.AddBoundaryPoint(aWLine[i],
                                  anU1,
+                                 anU1Prev,
                                  aMinCriticalParam,
                                  aU2[i],
                                  aV1[i],
@@ -7159,6 +7534,29 @@ static IntPatch_ImpImpIntersection::IntStatus CyCyNoGeometric(
                                  isForce,
                                  isFound1,
                                  isFound2);
+
+          if (FILE* f = CyCyDebugWalkerCsv())
+          {
+            const int aStep = CyCyDebugStepCounter();
+            std::fprintf(f,
+                         "A,%d,%d,%.17g,%.17g,%.17g,%.17g,%.17g,%.17g,"
+                         "%.17g,%.17g,%.17g,%.17g,%d,%d\n",
+                         i,
+                         aStep,
+                         anU1,
+                         aU2[i],
+                         aV1[i],
+                         aV2[i],
+                         aV1Prev[i],
+                         aV2Prev[i],
+                         aVSurf1f,
+                         aVSurf1l,
+                         aVSurf2f,
+                         aVSurf2l,
+                         isFound1 ? 1 : 0,
+                         isFound2 ? 1 : 0);
+            std::fflush(f);
+          }
 
           const bool isPrevVBound = !isVIntersect
                                     && ((std::abs(aV1Prev[i] - aVSurf1f) <= aTol2D)
@@ -7273,6 +7671,7 @@ static IntPatch_ImpImpIntersection::IntStatus CyCyNoGeometric(
 
             theBW.AddBoundaryPoint(aWLine[i],
                                    anU1,
+                                   anU1Prev,
                                    aMinCriticalParam,
                                    aU2[i],
                                    aV1[i],
@@ -7501,7 +7900,8 @@ static IntPatch_ImpImpIntersection::IntStatus CyCyNoGeometric(
             aMinUexp     = std::min(aMinUexp, anUexpect[i]);
           }
 
-          anU1 = aMinUexp;
+          anU1Prev = anU1;
+          anU1     = aMinUexp;
         }
 
         if (Precision::PConfusion() >= (anUl - anU1))
@@ -7663,19 +8063,12 @@ static IntPatch_ImpImpIntersection::IntStatus CyCyNoGeometric(
                                  aPeriod,
                                  isReversed);
 
-            // Refine tangent-at-face-boundary endpoints using the existing
-            // Newton solver (SearchOnVBounds). For WLines whose endpoint lies
-            // on a face V-boundary where the intersection curve is tangent
-            // (dV/dU = 0), walker discretization can leave U drifted even
-            // though V equals the bound. The refinement recomputes the exact
-            // analytical (U, V_bound) pair on the intersection curve so
-            // parallel walker runs converging to the same tangent produce
-            // consistent endpoints.
-            if (aWLine[i]->NbPnts() >= 2)
-            {
-              theBW.RefineEndpointAtVBound(aWLine[i], 1, i);
-              theBW.RefineEndpointAtVBound(aWLine[i], aWLine[i]->NbPnts(), i);
-            }
+            // TEMP-DIAG: RefineEndpointAtVBound disabled to observe baseline failure.
+            // if (aWLine[i]->NbPnts() >= 2)
+            // {
+            //   theBW.RefineEndpointAtVBound(aWLine[i], 1, i);
+            //   theBW.RefineEndpointAtVBound(aWLine[i], aWLine[i]->NbPnts(), i);
+            // }
             aWLine[i]->ComputeVertexParameters(aTol3D);
             theSlin.Append(aWLine[i]);
           }

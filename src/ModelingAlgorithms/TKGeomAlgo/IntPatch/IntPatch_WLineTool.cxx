@@ -1534,6 +1534,7 @@ void IntPatch_WLineTool::JoinWLines(NCollection_Sequence<occ::handle<IntPatch_Li
 
   occ::handle<NCollection_IncAllocator> anAlloc = new NCollection_IncAllocator();
 
+#if 0 // TEMP-DIAG: cross-WLine tangent-equalize disabled to observe baseline.
   // Cross-WLine tangent-at-face-boundary equalization.
   //
   // When the intersection curve's V-extremum coincides exactly with a face
@@ -1682,6 +1683,7 @@ void IntPatch_WLineTool::JoinWLines(NCollection_Sequence<occ::handle<IntPatch_Li
       }
     }
   }
+#endif // TEMP-DIAG
 
   for (int aN1 = 1; aN1 <= theSlin.Length(); aN1++)
   {
@@ -1733,29 +1735,14 @@ void IntPatch_WLineTool::JoinWLines(NCollection_Sequence<occ::handle<IntPatch_Li
       double aSqDistF = aPntFWL1.Value().SquareDistance(aPntFWL2.Value());
       double aSqDistL = aPntFWL1.Value().SquareDistance(aPntLWL2.Value());
 
-      // Match tolerance: Precision::SquareConfusion is the exact-match band.
-      // The drift-band (between Confusion and aMinRad) accommodates residual
-      // walker convergence error at tangent V-bounds where the analytical
-      // refinement (SearchOnVBounds in CyCyNoGeometric) stalls due to
-      // Jacobian rank-deficiency (dV/dU = 0 at the peak). Downstream
-      // CheckArgumentsToJoin already uses aMinRad as its acceptance scale,
-      // so this widening only propagates the same scale to the initial
-      // endpoint-match screen.
-      const double aSqConfusion = Precision::SquareConfusion();
-      const double aSqDrift     = aMinRad * aMinRad;
-
+      // TEMP-DIAG: reverted to baseline SquareConfusion tolerance.
       const double aSqMinFDist = std::min(aSqDistF, aSqDistL);
-      if (aSqMinFDist < aSqDrift)
+      if (aSqMinFDist < Precision::SquareConfusion())
       {
         const bool             isFM = (aSqDistF < aSqDistL);
         const IntSurf_PntOn2S& aPt1 = aWLine1->Point(2);
         const IntSurf_PntOn2S& aPt2 = isFM ? aWLine2->Point(2) : aWLine2->Point(aNbPntsWL2 - 1);
-        // IsSeamOrBound's midpoint test flags endpoints exactly at a bound,
-        // which is the tangent-at-bound case we want to merge. Apply it only
-        // in the exact-match band.
-        const bool aNeedsSeamCheck = aSqMinFDist < aSqConfusion;
-        if (!aNeedsSeamCheck
-            || !IsSeamOrBound(aPt1, aPt2, aPntFWL1, anArrPeriods, anArrFBonds, anArrLBonds))
+        if (!IsSeamOrBound(aPt1, aPt2, aPntFWL1, anArrPeriods, anArrFBonds, anArrLBonds))
         {
           isFirstConnected = true;
         }
@@ -1765,14 +1752,12 @@ void IntPatch_WLineTool::JoinWLines(NCollection_Sequence<occ::handle<IntPatch_Li
       aSqDistL = aPntLWL1.Value().SquareDistance(aPntLWL2.Value());
 
       const double aSqMinLDist = std::min(aSqDistF, aSqDistL);
-      if (aSqMinLDist < aSqDrift)
+      if (aSqMinLDist < Precision::SquareConfusion())
       {
         const bool             isFM = (aSqDistF < aSqDistL);
         const IntSurf_PntOn2S& aPt1 = aWLine1->Point(aNbPntsWL1 - 1);
         const IntSurf_PntOn2S& aPt2 = isFM ? aWLine2->Point(2) : aWLine2->Point(aNbPntsWL2 - 1);
-        const bool aNeedsSeamCheck = aSqMinLDist < aSqConfusion;
-        if (!aNeedsSeamCheck
-            || !IsSeamOrBound(aPt1, aPt2, aPntLWL1, anArrPeriods, anArrFBonds, anArrLBonds))
+        if (!IsSeamOrBound(aPt1, aPt2, aPntLWL1, anArrPeriods, anArrFBonds, anArrLBonds))
         {
           isLastConnected = true;
         }
