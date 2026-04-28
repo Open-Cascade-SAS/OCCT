@@ -139,11 +139,11 @@ void transformPolygon3D(const occ::handle<Poly_Polygon3D>& thePoly, const gp_Trs
 //!                           Mut guards in the geometry-transform pass that runs before this
 //!                           call).  When nullptr, theSource.Mesh().Faces().CachedMesh() is
 //!                           used (includes the freshness check).
-void applyMeshCopy(const BRepGraph&              theSource,
-                   BRepGraph&                    theDest,
-                   const gp_Trsf&                theTrsf,
-                   const bool                    theDoTransform,
-                   const BRepGraph*              thePolySource   = nullptr,
+void applyMeshCopy(const BRepGraph&                  theSource,
+                   BRepGraph&                        theDest,
+                   const gp_Trsf&                    theTrsf,
+                   const bool                        theDoTransform,
+                   const BRepGraph*                  thePolySource  = nullptr,
                    const BRepGraph_MeshCacheStorage* theSourceCache = nullptr)
 {
   const BRepGraph::MeshView::PolyOps& aSrcPoly =
@@ -180,8 +180,8 @@ void applyMeshCopy(const BRepGraph&              theSource,
     BRepGraph_Tool::Mesh::ClearFaceCache(theDest, aFaceId);
 
     // Helper lambda: copy one triangulation from source, optionally transform, register in dest.
-    auto copyOneTri = [&](const BRepGraph_TriangulationRepId aSrcRepId) -> BRepGraph_TriangulationRepId
-    {
+    auto copyOneTri =
+      [&](const BRepGraph_TriangulationRepId aSrcRepId) -> BRepGraph_TriangulationRepId {
       if (!aSrcRepId.IsValid(aSrcPoly.NbTriangulations()))
         return BRepGraph_TriangulationRepId();
       if (const BRepGraph_TriangulationRepId* aExisting = aTriRepMap.Seek(aSrcRepId.Index))
@@ -210,7 +210,7 @@ void applyMeshCopy(const BRepGraph&              theSource,
     const BRepGraph_TriangulationRepId aNewPersistId = copyOneTri(aSrcPersistId);
     theDest.Editor().Faces().SetTriangulationRep(aFaceId, aNewPersistId);
 
-    // Cached LOD entries (MeshLayer) — use the pre-clear snapshot.
+    // Cached LOD entries (MeshLayer) - use the pre-clear snapshot.
     for (int i = 0; i < aSrcLODs.Length(); ++i)
     {
       const BRepGraph_TriangulationRepId aNewRepId = copyOneTri(aSrcLODs.Value(i));
@@ -236,8 +236,7 @@ void applyMeshCopy(const BRepGraph&              theSource,
     if (!aSrcPolyRepId.IsValid(aSrcPoly.NbPolygons3D()))
       continue;
 
-    const occ::handle<Poly_Polygon3D>& aSrcPoly3D =
-      aSrcPoly.Polygon3DRep(aSrcPolyRepId).Polygon;
+    const occ::handle<Poly_Polygon3D>& aSrcPoly3D = aSrcPoly.Polygon3DRep(aSrcPolyRepId).Polygon;
     if (aSrcPoly3D.IsNull())
       continue;
 
@@ -294,11 +293,11 @@ void applyMeshCopy(const BRepGraph&              theSource,
 //! otherwise they are invalidated.
 //! @param[in] thePolySource   forwarded to applyMeshCopy; see that function's documentation.
 //! @param[in] theSourceCache  forwarded to applyMeshCopy; see that function's documentation.
-void applyGeometryTransform(const BRepGraph&              theSource,
-                            BRepGraph&                    theGraph,
-                            const gp_Trsf&                theTrsf,
-                            const bool                    theCopyMesh,
-                            const BRepGraph*              thePolySource   = nullptr,
+void applyGeometryTransform(const BRepGraph&                  theSource,
+                            BRepGraph&                        theGraph,
+                            const gp_Trsf&                    theTrsf,
+                            const bool                        theCopyMesh,
+                            const BRepGraph*                  thePolySource  = nullptr,
                             const BRepGraph_MeshCacheStorage* theSourceCache = nullptr)
 {
   // Transform absolute vertex points.
@@ -379,8 +378,7 @@ void BRepGraph_Transform::applyLocationTransform(BRepGraph& theGraph, const gp_T
         continue;
       BRepGraph_MutGuard<BRepGraphInc::OccurrenceRef> aMutRef =
         theGraph.Editor().Occurrences().MutRef(aRefId);
-      theGraph.Editor().Occurrences().SetRefLocalLocation(aMutRef,
-                                                         aLoc * aMutRef->LocalLocation);
+      theGraph.Editor().Occurrences().SetRefLocalLocation(aMutRef, aLoc * aMutRef->LocalLocation);
     }
   });
 }
@@ -485,65 +483,51 @@ bool BRepGraph_Transform::MoveRef(BRepGraph&             theGraph,
 
   switch (theRefId.RefKind)
   {
-    case BRepGraph_RefId::Kind::Shell:
-    {
+    case BRepGraph_RefId::Kind::Shell: {
       const BRepGraph_ShellRefId aShellRef = BRepGraph_ShellRefId::FromRefId(theRefId);
-      const TopLoc_Location      aOldLoc   = theGraph.Refs().Shells().Entry(aShellRef).LocalLocation;
+      const TopLoc_Location      aOldLoc = theGraph.Refs().Shells().Entry(aShellRef).LocalLocation;
       anEditor.Shells().SetRefLocalLocation(aShellRef, aLoc * aOldLoc);
       return true;
     }
-    case BRepGraph_RefId::Kind::Face:
-    {
+    case BRepGraph_RefId::Kind::Face: {
       const BRepGraph_FaceRefId aFaceRef = BRepGraph_FaceRefId::FromRefId(theRefId);
       const TopLoc_Location     aOldLoc  = theGraph.Refs().Faces().Entry(aFaceRef).LocalLocation;
       anEditor.Faces().SetRefLocalLocation(aFaceRef, aLoc * aOldLoc);
       return true;
     }
-    case BRepGraph_RefId::Kind::Wire:
-    {
+    case BRepGraph_RefId::Kind::Wire: {
       const BRepGraph_WireRefId aWireRef = BRepGraph_WireRefId::FromRefId(theRefId);
       const TopLoc_Location     aOldLoc  = theGraph.Refs().Wires().Entry(aWireRef).LocalLocation;
       anEditor.Wires().SetRefLocalLocation(aWireRef, aLoc * aOldLoc);
       return true;
     }
-    case BRepGraph_RefId::Kind::CoEdge:
-    {
+    case BRepGraph_RefId::Kind::CoEdge: {
       const BRepGraph_CoEdgeRefId aCoEdgeRef = BRepGraph_CoEdgeRefId::FromRefId(theRefId);
-      const TopLoc_Location       aOldLoc =
-        theGraph.Refs().CoEdges().Entry(aCoEdgeRef).LocalLocation;
+      const TopLoc_Location aOldLoc = theGraph.Refs().CoEdges().Entry(aCoEdgeRef).LocalLocation;
       anEditor.CoEdges().SetRefLocalLocation(aCoEdgeRef, aLoc * aOldLoc);
       return true;
     }
-    case BRepGraph_RefId::Kind::Vertex:
-    {
+    case BRepGraph_RefId::Kind::Vertex: {
       const BRepGraph_VertexRefId aVertexRef = BRepGraph_VertexRefId::FromRefId(theRefId);
-      const TopLoc_Location       aOldLoc =
-        theGraph.Refs().Vertices().Entry(aVertexRef).LocalLocation;
+      const TopLoc_Location aOldLoc = theGraph.Refs().Vertices().Entry(aVertexRef).LocalLocation;
       anEditor.Vertices().SetRefLocalLocation(aVertexRef, aLoc * aOldLoc);
       return true;
     }
-    case BRepGraph_RefId::Kind::Solid:
-    {
+    case BRepGraph_RefId::Kind::Solid: {
       const BRepGraph_SolidRefId aSolidRef = BRepGraph_SolidRefId::FromRefId(theRefId);
-      const TopLoc_Location      aOldLoc =
-        theGraph.Refs().Solids().Entry(aSolidRef).LocalLocation;
+      const TopLoc_Location      aOldLoc = theGraph.Refs().Solids().Entry(aSolidRef).LocalLocation;
       anEditor.Solids().SetRefLocalLocation(aSolidRef, aLoc * aOldLoc);
       return true;
     }
-    case BRepGraph_RefId::Kind::Child:
-    {
+    case BRepGraph_RefId::Kind::Child: {
       const BRepGraph_ChildRefId aChildRef = BRepGraph_ChildRefId::FromRefId(theRefId);
-      const TopLoc_Location      aOldLoc =
-        theGraph.Refs().Children().Entry(aChildRef).LocalLocation;
+      const TopLoc_Location aOldLoc = theGraph.Refs().Children().Entry(aChildRef).LocalLocation;
       anEditor.Gen().SetChildRefLocalLocation(aChildRef, aLoc * aOldLoc);
       return true;
     }
-    case BRepGraph_RefId::Kind::Occurrence:
-    {
-      const BRepGraph_OccurrenceRefId aOccRef =
-        BRepGraph_OccurrenceRefId::FromRefId(theRefId);
-      const TopLoc_Location aOldLoc =
-        theGraph.Refs().Occurrences().Entry(aOccRef).LocalLocation;
+    case BRepGraph_RefId::Kind::Occurrence: {
+      const BRepGraph_OccurrenceRefId aOccRef = BRepGraph_OccurrenceRefId::FromRefId(theRefId);
+      const TopLoc_Location aOldLoc = theGraph.Refs().Occurrences().Entry(aOccRef).LocalLocation;
       anEditor.Occurrences().SetRefLocalLocation(aOccRef, aLoc * aOldLoc);
       return true;
     }

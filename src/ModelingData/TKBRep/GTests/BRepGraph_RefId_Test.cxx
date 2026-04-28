@@ -446,7 +446,9 @@ TEST(BRepGraph_RefIdTest, MutFaceRef_UpdatesRefStampAndParentModifiedFlag)
 
   {
     BRepGraph_MutGuard<BRepGraphInc::FaceRef> aMut = aGraph.Editor().Faces().MutRef(aFaceRefId);
-    aGraph.Editor().Faces().SetRefOrientation(aMut, (anBeforeOri == TopAbs_FORWARD) ? TopAbs_REVERSED : TopAbs_FORWARD);
+    aGraph.Editor().Faces().SetRefOrientation(aMut,
+                                              (anBeforeOri == TopAbs_FORWARD) ? TopAbs_REVERSED
+                                                                              : TopAbs_FORWARD);
   }
 
   const BRepGraphInc::FaceRef& aAfterEntry = aGraph.Refs().Faces().Entry(aFaceRefId);

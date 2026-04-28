@@ -1163,7 +1163,7 @@ TEST(BRepGraph_BuildTest, ParamLayer_EdgeMutation_InvalidatesVertexBindings)
   EXPECT_TRUE(aParamLayer->FindPointOnCurve(aVertexId, anEdgeId));
 
   aGraph.Editor().Edges().SetTolerance(anEdgeId,
-    aGraph.Topo().Edges().Definition(anEdgeId).Tolerance + 0.01);
+                                       aGraph.Topo().Edges().Definition(anEdgeId).Tolerance + 0.01);
 }
 
 TEST(BRepGraph_BuildTest, ParamLayer_FaceMutation_InvalidatesVertexBindings)
@@ -1215,8 +1215,9 @@ TEST(BRepGraph_BuildTest, ParamLayer_CoEdgeMutation_InvalidatesPCurveBindings)
   EXPECT_TRUE(aParamLayer->FindPointOnPCurve(aVertexId, aCoEdgeId));
 
   aGraph.Editor().CoEdges().SetParamRange(aCoEdgeId,
-    aGraph.Topo().CoEdges().Definition(aCoEdgeId).ParamFirst + 0.01,
-    aGraph.Topo().CoEdges().Definition(aCoEdgeId).ParamLast);
+                                          aGraph.Topo().CoEdges().Definition(aCoEdgeId).ParamFirst
+                                            + 0.01,
+                                          aGraph.Topo().CoEdges().Definition(aCoEdgeId).ParamLast);
 
   EXPECT_FALSE(aParamLayer->FindPointOnPCurve(aVertexId, aCoEdgeId));
 }
@@ -1269,7 +1270,7 @@ TEST(BRepGraph_BuildTest, RegularityLayer_EdgeMutation_InvalidatesBindings)
     aRegularityLayer->FindContinuity(anEdgeId, aRegularity.FaceEntity1, aRegularity.FaceEntity2));
 
   aGraph.Editor().Edges().SetTolerance(anEdgeId,
-    aGraph.Topo().Edges().Definition(anEdgeId).Tolerance + 0.01);
+                                       aGraph.Topo().Edges().Definition(anEdgeId).Tolerance + 0.01);
 
   EXPECT_FALSE(
     aRegularityLayer->FindContinuity(anEdgeId, aRegularity.FaceEntity1, aRegularity.FaceEntity2));

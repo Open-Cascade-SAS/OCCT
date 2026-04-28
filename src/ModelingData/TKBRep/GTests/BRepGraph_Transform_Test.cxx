@@ -216,7 +216,7 @@ TEST(BRepGraph_TransformTest, TransformSingleFace)
   gp_Trsf aTrsf;
   aTrsf.SetTranslation(gp_Vec(10.0, 20.0, 30.0));
 
-  const BRepGraph_FaceId aFaceId  = BRepGraph_FaceId::Start();
+  const BRepGraph_FaceId aFaceId = BRepGraph_FaceId::Start();
   const BRepGraph_NodeId aFaceNode(BRepGraph_NodeId::Kind::Face, aFaceId.Index);
   BRepGraph aResultGraph = BRepGraph_Transform::TransformNode(aGraph, aFaceNode, aTrsf, true);
   ASSERT_TRUE(aResultGraph.IsDone());
@@ -230,13 +230,12 @@ TEST(BRepGraph_TransformTest, CopyMesh_TriangulationNodesTransformed)
 
   BRepGraph aGraph;
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes =
-    BRepGraph_Builder::Add(aGraph, aBox);
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes = BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GE(aGraph.Topo().Faces().Nb(), 1);
 
   // Manually create a triangulation with known node positions on the first face.
-  const BRepGraph_FaceId aFaceId = BRepGraph_FaceId::Start();
+  const BRepGraph_FaceId          aFaceId = BRepGraph_FaceId::Start();
   occ::handle<Poly_Triangulation> aSrcTri = new Poly_Triangulation(3, 1, false);
   aSrcTri->SetNode(1, gp_Pnt(1.0, 2.0, 3.0));
   aSrcTri->SetNode(2, gp_Pnt(4.0, 5.0, 6.0));
@@ -286,12 +285,11 @@ TEST(BRepGraph_TransformTest, CopyMesh_False_TriangulationInvalidated)
 
   BRepGraph aGraph;
   aGraph.Clear();
-  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes =
-    BRepGraph_Builder::Add(aGraph, aBox);
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes = BRepGraph_Builder::Add(aGraph, aBox);
   ASSERT_TRUE(aGraph.IsDone());
 
-  const BRepGraph_FaceId aFaceId = BRepGraph_FaceId::Start();
-  occ::handle<Poly_Triangulation> aTri = new Poly_Triangulation(3, 1, false);
+  const BRepGraph_FaceId          aFaceId = BRepGraph_FaceId::Start();
+  occ::handle<Poly_Triangulation> aTri    = new Poly_Triangulation(3, 1, false);
   aTri->SetNode(1, gp_Pnt(0, 0, 0));
   aTri->SetNode(2, gp_Pnt(1, 0, 0));
   aTri->SetNode(3, gp_Pnt(0, 1, 0));
@@ -315,9 +313,10 @@ TEST(BRepGraph_TransformTest, CopyMesh_False_TriangulationInvalidated)
 
 TEST(BRepGraph_TransformTest, MoveRef_FaceRef_LocationComposed)
 {
-  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
-  BRepGraph           aGraph;
-  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes = BRepGraph_Builder::Add(aGraph, aBoxMaker.Shape());
+  BRepPrimAPI_MakeBox                              aBoxMaker(10.0, 20.0, 30.0);
+  BRepGraph                                        aGraph;
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes =
+    BRepGraph_Builder::Add(aGraph, aBoxMaker.Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   // The solid has shell refs; grab the first one.
@@ -348,12 +347,13 @@ TEST(BRepGraph_TransformTest, MoveRef_FaceRef_LocationComposed)
 
 TEST(BRepGraph_TransformTest, MoveRef_ScaleRejected)
 {
-  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
-  BRepGraph           aGraph;
-  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes = BRepGraph_Builder::Add(aGraph, aBoxMaker.Shape());
+  BRepPrimAPI_MakeBox                              aBoxMaker(10.0, 20.0, 30.0);
+  BRepGraph                                        aGraph;
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes =
+    BRepGraph_Builder::Add(aGraph, aBoxMaker.Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  const BRepGraph_SolidId    aSolidId  = BRepGraph_SolidId::Start();
+  const BRepGraph_SolidId    aSolidId = BRepGraph_SolidId::Start();
   const BRepGraph_ShellRefId aShellRef =
     aGraph.Topo().Solids().Definition(aSolidId).ShellRefIds.Value(0);
 
@@ -368,16 +368,17 @@ TEST(BRepGraph_TransformTest, MoveRef_ScaleRejected)
 
 TEST(BRepGraph_TransformTest, TransformNode_FaceKind_VertexPointsShifted)
 {
-  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
-  BRepGraph           aGraph;
-  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes = BRepGraph_Builder::Add(aGraph, aBoxMaker.Shape());
+  BRepPrimAPI_MakeBox                              aBoxMaker(10.0, 20.0, 30.0);
+  BRepGraph                                        aGraph;
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes =
+    BRepGraph_Builder::Add(aGraph, aBoxMaker.Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
   const double aDx = 5.0, aDy = 10.0, aDz = 15.0;
   gp_Trsf      aTrsf;
   aTrsf.SetTranslation(gp_Vec(aDx, aDy, aDz));
 
-  const BRepGraph_FaceId aFaceId  = BRepGraph_FaceId::Start();
+  const BRepGraph_FaceId aFaceId = BRepGraph_FaceId::Start();
   const BRepGraph_NodeId aFaceNode(BRepGraph_NodeId::Kind::Face, aFaceId.Index);
 
   BRepGraph aResult = BRepGraph_Transform::TransformNode(aGraph, aFaceNode, aTrsf, true, false);
@@ -398,9 +399,10 @@ TEST(BRepGraph_TransformTest, TransformNode_FaceKind_VertexPointsShifted)
 
 TEST(BRepGraph_TransformTest, TransformNode_ShellKind)
 {
-  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
-  BRepGraph           aGraph;
-  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes = BRepGraph_Builder::Add(aGraph, aBoxMaker.Shape());
+  BRepPrimAPI_MakeBox                              aBoxMaker(10.0, 20.0, 30.0);
+  BRepGraph                                        aGraph;
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes =
+    BRepGraph_Builder::Add(aGraph, aBoxMaker.Shape());
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GE(aGraph.Topo().Shells().Nb(), 1);
 
@@ -432,9 +434,10 @@ TEST(BRepGraph_TransformTest, TransformNode_ShellKind)
 
 TEST(BRepGraph_TransformTest, TransformNode_SolidKind)
 {
-  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
-  BRepGraph           aGraph;
-  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes = BRepGraph_Builder::Add(aGraph, aBoxMaker.Shape());
+  BRepPrimAPI_MakeBox                              aBoxMaker(10.0, 20.0, 30.0);
+  BRepGraph                                        aGraph;
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes =
+    BRepGraph_Builder::Add(aGraph, aBoxMaker.Shape());
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GE(aGraph.Topo().Solids().Nb(), 1);
 
@@ -463,9 +466,10 @@ TEST(BRepGraph_TransformTest, TransformNode_SolidKind)
 
 TEST(BRepGraph_TransformTest, TransformNode_VertexKind)
 {
-  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
-  BRepGraph           aGraph;
-  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes = BRepGraph_Builder::Add(aGraph, aBoxMaker.Shape());
+  BRepPrimAPI_MakeBox                              aBoxMaker(10.0, 20.0, 30.0);
+  BRepGraph                                        aGraph;
+  [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes =
+    BRepGraph_Builder::Add(aGraph, aBoxMaker.Shape());
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GE(aGraph.Topo().Vertices().Nb(), 1);
 
@@ -497,7 +501,7 @@ TEST(BRepGraph_TransformTest, TransformNode_CompoundKind)
   aBB.Add(aCompound, aBox1.Shape());
   aBB.Add(aCompound, aBox2.Shape());
 
-  BRepGraph aGraph;
+  BRepGraph                                        aGraph;
   [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes =
     BRepGraph_Builder::Add(aGraph, aCompound);
   ASSERT_TRUE(aGraph.IsDone());
@@ -509,8 +513,7 @@ TEST(BRepGraph_TransformTest, TransformNode_CompoundKind)
   gp_Trsf aTrsf;
   aTrsf.SetTranslation(gp_Vec(20.0, 0.0, 0.0));
 
-  BRepGraph aResult =
-    BRepGraph_Transform::TransformNode(aGraph, aCompoundNode, aTrsf, true, false);
+  BRepGraph aResult = BRepGraph_Transform::TransformNode(aGraph, aCompoundNode, aTrsf, true, false);
   ASSERT_TRUE(aResult.IsDone());
 
   EXPECT_EQ(aResult.Topo().Compounds().Nb(), 1);
@@ -537,15 +540,14 @@ TEST(BRepGraph_TransformTest, TransformNode_CompSolidKind)
   BRepPrimAPI_MakeBox aBoxMaker(4.0, 4.0, 4.0);
   aBB.Add(aCompSolid, aBoxMaker.Shape());
 
-  BRepGraph aGraph;
+  BRepGraph                                        aGraph;
   [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes =
     BRepGraph_Builder::Add(aGraph, aCompSolid);
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GE(aGraph.Topo().CompSolids().Nb(), 1);
 
   const BRepGraph_CompSolidId aCompSolidId = BRepGraph_CompSolidId::Start();
-  const BRepGraph_NodeId      aCompSolidNode(BRepGraph_NodeId::Kind::CompSolid,
-                                        aCompSolidId.Index);
+  const BRepGraph_NodeId      aCompSolidNode(BRepGraph_NodeId::Kind::CompSolid, aCompSolidId.Index);
 
   gp_Trsf aTrsf;
   aTrsf.SetTranslation(gp_Vec(0.0, 0.0, 7.0));
@@ -571,8 +573,8 @@ TEST(BRepGraph_TransformTest, TransformNode_NegativeScale_VertexPointsMirrored)
   // Smoke-tests the negative-scale geometry path through TransformNode: every
   // vertex point should be mirrored about the origin and the result graph must
   // remain coherent (same face/edge/vertex counts, valid IsDone).
-  BRepPrimAPI_MakeBox aBoxMaker(10.0, 10.0, 10.0);
-  BRepGraph           aGraph;
+  BRepPrimAPI_MakeBox                              aBoxMaker(10.0, 10.0, 10.0);
+  BRepGraph                                        aGraph;
   [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes =
     BRepGraph_Builder::Add(aGraph, aBoxMaker.Shape());
   ASSERT_TRUE(aGraph.IsDone());
@@ -583,8 +585,7 @@ TEST(BRepGraph_TransformTest, TransformNode_NegativeScale_VertexPointsMirrored)
   gp_Trsf aTrsf;
   aTrsf.SetMirror(gp_Pnt(0.0, 0.0, 0.0));
 
-  BRepGraph aResult =
-    BRepGraph_Transform::TransformNode(aGraph, aSolidNode, aTrsf, true, false);
+  BRepGraph aResult = BRepGraph_Transform::TransformNode(aGraph, aSolidNode, aTrsf, true, false);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_EQ(aResult.Topo().Faces().Nb(), aGraph.Topo().Faces().Nb());
   EXPECT_EQ(aResult.Topo().Vertices().Nb(), aGraph.Topo().Vertices().Nb());
@@ -606,8 +607,8 @@ TEST(BRepGraph_TransformTest, TransformNode_CopyGeomAndMesh_LODCacheSurvives)
   // with theCopyGeom=true and theCopyMesh=true, the LOD face cache entries must survive.
   // Previously, applyMeshCopy(aSubgraph, aSubgraph, ...) would clear the face cache before
   // reading from it (source==dest), silently dropping all cached LOD triangulation entries.
-  BRepPrimAPI_MakeBox aBoxMaker(10.0, 10.0, 10.0);
-  BRepGraph           aGraph;
+  BRepPrimAPI_MakeBox                              aBoxMaker(10.0, 10.0, 10.0);
+  BRepGraph                                        aGraph;
   [[maybe_unused]] const BRepGraph_Builder::Result aBuildRes =
     BRepGraph_Builder::Add(aGraph, aBoxMaker.Shape());
   ASSERT_TRUE(aGraph.IsDone());
@@ -636,20 +637,18 @@ TEST(BRepGraph_TransformTest, TransformNode_CopyGeomAndMesh_LODCacheSurvives)
   BRepGraph_Tool::Mesh::AppendCachedTriangulation(aGraph, aFaceId, aRep2);
   BRepGraph_Tool::Mesh::SetCachedActiveIndex(aGraph, aFaceId, 1);
 
-  const BRepGraph_SolidId aSolidId   = BRepGraph_SolidId::Start();
-  const BRepGraph_NodeId  aSolidNode = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Solid,
-                                                        aSolidId.Index);
+  const BRepGraph_SolidId aSolidId = BRepGraph_SolidId::Start();
+  const BRepGraph_NodeId  aSolidNode =
+    BRepGraph_NodeId(BRepGraph_NodeId::Kind::Solid, aSolidId.Index);
   gp_Trsf aTrsf;
   aTrsf.SetTranslation(gp_Vec(5.0, 0.0, 0.0));
 
   // This is the previously failing path: theCopyGeom=true, theCopyMesh=true.
-  BRepGraph aResult =
-    BRepGraph_Transform::TransformNode(aGraph, aSolidNode, aTrsf, true, true);
+  BRepGraph aResult = BRepGraph_Transform::TransformNode(aGraph, aSolidNode, aTrsf, true, true);
   ASSERT_TRUE(aResult.IsDone());
 
   // Both LOD cache entries must survive the transform.
-  const BRepGraph_MeshCache::FaceMeshEntry* aEntry =
-    aResult.Mesh().Faces().CachedMesh(aFaceId);
+  const BRepGraph_MeshCache::FaceMeshEntry* aEntry = aResult.Mesh().Faces().CachedMesh(aFaceId);
   ASSERT_NE(aEntry, nullptr);
   EXPECT_TRUE(aEntry->IsPresent());
   EXPECT_EQ(aEntry->TriangulationRepIds.Length(), 2);

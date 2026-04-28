@@ -475,7 +475,8 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
 
       BRepGraph_MutGuard<BRepGraphInc::VertexRef> aNewInternalRef =
         aNewGraph.Editor().Vertices().MutRef(aNewInternalRefId);
-      aNewGraph.Editor().Vertices().SetRefLocalLocation(aNewInternalRef, anOldInternalRef.LocalLocation);
+      aNewGraph.Editor().Vertices().SetRefLocalLocation(aNewInternalRef,
+                                                        anOldInternalRef.LocalLocation);
       aVertexRefMap.Bind(anOldInternalRefId, aNewInternalRefId);
     }
   }
@@ -531,7 +532,8 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
     }
 
     BRepGraph_MutGuard<BRepGraphInc::WireDef> aNewWire = aNewGraph.Editor().Wires().Mut(aNewWireId);
-    aNewGraph.Editor().Wires().SetIsClosed(aNewWire, isWireClosedByIncidence(aNewGraph, aNewWireId));
+    aNewGraph.Editor().Wires().SetIsClosed(aNewWire,
+                                           isWireClosedByIncidence(aNewGraph, aNewWireId));
   }
 
   // Faces.
@@ -625,7 +627,8 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
 
       BRepGraph_MutGuard<BRepGraphInc::VertexRef> aNewVertexRef =
         aNewGraph.Editor().Vertices().MutRef(aNewVertexRefId);
-      aNewGraph.Editor().Vertices().SetRefLocalLocation(aNewVertexRef, anOldVertexRef.LocalLocation);
+      aNewGraph.Editor().Vertices().SetRefLocalLocation(aNewVertexRef,
+                                                        anOldVertexRef.LocalLocation);
       aVertexRefMap.Bind(anOldVertexRefId, aNewVertexRefId);
     }
   }
@@ -644,10 +647,14 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
     BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef> aNewCoEdge =
       aNewGraph.Editor().CoEdges().Mut(*aNewCoEdgeId);
 
-    aNewGraph.Editor().CoEdges().SetFaceDefId(aNewCoEdge, BRepGraph_FaceId::FromNodeId(remapId(anOldCoEdge.FaceDefId)));
+    aNewGraph.Editor().CoEdges().SetFaceDefId(
+      aNewCoEdge,
+      BRepGraph_FaceId::FromNodeId(remapId(anOldCoEdge.FaceDefId)));
     aNewGraph.Editor().CoEdges().SetOrientation(aNewCoEdge, anOldCoEdge.Orientation);
 
-    aNewGraph.Editor().CoEdges().SetParamRange(aNewCoEdge, anOldCoEdge.ParamFirst, anOldCoEdge.ParamLast);
+    aNewGraph.Editor().CoEdges().SetParamRange(aNewCoEdge,
+                                               anOldCoEdge.ParamFirst,
+                                               anOldCoEdge.ParamLast);
 
     aNewGraph.Editor().CoEdges().SetContinuity(aNewCoEdge, anOldCoEdge.Continuity);
 

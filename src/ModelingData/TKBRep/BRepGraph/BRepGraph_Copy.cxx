@@ -102,7 +102,7 @@ struct DeferredCacheTransfers
     return theSrc.Cache().CacheKindIter(theKey).More();
   }
 
-  void DeferNode(const BRepGraph& theSrc,
+  void DeferNode(const BRepGraph&       theSrc,
                  const BRepGraph_NodeId theSrcNode,
                  const BRepGraph_NodeId theDstNode)
   {
@@ -110,7 +110,7 @@ struct DeferredCacheTransfers
       NodePairs.Append({theSrcNode, theDstNode});
   }
 
-  void DeferRef(const BRepGraph& theSrc,
+  void DeferRef(const BRepGraph&      theSrc,
                 const BRepGraph_RefId theSrcRef,
                 const BRepGraph_RefId theDstRef)
   {
@@ -145,22 +145,22 @@ struct GraphCopyContext
   BRepGraph_MeshCacheStorage* DstMesh    = nullptr;
   BRepGraph_Data*             DstData    = nullptr;
 
-  NCollection_DataMap<BRepGraph_VertexId,        BRepGraph_VertexId>        Vertices;
-  NCollection_DataMap<BRepGraph_EdgeId,          BRepGraph_EdgeId>          Edges;
-  NCollection_DataMap<BRepGraph_WireId,          BRepGraph_WireId>          Wires;
-  NCollection_DataMap<BRepGraph_FaceId,          BRepGraph_FaceId>          Faces;
-  NCollection_DataMap<BRepGraph_ShellId,         BRepGraph_ShellId>         Shells;
-  NCollection_DataMap<BRepGraph_SolidId,         BRepGraph_SolidId>         Solids;
-  NCollection_DataMap<BRepGraph_CompoundId,      BRepGraph_CompoundId>      Compounds;
-  NCollection_DataMap<BRepGraph_CompSolidId,     BRepGraph_CompSolidId>     CompSolids;
-  NCollection_DataMap<BRepGraph_ProductId,       BRepGraph_ProductId>       Products;
-  NCollection_DataMap<BRepGraph_OccurrenceId,    BRepGraph_OccurrenceId>    Occurrences;
+  NCollection_DataMap<BRepGraph_VertexId, BRepGraph_VertexId>               Vertices;
+  NCollection_DataMap<BRepGraph_EdgeId, BRepGraph_EdgeId>                   Edges;
+  NCollection_DataMap<BRepGraph_WireId, BRepGraph_WireId>                   Wires;
+  NCollection_DataMap<BRepGraph_FaceId, BRepGraph_FaceId>                   Faces;
+  NCollection_DataMap<BRepGraph_ShellId, BRepGraph_ShellId>                 Shells;
+  NCollection_DataMap<BRepGraph_SolidId, BRepGraph_SolidId>                 Solids;
+  NCollection_DataMap<BRepGraph_CompoundId, BRepGraph_CompoundId>           Compounds;
+  NCollection_DataMap<BRepGraph_CompSolidId, BRepGraph_CompSolidId>         CompSolids;
+  NCollection_DataMap<BRepGraph_ProductId, BRepGraph_ProductId>             Products;
+  NCollection_DataMap<BRepGraph_OccurrenceId, BRepGraph_OccurrenceId>       Occurrences;
   NCollection_DataMap<BRepGraph_OccurrenceRefId, BRepGraph_OccurrenceRefId> OccurrenceRefs;
 
   explicit GraphCopyContext(const BRepGraph& theSrc,
-                       bool             theCopyGeom,
-                       bool             theCopyMesh,
-                       bool             theReserveCache)
+                            bool             theCopyGeom,
+                            bool             theCopyMesh,
+                            bool             theReserveCache)
       : Source(theSrc),
         CopyGeom(theCopyGeom),
         CopyMesh(theCopyMesh),
@@ -169,20 +169,21 @@ struct GraphCopyContext
   }
 };
 
-// Forward declarations — needed for mutual recursion between ensure* functions.
-BRepGraph_VertexId        ensureVertex       (GraphCopyContext& ctx, BRepGraph_VertexId srcId);
-BRepGraph_EdgeId          ensureEdge         (GraphCopyContext& ctx, BRepGraph_EdgeId srcId);
-BRepGraph_WireId          ensureWire         (GraphCopyContext& ctx, BRepGraph_WireId srcId);
-BRepGraph_FaceId          ensureFace         (GraphCopyContext& ctx, BRepGraph_FaceId srcId);
-BRepGraph_ShellId         ensureShell        (GraphCopyContext& ctx, BRepGraph_ShellId srcId);
-BRepGraph_SolidId         ensureSolid        (GraphCopyContext& ctx, BRepGraph_SolidId srcId);
-BRepGraph_CompoundId      ensureCompound     (GraphCopyContext& ctx, BRepGraph_CompoundId srcId);
-BRepGraph_CompSolidId     ensureCompSolid    (GraphCopyContext& ctx, BRepGraph_CompSolidId srcId);
-BRepGraph_ProductId       ensureProduct      (GraphCopyContext& ctx, BRepGraph_ProductId srcId);
-BRepGraph_OccurrenceId    ensureOccurrence   (GraphCopyContext& ctx, BRepGraph_OccurrenceId srcId);
-BRepGraph_OccurrenceRefId ensureOccurrenceRef(GraphCopyContext& ctx, BRepGraph_OccurrenceRefId srcRefId);
-void                      ensureNode         (GraphCopyContext& ctx, BRepGraph_NodeId srcNodeId);
-BRepGraph_NodeId          mappedNode         (const GraphCopyContext& ctx, BRepGraph_NodeId srcId);
+// Forward declarations - needed for mutual recursion between ensure* functions.
+BRepGraph_VertexId        ensureVertex(GraphCopyContext& ctx, BRepGraph_VertexId srcId);
+BRepGraph_EdgeId          ensureEdge(GraphCopyContext& ctx, BRepGraph_EdgeId srcId);
+BRepGraph_WireId          ensureWire(GraphCopyContext& ctx, BRepGraph_WireId srcId);
+BRepGraph_FaceId          ensureFace(GraphCopyContext& ctx, BRepGraph_FaceId srcId);
+BRepGraph_ShellId         ensureShell(GraphCopyContext& ctx, BRepGraph_ShellId srcId);
+BRepGraph_SolidId         ensureSolid(GraphCopyContext& ctx, BRepGraph_SolidId srcId);
+BRepGraph_CompoundId      ensureCompound(GraphCopyContext& ctx, BRepGraph_CompoundId srcId);
+BRepGraph_CompSolidId     ensureCompSolid(GraphCopyContext& ctx, BRepGraph_CompSolidId srcId);
+BRepGraph_ProductId       ensureProduct(GraphCopyContext& ctx, BRepGraph_ProductId srcId);
+BRepGraph_OccurrenceId    ensureOccurrence(GraphCopyContext& ctx, BRepGraph_OccurrenceId srcId);
+BRepGraph_OccurrenceRefId ensureOccurrenceRef(GraphCopyContext&         ctx,
+                                              BRepGraph_OccurrenceRefId srcRefId);
+void                      ensureNode(GraphCopyContext& ctx, BRepGraph_NodeId srcNodeId);
+BRepGraph_NodeId          mappedNode(const GraphCopyContext& ctx, BRepGraph_NodeId srcId);
 
 //=================================================================================================
 
@@ -191,55 +192,44 @@ BRepGraph_NodeId mappedNode(const GraphCopyContext& ctx, BRepGraph_NodeId srcId)
   using Kind = BRepGraph_NodeId::Kind;
   switch (srcId.NodeKind)
   {
-    case Kind::Vertex:
-    {
+    case Kind::Vertex: {
       const BRepGraph_VertexId* p = ctx.Vertices.Seek(BRepGraph_VertexId(srcId.Index));
       return p != nullptr ? BRepGraph_NodeId(*p) : BRepGraph_NodeId();
     }
-    case Kind::Edge:
-    {
+    case Kind::Edge: {
       const BRepGraph_EdgeId* p = ctx.Edges.Seek(BRepGraph_EdgeId(srcId.Index));
       return p != nullptr ? BRepGraph_NodeId(*p) : BRepGraph_NodeId();
     }
-    case Kind::Wire:
-    {
+    case Kind::Wire: {
       const BRepGraph_WireId* p = ctx.Wires.Seek(BRepGraph_WireId(srcId.Index));
       return p != nullptr ? BRepGraph_NodeId(*p) : BRepGraph_NodeId();
     }
-    case Kind::Face:
-    {
+    case Kind::Face: {
       const BRepGraph_FaceId* p = ctx.Faces.Seek(BRepGraph_FaceId(srcId.Index));
       return p != nullptr ? BRepGraph_NodeId(*p) : BRepGraph_NodeId();
     }
-    case Kind::Shell:
-    {
+    case Kind::Shell: {
       const BRepGraph_ShellId* p = ctx.Shells.Seek(BRepGraph_ShellId(srcId.Index));
       return p != nullptr ? BRepGraph_NodeId(*p) : BRepGraph_NodeId();
     }
-    case Kind::Solid:
-    {
+    case Kind::Solid: {
       const BRepGraph_SolidId* p = ctx.Solids.Seek(BRepGraph_SolidId(srcId.Index));
       return p != nullptr ? BRepGraph_NodeId(*p) : BRepGraph_NodeId();
     }
-    case Kind::Compound:
-    {
+    case Kind::Compound: {
       const BRepGraph_CompoundId* p = ctx.Compounds.Seek(BRepGraph_CompoundId(srcId.Index));
       return p != nullptr ? BRepGraph_NodeId(*p) : BRepGraph_NodeId();
     }
-    case Kind::CompSolid:
-    {
+    case Kind::CompSolid: {
       const BRepGraph_CompSolidId* p = ctx.CompSolids.Seek(BRepGraph_CompSolidId(srcId.Index));
       return p != nullptr ? BRepGraph_NodeId(*p) : BRepGraph_NodeId();
     }
-    case Kind::Product:
-    {
+    case Kind::Product: {
       const BRepGraph_ProductId* p = ctx.Products.Seek(BRepGraph_ProductId(srcId.Index));
       return p != nullptr ? BRepGraph_NodeId(*p) : BRepGraph_NodeId();
     }
-    case Kind::Occurrence:
-    {
-      const BRepGraph_OccurrenceId* p =
-        ctx.Occurrences.Seek(BRepGraph_OccurrenceId(srcId.Index));
+    case Kind::Occurrence: {
+      const BRepGraph_OccurrenceId* p = ctx.Occurrences.Seek(BRepGraph_OccurrenceId(srcId.Index));
       return p != nullptr ? BRepGraph_NodeId(*p) : BRepGraph_NodeId();
     }
     default:
@@ -258,8 +248,7 @@ BRepGraph_VertexId ensureVertex(GraphCopyContext& ctx, BRepGraph_VertexId srcId)
     return *anExisting;
 
   const BRepGraphInc::VertexDef& aVtx = ctx.Source.Topo().Vertices().Definition(srcId);
-  const BRepGraph_VertexId       aNewId =
-    ctx.Result.Editor().Vertices().Add(aVtx.Point, aVtx.Tolerance);
+  const BRepGraph_VertexId aNewId = ctx.Result.Editor().Vertices().Add(aVtx.Point, aVtx.Tolerance);
   ctx.Vertices.Bind(srcId, aNewId);
   ctx.Deferred.DeferNode(ctx.Source, srcId, aNewId);
   return aNewId;
@@ -282,10 +271,14 @@ BRepGraph_EdgeId ensureEdge(GraphCopyContext& ctx, BRepGraph_EdgeId srcId)
     ensureVertex(ctx, BRepGraph_Tool::Edge::EndVertexId(ctx.Source, srcId));
 
   const occ::handle<Geom_Curve>& aSrcCurve = BRepGraph_Tool::Edge::Curve(ctx.Source, srcId);
-  occ::handle<Geom_Curve>        aCurve     = copyCurve(aSrcCurve, ctx.CopyGeom);
+  occ::handle<Geom_Curve>        aCurve    = copyCurve(aSrcCurve, ctx.CopyGeom);
 
-  const BRepGraph_EdgeId aNewId = ctx.Result.Editor().Edges().Add(
-    aNewStart, aNewEnd, aCurve, anEdge.ParamFirst, anEdge.ParamLast, anEdge.Tolerance);
+  const BRepGraph_EdgeId aNewId = ctx.Result.Editor().Edges().Add(aNewStart,
+                                                                  aNewEnd,
+                                                                  aCurve,
+                                                                  anEdge.ParamFirst,
+                                                                  anEdge.ParamLast,
+                                                                  anEdge.Tolerance);
   {
     BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aG = ctx.Result.Editor().Edges().Mut(aNewId);
     ctx.Result.Editor().Edges().SetDegenerate(aG, anEdge.IsDegenerate);
@@ -323,18 +316,18 @@ BRepGraph_WireId ensureWire(GraphCopyContext& ctx, BRepGraph_WireId srcId)
 
 //=================================================================================================
 
-void ensurePCurvesForFace(GraphCopyContext& ctx, BRepGraph_FaceId srcFaceId, BRepGraph_FaceId newFaceId)
+void ensurePCurvesForFace(GraphCopyContext& ctx,
+                          BRepGraph_FaceId  srcFaceId,
+                          BRepGraph_FaceId  newFaceId)
 {
   for (BRepGraph_RefsWireOfFace aWIt(ctx.Source, srcFaceId); aWIt.More(); aWIt.Next())
   {
-    const BRepGraph_WireId aSrcWireId =
-      ctx.Source.Refs().Wires().Entry(aWIt.CurrentId()).WireDefId;
+    const BRepGraph_WireId aSrcWireId = ctx.Source.Refs().Wires().Entry(aWIt.CurrentId()).WireDefId;
     for (BRepGraph_RefsCoEdgeOfWire aCEIt(ctx.Source, aSrcWireId); aCEIt.More(); aCEIt.Next())
     {
       const BRepGraph_CoEdgeId aSrcCoEdgeId =
         ctx.Source.Refs().CoEdges().Entry(aCEIt.CurrentId()).CoEdgeDefId;
-      const BRepGraphInc::CoEdgeDef& aCoEdge =
-        ctx.Source.Topo().CoEdges().Definition(aSrcCoEdgeId);
+      const BRepGraphInc::CoEdgeDef& aCoEdge = ctx.Source.Topo().CoEdges().Definition(aSrcCoEdgeId);
       if (!aCoEdge.Curve2DRepId.IsValid())
         continue;
       const BRepGraph_EdgeId* aNewEdge = ctx.Edges.Seek(aCoEdge.EdgeDefId);
@@ -343,8 +336,12 @@ void ensurePCurvesForFace(GraphCopyContext& ctx, BRepGraph_FaceId srcFaceId, BRe
       const occ::handle<Geom2d_Curve>& aSrcPC =
         BRepGraph_Tool::CoEdge::PCurve(ctx.Source, aSrcCoEdgeId);
       occ::handle<Geom2d_Curve> aNewPC = copyPCurve(aSrcPC, ctx.CopyGeom);
-      ctx.Result.Editor().CoEdges().AddPCurve(
-        *aNewEdge, newFaceId, aNewPC, aCoEdge.ParamFirst, aCoEdge.ParamLast, aCoEdge.Orientation);
+      ctx.Result.Editor().CoEdges().AddPCurve(*aNewEdge,
+                                              newFaceId,
+                                              aNewPC,
+                                              aCoEdge.ParamFirst,
+                                              aCoEdge.ParamLast,
+                                              aCoEdge.Orientation);
     }
   }
 }
@@ -365,7 +362,7 @@ BRepGraph_FaceId ensureFace(GraphCopyContext& ctx, BRepGraph_FaceId srcId)
   NCollection_DynamicArray<BRepGraph_WireId> anInnerWires;
   for (BRepGraph_RefsWireOfFace aWRIt(ctx.Source, srcId); aWRIt.More(); aWRIt.Next())
   {
-    const BRepGraphInc::WireRef& aWR     = ctx.Source.Refs().Wires().Entry(aWRIt.CurrentId());
+    const BRepGraphInc::WireRef& aWR      = ctx.Source.Refs().Wires().Entry(aWRIt.CurrentId());
     const BRepGraph_WireId       aNewWire = ensureWire(ctx, aWR.WireDefId);
     if (aWR.IsOuter)
       anOuterWire = aNewWire;
@@ -391,7 +388,7 @@ BRepGraph_FaceId ensureFace(GraphCopyContext& ctx, BRepGraph_FaceId srcId)
     if (aCached != nullptr)
     {
       BRepGraph_MeshCache::FaceMeshEntry& aNewEntry = ctx.DstMesh->ChangeFaceMesh(aNewId);
-      aNewEntry = *aCached;
+      aNewEntry                                     = *aCached;
       // Update StoredOwnGen to the destination face's generation so that freshness checks pass.
       // The raw copy carries the source OwnGen, which differs from the newly created face.
       aNewEntry.StoredOwnGen = ctx.DstStorage->Face(aNewId).OwnGen;
@@ -427,7 +424,7 @@ BRepGraph_ShellId ensureShell(GraphCopyContext& ctx, BRepGraph_ShellId srcId)
 
   for (BRepGraph_RefsFaceOfShell aFRIt(ctx.Source, srcId); aFRIt.More(); aFRIt.Next())
   {
-    const BRepGraphInc::FaceRef& aFR     = ctx.Source.Refs().Faces().Entry(aFRIt.CurrentId());
+    const BRepGraphInc::FaceRef& aFR      = ctx.Source.Refs().Faces().Entry(aFRIt.CurrentId());
     const BRepGraph_FaceId       aNewFace = ensureFace(ctx, aFR.FaceDefId);
     const BRepGraph_FaceRefId    aNewFaceRefId =
       ctx.Result.Editor().Shells().AddFace(aNewId, aNewFace, aFR.Orientation);
@@ -452,7 +449,7 @@ BRepGraph_SolidId ensureSolid(GraphCopyContext& ctx, BRepGraph_SolidId srcId)
 
   for (BRepGraph_RefsShellOfSolid aSRIt(ctx.Source, srcId); aSRIt.More(); aSRIt.Next())
   {
-    const BRepGraphInc::ShellRef& aSR      = ctx.Source.Refs().Shells().Entry(aSRIt.CurrentId());
+    const BRepGraphInc::ShellRef& aSR       = ctx.Source.Refs().Shells().Entry(aSRIt.CurrentId());
     const BRepGraph_ShellId       aNewShell = ensureShell(ctx, aSR.ShellDefId);
     const BRepGraph_ShellRefId    aNewShellRefId =
       ctx.Result.Editor().Solids().AddShell(aNewId, aNewShell, aSR.Orientation);
@@ -558,7 +555,8 @@ BRepGraph_CompSolidId ensureCompSolid(GraphCopyContext& ctx, BRepGraph_CompSolid
 
 //=================================================================================================
 
-BRepGraph_OccurrenceRefId ensureOccurrenceRef(GraphCopyContext& ctx, BRepGraph_OccurrenceRefId srcRefId)
+BRepGraph_OccurrenceRefId ensureOccurrenceRef(GraphCopyContext&         ctx,
+                                              BRepGraph_OccurrenceRefId srcRefId)
 {
   const BRepGraph_OccurrenceRefId* anExisting = ctx.OccurrenceRefs.Seek(srcRefId);
   if (anExisting != nullptr)
@@ -569,8 +567,8 @@ BRepGraph_OccurrenceRefId ensureOccurrenceRef(GraphCopyContext& ctx, BRepGraph_O
   ctx.OccurrenceRefs.Bind(srcRefId, aNewId);
 
   BRepGraphInc::OccurrenceRef& aNewRef = ctx.DstStorage->ChangeOccurrenceRef(aNewId);
-  aNewRef.IsRemoved     = aSrcRef.IsRemoved;
-  aNewRef.LocalLocation = aSrcRef.LocalLocation;
+  aNewRef.IsRemoved                    = aSrcRef.IsRemoved;
+  aNewRef.LocalLocation                = aSrcRef.LocalLocation;
   if (aSrcRef.OccurrenceDefId.IsValid())
     aNewRef.OccurrenceDefId = ensureOccurrence(ctx, aSrcRef.OccurrenceDefId);
   // ParentId is set by the caller (ensureProduct) after the ref is created.
@@ -590,7 +588,7 @@ BRepGraph_OccurrenceId ensureOccurrence(GraphCopyContext& ctx, BRepGraph_Occurre
   ctx.Occurrences.Bind(srcId, aNewId);
 
   BRepGraphInc::OccurrenceDef& aNewOcc = ctx.DstStorage->ChangeOccurrence(aNewId);
-  aNewOcc.IsRemoved = aSrcOcc.IsRemoved;
+  aNewOcc.IsRemoved                    = aSrcOcc.IsRemoved;
   if (aSrcOcc.ChildDefId.IsValid())
   {
     ensureNode(ctx, aSrcOcc.ChildDefId);
@@ -851,8 +849,7 @@ BRepGraph BRepGraph_Copy::Perform(const BRepGraph& theGraph, const bool theCopyG
     const BRepGraph_ProductId       aProductId = aProductIt.CurrentId();
     const BRepGraphInc::ProductDef& aSrcProd   = theGraph.incStorage().Product(aProductId);
     const BRepGraph_ProductId       aNewId     = aResult.incStorage().AppendProduct();
-    aResult.incStorage().ChangeProduct(aNewId).OccurrenceRefIds =
-      aSrcProd.OccurrenceRefIds;
+    aResult.incStorage().ChangeProduct(aNewId).OccurrenceRefIds = aSrcProd.OccurrenceRefIds;
   }
 
   // Occurrences.
@@ -862,8 +859,7 @@ BRepGraph BRepGraph_Copy::Perform(const BRepGraph& theGraph, const bool theCopyG
     const BRepGraph_OccurrenceId       anOccurrenceId = anOccurrenceIt.CurrentId();
     const BRepGraphInc::OccurrenceDef& aSrcOcc = theGraph.incStorage().Occurrence(anOccurrenceId);
     const BRepGraph_OccurrenceId       aNewId  = aResult.incStorage().AppendOccurrence();
-    aResult.incStorage().ChangeOccurrence(aNewId).ChildDefId =
-      aSrcOcc.ChildDefId;
+    aResult.incStorage().ChangeOccurrence(aNewId).ChildDefId = aSrcOcc.ChildDefId;
   }
 
   // OccurrenceRefs (carry LocalLocation, formerly stored as Placement on OccurrenceDef).
@@ -873,9 +869,9 @@ BRepGraph BRepGraph_Copy::Perform(const BRepGraph& theGraph, const bool theCopyG
     const BRepGraphInc::OccurrenceRef& aSrcRef = theGraph.incStorage().OccurrenceRef(aRefId);
     const BRepGraph_OccurrenceRefId    aNewId  = aResult.incStorage().AppendOccurrenceRef();
     BRepGraphInc::OccurrenceRef&       aNewRef = aResult.incStorage().ChangeOccurrenceRef(aNewId);
-    aNewRef.ParentId = aSrcRef.ParentId;
+    aNewRef.ParentId                           = aSrcRef.ParentId;
     aNewRef.IsRemoved                          = aSrcRef.IsRemoved;
-    aNewRef.OccurrenceDefId = aSrcRef.OccurrenceDefId;
+    aNewRef.OccurrenceDefId                    = aSrcRef.OccurrenceDefId;
     aNewRef.LocalLocation                      = aSrcRef.LocalLocation;
   }
 

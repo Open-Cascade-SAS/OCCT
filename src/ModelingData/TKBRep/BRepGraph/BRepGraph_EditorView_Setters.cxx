@@ -63,9 +63,8 @@ void BRepGraph::EditorView::VertexOps::SetPoint(const BRepGraph_VertexId theVert
 
 //=================================================================================================
 
-void BRepGraph::EditorView::VertexOps::SetPoint(
-  BRepGraph_MutGuard<BRepGraphInc::VertexDef>& theMut,
-  const gp_Pnt&                                thePoint)
+void BRepGraph::EditorView::VertexOps::SetPoint(BRepGraph_MutGuard<BRepGraphInc::VertexDef>& theMut,
+                                                const gp_Pnt& thePoint)
 {
   theMut.Internal().Point = thePoint;
 }
@@ -81,9 +80,8 @@ void BRepGraph::EditorView::EdgeOps::SetTolerance(const BRepGraph_EdgeId theEdge
 
 //=================================================================================================
 
-void BRepGraph::EditorView::EdgeOps::SetTolerance(
-  BRepGraph_MutGuard<BRepGraphInc::EdgeDef>& theMut,
-  double                                     theTolerance)
+void BRepGraph::EditorView::EdgeOps::SetTolerance(BRepGraph_MutGuard<BRepGraphInc::EdgeDef>& theMut,
+                                                  double theTolerance)
 {
   theMut.Internal().Tolerance = theTolerance;
 }
@@ -104,8 +102,8 @@ void BRepGraph::EditorView::CoEdgeOps::SetParamRange(const BRepGraph_CoEdgeId th
 
 void BRepGraph::EditorView::CoEdgeOps::SetParamRange(
   BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef>& theMut,
-  double                                        theFirst,
-  double                                        theLast)
+  double                                       theFirst,
+  double                                       theLast)
 {
   theMut.Internal().ParamFirst = theFirst;
   theMut.Internal().ParamLast  = theLast;
@@ -113,8 +111,7 @@ void BRepGraph::EditorView::CoEdgeOps::SetParamRange(
 
 //=================================================================================================
 
-void BRepGraph::EditorView::WireOps::SetIsClosed(const BRepGraph_WireId theWire,
-                                                 bool                   theIsClosed)
+void BRepGraph::EditorView::WireOps::SetIsClosed(const BRepGraph_WireId theWire, bool theIsClosed)
 {
   myGraph->myData->myIncStorage.ChangeWire(theWire).IsClosed = theIsClosed;
   myGraph->markModified(theWire);
@@ -122,9 +119,8 @@ void BRepGraph::EditorView::WireOps::SetIsClosed(const BRepGraph_WireId theWire,
 
 //=================================================================================================
 
-void BRepGraph::EditorView::WireOps::SetIsClosed(
-  BRepGraph_MutGuard<BRepGraphInc::WireDef>& theMut,
-  bool                                        theIsClosed)
+void BRepGraph::EditorView::WireOps::SetIsClosed(BRepGraph_MutGuard<BRepGraphInc::WireDef>& theMut,
+                                                 bool theIsClosed)
 {
   theMut.Internal().IsClosed = theIsClosed;
 }
@@ -140,9 +136,8 @@ void BRepGraph::EditorView::FaceOps::SetTolerance(const BRepGraph_FaceId theFace
 
 //=================================================================================================
 
-void BRepGraph::EditorView::FaceOps::SetTolerance(
-  BRepGraph_MutGuard<BRepGraphInc::FaceDef>& theMut,
-  double                                     theTolerance)
+void BRepGraph::EditorView::FaceOps::SetTolerance(BRepGraph_MutGuard<BRepGraphInc::FaceDef>& theMut,
+                                                  double theTolerance)
 {
   theMut.Internal().Tolerance = theTolerance;
 }
@@ -160,16 +155,15 @@ void BRepGraph::EditorView::FaceOps::SetNaturalRestriction(const BRepGraph_FaceI
 
 void BRepGraph::EditorView::FaceOps::SetNaturalRestriction(
   BRepGraph_MutGuard<BRepGraphInc::FaceDef>& theMut,
-  bool                                        theNaturalRestriction)
+  bool                                       theNaturalRestriction)
 {
   theMut.Internal().NaturalRestriction = theNaturalRestriction;
 }
 
 //=================================================================================================
 
-void BRepGraph::EditorView::FaceOps::SetTriangulationRep(
-  const BRepGraph_FaceId             theFace,
-  const BRepGraph_TriangulationRepId theRep)
+void BRepGraph::EditorView::FaceOps::SetTriangulationRep(const BRepGraph_FaceId             theFace,
+                                                         const BRepGraph_TriangulationRepId theRep)
 {
   myGraph->myData->myIncStorage.ChangeFace(theFace).TriangulationRepId = theRep;
   myGraph->markModified(theFace);
@@ -232,9 +226,8 @@ void BRepGraph::EditorView::OccurrenceOps::SetRefLocalLocation(
 
 //=================================================================================================
 
-void BRepGraph::EditorView::VertexOps::SetRefLocalLocation(
-  const BRepGraph_VertexRefId theVertexRef,
-  const TopLoc_Location&      theLoc)
+void BRepGraph::EditorView::VertexOps::SetRefLocalLocation(const BRepGraph_VertexRefId theVertexRef,
+                                                           const TopLoc_Location&      theLoc)
 {
   myGraph->myData->myIncStorage.ChangeVertexRef(theVertexRef).LocalLocation = theLoc;
   myGraph->markRefModified(theVertexRef);
@@ -251,9 +244,8 @@ void BRepGraph::EditorView::VertexOps::SetRefLocalLocation(
 
 //=================================================================================================
 
-void BRepGraph::EditorView::CoEdgeOps::SetRefLocalLocation(
-  const BRepGraph_CoEdgeRefId theCoEdgeRef,
-  const TopLoc_Location&      theLoc)
+void BRepGraph::EditorView::CoEdgeOps::SetRefLocalLocation(const BRepGraph_CoEdgeRefId theCoEdgeRef,
+                                                           const TopLoc_Location&      theLoc)
 {
   myGraph->myData->myIncStorage.ChangeCoEdgeRef(theCoEdgeRef).LocalLocation = theLoc;
   myGraph->markRefModified(theCoEdgeRef);
@@ -324,9 +316,8 @@ void BRepGraph::EditorView::SolidOps::SetRefLocalLocation(
 
 //=================================================================================================
 
-void BRepGraph::EditorView::GenOps::SetChildRefLocalLocation(
-  const BRepGraph_ChildRefId theChildRef,
-  const TopLoc_Location&     theLoc)
+void BRepGraph::EditorView::GenOps::SetChildRefLocalLocation(const BRepGraph_ChildRefId theChildRef,
+                                                             const TopLoc_Location&     theLoc)
 {
   myGraph->myData->myIncStorage.ChangeChildRef(theChildRef).LocalLocation = theLoc;
   myGraph->markRefModified(theChildRef);
@@ -393,9 +384,8 @@ void BRepGraph::EditorView::EdgeOps::SetSameRange(const BRepGraph_EdgeId theEdge
 
 //=================================================================================================
 
-void BRepGraph::EditorView::EdgeOps::SetSameRange(
-  BRepGraph_MutGuard<BRepGraphInc::EdgeDef>& theMut,
-  const bool                                 theSameRange)
+void BRepGraph::EditorView::EdgeOps::SetSameRange(BRepGraph_MutGuard<BRepGraphInc::EdgeDef>& theMut,
+                                                  const bool theSameRange)
 {
   theMut.Internal().SameRange = theSameRange;
 }
@@ -513,10 +503,9 @@ void BRepGraph::EditorView::CoEdgeOps::SetUVBox(const BRepGraph_CoEdgeId theCoEd
 
 //=================================================================================================
 
-void BRepGraph::EditorView::CoEdgeOps::SetUVBox(
-  BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef>& theMut,
-  const gp_Pnt2d&                              theUV1,
-  const gp_Pnt2d&                              theUV2)
+void BRepGraph::EditorView::CoEdgeOps::SetUVBox(BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef>& theMut,
+                                                const gp_Pnt2d&                              theUV1,
+                                                const gp_Pnt2d&                              theUV2)
 {
   theMut.Internal().UV1 = theUV1;
   theMut.Internal().UV2 = theUV2;
@@ -733,7 +722,7 @@ void BRepGraph::EditorView::VertexOps::SetTolerance(
 //=================================================================================================
 
 void BRepGraph::EditorView::VertexOps::SetRefOrientation(const BRepGraph_VertexRefId theVertexRef,
-                                                         const TopAbs_Orientation theOrientation)
+                                                         const TopAbs_Orientation    theOrientation)
 {
   myGraph->myData->myIncStorage.ChangeVertexRef(theVertexRef).Orientation = theOrientation;
   myGraph->markRefModified(theVertexRef);
@@ -759,9 +748,8 @@ void BRepGraph::EditorView::EdgeOps::SetIsClosed(const BRepGraph_EdgeId theEdge,
 
 //=================================================================================================
 
-void BRepGraph::EditorView::EdgeOps::SetIsClosed(
-  BRepGraph_MutGuard<BRepGraphInc::EdgeDef>& theMut,
-  const bool                                 theIsClosed)
+void BRepGraph::EditorView::EdgeOps::SetIsClosed(BRepGraph_MutGuard<BRepGraphInc::EdgeDef>& theMut,
+                                                 const bool theIsClosed)
 {
   theMut.Internal().IsClosed = theIsClosed;
 }
@@ -805,7 +793,7 @@ void BRepGraph::EditorView::SolidOps::SetRefOrientation(
 //=================================================================================================
 
 void BRepGraph::EditorView::OccurrenceOps::SetChildDefId(const BRepGraph_OccurrenceId theOccurrence,
-                                                         const BRepGraph_NodeId theChildDefId)
+                                                         const BRepGraph_NodeId       theChildDefId)
 {
   myGraph->myData->myIncStorage.ChangeOccurrence(theOccurrence).ChildDefId = theChildDefId;
   myGraph->markModified(theOccurrence);
@@ -823,7 +811,7 @@ void BRepGraph::EditorView::OccurrenceOps::SetChildDefId(
 //=================================================================================================
 
 void BRepGraph::EditorView::GenOps::SetChildRefOrientation(const BRepGraph_ChildRefId theChildRef,
-                                                           const TopAbs_Orientation   theOrientation)
+                                                           const TopAbs_Orientation theOrientation)
 {
   myGraph->myData->myIncStorage.ChangeChildRef(theChildRef).Orientation = theOrientation;
   myGraph->markRefModified(theChildRef);
@@ -849,9 +837,8 @@ void BRepGraph::EditorView::RepOps::SetSurface(const BRepGraph_SurfaceRepId     
 
 //=================================================================================================
 
-void BRepGraph::EditorView::RepOps::SetSurface(
-  BRepGraph_MutGuard<BRepGraphInc::SurfaceRep>& theMut,
-  const occ::handle<Geom_Surface>&              theSurface)
+void BRepGraph::EditorView::RepOps::SetSurface(BRepGraph_MutGuard<BRepGraphInc::SurfaceRep>& theMut,
+                                               const occ::handle<Geom_Surface>& theSurface)
 {
   theMut.Internal().Surface = theSurface;
 }
@@ -867,9 +854,8 @@ void BRepGraph::EditorView::RepOps::SetCurve3D(const BRepGraph_Curve3DRepId   th
 
 //=================================================================================================
 
-void BRepGraph::EditorView::RepOps::SetCurve3D(
-  BRepGraph_MutGuard<BRepGraphInc::Curve3DRep>& theMut,
-  const occ::handle<Geom_Curve>&                theCurve)
+void BRepGraph::EditorView::RepOps::SetCurve3D(BRepGraph_MutGuard<BRepGraphInc::Curve3DRep>& theMut,
+                                               const occ::handle<Geom_Curve>& theCurve)
 {
   theMut.Internal().Curve = theCurve;
 }
@@ -885,9 +871,8 @@ void BRepGraph::EditorView::RepOps::SetCurve2D(const BRepGraph_Curve2DRepId     
 
 //=================================================================================================
 
-void BRepGraph::EditorView::RepOps::SetCurve2D(
-  BRepGraph_MutGuard<BRepGraphInc::Curve2DRep>& theMut,
-  const occ::handle<Geom2d_Curve>&              theCurve)
+void BRepGraph::EditorView::RepOps::SetCurve2D(BRepGraph_MutGuard<BRepGraphInc::Curve2DRep>& theMut,
+                                               const occ::handle<Geom2d_Curve>& theCurve)
 {
   theMut.Internal().Curve = theCurve;
 }
@@ -1020,7 +1005,7 @@ void BRepGraph::EditorView::EdgeOps::SetStartVertexRefId(const BRepGraph_EdgeId 
     return;
   const BRepGraph_VertexId anOldVtx = vertexFromRef(aStorage, anEdge.StartVertexRefId);
   const BRepGraph_VertexId aNewVtx  = vertexFromRef(aStorage, theVertexRef);
-  anEdge.StartVertexRefId = theVertexRef;
+  anEdge.StartVertexRefId           = theVertexRef;
   rebindVertexEdge(aStorage, anOldVtx, aNewVtx, theEdge);
   myGraph->markModified(theEdge);
 }
@@ -1031,9 +1016,9 @@ void BRepGraph::EditorView::EdgeOps::SetStartVertexRefId(
 {
   if (theMut->StartVertexRefId == theVertexRef)
     return;
-  BRepGraphInc_Storage&    aStorage = myGraph->myData->myIncStorage;
-  const BRepGraph_VertexId anOldVtx = vertexFromRef(aStorage, theMut->StartVertexRefId);
-  const BRepGraph_VertexId aNewVtx  = vertexFromRef(aStorage, theVertexRef);
+  BRepGraphInc_Storage&    aStorage  = myGraph->myData->myIncStorage;
+  const BRepGraph_VertexId anOldVtx  = vertexFromRef(aStorage, theMut->StartVertexRefId);
+  const BRepGraph_VertexId aNewVtx   = vertexFromRef(aStorage, theVertexRef);
   theMut.Internal().StartVertexRefId = theVertexRef;
   rebindVertexEdge(aStorage, anOldVtx, aNewVtx, theMut.Id());
 }
@@ -1049,7 +1034,7 @@ void BRepGraph::EditorView::EdgeOps::SetEndVertexRefId(const BRepGraph_EdgeId   
     return;
   const BRepGraph_VertexId anOldVtx = vertexFromRef(aStorage, anEdge.EndVertexRefId);
   const BRepGraph_VertexId aNewVtx  = vertexFromRef(aStorage, theVertexRef);
-  anEdge.EndVertexRefId = theVertexRef;
+  anEdge.EndVertexRefId             = theVertexRef;
   rebindVertexEdge(aStorage, anOldVtx, aNewVtx, theEdge);
   myGraph->markModified(theEdge);
 }
@@ -1063,7 +1048,7 @@ void BRepGraph::EditorView::EdgeOps::SetEndVertexRefId(
   BRepGraphInc_Storage&    aStorage = myGraph->myData->myIncStorage;
   const BRepGraph_VertexId anOldVtx = vertexFromRef(aStorage, theMut->EndVertexRefId);
   const BRepGraph_VertexId aNewVtx  = vertexFromRef(aStorage, theVertexRef);
-  theMut.Internal().EndVertexRefId = theVertexRef;
+  theMut.Internal().EndVertexRefId  = theVertexRef;
   rebindVertexEdge(aStorage, anOldVtx, aNewVtx, theMut.Id());
 }
 
@@ -1140,17 +1125,16 @@ void rebindCoEdgeEdge(BRepGraphInc_Storage&          theStorage,
 }
 
 //! Apply rev-index updates for CoEdge.FaceDefId rewrite.
-void rebindCoEdgeFace(BRepGraphInc_Storage&          theStorage,
-                      const BRepGraph_CoEdgeId       theCoEdge,
-                      const BRepGraph_EdgeId         theEdge,
-                      const BRepGraph_FaceId         theOldFace,
-                      const BRepGraph_FaceId         theNewFace)
+void rebindCoEdgeFace(BRepGraphInc_Storage&    theStorage,
+                      const BRepGraph_CoEdgeId theCoEdge,
+                      const BRepGraph_EdgeId   theEdge,
+                      const BRepGraph_FaceId   theOldFace,
+                      const BRepGraph_FaceId   theNewFace)
 {
   if (theOldFace == theNewFace || !theEdge.IsValid())
     return;
   BRepGraphInc_ReverseIndex& aRI = theStorage.ChangeReverseIndex();
-  if (theOldFace.IsValid()
-      && isLastCoEdgeOfEdgeOnFace(theStorage, theEdge, theOldFace, theCoEdge))
+  if (theOldFace.IsValid() && isLastCoEdgeOfEdgeOnFace(theStorage, theEdge, theOldFace, theCoEdge))
   {
     aRI.UnbindEdgeFromFace(theEdge, theOldFace);
   }
@@ -1228,7 +1212,7 @@ void rebindVertexRef(BRepGraphInc_Storage&    theStorage,
     return;
   if (theParent.NodeKind != BRepGraph_NodeId::Kind::Edge)
     return;
-  const BRepGraph_EdgeId anEdge(theParent);
+  const BRepGraph_EdgeId     anEdge(theParent);
   BRepGraphInc_ReverseIndex& aRI = theStorage.ChangeReverseIndex();
   if (theOldVtx.IsValid())
     aRI.UnbindVertexFromEdge(theOldVtx, anEdge);
@@ -1240,8 +1224,8 @@ void rebindVertexRef(BRepGraphInc_Storage&    theStorage,
 void BRepGraph::EditorView::VertexOps::SetRefVertexDefId(const BRepGraph_VertexRefId theVertexRef,
                                                          const BRepGraph_VertexId    theVertex)
 {
-  BRepGraphInc_Storage&     aStorage = myGraph->myData->myIncStorage;
-  BRepGraphInc::VertexRef&  aRef     = aStorage.ChangeVertexRef(theVertexRef);
+  BRepGraphInc_Storage&    aStorage = myGraph->myData->myIncStorage;
+  BRepGraphInc::VertexRef& aRef     = aStorage.ChangeVertexRef(theVertexRef);
   if (aRef.VertexDefId == theVertex)
     return;
   const BRepGraph_VertexId anOldVtx = aRef.VertexDefId;
@@ -1277,7 +1261,7 @@ void rebindWireRef(BRepGraphInc_Storage&  theStorage,
     return;
   if (theParent.NodeKind != BRepGraph_NodeId::Kind::Face)
     return;
-  const BRepGraph_FaceId aFace(theParent);
+  const BRepGraph_FaceId     aFace(theParent);
   BRepGraphInc_ReverseIndex& aRI = theStorage.ChangeReverseIndex();
   if (theOldWire.IsValid())
     aRI.UnbindWireFromFace(theOldWire, aFace);
@@ -1326,7 +1310,7 @@ void rebindFaceRef(BRepGraphInc_Storage&  theStorage,
     return;
   if (theParent.NodeKind != BRepGraph_NodeId::Kind::Shell)
     return;
-  const BRepGraph_ShellId aShell(theParent);
+  const BRepGraph_ShellId    aShell(theParent);
   BRepGraphInc_ReverseIndex& aRI = theStorage.ChangeReverseIndex();
   if (theOldFace.IsValid())
     aRI.UnbindFaceFromShell(theOldFace, aShell);
@@ -1366,16 +1350,16 @@ void BRepGraph::EditorView::FaceOps::SetRefFaceDefId(
 
 namespace
 {
-void rebindShellRef(BRepGraphInc_Storage&    theStorage,
-                    const BRepGraph_NodeId   theParent,
-                    const BRepGraph_ShellId  theOldShell,
-                    const BRepGraph_ShellId  theNewShell)
+void rebindShellRef(BRepGraphInc_Storage&   theStorage,
+                    const BRepGraph_NodeId  theParent,
+                    const BRepGraph_ShellId theOldShell,
+                    const BRepGraph_ShellId theNewShell)
 {
   if (theOldShell == theNewShell)
     return;
   if (theParent.NodeKind != BRepGraph_NodeId::Kind::Solid)
     return;
-  const BRepGraph_SolidId aSolid(theParent);
+  const BRepGraph_SolidId    aSolid(theParent);
   BRepGraphInc_ReverseIndex& aRI = theStorage.ChangeReverseIndex();
   if (theOldShell.IsValid())
     aRI.UnbindShellFromSolid(theOldShell, aSolid);
@@ -1425,7 +1409,7 @@ void rebindSolidRef(BRepGraphInc_Storage&   theStorage,
   if (theParent.NodeKind != BRepGraph_NodeId::Kind::CompSolid)
     return;
   const BRepGraph_CompSolidId aCompSolid(theParent);
-  BRepGraphInc_ReverseIndex& aRI = theStorage.ChangeReverseIndex();
+  BRepGraphInc_ReverseIndex&  aRI = theStorage.ChangeReverseIndex();
   if (theOldSolid.IsValid())
     aRI.UnbindSolidFromCompSolid(theOldSolid, aCompSolid);
   if (theNewSolid.IsValid())
@@ -1508,20 +1492,19 @@ void rebindCoEdgeRef(BRepGraphInc_Storage&       theStorage,
     return;
   if (theParent.NodeKind != BRepGraph_NodeId::Kind::Wire)
     return;
-  const BRepGraph_WireId aWire(theParent);
+  const BRepGraph_WireId     aWire(theParent);
   BRepGraphInc_ReverseIndex& aRI = theStorage.ChangeReverseIndex();
   if (theOldCoEdge.IsValid())
     aRI.UnbindCoEdgeFromWire(theOldCoEdge, aWire);
   if (theNewCoEdge.IsValid())
     aRI.BindCoEdgeToWire(theNewCoEdge, aWire);
-  // EdgeToWires is derived from coedge.EdgeDefId × wire (deduplicated). Unbind only
+  // EdgeToWires is derived from coedge.EdgeDefId x wire (deduplicated). Unbind only
   // when no other CoEdgeRef in the wire still references the old edge.
   const BRepGraph_EdgeId anOldEdge = edgeFromCoEdge(theStorage, theOldCoEdge);
   const BRepGraph_EdgeId aNewEdge  = edgeFromCoEdge(theStorage, theNewCoEdge);
   if (anOldEdge != aNewEdge)
   {
-    if (anOldEdge.IsValid()
-        && isLastCoEdgeRefOfEdgeInWire(theStorage, anOldEdge, aWire, theRefId))
+    if (anOldEdge.IsValid() && isLastCoEdgeRefOfEdgeInWire(theStorage, anOldEdge, aWire, theRefId))
     {
       aRI.UnbindEdgeFromWire(anOldEdge, aWire);
     }
@@ -1620,7 +1603,7 @@ void rebindOccurrenceRef(BRepGraphInc_Storage&        theStorage,
     return;
   if (theParent.NodeKind != BRepGraph_NodeId::Kind::Product)
     return;
-  const BRepGraph_ProductId aProduct(theParent);
+  const BRepGraph_ProductId  aProduct(theParent);
   BRepGraphInc_ReverseIndex& aRI = theStorage.ChangeReverseIndex();
   if (theOldOcc.IsValid())
     aRI.UnbindProductOccurrence(theOldOcc, aProduct);

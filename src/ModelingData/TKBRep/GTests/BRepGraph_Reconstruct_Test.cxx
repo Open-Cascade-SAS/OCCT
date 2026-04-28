@@ -575,7 +575,8 @@ TEST(BRepGraph_ReconstructTest, AfterVertexMutation_ModifiedFlagAndPointChanged)
   {
     BRepGraph_MutGuard<BRepGraphInc::VertexDef> aMutVtx =
       aGraph.Editor().Vertices().Mut(BRepGraph_VertexId(aVertIdx));
-    aGraph.Editor().Vertices().SetPoint(aMutVtx, gp_Pnt(anOldPt.X(), anOldPt.Y(), anOldPt.Z() + 5.0));
+    aGraph.Editor().Vertices().SetPoint(aMutVtx,
+                                        gp_Pnt(anOldPt.X(), anOldPt.Y(), anOldPt.Z() + 5.0));
   }
 
   // Verify the OwnGen is incremented on the vertex def (directly mutated).

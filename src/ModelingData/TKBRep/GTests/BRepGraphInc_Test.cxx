@@ -1457,7 +1457,7 @@ TEST(BRepGraphIncTest, ReverseIndex_AfterEditorMutations_StaysConsistent)
   // (or the only wire if all faces have a single wire).
   for (BRepGraph_FaceIterator aFaceIt(aGraph); aFaceIt.More(); aFaceIt.Next())
   {
-    const BRepGraph_FaceId aFaceId = aFaceIt.CurrentId();
+    const BRepGraph_FaceId                              aFaceId = aFaceIt.CurrentId();
     const NCollection_DynamicArray<BRepGraph_WireRefId> aWireRefs =
       BRepGraph_TestTools::WireRefsOfFace(aGraph, aFaceId);
     if (aWireRefs.IsEmpty())
@@ -1465,16 +1465,14 @@ TEST(BRepGraphIncTest, ReverseIndex_AfterEditorMutations_StaysConsistent)
     ASSERT_TRUE(aGraph.Editor().Faces().RemoveWire(aFaceId, aWireRefs.Value(0)));
     break;
   }
-  EXPECT_TRUE(aGraph.ValidateReverseIndex())
-    << "Reverse index inconsistent after RemoveWire";
+  EXPECT_TRUE(aGraph.ValidateReverseIndex()) << "Reverse index inconsistent after RemoveWire";
 
   // Remove the first face from the first shell.
   const NCollection_DynamicArray<BRepGraph_FaceRefId> aFaceRefs =
     BRepGraph_TestTools::FaceRefsOfShell(aGraph, BRepGraph_ShellId::Start());
   ASSERT_GE(aFaceRefs.Length(), 1);
   ASSERT_TRUE(aGraph.Editor().Shells().RemoveFace(BRepGraph_ShellId::Start(), aFaceRefs.Value(0)));
-  EXPECT_TRUE(aGraph.ValidateReverseIndex())
-    << "Reverse index inconsistent after RemoveFace";
+  EXPECT_TRUE(aGraph.ValidateReverseIndex()) << "Reverse index inconsistent after RemoveFace";
 
   // Remove the first shell from the first solid.
   const NCollection_DynamicArray<BRepGraph_ShellRefId> aShellRefs =
@@ -1482,8 +1480,7 @@ TEST(BRepGraphIncTest, ReverseIndex_AfterEditorMutations_StaysConsistent)
   ASSERT_GE(aShellRefs.Length(), 1);
   ASSERT_TRUE(
     aGraph.Editor().Solids().RemoveShell(BRepGraph_SolidId::Start(), aShellRefs.Value(0)));
-  EXPECT_TRUE(aGraph.ValidateReverseIndex())
-    << "Reverse index inconsistent after RemoveShell";
+  EXPECT_TRUE(aGraph.ValidateReverseIndex()) << "Reverse index inconsistent after RemoveShell";
 
   EXPECT_TRUE(aGraph.Editor().ValidateMutationBoundary());
 }
@@ -1506,7 +1503,7 @@ TEST(BRepGraphIncTest, ReverseIndex_BulkBuild_TwiceProducesEqualState)
 
   for (uint32_t anIdx = 0; anIdx < aStorageA.NbEdges(); ++anIdx)
   {
-    const BRepGraph_EdgeId                                  anEdgeId(anIdx);
+    const BRepGraph_EdgeId                            anEdgeId(anIdx);
     const NCollection_DynamicArray<BRepGraph_WireId>* aWiresA =
       aStorageA.ReverseIndex().WiresOfEdge(anEdgeId);
     const NCollection_DynamicArray<BRepGraph_WireId>* aWiresB =
@@ -1590,8 +1587,7 @@ TEST(BRepGraphIncTest, ReverseIndex_SetRefVertexDefId_RebindsVertexToEdges)
     aGraph.Editor().Edges().Add(aV0, aV1, occ::handle<Geom_Curve>(), 0.0, 1.0, 1.e-7);
   ASSERT_TRUE(anEdge.IsValid());
 
-  const BRepGraph_VertexRefId aStartRef =
-    aGraph.Topo().Edges().Definition(anEdge).StartVertexRefId;
+  const BRepGraph_VertexRefId aStartRef = aGraph.Topo().Edges().Definition(anEdge).StartVertexRefId;
   aGraph.Editor().Vertices().SetRefVertexDefId(aStartRef, aV2);
 
   bool stillUnderV0 = false, foundUnderV2 = false;
@@ -1643,7 +1639,8 @@ TEST(BRepGraphIncTest, ReverseIndex_SetRefWireDefId_RebindsWireToFaces)
     BRepGraph_TestTools::WireRefsOfFace(aGraph, aFace0).Value(0);
   const BRepGraph_WireId aOldWire = aGraph.Refs().Wires().Entry(aWireRef0).WireDefId;
   const BRepGraph_WireId aNewWire =
-    aGraph.Refs().Wires()
+    aGraph.Refs()
+      .Wires()
       .Entry(BRepGraph_TestTools::WireRefsOfFace(aGraph, aFace1).Value(0))
       .WireDefId;
   ASSERT_NE(aOldWire, aNewWire);
@@ -1671,11 +1668,10 @@ TEST(BRepGraphIncTest, ReverseIndex_SetRefFaceDefId_RebindsFaceToShells)
     BRepGraph_Builder::Add(aGraph, aBoxMaker.Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  const BRepGraph_ShellId    aShell = BRepGraph_ShellId::Start();
-  const BRepGraph_FaceRefId  aRef0 =
-    BRepGraph_TestTools::FaceRefsOfShell(aGraph, aShell).Value(0);
-  const BRepGraph_FaceId aOldFace = aGraph.Refs().Faces().Entry(aRef0).FaceDefId;
-  const BRepGraph_FaceId aNewFace(1);
+  const BRepGraph_ShellId   aShell = BRepGraph_ShellId::Start();
+  const BRepGraph_FaceRefId aRef0  = BRepGraph_TestTools::FaceRefsOfShell(aGraph, aShell).Value(0);
+  const BRepGraph_FaceId    aOldFace = aGraph.Refs().Faces().Entry(aRef0).FaceDefId;
+  const BRepGraph_FaceId    aNewFace(1);
   ASSERT_NE(aOldFace, aNewFace);
 
   aGraph.Editor().Faces().SetRefFaceDefId(aRef0, aNewFace);
@@ -1716,8 +1712,8 @@ TEST(BRepGraphIncTest, ReverseIndex_SetEdgeDefIdOnCoEdge_RebindsEdgeToCoEdges)
   ASSERT_TRUE(aGraph.IsDone());
   ASSERT_GE(aGraph.Topo().CoEdges().Nb(), 2);
 
-  const BRepGraph_CoEdgeId       aCoEdge = BRepGraph_CoEdgeId::Start();
-  const BRepGraphInc::CoEdgeDef& aDef    = aGraph.Topo().CoEdges().Definition(aCoEdge);
+  const BRepGraph_CoEdgeId       aCoEdge   = BRepGraph_CoEdgeId::Start();
+  const BRepGraphInc::CoEdgeDef& aDef      = aGraph.Topo().CoEdges().Definition(aCoEdge);
   const BRepGraph_EdgeId         anOldEdge = aDef.EdgeDefId;
   // Pick any other valid edge as the target.
   BRepGraph_EdgeId aNewEdge;
@@ -1757,8 +1753,8 @@ TEST(BRepGraphIncTest, ReverseIndex_SetFaceDefIdOnCoEdge_LastBondCheck)
   ASSERT_TRUE(aGraph.IsDone());
 
   // Locate a seam edge: an edge with two coedges on the same face.
-  BRepGraph_EdgeId aSeamEdge;
-  BRepGraph_FaceId aSeamFace;
+  BRepGraph_EdgeId   aSeamEdge;
+  BRepGraph_FaceId   aSeamFace;
   BRepGraph_CoEdgeId aSeamCoEdge;
   for (BRepGraph_EdgeId aE(0); aE.IsValid(aGraph.Topo().Edges().Nb()) && !aSeamEdge.IsValid(); ++aE)
   {
@@ -1826,7 +1822,7 @@ TEST(BRepGraphIncTest, ReverseIndex_SetEndVertexRefId_RebindsVertexToEdges)
   const BRepGraph_VertexId aV2 = aGraph.Editor().Vertices().Add(gp_Pnt(2, 0, 0), 1.e-7);
   const BRepGraph_EdgeId   anEdge =
     aGraph.Editor().Edges().Add(aV0, aV1, occ::handle<Geom_Curve>(), 0.0, 1.0, 1.e-7);
-  const BRepGraph_EdgeId   anExtra =
+  const BRepGraph_EdgeId anExtra =
     aGraph.Editor().Edges().Add(aV0, aV2, occ::handle<Geom_Curve>(), 0.0, 1.0, 1.e-7);
   ASSERT_TRUE(anEdge.IsValid());
   ASSERT_TRUE(anExtra.IsValid());
@@ -1858,8 +1854,8 @@ TEST(BRepGraphIncTest, ReverseIndex_SetterIdempotency_NoOp)
     BRepGraph_Builder::Add(aGraph, aBoxMaker.Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  const BRepGraph_CoEdgeId aCoEdge = BRepGraph_CoEdgeId::Start();
-  const BRepGraphInc::CoEdgeDef& aDef = aGraph.Topo().CoEdges().Definition(aCoEdge);
+  const BRepGraph_CoEdgeId       aCoEdge = BRepGraph_CoEdgeId::Start();
+  const BRepGraphInc::CoEdgeDef& aDef    = aGraph.Topo().CoEdges().Definition(aCoEdge);
   aGraph.Editor().CoEdges().SetEdgeDefId(aCoEdge, aDef.EdgeDefId);
   aGraph.Editor().CoEdges().SetFaceDefId(aCoEdge, aDef.FaceDefId);
   EXPECT_TRUE(aGraph.ValidateReverseIndex());
@@ -1904,7 +1900,7 @@ TEST(BRepGraphIncTest, ReverseIndex_SetChildRefChildDefId_CrossKindRebinds)
   aGraph.Editor().Gen().SetChildRefChildDefId(aChildRef, BRepGraph_NodeId(aShell));
 
   const BRepGraph_SolidId anOldSolid = BRepGraph_SolidId::FromNodeId(anOldChild);
-  bool oldStill = false, newBound = false;
+  bool                    oldStill = false, newBound = false;
   for (const BRepGraph_CompoundId& c : aGraph.Topo().Solids().Compounds(anOldSolid))
     if (c == aCompound0)
       oldStill = true;
@@ -1971,7 +1967,7 @@ TEST(BRepGraphIncTest, ReverseIndex_SetEdgeDefIdOnCoEdge_LastBondInWireCheck)
 
   aGraph.Editor().CoEdges().SetEdgeDefId(aSeamCoEdge, aTargetEdge);
 
-  // The OTHER coedge of aSeamWire still references aSeamEdge → wire still bound.
+  // The OTHER coedge of aSeamWire still references aSeamEdge -> wire still bound.
   bool stillBound = false;
   for (const BRepGraph_WireId& aW : aGraph.Topo().Edges().Wires(aSeamEdge))
     if (aW == aSeamWire)
@@ -1991,7 +1987,7 @@ TEST(BRepGraphIncTest, ReverseIndex_OrphanRef_NoRevIndexUpdate)
     BRepGraph_Builder::Add(aGraph, aBoxMaker.Shape());
   ASSERT_TRUE(aGraph.IsDone());
 
-  const BRepGraph_VertexId aV = aGraph.Editor().Vertices().Add(gp_Pnt(7, 7, 7), 1.e-7);
+  const BRepGraph_VertexId    aV = aGraph.Editor().Vertices().Add(gp_Pnt(7, 7, 7), 1.e-7);
   const BRepGraph_VertexRefId aFaceVtxRef =
     aGraph.Editor().Faces().AddVertex(BRepGraph_FaceId::Start(), aV, TopAbs_INTERNAL);
   ASSERT_TRUE(aFaceVtxRef.IsValid());

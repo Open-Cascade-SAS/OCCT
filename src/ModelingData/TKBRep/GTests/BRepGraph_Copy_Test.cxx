@@ -303,7 +303,7 @@ TEST(BRepGraph_CopyTest, CopySingleFace)
 
   const BRepGraph_FaceId aFaceId = BRepGraph_FaceId::Start();
   const BRepGraph_NodeId aFaceNode(BRepGraph_NodeId::Kind::Face, aFaceId.Index);
-  BRepGraph aCopyGraph = BRepGraph_Copy::CopyNode(aGraph, aFaceNode, true);
+  BRepGraph              aCopyGraph = BRepGraph_Copy::CopyNode(aGraph, aFaceNode, true);
   ASSERT_TRUE(aCopyGraph.IsDone());
   EXPECT_EQ(aCopyGraph.Topo().Faces().Nb(), 1);
 

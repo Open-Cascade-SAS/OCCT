@@ -129,17 +129,18 @@ public:
     Standard_EXPORT void SetPolygon3D(const BRepGraph_Polygon3DRepId     theRep,
                                       const occ::handle<Poly_Polygon3D>& thePolygon);
     Standard_EXPORT void SetPolygon3D(BRepGraph_MutGuard<BRepGraphInc::Polygon3DRep>& theMut,
-                                      const occ::handle<Poly_Polygon3D>& thePolygon);
+                                      const occ::handle<Poly_Polygon3D>&              thePolygon);
 
     //! Set the polygon handle on a Polygon2DRep.
     Standard_EXPORT void SetPolygon2D(const BRepGraph_Polygon2DRepId     theRep,
                                       const occ::handle<Poly_Polygon2D>& thePolygon);
     Standard_EXPORT void SetPolygon2D(BRepGraph_MutGuard<BRepGraphInc::Polygon2DRep>& theMut,
-                                      const occ::handle<Poly_Polygon2D>& thePolygon);
+                                      const occ::handle<Poly_Polygon2D>&              thePolygon);
 
     //! Set the polygon-on-triangulation handle on a PolygonOnTriRep.
-    Standard_EXPORT void SetPolygonOnTri(const BRepGraph_PolygonOnTriRepId               theRep,
-                                         const occ::handle<Poly_PolygonOnTriangulation>& thePolygon);
+    Standard_EXPORT void SetPolygonOnTri(
+      const BRepGraph_PolygonOnTriRepId               theRep,
+      const occ::handle<Poly_PolygonOnTriangulation>& thePolygon);
     Standard_EXPORT void SetPolygonOnTri(
       BRepGraph_MutGuard<BRepGraphInc::PolygonOnTriRep>& theMut,
       const occ::handle<Poly_PolygonOnTriangulation>&    thePolygon);
@@ -222,11 +223,12 @@ public:
     Standard_EXPORT void SetRefLocalLocation(BRepGraph_MutGuard<BRepGraphInc::VertexRef>& theMut,
                                              const TopLoc_Location&                       theLoc);
 
-    //! Rewire a vertex reference to a different vertex def (rebinds VertexToEdges if parent is Edge).
+    //! Rewire a vertex reference to a different vertex def (rebinds VertexToEdges if parent is
+    //! Edge).
     Standard_EXPORT void SetRefVertexDefId(const BRepGraph_VertexRefId theVertexRef,
                                            const BRepGraph_VertexId    theVertex);
     Standard_EXPORT void SetRefVertexDefId(BRepGraph_MutGuard<BRepGraphInc::VertexRef>& theMut,
-                                           const BRepGraph_VertexId theVertex);
+                                           const BRepGraph_VertexId                     theVertex);
 
   private:
     friend class EditorView;
@@ -321,7 +323,7 @@ public:
     //! @param[in] theMut       active mutable edge guard
     //! @param[in] theTolerance new tolerance value
     Standard_EXPORT void SetTolerance(BRepGraph_MutGuard<BRepGraphInc::EdgeDef>& theMut,
-                                      double                                      theTolerance);
+                                      double                                     theTolerance);
 
     //! Set the parametric range of an edge definition.
     Standard_EXPORT void SetParamRange(const BRepGraph_EdgeId theEdge,
@@ -374,7 +376,7 @@ public:
     Standard_EXPORT void SetEndVertexRefId(const BRepGraph_EdgeId      theEdge,
                                            const BRepGraph_VertexRefId theVertexRef);
     Standard_EXPORT void SetEndVertexRefId(BRepGraph_MutGuard<BRepGraphInc::EdgeDef>& theMut,
-                                           const BRepGraph_VertexRefId theVertexRef);
+                                           const BRepGraph_VertexRefId                theVertexRef);
 
   private:
     friend class EditorView;
@@ -451,8 +453,8 @@ public:
     //! @param[in] theFirst new first parameter value
     //! @param[in] theLast  new last parameter value
     Standard_EXPORT void SetParamRange(BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef>& theMut,
-                                       double                                        theFirst,
-                                       double                                        theLast);
+                                       double                                       theFirst,
+                                       double                                       theLast);
 
     //! Set the local location of a coedge reference and fire immediate notification.
     //! @param[in] theCoEdgeRef typed coedge reference identifier
@@ -463,15 +465,14 @@ public:
     //! Set the local location of a coedge reference inside a batched mutation scope.
     //! @param[in] theMut active mutable coedge reference guard
     //! @param[in] theLoc new local location
-    Standard_EXPORT void SetRefLocalLocation(
-      BRepGraph_MutGuard<BRepGraphInc::CoEdgeRef>& theMut,
-      const TopLoc_Location&                       theLoc);
+    Standard_EXPORT void SetRefLocalLocation(BRepGraph_MutGuard<BRepGraphInc::CoEdgeRef>& theMut,
+                                             const TopLoc_Location&                       theLoc);
 
     //! Rewire a coedge reference to a different coedge def (rebinds CoEdgeToWires + EdgeToWires).
     Standard_EXPORT void SetRefCoEdgeDefId(const BRepGraph_CoEdgeRefId theCoEdgeRef,
                                            const BRepGraph_CoEdgeId    theCoEdge);
     Standard_EXPORT void SetRefCoEdgeDefId(BRepGraph_MutGuard<BRepGraphInc::CoEdgeRef>& theMut,
-                                           const BRepGraph_CoEdgeId theCoEdge);
+                                           const BRepGraph_CoEdgeId                     theCoEdge);
 
     //! Set the orientation of a coedge definition.
     Standard_EXPORT void SetOrientation(const BRepGraph_CoEdgeId theCoEdge,
@@ -491,7 +492,7 @@ public:
     Standard_EXPORT void SetContinuity(const BRepGraph_CoEdgeId theCoEdge,
                                        const GeomAbs_Shape      theContinuity);
     Standard_EXPORT void SetContinuity(BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef>& theMut,
-                                       const GeomAbs_Shape theContinuity);
+                                       const GeomAbs_Shape                          theContinuity);
 
     //! Set the seam-pair continuity of a coedge definition.
     Standard_EXPORT void SetSeamContinuity(const BRepGraph_CoEdgeId theCoEdge,
@@ -518,7 +519,7 @@ public:
                                               const BRepGraph_PolygonOnTriRepId            theRep);
 
     //! Drop face-bound parametric payload (PCurve, param range, continuity, UVs)
-    //! while keeping structural links — used when the owning face is removed.
+    //! while keeping structural links - used when the owning face is removed.
     Standard_EXPORT void ClearPCurveBinding(const BRepGraph_CoEdgeId theCoEdge);
     Standard_EXPORT void ClearPCurveBinding(BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef>& theMut);
 
@@ -526,15 +527,17 @@ public:
     Standard_EXPORT void SetSeamPairId(const BRepGraph_CoEdgeId theCoEdge,
                                        const BRepGraph_CoEdgeId theSeamPairId);
     Standard_EXPORT void SetSeamPairId(BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef>& theMut,
-                                       const BRepGraph_CoEdgeId theSeamPairId);
+                                       const BRepGraph_CoEdgeId                     theSeamPairId);
 
-    //! Rewire a coedge to a different parent edge (rebinds EdgeToCoEdges, EdgeToWires, EdgeToFaces). Caller maintains reverse indices.
+    //! Rewire a coedge to a different parent edge (rebinds EdgeToCoEdges, EdgeToWires,
+    //! EdgeToFaces). Caller maintains reverse indices.
     Standard_EXPORT void SetEdgeDefId(const BRepGraph_CoEdgeId theCoEdge,
                                       const BRepGraph_EdgeId   theEdge);
     Standard_EXPORT void SetEdgeDefId(BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef>& theMut,
                                       const BRepGraph_EdgeId                       theEdge);
 
-    //! Rewire a coedge to a different owning face (rebinds EdgeToFaces). Caller maintains reverse indices.
+    //! Rewire a coedge to a different owning face (rebinds EdgeToFaces). Caller maintains reverse
+    //! indices.
     Standard_EXPORT void SetFaceDefId(const BRepGraph_CoEdgeId theCoEdge,
                                       const BRepGraph_FaceId   theFace);
     Standard_EXPORT void SetFaceDefId(BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef>& theMut,
@@ -603,7 +606,7 @@ public:
     //! @param[in] theMut      active mutable wire guard
     //! @param[in] theIsClosed new closed state
     Standard_EXPORT void SetIsClosed(BRepGraph_MutGuard<BRepGraphInc::WireDef>& theMut,
-                                     bool                                        theIsClosed);
+                                     bool                                       theIsClosed);
 
     //! Set the local location of a wire reference and fire immediate notification.
     //! @param[in] theWireRef typed wire reference identifier
@@ -709,7 +712,7 @@ public:
     //! @param[in] theMut       active mutable face guard
     //! @param[in] theTolerance new tolerance value
     Standard_EXPORT void SetTolerance(BRepGraph_MutGuard<BRepGraphInc::FaceDef>& theMut,
-                                      double                                      theTolerance);
+                                      double                                     theTolerance);
 
     //! Set the NaturalRestriction flag of a face definition and fire immediate notification.
     //! @param[in] theFace               typed face definition identifier
@@ -720,9 +723,8 @@ public:
     //! Set the NaturalRestriction flag inside a batched mutation scope.
     //! @param[in] theMut                active mutable face guard
     //! @param[in] theNaturalRestriction new flag value
-    Standard_EXPORT void
-      SetNaturalRestriction(BRepGraph_MutGuard<BRepGraphInc::FaceDef>& theMut,
-                            bool                                        theNaturalRestriction);
+    Standard_EXPORT void SetNaturalRestriction(BRepGraph_MutGuard<BRepGraphInc::FaceDef>& theMut,
+                                               bool theNaturalRestriction);
 
     //! Set the triangulation representation id and fire immediate notification.
     //! Pass an invalid id to clear the triangulation binding.
@@ -755,8 +757,8 @@ public:
     //! Set the local location of a face reference and fire immediate notification.
     //! @param[in] theFaceRef typed face reference identifier
     //! @param[in] theLoc     new local location
-    Standard_EXPORT void SetRefLocalLocation(const BRepGraph_FaceRefId  theFaceRef,
-                                             const TopLoc_Location&     theLoc);
+    Standard_EXPORT void SetRefLocalLocation(const BRepGraph_FaceRefId theFaceRef,
+                                             const TopLoc_Location&    theLoc);
 
     //! Set the local location of a face reference inside a batched mutation scope.
     //! @param[in] theMut active mutable face reference guard
@@ -858,7 +860,8 @@ public:
     Standard_EXPORT void SetRefOrientation(BRepGraph_MutGuard<BRepGraphInc::ShellRef>& theMut,
                                            const TopAbs_Orientation theOrientation);
 
-    //! Rewire a shell reference to a different shell def (rebinds ShellToSolids if parent is Solid).
+    //! Rewire a shell reference to a different shell def (rebinds ShellToSolids if parent is
+    //! Solid).
     Standard_EXPORT void SetRefShellDefId(const BRepGraph_ShellRefId theShellRef,
                                           const BRepGraph_ShellId    theShell);
     Standard_EXPORT void SetRefShellDefId(BRepGraph_MutGuard<BRepGraphInc::ShellRef>& theMut,
@@ -959,7 +962,8 @@ public:
     Standard_EXPORT void SetRefOrientation(BRepGraph_MutGuard<BRepGraphInc::SolidRef>& theMut,
                                            const TopAbs_Orientation theOrientation);
 
-    //! Rewire a solid reference to a different solid def (rebinds SolidToCompSolid if parent is CompSolid).
+    //! Rewire a solid reference to a different solid def (rebinds SolidToCompSolid if parent is
+    //! CompSolid).
     Standard_EXPORT void SetRefSolidDefId(const BRepGraph_SolidRefId theSolidRef,
                                           const BRepGraph_SolidId    theSolid);
     Standard_EXPORT void SetRefSolidDefId(BRepGraph_MutGuard<BRepGraphInc::SolidRef>& theMut,
@@ -1167,12 +1171,12 @@ public:
     //! Set the local location of an occurrence reference inside a batched mutation scope.
     //! @param[in] theMut active mutable occurrence reference guard
     //! @param[in] theLoc new local location
-    Standard_EXPORT void
-      SetRefLocalLocation(BRepGraph_MutGuard<BRepGraphInc::OccurrenceRef>& theMut,
-                          const TopLoc_Location&                           theLoc);
+    Standard_EXPORT void SetRefLocalLocation(
+      BRepGraph_MutGuard<BRepGraphInc::OccurrenceRef>& theMut,
+      const TopLoc_Location&                           theLoc);
 
     //! Set the child node referenced by an occurrence definition.
-    //! The child kind must be a topology root or a Product — invalid kinds are
+    //! The child kind must be a topology root or a Product - invalid kinds are
     //! accepted but the resulting graph will fail Validate.
     Standard_EXPORT void SetChildDefId(const BRepGraph_OccurrenceId theOccurrence,
                                        const BRepGraph_NodeId       theChildDefId);
@@ -1275,7 +1279,7 @@ public:
     Standard_EXPORT void SetChildRefChildDefId(const BRepGraph_ChildRefId theChildRef,
                                                const BRepGraph_NodeId     theChild);
     Standard_EXPORT void SetChildRefChildDefId(BRepGraph_MutGuard<BRepGraphInc::ChildRef>& theMut,
-                                               const BRepGraph_NodeId                       theChild);
+                                               const BRepGraph_NodeId theChild);
 
     //! Set the local location of a child reference inside a batched mutation scope.
     //! @param[in] theMut active mutable child reference guard

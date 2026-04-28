@@ -699,7 +699,7 @@ TEST(BRepGraph_ValidateTest, Audit_DetectsOrphanWireRef_AfterFaceRemoval)
       continue;
     BRepGraph_MutGuard<BRepGraphInc::WireRef> aMut = aGraph.Editor().Wires().MutRef(aRefId);
     aMut.Internal().ParentId = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, 9999);
-    aDidCorrupt    = true;
+    aDidCorrupt              = true;
   }
   ASSERT_TRUE(aDidCorrupt);
 

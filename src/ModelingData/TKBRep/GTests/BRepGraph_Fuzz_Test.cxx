@@ -122,7 +122,8 @@ bool applyOne(BRepGraph& theGraph, std::mt19937& theRng)
       BRepGraph_MutGuard<BRepGraphInc::VertexDef> aMut = theGraph.Editor().Vertices().Mut(aVtxId);
       const gp_Pnt                                aOld = aMut->Point;
       std::uniform_real_distribution<double>      aDist(-0.1, 0.1);
-      theGraph.Editor().Vertices().SetPoint(aMut,
+      theGraph.Editor().Vertices().SetPoint(
+        aMut,
         gp_Pnt(aOld.X() + aDist(theRng), aOld.Y() + aDist(theRng), aOld.Z() + aDist(theRng)));
       return true;
     }
