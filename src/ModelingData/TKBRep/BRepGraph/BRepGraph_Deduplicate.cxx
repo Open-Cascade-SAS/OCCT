@@ -296,7 +296,7 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
               theGraph.Editor().Vertices().MutRef(anEdge->StartVertexRefId);
             if (aStartRef->VertexDefId == anOldVertexId)
             {
-              aStartRef.Internal().VertexDefId = aCanonVertexId;
+              theGraph.Editor().Vertices().SetRefVertexDefId(aStartRef, aCanonVertexId);
             }
           }
           if (anEdge->EndVertexRefId.IsValid())
@@ -305,7 +305,7 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
               theGraph.Editor().Vertices().MutRef(anEdge->EndVertexRefId);
             if (anEndRef->VertexDefId == anOldVertexId)
             {
-              anEndRef.Internal().VertexDefId = aCanonVertexId;
+              theGraph.Editor().Vertices().SetRefVertexDefId(anEndRef, aCanonVertexId);
             }
           }
           for (const BRepGraph_VertexRefId& anInternalRefId : anEdge->InternalVertexRefIds)
@@ -314,7 +314,7 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
               theGraph.Editor().Vertices().MutRef(anInternalRefId);
             if (anInternalRef->VertexDefId == anOldVertexId)
             {
-              anInternalRef.Internal().VertexDefId = aCanonVertexId;
+              theGraph.Editor().Vertices().SetRefVertexDefId(anInternalRef, aCanonVertexId);
             }
           }
         }
@@ -332,7 +332,7 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
               theGraph.Editor().Vertices().MutRef(aVRefId);
             if (aVRef->VertexDefId == anOldVertexId)
             {
-              aVRef.Internal().VertexDefId = aCanonVertexId;
+              theGraph.Editor().Vertices().SetRefVertexDefId(aVRef, aCanonVertexId);
             }
           }
         }
@@ -618,7 +618,7 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
             {
               BRepGraph_MutGuard<BRepGraphInc::WireRef> aMutWireRef =
                 theGraph.Editor().Wires().MutRef(aWireRefId);
-              aMutWireRef.Internal().WireDefId = aCanonWireId;
+              theGraph.Editor().Wires().SetRefWireDefId(aMutWireRef, aCanonWireId);
             }
           }
         }
@@ -638,7 +638,7 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
             {
               BRepGraph_MutGuard<BRepGraphInc::ChildRef> aMutCR =
                 theGraph.Editor().Gen().MutChildRef(aRefIt.CurrentId());
-              aMutCR.Internal().ChildDefId = aCanonId;
+              theGraph.Editor().Gen().SetChildRefChildDefId(aMutCR, aCanonId);
             }
           }
         }
@@ -655,7 +655,7 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
             {
               BRepGraph_MutGuard<BRepGraphInc::ChildRef> aMutCR =
                 theGraph.Editor().Gen().MutChildRef(aRefIt.CurrentId());
-              aMutCR.Internal().ChildDefId = aCanonId;
+              theGraph.Editor().Gen().SetChildRefChildDefId(aMutCR, aCanonId);
             }
           }
         }
@@ -783,7 +783,7 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
           {
             BRepGraph_MutGuard<BRepGraphInc::FaceRef> aMutFaceRef =
               theGraph.Editor().Faces().MutRef(aFaceRefId);
-            aMutFaceRef.Internal().FaceDefId = aCanonFaceId;
+            theGraph.Editor().Faces().SetRefFaceDefId(aMutFaceRef, aCanonFaceId);
           }
         }
 
@@ -799,7 +799,7 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
           {
             BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef> aMutCE =
               theGraph.Editor().CoEdges().Mut(aCEId);
-            aMutCE.Internal().FaceDefId = aCanonFaceId;
+            theGraph.Editor().CoEdges().SetFaceDefId(aMutCE, aCanonFaceId);
           }
         }
 

@@ -222,6 +222,12 @@ public:
     Standard_EXPORT void SetRefLocalLocation(BRepGraph_MutGuard<BRepGraphInc::VertexRef>& theMut,
                                              const TopLoc_Location&                       theLoc);
 
+    //! Rewire a vertex reference to a different vertex def (rebinds VertexToEdges if parent is Edge).
+    Standard_EXPORT void SetRefVertexDefId(const BRepGraph_VertexRefId theVertexRef,
+                                           const BRepGraph_VertexId    theVertex);
+    Standard_EXPORT void SetRefVertexDefId(BRepGraph_MutGuard<BRepGraphInc::VertexRef>& theMut,
+                                           const BRepGraph_VertexId theVertex);
+
   private:
     friend class EditorView;
 
@@ -358,6 +364,18 @@ public:
     Standard_EXPORT void SetIsClosed(BRepGraph_MutGuard<BRepGraphInc::EdgeDef>& theMut,
                                      const bool                                 theIsClosed);
 
+    //! Set the start vertex-ref id (rebinds VertexToEdges). Caller maintains reverse indices.
+    Standard_EXPORT void SetStartVertexRefId(const BRepGraph_EdgeId      theEdge,
+                                             const BRepGraph_VertexRefId theVertexRef);
+    Standard_EXPORT void SetStartVertexRefId(BRepGraph_MutGuard<BRepGraphInc::EdgeDef>& theMut,
+                                             const BRepGraph_VertexRefId theVertexRef);
+
+    //! Set the end vertex-ref id (rebinds VertexToEdges). Caller maintains reverse indices.
+    Standard_EXPORT void SetEndVertexRefId(const BRepGraph_EdgeId      theEdge,
+                                           const BRepGraph_VertexRefId theVertexRef);
+    Standard_EXPORT void SetEndVertexRefId(BRepGraph_MutGuard<BRepGraphInc::EdgeDef>& theMut,
+                                           const BRepGraph_VertexRefId theVertexRef);
+
   private:
     friend class EditorView;
 
@@ -449,6 +467,12 @@ public:
       BRepGraph_MutGuard<BRepGraphInc::CoEdgeRef>& theMut,
       const TopLoc_Location&                       theLoc);
 
+    //! Rewire a coedge reference to a different coedge def (rebinds CoEdgeToWires + EdgeToWires).
+    Standard_EXPORT void SetRefCoEdgeDefId(const BRepGraph_CoEdgeRefId theCoEdgeRef,
+                                           const BRepGraph_CoEdgeId    theCoEdge);
+    Standard_EXPORT void SetRefCoEdgeDefId(BRepGraph_MutGuard<BRepGraphInc::CoEdgeRef>& theMut,
+                                           const BRepGraph_CoEdgeId theCoEdge);
+
     //! Set the orientation of a coedge definition.
     Standard_EXPORT void SetOrientation(const BRepGraph_CoEdgeId theCoEdge,
                                         const TopAbs_Orientation theOrientation);
@@ -503,6 +527,18 @@ public:
                                        const BRepGraph_CoEdgeId theSeamPairId);
     Standard_EXPORT void SetSeamPairId(BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef>& theMut,
                                        const BRepGraph_CoEdgeId theSeamPairId);
+
+    //! Rewire a coedge to a different parent edge (rebinds EdgeToCoEdges, EdgeToWires, EdgeToFaces). Caller maintains reverse indices.
+    Standard_EXPORT void SetEdgeDefId(const BRepGraph_CoEdgeId theCoEdge,
+                                      const BRepGraph_EdgeId   theEdge);
+    Standard_EXPORT void SetEdgeDefId(BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef>& theMut,
+                                      const BRepGraph_EdgeId                       theEdge);
+
+    //! Rewire a coedge to a different owning face (rebinds EdgeToFaces). Caller maintains reverse indices.
+    Standard_EXPORT void SetFaceDefId(const BRepGraph_CoEdgeId theCoEdge,
+                                      const BRepGraph_FaceId   theFace);
+    Standard_EXPORT void SetFaceDefId(BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef>& theMut,
+                                      const BRepGraph_FaceId                       theFace);
 
   private:
     friend class EditorView;
@@ -591,6 +627,12 @@ public:
                                            const TopAbs_Orientation  theOrientation);
     Standard_EXPORT void SetRefOrientation(BRepGraph_MutGuard<BRepGraphInc::WireRef>& theMut,
                                            const TopAbs_Orientation theOrientation);
+
+    //! Rewire a wire reference to a different wire def (rebinds WireToFaces if parent is Face).
+    Standard_EXPORT void SetRefWireDefId(const BRepGraph_WireRefId theWireRef,
+                                         const BRepGraph_WireId    theWire);
+    Standard_EXPORT void SetRefWireDefId(BRepGraph_MutGuard<BRepGraphInc::WireRef>& theMut,
+                                         const BRepGraph_WireId                     theWire);
 
   private:
     friend class EditorView;
@@ -722,6 +764,12 @@ public:
     Standard_EXPORT void SetRefLocalLocation(BRepGraph_MutGuard<BRepGraphInc::FaceRef>& theMut,
                                              const TopLoc_Location&                     theLoc);
 
+    //! Rewire a face reference to a different face def (rebinds FaceToShells if parent is Shell).
+    Standard_EXPORT void SetRefFaceDefId(const BRepGraph_FaceRefId theFaceRef,
+                                         const BRepGraph_FaceId    theFace);
+    Standard_EXPORT void SetRefFaceDefId(BRepGraph_MutGuard<BRepGraphInc::FaceRef>& theMut,
+                                         const BRepGraph_FaceId                     theFace);
+
   private:
     friend class EditorView;
 
@@ -809,6 +857,12 @@ public:
     //! Set the orientation inside a batched mutation scope.
     Standard_EXPORT void SetRefOrientation(BRepGraph_MutGuard<BRepGraphInc::ShellRef>& theMut,
                                            const TopAbs_Orientation theOrientation);
+
+    //! Rewire a shell reference to a different shell def (rebinds ShellToSolids if parent is Solid).
+    Standard_EXPORT void SetRefShellDefId(const BRepGraph_ShellRefId theShellRef,
+                                          const BRepGraph_ShellId    theShell);
+    Standard_EXPORT void SetRefShellDefId(BRepGraph_MutGuard<BRepGraphInc::ShellRef>& theMut,
+                                          const BRepGraph_ShellId                     theShell);
 
     //! Set the IsClosed flag of a shell definition.
     Standard_EXPORT void SetIsClosed(const BRepGraph_ShellId theShell, const bool theIsClosed);
@@ -904,6 +958,12 @@ public:
     //! Set the orientation inside a batched mutation scope.
     Standard_EXPORT void SetRefOrientation(BRepGraph_MutGuard<BRepGraphInc::SolidRef>& theMut,
                                            const TopAbs_Orientation theOrientation);
+
+    //! Rewire a solid reference to a different solid def (rebinds SolidToCompSolid if parent is CompSolid).
+    Standard_EXPORT void SetRefSolidDefId(const BRepGraph_SolidRefId theSolidRef,
+                                          const BRepGraph_SolidId    theSolid);
+    Standard_EXPORT void SetRefSolidDefId(BRepGraph_MutGuard<BRepGraphInc::SolidRef>& theMut,
+                                          const BRepGraph_SolidId                     theSolid);
 
   private:
     friend class EditorView;
@@ -1121,6 +1181,13 @@ public:
     Standard_EXPORT void SetChildDefId(BRepGraph_MutGuard<BRepGraphInc::OccurrenceDef>& theMut,
                                        const BRepGraph_NodeId theChildDefId);
 
+    //! Rewire an occurrence reference to a different occurrence def (rebinds ProductToOccurrences).
+    Standard_EXPORT void SetRefOccurrenceDefId(const BRepGraph_OccurrenceRefId theOccurrenceRef,
+                                               const BRepGraph_OccurrenceId    theOccurrence);
+    Standard_EXPORT void SetRefOccurrenceDefId(
+      BRepGraph_MutGuard<BRepGraphInc::OccurrenceRef>& theMut,
+      const BRepGraph_OccurrenceId                     theOccurrence);
+
   private:
     friend class EditorView;
 
@@ -1203,6 +1270,12 @@ public:
     //! Set the orientation inside a batched mutation scope.
     Standard_EXPORT void SetChildRefOrientation(BRepGraph_MutGuard<BRepGraphInc::ChildRef>& theMut,
                                                 const TopAbs_Orientation theOrientation);
+
+    //! Rewire a child reference to a different child def (rebinds CompoundsOf<Kind>).
+    Standard_EXPORT void SetChildRefChildDefId(const BRepGraph_ChildRefId theChildRef,
+                                               const BRepGraph_NodeId     theChild);
+    Standard_EXPORT void SetChildRefChildDefId(BRepGraph_MutGuard<BRepGraphInc::ChildRef>& theMut,
+                                               const BRepGraph_NodeId                       theChild);
 
     //! Set the local location of a child reference inside a batched mutation scope.
     //! @param[in] theMut active mutable child reference guard

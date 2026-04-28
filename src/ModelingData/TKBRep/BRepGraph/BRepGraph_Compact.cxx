@@ -422,18 +422,22 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
 
     // Copy edge properties.
     BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aNewEdge = aNewGraph.Editor().Edges().Mut(aNewEdgeId);
-    aNewEdge.Internal().IsDegenerate                   = anOldEdge.IsDegenerate;
-    aNewEdge.Internal().IsClosed                       = anOldEdge.IsClosed;
-    aNewEdge.Internal().SameParameter                  = anOldEdge.SameParameter;
-    aNewEdge.Internal().SameRange                      = anOldEdge.SameRange;
+    aNewGraph.Editor().Edges().SetDegenerate(aNewEdge, anOldEdge.IsDegenerate);
+
+    aNewGraph.Editor().Edges().SetIsClosed(aNewEdge, anOldEdge.IsClosed);
+
+    aNewGraph.Editor().Edges().SetSameParameter(aNewEdge, anOldEdge.SameParameter);
+
+    aNewGraph.Editor().Edges().SetSameRange(aNewEdge, anOldEdge.SameRange);
     if (anOldEdge.StartVertexRefId.IsValid() && aNewEdge->StartVertexRefId.IsValid())
     {
       const BRepGraphInc::VertexRef& anOldStartRef =
         theGraph.Refs().Vertices().Entry(anOldEdge.StartVertexRefId);
       BRepGraph_MutGuard<BRepGraphInc::VertexRef> aNewStartRef =
         aNewGraph.Editor().Vertices().MutRef(aNewEdge->StartVertexRefId);
-      aNewStartRef.Internal().Orientation   = anOldStartRef.Orientation;
-      aNewStartRef.Internal().LocalLocation = anOldStartRef.LocalLocation;
+      aNewGraph.Editor().Vertices().SetRefOrientation(aNewStartRef, anOldStartRef.Orientation);
+
+      aNewGraph.Editor().Vertices().SetRefLocalLocation(aNewStartRef, anOldStartRef.LocalLocation);
       aVertexRefMap.Bind(anOldEdge.StartVertexRefId, aNewEdge->StartVertexRefId);
     }
 
@@ -443,8 +447,9 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
         theGraph.Refs().Vertices().Entry(anOldEdge.EndVertexRefId);
       BRepGraph_MutGuard<BRepGraphInc::VertexRef> aNewEndRef =
         aNewGraph.Editor().Vertices().MutRef(aNewEdge->EndVertexRefId);
-      aNewEndRef.Internal().Orientation   = anOldEndRef.Orientation;
-      aNewEndRef.Internal().LocalLocation = anOldEndRef.LocalLocation;
+      aNewGraph.Editor().Vertices().SetRefOrientation(aNewEndRef, anOldEndRef.Orientation);
+
+      aNewGraph.Editor().Vertices().SetRefLocalLocation(aNewEndRef, anOldEndRef.LocalLocation);
       aVertexRefMap.Bind(anOldEdge.EndVertexRefId, aNewEdge->EndVertexRefId);
     }
 
@@ -470,7 +475,7 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
 
       BRepGraph_MutGuard<BRepGraphInc::VertexRef> aNewInternalRef =
         aNewGraph.Editor().Vertices().MutRef(aNewInternalRefId);
-      aNewInternalRef.Internal().LocalLocation = anOldInternalRef.LocalLocation;
+      aNewGraph.Editor().Vertices().SetRefLocalLocation(aNewInternalRef, anOldInternalRef.LocalLocation);
       aVertexRefMap.Bind(anOldInternalRefId, aNewInternalRefId);
     }
   }
@@ -515,7 +520,7 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
         theGraph.Refs().CoEdges().Entry(anOldCoEdgeRefs.Value(aRefIdx));
       BRepGraph_MutGuard<BRepGraphInc::CoEdgeRef> aNewRef =
         aNewGraph.Editor().CoEdges().MutRef(aNewCoEdgeRefs.Value(aRefIdx));
-      aNewRef.Internal().LocalLocation = anOldRef.LocalLocation;
+      aNewGraph.Editor().CoEdges().SetRefLocalLocation(aNewRef, anOldRef.LocalLocation);
       // Build aCoEdgeMap from actual CoEdgeDef IDs returned by the builder,
       // not from a predicted Nb()-based offset which can be wrong.
       const BRepGraphInc::CoEdgeRef& aNewCoEdgeRef =
@@ -569,16 +574,18 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
       aNewGraph.Editor().Faces().Add(aSurf, aNewOuterWire, aNewInnerWires, anOldFace.Tolerance);
 
     BRepGraph_MutGuard<BRepGraphInc::FaceDef> aNewFace = aNewGraph.Editor().Faces().Mut(aNewFaceId);
-    aNewFace.Internal().NaturalRestriction             = anOldFace.NaturalRestriction;
+    aNewGraph.Editor().Faces().SetNaturalRestriction(aNewFace, anOldFace.NaturalRestriction);
     const NCollection_DynamicArray<BRepGraph_WireRefId>& aNewWireRefs = aNewFace->WireRefIds;
     if (anOldOuterWireRef.IsValid() && !aNewWireRefs.IsEmpty())
     {
       const BRepGraphInc::WireRef& anOldOuterRef = theGraph.Refs().Wires().Entry(anOldOuterWireRef);
       BRepGraph_MutGuard<BRepGraphInc::WireRef> aNewOuterRef =
         aNewGraph.Editor().Wires().MutRef(aNewWireRefs.First());
-      aNewOuterRef.Internal().IsOuter       = anOldOuterRef.IsOuter;
-      aNewOuterRef.Internal().Orientation   = anOldOuterRef.Orientation;
-      aNewOuterRef.Internal().LocalLocation = anOldOuterRef.LocalLocation;
+      aNewGraph.Editor().Wires().SetRefIsOuter(aNewOuterRef, anOldOuterRef.IsOuter);
+
+      aNewGraph.Editor().Wires().SetRefOrientation(aNewOuterRef, anOldOuterRef.Orientation);
+
+      aNewGraph.Editor().Wires().SetRefLocalLocation(aNewOuterRef, anOldOuterRef.LocalLocation);
       aWireRefMap.Bind(anOldOuterWireRef, aNewWireRefs.First());
     }
 
@@ -590,9 +597,11 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
         theGraph.Refs().Wires().Entry(anOldInnerWireRefs.Value(anInnerIdx));
       BRepGraph_MutGuard<BRepGraphInc::WireRef> aNewInnerRef =
         aNewGraph.Editor().Wires().MutRef(aNewWireRefs.Value(anInnerIdx + 1));
-      aNewInnerRef.Internal().IsOuter       = anOldInnerRef.IsOuter;
-      aNewInnerRef.Internal().Orientation   = anOldInnerRef.Orientation;
-      aNewInnerRef.Internal().LocalLocation = anOldInnerRef.LocalLocation;
+      aNewGraph.Editor().Wires().SetRefIsOuter(aNewInnerRef, anOldInnerRef.IsOuter);
+
+      aNewGraph.Editor().Wires().SetRefOrientation(aNewInnerRef, anOldInnerRef.Orientation);
+
+      aNewGraph.Editor().Wires().SetRefLocalLocation(aNewInnerRef, anOldInnerRef.LocalLocation);
       aWireRefMap.Bind(anOldInnerWireRefs.Value(anInnerIdx), aNewWireRefs.Value(anInnerIdx + 1));
     }
 
@@ -616,7 +625,7 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
 
       BRepGraph_MutGuard<BRepGraphInc::VertexRef> aNewVertexRef =
         aNewGraph.Editor().Vertices().MutRef(aNewVertexRefId);
-      aNewVertexRef.Internal().LocalLocation = anOldVertexRef.LocalLocation;
+      aNewGraph.Editor().Vertices().SetRefLocalLocation(aNewVertexRef, anOldVertexRef.LocalLocation);
       aVertexRefMap.Bind(anOldVertexRefId, aNewVertexRefId);
     }
   }
@@ -635,14 +644,16 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
     BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef> aNewCoEdge =
       aNewGraph.Editor().CoEdges().Mut(*aNewCoEdgeId);
 
-    aNewCoEdge.Internal().FaceDefId      = BRepGraph_FaceId::FromNodeId(remapId(anOldCoEdge.FaceDefId));
-    aNewCoEdge.Internal().Orientation    = anOldCoEdge.Orientation;
-    aNewCoEdge.Internal().ParamFirst     = anOldCoEdge.ParamFirst;
-    aNewCoEdge.Internal().ParamLast      = anOldCoEdge.ParamLast;
-    aNewCoEdge.Internal().Continuity     = anOldCoEdge.Continuity;
-    aNewCoEdge.Internal().UV1            = anOldCoEdge.UV1;
-    aNewCoEdge.Internal().UV2            = anOldCoEdge.UV2;
-    aNewCoEdge.Internal().SeamContinuity = anOldCoEdge.SeamContinuity;
+    aNewGraph.Editor().CoEdges().SetFaceDefId(aNewCoEdge, BRepGraph_FaceId::FromNodeId(remapId(anOldCoEdge.FaceDefId)));
+    aNewGraph.Editor().CoEdges().SetOrientation(aNewCoEdge, anOldCoEdge.Orientation);
+
+    aNewGraph.Editor().CoEdges().SetParamRange(aNewCoEdge, anOldCoEdge.ParamFirst, anOldCoEdge.ParamLast);
+
+    aNewGraph.Editor().CoEdges().SetContinuity(aNewCoEdge, anOldCoEdge.Continuity);
+
+    aNewGraph.Editor().CoEdges().SetUVBox(aNewCoEdge, anOldCoEdge.UV1, anOldCoEdge.UV2);
+
+    aNewGraph.Editor().CoEdges().SetSeamContinuity(aNewCoEdge, anOldCoEdge.SeamContinuity);
 
     // If the owning face was removed, keep the coedge as free-wire usage only.
     // Drop face-bound parametric payload (PCurve/UV/continuity) to avoid stale
@@ -693,7 +704,7 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
 
     BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef> aNewCoEdge =
       aNewGraph.Editor().CoEdges().Mut(*aNewCoEdgeId);
-    aNewCoEdge.Internal().SeamPairId = *aNewSeamPairId;
+    aNewGraph.Editor().CoEdges().SetSeamPairId(aNewCoEdge, *aNewSeamPairId);
   }
 
   // Shells.
@@ -720,7 +731,7 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
         {
           BRepGraph_MutGuard<BRepGraphInc::FaceRef> aNewFaceRef =
             aNewGraph.Editor().Faces().MutRef(aNewFaceRefId);
-          aNewFaceRef.Internal().LocalLocation = aFR.LocalLocation;
+          aNewGraph.Editor().Faces().SetRefLocalLocation(aNewFaceRef, aFR.LocalLocation);
           aFaceRefMap.Bind(aRefIt.CurrentId(), aNewFaceRefId);
         }
       }
@@ -742,7 +753,7 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
       }
       BRepGraph_MutGuard<BRepGraphInc::ChildRef> aNewChildRef =
         aNewGraph.Editor().Gen().MutChildRef(aNewChildRefId);
-      aNewChildRef.Internal().LocalLocation = aCR.LocalLocation;
+      aNewGraph.Editor().Gen().SetChildRefLocalLocation(aNewChildRef, aCR.LocalLocation);
       aChildRefMap.Bind(aRefIt.CurrentId(), aNewChildRefId);
     }
 
@@ -775,7 +786,7 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
         {
           BRepGraph_MutGuard<BRepGraphInc::ShellRef> aNewShellRef =
             aNewGraph.Editor().Shells().MutRef(aNewShellRefId);
-          aNewShellRef.Internal().LocalLocation = aSR.LocalLocation;
+          aNewGraph.Editor().Shells().SetRefLocalLocation(aNewShellRef, aSR.LocalLocation);
           aShellRefMap.Bind(aRefIt.CurrentId(), aNewShellRefId);
         }
       }
@@ -797,7 +808,7 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
       }
       BRepGraph_MutGuard<BRepGraphInc::ChildRef> aNewChildRef =
         aNewGraph.Editor().Gen().MutChildRef(aNewChildRefId);
-      aNewChildRef.Internal().LocalLocation = aCR.LocalLocation;
+      aNewGraph.Editor().Gen().SetChildRefLocalLocation(aNewChildRef, aCR.LocalLocation);
       aChildRefMap.Bind(aRefIt.CurrentId(), aNewChildRefId);
     }
   }

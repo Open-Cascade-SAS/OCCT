@@ -546,6 +546,7 @@ BRepGraph_EdgeId BRepGraph::EditorView::EdgeOps::Add(const BRepGraph_VertexId   
     aStartVtxRef.Orientation              = TopAbs_FORWARD;
     myGraph->allocateRefUID(aStartVtxRefId);
     anEdgeDef.StartVertexRefId = aStartVtxRefId;
+    aStorage.ChangeReverseIndex().BindVertexToEdge(theStartVtx, aEdgeId);
   }
   if (theEndVtx.IsValid())
   {
@@ -557,6 +558,8 @@ BRepGraph_EdgeId BRepGraph::EditorView::EdgeOps::Add(const BRepGraph_VertexId   
     anEndVtxRef.Orientation              = TopAbs_REVERSED;
     myGraph->allocateRefUID(anEndVtxRefId);
     anEdgeDef.EndVertexRefId = anEndVtxRefId;
+    if (theEndVtx != theStartVtx) // BindVertexToEdge dedups, but skip needless work
+      aStorage.ChangeReverseIndex().BindVertexToEdge(theEndVtx, aEdgeId);
   }
   anEdgeDef.ParamFirst    = theFirst;
   anEdgeDef.ParamLast     = theLast;
@@ -1220,8 +1223,32 @@ void BRepGraph::EditorView::GenOps::RemoveNode(const BRepGraph_NodeId theNode,
 
   if (theNode.NodeKind == BRepGraph_NodeId::Kind::Edge)
   {
+    const BRepGraph_EdgeId       anEdgeId = BRepGraph_EdgeId::FromNodeId(theNode);
+    const BRepGraphInc::EdgeDef& anEdge   = aStorage.Edge(anEdgeId);
+    BRepGraphInc_ReverseIndex&   aRI      = aStorage.ChangeReverseIndex();
+    if (anEdge.StartVertexRefId.IsValid(aStorage.NbVertexRefs()))
+    {
+      const BRepGraph_VertexId aStartV =
+        aStorage.VertexRef(anEdge.StartVertexRefId).VertexDefId;
+      if (aStartV.IsValid())
+        aRI.UnbindVertexFromEdge(aStartV, anEdgeId);
+    }
+    if (anEdge.EndVertexRefId.IsValid(aStorage.NbVertexRefs()))
+    {
+      const BRepGraph_VertexId anEndV = aStorage.VertexRef(anEdge.EndVertexRefId).VertexDefId;
+      if (anEndV.IsValid())
+        aRI.UnbindVertexFromEdge(anEndV, anEdgeId);
+    }
+    for (const BRepGraph_VertexRefId& anIntRefId : anEdge.InternalVertexRefIds)
+    {
+      if (!anIntRefId.IsValid(aStorage.NbVertexRefs()))
+        continue;
+      const BRepGraph_VertexId anIntV = aStorage.VertexRef(anIntRefId).VertexDefId;
+      if (anIntV.IsValid())
+        aRI.UnbindVertexFromEdge(anIntV, anEdgeId);
+    }
     // Keep reverse edge->coedge table coherent for pure removals too.
-    unbindCoEdgesOfRemovedEdge(aStorage, BRepGraph_EdgeId::FromNodeId(theNode));
+    unbindCoEdgesOfRemovedEdge(aStorage, anEdgeId);
   }
 
   // Mark removed on the entity (which is the sole definition store).
@@ -1399,9 +1426,93 @@ bool BRepGraph::EditorView::GenOps::RemoveRef(const BRepGraph_RefId theRef)
     return false;
   }
 
-  if (!myGraph->myData->myIncStorage.MarkRemovedRef(theRef))
+  // Snapshot ref state before MarkRemoved flips IsRemoved.
+  BRepGraphInc_Storage&         aStorage = myGraph->myData->myIncStorage;
+  const BRepGraphInc::BaseRef&  aRef     = aStorage.BaseRef(theRef);
+  if (aRef.IsRemoved)
+    return false;
+  const BRepGraph_NodeId aParent = aRef.ParentId;
+  // Resolve the child def referenced by this ref (for rev-index unbind below).
+  BRepGraph_NodeId aChildNode;
+  switch (theRef.RefKind)
+  {
+    case BRepGraph_RefId::Kind::Shell:
+      aChildNode = aStorage.ShellRef(BRepGraph_ShellRefId(theRef)).ShellDefId;
+      break;
+    case BRepGraph_RefId::Kind::Face:
+      aChildNode = aStorage.FaceRef(BRepGraph_FaceRefId(theRef)).FaceDefId;
+      break;
+    case BRepGraph_RefId::Kind::Wire:
+      aChildNode = aStorage.WireRef(BRepGraph_WireRefId(theRef)).WireDefId;
+      break;
+    case BRepGraph_RefId::Kind::CoEdge:
+      aChildNode = aStorage.CoEdgeRef(BRepGraph_CoEdgeRefId(theRef)).CoEdgeDefId;
+      break;
+    case BRepGraph_RefId::Kind::Vertex:
+      aChildNode = aStorage.VertexRef(BRepGraph_VertexRefId(theRef)).VertexDefId;
+      break;
+    case BRepGraph_RefId::Kind::Solid:
+      aChildNode = aStorage.SolidRef(BRepGraph_SolidRefId(theRef)).SolidDefId;
+      break;
+    case BRepGraph_RefId::Kind::Child:
+      aChildNode = aStorage.ChildRef(BRepGraph_ChildRefId(theRef)).ChildDefId;
+      break;
+    case BRepGraph_RefId::Kind::Occurrence:
+      aChildNode = aStorage.OccurrenceRef(BRepGraph_OccurrenceRefId(theRef)).OccurrenceDefId;
+      break;
+    default:
+      break;
+  }
+
+  if (!aStorage.MarkRemovedRef(theRef))
   {
     return false;
+  }
+
+  // Unbind the corresponding reverse-index entry, mirroring Bind* in the matching
+  // Add* method. Uses the parent context captured before MarkRemoved.
+  BRepGraphInc_ReverseIndex& aRI = aStorage.ChangeReverseIndex();
+  switch (theRef.RefKind)
+  {
+    case BRepGraph_RefId::Kind::Face:
+      if (aParent.NodeKind == BRepGraph_NodeId::Kind::Shell && aChildNode.IsValid())
+        aRI.UnbindFaceFromShell(BRepGraph_FaceId(aChildNode), BRepGraph_ShellId(aParent));
+      break;
+    case BRepGraph_RefId::Kind::Wire:
+      if (aParent.NodeKind == BRepGraph_NodeId::Kind::Face && aChildNode.IsValid())
+        aRI.UnbindWireFromFace(BRepGraph_WireId(aChildNode), BRepGraph_FaceId(aParent));
+      break;
+    case BRepGraph_RefId::Kind::CoEdge:
+      if (aParent.NodeKind == BRepGraph_NodeId::Kind::Wire && aChildNode.IsValid())
+      {
+        // EdgeToWires is the OR over all coedges in the wire (deduplicated). Caller
+        // must rebind EdgeFromWire conditionally; we only unbind the unique pair.
+        aRI.UnbindCoEdgeFromWire(BRepGraph_CoEdgeId(aChildNode), BRepGraph_WireId(aParent));
+      }
+      break;
+    case BRepGraph_RefId::Kind::Vertex:
+      if (aParent.NodeKind == BRepGraph_NodeId::Kind::Edge && aChildNode.IsValid())
+        aRI.UnbindVertexFromEdge(BRepGraph_VertexId(aChildNode), BRepGraph_EdgeId(aParent));
+      break;
+    case BRepGraph_RefId::Kind::Shell:
+      if (aParent.NodeKind == BRepGraph_NodeId::Kind::Solid && aChildNode.IsValid())
+        aRI.UnbindShellFromSolid(BRepGraph_ShellId(aChildNode), BRepGraph_SolidId(aParent));
+      break;
+    case BRepGraph_RefId::Kind::Solid:
+      if (aParent.NodeKind == BRepGraph_NodeId::Kind::CompSolid && aChildNode.IsValid())
+        aRI.UnbindSolidFromCompSolid(BRepGraph_SolidId(aChildNode), BRepGraph_CompSolidId(aParent));
+      break;
+    case BRepGraph_RefId::Kind::Child:
+      if (aParent.NodeKind == BRepGraph_NodeId::Kind::Compound && aChildNode.IsValid())
+        aRI.UnbindCompoundChild(aChildNode, BRepGraph_CompoundId(aParent));
+      break;
+    case BRepGraph_RefId::Kind::Occurrence:
+      if (aParent.NodeKind == BRepGraph_NodeId::Kind::Product && aChildNode.IsValid())
+        aRI.UnbindProductOccurrence(BRepGraph_OccurrenceId(aChildNode),
+                                    BRepGraph_ProductId(aParent));
+      break;
+    default:
+      break;
   }
 
   myGraph->myLayerRegistry.DispatchOnRefRemoved(theRef);
