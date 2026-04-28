@@ -86,13 +86,7 @@ protected:
                                         double        theVMin,
                                         double        theVMax)
   {
-    return CreateHalfCylinderFace(theCenter,
-                                  theAxis,
-                                  theRadius,
-                                  theVMin,
-                                  theVMax,
-                                  0.0,
-                                  2.0 * M_PI);
+    return CreateHalfCylinderFace(theCenter, theAxis, theRadius, theVMin, theVMax, 0.0, 2.0 * M_PI);
   }
 
   //! Create a circular planar face.

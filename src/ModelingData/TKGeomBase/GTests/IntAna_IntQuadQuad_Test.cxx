@@ -255,8 +255,8 @@ TEST_F(IntAna_IntQuadQuad_Test, CylinderCylinderNonTangent_HasTwoLines)
 // both cylinder surfaces.
 TEST_F(IntAna_IntQuadQuad_Test, CylinderCylinderSkewInternallyTangent_HasPoint)
 {
-  const double aR1 = 5.0;
-  const double aR2 = 2.0;
+  const double aR1   = 5.0;
+  const double aR2   = 2.0;
   const double aDist = aR1 - aR2;
 
   gp_Ax3 anAxis1(gp_Pnt(0.0, 0.0, 0.0), gp_Dir::D::Z, gp_Dir::D::X);
@@ -271,7 +271,7 @@ TEST_F(IntAna_IntQuadQuad_Test, CylinderCylinderSkewInternallyTangent_HasPoint)
   ASSERT_EQ(anInter.TypeInter(), IntAna_Point);
   ASSERT_EQ(anInter.NbSolutions(), 1);
 
-  const gp_Pnt aP = anInter.Point(1);
+  const gp_Pnt aP           = anInter.Point(1);
   const double aDistToAxis1 = gp_Lin(aCyl1.Axis()).Distance(aP);
   const double aDistToAxis2 = gp_Lin(aCyl2.Axis()).Distance(aP);
   EXPECT_NEAR(aDistToAxis1, aR1, 1.0e-7);
@@ -282,8 +282,8 @@ TEST_F(IntAna_IntQuadQuad_Test, CylinderCylinderSkewInternallyTangent_HasPoint)
 // produce the same tangent-point classification and a consistent point.
 TEST_F(IntAna_IntQuadQuad_Test, CylinderCylinderSkewInternallyTangent_SwappedRadii)
 {
-  const double aR1 = 2.0;
-  const double aR2 = 5.0;
+  const double aR1   = 2.0;
+  const double aR2   = 5.0;
   const double aDist = aR2 - aR1;
 
   gp_Ax3 anAxis1(gp_Pnt(0.0, 0.0, 0.0), gp_Dir::D::Z, gp_Dir::D::X);
@@ -306,8 +306,8 @@ TEST_F(IntAna_IntQuadQuad_Test, CylinderCylinderSkewInternallyTangent_SwappedRad
 // Sanity regression for the pre-existing skew external-tangent branch.
 TEST_F(IntAna_IntQuadQuad_Test, CylinderCylinderSkewExternallyTangent_HasPoint)
 {
-  const double aR1 = 3.0;
-  const double aR2 = 2.0;
+  const double aR1   = 3.0;
+  const double aR2   = 2.0;
   const double aDist = aR1 + aR2;
 
   gp_Ax3 anAxis1(gp_Pnt(0.0, 0.0, 0.0), gp_Dir::D::Z, gp_Dir::D::X);

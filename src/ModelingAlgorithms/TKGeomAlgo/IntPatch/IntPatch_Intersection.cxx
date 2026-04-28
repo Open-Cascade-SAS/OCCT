@@ -13,8 +13,6 @@
 // commercial license or contractual agreement.
 
 #include <cstdio>
-#include <cstdlib>
-#include <iostream>
 #include <IntPatch_Intersection.hxx>
 
 #include <Adaptor3d_Surface.hxx>
@@ -1338,7 +1336,7 @@ void IntPatch_Intersection::Perform(const occ::handle<Adaptor3d_Surface>&   theS
       if (typs1 == typs2)
       {
         const gp_Torus aTor2 = aGeomSurf->Torus();
-        bToCheck = (bToCheck && (aTor2.MajorRadius() > aTor2.MinorRadius()))
+        bToCheck             = (bToCheck && (aTor2.MajorRadius() > aTor2.MinorRadius()))
                    || (std::abs(aTor1.MajorRadius() - aTor2.MajorRadius()) < TolTang
                        && std::abs(aTor1.MinorRadius() - aTor2.MinorRadius()) < TolTang);
       }

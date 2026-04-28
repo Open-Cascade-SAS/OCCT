@@ -1280,14 +1280,14 @@ bool FindLine(gp_Pnt&                                                 Psurf,
           // #endif
           gp_Pnt CopiePsurf    = Psurf;
           bool   IntersectIsOk = IntersectionWithAnArc(CopiePsurf,
-                                                       alin,
-                                                       para,
-                                                       thearc,
-                                                       theparamonarc,
-                                                       thepointonarc,
-                                                       QuadSurf1,
-                                                       lower,
-                                                       upper);
+                                                     alin,
+                                                     para,
+                                                     thearc,
+                                                     theparamonarc,
+                                                     thepointonarc,
+                                                     QuadSurf1,
+                                                     lower,
+                                                     upper);
           aSqDist              = CopiePsurf.SquareDistance(Psurf);
           if (IntersectIsOk)
           {
@@ -7551,11 +7551,11 @@ static IntPatch_ImpImpIntersection::IntStatus CyCyNoGeometric(
         double anUC = 0.5 * (anUf + anUl);
         double aU2 = 0.0, aV1 = 0.0, aV2 = 0.0;
         bool   isDone = ComputationMethods::CylCylComputeParameters(anUC,
-                                                                    anIndex,
-                                                                    anEquationCoeffs,
-                                                                    aU2,
-                                                                    aV1,
-                                                                    aV2);
+                                                                  anIndex,
+                                                                  anEquationCoeffs,
+                                                                  aU2,
+                                                                  aV1,
+                                                                  aV2);
 
         if (isDone)
         {
