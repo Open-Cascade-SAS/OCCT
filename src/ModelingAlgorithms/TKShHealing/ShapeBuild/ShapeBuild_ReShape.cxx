@@ -162,109 +162,132 @@ TopoDS_Shape ShapeBuild_ReShape::Apply(const TopoDS_Shape&    shape,
 
 //=================================================================================================
 
-TopoDS_Shape ShapeBuild_ReShape::Apply(const TopoDS_Shape& shape, const TopAbs_ShapeEnum until)
+TopoDS_Shape ShapeBuild_ReShape::Apply(const TopoDS_Shape&    theShape,
+                                       const TopAbs_ShapeEnum theUntil)
+{
+  NCollection_Map<occ::handle<TopoDS_TShape>> anInFlight;
+  return applyImpl(theShape, theUntil, anInFlight);
+}
+
+//=================================================================================================
+
+TopoDS_Shape ShapeBuild_ReShape::applyImpl(const TopoDS_Shape&                          theShape,
+                                           const TopAbs_ShapeEnum                       theUntil,
+                                           NCollection_Map<occ::handle<TopoDS_TShape>>& theInFlight)
 {
   myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
-  if (shape.IsNull())
-    return shape;
+  if (theShape.IsNull())
+    return theShape;
 
-  // apply direct replacement
-  TopoDS_Shape newsh = Value(shape);
+  // Apply direct replacement
+  TopoDS_Shape aNewShape = Value(theShape);
 
-  // if shape removed, return NULL
-  if (newsh.IsNull())
+  // If shape removed, return NULL
+  if (aNewShape.IsNull())
   {
     myStatus = ShapeExtend::EncodeStatus(ShapeExtend_DONE2);
-    return newsh;
+    return aNewShape;
   }
 
-  // if shape replaced, apply modifications to the result recursively
+  // DFS cycle guard: if theShape is already being processed further up the call
+  // stack, its replacement must be a compound that transitively contains it.
+  // Return the direct replacement without descending to break the cycle.
+  if (theInFlight.Contains(theShape.TShape()))
+    return aNewShape;
+
+  // If shape was replaced, apply modifications to the result recursively.
   bool aConsLoc = ModeConsiderLocation();
-  if ((aConsLoc && !newsh.IsPartner(shape)) || (!aConsLoc && !newsh.IsSame(shape)))
+  if ((aConsLoc && !aNewShape.IsPartner(theShape)) || (!aConsLoc && !aNewShape.IsSame(theShape)))
   {
-    TopoDS_Shape res = Apply(newsh, until);
+    theInFlight.Add(theShape.TShape());
+    TopoDS_Shape aRes = applyImpl(aNewShape, theUntil, theInFlight);
+    theInFlight.Remove(theShape.TShape());
     myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
-    return res;
+    return aRes;
   }
 
-  TopAbs_ShapeEnum st = shape.ShapeType();
-  if (st >= until)
-    return newsh; // critere d arret
-  if (st == TopAbs_VERTEX || st == TopAbs_SHAPE)
-    return shape;
-  // define allowed types of components
+  TopAbs_ShapeEnum aST = theShape.ShapeType();
+  if (aST >= theUntil)
+    return aNewShape; // stop criterion
+  if (aST == TopAbs_VERTEX || aST == TopAbs_SHAPE)
+    return theShape;
 
-  BRep_Builder B;
+  BRep_Builder aBuilder;
 
-  TopoDS_Shape       result = shape.EmptyCopied();
-  TopAbs_Orientation orient = shape.Orientation(); // JR/Hp: or -> orient
-  result.Orientation(TopAbs_FORWARD);              // protect against INTERNAL or EXTERNAL shapes
-  bool modif     = false;
-  int  locStatus = myStatus;
+  TopoDS_Shape       aResult  = theShape.EmptyCopied();
+  TopAbs_Orientation anOrient = theShape.Orientation();
+  aResult.Orientation(TopAbs_FORWARD); // protect against INTERNAL or EXTERNAL shapes
+  bool aModif     = false;
+  int  aLocStatus = myStatus;
 
-  // apply recorded modifications to subshapes
-  for (TopoDS_Iterator it(shape, false); it.More(); it.Next())
+  // Apply recorded modifications to subshapes
+  theInFlight.Add(theShape.TShape());
+  for (TopoDS_Iterator anIt(theShape, false); anIt.More(); anIt.Next())
   {
-    const TopoDS_Shape& sh = it.Value();
-    newsh                  = Apply(sh, until);
-    if (newsh != sh)
+    const TopoDS_Shape& aSh = anIt.Value();
+    aNewShape               = applyImpl(aSh, theUntil, theInFlight);
+    if (aNewShape != aSh)
     {
       if (ShapeExtend::DecodeStatus(myStatus, ShapeExtend_DONE4))
-        locStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE4);
-      modif = true;
+        aLocStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE4);
+      aModif = true;
     }
-    if (newsh.IsNull())
+    if (aNewShape.IsNull())
     {
-      locStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE4);
+      aLocStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE4);
       continue;
     }
-    locStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE3);
-    if (st == TopAbs_COMPOUND || newsh.ShapeType() == sh.ShapeType())
-    { // fix for SAMTECH bug OCC322 about absence internal vertices after sewing.
-      B.Add(result, newsh);
+    aLocStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE3);
+    if (aST == TopAbs_COMPOUND || aNewShape.ShapeType() == aSh.ShapeType())
+    {
+      // Fix for SAMTECH bug OCC322 about absence internal vertices after sewing
+      aBuilder.Add(aResult, aNewShape);
       continue;
     }
-    int nitems = 0;
-    for (TopoDS_Iterator subit(newsh); subit.More(); subit.Next(), nitems++)
+    int aNbItems = 0;
+    for (TopoDS_Iterator aSubIt(aNewShape); aSubIt.More(); aSubIt.Next(), aNbItems++)
     {
-      const TopoDS_Shape& subsh = subit.Value();
-      if (subsh.ShapeType() == sh.ShapeType())
-        B.Add(result, subsh);
+      const TopoDS_Shape& aSubSh = aSubIt.Value();
+      if (aSubSh.ShapeType() == aSh.ShapeType())
+        aBuilder.Add(aResult, aSubSh);
       else
-        locStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL1);
+        aLocStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL1);
     }
-    if (!nitems)
-      locStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL1);
+    if (!aNbItems)
+      aLocStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL1);
   }
-  if (!modif)
-    return shape;
+  theInFlight.Remove(theShape.TShape());
+  if (!aModif)
+    return theShape;
 
-  // restore Range on edge broken by EmptyCopied()
-  if (st == TopAbs_EDGE)
+  // Restore range on edge broken by EmptyCopied()
+  if (aST == TopAbs_EDGE)
   {
-    ShapeBuild_Edge sbe;
-    sbe.CopyRanges(TopoDS::Edge(result), TopoDS::Edge(shape));
+    ShapeBuild_Edge anSBE;
+    anSBE.CopyRanges(TopoDS::Edge(aResult), TopoDS::Edge(theShape));
   }
-  else if (st == TopAbs_WIRE || st == TopAbs_SHELL)
-    result.Closed(BRep_Tool::IsClosed(result));
-  result.Orientation(orient);
-  myStatus = locStatus;
+  else if (aST == TopAbs_WIRE || aST == TopAbs_SHELL)
+    aResult.Closed(BRep_Tool::IsClosed(aResult));
+  aResult.Orientation(anOrient);
+  myStatus = aLocStatus;
 
-  replace(shape, result, result.IsNull() ? TReplacementKind_Remove : TReplacementKind_Modify);
+  replace(theShape, aResult, aResult.IsNull() ? TReplacementKind_Remove : TReplacementKind_Modify);
 
-  return result;
+  return aResult;
 }
 
 //=================================================================================================
 
-int ShapeBuild_ReShape::Status(const TopoDS_Shape& ashape, TopoDS_Shape& newsh, const bool last)
+int ShapeBuild_ReShape::Status(const TopoDS_Shape& theShape,
+                               TopoDS_Shape&       theNewShape,
+                               const bool          theLast)
 {
-  return BRepTools_ReShape::Status(ashape, newsh, last);
+  return BRepTools_ReShape::Status(theShape, theNewShape, theLast);
 }
 
 //=================================================================================================
 
-bool ShapeBuild_ReShape::Status(const ShapeExtend_Status status) const
+bool ShapeBuild_ReShape::Status(const ShapeExtend_Status theStatus) const
 {
-  return ShapeExtend::DecodeStatus(myStatus, status);
+  return ShapeExtend::DecodeStatus(myStatus, theStatus);
 }

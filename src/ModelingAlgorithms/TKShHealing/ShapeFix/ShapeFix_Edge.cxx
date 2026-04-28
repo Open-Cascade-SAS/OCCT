@@ -610,7 +610,13 @@ bool ShapeFix_Edge::FixVertexTolerance(const TopoDS_Edge& edge, const TopoDS_Fac
   ShapeAnalysis_Edge sae;
   if (!Context().IsNull())
   {
-    anEdgeCopy = TopoDS::Edge(Context()->Apply(edge));
+    const TopoDS_Shape& aShape = Context()->Apply(edge);
+    if (aShape.IsNull() || aShape.ShapeType() != TopAbs_EDGE)
+    {
+      return false;
+    }
+
+    anEdgeCopy = TopoDS::Edge(aShape);
   }
 
   double toler1, toler2;
@@ -645,7 +651,13 @@ bool ShapeFix_Edge::FixVertexTolerance(const TopoDS_Edge& edge)
   ShapeAnalysis_Edge sae;
   if (!Context().IsNull())
   {
-    anEdgeCopy = TopoDS::Edge(Context()->Apply(edge));
+    const TopoDS_Shape& aShape = Context()->Apply(edge);
+    if (aShape.IsNull() || aShape.ShapeType() != TopAbs_EDGE)
+    {
+      return false;
+    }
+
+    anEdgeCopy = TopoDS::Edge(aShape);
   }
   double toler1, toler2;
   if (!sae.CheckVertexTolerance(anEdgeCopy, toler1, toler2))

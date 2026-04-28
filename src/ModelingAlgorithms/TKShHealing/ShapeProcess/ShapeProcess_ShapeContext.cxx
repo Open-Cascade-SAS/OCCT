@@ -282,9 +282,17 @@ static void RecModif(const TopoDS_Shape&                                        
       msgmap = msg->MapShape();
     if (msgmap.IsBound(S))
       next = S;
+
+    // Map to prevent infinite loops in case of cyclic replacements.
+    NCollection_Map<TopoDS_Shape> aVisitedShapes;
     do
     {
       cur = next;
+      if (!aVisitedShapes.Add(cur))
+      {
+        break;
+      }
+
       if (msgmap.IsBound(cur))
       {
         const NCollection_List<Message_Msg>& msglist = msgmap.Find(cur);
