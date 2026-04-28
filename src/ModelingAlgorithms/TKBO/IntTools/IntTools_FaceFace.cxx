@@ -41,14 +41,12 @@
 #include <Geom_TrimmedCurve.hxx>
 #include <IntAna_QuadQuadGeo.hxx>
 #include <IntPatch_GLine.hxx>
-#include <IntTools_TopolTool.hxx>
 #include <IntPatch_RLine.hxx>
 #include <IntRes2d_Domain.hxx>
 #include <IntSurf_Quadric.hxx>
 #include <IntTools_Context.hxx>
 #include <IntTools_Tools.hxx>
-#include <BRepAdaptor_Surface.hxx>
-#include <BRepTopAdaptor_TopolTool.hxx>
+#include <IntTools_TopolTool.hxx>
 #include <IntTools_WLineTool.hxx>
 #include <ProjLib_Plane.hxx>
 #include <TopExp_Explorer.hxx>
@@ -56,111 +54,6 @@
 #include <TopoDS_Edge.hxx>
 #include <gp_Elips.hxx>
 #include <ApproxInt_KnotTools.hxx>
-
-namespace
-{
-
-//! Angular tolerance used for analytical intersection.
-constexpr double THE_TOLANG = 1.e-8;
-
-//! Maximum ratio between major and minor radii for ellipse intersection to be valid.
-constexpr double THE_MAX_ELLIPSE_RATIO = 100000.0;
-
-//! Extracts cylinder height from surface V-parameter bounds.
-//! @param[in]  theBAS    surface adaptor
-//! @param[out] theHeight computed height (VMax - VMin)
-//! @return false if V-bounds are infinite, true otherwise
-static bool getCylinderHeight(const BRepAdaptor_Surface& theBAS, double& theHeight)
-{
-  const double aVMin = theBAS.FirstVParameter();
-  const double aVMax = theBAS.LastVParameter();
-
-  if (Precision::IsNegativeInfinite(aVMin) || Precision::IsPositiveInfinite(aVMax))
-  {
-    return false;
-  }
-
-  theHeight = aVMax - aVMin;
-  return true;
-}
-
-//! Checks if plane-cylinder intersection should use analytical treatment.
-//! @param[in] thePlane    plane surface
-//! @param[in] theCylinder cylinder surface
-//! @param[in] theHeight   cylinder height
-//! @param[in] theTol      tolerance
-//! @return true if analytical treatment is appropriate
-static bool treatPlaneCylinder(const gp_Pln&      thePlane,
-                               const gp_Cylinder& theCylinder,
-                               const double       theHeight,
-                               const double       theTol)
-{
-  IntAna_QuadQuadGeo anInter;
-  anInter.Perform(thePlane, theCylinder, THE_TOLANG, theTol, theHeight);
-
-  if (anInter.TypeInter() == IntAna_Ellipse)
-  {
-    const gp_Elips anEllipse = anInter.Ellipse(1);
-    const double   aMajorR   = anEllipse.MajorRadius();
-    const double   aMinorR   = anEllipse.MinorRadius();
-
-    return (aMajorR < THE_MAX_ELLIPSE_RATIO * aMinorR);
-  }
-
-  return anInter.IsDone();
-}
-
-//! Computes distance from a point to an infinite line and returns the projection parameter.
-//! Line is defined as: theLoc + t * theDir
-//! @param[in]  thePoint point to compute distance from
-//! @param[in]  theLoc   point on the line (at t=0)
-//! @param[in]  theDir   direction of the line (unit vector)
-//! @param[out] theParam parameter t where the closest point on line is located
-//! @return distance from thePoint to the line
-static double distancePointToLine(const gp_Pnt& thePoint,
-                                  const gp_Pnt& theLoc,
-                                  const gp_Dir& theDir,
-                                  double&       theParam)
-{
-  const gp_Vec aVec(theLoc, thePoint);
-  theParam              = aVec.Dot(theDir);
-  const gp_Pnt aClosest = theLoc.Translated(gp_Vec(theDir) * theParam);
-  return thePoint.Distance(aClosest);
-}
-
-//! Determines if analytical intersection treatment is appropriate for the given surfaces.
-//! @param[in] theBAS1 first surface adaptor
-//! @param[in] theBAS2 second surface adaptor
-//! @param[in] theTol  tolerance
-//! @return true if analytical treatment should be used
-static bool isTreatAnalityc(const BRepAdaptor_Surface& theBAS1,
-                            const BRepAdaptor_Surface& theBAS2,
-                            const double               theTol)
-{
-  const GeomAbs_SurfaceType aType1 = theBAS1.GetType();
-  const GeomAbs_SurfaceType aType2 = theBAS2.GetType();
-
-  // Handle Plane-Cylinder case
-  if ((aType1 == GeomAbs_Plane && aType2 == GeomAbs_Cylinder)
-      || (aType1 == GeomAbs_Cylinder && aType2 == GeomAbs_Plane))
-  {
-    const BRepAdaptor_Surface& aPlaneAdaptor = (aType1 == GeomAbs_Plane) ? theBAS1 : theBAS2;
-    const BRepAdaptor_Surface& aCylAdaptor   = (aType1 == GeomAbs_Cylinder) ? theBAS1 : theBAS2;
-
-    double aHeight = 0.0;
-    if (!getCylinderHeight(aCylAdaptor, aHeight))
-    {
-      return true;
-    }
-
-    return treatPlaneCylinder(aPlaneAdaptor.Plane(), aCylAdaptor.Cylinder(), aHeight, theTol);
-  }
-
-  // Default: use analytical treatment for unhandled cases
-  return true;
-}
-
-} // namespace
 
 static void Parameters(const occ::handle<GeomAdaptor_Surface>&,
                        const occ::handle<GeomAdaptor_Surface>&,
@@ -351,6 +244,75 @@ double IntTools_FaceFace::FuzzyValue() const
 void IntTools_FaceFace::SetList(NCollection_List<IntSurf_PntOn2S>& aListOfPnts)
 {
   myListOfPnts = aListOfPnts;
+}
+
+static bool isTreatAnalityc(const BRepAdaptor_Surface& theBAS1,
+                            const BRepAdaptor_Surface& theBAS2,
+                            const double               theTol)
+{
+  const double Tolang = 1.e-8;
+  double       aHigh  = 0.0;
+
+  const GeomAbs_SurfaceType aType1 = theBAS1.GetType();
+  const GeomAbs_SurfaceType aType2 = theBAS2.GetType();
+
+  gp_Pln      aS1;
+  gp_Cylinder aS2;
+  if (aType1 == GeomAbs_Plane)
+  {
+    aS1 = theBAS1.Plane();
+  }
+  else if (aType2 == GeomAbs_Plane)
+  {
+    aS1 = theBAS2.Plane();
+  }
+  else
+  {
+    return true;
+  }
+
+  if (aType1 == GeomAbs_Cylinder)
+  {
+    aS2               = theBAS1.Cylinder();
+    const double VMin = theBAS1.FirstVParameter();
+    const double VMax = theBAS1.LastVParameter();
+
+    if (Precision::IsNegativeInfinite(VMin) || Precision::IsPositiveInfinite(VMax))
+      return true;
+    else
+      aHigh = VMax - VMin;
+  }
+  else if (aType2 == GeomAbs_Cylinder)
+  {
+    aS2 = theBAS2.Cylinder();
+
+    const double VMin = theBAS2.FirstVParameter();
+    const double VMax = theBAS2.LastVParameter();
+
+    if (Precision::IsNegativeInfinite(VMin) || Precision::IsPositiveInfinite(VMax))
+      return true;
+    else
+      aHigh = VMax - VMin;
+  }
+  else
+  {
+    return true;
+  }
+
+  IntAna_QuadQuadGeo inter;
+  inter.Perform(aS1, aS2, Tolang, theTol, aHigh);
+  if (inter.TypeInter() == IntAna_Ellipse)
+  {
+    const gp_Elips anEl    = inter.Ellipse(1);
+    const double   aMajorR = anEl.MajorRadius();
+    const double   aMinorR = anEl.MinorRadius();
+
+    return (aMajorR < 100000.0 * aMinorR);
+  }
+  else
+  {
+    return inter.IsDone();
+  }
 }
 
 //=======================================================================
@@ -849,9 +811,7 @@ reapprox:;
             GeomInt_IntSS::BuildPCurves(fprm, lprm, Tolpc, myHS1->Surface(), newc, C2d);
 
             if (C2d.IsNull())
-            {
               continue;
-            }
 
             aCurve.SetFirstCurve2d(new Geom2d_TrimmedCurve(C2d, fprm, lprm));
           }
@@ -862,9 +822,7 @@ reapprox:;
             GeomInt_IntSS::BuildPCurves(fprm, lprm, Tolpc, myHS2->Surface(), newc, C2d);
 
             if (C2d.IsNull())
-            {
               continue;
-            }
 
             aCurve.SetSecondCurve2d(new Geom2d_TrimmedCurve(C2d, fprm, lprm));
           }

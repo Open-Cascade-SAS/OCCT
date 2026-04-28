@@ -7996,14 +7996,11 @@ IntPatch_ImpImpIntersection::IntStatus IntCyCy(
   const int aNbOfBoundaries = 2;
   Bnd_Range anURange[2][aNbOfBoundaries]; // const
 
-  // Failure to compute boundaries means the intersection could not be determined;
-  // it is not a proof that the surfaces are disjoint. Report it as Fail so the
-  // caller can decide to fall back rather than treat the result as "empty".
   if (!WorkWithBoundaries::BoundariesComputing(anEquationCoeffs1, aPeriod, anURange[0]))
-    return IntPatch_ImpImpIntersection::IntStatus_Fail;
+    return IntPatch_ImpImpIntersection::IntStatus_OK;
 
   if (!WorkWithBoundaries::BoundariesComputing(anEquationCoeffs2, aPeriod, anURange[1]))
-    return IntPatch_ImpImpIntersection::IntStatus_Fail;
+    return IntPatch_ImpImpIntersection::IntStatus_OK;
 
   // anURange[*] can be in different periodic regions in
   // compare with First-Last surface. E.g. the surface
@@ -8098,11 +8095,7 @@ IntPatch_ImpImpIntersection::IntStatus IntCyCy(
   // On the other hand, there is no point in reversing in case of
   // analytical intersection (when result is line, ellipse, point...).
   // This result is independent of the arguments order.
-  // Strict '>' on float sums can flip the driver choice for geometrically symmetric
-  // inputs solely due to rounding noise between (Cyl1, Cyl2) and (Cyl2, Cyl1) coefficient
-  // constructions; guard with theTol2D so micro-differences resolve deterministically
-  // to the original argument order.
-  const bool isToReverse = (aSumRange[1] > aSumRange[0] + theTol2D);
+  const bool isToReverse = (aSumRange[1] > aSumRange[0]);
 
   if (isToReverse)
   {
