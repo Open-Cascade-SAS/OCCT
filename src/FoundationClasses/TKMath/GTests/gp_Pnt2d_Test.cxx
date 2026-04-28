@@ -135,3 +135,37 @@ TEST(gp_Pnt2dTest, Transformed)
   EXPECT_NEAR(aResult.X(), 1.0, Precision::Confusion());
   EXPECT_NEAR(aResult.Y(), 5.0, Precision::Confusion());
 }
+
+// OCC22736: Verifies that composing two identical mirror transformations through the same axis
+// is equivalent to the identity transform. Mirror p1 once through the axis to get p2, then
+// mirror p2 to get back p1. Composing M1*M2 and applying to p1 must also return p1.
+TEST(gp_Pnt2dTest, OCC22736_TwoIdenticalMirrorCompositionIsIdentity)
+{
+  const gp_Pnt2d aMirrorFirst(2.0, 1.0);
+  const gp_Pnt2d aMirrorSecond(3.0, 1.0);
+  const gp_Ax2d  aMirrorAxis(aMirrorFirst, gp_Vec2d(aMirrorFirst, aMirrorSecond));
+
+  const gp_Pnt2d aP1(1.0, 0.0);
+  const gp_Pnt2d aP2(1.0, 2.0);
+
+  gp_Trsf2d aM1;
+  aM1.SetMirror(aMirrorAxis);
+  gp_Trsf2d aM2;
+  aM2.SetMirror(aMirrorAxis);
+
+  // Applying M1 to p1 should give p2
+  const gp_Pnt2d aP1MirrorM1 = aP1.Transformed(aM1);
+  EXPECT_NEAR(aP1MirrorM1.X(), aP2.X(), Precision::Confusion());
+  EXPECT_NEAR(aP1MirrorM1.Y(), aP2.Y(), Precision::Confusion());
+
+  // Applying M2 to the mirrored point should give back p1
+  const gp_Pnt2d aP1MirrorM1M2 = aP1MirrorM1.Transformed(aM2);
+  EXPECT_NEAR(aP1MirrorM1M2.X(), aP1.X(), Precision::Confusion());
+  EXPECT_NEAR(aP1MirrorM1M2.Y(), aP1.Y(), Precision::Confusion());
+
+  // Composing M2*M1 must also be identity on p1
+  const gp_Trsf2d aComp = aM2.Multiplied(aM1);
+  const gp_Pnt2d  aP1Comp = aP1.Transformed(aComp);
+  EXPECT_NEAR(aP1Comp.X(), aP1.X(), Precision::Confusion());
+  EXPECT_NEAR(aP1Comp.Y(), aP1.Y(), Precision::Confusion());
+}

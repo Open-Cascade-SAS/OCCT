@@ -58,10 +58,7 @@
 #include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <Geom2dAPI_Interpolate.hxx>
 #include <Geom2d_BSplineCurve.hxx>
-#include <Geom2dConvert_BSplineCurveToBezierCurve.hxx>
-#include <Geom2d_BezierCurve.hxx>
 #include <BRep_Tool.hxx>
 #include <GeomProjLib.hxx>
 #include <Geom2dAPI_InterCurveCurve.hxx>
@@ -76,7 +73,6 @@
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_DoubleMap.hxx>
 #include <BRepBuilderAPI_MakePolygon.hxx>
-#include <gp_GTrsf.hxx>
 #include <Poly_Triangulation.hxx>
 #include <IGESControl_Reader.hxx>
 #include <IGESData_IGESModel.hxx>
@@ -1406,41 +1402,6 @@ static int OCC708(Draw_Interpretor& di, int argc, const char** argv)
 
 //=================================================================================================
 
-#include <GeomAPI_ProjectPointOnSurf.hxx>
-
-//=================================================================================================
-
-static int OCC867(Draw_Interpretor& di, int argc, const char** argv)
-{
-  if (argc != 7)
-  {
-    di << "Usage : " << argv[0] << " Point Surface Umin Usup Vmin Vsup \n";
-    return 1;
-  }
-
-  gp_Pnt aPoint3d;
-  DrawTrSurf::GetPoint(argv[1], aPoint3d);
-  occ::handle<Geom_Surface> aSurface = DrawTrSurf::GetSurface(argv[2]);
-  double                    Umin     = Draw::Atof(argv[3]);
-  double                    Usup     = Draw::Atof(argv[4]);
-  double                    Vmin     = Draw::Atof(argv[5]);
-  double                    Vsup     = Draw::Atof(argv[6]);
-
-  if (aSurface.IsNull())
-  {
-    di << argv[2] << " Null surface \n";
-    return 1;
-  }
-
-  GeomAPI_ProjectPointOnSurf PonSurf;
-  PonSurf.Init(aSurface, Umin, Usup, Vmin, Vsup);
-  PonSurf.Perform(aPoint3d);
-
-  return 0;
-}
-
-//=================================================================================================
-
 static int OCC909(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 3)
@@ -1750,112 +1711,7 @@ static int OCC1487(Draw_Interpretor& di, int argc, const char** argv)
 }
 
 #include <NCollection_List.hxx>
-#include <BRepFilletAPI_MakeFillet.hxx>
 
-//=================================================================================================
-
-TopoDS_Shape OCC1077_boolbl(BRepAlgoAPI_BooleanOperation& aBoolenaOperation, const double aRadius)
-{
-  double        tesp       = 1.e-4;
-  double        t3d        = 1.e-4;
-  double        t2d        = 1.e-5;
-  double        ta         = 1.e-2;
-  double        fl         = 1.e-3;
-  double        tapp_angle = 1.e-2;
-  GeomAbs_Shape blend_cont = GeomAbs_C1;
-
-  TopoDS_Shape ShapeCut = aBoolenaOperation.Shape();
-
-  NCollection_List<TopoDS_Shape>::Iterator its;
-
-  TopoDS_Compound result;
-  BRep_Builder    B;
-  B.MakeCompound(result);
-
-  TopExp_Explorer ex;
-  for (ex.Init(ShapeCut, TopAbs_SOLID); ex.More(); ex.Next())
-  {
-    const TopoDS_Shape& cutsol = ex.Current();
-
-    BRepFilletAPI_MakeFillet fill(cutsol);
-    fill.SetParams(ta, tesp, t2d, t3d, t2d, fl);
-    fill.SetContinuity(blend_cont, tapp_angle);
-    its = aBoolenaOperation.SectionEdges();
-    while (its.More())
-    {
-      TopoDS_Edge E = TopoDS::Edge(its.Value());
-      fill.Add(aRadius, E);
-      its.Next();
-    }
-
-    fill.Build();
-    if (fill.IsDone())
-    {
-      B.Add(result, fill.Shape());
-    }
-    else
-    {
-      B.Add(result, cutsol);
-    }
-  }
-  return result;
-}
-
-TopoDS_Shape OCC1077_cut_blend(const TopoDS_Shape& aShapeToCut,
-                               const TopoDS_Shape& aTool,
-                               const double        aRadius)
-{
-  // return OCC1077_boolbl(BRepAlgoAPI_Cut(aShapeToCut, aTool),aRadius);
-  BRepAlgoAPI_Cut aCut(aShapeToCut, aTool);
-  return OCC1077_boolbl(aCut, aRadius);
-}
-
-// TopoDS_Shape OCC1077_common_blend(const TopoDS_Shape& aShape1, const TopoDS_Shape& aShape2, const
-// double aRadius)
-//{
-//   return OCC1077_boolbl(BRepAlgoAPI_Common(aShape1, aShape2),aRadius);
-// }
-
-TopoDS_Shape OCC1077_Bug()
-{
-  TopoDS_Shape theBox    = BRepPrimAPI_MakeBox(gp_Pnt(-5, -5, -5), 10, 10, 10).Shape();
-  TopoDS_Shape theSphere = BRepPrimAPI_MakeSphere(7).Shape();
-
-  TopoDS_Shape theCommon = BRepAlgoAPI_Common(theBox, theSphere);
-  TopoDS_Shape theCylinder1 =
-    BRepPrimAPI_MakeCylinder(gp_Ax2(gp_Pnt(0, 0, -10), gp_Dir(gp_Dir::D::Z)), 3, 20).Shape();
-  TopoDS_Shape theCylinder2 =
-    BRepPrimAPI_MakeCylinder(gp_Ax2(gp_Pnt(-10, 0, 0), gp_Dir(gp_Dir::D::X)), 3, 20).Shape();
-  TopoDS_Shape theCylinder3 =
-    BRepPrimAPI_MakeCylinder(gp_Ax2(gp_Pnt(0, -10, 0), gp_Dir(gp_Dir::D::Y)), 3, 20).Shape();
-  TopoDS_Shape                theTmp1 = OCC1077_cut_blend(theCommon, theCylinder1, 0.7);
-  occ::handle<ShapeFix_Shape> fixer   = new ShapeFix_Shape(theTmp1);
-  fixer->Perform();
-  theTmp1              = fixer->Shape();
-  TopoDS_Shape theTmp2 = OCC1077_cut_blend(theTmp1, theCylinder2, 0.7);
-  fixer->Init(theTmp2);
-  fixer->Perform();
-  theTmp2                = fixer->Shape();
-  TopoDS_Shape theResult = OCC1077_cut_blend(theTmp2, theCylinder3, 0.7);
-  fixer->Init(theResult);
-  fixer->Perform();
-  theResult = fixer->Shape();
-  return theResult;
-}
-
-static int OCC1077(Draw_Interpretor& di, int argc, const char** argv)
-{
-  if (argc < 1 || argc > 2)
-  {
-    di << "Usage : " << argv[0] << " result\n";
-    return 1;
-  }
-
-  TopoDS_Shape S = OCC1077_Bug();
-  DBRep::Set(argv[1], S);
-
-  return 0;
-}
 
 //////////////////////////////////////////////////////////////
 /*!
@@ -2410,50 +2266,6 @@ static int OCC7141(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-static int OCC7372(Draw_Interpretor& di, int argc, const char** argv)
-{
-  if (argc != 1)
-  {
-    di << "Usage : " << argv[0] << "\n";
-    return 1;
-  }
-
-  // 1. Create an array of points
-  occ::handle<NCollection_HArray1<gp_Pnt2d>> ap = new NCollection_HArray1<gp_Pnt2d>(1, 5);
-  ap->SetValue(1, gp_Pnt2d(100.0, 0.0));
-  ap->SetValue(2, gp_Pnt2d(100.0, 100.0));
-  ap->SetValue(3, gp_Pnt2d(0.0, 100.0));
-  ap->SetValue(4, gp_Pnt2d(0.0, 0.0));
-  ap->SetValue(5, gp_Pnt2d(50.0, -50.0));
-
-  // 2. Create a periodic bspline through these 5 points
-  Geom2dAPI_Interpolate intp(ap, true, 1e-6);
-  intp.Perform();
-  occ::handle<Geom2d_BSplineCurve> bspline1 = intp.Curve();
-
-  // 3. Increase degree of curve from 3 to 8
-  bspline1->IncreaseDegree(8); // Increase degree to demonstrate the error
-  const char* CString1 = "BSplineCurve";
-  DrawTrSurf::Set(CString1, bspline1);
-
-  // 4. Converts BSpline curve to Bezier segments
-  Geom2dConvert_BSplineCurveToBezierCurve bc(bspline1);
-
-  // 5. Test the result of conversion
-  TCollection_AsciiString aRName;
-  for (int i = 1; i <= bc.NbArcs(); i++)
-  {
-    occ::handle<Geom2d_BezierCurve> arc = bc.Arc(i);
-    aRName                              = "segment_";
-    aRName                              = aRName + TCollection_AsciiString(i);
-    const char* aRNameStr               = aRName.ToCString();
-    DrawTrSurf::Set(aRNameStr, arc);
-    di << aRNameStr << " ";
-  }
-
-  return 0;
-}
-
 static int OCC8169(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 4)
@@ -2811,32 +2623,6 @@ static int OCC11457(Draw_Interpretor& di, int argc, const char** argv)
   W.Close();
   DBRep::Set(argv[1], W.Wire());
   DBRep::Set(argv[2], W.Edge());
-  return 0;
-}
-
-static int OCC13963(Draw_Interpretor& di, int argc, const char** argv)
-{
-  if (argc < 5)
-  {
-    di << "Usage : " << argv[0] << " ratio origin_x origin_y origin_z\n";
-    return 1;
-  }
-  gp_Ax2   aPln(gp_Pnt(0., 0., 0.), gp_Dir(1., -1., 0.));
-  gp_GTrsf aTrf;
-  aTrf.SetAffinity(aPln, Draw::Atof(argv[4]));
-  gp_XYZ aOrigin(Draw::Atof(argv[1]), Draw::Atof(argv[2]), Draw::Atof(argv[3]));
-  gp_XYZ aResult(aOrigin);
-  aTrf.Transforms(aResult);
-  char sbf[512];
-  Sprintf(sbf,
-          "( %8.3f %8.3f %8.3f ) => ( %8.3f %8.3f %8.3f )\n",
-          aOrigin.X(),
-          aOrigin.Y(),
-          aOrigin.Z(),
-          aResult.X(),
-          aResult.Y(),
-          aResult.Z());
-  di << sbf;
   return 0;
 }
 
@@ -4355,122 +4141,6 @@ int OCC22301(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-#include <NCollection_DataMap.hxx>
-class AIS_InteractiveObject;
-
-int OCC22744(Draw_Interpretor& di, int argc, const char** argv)
-{
-
-  if (argc != 1)
-  {
-    di << "Usage : " << argv[0] << "\n";
-    return 1;
-  }
-
-  TCollection_ExtendedString anExtString;
-
-  char16_t aNonAsciiChar = 0x0f00;
-  anExtString.Insert(1, aNonAsciiChar);
-
-  di << "Is ASCII: " << (anExtString.IsAscii() ? "true : Error" : "false : OK") << "\n";
-  NCollection_DataMap<TCollection_ExtendedString, int> aMap;
-  aMap.Bind(anExtString, 0);
-
-  return 0;
-}
-
-int OCC22558(Draw_Interpretor& di, int argc, const char** argv)
-{
-  if (argc != 10)
-  {
-    di << "Wrong number of arguments" << argv[0] << "\n";
-    return 1;
-  }
-
-  double X_vec = Draw::Atof(argv[1]);
-  double Y_vec = Draw::Atof(argv[2]);
-  double Z_vec = Draw::Atof(argv[3]);
-
-  double X_dir = Draw::Atof(argv[4]);
-  double Y_dir = Draw::Atof(argv[5]);
-  double Z_dir = Draw::Atof(argv[6]);
-
-  double X_pnt = Draw::Atof(argv[7]);
-  double Y_pnt = Draw::Atof(argv[8]);
-  double Z_pnt = Draw::Atof(argv[9]);
-
-  gp_Dir toSym(X_vec, Y_vec, Z_vec);
-  gp_Dir dir(X_dir, Y_dir, Z_dir);
-  gp_Pnt loc(X_pnt, Y_pnt, Z_pnt);
-  gp_Ax2 symObj(loc, dir);
-  toSym.Mirror(symObj);
-
-  di << "The result " << toSym.X() << " " << toSym.Y() << " " << toSym.Z() << "\n";
-  return 0;
-}
-
-int OCC22736(Draw_Interpretor& di, int argc, const char** argv)
-{
-
-  if (argc != 9)
-  {
-    di << "Usage : " << argv[0]
-       << " X_mirrorFirstPoint Y_mirrorFirstPoint X_mirrorSecondPoint Y_mirrorSecondPoint X_p1 "
-          "Y_p1 X_p2 Y_p2\n";
-    return 1;
-  }
-
-  double X_mirrorFirstPoint  = Draw::Atof(argv[1]);
-  double Y_mirrorFirstPoint  = Draw::Atof(argv[2]);
-  double X_mirrorSecondPoint = Draw::Atof(argv[3]);
-  double Y_mirrorSecondPoint = Draw::Atof(argv[4]);
-  double X_p1                = Draw::Atof(argv[5]);
-  double Y_p1                = Draw::Atof(argv[6]);
-  double X_p2                = Draw::Atof(argv[7]);
-  double Y_p2                = Draw::Atof(argv[8]);
-
-  gp_Pnt2d mirrorFirstPoint(X_mirrorFirstPoint, Y_mirrorFirstPoint);
-  gp_Pnt2d mirrorSecondPoint(X_mirrorSecondPoint, Y_mirrorSecondPoint);
-  gp_Ax2d  mirrorAxis(mirrorFirstPoint, gp_Vec2d(mirrorFirstPoint, mirrorSecondPoint));
-
-  gp_Pnt2d p1(X_p1, Y_p1);
-  gp_Pnt2d p2(X_p2, Y_p2);
-
-  gp_Trsf2d M1;
-  M1.SetMirror(mirrorAxis);
-  gp_Trsf2d M2;
-  M2.SetMirror(mirrorAxis);
-  gp_Trsf2d Tcomp;
-  Tcomp = M2.Multiplied(M1);
-
-  constexpr double aTol    = Precision::Confusion();
-  int              aStatus = 0;
-
-  // After applying two times the same mirror the point is located on the same location OK
-  gp_Pnt2d p1MirrorM1 = p1.Transformed(M1);
-  if (std::abs(p2.X() - p1MirrorM1.X()) > aTol)
-    aStatus = 2;
-  if (std::abs(p2.Y() - p1MirrorM1.Y()) > aTol)
-    aStatus = 3;
-
-  gp_Pnt2d p1MirrorM1M2 = p1MirrorM1.Transformed(M2);
-  if (std::abs(p1.X() - p1MirrorM1M2.X()) > aTol)
-    aStatus = 4;
-  if (std::abs(p1.Y() - p1MirrorM1M2.Y()) > aTol)
-    aStatus = 5;
-
-  // If we apply the composed transformation of the same two mirrors to a point the result is //not
-  // located on the initial position.-->>ERROR
-  gp_Pnt2d p1MirrorComp = p1.Transformed(Tcomp);
-  if (std::abs(p1.X() - p1MirrorComp.X()) > aTol)
-    aStatus = 6;
-  if (std::abs(p1.Y() - p1MirrorComp.Y()) > aTol)
-    aStatus = 7;
-
-  di << "Status = " << aStatus << "\n";
-  return 0;
-}
-
 int OCC23429(Draw_Interpretor& /*di*/, int narg, const char** a)
 {
   if (narg < 4)
@@ -4718,7 +4388,6 @@ void QABugs::Commands_11(Draw_Interpretor& theCommands)
                   __FILE__,
                   OCC708,
                   group);
-  theCommands.Add("OCC867", "OCC867 Point Surface Umin Usup Vmin Vsup", __FILE__, OCC867, group);
   theCommands.Add("OCC909", "OCC909 wire face", __FILE__, OCC909, group);
   theCommands.Add("OCC921", "OCC921 face", __FILE__, OCC921, group);
 
@@ -4756,13 +4425,11 @@ void QABugs::Commands_11(Draw_Interpretor& theCommands)
                   OCC1487,
                   group);
 
-  theCommands.Add("OCC1077", "OCC1077 result", __FILE__, OCC1077, group);
   theCommands.Add("OCC5739", "OCC5739 name shape step", __FILE__, OCC5739_UniAbs, group);
   theCommands.Add("OCC5698", "OCC5698 wire", __FILE__, OCC5698, group);
   theCommands.Add("OCC6143", "OCC6143 catching signals", __FILE__, OCC6143, group);
   theCommands.Add("OCC30762", "OCC30762 printing backtrace", __FILE__, OCC30762, group);
   theCommands.Add("OCC7141", "OCC7141 [nCount] aPath", __FILE__, OCC7141, group);
-  theCommands.Add("OCC7372", "OCC7372", __FILE__, OCC7372, group);
   theCommands.Add("OCC8169", "OCC8169 edge1 edge2 plane", __FILE__, OCC8169, group);
   theCommands.Add("OCC10138", "OCC10138 lower upper", __FILE__, OCC10138, group);
   theCommands.Add("OCC7068", "OCC7068", __FILE__, OCC7068, group);
@@ -4770,11 +4437,6 @@ void QABugs::Commands_11(Draw_Interpretor& theCommands)
                   "OCC11457 polygon lastedge x1 y1 z1 x2 y2 z2 ...",
                   __FILE__,
                   OCC11457,
-                  group);
-  theCommands.Add("OCC13963",
-                  "OCC13963 ratio origin_x origin_y origin_z",
-                  __FILE__,
-                  OCC13963,
                   group);
   theCommands.Add("OCC14376", "OCC14376 shape [deflection]", __FILE__, OCC14376, group);
   theCommands.Add("OCC15755", "OCC15755 file shape", __FILE__, OCC15755, group);
@@ -4788,18 +4450,6 @@ void QABugs::Commands_11(Draw_Interpretor& theCommands)
                   OCC17424,
                   group);
   theCommands.Add("OCC22301", "OCC22301", __FILE__, OCC22301, group);
-  theCommands.Add("OCC22736",
-                  "OCC22736 X_mirrorFirstPoint Y_mirrorFirstPoint X_mirrorSecondPoint "
-                  "Y_mirrorSecondPoint X_p1 Y_p1 X_p2 Y_p2",
-                  __FILE__,
-                  OCC22736,
-                  group);
-  theCommands.Add("OCC22744", "OCC22744", __FILE__, OCC22744, group);
-  theCommands.Add("OCC22558",
-                  "OCC22558 x_vec y_vec z_vec x_dir y_dir z_dit x_pnt y_pnt z_pnt",
-                  __FILE__,
-                  OCC22558,
-                  group);
   theCommands.Add("CR23403", "CR23403 string", __FILE__, CR23403, group);
   theCommands.Add("OCC23429", "OCC23429 res shape tool [appr]", __FILE__, OCC23429, group);
   theCommands.Add(

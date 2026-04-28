@@ -180,3 +180,18 @@ TEST(gp_DirTest, ZeroMagnitudeInput_ThrowsException)
   GTEST_SKIP() << "No_Exception is defined; exception behavior is disabled in this build.";
 #endif
 }
+
+// OCC22558: Mirror of gp_Dir(1,1,1) through gp_Ax2 at origin with main dir (1,0,0) gives
+// (-1/sqrt(3), 1/sqrt(3), 1/sqrt(3)).  The TCL test checks int(res * 100000) == {-57735, 57735, 57735}.
+TEST(gp_DirTest, OCC22558_MirrorThroughAx2_CorrectResult)
+{
+  gp_Dir aToSym(1.0, 1.0, 1.0);
+  const gp_Ax2 anAx2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
+  aToSym.Mirror(anAx2);
+
+  // Expected: (-1/sqrt(3), 1/sqrt(3), 1/sqrt(3))
+  const double aExpected = 1.0 / std::sqrt(3.0);
+  EXPECT_NEAR(aToSym.X(), -aExpected, Precision::Confusion());
+  EXPECT_NEAR(aToSym.Y(),  aExpected, Precision::Confusion());
+  EXPECT_NEAR(aToSym.Z(),  aExpected, Precision::Confusion());
+}
