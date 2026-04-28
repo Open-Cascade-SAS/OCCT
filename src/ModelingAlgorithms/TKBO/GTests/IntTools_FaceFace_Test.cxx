@@ -73,6 +73,28 @@ protected:
     return aFaceMaker.Face();
   }
 
+  //! Create a full cylinder face with finite V range.
+  //! @param theCenter center point on the cylinder axis
+  //! @param theAxis direction of the cylinder axis
+  //! @param theRadius radius of the cylinder
+  //! @param theVMin minimum V parameter (height along axis)
+  //! @param theVMax maximum V parameter (height along axis)
+  //! @return the cylinder face
+  static TopoDS_Face CreateCylinderFace(const gp_Pnt& theCenter,
+                                        const gp_Dir& theAxis,
+                                        double        theRadius,
+                                        double        theVMin,
+                                        double        theVMax)
+  {
+    return CreateHalfCylinderFace(theCenter,
+                                  theAxis,
+                                  theRadius,
+                                  theVMin,
+                                  theVMax,
+                                  0.0,
+                                  2.0 * M_PI);
+  }
+
   //! Create a circular planar face.
   //! @param theCenter center of the circle on the plane
   //! @param theNormal normal direction of the plane
@@ -102,6 +124,55 @@ protected:
     return aFaceMaker.Face();
   }
 };
+
+//! Regression: cylinder-cylinder analytical gating must not depend on argument order.
+//! Geometry is configured so that only one cylinder contributes a touching V-boundary.
+TEST_F(IntTools_FaceFaceTest, PerpendicularCylinderBoundaryTouch_OrderIndependent)
+{
+  // Cylinder 1: axis along Z, long finite segment.
+  const gp_Pnt aCyl1Center(0.0, 0.0, 0.0);
+  const gp_Dir aCyl1Axis(0.0, 0.0, 1.0);
+  const double aCyl1Radius = 2.0;
+  const double aCyl1VMin   = -5.0;
+  const double aCyl1VMax   = 5.0;
+
+  // Cylinder 2: axis along X, one V-boundary at X=0 touches cylinder 1.
+  // Endpoint (0, 2, 0) lies on cylinder 1 surface, while cylinder 1 V-boundaries
+  // stay far from cylinder 2 surface.
+  const gp_Pnt aCyl2Center(0.0, 2.0, 0.0);
+  const gp_Dir aCyl2Axis(1.0, 0.0, 0.0);
+  const double aCyl2Radius = 0.5;
+  const double aCyl2VMin   = 0.0;
+  const double aCyl2VMax   = 4.0;
+
+  TopoDS_Face aFace1 =
+    CreateCylinderFace(aCyl1Center, aCyl1Axis, aCyl1Radius, aCyl1VMin, aCyl1VMax);
+  TopoDS_Face aFace2 =
+    CreateCylinderFace(aCyl2Center, aCyl2Axis, aCyl2Radius, aCyl2VMin, aCyl2VMax);
+
+  ASSERT_FALSE(aFace1.IsNull()) << "Failed to create first cylinder face";
+  ASSERT_FALSE(aFace2.IsNull()) << "Failed to create second cylinder face";
+
+  IntTools_FaceFace aFF12;
+  aFF12.SetParameters(true, true, true, 1.0e-7);
+  aFF12.Perform(aFace1, aFace2);
+  ASSERT_TRUE(aFF12.IsDone()) << "Intersection failed for (face1, face2)";
+
+  IntTools_FaceFace aFF21;
+  aFF21.SetParameters(true, true, true, 1.0e-7);
+  aFF21.Perform(aFace2, aFace1);
+  ASSERT_TRUE(aFF21.IsDone()) << "Intersection failed for (face2, face1)";
+
+  const int aNbCurves12 = aFF12.Lines().Length();
+  const int aNbPoints12 = aFF12.Points().Length();
+  const int aNbCurves21 = aFF21.Lines().Length();
+  const int aNbPoints21 = aFF21.Points().Length();
+
+  EXPECT_EQ(aNbCurves12, aNbCurves21)
+    << "Intersection curve count should not depend on argument order";
+  EXPECT_EQ(aNbPoints12, aNbPoints21)
+    << "Intersection point count should not depend on argument order";
+}
 
 //! Test that a half-cylinder face and a circular plane face that don't actually
 //! intersect (cylinder is outside the circle) correctly return no intersection.
