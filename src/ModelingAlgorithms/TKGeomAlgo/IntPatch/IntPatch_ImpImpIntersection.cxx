@@ -665,7 +665,7 @@ void PutPointsOnLine(const occ::handle<Adaptor3d_Surface>&                      
                       else if (Domain->Identical(vtx, vtxbis))
                       {
                         solpnt.SetVertex(OnFirst, vtxbis);
-                        solpnt.SetTolerance(Tolarc);
+                        solpnt.SetTolerance(aVertTol);
                         currentarc       = currentpointonrst.Arc();
                         currentparameter = currentpointonrst.Parameter();
 

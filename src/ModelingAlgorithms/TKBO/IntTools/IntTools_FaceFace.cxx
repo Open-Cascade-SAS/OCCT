@@ -215,6 +215,7 @@ static bool treatCylinderCylinder(const BRepAdaptor_Surface& theBAS1,
     return true;
   }
 
+  const double aR1 = aCyl1.Radius();
   const double aR2 = aCyl2.Radius();
 
   // Compute axis locations (at V=0)
@@ -224,10 +225,14 @@ static bool treatCylinderCylinder(const BRepAdaptor_Surface& theBAS1,
   // Compute axis segment endpoints
   const gp_Pnt aP1Min = aLoc1.Translated(gp_Vec(aDir1) * aV1Min);
   const gp_Pnt aP1Max = aLoc1.Translated(gp_Vec(aDir1) * aV1Max);
+  const gp_Pnt aP2Min = aLoc2.Translated(gp_Vec(aDir2) * aV2Min);
+  const gp_Pnt aP2Max = aLoc2.Translated(gp_Vec(aDir2) * aV2Max);
 
-  // Check boundary touch: endpoint of cylinder 1's axis touching cylinder 2's surface
+  // Check boundary touch symmetrically to avoid argument-order dependency.
   if (checkBoundaryTouch(aP1Min, aLoc2, aDir2, aV2Min, aV2Max, aR2, theTol)
-      || checkBoundaryTouch(aP1Max, aLoc2, aDir2, aV2Min, aV2Max, aR2, theTol))
+      || checkBoundaryTouch(aP1Max, aLoc2, aDir2, aV2Min, aV2Max, aR2, theTol)
+      || checkBoundaryTouch(aP2Min, aLoc1, aDir1, aV1Min, aV1Max, aR1, theTol)
+      || checkBoundaryTouch(aP2Max, aLoc1, aDir1, aV1Min, aV1Max, aR1, theTol))
   {
     return false; // Touch detected - disable analytical
   }
