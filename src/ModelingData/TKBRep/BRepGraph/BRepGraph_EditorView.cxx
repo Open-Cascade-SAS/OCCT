@@ -356,10 +356,10 @@ static void rebindCoEdgesForEdgeReplacement(BRepGraphInc_Storage&  theStorage,
 //! a non-removed CoEdge that references theEdge. Used to gate Edge->Wire unbind
 //! when a single CoEdgeRef is removed: deduped reverse entry must drop only when
 //! the last sibling pointing at the same edge is gone.
-static bool isLastEdgeUsageInWire(const BRepGraphInc_Storage&  theStorage,
-                                  const BRepGraph_WireId       theWire,
-                                  const BRepGraph_EdgeId       theEdge,
-                                  const BRepGraph_CoEdgeRefId  theExcludingRef)
+static bool isLastEdgeUsageInWire(const BRepGraphInc_Storage& theStorage,
+                                  const BRepGraph_WireId      theWire,
+                                  const BRepGraph_EdgeId      theEdge,
+                                  const BRepGraph_CoEdgeRefId theExcludingRef)
 {
   if (!theWire.IsValid(theStorage.NbWires()) || !theEdge.IsValid())
     return true;

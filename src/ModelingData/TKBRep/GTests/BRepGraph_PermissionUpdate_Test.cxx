@@ -47,10 +47,8 @@ BRepGraph makeBoxGraph()
 
 BRepGraph_EdgeId makeSelfLoopEdge(BRepGraph& theGraph)
 {
-  const BRepGraph_VertexId aV =
-    theGraph.Editor().Vertices().Add(gp_Pnt(0.0, 0.0, 0.0), 1.0e-7);
-  const occ::handle<Geom_Line> aLine =
-    new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
+  const BRepGraph_VertexId     aV = theGraph.Editor().Vertices().Add(gp_Pnt(0.0, 0.0, 0.0), 1.0e-7);
+  const occ::handle<Geom_Line> aLine = new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
   return theGraph.Editor().Edges().Add(aV, aV, aLine, 0.0, 1.0, 1.0e-7);
 }
 
@@ -74,11 +72,7 @@ TEST(BRepGraph_PermissionUpdateTest, RemoveRef_OccurrenceRef_PreservesProductToO
 
   BRepGraph_OccurrenceRefId    aOccRefId;
   const BRepGraph_OccurrenceId aOccId =
-    aProds.LinkProducts(aParent,
-                        aChild,
-                        TopLoc_Location(),
-                        BRepGraph_OccurrenceId(),
-                        &aOccRefId);
+    aProds.LinkProducts(aParent, aChild, TopLoc_Location(), BRepGraph_OccurrenceId(), &aOccRefId);
   ASSERT_TRUE(aOccId.IsValid());
   ASSERT_TRUE(aOccRefId.IsValid());
 
@@ -109,14 +103,10 @@ TEST(BRepGraph_PermissionUpdateTest, RemoveRef_CoEdge_PreservesEdgeToWireWhenSib
   BRepGraph aGraph;
   aGraph.Clear();
 
-  const BRepGraph_VertexId aV1 =
-    aGraph.Editor().Vertices().Add(gp_Pnt(0.0, 0.0, 0.0), 1.0e-7);
-  const BRepGraph_VertexId aV2 =
-    aGraph.Editor().Vertices().Add(gp_Pnt(1.0, 0.0, 0.0), 1.0e-7);
-  const occ::handle<Geom_Line> aLine =
-    new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
-  const BRepGraph_EdgeId aEdge =
-    aGraph.Editor().Edges().Add(aV1, aV2, aLine, 0.0, 1.0, 1.0e-7);
+  const BRepGraph_VertexId     aV1 = aGraph.Editor().Vertices().Add(gp_Pnt(0.0, 0.0, 0.0), 1.0e-7);
+  const BRepGraph_VertexId     aV2 = aGraph.Editor().Vertices().Add(gp_Pnt(1.0, 0.0, 0.0), 1.0e-7);
+  const occ::handle<Geom_Line> aLine = new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
+  const BRepGraph_EdgeId aEdge = aGraph.Editor().Edges().Add(aV1, aV2, aLine, 0.0, 1.0, 1.0e-7);
   ASSERT_TRUE(aEdge.IsValid());
 
   NCollection_DynamicArray<std::pair<BRepGraph_EdgeId, TopAbs_Orientation>> anEdges;
@@ -159,25 +149,27 @@ TEST(BRepGraph_PermissionUpdateTest, SetRefVertexDefId_SelfLoopSibling_KeepsRevI
   const BRepGraph_VertexRefId  aStartRefId = aDef.StartVertexRefId;
   ASSERT_TRUE(aStartRefId.IsValid());
 
-  const BRepGraph_VertexId aNewV =
-    aGraph.Editor().Vertices().Add(gp_Pnt(1.0, 0.0, 0.0), 1.0e-7);
+  const BRepGraph_VertexId aNewV = aGraph.Editor().Vertices().Add(gp_Pnt(1.0, 0.0, 0.0), 1.0e-7);
 
   aGraph.Editor().Vertices().SetRefVertexDefId(aStartRefId, aNewV);
   EXPECT_TRUE(aGraph.ValidateReverseIndex());
 
   // EndVertexRef still references the original vertex, so the (Vold -> aEdge)
   // reverse entry must survive the start-side rebind.
-  const BRepGraph_VertexId aOldV = aGraph.Topo().Edges().Definition(aEdge).EndVertexRefId.IsValid()
-                                     ? aGraph.Refs().Vertices()
-                                         .Entry(aGraph.Topo().Edges().Definition(aEdge).EndVertexRefId)
-                                         .VertexDefId
-                                     : BRepGraph_VertexId();
+  const BRepGraph_VertexId aOldV =
+    aGraph.Topo().Edges().Definition(aEdge).EndVertexRefId.IsValid()
+      ? aGraph.Refs()
+          .Vertices()
+          .Entry(aGraph.Topo().Edges().Definition(aEdge).EndVertexRefId)
+          .VertexDefId
+      : BRepGraph_VertexId();
   ASSERT_TRUE(aOldV.IsValid());
   bool aOldStillIndexed = false;
   for (const BRepGraph_EdgeId& aE : aGraph.Topo().Vertices().Edges(aOldV))
     if (aE == aEdge)
       aOldStillIndexed = true;
-  EXPECT_TRUE(aOldStillIndexed) << "Vold must remain in EdgesOfVertex(Vold) after start-side rebind";
+  EXPECT_TRUE(aOldStillIndexed)
+    << "Vold must remain in EdgesOfVertex(Vold) after start-side rebind";
 }
 
 // CopyNode must not loop infinitely on a self-referencing compound.
@@ -185,19 +177,17 @@ TEST(BRepGraph_PermissionUpdateTest, CopyNode_SelfReferencingCompound_Terminates
 {
   BRepGraph aGraph = makeBoxGraph();
   ASSERT_TRUE(aGraph.IsDone());
-  const BRepGraph_VertexId aV =
-    aGraph.Editor().Vertices().Add(gp_Pnt(0.0, 0.0, 0.0), 1.0e-7);
+  const BRepGraph_VertexId aV = aGraph.Editor().Vertices().Add(gp_Pnt(0.0, 0.0, 0.0), 1.0e-7);
   NCollection_DynamicArray<BRepGraph_NodeId> aChildren;
   aChildren.Append(BRepGraph_NodeId(aV));
   const BRepGraph_CompoundId aRoot = aGraph.Editor().Compounds().Add(aChildren);
   ASSERT_TRUE(aRoot.IsValid());
 
   // Splice the compound into itself by rewriting its first child ref.
-  const BRepGraphInc::CompoundDef& aDef    = aGraph.Topo().Compounds().Definition(aRoot);
+  const BRepGraphInc::CompoundDef& aDef = aGraph.Topo().Compounds().Definition(aRoot);
   ASSERT_FALSE(aDef.ChildRefIds.IsEmpty());
   const BRepGraph_ChildRefId aChildRefId = aDef.ChildRefIds.First();
   aGraph.Editor().Gen().SetChildRefChildDefId(aChildRefId, BRepGraph_NodeId(aRoot));
-
 
   const BRepGraph aCopy = BRepGraph_Copy::CopyNode(aGraph,
                                                    BRepGraph_NodeId(aRoot),
@@ -229,13 +219,12 @@ TEST(BRepGraph_PermissionUpdateTest, TransformNode_OccurrenceWithCopyGeom_Reject
 {
   BRepGraph aGraph = makeBoxGraph();
   ASSERT_TRUE(aGraph.IsDone());
-  BRepGraph::EditorView::ProductOps& aProds = aGraph.Editor().Products();
+  BRepGraph::EditorView::ProductOps& aProds  = aGraph.Editor().Products();
   const BRepGraph_ProductId          aParent = aProds.CreateEmptyProduct();
   const BRepGraph_ProductId          aChild  = aProds.CreateEmptyProduct();
   ASSERT_TRUE(aParent.IsValid());
   ASSERT_TRUE(aChild.IsValid());
-  const BRepGraph_OccurrenceId aOccId =
-    aProds.LinkProducts(aParent, aChild, TopLoc_Location());
+  const BRepGraph_OccurrenceId aOccId = aProds.LinkProducts(aParent, aChild, TopLoc_Location());
   ASSERT_TRUE(aOccId.IsValid());
 
   gp_Trsf aT;
@@ -251,26 +240,21 @@ TEST(BRepGraph_PermissionUpdateTest, LinkProducts_OutOccurrenceRefId_Populated)
 {
   BRepGraph aGraph = makeBoxGraph();
   ASSERT_TRUE(aGraph.IsDone());
-  BRepGraph::EditorView::ProductOps& aProds = aGraph.Editor().Products();
-  const BRepGraph_ProductId aParent = aProds.CreateEmptyProduct();
-  const BRepGraph_ProductId aChild  = aProds.CreateEmptyProduct();
+  BRepGraph::EditorView::ProductOps& aProds  = aGraph.Editor().Products();
+  const BRepGraph_ProductId          aParent = aProds.CreateEmptyProduct();
+  const BRepGraph_ProductId          aChild  = aProds.CreateEmptyProduct();
   ASSERT_TRUE(aParent.IsValid());
   ASSERT_TRUE(aChild.IsValid());
 
   BRepGraph_OccurrenceRefId    aOccRefId;
   const BRepGraph_OccurrenceId aOccId =
-    aProds.LinkProducts(aParent,
-                        aChild,
-                        TopLoc_Location(),
-                        BRepGraph_OccurrenceId(),
-                        &aOccRefId);
+    aProds.LinkProducts(aParent, aChild, TopLoc_Location(), BRepGraph_OccurrenceId(), &aOccRefId);
   ASSERT_TRUE(aOccId.IsValid());
   ASSERT_TRUE(aOccRefId.IsValid());
   EXPECT_EQ(aGraph.Refs().Occurrences().Entry(aOccRefId).OccurrenceDefId, aOccId);
 
   // Default out-pointer = nullptr is also legal.
-  const BRepGraph_OccurrenceId aOccId2 =
-    aProds.LinkProducts(aParent, aChild, TopLoc_Location());
+  const BRepGraph_OccurrenceId aOccId2 = aProds.LinkProducts(aParent, aChild, TopLoc_Location());
   EXPECT_TRUE(aOccId2.IsValid());
 }
 

@@ -520,9 +520,8 @@ BRepGraph_CompoundId ensureCompound(GraphCopyContext& ctx, BRepGraph_CompoundId 
 
   for (BRepGraph_RefsChildOfCompound aCRIt(ctx.Source, srcId); aCRIt.More(); aCRIt.Next())
   {
-    const BRepGraphInc::ChildRef& aChildRef =
-      ctx.Source.Refs().Children().Entry(aCRIt.CurrentId());
-    const BRepGraph_NodeId aSrcChild = aChildRef.ChildDefId;
+    const BRepGraphInc::ChildRef& aChildRef = ctx.Source.Refs().Children().Entry(aCRIt.CurrentId());
+    const BRepGraph_NodeId        aSrcChild = aChildRef.ChildDefId;
     ensureNode(ctx, aSrcChild);
     const BRepGraph_NodeId aMapped = mappedNode(ctx, aSrcChild);
     if (aMapped.IsValid())

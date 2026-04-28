@@ -1101,7 +1101,7 @@ public:
       LinkProducts(const BRepGraph_ProductId    theParentProduct,
                    const BRepGraph_ProductId    theReferencedProduct,
                    const TopLoc_Location&       thePlacement,
-                   const BRepGraph_OccurrenceId theParentOccurrence    = BRepGraph_OccurrenceId(),
+                   const BRepGraph_OccurrenceId theParentOccurrence   = BRepGraph_OccurrenceId(),
                    BRepGraph_OccurrenceRefId*   theOutOccurrenceRefId = nullptr);
 
     //! Detach one exact occurrence ref from a product definition.

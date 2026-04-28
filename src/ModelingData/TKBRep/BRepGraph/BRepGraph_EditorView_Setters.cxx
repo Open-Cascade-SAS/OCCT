@@ -981,15 +981,15 @@ BRepGraph_VertexId vertexFromRef(const BRepGraphInc_Storage& theStorage,
   return theStorage.VertexRef(theRef).VertexDefId;
 }
 
-bool isLastVertexUsageOnEdge(const BRepGraphInc_Storage&  theStorage,
-                             const BRepGraph_EdgeId       theEdge,
-                             const BRepGraph_VertexId     theVtx,
-                             const BRepGraph_VertexRefId  theExcludingRef)
+bool isLastVertexUsageOnEdge(const BRepGraphInc_Storage& theStorage,
+                             const BRepGraph_EdgeId      theEdge,
+                             const BRepGraph_VertexId    theVtx,
+                             const BRepGraph_VertexRefId theExcludingRef)
 {
   if (!theEdge.IsValid(theStorage.NbEdges()) || !theVtx.IsValid())
     return true;
-  const BRepGraphInc::EdgeDef& anEdge = theStorage.Edge(theEdge);
-  auto refResolvesTo = [&](const BRepGraph_VertexRefId aRefId) -> bool {
+  const BRepGraphInc::EdgeDef& anEdge        = theStorage.Edge(theEdge);
+  auto                         refResolvesTo = [&](const BRepGraph_VertexRefId aRefId) -> bool {
     if (!aRefId.IsValid(theStorage.NbVertexRefs()) || aRefId == theExcludingRef)
       return false;
     const BRepGraphInc::VertexRef& aRef = theStorage.VertexRef(aRefId);
@@ -1007,11 +1007,11 @@ bool isLastVertexUsageOnEdge(const BRepGraphInc_Storage&  theStorage,
   return true;
 }
 
-void rebindVertexEdge(BRepGraphInc_Storage&        theStorage,
-                      const BRepGraph_VertexId     theOldVtx,
-                      const BRepGraph_VertexId     theNewVtx,
-                      const BRepGraph_EdgeId       theEdge,
-                      const BRepGraph_VertexRefId  theExcludingRef)
+void rebindVertexEdge(BRepGraphInc_Storage&       theStorage,
+                      const BRepGraph_VertexId    theOldVtx,
+                      const BRepGraph_VertexId    theNewVtx,
+                      const BRepGraph_EdgeId      theEdge,
+                      const BRepGraph_VertexRefId theExcludingRef)
 {
   if (theOldVtx == theNewVtx)
     return;
@@ -1243,8 +1243,7 @@ void rebindVertexRef(BRepGraphInc_Storage&       theStorage,
     return;
   const BRepGraph_EdgeId     anEdge(theParent);
   BRepGraphInc_ReverseIndex& aRI = theStorage.ChangeReverseIndex();
-  if (theOldVtx.IsValid()
-      && isLastVertexUsageOnEdge(theStorage, anEdge, theOldVtx, theMutatedRef))
+  if (theOldVtx.IsValid() && isLastVertexUsageOnEdge(theStorage, anEdge, theOldVtx, theMutatedRef))
   {
     aRI.UnbindVertexFromEdge(theOldVtx, anEdge);
   }
@@ -1315,8 +1314,7 @@ void rebindWireRef(BRepGraphInc_Storage&     theStorage,
     return;
   const BRepGraph_FaceId     aFace(theParent);
   BRepGraphInc_ReverseIndex& aRI = theStorage.ChangeReverseIndex();
-  if (theOldWire.IsValid()
-      && isLastWireUsageOnFace(theStorage, aFace, theOldWire, theMutatedRef))
+  if (theOldWire.IsValid() && isLastWireUsageOnFace(theStorage, aFace, theOldWire, theMutatedRef))
   {
     aRI.UnbindWireFromFace(theOldWire, aFace);
   }
@@ -1387,8 +1385,7 @@ void rebindFaceRef(BRepGraphInc_Storage&     theStorage,
     return;
   const BRepGraph_ShellId    aShell(theParent);
   BRepGraphInc_ReverseIndex& aRI = theStorage.ChangeReverseIndex();
-  if (theOldFace.IsValid()
-      && isLastFaceUsageOnShell(theStorage, aShell, theOldFace, theMutatedRef))
+  if (theOldFace.IsValid() && isLastFaceUsageOnShell(theStorage, aShell, theOldFace, theMutatedRef))
   {
     aRI.UnbindFaceFromShell(theOldFace, aShell);
   }
