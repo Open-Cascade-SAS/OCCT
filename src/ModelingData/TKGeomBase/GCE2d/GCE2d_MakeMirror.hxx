@@ -23,7 +23,7 @@
 #include <GC_MakeMirror2d.hxx>
 
 using GCE2d_MakeMirror Standard_DEPRECATED_STD(
-  "GCE2d_MakeMirror is deprecated since OCCT 8.0.0. Use GC_MakeMirror2d instead.")
-= GC_MakeMirror2d;
+  "GCE2d_MakeMirror is deprecated since OCCT 8.0.0. Use GC_MakeMirror2d instead.") =
+  GC_MakeMirror2d;
 
 #endif // _GCE2d_MakeMirror_HeaderFile

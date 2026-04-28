@@ -23,7 +23,7 @@
 #include <GC_MakeParabola2d.hxx>
 
 using GCE2d_MakeParabola Standard_DEPRECATED_STD(
-  "GCE2d_MakeParabola is deprecated since OCCT 8.0.0. Use GC_MakeParabola2d instead.")
-= GC_MakeParabola2d;
+  "GCE2d_MakeParabola is deprecated since OCCT 8.0.0. Use GC_MakeParabola2d instead.") =
+  GC_MakeParabola2d;
 
 #endif // _GCE2d_MakeParabola_HeaderFile
