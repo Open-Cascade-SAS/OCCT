@@ -20,7 +20,7 @@
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_HPackedMapOfInteger.hxx>
 #include <NCollection_List.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 
 //! This class compares two images pixel-by-pixel.
 //! It uses the following methods to ignore the difference between images:
@@ -141,7 +141,7 @@ protected:
                                         // clang-format on
 
   //! coordinates of different pixels, packed in one int using 16-bit integers to save memory
-  NCollection_Vector<int>                                    myDiffPixels;
+  NCollection_DynamicArray<int>                              myDiffPixels;
   TColStd_PackedMapOfInteger                                 myLinearGroups;
   NCollection_List<occ::handle<TColStd_HPackedMapOfInteger>> myGroupsOfDiffPixels;
 

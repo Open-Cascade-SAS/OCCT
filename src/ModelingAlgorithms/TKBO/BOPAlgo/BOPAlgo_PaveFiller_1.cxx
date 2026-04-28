@@ -22,7 +22,7 @@
 #include <BOPDS_DS.hxx>
 #include <BOPDS_Iterator.hxx>
 #include <BOPDS_ShapeInfo.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <BOPDS_Interf.hxx>
 #include <BOPTools_AlgoTools.hxx>
 #include <BRep_Builder.hxx>
@@ -55,7 +55,7 @@ void BOPAlgo_PaveFiller::PerformVV(const Message_ProgressRange& theRange)
     return;
   }
   //
-  NCollection_Vector<BOPDS_InterfVV>& aVVs = myDS->InterfVV();
+  NCollection_DynamicArray<BOPDS_InterfVV>& aVVs = myDS->InterfVV();
   aVVs.SetIncrement(aSize);
   //
   //-----------------------------------------------------scope f
@@ -184,7 +184,7 @@ int BOPAlgo_PaveFiller::MakeSDVertices(const NCollection_List<int>& theVertIndic
   aBox.SetGap(BRep_Tool::Tolerance(aVn) + Precision::Confusion());
   //
   // Fill ShapesSD
-  NCollection_Vector<BOPDS_InterfVV>& aVVs = myDS->InterfVV();
+  NCollection_DynamicArray<BOPDS_InterfVV>& aVVs = myDS->InterfVV();
   if (theAddInterfs)
     aVVs.SetIncrement(theVertIndices.Extent());
   //

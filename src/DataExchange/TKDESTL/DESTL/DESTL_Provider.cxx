@@ -17,7 +17,7 @@
 #include <DE_ValidationUtils.hxx>
 #include <DESTL_ConfigurationNode.hxx>
 #include <Message.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <Poly_Triangle.hxx>
 #include <RWStl.hxx>
 #include <RWStl_Reader.hxx>

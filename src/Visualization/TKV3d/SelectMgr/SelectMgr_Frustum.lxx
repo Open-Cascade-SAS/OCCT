@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 #include <gp_Pln.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <Poly_Triangle.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard_Assert.hxx>
@@ -512,11 +512,11 @@ bool SelectMgr_Frustum<N>::isDotInside(const gp_Pnt&                     thePnt,
                                        const NCollection_Array1<gp_Pnt>& theVertices) const
 {
   double anAngle = 0.0;
-  for (int aVertIdx = 0; aVertIdx < theVertices.Size(); aVertIdx++)
+  for (int aVertIdx = 0; aVertIdx < theVertices.Length(); aVertIdx++)
   {
     const gp_Pnt aVert1 = theVertices[aVertIdx];
     const gp_Pnt aVert2 =
-      (aVertIdx == (theVertices.Size() - 1) ? theVertices[0] : theVertices[aVertIdx + 1]);
+      (aVertIdx == theVertices.Length() - 1 ? theVertices[0] : theVertices[aVertIdx + 1]);
     const gp_Vec aVec1(thePnt, aVert1);
     const gp_Vec aVec2(thePnt, aVert2);
     anAngle += aVec1.Angle(aVec2);

@@ -90,7 +90,7 @@ Poly_CoherentTriangulation::Poly_CoherentTriangulation(
 
 Poly_CoherentTriangulation::~Poly_CoherentTriangulation()
 {
-  NCollection_Vector<Poly_CoherentNode>::Iterator anIter(myNodes);
+  NCollection_DynamicArray<Poly_CoherentNode>::Iterator anIter(myNodes);
   for (; anIter.More(); anIter.Next())
   {
     anIter.ChangeValue().Clear(myAlloc);
@@ -110,8 +110,8 @@ occ::handle<Poly_Triangulation> Poly_CoherentTriangulation::GetTriangulation() c
 
   occ::handle<Poly_Triangulation> aResult = new Poly_Triangulation(nNodes, nTriangles, false);
 
-  NCollection_Vector<int> vecNodeId;
-  int                     aCount = 0;
+  NCollection_DynamicArray<int> vecNodeId;
+  int                           aCount = 0;
 
   // Copy the nodes (3D and 2D coordinates)
   for (int i = 0; i < myNodes.Length(); i++)
@@ -141,7 +141,8 @@ occ::handle<Poly_Triangulation> Poly_CoherentTriangulation::GetTriangulation() c
 
   // Copy the triangles
   aCount = 0;
-  for (NCollection_Vector<Poly_CoherentTriangle>::Iterator anIterT(myTriangles); anIterT.More();
+  for (NCollection_DynamicArray<Poly_CoherentTriangle>::Iterator anIterT(myTriangles);
+       anIterT.More();
        anIterT.Next())
   {
     const Poly_CoherentTriangle& aTri = anIterT.Value();
@@ -188,7 +189,7 @@ bool Poly_CoherentTriangulation::RemoveDegenerated(
   if (pLstRemovedNode)
     pLstRemovedNode->Clear();
 
-  // NCollection_Vector<Poly_CoherentTriangle>::Iterator anIterT(myTriangles);
+  // NCollection_DynamicArray<Poly_CoherentTriangle>::Iterator anIterT(myTriangles);
   Poly_CoherentTriangulation::IteratorOfTriangle anIterT(this);
   for (; anIterT.More(); anIterT.Next())
   {
@@ -266,7 +267,7 @@ Poly_CoherentTriangulation::IteratorOfTriangle::IteratorOfTriangle(
       const Poly_CoherentTriangle& aTri = Value();
       if (!aTri.IsEmpty())
         break;
-      NCollection_Vector<Poly_CoherentTriangle>::Iterator::Next();
+      NCollection_DynamicArray<Poly_CoherentTriangle>::Iterator::Next();
     }
   }
 }
@@ -275,13 +276,13 @@ Poly_CoherentTriangulation::IteratorOfTriangle::IteratorOfTriangle(
 
 void Poly_CoherentTriangulation::IteratorOfTriangle::Next() noexcept
 {
-  NCollection_Vector<Poly_CoherentTriangle>::Iterator::Next();
+  NCollection_DynamicArray<Poly_CoherentTriangle>::Iterator::Next();
   while (More())
   {
     const Poly_CoherentTriangle& aTri = Value();
     if (!aTri.IsEmpty())
       break;
-    NCollection_Vector<Poly_CoherentTriangle>::Iterator::Next();
+    NCollection_DynamicArray<Poly_CoherentTriangle>::Iterator::Next();
   }
 }
 
@@ -297,7 +298,7 @@ Poly_CoherentTriangulation::IteratorOfNode::IteratorOfNode(
     {
       if (!Value().IsFreeNode())
         break;
-      NCollection_Vector<Poly_CoherentNode>::Iterator::Next();
+      NCollection_DynamicArray<Poly_CoherentNode>::Iterator::Next();
     }
   }
 }
@@ -306,12 +307,12 @@ Poly_CoherentTriangulation::IteratorOfNode::IteratorOfNode(
 
 void Poly_CoherentTriangulation::IteratorOfNode::Next() noexcept
 {
-  NCollection_Vector<Poly_CoherentNode>::Iterator::Next();
+  NCollection_DynamicArray<Poly_CoherentNode>::Iterator::Next();
   while (More())
   {
     if (!Value().IsFreeNode())
       break;
-    NCollection_Vector<Poly_CoherentNode>::Iterator::Next();
+    NCollection_DynamicArray<Poly_CoherentNode>::Iterator::Next();
   }
 }
 
@@ -327,7 +328,7 @@ Poly_CoherentTriangulation::IteratorOfLink::IteratorOfLink(
     {
       if (!Value().IsEmpty())
         break;
-      NCollection_Vector<Poly_CoherentLink>::Iterator::Next();
+      NCollection_DynamicArray<Poly_CoherentLink>::Iterator::Next();
     }
   }
 }
@@ -336,12 +337,12 @@ Poly_CoherentTriangulation::IteratorOfLink::IteratorOfLink(
 
 void Poly_CoherentTriangulation::IteratorOfLink::Next() noexcept
 {
-  NCollection_Vector<Poly_CoherentLink>::Iterator::Next();
+  NCollection_DynamicArray<Poly_CoherentLink>::Iterator::Next();
   while (More())
   {
     if (!Value().IsEmpty())
       break;
-    NCollection_Vector<Poly_CoherentLink>::Iterator::Next();
+    NCollection_DynamicArray<Poly_CoherentLink>::Iterator::Next();
   }
 }
 
@@ -349,8 +350,8 @@ void Poly_CoherentTriangulation::IteratorOfLink::Next() noexcept
 
 int Poly_CoherentTriangulation::NNodes() const
 {
-  int                                             aCount(0);
-  NCollection_Vector<Poly_CoherentNode>::Iterator anIter(myNodes);
+  int                                                   aCount(0);
+  NCollection_DynamicArray<Poly_CoherentNode>::Iterator anIter(myNodes);
   for (; anIter.More(); anIter.Next())
     if (!anIter.Value().IsFreeNode())
       aCount++;
@@ -361,8 +362,8 @@ int Poly_CoherentTriangulation::NNodes() const
 
 int Poly_CoherentTriangulation::NTriangles() const
 {
-  int                                                 aCount(0);
-  NCollection_Vector<Poly_CoherentTriangle>::Iterator anIter(myTriangles);
+  int                                                       aCount(0);
+  NCollection_DynamicArray<Poly_CoherentTriangle>::Iterator anIter(myTriangles);
   for (; anIter.More(); anIter.Next())
   {
     const Poly_CoherentTriangle& aTri = anIter.Value();
@@ -376,8 +377,8 @@ int Poly_CoherentTriangulation::NTriangles() const
 
 int Poly_CoherentTriangulation::NLinks() const
 {
-  int                                             aCount(0);
-  NCollection_Vector<Poly_CoherentLink>::Iterator anIter(myLinks);
+  int                                                   aCount(0);
+  NCollection_DynamicArray<Poly_CoherentLink>::Iterator anIter(myLinks);
   for (; anIter.More(); anIter.Next())
   {
     if (!anIter.Value().IsEmpty())
@@ -645,7 +646,7 @@ bool Poly_CoherentTriangulation::FindTriangle(const Poly_CoherentLink&     theLi
 int Poly_CoherentTriangulation::ComputeLinks()
 {
   myLinks.Clear();
-  NCollection_Vector<Poly_CoherentTriangle>::Iterator anIter(myTriangles);
+  NCollection_DynamicArray<Poly_CoherentTriangle>::Iterator anIter(myTriangles);
   for (; anIter.More(); anIter.Next())
   {
     const Poly_CoherentTriangle& aTriangle = anIter.Value();
@@ -687,7 +688,7 @@ int Poly_CoherentTriangulation::ComputeLinks()
 void Poly_CoherentTriangulation::ClearLinks()
 {
   myLinks.Clear();
-  NCollection_Vector<Poly_CoherentTriangle>::Iterator anIter(myTriangles);
+  NCollection_DynamicArray<Poly_CoherentTriangle>::Iterator anIter(myTriangles);
   for (; anIter.More(); anIter.Next())
   {
     Poly_CoherentTriangle& aTriangle = anIter.ChangeValue();

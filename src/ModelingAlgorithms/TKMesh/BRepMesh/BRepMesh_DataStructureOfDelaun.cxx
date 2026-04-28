@@ -162,7 +162,7 @@ void BRepMesh_DataStructureOfDelaun::cleanLink(const int theIndex, const BRepMes
 int BRepMesh_DataStructureOfDelaun::AddElement(const BRepMesh_Triangle& theElement)
 {
   myElements.Append(theElement);
-  int aElementIndex = myElements.Size();
+  int aElementIndex = myElements.Length();
   myElementsOfDomain.Add(aElementIndex);
 
   const int (&e)[3] = theElement.myEdges;
@@ -344,7 +344,8 @@ void BRepMesh_DataStructureOfDelaun::clearDeletedLinks()
     {
       int                      e[3];
       bool                     o[3];
-      const BRepMesh_Triangle& aElement = GetElement(aPair.Index(j));
+      const int                anElementId = aPair.Index(j);
+      const BRepMesh_Triangle& aElement    = GetElement(anElementId);
       aElement.Edges(e, o);
       for (int i = 0; i < 3; ++i)
       {
@@ -355,7 +356,7 @@ void BRepMesh_DataStructureOfDelaun::clearDeletedLinks()
         }
       }
 
-      myElements(aLinkIt.Value()) = BRepMesh_Triangle(e, o, aElement.Movability());
+      myElements(anElementId) = BRepMesh_Triangle(e, o, aElement.Movability());
     }
   }
 }
@@ -410,22 +411,6 @@ void BRepMesh_DataStructureOfDelaun::clearDeletedNodes()
       myLinks.Substitute(aLinkId, BRepMesh_Edge(v[0], v[1], aLink.Movability()), aPair);
     }
   }
-}
-
-//=================================================================================================
-
-void BRepMesh_DataStructureOfDelaun::Statistics(Standard_OStream& theStream) const
-{
-  theStream << " Map of nodes : \n";
-  myNodes->Statistics(theStream);
-  theStream << "\n Deleted nodes : " << myNodes->GetListOfDelNodes().Extent() << std::endl;
-
-  theStream << "\n\n Map of Links : \n";
-  myLinks.Statistics(theStream);
-  theStream << "\n Deleted links : " << myDelLinks.Extent() << std::endl;
-
-  theStream << "\n\n Map of elements : \n";
-  theStream << "\n Elements : " << myElements.Size() << std::endl;
 }
 
 //=======================================================================

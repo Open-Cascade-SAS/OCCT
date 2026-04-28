@@ -42,7 +42,7 @@
 #include <Intf_SectionPoint.hxx>
 #include <Intf_TangentZone.hxx>
 #include <math_FunctionSetRoot.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <Precision.hxx>
 #include <ProjLib_Plane.hxx>
 #include <gp_Pnt.hxx>
@@ -1101,11 +1101,11 @@ bool ComputeAppendPoint(const CurveType&                   theCurve,
 //! @param[out] thePoints Vector of computed intersection points
 //! @return true if the operation was done successfully
 template <typename CurveType, typename CurveTool, typename SurfaceType, typename SurfaceTool>
-bool ProcessIntAna(const CurveType&                                       theCurve,
-                   const SurfaceType&                                     theSurface,
-                   const IntAna_IntConicQuad&                             theIntAna,
-                   bool&                                                  theIsParallel,
-                   NCollection_Vector<IntCurveSurface_IntersectionPoint>& thePoints)
+bool ProcessIntAna(const CurveType&                                             theCurve,
+                   const SurfaceType&                                           theSurface,
+                   const IntAna_IntConicQuad&                                   theIntAna,
+                   bool&                                                        theIsParallel,
+                   NCollection_DynamicArray<IntCurveSurface_IntersectionPoint>& thePoints)
 {
   theIsParallel = false;
   thePoints.Clear();
@@ -1156,9 +1156,9 @@ template <typename QuadCurvExactType,
           typename CurveTool,
           typename SurfaceType,
           typename SurfaceTool>
-void PerformCurveQuadric(const CurveType&                                       theCurve,
-                         const SurfaceType&                                     theSurface,
-                         NCollection_Vector<IntCurveSurface_IntersectionPoint>& thePoints)
+void PerformCurveQuadric(const CurveType&                                             theCurve,
+                         const SurfaceType&                                           theSurface,
+                         NCollection_DynamicArray<IntCurveSurface_IntersectionPoint>& thePoints)
 {
   thePoints.Clear();
 
@@ -1196,10 +1196,10 @@ void PerformCurveQuadric(const CurveType&                                       
 //! @tparam SurfaceTool The surface tool class
 //! @return true if intersection was processed successfully, false if fallback is needed
 template <typename CurveType, typename CurveTool, typename SurfaceType, typename SurfaceTool>
-bool ProcessLinTorus(const gp_Lin&                                          theLine,
-                     const CurveType&                                       theCurve,
-                     const SurfaceType&                                     theSurface,
-                     NCollection_Vector<IntCurveSurface_IntersectionPoint>& thePoints)
+bool ProcessLinTorus(const gp_Lin&                                                theLine,
+                     const CurveType&                                             theCurve,
+                     const SurfaceType&                                           theSurface,
+                     NCollection_DynamicArray<IntCurveSurface_IntersectionPoint>& thePoints)
 {
   thePoints.Clear();
 
@@ -1233,9 +1233,9 @@ bool ProcessLinTorus(const gp_Lin&                                          theL
 //! Structure to hold sorted intersection start points.
 struct SortedStartPoints
 {
-  NCollection_Vector<double> TabU;
-  NCollection_Vector<double> TabV;
-  NCollection_Vector<double> TabW;
+  NCollection_DynamicArray<double> TabU;
+  NCollection_DynamicArray<double> TabV;
+  NCollection_DynamicArray<double> TabW;
 
   void Clear()
   {
@@ -1244,7 +1244,7 @@ struct SortedStartPoints
     TabW.Clear();
   }
 
-  int Size() const { return TabU.Size(); }
+  int Size() const { return TabU.Length(); }
 
   void Append(double theU, double theV, double theW)
   {
@@ -1371,18 +1371,18 @@ template <typename ExactInterType,
           typename CurveTool,
           typename SurfaceType,
           typename SurfaceTool>
-void ProcessSortedPoints(ExactInterType&                                        theExactInter,
-                         math_FunctionSetRoot&                                  theRsnld,
-                         const SortedStartPoints&                               thePoints,
-                         const double                                           theU0,
-                         const double                                           theU1,
-                         const double                                           theV0,
-                         const double                                           theV1,
-                         const double                                           theWinf,
-                         const double                                           theWsup,
-                         const CurveType&                                       theCurve,
-                         const SurfaceType&                                     theSurface,
-                         NCollection_Vector<IntCurveSurface_IntersectionPoint>& theResult)
+void ProcessSortedPoints(ExactInterType&                                              theExactInter,
+                         math_FunctionSetRoot&                                        theRsnld,
+                         const SortedStartPoints&                                     thePoints,
+                         const double                                                 theU0,
+                         const double                                                 theU1,
+                         const double                                                 theV0,
+                         const double                                                 theV1,
+                         const double                                                 theWinf,
+                         const double                                                 theWsup,
+                         const CurveType&                                             theCurve,
+                         const SurfaceType&                                           theSurface,
+                         NCollection_DynamicArray<IntCurveSurface_IntersectionPoint>& theResult)
 {
   theResult.Clear();
 
@@ -1459,8 +1459,8 @@ struct UVBounds
 //! @tparam SurfaceType The surface type
 //! @tparam SurfaceTool The surface tool class
 template <typename SurfaceType, typename SurfaceTool>
-void DecomposeSurfaceIntervals(const SurfaceType&            theSurface,
-                               NCollection_Vector<UVBounds>& theIntervals)
+void DecomposeSurfaceIntervals(const SurfaceType&                  theSurface,
+                               NCollection_DynamicArray<UVBounds>& theIntervals)
 {
   theIntervals.Clear();
 

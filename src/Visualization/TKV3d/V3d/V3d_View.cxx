@@ -3402,6 +3402,27 @@ void V3d_View::SetGridActivity(const bool AFlag)
 
 //=================================================================================================
 
+void V3d_View::GridDisplay(const Aspect_GridParams& theParams)
+{
+  GridDisplay(theParams, MyViewer->PrivilegedPlane());
+}
+
+//=================================================================================================
+
+void V3d_View::GridDisplay(const Aspect_GridParams& theParams, const gp_Ax3& thePlane)
+{
+  myView->GridDisplay(theParams, thePlane);
+}
+
+//=================================================================================================
+
+void V3d_View::GridErase()
+{
+  myView->GridErase();
+}
+
+//=================================================================================================
+
 void toPolarCoords(const double theX, const double theY, double& theR, double& thePhi)
 {
   theR   = std::sqrt(theX * theX + theY * theY);

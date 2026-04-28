@@ -22,8 +22,8 @@
 #include <Standard_Macro.hxx>
 #include <GC_MakeSegment2d.hxx>
 
-using GCE2d_MakeSegment Standard_DEPRECATED(
-  "GCE2d_MakeSegment is deprecated since OCCT 8.0.0. Use GC_MakeSegment2d instead.")
-= GC_MakeSegment2d;
+using GCE2d_MakeSegment Standard_DEPRECATED_STD(
+  "GCE2d_MakeSegment is deprecated since OCCT 8.0.0. Use GC_MakeSegment2d instead.") =
+  GC_MakeSegment2d;
 
 #endif // _GCE2d_MakeSegment_HeaderFile

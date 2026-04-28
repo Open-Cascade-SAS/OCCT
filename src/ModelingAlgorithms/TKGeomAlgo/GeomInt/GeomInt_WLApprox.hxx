@@ -18,7 +18,7 @@
 #define _GeomInt_WLApprox_HeaderFile
 
 #include <Adaptor3d_Surface.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <GeomInt_TheComputeLineOfWLApprox.hxx>
 #include <GeomInt_TheComputeLineBezierOfWLApprox.hxx>
 #include <Approx_MCurvesToBSpCurve.hxx>
@@ -163,7 +163,7 @@ private:
   double                                 myTolReached3d;
   double                                 myTolReached2d;
   Approx_Data                            myData;
-  NCollection_Vector<int>                myKnots;
+  NCollection_DynamicArray<int>          myKnots;
 };
 
 #endif // _GeomInt_WLApprox_HeaderFile

@@ -95,7 +95,7 @@ bool Graphic3d_Layer::Remove(const Graphic3d_CStructure* theStruct,
       continue;
     }
 
-    aStructures.Swap(anIndex, aStructures.Size());
+    aStructures.Swap(anIndex, aStructures.Length());
     aStructures.RemoveLast();
 
     if (!isForChangePriority)
@@ -116,7 +116,7 @@ bool Graphic3d_Layer::Remove(const Graphic3d_CStructure* theStruct,
         const int anIndex2 = myAlwaysRenderedMap.FindIndex(theStruct);
         if (anIndex2 != 0)
         {
-          myAlwaysRenderedMap.Swap(myAlwaysRenderedMap.Size(), anIndex2);
+          myAlwaysRenderedMap.Swap(myAlwaysRenderedMap.Length(), anIndex2);
           myAlwaysRenderedMap.RemoveLast();
         }
       }

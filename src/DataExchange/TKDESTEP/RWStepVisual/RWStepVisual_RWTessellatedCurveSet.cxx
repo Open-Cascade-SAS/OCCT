@@ -46,9 +46,9 @@ void RWStepVisual_RWTessellatedCurveSet::ReadStep(
   data
     ->ReadEntity(num, 2, "coord_list", ach, STANDARD_TYPE(StepVisual_CoordinatesList), aCoordList);
   //--- Initialisation of the read entity ---
-  int                                                                             nsub2;
-  NCollection_Handle<NCollection_Vector<occ::handle<NCollection_HSequence<int>>>> aCurves =
-    new NCollection_Vector<occ::handle<NCollection_HSequence<int>>>;
+  int                                                                                   nsub2;
+  NCollection_Handle<NCollection_DynamicArray<occ::handle<NCollection_HSequence<int>>>> aCurves =
+    new NCollection_DynamicArray<occ::handle<NCollection_HSequence<int>>>;
   if (data->ReadSubList(num, 3, "curves", ach, nsub2))
   {
     int nb2 = data->NbParams(nsub2);

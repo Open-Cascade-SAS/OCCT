@@ -21,7 +21,9 @@
 #include <Standard_Type.hxx>
 
 #include <BRepTools_ReShape.hxx>
+#include <NCollection_Map.hxx>
 #include <TopAbs_ShapeEnum.hxx>
+#include <TopoDS_TShape.hxx>
 #include <Standard_Integer.hxx>
 #include <ShapeExtend_Status.hxx>
 class TopoDS_Shape;
@@ -104,6 +106,15 @@ public:
   Standard_EXPORT virtual bool Status(const ShapeExtend_Status status) const;
 
   DEFINE_STANDARD_RTTIEXT(ShapeBuild_ReShape, BRepTools_ReShape)
+
+private:
+  //! Recursive worker for Apply with a DFS in-flight set keyed by TShape handle.
+  //! Prevents unbounded descent when a replacement is a compound that transitively
+  //! contains the original shape as a sub-shape (cyclic containment, distinct from
+  //! cycles in the replacement map itself).
+  TopoDS_Shape applyImpl(const TopoDS_Shape&                          theShape,
+                         const TopAbs_ShapeEnum                       theUntil,
+                         NCollection_Map<occ::handle<TopoDS_TShape>>& theInFlight);
 };
 
 #endif // _ShapeBuild_ReShape_HeaderFile

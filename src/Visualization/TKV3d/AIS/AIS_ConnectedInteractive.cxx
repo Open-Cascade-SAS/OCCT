@@ -209,7 +209,7 @@ void AIS_ConnectedInteractive::ComputeSelection(
     myReference->RecomputePrimitives(theMode);
   }
 
-  for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
+  for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
          TheRefSel->Entities());
        aSelEntIter.More();
        aSelEntIter.Next())
@@ -249,7 +249,7 @@ void AIS_ConnectedInteractive::computeSubShapeSelection(
 
   // Fill in the map of subshapes and corresponding sensitive entities associated with aMode
   Shapes2EntitiesMap aShapes2EntitiesMap;
-  for (NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
+  for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
          aRefSel->Entities());
        aSelEntIter.More();
        aSelEntIter.Next())

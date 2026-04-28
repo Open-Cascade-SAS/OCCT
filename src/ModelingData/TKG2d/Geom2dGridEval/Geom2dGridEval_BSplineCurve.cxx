@@ -79,7 +79,7 @@ inline int countSpanSize(const NCollection_Array1<double>& theParams,
                          int                               theTargetSpan)
 {
   const int aLower = theParams.Lower();
-  const int aNb    = theParams.Size();
+  const int aNb    = theParams.Length();
   int       aCount = 1;
 
   for (int i = theStartIdx + 1; i < aNb; ++i)
@@ -123,7 +123,7 @@ NCollection_Array1<ResultT> evaluateGridCached(const CurveData&                 
                                                CacheEvalF                        theCacheEval,
                                                DirectEvalF                       theDirectEval)
 {
-  const int aNbParams = theParams.Size();
+  const int aNbParams = theParams.Length();
   const int aLow      = theParams.Lower();
 
   NCollection_Array1<ResultT> aResults(1, aNbParams);
@@ -332,7 +332,7 @@ NCollection_Array1<gp_Vec2d> Geom2dGridEval_BSplineCurve::EvaluateGridDN(
     return NCollection_Array1<gp_Vec2d>();
   }
 
-  const int aNbParams = theParams.Size();
+  const int aNbParams = theParams.Length();
   const int aLow      = theParams.Lower();
 
   // Derivatives beyond degree are zero

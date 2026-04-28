@@ -85,13 +85,13 @@ public:
   int Mode() const { return myMode; }
 
   //! Return entities.
-  const NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>& Entities() const
+  const NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>& Entities() const
   {
     return myEntities;
   }
 
   //! Return entities.
-  NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>>& ChangeEntities()
+  NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>& ChangeEntities()
   {
     return myEntities;
   }
@@ -131,13 +131,13 @@ public:
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
 private:
-  NCollection_Vector<occ::handle<SelectMgr_SensitiveEntity>> myEntities;
-  int                                                        myMode;
-  SelectMgr_TypeOfUpdate                                     myUpdateStatus;
-  mutable SelectMgr_StateOfSelection                         mySelectionState;
-  mutable SelectMgr_TypeOfBVHUpdate                          myBVHUpdateStatus;
-  int                                                        mySensFactor;
-  bool                                                       myIsCustomSens;
+  NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>> myEntities;
+  int                                                              myMode;
+  SelectMgr_TypeOfUpdate                                           myUpdateStatus;
+  mutable SelectMgr_StateOfSelection                               mySelectionState;
+  mutable SelectMgr_TypeOfBVHUpdate                                myBVHUpdateStatus;
+  int                                                              mySensFactor;
+  bool                                                             myIsCustomSens;
 };
 
 #endif

@@ -69,7 +69,7 @@ void HLRAlgo_PolyAlgo::Update()
   constexpr double Big = Precision::Infinite();
   Bnd_Box          aBox;
 
-  myNbrShell = myHShell.Size();
+  myNbrShell = myHShell.Length();
   for (int aShellIter = myHShell.Lower(); aShellIter <= myHShell.Upper(); ++aShellIter)
   {
     const occ::handle<HLRAlgo_PolyShellData>& aPsd = myHShell.ChangeValue(aShellIter);

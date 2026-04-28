@@ -869,7 +869,7 @@ void OpenGl_Window::init()
       aDefFbo = new OpenGl_FrameBuffer();
     }
 
-    NCollection_Vector<int> aColorFormats;
+    NCollection_DynamicArray<int> aColorFormats;
     aColorFormats.Append(GL_RGBA8);
     if (!aDefFbo->InitRenderBuffer(myGlContext, mySize, aColorFormats, GL_DEPTH24_STENCIL8))
     {

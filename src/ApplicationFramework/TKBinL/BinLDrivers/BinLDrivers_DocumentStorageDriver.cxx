@@ -110,7 +110,7 @@ void BinLDrivers_DocumentStorageDriver::Write(const occ::handle<CDM_Document>& t
 
     //  2. Write the Table of Contents of Sections
     const TDocStd_FormatVersion aDocVer = aDoc->StorageFormatVersion();
-    NCollection_Vector<BinLDrivers_DocumentSection>::Iterator anIterS(mySections);
+    NCollection_DynamicArray<BinLDrivers_DocumentSection>::Iterator anIterS(mySections);
     for (; anIterS.More(); anIterS.Next())
       anIterS.ChangeValue().WriteTOC(theOStream, aDocVer);
 

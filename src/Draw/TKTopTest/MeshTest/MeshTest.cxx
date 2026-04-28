@@ -743,7 +743,7 @@ static int trianglesinfo(Draw_Interpretor& theDI, int theNbArgs, const char** th
   double aMaxDeflection = 0.0, aMeshingDefl = -1.0, aMeshingAngDefl = -1.0, aMeshingMinSize = -1.0;
   int    aNbFaces = 0, aNbEmptyFaces = 0, aNbTriangles = 0, aNbNodes = 0, aNbRepresentations = 0;
   NCollection_IndexedDataMap<int, TriangulationStat> aLODsStat;
-  NCollection_Vector<int>                            aNbLODs;
+  NCollection_DynamicArray<int>                      aNbLODs;
   for (anExp.Init(aShape, TopAbs_FACE); anExp.More(); anExp.Next())
   {
     TopoDS_Face aFace = TopoDS::Face(anExp.Current());
@@ -770,9 +770,9 @@ static int trianglesinfo(Draw_Interpretor& theDI, int theNbArgs, const char** th
       // Collect LODs information
       const NCollection_List<occ::handle<Poly_Triangulation>>& aLODs =
         BRep_Tool::Triangulations(aFace, aLoc);
-      if (aLODs.Size() != 0)
+      if (aLODs.Length() != 0)
       {
-        aNbLODs.Append(aLODs.Size());
+        aNbLODs.Append(aLODs.Length());
       }
       int aTriangIndex = 0;
       for (NCollection_List<occ::handle<Poly_Triangulation>>::Iterator anIter(aLODs); anIter.More();
@@ -870,15 +870,15 @@ static int trianglesinfo(Draw_Interpretor& theDI, int theNbArgs, const char** th
     theDI << "Meshing min size " << aMeshingMinSize << "\n";
   }
 
-  if (aNbLODs.Size() > 0)
+  if (aNbLODs.Length() > 0)
   {
     // Find all different numbers of triangulation LODs and their average value per face
-    if (aNbLODs.Size() > 1)
+    if (aNbLODs.Length() > 1)
     {
       std::sort(aNbLODs.begin(), aNbLODs.end());
     }
     NCollection_IndexedMap<int> aLODsRange;
-    for (NCollection_Vector<int>::Iterator aNbIter(aNbLODs); aNbIter.More(); aNbIter.Next())
+    for (NCollection_DynamicArray<int>::Iterator aNbIter(aNbLODs); aNbIter.More(); aNbIter.Next())
     {
       if (!aLODsRange.Contains(aNbIter.Value()))
       {
@@ -891,19 +891,19 @@ static int trianglesinfo(Draw_Interpretor& theDI, int theNbArgs, const char** th
          aRangeIter.Next(), anIndex++)
     {
       aLODsRangeStr += TCollection_AsciiString(aRangeIter.Value());
-      if (anIndex < aLODsRange.Size() - 1)
+      if (anIndex < aLODsRange.Length() - 1)
       {
         aLODsRangeStr += " ";
       }
     }
     theDI << TCollection_AsciiString("Number of triangulation LODs [") + aLODsRangeStr + "]\n";
-    if (aLODsRange.Size() > 1)
+    if (aLODsRange.Length() > 1)
     {
       // Find average number of triangulation LODs per face
-      int aMedian = aNbLODs.Value(aNbLODs.Lower() + aNbLODs.Size() / 2);
-      if ((aNbLODs.Size() % 2) == 0)
+      int aMedian = aNbLODs.Value(aNbLODs.Lower() + aNbLODs.Length() / 2);
+      if ((aNbLODs.Length() % 2) == 0)
       {
-        aMedian += aNbLODs.Value(aNbLODs.Lower() + aNbLODs.Size() / 2 - 1);
+        aMedian += aNbLODs.Value(aNbLODs.Lower() + aNbLODs.Length() / 2 - 1);
         aMedian /= 2;
       }
       theDI << TCollection_AsciiString("                             [average per face: ") + aMedian
@@ -947,7 +947,7 @@ static int trianglesinfo(Draw_Interpretor& theDI, int theNbArgs, const char** th
       {
         aLODsStatStr +=
           TCollection_AsciiString(aTypeIter.Key()->Name()) + " (" + aTypeIter.Value() + ")";
-        if (aCounter < aLodStat.TypeMap.Size() - 1)
+        if (aCounter < aLodStat.TypeMap.Length() - 1)
         {
           aLODsStatStr += TCollection_AsciiString(", ");
         }

@@ -253,7 +253,7 @@ void BinLDrivers_DocumentRetrievalDriver::Read(Standard_IStream&                
       return;
     }
 
-    NCollection_Vector<BinLDrivers_DocumentSection>::Iterator anIterS(mySections);
+    NCollection_DynamicArray<BinLDrivers_DocumentSection>::Iterator anIterS(mySections);
     // if there is only empty section, do not call tellg and seekg
     if (!mySections.IsEmpty()
         && (mySections.Size() > 1 || !anIterS.Value().Name().IsEqual(ENDSECTION_POS)))
@@ -382,7 +382,7 @@ void BinLDrivers_DocumentRetrievalDriver::Read(Standard_IStream&                
   // Read Sections (post-reading type)
   if (aFileVer >= TDocStd_FormatVersion_VERSION_3)
   {
-    NCollection_Vector<BinLDrivers_DocumentSection>::Iterator aSectIter(mySections);
+    NCollection_DynamicArray<BinLDrivers_DocumentSection>::Iterator aSectIter(mySections);
     for (; aSectIter.More(); aSectIter.Next())
     {
       BinLDrivers_DocumentSection& aCurSection = aSectIter.ChangeValue();

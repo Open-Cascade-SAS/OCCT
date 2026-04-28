@@ -50,8 +50,8 @@ NCollection_Array2<gp_Pnt> EvaluateGridHelper(const NCollection_Array1<double>& 
                                               const NCollection_Array1<double>& theVParams,
                                               Evaluator                         theEval)
 {
-  const int aNbU = theUParams.Size();
-  const int aNbV = theVParams.Size();
+  const int aNbU = theUParams.Length();
+  const int aNbV = theVParams.Length();
   if (aNbU == 0 || aNbV == 0)
   {
     return NCollection_Array2<gp_Pnt>();
@@ -77,8 +77,8 @@ NCollection_Array2<SurfD1> EvaluateGridD1Helper(const NCollection_Array1<double>
                                                 const NCollection_Array1<double>& theVParams,
                                                 Evaluator                         theEval)
 {
-  const int aNbU = theUParams.Size();
-  const int aNbV = theVParams.Size();
+  const int aNbU = theUParams.Length();
+  const int aNbV = theVParams.Length();
   if (aNbU == 0 || aNbV == 0)
   {
     return NCollection_Array2<SurfD1>();
@@ -104,8 +104,8 @@ NCollection_Array2<SurfD2> EvaluateGridD2Helper(const NCollection_Array1<double>
                                                 const NCollection_Array1<double>& theVParams,
                                                 Evaluator                         theEval)
 {
-  const int aNbU = theUParams.Size();
-  const int aNbV = theVParams.Size();
+  const int aNbU = theUParams.Length();
+  const int aNbV = theVParams.Length();
   if (aNbU == 0 || aNbV == 0)
   {
     return NCollection_Array2<SurfD2>();
@@ -131,8 +131,8 @@ NCollection_Array2<SurfD3> EvaluateGridD3Helper(const NCollection_Array1<double>
                                                 const NCollection_Array1<double>& theVParams,
                                                 Evaluator                         theEval)
 {
-  const int aNbU = theUParams.Size();
-  const int aNbV = theVParams.Size();
+  const int aNbU = theUParams.Length();
+  const int aNbV = theVParams.Length();
   if (aNbU == 0 || aNbV == 0)
   {
     return NCollection_Array2<SurfD3>();
@@ -158,8 +158,8 @@ NCollection_Array2<gp_Vec> EvaluateGridDNHelper(const NCollection_Array1<double>
                                                 const NCollection_Array1<double>& theVParams,
                                                 Evaluator                         theEval)
 {
-  const int aNbU = theUParams.Size();
-  const int aNbV = theVParams.Size();
+  const int aNbU = theUParams.Length();
+  const int aNbV = theVParams.Length();
   if (aNbU == 0 || aNbV == 0)
   {
     return NCollection_Array2<gp_Vec>();

@@ -122,7 +122,7 @@ public:
                                                const char* const aUnit);
 
   //! Converts the local unit value to another local unit value.
-  //! Example: AnyToAny(0.0254,"in.","millimeter") returns 1. ;
+  //! Example: AnyToAny(0.0254,"in.","mm") returns 1. ;
   Standard_EXPORT static double AnyToAny(const double      aData,
                                          const char* const aUnit1,
                                          const char* const aUnit2);
@@ -145,7 +145,7 @@ public:
   Standard_EXPORT static UnitsAPI_SystemUnits LocalSystem();
 
   //! Sets the current unit dimension <aUnit> to the unit quantity <aQuantity>.
-  //! Example: SetCurrentUnit("LENGTH","millimeter")
+  //! Example: SetCurrentUnit("LENGTH","mm")
   Standard_EXPORT static void SetCurrentUnit(const char* const aQuantity, const char* const aUnit);
 
   //! Returns the current unit dimension <aUnit> from the unit quantity <aQuantity>.

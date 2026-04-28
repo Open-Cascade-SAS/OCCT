@@ -61,8 +61,8 @@ void TDF_IDFilter::Keep(const NCollection_List<Standard_GUID>& anIDList)
     NCollection_List<Standard_GUID>::Iterator itr(anIDList);
     if (myIgnore)
     {
-      int n = anIDList.Extent() + myIDMap.NbBuckets() + 1;
-      myIDMap.ReSize(n);
+      const size_t aMapSize = static_cast<size_t>(anIDList.Extent()) + myIDMap.NbBuckets() + 1;
+      myIDMap.ReSize(aMapSize);
       for (; itr.More(); itr.Next())
         myIDMap.Add(itr.Value());
     }
@@ -98,8 +98,8 @@ void TDF_IDFilter::Ignore(const NCollection_List<Standard_GUID>& anIDList)
     }
     else
     {
-      int n = anIDList.Extent() + myIDMap.NbBuckets() + 1;
-      myIDMap.ReSize(n);
+      const size_t aMapSize = static_cast<size_t>(anIDList.Extent()) + myIDMap.NbBuckets() + 1;
+      myIDMap.ReSize(aMapSize);
       for (; itr.More(); itr.Next())
         myIDMap.Add(itr.Value());
     }

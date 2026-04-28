@@ -17,7 +17,7 @@
 #include <BRepGraph.hxx>
 
 #include <BRepGraph_NodeId.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <TCollection_AsciiString.hxx>
 
@@ -89,7 +89,7 @@ public:
   //! Aggregated validation result.
   struct Result
   {
-    NCollection_Vector<Issue> Issues;
+    NCollection_DynamicArray<Issue> Issues;
 
     //! True if no Error-level issues were found.
     [[nodiscard]] bool IsValid() const

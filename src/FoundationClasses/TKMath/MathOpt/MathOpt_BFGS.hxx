@@ -20,7 +20,7 @@
 #include <MathUtils_LineSearch.hxx>
 #include <MathUtils_Deriv.hxx>
 
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 
 #include <cmath>
 
@@ -365,9 +365,9 @@ VectorResult LBFGS(Function&          theFunc,
   }
 
   // Storage for {s, y} pairs (circular buffer)
-  NCollection_Vector<math_Vector> aSVec;
-  NCollection_Vector<math_Vector> aYVec;
-  math_Vector                     aRhoVec(0, aM - 1, 0.0);
+  NCollection_DynamicArray<math_Vector> aSVec;
+  NCollection_DynamicArray<math_Vector> aYVec;
+  math_Vector                           aRhoVec(0, aM - 1, 0.0);
   for (int i = 0; i < aM; ++i)
   {
     aSVec.Append(math_Vector(1, aN));

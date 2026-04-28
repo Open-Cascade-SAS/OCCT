@@ -61,7 +61,7 @@ public:
   bool IsEmpty() const { return myTextures.IsEmpty(); }
 
   //! Return number of textures.
-  int Size() const { return myTextures.Size(); }
+  int Size() const { return myTextures.Length(); }
 
   //! Return the lower index in texture set.
   int Lower() const { return myTextures.Lower(); }

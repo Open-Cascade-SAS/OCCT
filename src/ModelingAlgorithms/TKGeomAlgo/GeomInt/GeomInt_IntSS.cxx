@@ -86,8 +86,8 @@ void GeomInt_IntSS::InternalPerform(const double Tol,
   occ::handle<Adaptor3d_TopolTool> dom1 = new Adaptor3d_TopolTool(myHS1);
   occ::handle<Adaptor3d_TopolTool> dom2 = new Adaptor3d_TopolTool(myHS2);
 
-  NCollection_Vector<occ::handle<Adaptor3d_Surface>> aVecHS1;
-  NCollection_Vector<occ::handle<Adaptor3d_Surface>> aVecHS2;
+  NCollection_DynamicArray<occ::handle<Adaptor3d_Surface>> aVecHS1;
+  NCollection_DynamicArray<occ::handle<Adaptor3d_Surface>> aVecHS2;
 
   if (myHS1 == myHS2)
   {

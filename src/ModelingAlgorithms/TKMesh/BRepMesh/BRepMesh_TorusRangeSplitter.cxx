@@ -135,7 +135,7 @@ Handle(IMeshData::SequenceOfReal) BRepMesh_TorusRangeSplitter::fillParams(
 {
   Handle(IMeshData::SequenceOfReal) aParams = new IMeshData::SequenceOfReal(theAllocator);
 
-  const int                  aLength = theParams.Size();
+  const int                  aLength = theParams.Length();
   NCollection_Array1<double> aParamArray(1, aLength);
 
   for (int j = 1; j <= aLength; ++j)

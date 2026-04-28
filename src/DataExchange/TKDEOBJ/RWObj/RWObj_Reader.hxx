@@ -21,7 +21,7 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_IndexedMap.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <NCollection_Shared.hxx>
 #include <OSD_OpenFile.hxx>
 #include <RWMesh_CoordinateSystemConverter.hxx>
@@ -306,11 +306,11 @@ protected:
     {
       if (myIsSinglePrecision)
       {
-        myVec3Vec = new NCollection_Shared<NCollection_Vector<NCollection_Vec3<float>>>();
+        myVec3Vec = new NCollection_Shared<NCollection_DynamicArray<NCollection_Vec3<float>>>();
       }
       else
       {
-        myPntVec = new NCollection_Shared<NCollection_Vector<gp_Pnt>>();
+        myPntVec = new NCollection_Shared<NCollection_DynamicArray<gp_Pnt>>();
       }
     }
 
@@ -349,9 +349,9 @@ protected:
     }
 
   private:
-    Handle(NCollection_Shared<NCollection_Vector<gp_Pnt>>)                  myPntVec;
-    Handle(NCollection_Shared<NCollection_Vector<NCollection_Vec3<float>>>) myVec3Vec;
-    bool                                                                    myIsSinglePrecision;
+    Handle(NCollection_Shared<NCollection_DynamicArray<gp_Pnt>>)                  myPntVec;
+    Handle(NCollection_Shared<NCollection_DynamicArray<NCollection_Vec3<float>>>) myVec3Vec;
+    bool myIsSinglePrecision;
   };
 
 protected:
@@ -375,9 +375,10 @@ protected:
   // set of nodal properties defines Vertex (thus node at the same location but with different
   // normal should be duplicated). The following code converts OBJ definition of nodal properties to
   // Primitive Array definition.
-  VectorOfVertices                            myObjVerts;   //!< temporary vector of vertices
-  NCollection_Vector<NCollection_Vec2<float>> myObjVertsUV; //!< temporary vector of UV parameters
-  NCollection_Vector<NCollection_Vec3<float>> myObjNorms;   //!< temporary vector of normals
+  VectorOfVertices myObjVerts; //!< temporary vector of vertices
+  NCollection_DynamicArray<NCollection_Vec2<float>>
+    myObjVertsUV; //!< temporary vector of UV parameters
+  NCollection_DynamicArray<NCollection_Vec3<float>> myObjNorms; //!< temporary vector of normals
   NCollection_DataMap<NCollection_Vec3<int>, int, ObjVec3iHasher> myPackedIndices;
   NCollection_DataMap<TCollection_AsciiString, RWObj_Material>
     myMaterials; //!< map of known materials

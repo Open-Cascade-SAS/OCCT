@@ -60,7 +60,7 @@ public:
       return NCollection_Array1<gp_Pnt2d>();
     }
 
-    NCollection_Array1<gp_Pnt2d> aResult(1, theParams.Size());
+    NCollection_Array1<gp_Pnt2d> aResult(1, theParams.Length());
 
     const gp_Lin2d& aLin = myGeom->Lin2d();
     const gp_Pnt2d& aLoc = aLin.Location();
@@ -92,7 +92,7 @@ public:
       return NCollection_Array1<Geom2dGridEval::CurveD1>();
     }
 
-    NCollection_Array1<Geom2dGridEval::CurveD1> aResult(1, theParams.Size());
+    NCollection_Array1<Geom2dGridEval::CurveD1> aResult(1, theParams.Length());
 
     const gp_Lin2d& aLin = myGeom->Lin2d();
     const gp_Pnt2d& aLoc = aLin.Location();
@@ -127,7 +127,7 @@ public:
       return NCollection_Array1<Geom2dGridEval::CurveD2>();
     }
 
-    NCollection_Array1<Geom2dGridEval::CurveD2> aResult(1, theParams.Size());
+    NCollection_Array1<Geom2dGridEval::CurveD2> aResult(1, theParams.Length());
 
     const gp_Lin2d& aLin = myGeom->Lin2d();
     const gp_Pnt2d& aLoc = aLin.Location();
@@ -163,7 +163,7 @@ public:
       return NCollection_Array1<Geom2dGridEval::CurveD3>();
     }
 
-    NCollection_Array1<Geom2dGridEval::CurveD3> aResult(1, theParams.Size());
+    NCollection_Array1<Geom2dGridEval::CurveD3> aResult(1, theParams.Length());
 
     const gp_Lin2d& aLin = myGeom->Lin2d();
     const gp_Pnt2d& aLoc = aLin.Location();
@@ -201,13 +201,13 @@ public:
       return NCollection_Array1<gp_Vec2d>();
     }
 
-    NCollection_Array1<gp_Vec2d> aResult(1, theParams.Size());
+    NCollection_Array1<gp_Vec2d> aResult(1, theParams.Length());
 
     if (theN == 1)
     {
       const gp_Dir2d aDir = myGeom->Lin2d().Direction();
       const gp_Vec2d aD1(aDir.X(), aDir.Y());
-      for (int i = 1; i <= theParams.Size(); ++i)
+      for (int i = 1; i <= theParams.Length(); ++i)
       {
         aResult.SetValue(i, aD1);
       }
@@ -215,7 +215,7 @@ public:
     else
     {
       const gp_Vec2d aZero(0, 0);
-      for (int i = 1; i <= theParams.Size(); ++i)
+      for (int i = 1; i <= theParams.Length(); ++i)
       {
         aResult.SetValue(i, aZero);
       }

@@ -125,7 +125,7 @@ public:
     const occ::handle<Poly_Triangulation>&                   theActiveTriangulation);
 
   //! Returns number of available face triangulations.
-  int NbTriangulations() const { return myTriangulations.Size(); }
+  int NbTriangulations() const { return myTriangulations.Length(); }
 
   //! Returns current active triangulation.
   const occ::handle<Poly_Triangulation>& ActiveTriangulation() const

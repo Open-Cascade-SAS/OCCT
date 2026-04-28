@@ -311,7 +311,7 @@ void Poly_Triangulation::AddUVNodes()
 
 void Poly_Triangulation::AddNormals()
 {
-  if (myNormals.IsEmpty() || myNormals.Size() != myNodes.Size())
+  if (myNormals.IsEmpty() || myNormals.Length() != myNodes.Length())
   {
     myNormals.Resize(0, myNodes.Size() - 1, false);
   }

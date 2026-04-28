@@ -24,7 +24,7 @@
 #include <NCollection_Map.hxx>
 #include <BOPDS_PaveBlock.hxx>
 #include <BOPDS_SubIterator.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <BOPTools_Parallel.hxx>
 #include <IntTools_Context.hxx>
 #include <Standard_ErrorHandler.hxx>
@@ -132,7 +132,7 @@ protected:
 };
 
 //=======================================================================
-typedef NCollection_Vector<BOPAlgo_VertexFace> BOPAlgo_VectorOfVertexFace;
+typedef NCollection_DynamicArray<BOPAlgo_VertexFace> BOPAlgo_VectorOfVertexFace;
 
 //=================================================================================================
 
@@ -159,7 +159,7 @@ void BOPAlgo_PaveFiller::PerformVF(const Message_ProgressRange& theRange)
     return;
   }
   //
-  NCollection_Vector<BOPDS_InterfVF>& aVFs = myDS->InterfVF();
+  NCollection_DynamicArray<BOPDS_InterfVF>& aVFs = myDS->InterfVF();
   if (!iSize)
   {
     iSize = 10;
@@ -316,8 +316,8 @@ void BOPAlgo_PaveFiller::TreatVerticesEE()
   //
   aNbS = myDS->NbSourceShapes();
   //
-  NCollection_Vector<BOPDS_InterfEE>& aEEs = myDS->InterfEE();
-  aNbEEs                                   = aEEs.Length();
+  NCollection_DynamicArray<BOPDS_InterfEE>& aEEs = myDS->InterfEE();
+  aNbEEs                                         = aEEs.Length();
   for (i = 0; i < aNbEEs; ++i)
   {
     BOPDS_InterfEE& aEE = aEEs(i);
@@ -351,7 +351,7 @@ void BOPAlgo_PaveFiller::TreatVerticesEE()
     return;
   }
   //-------------------------------------------------------------
-  NCollection_Vector<BOPDS_InterfVF>& aVFs = myDS->InterfVF();
+  NCollection_DynamicArray<BOPDS_InterfVF>& aVFs = myDS->InterfVF();
   //
   BOPDS_SubIterator aIt(aAllocator);
   //

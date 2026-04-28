@@ -18,12 +18,15 @@
 #include <Standard_HashUtils.hxx>
 
 #include <cstddef>
+#include <cstdint>
 #include <functional>
+#include <limits>
+#include <utility>
 
 //! Lightweight typed index into a per-kind reference vector inside BRepGraph.
 //!
 //! The pair (Kind, Index) forms a unique reference identifier within one graph
-//! instance. Default-constructed RefId has Index = -1 (invalid).
+//! instance. Default-constructed RefId has Index = UINT32_MAX (invalid).
 struct BRepGraph_RefId
 {
   //! Enumeration of supported topology reference kinds.
@@ -45,25 +48,54 @@ struct BRepGraph_RefId
   template <Kind TheKind>
   struct Typed
   {
-    int Index;
+    static constexpr uint32_t THE_START_INDEX   = 0u;
+    static constexpr uint32_t THE_INVALID_INDEX = std::numeric_limits<uint32_t>::max();
+
+    uint32_t Index;
 
     Typed()
-        : Index(-1)
+        : Index(THE_INVALID_INDEX)
     {
     }
 
-    explicit Typed(const int theIdx)
+    explicit Typed(const uint32_t theIdx)
         : Index(theIdx)
     {
-      Standard_ASSERT_VOID(theIdx >= -1, "index must be >= -1");
     }
 
-    [[nodiscard]] bool IsValid() const { return Index >= 0; }
-
-    [[nodiscard]] bool IsValid(const int theMaxCount) const
+    //! Construct from an untyped reference id of the same kind.
+    explicit Typed(const BRepGraph_RefId theRefId)
+        : Typed(FromRefId(theRefId))
     {
-      Standard_ASSERT_RETURN(theMaxCount >= 0, "max count must be non-negative", false);
-      return Index >= 0 && Index < theMaxCount;
+    }
+
+    template <Kind OtherKind, typename std::enable_if_t<OtherKind != TheKind, int> = 0>
+    Typed(const Typed<OtherKind>&) = delete;
+
+    //! First valid id in a dense per-kind sequence.
+    [[nodiscard]] static Typed Start() { return Typed(THE_START_INDEX); }
+
+    //! Invalid sentinel id.
+    [[nodiscard]] static Typed Invalid() { return Typed(); }
+
+    [[nodiscard]] bool IsValid() const { return Index != THE_INVALID_INDEX; }
+
+    //! True if this id points to an allocated slot within [0, theMaxCount).
+    //! UINT32_MAX (invalid sentinel) always fails this check for any realistic count.
+    [[nodiscard]] bool IsValid(const uint32_t theMaxCount) const { return Index < theMaxCount; }
+
+    template <typename CountProviderT>
+    [[nodiscard]] auto IsValidIn(const CountProviderT& theProvider) const
+      -> decltype(theProvider.Nb(), bool())
+    {
+      return IsValid(theProvider.Nb());
+    }
+
+    template <typename CountProviderT>
+    [[nodiscard]] auto IsValidIn(const CountProviderT& theProvider) const
+      -> decltype(theProvider.Size(), bool())
+    {
+      return IsValid(static_cast<uint32_t>(theProvider.Size()));
     }
 
     operator BRepGraph_RefId() const { return BRepGraph_RefId(TheKind, Index); }
@@ -89,7 +121,7 @@ struct BRepGraph_RefId
     //! Pre-increment (++id).
     Typed& operator++()
     {
-      Standard_ASSERT_VOID(Index >= 0, "pre-increment on invalid id");
+      Standard_ASSERT_VOID(Index != THE_INVALID_INDEX, "pre-increment on invalid id");
       ++Index;
       return *this;
     }
@@ -97,17 +129,25 @@ struct BRepGraph_RefId
     //! Post-increment (id++).
     Typed operator++(int)
     {
-      Standard_ASSERT_VOID(Index >= 0, "post-increment on invalid id");
+      Standard_ASSERT_VOID(Index != THE_INVALID_INDEX, "post-increment on invalid id");
       Typed aPrev = *this;
       ++Index;
       return aPrev;
     }
 
     //! Advance by offset.
-    [[nodiscard]] Typed operator+(const int theOffset) const { return Typed(Index + theOffset); }
+    [[nodiscard]] Typed operator+(const uint32_t theOffset) const
+    {
+      return Typed(Index + theOffset);
+    }
 
     //! Retreat by offset.
-    [[nodiscard]] Typed operator-(const int theOffset) const { return Typed(Index - theOffset); }
+    [[nodiscard]] Typed operator-(const uint32_t theOffset) const
+    {
+      Standard_ASSERT_VOID(Index != THE_INVALID_INDEX && Index >= theOffset,
+                           "retreat underflows index");
+      return Typed(Index - theOffset);
+    }
 
     bool operator==(const BRepGraph_RefId& theOther) const
     {
@@ -133,28 +173,54 @@ struct BRepGraph_RefId
            && static_cast<int>(theKind) <= static_cast<int>(Kind::Child);
   }
 
-  Kind RefKind;
-  int  Index;
+  static constexpr uint32_t THE_START_INDEX   = 0u;
+  static constexpr uint32_t THE_INVALID_INDEX = std::numeric_limits<uint32_t>::max();
+
+  Kind     RefKind;
+  uint32_t Index;
 
   BRepGraph_RefId()
       : RefKind(Kind::Shell),
-        Index(-1)
+        Index(THE_INVALID_INDEX)
   {
   }
 
-  BRepGraph_RefId(const Kind theKind, const int theIdx)
+  BRepGraph_RefId(const Kind theKind, const uint32_t theIdx)
       : RefKind(theKind),
         Index(theIdx)
   {
-    Standard_ASSERT_VOID(theIdx >= -1, "BRepGraph_RefId: index must be >= -1");
   }
 
-  [[nodiscard]] bool IsValid() const { return Index >= 0; }
-
-  [[nodiscard]] bool IsValid(const int theMaxCount) const
+  //! First valid id in a dense sequence for the specified kind.
+  [[nodiscard]] static BRepGraph_RefId Start(const Kind theKind)
   {
-    Standard_ASSERT_RETURN(theMaxCount >= 0, "max count must be non-negative", false);
-    return Index >= 0 && Index < theMaxCount;
+    return BRepGraph_RefId(theKind, THE_START_INDEX);
+  }
+
+  //! Invalid sentinel id for the specified kind.
+  [[nodiscard]] static BRepGraph_RefId Invalid(const Kind theKind = Kind::Shell)
+  {
+    return BRepGraph_RefId(theKind, THE_INVALID_INDEX);
+  }
+
+  [[nodiscard]] bool IsValid() const { return Index != THE_INVALID_INDEX; }
+
+  //! True if this id points to an allocated slot within [0, theMaxCount).
+  //! UINT32_MAX (invalid sentinel) always fails this check for any realistic count.
+  [[nodiscard]] bool IsValid(const uint32_t theMaxCount) const { return Index < theMaxCount; }
+
+  template <typename CountProviderT>
+  [[nodiscard]] auto IsValidIn(const CountProviderT& theProvider) const
+    -> decltype(theProvider.Nb(), bool())
+  {
+    return IsValid(theProvider.Nb());
+  }
+
+  template <typename CountProviderT>
+  [[nodiscard]] auto IsValidIn(const CountProviderT& theProvider) const
+    -> decltype(theProvider.Size(), bool())
+  {
+    return IsValid(static_cast<uint32_t>(theProvider.Size()));
   }
 
   bool operator==(const BRepGraph_RefId& theOther) const
@@ -174,7 +240,7 @@ struct BRepGraph_RefId
   //! Pre-increment (++id).
   BRepGraph_RefId& operator++()
   {
-    Standard_ASSERT_VOID(Index >= 0, "pre-increment on invalid id");
+    Standard_ASSERT_VOID(Index != THE_INVALID_INDEX, "pre-increment on invalid id");
     ++Index;
     return *this;
   }
@@ -182,22 +248,53 @@ struct BRepGraph_RefId
   //! Post-increment (id++).
   BRepGraph_RefId operator++(int)
   {
-    Standard_ASSERT_VOID(Index >= 0, "post-increment on invalid id");
+    Standard_ASSERT_VOID(Index != THE_INVALID_INDEX, "post-increment on invalid id");
     BRepGraph_RefId aPrev = *this;
     ++Index;
     return aPrev;
   }
 
   //! Advance by offset.
-  [[nodiscard]] BRepGraph_RefId operator+(const int theOffset) const
+  [[nodiscard]] BRepGraph_RefId operator+(const uint32_t theOffset) const
   {
     return BRepGraph_RefId(RefKind, Index + theOffset);
   }
 
   //! Retreat by offset.
-  [[nodiscard]] BRepGraph_RefId operator-(const int theOffset) const
+  [[nodiscard]] BRepGraph_RefId operator-(const uint32_t theOffset) const
   {
+    Standard_ASSERT_VOID(Index != THE_INVALID_INDEX && Index >= theOffset,
+                         "retreat underflows index");
     return BRepGraph_RefId(RefKind, Index - theOffset);
+  }
+
+  //! Dispatch a generic ref id to a callable taking the matching typed ref id.
+  template <typename FuncT>
+  static auto Visit(const BRepGraph_RefId theRefId, FuncT&& theFunc)
+    -> decltype(std::forward<FuncT>(theFunc)(Typed<Kind::Shell>()))
+  {
+    switch (theRefId.RefKind)
+    {
+      case Kind::Shell:
+        return std::forward<FuncT>(theFunc)(Typed<Kind::Shell>::FromRefId(theRefId));
+      case Kind::Face:
+        return std::forward<FuncT>(theFunc)(Typed<Kind::Face>::FromRefId(theRefId));
+      case Kind::Wire:
+        return std::forward<FuncT>(theFunc)(Typed<Kind::Wire>::FromRefId(theRefId));
+      case Kind::CoEdge:
+        return std::forward<FuncT>(theFunc)(Typed<Kind::CoEdge>::FromRefId(theRefId));
+      case Kind::Vertex:
+        return std::forward<FuncT>(theFunc)(Typed<Kind::Vertex>::FromRefId(theRefId));
+      case Kind::Solid:
+        return std::forward<FuncT>(theFunc)(Typed<Kind::Solid>::FromRefId(theRefId));
+      case Kind::Child:
+        return std::forward<FuncT>(theFunc)(Typed<Kind::Child>::FromRefId(theRefId));
+      case Kind::Occurrence:
+        return std::forward<FuncT>(theFunc)(Typed<Kind::Occurrence>::FromRefId(theRefId));
+    }
+
+    Standard_ASSERT_VOID(false, "BRepGraph_RefId::Visit: unhandled Kind");
+    return std::forward<FuncT>(theFunc)(Typed<Kind::Shell>());
   }
 };
 

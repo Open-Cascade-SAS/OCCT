@@ -59,7 +59,7 @@ void OpenGl_Clipping::Reset(const occ::handle<Graphic3d_SequenceOfHClipPlane>& t
   myCappedSubPlane = 0;
   myCappedChain.Nullify();
 
-  // Method ::add() implicitly extends myDisabledPlanes (NCollection_Vector::SetValue()),
+  // Method ::add() implicitly extends myDisabledPlanes (NCollection_DynamicArray::SetValue()),
   // however we do not reset myDisabledPlanes and mySkipFilter beforehand to avoid redundant memory
   // re-allocations. So once extended, they will never reduce their size to lower values. This
   // should not be a problem since overall number of clipping planes is expected to be quite small.

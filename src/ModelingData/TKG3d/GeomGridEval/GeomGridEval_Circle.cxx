@@ -27,7 +27,7 @@ NCollection_Array1<gp_Pnt> GeomGridEval_Circle::EvaluateGrid(
     return NCollection_Array1<gp_Pnt>();
   }
 
-  const int                  aNb = theParams.Size();
+  const int                  aNb = theParams.Length();
   NCollection_Array1<gp_Pnt> aResult(1, aNb);
 
   // Extract circle data from geometry
@@ -72,7 +72,7 @@ NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_Circle::EvaluateGridD1(
     return NCollection_Array1<GeomGridEval::CurveD1>();
   }
 
-  const int                                 aNb = theParams.Size();
+  const int                                 aNb = theParams.Length();
   NCollection_Array1<GeomGridEval::CurveD1> aResult(1, aNb);
 
   const gp_Circ& aCirc   = myGeom->Circ();
@@ -120,7 +120,7 @@ NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_Circle::EvaluateGridD2(
     return NCollection_Array1<GeomGridEval::CurveD2>();
   }
 
-  const int                                 aNb = theParams.Size();
+  const int                                 aNb = theParams.Length();
   NCollection_Array1<GeomGridEval::CurveD2> aResult(1, aNb);
 
   const gp_Circ& aCirc   = myGeom->Circ();
@@ -172,7 +172,7 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_Circle::EvaluateGridD3(
     return NCollection_Array1<GeomGridEval::CurveD3>();
   }
 
-  const int                                 aNb = theParams.Size();
+  const int                                 aNb = theParams.Length();
   NCollection_Array1<GeomGridEval::CurveD3> aResult(1, aNb);
 
   const gp_Circ& aCirc   = myGeom->Circ();
@@ -229,7 +229,7 @@ NCollection_Array1<gp_Vec> GeomGridEval_Circle::EvaluateGridDN(
     return NCollection_Array1<gp_Vec>();
   }
 
-  const int                  aNb = theParams.Size();
+  const int                  aNb = theParams.Length();
   NCollection_Array1<gp_Vec> aResult(1, aNb);
 
   const gp_Circ& aCirc   = myGeom->Circ();

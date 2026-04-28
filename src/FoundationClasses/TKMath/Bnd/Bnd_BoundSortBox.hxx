@@ -24,7 +24,7 @@
 #include <Bnd_Box.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_List.hxx>
@@ -54,7 +54,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
 private:
-  using VectorInt = NCollection_Vector<int>;
+  using VectorInt = NCollection_DynamicArray<int>;
 
 public:
   //! Constructs an empty comparison algorithm for bounding boxes.

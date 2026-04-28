@@ -32,7 +32,7 @@ Graphic3d_BvhCStructureSet::Graphic3d_BvhCStructureSet()
 
 int Graphic3d_BvhCStructureSet::Size() const
 {
-  return myStructs.Size();
+  return myStructs.Length();
 }
 
 //=================================================================================================
@@ -65,7 +65,7 @@ void Graphic3d_BvhCStructureSet::Swap(const int theIdx1, const int theIdx2)
 
 bool Graphic3d_BvhCStructureSet::Add(const Graphic3d_CStructure* theStruct)
 {
-  const int aSize = myStructs.Size();
+  const int aSize = myStructs.Length();
 
   if (myStructs.Add(theStruct) > aSize) // new structure?
   {

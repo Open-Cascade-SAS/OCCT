@@ -84,8 +84,8 @@ occ::handle<Adaptor3d_Curve> BRepAdaptor_CompCurve::ShallowCopy() const
   aCopy->TFirst   = TFirst;
   aCopy->TLast    = TLast;
   aCopy->PTol     = PTol;
-  aCopy->myCurves = new (NCollection_HArray1<BRepAdaptor_Curve>)(1, myCurves->Size());
-  for (int anI = 1; anI <= myCurves->Size(); ++anI)
+  aCopy->myCurves = new (NCollection_HArray1<BRepAdaptor_Curve>)(1, myCurves->Length());
+  for (int anI = 1; anI <= myCurves->Length(); ++anI)
   {
     const occ::handle<Adaptor3d_Curve> aCurve     = myCurves->Value(anI).ShallowCopy();
     const BRepAdaptor_Curve&           aBrepCurve = *(occ::down_cast<BRepAdaptor_Curve>(aCurve));

@@ -24,7 +24,7 @@
 #include <IntSurf_PntOn2S.hxx>
 #include <NCollection_List.hxx>
 #include <GeomAbs_SurfaceType.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 
 class Adaptor3d_TopolTool;
 
@@ -193,13 +193,13 @@ public:
 
   //! Prepares surfaces for intersection
   Standard_EXPORT static void PrepareSurfaces(
-    const occ::handle<Adaptor3d_Surface>&               theS1,
-    const occ::handle<Adaptor3d_TopolTool>&             theD1,
-    const occ::handle<Adaptor3d_Surface>&               theS2,
-    const occ::handle<Adaptor3d_TopolTool>&             theD2,
-    const double                                        Tol,
-    NCollection_Vector<occ::handle<Adaptor3d_Surface>>& theSeqHS1,
-    NCollection_Vector<occ::handle<Adaptor3d_Surface>>& theSeqHS2);
+    const occ::handle<Adaptor3d_Surface>&                     theS1,
+    const occ::handle<Adaptor3d_TopolTool>&                   theD1,
+    const occ::handle<Adaptor3d_Surface>&                     theS2,
+    const occ::handle<Adaptor3d_TopolTool>&                   theD2,
+    const double                                              Tol,
+    NCollection_DynamicArray<occ::handle<Adaptor3d_Surface>>& theSeqHS1,
+    NCollection_DynamicArray<occ::handle<Adaptor3d_Surface>>& theSeqHS2);
 
 private:
   Standard_EXPORT void ParamParamPerfom(const occ::handle<Adaptor3d_Surface>&   S1,

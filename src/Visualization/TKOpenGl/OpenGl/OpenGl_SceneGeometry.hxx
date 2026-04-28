@@ -265,7 +265,7 @@ public: //! @name auxiliary methods
 
 protected:
   // clang-format off
-  NCollection_Vector<occ::handle<OpenGl_Texture>> myTextures;           //!< Array of texture maps shared between rendered objects
+  NCollection_DynamicArray<occ::handle<OpenGl_Texture>> myTextures;           //!< Array of texture maps shared between rendered objects
   std::vector<GLuint64>                      myTextureHandles;     //!< Array of unique 64-bit texture handles obtained from OpenGL
   int                           myTopLevelTreeDepth;  //!< Depth of high-level scene BVH from last build
   int                           myBotLevelTreeDepth;  //!< Maximum depth of bottom-level scene BVHs from last build

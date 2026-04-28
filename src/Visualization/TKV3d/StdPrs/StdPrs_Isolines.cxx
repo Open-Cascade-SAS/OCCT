@@ -53,8 +53,8 @@ const gp_Lin2d isoV(const double theV)
   return gp_Lin2d(gp_Pnt2d(0.0, theV), gp::DX2d());
 }
 
-typedef NCollection_Shared<NCollection_Vector<StdPrs_Isolines::SegOnIso>> VecOfSegments;
-typedef NCollection_Sequence<occ::handle<VecOfSegments>>                  SeqOfVecOfSegments;
+typedef NCollection_Shared<NCollection_DynamicArray<StdPrs_Isolines::SegOnIso>> VecOfSegments;
+typedef NCollection_Sequence<occ::handle<VecOfSegments>>                        SeqOfVecOfSegments;
 
 //! Pack isoline segments into polylines.
 static void sortSegments(const SeqOfVecOfSegments&                                     theSegments,
@@ -317,7 +317,7 @@ void StdPrs_Isolines::addOnTriangulation(
         if (anIsoPnts.IsNull())
         {
           aPolylines.Append(new VecOfSegments());
-          anIsoIndexes.SetValue(anIsoIdx, aPolylines.Size());
+          anIsoIndexes.SetValue(anIsoIdx, aPolylines.Length());
           anIsoPnts = aPolylines.ChangeValue(anIsoIndexes.Value(anIsoIdx));
         }
 

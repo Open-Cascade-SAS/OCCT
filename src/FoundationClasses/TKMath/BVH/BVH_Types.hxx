@@ -25,7 +25,7 @@
 #include <NCollection_Mat4.hxx>
 #include <NCollection_Vec2.hxx>
 #include <NCollection_Vec3.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_Type.hxx>
 
@@ -117,7 +117,7 @@ template <class T, int N = 1>
 struct ArrayType
 {
 #ifndef _BVH_USE_STD_VECTOR_
-  typedef NCollection_Vector<typename VectorType<T, N>::Type> Type;
+  typedef NCollection_DynamicArray<typename VectorType<T, N>::Type> Type;
 #else
   typedef std::vector<typename VectorType<T, N>::Type> Type;
 #endif

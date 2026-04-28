@@ -1,0 +1,31 @@
+puts "=================================================================="
+puts "0030979: vgrid -type inf keeps step, mode, rotation and disc/wedge"
+puts "=================================================================="
+
+pload MODELING VISUALIZATION
+
+vclear
+vinit View1 w=400 h=400
+vaxo
+
+box b 2 2 0.2
+vdisplay b -dispMode 1
+vfit
+vzoom 0.25
+
+# Step-driven anisotropic spacing and rotation must survive the final GridDisplay
+# override; before the fix the display snapped back to default line mode / zero
+# rotation whenever -type inf was used.
+vgrid -type inf -step 0.5 1.0 -rotAngle 0.4
+vdump $imagedir/${casename}_rotated.png
+
+# Points mode used to be lost in the same override path.
+vgrid -type inf -step 0.5 1.0 -mode points
+vdump $imagedir/${casename}_points.png
+
+# Radius/arc now clip the infinite rectangular grid to a disc sector instead of
+# being silently ignored.
+vgrid -type inf -step 0.5 0.5 -radius 2.0 -arc 0 1.5707
+vdump $imagedir/${casename}_sector.png
+
+vgrid off

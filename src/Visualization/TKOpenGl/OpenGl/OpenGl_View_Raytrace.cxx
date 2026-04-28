@@ -27,7 +27,7 @@
 #include <OSD_Protection.hxx>
 #include <OSD_File.hxx>
 #include <NCollection_MapAlgo.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 
 #include "../../TKService/Shaders/Shaders_RaytraceBase_vs.pxx"
 #include "../../TKService/Shaders/Shaders_RaytraceBase_fs.pxx"
@@ -216,7 +216,7 @@ bool OpenGl_View::updateRaytraceGeometry(const RaytraceUpdateMode           theM
   else if (theMode == OpenGl_GUM_REBUILD)
   {
     // Actualize the hash map of structures - remove out-of-date records
-    NCollection_Vector<const OpenGl_Structure*> aKeysToRemove(
+    NCollection_DynamicArray<const OpenGl_Structure*> aKeysToRemove(
       myStructureStates.Extent() > 0 ? myStructureStates.Extent() : 1);
     for (NCollection_DataMap<const OpenGl_Structure*, StructState>::Iterator anIter(
            myStructureStates);
@@ -228,7 +228,7 @@ bool OpenGl_View::updateRaytraceGeometry(const RaytraceUpdateMode           theM
         aKeysToRemove.Append(anIter.Key());
       }
     }
-    for (NCollection_Vector<const OpenGl_Structure*>::Iterator aKeyIter(aKeysToRemove);
+    for (NCollection_DynamicArray<const OpenGl_Structure*>::Iterator aKeyIter(aKeysToRemove);
          aKeyIter.More();
          aKeyIter.Next())
     {

@@ -133,7 +133,7 @@ occ::handle<Graphic3d_ArrayOfPrimitives> Prs3d::PrimitivesFromPolylines(
   {
     aNbVertices += anIt.Value()->Length();
   }
-  const int                              aSegmentEdgeNb = (aNbVertices - thePoints.Size()) * 2;
+  const int                              aSegmentEdgeNb = (aNbVertices - thePoints.Length()) * 2;
   occ::handle<Graphic3d_ArrayOfSegments> aSegments =
     new Graphic3d_ArrayOfSegments(aNbVertices, aSegmentEdgeNb);
   for (NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>::Iterator anIt(thePoints);

@@ -46,7 +46,7 @@
 #include <IntRes2d_Domain.hxx>
 #include <NCollection_IncAllocator.hxx>
 #include <NCollection_Sequence.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <Precision.hxx>
 #include <ProjLib_ProjectedCurve.hxx>
 #include <ShapeAnalysis.hxx>
@@ -217,8 +217,8 @@ private:
 
 private:
   occ::handle<ShapeAnalysis_Surface> mySurf;      //!< Surface to project on
-  NCollection_Vector<gp_Pnt>         myCorners3d; //!< 3D positions of B-spline surface corners
-  NCollection_Vector<gp_Pnt2d>       myCorners2d; //!< UV parameters of B-spline surface corners
+  NCollection_DynamicArray<gp_Pnt>   myCorners3d; //!< 3D positions of B-spline surface corners
+  NCollection_DynamicArray<gp_Pnt2d> myCorners2d; //!< UV parameters of B-spline surface corners
 };
 
 //=================================================================================================

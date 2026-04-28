@@ -15,70 +15,98 @@
 #define _BRepGraph_Builder_HeaderFile
 
 #include <BRepGraphInc_Populate.hxx>
+#include <BRepGraph_NodeId.hxx>
+#include <BRepGraph_RefId.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <Standard_DefineAlloc.hxx>
+#include <TopAbs_ShapeEnum.hxx>
+#include <TopLoc_Location.hxx>
 
 class BRepGraph;
 class TopoDS_Shape;
 
-//! @brief Static helper that populates a BRepGraph from a TopoDS_Shape.
-//!
-//! BRepGraph_Builder extracts the build logic out of BRepGraph itself,
-//! keeping the graph class focused on queries and mutation.
-//! It is declared as a friend of BRepGraph to access private storage.
+//! @brief Static helper that ingests a TopoDS_Shape into a BRepGraph.
 class BRepGraph_Builder
 {
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Build the full graph from a TopoDS_Shape (clears existing data first).
+  //! Build-time options.
+  struct Options
+  {
+    BRepGraphInc_Populate::Options Populate{};
+    bool CreateAutoProduct = true;  //!< wrap topology root in a Product (unparented Add only)
+    bool Flatten           = false; //!< drop hierarchy containers, append faces as roots
+    bool Parallel          = false; //!< run face-level construction in parallel
+  };
+
+  //! Outcome of a single Add() call.
+  struct Result
+  {
+    BRepGraph_NodeId       TopologyRoot;
+    BRepGraph_ProductId    Product;
+    BRepGraph_OccurrenceId Occurrence;
+    BRepGraph_RefId        InsertedRef;
+    bool                   Ok = false;
+  };
+
+  //! Ingest a TopoDS_Shape as a new root subgraph, wrapping the topology root in a Product.
+  //! @param[in,out] theGraph graph to populate
+  //! @param[in]     theShape shape to ingest
+  //! @return Result with TopologyRoot, Product and Occurrence set on success.
+  [[nodiscard]] static Standard_EXPORT Result Add(BRepGraph&          theGraph,
+                                                  const TopoDS_Shape& theShape);
+
+  //! Ingest a TopoDS_Shape as a new root subgraph with explicit options.
   //! @param[in,out] theGraph   graph to populate
-  //! @param[in] theShape       root shape
-  //! @param[in] theParallel    if true, face-level construction runs in parallel
-  static Standard_EXPORT void Perform(BRepGraph&          theGraph,
-                                      const TopoDS_Shape& theShape,
-                                      const bool          theParallel);
+  //! @param[in]     theShape   shape to ingest
+  //! @param[in]     theOptions build-time options
+  //! @return Result with TopologyRoot set on success; Product/Occurrence set
+  //!         when theOptions.CreateAutoProduct is true.
+  [[nodiscard]] static Standard_EXPORT Result Add(BRepGraph&          theGraph,
+                                                  const TopoDS_Shape& theShape,
+                                                  const Options&      theOptions);
 
-  //! Build the full graph with explicit post-pass control.
-  static Standard_EXPORT void Perform(BRepGraph&                            theGraph,
-                                      const TopoDS_Shape&                   theShape,
-                                      const bool                            theParallel,
-                                      const BRepGraphInc_Populate::Options& theOptions);
+  //! Ingest a TopoDS_Shape under an existing parent.
+  //!
+  //! Parent kind dispatch:
+  //!   - Product:   creates a child part-product, links via Occurrence with shape.Location().
+  //!   - Compound:  appends topology root as a child reference.
+  //!   - Shell:     appends a Face as a FaceRef; other shapes via AddChild.
+  //!   - Solid:     appends a Shell as a ShellRef; other shapes via AddChild.
+  //!   - CompSolid: appends a Solid as a SolidRef.
+  //!   Other parent kinds yield an invalid Result.
+  //! @param[in,out] theGraph  graph to populate
+  //! @param[in]     theShape  shape to ingest
+  //! @param[in]     theParent parent node receiving the topology
+  //! @return Result with TopologyRoot set, plus (Product, Occurrence) for Product parents
+  //!         or InsertedRef for topology container parents.
+  [[nodiscard]] static Standard_EXPORT Result Add(BRepGraph&             theGraph,
+                                                  const TopoDS_Shape&    theShape,
+                                                  const BRepGraph_NodeId theParent);
 
-  //! Append a shape to the existing graph without clearing.
-  //! Flattens hierarchy containers away. Solid/Shell/Compound/CompSolid inputs
-  //! append their contained faces as roots instead of adding container nodes.
-  //! Uses existing deduplication maps to avoid re-registering shared entities.
-  //! @param[in,out] theGraph   graph to extend
-  //! @param[in] theShape       shape to add
-  //! @param[in] theParallel    if true, per-face geometry extraction is parallel
-  //! @param[in] theOptions     populate options (e.g. CreateAutoProduct)
-  static Standard_EXPORT void AppendFlattened(
-    BRepGraph&                            theGraph,
-    const TopoDS_Shape&                   theShape,
-    const bool                            theParallel,
-    const BRepGraphInc_Populate::Options& theOptions = BRepGraphInc_Populate::Options());
-
-  //! Append a shape to the existing graph without clearing.
-  //! Preserves the full shape hierarchy: Solid/Shell/Compound/CompSolid nodes
-  //! are created alongside Face/Edge/Vertex nodes. Shapes already present in
-  //! the graph (same TShape pointer) are deduplicated and not re-added.
-  //! @param[in,out] theGraph   graph to extend
-  //! @param[in] theShape       shape to add
-  //! @param[in] theParallel    if true, per-face geometry extraction is parallel
-  //! @param[in] theOptions     populate options (e.g. CreateAutoProduct)
-  static Standard_EXPORT void AppendFull(
-    BRepGraph&                            theGraph,
-    const TopoDS_Shape&                   theShape,
-    const bool                            theParallel,
-    const BRepGraphInc_Populate::Options& theOptions = BRepGraphInc_Populate::Options());
+  //! Ingest a shape under an existing parent with explicit options.
+  //! Options::CreateAutoProduct is ignored.
+  [[nodiscard]] static Standard_EXPORT Result Add(BRepGraph&             theGraph,
+                                                  const TopoDS_Shape&    theShape,
+                                                  const BRepGraph_NodeId theParent,
+                                                  const Options&         theOptions);
 
 private:
-  //! Allocate UIDs for all incidence entities after BRepGraphInc_Populate
-  //! has filled the storage.
+  static void appendImpl(BRepGraph&                                  theGraph,
+                         const TopoDS_Shape&                         theShape,
+                         const Options&                              theOptions,
+                         NCollection_DynamicArray<BRepGraph_NodeId>* theOutFlatRoots = nullptr);
+
+  static BRepGraph_NodeId detectTopologyRoot(const BRepGraph&       theGraph,
+                                             const TopAbs_ShapeEnum theShapeType,
+                                             const uint32_t         theOldCountOfShapeKind);
+
+  static uint32_t snapshotCountForKind(const BRepGraph&       theGraph,
+                                       const TopAbs_ShapeEnum theShapeType);
+
   static void populateUIDs(BRepGraph& theGraph);
 
-  //! Allocate UIDs only for entities in range [theOld, current) per kind.
-  //! Used by AppendFlattened() to avoid re-walking existing entities.
   static void populateUIDsIncremental(BRepGraph& theGraph,
                                       const int  theOldVtx,
                                       const int  theOldEdge,

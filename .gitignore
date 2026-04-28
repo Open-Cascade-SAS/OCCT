@@ -106,6 +106,9 @@ win64
 /build*
 /install*
 /tools/build*
+CMakeFiles/
+MakeFile
+cmake_install.cmake
 
 # Coding agents instructions (keep .github/copilot-instructions.md)
 /.CLAUDE.md

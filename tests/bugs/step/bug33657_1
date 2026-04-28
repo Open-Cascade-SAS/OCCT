@@ -1,4 +1,0 @@
-# Check performance of STEPCAFControl_Reader/Writer constructors in multithreading environment.
-# If no crash occurs, its fine.
-pload QAcommands
-OCC33657_1

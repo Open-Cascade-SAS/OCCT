@@ -22,8 +22,8 @@
 #include <Standard_Macro.hxx>
 #include <GC_MakeTranslation2d.hxx>
 
-using GCE2d_MakeTranslation Standard_DEPRECATED(
-  "GCE2d_MakeTranslation is deprecated since OCCT 8.0.0. Use GC_MakeTranslation2d instead.")
-= GC_MakeTranslation2d;
+using GCE2d_MakeTranslation Standard_DEPRECATED_STD(
+  "GCE2d_MakeTranslation is deprecated since OCCT 8.0.0. Use GC_MakeTranslation2d instead.") =
+  GC_MakeTranslation2d;
 
 #endif // _GCE2d_MakeTranslation_HeaderFile

@@ -44,7 +44,7 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 
 //=================================================================================================
 
@@ -177,7 +177,7 @@ static void fillParams(const NCollection_Array1<double>& theKnots,
                        int                               theDegree,
                        double                            theParMin,
                        double                            theParMax,
-                       NCollection_Vector<double>&       theParams)
+                       NCollection_DynamicArray<double>& theParams)
 {
   double aPrevPar = theParMin;
   theParams.Append(aPrevPar);
@@ -207,10 +207,10 @@ static void fillParams(const NCollection_Array1<double>& theKnots,
   theParams.Append(theParMax);
 }
 
-static void fillPoints(const BRepAdaptor_Curve&          theCurve,
-                       const NCollection_Vector<double>& theParams,
-                       NCollection_Sequence<gp_Pnt>&     thePoints,
-                       NCollection_Sequence<double>&     theWeights)
+static void fillPoints(const BRepAdaptor_Curve&                theCurve,
+                       const NCollection_DynamicArray<double>& theParams,
+                       NCollection_Sequence<gp_Pnt>&           thePoints,
+                       NCollection_Sequence<double>&           theWeights)
 {
   double aDistPrev = 0., aDistNext;
   gp_Pnt aPPrev(theCurve.Value(theParams(0))), aPNext;
@@ -355,7 +355,7 @@ void BRepLib_FindSurface::Init(const TopoDS_Shape& S,
     int iNbPoints = 0;
 
     // Fill the parameters of the sampling points
-    NCollection_Vector<double> aParams;
+    NCollection_DynamicArray<double> aParams;
     switch (c.GetType())
     {
       case GeomAbs_BezierCurve: {

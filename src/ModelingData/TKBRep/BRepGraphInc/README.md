@@ -10,7 +10,7 @@ It provides the runtime source of truth for topology entities, assembly entities
 
 BRepGraphInc is the backend runtime model that powers BRepGraph.
 
-External code should normally enter through `BRepGraph::Build()`, `BRepGraph::Shapes()`, `BRepGraph::Topo()`, `BRepGraph::Refs()`, and the other facade views. A subset of `BRepGraphInc::*` structs is intentionally exposed read-only through those views; direct storage-level access (`BRepGraph_Data`, `myIncStorage`) is reserved for backend maintenance, low-level infrastructure, and focused tests.
+External code should normally enter through `BRepGraph_Builder::Perform()`, `BRepGraph::Shapes()`, `BRepGraph::Topo()`, `BRepGraph::Refs()`, and the other facade views. A subset of `BRepGraphInc::*` structs is intentionally exposed read-only through those views; direct storage-level access (`BRepGraph_Data`, `myIncStorage`) is reserved for backend maintenance, low-level infrastructure, and focused tests.
 
 ## What This Backend Owns
 
@@ -18,7 +18,7 @@ External code should normally enter through `BRepGraph::Build()`, `BRepGraph::Sh
 - Assembly entity tables (Product, Occurrence)
 - Representation entity tables (SurfaceRep, Curve3DRep, Curve2DRep, TriangulationRep, Polygon3DRep, Polygon2DRep, PolygonOnTriRep)
 - Reference entry tables (ShellRef, FaceRef, WireRef, CoEdgeRef, VertexRef, SolidRef, ChildRef, OccurrenceRef) with BaseRef identity, orientation, and location
-- Reverse adjacency indices (including product→occurrences)
+- Reverse adjacency indices (including product->occurrences)
 - TShape to NodeId mapping
 - Original shape map
 - Per-kind UID vectors (10 entity kinds + 8 ref kinds)
@@ -187,18 +187,18 @@ flowchart LR
 | **Phase 1** | Sequential | Traverse hierarchy. Create container entities (Compound, CompSolid, Solid, Shell). Collect face contexts. |
 | **Phase 2** | Parallel | Extract per-face geometry: surface, PCurves, triangulations, vertices, edges. |
 | **Phase 3** | Sequential | Register faces, wires, edges, CoEdges with TShape deduplication. Link faces to shells. |
-| **Phase 3a** | Sequential | Resolve deferred Compound→Face ChildUsage indices via TShape lookup. |
+| **Phase 3a** | Sequential | Resolve deferred Compound->Face ChildUsage indices via TShape lookup. |
 | **Phase 3b** | Optional | Edge regularities (controlled by `Options.ExtractRegularities`). |
 | **Phase 3c** | Optional | Vertex point representations (controlled by `Options.ExtractVertexPointReps`). |
 | **Phase 4** | Sequential | Build reverse indices for O(1) upward navigation. |
 
 Backend entry point: `BRepGraphInc_Populate::Perform()`.
 
-`Options.CreateAutoProduct` (default true) controls whether a root Product is auto-created wrapping the top-level topology node. Set to false when a higher-level builder (e.g. XCAF) manages Products itself.
+`BRepGraphInc_Populate::Options` only controls backend extraction passes. Graph-level assembly policy such as root Product creation is owned by `BRepGraph_Builder::BuildOptions` in the facade layer.
 
 `BRepGraphInc_Populate::Append()` supports incremental addition to an already-populated storage, with TShape dedup against existing entities. Used by `BRepGraph_Builder::AppendFlattened()` (face-only) and `AppendFull()` (full hierarchy).
 
-For normal graph construction, use `BRepGraph::Build()` instead. The facade owns the public lifecycle, view initialization, mutation boundary behavior, and cache coordination on top of this backend pipeline.
+For normal graph construction, use `BRepGraph_Builder::Perform()` instead. The facade owns the public lifecycle, view initialization, mutation boundary behavior, and cache coordination on top of this backend pipeline.
 
 ### Geometry: Definition-Frame Storage
 
@@ -282,22 +282,22 @@ anEdge.Location(Identity);                     // Reset after attachment
 
 | Map | Purpose |
 |-----|---------|
-| edge → wires | Wire membership |
-| edge → faces | Face adjacency (from CoEdge.FaceDefId) |
-| edge → coedges | CoEdge lookup by parent edge |
+| edge -> wires | Wire membership |
+| edge -> faces | Face adjacency (from CoEdge.FaceDefId) |
+| edge -> coedges | CoEdge lookup by parent edge |
 | edge face count | Cached O(1) face count per edge |
-| vertex → edges | Vertex incidence |
-| coedge → wires | CoEdge-to-wire membership |
-| wire → faces | Wire-to-face membership |
-| face → shells | Face-to-shell membership |
-| shell → solids | Shell-to-solid membership |
-| solid → compounds | Compound parents of a solid |
-| solid → compsolids | CompSolid parents of a solid |
-| shell → compounds | Compound parents of a shell |
-| face → compounds | Compound parents of a face |
-| compound → compounds | Compound parents of a compound |
-| compsolid → compounds | Compound parents of a compsolid |
-| product → occurrences | Assembly references |
+| vertex -> edges | Vertex incidence |
+| coedge -> wires | CoEdge-to-wire membership |
+| wire -> faces | Wire-to-face membership |
+| face -> shells | Face-to-shell membership |
+| shell -> solids | Shell-to-solid membership |
+| solid -> compounds | Compound parents of a solid |
+| solid -> compsolids | CompSolid parents of a solid |
+| shell -> compounds | Compound parents of a shell |
+| face -> compounds | Compound parents of a face |
+| compound -> compounds | Compound parents of a compound |
+| compsolid -> compounds | Compound parents of a compsolid |
+| product -> occurrences | Assembly references |
 
 ## Core Invariants
 
@@ -306,7 +306,7 @@ anEdge.Location(Identity);                     // Reset after attachment
 3. **Reverse-index**: required reverse rows must exist for forward refs used by query paths
 4. **Removal**: IsRemoved entities must be filtered from normal traversals
 5. **Mutation boundary**: entities, reverse indices, cache invalidation, and history are coherent after each operation
-6. **Assembly**: Build produces a root Product when `CreateAutoProduct` is true (default); occurrence cross-references valid; self-referencing rejected; ParentOccurrenceDefId forms a tree
+6. **Assembly**: occurrence cross-references valid; self-referencing rejected; builder-owned root Product creation remains coherent when enabled by build policy
 
 ## Memory and Performance
 
@@ -322,16 +322,16 @@ All public Storage accessors use strongly-typed ids (`BRepGraph_VertexId`, `BRep
 All containers use the graph's `NCollection_IncAllocator` for O(1) bump-pointer allocation and bulk-free destruction:
 
 - **Storage**: all entity tables, UID vectors, and DataMaps receive the allocator
-- **ReverseIndex**: `SetAllocator()` called before `Build()`. Inner vectors constructed with allocator via `preSize()`.
+- **ReverseIndex**: `SetAllocator()` called before reverse-index `Build()`. Inner vectors constructed with allocator via `preSize()`.
 
-Contract: `SetAllocator()` must be called before `Build()`/`BuildDelta()` on ReverseIndex.
+Contract: `SetAllocator()` must be called before reverse-index `Build()`/`BuildDelta()` calls.
 
 ### Other Performance Notes
 
 - Edge-to-face reverse index uses sort-dedup (stack-allocated for typical 1-4 coedges per edge)
 - `Append()` allocates UIDs incrementally (O(M) instead of O(N+M))
 - Post-passes are optional via `BRepGraphInc_Populate::Options`
-- `NbFacesOfEdge()` is O(1) via cached count vector
+- `NbFacesOfEdge()` is O(1) (reads `myEdgeToFaces.Value(idx).Length()` directly)
 
 ## TopoDS vs GraphInc Comparison (Box)
 
@@ -355,7 +355,7 @@ Key difference: TopoDS expresses context through shape occurrences. GraphInc kee
 | `BRepGraphInc_Definition.hxx` | Entity struct definitions |
 | `BRepGraphInc_Reference.hxx` | Context reference definitions |
 | `BRepGraphInc_Storage.hxx/.cxx` | Typed storage and ownership |
-| `BRepGraphInc_Populate.hxx/.cxx` | TopoDS → incidence build and append |
-| `BRepGraphInc_Reconstruct.hxx/.cxx` | Incidence → TopoDS reconstruction |
+| `BRepGraphInc_Populate.hxx/.cxx` | TopoDS -> incidence build and append |
+| `BRepGraphInc_Reconstruct.hxx/.cxx` | Incidence -> TopoDS reconstruction |
 | `BRepGraphInc_ReverseIndex.hxx/.cxx` | Reverse adjacency services |
 | `BRepGraph_WireExplorer.hxx` | Wire traversal in connection order (in BRepGraph package) |

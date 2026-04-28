@@ -1,3 +1,0 @@
-# Check performance of STEPControl_Reader/Writer in multithreading environment.
-pload QAcommands
-OCC33657_4 [locate_data_file bug21802_as1-oc-214.stp]

@@ -87,19 +87,19 @@ typedef NCollection_Shared<NCollection_EBTree<int, Bnd_Box2d>> BndBox2dTree;
 typedef NCollection_UBTreeFiller<int, Bnd_Box2d>               BndBox2dTreeFiller;
 
 // Vectors
-typedef NCollection_Shared<NCollection_Vector<IFaceHandle>>        VectorOfIFaceHandles;
-typedef NCollection_Shared<NCollection_Vector<IWireHandle>>        VectorOfIWireHandles;
-typedef NCollection_Shared<NCollection_Vector<IEdgeHandle>>        VectorOfIEdgeHandles;
-typedef NCollection_Shared<NCollection_Vector<IPCurveHandle>>      VectorOfIPCurveHandles;
-typedef NCollection_Shared<NCollection_Vector<IEdgePtr>>           VectorOfIEdgePtrs;
-typedef NCollection_Shared<NCollection_Vector<bool>>               VectorOfBoolean;
-typedef NCollection_Shared<NCollection_Vector<int>>                VectorOfInteger;
-typedef NCollection_Shared<NCollection_Vector<TopAbs_Orientation>> VectorOfOrientation;
-typedef NCollection_Shared<NCollection_Vector<BRepMesh_Triangle>>  VectorOfElements;
-typedef NCollection_Shared<NCollection_Vector<BRepMesh_Circle>>    VectorOfCircle;
+typedef NCollection_Shared<NCollection_DynamicArray<IFaceHandle>>        VectorOfIFaceHandles;
+typedef NCollection_Shared<NCollection_DynamicArray<IWireHandle>>        VectorOfIWireHandles;
+typedef NCollection_Shared<NCollection_DynamicArray<IEdgeHandle>>        VectorOfIEdgeHandles;
+typedef NCollection_Shared<NCollection_DynamicArray<IPCurveHandle>>      VectorOfIPCurveHandles;
+typedef NCollection_Shared<NCollection_DynamicArray<IEdgePtr>>           VectorOfIEdgePtrs;
+typedef NCollection_Shared<NCollection_DynamicArray<bool>>               VectorOfBoolean;
+typedef NCollection_Shared<NCollection_DynamicArray<int>>                VectorOfInteger;
+typedef NCollection_Shared<NCollection_DynamicArray<TopAbs_Orientation>> VectorOfOrientation;
+typedef NCollection_Shared<NCollection_DynamicArray<BRepMesh_Triangle>>  VectorOfElements;
+typedef NCollection_Shared<NCollection_DynamicArray<BRepMesh_Circle>>    VectorOfCircle;
 
-typedef NCollection_Shared<NCollection_Array1<BRepMesh_Vertex>> Array1OfVertexOfDelaun;
-typedef NCollection_Shared<NCollection_Vector<BRepMesh_Vertex>> VectorOfVertex;
+typedef NCollection_Shared<NCollection_Array1<BRepMesh_Vertex>>       Array1OfVertexOfDelaun;
+typedef NCollection_Shared<NCollection_DynamicArray<BRepMesh_Vertex>> VectorOfVertex;
 
 // Sequences
 typedef NCollection_Shared<NCollection_Sequence<Bnd_B2d>> SequenceOfBndB2d;

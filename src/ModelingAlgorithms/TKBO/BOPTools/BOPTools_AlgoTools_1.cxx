@@ -46,7 +46,7 @@
 #include <IntRes2d_IntersectionPoint.hxx>
 #include <IntRes2d_IntersectionSegment.hxx>
 #include <IntTools_Context.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <ProjLib_ProjectedCurve.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
@@ -136,7 +136,7 @@ protected:
 
 //
 //=======================================================================
-typedef NCollection_Vector<BOPTools_CPC> BOPTools_VectorOfCPC;
+typedef NCollection_DynamicArray<BOPTools_CPC> BOPTools_VectorOfCPC;
 
 //=================================================================================================
 
@@ -175,7 +175,7 @@ protected:
 };
 
 //=======================================================================
-typedef NCollection_Vector<BOPTools_CWT> BOPTools_VectorOfCWT;
+typedef NCollection_DynamicArray<BOPTools_CWT> BOPTools_VectorOfCWT;
 
 //=================================================================================================
 
@@ -223,7 +223,7 @@ protected:
 };
 
 //=======================================================================
-typedef NCollection_Vector<BOPTools_CDT> BOPTools_VectorOfCDT;
+typedef NCollection_DynamicArray<BOPTools_CDT> BOPTools_VectorOfCDT;
 
 //=================================================================================================
 
@@ -263,7 +263,7 @@ protected:
 
 //
 //=======================================================================
-typedef NCollection_Vector<BOPTools_CVT> BOPTools_VectorOfCVT;
+typedef NCollection_DynamicArray<BOPTools_CVT> BOPTools_VectorOfCVT;
 
 //=================================================================================================
 
@@ -302,7 +302,7 @@ protected:
 };
 
 //=======================================================================
-typedef NCollection_Vector<BOPTools_CET> BOPTools_VectorOfCET;
+typedef NCollection_DynamicArray<BOPTools_CET> BOPTools_VectorOfCET;
 
 //=================================================================================================
 

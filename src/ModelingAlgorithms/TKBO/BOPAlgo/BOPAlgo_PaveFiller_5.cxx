@@ -42,7 +42,7 @@
 #include <NCollection_Sequence.hxx>
 #include <IntTools_Tools.hxx>
 #include <NCollection_IncAllocator.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <Precision.hxx>
 #include <Standard_Integer.hxx>
 #include <TopoDS.hxx>
@@ -158,7 +158,7 @@ protected:
 
 //
 //=======================================================================
-typedef NCollection_Vector<BOPAlgo_EdgeFace> BOPAlgo_VectorOfEdgeFace;
+typedef NCollection_DynamicArray<BOPAlgo_EdgeFace> BOPAlgo_VectorOfEdgeFace;
 
 //=================================================================================================
 
@@ -213,7 +213,7 @@ void BOPAlgo_PaveFiller::PerformEF(const Message_ProgressRange& theRange)
     aAllocator);
   BOPAlgo_DataMapOfPaveBlockBndBox aDMPBBox(100, aAllocator);
   //
-  NCollection_Vector<BOPDS_InterfEF>& aEFs = myDS->InterfEF();
+  NCollection_DynamicArray<BOPDS_InterfEF>& aEFs = myDS->InterfEF();
   aEFs.SetIncrement(iSize);
   //
   for (; myIterator->More(); myIterator->Next())
@@ -635,7 +635,7 @@ bool BOPAlgo_PaveFiller::ForceInterfVF(const int nV, const int nF)
   {
     bRet = !bRet;
     //
-    NCollection_Vector<BOPDS_InterfVF>& aVFs = myDS->InterfVF();
+    NCollection_DynamicArray<BOPDS_InterfVF>& aVFs = myDS->InterfVF();
     aVFs.SetIncrement(10);
     // 1
     BOPDS_InterfVF& aVF = aVFs.Appended();
@@ -691,8 +691,8 @@ void BOPAlgo_PaveFiller::ReduceIntersectionRange(const int theV1,
     return;
   }
   //
-  NCollection_Vector<BOPDS_InterfEE>& aEEs   = myDS->InterfEE();
-  int                                 aNbEEs = aEEs.Length();
+  NCollection_DynamicArray<BOPDS_InterfEE>& aEEs   = myDS->InterfEE();
+  int                                       aNbEEs = aEEs.Length();
   if (!aNbEEs)
   {
     return;
@@ -1082,7 +1082,7 @@ void BOPAlgo_PaveFiller::ForceInterfEF(
     return;
   }
 
-  NCollection_Vector<BOPDS_InterfEF>& aEFs = myDS->InterfEF();
+  NCollection_DynamicArray<BOPDS_InterfEF>& aEFs = myDS->InterfEF();
   if (theAddInterf && aEFs.IsEmpty())
     aEFs.SetIncrement(10);
 

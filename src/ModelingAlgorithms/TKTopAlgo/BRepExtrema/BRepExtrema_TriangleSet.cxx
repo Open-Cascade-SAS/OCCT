@@ -35,7 +35,8 @@ BRepExtrema_TriangleSet::BRepExtrema_TriangleSet()
 // function : BRepExtrema_TriangleSet
 // purpose  : Creates triangle set from the given face
 //=======================================================================
-BRepExtrema_TriangleSet::BRepExtrema_TriangleSet(const NCollection_Vector<TopoDS_Shape>& theFaces)
+BRepExtrema_TriangleSet::BRepExtrema_TriangleSet(
+  const NCollection_DynamicArray<TopoDS_Shape>& theFaces)
 {
   // Set default builder - linear BVH (LBVH)
   myBuilder =
@@ -214,12 +215,12 @@ void BRepExtrema_TriangleSet::Clear()
 
 //=================================================================================================
 
-bool BRepExtrema_TriangleSet::Init(const NCollection_Vector<TopoDS_Shape>& theShapes)
+bool BRepExtrema_TriangleSet::Init(const NCollection_DynamicArray<TopoDS_Shape>& theShapes)
 {
   Clear();
 
   bool isOK = true;
-  for (int aShapeIdx = 0; aShapeIdx < theShapes.Size() && isOK; ++aShapeIdx)
+  for (int aShapeIdx = 0; aShapeIdx < theShapes.Length() && isOK; ++aShapeIdx)
   {
     if (theShapes(aShapeIdx).ShapeType() == TopAbs_FACE)
       isOK = initFace(TopoDS::Face(theShapes(aShapeIdx)), aShapeIdx);
@@ -311,7 +312,7 @@ void BRepExtrema_TriangleSet::initNodes(const NCollection_Array1<gp_Pnt>& theNod
                                         const gp_Trsf&                    theTrsf,
                                         const int                         theIndex)
 {
-  for (int aVertIdx = 1; aVertIdx <= theNodes.Size(); ++aVertIdx)
+  for (int aVertIdx = 1; aVertIdx <= theNodes.Length(); ++aVertIdx)
   {
     gp_Pnt aVertex = theNodes.Value(aVertIdx);
 
@@ -321,5 +322,5 @@ void BRepExtrema_TriangleSet::initNodes(const NCollection_Array1<gp_Pnt>& theNod
     myShapeIdxOfVtxVec.Append(theIndex);
   }
 
-  myNumVtxInShapeVec.SetValue(theIndex, theNodes.Size());
+  myNumVtxInShapeVec.SetValue(theIndex, theNodes.Length());
 }

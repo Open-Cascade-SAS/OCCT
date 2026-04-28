@@ -16,7 +16,7 @@
 
 #include <gp_Pnt.hxx>
 #include <MathUtils_Domain.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <Precision.hxx>
 
 #include <limits>
@@ -145,8 +145,8 @@ struct ExtremumResult
 //! Non-copyable to enforce use of const reference from Perform().
 struct Result
 {
-  ExtremaPC::Status                  Status = ExtremaPC::Status::NotDone; //!< Computation status
-  NCollection_Vector<ExtremumResult> Extrema{8}; //!< Collection of found extrema
+  ExtremaPC::Status Status = ExtremaPC::Status::NotDone; //!< Computation status
+  NCollection_DynamicArray<ExtremumResult> Extrema{8};   //!< Collection of found extrema
 
   //! For infinite solutions, stores the constant squared distance.
   //! Only meaningful when Status == Status::InfiniteSolutions.

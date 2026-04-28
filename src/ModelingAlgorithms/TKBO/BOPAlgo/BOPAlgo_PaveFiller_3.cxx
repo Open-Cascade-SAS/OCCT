@@ -26,7 +26,7 @@
 #include <NCollection_Map.hxx>
 #include <BOPDS_PaveBlock.hxx>
 #include <BOPDS_Pave.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <BOPTools_AlgoTools.hxx>
 #include <BOPTools_Parallel.hxx>
 #include <BndLib_Add3dCurve.hxx>
@@ -138,7 +138,7 @@ protected:
 
 //
 //=======================================================================
-typedef NCollection_Vector<BOPAlgo_EdgeEdge> BOPAlgo_VectorOfEdgeEdge;
+typedef NCollection_DynamicArray<BOPAlgo_EdgeEdge> BOPAlgo_VectorOfEdgeEdge;
 
 //=================================================================================================
 
@@ -175,7 +175,7 @@ void BOPAlgo_PaveFiller::PerformEE(const Message_ProgressRange& theRange)
                                    aMVCPB(100, aAllocator);
   BOPAlgo_DataMapOfPaveBlockBndBox aDMPBBox(100, aAllocator);
   //
-  NCollection_Vector<BOPDS_InterfEE>& aEEs = myDS->InterfEE();
+  NCollection_DynamicArray<BOPDS_InterfEE>& aEEs = myDS->InterfEE();
   aEEs.SetIncrement(iSize);
   //
   for (; myIterator->More(); myIterator->Next())
@@ -608,8 +608,8 @@ void BOPAlgo_PaveFiller::PerformNewVertices(
   TreatNewVertices(theMVCPB, aImages);
   //
   // 2. Add new vertices to myDS and connect indices to CPB structure
-  NCollection_Vector<BOPDS_InterfEE>& aEEs = myDS->InterfEE();
-  NCollection_Vector<BOPDS_InterfEF>& aEFs = myDS->InterfEF();
+  NCollection_DynamicArray<BOPDS_InterfEE>& aEEs = myDS->InterfEE();
+  NCollection_DynamicArray<BOPDS_InterfEF>& aEFs = myDS->InterfEF();
   //
   // 4. Compute Extra Paves and split Pave blocks by the Extra paves
   Message_ProgressScope aPS(theRange, nullptr, 2);
@@ -856,7 +856,7 @@ bool BOPAlgo_PaveFiller::ForceInterfVE(const int                     nV,
     BOPDS_Pave aPave;
     //
     //
-    NCollection_Vector<BOPDS_InterfVE>& aVEs = myDS->InterfVE();
+    NCollection_DynamicArray<BOPDS_InterfVE>& aVEs = myDS->InterfVE();
     aVEs.SetIncrement(10);
     // 1
     BOPDS_InterfVE& aVE = aVEs.Appended();
@@ -947,7 +947,7 @@ void BOPAlgo_PaveFiller::UpdateVerticesOfCB()
   // Fence map to avoid checking same Common block twice
   NCollection_Map<occ::handle<BOPDS_PaveBlock>> aMPBFence;
 
-  NCollection_Vector<NCollection_List<occ::handle<BOPDS_PaveBlock>>>& aPBP =
+  NCollection_DynamicArray<NCollection_List<occ::handle<BOPDS_PaveBlock>>>& aPBP =
     myDS->ChangePaveBlocksPool();
   const int aNbPBP = aPBP.Length();
   for (int i = 0; i < aNbPBP; ++i)
@@ -1202,7 +1202,7 @@ void BOPAlgo_PaveFiller::ForceInterfEE(const Message_ProgressRange& theRange)
   {
     return;
   }
-  NCollection_Vector<BOPDS_InterfEE>& aEEs = myDS->InterfEE();
+  NCollection_DynamicArray<BOPDS_InterfEE>& aEEs = myDS->InterfEE();
   if (aEEs.IsEmpty())
     aEEs.SetIncrement(10);
 

@@ -31,12 +31,28 @@ Select3D_SensitiveEntity::Select3D_SensitiveEntity(
 
 //=================================================================================================
 
+void Select3D_SensitiveEntity::SetFlippingOptions(const bool    theIsEnabled,
+                                                  const gp_Ax2& theRefPlane)
+{
+  if (theIsEnabled)
+  {
+    myFlipper = new Graphic3d_Flipper(theRefPlane);
+  }
+  else
+  {
+    myFlipper.Nullify();
+  }
+}
+
+//=================================================================================================
+
 void Select3D_SensitiveEntity::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
   OCCT_DUMP_FIELD_VALUE_POINTER(theOStream, myOwnerId.get())
   OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, myTrsfPers.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, myFlipper.get())
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, mySFactor)
 
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, NbSubElements());

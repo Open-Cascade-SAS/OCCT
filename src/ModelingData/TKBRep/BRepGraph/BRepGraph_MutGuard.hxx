@@ -14,13 +14,18 @@
 #ifndef _BRepGraph_MutGuard_HeaderFile
 #define _BRepGraph_MutGuard_HeaderFile
 
+#include <BRepGraphInc_Definition.hxx>
+#include <BRepGraphInc_Reference.hxx>
+#include <BRepGraphInc_Representation.hxx>
 #include <Standard_ProgramError.hxx>
 
 #include <type_traits>
 
+class BRepGraph;
+
 //! @brief RAII guard wrapping a mutable topology definition or reference entry.
 //!
-//! Obtained via BRepGraph::Builder().MutEdge(), MutVertex(), MutFaceRef(), etc.
+//! Obtained via BRepGraph::Editor().MutEdge(), MutVertex(), MutFaceRef(), etc.
 //! Provides operator-> / operator* for direct field access.
 //! Calls the appropriate markModified() or markRefModified() exactly once
 //! on scope exit (destruction), regardless of how many fields were modified.
@@ -41,7 +46,7 @@
 //! @code
 //!   {
 //!     BRepGraph_MutGuard<BRepGraphInc::EdgeDef> anEdge =
-//!       theGraph.Builder().MutEdge(BRepGraph_EdgeId(42));
+//!       theGraph.Editor().MutEdge(BRepGraph_EdgeId(42));
 //!     anEdge->Tolerance     = 0.5;
 //!     anEdge->SameParameter = true;
 //!   } // markModified called once here
@@ -54,23 +59,24 @@ class BRepGraph_MutGuard
                   || std::is_base_of_v<BRepGraphInc::BaseRep, T>,
                 "BRepGraph_MutGuard<T>: T must derive from BaseDef, BaseRef, or BaseRep");
 
-  //! ID type: BRepGraph_NodeId for definitions, BRepGraph_RefId for references,
-  //! BRepGraph_RepId for representations.
-  using IdType = std::conditional_t<std::is_base_of_v<BRepGraphInc::BaseDef, T>,
-                                    BRepGraph_NodeId,
-                                    std::conditional_t<std::is_base_of_v<BRepGraphInc::BaseRef, T>,
-                                                       BRepGraph_RefId,
-                                                       BRepGraph_RepId>>;
+  //! Entity-provided identifier alias.
+  using TypeId = typename T::TypeId;
 
   //! Call the appropriate notification method on the graph.
   void notify() noexcept
   {
-    if constexpr (std::is_base_of_v<BRepGraphInc::BaseDef, T>)
-      myGraph->markModified(myId, *myEntity);
-    else if constexpr (std::is_base_of_v<BRepGraphInc::BaseRef, T>)
-      myGraph->markRefModified(myId, *myEntity);
-    else
-      myGraph->markRepModified(myId);
+    try
+    {
+      if constexpr (std::is_base_of_v<BRepGraphInc::BaseDef, T>)
+        myGraph->markModified(myId, *myEntity);
+      else if constexpr (std::is_base_of_v<BRepGraphInc::BaseRef, T>)
+        myGraph->markRefModified(myId, *myEntity);
+      else
+        myGraph->markRepModified(myId);
+    }
+    catch (...)
+    {
+    }
   }
 
 public:
@@ -78,7 +84,7 @@ public:
   //! @param[in] theGraph  owning graph (used for notification on destruction)
   //! @param[in] theEntity pointer to the mutable entity
   //! @param[in] theId     identity for notification
-  BRepGraph_MutGuard(BRepGraph* theGraph, T* theEntity, const IdType theId)
+  BRepGraph_MutGuard(BRepGraph* theGraph, T* theEntity, const TypeId theId)
       : myGraph(theGraph),
         myEntity(theEntity),
         myId(theId)
@@ -89,7 +95,9 @@ public:
   ~BRepGraph_MutGuard()
   {
     if (myGraph != nullptr)
+    {
       notify();
+    }
   }
 
   //! Move constructor: transfers ownership; source becomes inert.
@@ -121,6 +129,11 @@ public:
   BRepGraph_MutGuard(const BRepGraph_MutGuard&)            = delete;
   BRepGraph_MutGuard& operator=(const BRepGraph_MutGuard&) = delete;
 
+  //! True when the guard still owns an entity; false after a move or when
+  //! constructed in an inert state. Callers that want to branch on the guard
+  //! state without triggering the operator-> null-check should use this.
+  [[nodiscard]] explicit operator bool() const noexcept { return myEntity != nullptr; }
+
   //! Access the entity via pointer syntax.
   [[nodiscard]] T* operator->()
   {
@@ -141,7 +154,7 @@ public:
 private:
   BRepGraph* myGraph;  //!< Owning graph (nullptr after move).
   T*         myEntity; //!< Mutable entity pointer.
-  IdType     myId;     //!< Identity for notification.
+  TypeId     myId;     //!< Identity for notification.
 };
 
 #endif // _BRepGraph_MutGuard_HeaderFile

@@ -42,7 +42,7 @@
 #include <gp_Vec.hxx>
 #include <IntTools_Context.hxx>
 #include <NCollection_IncAllocator.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 #include <Standard_Integer.hxx>
@@ -1214,7 +1214,7 @@ private:
 };
 
 // Vector of ShapeBox
-typedef NCollection_Vector<BOPAlgo_ShapeBox> BOPAlgo_VectorOfShapeBox;
+typedef NCollection_DynamicArray<BOPAlgo_ShapeBox> BOPAlgo_VectorOfShapeBox;
 
 //=======================================================================
 // class : BOPAlgo_FillIn3DParts
@@ -1353,7 +1353,7 @@ void BOPAlgo_FillIn3DParts::Perform()
 
   // 3. aIVec - faces to process.
   //    Filter the selected faces with faces of the solid.
-  NCollection_Vector<int> aIVec(256, anAlloc);
+  NCollection_DynamicArray<int> aIVec(256, anAlloc);
 
   NCollection_List<int>::Iterator aItLI(aLIFP);
   for (; aItLI.More(); aItLI.Next())
@@ -1557,7 +1557,7 @@ void BOPAlgo_FillIn3DParts::MakeConnexityBlock(
 }
 
 // Vector of solid classifiers
-typedef NCollection_Vector<BOPAlgo_FillIn3DParts> BOPAlgo_VectorOfFillIn3DParts;
+typedef NCollection_DynamicArray<BOPAlgo_FillIn3DParts> BOPAlgo_VectorOfFillIn3DParts;
 
 //=================================================================================================
 

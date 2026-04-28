@@ -2464,7 +2464,7 @@ static void MergeSolutions(const NCollection_List<IntTools_CurveRangeSample>&   
     }
   }
 
-  for (int i = 1; i <= aMapToAvoid.Size(); i++)
+  for (int i = 1; i <= aMapToAvoid.Length(); i++)
   {
     const IntTools_SurfaceRangeSample& aSurfRange      = aMapToAvoid(i);
     const NCollection_List<int>&       aCurveRangeList = aCurveIdMap(i);

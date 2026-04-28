@@ -13,6 +13,7 @@
 
 #include <TCollection_ExtendedString.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <NCollection_DataMap.hxx>
 #include <Standard_OutOfRange.hxx>
 
 #include <gtest/gtest.h>
@@ -1085,4 +1086,55 @@ TEST(TCollection_ExtendedStringTest, EndsWith_ZeroLength)
   TCollection_ExtendedString aString("Hello");
   // Any string ends with empty string
   EXPECT_TRUE(aString.EndsWith(nullptr, 0));
+}
+
+// ========================================
+// Tests for StartsWith/EndsWith bug fix (0030536)
+// ========================================
+
+TEST(TCollection_ExtendedStringTest, StartsWith_NoMatchLongerPrefix)
+{
+  // "hello" does NOT start with "help"
+  const TCollection_ExtendedString aStr("hello");
+  const TCollection_ExtendedString aPrefix("help");
+  EXPECT_FALSE(aStr.StartsWith(aPrefix));
+}
+
+TEST(TCollection_ExtendedStringTest, StartsWith_Match)
+{
+  // "hello" DOES start with "he"
+  const TCollection_ExtendedString aStr("hello");
+  const TCollection_ExtendedString aPrefix("he");
+  EXPECT_TRUE(aStr.StartsWith(aPrefix));
+}
+
+TEST(TCollection_ExtendedStringTest, EndsWith_NoMatchMiddlePart)
+{
+  // "hello" does NOT end with "ll"
+  const TCollection_ExtendedString aStr("hello");
+  const TCollection_ExtendedString aSuffix("ll");
+  EXPECT_FALSE(aStr.EndsWith(aSuffix));
+}
+
+TEST(TCollection_ExtendedStringTest, EndsWith_Match)
+{
+  // "hello" DOES end with "lo"
+  const TCollection_ExtendedString aStr("hello");
+  const TCollection_ExtendedString aSuffix("lo");
+  EXPECT_TRUE(aStr.EndsWith(aSuffix));
+}
+
+// OCC22744: A TCollection_ExtendedString containing a non-ASCII character must report
+// IsAscii() == false, and must be usable as a key in NCollection_DataMap without crash.
+TEST(TCollection_ExtendedStringTest, OCC22744_NonAsciiCharIsNotAsciiAndCanBeUsedAsMapKey)
+{
+  TCollection_ExtendedString anExtString;
+  const char16_t             aNonAsciiChar = 0x0f00;
+  anExtString.Insert(1, aNonAsciiChar);
+
+  EXPECT_FALSE(anExtString.IsAscii());
+
+  NCollection_DataMap<TCollection_ExtendedString, int> aMap;
+  EXPECT_NO_THROW(aMap.Bind(anExtString, 0));
+  EXPECT_EQ(aMap.Size(), 1);
 }

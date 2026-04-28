@@ -19,7 +19,7 @@
 #include <BOPDS_FaceInfo.hxx>
 #include <Standard_Handle.hxx>
 #include <BOPDS_PaveBlock.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <BOPTools_AlgoTools.hxx>
 #include <BRep_Builder.hxx>
 #include <TopAbs_ShapeEnum.hxx>
@@ -241,10 +241,10 @@ void BOPAlgo_Section::BuildSection(const Message_ProgressRange& theRange)
   }
   //
   // 2. Common blocks between an edge and a face
-  const NCollection_Vector<NCollection_List<occ::handle<BOPDS_PaveBlock>>>& aPBP =
+  const NCollection_DynamicArray<NCollection_List<occ::handle<BOPDS_PaveBlock>>>& aPBP =
     myDS->PaveBlocksPool();
   //
-  aNb = aPBP.Size();
+  aNb = aPBP.Length();
   for (i = 0; i < aNb; ++i)
   {
     const NCollection_List<occ::handle<BOPDS_PaveBlock>>& aLPB = aPBP(i);

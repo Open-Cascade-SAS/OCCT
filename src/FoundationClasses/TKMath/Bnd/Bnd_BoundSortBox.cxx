@@ -19,7 +19,7 @@
 #include <gp_Pln.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_IncAllocator.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <Standard_MultiplyDefined.hxx>
 #include <Standard_NullValue.hxx>
 
@@ -131,7 +131,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(Bnd_VoxelGrid, Standard_Transient)
 
 public:
-  using VectorInt = NCollection_Vector<int>;
+  using VectorInt = NCollection_DynamicArray<int>;
 
 private:
   using SliceArray = NCollection_Array1<VectorInt>;
@@ -333,7 +333,7 @@ void Bnd_BoundSortBox::Initialize(const occ::handle<NCollection_HArray1<Bnd_Box>
     }
   }
 
-  myResolution = getBnd_VoxelGridResolution(myBoxes->Size());
+  myResolution = getBnd_VoxelGridResolution(myBoxes->Length());
 
   if (myEnclosingBox.IsVoid())
   {
@@ -353,7 +353,7 @@ void Bnd_BoundSortBox::Initialize(const Bnd_Box&                                
 {
   myBoxes        = theSetOfBoxes;
   myEnclosingBox = theEnclosingBox;
-  myResolution   = getBnd_VoxelGridResolution(myBoxes->Size());
+  myResolution   = getBnd_VoxelGridResolution(myBoxes->Length());
 
   if (myEnclosingBox.IsVoid())
   {

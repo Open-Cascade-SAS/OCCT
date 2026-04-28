@@ -20,6 +20,8 @@
 
 #include <ViewerTest.hxx>
 
+#include <Aspect_CircularGrid.hxx>
+#include <Aspect_GridParams.hxx>
 #include <AIS_AnimationAxisRotation.hxx>
 #include <AIS_AnimationCamera.hxx>
 #include <AIS_AnimationObject.hxx>
@@ -2861,7 +2863,7 @@ static int VBackground(Draw_Interpretor& theDI, int theNbArgs, const char** theA
 
       if (aCubeMapSeq.Size() > 1 && aCubeMapSeq.Size() < 6)
       {
-        aCubeMapSeq.Remove(2, aCubeMapSeq.Size());
+        aCubeMapSeq.Remove(2, aCubeMapSeq.Length());
       }
     }
     else if (anArgIter + 6 < theNbArgs && anArg == "-order")
@@ -5002,8 +5004,14 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
   Aspect_GridType          aType = aViewer->GridType();
   Aspect_GridDrawMode      aMode = aViewer->GridDrawMode();
   NCollection_Vec2<double> aNewOriginXY, aNewStepXY, aNewSizeXY;
-  double                   aNewRotAngle = 0.0, aNewZOffset = 0.0;
-  bool hasOrigin = false, hasStep = false, hasRotAngle = false, hasSize = false, hasZOffset = false;
+  double                   aNewRadius = 0.0, aNewRotAngle = 0.0, aNewZOffset = 0.0;
+  double                   aNewArcStart = 0.0, aNewArcEnd = 0.0;
+  Quantity_Color           aNewColor, aNewTenthColor;
+  bool hasOrigin = false, hasStep = false, hasRotAngle = false, hasSize = false, hasRadius = false,
+       hasZOffset                   = false;
+  bool                   isInfinite = false, hasInfOff = false, hasScale = false, hasArc = false;
+  bool                   hasColor = false, hasTenthColor = false;
+  Aspect_GridParams      aGridParams;
   ViewerTest_AutoUpdater anUpdateTool(ViewerTest::GetAISContext(), aView);
   for (int anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
   {
@@ -5024,6 +5032,10 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
       else if (anArgNext == "c" || anArgNext == "circ" || anArgNext == "circular")
       {
         aType = Aspect_GT_Circular;
+      }
+      else if (anArgNext == "inf" || anArgNext == "infinite")
+      {
+        isInfinite = true;
       }
       else
       {
@@ -5082,10 +5094,10 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
     }
     else if (anArgIter + 1 < theArgNb && anArg == "-radius")
     {
-      hasSize = true;
+      hasRadius = true;
       ++anArgIter;
-      aNewSizeXY.SetValues(Draw::Atof(theArgVec[anArgIter]), 0.0);
-      if (aNewStepXY.x() <= 0.0)
+      aNewRadius = Draw::Atof(theArgVec[anArgIter]);
+      if (aNewRadius <= 0.0)
       {
         Message::SendFail() << "Syntax error: wrong size '" << theArgVec[anArgIter] << "'";
         return 1;
@@ -5096,12 +5108,65 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
       hasSize = true;
       aNewSizeXY.SetValues(Draw::Atof(theArgVec[anArgIter + 1]),
                            Draw::Atof(theArgVec[anArgIter + 2]));
-      if (aNewStepXY.x() <= 0.0 || aNewStepXY.y() <= 0.0)
+      if (aNewSizeXY.x() <= 0.0 || aNewSizeXY.y() <= 0.0)
       {
         Message::SendFail() << "Syntax error: wrong size '" << theArgVec[anArgIter + 1] << " "
                             << theArgVec[anArgIter + 2] << "'";
         return 1;
       }
+      anArgIter += 2;
+    }
+    else if (anArgIter + 3 < theArgNb && (anArg == "-color"))
+    {
+      hasColor  = true;
+      aNewColor = Quantity_Color(Draw::Atof(theArgVec[anArgIter + 1]),
+                                 Draw::Atof(theArgVec[anArgIter + 2]),
+                                 Draw::Atof(theArgVec[anArgIter + 3]),
+                                 Quantity_TOC_RGB);
+      aGridParams.SetColor(aNewColor);
+      anArgIter += 3;
+    }
+    else if (anArgIter + 3 < theArgNb && (anArg == "-tenthcolor" || anArg == "-accentcolor"))
+    {
+      hasTenthColor  = true;
+      aNewTenthColor = Quantity_Color(Draw::Atof(theArgVec[anArgIter + 1]),
+                                      Draw::Atof(theArgVec[anArgIter + 2]),
+                                      Draw::Atof(theArgVec[anArgIter + 3]),
+                                      Quantity_TOC_RGB);
+      aGridParams.SetAccentColor(aNewTenthColor);
+      anArgIter += 3;
+    }
+    else if (anArgIter + 1 < theArgNb && anArg == "-scale")
+    {
+      hasScale = true;
+      aGridParams.SetScale(Draw::Atof(theArgVec[++anArgIter]));
+    }
+    else if (anArgIter + 1 < theArgNb && (anArg == "-linethickness" || anArg == "-thickness"))
+    {
+      aGridParams.SetLineThickness(Draw::Atof(theArgVec[++anArgIter]));
+    }
+    else if (anArgIter + 1 < theArgNb && anArg == "-background")
+    {
+      const int aVal = Draw::Atoi(theArgVec[++anArgIter]);
+      aGridParams.SetIsBackground(aVal != 0);
+    }
+    else if (anArgIter + 1 < theArgNb && anArg == "-drawaxis")
+    {
+      const int aVal = Draw::Atoi(theArgVec[++anArgIter]);
+      aGridParams.SetIsDrawAxis(aVal != 0);
+    }
+    else if (anArgIter + 1 < theArgNb && (anArg == "-inf" || anArg == "-infinity"))
+    {
+      const int aVal = Draw::Atoi(theArgVec[++anArgIter]);
+      aGridParams.SetIsInfinity(aVal != 0);
+    }
+    else if (anArgIter + 2 < theArgNb && anArg == "-arc")
+    {
+      // Angular range for circular grids (radians). Equal start/end = full circle.
+      hasArc       = true;
+      aNewArcStart = Draw::Atof(theArgVec[anArgIter + 1]);
+      aNewArcEnd   = Draw::Atof(theArgVec[anArgIter + 2]);
+      aGridParams.SetArcRange(aNewArcStart, aNewArcEnd);
       anArgIter += 2;
     }
     else if (anArg == "r" || anArg == "rect" || anArg == "rectangular")
@@ -5120,16 +5185,128 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
     {
       aMode = Aspect_GDM_Points;
     }
-    else if (anArgIter + 1 >= theArgNb && anArg == "off")
+    else if (anArg == "off")
     {
-      aViewer->DeactivateGrid();
-      return 0;
+      hasInfOff = true;
     }
     else
     {
       Message::SendFail() << "Syntax error at '" << anArg << "'";
       return 1;
     }
+  }
+
+  if (isInfinite && hasInfOff)
+  {
+    Message::SendFail("Syntax error: 'off' cannot be combined with '-type inf'");
+    return 1;
+  }
+
+  if (isInfinite || hasInfOff)
+  {
+    if (hasInfOff)
+    {
+      aView->GridErase();
+    }
+    if (isInfinite)
+    {
+      // An infinite grid needs a real Aspect_Grid to back snap selection, so we
+      // route through ActivateGrid(rect|circ) first and override the display
+      // with the inf-specific params afterwards. Decide the shape from aType
+      // (user explicitly asked) or from the presence of circular-only options.
+      const bool   isInfCircular = aType == Aspect_GT_Circular || hasRadius || hasArc;
+      const double anOrigX       = hasOrigin ? aNewOriginXY.x() : 0.0;
+      const double anOrigY       = hasOrigin ? aNewOriginXY.y() : 0.0;
+      const double aRotAngle     = hasRotAngle ? aNewRotAngle : 0.0;
+
+      if (isInfCircular)
+      {
+        // Radial step + angular divisions. `-step R N` supplies both; otherwise
+        // use sensible defaults that keep snap consistent with the visible grid.
+        double aRadiusStep    = 1.0;
+        int    aDivisionCount = 16;
+        if (hasStep)
+        {
+          aRadiusStep    = aNewStepXY.x();
+          aDivisionCount = int(aNewStepXY.y() > 0 ? aNewStepXY.y() : aDivisionCount);
+        }
+        else if (hasScale && aGridParams.Scale() > 0.0)
+        {
+          aRadiusStep = 1.0 / aGridParams.Scale();
+        }
+        aViewer->SetCircularGridValues(anOrigX, anOrigY, aRadiusStep, aDivisionCount, aRotAngle);
+        // Arc range reaches the circular grid base before ActivateGrid's first
+        // syncViews fires (otherwise syncViews would overwrite our override).
+        if (hasArc)
+        {
+          if (occ::handle<Aspect_CircularGrid> aCircGrid =
+                occ::down_cast<Aspect_CircularGrid>(aViewer->Grid(true)))
+          {
+            aCircGrid->SetArcRange(aNewArcStart, aNewArcEnd);
+          }
+        }
+        aViewer->ActivateGrid(Aspect_GT_Circular, aMode);
+
+        aGridParams.SetScale(1.0 / aRadiusStep);
+        aGridParams.SetScaleY(0.0); // unused in circular mode
+        aGridParams.SetAngularDivisions(aDivisionCount);
+      }
+      else
+      {
+        // Rectangular infinite grid. Derive step from explicit -step or from the
+        // Aspect_GridParams scale; fall back to 1 world unit so the default is
+        // immediately useful (Aspect_GridParams::Scale defaults to 0.01 which
+        // would give step 100 - too coarse for typical scenes).
+        if (!hasScale)
+        {
+          if (hasStep)
+          {
+            aGridParams.SetScale(1.0 / aNewStepXY.x());
+            aGridParams.SetScaleY(1.0 / aNewStepXY.y());
+          }
+          else
+          {
+            aGridParams.SetScale(1.0);
+            aGridParams.SetScaleY(1.0);
+          }
+        }
+        const double aInfStepX = 1.0 / aGridParams.Scale();
+        const double aInfStepY = 1.0 / aGridParams.EffectiveScaleY();
+        aViewer->SetRectangularGridValues(anOrigX, anOrigY, aInfStepX, aInfStepY, aRotAngle);
+        aViewer->ActivateGrid(Aspect_GT_Rectangular, aMode);
+
+        aGridParams.SetAngularDivisions(0);
+      }
+
+      // Convert origin to the same world-offset convention used by V3d
+      // syncViews so the shader's aPlaneOrigin matches snap's aPnt0.
+      const gp_Ax3 aPlane = aViewer->PrivilegedPlane();
+      const gp_XYZ aOriginOffset =
+        aPlane.XDirection().XYZ() * -anOrigX + aPlane.YDirection().XYZ() * -anOrigY;
+      aGridParams.SetOrigin(gp_Pnt(aOriginOffset));
+      aGridParams.SetDrawMode(aMode);
+      aGridParams.SetRotationAngle(aRotAngle);
+      if (hasSize && !isInfCircular)
+      {
+        aGridParams.SetSizeX(aNewSizeXY.x());
+        aGridParams.SetSizeY(aNewSizeXY.y());
+      }
+      if (hasRadius)
+      {
+        aGridParams.SetRadius(aNewRadius);
+      }
+      if (hasZOffset)
+      {
+        aGridParams.SetZOffset(aNewZOffset);
+      }
+      aView->GridDisplay(aGridParams);
+    }
+    if (hasInfOff && !isInfinite)
+    {
+      // plain 'vgrid off' still deactivates the classical grid
+      aViewer->DeactivateGrid();
+    }
+    return 0;
   }
 
   if (aType == Aspect_GT_Rectangular)
@@ -5205,24 +5382,55 @@ static int VGrid(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgV
                                    aRadiusStep,
                                    aDivisionNumber,
                                    aRotAngle);
-    if (hasSize || hasZOffset)
+    if (hasSize)
+    {
+      Message::SendFail("Syntax error: circular size should be specified as radius");
+      return 1;
+    }
+    if (hasRadius || hasZOffset)
     {
       double aRadius = 0.0, aZOffset = 0.0;
       aViewer->CircularGridGraphicValues(aRadius, aZOffset);
-      if (hasSize)
+      if (hasRadius)
       {
-        aRadius = aNewSizeXY.x();
-        if (aNewSizeXY.y() != 0.0)
-        {
-          Message::SendFail("Syntax error: circular size should be specified as radius");
-          return 1;
-        }
+        aRadius = aNewRadius;
       }
       if (hasZOffset)
       {
         aZOffset = aNewZOffset;
       }
       aViewer->SetCircularGridGraphicValues(aRadius, aZOffset);
+    }
+    // Angular range must hit the Aspect_CircularGrid base before ActivateGrid
+    // fires syncViews - syncViews copies AngleStart/End from the grid, so any
+    // value set earlier only on aGridParams would get overwritten.
+    if (hasArc)
+    {
+      if (occ::handle<Aspect_CircularGrid> aCircGrid =
+            occ::down_cast<Aspect_CircularGrid>(aViewer->Grid(true)))
+      {
+        aCircGrid->SetArcRange(aNewArcStart, aNewArcEnd);
+      }
+    }
+  }
+  // Apply -color / -tenthColor to the active grid so V3d syncViews picks
+  // them up on the next display. Raw -type inf users still drive these
+  // through aGridParams directly (set earlier in the parser loop).
+  if (hasColor || hasTenthColor)
+  {
+    if (occ::handle<Aspect_Grid> aGrid = aViewer->Grid(true))
+    {
+      Quantity_Color aMainColor, aTenthColor;
+      aGrid->Colors(aMainColor, aTenthColor);
+      if (hasColor)
+      {
+        aMainColor = aNewColor;
+      }
+      if (hasTenthColor)
+      {
+        aTenthColor = aNewTenthColor;
+      }
+      aGrid->SetColors(aMainColor, aTenthColor);
     }
   }
   aViewer->ActivateGrid(aType, aMode);
@@ -13951,9 +14159,16 @@ vlayerline x1 y1 x2 y2 [linewidth=0.5] [linetype=0] [transparency=1.0]
 )" /* [vlayerline] */);
 
   addCmd("vgrid", VGrid, /* [vgrid] */ R"(
-vgrid [off] [-type {rect|circ}] [-mode {line|point}] [-origin X Y] [-rotAngle Angle] [-zoffset DZ]
+vgrid [off] [-type {rect|circ|inf}] [-mode {line|point}] [-origin X Y] [-rotAngle Angle] [-zoffset DZ]
       [-step X Y] [-size DX DY]
-      [-step StepRadius NbDivisions] [-radius Radius]
+      [-step StepRadius NbDivisions] [-radius Radius] [-arc AngleStart AngleEnd]
+      [-color R G B] [-tenthColor R G B] [-scale N] [-lineThickness T]
+      [-background {0|1}] [-drawAxis {0|1}] [-inf {0|1}]
+'-type inf' activates a shader-rendered infinite (or bounded) grid; combine
+with '-size DX DY' for a rectangle, '-radius R' for a disc, '-arc S E' for a
+wedge. '-color', '-tenthColor', '-scale', '-lineThickness' drive every grid
+since rendering is shader-based. '-background', '-drawAxis', '-inf {0|1}' are
+inf-mode only. 'off' deactivates the grid and cannot be combined with '-type inf'.
 )" /* [vgrid] */);
 
   addCmd("vpriviledgedplane", VPriviledgedPlane, /* [vpriviledgedplane] */ R"(

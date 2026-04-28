@@ -101,7 +101,7 @@ IntWalk_IWalking::IntWalk_IWalking(const double Epsilon,
 
 //=======================================================================
 // function : Reset
-// purpose  : Clears NCollection_Vector-based containers and adds
+// purpose  : Clears NCollection_DynamicArray-based containers and adds
 //           dummy data to maintain start index of 1 and consistent with
 //           previous TCollection_Sequence-based implementation and other
 //           used TCollection-based containers

@@ -77,6 +77,7 @@ void Graphic3d_Structure::clear(const bool theWithDestruction)
   GraphicClear(theWithDestruction);
 
   myCStructure->SetGroupTransformPersistence(false);
+  myCStructure->SetGroupFlipping(false);
   myStructureManager->Clear(this, theWithDestruction);
 
   Update(true);
@@ -116,12 +117,12 @@ void Graphic3d_Structure::Remove()
   // It is necessary to remove the eventual pointer on the structure that can be destroyed, in the
   // list of descendants of ancestors of this structure and in the list of ancestors of descendants
   // of the same structure.
-  for (int aStructIdx = 1, aNbDesc = myDescendants.Size(); aStructIdx <= aNbDesc; ++aStructIdx)
+  for (int aStructIdx = 1, aNbDesc = myDescendants.Length(); aStructIdx <= aNbDesc; ++aStructIdx)
   {
     myDescendants.FindKey(aStructIdx)->Remove(this, Graphic3d_TOC_ANCESTOR);
   }
 
-  for (int aStructIdx = 1, aNbAnces = myAncestors.Size(); aStructIdx <= aNbAnces; ++aStructIdx)
+  for (int aStructIdx = 1, aNbAnces = myAncestors.Length(); aStructIdx <= aNbAnces; ++aStructIdx)
   {
     myAncestors.FindKey(aStructIdx)->Remove(this, Graphic3d_TOC_DESCENDANT);
   }
@@ -428,7 +429,7 @@ void Graphic3d_Structure::Descendants(
 
 bool Graphic3d_Structure::AppendAncestor(Graphic3d_Structure* theAncestor)
 {
-  const int aSize = myAncestors.Size();
+  const int aSize = myAncestors.Length();
 
   return myAncestors.Add(theAncestor) > aSize; // new object
 }
@@ -437,7 +438,7 @@ bool Graphic3d_Structure::AppendAncestor(Graphic3d_Structure* theAncestor)
 
 bool Graphic3d_Structure::AppendDescendant(Graphic3d_Structure* theDescendant)
 {
-  const int aSize = myDescendants.Size();
+  const int aSize = myDescendants.Length();
 
   return myDescendants.Add(theDescendant) > aSize; // new object
 }
@@ -450,7 +451,7 @@ bool Graphic3d_Structure::RemoveAncestor(Graphic3d_Structure* theAncestor)
 
   if (anIndex != 0)
   {
-    myAncestors.Swap(anIndex, myAncestors.Size());
+    myAncestors.Swap(anIndex, myAncestors.Length());
     myAncestors.RemoveLast();
   }
 
@@ -465,7 +466,7 @@ bool Graphic3d_Structure::RemoveDescendant(Graphic3d_Structure* theDescendant)
 
   if (anIndex != 0)
   {
-    myDescendants.Swap(anIndex, myDescendants.Size());
+    myDescendants.Swap(anIndex, myDescendants.Length());
     myDescendants.RemoveLast();
   }
 
@@ -556,7 +557,7 @@ void Graphic3d_Structure::DisconnectAll(const Graphic3d_TypeOfConnection theType
   switch (theType)
   {
     case Graphic3d_TOC_DESCENDANT: {
-      for (int anIdx = 1, aLength = myDescendants.Size(); anIdx <= aLength; ++anIdx)
+      for (int anIdx = 1, aLength = myDescendants.Length(); anIdx <= aLength; ++anIdx)
       {
         // Value (1) instead of Value (i) as myDescendants
         // is modified by :
@@ -567,7 +568,7 @@ void Graphic3d_Structure::DisconnectAll(const Graphic3d_TypeOfConnection theType
       break;
     }
     case Graphic3d_TOC_ANCESTOR: {
-      for (int anIdx = 1, aLength = myAncestors.Size(); anIdx <= aLength; ++anIdx)
+      for (int anIdx = 1, aLength = myAncestors.Length(); anIdx <= aLength; ++anIdx)
       {
         // Value (1) instead of Value (i) as myAncestors
         // is modified by :

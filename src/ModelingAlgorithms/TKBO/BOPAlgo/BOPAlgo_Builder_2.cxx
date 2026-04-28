@@ -16,6 +16,7 @@
 // commercial license or contractual agreement.
 
 #include <BOPAlgo_Builder.hxx>
+
 #include <BOPAlgo_Alerts.hxx>
 #include <BOPAlgo_BuilderFace.hxx>
 #include <BOPAlgo_PaveFiller.hxx>
@@ -25,7 +26,7 @@
 #include <BOPDS_Interf.hxx>
 #include <BOPDS_PaveBlock.hxx>
 #include <BOPDS_ShapeInfo.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <BOPTools_AlgoTools.hxx>
 #include <BOPTools_AlgoTools2D.hxx>
 #include <BOPTools_AlgoTools3D.hxx>
@@ -112,7 +113,7 @@ protected:
 };
 
 //
-typedef NCollection_Vector<BOPAlgo_PairOfShapeBoolean> BOPAlgo_VectorOfPairOfShapeBoolean;
+typedef NCollection_DynamicArray<BOPAlgo_PairOfShapeBoolean> BOPAlgo_VectorOfPairOfShapeBoolean;
 
 //=======================================================================
 // class   : BOPAlgo_SplitFace
@@ -143,7 +144,7 @@ private:
   Message_ProgressRange myRange;
 };
 
-typedef NCollection_Vector<BOPAlgo_SplitFace> BOPAlgo_VectorOfBuilderFace;
+typedef NCollection_DynamicArray<BOPAlgo_SplitFace> BOPAlgo_VectorOfBuilderFace;
 
 //=================================================================================================
 
@@ -207,7 +208,7 @@ protected:
 };
 
 //
-typedef NCollection_Vector<BOPAlgo_VFI> BOPAlgo_VectorOfVFI;
+typedef NCollection_DynamicArray<BOPAlgo_VFI> BOPAlgo_VectorOfVFI;
 
 //=================================================================================================
 
@@ -572,8 +573,8 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
 {
   // It is necessary to analyze all Face/Face intersections
   // and find all faces with equal sets of edges
-  const NCollection_Vector<BOPDS_InterfFF>& aFFs   = myDS->InterfFF();
-  int                                       aNbFFs = aFFs.Length();
+  const NCollection_DynamicArray<BOPDS_InterfFF>& aFFs   = myDS->InterfFF();
+  int                                             aNbFFs = aFFs.Length();
   if (!aNbFFs)
     return;
 
@@ -581,10 +582,58 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
 
   occ::handle<NCollection_BaseAllocator> aAllocator = new NCollection_IncAllocator;
 
+  // Two distinct faces of one solid cannot be Same-Domain: that would
+  // imply a zero-thickness interior in a single operand.
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> aFaceToParent(
+    1,
+    aAllocator);
+  {
+    const int aNbSrc = myDS->NbSourceShapes();
+    for (int iSrc = 0; iSrc < aNbSrc; ++iSrc)
+    {
+      const BOPDS_ShapeInfo& aSI = myDS->ShapeInfo(iSrc);
+      if (aSI.ShapeType() != TopAbs_SOLID)
+        continue;
+      const TopoDS_Shape& aSolid = aSI.Shape();
+      for (TopExp_Explorer anExpF(aSolid, TopAbs_FACE); anExpF.More(); anExpF.Next())
+      {
+        const TopoDS_Shape& aF = anExpF.Current();
+        if (!aFaceToParent.IsBound(aF))
+          aFaceToParent.Bind(aF, aSolid);
+      }
+    }
+    NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> aPropagation(
+      1,
+      aAllocator);
+    for (NCollection_DataMap<TopoDS_Shape,
+                             NCollection_List<TopoDS_Shape>,
+                             TopTools_ShapeMapHasher>::Iterator anItIm(myImages);
+         anItIm.More();
+         anItIm.Next())
+    {
+      const TopoDS_Shape* pParent = aFaceToParent.Seek(anItIm.Key());
+      if (pParent == nullptr)
+        continue;
+      for (NCollection_List<TopoDS_Shape>::Iterator anItPiece(anItIm.Value()); anItPiece.More();
+           anItPiece.Next())
+      {
+        if (!aFaceToParent.IsBound(anItPiece.Value()))
+          aPropagation.Bind(anItPiece.Value(), *pParent);
+      }
+    }
+    for (NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator
+           anItProp(aPropagation);
+         anItProp.More();
+         anItProp.Next())
+    {
+      aFaceToParent.Bind(anItProp.Key(), anItProp.Value());
+    }
+  }
+
   // Vector to store the indices of faces for future sorting
   // for making the SD face for the group from the face with
   // smallest index in Data structure
-  NCollection_Vector<int> aFIVec(256, aAllocator);
+  NCollection_DynamicArray<int> aFIVec(256, aAllocator);
   // Fence map to avoid repeated checks of the same face.
   NCollection_Map<int> aMFence(1, aAllocator);
 
@@ -689,11 +738,15 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
     {
       const TopoDS_Shape& aF1          = aIt1.Value();
       bool                bCheckPlanar = aMFPlanar.Contains(aF1);
+      const TopoDS_Shape* pParent1     = aFaceToParent.Seek(aF1);
 
       NCollection_List<TopoDS_Shape>::Iterator aIt2 = aIt1;
       for (aIt2.Next(); aIt2.More(); aIt2.Next())
       {
-        const TopoDS_Shape& aF2 = aIt2.Value();
+        const TopoDS_Shape& aF2      = aIt2.Value();
+        const TopoDS_Shape* pParent2 = aFaceToParent.Seek(aF2);
+        if (pParent1 != nullptr && pParent2 != nullptr && pParent1->IsSame(*pParent2))
+          continue;
         if (bCheckPlanar && aMFPlanar.Contains(aF2))
         {
           // Consider planar bounded faces as Same Domain without additional check
@@ -712,8 +765,8 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
   aPSOuter.Next();
 
   // Set progress range for each task to be run in parallel
-  Message_ProgressScope aPSParallel(aPSOuter.Next(6), "Checking SD faces", aVPSB.Size());
-  for (int iPSB = 0; iPSB < aVPSB.Size(); ++iPSB)
+  Message_ProgressScope aPSParallel(aPSOuter.Next(6), "Checking SD faces", aVPSB.Length());
+  for (int iPSB = 0; iPSB < aVPSB.Length(); ++iPSB)
   {
     aVPSB.ChangeValue(iPSB).SetProgressRange(aPSParallel.Next());
   }
@@ -883,8 +936,8 @@ void BOPAlgo_Builder::FillInternalVertices(const Message_ProgressRange& theRange
   }
 
   // Set progress range for each task to be run in parallel
-  Message_ProgressScope aPSParallel(aPSOuter.Next(), "Looking for internal shapes", aVVFI.Size());
-  for (int iVFI = 0; iVFI < aVVFI.Size(); ++iVFI)
+  Message_ProgressScope aPSParallel(aPSOuter.Next(), "Looking for internal shapes", aVVFI.Length());
+  for (int iVFI = 0; iVFI < aVVFI.Length(); ++iVFI)
   {
     aVVFI.ChangeValue(iVFI).SetProgressRange(aPSParallel.Next());
   }

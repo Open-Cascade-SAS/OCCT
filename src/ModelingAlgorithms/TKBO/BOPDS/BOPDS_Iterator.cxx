@@ -26,7 +26,7 @@
 #include <BOPTools_BoxTree.hxx>
 #include <BOPTools_Parallel.hxx>
 #include <IntTools_Context.hxx>
-#include <NCollection_Vector.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <algorithm>
 
 /////////////////////////////////////////////////////////////////////////
@@ -70,7 +70,7 @@ protected:
 
 //
 //=======================================================================
-typedef NCollection_Vector<BOPDS_TSR> BOPDS_VectorOfTSR;
+typedef NCollection_DynamicArray<BOPDS_TSR> BOPDS_VectorOfTSR;
 
 /////////////////////////////////////////////////////////////////////////
 
@@ -197,7 +197,7 @@ void BOPDS_Iterator::Initialize(const TopAbs_ShapeEnum aType1, const TopAbs_Shap
   iX       = BOPDS_Tools::TypeToInteger(aType1, aType2);
   if (iX >= 0)
   {
-    NCollection_Vector<BOPDS_Pair>& aPairs =
+    NCollection_DynamicArray<BOPDS_Pair>& aPairs =
       (myUseExt && iX < BOPDS_Iterator::NbExtInterfs()) ? myExtLists(iX) : myLists(iX);
     // sort interfering pairs for constant order of intersection
     std::stable_sort(aPairs.begin(), aPairs.end());
