@@ -233,16 +233,10 @@ struct Array
   }
 
   //! Returns the number of elements in the given array.
-  static inline int Size(const BVH_ArrayNt& theArray)
-  {
-    return static_cast<int>(theArray.Size());
-  }
+  static inline int Size(const BVH_ArrayNt& theArray) { return static_cast<int>(theArray.Size()); }
 
   //! Removes all elements from the given array.
-  static inline void Clear(BVH_ArrayNt& theArray)
-  {
-    theArray.Clear();
-  }
+  static inline void Clear(BVH_ArrayNt& theArray) { theArray.Clear(); }
 
   //! Requests that the array capacity be at least enough to
   //! contain given number of elements.

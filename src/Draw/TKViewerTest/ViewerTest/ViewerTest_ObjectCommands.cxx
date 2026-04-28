@@ -5892,9 +5892,8 @@ static int VFont(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
         std::stable_sort(aFontsSorted.begin(), aFontsSorted.end(), FontComparator());
         for (const occ::handle<Font_SystemFont>& aFont : aFontsSorted)
         {
-          const TCollection_AsciiString aCheck =
-            TCollection_AsciiString("string match -nocase \"") + aFontName + "\" \""
-            + aFont->FontName() + "\"";
+          const TCollection_AsciiString aCheck = TCollection_AsciiString("string match -nocase \"")
+                                                 + aFontName + "\" \"" + aFont->FontName() + "\"";
           if (theDI.Eval(aCheck.ToCString()) == 0 && *theDI.Result() != '1')
           {
             theDI.Reset();
@@ -5946,8 +5945,7 @@ static int VFont(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
         {
           continue;
         }
-        else if (anArgCase == "singlestroke" || anArgCase == "singleline"
-                 || anArgCase == "oneline")
+        else if (anArgCase == "singlestroke" || anArgCase == "singleline" || anArgCase == "oneline")
         {
           isSingelStroke = 1;
         }

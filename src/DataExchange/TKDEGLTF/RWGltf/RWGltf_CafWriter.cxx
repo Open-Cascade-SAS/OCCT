@@ -175,7 +175,7 @@ static void writeIndicesToDracoMesh(draco::Mesh&                                
 class DracoEncodingFunctor
 {
 public:
-  using MeshVector = NCollection_LinearVector<std::shared_ptr<RWGltf_CafWriter::Mesh>>;
+  using MeshVector          = NCollection_LinearVector<std::shared_ptr<RWGltf_CafWriter::Mesh>>;
   using EncoderBufferVector = NCollection_LinearVector<std::shared_ptr<draco::EncoderBuffer>>;
 
   DracoEncodingFunctor(const Message_ProgressRange& theProgress,
@@ -231,11 +231,11 @@ public:
   }
 
 private:
-  Message_ProgressScope                                       myProgress;
-  draco::Encoder*                                             myDracoEncoder;
-  NCollection_Array1<Message_ProgressRange>                   myRanges;
-  const MeshVector*                                           myMeshes;
-  EncoderBufferVector*                                        myEncoderBuffers;
+  Message_ProgressScope                     myProgress;
+  draco::Encoder*                           myDracoEncoder;
+  NCollection_Array1<Message_ProgressRange> myRanges;
+  const MeshVector*                         myMeshes;
+  EncoderBufferVector*                      myEncoderBuffers;
 };
 #endif
 
@@ -900,7 +900,7 @@ bool RWGltf_CafWriter::writeBinData(const occ::handle<TDocStd_Document>&        
   }
 
   NCollection_LinearVector<std::shared_ptr<RWGltf_CafWriter::Mesh>> aMeshes;
-  int                                                                aNbAccessors = 0;
+  int                                                               aNbAccessors = 0;
   NCollection_Map<occ::handle<NCollection_Shared<NCollection_List<occ::handle<RWGltf_GltfFace>>>>>
     aWrittenFaces;
   NCollection_DataMap<TopoDS_Shape, occ::handle<RWGltf_GltfFace>, TopTools_ShapeMapHasher>

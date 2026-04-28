@@ -146,17 +146,17 @@ bool StepTidy_EntityReducer<ProcessedType, ProcessedTypeHasher>::ProcessEntity(
     aGraph.GetSharings(anEntity);
   if (hasAllReplacers(aSharings))
   {
-      DuplicateList* anIter = myDuplicateMap.ChangeSeek(anEntity);
-      if (anIter == nullptr)
-      {
-        // Add as a new key.
-        myDuplicateMap.Bind(anEntity, DuplicateList());
-      }
-      else
-      {
-        // Add as a value.
-        anIter->Append(anEntity);
-      }
+    DuplicateList* anIter = myDuplicateMap.ChangeSeek(anEntity);
+    if (anIter == nullptr)
+    {
+      // Add as a new key.
+      myDuplicateMap.Bind(anEntity, DuplicateList());
+    }
+    else
+    {
+      // Add as a value.
+      anIter->Append(anEntity);
+    }
   }
 
   return true;
@@ -170,8 +170,8 @@ void StepTidy_EntityReducer<ProcessedType, ProcessedTypeHasher>::Perform(
 {
   for (typename DuplicateMap::Iterator anIter(myDuplicateMap); anIter.More(); anIter.Next())
   {
-    const occ::handle<ProcessedType>& anEntity     = anIter.Key();
-    const DuplicateList&              aDuplicates  = anIter.Value();
+    const occ::handle<ProcessedType>& anEntity    = anIter.Key();
+    const DuplicateList&              aDuplicates = anIter.Value();
     if (aDuplicates.IsEmpty())
     {
       continue;
