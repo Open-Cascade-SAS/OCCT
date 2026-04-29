@@ -562,12 +562,39 @@ bool ShapeFix_Wire::FixConnected(const double prec)
     return false;
   }
 
-  int stop = (myClosedMode ? 0 : 1);
+  int                               stop = (myClosedMode ? 0 : 1);
+  occ::handle<ShapeExtend_WireData> sbwd = WireData();
   for (int i = NbEdges(); i > stop; i--)
   {
     // Call without UpdateWire to avoid O(n^2) behavior in the loop
     FixConnected(i, prec, false);
     myStatusConnected |= myLastFixStatus;
+    // FixConnected updates sbwd[i] and sbwd[i-1] directly. The next iteration
+    // (i-1) will read sbwd[i-2] as its n1; if any vertex chain advanced this
+    // iteration, that edge's vertices are stale. Refresh just that edge via
+    // Apply (handles cycles, removed shapes, and non-edge replacements
+    // through its own DFS guard) - O(1) per iteration instead of full
+    // UpdateWire's O(N) walk.
+    if (Context().IsNull())
+    {
+      continue;
+    }
+    const int aPrev = (i - 2 > 0) ? i - 2 : sbwd->NbEdges();
+    if (aPrev == i || aPrev == i - 1)
+    {
+      continue;
+    }
+    const TopoDS_Edge  aEPrev   = sbwd->Edge(aPrev);
+    const TopoDS_Shape aRefresh = Context()->Apply(aEPrev);
+    if (aRefresh.IsNull() || aRefresh.IsSame(aEPrev))
+    {
+      continue; // edge unchanged or removed
+    }
+    if (aRefresh.ShapeType() != TopAbs_EDGE)
+    {
+      continue; // edge expanded into compound - leave for final UpdateWire
+    }
+    sbwd->Set(TopoDS::Edge(aRefresh), aPrev);
   }
 
   // Update wire once after all connections are fixed
