@@ -820,7 +820,7 @@ void BOPAlgo_Builder::FillInternalShapes(const Message_ProgressRange& theRange)
   // 5 Settle internal vertices and edges into solids
   aMx.Clear();
 
-  Message_ProgressScope aPSLoop(aPS.Next(9), "Looking for internal shapes", aLSd.Size());
+  Message_ProgressScope aPSLoop(aPS.Next(9), "Looking for internal shapes", aLSd.Extent());
 
   aIt.Initialize(aLSd);
   for (; aIt.More(); aIt.Next(), aPSLoop.Next())

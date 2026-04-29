@@ -1212,7 +1212,7 @@ void BRepOffset_MakeOffset::MakeOffsetFaces(
   //
   BRepLib::SortFaces(myFaceComp, aLF);
   //
-  Message_ProgressScope aPS(theRange, "Making offset faces", aLF.Size());
+  Message_ProgressScope aPS(theRange, "Making offset faces", aLF.Extent());
   aItLF.Initialize(aLF);
   for (; aItLF.More(); aItLF.Next(), aPS.Next())
   {
@@ -1455,7 +1455,7 @@ void BRepOffset_MakeOffset::BuildOffsetByInter(const Message_ProgressRange& theR
   Message_ProgressScope aPS2d(aPSOuter.Next(aSteps(BuildOffsetByInter_CompleteEdgesIntersection)),
                               nullptr,
                               2);
-  Message_ProgressScope aPS2dOffsets(aPS2d.Next(2. * anOffsetsPart), nullptr, LFE.Size());
+  Message_ProgressScope aPS2dOffsets(aPS2d.Next(2. * anOffsetsPart), nullptr, LFE.Extent());
   for (; itLFE.More(); itLFE.Next())
   {
     if (!aPS2dOffsets.More())
@@ -1547,7 +1547,7 @@ void BRepOffset_MakeOffset::BuildOffsetByInter(const Message_ProgressRange& theR
   //---------------------------
   Message_ProgressScope aPSHist(aPSOuter.Next(aSteps(BuildOffsetByInter_FillHistoryForOffsets)),
                                 "Fill history for offset faces",
-                                aLFaces.Size());
+                                aLFaces.Extent());
   for (NCollection_List<TopoDS_Shape>::Iterator it(aLFaces); it.More(); it.Next(), aPSHist.Next())
   {
     if (!aPSHist.More())
@@ -2090,7 +2090,7 @@ void BRepOffset_MakeOffset::BuildOffsetByArc(const Message_ProgressRange& theRan
     RT = ChFiDS_Convex;
   }
   NCollection_DataMap<TopoDS_Shape, BRepOffset_Offset, TopTools_ShapeMapHasher>::Iterator It(MapSF);
-  Message_ProgressScope aPS3(aPSOuter.Next(), nullptr, MapSF.Size());
+  Message_ProgressScope aPS3(aPSOuter.Next(), nullptr, MapSF.Length());
   for (; It.More(); It.Next(), aPS3.Next())
   {
     if (!aPS3.More())
@@ -4686,7 +4686,7 @@ void BRepOffset_MakeOffset::IntersectEdges(
   // intersect edges created from edges
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aMFV;
   Message_ProgressScope                                         aPSOuter(theRange, nullptr, 2);
-  Message_ProgressScope aPS1(aPSOuter.Next(), nullptr, theFaces.Size());
+  Message_ProgressScope aPS1(aPSOuter.Next(), nullptr, theFaces.Extent());
   for (NCollection_List<TopoDS_Shape>::Iterator it(theFaces); it.More(); it.Next())
   {
     const TopoDS_Face& aF = TopoDS::Face(it.Value());

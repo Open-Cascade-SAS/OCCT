@@ -77,7 +77,7 @@ Standard_EXPORT void debspanc(const int i)
 int GLOBAL_iexF = 0;
 #endif
 
-Standard_EXPORT Standard_EXPORT void TopOpeBRepDS_SetThePCurve(const BRep_Builder&              B,
+Standard_EXPORT void TopOpeBRepDS_SetThePCurve(const BRep_Builder&              B,
                                                                TopoDS_Edge&                     E,
                                                                const TopoDS_Face&               F,
                                                                const TopAbs_Orientation         O,

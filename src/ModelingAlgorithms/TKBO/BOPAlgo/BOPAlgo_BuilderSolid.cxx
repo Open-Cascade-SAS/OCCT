@@ -409,7 +409,7 @@ void BOPAlgo_BuilderSolid::PerformAreas(const Message_ProgressRange& theRange)
   Message_ProgressScope aMainScope(theRange, "Building solids", 10);
 
   // Analyze the shells
-  Message_ProgressScope aPSClass(aMainScope.Next(5), "Classify solids", myLoops.Size());
+  Message_ProgressScope aPSClass(aMainScope.Next(5), "Classify solids", myLoops.Extent());
   NCollection_List<TopoDS_Shape>::Iterator aItLL(myLoops);
   for (; aItLL.More(); aItLL.Next(), aPSClass.Next())
   {
@@ -480,7 +480,7 @@ void BOPAlgo_BuilderSolid::PerformAreas(const Message_ProgressRange& theRange)
   // Find outer growth shell that is most close to each hole shell
   NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> aHoleSolidMap;
 
-  Message_ProgressScope aPSH(aMainScope.Next(4), "Adding holes", aNewSolids.Size());
+  Message_ProgressScope aPSH(aMainScope.Next(4), "Adding holes", aNewSolids.Extent());
   NCollection_List<TopoDS_Shape>::Iterator aItLS(aNewSolids);
   for (; aItLS.More(); aItLS.Next(), aPSH.Next())
   {
@@ -548,7 +548,7 @@ void BOPAlgo_BuilderSolid::PerformAreas(const Message_ProgressRange& theRange)
   }
 
   // Add Holes to Solids and add them to myAreas
-  Message_ProgressScope aPSU(aMainScope.Next(), nullptr, aNewSolids.Size());
+  Message_ProgressScope aPSU(aMainScope.Next(), nullptr, aNewSolids.Extent());
   aItLS.Initialize(aNewSolids);
   for (; aItLS.More(); aItLS.Next(), aPSU.Next())
   {

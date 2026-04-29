@@ -402,7 +402,7 @@ void BRepOffset_SimpleOffset::FillVertexData(
   {
     aCenter.SetXYZ(aCenter.XYZ() + anOffsetPointVec.Value(i).XYZ());
   }
-  aCenter.SetXYZ(aCenter.XYZ() / anOffsetPointVec.Size());
+  aCenter.SetXYZ(aCenter.XYZ() / anOffsetPointVec.Length());
 
   // Compute max distance.
   double aSqMaxDist = 0.0;

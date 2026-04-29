@@ -3541,7 +3541,7 @@ bool BRepGraph::EditorView::ValidateMutationBoundary(
       aDesc += TCollection_AsciiString(aCachedCnt);
       aDesc += " actual=";
       aDesc += TCollection_AsciiString(anActualCnt);
-      anIssue.NodeId      = BRepGraph_NodeId(aKind, -1);
+      anIssue.NodeId      = BRepGraph_NodeId::Invalid(aKind);
       anIssue.Description = aDesc;
       theIssues->Append(anIssue);
     }

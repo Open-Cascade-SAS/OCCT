@@ -389,7 +389,7 @@ void BRepOffset_Analyse::TreatTangentFaces(const NCollection_List<TopoDS_Shape>&
   Message_ProgressScope aPSOuter(theRange, nullptr, 3);
   Message_ProgressScope aPS1(aPSOuter.Next(),
                              "Binding vertices with connected edges",
-                             theLE.Size());
+                             theLE.Extent());
   for (NCollection_List<TopoDS_Shape>::Iterator it(theLE); it.More(); it.Next(), aPS1.Next())
   {
     if (!aPS1.More())
@@ -446,7 +446,7 @@ void BRepOffset_Analyse::TreatTangentFaces(const NCollection_List<TopoDS_Shape>&
   NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
     aDMVFAnc;
 
-  Message_ProgressScope aPS2(aPSOuter.Next(), "Creating map of Face ancestors", theLE.Size());
+  Message_ProgressScope aPS2(aPSOuter.Next(), "Creating map of Face ancestors", theLE.Extent());
   for (NCollection_List<TopoDS_Shape>::Iterator itE(theLE); itE.More(); itE.Next(), aPS2.Next())
   {
     if (!aPS2.More())
@@ -513,7 +513,7 @@ void BRepOffset_Analyse::TreatTangentFaces(const NCollection_List<TopoDS_Shape>&
   // Analyze each block to find co-planar edges
   Message_ProgressScope aPS3(aPSOuter.Next(),
                              "Analyzing blocks to find co-planar edges",
-                             aLCB.Size());
+                             aLCB.Extent());
   for (NCollection_List<NCollection_List<TopoDS_Shape>>::Iterator itLCB(aLCB); itLCB.More();
        itLCB.Next(), aPS3.Next())
   {

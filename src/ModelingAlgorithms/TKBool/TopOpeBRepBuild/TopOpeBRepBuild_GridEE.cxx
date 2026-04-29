@@ -294,9 +294,8 @@ void debfillp2(const int i)
 // Standard_IMPORT extern bool GLOBAL_faces2d;
 extern bool GLOBAL_faces2d;
 
-Standard_EXPORT
-  // Standard_IMPORT extern bool GLOBAL_IEtoMERGE; // xpu240498
-  Standard_IMPORT bool GLOBAL_IEtoMERGE; // xpu240498
+// Standard_IMPORT extern bool GLOBAL_IEtoMERGE; // xpu240498
+Standard_IMPORT bool GLOBAL_IEtoMERGE; // xpu240498
 // Standard_IMPORT extern int GLOBAL_issp;
 extern int GLOBAL_issp;
 // Standard_IMPORT extern int GLOBAL_hassd;

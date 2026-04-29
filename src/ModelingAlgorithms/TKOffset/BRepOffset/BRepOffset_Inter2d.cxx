@@ -1757,7 +1757,7 @@ void BRepOffset_Inter2d::Compute(
   int                                   j, i = 1;
   BRepAdaptor_Surface                   BAsurf(F);
   //
-  Message_ProgressScope aPS(theRange, "Intersecting edges on faces", LE.Size());
+  Message_ProgressScope aPS(theRange, "Intersecting edges on faces", LE.Extent());
   for (it1LE.Initialize(LE); it1LE.More(); it1LE.Next(), aPS.Next())
   {
     if (!aPS.More())

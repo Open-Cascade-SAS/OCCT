@@ -292,8 +292,10 @@ const BRepGraphInc::BaseRef& BRepGraphInc_Storage::BaseRef(const BRepGraph_RefId
     {
       return findInStore(myOccurrenceRefs, theTypedId);
     }
-
-    Standard_ASSERT_RETURN(false, "BaseRef: unsupported ref id type", nullptr);
+    else
+    {
+      Standard_ASSERT_RETURN(false, "BaseRef: unsupported ref id type", nullptr);
+    }
   };
 
   const BRepGraphInc::BaseRef* aRef = BRepGraph_RefId::Visit(theRefId, aFindRef);
@@ -345,8 +347,10 @@ BRepGraphInc::BaseRef& BRepGraphInc_Storage::ChangeBaseRef(const BRepGraph_RefId
     {
       return changeFindInStore(myOccurrenceRefs, theTypedId);
     }
-
-    Standard_ASSERT_RETURN(false, "ChangeBaseRef: unsupported ref id type", nullptr);
+    else
+    {
+      Standard_ASSERT_RETURN(false, "ChangeBaseRef: unsupported ref id type", nullptr);
+    }
   };
 
   BRepGraphInc::BaseRef* aRef = BRepGraph_RefId::Visit(theRefId, aChangeRef);
@@ -440,8 +444,10 @@ bool BRepGraphInc_Storage::MarkRemoved(const BRepGraph_NodeId theNodeId)
     {
       return myOccurrences.MarkRemoved(theTypedId);
     }
-
-    Standard_ASSERT_RETURN(false, "MarkRemoved: unsupported node id type", false);
+    else
+    {
+      Standard_ASSERT_RETURN(false, "MarkRemoved: unsupported node id type", false);
+    }
   };
 
   return theNodeId.IsValid() ? BRepGraph_NodeId::Visit(theNodeId, aMarkRemoved) : false;
@@ -486,8 +492,10 @@ bool BRepGraphInc_Storage::MarkRemovedRef(const BRepGraph_RefId theRefId)
     {
       return myOccurrenceRefs.MarkRemoved(theTypedId);
     }
-
-    Standard_ASSERT_RETURN(false, "MarkRemovedRef: unsupported ref id type", false);
+    else
+    {
+      Standard_ASSERT_RETURN(false, "MarkRemovedRef: unsupported ref id type", false);
+    }
   };
 
   return theRefId.IsValid() ? BRepGraph_RefId::Visit(theRefId, aMarkRemoved) : false;
@@ -528,8 +536,10 @@ bool BRepGraphInc_Storage::MarkRemovedRep(const BRepGraph_RepId theRepId)
     {
       return myPolygonsOnTri.MarkRemoved(theTypedId);
     }
-
-    Standard_ASSERT_RETURN(false, "MarkRemovedRep: unsupported rep id type", false);
+    else
+    {
+      Standard_ASSERT_RETURN(false, "MarkRemovedRep: unsupported rep id type", false);
+    }
   };
 
   return theRepId.IsValid() ? BRepGraph_RepId::Visit(theRepId, aMarkRemoved) : false;
