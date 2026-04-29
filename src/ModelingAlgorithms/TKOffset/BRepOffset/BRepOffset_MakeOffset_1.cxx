@@ -1254,7 +1254,7 @@ void BRepOffset_BuildOffsetFaces::IntersectTrimmedEdges(const Message_ProgressRa
   //
   NCollection_List<TopoDS_Shape> aLA;
   // fill map with edges images
-  Message_ProgressScope aPSLoop(aPS.Next(), nullptr, aLS.Size());
+  Message_ProgressScope aPSLoop(aPS.Next(), nullptr, aLS.Extent());
   for (NCollection_List<TopoDS_Shape>::Iterator aIt(aLS); aIt.More(); aIt.Next(), aPSLoop.Next())
   {
     if (!aPSLoop.More())

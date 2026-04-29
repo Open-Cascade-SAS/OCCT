@@ -50,7 +50,7 @@ void BRepOffset_MakeLoops::Build(const NCollection_List<TopoDS_Shape>& LF,
   Loops.VerticesForSubstitute(myVerVerMap);
   Loops.SetImageVV(theImageVV);
   Message_ProgressScope aPSOuter(theRange, nullptr, 2);
-  Message_ProgressScope aPS1(aPSOuter.Next(), "Init loops", LF.Size());
+  Message_ProgressScope aPS1(aPSOuter.Next(), "Init loops", LF.Extent());
   for (; it.More(); it.Next(), aPS1.Next())
   {
     if (!aPS1.More())
@@ -129,7 +129,7 @@ void BRepOffset_MakeLoops::Build(const NCollection_List<TopoDS_Shape>& LF,
     return;
   }
   BRep_Builder          BB;
-  Message_ProgressScope aPS2(aPSOuter.Next(), "Building loops", LF.Size());
+  Message_ProgressScope aPS2(aPSOuter.Next(), "Building loops", LF.Extent());
   for (it.Initialize(LF); it.More(); it.Next(), aPS2.Next())
   {
     if (!aPS2.More())
@@ -466,7 +466,7 @@ void BRepOffset_MakeLoops::BuildFaces(const NCollection_List<TopoDS_Shape>& LF,
   //----------------------------------
   // Loop on all faces //.
   //----------------------------------
-  Message_ProgressScope aPS(theRange, "Building faces", LF.Size());
+  Message_ProgressScope aPS(theRange, "Building faces", LF.Extent());
   for (itr.Initialize(LF); itr.More(); itr.Next(), aPS.Next())
   {
     if (!aPS.More())

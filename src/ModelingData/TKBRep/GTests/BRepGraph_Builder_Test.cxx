@@ -273,9 +273,9 @@ TEST(BRepGraph_BuilderTest, RemoveFaceFromBox)
 
   // Other faces should not be removed.
   const int aNbFaces = aGraph.Topo().Faces().Nb();
-  for (BRepGraph_FaceId aFaceId(1); aFaceId.IsValid(aNbFaces); ++aFaceId)
+  for (BRepGraph_FaceId anOtherFaceId(1); anOtherFaceId.IsValid(aNbFaces); ++anOtherFaceId)
   {
-    EXPECT_FALSE(aGraph.Topo().Gen().IsRemoved(aFaceId));
+    EXPECT_FALSE(aGraph.Topo().Gen().IsRemoved(anOtherFaceId));
   }
 }
 

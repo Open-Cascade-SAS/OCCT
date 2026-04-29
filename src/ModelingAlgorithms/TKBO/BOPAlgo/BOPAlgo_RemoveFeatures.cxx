@@ -322,7 +322,7 @@ void BOPAlgo_RemoveFeatures::PrepareFeatures(const Message_ProgressRange& theRan
   Message_ProgressScope                    aPSOuter(theRange, "Preparing features", 2);
   Message_ProgressScope                    aPS(aPSOuter.Next(),
                             "Preparing the faces to remove",
-                            myFacesToRemove.Size());
+                            myFacesToRemove.Extent());
   for (; aIt.More(); aIt.Next(), aPS.Next())
   {
     const TopoDS_Shape& aS = aIt.Value();

@@ -39,7 +39,7 @@ class BOPDS_PaveBlock;
 
 void BOPAlgo_Builder::FillImagesVertices(const Message_ProgressRange& theRange)
 {
-  Message_ProgressScope aPS(theRange, "Filling splits of vertices", myDS->ShapesSD().Size());
+  Message_ProgressScope aPS(theRange, "Filling splits of vertices", myDS->ShapesSD().Length());
   NCollection_DataMap<int, int>::Iterator aIt(myDS->ShapesSD());
   for (; aIt.More(); aIt.Next(), aPS.Next())
   {

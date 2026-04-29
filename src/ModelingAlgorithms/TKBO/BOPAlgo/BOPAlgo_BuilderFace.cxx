@@ -423,7 +423,7 @@ void BOPAlgo_BuilderFace::PerformAreas(const Message_ProgressRange& theRange)
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aMHE;
 
   // Analyze the new wires - classify them to be the holes and growths
-  Message_ProgressScope aPSClass(aMainScope.Next(5), "Making faces", myLoops.Size());
+  Message_ProgressScope aPSClass(aMainScope.Next(5), "Making faces", myLoops.Extent());
   NCollection_List<TopoDS_Shape>::Iterator aItLL(myLoops);
   for (; aItLL.More(); aItLL.Next(), aPSClass.Next())
   {
@@ -581,7 +581,7 @@ void BOPAlgo_BuilderFace::PerformAreas(const Message_ProgressRange& theRange)
   }
 
   // Add Holes to Faces and add them to myAreas
-  Message_ProgressScope aPSU(aMainScope.Next(), nullptr, aNewFaces.Size());
+  Message_ProgressScope aPSU(aMainScope.Next(), nullptr, aNewFaces.Extent());
   aItLS.Initialize(aNewFaces);
   for (; aItLS.More(); aItLS.Next(), aPSU.Next())
   {
@@ -671,7 +671,7 @@ void BOPAlgo_BuilderFace::PerformInternalShapes(const Message_ProgressRange& the
   NCollection_Map<int> aMEDone;
 
   // Classify edges relatively faces
-  Message_ProgressScope                    aPSClass(aMainScope.Next(), nullptr, myAreas.Size());
+  Message_ProgressScope                    aPSClass(aMainScope.Next(), nullptr, myAreas.Extent());
   NCollection_List<TopoDS_Shape>::Iterator itLF(myAreas);
   for (; itLF.More(); itLF.Next(), aPSClass.Next())
   {

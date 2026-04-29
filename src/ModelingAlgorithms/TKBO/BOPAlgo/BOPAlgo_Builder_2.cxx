@@ -825,7 +825,7 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
   // Make blocks of SD faces using the back and forth map
   BOPAlgo_Tools::MakeBlocks(aDMSLS, aMBlocks, aAllocator);
 
-  Message_ProgressScope aPS(aPSOuter.Next(3), "Filling same domain faces map", aMBlocks.Size());
+  Message_ProgressScope aPS(aPSOuter.Next(3), "Filling same domain faces map", aMBlocks.Extent());
   // Fill same domain faces map
   NCollection_List<NCollection_List<TopoDS_Shape>>::Iterator aItB(aMBlocks);
   for (; aItB.More(); aItB.Next(), aPS.Next())
