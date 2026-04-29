@@ -200,48 +200,10 @@ void BRepTools_ReShape::replace(const TopoDS_Shape&    ashape,
     std::cout << "Warning: BRepTools_ReShape::Replace: shape already recorded" << std::endl;
 #endif
 
-  // Reject replacements that would introduce a cycle into the replacement chain,
-  // e.g. A -> ... -> X -> A. Walk forward from newshape via Value(); if the walk
-  // ever lands on shape itself, record only an identity (effectively no-op) to
-  // avoid forming a cycle that would later deadlock Apply()/ValueLeaf().
-  if (theKind != TReplacementKind_Remove && !newshape.IsNull() && !newshape.IsPartner(shape))
-  {
-    // Reject replacements that would close a cycle in the map. Walk forward from
-    // newshape via Value(); if the chain ever lands back on shape's underlying TShape
-    // (any orientation, any location), abort. Key by the TShape handle to mirror the
-    // identity the map itself uses once orientation/location are normalized away.
-    TopoDS_Shape                                aProbe = newshape;
-    NCollection_Map<occ::handle<TopoDS_TShape>> aSeen;
-    aSeen.Add(shape.TShape());
-    aSeen.Add(aProbe.TShape());
-    bool aCycle = false;
-    for (;;)
-    {
-      const TopoDS_Shape aNext = Value(aProbe);
-      if (aNext.IsNull() || aNext.IsSame(aProbe))
-      {
-        break;
-      }
-      if (aNext.IsPartner(shape))
-      {
-        aCycle = true;
-        break;
-      }
-      if (!aSeen.Add(aNext.TShape()))
-      {
-        break; // existing cycle in data - not ours to introduce, bail
-      }
-      aProbe = aNext;
-    }
-    if (aCycle)
-    {
-#ifdef OCCT_DEBUG
-      std::cout << "Warning: BRepTools_ReShape::Replace: cycle rejected" << std::endl;
-#endif
-      return;
-    }
-  }
-
+  // Cycle handling: cycles in the replacement map (A -> B -> A or longer) are
+  // accepted at insertion time. The DFS in-flight guard inside Apply()/applyImpl()
+  // breaks any cycle at traversal time, returning the immediate Value() instead
+  // of recursing.
   myShapeToReplacement.Bind(shape, TReplacement(newshape, theKind));
   myNewShapes.Add(newshape);
 }

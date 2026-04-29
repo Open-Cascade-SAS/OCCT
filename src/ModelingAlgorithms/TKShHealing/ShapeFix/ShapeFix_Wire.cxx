@@ -4280,11 +4280,9 @@ void ShapeFix_Wire::UpdateWire()
   occ::handle<ShapeExtend_WireData> sbwd = WireData();
   for (int i = 1; i <= sbwd->NbEdges(); i++)
   {
-    TopoDS_Edge E = sbwd->Edge(i);
-    // ValueLeaf follows the replacement chain without descending into sub-shapes,
-    // so a previously-split edge is not re-expanded on subsequent Perform() passes.
-    TopoDS_Shape S = Context()->ValueLeaf(E);
-    if (!S.IsNull() && S.IsEqual(E))
+    TopoDS_Edge  E = sbwd->Edge(i);
+    TopoDS_Shape S = Context()->Apply(E);
+    if (S == E)
     {
       continue;
     }
