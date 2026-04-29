@@ -78,7 +78,9 @@ void AIS_Line::ComputeSelection(const occ::handle<SelectMgr_Selection>& theSelec
 {
   // Do not support selection modes different from 0 currently
   if (theMode)
+  {
     return;
+  }
 
   if (!myLineIsSegment)
   {
@@ -148,9 +150,13 @@ void AIS_Line::UnsetColor()
   {
     Quantity_Color CC = Quantity_NOC_YELLOW;
     if (HasColor())
+    {
       CC = myDrawer->Color();
+    }
     else if (myDrawer->HasLink())
+    {
       AIS_GraphicTool::GetLineColor(myDrawer->Link(), AIS_TOA_Line, CC);
+    }
     myDrawer->LineAspect()->SetColor(CC);
     myDrawer->SetColor(CC);
     SynchronizeAspects();
@@ -167,9 +173,13 @@ void AIS_Line::SetWidth(const double aValue)
   {
     Quantity_Color CC = Quantity_NOC_YELLOW;
     if (HasColor())
+    {
       CC = myDrawer->Color();
+    }
     else if (myDrawer->HasLink())
+    {
       AIS_GraphicTool::GetLineColor(myDrawer->Link(), AIS_TOA_Line, CC);
+    }
     replaceWithNewLineAspect(new Prs3d_LineAspect(CC, Aspect_TOL_SOLID, aValue));
   }
   else

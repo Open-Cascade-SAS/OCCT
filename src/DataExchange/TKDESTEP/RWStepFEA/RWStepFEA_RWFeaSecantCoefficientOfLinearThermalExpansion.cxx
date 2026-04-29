@@ -36,7 +36,9 @@ void RWStepFEA_RWFeaSecantCoefficientOfLinearThermalExpansion::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "fea_secant_coefficient_of_linear_thermal_expansion"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 

@@ -46,7 +46,9 @@ gp_Pnt GeomFill_BoundWithSurf::Value(const double U) const
 {
   double x = U;
   if (!myPar.IsNull())
+  {
     x = myPar->Value(U);
+  }
   return myConS.Value(x);
 }
 
@@ -56,7 +58,9 @@ void GeomFill_BoundWithSurf::D1(const double U, gp_Pnt& P, gp_Vec& V) const
 {
   double x = U, dx = 1.;
   if (!myPar.IsNull())
+  {
     myPar->D1(U, x, dx);
+  }
   myConS.D1(x, P, V);
   V.Multiply(dx);
 }
@@ -74,14 +78,18 @@ gp_Vec GeomFill_BoundWithSurf::Norm(const double U) const
 {
   // voir s il ne faudrait pas utiliser LProp ou autre.
   if (!HasNormals())
+  {
     throw Standard_Failure("BoundWithSurf Norm : pas de contrainte");
+  }
 
   //  occ::handle<Adaptor3d_Surface>& S = myConS.GetSurface();
   //  occ::handle<Adaptor2d_Curve2d>& C2d = myConS.GetCurve();
   double x, y;
   double w = U;
   if (!myPar.IsNull())
+  {
     w = myPar->Value(U);
+  }
   myConS.GetCurve()->Value(w).Coord(x, y);
   gp_Pnt P;
   gp_Vec Su, Sv;
@@ -96,7 +104,9 @@ gp_Vec GeomFill_BoundWithSurf::Norm(const double U) const
 void GeomFill_BoundWithSurf::D1Norm(const double U, gp_Vec& N, gp_Vec& DN) const
 {
   if (!HasNormals())
+  {
     throw Standard_Failure("BoundWithSurf Norm : pas de contrainte");
+  }
   //  occ::handle<Adaptor3d_Surface>& S = myConS.GetSurface();
   //  occ::handle<Adaptor2d_Curve2d>& C2d = myConS.GetCurve();
   gp_Pnt2d P2d;
@@ -104,7 +114,9 @@ void GeomFill_BoundWithSurf::D1Norm(const double U, gp_Vec& N, gp_Vec& DN) const
   double   x, y, dx, dy;
   double   w = U, dw = 1.;
   if (!myPar.IsNull())
+  {
     myPar->D1(U, w, dw);
+  }
   myConS.GetCurve()->D1(w, P2d, V2d);
   P2d.Coord(x, y);
   V2d.Multiply(dw);
@@ -165,7 +177,9 @@ void GeomFill_BoundWithSurf::Reparametrize(const double First,
 void GeomFill_BoundWithSurf::Bounds(double& First, double& Last) const
 {
   if (!myPar.IsNull())
+  {
     myPar->Bounds(First, Last);
+  }
   else
   {
     First = myConS.FirstParameter();

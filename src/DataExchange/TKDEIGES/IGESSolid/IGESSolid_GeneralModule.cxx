@@ -84,7 +84,9 @@ void IGESSolid_GeneralModule::OwnSharedCase(const int                           
     case 1: {
       DeclareAndCast(IGESSolid_Block, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolBlock tool;
       tool.OwnShared(anent, iter);
     }
@@ -92,7 +94,9 @@ void IGESSolid_GeneralModule::OwnSharedCase(const int                           
     case 2: {
       DeclareAndCast(IGESSolid_BooleanTree, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolBooleanTree tool;
       tool.OwnShared(anent, iter);
     }
@@ -100,7 +104,9 @@ void IGESSolid_GeneralModule::OwnSharedCase(const int                           
     case 3: {
       DeclareAndCast(IGESSolid_ConeFrustum, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolConeFrustum tool;
       tool.OwnShared(anent, iter);
     }
@@ -108,7 +114,9 @@ void IGESSolid_GeneralModule::OwnSharedCase(const int                           
     case 4: {
       DeclareAndCast(IGESSolid_ConicalSurface, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolConicalSurface tool;
       tool.OwnShared(anent, iter);
     }
@@ -116,7 +124,9 @@ void IGESSolid_GeneralModule::OwnSharedCase(const int                           
     case 5: {
       DeclareAndCast(IGESSolid_Cylinder, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolCylinder tool;
       tool.OwnShared(anent, iter);
     }
@@ -124,7 +134,9 @@ void IGESSolid_GeneralModule::OwnSharedCase(const int                           
     case 6: {
       DeclareAndCast(IGESSolid_CylindricalSurface, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolCylindricalSurface tool;
       tool.OwnShared(anent, iter);
     }
@@ -132,7 +144,9 @@ void IGESSolid_GeneralModule::OwnSharedCase(const int                           
     case 7: {
       DeclareAndCast(IGESSolid_EdgeList, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolEdgeList tool;
       tool.OwnShared(anent, iter);
     }
@@ -140,7 +154,9 @@ void IGESSolid_GeneralModule::OwnSharedCase(const int                           
     case 8: {
       DeclareAndCast(IGESSolid_Ellipsoid, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolEllipsoid tool;
       tool.OwnShared(anent, iter);
     }
@@ -148,7 +164,9 @@ void IGESSolid_GeneralModule::OwnSharedCase(const int                           
     case 9: {
       DeclareAndCast(IGESSolid_Face, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolFace tool;
       tool.OwnShared(anent, iter);
     }
@@ -156,7 +174,9 @@ void IGESSolid_GeneralModule::OwnSharedCase(const int                           
     case 10: {
       DeclareAndCast(IGESSolid_Loop, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolLoop tool;
       tool.OwnShared(anent, iter);
     }
@@ -164,7 +184,9 @@ void IGESSolid_GeneralModule::OwnSharedCase(const int                           
     case 11: {
       DeclareAndCast(IGESSolid_ManifoldSolid, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolManifoldSolid tool;
       tool.OwnShared(anent, iter);
     }
@@ -172,7 +194,9 @@ void IGESSolid_GeneralModule::OwnSharedCase(const int                           
     case 12: {
       DeclareAndCast(IGESSolid_PlaneSurface, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolPlaneSurface tool;
       tool.OwnShared(anent, iter);
     }
@@ -180,7 +204,9 @@ void IGESSolid_GeneralModule::OwnSharedCase(const int                           
     case 13: {
       DeclareAndCast(IGESSolid_RightAngularWedge, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolRightAngularWedge tool;
       tool.OwnShared(anent, iter);
     }
@@ -188,7 +214,9 @@ void IGESSolid_GeneralModule::OwnSharedCase(const int                           
     case 14: {
       DeclareAndCast(IGESSolid_SelectedComponent, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolSelectedComponent tool;
       tool.OwnShared(anent, iter);
     }
@@ -196,7 +224,9 @@ void IGESSolid_GeneralModule::OwnSharedCase(const int                           
     case 15: {
       DeclareAndCast(IGESSolid_Shell, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolShell tool;
       tool.OwnShared(anent, iter);
     }
@@ -204,7 +234,9 @@ void IGESSolid_GeneralModule::OwnSharedCase(const int                           
     case 16: {
       DeclareAndCast(IGESSolid_SolidAssembly, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolSolidAssembly tool;
       tool.OwnShared(anent, iter);
     }
@@ -212,7 +244,9 @@ void IGESSolid_GeneralModule::OwnSharedCase(const int                           
     case 17: {
       DeclareAndCast(IGESSolid_SolidInstance, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolSolidInstance tool;
       tool.OwnShared(anent, iter);
     }
@@ -220,7 +254,9 @@ void IGESSolid_GeneralModule::OwnSharedCase(const int                           
     case 18: {
       DeclareAndCast(IGESSolid_SolidOfLinearExtrusion, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolSolidOfLinearExtrusion tool;
       tool.OwnShared(anent, iter);
     }
@@ -228,7 +264,9 @@ void IGESSolid_GeneralModule::OwnSharedCase(const int                           
     case 19: {
       DeclareAndCast(IGESSolid_SolidOfRevolution, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolSolidOfRevolution tool;
       tool.OwnShared(anent, iter);
     }
@@ -236,7 +274,9 @@ void IGESSolid_GeneralModule::OwnSharedCase(const int                           
     case 20: {
       DeclareAndCast(IGESSolid_Sphere, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolSphere tool;
       tool.OwnShared(anent, iter);
     }
@@ -244,7 +284,9 @@ void IGESSolid_GeneralModule::OwnSharedCase(const int                           
     case 21: {
       DeclareAndCast(IGESSolid_SphericalSurface, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolSphericalSurface tool;
       tool.OwnShared(anent, iter);
     }
@@ -252,7 +294,9 @@ void IGESSolid_GeneralModule::OwnSharedCase(const int                           
     case 22: {
       DeclareAndCast(IGESSolid_ToroidalSurface, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolToroidalSurface tool;
       tool.OwnShared(anent, iter);
     }
@@ -260,7 +304,9 @@ void IGESSolid_GeneralModule::OwnSharedCase(const int                           
     case 23: {
       DeclareAndCast(IGESSolid_Torus, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolTorus tool;
       tool.OwnShared(anent, iter);
     }
@@ -268,7 +314,9 @@ void IGESSolid_GeneralModule::OwnSharedCase(const int                           
     case 24: {
       DeclareAndCast(IGESSolid_VertexList, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolVertexList tool;
       tool.OwnShared(anent, iter);
     }
@@ -287,168 +335,216 @@ IGESData_DirChecker IGESSolid_GeneralModule::DirChecker(
     case 1: {
       DeclareAndCast(IGESSolid_Block, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESSolid_ToolBlock tool;
       return tool.DirChecker(anent);
     }
     case 2: {
       DeclareAndCast(IGESSolid_BooleanTree, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESSolid_ToolBooleanTree tool;
       return tool.DirChecker(anent);
     }
     case 3: {
       DeclareAndCast(IGESSolid_ConeFrustum, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESSolid_ToolConeFrustum tool;
       return tool.DirChecker(anent);
     }
     case 4: {
       DeclareAndCast(IGESSolid_ConicalSurface, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESSolid_ToolConicalSurface tool;
       return tool.DirChecker(anent);
     }
     case 5: {
       DeclareAndCast(IGESSolid_Cylinder, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESSolid_ToolCylinder tool;
       return tool.DirChecker(anent);
     }
     case 6: {
       DeclareAndCast(IGESSolid_CylindricalSurface, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESSolid_ToolCylindricalSurface tool;
       return tool.DirChecker(anent);
     }
     case 7: {
       DeclareAndCast(IGESSolid_EdgeList, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESSolid_ToolEdgeList tool;
       return tool.DirChecker(anent);
     }
     case 8: {
       DeclareAndCast(IGESSolid_Ellipsoid, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESSolid_ToolEllipsoid tool;
       return tool.DirChecker(anent);
     }
     case 9: {
       DeclareAndCast(IGESSolid_Face, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESSolid_ToolFace tool;
       return tool.DirChecker(anent);
     }
     case 10: {
       DeclareAndCast(IGESSolid_Loop, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESSolid_ToolLoop tool;
       return tool.DirChecker(anent);
     }
     case 11: {
       DeclareAndCast(IGESSolid_ManifoldSolid, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESSolid_ToolManifoldSolid tool;
       return tool.DirChecker(anent);
     }
     case 12: {
       DeclareAndCast(IGESSolid_PlaneSurface, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESSolid_ToolPlaneSurface tool;
       return tool.DirChecker(anent);
     }
     case 13: {
       DeclareAndCast(IGESSolid_RightAngularWedge, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESSolid_ToolRightAngularWedge tool;
       return tool.DirChecker(anent);
     }
     case 14: {
       DeclareAndCast(IGESSolid_SelectedComponent, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESSolid_ToolSelectedComponent tool;
       return tool.DirChecker(anent);
     }
     case 15: {
       DeclareAndCast(IGESSolid_Shell, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESSolid_ToolShell tool;
       return tool.DirChecker(anent);
     }
     case 16: {
       DeclareAndCast(IGESSolid_SolidAssembly, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESSolid_ToolSolidAssembly tool;
       return tool.DirChecker(anent);
     }
     case 17: {
       DeclareAndCast(IGESSolid_SolidInstance, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESSolid_ToolSolidInstance tool;
       return tool.DirChecker(anent);
     }
     case 18: {
       DeclareAndCast(IGESSolid_SolidOfLinearExtrusion, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESSolid_ToolSolidOfLinearExtrusion tool;
       return tool.DirChecker(anent);
     }
     case 19: {
       DeclareAndCast(IGESSolid_SolidOfRevolution, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESSolid_ToolSolidOfRevolution tool;
       return tool.DirChecker(anent);
     }
     case 20: {
       DeclareAndCast(IGESSolid_Sphere, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESSolid_ToolSphere tool;
       return tool.DirChecker(anent);
     }
     case 21: {
       DeclareAndCast(IGESSolid_SphericalSurface, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESSolid_ToolSphericalSurface tool;
       return tool.DirChecker(anent);
     }
     case 22: {
       DeclareAndCast(IGESSolid_ToroidalSurface, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESSolid_ToolToroidalSurface tool;
       return tool.DirChecker(anent);
     }
     case 23: {
       DeclareAndCast(IGESSolid_Torus, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESSolid_ToolTorus tool;
       return tool.DirChecker(anent);
     }
     case 24: {
       DeclareAndCast(IGESSolid_VertexList, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESSolid_ToolVertexList tool;
       return tool.DirChecker(anent);
     }
@@ -468,7 +564,9 @@ void IGESSolid_GeneralModule::OwnCheckCase(const int                            
     case 1: {
       DeclareAndCast(IGESSolid_Block, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolBlock tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -476,7 +574,9 @@ void IGESSolid_GeneralModule::OwnCheckCase(const int                            
     case 2: {
       DeclareAndCast(IGESSolid_BooleanTree, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolBooleanTree tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -484,7 +584,9 @@ void IGESSolid_GeneralModule::OwnCheckCase(const int                            
     case 3: {
       DeclareAndCast(IGESSolid_ConeFrustum, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolConeFrustum tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -492,7 +594,9 @@ void IGESSolid_GeneralModule::OwnCheckCase(const int                            
     case 4: {
       DeclareAndCast(IGESSolid_ConicalSurface, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolConicalSurface tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -500,7 +604,9 @@ void IGESSolid_GeneralModule::OwnCheckCase(const int                            
     case 5: {
       DeclareAndCast(IGESSolid_Cylinder, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolCylinder tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -508,7 +614,9 @@ void IGESSolid_GeneralModule::OwnCheckCase(const int                            
     case 6: {
       DeclareAndCast(IGESSolid_CylindricalSurface, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolCylindricalSurface tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -516,7 +624,9 @@ void IGESSolid_GeneralModule::OwnCheckCase(const int                            
     case 7: {
       DeclareAndCast(IGESSolid_EdgeList, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolEdgeList tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -524,7 +634,9 @@ void IGESSolid_GeneralModule::OwnCheckCase(const int                            
     case 8: {
       DeclareAndCast(IGESSolid_Ellipsoid, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolEllipsoid tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -532,7 +644,9 @@ void IGESSolid_GeneralModule::OwnCheckCase(const int                            
     case 9: {
       DeclareAndCast(IGESSolid_Face, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolFace tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -540,7 +654,9 @@ void IGESSolid_GeneralModule::OwnCheckCase(const int                            
     case 10: {
       DeclareAndCast(IGESSolid_Loop, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolLoop tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -548,7 +664,9 @@ void IGESSolid_GeneralModule::OwnCheckCase(const int                            
     case 11: {
       DeclareAndCast(IGESSolid_ManifoldSolid, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolManifoldSolid tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -556,7 +674,9 @@ void IGESSolid_GeneralModule::OwnCheckCase(const int                            
     case 12: {
       DeclareAndCast(IGESSolid_PlaneSurface, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolPlaneSurface tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -564,7 +684,9 @@ void IGESSolid_GeneralModule::OwnCheckCase(const int                            
     case 13: {
       DeclareAndCast(IGESSolid_RightAngularWedge, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolRightAngularWedge tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -572,7 +694,9 @@ void IGESSolid_GeneralModule::OwnCheckCase(const int                            
     case 14: {
       DeclareAndCast(IGESSolid_SelectedComponent, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolSelectedComponent tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -580,7 +704,9 @@ void IGESSolid_GeneralModule::OwnCheckCase(const int                            
     case 15: {
       DeclareAndCast(IGESSolid_Shell, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolShell tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -588,7 +714,9 @@ void IGESSolid_GeneralModule::OwnCheckCase(const int                            
     case 16: {
       DeclareAndCast(IGESSolid_SolidAssembly, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolSolidAssembly tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -596,7 +724,9 @@ void IGESSolid_GeneralModule::OwnCheckCase(const int                            
     case 17: {
       DeclareAndCast(IGESSolid_SolidInstance, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolSolidInstance tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -604,7 +734,9 @@ void IGESSolid_GeneralModule::OwnCheckCase(const int                            
     case 18: {
       DeclareAndCast(IGESSolid_SolidOfLinearExtrusion, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolSolidOfLinearExtrusion tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -612,7 +744,9 @@ void IGESSolid_GeneralModule::OwnCheckCase(const int                            
     case 19: {
       DeclareAndCast(IGESSolid_SolidOfRevolution, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolSolidOfRevolution tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -620,7 +754,9 @@ void IGESSolid_GeneralModule::OwnCheckCase(const int                            
     case 20: {
       DeclareAndCast(IGESSolid_Sphere, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolSphere tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -628,7 +764,9 @@ void IGESSolid_GeneralModule::OwnCheckCase(const int                            
     case 21: {
       DeclareAndCast(IGESSolid_SphericalSurface, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolSphericalSurface tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -636,7 +774,9 @@ void IGESSolid_GeneralModule::OwnCheckCase(const int                            
     case 22: {
       DeclareAndCast(IGESSolid_ToroidalSurface, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolToroidalSurface tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -644,7 +784,9 @@ void IGESSolid_GeneralModule::OwnCheckCase(const int                            
     case 23: {
       DeclareAndCast(IGESSolid_Torus, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolTorus tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -652,7 +794,9 @@ void IGESSolid_GeneralModule::OwnCheckCase(const int                            
     case 24: {
       DeclareAndCast(IGESSolid_VertexList, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESSolid_ToolVertexList tool;
       tool.OwnCheck(anent, shares, ach);
     }

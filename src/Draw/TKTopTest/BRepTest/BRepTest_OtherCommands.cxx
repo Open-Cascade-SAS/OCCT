@@ -77,7 +77,9 @@ void BRepTest::OtherCommands(Draw_Interpretor& theCommands)
 {
   static bool done = false;
   if (done)
+  {
     return;
+  }
   done = true;
 
   const char* g = "TOPOLOGY other commands";
@@ -114,7 +116,9 @@ void BRepTest::OtherCommands(Draw_Interpretor& theCommands)
 int emptyshape(Draw_Interpretor&, int n, const char** a)
 {
   if (n <= 1)
+  {
     return 1;
+  }
 
   BRep_Builder B;
   TopoDS_Shape S;
@@ -189,16 +193,22 @@ int emptyshape(Draw_Interpretor&, int n, const char** a)
 int subshape(Draw_Interpretor& di, int n, const char** a)
 {
   if (n <= 2)
+  {
     return 1;
+  }
 
   TopoDS_Shape S = DBRep::Get(a[1]);
   if (S.IsNull())
+  {
     return 0;
+  }
   char newname[1024];
   strcpy(newname, a[1]);
   char* p = newname;
   while (*p != '\0')
+  {
     p++;
+  }
   *p = '_';
   p++;
   int i = 0;
@@ -234,11 +244,17 @@ int subshape(Draw_Interpretor& di, int n, const char** a)
       case 'S':
       case 's':
         if ((a[2][1] == 'O') || (a[2][1] == 'o'))
+        {
           typ = TopAbs_SOLID;
+        }
         else if ((a[2][1] == 'H') || (a[2][1] == 'h'))
+        {
           typ = TopAbs_SHELL;
+        }
         else
+        {
           return 1;
+        }
         break;
 
       case 'F':
@@ -304,7 +320,9 @@ int brepintcs(Draw_Interpretor& di, int n, const char** a)
   {
     S = DBRep::Get(a[indshape]);
     if (!S.IsNull())
+    {
       break;
+    }
   }
   if (S.IsNull())
   {
@@ -318,7 +336,9 @@ int brepintcs(Draw_Interpretor& di, int n, const char** a)
   {
     double preci = atof(a[n - 1]);
     if (preci >= Precision::Confusion())
+    {
       tol = preci;
+    }
   }
   int             nbpi = 0;
   gp_Pnt          curp;
@@ -329,7 +349,9 @@ int brepintcs(Draw_Interpretor& di, int n, const char** a)
   {
     occ::handle<Geom_Curve> C = DrawTrSurf::GetCurve(a[1]);
     if (C.IsNull())
+    {
       return 2;
+    }
     GeomAdaptor_Curve acur(C);
     theAlg.Init(S, acur, tol);
 
@@ -374,9 +396,13 @@ int brepintcs(Draw_Interpretor& di, int n, const char** a)
     }
   }
   if (!nbpi)
+  {
     di << "Points of intersections are not found\n";
+  }
   if (indshape < n - 1)
+  {
     DBRep::Set(a[n - 1], aComp);
+  }
   // POP pour NT
   return 0;
 }
@@ -406,7 +432,9 @@ int MakeBoss(Draw_Interpretor&, int, const char** a)
   DPRISM.Build();
 
   if (DPRISM.IsDone())
+  {
     DBRep::Set(a[1], DPRISM.Shape());
+  }
 
   return 0;
 }

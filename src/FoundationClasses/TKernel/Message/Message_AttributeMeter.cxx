@@ -119,9 +119,13 @@ void Message_AttributeMeter::SetAlertMetrics(const occ::handle<Message_AlertExte
     aTimer.Start();
     double aTime = OSD_Timer::GetWallClockTime();
     if (theStartValue)
+    {
       aMeterAttribute->SetStartValue(Message_MetricType_WallClock, aTime);
+    }
     else
+    {
       aMeterAttribute->SetStopValue(Message_MetricType_WallClock, aTime);
+    }
   }
   if (anActiveMetrics.Contains(Message_MetricType_ProcessCPUUserTime)
       || anActiveMetrics.Contains(Message_MetricType_ProcessCPUSystemTime)

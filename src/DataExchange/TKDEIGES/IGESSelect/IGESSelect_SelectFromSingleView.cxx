@@ -28,7 +28,9 @@ Interface_EntityIterator IGESSelect_SelectFromSingleView::RootResult(const Inter
   Interface_EntityIterator list;
   Interface_EntityIterator views = InputResult(G);
   if (views.NbEntities() == 0)
+  {
     return list;
+  }
   int nb = G.Size();
   int i; // svv Jan11 2000 : porting on DEC
   for (i = 1; i <= nb; i++)
@@ -36,10 +38,14 @@ Interface_EntityIterator IGESSelect_SelectFromSingleView::RootResult(const Inter
     //    if (!G.IsPresent(i)) continue;
     DeclareAndCast(IGESData_IGESEntity, igesent, G.Entity(i));
     if (igesent.IsNull())
+    {
       continue;
+    }
     int nv = G.EntityNumber(igesent->View());
     if (nv > 0 && nv <= nb)
+    {
       list.GetOneItem(igesent);
+    }
   }
   return list;
 }

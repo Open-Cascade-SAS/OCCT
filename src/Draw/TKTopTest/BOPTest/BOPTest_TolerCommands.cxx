@@ -66,7 +66,9 @@ void BOPTest::TolerCommands(Draw_Interpretor& theCommands)
 {
   static bool done = false;
   if (done)
+  {
     return;
+  }
 
   done = true;
   // Chapter's name

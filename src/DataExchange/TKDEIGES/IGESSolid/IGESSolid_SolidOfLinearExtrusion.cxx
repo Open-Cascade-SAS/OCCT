@@ -53,7 +53,9 @@ gp_Dir IGESSolid_SolidOfLinearExtrusion::ExtrusionDirection() const
 gp_Dir IGESSolid_SolidOfLinearExtrusion::TransformedExtrusionDirection() const
 {
   if (!HasTransf())
+  {
     return gp_Dir(theDirection);
+  }
   else
   {
     gp_XYZ   tmp = theDirection;

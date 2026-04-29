@@ -62,7 +62,9 @@ static int BUC60623(Draw_Interpretor& di, int argc, const char** a)
     return 0;
   }
   else
+  {
     di << "The first solution is Null!" << "\n";
+  }
 
   di << "fini\n";
   return 0;
@@ -187,9 +189,13 @@ static int BUC60792(Draw_Interpretor& di, int /*argc*/, const char** argv)
       DBRep::Set(aStr, sh);
       occ::handle<AIS_Shape> ais = new AIS_Shape(sh);
       if (i == 1)
+      {
         aContext->SetColor(ais, Quantity_NOC_GREEN, false);
+      }
       if (i == 2)
+      {
         aContext->SetColor(ais, Quantity_NOC_HOTPINK, false);
+      }
       aContext->Display(ais, false);
       double   ParSol1, ParSol2, ParArg1, ParArg2;
       gp_Pnt2d PntSol1, PntSol2;
@@ -588,7 +594,9 @@ static int statface(Draw_Interpretor& di, int /*argc*/, const char** argv)
     aString                            = aSurface->DynamicType()->Name();
 
     if (aMap.IsBound(aString))
+    {
       aMap.ChangeFind(aString)++;
+    }
     else
     {
       aMap.Bind(aString, 1);
@@ -608,7 +616,9 @@ static int statface(Draw_Interpretor& di, int /*argc*/, const char** argv)
       occ::handle<Geom2d_Curve> aCurve2d = BRep_Tool::CurveOnSurface(Edge, aFace, f3d, l3d);
       aString                            = aCurve2d->DynamicType()->Name();
       if (aMap.IsBound(aString))
+      {
         aMap.ChangeFind(aString)++;
+      }
       else
       {
         aMap.Bind(aString, 1);

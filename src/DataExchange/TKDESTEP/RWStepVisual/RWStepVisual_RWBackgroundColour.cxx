@@ -29,7 +29,9 @@ void RWStepVisual_RWBackgroundColour::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 1, ach, "background_colour"))
+  {
     return;
+  }
 
   // --- own field : presentation ---
 

@@ -208,30 +208,40 @@ void TopOpeBRepBuild_GTool::Dump(Standard_OStream& OS)
   g = TopOpeBRepBuild_GTool::GFusUnsh(TopAbs_FACE, TopAbs_FACE);
   g.Dump(OS);
   for (gi.Init(g); gi.More(); gi.Next())
+  {
     gi.Dump(OS);
-  OS << std::endl;
+  }
+  OS << '\n';
 
   g = TopOpeBRepBuild_GTool::GFusSame(TopAbs_FACE, TopAbs_FACE);
   g.Dump(OS);
   for (gi.Init(g); gi.More(); gi.Next())
+  {
     gi.Dump(OS);
-  OS << std::endl;
+  }
+  OS << '\n';
 
   g = TopOpeBRepBuild_GTool::GFusDiff(TopAbs_FACE, TopAbs_FACE);
   g.Dump(OS);
   for (gi.Init(g); gi.More(); gi.Next())
+  {
     gi.Dump(OS);
-  OS << std::endl;
+  }
+  OS << '\n';
 
   g = TopOpeBRepBuild_GTool::GCutDiff(TopAbs_FACE, TopAbs_EDGE);
   g.Dump(OS);
   for (gi.Init(g); gi.More(); gi.Next())
+  {
     gi.Dump(OS);
-  OS << std::endl;
+  }
+  OS << '\n';
 
   g = g.CopyPermuted();
   g.Dump(OS);
   for (gi.Init(g); gi.More(); gi.Next())
+  {
     gi.Dump(OS);
-  OS << std::endl;
+  }
+  OS << '\n';
 }

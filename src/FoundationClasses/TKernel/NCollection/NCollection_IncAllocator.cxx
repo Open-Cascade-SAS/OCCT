@@ -204,7 +204,9 @@ void NCollection_IncAllocator::clean()
 {
   // Exclusive lock - no allocations can be in progress.
   if (myMutex)
+  {
     myMutex->lock();
+  }
   IBlock* aHeapIter = myOrderedBlocks;
   while (aHeapIter)
   {
@@ -218,7 +220,9 @@ void NCollection_IncAllocator::clean()
   myBlockCount     = 0;
   myBlockSize      = THE_DEFAULT_BLOCK_SIZE;
   if (myMutex)
+  {
     myMutex->unlock();
+  }
 }
 
 //=================================================================================================
@@ -266,7 +270,9 @@ void NCollection_IncAllocator::Reset(const bool theReleaseMemory)
     return;
   }
   if (myMutex)
+  {
     myMutex->lock();
+  }
   IBlock* aHeapIter = myOrderedBlocks;
   while (aHeapIter)
   {
@@ -278,7 +284,9 @@ void NCollection_IncAllocator::Reset(const bool theReleaseMemory)
   myAllocationHeap = myOrderedBlocks;
   myUsedHeap       = nullptr;
   if (myMutex)
+  {
     myMutex->unlock();
+  }
 }
 
 //=================================================================================================

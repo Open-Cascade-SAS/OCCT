@@ -689,7 +689,9 @@ Standard_EXPORT void DE_Wrapper::UpdateLoad(const bool theToForceUpdate) const
       aNode->UpdateLoad(true, true);
       aNode->UpdateLoad(false, true);
       if (!theToForceUpdate)
+      {
         continue;
+      }
       aNode->SetEnabled(aNode->IsExportSupported() || aNode->IsImportSupported());
     }
   }

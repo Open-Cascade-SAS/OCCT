@@ -61,9 +61,11 @@ Standard_EXPORT occ::handle<Geom2d_Curve> MakePCurve(const ProjLib_ProjectedCurv
 static const TopoDS_Face& FC2D_FancestorE(const TopoDS_Edge& E)
 {
   if (GLOBAL_pmosloc2df == nullptr)
+  {
     GLOBAL_pmosloc2df = new NCollection_DataMap<TopoDS_Shape,
                                                 NCollection_List<TopOpeBRepTool_C2DF>,
                                                 TopTools_ShapeMapHasher>();
+  }
   int ancemp = (*GLOBAL_pidmoslosc2df).Extent();
   if (ancemp == 0)
   {
@@ -78,10 +80,14 @@ static const TopoDS_Face& FC2D_FancestorE(const TopoDS_Edge& E)
   }
   bool Eb = (*GLOBAL_pidmoslosc2df).Contains(E);
   if (!Eb)
+  {
     return *GLOBAL_pFc2df;
+  }
   const NCollection_List<TopoDS_Shape>& lf = (*GLOBAL_pidmoslosc2df).FindFromKey(E);
   if (lf.IsEmpty())
+  {
     return *GLOBAL_pFc2df;
+  }
   const TopoDS_Face& F = TopoDS::Face(lf.First());
   return F;
 }
@@ -90,28 +96,38 @@ static const TopoDS_Face& FC2D_FancestorE(const TopoDS_Edge& E)
 Standard_EXPORT int FC2D_Prepare(const TopoDS_Shape& S1, const TopoDS_Shape& S2)
 {
   if (GLOBAL_pmosloc2df == nullptr)
+  {
     GLOBAL_pmosloc2df = new NCollection_DataMap<TopoDS_Shape,
                                                 NCollection_List<TopOpeBRepTool_C2DF>,
                                                 TopTools_ShapeMapHasher>();
+  }
   GLOBAL_pmosloc2df->Clear();
   GLOBAL_C2D_i = 0;
 
   if (GLOBAL_pidmoslosc2df == nullptr)
+  {
     GLOBAL_pidmoslosc2df = new NCollection_IndexedDataMap<TopoDS_Shape,
                                                           NCollection_List<TopoDS_Shape>,
                                                           TopTools_ShapeMapHasher>();
+  }
   GLOBAL_pidmoslosc2df->Clear();
 
   if (GLOBAL_pFc2df == nullptr)
+  {
     GLOBAL_pFc2df = new TopoDS_Face();
+  }
   GLOBAL_pFc2df->Nullify();
 
   if (GLOBAL_pS1c2df == nullptr)
+  {
     GLOBAL_pS1c2df = new TopoDS_Shape();
+  }
   *GLOBAL_pS1c2df = S1;
 
   if (GLOBAL_pS2c2df == nullptr)
+  {
     GLOBAL_pS2c2df = new TopoDS_Shape();
+  }
   *GLOBAL_pS2c2df = S2;
 
   return 0;
@@ -166,10 +182,14 @@ static TopOpeBRepTool_C2DF* FC2D_PNewCurveOnSurface(const TopoDS_Edge& E, const 
 {
   TopOpeBRepTool_C2DF* pc2df = nullptr;
   if (GLOBAL_pmosloc2df == nullptr)
+  {
     return nullptr;
+  }
   bool Eisb = GLOBAL_pmosloc2df->IsBound(E);
   if (!Eisb)
+  {
     return nullptr;
+  }
   NCollection_List<TopOpeBRepTool_C2DF>::Iterator it(GLOBAL_pmosloc2df->Find(E));
   for (; it.More(); it.Next())
   {
@@ -194,7 +214,9 @@ Standard_EXPORT bool FC2D_HasNewCurveOnSurface(const TopoDS_Edge&         E,
   const TopOpeBRepTool_C2DF* pc2df  = FC2D_PNewCurveOnSurface(E, F);
   bool                       hasnew = (pc2df != nullptr);
   if (hasnew)
+  {
     C2D = pc2df->PC(f2d, l2d, tol);
+  }
   return hasnew;
 }
 
@@ -216,10 +238,14 @@ int FC2D_AddNewCurveOnSurface(const occ::handle<Geom2d_Curve>& C2D,
                               const double&                    tol)
 {
   if (C2D.IsNull())
+  {
     return 1;
+  }
   TopOpeBRepTool_C2DF c2df(C2D, f2d, l2d, tol, F);
   if (GLOBAL_pmosloc2df == nullptr)
+  {
     return 1;
+  }
   NCollection_List<TopOpeBRepTool_C2DF> thelist;
   GLOBAL_pmosloc2df->Bind(E, thelist);
   NCollection_List<TopOpeBRepTool_C2DF>& lc2df = GLOBAL_pmosloc2df->ChangeFind(E);
@@ -244,7 +270,9 @@ static occ::handle<Geom2d_Curve> FC2D_make2d(const TopoDS_Edge& E,
 {
   occ::handle<Geom2d_Curve> C2D = BRep_Tool::CurveOnSurface(E, F, f2d, l2d);
   if (!C2D.IsNull())
+  {
     return C2D;
+  }
 
   // pas de 2D
   double                  f3d, l3d;
@@ -257,9 +285,13 @@ static occ::handle<Geom2d_Curve> FC2D_make2d(const TopoDS_Edge& E,
     bool                    elocid = eloc.IsIdentity();
     occ::handle<Geom_Curve> C2;
     if (elocid)
+    {
       C2 = C1;
+    }
     else
+    {
       C2 = occ::down_cast<Geom_Curve>(C1->Transformed(eloc.Transformation()));
+    }
     double f = 0., l = 0.;
     if (trim3d)
     {
@@ -277,7 +309,9 @@ static occ::handle<Geom2d_Curve> FC2D_make2d(const TopoDS_Edge& E,
     // une face accedant a E : FE
     const TopoDS_Face& FE = FC2D_FancestorE(E);
     if (FE.IsNull())
+    {
       return C2D;
+    }
     bool                             compminmaxUV = false;
     BRepAdaptor_Surface              BAS(F, compminmaxUV);
     occ::handle<BRepAdaptor_Surface> BAHS = new BRepAdaptor_Surface(BAS);
@@ -403,7 +437,9 @@ static void FC2D_translate(const occ::handle<Geom2d_Curve>& C2D,
     {
       gp_Vec2d transl(1., 0.);
       if (isviso)
+      {
         transl = gp_Vec2d(0., 1.);
+      }
       transl.Multiply(factor);
       C2D->Translate(transl);
     }
@@ -429,7 +465,9 @@ static occ::handle<Geom2d_Curve> FC2D_make2d(const TopoDS_Edge& E,
 {
   occ::handle<Geom2d_Curve> C2D = BRep_Tool::CurveOnSurface(E, F, f2d, l2d);
   if (!C2D.IsNull())
+  {
     return C2D;
+  }
 
   // pas de 2D
   double                  f3d, l3d;
@@ -442,9 +480,13 @@ static occ::handle<Geom2d_Curve> FC2D_make2d(const TopoDS_Edge& E,
     bool                    elocid = eloc.IsIdentity();
     occ::handle<Geom_Curve> C2;
     if (elocid)
+    {
       C2 = C1;
+    }
     else
+    {
       C2 = occ::down_cast<Geom_Curve>(C1->Transformed(eloc.Transformation()));
+    }
     double f = 0., l = 0.;
     if (trim3d)
     {
@@ -463,7 +505,9 @@ static occ::handle<Geom2d_Curve> FC2D_make2d(const TopoDS_Edge& E,
     // une face accedant a E : FE
     const TopoDS_Face& FE = FC2D_FancestorE(E);
     if (FE.IsNull())
+    {
       return C2D;
+    }
     bool                             compminmaxUV = false;
     BRepAdaptor_Surface              BAS(F, compminmaxUV);
     occ::handle<BRepAdaptor_Surface> BAHS = new BRepAdaptor_Surface(BAS);
@@ -503,7 +547,9 @@ Standard_EXPORT occ::handle<Geom2d_Curve> FC2D_CurveOnSurface(const TopoDS_Edge&
 
   bool hasold = FC2D_HasOldCurveOnSurface(E, F, C2D, f2d, l2d, tol);
   if (hasold)
+  {
     return C2D;
+  }
 
   TopOpeBRepTool_C2DF* pc2df = FC2D_PNewCurveOnSurface(E, F);
   if (pc2df != nullptr)

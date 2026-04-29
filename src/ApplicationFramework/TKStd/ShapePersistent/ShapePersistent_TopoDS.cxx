@@ -69,7 +69,9 @@ static inline void AddShape(TopoDS_Shape&                            theParent,
     Handle(ShapePersistent_TopoDS::HShape)::DownCast(theRef);
 
   if (aShape)
+  {
     BRep_Builder().Add(theParent, aShape->Import());
+  }
 }
 
 static inline void AddShape(TopoDS_Shape& theParent, const StdObject_Shape& theShape)
@@ -85,7 +87,9 @@ void ShapePersistent_TopoDS::pTBase::addShapesT(TopoDS_Shape& theParent) const
   {
     typename ShapesArray::Iterator anIter(*aShapes->Array());
     for (; anIter.More(); anIter.Next())
+    {
       AddShape(theParent, anIter.Value());
+    }
   }
 }
 
@@ -117,7 +121,9 @@ Handle(ShapePersistent_TopoDS::HShape) ShapePersistent_TopoDS::Translate(
   occ::handle<HShape> pHShape;
 
   if (theShape.IsNull())
+  {
     return pHShape;
+  }
 
   pHShape = new HShape;
 
@@ -204,17 +210,29 @@ Handle(ShapePersistent_TopoDS::HShape) ShapePersistent_TopoDS::Translate(
     // Shape flags
     int aFlags = 0;
     if (theShape.Modified())
+    {
       aFlags |= ModifiedMask;
+    }
     if (theShape.Checked())
+    {
       aFlags |= CheckedMask;
+    }
     if (theShape.Orientable())
+    {
       aFlags |= OrientableMask;
+    }
     if (theShape.Closed())
+    {
       aFlags |= ClosedMask;
+    }
     if (theShape.Infinite())
+    {
       aFlags |= InfiniteMask;
+    }
     if (theShape.Convex())
+    {
       aFlags |= ConvexMask;
+    }
     aPTShape->myFlags = aFlags;
 
     // Copy current Shape

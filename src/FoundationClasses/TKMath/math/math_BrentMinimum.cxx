@@ -92,7 +92,9 @@ void math_BrentMinimum::Perform(math_Function& F, const double ax, const double 
   {
     OK = F.Value(x, fx);
     if (!OK)
+    {
       return;
+    }
   }
   fw = fv = fx;
   for (iter = 1; iter <= Itermax; iter++)
@@ -112,7 +114,9 @@ void math_BrentMinimum::Perform(math_Function& F, const double ax, const double 
       p = (x - v) * q - (x - w) * r;
       q = 2.0 * (q - r);
       if (q > 0.0)
+      {
         p = -p;
+      }
       q     = fabs(q);
       etemp = e;
       e     = d;
@@ -126,7 +130,9 @@ void math_BrentMinimum::Perform(math_Function& F, const double ax, const double 
         d = p / q;
         u = x + d;
         if (u - a < tol2 || b - u < tol2)
+        {
           d = std::copysign(tol1, xm - x);
+        }
       }
     }
     else
@@ -137,22 +143,32 @@ void math_BrentMinimum::Perform(math_Function& F, const double ax, const double 
     u  = (fabs(d) >= tol1 ? x + d : x + std::copysign(tol1, d));
     OK = F.Value(u, fu);
     if (!OK)
+    {
       return;
+    }
     if (fu <= fx)
     {
       if (u >= x)
+      {
         a = x;
+      }
       else
+      {
         b = x;
+      }
       SHFT(v, w, x, u);
       SHFT(fv, fw, fx, fu);
     }
     else
     {
       if (u < x)
+      {
         a = u;
+      }
       else
+      {
         b = u;
+      }
       if (fu <= fw || w == x)
       {
         v  = w;
@@ -168,7 +184,6 @@ void math_BrentMinimum::Perform(math_Function& F, const double ax, const double 
     }
   }
   Done = false;
-  return;
 }
 
 //=================================================================================================

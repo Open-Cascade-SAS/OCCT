@@ -53,6 +53,8 @@ occ::handle<StepBasic_UncertaintyMeasureWithUnit> StepRepr_GlobalUncertaintyAssi
 int StepRepr_GlobalUncertaintyAssignedContext::NbUncertainty() const
 {
   if (uncertainty.IsNull())
+  {
     return 0;
+  }
   return uncertainty->Length();
 }

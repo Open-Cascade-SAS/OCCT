@@ -435,9 +435,13 @@ TEST(MathSVDTest, LargerMatrix)
     for (int aJ = 1; aJ <= 5; aJ++)
     {
       if (anI == aJ)
+      {
         aMatrix(anI, aJ) = 10.0; // Diagonal dominance
+      }
       else
+      {
         aMatrix(anI, aJ) = 1.0 / (abs(anI - aJ) + 1.0);
+      }
     }
   }
 

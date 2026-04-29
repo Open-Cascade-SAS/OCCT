@@ -44,7 +44,9 @@ static void FUN_HDS_data(const occ::handle<TopOpeBRepDS_Interference>& I,
                          int&                                          S1)
 {
   if (I.IsNull())
+  {
     return;
+  }
   GT1 = I->GeometryType();
   G1  = I->Geometry();
   ST1 = I->SupportType();
@@ -59,7 +61,9 @@ Standard_EXPORT bool FUN_HDS_FACESINTERFER(const TopoDS_Shape&                  
   const TopOpeBRepDS_DataStructure& DS       = HDS->DS();
   bool                              ya       = DS.HasShape(F1);
   if (!ya)
+  {
     return false;
+  }
 
   //                         DS.Shape(F1);
   int iF2 = DS.Shape(F2);
@@ -234,7 +238,9 @@ bool TopOpeBRepDS_HDataStructure::HasShape(const TopoDS_Shape& S, const bool Fin
 bool TopOpeBRepDS_HDataStructure::HasSameDomain(const TopoDS_Shape& S, const bool FindKeep) const
 {
   if (!HasShape(S, FindKeep))
+  {
     return false;
+  }
   const NCollection_List<TopoDS_Shape>& l   = myDS.ShapeSameDomain(S);
   bool                                  res = !l.IsEmpty();
   return res;
@@ -254,7 +260,9 @@ NCollection_List<TopoDS_Shape>::Iterator TopOpeBRepDS_HDataStructure::SameDomain
 TopOpeBRepDS_Config TopOpeBRepDS_HDataStructure::SameDomainOrientation(const TopoDS_Shape& S) const
 {
   if (!HasShape(S))
+  {
     return TopOpeBRepDS_UNSHGEOMETRY;
+  }
   return myDS.SameDomainOri(S);
 }
 
@@ -263,7 +271,9 @@ TopOpeBRepDS_Config TopOpeBRepDS_HDataStructure::SameDomainOrientation(const Top
 int TopOpeBRepDS_HDataStructure::SameDomainReference(const TopoDS_Shape& S) const
 {
   if (!HasShape(S))
+  {
     return 0;
+  }
   return myDS.SameDomainRef(S);
 }
 
@@ -338,18 +348,26 @@ int TopOpeBRepDS_HDataStructure::MakeCurve(const TopOpeBRepDS_Curve& curC, TopOp
   const occ::handle<TopOpeBRepDS_Interference>&      I2 = curC.GetSCI2();
   occ::handle<TopOpeBRepDS_SurfaceCurveInterference> SCI1, SCI2;
   if (!I1.IsNull())
+  {
     SCI1 = new TopOpeBRepDS_SurfaceCurveInterference(I1);
+  }
   if (!I2.IsNull())
+  {
     SCI2 = new TopOpeBRepDS_SurfaceCurveInterference(I2);
+  }
 
   const TopoDS_Shape& S1 = curC.Shape1();
   const TopoDS_Shape& S2 = curC.Shape2();
 
   // add the new SCIs in the lists of SCIs connected to the shapes
   if (!SCI1.IsNull())
+  {
     myDS.AddShapeInterference(S1, SCI1);
+  }
   if (!SCI2.IsNull())
+  {
     myDS.AddShapeInterference(S2, SCI2);
+  }
 
   // the shapes of the new curve are the shapes of curve curC
   newC.SetShapes(S1, S2);
@@ -365,9 +383,13 @@ int TopOpeBRepDS_HDataStructure::MakeCurve(const TopOpeBRepDS_Curve& curC, TopOp
 
   // the geometry of the new surface/curve interf. is new curve inewC
   if (!SCI1.IsNull())
+  {
     SCI1->Geometry(inewC);
+  }
   if (!SCI2.IsNull())
+  {
     SCI2->Geometry(inewC);
+  }
 
   return inewC;
 }
@@ -384,7 +406,9 @@ void TopOpeBRepDS_HDataStructure::RemoveCurve(const int icurC)
 int TopOpeBRepDS_HDataStructure::NbGeometry(const TopOpeBRepDS_Kind K) const
 {
   if (!TopOpeBRepDS::IsGeometry(K))
+  {
     return 0;
+  }
 
   int n = 0;
   switch (K)
@@ -418,15 +442,23 @@ int TopOpeBRepDS_HDataStructure::NbTopology() const
 int TopOpeBRepDS_HDataStructure::NbTopology(const TopOpeBRepDS_Kind K) const
 {
   if (!TopOpeBRepDS::IsTopology(K))
+  {
     return 0;
+  }
   int        res      = 0;
   const bool FindKeep = false;
 
   TopAbs_ShapeEnum S = TopOpeBRepDS::KindToShape(K);
   for (int i = 1; i <= NbTopology(); i++)
+  {
     if (myDS.KeepShape(i, FindKeep))
+    {
       if (myDS.Shape(i, FindKeep).ShapeType() == S)
+      {
         res++;
+      }
+    }
+  }
   return res;
 }
 
@@ -462,7 +494,9 @@ Standard_EXPORT void FUN_TopOpeBRepDS_SortOnParameter(
 
   int iIntf = 0, nIntf = List.Extent();
   if (nIntf == 0)
+  {
     return;
+  }
 
   occ::handle<NCollection_HArray1<bool>> HT;
   HT                          = new NCollection_HArray1<bool>(1, nIntf, false);
@@ -521,10 +555,14 @@ void TopOpeBRepDS_HDataStructure::SortOnParameter(
         L1.Append(I);
       }
       else
+      {
         L2.Append(I);
+      }
     }
     else
+    {
       L1.Append(I);
+    }
   }
 
   SList.Clear();
@@ -590,14 +628,18 @@ bool TopOpeBRepDS_HDataStructure::ScanInterfList(
       const TopOpeBRepDS_Point& OOPDS = myDS.Point(G);
       bool                      iseq  = PDS.IsEqual(OOPDS);
       if (iseq)
+      {
         return iseq;
+      }
     }
     else if (GT == TopOpeBRepDS_VERTEX)
     {
       TopOpeBRepDS_Point OOPDS(myDS.Shape(G));
       bool               iseq = PDS.IsEqual(OOPDS);
       if (iseq)
+      {
         return iseq;
+      }
     }
   }
   return false;

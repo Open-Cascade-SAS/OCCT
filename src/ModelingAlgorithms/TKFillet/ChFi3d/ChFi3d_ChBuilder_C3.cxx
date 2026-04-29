@@ -308,6 +308,7 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const int Jndex)
     fin   = 2;
     // on calcule l'intersection des pcurves sans les restreindre a leur common point
     if (!oksea[0])
+    {
       okinter = ChFi3d_IsInFront(DStr,
                                  CD[1],
                                  CD[2],
@@ -325,6 +326,7 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const int Jndex)
                                  Vtx,
                                  false,
                                  true);
+    }
   }
   else if (oksea[2] && oksea[0] && !sameside[2] && !sameside[0])
   {
@@ -332,6 +334,7 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const int Jndex)
     deb   = 2;
     fin   = 0;
     if (!oksea[1])
+    {
       okinter = ChFi3d_IsInFront(DStr,
                                  CD[0],
                                  CD[2],
@@ -349,6 +352,7 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const int Jndex)
                                  Vtx,
                                  false,
                                  true);
+    }
   }
   else if (oksea[1] && oksea[0] && !sameside[1] && !sameside[0])
   {
@@ -356,6 +360,7 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const int Jndex)
     deb   = 0;
     fin   = 1;
     if (!oksea[2])
+    {
       okinter = ChFi3d_IsInFront(DStr,
                                  CD[0],
                                  CD[1],
@@ -373,22 +378,29 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const int Jndex)
                                  Vtx,
                                  false,
                                  true);
+    }
   }
   else if (oksea[0] && oksea[1] && oksea[2])
   {
     // 3 concavites identiques.
     pivot = ChFi3d_SearchPivot(sens, p, tol2d);
     if (pivot < 0)
+    {
       // on prend un pivot au hasard!!!!!!!!!!!!!!!
       pivot = 0;
+    }
     deb           = (pivot + 1) % 3;
     fin           = (pivot + 2) % 3;
     CornerAllSame = true;
   }
   else
+  {
     throw Standard_Failure("FD en vis a vis non trouvees");
+  }
   if (!okinter)
+  {
     throw Standard_Failure("Echec intersection PCurves OnCommonFace");
+  }
 
   // on a le pivot, le CD deb et le CD fin (enfin on espere !?!) :
   // -------------------------------------------------------------
@@ -519,16 +531,22 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const int Jndex)
   double DistDebFin = (p3d[pivot]).Distance(p3d[3]);
 
   if (DistTmp > DistMin)
+  {
     DistMin = DistTmp;
+  }
 
   // on elargi la notion de triangle pour eviter de creer
   // des surfaces ecraser avec deux coins proches
   // attention ceci entraine un effet de seuil
   if (CornerAllSame)
+  {
     c1triangle = (DistDebFin < 0.3 * DistMin);
+  }
 
   if (c1triangle)
+  {
     p3d[pivot] = PSom;
+  }
 
   // on calcule la surface portant le coin
   //--------------------------------------
@@ -561,19 +579,27 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const int Jndex)
     gp_Dir xdir = gp_Dir(gp_Vec(p3d[fin], p3d[deb]));
     gp_Ax3 planAx3(p3d[pivot], ndir, xdir);
     if (planAx3.YDirection().Dot(v1) <= 0.)
+    {
       planAx3.YReverse();
+    }
     occ::handle<Geom_Plane> gpl = new Geom_Plane(planAx3);
     coin->ChangeSurf(ChFiKPart_IndexSurfaceInDS(gpl, DStr));
 
     // on oriente coin
     gp_Vec norface = norpl;
     if (face[pivot].Orientation() == TopAbs_REVERSED)
+    {
       norface.Reverse();
+    }
     gp_Vec norcoin = gpl->Pln().Position().XDirection().Crossed(gpl->Pln().Position().YDirection());
     if (norcoin.Dot(norface) <= 0.)
+    {
       coin->ChangeOrientation() = TopAbs_REVERSED;
+    }
     else
+    {
       coin->ChangeOrientation() = TopAbs_FORWARD;
+    }
 
     // on calcule les intersections
     occ::handle<Geom_Curve>        gcpiv, gcdeb, gcfin;
@@ -599,16 +625,22 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const int Jndex)
                              tolapp3d,
                              tol2d,
                              tolrcoinpiv))
+    {
       throw StdFail_NotDone("echec calcul intersection coin-pivot");
+    }
     gp_Vec norpiv = deru.Crossed(derv);
 
     // intersection coin-deb
     double   tolrcoindeb;
     gp_Pnt2d p2d1, p2d2;
     if (c1triangle)
+    {
       p2d1 = fddeb->Interference(jf[deb][fin]).PCurveOnSurf()->Value(p[deb][fin]);
+    }
     else
+    {
       p2d1 = fddeb->Interference(jf[deb][fin]).PCurveOnSurf()->Value(p[deb][pivot]);
+    }
 
     p2d2 = fddeb->Interference(jf[deb][pivot]).PCurveOnSurf()->Value(p[deb][pivot]);
 
@@ -628,7 +660,9 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const int Jndex)
                              tolapp3d,
                              tol2d,
                              tolrcoindeb))
+    {
       throw StdFail_NotDone("echec calcul intersection coin-deb");
+    }
     Icf = DStr.AddCurve(TopOpeBRepDS_Curve(gcdeb, tolrcoindeb));
 
     // intersection coin-fin
@@ -661,7 +695,9 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const int Jndex)
                              tolapp3d,
                              tol2d,
                              tolrcoinfin))
+    {
       throw StdFail_NotDone("echec calcul intersection coin-face");
+    }
     Icl = DStr.AddCurve(TopOpeBRepDS_Curve(gcfin, tolrcoinfin));
 
     //! c1triangle: intersection coin-face[pivot]
@@ -705,9 +741,13 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const int Jndex)
     coin->ChangeVertexFirstOnS1().SetPoint(p3d[pivot]);
     coin->ChangeVertexFirstOnS2().SetPoint(p3d[fin]);
     if (c1triangle)
+    {
       coin->ChangeVertexLastOnS1().SetPoint(p3d[pivot]);
+    }
     else
+    {
       coin->ChangeVertexLastOnS1().SetPoint(p3d[3]);
+    }
     coin->ChangeVertexLastOnS2().SetPoint(p3d[deb]);
 
     // avec les FaceInterference
@@ -718,12 +758,18 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const int Jndex)
 
     // sur face[pivot]
     if (norcoin.Dot(norpl) <= 0.)
+    {
       trans = TopAbs_FORWARD;
+    }
     else
+    {
       trans = TopAbs_REVERSED;
+    }
     occ::handle<Geom2d_Curve> bidpc;
     if (c1triangle)
+    {
       fi1.SetInterference(0, trans, bidpc, bidpc);
+    }
     else
     {
       Igcface = ChFiKPart_IndexCurveInDS(gcface, DStr);
@@ -733,9 +779,13 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const int Jndex)
     }
     // sur le pivot
     if (norcoin.Dot(norpiv) <= 0.)
+    {
       trans = TopAbs_REVERSED;
+    }
     else
+    {
       trans = TopAbs_FORWARD;
+    }
     Igcpiv = ChFiKPart_IndexCurveInDS(gcpiv, DStr);
     fi2.SetInterference(Igcpiv, trans, pivpc1, pivpc2);
     fi2.SetFirstParameter(gcpiv->FirstParameter());
@@ -848,7 +898,9 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const int Jndex)
     const ChFiDS_CommonPoint& Pf2 = coin->VertexFirstOnS2();
     ChFiDS_CommonPoint&       Pl1 = coin->ChangeVertexLastOnS1();
     if (c1triangle)
+    {
       Pl1 = coin->ChangeVertexFirstOnS1();
+    }
     const ChFiDS_CommonPoint& Pl2 = coin->VertexLastOnS2();
 
     // le coin pour commencer,
@@ -857,9 +909,13 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const int Jndex)
     If1 = ChFi3d_IndexPointInDS(Pf1, DStr);
     If2 = ChFi3d_IndexPointInDS(Pf2, DStr);
     if (c1triangle)
+    {
       Il1 = If1;
+    }
     else
+    {
       Il1 = ChFi3d_IndexPointInDS(Pl1, DStr);
+    }
     Il2 = ChFi3d_IndexPointInDS(Pl2, DStr);
 
     coin->ChangeIndexOfS1(DStr.AddShape(face[pivot]));
@@ -951,7 +1007,9 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const int Jndex)
     int    isurf1 = 1, isurf2 = 2;
     double par = p[deb][pivot], par2 = p[deb][pivot];
     if (c1triangle)
+    {
       par2 = p[deb][fin];
+    }
     if (rev)
     {
       isurf1 = 2;
@@ -967,7 +1025,9 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const int Jndex)
     fddeb->ChangeInterference(isurf1).SetParameter(par2, isfirst);
     fddeb->ChangeInterference(isurf2).SetParameter(par, isfirst);
     if (c1plan)
+    {
       CD[deb]->ChangePCurve(isfirst) = debpc1;
+    }
     else
     {
       pp1 = fddeb->InterferenceOnS1().PCurveOnSurf()->Value(par);
@@ -984,7 +1044,9 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const int Jndex)
     par     = p[fin][pivot];
     par2    = p[fin][pivot];
     if (c1triangle)
+    {
       par2 = p[fin][deb];
+    }
     if (rev)
     {
       isurf1 = 2;
@@ -1000,7 +1062,9 @@ void ChFi3d_ChBuilder::PerformThreeCorner(const int Jndex)
     fdfin->ChangeInterference(isurf1).SetParameter(par2, isfirst);
     fdfin->ChangeInterference(isurf2).SetParameter(par, isfirst);
     if (c1plan)
+    {
       CD[fin]->ChangePCurve(isfirst) = finpc1;
+    }
     else
     {
       pp1 = fdfin->InterferenceOnS1().PCurveOnSurf()->Value(par);

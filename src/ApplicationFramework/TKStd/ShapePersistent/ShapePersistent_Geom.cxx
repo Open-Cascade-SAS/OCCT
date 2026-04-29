@@ -38,7 +38,9 @@ Handle(ShapePersistent_Geom::Curve) ShapePersistent_Geom::Translate(
   if (!theCurve.IsNull())
   {
     if (theMap.IsBound(theCurve))
+    {
       aPC = occ::down_cast<Curve>(theMap.Find(theCurve));
+    }
     else
     {
       occ::handle<Standard_Type> aCT = theCurve->DynamicType();
@@ -104,7 +106,9 @@ Handle(ShapePersistent_Geom::Surface) ShapePersistent_Geom::Translate(
   if (!theSurf.IsNull())
   {
     if (theMap.IsBound(theSurf))
+    {
       aPS = occ::down_cast<Surface>(theMap.Find(theSurf));
+    }
     else
     {
       occ::handle<Standard_Type> aST = theSurf->DynamicType();

@@ -96,7 +96,9 @@ static int SearchIndex(const double Value, occ::handle<BRepBlend_Line>& Lin)
   int NbPnt = Lin->NbPoints(), Ind;
 
   for (Ind = 1; (Ind < NbPnt) && (Lin->Point(Ind).Parameter() < Value);)
+  {
     Ind++;
+  }
   return Ind;
 }
 
@@ -120,7 +122,9 @@ static int nbedconnex(const NCollection_List<TopoDS_Shape>& L)
       }
     }
     if (!dejavu)
+    {
       nb++;
+    }
   }
   return nb;
 }
@@ -133,13 +137,19 @@ static bool IsVois(const TopoDS_Edge&                                      E,
                    const int                                               profmax)
 {
   if (prof > profmax)
+  {
     return false;
+  }
   if (DONE.Contains(E))
+  {
     return false;
+  }
   TopoDS_Vertex V1, V2;
   TopExp::Vertices(E, V1, V2);
   if (Vref.IsSame(V1) || Vref.IsSame(V2))
+  {
     return true;
+  }
   DONE.Add(E);
   const NCollection_List<TopoDS_Shape>&    L1 = VEMap(V1);
   int                                      i1 = nbedconnex(L1);
@@ -150,10 +160,14 @@ static bool IsVois(const TopoDS_Edge&                                      E,
     if (i1 <= 2)
     {
       if (IsVois(curE, Vref, VEMap, DONE, prof, profmax))
+      {
         return true;
+      }
     }
     else if (IsVois(curE, Vref, VEMap, DONE, prof + 1, profmax))
+    {
       return true;
+    }
   }
   const NCollection_List<TopoDS_Shape>& L2 = VEMap(V2);
 #ifdef OCCT_DEBUG
@@ -166,10 +180,14 @@ static bool IsVois(const TopoDS_Edge&                                      E,
     if (i1 <= 2)
     {
       if (IsVois(curE, Vref, VEMap, DONE, prof, profmax))
+      {
         return true;
+      }
     }
     else if (IsVois(curE, Vref, VEMap, DONE, prof + 1, profmax))
+    {
       return true;
+    }
   }
   return false;
 }
@@ -177,7 +195,9 @@ static bool IsVois(const TopoDS_Edge&                                      E,
 static bool IsObst(const ChFiDS_CommonPoint& CP, const TopoDS_Vertex& Vref, const ChFiDS_Map& VEMap)
 {
   if (!CP.IsOnArc())
+  {
     return false;
+  }
   const TopoDS_Edge&                                     E = CP.Arc();
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> DONE;
   int                                                    prof = 4;
@@ -270,9 +290,13 @@ static void CompParam(const Geom2dAdaptor_Curve&       Carc,
     {
       // It is checked if everything was calculated correctly (EDC402 C2)
       if (projector.LowerDistance() < distini)
+      {
         ptg = projector.LowerDistanceParameter();
+      }
       else
+      {
         ptg = preftg;
+      }
     }
   }
 }
@@ -299,12 +323,16 @@ static bool CompBlendPoint(const TopoDS_Vertex& V,
   param = BRep_Tool::Parameter(V, E, F1);
   pc    = BRep_Tool::CurveOnSurface(E, F1, f, l);
   if (pc.IsNull())
+  {
     return false;
+  }
   P1    = pc->Value(param);
   param = BRep_Tool::Parameter(V, E, F2);
   pc    = BRep_Tool::CurveOnSurface(E, F2, f, l);
   if (pc.IsNull())
+  {
     return false;
+  }
   P2 = pc->Value(param);
   BP.SetValue(P3d, P3d, W, P1.X(), P1.Y(), P2.X(), P2.Y());
   return true;
@@ -383,18 +411,28 @@ bool ChFi3d_Builder::CompleteData(occ::handle<ChFiDS_SurfData>&         Data,
   double UFirst, ULast, VFirst, VLast;
   Surfcoin->Bounds(UFirst, ULast, VFirst, VLast);
   if (!Gd1)
+  {
     Data->ChangeVertexFirstOnS1().SetPoint(Surfcoin->Value(UFirst, VFirst));
+  }
   if (!Gd2)
+  {
     Data->ChangeVertexFirstOnS2().SetPoint(Surfcoin->Value(UFirst, VLast));
+  }
   if (!Gf1)
+  {
     Data->ChangeVertexLastOnS1().SetPoint(Surfcoin->Value(ULast, VFirst));
+  }
   if (!Gf2)
+  {
     Data->ChangeVertexLastOnS2().SetPoint(Surfcoin->Value(ULast, VLast));
+  }
 
   // calculate curves side S1
   occ::handle<Geom_Curve> Crv3d1;
   if (!PC1.IsNull())
+  {
     Crv3d1 = Surfcoin->VIso(VFirst);
+  }
   gp_Pnt2d                  pd1(UFirst, VFirst), pf1(ULast, VFirst);
   gp_Lin2d                  lfil1(pd1, gp_Dir2d(gp_Vec2d(pd1, pf1)));
   occ::handle<Geom2d_Curve> PCurveOnSurf = new Geom2d_Line(lfil1);
@@ -415,9 +453,13 @@ bool ChFi3d_Builder::CompleteData(occ::handle<ChFiDS_SurfData>&         Data,
     Surfcoin->D1(w, VFirst, p, du, dv);
     gp_Vec ns = du.Crossed(dv);
     if (nf.Dot(ns) > 0.)
+    {
       tra1 = TopAbs_REVERSED;
+    }
     else if (On1)
+    {
       orsurf = TopAbs::Reverse(orsurf);
+    }
   }
   int                      Index1OfCurve = DStr.AddCurve(TopOpeBRepDS_Curve(Crv3d1, tolreached));
   ChFiDS_FaceInterference& Fint1         = Data->ChangeInterferenceOnS1();
@@ -427,7 +469,9 @@ bool ChFi3d_Builder::CompleteData(occ::handle<ChFiDS_SurfData>&         Data,
   // calculate curves side S2
   occ::handle<Geom_Curve> Crv3d2;
   if (!PC2.IsNull())
+  {
     Crv3d2 = Surfcoin->VIso(VLast);
+  }
   gp_Pnt2d pd2(UFirst, VLast), pf2(ULast, VLast);
   gp_Lin2d lfil2(pd2, gp_Dir2d(gp_Vec2d(pd2, pf2)));
   PCurveOnSurf            = new Geom2d_Line(lfil2);
@@ -446,7 +490,9 @@ bool ChFi3d_Builder::CompleteData(occ::handle<ChFiDS_SurfData>&         Data,
     {
       tra2 = TopAbs_REVERSED;
       if (!On1)
+      {
         orsurf = TopAbs::Reverse(orsurf);
+      }
     }
   }
   int                      Index2OfCurve = DStr.AddCurve(TopOpeBRepDS_Curve(Crv3d2, tolreached));
@@ -597,7 +643,9 @@ bool ChFi3d_Builder::StoreData(occ::handle<ChFiDS_SurfData>&         Data,
   // Small control tools.
   static occ::handle<GeomAdaptor_Curve> checkcurve;
   if (checkcurve.IsNull())
+  {
     checkcurve = new GeomAdaptor_Curve();
+  }
   GeomAdaptor_Curve& chc = *checkcurve;
   double             tolget3d, tolget2d, tolaux, tolC1, tolcheck;
   double             tolC2 = 0.;
@@ -738,7 +786,9 @@ bool ChFi3d_Builder::StoreData(occ::handle<ChFiDS_SurfData>&         Data,
     pppdeb = utg;
   }
   else
+  {
     pppdeb = VFirst;
+  }
   if (Gf1)
   {
     TopoDS_Face forwfac = BS1->Face();
@@ -752,15 +802,21 @@ bool ChFi3d_Builder::StoreData(occ::handle<ChFiDS_SurfData>&         Data,
     pppfin = utg;
   }
   else
+  {
     pppfin = VLast;
+  }
   ChFiDS_FaceInterference& Fint1 = Data->ChangeInterferenceOnS1();
   Fint1.SetFirstParameter(pppdeb);
   Fint1.SetLastParameter(pppfin);
   TopAbs_Orientation TraOn1;
   if (Reversed)
+  {
     TraOn1 = ChFi3d_TrsfTrans(lin->TransitionOnS2());
+  }
   else
+  {
     TraOn1 = ChFi3d_TrsfTrans(lin->TransitionOnS1());
+  }
   Fint1.SetInterference(Index1OfCurve, TraOn1, PCurveOnFace, PCurveOnSurf);
 
   // SurfData is filled in what concerns S2,
@@ -798,7 +854,9 @@ bool ChFi3d_Builder::StoreData(occ::handle<ChFiDS_SurfData>&         Data,
     pppdeb = utg;
   }
   else
+  {
     pppdeb = VFirst;
+  }
   if (Gf2)
   {
     TopoDS_Face forwfac = BS2->Face();
@@ -812,7 +870,9 @@ bool ChFi3d_Builder::StoreData(occ::handle<ChFiDS_SurfData>&         Data,
     pppfin = utg;
   }
   else
+  {
     pppfin = VLast;
+  }
   ChFiDS_FaceInterference& Fint2 = Data->ChangeInterferenceOnS2();
   Fint2.SetFirstParameter(pppdeb);
   Fint2.SetLastParameter(pppfin);
@@ -820,9 +880,13 @@ bool ChFi3d_Builder::StoreData(occ::handle<ChFiDS_SurfData>&         Data,
   {
     TopAbs_Orientation TraOn2;
     if (Reversed)
+    {
       TraOn2 = ChFi3d_TrsfTrans(lin->TransitionOnS1());
+    }
     else
+    {
       TraOn2 = ChFi3d_TrsfTrans(lin->TransitionOnS2());
+    }
     Fint2.SetInterference(Index2OfCurve, TraOn2, PCurveOnFace, PCurveOnSurf);
   }
   else
@@ -868,7 +932,9 @@ bool ChFi3d_Builder::StoreData(occ::handle<ChFiDS_SurfData>&         Data,
     Du1.Cross(Dv1);
 
     if (Or1 == TopAbs_REVERSED)
+    {
       Du1.Reverse();
+    }
 
     Surf->D1(UFirst, aParam, P, Du2, Dv2);
     Du2.Cross(Dv2);
@@ -878,44 +944,58 @@ bool ChFi3d_Builder::StoreData(occ::handle<ChFiDS_SurfData>&         Data,
       aDenom++;
 
       if (std::abs(aDeltav) <= tolget2d)
+      {
         return false;
+      }
 
       continue;
     }
 
     if (Du1.Dot(Du2) > 0)
+    {
       Data->ChangeOrientation() = TopAbs_FORWARD;
+    }
     else
+    {
       Data->ChangeOrientation() = TopAbs_REVERSED;
+    }
 
     break;
   }
   //  Modified by skv - Wed Jun  9 17:16:26 2004 OCC5898 End
 
   if (!Gd1 && !S1.IsNull())
+  {
     ChFi3d_FilCommonPoint(lin->StartPointOnFirst(),
                           lin->TransitionOnS1(),
                           true,
                           Data->ChangeVertex(true, ion1),
                           tolC1);
+  }
   if (!Gf1 && !S1.IsNull())
+  {
     ChFi3d_FilCommonPoint(lin->EndPointOnFirst(),
                           lin->TransitionOnS1(),
                           false,
                           Data->ChangeVertex(false, ion1),
                           tolC1);
+  }
   if (!Gd2 && !S2.IsNull())
+  {
     ChFi3d_FilCommonPoint(lin->StartPointOnSecond(),
                           lin->TransitionOnS2(),
                           true,
                           Data->ChangeVertex(true, ion2),
                           tolC2);
+  }
   if (!Gf2 && !S2.IsNull())
+  {
     ChFi3d_FilCommonPoint(lin->EndPointOnSecond(),
                           lin->TransitionOnS2(),
                           false,
                           Data->ChangeVertex(false, ion2),
                           tolC2);
+  }
   // Parameters on ElSpine
   int nbp = lin->NbPoints();
   Data->FirstSpineParam(lin->Point(1).Parameter());
@@ -965,7 +1045,9 @@ bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
   double SpLast  = HGuide->LastParameter();
   double Target  = SpLast;
   if (reverse)
+  {
     Target = SpFirst;
+  }
   double Targetsov = Target;
 
   double MS      = MaxStep;
@@ -1075,9 +1157,13 @@ bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
     }
   }
   if (Forward)
+  {
     Decroch = TheWalk.DecrochEnd();
+  }
   else
+  {
     Decroch = TheWalk.DecrochStart();
+  }
   Last  = Lin->Point(Nbpnt).Parameter();
   First = Lin->Point(1).Parameter();
   return true;
@@ -1129,7 +1215,9 @@ bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
   double SpLast  = HGuide->LastParameter();
   double Target  = SpLast;
   if (reverse)
+  {
     Target = SpFirst;
+  }
   double Targetsov = Target;
 
   double MS      = MaxStep;
@@ -1292,7 +1380,9 @@ bool ChFi3d_Builder::SimulData(occ::handle<ChFiDS_SurfData>& /*Data*/,
   double SpLast  = HGuide->LastParameter();
   double Target  = SpLast;
   if (reverse)
+  {
     Target = SpFirst;
+  }
   double Targetsov = Target;
 
   double MS    = MaxStep;
@@ -1397,9 +1487,13 @@ bool ChFi3d_Builder::SimulData(occ::handle<ChFiDS_SurfData>& /*Data*/,
     }
   }
   if (Forward)
+  {
     Decroch = TheWalk.DecrochEnd();
+  }
   else
+  {
     Decroch = TheWalk.DecrochStart();
+  }
   Last  = Lin->Point(Nbpnt).Parameter();
   First = Lin->Point(1).Parameter();
   return true;
@@ -1450,7 +1544,9 @@ bool ChFi3d_Builder::SimulData(occ::handle<ChFiDS_SurfData>& /*Data*/,
   double SpLast  = HGuide->LastParameter();
   double Target  = SpLast;
   if (reverse)
+  {
     Target = SpFirst;
+  }
   double Targetsov = Target;
 
   double MS    = MaxStep;
@@ -1617,7 +1713,9 @@ bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
     {
       const occ::handle<ChFiDS_ElSpine>& aHElSpine = ILES.Value();
       if (aHElSpine == HGuide)
+      {
         OffsetHGuide = ILES_offset.Value();
+      }
     }
   }
 
@@ -1630,10 +1728,14 @@ bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
   TopoDS_Face                      F1, F2;
   occ::handle<BRepAdaptor_Surface> HS = occ::down_cast<BRepAdaptor_Surface>(S1);
   if (!HS.IsNull())
+  {
     F1 = HS->Face();
+  }
   HS = occ::down_cast<BRepAdaptor_Surface>(S2);
   if (!HS.IsNull())
+  {
     F2 = HS->Face();
+  }
 
   // Path framing variables
   double TolGuide = tolguide;
@@ -1659,13 +1761,17 @@ bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
   {
     Target = SpFirst;
     if (!intf)
+    {
       Target = Last;
+    }
   }
   else
   {
     Target = SpLast + std::abs(SpLast);
     if (!intl)
+    {
       Target = Last;
+    }
   }
 
   // In case if the singularity is pre-determined,
@@ -1757,11 +1863,15 @@ bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
   {
     // Path.
     if (!again && (MS < 5 * TolGuide))
+    {
       MS = 5 * TolGuide;
+    }
     else
     {
       if (5 * TolGuide > MS)
+      {
         TolGuide = MS / 5;
+      }
     }
     TheWalk.Perform(Func, FInv, NewFirst, Target, MS, tolapp3d, TolGuide, ParSol, Fleche, Appro);
     if (!TheWalk.IsDone())
@@ -1788,7 +1898,9 @@ bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
     }
     bool complmnt = true;
     if (Inside)
+    {
       complmnt = TheWalk.Complete(Func, FInv, SpLast);
+    }
     if (!complmnt)
     {
 #ifdef OCCT_DEBUG
@@ -1987,11 +2099,17 @@ bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
     }
     bool oncontinue = !noproldeb && (narc1 != 0 || narc2 != 0);
     if (debobst1 || debobst2)
+    {
       oncontinue = false;
+    }
     else if (debcas1 && debcas2)
+    {
       oncontinue = false;
+    }
     else if ((!debcas1 && debarc1) || (!debcas2 && debarc2))
+    {
       oncontinue = false;
+    }
 
     if (oncontinue)
     {
@@ -2008,7 +2126,9 @@ bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
       if (!debarc1)
       {
         if (narc1 == 0)
+        {
           backwContinueFailed = Lin->StartPointOnFirst().ParameterOnGuide() > Target;
+        }
         else
         {
           ChFi3d_FilCommonPoint(Lin->StartPointOnFirst(),
@@ -2036,7 +2156,9 @@ bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
       if (!debarc2)
       {
         if (narc2 == 0)
+        {
           backwContinueFailed = Lin->StartPointOnSecond().ParameterOnGuide() > Target;
+        }
         else
         {
           ChFi3d_FilCommonPoint(Lin->StartPointOnSecond(),
@@ -2068,7 +2190,9 @@ bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
         // check this condition
         const ChFiDS_CommonPoint& aCP = debarc1 ? Data->VertexFirstOnS1() : Data->VertexFirstOnS2();
         if (aCP.IsOnArc() && bif.IsNull())
+        {
           backwContinueFailed = false;
+        }
       }
     }
   }
@@ -2117,11 +2241,17 @@ bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
     }
     bool oncontinue = !noprolfin && (narc1 != 0 || narc2 != 0);
     if (finobst1 || finobst2)
+    {
       oncontinue = false;
+    }
     else if (fincas1 && fincas2)
+    {
       oncontinue = false;
+    }
     else if ((!fincas1 && finarc1) || (!fincas2 && finarc2))
+    {
       oncontinue = false;
+    }
 
     if (oncontinue)
     {
@@ -2138,7 +2268,9 @@ bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
       if (!finarc1)
       {
         if (narc1 == 0)
+        {
           forwContinueFailed = Lin->EndPointOnFirst().ParameterOnGuide() < Target;
+        }
         else
         {
           ChFi3d_FilCommonPoint(Lin->EndPointOnFirst(),
@@ -2161,7 +2293,9 @@ bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
       if (!finarc2)
       {
         if (narc2 == 0)
+        {
           forwContinueFailed = Lin->EndPointOnSecond().ParameterOnGuide() < Target;
+        }
         else
         {
           ChFi3d_FilCommonPoint(Lin->EndPointOnSecond(),
@@ -2188,7 +2322,9 @@ bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
         // check this condition
         const ChFiDS_CommonPoint& aCP = finarc1 ? Data->VertexLastOnS1() : Data->VertexLastOnS2();
         if (aCP.IsOnArc() && bif.IsNull())
+        {
           forwContinueFailed = false;
+        }
       }
       //  modified by eap Fri Feb  8 11:45:10 2002 ___END___
     }
@@ -2210,14 +2346,20 @@ bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
       double sortie;
       int    ind;
       if (debarc1)
+      {
         sortie = Data->VertexFirstOnS1().Parameter();
+      }
       else
+      {
         sortie = Data->VertexFirstOnS2().Parameter();
+      }
       if (sortie - First > tolesp)
       {
         ind = SearchIndex(sortie, Lin);
         if (Lin->Point(ind).Parameter() == sortie)
+        {
           ind--;
+        }
         if (ind >= 1)
         {
           Lin->Remove(1, ind);
@@ -2235,9 +2377,13 @@ bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
       {
         ind = SearchIndex(sortie, Lin);
         if (Lin->Point(ind).Parameter() == sortie)
+        {
           ind--;
+        }
         if (Nbpnt - ind < 3)
+        {
           ind = Nbpnt - 3;
+        }
         if (ind >= 1)
         {
           Lin->Remove(1, ind);
@@ -2254,17 +2400,23 @@ bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
       Data->FirstExtensionValue(std::abs(Lin->Point(1).Parameter() - Target));
     }
     if (intf && !unseulsuffitdeb)
+    {
       intf = (Gd1 && Gd2)            //;
              || backwContinueFailed; // eap
+    }
     else if (intf && unseulsuffitdeb && (intf < 5))
     {
       intf = (Gd1 || Gd2);
       // It is checked if there is no new face.
       if (intf && ((!debcas1 && debarc1) || (!debcas2 && debarc2)))
+      {
         intf = 0;
+      }
     }
     else if (intf < 5)
+    {
       intf = 0;
+    }
   }
 
   if (Forward && intl)
@@ -2278,14 +2430,20 @@ bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
       double sortie;
       int    ind;
       if (finarc1)
+      {
         sortie = Data->VertexLastOnS1().Parameter();
+      }
       else
+      {
         sortie = Data->VertexLastOnS2().Parameter();
+      }
       if (Last - sortie > tolesp)
       {
         ind = SearchIndex(sortie, Lin);
         if (Lin->Point(ind).Parameter() == sortie)
+        {
           ind++;
+        }
         if (ind <= Nbpnt)
         {
           Lin->Remove(ind, Nbpnt);
@@ -2304,9 +2462,13 @@ bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
       {
         ind = SearchIndex(sortie, Lin);
         if (Lin->Point(ind).Parameter() == sortie)
+        {
           ind++;
+        }
         if (ind < 3)
+        {
           ind = 3;
+        }
         if (ind <= Nbpnt)
         {
           Lin->Remove(ind, Nbpnt);
@@ -2324,16 +2486,22 @@ bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
     }
 
     if (intl && !unseulsuffitfin)
+    {
       intl = (Gf1 && Gf2)           //;
              || forwContinueFailed; // eap
+    }
     else if (intl && unseulsuffitfin && (intl < 5))
     {
       intl = (Gf1 || Gf2); // It is checked if there is no new face.
       if (intl && ((!fincas1 && finarc1) || (!fincas2 && finarc2)))
+      {
         intl = 0;
+      }
     }
     else if (intl < 5)
+    {
       intl = 0;
+    }
   }
   return true;
 }
@@ -2418,11 +2586,15 @@ bool ChFi3d_Builder::SimulData(occ::handle<ChFiDS_SurfData>& /*Data*/,
     // When the start point is inside, the path goes first to the left
     // to determine the Last for the periodicals.
     if (!again && (MS < 5 * TolGuide))
+    {
       MS = 5 * TolGuide;
+    }
     else
     {
       if (5 * TolGuide > MS)
+      {
         TolGuide = MS / 5;
+      }
     }
 
     TheWalk.Perform(Func, FInv, NewFirst, Target, MS, tolapp3d, TolGuide, ParSol, Fleche, Appro);
@@ -2451,7 +2623,9 @@ bool ChFi3d_Builder::SimulData(occ::handle<ChFiDS_SurfData>& /*Data*/,
       }
       bool complmnt = true;
       if (Inside)
+      {
         complmnt = TheWalk.Complete(Func, FInv, SpLast);
+      }
       if (!complmnt)
       {
 #ifdef OCCT_DEBUG

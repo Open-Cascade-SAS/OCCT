@@ -32,7 +32,9 @@ void RWStepRepr_RWRepresentationRelationship::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 4, ach, "representation_relationship"))
+  {
     return;
+  }
 
   // --- own field : name ---
 

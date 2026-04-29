@@ -27,19 +27,33 @@ int StepAP214_AutoDesignPresentedItemSelect::CaseNum(
   const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinition)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinitionRelationship)))
+  {
     return 2;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepRepr_ProductDefinitionShape)))
+  {
     return 3;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepRepr_RepresentationRelationship)))
+  {
     return 4;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepRepr_ShapeAspect)))
+  {
     return 5;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_DocumentRelationship)))
+  {
     return 6;
+  }
   return 0;
 }
 

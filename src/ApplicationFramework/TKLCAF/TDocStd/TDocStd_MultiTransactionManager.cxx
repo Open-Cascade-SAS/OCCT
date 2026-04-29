@@ -49,7 +49,9 @@ void TDocStd_MultiTransactionManager::SetUndoLimit(const int theLimit)
 
   int i;
   for (i = myDocuments.Length(); i > 0; i--)
+  {
     myDocuments.Value(i)->SetUndoLimit(myUndoLimit);
+  }
 }
 
 //=================================================================================================
@@ -57,14 +59,18 @@ void TDocStd_MultiTransactionManager::SetUndoLimit(const int theLimit)
 void TDocStd_MultiTransactionManager::Undo()
 {
   if (myUndos.IsEmpty())
+  {
     return;
+  }
   const NCollection_Sequence<occ::handle<TDocStd_Document>>& docs = myUndos.First()->GetDocuments();
   int                                                        i;
   for (i = docs.Length(); i > 0; i--)
   {
     occ::handle<TDocStd_Document> doc = docs.Value(i);
     if (doc.IsNull() || doc->GetAvailableUndos() == 0)
+    {
       continue;
+    }
     doc->Undo();
   }
   myRedos.Prepend(myUndos.First());
@@ -77,14 +83,18 @@ void TDocStd_MultiTransactionManager::Undo()
 void TDocStd_MultiTransactionManager::Redo()
 {
   if (myRedos.IsEmpty())
+  {
     return;
+  }
   const NCollection_Sequence<occ::handle<TDocStd_Document>>& docs = myRedos.First()->GetDocuments();
   int                                                        i;
   for (i = docs.Length(); i > 0; i--)
   {
     occ::handle<TDocStd_Document> doc = docs.Value(i);
     if (doc.IsNull() || doc->GetAvailableRedos() == 0)
+    {
       continue;
+    }
     doc->Redo();
   }
   myUndos.Prepend(myRedos.First());
@@ -112,7 +122,9 @@ void TDocStd_MultiTransactionManager::OpenCommand()
   for (i = myDocuments.Length(); i > 0; i--)
   {
     while (myDocuments.Value(i)->HasOpenCommand())
+    {
       myDocuments.Value(i)->AbortCommand();
+    }
     myDocuments.Value(i)->OpenCommand();
   }
 }
@@ -126,7 +138,9 @@ void TDocStd_MultiTransactionManager::AbortCommand()
   for (i = myDocuments.Length(); i > 0; i--)
   {
     while (myDocuments.Value(i)->HasOpenCommand())
+    {
       myDocuments.Value(i)->AbortCommand();
+    }
   }
 }
 
@@ -141,8 +155,12 @@ bool TDocStd_MultiTransactionManager::CommitCommand()
   {
     isCommited = false;
     while (myDocuments.Value(i)->HasOpenCommand())
+    {
       if (myDocuments.Value(i)->CommitCommand())
+      {
         isCommited = true;
+      }
+    }
     if (isCommited)
     {
       aDelta->GetDocuments().Append(myDocuments.Value(i));
@@ -169,7 +187,9 @@ bool TDocStd_MultiTransactionManager::CommitCommand(const TCollection_ExtendedSt
 {
   bool isCommited = CommitCommand();
   if (isCommited && myUndos.Length())
+  {
     myUndos.First()->SetName(theName);
+  }
   return isCommited;
 }
 
@@ -179,27 +199,37 @@ void TDocStd_MultiTransactionManager::DumpTransaction(Standard_OStream& anOS) co
 {
   int i;
   if (myDocuments.Length() == 0)
-    anOS << "Manager is empty" << std::endl;
+  {
+    anOS << "Manager is empty" << '\n';
+  }
   else
   {
     if (myDocuments.Length() == 1)
+    {
       anOS << "There is one document ( ";
+    }
     else
+    {
       anOS << "There are " << myDocuments.Length() << " documents ( ";
+    }
     for (i = 1; i <= myDocuments.Length(); i++)
     {
       occ::handle<Standard_Transient> aDoc(myDocuments.Value(i));
       anOS << "\"" << aDoc.get();
       anOS << "\" ";
     }
-    anOS << ") in the manager " << std::endl;
+    anOS << ") in the manager " << '\n';
 
     if (myIsNestedTransactionMode)
-      anOS << "Nested transaction mode is on" << std::endl;
+    {
+      anOS << "Nested transaction mode is on" << '\n';
+    }
     else
-      anOS << "Nested transaction mode is off" << std::endl;
+    {
+      anOS << "Nested transaction mode is off" << '\n';
+    }
 
-    anOS << " " << std::endl;
+    anOS << " " << '\n';
   }
 
   for (i = myUndos.Length(); i > 0; i--)
@@ -209,11 +239,11 @@ void TDocStd_MultiTransactionManager::DumpTransaction(Standard_OStream& anOS) co
     delta->Dump(anOS);
     if (i == 1)
     {
-      anOS << "  < Last action" << std::endl;
+      anOS << "  < Last action" << '\n';
     }
     else
     {
-      anOS << std::endl;
+      anOS << '\n';
     }
   }
   for (i = 1; i <= myRedos.Length(); i++)
@@ -221,7 +251,7 @@ void TDocStd_MultiTransactionManager::DumpTransaction(Standard_OStream& anOS) co
     occ::handle<TDocStd_ApplicationDelta> delta = myRedos.Value(i);
     anOS << " Redo: ";
     delta->Dump(anOS);
-    anOS << std::endl;
+    anOS << '\n';
   }
 }
 
@@ -230,7 +260,9 @@ void TDocStd_MultiTransactionManager::DumpTransaction(Standard_OStream& anOS) co
 void TDocStd_MultiTransactionManager::RemoveLastUndo()
 {
   if (myUndos.Length() == 0)
+  {
     return;
+  }
   const NCollection_Sequence<occ::handle<TDocStd_Document>>& docs = myUndos.Last()->GetDocuments();
   int                                                        i;
   for (i = 1; i <= docs.Length(); i++)
@@ -246,11 +278,17 @@ void TDocStd_MultiTransactionManager::AddDocument(const occ::handle<TDocStd_Docu
 {
   int i;
   for (i = myDocuments.Length(); i > 0; i--)
+  {
     if (myDocuments.Value(i) == theDoc)
+    {
       return; // the document is already added to the list
+    }
+  }
 
   if (theDoc->IsNestedTransactionMode() != myIsNestedTransactionMode)
+  {
     theDoc->SetNestedTransactionMode(myIsNestedTransactionMode);
+  }
 
   theDoc->SetModificationMode(myOnlyTransactionModification);
 
@@ -259,12 +297,16 @@ void TDocStd_MultiTransactionManager::AddDocument(const occ::handle<TDocStd_Docu
   if (myOpenTransaction)
   {
     if (!theDoc->HasOpenCommand())
+    {
       theDoc->OpenCommand();
+    }
   }
   else
   {
     if (theDoc->HasOpenCommand())
+    {
       theDoc->CommitCommand();
+    }
   }
   theDoc->ClearUndos();
   theDoc->ClearRedos();
@@ -278,7 +320,9 @@ void TDocStd_MultiTransactionManager::RemoveDocument(const occ::handle<TDocStd_D
   for (i = myDocuments.Length(); i > 0; i--)
   {
     if (myDocuments.Value(i) == theDoc)
+    {
       myDocuments.Remove(i);
+    }
   }
   for (i = myUndos.Length(); i > 0; i--)
   {
@@ -290,7 +334,9 @@ void TDocStd_MultiTransactionManager::RemoveDocument(const occ::handle<TDocStd_D
       {
         docs.Remove(j);
         if (docs.Length() == 0)
+        {
           myUndos.Remove(i);
+        }
       }
     }
   }
@@ -304,7 +350,9 @@ void TDocStd_MultiTransactionManager::RemoveDocument(const occ::handle<TDocStd_D
       {
         docs.Remove(j);
         if (docs.Length() == 0)
+        {
           myRedos.Remove(i);
+        }
       }
     }
   }
@@ -319,7 +367,9 @@ void TDocStd_MultiTransactionManager::SetNestedTransactionMode(const bool isAllo
   for (i = myDocuments.Length(); i > 0; i--)
   {
     if (myDocuments.Value(i)->IsNestedTransactionMode() != myIsNestedTransactionMode)
+    {
       myDocuments.Value(i)->SetNestedTransactionMode(myIsNestedTransactionMode);
+    }
   }
 }
 

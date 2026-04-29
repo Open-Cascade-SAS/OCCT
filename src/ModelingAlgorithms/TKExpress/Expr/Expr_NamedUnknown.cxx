@@ -111,7 +111,9 @@ bool Expr_NamedUnknown::Contains(const occ::handle<Expr_GeneralExpression>& exp)
   {
     const occ::handle<Expr_NamedUnknown> expNamed = occ::down_cast<Expr_NamedUnknown>(exp);
     if (expNamed.IsNull() || expNamed->IsAssigned())
+    {
       return false;
+    }
     // AGV 22.03.12: Comparison based on name coincidence
     return IsIdentical(expNamed);
   }

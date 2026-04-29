@@ -118,7 +118,9 @@ void BOPAlgo_Builder::FillIn3DParts(
   {
     const BOPDS_ShapeInfo& aSI = myDS->ShapeInfo(i);
     if (aSI.ShapeType() != TopAbs_FACE)
+    {
       continue;
+    }
 
     if (UserBreak(aPS))
     {
@@ -135,7 +137,9 @@ void BOPAlgo_Builder::FillIn3DParts(
       {
         const TopoDS_Shape& aSIm = aItLSIm.Value();
         if (aMFence.Add(aSIm))
+        {
           aLFaces.Append(aSIm);
+        }
       }
     }
     else
@@ -174,7 +178,9 @@ void BOPAlgo_Builder::FillIn3DParts(
     // Bounding box for the solid aS
     Bnd_Box& aBoxS = aSI.ChangeBox();
     if (aBoxS.IsVoid())
+    {
       myDS->BuildBndBoxSolid(i, aBoxS, myCheckInverted);
+    }
 
     // Build Draft Solid
     NCollection_List<TopoDS_Shape> aLIF;
@@ -221,11 +227,15 @@ void BOPAlgo_Builder::FillIn3DParts(
       bool bHasImage = false;
       // Check if the shells of the solid have image
       for (TopoDS_Iterator it(aSolid); it.More() && !bHasImage; it.Next())
+      {
         bHasImage = myImages.IsBound(it.Value());
+      }
 
       if (!bHasImage)
+      {
         // no need to split the solid
         continue;
+      }
     }
 
     theDraftSolids.Bind(aSolid, aSDraft);
@@ -239,11 +249,15 @@ void BOPAlgo_Builder::FillIn3DParts(
 
       NCollection_List<TopoDS_Shape>::Iterator aItLS(aLInFaces);
       for (; aItLS.More(); aItLS.Next())
+      {
         pLIN->Append(aItLS.Value());
+      }
 
       aItLS.Initialize(aLInternal);
       for (; aItLS.More(); aItLS.Next())
+      {
         pLIN->Append(aItLS.Value());
+      }
     }
   }
 }
@@ -455,12 +469,16 @@ void BOPAlgo_Builder::BuildSplitSolids(
   {
     const BOPDS_ShapeInfo& aSI = myDS->ShapeInfo(i);
     if (aSI.ShapeType() != TopAbs_SOLID)
+    {
       continue;
+    }
 
     const TopoDS_Shape& aS     = aSI.Shape();
     const TopoDS_Solid& aSolid = (*(TopoDS_Solid*)(&aS));
     if (!theDraftSolids.IsBound(aS))
+    {
       continue;
+    }
 
     const TopoDS_Shape&                   aSD   = theDraftSolids.Find(aS);
     const NCollection_List<TopoDS_Shape>* pLFIN = myInParts.Seek(aS);
@@ -551,7 +569,9 @@ void BOPAlgo_Builder::BuildSplitSolids(
           AddWarning(anAlertWithShape);
         }
         else
+        {
           AddWarning(anAlert);
+        }
       }
     }
   }

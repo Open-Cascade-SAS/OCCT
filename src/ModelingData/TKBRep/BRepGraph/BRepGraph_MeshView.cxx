@@ -25,7 +25,9 @@ bool BRepGraph::MeshView::FaceOps::isFresh(const BRepGraph_FaceId theFace,
 {
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
   if (!theFace.IsValid(aStorage.NbFaces()))
+  {
     return false;
+  }
   return theStoredGen == aStorage.Face(theFace).OwnGen;
 }
 
@@ -39,12 +41,16 @@ bool BRepGraph::MeshView::FaceOps::HasTriangulation(const BRepGraph_FaceId theFa
   {
     const BRepGraph_TriangulationRepId aRepId = aCached->ActiveTriangulationRepId();
     if (aRepId.IsValid())
+    {
       return true;
+    }
   }
   // Fallback to persistent mesh in definition.
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
   if (!theFace.IsValid(aStorage.NbFaces()))
+  {
     return false;
+  }
   const BRepGraph_TriangulationRepId aRepId = aStorage.Face(theFace).TriangulationRepId;
   return aRepId.IsValid(aStorage.NbTriangulations())
          && !aStorage.TriangulationRep(aRepId).IsRemoved;
@@ -71,10 +77,14 @@ BRepGraph_TriangulationRepId BRepGraph::MeshView::FaceOps::ActiveTriangulationRe
 
   // Fallback to persistent.
   if (!theFace.IsValid(aStorage.NbFaces()))
+  {
     return BRepGraph_TriangulationRepId();
+  }
   const BRepGraph_TriangulationRepId aRepId = aStorage.Face(theFace).TriangulationRepId;
   if (!aRepId.IsValid(aStorage.NbTriangulations()) || aStorage.TriangulationRep(aRepId).IsRemoved)
+  {
     return BRepGraph_TriangulationRepId();
+  }
   return aRepId;
 }
 
@@ -86,7 +96,9 @@ const BRepGraph_MeshCache::FaceMeshEntry* BRepGraph::MeshView::FaceOps::CachedMe
   const BRepGraph_MeshCache::FaceMeshEntry* aCached =
     myGraph->myData->myMeshCache.FindFaceMesh(theFace);
   if (aCached != nullptr && isFresh(theFace, aCached->StoredOwnGen))
+  {
     return aCached;
+  }
   return nullptr;
 }
 
@@ -99,7 +111,9 @@ bool BRepGraph::MeshView::EdgeOps::isFresh(const BRepGraph_EdgeId theEdge,
 {
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
   if (!theEdge.IsValid(aStorage.NbEdges()))
+  {
     return false;
+  }
   return theStoredGen == aStorage.Edge(theEdge).OwnGen;
 }
 
@@ -112,12 +126,16 @@ bool BRepGraph::MeshView::EdgeOps::HasPolygon3D(const BRepGraph_EdgeId theEdge) 
   if (aCached != nullptr && isFresh(theEdge, aCached->StoredOwnGen))
   {
     if (aCached->Polygon3DRepId.IsValid())
+    {
       return true;
+    }
   }
   // Fallback to persistent.
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
   if (!theEdge.IsValid(aStorage.NbEdges()))
+  {
     return false;
+  }
   const BRepGraph_Polygon3DRepId aRepId = aStorage.Edge(theEdge).Polygon3DRepId;
   return aRepId.IsValid(aStorage.NbPolygons3D()) && !aStorage.Polygon3DRep(aRepId).IsRemoved;
 }
@@ -143,10 +161,14 @@ BRepGraph_Polygon3DRepId BRepGraph::MeshView::EdgeOps::Polygon3DRepId(
 
   // Fallback to persistent.
   if (!theEdge.IsValid(aStorage.NbEdges()))
+  {
     return BRepGraph_Polygon3DRepId();
+  }
   const BRepGraph_Polygon3DRepId aRepId = aStorage.Edge(theEdge).Polygon3DRepId;
   if (!aRepId.IsValid(aStorage.NbPolygons3D()) || aStorage.Polygon3DRep(aRepId).IsRemoved)
+  {
     return BRepGraph_Polygon3DRepId();
+  }
   return aRepId;
 }
 
@@ -158,7 +180,9 @@ const BRepGraph_MeshCache::EdgeMeshEntry* BRepGraph::MeshView::EdgeOps::CachedMe
   const BRepGraph_MeshCache::EdgeMeshEntry* aCached =
     myGraph->myData->myMeshCache.FindEdgeMesh(theEdge);
   if (aCached != nullptr && isFresh(theEdge, aCached->StoredOwnGen))
+  {
     return aCached;
+  }
   return nullptr;
 }
 
@@ -171,7 +195,9 @@ bool BRepGraph::MeshView::CoEdgeOps::isFresh(const BRepGraph_CoEdgeId theCoEdge,
 {
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
   if (!theCoEdge.IsValid(aStorage.NbCoEdges()))
+  {
     return false;
+  }
   return theStoredGen == aStorage.CoEdge(theCoEdge).OwnGen;
 }
 
@@ -182,7 +208,9 @@ bool BRepGraph::MeshView::CoEdgeOps::HasMesh(const BRepGraph_CoEdgeId theCoEdge)
   const BRepGraph_MeshCache::CoEdgeMeshEntry* aCached =
     myGraph->myData->myMeshCache.FindCoEdgeMesh(theCoEdge);
   if (aCached != nullptr && isFresh(theCoEdge, aCached->StoredOwnGen))
+  {
     return true;
+  }
   return false;
 }
 
@@ -194,7 +222,9 @@ const BRepGraph_MeshCache::CoEdgeMeshEntry* BRepGraph::MeshView::CoEdgeOps::Cach
   const BRepGraph_MeshCache::CoEdgeMeshEntry* aCached =
     myGraph->myData->myMeshCache.FindCoEdgeMesh(theCoEdge);
   if (aCached != nullptr && isFresh(theCoEdge, aCached->StoredOwnGen))
+  {
     return aCached;
+  }
   return nullptr;
 }
 

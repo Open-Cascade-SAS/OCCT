@@ -190,7 +190,9 @@ void Law_Composite::Prepare(double& W)
 
   curfunc->Bounds(f, l);
   if (f <= Wtest && Wtest <= l)
+  {
     return;
+  }
   if (W <= first)
   {
     curfunc = funclist.First();
@@ -207,7 +209,9 @@ void Law_Composite::Prepare(double& W)
       curfunc = It.Value();
       curfunc->Bounds(f, l);
       if (f <= Wtest && Wtest <= l)
+      {
         return;
+      }
     }
   }
 }

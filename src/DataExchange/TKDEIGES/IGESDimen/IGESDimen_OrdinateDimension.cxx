@@ -36,9 +36,13 @@ void IGESDimen_OrdinateDimension::Init(const occ::handle<IGESDimen_GeneralNote>&
   theWitnessLine = aLine;
   theLeader      = anArrow;
   if ((aLine.IsNull()) || (anArrow.IsNull()))
+  {
     InitTypeAndForm(218, 0);
+  }
   else
+  {
     InitTypeAndForm(218, 1);
+  }
 }
 
 occ::handle<IGESDimen_GeneralNote> IGESDimen_OrdinateDimension::Note() const

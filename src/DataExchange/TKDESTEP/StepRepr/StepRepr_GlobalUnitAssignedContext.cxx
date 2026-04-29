@@ -49,6 +49,8 @@ occ::handle<StepBasic_NamedUnit> StepRepr_GlobalUnitAssignedContext::UnitsValue(
 int StepRepr_GlobalUnitAssignedContext::NbUnits() const
 {
   if (units.IsNull())
+  {
     return 0;
+  }
   return units->Length();
 }

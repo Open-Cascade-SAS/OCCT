@@ -79,7 +79,9 @@ public:
     const int aLower  = theBatchIndex * THE_BATCH_SIZE;
     const int anUpper = std::min(aLower + THE_BATCH_SIZE - 1, myX.Upper());
     for (int i = aLower; i <= anUpper; ++i)
+    {
       myY(i) = myScalar * myX(i) + myY(i);
+    }
   }
 
   void operator()(int /*theThreadIndex*/, int theBatchIndex) const { (*this)(theBatchIndex); }
@@ -119,7 +121,9 @@ public:
     {
       double aTmp = 0.0;
       for (int k = 0; k < mySize; ++k)
+      {
         aTmp += myMat1(theIndex, k) * myMat2(k, j);
+      }
       myResult(theIndex, j) = aTmp;
     }
   }
@@ -147,47 +151,63 @@ TEST(OSD_ParallelTest, OCC24826_SaxpyParallelMatchesSequential)
   NCollection_Array1<double> aX(0, aLength - 1);
   NCollection_Array1<double> anYRef(0, aLength - 1);
   for (int i = 0; i < aLength; ++i)
+  {
     aX(i) = anYRef(i) = static_cast<double>(i);
+  }
 
   // Sequential reference
   {
     const SaxpyFunctor aFunctor(aX, anYRef, 1e-6);
     for (int i = 0; i < aLength; ++i)
+    {
       aFunctor(i);
+    }
   }
 
   // OSD_Parallel::For
   {
     NCollection_Array1<double> anY = aX;
     for (int i = 0; i < aLength; ++i)
+    {
       anY(i) = static_cast<double>(i);
+    }
     SaxpyFunctor aFunctor(aX, anY, 1e-6);
     OSD_Parallel::For(aFunctor.Begin(), aFunctor.End(), aFunctor);
     for (int i = 0; i < aLength; ++i)
+    {
       EXPECT_DOUBLE_EQ(anY(i), anYRef(i)) << "Mismatch at index " << i;
+    }
   }
 
   // OSD_ThreadPool::Launcher
   {
     NCollection_Array1<double> anY = aX;
     for (int i = 0; i < aLength; ++i)
+    {
       anY(i) = static_cast<double>(i);
+    }
     SaxpyFunctor             aFunctor(aX, anY, 1e-6);
     OSD_ThreadPool::Launcher aLauncher(*OSD_ThreadPool::DefaultPool());
     aLauncher.Perform(aFunctor.Begin(), aFunctor.End(), aFunctor);
     for (int i = 0; i < aLength; ++i)
+    {
       EXPECT_DOUBLE_EQ(anY(i), anYRef(i)) << "Mismatch at index " << i;
+    }
   }
 
   // OSD_Parallel::For with batched functor
   {
     NCollection_Array1<double> anY = aX;
     for (int i = 0; i < aLength; ++i)
+    {
       anY(i) = static_cast<double>(i);
+    }
     SaxpyBatchFunctor aFunctor(aX, anY, 1e-6);
     OSD_Parallel::For(aFunctor.Begin(), aFunctor.End(), aFunctor);
     for (int i = 0; i < aLength; ++i)
+    {
       EXPECT_DOUBLE_EQ(anY(i), anYRef(i)) << "Mismatch at index " << i;
+    }
   }
 }
 
@@ -204,17 +224,21 @@ TEST(OSD_ParallelTest, OCC29935_MatrixMultiplyParallelMatchesSequential)
   NCollection_Array2<double> aMatRes(0, aSize - 1, 0, aSize - 1);
 
   for (int i = 0; i < aSize; ++i)
+  {
     for (int j = 0; j < aSize; ++j)
     {
       aMat1(i, j) = static_cast<double>(aGen() % 1000);
       aMat2(i, j) = static_cast<double>(aGen() % 1000);
     }
+  }
 
   // Sequential reference
   {
     MatMultFunctor aFunctor(aMat1, aMat2, aMatRef, aSize);
     for (int i = aFunctor.Begin(); i < aFunctor.End(); ++i)
+    {
       aFunctor(i);
+    }
   }
 
   // OSD_Parallel::For
@@ -223,8 +247,12 @@ TEST(OSD_ParallelTest, OCC29935_MatrixMultiplyParallelMatchesSequential)
     MatMultFunctor aFunctor(aMat1, aMat2, aMatRes, aSize);
     OSD_Parallel::For(aFunctor.Begin(), aFunctor.End(), aFunctor);
     for (int i = 0; i < aSize; ++i)
+    {
       for (int j = 0; j < aSize; ++j)
+      {
         EXPECT_DOUBLE_EQ(aMatRes(i, j), aMatRef(i, j));
+      }
+    }
   }
 
   // OSD_ThreadPool::Launcher
@@ -234,7 +262,11 @@ TEST(OSD_ParallelTest, OCC29935_MatrixMultiplyParallelMatchesSequential)
     OSD_ThreadPool::Launcher aLauncher(*OSD_ThreadPool::DefaultPool());
     aLauncher.Perform(aFunctor.Begin(), aFunctor.End(), aFunctor);
     for (int i = 0; i < aSize; ++i)
+    {
       for (int j = 0; j < aSize; ++j)
+      {
         EXPECT_DOUBLE_EQ(aMatRes(i, j), aMatRef(i, j));
+      }
+    }
   }
 }

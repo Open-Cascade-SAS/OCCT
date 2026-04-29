@@ -75,23 +75,31 @@ namespace
 static bool isCylinderOrCone(const TopoDS_Face& theFace)
 {
   if (theFace.NbChildren() != 1)
+  {
     return false;
+  }
 
   const TopoDS_Iterator aWireIt(theFace);
   const TopoDS_Shape&   aWire = aWireIt.Value();
   if (aWire.ShapeType() != TopAbs_WIRE || aWire.NbChildren() != 4)
+  {
     return false;
+  }
 
   int aNbSeams = 0, aNbCirles = 0;
   for (TopoDS_Iterator anEdgeIt(aWire); anEdgeIt.More(); anEdgeIt.Next())
   {
     const TopoDS_Edge& anEdge = TopoDS::Edge(anEdgeIt.Value());
     if (BRep_Tool::IsClosed(anEdge, theFace))
+    {
       ++aNbSeams;
+    }
 
     BRepAdaptor_Curve anAdaptor(anEdge);
     if (anAdaptor.GetType() == GeomAbs_Circle)
+    {
       ++aNbCirles;
+    }
   }
   return aNbSeams == 2 && aNbCirles == 2;
 }
@@ -472,7 +480,9 @@ static bool FindLimits(const Adaptor3d_Curve& theCurve,
       do
       {
         if (anIterCount++ >= 100000)
+        {
           return false;
+        }
         aDelta *= 2.0;
         theFirst = -aDelta;
         theLast  = aDelta;
@@ -486,7 +496,9 @@ static bool FindLimits(const Adaptor3d_Curve& theCurve,
       do
       {
         if (anIterCount++ >= 100000)
+        {
           return false;
+        }
         aDelta *= 2.0;
         theFirst = theLast - aDelta;
         theCurve.D0(theFirst, aPnt1);
@@ -498,7 +510,9 @@ static bool FindLimits(const Adaptor3d_Curve& theCurve,
       do
       {
         if (anIterCount++ >= 100000)
+        {
           return false;
+        }
         aDelta *= 2.0;
         theLast = theFirst + aDelta;
         theCurve.D0(theLast, aPnt2);

@@ -84,7 +84,9 @@ int ShapeFix_WireVertex::FixSame()
   //  FixSame : prend les status "SameCoord" et "Close" et les force a "Same"
   //  reprendre l edge et forcer le vertex. Evt changer sa tolerance. Et voila
   if (!myAnalyzer.IsDone())
+  {
     return 0;
+  }
 
   int          nbfix = 0;
   BRep_Builder B;
@@ -97,7 +99,9 @@ int ShapeFix_WireVertex::FixSame()
     int j    = (i == nb ? 1 : i + 1);
     int stat = myAnalyzer.Status(i);
     if (stat != 1 && stat != 2)
+    {
       continue;
+    }
     // Ici on prend un vertex et on le generalise aux deux edges
     TopoDS_Edge E1 = sbwd->Edge(i);
     TopoDS_Edge E2 = sbwd->Edge(j);
@@ -145,7 +149,9 @@ int ShapeFix_WireVertex::Fix()
   //   auxquelles on remet les Vertex (assez facile)
   //   Donc deux passes : 1 refaire les VTX  et 2 les remettre dans les edges
   if (!myAnalyzer.IsDone())
+  {
     return 0;
+  }
 
   occ::handle<ShapeExtend_WireData> sbwd = myAnalyzer.WireData();
 
@@ -156,10 +162,14 @@ int ShapeFix_WireVertex::Fix()
     //    On note les valeurs
     // szv#4:S4163:12Mar99 optimized
     if (myAnalyzer.Status(i) > 0)
+    {
       nbfix++;
+    }
   }
   if (nbfix == 0)
+  {
     return 0;
+  }
 
   BRep_Builder B;
 
@@ -211,7 +221,9 @@ int ShapeFix_WireVertex::Fix()
   }
 
   if (nbfix == 0)
+  {
     return nbfix;
+  }
 
   // EmptyCopy pas bon : KK sur les Range (dommage, le reste est bon)
   // Donc on garde l original mais on change les vertex
@@ -246,7 +258,9 @@ int ShapeFix_WireVertex::Fix()
     double        ufol = UJ->Value(j);
 
     if (stat > 2)
+    {
       B.UpdateVertex(V1, gp_Pnt(myAnalyzer.Position(i)), Prec);
+    }
 
     //    ce qui suit : seulement si vertex a reprendre
     if (stat > 0)
@@ -271,7 +285,9 @@ int ShapeFix_WireVertex::Fix()
 
   //  pour finir, MAJ du STW
   for (i = 1; i <= nb; i++)
+  {
     sbwd->Set(TopoDS::Edge(EF->Value(i)), i);
+  }
 
   return nbfix;
 }

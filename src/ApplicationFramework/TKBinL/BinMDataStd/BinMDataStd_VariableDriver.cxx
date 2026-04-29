@@ -48,12 +48,16 @@ bool BinMDataStd_VariableDriver::Paste(const BinObjMgt_Persistent&       theSour
 
   bool isConstant;
   if (!(theSource >> isConstant))
+  {
     return false;
+  }
   aV->Constant(isConstant);
 
   TCollection_AsciiString anStr;
   if (!(theSource >> anStr))
+  {
     return false;
+  }
   aV->Unit(anStr);
 
   return true;

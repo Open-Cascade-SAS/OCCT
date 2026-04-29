@@ -32,13 +32,17 @@ XmlMDF_ADriver::XmlMDF_ADriver(const occ::handle<Message_Messenger>& theMsgDrive
       myMessageDriver(theMsgDriver)
 {
   if (theNS != nullptr)
+  {
     if (theNS[0] != '\0')
     {
       myTypeName = theNS;
       myTypeName += ':';
     }
+  }
   if (theName != nullptr)
+  {
     myTypeName += theName;
+  }
 }
 
 //=================================================================================================
@@ -61,6 +65,8 @@ const TCollection_AsciiString& XmlMDF_ADriver::TypeName() const
 {
   const char* const aString = myTypeName.ToCString();
   if (myTypeName.Length() == 0 || aString[myTypeName.Length() - 1] == ':')
+  {
     (TCollection_AsciiString&)myTypeName += SourceType()->Name();
+  }
   return myTypeName;
 }

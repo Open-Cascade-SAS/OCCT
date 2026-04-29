@@ -35,7 +35,9 @@ void RWStepBasic_RWCharacterizedObject::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "characterized_object"))
+  {
     return;
+  }
 
   // Own fields of CharacterizedObject
 
@@ -73,7 +75,9 @@ void RWStepBasic_RWCharacterizedObject::WriteStep(
     SW.Send(ent->Description());
   }
   else
+  {
     SW.SendUndef();
+  }
 }
 
 //=================================================================================================

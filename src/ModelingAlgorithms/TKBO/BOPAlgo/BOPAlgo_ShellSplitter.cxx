@@ -238,7 +238,9 @@ void BOPAlgo_ShellSplitter::SplitBlock(BOPTools_ConnexityBlock& aCB)
     {
       aLFConnected.Append(aF);
       if (!aBoundaryFaces.Add(aF))
+      {
         aBoundaryFaces.Remove(aF);
+      }
     }
   }
   //

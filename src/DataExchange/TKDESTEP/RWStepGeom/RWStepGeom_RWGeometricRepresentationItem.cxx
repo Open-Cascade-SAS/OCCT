@@ -28,7 +28,9 @@ void RWStepGeom_RWGeometricRepresentationItem::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 1, ach, "geometric_representation_item"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

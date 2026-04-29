@@ -72,12 +72,18 @@ bool IGESData_IGESReaderTool::Recognize(const int                        num,
 
   //  Recognizer -> Liste limitative
   if (!thereco.IsNull())
+  {
     res = thereco->Evaluate(thectyp, anent);
+  }
   if (res)
+  {
     ent = anent;
-  //  Sinon, Library
+    //  Sinon, Library
+  }
   else
+  {
     res = RecognizeByLib(num, theglib, therlib, ach, ent);
+  }
   return res;
 }
 
@@ -129,7 +135,9 @@ bool IGESData_IGESReaderTool::AnalyseRecord(const int                           
     ReadDir(ent, igesdat, DP, ach);              // Reading with this DP
   }
   else
+  {
     ReadDir(ent, igesdat, igesdat->DirPart(num), ach);
+  }
 
   thestep = IGESData_ReadDir;
 
@@ -141,7 +149,9 @@ bool IGESData_IGESReaderTool::AnalyseRecord(const int                           
   {
     //   Empty list not allowed, except if Undefined (for example null type)
     if (!undent.IsNull())
+    {
       return true;
+    }
     // Sending of message : DE : no parameter
     Message_Msg Msg27("XSTEP_27");
     Msg27.Arg(thecnum);
@@ -162,27 +172,37 @@ bool IGESData_IGESReaderTool::AnalyseRecord(const int                           
   thestep = IGESData_ReadOwn;
   ReadOwnParams(ent, igesdat, PR);
   if ((thestep = PR.Stage()) == IGESData_ReadOwn)
+  {
     PR.NextStage();
+  }
   if (thestep == IGESData_ReadEnd)
   {
     if (!PR.IsCheckEmpty())
+    {
       ach = PR.Check();
+    }
     return (!ach->HasFailed());
   }
 
   ReadAssocs(ent, igesdat, PR);
   if ((thestep = PR.Stage()) == IGESData_ReadAssocs)
+  {
     PR.NextStage();
+  }
   if (thestep == IGESData_ReadEnd)
   {
     if (!PR.IsCheckEmpty())
+    {
       ach = PR.Check();
+    }
     return (!ach->HasFailed());
   }
   ReadProps(ent, igesdat, PR);
   //  thestep = IGESData_ReadEnd;
   if (!PR.IsCheckEmpty())
+  {
     ach = PR.Check();
+  }
   return (!ach->HasFailed());
 }
 
@@ -234,7 +254,9 @@ void IGESData_IGESReaderTool::ReadDir(const occ::handle<IGESData_IGESEntity>&   
   ent->InitTypeAndForm(v[0], v[16]);
   occ::handle<IGESData_IGESEntity> fieldent, Structure, fieldlab;
   if (v[2] < 0)
+  {
     Structure = GetCasted(IGESData_IGESEntity, IR->BoundEntity((1 - v[2]) / 2));
+  }
 
   occ::handle<IGESData_LineFontEntity> Lnf;
   if (v[3] < 0)
@@ -251,10 +273,14 @@ void IGESData_IGESReaderTool::ReadDir(const occ::handle<IGESData_IGESEntity>&   
       ent->InitDirFieldEntity(4, fieldent);
     }
     else
+    {
       ent->InitLineFont(Lnf);
+    }
   }
   else
+  {
     ent->InitLineFont(Lnf, v[3]); // ici Lnf Null
+  }
 
   occ::handle<IGESData_LevelListEntity> Lvs;
   if (v[4] < 0)
@@ -271,10 +297,14 @@ void IGESData_IGESReaderTool::ReadDir(const occ::handle<IGESData_IGESEntity>&   
       ent->InitDirFieldEntity(5, fieldent);
     }
     else
+    {
       ent->InitLevel(Lvs, -1);
+    }
   }
   else
+  {
     ent->InitLevel(Lvs, v[4]); // ici Lvs Null
+  }
 
   if (v[5] != 0)
   {
@@ -290,7 +320,9 @@ void IGESData_IGESReaderTool::ReadDir(const occ::handle<IGESData_IGESEntity>&   
       ent->InitDirFieldEntity(6, fieldent);
     }
     else
+    {
       ent->InitView(View);
+    }
   }
 
   if (v[6] != 0)
@@ -307,7 +339,9 @@ void IGESData_IGESReaderTool::ReadDir(const occ::handle<IGESData_IGESEntity>&   
       ent->InitDirFieldEntity(7, fieldent);
     }
     else
+    {
       ent->InitTransf(Transf);
+    }
   }
 
   occ::handle<IGESData_LabelDisplayEntity> Lbd;
@@ -346,10 +380,14 @@ void IGESData_IGESReaderTool::ReadDir(const occ::handle<IGESData_IGESEntity>&   
       ent->InitDirFieldEntity(13, Color);
     }
     else
+    {
       ent->InitColor(Color);
+    }
   }
   else
+  {
     ent->InitColor(Color, v[14]);
+  }
 
   ent->InitMisc(Structure, Lbd, LWeightNum);
   ent->InitDirFieldEntity(8, fieldlab);
@@ -365,20 +403,30 @@ void IGESData_IGESReaderTool::ReadDir(const occ::handle<IGESData_IGESEntity>&   
   for (i = 0; i < 8; i++)
   {
     if (nom[i] > ' ')
+    {
       iacar = 1;
+    }
   }
   if (iacar > 0)
+  {
     ShortLabel = new TCollection_HAsciiString(nom);
+  }
   iacar = 0;
   for (i = 0; i < 8; i++)
   {
     if (snum[i] > ' ')
+    {
       iacar = 1;
+    }
     if (snum[i] == 0)
+    {
       break;
+    }
   }
   if (iacar > 0)
+  {
     SubScriptN = atoi(snum);
+  }
   ent->SetLabel(ShortLabel, SubScriptN);
 
   //    Finally, SetLineWeight, taking into account the default
@@ -443,7 +491,9 @@ void IGESData_IGESReaderTool::ReadProps(const occ::handle<IGESData_IGESEntity>& 
   Msg38.Arg(thecnum);
   Msg38.Arg(thectyp.Type());
   if (PR.Stage() != IGESData_ReadProps)
+  {
     ach->SendFail(Msg38);
+  }
   int ncur = PR.CurrentNumber();
   int nbp  = PR.NbParams();
   if (ncur == nbp + 1)
@@ -452,11 +502,15 @@ void IGESData_IGESReaderTool::ReadProps(const occ::handle<IGESData_IGESEntity>& 
     return;
   }
   else if (ncur > nbp || ncur == 0)
+  {
     ach->SendWarning(Msg38);
+  }
 
   int nbprops = 0;
   if (!PR.DefinedElseSkip())
+  {
     return;
+  }
   if (!PR.ReadInteger(ncur, nbprops))
   {
     Message_Msg Msg221("XSTEP_221");
@@ -471,7 +525,9 @@ void IGESData_IGESReaderTool::ReadProps(const occ::handle<IGESData_IGESEntity>& 
   ++ncur;
   Interface_EntityList props;
   if (PR.ReadEntList(IR, PR.CurrentList(nbprops), Msg38, props, false))
+  {
     ent->LoadProperties(props);
+  }
 }
 
 //  ########                      Associativites                       ########
@@ -490,7 +546,9 @@ void IGESData_IGESReaderTool::ReadAssocs(const occ::handle<IGESData_IGESEntity>&
   Msg37.Arg(thectyp.Type());
   occ::handle<Interface_Check> ach = new Interface_Check;
   if (PR.Stage() != IGESData_ReadAssocs)
+  {
     ach->SendFail(Msg37);
+  }
   int ncur = PR.CurrentNumber();
   int nbp  = PR.NbParams();
   if (ncur == nbp + 1)
@@ -499,11 +557,15 @@ void IGESData_IGESReaderTool::ReadAssocs(const occ::handle<IGESData_IGESEntity>&
     return;
   }
   else if (ncur > nbp || ncur == 0)
+  {
     ach->SendWarning(Msg37);
+  }
 
   int nbassocs = 0;
   if (!PR.DefinedElseSkip())
+  {
     return;
+  }
   if (!PR.ReadInteger(PR.Current(), nbassocs))
   {
     Message_Msg Msg220("XSTEP_220");
@@ -511,8 +573,12 @@ void IGESData_IGESReaderTool::ReadAssocs(const occ::handle<IGESData_IGESEntity>&
     return;
   }
   if (nbassocs == 0)
+  {
     return;
+  }
   Interface_EntityList assocs;
   if (PR.ReadEntList(IR, PR.CurrentList(nbassocs), Msg37, assocs, false))
+  {
     ent->LoadAssociativities(assocs);
+  }
 }

@@ -42,7 +42,9 @@ IFSelect_Editor::IFSelect_Editor(const int nbval)
 void IFSelect_Editor::SetNbValues(const int nbval)
 {
   if (nbval > thevalues.Upper())
+  {
     throw Standard_OutOfRange("IFSelect_Editor:SetNbValues");
+  }
   thenbval = nbval;
 }
 
@@ -52,19 +54,29 @@ void IFSelect_Editor::SetValue(const int                                num,
                                const IFSelect_EditValue                 editmode)
 {
   if (num < 1 || num > thenbval)
+  {
     return;
+  }
   TCollection_AsciiString shn(shortname);
   int                     lng = shn.Length();
   if (lng > 0)
+  {
     thenames.Bind(shortname, num);
+  }
   if (lng > themaxsh)
+  {
     themaxsh = lng;
+  }
   lng = (int)strlen(typval->Name());
   if (lng > themaxco)
+  {
     themaxco = lng;
+  }
   lng = (int)strlen(typval->Label());
   if (lng > themaxla)
+  {
     themaxla = lng;
+  }
 
   thenames.Bind(typval->Name(), num);
   int edm = (int)editmode;
@@ -76,7 +88,9 @@ void IFSelect_Editor::SetValue(const int                                num,
 void IFSelect_Editor::SetList(const int num, const int max)
 {
   if (num < 1 || num > thenbval)
+  {
     return;
+  }
   thelists.SetValue(num, max);
 }
 
@@ -93,31 +107,43 @@ occ::handle<Interface_TypedValue> IFSelect_Editor::TypedValue(const int num) con
 bool IFSelect_Editor::IsList(const int num) const
 {
   if (num < 1 || num > thenbval)
+  {
     return false;
+  }
   return (thelists.Value(num) >= 0);
 }
 
 int IFSelect_Editor::MaxList(const int num) const
 {
   if (num < 1 || num > thenbval)
+  {
     return -1;
+  }
   return thelists.Value(num);
 }
 
 const char* IFSelect_Editor::Name(const int num, const bool isshort) const
 {
   if (num < 1 || num > thenbval)
+  {
     return "";
+  }
   if (isshort)
+  {
     return theshorts.Value(num).ToCString();
+  }
   else
+  {
     return TypedValue(num)->Name();
+  }
 }
 
 IFSelect_EditValue IFSelect_Editor::EditMode(const int num) const
 {
   if (num < 1 || num > thenbval)
+  {
     return IFSelect_EditDynamic;
+  }
   int edm = themodes.Value(num);
   return (IFSelect_EditValue)edm;
 }
@@ -125,54 +151,65 @@ IFSelect_EditValue IFSelect_Editor::EditMode(const int num) const
 void IFSelect_Editor::PrintNames(Standard_OStream& S) const
 {
   int i, nb = NbValues();
-  S << "****    Editor : " << Label() << std::endl;
-  S << "****    Nb Values = " << nb << "    ****    Names / Labels" << std::endl;
+  S << "****    Editor : " << Label() << '\n';
+  S << "****    Nb Values = " << nb << "    ****    Names / Labels" << '\n';
   S << " Num ";
   if (themaxsh > 0)
+  {
     S << "Short" << Interface_MSG::Blanks("Short", themaxsh) << " ";
-  S << "Complete" << Interface_MSG::Blanks("Complete", themaxco) << "  Label" << std::endl;
+  }
+  S << "Complete" << Interface_MSG::Blanks("Complete", themaxco) << "  Label" << '\n';
 
   for (i = 1; i <= nb; i++)
   {
     occ::handle<Interface_TypedValue> tv = TypedValue(i);
     if (tv.IsNull())
+    {
       continue;
+    }
     S << Interface_MSG::Blanks(i, 3) << i << " ";
     if (themaxsh > 0)
     {
       const TCollection_AsciiString& sho = theshorts(i);
       S << sho << Interface_MSG::Blanks(sho.ToCString(), themaxsh) << " ";
     }
-    S << tv->Name() << Interface_MSG::Blanks(tv->Name(), themaxco) << "  " << tv->Label()
-      << std::endl;
+    S << tv->Name() << Interface_MSG::Blanks(tv->Name(), themaxco) << "  " << tv->Label() << '\n';
   }
 }
 
 void IFSelect_Editor::PrintDefs(Standard_OStream& S, const bool labels) const
 {
   int i, nb = NbValues();
-  S << "****    Editor : " << Label() << std::endl;
+  S << "****    Editor : " << Label() << '\n';
   S << "****    Nb Values = " << nb << "    ****    " << (labels ? "Labels" : "Names")
-    << "  /  Definitions" << std::endl;
+    << "  /  Definitions" << '\n';
   S << " Num ";
   if (labels)
+  {
     S << "Label" << Interface_MSG::Blanks("Label", themaxla);
+  }
   else
   {
     if (themaxsh > 0)
+    {
       S << "Short" << Interface_MSG::Blanks("Short", themaxsh + 1);
+    }
     S << "Complete" << Interface_MSG::Blanks("Complete", themaxco);
   }
-  S << "  Edit Mode  &  Definition" << std::endl;
+  S << "  Edit Mode  &  Definition" << '\n';
 
   for (i = 1; i <= nb; i++)
   {
     occ::handle<Interface_TypedValue> tv = TypedValue(i);
     if (tv.IsNull())
+    {
       continue;
+    }
     S << " " << Interface_MSG::Blanks(i, 3) << i << " ";
     if (labels)
+    {
       S << tv->Label() << Interface_MSG::Blanks(tv->Label(), themaxla);
+    }
     else
     {
       if (themaxsh > 0)
@@ -186,11 +223,17 @@ void IFSelect_Editor::PrintDefs(Standard_OStream& S, const bool labels) const
     S << " ";
     int maxls = MaxList(i);
     if (maxls == 0)
+    {
       S << " (List) ";
+    }
     else if (maxls > 0)
+    {
       S << " (List <= " << maxls << " Items) ";
+    }
     else
+    {
       S << " ";
+    }
     IFSelect_EditValue edm = EditMode(i);
     switch (edm)
     {
@@ -217,18 +260,24 @@ void IFSelect_Editor::PrintDefs(Standard_OStream& S, const bool labels) const
         break;
     }
 
-    S << " " << tv->Definition() << std::endl;
+    S << " " << tv->Definition() << '\n';
   }
 }
 
 int IFSelect_Editor::MaxNameLength(const int what) const
 {
   if (what == -1)
+  {
     return themaxsh;
+  }
   if (what == 0)
+  {
     return themaxco;
+  }
   if (what == 1)
+  {
     return themaxla;
+  }
   return 0;
 }
 
@@ -236,10 +285,14 @@ int IFSelect_Editor::NameNumber(const char* const name) const
 {
   int res;
   if (thenames.Find(name, res))
+  {
     return res;
+  }
   res = atoi(name); // if it's an integer, we try it
   if (res < 1 || res > NbValues())
+  {
     res = 0;
+  }
   return res;
 }
 
@@ -253,7 +306,9 @@ occ::handle<IFSelect_ListEditor> IFSelect_Editor::ListEditor(const int num) cons
   occ::handle<IFSelect_ListEditor> led;
   int                              max = MaxList(num);
   if (max < 0)
+  {
     return led;
+  }
   led = new IFSelect_ListEditor(TypedValue(num), max);
   return led;
 }

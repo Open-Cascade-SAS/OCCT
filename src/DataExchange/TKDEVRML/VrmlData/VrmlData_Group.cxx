@@ -52,12 +52,14 @@ bool VrmlData_Group::RemoveNode(const occ::handle<VrmlData_Node>& theNode)
 {
   bool aResult(false);
   for (Iterator anIter = NodeIterator(); anIter.More(); anIter.Next())
+  {
     if (anIter.Value() == theNode)
     {
       aResult = true;
       myNodes.Remove(anIter);
       break;
     }
+  }
   return aResult;
 }
 
@@ -81,12 +83,16 @@ occ::handle<VrmlData_Node> VrmlData_Group::Clone(const occ::handle<VrmlData_Node
   occ::handle<VrmlData_Group> aResult =
     occ::down_cast<VrmlData_Group>(VrmlData_Node::Clone(theOther));
   if (aResult.IsNull())
+  {
     aResult =
       new VrmlData_Group(theOther.IsNull() ? Scene() : theOther->Scene(), Name(), myIsTransform);
+  }
 
   aResult->myIsTransform = myIsTransform;
   if (&aResult->Scene() == &Scene())
+  {
     aResult->myNodes = myNodes;
+  }
   else
   {
     // Create a dummy node to pass the different Scene instance to methods Clone
@@ -96,11 +102,15 @@ occ::handle<VrmlData_Node> VrmlData_Group::Clone(const occ::handle<VrmlData_Node
     {
       const occ::handle<VrmlData_Node>& aNode = anIter.Value();
       if (!aNode.IsNull())
+      {
         aResult->myNodes.Append(aNode->Clone(aDummyNode));
+      }
     }
   }
   if (myIsTransform)
+  {
     aResult->SetTransform(myTrsf);
+  }
   aResult->SetBox(myBox);
 
   return aResult;
@@ -156,22 +166,28 @@ VrmlData_ErrorStatus VrmlData_Group::Read(VrmlData_InBuffer& theBuffer)
   while (OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
   {
     if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "bboxCenter"))
+    {
       aStatus = Scene().ReadXYZ(theBuffer, aBoxCenter, true, false);
-
+    }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "bboxSize"))
+    {
       aStatus = Scene().ReadXYZ(theBuffer, aBoxSize, true, false);
-
+    }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "children"))
     {
       bool isBracketed(false);
       // Read the opening bracket for the list of children
       if (!OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
+      {
         break;
+      }
       if (theBuffer.LinePtr[0] == '[')
       {
         theBuffer.LinePtr++;
         if (!OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
+        {
           break;
+        }
         isBracketed = true;
       }
 
@@ -187,10 +203,14 @@ VrmlData_ErrorStatus VrmlData_Group::Read(VrmlData_InBuffer& theBuffer)
         }
         // otherwise read a node
         if (!OK(aStatus, ReadNode(theBuffer, aChildNode)))
+        {
           break;
+        }
         AddNode(aChildNode);
         if (!isBracketed)
+        {
           break;
+        }
       }
     }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "collide"))
@@ -203,13 +223,17 @@ VrmlData_ErrorStatus VrmlData_Group::Read(VrmlData_InBuffer& theBuffer)
       bool isBracketed(false);
       // Read the opening bracket for the list of children
       if (!OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
+      {
         break;
+      }
 
       if (theBuffer.LinePtr[0] == '{')
       {
         theBuffer.LinePtr++;
         if (!OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
+        {
           break;
+        }
         isBracketed = true;
       }
 
@@ -226,11 +250,15 @@ VrmlData_ErrorStatus VrmlData_Group::Read(VrmlData_InBuffer& theBuffer)
 
         // otherwise read a node
         if (!OK(aStatus, ReadNode(theBuffer, aChildNode)))
+        {
           break;
+        }
 
         AddNode(aChildNode);
         if (!isBracketed)
+        {
           break;
+        }
       }
     }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "TransformSeparator")
@@ -240,13 +268,17 @@ VrmlData_ErrorStatus VrmlData_Group::Read(VrmlData_InBuffer& theBuffer)
       bool                        isBracketed(false);
       // Read the opening bracket for the list of children
       if (!OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
+      {
         break;
+      }
 
       if (theBuffer.LinePtr[0] == '{')
       {
         theBuffer.LinePtr++;
         if (!OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
+        {
           break;
+        }
         isBracketed = true;
       }
 
@@ -262,11 +294,15 @@ VrmlData_ErrorStatus VrmlData_Group::Read(VrmlData_InBuffer& theBuffer)
         }
         // otherwise read a node
         if (!OK(aStatus, ReadNode(theBuffer, aChildNode)))
+        {
           break;
+        }
 
         aGroupNode->AddNode(aChildNode);
         if (!isBracketed)
+        {
           break;
+        }
       }
 
       occ::handle<VrmlData_Coordinate>     aCoord;
@@ -279,7 +315,9 @@ VrmlData_ErrorStatus VrmlData_Group::Read(VrmlData_InBuffer& theBuffer)
       {
         occ::handle<VrmlData_Node> aNode = anIt.Value();
         if (aNode.IsNull())
+        {
           continue;
+        }
 
         if (anIt.Value()->IsKind(STANDARD_TYPE(VrmlData_Coordinate)))
         {
@@ -335,13 +373,17 @@ VrmlData_ErrorStatus VrmlData_Group::Read(VrmlData_InBuffer& theBuffer)
     {
       // Skip this tag
       if (!OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
+      {
         break;
+      }
 
       if (theBuffer.LinePtr[0] == '{')
       {
         theBuffer.LinePtr++;
         if (!OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
+        {
           break;
+        }
 
         while (OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
         {
@@ -356,20 +398,27 @@ VrmlData_ErrorStatus VrmlData_Group::Read(VrmlData_InBuffer& theBuffer)
       }
     }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "center"))
+    {
       if (myIsTransform)
+      {
         aStatus = Scene().ReadXYZ(theBuffer, aCenter, true, false);
+      }
       else
       {
         aStatus = VrmlData_VrmlFormatError;
         break;
       }
+    }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "rotation"))
+    {
       if (myIsTransform)
       {
         if (OK(aStatus, Scene().ReadXYZ(theBuffer, aRotAxis, false, false)))
         {
           if (aRotAxis.SquareModulus() < Precision::Confusion())
+          {
             aRotAxis.SetZ(1.0);
+          }
           aStatus = Scene().ReadReal(theBuffer, aRotAngle, false, false);
         }
       }
@@ -378,33 +427,46 @@ VrmlData_ErrorStatus VrmlData_Group::Read(VrmlData_InBuffer& theBuffer)
         aStatus = VrmlData_VrmlFormatError;
         break;
       }
+    }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "scaleOrientation"))
+    {
       if (myIsTransform)
       {
         if (OK(aStatus, Scene().ReadXYZ(theBuffer, aScaleAxis, false, false)))
+        {
           aStatus = Scene().ReadReal(theBuffer, aScaleAngle, false, false);
+        }
       }
       else
       {
         aStatus = VrmlData_VrmlFormatError;
         break;
       }
+    }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "scale"))
+    {
       if (myIsTransform)
+      {
         aStatus = Scene().ReadXYZ(theBuffer, aScale, false, true);
+      }
       else
       {
         aStatus = VrmlData_VrmlFormatError;
         break;
       }
+    }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "translation"))
+    {
       if (myIsTransform)
+      {
         aStatus = Scene().ReadXYZ(theBuffer, aTrans, true, false);
+      }
       else
       {
         aStatus = VrmlData_VrmlFormatError;
         break;
       }
+    }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "DEF"))
     {
       TCollection_AsciiString aWord;
@@ -424,28 +486,39 @@ VrmlData_ErrorStatus VrmlData_Group::Read(VrmlData_InBuffer& theBuffer)
           std::ifstream                  aStream;
           const TCollection_AsciiString& aFileName = anIter.Value();
           if (!OK(aStatus, openFile(aStream, aFileName)))
+          {
             break;
+          }
           VrmlData_Scene aScene(Scene().Allocator());
           aScene.myLinearScale = Scene().myLinearScale;
           aScene.myVrmlDir     = Scene().myVrmlDir;
           aScene << aStream;
           if (!OK(aStatus, aScene.Status()))
+          {
             break;
+          }
           VrmlData_Scene::Iterator anIterN = aScene.GetIterator();
           for (; anIterN.More(); anIterN.Next())
+          {
             if (!anIterN.Value()->IsKind(STANDARD_TYPE(VrmlData_WorldInfo)))
+            {
               AddNode(anIterN.Value());
+            }
+          }
           VrmlData_Scene::Iterator anAllIter(aScene.myAllNodes);
           for (; anAllIter.More(); anAllIter.Next())
           {
             const occ::handle<VrmlData_Node>& aNode = anAllIter.Value();
             if (aNode->IsKind(STANDARD_TYPE(VrmlData_WorldInfo)))
+            {
               continue;
+            }
             const_cast<VrmlData_Scene&>(Scene()).myAllNodes.Append(aNode);
             aNode->myScene = &Scene();
             // The name of the imported node should be prefixed by the URL
             // because each name must remain unique in the global scene.
             if (aNode->Name())
+            {
               if (*aNode->Name() != '\0')
               {
                 TCollection_AsciiString buf;
@@ -465,20 +538,27 @@ VrmlData_ErrorStatus VrmlData_Group::Read(VrmlData_InBuffer& theBuffer)
                   memcpy(aNewName, buf.ToCString(), len);
                 }
               }
+            }
           }
         }
       }
     }
     else
+    {
       break;
+    }
 
     if (!OK(aStatus))
+    {
       break;
+    }
   }
 
   // Read the terminating (closing) brace
   if (OK(aStatus))
+  {
     aStatus = readBrace(theBuffer);
+  }
   if (OK(aStatus))
   {
     // Check if the Bounding Box has been imported
@@ -533,12 +613,16 @@ VrmlData_ErrorStatus VrmlData_Group::openFile(Standard_IStream&              the
   for (; aDirIter.More(); aDirIter.Next())
   {
     if (!aDirIter.Value().IsAscii())
+    {
       continue;
+    }
     const TCollection_AsciiString aFullName =
       TCollection_AsciiString(aDirIter.Value()) + theFilename;
     aStream.open(aFullName.ToCString(), std::ios::in);
     if (aStream.fail())
+    {
       aStream.clear();
+    }
     else
     {
       aStatus = VrmlData_StatusOK;
@@ -549,10 +633,14 @@ VrmlData_ErrorStatus VrmlData_Group::openFile(Standard_IStream&              the
   {
     aStream.open(theFilename.ToCString(), std::ios::in);
     if (!aStream.fail())
+    {
       aStatus = VrmlData_StatusOK;
+    }
   }
   if (aStatus == VrmlData_EmptyData)
+  {
     aStatus = VrmlData_CannotOpenFile;
+  }
   return aStatus;
 }
 
@@ -566,7 +654,9 @@ VrmlData_ErrorStatus VrmlData_Group::Write(const char* thePrefix) const
     const VrmlData_Scene& aScene      = Scene();
     bool                  isTransform = myIsTransform;
     if (isTransform && myTrsf.Form() == gp_Identity)
+    {
       isTransform = false;
+    }
     static const char* header[2] = {"Group {", "Transform {"};
     if (OK(aStatus, aScene.WriteLine(thePrefix, header[isTransform ? 1 : 0], GlobalIndent())))
     {

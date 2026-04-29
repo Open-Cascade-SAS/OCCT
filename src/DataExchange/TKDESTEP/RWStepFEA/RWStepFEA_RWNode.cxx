@@ -40,7 +40,9 @@ void RWStepFEA_RWNode::ReadStep(const occ::handle<StepData_StepReaderData>& data
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "node"))
+  {
     return;
+  }
 
   // Inherited fields of Representation
 

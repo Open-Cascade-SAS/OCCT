@@ -30,7 +30,9 @@ void RWStepBasic_RWSiUnit::ReadStep(const occ::handle<StepData_StepReaderData>& 
 {
   // --- Number of Parameter Control ---
   if (!data->CheckNbParams(num, 3, ach, "si_unit"))
+  {
     return;
+  }
 
   // --- inherited field : dimensions ---
   // --- this field is redefined ---
@@ -68,7 +70,9 @@ void RWStepBasic_RWSiUnit::ReadStep(const occ::handle<StepData_StepReaderData>& 
     }
   }
   else
+  {
     ach->AddFail("Parameter #3 (name) is not an enumeration");
+  }
 
   //--- Initialisation of the read entity ---
   ent->Init(hasAprefix, aPrefix, aName);
@@ -84,9 +88,13 @@ void RWStepBasic_RWSiUnit::WriteStep(StepData_StepWriter&                 SW,
   // --- own field : prefix ---
   bool hasAprefix = ent->HasPrefix();
   if (hasAprefix)
+  {
     SW.SendEnum(RWStepBasic_RWSiPrefix::ConvertToString(ent->Prefix()));
+  }
   else
+  {
     SW.SendUndef();
+  }
 
   // --- own field : name ---
   SW.SendEnum(RWStepBasic_RWSiUnitName::ConvertToString(ent->Name()));

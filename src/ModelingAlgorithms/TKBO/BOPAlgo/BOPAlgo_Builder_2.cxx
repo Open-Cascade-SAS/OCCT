@@ -320,13 +320,17 @@ void BOPAlgo_Builder::BuildSplitFaces(const Message_ProgressRange& theRange)
           TopoDS_Iterator itE(aItW.Value());
           hasInternals = (itE.More() && (itE.Value().Orientation() == TopAbs_INTERNAL));
           if (hasInternals)
+          {
             break;
+          }
 
           hasModified |= myImages.IsBound(aItW.Value());
         }
 
         if (!hasInternals && !hasModified)
+        {
           continue;
+        }
       }
 
       if (!hasInternals)
@@ -540,7 +544,9 @@ void BOPAlgo_Builder::BuildSplitFaces(const Message_ProgressRange& theRange)
     {
       TopoDS_Shape& aFR = aIt.ChangeValue();
       if (anOriF == TopAbs_REVERSED)
+      {
         aFR.Orientation(TopAbs_REVERSED);
+      }
       pLFIm->Append(aFR);
     }
   }
@@ -563,7 +569,9 @@ static void AddEdgeSet(const TopoDS_Shape&                           theS,
   // Add set to the map, keeping connection to the shape
   NCollection_List<TopoDS_Shape>* pLF = theMap.ChangeSeek(aSE);
   if (!pLF)
+  {
     pLF = &theMap(theMap.Add(aSE, NCollection_List<TopoDS_Shape>(theAllocator)));
+  }
   pLF->Append(theS);
 }
 
@@ -576,7 +584,9 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
   const NCollection_DynamicArray<BOPDS_InterfFF>& aFFs   = myDS->InterfFF();
   int                                             aNbFFs = aFFs.Length();
   if (!aNbFFs)
+  {
     return;
+  }
 
   Message_ProgressScope aPSOuter(theRange, nullptr, 10);
 
@@ -593,13 +603,17 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
     {
       const BOPDS_ShapeInfo& aSI = myDS->ShapeInfo(iSrc);
       if (aSI.ShapeType() != TopAbs_SOLID)
+      {
         continue;
+      }
       const TopoDS_Shape& aSolid = aSI.Shape();
       for (TopExp_Explorer anExpF(aSolid, TopAbs_FACE); anExpF.More(); anExpF.Next())
       {
         const TopoDS_Shape& aF = anExpF.Current();
         if (!aFaceToParent.IsBound(aF))
+        {
           aFaceToParent.Bind(aF, aSolid);
+        }
       }
     }
     NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> aPropagation(
@@ -613,12 +627,16 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
     {
       const TopoDS_Shape* pParent = aFaceToParent.Seek(anItIm.Key());
       if (pParent == nullptr)
+      {
         continue;
+      }
       for (NCollection_List<TopoDS_Shape>::Iterator anItPiece(anItIm.Value()); anItPiece.More();
            anItPiece.Next())
       {
         if (!aFaceToParent.IsBound(anItPiece.Value()))
+        {
           aPropagation.Bind(anItPiece.Value(), *pParent);
+        }
       }
     }
     for (NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator
@@ -652,10 +670,14 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
     for (int j = 0; j < 2; ++j)
     {
       if (!myDS->HasFaceInfo(nF[j]))
+      {
         continue;
+      }
 
       if (!aMFence.Add(nF[j]))
+      {
         continue;
+      }
 
       aFIVec.Appended() = nF[j];
     }
@@ -703,14 +725,18 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
       {
         AddEdgeSet(aItLF.Value(), anESetFaces, aAllocator);
         if (bCheckPlanar)
+        {
           aMFPlanar.Add(aItLF.Value());
+        }
       }
     }
     else
     {
       AddEdgeSet(aF, anESetFaces, aAllocator);
       if (bCheckPlanar)
+      {
         aMFPlanar.Add(aF);
+      }
     }
   }
 
@@ -730,7 +756,9 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
     }
     const NCollection_List<TopoDS_Shape>& aLF = anESetFaces(i);
     if (aLF.Extent() < 2)
+    {
       continue;
+    }
 
     // All possible pairs from <aLF> should be checked
     NCollection_List<TopoDS_Shape>::Iterator aIt1(aLF);
@@ -746,7 +774,9 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
         const TopoDS_Shape& aF2      = aIt2.Value();
         const TopoDS_Shape* pParent2 = aFaceToParent.Seek(aF2);
         if (pParent1 != nullptr && pParent2 != nullptr && pParent1->IsSame(*pParent2))
+        {
           continue;
+        }
         if (bCheckPlanar && aMFPlanar.Contains(aF2))
         {
           // Consider planar bounded faces as Same Domain without additional check
@@ -786,7 +816,9 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
   {
     BOPAlgo_PairOfShapeBoolean& aPSB = aVPSB(i);
     if (aPSB.Flag())
+    {
       BOPAlgo_Tools::FillMap(aPSB.Shape1(), aPSB.Shape2(), aDMSLS, aAllocator);
+    }
   }
   aVPSB.Clear();
 
@@ -856,12 +888,16 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
   {
     const BOPDS_ShapeInfo& aSI = myDS->ShapeInfo(i);
     if (aSI.ShapeType() != TopAbs_FACE)
+    {
       continue;
+    }
 
     const TopoDS_Shape&             aF    = aSI.Shape();
     NCollection_List<TopoDS_Shape>* pLFIm = myImages.ChangeSeek(aF);
     if (!pLFIm)
+    {
       continue;
+    }
 
     NCollection_List<TopoDS_Shape>::Iterator aItLFIm(*pLFIm);
     for (; aItLFIm.More(); aItLFIm.Next())
@@ -869,13 +905,17 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
       TopoDS_Shape&       aFIm = aItLFIm.ChangeValue();
       const TopoDS_Shape* pFSD = myShapesSD.Seek(aFIm);
       if (pFSD)
+      {
         // Update image with SD face
         aFIm = *pFSD;
+      }
 
       // Fill the map of origins
       NCollection_List<TopoDS_Shape>* pLFOr = myOrigins.ChangeSeek(aFIm);
       if (!pLFOr)
+      {
         pLFOr = myOrigins.Bound(aFIm, NCollection_List<TopoDS_Shape>());
+      }
       pLFOr->Append(aF);
     }
   }
@@ -899,7 +939,9 @@ void BOPAlgo_Builder::FillInternalVertices(const Message_ProgressRange& theRange
   {
     const BOPDS_ShapeInfo& aSI = myDS->ShapeInfo(i);
     if (aSI.ShapeType() != TopAbs_FACE)
+    {
       continue;
+    }
 
     if (UserBreak(aPSOuter))
     {
@@ -909,7 +951,9 @@ void BOPAlgo_Builder::FillInternalVertices(const Message_ProgressRange& theRange
     const TopoDS_Shape&                   aF    = aSI.Shape();
     const NCollection_List<TopoDS_Shape>* pLFIm = myImages.Seek(aF);
     if (!pLFIm)
+    {
       continue;
+    }
 
     // Find vertices to add as internal into the splits
     NCollection_List<int> aLIAV;
@@ -987,10 +1031,14 @@ static bool HasMultiConnected(
       // The list is expected to be 1-2 elements long,
       // thus using "Contains" is safe.
       if (!pList->Contains(theEdge))
+      {
         pList->Append(theEdge);
+      }
 
       if (pList->Extent() > 2)
+      {
         return true;
+      }
     }
   }
   return false;
@@ -1035,12 +1083,16 @@ TopoDS_Face BuildDraftFace(
   {
     const TopoDS_Shape& aW = aItW.Value();
     if (aW.ShapeType() != TopAbs_WIRE)
+    {
       continue;
+    }
 
     // Rebuild wire using images of edges
     TopoDS_Iterator aItE(aW.Oriented(TopAbs_FORWARD));
     if (!aItE.More())
+    {
       continue;
+    }
 
     TopoDS_Wire aNewWire;
     aBB.MakeWire(aNewWire);
@@ -1068,11 +1120,15 @@ TopoDS_Face BuildDraftFace(
       {
         // Check if the edge has multi-connected vertices
         if (!bIsDegenerated && HasMultiConnected(aE, aVerticesCounter))
+        {
           return TopoDS_Face();
+        }
 
         // Check edges unification
         if (!bIsClosed && !aMEdges.Add(aE))
+        {
           return TopoDS_Face();
+        }
 
         aBB.Add(aNewWire, aE);
         continue;
@@ -1085,11 +1141,15 @@ TopoDS_Face BuildDraftFace(
 
         // Check if the split has multi-connected vertices
         if (!bIsDegenerated && HasMultiConnected(aSp, aVerticesCounter))
+        {
           return TopoDS_Face();
+        }
 
         // Check edges unification
         if (!bIsClosed && !aMEdges.Add(aSp))
+        {
           return TopoDS_Face();
+        }
 
         aSp.Orientation(anOriE);
         if (bIsDegenerated)
@@ -1101,11 +1161,15 @@ TopoDS_Face BuildDraftFace(
         // If the original edge is closed on the face check closeness
         // of the split edge and if it is not closed make the second PCurve
         if (bIsClosed && !BRep_Tool::IsClosed(aSp, theFace))
+        {
           BOPTools_AlgoTools3D::DoSplitSEAMOnFace(aSp, theFace);
+        }
 
         // Check if the split should be reversed
         if (BOPTools_AlgoTools::IsSplitToReverseWithWarn(aSp, aE, theCtx, theReport))
+        {
           aSp.Reverse();
+        }
 
         aBB.Add(aNewWire, aSp);
       }
@@ -1117,7 +1181,9 @@ TopoDS_Face BuildDraftFace(
   }
 
   if (theFace.Orientation() == TopAbs_REVERSED)
+  {
     aDraftFace.Reverse();
+  }
 
   return aDraftFace;
 }

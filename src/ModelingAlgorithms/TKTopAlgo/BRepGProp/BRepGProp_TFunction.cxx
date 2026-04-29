@@ -84,23 +84,31 @@ bool BRepGProp_TFunction::Value(const double X, double& F)
   if (myValueType == GProp_Mass)
   {
     if (myIsByPoint)
+    {
       aCoeff /= 3.;
+    }
   }
   else if (myValueType == GProp_CenterMassX || myValueType == GProp_CenterMassY
            || myValueType == GProp_CenterMassZ)
   {
     if (myIsByPoint)
+    {
       aCoeff *= 0.25;
+    }
   }
   else if (myValueType == GProp_InertiaXX || myValueType == GProp_InertiaYY
            || myValueType == GProp_InertiaZZ || myValueType == GProp_InertiaXY
            || myValueType == GProp_InertiaXZ || myValueType == GProp_InertiaYZ)
   {
     if (myIsByPoint)
+    {
       aCoeff *= 0.2;
+    }
   }
   else
+  {
     return false;
+  }
 
   double aAbsCoeff = std::abs(aCoeff);
 
@@ -134,12 +142,16 @@ bool BRepGProp_TFunction::Value(const double X, double& F)
     double aU2 = aUKnots->Value(i);
 
     if (aU2 - aU1 < tolU)
+    {
       continue;
+    }
 
     anIntegral.Perform(myUFunction, aU1, aU2, aNbPntsStart, aTol, aNbMaxIter);
 
     if (!anIntegral.IsDone())
+    {
       return false;
+    }
 
     F += anIntegral.Value();
     aLocalErr += anIntegral.AbsolutError();
@@ -154,7 +166,9 @@ bool BRepGProp_TFunction::Value(const double X, double& F)
   myTolReached += aLocalErr;
 
   if (std::abs(F) > Epsilon(1.))
+  {
     aLocalErr /= std::abs(F);
+  }
 
   myErrReached = std::max(myErrReached, aLocalErr);
 

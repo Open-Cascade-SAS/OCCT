@@ -135,7 +135,9 @@ void TPrsStd_AISViewer::Update(const TDF_Label& acces)
 {
   occ::handle<TPrsStd_AISViewer> viewer;
   if (Find(acces, viewer))
+  {
     viewer->Update();
+  }
 }
 
 //=================================================================================================

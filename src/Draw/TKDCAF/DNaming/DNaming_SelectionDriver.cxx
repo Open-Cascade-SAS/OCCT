@@ -82,11 +82,15 @@ int DNaming_SelectionDriver::Execute(occ::handle<TFunction_Logbook>& theLog) con
   occ::handle<TFunction_Function> aFunction;
   Label().FindAttribute(TFunction_Function::GetID(), aFunction);
   if (aFunction.IsNull())
+  {
     return -1;
+  }
 
   TDF_Label aRLabel = RESPOSITION(aFunction);
   if (aRLabel.IsNull())
+  {
     return -1;
+  }
 
   bool                            aIsWire        = false;
   TopAbs_ShapeEnum                aPrevShapeType = TopAbs_SHAPE;
@@ -97,7 +101,9 @@ int DNaming_SelectionDriver::Execute(occ::handle<TFunction_Logbook>& theLog) con
     {
       aPrevShapeType = aNShape->Get().ShapeType();
       if (aPrevShapeType == TopAbs_WIRE)
+      {
         aIsWire = true;
+      }
     }
   }
 
@@ -131,19 +137,19 @@ int DNaming_SelectionDriver::Execute(occ::handle<TFunction_Logbook>& theLog) con
     occ::handle<TNaming_NamedShape> aNS;
     if (!aRLabel.FindAttribute(TNaming_NamedShape::GetID(), aNS))
     {
-      std::cout << "%%%WARNING: DNaming_SelectionDriver::NamedShape is not found" << std::endl;
+      std::cout << "%%%WARNING: DNaming_SelectionDriver::NamedShape is not found" << '\n';
     }
     else
     {
       if (aNS.IsNull())
       {
-        std::cout << "%%%WARNING: DNaming_SelectionDriver::NamedShape is NULL" << std::endl;
+        std::cout << "%%%WARNING: DNaming_SelectionDriver::NamedShape is NULL" << '\n';
       }
       else if (aNS->IsEmpty())
       {
         std::cout << "%%%WARNING: DNaming_SelectionDriver::NamedShape is EMPTY on Label = ";
         aNS->Label().EntryDump(std::cout);
-        std::cout << std::endl;
+        std::cout << '\n';
       }
       else
       {
@@ -179,7 +185,7 @@ int DNaming_SelectionDriver::Execute(occ::handle<TFunction_Logbook>& theLog) con
   {
     aFunction->SetFailure(NOTDONE);
     std::cout << "%%%WARNING: DNaming_SelectionDriver::Execute: Selection is Not solved !!!"
-              << std::endl;
+              << '\n';
     return 1;
   }
   return 0;

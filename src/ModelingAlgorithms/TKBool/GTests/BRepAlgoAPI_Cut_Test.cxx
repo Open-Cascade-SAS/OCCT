@@ -47,7 +47,9 @@ static double runHollowBoxMeshTest(double theMeshDelta)
   // Cut inner from outer
   BRepAlgoAPI_Cut aCut(aFullSolid, anInnerSolid);
   if (!aCut.IsDone())
+  {
     return -1.0;
+  }
 
   // Extract the single solid from the cut result
   TopoDS_Solid    aCutSolid;
@@ -63,14 +65,18 @@ static double runHollowBoxMeshTest(double theMeshDelta)
     }
   }
   if (aNbSolids != 1)
+  {
     return -1.0;
+  }
 
   // Calculate original volume
   GProp_GProps aVProps;
   BRepGProp::VolumeProperties(aCutSolid, aVProps);
   const double anOriginalVolume = aVProps.Mass();
   if (anOriginalVolume <= 0.0)
+  {
     return -1.0;
+  }
 
   // Build bounding box and extend by small delta
   Bnd_Box aBndBox;
@@ -87,13 +93,19 @@ static double runHollowBoxMeshTest(double theMeshDelta)
   // Grid the bounding box
   int aNx = (int)((aXmax - aXmin) / theMeshDelta);
   if (aNx <= 0)
+  {
     aNx = 1;
+  }
   int aNy = (int)((aYmax - aYmin) / theMeshDelta);
   if (aNy <= 0)
+  {
     aNy = 1;
+  }
   int aNz = (int)((aZmax - aZmin) / theMeshDelta);
   if (aNz <= 0)
+  {
     aNz = 1;
+  }
 
   const double aStepX     = (aXmax - aXmin) / aNx;
   const double aStepY     = (aYmax - aYmin) / aNy;
@@ -127,7 +139,9 @@ static double runHollowBoxMeshTest(double theMeshDelta)
     const TopoDS_Shape aCopySolid = BRepBuilderAPI_Copy(aCutSolid).Shape();
     BRepAlgoAPI_Common aCommon(aCopySolid, aSubvols(l));
     if (!aCommon.IsDone())
+    {
       continue;
+    }
 
     int          aNbCommon = 0;
     TopoDS_Shape aFoundSolid;
@@ -145,7 +159,9 @@ static double runHollowBoxMeshTest(double theMeshDelta)
       BRepGProp::VolumeProperties(aFoundSolid, aVProps);
       const double aVol = aVProps.Mass();
       if (aVol > 0.0 && aVol <= aSubvolVols(l))
+      {
         anAccumulated += aVol;
+      }
     }
   }
 
@@ -191,7 +207,9 @@ TEST(BRepAlgoAPI_CutTest, HollowBox_SurfaceAreaAndValidity)
   TopoDS_Solid    aCutSolid;
   TopExp_Explorer anExp;
   for (anExp.Init(aCut.Shape(), TopAbs_SOLID); anExp.More(); anExp.Next())
+  {
     aCutSolid = TopoDS::Solid(anExp.Current());
+  }
   ASSERT_FALSE(aCutSolid.IsNull());
 
   // Surface area: outer box 6*900=5400, inner box adds 6*100=600 => total=6000

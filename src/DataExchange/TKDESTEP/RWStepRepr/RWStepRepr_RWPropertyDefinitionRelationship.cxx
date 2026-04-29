@@ -37,7 +37,9 @@ void RWStepRepr_RWPropertyDefinitionRelationship::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "property_definition_relationship"))
+  {
     return;
+  }
 
   // Own fields of PropertyDefinitionRelationship
 

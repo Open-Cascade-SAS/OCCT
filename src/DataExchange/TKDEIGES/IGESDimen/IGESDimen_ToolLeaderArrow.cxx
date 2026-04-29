@@ -51,9 +51,13 @@ void IGESDimen_ToolLeaderArrow::ReadOwnParams(const occ::handle<IGESDimen_Leader
 
   bool st = PR.ReadInteger(PR.Current(), "Count of Segments", nbval);
   if (st && nbval > 0)
+  {
     segmentTails = new NCollection_HArray1<gp_XY>(1, nbval);
+  }
   else
+  {
     PR.AddFail("Count of Segments: Not Positive");
+  }
 
   // szv#4:S4163:12Mar99 `st=` not needed
   PR.ReadReal(PR.Current(), "Arrow Head Height", arrowHeadHeight);
@@ -69,7 +73,9 @@ void IGESDimen_ToolLeaderArrow::ReadOwnParams(const occ::handle<IGESDimen_Leader
       // st = PR.ReadXY(PR.CurrentList(1, 2), "Segment Co-ords.", tempXY); //szv#4:S4163:12Mar99
       // moved in if
       if (PR.ReadXY(PR.CurrentList(1, 2), "Segment Co-ords.", tempXY))
+      {
         segmentTails->SetValue(i, tempXY);
+      }
     }
     DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
     ent->Init(arrowHeadHeight, arrowHeadWidth, zDepth, arrowHead, segmentTails);
@@ -158,5 +164,5 @@ void IGESDimen_ToolLeaderArrow::OwnDump(const occ::handle<IGESDimen_LeaderArrow>
                         ent->SegmentTail,
                         ent->Location(),
                         ent->ZDepth());
-  S << std::endl;
+  S << '\n';
 }

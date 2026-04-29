@@ -32,7 +32,9 @@ Geom2dConvert_BSplineCurveToBezierCurve::Geom2dConvert_BSplineCurveToBezierCurve
   // last pole (equal to first one) is missing;
   // poles recomputation using default boor scheme is fails.
   if (myCurve->IsPeriodic())
+  {
     myCurve->SetNotPeriodic();
+  }
   double Uf = myCurve->FirstParameter();
   double Ul = myCurve->LastParameter();
   myCurve->Segment(Uf, Ul);
@@ -50,7 +52,9 @@ Geom2dConvert_BSplineCurveToBezierCurve::Geom2dConvert_BSplineCurveToBezierCurve
   const double                            ParametricTolerance)
 {
   if (U2 - U1 < ParametricTolerance)
+  {
     throw Standard_DomainError("GeomConvert_BSplineCurveToBezierSurface");
+  }
 
   double Uf = U1, Ul = U2;
   double PTol = ParametricTolerance / 2;
@@ -58,20 +62,26 @@ Geom2dConvert_BSplineCurveToBezierCurve::Geom2dConvert_BSplineCurveToBezierCurve
   int I1, I2;
   myCurve = occ::down_cast<Geom2d_BSplineCurve>(BasisCurve->Copy());
   if (myCurve->IsPeriodic())
+  {
     myCurve->SetNotPeriodic();
+  }
 
   myCurve->LocateU(U1, PTol, I1, I2);
   if (I1 == I2)
   { // We are on the knot
     if (myCurve->Knot(I1) > U1)
+    {
       Uf = myCurve->Knot(I1);
+    }
   }
 
   myCurve->LocateU(U2, PTol, I1, I2);
   if (I1 == I2)
   { // We are on the knot
     if (myCurve->Knot(I1) < U2)
+    {
       Ul = myCurve->Knot(I1);
+    }
   }
 
   myCurve->Segment(Uf, Ul);
@@ -132,7 +142,9 @@ void Geom2dConvert_BSplineCurveToBezierCurve::Knots(NCollection_Array1<double>& 
 {
   int ii, kk;
   for (ii = 1, kk = TKnots.Lower(); ii <= myCurve->NbKnots(); ii++, kk++)
+  {
     TKnots(kk) = myCurve->Knot(ii);
+  }
 }
 
 //=================================================================================================

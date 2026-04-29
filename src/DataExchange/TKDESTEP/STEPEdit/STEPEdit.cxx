@@ -49,7 +49,9 @@ occ::handle<IFSelect_Signature> STEPEdit::SignType()
   std::lock_guard<std::mutex>             aLock(aMutex);
   static occ::handle<StepSelect_StepType> sty;
   if (!sty.IsNull())
+  {
     return sty;
+  }
   sty = new StepSelect_StepType;
   sty->SetProtocol(STEPEdit::Protocol());
   return sty;

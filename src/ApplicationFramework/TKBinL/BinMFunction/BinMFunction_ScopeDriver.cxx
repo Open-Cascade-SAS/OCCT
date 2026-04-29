@@ -58,9 +58,13 @@ bool BinMFunction_ScopeDriver::Paste(const BinObjMgt_Persistent&       theSource
 
   int nb;
   if (!(theSource >> nb))
+  {
     return false;
+  }
   if (!nb)
+  {
     return true;
+  }
 
   NCollection_DoubleMap<int, TDF_Label>& map = S->ChangeFunctions();
 
@@ -74,14 +78,18 @@ bool BinMFunction_ScopeDriver::Paste(const BinObjMgt_Persistent&       theSource
   {
     TCollection_AsciiString entry;
     if (!(theSource >> entry))
+    {
       return false;
+    }
     TDF_Label L;
     TDF_Tool::Label(S->Label().Data(), entry, L, true);
     if (!L.IsNull())
     {
       map.Bind(IDs.Value(i), L);
       if (IDs.Value(i) > freeID)
+      {
         freeID = IDs.Value(i);
+      }
     }
   }
 
@@ -108,7 +116,9 @@ void BinMFunction_ScopeDriver::Paste(const occ::handle<TDF_Attribute>& theSource
   // Number of functions
   theTarget << nb;
   if (!nb)
+  {
     return;
+  }
 
   // IDs
   {

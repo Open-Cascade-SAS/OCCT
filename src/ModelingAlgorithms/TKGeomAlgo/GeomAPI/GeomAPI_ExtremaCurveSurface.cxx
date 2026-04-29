@@ -132,9 +132,13 @@ void GeomAPI_ExtremaCurveSurface::Init(const occ::handle<Geom_Curve>&   Curve,
 int GeomAPI_ExtremaCurveSurface::NbExtrema() const
 {
   if (myIsDone)
+  {
     return myExtCS.NbExt();
+  }
   else
+  {
     return 0;
+  }
 }
 
 //=================================================================================================

@@ -47,7 +47,9 @@ void IGESGraph_TextFontDef::Init(
       || (allPenFlags->Lower() != 1 || allPenFlags->Length() != Len)
       || (allMovePenToX->Lower() != 1 || allMovePenToX->Length() != Len)
       || (allMovePenToY->Lower() != 1 || allMovePenToY->Length() != Len))
+  {
     throw Standard_DimensionMismatch("IGESGraph_TextFontDef : Init");
+  }
 
   theFontCode             = aFontCode;
   theFontName             = aFontName;

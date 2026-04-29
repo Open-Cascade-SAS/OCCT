@@ -41,7 +41,9 @@ void IGESDefs_TabularData::Init(const int nbProps,
   int num = typesInd->Length();
   if (typesInd->Lower() != 1 || nbValuesInd->Lower() != 1 || nbValuesInd->Length() != num
       || valuesInd->Lower() != 1 || valuesInd->Length() != num || valuesDep->Lower() != 1)
+  {
     throw Standard_DimensionMismatch("IGESDefs_TabularData : Init");
+  }
   theNbPropertyValues = nbProps;
   thePropertyType     = propType;
   /*     theNbDependents = nbDeps; */
@@ -67,7 +69,9 @@ bool IGESDefs_TabularData::OwnCorrect()
 {
   int newnb = ComputedNbPropertyValues();
   if (newnb == theNbPropertyValues)
+  {
     return false;
+  }
   theNbPropertyValues = newnb;
   return true;
 }

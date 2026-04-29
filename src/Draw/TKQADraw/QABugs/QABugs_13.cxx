@@ -77,15 +77,25 @@ static int OCC544(Draw_Interpretor& di, int argc, const char** argv)
 
   // Convert arguments
   if (argc > 1)
+  {
     radius_l = Draw::Atof(argv[1]);
+  }
   if (argc > 2)
+  {
     radius_r = Draw::Atof(argv[2]);
+  }
   if (argc > 3)
+  {
     bend_angle = Draw::Atof(argv[3]);
+  }
   if (argc > 4)
+  {
     major_rad = Draw::Atof(argv[4]);
+  }
   if (argc > 5)
+  {
     wall_thickness = Draw::Atof(argv[5]);
+  }
 
   // mkv 15.07.03 if ((bend_angle >= 2.0*M_PI)) {
   if ((bend_angle >= 2.0 * M_PI))
@@ -168,7 +178,9 @@ static int OCC544(Draw_Interpretor& di, int argc, const char** argv)
 
   mkEdge.Init(SpineCurve);
   if (!mkEdge.IsDone())
+  {
     return 1;
+  }
   TopoDS_Wire SpineWire = BRepBuilderAPI_MakeWire(mkEdge.Edge()).Wire();
 
   Sprintf(name, "SpineWire");
@@ -206,7 +218,9 @@ static int OCC544(Draw_Interpretor& di, int argc, const char** argv)
   mkPipe1.SetLaw(Wire1_, myLaw, Location1, false, false);
   mkPipe1.Build();
   if (!mkPipe1.IsDone())
+  {
     return 1;
+  }
 
   // Make outer pipe shell
   BRepOffsetAPI_MakePipeShell mkPipe2(SpineWire);
@@ -216,7 +230,9 @@ static int OCC544(Draw_Interpretor& di, int argc, const char** argv)
   mkPipe2.SetLaw(outerWire1_, myLaw2, Location1, false, false);
   mkPipe2.Build();
   if (!mkPipe2.IsDone())
+  {
     return 1;
+  }
 
   //    Sprintf(name,"w1-first");
   //    DBRep::Set(name,mkPipe1.FirstShape());
@@ -248,7 +264,9 @@ static int OCC544(Draw_Interpretor& di, int argc, const char** argv)
   mkFace.Add(TopoDS::Wire(outerWire1_));
   mkFace.Add(TopoDS::Wire(Wire1_.Reversed()));
   if (!mkFace.IsDone())
+  {
     return 1;
+  }
   TopoDS_Face Face1 = mkFace.Face();
 
   // Make face for second opening
@@ -257,7 +275,9 @@ static int OCC544(Draw_Interpretor& di, int argc, const char** argv)
   mkFace.Add(TopoDS::Wire(outerWire2_));
   mkFace.Add(TopoDS::Wire(Wire2_.Reversed()));
   if (!mkFace.IsDone())
+  {
     return 1;
+  }
   TopoDS_Face Face2 = mkFace.Face();
 
   // Grab the gas solid now that we've extracted the faces.
@@ -381,21 +401,37 @@ static int OCC544(Draw_Interpretor& di, int argc, const char** argv)
   if (check)
   {
     if (!(BRepCheck_Analyzer(wallSolid).IsValid()))
+    {
       di << "The TopoDS_Solid was checked, and it was invalid!\n";
+    }
     else
+    {
       di << "The TopoDS_Solid was checked, and it was valid.\n";
+    }
     if (!wallSolid.Closed())
+    {
       di << "The TopoDS_Solid is not closed!\n";
+    }
     else
+    {
       di << "The TopoDS_Solid is closed.\n";
+    }
     if (!wallSolid.Checked())
+    {
       di << "The TopoDS_Solid is not checked!\n";
+    }
     else
+    {
       di << "The TopoDS_Solid has been checked.\n";
+    }
     if (wallSolid.Infinite())
+    {
       di << "The TopoDS_Solid is infinite!\n";
+    }
     else
+    {
       di << "The TopoDS_Solid is finite.\n";
+    }
   }
 
   di << "The result is a ";
@@ -442,6 +478,4 @@ void QABugs::Commands_13(Draw_Interpretor& theCommands)
                   __FILE__,
                   OCC544,
                   group);
-
-  return;
 }

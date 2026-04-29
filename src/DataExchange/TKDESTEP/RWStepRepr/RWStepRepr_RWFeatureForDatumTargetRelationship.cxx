@@ -37,7 +37,9 @@ void RWStepRepr_RWFeatureForDatumTargetRelationship::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "feature_for_datum_target-relationship"))
+  {
     return;
+  }
 
   // Own fields of ShapeAspectRelationship
 
@@ -91,7 +93,9 @@ void RWStepRepr_RWFeatureForDatumTargetRelationship::WriteStep(
     SW.Send(ent->Description());
   }
   else
+  {
     SW.SendUndef();
+  }
 
   SW.Send(ent->RelatingShapeAspect());
 

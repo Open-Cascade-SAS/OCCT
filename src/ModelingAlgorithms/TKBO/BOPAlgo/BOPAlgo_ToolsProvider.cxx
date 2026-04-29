@@ -47,7 +47,9 @@ void BOPAlgo_ToolsProvider::Clear()
 void BOPAlgo_ToolsProvider::AddTool(const TopoDS_Shape& theShape)
 {
   if (myMapTools.Add(theShape))
+  {
     myTools.Append(theShape);
+  }
 }
 
 //=================================================================================================
@@ -57,5 +59,7 @@ void BOPAlgo_ToolsProvider::SetTools(const NCollection_List<TopoDS_Shape>& theSh
   myTools.Clear();
   NCollection_List<TopoDS_Shape>::Iterator aIt(theShapes);
   for (; aIt.More(); aIt.Next())
+  {
     AddTool(aIt.Value());
+  }
 }

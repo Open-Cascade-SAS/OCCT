@@ -133,37 +133,49 @@ bool TopOpeBRepDS_Check::CheckDS(const int I, const TopOpeBRepDS_Kind K)
       if (myHDS->NbSurfaces() < I)
       {
         if (myMapSurfaceStatus.IsBound(I))
+        {
           myMapSurfaceStatus.UnBind(I);
+        }
         myMapSurfaceStatus.Bind(I, TopOpeBRepDS_NOK);
         return false;
       }
       if (!myMapSurfaceStatus.IsBound(I))
+      {
         myMapSurfaceStatus.Bind(I, TopOpeBRepDS_OK);
+      }
       return true;
     }
     case TopOpeBRepDS_CURVE: {
       if (myHDS->NbCurves() < I)
       {
         if (myMapCurveStatus.IsBound(I))
+        {
           myMapCurveStatus.UnBind(I);
+        }
         myMapCurveStatus.Bind(I, TopOpeBRepDS_NOK);
         return false;
       }
 
       if (!myMapCurveStatus.IsBound(I))
+      {
         myMapCurveStatus.Bind(I, TopOpeBRepDS_OK);
+      }
       return true;
     }
     case TopOpeBRepDS_POINT: {
       if (myHDS->NbPoints() < I)
       {
         if (myMapPointStatus.IsBound(I))
+        {
           myMapPointStatus.UnBind(I);
+        }
         myMapPointStatus.Bind(I, TopOpeBRepDS_NOK);
         return false;
       }
       if (!myMapPointStatus.IsBound(I))
+      {
         myMapPointStatus.Bind(I, TopOpeBRepDS_OK);
+      }
       return true;
     }
     default:
@@ -174,7 +186,9 @@ bool TopOpeBRepDS_Check::CheckDS(const int I, const TopOpeBRepDS_Kind K)
   if (myHDS->NbShapes() < I)
   {
     if (myMapShapeStatus.IsBound(I))
+    {
       myMapShapeStatus.UnBind(I);
+    }
     myMapShapeStatus.Bind(I, TopOpeBRepDS_NOK);
     return false;
   }
@@ -208,12 +222,16 @@ bool TopOpeBRepDS_Check::CheckDS(const int I, const TopOpeBRepDS_Kind K)
   if (S.ShapeType() != se)
   {
     if (myMapShapeStatus.IsBound(I))
+    {
       myMapShapeStatus.UnBind(I);
+    }
     myMapShapeStatus.Bind(I, TopOpeBRepDS_NOK);
     return false;
   }
   if (!myMapShapeStatus.IsBound(I))
+  {
     myMapShapeStatus.Bind(I, TopOpeBRepDS_OK);
+  }
   return true;
 }
 
@@ -290,7 +308,9 @@ bool TopOpeBRepDS_Check::CheckShapes(const NCollection_List<TopoDS_Shape>& LS) c
     const TopoDS_Shape& itS = it.Value();
     index                   = myHDS->Shape(itS);
     if (!index)
+    {
       return false;
+    }
     it.Next();
   }
   return true;
@@ -313,7 +333,9 @@ bool TopOpeBRepDS_Check::OneVertexOnPnt()
   {
     const TopoDS_Shape& S = myHDS->Shape(i);
     if ((S.ShapeType() == TopAbs_VERTEX) && myHDS->HasShape(S))
+    {
       vert.Add(i);
+    }
   }
   NbVe = vert.Extent();
   for (i = 1; i <= NbVe; i++)
@@ -437,8 +459,8 @@ bool CheckEdgeParameter(const occ::handle<TopOpeBRepDS_HDataStructure>& myHDS)
 
 Standard_OStream& TopOpeBRepDS_Check::PrintIntg(Standard_OStream& OS)
 {
-  OS << std::endl << std::endl << "************************************************" << std::endl;
-  OS << "state of the DS : (only the tested elements)" << std::endl << std::endl;
+  OS << '\n' << '\n' << "************************************************" << '\n';
+  OS << "state of the DS : (only the tested elements)" << '\n' << '\n';
 
   // Display of the geometry
   PrintMap(myMapSurfaceStatus, "Surface", OS);
@@ -483,7 +505,7 @@ Standard_OStream& TopOpeBRepDS_Check::PrintIntg(Standard_OStream& OS)
   PrintMap(MapFace, "Face", OS);
   PrintMap(MapSolid, "Solid", OS);
 
-  OS << std::endl << std::endl;
+  OS << '\n' << '\n';
   return OS;
 }
 
@@ -503,10 +525,14 @@ Standard_OStream& TopOpeBRepDS_Check::PrintMap(
 
     PrintElts(MapStat, TopOpeBRepDS_OK, b, OS);
     if (!b)
-      OS << " = OK" << std::endl;
+    {
+      OS << " = OK" << '\n';
+    }
     PrintElts(MapStat, TopOpeBRepDS_NOK, b, OS);
     if (!b)
-      OS << " = NOK" << std::endl;
+    {
+      OS << " = NOK" << '\n';
+    }
   }
   return OS;
 }
@@ -533,7 +559,9 @@ Standard_OStream& TopOpeBRepDS_Check::PrintElts(
     if (s == Stat)
     {
       if (b)
+      {
         b = !b;
+      }
       if (bb)
       {
         OS << "\t\tnumber ";
@@ -605,7 +633,7 @@ Standard_OStream& TopOpeBRepDS_Check::PrintShape(const int index, Standard_OStre
   }
   if (!myMapShapeStatus.IsBound(index))
   {
-    OS << "NO CHECK HAS PROCESSING" << std::endl;
+    OS << "NO CHECK HAS PROCESSING" << '\n';
     return OS;
   }
   OS << " ";

@@ -172,12 +172,16 @@ void BOPAlgo_RemoveFeatures::Perform(const Message_ProgressRange& theRange)
     OCC_CATCH_SIGNALS
 
     if (HasHistory())
+    {
       myHistory = new BRepTools_History();
+    }
 
     // Check the input data
     CheckData();
     if (HasErrors())
+    {
       return;
+    }
     Message_ProgressScope aPS(theRange, "Removing features", 100);
     BOPAlgo_PISteps       aSteps(PIOperation_Last);
     analyzeProgress(100., aSteps);
@@ -230,7 +234,9 @@ void BOPAlgo_RemoveFeatures::CheckData()
   const TopAbs_ShapeEnum aType = myInputShape.ShapeType();
 
   if (aType == TopAbs_SOLID || aType == TopAbs_COMPSOLID)
+  {
     return; // OK
+  }
 
   if (aType == TopAbs_COMPOUND)
   {
@@ -253,9 +259,13 @@ void BOPAlgo_RemoveFeatures::CheckData()
     {
       const TopoDS_Shape& aS = aIt.Value();
       if (aS.ShapeType() == TopAbs_SOLID || aS.ShapeType() == TopAbs_COMPSOLID)
+      {
         aSolids.Append(aS);
+      }
       else
+      {
         anOtherShapes.Append(aS);
+      }
     }
 
     if (aSolids.IsEmpty())
@@ -277,7 +287,9 @@ void BOPAlgo_RemoveFeatures::CheckData()
       TopoDS_Compound aCS;
       BRep_Builder().MakeCompound(aCS);
       for (aIt.Initialize(aSolids); aIt.More(); aIt.Next())
+      {
         BRep_Builder().Add(aCS, aIt.Value());
+      }
 
       myShape = aCS;
 
@@ -323,7 +335,9 @@ void BOPAlgo_RemoveFeatures::PrepareFeatures(const Message_ProgressRange& theRan
       }
       const TopoDS_Shape& aF = anExpF.Current();
       if (myInputsMap.Contains(aF))
+      {
         aFacesToRemove.Append(aF);
+      }
     }
   }
 
@@ -338,7 +352,9 @@ void BOPAlgo_RemoveFeatures::PrepareFeatures(const Message_ProgressRange& theRan
   TopoDS_Compound aCFToRemove;
   BRep_Builder().MakeCompound(aCFToRemove);
   for (aIt.Initialize(aFacesToRemove); aIt.More(); aIt.Next())
+  {
     BRep_Builder().Add(aCFToRemove, aIt.Value());
+  }
 
   // Fill the list of features with connexity blocks of faces
   BOPTools_AlgoTools::MakeConnexityBlocks(aCFToRemove, TopAbs_EDGE, TopAbs_FACE, myFeatures);
@@ -420,7 +436,9 @@ public: //! @name Perform the operation
 
       myHasAdjacentFaces = (aMFAdjacent.Extent() > 0);
       if (!myHasAdjacentFaces)
+      {
         return;
+      }
 
       // Extend the adjacent faces keeping the connection to the original faces
       NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>
@@ -476,7 +494,9 @@ private: //! @name Private methods performing the operation
     // Map the faces of the feature to avoid them in the map of adjacent faces
     TopoDS_Iterator aIt(myFeature);
     for (; aIt.More(); aIt.Next())
+    {
       myFeatureFacesMap.Add(aIt.Value());
+    }
     Message_ProgressScope aPSOuter(theRange, nullptr, 2);
     // Find faces adjacent to the feature using the connection map
     aIt.Initialize(myFeature);
@@ -500,7 +520,9 @@ private: //! @name Private methods performing the operation
           {
             const TopoDS_Shape& anAF = itLFA.Value();
             if (!myFeatureFacesMap.Contains(anAF))
+            {
               theMFAdjacent.Add(anAF);
+            }
           }
         }
       }
@@ -510,7 +532,9 @@ private: //! @name Private methods performing the operation
       {
         NCollection_List<TopoDS_Shape>::Iterator itLS(*pLS);
         for (; itLS.More(); itLS.Next())
+        {
           mySolids.Add(itLS.Value());
+        }
       }
     }
 
@@ -539,7 +563,9 @@ private: //! @name Private methods performing the operation
             {
               NCollection_List<TopoDS_Shape>::Iterator itLS(*pLS);
               for (; itLS.More(); itLS.Next())
+              {
                 mySolids.Add(itLS.Value());
+              }
             }
           }
         }
@@ -585,7 +611,9 @@ private: //! @name Private methods performing the operation
     // Add faces for intersection
     const int aNbF = theFaceExtFaceMap.Extent();
     for (int i = 1; i <= aNbF; ++i)
+    {
       aGFInter.AddArgument(theFaceExtFaceMap(i));
+    }
 
     aGFInter.SetRunParallel(myRunParallel);
 
@@ -596,14 +624,18 @@ private: //! @name Private methods performing the operation
     {
       aGFInter.Perform(aPSOuter.Next());
       if (aGFInter.HasErrors())
+      {
         return;
+      }
 
       anIntResult = aGFInter.Shape();
 
       myHistory->Merge(aGFInter.History());
     }
     else
+    {
       anIntResult = aGFInter.Arguments().First();
+    }
 
     // Prepare the EF map of the extended faces after intersection
     // to select from them only boundary edges
@@ -649,7 +681,9 @@ private: //! @name Private methods performing the operation
       const TopoDS_Edge& aE = TopoDS::Edge(anExpE.Current());
       // skip degenerated and seam edges
       if (BRep_Tool::Degenerated(aE) || BRep_Tool::IsClosed(aE, theFExt))
+      {
         continue;
+      }
       NCollection_List<TopoDS_Shape> aLEIm;
       TakeModified(aE, theGFInter, aLEIm);
       NCollection_List<TopoDS_Shape>::Iterator itLEIm(aLEIm);
@@ -657,7 +691,9 @@ private: //! @name Private methods performing the operation
       {
         const TopoDS_Shape& aEIm = itLEIm.Value();
         if (theEFExtMap.FindFromKey(aEIm).Extent() == 1)
+        {
           aMExtEdges.Add(aEIm);
+        }
       }
     }
 
@@ -681,7 +717,9 @@ private: //! @name Private methods performing the operation
         if (!BRep_Tool::Degenerated(aE) && !BRep_Tool::IsClosed(aE, theFOriginal))
         {
           if (!aMEdgesToCheckOri.Add(aE))
+          {
             aMEdgesToCheckOri.Remove(aE);
+          }
         }
       }
     }
@@ -693,7 +731,9 @@ private: //! @name Private methods performing the operation
 
     aGFTrim.Perform();
     if (aGFTrim.HasErrors())
+    {
       return;
+    }
 
     // Get all splits
     const TopoDS_Shape& aSplits = aGFTrim.Shape();
@@ -708,10 +748,14 @@ private: //! @name Private methods performing the operation
       for (; anExpE.More(); anExpE.Next())
       {
         if (aMExtEdges.Contains(anExpE.Current()))
+        {
           break;
+        }
       }
       if (!anExpE.More())
+      {
         aLFTrimmed.Append(aSp);
+      }
     }
 
     if (aLFTrimmed.Extent() > 1)
@@ -724,7 +768,9 @@ private: //! @name Private methods performing the operation
                                                anEFMap;
       NCollection_List<TopoDS_Shape>::Iterator itLF(aLFTrimmed);
       for (; itLF.More(); itLF.Next())
+      {
         TopExp::MapShapesAndAncestors(itLF.Value(), TopAbs_EDGE, TopAbs_FACE, anEFMap);
+      }
 
       // Check edges orientations
       NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aFacesToAvoid, aValidFaces;
@@ -740,7 +786,9 @@ private: //! @name Private methods performing the operation
         for (; itLF.More(); itLF.Next())
         {
           if (!aFacesToAvoid.Contains(itLF.Value()))
+          {
             BRep_Builder().Add(aCF, itLF.Value());
+          }
         }
 
         NCollection_List<TopoDS_Shape> aLCB;
@@ -756,13 +804,17 @@ private: //! @name Private methods performing the operation
             for (; itF.More(); itF.Next())
             {
               if (aValidFaces.Contains(itF.Value()))
+              {
                 break;
+              }
             }
             if (!itF.More())
             {
               // Invalid block
               for (itF.Initialize(aCB); itF.More(); itF.Next())
+              {
                 aFacesToAvoid.Add(itF.Value());
+              }
             }
           }
         }
@@ -772,9 +824,13 @@ private: //! @name Private methods performing the operation
       for (; itLF.More();)
       {
         if (aFacesToAvoid.Contains(itLF.Value()))
+        {
           aLFTrimmed.Remove(itLF);
+        }
         else
+        {
           itLF.Next();
+        }
       }
     }
     else if (aLFTrimmed.IsEmpty())
@@ -782,7 +838,9 @@ private: //! @name Private methods performing the operation
       // Use all splits, including those having the bounds of extended face
       anExpF.ReInit();
       for (; anExpF.More(); anExpF.Next())
+      {
         aLFTrimmed.Append(anExpF.Current());
+      }
     }
 
     if (aLFTrimmed.Extent())
@@ -803,7 +861,9 @@ private: //! @name Private methods performing the operation
     NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aResMap;
     NCollection_List<TopoDS_Shape>::Iterator                      itLF(aLFTrimmed);
     for (; itLF.More(); itLF.Next())
+    {
       TopExp::MapShapes(itLF.Value(), aResMap);
+    }
 
     NCollection_List<TopoDS_Shape> aLSplits;
     aLSplits.Append(aSplits);
@@ -895,7 +955,9 @@ void BOPAlgo_RemoveFeatures::RemoveFeatures(const Message_ProgressRange& theRang
   // - The faces modification after each feature removal to find the
   //   splits of the adjacent and feature faces for the next steps.
   if (myHistory.IsNull())
+  {
     myHistory = new BRepTools_History();
+  }
 
   // Remove the features one by one.
   // It will allow removing the features even if there were
@@ -1006,7 +1068,9 @@ void BOPAlgo_RemoveFeatures::RemoveFeature(
   aBB.MakeCompound(anOrigF);
   int aNbFK = aFacesToBeKept.Extent();
   for (int i = 1; i <= aNbFK; ++i)
+  {
     aBB.Add(anOrigF, aFacesToBeKept(i));
+  }
 
   // Tool for solids reconstruction
   BOPAlgo_MakerVolume aMV;
@@ -1034,7 +1098,9 @@ void BOPAlgo_RemoveFeatures::RemoveFeature(
       aBB.MakeCompound(anAdjF);
       NCollection_List<TopoDS_Shape>::Iterator itLFA(aLFA);
       for (; itLFA.More(); itLFA.Next())
+      {
         aBB.Add(anAdjF, itLFA.Value());
+      }
 
       aMV.AddArgument(anAdjF);
       aFacesToBeKept.Add(anAdjF);
@@ -1084,12 +1150,16 @@ void BOPAlgo_RemoveFeatures::RemoveFeature(
     const TopoDS_Shape&                   aF    = theAdjFaces.FindKey(i);
     const NCollection_List<TopoDS_Shape>& aLFIm = myHistory->Modified(aF);
     if (aLFIm.IsEmpty())
+    {
       anAdjFacesSplits.Add(aF);
+    }
     else
     {
       NCollection_List<TopoDS_Shape>::Iterator itLFIm(aLFIm);
       for (; itLFIm.More(); itLFIm.Next())
+      {
         anAdjFacesSplits.Add(itLFIm.Value());
+      }
     }
   }
 
@@ -1101,7 +1171,9 @@ void BOPAlgo_RemoveFeatures::RemoveFeature(
 
     const TopoDS_Shape& aS = aFacesToBeKept(i);
     if (anAdjFacesSplits.Contains(aS))
+    {
       continue;
+    }
     if (!aPS.More())
     {
       return;
@@ -1111,7 +1183,9 @@ void BOPAlgo_RemoveFeatures::RemoveFeature(
     {
       const TopoDS_Shape& aF = anExpF.Current();
       if (!aMV.IsDeleted(aF))
+      {
         break;
+      }
     }
     bValid = anExpF.More();
   }
@@ -1158,7 +1232,9 @@ void BOPAlgo_RemoveFeatures::RemoveFeature(
     NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aMSRes;
     NCollection_List<TopoDS_Shape>::Iterator                      itLS(aLSRes);
     for (; itLS.More(); itLS.Next())
+    {
       TopExp::MapShapes(itLS.Value(), aMSRes);
+    }
 
     // Remove internal shapes and extra faces
     BRepTools_History aRemHist;
@@ -1180,12 +1256,16 @@ void BOPAlgo_RemoveFeatures::RemoveFeature(
   // Add reconstructed solids
   NCollection_List<TopoDS_Shape>::Iterator itLS(aLSRes);
   for (; itLS.More(); itLS.Next())
+  {
     aBB.Add(aCRes, itLS.Value());
+  }
 
   // Add unmodified solids
   itLS.Initialize(anUnTouchedSolids);
   for (; itLS.More(); itLS.Next())
+  {
     aBB.Add(aCRes, itLS.Value());
+  }
 
   // Save the result
   myShape = aCRes;
@@ -1198,7 +1278,9 @@ void BOPAlgo_RemoveFeatures::RemoveFeature(
 void BOPAlgo_RemoveFeatures::UpdateHistory(const Message_ProgressRange& theRange)
 {
   if (!HasHistory())
+  {
     return;
+  }
 
   // Map the result
   myMapShape.Clear();
@@ -1213,10 +1295,14 @@ void BOPAlgo_RemoveFeatures::UpdateHistory(const Message_ProgressRange& theRange
   {
     const TopoDS_Shape& aS = myInputsMap(i);
     if (!BRepTools_History::IsSupportedType(aS))
+    {
       continue;
+    }
 
     if (myHistory->IsRemoved(aS))
+    {
       continue;
+    }
 
     if (UserBreak(aPS))
     {
@@ -1227,14 +1313,18 @@ void BOPAlgo_RemoveFeatures::UpdateHistory(const Message_ProgressRange& theRange
     if (aLSIm.IsEmpty())
     {
       if (!myMapShape.Contains(aS))
+      {
         aHistory.Remove(aS);
+      }
     }
 
     NCollection_List<TopoDS_Shape>::Iterator itLSIm(aLSIm);
     for (; itLSIm.More(); itLSIm.Next())
     {
       if (!myMapShape.Contains(itLSIm.Value()))
+      {
         aHistory.Remove(itLSIm.Value());
+      }
     }
   }
 
@@ -1249,7 +1339,9 @@ void BOPAlgo_RemoveFeatures::UpdateHistory(const Message_ProgressRange& theRange
 void BOPAlgo_RemoveFeatures::SimplifyResult(const Message_ProgressRange& theRange)
 {
   if (myShape.IsSame(myInputShape))
+  {
     return;
+  }
   Message_ProgressScope        aPSOuter(theRange, "Simplifyingthe result", 2);
   ShapeUpgrade_UnifySameDomain aSDTool;
   aSDTool.Initialize(myShape, true, true);
@@ -1257,7 +1349,9 @@ void BOPAlgo_RemoveFeatures::SimplifyResult(const Message_ProgressRange& theRang
   aSDTool.AllowInternalEdges(false);
   // Avoid removal of the input edges and vertices
   if (myMapShape.IsEmpty())
+  {
     TopExp::MapShapes(myShape, myMapShape);
+  }
 
   const int             aNbS = myInputsMap.Extent();
   Message_ProgressScope aPS(aPSOuter.Next(), nullptr, aNbS);
@@ -1268,7 +1362,9 @@ void BOPAlgo_RemoveFeatures::SimplifyResult(const Message_ProgressRange& theRang
       return;
     }
     if (myMapShape.Contains(myInputsMap(i)))
+    {
       aSDTool.KeepShape(myInputsMap(i));
+    }
   }
 
   // Perform unification
@@ -1276,7 +1372,9 @@ void BOPAlgo_RemoveFeatures::SimplifyResult(const Message_ProgressRange& theRang
   aPSOuter.Next();
   myShape = aSDTool.Shape();
   if (HasHistory())
+  {
     myHistory->Merge(aSDTool.History());
+  }
 }
 
 //=======================================================================
@@ -1288,7 +1386,9 @@ void BOPAlgo_RemoveFeatures::PostTreat()
   const TopAbs_ShapeEnum anInputType = myInputShape.ShapeType();
   const TopAbs_ShapeEnum aResType    = myShape.ShapeType();
   if (aResType == anInputType)
+  {
     return;
+  }
 
   TopExp_Explorer anExpS(myShape, TopAbs_SOLID);
 
@@ -1300,12 +1400,18 @@ void BOPAlgo_RemoveFeatures::PostTreat()
 
   TopoDS_Shape aRes;
   if (anInputType == TopAbs_COMPOUND)
+  {
     BRep_Builder().MakeCompound(TopoDS::Compound(aRes));
+  }
   else
+  {
     BRep_Builder().MakeCompSolid(TopoDS::CompSolid(aRes));
+  }
 
   for (; anExpS.More(); anExpS.Next())
+  {
     BRep_Builder().Add(aRes, anExpS.Current());
+  }
 
   myShape = aRes;
 }
@@ -1326,7 +1432,9 @@ void MakeRemoved(const NCollection_List<TopoDS_Shape>&                          
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aShapesMap;
   NCollection_List<TopoDS_Shape>::Iterator                      it(theShapes);
   for (; it.More(); it.Next())
+  {
     TopExp::MapShapes(it.Value(), aShapesMap);
+  }
 
   const int aNbS = aShapesMap.Extent();
   for (int i = 1; i <= aNbS; ++i)
@@ -1350,7 +1458,9 @@ void FindInternals(const TopoDS_Shape& theS, NCollection_List<TopoDS_Shape>& the
   {
     const TopoDS_Shape& aSS = itS.Value();
     if (aSS.Orientation() == TopAbs_INTERNAL)
+    {
       theLInt.Append(aSS);
+    }
     else
     {
       TopoDS_Iterator itSS(aSS);
@@ -1390,7 +1500,9 @@ void RemoveInternalWires(const NCollection_List<TopoDS_Shape>& theShapes,
         for (; itR.More(); itR.Next())
         {
           if (theRemoved)
+          {
             theRemoved->Append(itR.Value());
+          }
           BRep_Builder().Remove(aF, itR.Value());
         }
         aF.Free(false);
@@ -1429,9 +1541,13 @@ void GetOriginalFaces(
     const TopoDS_Shape&                   aSol  = theSolids(i);
     const NCollection_List<TopoDS_Shape>& aLFIm = theHistory->Modified(aSol);
     if (aLFIm.IsEmpty())
+    {
       theSolidsToRebuild.Add(aSol);
+    }
     else
+    {
       theSolidsToRebuild.Add(aLFIm.First());
+    }
   }
 
   // Splits of the feature faces
@@ -1442,12 +1558,16 @@ void GetOriginalFaces(
     const TopoDS_Shape&                   aF    = itM.Value();
     const NCollection_List<TopoDS_Shape>& aLFIm = theHistory->Modified(aF);
     if (aLFIm.IsEmpty())
+    {
       aFeatureFacesSplits.Add(aF);
+    }
     else
     {
       NCollection_List<TopoDS_Shape>::Iterator itLFIm(aLFIm);
       for (; itLFIm.More(); itLFIm.Next())
+      {
         aFeatureFacesSplits.Add(itLFIm.Value());
+      }
     }
   }
 
@@ -1480,11 +1600,15 @@ void GetOriginalFaces(
         const TopoDS_Shape& aF = itF.Value();
         // Avoid the feature faces
         if (aFeatureFacesSplits.Contains(aF))
+        {
           continue;
+        }
 
         // Avoid the adjacent faces
         if (theAdjFaces.Contains(aF))
+        {
           continue;
+        }
 
         if (aF.Orientation() != TopAbs_INTERNAL)
         {
@@ -1497,7 +1621,9 @@ void GetOriginalFaces(
           }
         }
         else
+        {
           theInternalShapes.Append(aSh);
+        }
       }
     }
   }
@@ -1536,7 +1662,9 @@ void GetValidSolids(
 {
   TopExp_Explorer anExpS(theMV.Shape(), TopAbs_SOLID);
   for (; anExpS.More(); anExpS.Next())
+  {
     theLSRes.Append(anExpS.Current());
+  }
 
   if (theLSRes.Extent() > theNbSol)
   {
@@ -1553,9 +1681,13 @@ void GetValidSolids(
     for (; itLS.More();)
     {
       if (aSolidsToAvoid.Contains(itLS.Value()))
+      {
         theLSRes.Remove(itLS);
+      }
       else
+      {
         itLS.Next();
+      }
     }
   }
 
@@ -1571,7 +1703,9 @@ void GetValidSolids(
     NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> anOrigFacesRes;
     TopExp_Explorer                                        anExpF(theOrigFaces, TopAbs_FACE);
     for (; anExpF.More(); anExpF.Next())
+    {
       TakeModified(anExpF.Current(), theMV, anOrigFacesRes);
+    }
 
     NCollection_List<TopoDS_Shape>::Iterator itLS(theLSRes);
     for (; itLS.More();)
@@ -1580,7 +1714,9 @@ void GetValidSolids(
       for (; anExpF.More(); anExpF.Next())
       {
         if (anOrigFacesRes.Contains(anExpF.Current()))
+        {
           break;
+        }
       }
       if (!anExpF.More())
       {
@@ -1588,7 +1724,9 @@ void GetValidSolids(
         theLSRes.Remove(itLS);
       }
       else
+      {
         itLS.Next();
+      }
     }
   }
 }
@@ -1625,14 +1763,18 @@ void FindExtraShapes(
 
       const NCollection_List<TopoDS_Shape>* pShapesToValidate = theConnectionMap.Seek(aSIm);
       if (!pShapesToValidate)
+      {
         continue;
+      }
 
       NCollection_List<TopoDS_Shape>::Iterator itSV(*pShapesToValidate);
       for (; itSV.More(); itSV.Next())
       {
         const TopoDS_Shape& aShapeToValidate = itSV.Value();
         if (pValidShapes->Contains(aShapeToValidate))
+        {
           continue;
+        }
 
         TopoDS_Face aSInShape;
         FindShape(aSIm, aShapeToValidate, aSInShape);
@@ -1640,16 +1782,22 @@ void FindExtraShapes(
         bool bSameOri = !BOPTools_AlgoTools::IsSplitToReverse(aSInShape, aSToCheckOri, aCtx);
 
         if (bSameOri)
+        {
           pValidShapes->Add(aShapeToValidate);
+        }
         else
+        {
           theShapesToAvoid.Add(aShapeToValidate);
+        }
       }
     }
   }
 
   itM.Initialize(*pValidShapes);
   for (; itM.More(); itM.Next())
+  {
     theShapesToAvoid.Remove(itM.Value());
+  }
 }
 
 //=======================================================================
@@ -1667,14 +1815,18 @@ void AvoidExtraSharedFaces(NCollection_List<TopoDS_Shape>&       theLSolids,
     NCollection_List<TopoDS_Shape>           aLFSharedSp;
     NCollection_List<TopoDS_Shape>::Iterator itLFS(theLFSharedToAvoid);
     for (; itLFS.More(); itLFS.Next())
+    {
       TakeModified(itLFS.Value(), theBuilder, aMFSharedSp);
+    }
   }
 
   NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
                                            aFSMap;
   NCollection_List<TopoDS_Shape>::Iterator itLS(theLSolids);
   for (; itLS.More(); itLS.Next())
+  {
     TopExp::MapShapesAndAncestors(itLS.Value(), TopAbs_FACE, TopAbs_SOLID, aFSMap);
+  }
 
   NCollection_List<TopoDS_Shape> anExtraFaces;
   NCollection_List<TopoDS_Shape> aLFArguments;
@@ -1688,14 +1840,20 @@ void AvoidExtraSharedFaces(NCollection_List<TopoDS_Shape>&       theLSolids,
       const TopoDS_Shape&                   aF    = anExpF.Current();
       const NCollection_List<TopoDS_Shape>& aLSol = aFSMap.FindFromKey(aF);
       if (aLSol.Extent() != 2 || aMFSharedSp.Contains(aF))
+      {
         aLFArguments.Append(aF);
+      }
       else
+      {
         anExtraFaces.Append(aF);
+      }
     }
   }
 
   if (anExtraFaces.IsEmpty())
+  {
     return;
+  }
 
   // Rebuild the solids avoiding the extra faces
   BOPAlgo_BuilderSolid aBS;
@@ -1703,7 +1861,9 @@ void AvoidExtraSharedFaces(NCollection_List<TopoDS_Shape>&       theLSolids,
   aBS.SetShapes(aLFArguments);
   aBS.Perform();
   if (aBS.HasErrors())
+  {
     return;
+  }
 
   theLSolids = aBS.Areas();
   theExtraFaces.Append(anExtraFaces);
@@ -1772,12 +1932,16 @@ void TakeModified(const TopoDS_Shape&             theS,
 {
   const NCollection_List<TopoDS_Shape>& aModified = theBuilder.Modified(theS);
   if (aModified.IsEmpty() && !theBuilder.IsDeleted(theS))
+  {
     theList.Append(theS);
+  }
   else
   {
     NCollection_List<TopoDS_Shape>::Iterator itM(aModified);
     for (; itM.More(); itM.Next())
+    {
       theList.Append(itM.Value());
+    }
   }
 }
 
@@ -1791,12 +1955,16 @@ void TakeModified(const TopoDS_Shape&                                     theS,
 {
   const NCollection_List<TopoDS_Shape>& aModified = theBuilder.Modified(theS);
   if (aModified.IsEmpty() && !theBuilder.IsDeleted(theS))
+  {
     theMap.Add(theS);
+  }
   else
   {
     NCollection_List<TopoDS_Shape>::Iterator itM(aModified);
     for (; itM.More(); itM.Next())
+    {
       theMap.Add(itM.Value());
+    }
   }
 }
 
@@ -1826,7 +1994,9 @@ void FindSolid(const TopoDS_Shape&                                        theSol
     {
       NCollection_List<TopoDS_Shape>::Iterator itLFA(*pLFA);
       for (; itLFA.More(); itLFA.Next())
+      {
         TakeModified(itLFA.Value(), theBuilder, aMFSIm);
+      }
     }
     else
     {

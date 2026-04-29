@@ -235,7 +235,9 @@ void BRepMesh_EdgeDiscret::Tessellate3d(
   TopExp::Vertices(aEdge, aFirstVertex, aLastVertex);
 
   if (aFirstVertex.IsNull() || aLastVertex.IsNull())
+  {
     return;
+  }
 
   if (theUpdateEnds)
   {
@@ -252,7 +254,9 @@ void BRepMesh_EdgeDiscret::Tessellate3d(
       gp_Pnt aPoint;
       double aParam;
       if (!theTessellator->Value(i, aPoint, aParam))
+      {
         continue;
+      }
 
       if (theUpdateEnds)
       {

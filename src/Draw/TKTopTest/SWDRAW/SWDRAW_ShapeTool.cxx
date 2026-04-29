@@ -72,7 +72,9 @@ static int XSHAPE_edge(Draw_Interpretor& di, int argc, const char** argv)
     TopoDS_Edge Edge = TopoDS::Edge(exp.Current());
     nbe++;
     if (BRep_Tool::Degenerated(Edge))
+    {
       continue;
+    }
     occ::handle<Geom_Curve> curve3d = BRep_Tool::Curve(Edge, f3d, l3d);
     if (curve3d.IsNull())
     {
@@ -120,27 +122,37 @@ static int XSHAPE_explorewire(Draw_Interpretor& di, int argc, const char** argv)
   for (TopoDS_Iterator ext(W); ext.More(); ext.Next())
   {
     if (ext.Value().ShapeType() != TopAbs_EDGE)
+    {
       continue;
+    }
     TopoDS_Edge E = TopoDS::Edge(ext.Value());
     nbe++;
     num = map.Add(E);
   }
   int* nbs = new int[nbe + 1];
   for (i = 0; i <= nbe; i++)
+  {
     nbs[i] = 0;
+  }
 
   di << "TopoDS_Iterator(EDGE)  donne " << nbe << " Edges dont " << num << " distinctes\n";
   nbe = num;
   nbw = 0;
   for (TopExp_Explorer exe(W.Oriented(TopAbs_FORWARD), TopAbs_EDGE); exe.More(); exe.Next())
+  {
     nbw++;
+  }
   di << "TopExp_Explorer(EDGE)  donne " << nbw << " Edges\n";
   nbw = 0;
   BRepTools_WireExplorer bwe;
   if (F.IsNull())
+  {
     bwe.Init(W);
+  }
   else
+  {
     bwe.Init(W, F);
+  }
   for (; bwe.More(); bwe.Next())
   {
     TopoDS_Edge E = TopoDS::Edge(bwe.Current());
@@ -151,7 +163,9 @@ static int XSHAPE_explorewire(Draw_Interpretor& di, int argc, const char** argv)
   di << "BRepTools_WireExplorer donne " << nbw << " Edges\n";
   di << "Par rapport a la map, edges sautees par WE en NOWE_num, passees > 1 fois en MULTWE_num\n";
   if (nbs[0] > 0)
+  {
     di << "NB : Edge n0 0 comptee " << nbs[0] << " fois\n";
+  }
   for (i = 1; i <= nbe; i++)
   {
     if (nbs[i] < 1)

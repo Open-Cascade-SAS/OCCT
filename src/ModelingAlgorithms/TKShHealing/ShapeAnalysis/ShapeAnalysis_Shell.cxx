@@ -45,10 +45,14 @@ void ShapeAnalysis_Shell::Clear()
 void ShapeAnalysis_Shell::LoadShells(const TopoDS_Shape& shape)
 {
   if (shape.IsNull())
+  {
     return;
+  }
 
   if (shape.ShapeType() == TopAbs_SHELL)
+  {
     myShells.Add(shape); // szv#4:S4163:12Mar99 i =
+  }
   else
   {
     for (TopExp_Explorer exs(shape, TopAbs_SHELL); exs.More(); exs.Next())
@@ -78,20 +82,26 @@ static bool CheckEdges(const TopoDS_Shape&                                      
     for (TopoDS_Iterator it(shape); it.More(); it.Next())
     {
       if (CheckEdges(it.Value(), bads, dirs, revs, ints))
+      {
         res = true;
+      }
     }
   }
   else
   {
     TopoDS_Edge E = TopoDS::Edge(shape);
     if (BRep_Tool::Degenerated(E))
+    {
       return false;
+    }
 
     if (shape.Orientation() == TopAbs_FORWARD)
     {
       // szv#4:S4163:12Mar99 optimized
       if (dirs.FindIndex(shape) == 0)
+      {
         dirs.Add(shape);
+      }
       else
       {
         bads.Add(shape);
@@ -102,7 +112,9 @@ static bool CheckEdges(const TopoDS_Shape&                                      
     {
       // szv#4:S4163:12Mar99 optimized
       if (revs.FindIndex(shape) == 0)
+      {
         revs.Add(shape);
+      }
       else
       {
         bads.Add(shape);
@@ -112,7 +124,9 @@ static bool CheckEdges(const TopoDS_Shape&                                      
     if (shape.Orientation() == TopAbs_INTERNAL)
     {
       if (ints.FindIndex(shape) == 0)
+      {
         ints.Add(shape);
+      }
       // else { bads.Add (shape); res = true; }
     }
   }
@@ -128,7 +142,9 @@ bool ShapeAnalysis_Shell::CheckOrientedShells(const TopoDS_Shape& shape,
 {
   myConex = false;
   if (shape.IsNull())
+  {
     return false;
+  }
   bool res = false;
 
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> dirs, revs, ints;
@@ -137,13 +153,19 @@ bool ShapeAnalysis_Shell::CheckOrientedShells(const TopoDS_Shape& shape,
     const TopoDS_Shape& sh = exs.Current();
     // szv#4:S4163:12Mar99 optimized
     if (CheckEdges(sh, myBad, dirs, revs, ints))
+    {
       if (myShells.Add(sh))
+      {
         res = true;
+      }
+    }
   }
 
   //  Resteraient a faire les FreeEdges
   if (!alsofree)
+  {
     return res;
+  }
 
   //  Free Edges. Ce sont les edges d une map pas dans l autre
   //  et lycee de Versailles  (les maps dirs et revs)
@@ -163,7 +185,9 @@ bool ShapeAnalysis_Shell::CheckOrientedShells(const TopoDS_Shape& shape,
             myFree.Add(sh);
           }
           else
+          {
             myConex = true;
+          }
         }
         else
         {
@@ -171,10 +195,14 @@ bool ShapeAnalysis_Shell::CheckOrientedShells(const TopoDS_Shape& shape,
         }
       }
       else
+      {
         myConex = true;
+      }
     }
     else
+    {
       myConex = true;
+    }
   }
 
   nb = revs.Extent();
@@ -192,7 +220,9 @@ bool ShapeAnalysis_Shell::CheckOrientedShells(const TopoDS_Shape& shape,
             myFree.Add(sh);
           }
           else
+          {
             myConex = true;
+          }
         }
         else
         {
@@ -200,10 +230,14 @@ bool ShapeAnalysis_Shell::CheckOrientedShells(const TopoDS_Shape& shape,
         }
       }
       else
+      {
         myConex = true;
+      }
     }
     else
+    {
       myConex = true;
+    }
   }
 
   return res;
@@ -214,7 +248,9 @@ bool ShapeAnalysis_Shell::CheckOrientedShells(const TopoDS_Shape& shape,
 bool ShapeAnalysis_Shell::IsLoaded(const TopoDS_Shape& shape) const
 {
   if (shape.IsNull())
+  {
     return false;
+  }
   return myShells.Contains(shape);
 }
 
@@ -248,7 +284,9 @@ TopoDS_Compound ShapeAnalysis_Shell::BadEdges() const
   B.MakeCompound(C);
   int n = myBad.Extent();
   for (int i = 1; i <= n; i++)
+  {
     B.Add(C, myBad.FindKey(i));
+  }
   return C;
 }
 
@@ -268,7 +306,9 @@ TopoDS_Compound ShapeAnalysis_Shell::FreeEdges() const
   B.MakeCompound(C);
   int n = myFree.Extent();
   for (int i = 1; i <= n; i++)
+  {
     B.Add(C, myFree.FindKey(i));
+  }
   return C;
 }
 

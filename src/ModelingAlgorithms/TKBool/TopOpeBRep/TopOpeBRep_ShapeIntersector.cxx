@@ -123,37 +123,57 @@ const TopoDS_Shape& TopOpeBRep_ShapeIntersector::CurrentGeomShape(const int Inde
     if (myFFDone)
     {
       if (Index == 1)
+      {
         return myFaceScanner.Current();
+      }
       else if (Index == 2)
+      {
         return myFaceExplorer.Current();
+      }
     }
     else if (myEEFFDone)
     {
       if (Index == 1)
+      {
         return myEdgeScanner.Current();
+      }
       else if (Index == 2)
+      {
         return myEdgeExplorer.Current();
+      }
     }
     else if (myFEDone)
     {
       if (Index == 1)
+      {
         return myFaceScanner.Current();
+      }
       else if (Index == 2)
+      {
         return myEdgeExplorer.Current();
+      }
     }
     else if (myEFDone)
     {
       if (Index == 1)
+      {
         return myEdgeScanner.Current();
+      }
       else if (Index == 2)
+      {
         return myFaceExplorer.Current();
+      }
     }
     else if (myEEDone)
     {
       if (Index == 1)
+      {
         return myEdgeScanner.Current();
+      }
       else if (Index == 2)
+      {
         return myEdgeExplorer.Current();
+      }
     }
   }
 
@@ -258,7 +278,9 @@ void TopOpeBRep_ShapeIntersector::RejectedFaces(const TopoDS_Shape&             
         const TopoDS_Shape& shape = it.Value();
 
         if (shape.ShapeType() != TopAbs_EDGE)
+        {
           continue;
+        }
 
         const TopoDS_Edge& edgel = TopoDS::Edge(shape);
         if (edgef.IsSame(edgel))
@@ -274,7 +296,9 @@ void TopOpeBRep_ShapeIntersector::RejectedFaces(const TopoDS_Shape&             
       const TopoDS_Shape& shape = it.Value();
 
       if (shape.ShapeType() != TopAbs_FACE)
+      {
         continue;
+      }
 
       const TopoDS_Face& facel = TopoDS::Face(shape);
       if (facel.IsSame(newRejectFace))
@@ -351,15 +375,21 @@ void TopOpeBRep_ShapeIntersector::InitIntersection(const TopoDS_Shape& S1, const
 
   InitFFIntersection();
   if (MoreFFCouple())
+  {
     return;
+  }
 
   InitFEIntersection();
   if (MoreFECouple())
+  {
     return;
+  }
 
   InitEFIntersection();
   if (MoreEFCouple())
+  {
     return;
+  }
 }
 
 //=================================================================================================
@@ -767,9 +797,13 @@ void TopOpeBRep_ShapeIntersector::FindEEFFIntersection()
 
     myEEFFDone = !(myEEIntersector.IsEmpty());
     if (myEEFFDone)
+    {
       break;
+    }
     else
+    {
       NextEEFFCouple();
+    }
   }
   SetIntersectionDone();
 }
@@ -828,9 +862,13 @@ void TopOpeBRep_ShapeIntersector::FindFEIntersection()
     myFEIntersector.Perform(GS1, GS2);
     myFEDone = !(myFEIntersector.IsEmpty());
     if (myFEDone)
+    {
       break;
+    }
     else
+    {
       NextFECouple();
+    }
   }
   SetIntersectionDone();
 }
@@ -889,9 +927,13 @@ void TopOpeBRep_ShapeIntersector::FindEFIntersection()
     myFEIntersector.Perform(GS2, GS1);
     myEFDone = !(myFEIntersector.IsEmpty());
     if (myEFDone)
+    {
       break;
+    }
     else
+    {
       NextEFCouple();
+    }
   }
   SetIntersectionDone();
 }
@@ -957,9 +999,13 @@ void TopOpeBRep_ShapeIntersector::FindEEIntersection()
     myEEIntersector.Perform(GS1, GS2);
     myEEDone = !(myEEIntersector.IsEmpty());
     if (myEEDone)
+    {
       break;
+    }
     else
+    {
       NextEECouple();
+    }
   }
   SetIntersectionDone();
 }
@@ -990,9 +1036,13 @@ void TopOpeBRep_ShapeIntersector::NextEECouple()
 const TopoDS_Shape& TopOpeBRep_ShapeIntersector::Shape(const int Index) const
 {
   if (Index == 1)
+  {
     return myShape1;
+  }
   else if (Index == 2)
+  {
     return myShape2;
+  }
 
   throw Standard_Failure("ShapeIntersector : no shape");
 }
@@ -1046,15 +1096,23 @@ static int OneShapeIsHalfSpace(const TopoDS_Shape& S1, const TopoDS_Shape& S2)
     int             NbFacesSol2 = 0;
 
     for (; ExpSol1.More(); ExpSol1.Next())
+    {
       NbFacesSol1++;
+    }
 
     for (; ExpSol2.More(); ExpSol2.Next())
+    {
       NbFacesSol2++;
+    }
 
-    if (NbFacesSol1 == 0 || NbFacesSol2 == 0) // strange solids!!!
+    if (NbFacesSol1 == 0 || NbFacesSol2 == 0)
+    { // strange solids!!!
       return result;
-    if (NbFacesSol1 == 1 && NbFacesSol2 == 1) // both shapes are half spaces ???
+    }
+    if (NbFacesSol1 == 1 && NbFacesSol2 == 1)
+    { // both shapes are half spaces ???
       return result;
+    }
 
     if ((NbFacesSol1 == 1 && NbFacesSol2 >= 2) || (NbFacesSol2 == 1 && NbFacesSol1 >= 2))
     {
@@ -1074,12 +1132,16 @@ static int OneShapeIsHalfSpace(const TopoDS_Shape& S1, const TopoDS_Shape& S2)
       if (NbFacesSol1 == 1)
       {
         for (SolidExplorer.Init(S1, TopAbs_FACE); SolidExplorer.More(); SolidExplorer.Next())
+        {
           testFace = TopoDS::Face(SolidExplorer.Current());
+        }
       }
       else
       {
         for (SolidExplorer.Init(S2, TopAbs_FACE); SolidExplorer.More(); SolidExplorer.Next())
+        {
           testFace = TopoDS::Face(SolidExplorer.Current());
+        }
       }
 
       BRepAdaptor_Surface FSurf(testFace);
@@ -1113,7 +1175,9 @@ static int OneShapeIsHalfSpace(const TopoDS_Shape& S1, const TopoDS_Shape& S2)
       }
 
       if (SolidIsSphereOrTorus)
+      {
         return result;
+      }
 
       bool SecondShellOk = true;
       NCollection_IndexedDataMap<TopoDS_Shape,
@@ -1124,9 +1188,13 @@ static int OneShapeIsHalfSpace(const TopoDS_Shape& S1, const TopoDS_Shape& S2)
       int NbEdges = 0, NbFaces = 0, iE = 0;
 
       if (NbFacesSol1 == 1)
+      {
         TopExp::MapShapesAndAncestors(S2, TopAbs_EDGE, TopAbs_FACE, aMapEF);
+      }
       else
+      {
         TopExp::MapShapesAndAncestors(S1, TopAbs_EDGE, TopAbs_FACE, aMapEF);
+      }
 
       NbEdges = aMapEF.Extent();
       for (iE = 1; iE <= NbEdges; iE++)
@@ -1142,7 +1210,9 @@ static int OneShapeIsHalfSpace(const TopoDS_Shape& S1, const TopoDS_Shape& S2)
       aMapEF.Clear();
 
       if (SecondShellOk)
+      {
         result = (NbFacesSol1 == 1) ? 1 : 2;
+      }
     }
     else
     {
@@ -1192,7 +1262,9 @@ static TopoDS_Solid GetNewSolid(const TopoDS_Shape& S, TopoDS_Face& F)
   TopoDS_Face hsFace;
 
   for (ShapeExplorer.Init(S, TopAbs_FACE); ShapeExplorer.More(); ShapeExplorer.Next())
+  {
     hsFace = TopoDS::Face(ShapeExplorer.Current());
+  }
 
   BRepAdaptor_Surface ASurf(hsFace);
 
@@ -1211,9 +1283,13 @@ static TopoDS_Solid GetNewSolid(const TopoDS_Shape& S, TopoDS_Face& F)
   gp_Vec Normal = SurfDU.Crossed(SurfDV);
 
   if (hsFace.Orientation() == TopAbs_FORWARD)
+  {
     Normal *= -1.e+10;
+  }
   else
+  {
     Normal *= 1.e+10;
+  }
 
   double Pu1 = MinU + std::abs((MaxU - MinU) / 4.);
   double Pu2 = MinU + std::abs((MaxU - MinU) / 4. * 3.);

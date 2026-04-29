@@ -53,23 +53,39 @@ void LocalAnalysis_SurfaceContinuity::SurfC1(GeomLProp_SLProps& Surf1, GeomLProp
   if ((norm1u > myepsnul) && (norm2u > myepsnul) && (norm1v > myepsnul) && (norm2v > myepsnul))
   {
     if (norm1u >= norm2u)
+    {
       myLambda1U = norm2u / norm1u;
+    }
     else
+    {
       myLambda1U = norm1u / norm2u;
+    }
     if (norm1v >= norm2v)
+    {
       myLambda1V = norm2v / norm1v;
+    }
     else
+    {
       myLambda1V = norm1v / norm2v;
+    }
     angu = V1u.Angle(V2u);
     if (angu > M_PI / 2)
+    {
       myContC1U = M_PI - angu;
+    }
     else
+    {
       myContC1U = angu;
+    }
     angv = V1v.Angle(V2v);
     if (angv > M_PI / 2)
+    {
       myContC1V = M_PI - angv;
+    }
     else
+    {
       myContC1V = angv;
+    }
   }
   else
   {
@@ -111,9 +127,13 @@ void LocalAnalysis_SurfaceContinuity::SurfC2(GeomLProp_SLProps& Surf1, GeomLProp
       }
       ang = V21u.Angle(V22u);
       if (ang > M_PI / 2)
+      {
         myContC2U = M_PI - ang;
+      }
       else
+      {
         myContC2U = ang;
+      }
     }
     else
     {
@@ -153,9 +173,13 @@ void LocalAnalysis_SurfaceContinuity::SurfC2(GeomLProp_SLProps& Surf1, GeomLProp
       }
       ang = V21v.Angle(V22v);
       if (ang > M_PI / 2)
+      {
         myContC2V = M_PI - ang;
+      }
       else
+      {
         myContC2V = ang;
+      }
     }
     else
     {
@@ -179,9 +203,13 @@ void LocalAnalysis_SurfaceContinuity::SurfG1(GeomLProp_SLProps& Surf1, GeomLProp
     gp_Dir D2  = Surf2.Normal();
     double ang = D1.Angle(D2);
     if (ang > M_PI / 2)
+    {
       myContG1 = M_PI - ang;
+    }
     else
+    {
       myContG1 = ang;
+    }
   }
   else
   {
@@ -453,7 +481,9 @@ LocalAnalysis_SurfaceContinuity::LocalAnalysis_SurfaceContinuity(
   parf2 = curv2->LastParameter();
 
   if ((U > parf1) || (U < pard1) || (U > parf2) || (U < pard2))
+  {
     myIsDone = false;
+  }
   else
   {
     gp_Pnt2d pt1 = curv1->Value(U);
@@ -546,18 +576,30 @@ bool LocalAnalysis_SurfaceContinuity::IsC2() const
     if ((myContC2U < myepsC2) && (myContC2V < myepsC2))
     {
       if (std::abs(myLambda1U * myLambda1U - myLambda2U) <= (eps1u * eps1u + eps2u))
+      {
         if (std::abs(myLambda1V * myLambda1V - myLambda2V) <= (eps1v * eps1v + eps2v))
+        {
           return true;
+        }
         else
+        {
           return false;
+        }
+      }
       else
+      {
         return false;
+      }
     }
     else
+    {
       return false;
+    }
   }
   else
+  {
     return false;
+  }
 }
 
 /*********************************************************************************/
@@ -587,31 +629,51 @@ bool LocalAnalysis_SurfaceContinuity::IsG2() const
   if (IsG1())
   {
     if ((std::abs(myETA) < EPSNL) && (std::abs(myZETA) < EPSNL))
+    {
       return true;
+    }
     if ((std::abs(myZETA1) < EPSNL) && (std::abs(myZETA2) < EPSNL))
+    {
       itype = 1;
+    }
     else if ((std::abs(myETA1) < EPSNL) && (std::abs(myETA2) < EPSNL))
+    {
       itype = 1;
+    }
     else if ((std::abs(std::abs(myZETA) - std::abs(myETA))) < EPSNL)
+    {
       itype = 1;
+    }
     else if ((myETA1 < myZETA1) && (myETA2 < myZETA2))
+    {
       itype = 1;
+    }
     else if ((myETA1 > myZETA1) && (myETA2 > myZETA2))
+    {
       itype = 1;
+    }
     if (itype == 1)
     {
 
       if ((myETA >= (2 * myZETA)) && (myGap <= (myperce * (myETA - myZETA))))
+      {
         return true;
+      }
       if ((myZETA >= myETA) && (myGap <= (myperce * myZETA)))
+      {
         return true;
+      }
       return (myZETA <= myETA) && (myETA <= (2 * myZETA)) && (myGap <= (myperce * myETA));
     }
     else
+    {
       return false;
+    }
   }
   else
+  {
     return false;
+  }
 }
 
 /*********************************************************************************/

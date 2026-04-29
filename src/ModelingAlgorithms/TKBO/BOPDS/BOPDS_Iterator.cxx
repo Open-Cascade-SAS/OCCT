@@ -280,7 +280,9 @@ void BOPDS_Iterator::Intersect(const occ::handle<IntTools_Context>& theCtx,
   {
     const BOPDS_ShapeInfo& aSI = myDS->ShapeInfo(i);
     if (!aSI.HasBRep())
+    {
       continue;
+    }
     const Bnd_Box& aBox = aSI.Box();
     aBoxTree.Add(i, Bnd_Tools::Bnd2BVH(aBox));
   }
@@ -310,12 +312,16 @@ void BOPDS_Iterator::Intersect(const occ::handle<IntTools_Context>& theCtx,
     {
       const BOPTools_BoxPairSelector::PairIDs& aPair = aPairs[iPair];
       if (!aRange.Contains(aPair.ID1))
+      {
         // Go to the next range
         break;
+      }
 
       if (aRange.Contains(aPair.ID2))
+      {
         // Go to the next pair
         continue;
+      }
 
       const BOPDS_ShapeInfo& aSI1 = myDS->ShapeInfo(aPair.ID1);
       const BOPDS_ShapeInfo& aSI2 = myDS->ShapeInfo(aPair.ID2);
@@ -329,7 +335,9 @@ void BOPDS_Iterator::Intersect(const occ::handle<IntTools_Context>& theCtx,
       // avoid interfering of the shape with its sub-shapes
       if (((iType1 < iType2) && aSI1.HasSubShape(aPair.ID2))
           || ((iType1 > iType2) && aSI2.HasSubShape(aPair.ID1)))
+      {
         continue;
+      }
 
       if (theCheckOBB)
       {
@@ -338,7 +346,9 @@ void BOPDS_Iterator::Intersect(const occ::handle<IntTools_Context>& theCtx,
         const Bnd_OBB& anOBB2 = theCtx->OBB(aSI2.Shape(), theFuzzyValue);
 
         if (anOBB1.IsOut(anOBB2))
+        {
           continue;
+        }
       }
 
       int iX = BOPDS_Tools::TypeToInteger(aType1, aType2);
@@ -353,7 +363,9 @@ void BOPDS_Iterator::Intersect(const occ::handle<IntTools_Context>& theCtx,
 void BOPDS_Iterator::IntersectExt(const NCollection_Map<int>& theIndices)
 {
   if (!myDS)
+  {
     return;
+  }
 
   const int aNb = myDS->NbSourceShapes();
 
@@ -365,7 +377,9 @@ void BOPDS_Iterator::IntersectExt(const NCollection_Map<int>& theIndices)
   {
     const BOPDS_ShapeInfo& aSI = myDS->ShapeInfo(i);
     if (!aSI.IsInterfering() || (aSI.ShapeType() == TopAbs_SOLID))
+    {
       continue;
+    }
     //
     if (theIndices.Contains(i))
     {
@@ -403,7 +417,9 @@ void BOPDS_Iterator::IntersectExt(const NCollection_Map<int>& theIndices)
     BOPDS_TSR&                   aTSRi = aVTSR(k);
     const NCollection_List<int>& aLI   = aTSRi.Indices();
     if (aLI.IsEmpty())
+    {
       continue;
+    }
 
     const int              i      = aTSRi.Index();
     const BOPDS_ShapeInfo& aSI    = myDS->ShapeInfo(i);
@@ -417,7 +433,9 @@ void BOPDS_Iterator::IntersectExt(const NCollection_Map<int>& theIndices)
       const int j      = itLI.Value(); // Index in DS
       const int iRankJ = myDS->Rank(j);
       if (iRankI == iRankJ)
+      {
         continue;
+      }
 
       const BOPDS_ShapeInfo& aSJ = myDS->ShapeInfo(j);
       const TopAbs_ShapeEnum aTJ = aSJ.ShapeType();
@@ -425,14 +443,18 @@ void BOPDS_Iterator::IntersectExt(const NCollection_Map<int>& theIndices)
 
       // avoid interfering of the shape with its sub-shapes
       if (((iTI < iTJ) && aSI.HasSubShape(j)) || ((iTI > iTJ) && aSJ.HasSubShape(i)))
+      {
         continue;
+      }
 
       BOPDS_Pair aPair(i, j);
       if (aMPFence.Add(aPair))
       {
         const int iX = BOPDS_Tools::TypeToInteger(aTI, aTJ);
         if (iX < BOPDS_Iterator::NbExtInterfs())
+        {
           myExtLists(iX).Append(aPair);
+        }
       }
     }
   }

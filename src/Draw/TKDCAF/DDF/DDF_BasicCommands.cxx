@@ -47,17 +47,23 @@
 static int DDF_Children(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
+  {
     return 1;
+  }
 
   occ::handle<TDF_Data>   DF;
   TCollection_AsciiString entry;
 
   if (!DDF::GetDF(a[1], DF))
+  {
     return 1;
+  }
 
   TDF_Label lab;
   if (n == 3)
+  {
     TDF_Tool::Label(DF, a[2], lab);
+  }
 
   if (lab.IsNull())
   {
@@ -83,18 +89,24 @@ static int DDF_Children(Draw_Interpretor& di, int n, const char** a)
 static int DDF_Attributes(Draw_Interpretor& di, int n, const char** a)
 {
   if (n != 3)
+  {
     return 1;
+  }
 
   occ::handle<TDF_Data> DF;
 
   if (!DDF::GetDF(a[1], DF))
+  {
     return 1;
+  }
 
   TDF_Label lab;
   TDF_Tool::Label(DF, a[2], lab);
 
   if (lab.IsNull())
+  {
     return 1;
+  }
 
   for (TDF_AttributeIterator itr(lab); itr.More(); itr.Next())
   {
@@ -111,18 +123,24 @@ static int DDF_Attributes(Draw_Interpretor& di, int n, const char** a)
 static int DDF_SetEmptyAttribute(Draw_Interpretor& di, int n, const char** a)
 {
   if (n != 4)
+  {
     return 1;
+  }
 
   occ::handle<TDF_Data> DF;
 
   if (!DDF::GetDF(a[1], DF))
+  {
     return 1;
+  }
 
   TDF_Label lab;
   TDF_Tool::Label(DF, a[2], lab);
 
   if (lab.IsNull())
+  {
     return 1;
+  }
 
   occ::handle<TDF_Attribute> anAttrByType = TDF_DerivedAttribute::Attribute(a[3]);
   if (anAttrByType.IsNull())
@@ -144,17 +162,23 @@ static int DDF_SetEmptyAttribute(Draw_Interpretor& di, int n, const char** a)
 static int DDF_ForgetAll(Draw_Interpretor& /*di*/, int n, const char** a)
 {
   if (n != 3)
+  {
     return 1;
+  }
 
   occ::handle<TDF_Data> DF;
 
   if (!DDF::GetDF(a[1], DF))
+  {
     return 1;
+  }
 
   TDF_Label label;
   TDF_Tool::Label(DF, a[2], label);
   if (label.IsNull())
+  {
     return 1;
+  }
   label.ForgetAllAttributes();
   // POP pour NT
   return 0;
@@ -168,15 +192,21 @@ static int DDF_ForgetAll(Draw_Interpretor& /*di*/, int n, const char** a)
 static int DDF_ForgetAttribute(Draw_Interpretor& di, int n, const char** a)
 {
   if (n != 4)
+  {
     return 1;
+  }
   occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(a[1], DF))
+  {
     return 1;
+  }
 
   TDF_Label aLabel;
   TDF_Tool::Label(DF, a[2], aLabel);
   if (aLabel.IsNull())
+  {
     return 1;
+  }
   if (!Standard_GUID::CheckGUIDFormat(a[3]))
   {
     // check this may be derived attribute by its type
@@ -205,7 +235,9 @@ static int DDF_SetTagger(Draw_Interpretor& di, int nb, const char** arg)
   {
     occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
+    {
       return 1;
+    }
     TDF_Label L;
     DDF::AddLabel(DF, arg[2], L);
     TDF_TagSource::Set(L);
@@ -226,10 +258,14 @@ static int DDF_NewTag(Draw_Interpretor& di, int nb, const char** arg)
   {
     occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
+    {
       return 1;
+    }
     occ::handle<TDF_TagSource> A;
     if (!DDF::Find(DF, arg[2], TDF_TagSource::GetID(), A))
+    {
       return 1;
+    }
     di << A->NewTag();
     return 0;
   }
@@ -248,7 +284,9 @@ static int DDF_NewChild(Draw_Interpretor& di, int nb, const char** arg)
   if (nb >= 2)
   {
     if (!DDF::GetDF(arg[1], DF))
+    {
       return 1;
+    }
     if (nb == 2)
     {
       TDF_Label free = TDF_TagSource::NewChild(DF->Root());
@@ -259,7 +297,9 @@ static int DDF_NewChild(Draw_Interpretor& di, int nb, const char** arg)
     {
       TDF_Label fatherlabel;
       if (!DDF::FindLabel(DF, arg[2], fatherlabel))
+      {
         return 1;
+      }
       TDF_Label free = TDF_TagSource::NewChild(fatherlabel);
       di << arg[2] << ":" << free.Tag();
       return 0;
@@ -279,7 +319,9 @@ static int DDF_Label(Draw_Interpretor& di, int n, const char** a)
   {
     occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(a[1], DF))
+    {
       return 1;
+    }
     TDF_Label L;
     if (!DDF::FindLabel(DF, a[2], L, false))
     {
@@ -300,7 +342,9 @@ void DDF::BasicCommands(Draw_Interpretor& theCommands)
 {
   static bool done = false;
   if (done)
+  {
     return;
+  }
   done = true;
 
   const char* g = "DF basic commands";

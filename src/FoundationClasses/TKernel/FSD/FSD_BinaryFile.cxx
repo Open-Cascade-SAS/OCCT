@@ -197,7 +197,9 @@ Storage_BaseDriver& FSD_BinaryFile::PutReference(const int aValue)
     throw Storage_StreamWriteError();
 #else
   if (!fwrite(&aValue, sizeof(int), 1, myStream))
+  {
     throw Storage_StreamWriteError();
+  }
 #endif
   return *this;
 }
@@ -207,7 +209,9 @@ Storage_BaseDriver& FSD_BinaryFile::PutReference(const int aValue)
 Storage_BaseDriver& FSD_BinaryFile::PutCharacter(const char aValue)
 {
   if (!fwrite(&aValue, sizeof(char), 1, myStream))
+  {
     throw Storage_StreamWriteError();
+  }
   return *this;
 }
 
@@ -222,7 +226,9 @@ Storage_BaseDriver& FSD_BinaryFile::PutExtCharacter(const char16_t aValue)
     throw Storage_StreamWriteError();
 #else
   if (!fwrite(&aValue, sizeof(char16_t), 1, myStream))
+  {
     throw Storage_StreamWriteError();
+  }
 #endif
   return *this;
 }
@@ -238,7 +244,9 @@ Storage_BaseDriver& FSD_BinaryFile::PutInteger(const int aValue)
     throw Storage_StreamWriteError();
 #else
   if (!fwrite(&aValue, sizeof(int), 1, myStream))
+  {
     throw Storage_StreamWriteError();
+  }
 #endif
 
   return *this;
@@ -278,7 +286,9 @@ Storage_BaseDriver& FSD_BinaryFile::PutBoolean(const bool aValue)
   int t = aValue ? 1 : 0;
 #endif
   if (!fwrite(&t, sizeof(int), 1, myStream))
+  {
     throw Storage_StreamWriteError();
+  }
   return *this;
 }
 
@@ -293,7 +303,9 @@ Storage_BaseDriver& FSD_BinaryFile::PutReal(const double aValue)
     throw Storage_StreamWriteError();
 #else
   if (!fwrite(&aValue, sizeof(double), 1, myStream))
+  {
     throw Storage_StreamWriteError();
+  }
 #endif
   return *this;
 }
@@ -309,7 +321,9 @@ Storage_BaseDriver& FSD_BinaryFile::PutShortReal(const float aValue)
     throw Storage_StreamWriteError();
 #else
   if (!fwrite(&aValue, sizeof(float), 1, myStream))
+  {
     throw Storage_StreamWriteError();
+  }
 #endif
   return *this;
 }
@@ -322,7 +336,9 @@ Storage_BaseDriver& FSD_BinaryFile::PutShortReal(const float aValue)
 Storage_BaseDriver& FSD_BinaryFile::GetReference(int& aValue)
 {
   if (!fread(&aValue, sizeof(int), 1, myStream))
+  {
     throw Storage_StreamTypeMismatchError();
+  }
 #if OCCT_BINARY_FILE_DO_INVERSE
   aValue = InverseInt(aValue);
 #endif
@@ -352,7 +368,9 @@ void FSD_BinaryFile::GetReference(Standard_IStream& theIStream, int& aValue)
 Storage_BaseDriver& FSD_BinaryFile::GetCharacter(char& aValue)
 {
   if (!fread(&aValue, sizeof(char), 1, myStream))
+  {
     throw Storage_StreamTypeMismatchError();
+  }
   return *this;
 }
 
@@ -361,7 +379,9 @@ Storage_BaseDriver& FSD_BinaryFile::GetCharacter(char& aValue)
 Storage_BaseDriver& FSD_BinaryFile::GetExtCharacter(char16_t& aValue)
 {
   if (!fread(&aValue, sizeof(char16_t), 1, myStream))
+  {
     throw Storage_StreamTypeMismatchError();
+  }
 #if OCCT_BINARY_FILE_DO_INVERSE
   aValue = InverseExtChar(aValue);
 #endif
@@ -373,7 +393,9 @@ Storage_BaseDriver& FSD_BinaryFile::GetExtCharacter(char16_t& aValue)
 Storage_BaseDriver& FSD_BinaryFile::GetInteger(int& aValue)
 {
   if (!fread(&aValue, sizeof(int), 1, myStream))
+  {
     throw Storage_StreamTypeMismatchError();
+  }
 #if OCCT_BINARY_FILE_DO_INVERSE
   aValue = InverseInt(aValue);
 #endif
@@ -403,7 +425,9 @@ Storage_BaseDriver& FSD_BinaryFile::GetBoolean(bool& aValue)
 {
   int anInt = 0;
   if (!fread(&anInt, sizeof(int), 1, myStream))
+  {
     throw Storage_StreamTypeMismatchError();
+  }
 #if OCCT_BINARY_FILE_DO_INVERSE
   anInt = InverseInt(anInt);
 #endif
@@ -416,7 +440,9 @@ Storage_BaseDriver& FSD_BinaryFile::GetBoolean(bool& aValue)
 Storage_BaseDriver& FSD_BinaryFile::GetReal(double& aValue)
 {
   if (!fread(&aValue, sizeof(double), 1, myStream))
+  {
     throw Storage_StreamTypeMismatchError();
+  }
 #if OCCT_BINARY_FILE_DO_INVERSE
   aValue = InverseReal(aValue);
 #endif
@@ -428,7 +454,9 @@ Storage_BaseDriver& FSD_BinaryFile::GetReal(double& aValue)
 Storage_BaseDriver& FSD_BinaryFile::GetShortReal(float& aValue)
 {
   if (!fread(&aValue, sizeof(float), 1, myStream))
+  {
     throw Storage_StreamTypeMismatchError();
+  }
 #if OCCT_BINARY_FILE_DO_INVERSE
   aValue = InverseShortReal(aValue);
 #endif
@@ -465,7 +493,9 @@ Storage_Error FSD_BinaryFile::BeginWriteInfoSection()
   myHeader.testindian = aWrapUnion.aResult;
 
   if (!fwrite(FSD_BinaryFile::MagicNumber(), strlen(FSD_BinaryFile::MagicNumber()), 1, myStream))
+  {
     throw Storage_StreamWriteError();
+  }
 
   myHeader.binfo = (int)ftell(myStream);
   WriteHeader();
@@ -735,9 +765,13 @@ void FSD_BinaryFile::ReadCompleteInfo(Standard_IStream&          theIStream,
 Storage_Error FSD_BinaryFile::EndReadInfoSection()
 {
   if (!fseek(myStream, myHeader.einfo, SEEK_SET))
+  {
     return Storage_VSOk;
+  }
   else
+  {
     return Storage_VSSectionNotFound;
+  }
 }
 
 //=======================================================================
@@ -818,9 +852,13 @@ Storage_Error FSD_BinaryFile::EndWriteCommentSection(Standard_OStream& theOStrea
 Storage_Error FSD_BinaryFile::BeginReadCommentSection()
 {
   if (!fseek(myStream, myHeader.bcomment, SEEK_SET))
+  {
     return Storage_VSOk;
+  }
   else
+  {
     return Storage_VSSectionNotFound;
+  }
 }
 
 //=================================================================================================
@@ -859,9 +897,13 @@ void FSD_BinaryFile::ReadComment(Standard_IStream&                              
 Storage_Error FSD_BinaryFile::EndReadCommentSection()
 {
   if (!fseek(myStream, myHeader.ecomment, SEEK_SET))
+  {
     return Storage_VSOk;
+  }
   else
+  {
     return Storage_VSSectionNotFound;
+  }
 }
 
 //=======================================================================
@@ -907,9 +949,13 @@ Storage_Error FSD_BinaryFile::EndWriteTypeSection()
 Storage_Error FSD_BinaryFile::BeginReadTypeSection()
 {
   if (!fseek(myStream, myHeader.btype, SEEK_SET))
+  {
     return Storage_VSOk;
+  }
   else
+  {
     return Storage_VSSectionNotFound;
+  }
 }
 
 //=================================================================================================
@@ -959,9 +1005,13 @@ void FSD_BinaryFile::ReadTypeInformations(Standard_IStream&        theIStream,
 Storage_Error FSD_BinaryFile::EndReadTypeSection()
 {
   if (!fseek(myStream, myHeader.etype, SEEK_SET))
+  {
     return Storage_VSOk;
+  }
   else
+  {
     return Storage_VSSectionNotFound;
+  }
 }
 
 //=======================================================================
@@ -1009,9 +1059,13 @@ Storage_Error FSD_BinaryFile::EndWriteRootSection()
 Storage_Error FSD_BinaryFile::BeginReadRootSection()
 {
   if (!fseek(myStream, myHeader.broot, SEEK_SET))
+  {
     return Storage_VSOk;
+  }
   else
+  {
     return Storage_VSSectionNotFound;
+  }
 }
 
 //=================================================================================================
@@ -1066,9 +1120,13 @@ void FSD_BinaryFile::ReadRoot(Standard_IStream&        theIStream,
 Storage_Error FSD_BinaryFile::EndReadRootSection()
 {
   if (!fseek(myStream, myHeader.eroot, SEEK_SET))
+  {
     return Storage_VSOk;
+  }
   else
+  {
     return Storage_VSSectionNotFound;
+  }
 }
 
 //=======================================================================
@@ -1113,9 +1171,13 @@ Storage_Error FSD_BinaryFile::EndWriteRefSection()
 Storage_Error FSD_BinaryFile::BeginReadRefSection()
 {
   if (!fseek(myStream, myHeader.bref, SEEK_SET))
+  {
     return Storage_VSOk;
+  }
   else
+  {
     return Storage_VSSectionNotFound;
+  }
 }
 
 //=================================================================================================
@@ -1163,9 +1225,13 @@ void FSD_BinaryFile::ReadReferenceType(Standard_IStream& theIStream, int& refere
 Storage_Error FSD_BinaryFile::EndReadRefSection()
 {
   if (!fseek(myStream, myHeader.eref, SEEK_SET))
+  {
     return Storage_VSOk;
+  }
   else
+  {
     return Storage_VSSectionNotFound;
+  }
 }
 
 //=======================================================================
@@ -1222,9 +1288,13 @@ Storage_Error FSD_BinaryFile::EndWriteDataSection()
 Storage_Error FSD_BinaryFile::BeginReadDataSection()
 {
   if (!fseek(myStream, myHeader.bdata, SEEK_SET))
+  {
     return Storage_VSOk;
+  }
   else
+  {
     return Storage_VSSectionNotFound;
+  }
 }
 
 //=================================================================================================
@@ -1256,9 +1326,13 @@ void FSD_BinaryFile::EndReadPersistentObjectData() {}
 Storage_Error FSD_BinaryFile::EndReadDataSection()
 {
   if (!fseek(myStream, myHeader.edata, SEEK_SET))
+  {
     return Storage_VSOk;
+  }
   else
+  {
     return Storage_VSSectionNotFound;
+  }
 }
 
 //=======================================================================
@@ -1277,7 +1351,9 @@ void FSD_BinaryFile::WriteString(const TCollection_AsciiString& aString)
   if (size > 0)
   {
     if (!fwrite(aString.ToCString(), aString.Length(), 1, myStream))
+    {
       throw Storage_StreamWriteError();
+    }
   }
 }
 
@@ -1321,7 +1397,9 @@ void FSD_BinaryFile::ReadString(TCollection_AsciiString& aString)
   {
     char* c = (char*)Standard::Allocate((size + 1) * sizeof(char));
     if (!fread(c, size, 1, myStream))
+    {
       throw Storage_StreamWriteError();
+    }
     c[size] = '\0';
     aString = c;
     Standard::Free(c);
@@ -1400,7 +1478,9 @@ void FSD_BinaryFile::WriteExtendedString(const TCollection_ExtendedString& aStri
     anExtStr = aString.ToExtString();
 #endif
     if (!fwrite(anExtStr, sizeof(char16_t) * aString.Length(), 1, myStream))
+    {
       throw Storage_StreamWriteError();
+    }
   }
 }
 
@@ -1461,7 +1541,9 @@ void FSD_BinaryFile::ReadExtendedString(TCollection_ExtendedString& aString)
   {
     char16_t* c = (char16_t*)Standard::Allocate((size + 1) * sizeof(char16_t));
     if (!fread(c, size * sizeof(char16_t), 1, myStream))
+    {
       throw Storage_StreamWriteError();
+    }
     c[size] = '\0';
 #if OCCT_BINARY_FILE_DO_INVERSE
     for (int i = 0; i < size; i++)

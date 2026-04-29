@@ -35,7 +35,9 @@ void RWStepBasic_RWGeneralProperty::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "general_property"))
+  {
     return;
+  }
 
   // Own fields of GeneralProperty
 
@@ -78,7 +80,9 @@ void RWStepBasic_RWGeneralProperty::WriteStep(
     SW.Send(ent->Description());
   }
   else
+  {
     SW.SendUndef();
+  }
 }
 
 //=================================================================================================

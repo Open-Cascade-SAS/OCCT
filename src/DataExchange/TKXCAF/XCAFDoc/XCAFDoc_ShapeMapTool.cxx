@@ -91,7 +91,9 @@ static void AddSubShape(const TopoDS_Shape&                                     
 {
   myMap.Add(S);
   for (TopoDS_Iterator it(S); it.More(); it.Next())
+  {
     AddSubShape(it.Value(), myMap);
+  }
 }
 
 //=================================================================================================
@@ -100,7 +102,9 @@ void XCAFDoc_ShapeMapTool::SetShape(const TopoDS_Shape& S)
 {
   myMap.Clear();
   for (TopoDS_Iterator it(S); it.More(); it.Next())
+  {
     AddSubShape(it.Value(), myMap);
+  }
 }
 
 //=================================================================================================

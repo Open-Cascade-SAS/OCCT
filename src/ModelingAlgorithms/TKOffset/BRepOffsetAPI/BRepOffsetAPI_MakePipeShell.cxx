@@ -215,7 +215,9 @@ void BRepOffsetAPI_MakePipeShell::Build(const Message_ProgressRange& /*theRange*
     Done();
   }
   else
+  {
     NotDone();
+  }
 }
 
 //=================================================================================================
@@ -223,11 +225,15 @@ void BRepOffsetAPI_MakePipeShell::Build(const Message_ProgressRange& /*theRange*
 bool BRepOffsetAPI_MakePipeShell::MakeSolid()
 {
   if (!IsDone())
+  {
     throw StdFail_NotDone("BRepOffsetAPI_MakePipeShell::MakeSolid");
+  }
   bool Ok;
   Ok = myPipe->MakeSolid();
   if (Ok)
+  {
     myShape = myPipe->Shape();
+  }
   return Ok;
 }
 

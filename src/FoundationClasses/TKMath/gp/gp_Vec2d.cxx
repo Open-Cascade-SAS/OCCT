@@ -55,7 +55,9 @@ double gp_Vec2d::Angle(const gp_Vec2d& theOther) const
   const double aNorm       = Magnitude();
   const double anOtherNorm = theOther.Magnitude();
   if (aNorm <= gp::Resolution() || anOtherNorm <= gp::Resolution())
+  {
     throw gp_VectorWithNullMagnitude();
+  }
 
   const double aD       = aNorm * anOtherNorm;
   const double aCosinus = coord.Dot(theOther.coord) / aD;
@@ -73,9 +75,13 @@ double gp_Vec2d::Angle(const gp_Vec2d& theOther) const
   {
     // For angles near 0 degrees or +/-180 degrees, use asin for better precision
     if (aCosinus > 0.0)
+    {
       return asin(aSinus);
+    }
     else
+    {
       return (aSinus > 0.0) ? M_PI - asin(aSinus) : -M_PI - asin(aSinus);
+    }
   }
 }
 

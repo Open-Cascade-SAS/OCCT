@@ -98,7 +98,9 @@ void IGESGeom_ToolTrimmedSurface::ReadOwnParams(const occ::handle<IGESGeom_Trimm
       PR.SendFail(Msg171);
     }
     else if (count > 0)
+    {
       anInner = new NCollection_HArray1<occ::handle<IGESGeom_CurveOnSurface>>(1, count);
+    }
   }
   else
   {
@@ -153,7 +155,9 @@ void IGESGeom_ToolTrimmedSurface::ReadOwnParams(const occ::handle<IGESGeom_Trimm
                    STANDARD_TYPE(IGESGeom_CurveOnSurface), tempEnt);
       */
       if (PR.ReadEntity(IR, PR.Current(), aStatus, STANDARD_TYPE(IGESGeom_CurveOnSurface), tempEnt))
+      {
         anInner->SetValue(I, tempEnt);
+      }
       else
       {
         Message_Msg Msg173("XSTEP_173");
@@ -199,12 +203,18 @@ void IGESGeom_ToolTrimmedSurface::WriteOwnParams(const occ::handle<IGESGeom_Trim
   IW.Send(up);
 
   if (ent->OuterBoundaryType())
+  {
     IW.Send(ent->OuterContour());
+  }
   else
+  {
     IW.Send(0);
+  }
   int I;
   for (I = 1; I <= up; I++)
+  {
     IW.Send(ent->InnerContour(I));
+  }
 }
 
 //=================================================================================================
@@ -217,7 +227,9 @@ void IGESGeom_ToolTrimmedSurface::OwnShared(const occ::handle<IGESGeom_TrimmedSu
   iter.GetOneItem(ent->OuterContour());
   int I;
   for (I = 1; I <= up; I++)
+  {
     iter.GetOneItem(ent->InnerContour(I));
+  }
 }
 
 //=================================================================================================
@@ -301,5 +313,5 @@ void IGESGeom_ToolTrimmedSurface::OwnDump(const occ::handle<IGESGeom_TrimmedSurf
   S << "\n"
     << "Inner Boundaries : ";
   IGESData_DumpEntities(S, dumper, level, 1, ent->NbInnerContours(), ent->InnerContour);
-  S << std::endl;
+  S << '\n';
 }

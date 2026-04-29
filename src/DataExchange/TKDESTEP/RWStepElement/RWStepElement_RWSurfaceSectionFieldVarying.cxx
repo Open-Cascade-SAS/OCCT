@@ -37,7 +37,9 @@ void RWStepElement_RWSurfaceSectionFieldVarying::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "surface_section_field_varying"))
+  {
     return;
+  }
 
   // Own fields of SurfaceSectionFieldVarying
 

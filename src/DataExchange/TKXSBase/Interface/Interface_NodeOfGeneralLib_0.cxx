@@ -29,11 +29,15 @@ Interface_NodeOfGeneralLib::Interface_NodeOfGeneralLib() = default;
 void Interface_NodeOfGeneralLib::AddNode(const occ::handle<Interface_GlobalNodeOfGeneralLib>& anode)
 {
   if (thenode == anode)
+  {
     return;
+  }
   if (thenext.IsNull())
   {
     if (thenode.IsNull())
+    {
       thenode = anode;
+    }
     else
     {
       thenext = new Interface_NodeOfGeneralLib;
@@ -41,7 +45,9 @@ void Interface_NodeOfGeneralLib::AddNode(const occ::handle<Interface_GlobalNodeO
     }
   }
   else
+  {
     thenext->AddNode(anode);
+  }
 }
 
 const occ::handle<Interface_GeneralModule>& Interface_NodeOfGeneralLib::Module() const

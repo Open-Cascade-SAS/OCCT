@@ -41,10 +41,16 @@ void IGESDraw_DrawingWithRotation::Init(
   int Len = allViews->Length();
   if (allViews->Lower() != 1 || (allViewOrigins->Lower() != 1 || allViewOrigins->Length() != Len)
       || (allOrientationAngles->Lower() != 1 || allOrientationAngles->Length() != Len))
+  {
     throw Standard_DimensionMismatch("IGESDraw_DrawingWithRotation : Init");
+  }
   if (!allAnnotations.IsNull())
+  {
     if (allAnnotations->Lower() != 1)
+    {
       throw Standard_DimensionMismatch("IGESDraw_DrawingWithRotation : Init");
+    }
+  }
 
   theViews             = allViews;
   theViewOrigins       = allViewOrigins;
@@ -118,10 +124,14 @@ bool IGESDraw_DrawingWithRotation::DrawingUnit(double& val) const
   val                                = 0.;
   occ::handle<Standard_Type> typunit = STANDARD_TYPE(IGESGraph_DrawingUnits);
   if (NbTypedProperties(typunit) != 1)
+  {
     return false;
+  }
   DeclareAndCast(IGESGraph_DrawingUnits, units, TypedProperty(typunit));
   if (units.IsNull())
+  {
     return false;
+  }
   val = units->UnitValue();
   return true;
 }
@@ -131,10 +141,14 @@ bool IGESDraw_DrawingWithRotation::DrawingSize(double& X, double& Y) const
   X = Y                              = 0.;
   occ::handle<Standard_Type> typsize = STANDARD_TYPE(IGESGraph_DrawingSize);
   if (NbTypedProperties(typsize) != 1)
+  {
     return false;
+  }
   DeclareAndCast(IGESGraph_DrawingSize, size, TypedProperty(typsize));
   if (size.IsNull())
+  {
     return false;
+  }
   X = size->XSize();
   Y = size->YSize();
   return true;

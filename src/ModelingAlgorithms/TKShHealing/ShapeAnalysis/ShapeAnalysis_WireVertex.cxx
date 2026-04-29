@@ -49,7 +49,9 @@ void ShapeAnalysis_WireVertex::Init(const occ::handle<ShapeExtend_WireData>& sbw
 {
   int nb = sbwd->NbEdges();
   if (nb == 0)
+  {
     return;
+  }
   myDone = false;
   myWire = sbwd;
   myStat = new NCollection_HArray1<int>(1, nb);
@@ -88,7 +90,9 @@ void ShapeAnalysis_WireVertex::SetPrecision(const double preci)
 void ShapeAnalysis_WireVertex::Analyze()
 {
   if (myStat.IsNull())
+  {
     return;
+  }
   myDone = true;
   //  Analyse des vertex qui se suivent
   occ::handle<Geom_Curve> c1, c2;
@@ -111,7 +115,9 @@ void ShapeAnalysis_WireVertex::Analyze()
     EA.Curve3d(myWire->Edge(i), c1, cf, upre);
     EA.Curve3d(myWire->Edge(j), c2, ufol, cl);
     if (c1.IsNull() || c2.IsNull())
+    {
       continue; // on ne peut rien faire ...
+    }
     gp_Pnt P1 = c1->Value(upre);
     gp_Pnt P2 = c2->Value(ufol);
 
@@ -120,14 +126,20 @@ void ShapeAnalysis_WireVertex::Analyze()
     double d2 = PV2.Distance(P2);
     double dd = PV1.Distance(PV2);
     if (d1 <= tol1 && d2 <= tol2 && dd <= (tol1 + tol2))
+    {
       stat = 1;
+    }
     else if (d1 <= myPreci && d2 <= myPreci && dd <= myPreci)
+    {
       stat = 2;
+    }
     myStat->SetValue(i, -1); // par defaut
     if (stat > 0)
     {
       if (V1 == V2)
+      {
         stat = 0;
+      }
     }
     if (stat >= 0)
     {
@@ -293,8 +305,12 @@ int ShapeAnalysis_WireVertex::NextStatus(const int stat, const int num) const
   {
     int i, nb = myStat->Length();
     for (i = num + 1; i <= nb; i++)
+    {
       if (myStat->Value(i) == stat)
+      {
         return i;
+      }
+    }
   }
   return 0;
 }
@@ -313,7 +329,9 @@ int ShapeAnalysis_WireVertex::NextCriter(const int crit, const int num) const
       if ((crit == -1 && stat < 0) || (crit == 0 && stat == 0) || (crit == 1 && stat > 0)
           || (crit == 2 && (stat >= 0 && stat <= 2)) || (crit == 3 && (stat == 1 || stat == 2))
           || (crit == 4 && stat > 2))
+      {
         return i;
+      }
     }
   }
   return 0;

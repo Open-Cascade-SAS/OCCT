@@ -49,7 +49,9 @@ struct StdLPersistent_Collection::stringConverter
     const occ::handle<StdObjMgt_Persistent>& theValue) const
   {
     if (theValue.IsNull())
+    {
       return TCollection_ExtendedString::EmptyString();
+    }
 
     occ::handle<TCollection_HExtendedString> aString = theValue->ExtString();
     return aString ? aString->String() : TCollection_ExtendedString::EmptyString();
@@ -81,7 +83,9 @@ void StdLPersistent_Collection::booleanArrayBase<Base>::import(const ArrayHandle
     new NCollection_HArray1<uint8_t>(theArray->Lower(), theArray->Upper());
 
   for (int i = theArray->Lower(); i <= theArray->Upper(); i++)
+  {
     aByteArray->SetValue(i, theConverter(theArray->Value(i)));
+  }
 
   this->myTransient->Init(myLower, myUpper);
   this->myTransient->SetInternalArray(aByteArray);
@@ -102,7 +106,9 @@ void StdLPersistent_Collection::arrayBase<Base>::import(const ArrayHandle& theAr
 {
   this->myTransient->Init(theArray->Lower(), theArray->Upper());
   for (int i = theArray->Lower(); i <= theArray->Upper(); i++)
+  {
     this->myTransient->SetValue(i, theConverter(theArray->Value(i)));
+  }
 }
 
 template <class Base>
@@ -111,7 +117,9 @@ void StdLPersistent_Collection::listBase<Base>::import(const ArrayHandle& theArr
                                                        Converter          theConverter) const
 {
   for (int i = theArray->Lower(); i <= theArray->Upper(); i++)
+  {
     this->myTransient->Append(theConverter(theArray->Value(i)));
+  }
 }
 
 template <class Base>
@@ -121,7 +129,9 @@ void StdLPersistent_Collection::mapBase<Base>::import(const ArrayHandle& theArra
 {
   occ::handle<TColStd_HPackedMapOfInteger> anHMap = new TColStd_HPackedMapOfInteger;
   for (int i = theArray->Lower(); i <= theArray->Upper(); i++)
+  {
     anHMap->ChangeMap().Add(theConverter(theArray->Value(i)));
+  }
   this->myTransient->ChangeMap(anHMap);
 }
 
@@ -138,7 +148,9 @@ void StdLPersistent_Collection::instance<BaseT, HArrayClass, AttribClass, Conver
   {
     typename HArrayClass::ArrayHandle anArray = anHArray->Array();
     if (anArray)
+    {
       this->import(anArray, Converter(this->myTransient->Label().Data()));
+    }
     this->myData.Nullify();
   }
 }

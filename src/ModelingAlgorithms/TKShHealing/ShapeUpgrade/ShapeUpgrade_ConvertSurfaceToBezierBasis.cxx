@@ -61,13 +61,21 @@ void ShapeUpgrade_ConvertSurfaceToBezierBasis::Compute(const bool Segment)
     double UF, UL, VF, VL;
     mySurface->Bounds(UF, UL, VF, VL);
     if (!Precision::IsInfinite(UF))
+    {
       myUSplitValues->SetValue(1, UF);
+    }
     if (!Precision::IsInfinite(UL))
+    {
       myUSplitValues->SetValue(myUSplitValues->Length(), UL);
+    }
     if (!Precision::IsInfinite(VF))
+    {
       myVSplitValues->SetValue(1, VF);
+    }
     if (!Precision::IsInfinite(VL))
+    {
       myVSplitValues->SetValue(myVSplitValues->Length(), VL);
+    }
   }
 
   double           UFirst    = myUSplitValues->Value(1);
@@ -191,25 +199,33 @@ void ShapeUpgrade_ConvertSurfaceToBezierBasis::Compute(const bool Segment)
     UFilteredJoints.Append(UJoints(1));
     int i;
     for (i = 2; i <= nbUPatches + 1; i++)
+    {
       if (UJoints(i) - UJoints(i - 1) < precision)
       {
         NbUFiltered++;
         UReject(i - 1) = true;
       }
       else
+      {
         UFilteredJoints.Append(UJoints(i));
+      }
+    }
 
     converter.VKnots(VJoints);
     NCollection_Sequence<double> VFilteredJoints;
     VFilteredJoints.Append(VJoints(1));
     for (i = 2; i <= nbVPatches + 1; i++)
+    {
       if (VJoints(i) - VJoints(i - 1) < precision)
       {
         NbVFiltered++;
         VReject(i - 1) = true;
       }
       else
+      {
         VFilteredJoints.Append(VJoints(i));
+      }
+    }
 
 #ifdef OCCT_DEBUG
     if (NbVFiltered || NbUFiltered)
@@ -228,13 +244,17 @@ void ShapeUpgrade_ConvertSurfaceToBezierBasis::Compute(const bool Segment)
     for (int ind1 = 1; ind1 <= nbUPatches; ind1++)
     {
       if (UReject(ind1))
+      {
         continue;
+      }
       indApp1++;
       int indApp2 = 0;
       for (int ind2 = 1; ind2 <= nbVPatches; ind2++)
       {
         if (VReject(ind2))
+        {
           continue;
+        }
         indApp2++;
         srf->SetValue(indApp1, indApp2, Surfaces(ind1, ind2));
       }
@@ -242,11 +262,15 @@ void ShapeUpgrade_ConvertSurfaceToBezierBasis::Compute(const bool Segment)
 
     NCollection_Array1<double> uj(1, UFilteredJoints.Length());
     for (i = 1; i <= UFilteredJoints.Length(); i++)
+    {
       uj(i) = UFilteredJoints.Value(i);
+    }
 
     NCollection_Array1<double> vj(1, VFilteredJoints.Length());
     for (i = 1; i <= VFilteredJoints.Length(); i++)
+    {
       vj(i) = VFilteredJoints.Value(i);
+    }
 
     mySegments = new ShapeExtend_CompositeSurface(srf, uj, vj);
 
@@ -258,9 +282,13 @@ void ShapeUpgrade_ConvertSurfaceToBezierBasis::Compute(const bool Segment)
       {
         double valknot = UJoints(ii);
         if (valknot - UFirst <= precision)
+        {
           continue;
+        }
         if (ULast - valknot <= precision)
+        {
           break;
+        }
         myUSplitValues->InsertBefore(j++, valknot);
       }
       UFirst = ULast;
@@ -272,9 +300,13 @@ void ShapeUpgrade_ConvertSurfaceToBezierBasis::Compute(const bool Segment)
       {
         double valknot = VJoints(ii);
         if (valknot - VFirst <= precision)
+        {
           continue;
+        }
         if (VLast - valknot <= precision)
+        {
           break;
+        }
         myVSplitValues->InsertBefore(j++, valknot);
       }
       VFirst = VLast;
@@ -306,9 +338,13 @@ void ShapeUpgrade_ConvertSurfaceToBezierBasis::Compute(const bool Segment)
       converter.Init(bas, VFirst, VLast);
       converter.Perform(true);
       if (converter.Status(ShapeExtend_DONE))
+      {
         myStatus = ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
+      }
       else
+      {
         myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
+      }
 
       vPar->ChangeSequence()  = converter.SplitParams()->Sequence();
       vSVal->ChangeSequence() = converter.SplitValues()->Sequence();
@@ -327,9 +363,13 @@ void ShapeUpgrade_ConvertSurfaceToBezierBasis::Compute(const bool Segment)
       converter.Init(basis, VFirst, VLast);
       converter.Perform(true);
       if (converter.Status(ShapeExtend_DONE))
+      {
         myStatus = ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
+      }
       else
+      {
         myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
+      }
 
       vPar->ChangeSequence()  = converter.SplitParams()->Sequence();
       vSVal->ChangeSequence() = converter.SplitValues()->Sequence();
@@ -348,7 +388,9 @@ void ShapeUpgrade_ConvertSurfaceToBezierBasis::Compute(const bool Segment)
       occ::handle<Geom_SurfaceOfRevolution> rev =
         new Geom_SurfaceOfRevolution(curves->Value(i), axis);
       if (UFirst - Umin < Precision::PConfusion() && Umax - ULast < Precision::PConfusion())
+      {
         surf->SetValue(1, i, rev);
+      }
       else
       {
         occ::handle<Geom_RectangularTrimmedSurface> rect =
@@ -361,7 +403,9 @@ void ShapeUpgrade_ConvertSurfaceToBezierBasis::Compute(const bool Segment)
     UJoints(1) = UFirst;
     UJoints(2) = ULast;
     for (i = 1; i <= nbCurves + 1; i++)
+    {
       VJoints(i) = vPar->Value(i);
+    }
 
     mySegments = new ShapeExtend_CompositeSurface(surf, UJoints, VJoints);
 
@@ -372,9 +416,13 @@ void ShapeUpgrade_ConvertSurfaceToBezierBasis::Compute(const bool Segment)
       {
         double valknot = vSVal->Value(ii);
         if (valknot - VFirst <= precision)
+        {
           continue;
+        }
         if (VLast - valknot <= precision)
+        {
           break;
+        }
         myVSplitValues->InsertBefore(j++, valknot);
       }
       VFirst = VLast;
@@ -427,7 +475,9 @@ void ShapeUpgrade_ConvertSurfaceToBezierBasis::Compute(const bool Segment)
     VJoints(1) = VFirst;
     VJoints(2) = VLast;
     for (i = 1; i <= nbCurves + 1; i++)
+    {
       UJoints(i) = uPar->Value(i);
+    }
 
     mySegments = new ShapeExtend_CompositeSurface(surf, UJoints, VJoints);
 
@@ -438,9 +488,13 @@ void ShapeUpgrade_ConvertSurfaceToBezierBasis::Compute(const bool Segment)
       {
         double valknot = uSVal->Value(ii);
         if (valknot + UFirst <= precision)
+        {
           continue;
+        }
         if (ULast - valknot <= precision)
+        {
           break;
+        }
         myUSplitValues->InsertBefore(j++, valknot);
       }
       UFirst = ULast;
@@ -463,7 +517,9 @@ void ShapeUpgrade_ConvertSurfaceToBezierBasis::Compute(const bool Segment)
     occ::handle<Geom_Surface> S;
     if (U1 - UFirst < precision && ULast - U2 < precision && V2 - VFirst < precision
         && VLast - V2 < precision)
+    {
       S = mySurface;
+    }
     else
     {
       occ::handle<Geom_RectangularTrimmedSurface> rts =
@@ -490,7 +546,9 @@ static occ::handle<Geom_Surface> GetSegment(const occ::handle<Geom_Surface>& sur
     occ::handle<Geom_BezierSurface> bezier = occ::down_cast<Geom_BezierSurface>(surf->Copy());
     constexpr double                prec   = Precision::PConfusion();
     if (U1 < prec && U2 > 1 - prec && V1 < prec && V2 > 1 - prec)
+    {
       return bezier;
+    }
     // pdn K4L+ (work around)
     //  double u1 = 2*U1 - 1;
     //  double u2 = 2*U2 - 1;
@@ -513,7 +571,9 @@ static occ::handle<Geom_Surface> GetSegment(const occ::handle<Geom_Surface>& sur
     S = rect->BasisSurface();
   }
   else
+  {
     S = surf;
+  }
 
   if (S->IsKind(STANDARD_TYPE(Geom_SurfaceOfRevolution)))
   {
@@ -541,7 +601,9 @@ static occ::handle<Geom_Surface> GetSegment(const occ::handle<Geom_Surface>& sur
     }
     if (std::abs(U1 - Umin) < Precision::PConfusion()
         && std::abs(U2 - Umax) < Precision::PConfusion())
+    {
       return revol;
+    }
 
     occ::handle<Geom_RectangularTrimmedSurface> res =
       new Geom_RectangularTrimmedSurface(revol, U1, U2, true);
@@ -553,7 +615,9 @@ static occ::handle<Geom_Surface> GetSegment(const occ::handle<Geom_Surface>& sur
     surf->Bounds(Umin, Umax, Vmin, Vmax);
     if (U1 - Umin < Precision::PConfusion() && Umax - U2 < Precision::PConfusion()
         && V1 - Vmin < Precision::PConfusion() && Vmax - V2 < Precision::PConfusion())
+    {
       return surf;
+    }
 
     occ::handle<Geom_RectangularTrimmedSurface> res =
       new Geom_RectangularTrimmedSurface(surf, U1, U2, V1, V2);
@@ -575,7 +639,9 @@ void ShapeUpgrade_ConvertSurfaceToBezierBasis::Build(const bool /*Segment*/)
     S = Surface->BasisSurface();
   }
   else
+  {
     S = mySurface;
+  }
   if (S->IsKind(STANDARD_TYPE(Geom_OffsetSurface)))
   {
     occ::handle<Geom_OffsetSurface> offSur = occ::down_cast<Geom_OffsetSurface>(S);
@@ -599,7 +665,9 @@ void ShapeUpgrade_ConvertSurfaceToBezierBasis::Build(const bool /*Segment*/)
     {
       double param = myUSplitParams->Value(j1);
       if (parU - param < prec)
+      {
         break;
+      }
     }
 
     int j2 = 2;
@@ -607,8 +675,12 @@ void ShapeUpgrade_ConvertSurfaceToBezierBasis::Build(const bool /*Segment*/)
     {
       double parV = myVSplitValues->Value(i2);
       for (; j2 <= myVSplitParams->Length(); j2++)
+      {
         if (parV - myVSplitParams->Value(j2) < prec)
+        {
           break;
+        }
+      }
 
       occ::handle<Geom_Surface> patch = mySegments->Patch(j1 - 1, j2 - 1);
       double                    U1, U2, V1, V2;
@@ -640,11 +712,15 @@ void ShapeUpgrade_ConvertSurfaceToBezierBasis::Build(const bool /*Segment*/)
   NCollection_Array1<double> UJoints(1, nbU);
   int                        i; // svv #1
   for (i = 1; i <= nbU; i++)
+  {
     UJoints(i) = myUSplitValues->Value(i);
+  }
 
   NCollection_Array1<double> VJoints(1, nbV);
   for (i = 1; i <= nbV; i++)
+  {
     VJoints(i) = myVSplitValues->Value(i);
+  }
 
   myResSurfaces = new ShapeExtend_CompositeSurface(resSurfaces, UJoints, VJoints);
 }

@@ -29,7 +29,9 @@ bool ExprIntrp::Parse(const occ::handle<ExprIntrp_Generator>& gen,
 {
   ExprIntrp_Recept.SetMaster(gen);
   if (str.Length() == 0)
+  {
     return false;
+  }
   ExprIntrp_thestring = str;
   ExprIntrp_start_string(ExprIntrp_thestring.ToCString());
 

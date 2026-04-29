@@ -32,7 +32,9 @@ void RWStepGeom_RWCompositeCurve::ReadStep(const occ::handle<StepData_StepReader
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "composite_curve"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -58,7 +60,9 @@ void RWStepGeom_RWCompositeCurve::ReadStep(const occ::handle<StepData_StepReader
                            ach,
                            STANDARD_TYPE(StepGeom_CompositeCurveSegment),
                            anent2))
+      {
         aSegments->SetValue(i2, anent2);
+      }
     }
   }
 

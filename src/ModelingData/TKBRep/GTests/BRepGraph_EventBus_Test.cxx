@@ -119,16 +119,24 @@ public:
   bool HasImmediateEventFor(BRepGraph_NodeId theNode) const
   {
     for (const BRepGraph_NodeId& anEvent : myImmediateEvents)
+    {
       if (anEvent == theNode)
+      {
         return true;
+      }
+    }
     return false;
   }
 
   bool HasBatchEventFor(BRepGraph_NodeId theNode) const
   {
     for (const BRepGraph_NodeId& anEvent : myBatchEvents)
+    {
       if (anEvent == theNode)
+      {
         return true;
+      }
+    }
     return false;
   }
 
@@ -136,8 +144,12 @@ public:
   {
     int aCount = 0;
     for (const BRepGraph_NodeId& anEvent : myImmediateEvents)
+    {
       if (anEvent.NodeKind == theKind)
+      {
         ++aCount;
+      }
+    }
     return aCount;
   }
 
@@ -536,7 +548,9 @@ TEST_F(BRepGraph_EventBusTest, KindBit_Helpers)
   // 8 distinct bits set.
   int aBitCount = 0;
   for (int v = aAll; v != 0; v >>= 1)
+  {
     aBitCount += (v & 1);
+  }
   EXPECT_EQ(aBitCount, 8);
 }
 
@@ -560,7 +574,9 @@ TEST_F(BRepGraph_EventBusTest, RefKindBit_Helpers)
     | BRepGraph_Layer::RefKindBit(Kind::Child) | BRepGraph_Layer::RefKindBit(Kind::Occurrence);
   int aBitCount = 0;
   for (int v = aAll; v != 0; v >>= 1)
+  {
     aBitCount += (v & 1);
+  }
   EXPECT_EQ(aBitCount, 8);
 }
 
@@ -667,9 +683,13 @@ TEST_F(BRepGraph_EventBusTest, LayerIterator_RangeFor)
        BRepGraph_LayerIterator(myGraph.LayerRegistry()))
   {
     if (aLayer == aLayer1)
+    {
       hasL1 = true;
+    }
     if (aLayer == aLayer2)
+    {
       hasL2 = true;
+    }
     ++aCount;
   }
   EXPECT_EQ(aCount, 2);

@@ -38,7 +38,9 @@ void RWStepKinematics_RWOrientedJoint::ReadStep(
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 5, theArch, "oriented_joint"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 

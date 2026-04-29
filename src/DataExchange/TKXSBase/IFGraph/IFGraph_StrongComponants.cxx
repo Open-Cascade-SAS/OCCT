@@ -30,7 +30,9 @@ void IFGraph_StrongComponants::Evaluate()
   for (int i = 1; i <= nb; i++)
   {
     if (!G.IsPresent(i))
+    {
       continue;
+    }
     AddPart();
     GetFromEntity(G.Entity(i), false);
   }

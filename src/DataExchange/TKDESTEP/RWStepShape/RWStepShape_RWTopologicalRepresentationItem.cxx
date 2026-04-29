@@ -29,7 +29,9 @@ void RWStepShape_RWTopologicalRepresentationItem::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 1, ach, "topological_representation_item"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

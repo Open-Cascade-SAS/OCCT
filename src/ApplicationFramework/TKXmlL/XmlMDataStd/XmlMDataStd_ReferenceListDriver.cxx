@@ -58,7 +58,9 @@ bool XmlMDataStd_ReferenceListDriver::Paste(const XmlObjMgt_Persistent&       th
   // Read the FirstIndex; if the attribute is absent initialize to 1
   XmlObjMgt_DOMString aFirstIndex = anElement.getAttribute(::FirstIndexString());
   if (aFirstIndex == nullptr)
+  {
     aFirstInd = 1;
+  }
   else if (!aFirstIndex.GetInteger(aFirstInd))
   {
     TCollection_ExtendedString aMessageString =
@@ -86,9 +88,13 @@ bool XmlMDataStd_ReferenceListDriver::Paste(const XmlObjMgt_Persistent&       th
   Standard_GUID       aGUID;
   XmlObjMgt_DOMString aGUIDStr = anElement.getAttribute(::AttributeIDString());
   if (aGUIDStr.Type() == XmlObjMgt_DOMString::LDOM_NULL)
+  {
     aGUID = TDataStd_ReferenceList::GetID(); // default case
+  }
   else
+  {
     aGUID = Standard_GUID(static_cast<const char*>(aGUIDStr.GetString())); // user defined case
+  }
   aReferenceList->SetID(aGUID);
 
   if (aLastInd > 0)
@@ -123,7 +129,9 @@ bool XmlMDataStd_ReferenceListDriver::Paste(const XmlObjMgt_Persistent&       th
       // Find label by entry
       TDF_Label tLab; // Null label.
       if (anEntry.Length() > 0)
+      {
         TDF_Tool::Label(aReferenceList->Label().Data(), anEntry, tLab, true);
+      }
 
       aReferenceList->Append(tLab);
       aCurNode    = aCurElement->getNextSibling();
@@ -176,7 +184,9 @@ void XmlMDataStd_ReferenceListDriver::Paste(const occ::handle<TDF_Attribute>& th
   XmlObjMgt_Element& anElement = theTarget;
   anElement.setAttribute(::LastIndexString(), anU);
   if (anU == 0)
+  {
     return;
+  }
   XmlObjMgt_Document aDoc(anElement.getOwnerDocument());
 
   NCollection_List<TDF_Label>::Iterator itr(aReferenceList->List());

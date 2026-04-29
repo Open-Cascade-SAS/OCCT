@@ -763,10 +763,14 @@ bool GetOffset(const LocOpe_PntFace& PntInfo,
   CSLib_NormalStatus stat;
   CSLib::Normal(D1U, D1V, Precision::Angular(), stat, NormF);
   if (stat != CSLib_Defined)
+  {
     return false;
+  }
   double angle = Axis.Direction().Angle(NormF);
   if (std::abs(M_PI / 2. - angle) < Precision::Angular())
+  {
     return false;
+  }
   outOff = Radius * std::abs(tan(angle));
   return true;
 }
@@ -786,9 +790,13 @@ void CreateCyl(const LocOpe_PntFace& PntInfoFirst,
   double Heigth = Last - First;
 
   if (!GetOffset(PntInfoFirst, Radius, Axis, offF))
+  {
     offF = Radius;
+  }
   if (!GetOffset(PntInfoLast, Radius, Axis, offL))
+  {
     offL = Radius;
+  }
 
   // create cylinder along the axis (myAxis);
   // from 'First - offF' to 'Last + offL' params

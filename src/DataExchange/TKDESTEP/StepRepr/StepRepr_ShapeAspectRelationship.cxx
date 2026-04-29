@@ -46,7 +46,9 @@ void StepRepr_ShapeAspectRelationship::Init(
     theDescription = aDescription;
   }
   else
+  {
     theDescription.Nullify();
+  }
 
   theRelatingShapeAspect = aRelatingShapeAspect;
 

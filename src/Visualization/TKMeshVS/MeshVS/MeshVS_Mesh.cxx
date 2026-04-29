@@ -232,12 +232,16 @@ void MeshVS_Mesh::scanFacesForSharedNodes(const TColStd_PackedMapOfInteger& theA
     {
       myDataSource->GetGeom(aFaceIdx, true, aCoords, aNbNodes, aType);
       if (aNbNodes == 0)
+      {
         continue;
+      }
 
       MeshVS_Buffer           aNodesBuf(aNbNodes * sizeof(int));
       NCollection_Array1<int> aElemNodes(aNodesBuf, 1, aNbNodes);
       if (!myDataSource->GetNodesByElement(aFaceIdx, aElemNodes, aNbNodes))
+      {
         continue;
+      }
 
       MeshVS_Buffer              aFacePntsBuf(aNbNodes * 3 * sizeof(double));
       NCollection_Array1<gp_Pnt> aFacePnts(aFacePntsBuf, 1, aNbNodes);
@@ -701,11 +705,15 @@ int MeshVS_Mesh::GetFreeId() const
   int                        i, len = myBuilders.Length(), curId;
 
   for (i = 1; i <= len; i++)
+  {
     Ids.Add(myBuilders.Value(i)->GetId());
+  }
 
   curId = 0;
   while (Ids.Contains(curId))
+  {
     curId++;
+  }
 
   return curId;
 }
@@ -715,9 +723,13 @@ int MeshVS_Mesh::GetFreeId() const
 occ::handle<MeshVS_PrsBuilder> MeshVS_Mesh::GetBuilder(const int Index) const
 {
   if (Index >= 1 && Index <= myBuilders.Length())
+  {
     return myBuilders.Value(Index);
+  }
   else
+  {
     return nullptr;
+  }
 }
 
 //=================================================================================================
@@ -728,11 +740,13 @@ occ::handle<MeshVS_PrsBuilder> MeshVS_Mesh::GetBuilderById(const int Id) const
 
   int i, len = myBuilders.Length();
   for (i = 1; i <= len; i++)
+  {
     if (myBuilders.Value(i)->GetId() == Id)
     {
       Result = myBuilders.Value(i);
       break;
     }
+  }
   return Result;
 }
 
@@ -742,20 +756,32 @@ void MeshVS_Mesh::AddBuilder(const occ::handle<MeshVS_PrsBuilder>& theBuilder,
                              const bool                            TreatAsHilighter)
 {
   if (theBuilder.IsNull())
+  {
     return;
+  }
 
   int i, n = myBuilders.Length();
   for (i = 1; i <= n; i++)
+  {
     if (myBuilders(i)->GetPriority() < theBuilder->GetPriority())
+    {
       break;
+    }
+  }
 
   if (i > n)
+  {
     myBuilders.Append(theBuilder);
+  }
   else
+  {
     myBuilders.InsertBefore(i, theBuilder);
+  }
 
   if (TreatAsHilighter)
+  {
     myHilighter = theBuilder;
+  }
 }
 
 //=================================================================================================
@@ -766,7 +792,9 @@ void MeshVS_Mesh::RemoveBuilder(const int theIndex)
   if (!aBuild.IsNull())
   {
     if (aBuild == myHilighter)
+    {
       myHilighter.Nullify();
+    }
     myBuilders.Remove(theIndex);
   }
 }
@@ -780,12 +808,16 @@ void MeshVS_Mesh::RemoveBuilderById(const int Id)
   {
     occ::handle<MeshVS_PrsBuilder> aCur = myBuilders(i);
     if (!aCur.IsNull() && aCur->GetId() == Id)
+    {
       break;
+    }
   }
   if (i >= 1 && i <= n)
   {
     if (GetBuilder(i) == myHilighter)
+    {
       myHilighter.Nullify();
+    }
     RemoveBuilder(i);
   }
 }
@@ -800,7 +832,9 @@ void MeshVS_Mesh::SetHiddenElems(const occ::handle<TColStd_HPackedMapOfInteger>&
   bool AutoSelUpdate = false;
   if (!GetDrawer().IsNull() && GetDrawer()->GetBoolean(MeshVS_DA_SelectableAuto, AutoSelUpdate)
       && AutoSelUpdate)
+  {
     UpdateSelectableNodes();
+  }
 }
 
 //=================================================================================================
@@ -813,7 +847,9 @@ void MeshVS_Mesh::SetHiddenNodes(const occ::handle<TColStd_HPackedMapOfInteger>&
   bool AutoSelUpdate = false;
   if (!GetDrawer().IsNull() && GetDrawer()->GetBoolean(MeshVS_DA_SelectableAuto, AutoSelUpdate)
       && AutoSelUpdate)
+  {
     UpdateSelectableNodes();
+  }
 }
 
 //=================================================================================================
@@ -837,10 +873,16 @@ void AddToMap(NCollection_DataMap<int, occ::handle<SelectMgr_EntityOwner>>&     
 {
   NCollection_DataMap<int, occ::handle<SelectMgr_EntityOwner>>::Iterator anIt(Addition);
   for (; anIt.More(); anIt.Next())
+  {
     if (Result.IsBound(anIt.Key()))
+    {
       Result.ChangeFind(anIt.Key()) = anIt.Value();
+    }
     else
+    {
       Result.Bind(anIt.Key(), anIt.Value());
+    }
+  }
 }
 
 //=================================================================================================
@@ -850,7 +892,9 @@ const NCollection_DataMap<int, occ::handle<SelectMgr_EntityOwner>>& MeshVS_Mesh:
 {
   occ::handle<MeshVS_DataSource> aDS = GetDataSource();
   if (!aDS.IsNull() && aDS->IsAdvancedSelectionEnabled())
+  {
     return myMeshOwners;
+  }
   if (IsElements)
   {
     if (myElementOwners.IsEmpty())
@@ -863,7 +907,9 @@ const NCollection_DataMap<int, occ::handle<SelectMgr_EntityOwner>>& MeshVS_Mesh:
     return myElementOwners;
   }
   else
+  {
     return myNodeOwners;
+  }
 }
 
 //=================================================================================================
@@ -916,7 +962,9 @@ void MeshVS_Mesh::HilightSelected(
   const NCollection_Sequence<occ::handle<SelectMgr_EntityOwner>>& theOwners)
 {
   if (myHilighter.IsNull())
+  {
     return;
+  }
 
   //  if ( mySelectionPrs.IsNull() )
   //    mySelectionPrs = new Prs3d_Presentation ( thePM->StructureManager() );
@@ -928,7 +976,9 @@ void MeshVS_Mesh::HilightSelected(
   aSelectionPrs = GetSelectPresentation(thePM);
 
   if (HasPresentation())
+  {
     aSelectionPrs->SetTransformPersistence(Presentation()->TransformPersistence());
+  }
   //----------------
 
   //   It is very important to call this parent method, because it check whether
@@ -968,23 +1018,35 @@ void MeshVS_Mesh::HilightSelected(
           if (aGroupType == MeshVS_ET_Node)
           {
             for (TColStd_PackedMapOfInteger::Iterator anIt(aGroupMap); anIt.More(); anIt.Next())
+            {
               if (IsSelectableNode /*!IsHiddenNode*/ (anIt.Key()))
+              {
                 aSelNodes.Add(anIt.Key());
+              }
+            }
           }
           else
           {
             for (TColStd_PackedMapOfInteger::Iterator anIt(aGroupMap); anIt.More(); anIt.Next())
+            {
               if (IsSelectableElem /*!IsHiddenElem*/ (anIt.Key()))
+              {
                 aSelElements.Add(anIt.Key());
+              }
+            }
           }
         }
       }
       else
       {
         if (anOwner->Type() == MeshVS_ET_Node)
+        {
           aSelNodes.Add(anOwner->ID());
+        }
         else
+        {
           aSelElements.Add(anOwner->ID());
+        }
       }
     }
     else if (GetDataSource()->IsAdvancedSelectionEnabled())
@@ -996,9 +1058,13 @@ void MeshVS_Mesh::HilightSelected(
         occ::handle<TColStd_HPackedMapOfInteger> aNodes = aMeshOwner->GetSelectedNodes();
         occ::handle<TColStd_HPackedMapOfInteger> aElems = aMeshOwner->GetSelectedElements();
         if (!aNodes.IsNull())
+        {
           aSelNodes.Assign(aNodes->Map());
+        }
         if (!aElems.IsNull())
+        {
           aSelElements.Assign(aElems->Map());
+        }
       }
     }
     // agv    else if( theOwners.Value ( i )==myWholeMeshOwner )
@@ -1006,13 +1072,21 @@ void MeshVS_Mesh::HilightSelected(
     {
       TColStd_PackedMapOfInteger::Iterator anIt(GetDataSource()->GetAllNodes());
       for (; anIt.More(); anIt.Next())
+      {
         if (!IsHiddenNode(anIt.Key()))
+        {
           aSelNodes.Add(anIt.Key());
+        }
+      }
 
       anIt = TColStd_PackedMapOfInteger::Iterator(GetDataSource()->GetAllElements());
       for (; anIt.More(); anIt.Next())
+      {
         if (!IsHiddenElem(anIt.Key()))
+        {
           aSelElements.Add(anIt.Key());
+        }
+      }
 
       break;
     }
@@ -1068,7 +1142,9 @@ void MeshVS_Mesh::HilightOwnerWithColor(const occ::handle<PrsMgr_PresentationMan
                                         const occ::handle<SelectMgr_EntityOwner>&      theOwner)
 {
   if (theOwner.IsNull())
+  {
     return;
+  }
 
   const Quantity_Color& aColor = theStyle->Color();
   if (theOwner == GlobalSelOwner())
@@ -1079,7 +1155,9 @@ void MeshVS_Mesh::HilightOwnerWithColor(const occ::handle<PrsMgr_PresentationMan
   }
 
   if (myHilighter.IsNull())
+  {
     return;
+  }
 
   occ::handle<Prs3d_Presentation> aHilightPrs;
   aHilightPrs = GetHilightPresentation(thePM);
@@ -1088,7 +1166,9 @@ void MeshVS_Mesh::HilightOwnerWithColor(const occ::handle<PrsMgr_PresentationMan
 
   // new functionality
   if (HasPresentation())
+  {
     aHilightPrs->SetTransformPersistence(Presentation()->TransformPersistence());
+  }
   //----------------
 
   const bool isMeshEntityOwner = theOwner->IsKind(STANDARD_TYPE(MeshVS_MeshEntityOwner));
@@ -1098,7 +1178,9 @@ void MeshVS_Mesh::HilightOwnerWithColor(const occ::handle<PrsMgr_PresentationMan
 
   int aDispMode = MeshVS_DMF_Shading;
   if (HasDisplayMode() && (DisplayMode() & MeshVS_DMF_OCCMask) > MeshVS_DMF_WireFrame)
+  {
     aDispMode = (DisplayMode() & MeshVS_DMF_OCCMask);
+  }
   // It because we draw hilighted owners only in shading or shrink (not in wireframe)
 
   myHilightDrawer->SetColor(MeshVS_DA_InteriorColor, aColor);
@@ -1196,7 +1278,9 @@ void MeshVS_Mesh::ClearSelected()
 {
   occ::handle<Prs3d_Presentation> aSelectionPrs = GetSelectPresentation(nullptr);
   if (!aSelectionPrs.IsNull())
+  {
     aSelectionPrs->Clear();
+  }
 }
 
 //=================================================================================================
@@ -1240,7 +1324,9 @@ bool MeshVS_Mesh::SetHilighter(const int Index)
   occ::handle<MeshVS_PrsBuilder> aBuild = GetBuilder(Index);
   bool                           aRes   = (!aBuild.IsNull());
   if (aRes)
+  {
     myHilighter = aBuild;
+  }
   return aRes;
 }
 
@@ -1251,7 +1337,9 @@ bool MeshVS_Mesh::SetHilighterById(const int Id)
   occ::handle<MeshVS_PrsBuilder> aBuild = GetBuilderById(Id);
   bool                           aRes   = (!aBuild.IsNull());
   if (aRes)
+  {
     myHilighter = aBuild;
+  }
   return aRes;
 }
 
@@ -1300,7 +1388,9 @@ void MeshVS_Mesh::UpdateSelectableNodes()
   occ::handle<MeshVS_DataSource> aSource = GetDataSource();
   if (aSource.IsNull() || myCurrentDrawer.IsNull()
       || !myCurrentDrawer->GetInteger(MeshVS_DA_MaxFaceNodes, aMaxFaceNodes) || aMaxFaceNodes <= 0)
+  {
     return;
+  }
 
   // all non-hidden nodes are selectable;
   // by default (i.e. if myHiddenNodes.IsNull()) all nodes are hidden
@@ -1317,15 +1407,21 @@ void MeshVS_Mesh::UpdateSelectableNodes()
   {
     int aKey = anIter.Key();
     if (IsHiddenElem(aKey))
+    {
       continue;
+    }
 
     MeshVS_Buffer           aNodesBuf(aMaxFaceNodes * sizeof(int));
     NCollection_Array1<int> aNodes(aNodesBuf, 1, aMaxFaceNodes);
     int                     NbNodes;
     if (!aSource->GetNodesByElement(aKey, aNodes, NbNodes))
+    {
       continue;
+    }
     for (int i = 1; i <= NbNodes; i++)
+    {
       mySelectableNodes->ChangeMap().Add(aNodes(i));
+    }
   }
 }
 

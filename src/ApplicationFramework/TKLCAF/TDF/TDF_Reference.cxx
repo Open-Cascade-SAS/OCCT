@@ -58,7 +58,9 @@ void TDF_Reference::Set(const TDF_Label& Origin)
 {
   // OCC2932 correction
   if (myOrigin == Origin)
+  {
     return;
+  }
 
   Backup();
   myOrigin = Origin;
@@ -101,7 +103,9 @@ void TDF_Reference::Paste(const occ::handle<TDF_Attribute>&       Into,
   if (!myOrigin.IsNull())
   {
     if (!RT->HasRelocation(myOrigin, tLab))
+    {
       tLab = myOrigin;
+    }
   }
   occ::down_cast<TDF_Reference>(Into)->Set(tLab);
 }
@@ -111,7 +115,8 @@ void TDF_Reference::Paste(const occ::handle<TDF_Attribute>&       Into,
 void TDF_Reference::References(const occ::handle<TDF_DataSet>& aDataSet) const
 {
   // clang-format off
-  if (!Label().IsImported()) aDataSet->AddLabel( myOrigin); //pour real et entier mais surtout pas les parts ...
+  if (!Label().IsImported()) { aDataSet->AddLabel( myOrigin); //pour real et entier mais surtout pas les parts ...
+}
   // clang-format on
 }
 

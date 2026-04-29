@@ -28,7 +28,9 @@ void RWStepVisual_RWPlanarBox::ReadStep(const occ::handle<StepData_StepReaderDat
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 4, ach, "planar_box"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

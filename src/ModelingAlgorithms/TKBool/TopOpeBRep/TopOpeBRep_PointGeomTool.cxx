@@ -52,9 +52,13 @@ TopOpeBRepDS_Point TopOpeBRep_PointGeomTool::MakePoint(const TopOpeBRep_VPointIn
     double             t2 = BRep_Tool::Tolerance(E2);
     //    tolout = std::max(t1,t2);
     if (t1 > 0.9)
+    {
       t1 = 0.9;
+    }
     if (t1 > 0.9)
+    {
       t1 = 0.9;
+    }
     tolout = 2.5 * (t1 + t2);
   }
   tolout = std::max(tolout, tolip);

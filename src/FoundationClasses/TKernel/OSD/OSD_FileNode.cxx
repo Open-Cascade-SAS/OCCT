@@ -80,9 +80,13 @@ bool OSD_FileNode::Exists()
   status = access(aBuffer.ToCString(), F_OK);
 
   if (status == 0)
+  {
     return (true);
+  }
   else
+  {
     return (false);
+  }
 }
 
 // Physically remove a file/directory
@@ -127,11 +131,12 @@ void OSD_FileNode::Remove()
   {
 
     if (unlink(aBuffer.ToCString()) == -1)
+    {
       myError.SetValue(errno, Iam, "Remove");
+    }
     return;
   }
   myError.SetValue(EINVAL, Iam, "Remove");
-  return;
 }
 
 // Move a file/directory to another path
@@ -152,7 +157,9 @@ void OSD_FileNode::Move(const OSD_Path& NewPath)
   status = rename(aBuffer.ToCString(), thisPath.ToCString());
 
   if (status == -1)
+  {
     myError.SetValue(errno, Iam, "Move");
+  }
 }
 
 // Copy a file to another path and name
@@ -162,7 +169,9 @@ int static copy_file(const char* src, const char* trg)
   errno   = 0;
   int fds = open(src, O_RDONLY);
   if (fds < 0)
+  {
     return errno;
+  }
 
   int fdo = open(trg, O_WRONLY | O_TRUNC | O_CREAT, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
   if (fdo < 0)
@@ -191,10 +200,14 @@ int static copy_file(const char* src, const char* trg)
   err = errno;
   close(fdo);
   if (!err)
+  {
     err = errno;
+  }
   close(fds);
   if (!err)
+  {
     err = errno;
+  }
   return err;
 }
 
@@ -213,7 +226,9 @@ void OSD_FileNode::Copy(const OSD_Path& ToPath)
   myPath.SystemName(aBuffer);
   status = copy_file(aBuffer.ToCString(), second_name.ToCString());
   if (status != 0)
+  {
     myError.SetValue(-1, Iam, "Copy failed"); // (LD)
+  }
   #ifdef OCCT_DEBUG
   printf("Status %d : errno # %d\n", status, errno);
   #endif
@@ -237,30 +252,50 @@ OSD_Protection OSD_FileNode::Protection()
   myPath.SystemName(aBuffer);
   status = stat(aBuffer.ToCString(), &myStat);
   if (status == -1)
+  {
     myError.SetValue(errno, Iam, "Protection");
+  }
 
   u = g = w = OSD_None;
 
   if (myStat.st_mode & S_IRUSR)
+  {
     u |= OSD_R;
+  }
   if (myStat.st_mode & S_IWUSR)
+  {
     u |= OSD_W;
+  }
   if (myStat.st_mode & S_IXUSR)
+  {
     u |= OSD_X;
+  }
 
   if (myStat.st_mode & S_IRGRP)
+  {
     g |= OSD_R;
+  }
   if (myStat.st_mode & S_IWGRP)
+  {
     g |= OSD_W;
+  }
   if (myStat.st_mode & S_IXGRP)
+  {
     g |= OSD_X;
+  }
 
   if (myStat.st_mode & S_IROTH)
+  {
     w |= OSD_R;
+  }
   if (myStat.st_mode & S_IWOTH)
+  {
     w |= OSD_W;
+  }
   if (myStat.st_mode & S_IXOTH)
+  {
     w |= OSD_X;
+  }
 
   s = g;
   thisProt.SetValues((OSD_SingleProtection)s,
@@ -286,7 +321,9 @@ void OSD_FileNode::SetProtection(const OSD_Protection& Prot)
   myPath.SystemName(aBuffer);
   status = chmod(aBuffer.ToCString(), (mode_t)Prot.Internal());
   if (status == -1)
+  {
     myError.SetValue(errno, Iam, "SetProtection");
+  }
 }
 
 // return the date of last access of file/directory
@@ -321,7 +358,9 @@ Quantity_Date OSD_FileNode::CreationMoment()
                      0);
   }
   else
+  {
     result.SetValues(1, 1, 1979, 0, 0, 0, 0, 0);
+  }
   return (result);
 }
 
@@ -357,7 +396,9 @@ Quantity_Date OSD_FileNode::AccessMoment()
                      0);
   }
   else
+  {
     result.SetValues(1, 1, 1979, 0, 0, 0, 0, 0);
+  }
   return (result);
 }
 

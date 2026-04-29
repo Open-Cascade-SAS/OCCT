@@ -150,7 +150,9 @@ static void RecModif(
   r.Location(aNullLoc);
 
   if (map.IsBound(r))
+  {
     r = map.Find(r);
+  }
   if (!r.IsNull())
   {
     TopoDS_Shape res = r;
@@ -162,7 +164,9 @@ static void RecModif(
       // hence, if it is reversed, result should be reversed too
       // INTERNAL or EXTERNAL orientations are not allowed
       if (r.Orientation() != TopAbs_FORWARD)
+      {
         res.Reverse();
+      }
     }
     // Treat special case: if S was split, r will be a compound of
     // resulting shapes, each to be checked separately
@@ -180,22 +184,30 @@ static void RecModif(
         {
           const TopoDS_Shape& newsh = repl.Find(sh);
           if (!newsh.IsNull())
+          {
             B.Add(result, newsh);
+          }
           modif = true;
         }
         else
+        {
           B.Add(result, sh);
+        }
       }
       if (modif)
       {
         if (result.ShapeType() == TopAbs_WIRE || result.ShapeType() == TopAbs_SHELL)
+        {
           result.Closed(BRep_Tool::IsClosed(result));
+        }
         res = result;
       }
     }
 
     if (res != r)
+    {
       map.Bind(S.Located(aNullLoc), res);
+    }
   }
 
   // update messages (messages must be taken from each level in the substitution map)
@@ -207,18 +219,24 @@ static void RecModif(
     {
       const NCollection_List<Message_Msg>& msglist = msgmap.Find(r);
       for (NCollection_List<Message_Msg>::Iterator iter(msglist); iter.More(); iter.Next())
+      {
         myMsg->Send(S, iter.Value(), Message_Warning);
+      }
     }
     else if (msgmap.IsBound(S))
     {
       const NCollection_List<Message_Msg>& msglist = msgmap.Find(S);
       for (NCollection_List<Message_Msg>::Iterator iter(msglist); iter.More(); iter.Next())
+      {
         myMsg->Send(S, iter.Value(), Message_Warning);
+      }
     }
   }
 
   if (until == TopAbs_SHAPE || S.ShapeType() >= until)
+  {
     return;
+  }
 
   for (TopoDS_Iterator it(S); it.More(); it.Next())
   {
@@ -231,10 +249,14 @@ void ShapeProcess_ShapeContext::RecordModification(
   const occ::handle<ShapeExtend_MsgRegistrator>&                                  msg)
 {
   if (repl.Extent() <= 0)
+  {
     return;
+  }
   RecModif(myShape, repl, msg, myMap, myMsg, myUntil);
   if (myMap.IsBound(myShape))
+  {
     myResult = myMap.Find(myShape);
+  }
 #ifdef OCCT_DEBUG
 //  std::cout << "Modifier: " << std::endl; DumpMap (myMap);
 #endif
@@ -250,27 +272,35 @@ static void RecModif(const TopoDS_Shape&                                        
                      const TopAbs_ShapeEnum                   until)
 {
   if (S.IsNull())
+  {
     return;
+  }
   // gka  -modification to keep history for shape with location (OCC21617)
   TopLoc_Location aNullLoc;
   TopoDS_Shape    aS = S.Located(aNullLoc);
   TopoDS_Shape    r  = aS;
 
   if (map.IsBound(r))
+  {
     r = map.Find(r);
+  }
   if (!r.IsNull())
   {
     TopoDS_Shape res;
     if (repl->Status(r, res, true) && res != r)
+    {
       map.Bind(aS, res);
 
-    // Treat special case: if S was split, r will be a compound of
-    // resulting shapes, recursive procedure should be applied
+      // Treat special case: if S was split, r will be a compound of
+      // resulting shapes, recursive procedure should be applied
+    }
     else if (r.ShapeType() < S.ShapeType())
     {
       res = repl->Apply(r, (TopAbs_ShapeEnum)((int)S.ShapeType() + 1));
       if (res != r)
+      {
         map.Bind(aS, res);
+      }
     }
   }
 
@@ -281,7 +311,9 @@ static void RecModif(const TopoDS_Shape&                                        
     const NCollection_DataMap<TopoDS_Shape, NCollection_List<Message_Msg>, TopTools_ShapeMapHasher>&
       msgmap = msg->MapShape();
     if (msgmap.IsBound(S))
+    {
       next = S;
+    }
 
     // Map to prevent infinite loops in case of cyclic replacements.
     NCollection_Map<TopoDS_Shape> aVisitedShapes;
@@ -306,7 +338,9 @@ static void RecModif(const TopoDS_Shape&                                        
   }
 
   if (until == TopAbs_SHAPE || S.ShapeType() >= until)
+  {
     return;
+  }
 
   for (TopoDS_Iterator it(S, false /*,false*/); it.More(); it.Next())
   {
@@ -345,7 +379,9 @@ void ShapeProcess_ShapeContext::AddMessage(const TopoDS_Shape&   S,
                                            const Message_Gravity grv)
 {
   if (!myMsg.IsNull())
+  {
     myMsg->Send(S, msg, grv);
+  }
 }
 
 //=================================================================================================
@@ -363,7 +399,9 @@ static void ExplodeModifier(
     map.Bind(S, res);
   }
   if (until == TopAbs_SHAPE || S.ShapeType() >= until)
+  {
     return;
+  }
   for (TopoDS_Iterator it(S); it.More(); it.Next())
   {
     ExplodeModifier(it.Value(), repl, map, until);
@@ -386,28 +424,46 @@ bool ShapeProcess_ShapeContext::GetContinuity(const char* const param, GeomAbs_S
 {
   TCollection_AsciiString str;
   if (!GetString(param, str))
+  {
     return false;
+  }
 
   str.LeftAdjust();
   str.RightAdjust();
   str.UpperCase();
 
   if (str.IsEqual("C0"))
+  {
     cont = GeomAbs_C0;
+  }
   else if (str.IsEqual("G1"))
+  {
     cont = GeomAbs_G1;
+  }
   else if (str.IsEqual("C1"))
+  {
     cont = GeomAbs_C1;
+  }
   else if (str.IsEqual("G2"))
+  {
     cont = GeomAbs_G2;
+  }
   else if (str.IsEqual("C2"))
+  {
     cont = GeomAbs_C2;
+  }
   else if (str.IsEqual("C3"))
+  {
     cont = GeomAbs_C3;
+  }
   else if (str.IsEqual("CN"))
+  {
     cont = GeomAbs_CN;
+  }
   else
+  {
     return false;
+  }
   return true;
 }
 
@@ -431,18 +487,30 @@ void ShapeProcess_ShapeContext::PrintStatistics() const
   {
     TopoDS_Shape keyshape = It.Key(), valueshape = It.Value();
     if (keyshape.ShapeType() == TopAbs_SHELL)
+    {
       if (valueshape.IsNull())
+      {
         SN++;
+      }
       else
+      {
         SS++;
+      }
+    }
     else if (keyshape.ShapeType() == TopAbs_FACE)
     {
       if (valueshape.IsNull())
+      {
         FN++;
+      }
       else if (valueshape.ShapeType() == TopAbs_SHELL)
+      {
         FS++;
+      }
       else
+      {
         FF++;
+      }
     }
   }
 
@@ -477,9 +545,13 @@ void ShapeProcess_ShapeContext::PrintStatistics() const
   int    STotalR = SS, FTotalR = FF + FS;
   int    NbS = STotalR + SN, NbF = FTotalR + FN;
   if (NbS > 0)
+  {
     SPR = 1. * (NbS - SN) / NbS;
+  }
   if (NbF > 0)
+  {
     FPR = 1. * (NbF - FN) / NbF;
+  }
   Message_Msg PMSG200("PrResult.Print.MSG200"); // Preparation ratio:
   Messenger()->Send(PMSG200, Message_Info);
   Message_Msg PMSG205("PrResult.Print.MSG205"); //  Shells: %d per cent

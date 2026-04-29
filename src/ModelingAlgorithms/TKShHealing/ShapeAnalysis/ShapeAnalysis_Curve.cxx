@@ -133,9 +133,13 @@ double ShapeAnalysis_Curve::Project(const occ::handle<Geom_Curve>& C3D,
   double uMin = C3D->FirstParameter();
   double uMax = C3D->LastParameter();
   if (uMin < uMax)
+  {
     return Project(C3D, P3D, preci, proj, param, uMin, uMax, AdjustToEnds);
+  }
   else
+  {
     return Project(C3D, P3D, preci, proj, param, uMax, uMin, AdjustToEnds);
+  }
 }
 
 //=================================================================================================
@@ -211,7 +215,9 @@ double ShapeAnalysis_Curve::Project(const Adaptor3d_Curve& C3D,
   double uMax = C3D.LastParameter();
 
   if (Precision::IsInfinite(uMin) && Precision::IsInfinite(uMax))
+  {
     return ProjectAct(C3D, P3D, preci, proj, param);
+  }
 
   double distmin_L = Precision::Infinite(), distmin_H = Precision::Infinite();
   // clang-format off
@@ -239,7 +245,9 @@ double ShapeAnalysis_Curve::Project(const Adaptor3d_Curve& C3D,
   double distProj = ProjectAct(C3D, P3D, preci, proj, param);
   if (distProj < distmin_L + Precision::Confusion()
       && distProj < distmin_H + Precision::Confusion())
+  {
     return distProj;
+  }
 
   if (distmin_L < distmin_H)
   {
@@ -626,21 +634,29 @@ bool ShapeAnalysis_Curve::ValidateRange(const occ::handle<Geom_Curve>& theCurve,
 
     // Last = cf au lieu de Last = cl
     if (std::abs(Last - cf) < Precision::PConfusion() /*preci*/)
+    {
       Last = cl;
-    // First = cl au lieu de First = cf
+      // First = cl au lieu de First = cf
+    }
     else if (std::abs(First - cl) < Precision::PConfusion() /*preci*/)
+    {
       First = cf;
 
-    // on se trouve dans un cas ou l origine est traversee
-    // illegal sur une courbe fermee non periodique
-    // on inverse quand meme les parametres !!!!!!
+      // on se trouve dans un cas ou l origine est traversee
+      // illegal sur une courbe fermee non periodique
+      // on inverse quand meme les parametres !!!!!!
+    }
     else
     {
       //: S4136 abv 20 Apr 99: r0701_ug.stp #6230: add check in 3d
       if (theCurve->Value(First).Distance(theCurve->Value(cf)) < preci)
+      {
         First = cf;
+      }
       if (theCurve->Value(Last).Distance(theCurve->Value(cl)) < preci)
+      {
         Last = cl;
+      }
       if (First > Last)
       {
         double tmp = First;
@@ -662,14 +678,18 @@ bool ShapeAnalysis_Curve::ValidateRange(const occ::handle<Geom_Curve>& theCurve,
 
       // Last = cf au lieu de Last = cl
       if (std::abs(Last - cf) < Precision::PConfusion() /*preci*/)
+      {
         Last = cl;
-      // First = cl au lieu de First = cf
+        // First = cl au lieu de First = cf
+      }
       else if (std::abs(First - cl) < Precision::PConfusion() /*preci*/)
+      {
         First = cf;
 
-      // on se trouve dans un cas ou l origine est traversee
-      // illegal sur une courbe fermee non periodique
-      // on inverse quand meme les parametres !!!!!!
+        // on se trouve dans un cas ou l origine est traversee
+        // illegal sur une courbe fermee non periodique
+        // on inverse quand meme les parametres !!!!!!
+      }
       else
       {
         double tmp = First;
@@ -735,22 +755,30 @@ static int SearchForExtremum(const occ::handle<Geom2d_Curve>& C2d,
     C2d->D2(par, res, D1, D2);
     double Det = (D2 * dir);
     if (std::abs(Det) < 1e-10)
+    {
       return true;
+    }
 
     par -= (D1 * dir) / Det;
     if (std::abs(par - prevpar) < Precision::PConfusion())
+    {
       return true;
+    }
 
     if (par < First)
     {
       if (nbOut++ > 2 || prevpar == First)
+      {
         return false;
+      }
       par = First;
     }
     if (par > Last)
     {
       if (nbOut++ > 2 || prevpar == Last)
+      {
         return false;
+      }
       par = Last;
     }
   }
@@ -784,12 +812,16 @@ void ShapeAnalysis_Curve::FillBndBox(const occ::handle<Geom2d_Curve>& C2d,
   int                        nbSamples = (nbInt < 2 ? NPoints - 1 : nbInt);
   NCollection_Array1<double> aParams(1, nbSamples + 1);
   if (nbSamples == nbInt)
+  {
     anAC.Intervals(aParams, GeomAbs_C2);
+  }
   else
   {
     double step = (Last - First) / nbSamples;
     for (int i = 0; i <= nbSamples; i++)
+    {
       aParams(i + 1) = First + i * step;
+    }
   }
   for (int i = 1; i <= nbSamples + 1; i++)
   {
@@ -831,12 +863,16 @@ int ShapeAnalysis_Curve::SelectForwardSeam(const occ::handle<Geom2d_Curve>& C1,
     // if we have BoundedCurve, create a line from C1
     occ::handle<Geom2d_BoundedCurve> BC1 = occ::down_cast<Geom2d_BoundedCurve>(C1);
     if (BC1.IsNull())
+    {
       return theCurveIndice;
+    }
     gp_Pnt2d StartBC1 = BC1->StartPoint();
     gp_Pnt2d EndBC1   = BC1->EndPoint();
     gp_Vec2d VecBC1(StartBC1, EndBC1);
     if (VecBC1.SquareMagnitude() < gp::Resolution())
+    {
       return theCurveIndice;
+    }
     L1 = new Geom2d_Line(StartBC1, VecBC1);
   }
 
@@ -846,12 +882,16 @@ int ShapeAnalysis_Curve::SelectForwardSeam(const occ::handle<Geom2d_Curve>& C1,
     // if we have BoundedCurve, creates a line from C2
     occ::handle<Geom2d_BoundedCurve> BC2 = occ::down_cast<Geom2d_BoundedCurve>(C2);
     if (BC2.IsNull())
+    {
       return theCurveIndice;
+    }
     gp_Pnt2d StartBC2 = BC2->StartPoint();
     gp_Pnt2d EndBC2   = BC2->EndPoint();
     gp_Vec2d VecBC2(StartBC2, EndBC2);
     if (VecBC2.SquareMagnitude() < gp::Resolution())
+    {
       return theCurveIndice;
+    }
     L2 = new Geom2d_Line(StartBC2, VecBC2);
   }
 
@@ -883,31 +923,47 @@ int ShapeAnalysis_Curve::SelectForwardSeam(const occ::handle<Geom2d_Curve>& C1,
   {
     // max of Loc1.X() Loc2.X()
     if (theLoc1.X() > theLoc2.X())
+    {
       theCurveIndice = 1;
+    }
     else
+    {
       theCurveIndice = 2;
+    }
   }
   else if (VdirNeg)
   {
     if (theLoc1.X() > theLoc2.X())
+    {
       theCurveIndice = 2;
+    }
     else
+    {
       theCurveIndice = 1;
+    }
   }
   else if (UdirPos)
   {
     // min of Loc1.X() Loc2.X()
     if (theLoc1.Y() < theLoc2.Y())
+    {
       theCurveIndice = 1;
+    }
     else
+    {
       theCurveIndice = 2;
+    }
   }
   else if (UdirNeg)
   {
     if (theLoc1.Y() < theLoc2.Y())
+    {
       theCurveIndice = 2;
+    }
     else
+    {
       theCurveIndice = 1;
+    }
   }
 
   return theCurveIndice;
@@ -923,15 +979,21 @@ static gp_XYZ GetAnyNormal(const gp_XYZ& orig)
 {
   gp_XYZ Norm;
   if (std::abs(orig.Z()) < Precision::Confusion())
+  {
     Norm.SetCoord(0, 0, 1);
+  }
   else
   {
     Norm.SetCoord(orig.Z(), 0, -orig.X());
     double nrm = Norm.Modulus();
     if (nrm < Precision::Confusion())
+    {
       Norm.SetCoord(0, 0, 1);
+    }
     else
+    {
       Norm = Norm / nrm;
+    }
   }
   return Norm;
 }
@@ -1010,14 +1072,18 @@ static void AppendControlPoles(NCollection_Sequence<gp_Pnt>&  seq,
     occ::handle<Geom_BSplineCurve>    BSpline = occ::down_cast<Geom_BSplineCurve>(curve);
     const NCollection_Array1<gp_Pnt>& Poles   = BSpline->Poles();
     for (int i = 1; i <= Poles.Length(); i++)
+    {
       seq.Append(Poles(i));
+    }
   }
   else if (curve->IsKind(STANDARD_TYPE(Geom_BezierCurve)))
   {
     occ::handle<Geom_BezierCurve>     Bezier = occ::down_cast<Geom_BezierCurve>(curve);
     const NCollection_Array1<gp_Pnt>& Poles  = Bezier->Poles();
     for (int i = 1; i <= Poles.Length(); i++)
+    {
       seq.Append(Poles(i));
+    }
   }
 }
 
@@ -1053,7 +1119,9 @@ bool ShapeAnalysis_Curve::IsPlanar(const NCollection_Array1<gp_Pnt>& pnts,
     gp_XYZ aCenter(0, 0, 0);
     int    i = 1;
     for (; i <= pnts.Length(); i++)
+    {
       aCenter += pnts(i).XYZ();
+    }
     aCenter /= pnts.Length();
 
     aMaxDir = pnts(1).XYZ() - aCenter;
@@ -1063,11 +1131,15 @@ bool ShapeAnalysis_Curve::IsPlanar(const NCollection_Array1<gp_Pnt>& pnts,
     {
       gp_XYZ aTmpDir = pnts(i + 1).XYZ() - aCenter;
       if (aTmpDir.SquareModulus() > aMaxDir.SquareModulus())
+      {
         aMaxDir = aTmpDir;
+      }
 
       gp_XYZ aDelta = (pnts(i).XYZ() - aCenter) ^ (pnts(i + 1).XYZ() - aCenter);
       if (Normal * aDelta < 0)
+      {
         aDelta *= -1;
+      }
       Normal += aDelta;
     }
   }
@@ -1086,9 +1158,13 @@ bool ShapeAnalysis_Curve::IsPlanar(const NCollection_Array1<gp_Pnt>& pnts,
   {
     dev = pnts(i).XYZ() * Normal;
     if (dev < mind)
+    {
       mind = dev;
+    }
     if (dev > maxd)
+    {
       maxd = dev;
+    }
   }
 
   return ((maxd - mind) <= precision);
@@ -1163,10 +1239,14 @@ bool ShapeAnalysis_Curve::IsPlanar(const occ::handle<Geom_Curve>& curve,
     NCollection_Sequence<gp_Pnt>          sequence;
     int                                   i; // svv Jan11 2000 : porting on DEC
     for (i = 1; i <= Complex->NbCurves(); i++)
+    {
       AppendControlPoles(sequence, Complex->Curve(i));
+    }
     NCollection_Array1<gp_Pnt> Poles(1, sequence.Length());
     for (i = 1; i <= sequence.Length(); i++)
+    {
       Poles(i) = sequence(i);
+    }
     return IsPlanar(Poles, Normal, precision);
   }
 
@@ -1182,22 +1262,29 @@ bool ShapeAnalysis_Curve::GetSamplePoints(const occ::handle<Geom_Curve>& curve,
 {
   double adelta = curve->LastParameter() - curve->FirstParameter();
   if (!adelta)
+  {
     return false;
+  }
 
   int aK  = (int)ceil((last - first) / adelta);
   int nbp = 100 * aK;
   if (curve->IsKind(STANDARD_TYPE(Geom_Line)))
+  {
     nbp = 2;
+  }
   else if (curve->IsKind(STANDARD_TYPE(Geom_Circle)))
+  {
     nbp = 360 * aK;
-
+  }
   else if (curve->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
   {
     occ::handle<Geom_BSplineCurve> aBspl = occ::down_cast<Geom_BSplineCurve>(curve);
 
     nbp = aBspl->NbKnots() * aBspl->Degree() * aK;
     if (nbp < 2.0)
+    {
       nbp = 2;
+    }
   }
   else if (curve->IsKind(STANDARD_TYPE(Geom_BezierCurve)))
   {
@@ -1218,7 +1305,9 @@ bool ShapeAnalysis_Curve::GetSamplePoints(const occ::handle<Geom_Curve>& curve,
   GeomAdaptor_Curve GAC(curve);
   double            step = (last - first) / (double)(nbp - 1);
   for (int i = 0; i < nbp - 1; ++i)
+  {
     seq.Append(GAC.Value(first + step * i));
+  }
   seq.Append(GAC.Value(last));
   return true;
 }
@@ -1236,10 +1325,14 @@ bool ShapeAnalysis_Curve::GetSamplePoints(const occ::handle<Geom2d_Curve>& curve
   int                 nbs = Geom2dInt_Geom2dCurveTool::NbSamples(C);
   //-- Attention aux bsplines rationnelles de degree 3. (bouts de cercles entre autres)
   if (nbs > 2)
+  {
     nbs *= 4;
+  }
   double step = (last - first) / (double)(nbs - 1);
   for (int i = 0; i < nbs - 1; ++i)
+  {
     seq.Append(C.Value(first + step * i));
+  }
   seq.Append(C.Value(last));
   return true;
   /*
@@ -1331,7 +1424,9 @@ bool ShapeAnalysis_Curve::GetSamplePoints(const occ::handle<Geom2d_Curve>& curve
 bool ShapeAnalysis_Curve::IsClosed(const occ::handle<Geom_Curve>& theCurve, const double preci)
 {
   if (theCurve->IsClosed())
+  {
     return true;
+  }
 
   double prec = std::max(preci, Precision::Confusion());
 
@@ -1340,7 +1435,9 @@ bool ShapeAnalysis_Curve::IsClosed(const occ::handle<Geom_Curve>& theCurve, cons
   l = theCurve->LastParameter();
 
   if (Precision::IsInfinite(f) || Precision::IsInfinite(l))
+  {
     return false;
+  }
 
   double aClosedVal = theCurve->Value(f).SquareDistance(theCurve->Value(l));
   double preci2     = prec * prec;
@@ -1360,9 +1457,13 @@ bool ShapeAnalysis_Curve::IsPeriodic(const occ::handle<Geom_Curve>& theCurve)
          || (aTmpCurve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve))))
   {
     if (aTmpCurve->IsKind(STANDARD_TYPE(Geom_OffsetCurve)))
+    {
       aTmpCurve = occ::down_cast<Geom_OffsetCurve>(aTmpCurve)->BasisCurve();
+    }
     if (aTmpCurve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
+    {
       aTmpCurve = occ::down_cast<Geom_TrimmedCurve>(aTmpCurve)->BasisCurve();
+    }
   }
   return aTmpCurve->IsPeriodic();
 }
@@ -1377,9 +1478,13 @@ bool ShapeAnalysis_Curve::IsPeriodic(const occ::handle<Geom2d_Curve>& theCurve)
          || (aTmpCurve->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve))))
   {
     if (aTmpCurve->IsKind(STANDARD_TYPE(Geom2d_OffsetCurve)))
+    {
       aTmpCurve = occ::down_cast<Geom2d_OffsetCurve>(aTmpCurve)->BasisCurve();
+    }
     if (aTmpCurve->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve)))
+    {
       aTmpCurve = occ::down_cast<Geom2d_TrimmedCurve>(aTmpCurve)->BasisCurve();
+    }
   }
   return aTmpCurve->IsPeriodic();
 }

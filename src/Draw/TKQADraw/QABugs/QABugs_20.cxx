@@ -116,7 +116,7 @@ static int OCC27021(Draw_Interpretor& theDI, int theNArg, const char** theArgVal
 {
   if (theNArg != 2)
   {
-    std::cout << "Use: " << theArgVal[0] << " shape" << std::endl;
+    std::cout << "Use: " << theArgVal[0] << " shape" << '\n';
     return 1;
   }
 
@@ -192,13 +192,19 @@ static int OCC27235(Draw_Interpretor& theDI, int n, const char** a)
   {
     occ::handle<XCAFDoc_Dimension> aDimAttr;
     if (!aGDTs.Value(i).FindAttribute(XCAFDoc_Dimension::GetID(), aDimAttr))
+    {
       continue;
+    }
     occ::handle<XCAFDimTolObjects_DimensionObject> anObject = aDimAttr->GetObject();
     if (anObject.IsNull())
+    {
       continue;
+    }
     TopoDS_Shape aShape = anObject->GetPresentation();
     if (!aShape.IsNull())
+    {
       B.Add(aPresentations, aShape);
+    }
   }
 
   aGDTs.Clear();
@@ -207,13 +213,19 @@ static int OCC27235(Draw_Interpretor& theDI, int n, const char** a)
   {
     occ::handle<XCAFDoc_GeomTolerance> aGTAttr;
     if (!aGDTs.Value(i).FindAttribute(XCAFDoc_GeomTolerance::GetID(), aGTAttr))
+    {
       continue;
+    }
     occ::handle<XCAFDimTolObjects_GeomToleranceObject> anObject = aGTAttr->GetObject();
     if (anObject.IsNull())
+    {
       continue;
+    }
     TopoDS_Shape aShape = anObject->GetPresentation();
     if (!aShape.IsNull())
+    {
       B.Add(aPresentations, aShape);
+    }
   }
 
   for (int i = 1; i <= aLabels.Length(); i++)
@@ -225,13 +237,19 @@ static int OCC27235(Draw_Interpretor& theDI, int n, const char** a)
       {
         occ::handle<XCAFDoc_Datum> aDat;
         if (!aDatL.Value(j).FindAttribute(XCAFDoc_Datum::GetID(), aDat))
+        {
           continue;
+        }
         occ::handle<XCAFDimTolObjects_DatumObject> anObject = aDat->GetObject();
         if (anObject.IsNull())
+        {
           continue;
+        }
         TopoDS_Shape aShape = anObject->GetPresentation();
         if (!aShape.IsNull())
+        {
           B.Add(aPresentations, aShape);
+        }
       }
     }
   }
@@ -251,7 +269,7 @@ static int OCC26930(Draw_Interpretor& theDI, int theNArg, const char** theArgVal
 {
   if (theNArg != 5)
   {
-    std::cout << "Use: " << theArgVal[0] << " surface curve start end" << std::endl;
+    std::cout << "Use: " << theArgVal[0] << " surface curve start end" << '\n';
     return 1;
   }
 
@@ -302,19 +320,25 @@ static int OCC27466(Draw_Interpretor& theDI, int theNArg, const char** theArgVal
 {
   if (theNArg != 4)
   {
-    std::cout << "Use: " << theArgVal[0] << " face point start_pnt2d" << std::endl;
+    std::cout << "Use: " << theArgVal[0] << " face point start_pnt2d" << '\n';
     return 1;
   }
 
   TopoDS_Face aFace = TopoDS::Face(DBRep::Get(theArgVal[1], TopAbs_FACE, true));
   if (aFace.IsNull())
+  {
     return 1;
+  }
   gp_Pnt aPnt;
   if (!DrawTrSurf::GetPoint(theArgVal[2], aPnt))
+  {
     return 1;
+  }
   gp_Pnt2d aUV;
   if (!DrawTrSurf::GetPoint2d(theArgVal[3], aUV))
+  {
     return 1;
+  }
   BRepAdaptor_Surface aSurf(aFace);
 
   constexpr double aTolU = Precision::PConfusion();
@@ -564,15 +588,21 @@ static int OCC28389(Draw_Interpretor& di, int argc, const char** argv)
   NCollection_Sequence<TDF_Label> aSequence;
   aViewTool->GetRefShapeLabel(aLabel, aSequence);
   if (aSequence.Length() != nbShapes)
+  {
     isOK = false;
+  }
   aSequence.Clear();
   aViewTool->GetRefGDTLabel(aLabel, aSequence);
   if (aSequence.Length() != nbGDTs)
+  {
     isOK = false;
+  }
   aSequence.Clear();
   aViewTool->GetRefClippingPlaneLabel(aLabel, aSequence);
   if (aSequence.Length() != nbPlanes)
+  {
     isOK = false;
+  }
   if (!isOK)
   {
     di << "Error: Wrong references";
@@ -587,9 +617,13 @@ static int OCC28389(Draw_Interpretor& di, int argc, const char** argv)
 
   XCAFView_ProjectionType aType = XCAFView_ProjectionType_NoCamera;
   if (argv[7][0] == 'p')
+  {
     aType = XCAFView_ProjectionType_Parallel;
+  }
   else if (argv[7][0] == 'c')
+  {
     aType = XCAFView_ProjectionType_Central;
+  }
 
   if (anObj->Type() != aType)
   {
@@ -625,9 +659,13 @@ static int OCC28389(Draw_Interpretor& di, int argc, const char** argv)
   }
 
   if (fabs(anObj->WindowHorizontalSize() - Draw::Atof(argv[18])) > Precision::Confusion())
+  {
     isOK = false;
+  }
   if (fabs(anObj->WindowVerticalSize() - Draw::Atof(argv[19])) > Precision::Confusion())
+  {
     isOK = false;
+  }
   if (!isOK)
   {
     di << "Error: Wrong Window size";
@@ -641,11 +679,15 @@ static int OCC28389(Draw_Interpretor& di, int argc, const char** argv)
 static int OCC28784(Draw_Interpretor&, int argc, const char** argv)
 {
   if (argc < 3)
+  {
     return 1;
+  }
 
   TopoDS_Shape aShape = DBRep::Get(argv[2]);
   if (aShape.IsNull())
+  {
     return 1;
+  }
 
   gp_Ax2            aPlane(gp::Origin(), gp::DX(), -gp::DZ());
   HLRAlgo_Projector aProjector(aPlane);
@@ -667,7 +709,7 @@ static int OCC28784(Draw_Interpretor&, int argc, const char** argv)
 static int OCC28829(Draw_Interpretor&, int, const char**)
 {
   // do something that causes FPE exception
-  std::cout << "sqrt(-1) = " << sqrt(-1.) << std::endl;
+  std::cout << "sqrt(-1) = " << sqrt(-1.) << '\n';
   return 0;
 }
 
@@ -760,7 +802,7 @@ static int OCC29311(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
 {
   if (theArgc < 4)
   {
-    std::cerr << "Use: " << theArgv[0] << " shape counter_name nb_iterations" << std::endl;
+    std::cerr << "Use: " << theArgv[0] << " shape counter_name nb_iterations" << '\n';
     return 1;
   }
 
@@ -797,7 +839,9 @@ static int OCC30391(Draw_Interpretor& theDI, int theNArg, const char** theArgV)
 
   TopoDS_Shape aShape = DBRep::Get(theArgV[2], TopAbs_FACE);
   if (aShape.IsNull())
+  {
     return 1;
+  }
 
   const TopoDS_Face& aFace = TopoDS::Face(aShape);
 
@@ -851,15 +895,25 @@ static int OCC29745(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
   int           i     = Draw::Atoi(theArgv[2]);
   GeomAbs_Shape aCont = GeomAbs_C0;
   if (i <= 0)
+  {
     aCont = GeomAbs_C0;
+  }
   else if (i == 1)
+  {
     aCont = GeomAbs_C1;
+  }
   else if (i == 2)
+  {
     aCont = GeomAbs_C2;
+  }
   else if (i == 3)
+  {
     aCont = GeomAbs_C3;
+  }
   else if (i >= 4)
+  {
     aCont = GeomAbs_CN;
+  }
 
   double t1 = Draw::Atof(theArgv[3]);
   double t2 = Draw::Atof(theArgv[4]);
@@ -1013,7 +1067,7 @@ static int OCC29195(Draw_Interpretor&, int theArgC, const char** theArgV)
     std::cout << "\nnbRep - number repetitions of a thread function (by default - 50)";
     std::cout
       << "\ndocN - names (5 in each group) of OCAF documents names (3 input files, 2 output)\n"
-      << std::endl;
+      << '\n';
     return 1;
   }
   int iThread(0), off(0);
@@ -1137,7 +1191,9 @@ static int OCC30435(Draw_Interpretor& di, int, const char** a)
   occ::handle<Geom_Curve> GC;
   GC = DrawTrSurf::GetCurve(a[2]);
   if (GC.IsNull())
+  {
     return 1;
+  }
 
   int    Dmin    = 3;
   int    Dmax    = 12;
@@ -1157,7 +1213,9 @@ static int OCC30435(Draw_Interpretor& di, int, const char** a)
   anAppro.SetInvOrder(inverse);
   int i;
   for (i = 1; i <= maxit; ++i)
+  {
     anAppro.Perform(aCE);
+  }
 
   if (!anAppro.IsAllApproximated())
   {
@@ -1507,7 +1565,9 @@ static int OCC26441(Draw_Interpretor& theDi, int theNbArgs, const char** theArgV
   {
     int Inc = Draw::Atoi(theArgVec[4]);
     if (Inc > 0)
+    {
       isAllDiff = true;
+    }
   }
 
   BRep_Builder                                           aBB;
@@ -1533,16 +1593,22 @@ static int OCC26441(Draw_Interpretor& theDi, int theNbArgs, const char** theArgV
     }
     const TopoDS_Edge& anE = TopoDS::Edge(anExp.Current());
     if (!aChecked.Add(anE))
+    {
       continue;
+    }
     double aTolRef = BRep_Tool::Tolerance(aRefE);
     double aTol    = BRep_Tool::Tolerance(anE);
     double aDiff   = aTol - aTolRef;
     if (isAllDiff && aDiff < 0)
+    {
       aDiff = -aDiff;
+    }
     if (aDiff > anEps)
     {
       if (aDiff > aMaxE)
+      {
         aMaxE = aDiff;
+      }
 
       aBB.Add(aBadEdges, anE);
     }
@@ -1552,16 +1618,22 @@ static int OCC26441(Draw_Interpretor& theDi, int theNbArgs, const char** theArgV
     for (int i = 0; i < 2; ++i)
     {
       if (aRefV[i].IsNull())
+      {
         continue;
+      }
       if (!aChecked.Add(aV[i]))
+      {
         continue;
+      }
       aTolRef = BRep_Tool::Tolerance(aRefV[i]);
       aTol    = BRep_Tool::Tolerance(aV[i]);
       aDiff   = aTol - aTolRef;
       if (aDiff > anEps)
       {
         if (aDiff > aMaxV)
+        {
           aMaxV = aDiff;
+        }
 
         aBB.Add(aBadVerts, aV[i]);
       }
@@ -1663,6 +1735,4 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands)
                   __FILE__,
                   OCC26441,
                   group);
-
-  return;
 }

@@ -48,7 +48,9 @@ public:
     Bnd_Box                                        aBox;
     anObject->BoundingBox(aBox);
     if (aBox.IsVoid())
+    {
       return Select3D_BndBox3d();
+    }
 
     return Select3D_BndBox3d(
       NCollection_Vec3<double>(aBox.CornerMin().X(), aBox.CornerMin().Y(), aBox.CornerMin().Z()),

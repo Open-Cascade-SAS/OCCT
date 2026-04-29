@@ -37,7 +37,9 @@ int countInlineFaceRefs(const BRepGraph& theGraph)
 {
   int aNb = 0;
   for (BRepGraph_ShellIterator aShellIt(theGraph); aShellIt.More(); aShellIt.Next())
+  {
     aNb += BRepGraph_TestTools::CountFaceRefsOfShell(theGraph, aShellIt.CurrentId());
+  }
   return aNb;
 }
 
@@ -45,7 +47,9 @@ int countInlineWireRefs(const BRepGraph& theGraph)
 {
   int aNb = 0;
   for (BRepGraph_FaceIterator aFaceIt(theGraph); aFaceIt.More(); aFaceIt.Next())
+  {
     aNb += BRepGraph_TestTools::CountWireRefsOfFace(theGraph, aFaceIt.CurrentId());
+  }
   return aNb;
 }
 
@@ -53,7 +57,9 @@ int countInlineCoEdgeRefs(const BRepGraph& theGraph)
 {
   int aNb = 0;
   for (BRepGraph_WireIterator aWireIt(theGraph); aWireIt.More(); aWireIt.Next())
+  {
     aNb += BRepGraph_TestTools::CountCoEdgeRefsOfWire(theGraph, aWireIt.CurrentId());
+  }
   return aNb;
 }
 
@@ -64,13 +70,19 @@ int countInlineVertexRefs(const BRepGraph& theGraph)
   {
     const BRepGraphInc::EdgeDef& anEdge = anEdgeIt.Current();
     if (anEdge.StartVertexRefId.IsValid())
+    {
       ++aNb;
+    }
     if (anEdge.EndVertexRefId.IsValid())
+    {
       ++aNb;
+    }
     aNb += anEdge.InternalVertexRefIds.Length();
   }
   for (BRepGraph_FaceIterator aFaceIt(theGraph); aFaceIt.More(); aFaceIt.Next())
+  {
     aNb += aFaceIt.Current().VertexRefIds.Length();
+  }
   return aNb;
 }
 
@@ -78,7 +90,9 @@ int countInlineShellRefs(const BRepGraph& theGraph)
 {
   int aNb = 0;
   for (BRepGraph_SolidIterator aSolidIt(theGraph); aSolidIt.More(); aSolidIt.Next())
+  {
     aNb += BRepGraph_TestTools::CountShellRefsOfSolid(theGraph, aSolidIt.CurrentId());
+  }
   return aNb;
 }
 
@@ -86,7 +100,9 @@ int countInlineSolidRefs(const BRepGraph& theGraph)
 {
   int aNb = 0;
   for (BRepGraph_CompSolidIterator aCSIt(theGraph); aCSIt.More(); aCSIt.Next())
+  {
     aNb += BRepGraph_TestTools::CountSolidRefsOfCompSolid(theGraph, aCSIt.CurrentId());
+  }
   return aNb;
 }
 
@@ -94,11 +110,17 @@ int countInlineChildRefs(const BRepGraph& theGraph)
 {
   int aNb = 0;
   for (BRepGraph_CompoundIterator aCompIt(theGraph); aCompIt.More(); aCompIt.Next())
+  {
     aNb += BRepGraph_TestTools::CountChildRefsOfParent(theGraph, aCompIt.CurrentId());
+  }
   for (BRepGraph_ShellIterator aShellIt(theGraph); aShellIt.More(); aShellIt.Next())
+  {
     aNb += BRepGraph_TestTools::CountChildRefsOfParent(theGraph, aShellIt.CurrentId());
+  }
   for (BRepGraph_SolidIterator aSolidIt(theGraph); aSolidIt.More(); aSolidIt.Next())
+  {
     aNb += BRepGraph_TestTools::CountChildRefsOfParent(theGraph, aSolidIt.CurrentId());
+  }
   return aNb;
 }
 

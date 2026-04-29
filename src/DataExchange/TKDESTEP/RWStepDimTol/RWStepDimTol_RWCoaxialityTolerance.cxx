@@ -41,7 +41,9 @@ void RWStepDimTol_RWCoaxialityTolerance::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 5, ach, "coaxiality_tolerance"))
+  {
     return;
+  }
 
   // Inherited fields of GeometricTolerance
 

@@ -30,7 +30,9 @@ void IGESGeom_BoundedSurface::Init(
   const occ::handle<NCollection_HArray1<occ::handle<IGESGeom_Boundary>>>& aBoundary)
 {
   if (aBoundary->Lower() != 1)
+  {
     throw Standard_DimensionMismatch("IGESGeom_BoundedSurface : Init");
+  }
   theType       = aType;
   theSurface    = aSurface;
   theBoundaries = aBoundary;

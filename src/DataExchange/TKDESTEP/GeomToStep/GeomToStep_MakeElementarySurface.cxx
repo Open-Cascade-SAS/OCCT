@@ -75,7 +75,9 @@ GeomToStep_MakeElementarySurface::GeomToStep_MakeElementarySurface(
     theElementarySurface = MkPlane.Value();
   }
   else
+  {
     done = false;
+  }
 }
 
 //=============================================================================

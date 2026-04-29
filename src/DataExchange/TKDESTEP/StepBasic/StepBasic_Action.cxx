@@ -45,7 +45,9 @@ void StepBasic_Action::Init(const occ::handle<TCollection_HAsciiString>& aName,
     theDescription = aDescription;
   }
   else
+  {
     theDescription.Nullify();
+  }
 
   theChosenMethod = aChosenMethod;
 }

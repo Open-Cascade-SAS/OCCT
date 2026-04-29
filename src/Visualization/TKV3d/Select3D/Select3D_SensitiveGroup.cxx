@@ -248,7 +248,9 @@ void Select3D_SensitiveGroup::Set(const occ::handle<SelectMgr_EntityOwner>& theO
 Select3D_BndBox3d Select3D_SensitiveGroup::BoundingBox()
 {
   if (myBndBox.IsValid())
+  {
     return myBndBox;
+  }
 
   // do not apply the transformation because sensitives AABBs
   // are already transformed

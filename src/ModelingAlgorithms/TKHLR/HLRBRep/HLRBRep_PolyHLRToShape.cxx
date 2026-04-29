@@ -89,9 +89,13 @@ TopoDS_Shape HLRBRep_PolyHLRToShape::InternalCompound(const int           typ,
   {
     TopExp_Explorer ex;
     for (ex.Init(S, TopAbs_EDGE); ex.More(); ex.Next())
+    {
       Map.Add(ex.Current());
+    }
     for (ex.Init(S, TopAbs_FACE); ex.More(); ex.Next())
+    {
       Map.Add(ex.Current());
+    }
   }
   bool         todraw, reg1, regn, outl, intl;
   bool         added = false;
@@ -103,9 +107,13 @@ TopoDS_Shape HLRBRep_PolyHLRToShape::InternalCompound(const int           typ,
   {
     NCollection_List<HLRBRep_BiPnt2D>::Iterator It;
     if (visible)
+    {
       It.Initialize(myBiPntVis);
+    }
     else
+    {
       It.Initialize(myBiPntHid);
+    }
 
     for (; It.More(); It.Next())
     {
@@ -115,16 +123,28 @@ TopoDS_Shape HLRBRep_PolyHLRToShape::InternalCompound(const int           typ,
       outl                      = BP.OutLine();
       intl                      = BP.IntLine();
       if (typ == 1)
+      {
         todraw = intl;
+      }
       else if (typ == 2)
+      {
         todraw = reg1 && !regn && !outl;
+      }
       else if (typ == 3)
+      {
         todraw = regn && !outl;
+      }
       else
+      {
         todraw = !intl && (!reg1 || outl);
+      }
       if (todraw)
+      {
         if (!S.IsNull())
+        {
           todraw = Map.Contains(BP.Shape());
+        }
+      }
       if (todraw)
       {
         const gp_Pnt2d& FirstP2d = BP.P1();
@@ -146,16 +166,28 @@ TopoDS_Shape HLRBRep_PolyHLRToShape::InternalCompound(const int           typ,
     {
       HLRAlgo_BiPoint::PointsT& aPoints = myAlgo->Show(SBP, reg1, regn, outl, intl);
       if (typ == 1)
+      {
         todraw = intl;
+      }
       else if (typ == 2)
+      {
         todraw = reg1 && !regn && !outl;
+      }
       else if (typ == 3)
+      {
         todraw = regn && !outl;
+      }
       else
+      {
         todraw = !intl && (!reg1 || outl);
+      }
       if (todraw)
+      {
         if (!S.IsNull())
+        {
           todraw = Map.Contains(SBP);
+        }
+      }
       if (todraw)
       {
         gp_XYZ aSta = aPoints.Pnt1, aEnd = aPoints.Pnt2;
@@ -173,6 +205,8 @@ TopoDS_Shape HLRBRep_PolyHLRToShape::InternalCompound(const int           typ,
     }
   }
   if (!added)
+  {
     Result = TopoDS_Shape();
+  }
   return Result;
 }

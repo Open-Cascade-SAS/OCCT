@@ -45,7 +45,9 @@ struct SurfaceData
 bool extractSurfaceData(const occ::handle<Geom_BSplineSurface>& theGeom, SurfaceData& theData)
 {
   if (theGeom.IsNull())
+  {
     return false;
+  }
 
   theData.UFlatKnots  = &theGeom->UKnotSequence();
   theData.VFlatKnots  = &theGeom->VKnotSequence();
@@ -104,7 +106,9 @@ inline int countSpanSize(const NCollection_Array1<double>& theParams,
     for (int i = theStartIdx + 1; i < aNb; ++i)
     {
       if (theParams.Value(aLower + i) >= aNextKnot)
+      {
         break;
+      }
       ++aCount;
     }
     return aCount;
@@ -124,9 +128,13 @@ inline int countSpanSize(const NCollection_Array1<double>& theParams,
                               aSpan,
                               aAdjusted);
     if (aSpan == theTargetSpan)
+    {
       ++aCount;
+    }
     else
+    {
       break;
+    }
   }
   return aCount;
 }

@@ -37,10 +37,14 @@ void IGESGeom_CopiousData::Init(const int                                       
 {
   // PTV OCC386 crash application while reading So5771b.igs
   if (allData.IsNull())
+  {
     throw Standard_NullObject("IGESGeom_CopiousData : Init with null data");
+  }
 
   if (allData->Lower() != 1)
+  {
     throw Standard_DimensionMismatch("IGESGeom_CopiousData : Init");
+  }
   theDataType = aDataType;
   theZPlane   = aZPlane;
   theData     = allData;
@@ -53,7 +57,9 @@ void IGESGeom_CopiousData::SetPolyline(const bool F)
 {
   int newfn = theDataType;
   if (F)
+  {
     newfn += 10;
+  }
   InitTypeAndForm(106, newfn);
 }
 
@@ -87,15 +93,25 @@ int IGESGeom_CopiousData::NbPoints() const
   int nbtuples;
   // PTV OCC386
   if (theData.IsNull())
+  {
     nbtuples = 0;
+  }
   else
+  {
     nbtuples = theData->Length();
+  }
   if (theDataType == 1)
+  {
     nbtuples /= 2;
+  }
   else if (theDataType == 2)
+  {
     nbtuples /= 3;
+  }
   else if (theDataType == 3)
+  {
     nbtuples /= 6;
+  }
   return nbtuples;
 }
 
@@ -103,11 +119,17 @@ double IGESGeom_CopiousData::Data(const int nump, const int numdata) const
 {
   int numd = 0;
   if (theDataType == 1)
+  {
     numd = 2 * (nump - 1) + numdata; // 1-2
+  }
   else if (theDataType == 2)
+  {
     numd = 3 * (nump - 1) + numdata; // 1-2-3
+  }
   else if (theDataType == 3)
+  {
     numd = 6 * (nump - 1) + numdata; // 1-2-3-4-5-6
+  }
   return theData->Value(numd);
 }
 
@@ -152,7 +174,9 @@ gp_Pnt IGESGeom_CopiousData::Point(const int anIndex) const
 gp_Pnt IGESGeom_CopiousData::TransformedPoint(const int anIndex) const
 {
   if (!HasTransf())
+  {
     return Point(anIndex);
+  }
   gp_XYZ xyz(Point(anIndex).XYZ());
   Location().Transforms(xyz);
   return gp_Pnt(xyz);
@@ -163,7 +187,9 @@ gp_Vec IGESGeom_CopiousData::Vector(const int anIndex) const
   int lower = theData->Lower();
   int Real_Index;
   if (theDataType != 3)
+  {
     return gp_Vec(0.0, 0.0, 0.0);
+  }
   Real_Index = lower + 6 * (anIndex - 1) + 3;
   double I   = theData->Value(Real_Index);
   double J   = theData->Value(Real_Index + 1);
@@ -174,7 +200,9 @@ gp_Vec IGESGeom_CopiousData::Vector(const int anIndex) const
 gp_Vec IGESGeom_CopiousData::TransformedVector(const int anIndex) const
 {
   if (!HasTransf())
+  {
     return Vector(anIndex);
+  }
   gp_XYZ   xyz(Vector(anIndex).XYZ());
   gp_GTrsf loc = Location();
   loc.SetTranslationPart(gp_XYZ(0., 0., 0.));

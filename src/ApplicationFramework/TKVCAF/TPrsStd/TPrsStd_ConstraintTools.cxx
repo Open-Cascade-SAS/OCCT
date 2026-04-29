@@ -91,7 +91,9 @@ static bool CheckShapesPair(const TopoDS_Shape&, const TopoDS_Shape&); // ota
 static void NullifyAIS(occ::handle<AIS_InteractiveObject>& anais)
 {
   if (anais.IsNull())
+  {
     return;
+  }
   anais.Nullify();
 }
 
@@ -102,9 +104,13 @@ static void FindExternalShape(const occ::handle<TDataXtd_Constraint>& aConst, in
   extShape           = 0;
   const TDF_Label& L = aConst->Label();
   if (!aConst->GetGeometry(1)->Label().IsDescendant(L))
+  {
     extShape = 1;
+  }
   else if (!aConst->GetGeometry(2)->Label().IsDescendant(L))
+  {
     extShape = 2;
+  }
 }
 
 //=================================================================================================
@@ -142,7 +148,9 @@ static bool IsFace(const TopoDS_Shape& S)
   bool            findface = false;
   TopExp_Explorer EXP(S, TopAbs_FACE);
   if (EXP.More())
+  {
     findface = true;
+  }
   return findface;
 }
 
@@ -151,7 +159,9 @@ static TopoDS_Face GetFace(const TopoDS_Shape& S)
   TopoDS_Face     F;
   TopExp_Explorer EXP(S, TopAbs_FACE);
   if (EXP.More())
+  {
     F = TopoDS::Face(EXP.Current());
+  }
   return F;
 }
 
@@ -160,7 +170,9 @@ static TopoDS_Edge GetEdge(const TopoDS_Shape& S)
   TopoDS_Edge     E;
   TopExp_Explorer EXP(S, TopAbs_EDGE);
   if (EXP.More())
+  {
     E = TopoDS::Edge(EXP.Current());
+  }
   return E;
 }
 
@@ -201,7 +213,9 @@ void TPrsStd_ConstraintTools::ComputeTextAndValue(const occ::handle<TDataXtd_Con
         fullname = Fathername->Get() + TCollection_ExtendedString(".") + name->Get();
       }
       else
+      {
         fullname = name->Get();
+      }
       txt = fullname + TCollection_ExtendedString("=") + txt;
     }
   }
@@ -213,9 +227,13 @@ void TPrsStd_ConstraintTools::UpdateOnlyValue(const occ::handle<TDataXtd_Constra
                                               const occ::handle<AIS_InteractiveObject>& anAIS)
 {
   if (anAIS.IsNull())
+  {
     return;
+  }
   if (!aConst->IsDimension())
+  {
     return;
+  }
   double                     val;
   TCollection_ExtendedString txt;
   TPrsStd_ConstraintTools::ComputeTextAndValue(aConst,
@@ -224,7 +242,9 @@ void TPrsStd_ConstraintTools::UpdateOnlyValue(const occ::handle<TDataXtd_Constra
                                                aConst->GetType() == TDataXtd_ANGLE);
   occ::handle<PrsDim_Relation> rel = occ::down_cast<PrsDim_Relation>(anAIS);
   if (!rel.IsNull())
+  {
     rel->SetText(txt);
+  }
 }
 
 //=================================================================================================
@@ -515,9 +535,13 @@ void TPrsStd_ConstraintTools::computePerpendicularImpl(
   bool                       is_planar(aConst->IsPlanar());
 
   if (is_planar)
+  {
     GetShapesAndGeom(aConst, shape1, shape2, ageom3);
+  }
   else
+  {
     GetTwoShapes(aConst, shape1, shape2);
+  }
   if (shape1.IsNull() || shape2.IsNull())
   {
 #ifdef OCCT_DEBUG
@@ -531,7 +555,9 @@ void TPrsStd_ConstraintTools::computePerpendicularImpl(
   //  Update de l'AIS
   occ::handle<PrsDim_PerpendicularRelation> ais;
   if (anAIS.IsNull())
+  {
     ais = new PrsDim_PerpendicularRelation(shape1, shape2);
+  }
   else
   {
     ais = occ::down_cast<PrsDim_PerpendicularRelation>(anAIS);
@@ -632,7 +658,9 @@ void TPrsStd_ConstraintTools::computeParallelImpl(const occ::handle<TDataXtd_Con
   GetGoodShape(shape2);
   occ::handle<PrsDim_ParallelRelation> ais;
   if (anAIS.IsNull())
+  {
     ais = new PrsDim_ParallelRelation(shape1, shape2, aplane);
+  }
   else
   {
     ais = occ::down_cast<PrsDim_ParallelRelation>(anAIS);
@@ -722,7 +750,9 @@ void TPrsStd_ConstraintTools::computeSymmetryImpl(const occ::handle<TDataXtd_Con
   //  Update de l'AIS
   occ::handle<PrsDim_SymmetricRelation> ais;
   if (anAIS.IsNull())
+  {
     ais = new PrsDim_SymmetricRelation(shape3, shape1, shape2, aplane);
+  }
   else
   {
     ais = occ::down_cast<PrsDim_SymmetricRelation>(anAIS);
@@ -815,7 +845,9 @@ void TPrsStd_ConstraintTools::computeMidPointImpl(const occ::handle<TDataXtd_Con
   //  Update de l'AIS
   occ::handle<PrsDim_MidPointRelation> ais;
   if (anAIS.IsNull())
+  {
     ais = new PrsDim_MidPointRelation(shape3, shape1, shape2, aplane);
+  }
   else
   {
     ais = occ::down_cast<PrsDim_MidPointRelation>(anAIS);
@@ -1083,7 +1115,9 @@ void TPrsStd_ConstraintTools::computeAngleImpl(const occ::handle<TDataXtd_Constr
       }
     }
     else if (shape1.ShapeType() == TopAbs_FACE)
+    {
       aFace = TopoDS::Face(shape1);
+    }
     else if (!CheckIsShapeCompound(shape1, aFace))
     {
 #ifdef OCCT_DEBUG
@@ -1140,7 +1174,9 @@ void TPrsStd_ConstraintTools::computeAngleImpl(const occ::handle<TDataXtd_Constr
       }
     }
     else if (shape2.ShapeType() == TopAbs_FACE)
+    {
       aFace = TopoDS::Face(shape2);
+    }
     else if (!CheckIsShapeCompound(shape2, aFace))
     {
 #ifdef OCCT_DEBUG
@@ -1228,9 +1264,13 @@ void TPrsStd_ConstraintTools::computeAngleImpl(const occ::handle<TDataXtd_Constr
   if (!isCurvilinear)
   {
     if (ageom3->IsKind(STANDARD_TYPE(Geom_Plane)))
+    {
       isplan = true;
+    }
     else if (ageom3->IsKind(STANDARD_TYPE(Geom_Line)))
+    {
       isplan = false;
+    }
     else
     {
 #ifdef OCCT_DEBUG
@@ -1290,7 +1330,9 @@ void TPrsStd_ConstraintTools::computeAngleImpl(const occ::handle<TDataXtd_Constr
     }
     ais->SetMeasuredGeometry(TopoDS::Face(shape1), TopoDS::Face(shape2));
     if (isplan)
+    {
       ais->SetCustomPlane(occ::down_cast<Geom_Plane>(ageom3)->Pln());
+    }
     else if (!isCurvilinear)
     {
       gp_Pln aPlane;
@@ -1457,7 +1499,9 @@ void TPrsStd_ConstraintTools::computeRadiusImpl(const occ::handle<TDataXtd_Const
   }
 
   if (IsFace(shape1))
+  {
     shape1 = GetFace(shape1);
+  }
 
   double                     val1;
   TCollection_ExtendedString txt;
@@ -1466,7 +1510,9 @@ void TPrsStd_ConstraintTools::computeRadiusImpl(const occ::handle<TDataXtd_Const
   //  Update de l'AIS
   bool isplanar(aConst->IsPlanar());
   if (isplanar)
+  {
     GetGoodShape(shape1);
+  }
 
   occ::handle<PrsDim_RadiusDimension> ais;
   if (!anAIS.IsNull())
@@ -1482,7 +1528,9 @@ void TPrsStd_ConstraintTools::computeRadiusImpl(const occ::handle<TDataXtd_Const
     }
   }
   else
+  {
     ais = new PrsDim_RadiusDimension(shape1);
+  }
 
   if (isplanar)
   {
@@ -1560,7 +1608,9 @@ void TPrsStd_ConstraintTools::computeMinRadiusImpl(const occ::handle<TDataXtd_Co
   }
 
   if (IsFace(shape1))
+  {
     shape1 = GetFace(shape1);
+  }
 
   double                     val1;
   TCollection_ExtendedString txt;
@@ -1569,7 +1619,9 @@ void TPrsStd_ConstraintTools::computeMinRadiusImpl(const occ::handle<TDataXtd_Co
   //  Update de l'AIS
   bool isplanar(aConst->IsPlanar());
   if (isplanar)
+  {
     GetGoodShape(shape1);
+  }
 
   occ::handle<PrsDim_MinRadiusDimension> ais;
   if (!anAIS.IsNull())
@@ -1587,7 +1639,9 @@ void TPrsStd_ConstraintTools::computeMinRadiusImpl(const occ::handle<TDataXtd_Co
     }
   }
   else
+  {
     ais = new PrsDim_MinRadiusDimension(shape1, val1, txt);
+  }
 
   if (isplanar)
   {
@@ -1664,7 +1718,9 @@ void TPrsStd_ConstraintTools::computeMaxRadiusImpl(const occ::handle<TDataXtd_Co
   }
 
   if (IsFace(shape1))
+  {
     shape1 = GetFace(shape1);
+  }
 
   double                     val1;
   TCollection_ExtendedString txt;
@@ -1673,7 +1729,9 @@ void TPrsStd_ConstraintTools::computeMaxRadiusImpl(const occ::handle<TDataXtd_Co
   //  Update de l'AIS
   bool isplanar(aConst->IsPlanar());
   if (isplanar)
+  {
     GetGoodShape(shape1);
+  }
 
   occ::handle<PrsDim_MaxRadiusDimension> ais;
   if (!anAIS.IsNull())
@@ -1691,7 +1749,9 @@ void TPrsStd_ConstraintTools::computeMaxRadiusImpl(const occ::handle<TDataXtd_Co
     }
   }
   else
+  {
     ais = new PrsDim_MaxRadiusDimension(shape1, val1, txt);
+  }
 
   if (isplanar)
   {
@@ -1777,7 +1837,9 @@ void TPrsStd_ConstraintTools::computeEqualDistanceImpl(
   bool                    IsPlanar(aConst->IsPlanar());
   occ::handle<Geom_Plane> aPlane;
   if (IsPlanar)
+  {
     aPlane = occ::down_cast<Geom_Plane>(aGeom);
+  }
 
   if (!IsPlanar || aPlane.IsNull())
   {
@@ -1797,8 +1859,9 @@ void TPrsStd_ConstraintTools::computeEqualDistanceImpl(
       ais = occ::down_cast<PrsDim_EqualDistanceRelation>(anAIS);
 
       if (ais.IsNull())
+      {
         ais = new PrsDim_EqualDistanceRelation(aShape1, aShape2, aShape3, aShape4, aPlane);
-
+      }
       else
       {
         ais->SetFirstShape(aShape1);
@@ -1810,11 +1873,11 @@ void TPrsStd_ConstraintTools::computeEqualDistanceImpl(
     }
   }
   else
+  {
     ais = new PrsDim_EqualDistanceRelation(aShape1, aShape2, aShape3, aShape4, aPlane);
+  }
 
   anAIS = ais;
-
-  return;
 }
 
 //=================================================================================================
@@ -1943,7 +2006,9 @@ void TPrsStd_ConstraintTools::computeEqualRadiusImpl(const occ::handle<TDataXtd_
   occ::handle<Geom_Plane> aplane;
 
   if (IsPlanar)
+  {
     aplane = occ::down_cast<Geom_Plane>(ageom3);
+  }
 
   if (!IsPlanar || aplane.IsNull())
   {
@@ -1970,7 +2035,9 @@ void TPrsStd_ConstraintTools::computeEqualRadiusImpl(const occ::handle<TDataXtd_
 
     if (std::abs(D1 - D2) < Precision::Confusion()
         && aDir1.IsParallel(aDir2, Precision::Confusion()))
+    {
       aplane = aPlane2;
+    }
     else
     {
 #ifdef OCCT_DEBUG
@@ -2057,7 +2124,9 @@ void TPrsStd_ConstraintTools::computeDiameterImpl(const occ::handle<TDataXtd_Con
   //  Update de l'AIS
   bool IsPlanar(aConst->IsPlanar());
   if (IsPlanar)
+  {
     GetGoodShape(shape1);
+  }
   occ::handle<PrsDim_DiameterDimension> ais;
   if (!anAIS.IsNull())
   {
@@ -2072,7 +2141,9 @@ void TPrsStd_ConstraintTools::computeDiameterImpl(const occ::handle<TDataXtd_Con
     }
   }
   else
+  {
     ais = new PrsDim_DiameterDimension(shape1);
+  }
 
   if (IsPlanar)
   {
@@ -2173,7 +2244,9 @@ void TPrsStd_ConstraintTools::computeFixImpl(const occ::handle<TDataXtd_Constrai
     }
   }
   else
+  {
     ais = new PrsDim_FixRelation(shape1, aplane);
+  }
 
   anAIS = ais;
 }
@@ -2332,7 +2405,9 @@ void TPrsStd_ConstraintTools::computeOffsetImpl(const occ::handle<TDataXtd_Const
       B.MakeWire(w1);
       TopExp_Explorer exp(S1, TopAbs_EDGE);
       for (; exp.More(); exp.Next())
+      {
         B.Add(w1, exp.Current());
+      }
 
       BRepBuilderAPI_MakeFace MkF(w1, true);
       if (MkF.IsDone())
@@ -2412,8 +2487,10 @@ void TPrsStd_ConstraintTools::computePlacementImpl(const occ::handle<TDataXtd_Co
 {
   int nbgeom = aConst->NbGeometries();
   if (nbgeom < 2)
+  {
     throw Standard_ProgramError(
       "TPrsStd_ConstraintTools::ComputePlacement: at leat two constraints are needed");
+  }
 
   TopoDS_Shape shape1, shape2;
   GetTwoShapes(aConst, shape1, shape2);
@@ -2457,7 +2534,9 @@ void TPrsStd_ConstraintTools::computePlacementImpl(const occ::handle<TDataXtd_Co
     }
   }
   if (GetFace(shape1).IsNull() || GetFace(shape2).IsNull())
+  {
     ais.Nullify();
+  }
   anAIS = ais;
 }
 
@@ -2493,7 +2572,9 @@ void TPrsStd_ConstraintTools::GetOneShape(const occ::handle<TDataXtd_Constraint>
 {
   const occ::handle<TNaming_NamedShape>& ageom1 = aConst->GetGeometry(1);
   if (!ageom1.IsNull())
+  {
     aShape = TNaming_Tool::CurrentShape(ageom1);
+  }
 }
 
 //=================================================================================================
@@ -2504,10 +2585,14 @@ void TPrsStd_ConstraintTools::GetTwoShapes(const occ::handle<TDataXtd_Constraint
 {
   const occ::handle<TNaming_NamedShape>& ageom1 = aConst->GetGeometry(1);
   if (!ageom1.IsNull())
+  {
     aShape1 = TNaming_Tool::CurrentShape(aConst->GetGeometry(1));
+  }
   const occ::handle<TNaming_NamedShape>& ageom2 = aConst->GetGeometry(2);
   if (!ageom2.IsNull())
+  {
     aShape2 = TNaming_Tool::CurrentShape(aConst->GetGeometry(2));
+  }
 }
 
 //=================================================================================================
@@ -2532,7 +2617,9 @@ void TPrsStd_ConstraintTools::GetShapesAndGeom(const occ::handle<TDataXtd_Constr
   GetTwoShapes(aConst, aShape1, aShape2);
   const occ::handle<TNaming_NamedShape>& ageom3 = aConst->GetGeometry(3); // ota: GetGeometry(2) was
   if (!ageom3.IsNull())
+  {
     aShape3 = TNaming_Tool::CurrentShape(aConst->GetGeometry(3));
+  }
   GetGeom(aConst, aGeom);
 }
 
@@ -2548,10 +2635,14 @@ void TPrsStd_ConstraintTools::GetShapesAndGeom(const occ::handle<TDataXtd_Constr
   GetTwoShapes(aConst, aShape1, aShape2);
   const occ::handle<TNaming_NamedShape>& ageom3 = aConst->GetGeometry(3);
   if (!ageom3.IsNull())
+  {
     aShape3 = TNaming_Tool::CurrentShape(aConst->GetGeometry(3));
+  }
   const occ::handle<TNaming_NamedShape>& ageom4 = aConst->GetGeometry(4);
   if (!ageom4.IsNull())
+  {
     aShape4 = TNaming_Tool::CurrentShape(aConst->GetGeometry(4));
+  }
   GetGeom(aConst, aGeom);
 }
 
@@ -2626,7 +2717,9 @@ void TPrsStd_ConstraintTools::computeCoincidentImpl(const occ::handle<TDataXtd_C
   //  Update de l'AIS
   occ::handle<PrsDim_IdenticRelation> ais;
   if (anAIS.IsNull())
+  {
     ais = new PrsDim_IdenticRelation(shape1, shape2, aplane);
+  }
   else
   {
     ais = occ::down_cast<PrsDim_IdenticRelation>(anAIS);
@@ -2700,7 +2793,9 @@ void TPrsStd_ConstraintTools::computeRoundImpl(const occ::handle<TDataXtd_Constr
     {
       OCC_CATCH_SIGNALS
       if (anAIS.IsNull())
+      {
         ais = new PrsDim_RadiusDimension(shape1);
+      }
       else
       {
         ais = occ::down_cast<PrsDim_RadiusDimension>(anAIS);
@@ -2746,15 +2841,23 @@ void TPrsStd_ConstraintTools::GetGeom(const occ::handle<TDataXtd_Constraint>& aC
   {
     TopoDS_Shape s = TNaming_Tool::GetShape(NS);
     if (s.IsNull())
+    {
       return;
+    }
   }
 
   if (TDataXtd_Geometry::Plane(label, aplane))
+  {
     aGeom = new Geom_Plane(aplane);
+  }
   else if (TDataXtd_Geometry::Line(label, anaxis))
+  {
     aGeom = new Geom_Line(anaxis);
+  }
   else if (TDataXtd_Geometry::Point(label, apoint))
+  {
     aGeom = new Geom_CartesianPoint(apoint);
+  }
 #ifdef OCCT_DEBUG
   else
   {

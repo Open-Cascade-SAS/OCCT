@@ -122,12 +122,18 @@ bool TransferBRep_Reader::BeginTransfer()
 {
   theDone = false;
   if (theModel.IsNull())
+  {
     return false;
+  }
 
   if (theNewpr || theProc.IsNull())
+  {
     theProc = new Transfer_TransientProcess(theModel->NbEntities());
+  }
   else
+  {
     theProc->Clear();
+  }
   theProc->SetErrorHandle(true);
   theProc->SetModel(theModel);
   PrepareTransfer();
@@ -144,7 +150,9 @@ void TransferBRep_Reader::EndTransfer()
     occ::handle<Standard_Transient> ent = theProc->Root(i);
     occ::handle<Standard_Transient> res = theProc->FindTransient(ent);
     if (!res.IsNull())
+    {
       theTransi->Append(res);
+    }
   }
   theDone = true;
 }
@@ -155,7 +163,9 @@ void TransferBRep_Reader::TransferRoots(const Message_ProgressRange& theProgress
 {
   Clear();
   if (!BeginTransfer())
+  {
     return;
+  }
   Transfer_TransferOutput TP(theProc, theModel);
 
   TP.TransferRoots(theProto, theProgress);
@@ -165,9 +175,13 @@ void TransferBRep_Reader::TransferRoots(const Message_ProgressRange& theProgress
 bool TransferBRep_Reader::Transfer(const int num, const Message_ProgressRange& theProgress)
 {
   if (!BeginTransfer())
+  {
     return false;
+  }
   if (num <= 0 || num > theModel->NbEntities())
+  {
     return false;
+  }
   occ::handle<Standard_Transient> ent = theModel->Value(num);
   Transfer_TransferOutput         TP(theProc, theModel);
 
@@ -176,7 +190,7 @@ bool TransferBRep_Reader::Transfer(const int num, const Message_ProgressRange& t
     Message_Messenger::StreamBuffer sout = theProc->Messenger()->SendInfo();
     sout << "--  Transfer(Read) : ";
     theModel->Print(ent, sout);
-    sout << std::endl;
+    sout << '\n';
   }
   TP.Transfer(ent, theProgress);
   theProc->SetRoot(ent);
@@ -189,28 +203,36 @@ void TransferBRep_Reader::TransferList(
   const Message_ProgressRange&                                               theProgress)
 {
   if (!BeginTransfer())
+  {
     return;
+  }
   if (list.IsNull())
+  {
     return;
+  }
   Transfer_TransferOutput         TP(theProc, theModel);
   int                             i, nb = list->Length();
   Message_Messenger::StreamBuffer sout = theProc->Messenger()->SendInfo();
 
   if (theProc->TraceLevel() > 1)
-    sout << "--  Transfer(Read-List) : " << nb << " Items" << std::endl;
+  {
+    sout << "--  Transfer(Read-List) : " << nb << " Items" << '\n';
+  }
   Message_ProgressScope aPS(theProgress, nullptr, nb);
   for (i = 1; i <= nb && aPS.More(); i++)
   {
     Message_ProgressRange           aRange = aPS.Next();
     occ::handle<Standard_Transient> ent    = list->Value(i);
     if (theModel->Number(ent) == 0)
+    {
       continue;
+    }
 
     if (theProc->TraceLevel() > 1)
     {
       sout << "--  Transfer(Read-List), Item " << i << " : ";
       theModel->Print(ent, sout);
-      sout << std::endl;
+      sout << '\n';
     }
     TP.Transfer(ent, aRange);
     theProc->SetRoot(ent);
@@ -245,16 +267,22 @@ TopoDS_Shape TransferBRep_Reader::OneShape() const
   TopoDS_Shape res;
   int          nb = theShapes->Length();
   if (nb == 0)
+  {
     return res;
+  }
   else if (nb == 1)
+  {
     return theShapes->Value(1);
+  }
   else
   {
     TopoDS_Compound C;
     BRep_Builder    B;
     B.MakeCompound(C);
     for (int i = 1; i <= nb; i++)
+    {
       B.Add(C, theShapes->Value(i));
+    }
     return C;
   }
 }
@@ -288,7 +316,9 @@ bool TransferBRep_Reader::CheckStatusResult(const bool withprint) const
 {
   Interface_CheckIterator chl;
   if (!theProc.IsNull())
+  {
     chl = theProc->CheckList(false);
+  }
   if (withprint && !theProc.IsNull() && !theProc->Messenger().IsNull())
   {
     Message_Messenger::StreamBuffer aBuffer = theProc->Messenger()->SendInfo();
@@ -300,7 +330,9 @@ bool TransferBRep_Reader::CheckStatusResult(const bool withprint) const
 Interface_CheckIterator TransferBRep_Reader::CheckListResult() const
 {
   if (!theProc.IsNull())
+  {
     return theProc->CheckList(false);
+  }
   Interface_CheckIterator chbid;
   return chbid;
 }

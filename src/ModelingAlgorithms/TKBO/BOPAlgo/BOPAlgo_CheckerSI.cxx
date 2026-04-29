@@ -174,19 +174,29 @@ void BOPAlgo_CheckerSI::Perform(const Message_ProgressRange& theRange)
     Message_ProgressScope aPSZZ(aPS.Next(), nullptr, 4);
     // Perform intersection with solids
     if (!HasErrors())
+    {
       PerformVZ(aPSZZ.Next());
+    }
     //
     if (!HasErrors())
+    {
       PerformEZ(aPSZZ.Next());
+    }
     //
     if (!HasErrors())
+    {
       PerformFZ(aPSZZ.Next());
+    }
     //
     if (!HasErrors())
+    {
       PerformZZ(aPSZZ.Next());
+    }
     //
     if (HasErrors())
+    {
       return;
+    }
 
     // Treat the intersection results
     PostTreat();
@@ -403,7 +413,9 @@ void BOPAlgo_CheckerSI::PostTreat()
 void BOPAlgo_CheckerSI::CheckFaceSelfIntersection(const Message_ProgressRange& theRange)
 {
   if (myLevelOfCheck < 5)
+  {
     return;
+  }
 
   BOPDS_Pair aPK;
 
@@ -421,14 +433,18 @@ void BOPAlgo_CheckerSI::CheckFaceSelfIntersection(const Message_ProgressRange& t
   {
     const BOPDS_ShapeInfo& aSI = myDS->ShapeInfo(i);
     if (aSI.ShapeType() != TopAbs_FACE)
+    {
       continue;
+    }
     //
     const TopoDS_Face&  aF = (*(TopoDS_Face*)(&aSI.Shape()));
     BRepAdaptor_Surface BAsurf(aF, false);
     GeomAbs_SurfaceType aSurfType = BAsurf.GetType();
     if (aSurfType == GeomAbs_Plane || aSurfType == GeomAbs_Cylinder || aSurfType == GeomAbs_Cone
         || aSurfType == GeomAbs_Sphere)
+    {
       continue;
+    }
 
     if (aSurfType == GeomAbs_Torus)
     {
@@ -436,7 +452,9 @@ void BOPAlgo_CheckerSI::CheckFaceSelfIntersection(const Message_ProgressRange& t
       double   aMajorRadius = aTorus.MajorRadius();
       double   aMinorRadius = aTorus.MinorRadius();
       if (aMajorRadius > aMinorRadius + Precision::Confusion())
+      {
         continue;
+      }
     }
 
     double aTolF = BRep_Tool::Tolerance(aF);

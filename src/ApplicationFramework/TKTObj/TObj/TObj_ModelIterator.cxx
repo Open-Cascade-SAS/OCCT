@@ -27,7 +27,9 @@ TObj_ModelIterator::TObj_ModelIterator(const occ::handle<TObj_Model>& theModel)
 {
   myObject = theModel->GetRoot();
   if (!myObject.IsNull())
+  {
     addIterator(myObject);
+  }
 }
 
 //=================================================================================================
@@ -36,7 +38,9 @@ void TObj_ModelIterator::addIterator(const occ::handle<TObj_Object>& theObj)
 {
   occ::handle<TObj_ObjectIterator> anIter = theObj->GetChildren();
   if (anIter.IsNull())
+  {
     return; // object has no children.
+  }
   myIterSeq.Append(anIter);
 }
 
@@ -69,6 +73,8 @@ void TObj_ModelIterator::Next()
       return;
     }
     else
+    {
       myIterSeq.Remove(myIterSeq.Length());
+    }
   }
 }

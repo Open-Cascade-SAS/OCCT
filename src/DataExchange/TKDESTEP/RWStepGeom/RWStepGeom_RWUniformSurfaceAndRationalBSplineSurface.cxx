@@ -39,14 +39,18 @@ void RWStepGeom_RWUniformSurfaceAndRationalBSplineSurface::ReadStep(
   // --- Instance of plex component BoundedSurface ---
 
   if (!data->CheckNbParams(num, 0, ach, "bounded_surface"))
+  {
     return;
+  }
 
   num = data->NextForComplex(num);
 
   // --- Instance of common supertype BSplineSurface ---
 
   if (!data->CheckNbParams(num, 7, ach, "b_spline_surface"))
+  {
     return;
+  }
   // --- field : uDegree ---
 
   int aUDegree;
@@ -82,7 +86,9 @@ void RWStepGeom_RWUniformSurfaceAndRationalBSplineSurface::ReadStep(
                                ach,
                                STANDARD_TYPE(StepGeom_CartesianPoint),
                                anent3))
+          {
             aControlPointsList->SetValue(i3, j3, anent3);
+          }
         }
       }
     }
@@ -100,7 +106,9 @@ void RWStepGeom_RWUniformSurfaceAndRationalBSplineSurface::ReadStep(
     }
   }
   else
+  {
     ach->AddFail("Parameter #4 (surface_form) is not an enumeration");
+  }
   // --- field : uClosed ---
 
   StepData_Logical aUClosed;
@@ -122,14 +130,18 @@ void RWStepGeom_RWUniformSurfaceAndRationalBSplineSurface::ReadStep(
   // --- Instance of plex component GeometricRepresentationItem ---
 
   if (!data->CheckNbParams(num, 0, ach, "geometric_representation_item"))
+  {
     return;
+  }
 
   num = data->NextForComplex(num);
 
   // --- Instance of plex component RationalBSplineSurface ---
 
   if (!data->CheckNbParams(num, 1, ach, "rational_b_spline_surface"))
+  {
     return;
+  }
 
   // --- field : weightsData ---
 
@@ -150,7 +162,9 @@ void RWStepGeom_RWUniformSurfaceAndRationalBSplineSurface::ReadStep(
         {
           // szv#4:S4163:12Mar99 `bool stat8 =` not needed
           if (data->ReadReal(nsi8, j8, "weights_data", ach, aWeightsDataItem))
+          {
             aWeightsData->SetValue(i8, j8, aWeightsDataItem);
+          }
         }
       }
     }
@@ -161,7 +175,9 @@ void RWStepGeom_RWUniformSurfaceAndRationalBSplineSurface::ReadStep(
   // --- Instance of plex component RepresentationItem ---
 
   if (!data->CheckNbParams(num, 1, ach, "representation_item"))
+  {
     return;
+  }
 
   // --- field : name ---
 
@@ -174,14 +190,18 @@ void RWStepGeom_RWUniformSurfaceAndRationalBSplineSurface::ReadStep(
   // --- Instance of plex component Surface ---
 
   if (!data->CheckNbParams(num, 0, ach, "surface"))
+  {
     return;
+  }
 
   num = data->NextForComplex(num);
 
   // --- Instance of plex component UniformSurface ---
 
   if (!data->CheckNbParams(num, 0, ach, "uniform_surface"))
+  {
     return;
+  }
 
   //--- Initialisation of the red entity ---
 

@@ -37,7 +37,9 @@ void IGESAppli_LevelToPWBLayerMap::Init(
       || (allNativeLevels->Lower() != 1 || allNativeLevels->Length() != num)
       || (allPhysLevels->Lower() != 1 || allPhysLevels->Length() != num)
       || (allExchIdents->Lower() != 1 || allExchIdents->Length() != num))
+  {
     throw Standard_DimensionMismatch("IGESAppli_LevelToPWBLayerMap: Init");
+  }
   theNbPropertyValues        = nbPropVal;
   theExchangeFileLevelNumber = allExchLevels;
   theNativeLevel             = allNativeLevels;

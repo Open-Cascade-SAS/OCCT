@@ -52,7 +52,9 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::ReadStep(
   // --- Instance of common supertype BSplineSurface ---
 
   if (!data->CheckNbParams(num, 7, ach, "b_spline_surface"))
+  {
     return;
+  }
   // --- field : uDegree ---
 
   int aUDegree;
@@ -89,7 +91,9 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::ReadStep(
                                ach,
                                STANDARD_TYPE(StepGeom_CartesianPoint),
                                anent3))
+          {
             aControlPointsList->SetValue(i3, j3, anent3);
+          }
         }
       }
     }
@@ -107,7 +111,9 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::ReadStep(
     }
   }
   else
+  {
     ach->AddFail("Parameter #4 (surface_form) is not an enumeration");
+  }
   // --- field : uClosed ---
 
   StepData_Logical aUClosed;
@@ -130,7 +136,9 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::ReadStep(
   // --- Instance of plex component BSplineSurfaceWithKnots ---
 
   if (!data->CheckNbParams(num, 5, ach, "b_spline_surface_with_knots"))
+  {
     return;
+  }
 
   // --- field : uMultiplicities ---
 
@@ -145,7 +153,9 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::ReadStep(
     {
       // szv#4:S4163:12Mar99 `bool stat8 =` not needed
       if (data->ReadInteger(nsub8, i8, "u_multiplicities", ach, aUMultiplicitiesItem))
+      {
         aUMultiplicities->SetValue(i8, aUMultiplicitiesItem);
+      }
     }
   }
 
@@ -162,7 +172,9 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::ReadStep(
     {
       // szv#4:S4163:12Mar99 `bool stat9 =` not needed
       if (data->ReadInteger(nsub9, i9, "v_multiplicities", ach, aVMultiplicitiesItem))
+      {
         aVMultiplicities->SetValue(i9, aVMultiplicitiesItem);
+      }
     }
   }
 
@@ -179,7 +191,9 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::ReadStep(
     {
       // szv#4:S4163:12Mar99 `bool stat10 =` not needed
       if (data->ReadReal(nsub10, i10, "u_knots", ach, aUKnotsItem))
+      {
         aUKnots->SetValue(i10, aUKnotsItem);
+      }
     }
   }
 
@@ -196,7 +210,9 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::ReadStep(
     {
       // szv#4:S4163:12Mar99 `bool stat11 =` not needed
       if (data->ReadReal(nsub11, i11, "v_knots", ach, aVKnotsItem))
+      {
         aVKnots->SetValue(i11, aVKnotsItem);
+      }
     }
   }
 
@@ -212,7 +228,9 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::ReadStep(
     }
   }
   else
+  {
     ach->AddFail("Parameter #5 (knot_spec) is not an enumeration");
+  }
 
   //	num = data->NextForComplex(num);
   data->NamedForComplex("GEOMETRIC_REPRESENTATION_ITEM", "GMRPIT", num0, num, ach);
@@ -223,7 +241,9 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::ReadStep(
   // --- Instance of plex component RationalBSplineSurface ---
 
   if (!data->CheckNbParams(num, 1, ach, "rational_b_spline_surface"))
+  {
     return;
+  }
 
   // --- field : weightsData ---
 
@@ -245,7 +265,9 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::ReadStep(
         {
           // szv#4:S4163:12Mar99 `bool stat13 =` not needed
           if (data->ReadReal(nsi13, j13, "weights_data", ach, aWeightsDataItem))
+          {
             aWeightsData->SetValue(i13, j13, aWeightsDataItem);
+          }
         }
       }
     }

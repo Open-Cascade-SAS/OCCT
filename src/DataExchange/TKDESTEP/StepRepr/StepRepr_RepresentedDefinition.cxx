@@ -32,17 +32,29 @@ StepRepr_RepresentedDefinition::StepRepr_RepresentedDefinition() = default;
 int StepRepr_RepresentedDefinition::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_GeneralProperty)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepRepr_PropertyDefinition)))
+  {
     return 2;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepRepr_PropertyDefinitionRelationship)))
+  {
     return 3;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepRepr_ShapeAspect)))
+  {
     return 4;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepRepr_ShapeAspectRelationship)))
+  {
     return 5;
+  }
   return 0;
 }
 

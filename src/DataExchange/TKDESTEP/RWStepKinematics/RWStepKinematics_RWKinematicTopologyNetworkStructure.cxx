@@ -42,7 +42,9 @@ void RWStepKinematics_RWKinematicTopologyNetworkStructure::ReadStep(
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 4, theArch, "kinematic_topology_network_structure"))
+  {
     return;
+  }
 
   // Inherited fields of Representation
 

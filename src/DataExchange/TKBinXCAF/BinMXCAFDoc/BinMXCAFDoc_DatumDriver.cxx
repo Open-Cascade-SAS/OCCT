@@ -48,7 +48,9 @@ bool BinMXCAFDoc_DatumDriver::Paste(const BinObjMgt_Persistent&       theSource,
   occ::handle<XCAFDoc_Datum> anAtt = occ::down_cast<XCAFDoc_Datum>(theTarget);
   TCollection_AsciiString    aName, aDescr, anId;
   if (!(theSource >> aName >> aDescr >> anId))
+  {
     return false;
+  }
 
   anAtt->Set(new TCollection_HAsciiString(aName),
              new TCollection_HAsciiString(aDescr),
@@ -65,17 +67,29 @@ void BinMXCAFDoc_DatumDriver::Paste(
 {
   occ::handle<XCAFDoc_Datum> anAtt = occ::down_cast<XCAFDoc_Datum>(theSource);
   if (!anAtt->GetName().IsNull())
+  {
     theTarget << anAtt->GetName()->String();
+  }
   else
+  {
     theTarget << TCollection_AsciiString("");
+  }
 
   if (!anAtt->GetDescription().IsNull())
+  {
     theTarget << anAtt->GetDescription()->String();
+  }
   else
+  {
     theTarget << TCollection_AsciiString("");
+  }
 
   if (!anAtt->GetIdentification().IsNull())
+  {
     theTarget << anAtt->GetIdentification()->String();
+  }
   else
+  {
     theTarget << TCollection_AsciiString("");
+  }
 }

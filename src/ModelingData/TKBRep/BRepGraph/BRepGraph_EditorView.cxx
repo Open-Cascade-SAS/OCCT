@@ -68,7 +68,9 @@ bool hasOtherActiveParent(const BRepGraph&       theGraph,
        anExp.Next())
   {
     if (anExp.Current().DefId != theExcludedParent)
+    {
       return true;
+    }
   }
   return false;
 }
@@ -115,7 +117,9 @@ RefIdT findOrderedRef(const NCollection_DynamicArray<RefIdT>& theRefIds, const R
        anIt.Next())
   {
     if (anIt.Value() == theRefId)
+    {
       return theRefId;
+    }
   }
   return RefIdT();
 }
@@ -130,8 +134,10 @@ void eraseOrderedRef(const RefIdT theRefId, NCollection_DynamicArray<RefIdT>& th
     if (anIt.Value() == theRefId)
     {
       for (uint32_t i = anIndex; i < static_cast<uint32_t>(theRefIds.Size()) - 1u; ++i)
+      {
         theRefIds.ChangeValue(static_cast<size_t>(i)) =
           theRefIds.Value(static_cast<size_t>(i + 1u));
+      }
       theRefIds.EraseLast();
       return;
     }
@@ -201,7 +207,9 @@ static bool isNodeIndexInRange(const BRepGraphInc_Storage& theStorage,
                                const BRepGraph_NodeId      theNode)
 {
   if (!theNode.IsValid())
+  {
     return false;
+  }
 
   switch (theNode.NodeKind)
   {
@@ -338,11 +346,15 @@ static void rebindCoEdgesForEdgeReplacement(BRepGraphInc_Storage&  theStorage,
   {
     const BRepGraph_CoEdgeId aCoEdgeId = aCoEdgeSnapshot[aCoEdgeIdx];
     if (!aCoEdgeId.IsValid(theStorage.NbCoEdges()))
+    {
       continue;
+    }
 
     BRepGraphInc::CoEdgeDef& aCoEdge = theStorage.ChangeCoEdge(aCoEdgeId);
     if (aCoEdge.IsRemoved || aCoEdge.EdgeDefId != theSourceEdgeId)
+    {
       continue;
+    }
 
     theStorage.ChangeReverseIndex().UnbindEdgeFromCoEdge(theSourceEdgeId, aCoEdgeId);
     aCoEdge.EdgeDefId = theReplacementEdgeId;
@@ -362,18 +374,26 @@ static bool isLastEdgeUsageInWire(const BRepGraphInc_Storage& theStorage,
                                   const BRepGraph_CoEdgeRefId theExcludingRef)
 {
   if (!theWire.IsValid(theStorage.NbWires()) || !theEdge.IsValid())
+  {
     return true;
+  }
   const BRepGraphInc::WireDef& aWireDef = theStorage.Wire(theWire);
   for (const BRepGraph_CoEdgeRefId& aRefId : aWireDef.CoEdgeRefIds)
   {
     if (!aRefId.IsValid(theStorage.NbCoEdgeRefs()) || aRefId == theExcludingRef)
+    {
       continue;
+    }
     const BRepGraphInc::CoEdgeRef& aRef = theStorage.CoEdgeRef(aRefId);
     if (aRef.IsRemoved || !aRef.CoEdgeDefId.IsValid(theStorage.NbCoEdges()))
+    {
       continue;
+    }
     const BRepGraphInc::CoEdgeDef& aCoEdge = theStorage.CoEdge(aRef.CoEdgeDefId);
     if (!aCoEdge.IsRemoved && aCoEdge.EdgeDefId == theEdge)
+    {
       return false;
+    }
   }
   return true;
 }
@@ -396,11 +416,15 @@ static void unbindCoEdgesOfRemovedEdge(BRepGraphInc_Storage&  theStorage,
   {
     const BRepGraph_CoEdgeId aCoEdgeId = aCoEdgeSnapshot[aCoEdgeIdx];
     if (!aCoEdgeId.IsValid(theStorage.NbCoEdges()))
+    {
       continue;
+    }
 
     const BRepGraphInc::CoEdgeDef& aCoEdge = theStorage.CoEdge(aCoEdgeId);
     if (!aCoEdge.IsRemoved && aCoEdge.EdgeDefId == theEdgeId)
+    {
       theStorage.ChangeReverseIndex().UnbindEdgeFromCoEdge(theEdgeId, aCoEdgeId);
+    }
   }
 }
 
@@ -411,7 +435,9 @@ int countIterator(const BRepGraph& theGraph)
 {
   int aCount = 0;
   for (BRepGraph_Iterator<DefType> anIt(theGraph); anIt.More(); anIt.Next())
+  {
     ++aCount;
+  }
   return aCount;
 }
 
@@ -586,8 +612,10 @@ BRepGraph_EdgeId BRepGraph::EditorView::EdgeOps::Add(const BRepGraph_VertexId   
     anEndVtxRef.Orientation              = TopAbs_REVERSED;
     myGraph->allocateRefUID(anEndVtxRefId);
     anEdgeDef.EndVertexRefId = anEndVtxRefId;
-    if (theEndVtx != theStartVtx) // BindVertexToEdge dedups, but skip needless work
+    if (theEndVtx != theStartVtx)
+    { // BindVertexToEdge dedups, but skip needless work
       aStorage.ChangeReverseIndex().BindVertexToEdge(theEndVtx, aEdgeId);
+    }
   }
   anEdgeDef.ParamFirst    = theFirst;
   anEdgeDef.ParamLast     = theLast;
@@ -1128,17 +1156,27 @@ BRepGraph_OccurrenceId BRepGraph::EditorView::ProductOps::LinkProducts(
   BRepGraph_OccurrenceRefId*   theOutOccurrenceRefId)
 {
   if (theOutOccurrenceRefId != nullptr)
+  {
     *theOutOccurrenceRefId = BRepGraph_OccurrenceRefId();
+  }
   BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
 
   if (!isActiveNode(aStorage, theParentProduct))
+  {
     return BRepGraph_OccurrenceId();
+  }
   if (!isActiveNode(aStorage, theReferencedProduct))
+  {
     return BRepGraph_OccurrenceId();
+  }
   if (theParentProduct == theReferencedProduct)
+  {
     return BRepGraph_OccurrenceId();
+  }
   if (theParentOccurrence.IsValid() && !isActiveNode(aStorage, theParentOccurrence))
+  {
     return BRepGraph_OccurrenceId();
+  }
   if (theParentOccurrence.IsValid()
       && aStorage.Occurrence(theParentOccurrence).ChildDefId != BRepGraph_NodeId(theParentProduct))
   {
@@ -1167,7 +1205,9 @@ BRepGraph_OccurrenceId BRepGraph::EditorView::ProductOps::LinkProducts(
   aStorage.ChangeReverseIndex().BindProductOccurrence(anOccId, theReferencedProduct);
 
   if (theOutOccurrenceRefId != nullptr)
+  {
     *theOutOccurrenceRefId = anOccRefId;
+  }
   return anOccId;
 }
 
@@ -1184,7 +1224,9 @@ void BRepGraph::EditorView::GenOps::RemoveNode(const BRepGraph_NodeId theNode,
                                                const BRepGraph_NodeId theReplacement)
 {
   if (!theNode.IsValid())
+  {
     return;
+  }
 
   BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
 
@@ -1243,21 +1285,29 @@ void BRepGraph::EditorView::GenOps::RemoveNode(const BRepGraph_NodeId theNode,
     {
       const BRepGraph_VertexId aStartV = aStorage.VertexRef(anEdge.StartVertexRefId).VertexDefId;
       if (aStartV.IsValid())
+      {
         aRI.UnbindVertexFromEdge(aStartV, anEdgeId);
+      }
     }
     if (anEdge.EndVertexRefId.IsValid(aStorage.NbVertexRefs()))
     {
       const BRepGraph_VertexId anEndV = aStorage.VertexRef(anEdge.EndVertexRefId).VertexDefId;
       if (anEndV.IsValid())
+      {
         aRI.UnbindVertexFromEdge(anEndV, anEdgeId);
+      }
     }
     for (const BRepGraph_VertexRefId& anIntRefId : anEdge.InternalVertexRefIds)
     {
       if (!anIntRefId.IsValid(aStorage.NbVertexRefs()))
+      {
         continue;
+      }
       const BRepGraph_VertexId anIntV = aStorage.VertexRef(anIntRefId).VertexDefId;
       if (anIntV.IsValid())
+      {
         aRI.UnbindVertexFromEdge(anIntV, anEdgeId);
+      }
     }
     // Keep reverse edge->coedge table coherent for pure removals too.
     unbindCoEdgesOfRemovedEdge(aStorage, anEdgeId);
@@ -1350,7 +1400,9 @@ void BRepGraph::EditorView::GenOps::RemoveSubgraph(const BRepGraph_NodeId theNod
           anOccIndices.Append(aStorage.OccurrenceRef(anOccIt.CurrentId()).OccurrenceDefId.Index);
         }
         for (const int anOccIdx : anOccIndices)
+        {
           RemoveSubgraph(BRepGraph_OccurrenceId(anOccIdx));
+        }
       }
       break;
     }
@@ -1365,7 +1417,9 @@ void BRepGraph::EditorView::GenOps::RemoveSubgraph(const BRepGraph_NodeId theNod
             && BRepGraph_NodeId::IsTopologyKind(anOcc.ChildDefId.NodeKind))
         {
           if (!hasAnyActiveUsage(*myGraph, anOcc.ChildDefId))
+          {
             RemoveSubgraph(anOcc.ChildDefId);
+          }
         }
         // Detach from parent product's OccurrenceRefIds.
         // Find the parent product by scanning OccurrenceRefs.
@@ -1375,11 +1429,15 @@ void BRepGraph::EditorView::GenOps::RemoveSubgraph(const BRepGraph_NodeId theNod
         {
           const BRepGraphInc::OccurrenceRef& aRef = aStorage.OccurrenceRef(aOccRefId);
           if (aRef.IsRemoved || aRef.OccurrenceDefId != theNode)
+          {
             continue;
+          }
 
           const BRepGraph_ProductId aParentProduct = BRepGraph_ProductId::FromNodeId(aRef.ParentId);
           if (!aParentProduct.IsValid(aStorage.NbProducts()))
+          {
             break;
+          }
 
           NCollection_DynamicArray<BRepGraph_OccurrenceRefId>& aRefIds =
             myGraph->myData->myIncStorage.ChangeProduct(aParentProduct).OccurrenceRefIds;
@@ -1392,8 +1450,10 @@ void BRepGraph::EditorView::GenOps::RemoveSubgraph(const BRepGraph_NodeId theNod
             {
               myGraph->myData->myIncStorage.MarkRemovedRef(aOccRefId);
               if (anIdx < static_cast<uint32_t>(aRefIds.Size()) - 1u)
+              {
                 aRefIds.ChangeValue(static_cast<size_t>(anIdx)) =
                   aRefIds.Value(aRefIds.Size() - 1u);
+              }
               aRefIds.EraseLast();
               myGraph->markModified(aParentProduct);
               break;
@@ -1434,7 +1494,9 @@ void BRepGraph::EditorView::GenOps::RemoveSubgraph(const BRepGraph_NodeId theNod
       for (const BRepGraph_NodeId& aChild : aChildNodes)
       {
         if (!hasOtherActiveParent(*myGraph, aChild, theNode))
+        {
           RemoveSubgraph(aChild);
+        }
       }
       break;
     }
@@ -1465,7 +1527,9 @@ bool BRepGraph::EditorView::GenOps::RemoveRef(const BRepGraph_RefId theRef)
   BRepGraphInc_Storage&        aStorage = myGraph->myData->myIncStorage;
   const BRepGraphInc::BaseRef& aRef     = aStorage.BaseRef(theRef);
   if (aRef.IsRemoved)
+  {
     return false;
+  }
   const BRepGraph_NodeId aParent = aRef.ParentId;
   BRepGraph_NodeId       aChildNode;
   BRepGraph_NodeId       aOccChildDef;
@@ -1484,7 +1548,9 @@ bool BRepGraph::EditorView::GenOps::RemoveRef(const BRepGraph_RefId theRef)
     case BRepGraph_RefId::Kind::CoEdge: {
       aChildNode = aStorage.CoEdgeRef(BRepGraph_CoEdgeRefId(theRef)).CoEdgeDefId;
       if (aChildNode.IsValid(aStorage.NbCoEdges()))
+      {
         aCoEdgeUnderlyingEdge = aStorage.CoEdge(BRepGraph_CoEdgeId(aChildNode)).EdgeDefId;
+      }
       break;
     }
     case BRepGraph_RefId::Kind::Vertex:
@@ -1499,7 +1565,9 @@ bool BRepGraph::EditorView::GenOps::RemoveRef(const BRepGraph_RefId theRef)
     case BRepGraph_RefId::Kind::Occurrence: {
       aChildNode = aStorage.OccurrenceRef(BRepGraph_OccurrenceRefId(theRef)).OccurrenceDefId;
       if (aChildNode.IsValid())
+      {
         aOccChildDef = aStorage.Occurrence(BRepGraph_OccurrenceId(aChildNode)).ChildDefId;
+      }
       break;
     }
     default:
@@ -1516,11 +1584,15 @@ bool BRepGraph::EditorView::GenOps::RemoveRef(const BRepGraph_RefId theRef)
   {
     case BRepGraph_RefId::Kind::Face:
       if (aParent.NodeKind == BRepGraph_NodeId::Kind::Shell && aChildNode.IsValid())
+      {
         aRI.UnbindFaceFromShell(BRepGraph_FaceId(aChildNode), BRepGraph_ShellId(aParent));
+      }
       break;
     case BRepGraph_RefId::Kind::Wire:
       if (aParent.NodeKind == BRepGraph_NodeId::Kind::Face && aChildNode.IsValid())
+      {
         aRI.UnbindWireFromFace(BRepGraph_WireId(aChildNode), BRepGraph_FaceId(aParent));
+      }
       break;
     case BRepGraph_RefId::Kind::CoEdge:
       if (aParent.NodeKind == BRepGraph_NodeId::Kind::Wire && aChildNode.IsValid())
@@ -1539,19 +1611,27 @@ bool BRepGraph::EditorView::GenOps::RemoveRef(const BRepGraph_RefId theRef)
       break;
     case BRepGraph_RefId::Kind::Vertex:
       if (aParent.NodeKind == BRepGraph_NodeId::Kind::Edge && aChildNode.IsValid())
+      {
         aRI.UnbindVertexFromEdge(BRepGraph_VertexId(aChildNode), BRepGraph_EdgeId(aParent));
+      }
       break;
     case BRepGraph_RefId::Kind::Shell:
       if (aParent.NodeKind == BRepGraph_NodeId::Kind::Solid && aChildNode.IsValid())
+      {
         aRI.UnbindShellFromSolid(BRepGraph_ShellId(aChildNode), BRepGraph_SolidId(aParent));
+      }
       break;
     case BRepGraph_RefId::Kind::Solid:
       if (aParent.NodeKind == BRepGraph_NodeId::Kind::CompSolid && aChildNode.IsValid())
+      {
         aRI.UnbindSolidFromCompSolid(BRepGraph_SolidId(aChildNode), BRepGraph_CompSolidId(aParent));
+      }
       break;
     case BRepGraph_RefId::Kind::Child:
       if (aParent.NodeKind == BRepGraph_NodeId::Kind::Compound && aChildNode.IsValid())
+      {
         aRI.UnbindCompoundChild(aChildNode, BRepGraph_CompoundId(aParent));
+      }
       break;
     case BRepGraph_RefId::Kind::Occurrence:
       if (aChildNode.IsValid() && aOccChildDef.IsValid()
@@ -1604,7 +1684,9 @@ bool BRepGraph::EditorView::GenOps::RemoveRef(const BRepGraph_NodeId theParent,
 void BRepGraph::EditorView::GenOps::RemoveRep(const BRepGraph_RepId theRep)
 {
   if (!theRep.IsValid())
+  {
     return;
+  }
 
   if (myGraph->myData->myIncStorage.MarkRemovedRep(theRep))
   {
@@ -1618,7 +1700,9 @@ BRepGraph_Curve2DRepId BRepGraph::EditorView::CoEdgeOps::CreateCurve2DRep(
   const occ::handle<Geom2d_Curve>& theCurve2d)
 {
   if (theCurve2d.IsNull())
+  {
     return BRepGraph_Curve2DRepId();
+  }
 
   const BRepGraph_Curve2DRepId aRepId = myGraph->myData->myIncStorage.AppendCurve2DRep();
   myGraph->myData->myIncStorage.ChangeCurve2DRep(aRepId).Curve = theCurve2d;
@@ -1687,14 +1771,18 @@ void BRepGraph::EditorView::BeginDeferredInvalidation()
 void BRepGraph::EditorView::EndDeferredInvalidation() noexcept
 {
   if (!myGraph->myData->myDeferredMode.load(std::memory_order_relaxed))
+  {
     return;
+  }
 
   myGraph->myData->myDeferredMode.store(false, std::memory_order_relaxed);
 
   NCollection_DynamicArray<BRepGraph_NodeId>& aDeferredList = myGraph->myData->myDeferredModified;
 
   if (aDeferredList.IsEmpty())
+  {
     return;
+  }
 
   // Shape cache uses SubtreeGen validation - no bulk clear needed.
   // Stale entries are detected on read via StoredSubtreeGen != entity.SubtreeGen.
@@ -1739,9 +1827,13 @@ void BRepGraph::EditorView::EndDeferredInvalidation() noexcept
     const int                 aKindIdx = static_cast<int>(theNode.NodeKind);
     NCollection_Array1<bool>& aArr     = aVisArrays[aKindIdx];
     if (aArr.IsEmpty() || static_cast<int>(theNode.Index) > aArr.Upper())
+    {
       return false;
+    }
     if (aArr.Value(static_cast<int>(theNode.Index)))
+    {
       return false;
+    }
     aArr.SetValue(static_cast<int>(theNode.Index), true);
     return true;
   };
@@ -1783,18 +1875,24 @@ void BRepGraph::EditorView::EndDeferredInvalidation() noexcept
         const NCollection_DynamicArray<BRepGraph_WireId>* aWires =
           aRevIdx.WiresOfEdge(BRepGraph_EdgeId(aNodeId));
         if (aWires != nullptr)
+        {
           for (const BRepGraph_WireId& aWireId : *aWires)
           {
             const BRepGraph_NodeId aParentId = aWireId;
             if (!markVisited(aParentId))
+            {
               continue;
+            }
             BRepGraphInc::BaseDef* aParent = myGraph->changeTopoEntity(aParentId);
             if (aParent == nullptr || aParent->IsRemoved)
+            {
               continue;
+            }
             ++aParent->SubtreeGen;
             aAllModified.Append(aParentId);
             aModifiedKindsMask |= BRepGraph_Layer::KindBit(aParentId.NodeKind);
           }
+        }
         break;
       }
       case BRepGraph_NodeId::Kind::CoEdge:
@@ -1803,54 +1901,72 @@ void BRepGraph::EditorView::EndDeferredInvalidation() noexcept
         const NCollection_DynamicArray<BRepGraph_FaceId>* aFaces =
           aRevIdx.FacesOfWire(BRepGraph_WireId(aNodeId));
         if (aFaces != nullptr)
+        {
           for (const BRepGraph_FaceId& aFaceId : *aFaces)
           {
             const BRepGraph_NodeId aParentId = aFaceId;
             if (!markVisited(aParentId))
+            {
               continue;
+            }
             BRepGraphInc::BaseDef* aParent = myGraph->changeTopoEntity(aParentId);
             if (aParent == nullptr || aParent->IsRemoved)
+            {
               continue;
+            }
             ++aParent->SubtreeGen;
             aAllModified.Append(aParentId);
             aModifiedKindsMask |= BRepGraph_Layer::KindBit(aParentId.NodeKind);
           }
+        }
         break;
       }
       case BRepGraph_NodeId::Kind::Face: {
         const NCollection_DynamicArray<BRepGraph_ShellId>* aShells =
           aRevIdx.ShellsOfFace(BRepGraph_FaceId(aNodeId));
         if (aShells != nullptr)
+        {
           for (const BRepGraph_ShellId& aShellId : *aShells)
           {
             const BRepGraph_NodeId aParentId = aShellId;
             if (!markVisited(aParentId))
+            {
               continue;
+            }
             BRepGraphInc::BaseDef* aParent = myGraph->changeTopoEntity(aParentId);
             if (aParent == nullptr || aParent->IsRemoved)
+            {
               continue;
+            }
             ++aParent->SubtreeGen;
             aAllModified.Append(aParentId);
             aModifiedKindsMask |= BRepGraph_Layer::KindBit(aParentId.NodeKind);
           }
+        }
         break;
       }
       case BRepGraph_NodeId::Kind::Shell: {
         const NCollection_DynamicArray<BRepGraph_SolidId>* aSolids =
           aRevIdx.SolidsOfShell(BRepGraph_ShellId(aNodeId));
         if (aSolids != nullptr)
+        {
           for (const BRepGraph_SolidId& aSolidId : *aSolids)
           {
             const BRepGraph_NodeId aParentId = aSolidId;
             if (!markVisited(aParentId))
+            {
               continue;
+            }
             BRepGraphInc::BaseDef* aParent = myGraph->changeTopoEntity(aParentId);
             if (aParent == nullptr || aParent->IsRemoved)
+            {
               continue;
+            }
             ++aParent->SubtreeGen;
             aAllModified.Append(aParentId);
             aModifiedKindsMask |= BRepGraph_Layer::KindBit(aParentId.NodeKind);
           }
+        }
         break;
       }
       case BRepGraph_NodeId::Kind::Occurrence: {
@@ -1887,7 +2003,9 @@ void BRepGraph::EditorView::EndDeferredInvalidation() noexcept
 
   // Dispatch batch modification event to subscribing layers.
   if (myGraph->myLayerRegistry.HasModificationSubscribers() && !aAllModified.IsEmpty())
+  {
     myGraph->myLayerRegistry.DispatchNodesModified(aAllModified, aModifiedKindsMask);
+  }
 
   // Clear deferred list for next scope.
   aDeferredList.Clear();
@@ -2111,7 +2229,9 @@ void BRepGraph::EditorView::EdgeOps::Split(const BRepGraph_EdgeId   theEdgeEntit
           aStorage.ReverseIndex().CoEdgesOfEdge(theEdgeEntity))
     {
       for (const BRepGraph_CoEdgeId& anId : *aSrc)
+      {
         anOrigCoEdgeIds.Append(anId);
+      }
     }
     const uint32_t aNbOrig = static_cast<uint32_t>(anOrigCoEdgeIds.Size());
 
@@ -2134,9 +2254,13 @@ void BRepGraph::EditorView::EdgeOps::Split(const BRepGraph_EdgeId   theEdgeEntit
       {
         const double aPCRange = aOld.ParamLast - aOld.ParamFirst;
         if (aParamRange > 0.0)
+        {
           aPCSplit = aOld.ParamFirst + ((theSplitParam - aOrigParamFirst) / aParamRange) * aPCRange;
+        }
         else
+        {
           aPCSplit = 0.5 * (aOld.ParamFirst + aOld.ParamLast);
+        }
       }
 
       const BRepGraph_CoEdgeId aNewA = aStorage.AppendCoEdge();
@@ -2182,7 +2306,9 @@ void BRepGraph::EditorView::EdgeOps::Split(const BRepGraph_EdgeId   theEdgeEntit
       aNewBCoEdgeIds.Append(aNewB);
       aIdxOf.Bind(aOldId, i);
       if (aOld.FaceDefId.IsValid())
+      {
         aOrigFaces.Append(aOld.FaceDefId);
+      }
     }
 
     // Step 3: re-establish SeamPairId linkage on new pairs. If the old
@@ -2195,7 +2321,9 @@ void BRepGraph::EditorView::EdgeOps::Split(const BRepGraph_EdgeId   theEdgeEntit
       const BRepGraph_CoEdgeId aOldId       = anOrigCoEdgeIds.Value(static_cast<size_t>(i));
       const BRepGraph_CoEdgeId aOldSeamPair = aStorage.CoEdge(aOldId).SeamPairId;
       if (!aOldSeamPair.IsValid() || !aIdxOf.IsBound(aOldSeamPair))
+      {
         continue;
+      }
       int aJ = -1;
       aIdxOf.Find(aOldSeamPair, aJ);
       aStorage.ChangeCoEdge(aNewACoEdgeIds.Value(static_cast<size_t>(i))).SeamPairId =
@@ -2232,11 +2360,15 @@ void BRepGraph::EditorView::EdgeOps::Split(const BRepGraph_EdgeId   theEdgeEntit
         // wire's list but is filtered out of any live walk. Split must not
         // revive them.
         if (aRefEnt.IsRemoved)
+        {
           continue;
+        }
         const BRepGraph_CoEdgeId aOldCEId = aRefEnt.CoEdgeDefId;
         int                      aJ       = -1;
         if (!aIdxOf.Find(aOldCEId, aJ))
+        {
           continue;
+        }
         const BRepGraph_CoEdgeId aNewA = aNewACoEdgeIds.Value(aJ);
         const BRepGraph_CoEdgeId aNewB = aNewBCoEdgeIds.Value(aJ);
         const TopLoc_Location    aLoc  = aStorage.CoEdgeRef(aRefId).LocalLocation;
@@ -2258,9 +2390,13 @@ void BRepGraph::EditorView::EdgeOps::Split(const BRepGraph_EdgeId   theEdgeEntit
         BRepGraphInc::WireDef& aWireEnt      = aStorage.ChangeWire(aWireId);
         auto&                  aCoEdgeRefIds = aWireEnt.CoEdgeRefIds;
         if (aPos < aCoEdgeRefIds.Size())
+        {
           aCoEdgeRefIds.InsertAfter(aPos, aNewRefId);
+        }
         else
+        {
           aCoEdgeRefIds.Append(aNewRefId);
+        }
         ++anInsertOffset;
 
         aRevIdx.UnbindCoEdgeFromWire(aOldCEId, aWireId);
@@ -2289,9 +2425,13 @@ void BRepGraph::EditorView::EdgeOps::Split(const BRepGraph_EdgeId   theEdgeEntit
     // SubA/SubB based on parameter - reparenting is a follow-up when a
     // caller surfaces that needs it.
     if (aOrigStartVertexRefId.IsValid())
+    {
       aStorage.MarkRemovedRef(aOrigStartVertexRefId);
+    }
     if (aOrigEndVertexRefId.IsValid())
+    {
       aStorage.MarkRemovedRef(aOrigEndVertexRefId);
+    }
     // Defensive retirement of internal vertex refs. No existing test
     // populates InternalVertexRefIds before a Split, so the loop is a
     // no-op under the current suite; it guards against orphan refs the
@@ -2305,7 +2445,9 @@ void BRepGraph::EditorView::EdgeOps::Split(const BRepGraph_EdgeId   theEdgeEntit
       {
         const BRepGraph_VertexRefId anIntRef = anIntRefIt.Value();
         if (anIntRef.IsValid())
+        {
           aStorage.MarkRemovedRef(anIntRef);
+        }
       }
     }
 
@@ -2336,33 +2478,45 @@ void BRepGraph::EditorView::EdgeOps::Split(const BRepGraph_EdgeId   theEdgeEntit
       const BRepGraph_VertexId aVtxId =
         aStorageRef.VertexRef(aSubAEnt.StartVertexRefId).VertexDefId;
       if (aVtxId.IsValid())
+      {
         aRevIdxMut.BindVertexToEdge(aVtxId, aSubAId);
+      }
     }
     if (aSubAEnt.EndVertexRefId.IsValid())
     {
       const BRepGraph_VertexId aVtxId = aStorageRef.VertexRef(aSubAEnt.EndVertexRefId).VertexDefId;
       if (aVtxId.IsValid())
+      {
         aRevIdxMut.BindVertexToEdge(aVtxId, aSubAId);
+      }
     }
     if (aSubBEnt.StartVertexRefId.IsValid())
     {
       const BRepGraph_VertexId aVtxId =
         aStorageRef.VertexRef(aSubBEnt.StartVertexRefId).VertexDefId;
       if (aVtxId.IsValid())
+      {
         aRevIdxMut.BindVertexToEdge(aVtxId, aSubBId);
+      }
     }
     if (aSubBEnt.EndVertexRefId.IsValid())
     {
       const BRepGraph_VertexId aVtxId = aStorageRef.VertexRef(aSubBEnt.EndVertexRefId).VertexDefId;
       if (aVtxId.IsValid())
+      {
         aRevIdxMut.BindVertexToEdge(aVtxId, aSubBId);
+      }
     }
 
     // Remove old edge from vertex-to-edge index.
     if (aOrigStartVertexDefId.IsValid())
+    {
       aRevIdxMut.UnbindVertexFromEdge(aOrigStartVertexDefId, BRepGraph_EdgeId(theEdgeEntity));
+    }
     if (aOrigEndVertexDefId.IsValid())
+    {
       aRevIdxMut.UnbindVertexFromEdge(aOrigEndVertexDefId, BRepGraph_EdgeId(theEdgeEntity));
+    }
 
     // Edge-to-face: unbind the original edge and bind both sub-edges for
     // each face the original edge touched. aOrigFaces was captured during
@@ -2412,7 +2566,9 @@ void BRepGraph::EditorView::WireOps::ReplaceEdge(const BRepGraph_WireId theWireD
     const BRepGraphInc::CoEdgeRef& aRef         = aStorage.CoEdgeRef(aRefIt.CurrentId());
     const BRepGraph_CoEdgeId       aCoEdgeDefId = aRef.CoEdgeDefId;
     if (!aCoEdgeDefId.IsValid(aStorage.NbCoEdges()))
+    {
       continue;
+    }
 
     BRepGraphInc::CoEdgeDef& aCoEdge = aStorage.ChangeCoEdge(aCoEdgeDefId);
     if (aCoEdge.EdgeDefId == theOldEdgeEntity)
@@ -2612,7 +2768,9 @@ bool BRepGraph::EditorView::ProductOps::RemoveShapeRoot(const BRepGraph_ProductI
   {
     const BRepGraphInc::OccurrenceRef& aOccRef = aStorage.OccurrenceRef(aRefId);
     if (aOccRef.IsRemoved)
+    {
       continue;
+    }
     const BRepGraphInc::OccurrenceDef& anOcc = aStorage.Occurrence(aOccRef.OccurrenceDefId);
     if (!anOcc.IsRemoved && BRepGraph_NodeId::IsTopologyKind(anOcc.ChildDefId.NodeKind))
     {
@@ -3180,7 +3338,9 @@ bool BRepGraph::EditorView::EdgeOps::RemoveVertex(const BRepGraph_EdgeId      th
     const BRepGraphInc::EdgeDef& anEdgeRO   = aStorage.Edge(theEdgeDefId);
     auto                         refTargets = [&](const BRepGraph_VertexRefId theRefId) {
       if (!theRefId.IsValid())
+      {
         return false;
+      }
       const BRepGraphInc::VertexRef& aVR = aStorage.VertexRef(theRefId);
       return !aVR.IsRemoved && aVR.VertexDefId == aVertexDefId;
     };
@@ -3367,7 +3527,9 @@ bool BRepGraph::EditorView::ValidateMutationBoundary(
     const int                    aCachedCnt  = cachedActiveByKind(aStorage, aKind);
     const int                    anActualCnt = countActiveByKind(*myGraph, aKind);
     if (aCachedCnt == anActualCnt)
+    {
       continue;
+    }
 
     isValid = false;
     if (theIssues != nullptr)

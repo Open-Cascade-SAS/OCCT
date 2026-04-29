@@ -400,9 +400,13 @@ static bool FindPoint(const gp_Pnt2d& theFirstPoint,
       anOtherVecNormal.SetY(0.);
 
       if (i < 2)
+      {
         aprojpoint.SetX(theUmin);
+      }
       else
+      {
         aprojpoint.SetX(theUmax);
+      }
     }
     else
     {
@@ -412,9 +416,13 @@ static bool FindPoint(const gp_Pnt2d& theFirstPoint,
       anOtherVecNormal.SetY(1.);
 
       if (i < 2)
+      {
         aprojpoint.SetY(theVmin);
+      }
       else
+      {
         aprojpoint.SetY(theVmax);
+      }
     }
     gp_Vec2d anormvec = aVec;
     anormvec.Normalize();
@@ -422,7 +430,9 @@ static bool FindPoint(const gp_Pnt2d& theFirstPoint,
     double adot1 = anormvec.Dot(anOtherVecNormal);
 
     if (fabs(adot1) < Precision::Angular())
+    {
       continue;
+    }
     double adist  = 0.;
     bool   bIsOut = false;
 
@@ -444,7 +454,9 @@ static bool FindPoint(const gp_Pnt2d& theFirstPoint,
       gp_Pnt2d acurpoint(aprojpoint.XY() + (anOtherVec.XY() * anoffset));
       gp_Vec2d acurvec(theLastPoint, acurpoint);
       if (bIsOut)
+      {
         acurvec.Reverse();
+      }
 
       double aDotX, anAngleX;
       //
@@ -648,10 +660,14 @@ bool IntTools_WLineTool::DecompositionOfWLine(
       int aneighbourindex = (j == 0) ? (i - 1) : (i + 1);
 
       if ((aneighbourindex < 1) || (aneighbourindex > nblines))
+      {
         continue;
+      }
 
       if (anArrayOfLineType.Value(aneighbourindex) == 0)
+      {
         continue;
+      }
       const NCollection_List<int>& aNeighbour = anArrayOfLines.Value(aneighbourindex);
       int                          anIndex    = (j == 0) ? aNeighbour.Last() : aNeighbour.First();
       const IntSurf_PntOn2S&       aPoint     = theWLine->Point(anIndex);
@@ -676,9 +692,13 @@ bool IntTools_WLineTool::DecompositionOfWLine(
         double U = 0., V = 0.;
 
         if (surfit == 0)
+        {
           aNewP.ParametersOnS1(U, V);
+        }
         else
+        {
           aNewP.ParametersOnS2(U, V);
+        }
         int nbboundaries = 0;
 
         bool bIsNearBoundary = false;
@@ -786,9 +806,13 @@ bool IntTools_WLineTool::DecompositionOfWLine(
             double                 nU1, nV1;
 
             if (surfit == 0)
+            {
               aNeighbourPoint.ParametersOnS1(nU1, nV1);
+            }
             else
+            {
               aNeighbourPoint.ParametersOnS2(nU1, nV1);
+            }
 
             double adist1   = (bIsUBoundary) ? fabs(nU1 - U) : fabs(nV1 - V);
             double adist2   = (bIsUBoundary) ? fabs(nU1 - anotherPar) : fabs(nV1 - anotherPar);
@@ -833,9 +857,13 @@ bool IntTools_WLineTool::DecompositionOfWLine(
                 double                 nU2, nV2;
 
                 if (surfit == 0)
+                {
                   aPrevNeighbourPoint.ParametersOnS1(nU2, nV2);
+                }
                 else
+                {
                   aPrevNeighbourPoint.ParametersOnS2(nU2, nV2);
+                }
                 gp_Vec2d aVecOld(gp_Pnt2d(nU2, nV2), gp_Pnt2d(nU1, nV1));
 
                 if (aVecOld.SquareMagnitude() <= gp::Resolution())
@@ -894,18 +922,26 @@ bool IntTools_WLineTool::DecompositionOfWLine(
             double u1, v1, u2, v2;
             aNewP.Parameters(u1, v1, u2, v2);
             if (surfit == 0)
+            {
               anewpoint = gp_Pnt2d(u1, v1);
+            }
             else
+            {
               anewpoint = gp_Pnt2d(u2, v2);
+            }
 
             int                    aneighbourpointindex1 = (j == 0) ? iFirst : iLast;
             const IntSurf_PntOn2S& aNeighbourPoint       = theWLine->Point(aneighbourpointindex1);
             double                 nU1, nV1;
 
             if (surfit == 0)
+            {
               aNeighbourPoint.ParametersOnS1(nU1, nV1);
+            }
             else
+            {
               aNeighbourPoint.ParametersOnS2(nU1, nV1);
+            }
             gp_Pnt2d ap1(nU1, nV1);
             gp_Pnt2d ap2;
 
@@ -933,9 +969,13 @@ bool IntTools_WLineTool::DecompositionOfWLine(
             double                 nU1, nV1;
 
             if (surfit == 0)
+            {
               aNeighbourPoint.ParametersOnS1(nU1, nV1);
+            }
             else
+            {
               aNeighbourPoint.ParametersOnS2(nU1, nV1);
+            }
             gp_Pnt2d ap1(nU1, nV1);
             gp_Pnt2d ap2(nU1, nV1);
             int      aneighbourpointindex2 = aneighbourpointindex1;
@@ -948,9 +988,13 @@ bool IntTools_WLineTool::DecompositionOfWLine(
               double                 nU2, nV2;
 
               if (surfit == 0)
+              {
                 aPrevNeighbourPoint.ParametersOnS1(nU2, nV2);
+              }
               else
+              {
                 aPrevNeighbourPoint.ParametersOnS2(nU2, nV2);
+              }
               ap2.SetX(nU2);
               ap2.SetY(nV2);
 
@@ -990,9 +1034,13 @@ bool IntTools_WLineTool::DecompositionOfWLine(
                 double                 nUn, nVn;
 
                 if (surfit == 0)
+                {
                   aNeighbourPoint.ParametersOnS2(nUn, nVn);
+                }
                 else
+                {
                   aNeighbourPoint.ParametersOnS1(nUn, nVn);
+                }
                 gp_Pnt2d aNeighbour2d(nUn, nVn);
                 gp_Pnt2d anAdjustedPoint =
                   AdjustByNeighbour(aNeighbour2d, gp_Pnt2d(foundU, foundV), aSurfaceOther);
@@ -1028,9 +1076,13 @@ bool IntTools_WLineTool::DecompositionOfWLine(
                 // Correction of projected coordinates. End
 
                 if (surfit == 0)
+                {
                   aNewP.SetValue(aP3d, anewpoint.X(), anewpoint.Y(), foundU, foundV);
+                }
                 else
+                {
                   aNewP.SetValue(aP3d, foundU, foundV, anewpoint.X(), anewpoint.Y());
+                }
               }
             }
           }
@@ -1162,7 +1214,9 @@ bool IntTools_WLineTool::DecompositionOfWLine(
         {
           pit = anIt.Value();
           if ((pit < ifprm) || (pit > ilprm))
+          {
             continue;
+          }
           const IntSurf_PntOn2S& aP = theWLine->Point(pit);
           aLineOn2S->Add(aP);
         }
@@ -1179,7 +1233,9 @@ bool IntTools_WLineTool::DecompositionOfWLine(
           {
             pit = anIt.Value();
             if (pit < ifprm)
+            {
               continue;
+            }
             const IntSurf_PntOn2S& aP = theWLine->Point(pit);
             aLineOn2S->Add(aP);
           }
@@ -1232,7 +1288,9 @@ bool IntTools_WLineTool::DecompositionOfWLine(
           {
             pit = anIt.Value();
             if (pit > ilprm)
+            {
               continue;
+            }
             const IntSurf_PntOn2S& aP = theWLine->Point(pit);
             aLineOn2S->Add(aP);
           }

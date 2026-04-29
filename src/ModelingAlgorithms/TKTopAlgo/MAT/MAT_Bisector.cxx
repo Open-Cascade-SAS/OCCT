@@ -175,23 +175,31 @@ void MAT_Bisector::Dump(const int ashift, const int alevel) const
   int i;
 
   for (i = 0; i < ashift; i++)
+  {
     std::cout << "  ";
-  std::cout << " BISECTOR : " << thebisectornumber << std::endl;
+  }
+  std::cout << " BISECTOR : " << thebisectornumber << '\n';
   for (i = 0; i < ashift; i++)
+  {
     std::cout << "  ";
-  std::cout << "   First edge     : " << thefirstedge->EdgeNumber() << std::endl;
+  }
+  std::cout << "   First edge     : " << thefirstedge->EdgeNumber() << '\n';
   for (i = 0; i < ashift; i++)
+  {
     std::cout << "  ";
-  std::cout << "   Second edge    : " << thesecondedge->EdgeNumber() << std::endl;
+  }
+  std::cout << "   Second edge    : " << thesecondedge->EdgeNumber() << '\n';
   for (i = 0; i < ashift; i++)
+  {
     std::cout << "  ";
+  }
   if (alevel)
   {
     if (!thelistofbisectors->More())
     {
-      std::cout << "   Bisectors List : " << std::endl;
+      std::cout << "   Bisectors List : " << '\n';
       thelistofbisectors->Dump(ashift + 1, 1);
     }
   }
-  std::cout << std::endl;
+  std::cout << '\n';
 }

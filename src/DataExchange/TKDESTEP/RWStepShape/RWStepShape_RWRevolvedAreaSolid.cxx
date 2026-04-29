@@ -31,7 +31,9 @@ void RWStepShape_RWRevolvedAreaSolid::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 4, ach, "revolved_area_solid"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

@@ -48,11 +48,17 @@ static int AboveInBelowCone(const gp_Circ& CMax, const gp_Circ& CMin, const gp_C
   const double D2 = CMin.Location().Distance(C.Location());
 
   if (D >= D1 && D >= D2)
+  {
     return 0;
+  }
   if (D < D2 && D1 < D2)
+  {
     return -1;
+  }
   if (D < D1 && D2 < D1)
+  {
     return 1;
+  }
 
   return 0;
 }
@@ -87,7 +93,9 @@ void DsgPrs_AnglePresentation::Add(const occ::handle<Prs3d_Presentation>& aPrese
   {
     IsConeTrimmed = true;
     if (AboveInBelowCone(VmaxCircle, VminCircle, myCircle) == 1)
+    {
       myCircle = VminCircle;
+    }
   }
 
   gp_Pnt P1 = ElCLib::Value(0., myCircle);
@@ -132,9 +140,13 @@ void DsgPrs_AnglePresentation::Add(const occ::handle<Prs3d_Presentation>& aPrese
   double OppParam = ElCLib::Parameter(aCircle2, OppositePnt);
 
   while (AttParam >= 2. * M_PI)
+  {
     AttParam -= 2. * M_PI;
+  }
   while (OppParam >= 2. * M_PI)
+  {
     OppParam -= 2. * M_PI;
+  }
 
   //-------------------------- Compute angle ------------------------
   if (txt.Length() == 0)
@@ -148,8 +160,11 @@ void DsgPrs_AnglePresentation::Add(const occ::handle<Prs3d_Presentation>& aPrese
 
   bool IsArrowOut = true; // Is arrows inside or outside of the cone
   if (ElCLib::Parameter(aCircle2, tmpPnt) < OppParam)
+  {
     // clang-format off
-    if( 2. * myCircle.Radius() > 4. * myArrowSize ) IsArrowOut = false;  //four times more than an arrow size
+    if( 2. * myCircle.Radius() > 4. * myArrowSize ) { IsArrowOut = false;  //four times more than an arrow size
+}
+}
   // clang-format on
 
   double angle = OppParam - AttParam;
@@ -168,11 +183,15 @@ void DsgPrs_AnglePresentation::Add(const occ::handle<Prs3d_Presentation>& aPrese
   }
 
   while (angle > 2. * M_PI)
+  {
     angle -= 2. * M_PI;
+  }
 
   occ::handle<Graphic3d_ArrayOfPrimitives> aPrims = new Graphic3d_ArrayOfPolylines(12);
   for (i = 0; i <= 11; i++)
+  {
     aPrims->AddVertex(ElCLib::Value(param + angle / 11 * i, aCircle2));
+  }
   aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
   DsgPrs::ComputeSymbol(aPresentation,
@@ -199,10 +218,14 @@ void DsgPrs_AnglePresentation::Add(const occ::handle<Prs3d_Presentation>& aPrese
   if (param > OppParam)
   {
     while (angle > 2. * M_PI)
+    {
       angle -= 2. * M_PI;
+    }
     aPrims = new Graphic3d_ArrayOfPolylines(12);
     for (i = 11; i >= 0; i--)
+    {
       aPrims->AddVertex(ElCLib::Value(-angle / 11 * i, aCircle2));
+    }
     aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
   }
 
@@ -217,7 +240,9 @@ void DsgPrs_AnglePresentation::Add(const occ::handle<Prs3d_Presentation>& aPrese
   {
     aPnt = OppositePnt;
     if (AboveInBelowCone(VmaxCircle, VminCircle, myCircle) == 0)
+    {
       return;
+    }
 
     gp_Pnt P11 = ElCLib::Value(0., VmaxCircle);
     gp_Pnt P12 = ElCLib::Value(M_PI, VmaxCircle);
@@ -301,13 +326,17 @@ void DsgPrs_AnglePresentation::Add(const occ::handle<Prs3d_Presentation>& aPrese
   occ::handle<Graphic3d_ArrayOfPolylines> aPrims = new Graphic3d_ArrayOfPolylines(nbp + 4, 3);
   aPrims->AddBound(nbp);
   for (int i = 1; i <= nbp; i++)
+  {
     aPrims->AddVertex(ElCLib::Value(udeb + dteta * (i - 1), cer));
+  }
 
   Prs3d_Text::Draw(aGroup, LA->TextAspect(), aText, OffsetPoint);
 
   double length = LA->ArrowAspect()->Length();
   if (length < Precision::Confusion())
+  {
     length = 1.e-04;
+  }
 
   gp_Vec vecarr;
   gp_Pnt ptarr;
@@ -408,7 +437,9 @@ void DsgPrs_AnglePresentation::Add(const occ::handle<Prs3d_Presentation>& aPrese
     aPrims = new Graphic3d_ArrayOfPolylines(NodeNumber + 4, 3);
     aPrims->AddBound(NodeNumber);
     for (int i = 0; i < NodeNumber; i++, FirstParAngleCirc += delta)
+    {
       aPrims->AddVertex(ElCLib::Value(FirstParAngleCirc, AngleCirc));
+    }
 
     aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
     aPrims = new Graphic3d_ArrayOfSegments(4);
@@ -460,7 +491,9 @@ void DsgPrs_AnglePresentation::Add(const occ::handle<Prs3d_Presentation>& aPrese
 
       aPrims = new Graphic3d_ArrayOfPolylines(NodeNumber);
       for (int i = 0; i < NodeNumber; i++, FirstParAttachCirc += delta)
+      {
         aPrims->AddVertex(ElCLib::Value(FirstParAttachCirc, AttachCirc));
+      }
     }
     aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
   }
@@ -497,7 +530,9 @@ void DsgPrs_AnglePresentation::Add(const occ::handle<Prs3d_Presentation>& aPrese
   }
 
   if (std::abs(theval) > M_PI)
+  {
     Norm.Reverse();
+  }
 
   gp_Ax2  ax(CenterPoint, Norm, dir1);
   gp_Circ cer(ax, CenterPoint.Distance(OffsetPoint));
@@ -548,13 +583,17 @@ void DsgPrs_AnglePresentation::Add(const occ::handle<Prs3d_Presentation>& aPrese
   occ::handle<Graphic3d_ArrayOfPolylines> aPrims = new Graphic3d_ArrayOfPolylines(nbp + 4, 3);
   aPrims->AddBound(nbp);
   for (int i = 1; i <= nbp; i++)
+  {
     aPrims->AddVertex(ElCLib::Value(udeb + dteta * (i - 1), cer));
+  }
 
   Prs3d_Text::Draw(aPresentation->CurrentGroup(), LA->TextAspect(), aText, OffsetPoint);
 
   double length = LA->ArrowAspect()->Length();
   if (length < Precision::Confusion())
+  {
     length = 1.e-04;
+  }
 
   gp_Vec vecarr;
   gp_Pnt ptarr;
@@ -623,7 +662,9 @@ void DsgPrs_AnglePresentation::Add(const occ::handle<Prs3d_Presentation>& aPrese
 
   gp_Dir Norm = dir1.Crossed(dir2);
   if (std::abs(theval) > M_PI)
+  {
     Norm.Reverse();
+  }
 
   gp_Ax2  ax(CenterPoint, Norm, dir1);
   gp_Circ cer(ax, CenterPoint.Distance(OffsetPoint));
@@ -674,13 +715,17 @@ void DsgPrs_AnglePresentation::Add(const occ::handle<Prs3d_Presentation>& aPrese
   occ::handle<Graphic3d_ArrayOfPolylines> aPrims = new Graphic3d_ArrayOfPolylines(nbp + 4, 3);
   aPrims->AddBound(nbp);
   for (int i = 1; i <= nbp; i++)
+  {
     aPrims->AddVertex(ElCLib::Value(udeb + dteta * (i - 1), cer));
+  }
 
   Prs3d_Text::Draw(aPresentation->CurrentGroup(), LA->TextAspect(), aText, OffsetPoint);
 
   double length = LA->ArrowAspect()->Length();
   if (length < Precision::Confusion())
+  {
     length = 1.e-04;
+  }
 
   // Lines of recall
   gp_Vec vecarr;
@@ -742,7 +787,9 @@ void DsgPrs_AnglePresentation::Add(const occ::handle<Prs3d_Presentation>& aPrese
 
   gp_Dir Norm = dir1.Crossed(dir2);
   if (std::abs(theval) > M_PI)
+  {
     Norm.Reverse();
+  }
 
   gp_Ax2  ax(CenterPoint, Norm, dir1);
   gp_Circ cer(ax, CenterPoint.Distance(OffsetPoint));
@@ -793,13 +840,17 @@ void DsgPrs_AnglePresentation::Add(const occ::handle<Prs3d_Presentation>& aPrese
   occ::handle<Graphic3d_ArrayOfPolylines> aPrims = new Graphic3d_ArrayOfPolylines(nbp + 4, 3);
   aPrims->AddBound(nbp);
   for (int i = 1; i <= nbp; i++)
+  {
     aPrims->AddVertex(ElCLib::Value(udeb + dteta * (i - 1), cer));
+  }
 
   Prs3d_Text::Draw(aPresentation->CurrentGroup(), LA->TextAspect(), aText, OffsetPoint);
 
   double length = LA->ArrowAspect()->Length();
   if (length < Precision::Confusion())
+  {
     length = 1.e-04;
+  }
 
   gp_Vec vecarr;
   gp_Pnt ptarr;
@@ -864,7 +915,9 @@ void DsgPrs_AnglePresentation::Add(const occ::handle<Prs3d_Presentation>& aPrese
 
   occ::handle<Graphic3d_ArrayOfPolylines> aPrims = new Graphic3d_ArrayOfPolylines(nbp);
   for (int i = 1; i <= nbp; i++)
+  {
     aPrims->AddVertex(ElCLib::Value(dteta * (i - 1), cer));
+  }
   aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
   double uc1 = 0.;
@@ -872,7 +925,9 @@ void DsgPrs_AnglePresentation::Add(const occ::handle<Prs3d_Presentation>& aPrese
 
   double length = LA->ArrowAspect()->Length();
   if (length < Precision::Confusion())
+  {
     length = 1.e-04;
+  }
 
   gp_Vec vecarr;
   gp_Pnt ptarr;

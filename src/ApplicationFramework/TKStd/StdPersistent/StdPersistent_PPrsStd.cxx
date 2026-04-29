@@ -22,27 +22,45 @@ void StdPersistent_PPrsStd::AISPresentation::Import(
 
   occ::handle<TCollection_HExtendedString> aDriverGUID = myDriverGUID->ExtString();
   if (aDriverGUID)
+  {
     theAttribute->SetDriverGUID(Standard_GUID(aDriverGUID->String().ToExtString()));
+  }
 
   if (myColor != -1)
+  {
     theAttribute->SetColor(static_cast<Quantity_NameOfColor>((int)myColor));
+  }
   else
+  {
     theAttribute->UnsetColor();
+  }
 
   if (myMaterial != -1)
+  {
     theAttribute->SetMaterialIndex(myMaterial);
+  }
   else
+  {
     theAttribute->UnsetMaterial();
+  }
 
   if (myTransparency != -1.)
+  {
     theAttribute->SetTransparency(myTransparency);
+  }
   else
+  {
     theAttribute->UnsetTransparency();
+  }
 
   if (myWidth != -1.)
+  {
     theAttribute->SetWidth(myWidth);
+  }
   else
+  {
     theAttribute->UnsetWidth();
+  }
 }
 
 //=================================================================================================

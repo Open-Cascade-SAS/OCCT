@@ -31,7 +31,9 @@ void RWStepGeom_RWDirection::ReadStep(const occ::handle<StepData_StepReaderData>
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "direction"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -63,9 +65,13 @@ void RWStepGeom_RWDirection::ReadStep(const occ::handle<StepData_StepReaderData>
 
   //--- Initialisation of the read entity ---
   if (aNbCoord == 3)
+  {
     ent->Init3D(aName, aXYZ[0], aXYZ[1], aXYZ[2]);
+  }
   else
+  {
     ent->Init2D(aName, aXYZ[0], aXYZ[1]);
+  }
 }
 
 void RWStepGeom_RWDirection::WriteStep(StepData_StepWriter&                   SW,
@@ -95,8 +101,12 @@ void RWStepGeom_RWDirection::Check(const occ::handle<StepGeom_Direction>& ent,
   for (i = 1; i <= nbVal; i++)
   {
     if (std::abs(ent->DirectionRatiosValue(i)) >= RealEpsilon())
+    {
       break;
+    }
   }
   if (i > nbVal)
+  {
     ach->AddFail("ERROR: DirectionRatios all 0.0");
+  }
 }

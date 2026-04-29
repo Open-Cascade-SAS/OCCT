@@ -54,7 +54,9 @@ AIS_ExclusionFilter::AIS_ExclusionFilter(const AIS_KindOfInteractive TypeToExclu
 bool AIS_ExclusionFilter::Add(const AIS_KindOfInteractive TypeToExclude)
 {
   if (IsStored(TypeToExclude))
+  {
     return false;
+  }
   NCollection_List<int> L;
   myStoredTypes.Bind((int)TypeToExclude, L);
   return true;
@@ -79,7 +81,9 @@ bool AIS_ExclusionFilter::Add(const AIS_KindOfInteractive TypeToExclude, const i
 bool AIS_ExclusionFilter::Remove(const AIS_KindOfInteractive TypeToExclude)
 {
   if (!IsStored(TypeToExclude))
+  {
     return false;
+  }
   myStoredTypes((int)TypeToExclude).Clear();
   myStoredTypes.UnBind((int)TypeToExclude);
   return true;
@@ -89,7 +93,9 @@ bool AIS_ExclusionFilter::Remove(const AIS_KindOfInteractive TypeToExclude,
                                  const int                   SignatureInType)
 {
   if (!IsStored(TypeToExclude))
+  {
     return false;
+  }
   NCollection_List<int>& LL = myStoredTypes.ChangeFind((int)TypeToExclude);
   for (NCollection_List<int>::Iterator it(LL); it.More(); it.Next())
   {
@@ -108,7 +114,9 @@ void AIS_ExclusionFilter::Clear()
 {
   NCollection_DataMap<int, NCollection_List<int>>::Iterator Mit(myStoredTypes);
   for (; Mit.More(); Mit.Next())
+  {
     myStoredTypes.ChangeFind(Mit.Key()).Clear();
+  }
   myStoredTypes.Clear();
 }
 
@@ -125,11 +133,15 @@ bool AIS_ExclusionFilter::IsSignatureIn(const AIS_KindOfInteractive aType,
                                         const int                   SignatureInType) const
 {
   if (!myStoredTypes.IsBound(aType))
+  {
     return false;
+  }
   for (NCollection_List<int>::Iterator Lit(myStoredTypes((int)aType)); Lit.More(); Lit.Next())
   {
     if (Lit.Value() == SignatureInType)
+    {
       return true;
+    }
   }
   return false;
 }
@@ -141,7 +153,9 @@ void AIS_ExclusionFilter::ListOfStoredTypes(NCollection_List<int>& TheList) cons
   TheList.Clear();
   NCollection_DataMap<int, NCollection_List<int>>::Iterator MIT(myStoredTypes);
   for (; MIT.More(); MIT.Next())
+  {
     TheList.Append(MIT.Key());
+  }
 }
 
 //=================================================================================================
@@ -151,8 +165,12 @@ void AIS_ExclusionFilter::ListOfSignature(const AIS_KindOfInteractive aType,
 {
   TheStoredList.Clear();
   if (IsStored(aType))
+  {
     for (NCollection_List<int>::Iterator it(myStoredTypes(aType)); it.More(); it.Next())
+    {
       TheStoredList.Append(it.Value());
+    }
+  }
 }
 
 //=================================================================================================
@@ -160,23 +178,35 @@ void AIS_ExclusionFilter::ListOfSignature(const AIS_KindOfInteractive aType,
 bool AIS_ExclusionFilter::IsOk(const occ::handle<SelectMgr_EntityOwner>& EO) const
 {
   if (myStoredTypes.IsEmpty())
+  {
     return myIsExclusionFlagOn;
+  }
 
   if (EO.IsNull())
+  {
     return false;
+  }
   occ::handle<AIS_InteractiveObject> IO = occ::down_cast<AIS_InteractiveObject>(EO->Selectable());
   if (IO.IsNull())
+  {
     return false;
+  }
 
   // type of AIS is not in the map...
   if (!myStoredTypes.IsBound(IO->Type()))
+  {
     return myIsExclusionFlagOn;
+  }
   // type of AIS is not in the map and there is no signature indicated
   if (myStoredTypes(IO->Type()).IsEmpty())
+  {
     return !myIsExclusionFlagOn;
+  }
   // one or several signatures are indicated...
   if (IsSignatureIn(IO->Type(), IO->Signature()))
+  {
     return !myIsExclusionFlagOn;
+  }
 
   return myIsExclusionFlagOn;
 }

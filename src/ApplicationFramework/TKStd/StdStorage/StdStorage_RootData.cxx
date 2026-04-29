@@ -177,7 +177,9 @@ void StdStorage_RootData::RemoveRoot(const TCollection_AsciiString& aName)
            anIt(myObjects);
          anIt.More();
          anIt.Next(), ++aRef)
+    {
       anIt.ChangeValue()->myRef = aRef;
+    }
   }
 }
 
@@ -187,7 +189,9 @@ void StdStorage_RootData::Clear()
          anIt(myObjects);
        anIt.More();
        anIt.Next())
+  {
     anIt.ChangeValue()->myRef = 0;
+  }
 
   myObjects.Clear();
 }

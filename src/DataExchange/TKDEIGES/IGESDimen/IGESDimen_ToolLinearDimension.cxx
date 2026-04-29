@@ -140,11 +140,17 @@ void IGESDimen_ToolLinearDimension::OwnDump(const occ::handle<IGESDimen_LinearDi
 
   S << "IGESDimen_LinearDimension\n";
   if (ent->FormNumber() == 0)
+  {
     S << "     (Undetermined Form)\n";
+  }
   else if (ent->FormNumber() == 1)
+  {
     S << "     (Diameter Form)\n";
+  }
   else if (ent->FormNumber() == 2)
+  {
     S << "     (Radius Form)\n";
+  }
   S << "General Note Entity : ";
   dumper.Dump(ent->Note(), S, sublevel);
   S << "\n"
@@ -159,5 +165,5 @@ void IGESDimen_ToolLinearDimension::OwnDump(const occ::handle<IGESDimen_LinearDi
   S << "\n"
     << "Second Witness Entity : ";
   dumper.Dump(ent->SecondWitness(), S, sublevel);
-  S << std::endl;
+  S << '\n';
 }

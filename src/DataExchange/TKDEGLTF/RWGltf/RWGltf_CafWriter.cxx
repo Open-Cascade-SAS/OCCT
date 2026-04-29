@@ -2474,7 +2474,9 @@ void RWGltf_CafWriter::writeExtrasAttributes(const occ::handle<TDataStd_NamedDat
                                  "Internal error: RWGltf_CafWriter::writeExtrasAttributes()");
 
   if (theNamedData.IsNull())
+  {
     return;
+  }
   theNamedData->LoadDeferredData();
   if (theNamedData->HasIntegers())
   {

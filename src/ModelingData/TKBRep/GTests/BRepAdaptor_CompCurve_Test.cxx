@@ -104,9 +104,13 @@ TEST(BRepAdaptor_CompCurve_Test, OCC29430_ArcBoundaryPoints)
   for (const gp_Pnt& aV : aVertices)
   {
     if (aStartPt.Distance(aV) < 1.0e-7)
+    {
       aStartMatchesAnyVertex = true;
+    }
     if (anEndPt.Distance(aV) < 1.0e-7)
+    {
       anEndMatchesAnyVertex = true;
+    }
   }
   EXPECT_TRUE(aStartMatchesAnyVertex) << "Start point does not match any wire vertex";
   EXPECT_TRUE(anEndMatchesAnyVertex) << "End point does not match any wire vertex";
@@ -143,9 +147,13 @@ TEST(BRepAdaptor_CompCurve_Test, OCC30869_ReversedEdgeBoundaryPoints)
   aBACC.D1(aLast, aPLast, aVLast);
 
   if (aVFirst.SquareMagnitude() > gp::Resolution())
+  {
     aVFirst.Normalize();
+  }
   if (aVLast.SquareMagnitude() > gp::Resolution())
+  {
     aVLast.Normalize();
+  }
 
   // Reference: inverse circle (normal = (0,1,0)), evaluated at the same parameters
   const gp_Ax2        anAx2Ref(gp_Pnt(1., 0., 0.), gp_Dir(0., 1., 0.), gp_Dir(0., 0., -1.));
@@ -156,9 +164,13 @@ TEST(BRepAdaptor_CompCurve_Test, OCC30869_ReversedEdgeBoundaryPoints)
   aCircleRef->D1(t1, aRefP1, aRefV1);
   aCircleRef->D1(t2, aRefP2, aRefV2);
   if (aRefV1.SquareMagnitude() > gp::Resolution())
+  {
     aRefV1.Normalize();
+  }
   if (aRefV2.SquareMagnitude() > gp::Resolution())
+  {
     aRefV2.Normalize();
+  }
 
   const double aTol = 1.e-7;
   EXPECT_NEAR(aPFirst.X(), aRefP1.X(), aTol) << "First point X";

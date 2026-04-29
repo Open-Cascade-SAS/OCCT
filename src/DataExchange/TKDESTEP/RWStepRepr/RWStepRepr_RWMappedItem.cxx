@@ -30,7 +30,9 @@ void RWStepRepr_RWMappedItem::ReadStep(const occ::handle<StepData_StepReaderData
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "mapped_item"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

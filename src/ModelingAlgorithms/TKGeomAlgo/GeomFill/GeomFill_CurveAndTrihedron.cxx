@@ -77,9 +77,15 @@ void GeomFill_CurveAndTrihedron::SetTrsf(const gp_Mat& Transfo)
   Aux -= Trans;
   WithTrans = false; // Au cas ou Trans = I
   for (int ii = 1; ii <= 3 && !WithTrans; ii++)
+  {
     for (int jj = 1; jj <= 3 && !WithTrans; jj++)
+    {
       if (std::abs(Aux.Value(ii, jj)) > 1.e-14)
+      {
         WithTrans = true;
+      }
+    }
+  }
 }
 
 //=================================================================================================
@@ -239,7 +245,9 @@ void GeomFill_CurveAndTrihedron::Intervals(NCollection_Array1<double>& T,
 
   GeomLib::FuseIntervals(IntC, IntL, Inter, Precision::PConfusion() * 0.99);
   for (int ii = 1; ii <= Inter.Length(); ii++)
+  {
     T(ii) = Inter(ii);
+  }
 }
 
 //=================================================================================================

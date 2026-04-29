@@ -157,7 +157,9 @@ void BRepFill_ShapeLaw::Init(const bool Build)
 
           bool IsClosed = BRep_Tool::IsClosed(E);
           if (IsClosed && std::abs(C->FirstParameter() - First) > Precision::PConfusion())
+          {
             IsClosed = false; // trimmed curve differs
+          }
 
           if ((ii > 1) || !IsClosed)
           { // Trim C
@@ -249,17 +251,25 @@ TopoDS_Vertex BRepFill_ShapeLaw::Vertex(const int Index, const double Param) con
   {
     E = TopoDS::Edge(myEdges->Value(Index));
     if (E.Orientation() == TopAbs_REVERSED)
+    {
       V = TopExp::LastVertex(E);
+    }
     else
+    {
       V = TopExp::FirstVertex(E);
+    }
   }
   else if (Index == myEdges->Length() + 1)
   {
     E = TopoDS::Edge(myEdges->Value(Index - 1));
     if (E.Orientation() == TopAbs_REVERSED)
+    {
       V = TopExp::FirstVertex(E);
+    }
     else
+    {
       V = TopExp::LastVertex(E);
+    }
   }
 
   if (!TheLaw.IsNull())
@@ -284,7 +294,9 @@ double BRepFill_ShapeLaw::VertexTol(const int Index, const double Param) const
   if ((Index == 0) || (Index == myEdges->Length()))
   {
     if (!uclosed)
+    {
       return Tol; // The least possible error
+    }
     I1 = myEdges->Length();
     I2 = 1;
   }
@@ -344,7 +356,9 @@ occ::handle<GeomFill_SectionLaw> BRepFill_ShapeLaw::ConcatenedLaw() const
 {
   occ::handle<GeomFill_SectionLaw> Law;
   if (myLaws->Length() == 1)
+  {
     return myLaws->Value(1);
+  }
   else
   {
     TopoDS_Wire   W;
@@ -372,10 +386,14 @@ occ::handle<GeomFill_SectionLaw> BRepFill_ShapeLaw::ConcatenedLaw() const
           epsV = BRep_Tool::Tolerance(V);
         }
         else
+        {
           epsV = 10 * Precision::PConfusion();
+        }
         Bof = Concat.Add(TC, epsV, true, false, 20);
         if (!Bof)
+        {
           Bof = Concat.Add(TC, 200 * epsV, true, false, 20);
+        }
 #ifdef OCCT_DEBUG
         if (!Bof)
           std::cout << "BRepFill_ShapeLaw::ConcatenedLaw INCOMPLET !!!" << std::endl;
@@ -405,7 +423,9 @@ GeomAbs_Shape BRepFill_ShapeLaw::Continuity(const int Index, const double TolAng
   if ((Index == 0) || (Index == myEdges->Length()))
   {
     if (!uclosed)
+    {
       return GeomAbs_C0; // The least possible error
+    }
 
     Edge1 = TopoDS::Edge(myEdges->Value(myEdges->Length()));
     Edge2 = TopoDS::Edge(myEdges->Value(1));

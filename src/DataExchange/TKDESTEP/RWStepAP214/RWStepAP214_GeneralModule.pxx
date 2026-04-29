@@ -62,12 +62,12 @@ public:
 
   Standard_HIDDEN bool NewVoid(const int CN, occ::handle<Standard_Transient>& ent) const override;
 
-  Standard_HIDDEN virtual int CategoryNumber(const int                              CN,
-                                             const occ::handle<Standard_Transient>& ent,
-                                             const Interface_ShareTool& shares) const override;
+  Standard_HIDDEN int CategoryNumber(const int                              CN,
+                                     const occ::handle<Standard_Transient>& ent,
+                                     const Interface_ShareTool&             shares) const override;
 
   //! Returns the name of a STEP Entity according to its type
-  Standard_HIDDEN virtual occ::handle<TCollection_HAsciiString> Name(
+  Standard_HIDDEN occ::handle<TCollection_HAsciiString> Name(
     const int                              CN,
     const occ::handle<Standard_Transient>& ent,
     const Interface_ShareTool&             shares) const override;

@@ -98,7 +98,9 @@ GeomToStep_MakeCurve::GeomToStep_MakeCurve(const occ::handle<Geom_Curve>& C,
     theCurve = MkBoundedC.Value();
   }
   else
+  {
     done = false;
+  }
 }
 
 //=============================================================================
@@ -188,7 +190,9 @@ GeomToStep_MakeCurve::GeomToStep_MakeCurve(const occ::handle<Geom2d_Curve>& C,
     theCurve = aMaker.Value();
   }
   else
+  {
     done = false;
+  }
 }
 
 //=============================================================================

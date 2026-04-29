@@ -124,7 +124,9 @@ void IGESGeom_ToolSplineCurve::ReadOwnParams(const occ::handle<IGESGeom_SplineCu
       {
         int J;
         for (J = 1; J <= 4; J++)
+        {
           allXPolynomials->SetValue(I, J, temp->Value(J));
+        }
       }
 
       // st = PR.ReadReals(PR.CurrentList(4),"Y-Coordinate Polynomial",temp); //szv#4:S4163:12Mar99
@@ -133,7 +135,9 @@ void IGESGeom_ToolSplineCurve::ReadOwnParams(const occ::handle<IGESGeom_SplineCu
       {
         int J;
         for (J = 1; J <= 4; J++)
+        {
           allYPolynomials->SetValue(I, J, temp->Value(J));
+        }
       }
 
       // st = PR.ReadReals(PR.CurrentList(4),"Z-Coordinate Polynomial",temp); //szv#4:S4163:12Mar99
@@ -142,7 +146,9 @@ void IGESGeom_ToolSplineCurve::ReadOwnParams(const occ::handle<IGESGeom_SplineCu
       {
         int J;
         for (J = 1; J <= 4; J++)
+        {
           allZPolynomials->SetValue(I, J, temp->Value(J));
+        }
       }
     }
   }
@@ -153,7 +159,9 @@ void IGESGeom_ToolSplineCurve::ReadOwnParams(const occ::handle<IGESGeom_SplineCu
   {
     int J;
     for (J = 1; J <= 4; J++)
+    {
       allXvalues->SetValue(J, temp->Value(J));
+    }
   }
 
   // st = PR.ReadReals(PR.CurrentList(4), "TerminatePoint Y-Values", temp); //szv#4:S4163:12Mar99
@@ -162,7 +170,9 @@ void IGESGeom_ToolSplineCurve::ReadOwnParams(const occ::handle<IGESGeom_SplineCu
   {
     int J;
     for (J = 1; J <= 4; J++)
+    {
       allYvalues->SetValue(J, temp->Value(J));
+    }
   }
 
   // st = PR.ReadReals(PR.CurrentList(4), "TerminatePoint Z-Values", temp); //szv#4:S4163:12Mar99
@@ -171,14 +181,18 @@ void IGESGeom_ToolSplineCurve::ReadOwnParams(const occ::handle<IGESGeom_SplineCu
   {
     int J;
     for (J = 1; J <= 4; J++)
+    {
       allZvalues->SetValue(J, temp->Value(J));
+    }
   }
 
   // sln 28.09.2001, BUC61004, If the condition is true function ent->Init is not called in order to
   // avoid exception
   if (allBreakPoints.IsNull() || allXPolynomials.IsNull() || allYPolynomials.IsNull()
       || allZPolynomials.IsNull())
+  {
     return;
+  }
   else
   {
     DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
@@ -206,7 +220,9 @@ void IGESGeom_ToolSplineCurve::WriteOwnParams(const occ::handle<IGESGeom_SplineC
 
   int I;
   for (I = 1; I <= nbSegments + 1; I++)
+  {
     IW.Send(ent->BreakPoint(I));
+  }
   double AX, BX, CX, DX, AY, BY, CY, DY, AZ, BZ, CZ, DZ;
   for (I = 1; I <= nbSegments; I++)
   {
@@ -264,7 +280,9 @@ void IGESGeom_ToolSplineCurve::OwnCopy(const occ::handle<IGESGeom_SplineCurve>& 
   occ::handle<NCollection_HArray1<double>> allBreakPoints =
     new NCollection_HArray1<double>(1, nbSegments + 1);
   for (I = 1; I <= (nbSegments + 1); I++)
+  {
     allBreakPoints->SetValue(I, another->BreakPoint(I));
+  }
 
   occ::handle<NCollection_HArray2<double>> allXPolynomials =
     new NCollection_HArray2<double>(1, nbSegments, 1, 4);
@@ -415,7 +433,7 @@ void IGESGeom_ToolSplineCurve::OwnDump(const occ::handle<IGESGeom_SplineCurve>& 
   IGESData_DumpVals(S, level, 1, nbSegments + 1, ent->BreakPoint);
   if (level <= 4)
   {
-    S << " [ also ask level > 4 for X-Y-Z Polynomials ]" << std::endl;
+    S << " [ also ask level > 4 for X-Y-Z Polynomials ]" << '\n';
     return;
   }
   S << "  --  Polynomial  Values  --\n";
@@ -440,5 +458,5 @@ void IGESGeom_ToolSplineCurve::OwnDump(const occ::handle<IGESGeom_SplineCurve>& 
     << " Value        	" << AX << "	" << AY << "	" << AZ << "\n"
     << " 1st Derivative	" << BX << "	" << BY << "	" << BZ << "\n"
     << " 2nd Der./2!   	" << CX << "	" << CY << "	" << CZ << "\n"
-    << " 3rd Der./3!   	" << DX << "	" << DY << "	" << DZ << std::endl;
+    << " 3rd Der./3!   	" << DX << "	" << DY << "	" << DZ << '\n';
 }

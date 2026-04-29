@@ -36,7 +36,9 @@ void RWStepBasic_RWDocumentFile::ReadStep(const occ::handle<StepData_StepReaderD
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 6, ach, "document_file"))
+  {
     return;
+  }
 
   // Inherited fields of Document
 
@@ -113,7 +115,9 @@ void RWStepBasic_RWDocumentFile::WriteStep(StepData_StepWriter&                 
     SW.Send(ent->StepBasic_Document::Description());
   }
   else
+  {
     SW.SendUndef();
+  }
 
   SW.Send(ent->StepBasic_Document::Kind());
 
@@ -126,7 +130,9 @@ void RWStepBasic_RWDocumentFile::WriteStep(StepData_StepWriter&                 
     SW.Send(ent->CharacterizedObject()->Description());
   }
   else
+  {
     SW.SendUndef();
+  }
 }
 
 //=================================================================================================

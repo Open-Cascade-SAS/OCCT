@@ -155,16 +155,24 @@ Convert_TorusToBSplineSurface::Convert_TorusToBSplineSurface(const gp_Torus& T,
   for (i = 1; i <= myNbUPoles; i++)
   {
     if (i % 2 == 0)
+    {
       W1 = std::cos(AlfaU);
+    }
     else
+    {
       W1 = 1.;
+    }
 
     for (j = 1; j <= myNbVPoles; j++)
     {
       if (j % 2 == 0)
+      {
         W2 = std::cos(AlfaV);
+      }
       else
+      {
         W2 = 1.;
+      }
 
       myWeights(i, j) = W1 * W2;
       myPoles(i, j).Transform(Trsf);
@@ -270,16 +278,24 @@ Convert_TorusToBSplineSurface::Convert_TorusToBSplineSurface(const gp_Torus& T,
   for (i = 1; i <= myNbUPoles; i++)
   {
     if (i % 2 == 0)
+    {
       W1 = CosU;
+    }
     else
+    {
       W1 = 1.;
+    }
 
     for (j = 1; j <= myNbVPoles; j++)
     {
       if (j % 2 == 0)
+      {
         W2 = CosV;
+      }
       else
+      {
         W2 = 1.;
+      }
 
       myWeights(i, j) = W1 * W2;
       myPoles(i, j).Transform(Trsf);
@@ -333,16 +349,24 @@ Convert_TorusToBSplineSurface::Convert_TorusToBSplineSurface(const gp_Torus& T)
   for (i = 1; i <= myNbUPoles; i++)
   {
     if (i % 2 == 0)
+    {
       W1 = 0.5;
+    }
     else
+    {
       W1 = 1.;
+    }
 
     for (j = 1; j <= myNbVPoles; j++)
     {
       if (j % 2 == 0)
+      {
         W2 = 0.5;
+      }
       else
+      {
         W2 = 1.;
+      }
 
       myWeights(i, j) = W1 * W2;
       myPoles(i, j).Transform(Trsf);

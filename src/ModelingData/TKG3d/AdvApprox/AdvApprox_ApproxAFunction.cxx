@@ -156,7 +156,9 @@ static void PrepareConvert(const int                         NumCurves,
   // Init
   Continuity.Init(0);
   if (ContinuityOrder == 0)
+  {
     return;
+  }
 
   for (icurve = 1; icurve < NumCurves; icurve++)
   {
@@ -194,17 +196,21 @@ static void PrepareConvert(const int                         NumCurves,
       double f2_divizor  = TrueIntervals(icurve + 2) - TrueIntervals(icurve + 1);
       double fract1, fract2;
 
-      if (std::abs(f1_divizor) < Toler) // this is to avoid divizion by zero
+      if (std::abs(f1_divizor) < Toler)
+      { // this is to avoid divizion by zero
         // in this case fract1 =  5.14755758946803e-85
         facteur1 = 0.0;
+      }
       else
       {
         fract1   = f1_dividend / f1_divizor;
         facteur1 = std::pow(fract1, iordre);
       }
       if (std::abs(f2_divizor) < Toler)
+      {
         // in this case fract2 =  6.77193633669143e-313
         facteur2 = 0.0;
+      }
       else
       {
         fract2   = f2_dividend / f2_divizor;
@@ -229,7 +235,9 @@ static void PrepareConvert(const int                         NumCurves,
           Suivant(idim) = diff * normal2;
           // And a second check on the upper bound of the generated error
           if (Prec(idim) > eps || Suivant(idim) > eps)
+          {
             isCi = false;
+          }
         }
         else
         {
@@ -254,7 +262,9 @@ static void PrepareConvert(const int                         NumCurves,
           Prec(idim)    = diff * normal1;
           Suivant(idim) = diff * normal2;
           if (Prec(idim) > eps || Suivant(idim) > eps)
+          {
             isCi = false;
+          }
         }
         else
         {
@@ -277,7 +287,9 @@ static void PrepareConvert(const int                         NumCurves,
           Prec(idim)    = diff * normal1;
           Suivant(idim) = diff * normal2;
           if (Prec(idim) > eps || Suivant(idim) > eps)
+          {
             isCi = false;
+          }
         }
         else
         {
@@ -543,7 +555,9 @@ void AdvApprox_ApproxAFunction::Approximation(
     //         IDIM += NDSES;
     // HP port: the compiler refuses branching
     if (goto_fin_de_boucle)
+    {
       continue;
+    }
     for (IS = 1; IS <= TotalNumSS; IS++)
     {
       ErrorMaxArray.SetValue(IS + (NumCurves - 1) * TotalNumSS, Approx.MaxError(IS));
@@ -554,9 +568,11 @@ void AdvApprox_ApproxAFunction::Approximation(
     occ::handle<NCollection_HArray1<double>> HJacCoeff = Approx.Coefficients();
     TheDeg                                             = Approx.Degree();
     if (isCut && (TheDeg < 2 * ContinuityOrder + 1))
+    {
       // To avoid noisy derivatives at the ends, and maintain correct
       // continuity on the resulting BSpline.
       TheDeg = 2 * ContinuityOrder + 1;
+    }
 
     NumCoeffPerCurveArray(NumCurves) = TheDeg + 1;
     NCollection_Array1<double> Coefficients(0, (TheDeg + 1) * TotalDimension - 1);
@@ -580,7 +596,6 @@ void AdvApprox_ApproxAFunction::Approximation(
     //     fin_de_boucle:
     //     {;}  end of the while loop
   }
-  return;
 }
 
 //=================================================================================================
@@ -652,7 +667,9 @@ void AdvApprox_ApproxAFunction::Perform(const int                Num1DSS,
 {
   if (Num1DSS < 0 || Num2DSS < 0 || Num3DSS < 0 || Num1DSS + Num2DSS + Num3DSS <= 0
       || myLast < myFirst || myMaxDegree < 1 || myMaxSegments < 0)
+  {
     throw Standard_ConstructionError();
+  }
   if (myMaxDegree > 14)
   {
     myMaxDegree = 14;
@@ -954,7 +971,9 @@ void AdvApprox_ApproxAFunction::Poles(const int Index, NCollection_Array1<gp_Pnt
 int AdvApprox_ApproxAFunction::NbPoles() const
 {
   if (myDone || myHasResult)
+  {
     return BSplCLib::NbPoles(myDegree, false, myMults->Array1());
+  }
   return 0;
 }
 
@@ -1053,31 +1072,31 @@ double AdvApprox_ApproxAFunction::AverageError(const int D, const int Index) con
 void AdvApprox_ApproxAFunction::Dump(Standard_OStream& o) const
 {
   int ii;
-  o << "Dump of ApproxAFunction" << std::endl;
+  o << "Dump of ApproxAFunction" << '\n';
   if (myNumSubSpaces[0] > 0)
   {
-    o << "Error(s) 1d = " << std::endl;
+    o << "Error(s) 1d = " << '\n';
     for (ii = 1; ii <= myNumSubSpaces[0]; ii++)
     {
-      o << "   " << MaxError(1, ii) << std::endl;
+      o << "   " << MaxError(1, ii) << '\n';
     }
   }
 
   if (myNumSubSpaces[1] > 0)
   {
-    o << "Error(s) 2d = " << std::endl;
+    o << "Error(s) 2d = " << '\n';
     for (ii = 1; ii <= myNumSubSpaces[1]; ii++)
     {
-      o << "   " << MaxError(2, ii) << std::endl;
+      o << "   " << MaxError(2, ii) << '\n';
     }
   }
 
   if (myNumSubSpaces[2] > 0)
   {
-    o << "Error(s) 3d = " << std::endl;
+    o << "Error(s) 3d = " << '\n';
     for (ii = 1; ii <= myNumSubSpaces[2]; ii++)
     {
-      o << "   " << MaxError(3, ii) << std::endl;
+      o << "   " << MaxError(3, ii) << '\n';
     }
   }
 }

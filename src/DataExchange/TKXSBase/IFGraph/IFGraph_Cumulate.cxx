@@ -61,7 +61,9 @@ Interface_EntityIterator IFGraph_Cumulate::Overlapped() const
   for (int i = 1; i <= nb; i++)
   {
     if (thegraph.IsPresent(i) && thegraph.Status(i) > 2)
+    {
       iter.GetOneItem(thegraph.Entity(i));
+    }
   }
   return iter;
 }
@@ -73,7 +75,9 @@ Interface_EntityIterator IFGraph_Cumulate::Forgotten() const
   for (int i = 1; i <= nb; i++)
   {
     if (!thegraph.IsPresent(i))
+    {
       iter.GetOneItem(thegraph.Model()->Value(i));
+    }
   }
   return iter;
 }
@@ -85,7 +89,9 @@ Interface_EntityIterator IFGraph_Cumulate::PerCount(const int count) const
   for (int i = 1; i <= nb; i++)
   {
     if (thegraph.IsPresent(i) && thegraph.Status(i) == (count + 1))
+    {
       iter.GetOneItem(thegraph.Model()->Value(i));
+    }
   }
   return iter;
 }
@@ -94,7 +100,9 @@ int IFGraph_Cumulate::NbTimes(const occ::handle<Standard_Transient>& ent) const
 {
   int num = thegraph.EntityNumber(ent);
   if (num == 0)
+  {
     return 0;
+  }
   int stat = thegraph.Status(num);
   return stat - 1;
 }
@@ -106,10 +114,14 @@ int IFGraph_Cumulate::HighestNbTimes() const
   for (int i = 1; i <= nb; i++)
   {
     if (!thegraph.IsPresent(i))
+    {
       continue;
+    }
     int count = thegraph.Status(i) - 1;
     if (count > max)
+    {
       max = count;
+    }
   }
   return max;
 }

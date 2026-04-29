@@ -38,7 +38,9 @@ void RWStepRepr_RWMaterialPropertyRepresentation::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "material_property_representation"))
+  {
     return;
+  }
 
   // Inherited fields of PropertyDefinitionRepresentation
 

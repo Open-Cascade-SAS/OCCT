@@ -28,7 +28,9 @@ void RWStepBasic_RWPerson::ReadStep(const occ::handle<StepData_StepReaderData>& 
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 6, ach, "person"))
+  {
     return;
+  }
 
   // --- own field : id ---
 
@@ -82,7 +84,9 @@ void RWStepBasic_RWPerson::ReadStep(const occ::handle<StepData_StepReaderData>& 
       {
         // szv#4:S4163:12Mar99 `bool stat4 =` not needed
         if (data->ReadString(nsub4, i4, "middle_names", ach, aMiddleNamesItem))
+        {
           aMiddleNames->SetValue(i4, aMiddleNamesItem);
+        }
       }
     }
   }
@@ -108,7 +112,9 @@ void RWStepBasic_RWPerson::ReadStep(const occ::handle<StepData_StepReaderData>& 
       {
         // szv#4:S4163:12Mar99 `bool stat5 =` not needed
         if (data->ReadString(nsub5, i5, "prefix_titles", ach, aPrefixTitlesItem))
+        {
           aPrefixTitles->SetValue(i5, aPrefixTitlesItem);
+        }
       }
     }
   }
@@ -134,7 +140,9 @@ void RWStepBasic_RWPerson::ReadStep(const occ::handle<StepData_StepReaderData>& 
       {
         // szv#4:S4163:12Mar99 `bool stat6 =` not needed
         if (data->ReadString(nsub6, i6, "suffix_titles", ach, aSuffixTitlesItem))
+        {
           aSuffixTitles->SetValue(i6, aSuffixTitlesItem);
+        }
       }
     }
   }

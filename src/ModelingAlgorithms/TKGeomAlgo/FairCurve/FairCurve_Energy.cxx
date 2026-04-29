@@ -392,8 +392,12 @@ void FairCurve_Energy::Hessian1(const math_Vector& Vect, math_Matrix& H)
   }
   // symmetry
   for (ii = H.LowerRow(); ii <= H.UpperRow(); ii++)
+  {
     for (jj = ii + 1; jj <= H.UpperRow(); jj++)
+    {
       H(ii, jj) = H(jj, ii);
+    }
+  }
 }
 
 //=======================================================================

@@ -261,21 +261,37 @@ const BRepGraphInc::BaseRef& BRepGraphInc_Storage::BaseRef(const BRepGraph_RefId
     using TypeId = std::remove_cv_t<decltype(theTypedId)>;
 
     if constexpr (std::is_same_v<TypeId, BRepGraph_ShellRefId>)
+    {
       return findInStore(myShellRefs, theTypedId);
+    }
     else if constexpr (std::is_same_v<TypeId, BRepGraph_FaceRefId>)
+    {
       return findInStore(myFaceRefs, theTypedId);
+    }
     else if constexpr (std::is_same_v<TypeId, BRepGraph_WireRefId>)
+    {
       return findInStore(myWireRefs, theTypedId);
+    }
     else if constexpr (std::is_same_v<TypeId, BRepGraph_CoEdgeRefId>)
+    {
       return findInStore(myCoEdgeRefs, theTypedId);
+    }
     else if constexpr (std::is_same_v<TypeId, BRepGraph_VertexRefId>)
+    {
       return findInStore(myVertexRefs, theTypedId);
+    }
     else if constexpr (std::is_same_v<TypeId, BRepGraph_SolidRefId>)
+    {
       return findInStore(mySolidRefs, theTypedId);
+    }
     else if constexpr (std::is_same_v<TypeId, BRepGraph_ChildRefId>)
+    {
       return findInStore(myChildRefs, theTypedId);
+    }
     else if constexpr (std::is_same_v<TypeId, BRepGraph_OccurrenceRefId>)
+    {
       return findInStore(myOccurrenceRefs, theTypedId);
+    }
 
     Standard_ASSERT_RETURN(false, "BaseRef: unsupported ref id type", nullptr);
   };
@@ -298,21 +314,37 @@ BRepGraphInc::BaseRef& BRepGraphInc_Storage::ChangeBaseRef(const BRepGraph_RefId
     using TypeId = std::remove_cv_t<decltype(theTypedId)>;
 
     if constexpr (std::is_same_v<TypeId, BRepGraph_ShellRefId>)
+    {
       return changeFindInStore(myShellRefs, theTypedId);
+    }
     else if constexpr (std::is_same_v<TypeId, BRepGraph_FaceRefId>)
+    {
       return changeFindInStore(myFaceRefs, theTypedId);
+    }
     else if constexpr (std::is_same_v<TypeId, BRepGraph_WireRefId>)
+    {
       return changeFindInStore(myWireRefs, theTypedId);
+    }
     else if constexpr (std::is_same_v<TypeId, BRepGraph_CoEdgeRefId>)
+    {
       return changeFindInStore(myCoEdgeRefs, theTypedId);
+    }
     else if constexpr (std::is_same_v<TypeId, BRepGraph_VertexRefId>)
+    {
       return changeFindInStore(myVertexRefs, theTypedId);
+    }
     else if constexpr (std::is_same_v<TypeId, BRepGraph_SolidRefId>)
+    {
       return changeFindInStore(mySolidRefs, theTypedId);
+    }
     else if constexpr (std::is_same_v<TypeId, BRepGraph_ChildRefId>)
+    {
       return changeFindInStore(myChildRefs, theTypedId);
+    }
     else if constexpr (std::is_same_v<TypeId, BRepGraph_OccurrenceRefId>)
+    {
       return changeFindInStore(myOccurrenceRefs, theTypedId);
+    }
 
     Standard_ASSERT_RETURN(false, "ChangeBaseRef: unsupported ref id type", nullptr);
   };
@@ -365,27 +397,49 @@ bool BRepGraphInc_Storage::MarkRemoved(const BRepGraph_NodeId theNodeId)
     using TypeId = std::remove_cv_t<decltype(theTypedId)>;
 
     if constexpr (std::is_same_v<TypeId, BRepGraph_VertexId>)
+    {
       return myVertices.MarkRemoved(theTypedId);
+    }
     else if constexpr (std::is_same_v<TypeId, BRepGraph_EdgeId>)
+    {
       return myEdges.MarkRemoved(theTypedId);
+    }
     else if constexpr (std::is_same_v<TypeId, BRepGraph_CoEdgeId>)
+    {
       return myCoEdges.MarkRemoved(theTypedId);
+    }
     else if constexpr (std::is_same_v<TypeId, BRepGraph_WireId>)
+    {
       return myWires.MarkRemoved(theTypedId);
+    }
     else if constexpr (std::is_same_v<TypeId, BRepGraph_FaceId>)
+    {
       return myFaces.MarkRemoved(theTypedId);
+    }
     else if constexpr (std::is_same_v<TypeId, BRepGraph_ShellId>)
+    {
       return myShells.MarkRemoved(theTypedId);
+    }
     else if constexpr (std::is_same_v<TypeId, BRepGraph_SolidId>)
+    {
       return mySolids.MarkRemoved(theTypedId);
+    }
     else if constexpr (std::is_same_v<TypeId, BRepGraph_CompoundId>)
+    {
       return myCompounds.MarkRemoved(theTypedId);
+    }
     else if constexpr (std::is_same_v<TypeId, BRepGraph_CompSolidId>)
+    {
       return myCompSolids.MarkRemoved(theTypedId);
+    }
     else if constexpr (std::is_same_v<TypeId, BRepGraph_ProductId>)
+    {
       return myProducts.MarkRemoved(theTypedId);
+    }
     else if constexpr (std::is_same_v<TypeId, BRepGraph_OccurrenceId>)
+    {
       return myOccurrences.MarkRemoved(theTypedId);
+    }
 
     Standard_ASSERT_RETURN(false, "MarkRemoved: unsupported node id type", false);
   };
@@ -401,21 +455,37 @@ bool BRepGraphInc_Storage::MarkRemovedRef(const BRepGraph_RefId theRefId)
     using TypeId = std::remove_cv_t<decltype(theTypedId)>;
 
     if constexpr (std::is_same_v<TypeId, BRepGraph_ShellRefId>)
+    {
       return myShellRefs.MarkRemoved(theTypedId);
+    }
     else if constexpr (std::is_same_v<TypeId, BRepGraph_FaceRefId>)
+    {
       return myFaceRefs.MarkRemoved(theTypedId);
+    }
     else if constexpr (std::is_same_v<TypeId, BRepGraph_WireRefId>)
+    {
       return myWireRefs.MarkRemoved(theTypedId);
+    }
     else if constexpr (std::is_same_v<TypeId, BRepGraph_CoEdgeRefId>)
+    {
       return myCoEdgeRefs.MarkRemoved(theTypedId);
+    }
     else if constexpr (std::is_same_v<TypeId, BRepGraph_VertexRefId>)
+    {
       return myVertexRefs.MarkRemoved(theTypedId);
+    }
     else if constexpr (std::is_same_v<TypeId, BRepGraph_SolidRefId>)
+    {
       return mySolidRefs.MarkRemoved(theTypedId);
+    }
     else if constexpr (std::is_same_v<TypeId, BRepGraph_ChildRefId>)
+    {
       return myChildRefs.MarkRemoved(theTypedId);
+    }
     else if constexpr (std::is_same_v<TypeId, BRepGraph_OccurrenceRefId>)
+    {
       return myOccurrenceRefs.MarkRemoved(theTypedId);
+    }
 
     Standard_ASSERT_RETURN(false, "MarkRemovedRef: unsupported ref id type", false);
   };
@@ -431,19 +501,33 @@ bool BRepGraphInc_Storage::MarkRemovedRep(const BRepGraph_RepId theRepId)
     using TypeId = std::remove_cv_t<decltype(theTypedId)>;
 
     if constexpr (std::is_same_v<TypeId, BRepGraph_SurfaceRepId>)
+    {
       return mySurfaces.MarkRemoved(theTypedId);
+    }
     else if constexpr (std::is_same_v<TypeId, BRepGraph_Curve3DRepId>)
+    {
       return myCurves3D.MarkRemoved(theTypedId);
+    }
     else if constexpr (std::is_same_v<TypeId, BRepGraph_Curve2DRepId>)
+    {
       return myCurves2D.MarkRemoved(theTypedId);
+    }
     else if constexpr (std::is_same_v<TypeId, BRepGraph_TriangulationRepId>)
+    {
       return myTriangulationsRep.MarkRemoved(theTypedId);
+    }
     else if constexpr (std::is_same_v<TypeId, BRepGraph_Polygon3DRepId>)
+    {
       return myPolygons3D.MarkRemoved(theTypedId);
+    }
     else if constexpr (std::is_same_v<TypeId, BRepGraph_Polygon2DRepId>)
+    {
       return myPolygons2D.MarkRemoved(theTypedId);
+    }
     else if constexpr (std::is_same_v<TypeId, BRepGraph_PolygonOnTriRepId>)
+    {
       return myPolygonsOnTri.MarkRemoved(theTypedId);
+    }
 
     Standard_ASSERT_RETURN(false, "MarkRemovedRep: unsupported rep id type", false);
   };
@@ -480,74 +564,146 @@ void BRepGraphInc_Storage::BuildReverseIndex()
   myPolygons2D.NbActive        = 0;
   myPolygonsOnTri.NbActive     = 0;
   for (BRepGraph_VertexId aId = BRepGraph_VertexId::Start(); aId.IsValid(myVertices.Nb()); ++aId)
+  {
     if (!myVertices.Get(aId).IsRemoved)
+    {
       ++myVertices.NbActive;
+    }
+  }
   for (BRepGraph_EdgeId aId = BRepGraph_EdgeId::Start(); aId.IsValid(myEdges.Nb()); ++aId)
+  {
     if (!myEdges.Get(aId).IsRemoved)
+    {
       ++myEdges.NbActive;
+    }
+  }
   for (BRepGraph_CoEdgeId aId = BRepGraph_CoEdgeId::Start(); aId.IsValid(myCoEdges.Nb()); ++aId)
+  {
     if (!myCoEdges.Get(aId).IsRemoved)
+    {
       ++myCoEdges.NbActive;
+    }
+  }
   for (BRepGraph_WireId aId = BRepGraph_WireId::Start(); aId.IsValid(myWires.Nb()); ++aId)
+  {
     if (!myWires.Get(aId).IsRemoved)
+    {
       ++myWires.NbActive;
+    }
+  }
   for (BRepGraph_FaceId aId = BRepGraph_FaceId::Start(); aId.IsValid(myFaces.Nb()); ++aId)
+  {
     if (!myFaces.Get(aId).IsRemoved)
+    {
       ++myFaces.NbActive;
+    }
+  }
   for (BRepGraph_ShellId aId = BRepGraph_ShellId::Start(); aId.IsValid(myShells.Nb()); ++aId)
+  {
     if (!myShells.Get(aId).IsRemoved)
+    {
       ++myShells.NbActive;
+    }
+  }
   for (BRepGraph_SolidId aId = BRepGraph_SolidId::Start(); aId.IsValid(mySolids.Nb()); ++aId)
+  {
     if (!mySolids.Get(aId).IsRemoved)
+    {
       ++mySolids.NbActive;
+    }
+  }
   for (BRepGraph_CompoundId aId = BRepGraph_CompoundId::Start(); aId.IsValid(myCompounds.Nb());
        ++aId)
+  {
     if (!myCompounds.Get(aId).IsRemoved)
+    {
       ++myCompounds.NbActive;
+    }
+  }
   for (BRepGraph_CompSolidId aId = BRepGraph_CompSolidId::Start(); aId.IsValid(myCompSolids.Nb());
        ++aId)
+  {
     if (!myCompSolids.Get(aId).IsRemoved)
+    {
       ++myCompSolids.NbActive;
+    }
+  }
   for (BRepGraph_ProductId aId = BRepGraph_ProductId::Start(); aId.IsValid(myProducts.Nb()); ++aId)
+  {
     if (!myProducts.Get(aId).IsRemoved)
+    {
       ++myProducts.NbActive;
+    }
+  }
   for (BRepGraph_OccurrenceId aId = BRepGraph_OccurrenceId::Start();
        aId.IsValid(myOccurrences.Nb());
        ++aId)
+  {
     if (!myOccurrences.Get(aId).IsRemoved)
+    {
       ++myOccurrences.NbActive;
+    }
+  }
   for (BRepGraph_SurfaceRepId aId = BRepGraph_SurfaceRepId::Start(); aId.IsValid(mySurfaces.Nb());
        ++aId)
+  {
     if (!mySurfaces.Get(aId).IsRemoved)
+    {
       ++mySurfaces.NbActive;
+    }
+  }
   for (BRepGraph_Curve3DRepId aId = BRepGraph_Curve3DRepId::Start(); aId.IsValid(myCurves3D.Nb());
        ++aId)
+  {
     if (!myCurves3D.Get(aId).IsRemoved)
+    {
       ++myCurves3D.NbActive;
+    }
+  }
   for (BRepGraph_Curve2DRepId aId = BRepGraph_Curve2DRepId::Start(); aId.IsValid(myCurves2D.Nb());
        ++aId)
+  {
     if (!myCurves2D.Get(aId).IsRemoved)
+    {
       ++myCurves2D.NbActive;
+    }
+  }
   for (BRepGraph_TriangulationRepId aId = BRepGraph_TriangulationRepId::Start();
        aId.IsValid(myTriangulationsRep.Nb());
        ++aId)
+  {
     if (!myTriangulationsRep.Get(aId).IsRemoved)
+    {
       ++myTriangulationsRep.NbActive;
+    }
+  }
   for (BRepGraph_Polygon3DRepId aId = BRepGraph_Polygon3DRepId::Start();
        aId.IsValid(myPolygons3D.Nb());
        ++aId)
+  {
     if (!myPolygons3D.Get(aId).IsRemoved)
+    {
       ++myPolygons3D.NbActive;
+    }
+  }
   for (BRepGraph_Polygon2DRepId aId = BRepGraph_Polygon2DRepId::Start();
        aId.IsValid(myPolygons2D.Nb());
        ++aId)
+  {
     if (!myPolygons2D.Get(aId).IsRemoved)
+    {
       ++myPolygons2D.NbActive;
+    }
+  }
   for (BRepGraph_PolygonOnTriRepId aId = BRepGraph_PolygonOnTriRepId::Start();
        aId.IsValid(myPolygonsOnTri.Nb());
        ++aId)
+  {
     if (!myPolygonsOnTri.Get(aId).IsRemoved)
+    {
       ++myPolygonsOnTri.NbActive;
+    }
+  }
 }
 
 //=================================================================================================

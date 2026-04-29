@@ -42,7 +42,9 @@ void RWStepGeom_RWBSplineSurfaceWithKnots::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 13, ach, "b_spline_surface_with_knots"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -87,7 +89,9 @@ void RWStepGeom_RWBSplineSurfaceWithKnots::ReadStep(
                                ach,
                                STANDARD_TYPE(StepGeom_CartesianPoint),
                                anent4))
+          {
             aControlPointsList->SetValue(i4, j4, anent4);
+          }
         }
       }
     }
@@ -105,7 +109,9 @@ void RWStepGeom_RWBSplineSurfaceWithKnots::ReadStep(
     }
   }
   else
+  {
     ach->AddFail("Parameter #5 (surface_form) is not an enumeration");
+  }
 
   // --- inherited field : uClosed ---
 
@@ -138,7 +144,9 @@ void RWStepGeom_RWBSplineSurfaceWithKnots::ReadStep(
     {
       // szv#4:S4163:12Mar99 `bool stat9 =` not needed
       if (data->ReadInteger(nsub9, i9, "u_multiplicities", ach, aUMultiplicitiesItem))
+      {
         aUMultiplicities->SetValue(i9, aUMultiplicitiesItem);
+      }
     }
   }
 
@@ -155,7 +163,9 @@ void RWStepGeom_RWBSplineSurfaceWithKnots::ReadStep(
     {
       // szv#4:S4163:12Mar99 `bool stat10 =` not needed
       if (data->ReadInteger(nsub10, i10, "v_multiplicities", ach, aVMultiplicitiesItem))
+      {
         aVMultiplicities->SetValue(i10, aVMultiplicitiesItem);
+      }
     }
   }
 
@@ -172,7 +182,9 @@ void RWStepGeom_RWBSplineSurfaceWithKnots::ReadStep(
     {
       // szv#4:S4163:12Mar99 `bool stat11 =` not needed
       if (data->ReadReal(nsub11, i11, "u_knots", ach, aUKnotsItem))
+      {
         aUKnots->SetValue(i11, aUKnotsItem);
+      }
     }
   }
 
@@ -189,7 +201,9 @@ void RWStepGeom_RWBSplineSurfaceWithKnots::ReadStep(
     {
       // szv#4:S4163:12Mar99 `bool stat12 =` not needed
       if (data->ReadReal(nsub12, i12, "v_knots", ach, aVKnotsItem))
+      {
         aVKnots->SetValue(i12, aVKnotsItem);
+      }
     }
   }
 
@@ -205,7 +219,9 @@ void RWStepGeom_RWBSplineSurfaceWithKnots::ReadStep(
     }
   }
   else
+  {
     ach->AddFail("Parameter #13 (knot_spec) is not an enumeration");
+  }
 
   //--- Initialisation of the read entity ---
 
@@ -394,9 +410,13 @@ void RWStepGeom_RWBSplineSurfaceWithKnots::Check(
   {
     double distKn = ent->UKnotsValue(i - 1) - ent->UKnotsValue(i);
     if (std::abs(distKn) <= RealEpsilon())
+    {
       ach->AddWarning("WARNING: Surface contains identical KnotsValues in U");
+    }
     else if (distKn > RealEpsilon())
+    {
       ach->AddFail("ERROR: Surface contains descending KnotsValues in U");
+    }
   }
 
   // check in V direction
@@ -424,8 +444,12 @@ void RWStepGeom_RWBSplineSurfaceWithKnots::Check(
   {
     double distKn = ent->VKnotsValue(i - 1) - ent->VKnotsValue(i);
     if (std::abs(distKn) <= RealEpsilon())
+    {
       ach->AddWarning("WARNING: Surface contains identical KnotsValues in V");
+    }
     else if (distKn > RealEpsilon())
+    {
       ach->AddFail("ERROR: Surface contains descending KnotsValues in V");
+    }
   }
 }

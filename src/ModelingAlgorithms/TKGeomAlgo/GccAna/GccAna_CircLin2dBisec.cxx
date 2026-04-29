@@ -66,10 +66,14 @@ occ::handle<GccInt_Bisec> GccAna_CircLin2dBisec::ThisSolution(const int Index) c
 {
 
   if (!WellDone)
+  {
     throw StdFail_NotDone();
+  }
 
   if ((Index <= 0) || (Index > NbrSol))
+  {
     throw Standard_OutOfRange();
+  }
 
   occ::handle<GccInt_Bisec> bissol;
   double                    xdir    = line.Direction().X();

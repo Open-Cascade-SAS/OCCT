@@ -215,7 +215,9 @@ bool BlendFunc_CSCircular::IsSolution(const math_Vector& Sol, const double Tol)
     // mise a jour de maxang
 
     if (ray > 0.)
+    {
       ns.Reverse();
+    }
     nc = -resul.Normalized();
 
     Cosa = ns.Dot(nc);
@@ -433,7 +435,9 @@ bool BlendFunc_CSCircular::IsTangencyPoint() const
 const gp_Vec& BlendFunc_CSCircular::TangentOnS() const
 {
   if (istangent)
+  {
     throw Standard_DomainError("BlendFunc_CSCircular::TangentOnS");
+  }
   return tgs;
 }
 
@@ -442,7 +446,9 @@ const gp_Vec& BlendFunc_CSCircular::TangentOnS() const
 const gp_Vec& BlendFunc_CSCircular::TangentOnC() const
 {
   if (istangent)
+  {
     throw Standard_DomainError("BlendFunc_CSCircular::TangentOnC");
+  }
   return tgc;
 }
 
@@ -451,7 +457,9 @@ const gp_Vec& BlendFunc_CSCircular::TangentOnC() const
 const gp_Vec2d& BlendFunc_CSCircular::Tangent2d() const
 {
   if (istangent)
+  {
     throw Standard_DomainError("BlendFunc_CSCircular::Tangent2d");
+  }
   return tg2d;
 }
 
@@ -467,10 +475,14 @@ void BlendFunc_CSCircular::Tangent(const double U, const double V, gp_Vec& TgS, 
   const double norm = nplan.Crossed(ns).Magnitude();
   ns.SetLinearForm(nplan.Dot(ns) / norm, nplan, -1. / norm, ns);
   if (ray > 0.)
+  {
     ns.Reverse();
+  }
   TgS = nplan.Crossed(ns);
   if (choix % 2 == 1)
+  {
     TgS.Reverse();
+  }
 }
 
 //=================================================================================================
@@ -503,7 +515,9 @@ void BlendFunc_CSCircular::Section(const double Param,
   C.SetRadius(std::abs(ray));
 
   if (ray > 0.)
+  {
     ns.Reverse();
+  }
 
   if (choix % 2 == 0)
   {
@@ -814,7 +828,9 @@ void BlendFunc_CSCircular::Section(const Blend_Point&            P,
 
   ns2 = gp_Vec(Center, ptc).Normalized();
   if (ray > 0.)
+  {
     ns.Reverse();
+  }
 
   if (choix % 2 != 0)
   {

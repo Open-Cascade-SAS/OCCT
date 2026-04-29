@@ -173,13 +173,17 @@ void PLib_HermitJacobi::ToCoefficients(const int                         Dimensi
   }
 
   if (Degree > aDegreeH)
+  {
     myJacobi.ToCoefficients(Dimension, Degree, AuxCoeff, Coefficients);
+  }
   else
   {
     int ibegC = Coefficients.Lower();
     kdim      = (Degree + 1) * Dimension;
     for (k = 0; k < kdim; k++)
+    {
       Coefficients(ibegC + k) = AuxCoeff(k);
+    }
   }
 }
 
@@ -218,6 +222,7 @@ void PLib_HermitJacobi::D0123(const int                   NDeriv,
   // Evaluation des polynomes d'hermite
   math_Matrix HermitValues(0, aDegreeH, 0, NDeriv, 0.);
   if (NDeriv == 0)
+  {
     for (i = 0; i <= aDegreeH; i++)
     {
       PLib::NoDerivativeEvalPolynomial(U,
@@ -227,11 +232,14 @@ void PLib_HermitJacobi::D0123(const int                   NDeriv,
                                        aHermiteMatrix(i + 1, 1),
                                        HermitValues(i, 0));
     }
+  }
   else
+  {
     for (i = 0; i <= aDegreeH; i++)
     {
       PLib::EvalPolynomial(U, NDeriv, aDegreeH, 1, aHermiteMatrix(i + 1, 1), HermitValues(i, 0));
     }
+  }
 
   // Evaluation des polynomes de Jaccobi
   if (aJacDegree >= 0)
@@ -264,9 +272,13 @@ void PLib_HermitJacobi::D0123(const int                   NDeriv,
     // Evaluation de W(t)
     const double& aWCoeff = GetWCoefficients(aNivConstr);
     if (NDeriv == 0)
+    {
       PLib::NoDerivativeEvalPolynomial(U, aDegreeH + 1, 1, aDegreeH + 1, aWCoeff, WValues(0));
+    }
     else
+    {
       PLib::EvalPolynomial(U, NDeriv, aDegreeH + 1, 1, aWCoeff, WValues(0));
+    }
   }
 
   // Evaluation a l'ordre 0

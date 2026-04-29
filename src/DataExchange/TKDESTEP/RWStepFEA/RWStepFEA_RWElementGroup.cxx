@@ -39,7 +39,9 @@ void RWStepFEA_RWElementGroup::ReadStep(const occ::handle<StepData_StepReaderDat
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "element_group"))
+  {
     return;
+  }
 
   // Inherited fields of Group
 

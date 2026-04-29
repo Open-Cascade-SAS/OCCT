@@ -69,7 +69,9 @@ AIS_SelectStatus AIS_Selection::Select(const occ::handle<SelectMgr_EntityOwner>&
   if (!wasSelected || !myResultMap.IsBound(theOwner))
   {
     if (!toSelect)
+    {
       return AIS_SS_NotDone;
+    }
 
     NCollection_List<occ::handle<SelectMgr_EntityOwner>>::Iterator aListIter;
     myresult.Append(theOwner, aListIter);

@@ -35,7 +35,9 @@ void RWStepFEA_RWFeaMoistureAbsorption::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "fea_moisture_absorption"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 

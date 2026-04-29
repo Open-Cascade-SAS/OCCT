@@ -88,7 +88,9 @@ Geom2dGcc_Lin2dTanObl::Geom2dGcc_Lin2dTanObl(const Geom2dGcc_QualifiedCurve& Qua
       if (Lin.IsDone())
       {
         if (Add(NbrSol + 1, Lin, TolAng, C1))
+        {
           NbrSol++;
+        }
       }
 
       Param1 += aStep;
@@ -255,7 +257,9 @@ bool Geom2dGcc_Lin2dTanObl::Add(const int                        theIndex,
   for (i = 1; i < theIndex; i++)
   {
     if (std::abs(aPar1arg - pararg1(i)) <= theTol && std::abs(aPar2arg - pararg2(i)) <= theTol)
+    {
       return false;
+    }
   }
 
   gp_Dir2d aLinDir = aLin.Direction();
@@ -265,7 +269,9 @@ bool Geom2dGcc_Lin2dTanObl::Add(const int                        theIndex,
   Geom2dGcc_CurveTool::D1(theC1, aPar1arg, aPoint, aVTan);
 
   if (std::abs(aLinDir.Crossed(gp_Dir2d(aVTan))) > theTol)
+  {
     return false;
+  }
 
   linsol(theIndex)     = aLin;
   par1sol(theIndex)    = aPar1sol;

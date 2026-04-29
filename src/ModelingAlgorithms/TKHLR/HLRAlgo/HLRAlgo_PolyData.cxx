@@ -109,26 +109,38 @@ void HLRAlgo_PolyData::HideByPolyData(const HLRAlgo_BiPoint::PointsT& thePoints,
           if (myFaceIndices.Index == theIndices.FaceConex1)
           {
             if (theIndices.Face1Pt1 == aTriangle.Node1)
+            {
               NotConnex =
                 theIndices.Face1Pt2 != aTriangle.Node2 && theIndices.Face1Pt2 != aTriangle.Node3;
+            }
             else if (theIndices.Face1Pt1 == aTriangle.Node2)
+            {
               NotConnex =
                 theIndices.Face1Pt2 != aTriangle.Node3 && theIndices.Face1Pt2 != aTriangle.Node1;
+            }
             else if (theIndices.Face1Pt1 == aTriangle.Node3)
+            {
               NotConnex =
                 theIndices.Face1Pt2 != aTriangle.Node1 && theIndices.Face1Pt2 != aTriangle.Node2;
+            }
           }
           else if (myFaceIndices.Index == theIndices.FaceConex2)
           {
             if (theIndices.Face2Pt1 == aTriangle.Node1)
+            {
               NotConnex =
                 theIndices.Face2Pt2 != aTriangle.Node2 && theIndices.Face2Pt2 != aTriangle.Node3;
+            }
             else if (theIndices.Face2Pt1 == aTriangle.Node2)
+            {
               NotConnex =
                 theIndices.Face2Pt2 != aTriangle.Node3 && theIndices.Face2Pt2 != aTriangle.Node1;
+            }
             else if (theIndices.Face2Pt1 == aTriangle.Node3)
+            {
               NotConnex =
                 theIndices.Face2Pt2 != aTriangle.Node1 && theIndices.Face2Pt2 != aTriangle.Node2;
+            }
           }
         }
         if (NotConnex)
@@ -239,7 +251,9 @@ void HLRAlgo_PolyData::hideByOneTriangle(const HLRAlgo_BiPoint::PointsT& thePoin
         CrosSeg = true;
       }
       else
+      {
         CrosSeg = false;
+      }
     }
     else if (d1 < -theTriangle.Tolerance)
     {
@@ -249,14 +263,20 @@ void HLRAlgo_PolyData::hideByOneTriangle(const HLRAlgo_BiPoint::PointsT& thePoin
         CrosSeg = true;
       }
       else
+      {
         return;
+      }
     }
     else
     {
       if (d2 > theTriangle.Tolerance)
+      {
         CrosSeg = false;
+      }
       else if (d2 < -theTriangle.Tolerance)
+      {
         return;
+      }
       else
       {
         CrosSeg = false;
@@ -271,67 +291,107 @@ void HLRAlgo_PolyData::hideByOneTriangle(const HLRAlgo_BiPoint::PointsT& thePoin
           pd2 = (thePoints.PntP2.Y() - theTriangle.V1.Y()) / aD.Y();
         }
         if (pd1 < -theTriangle.TolParam)
+        {
           nn1 = 1;
+        }
         else if (pd1 < theTriangle.TolParam)
+        {
           nn1 = 2;
+        }
         else if (pd1 - 1. < -theTriangle.TolParam)
+        {
           nn1 = 3;
+        }
         else if (pd1 - 1. < theTriangle.TolParam)
+        {
           nn1 = 4;
+        }
         else
+        {
           nn1 = 5;
+        }
         if (pd2 < -theTriangle.TolParam)
+        {
           nn2 = 1;
+        }
         else if (pd2 < theTriangle.TolParam)
+        {
           nn2 = 2;
+        }
         else if (pd2 - 1. < -theTriangle.TolParam)
+        {
           nn2 = 3;
+        }
         else if (pd2 - 1. < theTriangle.TolParam)
+        {
           nn2 = 4;
+        }
         else
+        {
           nn2 = 5;
+        }
         if (nn1 == 3)
         {
           if (nn2 == 1)
+          {
             pend = pd1 / (pd1 - pd2);
+          }
           else if (nn2 == 5)
+          {
             pend = (1. - pd1) / (pd2 - pd1);
+          }
         }
         else if (nn1 == 1)
         {
           if (nn2 <= 2)
+          {
             return;
+          }
           else
           {
             psta = -pd1 / (pd2 - pd1);
             if (nn2 == 5)
+            {
               pend = (1. - pd1) / (pd2 - pd1);
+            }
           }
         }
         else if (nn1 == 5)
         {
           if (nn2 >= 4)
+          {
             return;
+          }
           else
           {
             psta = (pd1 - 1.) / (pd1 - pd2);
             if (nn2 == 1)
+            {
               pend = pd1 / (pd1 - pd2);
+            }
           }
         }
         else if (nn1 == 2)
         {
           if (nn2 == 1)
+          {
             return;
+          }
           else if (nn2 == 5)
+          {
             pend = (1. - pd1) / (pd2 - pd1);
+          }
         }
         else if (nn1 == 4)
         {
           if (nn2 == 5)
+          {
             return;
+          }
           else if (nn2 == 1)
+          {
             pend = pd1 / (pd1 - pd2);
+          }
         }
       }
     }
@@ -339,23 +399,33 @@ void HLRAlgo_PolyData::hideByOneTriangle(const HLRAlgo_BiPoint::PointsT& thePoin
     {
       double ad1 = d1;
       if (d1 < 0)
+      {
         ad1 = -d1;
+      }
       double ad2 = d2;
       if (d2 < 0)
+      {
         ad2 = -d2;
+      }
       pp = ad1 / (ad1 + ad2);
       if (TrFlags & HLRAlgo_PolyMask_EMskGrALin1)
+      {
         pdp = (thePoints.PntP1.X() + (thePoints.PntP2.X() - thePoints.PntP1.X()) * pp
                - theTriangle.V1.X())
               / aD.X();
+      }
       else
+      {
         pdp = (thePoints.PntP1.Y() + (thePoints.PntP2.Y() - thePoints.PntP1.Y()) * pp
                - theTriangle.V1.Y())
               / aD.Y();
+      }
       bool OutSideP = false;
       bool Multiple = false;
       if (pdp < -theTriangle.TolParam)
+      {
         OutSideP = true;
+      }
       else if (pdp < theTriangle.TolParam)
       {
         Multiple = true;
@@ -407,9 +477,13 @@ void HLRAlgo_PolyData::hideByOneTriangle(const HLRAlgo_BiPoint::PointsT& thePoin
         }
       }
       else
+      {
         OutSideP = true;
+      }
       if (OutSideP)
+      {
         npiRej++;
+      }
       else
       {
         npi++;
@@ -444,7 +518,9 @@ void HLRAlgo_PolyData::hideByOneTriangle(const HLRAlgo_BiPoint::PointsT& thePoin
         CrosSeg = true;
       }
       else
+      {
         CrosSeg = false;
+      }
     }
     else if (d1 < -theTriangle.Tolerance)
     {
@@ -454,14 +530,20 @@ void HLRAlgo_PolyData::hideByOneTriangle(const HLRAlgo_BiPoint::PointsT& thePoin
         CrosSeg = true;
       }
       else
+      {
         return;
+      }
     }
     else
     {
       if (d2 > theTriangle.Tolerance)
+      {
         CrosSeg = false;
+      }
       else if (d2 < -theTriangle.Tolerance)
+      {
         return;
+      }
       else
       {
         CrosSeg = false;
@@ -476,67 +558,107 @@ void HLRAlgo_PolyData::hideByOneTriangle(const HLRAlgo_BiPoint::PointsT& thePoin
           pd2 = (thePoints.PntP2.Y() - theTriangle.V2.Y()) / aD.Y();
         }
         if (pd1 < -theTriangle.TolParam)
+        {
           nn1 = 1;
+        }
         else if (pd1 < theTriangle.TolParam)
+        {
           nn1 = 2;
+        }
         else if (pd1 - 1. < -theTriangle.TolParam)
+        {
           nn1 = 3;
+        }
         else if (pd1 - 1. < theTriangle.TolParam)
+        {
           nn1 = 4;
+        }
         else
+        {
           nn1 = 5;
+        }
         if (pd2 < -theTriangle.TolParam)
+        {
           nn2 = 1;
+        }
         else if (pd2 < theTriangle.TolParam)
+        {
           nn2 = 2;
+        }
         else if (pd2 - 1. < -theTriangle.TolParam)
+        {
           nn2 = 3;
+        }
         else if (pd2 - 1. < theTriangle.TolParam)
+        {
           nn2 = 4;
+        }
         else
+        {
           nn2 = 5;
+        }
         if (nn1 == 3)
         {
           if (nn2 == 1)
+          {
             pend = pd1 / (pd1 - pd2);
+          }
           else if (nn2 == 5)
+          {
             pend = (1. - pd1) / (pd2 - pd1);
+          }
         }
         else if (nn1 == 1)
         {
           if (nn2 <= 2)
+          {
             return;
+          }
           else
           {
             psta = -pd1 / (pd2 - pd1);
             if (nn2 == 5)
+            {
               pend = (1. - pd1) / (pd2 - pd1);
+            }
           }
         }
         else if (nn1 == 5)
         {
           if (nn2 >= 4)
+          {
             return;
+          }
           else
           {
             psta = (pd1 - 1.) / (pd1 - pd2);
             if (nn2 == 1)
+            {
               pend = pd1 / (pd1 - pd2);
+            }
           }
         }
         else if (nn1 == 2)
         {
           if (nn2 == 1)
+          {
             return;
+          }
           else if (nn2 == 5)
+          {
             pend = (1. - pd1) / (pd2 - pd1);
+          }
         }
         else if (nn1 == 4)
         {
           if (nn2 == 5)
+          {
             return;
+          }
           else if (nn2 == 1)
+          {
             pend = pd1 / (pd1 - pd2);
+          }
         }
       }
     }
@@ -544,23 +666,33 @@ void HLRAlgo_PolyData::hideByOneTriangle(const HLRAlgo_BiPoint::PointsT& thePoin
     {
       double ad1 = d1;
       if (d1 < 0)
+      {
         ad1 = -d1;
+      }
       double ad2 = d2;
       if (d2 < 0)
+      {
         ad2 = -d2;
+      }
       pp = ad1 / (ad1 + ad2);
       if (TrFlags & HLRAlgo_PolyMask_EMskGrALin2)
+      {
         pdp = (thePoints.PntP1.X() + (thePoints.PntP2.X() - thePoints.PntP1.X()) * pp
                - theTriangle.V2.X())
               / aD.X();
+      }
       else
+      {
         pdp = (thePoints.PntP1.Y() + (thePoints.PntP2.Y() - thePoints.PntP1.Y()) * pp
                - theTriangle.V2.Y())
               / aD.Y();
+      }
       bool OutSideP = false;
       bool Multiple = false;
       if (pdp < -theTriangle.TolParam)
+      {
         OutSideP = true;
+      }
       else if (pdp < theTriangle.TolParam)
       {
         Multiple = true;
@@ -611,9 +743,13 @@ void HLRAlgo_PolyData::hideByOneTriangle(const HLRAlgo_BiPoint::PointsT& thePoin
         }
       }
       else
+      {
         OutSideP = true;
+      }
       if (OutSideP)
+      {
         npiRej++;
+      }
       else
       {
         npi++;
@@ -648,7 +784,9 @@ void HLRAlgo_PolyData::hideByOneTriangle(const HLRAlgo_BiPoint::PointsT& thePoin
         CrosSeg = true;
       }
       else
+      {
         CrosSeg = false;
+      }
     }
     else if (d1 < -theTriangle.Tolerance)
     {
@@ -658,14 +796,20 @@ void HLRAlgo_PolyData::hideByOneTriangle(const HLRAlgo_BiPoint::PointsT& thePoin
         CrosSeg = true;
       }
       else
+      {
         return;
+      }
     }
     else
     {
       if (d2 > theTriangle.Tolerance)
+      {
         CrosSeg = false;
+      }
       else if (d2 < -theTriangle.Tolerance)
+      {
         return;
+      }
       else
       {
         CrosSeg = false;
@@ -680,67 +824,107 @@ void HLRAlgo_PolyData::hideByOneTriangle(const HLRAlgo_BiPoint::PointsT& thePoin
           pd2 = (thePoints.PntP2.Y() - theTriangle.V3.Y()) / aD.Y();
         }
         if (pd1 < -theTriangle.TolParam)
+        {
           nn1 = 1;
+        }
         else if (pd1 < theTriangle.TolParam)
+        {
           nn1 = 2;
+        }
         else if (pd1 - 1. < -theTriangle.TolParam)
+        {
           nn1 = 3;
+        }
         else if (pd1 - 1. < theTriangle.TolParam)
+        {
           nn1 = 4;
+        }
         else
+        {
           nn1 = 5;
+        }
         if (pd2 < -theTriangle.TolParam)
+        {
           nn2 = 1;
+        }
         else if (pd2 < theTriangle.TolParam)
+        {
           nn2 = 2;
+        }
         else if (pd2 - 1. < -theTriangle.TolParam)
+        {
           nn2 = 3;
+        }
         else if (pd2 - 1. < theTriangle.TolParam)
+        {
           nn2 = 4;
+        }
         else
+        {
           nn2 = 5;
+        }
         if (nn1 == 3)
         {
           if (nn2 == 1)
+          {
             pend = pd1 / (pd1 - pd2);
+          }
           else if (nn2 == 5)
+          {
             pend = (1. - pd1) / (pd2 - pd1);
+          }
         }
         else if (nn1 == 1)
         {
           if (nn2 <= 2)
+          {
             return;
+          }
           else
           {
             psta = -pd1 / (pd2 - pd1);
             if (nn2 == 5)
+            {
               pend = (1. - pd1) / (pd2 - pd1);
+            }
           }
         }
         else if (nn1 == 5)
         {
           if (nn2 >= 4)
+          {
             return;
+          }
           else
           {
             psta = (pd1 - 1.) / (pd1 - pd2);
             if (nn2 == 1)
+            {
               pend = pd1 / (pd1 - pd2);
+            }
           }
         }
         else if (nn1 == 2)
         {
           if (nn2 == 1)
+          {
             return;
+          }
           else if (nn2 == 5)
+          {
             pend = (1. - pd1) / (pd2 - pd1);
+          }
         }
         else if (nn1 == 4)
         {
           if (nn2 == 5)
+          {
             return;
+          }
           else if (nn2 == 1)
+          {
             pend = pd1 / (pd1 - pd2);
+          }
         }
       }
     }
@@ -748,23 +932,33 @@ void HLRAlgo_PolyData::hideByOneTriangle(const HLRAlgo_BiPoint::PointsT& thePoin
     {
       double ad1 = d1;
       if (d1 < 0)
+      {
         ad1 = -d1;
+      }
       double ad2 = d2;
       if (d2 < 0)
+      {
         ad2 = -d2;
+      }
       pp = ad1 / (ad1 + ad2);
       if (TrFlags & HLRAlgo_PolyMask_EMskGrALin3)
+      {
         pdp = (thePoints.PntP1.X() + (thePoints.PntP2.X() - thePoints.PntP1.X()) * pp
                - theTriangle.V3.X())
               / aD.X();
+      }
       else
+      {
         pdp = (thePoints.PntP1.Y() + (thePoints.PntP2.Y() - thePoints.PntP1.Y()) * pp
                - theTriangle.V3.Y())
               / aD.Y();
+      }
       bool OutSideP = false;
       bool Multiple = false;
       if (pdp < -theTriangle.TolParam)
+      {
         OutSideP = true;
+      }
       else if (pdp < theTriangle.TolParam)
       {
         Multiple = true;
@@ -815,9 +1009,13 @@ void HLRAlgo_PolyData::hideByOneTriangle(const HLRAlgo_BiPoint::PointsT& thePoin
         }
       }
       else
+      {
         OutSideP = true;
+      }
       if (OutSideP)
+      {
         npiRej++;
+      }
       else
       {
         npi++;
@@ -841,7 +1039,9 @@ void HLRAlgo_PolyData::hideByOneTriangle(const HLRAlgo_BiPoint::PointsT& thePoin
   if (npi == -1)
   {
     if (npiRej >= 2)
+    {
       return;
+    }
   }
   else if (npi == 0)
   {
@@ -875,34 +1075,54 @@ void HLRAlgo_PolyData::hideByOneTriangle(const HLRAlgo_BiPoint::PointsT& thePoin
     if (HideBefore)
     {
       if (theTriangle.Param - psta < theTriangle.TolParam)
+      {
         return;
+      }
       else if (theTriangle.Param < pend)
+      {
         pend = theTriangle.Param;
+      }
     }
     else
     {
       if (pend - theTriangle.Param < theTriangle.TolParam)
+      {
         return;
+      }
       else if (psta < theTriangle.Param)
+      {
         psta = theTriangle.Param;
+      }
     }
   }
 
   bool total;
   if (psta > 0)
+  {
     total = psta < theTriangle.TolParam;
+  }
   else
+  {
     total = psta > -theTriangle.TolParam;
+  }
   if (total)
   {
     double pfin = pend - 1.;
     if (pfin > 0)
+    {
       total = pfin < theTriangle.TolParam;
+    }
     else
+    {
       total = pfin > -theTriangle.TolParam;
+    }
   }
   if (total)
+  {
     status.HideAll();
+  }
   else
+  {
     status.Hide(psta, (float)theTriangle.TolParam, pend, (float)theTriangle.TolParam, false, false);
+  }
 }

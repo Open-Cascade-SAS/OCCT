@@ -37,7 +37,9 @@ void createTridiagonalMatrix(const NCollection_Array1<double>& theDiagonal,
 
   // Set diagonal elements
   for (int i = 1; i <= aN; i++)
+  {
     theMatrix(i, i) = theDiagonal(i);
+  }
 
   // Set sub and super diagonal elements
   for (int i = 2; i <= aN; i++)
@@ -61,7 +63,9 @@ bool verifyEigenPair(const math_Matrix& theMatrix,
   {
     double aSum = 0.0;
     for (int j = 1; j <= aN; j++)
+    {
       aSum += theMatrix(i, j) * theEigenVector(j);
+    }
     aResult(i) = aSum;
   }
 
@@ -70,7 +74,9 @@ bool verifyEigenPair(const math_Matrix& theMatrix,
   {
     const double aExpected = theEigenValue * theEigenVector(i);
     if (std::abs(aResult(i) - aExpected) > theTolerance)
+    {
       return false;
+    }
   }
 
   return true;
@@ -83,7 +89,9 @@ bool areOrthogonal(const math_Vector& theVec1,
 {
   double aDotProduct = 0.0;
   for (int i = 1; i <= theVec1.Length(); i++)
+  {
     aDotProduct += theVec1(i) * theVec2(i);
+  }
 
   return std::abs(aDotProduct) < theTolerance;
 }
@@ -93,7 +101,9 @@ double vectorNorm(const math_Vector& theVector)
 {
   double aNorm = 0.0;
   for (int i = 1; i <= theVector.Length(); i++)
+  {
     aNorm += theVector(i) * theVector(i);
+  }
   return std::sqrt(aNorm);
 }
 } // namespace
@@ -257,7 +267,9 @@ TEST(math_EigenValuesSearcherTest, DiagonalMatrix)
   // For a diagonal matrix, eigenvalues should be the diagonal elements
   std::vector<double> eigenvals;
   for (int i = 1; i <= 4; i++)
+  {
     eigenvals.push_back(searcher.EigenValue(i));
+  }
 
   std::sort(eigenvals.begin(), eigenvals.end());
 
@@ -338,11 +350,15 @@ TEST(math_EigenValuesSearcherTest, FiveByFiveMatrix)
 
   // Create a symmetric tridiagonal matrix with pattern
   for (int i = 1; i <= 5; i++)
+  {
     aDiagonal.SetValue(i, 2.0);
+  }
 
   aSubdiagonal.SetValue(1, 0.0); // Not used
   for (int i = 2; i <= 5; i++)
+  {
     aSubdiagonal.SetValue(i, -1.0);
+  }
 
   math_EigenValuesSearcher searcher(aDiagonal, aSubdiagonal);
 
@@ -393,7 +409,9 @@ TEST(math_EigenValuesSearcherTest, SmallSubdiagonalElements)
   // Should converge to approximately diagonal values
   std::vector<double> eigenvals;
   for (int i = 1; i <= 3; i++)
+  {
     eigenvals.push_back(searcher.EigenValue(i));
+  }
 
   std::sort(eigenvals.begin(), eigenvals.end());
 
@@ -427,7 +445,9 @@ TEST(math_EigenValuesSearcherTest, ZeroDiagonalElements)
   // Eigenvalues should be -sqrt(2), 0, sqrt(2)
   std::vector<double> eigenvals;
   for (int i = 1; i <= 3; i++)
+  {
     eigenvals.push_back(searcher.EigenValue(i));
+  }
 
   std::sort(eigenvals.begin(), eigenvals.end());
 
@@ -569,7 +589,9 @@ TEST(math_EigenValuesSearcherTest, AntisymmetricSubdiagonal)
 
   // Symmetric tridiagonal with specific pattern
   for (int i = 1; i <= 5; i++)
+  {
     aDiagonal.SetValue(i, static_cast<double>(i));
+  }
 
   aSubdiagonal.SetValue(1, 0.0);
   aSubdiagonal.SetValue(2, 1.0);
@@ -621,7 +643,9 @@ TEST(math_EigenValuesSearcherTest, WilkinsonMatrix)
 
   aSubdiagonal.SetValue(1, 0.0);
   for (int i = 2; i <= n; i++)
+  {
     aSubdiagonal.SetValue(i, 1.0);
+  }
 
   math_EigenValuesSearcher searcher(aDiagonal, aSubdiagonal);
 
@@ -786,7 +810,9 @@ TEST(math_EigenValuesSearcherTest, NearDegenerateEigenvalues)
   // Should still find distinct eigenvalues despite near-degeneracy
   std::vector<double> eigenvals;
   for (int i = 1; i <= 3; i++)
+  {
     eigenvals.push_back(searcher.EigenValue(i));
+  }
 
   std::sort(eigenvals.begin(), eigenvals.end());
 
@@ -844,7 +870,9 @@ TEST(math_EigenValuesSearcherTest, DeflationConditionPrecision)
   // Eigenvalues should be close to diagonal elements due to small off-diagonal
   std::vector<double> eigenvals;
   for (int i = 1; i <= 4; i++)
+  {
     eigenvals.push_back(searcher.EigenValue(i));
+  }
 
   std::sort(eigenvals.begin(), eigenvals.end());
 
@@ -897,11 +925,15 @@ TEST(math_EigenValuesSearcherTest, ConvergenceBehavior)
 
   // Create a matrix that might require more iterations to converge
   for (int i = 1; i <= 6; i++)
+  {
     aDiagonal.SetValue(i, static_cast<double>(i) * 0.1);
+  }
 
   aSubdiagonal.SetValue(1, 0.0);
   for (int i = 2; i <= 6; i++)
+  {
     aSubdiagonal.SetValue(i, 0.99); // Large off-diagonal elements
+  }
 
   math_EigenValuesSearcher searcher(aDiagonal, aSubdiagonal);
 
@@ -1028,11 +1060,15 @@ TEST(math_EigenValuesSearcherTest, PathologicalEqualElements)
   // All elements equal - degenerate case
   const double value = 42.0;
   for (int i = 1; i <= 5; i++)
+  {
     aDiagonal.SetValue(i, value);
+  }
 
   aSubdiagonal.SetValue(1, 0.0);
   for (int i = 2; i <= 5; i++)
+  {
     aSubdiagonal.SetValue(i, value);
+  }
 
   math_EigenValuesSearcher searcher(aDiagonal, aSubdiagonal);
 
@@ -1058,11 +1094,15 @@ TEST(math_EigenValuesSearcherTest, IncreasingSubdiagonal)
   NCollection_Array1<double> aSubdiagonal(1, 6);
 
   for (int i = 1; i <= 6; i++)
+  {
     aDiagonal.SetValue(i, 1.0);
+  }
 
   aSubdiagonal.SetValue(1, 0.0);
   for (int i = 2; i <= 6; i++)
+  {
     aSubdiagonal.SetValue(i, static_cast<double>(i - 1) * 0.1);
+  }
 
   math_EigenValuesSearcher searcher(aDiagonal, aSubdiagonal);
 

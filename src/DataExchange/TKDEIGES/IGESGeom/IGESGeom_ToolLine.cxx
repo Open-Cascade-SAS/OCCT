@@ -126,5 +126,5 @@ void IGESGeom_ToolLine::OwnDump(const occ::handle<IGESGeom_Line>& ent,
   S << "\n"
        "End Point : ";
   IGESData_DumpXYZL(S, level, ent->EndPoint(), ent->Location());
-  S << std::endl;
+  S << '\n';
 }

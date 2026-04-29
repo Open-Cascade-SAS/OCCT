@@ -490,11 +490,17 @@ TEST(NCollection_IndexedDataMapTest, Iterator)
     const ItemType& value = it.Value();
 
     if (key == 10 && value == 1.0)
+    {
       found10 = true;
+    }
     else if (key == 20 && value == 2.0)
+    {
       found20 = true;
+    }
     else if (key == 30 && value == 3.0)
+    {
       found30 = true;
+    }
   }
 
   EXPECT_EQ(count, 3);
@@ -531,11 +537,17 @@ TEST(NCollection_IndexedDataMapTest, StlIterator)
   for (auto it = aMap.begin(); it != aMap.end(); ++it, ++count)
   {
     if (*it == 1.0)
+    {
       found1 = true;
+    }
     else if (*it == 2.0)
+    {
       found2 = true;
+    }
     else if (*it == 3.0)
+    {
       found3 = true;
+    }
   }
 
   EXPECT_EQ(count, 3);
@@ -552,11 +564,17 @@ TEST(NCollection_IndexedDataMapTest, StlIterator)
   for (auto it = aMap.cbegin(); it != aMap.cend(); ++it, ++count)
   {
     if (*it == 1.0)
+    {
       found1 = true;
+    }
     else if (*it == 2.0)
+    {
       found2 = true;
+    }
     else if (*it == 3.0)
+    {
       found3 = true;
+    }
   }
 
   EXPECT_EQ(count, 3);

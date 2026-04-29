@@ -675,13 +675,21 @@ void StdPrs_Isolines::UVIsoParameters(const TopoDS_Face&            theFace,
   double aVmax = theVmax;
 
   if (Precision::IsInfinite(aUmin))
+  {
     aUmin = -theUVLimit;
+  }
   if (Precision::IsInfinite(aUmax))
+  {
     aUmax = theUVLimit;
+  }
   if (Precision::IsInfinite(aVmin))
+  {
     aVmin = -theUVLimit;
+  }
   if (Precision::IsInfinite(aVmax))
+  {
     aVmax = theUVLimit;
+  }
 
   const bool isUClosed = aSurface->IsUClosed();
   const bool isVClosed = aSurface->IsVClosed();

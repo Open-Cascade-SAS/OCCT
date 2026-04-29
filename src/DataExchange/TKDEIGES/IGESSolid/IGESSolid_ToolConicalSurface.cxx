@@ -59,12 +59,14 @@ void IGESSolid_ToolConicalSurface::ReadOwnParams(const occ::handle<IGESSolid_Con
 
   PR.ReadReal(PR.Current(), "Semi-angle", tempAngle); // szv#4:S4163:12Mar99 `st=` not needed
 
-  if (ent->FormNumber() == 1) // Parametrised surface
+  if (ent->FormNumber() == 1)
+  { // Parametrised surface
     PR.ReadEntity(IR,
                   PR.Current(),
                   "Reference direction",
                   STANDARD_TYPE(IGESGeom_Direction),
                   tempRefdir); // szv#4:S4163:12Mar99 `st=` not needed
+  }
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(tempLocation, tempAxis, tempRadius, tempAngle, tempRefdir);
@@ -78,7 +80,9 @@ void IGESSolid_ToolConicalSurface::WriteOwnParams(const occ::handle<IGESSolid_Co
   IW.Send(ent->Radius());
   IW.Send(ent->SemiAngle());
   if (ent->IsParametrised())
+  {
     IW.Send(ent->ReferenceDir()); // see FormNumber
+  }
 }
 
 void IGESSolid_ToolConicalSurface::OwnShared(const occ::handle<IGESSolid_ConicalSurface>& ent,
@@ -132,14 +136,22 @@ void IGESSolid_ToolConicalSurface::OwnCheck(const occ::handle<IGESSolid_ConicalS
                                             occ::handle<Interface_Check>& ach) const
 {
   if (ent->Radius() < 0.0)
+  {
     ach->AddFail("Radius : Value Negative");
+  }
   if (ent->SemiAngle() < 0.0 || ent->SemiAngle() > 90.0)
+  {
     ach->AddFail("Semi-angle : Value not in the range [0 - 90]");
+  }
   int fn = 0;
   if (ent->IsParametrised())
+  {
     fn = 1;
+  }
   if (fn != ent->FormNumber())
+  {
     ach->AddFail("Parametrised Status Mismatches with Form Number");
+  }
 }
 
 void IGESSolid_ToolConicalSurface::OwnDump(const occ::handle<IGESSolid_ConicalSurface>& ent,
@@ -162,8 +174,10 @@ void IGESSolid_ToolConicalSurface::OwnDump(const occ::handle<IGESSolid_ConicalSu
   {
     S << "Surface is Parametrised  -  Reference direction :\n";
     dumper.Dump(ent->ReferenceDir(), S, sublevel);
-    S << std::endl;
+    S << '\n';
   }
   else
-    S << "Surface is UnParametrised" << std::endl;
+  {
+    S << "Surface is UnParametrised" << '\n';
+  }
 }

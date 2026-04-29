@@ -242,7 +242,9 @@ static int WriteVrml(Draw_Interpretor& di, int argc, const char** argv)
 static int loadvrml(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc < 3)
+  {
     di << "wrong number of parameters" << "\n";
+  }
   else
   {
     TopoDS_Shape                                                                      aShape;
@@ -263,9 +265,13 @@ static int loadvrml(Draw_Interpretor& di, int argc, const char** argv)
       if (!aTrek.IsEmpty())
       {
         if (!aDisk.IsEmpty())
+        {
           aVrmlDir = aDisk;
+        }
         else
+        {
           aVrmlDir.Clear();
+        }
         aTrek.ChangeAll('|', '/');
         aVrmlDir += aTrek;
       }
@@ -376,7 +382,9 @@ static int writevrml(Draw_Interpretor& di, int argc, const char** argv)
   {
     aVersion = Draw::Atoi(argv[3]);
     if (argc == 5)
+    {
       aType = Draw::Atoi(argv[4]);
+    }
   }
 
   // Bound parameters

@@ -125,11 +125,17 @@ GeomFill_CircularBlendFunc::GeomFill_CircularBlendFunc(const occ::handle<Adaptor
 
   // Type de convertion ?
   if (Polynomial)
+  {
     myTConv = Convert_Polynomial;
+  }
   else if (maxang > 0.65 * M_PI)
+  {
     myTConv = Convert_QuasiAngular; // car c'est Continue
+  }
   else
+  {
     myTConv = Convert_TgtThetaOver2;
+  }
   // car c'est le plus performant
 
   // On en deduit la structure
@@ -200,9 +206,13 @@ void GeomFill_CircularBlendFunc::Discret()
       }
       Angle = std::abs(std::acos(Cosa));
       if (Angle > maxang)
+      {
         maxang = Angle;
+      }
       if (Angle < minang)
+      {
         minang = Angle;
+      }
       distmin = std::min(distmin, P1.Distance(P2));
       myBary.ChangeCoord() += (P1.XYZ() + P2.XYZ());
     }
@@ -223,13 +233,19 @@ void GeomFill_CircularBlendFunc::Discret()
       ns2.Normalize();
       Cosa = ns1.Dot(ns2);
       if (Cosa > 1.)
+      {
         Cosa = 1.;
+      }
       Angle = std::abs(std::acos(Cosa));
 
       if (Angle > maxang)
+      {
         maxang = Angle;
+      }
       if (Angle < minang)
+      {
         minang = Angle;
+      }
       distmin = std::min(distmin, P1.Distance(P2));
       myBary.ChangeCoord() += (P1.XYZ() + P2.XYZ());
     }
@@ -267,12 +283,16 @@ bool GeomFill_CircularBlendFunc::D0(const double Param,
   ns1.SetXYZ(Center.XYZ() - P1.XYZ());
   ns2.SetXYZ(Center.XYZ() - P2.XYZ());
   if (!ns1.IsParallel(ns2, TolAng))
+  {
     nplan = ns1.Crossed(ns2);
+  }
   else
   {
     myTPath->D1(Param, Center, nplan);
     if (myreverse)
+    {
       nplan.Reverse();
+    }
   }
 
   // Normalisation
@@ -568,7 +588,9 @@ int GeomFill_CircularBlendFunc::NbIntervals(const GeomAbs_Shape S) const
 
   NCollection_Array1<double> ICbs(1, Inter.Length());
   for (ii = 1; ii <= ICbs.Length(); ii++)
+  {
     ICbs(ii) = Inter(ii);
+  }
 
   Inter.Clear();
   GeomFillFusInt(ICenter, ICbs, Inter);
@@ -597,14 +619,18 @@ void GeomFill_CircularBlendFunc::Intervals(NCollection_Array1<double>& T,
 
   NCollection_Array1<double> ICbs(1, Inter.Length());
   for (ii = 1; ii <= ICbs.Length(); ii++)
+  {
     ICbs(ii) = Inter(ii);
+  }
 
   Inter.Clear();
   GeomFillFusInt(ICenter, ICbs, Inter);
 
   // Recopie du resultat
   for (ii = 1; ii <= Inter.Length(); ii++)
+  {
     T(ii) = Inter(ii);
+  }
 }
 
 void GeomFill_CircularBlendFunc::SetInterval(const double First, const double Last)

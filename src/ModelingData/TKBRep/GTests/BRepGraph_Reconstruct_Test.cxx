@@ -250,7 +250,9 @@ TEST(BRepGraph_ReconstructTest, Edge_HasCurve_NonNull)
   for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
     if (BRepGraph_Tool::Edge::Degenerated(aGraph, anEdgeIt.CurrentId()))
+    {
       continue;
+    }
 
     TopoDS_Shape aReconEdge = aGraph.Shapes().Reconstruct(BRepGraph_NodeId(anEdgeIt.CurrentId()));
     TopLoc_Location         aLoc;
@@ -276,7 +278,9 @@ TEST(BRepGraph_ReconstructTest, Edge_ParameterRange_Preserved)
   for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
     if (BRepGraph_Tool::Edge::Degenerated(aGraph, anEdgeIt.CurrentId()))
+    {
       continue;
+    }
 
     TopoDS_Shape aReconEdge = aGraph.Shapes().Reconstruct(BRepGraph_NodeId(anEdgeIt.CurrentId()));
     TopLoc_Location aLoc;
@@ -341,7 +345,9 @@ TEST(BRepGraph_ReconstructTest, Face_PCurvesPresent_OnAllEdges)
     {
       const TopoDS_Edge& anEdge = TopoDS::Edge(anEdgeExp.Current());
       if (BRep_Tool::Degenerated(anEdge))
+      {
         continue;
+      }
 
       double                    aFirst  = 0.0;
       double                    aLast   = 0.0;
@@ -505,7 +511,9 @@ TEST(BRepGraph_ReconstructTest, Reconstruct_Edge_ValidShape)
   for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
     if (BRepGraph_Tool::Edge::Degenerated(aGraph, anEdgeIt.CurrentId()))
+    {
       continue;
+    }
 
     TopoDS_Shape aRecon = aGraph.Shapes().Reconstruct(BRepGraph_NodeId(anEdgeIt.CurrentId()));
     EXPECT_FALSE(aRecon.IsNull());

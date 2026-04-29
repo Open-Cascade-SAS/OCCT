@@ -61,11 +61,15 @@ occ::handle<TObj_TReference> TObj_TReference::Set(const TDF_Label&              
   {
     occ::handle<TObj_Object> anObj = A->Get();
     if (!anObj.IsNull())
+    {
       anObj->RemoveBackReference(theMaster);
+    }
   }
   A->Set(theObject, theMaster->GetLabel());
   if (!theObject.IsNull())
+  {
     theObject->AddBackReference(theMaster);
+  }
   return A;
 }
 
@@ -75,9 +79,13 @@ void TObj_TReference::Set(const occ::handle<TObj_Object>& theElem, const TDF_Lab
 {
   Backup();
   if (theElem.IsNull())
+  {
     myLabel.Nullify();
+  }
   else
+  {
     myLabel = theElem->GetLabel();
+  }
 
   myMasterLabel = theMasterLabel;
 }
@@ -139,27 +147,37 @@ void TObj_TReference::Paste(const occ::handle<TDF_Attribute>&       theInto,
   // get new referenced object
   TDF_Label aRefLabel = myLabel;
   if (!RT->HasRelocation(myLabel, aRefLabel))
+  {
     aRefLabel = myLabel;
+  }
   aRefLabel.FindAttribute(TObj_TObject::GetID(), aObject);
   occ::handle<TObj_Object> anIObject;
   if (!aObject.IsNull())
+  {
     anIObject = aObject->Get();
+  }
 
   // find correct master label
   occ::handle<TObj_Object> aMasterObj;
   TObj_Object::GetObj(aReference->Label(), aMasterObj, true);
   TDF_Label aMasterLabel;
   if (!aMasterObj.IsNull())
+  {
     aMasterLabel = aMasterObj->GetLabel();
+  }
   if (aMasterLabel.IsNull() || !aMasterLabel.FindAttribute(TObj_TObject::GetID(), aMasterTObj))
+  {
     return;
+  }
 
   // set master and referenced label
   aReference->Set(anIObject, aMasterLabel);
 
   // update back references
   if (!anIObject.IsNull())
+  {
     anIObject->AddBackReference(aMasterTObj->Get());
+  }
 }
 
 //=======================================================================
@@ -171,18 +189,24 @@ void TObj_TReference::BeforeForget()
 {
   // check if master object exist
   if (myMasterLabel.IsNull())
+  {
     return;
+  }
 
   // removing back reference
   occ::handle<TObj_Object>  aMasterObject;
   occ::handle<TObj_TObject> aTObject;
   if (!myMasterLabel.FindAttribute(TObj_TObject::GetID(), aTObject))
+  {
     return;
+  }
   aMasterObject = aTObject->Get();
 
   occ::handle<TObj_Object> anObj = Get();
   if (anObj.IsNull())
+  {
     return;
+  }
 
   aMasterObject->BeforeForgetReference(GetLabel());
   anObj->RemoveBackReference(aMasterObject);
@@ -194,23 +218,33 @@ bool TObj_TReference::BeforeUndo(const occ::handle<TDF_AttributeDelta>& theDelta
                                  const bool /*isForced*/)
 {
   if (!theDelta->IsKind(STANDARD_TYPE(TDF_DeltaOnAddition)))
+  {
     return true;
+  }
 
   if (myMasterLabel.IsNull())
+  {
     return true;
+  }
 
   occ::handle<TObj_Object> anObject = Get();
   if (anObject.IsNull())
+  {
     return true;
+  }
 
   occ::handle<TObj_Object>  aMasterObject;
   occ::handle<TObj_TObject> aTObject;
   if (!myMasterLabel.FindAttribute(TObj_TObject::GetID(), aTObject))
+  {
     return true;
+  }
   aMasterObject = aTObject->Get();
 
   if (!anObject.IsNull())
+  {
     anObject->RemoveBackReference(aMasterObject);
+  }
 
   return true;
 }
@@ -221,24 +255,34 @@ bool TObj_TReference::AfterUndo(const occ::handle<TDF_AttributeDelta>& theDelta,
                                 const bool /*isForced*/)
 {
   if (!theDelta->IsKind(STANDARD_TYPE(TDF_DeltaOnRemoval)))
+  {
     return true;
+  }
 
   if (myMasterLabel.IsNull())
+  {
     return true;
+  }
 
   occ::handle<TObj_Object> anObject = Get();
   if (anObject.IsNull())
+  {
     return true;
+  }
 
   occ::handle<TObj_Object>  aMasterObject;
   occ::handle<TObj_TObject> aTObject;
 
   if (!myMasterLabel.FindAttribute(TObj_TObject::GetID(), aTObject))
+  {
     return true;
+  }
   aMasterObject = aTObject->Get();
 
   if (!anObject.IsNull())
+  {
     anObject->AddBackReference(aMasterObject);
+  }
 
   return true;
 }
@@ -248,17 +292,23 @@ bool TObj_TReference::AfterUndo(const occ::handle<TDF_AttributeDelta>& theDelta,
 void TObj_TReference::AfterResume()
 {
   if (myMasterLabel.IsNull())
+  {
     return;
+  }
 
   occ::handle<TObj_Object>  aMasterObject;
   occ::handle<TObj_TObject> aTObject;
   if (!myMasterLabel.FindAttribute(TObj_TObject::GetID(), aTObject))
+  {
     return;
+  }
   aMasterObject                     = aTObject->Get();
   occ::handle<TObj_Object> anObject = Get();
 
   if (!anObject.IsNull())
+  {
     anObject->AddBackReference(aMasterObject);
+  }
 }
 
 //=================================================================================================
@@ -266,17 +316,23 @@ void TObj_TReference::AfterResume()
 bool TObj_TReference::AfterRetrieval(const bool /*forceIt*/)
 {
   if (myMasterLabel.IsNull())
+  {
     return true;
+  }
 
   occ::handle<TObj_Object>  anObject = Get();
   occ::handle<TObj_Object>  aMasterObject;
   occ::handle<TObj_TObject> aTObject;
   if (!myMasterLabel.FindAttribute(TObj_TObject::GetID(), aTObject))
+  {
     return false;
+  }
 
   aMasterObject = aTObject->Get();
   if (!anObject.IsNull())
+  {
     anObject->AddBackReference(aMasterObject);
+  }
 
   return true;
 }

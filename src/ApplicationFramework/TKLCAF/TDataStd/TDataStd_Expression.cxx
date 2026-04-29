@@ -67,7 +67,9 @@ void TDataStd_Expression::SetExpression(const TCollection_ExtendedString& E)
 {
   // OCC2932 correction
   if (myExpression == E)
+  {
     return;
+  }
 
   Backup();
   myExpression = E;

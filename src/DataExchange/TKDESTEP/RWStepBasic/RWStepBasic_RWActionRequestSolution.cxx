@@ -38,7 +38,9 @@ void RWStepBasic_RWActionRequestSolution::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "action_request_solution"))
+  {
     return;
+  }
 
   // Own fields of ActionRequestSolution
 

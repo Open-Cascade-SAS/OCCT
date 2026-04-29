@@ -405,7 +405,9 @@ void BOPAlgo_BuilderFace::PerformAreas(const Message_ProgressRange& theRange)
       TopoDS_Face aFace;
       aBB.MakeFace(aFace, aS, aLoc, aTol);
       if (BRep_Tool::NaturalRestriction(myFace))
+      {
         aBB.NaturalRestriction(aFace, true);
+      }
       myAreas.Append(aFace);
     }
     return;
@@ -514,7 +516,9 @@ void BOPAlgo_BuilderFace::PerformAreas(const Message_ProgressRange& theRange)
       const TopoDS_Shape& aHole = aHoleFaces(k);
       // Check if it is inside
       if (!IsInside(aHole, aFace, myContext))
+      {
         continue;
+      }
 
       // Save the relation
       TopoDS_Shape* pFaceWas = aHoleFaceMap.ChangeSeek(aHole);
@@ -544,7 +548,9 @@ void BOPAlgo_BuilderFace::PerformAreas(const Message_ProgressRange& theRange)
     //
     NCollection_List<TopoDS_Shape>* pLHoles = aFaceHolesMap.ChangeSeek(aFace);
     if (!pLHoles)
+    {
       pLHoles = &aFaceHolesMap(aFaceHolesMap.Add(aFace, NCollection_List<TopoDS_Shape>()));
+    }
     pLHoles->Append(aHole);
   }
 
@@ -565,7 +571,9 @@ void BOPAlgo_BuilderFace::PerformAreas(const Message_ProgressRange& theRange)
       {
         const TopoDS_Shape& aHole = aHoleFaces(i);
         if (!aHoleFaceMap.Contains(aHole))
+        {
           anUnUsedHoles.Append(aHole);
+        }
       }
       // Save it
       aNewFaces.Append(aFace);
@@ -610,13 +618,17 @@ void BOPAlgo_BuilderFace::PerformAreas(const Message_ProgressRange& theRange)
 void BOPAlgo_BuilderFace::PerformInternalShapes(const Message_ProgressRange& theRange)
 {
   if (myAvoidInternalShapes)
+  {
     // User-defined option to avoid internal edges
     // in the result is in force.
     return;
+  }
 
   if (myLoopsInternal.IsEmpty())
+  {
     // No edges left for classification
     return;
+  }
 
   // Prepare tree with the boxes of the edges to classify
   BOPTools_Box2dTree aBoxTree;
@@ -678,7 +690,9 @@ void BOPAlgo_BuilderFace::PerformInternalShapes(const Message_ProgressRange& the
     aSelector.SetBVHSet(&aBoxTree);
     aSelector.SetBox(Bnd_Tools::Bnd2BVH(aBoxF));
     if (!aSelector.Select())
+    {
       continue;
+    }
 
     // Collect edges inside the face
     NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> anEdgesInside;
@@ -689,7 +703,9 @@ void BOPAlgo_BuilderFace::PerformInternalShapes(const Message_ProgressRange& the
     {
       const int nE = itLI.Value();
       if (aMEDone.Contains(nE))
+      {
         continue;
+      }
 
       const TopoDS_Edge& aE = TopoDS::Edge(anEdgesMap(nE));
       if (IsInside(aE, aF, myContext))
@@ -700,7 +716,9 @@ void BOPAlgo_BuilderFace::PerformInternalShapes(const Message_ProgressRange& the
     }
 
     if (anEdgesInside.IsEmpty())
+    {
       continue;
+    }
 
     // Make internal wires
     NCollection_List<TopoDS_Shape> aLSI;
@@ -716,8 +734,10 @@ void BOPAlgo_BuilderFace::PerformInternalShapes(const Message_ProgressRange& the
 
     // Condition of early exit
     if (aMEDone.Extent() == anEdgesMap.Extent())
+    {
       // All edges are classified and added into the faces
       return;
+    }
   }
 
   // Some edges are left unclassified - warn user about them
@@ -725,7 +745,9 @@ void BOPAlgo_BuilderFace::PerformInternalShapes(const Message_ProgressRange& the
   for (int i = 1; i <= anEdgesMap.Extent(); ++i)
   {
     if (!aMEDone.Contains(i))
+    {
       anEdgesUnUsed.Add(anEdgesMap(i));
+    }
   }
 
   // Make internal wires
@@ -737,13 +759,17 @@ void BOPAlgo_BuilderFace::PerformInternalShapes(const Message_ProgressRange& the
   BRep_Builder().MakeCompound(aWShape);
   BRep_Builder().Add(aWShape, myFace);
   if (aLSI.Extent() == 1)
+  {
     BRep_Builder().Add(aWShape, aLSI.First());
+  }
   else
   {
     TopoDS_Compound aCE;
     BRep_Builder().MakeCompound(aCE);
     for (NCollection_List<TopoDS_Shape>::Iterator it(aLSI); it.More(); it.Next())
+    {
       BRep_Builder().Add(aCE, it.Value());
+    }
     BRep_Builder().Add(aWShape, aCE);
   }
 
@@ -836,19 +862,25 @@ bool IsInside(const TopoDS_Shape&            theWire,
   {
     const TopoDS_Edge& aE = TopoDS::Edge(anExp.Current());
     if (BRep_Tool::Degenerated(aE))
+    {
       // Avoid checking degenerated edges.
       continue;
+    }
 
     if (aFaceEdgesMap.Contains(aE))
+    {
       // Face contains the edge from the wire, thus the wire cannot be
       // inside that face.
       return isInside;
+    }
 
     // Get 2d curve of the edge on the face
     double                           aT1, aT2;
     const occ::handle<Geom2d_Curve>& aC2D = BRep_Tool::CurveOnSurface(aE, aF, aT1, aT2);
     if (aC2D.IsNull())
+    {
       continue;
+    }
 
     // Get middle point on the curve
     gp_Pnt2d aP2D = aC2D->Value((aT1 + aT2) / 2.);
@@ -872,7 +904,9 @@ bool IsGrowthWire(const TopoDS_Shape&                                           
     for (; aIt.More(); aIt.Next())
     {
       if (theMHE.Contains(aIt.Value()))
+      {
         return true;
+      }
     }
   }
   return false;

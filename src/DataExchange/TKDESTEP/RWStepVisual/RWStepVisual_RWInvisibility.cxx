@@ -30,7 +30,9 @@ void RWStepVisual_RWInvisibility::ReadStep(const occ::handle<StepData_StepReader
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 1, ach, "invisibility"))
+  {
     return;
+  }
 
   // --- own field : invisibleItems ---
 
@@ -45,7 +47,9 @@ void RWStepVisual_RWInvisibility::ReadStep(const occ::handle<StepData_StepReader
     {
       // szv#4:S4163:12Mar99 `bool stat1 =` not needed
       if (data->ReadEntity(nsub1, i1, "invisible_items", ach, aInvisibleItemsItem))
+      {
         aInvisibleItems->SetValue(i1, aInvisibleItemsItem);
+      }
     }
   }
 

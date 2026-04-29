@@ -75,19 +75,25 @@ bool TopOpeBRepTool_mkTondgE::Initialize(const TopoDS_Edge& dgE,
   gp_Pnt2d             uv;
   bool                 ok = FUN_tool_paronEF(mydgE, par, myF, uv);
   if (!ok)
+  {
     return false;
+  }
   gp_Vec tmp;
   ok    = TopOpeBRepTool_TOOL::NggeomF(uv, myF, tmp);
   myngf = gp_Dir(tmp);
   if (!ok)
+  {
     return false;
+  }
 
   myuvi    = uvi;
   myFi     = Fi;
   bool oki = TopOpeBRepTool_TOOL::NggeomF(myuvi, myFi, tmp);
   myngfi   = gp_Dir(tmp);
   if (!oki)
+  {
     return false;
+  }
 
   double dot = myngf.Dot(myngfi);
   isT2d      = (std::abs(1 - std::abs(dot)) < FUN_tola());
@@ -141,7 +147,9 @@ int TopOpeBRepTool_mkTondgE::GetAllRest(NCollection_List<TopoDS_Shape>& lEi)
     const TopoDS_Edge& ei  = TopoDS::Edge(ex.Current());
     bool               cli = TopOpeBRepTool_TOOL::IsClosingE(ei, myFi);
     if (cli)
+    {
       continue;
+    }
 
     bool isbi = myEpari.IsBound(ei);
     if (isbi)
@@ -155,15 +163,23 @@ int TopOpeBRepTool_mkTondgE::GetAllRest(NCollection_List<TopoDS_Shape>& lEi)
     gp_Pnt2d o2d;
     bool     uviso = TopOpeBRepTool_TOOL::UVISO(ei, myFi, isou, isov, d2d, o2d);
     if (!uviso)
+    {
       continue;
+    }
 
     bool ok = false;
     if (isou)
+    {
       ok = std::abs(o2d.X() - myuvi.X()) < tolu;
+    }
     if (isov)
+    {
       ok = std::abs(o2d.Y() - myuvi.Y()) < tolv;
+    }
     if (!ok)
+    {
       continue;
+    }
 
     double parei;
     TopOpeBRepTool_TOOL::ParISO(myuvi, ei, myFi, parei);
@@ -182,7 +198,9 @@ static bool FUN_getEc(const TopoDS_Face& f, const TopoDS_Vertex& v, TopoDS_Edge&
     const TopoDS_Edge& e      = TopoDS::Edge(exe.Current());
     bool               closed = TopOpeBRepTool_TOOL::IsClosingE(e, f);
     if (!closed)
+    {
       continue;
+    }
     TopExp_Explorer exv(e, TopAbs_VERTEX);
     for (; exv.More(); exv.Next())
     {
@@ -227,13 +245,19 @@ static bool FUN_MkTonE(const gp_Vec& faxis,
   else
   {
     if (!isONi)
+    {
       ang = TopOpeBRepTool_TOOL::Matter(dirINcle, tgi.Reversed(), faxis);
+    }
     // double dot = isONi ? 0 : (dirINcle^tgi).Dot(ngf);
     double dot = isONi ? 0 : (dirINcle ^ tgi).Dot(faxis);
     if (dot1 < 0)
+    {
       outin = (dot > 0);
+    }
     else
+    {
       outin = (dot < 0);
+    }
   } //! isONi
 
   double Cang = (ang > M_PI) ? ang - M_PI : ang + M_PI;
@@ -247,7 +271,9 @@ static bool FUN_MkTonE(const gp_Vec& faxis,
 bool TopOpeBRepTool_mkTondgE::MkTonE(int& mkT, double& par1, double& par2)
 {
   if (isT2d)
+  {
     return false;
+  }
 
   mkT  = NOI;
   par1 = par2 = 1.e7;
@@ -259,7 +285,9 @@ bool TopOpeBRepTool_mkTondgE::MkTonE(int& mkT, double& par1, double& par2)
   {
     bool find = FUN_getEc(myF, v, myclE);
     if (!find)
+    {
       return false;
+    }
   }
 
   // dirINcle : tangent to cle at v oriented INSIDE 1d(cle)
@@ -267,26 +295,36 @@ bool TopOpeBRepTool_mkTondgE::MkTonE(int& mkT, double& par1, double& par2)
   gp_Vec dirINcle;
   bool   ok = TopOpeBRepTool_TOOL::TgINSIDE(v, myclE, dirINcle, ovcle);
   if (!ok)
+  {
     return NOI;
+  }
 
   // faxis : describes f's axis for parametrization of <dgE>
   gp_Vec faxis = myngf;
   if (ovcle == FORWARD)
+  {
     faxis.Reverse();
+  }
 
   // xxi : normal to fi oriented INSIDE 3d(fi)
   gp_Vec xxi;
   ok = TopOpeBRepTool_TOOL::NggeomF(myuvi, myFi, xxi);
   if (!ok)
+  {
     return false;
+  }
   if (M_FORWARD(myFi.Orientation()))
+  {
     xxi.Reverse();
+  }
 
   // mkT, par1, par2 :
   bool outin;
   ok = FUN_MkTonE(faxis, dirINcle, xxi, myngf, par1, par2, outin);
   if (ok)
+  {
     mkT = MKI12;
+  }
   return ok;
 }
 
@@ -311,7 +349,9 @@ bool TopOpeBRepTool_mkTondgE::MkTonE(const TopoDS_Edge& ei, int& mkT, double& pa
   par1 = par2 = 1.e7;
   hasRest     = myEpari.IsBound(ei);
   if (!hasRest)
+  {
     return false;
+  }
   const double pari = myEpari.Find(ei);
 
   double pfi, pli;
@@ -321,9 +361,13 @@ bool TopOpeBRepTool_mkTondgE::MkTonE(const TopoDS_Edge& ei, int& mkT, double& pa
   gp_Vec tgin1di;
   bool   ok = TopOpeBRepTool_TOOL::TggeomE(pari, ei, tgin1di);
   if (!ok)
+  {
     return false;
+  }
   if (onli)
+  {
     tgin1di.Reverse();
+  }
 
   // v :
   TopExp_Explorer      exv(mydgE, TopAbs_VERTEX);
@@ -333,7 +377,9 @@ bool TopOpeBRepTool_mkTondgE::MkTonE(const TopoDS_Edge& ei, int& mkT, double& pa
   {
     bool find = FUN_getEc(myF, v, myclE);
     if (!find)
+    {
       return false;
+    }
   }
 
   // dirINcle : tangent to cle at v oriented INSIDE 1d(cle)
@@ -341,15 +387,21 @@ bool TopOpeBRepTool_mkTondgE::MkTonE(const TopoDS_Edge& ei, int& mkT, double& pa
   gp_Vec dirINcle;
   ok = TopOpeBRepTool_TOOL::TgINSIDE(v, myclE, dirINcle, ovcle);
   if (!ok)
+  {
     return NOI;
+  }
 
   if (isT2d && !hasRest)
+  {
     return false; // no transition to compute
+  }
 
   // faxis : describes f's axis for parametrization of <dgE>
   gp_Vec faxis = myngf;
   if (ovcle == FORWARD)
+  {
     faxis.Reverse();
+  }
 
   gp_Dir xxi;  // isT2d=true : normal to ei oriented INSIDE 2d(fi)
                //              normal to fi oriented INSIDE 3d(fi)
@@ -364,12 +416,16 @@ bool TopOpeBRepTool_mkTondgE::MkTonE(const TopoDS_Edge& ei, int& mkT, double& pa
     // xxi :
     ok = TopOpeBRepTool_TOOL::XX(myuvi, myFi, pari, ei, xxi);
     if (!ok)
+    {
       return false;
+    }
 
     // mkT,par1,par2
     ok = FUN_MkTonE(faxis, dirINcle, xxi, myngf, par1, par2, outin);
     if (!ok)
+    {
       return false;
+    }
 
     // clang-format off
     if (!onfi && !onli) {mkT = MKI12; return true;}// => the same for all edges of lei @190499
@@ -391,19 +447,27 @@ bool TopOpeBRepTool_mkTondgE::MkTonE(const TopoDS_Edge& ei, int& mkT, double& pa
     ok  = TopOpeBRepTool_TOOL::NggeomF(myuvi, myFi, tmp);
     xxi = gp_Dir(tmp);
     if (!ok)
+    {
       return false;
+    }
     if (M_FORWARD(myFi.Orientation()))
+    {
       xxi.Reverse();
+    }
 
     // mkT,par1,par2
     ok = FUN_MkTonE(faxis, dirINcle, xxi, myngf, par1, par2, outin);
     if (!ok)
+    {
       return false;
+    }
 
     //// modified by jgv, 21.11.01 for BUC61053 ////
     ok = TopOpeBRepTool_TOOL::XX(myuvi, myFi, pari, ei, xxri);
     if (!ok)
+    {
       return false;
+    }
 
     mkT        = MKI12;              // without restrictions.
     gp_Vec tgi = xxi.Crossed(faxis); // tgi /(tgi,xxi,faxis) is direct :
@@ -416,13 +480,19 @@ bool TopOpeBRepTool_mkTondgE::MkTonE(const TopoDS_Edge& ei, int& mkT, double& pa
         return true;
       }
       else
+      {
         dot = tgi.Dot(tgin1di);
+      }
     }
     bool keepang = (dot > 0);
     if (keepang)
+    {
       mkT = outin ? MKI1 : MKI2;
+    }
     else
+    {
       mkT = outin ? MKI2 : MKI1;
+    }
     return true;
     ////////////////////////////////////////////////
     /*
@@ -448,9 +518,13 @@ bool TopOpeBRepTool_mkTondgE::MkTonE(const TopoDS_Edge& ei, int& mkT, double& pa
   double dot     = tgi.Dot(xxri);
   bool   keepang = (dot > 0);
   if (keepang)
+  {
     mkT = outin ? MKI1 : MKI2;
+  }
   else
+  {
     mkT = outin ? MKI2 : MKI1;
+  }
 
   return true;
 }

@@ -287,7 +287,9 @@ void AIS_Shape::ComputeSelection(const occ::handle<SelectMgr_Selection>& aSelect
                                  const int                               aMode)
 {
   if (myshape.IsNull())
+  {
     return;
+  }
   if (myshape.ShapeType() == TopAbs_COMPOUND && myshape.NbChildren() == 0)
   {
     // empty Shape -> empty Assembly.
@@ -754,7 +756,9 @@ bool AIS_Shape::SetOwnDeviationCoefficient()
 {
   bool itSet = myDrawer->HasOwnDeviationCoefficient();
   if (itSet)
+  {
     myDrawer->SetDeviationCoefficient();
+  }
   return itSet;
 }
 
@@ -768,7 +772,9 @@ bool AIS_Shape::SetOwnDeviationAngle()
 {
   bool itSet = myDrawer->HasOwnDeviationAngle();
   if (itSet)
+  {
     myDrawer->SetDeviationAngle();
+  }
   return itSet;
 }
 

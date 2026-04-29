@@ -69,7 +69,8 @@ TEST(Message_Messenger_Test, OCC31189_StreamBufferMessageOrdering)
     // Check that messages output to sender and directly to messenger do not intermix
     aSender << "Sender message 1: start ...";
     aMsgMgr->Send("Direct message 1");
-    aSender << "... end" << std::endl; // endl should send the message
+    aSender << "... end";
+    aSender.Flush(true);
 
     // Check that empty stream buffer does not produce output on destruction
     ::Message::SendInfo();
@@ -77,8 +78,9 @@ TEST(Message_Messenger_Test, OCC31189_StreamBufferMessageOrdering)
     // Additional message to check that they go in expected order
     aMsgMgr->Send("Direct message 2");
 
-    // Check that empty stream buffer does produce empty line if std::endl is passed
-    ::Message::SendInfo() << std::endl;
+    // Check that empty stream buffer does produce empty line if explicit flush is requested
+    Message_Messenger::StreamBuffer anEmptySender = ::Message::SendInfo();
+    anEmptySender.Flush(true);
 
     // Last message should be sent on destruction of a sender
     aSender << "Sender message 2";
@@ -131,7 +133,7 @@ TEST(Message_Messenger_Test, StreamBufferBasicUsage)
   aMsgMgr->AddPrinter(aPrinter);
   {
     Message_Messenger::StreamBuffer aBuffer = Message::SendInfo();
-    aBuffer << "Test message" << std::endl;
+    aBuffer << "Test message" << '\n';
   }
 
   aMsgMgr->ChangePrinters().Clear();

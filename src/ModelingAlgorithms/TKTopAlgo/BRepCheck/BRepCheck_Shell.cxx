@@ -61,7 +61,9 @@ static void Propagate(const NCollection_IndexedDataMap<TopoDS_Shape,
       const NCollection_List<TopoDS_Shape>* aList = mapEF.Seek(edg);
 
       if (aList == nullptr)
+      {
         continue;
+      }
 
       for (NCollection_List<TopoDS_Shape>::Iterator itl(*aList); itl.More(); itl.Next())
       {
@@ -80,9 +82,13 @@ Standard_EXPORT int BRepCheck_Trace(const int phase)
 {
   static int BRC_Trace = 0;
   if (phase < 0)
+  {
     BRC_Trace = 0;
+  }
   else if (phase > 0)
+  {
     BRC_Trace = phase;
+  }
   return BRC_Trace;
 }
 
@@ -92,7 +98,7 @@ void PrintShape(const TopoDS_Shape& theShape)
   {
     size_t code = TopTools_ShapeMapHasher{}(theShape);
     std::cout << TopAbs::ShapeTypeToString(theShape.ShapeType()) << " : " << code << " "
-              << TopAbs::ShapeOrientationToString(theShape.Orientation()) << std::endl;
+              << TopAbs::ShapeOrientationToString(theShape.Orientation()) << '\n';
   }
 }
 
@@ -524,7 +530,9 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const bool Update)
 
     const TopoDS_Edge& edg = TopoDS::Edge(myMapEF.FindKey(i));
     if (BRep_Tool::Degenerated(edg))
+    {
       continue;
+    }
     NCollection_List<TopoDS_Shape>&          lface = myMapEF(i);
     NCollection_List<TopoDS_Shape>::Iterator lite(lface);
 
@@ -647,10 +655,12 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const bool Update)
         Fcur.Orientation(orf);
 
         for (ede.Init(Fcur, TopAbs_EDGE); ede.More(); ede.Next())
+        {
           if (ede.Current().IsSame(edg))
           {
             break;
           }
+        }
         if (Fmap.Contains(Fcur)) // edge is "closed" on Fcur, we meet Fcur twice
         {
           ede.Next();
@@ -896,7 +906,9 @@ int BRepCheck_Shell::NbConnectedSet(NCollection_List<TopoDS_Shape>& theSets)
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> theFaces;
   TopExp_Explorer                                        exsh(myShape, TopAbs_FACE);
   for (; exsh.More(); exsh.Next())
+  {
     theFaces.Add(exsh.Current());
+  }
   // The edges that are not oriented or have more than 2 connections are missing
   int                                                    iCur;
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> theMultiEd;
@@ -905,9 +917,13 @@ int BRepCheck_Shell::NbConnectedSet(NCollection_List<TopoDS_Shape>& theSets)
   {
     const TopoDS_Edge& Ed = TopoDS::Edge(parents.FindKey(iCur));
     if (parents(iCur).Extent() > 2)
+    {
       theMultiEd.Add(Ed);
+    }
     if (Ed.Orientation() != TopAbs_REVERSED && Ed.Orientation() != TopAbs_FORWARD)
+    {
       theUnOriEd.Add(Ed);
+    }
   }
   // Starting from multiconnected edges propagation by simple connections
   NCollection_List<TopoDS_Shape>::Iterator                         lconx1, lconx2;
@@ -932,7 +948,9 @@ int BRepCheck_Shell::NbConnectedSet(NCollection_List<TopoDS_Shape>& theSets)
           theFaces.Remove(adFac);
           newCur = false;
           if (theFaces.IsEmpty())
+          {
             break;
+          }
           lesCur.Append(adFac);
           while (!lesCur.IsEmpty())
           {
@@ -952,13 +970,17 @@ int BRepCheck_Shell::NbConnectedSet(NCollection_List<TopoDS_Shape>& theSets)
                     theFaces.Remove(adFac);
                     newCur = false;
                     if (theFaces.IsEmpty())
+                    {
                       break;
+                    }
                     lesCur.Append(adFac);
                   }
                 }
               }
               if (theFaces.IsEmpty())
+              {
                 break;
+              }
             }
           }
           if (!newCur)
@@ -971,11 +993,15 @@ int BRepCheck_Shell::NbConnectedSet(NCollection_List<TopoDS_Shape>& theSets)
           }
         }
         if (theFaces.IsEmpty())
+        {
           break;
+        }
       }
     }
     if (theFaces.IsEmpty())
+    {
       break;
+    }
   }
   return theSets.Extent();
 }

@@ -62,7 +62,9 @@ TEST(FSD_BinaryFileTest, OCC24537_InverseInt_Sequential)
 
   int anInv[10];
   for (int i = 0; i < 10; ++i)
+  {
     anInv[i] = FSD_BinaryFile::InverseInt(anIntArr[i]);
+  }
 
   EXPECT_EQ(0, memcmp(anInv, anIntRef, sizeof(anIntRef)));
 }
@@ -77,7 +79,9 @@ TEST(FSD_BinaryFileTest, OCC24537_InverseInt_Random)
 
   int anInv[10];
   for (int i = 0; i < 10; ++i)
+  {
     anInv[i] = FSD_BinaryFile::InverseInt(aRndIntArr[i]);
+  }
 
   EXPECT_EQ(0, memcmp(anInv, aRndIntRef, sizeof(aRndIntRef)));
 }
@@ -94,7 +98,9 @@ TEST(FSD_BinaryFileTest, OCC24537_InverseReal_Sequential)
 
   double anInv[10];
   for (int i = 0; i < 10; ++i)
+  {
     anInv[i] = FSD_BinaryFile::InverseReal(aRealArr[i]);
+  }
 
   EXPECT_EQ(0, memcmp(anInv, aRealRef, sizeof(aRealRef)));
 }
@@ -111,7 +117,9 @@ TEST(FSD_BinaryFileTest, OCC24537_InverseReal_Random)
 
   double anInv[10];
   for (int i = 0; i < 10; ++i)
+  {
     anInv[i] = FSD_BinaryFile::InverseReal(aRndRealArr[i]);
+  }
 
   EXPECT_EQ(0, memcmp(anInv, aRndRealRef, sizeof(aRndRealRef)));
 }
@@ -126,7 +134,9 @@ TEST(FSD_BinaryFileTest, OCC24537_InverseShortReal_Sequential)
 
   float anInv[10];
   for (int i = 0; i < 10; ++i)
+  {
     anInv[i] = FSD_BinaryFile::InverseShortReal(aShortRealArr[i]);
+  }
 
   EXPECT_EQ(0, memcmp(anInv, aShortRealRef, sizeof(aShortRealRef)));
 }
@@ -142,7 +152,9 @@ TEST(FSD_BinaryFileTest, OCC24537_InverseShortReal_Random)
 
   float anInv[10];
   for (int i = 0; i < 10; ++i)
+  {
     anInv[i] = FSD_BinaryFile::InverseShortReal(aRndShortRealArr[i]);
+  }
 
   EXPECT_EQ(0, memcmp(anInv, aRndShortRealRef, sizeof(aRndShortRealRef)));
 }
@@ -154,7 +166,9 @@ TEST(FSD_BinaryFileTest, OCC24537_InverseSize_Sequential)
 
   size_t anInv[10];
   for (int i = 0; i < 10; ++i)
+  {
     anInv[i] = FSD_BinaryFile::InverseSize(aSizeArr[i]);
+  }
 
   EXPECT_EQ(0, memcmp(anInv, aSizeRef, sizeof(size_t) * 10));
 }

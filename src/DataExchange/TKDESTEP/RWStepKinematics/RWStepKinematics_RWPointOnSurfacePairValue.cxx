@@ -39,7 +39,9 @@ void RWStepKinematics_RWPointOnSurfacePairValue::ReadStep(
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 4, theArch, "point_on_surface_pair_value"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 
@@ -86,7 +88,9 @@ void RWStepKinematics_RWPointOnSurfacePairValue::ReadStep(
     aInputOrientation.SetValue(aItems);
   }
   else
+  {
     theData->ReadEntity(theNum, 4, "input_orientation", theArch, aInputOrientation);
+  }
 
   // Initialize entity
   theEnt->Init(aRepresentationItem_Name,
@@ -125,7 +129,9 @@ void RWStepKinematics_RWPointOnSurfacePairValue::WriteStep(
     theSW.CloseSub();
   }
   else
+  {
     theSW.Send(theEnt->InputOrientation().Value());
+  }
 }
 
 //=================================================================================================
@@ -146,5 +152,7 @@ void RWStepKinematics_RWPointOnSurfacePairValue::Share(
   iter.AddItem(theEnt->ActualPointOnSurface());
 
   if (!theEnt->InputOrientation().RotationAboutDirection().IsNull())
+  {
     iter.AddItem(theEnt->InputOrientation().Value());
+  }
 }

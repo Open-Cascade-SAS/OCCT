@@ -31,7 +31,9 @@ Interface_EntityIterator IFSelect_Selection::UniqueResult(const Interface_Graph&
 {
   Interface_EntityIterator iter = RootResult(G);
   if (HasUniqueResult() || !G.ModeStat())
+  {
     return iter;
+  }
   Interface_Graph GG(G);
   GG.GetFromIter(iter, 0);
   return Interface_GraphContent(GG); // specialized EntityIterator (same size)

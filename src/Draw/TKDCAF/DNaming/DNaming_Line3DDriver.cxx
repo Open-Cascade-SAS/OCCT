@@ -69,7 +69,9 @@ int DNaming_Line3DDriver::Execute(occ::handle<TFunction_Logbook>& theLog) const
   occ::handle<TFunction_Function> aFunction;
   Label().FindAttribute(TFunction_Function::GetID(), aFunction);
   if (aFunction.IsNull())
+  {
     return -1;
+  }
 
   aFunction->SetFailure(NOTDONE);
   occ::handle<TNaming_NamedShape> aPrevILine3D = DNaming::GetFunctionResult(aFunction);
@@ -162,10 +164,14 @@ int DNaming_Line3DDriver::Execute(occ::handle<TFunction_Logbook>& theLog) const
     aShape1                                 = aNS1->Get();
     BRepBuilderAPI_MakeEdge aMakeEdge(TopoDS::Vertex(aShape2), TopoDS::Vertex(aShape1));
     if (aMakeEdge.IsDone())
+    {
       aMakeWire.Add(aMakeEdge.Edge());
+    }
   }
   if (aMakeWire.IsDone())
+  {
     aWire = aMakeWire.Wire();
+  }
 
   if (aWire.IsNull())
   {
@@ -192,7 +198,9 @@ int DNaming_Line3DDriver::Execute(occ::handle<TFunction_Logbook>& theLog) const
 
   // restore location
   if (!aLocation.IsIdentity())
+  {
     TNaming::Displace(aResultLabel, aLocation, true);
+  }
 
   theLog->SetValid(aResultLabel, true);
 
@@ -210,7 +218,9 @@ void DNaming_Line3DDriver::LoadNamingDS(const TDF_Label&                        
                                         const bool                              isClosed) const
 {
   if (theWire.IsNull())
+  {
     return;
+  }
   // Wire
   TNaming_Builder aWBuilder(theResultLabel);
   aWBuilder.Generated(theWire);
@@ -219,7 +229,9 @@ void DNaming_Line3DDriver::LoadNamingDS(const TDF_Label&                        
 #endif
   int aLength = theArV.Length();
   if (aLength < 2)
+  {
     return;
+  }
   TopoDS_Shape                     aShape;
   NCollection_Array1<TopoDS_Shape> anArE(1, aLength);
   TopoDS_Vertex                    aFirst, aLast;
@@ -244,9 +256,13 @@ void DNaming_Line3DDriver::LoadNamingDS(const TDF_Label&                        
       }
     }
     if (!aFound)
+    {
       anArE.SetValue(i, aShape);
+    }
     else
+    {
       aFound = false;
+    }
   }
   if (isClosed)
   {
@@ -272,7 +288,9 @@ void DNaming_Line3DDriver::LoadNamingDS(const TDF_Label&                        
       }
     }
     if (!aFound)
+    {
       anArE.SetValue(aLength, aShape);
+    }
   }
   else
   {
@@ -295,7 +313,9 @@ void DNaming_Line3DDriver::LoadNamingDS(const TDF_Label&                        
     {
       occ::handle<TNaming_NamedShape> aNS;
       if (aLab.FindAttribute(TNaming_NamedShape::GetID(), aNS))
+      {
         TNaming_Builder aB(aLab);
+      }
     }
   }
   // put vertexes
@@ -312,7 +332,9 @@ void DNaming_Line3DDriver::LoadNamingDS(const TDF_Label&                        
   {
     occ::handle<TNaming_NamedShape> aNS;
     if (aLab1.FindAttribute(TNaming_NamedShape::GetID(), aNS))
+    {
       TNaming_Builder aB(aLab1);
+    }
   }
   if (!aLast.IsNull())
   {
@@ -323,6 +345,8 @@ void DNaming_Line3DDriver::LoadNamingDS(const TDF_Label&                        
   {
     occ::handle<TNaming_NamedShape> aNS;
     if (aLab2.FindAttribute(TNaming_NamedShape::GetID(), aNS))
+    {
       TNaming_Builder aB(aLab2);
+    }
   }
 }

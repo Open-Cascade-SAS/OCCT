@@ -45,7 +45,9 @@ void StepBasic_GroupRelationship::Init(const occ::handle<TCollection_HAsciiStrin
     theDescription = aDescription;
   }
   else
+  {
     theDescription.Nullify();
+  }
 
   theRelatingGroup = aRelatingGroup;
 

@@ -109,9 +109,13 @@ void MAT2d_Tool2d::InitItems(const occ::handle<MAT2d_Circuit>& EquiCircuit)
 void MAT2d_Tool2d::Sense(const MAT_Side aside)
 {
   if (aside == MAT_Left)
+  {
     theDirection = 1.;
+  }
   else
+  {
     theDirection = -1.;
+  }
 }
 
 //=================================================================================================
@@ -178,9 +182,13 @@ int MAT2d_Tool2d::TangentBefore(const int anitem, const bool IsOpenResult)
   theNumberOfVecs++;
 
   if (!IsOpenResult)
+  {
     item = (anitem == theCircuit->NumberOfItems()) ? 1 : (anitem + 1);
+  }
   else
+  {
     item = (anitem == theCircuit->NumberOfItems()) ? (anitem - 1) : (anitem + 1);
+  }
   if (theCircuit->ConnexionOn(item))
   {
     double x1, y1, x2, y2;
@@ -237,9 +245,13 @@ int MAT2d_Tool2d::TangentAfter(const int anitem, const bool IsOpenResult)
   else
   {
     if (!IsOpenResult)
+    {
       item = (anitem == 1) ? theCircuit->NumberOfItems() : (anitem - 1);
+    }
     else
+    {
       item = (anitem == 1) ? 2 : (anitem - 1);
+    }
 
     curve        = occ::down_cast<Geom2d_Curve>(theCircuit->Value(item));
     double param = (IsOpenResult && anitem == 1) ? curve->FirstParameter() : curve->LastParameter();
@@ -274,7 +286,9 @@ void MAT2d_Tool2d::CreateBisector(const occ::handle<MAT_Bisector>& abisector)
   bool InitialNeighbour = ontheline;
 
   if (theCircuit->ConnexionOn(edge2number))
+  {
     ontheline = false;
+  }
 
   elt1 = theCircuit->Value(edge1number);
   elt2 = theCircuit->Value(edge2number);
@@ -449,7 +463,9 @@ void MAT2d_Tool2d::TrimBisec(Bisector_Bisec& B1,
         }
       }
       if (Line1.IsNull() && Line2.IsNull())
+      {
         return;
+      }
 
       //-----------------------------------------------------------------------
       // Restriction de la bisectrice par les demi-droites liees aux connexions
@@ -493,7 +509,9 @@ bool MAT2d_Tool2d::TrimBisector(const occ::handle<MAT_Bisector>& abisector)
     param = bisector->BasisCurve()->LastParameter();
   }
   if (bisector->FirstParameter() == param)
+  {
     return false;
+  }
 
   bisector->SetTrim(bisector->FirstParameter(), param);
   return true;
@@ -515,12 +533,18 @@ bool MAT2d_Tool2d::TrimBisector(const occ::handle<MAT_Bisector>& abisector, cons
   if (Bisector->BasisCurve()->IsPeriodic())
   {
     if (Bisector->FirstParameter() > Param)
+    {
       Param = Param + 2 * M_PI;
+    }
   }
   if (Bisector->FirstParameter() >= Param)
+  {
     return false;
+  }
   if (Bisector->LastParameter() < Param)
+  {
     return false;
+  }
   Bisector->SetTrim(Bisector->FirstParameter(), Param);
 
 #ifdef OCCT_DEBUG
@@ -582,7 +606,9 @@ bool MAT2d_Tool2d::Projection(const int IEdge, const gp_Pnt2d& PCom, double& Dis
       double R       = C1.Circle().Radius();
       double EpsCirc = 100. * Eps;
       if (R < 1.)
+      {
         EpsCirc = Eps / R;
+      }
       if (((ParamMax - ParamMin + 2 * EpsCirc) < 2 * M_PI))
       {
         ParamMax = ParamMax + EpsCirc;
@@ -671,18 +697,30 @@ bool MAT2d_Tool2d::IsSameDistance(const occ::handle<MAT_Bisector>& BisectorOne,
 
   bool isDone3 = true, isDone4 = true;
   if (IEdge3 == IEdge1)
+  {
     Dist(3) = Dist(1);
+  }
   else if (IEdge3 == IEdge2)
+  {
     Dist(3) = Dist(2);
+  }
   else
+  {
     isDone3 = Projection(IEdge3, PCom, Dist(3));
+  }
 
   if (IEdge4 == IEdge1)
+  {
     Dist(4) = Dist(1);
+  }
   else if (IEdge4 == IEdge2)
+  {
     Dist(4) = Dist(2);
+  }
   else
+  {
     isDone4 = Projection(IEdge4, PCom, Dist(4));
+  }
   //
   if (isDone3)
   {
@@ -722,16 +760,20 @@ bool MAT2d_Tool2d::IsSameDistance(const occ::handle<MAT_Bisector>& BisectorOne,
   if (theJoinType == GeomAbs_Intersection && Precision::IsInfinite(Distance))
   {
     for (int i = 2; i <= 4; i++)
+    {
       if (!Precision::IsInfinite(Dist(i)))
       {
         Distance = Dist(i);
         break;
       }
+    }
   }
   for (int i = 1; i <= 4; i++)
   {
     if (theJoinType == GeomAbs_Intersection && Precision::IsInfinite(Dist(i)))
+    {
       continue;
+    }
     if (std::abs(Dist(i) - Distance) > EpsDist)
     {
       Distance = Precision::Infinite();
@@ -761,7 +803,9 @@ double MAT2d_Tool2d::IntersectBisector(const occ::handle<MAT_Bisector>& Bisector
     ChangeGeomBis(BisectorTwo->BisectorNumber()).ChangeValue();
 
   if (Bisector1.IsNull() || Bisector2.IsNull())
+  {
     return Precision::Infinite();
+  }
 
   //-------------------------------------------------------------------------
   // Si les deux bissectrices separent des elements consecutifs et qu elles
@@ -782,7 +826,9 @@ double MAT2d_Tool2d::IntersectBisector(const occ::handle<MAT_Bisector>& Bisector
     C2 = theCircuit->Connexion(IS2);
     if (C2->IndexFirstLine() == C1->IndexSecondLine()
         && C1->IndexFirstLine() == C2->IndexSecondLine())
+    {
       return Precision::Infinite();
+    }
   }
 
   // -----------------------------------------
@@ -792,9 +838,13 @@ double MAT2d_Tool2d::IntersectBisector(const occ::handle<MAT_Bisector>& Bisector
   IntRes2d_Domain Domain2 = Domain(Bisector2, Tolerance);
 
   if (Domain1.LastParameter() - Domain1.FirstParameter() < Tolerance)
+  {
     return Precision::Infinite();
+  }
   if (Domain2.LastParameter() - Domain2.FirstParameter() < Tolerance)
+  {
     return Precision::Infinite();
+  }
 
 #ifdef OCCT_DEBUG
   bool Affich = false;
@@ -841,10 +891,14 @@ double MAT2d_Tool2d::IntersectBisector(const occ::handle<MAT_Bisector>& Bisector
   // -------------------------------------------------------------------------
 
   if (!Intersect.IsDone())
+  {
     return Precision::Infinite();
+  }
 
   if (Intersect.IsEmpty())
+  {
     return Precision::Infinite();
+  }
 
   DistanceMini   = Precision::Infinite();
   Param1         = Precision::Infinite();
@@ -874,7 +928,9 @@ double MAT2d_Tool2d::IntersectBisector(const occ::handle<MAT_Bisector>& Bisector
         {
           PointOnSegment = P1;
           if (IsSameDistance(BisectorOne, BisectorTwo, PointOnSegment, Distance))
+          {
             PointRetenu = true;
+          }
         }
         else if (SegmentLength <= MaxSegmentLength)
         {
@@ -942,7 +998,9 @@ double MAT2d_Tool2d::IntersectBisector(const occ::handle<MAT_Bisector>& Bisector
   }
 
   if (!SolutionValide)
+  {
     return Precision::Infinite();
+  }
   theNumberOfPnts++;
   theGeomPnts.Bind(theNumberOfPnts, PointSolution);
   IntPnt = theNumberOfPnts;
@@ -1017,11 +1075,15 @@ double MAT2d_Tool2d::IntersectBisector(const occ::handle<MAT_Bisector>& Bisector
 
   if (BisectorOne->SecondParameter() < Precision::Infinite()
       && BisectorOne->SecondParameter() < Param1 * (1. - Tolerance))
+  {
     return Precision::Infinite();
+  }
 
   if (BisectorTwo->FirstParameter() < Precision::Infinite()
       && BisectorTwo->FirstParameter() < Param2 * (1. - Tolerance))
+  {
     return Precision::Infinite();
+  }
 
   BisectorOne->SecondParameter(Param1);
   BisectorTwo->FirstParameter(Param2);
@@ -1209,11 +1271,17 @@ static occ::handle<Standard_Type> Type(const occ::handle<Geom2d_Geometry>& aGeom
 bool AreNeighbours(const int IEdge1, const int IEdge2, const int NbEdge)
 {
   if (std::abs(IEdge1 - IEdge2) == 1)
+  {
     return true;
+  }
   else if (std::abs(IEdge1 - IEdge2) == NbEdge - 1)
+  {
     return true;
+  }
   else
+  {
     return false;
+  }
 }
 
 //=================================================================================================
@@ -1253,7 +1321,9 @@ static void SetTrim(Bisector_Bisec& Bis, const occ::handle<Geom2d_Curve>& Line1)
   // parametre.
   // ------------------------------------------------------------------------
   if (UTrim < UB2 && UTrim > UB1)
+  {
     Bisector->SetTrim(UB1, UTrim);
+  }
 }
 
 //=================================================================================================
@@ -1333,9 +1403,13 @@ bool CheckEnds(const occ::handle<Geom2d_Geometry>& Elt,
     double   df  = PCom.Distance(aPf);
     double   dl  = PCom.Distance(aPl);
     if (std::abs(df - Distance) <= Tol)
+    {
       return true;
+    }
     if (std::abs(dl - Distance) <= Tol)
+    {
       return true;
+    }
   }
   return false;
 }

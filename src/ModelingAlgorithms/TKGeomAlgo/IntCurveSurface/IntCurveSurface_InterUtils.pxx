@@ -165,14 +165,20 @@ void EstLimForInfExtr(const gp_Lin&      Line,
   occ::handle<Adaptor3d_Surface> aBasSurf;
 
   if (IsOffSurf)
+  {
     aBasSurf = SurfaceTool::BasisSurface(surface);
+  }
 
   gp_Dir aDirOfExt;
 
   if (IsOffSurf)
+  {
     aDirOfExt = aBasSurf->Direction();
+  }
   else
+  {
     aDirOfExt = SurfaceTool::Direction(surface);
+  }
 
   double tolang = THE_TOLERANCE_ANGULAIRE;
 
@@ -201,7 +207,9 @@ void EstLimForInfExtr(const gp_Lin&      Line,
       Extrema_ExtElC aExtr(aL, Line, tolang);
 
       if (!aExtr.IsDone())
+      {
         return;
+      }
 
       if (aExtr.IsParallel())
       {
@@ -235,16 +243,22 @@ void EstLimForInfExtr(const gp_Lin&      Line,
     occ::handle<Adaptor3d_Curve> aBasCurv;
 
     if (IsOffSurf)
+    {
       aBasCurv = aBasSurf->BasisCurve();
+    }
     else
+    {
       aBasCurv = SurfaceTool::BasisCurve(surface);
+    }
 
     ProjLib_Plane Projector(aRefPln);
 
     Projector.Project(Line);
 
     if (!Projector.IsDone())
+    {
       return;
+    }
 
     gp_Lin2d Line2d = Projector.Line();
 
@@ -255,14 +269,18 @@ void EstLimForInfExtr(const gp_Lin&      Line,
       Projector.Project(aBasCurv->Line());
 
       if (!Projector.IsDone())
+      {
         return;
+      }
 
       gp_Lin2d aL2d = Projector.Line();
 
       IntAna2d_AnaIntersection anInter(Line2d, aL2d);
 
       if (!anInter.IsDone())
+      {
         return;
+      }
 
       if (anInter.IsEmpty() || anInter.IdenticalElements() || anInter.ParallelElements())
       {
@@ -282,7 +300,9 @@ void EstLimForInfExtr(const gp_Lin&      Line,
       {
         Projector.Project(aBasCurv->Parabola());
         if (!Projector.IsDone())
+        {
           return;
+        }
 
         const gp_Parab2d& aP2d = Projector.Parabola();
 
@@ -292,14 +312,18 @@ void EstLimForInfExtr(const gp_Lin&      Line,
       {
         Projector.Project(aBasCurv->Hyperbola());
         if (!Projector.IsDone())
+        {
           return;
+        }
 
         const gp_Hypr2d& aH2d = Projector.Hyperbola();
         anInter.Perform(aH2d, aCon);
       }
 
       if (!anInter.IsDone())
+      {
         return;
+      }
 
       if (anInter.IsEmpty())
       {
@@ -367,11 +391,17 @@ void EstLimForInfRevl(const gp_Lin&      Line,
   if (U1inf || U2inf)
   {
     if (U1inf)
+    {
       U1new = std::max(0., U1new);
+    }
     else
+    {
       U2new = std::min(2 * M_PI, U2new);
+    }
     if (!V1inf && !V2inf)
+    {
       return;
+    }
   }
 
   occ::handle<Adaptor3d_Curve> aBasisCurve = SurfaceTool::BasisCurve(surface);
@@ -388,8 +418,10 @@ void EstLimForInfRevl(const gp_Lin&      Line,
     aU += 1.;
     P = aBasisCurve->Value(aU);
     if (aU > 3)
+    {
       // basis curve is a line coinciding with aXVec, P is any not on aXVec
       P = gp_Pnt(aU, aU + 1, aU + 2);
+    }
   }
   gp_Vec aNVec = aXVec ^ gp_Vec(O, P);
   gp_Pln aPln(gp_Ax3(O, aNVec, aXVec));
@@ -426,7 +458,9 @@ void EstLimForInfRevl(const gp_Lin&      Line,
     aNVec = aXVec ^ gp_Vec(O, P);
   }
   else
+  {
     aNVec = aXVec.Crossed(Line.Direction());
+  }
 
   aPln = gp_Pln(gp_Ax3(O, aNVec, aXVec));
 
@@ -450,9 +484,13 @@ void EstLimForInfRevl(const gp_Lin&      Line,
   aVmax = aVmax + std::abs(aVmax) + 10;
 
   if (V1inf)
+  {
     V1new = aVmin;
+  }
   if (V2inf)
+  {
     V2new = aVmax;
+  }
 }
 
 //! Estimate limits for infinite offset surfaces.
@@ -489,7 +527,9 @@ void EstLimForInfOffs(const gp_Lin&      Line,
     IntAna_IntConicQuad LinPlane(Line, aPln, THE_TOLERANCE_ANGULAIRE);
 
     if (!LinPlane.IsDone())
+    {
       return;
+    }
 
     if (LinPlane.IsParallel() || LinPlane.IsInQuadric())
     {
@@ -512,9 +552,13 @@ void EstLimForInfOffs(const gp_Lin&      Line,
     gp_Ax3 anA = aCyl.Position();
 
     if (anA.Direct())
+    {
       aR += anOffVal;
+    }
     else
+    {
       aR -= anOffVal;
+    }
 
     if (aR >= THE_TOLTANGENCY)
     {
@@ -535,7 +579,9 @@ void EstLimForInfOffs(const gp_Lin&      Line,
     IntAna_IntConicQuad LinCylinder(Line, aCyl);
 
     if (!LinCylinder.IsDone())
+    {
       return;
+    }
 
     if (LinCylinder.IsParallel() || LinCylinder.IsInQuadric())
     {
@@ -579,7 +625,9 @@ void EstLimForInfOffs(const gp_Lin&      Line,
     IntAna_IntConicQuad LinCone(Line, aCon);
 
     if (!LinCone.IsDone())
+    {
       return;
+    }
 
     if (LinCone.IsParallel() || LinCone.IsInQuadric())
     {
@@ -619,7 +667,9 @@ void EstLimForInfOffs(const gp_Lin&      Line,
                                                NoIntersection);
 
     if (NoIntersection)
+    {
       return;
+    }
 
     if (U1inf || U2inf)
     {
@@ -895,20 +945,32 @@ void DoSurface(const SurfaceType&          theSurface,
   for (iU = 0; iU < 50; iU++)
   {
     if (iU == 0)
+    {
       U = theU0;
+    }
     else if (iU == 49)
+    {
       U = theU1;
+    }
     else
+    {
       U = theU0 + dU * ((double)iU);
+    }
 
     for (iV = 0; iV < 50; iV++)
     {
       if (iV == 0)
+      {
         V = theV0;
+      }
       else if (iV == 49)
+      {
         V = theV1;
+      }
       else
+      {
         V = theV0 + dV * ((double)iV);
+      }
 
       SurfaceTool::D0(theSurface, U, V, aPnt);
       theBoxSurface.Add(aPnt);
@@ -972,13 +1034,21 @@ void DoNewBounds(const SurfaceType&                theSurface,
           }
         }
         if (diU > 0 && diU < iUmin)
+        {
           iUmin = diU;
+        }
         if (diU > 0 && diU > iUmax)
+        {
           iUmax = diU;
+        }
         if (diV > 0 && diV < iVmin)
+        {
           iVmin = diV;
+        }
         if (diV > 0 && diV > iVmax)
+        {
           iVmax = diV;
+        }
       }
     }
   }
@@ -1005,16 +1075,24 @@ void DoNewBounds(const SurfaceType&                theSurface,
 
   USmin -= 1.5 * dU;
   if (USmin < theU0)
+  {
     USmin = theU0;
+  }
   USmax += 1.5 * dU;
   if (USmax > theU1)
+  {
     USmax = theU1;
+  }
   VSmin -= 1.5 * dV;
   if (VSmin < theV0)
+  {
     VSmin = theV0;
+  }
   VSmax += 1.5 * dV;
   if (VSmax > theV1)
+  {
     VSmax = theV1;
+  }
 
   if (checkU)
   {
@@ -1060,7 +1138,9 @@ bool ComputeAppendPoint(const CurveType&                   theCurve,
   }
 
   if ((W0 - w) >= THE_TOLTANGENCY || (w - W1) >= THE_TOLTANGENCY)
+  {
     return false;
+  }
 
   GeomAbs_SurfaceType aSType = SurfaceTool::GetType(theSurface);
   if (SurfaceTool::IsUPeriodic(theSurface) || aSType == GeomAbs_Cylinder || aSType == GeomAbs_Cone
@@ -1075,9 +1155,13 @@ bool ComputeAppendPoint(const CurveType&                   theCurve,
   }
 
   if ((U0 - u) >= THE_TOLTANGENCY || (u - U1) >= THE_TOLTANGENCY)
+  {
     return false;
+  }
   if ((V0 - v) >= THE_TOLTANGENCY || (v - V1) >= THE_TOLTANGENCY)
+  {
     return false;
+  }
 
   IntCurveSurface_TransitionOnCurve TransOnCurve;
   ComputeTransitions<CurveType, CurveTool, SurfaceType, SurfaceTool>(theCurve,
@@ -1297,7 +1381,9 @@ inline void SortStartPoints(SortedStartPoints& thePoints)
 {
   int NbStartPoints = thePoints.Size();
   if (NbStartPoints == 0)
+  {
     return;
+  }
 
   double ptol = 10 * Precision::PConfusion();
 
@@ -1388,7 +1474,9 @@ void ProcessSortedPoints(ExactInterType&                                        
 
   int NbStartPoints = thePoints.Size();
   if (NbStartPoints == 0)
+  {
     return;
+  }
 
   double ptol = 10 * Precision::PConfusion();
   double su = 0, sv = 0, sw = 0;
@@ -1527,13 +1615,21 @@ inline void ClampUVParameters(double& theU1, double& theU2, double& theV1, doubl
 {
   constexpr double THE_PARAM_LIMIT = 1.0e50;
   if (theU1 < -THE_PARAM_LIMIT)
+  {
     theU1 = -THE_PARAM_LIMIT;
+  }
   if (theU2 > THE_PARAM_LIMIT)
+  {
     theU2 = THE_PARAM_LIMIT;
+  }
   if (theV1 < -THE_PARAM_LIMIT)
+  {
     theV1 = -THE_PARAM_LIMIT;
+  }
   if (theV2 > THE_PARAM_LIMIT)
+  {
     theV2 = THE_PARAM_LIMIT;
+  }
 }
 
 } // namespace IntCurveSurface_InterUtils

@@ -86,7 +86,9 @@ math_GaussSingleIntegration::math_GaussSingleIntegration(math_Function& F,
     {
       Perform(F, Lower + (i - 1) * dU, Lower + i * dU, theOrder);
       if (!Done)
+      {
         return;
+      }
       Len += Val;
     }
     NIter++;
@@ -124,7 +126,9 @@ void math_GaussSingleIntegration::Perform(math_Function& F,
   { // odder case
     Ok1 = F.Value(xm, Val);
     if (!Ok1)
+    {
       return;
+    }
     Val *= GaussW(ind1);
   }
   // Sommation sur tous les points de Gauss: avec utilisation de la symetrie.
@@ -133,10 +137,14 @@ void math_GaussSingleIntegration::Perform(math_Function& F,
     dx  = xr * GaussP(j);
     Ok1 = F.Value(xm - dx, F1);
     if (!Ok1)
+    {
       return;
+    }
     Ok1 = F.Value(xm + dx, F2);
     if (!Ok1)
+    {
       return;
+    }
     // Multiplication par les poids de Gauss.
     double FT = F1 + F2;
     Val += GaussW(j) * FT;

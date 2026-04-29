@@ -106,7 +106,9 @@ Geom2dGcc_Lin2d2Tan::Geom2dGcc_Lin2d2Tan(const Geom2dGcc_QualifiedCurve& Qualifi
         if (Lin.IsDone())
         {
           if (Add(NbrSol + 1, Lin, Tolang, C1, C2))
+          {
             NbrSol++;
+          }
         }
         Param2 += aStep2;
       }
@@ -176,7 +178,9 @@ Geom2dGcc_Lin2d2Tan::Geom2dGcc_Lin2d2Tan(const Geom2dGcc_QualifiedCurve& Qualifi
       if (Lin.IsDone())
       {
         if (Add(NbrSol + 1, Lin, Tolang, C1, Geom2dAdaptor_Curve()))
+        {
           NbrSol++;
+        }
       }
 
       Param1 += aStep;
@@ -421,7 +425,9 @@ bool Geom2dGcc_Lin2d2Tan::Add(const int                      theIndex,
   for (i = 1; i < theIndex; i++)
   {
     if (std::abs(aPar1arg - pararg1(i)) <= theTol && std::abs(aPar2arg - pararg2(i)) <= theTol)
+    {
       return false;
+    }
   }
 
   gp_Dir2d aLinDir = aLin.Direction();
@@ -431,14 +437,18 @@ bool Geom2dGcc_Lin2d2Tan::Add(const int                      theIndex,
   Geom2dGcc_CurveTool::D1(theC1, aPar1arg, aPoint, aVTan);
 
   if (std::abs(aLinDir.Crossed(gp_Dir2d(aVTan))) > theTol)
+  {
     return false;
+  }
 
   if (!theC2.Curve().IsNull())
   {
     Geom2dGcc_CurveTool::D1(theC2, aPar2arg, aPoint, aVTan);
 
     if (std::abs(aLinDir.Crossed(gp_Dir2d(aVTan))) > theTol)
+    {
       return false;
+    }
   }
 
   linsol(theIndex)    = aLin;

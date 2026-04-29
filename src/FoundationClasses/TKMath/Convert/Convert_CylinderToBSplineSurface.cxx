@@ -125,9 +125,13 @@ Convert_CylinderToBSplineSurface::Convert_CylinderToBSplineSurface(const gp_Cyli
   for (i = 1; i <= myNbUPoles; i++)
   {
     if (i % 2 == 0)
+    {
       W1 = std::cos(AlfaU);
+    }
     else
+    {
       W1 = 1.;
+    }
 
     for (j = 1; j <= myNbVPoles; j++)
     {
@@ -188,9 +192,13 @@ Convert_CylinderToBSplineSurface::Convert_CylinderToBSplineSurface(const gp_Cyli
   for (i = 1; i <= myNbUPoles; i++)
   {
     if (i % 2 == 0)
+    {
       W = 0.5; // = std::cos(pi /3)
+    }
     else
+    {
       W = 1.;
+    }
 
     for (j = 1; j <= myNbVPoles; j++)
     {

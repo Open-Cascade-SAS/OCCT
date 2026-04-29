@@ -375,9 +375,13 @@ void Bisector_Inter::NeighbourPerform(const occ::handle<Bisector_BisecCC>& Bis1,
   aSolution.Perform(Fint, UMin, UMax, 20);
 
   if (aSolution.IsDone())
+  {
     USol = aSolution.Root();
+  }
   else
+  {
     return;
+  }
 
   PSol = BisTemp->ValueAndDist(USol, U1, U2, Dist);
 
@@ -430,7 +434,9 @@ void Bisector_Inter::TestBound(const occ::handle<Geom2d_Line>&  Bis1,
       //  Modified by skv - Mon May  5 14:48:14 2003 OCC616 End
       // PF est sur L1
       if (BisecAlgo)
+      {
         PF = ElCLib::Value(U1, L1);
+      }
       PointInterSol.SetValues(PF, U1, D2.FirstParameter(), Trans1, Trans2, Reverse);
       Append(PointInterSol);
     }
@@ -447,7 +453,9 @@ void Bisector_Inter::TestBound(const occ::handle<Geom2d_Line>&  Bis1,
     {
       //  Modified by skv - Mon May  5 15:05:49 2003 OCC616 End
       if (BisecAlgo)
+      {
         PL = ElCLib::Value(U1, L1);
+      }
       PointInterSol.SetValues(PL, U1, D2.LastParameter(), Trans1, Trans2, Reverse);
       Append(PointInterSol);
     }

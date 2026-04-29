@@ -276,7 +276,9 @@ TEST_F(Geom2d_BSplineCurve_Test, PeriodicCurve)
 
   NCollection_Array1<double> aKnots(1, 6);
   for (int i = 1; i <= 6; ++i)
+  {
     aKnots(i) = (i - 1) * 0.2;
+  }
 
   NCollection_Array1<int> aMults(1, 6);
   aMults.Init(1);

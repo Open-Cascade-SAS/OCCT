@@ -31,7 +31,9 @@ void RWStepGeom_RWUniformCurve::ReadStep(const occ::handle<StepData_StepReaderDa
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 6, ach, "uniform_curve"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -63,7 +65,9 @@ void RWStepGeom_RWUniformCurve::ReadStep(const occ::handle<StepData_StepReaderDa
                            ach,
                            STANDARD_TYPE(StepGeom_CartesianPoint),
                            anent3))
+      {
         aControlPointsList->SetValue(i3, anent3);
+      }
     }
   }
 
@@ -79,7 +83,9 @@ void RWStepGeom_RWUniformCurve::ReadStep(const occ::handle<StepData_StepReaderDa
     }
   }
   else
+  {
     ach->AddFail("Parameter #4 (curve_form) is not an enumeration");
+  }
 
   // --- inherited field : closedCurve ---
 

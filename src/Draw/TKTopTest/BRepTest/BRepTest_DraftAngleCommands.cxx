@@ -53,7 +53,9 @@ static void Print(Draw_Interpretor& di, const Draft_ErrorStatus St)
 static int DEP(Draw_Interpretor& theCommands, int narg, const char** a)
 {
   if ((narg < 14) || (narg % 8 != 6))
+  {
     return 1;
+  }
   TopoDS_Shape             V = DBRep::Get(a[2]);
   BRepOffsetAPI_DraftAngle drft(V);
 
@@ -103,7 +105,9 @@ static int DEP(Draw_Interpretor& theCommands, int narg, const char** a)
 static int NDEP(Draw_Interpretor& theCommands, int narg, const char** a)
 {
   if ((narg < 15) || ((narg) % 9 != 6))
+  {
     return 1;
+  }
   TopoDS_Shape V = DBRep::Get(a[2]);
   if (V.IsNull())
   {
@@ -172,7 +176,9 @@ static int draft(Draw_Interpretor& di, int n, const char** a)
   int  Inside   = -1;
   bool Internal = false;
   if (n < 8)
+  {
     return 1;
+  }
 
   double       x, y, z, teta;
   TopoDS_Shape SInit = DBRep::Get(a[2]); // shape d'arret
@@ -230,7 +236,9 @@ static int draft(Draw_Interpretor& di, int n, const char** a)
     // std::cout << "Internal Draft : " << std::endl;
   }
   else
+  {
     di << "External Draft : \n";
+  }
   // std::cout << "External Draft : " << std::endl;
 
   TopoDS_Shape Stop = DBRep::Get(a[7]); // shape d'arret
@@ -238,7 +246,9 @@ static int draft(Draw_Interpretor& di, int n, const char** a)
   {
     bool KeepOutside = true;
     if (Inside == 0)
+    {
       KeepOutside = false;
+    }
     MkDraft.Perform(Stop, KeepOutside);
   }
   else
@@ -248,7 +258,9 @@ static int draft(Draw_Interpretor& di, int n, const char** a)
     { // surface d'arret
       bool KeepInside = true;
       if (Inside == 1)
+      {
         KeepInside = false;
+      }
       MkDraft.Perform(Surf, KeepInside);
     }
     else
@@ -259,7 +271,9 @@ static int draft(Draw_Interpretor& di, int n, const char** a)
         MkDraft.Perform(L);
       }
       else
+      {
         return 1;
+      }
     }
   }
 
@@ -275,7 +289,9 @@ void BRepTest::DraftAngleCommands(Draw_Interpretor& theCommands)
 {
   static bool done = false;
   if (done)
+  {
     return;
+  }
   done = true;
 
   DBRep::BasicCommands(theCommands);

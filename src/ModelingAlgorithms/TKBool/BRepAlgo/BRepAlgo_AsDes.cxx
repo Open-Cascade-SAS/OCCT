@@ -83,7 +83,9 @@ bool BRepAlgo_AsDes::HasDescendant(const TopoDS_Shape& S) const
 const NCollection_List<TopoDS_Shape>& BRepAlgo_AsDes::Ascendant(const TopoDS_Shape& S) const
 {
   if (up.IsBound(S))
+  {
     return up(S);
+  }
   static NCollection_List<TopoDS_Shape> empty;
   return empty;
 }
@@ -93,7 +95,9 @@ const NCollection_List<TopoDS_Shape>& BRepAlgo_AsDes::Ascendant(const TopoDS_Sha
 const NCollection_List<TopoDS_Shape>& BRepAlgo_AsDes::Descendant(const TopoDS_Shape& S) const
 {
   if (down.IsBound(S))
+  {
     return down(S);
+  }
   static NCollection_List<TopoDS_Shape> empty;
   return empty;
 }
@@ -103,7 +107,9 @@ const NCollection_List<TopoDS_Shape>& BRepAlgo_AsDes::Descendant(const TopoDS_Sh
 NCollection_List<TopoDS_Shape>& BRepAlgo_AsDes::ChangeDescendant(const TopoDS_Shape& S)
 {
   if (down.IsBound(S))
+  {
     return down.ChangeFind(S);
+  }
   static NCollection_List<TopoDS_Shape> empty;
   return empty;
 }
@@ -133,7 +139,9 @@ static void ReplaceInList(const TopoDS_Shape&             OldS,
       L.Remove(it);
     }
     else
+    {
       it.Next();
+    }
   }
 }
 

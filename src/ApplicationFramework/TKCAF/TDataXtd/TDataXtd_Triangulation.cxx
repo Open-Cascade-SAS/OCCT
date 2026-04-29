@@ -211,7 +211,9 @@ void TDataXtd_Triangulation::Restore(const occ::handle<TDF_Attribute>& theAttrib
   {
     occ::handle<Poly_Triangulation> T = M->myTriangulation->Copy();
     if (!T.IsNull())
+    {
       myTriangulation = T;
+    }
   }
 }
 
@@ -226,7 +228,9 @@ void TDataXtd_Triangulation::Paste(const occ::handle<TDF_Attribute>& theIntoAttr
   {
     occ::handle<Poly_Triangulation> T = myTriangulation->Copy();
     if (!T.IsNull())
+    {
       M->myTriangulation = T;
+    }
   }
 }
 

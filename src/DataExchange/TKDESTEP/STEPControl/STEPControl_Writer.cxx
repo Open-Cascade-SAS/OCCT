@@ -71,7 +71,9 @@ occ::handle<StepData_StepModel> STEPControl_Writer::Model(const bool newone)
 {
   DeclareAndCast(StepData_StepModel, model, thesession->Model());
   if (newone || model.IsNull())
+  {
     model = GetCasted(StepData_StepModel, thesession->NewModel());
+  }
   return model;
 }
 
@@ -81,7 +83,9 @@ void STEPControl_Writer::SetTolerance(const double Tol)
 {
   DeclareAndCast(STEPControl_ActorWrite, act, WS()->NormAdaptor()->ActorWrite());
   if (!act.IsNull())
+  {
     act->SetTolerance(Tol);
+  }
 }
 
 //=================================================================================================
@@ -135,7 +139,9 @@ IFSelect_ReturnStatus STEPControl_Writer::Transfer(const TopoDS_Shape&          
       break;
   }
   if (mws < 0)
+  {
     return IFSelect_RetError; // cas non reconnu
+  }
   thesession->TransferWriter()->SetTransferMode(mws);
   if (!Model()->IsInitializedUnit())
   {

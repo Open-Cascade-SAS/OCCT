@@ -59,9 +59,13 @@ void ShapeFix_Root::SetPrecision(const double preci)
 {
   myPrecision = preci;
   if (myMaxTol < myPrecision)
+  {
     myMaxTol = myPrecision;
+  }
   if (myMinTol > myPrecision)
+  {
     myMinTol = myPrecision;
+  }
 }
 
 //=================================================================================================
@@ -85,5 +89,7 @@ void ShapeFix_Root::SendMsg(const TopoDS_Shape&   shape,
                             const Message_Gravity gravity) const
 {
   if (!myMsgReg.IsNull())
+  {
     myMsgReg->Send(shape, message, gravity);
+  }
 }

@@ -53,15 +53,21 @@ bool BinMDataXtd_PatternStdDriver::Paste(const BinObjMgt_Persistent&       theSo
   // signature
   int signature;
   if (!(theSource >> signature))
+  {
     return false;
+  }
   if (signature == 0)
+  {
     return true;
+  }
   aP->Signature(signature);
 
   // reversed flags
   int revFlags;
   if (!(theSource >> revFlags))
+  {
     return false;
+  }
   aP->Axis1Reversed((revFlags & 1) != 0);
   aP->Axis2Reversed((revFlags & 2) != 0);
 
@@ -71,9 +77,13 @@ bool BinMDataXtd_PatternStdDriver::Paste(const BinObjMgt_Persistent&       theSo
   if (signature == 5) // mirror
   {
     if (!(theSource >> aNb))
+    {
       return false;
+    }
     if (theRelocTable.IsBound(aNb))
+    {
       TNS = occ::down_cast<TNaming_NamedShape>(theRelocTable.Find(aNb));
+    }
     else
     {
       TNS = new TNaming_NamedShape;
@@ -88,9 +98,13 @@ bool BinMDataXtd_PatternStdDriver::Paste(const BinObjMgt_Persistent&       theSo
 
     // axis 1
     if (!(theSource >> aNb))
+    {
       return false;
+    }
     if (theRelocTable.IsBound(aNb))
+    {
       TNS = occ::down_cast<TNaming_NamedShape>(theRelocTable.Find(aNb));
+    }
     else
     {
       TNS = new TNaming_NamedShape;
@@ -100,9 +114,13 @@ bool BinMDataXtd_PatternStdDriver::Paste(const BinObjMgt_Persistent&       theSo
 
     // value 1
     if (!(theSource >> aNb))
+    {
       return false;
+    }
     if (theRelocTable.IsBound(aNb))
+    {
       TReal = occ::down_cast<TDataStd_Real>(theRelocTable.Find(aNb));
+    }
     else
     {
       TReal = new TDataStd_Real;
@@ -112,9 +130,13 @@ bool BinMDataXtd_PatternStdDriver::Paste(const BinObjMgt_Persistent&       theSo
 
     // number of instances 1
     if (!(theSource >> aNb))
+    {
       return false;
+    }
     if (theRelocTable.IsBound(aNb))
+    {
       TInt = occ::down_cast<TDataStd_Integer>(theRelocTable.Find(aNb));
+    }
     else
     {
       TInt = new TDataStd_Integer;
@@ -126,9 +148,13 @@ bool BinMDataXtd_PatternStdDriver::Paste(const BinObjMgt_Persistent&       theSo
     {
       // axis 2
       if (!(theSource >> aNb))
+      {
         return false;
+      }
       if (theRelocTable.IsBound(aNb))
+      {
         TNS = occ::down_cast<TNaming_NamedShape>(theRelocTable.Find(aNb));
+      }
       else
       {
         TNS = new TNaming_NamedShape;
@@ -138,9 +164,13 @@ bool BinMDataXtd_PatternStdDriver::Paste(const BinObjMgt_Persistent&       theSo
 
       // real value 2
       if (!(theSource >> aNb))
+      {
         return false;
+      }
       if (theRelocTable.IsBound(aNb))
+      {
         TReal = occ::down_cast<TDataStd_Real>(theRelocTable.Find(aNb));
+      }
       else
       {
         TReal = new TDataStd_Real;
@@ -150,9 +180,13 @@ bool BinMDataXtd_PatternStdDriver::Paste(const BinObjMgt_Persistent&       theSo
 
       // number of instances 2
       if (!(theSource >> aNb))
+      {
         return false;
+      }
       if (theRelocTable.IsBound(aNb))
+      {
         TInt = occ::down_cast<TDataStd_Integer>(theRelocTable.Find(aNb));
+      }
       else
       {
         TInt = new TDataStd_Integer;
@@ -177,17 +211,25 @@ void BinMDataXtd_PatternStdDriver::Paste(
   // signature
   int signature = aP->Signature();
   if (signature < 1 || signature > 5)
+  {
     signature = 0;
+  }
   theTarget << signature;
   if (signature == 0)
+  {
     return;
+  }
 
   // reversed flags
   int revFlags = 0;
   if (aP->Axis1Reversed())
+  {
     revFlags |= 1;
+  }
   if (aP->Axis2Reversed())
+  {
     revFlags |= 2;
+  }
   theTarget << revFlags;
 
   int aNb;

@@ -68,7 +68,9 @@ occ::handle<StepGeom_CartesianPoint> StepGeom_BSplineCurve::ControlPointsListVal
 int StepGeom_BSplineCurve::NbControlPointsList() const
 {
   if (controlPointsList.IsNull())
+  {
     return 0;
+  }
   return controlPointsList->Length();
 }
 

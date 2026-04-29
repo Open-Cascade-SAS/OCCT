@@ -41,7 +41,9 @@ void RWStepDimTol_RWDatumReferenceElement::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 6, ach, "datum_reference_element"))
+  {
     return;
+  }
 
   // Inherited fields of ShapeAspect
 
@@ -111,7 +113,9 @@ void RWStepDimTol_RWDatumReferenceElement::ReadStep(
                              ach,
                              STANDARD_TYPE(StepDimTol_DatumReferenceElement),
                              anEnt))
+        {
           anItems->SetValue(i, anEnt);
+        }
       }
     }
     aBase.SetValue(anItems);
@@ -194,7 +198,9 @@ void RWStepDimTol_RWDatumReferenceElement::WriteStep(
     int i, nb = (anArray.IsNull() ? 0 : anArray->Length());
     SW.OpenTypedSub("COMMON_DATUM_LIST");
     for (i = 1; i <= nb; i++)
+    {
       SW.Send(anArray->Value(i));
+    }
     SW.CloseSub();
   }
 
@@ -247,6 +253,8 @@ void RWStepDimTol_RWDatumReferenceElement::Share(
       ent->Base().CommonDatumList();
     int i, nb = (anArray.IsNull() ? 0 : anArray->Length());
     for (i = 1; i <= nb; i++)
+    {
       iter.AddItem(anArray->Value(i));
+    }
   }
 }

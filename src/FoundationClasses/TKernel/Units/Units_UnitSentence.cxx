@@ -52,7 +52,9 @@ Units_UnitSentence::Units_UnitSentence(
 void Units_UnitSentence::Analyse()
 {
   if (Sequence()->Length() == 0)
+  {
     return;
+  }
 
   int                                                          index;
   TCollection_AsciiString                                      s;
@@ -203,16 +205,24 @@ void Units_UnitSentence::SetUnits(
           {
             symbol = currenttoken->Word();
             if (unit == symbol.ToCString())
+            {
               sequenceoftokens->SetValue(kindex, unit->Token());
+            }
             else
+            {
               istheend = false;
+            }
           }
         }
       }
       if (istheend)
+      {
         break;
+      }
     }
     if (istheend)
+    {
       break;
+    }
   }
 }

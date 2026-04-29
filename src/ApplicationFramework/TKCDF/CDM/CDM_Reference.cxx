@@ -87,9 +87,13 @@ bool CDM_Reference::IsUpToDate() const
 {
   int theActualDocumentVersion;
   if (myToDocument.IsNull())
+  {
     theActualDocumentVersion = myMetaData->DocumentVersion(myApplication);
+  }
   else
+  {
     theActualDocumentVersion = myToDocument->Modifications();
+  }
 
   return myDocumentVersion == theActualDocumentVersion;
 }
@@ -99,12 +103,18 @@ void CDM_Reference::SetIsUpToDate()
 
   int theActualDocumentVersion;
   if (myToDocument.IsNull())
+  {
     theActualDocumentVersion = myMetaData->DocumentVersion(myApplication);
+  }
   else
+  {
     theActualDocumentVersion = myToDocument->Modifications();
+  }
 
   if (theActualDocumentVersion != -1)
+  {
     myDocumentVersion = theActualDocumentVersion;
+  }
 }
 
 void CDM_Reference::UnsetToDocument(const occ::handle<CDM_MetaData>&    aMetaData,
@@ -123,14 +133,18 @@ int CDM_Reference::DocumentVersion() const
 bool CDM_Reference::IsOpened() const
 {
   if (myToDocument.IsNull())
+  {
     return false;
+  }
   return myToDocument->IsOpened();
 }
 
 bool CDM_Reference::IsReadOnly() const
 {
   if (myToDocument.IsNull())
+  {
     return myMetaData->IsReadOnly();
+  }
   return myToDocument->IsReadOnly();
 }
 

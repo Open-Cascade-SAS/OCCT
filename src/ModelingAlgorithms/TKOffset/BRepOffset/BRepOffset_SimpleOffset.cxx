@@ -56,7 +56,9 @@ bool BRepOffset_SimpleOffset::NewSurface(const TopoDS_Face&         F,
                                          bool&                      RevFace)
 {
   if (!myFaceInfo.IsBound(F))
+  {
     return false;
+  }
 
   const NewFaceData& aNFD = myFaceInfo.Find(F);
 
@@ -77,7 +79,9 @@ bool BRepOffset_SimpleOffset::NewCurve(const TopoDS_Edge&       E,
                                        double&                  Tol)
 {
   if (!myEdgeInfo.IsBound(E))
+  {
     return false;
+  }
 
   const NewEdgeData& aNED = myEdgeInfo.Find(E);
 
@@ -93,7 +97,9 @@ bool BRepOffset_SimpleOffset::NewCurve(const TopoDS_Edge&       E,
 bool BRepOffset_SimpleOffset::NewPoint(const TopoDS_Vertex& V, gp_Pnt& P, double& Tol)
 {
   if (!myVertexInfo.IsBound(V))
+  {
     return false;
+  }
 
   const NewVertexData& aNVD = myVertexInfo.Find(V);
 
@@ -118,7 +124,9 @@ bool BRepOffset_SimpleOffset::NewCurve2d(const TopoDS_Edge& E,
   Tol = BRep_Tool::Tolerance(E);
 
   if (myEdgeInfo.IsBound(E))
+  {
     Tol = myEdgeInfo.Find(E).myTol;
+  }
 
   return true;
 }
@@ -135,7 +143,9 @@ bool BRepOffset_SimpleOffset::NewParameter(const TopoDS_Vertex& V,
   Tol = BRep_Tool::Tolerance(V);
 
   if (myVertexInfo.IsBound(V))
+  {
     Tol = myVertexInfo.Find(V).myTol;
+  }
 
   return true;
 }
@@ -210,7 +220,9 @@ void BRepOffset_SimpleOffset::FillFaceData(const TopoDS_Face& theFace)
   // Take into account face orientation.
   double aMult = 1.0;
   if (theFace.Orientation() == TopAbs_REVERSED)
+  {
     aMult = -1.0;
+  }
 
   BRepOffset_Status aStatus; // set by BRepOffset::Surface(), could be used to check result...
   aNFD.myOffsetS = BRepOffset::Surface(aS, aMult * myOffsetValue, aStatus, true);
@@ -232,13 +244,17 @@ void BRepOffset_SimpleOffset::FillEdgeData(
   const NCollection_List<TopoDS_Shape>& aFacesList = theEdgeFaceMap(theIdx);
 
   if (aFacesList.Size() == 0)
+  {
     return; // Free edges are skipped.
+  }
 
   // Get offset surface.
   const TopoDS_Face& aCurrFace = TopoDS::Face(aFacesList.First());
 
   if (!myFaceInfo.IsBound(aCurrFace))
+  {
     return;
+  }
 
   // No need to deal with transformation - it is applied in fill faces data method.
   const NewFaceData&        aNFD         = myFaceInfo.Find(aCurrFace);
@@ -267,7 +283,9 @@ void BRepOffset_SimpleOffset::FillEdgeData(
     const TopoDS_Face& aCurFace = TopoDS::Face(anIter.Value());
 
     if (!myFaceInfo.IsBound(aCurFace))
+    {
       continue;
+    }
 
     // Create offset curve on surface.
     const occ::handle<Geom2d_Curve> aC2dNew = BRep_Tool::CurveOnSurface(theEdge, aCurFace, aF, aL);
@@ -315,7 +333,9 @@ void BRepOffset_SimpleOffset::FillVertexData(
   const NCollection_List<TopoDS_Shape>& aEdgesList = theVertexEdgeMap(theIdx);
 
   if (aEdgesList.Size() == 0)
+  {
     return; // Free verices are skipped.
+  }
 
   // Array to store offset points.
   NCollection_DynamicArray<gp_Pnt> anOffsetPointVec;
@@ -329,7 +349,9 @@ void BRepOffset_SimpleOffset::FillVertexData(
     const TopoDS_Edge& aCurrEdge = TopoDS::Edge(anIterEdges.Value());
 
     if (!myEdgeInfo.IsBound(aCurrEdge))
+    {
       continue; // Skip shared edges with wrong orientation.
+    }
 
     // Find the closest bound.
     double                  aF, aL;
@@ -337,7 +359,9 @@ void BRepOffset_SimpleOffset::FillVertexData(
 
     // Protection from degenerated edges.
     if (aC3d.IsNull())
+    {
       continue;
+    }
 
     const gp_Pnt aPntF = aC3d->Value(aF);
     const gp_Pnt aPntL = aC3d->Value(aL);
@@ -386,7 +410,9 @@ void BRepOffset_SimpleOffset::FillVertexData(
   {
     const double aSqDist = aCenter.SquareDistance(anOffsetPointVec.Value(i));
     if (aSqDist > aSqMaxDist)
+    {
       aSqMaxDist = aSqDist;
+    }
   }
 
   const double aResTol = std::max(aMaxEdgeTol, std::sqrt(aSqMaxDist));

@@ -94,11 +94,15 @@ void IGESDraw_ToolConnectPoint::ReadOwnParams(const occ::handle<IGESDraw_Connect
                  tempFunctionCode); // szv#4:S4163:12Mar99 `st=` not needed
 
   if (PR.DefinedElseSkip())
+  {
     // clang-format off
     PR.ReadInteger(PR.Current(), "Swap Flag", tempSwapFlag); //szv#4:S4163:12Mar99 `st=` not needed
-  // clang-format on
+    // clang-format on
+  }
   else
+  {
     tempSwapFlag = 0; // default
+  }
 
   PR.ReadEntity(IR,
                 PR.Current(),
@@ -220,19 +224,27 @@ void IGESDraw_ToolConnectPoint::OwnCheck(const occ::handle<IGESDraw_ConnectPoint
       || ((ent->TypeFlag() > 2) && (ent->TypeFlag() < 101))
       || ((ent->TypeFlag() > 104) && (ent->TypeFlag() < 201))
       || ((ent->TypeFlag() > 203) && (ent->TypeFlag() < 5001)))
+  {
     ach->AddFail("TypeFlag has Invalid value");
+  }
 
   if ((ent->FunctionFlag() < 0) || (ent->FunctionFlag() > 2))
+  {
     ach->AddFail("FunctionFlag has Invalid value");
+  }
 
   if ((ent->FunctionCode() < 0) || (ent->FunctionCode() > 9999)
       || ((ent->FunctionCode() > 49) && (ent->FunctionCode() < 98))
       || ((ent->FunctionCode() > 99) && (ent->FunctionCode() < 5001)))
+  {
     ach->AddFail("FunctionCode has Invalid value");
+  }
 
   // if ((ent->SwapFlag() < 0) || (ent->SwapFlag() > 1)) //szv#4:S4163:12Mar99 SGI warns
   if ((ent->SwapFlag() != 0) && (ent->SwapFlag() != 1))
+  {
     ach->AddFail("SwapFlag has Invalid value");
+  }
 }
 
 void IGESDraw_ToolConnectPoint::OwnDump(const occ::handle<IGESDraw_ConnectPoint>& ent,
@@ -264,5 +276,5 @@ void IGESDraw_ToolConnectPoint::OwnDump(const occ::handle<IGESDraw_ConnectPoint>
     << "Swap Flag : " << (ent->SwapFlag() ? "True" : "False") << "\n"
     << "Owner Subfigure Entity : ";
   dumper.Dump(ent->OwnerSubfigure(), S, tempSubLevel);
-  S << std::endl;
+  S << '\n';
 }

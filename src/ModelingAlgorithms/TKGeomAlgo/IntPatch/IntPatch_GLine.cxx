@@ -375,9 +375,13 @@ void IntPatch_GLine::AddVertex(const IntPatch_Point& Pnt)
       if (fipt && lapt)
       {
         while (par < pf)
+        {
           par += M_PI + M_PI;
+        }
         while (par > pl)
+        {
           par -= M_PI + M_PI;
+        }
         if (par < pf)
         {
           constexpr double PrecisionPConfusion(Precision::PConfusion() * 1000.0);
@@ -397,7 +401,9 @@ void IntPatch_GLine::AddVertex(const IntPatch_Point& Pnt)
       if (fipt && lapt)
       {
         if (pl < par || par < pf)
+        {
           return;
+        }
       }
     }
   }
@@ -455,12 +461,16 @@ void IntPatch_GLine::ComputeVertexParameters(const double /*Tol*/)
                 if (lapt)
                 {
                   if (indl > j)
+                  {
                     indl--;
+                  }
                 }
                 if (fipt)
                 {
                   if (indf > j)
+                  {
                     indf--;
+                  }
                 }
                 APointDeleted = true;
               }
@@ -497,12 +507,16 @@ void IntPatch_GLine::ComputeVertexParameters(const double /*Tol*/)
                     if (lapt)
                     {
                       if (indl > j)
+                      {
                         indl--;
+                      }
                     }
                     if (fipt)
                     {
                       if (indf > j)
+                      {
                         indf--;
+                      }
                     }
                   }
                   else
@@ -512,12 +526,16 @@ void IntPatch_GLine::ComputeVertexParameters(const double /*Tol*/)
                     if (lapt)
                     {
                       if (indl > i)
+                      {
                         indl--;
+                      }
                     }
                     if (fipt)
                     {
                       if (indf > i)
+                      {
                         indf--;
+                      }
                     }
                   }
                   APointDeleted = true;
@@ -556,12 +574,16 @@ void IntPatch_GLine::ComputeVertexParameters(const double /*Tol*/)
                     if (lapt)
                     {
                       if (indl > j)
+                      {
                         indl--;
+                      }
                     }
                     if (fipt)
                     {
                       if (indf > j)
+                      {
                         indf--;
+                      }
                     }
                   }
                   else
@@ -571,12 +593,16 @@ void IntPatch_GLine::ComputeVertexParameters(const double /*Tol*/)
                     if (lapt)
                     {
                       if (indl > i)
+                      {
                         indl--;
+                      }
                     }
                     if (fipt)
                     {
                       if (indf > i)
+                      {
                         indf--;
+                      }
                     }
                   }
                   APointDeleted = true;
@@ -614,16 +640,24 @@ void IntPatch_GLine::ComputeVertexParameters(const double /*Tol*/)
             if (fipt)
             {
               if (indf == i)
+              {
                 indf = i - 1;
+              }
               else if (indf == i - 1)
+              {
                 indf = i;
+              }
             }
             if (lapt)
             {
               if (indl == i)
+              {
                 indl = i - 1;
+              }
               else if (indl == i - 1)
+              {
                 indl = i;
+              }
             }
           }
         }
@@ -632,7 +666,9 @@ void IntPatch_GLine::ComputeVertexParameters(const double /*Tol*/)
 
     //// modified by jgv, 2.11.01 for BUC61033 ////
     if (ToBreak)
+    {
       break;
+    }
     ///////////////////////////////////////////////
 
     SortAgain = false;
@@ -759,17 +795,25 @@ void IntPatch_GLine::ComputeVertexParameters(const double /*Tol*/)
               if (lapt)
               {
                 if (indl > i)
+                {
                   indl--;
+                }
                 else if (indl == i)
+                {
                   indl = j;
+                }
               }
 
               if (fipt)
               {
                 if (indf > i)
+                {
                   indf--;
+                }
                 else if (indf == i)
+                {
                   indf = j;
+                }
               }
 
               svtx.Remove(i);
@@ -781,17 +825,25 @@ void IntPatch_GLine::ComputeVertexParameters(const double /*Tol*/)
               if (lapt)
               {
                 if (indl > j)
+                {
                   indl--;
+                }
                 else if (indl == j)
+                {
                   indl = i - 1;
+                }
               }
 
               if (fipt)
               {
                 if (indf > j)
+                {
                   indf--;
+                }
                 else if (indf == j)
+                {
                   indf = i - 1;
+                }
               }
 
               svtx.Remove(j);
@@ -814,15 +866,23 @@ void IntPatch_GLine::ComputeVertexParameters(const double /*Tol*/)
               bool         is2PI    = (std::abs(ponline - PiPi) <= PrecisionPConfusion);
 
               if (nbvtx > 2 && // do this check if seam edge only gives vertices
-                  !is2PI)      // but always change 2PI -> 0
+                  !is2PI)
+              { // but always change 2PI -> 0
                 continue;
+              }
 
               if (is2PI)
+              {
                 newParam = 0;
+              }
               else if (std::abs(ponline) <= PrecisionPConfusion)
+              {
                 newParam = PiPi;
+              }
               else
+              {
                 newParam -= PiPi;
+              }
 
               // 	      if(  (std::abs(ponline)<=PrecisionPConfusion)
               // 		   ||(std::abs(ponline-M_PI-M_PI) <=PrecisionPConfusion))
@@ -834,15 +894,23 @@ void IntPatch_GLine::ComputeVertexParameters(const double /*Tol*/)
               int flag = 0;
 
               if ((std::abs(u1a - u1b) <= PrecisionPConfusion))
+              {
                 flag |= 1;
+              }
 
               if ((std::abs(v1a - v1b) <= PrecisionPConfusion))
+              {
                 flag |= 2;
+              }
               if ((std::abs(u2a - u2b) <= PrecisionPConfusion))
+              {
                 flag |= 4;
+              }
 
               if ((std::abs(v2a - v2b) <= PrecisionPConfusion))
+              {
                 flag |= 8;
+              }
 
               bool TestOn1 = false;
               bool TestOn2 = false;
@@ -887,9 +955,13 @@ void IntPatch_GLine::ComputeVertexParameters(const double /*Tol*/)
                 else
                 {
                   if (std::abs(U1A - u1min) > PrecisionPConfusion)
+                  {
                     ToBreak = true;
+                  }
                   if (std::abs(U1B - u1max) > PrecisionPConfusion)
+                  {
                     ToBreak = true;
+                  }
                 }
                 ///////////////////////////////////////////////
                 // eap, =>>
@@ -948,10 +1020,14 @@ void IntPatch_GLine::ComputeVertexParameters(const double /*Tol*/)
                 else
                 {
                   if (std::abs(U2A - u2min) > PrecisionPConfusion)
+                  {
                     ToBreak = true;
+                  }
 
                   if (std::abs(U2B - u2max) > PrecisionPConfusion)
+                  {
                     ToBreak = true;
+                  }
                 }
                 ///////////////////////////////////////////////
                 // eap, =>>

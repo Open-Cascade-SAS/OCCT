@@ -236,14 +236,18 @@ void LocOpe_WiresOnShape::BindAll()
     double                    pf, pl;
     occ::handle<Geom2d_Curve> aPCurve = BRep_Tool::CurveOnSurface(edg, fac, pf, pl);
     if (aPCurve.IsNull())
+    {
       continue;
+    }
 
     if (myCheckInterior)
     {
       bool isOverlapped = false;
       FindInternalIntersections(edg, fac, Splits, isOverlapped);
       if (isOverlapped)
+      {
         anOverlappedEdges.Add(edg);
+      }
     }
   }
 
@@ -251,13 +255,17 @@ void LocOpe_WiresOnShape::BindAll()
   {
     TopoDS_Shape anEdge = Splits.FindKey(Ind);
     if (anOverlappedEdges.Contains(anEdge))
+    {
       continue;
+    }
     TopoDS_Shape aFace = myMapEF.FindFromKey(anEdge);
     // Remove "anEdge" from "myMapEF"
     myMapEF.RemoveKey(anEdge);
     NCollection_List<TopoDS_Shape>::Iterator itl(Splits(Ind));
     for (; itl.More(); itl.Next())
+    {
       myMapEF.Add(itl.Value(), aFace);
+    }
   }
 
   NCollection_DataMap<TopoDS_Shape, double, TopTools_ShapeMapHasher> aVertParam;
@@ -296,10 +304,14 @@ void LocOpe_WiresOnShape::BindAll()
       {
         TopoDS_Shape aSh = myMap.Find(vtx);
         if (aSh.ShapeType() != TopAbs_EDGE)
+        {
           continue;
+        }
         Epro = TopoDS::Edge(myMap.Find(vtx));
         if (aVertParam.IsBound(vtx))
+        {
           prm = aVertParam.Find(vtx);
+        }
       }
       bool ok = Project(vtx, p2d, fac, Epro, prm);
       if (ok && !isProjected)
@@ -339,8 +351,12 @@ void LocOpe_WiresOnShape::BindAll()
 
   //  Modified by Sergey KHROMOV - Mon Feb 12 16:26:50 2001 Begin
   for (ite.Initialize(myMap); ite.More(); ite.Next())
+  {
     if ((ite.Key()).ShapeType() == TopAbs_EDGE)
+    {
       myMapEF.Add(ite.Key(), ite.Value());
+    }
+  }
   //  Modified by Sergey KHROMOV - Mon Feb 12 16:26:52 2001 End
 
   myDone = true;
@@ -445,7 +461,9 @@ bool LocOpe_WiresOnShape::OnEdge(const TopoDS_Vertex& V,
 
   Ed = TopoDS::Edge(myMap(V));
   if (!myMapEF.Contains(EdgeFrom))
+  {
     return false;
+  }
 
   TopoDS_Shape            aShape = myMapEF.FindFromKey(EdgeFrom);
   double                  aF, aL;
@@ -461,7 +479,9 @@ bool LocOpe_WiresOnShape::OnEdge(const TopoDS_Vertex& V,
     prm = Project(V, p2d, Ed, aFace);
   }
   else
+  {
     prm = Project(V, TopoDS::Edge(Ed));
+  }
 
   return true;
 }
@@ -495,7 +515,9 @@ bool Project(const TopoDS_Vertex& V,
       {
         aCurPar = Project(V, edg);
         if (Precision::IsInfinite(aCurPar))
+        {
           continue;
+        }
         gp_Pnt aCurPBound;
         C->D0(aCurPar, aCurPBound);
         aCurDist = aCurPBound.SquareDistance(toproj);
@@ -506,11 +528,15 @@ bool Project(const TopoDS_Vertex& V,
         // Geom2dAPI_ProjectPointOnCurve proj;
         occ::handle<Geom2d_Curve> aC2d = BRep_Tool::CurveOnSurface(edg, F, f, l);
         if (aC2d.IsNull())
+        {
           continue;
+        }
 
         aCurPar = Project(V, p2d, edg, F);
         if (Precision::IsInfinite(aCurPar))
+        {
           continue;
+        }
         occ::handle<Geom2d_Curve> PC = BRep_Tool::CurveOnSurface(edg, F, f, l);
         gp_Pnt2d                  aPProj;
         PC->D0(aCurPar, aPProj);
@@ -528,7 +554,9 @@ bool Project(const TopoDS_Vertex& V,
       }
     }
     if (theEdge.IsNull())
+    {
       return false;
+    }
   }
   else if (Precision::IsInfinite(param))
   {
@@ -613,7 +641,9 @@ bool Project(const TopoDS_Vertex& V,
         {
           double aDist3d1 = aDist2d / std::max(anUResolution, aVResolution);
           if (aDist3d1 > aDist3d)
+          {
             aDist3d = aDist3d1;
+          }
         }
       }
 
@@ -720,12 +750,18 @@ void PutPCurve(const TopoDS_Edge& Edg, const TopoDS_Face& Fac)
     aC2d->D0((f + l) * 0.5, p2d);
     bool IsIn = true;
     if ((p2d.X() < Umin - Precision::PConfusion()) || (p2d.X() > Umax + Precision::PConfusion()))
+    {
       IsIn = false;
+    }
     if ((p2d.Y() < Vmin - Precision::PConfusion()) || (p2d.Y() > Vmax + Precision::PConfusion()))
+    {
       IsIn = false;
+    }
 
     if (IsIn)
+    {
       return;
+    }
   }
 
   TopLoc_Location         Loc;
@@ -747,9 +783,13 @@ void PutPCurve(const TopoDS_Edge& Edg, const TopoDS_Face& Fac)
   TopoDS_Vertex V1, V2;
   TopExp::Vertices(Edg, V1, V2);
   if (!V1.IsNull())
+  {
     TolFirst = BRep_Tool::Tolerance(V1);
+  }
   if (!V2.IsNull())
+  {
     TolLast = BRep_Tool::Tolerance(V2);
+  }
 
   constexpr double                     tol2d = Precision::Confusion();
   occ::handle<Geom2d_Curve>            C2d;
@@ -954,7 +994,9 @@ void PutPCurves(const TopoDS_Edge& Efrom, const TopoDS_Edge& Eto, const TopoDS_S
 
       occ::handle<Geom2d_Curve> C2d = GeomProjLib::Curve2d(C, S, Umin, Umax, Vmin, Vmax, tol2d);
       if (C2d.IsNull())
+      {
         return;
+      }
 
       gp_Pnt2d pf(C2d->Value(f));
       gp_Pnt2d pl(C2d->Value(l));
@@ -1294,14 +1336,18 @@ void FindInternalIntersections(
     Bnd_Box2d           aBox;
     BndLib_Add2dCurve::Add(aPCurve, BRep_Tool::Tolerance(anEdge), aBox);
     if (theBox.IsOut(aBox))
+    {
       continue;
+    }
 
     const occ::handle<Geom_Curve>& aCurve = BRep_Tool::Curve(anEdge, aFpar, aLpar);
     GeomAdaptor_Curve              aGAcurve(aCurve, aFpar, aLpar);
     Extrema_ExtCC                  anExtrema(theGAcurve, aGAcurve, TolExt, TolExt);
 
     if (!anExtrema.IsDone() || !anExtrema.NbExt())
+    {
       continue;
+    }
 
     int    aNbExt   = anExtrema.NbExt();
     double MaxTol   = BRep_Tool::Tolerance(anEdge);
@@ -1319,9 +1365,13 @@ void FindInternalIntersections(
     for (i = 0; i < 4; ++i)
     {
       if (i < 2)
+      {
         j = 0;
+      }
       else
+      {
         j = 1;
+      }
       if (dists[i] < aTolVExt[j] / ext)
       {
         return;
@@ -1332,7 +1382,9 @@ void FindInternalIntersections(
     {
       double aDist = anExtrema.SquareDistance(i);
       if (aDist > aMaxTol2)
+      {
         continue;
+      }
 
       Extrema_POnCurv aPOnC1, aPOnC2;
       anExtrema.Points(i, aPOnC1, aPOnC2);
@@ -1341,7 +1393,9 @@ void FindInternalIntersections(
       for (j = 0; j < 2; j++) // try to find intersection on an extremity of "theEdge"
       {
         if (std::abs(theIntPar - thePar[j]) <= aTolV2d[j])
+        {
           break;
+        }
       }
       // intersection found in the middle of the edge
       if (j >= 2) // intersection is inside "theEdge" => split
@@ -1356,24 +1410,32 @@ void FindInternalIntersections(
         {
           SplitPars.Append(theIntPar);
           if (aDist > aDistMax)
+          {
             aDistMax = aDist;
+          }
         }
       }
     }
   }
 
   if (SplitPars.IsEmpty())
+  {
     return;
+  }
 
   // Sort
   for (i = 1; i < SplitPars.Length(); i++)
+  {
     for (j = i + 1; j <= SplitPars.Length(); j++)
+    {
       if (SplitPars(i) > SplitPars(j))
       {
         double Tmp   = SplitPars(i);
         SplitPars(i) = SplitPars(j);
         SplitPars(j) = Tmp;
       }
+    }
+  }
   // Remove repeating points
   i = 1;
   while (i < SplitPars.Length())
@@ -1381,9 +1443,13 @@ void FindInternalIntersections(
     gp_Pnt Pnt1 = theCurve->Value(SplitPars(i));
     gp_Pnt Pnt2 = theCurve->Value(SplitPars(i + 1));
     if (Pnt1.SquareDistance(Pnt2) <= Precision::Confusion() * Precision::Confusion())
+    {
       SplitPars.Remove(i + 1);
+    }
     else
+    {
       i++;
+    }
   }
 
   // Split
@@ -1427,15 +1493,21 @@ void FindInternalIntersections(
     }
 
     if (anOrient == TopAbs_FORWARD)
+    {
       NewEdges.Append(NewEdge);
+    }
     else
+    {
       NewEdges.Prepend(NewEdge);
+    }
     FirstVertex = LastVertex;
     FirstPar    = LastPar;
   }
 
   if (!NewEdges.IsEmpty())
+  {
     Splits.Add(theEdge, NewEdges);
+  }
 }
 
 //=================================================================================================
@@ -1456,7 +1528,9 @@ bool LocOpe_WiresOnShape::Add(const NCollection_Sequence<TopoDS_Shape>& theEdges
       Bnd_Box aBoxE;
       BRepBndLib::AddClose(aCurE, aBoxE);
       if (aBoxE.IsVoid())
+      {
         continue;
+      }
       double aTolE = BRep_Tool::Tolerance(TopoDS::Edge(aCurE));
       aBoxE.SetGap(aTolE);
       anEdgeBoxes.SetValue(i, aBoxE);
@@ -1472,7 +1546,9 @@ bool LocOpe_WiresOnShape::Add(const NCollection_Sequence<TopoDS_Shape>& theEdges
     Bnd_Box            aBoxF;
     BRepBndLib::Add(aCurF, aBoxF);
     if (aBoxF.IsVoid())
+    {
       continue;
+    }
     BRepAdaptor_Surface                         anAdF(aCurF, false);
     NCollection_Handle<BRepTopAdaptor_FClass2d> aCheckStateTool;
 
@@ -1492,10 +1568,14 @@ bool LocOpe_WiresOnShape::Add(const NCollection_Sequence<TopoDS_Shape>& theEdges
     for (; i <= nb; i++)
     {
       if (anUsedEdges.Contains(i))
+      {
         continue;
+      }
 
       if (aBoxF.IsOut(anEdgeBoxes(i)))
+      {
         continue;
+      }
 
       const TopoDS_Edge& aCurE = TopoDS::Edge(anEdges(i));
 
@@ -1510,7 +1590,9 @@ bool LocOpe_WiresOnShape::Add(const NCollection_Sequence<TopoDS_Shape>& theEdges
       anExtr.Perform(aP);
 
       if (!anExtr.IsDone() || !anExtr.NbExt())
+      {
         continue;
+      }
       double aTolE = BRep_Tool::Tolerance(TopoDS::Edge(aCurE));
       double aTol2 = (aTolE + Precision::Confusion()) * (aTolE + Precision::Confusion());
       int    n     = 1;
@@ -1518,7 +1600,9 @@ bool LocOpe_WiresOnShape::Add(const NCollection_Sequence<TopoDS_Shape>& theEdges
       {
         double aDist2 = anExtr.SquareDistance(n);
         if (aDist2 > aTol2)
+        {
           continue;
+        }
         const Extrema_POnSurf& aPS = anExtr.Point(n);
         double                 aU, aV;
         aPS.Parameter(aU, aV);

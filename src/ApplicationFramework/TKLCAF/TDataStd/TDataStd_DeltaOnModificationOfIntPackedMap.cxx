@@ -46,7 +46,9 @@ TDataStd_DeltaOnModificationOfIntPackedMap::TDataStd_DeltaOnModificationOfIntPac
 #endif
 
     if (aMap1.IsNull() || aMap2.IsNull())
+    {
       return;
+    }
     if (aMap1 != aMap2)
     {
       const TColStd_PackedMapOfInteger& map1 = aMap1->Map();
@@ -108,24 +110,34 @@ void TDataStd_DeltaOnModificationOfIntPackedMap::Apply()
     return;
   }
   else
+  {
     aCurAtt->Backup();
+  }
 
   occ::handle<TColStd_HPackedMapOfInteger> IntMap = aCurAtt->GetHMap();
   if (IntMap.IsNull())
+  {
     return;
+  }
 
   if (myDeletion.IsNull() && myAddition.IsNull())
+  {
     return;
+  }
 
   if (!myDeletion.IsNull())
   {
     if (myDeletion->Map().Extent())
+    {
       NCollection_PackedMapAlgo::Subtract(IntMap->ChangeMap(), myDeletion->Map());
+    }
   }
   if (!myAddition.IsNull())
   {
     if (myAddition->Map().Extent())
+    {
       NCollection_PackedMapAlgo::Unite(IntMap->ChangeMap(), myAddition->Map());
+    }
   }
 
 #ifdef OCCT_DEBUG_disable

@@ -99,11 +99,15 @@ bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&         DStr,
   gp_Dir LinAx1     = Spine.Direction();
   gp_Dir VecTransl1 = LinAx1.Crossed(D1);
   if (VecTransl1.Dot(D2) < 0.)
+  {
     VecTransl1.Reverse();
+  }
 
   gp_Dir VecTransl2 = LinAx1.Crossed(D2);
   if (VecTransl2.Dot(D1) < 0.)
+  {
     VecTransl2.Reverse();
+  }
 
   double cosP, sinP, dis1, dis2;
   cosP = VecTransl1.Dot(VecTransl2);
@@ -146,7 +150,9 @@ bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&         DStr,
   gp_Dir xdir = LinAx1; // u axis
   gp_Ax3 PlanAx3(Po, AxisPlan, xdir);
   if (PlanAx3.YDirection().Dot(D2) >= 0.)
+  {
     PlanAx3.YReverse();
+  }
 
   occ::handle<Geom_Plane> gpl = new Geom_Plane(PlanAx3);
   Data->ChangeSurf(ChFiKPart_IndexSurfaceInDS(gpl, DStr));
@@ -166,12 +172,18 @@ bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&         DStr,
   gp_Dir DirCh12(gp_Vec(P1, P2));
   bool   toreverse = (norplch.Dot(norface1) <= 0.);
   if (VecTransl1.Dot(DirCh12) > 0)
+  {
     toreverse = !toreverse;
+  }
 
   if (toreverse)
+  {
     Data->ChangeOrientation() = TopAbs_REVERSED;
+  }
   else
+  {
     Data->ChangeOrientation() = TopAbs_FORWARD;
+  }
 
   // Loading of the FaceInterferences with pcurves & 3d curves.
 
@@ -195,11 +207,17 @@ bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&         DStr,
   TopAbs_Orientation trans;
   toreverse = (norplch.Dot(norpl) <= 0.);
   if (VecTransl1.Dot(DirCh12) > 0)
+  {
     toreverse = !toreverse;
+  }
   if (toreverse)
+  {
     trans = TopAbs_FORWARD;
+  }
   else
+  {
     trans = TopAbs_REVERSED;
+  }
 
   Data->ChangeInterferenceOnS1().SetInterference(ChFiKPart_IndexCurveInDS(GLinPln1, DStr),
                                                  trans,
@@ -227,11 +245,17 @@ bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&         DStr,
   norpl     = Pos2.XDirection().Crossed(Pos2.YDirection());
   toreverse = (norplch.Dot(norpl) <= 0.);
   if (VecTransl2.Dot(DirCh12) < 0)
+  {
     toreverse = !toreverse;
+  }
   if (toreverse)
+  {
     trans = TopAbs_REVERSED;
+  }
   else
+  {
     trans = TopAbs_FORWARD;
+  }
 
   Data->ChangeInterferenceOnS2().SetInterference(ChFiKPart_IndexCurveInDS(GLinPln2, DStr),
                                                  trans,

@@ -35,7 +35,9 @@ void RWStepElement_RWSurfaceSectionField::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 0, ach, "surface_section_field"))
+  {
     return;
+  }
 
   // Initialize entity
   //  ent->Init();

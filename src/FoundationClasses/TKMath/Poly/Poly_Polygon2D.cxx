@@ -34,7 +34,9 @@ Poly_Polygon2D::Poly_Polygon2D(const NCollection_Array1<gp_Pnt2d>& Nodes)
 {
   int i, j = 1;
   for (i = Nodes.Lower(); i <= Nodes.Upper(); i++)
+  {
     myNodes(j++) = Nodes(i);
+  }
 }
 
 //=================================================================================================

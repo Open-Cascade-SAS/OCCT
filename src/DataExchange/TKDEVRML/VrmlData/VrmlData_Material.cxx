@@ -164,7 +164,9 @@ occ::handle<VrmlData_Node> VrmlData_Material::Clone(
   occ::handle<VrmlData_Material> aResult =
     occ::down_cast<VrmlData_Material>(VrmlData_Node::Clone(theOther));
   if (aResult.IsNull())
+  {
     aResult = new VrmlData_Material(theOther.IsNull() ? Scene() : theOther->Scene(), Name());
+  }
 
   aResult->SetAmbientIntensity(myAmbientIntensity);
   aResult->SetShininess(myShininess);
@@ -217,15 +219,21 @@ VrmlData_ErrorStatus VrmlData_Material::Read(VrmlData_InBuffer& theBuffer)
       parseColor(aStatus, theBuffer, aColor[3], Scene());
     }
     else
+    {
       break;
+    }
 
     if (!OK(aStatus))
+    {
       break;
+    }
   }
 
   // Read the terminating (closing) brace
   if (OK(aStatus))
+  {
     aStatus = readBrace(theBuffer);
+  }
 
   // Store the values in the Material node instance
   if (OK(aStatus))

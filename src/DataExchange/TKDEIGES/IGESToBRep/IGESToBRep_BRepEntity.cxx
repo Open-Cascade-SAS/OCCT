@@ -387,7 +387,9 @@ TopoDS_Shape IGESToBRep_BRepEntity::TransferLoop(const occ::handle<IGESSolid_Loo
           continue;
         }
         if (!orientation)
+        {
           curve3d->Reverse();
+        }
 
         //  processing of 2d curves.
         //  -------------------------
@@ -405,7 +407,9 @@ TopoDS_Shape IGESToBRep_BRepEntity::TransferLoop(const occ::handle<IGESSolid_Loo
         {
           Curves2d = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nbparam);
           for (int i = 1; i <= nbparam; i++)
+          {
             Curves2d->SetValue(i, start->ParametricCurve(iedge, i));
+          }
         }
         occ::handle<ShapeExtend_WireData> lsewd; // result of translation of current edge
         Result = Result
@@ -418,7 +422,9 @@ TopoDS_Shape IGESToBRep_BRepEntity::TransferLoop(const occ::handle<IGESSolid_Loo
                                 iedge,
                                 lsewd);
         if (iedge == 1)
+        {
           sewd = IB->WireData(); // initialization
+        }
         if (curve3d->NbEdges() == 1 && lsewd->NbEdges() == 1)
         { // the condition corresponds to limitation above
           // to keep sharing of edges all geometric representations should be put
@@ -500,7 +506,9 @@ TopoDS_Shape IGESToBRep_BRepEntity::TransferFace(const occ::handle<IGESSolid_Fac
           F = TopoDS::Face(myshape);
           F.EmptyCopy();
           if (nbloops == 0)
+          {
             B.NaturalRestriction(F, true);
+          }
 
           // Loops
           // -----
@@ -510,7 +518,9 @@ TopoDS_Shape IGESToBRep_BRepEntity::TransferFace(const occ::handle<IGESSolid_Fac
             TopoDS_Shape                Shape = TransferLoop(loop, F, trans, uFact);
             // pdn 20.04.99 CTS22655 avoid of exceptions in case of empty loops
             if (!Shape.IsNull())
+            {
               B.Add(F, Shape);
+            }
           }
 
           // update the face
@@ -575,7 +585,9 @@ TopoDS_Shape IGESToBRep_BRepEntity::TransferShell(const occ::handle<IGESSolid_Sh
           continue;
         }
         if (!orientation)
+        {
           Sh.Reverse();
+        }
         B.Add(S, Sh);
       }
       if (!closed)
@@ -632,7 +644,9 @@ TopoDS_Shape IGESToBRep_BRepEntity::TransferManifoldSolid(
       {
         TopoDS_Shell Shell = TopoDS::Shell(Sh);
         if (!isoriented)
+        {
           Shell.Reverse();
+        }
         B.Add(S, Shell);
       }
 
@@ -651,7 +665,9 @@ TopoDS_Shape IGESToBRep_BRepEntity::TransferManifoldSolid(
             {
               TopoDS_Shell Shell = TopoDS::Shell(aSh);
               if (!isoriented)
+              {
                 Shell.Reverse();
+              }
               B.Add(S, Shell);
             }
           }

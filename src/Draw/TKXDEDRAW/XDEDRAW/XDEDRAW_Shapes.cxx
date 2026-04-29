@@ -75,11 +75,15 @@ static int addShape(Draw_Interpretor& di, int argc, const char** argv)
   occ::handle<XCAFDoc_ShapeTool> myAssembly   = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
   bool                           makeAssembly = true;
   if (argc == 4 && Draw::Atoi(argv[3]) == 0)
+  {
     makeAssembly = false;
+  }
   TDF_Label aLabel;
   aLabel = myAssembly->AddShape(aShape, makeAssembly);
   if (aLabel.IsNull())
+  {
     di << "Null Label\n";
+  }
   TCollection_AsciiString Entry;
   TDF_Tool::Entry(aLabel, Entry);
   di << Entry.ToCString();
@@ -201,7 +205,9 @@ static int removeShape(Draw_Interpretor& di, int argc, const char** argv)
   occ::handle<XCAFDoc_ShapeTool> myAssembly       = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
   bool                           removeCompletely = true;
   if (argc == 4 && Draw::Atoi(argv[3]) == 0)
+  {
     removeCompletely = false;
+  }
   myAssembly->RemoveShape(aLabel, removeCompletely);
 
   return 0;
@@ -384,7 +390,9 @@ static int getUsers(Draw_Interpretor& di, int argc, const char** argv)
   }
   bool getsubchilds = false;
   if ((argc == 4) && (Draw::Atoi(argv[3]) == 1))
+  {
     getsubchilds = true;
+  }
 
   occ::handle<TDocStd_Document> Doc;
   DDocStd::GetDocument(argv[1], Doc);
@@ -414,7 +422,9 @@ static int nbComponents(Draw_Interpretor& di, int argc, const char** argv)
   }
   bool getsubchilds = false;
   if ((argc == 4) && (Draw::Atoi(argv[3]) == 1))
+  {
     getsubchilds = true;
+  }
   occ::handle<TDocStd_Document> Doc;
   DDocStd::GetDocument(argv[1], Doc);
   if (Doc.IsNull())
@@ -679,7 +689,9 @@ static int XDumpLocation(Draw_Interpretor& di, int argc, const char** argv)
     for (int j = 1; j <= 4; j++) // column number
     {
       if (j > 1)
+      {
         di << ",";
+      }
       di << TCollection_AsciiString(aTrsf.Value(i, j)).ToCString();
     }
     di << ")";
@@ -709,9 +721,13 @@ static int setSHUO(Draw_Interpretor& di, int argc, const char** argv)
     TDF_Label L;
     TDF_Tool::Label(Doc->GetData(), argv[i - 1], L);
     if (!L.IsNull())
+    {
       aLabSeq.Append(L);
+    }
     else
+    {
       di << argv[i - 1] << " is null label" << "\n";
+    }
   }
   if (aLabSeq.Length() < 2)
   {
@@ -854,9 +870,13 @@ static int hasSHUO(Draw_Interpretor& di, int argc, const char** argv)
   occ::handle<XCAFDoc_GraphNode> anAttrSHUO;
   occ::handle<XCAFDoc_ShapeTool> myAssembly = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
   if (myAssembly->GetSHUO(UL, anAttrSHUO))
+  {
     di << 1;
+  }
   else
+  {
     di << 0;
+  }
 
   return 0;
 }
@@ -950,7 +970,9 @@ static int getStyledComponent(Draw_Interpretor& di, int argc, const char** argv)
   TDF_Tool::Label(Doc->GetData(), argv[3], aLabel);
   occ::handle<XCAFDoc_GraphNode> SHUO;
   if (myAssembly->GetSHUO(aLabel, SHUO))
+  {
     aShape = myAssembly->GetSHUOInstance(SHUO);
+  }
 
   if (aShape.IsNull())
   {
@@ -982,6 +1004,7 @@ static int getAllStyledComponents(Draw_Interpretor& di, int argc, const char** a
   TDF_Tool::Label(Doc->GetData(), argv[3], aLabel);
   occ::handle<XCAFDoc_GraphNode> SHUO;
   if (myAssembly->GetSHUO(aLabel, SHUO))
+  {
     if (myAssembly->GetAllSHUOInstances(SHUO, aShapes))
     {
       TopoDS_Compound aShape;
@@ -995,6 +1018,7 @@ static int getAllStyledComponents(Draw_Interpretor& di, int argc, const char** a
       DBRep::Set(argv[2], aShape);
       di << argv[2];
     }
+  }
 
   return 0;
 }
@@ -1020,9 +1044,13 @@ static int findSHUO(Draw_Interpretor& di, int argc, const char** argv)
     TDF_Label L;
     TDF_Tool::Label(Doc->GetData(), argv[i - 1], L);
     if (!L.IsNull())
+    {
       aLabSeq.Append(L);
+    }
     else
+    {
       di << argv[i - 1] << " is null label" << "\n";
+    }
   }
   if (aLabSeq.Length() < 2)
   {
@@ -1090,7 +1118,9 @@ static int updateAssemblies(Draw_Interpretor& di, int argc, const char** argv)
   occ::handle<TDocStd_Document> aDoc;
   DDocStd::GetDocument(argv[1], aDoc);
   if (aDoc.IsNull())
+  {
     return 1;
+  }
 
   // Get XDE shape tool
   occ::handle<XCAFDoc_ShapeTool> aShapeTool = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main());

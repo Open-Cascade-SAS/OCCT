@@ -125,7 +125,9 @@ void BRepOffset_MakeLoops::Build(const NCollection_List<TopoDS_Shape>& LF,
   }
   Loops.GetVerticesForSubstitute(myVerVerMap);
   if (myVerVerMap.IsEmpty())
+  {
     return;
+  }
   BRep_Builder          BB;
   Message_ProgressScope aPS2(aPSOuter.Next(), "Building loops", LF.Size());
   for (it.Initialize(LF); it.More(); it.Next(), aPS2.Next())
@@ -147,7 +149,9 @@ void BRepOffset_MakeLoops::Build(const NCollection_List<TopoDS_Shape>& LF,
         NCollection_List<TopoDS_Shape> VList;
         TopoDS_Iterator                VerExp(E);
         for (; VerExp.More(); VerExp.Next())
+        {
           VList.Append(VerExp.Value());
+        }
         NCollection_List<TopoDS_Shape>::Iterator itlv(VList);
         for (; itlv.More(); itlv.Next())
         {
@@ -160,7 +164,9 @@ void BRepOffset_MakeLoops::Build(const NCollection_List<TopoDS_Shape>& LF,
             occ::handle<BRep_TVertex>& TV    = *((occ::handle<BRep_TVertex>*)&V.TShape());
             occ::handle<BRep_TVertex>& NewTV = *((occ::handle<BRep_TVertex>*)&NewV.TShape());
             if (TV->Tolerance() > NewTV->Tolerance())
+            {
               NewTV->Tolerance(TV->Tolerance());
+            }
             NewTV->ChangePoints().Append(TV->ChangePoints());
             AsDes->Replace(V, NewV);
             BB.Remove(E, V);
@@ -179,7 +185,9 @@ static bool IsBetweenCorks(const TopoDS_Shape&                   E,
                            const NCollection_List<TopoDS_Shape>& LContext)
 {
   if (!AsDes->HasAscendant(E))
+  {
     return true;
+  }
   const NCollection_List<TopoDS_Shape>&    LF = AsDes->Ascendant(E);
   NCollection_List<TopoDS_Shape>::Iterator it;
   for (it.Initialize(LF); it.More(); it.Next())
@@ -196,7 +204,9 @@ static bool IsBetweenCorks(const TopoDS_Shape&                   E,
       }
     }
     if (!found)
+    {
       return false;
+    }
   }
   return true;
 }
@@ -236,10 +246,14 @@ void BRepOffset_MakeLoops::BuildOnContext(const NCollection_List<TopoDS_Shape>& 
     //-----------------------------------------------
     TopoDS_Shape aReversedF = F.Reversed();
     if (InSide)
+    {
       Loops.Init(TopoDS::Face(aReversedF));
-    //    if (InSide) Loops.Init(TopoDS::Face(F.Reversed()));
+      //    if (InSide) Loops.Init(TopoDS::Face(F.Reversed()));
+    }
     else
+    {
       Loops.Init(F);
+    }
     //--------------------------------------------------------
     // return edges of F not modified by definition.
     //--------------------------------------------------------
@@ -253,9 +267,13 @@ void BRepOffset_MakeLoops::BuildOnContext(const NCollection_List<TopoDS_Shape>& 
         //      if (!AsDes->HasAscendant(CE)) {
         TopoDS_Shape aReversedE = CE.Reversed();
         if (InSide)
+        {
           Loops.AddConstEdge(CE);
+        }
         else
+        {
           Loops.AddConstEdge(TopoDS::Edge(aReversedE));
+        }
         //	else        Loops.AddConstEdge(TopoDS::Edge(CE.Reversed()));
       }
     }
@@ -285,9 +303,13 @@ void BRepOffset_MakeLoops::BuildOnContext(const NCollection_List<TopoDS_Shape>& 
             continue;
           }
           if (!MBound.Contains(E))
+          {
             CE.Reverse();
+          }
           if (InSide)
+          {
             Loops.AddConstEdge(TopoDS::Edge(CE));
+          }
           else
           {
             TopoDS_Shape aReversedE = CE.Reversed();
@@ -321,9 +343,13 @@ void BRepOffset_MakeLoops::BuildOnContext(const NCollection_List<TopoDS_Shape>& 
         {
           TopoDS_Shape aLocalShape = E.Reversed();
           if (InSide)
+          {
             Loops.AddConstEdge(E);
+          }
           else
+          {
             Loops.AddConstEdge(TopoDS::Edge(aLocalShape));
+          }
           //	  if (InSide) Loops.AddConstEdge(TopoDS::Edge(E));
           //	  else        Loops.AddConstEdge(TopoDS::Edge(E.Reversed()));
         }
@@ -331,9 +357,13 @@ void BRepOffset_MakeLoops::BuildOnContext(const NCollection_List<TopoDS_Shape>& 
         {
           TopoDS_Shape aLocalShape = E.Reversed();
           if (InSide)
+          {
             Loops.AddConstEdge(TopoDS::Edge(aLocalShape));
+          }
           else
+          {
             Loops.AddConstEdge(E);
+          }
           //	  if (InSide) Loops.AddConstEdge(TopoDS::Edge(E.Reversed()));
           //	  else        Loops.AddConstEdge(TopoDS::Edge(E));
         }
@@ -372,7 +402,9 @@ void BRepOffset_MakeLoops::BuildOnContext(const NCollection_List<TopoDS_Shape>& 
   }
   Loops.GetVerticesForSubstitute(myVerVerMap);
   if (myVerVerMap.IsEmpty())
+  {
     return;
+  }
   BRep_Builder BB;
   for (it.Initialize(LContext); it.More(); it.Next())
   {
@@ -389,7 +421,9 @@ void BRepOffset_MakeLoops::BuildOnContext(const NCollection_List<TopoDS_Shape>& 
         NCollection_List<TopoDS_Shape> VList;
         TopoDS_Iterator                VerExp(E);
         for (; VerExp.More(); VerExp.Next())
+        {
           VList.Append(VerExp.Value());
+        }
         NCollection_List<TopoDS_Shape>::Iterator itlv(VList);
         for (; itlv.More(); itlv.Next())
         {
@@ -402,7 +436,9 @@ void BRepOffset_MakeLoops::BuildOnContext(const NCollection_List<TopoDS_Shape>& 
             occ::handle<BRep_TVertex>& TV    = *((occ::handle<BRep_TVertex>*)&V.TShape());
             occ::handle<BRep_TVertex>& NewTV = *((occ::handle<BRep_TVertex>*)&NewV.TShape());
             if (TV->Tolerance() > NewTV->Tolerance())
+            {
               NewTV->Tolerance(TV->Tolerance());
+            }
             NewTV->ChangePoints().Append(TV->ChangePoints());
             AsDes->Replace(V, NewV);
             BB.Remove(E, V);
@@ -482,9 +518,13 @@ void BRepOffset_MakeLoops::BuildFaces(const NCollection_List<TopoDS_Shape>& LF,
             TopExp::Vertices(E, OV1, OV2);
             TopExp::Vertices(CE, NV1, NV2);
             if (!OV1.IsSame(NV1))
+            {
               MONV.Bind(OV1, NV1);
+            }
             if (!OV2.IsSame(NV2))
+            {
               MONV.Bind(OV2, NV2);
+            }
             Loops.AddConstEdge(CE);
           }
         }
@@ -524,7 +564,9 @@ void BRepOffset_MakeLoops::BuildFaces(const NCollection_List<TopoDS_Shape>& LF,
               //			     l,E,BRep_Tool::Tolerance(VV));
             }
             if (LV.IsEmpty())
+            {
               Loops.AddConstEdge(E);
+            }
             else
             {
               Loops.AddEdge(E, LV);
@@ -570,7 +612,9 @@ void BRepOffset_MakeLoops::BuildFaces(const NCollection_List<TopoDS_Shape>& LF,
   }
   Loops.GetVerticesForSubstitute(myVerVerMap);
   if (myVerVerMap.IsEmpty())
+  {
     return;
+  }
   BRep_Builder BB;
   for (itr.Initialize(LF); itr.More(); itr.Next())
   {
@@ -587,7 +631,9 @@ void BRepOffset_MakeLoops::BuildFaces(const NCollection_List<TopoDS_Shape>& LF,
         NCollection_List<TopoDS_Shape> VList;
         TopoDS_Iterator                VerExp(E);
         for (; VerExp.More(); VerExp.Next())
+        {
           VList.Append(VerExp.Value());
+        }
         NCollection_List<TopoDS_Shape>::Iterator itlv(VList);
         for (; itlv.More(); itlv.Next())
         {
@@ -600,7 +646,9 @@ void BRepOffset_MakeLoops::BuildFaces(const NCollection_List<TopoDS_Shape>& LF,
             occ::handle<BRep_TVertex>& TV    = *((occ::handle<BRep_TVertex>*)&V.TShape());
             occ::handle<BRep_TVertex>& NewTV = *((occ::handle<BRep_TVertex>*)&NewV.TShape());
             if (TV->Tolerance() > NewTV->Tolerance())
+            {
               NewTV->Tolerance(TV->Tolerance());
+            }
             NewTV->ChangePoints().Append(TV->ChangePoints());
             AsDes->Replace(V, NewV);
             BB.Remove(E, V);

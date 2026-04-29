@@ -85,10 +85,12 @@ bool IGESAppli_ToolRegionRestriction::OwnCorrect(
 {
   bool res = (ent->NbPropertyValues() != 3);
   if (res)
+  {
     ent->Init(3,
               ent->ElectricalViasRestriction(),
               ent->ElectricalComponentRestriction(),
               ent->ElectricalCktRestriction()); // nbprops = 3
+  }
   if (ent->SubordinateStatus() != 0)
   {
     occ::handle<IGESData_LevelListEntity> nulevel;
@@ -115,16 +117,28 @@ void IGESAppli_ToolRegionRestriction::OwnCheck(const occ::handle<IGESAppli_Regio
                                                occ::handle<Interface_Check>& ach) const
 {
   if (ent->SubordinateStatus() != 0)
+  {
     if (ent->DefLevel() != IGESData_DefOne && ent->DefLevel() != IGESData_DefSeveral)
+    {
       ach->AddFail("Level type: Not value/reference");
+    }
+  }
   if (ent->NbPropertyValues() != 3)
+  {
     ach->AddFail("Number of Property Values != 3");
+  }
   if (ent->ElectricalViasRestriction() < 0 || ent->ElectricalViasRestriction() > 2)
+  {
     ach->AddFail("Incorrect value for Electrical Vias Restriction");
+  }
   if (ent->ElectricalComponentRestriction() < 0 || ent->ElectricalComponentRestriction() > 2)
+  {
     ach->AddFail("Incorrect value for Electrical Component Restriction");
+  }
   if (ent->ElectricalCktRestriction() < 0 || ent->ElectricalCktRestriction() > 2)
+  {
     ach->AddFail("Incorrect value for Electrical Circuit Restriction");
+  }
   // UNFINISHED
   // level ignored if this property is subordinate -- queried
 }
@@ -138,5 +152,5 @@ void IGESAppli_ToolRegionRestriction::OwnDump(const occ::handle<IGESAppli_Region
     << "Number of property values : " << ent->NbPropertyValues() << "\n"
     << "Electrical vias restriction       : " << ent->ElectricalViasRestriction() << "\n"
     << "Electrical components restriction : " << ent->ElectricalComponentRestriction() << "\n"
-    << "Electrical circuitary restriction : " << ent->ElectricalCktRestriction() << std::endl;
+    << "Electrical circuitary restriction : " << ent->ElectricalCktRestriction() << '\n';
 }

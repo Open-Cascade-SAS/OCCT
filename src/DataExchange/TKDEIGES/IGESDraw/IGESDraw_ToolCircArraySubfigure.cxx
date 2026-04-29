@@ -64,9 +64,13 @@ void IGESDraw_ToolCircArraySubfigure::ReadOwnParams(
   {
     // Initialise HArray1 only if there is no error reading its Length
     if (tempListCount > 0)
+    {
       tempNumPos = new NCollection_HArray1<int>(1, tempListCount);
+    }
     else if (tempListCount < 0)
+    {
       PR.AddFail("DO-DONT List Count : Less than Zero");
+    }
   }
 
   PR.ReadInteger(PR.Current(), "DO-DONT Flag", tempFlag); // szv#4:S4163:12Mar99 `st=` not needed
@@ -81,7 +85,9 @@ void IGESDraw_ToolCircArraySubfigure::ReadOwnParams(
       // st = PR.ReadInteger(PR.Current(), "Number Of Position To Process",
       // tempPosition); //szv#4:S4163:12Mar99 moved in if
       if (PR.ReadInteger(PR.Current(), "Number Of Position To Process", tempPosition))
+      {
         tempNumPos->SetValue(I, tempPosition);
+      }
     }
   }
 
@@ -114,7 +120,9 @@ void IGESDraw_ToolCircArraySubfigure::WriteOwnParams(
   int I;
   int up = ent->ListCount();
   for (I = 1; I <= up; I++)
+  {
     IW.Send(ent->ListPosition(I));
+  }
 }
 
 void IGESDraw_ToolCircArraySubfigure::OwnShared(
@@ -197,10 +205,14 @@ void IGESDraw_ToolCircArraySubfigure::OwnDump(const occ::handle<IGESDraw_CircArr
     << "Delta Angle (in radians) : " << ent->DeltaAngle() << "\n"
     << "Do-Dont Flag : ";
   if (ent->DoDontFlag())
+  {
     S << "Dont\n";
+  }
   else
+  {
     S << "Do\n";
+  }
   S << "The Do-Dont List : ";
   IGESData_DumpVals(S, level, 1, ent->ListCount(), ent->ListPosition);
-  S << std::endl;
+  S << '\n';
 }

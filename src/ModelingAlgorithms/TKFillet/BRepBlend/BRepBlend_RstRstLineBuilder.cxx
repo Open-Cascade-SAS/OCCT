@@ -334,7 +334,9 @@ bool BRepBlend_RstRstLineBuilder::PerformFirstSection(Blend_RstRstFunction&   Fu
   math_FunctionSetRoot rsnld(Func, tolerance, 30);
   rsnld.Perform(Func, ParDep, infbound, supbound);
   if (!rsnld.IsDone())
+  {
     return false;
+  }
   rsnld.Root(sol);
 
   recadrst1 = RecRst1 && Recadre1(Func, Finv1, solinvrst1, IsVtxrst1, Vtxrst1);
@@ -362,7 +364,9 @@ bool BRepBlend_RstRstLineBuilder::PerformFirstSection(Blend_RstRstFunction&   Fu
   }
 
   if (!recadrst1 && !recadp1 && !recadrst2 && !recadp2)
+  {
     return false;
+  }
 
   // it is checked if the contact was lost or domain 1 was left
   if (recadp1 && recadrst1)
@@ -733,7 +737,9 @@ void BRepBlend_RstRstLineBuilder::InternalPerform(Blend_RstRstFunction&   Func,
 
       decroch = Blend_NoDecroch;
       if (recadp1 || recadp2 || recadrst1 || recadrst2)
+      {
         echecrecad = false;
+      }
 
       if (!echecrecad)
       {
@@ -1202,7 +1208,9 @@ bool BRepBlend_RstRstLineBuilder::Recadre1(Blend_RstRstFunction&           Func,
     Func.Set(Solinv(1));
     rsnld2.Perform(Func, parinit, infbound, supbound);
     if (!rsnld2.IsDone())
+    {
       return false;
+    }
     rsnld2.Root(parinit);
     Solinv(2) = parinit(2);
     Solinv(3) = parinit(1);
@@ -1282,7 +1290,9 @@ bool BRepBlend_RstRstLineBuilder::Recadre2(Blend_RstRstFunction&           Func,
     Func.Set(Solinv(1));
     rsnld2.Perform(Func, parinit, infbound, supbound);
     if (!rsnld2.IsDone())
+    {
       return false;
+    }
     rsnld2.Root(parinit);
     Solinv(2) = parinit(1);
     Solinv(3) = parinit(2);
@@ -1306,7 +1316,9 @@ bool BRepBlend_RstRstLineBuilder::Recadre1(Blend_CurvPointFuncInv&         FinvP
   double   upoint    = firstrst1;
 
   if ((sol(1) - firstrst1) > (lastrst1 - sol(1)))
+  {
     upoint = lastrst1;
+  }
   p2drst1         = rst1->Value(upoint);
   gp_Pnt thepoint = surf1->Value(p2drst1.X(), p2drst1.Y());
 
@@ -1377,7 +1389,9 @@ bool BRepBlend_RstRstLineBuilder::Recadre2(Blend_CurvPointFuncInv&         FinvP
   double   vpoint    = firstrst2;
 
   if ((sol(2) - firstrst2) > (lastrst2 - sol(2)))
+  {
     vpoint = lastrst2;
+  }
   p2drst2         = rst2->Value(vpoint);
   gp_Pnt thepoint = surf2->Value(p2drst2.X(), p2drst2.Y());
 
@@ -1448,7 +1462,9 @@ void BRepBlend_RstRstLineBuilder::Transition(const bool                         
   if (previousP.IsTangencyPoint())
   {
     if (line->NbPoints() < 2)
+    {
       return;
+    }
     computetranstionaveclacorde = true;
     if (sens < 0)
     {
@@ -1470,17 +1486,25 @@ void BRepBlend_RstRstLineBuilder::Transition(const bool                         
   {
     surf1->D1(p2d.X(), p2d.Y(), pbid, d1u, d1v);
     if (!computetranstionaveclacorde)
+    {
       tgline = previousP.TangentOnC1();
+    }
     else
+    {
       tgline = gp_Vec(prevprev.PointOnC1(), previousP.PointOnC1());
+    }
   }
   else
   {
     surf2->D1(p2d.X(), p2d.Y(), pbid, d1u, d1v);
     if (!computetranstionaveclacorde)
+    {
       tgline = previousP.TangentOnC2();
+    }
     else
+    {
       tgline = gp_Vec(prevprev.PointOnC2(), previousP.PointOnC2());
+    }
   }
 
   tgrst.SetLinearForm(dp2d.X(), d1u, dp2d.Y(), d1v);
@@ -1508,14 +1532,18 @@ void BRepBlend_RstRstLineBuilder::MakeExtremity(BRepBlend_Extremity&            
   {
     Extrem.SetValue(previousP.PointOnC1(), sol(1), previousP.Parameter(), tolpoint3d);
     if (!previousP.IsTangencyPoint())
+    {
       Extrem.SetTangent(previousP.TangentOnC1());
+    }
     Iter = domain1;
   }
   else
   {
     Extrem.SetValue(previousP.PointOnC2(), sol(2), previousP.Parameter(), tolpoint3d);
     if (!previousP.IsTangencyPoint())
+    {
       Extrem.SetTangent(previousP.TangentOnC1());
+    }
     Iter = domain2;
   }
 
@@ -1585,7 +1613,9 @@ Blend_Status BRepBlend_RstRstLineBuilder::CheckDeflectionOnRst1(const Blend_Poin
   gp_Vec Corde(prevP, Psurf);
   Norme = Corde.SquareMagnitude();
   if (!prevpointistangent)
+  {
     prevNorme = prevTg.SquareMagnitude();
+  }
 
   const double toler3d = 0.01 * tolpoint3d;
   if (Norme <= toler3d * toler3d)
@@ -1672,7 +1702,9 @@ Blend_Status BRepBlend_RstRstLineBuilder::CheckDeflectionOnRst2(const Blend_Poin
   gp_Vec Corde(prevP, Psurf);
   Norme = Corde.SquareMagnitude();
   if (!prevpointistangent)
+  {
     prevNorme = prevTg.SquareMagnitude();
+  }
 
   const double toler3d = 0.01 * tolpoint3d;
   if (Norme <= toler3d * toler3d)
@@ -1732,7 +1764,9 @@ Blend_Status BRepBlend_RstRstLineBuilder::CheckDeflectionOnRst2(const Blend_Poin
 static IntSurf_TypeTrans ConvOrToTra(const TopAbs_Orientation O)
 {
   if (O == TopAbs_FORWARD)
+  {
     return IntSurf_In;
+  }
   return IntSurf_Out;
 }
 
@@ -1903,7 +1937,9 @@ bool BRepBlend_RstRstLineBuilder::CheckInside(Blend_RstRstFunction& Func,
     SituOnC1 = TopAbs_IN;
   }
   else
+  {
     SituOnC1 = TopAbs_ON;
+  }
 
   // face pcurve 2.
   v = sol(2);
@@ -1916,7 +1952,9 @@ bool BRepBlend_RstRstLineBuilder::CheckInside(Blend_RstRstFunction& Func,
     SituOnC2 = TopAbs_IN;
   }
   else
+  {
     SituOnC2 = TopAbs_ON;
+  }
 
   // lost contact
   gp_Vec tgrst1, norst1, tgrst2, norst2;

@@ -54,7 +54,9 @@ void RWStepBasic_RWUncertaintyMeasureWithUnit::ReadStep(
     num1 = data->NextForComplex(num1);
 
     if (!data->CheckNbParams(num1, 2, ach, "measure_with_unit"))
+    {
       return;
+    }
 
     // --- inherited field : valueComponent ---
     occ::handle<StepBasic_MeasureValueMember> mvc = new StepBasic_MeasureValueMember;
@@ -68,7 +70,9 @@ void RWStepBasic_RWUncertaintyMeasureWithUnit::ReadStep(
     num1 = data->NextForComplex(num1);
 
     if (!data->CheckNbParams(num1, 2, ach, "uncertainty_measure_with_unit"))
+    {
       return;
+    }
 
     // --- own field : name ---
     occ::handle<TCollection_HAsciiString> aName;
@@ -89,7 +93,9 @@ void RWStepBasic_RWUncertaintyMeasureWithUnit::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 4, ach, "uncertainty_measure_with_unit"))
+  {
     return;
+  }
 
   // --- inherited field : valueComponent ---
   // double aValueComponent;

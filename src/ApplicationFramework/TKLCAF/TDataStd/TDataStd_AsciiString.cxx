@@ -89,7 +89,9 @@ occ::handle<TDataStd_AsciiString> TDataStd_AsciiString::Set(
 void TDataStd_AsciiString::Set(const TCollection_AsciiString& theAsciiString)
 {
   if (myString == theAsciiString)
+  {
     return;
+  }
   Backup();
   myString = theAsciiString;
 }
@@ -106,7 +108,9 @@ const TCollection_AsciiString& TDataStd_AsciiString::Get() const
 void TDataStd_AsciiString::SetID(const Standard_GUID& theGuid)
 {
   if (myID == theGuid)
+  {
     return;
+  }
 
   Backup();
   myID = theGuid;
@@ -162,7 +166,7 @@ Standard_OStream& TDataStd_AsciiString::Dump(Standard_OStream& theOS) const
   anOS << " Name=|" << myString << "|";
   char sguid[Standard_GUID_SIZE_ALLOC];
   myID.ToCString(sguid);
-  anOS << sguid << "|" << std::endl;
+  anOS << sguid << "|" << '\n';
   return anOS;
 }
 

@@ -31,7 +31,9 @@ void RWStepBasic_RWApplicationProtocolDefinition::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 4, ach, "application_protocol_definition"))
+  {
     return;
+  }
 
   // --- own field : status ---
 

@@ -83,7 +83,9 @@ TEST(BRepGraph_CopyTest, CopyBox_FaceCount)
 
   int aNbFaces = 0;
   for (TopExp_Explorer anExp(aCopy, TopAbs_FACE); anExp.More(); anExp.Next())
+  {
     ++aNbFaces;
+  }
   EXPECT_EQ(aNbFaces, 6);
 }
 

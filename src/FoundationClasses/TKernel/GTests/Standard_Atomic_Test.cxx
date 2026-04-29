@@ -31,9 +31,13 @@ public:
   void operator()(const size_t) const
   {
     if (myPositive)
+    {
       ++(*myVal);
+    }
     else
+    {
       --(*myVal);
+    }
   }
 
 private:

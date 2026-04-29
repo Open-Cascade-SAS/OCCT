@@ -134,7 +134,9 @@ void BRepClass3d_SClassifier::PerformInfinitePoint(BRepClass3d_SolidExplorer& aS
       aParam = 0.1 + 0.8 * aRandomGenerator.NextReal(); // random number in range [0.1, 0.9]
       bFound = BRepClass3d_SolidExplorer::FindAPointInTheFace(aF, aPoint, aU, aV, aParam);
       if (!bFound || !FaceNormal(aF, aU, aV, aDN))
+      {
         continue;
+      }
 
       gp_Lin aLin(aPoint, -aDN);
       double parmin = RealLast();
@@ -157,8 +159,12 @@ void BRepClass3d_SClassifier::PerformInfinitePoint(BRepClass3d_SolidExplorer& aS
                 {
                   int imin = 1;
                   for (int i = 2; i <= Intersector3d.NbPnt(); i++)
+                  {
                     if (Intersector3d.WParameter(i) < Intersector3d.WParameter(imin))
+                    {
                       imin = i;
+                    }
+                  }
                   parmin      = Intersector3d.WParameter(imin);
                   aState      = Intersector3d.State(imin);
                   aTransition = Intersector3d.Transition(imin);
@@ -168,7 +174,9 @@ void BRepClass3d_SClassifier::PerformInfinitePoint(BRepClass3d_SolidExplorer& aS
           }
         }
         else
+        {
           myState = 1;
+        }
       } // end of loop on the whole solid
 
       if (aState == TopAbs_IN)
@@ -249,14 +257,20 @@ void BRepClass3d_SClassifier::Perform(BRepClass3d_SolidExplorer& SolidExplorer,
   while (isFaultyLine)
   {
     if (anIndFace == 0)
+    {
       iFlag = SolidExplorer.Segment(P, L, Par);
+    }
     else
+    {
       iFlag = SolidExplorer.OtherSegment(P, L, Par);
+    }
 
     int aCurInd = SolidExplorer.GetFaceSegmentIndex();
 
     if (aCurInd > anIndFace)
+    {
       anIndFace = aCurInd;
+    }
     else
     {
       myState = 1; // Faulty.
@@ -278,7 +292,9 @@ void BRepClass3d_SClassifier::Perform(BRepClass3d_SolidExplorer& SolidExplorer,
     // Check if the point is ON surface but OUT of the face.
     // Just skip this face because it is bad for classification.
     if (iFlag == 3)
+    {
       continue;
+    }
 
     isFaultyLine = false;
     parmin       = RealLast();
@@ -304,7 +320,9 @@ void BRepClass3d_SClassifier::Perform(BRepClass3d_SolidExplorer& SolidExplorer,
 
         LVInts.Add(V);
         if (std::abs(LP) < std::abs(NearFaultPar))
+        {
           NearFaultPar = LP;
+        }
       }
 
       double      param = 0.0;
@@ -316,7 +334,9 @@ void BRepClass3d_SClassifier::Perform(BRepClass3d_SolidExplorer& SolidExplorer,
         aSelectorLine.GetEdgeParam(i, EE, param, Lpar);
         const NCollection_List<TopoDS_Shape>& ffs = mapEF.FindFromKey(EE); // ffs size == 2
         if (ffs.Extent() != 2)
+        {
           continue;
+        }
         TopoDS_Face   f1 = TopoDS::Face(ffs.First());
         TopoDS_Face   f2 = TopoDS::Face(ffs.Last());
         TopoDS_Vertex V1, V2;
@@ -334,7 +354,9 @@ void BRepClass3d_SClassifier::Perform(BRepClass3d_SolidExplorer& SolidExplorer,
           Trans(parmin, tran, myState);
         }
         else if (std::abs(Lpar) < std::abs(NearFaultPar))
+        {
           NearFaultPar = Lpar;
+        }
       }
     }
 
@@ -470,7 +492,9 @@ void BRepClass3d_SClassifier::Perform(BRepClass3d_SolidExplorer& SolidExplorer,
               }
             } //-- Face has not been rejected
             else
+            {
               myState = 1;
+            }
           }
         } //-- Exploration of the faces
         if (myState == 2)
@@ -479,7 +503,9 @@ void BRepClass3d_SClassifier::Perform(BRepClass3d_SolidExplorer& SolidExplorer,
         }
       } //-- Shell has not been rejected
       else
+      {
         myState = 1;
+      }
     } //-- Exploration of the shells
 
     if (NearFaultPar != RealLast()
@@ -499,11 +525,17 @@ void BRepClass3d_SClassifier::Perform(BRepClass3d_SolidExplorer& SolidExplorer,
 TopAbs_State BRepClass3d_SClassifier::State() const
 {
   if (myState == 2)
+  {
     return (TopAbs_ON);
+  }
   else if (myState == 3)
+  {
     return (TopAbs_IN);
+  }
   else if (myState == 4)
+  {
     return (TopAbs_OUT);
+  }
 
   // return OUT state when there is an error during execution.
   return (TopAbs_OUT);
@@ -555,10 +587,14 @@ double GetAddToParam(const gp_Lin& L, const double P, const Bnd_Box& B)
           gp_Pnt aP(x[i], y[j], z[k]);
           double par = ElCLib::Parameter(L, aP);
           if (par > Par)
+          {
             Par = par;
+          }
         }
         else
+        {
           return 1.e+20;
+        }
       }
     }
   }
@@ -577,7 +613,9 @@ bool FaceNormal(const TopoDS_Face& aF, const double U, const double V, gp_Dir& a
   aS->D1(U, V, aPnt, aD1U, aD1V);
   aN = aD1U.Crossed(aD1V);
   if (aN.Magnitude() <= gp::Resolution())
+  {
     return false;
+  }
 
   aN.Normalize();
   aDN.SetXYZ(aN.XYZ());
@@ -600,9 +638,13 @@ static bool GetNormalOnFaceBound(const TopoDS_Edge& E,
   gp_Pnt2d                  P2d;
   occ::handle<Geom2d_Curve> c2d = BRep_Tool::CurveOnSurface(E, F, f, l);
   if (c2d.IsNull())
+  {
     return false;
+  }
   if (param < f || param > l)
+  {
     return false;
+  }
   c2d->D0(param, P2d);
   return FaceNormal(F, P2d.X(), P2d.Y(), OutDir);
 }
@@ -622,9 +664,13 @@ static int GetTransi(const TopoDS_Face&                 f1,
   //-1 => probably a faulty line
   gp_Dir nf1, nf2;
   if (!GetNormalOnFaceBound(e, f1, param, nf1))
+  {
     return -1;
+  }
   if (!GetNormalOnFaceBound(e, f2, param, nf2))
+  {
     return -1;
+  }
 
   const gp_Dir& LDir = L.Direction();
 
@@ -640,11 +686,17 @@ static int GetTransi(const TopoDS_Face&                 f1,
   {
     double angD = nf1.Dot(LDir);
     if (std::abs(angD) < Precision::Angular())
+    {
       return -1;
+    }
     else if (angD > 0)
+    {
       trans = IntCurveSurface_Out;
-    else // angD < -Precision::Angular())
+    }
+    else
+    { // angD < -Precision::Angular())
       trans = IntCurveSurface_In;
+    }
     return 1;
   }
 
@@ -657,11 +709,17 @@ static int GetTransi(const TopoDS_Face&                 f1,
   double sAD = nf2.Dot(ProjL);
 
   if (fAD < -Precision::Angular() && sAD < -Precision::Angular())
+  {
     trans = IntCurveSurface_In;
+  }
   else if (fAD > Precision::Angular() && sAD > Precision::Angular())
+  {
     trans = IntCurveSurface_Out;
+  }
   else
+  {
     return 0;
+  }
   return 1;
 }
 
@@ -671,12 +729,18 @@ static void Trans(const double parmin, IntCurveSurface_TransitionOnCurve& tran, 
 {
   // if parmin is negative we should reverse transition
   if (parmin < 0)
+  {
     tran = (tran == IntCurveSurface_Out ? IntCurveSurface_In : IntCurveSurface_Out);
+  }
 
   if (tran == IntCurveSurface_Out)
+  {
     //-- The line is going from inside the solid to outside
     //-- the solid.
     state = 3; // IN
+  }
   else
+  {
     state = 4; // OUT
+  }
 }

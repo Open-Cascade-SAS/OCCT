@@ -163,7 +163,9 @@ void ChFiDS_ElSpine::SetPeriodic(const bool I)
 double ChFiDS_ElSpine::Period() const
 {
   if (!periodic)
+  {
     throw Standard_Failure("ElSpine non periodique");
+  }
   return period;
 }
 
@@ -228,7 +230,9 @@ void ChFiDS_ElSpine::SaveLastParameter()
 void ChFiDS_ElSpine::SetOrigin(const double O)
 {
   if (!periodic)
+  {
     throw Standard_Failure("Elspine non periodique");
+  }
   occ::handle<Geom_BSplineCurve> bs = occ::down_cast<Geom_BSplineCurve>(curve.Curve());
   if (!bs.IsNull())
   {

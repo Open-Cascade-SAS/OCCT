@@ -157,15 +157,21 @@ void gp_Mat2d::Power(const int theN)
   else
   {
     if (theN < 0)
+    {
       Invert();
+    }
     int      Npower = std::abs(theN) - 1;
     gp_Mat2d aTemp  = *this;
     for (;;)
     {
       if (IsOdd(Npower))
+      {
         Multiply(aTemp);
+      }
       if (Npower == 1)
+      {
         break;
+      }
       aTemp.Multiply(aTemp);
       Npower = Npower / 2;
     }

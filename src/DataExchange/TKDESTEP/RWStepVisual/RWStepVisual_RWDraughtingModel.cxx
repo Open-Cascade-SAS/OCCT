@@ -37,7 +37,9 @@ void RWStepVisual_RWDraughtingModel::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "draughting_model"))
+  {
     return;
+  }
 
   // Inherited fields of Representation
 

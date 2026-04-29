@@ -80,9 +80,13 @@ bool ShapeUpgrade_FaceDivide::Perform(const double theArea)
 {
   myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
   if (myFace.IsNull())
+  {
     return false;
+  }
   if (Context().IsNull())
+  {
     SetContext(new ShapeBuild_ReShape);
+  }
   myResult = myFace;
   SplitSurface(theArea);
   SplitCurves();
@@ -95,7 +99,9 @@ bool ShapeUpgrade_FaceDivide::SplitSurface(const double theArea)
 {
   occ::handle<ShapeUpgrade_SplitSurface> SplitSurf = GetSplitSurfaceTool();
   if (SplitSurf.IsNull())
+  {
     return false;
+  }
 
   // myResult should be face; else return with FAIL
   if (myResult.IsNull() || myResult.ShapeType() != TopAbs_FACE)
@@ -114,7 +120,9 @@ bool ShapeUpgrade_FaceDivide::SplitSurface(const double theArea)
   ShapeAnalysis::GetFaceUVBounds(face, Uf, Ul, Vf, Vl);
   if (Precision::IsInfinite(Uf) || Precision::IsInfinite(Ul) || Precision::IsInfinite(Vf)
       || Precision::IsInfinite(Vl))
+  {
     return false;
+  }
 
   // make little extension to ensure all pcurves fit inside new surface bounds
   double aSUf, aSUl, aSVf, aSVl;
@@ -123,17 +131,25 @@ bool ShapeUpgrade_FaceDivide::SplitSurface(const double theArea)
   {
     double dU = (Ul - Uf) * 0.01;
     if (Uf > aSUf)
+    {
       Uf -= std::min(dU, Uf - aSUf);
+    }
     if (Ul < aSUl)
+    {
       Ul += std::min(dU, aSUl - Ul);
+    }
   }
   if (!surf->IsVPeriodic())
   {
     double dV = (Vl - Vf) * 0.01;
     if (Vf > aSVf)
+    {
       Vf -= std::min(dV, Vf - aSVf);
+    }
     if (Vl < aSVl)
+    {
       Vl += std::min(dV, aSVl - Vl);
+    }
   }
 
   SplitSurf->Init(surf, Uf, Ul, Vf, Vl, theArea);
@@ -141,20 +157,26 @@ bool ShapeUpgrade_FaceDivide::SplitSurface(const double theArea)
 
   // If surface was neither split nor modified, do nothing
   if (!SplitSurf->Status(ShapeExtend_DONE))
+  {
     return false;
+  }
 
   // if surface was modified, force copying all vertices (and edges as consequence)
   // to protect original shape from increasing tolerance after SameParameter
   if (SplitSurf->Status(ShapeExtend_DONE3))
+  {
     for (TopExp_Explorer exp(face, TopAbs_VERTEX); exp.More(); exp.Next())
     {
       if (Context()->IsRecorded(exp.Current()))
+      {
         continue;
+      }
       // smh#8
       TopoDS_Shape  emptyCopied = exp.Current().EmptyCopied();
       TopoDS_Vertex V           = TopoDS::Vertex(emptyCopied);
       Context()->Replace(exp.Current(), V);
     }
+  }
 
   occ::handle<ShapeExtend_CompositeSurface> Grid = SplitSurf->ResSurfaces();
 
@@ -164,10 +186,14 @@ bool ShapeUpgrade_FaceDivide::SplitSurface(const double theArea)
   CompShell.SetMaxTolerance(MaxTolerance());
   occ::handle<ShapeUpgrade_WireDivide> SplitWire = GetWireDivideTool();
   if (!SplitWire.IsNull())
+  {
     CompShell.SetTransferParamTool(GetWireDivideTool()->GetTransferParamTool());
+  }
   CompShell.Perform();
   if (CompShell.Status(ShapeExtend_FAIL) || !CompShell.Status(ShapeExtend_DONE))
+  {
     myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL2);
+  }
 
   myResult = CompShell.Result();
   myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE2);
@@ -181,7 +207,9 @@ bool ShapeUpgrade_FaceDivide::SplitCurves()
 {
   occ::handle<ShapeUpgrade_WireDivide> SplitWire = GetWireDivideTool();
   if (SplitWire.IsNull())
+  {
     return false;
+  }
 
   SplitWire->SetMaxTolerance(MaxTolerance());
   for (TopExp_Explorer explf(myResult, TopAbs_FACE); explf.More(); explf.Next())
@@ -202,13 +230,17 @@ bool ShapeUpgrade_FaceDivide::SplitCurves()
       // TopoDS_Wire wire = TopoDS::Wire ( wi.Value() );
       //  modifications already defined in context are to be applied inside SplitWire
       if (wi.Value().ShapeType() != TopAbs_WIRE)
+      {
         continue;
+      }
       TopoDS_Wire wire = TopoDS::Wire(wi.Value());
       SplitWire->Load(wire);
       SplitWire->SetContext(Context());
       SplitWire->Perform();
       if (SplitWire->Status(ShapeExtend_FAIL))
+      {
         myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL1);
+      }
       if (SplitWire->Status(ShapeExtend_DONE))
       {
         myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE1);

@@ -46,7 +46,9 @@ void Interface_CheckIterator::SetName(const char* const name)
 {
   thename.Clear();
   if (name[0] != '\0')
+  {
     thename.AssignCat(name);
+  }
 }
 
 //=================================================================================================
@@ -86,7 +88,9 @@ void Interface_CheckIterator::Merge(Interface_CheckIterator& other)
 {
   themod = other.Model();
   for (other.Start(); other.More(); other.Next())
+  {
     Add(other.Value(), other.Number());
+  }
 }
 
 //=================================================================================================
@@ -95,7 +99,9 @@ void Interface_CheckIterator::Add(const occ::handle<Interface_Check>& ach, const
 {
   //  Add <same num as the last> -> accumulate Checks
   if (ach->NbWarnings() + ach->NbFails() == 0)
+  {
     return;
+  }
   int nm = num;
   if (num <= 0 && ach->HasEntity())
   {
@@ -103,20 +109,26 @@ void Interface_CheckIterator::Add(const occ::handle<Interface_Check>& ach, const
     {
       nm = themod->Number(ach->Entity());
       if (nm <= 0)
+      {
         nm = -1;
+      }
     }
     else
+    {
       nm = -1;
+    }
   }
   if (nm >= 0 && nm <= -(thecurr->Value()))
   {
     int i, numpos = 0, nb = thelist->Length();
     for (i = nb; i > 0; i--)
+    {
       if (thenums->Value(i) == nm)
       {
         numpos = i;
         break;
       }
+    }
     if (numpos > 0 && nm >= 0)
     {
       occ::handle<Interface_Check> lch = thelist->ChangeValue(numpos);
@@ -146,7 +158,9 @@ const occ::handle<Interface_Check>& Interface_CheckIterator::Check(const int num
   for (i = 1; i <= nb; i++)
   {
     if (num == thenums->Value(i))
+    {
       return thelist->Value(i);
+    }
   }
   return nulcheck();
 }
@@ -158,15 +172,21 @@ const occ::handle<Interface_Check>& Interface_CheckIterator::Check(
 {
   int num = -1;
   if (!themod.IsNull())
+  {
     num = themod->Number(ent);
+  }
   if (num > 0)
+  {
     return Check(num);
+  }
 
   int i, nb = thelist->Length();
   for (i = 1; i <= nb; i++)
   {
     if (ent == thelist->Value(i)->Entity())
+    {
       return thelist->Value(i);
+    }
   }
   return nulcheck();
 }
@@ -179,7 +199,9 @@ occ::handle<Interface_Check>& Interface_CheckIterator::CCheck(const int num)
   for (i = 1; i <= nb; i++)
   {
     if (num == thenums->Value(i))
+    {
       return thelist->ChangeValue(i);
+    }
   }
   occ::handle<Interface_Check> ach = new Interface_Check;
   thelist->Append(ach);
@@ -194,15 +216,21 @@ occ::handle<Interface_Check>& Interface_CheckIterator::CCheck(
 {
   int num = -1;
   if (!themod.IsNull())
+  {
     num = themod->Number(ent);
+  }
   if (num > 0)
+  {
     return CCheck(num);
+  }
 
   int i, nb = thelist->Length();
   for (i = 1; i <= nb; i++)
   {
     if (ent == thelist->Value(i)->Entity())
+    {
       return thelist->ChangeValue(i);
+    }
   }
 
   occ::handle<Interface_Check> ach = new Interface_Check;
@@ -216,14 +244,20 @@ occ::handle<Interface_Check>& Interface_CheckIterator::CCheck(
 bool Interface_CheckIterator::IsEmpty(const bool failsonly) const
 {
   if (thelist->IsEmpty())
+  {
     return true;
+  }
   if (!failsonly)
+  {
     return false;
+  }
   int i, nb = thelist->Length();
   for (i = 1; i <= nb; i++)
   {
     if (thelist->Value(i)->HasFailed())
+    {
       return false;
+    }
   }
   return true;
 }
@@ -238,9 +272,13 @@ Interface_CheckStatus Interface_CheckIterator::Status() const
   {
     const occ::handle<Interface_Check> ach = thelist->Value(i);
     if (ach->HasFailed())
+    {
       return Interface_CheckFail;
+    }
     if (ach->NbWarnings() > 0)
+    {
       stat = Interface_CheckWarning;
+    }
   }
   return stat;
 }
@@ -343,7 +381,9 @@ Interface_CheckIterator Interface_CheckIterator::Extract(const Interface_CheckSt
         break;
     }
     if (prend)
+    {
       res.Add(ach, thenums->Value(i));
+    }
   }
   return res;
 }
@@ -363,7 +403,9 @@ Interface_CheckIterator Interface_CheckIterator::Extract(const char* const      
   {
     const occ::handle<Interface_Check> ach = thelist->Value(i);
     if (ach->Complies(str, incl, stat))
+    {
       res.Add(ach, thenums->Value(i));
+    }
   }
   return res;
 }
@@ -381,7 +423,9 @@ bool Interface_CheckIterator::Remove(const char* const           mess,
   {
     occ::handle<Interface_Check> ach = thelist->ChangeValue(i);
     if (ach->Remove(str, incl, stat))
+    {
       res = true;
+    }
   }
   return res;
 }
@@ -393,21 +437,31 @@ occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Interface_Ch
 {
   occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list;
   if (themod.IsNull())
+  {
     return list;
+  }
   list = new NCollection_HSequence<occ::handle<Standard_Transient>>();
   int num, i, nb = thelist->Length();
   for (i = 1; i <= nb; i++)
   {
     const occ::handle<Interface_Check> chk = thelist->Value(i);
     if (failsonly && !chk->HasFailed())
+    {
       continue;
+    }
     if (chk->NbWarnings() == 0)
+    {
       continue;
+    }
     num = thenums->Value(i);
     if (num == 0 && global)
+    {
       list->Append(themod);
+    }
     else if (num > 0)
+    {
       list->Append(themod->Value(num));
+    }
   }
   return list;
 }
@@ -424,7 +478,9 @@ void Interface_CheckIterator::Start() const
 bool Interface_CheckIterator::More() const
 {
   if (thecurr->Value() < 0)
+  {
     thecurr->CValue() = 1;
+  }
   return (thecurr->Value() <= thelist->Length());
 }
 
@@ -433,7 +489,9 @@ bool Interface_CheckIterator::More() const
 void Interface_CheckIterator::Next() const
 {
   if (thecurr->Value() < 0)
+  {
     thecurr->CValue() = 1;
+  }
   thecurr->CValue()++;
 }
 
@@ -442,7 +500,9 @@ void Interface_CheckIterator::Next() const
 const occ::handle<Interface_Check>& Interface_CheckIterator::Value() const
 {
   if (thecurr->Value() > thelist->Length())
+  {
     throw Standard_NoSuchObject("Interface Check Iterator : Value");
+  }
   return thelist->Value(thecurr->Value());
 }
 
@@ -451,7 +511,9 @@ const occ::handle<Interface_Check>& Interface_CheckIterator::Value() const
 int Interface_CheckIterator::Number() const
 {
   if (thecurr->Value() > thenums->Length())
+  {
     throw Standard_NoSuchObject("Interface Check Iterator : Value");
+  }
   return thenums->Value(thecurr->Value());
 }
 
@@ -483,33 +545,51 @@ void Interface_CheckIterator::Print(Standard_OStream&                           
     const occ::handle<Interface_Check> ach = thelist->Value(i);
     int                                nbw = 0, nbf = ach->NbFails();
     if (!failsonly)
+    {
       nbw = ach->NbWarnings();
+    }
     if (nbf + nbw == 0)
+    {
       continue;
+    }
     occ::handle<Standard_Transient> ent    = ach->Entity();
     int                             nm0    = thenums->Value(i);
     bool                            entnul = ent.IsNull();
     int                             num    = nm0;
     if (nm0 <= 0 && !entnul && yamod)
+    {
       num = model->Number(ent);
+    }
     if (nm0 <= 0 && entnul)
+    {
       num = -1; // Global
-                //  mesnum = mesnum0;
-                //    if (yamod) mesnum = (nm0 > 0 ? mesnum1 : mesnum2);
+    }
+    //  mesnum = mesnum0;
+    //    if (yamod) mesnum = (nm0 > 0 ? mesnum1 : mesnum2);
 
     if (!titre)
-      S << " **  " << Name() << "  **" << std::endl;
+    {
+      S << " **  " << Name() << "  **" << '\n';
+    }
     titre = true;
     S << "Check:";
     if (nb > 9 && i < 10)
+    {
       S << " ";
+    }
     if (nb > 99 && i < 100)
+    {
       S << " ";
+    }
     S << i;
     if (num < 0)
-      S << " -- Global Check" << std::endl;
+    {
+      S << " -- Global Check" << '\n';
+    }
     else if (num == 0)
+    {
       S << " -- Entity n0 ??:";
+    }
     else
     {
       if (yamod)
@@ -518,18 +598,26 @@ void Interface_CheckIterator::Print(Standard_OStream&                           
         model->Print(ent, S);
       }
       else
+      {
         S << " -- Entity n0 " << num;
+      }
       //      S<<" -- Entity n0 "<<num<<mesnum;
       //      if (yamod) model->PrintLabel(ent,S);
     }
     if (num >= 0 && entnul)
-      S << " (unknown Type)" << std::endl;
+    {
+      S << " (unknown Type)" << '\n';
+    }
     else if (num >= 0 && !entnul)
     {
       if (yamod)
-        S << "   Type:" << model->TypeName(ent) << std::endl;
+      {
+        S << "   Type:" << model->TypeName(ent) << '\n';
+      }
       else
-        S << "   Type:" << ent->DynamicType()->Name() << std::endl;
+      {
+        S << "   Type:" << ent->DynamicType()->Name() << '\n';
+      }
     }
 
     ach->Print(S, (failsonly ? 1 : 3));

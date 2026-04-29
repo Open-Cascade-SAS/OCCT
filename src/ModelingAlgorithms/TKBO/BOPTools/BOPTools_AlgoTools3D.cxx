@@ -85,9 +85,13 @@ bool BOPTools_AlgoTools3D::DoSplitSEAMOnFace(const TopoDS_Edge& aSplit, const To
   bIsVPeriodic = aS->IsVClosed();
 
   if (bIsUPeriodic)
+  {
     anUPeriod = aUmax - aUmin;
+  }
   if (bIsVPeriodic)
+  {
     anVPeriod = aVmax - aVmin;
+  }
 
   //
   if (!bIsUPeriodic && !bIsVPeriodic)
@@ -97,8 +101,9 @@ bool BOPTools_AlgoTools3D::DoSplitSEAMOnFace(const TopoDS_Edge& aSplit, const To
     aRTS = occ::down_cast<Geom_RectangularTrimmedSurface>(aS);
     //
     if (aRTS.IsNull())
+    {
       return false;
-
+    }
     else
     {
       occ::handle<Geom_Surface> aSB;
@@ -233,10 +238,14 @@ bool BOPTools_AlgoTools3D::DoSplitSEAMOnFace(const TopoDS_Edge& theEOrigin,
                                              const TopoDS_Face& theFace)
 {
   if (!BRep_Tool::IsClosed(theEOrigin, theFace))
+  {
     return false;
+  }
 
   if (BRep_Tool::IsClosed(theESplit, theFace))
+  {
     return true;
+  }
 
   TopoDS_Edge aESplit = theESplit;
   aESplit.Orientation(TopAbs_FORWARD);
@@ -247,7 +256,9 @@ bool BOPTools_AlgoTools3D::DoSplitSEAMOnFace(const TopoDS_Edge& theEOrigin,
   double                    aTS1, aTS2;
   occ::handle<Geom2d_Curve> aC2DSplit = BRep_Tool::CurveOnSurface(aESplit, aFace, aTS1, aTS2);
   if (aC2DSplit.IsNull())
+  {
     return false;
+  }
 
   double                    aT1, aT2;
   occ::handle<Geom2d_Curve> aC2D1 =
@@ -266,13 +277,17 @@ bool BOPTools_AlgoTools3D::DoSplitSEAMOnFace(const TopoDS_Edge& theEOrigin,
   aProjPC2.Init(aPMid, aC2D2, aT1, aT2);
 
   if (!aProjPC1.NbPoints() && !aProjPC2.NbPoints())
+  {
     return false;
+  }
 
   double aDist1 = aProjPC1.NbPoints() ? aProjPC1.LowerDistance() : RealLast();
   double aDist2 = aProjPC2.NbPoints() ? aProjPC2.LowerDistance() : RealLast();
 
   if (aDist1 > Precision::PConfusion() && aDist2 > Precision::PConfusion())
+  {
     return false;
+  }
 
   // choose the closest and take corresponding point from the opposite
   gp_Pnt2d aNewPnt = aDist1 < aDist2 ? aC2D2->Value(aProjPC1.LowerDistanceParameter())
@@ -400,18 +415,24 @@ bool BOPTools_AlgoTools3D::GetNormalToSurface(const occ::handle<Geom_Surface>& a
 
   double aLenU = aD1U.SquareMagnitude();
   if (aLenU < gp::Resolution())
+  {
     return false;
+  }
 
   double aLenV = aD1V.SquareMagnitude();
   if (aLenV < gp::Resolution())
+  {
     return false;
+  }
 
   gp_Dir aDD1U(aD1U);
   gp_Dir aDD1V(aD1V);
 
   bool bFlag = IntTools_Tools::IsDirsCoinside(aDD1U, aDD1U);
   if (!bFlag)
+  {
     return bFlag;
+  }
 
   aDNS = aDD1U ^ aDD1V;
   return bFlag;

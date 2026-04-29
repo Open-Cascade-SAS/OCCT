@@ -64,7 +64,9 @@ bool TopOpeBRepBuild_Builder::GKeepShape1(const TopoDS_Shape&                   
   {
     pos = ShapePosition(S, LSclass);
     if (pos != TB)
+    {
       keep = false;
+    }
   }
 #ifdef OCCT_DEBUG
   int  iS;
@@ -151,7 +153,9 @@ void TopOpeBRepBuild_Builder::GKeepShapes
     {
       TopAbs_State pos = ShapePosition(SL, LSclass);
       if (pos != TB)
+      {
         keep = false;
+      }
     }
 
 #ifdef OCCT_DEBUG
@@ -192,6 +196,8 @@ void TopOpeBRepBuild_Builder::GKeepShapes
 #endif
 
     if (keep)
+    {
       Lou.Append(SL);
+    }
   }
 }

@@ -128,7 +128,9 @@ void Geom2dAPI_PointsToBSpline::Init(const NCollection_Array1<gp_Pnt2d>& Points,
   int  nbit       = 2;
   bool UseSquares = false;
   if (Tol2D <= 1.e-3)
+  {
     UseSquares = true;
+  }
 
   AppDef_BSplineCompute TheComputer(DegMin, DegMax, Tol3D, Tol2D, nbit, true, ParType, UseSquares);
 
@@ -314,7 +316,9 @@ void Geom2dAPI_PointsToBSpline::Init(const NCollection_Array1<gp_Pnt2d>& Points,
 {
   myIsDone = false;
   if (Params.Length() != Points.Length())
+  {
     throw Standard_OutOfRange("Geom2dAPI_PointsToBSpline::Init() - invalid input");
+  }
 
   double      Tol3D = 0.; // dummy argument for BSplineCompute.
   int         Nbp   = Params.Length();
@@ -325,7 +329,9 @@ void Geom2dAPI_PointsToBSpline::Init(const NCollection_Array1<gp_Pnt2d>& Points,
   double Uf = Params(Params.Lower());
   double Ul = Params(Params.Upper()) - Uf;
   if (!hasMeaningfulSpan(Ul))
+  {
     return;
+  }
 
   for (int i = 2; i < Nbp; i++)
   {
@@ -385,7 +391,9 @@ void Geom2dAPI_PointsToBSpline::Init(const NCollection_Array1<gp_Pnt2d>& Points,
 
   int nbit = 2;
   if (Tol2D <= 1.e-3)
+  {
     nbit = 0;
+  }
 
   // Variational algo
 
@@ -468,7 +476,9 @@ void Geom2dAPI_PointsToBSpline::Init(const NCollection_Array1<gp_Pnt2d>& Points,
 const occ::handle<Geom2d_BSplineCurve>& Geom2dAPI_PointsToBSpline::Curve() const
 {
   if (!myIsDone)
+  {
     throw StdFail_NotDone(" ");
+  }
   return myCurve;
 }
 

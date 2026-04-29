@@ -29,7 +29,9 @@ void StdLPersistent_HArray1::base::Read(StdObjMgt_ReadData& theReadData)
   theReadData >> aSize;
 
   for (int i = aLowerBound; i <= anUpperBound; i++)
+  {
     readValue(theReadData, i);
+  }
 }
 
 //=======================================================================
@@ -47,5 +49,7 @@ void StdLPersistent_HArray1::base::Write(StdObjMgt_WriteData& theWriteData) cons
   theWriteData << aSize;
 
   for (int i = aLowerBound; i <= anUpperBound; i++)
+  {
     writeValue(theWriteData, i);
+  }
 }

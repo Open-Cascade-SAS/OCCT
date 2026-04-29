@@ -37,13 +37,21 @@ int StepElement_VolumeElementPurpose::CaseNum(const occ::handle<Standard_Transie
 int StepElement_VolumeElementPurpose::CaseMem(const occ::handle<StepData_SelectMember>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->Matches("EnumeratedVolumeElementPurpose"))
+  {
     return 1;
+  }
   else if (ent->Matches("ApplicationDefinedElementPurpose"))
+  {
     return 2;
+  }
   else
+  {
     return 0;
+  }
 }
 
 //=================================================================================================
@@ -61,7 +69,9 @@ void StepElement_VolumeElementPurpose::SetEnumeratedVolumeElementPurpose(
   occ::handle<StepElement_VolumeElementPurposeMember> SelMem =
     occ::down_cast<StepElement_VolumeElementPurposeMember>(Value());
   if (SelMem.IsNull())
+  {
     return;
+  }
   occ::handle<TCollection_HAsciiString> name =
     new TCollection_HAsciiString("EnumeratedVolumeElementPurpose");
   SelMem->SetName(name->ToCString());
@@ -76,13 +86,17 @@ StepElement_EnumeratedVolumeElementPurpose StepElement_VolumeElementPurpose::
   occ::handle<StepElement_VolumeElementPurposeMember> SelMem =
     occ::down_cast<StepElement_VolumeElementPurposeMember>(Value());
   if (SelMem.IsNull())
+  {
     return StepElement_StressDisplacement;
+  }
   occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString;
   name->AssignCat(SelMem->Name());
   occ::handle<TCollection_HAsciiString> nameitem =
     new TCollection_HAsciiString("EnumeratedVolumeElementPurpose");
   if (name->IsDifferent(nameitem))
+  {
     return StepElement_StressDisplacement;
+  }
   int                                        numit = SelMem->Enum();
   StepElement_EnumeratedVolumeElementPurpose val;
   switch (numit)
@@ -105,7 +119,9 @@ void StepElement_VolumeElementPurpose::SetApplicationDefinedElementPurpose(
   occ::handle<StepElement_VolumeElementPurposeMember> SelMem =
     occ::down_cast<StepElement_VolumeElementPurposeMember>(Value());
   if (SelMem.IsNull())
+  {
     return;
+  }
   occ::handle<TCollection_HAsciiString> name =
     new TCollection_HAsciiString("ApplicationDefinedElementPurpose");
   SelMem->SetName(name->ToCString());
@@ -120,13 +136,17 @@ occ::handle<TCollection_HAsciiString> StepElement_VolumeElementPurpose::
   occ::handle<StepElement_VolumeElementPurposeMember> SelMem =
     occ::down_cast<StepElement_VolumeElementPurposeMember>(Value());
   if (SelMem.IsNull())
+  {
     return nullptr;
+  }
   occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString;
   name->AssignCat(SelMem->Name());
   occ::handle<TCollection_HAsciiString> nameitem =
     new TCollection_HAsciiString("ApplicationDefinedElementPurpose");
   if (name->IsDifferent(nameitem))
+  {
     return nullptr;
+  }
   occ::handle<TCollection_HAsciiString> val = new TCollection_HAsciiString;
   val->AssignCat(SelMem->String());
   return val;

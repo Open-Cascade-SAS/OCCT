@@ -76,7 +76,9 @@ int GeomTools_CurveSet::Add(const occ::handle<Geom_Curve>& C)
 occ::handle<Geom_Curve> GeomTools_CurveSet::Curve(const int I) const
 {
   if (I <= 0 || I > myMap.Extent())
+  {
     return occ::handle<Geom_Curve>();
+  }
   return occ::down_cast<Geom_Curve>(myMap(I));
 }
 
@@ -93,11 +95,15 @@ static void Print(const gp_Pnt& P, Standard_OStream& OS, const bool compact)
 {
   OS << P.X();
   if (!compact)
+  {
     OS << ",";
+  }
   OS << " ";
   OS << P.Y();
   if (!compact)
+  {
     OS << ",";
+  }
   OS << " ";
   OS << P.Z();
   OS << " ";
@@ -109,11 +115,15 @@ static void Print(const gp_Dir& D, Standard_OStream& OS, const bool compact)
 {
   OS << D.X();
   if (!compact)
+  {
     OS << ",";
+  }
   OS << " ";
   OS << D.Y();
   if (!compact)
+  {
     OS << ",";
+  }
   OS << " ";
   OS << D.Z();
   OS << " ";
@@ -124,19 +134,29 @@ static void Print(const gp_Dir& D, Standard_OStream& OS, const bool compact)
 static void Print(const occ::handle<Geom_Line>& L, Standard_OStream& OS, const bool compact)
 {
   if (compact)
+  {
     OS << LINE << " ";
+  }
   else
+  {
     OS << "Line";
+  }
 
   gp_Lin C = L->Lin();
   if (!compact)
+  {
     OS << "\n  Origin :";
+  }
   Print(C.Location(), OS, compact);
   if (!compact)
+  {
     OS << "\n  Axis   :";
+  }
   Print(C.Direction(), OS, compact);
   if (!compact)
+  {
     OS << "\n";
+  }
   OS << "\n";
 }
 
@@ -145,28 +165,44 @@ static void Print(const occ::handle<Geom_Line>& L, Standard_OStream& OS, const b
 static void Print(const occ::handle<Geom_Circle>& CC, Standard_OStream& OS, const bool compact)
 {
   if (compact)
+  {
     OS << CIRCLE << " ";
+  }
   else
+  {
     OS << "Circle";
+  }
 
   gp_Circ C = CC->Circ();
   if (!compact)
+  {
     OS << "\n  Center :";
+  }
   Print(C.Location(), OS, compact);
   if (!compact)
+  {
     OS << "\n  Axis   :";
+  }
   Print(C.Axis().Direction(), OS, compact);
   if (!compact)
+  {
     OS << "\n  XAxis  :";
+  }
   Print(C.XAxis().Direction(), OS, compact);
   if (!compact)
+  {
     OS << "\n  YAxis  :";
+  }
   Print(C.YAxis().Direction(), OS, compact);
   if (!compact)
+  {
     OS << "\n  Radius :";
+  }
   OS << C.Radius();
   if (!compact)
+  {
     OS << "\n";
+  }
   OS << "\n";
 }
 
@@ -175,32 +211,50 @@ static void Print(const occ::handle<Geom_Circle>& CC, Standard_OStream& OS, cons
 static void Print(const occ::handle<Geom_Ellipse>& E, Standard_OStream& OS, const bool compact)
 {
   if (compact)
+  {
     OS << ELLIPSE << " ";
+  }
   else
+  {
     OS << "Ellipse";
+  }
 
   gp_Elips C = E->Elips();
   if (!compact)
+  {
     OS << "\n  Center :";
+  }
   Print(C.Location(), OS, compact);
   if (!compact)
+  {
     OS << "\n  Axis   :";
+  }
   Print(C.Axis().Direction(), OS, compact);
   if (!compact)
+  {
     OS << "\n  XAxis  :";
+  }
   Print(C.XAxis().Direction(), OS, compact);
   if (!compact)
+  {
     OS << "\n  YAxis  :";
+  }
   Print(C.YAxis().Direction(), OS, compact);
   if (!compact)
+  {
     OS << "\n  Radii  :";
+  }
   OS << C.MajorRadius();
   if (!compact)
+  {
     OS << ",";
+  }
   OS << " ";
   OS << C.MinorRadius();
   if (!compact)
+  {
     OS << "\n";
+  }
   OS << "\n";
 }
 
@@ -209,28 +263,44 @@ static void Print(const occ::handle<Geom_Ellipse>& E, Standard_OStream& OS, cons
 static void Print(const occ::handle<Geom_Parabola>& P, Standard_OStream& OS, const bool compact)
 {
   if (compact)
+  {
     OS << PARABOLA << " ";
+  }
   else
+  {
     OS << "Parabola";
+  }
 
   gp_Parab C = P->Parab();
   if (!compact)
+  {
     OS << "\n  Center :";
+  }
   Print(C.Location(), OS, compact);
   if (!compact)
+  {
     OS << "\n  Axis   :";
+  }
   Print(C.Axis().Direction(), OS, compact);
   if (!compact)
+  {
     OS << "\n  XAxis  :";
+  }
   Print(C.XAxis().Direction(), OS, compact);
   if (!compact)
+  {
     OS << "\n  YAxis  :";
+  }
   Print(C.YAxis().Direction(), OS, compact);
   if (!compact)
+  {
     OS << "\n  Focal  :";
+  }
   OS << C.Focal();
   if (!compact)
+  {
     OS << "\n";
+  }
   OS << "\n";
 }
 
@@ -239,32 +309,50 @@ static void Print(const occ::handle<Geom_Parabola>& P, Standard_OStream& OS, con
 static void Print(const occ::handle<Geom_Hyperbola>& H, Standard_OStream& OS, const bool compact)
 {
   if (compact)
+  {
     OS << HYPERBOLA << " ";
+  }
   else
+  {
     OS << "Hyperbola";
+  }
 
   gp_Hypr C = H->Hypr();
   if (!compact)
+  {
     OS << "\n  Center :";
+  }
   Print(C.Location(), OS, compact);
   if (!compact)
+  {
     OS << "\n  Axis   :";
+  }
   Print(C.Axis().Direction(), OS, compact);
   if (!compact)
+  {
     OS << "\n  XAxis  :";
+  }
   Print(C.XAxis().Direction(), OS, compact);
   if (!compact)
+  {
     OS << "\n  YAxis  :";
+  }
   Print(C.YAxis().Direction(), OS, compact);
   if (!compact)
+  {
     OS << "\n  Radii  :";
+  }
   OS << C.MajorRadius();
   if (!compact)
+  {
     OS << ",";
+  }
   OS << " ";
   OS << C.MinorRadius();
   if (!compact)
+  {
     OS << "\n";
+  }
   OS << "\n";
 }
 
@@ -273,38 +361,56 @@ static void Print(const occ::handle<Geom_Hyperbola>& H, Standard_OStream& OS, co
 static void Print(const occ::handle<Geom_BezierCurve>& B, Standard_OStream& OS, const bool compact)
 {
   if (compact)
+  {
     OS << BEZIER << " ";
+  }
   else
+  {
     OS << "BezierCurve";
+  }
 
   bool rational = B->IsRational();
   if (compact)
+  {
     OS << (rational ? 1 : 0) << " ";
+  }
   else
   {
     if (rational)
+    {
       OS << " rational";
+    }
   }
 
   // poles and weights
   int i, degree = B->Degree();
   if (!compact)
+  {
     OS << "\n  Degree :";
+  }
   OS << degree << " ";
 
   for (i = 1; i <= degree + 1; i++)
   {
     if (!compact)
+    {
       OS << "\n  " << std::setw(2) << i << " : ";
+    }
     Print(B->Pole(i), OS, compact);
     if (rational)
+    {
       OS << " " << B->Weight(i);
+    }
     if (compact)
+    {
       OS << " ";
+    }
   }
   OS << "\n";
   if (!compact)
+  {
     OS << "\n";
+  }
 }
 
 //=================================================================================================
@@ -312,26 +418,38 @@ static void Print(const occ::handle<Geom_BezierCurve>& B, Standard_OStream& OS, 
 static void Print(const occ::handle<Geom_BSplineCurve>& B, Standard_OStream& OS, const bool compact)
 {
   if (compact)
+  {
     OS << BSPLINE << " ";
+  }
   else
+  {
     OS << "BSplineCurve";
+  }
 
   bool rational = B->IsRational();
   if (compact)
+  {
     OS << (rational ? 1 : 0) << " ";
+  }
   else
   {
     if (rational)
+    {
       OS << " rational";
+    }
   }
 
   bool periodic = B->IsPeriodic();
   if (compact)
+  {
     OS << (periodic ? 1 : 0) << " ";
+  }
   else
   {
     if (periodic)
+    {
       OS << " periodic";
+    }
   }
 
   // poles and weights
@@ -340,47 +458,71 @@ static void Print(const occ::handle<Geom_BSplineCurve>& B, Standard_OStream& OS,
   nbpoles = B->NbPoles();
   nbknots = B->NbKnots();
   if (!compact)
+  {
     OS << "\n  Degree ";
+  }
   else
+  {
     OS << " ";
+  }
   OS << degree;
   if (!compact)
+  {
     OS << ",";
+  }
   OS << " ";
   OS << nbpoles;
   if (!compact)
+  {
     OS << " Poles,";
+  }
   OS << " ";
   OS << nbknots << " ";
   if (!compact)
+  {
     OS << " Knots\n";
+  }
 
   if (!compact)
+  {
     OS << "Poles :\n";
+  }
   for (i = 1; i <= nbpoles; i++)
   {
     if (!compact)
+    {
       OS << "\n  " << std::setw(2) << i << " : ";
+    }
     else
+    {
       OS << " ";
+    }
     Print(B->Pole(i), OS, compact);
     if (rational)
+    {
       OS << " " << B->Weight(i);
+    }
   }
   OS << "\n";
 
   if (!compact)
+  {
     OS << "Knots :\n";
+  }
   for (i = 1; i <= nbknots; i++)
   {
     if (!compact)
+    {
       OS << "\n  " << std::setw(2) << i << " : ";
+    }
     OS << " " << B->Knot(i) << " " << B->Multiplicity(i);
   }
 
   OS << "\n";
   if (!compact)
+  {
     OS << "\n";
+  }
 }
 
 //=================================================================================================
@@ -388,14 +530,22 @@ static void Print(const occ::handle<Geom_BSplineCurve>& B, Standard_OStream& OS,
 static void Print(const occ::handle<Geom_TrimmedCurve>& C, Standard_OStream& OS, const bool compact)
 {
   if (compact)
+  {
     OS << TRIMMED << " ";
+  }
   else
+  {
     OS << "Trimmed curve\n";
+  }
   if (!compact)
+  {
     OS << "Parameters : ";
+  }
   OS << C->FirstParameter() << " " << C->LastParameter() << "\n";
   if (!compact)
+  {
     OS << "Basis curve :\n";
+  }
   GeomTools_CurveSet::PrintCurve(C->BasisCurve(), OS, compact);
 }
 
@@ -404,18 +554,28 @@ static void Print(const occ::handle<Geom_TrimmedCurve>& C, Standard_OStream& OS,
 static void Print(const occ::handle<Geom_OffsetCurve>& C, Standard_OStream& OS, const bool compact)
 {
   if (compact)
+  {
     OS << OFFSET << " ";
+  }
   else
+  {
     OS << "OffsetCurve";
+  }
   if (!compact)
+  {
     OS << "Offset : ";
+  }
   OS << C->Offset() << "\n";
   if (!compact)
+  {
     OS << "Direction : ";
+  }
   Print(C->Direction(), OS, compact);
   OS << "\n";
   if (!compact)
+  {
     OS << "Basis curve :\n";
+  }
   GeomTools_CurveSet::PrintCurve(C->BasisCurve(), OS, compact);
 }
 
@@ -612,13 +772,19 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Bezie
   {
     IS >> poles(i);
     if (rational)
+    {
       GeomTools::GetReal(IS, weights(i));
+    }
   }
 
   if (rational)
+  {
     B = new Geom_BezierCurve(poles, weights);
+  }
   else
+  {
     B = new Geom_BezierCurve(poles);
+  }
 
   return IS;
 }
@@ -642,7 +808,9 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_BSpli
   {
     IS >> poles(i);
     if (rational)
+    {
       GeomTools::GetReal(IS, weights(i));
+    }
   }
 
   NCollection_Array1<double> knots(1, nbknots);
@@ -655,9 +823,13 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_BSpli
   }
 
   if (rational)
+  {
     B = new Geom_BSplineCurve(poles, weights, knots, mults, degree, periodic);
+  }
   else
+  {
     B = new Geom_BSplineCurve(poles, knots, mults, degree, periodic);
+  }
 
   return IS;
 }
@@ -790,7 +962,7 @@ void GeomTools_CurveSet::Read(Standard_IStream& IS, const Message_ProgressRange&
   IS >> buffer;
   if (strcmp(buffer, "Curves"))
   {
-    std::cout << "Not a Curve table" << std::endl;
+    std::cout << "Not a Curve table" << '\n';
     return;
   }
 

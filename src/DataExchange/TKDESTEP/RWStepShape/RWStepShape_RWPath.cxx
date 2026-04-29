@@ -30,7 +30,9 @@ void RWStepShape_RWPath::ReadStep(const occ::handle<StepData_StepReaderData>& da
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "path"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -56,7 +58,9 @@ void RWStepShape_RWPath::ReadStep(const occ::handle<StepData_StepReaderData>& da
                            ach,
                            STANDARD_TYPE(StepShape_OrientedEdge),
                            anent2))
+      {
         aEdgeList->SetValue(i2, anent2);
+      }
     }
   }
 

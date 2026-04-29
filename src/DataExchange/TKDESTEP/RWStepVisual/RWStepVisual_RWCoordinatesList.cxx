@@ -37,7 +37,9 @@ void RWStepVisual_RWCoordinatesList::ReadStep(
 {
   // Number of Parameter Control
   if (!data->CheckNbParams(num, 3, ach, "coordinate list"))
+  {
     return;
+  }
 
   // Inherited field : name
   occ::handle<TCollection_HAsciiString> aName;
@@ -51,7 +53,9 @@ void RWStepVisual_RWCoordinatesList::ReadStep(
   {
     int nb2 = data->NbParams(nsub2);
     if (!nb2)
+    {
       return;
+    }
     aPoints = new NCollection_HArray1<gp_XYZ>(1, nb2);
     for (int i = 1; i <= nb2; i++)
     {

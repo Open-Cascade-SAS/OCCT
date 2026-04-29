@@ -38,7 +38,9 @@ void RWStepShape_RWShapeDefinitionRepresentation::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "shape_definition_representation"))
+  {
     return;
+  }
 
   // Inherited fields of PropertyDefinitionRepresentation
 

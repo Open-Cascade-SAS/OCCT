@@ -151,8 +151,12 @@ void IGESDimen_ToolCurveDimension::OwnCheck(const occ::handle<IGESDimen_CurveDim
   if (ent->HasSecondCurve())
   {
     if (ent->FirstCurve()->IsKind(STANDARD_TYPE(IGESGeom_Line)))
+    {
       if (ent->SecondCurve()->IsKind(STANDARD_TYPE(IGESGeom_Line)))
+      {
         ach->AddWarning("Both curves are IGESGeom_Line Entities");
+      }
+    }
   }
 }
 
@@ -184,5 +188,5 @@ void IGESDimen_ToolCurveDimension::OwnDump(const occ::handle<IGESDimen_CurveDime
   S << "\n"
     << "Second Witness Entity : ";
   dumper.Dump(ent->SecondWitnessLine(), S, sublevel);
-  S << std::endl;
+  S << '\n';
 }

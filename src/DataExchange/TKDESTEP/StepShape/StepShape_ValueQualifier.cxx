@@ -22,13 +22,21 @@ StepShape_ValueQualifier::StepShape_ValueQualifier() = default;
 int StepShape_ValueQualifier::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepShape_PrecisionQualifier)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepShape_TypeQualifier)))
+  {
     return 2;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepShape_ValueFormatTypeQualifier)))
+  {
     return 4;
+  }
   return 0;
 }
 

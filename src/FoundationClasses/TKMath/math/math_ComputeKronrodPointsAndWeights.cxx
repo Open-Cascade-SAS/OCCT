@@ -45,7 +45,9 @@ math_ComputeKronrodPointsAndWeights::math_ComputeKronrodPointsAndWeights(const i
       aDiag(i) = 0.;
 
       if (i == 1)
+      {
         aSubDiag(i) = 0.;
+      }
       else
       {
         int sqrIm1  = (i - 1) * (i - 1);
@@ -112,7 +114,9 @@ math_ComputeKronrodPointsAndWeights::math_ComputeKronrodPointsAndWeights(const i
     }
 
     for (j = aNd2; j >= 0; j--)
+    {
       s[j] = s[j - 1];
+    }
 
     // Southward phase.
     for (m = n - 1; m <= 2 * n - 3; m++)
@@ -157,7 +161,9 @@ math_ComputeKronrodPointsAndWeights::math_ComputeKronrodPointsAndWeights(const i
     delete[] bb;
 
     for (i = 1; i <= a2NP1; i++)
+    {
       aSubDiag(i) = std::sqrt(aSubDiag(i));
+    }
 
     // Compute eigen values.
     math_EigenValuesSearcher EVsearch(aDiag, aSubDiag);
@@ -199,7 +205,9 @@ math_Vector math_ComputeKronrodPointsAndWeights::Points() const
   int         Number = myPoints->Length();
   math_Vector thePoints(1, Number);
   for (int i = 1; i <= Number; i++)
+  {
     thePoints(i) = myPoints->Value(i);
+  }
 
   return thePoints;
 }
@@ -209,7 +217,9 @@ math_Vector math_ComputeKronrodPointsAndWeights::Weights() const
   int         Number = myWeights->Length();
   math_Vector theWeights(1, Number);
   for (int i = 1; i <= Number; i++)
+  {
     theWeights(i) = myWeights->Value(i);
+  }
 
   return theWeights;
 }

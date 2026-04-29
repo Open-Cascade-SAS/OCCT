@@ -61,7 +61,9 @@ XSControl_Reader::XSControl_Reader(const occ::handle<XSControl_WorkSession>& WS,
 bool XSControl_Reader::SetNorm(const char* const norm)
 {
   if (thesession.IsNull())
+  {
     SetWS(new XSControl_WorkSession);
+  }
   bool stat = thesession->SelectNorm(norm);
   if (stat)
   {
@@ -80,10 +82,14 @@ void XSControl_Reader::SetWS(const occ::handle<XSControl_WorkSession>& WS, const
   thesession = WS;
   //  There must be a Controller ...  Otherwise we'll see later (after SetNorm)
   if (thesession->NormAdaptor().IsNull())
+  {
     return;
+  }
   occ::handle<Interface_InterfaceModel> model = thesession->Model();
   if (scratch || model.IsNull())
+  {
     model = thesession->NewModel();
+  }
   thesession->InitTransferReader(0);
   thesession->InitTransferReader(4);
 }
@@ -136,7 +142,9 @@ occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> XSControl_Re
     new NCollection_HSequence<occ::handle<Standard_Transient>>();
   int i, nbr = NbRootsForTransfer();
   for (i = 1; i <= nbr; i++)
+  {
     list->Append(RootForTransfer(i));
+  }
   return list;
 }
 
@@ -154,7 +162,9 @@ occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> XSControl_Re
 int XSControl_Reader::NbRootsForTransfer()
 {
   if (therootsta)
+  {
     return theroots.Length();
+  }
   therootsta = true;
   Interface_ShareFlags sf(thesession->Graph());
   int                  i, nbr = sf.NbRoots();
@@ -163,7 +173,9 @@ int XSControl_Reader::NbRootsForTransfer()
     //    on filtre les racines qu on sait transferer
     occ::handle<Standard_Transient> start = sf.Root(i);
     if (thesession->TransferReader()->Recognize(start))
+    {
       theroots.Append(start);
+    }
   }
   return theroots.Length();
 }
@@ -175,7 +187,9 @@ occ::handle<Standard_Transient> XSControl_Reader::RootForTransfer(const int num)
   occ::handle<Standard_Transient> voidroot;
   int                             nbr = NbRootsForTransfer();
   if (num < 1 || num > nbr)
+  {
     return voidroot;
+  }
   return theroots.Value(num);
 }
 
@@ -201,13 +215,17 @@ bool XSControl_Reader::TransferEntity(const occ::handle<Standard_Transient>& the
                                       const Message_ProgressRange&           theProgress)
 {
   if (theStart.IsNull())
+  {
     return false;
+  }
 
   const occ::handle<XSControl_TransferReader>& aTransferReader = thesession->TransferReader();
   aTransferReader->BeginTransfer();
   InitializeMissingParameters();
   if (aTransferReader->TransferOne(theStart, true, theProgress) == 0)
+  {
     return false;
+  }
 
   const TopoDS_Shape aShape = aTransferReader->ShapeResult(theStart);
   // Null shapes are allowed intentionally.
@@ -223,7 +241,9 @@ int XSControl_Reader::TransferList(
   const Message_ProgressRange&                                               theProgress)
 {
   if (theList.IsNull())
+  {
     return 0;
+  }
 
   int                                          aTransferredCount = 0;
   const occ::handle<XSControl_TransferReader>& aTransferReader   = thesession->TransferReader();
@@ -401,7 +421,9 @@ void XSControl_Reader::GetStatsTransfer(
   Transfer_IteratorOfProcessForTransient itrp(true);
   itrp = TP->CompleteResult(true);
   if (!list.IsNull())
+  {
     itrp.Filter(list);
+  }
   nbMapped = nbWithFail = nbWithResult = 0;
 
   for (itrp.Start(); itrp.More(); itrp.Next())
@@ -409,16 +431,24 @@ void XSControl_Reader::GetStatsTransfer(
     const occ::handle<Transfer_Binder>& binder = itrp.Value();
     nbMapped++;
     if (binder.IsNull())
+    {
       nbWithFail++;
+    }
     else if (!binder->HasResult())
+    {
       nbWithFail++;
+    }
     else
     {
       Interface_CheckStatus cst = binder->Check()->Status();
       if ((cst == Interface_CheckOK) || (cst == Interface_CheckWarning))
+      {
         nbWithResult++;
+      }
       else
+      {
         nbWithFail++;
+      }
     }
   }
 }

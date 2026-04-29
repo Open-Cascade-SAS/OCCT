@@ -84,7 +84,7 @@ void Units_UnitsSystem::Specify(const char* const aquantity, const char* const a
   Units_UnitSentence unitsentence(aunit);
   if (!unitsentence.IsDone())
   {
-    std::cout << "Units_UnitsSystem::Specify : incorrect unit" << std::endl;
+    std::cout << "Units_UnitsSystem::Specify : incorrect unit" << '\n';
     return;
   }
   occ::handle<Units_Token> token = unitsentence.Evaluate();
@@ -119,8 +119,7 @@ void Units_UnitsSystem::Specify(const char* const aquantity, const char* const a
   //  Units_NoSuchType_Raise_if(quantity.IsNull(),aquantity);
   if (quantity.IsNull())
   {
-    std::cout << "Warning: in Units_UnitsSystem : Units_NoSuchType '" << aquantity << "'"
-              << std::endl;
+    std::cout << "Warning: in Units_UnitsSystem : Units_NoSuchType '" << aquantity << "'" << '\n';
     return;
   }
 
@@ -166,9 +165,13 @@ void Units_UnitsSystem::Remove(const char* const aquantity, const char* const au
           else
           {
             if (theactiveunitssequence->Value(index1) == index2)
+            {
               theactiveunitssequence->SetValue(index1, 0);
+            }
             else if (theactiveunitssequence->Value(index1) > index2)
+            {
               theactiveunitssequence->SetValue(index1, theactiveunitssequence->Value(index1) - 1);
+            }
             return;
           }
         }
@@ -248,7 +251,9 @@ TCollection_AsciiString Units_UnitsSystem::ActiveUnit(const char* const aquantit
       unitssequence = quantity->Sequence();
       index2        = theactiveunitssequence->Value(index1);
       if (index2)
+      {
         return unitssequence->Value(index2)->SymbolsSequence()->Value(1)->String();
+      }
       else
       {
 #ifdef OCCT_DEBUG
@@ -271,8 +276,7 @@ double Units_UnitsSystem::ConvertValueToUserSystem(const char* const aquantity,
   Units_UnitSentence unitsentence(aunit);
   if (!unitsentence.IsDone())
   {
-    std::cout << "Units_UnitsSystem::ConvertValueToUserSystem : incorrect unit => return 0"
-              << std::endl;
+    std::cout << "Units_UnitsSystem::ConvertValueToUserSystem : incorrect unit => return 0" << '\n';
     return 0.;
   }
   return ConvertSIValueToUserSystem(aquantity, avalue * (unitsentence.Evaluate())->Value());
@@ -385,12 +389,14 @@ void Units_UnitsSystem::Dump() const
   occ::handle<Standard_Transient> transient   = This();
   occ::handle<Units_UnitsSystem>  unitssystem = occ::down_cast<Units_UnitsSystem>(transient);
   Units_Explorer                  explorer(unitssystem);
-  std::cout << " UNITSSYSTEM : " << std::endl;
+  std::cout << " UNITSSYSTEM : " << '\n';
   for (; explorer.MoreQuantity(); explorer.NextQuantity())
   {
-    std::cout << explorer.Quantity() << std::endl;
+    std::cout << explorer.Quantity() << '\n';
     for (; explorer.MoreUnit(); explorer.NextUnit())
-      std::cout << "  " << explorer.Unit() << std::endl;
+    {
+      std::cout << "  " << explorer.Unit() << '\n';
+    }
   }
 }
 

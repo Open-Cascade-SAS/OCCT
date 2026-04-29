@@ -37,7 +37,9 @@ void BRepTest::HistoryCommands(Draw_Interpretor& theCommands)
 {
   static bool isDone = false;
   if (isDone)
+  {
     return;
+  }
   isDone = true;
   // Chapter's name
   const char* group = "History commands";
@@ -174,13 +176,17 @@ static TopoDS_Shape MakeCompound(const NCollection_List<TopoDS_Shape>& theLS)
 {
   TopoDS_Shape aC;
   if (theLS.Extent() == 1)
+  {
     aC = theLS.First();
+  }
   else
   {
     BRep_Builder().MakeCompound(TopoDS::Compound(aC));
     NCollection_List<TopoDS_Shape>::Iterator it(theLS);
     for (; it.More(); it.Next())
+    {
       BRep_Builder().Add(aC, it.Value());
+    }
   }
   return aC;
 }
@@ -197,11 +203,15 @@ int Modified(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
 
   occ::handle<BRepTools_History> aHistory = GetHistory(theDI, theArgv[2]);
   if (aHistory.IsNull())
+  {
     return 1;
+  }
 
   TopoDS_Shape aS = GetShape(theDI, theArgv[3]);
   if (aS.IsNull())
+  {
     return 1;
+  }
 
   const NCollection_List<TopoDS_Shape>& aModified = aHistory->Modified(aS);
 
@@ -228,11 +238,15 @@ int Generated(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
 
   occ::handle<BRepTools_History> aHistory = GetHistory(theDI, theArgv[2]);
   if (aHistory.IsNull())
+  {
     return 1;
+  }
 
   TopoDS_Shape aS = GetShape(theDI, theArgv[3]);
   if (aS.IsNull())
+  {
     return 1;
+  }
 
   const NCollection_List<TopoDS_Shape>& aGenerated = aHistory->Generated(aS);
 
@@ -259,11 +273,15 @@ int IsDeleted(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
 
   occ::handle<BRepTools_History> aHistory = GetHistory(theDI, theArgv[1]);
   if (aHistory.IsNull())
+  {
     return 1;
+  }
 
   TopoDS_Shape aS = GetShape(theDI, theArgv[2]);
   if (aS.IsNull())
+  {
     return 1;
+  }
 
   theDI << (aHistory->IsRemoved(aS) ? "Deleted." : "Not deleted.");
 

@@ -50,7 +50,7 @@ static gp_Pnt OnSurface_Value(const double                        U,
   }
   if (Index == 0)
   {
-    std::cout << " Extrema non trouve pour U = " << U << std::endl;
+    std::cout << " Extrema non trouve pour U = " << U << '\n';
     return gp_Pnt(0., 0., 0.);
   }
   else

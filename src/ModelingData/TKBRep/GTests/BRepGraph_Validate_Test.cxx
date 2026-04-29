@@ -57,7 +57,9 @@ NCollection_DynamicArray<BRepGraph_CoEdgeRefId> coEdgeRefsOfWire(const BRepGraph
   {
     const BRepGraphInc::CoEdgeRef& aRef = aRefs.CoEdges().Entry(aRefId);
     if (aRef.ParentId == aParentNode && !aRef.IsRemoved)
+    {
       aRefIds.Append(aRefId);
+    }
   }
   return aRefIds;
 }
@@ -696,7 +698,9 @@ TEST(BRepGraph_ValidateTest, Audit_DetectsOrphanWireRef_AfterFaceRemoval)
     const BRepGraph_WireRefId    aRefId(aRefIdx);
     const BRepGraphInc::WireRef& aRef = aRefs.Wires().Entry(aRefId);
     if (aRef.IsRemoved)
+    {
       continue;
+    }
     BRepGraph_MutGuard<BRepGraphInc::WireRef> aMut = aGraph.Editor().Wires().MutRef(aRefId);
     aMut.Internal().ParentId = BRepGraph_NodeId(BRepGraph_NodeId::Kind::Face, 9999);
     aDidCorrupt              = true;

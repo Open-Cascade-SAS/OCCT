@@ -562,10 +562,14 @@ void BOPAlgo_CellsBuilder::RemoveInternalBoundaries()
   for (int iType = 0; iType < 2; ++iType)
   {
     if (aLSUnify[iType].IsEmpty())
+    {
       continue;
+    }
     NCollection_List<TopoDS_Shape> aLSN;
     if (RemoveInternals(aLSUnify[iType], aLSN, aKeepMap[iType]))
+    {
       bChanged = true;
+    }
     // add shapes to result ([unified] edges or faces)
     for (NCollection_List<TopoDS_Shape>::Iterator aItLS(aLSN); aItLS.More(); aItLS.Next())
     {
@@ -853,9 +857,13 @@ bool BOPAlgo_CellsBuilder::RemoveInternals(
     {
       // add the warning
       if (bFaces)
+      {
         AddWarning(new BOPAlgo_AlertRemovalOfIBForFacesFailed(aShape));
+      }
       else
+      {
         AddWarning(new BOPAlgo_AlertRemovalOfIBForEdgesFailed(aShape));
+      }
       //
       theLSNew.Assign(theLS);
       return bRemoved;
@@ -882,7 +890,9 @@ bool BOPAlgo_CellsBuilder::RemoveInternals(
         myMapModified.Bind(aSS, aSU);
         bRemoved = true;
         if (pMaterial && !myShapeMaterial.IsBound(aSU))
+        {
           myShapeMaterial.Bind(aSU, *pMaterial);
+        }
       }
     }
   }
@@ -1017,7 +1027,9 @@ bool BOPAlgo_CellsBuilder::RemoveInternals(
       // Save information about the fuse of the solids into a history map
       aItS.Initialize(aCB);
       for (; aItS.More(); aItS.Next())
+      {
         myMapModified.Bind(aItS.Value(), aSNew);
+      }
     }
   }
   return bRemoved;
@@ -1030,8 +1042,10 @@ const NCollection_List<TopoDS_Shape>* BOPAlgo_CellsBuilder::LocModified(const To
   // Get shape's modification coming from GF operation
   const NCollection_List<TopoDS_Shape>* pLSp = BOPAlgo_Builder::LocModified(theS);
   if (myMapModified.IsEmpty())
+  {
     // No local modifications
     return pLSp;
+  }
 
   myHistShapes.Clear();
 
@@ -1042,7 +1056,9 @@ const NCollection_List<TopoDS_Shape>* BOPAlgo_CellsBuilder::LocModified(const To
     // Check if the shape has been unified with other shapes
     const TopoDS_Shape* pSU = myMapModified.Seek(theS);
     if (!pSU)
+    {
       return nullptr;
+    }
 
     myHistShapes.Append(*pSU);
   }
@@ -1056,9 +1072,13 @@ const NCollection_List<TopoDS_Shape>* BOPAlgo_CellsBuilder::LocModified(const To
       const TopoDS_Shape* pSp = &aIt.Value();
       const TopoDS_Shape* pSU = myMapModified.Seek(*pSp);
       if (pSU)
+      {
         pSp = pSU;
+      }
       if (aMFence.Add(*pSp))
+      {
         myHistShapes.Append(*pSp);
+      }
     }
   }
   return &myHistShapes;

@@ -54,9 +54,13 @@ void LProp_CurAndInf::AddExtCur(const double Param, const bool IsMin)
 {
   LProp_CIType TypePoint;
   if (IsMin)
+  {
     TypePoint = LProp_MinCur;
+  }
   else
+  {
     TypePoint = LProp_MaxCur;
+  }
 
   if (theParams.IsEmpty())
   {

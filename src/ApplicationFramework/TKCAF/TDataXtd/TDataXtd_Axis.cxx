@@ -61,6 +61,7 @@ occ::handle<TDataXtd_Axis> TDataXtd_Axis::Set(const TDF_Label& L, const gp_Lin& 
   if (L.FindAttribute(TNaming_NamedShape::GetID(), aNS))
   {
     if (!aNS->Get().IsNull())
+    {
       if (aNS->Get().ShapeType() == TopAbs_EDGE)
       {
         TopoDS_Edge       anEdge = TopoDS::Edge(aNS->Get());
@@ -74,9 +75,12 @@ occ::handle<TDataXtd_Axis> TDataXtd_Axis::Set(const TDF_Label& L, const gp_Lin& 
               && anOldLine.Location().X() == line.Location().X()
               && anOldLine.Location().Y() == line.Location().Y()
               && anOldLine.Location().Z() == line.Location().Z())
+          {
             return A;
+          }
         }
       }
+    }
   }
   TNaming_Builder B(L);
   B.Generated(BRepBuilderAPI_MakeEdge(line));

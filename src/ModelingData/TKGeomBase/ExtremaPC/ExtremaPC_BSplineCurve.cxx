@@ -70,17 +70,23 @@ math_Vector ExtremaPC_BSplineCurve::buildKnotAwareParams() const
     double aSpanLo = std::max(aKnotLo, theUMin);
     double aSpanHi = std::min(aKnotHi, theUMax);
     if (aSpanHi <= aSpanLo)
+    {
       continue;
+    }
 
     double aStep = (aSpanHi - aSpanLo) / aSamplesPerSpan;
     for (int j = 1; j < aSamplesPerSpan; ++j)
     {
       double aU = aSpanLo + j * aStep;
       if (aU > theUMin && aU < theUMax)
+      {
         aParams.Append(aU);
+      }
     }
     if (aKnotHi > theUMin && aKnotHi < theUMax)
+    {
       aParams.Append(aKnotHi);
+    }
   }
   aParams.Append(theUMax);
 

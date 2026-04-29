@@ -2416,7 +2416,9 @@ bool OpenGl_View::uploadRaytraceData(const occ::handle<OpenGl_Context>& theGlCon
   for (int aNodeIdx = 0; aNodeIdx < aBVH->Length(); ++aNodeIdx)
   {
     if (!aBVH->IsOuter(aNodeIdx))
+    {
       continue;
+    }
 
     OpenGl_TriangleSet* aTriangleSet = myRaytraceGeometry.TriangleSet(aNodeIdx);
 

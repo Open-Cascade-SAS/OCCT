@@ -200,7 +200,9 @@ const NCollection_DynamicArray<BRepGraph_FaceRefId>& BRepGraph::RefsView::FaceOp
 {
   static const NCollection_DynamicArray<BRepGraph_FaceRefId> anEmpty;
   if (!theShell.IsValid(myGraph->myData->myIncStorage.NbShells()))
+  {
     return anEmpty;
+  }
   return myGraph->myData->myIncStorage.Shell(theShell).FaceRefIds;
 }
 
@@ -211,7 +213,9 @@ const NCollection_DynamicArray<BRepGraph_WireRefId>& BRepGraph::RefsView::WireOp
 {
   static const NCollection_DynamicArray<BRepGraph_WireRefId> anEmpty;
   if (!theFace.IsValid(myGraph->myData->myIncStorage.NbFaces()))
+  {
     return anEmpty;
+  }
   return myGraph->myData->myIncStorage.Face(theFace).WireRefIds;
 }
 
@@ -222,7 +226,9 @@ const NCollection_DynamicArray<BRepGraph_CoEdgeRefId>& BRepGraph::RefsView::CoEd
 {
   static const NCollection_DynamicArray<BRepGraph_CoEdgeRefId> anEmpty;
   if (!theWire.IsValid(myGraph->myData->myIncStorage.NbWires()))
+  {
     return anEmpty;
+  }
   return myGraph->myData->myIncStorage.Wire(theWire).CoEdgeRefIds;
 }
 
@@ -233,7 +239,9 @@ const NCollection_DynamicArray<BRepGraph_ShellRefId>& BRepGraph::RefsView::Shell
 {
   static const NCollection_DynamicArray<BRepGraph_ShellRefId> anEmpty;
   if (!theSolid.IsValid(myGraph->myData->myIncStorage.NbSolids()))
+  {
     return anEmpty;
+  }
   return myGraph->myData->myIncStorage.Solid(theSolid).ShellRefIds;
 }
 
@@ -244,7 +252,9 @@ const NCollection_DynamicArray<BRepGraph_ChildRefId>& BRepGraph::RefsView::Child
 {
   static const NCollection_DynamicArray<BRepGraph_ChildRefId> anEmpty;
   if (!theCompound.IsValid(myGraph->myData->myIncStorage.NbCompounds()))
+  {
     return anEmpty;
+  }
   return myGraph->myData->myIncStorage.Compound(theCompound).ChildRefIds;
 }
 
@@ -255,7 +265,9 @@ const NCollection_DynamicArray<BRepGraph_OccurrenceRefId>& BRepGraph::RefsView::
 {
   static const NCollection_DynamicArray<BRepGraph_OccurrenceRefId> anEmpty;
   if (!theProduct.IsValid(myGraph->myData->myIncStorage.NbProducts()))
+  {
     return anEmpty;
+  }
   return myGraph->myData->myIncStorage.Product(theProduct).OccurrenceRefIds;
 }
 
@@ -492,7 +504,9 @@ const NCollection_DynamicArray<BRepGraph_SolidRefId>& BRepGraph::RefsView::Solid
 {
   static const NCollection_DynamicArray<BRepGraph_SolidRefId> anEmpty;
   if (!theCompSolid.IsValid(myGraph->myData->myIncStorage.NbCompSolids()))
+  {
     return anEmpty;
+  }
   return myGraph->myData->myIncStorage.CompSolid(theCompSolid).SolidRefIds;
 }
 

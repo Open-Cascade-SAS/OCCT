@@ -97,7 +97,9 @@ void BOPTest::DebugCommands(Draw_Interpretor& theCommands)
 {
   static bool done = false;
   if (done)
+  {
     return;
+  }
   done = true;
   // Chapter's name
   const char* g = "BOPTest commands";
@@ -715,9 +717,13 @@ int bopsc(Draw_Interpretor& di, int n, const char** a)
   //
   nSF1 = nSF2 = -1;
   if (n > 1)
+  {
     nSF1 = Draw::Atoi(a[1]);
+  }
   if (n > 2)
+  {
     nSF2 = Draw::Atoi(a[2]);
+  }
 
   NCollection_DynamicArray<BOPDS_InterfFF>& aFFs = pDS->InterfFF();
   //
@@ -738,7 +744,9 @@ int bopsc(Draw_Interpretor& di, int n, const char** a)
     else if (n == 2)
     {
       if (!aFF.Contains(nSF1))
+      {
         continue;
+      }
     }
     //
     aFF.Indices(nF1, nF2);

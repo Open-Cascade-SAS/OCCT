@@ -46,7 +46,9 @@ Interface_EntityIterator IFSelect_SelectExtract::RootResult(const Interface_Grap
     const occ::handle<Standard_Transient>& ent = inputer.Value();
     rank++;
     if (SortInGraph(rank, ent, G) == thesort)
+    {
       iter.GetOneItem(ent);
+    }
   }
   return iter;
 }
@@ -62,9 +64,13 @@ TCollection_AsciiString IFSelect_SelectExtract::Label() const
 {
   TCollection_AsciiString labl;
   if (thesort)
+  {
     labl.AssignCat("Picked: ");
+  }
   if (!thesort)
+  {
     labl.AssignCat("Removed: ");
+  }
   labl.AssignCat(ExtractLabel());
   return labl;
 }

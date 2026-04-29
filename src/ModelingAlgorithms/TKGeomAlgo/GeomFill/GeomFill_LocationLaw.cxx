@@ -54,9 +54,13 @@ int GeomFill_LocationLaw::Nb2dCurves() const
 {
   int N = TraceNumber();
   if (HasFirstRestriction())
+  {
     N++;
+  }
   if (HasLastRestriction())
+  {
     N++;
+  }
 
   return N;
 }

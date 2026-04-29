@@ -49,7 +49,9 @@ void MAT_Zone::Perform(const occ::handle<MAT_BasicElt>& aBasicElt)
   // Si le premier arc correspondant a la zone est Null => Sequence vide.
   // ------------------------------------------------------------------------
   if (aBasicElt->EndArc().IsNull())
+  {
     return;
+  }
 
   // ----------------------------
   // Angle rentrant => Zone Vide.

@@ -27,7 +27,9 @@ void RWStepShape_RWPrecisionQualifier::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 1, ach, "precision_qualifier"))
+  {
     return;
+  }
 
   // --- own field : precision_value ---
 

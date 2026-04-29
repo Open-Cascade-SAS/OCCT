@@ -36,7 +36,9 @@ static int parsing(Draw_Interpretor& di, int argc, const char** argv)
   TCollection_AsciiString aStrTok(argv[1]);
   int                     nbIter = 1;
   if (argc > 2)
+  {
     nbIter = Draw::Atoi(argv[2]);
+  }
   UnitsAPI::SetLocalSystem();
   occ::handle<Units_Token> atoken;
   Units_UnitSentence       aUnitSent(aStrTok.ToCString());
@@ -118,7 +120,9 @@ static int unit(Draw_Interpretor& di, int n, const char** a)
     return 0;
   }
   else
+  {
     return 1;
+  }
 }
 
 //=================================================================================================
@@ -127,7 +131,9 @@ void Draw::UnitCommands(Draw_Interpretor& theCommands)
 {
   static bool Done = false;
   if (Done)
+  {
     return;
+  }
   Done = true;
 
   const char* g = "DRAW Unit Commands";

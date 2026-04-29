@@ -31,7 +31,9 @@ void RWStepGeom_RWAxis2Placement3d::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 4, ach, "axis2_placement_3d"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

@@ -266,7 +266,9 @@ bool toSplitIntervals(const occ::handle<Geom_Surface>& theSurf,
   {
     const double aParamU = theIntervals[0].Value(aIntervalU);
     if (Precision::IsInfinite(aParamU))
+    {
       continue;
+    }
 
     int aIntervalV = theIntervals[1].Lower();
     for (; aIntervalV <= theIntervals[1].Upper(); ++aIntervalV)
@@ -274,7 +276,9 @@ bool toSplitIntervals(const occ::handle<Geom_Surface>& theSurf,
       gp_Dir       aNorm;
       const double aParamV = theIntervals[1].Value(aIntervalV);
       if (Precision::IsInfinite(aParamV))
+      {
         continue;
+      }
 
       if (GeomLib::NormEstim(theSurf, gp_Pnt2d(aParamU, aParamV), Precision::Confusion(), aNorm)
           != 0)
@@ -581,7 +585,9 @@ Handle(IMeshData::SequenceOfReal) BRepMesh_NURBSRangeSplitter::filterParameters(
   NCollection_Array1<double> aParamArray(1, anInitLen);
   int                        j;
   for (j = 1; j <= anInitLen; j++)
+  {
     aParamArray(j) = theParams(j);
+  }
 
   std::sort(aParamArray.begin(), aParamArray.end());
 
@@ -592,7 +598,9 @@ Handle(IMeshData::SequenceOfReal) BRepMesh_NURBSRangeSplitter::filterParameters(
     if ((aParamArray(j) - aParamArray(aParamLength)) > theMinDist)
     {
       if (++aParamLength < j)
+      {
         aParamArray(aParamLength) = aParamArray(j);
+      }
     }
   }
 

@@ -203,7 +203,9 @@ void CorrectEdgeTolerance(const TopoDS_Edge& myShape, const TopoDS_Face& S, cons
   // 2. Tolerances in InContext
   {
     if (myCref.IsNull())
+    {
       return;
+    }
     bool ok = true;
 
     double Tol     = BRep_Tool::Tolerance(TopoDS::Edge(myShape));
@@ -245,7 +247,9 @@ void CorrectEdgeTolerance(const TopoDS_Edge& myShape, const TopoDS_Face& S, cons
         {
           // printf("(Edge,1) Tolerance=%15.10lg\n", aNewTol);
           if (aNewTol < aMaxTol)
+          {
             TE->UpdateTolerance(aNewTol);
+          }
         }
         if (cr->IsCurveOnClosedSurface())
         {
@@ -256,7 +260,9 @@ void CorrectEdgeTolerance(const TopoDS_Edge& myShape, const TopoDS_Face& S, cons
           if (ok)
           {
             if (aNewTol < aMaxTol)
+            {
               TE->UpdateTolerance(aNewTol);
+            }
           }
         }
       }
@@ -308,7 +314,9 @@ void CorrectEdgeTolerance(const TopoDS_Edge& myShape, const TopoDS_Face& S, cons
         if (ok)
         {
           if (aNewTol < aMaxTol)
+          {
             TE->UpdateTolerance(aNewTol);
+          }
         }
       }
     } // end of if (!pcurvefound) {
@@ -490,7 +498,9 @@ void CheckEdge(const TopoDS_Edge& Ed, const double aMaxTol)
               {
                 aNewTolerance = sqrt(aD2) + dd;
                 if (aNewTolerance < aMaxTol)
+                {
                   TV->UpdateTolerance(aNewTolerance);
+                }
               }
             }
             itpr.Next();
@@ -502,9 +512,13 @@ void CheckEdge(const TopoDS_Edge& Ed, const double aMaxTol)
             occ::handle<BRep_GCurve> GC(occ::down_cast<BRep_GCurve>(cr));
 
             if (orv == TopAbs_FORWARD)
+            {
               Controlp = C->Value(GC->First());
+            }
             else
+            {
               Controlp = C->Value(GC->Last());
+            }
 
             Controlp.Transform(L.Transformation());
             aD2 = prep.SquareDistance(Controlp);
@@ -513,7 +527,9 @@ void CheckEdge(const TopoDS_Edge& Ed, const double aMaxTol)
             {
               aNewTolerance = sqrt(aD2) + dd;
               if (aNewTolerance < aMaxTol)
+              {
                 TV->UpdateTolerance(aNewTolerance);
+              }
             }
           }
         }
@@ -535,7 +551,9 @@ bool TopOpeBRepBuild_Tools::CheckFaceClosed2d(const TopoDS_Face& theFace)
     BRepCheck_Wire     aWChk(aW);
     BRepCheck_Status   aStatus = aWChk.Orientation(theFace);
     if (aStatus != BRepCheck_NoError)
+    {
       isClosed = false;
+    }
   }
   return isClosed;
 }

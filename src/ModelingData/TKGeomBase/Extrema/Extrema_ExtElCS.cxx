@@ -257,7 +257,9 @@ void Extrema_ExtElCS::Perform(const gp_Lin& C, const gp_Sphere& S)
         myPoint2 = new NCollection_HArray1<Extrema_POnSurf>(1, myNbExt);
       }
       else
+      {
         myNbExt += ExPS.NbExt();
+      }
 
       for (i = aStartIdx + 1; i <= myNbExt; i++)
       {
@@ -408,7 +410,9 @@ void Extrema_ExtElCS::Perform(const gp_Circ& C, const gp_Cylinder& S)
   Extrema_ExtElC anExtC(anAxis, C, 0.);
 
   if (!anExtC.IsDone())
+  {
     return;
+  }
 
   bool isParallel = false;
 
@@ -585,8 +589,10 @@ void Extrema_ExtElCS::Perform(const gp_Circ& C, const gp_Sphere& S)
   gp_Pln             CPln(C.Location(), C.Axis().Direction());
   IntAna_QuadQuadGeo anInter(CPln, S);
   if (!anInter.IsDone())
+  {
     // not done
     return;
+  }
 
   if (anInter.TypeInter() != IntAna_Circle)
   {
@@ -631,8 +637,10 @@ void Extrema_ExtElCS::Perform(const gp_Circ& C, const gp_Sphere& S)
                                           && anExtC.NbExt() > 0; // Check that some solutions have been found
                                                         // clang-format on
   if (!isExtremaCircCircValid)
+  {
     // not done
     return;
+  }
 
   myDone = true;
 
@@ -644,7 +652,9 @@ void Extrema_ExtElCS::Perform(const gp_Circ& C, const gp_Sphere& S)
   {
     double aSqDist = anExtC.SquareDistance(i);
     if (aSqDist < aMinSqDist)
+    {
       aMinSqDist = aSqDist;
+    }
   }
 
   // Collect all solutions close to the minimal one
@@ -653,7 +663,9 @@ void Extrema_ExtElCS::Perform(const gp_Circ& C, const gp_Sphere& S)
   {
     double aDiff = anExtC.SquareDistance(i) - aMinSqDist;
     if (aDiff < Precision::SquareConfusion())
+    {
       aSols.Append(i);
+    }
   }
 
   // Save all minimal solutions
@@ -757,7 +769,9 @@ bool Extrema_ExtElCS::IsDone() const
 int Extrema_ExtElCS::NbExt() const
 {
   if (!IsDone())
+  {
     throw StdFail_NotDone();
+  }
   return myNbExt;
 }
 

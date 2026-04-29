@@ -50,7 +50,9 @@ bool StepData_Plex::Matches(const char* const steptype) const
   for (i = 1; i <= nb; i++)
   {
     if (Member(i)->Matches(steptype))
+    {
       return true;
+    }
   }
   return false;
 }
@@ -63,7 +65,9 @@ occ::handle<StepData_Simple> StepData_Plex::As(const char* const steptype) const
   {
     ent = Member(i);
     if (ent->Matches(steptype))
+    {
       return ent;
+    }
   }
   ent.Nullify();
   return ent;
@@ -75,7 +79,9 @@ bool StepData_Plex::HasField(const char* const name) const
   for (i = 1; i <= nb; i++)
   {
     if (Member(i)->HasField(name))
+    {
       return true;
+    }
   }
   return false;
 }
@@ -88,7 +94,9 @@ const StepData_Field& StepData_Plex::Field(const char* const name) const
   {
     ent = Member(i);
     if (ent->HasField(name))
+    {
       return ent->Field(name);
+    }
   }
   throw Interface_InterfaceMismatch("StepData_Plex : Field");
 }
@@ -101,7 +109,9 @@ StepData_Field& StepData_Plex::CField(const char* const name)
   {
     ent = Member(i);
     if (ent->HasField(name))
+    {
       return ent->CField(name);
+    }
   }
   throw Interface_InterfaceMismatch("StepData_Plex : Field");
 }

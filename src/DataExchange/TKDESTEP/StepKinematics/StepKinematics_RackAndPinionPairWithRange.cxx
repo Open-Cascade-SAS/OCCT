@@ -58,7 +58,9 @@ void StepKinematics_RackAndPinionPairWithRange::Init(
     myLowerLimitRackDisplacement = theLowerLimitRackDisplacement;
   }
   else
+  {
     myLowerLimitRackDisplacement = 0;
+  }
 
   defUpperLimitRackDisplacement = hasUpperLimitRackDisplacement;
   if (defUpperLimitRackDisplacement)
@@ -66,7 +68,9 @@ void StepKinematics_RackAndPinionPairWithRange::Init(
     myUpperLimitRackDisplacement = theUpperLimitRackDisplacement;
   }
   else
+  {
     myUpperLimitRackDisplacement = 0;
+  }
 }
 
 //=================================================================================================

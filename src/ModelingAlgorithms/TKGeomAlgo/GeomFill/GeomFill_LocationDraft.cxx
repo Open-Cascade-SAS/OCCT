@@ -68,7 +68,9 @@ occ::handle<GeomFill_LocationLaw> GeomFill_LocationDraft::Copy() const
   copy->SetCurve(myCurve);
   copy->SetStopSurf(mySurf);
   if (WithTrans)
+  {
     copy->SetTrsf(Trans);
+  }
 
   return copy;
 }
@@ -83,9 +85,15 @@ void GeomFill_LocationDraft::SetTrsf(const gp_Mat& Transfo)
   Aux -= Trans;
   WithTrans = false; // Au cas ou Trans = I
   for (int ii = 1; ii <= 3 && !WithTrans; ii++)
+  {
     for (int jj = 1; jj <= 3 && !WithTrans; jj++)
+    {
       if (std::abs(Aux.Value(ii, jj)) > 1.e-14)
+      {
         WithTrans = true;
+      }
+    }
+  }
 }
 
 //==================================================================
@@ -168,7 +176,9 @@ void GeomFill_LocationDraft::Prepare()
       {
         P2 = Int.Point(jj);
         if (P1.W() > P2.W())
+        {
           P1 = P2; // point le plus proche
+        }
       } // for_jj
 
       gp_Pnt2d p(P1.W(), t);              // point de la courbe
@@ -204,7 +214,9 @@ bool GeomFill_LocationDraft::D0(const double Param, gp_Mat& M, gp_Vec& V)
 
   Ok = myLaw->D0(Param, T, N, B);
   if (!Ok)
+  {
     return Ok;
+  }
   M.SetCols(N.XYZ(), B.XYZ(), T.XYZ());
 
   if (WithTrans)
@@ -233,7 +245,9 @@ bool GeomFill_LocationDraft::D0(const double                  Param,
   V.SetXYZ(P.XYZ());
   Ok = myLaw->D0(Param, T, N, B);
   if (!Ok)
+  {
     return Ok;
+  }
   M.SetCols(N.XYZ(), B.XYZ(), T.XYZ());
 
   if (WithTrans)
@@ -257,7 +271,9 @@ bool GeomFill_LocationDraft::D0(const double                  Param,
 
     // on recherche l'intervalle auquel appartient Param
     while (ii < 2 * myNbPts && myPoles2d->Value(ii).Coord(2) < Param)
+    {
       ii = ii + 2;
+    }
 
     if (ii < 2 * myNbPts && !IsEqual(myPoles2d->Value(ii).Coord(2), Param))
     {
@@ -346,7 +362,9 @@ bool GeomFill_LocationDraft::D1(const double                  Param,
 
   Ok = myLaw->D1(Param, T, DT, N, DN, B, DB);
   if (!Ok)
+  {
     return false;
+  }
 
   M.SetCols(N.XYZ(), B.XYZ(), T.XYZ());
   DM.SetCols(DN.XYZ(), DB.XYZ(), DT.XYZ());
@@ -374,7 +392,9 @@ bool GeomFill_LocationDraft::D1(const double                  Param,
 
     // on recherche l'intervalle auquel appartient Param
     while (ii < 2 * myNbPts && myPoles2d->Value(ii).Coord(2) < Param)
+    {
       ii = ii + 2;
+    }
 
     if (ii < 2 * myNbPts && !IsEqual(myPoles2d->Value(ii).Coord(2), Param))
     {
@@ -481,7 +501,9 @@ bool GeomFill_LocationDraft::D2(const double                  Param,
 
   Ok = myLaw->D2(Param, T, DT, D2T, N, DN, D2N, B, DB, D2B);
   if (!Ok)
+  {
     return Ok;
+  }
 
   M.SetCols(N.XYZ(), B.XYZ(), T.XYZ());
   DM.SetCols(DN.XYZ(), DB.XYZ(), DT.XYZ());
@@ -509,7 +531,9 @@ bool GeomFill_LocationDraft::D2(const double                  Param,
 
     // on recherche l'intervalle auquel appartient Param
     while (ii < 2 * myNbPts && myPoles2d->Value(ii).Coord(2) < Param)
+    {
       ii = ii + 2;
+    }
 
     if (ii < 2 * myNbPts && !IsEqual(myPoles2d->Value(ii).Coord(2), Param))
     {
@@ -640,9 +664,13 @@ bool GeomFill_LocationDraft::HasLastRestriction() const
 int GeomFill_LocationDraft::TraceNumber() const
 {
   if (Intersec)
+  {
     return 1;
+  }
   else
+  {
     return 0;
+  }
 }
 
 //=================================================================================================

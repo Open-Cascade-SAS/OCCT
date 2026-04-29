@@ -115,7 +115,9 @@ bool ShapeProcess::Perform(const occ::handle<ShapeProcess_Context>& context,
   {
     oper = sequence.Token(" \t,;", i);
     if (oper.Length() <= 0)
+    {
       break;
+    }
     sequenceOfOperators.Append(oper);
   }
 
@@ -127,7 +129,9 @@ bool ShapeProcess::Perform(const occ::handle<ShapeProcess_Context>& context,
     for (int i1 = 1; i1 <= sequenceOfOperators.Length(); i1++)
     {
       if (i1 > 1)
+      {
         Seq += ",";
+      }
       Seq += sequenceOfOperators.Value(i1);
     }
     SMSG0.Arg(Seq.ToCString());
@@ -165,7 +169,9 @@ bool ShapeProcess::Perform(const occ::handle<ShapeProcess_Context>& context,
     {
       OCC_CATCH_SIGNALS
       if (op->Perform(context, aRange))
+      {
         isDone = true;
+      }
     }
     catch (Standard_Failure const& anException)
     {

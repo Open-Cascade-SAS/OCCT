@@ -41,7 +41,9 @@ void BOPTest::CellsCommands(Draw_Interpretor& theCommands)
 {
   static bool done = false;
   if (done)
+  {
     return;
+  }
   done = true;
   // Chapter's name
   const char* g = "BOPTest commands";
@@ -139,7 +141,9 @@ int bcbuild(Draw_Interpretor& di, int n, const char** a)
   BOPTest::ReportAlerts(aCBuilder.GetReport());
   // Store the history of the Cells Builder into the session
   if (BRepTest_Objects::IsHistoryNeeded())
+  {
     BRepTest_Objects::SetHistory(aCBuilder.Arguments(), aCBuilder);
+  }
 
   if (aCBuilder.HasErrors())
   {
@@ -195,7 +199,9 @@ int bcaddall(Draw_Interpretor& di, int n, const char** a)
 
   // Update the history of the Cells Builder
   if (BRepTest_Objects::IsHistoryNeeded())
+  {
     BRepTest_Objects::SetHistory(aCBuilder.Arguments(), aCBuilder);
+  }
 
   DBRep::Set(a[1], aR);
   return 0;
@@ -217,7 +223,9 @@ int bcremoveall(Draw_Interpretor& di, int n, const char**)
 
   // Update the history of the Cells Builder
   if (BRepTest_Objects::IsHistoryNeeded())
+  {
     BRepTest_Objects::SetHistory(aCBuilder.Arguments(), aCBuilder);
+  }
 
   return 0;
 }
@@ -288,7 +296,9 @@ int bcadd(Draw_Interpretor& di, int n, const char** a)
 
   // Update the history of the Cells Builder
   if (BRepTest_Objects::IsHistoryNeeded())
+  {
     BRepTest_Objects::SetHistory(aCBuilder.Arguments(), aCBuilder);
+  }
 
   DBRep::Set(a[1], aR);
   return 0;
@@ -340,7 +350,9 @@ int bcremove(Draw_Interpretor& di, int n, const char** a)
 
   // Update the history of the Cells Builder
   if (BRepTest_Objects::IsHistoryNeeded())
+  {
     BRepTest_Objects::SetHistory(aCBuilder.Arguments(), aCBuilder);
+  }
 
   DBRep::Set(a[1], aR);
   return 0;
@@ -366,7 +378,9 @@ int bcremoveint(Draw_Interpretor& di, int n, const char** a)
 
   // Update the history of the Cells Builder
   if (BRepTest_Objects::IsHistoryNeeded())
+  {
     BRepTest_Objects::SetHistory(aCBuilder.Arguments(), aCBuilder);
+  }
 
   DBRep::Set(a[1], aR);
   return 0;

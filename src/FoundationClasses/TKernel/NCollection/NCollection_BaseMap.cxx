@@ -30,9 +30,13 @@ bool NCollection_BaseMap::BeginResize(const size_t            theExtent,
   if (theNewBuckets <= myNbBuckets)
   {
     if (!myData1)
+    {
       theNewBuckets = myNbBuckets;
+    }
     else
+    {
       return false;
+    }
   }
   data1 =
     (NCollection_ListNode**)Standard::Allocate((theNewBuckets + 1) * sizeof(NCollection_ListNode*));
@@ -42,7 +46,9 @@ bool NCollection_BaseMap::BeginResize(const size_t            theExtent,
                                                        * sizeof(NCollection_ListNode*));
   }
   else
+  {
     data2 = nullptr;
+  }
   return true;
 }
 
@@ -56,7 +62,9 @@ void NCollection_BaseMap::EndResize(const size_t           theExtent,
   (void)theExtent; // obsolete parameter
   Standard::Free(myData1);
   if (isDouble)
+  {
     Standard::Free(myData2);
+  }
   myNbBuckets = theNewBuckets;
   myData1     = data1;
   myData2     = data2;

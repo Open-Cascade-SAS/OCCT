@@ -61,7 +61,9 @@ void TopOpeBRepBuild_Builder::RegularizeSolids(const TopoDS_Shape&              
 #endif
   int nr = myMemoSplit.Extent();
   if (nr == 0)
+  {
     return;
+  }
 
   // lsosdSO = solids SameDomain de SO
   NCollection_List<TopoDS_Shape> lsosdSO, lsosdSO1, lsosdSO2;
@@ -83,7 +85,9 @@ void TopOpeBRepBuild_Builder::RegularizeSolids(const TopoDS_Shape&              
       TopAbs_State        staf     = (rankf == 1) ? myState1 : myState2;
       bool                issplitf = IsSplit(f, staf);
       if (!issplitf)
+      {
         continue;
+      }
 
       NCollection_List<TopoDS_Shape>  newlspf;
       NCollection_List<TopoDS_Shape>& lspf = ChangeSplit(f, staf);
@@ -95,7 +99,9 @@ void TopOpeBRepBuild_Builder::RegularizeSolids(const TopoDS_Shape&              
         const TopoDS_Shape& fsp     = itl1.Value();
         bool                fspmemo = myMemoSplit.Contains(fsp);
         if (!fspmemo)
+        {
           newlspf.Append(fsp);
+        }
         else
         {
           NCollection_List<TopoDS_Shape>& lspfsp = ChangeSplit(fsp, staf);
@@ -224,7 +230,9 @@ void TopOpeBRepBuild_Builder::RegularizeSolid(const TopoDS_Shape&             SS
   // LOSO = nouvelles Solids regularisees de newSolid
   NCollection_List<TopoDS_Shape>::Iterator itlnf(newSolids);
   for (; itlnf.More(); itlnf.Next())
+  {
     LOSO.Append(TopoDS::Solid(itlnf.Value()));
+  }
 
   // mise a jour des faces decoupees
   // Face(SS) = {E}, E-->Split(E) = {E'}, E'-->myFSplits(E') = {E''}
@@ -292,7 +300,9 @@ void TopOpeBRepBuild_Builder::RegularizeSolid(const TopoDS_Shape&             SS
 
         bool inmfns = mfns.Contains(fspssdSSf);
         if (!inmfns)
+        {
           continue;
+        }
 
         // ssdSSf est une face de ssdSS (Cf supra E)
         // fspssdSSf de Split(ssdSSf) figure dans newSolid (Cf supra E')

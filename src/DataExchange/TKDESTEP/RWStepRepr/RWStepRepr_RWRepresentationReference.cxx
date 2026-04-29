@@ -37,7 +37,9 @@ void RWStepRepr_RWRepresentationReference::ReadStep(
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 2, theAch, "representation_reference"))
+  {
     return;
+  }
 
   // Own fields of RepresentationReference
 

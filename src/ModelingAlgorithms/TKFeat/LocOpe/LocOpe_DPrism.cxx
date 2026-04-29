@@ -128,7 +128,9 @@ LocOpe_DPrism::LocOpe_DPrism(const TopoDS_Face& Spine,
       for (it.Initialize(lffs); it.More(); it.Next())
       {
         if (View.Add(it.Value()))
+        {
           B.Add(C, it.Value());
+        }
       }
     }
 
@@ -189,7 +191,9 @@ LocOpe_DPrism::LocOpe_DPrism(const TopoDS_Face& Spine,
       for (it.Initialize(lfls); it.More(); it.Next())
       {
         if (View.Add(it.Value()))
+        {
           B.Add(D, it.Value());
+        }
       }
     }
 
@@ -403,7 +407,9 @@ LocOpe_DPrism::LocOpe_DPrism(const TopoDS_Face& Spine, const double Height, cons
       for (it.Initialize(lffs); it.More(); it.Next())
       {
         if (View.Add(it.Value()))
+        {
           B.Add(C, it.Value());
+        }
       }
     }
 
@@ -464,7 +470,9 @@ LocOpe_DPrism::LocOpe_DPrism(const TopoDS_Face& Spine, const double Height, cons
       for (it.Initialize(lfls); it.More(); it.Next())
       {
         if (View.Add(it.Value()))
+        {
           B.Add(D, it.Value());
+        }
       }
     }
 

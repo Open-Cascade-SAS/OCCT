@@ -27,11 +27,17 @@ StepVisual_RenderingPropertiesSelect::StepVisual_RenderingPropertiesSelect() = d
 int StepVisual_RenderingPropertiesSelect::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepVisual_SurfaceStyleReflectanceAmbient)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepVisual_SurfaceStyleTransparent)))
+  {
     return 2;
+  }
   return 0;
 }
 

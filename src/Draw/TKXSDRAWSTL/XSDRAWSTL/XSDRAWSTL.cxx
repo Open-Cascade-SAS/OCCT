@@ -75,7 +75,9 @@ static int writestl(Draw_Interpretor& di, int argc, const char** argv)
     occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(di);
     bool                                isOK = aWriter.Write(aShape, argv[2], aProgress->Start());
     if (!isOK)
+    {
       di << "** Error **: Mesh writing has been failed.\n";
+    }
   }
   return 0;
 }
@@ -243,7 +245,9 @@ static int createmesh(Draw_Interpretor& theDI, int theNbArgs, const char** theAr
   occ::handle<TColStd_HPackedMapOfInteger> aNodes = new TColStd_HPackedMapOfInteger();
   const int                                aLen   = aSTLMesh->NbNodes();
   for (int anIndex = 1; anIndex <= aLen; anIndex++)
+  {
     aNodes->ChangeMap().Add(anIndex);
+  }
   aMesh->SetHiddenNodes(aNodes);
   aMesh->SetSelectableNodes(aNodes);
 
@@ -253,7 +257,9 @@ static int createmesh(Draw_Interpretor& theDI, int theNbArgs, const char** theAr
   Draw::Set(theArgVec[1], new XSDRAWSTL_DrawableMesh(aMesh));
   occ::handle<V3d_View> aView = ViewerTest::CurrentView();
   if (!aView.IsNull())
+  {
     aView->FitAll();
+  }
 
   return 0;
 }
@@ -290,7 +296,9 @@ static int create3d(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
   occ::handle<TColStd_HPackedMapOfInteger> aNodes = new TColStd_HPackedMapOfInteger();
   int                                      aLen   = aDS->GetAllNodes().Extent();
   for (int anIndex = 1; anIndex <= aLen; anIndex++)
+  {
     aNodes->ChangeMap().Add(anIndex);
+  }
   aMesh->SetHiddenNodes(aNodes);
   aMesh->SetSelectableNodes(aNodes);
 
@@ -300,7 +308,9 @@ static int create3d(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
   Draw::Set(theArgVec[1], new XSDRAWSTL_DrawableMesh(aMesh));
   occ::handle<V3d_View> aView = ViewerTest::CurrentView();
   if (!aView.IsNull())
+  {
     aView->FitAll();
+  }
 
   return 0;
 }
@@ -326,7 +336,9 @@ occ::handle<MeshVS_Mesh> getMesh(const char* theName, Draw_Interpretor& theDI)
       return nullptr;
     }
     else
+    {
       return aMesh;
+    }
   }
 }
 
@@ -335,7 +347,9 @@ occ::handle<MeshVS_Mesh> getMesh(const char* theName, Draw_Interpretor& theDI)
 static int setcolor(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec, int theParam)
 {
   if (theNbArgs < 5)
+  {
     theDI << "Wrong number of parameters\n";
+  }
   else
   {
     occ::handle<MeshVS_Mesh> aMesh = getMesh(theArgVec[1], theDI);
@@ -350,9 +364,13 @@ static int setcolor(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
       occ::handle<AIS_InteractiveContext> aContext = ViewerTest::GetAISContext();
 
       if (aContext.IsNull())
+      {
         theDI << "The context is null\n";
+      }
       else
+      {
         aContext->Redisplay(aMesh, true);
+      }
     }
   }
   return 0;
@@ -377,7 +395,9 @@ static int linecolor(Draw_Interpretor& theInterp, int theNbArgs, const char** th
 static int meshmat(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
 {
   if (theNbArgs < 3)
+  {
     theDI << "Wrong number of parameters\n";
+  }
   else
   {
     occ::handle<MeshVS_Mesh> aMesh = getMesh(theArgVec[1], theDI);
@@ -399,9 +419,13 @@ static int meshmat(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVe
       occ::handle<AIS_InteractiveContext> aContext = ViewerTest::GetAISContext();
 
       if (aContext.IsNull())
+      {
         theDI << "The context is null\n";
+      }
       else
+      {
         aContext->Redisplay(aMesh, true);
+      }
     }
   }
   return 0;
@@ -412,7 +436,9 @@ static int meshmat(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVe
 static int shrink(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
 {
   if (theNbArgs < 3)
+  {
     theDI << "Wrong number of parameters\n";
+  }
   else
   {
     occ::handle<MeshVS_Mesh> aMesh = getMesh(theArgVec[1], theDI);
@@ -424,9 +450,13 @@ static int shrink(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec
       occ::handle<AIS_InteractiveContext> aContext = ViewerTest::GetAISContext();
 
       if (aContext.IsNull())
+      {
         theDI << "The context is null\n";
+      }
       else
+      {
         aContext->Redisplay(aMesh, true);
+      }
     }
   }
   return 0;
@@ -467,7 +497,9 @@ static int closed(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
 static int mdisplay(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
 {
   if (theNbArgs < 2)
+  {
     theDI << "Wrong number of parameters\n";
+  }
   else
   {
     occ::handle<MeshVS_Mesh> aMesh = getMesh(theArgVec[1], theDI);
@@ -476,7 +508,9 @@ static int mdisplay(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
       occ::handle<AIS_InteractiveContext> aContext = ViewerTest::GetAISContext();
 
       if (aContext.IsNull())
+      {
         theDI << "The context is null\n";
+      }
       else
       {
         aContext->Display(aMesh, true);
@@ -491,7 +525,9 @@ static int mdisplay(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
 static int merase(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
 {
   if (theNbArgs < 2)
+  {
     theDI << "Wrong number of parameters\n";
+  }
   else
   {
     occ::handle<MeshVS_Mesh> aMesh = getMesh(theArgVec[1], theDI);
@@ -500,14 +536,18 @@ static int merase(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec
       occ::handle<AIS_InteractiveContext> aContext = ViewerTest::GetAISContext();
 
       if (aContext.IsNull())
+      {
         theDI << "The context is null\n";
+      }
       else
       {
         aContext->Erase(aMesh, true);
       }
     }
     else
+    {
       theDI << "Mesh is null\n";
+    }
   }
   return 0;
 }
@@ -532,7 +572,9 @@ static int hidesel(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVe
   }
 
   if (aContext.IsNull())
+  {
     theDI << "The context is null\n";
+  }
   else
   {
     occ::handle<TColStd_HPackedMapOfInteger> aHiddenNodes = aMesh->GetHiddenNodes();
@@ -590,7 +632,9 @@ static int showonly(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
   }
 
   if (aContext.IsNull())
+  {
     theDI << "The context is null\n";
+  }
   else
   {
     occ::handle<TColStd_HPackedMapOfInteger> aHiddenNodes =
@@ -641,7 +685,9 @@ static int showall(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVe
   }
 
   if (aContext.IsNull())
+  {
     theDI << "The context is null\n";
+  }
   else
   {
     aMesh->SetHiddenNodes(new TColStd_HPackedMapOfInteger());
@@ -702,11 +748,15 @@ static int meshcolors(Draw_Interpretor& theDI, int theNbArgs, const char** theAr
         {
           aTempBuilder = aMesh->FindBuilder(STANDARD_TYPE(MeshVS_ElementalColorPrsBuilder));
           if (!aTempBuilder.IsNull())
+          {
             aMesh->RemoveBuilderById(aTempBuilder->GetId());
+          }
 
           aTempBuilder = aMesh->FindBuilder(STANDARD_TYPE(MeshVS_NodalColorPrsBuilder));
           if (!aTempBuilder.IsNull())
+          {
             aMesh->RemoveBuilderById(aTempBuilder->GetId());
+          }
         }
 
         if (aMode.IsEqual("elem1") || aMode.IsEqual("elem2"))
@@ -720,18 +770,22 @@ static int meshcolors(Draw_Interpretor& theDI, int theNbArgs, const char** theAr
             aMesh->GetDataSource()->GetAllElements();
 
           if (aMode.IsEqual("elem1"))
+          {
             for (TColStd_PackedMapOfInteger::Iterator anIter(anAllElements); anIter.More();
                  anIter.Next())
             {
               Quantity_Color aColor((Quantity_NameOfColor)(anIter.Key() % Quantity_NOC_WHITE));
               aBuilder->SetColor1(anIter.Key(), aColor);
             }
+          }
           else
+          {
             for (TColStd_PackedMapOfInteger::Iterator anIter(anAllElements); anIter.More();
                  anIter.Next())
             {
               aBuilder->SetColor2(anIter.Key(), aColor1, aColor2);
             }
+          }
 
           aMesh->AddBuilder(aBuilder, true);
         }
@@ -915,7 +969,9 @@ static int meshvectors(Draw_Interpretor& theDI, int theNbArgs, const char** theA
 
   aTempBuilder = aMesh->FindBuilder(STANDARD_TYPE(MeshVS_VectorPrsBuilder));
   if (!aTempBuilder.IsNull())
+  {
     aMesh->RemoveBuilderById(aTempBuilder->GetId());
+  }
 
   if (!aMode.IsEqual("none"))
   {
@@ -946,15 +1002,19 @@ static int meshvectors(Draw_Interpretor& theDI, int theNbArgs, const char** theA
       {
         aMesh->GetDataSource()->GetGeomType(anIter.Key(), anIsElement, aEntType);
         if (aEntType == MeshVS_ET_Face)
+        {
           IsValidData = aMesh->GetDataSource()->GetNormal(anIter.Key(),
                                                           3,
                                                           aCoords.ChangeValue(1),
                                                           aCoords.ChangeValue(2),
                                                           aCoords.ChangeValue(3));
+        }
       }
       else
+      {
         IsValidData =
           aMesh->GetDataSource()->GetGeom(anIter.Key(), false, aCoords, aNbNodes, aEntType);
+      }
 
       gp_Vec aNorm;
       if (IsValidData)
@@ -1093,7 +1153,9 @@ static int meshdeform(Draw_Interpretor& theDI, int theNbArgs, const char** theAr
 
     gp_Vec aNorm = gp_Vec(aCoords.Value(1), aCoords.Value(2), aCoords.Value(3));
     if (!aNorm.Magnitude())
+    {
       aNorm = gp_Vec(0, 0, 1);
+    }
     aDefDS->SetVector(anIter.Key(), aNorm.Normalized());
   }
 
@@ -1103,7 +1165,9 @@ static int meshdeform(Draw_Interpretor& theDI, int theNbArgs, const char** theAr
 
   occ::handle<V3d_View> aView = ViewerTest::CurrentView();
   if (!aView.IsNull())
+  {
     aView->FitAll();
+  }
 
   return 0;
 }

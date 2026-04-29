@@ -56,7 +56,9 @@ void HLRBRep_Surface::Surface(const TopoDS_Face& F)
         myType = GeomAbs_Plane;
       }
       else
+      {
         myType = typ;
+      }
       break;
 
     default:
@@ -82,7 +84,9 @@ bool HLRBRep_Surface::SideRowsOfPoles(const double                tol,
   {
 
     for (iv = 1; iv <= nbvPoles; iv++)
+    {
       Pnt(iu, iv).Transform(T);
+    }
   }
   result = true;
 
@@ -97,7 +101,9 @@ bool HLRBRep_Surface::SideRowsOfPoles(const double                tol,
     }
   }
   if (result)
+  {
     return result;
+  }
   result = true;
 
   for (iv = 1; iv <= nbvPoles && result; iv++)
@@ -111,7 +117,9 @@ bool HLRBRep_Surface::SideRowsOfPoles(const double                tol,
     }
   }
   if (result)
+  {
     return result;
+  }
 
   // Are the Poles in a Side Plane ?
   NCollection_Array1<gp_Pnt> p(1, nbuPoles * nbvPoles);
@@ -129,7 +137,9 @@ bool HLRBRep_Surface::SideRowsOfPoles(const double                tol,
 
   PointSetLib_Equation Pl(p, tol);
   if (Pl.IsPlanar())
+  {
     result = std::abs(Pl.Plane().Axis().Direction().Z()) < 0.0001;
+  }
 
   return result;
 }
@@ -155,13 +165,17 @@ bool HLRBRep_Surface::IsSide(const double tolF, const double toler) const
       r = D.Z() * myProj->Focus() - (D.X() * Pt.X() + D.Y() * Pt.Y() + D.Z() * Pt.Z());
     }
     else
+    {
       r = D.Z();
+    }
     return std::abs(r) < toler;
   }
   else if (myType == GeomAbs_Cylinder)
   {
     if (myProj->Perspective())
+    {
       return false;
+    }
     gp_Cylinder Cyl = HLRBRep_BSurfaceTool::Cylinder(mySurf);
     gp_Ax1      A   = Cyl.Axis();
     D               = A.Direction();
@@ -172,7 +186,9 @@ bool HLRBRep_Surface::IsSide(const double tolF, const double toler) const
   else if (myType == GeomAbs_Cone)
   {
     if (!myProj->Perspective())
+    {
       return false;
+    }
     gp_Cone Con = HLRBRep_BSurfaceTool::Cone(mySurf);
     Pt          = Con.Apex();
     Pt.Transform(myProj->Transformation());
@@ -182,31 +198,45 @@ bool HLRBRep_Surface::IsSide(const double tolF, const double toler) const
   else if (myType == GeomAbs_BezierSurface)
   {
     if (myProj->Perspective())
+    {
       return false;
+    }
     int                               nu = HLRBRep_BSurfaceTool::NbUPoles(mySurf);
     int                               nv = HLRBRep_BSurfaceTool::NbVPoles(mySurf);
     NCollection_Array2<gp_Pnt>        Pnt(1, nu, 1, nv);
     const NCollection_Array2<gp_Pnt>& aSrcPoles = HLRBRep_BSurfaceTool::Bezier(mySurf)->Poles();
     for (int iu = 1; iu <= nu; iu++)
+    {
       for (int iv = 1; iv <= nv; iv++)
+      {
         Pnt(iu, iv) = aSrcPoles(iu, iv);
+      }
+    }
     return SideRowsOfPoles(tolF, nu, nv, Pnt);
   }
   else if (myType == GeomAbs_BSplineSurface)
   {
     if (myProj->Perspective())
+    {
       return false;
+    }
     int                               nu = HLRBRep_BSurfaceTool::NbUPoles(mySurf);
     int                               nv = HLRBRep_BSurfaceTool::NbVPoles(mySurf);
     NCollection_Array2<gp_Pnt>        Pnt(1, nu, 1, nv);
     const NCollection_Array2<gp_Pnt>& aSrcPoles = HLRBRep_BSurfaceTool::BSpline(mySurf)->Poles();
     for (int iu = 1; iu <= nu; iu++)
+    {
       for (int iv = 1; iv <= nv; iv++)
+      {
         Pnt(iu, iv) = aSrcPoles(iu, iv);
+      }
+    }
     return SideRowsOfPoles(tolF, nu, nv, Pnt);
   }
   else
+  {
     return false;
+  }
 }
 
 //=================================================================================================
@@ -228,9 +258,13 @@ bool HLRBRep_Surface::IsAbove(const bool back, const HLRBRep_Curve* A, const dou
     P.Coord(x, y, z);
     dd = a * x + b * y + c * z + d;
     if (back)
+    {
       dd = -dd;
+    }
     if (dd < -tol)
+    {
       return false;
+    }
     if (A->GetType() != GeomAbs_Line)
     {
       int    nbPnt = 30;
@@ -242,9 +276,13 @@ bool HLRBRep_Surface::IsAbove(const bool back, const HLRBRep_Curve* A, const dou
         P.Coord(x, y, z);
         dd = a * x + b * y + c * z + d;
         if (back)
+        {
           dd = -dd;
+        }
         if (dd < -tol)
+        {
           return false;
+        }
       }
     }
     u = u2;
@@ -252,13 +290,19 @@ bool HLRBRep_Surface::IsAbove(const bool back, const HLRBRep_Curve* A, const dou
     P.Coord(x, y, z);
     dd = a * x + b * y + c * z + d;
     if (back)
+    {
       dd = -dd;
+    }
     if (dd < -tol)
+    {
       return false;
+    }
     return true;
   }
   else
+  {
     return false;
+  }
 }
 
 //=================================================================================================

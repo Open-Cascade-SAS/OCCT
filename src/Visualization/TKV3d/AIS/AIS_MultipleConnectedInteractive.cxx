@@ -39,7 +39,9 @@ occ::handle<AIS_InteractiveObject> AIS_MultipleConnectedInteractive::connect(
   const occ::handle<Graphic3d_TransformPers>& theTrsfPers)
 {
   if (myAssemblyOwner.IsNull())
+  {
     myAssemblyOwner = new SelectMgr_EntityOwner(this);
+  }
 
   occ::handle<AIS_InteractiveObject> anObjectToAdd;
 

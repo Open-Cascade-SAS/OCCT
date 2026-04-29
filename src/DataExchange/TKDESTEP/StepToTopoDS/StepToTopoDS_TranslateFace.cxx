@@ -385,13 +385,17 @@ static occ::handle<Poly_Triangulation> CreatePolyTriangulation(
       {
         if (aTriangleStrip->Value(anIndex) != aTriangleStrip->Value(anIndex - 2)
             && aTriangleStrip->Value(anIndex) != aTriangleStrip->Value(anIndex - 1))
+        {
           ++aNbTriaStrips;
+        }
       }
       for (int anIndex = 4; anIndex <= aTriangleStrip->Length(); anIndex += 2)
       {
         if (aTriangleStrip->Value(anIndex) != aTriangleStrip->Value(anIndex - 2)
             && aTriangleStrip->Value(anIndex) != aTriangleStrip->Value(anIndex - 1))
+        {
           ++aNbTriaStrips;
+        }
       }
     }
 
@@ -772,7 +776,9 @@ void StepToTopoDS_TranslateFace::Init(const occ::handle<StepVisual_TessellatedFa
                                       const StepData_Factors& theLocalFactors)
 {
   if (theTF.IsNull())
+  {
     return;
+  }
 
   occ::handle<Transfer_TransientProcess> aTP = theTool.TransientProcess();
 
@@ -825,7 +831,9 @@ void StepToTopoDS_TranslateFace::Init(const occ::handle<StepVisual_TessellatedFa
   aB.UpdateFace(aF, aMesh);
 
   if (theNMTool.IsActive())
+  {
     theNMTool.Bind(theTF, aF);
+  }
 
   aTP->Bind(theTF, new TransferBRep_ShapeBinder(aF));
 
@@ -845,7 +853,9 @@ void StepToTopoDS_TranslateFace::Init(const occ::handle<StepVisual_TessellatedSu
                                       const StepData_Factors& theLocalFactors)
 {
   if (theTSS.IsNull())
+  {
     return;
+  }
 
   occ::handle<Transfer_TransientProcess> aTP = theTool.TransientProcess();
   BRep_Builder                           aB;
@@ -873,7 +883,9 @@ void StepToTopoDS_TranslateFace::Init(const occ::handle<StepVisual_TessellatedSu
   }
   aB.UpdateFace(aF, aMesh);
   if (theNMTool.IsActive())
+  {
     theNMTool.Bind(theTSS, aF);
+  }
 
   myResult = aF;
   myError  = StepToTopoDS_TranslateFaceDone;

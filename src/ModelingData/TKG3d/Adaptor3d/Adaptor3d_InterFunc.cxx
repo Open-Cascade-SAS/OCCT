@@ -29,7 +29,9 @@ Adaptor3d_InterFunc::Adaptor3d_InterFunc(const occ::handle<Adaptor2d_Curve2d>& C
       myFix(Fix)
 {
   if (Fix != 1 && Fix != 2)
+  {
     throw Standard_ConstructionError();
+  }
 }
 
 bool Adaptor3d_InterFunc::Value(const double X, double& F)
@@ -37,9 +39,13 @@ bool Adaptor3d_InterFunc::Value(const double X, double& F)
   gp_Pnt2d C;
   myCurve2d->D0(X, C);
   if (myFix == 1)
+  {
     F = C.X() - myFixVal;
+  }
   else
+  {
     F = C.Y() - myFixVal;
+  }
 
   return true;
 }

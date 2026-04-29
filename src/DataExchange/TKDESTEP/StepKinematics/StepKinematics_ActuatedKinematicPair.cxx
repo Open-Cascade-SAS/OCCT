@@ -67,7 +67,9 @@ void StepKinematics_ActuatedKinematicPair::Init(
     myTX = theTX;
   }
   else
+  {
     myTX = StepKinematics_ActuatedDirection();
+  }
 
   defTY = hasTY;
   if (defTY)
@@ -75,7 +77,9 @@ void StepKinematics_ActuatedKinematicPair::Init(
     myTY = theTY;
   }
   else
+  {
     myTY = StepKinematics_ActuatedDirection();
+  }
 
   defTZ = hasTZ;
   if (defTZ)
@@ -83,7 +87,9 @@ void StepKinematics_ActuatedKinematicPair::Init(
     myTZ = theTZ;
   }
   else
+  {
     myTZ = StepKinematics_ActuatedDirection();
+  }
 
   defRX = hasRX;
   if (defRX)
@@ -91,7 +97,9 @@ void StepKinematics_ActuatedKinematicPair::Init(
     myRX = theRX;
   }
   else
+  {
     myRX = StepKinematics_ActuatedDirection();
+  }
 
   defRY = hasRY;
   if (defRY)
@@ -99,7 +107,9 @@ void StepKinematics_ActuatedKinematicPair::Init(
     myRY = theRY;
   }
   else
+  {
     myRY = StepKinematics_ActuatedDirection();
+  }
 
   defRZ = hasRZ;
   if (defRZ)
@@ -107,7 +117,9 @@ void StepKinematics_ActuatedKinematicPair::Init(
     myRZ = theRZ;
   }
   else
+  {
     myRZ = StepKinematics_ActuatedDirection();
+  }
 }
 
 //=================================================================================================

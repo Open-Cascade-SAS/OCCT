@@ -89,7 +89,9 @@ void XCAFDoc_NoteComment::Restore(const occ::handle<TDF_Attribute>& theAttr)
 
   occ::handle<XCAFDoc_NoteComment> aMine = occ::down_cast<XCAFDoc_NoteComment>(theAttr);
   if (!aMine.IsNull())
+  {
     myComment = aMine->myComment;
+  }
 }
 
 //=================================================================================================
@@ -101,7 +103,9 @@ void XCAFDoc_NoteComment::Paste(const occ::handle<TDF_Attribute>&       theAttrI
 
   occ::handle<XCAFDoc_NoteComment> aMine = occ::down_cast<XCAFDoc_NoteComment>(theAttrInto);
   if (!aMine.IsNull())
+  {
     aMine->Set(myComment);
+  }
 }
 
 //=================================================================================================

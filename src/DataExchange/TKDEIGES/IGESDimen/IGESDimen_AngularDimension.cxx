@@ -83,7 +83,9 @@ gp_Pnt2d IGESDimen_AngularDimension::TransformedVertex() const
 {
   gp_XYZ point(theVertex.X(), theVertex.Y(), 0.0);
   if (HasTransf())
+  {
     Location().Transforms(point);
+  }
   return gp_Pnt2d(point.X(), point.Y());
 }
 

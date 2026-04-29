@@ -251,12 +251,18 @@ void Poly_CoherentTriangle::RemoveConnection(const int iConn)
     if (pConnectedTri->mypConnected[0] != this)
     {
       if (pConnectedTri->mypConnected[1] == this)
+      {
         iConn1 = 1;
+      }
       else if (pConnectedTri->mypConnected[2] == this)
+      {
         iConn1 = 2;
+      }
       else
+      {
         throw Standard_ProgramError("Poly_CoherentTriangle::RemoveConnection: "
                                     "wrong connection between triangles");
+      }
     }
     pConnectedTri->mypConnected[iConn1]       = nullptr;
     pConnectedTri->myNodesOnConnected[iConn1] = -1;
@@ -273,7 +279,9 @@ bool Poly_CoherentTriangle::RemoveConnection(Poly_CoherentTriangle& theTri)
 {
   const int iConn = FindConnection(theTri);
   if (iConn >= 0)
+  {
     RemoveConnection(iConn);
+  }
   return (iConn >= 0);
 }
 
@@ -283,12 +291,20 @@ int Poly_CoherentTriangle::FindConnection(const Poly_CoherentTriangle& theTri) c
 {
   int aResult;
   if (mypConnected[0] == &theTri)
+  {
     aResult = 0;
+  }
   else if (mypConnected[1] == &theTri)
+  {
     aResult = 1;
+  }
   else if (mypConnected[2] == &theTri)
+  {
     aResult = 2;
+  }
   else
+  {
     aResult = -1;
+  }
   return aResult;
 }

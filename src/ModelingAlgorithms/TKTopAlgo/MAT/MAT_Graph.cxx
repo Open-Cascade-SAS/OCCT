@@ -233,7 +233,9 @@ void MAT_Graph::FusionOfBasicElts(const int IndexElt1,
   occ::handle<MAT_BasicElt> Elt2 = theBasicElts(IndexElt2);
 
   if (Elt1 == Elt2)
+  {
     return;
+  }
 
   int                   i;
   occ::handle<MAT_Zone> Zone2 = new MAT_Zone(Elt2);
@@ -381,9 +383,13 @@ void MAT_Graph::FusionOfArcs(const occ::handle<MAT_Arc>& Arc1, const occ::handle
   {
     occ::handle<MAT_BasicElt> BE;
     if (i == 1)
+    {
       BE = theBasicElts(anArc2->FirstElement()->Index());
+    }
     else
+    {
       BE = theBasicElts(anArc2->SecondElement()->Index());
+    }
 
     if (BE->StartArc() == anArc2)
     {

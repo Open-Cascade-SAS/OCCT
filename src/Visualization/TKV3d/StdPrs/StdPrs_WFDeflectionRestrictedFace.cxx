@@ -421,13 +421,21 @@ bool StdPrs_WFDeflectionRestrictedFace::Match(const double                      
     {
       gp_Pnt2d P = TheRCurve->Value(u);
       if (P.X() < UMin)
+      {
         UMin = P.X();
+      }
       if (P.X() > UMax)
+      {
         UMax = P.X();
+      }
       if (P.Y() < VMin)
+      {
         VMin = P.Y();
+      }
       if (P.Y() > VMax)
+      {
         VMax = P.Y();
+      }
       u += step;
     }
   }
@@ -495,9 +503,13 @@ bool StdPrs_WFDeflectionRestrictedFace::Match(const double                      
           dummypnt = UDP.Value(i);
           P2.SetCoord(dummypnt.X(), dummypnt.Y());
           if (Orient == TopAbs_FORWARD)
+          {
             isobuild.Trim(P1, P2);
+          }
           else
+          {
             isobuild.Trim(P2, P1);
+          }
         }
       }
     }
@@ -528,12 +540,18 @@ bool StdPrs_WFDeflectionRestrictedFace::Match(const double                      
       b2 = b2 == RealLast() ? aLimit : b2;
 
       if (isobuild.IsXLine(i))
+      {
         anIso.Load(GeomAbs_IsoU, Coord, b1, b2);
+      }
       else
+      {
         anIso.Load(GeomAbs_IsoV, Coord, b1, b2);
+      }
 
       if (StdPrs_DeflectionCurve::Match(X, Y, Z, aDistance, anIso, b1, b2, Deflection, anAngle))
+      {
         return true;
+      }
     }
   }
   return false;

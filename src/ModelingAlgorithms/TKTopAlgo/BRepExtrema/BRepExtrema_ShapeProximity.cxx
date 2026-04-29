@@ -36,7 +36,9 @@ static bool initSubShapes(const TopoDS_Shape&                     theShape,
   }
 
   if (theTriangleSet.IsNull())
+  {
     theTriangleSet = new BRepExtrema_TriangleSet;
+  }
   return theTriangleSet->Init(theSubshapesList);
 }
 

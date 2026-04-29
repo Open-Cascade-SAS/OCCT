@@ -80,7 +80,9 @@ void BRepGraph_History::Record(const TCollection_AsciiString&                   
   }
 
   if (aFilteredReplacements.IsEmpty())
+  {
     return;
+  }
 
   if (myOriginalToDerived.IsBound(theOriginal))
   {

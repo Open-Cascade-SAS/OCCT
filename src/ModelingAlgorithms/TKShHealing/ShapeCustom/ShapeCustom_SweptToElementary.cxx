@@ -73,7 +73,9 @@ static bool IsToConvert(const occ::handle<Geom_Surface>& S, occ::handle<Geom_Swe
     Stmp                               = OS->BasisSurface();
   }
   if (Stmp.IsNull())
+  {
     return false;
+  }
   if (S->IsKind(STANDARD_TYPE(Geom_SweptSurface)))
   {
     SS = occ::down_cast<Geom_SweptSurface>(Stmp);
@@ -94,7 +96,9 @@ bool ShapeCustom_SweptToElementary::NewSurface(const TopoDS_Face&         F,
   S = BRep_Tool::Surface(F, L);
   occ::handle<Geom_SweptSurface> SS;
   if (!IsToConvert(S, SS))
+  {
     return false;
+  }
 
   // case SurfaceOfRevolution
   if (SS->IsKind(STANDARD_TYPE(Geom_SurfaceOfRevolution)))
@@ -189,15 +193,21 @@ bool ShapeCustom_SweptToElementary::NewCurve(const TopoDS_Edge&       E,
   {
     occ::handle<BRep_GCurve> GC = occ::down_cast<BRep_GCurve>(itcr.Value());
     if (GC.IsNull() || !GC->IsCurveOnSurface())
+    {
       continue;
+    }
     occ::handle<Geom_Surface>      S = GC->Surface();
     occ::handle<Geom_SweptSurface> SS;
     if (!IsToConvert(S, SS))
+    {
       continue;
+    }
     double f, l;
     C = BRep_Tool::Curve(E, L, f, l);
     if (!C.IsNull())
+    {
       C = occ::down_cast<Geom_Curve>(C->Copy());
+    }
     Tol = BRep_Tool::Tolerance(E);
     return true;
   }
@@ -229,7 +239,9 @@ bool ShapeCustom_SweptToElementary::NewCurve2d(const TopoDS_Edge&         E,
 
   // just copy pcurve if either its surface is changing or edge was copied
   if (!IsToConvert(S, SS) && E.IsSame(NewE))
+  {
     return false;
+  }
 
   double f, l;
   C = BRep_Tool::CurveOnSurface(E, F, f, l);

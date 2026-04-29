@@ -80,7 +80,7 @@ void Standard_ErrorHandler::Raise()
   if (std::holds_alternative<std::monostate>(myCaughtError))
   {
     std::cerr << "*** Abort *** an exception handler was called, but no exception object is set."
-              << std::endl;
+              << '\n';
     exit(1);
   }
 
@@ -115,7 +115,9 @@ Standard_ErrorHandler::Callback::~Callback()
 void Standard_ErrorHandler::Callback::RegisterCallback()
 {
   if (myHandler)
+  {
     return; // already registered
+  }
 
   // find current active exception handler
   Standard_ErrorHandler* aHandler = Standard_ErrorHandler::FindHandler();
@@ -126,7 +128,9 @@ void Standard_ErrorHandler::Callback::RegisterCallback()
     myHandler = aHandler;
     myNext    = aHandler->myCallbackPtr;
     if (myNext)
+    {
       ((Standard_ErrorHandler::Callback*)myNext)->myPrev = this;
+    }
     aHandler->myCallbackPtr = this;
   }
 }
@@ -134,13 +138,21 @@ void Standard_ErrorHandler::Callback::RegisterCallback()
 void Standard_ErrorHandler::Callback::UnregisterCallback()
 {
   if (!myHandler)
+  {
     return;
+  }
   if (myNext)
+  {
     ((Standard_ErrorHandler::Callback*)myNext)->myPrev = myPrev;
+  }
   if (myPrev)
+  {
     ((Standard_ErrorHandler::Callback*)myPrev)->myNext = myNext;
+  }
   else if (((Standard_ErrorHandler*)myHandler)->myCallbackPtr == this)
+  {
     ((Standard_ErrorHandler*)myHandler)->myCallbackPtr = (Standard_ErrorHandler::Callback*)myNext;
+  }
   myHandler = myNext = myPrev = nullptr;
 }
 #endif

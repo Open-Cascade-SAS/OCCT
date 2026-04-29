@@ -35,7 +35,9 @@ void RWStepRepr_RWParallelOffset::ReadStep(const occ::handle<StepData_StepReader
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 5, ach, "parallel_offset"))
+  {
     return;
+  }
 
   // Inherited fields of ShapeAspect
 

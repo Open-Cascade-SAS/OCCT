@@ -139,9 +139,13 @@ Method:
 
   constexpr double aAngTol = Precision::Angular();
   if (Usol[0] + M_PI < aAngTol)
+  {
     Usol[0] = -M_PI;
+  }
   else if (Usol[0] - M_PI > -aAngTol)
+  {
     Usol[0] = M_PI;
+  }
 
   Usol[1] = Usol[0] + M_PI;
 
@@ -158,9 +162,13 @@ Method:
   ElCLib::AdjustPeriodic(Uinf, Uinf + 2 * M_PI, TolU, myuinf, Usol[0]);
   ElCLib::AdjustPeriodic(Uinf, Uinf + 2 * M_PI, TolU, myuinf, Usol[1]);
   if (((Usol[0] - 2 * M_PI - Uinf) < TolU) && ((Usol[0] - 2 * M_PI - Uinf) > -TolU))
+  {
     Usol[0] = Uinf;
+  }
   if (((Usol[1] - 2 * M_PI - Uinf) < TolU) && ((Usol[1] - 2 * M_PI - Uinf) > -TolU))
+  {
     Usol[1] = Uinf;
+  }
 
   // 3- Calculate extrema in [Umin,Umax] ...
 
@@ -245,7 +253,9 @@ Method:
 
   double ko2 = (B * B - A * A) / 2., ko3 = -B * Y, ko4 = A * X;
   if (std::abs(ko3) < 1.e-16 * std::max(std::abs(ko2), std::abs(ko3)))
+  {
     ko3 = 0.0;
+  }
 
   //  math_TrigonometricFunctionRoots Sol(0.,(B*B-A*A)/2.,-B*Y,A*X,0.,Uinf,Usup);
   math_TrigonometricFunctionRoots Sol(0., ko2, ko3, ko4, 0., Uinf, Usup);

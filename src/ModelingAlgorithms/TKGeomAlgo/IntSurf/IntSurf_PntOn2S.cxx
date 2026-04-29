@@ -58,9 +58,13 @@ gp_Pnt2d IntSurf_PntOn2S::ValueOnSurface(const bool OnFirst) const
 {
   gp_Pnt2d PointOnSurf;
   if (OnFirst)
+  {
     PointOnSurf.SetCoord(u1, v1);
+  }
   else
+  {
     PointOnSurf.SetCoord(u2, v2);
+  }
   return PointOnSurf;
 }
 
@@ -83,7 +87,9 @@ bool IntSurf_PntOn2S::IsSame(const IntSurf_PntOn2S& theOterPoint,
                              const double           theTol2D) const
 {
   if (pt.SquareDistance(theOterPoint.Value()) > theTol3D * theTol3D)
+  {
     return false;
+  }
 
   if (theTol2D < 0.0)
   { // We need not compare 2D-coordinates of the points
@@ -96,7 +102,9 @@ bool IntSurf_PntOn2S::IsSame(const IntSurf_PntOn2S& theOterPoint,
   gp_Pnt2d aP1(u1, v1), aP2(aU1, aV1);
 
   if (!aP1.IsEqual(aP2, theTol2D))
+  {
     return false;
+  }
 
   aP1.SetCoord(u2, v2);
   aP2.SetCoord(aU2, aV2);

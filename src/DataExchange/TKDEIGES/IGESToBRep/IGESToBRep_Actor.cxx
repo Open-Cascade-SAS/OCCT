@@ -118,7 +118,9 @@ bool IGESToBRep_Actor::Recognize(const occ::handle<Standard_Transient>& start)
   DeclareAndCast(IGESData_IGESModel, mymodel, themodel);
   DeclareAndCast(IGESData_IGESEntity, ent, start);
   if (ent.IsNull())
+  {
     return false;
+  }
 
   //   Cas reconnus
   int typnum = ent->TypeNumber();
@@ -138,11 +140,15 @@ occ::handle<Transfer_Binder> IGESToBRep_Actor::Transfer(
   DeclareAndCast(IGESData_IGESModel, mymodel, themodel);
   DeclareAndCast(IGESData_IGESEntity, ent, start);
   if (mymodel.IsNull() || ent.IsNull())
+  {
     return NullResult();
+  }
   int anum = mymodel->Number(start);
 
   if (Interface_Static::IVal("read.iges.faulty.entities") == 0 && mymodel->IsErrorEntity(anum))
+  {
     return NullResult();
+  }
   TopoDS_Shape shape;
 
   // Call the transfer only if type is OK.
@@ -164,9 +170,13 @@ occ::handle<Transfer_Binder> IGESToBRep_Actor::Transfer(
     CAS.SetTransferProcess(TP);
     int Ival = Interface_Static::IVal("read.precision.mode");
     if (Ival == 0)
+    {
       eps = mymodel->GlobalSection().Resolution();
+    }
     else
+    {
       eps = Interface_Static::RVal("read.precision.val"); //: 10 ABV 11 Nov 97
+    }
     //: 10      eps = BRepAPI::Precision();
     Ival = Interface_Static::IVal("read.iges.bspline.approxd1.mode");
     CAS.SetModeApprox((Ival > 0));
@@ -221,7 +231,9 @@ occ::handle<Transfer_Binder> IGESToBRep_Actor::Transfer(
   }
   occ::handle<TransferBRep_ShapeBinder> binder;
   if (!shape.IsNull())
+  {
     binder = new TransferBRep_ShapeBinder(shape);
+  }
   return binder;
 }
 

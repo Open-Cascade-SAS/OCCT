@@ -24,7 +24,9 @@ FEmTool_ElementsOfRefMatrix::FEmTool_ElementsOfRefMatrix(const PLib_HermitJacobi
     : myBase(TheBase)
 {
   if (DerOrder < 0 || DerOrder > 3)
+  {
     throw Standard_ConstructionError("FEmTool_ElementsOfRefMatrix");
+  }
 
   myDerOrder    = DerOrder;
   myNbEquations = (myBase.WorkDegree() + 2) * (myBase.WorkDegree() + 1) / 2;
@@ -43,7 +45,9 @@ int FEmTool_ElementsOfRefMatrix::NbEquations() const
 bool FEmTool_ElementsOfRefMatrix::Value(const math_Vector& X, math_Vector& F)
 {
   if (F.Length() < myNbEquations)
+  {
     throw Standard_OutOfRange("FEmTool_ElementsOfRefMatrix::Value");
+  }
 
   double                     u = X(X.Lower());
   NCollection_Array1<double> Basis(0, myBase.WorkDegree()), Aux(0, myBase.WorkDegree());
@@ -66,11 +70,13 @@ bool FEmTool_ElementsOfRefMatrix::Value(const math_Vector& X, math_Vector& F)
 
   int i, j, ii = 0;
   for (i = 0; i <= myBase.WorkDegree(); i++)
+  {
     for (j = i; j <= myBase.WorkDegree(); j++)
     {
       F(F.Lower() + ii) = Basis(i) * Basis(j);
       ii++;
     }
+  }
 
   return true;
 }

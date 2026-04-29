@@ -98,10 +98,14 @@ void HLRTopoBRep_DSFiller::Insert(
       if (FO.IsDone())
       {
         if (!FO.IsEmpty())
+        {
           InsertFace(f, S1, FO, DS, withPCurve);
+        }
       }
       if (nbIso != 0)
+      {
         HLRTopoBRep_FaceIsoLiner::Perform(f, S1, DS, nbIso);
+      }
     }
     ex.Next();
   }
@@ -177,9 +181,13 @@ void HLRTopoBRep_DSFiller::InsertFace(const int /*FI*/,
 
         const Contap_Point PF = Line.Vertex(CurPoint);
         if (PF.IsInternal() && CurPoint != 1)
+        {
           VF = VL;
+        }
         else
+        {
           VF = MakeVertex(PF, tol, DS);
+        }
         const double parF = PF.ParameterOnLine();
 
         if (CurPoint < NbPoints)
@@ -358,17 +366,29 @@ void HLRTopoBRep_DSFiller::InsertFace(const int /*FI*/,
                     mults.SetValue(i, 1);
                     const gp_Pnt& P = Line.Point(i + ipF - 1).Value();
                     if (P.X() < Minx)
+                    {
                       Minx = P.X();
+                    }
                     if (P.Y() < Miny)
+                    {
                       Miny = P.Y();
+                    }
                     if (P.Z() < Minz)
+                    {
                       Minz = P.Z();
+                    }
                     if (P.X() > Maxx)
+                    {
                       Maxx = P.X();
+                    }
                     if (P.Y() > Maxy)
+                    {
                       Maxy = P.Y();
+                    }
                     if (P.Z() > Maxz)
+                    {
                       Maxz = P.Z();
+                    }
                     Points.SetValue(i, P);
                   }
                   mults(1) = mults(nbp) = 2;
@@ -384,13 +404,21 @@ void HLRTopoBRep_DSFiller::InsertFace(const int /*FI*/,
                       double u, v;
                       Line.Point(i + ipF - 1).ParametersOnS2(u, v);
                       if (u < Minu)
+                      {
                         Minu = u;
+                      }
                       if (v < Minv)
+                      {
                         Minv = v;
+                      }
                       if (u > Maxu)
+                      {
                         Maxu = u;
+                      }
                       if (v > Maxv)
+                      {
                         Maxv = v;
+                      }
                       Points2d.SetValue(i, gp_Pnt2d(u, v));
                     }
                     AppC2d = new Geom2d_BSplineCurve(Points2d, knots, mults, 1);
@@ -413,22 +441,36 @@ void HLRTopoBRep_DSFiller::InsertFace(const int /*FI*/,
                   Maxu -= Minu;
                   Maxv -= Minv;
                   if (Maxy > Maxx)
+                  {
                     Maxx = Maxy;
+                  }
                   if (Maxz > Maxx)
+                  {
                     Maxx = Maxy;
+                  }
                   if (Maxv > Maxu)
+                  {
                     Maxu = Maxv;
+                  }
 
                   TOL3d = TOL * Maxx;
                   if (TOL3d < 1e-12)
+                  {
                     TOL3d = 1e-12;
+                  }
                   else if (TOL3d > 0.1)
+                  {
                     TOL3d = 0.1;
+                  }
                   TOL2d = TOL * Maxu;
                   if (TOL2d < 1e-12)
+                  {
                     TOL2d = 1e-12;
+                  }
                   else if (TOL2d > 0.1)
+                  {
                     TOL2d = 0.1;
+                  }
 
                   //-- std::cout<<"\nHLRTopoBRep_DSFiller : nbp="<<nbp<<"  Tol3d="<<TOL3d<<"
                   // Tol2d="<<TOL2d<<std::endl;
@@ -492,7 +534,9 @@ void HLRTopoBRep_DSFiller::InsertFace(const int /*FI*/,
 
               // add the edge in the DS
               if (!E.IsNull())
+              {
                 IntL.Append(E);
+              }
             }
           }
         }
@@ -515,18 +559,24 @@ void HLRTopoBRep_DSFiller::InsertFace(const int /*FI*/,
       TopoDS_Edge anIntLine2 = TopoDS::Edge(itl2.Value());
       anIntLine2.Orientation(TopAbs_FORWARD);
       if (anIntLine2.IsSame(anIntLine))
+      {
         continue;
+      }
       TopoDS_Vertex aVer2[2];
       TopExp::Vertices(anIntLine2, aVer2[0], aVer2[1]);
       for (int i = 0; i < 2; i++)
       {
         if (i == 1 && aVer[0].IsSame(aVer[1]))
+        {
           continue;
+        }
         gp_Pnt Pnt1 = BRep_Tool::Pnt(aVer[i]);
         for (int j = 0; j < 2; j++)
         {
           if (aVer[i].IsSame(aVer2[j]))
+          {
             continue;
+          }
           gp_Pnt Pnt2 = BRep_Tool::Pnt(aVer2[j]);
           if (Pnt1.SquareDistance(Pnt2) <= SqTol)
           {
@@ -596,9 +646,13 @@ TopoDS_Vertex HLRTopoBRep_DSFiller::MakeVertex(const Contap_Point& P,
     {
       B.MakeVertex(V, P.Value(), tol);
       if (P.IsInternal())
+      {
         DS.AddIntV(V);
+      }
       else
+      {
         DS.AddOutV(V);
+      }
     }
   }
   return V;

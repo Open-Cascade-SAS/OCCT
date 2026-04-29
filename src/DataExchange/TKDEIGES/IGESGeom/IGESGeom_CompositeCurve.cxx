@@ -28,7 +28,9 @@ void IGESGeom_CompositeCurve::Init(
   const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allEntities)
 {
   if (!allEntities.IsNull() && allEntities->Lower() != 1)
+  {
     throw Standard_DimensionMismatch("IGESGeom_CompositeCurve : Init");
+  }
   theEntities = allEntities;
   InitTypeAndForm(102, 0);
 }

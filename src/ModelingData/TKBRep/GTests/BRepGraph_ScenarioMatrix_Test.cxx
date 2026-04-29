@@ -155,7 +155,9 @@ TEST(BRepGraph_ScenarioMatrix, Box_MutateVertex_ValidateReconstructPopulateRound
   {
     const TopoDS_Vertex aVtx = TopoDS::Vertex(anExp.Current());
     if (BRep_Tool::Pnt(aVtx).SquareDistance(aMutatedPt) < Precision::SquareConfusion())
+    {
       aFoundMutatedVertex = true;
+    }
   }
   EXPECT_TRUE(aFoundMutatedVertex)
     << "Reconstructed solid must contain a vertex at the mutated point - "
@@ -213,7 +215,9 @@ TEST(BRepGraph_ScenarioMatrix, Cylinder_SeamEdge_MutationAndBothSubsystemsConsis
       const NCollection_DynamicArray<BRepGraph_CoEdgeId>* aCoEdges =
         aOrigStorage.ReverseIndex().CoEdgesOfEdge(anEdgeId);
       if (aCoEdges == nullptr)
+      {
         continue;
+      }
       for (const BRepGraph_CoEdgeId& aCoEdgeId : *aCoEdges)
       {
         if (aOrigStorage.CoEdge(aCoEdgeId).SeamPairId.IsValid())
@@ -266,7 +270,9 @@ TEST(BRepGraph_ScenarioMatrix, Cylinder_SeamEdge_MutationAndBothSubsystemsConsis
       const NCollection_DynamicArray<BRepGraph_CoEdgeId>* aCoEdges =
         aReconStorage.ReverseIndex().CoEdgesOfEdge(anEdgeId);
       if (aCoEdges == nullptr)
+      {
         continue;
+      }
       for (const BRepGraph_CoEdgeId& aCoEdgeId : *aCoEdges)
       {
         if (aReconStorage.CoEdge(aCoEdgeId).SeamPairId.IsValid())
@@ -587,7 +593,9 @@ TEST(BRepGraph_ScenarioMatrix, Compound_BoxAndCylinder_MutationReconstructAreaRe
     const NCollection_DynamicArray<BRepGraph_CoEdgeId>* aCoEdges =
       aBaseStorage.ReverseIndex().CoEdgesOfEdge(anEdgeId);
     if (aCoEdges == nullptr)
+    {
       continue;
+    }
     for (const BRepGraph_CoEdgeId& aCoEdgeId : *aCoEdges)
     {
       if (aBaseStorage.CoEdge(aCoEdgeId).SeamPairId.IsValid())
@@ -651,7 +659,9 @@ TEST(BRepGraph_ScenarioMatrix, Compound_BoxAndCylinder_MutationReconstructAreaRe
     const NCollection_DynamicArray<BRepGraph_CoEdgeId>* aCoEdges =
       aReconStorage.ReverseIndex().CoEdgesOfEdge(anEdgeId);
     if (aCoEdges == nullptr)
+    {
       continue;
+    }
     for (const BRepGraph_CoEdgeId& aCoEdgeId : *aCoEdges)
     {
       if (aReconStorage.CoEdge(aCoEdgeId).SeamPairId.IsValid())
@@ -829,13 +839,17 @@ TEST(BRepGraph_ScenarioMatrix, Compound_MixedAtomicChildren_ReverseIndexCoverage
     aBB.MakeCompound(aShellContainer);
     TopExp_Explorer aShellExp(aBox, TopAbs_SHELL);
     if (aShellExp.More())
+    {
       aFreeSh = aShellExp.Current();
+    }
   }
   TopoDS_Shape aFreeFace;
   {
     TopExp_Explorer aFaceExp(aBox, TopAbs_FACE);
     if (aFaceExp.More())
+    {
       aFreeFace = aFaceExp.Current();
+    }
   }
   TopoDS_Edge   aFreeEdge = BRepBuilderAPI_MakeEdge(gp_Pnt(0, 0, 0), gp_Pnt(10, 0, 0));
   TopoDS_Vertex aFreeVertex;
@@ -999,7 +1013,9 @@ TEST(BRepGraph_ScenarioMatrix, Sphere_SeamCoEdgePair_Bidirectional)
   {
     const BRepGraphInc::CoEdgeDef& aCoEdge = aStorage.CoEdge(aCoEdgeId);
     if (!aCoEdge.SeamPairId.IsValid())
+    {
       continue;
+    }
     ++aNbPairedCoEdges;
 
     ASSERT_TRUE(aCoEdge.SeamPairId.IsValid(aStorage.NbCoEdges()));
@@ -1033,7 +1049,9 @@ TEST(BRepGraph_ScenarioMatrix, Sphere_SeamCoEdgePair_Bidirectional)
   {
     const BRepGraphInc::CoEdgeDef& aCoEdge = aReconStorage.CoEdge(aCoEdgeId);
     if (!aCoEdge.SeamPairId.IsValid())
+    {
       continue;
+    }
     ++aNbPairedAfter;
     const BRepGraphInc::CoEdgeDef& aPaired = aReconStorage.CoEdge(aCoEdge.SeamPairId);
     EXPECT_EQ(aPaired.SeamPairId, aCoEdgeId)
@@ -1128,7 +1146,9 @@ TEST(BRepGraph_ScenarioMatrix, Cylinder_SeamEdgeSplit_AuditStable)
       }
     }
     if (aSeamEdgeId.IsValid())
+    {
       break;
+    }
   }
   ASSERT_TRUE(aSeamEdgeId.IsValid()) << "Cylinder must carry at least one seam edge";
 
@@ -1162,7 +1182,9 @@ TEST(BRepGraph_ScenarioMatrix, Cylinder_SeamEdgeSplit_AuditStable)
     {
       const BRepGraphInc::CoEdgeDef& aCoEdge = aGraph.Topo().CoEdges().Definition(aCoEdgeId);
       if (!aCoEdge.SeamPairId.IsValid())
+      {
         continue;
+      }
       const BRepGraphInc::CoEdgeDef& aPaired =
         aGraph.Topo().CoEdges().Definition(aCoEdge.SeamPairId);
       EXPECT_EQ(aPaired.SeamPairId, aCoEdgeId)
@@ -1203,7 +1225,9 @@ TEST(BRepGraph_ScenarioMatrix, Cylinder_SeamEdgeSplit_CoEdgeFaceIncidence)
       }
     }
     if (aSeamEdgeId.IsValid())
+    {
       break;
+    }
   }
   ASSERT_TRUE(aSeamEdgeId.IsValid());
 

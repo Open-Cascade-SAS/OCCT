@@ -169,7 +169,9 @@ TEST(BRepTools_ReShapeTest, Apply_DiamondSharingIsProcessedCorrectly)
     EXPECT_FALSE(anExp.Current().TShape() == aV2.TShape())
       << "Original v2 must have been replaced on every diamond arm";
     if (anExp.Current().TShape() == aV2Repl.TShape())
+    {
       ++aNbReplVertices;
+    }
   }
   EXPECT_GE(aNbReplVertices, 2) << "Replacement must appear on both arms of the diamond";
 }
@@ -283,13 +285,17 @@ TEST(BRepTools_ReShapeTest, Apply_SharedEdgeAcrossTwoParents)
   {
     EXPECT_FALSE(anExp.Current().TShape() == aE1.TShape());
     if (anExp.Current().TShape() == aE1New.TShape())
+    {
       aFoundNewInA = true;
+    }
   }
   for (TopExp_Explorer anExp(aResultB, TopAbs_EDGE); anExp.More(); anExp.Next())
   {
     EXPECT_FALSE(anExp.Current().TShape() == aE1.TShape());
     if (anExp.Current().TShape() == aE1New.TShape())
+    {
       aFoundNewInB = true;
+    }
   }
   EXPECT_TRUE(aFoundNewInA);
   EXPECT_TRUE(aFoundNewInB);

@@ -588,7 +588,9 @@ void SelectMgr_ViewerSelector::traverseObject(
               && !mySelectingVolumeMgr.IsOverlapAllowed()) // partially clipped
           {
             if (aPlane->ProbeBoxTouch(aBBox))
+            {
               continue;
+            }
             aClipped = true;
             break;
           }
@@ -996,7 +998,9 @@ bool SelectMgr_ViewerSelector::IsActive(
   const int                                      theMode) const
 {
   if (!Contains(theSelectableObject))
+  {
     return false;
+  }
 
   const occ::handle<SelectMgr_Selection>& aSel = theSelectableObject->Selection(theMode);
   return !aSel.IsNull() && aSel->GetSelectionState() == SelectMgr_SOS_Activated;
@@ -1009,7 +1013,9 @@ bool SelectMgr_ViewerSelector::IsInside(
   const int                                      theMode) const
 {
   if (!Contains(theSelectableObject))
+  {
     return false;
+  }
 
   const occ::handle<SelectMgr_Selection>& aSel = theSelectableObject->Selection(theMode);
   return !aSel.IsNull() && aSel->GetSelectionState() != SelectMgr_SOS_Unknown;
@@ -1179,7 +1185,9 @@ void SelectMgr_ViewerSelector::RebuildSensitivesTree(
   const bool                                     theIsForce)
 {
   if (!Contains(theObject))
+  {
     return;
+  }
 
   occ::handle<SelectMgr_SensitiveEntitySet>& anEntitySet =
     myMapOfObjectSensitives.ChangeFind(theObject);

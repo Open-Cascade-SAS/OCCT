@@ -90,7 +90,9 @@ bool BRepClass3d_SolidExplorer::FindAPointInTheFace(const TopoDS_Face& _face,
     TopoDS_Edge         Edge = TopoDS::Edge(faceexplorer.Current());
     BRepAdaptor_Curve2d c(Edge, face);
     if (c.Curve().IsNull())
+    {
       continue;
+    }
 
     c.D1((c.LastParameter() - c.FirstParameter()) * param_ + c.FirstParameter(), P, T);
 
@@ -162,17 +164,23 @@ bool BRepClass3d_SolidExplorer::FindAPointInTheFace(const TopoDS_Face& _face,
       gp_Pnt2d                aPnt2d(u_, v_);
       TopAbs_State            StateOfResultingPoint = Classifier.Perform(aPnt2d);
       if (StateOfResultingPoint != TopAbs_IN)
+      {
         return false;
+      }
 
       BRepAdaptor_Surface s;
       s.Initialize(face, false);
       s.D1(u_, v_, APoint_, theVecD1U, theVecD1V);
 
       if (theVecD1U.CrossMagnitude(theVecD1V) > gp::Resolution())
+      {
         return true;
+      }
 
       if (ParamInit < Precision::PConfusion())
+      {
         return false;
+      }
     }
   }
   return false;
@@ -247,9 +255,13 @@ bool BRepClass3d_SolidExplorer::PointInTheFace(const TopoDS_Face&               
   double u, du = (U2 - U1) / 6.0;
   double v, dv = (V2 - V1) / 6.0;
   if (du < 1e-12)
+  {
     du = 1e-12;
+  }
   if (dv < 1e-12)
+  {
     dv = 1e-12;
+  }
   bool IsNotUper = !surf->IsUPeriodic(), IsNotVper = !surf->IsVPeriodic();
   int  NbPntCalc = 0;
   if (myMapOfInter.IsBound(Face))
@@ -273,7 +285,9 @@ bool BRepClass3d_SolidExplorer::PointInTheFace(const TopoDS_Face&               
         gp_Pnt aPnt;
         surf->D1(u_, v_, aPnt, theVecD1U, theVecD1V);
         if (aPnt.SquareDistance(APoint_) < Precision::Confusion() * Precision::Confusion())
+        {
           return true;
+        }
       }
 
       //-- Take 4 points in each Quarter of surface
@@ -355,9 +369,13 @@ bool BRepClass3d_SolidExplorer::PointInTheFace(const TopoDS_Face&               
       du = (U2 - U1) / 37.0;
       dv = (V2 - V1) / 37.0;
       if (du < 1e-12)
+      {
         du = 1e-12;
+      }
       if (dv < 1e-12)
+      {
         dv = 1e-12;
+      }
 
       for (u = du + U1; u < U2; u += du)
       {
@@ -414,13 +432,21 @@ static void LimitInfiniteUV(double& U1, double& V1, double& U2, double& V2)
        infU2 = Precision::IsPositiveInfinite(U2), infV2 = Precision::IsPositiveInfinite(V2);
 
   if (infU1)
+  {
     U1 = -1e10;
+  }
   if (infV1)
+  {
     V1 = -1e10;
+  }
   if (infU2)
+  {
     U2 = 1e10;
+  }
   if (infV2)
+  {
     V2 = 1e10;
+  }
 }
 
 //=================================================================================================
@@ -430,16 +456,24 @@ static int IsInfiniteUV(double& U1, double& V1, double& U2, double& V2)
   int aVal = 0;
 
   if (Precision::IsInfinite(U1))
+  {
     aVal |= 1;
+  }
 
   if (Precision::IsInfinite(V1))
+  {
     aVal |= 2;
+  }
 
   if (Precision::IsInfinite(U2))
+  {
     aVal |= 4;
+  }
 
   if (Precision::IsInfinite(V2))
+  {
     aVal |= 8;
+  }
 
   return aVal;
 }
@@ -488,7 +522,9 @@ int BRepClass3d_SolidExplorer::OtherSegment(const gp_Pnt& P, gp_Lin& L, double& 
       //  Modified by skv - Thu Sep  4 14:31:12 2003 OCC578 End
       NbFacesInSolid++;
       if (myFirstFace > NbFacesInSolid)
+      {
         continue;
+      }
       face = TopoDS::Face(faceexplorer.Current());
 
       occ::handle<BRepAdaptor_Surface> surf = new BRepAdaptor_Surface();
@@ -701,22 +737,38 @@ int BRepClass3d_SolidExplorer::OtherSegment(const gp_Pnt& P, gp_Lin& L, double& 
     }
     myFirstFace = 0;
     if (myParamOnEdge == 0.512345)
+    {
       myParamOnEdge = 0.4;
+    }
     else if (myParamOnEdge == 0.4)
+    {
       myParamOnEdge = 0.6;
+    }
     else if (myParamOnEdge == 0.6)
+    {
       myParamOnEdge = 0.3;
+    }
     else if (myParamOnEdge == 0.3)
+    {
       myParamOnEdge = 0.7;
+    }
     else if (myParamOnEdge == 0.7)
+    {
       myParamOnEdge = 0.2;
+    }
     else if (myParamOnEdge == 0.2)
+    {
       myParamOnEdge = 0.8;
+    }
     else if (myParamOnEdge == 0.8)
+    {
       myParamOnEdge = 0.1;
+    }
     else if (myParamOnEdge == 0.1)
+    {
       myParamOnEdge = 0.9;
-    //
+      //
+    }
     else
     {
       myParamOnEdge *= 0.5;

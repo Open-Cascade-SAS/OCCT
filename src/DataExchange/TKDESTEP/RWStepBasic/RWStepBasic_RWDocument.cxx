@@ -35,7 +35,9 @@ void RWStepBasic_RWDocument::ReadStep(const occ::handle<StepData_StepReaderData>
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "document"))
+  {
     return;
+  }
 
   // Own fields of Document
 
@@ -80,7 +82,9 @@ void RWStepBasic_RWDocument::WriteStep(StepData_StepWriter&                   SW
     SW.Send(ent->Description());
   }
   else
+  {
     SW.SendUndef();
+  }
 
   SW.Send(ent->Kind());
 }

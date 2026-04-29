@@ -108,66 +108,96 @@ void Poly::Write(const occ::handle<Poly_Triangulation>& T, Standard_OStream& OS,
   // write the deflection
 
   if (!Compact)
+  {
     OS << "Deflection : ";
+  }
   OS << T->Deflection() << "\n";
 
   // write the 3d nodes
 
   if (!Compact)
+  {
     OS << "\n3D Nodes :\n";
+  }
 
   int i, nbNodes = T->NbNodes();
   for (i = 1; i <= nbNodes; i++)
   {
     const gp_Pnt aNode = T->Node(i);
     if (!Compact)
+    {
       OS << std::setw(10) << i << " : ";
+    }
     if (!Compact)
+    {
       OS << std::setw(17);
+    }
     OS << aNode.X() << " ";
     if (!Compact)
+    {
       OS << std::setw(17);
+    }
     OS << aNode.Y() << " ";
     if (!Compact)
+    {
       OS << std::setw(17);
+    }
     OS << aNode.Z() << "\n";
   }
 
   if (T->HasUVNodes())
   {
     if (!Compact)
+    {
       OS << "\nUV Nodes :\n";
+    }
     for (i = 1; i <= nbNodes; i++)
     {
       const gp_Pnt2d aNode2d = T->UVNode(i);
       if (!Compact)
+      {
         OS << std::setw(10) << i << " : ";
+      }
       if (!Compact)
+      {
         OS << std::setw(17);
+      }
       OS << aNode2d.X() << " ";
       if (!Compact)
+      {
         OS << std::setw(17);
+      }
       OS << aNode2d.Y() << "\n";
     }
   }
 
   if (!Compact)
+  {
     OS << "\nTriangles :\n";
+  }
   int nbTriangles = T->NbTriangles();
   int n1, n2, n3;
   for (i = 1; i <= nbTriangles; i++)
   {
     if (!Compact)
+    {
       OS << std::setw(10) << i << " : ";
+    }
     T->Triangle(i).Get(n1, n2, n3);
     if (!Compact)
+    {
       OS << std::setw(10);
+    }
     OS << n1 << " ";
     if (!Compact)
+    {
       OS << std::setw(10);
+    }
     OS << n2 << " ";
     if (!Compact)
+    {
       OS << std::setw(10);
+    }
     OS << n3 << "\n";
   }
 }
@@ -191,35 +221,49 @@ void Poly::Write(const occ::handle<Poly_Polygon3D>& P, Standard_OStream& OS, con
   // write the deflection
 
   if (!Compact)
+  {
     OS << "Deflection : ";
+  }
   OS << P->Deflection() << "\n";
 
   // write the nodes
 
   if (!Compact)
+  {
     OS << "\nNodes :\n";
+  }
 
   int                               i, nbNodes = P->NbNodes();
   const NCollection_Array1<gp_Pnt>& Nodes = P->Nodes();
   for (i = 1; i <= nbNodes; i++)
   {
     if (!Compact)
+    {
       OS << std::setw(10) << i << " : ";
+    }
     if (!Compact)
+    {
       OS << std::setw(17);
+    }
     OS << Nodes(i).X() << " ";
     if (!Compact)
+    {
       OS << std::setw(17);
+    }
     OS << Nodes(i).Y() << " ";
     if (!Compact)
+    {
       OS << std::setw(17);
+    }
     OS << Nodes(i).Z() << "\n";
   }
 
   if (P->HasParameters())
   {
     if (!Compact)
+    {
       OS << "\nParameters :\n";
+    }
     const NCollection_Array1<double>& Param = P->Parameters();
     for (i = 1; i <= nbNodes; i++)
     {
@@ -246,25 +290,35 @@ void Poly::Write(const occ::handle<Poly_Polygon2D>& P, Standard_OStream& OS, con
   // write the deflection
 
   if (!Compact)
+  {
     OS << "Deflection : ";
+  }
   OS << P->Deflection() << "\n";
 
   // write the nodes
 
   if (!Compact)
+  {
     OS << "\nNodes :\n";
+  }
 
   int                                 i, nbNodes = P->NbNodes();
   const NCollection_Array1<gp_Pnt2d>& Nodes = P->Nodes();
   for (i = 1; i <= nbNodes; i++)
   {
     if (!Compact)
+    {
       OS << std::setw(10) << i << " : ";
+    }
     if (!Compact)
+    {
       OS << std::setw(17);
+    }
     OS << Nodes(i).X() << " ";
     if (!Compact)
+    {
       OS << std::setw(17);
+    }
     OS << Nodes(i).Y() << "\n";
   }
 }
@@ -348,9 +402,13 @@ occ::handle<Poly_Triangulation> Poly::ReadTriangulation(Standard_IStream& IS)
   occ::handle<Poly_Triangulation> T;
 
   if (hasUV)
+  {
     T = new Poly_Triangulation(Nodes, UVNodes, Triangles);
+  }
   else
+  {
     T = new Poly_Triangulation(Nodes, Triangles);
+  }
 
   T->Deflection(d);
 
@@ -404,9 +462,13 @@ occ::handle<Poly_Polygon3D> Poly::ReadPolygon3D(Standard_IStream& IS)
 
   occ::handle<Poly_Polygon3D> P;
   if (!hasparameters)
+  {
     P = new Poly_Polygon3D(Nodes);
+  }
   else
+  {
     P = new Poly_Polygon3D(Nodes, Param);
+  }
 
   P->Deflection(d);
 

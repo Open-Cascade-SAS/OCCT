@@ -136,7 +136,9 @@ TEST(BRepGraph_GeometryTest, Sphere_AllFacesShareSurface)
     const BRepGraph_FaceId aFaceId = aFaceIt.CurrentId();
     if (BRepGraph_Tool::Face::HasSurface(aGraph, aFaceId)
         && BRepGraph_Tool::Face::Surface(aGraph, aFaceId).get() == aFirstSurf.get())
+    {
       ++aSameCount;
+    }
   }
   EXPECT_EQ(aSameCount, aGraph.Topo().Faces().Nb());
 }
@@ -780,7 +782,9 @@ TEST(BRepGraph_GeometryTest, Cylinder_SeamEdge_FindPCurve_WithOrientation)
     {
       const BRepGraphInc::CoEdgeDef& aCE = aGraph.Topo().CoEdges().Definition(aCoEdgeId);
       if (!aCE.SeamPairId.IsValid())
+      {
         continue;
+      }
 
       // This is a seam edge - test oriented overload.
       const BRepGraph_FaceId         aFaceId(aCE.FaceDefId.Index);
@@ -846,7 +850,9 @@ TEST(BRepGraph_GeometryTest, Cylinder_SeamEdge_FindPCurve_DistinguishesOrientati
     {
       const BRepGraphInc::CoEdgeDef& aCE = aGraph.Topo().CoEdges().Definition(aCoEdgeId);
       if (!aCE.SeamPairId.IsValid())
+      {
         continue;
+      }
 
       // Seam edge: same face, two orientations.
       const BRepGraph_FaceId aFaceId  = aCE.FaceDefId;

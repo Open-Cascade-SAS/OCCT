@@ -411,9 +411,13 @@ double Quantity_Color::DeltaE2000(const Quantity_Color& theOther) const
   double ah1x = (aC1x > Epsilon() ? std::atan2(ab1, aa1x) * RAD_TO_DEG : 270.);
   double ah2x = (aC2x > Epsilon() ? std::atan2(ab2, aa2x) * RAD_TO_DEG : 270.);
   if (ah1x < 0.)
+  {
     ah1x += 360.;
+  }
   if (ah2x < 0.)
+  {
     ah2x += 360.;
+  }
   double aHx_mean = 0.5 * (ah1x + ah2x);
   double aDeltahx = ah2x - ah1x;
   if (std::abs(aDeltahx) > 180.)
@@ -595,16 +599,22 @@ NCollection_Vec3<float> Quantity_Color::Convert_sRGB_To_HLS(
   // compute minimum from RGB components
   float min = theRgb.r();
   if (theRgb.g() < min)
+  {
     min = theRgb.g();
+  }
   if (theRgb.b() < min)
+  {
     min = theRgb.b();
+  }
 
   const float aDelta = aMax - min;
 
   // compute saturation
   float aSaturation = 0.0f;
   if (aMax != 0.0f)
+  {
     aSaturation = aDelta / aMax;
+  }
 
   // compute hue
   float aHue = RGBHLS_H_UNDEFINED;
@@ -612,7 +622,9 @@ NCollection_Vec3<float> Quantity_Color::Convert_sRGB_To_HLS(
   {
     aHue = 60.0f * (aPlus + aDiff / aDelta);
     if (aHue < 0.0f)
+    {
       aHue += 360.0f;
+    }
   }
   return NCollection_Vec3<float>(aHue, aMax, aSaturation);
 }
@@ -729,7 +741,9 @@ NCollection_Vec3<float> Quantity_Color::Convert_Lab_To_Lch(
   double aH = (aC > Epsilon() ? std::atan2(ab, aa) * RAD_TO_DEG : 0.);
 
   if (aH < 0.)
+  {
     aH += 360.;
+  }
 
   return NCollection_Vec3<float>(theLab[0], (float)aC, (float)aH);
 }

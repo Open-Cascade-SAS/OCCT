@@ -33,7 +33,9 @@ void RWStepRepr_RWItemDefinedTransformation::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 4, ach, "item_defined_transformation"))
+  {
     return;
+  }
 
   // --- own fields
   occ::handle<TCollection_HAsciiString> name, description;

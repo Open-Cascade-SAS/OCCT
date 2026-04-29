@@ -146,5 +146,5 @@ void IGESGeom_ToolTabulatedCylinder::OwnDump(const occ::handle<IGESGeom_Tabulate
   S << "\n"
     << "Terminate Point : ";
   IGESData_DumpXYZL(S, level, ent->EndPoint(), ent->Location());
-  S << std::endl;
+  S << '\n';
 }

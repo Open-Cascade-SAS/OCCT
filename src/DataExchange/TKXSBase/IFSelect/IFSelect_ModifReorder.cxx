@@ -38,7 +38,9 @@ void IFSelect_ModifReorder::Perform(IFSelect_ContextModif&                      
   Interface_EntityIterator list = sht.All(ctx.OriginalModel(), thertl);
   target->ClearEntities();
   for (list.Start(); list.More(); list.Next())
+  {
     target->AddEntity(list.Value());
+  }
 }
 
 TCollection_AsciiString IFSelect_ModifReorder::Label() const

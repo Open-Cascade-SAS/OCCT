@@ -47,9 +47,13 @@ void Poly_CoherentNode::AddTriangle(const Poly_CoherentTriangle&                
                                     const occ::handle<NCollection_BaseAllocator>& theAlloc)
 {
   if (myTriangles == nullptr)
+  {
     myTriangles = new (theAlloc) Poly_CoherentTriPtr(theTri);
+  }
   else
+  {
     myTriangles->Prepend(&theTri, theAlloc);
+  }
 }
 
 //=================================================================================================
@@ -62,9 +66,13 @@ bool Poly_CoherentNode::RemoveTriangle(const Poly_CoherentTriangle&             
   {
     Poly_CoherentTriPtr* aLostPtr = myTriangles;
     if (myTriangles == &myTriangles->Next())
+    {
       myTriangles = nullptr;
+    }
     else
+    {
       myTriangles = &myTriangles->Next();
+    }
     Poly_CoherentTriPtr::Remove(aLostPtr, theAlloc);
     aResult = true;
   }
@@ -72,12 +80,14 @@ bool Poly_CoherentNode::RemoveTriangle(const Poly_CoherentTriangle&             
   {
     Poly_CoherentTriPtr::Iterator anIter(*myTriangles);
     for (anIter.Next(); anIter.More(); anIter.Next())
+    {
       if (&anIter.Value() == &theTri)
       {
         Poly_CoherentTriPtr::Remove(const_cast<Poly_CoherentTriPtr*>(&anIter.PtrValue()), theAlloc);
         aResult = true;
         break;
       }
+    }
   }
   return aResult;
 }
@@ -88,12 +98,12 @@ void Poly_CoherentNode::Dump(Standard_OStream& theStream) const
 {
   char buf[256];
   Sprintf(buf, "  X =%9.4f; Y =%9.4f; Z =%9.4f", X(), Y(), Z());
-  theStream << buf << std::endl;
+  theStream << buf << '\n';
   Poly_CoherentTriPtr::Iterator anIter(*myTriangles);
   for (; anIter.More(); anIter.Next())
   {
     const Poly_CoherentTriangle& aTri = anIter.Value();
     Sprintf(buf, "      %5d %5d %5d", aTri.Node(0), aTri.Node(1), aTri.Node(2));
-    theStream << buf << std::endl;
+    theStream << buf << '\n';
   }
 }

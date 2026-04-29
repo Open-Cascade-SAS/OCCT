@@ -33,7 +33,9 @@ void RWStepShape_RWMeasureQualification::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 4, ach, "measure_qualification"))
+  {
     return;
+  }
 
   // --- own field : name ---
 
@@ -62,7 +64,9 @@ void RWStepShape_RWMeasureQualification::ReadStep(
     {
       StepShape_ValueQualifier VQ;
       if (data->ReadEntity(nsub4, i4, "qualifier", ach, VQ))
+      {
         quals->SetValue(i4, VQ);
+      }
     }
   }
 
@@ -81,7 +85,9 @@ void RWStepShape_RWMeasureQualification::WriteStep(
   int i, nbq = ent->NbQualifiers();
   SW.OpenSub();
   for (i = 1; i <= nbq; i++)
+  {
     SW.Send(ent->QualifiersValue(i).Value());
+  }
   SW.CloseSub();
 }
 
@@ -91,5 +97,7 @@ void RWStepShape_RWMeasureQualification::Share(
 {
   int i, nbq = ent->NbQualifiers();
   for (i = 1; i <= nbq; i++)
+  {
     iter.AddItem(ent->QualifiersValue(i).Value());
+  }
 }

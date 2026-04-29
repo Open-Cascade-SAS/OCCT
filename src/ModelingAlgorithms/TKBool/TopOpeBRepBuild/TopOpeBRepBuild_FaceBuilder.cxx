@@ -96,7 +96,9 @@ void FUN_DetectVerticesOn1Edge(
   {
     const TopoDS_Shape& V = mapVedges.FindKey(i);
     if (V.Orientation() == TopAbs_INTERNAL)
+    {
       continue;
+    }
 
     const NCollection_List<TopoDS_Shape>& loE = mapVedges.FindFromIndex(i);
     if (loE.Extent() < 2)
@@ -105,7 +107,9 @@ void FUN_DetectVerticesOn1Edge(
       const TopoDS_Shape& E    = loE.First();
       TopAbs_Orientation  oriE = E.Orientation();
       if ((oriE == TopAbs_INTERNAL) || (oriE == TopAbs_EXTERNAL))
+      {
         continue;
+      }
       mapVon1E.Add(V, E);
     }
   }
@@ -135,11 +139,17 @@ int FUN_AnalyzemapVon1E(
     bool                Eclosed = BRep_Tool::IsClosed(E);
     bool                dgE     = BRep_Tool::Degenerated(TopoDS::Edge(E));
     if (dgE)
+    {
       res = ISVERTEX;
+    }
     else if (Eclosed)
+    {
       res = CLOSEDW;
+    }
     else
+    {
       res = UNCLOSEDW;
+    }
   }
   else
   {
@@ -171,14 +181,21 @@ int FUN_AnalyzemapVon1E(
     //                  useless chains of hanging edges that can be removed to
     //                  achieve a closed wire.
     if (nVV > 0)
+    {
       res = GCLOSEDW;
+    }
 #else
     if (nVV == nV)
+    {
       res = GCLOSEDW;
+    }
 #endif
     else
+    {
       res = UNCLOSEDW;
+    }
   }
+
   return res;
 } // FUN_AnalyzemapVon1E
 
@@ -210,14 +227,18 @@ void TopOpeBRepBuild_FaceBuilder::DetectUnclosedWire(
     {
       bool isold = IsOldWire();
       if (isold)
+      {
         continue;
+      }
 
       TopoDS_Compound cmp;
       BRep_Builder    BB;
       BB.MakeCompound(cmp);
       InitEdge();
       for (; MoreEdge(); NextEdge())
+      {
         AddEdgeWire(Edge(), cmp);
+      }
       TopoDS_Shape W = cmp;
 
       // <mapVon1E> binds vertices of connexity 1 attached to one non-closed,non-degenerated edge.
@@ -344,7 +365,9 @@ void TopOpeBRepBuild_FaceBuilder::CorrectGclosedWire(
     const TopoDS_Vertex& Vref = TopoDS::Vertex(mapVVref.FindFromIndex(i));
 
     if (V.IsSame(Vref))
+    {
       continue;
+    }
 
     TopoDS_Edge E      = TopoDS::Edge(mapVon1Edge.FindFromKey(V));
     double      paronE = BRep_Tool::Parameter(V, E);
@@ -377,10 +400,14 @@ void TopOpeBRepBuild_FaceBuilder::DetectPseudoInternalEdge(
     {
       bool isold = IsOldWire();
       if (isold)
+      {
         continue;
+      }
       InitEdge();
       for (; MoreEdge(); NextEdge())
+      {
         AddEdgeWire(Edge(), cmp);
+      }
     } // MoreWire
   } // MoreFace
 
@@ -503,9 +530,13 @@ void TopOpeBRepBuild_FaceBuilder::FindNextValidElement()
     const int i = myBlockIterator.Value();
     found       = myBlockBuilder.ElementIsValid(i);
     if (found)
+    {
       break;
+    }
     else
+    {
       myBlockIterator.Next();
+    }
   }
 }
 
@@ -515,7 +546,9 @@ int TopOpeBRepBuild_FaceBuilder::InitEdge()
 {
   const occ::handle<TopOpeBRepBuild_Loop>& L = myFaceAreaBuilder.Loop();
   if (L->IsShape())
+  {
     throw Standard_DomainError("TopOpeBRepBuild_FaceBuilder:InitEdge");
+  }
   else
   {
     myBlockIterator = L->BlockIterator();
@@ -547,12 +580,16 @@ void TopOpeBRepBuild_FaceBuilder::NextEdge()
 const TopoDS_Shape& TopOpeBRepBuild_FaceBuilder::Edge() const
 {
   if (!myBlockIterator.More())
+  {
     throw Standard_Failure("OutOfRange");
+  }
 
   const int i       = myBlockIterator.Value();
   bool      isvalid = myBlockBuilder.ElementIsValid(i);
   if (!isvalid)
+  {
     throw Standard_Failure("Edge not Valid");
+  }
 
   const TopoDS_Shape& E = myBlockBuilder.Element(i);
   return E;

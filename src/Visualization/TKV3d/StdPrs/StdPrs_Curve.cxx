@@ -124,17 +124,23 @@ static void DrawCurve(const Adaptor3d_Curve&              aCurve,
 
       occ::handle<Graphic3d_ArrayOfPolylines> aPrims;
       if (drawCurve)
+      {
         aPrims = new Graphic3d_ArrayOfPolylines(N);
+      }
 
       for (int i = 1; i <= N; i++)
       {
         p = aCurve.Value(U1 + (i - 1) * DU);
         Points.Append(p);
         if (drawCurve)
+        {
           aPrims->AddVertex(p);
+        }
       }
       if (drawCurve)
+      {
         aGroup->AddPrimitiveArray(aPrims);
+      }
     }
   }
 }
@@ -157,10 +163,14 @@ static bool MatchCurve(const double           X,
     case GeomAbs_Line: {
       gp_Pnt p1 = aCurve.Value(U1);
       if (std::abs(X - p1.X()) + std::abs(Y - p1.Y()) + std::abs(Z - p1.Z()) <= aDistance)
+      {
         return true;
+      }
       gp_Pnt p2 = aCurve.Value(U2);
       if (std::abs(X - p2.X()) + std::abs(Y - p2.Y()) + std::abs(Z - p2.Z()) <= aDistance)
+      {
         return true;
+      }
       return Prs3d::MatchSegment(X, Y, Z, aDistance, p1, p2, retdist);
     }
     case GeomAbs_Circle: {
@@ -175,12 +185,16 @@ static bool MatchCurve(const double           X,
         {
           p2 = aCurve.Value(U1 + (Index - 1) * DU);
           if (std::abs(X - p2.X()) + std::abs(Y - p2.Y()) + std::abs(Z - p2.Z()) <= aDistance)
+          {
             return true;
+          }
 
           if (Index > 1)
           {
             if (Prs3d::MatchSegment(X, Y, Z, aDistance, p1, p2, retdist))
+            {
               return true;
+            }
           }
           p1 = p2;
         }
@@ -194,11 +208,15 @@ static bool MatchCurve(const double           X,
       {
         p2 = aCurve.Value(U1 + (i - 1) * DU);
         if (std::abs(X - p2.X()) + std::abs(Y - p2.Y()) + std::abs(Z - p2.Z()) <= aDistance)
+        {
           return true;
+        }
         if (i > 1)
         {
           if (Prs3d::MatchSegment(X, Y, Z, aDistance, p1, p2, retdist))
+          {
             return true;
+          }
         }
         p1 = p2;
       }
@@ -279,9 +297,13 @@ void StdPrs_Curve::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
   double V2 = U2;
 
   if (Precision::IsNegativeInfinite(V1))
+  {
     V1 = -aDrawer->MaximalParameterValue();
+  }
   if (Precision::IsPositiveInfinite(V2))
+  {
     V2 = aDrawer->MaximalParameterValue();
+  }
 
   const int                    NbPoints = aDrawer->Discretisation();
   NCollection_Sequence<gp_Pnt> Pnts;
@@ -356,9 +378,13 @@ bool StdPrs_Curve::Match(const double                     X,
   double V2 = U2;
 
   if (Precision::IsNegativeInfinite(V1))
+  {
     V1 = -aDrawer->MaximalParameterValue();
+  }
   if (Precision::IsPositiveInfinite(V2))
+  {
     V2 = aDrawer->MaximalParameterValue();
+  }
 
   return MatchCurve(X,
                     Y,

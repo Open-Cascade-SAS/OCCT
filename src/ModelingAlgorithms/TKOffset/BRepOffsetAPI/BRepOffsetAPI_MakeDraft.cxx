@@ -32,7 +32,9 @@ void BRepOffsetAPI_MakeDraft::SetOptions(const BRepBuilderAPI_TransitionMode Sty
 {
   BRepFill_TransitionStyle style = BRepFill_Right;
   if (Style == BRepBuilderAPI_RoundCorner)
+  {
     style = BRepFill_Round;
+  }
   myDraft.SetOptions(style, AngleMin, AngleMax);
 }
 

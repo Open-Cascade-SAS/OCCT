@@ -253,7 +253,9 @@ const Standard_GUID& TDataStd_IntegerList::ID() const
 void TDataStd_IntegerList::SetID(const Standard_GUID& theGuid)
 {
   if (myID == theGuid)
+  {
     return;
+  }
   Backup();
   myID = theGuid;
 }
@@ -310,7 +312,7 @@ Standard_OStream& TDataStd_IntegerList::Dump(Standard_OStream& anOS) const
   char sguid[Standard_GUID_SIZE_ALLOC];
   myID.ToCString(sguid);
   anOS << sguid;
-  anOS << std::endl;
+  anOS << '\n';
   return anOS;
 }
 

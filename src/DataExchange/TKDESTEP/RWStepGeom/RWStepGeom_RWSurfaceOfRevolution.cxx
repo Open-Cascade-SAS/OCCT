@@ -31,7 +31,9 @@ void RWStepGeom_RWSurfaceOfRevolution::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "surface_of_revolution"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

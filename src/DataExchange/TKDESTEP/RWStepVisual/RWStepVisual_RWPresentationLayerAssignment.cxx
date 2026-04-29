@@ -30,7 +30,9 @@ void RWStepVisual_RWPresentationLayerAssignment::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "presentation_layer_assignment"))
+  {
     return;
+  }
 
   // --- own field : name ---
 
@@ -59,7 +61,9 @@ void RWStepVisual_RWPresentationLayerAssignment::ReadStep(
       {
         // szv#4:S4163:12Mar99 `bool stat3 =` not needed
         if (data->ReadEntity(nsub3, i3, "assigned_items", ach, aAssignedItemsItem))
+        {
           aAssignedItems->SetValue(i3, aAssignedItemsItem);
+        }
       }
     }
   }

@@ -463,7 +463,9 @@ static void SetMinMaxValuesCallback(Graphic3d_CView* theView)
 {
   OpenGl_View* aView = dynamic_cast<OpenGl_View*>(theView);
   if (aView == nullptr)
+  {
     return;
+  }
 
   Bnd_Box aBox = theView->MinMaxValues();
   if (!aBox.IsVoid())
@@ -2022,7 +2024,9 @@ void OpenGl_View::Redraw()
 void OpenGl_View::RedrawImmediate()
 {
   if (!myWorkspace->Activate())
+  {
     return;
+  }
 
   // no special handling of HMD display, since it will force full Redraw() due to no frame caching
   // (myBackBufferRestored)

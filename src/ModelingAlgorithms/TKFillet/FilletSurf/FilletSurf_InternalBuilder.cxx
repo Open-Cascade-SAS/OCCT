@@ -62,7 +62,9 @@ static bool isinlist(const TopoDS_Shape& E, const NCollection_List<TopoDS_Shape>
   for (It.Initialize(L); It.More(); It.Next())
   {
     if (E.IsSame(It.Value()))
+    {
       return true;
+    }
   }
   return false;
 }
@@ -178,15 +180,21 @@ FilletSurf_InternalBuilder::FilletSurf_InternalBuilder(const TopoDS_Shape&      
 int FilletSurf_InternalBuilder::Add(const NCollection_List<TopoDS_Shape>& E, const double R)
 {
   if (E.IsEmpty())
+  {
     return 1;
+  }
   NCollection_List<TopoDS_Shape>::Iterator It;
   for (It.Initialize(E); It.More(); It.Next())
   {
     TopoDS_Edge cured = TopoDS::Edge(It.Value());
     if (cured.IsNull())
+    {
       return 4;
+    }
     if (!myEFMap.Contains(cured))
+    {
       return 4;
+    }
     // check if the edge is a fracture edge
     TopoDS_Face ff1, ff2;
     for (It.Initialize(myEFMap(cured)); It.More(); It.Next())
@@ -205,11 +213,17 @@ int FilletSurf_InternalBuilder::Add(const NCollection_List<TopoDS_Shape>& E, con
       }
     }
     if (ff1.IsNull() || ff2.IsNull())
+    {
       return 5;
+    }
     if (ff1.IsSame(ff2))
+    {
       return 5;
+    }
     if (BRep_Tool::Continuity(cured, ff1, ff2) != GeomAbs_C0)
+    {
       return 5;
+    }
   }
   TopoDS_Edge ed = TopoDS::Edge(E.First());
   ed.Orientation(TopAbs_FORWARD);
@@ -226,7 +240,9 @@ int FilletSurf_InternalBuilder::Add(const NCollection_List<TopoDS_Shape>& E, con
   {
     TopoDS_Edge cured = TopoDS::Edge(It.Value());
     if (!Contains(cured))
+    {
       return 2;
+    }
   }
 
   occ::handle<ChFiDS_FilSpine> newsp              = new ChFiDS_FilSpine();
@@ -247,10 +263,14 @@ int FilletSurf_InternalBuilder::Add(const NCollection_List<TopoDS_Shape>& E, con
       newsp->SetEdges(cured);
     }
     else if (debut && !premierquinyestpas)
+    {
       premierquinyestpas = i;
+    }
   }
   if (!periodic && yatrou)
+  {
     return 2;
+  }
   if (periodic && yatrou)
   {
     bool vraitrou = false, aLocalDebut = false;
@@ -260,11 +280,15 @@ int FilletSurf_InternalBuilder::Add(const NCollection_List<TopoDS_Shape>& E, con
       if (isinlist(cured, E))
       {
         if (vraitrou)
+        {
           return 2;
+        }
         newsp->PutInFirst(cured);
       }
       else if (aLocalDebut)
+      {
         vraitrou = true;
+      }
       aLocalDebut = true;
     }
   }
@@ -340,11 +364,15 @@ bool FilletSurf_InternalBuilder::PerformSurf(
   occ::handle<ChFiDS_SurfData> Data = SeqData(1);
   occ::handle<ChFiDS_FilSpine> fsp  = occ::down_cast<ChFiDS_FilSpine>(Spine);
   if (fsp.IsNull())
+  {
     throw Standard_ConstructionError("PerformSurf : this is not the spine of a fillet");
+  }
   occ::handle<BRepBlend_Line> lin;
   TopAbs_Orientation          Or = S1->Face().Orientation();
   if (!fsp->IsConstant())
+  {
     throw Standard_ConstructionError("PerformSurf : no variable radiuses");
+  }
   // bool maybesingular; //pour scinder les Surfdata singulieres
 
   occ::handle<ChFiDS_ElSpine> EmptyGuide;
@@ -389,7 +417,9 @@ bool FilletSurf_InternalBuilder::PerformSurf(
                    RecOnS1,
                    RecOnS2);
   if (!done)
+  {
     return false;
+  }
   if (lin->StartPointOnFirst().NbPointOnRst() != 0)
   {
     ChFi3d_FilCommonPoint(lin->StartPointOnFirst(),
@@ -424,7 +454,9 @@ bool FilletSurf_InternalBuilder::PerformSurf(
   }
   done = CompleteData(Data, Func, lin, S1, S2, Or, false, false, false, false);
   if (!done)
+  {
     throw Standard_Failure("PerformSurf : Failed approximation!");
+  }
   //  maybesingular = (Func.GetMinimalDistance()<=100*tolapp3d);
   bool ok = false;
   if (!Forward)
@@ -697,10 +729,14 @@ double FilletSurf_InternalBuilder::FirstParameter() const
   double                              p   = sd->FirstSpineParam();
   int                                 ind = 1;
   if (sp->IsPeriodic())
+  {
     ind = sp->Index(p);
+  }
   double ep;
   if (ComputeEdgeParameter(sp, ind, p, ep, tolapp3d))
+  {
     return ep;
+  }
   return 0.0;
 }
 
@@ -716,10 +752,14 @@ double FilletSurf_InternalBuilder::LastParameter() const
   double                              p   = sd->LastSpineParam();
   int                                 ind = sp->NbEdges();
   if (sp->IsPeriodic())
+  {
     ind = sp->Index(p);
+  }
   double ep;
   if (ComputeEdgeParameter(sp, ind, p, ep, tolapp3d))
+  {
     return ep;
+  }
   return 0.0;
 }
 

@@ -272,9 +272,13 @@ TEST(math_TrigonometricFunctionRoots, HighFrequencyTest)
     for (double sol : solutions)
     {
       if (fabs(sol - PI / 6.0) < 0.1)
+      {
         found_first = true;
+      }
       if (fabs(sol - 5.0 * PI / 6.0) < 0.1)
+      {
         found_second = true;
+      }
     }
     EXPECT_TRUE(found_first || found_second);
   }

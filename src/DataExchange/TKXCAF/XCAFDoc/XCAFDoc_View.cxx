@@ -129,8 +129,10 @@ void XCAFDoc_View::SetObject(const occ::handle<XCAFView_Object>& theObject)
 
   // Clipping Expression
   if (!theObject->ClippingExpression().IsNull())
+  {
     TDataStd_AsciiString::Set(Label().FindChild(ChildLab_ClippingExpression),
                               theObject->ClippingExpression()->String());
+  }
 
   // GDT points
   if (theObject->HasGDTPoints())
@@ -266,7 +268,9 @@ occ::handle<XCAFView_Object> XCAFDoc_View::GetObject() const
     for (; anItrPnts.More(); anItrPnts.Next())
     {
       if (anItrPnts.Value().FindAttribute(TDataXtd_Point::GetID(), aGDTPointAttr))
+      {
         aNbGDTPoints++;
+      }
     }
 
     // Allocate the GDT-points and fill them in from Ocaf tree.

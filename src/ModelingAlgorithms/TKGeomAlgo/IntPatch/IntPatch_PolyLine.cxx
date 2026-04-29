@@ -84,9 +84,13 @@ void IntPatch_PolyLine::Prepare()
       gp_XY  V12   = P2.XY() - P1.XY();
       double d13_2 = V13.SquareModulus(), d_2;
       if (d13_2 > eps_2)
+      {
         d_2 = V13.CrossSquareMagnitude(V12) / d13_2;
+      }
       else
+      {
         d_2 = eps_2;
+      }
       if (d_2 > myError * myError)
       {
         // try to compute deflection more precisely using parabola interpolation
@@ -123,13 +127,19 @@ void IntPatch_PolyLine::Prepare()
           double d1 = std::abs(A1 * xt1 + B1 * yt1 + C1);
           double d2 = std::abs(A2 * xt2 + B2 * yt2 + C2);
           if (d2 > d1)
+          {
             d1 = d2;
+          }
           // select min deflection from linear and parabolic ones
           if (d1 * d1 < d_2)
+          {
             d_2 = d1 * d1;
+          }
         }
         if (d_2 > myError * myError)
+        {
           myError = std::sqrt(d_2);
+        }
       }
       P1 = P2;
       P2 = P3;

@@ -145,5 +145,5 @@ void IGESDimen_ToolDiameterDimension::OwnDump(const occ::handle<IGESDimen_Diamet
   S << "\n"
     << "Center Point : ";
   IGESData_DumpXYL(S, level, ent->Center(), ent->Location());
-  S << std::endl;
+  S << '\n';
 }

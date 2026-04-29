@@ -85,46 +85,62 @@ TEST_F(BRepGraph_MutationGenTest, SubtreeGen_PropagatedParent_Incremented)
   for (BRepGraph_WireIterator aWireIt(myGraph); aWireIt.More(); aWireIt.Next())
   {
     if (aWireIt.Current().SubtreeGen > 0u)
+    {
       aAnyWireSubtreeIncremented = true;
+    }
   }
   EXPECT_TRUE(aAnyWireSubtreeIncremented);
 
   // Verify parent OwnGen did NOT change (split behavior).
   for (BRepGraph_WireIterator aWireIt(myGraph); aWireIt.More(); aWireIt.Next())
+  {
     EXPECT_EQ(aWireIt.Current().OwnGen, 0u);
+  }
 
   bool aAnyFaceSubtreeIncremented = false;
   for (BRepGraph_FaceIterator aFaceIt(myGraph); aFaceIt.More(); aFaceIt.Next())
   {
     if (aFaceIt.Current().SubtreeGen > 0u)
+    {
       aAnyFaceSubtreeIncremented = true;
+    }
   }
   EXPECT_TRUE(aAnyFaceSubtreeIncremented);
 
   for (BRepGraph_FaceIterator aFaceIt(myGraph); aFaceIt.More(); aFaceIt.Next())
+  {
     EXPECT_EQ(aFaceIt.Current().OwnGen, 0u);
+  }
 
   bool aAnyShellSubtreeIncremented = false;
   for (BRepGraph_ShellIterator aShellIt(myGraph); aShellIt.More(); aShellIt.Next())
   {
     if (aShellIt.Current().SubtreeGen > 0u)
+    {
       aAnyShellSubtreeIncremented = true;
+    }
   }
   EXPECT_TRUE(aAnyShellSubtreeIncremented);
 
   for (BRepGraph_ShellIterator aShellIt(myGraph); aShellIt.More(); aShellIt.Next())
+  {
     EXPECT_EQ(aShellIt.Current().OwnGen, 0u);
+  }
 
   bool aAnySolidSubtreeIncremented = false;
   for (BRepGraph_SolidIterator aSolidIt(myGraph); aSolidIt.More(); aSolidIt.Next())
   {
     if (aSolidIt.Current().SubtreeGen > 0u)
+    {
       aAnySolidSubtreeIncremented = true;
+    }
   }
   EXPECT_TRUE(aAnySolidSubtreeIncremented);
 
   for (BRepGraph_SolidIterator aSolidIt(myGraph); aSolidIt.More(); aSolidIt.Next())
+  {
     EXPECT_EQ(aSolidIt.Current().OwnGen, 0u);
+  }
 }
 
 TEST_F(BRepGraph_MutationGenTest, SubtreeGen_DeferredPropagatedParent_Incremented)
@@ -134,10 +150,14 @@ TEST_F(BRepGraph_MutationGenTest, SubtreeGen_DeferredPropagatedParent_Incremente
     myGraph.Topo().Edges().Definition(BRepGraph_EdgeId::Start()).OwnGen;
   NCollection_DynamicArray<uint32_t> aWireSubtreeGensBefore;
   for (BRepGraph_WireIterator aWireIt(myGraph); aWireIt.More(); aWireIt.Next())
+  {
     aWireSubtreeGensBefore.Append(aWireIt.Current().SubtreeGen);
+  }
   NCollection_DynamicArray<uint32_t> aFaceSubtreeGensBefore;
   for (BRepGraph_FaceIterator aFaceIt(myGraph); aFaceIt.More(); aFaceIt.Next())
+  {
     aFaceSubtreeGensBefore.Append(aFaceIt.Current().SubtreeGen);
+  }
 
   // Deferred mutation + flush.
   myGraph.Editor().BeginDeferredInvalidation();
@@ -151,17 +171,25 @@ TEST_F(BRepGraph_MutationGenTest, SubtreeGen_DeferredPropagatedParent_Incremente
   // At least one parent wire must have SubtreeGen incremented vs its baseline.
   bool aAnyWireSubtreeIncremented = false;
   for (BRepGraph_WireIterator aWireIt(myGraph); aWireIt.More(); aWireIt.Next())
+  {
     if (aWireIt.Current().SubtreeGen
         > aWireSubtreeGensBefore.Value(static_cast<int>(aWireIt.CurrentId().Index)))
+    {
       aAnyWireSubtreeIncremented = true;
+    }
+  }
   EXPECT_TRUE(aAnyWireSubtreeIncremented);
 
   // At least one parent face must have SubtreeGen incremented vs its baseline.
   bool aAnyFaceSubtreeIncremented = false;
   for (BRepGraph_FaceIterator aFaceIt(myGraph); aFaceIt.More(); aFaceIt.Next())
+  {
     if (aFaceIt.Current().SubtreeGen
         > aFaceSubtreeGensBefore.Value(static_cast<int>(aFaceIt.CurrentId().Index)))
+    {
       aAnyFaceSubtreeIncremented = true;
+    }
+  }
   EXPECT_TRUE(aAnyFaceSubtreeIncremented);
 }
 
@@ -189,7 +217,9 @@ TEST_F(BRepGraph_MutationGenTest, RepMutation_Curve3DPropagatesSubtreeGenToEdge)
   const BRepGraph_EdgeId       anEdgeId(0);
   const BRepGraph_Curve3DRepId aCurveId = myGraph.Topo().Edges().Definition(anEdgeId).Curve3DRepId;
   if (!aCurveId.IsValid())
+  {
     return; // Skip degenerate edges without 3D curves.
+  }
 
   EXPECT_EQ(myGraph.Topo().Edges().Definition(anEdgeId).OwnGen, 0u);
   EXPECT_EQ(myGraph.Topo().Edges().Definition(anEdgeId).SubtreeGen, 0u);
@@ -212,7 +242,9 @@ TEST_F(BRepGraph_MutationGenTest, RepMutation_Curve2DPropagatesSubtreeGenToCoEdg
   {
     const BRepGraph_Curve2DRepId aCurveId = aCoEdgeIt.Current().Curve2DRepId;
     if (!aCurveId.IsValid())
+    {
       continue;
+    }
 
     const BRepGraph_CoEdgeId aCoEdgeId = aCoEdgeIt.CurrentId();
     EXPECT_EQ(aCoEdgeIt.Current().OwnGen, 0u);
@@ -238,7 +270,9 @@ TEST_F(BRepGraph_MutationGenTest, RepMutation_TriangulationPropagatesSubtreeGenT
   {
     const BRepGraphInc::FaceDef& aFace = aFaceIt.Current();
     if (!aFace.TriangulationRepId.IsValid())
+    {
       continue;
+    }
 
     const BRepGraph_FaceId             aFaceId = aFaceIt.CurrentId();
     const BRepGraph_TriangulationRepId aTriId  = aFace.TriangulationRepId;
@@ -265,7 +299,9 @@ TEST_F(BRepGraph_MutationGenTest, RepMutation_Polygon3DPropagatesSubtreeGenToEdg
   {
     const BRepGraph_Polygon3DRepId aPolyId = anEdgeIt.Current().Polygon3DRepId;
     if (!aPolyId.IsValid())
+    {
       continue;
+    }
 
     const BRepGraph_EdgeId anEdgeId = anEdgeIt.CurrentId();
     EXPECT_EQ(anEdgeIt.Current().OwnGen, 0u);

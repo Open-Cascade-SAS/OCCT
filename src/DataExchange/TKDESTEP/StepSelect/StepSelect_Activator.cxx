@@ -59,60 +59,70 @@ IFSelect_ReturnStatus StepSelect_Activator::Do(const int                        
     case 1: { //        ****    StepSchema
       if (argc < 2)
       {
-        std::cout << "Identify an entity" << std::endl;
+        std::cout << "Identify an entity" << '\n';
         return IFSelect_RetError;
       }
       int num = pilot->Number(arg1);
       if (num <= 0)
       {
-        std::cout << "Not an entity : " << arg2 << std::endl;
+        std::cout << "Not an entity : " << arg2 << '\n';
         return IFSelect_RetError;
       }
       occ::handle<Standard_Transient> ent = pilot->Session()->StartingEntity(num);
       DeclareAndCast(StepData_UndefinedEntity, und, ent);
       if (!und.IsNull())
       {
-        std::cout << "Entity " << arg2 << " : No Binding known" << std::endl;
+        std::cout << "Entity " << arg2 << " : No Binding known" << '\n';
         return IFSelect_RetVoid;
       }
       DeclareAndCast(StepData_Simple, sim, ent);
       if (!sim.IsNull())
       {
-        std::cout << "Entity " << arg2 << " : Late Binding" << std::endl;
-        std::cout << "Simple Type : " << sim->StepType() << std::endl;
+        std::cout << "Entity " << arg2 << " : Late Binding" << '\n';
+        std::cout << "Simple Type : " << sim->StepType() << '\n';
         return IFSelect_RetVoid;
       }
       DeclareAndCast(StepData_Plex, plx, ent);
       if (!plx.IsNull())
       {
-        std::cout << "Entity " << arg2 << " : Late Binding" << std::endl;
-        std::cout << "Complex Type" << std::endl;
+        std::cout << "Entity " << arg2 << " : Late Binding" << '\n';
+        std::cout << "Complex Type" << '\n';
       }
       //       reste Early Binding
-      std::cout << "Entity " << arg2 << " : Early Binding" << std::endl;
-      std::cout << "CDL Type : " << ent->DynamicType()->Name() << std::endl;
+      std::cout << "Entity " << arg2 << " : Early Binding" << '\n';
+      std::cout << "CDL Type : " << ent->DynamicType()->Name() << '\n';
       return IFSelect_RetVoid;
     }
 
     case 40: { //        ****    FloatFormat
       char prem = ' ';
       if (argc < 2)
+      {
         prem = '?';
+      }
       else if (argc == 5)
       {
-        std::cout << "floatformat tout court donne les formes admises" << std::endl;
+        std::cout << "floatformat tout court donne les formes admises" << '\n';
         return IFSelect_RetError;
       }
       else
+      {
         prem = arg1[0];
+      }
       bool zerosup = false;
       int  digits  = 0;
       if (prem == 'N' || prem == 'n')
+      {
         zerosup = false;
+      }
       else if (prem == 'Z' || prem == 'z')
+      {
         zerosup = true;
+      }
       else if (prem >= 48 && prem <= 57)
+      {
         digits = atoi(arg1);
+      }
       else
       {
         std::cout << "floatformat digits, digits=nb de chiffres signifiants, ou\n"
@@ -132,23 +142,31 @@ IFSelect_ReturnStatus StepSelect_Activator::Do(const int                        
         Rmax = Atof(pilot->Word(5).ToCString());
         if (Rmin <= 0 || Rmax <= 0)
         {
-          std::cout << "intervalle : donner reels > 0" << std::endl;
+          std::cout << "intervalle : donner reels > 0" << '\n';
           return IFSelect_RetError;
         }
       }
       occ::handle<StepSelect_FloatFormat> fm = new StepSelect_FloatFormat;
       if (argc == 2)
+      {
         fm->SetDefault(digits);
+      }
       else
       {
         fm->SetZeroSuppress(zerosup);
         fm->SetFormat(arg2);
         if (argc == 4)
+        {
           fm->SetFormatForRange(pilot->Word(3).ToCString());
+        }
         else if (argc >= 6)
+        {
           fm->SetFormatForRange(pilot->Word(3).ToCString(), Rmin, Rmax);
+        }
         else
+        {
           fm->SetFormatForRange("");
+        }
       }
       return pilot->RecordItem(fm);
     }

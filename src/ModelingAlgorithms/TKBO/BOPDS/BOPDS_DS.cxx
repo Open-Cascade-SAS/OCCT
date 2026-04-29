@@ -464,10 +464,14 @@ void BOPDS_DS::InitPaveBlocks(const int theEdgeIndex)
 
       aVertexIndex = GetSameDomainIndex(aVertexIndex);
       BOPDS_Pave aPave(aVertexIndex, aVertexParam);
-      if (anEdgeInfo.HasFlag()) // for a degenerated edge append pave unconditionally
+      if (anEdgeInfo.HasFlag())
+      { // for a degenerated edge append pave unconditionally
         aPaveBlock->AppendExtPave1(aPave);
+      }
       else
+      {
         aPaveBlock->AppendExtPave(aPave);
+      }
 
       // Handle closed edges (seam edges) that have a single vertex shared by both ends.
       // In this case, we need to add two paves: one for the start and one for the end

@@ -113,7 +113,9 @@ void StepToTopoDS_TranslateVertex::Init(const occ::handle<StepShape_Vertex>& aVe
     {
       NMTool.Bind(aVertex, V);
       if (NMTool.IsIDEASCase() && !aVName.IsNull() && !aVName->IsEmpty())
+      {
         NMTool.Bind(aVName->String(), V);
+      }
     }
 
     myResult = V;

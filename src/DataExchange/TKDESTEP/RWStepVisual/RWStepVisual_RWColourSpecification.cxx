@@ -28,7 +28,9 @@ void RWStepVisual_RWColourSpecification::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 1, ach, "colour_specification"))
+  {
     return;
+  }
 
   // --- own field : name ---
 

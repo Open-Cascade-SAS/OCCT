@@ -176,10 +176,14 @@ void BRepMesh_CurveTessellator::splitByDeflection2d()
       occ::handle<Geom2d_Curve>  aCurve2d = BRep_Tool::CurveOnSurface(aCurrEdge, aFace, aF, aL);
       NCollection_Array1<double> aParamArray(1, aNodesNb);
       for (int i = 1; i <= aNodesNb; ++i)
+      {
         aParamArray.SetValue(i, myDiscretTool.Parameter(i));
+      }
 
       for (int i = 1; i < aNodesNb; ++i)
+      {
         splitSegment(aSurface, aCurve2d, aParamArray(i), aParamArray(i + 1), 1);
+      }
     }
   }
 }

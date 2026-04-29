@@ -36,7 +36,9 @@ void RWStepDimTol_RWModifiedGeometricTolerance::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 5, ach, "modified_geometric_tolerance"))
+  {
     return;
+  }
 
   // Inherited fields of GeometricTolerance
 
@@ -68,16 +70,26 @@ void RWStepDimTol_RWModifiedGeometricTolerance::ReadStep(
   {
     const char* text = data->ParamCValue(num, 5);
     if (strcmp(text, ".MAXIMUM_MATERIAL_CONDITION.") == 0)
+    {
       aModifier = StepDimTol_MaximumMaterialCondition;
+    }
     else if (strcmp(text, ".LEAST_MATERIAL_CONDITION.") == 0)
+    {
       aModifier = StepDimTol_LeastMaterialCondition;
+    }
     else if (strcmp(text, ".REGARDLESS_OF_FEATURE_SIZE.") == 0)
+    {
       aModifier = StepDimTol_RegardlessOfFeatureSize;
+    }
     else
+    {
       ach->AddFail("Parameter #5 (modifier) has not allowed value");
+    }
   }
   else
+  {
     ach->AddFail("Parameter #5 (modifier) is not enumeration");
+  }
 
   // Initialize entity
   ent->Init(aGeometricTolerance_Name,

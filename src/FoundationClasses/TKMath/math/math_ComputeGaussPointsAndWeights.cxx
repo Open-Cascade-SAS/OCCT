@@ -43,7 +43,9 @@ math_ComputeGaussPointsAndWeights::math_ComputeGaussPointsAndWeights(const int N
       aDiag(i) = 0.;
 
       if (i == 1)
+      {
         aSubDiag(i) = 0.;
+      }
       else
       {
         int sqrIm1  = (i - 1) * (i - 1);
@@ -92,7 +94,9 @@ math_Vector math_ComputeGaussPointsAndWeights::Points() const
   int         Number = myPoints->Length();
   math_Vector thePoints(1, Number);
   for (int i = 1; i <= Number; i++)
+  {
     thePoints(i) = myPoints->Value(i);
+  }
 
   return thePoints;
 }
@@ -102,7 +106,9 @@ math_Vector math_ComputeGaussPointsAndWeights::Weights() const
   int         Number = myWeights->Length();
   math_Vector theWeights(1, Number);
   for (int i = 1; i <= Number; i++)
+  {
     theWeights(i) = myWeights->Value(i);
+  }
 
   return theWeights;
 }

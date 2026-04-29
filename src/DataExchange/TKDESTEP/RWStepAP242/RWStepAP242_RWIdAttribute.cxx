@@ -31,7 +31,9 @@ void RWStepAP242_RWIdAttribute::ReadStep(const occ::handle<StepData_StepReaderDa
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "id_attribute"))
+  {
     return;
+  }
 
   // --- own field : attribute_value ---
 

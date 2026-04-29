@@ -353,7 +353,9 @@ void IntTools_BeanFaceIntersector::Perform()
   for (int i = 1; i <= myRangeManager.Length(); i++)
   {
     if (myRangeManager.Flag(i) != 2)
+    {
       continue;
+    }
 
     IntTools_Range aRange     = myRangeManager.Range(i);
     int            iLastRange = myResults.Length();
@@ -370,7 +372,9 @@ void IntTools_BeanFaceIntersector::Perform()
       }
     }
     else
+    {
       myResults.Append(aRange);
+    }
   }
 }
 
@@ -439,7 +443,9 @@ double IntTools_BeanFaceIntersector::Distance(const double theArg)
         useMinMaxPoints = false;
 
         if (aDistance > aProjectorOnCurve.LowerDistance())
+        {
           aDistance = aProjectorOnCurve.LowerDistance();
+        }
       }
     }
 
@@ -643,7 +649,9 @@ void IntTools_BeanFaceIntersector::ComputeAroundExactIntersection()
         }
 
         if (!solutionIsValid)
+        {
           continue;
+        }
 
         int aNbRanges = myRangeManager.Length();
 
@@ -731,7 +739,9 @@ bool IntTools_BeanFaceIntersector::FastComputeAnalytic()
 
     double anAngle = aDir.Angle(surfPlane.Axis().Direction());
     if (anAngle > Precision::Angular())
+    {
       return false;
+    }
 
     hasIntersection = false;
 
@@ -751,7 +761,9 @@ bool IntTools_BeanFaceIntersector::FastComputeAnalytic()
     {
       gp_Lin aLin = myCurve.Line();
       if (!aLin.Direction().IsParallel(aCylDir, Precision::Angular()))
+      {
         return false;
+      }
 
       hasIntersection = false;
 
@@ -765,15 +777,19 @@ bool IntTools_BeanFaceIntersector::FastComputeAnalytic()
 
       double anAngle = aCylDir.Angle(aCircle.Axis().Direction());
       if (anAngle > Precision::Angular())
+      {
         return false;
+      }
 
       double aDistLoc = gp_Lin(aCylAxis).Distance(aCircle.Location());
       double aDist    = aDistLoc + std::abs(aCircle.Radius() - aCylRadius);
       isCoincide      = (aDist < myCriteria);
 
       if (!isCoincide)
+      {
         hasIntersection = (aDistLoc - (aCircle.Radius() + aCylRadius)) < myCriteria
                           && (std::abs(aCircle.Radius() - aCylRadius) - aDistLoc) < myCriteria;
+      }
     }
   }
 
@@ -832,10 +848,14 @@ void IntTools_BeanFaceIntersector::ComputeLinePlane()
     gp_Pnt p2 = ElCLib::Value(myLastParameter, L);
     double d1 = A * p1.X() + B * p1.Y() + C * p1.Z() + D;
     if (d1 < 0)
+    {
       d1 = -d1;
+    }
     double d2 = A * p2.X() + B * p2.Y() + C * p2.Z() + D;
     if (d2 < 0)
+    {
       d2 = -d2;
+    }
     if (d1 <= myCriteria && d2 <= myCriteria)
     {
       inplane = true;
@@ -883,8 +903,6 @@ void IntTools_BeanFaceIntersector::ComputeLinePlane()
   double         t2 = std::min(myLastParameter, t + aDt);
   IntTools_Range aRange(t1, t2);
   myResults.Append(aRange);
-
-  return;
 }
 
 //=================================================================================================
@@ -899,7 +917,9 @@ void IntTools_BeanFaceIntersector::ComputeUsingExtremum()
   {
 
     if (myRangeManager.Flag(i) > 0)
+    {
       continue;
+    }
 
     IntTools_Range aParamRange = myRangeManager.Range(i);
     double         anarg1      = aParamRange.First();
@@ -1071,10 +1091,14 @@ void IntTools_BeanFaceIntersector::ComputeNearRangeBoundaries()
   {
 
     if (myRangeManager.Flag(i) > 0)
+    {
       continue;
+    }
 
     if ((i > 1) && (myRangeManager.Flag(i - 1) > 0))
+    {
       continue;
+    }
 
     IntTools_Range aParamRange = myRangeManager.Range(i);
 
@@ -1156,7 +1180,9 @@ void IntTools_BeanFaceIntersector::ComputeRangeFromStartPoint(const bool   ToInc
                                                               const int    theIndex)
 {
   if (myRangeManager.Flag(theIndex) > 0)
+  {
     return;
+  }
 
   int aValidIndex = theIndex;
 
@@ -1164,7 +1190,9 @@ void IntTools_BeanFaceIntersector::ComputeRangeFromStartPoint(const bool   ToInc
   double aDeltaRestrictor = 0.1 * (myLastParameter - myFirstParameter);
 
   if (aMinDelta > aDeltaRestrictor)
+  {
     aMinDelta = aDeltaRestrictor * 0.5;
+  }
 
   double tenOfMinDelta = aMinDelta * 10.;
   double aDelta        = myCurveResolution;
@@ -1219,7 +1247,9 @@ void IntTools_BeanFaceIntersector::ComputeRangeFromStartPoint(const bool   ToInc
       anotherSolutionFound = true;
 
       if (BoundaryCondition && (isboundaryindex || !isvalidindex))
+      {
         break;
+      }
     }
     else
     {
@@ -1238,7 +1268,9 @@ void IntTools_BeanFaceIntersector::ComputeRangeFromStartPoint(const bool   ToInc
     //
 
     if (aCurPar == aPrevPar)
+    {
       break;
+    }
 
     BoundaryCondition =
       (ToIncreaseParameter) ? (aCurPar > aCurrentRange.Last()) : (aCurPar < aCurrentRange.First());
@@ -1297,9 +1329,13 @@ void IntTools_BeanFaceIntersector::ComputeRangeFromStartPoint(const bool   ToInc
   if (anotherSolutionFound)
   {
     if (ToIncreaseParameter)
+    {
       myRangeManager.InsertRange(theParameter, aPrevPar, 2);
+    }
     else
+    {
       myRangeManager.InsertRange(aPrevPar, theParameter, 2);
+    }
   }
 }
 
@@ -1723,7 +1759,9 @@ bool IntTools_BeanFaceIntersector::LocalizeSolutions(
                                  theSurfaceData,
                                  theListCurveRange,
                                  theListSurfaceRange))
+          {
             return false;
+          }
         }
       }
       // end (tIt...)
@@ -1744,7 +1782,9 @@ bool IntTools_BeanFaceIntersector::LocalizeSolutions(
                                  theSurfaceData,
                                  theListCurveRange,
                                  theListSurfaceRange))
+          {
             return false;
+          }
         }
       }
     } // end for (vIt...)
@@ -1910,17 +1950,23 @@ bool IntTools_BeanFaceIntersector::ComputeLocalized()
       IntTools_Range aRangeC(myFirstParameter, myLastParameter);
 
       if (bAllowSamplingC)
+      {
         aRangeC = anItC.Value().GetRange(myFirstParameter, myLastParameter, nbSampleC);
+      }
 
       IntTools_Range aRangeU(myUMinParameter, myUMaxParameter);
 
       if (bAllowSamplingU)
+      {
         aRangeU = anItS.Value().GetRangeU(myUMinParameter, myUMaxParameter, nbSampleU);
+      }
 
       IntTools_Range aRangeV(myVMinParameter, myVMaxParameter);
 
       if (bAllowSamplingV)
+      {
         aRangeV = anItS.Value().GetRangeV(myVMinParameter, myVMaxParameter, nbSampleV);
+      }
 
       double anarg1 = aRangeC.First(), anarg2 = aRangeC.Last();
 
@@ -1948,7 +1994,9 @@ bool IntTools_BeanFaceIntersector::ComputeLocalized()
       }
 
       if (bFound)
+      {
         continue;
+      }
       nMinIndex                                = (nMaxIndex >= 0) ? nMaxIndex : nMinIndex;
       const NCollection_Sequence<int>& anInds2 = myRangeManager.GetIndices(anarg2);
 
@@ -1969,7 +2017,9 @@ bool IntTools_BeanFaceIntersector::ComputeLocalized()
       }
 
       if (bFound)
+      {
         continue;
+      }
 
       double parUF = aRangeU.First(), parUL = aRangeU.Last();
       double parVF = aRangeV.First(), parVL = aRangeV.Last();
@@ -2002,22 +2052,36 @@ bool IntTools_BeanFaceIntersector::ComputeLocalized()
             p2.Parameter(U, V);
 
             if (myCurve.IsPeriodic())
+            {
               T = ElCLib::InPeriod(T, anarg1, anarg1 + myCurve.Period());
+            }
             if (mySurface.IsUPeriodic())
+            {
               U = ElCLib::InPeriod(U, parUF, parUF + mySurface.UPeriod());
+            }
             if (mySurface.IsVPeriodic())
+            {
               V = ElCLib::InPeriod(V, parVF, parVF + mySurface.VPeriod());
+            }
 
             // To avoid occasional going out of boundaries because of numerical
             // problem
             if (U < myUMinParameter)
+            {
               U = myUMinParameter;
+            }
             if (U > myUMaxParameter)
+            {
               U = myUMaxParameter;
+            }
             if (V < myVMinParameter)
+            {
               V = myVMinParameter;
+            }
             if (V > myVMaxParameter)
+            {
               V = myVMaxParameter;
+            }
 
             int aNbRanges = myRangeManager.Length();
             ComputeRangeFromStartPoint(false, T, U, V);
@@ -2073,7 +2137,9 @@ bool IntTools_BeanFaceIntersector::TestComputeCoinside()
   double U, V;
 
   if (Distance(cfp, U, V) > myCriteria)
+  {
     return false;
+  }
 
   //
   ComputeRangeFromStartPoint(true, cfp, U, V);
@@ -2084,11 +2150,15 @@ bool IntTools_BeanFaceIntersector::TestComputeCoinside()
   if (aFoundIndex != 0)
   {
     if (myRangeManager.Flag(aFoundIndex) == 2)
+    {
       return true;
+    }
   }
 
   if (Distance(clp, U, V) > myCriteria)
+  {
     return false;
+  }
 
   //
   ComputeRangeFromStartPoint(false, clp, U, V);
@@ -2099,7 +2169,9 @@ bool IntTools_BeanFaceIntersector::TestComputeCoinside()
     double aPar = (cfp + ((double)i) * cdp);
 
     if (Distance(aPar, U, V) > myCriteria)
+    {
       return false;
+    }
 
     int aNbRanges = myRangeManager.Length();
     ComputeRangeFromStartPoint(false, aPar, U, V);
@@ -2171,49 +2243,71 @@ void ComputeGridPoints(const BRepAdaptor_Surface&         theSurf,
     for (i = 1; i <= aNbKnots[j] && (iMin[j] == -1 || iMax[j] == -1); i++)
     {
       if (iMin[j] == -1 && aFpTol[j] < aKnots.Value(i))
+      {
         iMin[j] = i - 1;
+      }
 
       iLmI = aNbKnots[j] - i + 1;
 
       if (iMax[j] == -1 && aLmTol[j] > aKnots.Value(iLmI))
+      {
         iMax[j] = iLmI + 1;
+      }
     }
 
     // If indices are not found, return.
     // if (iMin[j] == -1 || iMax[j] == -1)
     // return;
     if (iMin[j] == -1)
+    {
       iMin[j] = 1;
+    }
 
     if (iMax[j] == -1)
+    {
       iMax[j] = aNbKnots[j];
+    }
 
     if (iMin[j] == 0)
+    {
       iMin[j] = 1;
+    }
 
     if (iMax[j] > aNbKnots[j])
+    {
       iMax[j] = aNbKnots[j];
+    }
 
     if (iMax[j] < iMin[j])
+    {
       return;
+    }
 
     if (iMax[j] == iMin[j])
     {
       iMax[j]++;
       iMin[j]--;
       if (iMin[j] == 0)
+      {
         iMin[j] = 1;
+      }
       if (iMax[j] > aNbKnots[j])
+      {
         iMax[j] = aNbKnots[j];
+      }
     }
 
     aNbGridPnts[j] = (iMax[j] - iMin[j]) * aNbSamples[j] + 1;
 
     // Setting the number of grid points.
     if (j == 0)
+    {
       theSurfaceData.SetRangeUGrid(aNbGridPnts[j]);
-    else // j == 1
+    }
+    else
+    { // j == 1
       theSurfaceData.SetRangeVGrid(aNbGridPnts[j]);
+    }
 
     // Setting the first and last parameters.
     int    iAbs = 1;
@@ -2227,9 +2321,13 @@ void ComputeGridPoints(const BRepAdaptor_Surface&         theSurf,
       {
         // The first knot.
         if (aFmTol[j] > aKnots.Value(iMin[j]))
+        {
           aMinPar = aFPar[j];
+        }
         else
+        {
           aMinPar = aKnots.Value(iMin[j]);
+        }
       }
       else
       {
@@ -2241,9 +2339,13 @@ void ComputeGridPoints(const BRepAdaptor_Surface&         theSurf,
       {
         // The last knot.
         if (aLpTol[j] < aKnots.Value(iMax[j]))
+        {
           aMaxPar = aLPar[j];
+        }
         else
+        {
           aMaxPar = aKnots.Value(iMax[j]);
+        }
       }
       else
       {
@@ -2256,17 +2358,25 @@ void ComputeGridPoints(const BRepAdaptor_Surface&         theSurf,
       for (k = 0; k < aNbSamples[j]; k++, aMinPar += aDelta)
       {
         if (j == 0)
+        {
           theSurfaceData.SetUParam(iAbs++, aMinPar);
+        }
         else
+        {
           theSurfaceData.SetVParam(iAbs++, aMinPar);
+        }
       }
     }
 
     // Add the last parameter
     if (j == 0)
+    {
       theSurfaceData.SetUParam(iAbs++, aMaxPar);
+    }
     else
+    {
       theSurfaceData.SetVParam(iAbs++, aMaxPar);
+    }
   }
 
   // Compute of grid points.
@@ -2363,7 +2473,9 @@ void ComputeGridPoints(const BRepAdaptor_Surface&         theSurf,
   }
 
   if (theTolerance > aDef)
+  {
     aDef = 2. * theTolerance;
+  }
 
   theSurfaceData.SetGridDeflection(aDef);
 }

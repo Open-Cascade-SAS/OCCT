@@ -90,7 +90,9 @@ static IntPatch_SpecPntType IsSeamOrPole(const occ::handle<Adaptor3d_Surface>& t
                                          const double                          theDeltaMax)
 {
   if ((theRefIndex < 1) || (theRefIndex >= theLine->NbPoints()))
+  {
     return IntPatch_SPntNone;
+  }
 
   // Parameters on Quadric and on parametric for reference point
   double aUQRef, aVQRef, aUPRef, aVPRef;
@@ -135,7 +137,9 @@ static IntPatch_SpecPntType IsSeamOrPole(const occ::handle<Adaptor3d_Surface>& t
   const double aDeltaU = std::abs(aUQRef - aUQNext);
 
   if ((aType != GeomAbs_Torus) && (aDeltaU < theDeltaMax))
+  {
     return IntPatch_SPntNone;
+  }
 
   switch (aType)
   {
@@ -146,13 +150,19 @@ static IntPatch_SpecPntType IsSeamOrPole(const occ::handle<Adaptor3d_Surface>& t
       const double aDeltaV = std::abs(aVQRef - aVQNext);
 
       if ((aDeltaU >= theDeltaMax) && (aDeltaV >= theDeltaMax))
+      {
         return IntPatch_SPntSeamUV;
+      }
 
       if (aDeltaU >= theDeltaMax)
+      {
         return IntPatch_SPntSeamU;
+      }
 
       if (aDeltaV >= theDeltaMax)
+      {
         return IntPatch_SPntSeamV;
+      }
     }
 
     break;
@@ -477,17 +487,25 @@ void Recadre(const bool,
   {
     case GeomAbs_Torus:
       while (V1 < (V1p - 1.5 * M_PI))
+      {
         V1 += M_PI + M_PI;
+      }
       while (V1 > (V1p + 1.5 * M_PI))
+      {
         V1 -= M_PI + M_PI;
+      }
       [[fallthrough]];
     case GeomAbs_Cylinder:
     case GeomAbs_Cone:
     case GeomAbs_Sphere:
       while (U1 < (U1p - 1.5 * M_PI))
+      {
         U1 += M_PI + M_PI;
+      }
       while (U1 > (U1p + 1.5 * M_PI))
+      {
         U1 -= M_PI + M_PI;
+      }
       break;
     default:
       break;
@@ -496,17 +514,25 @@ void Recadre(const bool,
   {
     case GeomAbs_Torus:
       while (V2 < (V2p - 1.5 * M_PI))
+      {
         V2 += M_PI + M_PI;
+      }
       while (V2 > (V2p + 1.5 * M_PI))
+      {
         V2 -= M_PI + M_PI;
+      }
       [[fallthrough]];
     case GeomAbs_Cylinder:
     case GeomAbs_Cone:
     case GeomAbs_Sphere:
       while (U2 < (U2p - 1.5 * M_PI))
+      {
         U2 += M_PI + M_PI;
+      }
       while (U2 > (U2p + 1.5 * M_PI))
+      {
         U2 -= M_PI + M_PI;
+      }
       break;
     default:
       break;
@@ -689,9 +715,13 @@ void IntPatch_ImpPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
   //
   double aLocalPas = Pas;
   if (reversed)
+  {
     aLocalPas = GetLocalStep(Surf1, Pas);
+  }
   else
+  {
     aLocalPas = GetLocalStep(Surf2, Pas);
+  }
 
   Func.SetImplicitSurface(Quad);
   Func.Set(IntSurf_QuadricTool::Tolerance(Quad));
@@ -786,16 +816,24 @@ void IntPatch_ImpPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
     if (!reversed)
     {
       if (myIsStartPnt)
+      {
         solins.Perform(Func, Surf2, myUStart, myVStart);
+      }
       else
+      {
         solins.Perform(Func, Surf2, D2, TolTang);
+      }
     }
     else
     {
       if (myIsStartPnt)
+      {
         solins.Perform(Func, Surf1, myUStart, myVStart);
+      }
       else
+      {
         solins.Perform(Func, Surf1, D1, TolTang);
+      }
     }
     NbPointIns = solins.NbPoints();
     for (int i = 1; i <= NbPointIns; i++)
@@ -882,9 +920,13 @@ void IntPatch_ImpPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
         Quad.Parameters(valpt, AnU1, V1);
 
         if ((V1 < Vmin) && (Vmin - V1 < TolV))
+        {
           V1 = Vmin;
+        }
         if ((V1 > Vmax) && (V1 - Vmax < TolV))
+        {
           V1 = Vmax;
+        }
 
         if (reversed)
         {
@@ -962,9 +1004,13 @@ void IntPatch_ImpPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
               case GeomAbs_Sphere:
               case GeomAbs_Torus:
                 while (U2 < (AnU2 - 1.5 * M_PI))
+                {
                   U2 += M_PI + M_PI;
+                }
                 while (U2 > (AnU2 + 1.5 * M_PI))
+                {
                   U2 -= M_PI + M_PI;
+                }
                 break;
               default:
                 break;
@@ -972,9 +1018,13 @@ void IntPatch_ImpPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
             if (typeS2 == GeomAbs_Torus)
             {
               while (V2 < (AnV2 - 1.5 * M_PI))
+              {
                 V2 += M_PI + M_PI;
+              }
               while (V2 > (AnV2 + 1.5 * M_PI))
+              {
                 V2 -= M_PI + M_PI;
+              }
             }
             thelin->SetUV(k, true, U2, V2);
           }
@@ -990,9 +1040,13 @@ void IntPatch_ImpPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
               case GeomAbs_Sphere:
               case GeomAbs_Torus:
                 while (U2 < (AnU2 - 1.5 * M_PI))
+                {
                   U2 += M_PI + M_PI;
+                }
                 while (U2 > (AnU2 + 1.5 * M_PI))
+                {
                   U2 -= M_PI + M_PI;
+                }
                 break;
               default:
                 break;
@@ -1000,9 +1054,13 @@ void IntPatch_ImpPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
             if (typeS2 == GeomAbs_Torus)
             {
               while (V2 < (AnV2 - 1.5 * M_PI))
+              {
                 V2 += M_PI + M_PI;
+              }
               while (V2 > (AnV2 + 1.5 * M_PI))
+              {
                 V2 -= M_PI + M_PI;
+              }
             }
             thelin->SetUV(k, false, U2, V2);
           }
@@ -1034,9 +1092,13 @@ void IntPatch_ImpPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
                 Quad.Parameters(PPoint.Value(), U1, V1);
 
                 if ((V1 < Vmin) && (Vmin - V1 < TolV))
+                {
                   V1 = Vmin;
+                }
                 if ((V1 > Vmax) && (V1 - Vmax < TolV))
+                {
                   V1 = Vmax;
+                }
 
                 PPoint.Parameters(themult, U2, V2);
                 Surf2->D1(U2, V2, ptbid, d1u, d1v); //-- @@@@
@@ -1046,9 +1108,13 @@ void IntPatch_ImpPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
                 Quad.Parameters(PPoint.Value(), U2, V2);
 
                 if ((V2 < Vmin) && (Vmin - V2 < TolV))
+                {
                   V2 = Vmin;
+                }
                 if ((V2 > Vmax) && (V2 - Vmax < TolV))
+                {
                   V2 = Vmax;
+                }
 
                 PPoint.Parameters(themult, U1, V1);
                 Surf1->D1(U1, V1, ptbid, d1u, d1v); //-- @@@@
@@ -1132,9 +1198,13 @@ void IntPatch_ImpPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
                 Quad.Parameters(PPoint.Value(), U1, V1);
 
                 if ((V1 < Vmin) && (Vmin - V1 < TolV))
+                {
                   V1 = Vmin;
+                }
                 if ((V1 > Vmax) && (V1 - Vmax < TolV))
+                {
                   V1 = Vmax;
+                }
 
                 PPoint.Parameters(themult, U2, V2);
                 Surf2->D1(U2, V2, ptbid, d1u, d1v); //-- @@@@
@@ -1145,9 +1215,13 @@ void IntPatch_ImpPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
                 Quad.Parameters(PPoint.Value(), U2, V2);
 
                 if ((V2 < Vmin) && (Vmin - V2 < TolV))
+                {
                   V2 = Vmin;
+                }
                 if ((V2 > Vmax) && (V2 - Vmax < TolV))
+                {
                   V2 = Vmax;
+                }
 
                 PPoint.Parameters(themult, U1, V1);
                 Surf1->D1(U1, V1, ptbid, d1u, d1v); //-- @@@@
@@ -1316,9 +1390,13 @@ void IntPatch_ImpPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
           }
         }
         if (dofirst)
+        {
           wlin1->Replace(indfirst, ptdeb);
+        }
         if (dolast)
+        {
           wlin1->Replace(indlast, ptfin);
+        }
       }
     }
   } // if (seqpdep.Length() != 0 || seqpins.Length() != 0) {
@@ -1390,7 +1468,9 @@ void IntPatch_ImpPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
         gp_Pnt2d                       _p2d = thesegm.Curve()->Value(paramf);
         occ::handle<Adaptor3d_HVertex> _vtx;
         if (!PStartf.IsNew())
+        {
           _vtx = PStartf.Vertex();
+        }
         const gp_Pnt& _Pp = PStartf.Value();
         _thepointAtBeg.SetValue(_Pp, PStartf.Tolerance(), false);
         if (!reversed)
@@ -1408,7 +1488,9 @@ void IntPatch_ImpPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
         _thepointAtBeg.SetParameters(_u1, _v1, _u2, _v2);
         _thepointAtBeg.SetParameter(paramf);
         if (!PStartf.IsNew())
+        {
           _thepointAtBeg.SetVertex(reversed, _vtx);
+        }
         _thepointAtBeg.SetArc(reversed, thesegm.Curve(), paramf, TLineUnk, TArcUnk);
 
         gp_Vec   d1u1, d1v1, d1u2, d1v2;
@@ -1455,7 +1537,9 @@ void IntPatch_ImpPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
         gp_Pnt2d                       _p2d = thesegm.Curve()->Value(paraml);
         occ::handle<Adaptor3d_HVertex> _vtx;
         if (!PStartl.IsNew())
+        {
           _vtx = PStartl.Vertex();
+        }
         const gp_Pnt&  _Pp = PStartl.Value();
         IntPatch_Point _thepoint;
         _thepointAtEnd.SetValue(_Pp, PStartl.Tolerance(), false);
@@ -1474,7 +1558,9 @@ void IntPatch_ImpPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
         _thepointAtEnd.SetParameters(_u1, _v1, _u2, _v2);
         _thepointAtEnd.SetParameter(paraml);
         if (!PStartl.IsNew())
+        {
           _thepointAtEnd.SetVertex(reversed, _vtx);
+        }
         _thepointAtEnd.SetArc(reversed, thesegm.Curve(), paraml, TLineUnk, TArcUnk);
 
         gp_Vec   d1u1, d1v1, d1u2, d1v2;
@@ -1686,15 +1772,21 @@ void IntPatch_ImpPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
     occ::handle<IntPatch_PointLine> aL = occ::down_cast<IntPatch_PointLine>(slin(i));
 
     if (!reversed)
+    {
       IntPatch_RstInt::PutVertexOnLine(aL, Surf1, D1, Surf2, true, TolTang);
+    }
     else
+    {
       IntPatch_RstInt::PutVertexOnLine(aL, Surf2, D2, Surf1, false, TolTang);
+    }
 
     if (aL->NbPnts() <= 2)
     {
       bool aCond = aL->NbPnts() < 2;
       if (!aCond)
+      {
         aCond = (aL->Point(1).IsSame(aL->Point(2), Precision::Confusion()));
+      }
 
       if (aCond)
       {
@@ -1824,14 +1916,18 @@ void IntPatch_ImpPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
   done = true;
 
   if (slin.Length() == 0)
+  {
     return;
+  }
 
   bool isDecomposeRequired =
     (Quad.TypeQuadric() == GeomAbs_Cone) || (Quad.TypeQuadric() == GeomAbs_Sphere)
     || (Quad.TypeQuadric() == GeomAbs_Cylinder) || (Quad.TypeQuadric() == GeomAbs_Torus);
 
   if (!isDecomposeRequired)
+  {
     return;
+  }
 
   // post processing for cones and spheres
 
@@ -1856,11 +1952,15 @@ void IntPatch_ImpPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
   }
 
   if (!isDecompose)
+  {
     return;
+  }
 
   slin.Clear();
   for (int i = 1; i <= dslin.Length(); i++)
+  {
     slin.Append(dslin(i));
+  }
 }
 
 // correct U parameter of the start point of line on Quadric
@@ -1871,22 +1971,34 @@ static double AdjustUFirst(double U1, double U2)
 
   // case: no adjustment
   if (U1 > 0. && U1 < (2. * M_PI))
+  {
     return u;
+  }
 
   // case: near '0'
   if (U1 == 0. || fabs(U1) <= 1.e-9)
   {
     if (U2 > 0. && U2 < (2. * M_PI))
+    {
       u = (U2 < ((2. * M_PI) - U2)) ? 0. : (2. * M_PI);
+    }
     else
     {
       double uu = U2;
       if (U2 > (2. * M_PI))
+      {
         while (uu > (2. * M_PI))
+        {
           uu -= (2. * M_PI);
+        }
+      }
       else
+      {
         while (uu < 0.)
+        {
           uu += (2. * M_PI);
+        }
+      }
 
       u = (uu < ((2. * M_PI) - uu)) ? 0. : (2. * M_PI);
     }
@@ -1895,16 +2007,26 @@ static double AdjustUFirst(double U1, double U2)
   else if (U1 == (2. * M_PI) || fabs((2. * M_PI) - fabs(U1)) <= 1.e-9)
   {
     if (U2 > 0. && U2 < (2. * M_PI))
+    {
       u = (U2 < ((2. * M_PI) - U2)) ? 0. : (2. * M_PI);
+    }
     else
     {
       double uu = U2;
       if (U2 > (2. * M_PI))
+      {
         while (uu > (2. * M_PI))
+        {
           uu -= (2. * M_PI);
+        }
+      }
       else
+      {
         while (uu < 0.)
+        {
           uu += (2. * M_PI);
+        }
+      }
 
       u = (uu < ((2. * M_PI) - uu)) ? 0. : (2. * M_PI);
     }
@@ -1913,11 +2035,19 @@ static double AdjustUFirst(double U1, double U2)
   else
   {
     if (U1 < 0.)
+    {
       while (u < 0.)
+      {
         u += 2. * M_PI;
+      }
+    }
     if (U1 > (2. * M_PI))
+    {
       while (u > (2. * M_PI))
+      {
         u -= (2. * M_PI);
+      }
+    }
   }
 
   return u;
@@ -1944,7 +2074,9 @@ static occ::handle<IntSurf_LineOn2S> GetVertices(const occ::handle<IntPatch_Poin
   {
 
     if (anVrts(i) == -1)
+    {
       continue;
+    }
 
     const IntPatch_Point& Pi = thePLine->Vertex(i);
 
@@ -1952,7 +2084,9 @@ static occ::handle<IntSurf_LineOn2S> GetVertices(const occ::handle<IntPatch_Poin
     {
 
       if (anVrts(k) == -1)
+      {
         continue;
+      }
 
       const IntPatch_Point& Pk = thePLine->Vertex(k);
 
@@ -1968,19 +2102,29 @@ static occ::handle<IntSurf_LineOn2S> GetVertices(const occ::handle<IntPatch_Poin
         Pi.ParametersOnS1(U1, V1);
         Pk.ParametersOnS1(U2, V2);
         if (fabs(U1 - U2) <= TOL2D)
+        {
           sameU1 = true;
+        }
         if (fabs(V1 - V2) <= TOL2D)
+        {
           sameV1 = true;
+        }
 
         Pi.ParametersOnS2(U1, V1);
         Pk.ParametersOnS2(U2, V2);
         if (fabs(U1 - U2) <= TOL2D)
+        {
           sameU2 = true;
+        }
         if (fabs(V1 - V2) <= TOL2D)
+        {
           sameV2 = true;
+        }
 
         if ((sameU1 && sameV1) && (sameU2 && sameV2))
+        {
           anVrts(k) = -1;
+        }
       }
     }
   }
@@ -1989,7 +2133,9 @@ static occ::handle<IntSurf_LineOn2S> GetVertices(const occ::handle<IntPatch_Poin
   for (i = 1; i <= NbVrt; i++)
   {
     if (anVrts(i) == -1)
+    {
       continue;
+    }
     vertices->Add(thePLine->Vertex(i).PntOn2S());
   }
   return vertices;
@@ -2029,11 +2175,19 @@ static inline double AdjustU(const double U)
   if (u < 0. || u > DBLPI)
   {
     if (u < 0.)
+    {
       while (u < 0.)
+      {
         u += DBLPI;
+      }
+    }
     else
+    {
       while (u > DBLPI)
+      {
         u -= DBLPI;
+      }
+    }
   }
   return u;
 }
@@ -2052,13 +2206,21 @@ static inline void Correct2DBounds(const double UF,
   double dVF = fabs(V - VF);
   double dVL = fabs(V - VL);
   if (dUF <= TOL2D && dUF > Eps)
+  {
     U = UF;
+  }
   if (dUL <= TOL2D && dUL > Eps)
+  {
     U = UL;
+  }
   if (dVF <= TOL2D && dVF > Eps)
+  {
     V = VF;
+  }
   if (dVL <= TOL2D && dVL > Eps)
+  {
     V = VL;
+  }
 }
 
 static void AdjustLine(occ::handle<IntSurf_LineOn2S>&        Line,
@@ -2108,9 +2270,13 @@ static bool InsertSeamVertices(occ::handle<IntSurf_LineOn2S>& Line,
     {
       const IntSurf_PntOn2S& aP = Line->Value(ip);
       if (IsReversed)
+      {
         aP.ParametersOnS2(U, V); // S2 - quadric
+      }
       else
+      {
         aP.ParametersOnS1(U, V); // S1 - quadric
+      }
       U = AdjustU(U);
       if (IsSeamParameter(U, TOL2D))
       {
@@ -2119,9 +2285,13 @@ static bool InsertSeamVertices(occ::handle<IntSurf_LineOn2S>& Line,
           double U1 = 0., V1 = 0.;
           int    ipp = (ip == 1) ? (ip + 1) : (ip - 1);
           if (IsReversed)
+          {
             Line->Value(ipp).ParametersOnS2(U1, V1); // S2 - quadric
+          }
           else
+          {
             Line->Value(ipp).ParametersOnS1(U1, V1); // S1 - quadric
+          }
           double u = AdjustUFirst(U, U1);
           if (fabs(u - U) >= 1.5 * M_PI)
           {
@@ -2233,12 +2403,16 @@ static void ToSmooth(const occ::handle<IntSurf_LineOn2S>& Line,
                      double&                              D3D)
 {
   if (Line->NbPoints() <= 10)
+  {
     return;
+  }
 
   D3D            = 0.;
   int NbTestPnts = Line->NbPoints() / 5;
   if (NbTestPnts < 5)
+  {
     NbTestPnts = 5;
+  }
 
   int    startp = (IsFirst) ? 2 : (Line->NbPoints() - NbTestPnts - 2);
   int    ip     = 0;
@@ -2296,7 +2470,9 @@ static void ToSmooth(const occ::handle<IntSurf_LineOn2S>& Line,
   if (!doU && Quad.TypeQuadric() == GeomAbs_Sphere)
   {
     if (fabs(fabs(U1) - fabs(U2)) > (M_PI / 16.))
+    {
       doU = true;
+    }
 
     if (doU && (fabs(U1) <= 1.e-9 || fabs(U1 - 2. * M_PI) <= 1.e-9))
     {
@@ -2316,7 +2492,9 @@ static void ToSmooth(const occ::handle<IntSurf_LineOn2S>& Line,
     Quad.Parameters(Quad.Cone().Apex(), Uapx, Vapx);
 
     if (fabs(fabs(U1) - fabs(U2)) > M_PI / 32.)
+    {
       doU = true;
+    }
 
     if (doU && (fabs(U1) <= 1.e-9 || fabs(U1 - 2. * M_PI) <= 1.e-9))
     {
@@ -2335,9 +2513,13 @@ static void ToSmooth(const occ::handle<IntSurf_LineOn2S>& Line,
     double dU = std::min((DDU / 10.), 5.e-8);
     double U  = (U2 > U3) ? (U2 + dU) : (U2 - dU);
     if (IsReversed)
+    {
       Line->SetUV(Index1, false, U, V1);
+    }
     else
+    {
       Line->SetUV(Index1, true, U, V1);
+    }
     U1 = U;
   }
 }
@@ -2365,7 +2547,9 @@ static bool TestMiddleOnPrm(const IntSurf_PntOn2S&                  aP,
   gp_Pnt2d     a2DPntM(Um, Vm);
   TopAbs_State PosM = PDomain->Classify(a2DPntM, ArcTol);
   if (PosM == TopAbs_ON || PosM == TopAbs_IN)
+  {
     result = true;
+  }
   return result;
 }
 
@@ -2431,9 +2615,13 @@ static void VerifyVertices(const occ::handle<IntSurf_LineOn2S>&    Line,
     {
       double Uv = 0., Vv = 0.;
       if (IsReversed)
+      {
         aV.ParametersOnS2(Uv, Vv);
+      }
       else
+      {
         aV.ParametersOnS1(Uv, Vv);
+      }
       gp_Pnt2d a2DV(Uv, Vv);
       double   Dist = a2DV.Distance(a2DPF);
       if (Dist < DistMinF)
@@ -2441,7 +2629,9 @@ static void VerifyVertices(const occ::handle<IntSurf_LineOn2S>&    Line,
         DistMinF   = Dist;
         FIndexNear = iv;
         if (FConjugated != 0)
+        {
           FConjugated = 0;
+        }
       }
       if (IsSeamParameter(Uv, TOL2D))
       {
@@ -2470,9 +2660,13 @@ static void VerifyVertices(const occ::handle<IntSurf_LineOn2S>&    Line,
     {
       double Uv = 0., Vv = 0.;
       if (IsReversed)
+      {
         aV.ParametersOnS2(Uv, Vv);
+      }
       else
+      {
         aV.ParametersOnS1(Uv, Vv);
+      }
       gp_Pnt2d a2DV(Uv, Vv);
       double   Dist = a2DV.Distance(a2DPL);
       if (Dist < DistMinL)
@@ -2480,7 +2674,9 @@ static void VerifyVertices(const occ::handle<IntSurf_LineOn2S>&    Line,
         DistMinL   = Dist;
         LIndexNear = iv;
         if (LConjugated != 0)
+        {
           LConjugated = 0;
+        }
       }
       if (IsSeamParameter(Uv, TOL2D))
       {
@@ -2507,9 +2703,13 @@ static void VerifyVertices(const occ::handle<IntSurf_LineOn2S>&    Line,
       const IntSurf_PntOn2S& aV = Vertices->Value(FIndexNear);
       double                 Uv = 0., Vv = 0.;
       if (IsReversed)
+      {
         aV.ParametersOnS2(Uv, Vv);
+      }
       else
+      {
         aV.ParametersOnS1(Uv, Vv);
+      }
       if (IsSeamParameter(Uv, TOL2D))
       {
         double Ucv  = (fabs(Uv) < fabs(2. * M_PI - Uv)) ? (2. * M_PI) : 0.;
@@ -2523,9 +2723,13 @@ static void VerifyVertices(const occ::handle<IntSurf_LineOn2S>&    Line,
             aV.ParametersOnS1(U2, V2); // S1 - prm
             VrtF.SetValue(true, U2, V2);
             if (FConjugated == 0)
+            {
               VrtF.SetValue(false, Uv, Vv);
+            }
             else
+            {
               VrtF.SetValue(false, Ucv, Vv);
+            }
           }
           else
           {
@@ -2533,9 +2737,13 @@ static void VerifyVertices(const occ::handle<IntSurf_LineOn2S>&    Line,
             aV.ParametersOnS2(U2, V2); // S2 - prm
             VrtF.SetValue(false, U2, V2);
             if (FConjugated == 0)
+            {
               VrtF.SetValue(true, Uv, Vv);
+            }
             else
+            {
               VrtF.SetValue(true, Ucv, Vv);
+            }
           }
           double Dist3D = VrtF.Value().Distance(aPF.Value());
           if (Dist3D > 1.5e-7 && DistMinF > TOL2D)
@@ -2558,9 +2766,13 @@ static void VerifyVertices(const occ::handle<IntSurf_LineOn2S>&    Line,
       const IntSurf_PntOn2S& aV = Vertices->Value(LIndexNear);
       double                 Uv = 0., Vv = 0.;
       if (IsReversed)
+      {
         aV.ParametersOnS2(Uv, Vv);
+      }
       else
+      {
         aV.ParametersOnS1(Uv, Vv);
+      }
       if (IsSeamParameter(Uv, TOL2D))
       {
         double Ucv  = (fabs(Uv) < fabs(2. * M_PI - Uv)) ? (2. * M_PI) : 0.;
@@ -2574,9 +2786,13 @@ static void VerifyVertices(const occ::handle<IntSurf_LineOn2S>&    Line,
             aV.ParametersOnS1(U2, V2); // S1 - prm
             VrtL.SetValue(true, U2, V2);
             if (LConjugated == 0)
+            {
               VrtL.SetValue(false, Uv, Vv);
+            }
             else
+            {
               VrtL.SetValue(false, Ucv, Vv);
+            }
           }
           else
           {
@@ -2584,9 +2800,13 @@ static void VerifyVertices(const occ::handle<IntSurf_LineOn2S>&    Line,
             aV.ParametersOnS2(U2, V2); // S2 - prm
             VrtL.SetValue(false, U2, V2);
             if (LConjugated == 0)
+            {
               VrtL.SetValue(true, Uv, Vv);
+            }
             else
+            {
               VrtL.SetValue(true, Ucv, Vv);
+            }
           }
           double Dist3D = VrtL.Value().Distance(aPL.Value());
           if (Dist3D > 1.5e-7 && DistMinL > TOL2D)
@@ -2642,7 +2862,9 @@ static void PutIntVertices(const occ::handle<IntPatch_PointLine>& Line,
   int nbp = Result->NbPoints(), nbv = Vertices->NbPoints();
 
   if (nbp < 3)
+  {
     return;
+  }
 
   const occ::handle<IntPatch_RLine> aRLine = occ::down_cast<IntPatch_RLine>(Line);
 
@@ -2705,7 +2927,9 @@ static bool HasInternals(occ::handle<IntSurf_LineOn2S>& Line,
   bool result = false;
 
   if (nbp < 3)
+  {
     return result;
+  }
 
   for (ip = 2; ip <= (nbp - 1); ip++)
   {
@@ -2720,7 +2944,9 @@ static bool HasInternals(occ::handle<IntSurf_LineOn2S>& Line,
       }
     }
     if (result)
+    {
       break;
+    }
   }
 
   return result;
@@ -2739,7 +2965,9 @@ static occ::handle<IntPatch_WLine> MakeSplitWLine(occ::handle<IntPatch_WLine>& W
 
   int ip = 0;
   for (ip = ParFirst; ip <= ParLast; ip++)
+  {
     sline->Add(SLine->Value(ip));
+  }
 
   occ::handle<IntPatch_WLine> wline = new IntPatch_WLine(sline, Tang, Trans1, Trans2);
   wline->SetCreatingWayInfo(IntPatch_WLine::IntPatch_WLImpPrm);
@@ -2788,14 +3016,18 @@ static bool SplitOnSegments(occ::handle<IntPatch_WLine>&                      WL
       int firstPar = (int)WLine->Vertex(iv).ParameterOnLine();
       int lastPar  = (int)WLine->Vertex(iv + 1).ParameterOnLine();
       if ((lastPar - firstPar) <= 1)
+      {
         continue;
+      }
       else
       {
         occ::handle<IntPatch_WLine> splitwline =
           MakeSplitWLine(WLine, Tang, Trans1, Trans2, ArcTol, firstPar, lastPar);
         Segments.Append(splitwline);
         if (!result)
+        {
           result = true;
+        }
       }
     }
   }
@@ -2956,7 +3188,9 @@ static bool DecomposeResult(const occ::handle<IntPatch_PointLine>&  theLine,
   occ::handle<IntSurf_LineOn2S> aSSLine(aSLine);
 
   if (aSSLine->NbPoints() <= 1)
+  {
     return false;
+  }
 
   AdjustLine(aSSLine, IsReversed, theQSurf, aTOL2D);
 
@@ -3247,7 +3481,9 @@ static bool DecomposeResult(const occ::handle<IntPatch_PointLine>&  theLine,
         if (!aNewPoint.IsSame(aRefPt, aCompareTol3D, aCompareTol2D))
         {
           if (isOnBoundary)
+          {
             break;
+          }
 
           sline->Add(aNewPoint);
           aPrePointExist = aLastType;
@@ -3296,7 +3532,9 @@ static bool DecomposeResult(const occ::handle<IntPatch_PointLine>&  theLine,
       flNextLine = true;
 
       if (aFindex < aBindex)
+      {
         aFindex = aBindex;
+      }
 
       // Go to the next part of aSSLine
       // because we cannot create the line
@@ -3389,7 +3627,9 @@ static bool DecomposeResult(const occ::handle<IntPatch_PointLine>&  theLine,
         int nbsegms = segm.Length();
         int iseg    = 0;
         for (iseg = 1; iseg <= nbsegms; iseg++)
+        {
           theLines.Append(segm(iseg));
+        }
       }
     }
     else
@@ -3568,7 +3808,9 @@ bool IsCoincide(IntPatch_TheSurfFunction&              theFunc,
       double aParam1 = ElCLib::Parameter(aLin1, aP1), aParam2 = ElCLib::Parameter(aLin1, aP2);
 
       if (CheckSegmSegm(aRf, aRl, aParam1, aParam2))
+      {
         return true;
+      }
 
       // Lines are parallel. Therefore, there is no point in
       // projecting points to another line in order to check
@@ -3590,9 +3832,13 @@ bool IsCoincide(IntPatch_TheSurfFunction&              theFunc,
   {
     double aUf = 0.0, aVf = 0.0;
     if (isTheSurface1Using)
+    {
       theLine->Point(aPtID).ParametersOnS1(aUf, aVf);
+    }
     else
+    {
       theLine->Point(aPtID).ParametersOnS2(aUf, aVf);
+    }
 
     // Take 2d-point in parametric surface (because theArc is
     // 2d-line in parametric surface).
@@ -3601,7 +3847,9 @@ bool IsCoincide(IntPatch_TheSurfFunction&              theFunc,
     const double aRParam = ElCLib::Parameter(anArcLin, aPloc);
 
     if ((aRParam < aUAf) || (aRParam > aUAl))
+    {
       return false;
+    }
 
     const gp_Pnt2d aPmin(ElCLib::Value(aRParam, anArcLin));
 

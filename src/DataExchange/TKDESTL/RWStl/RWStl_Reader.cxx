@@ -254,7 +254,9 @@ bool RWStl_Reader::IsAscii(Standard_IStream& theStream, const bool isSeekgAvaila
 static inline bool str_starts_with(const char* theStr, const char* theWord, int theN)
 {
   while (isspace(*theStr) && *theStr != '\0')
+  {
     theStr++;
+  }
   return !strncasecmp(theStr, theWord, theN);
 }
 
@@ -264,7 +266,9 @@ static bool ReadVertex(const char* theStr, double& theX, double& theY, double& t
 
   // skip 'vertex'
   while (isspace((unsigned char)*aStr) || isalpha((unsigned char)*aStr))
+  {
     ++aStr;
+  }
 
   // read values
   char* aEnd;

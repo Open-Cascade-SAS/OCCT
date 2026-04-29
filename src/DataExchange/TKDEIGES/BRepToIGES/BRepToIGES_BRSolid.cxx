@@ -68,7 +68,9 @@ occ::handle<IGESData_IGESEntity> BRepToIGES_BRSolid ::TransferSolid(
   occ::handle<IGESData_IGESEntity> res;
 
   if (start.IsNull())
+  {
     return res;
+  }
 
   if (start.ShapeType() == TopAbs_SOLID)
   {
@@ -103,7 +105,9 @@ occ::handle<IGESData_IGESEntity> BRepToIGES_BRSolid ::TransferSolid(
 {
   occ::handle<IGESData_IGESEntity> res;
   if (start.IsNull())
+  {
     return res;
+  }
 
   TopExp_Explorer                                                     Ex;
   occ::handle<IGESData_IGESEntity>                                    IShell;
@@ -113,7 +117,9 @@ occ::handle<IGESData_IGESEntity> BRepToIGES_BRSolid ::TransferSolid(
 
   int nbshapes = 0;
   for (Ex.Init(start, TopAbs_SHELL); Ex.More(); Ex.Next())
+  {
     nbshapes++;
+  }
   Message_ProgressScope aPS(theProgress, nullptr, nbshapes);
   for (Ex.Init(start, TopAbs_SHELL); Ex.More() && aPS.More(); Ex.Next())
   {
@@ -127,7 +133,9 @@ occ::handle<IGESData_IGESEntity> BRepToIGES_BRSolid ::TransferSolid(
     {
       IShell = BS.TransferShell(S, aRange);
       if (!IShell.IsNull())
+      {
         Seq->Append(IShell);
+      }
     }
   }
 
@@ -169,7 +177,9 @@ occ::handle<IGESData_IGESEntity> BRepToIGES_BRSolid ::TransferCompSolid(
 {
   occ::handle<IGESData_IGESEntity> res;
   if (start.IsNull())
+  {
     return res;
+  }
 
   TopExp_Explorer                                                     Ex;
   occ::handle<IGESData_IGESEntity>                                    ISolid;
@@ -178,7 +188,9 @@ occ::handle<IGESData_IGESEntity> BRepToIGES_BRSolid ::TransferCompSolid(
 
   int nbshapes = 0;
   for (Ex.Init(start, TopAbs_SOLID); Ex.More(); Ex.Next())
+  {
     nbshapes++;
+  }
   Message_ProgressScope aPS(theProgress, nullptr, nbshapes);
   for (Ex.Init(start, TopAbs_SOLID); Ex.More() && aPS.More(); Ex.Next())
   {
@@ -192,7 +204,9 @@ occ::handle<IGESData_IGESEntity> BRepToIGES_BRSolid ::TransferCompSolid(
     {
       ISolid = TransferSolid(S, aRange);
       if (!ISolid.IsNull())
+      {
         Seq->Append(ISolid);
+      }
     }
   }
 
@@ -234,7 +248,9 @@ occ::handle<IGESData_IGESEntity> BRepToIGES_BRSolid ::TransferCompound(
 {
   occ::handle<IGESData_IGESEntity> res;
   if (start.IsNull())
+  {
     return res;
+  }
 
   TopExp_Explorer                                                     Ex;
   occ::handle<IGESData_IGESEntity>                                    IShape;
@@ -246,17 +262,29 @@ occ::handle<IGESData_IGESEntity> BRepToIGES_BRSolid ::TransferCompound(
   // count numbers of subshapes
   int nbshapes = 0;
   for (Ex.Init(start, TopAbs_SOLID); Ex.More(); Ex.Next())
+  {
     nbshapes++;
+  }
   for (Ex.Init(start, TopAbs_SHELL, TopAbs_SOLID); Ex.More(); Ex.Next())
+  {
     nbshapes++;
+  }
   for (Ex.Init(start, TopAbs_FACE, TopAbs_SHELL); Ex.More(); Ex.Next())
+  {
     nbshapes++;
+  }
   for (Ex.Init(start, TopAbs_WIRE, TopAbs_FACE); Ex.More(); Ex.Next())
+  {
     nbshapes++;
+  }
   for (Ex.Init(start, TopAbs_EDGE, TopAbs_WIRE); Ex.More(); Ex.Next())
+  {
     nbshapes++;
+  }
   for (Ex.Init(start, TopAbs_VERTEX, TopAbs_EDGE); Ex.More(); Ex.Next())
+  {
     nbshapes++;
+  }
   Message_ProgressScope aPS(theProgress, nullptr, nbshapes);
 
   // take all Solids
@@ -272,7 +300,9 @@ occ::handle<IGESData_IGESEntity> BRepToIGES_BRSolid ::TransferCompound(
     {
       IShape = TransferSolid(S, aRange);
       if (!IShape.IsNull())
+      {
         Seq->Append(IShape);
+      }
     }
   }
 
@@ -289,7 +319,9 @@ occ::handle<IGESData_IGESEntity> BRepToIGES_BRSolid ::TransferCompound(
     {
       IShape = BS.TransferShell(S, aRange);
       if (!IShape.IsNull())
+      {
         Seq->Append(IShape);
+      }
     }
   }
 
@@ -306,7 +338,9 @@ occ::handle<IGESData_IGESEntity> BRepToIGES_BRSolid ::TransferCompound(
     {
       IShape = BS.TransferFace(S, aRange);
       if (!IShape.IsNull())
+      {
         Seq->Append(IShape);
+      }
     }
   }
 
@@ -322,7 +356,9 @@ occ::handle<IGESData_IGESEntity> BRepToIGES_BRSolid ::TransferCompound(
     {
       IShape = BW.TransferWire(S);
       if (!IShape.IsNull())
+      {
         Seq->Append(IShape);
+      }
     }
   }
 
@@ -339,7 +375,9 @@ occ::handle<IGESData_IGESEntity> BRepToIGES_BRSolid ::TransferCompound(
       NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> anEmptyMap;
       IShape = BW.TransferEdge(S, anEmptyMap, false);
       if (!IShape.IsNull())
+      {
         Seq->Append(IShape);
+      }
     }
   }
 
@@ -355,7 +393,9 @@ occ::handle<IGESData_IGESEntity> BRepToIGES_BRSolid ::TransferCompound(
     {
       IShape = BW.TransferVertex(S);
       if (!IShape.IsNull())
+      {
         Seq->Append(IShape);
+      }
     }
   }
 

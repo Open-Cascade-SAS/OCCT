@@ -30,7 +30,9 @@ void RWStepGeom_RWAxis1Placement::ReadStep(const occ::handle<StepData_StepReader
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "axis1_placement"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

@@ -351,7 +351,9 @@ void IntAna_Curve::InternalUVValue(const double theta,
   const double aTolD = 2.0 * aDT * std::abs(B * aDB - 2.0 * (A * aDC + C * aDA));
 
   if (aDiscriminant < aTolD)
+  {
     aDiscriminant = 0.0;
+  }
 
   if (std::abs(A) <= Precision::PConfusion())
   {
@@ -408,7 +410,9 @@ bool IntAna_Curve::D1u(const double theta, gp_Pnt& Pt, gp_Vec& Vec)
   //
   Pt = Value(theta);
   if (std::abs(A) < 1.0e-7 || std::abs(SigneSqrtDis) < 1.0e-10)
+  {
     return (false);
+  }
 
   //-- Approximation of the derivative (better than the mathematical computation!)
   double dtheta = (DomainSup - DomainInf) * 1.0e-6;
@@ -491,13 +495,19 @@ void IntAna_Curve::FindParameter(const gp_Pnt& theP, NCollection_List<double>& t
   for (int i = 0; i < aMaxPar; i++)
   {
     if (aParams[i] > myLastParameter)
+    {
       break;
+    }
 
     if (aParams[i] < myFirstParameter)
+    {
       continue;
+    }
 
     if (i && (aParams[i] - aParams[i - 1]) < Precision::PConfusion())
+    {
       continue;
+    }
 
     double U = 0.0, V = 0.0, A = 0.0, B = 0.0, C = 0.0, sint = 0.0, cost = 0.0, SigneSqrtDis = 0.0;
     InternalUVValue(aParams[i], U, V, A, B, C, cost, sint, SigneSqrtDis);
@@ -505,9 +515,13 @@ void IntAna_Curve::FindParameter(const gp_Pnt& theP, NCollection_List<double>& t
 
     double aSqTol;
     if (aParams[i] == aTheta || (TwoCurves && aParams[i] == DomainSup + DomainSup - aTheta))
+    {
       aSqTol = InternalPrecision;
+    }
     else
+    {
       aSqTol = aSqTolPrecision;
+    }
 
     if (aP.SquareDistance(theP) < aSqTol)
     {

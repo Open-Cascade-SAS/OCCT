@@ -27,7 +27,9 @@ void RWStepShape_RWLimitsAndFits::ReadStep(const occ::handle<StepData_StepReader
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 4, ach, "limits_and_fits"))
+  {
     return;
+  }
 
   // --- own field : form_variance ---
 

@@ -87,12 +87,17 @@ static bool checkBSplineSurface(IGESToBRep_BasicSurface*                    theS
     double aMinValue = SWeights.Value(SWeights.LowerRow(), SWeights.LowerCol());
     double aMaxValue = SWeights.Value(SWeights.LowerRow(), SWeights.LowerCol());
     for (int i = SWeights.LowerRow(); i <= SWeights.UpperRow(); i++)
+    {
       for (int j = SWeights.LowerCol(); j <= SWeights.UpperCol(); j++)
       {
         if (SWeights.Value(i, j) < aMinValue)
+        {
           aMinValue = SWeights.Value(i, j);
+        }
         if (SWeights.Value(i, j) > aMaxValue)
+        {
           aMaxValue = SWeights.Value(i, j);
+        }
 
         if (aMaxValue - aMinValue > 1000)
         {
@@ -100,6 +105,7 @@ static bool checkBSplineSurface(IGESToBRep_BasicSurface*                    theS
           theSurface->SendWarning(theBSplineSurface, msg1374);
         }
       }
+    }
   }
 
   bool aResult = true;
@@ -108,11 +114,19 @@ static bool checkBSplineSurface(IGESToBRep_BasicSurface*                    theS
   bool aWrongOrder = false;
   int  i;
   for (i = SUKnots.Lower(); (i < SUKnots.Upper()) && (!aWrongOrder); i++)
+  {
     if (SUKnots.Value(i + 1) < SUKnots.Value(i))
+    {
       aWrongOrder = true;
+    }
+  }
   for (i = SVKnots.Lower(); (i < SVKnots.Upper()) && (!aWrongOrder); i++)
+  {
     if (SVKnots.Value(i + 1) < SVKnots.Value(i))
+    {
       aWrongOrder = true;
+    }
+  }
 
   if (aWrongOrder)
   {
@@ -235,7 +249,9 @@ occ::handle<Geom_Surface> IGESToBRep_BasicSurface::TransferBasicSurface(
     // AddFail(start,"The IGESEntity cannot be transferred");
   }
   else
+  {
     resurf->Scale(gp_Pnt(0, 0, 0), GetUnitFactor());
+  }
 
   return resurf;
 }
@@ -330,7 +346,9 @@ occ::handle<Geom_CylindricalSurface> IGESToBRep_BasicSurface::TransferRigthCylin
   gp_Dir ax = gp_Dir(Axis->Value());
   gp_Ax3 ax3;
   if (!Param)
+  {
     ax3 = gp_Ax3(Pt, ax);
+  }
   else
   {
     occ::handle<IGESGeom_Direction> refdir = start->ReferenceDir();
@@ -389,13 +407,17 @@ occ::handle<Geom_ConicalSurface> IGESToBRep_BasicSurface::TransferRigthConicalSu
     return res;
   }
   if (radius < Precision::Confusion())
+  {
     radius = 0.;
+  }
 
   gp_Pnt Pt = Point->Value();
   gp_Dir ax = gp_Dir(Axis->Value());
   gp_Ax3 ax3;
   if (!Param)
+  {
     ax3 = gp_Ax3(Pt, ax);
+  }
   else
   {
     occ::handle<IGESGeom_Direction> refdir = start->ReferenceDir();
@@ -453,7 +475,9 @@ occ::handle<Geom_SphericalSurface> IGESToBRep_BasicSurface::TransferSphericalSur
   gp_Dir ax = gp_Dir(Axis->Value());
   gp_Ax3 ax3;
   if (!Param)
+  {
     ax3 = gp_Ax3(Pt, ax);
+  }
   else
   {
     occ::handle<IGESGeom_Direction> refdir = start->ReferenceDir();
@@ -512,7 +536,9 @@ occ::handle<Geom_ToroidalSurface> IGESToBRep_BasicSurface::TransferToroidalSurfa
   gp_Dir ax = gp_Dir(Axis->Value());
   gp_Ax3 ax3;
   if (!Param)
+  {
     ax3 = gp_Ax3(Pt, ax);
+  }
   else
   {
     occ::handle<IGESGeom_Direction> refdir = start->ReferenceDir();
@@ -628,21 +654,29 @@ occ::handle<Geom_BSplineSurface> IGESToBRep_BasicSurface::TransferBSplineSurface
   int                        i, j; // szv#4:S4163:12Mar99 k unused
 
   if (!GetModeTransfer() && start->HasTransf())
+  {
     for (i = 0; i <= start->UpperIndexU(); i++)
     {
       for (j = 0; j <= start->UpperIndexV(); j++)
+      {
         Pole.SetValue(UIndex, VIndex++, start->TransformedPole(i, j));
+      }
       UIndex++;
       VIndex = Pole.LowerCol();
     }
+  }
   else
+  {
     for (i = 0; i <= start->UpperIndexU(); i++)
     {
       for (j = 0; j <= start->UpperIndexV(); j++)
+      {
         Pole.SetValue(UIndex, VIndex++, start->Pole(i, j));
+      }
       UIndex++;
       VIndex = Pole.LowerCol();
     }
+  }
 
   //  KNOTS & MULTIPLICITIES for U :
   //  ==============================
@@ -667,9 +701,13 @@ occ::handle<Geom_BSplineSurface> IGESToBRep_BasicSurface::TransferBSplineSurface
     double UKnot2 = start->KnotU(i - 1);
 
     if (std::abs(UKnot1 - UKnot2) <= Epsilon(UKnot2))
+    {
       TempUMult.SetValue(UIndex, TempUMult.Value(UIndex) + 1);
+    }
     else
+    {
       TempUKnot.SetValue(++UIndex, UKnot1);
+    }
   }
 
   //  Final knots & multiplicities arrays are dimensioned so as to be fully
@@ -739,9 +777,13 @@ occ::handle<Geom_BSplineSurface> IGESToBRep_BasicSurface::TransferBSplineSurface
     double VKnot2 = start->KnotV(i - 1);
 
     if (std::abs(VKnot1 - VKnot2) <= Epsilon(VKnot2))
+    {
       TempVMult.SetValue(VIndex, TempVMult.Value(VIndex) + 1);
+    }
     else
+    {
       TempVKnot.SetValue(++VIndex, VKnot1);
+    }
   }
 
   //  Final knots & multiplicities arrays are dimensioned so as to be fully
@@ -794,9 +836,13 @@ occ::handle<Geom_BSplineSurface> IGESToBRep_BasicSurface::TransferBSplineSurface
   NCollection_Sequence<int>  PoleUInd;
   NCollection_Sequence<int>  PoleVInd;
   for (i = 1; i <= NbPolesU; i++)
+  {
     PoleUInd.Append(i);
+  }
   for (i = 1; i <= NbPolesV; i++)
+  {
     PoleVInd.Append(i);
+  }
   UIndex = Poles.LowerRow();
   VIndex = Poles.LowerCol();
 
@@ -829,7 +875,9 @@ occ::handle<Geom_BSplineSurface> IGESToBRep_BasicSurface::TransferBSplineSurface
       for (i = 1; i <= newNbPolesU; i++)
       {
         for (j = 1; j <= newNbPolesV; j++)
+        {
           Poles.SetValue(UIndex, VIndex++, Pole.Value(PoleUInd.Value(i), PoleVInd.Value(j)));
+        }
         UIndex++;
         VIndex = Poles.LowerCol();
       }
@@ -846,7 +894,9 @@ occ::handle<Geom_BSplineSurface> IGESToBRep_BasicSurface::TransferBSplineSurface
     for (i = 1; i <= newNbPolesU; i++)
     {
       for (j = 1; j <= newNbPolesV; j++)
+      {
         Poles.SetValue(UIndex, VIndex++, Pole.Value(i, j));
+      }
       UIndex++;
       VIndex = Poles.LowerCol();
     }
@@ -860,9 +910,15 @@ occ::handle<Geom_BSplineSurface> IGESToBRep_BasicSurface::TransferBSplineSurface
     gp_GTrsf GBSplTrsf(start->CompoundLocation());
     gp_Trsf  BSplTrsf;
     if (IGESData_ToolLocation::ConvertLocation(GetEpsilon(), GBSplTrsf, BSplTrsf))
+    {
       for (i = Poles.LowerRow(); i <= Poles.UpperRow(); i++)
+      {
         for (j = Poles.LowerCol(); j <= Poles.UpperCol(); j++)
+        {
           Poles.SetValue(i, j, Poles.Value(i, j).Transformed(BSplTrsf));
+        }
+      }
+    }
     else
     {
       Message_Msg msg1035("IGES_1035");
@@ -878,7 +934,9 @@ occ::handle<Geom_BSplineSurface> IGESToBRep_BasicSurface::TransferBSplineSurface
     // sln 29.12.2001 OCC90 : If surface can not be created do nothing
     NCollection_Array2<double> Weight(1, 1, 1, 1);
     if (!checkBSplineSurface(this, start, UKnot, VKnot, Weight))
+    {
       return res;
+    }
     res = new Geom_BSplineSurface(Poles, UKnot, VKnot, UMult, VMult, DegreeU, DegreeV);
   }
 
@@ -927,7 +985,9 @@ occ::handle<Geom_BSplineSurface> IGESToBRep_BasicSurface::TransferBSplineSurface
       for (i = 1; i <= newNbPolesU; i++)
       {
         for (j = 1; j <= newNbPolesV; j++)
+        {
           Weight.SetValue(UIndex, VIndex++, PoleWeight.Value(PoleUInd.Value(i), PoleVInd.Value(j)));
+        }
         UIndex++;
         VIndex = Poles.LowerCol();
       }
@@ -937,7 +997,9 @@ occ::handle<Geom_BSplineSurface> IGESToBRep_BasicSurface::TransferBSplineSurface
       for (i = 1; i <= newNbPolesU; i++)
       {
         for (j = 1; j <= newNbPolesV; j++)
+        {
           Weight.SetValue(UIndex, VIndex++, PoleWeight.Value(i, j));
+        }
         UIndex++;
         VIndex = Poles.LowerCol();
       }
@@ -945,7 +1007,9 @@ occ::handle<Geom_BSplineSurface> IGESToBRep_BasicSurface::TransferBSplineSurface
 
     // sln 29.12.2001 OCC90 : If surface can not be created do nothing
     if (!checkBSplineSurface(this, start, UKnot, VKnot, Weight))
+    {
       return res;
+    }
     res = new Geom_BSplineSurface(Poles, Weight, UKnot, VKnot, UMult, VMult, DegreeU, DegreeV);
   }
 
@@ -967,7 +1031,9 @@ occ::handle<Geom_BSplineSurface> IGESToBRep_BasicSurface::TransferBSplineSurface
         res->RemoveUKnot(i, DegreeU - 1, GetEpsGeom()); // szv#4:S4163:12Mar99 `isC1=` not needed
       }
       else
+      {
         res->RemoveUKnot(i, DegreeU - 1, GetEpsGeom()); // szv#4:S4163:12Mar99 `isC1=` not needed
+      }
     }
   }
 
@@ -983,7 +1049,9 @@ occ::handle<Geom_BSplineSurface> IGESToBRep_BasicSurface::TransferBSplineSurface
         res->RemoveVKnot(i, DegreeV - 1, GetEpsGeom()); // szv#4:S4163:12Mar99 `isC1=` not needed
       }
       else
+      {
         res->RemoveVKnot(i, DegreeV - 1, GetEpsGeom()); // szv#4:S4163:12Mar99 `isC1=` not needed
+      }
     }
   }
 

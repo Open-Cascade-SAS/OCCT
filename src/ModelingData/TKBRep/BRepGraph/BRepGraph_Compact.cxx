@@ -77,7 +77,9 @@ BRepGraph_NodeId remapNodeId(
   const NCollection_DataMap<BRepGraph_CompSolidId, BRepGraph_CompSolidId>& theCompSolidMap)
 {
   if (!theId.IsValid())
+  {
     return BRepGraph_NodeId();
+  }
 
   switch (theId.NodeKind)
   {
@@ -559,7 +561,9 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
       const BRepGraphInc::WireRef& aWR       = theGraph.Refs().Wires().Entry(aRefIt.CurrentId());
       const BRepGraph_WireId       aRemapped = BRepGraph_WireId::FromNodeId(remapId(aWR.WireDefId));
       if (!aRemapped.IsValid())
+      {
         continue;
+      }
       if (aWR.IsOuter)
       {
         aNewOuterWire     = aRemapped;
@@ -682,7 +686,9 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
         const BRepGraph_Curve2DRepId aNewRepId =
           aNewGraph.Editor().CoEdges().CreateCurve2DRep(anOldPCurve);
         if (aNewRepId.IsValid())
+        {
           aNewGraph.Editor().CoEdges().SetCurve2DRepId(aNewCoEdge, aNewRepId);
+        }
       }
     }
   }
@@ -953,7 +959,9 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
           const BRepGraphInc::OccurrenceRef& anOldOccRef =
             theGraph.Refs().Occurrences().Entry(anOldOccRefId);
           if (anOldOccRef.IsRemoved)
+          {
             continue;
+          }
           const BRepGraphInc::OccurrenceDef& anOldOccDef =
             theGraph.Topo().Occurrences().Definition(anOldOccRef.OccurrenceDefId);
           if (!anOldOccDef.IsRemoved && anOldOccDef.ChildDefId.IsValid()
@@ -1302,27 +1310,49 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
   // Build unified remap map covering all 8 topology kinds.
   NCollection_DataMap<BRepGraph_NodeId, BRepGraph_NodeId> aRemapMap;
   for (const auto& [anOldId, aNewId] : aVertexMap.Items())
+  {
     aRemapMap.Bind(anOldId, aNewId);
+  }
   for (const auto& [anOldId, aNewId] : anEdgeMap.Items())
+  {
     aRemapMap.Bind(anOldId, aNewId);
+  }
   for (const auto& [anOldId, aNewId] : aCoEdgeMap.Items())
+  {
     aRemapMap.Bind(anOldId, aNewId);
+  }
   for (const auto& [anOldId, aNewId] : aWireMap.Items())
+  {
     aRemapMap.Bind(anOldId, aNewId);
+  }
   for (const auto& [anOldId, aNewId] : aFaceMap.Items())
+  {
     aRemapMap.Bind(anOldId, aNewId);
+  }
   for (const auto& [anOldId, aNewId] : aShellMap.Items())
+  {
     aRemapMap.Bind(anOldId, aNewId);
+  }
   for (const auto& [anOldId, aNewId] : aSolidMap.Items())
+  {
     aRemapMap.Bind(anOldId, aNewId);
+  }
   for (const auto& [anOldId, aNewId] : aCompoundMap.Items())
+  {
     aRemapMap.Bind(anOldId, aNewId);
+  }
   for (const auto& [anOldId, aNewId] : aCompSolidMap.Items())
+  {
     aRemapMap.Bind(anOldId, aNewId);
+  }
   for (const auto& [anOldId, aNewId] : aProductMap.Items())
+  {
     aRemapMap.Bind(anOldId, aNewId);
+  }
   for (const auto& [anOldId, aNewId] : anOccurrenceMap.Items())
+  {
     aRemapMap.Bind(anOldId, aNewId);
+  }
 
   theGraph.LayerRegistry().DispatchOnCompact(aRemapMap);
 
@@ -1332,13 +1362,17 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
   {
     const BRepGraph_NodeId* aNewId = aRemapMap.Seek(aOldId);
     if (aNewId != nullptr)
+    {
       theGraph.incStorage().BindTShapeToNode(aTShape, *aNewId);
+    }
   }
   for (const auto& [aOldId, aShape] : aOriginalBindings)
   {
     const BRepGraph_NodeId* aNewId = aRemapMap.Seek(aOldId);
     if (aNewId != nullptr)
+    {
       theGraph.incStorage().BindOriginal(*aNewId, aShape);
+    }
   }
 
   // Record history after swap so records survive in the new graph's history log.

@@ -60,7 +60,9 @@ void PCDM_StorageDriver::Write(const occ::handle<CDM_Document>&  aDocument,
   }
 
   if (Failure)
+  {
     throw PCDM_DriverError(aMsg.str().c_str());
+  }
 
   if (thePersistentDocuments.IsEmpty())
   {
@@ -100,7 +102,9 @@ void PCDM_StorageDriver::Write(const occ::handle<CDM_Document>&  aDocument,
   theFile->Close();
 
   if (theData->ErrorStatus() != Storage_VSOk)
+  {
     throw PCDM_DriverError(theData->ErrorStatusExtension().ToCString());
+  }
 }
 
 //=================================================================================================

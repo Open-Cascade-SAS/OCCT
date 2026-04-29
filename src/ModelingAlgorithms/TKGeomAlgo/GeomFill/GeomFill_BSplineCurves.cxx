@@ -294,13 +294,21 @@ void GeomFill_BSplineCurves::Init(const occ::handle<Geom_BSplineCurve>& C1,
   int DegU = std::max(Deg1, Deg3);
   int DegV = std::max(Deg2, Deg4);
   if (Deg1 < DegU)
+  {
     CC1->IncreaseDegree(DegU);
+  }
   if (Deg2 < DegV)
+  {
     CC2->IncreaseDegree(DegV);
+  }
   if (Deg3 < DegU)
+  {
     CC3->IncreaseDegree(DegU);
+  }
   if (Deg4 < DegV)
+  {
     CC4->IncreaseDegree(DegV);
+  }
 
   // Mise en conformite des distributions de noeuds
   int NbUPoles = SetSameDistribution(CC1, CC3);
@@ -309,7 +317,9 @@ void GeomFill_BSplineCurves::Init(const occ::handle<Geom_BSplineCurve>& C1,
   if (Type == GeomFill_CoonsStyle)
   {
     if (NbUPoles < 4 || NbVPoles < 4)
+    {
       throw Standard_ConstructionError("GeomFill_BSplineCurves: invalid filling style");
+    }
   }
 
   const NCollection_Array1<gp_Pnt>& P1 = CC1->Poles();
@@ -405,15 +415,23 @@ void GeomFill_BSplineCurves::Init(const occ::handle<Geom_BSplineCurve>& C1,
   Tol                                = Tol * Tol;
   if (C1->StartPoint().SquareDistance(C2->StartPoint()) > Tol
       && C1->StartPoint().SquareDistance(C2->EndPoint()) > Tol)
+  {
     Poles(1) = C1->StartPoint();
+  }
   else
+  {
     Poles(1) = C1->EndPoint();
+  }
 
   if (C3->StartPoint().SquareDistance(C2->StartPoint()) > Tol
       && C3->StartPoint().SquareDistance(C2->EndPoint()) > Tol)
+  {
     Poles(2) = C3->StartPoint();
+  }
   else
+  {
     Poles(2) = C3->EndPoint();
+  }
 
   Knots(1) = C2->Knot(C2->FirstUKnotIndex());
   Knots(2) = C2->Knot(C2->LastUKnotIndex());
@@ -441,9 +459,13 @@ void GeomFill_BSplineCurves::Init(const occ::handle<Geom_BSplineCurve>& C1,
     int DegU = std::max(Deg1, Deg2);
 
     if (CC1->Degree() < DegU)
+    {
       CC1->IncreaseDegree(DegU);
+    }
     if (CC2->Degree() < DegU)
+    {
       CC2->IncreaseDegree(DegU);
+    }
 
     // Mise en conformite des distributions de noeuds
     int                               NbPoles = SetSameDistribution(CC1, CC2);
@@ -519,7 +541,9 @@ void GeomFill_BSplineCurves::Init(const occ::handle<Geom_BSplineCurve>& C1,
     }
 
     if (!IsOK)
+    {
       throw Standard_OutOfRange("GeomFill_BSplineCurves: Courbes non jointives");
+    }
 
     int                               NbUPoles = CC1->NbPoles();
     int                               NbVPoles = CC2->NbPoles();

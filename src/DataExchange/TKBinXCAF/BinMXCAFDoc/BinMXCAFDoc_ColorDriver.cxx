@@ -50,7 +50,9 @@ bool BinMXCAFDoc_ColorDriver::Paste(const BinObjMgt_Persistent&       theSource,
   {
     bool isRGBA = theSource >> alpha;
     if (!isRGBA)
+    {
       alpha = 1.0;
+    }
     anAtt->Set(R, G, B, alpha);
   }
   return isOk;

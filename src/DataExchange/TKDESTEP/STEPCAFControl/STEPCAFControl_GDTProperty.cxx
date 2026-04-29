@@ -315,7 +315,9 @@ void STEPCAFControl_GDTProperty::GetDimModifiers(
     occ::handle<StepRepr_DescriptiveRepresentationItem> aDRI =
       occ::down_cast<StepRepr_DescriptiveRepresentationItem>(theCRI->ItemElement()->Value(l));
     if (aDRI.IsNull())
+    {
       continue;
+    }
     XCAFDimTolObjects_DimensionModif aModifier = XCAFDimTolObjects_DimensionModif_ControlledRadius;
     const TCollection_AsciiString    aModifStr = aDRI->Description()->String();
     bool                             aFound    = false;
@@ -435,7 +437,9 @@ void STEPCAFControl_GDTProperty::GetDimModifiers(
       aModifier = XCAFDimTolObjects_DimensionModif_FreeStateCondition;
     }
     if (aFound)
+    {
       theModifiers.Append(aModifier);
+    }
   }
 }
 
@@ -458,7 +462,9 @@ void STEPCAFControl_GDTProperty::GetDimClassOfTolerance(
     aFound         = false;
     bool aCaseSens = false;
     if (c == 1)
+    {
       aCaseSens = true;
+    }
     occ::handle<TCollection_HAsciiString> aStr = new TCollection_HAsciiString("a");
     if (aFormV->IsSameString(aStr, aCaseSens))
     {
@@ -657,7 +663,9 @@ void STEPCAFControl_GDTProperty::GetDimClassOfTolerance(
     }
 
     if (c == 1 && !aFound)
+    {
       theHolle = true;
+    }
   }
   occ::handle<TCollection_HAsciiString> aStr = new TCollection_HAsciiString("01");
   theG                                       = XCAFDimTolObjects_DimensionGrade_IT01;
@@ -1074,9 +1082,13 @@ occ::handle<StepShape_LimitsAndFits> STEPCAFControl_GDTProperty::GetLimitsAndFit
   occ::handle<TCollection_HAsciiString> aGradeStr, aFormStr, aHoleStr;
 
   if (theGrade == XCAFDimTolObjects_DimensionGrade_IT01)
+  {
     aGradeStr = new TCollection_HAsciiString("01");
+  }
   else
+  {
     aGradeStr = new TCollection_HAsciiString((int)theGrade + 1);
+  }
 
   switch (theFormVariance)
   {
@@ -1375,10 +1387,14 @@ occ::handle<NCollection_HArray1<StepDimTol_DatumReferenceModifier>> STEPCAFContr
 {
   if ((theModifiers.Length() == 0)
       && (theModifWithVal == XCAFDimTolObjects_DatumModifWithValue_None))
+  {
     return nullptr;
+  }
   int aModifNb = theModifiers.Length();
   if (theModifWithVal != XCAFDimTolObjects_DatumModifWithValue_None)
+  {
     aModifNb++;
+  }
   occ::handle<NCollection_HArray1<StepDimTol_DatumReferenceModifier>> aModifiers =
     new NCollection_HArray1<StepDimTol_DatumReferenceModifier>(1, aModifNb);
 

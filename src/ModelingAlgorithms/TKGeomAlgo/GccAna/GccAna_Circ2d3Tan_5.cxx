@@ -220,12 +220,18 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
               for (int k = 1; k <= nbsol3; k++)
               {
                 if (NbrSol == 4)
+                {
                   break;
+                }
                 // pop : if the radius is too great - no creation
                 if (Radius(k) > MaxRad)
+                {
                   break;
+                }
                 if (std::abs(Radius(k)) < MinRad)
+                {
                   break;
+                }
 
                 NbrSol++;
                 cirsol(NbrSol) = gp_Circ2d(gp_Ax2d(Center, dirx), Radius(k));
@@ -295,7 +301,9 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
         WellDone = true;
       }
       if (NbrSol == 4)
+      {
         break;
+      }
     }
   }
 }

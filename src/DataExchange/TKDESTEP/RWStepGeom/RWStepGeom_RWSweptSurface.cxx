@@ -29,7 +29,9 @@ void RWStepGeom_RWSweptSurface::ReadStep(const occ::handle<StepData_StepReaderDa
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "swept_surface"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

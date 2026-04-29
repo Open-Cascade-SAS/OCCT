@@ -47,7 +47,9 @@ bool DDF::FindLabel(const occ::handle<TDF_Data>& DF,
   Label.Nullify();
   TDF_Tool::Label(DF, Entry, Label, false);
   if (Label.IsNull() && Complain)
-    std::cout << "No label for entry " << Entry << std::endl;
+  {
+    std::cout << "No label for entry " << Entry << '\n';
+  }
   return !Label.IsNull();
 }
 
@@ -64,7 +66,9 @@ bool DDF::GetDF(const char*& Name, occ::handle<TDF_Data>& DF, const bool Complai
     return true;
   }
   if (Complain)
-    std::cout << "framework " << Name << " not found " << std::endl;
+  {
+    std::cout << "framework " << Name << " not found " << '\n';
+  }
   return false;
 }
 
@@ -80,9 +84,13 @@ bool DDF::Find(const occ::handle<TDF_Data>& DF,
   if (FindLabel(DF, Entry, L, Complain))
   {
     if (L.FindAttribute(ID, A))
+    {
       return true;
+    }
     if (Complain)
-      std::cout << "attribute not found for entry : " << Entry << std::endl;
+    {
+      std::cout << "attribute not found for entry : " << Entry << '\n';
+    }
   }
   return false;
 }
@@ -103,7 +111,9 @@ void DDF::AllCommands(Draw_Interpretor& theCommands)
 {
   static bool done = false;
   if (done)
+  {
     return;
+  }
   done = true;
 
   DDF::BasicCommands(theCommands);

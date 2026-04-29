@@ -37,13 +37,21 @@ int StepFEA_DegreeOfFreedom::CaseNum(const occ::handle<Standard_Transient>& /*en
 int StepFEA_DegreeOfFreedom::CaseMem(const occ::handle<StepData_SelectMember>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->Matches("ENUMERATED_DEGREE_OF_FREEDOM"))
+  {
     return 1;
+  }
   else if (ent->Matches("APPLICATION_DEFINED_DEGREE_OF_FREEDOM"))
+  {
     return 2;
+  }
   else
+  {
     return 0;
+  }
 }
 
 //=================================================================================================
@@ -61,7 +69,9 @@ void StepFEA_DegreeOfFreedom::SetEnumeratedDegreeOfFreedom(
   occ::handle<StepFEA_DegreeOfFreedomMember> SelMem =
     occ::down_cast<StepFEA_DegreeOfFreedomMember>(Value());
   if (SelMem.IsNull())
+  {
     return;
+  }
   occ::handle<TCollection_HAsciiString> name =
     new TCollection_HAsciiString("ENUMERATED_DEGREE_OF_FREEDOM");
   SelMem->SetName(name->ToCString());
@@ -75,13 +85,17 @@ StepFEA_EnumeratedDegreeOfFreedom StepFEA_DegreeOfFreedom::EnumeratedDegreeOfFre
   occ::handle<StepFEA_DegreeOfFreedomMember> SelMem =
     occ::down_cast<StepFEA_DegreeOfFreedomMember>(Value());
   if (SelMem.IsNull())
+  {
     return StepFEA_XTranslation;
+  }
   occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString;
   name->AssignCat(SelMem->Name());
   occ::handle<TCollection_HAsciiString> nameitem =
     new TCollection_HAsciiString("ENUMERATED_DEGREE_OF_FREEDOM");
   if (name->IsDifferent(nameitem))
+  {
     return StepFEA_XTranslation;
+  }
   int                               numit = SelMem->Enum();
   StepFEA_EnumeratedDegreeOfFreedom val;
   switch (numit)
@@ -111,7 +125,9 @@ void StepFEA_DegreeOfFreedom::SetApplicationDefinedDegreeOfFreedom(
   occ::handle<StepFEA_DegreeOfFreedomMember> SelMem =
     occ::down_cast<StepFEA_DegreeOfFreedomMember>(Value());
   if (SelMem.IsNull())
+  {
     return;
+  }
   occ::handle<TCollection_HAsciiString> name =
     new TCollection_HAsciiString("APPLICATION_DEFINED_DEGREE_OF_FREEDOM");
   SelMem->SetName(name->ToCString());
@@ -126,13 +142,17 @@ occ::handle<TCollection_HAsciiString> StepFEA_DegreeOfFreedom::ApplicationDefine
   occ::handle<StepFEA_DegreeOfFreedomMember> SelMem =
     occ::down_cast<StepFEA_DegreeOfFreedomMember>(Value());
   if (SelMem.IsNull())
+  {
     return nullptr;
+  }
   occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString;
   name->AssignCat(SelMem->Name());
   occ::handle<TCollection_HAsciiString> nameitem =
     new TCollection_HAsciiString("APPLICATION_DEFINED_DEGREE_OF_FREEDOM");
   if (name->IsDifferent(nameitem))
+  {
     return nullptr;
+  }
   occ::handle<TCollection_HAsciiString> val = new TCollection_HAsciiString;
   val->AssignCat(SelMem->String());
   return val;

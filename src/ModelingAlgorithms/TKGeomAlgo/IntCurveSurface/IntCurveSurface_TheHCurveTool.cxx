@@ -40,9 +40,13 @@ int IntCurveSurface_TheHCurveTool::NbSamples(const occ::handle<Adaptor3d_Curve>&
   double            nbs      = nbsOther;
 
   if (typC == GeomAbs_Line)
+  {
     nbs = 2;
+  }
   else if (typC == GeomAbs_BezierCurve)
+  {
     nbs = 3 + C->NbPoles();
+  }
   else if (typC == GeomAbs_BSplineCurve)
   {
     nbs = C->NbKnots();
@@ -50,12 +54,18 @@ int IntCurveSurface_TheHCurveTool::NbSamples(const occ::handle<Adaptor3d_Curve>&
     nbs *= C->LastParameter() - C->FirstParameter();
     double aRange = U1 - U0;
     if (std::abs(aRange) > Precision::PConfusion())
+    {
       nbs /= aRange;
+    }
     if (nbs < 2.0)
+    {
       nbs = 2;
+    }
   }
   if (nbs > 50)
+  {
     nbs = 50;
+  }
   return ((int)nbs);
 }
 
@@ -72,7 +82,9 @@ occ::handle<NCollection_HArray1<double>> IntCurveSurface_TheHCurveTool::SamplePa
   double                                   nbs      = nbsOther;
 
   if (typC == GeomAbs_Line)
+  {
     nbs = 2;
+  }
   else if (typC == GeomAbs_BezierCurve)
   {
     nbs = 3 + C->NbPoles();
@@ -81,7 +93,9 @@ occ::handle<NCollection_HArray1<double>> IntCurveSurface_TheHCurveTool::SamplePa
   if (typC != GeomAbs_BSplineCurve)
   {
     if (nbs > 50)
+    {
       nbs = 50;
+    }
     int nnbs = (int)nbs;
 
     Pars      = new NCollection_HArray1<double>(1, nnbs);
@@ -158,9 +172,13 @@ occ::handle<NCollection_HArray1<double>> IntCurveSurface_TheHCurveTool::SamplePa
     for (i = ui1 + 1; i <= ui2; ++i)
     {
       if (i == ui2)
+      {
         t2 = U1;
+      }
       else
+      {
         t2 = aBC->Knot(i);
+      }
       dt = (t2 - t1) / nbi;
       j  = 1;
       do
@@ -202,7 +220,9 @@ occ::handle<NCollection_HArray1<double>> IntCurveSurface_TheHCurveTool::SamplePa
       gp_Pnt p2 = aBC->Value(t2);
 
       if (p1.SquareDistance(p2) <= tol)
+      {
         continue;
+      }
 
       gce_MakeLin   MkLin(p1, p2);
       const gp_Lin& lin = MkLin.Value();
@@ -219,7 +239,9 @@ occ::handle<NCollection_HArray1<double>> IntCurveSurface_TheHCurveTool::SamplePa
         double d  = lin.SquareDistance(pp);
 
         if (d <= aDefl2)
+        {
           continue;
+        }
 
         ok = false;
         break;
@@ -241,7 +263,9 @@ occ::handle<NCollection_HArray1<double>> IntCurveSurface_TheHCurveTool::SamplePa
     }
 
     if (k >= nbsu)
+    {
       bCont = false;
+    }
   }
 
   if (NbSamples < myMinPnts)

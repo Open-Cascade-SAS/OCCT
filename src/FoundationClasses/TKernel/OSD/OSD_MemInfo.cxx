@@ -229,13 +229,17 @@ void OSD_MemInfo::Update()
     else if (IsActive(MemPrivate) && strncmp(aBuff, "VmData:", strlen("VmData:")) == 0)
     {
       if (myCounters[MemPrivate] == size_t(-1))
+      {
         ++myCounters[MemPrivate];
+      }
       myCounters[MemPrivate] += atol(aBuff + strlen("VmData:")) * 1024;
     }
     else if (IsActive(MemPrivate) && strncmp(aBuff, "VmStk:", strlen("VmStk:")) == 0)
     {
       if (myCounters[MemPrivate] == size_t(-1))
+      {
         ++myCounters[MemPrivate];
+      }
       myCounters[MemPrivate] += atol(aBuff + strlen("VmStk:")) * 1024;
     }
   }

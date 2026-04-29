@@ -29,7 +29,9 @@ IFGraph_SubPartsIterator::IFGraph_SubPartsIterator(const Interface_Graph& agraph
     : thegraph(agraph)
 {
   if (whole)
+  {
     thegraph.GetFromModel();
+  }
   theparts  = new NCollection_HSequence<int>();
   thefirsts = new NCollection_HSequence<int>();
   thepart   = 0;
@@ -50,7 +52,9 @@ IFGraph_SubPartsIterator::IFGraph_SubPartsIterator(IFGraph_SubPartsIterator& oth
     for (int i = 1; i <= nb; i++)
     {
       if (thegraph.Status(i) == thepart)
+      {
         nbent++;
+      }
     }
     theparts->Append(nbent); // empty count
   }
@@ -61,7 +65,9 @@ IFGraph_SubPartsIterator::IFGraph_SubPartsIterator(IFGraph_SubPartsIterator& oth
 void IFGraph_SubPartsIterator::GetParts(IFGraph_SubPartsIterator& other)
 {
   if (Model() != other.Model())
+  {
     throw Interface_InterfaceError("SubPartsIterator : GetParts");
+  }
   //  We ADD the Parts from other, without losing our own
   //  (same principle as the constructor above)
   int nb  = thegraph.Size();
@@ -74,7 +80,9 @@ void IFGraph_SubPartsIterator::GetParts(IFGraph_SubPartsIterator& other)
     for (int i = 1; i <= nb; i++)
     {
       if (thegraph.Status(i) == thepart)
+      {
         nbent++;
+      }
     }
     theparts->Append(nbent); // empty count
   }
@@ -116,7 +124,9 @@ void IFGraph_SubPartsIterator::SetLoad()
 void IFGraph_SubPartsIterator::SetPartNum(const int num)
 {
   if (num <= 0 || num > theparts->Length())
+  {
     throw Standard_OutOfRange("IFGraph_SubPartsIterator : SetPartNum");
+  }
   thepart = num;
 }
 
@@ -157,7 +167,9 @@ Interface_Graph IFGraph_SubPartsIterator::LoadedGraph() const
   for (int i = 1; i <= nb; i++)
   {
     if (thegraph.IsPresent(i) && thegraph.Status(i) == 0)
+    {
       G.GetFromEntity(thegraph.Entity(i), false);
+    }
   }
   return G;
 }
@@ -171,7 +183,9 @@ bool IFGraph_SubPartsIterator::IsInPart(const occ::handle<Standard_Transient>& e
 {
   int num = thegraph.EntityNumber(ent);
   if (!thegraph.IsPresent(num))
+  {
     return false;
+  }
   return (thegraph.Status(num) != 0);
 }
 
@@ -179,7 +193,9 @@ int IFGraph_SubPartsIterator::EntityPartNum(const occ::handle<Standard_Transient
 {
   int num = thegraph.EntityNumber(ent);
   if (!thegraph.IsPresent(num))
+  {
     return 0;
+  }
   return thegraph.Status(num);
 }
 
@@ -190,7 +206,9 @@ void IFGraph_SubPartsIterator::Start()
   int nb  = thegraph.Size();
   int nbp = theparts->Length();
   if (thepart > nbp)
+  {
     thepart = nbp;
+  }
   if (nbp == 0)
   {
     thecurr = 1;
@@ -205,14 +223,20 @@ void IFGraph_SubPartsIterator::Start()
   for (int i = 1; i <= nb; i++)
   {
     if (!thegraph.IsPresent(i))
+    {
       continue;
+    }
     int nump = thegraph.Status(i);
     if (nump < 1 || nump > nbp)
+    {
       continue;
+    }
     int nbent = partcounts.Value(nump);
     partcounts.SetValue(nump, nbent + 1);
     if (nbent == 0)
+    {
       partfirsts.SetValue(nump, i);
+    }
   }
   //  - Format them (i.e. in sequences)
   theparts->Clear();
@@ -222,12 +246,16 @@ void IFGraph_SubPartsIterator::Start()
   {
     int nbent = partcounts.Value(np);
     if (np != 0)
+    {
       lastp = np;
+    }
     theparts->Append(nbent);
     thefirsts->Append(partfirsts.Value(np));
   }
   if (lastp < nbp)
+  {
     theparts->Remove(lastp + 1, nbp);
+  }
   //  Finally, prepare to iterate
   thecurr = 1;
 }
@@ -235,7 +263,9 @@ void IFGraph_SubPartsIterator::Start()
 bool IFGraph_SubPartsIterator::More()
 {
   if (thecurr == 0)
+  {
     Start();
+  }
   return (thecurr <= theparts->Length());
 }
 
@@ -243,43 +273,61 @@ void IFGraph_SubPartsIterator::Next()
 {
   thecurr++;
   if (thecurr > theparts->Length())
+  {
     return;
+  }
   if (theparts->Value(thecurr) == 0)
+  {
     Next(); // skip empty parts
+  }
 }
 
 bool IFGraph_SubPartsIterator::IsSingle() const
 {
   if (thecurr < 1 || thecurr > theparts->Length())
+  {
     throw Standard_NoSuchObject("IFGraph_SubPartsIterator : IsSingle");
+  }
   return (theparts->Value(thecurr) == 1);
 }
 
 occ::handle<Standard_Transient> IFGraph_SubPartsIterator::FirstEntity() const
 {
   if (thecurr < 1 || thecurr > theparts->Length())
+  {
     throw Standard_NoSuchObject("IFGraph_SubPartsIterator : FirstEntity");
+  }
   int nument = thefirsts->Value(thecurr);
   if (nument == 0)
+  {
     throw Standard_NoSuchObject("IFGraph_SubPartsIterator : FirstEntity (current part is empty)");
+  }
   return thegraph.Entity(nument);
 }
 
 Interface_EntityIterator IFGraph_SubPartsIterator::Entities() const
 {
   if (thecurr < 1 || thecurr > theparts->Length())
+  {
     throw Standard_NoSuchObject("IFGraph_SubPartsIterator : Entities");
+  }
   Interface_EntityIterator iter;
   int                      nb     = thegraph.Size();
   int                      nument = thefirsts->Value(thecurr);
   if (nument == 0)
+  {
     return iter;
+  }
   if (theparts->Value(thecurr) == 1)
+  {
     nb = nument; // obvious: 1 single Entity
+  }
   for (int i = nument; i <= nb; i++)
   {
     if (thegraph.Status(i) == thecurr && thegraph.IsPresent(i))
+    {
       iter.GetOneItem(thegraph.Entity(i));
+    }
   }
   return iter;
 }

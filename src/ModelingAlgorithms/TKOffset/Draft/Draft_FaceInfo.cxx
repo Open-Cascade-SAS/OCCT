@@ -30,9 +30,13 @@ Draft_FaceInfo::Draft_FaceInfo(const occ::handle<Geom_Surface>& S, const bool Ha
 {
   occ::handle<Geom_RectangularTrimmedSurface> T = occ::down_cast<Geom_RectangularTrimmedSurface>(S);
   if (!T.IsNull())
+  {
     myGeom = T->BasisSurface();
+  }
   else
+  {
     myGeom = S;
+  }
 }
 
 //=================================================================================================

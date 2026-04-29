@@ -461,14 +461,14 @@ double GeomConvert_ApproxSurface::MaxError() const
 
 void GeomConvert_ApproxSurface::Dump(Standard_OStream& o) const
 {
-  o << std::endl;
+  o << '\n';
   if (!myHasResult)
   {
-    o << "No result" << std::endl;
+    o << "No result" << '\n';
   }
   else
   {
-    o << "Result max error :" << myMaxError << std::endl;
+    o << "Result max error :" << myMaxError << '\n';
   }
-  o << std::endl;
+  o << '\n';
 }

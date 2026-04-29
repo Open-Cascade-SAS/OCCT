@@ -65,7 +65,9 @@ void StepKinematics_GearPairWithRange::Init(
     myLowerLimitActualRotation1 = theLowerLimitActualRotation1;
   }
   else
+  {
     myLowerLimitActualRotation1 = 0;
+  }
 
   defUpperLimitActualRotation1 = hasUpperLimitActualRotation1;
   if (defUpperLimitActualRotation1)
@@ -73,7 +75,9 @@ void StepKinematics_GearPairWithRange::Init(
     myUpperLimitActualRotation1 = theUpperLimitActualRotation1;
   }
   else
+  {
     myUpperLimitActualRotation1 = 0;
+  }
 }
 
 //=================================================================================================

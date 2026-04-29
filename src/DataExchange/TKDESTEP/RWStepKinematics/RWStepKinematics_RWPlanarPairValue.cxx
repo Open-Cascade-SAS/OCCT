@@ -38,7 +38,9 @@ void RWStepKinematics_RWPlanarPairValue::ReadStep(
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 5, theArch, "planar_pair_value"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 

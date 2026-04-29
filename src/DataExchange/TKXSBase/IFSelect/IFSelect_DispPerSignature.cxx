@@ -79,10 +79,14 @@ void IFSelect_DispPerSignature::Packets(const Interface_Graph&    G,
     asign = list->Value(is);
     ents  = thesign->Entities(asign->ToCString());
     if (ents.IsNull())
+    {
       continue;
+    }
     packs.AddPart();
     nb = ents->Length();
     for (i = 1; i <= nb; i++)
+    {
       packs.GetFromEntity(ents->Value(i), false);
+    }
   }
 }

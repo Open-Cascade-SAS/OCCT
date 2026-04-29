@@ -28,25 +28,45 @@ StepAP214_AutoDesignDateAndPersonItem::StepAP214_AutoDesignDateAndPersonItem() =
 int StepAP214_AutoDesignDateAndPersonItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepAP214_AutoDesignOrganizationAssignment)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_Product)))
+  {
     return 2;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinition)))
+  {
     return 3;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinitionFormation)))
+  {
     return 4;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepRepr_Representation)))
+  {
     return 5;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepAP214_AutoDesignDocumentReference)))
+  {
     return 6;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepRepr_ExternallyDefinedRepresentation)))
+  {
     return 7;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinitionRelationship)))
+  {
     return 8;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinitionWithAssociatedDocuments)))
+  {
     return 9;
+  }
   return 0;
 }
 

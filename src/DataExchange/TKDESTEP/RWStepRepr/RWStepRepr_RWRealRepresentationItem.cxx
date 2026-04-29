@@ -27,7 +27,9 @@ void RWStepRepr_RWRealRepresentationItem::ReadStep(
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 2, theAch, "real_representation_item"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
   occ::handle<TCollection_HAsciiString> aName;

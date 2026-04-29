@@ -48,7 +48,9 @@ void IGESGraph_ToolDrawingUnits::ReadOwnParams(const occ::handle<IGESGraph_Drawi
   PR.ReadInteger(PR.Current(), "No. of property values", nbPropertyValues); //szv#4:S4163:12Mar99 `st=` not needed
   // clang-format on
   if (nbPropertyValues != 2)
+  {
     PR.AddFail("No. of Property values : Value is not 2");
+  }
 
   // Reading flag(Integer)
   PR.ReadInteger(PR.Current(), "Units Flag", flag); // szv#4:S4163:12Mar99 `st=` not needed
@@ -96,7 +98,9 @@ bool IGESGraph_ToolDrawingUnits::OwnCorrect(const occ::handle<IGESGraph_DrawingU
   occ::handle<TCollection_HAsciiString> name;
   const char*                           unm = "";
   if (!ent->Unit().IsNull())
+  {
     unm = ent->Unit()->ToCString();
+  }
   switch (unf)
   {
     case 1:
@@ -167,9 +171,13 @@ bool IGESGraph_ToolDrawingUnits::OwnCorrect(const occ::handle<IGESGraph_DrawingU
 
   res |= (!name.IsNull());
   if (name.IsNull())
+  {
     name = ent->Unit();
+  }
   if (res)
+  {
     ent->Init(2, unf, name); // nbpropertyvalues=2 + Unit Flag//Name
+  }
   return res;
 }
 
@@ -192,13 +200,17 @@ void IGESGraph_ToolDrawingUnits::OwnCheck(const occ::handle<IGESGraph_DrawingUni
                                           occ::handle<Interface_Check>& ach) const
 {
   if (ent->NbPropertyValues() != 2)
+  {
     ach->AddFail("No. of Property values : Value != 2");
+  }
   //    Check Flag//Unit Name
   int unf = ent->Flag();
   if (ent->Unit().IsNull())
   {
     if (unf == 3)
+    {
       ach->AddFail("Unit Flag = 3 (user def.) and Unit Name undefined");
+    }
   }
   else
   {
@@ -244,7 +256,9 @@ void IGESGraph_ToolDrawingUnits::OwnCheck(const occ::handle<IGESGraph_DrawingUni
         break;
     }
     if (!unok)
+    {
       ach->AddFail("Unit Flag & Name not accorded");
+    }
   }
 }
 
@@ -257,5 +271,5 @@ void IGESGraph_ToolDrawingUnits::OwnDump(const occ::handle<IGESGraph_DrawingUnit
     << "No. of property values : " << ent->NbPropertyValues() << "\n"
     << "  Units Flag : " << ent->Flag() << "  Units Name : ";
   IGESData_DumpString(S, ent->Unit());
-  S << "  computed Value (in meters) : " << ent->UnitValue() << std::endl;
+  S << "  computed Value (in meters) : " << ent->UnitValue() << '\n';
 }

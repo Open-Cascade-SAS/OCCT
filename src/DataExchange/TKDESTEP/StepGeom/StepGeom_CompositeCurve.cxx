@@ -52,7 +52,9 @@ occ::handle<StepGeom_CompositeCurveSegment> StepGeom_CompositeCurve::SegmentsVal
 int StepGeom_CompositeCurve::NbSegments() const
 {
   if (segments.IsNull())
+  {
     return 0;
+  }
   return segments->Length();
 }
 

@@ -204,7 +204,9 @@ bool XmlMFunction_ScopeDriver::Paste(const XmlObjMgt_Persistent&       theSource
   {
     int ID = itri.Value();
     if (ID > freeID)
+    {
       freeID = ID;
+    }
     S->ChangeFunctions().Bind(ID, itrl.Value());
   }
   freeID++;

@@ -476,7 +476,9 @@ void CheckEdge(const TopoDS_Edge&                                               
               {
                 double aNewTolerance = sqrt(aD2) + dd;
                 if (aNewTolerance < aMaxTol)
+                {
                   UpdateShape(aV, aNewTolerance, aMapToAvoid);
+                }
               }
             }
             aItPR.Next();
@@ -502,7 +504,9 @@ void CheckEdge(const TopoDS_Edge&                                               
             {
               double aNewTolerance = sqrt(aD2) + dd;
               if (aNewTolerance < aMaxTol)
+              {
                 UpdateShape(aV, aNewTolerance, aMapToAvoid);
+              }
             }
           }
         }
@@ -732,7 +736,9 @@ void CorrectWires(const TopoDS_Face&                                            
         const TopoDS_Shape& aE2     = *aEData2.Edge;
 
         if (aE1.IsSame(aE2))
+        {
           continue;
+        }
 
         aD2 = IntersectCurves2d(aV, aS, aEData1, aEData2, aMapEdgeLen);
         if (aD2 > aD2max)
@@ -861,7 +867,9 @@ void CorrectEdgeTolerance(
   // 2. Tolerances in InContext
   {
     if (myCref.IsNull())
+    {
       return;
+    }
 
     occ::handle<BRep_TEdge>& TE      = *((occ::handle<BRep_TEdge>*)&myShape.TShape());
     double                   Tol     = BRep_Tool::Tolerance(TopoDS::Edge(myShape));

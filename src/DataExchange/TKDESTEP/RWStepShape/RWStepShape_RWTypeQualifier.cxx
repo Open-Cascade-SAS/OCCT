@@ -26,7 +26,9 @@ void RWStepShape_RWTypeQualifier::ReadStep(const occ::handle<StepData_StepReader
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 1, ach, "type_qualifier"))
+  {
     return;
+  }
 
   // --- own field : name ---
 

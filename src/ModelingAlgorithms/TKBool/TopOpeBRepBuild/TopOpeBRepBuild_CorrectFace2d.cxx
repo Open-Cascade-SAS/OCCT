@@ -288,7 +288,9 @@ void TopOpeBRepBuild_CorrectFace2d::CheckFace()
     NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aEM;
     TopExp::MapShapes(aVoidWires(i), TopAbs_EDGE, aEM);
     if (aEM.Extent())
+    {
       myCopyAvoidMap.Add(aEM(1));
+    }
   }
 
   // III. Check all wires to know  whether they are closed or not
@@ -346,7 +348,9 @@ int TopOpeBRepBuild_CorrectFace2d::ConnectWire(
   int priz;
   priz = MakeRightWire();
   if (priz)
+  {
     return priz;
+  }
   //
   // 2. Define the First Edge on the Wire from aCopyAvoidMap
   int    i, aNbEdges = 0, aNbAvoidEdgesOnWire;
@@ -362,15 +366,21 @@ int TopOpeBRepBuild_CorrectFace2d::ConnectWire(
   {
     const TopoDS_Shape& anEdge = aWExp.Current();
     if (aCopyAvoidMap.Contains(anEdge))
+    {
       anAvoidMap.Add(anEdge);
+    }
   }
 
-  if (aNbEdges == 1) // nothing to do with this wire.
+  if (aNbEdges == 1)
+  { // nothing to do with this wire.
     return 0;
+  }
 
   aNbAvoidEdgesOnWire = anAvoidMap.Extent();
-  if (aNbAvoidEdgesOnWire == aNbEdges) // nothing to do. all edges on wire are good.
+  if (aNbAvoidEdgesOnWire == aNbEdges)
+  { // nothing to do. all edges on wire are good.
     return 0;
+  }
 
   // if  at least one  non-degenerated edge exists
   // among anAvoidMap set it as aFirstEdge
@@ -429,7 +439,9 @@ int TopOpeBRepBuild_CorrectFace2d::ConnectWire(
   NCollection_List<TopoDS_Shape>::Iterator anIt;
   anIt.Initialize(HeadList);
   for (; anIt.More(); anIt.Next())
+  {
     aSeqEdges.Append(anIt.Value());
+  }
   aNbEdges = aSeqEdges.Length();
 
   //
@@ -483,14 +495,18 @@ int TopOpeBRepBuild_CorrectFace2d::ConnectWire(
     //    printf(" (fmod(fabs(V), 2*M_PI) > 1e-7)=%lf\n", (fmod(fabs(V), 2*M_PI)));
 
     if (nonPU && nonPV && !BRep_Tool::Degenerated(anEdge))
+    {
       return 1;
+    }
     // End modified by NIZHNY-MZV  Mon Mar 27 16:04:11 2000
 
     if (BRep_Tool::IsClosed(anEdge, aCopyFace))
     {
       // a. Closed edge <--->
       if (anEdMap.Contains(anEdge))
+      {
         continue;
+      }
       anEdMap.Add(anEdge);
 
       TopAbs_Orientation anOri = anEdge.Orientation();
@@ -515,11 +531,14 @@ int TopOpeBRepBuild_CorrectFace2d::ConnectWire(
       TranslateCurve2d(anEF, aCopyFace, aTrV, aTrCF);
       TranslateCurve2d(anER, aCopyFace, aTrV, aTrCR);
 
-      if (aTryFlag) // Use Builder in a trying case
+      if (aTryFlag)
+      { // Use Builder in a trying case
         BB.UpdateEdge(anEdge, aTrCF, aTrCR, aCopyFace, myFaceTolerance);
-
-      else // Use "False-Builder" otherwise
+      }
+      else
+      { // Use "False-Builder" otherwise
         UpdateEdge(anEdge, aTrCF, aTrCR, aCopyFace, myFaceTolerance);
+      }
     }
 
     else
@@ -528,9 +547,13 @@ int TopOpeBRepBuild_CorrectFace2d::ConnectWire(
       TranslateCurve2d(anEdge, aCopyFace, aTrV, aTrC);
 
       if (aTryFlag)
+      {
         BB.UpdateEdge(anEdge, aTrC, aCopyFace, myFaceTolerance);
+      }
       else
+      {
         UpdateEdge(anEdge, aTrC, aCopyFace, myFaceTolerance);
+      }
     }
 
     GetP2dFL(aCopyFace, anEdge, PF, PL);
@@ -547,7 +570,9 @@ int TopOpeBRepBuild_CorrectFace2d::ConnectWire(
       {
         aD = PA1.Distance(PB);
         if (aD > aDTolerance)
+        {
           return 1;
+        }
       }
     }
     ////////////////////////////////////////////
@@ -574,7 +599,9 @@ void TopOpeBRepBuild_CorrectFace2d::Perform()
   // 1. Check the input face first
   CheckFace();
   if (myIsDone)
+  {
     return;
+  }
 
   //
   // 2. Make all wires connected
@@ -626,7 +653,9 @@ int TopOpeBRepBuild_CorrectFace2d::MakeRightWire()
   TopExp_Explorer aWExp;
   aWExp.Init(myCurrentWire, TopAbs_EDGE);
   for (; aWExp.More(); aWExp.Next())
+  {
     aNbEdgesReally++;
+  }
 
   // 2. We'll use TopOpeBRepBuild_Tools::Path
   NCollection_List<TopoDS_Shape> aL;
@@ -643,7 +672,9 @@ int TopOpeBRepBuild_CorrectFace2d::MakeRightWire()
   NCollection_List<TopoDS_Shape>           aFL;
   NCollection_List<TopoDS_Shape>::Iterator lit(aL);
   for (; lit.More(); lit.Next())
+  {
     aFL.Prepend(lit.Value());
+  }
 
   myOrderedWireList = aFL;
   // End modified by NIZNHY-PKV Tue Apr 25 12:06:45 2000
@@ -686,11 +717,17 @@ void TopOpeBRepBuild_CorrectFace2d::MakeHeadList(const TopoDS_Shape&            
     const TopoDS_Shape& anEdge = anIt.Value();
     // modified by NIZHNY-MZV  Mon Mar 27 11:40:00 2000
     if (aFE.IsNull() && !BRep_Tool::Degenerated(TopoDS::Edge(anEdge)))
+    {
       aFE = anEdge;
+    }
     if (anEdge == aFE)
+    {
       aFlag = 1; // turn the switch ON
+    }
     if (aFlag)
+    {
       HeadList.Append(anEdge);
+    }
   }
 
   anIt.Initialize(myOrderedWireList);
@@ -698,7 +735,9 @@ void TopOpeBRepBuild_CorrectFace2d::MakeHeadList(const TopoDS_Shape&            
   {
     const TopoDS_Shape& anEdge = anIt.Value();
     if (anEdge == aFE)
+    {
       break;
+    }
     aTailList.Append(anEdge);
   }
   HeadList.Append(aTailList);
@@ -871,7 +910,9 @@ void TopOpeBRepBuild_CorrectFace2d::BndBoxWire(const TopoDS_Wire& aWire, Bnd_Box
 void TopOpeBRepBuild_CorrectFace2d::MoveWire2d(TopoDS_Wire& aWire, const gp_Vec2d& aTrV)
 {
   if (aTrV.Magnitude() < Precision::Confusion())
+  {
     return;
+  }
 
   int                                                           i, aNbEdges;
   NCollection_Sequence<TopoDS_Shape>                            aSeqEdges;
@@ -896,7 +937,9 @@ void TopOpeBRepBuild_CorrectFace2d::MoveWire2d(TopoDS_Wire& aWire, const gp_Vec2
     {
       // a. Closed edge <--->
       if (anEdMap.Contains(anEdge))
+      {
         continue;
+      }
       anEdMap.Add(anEdge);
 
       TopAbs_Orientation anOri = anEdge.Orientation();

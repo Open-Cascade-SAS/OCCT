@@ -35,7 +35,9 @@ IGESBasic_Group::IGESBasic_Group(const int nb)
 {
   InitTypeAndForm(402, 1);
   if (nb <= 0)
+  {
     return;
+  }
   theEntities = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nb);
 }
 
@@ -45,10 +47,14 @@ void IGESBasic_Group::Init(
   // ptv and rln September 14, 2000 BUC60743
   // Protection against empty groups
   if (!allEntities.IsNull() && (allEntities->Lower() != 1))
+  {
     throw Standard_DimensionMismatch("IGESBasic_Group : Init");
+  }
   theEntities = allEntities;
   if (FormNumber() == 0)
+  {
     InitTypeAndForm(402, 1);
+  }
 }
 
 void IGESBasic_Group::SetOrdered(const bool mode)
@@ -57,16 +63,24 @@ void IGESBasic_Group::SetOrdered(const bool mode)
   if (mode)
   {
     if (fn == 0 || fn == 1)
+    {
       InitTypeAndForm(402, 14);
+    }
     else if (fn == 7)
+    {
       InitTypeAndForm(402, 15);
+    }
   }
   else
   {
     if (fn == 14)
+    {
       InitTypeAndForm(402, 1);
+    }
     else if (fn == 15)
+    {
       InitTypeAndForm(402, 7);
+    }
   }
 }
 
@@ -76,16 +90,24 @@ void IGESBasic_Group::SetWithoutBackP(const bool mode)
   if (mode)
   {
     if (fn == 0 || fn == 1)
+    {
       InitTypeAndForm(402, 7);
+    }
     else if (fn == 14)
+    {
       InitTypeAndForm(402, 15);
+    }
   }
   else
   {
     if (fn == 7)
+    {
       InitTypeAndForm(402, 1);
+    }
     else if (fn == 15)
+    {
       InitTypeAndForm(402, 14);
+    }
   }
 }
 
@@ -104,7 +126,9 @@ bool IGESBasic_Group::IsWithoutBackP() const
 void IGESBasic_Group::SetUser(const int type, const int form)
 {
   if (type <= 5000)
+  {
     throw Standard_OutOfRange("IGESBasic_Group::SetUser");
+  }
   InitTypeAndForm(type, form);
 }
 
@@ -112,14 +136,20 @@ void IGESBasic_Group::SetNb(const int nb)
 {
   int i, oldnb = NbEntities();
   if (nb == oldnb || nb <= 0)
+  {
     return;
+  }
 
   occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> newents =
     new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nb);
   if (oldnb > nb)
+  {
     oldnb = nb;
+  }
   for (i = 1; i <= oldnb; i++)
+  {
     newents->SetValue(i, theEntities->Value(i));
+  }
   theEntities = newents;
 }
 

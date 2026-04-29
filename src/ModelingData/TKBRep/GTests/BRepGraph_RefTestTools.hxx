@@ -40,7 +40,9 @@ inline NCollection_DynamicArray<BRepGraph_CoEdgeRefId> CoEdgeRefsOfWire(
   {
     const BRepGraphInc::CoEdgeRef& aRef = aRefs.CoEdges().Entry(aRefId);
     if (aRef.ParentId == aParentNode && !aRef.IsRemoved)
+    {
       aRefIds.Append(aRefId);
+    }
   }
   return aRefIds;
 }
@@ -66,7 +68,9 @@ inline NCollection_DynamicArray<BRepGraph_WireRefId> WireRefsOfFace(
   {
     const BRepGraphInc::WireRef& aRef = aRefs.Wires().Entry(aRefId);
     if (aRef.ParentId == aParentNode && !aRef.IsRemoved)
+    {
       aRefIds.Append(aRefId);
+    }
   }
   return aRefIds;
 }
@@ -90,7 +94,9 @@ inline bool FaceUsesWire(const BRepGraph&       theGraph,
   for (const BRepGraph_WireRefId& aWireRefId : aWireRefs)
   {
     if (aRefs.Wires().Entry(aWireRefId).WireDefId == theWireId)
+    {
       return true;
+    }
   }
   return false;
 }
@@ -109,7 +115,9 @@ inline NCollection_DynamicArray<BRepGraph_FaceRefId> FaceRefsOfShell(
   {
     const BRepGraphInc::FaceRef& aRef = aRefs.Faces().Entry(aRefId);
     if (aRef.ParentId == aParentNode && !aRef.IsRemoved)
+    {
       aRefIds.Append(aRefId);
+    }
   }
   return aRefIds;
 }
@@ -135,7 +143,9 @@ inline NCollection_DynamicArray<BRepGraph_ShellRefId> ShellRefsOfSolid(
   {
     const BRepGraphInc::ShellRef& aRef = aRefs.Shells().Entry(aRefId);
     if (aRef.ParentId == aParentNode && !aRef.IsRemoved)
+    {
       aRefIds.Append(aRefId);
+    }
   }
   return aRefIds;
 }
@@ -161,7 +171,9 @@ inline NCollection_DynamicArray<BRepGraph_SolidRefId> SolidRefsOfCompSolid(
   {
     const BRepGraphInc::SolidRef& aRef = aRefs.Solids().Entry(aRefId);
     if (aRef.ParentId == aParentNode && !aRef.IsRemoved)
+    {
       aRefIds.Append(aRefId);
+    }
   }
   return aRefIds;
 }
@@ -187,7 +199,9 @@ inline NCollection_DynamicArray<BRepGraph_ChildRefId> ChildRefsOfParent(
   {
     const BRepGraphInc::ChildRef& aRef = aRefs.Children().Entry(aRefId);
     if (aRef.ParentId == theParentId && !aRef.IsRemoved)
+    {
       aRefIds.Append(aRefId);
+    }
   }
   return aRefIds;
 }
@@ -219,7 +233,9 @@ inline NCollection_DynamicArray<BRepGraph_CoEdgeRefId> CoEdgeRefsOfWire(
   {
     const BRepGraphInc::CoEdgeRef& aRef = theStorage.CoEdgeRef(aRefId);
     if (aRef.ParentId == aParentNode && !aRef.IsRemoved)
+    {
       aRefIds.Append(aRefId);
+    }
   }
   return aRefIds;
 }
@@ -245,7 +261,9 @@ inline NCollection_DynamicArray<BRepGraph_WireRefId> WireRefsOfFace(
   {
     const BRepGraphInc::WireRef& aRef = theStorage.WireRef(aRefId);
     if (aRef.ParentId == aParentNode && !aRef.IsRemoved)
+    {
       aRefIds.Append(aRefId);
+    }
   }
   return aRefIds;
 }
@@ -270,7 +288,9 @@ inline bool FaceUsesWire(const BRepGraphInc_Storage& theStorage,
   {
     const BRepGraphInc::WireRef& aWireRef = theStorage.WireRef(aWireRefId);
     if (aWireRef.WireDefId == theWireId)
+    {
       return true;
+    }
   }
   return false;
 }
@@ -288,7 +308,9 @@ inline NCollection_DynamicArray<BRepGraph_FaceRefId> FaceRefsOfShell(
   {
     const BRepGraphInc::FaceRef& aRef = theStorage.FaceRef(aRefId);
     if (aRef.ParentId == aParentNode && !aRef.IsRemoved)
+    {
       aRefIds.Append(aRefId);
+    }
   }
   return aRefIds;
 }
@@ -314,7 +336,9 @@ inline NCollection_DynamicArray<BRepGraph_ShellRefId> ShellRefsOfSolid(
   {
     const BRepGraphInc::ShellRef& aRef = theStorage.ShellRef(aRefId);
     if (aRef.ParentId == aParentNode && !aRef.IsRemoved)
+    {
       aRefIds.Append(aRefId);
+    }
   }
   return aRefIds;
 }
@@ -340,7 +364,9 @@ inline NCollection_DynamicArray<BRepGraph_SolidRefId> SolidRefsOfCompSolid(
   {
     const BRepGraphInc::SolidRef& aRef = theStorage.SolidRef(aRefId);
     if (aRef.ParentId == aParentNode && !aRef.IsRemoved)
+    {
       aRefIds.Append(aRefId);
+    }
   }
   return aRefIds;
 }
@@ -365,7 +391,9 @@ inline NCollection_DynamicArray<BRepGraph_ChildRefId> ChildRefsOfParent(
   {
     const BRepGraphInc::ChildRef& aRef = theStorage.ChildRef(aRefId);
     if (aRef.ParentId == theParentId && !aRef.IsRemoved)
+    {
       aRefIds.Append(aRefId);
+    }
   }
   return aRefIds;
 }
@@ -389,7 +417,9 @@ inline BRepGraph_WireId OuterWireOfFace(const BRepGraphInc_Storage& theStorage,
   {
     const BRepGraphInc::WireRef& aWireRef = theStorage.WireRef(aWireRefId);
     if (aWireRef.IsOuter)
+    {
       return aWireRef.WireDefId;
+    }
   }
   return BRepGraph_WireId();
 }

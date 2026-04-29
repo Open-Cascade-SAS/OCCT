@@ -896,7 +896,9 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Random_Circle_100Points)
     Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
 
     if (!anOldExtPC.IsDone())
+    {
       continue;
+    }
 
     if (aNewResult.IsDone() && aNewResult.NbExt() > 0)
     {
@@ -940,7 +942,9 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Random_Ellipse_100Points)
     Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
 
     if (!anOldExtPC.IsDone())
+    {
       continue;
+    }
 
     if (aNewResult.IsDone() && aNewResult.NbExt() > 0)
     {
@@ -985,10 +989,14 @@ TEST_F(ExtremaPC_ExtendedGeometryTest, Random_Parabola_100Points)
     Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
 
     if (!anOldExtPC.IsDone() || anOldExtPC.NbExt() == 0)
+    {
       continue;
+    }
 
     if (!aNewResult.IsDone() || aNewResult.NbExt() == 0)
+    {
       continue;
+    }
 
     ++aValidCount;
 

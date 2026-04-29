@@ -228,13 +228,19 @@ STEPControl_ActorRead::STEPControl_ActorRead(const occ::handle<Interface_Interfa
 bool STEPControl_ActorRead::Recognize(const occ::handle<Standard_Transient>& start)
 {
   if (start.IsNull())
+  {
     return false;
+  }
 
   if (start->IsKind(STANDARD_TYPE(StepBasic_ProductDefinition)))
+  {
     return true;
+  }
 
   if (start->IsKind(STANDARD_TYPE(StepRepr_NextAssemblyUsageOccurrence)))
+  {
     return true;
+  }
 
   occ::handle<StepData_StepModel> aStepModel = occ::down_cast<StepData_StepModel>(myModel);
   if (aStepModel.IsNull())
@@ -243,8 +249,12 @@ bool STEPControl_ActorRead::Recognize(const occ::handle<Standard_Transient>& sta
   }
   bool aProdMode = aStepModel->InternalParameters.ReadProductMode;
   if (!aProdMode)
+  {
     if (start->IsKind(STANDARD_TYPE(StepShape_ShapeDefinitionRepresentation)))
+    {
       return true;
+    }
+  }
 
   DeclareAndCast(StepShape_ShapeRepresentation, sr, start);
   if (!sr.IsNull())
@@ -253,7 +263,9 @@ bool STEPControl_ActorRead::Recognize(const occ::handle<Standard_Transient>& sta
     for (i = 1; i <= nb; i++)
     {
       if (Recognize(sr->ItemsValue(i)))
+      {
         return true;
+      }
     }
     return false;
   }
@@ -261,35 +273,65 @@ bool STEPControl_ActorRead::Recognize(const occ::handle<Standard_Transient>& sta
   const bool aCanReadTessGeom = aStepModel->InternalParameters.ReadTessellated != 0;
 
   if (start->IsKind(STANDARD_TYPE(StepShape_FacetedBrep)))
+  {
     return true;
+  }
   if (start->IsKind(STANDARD_TYPE(StepShape_BrepWithVoids)))
+  {
     return true;
+  }
   if (start->IsKind(STANDARD_TYPE(StepShape_ManifoldSolidBrep)))
+  {
     return true;
+  }
   if (start->IsKind(STANDARD_TYPE(StepShape_ShellBasedSurfaceModel)))
+  {
     return true;
+  }
   if (start->IsKind(STANDARD_TYPE(StepShape_FacetedBrepAndBrepWithVoids)))
+  {
     return true;
+  }
   if (start->IsKind(STANDARD_TYPE(StepShape_GeometricSet)))
+  {
     return true;
+  }
   if (start->IsKind(STANDARD_TYPE(StepRepr_MappedItem)))
+  {
     return true;
+  }
   if (start->IsKind(STANDARD_TYPE(StepShape_FaceSurface)))
+  {
     return true;
+  }
   if (start->IsKind(STANDARD_TYPE(StepShape_EdgeBasedWireframeModel)))
+  {
     return true;
+  }
   if (start->IsKind(STANDARD_TYPE(StepShape_FaceBasedSurfaceModel)))
+  {
     return true;
+  }
   if (aCanReadTessGeom && start->IsKind(STANDARD_TYPE(StepVisual_TessellatedFace)))
+  {
     return true;
+  }
   if (aCanReadTessGeom && start->IsKind(STANDARD_TYPE(StepVisual_TessellatedSurfaceSet)))
+  {
     return true;
+  }
   if (aCanReadTessGeom && start->IsKind(STANDARD_TYPE(StepVisual_TessellatedShell)))
+  {
     return true;
+  }
   if (aCanReadTessGeom && start->IsKind(STANDARD_TYPE(StepVisual_TessellatedSolid)))
+  {
     return true;
+  }
   if (aCanReadTessGeom && start->IsKind(STANDARD_TYPE(StepVisual_TessellatedShapeRepresentation)))
+  {
     return true;
+  }
 
   //  REPRESENTATION_RELATIONSHIP et consorts : on regarde le contenu ...
   //  On prend WithTransformation ou non ...
@@ -343,7 +385,9 @@ occ::handle<Transfer_Binder> STEPControl_ActorRead::Transfer(
     {
       occ::handle<TCollection_HAsciiString> aPPVersion = aFileNameEntity->PreprocessorVersion();
       if (aPPVersion.IsNull())
+      {
         continue;
+      }
 #ifdef OCCT_DEBUG
       std::cout << "Preprocessor version detected: " << aPPVersion->ToCString() << std::endl;
 #endif
@@ -368,7 +412,9 @@ occ::handle<Transfer_Binder> STEPControl_ActorRead::Transfer(
 static void ApplyTransformation(TopoDS_Shape& shape, const gp_Trsf& Trsf)
 {
   if (Trsf.Form() == gp_Identity)
+  {
     return;
+  }
   TopLoc_Location theLoc(Trsf);
   shape.Move(theLoc);
 }
@@ -388,7 +434,9 @@ static occ::handle<StepRepr_Representation> FindContext(
   {
     rep = occ::down_cast<StepRepr_Representation>(subs.Value());
     if (rep.IsNull() && level > 0)
+    {
       rep = FindContext(subs.Value(), TP, level - 1);
+    }
   }
   return rep;
 }
@@ -402,17 +450,29 @@ static occ::handle<StepRepr_Representation> FindContext(
 static int FindShapeReprType(const occ::handle<Standard_Transient>& start)
 {
   if (start->IsKind(STANDARD_TYPE(StepShape_AdvancedBrepShapeRepresentation)))
+  {
     return 2;
+  }
   if (start->IsKind(STANDARD_TYPE(StepShape_ManifoldSurfaceShapeRepresentation)))
+  {
     return 3;
+  }
   if (start->IsKind(STANDARD_TYPE(StepShape_GeometricallyBoundedSurfaceShapeRepresentation)))
+  {
     return 4;
+  }
   if (start->IsKind(STANDARD_TYPE(StepShape_FacetedBrepShapeRepresentation)))
+  {
     return 5;
+  }
   if (start->IsKind(STANDARD_TYPE(StepShape_EdgeBasedWireframeShapeRepresentation)))
+  {
     return 6;
+  }
   if (start->IsKind(STANDARD_TYPE(StepShape_GeometricallyBoundedWireframeShapeRepresentation)))
+  {
     return 7;
+  }
   return 8;
 }
 
@@ -430,12 +490,16 @@ static void getListSDR(const occ::handle<StepRepr_ShapeAspect>&                 
 
   // check whether this ShapeAspect is used in G&DT, and if yes, ignore it
   if (sa->IsKind(STANDARD_TYPE(StepDimTol_DatumFeature)))
+  {
     return;
+  }
   Interface_EntityIterator subs5 = graph.Sharings(sa);
   for (subs5.Start(); subs5.More(); subs5.Next())
   {
     if (subs5.Value()->IsKind(STANDARD_TYPE(StepDimTol_GeometricTolerance)))
+    {
       return;
+    }
   }
 
   // reiterate by referred entities and take all SDRs; note that SDRs that
@@ -446,14 +510,18 @@ static void getListSDR(const occ::handle<StepRepr_ShapeAspect>&                 
     occ::handle<StepRepr_PropertyDefinition> propd =
       occ::down_cast<StepRepr_PropertyDefinition>(subs5.Value());
     if (propd.IsNull())
+    {
       continue;
+    }
     Interface_EntityIterator subs6 = graph.Sharings(propd);
     for (subs6.Start(); subs6.More(); subs6.Next())
     {
       occ::handle<StepShape_ShapeDefinitionRepresentation> sdr =
         occ::down_cast<StepShape_ShapeDefinitionRepresentation>(subs6.Value());
       if (!sdr.IsNull())
+      {
         listSDR->Append(sdr);
+      }
     }
   }
 }
@@ -496,8 +564,10 @@ static void getSDR(
       {
         // if specific representation type is preferred, choose the
         // representations of the closest type
-        if (ICS == 1) // translate all SDRs
+        if (ICS == 1)
+        { // translate all SDRs
           listSDR->Append(sdr);
+        }
         else
         {
           int iDiff = std::abs(FindShapeReprType(rep) - ICS);
@@ -505,12 +575,16 @@ static void getSDR(
           if (iDiff < delta)
           {
             while (listSDR->Length() > nbSDR0)
+            {
               listSDR->Remove(listSDR->Length());
+            }
             delta = iDiff;
           }
           // take all representations of preferred or closest type
           if (iDiff <= delta)
+          {
             listSDR->Append(sdr);
+          }
         }
       }
       continue;
@@ -530,7 +604,9 @@ static void getSDR(
     if (!NAUO.IsNull())
     {
       if (PDS->Definition().ProductDefinition() == NAUO->RelatingProductDefinition())
+      {
         listNAUO->Append(NAUO);
+      }
       continue;
     }
   }
@@ -580,7 +656,9 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
     if (!NAUO.IsNull())
     {
       if (PD == NAUO->RelatingProductDefinition())
+      {
         listNAUO->Append(NAUO);
+      }
       continue;
     }
   }
@@ -598,7 +676,9 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
   // should be taken into account
   int readSA = aStepModel->InternalParameters.ReadShapeAspect;
   if (!readSA)
+  {
     listSDRAspect->Clear();
+  }
 
   // remember number of normal SDRs (not those found via ShapeAspect)
   // and merge both lists in one
@@ -612,13 +692,19 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
   // ignoring sub-assemblies if any
   int readAssembly = aStepModel->InternalParameters.ReadAssemblyLevel;
   if (readAssembly == 3 || (readAssembly == 2 && listNAUO->Length() > 0))
+  {
     listSDR->Clear();
+  }
   else if (readAssembly == 4)
+  {
     listNAUO->Clear();
+  }
 
   int nbEnt = listSDR->Length() + listNAUO->Length();
   if (nbEnt <= 0)
+  {
     return shbinder;
+  }
 
   // common progress indicator for translation of own shapes and sub-assemblies
   Message_ProgressScope PS(theProgress, "Part", nbEnt);
@@ -632,15 +718,21 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
 
 #ifdef TRANSLOG
     if (TP->TraceLevel() > 1)
+    {
       sout << " -- Actor : Ent.n0 " << TP->Model()->Number(PD) << " -> Shared Ent.no"
-           << TP->Model()->Number(NAUO) << std::endl;
+           << TP->Model()->Number(NAUO) << '\n';
+    }
 #endif
     occ::handle<Transfer_Binder> binder;
     Message_ProgressRange        aRange = PS.Next();
     if (!TP->IsBound(NAUO))
+    {
       binder = TransferEntity(NAUO, TP, theLocalFactors, aRange);
+    }
     else
+    {
       binder = TP->Find(NAUO);
+    }
 
     TopoDS_Shape theResult = TransferBRep::ShapeResult(binder);
     if (!theResult.IsNull())
@@ -657,7 +749,9 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
         }
       }
       else
+      {
         B.Add(Cund, theResult);
+      }
       // [END] ssv: OCCT#22436: extra compound in NMSSR case
       nbComponents++;
     }
@@ -671,7 +765,9 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
     occ::handle<StepShape_ShapeRepresentation> rep =
       occ::down_cast<StepShape_ShapeRepresentation>(sdr->UsedRepresentation());
     if (rep.IsNull())
+    {
       continue;
+    }
 
     Message_ProgressScope aPS1(PS.Next(), nullptr, 2);
 
@@ -684,14 +780,18 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
     bool                         useTrsf = theUseTrsf && (i <= nbNotAspect);
     occ::handle<Transfer_Binder> binder  = TP->Find(rep);
     if (binder.IsNull())
+    {
       binder = TransferEntity(rep, TP, theLocalFactors, isBound, useTrsf, aPS1.Next());
+    }
 
     // if SDR is obtained from ShapeAspect and representation items have already been tramnslated,
     // this means that that ShapeAspect is used to refer to sub-shape of the main shape
     // (e.g. for validation properties), and we do not need to translate it actually;
     // otherwise it is considered as part of hybrid representation in AP203 before 1998
     if (i > nbNotAspect && isBound)
+    {
       continue;
+    }
 
     // record shape resulting from translation
     TopoDS_Shape theResult;
@@ -712,7 +812,9 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
           }
         }
         else
+        {
           B.Add(Cund, theResult);
+        }
         // [END] ssv: OCCT#22436: extra compound in NMSSR case
       }
     }
@@ -733,13 +835,19 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
 
   // make a warning if both own shape and sub-assemblies are present
   if ((Cund.NbChildren() - nbComponents) > 0 && nbComponents > 0)
+  {
     TP->AddWarning(PD, "Product has both sub-assemblies and directly assigned shape");
+  }
 
   // if only single shape is read, add it as it is; otherwise add compound
   if ((Cund.NbChildren() - nbComponents) == 1 && nbComponents == 0)
+  {
     shbinder = new TransferBRep_ShapeBinder(Result1);
+  }
   else
+  {
     shbinder = new TransferBRep_ShapeBinder(Cund);
+  }
 
   // TP->Unbind( PD ); //:j3: unbind start (let it be bound by TransferProcess)
   TP->Bind(PD, shbinder);
@@ -766,22 +874,30 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
     occ::handle<StepRepr_ProductDefinitionShape> PDS =
       occ::down_cast<StepRepr_ProductDefinitionShape>(subs1.Value());
     if (PDS.IsNull())
+    {
       continue;
+    }
     Interface_EntityIterator subs2 = graph.Sharings(PDS);
     for (subs2.Start(); subs2.More(); subs2.Next())
     {
       occ::handle<StepShape_ContextDependentShapeRepresentation> CDSR =
         occ::down_cast<StepShape_ContextDependentShapeRepresentation>(subs2.Value());
       if (CDSR.IsNull())
+      {
         continue;
+      }
       IsDepend                                            = true;
       occ::handle<StepRepr_RepresentationRelationship> RR = CDSR->RepresentationRelation();
       if (RR.IsNull())
+      {
         continue;
+      }
       SRRReversed = STEPConstruct_Assembly::CheckSRRReversesNAUO(graph, CDSR);
       occ::handle<StepRepr_Representation> rep = (SRRReversed ? RR->Rep2() : RR->Rep1());
       if (rep.IsNull())
+      {
         continue;
+      }
       iatrsf = ComputeSRRWT(RR, TP, Trsf, theLocalFactors);
       // find real ProductDefinition used rep
       Interface_EntityIterator subs3 = TP->Graph().Sharings(rep);
@@ -794,7 +910,9 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
           occ::handle<StepRepr_ProductDefinitionShape> PDS1 =
             occ::down_cast<StepRepr_ProductDefinitionShape>(SDR->Definition().PropertyDefinition());
           if (PDS1.IsNull())
+          {
             continue;
+          }
           Interface_EntityIterator subs4 = graph.Shareds(PDS1);
           for (subs4.Start(); PD.IsNull() && subs4.More(); subs4.Next())
           {
@@ -823,16 +941,22 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
     {
       binder = TP->Find(PD);
       if (binder.IsNull())
+      {
         binder = TransferEntity(PD, TP, theLocalFactors, false, aPS.Next());
+      }
       theResult = TransferBRep::ShapeResult(binder);
       if (!theResult.IsNull())
       {
         if (iatrsf)
         {
           if (SRRReversed)
+          {
             ApplyTransformation(theResult, Trsf.Inverted());
+          }
           else
+          {
             ApplyTransformation(theResult, Trsf);
+          }
         }
         shbinder = new TransferBRep_ShapeBinder(theResult);
       }
@@ -846,7 +970,9 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
         binder    = TransferEntity(SRR, TP, theLocalFactors, 0, false, aPS.Next());
         theResult = TransferBRep::ShapeResult(binder);
         if (!theResult.IsNull())
+        {
           shbinder = new TransferBRep_ShapeBinder(theResult);
+        }
       }
     }
   }
@@ -868,14 +994,18 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
   occ::handle<TransferBRep_ShapeBinder> shbinder;
   occ::handle<StepData_StepModel> aStepModel = occ::down_cast<StepData_StepModel>(TP->Model());
   if (!Recognize(sr))
+  {
     return shbinder;
+  }
   isBound                                   = false;
   int                             nb        = sr->NbItems();
   int                             nbTPitems = TP->NbMapped();
   Message_Messenger::StreamBuffer sout      = TP->Messenger()->SendInfo();
 #ifdef TRANSLOG
   if (TP->TraceLevel() > 2)
-    sout << " -- Actor : case  ShapeRepr. NbItems=" << nb << std::endl;
+  {
+    sout << " -- Actor : case  ShapeRepr. NbItems=" << nb << '\n';
+  }
 #endif
 
   // Compute unit conversion factors and geometric Accuracy
@@ -932,11 +1062,15 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
     Message_ProgressRange aRange = aPS.Next();
 #ifdef TRANSLOG
     if (TP->TraceLevel() > 2)
-      sout << " -- Actor, shape_representation.item n0. " << i << std::endl;
+    {
+      sout << " -- Actor, shape_representation.item n0. " << i << '\n';
+    }
 #endif
     occ::handle<StepRepr_RepresentationItem> anitem = sr->ItemsValue(i);
     if (anitem.IsNull())
+    {
       continue;
+    }
     if (theUseTrsf)
     {
       if (anitem->IsKind(STANDARD_TYPE(StepGeom_Axis2Placement3d)))
@@ -1064,7 +1198,9 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
       {
         const TopoDS_Shape& aCurrentShell = allShellsExp.Current();
         if (!myNMTool.IsPureNMShell(aCurrentShell) && !shellClosingsMap.Contains(aCurrentShell))
+        {
           brepBuilder.Add(compWithClosings, aCurrentShell);
+        }
       }
       comp = compWithClosings;
     }
@@ -1085,7 +1221,9 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
         brepBuilder.Add(reconstComp, nextSolid);
       }
       else if (aSubShape.ShapeType() == TopAbs_SHELL)
+      {
         brepBuilder.Add(reconstComp, aSubShape);
+      }
     }
     comp = reconstComp;
     // [END] Reconstruct Solids from Closed Shells (ssv; 15.11.2010)
@@ -1096,7 +1234,9 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
   // else if (nsh == 1) shbinder = new TransferBRep_ShapeBinder (OneResult);
   // else               shbinder = new TransferBRep_ShapeBinder (comp);
   if (nsh == 0)
+  {
     shbinder.Nullify();
+  }
   else if (nsh == 1)
   {
     if (aTrsf.Form() != gp_Identity)
@@ -1138,7 +1278,9 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
   //: j2: treat SRRs here in order to compare them with NAUO
   occ::handle<StepRepr_ShapeRepresentationRelationship> SRR = CDSR->RepresentationRelation();
   if (SRR.IsNull())
+  {
     return shbinder;
+  }
 
   bool SRRReversed = STEPConstruct_Assembly::CheckSRRReversesNAUO(TP->Graph(), CDSR);
   occ::handle<StepRepr_Representation>       rep1 = (SRRReversed ? SRR->Rep2() : SRR->Rep1());
@@ -1146,7 +1288,9 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
     occ::down_cast<StepShape_ShapeRepresentation>(rep1);
 
   if (SRRReversed)
+  {
     TP->AddWarning(SRR, "SRR reverses relation defined by NAUO; NAUO definition is taken");
+  }
 
   TopoDS_Shape theResult;
 
@@ -1156,9 +1300,13 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
   occ::handle<Transfer_Binder> binder;
   bool                         isBound = false;
   if (!TP->IsBound(rep))
+  {
     binder = TransferEntity(rep, TP, theLocalFactors, isBound, false, theProgress);
+  }
   else
+  {
     binder = TP->Find(rep);
+  }
   theResult = TransferBRep::ShapeResult(binder);
 
   if (!theResult.IsNull())
@@ -1166,14 +1314,20 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
     if (iatrsf)
     {
       if (SRRReversed)
+      {
         ApplyTransformation(theResult, Trsf.Inverted());
+      }
       else
+      {
         ApplyTransformation(theResult, Trsf);
+      }
     }
     shbinder = new TransferBRep_ShapeBinder(theResult);
   }
   else
+  {
     shbinder.Nullify();
+  }
   TP->Bind(CDSR, shbinder);
   return shbinder;
 }
@@ -1192,7 +1346,9 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
   occ::handle<TransferBRep_ShapeBinder> shbinder;
 
   if (und.IsNull())
+  {
     return shbinder;
+  }
 
   //  On prend son contenu : Rep1 ou Rep2 , that is the question
   //    on prend les 2. Mais quoi faire des axes
@@ -1212,20 +1368,30 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
   {
     Message_ProgressRange aRange = aPS.Next();
     if (nbrep && nbrep != i)
+    {
       continue;
+    }
     occ::handle<StepRepr_Representation> anitemt;
     if (i == 1)
+    {
       anitemt = und->Rep1();
+    }
     if (i == 2)
+    {
       anitemt = und->Rep2();
+    }
     occ::handle<StepShape_ShapeRepresentation> anitem =
       occ::down_cast<StepShape_ShapeRepresentation>(anitemt);
     occ::handle<Transfer_Binder> binder;
     bool                         isBound = false;
     if (!TP->IsBound(anitem))
+    {
       binder = TransferEntity(anitem, TP, theLocalFactors, isBound, theUseTrsf, aRange);
+    }
     else
+    {
       binder = TP->Find(anitem);
+    }
     TopoDS_Shape theResult = TransferBRep::ShapeResult(binder);
     if (!theResult.IsNull())
     {
@@ -1242,16 +1408,26 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
   if (iatrsf)
   {
     if (nsh == 1)
+    {
       ApplyTransformation(OneResult, Trsf);
+    }
     else if (nsh > 1)
+    {
       ApplyTransformation(Cund, Trsf);
+    }
   }
   if (nsh == 0)
+  {
     shbinder.Nullify();
+  }
   else if (nsh == 1)
+  {
     shbinder = new TransferBRep_ShapeBinder(OneResult);
+  }
   else
+  {
     shbinder = new TransferBRep_ShapeBinder(Cund);
+  }
   TP->Bind(und, shbinder);
   return shbinder;
 }
@@ -1266,7 +1442,9 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
 
   occ::handle<TransferBRep_ShapeBinder> shbinder;
   if (theCGRR.IsNull())
+  {
     return shbinder;
+  }
   bool                                 resetUnits    = false;
   occ::handle<StepRepr_Representation> oldSRContext  = mySRContext;
   StepData_Factors                     aLocalFactors = theLocalFactors;
@@ -1279,7 +1457,9 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
       occ::down_cast<StepRepr_ConstructiveGeometryRepresentation>(i == 1 ? theCGRR->Rep1()
                                                                          : theCGRR->Rep2());
     if (aCRepr.IsNull())
+    {
       continue;
+    }
     if (mySRContext.IsNull() || aCRepr->ContextOfItems() != mySRContext->ContextOfItems())
     {
       PrepareUnits(aCRepr, theTP, aLocalFactors);
@@ -1298,7 +1478,9 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
         occ::handle<Geom_Axis2Placement> anAxis =
           StepToGeom::MakeAxis2Placement(aStepAxis, aLocalFactors);
         if (anAxis.IsNull())
+        {
           continue;
+        }
         occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Ax3(anAxis->Ax2()));
         TopoDS_Face             aPlaneFace;
         aB.MakeFace(aPlaneFace, aPlane, Precision::Confusion());
@@ -1311,7 +1493,9 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
   shbinder    = new TransferBRep_ShapeBinder(aComp);
   mySRContext = oldSRContext;
   if (oldSRContext.IsNull() || resetUnits)
+  {
     PrepareUnits(oldSRContext, theTP, aLocalFactors);
+  }
 
   theTP->Bind(theCGRR, shbinder);
 
@@ -1328,7 +1512,9 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
 {
   occ::handle<TransferBRep_ShapeBinder> aShBinder;
   if (theMDADR.IsNull())
+  {
     return aShBinder;
+  }
 
   bool                                 aResetUnits    = false;
   occ::handle<StepRepr_Representation> anOldSRContext = mySRContext;
@@ -1344,7 +1530,9 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
     occ::handle<StepRepr_Representation> aRepr =
       (anIndex == 1) ? theMDADR->Rep1() : theMDADR->Rep2();
     if (aRepr.IsNull())
+    {
       continue;
+    }
     if (mySRContext.IsNull() || aRepr->ContextOfItems() != mySRContext->ContextOfItems())
     {
       PrepareUnits(aRepr, theTP, aLocalFactors);
@@ -1399,7 +1587,9 @@ static bool IsNeedRepresentation(const occ::handle<StepRepr_ShapeAspect>&      s
     occ::handle<StepShape_ShapeDefinitionRepresentation> sdrA =
       occ::down_cast<StepShape_ShapeDefinitionRepresentation>(subs7.Value());
     if (sdrA.IsNull())
+    {
       continue;
+    }
     // abv 23 Feb 00: use iterator to take into account AP203 hybrid models
     Interface_EntityIterator subs8 = graph.Shareds(sdrA);
     for (subs8.Start(); subs8.More(); subs8.Next())
@@ -1411,7 +1601,9 @@ static bool IsNeedRepresentation(const occ::handle<StepRepr_ShapeAspect>&      s
         occ::handle<StepRepr_ShapeRepresentationRelationship> SRR =
           occ::down_cast<StepRepr_ShapeRepresentationRelationship>(subs8.Value());
         if (SRR.IsNull())
+        {
           continue;
+        }
         rep2 = (sdrA->UsedRepresentation() == SRR->Rep1() ? SRR->Rep2() : SRR->Rep1());
       }
       int i, j; // svv Jan 11 2000 : porting on DEC
@@ -1419,13 +1611,21 @@ static bool IsNeedRepresentation(const occ::handle<StepRepr_ShapeAspect>&      s
       {
         occ::handle<StepRepr_RepresentationItem> it = repA->ItemsValue(i);
         for (j = 1; j <= rep2->NbItems(); j++)
+        {
           if (it == rep2->ItemsValue(j))
+          {
             break;
+          }
+        }
         if (j > rep2->NbItems())
+        {
           break;
+        }
       }
       if (i > repA->NbItems())
+      {
         IsSDRaspect = false;
+      }
     }
   }
   return IsSDRaspect;
@@ -1454,7 +1654,9 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::OldWay(
     if (!SA.IsNull())
     {
       if (!IsNeedRepresentation(SA, rep, TP))
+      {
         return shbinder;
+      }
     }
   }
 
@@ -1462,7 +1664,9 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::OldWay(
 
 #ifdef TRANSLOG
   if (TP->TraceLevel() > 2)
-    sout << " -- Actor : case  shape_definition_representation." << std::endl;
+  {
+    sout << " -- Actor : case  shape_definition_representation." << '\n';
+  }
 #endif
   occ::handle<Transfer_Binder> binder = TP->Find(rep);
   {
@@ -1473,7 +1677,9 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::OldWay(
     }
   }
   if (aPSRoot.UserBreak())
+  {
     return shbinder;
+  }
   //: j2    if (!binder.IsNull()) return binder;
 
   //    SDR designant des CDSR (lien implicite, via la UsedRepr)
@@ -1507,26 +1713,36 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::OldWay(
   occ::handle<Standard_Type> tSRR   = STANDARD_TYPE(StepRepr_ShapeRepresentationRelationship);
   int                        nbitem = 0;
   for (subs.Start(); subs.More(); subs.Next())
+  {
     nbitem++;
+  }
   Message_ProgressScope PS(aPSRoot.Next(), "Sub", nbitem);
   for (subs.Start(); subs.More() && PS.More(); subs.Next())
   {
     Message_ProgressRange                  aRange = PS.Next();
     const occ::handle<Standard_Transient>& anitem = subs.Value();
     if (anitem->DynamicType() != tCDSR && anitem->DynamicType() != tSRR)
+    {
       continue;
+    }
 //      DeclareAndCast(StepShape_ContextDependentShapeRepresentation,anitem,subs.Value());
 //      if (anitem.IsNull()) continue;
 #ifdef TRANSLOG
     if (TP->TraceLevel() > 1)
+    {
       sout << " -- Actor : Ent.n0 " << TP->Model()->Number(start) << " -> Shared Ent.no"
-           << TP->Model()->Number(anitem) << std::endl;
+           << TP->Model()->Number(anitem) << '\n';
+    }
 #endif
 
     if (!TP->IsBound(anitem))
+    {
       binder = TP->Transferring(anitem, aRange);
+    }
     else
+    {
       binder = TP->Find(anitem);
+    }
     TopoDS_Shape theResult = TransferBRep::ShapeResult(binder);
     if (!theResult.IsNull())
     {
@@ -1537,11 +1753,17 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::OldWay(
   }
 
   if (nsh == 0)
+  {
     shbinder = new TransferBRep_ShapeBinder(Cund); // shbinder.Nullify();
+  }
   else if (nsh == 1)
+  {
     shbinder = new TransferBRep_ShapeBinder(OneResult);
+  }
   else
+  {
     shbinder = new TransferBRep_ShapeBinder(Cund);
+  }
   TP->Unbind(start); //: j3: unbind start (let it be bound by TransferProcess)
   return shbinder;
 }
@@ -1564,7 +1786,9 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
 #ifdef TRANSLOG
   OSD_Timer chrono;
   if (TP->TraceLevel() > 2)
-    sout << "Begin transfer STEP -> CASCADE, Type " << start->DynamicType()->Name() << std::endl;
+  {
+    sout << "Begin transfer STEP -> CASCADE, Type " << start->DynamicType()->Name() << '\n';
+  }
   chrono.Start();
 #endif
   occ::handle<StepData_StepModel> aStepModel = occ::down_cast<StepData_StepModel>(TP->Model());
@@ -1580,7 +1804,9 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
       ResetUnits(aStepModel, aLocalFactors);
     }
     else
+    {
       PrepareUnits(context, TP, aLocalFactors);
+    }
   }
   myShapeBuilder.SetPrecision(myPrecision);
   myShapeBuilder.SetMaxTol(myMaxTol);
@@ -1694,7 +1920,9 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
   }
 
   if (aPS.UserBreak())
+  {
     return shbinder;
+  }
 
   if (found && myShapeBuilder.IsDone())
   {
@@ -1717,16 +1945,24 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
   }
   found = !mappedShape.IsNull();
   if (found && shbinder.IsNull())
+  {
     shbinder = new TransferBRep_ShapeBinder(mappedShape);
+  }
 #ifdef TRANSLOG
   chrono.Stop();
   if (TP->TraceLevel() > 2)
-    sout << "End transfer STEP -> CASCADE :" << (found ? "OK" : " : no result") << std::endl;
+  {
+    sout << "End transfer STEP -> CASCADE :" << (found ? "OK" : " : no result") << '\n';
+  }
   if (TP->TraceLevel() > 2)
+  {
     chrono.Show();
+  }
 #endif
-  if (oldSRContext.IsNull() && !mySRContext.IsNull()) //: S4136
+  if (oldSRContext.IsNull() && !mySRContext.IsNull())
+  { //: S4136
     PrepareUnits(oldSRContext, TP, aLocalFactors);
+  }
   TP->Bind(start, shbinder);
   return shbinder;
 }
@@ -1756,10 +1992,14 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
   Message_ProgressScope        aPSRoot(theProgress, nullptr, 2);
   occ::handle<Transfer_Binder> binder = TP->Find(maprep);
   if (binder.IsNull())
+  {
     binder = TransferEntity(maprep, TP, theLocalFactors, isBound, false, theProgress);
+  }
   shbinder = occ::down_cast<TransferBRep_ShapeBinder>(binder);
   if (shbinder.IsNull())
+  {
     TP->AddWarning(mapit, "No Shape Produced");
+  }
   else
   {
     TopoDS_Shape mappedShape = shbinder->Result();
@@ -1794,9 +2034,13 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
       }
 
       if (ok)
+      {
         ApplyTransformation(mappedShape, Trsf);
+      }
       else
+      {
         TP->AddWarning(mapit, "Mapped Item, case not recognized, location ignored");
+      }
 
       shbinder = new TransferBRep_ShapeBinder(mappedShape);
     }
@@ -1819,7 +2063,9 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
     const Interface_Graph& aGraph  = TP->Graph();
     int                    aSRRnum = 0;
     for (Interface_EntityIterator aSubsIt(aGraph.Sharings(maprep)); aSubsIt.More(); aSubsIt.Next())
+    {
       ++aSRRnum;
+    }
     Message_ProgressScope aPS(aPSRoot.Next(), "Part", aSRRnum);
     TopoDS_Shape          aNewResult = TransferRelatedSRR(TP,
                                                  maprep,
@@ -1834,7 +2080,9 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
     }
     // if only single shape is read, add it as it is; otherwise add compound
     if (aCund.NbChildren() == 1)
+    {
       shbinder = new TransferBRep_ShapeBinder(aResult);
+    }
     else if (aCund.NbChildren() > 1)
     {
       shbinder = new TransferBRep_ShapeBinder(aCund);
@@ -1883,7 +2131,9 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
         ResetUnits(aStepModel, aLocalFactors);
       }
       else
+      {
         PrepareUnits(context, TP, aLocalFactors);
+      }
     }
 
     // Apply ShapeFix
@@ -1908,8 +2158,10 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
       aShapeProcessor.MergeTransferInfo(TP, nbTPitems);
     }
 
-    if (oldSRContext.IsNull() && !mySRContext.IsNull()) //: S4136
+    if (oldSRContext.IsNull() && !mySRContext.IsNull())
+    { //: S4136
       PrepareUnits(oldSRContext, TP, aLocalFactors);
+    }
     TP->Bind(fs, sb);
     return sb; // TP->Find (start);
   }
@@ -1933,14 +2185,18 @@ occ::handle<Transfer_Binder> STEPControl_ActorRead::TransferShape(
   const Message_ProgressRange&                  theProgress)
 {
   if (start.IsNull())
+  {
     return NullResult();
+  }
 
   Message_Messenger::StreamBuffer sout = TP->Messenger()->SendInfo();
 #ifdef TRANSLOG
   //  POUR MISE AU POINT, a supprimer ensuite
   if (TP->TraceLevel() > 1)
+  {
     sout << " -- Actor : Transfer Ent.n0 " << TP->Model()->Number(start) << "  Type "
-         << start->DynamicType()->Name() << std::endl;
+         << start->DynamicType()->Name() << '\n';
+  }
 #endif
 
   occ::handle<TransferBRep_ShapeBinder> shbinder;
@@ -1951,9 +2207,10 @@ occ::handle<Transfer_Binder> STEPControl_ActorRead::TransferShape(
   // case ShapeDefinitionRepresentation if ProductMode != ON
   bool aProdMode = aStepModel->InternalParameters.ReadProductMode;
   if (!aProdMode && start->IsKind(STANDARD_TYPE(StepShape_ShapeDefinitionRepresentation)))
+  {
     shbinder = OldWay(start, TP, theProgress);
-  // skl
-
+    // skl
+  }
   else if (start->IsKind(STANDARD_TYPE(StepBasic_ProductDefinition)))
   {
     occ::handle<StepBasic_ProductDefinition> PD =
@@ -2096,21 +2353,29 @@ void STEPControl_ActorRead::PrepareUnits(const occ::handle<StepRepr_Representati
                                       angleFactor,
                                       myUnit.SolidAngleFactor());
     if (stat1 != 0)
+    {
       TP->AddWarning(theRepCont, myUnit.StatusMessage(stat1));
+    }
   }
 
   if (!aTol.IsNull())
   {
     stat2 = myUnit.ComputeTolerance(aTol);
     if (stat2 != 0)
+    {
       TP->AddWarning(theRepCont, myUnit.StatusMessage(stat2));
+    }
   }
 
   //  myPrecision = Precision::Confusion();
-  if (aStepModel->InternalParameters.ReadPrecisionMode == 1) //: i1 gka S4136 05.04.99
+  if (aStepModel->InternalParameters.ReadPrecisionMode == 1)
+  { //: i1 gka S4136 05.04.99
     myPrecision = aStepModel->InternalParameters.ReadPrecisionVal;
+  }
   else if (myUnit.HasUncertainty())
+  {
     myPrecision = myUnit.Uncertainty() * myUnit.LengthFactor();
+  }
   else
   {
     TP->AddWarning(theRepCont, "No Length Uncertainty, value of read.precision.val is taken");
@@ -2120,8 +2385,10 @@ void STEPControl_ActorRead::PrepareUnits(const occ::handle<StepRepr_Representati
   // Assign uncertainty
 #ifdef TRANSLOG
   if (TP->TraceLevel() > 1)
+  {
     TP->Messenger()->SendInfo() << "  Cc1ToTopoDS : Length Unit = " << myUnit.LengthFactor()
-                                << "  Tolerance CASCADE = " << myPrecision << std::endl;
+                                << "  Tolerance CASCADE = " << myPrecision << '\n';
+  }
 #endif
 }
 
@@ -2149,7 +2416,9 @@ bool STEPControl_ActorRead::ComputeTransformation(
 {
   Trsf = gp_Trsf(); // reinit
   if (Origin.IsNull() || Target.IsNull())
+  {
     return false;
+  }
 
   //: abv 31.10.01: TEST_MCI_2.step: check that Ax1 and Ax2 belong to
   // corresponding reps and fix case of inversion error
@@ -2160,16 +2429,24 @@ bool STEPControl_ActorRead::ComputeTransformation(
   for (int i = 1; i <= OrigContext->NbItems(); i++)
   {
     if (OrigContext->ItemsValue(i) == org)
+    {
       isOKOrigin = true;
+    }
     else if (OrigContext->ItemsValue(i) == trg)
+    {
       isSwapTarget = true;
+    }
   }
   for (int i = 1; i <= TargContext->NbItems(); i++)
   {
     if (TargContext->ItemsValue(i) == trg)
+    {
       isOKTarget = true;
+    }
     else if (TargContext->ItemsValue(i) == org)
+    {
       isSwapOrigin = true;
+    }
   }
   if (!isOKOrigin || !isOKTarget)
   {
@@ -2190,13 +2467,19 @@ bool STEPControl_ActorRead::ComputeTransformation(
   occ::handle<StepRepr_Representation> oldSRContext  = mySRContext;
   StepData_Factors                     aLocalFactors = theLocalFactors;
   if (OrigContext != oldSRContext)
+  {
     PrepareUnits(OrigContext, TP, aLocalFactors);
+  }
   occ::handle<Geom_Axis2Placement> theOrig = StepToGeom::MakeAxis2Placement(org, aLocalFactors);
   if (TargContext != OrigContext)
+  {
     PrepareUnits(TargContext, TP, aLocalFactors);
+  }
   occ::handle<Geom_Axis2Placement> theTarg = StepToGeom::MakeAxis2Placement(trg, aLocalFactors);
   if (oldSRContext != TargContext)
+  {
     PrepareUnits(oldSRContext, TP, aLocalFactors);
+  }
 
   gp_Ax3 ax3Orig(theOrig->Ax2());
   gp_Ax3 ax3Targ(theTarg->Ax2());
@@ -2219,7 +2502,9 @@ bool STEPControl_ActorRead::ComputeSRRWT(
 
   DeclareAndCast(StepRepr_ShapeRepresentationRelationshipWithTransformation, srwt, SRR);
   if (srwt.IsNull())
+  {
     return false;
+  }
 
   StepRepr_Transformation SelectTrans   = srwt->TransformationOperator();
   StepData_Factors        aLocalFactors = theLocalFactors;
@@ -2231,24 +2516,32 @@ bool STEPControl_ActorRead::ComputeSRRWT(
     // reset units (by Rep2 - ?)
     occ::handle<StepRepr_Representation> oldSRContext = mySRContext;
     if (SRR->Rep2() != oldSRContext)
+    {
       PrepareUnits(SRR->Rep2(), TP, aLocalFactors);
+    }
     StepToGeom::MakeTransformation3d(CartOp, Trsf, aLocalFactors);
     if (SRR->Rep2() != oldSRContext)
+    {
       PrepareUnits(oldSRContext, TP, aLocalFactors);
+    }
     return Trsf.Form() != gp_Identity;
   }
 
   // item-defined transformation
   occ::handle<StepRepr_ItemDefinedTransformation> ItemDef = SelectTrans.ItemDefinedTransformation();
   if (ItemDef.IsNull())
+  {
     return false;
+  }
 
   occ::handle<StepGeom_Axis2Placement3d> Ax1 =
     occ::down_cast<StepGeom_Axis2Placement3d>(ItemDef->TransformItem1());
   occ::handle<StepGeom_Axis2Placement3d> Ax2 =
     occ::down_cast<StepGeom_Axis2Placement3d>(ItemDef->TransformItem2());
   if (Ax1.IsNull() || Ax2.IsNull())
+  {
     return false;
+  }
   return ComputeTransformation(Ax1, Ax2, SRR->Rep1(), SRR->Rep2(), TP, Trsf, aLocalFactors);
 }
 
@@ -2298,9 +2591,13 @@ TopoDS_Shell STEPControl_ActorRead::closeIDEASShell(
   BRepCheck_Shell  checker(TopoDS::Shell(result));
   BRepCheck_Status checkStatus = checker.Closed();
   if (checkStatus == BRepCheck_NoError)
+  {
     result.Closed(true);
+  }
   else
+  {
     return shell; // Cannot close this shell, skip it so...
+  }
 
   // Try to remove redundant Faces
   for (itL.Initialize(closingFaces); itL.More(); itL.Next())
@@ -2312,7 +2609,9 @@ TopoDS_Shell STEPControl_ActorRead::closeIDEASShell(
     BRepCheck_Status subCheckStatus = subChecker.Closed();
     // If Shell becomes open, just put the deleted face back
     if (subCheckStatus != BRepCheck_NoError)
+    {
       brepBuilder.Add(result, currentFace);
+    }
     else
     {
 #ifdef OCCT_DEBUG
@@ -2348,15 +2647,21 @@ void STEPControl_ActorRead::computeIDEASClosings(
     {
       const TopoDS_Shape& shellB = shellExpB.Current();
       if (shellA.IsSame(shellB))
+      {
         continue;
+      }
       // Check whether ShellB is non-manifold and adjacent to ShellA.
       // If so, ShellA has a chance to be closed with ShellB
       if (myNMTool.IsSuspectedAsClosing(shellA, shellB))
+      {
         closingShells.Append(shellB);
+      }
     }
 
     if (!closingShells.IsEmpty())
+    {
       shellClosingsMap.Add(shellA, closingShells);
+    }
   }
 }
 
@@ -2388,7 +2693,9 @@ TopoDS_Shape STEPControl_ActorRead::TransferRelatedSRR(
   {
     occ::handle<Standard_Transient> anItem = aSubsIt.Value();
     if (!anItem->IsKind(STANDARD_TYPE(StepRepr_RepresentationRelationship)))
+    {
       continue;
+    }
     occ::handle<Transfer_Binder> aBinder;
     if (anItem->DynamicType() == STANDARD_TYPE(StepRepr_ShapeRepresentationRelationship))
     {

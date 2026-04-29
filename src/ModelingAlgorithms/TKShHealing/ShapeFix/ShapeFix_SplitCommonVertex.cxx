@@ -50,7 +50,9 @@ void ShapeFix_SplitCommonVertex::Init(const TopoDS_Shape& S)
 {
   myShape = S;
   if (Context().IsNull())
+  {
     SetContext(new ShapeBuild_ReShape);
+  }
   myResult = myShape;
   Context()->Apply(myShape);
 }
@@ -61,23 +63,31 @@ void ShapeFix_SplitCommonVertex::Perform()
 {
   TopAbs_ShapeEnum st = myShape.ShapeType();
   if (st > TopAbs_FACE)
+  {
     return;
+  }
   for (TopExp_Explorer itf(myShape, TopAbs_FACE); itf.More(); itf.Next())
   {
     TopoDS_Shape tmpFace = Context()->Apply(itf.Current());
     TopoDS_Face  F       = TopoDS::Face(tmpFace);
     if (F.IsNull())
+    {
       continue;
+    }
     // analys face and split if necessary
     NCollection_Sequence<TopoDS_Shape> wires;
     for (TopoDS_Iterator itw(F, false); itw.More(); itw.Next())
     {
       if (itw.Value().ShapeType() != TopAbs_WIRE)
+      {
         continue;
+      }
       wires.Append(itw.Value());
     }
     if (wires.Length() < 2)
+    {
       continue;
+    }
     NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> MapVV;
     MapVV.Clear();
     for (int nw1 = 1; nw1 < wires.Length(); nw1++)
@@ -141,7 +151,9 @@ void ShapeFix_SplitCommonVertex::Perform()
       }
     }
     if (!MapVV.IsEmpty())
+    {
       SendWarning(Message_Msg("Fix.SplitCommonVertex.MSG0"));
+    }
   }
 
   myShape = Context()->Apply(myShape);

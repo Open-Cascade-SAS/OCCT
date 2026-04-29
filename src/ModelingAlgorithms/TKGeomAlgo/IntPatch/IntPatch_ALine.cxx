@@ -133,7 +133,9 @@ void IntPatch_ALine::ComputeVertexParameters(const double Tol)
   nbvtx = NbVertex();
 
   if (nbvtx <= 0)
+  {
     return;
+  }
   do
   {
     SortIsOK = true;
@@ -146,16 +148,24 @@ void IntPatch_ALine::ComputeVertexParameters(const double Tol)
         if (fipt)
         {
           if (indf == i)
+          {
             indf = i - 1;
+          }
           else if (indf == i - 1)
+          {
             indf = i;
+          }
         }
         if (lapt)
         {
           if (indl == i)
+          {
             indl = i - 1;
+          }
           else if (indl == i - 1)
+          {
             indl = i;
+          }
         }
       }
     }
@@ -187,12 +197,16 @@ void IntPatch_ALine::ComputeVertexParameters(const double Tol)
                     if (lapt)
                     {
                       if (indl >= j)
+                      {
                         indl--;
+                      }
                     }
                     if (fipt)
                     {
                       if (indf >= j)
+                      {
                         indf--;
+                      }
                     }
                     APointDeleted = true;
                   }
@@ -231,12 +245,16 @@ void IntPatch_ALine::ComputeVertexParameters(const double Tol)
                     if (lapt)
                     {
                       if (indl >= j)
+                      {
                         indl--;
+                      }
                     }
                     if (fipt)
                     {
                       if (indf >= j)
+                      {
                         indf--;
+                      }
                     }
                     APointDeleted = true;
                   }
@@ -269,16 +287,24 @@ void IntPatch_ALine::ComputeVertexParameters(const double Tol)
             if (fipt)
             {
               if (indf == i)
+              {
                 indf = i - 1;
+              }
               else if (indf == i - 1)
+              {
                 indf = i;
+              }
             }
             if (lapt)
             {
               if (indl == i)
+              {
                 indl = i - 1;
+              }
               else if (indl == i - 1)
+              {
                 indl = i;
+              }
             }
           }
         }
@@ -389,16 +415,24 @@ void IntPatch_ALine::ComputeVertexParameters(const double Tol)
             if (lapt)
             {
               if (indl > i)
+              {
                 indl--;
+              }
               else if (indl == i)
+              {
                 indl = j;
+              }
             }
             if (fipt)
             {
               if (indf > i)
+              {
                 indf--;
+              }
               else if (indf == i)
+              {
                 indf = j;
+              }
             }
             svtx.Remove(i);
             nbvtx--;
@@ -409,16 +443,24 @@ void IntPatch_ALine::ComputeVertexParameters(const double Tol)
             if (lapt)
             {
               if (indl > j)
+              {
                 indl--;
+              }
               else if (indl == j)
+              {
                 indl = i - 1;
+              }
             }
             if (fipt)
             {
               if (indf > j)
+              {
                 indf--;
+              }
               else if (indf == j)
+              {
                 indf = i - 1;
+              }
             }
             svtx.Remove(j);
             nbvtx--;

@@ -69,7 +69,9 @@ TDF_Label XCAFDoc_MaterialTool::BaseLabel() const
 const occ::handle<XCAFDoc_ShapeTool>& XCAFDoc_MaterialTool::ShapeTool()
 {
   if (myShapeTool.IsNull())
+  {
     myShapeTool = XCAFDoc_DocumentTool::ShapeTool(Label());
+  }
   return myShapeTool;
 }
 
@@ -91,7 +93,9 @@ void XCAFDoc_MaterialTool::GetMaterialLabels(NCollection_Sequence<TDF_Label>& La
   {
     TDF_Label L = ChildIterator.Value();
     if (IsMaterial(L))
+    {
       Labels.Append(L);
+    }
   }
 }
 
@@ -168,7 +172,9 @@ double XCAFDoc_MaterialTool::GetDensityForShape(const TDF_Label& ShapeL)
   double                         Dens = 0.0;
   occ::handle<TDataStd_TreeNode> Node;
   if (!ShapeL.FindAttribute(XCAFDoc::MaterialRefGUID(), Node) || !Node->HasFather())
+  {
     return Dens;
+  }
   TDF_Label                     MatL = Node->Father()->Label();
   occ::handle<XCAFDoc_Material> MatAttr;
   if (!MatL.FindAttribute(XCAFDoc_Material::GetID(), MatAttr))

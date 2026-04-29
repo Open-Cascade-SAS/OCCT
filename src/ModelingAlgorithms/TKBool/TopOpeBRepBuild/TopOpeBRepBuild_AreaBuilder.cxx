@@ -67,7 +67,9 @@ TopAbs_State TopOpeBRepBuild_AreaBuilder::CompareLoopWithListOfLoop(
   NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>::Iterator LoopIter;
 
   if (LOL.IsEmpty())
+  {
     return TopAbs_OUT;
+  }
 
   for (LoopIter.Initialize(LOL); LoopIter.More(); LoopIter.Next())
   {
@@ -90,8 +92,10 @@ TopAbs_State TopOpeBRepBuild_AreaBuilder::CompareLoopWithListOfLoop(
     {
       state = LC.Compare(L, curL);
       if (state == TopAbs_OUT)
+      {
         // <L> is out of at least one Loop of <LOL> : stop to explore
         break;
+      }
     }
   }
 
@@ -157,13 +161,19 @@ void TopOpeBRepBuild_AreaBuilder::InitAreaBuilder(TopOpeBRepBuild_LoopSet&      
       {
         const NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& aArea = AreaIter.Value();
         if (aArea.IsEmpty())
+        {
           continue;
+        }
         state = CompareLoopWithListOfLoop(LC, L, aArea, TopOpeBRepBuild_BLOCK);
         if (state == TopAbs_UNKNOWN)
+        {
           Atomize(state, TopAbs_IN);
+        }
         Loopinside = (state == TopAbs_IN);
         if (Loopinside)
+        {
           break;
+        }
       } // end of Area scan
 
       if (Loopinside)
@@ -196,13 +206,19 @@ void TopOpeBRepBuild_AreaBuilder::InitAreaBuilder(TopOpeBRepBuild_LoopSet&      
       {
         const NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& aArea = AreaIter.Value();
         if (aArea.IsEmpty())
+        {
           continue;
+        }
         state = CompareLoopWithListOfLoop(LC, L, aArea, TopOpeBRepBuild_ANYLOOP);
         if (state == TopAbs_UNKNOWN)
+        {
           Atomize(state, TopAbs_IN);
+        }
         Loopinside = (state == TopAbs_IN);
         if (Loopinside)
+        {
           break;
+        }
       } // end of Area scan
 
       if (Loopinside)
@@ -215,7 +231,9 @@ void TopOpeBRepBuild_AreaBuilder::InitAreaBuilder(TopOpeBRepBuild_LoopSet&      
         {
           state = LC.Compare(LoopIter.Value(), L);
           if (state == TopAbs_UNKNOWN)
+          {
             Atomize(state, TopAbs_IN); // not OUT
+          }
           loopoutside = (state == TopAbs_OUT);
           if (loopoutside)
           {
@@ -275,13 +293,17 @@ void TopOpeBRepBuild_AreaBuilder::InitAreaBuilder(TopOpeBRepBuild_LoopSet&      
           ashapeinside = ablockinside = false;
           state                       = LC.Compare(LoopIter.Value(), L);
           if (state == TopAbs_UNKNOWN)
+          {
             Atomize(state, TopAbs_IN);
+          }
           ashapeinside = (state == TopAbs_IN);
           if (ashapeinside)
           {
             state = LC.Compare(L, LoopIter.Value());
             if (state == TopAbs_UNKNOWN)
+            {
               Atomize(state, TopAbs_IN);
+            }
             ablockinside = (state == TopAbs_IN);
           }
           if (ashapeinside && ablockinside)

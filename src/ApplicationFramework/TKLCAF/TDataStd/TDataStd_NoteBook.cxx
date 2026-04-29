@@ -33,15 +33,21 @@ bool TDataStd_NoteBook::Find(const TDF_Label& current, occ::handle<TDataStd_Note
   TDF_Label                      L = current;
   occ::handle<TDataStd_NoteBook> NB;
   if (L.IsNull())
+  {
     return false;
+  }
 
   for (;;)
   {
     if (L.FindAttribute(TDataStd_NoteBook::GetID(), NB))
+    {
       break;
+    }
     L = L.Father();
     if (L.IsNull())
+    {
       break;
+    }
   }
 
   if (!NB.IsNull())

@@ -217,9 +217,13 @@ void AIS_Axis::SetColor(const Quantity_Color& aCol)
 void AIS_Axis::SetWidth(const double aValue)
 {
   if (aValue < 0.0)
+  {
     return;
+  }
   if (aValue == 0)
+  {
     UnsetWidth();
+  }
 
   myDrawer->LineAspect()->SetWidth(aValue);
 

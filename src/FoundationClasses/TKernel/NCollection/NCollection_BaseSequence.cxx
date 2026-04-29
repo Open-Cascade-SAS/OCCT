@@ -64,7 +64,9 @@ void NCollection_BaseSequence::PAppend(NCollection_SeqNode* theItem)
 void NCollection_BaseSequence::PAppend(NCollection_BaseSequence& Other)
 {
   if (Other.mySize == 0)
+  {
     return;
+  }
   if (mySize == 0)
   {
     mySize         = Other.mySize;
@@ -115,7 +117,9 @@ void NCollection_BaseSequence::PPrepend(NCollection_SeqNode* theItem)
 void NCollection_BaseSequence::PPrepend(NCollection_BaseSequence& Other)
 {
   if (Other.mySize == 0)
+  {
     return;
+  }
   if (mySize == 0)
   {
     mySize         = Other.mySize;
@@ -128,7 +132,9 @@ void NCollection_BaseSequence::PPrepend(NCollection_BaseSequence& Other)
   {
     mySize += Other.mySize;
     if (Other.myLastItem)
+    {
       Other.myLastItem->SetNext(myFirstItem);
+    }
     myFirstItem->SetPrevious(Other.myLastItem);
     myFirstItem = Other.myFirstItem;
     myCurrentIndex += Other.mySize;
@@ -155,7 +161,9 @@ void NCollection_BaseSequence::PReverse() noexcept
   myFirstItem              = myLastItem;
   myLastItem               = tmp;
   if (mySize != 0)
+  {
     myCurrentIndex = mySize + 1 - myCurrentIndex;
+  }
 }
 
 //=================================================================================================
@@ -165,15 +173,21 @@ void NCollection_BaseSequence::PInsertAfter(NCollection_BaseSequence::Iterator& 
 {
   NCollection_SeqNode* aPos = thePosition.myCurrent;
   if (aPos == nullptr)
+  {
     PPrepend(theItem);
+  }
   else
   {
     theItem->SetNext(aPos->Next());
     theItem->SetPrevious(aPos);
     if (aPos->Next() == nullptr)
+    {
       myLastItem = theItem;
+    }
     else
+    {
       aPos->Next()->SetPrevious(theItem);
+    }
     aPos->SetNext(theItem);
     ++mySize;
     myCurrentItem  = myFirstItem;
@@ -186,20 +200,28 @@ void NCollection_BaseSequence::PInsertAfter(NCollection_BaseSequence::Iterator& 
 void NCollection_BaseSequence::PInsertAfter(const size_t theIndex, NCollection_SeqNode* theItem)
 {
   if (theIndex == 0)
+  {
     PPrepend(theItem);
+  }
   else
   {
     NCollection_SeqNode* p = Find(theIndex);
     theItem->SetNext(p->Next());
     theItem->SetPrevious(p);
     if (theIndex == mySize)
+    {
       myLastItem = theItem;
+    }
     else
+    {
       p->Next()->SetPrevious(theItem);
+    }
     p->SetNext(theItem);
     ++mySize;
     if (theIndex < myCurrentIndex)
+    {
       ++myCurrentIndex;
+    }
   }
 }
 
@@ -211,24 +233,34 @@ void NCollection_BaseSequence::PInsertAfter(const size_t theIndex, NCollection_S
 void NCollection_BaseSequence::PInsertAfter(const size_t theIndex, NCollection_BaseSequence& Other)
 {
   if (theIndex > mySize)
+  {
     throw Standard_OutOfRange();
+  }
   if (Other.mySize != 0)
   {
     if (theIndex == 0)
+    {
       PPrepend(Other);
+    }
     else
     {
       NCollection_SeqNode* p = Find(theIndex);
       Other.myFirstItem->SetPrevious(p);
       Other.myLastItem->SetNext(p->Next());
       if (theIndex == mySize)
+      {
         myLastItem = Other.myLastItem;
+      }
       else
+      {
         p->Next()->SetPrevious(Other.myLastItem);
+      }
       p->SetNext(Other.myFirstItem);
       mySize += Other.mySize;
       if (theIndex < myCurrentIndex)
+      {
         myCurrentIndex += Other.mySize;
+      }
       Other.Nullify();
     }
   }
@@ -245,7 +277,9 @@ void NCollection_BaseSequence::PExchange(const size_t I, const size_t J)
 
   // Assume I < J
   if (J < I)
+  {
     PExchange(J, I);
+  }
   else if (I < J)
   {
     NCollection_SeqNode* pi = Find(I);
@@ -253,15 +287,23 @@ void NCollection_BaseSequence::PExchange(const size_t I, const size_t J)
 
     // update the node before I
     if (pi->Previous())
+    {
       pi->Previous()->SetNext(pj);
+    }
     else
+    {
       myFirstItem = pj;
+    }
 
     // update the node after J
     if (pj->Next())
+    {
       pj->Next()->SetPrevious(pi);
+    }
     else
+    {
       myLastItem = pi;
+    }
 
     if (pi->Next() == pj)
     { // I and J are consecutives, update them
@@ -286,9 +328,13 @@ void NCollection_BaseSequence::PExchange(const size_t I, const size_t J)
     }
 
     if (myCurrentIndex == I)
+    {
       myCurrentItem = pj;
+    }
     else if (myCurrentIndex == J)
+    {
       myCurrentItem = pi;
+    }
   }
 }
 
@@ -333,18 +379,28 @@ void NCollection_BaseSequence::RemoveSeq(NCollection_BaseSequence::Iterator& the
 {
   NCollection_SeqNode* aPos = thePosition.myCurrent;
   if (aPos == nullptr)
+  {
     return;
+  }
   thePosition.myCurrent = aPos->Next();
 
   if (aPos->Previous())
+  {
     aPos->Previous()->SetNext(aPos->Next());
+  }
   else
+  {
     myFirstItem = aPos->Next();
+  }
 
   if (aPos->Next())
+  {
     aPos->Next()->SetPrevious(aPos->Previous());
+  }
   else
+  {
     myLastItem = aPos->Previous();
+  }
 
   --mySize;
   myCurrentItem  = myLastItem;
@@ -362,21 +418,33 @@ void NCollection_BaseSequence::RemoveSeq(const size_t theIndex, NCollection_DelS
 
   NCollection_SeqNode* p = Find(theIndex);
   if (p->Previous())
+  {
     p->Previous()->SetNext(p->Next());
+  }
   else
+  {
     myFirstItem = p->Next();
+  }
   if (p->Next())
+  {
     p->Next()->SetPrevious(p->Previous());
+  }
   else
+  {
     myLastItem = p->Previous();
+  }
 
   --mySize;
   if (myCurrentIndex > theIndex)
+  {
     --myCurrentIndex;
+  }
   else if (myCurrentIndex == theIndex)
   {
     if (p->Next())
+    {
       myCurrentItem = p->Next();
+    }
     else
     {
       myCurrentItem  = myLastItem;
@@ -399,17 +467,27 @@ void NCollection_BaseSequence::RemoveSeq(const size_t           From,
   NCollection_SeqNode* pto   = Find(To);
 
   if (pfrom->Previous())
+  {
     pfrom->Previous()->SetNext(pto->Next());
+  }
   else
+  {
     myFirstItem = pto->Next();
+  }
   if (pto->Next())
+  {
     pto->Next()->SetPrevious(pfrom->Previous());
+  }
   else
+  {
     myLastItem = pfrom->Previous();
+  }
 
   mySize -= To - From + 1;
   if (myCurrentIndex > To)
+  {
     myCurrentIndex -= To - From + 1;
+  }
   else if (myCurrentIndex >= From)
   {
     if (pto->Next())
@@ -444,13 +522,17 @@ NCollection_SeqNode* NCollection_BaseSequence::Find(const size_t theIndex) const
     {
       p = myFirstItem;
       for (i = 1; i < theIndex; ++i)
+      {
         p = p->Next();
+      }
     }
     else
     {
       p = myCurrentItem;
       for (i = myCurrentIndex; i > theIndex; --i)
+      {
         p = p->Previous();
+      }
     }
   }
   else
@@ -459,13 +541,17 @@ NCollection_SeqNode* NCollection_BaseSequence::Find(const size_t theIndex) const
     {
       p = myCurrentItem;
       for (i = myCurrentIndex; i < theIndex; ++i)
+      {
         p = p->Next();
+      }
     }
     else
     {
       p = myLastItem;
       for (i = mySize; i > theIndex; --i)
+      {
         p = p->Previous();
+      }
     }
   }
   return p;

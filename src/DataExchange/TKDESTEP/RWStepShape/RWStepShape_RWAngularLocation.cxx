@@ -36,7 +36,9 @@ void RWStepShape_RWAngularLocation::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 5, ach, "angular_location"))
+  {
     return;
+  }
 
   // Inherited fields of ShapeAspectRelationship
 
@@ -84,16 +86,26 @@ void RWStepShape_RWAngularLocation::ReadStep(
   {
     const char* text = data->ParamCValue(num, 5);
     if (strcmp(text, ".EQUAL.") == 0)
+    {
       aAngleSelection = StepShape_Equal;
+    }
     else if (strcmp(text, ".LARGE.") == 0)
+    {
       aAngleSelection = StepShape_Large;
+    }
     else if (strcmp(text, ".SMALL.") == 0)
+    {
       aAngleSelection = StepShape_Small;
+    }
     else
+    {
       ach->AddFail("Parameter #5 (angle_selection) has not allowed value");
+    }
   }
   else
+  {
     ach->AddFail("Parameter #5 (angle_selection) is not enumeration");
+  }
 
   // Initialize entity
   ent->Init(aShapeAspectRelationship_Name,
@@ -120,7 +132,9 @@ void RWStepShape_RWAngularLocation::WriteStep(
     SW.Send(ent->StepRepr_ShapeAspectRelationship::Description());
   }
   else
+  {
     SW.SendUndef();
+  }
 
   SW.Send(ent->StepRepr_ShapeAspectRelationship::RelatingShapeAspect());
 

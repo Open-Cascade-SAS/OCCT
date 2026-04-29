@@ -53,7 +53,9 @@ void Transfer_Finder::SetAttribute(const char* const                      name,
 bool Transfer_Finder::RemoveAttribute(const char* const name)
 {
   if (theattrib.IsEmpty())
+  {
     return false;
+  }
   return theattrib.UnBind(name);
 }
 
@@ -83,9 +85,13 @@ occ::handle<Standard_Transient> Transfer_Finder::Attribute(const char* const nam
 {
   occ::handle<Standard_Transient> atr;
   if (theattrib.IsEmpty())
+  {
     return atr;
+  }
   if (!theattrib.Find(name, atr))
+  {
     atr.Nullify();
+  }
   return atr;
 }
 
@@ -93,13 +99,21 @@ Interface_ParamType Transfer_Finder::AttributeType(const char* const name) const
 {
   occ::handle<Standard_Transient> atr = Attribute(name);
   if (atr.IsNull())
+  {
     return Interface_ParamVoid;
+  }
   if (atr->DynamicType() == STANDARD_TYPE(Interface_IntVal))
+  {
     return Interface_ParamInteger;
+  }
   if (atr->DynamicType() == STANDARD_TYPE(Geom2d_CartesianPoint))
+  {
     return Interface_ParamReal;
+  }
   if (atr->DynamicType() == STANDARD_TYPE(TCollection_HAsciiString))
+  {
     return Interface_ParamText;
+  }
   return Interface_ParamIdent;
 }
 
@@ -126,7 +140,9 @@ int Transfer_Finder::IntegerAttribute(const char* const name) const
 {
   occ::handle<Interface_IntVal> ival = occ::down_cast<Interface_IntVal>(Attribute(name));
   if (ival.IsNull())
+  {
     return 0;
+  }
   return ival->Value();
 }
 
@@ -152,7 +168,9 @@ double Transfer_Finder::RealAttribute(const char* const name) const
 {
   occ::handle<Geom2d_CartesianPoint> rval = occ::down_cast<Geom2d_CartesianPoint>(Attribute(name));
   if (rval.IsNull())
+  {
     return 0;
+  }
   return rval->X();
 }
 
@@ -180,7 +198,9 @@ const char* Transfer_Finder::StringAttribute(const char* const name) const
   occ::handle<TCollection_HAsciiString> hval =
     occ::down_cast<TCollection_HAsciiString>(Attribute(name));
   if (hval.IsNull())
+  {
     return "";
+  }
   return hval->ToCString();
 }
 
@@ -193,7 +213,9 @@ NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>>& T
 void Transfer_Finder::SameAttributes(const occ::handle<Transfer_Finder>& other)
 {
   if (!other.IsNull())
+  {
     theattrib = other->AttrList();
+  }
 }
 
 void Transfer_Finder::GetAttributes(const occ::handle<Transfer_Finder>& other,
@@ -201,11 +223,15 @@ void Transfer_Finder::GetAttributes(const occ::handle<Transfer_Finder>& other,
                                     const bool                          copied)
 {
   if (other.IsNull())
+  {
     return;
+  }
   NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>>& list =
     other->AttrList();
   if (list.IsEmpty())
+  {
     return;
+  }
 
   NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>>::Iterator iter(
     list);
@@ -213,7 +239,9 @@ void Transfer_Finder::GetAttributes(const occ::handle<Transfer_Finder>& other,
   {
     const TCollection_AsciiString& name = iter.Key();
     if (!name.StartsWith(fromname))
+    {
       continue;
+    }
     const occ::handle<Standard_Transient>& atr    = iter.Value();
     occ::handle<Standard_Transient>        newatr = atr;
 

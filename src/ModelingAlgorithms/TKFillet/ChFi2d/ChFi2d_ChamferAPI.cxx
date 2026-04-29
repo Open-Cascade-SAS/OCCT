@@ -64,11 +64,17 @@ void ChFi2d_ChamferAPI::Init(const TopoDS_Wire& theWire)
   for (; itr.More(); itr.Next())
   {
     if (E1.IsNull())
+    {
       E1 = TopoDS::Edge(itr.Value());
+    }
     else if (E2.IsNull())
+    {
       E2 = TopoDS::Edge(itr.Value());
+    }
     else
+    {
       break;
+    }
   }
   Init(E1, E2);
 }
@@ -124,9 +130,13 @@ TopoDS_Edge ChFi2d_ChamferAPI::Result(TopoDS_Edge& theEdge1,
 {
   TopoDS_Edge aResult;
   if (std::abs(myEnd1 - myStart1) < theLength1)
+  {
     return aResult;
+  }
   if (std::abs(myEnd2 - myStart2) < theLength2)
+  {
     return aResult;
+  }
 
   double aCommon1 = (myCommonStart1 ? myStart1 : myEnd1)
                     + (((myStart1 > myEnd1) ^ myCommonStart1) ? theLength1 : -theLength1);

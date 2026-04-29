@@ -107,7 +107,9 @@ int IntTools::PrepareArgs(BRepAdaptor_Curve&          C,
     aPars.Append(tCurrent);
     tNext = tCurrent + dt;
     if (i == Discret)
+    {
       tNext = Tmax;
+    }
     ///////////////////////////////////////////////////
     if (!aRFlag)
     {

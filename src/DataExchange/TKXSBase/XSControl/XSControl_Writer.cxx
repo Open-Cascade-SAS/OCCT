@@ -37,7 +37,9 @@ XSControl_Writer::XSControl_Writer(const occ::handle<XSControl_WorkSession>& WS,
 bool XSControl_Writer::SetNorm(const char* const norm)
 {
   if (thesession.IsNull())
+  {
     SetWS(new XSControl_WorkSession);
+  }
   bool                                  sess  = thesession->SelectNorm(norm);
   occ::handle<Interface_InterfaceModel> model = Model(); //: i1 gka 03.04.99 BUC60301
   return sess;
@@ -60,7 +62,9 @@ occ::handle<Interface_InterfaceModel> XSControl_Writer::Model(const bool newone)
 {
   occ::handle<Interface_InterfaceModel> model = thesession->Model();
   if (newone || model.IsNull())
+  {
     model = thesession->NewModel();
+  }
   return model;
 }
 

@@ -40,7 +40,9 @@ Interface_EntityIterator IGESSelect_SelectSingleViewFrom::RootResult(const Inter
   Interface_EntityIterator list;
   int                      nb = sorter->NbSets(true);
   for (int i = 1; i <= nb; i++)
+  {
     list.GetOneItem(sorter->SetItem(i, true));
+  }
   return list;
 }
 

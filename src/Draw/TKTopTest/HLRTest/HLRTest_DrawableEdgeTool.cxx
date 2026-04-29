@@ -50,7 +50,9 @@ void HLRTest_DrawableEdgeTool::DrawOn(Draw_Display& D) const
   if (myViewId == D.ViewId())
   {
     if (myIsoLine)
+    {
       InternalDraw(D, 1);
+    }
     InternalDraw(D, 2);
     InternalDraw(D, 3);
   }
@@ -79,14 +81,20 @@ void HLRTest_DrawableEdgeTool::InternalDraw(Draw_Display& D, const int typ) cons
     for (ie = 1; ie <= ne; ie++)
     {
       if (ed->Selected() && !ed->Vertical())
+      {
         ed->Used(false);
+      }
       else
+      {
         ed->Used(true);
+      }
       ed++;
     }
 
     for (int iface = 1; iface <= nf; iface++)
+    {
       DrawFace(D, typ, nCB, iface, e2, iCB, DS);
+    }
 
     if (typ >= 3)
     {
@@ -129,15 +137,25 @@ void HLRTest_DrawableEdgeTool::DrawFace(Draw_Display&              D,
       bool todraw;
       if ((!myRg1Line && !Itf.OutLine() && edf.Rg1Line())
           || (!myRgNLine && !Itf.OutLine() && edf.RgNLine()))
+      {
         todraw = false;
+      }
       else if (typ == 1)
+      {
         todraw = Itf.IsoLine();
+      }
       else if (typ == 2)
+      {
         todraw = Itf.OutLine() || Itf.Internal();
+      }
       else
+      {
         todraw = !(Itf.IsoLine() || (Itf.OutLine() || Itf.Internal()));
+      }
       if (todraw)
+      {
         DrawEdge(D, true, typ, nCB, ie, e2, iCB, edf);
+      }
       edf.Used(true);
     }
   }
@@ -156,7 +174,9 @@ void HLRTest_DrawableEdgeTool::DrawEdge(Draw_Display&     D,
 {
   bool todraw = true;
   if (!inFace && ((!myRg1Line && ed.Rg1Line()) || (!myRgNLine && ed.RgNLine())))
+  {
     todraw = false;
+  }
   if (todraw)
   {
     double               sta, end;
@@ -172,11 +192,17 @@ void HLRTest_DrawableEdgeTool::DrawEdge(Draw_Display&     D,
         ShB.Bounds(v1, v2, e1, e2, f1, f2);
         occ::handle<HLRTest_ShapeData> ShData = occ::down_cast<HLRTest_ShapeData>(ShB.ShapeData());
         if (typ == 1)
+        {
           D.SetColor(ShData->VisibleIsoColor());
+        }
         else if (typ == 2)
+        {
           D.SetColor(ShData->VisibleOutLineColor());
+        }
         else
+        {
           D.SetColor(ShData->VisibleColor());
+        }
         iCB++;
       }
 
@@ -209,11 +235,17 @@ void HLRTest_DrawableEdgeTool::DrawEdge(Draw_Display&     D,
         ShB.Bounds(v1, v2, e1, e2, f1, f2);
         occ::handle<HLRTest_ShapeData> ShData = occ::down_cast<HLRTest_ShapeData>(ShB.ShapeData());
         if (typ == 1)
+        {
           D.SetColor(ShData->HiddenIsoColor());
+        }
         else if (typ == 2)
+        {
           D.SetColor(ShData->HiddenOutLineColor());
+        }
         else
+        {
           D.SetColor(ShData->HiddenColor());
+        }
         iCB++;
       }
 

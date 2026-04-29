@@ -123,7 +123,9 @@ Units_Measurement Units_Measurement::Add(const Units_Measurement& ameasurement) 
   double            value;
   Units_Measurement measurement;
   if (myToken->Dimensions()->IsNotEqual((ameasurement.Token())->Dimensions()))
+  {
     return measurement;
+  }
   value                          = ameasurement.Token()->Multiplied(ameasurement.Measurement());
   value                          = myToken->Divided(value);
   value                          = themeasurement + value;
@@ -138,7 +140,9 @@ Units_Measurement Units_Measurement::Subtract(const Units_Measurement& ameasurem
   double            value;
   Units_Measurement measurement;
   if (myToken->Dimensions()->IsNotEqual((ameasurement.Token())->Dimensions()))
+  {
     return measurement;
+  }
   value                          = ameasurement.Token()->Multiplied(ameasurement.Measurement());
   value                          = myToken->Divided(value);
   value                          = themeasurement - value;

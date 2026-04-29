@@ -37,7 +37,9 @@ void RWStepRepr_RWConfigurationItem::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 5, ach, "configuration_item"))
+  {
     return;
+  }
 
   // Own fields of ConfigurationItem
 
@@ -95,7 +97,9 @@ void RWStepRepr_RWConfigurationItem::WriteStep(
     SW.Send(ent->Description());
   }
   else
+  {
     SW.SendUndef();
+  }
 
   SW.Send(ent->ItemConcept());
 
@@ -104,7 +108,9 @@ void RWStepRepr_RWConfigurationItem::WriteStep(
     SW.Send(ent->Purpose());
   }
   else
+  {
     SW.SendUndef();
+  }
 }
 
 //=================================================================================================

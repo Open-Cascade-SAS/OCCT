@@ -124,7 +124,9 @@ static int DDocStd_fsdwrite(Draw_Interpretor& theDI, int theArgNb, const char** 
   }
 
   if (hasStorageDriver)
+  {
     --iArgN;
+  }
 
   Storage_Error aStatus = aFileDriver->Open(theArgs[iArgN], Storage_VSWrite);
   if (aStatus != Storage_VSOk)
@@ -146,9 +148,13 @@ static int DDocStd_fsdwrite(Draw_Interpretor& theDI, int theArgNb, const char** 
     }
     aShapes.Append(aShape);
     if (aShapeNames.IsBound(theArgs[i]))
+    {
       aShapeNames.ChangeFind(theArgs[i]) += 1;
+    }
     else
+    {
       aShapeNames.Bind(theArgs[i], 1);
+    }
   }
 
   occ::handle<StdStorage_Data> aData = new StdStorage_Data;
@@ -211,7 +217,9 @@ static int DDocStd_fsdread(Draw_Interpretor& theDI, int theArgNb, const char** t
   }
   bool rflag(false);
   if (strcmp(theArgs[2], "restore_with_names") == 0)
+  {
     rflag = true;
+  }
   occ::handle<StdStorage_Data> aData;
   Storage_Error anError = StdStorage::Read(TCollection_AsciiString(theArgs[1]), aData);
   if (anError != Storage_VSOk)
@@ -242,7 +250,9 @@ static int DDocStd_fsdread(Draw_Interpretor& theDI, int theArgNb, const char** t
           if (rflag)
           {
             if (!aRoot->Name().IsEmpty())
+            {
               DBRep::Set(aRoot->Name().ToCString(), aShape);
+            }
             else
             {
               TCollection_AsciiString aNam("name_");
@@ -255,7 +265,9 @@ static int DDocStd_fsdread(Draw_Interpretor& theDI, int theArgNb, const char** t
 #endif
           }
           else
+          {
             aShapes.Append(aShape);
+          }
         }
       }
     }
@@ -273,11 +285,15 @@ static int DDocStd_fsdread(Draw_Interpretor& theDI, int theArgNb, const char** t
       TopoDS_Compound aC;
       aB.MakeCompound(aC);
       for (int i = 1; i <= aShapes.Length(); ++i)
+      {
         aB.Add(aC, aShapes.Value(i));
+      }
       DBRep::Set(theArgs[2], aC);
     }
     else
+    {
       DBRep::Set(theArgs[2], aShapes.First());
+    }
   }
   return 0;
 }
@@ -291,7 +307,9 @@ void DDocStd::ShapeSchemaCommands(Draw_Interpretor& theCommands)
 {
   static bool done = false;
   if (done)
+  {
     return;
+  }
   done = true;
 
   const char* g = "Shape persistence commands";

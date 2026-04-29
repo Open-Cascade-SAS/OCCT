@@ -71,7 +71,9 @@ void DrawTrSurf_BSplineCurve2d::DrawOn(Draw_Display& dis) const
       dis.DrawTo(CPoles(i));
     }
     if (C->IsPeriodic())
+    {
       dis.DrawTo(CPoles(1));
+    }
   }
 
   DrawTrSurf_Curve2d::DrawOn(dis);

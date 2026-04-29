@@ -83,7 +83,9 @@ occ::handle<VrmlData_Node> VrmlData_Box::Clone(const occ::handle<VrmlData_Node>&
 {
   occ::handle<VrmlData_Box> aResult = occ::down_cast<VrmlData_Box>(VrmlData_Node::Clone(theOther));
   if (aResult.IsNull())
+  {
     aResult = new VrmlData_Box(theOther.IsNull() ? Scene() : theOther->Scene(), Name());
+  }
   aResult->SetSize(mySize);
   return aResult;
 }
@@ -96,9 +98,13 @@ VrmlData_ErrorStatus VrmlData_Box::Read(VrmlData_InBuffer& theBuffer)
   if (OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
   {
     if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "size"))
+    {
       aStatus = Scene().ReadXYZ(theBuffer, mySize, true, true);
+    }
     if (OK(aStatus))
+    {
       aStatus = readBrace(theBuffer);
+    }
   }
   return aStatus;
 }
@@ -130,11 +136,17 @@ const occ::handle<TopoDS_TShape>& VrmlData_Cone::TShape()
       gp_Ax2        aLocalAxis(gp_Pnt(0., -0.5 * myHeight, 0.), gp_Dir(gp_Dir::D::Y));
       BRepPrim_Cone aBuilder(aLocalAxis, myBottomRadius, 0., myHeight);
       if (!myHasBottom)
+      {
         myTShape = aBuilder.LateralFace().TShape();
+      }
       else if (!myHasSide)
+      {
         myTShape = aBuilder.BottomFace().TShape();
+      }
       else
+      {
         myTShape = aBuilder.Shell().TShape();
+      }
       myIsModified = false;
     }
     catch (Standard_Failure const&)
@@ -152,7 +164,9 @@ occ::handle<VrmlData_Node> VrmlData_Cone::Clone(const occ::handle<VrmlData_Node>
   occ::handle<VrmlData_Cone> aResult =
     occ::down_cast<VrmlData_Cone>(VrmlData_Node::Clone(theOther));
   if (aResult.IsNull())
+  {
     aResult = new VrmlData_Cone(theOther.IsNull() ? Scene() : theOther->Scene(), Name());
+  }
 
   aResult->SetBottomRadius(myBottomRadius);
   aResult->SetHeight(myHeight);
@@ -170,28 +184,42 @@ VrmlData_ErrorStatus VrmlData_Cone::Read(VrmlData_InBuffer& theBuffer)
   while (OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
   {
     if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "bottomRadius"))
+    {
       aStatus = Scene().ReadReal(theBuffer, myBottomRadius, true, true);
+    }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "height"))
+    {
       aStatus = Scene().ReadReal(theBuffer, myHeight, true, true);
+    }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "side"))
     {
       if (OK(aStatus, ReadBoolean(theBuffer, hasSide)))
+      {
         myHasSide = hasSide;
+      }
     }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "bottom"))
     {
       if (OK(aStatus, ReadBoolean(theBuffer, hasBottom)))
+      {
         myHasBottom = hasBottom;
+      }
     }
     else
+    {
       break;
+    }
 
     if (!OK(aStatus))
+    {
       break;
+    }
   }
   // Read the terminating (closing) brace
   if (OK(aStatus))
+  {
     aStatus = readBrace(theBuffer);
+  }
   return aStatus;
 }
 
@@ -215,9 +243,13 @@ VrmlData_ErrorStatus VrmlData_Cone::Write(const char* thePrefix) const
       aStatus = Scene().WriteLine(buf);
     }
     if (OK(aStatus) && !myHasBottom)
+    {
       aStatus = Scene().WriteLine("bottom   FALSE");
+    }
     if (OK(aStatus) && !myHasSide)
+    {
       aStatus = Scene().WriteLine("side     FALSE");
+    }
 
     aStatus = WriteClosing();
   }
@@ -248,11 +280,17 @@ const occ::handle<TopoDS_TShape>& VrmlData_Cylinder::TShape()
       TopoDS_Shell      aShell;
       aShapeBuilder.MakeShell(aShell);
       if (myHasSide)
+      {
         aShapeBuilder.AddShellFace(aShell, aBuilder.LateralFace());
+      }
       if (myHasTop)
+      {
         aShapeBuilder.AddShellFace(aShell, aBuilder.TopFace());
+      }
       if (myHasBottom)
+      {
         aShapeBuilder.AddShellFace(aShell, aBuilder.BottomFace());
+      }
       myTShape     = aShell.TShape();
       myIsModified = false;
     }
@@ -272,7 +310,9 @@ occ::handle<VrmlData_Node> VrmlData_Cylinder::Clone(
   occ::handle<VrmlData_Cylinder> aResult =
     occ::down_cast<VrmlData_Cylinder>(VrmlData_Node::Clone(theOther));
   if (aResult.IsNull())
+  {
     aResult = new VrmlData_Cylinder(theOther.IsNull() ? Scene() : theOther->Scene(), Name());
+  }
   aResult->SetRadius(myRadius);
   aResult->SetHeight(myHeight);
   aResult->SetFaces(myHasBottom, myHasSide, myHasTop);
@@ -290,34 +330,50 @@ VrmlData_ErrorStatus VrmlData_Cylinder::Read(VrmlData_InBuffer& theBuffer)
   while (OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
   {
     if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "radius"))
+    {
       aStatus = Scene().ReadReal(theBuffer, myRadius, true, true);
+    }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "height"))
+    {
       aStatus = Scene().ReadReal(theBuffer, myHeight, true, true);
+    }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "top"))
     {
       if (OK(aStatus, ReadBoolean(theBuffer, hasTop)))
+      {
         myHasTop = hasTop;
+      }
     }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "side"))
     {
       if (OK(aStatus, ReadBoolean(theBuffer, hasSide)))
+      {
         myHasSide = hasSide;
+      }
     }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "bottom"))
     {
       if (OK(aStatus, ReadBoolean(theBuffer, hasBottom)))
+      {
         myHasBottom = hasBottom;
+      }
     }
     else
+    {
       break;
+    }
 
     if (!OK(aStatus))
+    {
       break;
+    }
   }
 
   // Read the terminating (closing) brace
   if (OK(aStatus))
+  {
     aStatus = readBrace(theBuffer);
+  }
   return aStatus;
 }
 
@@ -341,11 +397,17 @@ VrmlData_ErrorStatus VrmlData_Cylinder::Write(const char* thePrefix) const
       aStatus = Scene().WriteLine(buf);
     }
     if (OK(aStatus) && !myHasBottom)
+    {
       aStatus = Scene().WriteLine("bottom   FALSE");
+    }
     if (OK(aStatus) && !myHasSide)
+    {
       aStatus = Scene().WriteLine("side     FALSE");
+    }
     if (OK(aStatus) && !myHasTop)
+    {
       aStatus = Scene().WriteLine("top      FALSE");
+    }
 
     aStatus = WriteClosing();
   }
@@ -388,7 +450,9 @@ occ::handle<VrmlData_Node> VrmlData_Sphere::Clone(const occ::handle<VrmlData_Nod
   occ::handle<VrmlData_Sphere> aResult =
     occ::down_cast<VrmlData_Sphere>(VrmlData_Node::Clone(theOther));
   if (aResult.IsNull())
+  {
     aResult = new VrmlData_Sphere(theOther.IsNull() ? Scene() : theOther->Scene(), Name());
+  }
   aResult->SetRadius(myRadius);
   return aResult;
 }
@@ -399,14 +463,22 @@ VrmlData_ErrorStatus VrmlData_Sphere::Read(VrmlData_InBuffer& theBuffer)
 {
   VrmlData_ErrorStatus aStatus;
   while (OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
+  {
     if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "radius"))
+    {
       aStatus = Scene().ReadReal(theBuffer, myRadius, true, true);
+    }
     else
+    {
       break;
+    }
+  }
 
   // Read the terminating (closing) brace
   if (OK(aStatus))
+  {
     aStatus = readBrace(theBuffer);
+  }
   return aStatus;
 }
 
@@ -451,15 +523,21 @@ occ::handle<VrmlData_Node> VrmlData_TextureCoordinate::Clone(
   occ::handle<VrmlData_TextureCoordinate> aResult =
     occ::down_cast<VrmlData_TextureCoordinate>(VrmlData_Node::Clone(theOther));
   if (aResult.IsNull())
+  {
     aResult =
       new VrmlData_TextureCoordinate(theOther.IsNull() ? Scene() : theOther->Scene(), Name());
+  }
   if (&aResult->Scene() == &Scene())
+  {
     aResult->SetPoints(myLength, myPoints);
+  }
   else
   {
     aResult->AllocateValues(myLength);
     for (size_t i = 0; i < myLength; i++)
+    {
       const_cast<gp_XY&>(aResult->myPoints[i]) = myPoints[i];
+    }
   }
   return aResult;
 }
@@ -474,11 +552,14 @@ VrmlData_ErrorStatus VrmlData_TextureCoordinate::Read(VrmlData_InBuffer& theBuff
   {
     // Match the name with the current word in the stream
     if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "point"))
+    {
       // Read the body of the data node (comma-separated list of duplets)
       if (OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
       {
-        if (theBuffer.LinePtr[0] != '[') // opening bracket
+        if (theBuffer.LinePtr[0] != '[')
+        { // opening bracket
           aStatus = VrmlData_VrmlFormatError;
+        }
         else
         {
           theBuffer.LinePtr++;
@@ -486,7 +567,9 @@ VrmlData_ErrorStatus VrmlData_TextureCoordinate::Read(VrmlData_InBuffer& theBuff
           {
             gp_XY anXY;
             if (!OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
+            {
               break;
+            }
             // closing bracket, in case that it follows a comma
             if (theBuffer.LinePtr[0] == ']')
             {
@@ -494,10 +577,14 @@ VrmlData_ErrorStatus VrmlData_TextureCoordinate::Read(VrmlData_InBuffer& theBuff
               break;
             }
             if (!OK(aStatus, Scene().ReadXY(theBuffer, anXY, false, false)))
+            {
               break;
+            }
             vecValues.Append(anXY);
             if (!OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
+            {
               break;
+            }
             if (theBuffer.LinePtr[0] == ',')
             {
               theBuffer.LinePtr++;
@@ -510,6 +597,7 @@ VrmlData_ErrorStatus VrmlData_TextureCoordinate::Read(VrmlData_InBuffer& theBuff
           }
         }
       }
+    }
     if (OK(aStatus) && OK(aStatus, readBrace(theBuffer)))
     {
       myLength = vecValues.Length();
@@ -519,7 +607,9 @@ VrmlData_ErrorStatus VrmlData_TextureCoordinate::Read(VrmlData_InBuffer& theBuff
           reinterpret_cast<gp_XY*>(Scene().Allocator()->Allocate(myLength * sizeof(gp_XY)));
         myPoints = aPoints;
         for (int i = 0; i < int(myLength); i++)
+        {
           aPoints[i] = vecValues(i);
+        }
       }
     }
   }
@@ -554,9 +644,13 @@ VrmlData_ErrorStatus VrmlData_ArrayVec3d::ReadArray(VrmlData_InBuffer& theBuffer
     {
       const size_t aNameLen = strlen(theName);
       if (strncmp(theBuffer.LinePtr, theName, aNameLen))
+      {
         aStatus = VrmlData_VrmlFormatError;
+      }
       else
+      {
         theBuffer.LinePtr += aNameLen;
+      }
     }
     else
     {
@@ -564,7 +658,9 @@ VrmlData_ErrorStatus VrmlData_ArrayVec3d::ReadArray(VrmlData_InBuffer& theBuffer
       while (theBuffer.LinePtr[0] != ' ' && theBuffer.LinePtr[0] != ','
              && theBuffer.LinePtr[0] != '\t' && theBuffer.LinePtr[0] != '\n'
              && theBuffer.LinePtr[0] != '\r' && theBuffer.LinePtr[0] != '\0')
+      {
         theBuffer.LinePtr++;
+      }
     }
     // Read the body of the data node (list of triplets)
     if (OK(aStatus) && OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
@@ -575,9 +671,13 @@ VrmlData_ErrorStatus VrmlData_ArrayVec3d::ReadArray(VrmlData_InBuffer& theBuffer
         gp_XYZ anXYZ;
         // Read three numbers (XYZ value)
         if (!OK(aStatus, Scene().ReadXYZ(theBuffer, anXYZ, isScale, false)))
+        {
           aStatus = VrmlData_VrmlFormatError;
+        }
         else
+        {
           vecValues.Append(anXYZ);
+        }
       }
       else
       {
@@ -586,7 +686,9 @@ VrmlData_ErrorStatus VrmlData_ArrayVec3d::ReadArray(VrmlData_InBuffer& theBuffer
         {
           gp_XYZ anXYZ;
           if (!OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
+          {
             break;
+          }
           // closing bracket, in case that it follows a comma
           if (theBuffer.LinePtr[0] == ']')
           {
@@ -595,10 +697,14 @@ VrmlData_ErrorStatus VrmlData_ArrayVec3d::ReadArray(VrmlData_InBuffer& theBuffer
           }
           // Read three numbers (XYZ value)
           if (!OK(aStatus, Scene().ReadXYZ(theBuffer, anXYZ, isScale, false)))
+          {
             break;
+          }
           vecValues.Append(anXYZ);
           if (!OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
+          {
             break;
+          }
           if (theBuffer.LinePtr[0] == ']')
           { // closing bracket
             theBuffer.LinePtr++;
@@ -616,7 +722,9 @@ VrmlData_ErrorStatus VrmlData_ArrayVec3d::ReadArray(VrmlData_InBuffer& theBuffer
           reinterpret_cast<gp_XYZ*>(Scene().Allocator()->Allocate(myLength * sizeof(gp_XYZ)));
         myArray = anArray;
         for (int i = 0; i < int(myLength); i++)
+        {
           anArray[i] = vecValues(i);
+        }
       }
     }
   }
@@ -634,13 +742,21 @@ VrmlData_ErrorStatus VrmlData_ArrayVec3d::WriteArray(const char* theName, const 
     if (OK(aStatus))
     {
       for (size_t i = 0; i < myLength - 1; i++)
+      {
         if (!OK(aStatus, Scene().WriteXYZ(myArray[i], isScale, ",")))
+        {
           break;
+        }
+      }
       if (OK(aStatus))
+      {
         aStatus = Scene().WriteXYZ(myArray[myLength - 1], isScale);
+      }
     }
     if (aStatus == VrmlData_StatusOK)
+    {
       aStatus = Scene().WriteLine("]", nullptr, -2 * GlobalIndent());
+    }
   }
   return aStatus;
 }
@@ -660,14 +776,20 @@ occ::handle<VrmlData_Node> VrmlData_Coordinate::Clone(
   occ::handle<VrmlData_Coordinate> aResult =
     occ::down_cast<VrmlData_Coordinate>(VrmlData_Node::Clone(theOther));
   if (aResult.IsNull())
+  {
     aResult = new VrmlData_Coordinate(theOther.IsNull() ? Scene() : theOther->Scene(), Name());
+  }
   if (&aResult->Scene() == &Scene())
+  {
     aResult->SetValues(Length(), Values());
+  }
   else
   {
     aResult->AllocateValues(Length());
     for (size_t i = 0; i < Length(); i++)
+    {
       const_cast<gp_XYZ&>(aResult->Values()[i]) = Values()[i];
+    }
   }
   return aResult;
 }
@@ -700,14 +822,20 @@ occ::handle<VrmlData_Node> VrmlData_Color::Clone(const occ::handle<VrmlData_Node
   occ::handle<VrmlData_Color> aResult =
     occ::down_cast<VrmlData_Color>(VrmlData_Node::Clone(theOther));
   if (aResult.IsNull())
+  {
     aResult = new VrmlData_Color(theOther.IsNull() ? Scene() : theOther->Scene(), Name());
+  }
   if (&aResult->Scene() == &Scene())
+  {
     aResult->SetValues(Length(), Values());
+  }
   else
   {
     aResult->AllocateValues(Length());
     for (size_t i = 0; i < Length(); i++)
+    {
       const_cast<gp_XYZ&>(aResult->Values()[i]) = Values()[i];
+    }
   }
   return aResult;
 }
@@ -740,14 +868,20 @@ occ::handle<VrmlData_Node> VrmlData_Normal::Clone(const occ::handle<VrmlData_Nod
   occ::handle<VrmlData_Normal> aResult =
     occ::down_cast<VrmlData_Normal>(VrmlData_Node::Clone(theOther));
   if (aResult.IsNull())
+  {
     aResult = new VrmlData_Normal(theOther.IsNull() ? Scene() : theOther->Scene(), Name());
+  }
   if (&aResult->Scene() == &Scene())
+  {
     aResult->SetValues(Length(), Values());
+  }
   else
   {
     aResult->AllocateValues(Length());
     for (size_t i = 0; i < Length(); i++)
+    {
       const_cast<gp_XYZ&>(aResult->Values()[i]) = Values()[i];
+    }
   }
   return aResult;
 }

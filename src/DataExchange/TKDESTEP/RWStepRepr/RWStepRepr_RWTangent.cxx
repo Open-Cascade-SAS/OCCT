@@ -34,7 +34,9 @@ void RWStepRepr_RWTangent::ReadStep(const occ::handle<StepData_StepReaderData>& 
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "tangent"))
+  {
     return;
+  }
 
   // Inherited fields of ShapeAspect
 

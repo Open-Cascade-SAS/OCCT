@@ -53,7 +53,9 @@ bool Message_CompositeAlerts::AddAlert(Message_Gravity                   theGrav
     {
       // if merged successfully, just return
       if (aType == anIt.Value()->DynamicType() && theAlert->Merge(anIt.Value()))
+      {
         return false;
+      }
     }
   }
 
@@ -171,7 +173,9 @@ void Message_CompositeAlerts::DumpJson(Standard_OStream& theOStream, int theDept
   for (unsigned int i = 0; i < sizeof(myAlerts) / sizeof(myAlerts[0]); ++i)
   {
     if (myAlerts[i].IsEmpty())
+    {
       continue;
+    }
 
     for (NCollection_List<occ::handle<Message_Alert>>::Iterator anIt(myAlerts[i]); anIt.More();
          anIt.Next(), anInc++)

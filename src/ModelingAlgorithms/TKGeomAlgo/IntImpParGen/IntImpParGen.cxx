@@ -70,7 +70,9 @@ void IntImpParGen::DeterminePosition(IntRes2d_Position&     Pos1,
       {
         if (std::abs(Param1 - TheDomain.LastParameter())
             < std::abs(Param1 - TheDomain.FirstParameter()))
+        {
           Pos1 = IntRes2d_End;
+        }
       }
       else
       {

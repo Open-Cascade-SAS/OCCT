@@ -76,7 +76,9 @@ void IntAna2d_AnaIntersection::Perform(const gp_Elips2d& Elips, const IntAna2d_C
       ty = minor_radius * std::sin(S);
       Coord_Ancien_Repere(tx, ty, Axe_rep);
       if (!EIsDirect)
+      {
         S = M_PI + M_PI - S;
+      }
       lpnt[i - 1].SetValue(tx, ty, S);
     }
     Traitement_Points_Confondus(nbp, lpnt);

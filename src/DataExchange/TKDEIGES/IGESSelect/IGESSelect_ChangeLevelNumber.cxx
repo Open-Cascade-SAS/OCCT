@@ -65,27 +65,43 @@ void IGESSelect_ChangeLevelNumber::Performing(IFSelect_ContextModif& ctx,
   int  oldl  = 0;
   bool yaold = HasOldNumber();
   if (yaold)
+  {
     oldl = theold->Value();
+  }
   int newl = 0;
   if (!thenew.IsNull())
+  {
     newl = thenew->Value();
+  }
   if (oldl < 0)
+  {
     ctx.CCheck()->AddFail("ChangeLevelNumber : OldNumber negative");
+  }
   if (newl < 0)
+  {
     ctx.CCheck()->AddFail("ChangeLevelNumber : NewNumber negative");
+  }
   if (oldl < 0 || newl < 0)
+  {
     return;
+  }
 
   occ::handle<IGESData_LevelListEntity> nulist;
   for (ctx.Start(); ctx.More(); ctx.Next())
   {
     DeclareAndCast(IGESData_IGESEntity, ent, ctx.ValueResult());
     if (ent.IsNull())
+    {
       continue;
+    }
     if (ent->DefLevel() == IGESData_DefSeveral)
+    {
       continue;
+    }
     if (yaold && ent->Level() != oldl)
+    {
       continue;
+    }
     ent->InitLevel(nulist, newl);
     ctx.Trace();
   }
@@ -97,14 +113,22 @@ TCollection_AsciiString IGESSelect_ChangeLevelNumber::Label() const
   int  oldl  = 0;
   bool yaold = HasOldNumber();
   if (yaold)
+  {
     oldl = theold->Value();
+  }
   int newl = 0;
   if (!thenew.IsNull())
+  {
     newl = thenew->Value();
+  }
 
   if (yaold)
+  {
     Sprintf(labl, "Changes Level Number %d to %d", oldl, newl);
+  }
   else
+  {
     Sprintf(labl, "Changes all Level Numbers positive and zero to %d", newl);
+  }
   return TCollection_AsciiString(labl);
 }

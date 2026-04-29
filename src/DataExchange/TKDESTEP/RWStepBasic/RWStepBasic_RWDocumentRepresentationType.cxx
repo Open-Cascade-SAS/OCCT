@@ -36,7 +36,9 @@ void RWStepBasic_RWDocumentRepresentationType::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "document_representation_type"))
+  {
     return;
+  }
 
   // Own fields of DocumentRepresentationType
 

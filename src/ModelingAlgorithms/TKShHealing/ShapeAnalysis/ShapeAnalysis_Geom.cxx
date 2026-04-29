@@ -46,23 +46,35 @@ bool ShapeAnalysis_Geom::NearestPlane(const NCollection_Array1<gp_Pnt>& thePnts,
   {
     case 1: {
       if ((2.0 * aDev1 > aDev2) || (2.0 * aDev1 > aDev3))
+      {
         anAxis = 0;
+      }
       else
+      {
         thePln = gp_Pln(anEq.Barycentre(), anEq.PrincipalAxis(1));
+      }
       break;
     }
     case 2: {
       if ((2.0 * aDev2 > aDev1) || (2.0 * aDev2 > aDev3))
+      {
         anAxis = 0;
+      }
       else
+      {
         thePln = gp_Pln(anEq.Barycentre(), anEq.PrincipalAxis(2));
+      }
       break;
     }
     case 3: {
       if ((2.0 * aDev3 > aDev2) || (2.0 * aDev3 > aDev1))
+      {
         anAxis = 0;
+      }
       else
+      {
         thePln = gp_Pln(anEq.Barycentre(), anEq.PrincipalAxis(3));
+      }
       break;
     }
   }
@@ -74,7 +86,9 @@ bool ShapeAnalysis_Geom::NearestPlane(const NCollection_Array1<gp_Pnt>& thePnts,
     {
       const double aD = thePln.Distance(thePnts(i));
       if (theMaxDist < aD)
+      {
         theMaxDist = aD;
+      }
     }
   }
 
@@ -93,7 +107,9 @@ bool ShapeAnalysis_Geom::PositionTrsf(const occ::handle<NCollection_HArray2<doub
   trsf = gp_Trsf();
 
   if (coefs.IsNull())
+  {
     return true;
+  }
 
   gp_GTrsf gtrsf;
   for (int i = 1; i <= 3; i++)
@@ -112,16 +128,22 @@ bool ShapeAnalysis_Geom::PositionTrsf(const occ::handle<NCollection_HArray2<doub
   double m3 = v3.Modulus();
 
   if (m1 < prec || m2 < prec || m3 < prec)
+  {
     return false;
+  }
   double mm  = (m1 + m2 + m3) / 3.;
   double pmm = prec * mm;
   if (std::abs(m1 - mm) > pmm || std::abs(m2 - mm) > pmm || std::abs(m3 - mm) > pmm)
+  {
     return false;
+  }
   v1.Divide(m1);
   v2.Divide(m2);
   v3.Divide(m3);
   if (std::abs(v1.Dot(v2)) > prec || std::abs(v2.Dot(v3)) > prec || std::abs(v3.Dot(v1)) > prec)
+  {
     return false;
+  }
 
   if (v1.X() != 1 || v1.Y() != 0 || v1.Z() != 0 || v2.X() != 0 || v2.Y() != 1 || v2.Z() != 0
       || v3.X() != 0 || v3.Y() != 0 || v3.Z() != 1)
@@ -132,17 +154,25 @@ bool ShapeAnalysis_Geom::PositionTrsf(const occ::handle<NCollection_HArray2<doub
     gp_Ax3 axes(gp_Pnt(0, 0, 0), d3, d1);
     d3.Cross(d1);
     if (d3.Dot(d2) < 0)
+    {
       axes.YReverse();
+    }
     trsf.SetTransformation(axes);
   }
 
   if (std::abs(mm - 1.) > prec)
+  {
     trsf.SetScale(gp_Pnt(0, 0, 0), mm);
+  }
   gp_Vec tp(gtrsf.TranslationPart());
   if (unit != 1.)
+  {
     tp.Multiply(unit);
+  }
   if (tp.X() != 0 || tp.Y() != 0 || tp.Z() != 0)
+  {
     trsf.SetTranslationPart(tp);
+  }
 
   return result;
 }

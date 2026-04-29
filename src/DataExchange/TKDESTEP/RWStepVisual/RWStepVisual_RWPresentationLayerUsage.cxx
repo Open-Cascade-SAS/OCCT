@@ -32,7 +32,9 @@ void RWStepVisual_RWPresentationLayerUsage::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "presentation_layer_usage"))
+  {
     return;
+  }
 
   // --- own fields
   occ::handle<StepVisual_PresentationLayerAssignment> pla;

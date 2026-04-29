@@ -49,13 +49,21 @@ static void FindLimits(const occ::handle<Adaptor3d_Surface>& surf,
     gp_Pnt P1, P2;
     double v;
     if (VfirstInf && VlastInf)
+    {
       v = 0;
+    }
     else if (VfirstInf)
+    {
       v = VLast;
+    }
     else if (VlastInf)
+    {
       v = VFirst;
+    }
     else
+    {
       v = (VFirst + VLast) / 2;
+    }
 
     double delta = aLimit * 2;
 
@@ -226,7 +234,9 @@ void StdPrs_WFSurface::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
     nbBounds = UIsoCurves.Length();
     NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>::Iterator It;
     for (It.Init(UIsoCurves); It.More(); It.Next())
+    {
       nbVertices += It.Value()->Length();
+    }
     occ::handle<Graphic3d_ArrayOfPolylines> UIsoArray =
       new Graphic3d_ArrayOfPolylines(nbVertices, nbBounds);
     for (It.Init(UIsoCurves); It.More(); It.Next())
@@ -234,7 +244,9 @@ void StdPrs_WFSurface::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
       const occ::handle<NCollection_HSequence<gp_Pnt>>& Pnts = It.Value();
       UIsoArray->AddBound(Pnts->Length());
       for (int i = 1; i <= Pnts->Length(); i++)
+      {
         UIsoArray->AddVertex(Pnts->Value(i));
+      }
     }
     occ::handle<Graphic3d_Group> TheGroup = aPresentation->NewGroup();
     TheGroup->SetPrimitivesAspect(aDrawer->UIsoAspect()->Aspect());
@@ -246,7 +258,9 @@ void StdPrs_WFSurface::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
     nbBounds = VIsoCurves.Length();
     NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>::Iterator It;
     for (It.Init(VIsoCurves); It.More(); It.Next())
+    {
       nbVertices += It.Value()->Length();
+    }
     occ::handle<Graphic3d_ArrayOfPolylines> VIsoArray =
       new Graphic3d_ArrayOfPolylines(nbVertices, nbBounds);
     for (It.Init(VIsoCurves); It.More(); It.Next())
@@ -254,7 +268,9 @@ void StdPrs_WFSurface::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
       const occ::handle<NCollection_HSequence<gp_Pnt>>& Pnts = It.Value();
       VIsoArray->AddBound(Pnts->Length());
       for (int i = 1; i <= Pnts->Length(); i++)
+      {
         VIsoArray->AddVertex(Pnts->Value(i));
+      }
     }
     occ::handle<Graphic3d_Group> TheGroup = aPresentation->NewGroup();
     TheGroup->SetPrimitivesAspect(aDrawer->VIsoAspect()->Aspect());
@@ -265,7 +281,9 @@ void StdPrs_WFSurface::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
     nbBounds = freeCurves.Length();
     NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>::Iterator It;
     for (It.Init(freeCurves); It.More(); It.Next())
+    {
       nbVertices += It.Value()->Length();
+    }
     occ::handle<Graphic3d_ArrayOfPolylines> freeArray =
       new Graphic3d_ArrayOfPolylines(nbVertices, nbBounds);
     for (It.Init(freeCurves); It.More(); It.Next())
@@ -273,7 +291,9 @@ void StdPrs_WFSurface::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
       const occ::handle<NCollection_HSequence<gp_Pnt>>& Pnts = It.Value();
       freeArray->AddBound(Pnts->Length());
       for (int i = 1; i <= Pnts->Length(); i++)
+      {
         freeArray->AddVertex(Pnts->Value(i));
+      }
     }
     occ::handle<Graphic3d_Group> TheGroup = aPresentation->NewGroup();
     TheGroup->SetPrimitivesAspect(aDrawer->FreeBoundaryAspect()->Aspect());

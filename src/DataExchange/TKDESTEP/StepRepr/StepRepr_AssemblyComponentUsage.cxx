@@ -55,7 +55,9 @@ void StepRepr_AssemblyComponentUsage::Init(
     theReferenceDesignator = aReferenceDesignator;
   }
   else
+  {
     theReferenceDesignator.Nullify();
+  }
 }
 
 //=================================================================================================
@@ -85,7 +87,9 @@ void StepRepr_AssemblyComponentUsage::Init(
     theReferenceDesignator = aReferenceDesignator;
   }
   else
+  {
     theReferenceDesignator.Nullify();
+  }
 }
 
 //=================================================================================================

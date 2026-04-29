@@ -52,7 +52,9 @@ TDataStd_DeltaOnModificationOfIntArray::TDataStd_DeltaOnModificationOfIntArray(
 #endif
 
       if (Arr1.IsNull() || Arr2.IsNull())
+      {
         return;
+      }
       if (Arr1 != Arr2)
       {
         myUp1 = Arr1->Upper();
@@ -76,12 +78,18 @@ TDataStd_DeltaOnModificationOfIntArray::TDataStd_DeltaOnModificationOfIntArray(
 
         NCollection_List<int> aList;
         for (i = Arr1->Lower(); i <= N; i++)
+        {
           if (Arr1->Value(i) != Arr2->Value(i))
+          {
             aList.Append(i);
+          }
+        }
         if (aCase == 3)
         {
           for (i = N + 1; i <= myUp1; i++)
+          {
             aList.Append(i);
+          }
         }
         if (aList.Extent())
         {
@@ -134,35 +142,57 @@ void TDataStd_DeltaOnModificationOfIntArray::Apply()
     return;
   }
   else
+  {
     aCurAtt->Backup();
+  }
 
   int aCase;
   if (myUp1 == myUp2)
+  {
     aCase = 1;
+  }
   else if (myUp1 < myUp2)
+  {
     aCase = 2;
+  }
   else
+  {
     aCase = 3; // Up1 > Up2
+  }
   ////
   if (aCase == 1 && (myIndxes.IsNull() || myValues.IsNull()))
+  {
     return;
+  }
 
   int                                   i;
   occ::handle<NCollection_HArray1<int>> IntArr = aCurAtt->Array();
   if (IntArr.IsNull())
+  {
     return;
+  }
   if (aCase == 1)
+  {
     for (i = 1; i <= myIndxes->Upper(); i++)
+    {
       IntArr->ChangeArray1().SetValue(myIndxes->Value(i), myValues->Value(i));
+    }
+  }
   else if (aCase == 2)
   {
     occ::handle<NCollection_HArray1<int>> intArr =
       new NCollection_HArray1<int>(IntArr->Lower(), myUp1);
     for (i = IntArr->Lower(); i <= myUp1 && i <= IntArr->Upper(); i++)
+    {
       intArr->SetValue(i, IntArr->Value(i));
+    }
     if (!myIndxes.IsNull() && !myValues.IsNull())
+    {
       for (i = 1; i <= myIndxes->Upper(); i++)
+      {
         intArr->ChangeArray1().SetValue(myIndxes->Value(i), myValues->Value(i));
+      }
+    }
     aCurAtt->myValue = intArr;
   }
   else
@@ -170,8 +200,11 @@ void TDataStd_DeltaOnModificationOfIntArray::Apply()
     int                                   low    = IntArr->Lower();
     occ::handle<NCollection_HArray1<int>> intArr = new NCollection_HArray1<int>(low, myUp1);
     for (i = IntArr->Lower(); i <= myUp2 && i <= IntArr->Upper(); i++)
+    {
       intArr->SetValue(i, IntArr->Value(i));
+    }
     if (!myIndxes.IsNull() && !myValues.IsNull())
+    {
       for (i = 1; i <= myIndxes->Upper(); i++)
       {
 #ifdef OCCT_DEBUG
@@ -181,6 +214,7 @@ void TDataStd_DeltaOnModificationOfIntArray::Apply()
 #endif
         intArr->ChangeArray1().SetValue(myIndxes->Value(i), myValues->Value(i));
       }
+    }
     aCurAtt->myValue = intArr;
   }
 

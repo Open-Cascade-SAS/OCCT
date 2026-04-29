@@ -91,9 +91,13 @@ Bnd_Box GeomBndLib_Cone::Box(double theUMin,
       const gp_Circ aC =
         ElSLib::ConeVIso(aCone.Position(), aCone.RefRadius(), aCone.SemiAngle(), 0.);
       if (aC.Radius() > Precision::Confusion())
+      {
         aBox.Add(GeomBndLib_Circle::Box(aC, theUMin, theUMax, 0.));
+      }
       else
+      {
         aBox.Add(aC.Location());
+      }
       GeomBndLib_InfiniteHelpers::OpenMinMax(aDir, aBox);
     }
     else
@@ -110,9 +114,13 @@ Bnd_Box GeomBndLib_Cone::Box(double theUMin,
       const gp_Circ aC =
         ElSLib::ConeVIso(aCone.Position(), aCone.RefRadius(), aCone.SemiAngle(), 0.);
       if (aC.Radius() > Precision::Confusion())
+      {
         aBox.Add(GeomBndLib_Circle::Box(aC, theUMin, theUMax, 0.));
+      }
       else
+      {
         aBox.Add(aC.Location());
+      }
       GeomBndLib_InfiniteHelpers::OpenMinMax(aDir, aBox);
     }
     else if (Precision::IsPositiveInfinite(theVMax))

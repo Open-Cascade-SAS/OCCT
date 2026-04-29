@@ -112,13 +112,17 @@ TEST(BRepGraph_PolygonTest, Polygon3D_Captured_WhenPresent)
   for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
     if (BRepGraph_Tool::Edge::HasPolygon3D(aGraph, anEdgeIt.CurrentId()))
+    {
       ++aNbPoly3DGraph;
+    }
   }
   for (TopExp_Explorer anExp(aBox, TopAbs_EDGE); anExp.More(); anExp.Next())
   {
     TopLoc_Location aLoc;
     if (!BRep_Tool::Polygon3D(TopoDS::Edge(anExp.Current()), aLoc).IsNull())
+    {
       ++aNbPoly3DOrig;
+    }
   }
   EXPECT_EQ(aNbPoly3DGraph, aNbPoly3DOrig)
     << "Graph Polygon3D count should match BRep_Tool::Polygon3D count";
@@ -127,7 +131,9 @@ TEST(BRepGraph_PolygonTest, Polygon3D_Captured_WhenPresent)
   for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
     if (!BRepGraph_Tool::Edge::HasPolygon3D(aGraph, anEdgeIt.CurrentId()))
+    {
       continue;
+    }
     TopoDS_Shape aReconEdge = aGraph.Shapes().Reconstruct(anEdgeIt.CurrentId());
     ASSERT_FALSE(aReconEdge.IsNull());
     TopLoc_Location             aPolyLoc;
@@ -213,12 +219,16 @@ TEST(BRepGraph_PolygonTest, PolyOnTri_Roundtrip_PreservedOnReconstruct)
       TopLoc_Location                 aTriLoc;
       occ::handle<Poly_Triangulation> aTri = BRep_Tool::Triangulation(aFace, aTriLoc);
       if (aTri.IsNull())
+      {
         continue;
+      }
       TopLoc_Location                          aPolyLoc;
       occ::handle<Poly_PolygonOnTriangulation> aPolyOnTri =
         BRep_Tool::PolygonOnTriangulation(anEdge, aTri, aPolyLoc);
       if (!aPolyOnTri.IsNull())
+      {
         ++aNbReconPolyOnTri;
+      }
     }
   }
 
@@ -279,7 +289,9 @@ TEST(BRepGraph_PolygonTest, VertexPointRepresentations_StructurallyValid)
     double             aLast  = 0.0;
     TopLoc_Location    aLoc;
     if (BRep_Tool::Curve(anEdge, aLoc, aFirst, aLast).IsNull())
+    {
       continue;
+    }
 
     for (TopoDS_Iterator aVtxIt(anEdge, false, false); aVtxIt.More(); aVtxIt.Next())
     {
@@ -319,7 +331,9 @@ TEST(BRepGraph_PolygonTest, VertexPointRepresentations_StructurallyValid)
       double                    aLast   = 0.0;
       occ::handle<Geom2d_Curve> aPCurve = BRep_Tool::CurveOnSurface(anEdge, aFace, aFirst, aLast);
       if (aPCurve.IsNull())
+      {
         continue;
+      }
 
       aBuilder.UpdateEdge(anEdge, aPCurve, aFace, BRep_Tool::Tolerance(anEdge));
       aBuilder.Range(anEdge, aFace, aFirst, aLast);
@@ -358,18 +372,26 @@ TEST(BRepGraph_PolygonTest, VertexPointRepresentations_StructurallyValid)
     const BRepGraph_VertexId                  aVertexId = aVertexIt.CurrentId();
     const BRepGraph_LayerParam::VertexParams* aParams   = aParamLayer->FindVertexParams(aVertexId);
     if (aParams == nullptr)
+    {
       continue;
+    }
     aNbPointsOnCurve += aParams->PointsOnCurve.Length();
     aNbPointsOnSurface += aParams->PointsOnSurface.Length();
     aNbPointsOnPCurve += aParams->PointsOnPCurve.Length();
 
     // Validate that any captured entries have valid def references.
     for (const BRepGraph_LayerParam::PointOnCurveEntry& anEntry : aParams->PointsOnCurve)
+    {
       EXPECT_TRUE(anEntry.EdgeDefId.IsValid());
+    }
     for (const BRepGraph_LayerParam::PointOnSurfaceEntry& anEntry : aParams->PointsOnSurface)
+    {
       EXPECT_TRUE(anEntry.FaceDefId.IsValid());
+    }
     for (const BRepGraph_LayerParam::PointOnPCurveEntry& anEntry : aParams->PointsOnPCurve)
+    {
       EXPECT_TRUE(anEntry.CoEdgeDefId.IsValid());
+    }
   }
 
   EXPECT_GT(aNbPointsOnSurface, 0);
@@ -393,11 +415,15 @@ TEST(BRepGraph_PolygonTest, EdgeRegularity_MatchesOriginal)
     const TopoDS_Edge&             anEdge = TopoDS::Edge(anEdgeExp.Current());
     const occ::handle<BRep_TEdge>& aTEdge = occ::down_cast<BRep_TEdge>(anEdge.TShape());
     if (aTEdge.IsNull())
+    {
       continue;
+    }
     for (const occ::handle<BRep_CurveRepresentation>& aCRep : aTEdge->Curves())
     {
       if (!occ::down_cast<BRep_CurveOn2Surfaces>(aCRep).IsNull())
+      {
         ++aNbOrigReg;
+      }
     }
   }
 
@@ -450,7 +476,9 @@ TEST(BRepGraph_PolygonTest, SeamEdge_PolyOnTri_TwoEntries)
       const BRepGraphInc::CoEdgeDef& aCE      = aGraph.Topo().CoEdges().Definition(aCoEdgeId);
       const int                      aFaceIdx = aCE.FaceDefId.Index;
       if (!aFaceCounts.IsBound(aFaceIdx))
+      {
         aFaceCounts.Bind(aFaceIdx, 0);
+      }
       aFaceCounts.ChangeFind(aFaceIdx) += 1;
     }
     for (const auto& [aFaceIdx, aCount] : aFaceCounts.Items())
@@ -462,7 +490,9 @@ TEST(BRepGraph_PolygonTest, SeamEdge_PolyOnTri_TwoEntries)
       }
     }
     if (aFoundSeam)
+    {
       break;
+    }
   }
   // Seam edges on cylinder lateral face should produce two PolyOnTri entries.
   EXPECT_TRUE(aFoundSeam) << "Meshed cylinder should have seam edge with two PolyOnTri entries";

@@ -176,7 +176,9 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
             {
               //	       for (int k = 1 ; k <= nbsol3 ; k++) {
               if (NbrSol >= 2)
+              {
                 break;
+              }
               NbrSol++;
               //		 cirsol(NbrSol) = gp_Circ2d(gp_Ax2d(Center,dirx),Radius(k));
               cirsol(NbrSol) = gp_Circ2d(gp_Ax2d(Center, dirx), Radius(nbsol3));
@@ -210,8 +212,10 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
                 TheSame1(NbrSol) = 0;
                 gp_Dir2d dc(center1.XY() - Center.XY());
                 if (qualifier1(NbrSol) == GccEnt_enclosed)
+                {
                   // clang-format off
 		     dc.Reverse(); // if tangent circle is inside the source circle, moving to edge of source circle
+}
                 // clang-format on
                 pnttg1sol(NbrSol) = gp_Pnt2d(Center.XY() + Radius(nbsol3) * dc.XY());
                 par1sol(NbrSol)   = ElCLib::Parameter(cirsol(NbrSol), pnttg1sol(NbrSol));

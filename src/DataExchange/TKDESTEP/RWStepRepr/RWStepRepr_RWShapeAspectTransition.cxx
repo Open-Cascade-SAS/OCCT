@@ -36,7 +36,9 @@ void RWStepRepr_RWShapeAspectTransition::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "shape_aspect_transition"))
+  {
     return;
+  }
 
   // Inherited fields of ShapeAspectRelationship
 
@@ -98,7 +100,9 @@ void RWStepRepr_RWShapeAspectTransition::WriteStep(
     SW.Send(ent->StepRepr_ShapeAspectRelationship::Description());
   }
   else
+  {
     SW.SendUndef();
+  }
 
   SW.Send(ent->StepRepr_ShapeAspectRelationship::RelatingShapeAspect());
 

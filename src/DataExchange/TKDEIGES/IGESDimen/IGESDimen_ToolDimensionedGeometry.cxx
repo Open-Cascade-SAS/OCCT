@@ -52,10 +52,12 @@ void IGESDimen_ToolDimensionedGeometry::ReadOwnParams(
   // clang-format on
 
   if (nbgeom > 0)
+  {
     PR.ReadEnts(IR,
                 PR.CurrentList(nbgeom),
                 "Geometry Entities",
                 GeomEntities); // szv#4:S4163:12Mar99 `st=` not needed
+  }
   /*
       {
         GeomEntities = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1,nbgeom);
@@ -79,7 +81,9 @@ void IGESDimen_ToolDimensionedGeometry::WriteOwnParams(
   IW.Send(ent->NbGeometryEntities());
   IW.Send(ent->DimensionEntity());
   for (int upper = ent->NbGeometryEntities(), i = 1; i <= upper; i++)
+  {
     IW.Send(ent->GeometryEntity(i));
+  }
 }
 
 void IGESDimen_ToolDimensionedGeometry::OwnShared(
@@ -88,7 +92,9 @@ void IGESDimen_ToolDimensionedGeometry::OwnShared(
 {
   iter.GetOneItem(ent->DimensionEntity());
   for (int upper = ent->NbGeometryEntities(), i = 1; i <= upper; i++)
+  {
     iter.GetOneItem(ent->GeometryEntity(i));
+  }
 }
 
 void IGESDimen_ToolDimensionedGeometry::OwnCopy(
@@ -113,13 +119,17 @@ bool IGESDimen_ToolDimensionedGeometry::OwnCorrect(
   const occ::handle<IGESDimen_DimensionedGeometry>& ent) const
 {
   if (ent->NbDimensions() == 1)
+  {
     return false;
+  }
   //  force NbDimensions to 1 -> reconstruct
   int                                                                nb = ent->NbGeometryEntities();
   occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> EntArray =
     new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nb);
   for (int i = 1; i <= nb; i++)
+  {
     EntArray->SetValue(i, ent->GeometryEntity(i));
+  }
   ent->Init(1, ent->DimensionEntity(), EntArray);
   return true;
 }
@@ -141,9 +151,13 @@ void IGESDimen_ToolDimensionedGeometry::OwnCheck(
   occ::handle<Interface_Check>& ach) const
 {
   if (ent->NbDimensions() != 1)
+  {
     ach->AddFail("NbDimensions != 1");
+  }
   if (ent->UseFlag() > 3)
+  {
     ach->AddFail("Incorrect UseFlag");
+  }
 }
 
 void IGESDimen_ToolDimensionedGeometry::OwnDump(
@@ -163,5 +177,5 @@ void IGESDimen_ToolDimensionedGeometry::OwnDump(
   S << "\n"
     << "Geometry Entities : ";
   IGESData_DumpEntities(S, dumper, level, 1, ent->NbGeometryEntities(), ent->GeometryEntity);
-  S << std::endl;
+  S << '\n';
 }

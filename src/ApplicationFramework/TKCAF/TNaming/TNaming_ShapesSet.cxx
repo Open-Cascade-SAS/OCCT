@@ -26,7 +26,9 @@
 TNaming_ShapesSet::TNaming_ShapesSet(const TopoDS_Shape& CS, const TopAbs_ShapeEnum Type)
 {
   if (CS.IsNull())
+  {
     return;
+  }
   if (Type == TopAbs_SHAPE)
   {
     if (CS.ShapeType() == TopAbs_SOLID || CS.ShapeType() == TopAbs_FACE

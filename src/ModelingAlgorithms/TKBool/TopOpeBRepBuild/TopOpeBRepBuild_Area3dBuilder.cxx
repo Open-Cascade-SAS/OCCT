@@ -73,13 +73,19 @@ void TopOpeBRepBuild_Area3dBuilder::InitAreaBuilder(TopOpeBRepBuild_LoopSet&    
       {
         NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& aArea = AreaIter.ChangeValue();
         if (aArea.IsEmpty())
+        {
           continue;
+        }
         state = CompareLoopWithListOfLoop(LC, L, aArea, TopOpeBRepBuild_BLOCK);
         if (state == TopAbs_UNKNOWN)
+        {
           Atomize(state, TopAbs_IN);
+        }
         Loopinside = (state == TopAbs_IN);
         if (Loopinside)
+        {
           break;
+        }
       } // end of Area scan
 
       if (Loopinside)
@@ -112,13 +118,19 @@ void TopOpeBRepBuild_Area3dBuilder::InitAreaBuilder(TopOpeBRepBuild_LoopSet&    
       {
         NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& aArea = AreaIter.ChangeValue();
         if (aArea.IsEmpty())
+        {
           continue;
+        }
         state = CompareLoopWithListOfLoop(LC, L, aArea, TopOpeBRepBuild_ANYLOOP);
         if (state == TopAbs_UNKNOWN)
+        {
           Atomize(state, TopAbs_IN);
+        }
         Loopinside = (state == TopAbs_IN);
         if (Loopinside)
+        {
           break;
+        }
       } // end of Area scan
 
       if (Loopinside)
@@ -132,7 +144,9 @@ void TopOpeBRepBuild_Area3dBuilder::InitAreaBuilder(TopOpeBRepBuild_LoopSet&    
           const occ::handle<TopOpeBRepBuild_Loop>& LLI1 = LoopIter.Value();
           state                                         = LC.Compare(LLI1, L);
           if (state == TopAbs_UNKNOWN)
+          {
             Atomize(state, TopAbs_IN); // not OUT
+          }
           loopoutside = (state == TopAbs_OUT);
           if (loopoutside)
           {
@@ -193,14 +207,18 @@ void TopOpeBRepBuild_Area3dBuilder::InitAreaBuilder(TopOpeBRepBuild_LoopSet&    
           const occ::handle<TopOpeBRepBuild_Loop>& LLI2 = LoopIter.Value();
           state                                         = LC.Compare(LLI2, L);
           if (state == TopAbs_UNKNOWN)
+          {
             Atomize(state, TopAbs_IN);
+          }
           ashapeinside = (state == TopAbs_IN);
           if (ashapeinside)
           {
             const occ::handle<TopOpeBRepBuild_Loop>& LLI3 = LoopIter.Value();
             state                                         = LC.Compare(L, LLI3);
             if (state == TopAbs_UNKNOWN)
+            {
               Atomize(state, TopAbs_IN);
+            }
             ablockinside = (state == TopAbs_IN);
           }
           if (ashapeinside && ablockinside)

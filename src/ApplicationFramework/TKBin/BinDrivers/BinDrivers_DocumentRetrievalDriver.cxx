@@ -100,16 +100,22 @@ void BinDrivers_DocumentRetrievalDriver::EnableQuickPartReading(
   bool                                  theValue)
 {
   if (myDrivers.IsNull())
+  {
     myDrivers = AttributeDrivers(theMessageDriver);
+  }
   if (myDrivers.IsNull())
+  {
     return;
+  }
 
   occ::handle<BinMDF_ADriver> aDriver;
   myDrivers->GetDriver(STANDARD_TYPE(TNaming_NamedShape), aDriver);
   occ::handle<BinMNaming_NamedShapeDriver> aShapesDriver =
     occ::down_cast<BinMNaming_NamedShapeDriver>(aDriver);
   if (aShapesDriver.IsNull())
+  {
     throw Standard_NotImplemented("Internal Error - TNaming_NamedShape is not found!");
+  }
 
   aShapesDriver->EnableQuickPart(theValue);
 }

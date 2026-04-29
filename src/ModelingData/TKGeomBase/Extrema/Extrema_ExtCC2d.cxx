@@ -170,7 +170,9 @@ void Extrema_ExtCC2d::Perform(const Adaptor2d_Curve2d& C1, const double U1, cons
           aParamSolver->Perform();
           double Period2 = 0.;
           if (Extrema_Curve2dTool::IsPeriodic(*myC))
+          {
             Period2 = Extrema_Curve2dTool::Period(*myC);
+          }
           Results(*aParamSolver, U11, U12, U21, U22, 2 * M_PI, Period2);
         }
         break;
@@ -230,7 +232,9 @@ void Extrema_ExtCC2d::Perform(const Adaptor2d_Curve2d& C1, const double U1, cons
           aParamSolver->Perform();
           double Period2 = 0.;
           if (Extrema_Curve2dTool::IsPeriodic(*myC))
+          {
             Period2 = Extrema_Curve2dTool::Period(*myC);
+          }
           Results(*aParamSolver, U11, U12, U21, U22, 2 * M_PI, Period2);
         }
         break;
@@ -294,7 +298,9 @@ void Extrema_ExtCC2d::Perform(const Adaptor2d_Curve2d& C1, const double U1, cons
           aParamSolver->Perform();
           double Period2 = 0.;
           if (Extrema_Curve2dTool::IsPeriodic(*myC))
+          {
             Period2 = Extrema_Curve2dTool::Period(*myC);
+          }
           Results(*aParamSolver, U11, U12, U21, U22, 0., Period2);
         }
         break;
@@ -357,7 +363,9 @@ void Extrema_ExtCC2d::Perform(const Adaptor2d_Curve2d& C1, const double U1, cons
           aParamSolver->Perform();
           double Period2 = 0.;
           if (Extrema_Curve2dTool::IsPeriodic(*myC))
+          {
             Period2 = Extrema_Curve2dTool::Period(*myC);
+          }
           Results(*aParamSolver, U11, U12, U21, U22, 0., Period2);
         }
         break;
@@ -411,7 +419,9 @@ void Extrema_ExtCC2d::Perform(const Adaptor2d_Curve2d& C1, const double U1, cons
           aParamSolver->Perform();
           double Period2 = 0.;
           if (Extrema_Curve2dTool::IsPeriodic(*myC))
+          {
             Period2 = Extrema_Curve2dTool::Period(*myC);
+          }
           Results(*aParamSolver, U11, U12, U21, U22, 0., Period2);
         }
         break;
@@ -428,10 +438,14 @@ void Extrema_ExtCC2d::Perform(const Adaptor2d_Curve2d& C1, const double U1, cons
       aParamSolver->Perform();
       double Period1 = 0.;
       if (Extrema_Curve2dTool::IsPeriodic(C1))
+      {
         Period1 = Extrema_Curve2dTool::Period(C1);
+      }
       double Period2 = 0.;
       if (Extrema_Curve2dTool::IsPeriodic(*myC))
+      {
         Period2 = Extrema_Curve2dTool::Period(*myC);
+      }
       Results(*aParamSolver, U11, U12, U21, U22, Period1, Period2);
     }
     break;
@@ -450,9 +464,13 @@ bool Extrema_ExtCC2d::IsDone() const
 double Extrema_ExtCC2d::SquareDistance(const int N) const
 {
   if (!myDone)
+  {
     throw StdFail_NotDone();
+  }
   if ((N <= 0) || (N > mynbext))
+  {
     throw Standard_OutOfRange();
+  }
   return mySqDist.Value(N);
 }
 
@@ -461,7 +479,9 @@ double Extrema_ExtCC2d::SquareDistance(const int N) const
 int Extrema_ExtCC2d::NbExt() const
 {
   if (!myDone)
+  {
     throw StdFail_NotDone();
+  }
   return mynbext;
 }
 
@@ -470,9 +490,13 @@ int Extrema_ExtCC2d::NbExt() const
 void Extrema_ExtCC2d::Points(const int N, Extrema_POnCurv2d& P1, Extrema_POnCurv2d& P2) const
 {
   if (!myDone)
+  {
     throw StdFail_NotDone();
+  }
   if ((N <= 0) || (N > mynbext))
+  {
     throw Standard_OutOfRange();
+  }
   P1 = mypoints.Value(2 * N - 1);
   P2 = mypoints.Value(2 * N);
 }
@@ -527,19 +551,27 @@ void Extrema_ExtCC2d::Results(const Extrema_ExtElC2d& AlgExt,
         {
           U = P1.Parameter();
           if (Period1 != 0.0)
+          {
             U = ElCLib::InPeriod(U, Ut11, Ut11 + Period1);
+          }
           U2 = P2.Parameter();
           if (Period2 != 0.0)
+          {
             U2 = ElCLib::InPeriod(U2, Ut21, Ut21 + Period2);
+          }
         }
         else
         {
           U2 = P1.Parameter();
           if (Period2 != 0.0)
+          {
             U2 = ElCLib::InPeriod(U2, Ut21, Ut21 + Period2);
+          }
           U = P2.Parameter();
           if (Period1 != 0.0)
+          {
             U = ElCLib::InPeriod(U, Ut11, Ut11 + Period1);
+          }
         }
         if ((U >= Ut11 - Precision::PConfusion()) && (U <= Ut12 + Precision::PConfusion())
             && (U2 >= Ut21 - Precision::PConfusion()) && (U2 <= Ut22 + Precision::PConfusion()))
@@ -597,10 +629,14 @@ void Extrema_ExtCC2d::Results(const Extrema_ECC2d& AlgExt,
       AlgExt.Points(i, P1, P2);
       U = P1.Parameter();
       if (Period1 != 0.0)
+      {
         U = ElCLib::InPeriod(U, Ut11, Ut11 + Period1);
+      }
       U2 = P2.Parameter();
       if (Period2 != 0.0)
+      {
         U2 = ElCLib::InPeriod(U2, Ut21, Ut21 + Period2);
+      }
 
       if ((U >= Ut11 - Precision::PConfusion()) && (U <= Ut12 + Precision::PConfusion())
           && (U2 >= Ut21 - Precision::PConfusion()) && (U2 <= Ut22 + Precision::PConfusion()))
@@ -627,7 +663,9 @@ void Extrema_ExtCC2d::Results(const Extrema_ECC2d& AlgExt,
 bool Extrema_ExtCC2d::IsParallel() const
 {
   if (!myDone)
+  {
     throw StdFail_NotDone();
+  }
   return myIsPar;
 }
 

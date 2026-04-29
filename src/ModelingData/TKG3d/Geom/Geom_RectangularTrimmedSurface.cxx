@@ -53,11 +53,17 @@ occ::handle<Geom_Geometry> Geom_RectangularTrimmedSurface::Copy() const
   occ::handle<Geom_RectangularTrimmedSurface> S;
 
   if (isutrimmed && isvtrimmed)
+  {
     S = new RectangularTrimmedSurface(basisSurf, utrim1, utrim2, vtrim1, vtrim2, true, true);
+  }
   else if (isutrimmed)
+  {
     S = new RectangularTrimmedSurface(basisSurf, utrim1, utrim2, true, true);
+  }
   else if (isvtrimmed)
+  {
     S = new RectangularTrimmedSurface(basisSurf, vtrim1, vtrim2, false, true);
+  }
 
   return S;
 }
@@ -85,9 +91,13 @@ Geom_RectangularTrimmedSurface::Geom_RectangularTrimmedSurface(
   // kill trimmed basis surfaces
   occ::handle<Geom_RectangularTrimmedSurface> T = occ::down_cast<Geom_RectangularTrimmedSurface>(S);
   if (!T.IsNull())
+  {
     basisSurf = occ::down_cast<Geom_Surface>(T->BasisSurface()->Copy());
+  }
   else
+  {
     basisSurf = occ::down_cast<Geom_Surface>(S->Copy());
+  }
 
   occ::handle<Geom_OffsetSurface> O = occ::down_cast<Geom_OffsetSurface>(basisSurf);
   if (!O.IsNull())
@@ -113,9 +123,13 @@ Geom_RectangularTrimmedSurface::Geom_RectangularTrimmedSurface(
   // kill trimmed basis surfaces
   occ::handle<Geom_RectangularTrimmedSurface> T = occ::down_cast<Geom_RectangularTrimmedSurface>(S);
   if (!T.IsNull())
+  {
     basisSurf = occ::down_cast<Geom_Surface>(T->BasisSurface()->Copy());
+  }
   else
+  {
     basisSurf = occ::down_cast<Geom_Surface>(S->Copy());
+  }
 
   occ::handle<Geom_OffsetSurface> O = occ::down_cast<Geom_OffsetSurface>(basisSurf);
   if (!O.IsNull())
@@ -219,7 +233,9 @@ void Geom_RectangularTrimmedSurface::SetTrim(const double U1,
   else
   {
     if (U1 == U2)
+    {
       throw Standard_ConstructionError("Geom_RectangularTrimmedSurface::U1==U2");
+    }
 
     if (basisSurf->IsUPeriodic())
     {
@@ -251,8 +267,10 @@ void Geom_RectangularTrimmedSurface::SetTrim(const double U1,
       }
 
       if ((Udeb - utrim1 > Precision::PConfusion()) || (utrim2 - Ufin > Precision::PConfusion()))
+      {
         throw Standard_ConstructionError(
           "Geom_RectangularTrimmedSurface::U parameters out of range");
+      }
     }
   }
 
@@ -266,7 +284,9 @@ void Geom_RectangularTrimmedSurface::SetTrim(const double U1,
   else
   {
     if (V1 == V2)
+    {
       throw Standard_ConstructionError("Geom_RectangularTrimmedSurface::V1==V2");
+    }
 
     if (basisSurf->IsVPeriodic())
     {
@@ -298,15 +318,21 @@ void Geom_RectangularTrimmedSurface::SetTrim(const double U1,
       }
 
       if ((Vdeb - vtrim1 > Precision::PConfusion()) || (vtrim2 - Vfin > Precision::PConfusion()))
+      {
         throw Standard_ConstructionError(
           "Geom_RectangularTrimmedSurface::V parameters out of range");
+      }
     }
   }
 
   if (!UsameSense)
+  {
     UReverse();
+  }
   if (!VsameSense)
+  {
     VReverse();
+  }
 }
 
 //=================================================================================================
@@ -396,7 +422,9 @@ gp_Vec Geom_RectangularTrimmedSurface::EvalDN(const double U,
                                               const int    Nv) const
 {
   if (Nu + Nv < 1 || Nu < 0 || Nv < 0)
+  {
     throw Geom_UndefinedDerivative();
+  }
   return basisSurf->EvalDN(U, V, Nu, Nv);
 }
 
@@ -481,9 +509,13 @@ void Geom_RectangularTrimmedSurface::Transform(const Trsf& T)
 bool Geom_RectangularTrimmedSurface::IsUPeriodic() const
 {
   if (!basisSurf->IsUPeriodic())
+  {
     return false;
+  }
   if (!isutrimmed)
+  {
     return true;
+  }
   const double aPeriod = basisSurf->UPeriod();
   const double aLength = utrim2 - utrim1;
   return aLength > Precision::PConfusion()
@@ -502,9 +534,13 @@ double Geom_RectangularTrimmedSurface::UPeriod() const
 bool Geom_RectangularTrimmedSurface::IsVPeriodic() const
 {
   if (!basisSurf->IsVPeriodic())
+  {
     return false;
+  }
   if (!isvtrimmed)
+  {
     return true;
+  }
   const double aPeriod = basisSurf->VPeriod();
   const double aLength = vtrim2 - vtrim1;
   return aLength > Precision::PConfusion()
@@ -523,14 +559,18 @@ double Geom_RectangularTrimmedSurface::VPeriod() const
 bool Geom_RectangularTrimmedSurface::IsUClosed() const
 {
   if (!isutrimmed)
+  {
     return basisSurf->IsUClosed();
+  }
   if (basisSurf->IsUPeriodic())
   {
     const double aPeriod = basisSurf->UPeriod();
     const double aLength = utrim2 - utrim1;
     if (aLength > Precision::PConfusion()
         && std::abs(std::remainder(aLength, aPeriod)) <= Precision::PConfusion())
+    {
       return true;
+    }
   }
   return false;
 }
@@ -540,14 +580,18 @@ bool Geom_RectangularTrimmedSurface::IsUClosed() const
 bool Geom_RectangularTrimmedSurface::IsVClosed() const
 {
   if (!isvtrimmed)
+  {
     return basisSurf->IsVClosed();
+  }
   if (basisSurf->IsVPeriodic())
   {
     const double aPeriod = basisSurf->VPeriod();
     const double aLength = vtrim2 - vtrim1;
     if (aLength > Precision::PConfusion()
         && std::abs(std::remainder(aLength, aPeriod)) <= Precision::PConfusion())
+    {
       return true;
+    }
   }
   return false;
 }

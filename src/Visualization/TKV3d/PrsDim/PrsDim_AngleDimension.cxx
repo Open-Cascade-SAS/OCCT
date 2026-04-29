@@ -374,7 +374,9 @@ void PrsDim_AngleDimension::DrawArc(const occ::handle<Prs3d_Presentation>& thePr
   gp_Vec aCenterToSecondVec(theCenter, theSecondAttach);
   double anAngle = aCenterToFirstVec.Angle(aCenterToSecondVec);
   if (myType == PrsDim_TypeOfAngle_Exterior)
+  {
     anAngle = 2.0 * M_PI - anAngle;
+  }
   // it sets 50 points on PI, and a part of points if angle is less
   const int aNbPoints = std::max(4, int(50.0 * anAngle / M_PI));
 
@@ -755,9 +757,13 @@ void PrsDim_AngleDimension::Compute(const occ::handle<PrsMgr_PresentationManager
     thePresentation->NewGroup();
 
     if (isArrowVisible(PrsDim_TypeOfAngleArrowVisibility_First))
+    {
       DrawArrow(thePresentation, aFirstArrowBegin, gp_Dir(aFirstArrowVec));
+    }
     if (isArrowVisible(PrsDim_TypeOfAngleArrowVisibility_Second))
+    {
       DrawArrow(thePresentation, aSecondArrowBegin, gp_Dir(aSecondArrowVec));
+    }
   }
 
   if ((theMode == ComputeMode_All || theMode == ComputeMode_Line) && isArrowsExternal)
@@ -1085,7 +1091,9 @@ bool PrsDim_AngleDimension::InitConeAngle()
     occ::handle<Geom_Curve> aBasisCurve = aRevSurf->BasisCurve();
     // Must be a part of line (basis curve should be linear)
     if (aBasisCurve->DynamicType() != STANDARD_TYPE(Geom_Line))
+    {
       return false;
+    }
 
     gp_Pnt aFirst1 = aConeAdaptor.Value(0., aMinV);
     gp_Pnt aLast1  = aConeAdaptor.Value(0., aMaxV);
@@ -1101,7 +1109,9 @@ bool PrsDim_AngleDimension::InitConeAngle()
     // Check if two parts of revolution are parallel (it's a cylinder) or normal (it's a circle).
     if (aVec1.IsParallel(aVec2, Precision::Angular())
         || aVec1.IsNormal(aVec2, Precision::Angular()))
+    {
       return false;
+    }
 
     gce_MakeCone aMkCone(aRevSurf->Axis(), aFirst1, aLast1);
     aCone         = aMkCone.Value();
@@ -1118,7 +1128,9 @@ bool PrsDim_AngleDimension::InitConeAngle()
       BRepBuilderAPI_MakeFace aMkFace(aSurf, Precision::Confusion());
       aMkFace.Build();
       if (!aMkFace.IsDone())
+      {
         return false;
+      }
       aConeAdaptor.Initialize(aMkFace.Face());
     }
     aCone         = aConeAdaptor.Cone();

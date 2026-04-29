@@ -256,19 +256,33 @@ TCollection_AsciiString XCAFDoc::AttributeInfo(const occ::handle<TDF_Attribute>&
   {
     const char* type = "";
     if (theAtt->ID() == XCAFDoc::ShapeRefGUID())
+    {
       type = "Shape Instance Link";
+    }
     else if (theAtt->ID() == XCAFDoc::ColorRefGUID(XCAFDoc_ColorGen))
+    {
       type = "Generic Color Link";
+    }
     else if (theAtt->ID() == XCAFDoc::ColorRefGUID(XCAFDoc_ColorSurf))
+    {
       type = "Surface Color Link";
+    }
     else if (theAtt->ID() == XCAFDoc::ColorRefGUID(XCAFDoc_ColorCurv))
+    {
       type = "Curve Color Link";
+    }
     else if (theAtt->ID() == XCAFDoc::DimTolRefGUID())
+    {
       type = "DGT Link";
+    }
     else if (theAtt->ID() == XCAFDoc::DatumRefGUID())
+    {
       type = "Datum Link";
+    }
     else if (theAtt->ID() == XCAFDoc::MaterialRefGUID())
+    {
       type = "Material Link";
+    }
     occ::handle<TDataStd_TreeNode> TN = occ::down_cast<TDataStd_TreeNode>(theAtt);
     TCollection_AsciiString        ref;
     if (TN->HasFather())
@@ -286,7 +300,9 @@ TCollection_AsciiString XCAFDoc::AttributeInfo(const occ::handle<TDF_Attribute>&
       {
         TDF_Tool::Entry(child->Label(), ref);
         if (child != TN->First())
+        {
           anInfo += ", ";
+        }
         anInfo += ref;
         child = child->Next();
       }
@@ -343,7 +359,9 @@ TCollection_AsciiString XCAFDoc::AttributeInfo(const occ::handle<TDF_Attribute>&
     for (int j = val->Lower(); j <= val->Upper(); j++)
     {
       if (j > val->Lower())
+      {
         anInfo += TCollection_AsciiString(", ");
+      }
       anInfo += TCollection_AsciiString(val->Value(j));
     }
   }
@@ -353,7 +371,9 @@ TCollection_AsciiString XCAFDoc::AttributeInfo(const occ::handle<TDF_Attribute>&
     for (int j = val->Lower(); j <= val->Upper(); j++)
     {
       if (j > val->Lower())
+      {
         anInfo += TCollection_AsciiString(", ");
+      }
       anInfo += TCollection_AsciiString(val->Value(j));
     }
   }
@@ -363,7 +383,9 @@ TCollection_AsciiString XCAFDoc::AttributeInfo(const occ::handle<TDF_Attribute>&
     for (int j = val->Lower(); j <= val->Upper(); j++)
     {
       if (j > val->Lower())
+      {
         anInfo += TCollection_AsciiString(", ");
+      }
       anInfo += TCollection_AsciiString(val->Value(j));
     }
   }
@@ -372,11 +394,17 @@ TCollection_AsciiString XCAFDoc::AttributeInfo(const occ::handle<TDF_Attribute>&
     occ::handle<TNaming_NamedShape> val = occ::down_cast<TNaming_NamedShape>(theAtt);
     TopoDS_Shape                    S   = val->Get();
     if (!S.IsNull())
+    {
       anInfo = S.TShape()->DynamicType()->Name();
+    }
     else
+    {
       anInfo = "Empty Shape";
+    }
     if (!S.Location().IsIdentity())
+    {
       anInfo += TCollection_AsciiString("(located)");
+    }
   }
   else if (theAtt->IsKind(STANDARD_TYPE(XCAFDoc_ShapeMapTool)))
   {
@@ -409,9 +437,13 @@ TCollection_AsciiString XCAFDoc::AttributeInfo(const occ::handle<TDF_Attribute>&
   else if (theAtt->IsKind(STANDARD_TYPE(TDataStd_UAttribute)))
   {
     if (theAtt->ID() == XCAFDoc::AssemblyGUID())
+    {
       anInfo += TCollection_AsciiString("is assembly");
+    }
     if (theAtt->ID() == XCAFDoc::InvisibleGUID())
+    {
       anInfo += TCollection_AsciiString("invisible");
+    }
   }
   else if (theAtt->IsKind(STANDARD_TYPE(XCAFDoc_Color)))
   {
@@ -522,7 +554,9 @@ TCollection_AsciiString XCAFDoc::AttributeInfo(const occ::handle<TDF_Attribute>&
     double                        dens    = val->GetDensity();
     const char*                   dimdens = "g/cu sm";
     if (dens == 0)
+    {
       anInfo = val->GetName()->ToCString();
+    }
     else
     {
       anInfo = val->GetName()->ToCString();
@@ -576,7 +610,9 @@ TCollection_AsciiString XCAFDoc::AttributeInfo(const occ::handle<TDF_Attribute>&
       type = "View Clipping Plane Link";
     }
     else
+    {
       return TCollection_AsciiString();
+    }
 
     occ::handle<XCAFDoc_GraphNode> DETGN = occ::down_cast<XCAFDoc_GraphNode>(theAtt);
     TCollection_AsciiString        ref;

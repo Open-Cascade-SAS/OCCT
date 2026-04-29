@@ -40,7 +40,9 @@ void RWStepKinematics_RWRevolutePairWithRange::ReadStep(
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 14, theArch, "revolute_pair_with_range"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 
@@ -216,7 +218,9 @@ void RWStepKinematics_RWRevolutePairWithRange::WriteStep(
     theSW.Send(theEnt->ItemDefinedTransformation()->Description());
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   theSW.Send(theEnt->ItemDefinedTransformation()->TransformItem1());
 
@@ -247,14 +251,18 @@ void RWStepKinematics_RWRevolutePairWithRange::WriteStep(
     theSW.Send(theEnt->LowerLimitActualRotation());
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   if (theEnt->HasUpperLimitActualRotation())
   {
     theSW.Send(theEnt->UpperLimitActualRotation());
   }
   else
+  {
     theSW.SendUndef();
+  }
 }
 
 //=================================================================================================

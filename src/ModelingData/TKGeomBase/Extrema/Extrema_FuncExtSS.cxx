@@ -109,7 +109,9 @@ int Extrema_FuncExtSS::NbEquations() const
 bool Extrema_FuncExtSS::Value(const math_Vector& UV, math_Vector& F)
 {
   if (!myS1init || !myS2init)
+  {
     throw Standard_TypeMismatch();
+  }
   myU1 = UV(1);
   myV1 = UV(2);
   myU2 = UV(3);
@@ -142,7 +144,9 @@ bool Extrema_FuncExtSS::Derivatives(const math_Vector& UV, math_Matrix& Df)
 bool Extrema_FuncExtSS::Values(const math_Vector& UV, math_Vector& F, math_Matrix& Df)
 {
   if (!myS1init || !myS2init)
+  {
     throw Standard_TypeMismatch();
+  }
   myU1 = UV(1);
   myV1 = UV(2);
   myU2 = UV(3);
@@ -187,7 +191,9 @@ bool Extrema_FuncExtSS::Values(const math_Vector& UV, math_Vector& F, math_Matri
 int Extrema_FuncExtSS::GetStateNumber()
 {
   if (!myS1init || !myS2init)
+  {
     throw Standard_TypeMismatch();
+  }
 
   mySqDist.Append(myP1.SquareDistance(myP2));
   myPoint1.Append(Extrema_POnSurf(myU1, myV1, myP1));
@@ -207,7 +213,9 @@ int Extrema_FuncExtSS::NbExt() const
 double Extrema_FuncExtSS::SquareDistance(const int N) const
 {
   if (!myS1init || !myS2init)
+  {
     throw Standard_TypeMismatch();
+  }
   return mySqDist.Value(N);
 }
 
@@ -216,7 +224,9 @@ double Extrema_FuncExtSS::SquareDistance(const int N) const
 const Extrema_POnSurf& Extrema_FuncExtSS::PointOnS1(const int N) const
 {
   if (!myS1init || !myS2init)
+  {
     throw Standard_TypeMismatch();
+  }
   return myPoint1.Value(N);
 }
 
@@ -225,6 +235,8 @@ const Extrema_POnSurf& Extrema_FuncExtSS::PointOnS1(const int N) const
 const Extrema_POnSurf& Extrema_FuncExtSS::PointOnS2(const int N) const
 {
   if (!myS1init || !myS2init)
+  {
     throw Standard_TypeMismatch();
+  }
   return myPoint2.Value(N);
 }

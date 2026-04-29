@@ -67,7 +67,9 @@ gp_Pnt IGESDraw_ConnectPoint::TransformedPoint() const
 {
   gp_XYZ tempPoint = thePoint;
   if (HasTransf())
+  {
     Location().Transforms(tempPoint);
+  }
   gp_Pnt tempRes(tempPoint);
 
   return (tempRes);

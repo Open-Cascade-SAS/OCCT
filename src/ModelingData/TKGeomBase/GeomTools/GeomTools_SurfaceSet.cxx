@@ -81,7 +81,9 @@ int GeomTools_SurfaceSet::Add(const occ::handle<Geom_Surface>& S)
 occ::handle<Geom_Surface> GeomTools_SurfaceSet::Surface(const int I) const
 {
   if (I <= 0 || I > myMap.Extent())
+  {
     return occ::handle<Geom_Surface>();
+  }
   return occ::down_cast<Geom_Surface>(myMap(I));
 }
 
@@ -98,11 +100,15 @@ static void Print(const gp_Pnt& P, Standard_OStream& OS, const bool compact)
 {
   OS << P.X();
   if (!compact)
+  {
     OS << ",";
+  }
   OS << " ";
   OS << P.Y();
   if (!compact)
+  {
     OS << ",";
+  }
   OS << " ";
   OS << P.Z();
   OS << " ";
@@ -114,11 +120,15 @@ static void Print(const gp_Dir& D, Standard_OStream& OS, const bool compact)
 {
   OS << D.X();
   if (!compact)
+  {
     OS << ",";
+  }
   OS << " ";
   OS << D.Y();
   if (!compact)
+  {
     OS << ",";
+  }
   OS << " ";
   OS << D.Z();
   OS << " ";
@@ -129,26 +139,40 @@ static void Print(const gp_Dir& D, Standard_OStream& OS, const bool compact)
 static void Print(const occ::handle<Geom_Plane>& S, Standard_OStream& OS, const bool compact)
 {
   if (compact)
+  {
     OS << PLANE << " ";
+  }
   else
+  {
     OS << "Plane";
+  }
 
   gp_Pln P = S->Pln();
   if (!compact)
+  {
     OS << "\n  Origin :";
+  }
   Print(P.Location(), OS, compact);
   if (!compact)
+  {
     OS << "\n  Axis   :";
+  }
   Print(P.Axis().Direction(), OS, compact);
   if (!compact)
+  {
     OS << "\n  XAxis  :";
+  }
   Print(P.XAxis().Direction(), OS, compact);
   if (!compact)
+  {
     OS << "\n  YAxis  :";
+  }
   Print(P.YAxis().Direction(), OS, compact);
   OS << "\n";
   if (!compact)
+  {
     OS << "\n";
+  }
 }
 
 //=================================================================================================
@@ -158,29 +182,45 @@ static void Print(const occ::handle<Geom_CylindricalSurface>& S,
                   const bool                                  compact)
 {
   if (compact)
+  {
     OS << CYLINDER << " ";
+  }
   else
+  {
     OS << "CylindricalSurface";
+  }
 
   gp_Cylinder P = S->Cylinder();
   if (!compact)
+  {
     OS << "\n  Origin :";
+  }
   Print(P.Location(), OS, compact);
   if (!compact)
+  {
     OS << "\n  Axis   :";
+  }
   Print(P.Axis().Direction(), OS, compact);
   if (!compact)
+  {
     OS << "\n  XAxis  :";
+  }
   Print(P.XAxis().Direction(), OS, compact);
   if (!compact)
+  {
     OS << "\n  YAxis  :";
+  }
   Print(P.YAxis().Direction(), OS, compact);
   if (!compact)
+  {
     OS << "\n  Radius :";
+  }
   OS << P.Radius();
   OS << "\n";
   if (!compact)
+  {
     OS << "\n";
+  }
 }
 
 //=================================================================================================
@@ -190,33 +230,51 @@ static void Print(const occ::handle<Geom_ConicalSurface>& S,
                   const bool                              compact)
 {
   if (compact)
+  {
     OS << CONE << " ";
+  }
   else
+  {
     OS << "ConicalSurface";
+  }
 
   gp_Cone P = S->Cone();
   if (!compact)
+  {
     OS << "\n  Origin :";
+  }
   Print(P.Location(), OS, compact);
   if (!compact)
+  {
     OS << "\n  Axis   :";
+  }
   Print(P.Axis().Direction(), OS, compact);
   if (!compact)
+  {
     OS << "\n  XAxis  :";
+  }
   Print(P.XAxis().Direction(), OS, compact);
   if (!compact)
+  {
     OS << "\n  YAxis  :";
+  }
   Print(P.YAxis().Direction(), OS, compact);
   if (!compact)
+  {
     OS << "\n  Radius :";
+  }
   OS << P.RefRadius();
   OS << "\n";
   if (!compact)
+  {
     OS << "\n  Angle :";
+  }
   OS << P.SemiAngle();
   OS << "\n";
   if (!compact)
+  {
     OS << "\n";
+  }
 }
 
 //=================================================================================================
@@ -226,29 +284,45 @@ static void Print(const occ::handle<Geom_SphericalSurface>& S,
                   const bool                                compact)
 {
   if (compact)
+  {
     OS << SPHERE << " ";
+  }
   else
+  {
     OS << "SphericalSurface";
+  }
 
   gp_Sphere P = S->Sphere();
   if (!compact)
+  {
     OS << "\n  Center :";
+  }
   Print(P.Location(), OS, compact);
   if (!compact)
+  {
     OS << "\n  Axis   :";
+  }
   Print(P.Position().Axis().Direction(), OS, compact);
   if (!compact)
+  {
     OS << "\n  XAxis  :";
+  }
   Print(P.XAxis().Direction(), OS, compact);
   if (!compact)
+  {
     OS << "\n  YAxis  :";
+  }
   Print(P.YAxis().Direction(), OS, compact);
   if (!compact)
+  {
     OS << "\n  Radius :";
+  }
   OS << P.Radius();
   OS << "\n";
   if (!compact)
+  {
     OS << "\n";
+  }
 }
 
 //=================================================================================================
@@ -258,29 +332,45 @@ static void Print(const occ::handle<Geom_ToroidalSurface>& S,
                   const bool                               compact)
 {
   if (compact)
+  {
     OS << TORUS << " ";
+  }
   else
+  {
     OS << "ToroidalSurface";
+  }
 
   gp_Torus P = S->Torus();
   if (!compact)
+  {
     OS << "\n  Origin :";
+  }
   Print(P.Location(), OS, compact);
   if (!compact)
+  {
     OS << "\n  Axis   :";
+  }
   Print(P.Axis().Direction(), OS, compact);
   if (!compact)
+  {
     OS << "\n  XAxis  :";
+  }
   Print(P.XAxis().Direction(), OS, compact);
   if (!compact)
+  {
     OS << "\n  YAxis  :";
+  }
   Print(P.YAxis().Direction(), OS, compact);
   if (!compact)
+  {
     OS << "\n  Radii  :";
+  }
   OS << P.MajorRadius() << " " << P.MinorRadius();
   OS << "\n";
   if (!compact)
+  {
     OS << "\n";
+  }
 }
 
 //=================================================================================================
@@ -290,15 +380,23 @@ static void Print(const occ::handle<Geom_SurfaceOfLinearExtrusion>& S,
                   const bool                                        compact)
 {
   if (compact)
+  {
     OS << LINEAREXTRUSION << " ";
+  }
   else
+  {
     OS << "SurfaceOfLinearExtrusion";
+  }
 
   if (!compact)
+  {
     OS << "\n  Direction :";
+  }
   Print(S->Direction(), OS, compact);
   if (!compact)
+  {
     OS << "\n  Basis curve : ";
+  }
   OS << "\n";
   GeomTools_CurveSet::PrintCurve(S->BasisCurve(), OS, compact);
 }
@@ -310,18 +408,28 @@ static void Print(const occ::handle<Geom_SurfaceOfRevolution>& S,
                   const bool                                   compact)
 {
   if (compact)
+  {
     OS << REVOLUTION << " ";
+  }
   else
+  {
     OS << "SurfaceOfRevolution";
+  }
 
   if (!compact)
+  {
     OS << "\n  Origin    :";
+  }
   Print(S->Location(), OS, compact);
   if (!compact)
+  {
     OS << "\n  Direction :";
+  }
   Print(S->Direction(), OS, compact);
   if (!compact)
+  {
     OS << "\n  Basis curve : ";
+  }
   OS << "\n";
   GeomTools_CurveSet::PrintCurve(S->BasisCurve(), OS, compact);
 }
@@ -333,25 +441,37 @@ static void Print(const occ::handle<Geom_BezierSurface>& S,
                   const bool                             compact)
 {
   if (compact)
+  {
     OS << BEZIER << " ";
+  }
   else
+  {
     OS << "BezierSurface";
+  }
 
   bool urational = S->IsURational();
   bool vrational = S->IsVRational();
   if (compact)
+  {
     OS << (urational ? 1 : 0) << " ";
+  }
   else
   {
     if (urational)
+    {
       OS << " urational";
+    }
   }
   if (compact)
+  {
     OS << (vrational ? 1 : 0) << " ";
+  }
   else
   {
     if (vrational)
+    {
       OS << " vrational";
+    }
   }
 
   if (!compact)
@@ -359,9 +479,13 @@ static void Print(const occ::handle<Geom_BezierSurface>& S,
     bool uclosed = S->IsUClosed();
     bool vclosed = S->IsVClosed();
     if (uclosed)
+    {
       OS << " uclosed";
+    }
     if (vclosed)
+    {
       OS << " vclosed";
+    }
   }
 
   // poles and weights
@@ -369,7 +493,9 @@ static void Print(const occ::handle<Geom_BezierSurface>& S,
   udegree = S->UDegree();
   vdegree = S->VDegree();
   if (!compact)
+  {
     OS << "\n  Degrees :";
+  }
   OS << udegree << " " << vdegree << " ";
 
   for (i = 1; i <= udegree + 1; i++)
@@ -377,18 +503,26 @@ static void Print(const occ::handle<Geom_BezierSurface>& S,
     for (j = 1; j <= vdegree + 1; j++)
     {
       if (!compact)
+      {
         OS << "\n  " << std::setw(2) << i << ", " << std::setw(2) << j << " : ";
+      }
       Print(S->Pole(i, j), OS, compact);
       if (urational || vrational)
+      {
         OS << " " << S->Weight(i, j);
+      }
       if (compact)
+      {
         OS << " ";
+      }
     }
     OS << "\n";
   }
   OS << "\n";
   if (!compact)
+  {
     OS << "\n";
+  }
 }
 
 //=================================================================================================
@@ -398,42 +532,62 @@ static void Print(const occ::handle<Geom_BSplineSurface>& S,
                   const bool                              compact)
 {
   if (compact)
+  {
     OS << BSPLINE << " ";
+  }
   else
+  {
     OS << "BSplineSurface";
+  }
 
   bool urational = S->IsURational();
   bool vrational = S->IsVRational();
   if (compact)
+  {
     OS << (urational ? 1 : 0) << " ";
+  }
   else
   {
     if (urational)
+    {
       OS << " urational";
+    }
   }
   if (compact)
+  {
     OS << (vrational ? 1 : 0) << " ";
+  }
   else
   {
     if (vrational)
+    {
       OS << " vrational";
+    }
   }
 
   bool uperiodic = S->IsUPeriodic();
   bool vperiodic = S->IsVPeriodic();
   if (compact)
+  {
     OS << (uperiodic ? 1 : 0) << " ";
+  }
   else
   {
     if (uperiodic)
+    {
       OS << " uperiodic";
+    }
   }
   if (compact)
+  {
     OS << (vperiodic ? 1 : 0) << " ";
+  }
   else
   {
     if (vperiodic)
+    {
       OS << " vperiodic";
+    }
   }
 
   if (!compact)
@@ -441,9 +595,13 @@ static void Print(const occ::handle<Geom_BSplineSurface>& S,
     bool uclosed = S->IsUClosed();
     bool vclosed = S->IsVClosed();
     if (uclosed)
+    {
       OS << " uclosed";
+    }
     if (vclosed)
+    {
       OS << " vclosed";
+    }
   }
 
   // poles and weights
@@ -455,52 +613,76 @@ static void Print(const occ::handle<Geom_BSplineSurface>& S,
   nbuknots = S->NbUKnots();
   nbvknots = S->NbVKnots();
   if (!compact)
+  {
     OS << "\n  Degrees :";
+  }
   OS << udegree << " " << vdegree << " ";
   if (!compact)
+  {
     OS << "\n  NbPoles :";
+  }
   OS << nbupoles << " " << nbvpoles << " ";
   if (!compact)
+  {
     OS << "\n  NbKnots :";
+  }
   OS << nbuknots << " " << nbvknots << " ";
 
   if (!compact)
+  {
     OS << "\n Poles :\n";
+  }
   for (i = 1; i <= nbupoles; i++)
   {
     for (j = 1; j <= nbvpoles; j++)
     {
       if (!compact)
+      {
         OS << "\n  " << std::setw(2) << i << ", " << std::setw(2) << j << " : ";
+      }
       Print(S->Pole(i, j), OS, compact);
       if (urational || vrational)
+      {
         OS << " " << S->Weight(i, j);
+      }
       if (compact)
+      {
         OS << " ";
+      }
     }
     OS << "\n";
   }
   OS << "\n";
   if (!compact)
+  {
     OS << "\n UKnots :\n";
+  }
   for (i = 1; i <= nbuknots; i++)
   {
     if (!compact)
+    {
       OS << "\n  " << std::setw(2) << i << " : ";
+    }
     OS << S->UKnot(i) << " " << S->UMultiplicity(i) << "\n";
   }
   OS << "\n";
   if (!compact)
+  {
     OS << "\n VKnots :\n";
+  }
   for (i = 1; i <= nbvknots; i++)
   {
     if (!compact)
+    {
       OS << "\n  " << std::setw(2) << i << " : ";
+    }
     OS << S->VKnot(i) << " " << S->VMultiplicity(i) << "\n";
   }
   OS << "\n";
   if (!compact)
+  {
     OS << "\n";
+  }
 }
 
 //=================================================================================================
@@ -510,17 +692,25 @@ static void Print(const occ::handle<Geom_RectangularTrimmedSurface>& S,
                   const bool                                         compact)
 {
   if (compact)
+  {
     OS << RECTANGULAR << " ";
+  }
   else
+  {
     OS << "RectangularTrimmedSurface";
+  }
 
   double U1, U2, V1, V2;
   S->Bounds(U1, U2, V1, V2);
   if (!compact)
+  {
     OS << "\nParameters : ";
+  }
   OS << U1 << " " << U2 << " " << V1 << " " << V2 << "\n";
   if (!compact)
+  {
     OS << "BasisSurface :\n";
+  }
   GeomTools_SurfaceSet::PrintSurface(S->BasisSurface(), OS, compact);
 }
 
@@ -531,15 +721,23 @@ static void Print(const occ::handle<Geom_OffsetSurface>& S,
                   const bool                             compact)
 {
   if (compact)
+  {
     OS << OFFSET << " ";
+  }
   else
+  {
     OS << "OffsetSurface";
+  }
 
   if (!compact)
+  {
     OS << "\nOffset : ";
+  }
   OS << S->Offset() << "\n";
   if (!compact)
+  {
     OS << "BasisSurface :\n";
+  }
   GeomTools_SurfaceSet::PrintSurface(S->BasisSurface(), OS, compact);
 }
 
@@ -671,7 +869,9 @@ static Standard_IStream& operator>>(Standard_IStream& IS, gp_Ax3& A3)
   IS >> P >> A >> AX >> AY;
   gp_Ax3 ax3(P, A, AX);
   if (AY.DotCross(A, AX) < 0)
+  {
     ax3.YReverse();
+  }
   A3 = ax3;
   return IS;
 }
@@ -778,14 +978,20 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Bezie
     {
       IS >> poles(i, j);
       if (urational || vrational)
+      {
         GeomTools::GetReal(IS, weights(i, j));
+      }
     }
   }
 
   if (urational || vrational)
+  {
     S = new Geom_BezierSurface(poles, weights);
+  }
   else
+  {
     S = new Geom_BezierSurface(poles);
+  }
   return IS;
 }
 
@@ -811,7 +1017,9 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_BSpli
     {
       IS >> poles(i, j);
       if (urational || vrational)
+      {
         GeomTools::GetReal(IS, weights(i, j));
+      }
     }
   }
 
@@ -832,6 +1040,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_BSpli
   }
 
   if (urational || vrational)
+  {
     S = new Geom_BSplineSurface(poles,
                                 weights,
                                 uknots,
@@ -842,7 +1051,9 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_BSpli
                                 vdegree,
                                 uperiodic,
                                 vperiodic);
+  }
   else
+  {
     S = new Geom_BSplineSurface(poles,
                                 uknots,
                                 vknots,
@@ -852,6 +1063,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_BSpli
                                 vdegree,
                                 uperiodic,
                                 vperiodic);
+  }
   return IS;
 }
 
@@ -999,7 +1211,7 @@ void GeomTools_SurfaceSet::Read(Standard_IStream& IS, const Message_ProgressRang
   IS >> buffer;
   if (strcmp(buffer, "Surfaces"))
   {
-    std::cout << "Not a surface table" << std::endl;
+    std::cout << "Not a surface table" << '\n';
     return;
   }
 

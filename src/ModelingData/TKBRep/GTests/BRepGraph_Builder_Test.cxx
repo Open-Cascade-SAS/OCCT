@@ -708,12 +708,16 @@ TEST(BRepGraph_BuilderTest, RemoveSolid_CascadesToFaces)
   // All shells should be removed.
   const int aNbShells = aGraph.Topo().Shells().Nb();
   for (BRepGraph_ShellId aShellId(0); aShellId.IsValid(aNbShells); ++aShellId)
+  {
     EXPECT_TRUE(aGraph.Topo().Gen().IsRemoved(aShellId));
+  }
 
   // All faces should be removed.
   const int aNbFaces = aGraph.Topo().Faces().Nb();
   for (BRepGraph_FaceId aFaceId(0); aFaceId.IsValid(aNbFaces); ++aFaceId)
+  {
     EXPECT_TRUE(aGraph.Topo().Gen().IsRemoved(aFaceId));
+  }
 }
 
 TEST(BRepGraph_BuilderTest, RemoveSubgraph_SharedFace_PreservesSharedEdgesAndVertices)
@@ -745,18 +749,24 @@ TEST(BRepGraph_BuilderTest, RemoveSubgraph_SharedFace_PreservesSharedEdgesAndVer
 
   // Other faces must remain active.
   for (int aIdx = 1; aIdx < aNbFaces; ++aIdx)
+  {
     EXPECT_FALSE(aGraph.Topo().Gen().IsRemoved(BRepGraph_FaceId(aIdx)));
+  }
 
   // All 12 edges of a box are shared by exactly 2 faces.
   // Removing 1 face leaves each shared edge with at least 1 active parent face.
   // Therefore all edges must remain active.
   for (int aIdx = 0; aIdx < aNbEdges; ++aIdx)
+  {
     EXPECT_FALSE(aGraph.Topo().Gen().IsRemoved(BRepGraph_EdgeId(aIdx)));
+  }
 
   // All 8 vertices of a box are shared by 3 edges. All edges are still active,
   // so all vertices must remain active.
   for (int aIdx = 0; aIdx < aNbVertices; ++aIdx)
+  {
     EXPECT_FALSE(aGraph.Topo().Gen().IsRemoved(BRepGraph_VertexId(aIdx)));
+  }
 }
 
 // ============================================================
@@ -806,7 +816,9 @@ TEST(BRepGraph_BuilderTest, SharedEdges_AdjacentBoxFaces)
       NCollection_DynamicArray<BRepGraph_EdgeId> aShared =
         aGraph.Topo().Faces().SharedEdges(aFaceA, aFaceB, aGraph.Allocator());
       if (!aShared.IsEmpty())
+      {
         ++aSharingPairs;
+      }
     }
   }
   // A box has 12 edges, each shared by 2 faces, so 12 sharing pairs.
@@ -867,7 +879,9 @@ TEST(BRepGraph_BuilderTest, EdgesOfFace_Box_HasEdges)
                                      BRepGraph_NodeId::Kind::Edge);
        anExp.More();
        anExp.Next())
+  {
     ++aNbEdges;
+  }
   EXPECT_EQ(aNbEdges, 4);
 }
 
@@ -885,7 +899,9 @@ TEST(BRepGraph_BuilderTest, VerticesOfEdge_Box_HasTwoVertices)
                                      BRepGraph_NodeId::Kind::Vertex);
        anExp.More();
        anExp.Next())
+  {
     ++aNbVertices;
+  }
   EXPECT_EQ(aNbVertices, 2);
 }
 

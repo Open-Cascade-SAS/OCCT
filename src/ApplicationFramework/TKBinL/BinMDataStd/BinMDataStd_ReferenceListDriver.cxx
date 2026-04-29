@@ -51,7 +51,9 @@ bool BinMDataStd_ReferenceListDriver::Paste(const BinObjMgt_Persistent&       th
 {
   int aFirstInd, aLastInd;
   if (!(theSource >> aFirstInd >> aLastInd))
+  {
     return false;
+  }
 
   const occ::handle<TDataStd_ReferenceList> anAtt =
     occ::down_cast<TDataStd_ReferenceList>(theTarget);
@@ -60,16 +62,22 @@ bool BinMDataStd_ReferenceListDriver::Paste(const BinObjMgt_Persistent&       th
 
     const int aLength = aLastInd - aFirstInd + 1;
     if (aLength <= 0)
+    {
       return false;
+    }
     for (int i = aFirstInd; i <= aLastInd; i++)
     {
       TCollection_AsciiString entry;
       if (!(theSource >> entry))
+      {
         return false;
+      }
       TDF_Label L;
       TDF_Tool::Label(anAtt->Label().Data(), entry, L, true);
       if (!L.IsNull())
+      {
         anAtt->Append(L);
+      }
     }
   }
 
@@ -91,12 +99,16 @@ void BinMDataStd_ReferenceListDriver::Paste(
   const occ::handle<TDataStd_ReferenceList> anAtt =
     occ::down_cast<TDataStd_ReferenceList>(theSource);
   if (anAtt.IsNull())
+  {
     return;
+  }
   const int aFirstInd = (anAtt->Extent() > 0) ? 1 : 0;
   const int aLastInd(anAtt->Extent());
   theTarget << aFirstInd << aLastInd;
   if (aLastInd == 0)
+  {
     return;
+  }
   NCollection_List<TDF_Label>::Iterator itr(anAtt->List());
   for (int i = aFirstInd; itr.More(); itr.Next(), i++)
   {
@@ -111,5 +123,7 @@ void BinMDataStd_ReferenceListDriver::Paste(
 
   // process user defined guid
   if (anAtt->ID() != TDataStd_ReferenceList::GetID())
+  {
     theTarget << anAtt->ID();
+  }
 }

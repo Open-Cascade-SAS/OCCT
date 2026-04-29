@@ -71,15 +71,21 @@ void PrsDim_MidPointRelation::Compute(const occ::handle<PrsMgr_PresentationManag
     if (PrsDim::ComputeGeometry(TopoDS::Vertex(myTool), pp, myPlane, isonplane))
     {
       if (!isonplane)
+      {
         ComputeProjVertexPresentation(aprs, TopoDS::Vertex(myTool), pp);
+      }
     }
     myMidPoint = pp;
   }
   else
+  {
     return;
+  }
 
   if (myAutomaticPosition)
+  {
     myPosition = myMidPoint;
+  }
 
   switch (myFShape.ShapeType())
   {
@@ -161,7 +167,9 @@ void PrsDim_MidPointRelation::ComputeSelection(const occ::handle<SelectMgr_Selec
   {
     TopoDS_Edge E = TopoDS::Edge(myFShape);
     if (!PrsDim::ComputeGeometry(E, curv, firstp, lastp, extCurv, isInfinite, isOnPlane, myPlane))
+    {
       return;
+    }
     if (curv->IsInstance(STANDARD_TYPE(Geom_Line))) // case of line
     {
       // segment on line
@@ -197,7 +205,9 @@ void PrsDim_MidPointRelation::ComputeSelection(const occ::handle<SelectMgr_Selec
   {
     TopoDS_Edge E = TopoDS::Edge(mySShape);
     if (!PrsDim::ComputeGeometry(E, curv, firstp, lastp, extCurv, isInfinite, isOnPlane, myPlane))
+    {
       return;
+    }
     if (curv->IsInstance(STANDARD_TYPE(Geom_Line))) // case of line
     {
       // segment on line
@@ -243,29 +253,38 @@ void PrsDim_MidPointRelation::ComputeEdgeFromPnt(const occ::handle<Prs3d_Present
 {
   TopoDS_Edge E;
   if (first)
+  {
     E = TopoDS::Edge(myFShape);
+  }
   else
+  {
     E = TopoDS::Edge(mySShape);
+  }
 
   occ::handle<Geom_Curve> geom;
   gp_Pnt                  ptat1, ptat2;
   occ::handle<Geom_Curve> extCurv;
   bool                    isInfinite, isOnPlane;
   if (!PrsDim::ComputeGeometry(E, geom, ptat1, ptat2, extCurv, isInfinite, isOnPlane, myPlane))
+  {
     return;
+  }
 
   gp_Ax2 ax = myPlane->Pln().Position().Ax2();
 
   if (geom->IsInstance(STANDARD_TYPE(Geom_Line)))
   {
     if (!isInfinite)
+    {
       ComputePointsOnLine(ptat1, ptat2, first);
+    }
     else
     {
       const gp_Lin& line = occ::down_cast<Geom_Line>(geom)->Lin();
       ComputePointsOnLine(line, first);
     }
     if (first)
+    {
       DsgPrs_MidPointPresentation::Add(aprs,
                                        myDrawer,
                                        ax,
@@ -275,7 +294,9 @@ void PrsDim_MidPointRelation::ComputeEdgeFromPnt(const occ::handle<Prs3d_Present
                                        myFirstPnt1,
                                        myFirstPnt2,
                                        first);
+    }
     else
+    {
       DsgPrs_MidPointPresentation::Add(aprs,
                                        myDrawer,
                                        ax,
@@ -285,6 +306,7 @@ void PrsDim_MidPointRelation::ComputeEdgeFromPnt(const occ::handle<Prs3d_Present
                                        mySecondPnt1,
                                        mySecondPnt2,
                                        first);
+    }
   }
   else if (geom->IsInstance(STANDARD_TYPE(Geom_Circle)))
   {
@@ -292,6 +314,7 @@ void PrsDim_MidPointRelation::ComputeEdgeFromPnt(const occ::handle<Prs3d_Present
     gp_Circ                  circ(geom_cir->Circ());
     ComputePointsOnCirc(circ, ptat1, ptat2, first);
     if (first)
+    {
       DsgPrs_MidPointPresentation::Add(aprs,
                                        myDrawer,
                                        circ,
@@ -301,7 +324,9 @@ void PrsDim_MidPointRelation::ComputeEdgeFromPnt(const occ::handle<Prs3d_Present
                                        myFirstPnt1,
                                        myFirstPnt2,
                                        first);
+    }
     else
+    {
       DsgPrs_MidPointPresentation::Add(aprs,
                                        myDrawer,
                                        circ,
@@ -311,6 +336,7 @@ void PrsDim_MidPointRelation::ComputeEdgeFromPnt(const occ::handle<Prs3d_Present
                                        mySecondPnt1,
                                        mySecondPnt2,
                                        first);
+    }
   }
   else if (geom->IsInstance(STANDARD_TYPE(Geom_Ellipse)))
   {
@@ -318,6 +344,7 @@ void PrsDim_MidPointRelation::ComputeEdgeFromPnt(const occ::handle<Prs3d_Present
     gp_Elips                  elips(geom_ell->Elips());
     ComputePointsOnElips(elips, ptat1, ptat2, first);
     if (first)
+    {
       DsgPrs_MidPointPresentation::Add(aprs,
                                        myDrawer,
                                        elips,
@@ -327,7 +354,9 @@ void PrsDim_MidPointRelation::ComputeEdgeFromPnt(const occ::handle<Prs3d_Present
                                        myFirstPnt1,
                                        myFirstPnt2,
                                        first);
+    }
     else
+    {
       DsgPrs_MidPointPresentation::Add(aprs,
                                        myDrawer,
                                        elips,
@@ -337,13 +366,18 @@ void PrsDim_MidPointRelation::ComputeEdgeFromPnt(const occ::handle<Prs3d_Present
                                        mySecondPnt1,
                                        mySecondPnt2,
                                        first);
+    }
   }
   else
+  {
     return;
+  }
 
   // projection on myPlane
   if (!isOnPlane)
+  {
     ComputeProjEdgePresentation(aprs, E, geom, ptat1, ptat2);
+  }
 }
 
 //=================================================================================================
@@ -359,7 +393,9 @@ void PrsDim_MidPointRelation::ComputeVertexFromPnt(const occ::handle<Prs3d_Prese
     PrsDim::ComputeGeometry(V, myFAttach, myPlane, isOnPlane);
     DsgPrs_MidPointPresentation::Add(aprs, myDrawer, ax, myMidPoint, myPosition, myFAttach, first);
     if (!isOnPlane)
+    {
       ComputeProjVertexPresentation(aprs, V, myFAttach);
+    }
   }
   else
   {
@@ -368,7 +404,9 @@ void PrsDim_MidPointRelation::ComputeVertexFromPnt(const occ::handle<Prs3d_Prese
     PrsDim::ComputeGeometry(V, mySAttach, myPlane, isOnPlane);
     DsgPrs_MidPointPresentation::Add(aprs, myDrawer, ax, myMidPoint, myPosition, mySAttach, first);
     if (!isOnPlane)
+    {
       ComputeProjVertexPresentation(aprs, V, mySAttach);
+    }
   }
 }
 
@@ -381,7 +419,9 @@ void PrsDim_MidPointRelation::ComputePointsOnLine(const gp_Lin& aLin, const bool
 
   double dist = anAttach.Distance(myMidPoint) / 10.0;
   if (dist < Precision::Confusion())
+  {
     dist = 10.0;
+  }
 
   double fpar = ppar + dist;
   double spar = ppar - dist;
@@ -421,7 +461,9 @@ void PrsDim_MidPointRelation::ComputePointsOnLine(const gp_Pnt& pnt1,
   double ll       = pnt1.Distance(pnt2);
   double segm     = std::min(dist, ll) * 0.75;
   if (dist < Precision::Confusion())
+  {
     segm = ll * 0.75;
+  }
 
   gp_Pnt anAttach, aPnt1, aPnt2;
   anAttach = aProjPnt;

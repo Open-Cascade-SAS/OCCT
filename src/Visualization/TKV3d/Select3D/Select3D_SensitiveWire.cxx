@@ -35,13 +35,17 @@ Select3D_SensitiveWire::Select3D_SensitiveWire(const occ::handle<SelectMgr_Entit
 void Select3D_SensitiveWire::Add(const occ::handle<Select3D_SensitiveEntity>& theSensitive)
 {
   if (!theSensitive.IsNull())
+  {
     myEntities.Append(theSensitive);
+  }
 
   Select3D_BndBox3d aBndBox = theSensitive->BoundingBox();
   myBndBox.Combine(aBndBox);
   myCenter.ChangeCoord() += theSensitive->CenterOfGeometry().XYZ();
   if (myEntities.Length() != 1)
+  {
     myCenter.ChangeCoord().Divide(2.0);
+  }
   myEntityIndexes.Append(myEntities.Length() - 1);
 }
 
@@ -141,7 +145,9 @@ occ::handle<Select3D_SensitiveEntity> Select3D_SensitiveWire::GetConnected()
 {
   occ::handle<Select3D_SensitiveWire> aNewEntity = new Select3D_SensitiveWire(myOwnerId);
   for (int anEntityIdx = 0; anEntityIdx < myEntities.Length(); anEntityIdx++)
+  {
     aNewEntity->Add(myEntities(anEntityIdx)->GetConnected());
+  }
 
   return aNewEntity;
 }
@@ -192,7 +198,9 @@ void Select3D_SensitiveWire::Set(const occ::handle<SelectMgr_EntityOwner>& theOw
 Select3D_BndBox3d Select3D_SensitiveWire::BoundingBox()
 {
   if (myBndBox.IsValid())
+  {
     return myBndBox;
+  }
 
   for (int aSensitiveIdx = 0; aSensitiveIdx < myEntities.Length(); ++aSensitiveIdx)
   {

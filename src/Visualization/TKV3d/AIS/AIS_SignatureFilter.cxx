@@ -33,7 +33,9 @@ bool AIS_SignatureFilter::IsOk(const occ::handle<SelectMgr_EntityOwner>& anObj) 
   occ::handle<AIS_InteractiveObject> IO =
     occ::down_cast<AIS_InteractiveObject>(anObj->Selectable());
   if (IO.IsNull())
+  {
     return false;
+  }
 
   return (IO->Signature() == mySig && IO->Type() == myKind);
 }

@@ -47,12 +47,14 @@ void IGESAppli_ToolNode::ReadOwnParams(const occ::handle<IGESAppli_Node>&       
   PR.ReadXYZ(PR.CurrentList(1, 3), "Coordinates of Node (XYZ)", tempCoordinates);
 
   if (PR.DefinedElseSkip())
+  {
     PR.ReadEntity(IR,
                   PR.Current(),
                   "Transformation Matrix",
                   STANDARD_TYPE(IGESGeom_TransformationMatrix),
                   tempSystem,
                   true);
+  }
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(tempCoordinates, tempSystem);
@@ -99,12 +101,20 @@ void IGESAppli_ToolNode::OwnCheck(const occ::handle<IGESAppli_Node>& ent,
                                   occ::handle<Interface_Check>& ach) const
 {
   if (!ent->HasSubScriptNumber())
+  {
     ach->AddFail("SubScript Number expected (for Node Number) not present");
+  }
   if (!ent->HasTransf())
+  {
     ach->AddFail("Transformation Matrix expected, not present");
+  }
   if (!ent->System().IsNull())
+  {
     if (ent->System()->FormNumber() < 10)
+    {
       ach->AddFail("System : Incorrect FormNumber (not 10-11-12)");
+    }
+  }
 }
 
 void IGESAppli_ToolNode::OwnDump(const occ::handle<IGESAppli_Node>& ent,
@@ -117,8 +127,12 @@ void IGESAppli_ToolNode::OwnDump(const occ::handle<IGESAppli_Node>& ent,
     << "  3rd : " << ent->Coord().Z() << "\n";
   S << "Nodal Displacement Coordinate System : ";
   if (!ent->System().IsNull())
+  {
     dumper.Dump(ent->System(), S, level);
+  }
   else
+  {
     S << "Global Cartesian Coordinate System (default)";
-  S << std::endl;
+  }
+  S << '\n';
 }

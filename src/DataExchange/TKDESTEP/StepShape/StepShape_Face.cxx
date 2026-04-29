@@ -48,6 +48,8 @@ occ::handle<StepShape_FaceBound> StepShape_Face::BoundsValue(const int num) cons
 int StepShape_Face::NbBounds() const
 {
   if (bounds.IsNull())
+  {
     return 0;
+  }
   return bounds->Length();
 }

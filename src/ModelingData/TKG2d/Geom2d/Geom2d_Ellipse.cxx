@@ -103,9 +103,13 @@ void Geom2d_Ellipse::SetElips2d(const gp_Elips2d& E)
 void Geom2d_Ellipse::SetMajorRadius(const double MajorRadius)
 {
   if (MajorRadius < minorRadius)
+  {
     throw Standard_ConstructionError();
+  }
   else
+  {
     majorRadius = MajorRadius;
+  }
 }
 
 //=================================================================================================
@@ -210,9 +214,13 @@ double Geom2d_Ellipse::MinorRadius() const
 double Geom2d_Ellipse::Parameter() const
 {
   if (majorRadius == 0.0)
+  {
     return 0.0;
+  }
   else
+  {
     return (minorRadius * minorRadius) / majorRadius;
+  }
 }
 
 //=================================================================================================
@@ -289,7 +297,9 @@ Geom2d_Curve::ResD3 Geom2d_Ellipse::EvalD3(const double U) const
 gp_Vec2d Geom2d_Ellipse::EvalDN(const double U, const int N) const
 {
   if (N < 1)
+  {
     throw Geom2d_UndefinedDerivative();
+  }
   return ElCLib::EllipseDN(U, pos, majorRadius, minorRadius, N);
 }
 

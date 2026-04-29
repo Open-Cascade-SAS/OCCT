@@ -117,7 +117,9 @@ bool FairCurve_EnergyOfBatten::Compute(const int DerivativeOrder, math_Vector& R
     math_GaussSetIntegration SumTension(MyTension, Debut, Fin, MyOrder);
     Ok = SumTension.IsDone();
     if (!Ok)
+    {
       return Ok;
+    }
 
     math_GaussSetIntegration SumSagging(MySagging, Debut, Fin, MyOrder);
     Ok = SumSagging.IsDone();

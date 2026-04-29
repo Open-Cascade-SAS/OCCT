@@ -65,7 +65,9 @@ void DsgPrs_EllipseRadiusPresentation::Add(const occ::handle<Prs3d_Presentation>
   // arrows
   gp_Dir arrdir(gp_Vec(aCenter, anEndOfArrow));
   if (!inside)
+  {
     arrdir.Reverse();
+  }
 
   DsgPrs::ComputeSymbol(aPresentation, LA, anEndOfArrow, anEndOfArrow, arrdir, arrdir, ArrowPrs);
 }
@@ -104,7 +106,9 @@ void DsgPrs_EllipseRadiusPresentation::Add(const occ::handle<Prs3d_Presentation>
 
     occ::handle<Graphic3d_ArrayOfPolylines> aPrims = new Graphic3d_ArrayOfPolylines(NodeNumber);
     for (int i = 0; i < NodeNumber; i++, parFirst += delta)
+    {
       aPrims->AddVertex(ElCLib::Value(parFirst, anEllipse));
+    }
     aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
   }
   DsgPrs_EllipseRadiusPresentation::Add(aPresentation,
@@ -139,7 +143,9 @@ void DsgPrs_EllipseRadiusPresentation::Add(const occ::handle<Prs3d_Presentation>
   if (!IsInDomain)
   {
     if (!aCurve->IsCN(1))
+    {
       return;
+    }
     gp_Elips     aBEllipse = occ::down_cast<Geom_Ellipse>(aCurve->BasisCurve())->Elips();
     const double Offset    = aCurve->Offset();
     aBEllipse.SetMajorRadius(aBEllipse.MajorRadius() + Offset);

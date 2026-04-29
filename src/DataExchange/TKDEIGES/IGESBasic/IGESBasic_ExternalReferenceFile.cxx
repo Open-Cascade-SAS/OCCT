@@ -29,7 +29,9 @@ void IGESBasic_ExternalReferenceFile::Init(
   const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aNameArray)
 {
   if (aNameArray->Lower() != 1)
+  {
     throw Standard_DimensionMismatch("IGESBasic_ExternalReferenceFile : Init");
+  }
   theNames = aNameArray;
   InitTypeAndForm(406, 12);
 }

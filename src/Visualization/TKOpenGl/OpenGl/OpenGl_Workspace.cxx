@@ -351,7 +351,9 @@ occ::handle<OpenGl_FrameBuffer> OpenGl_Workspace::FBOCreate(const int theWidth, 
 {
   // activate OpenGL context
   if (!Activate())
+  {
     return occ::handle<OpenGl_FrameBuffer>();
+  }
 
   // create the FBO
   const occ::handle<OpenGl_Context>& aCtx = GetGlContext();

@@ -379,7 +379,9 @@ void LocOpe_Generator::Perform(const occ::handle<LocOpe_GeneratedShape>& G)
               }
             }
             if (OK)
+            {
               theEEMap(edg).Append(edgbis);
+            }
 
             itl.Initialize(theEFMap.FindFromKey(edg));
             bool FuseEdge = ToFuse(edg, fac, vtx, toRemove);

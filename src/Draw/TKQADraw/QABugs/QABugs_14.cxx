@@ -90,9 +90,13 @@ static int BUC60889(Draw_Interpretor& di, int argc, const char** argv)
                    Draw::Atof(argv[8]),
                    Draw::Atof(argv[9]));
     if (bnd_box.IsOut(p1, p2, d))
+    {
       di << "The band lies out of the box\n";
+    }
     else
+    {
       di << "The band intersects the box\n";
+    }
 
     return 0;
   }
@@ -101,13 +105,17 @@ static int BUC60889(Draw_Interpretor& di, int argc, const char** argv)
 static int BUC60852(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 8)
+  {
     di << "Usage : " << argv[0]
        << " name_of_edge bndbox_X1 bndbox_Y1 bndbox_Z1 bndbox_X2 bndbox_Y2 bndbox_Z2\n";
+  }
   else
   {
     TopoDS_Edge shape = TopoDS::Edge(DBRep::Get(argv[1]));
     if (shape.ShapeType() != TopAbs_EDGE)
+    {
       di << "shape must be an edge\n";
+    }
     else
     {
       BRepAdaptor_Curve curve(shape);
@@ -120,9 +128,13 @@ static int BUC60852(Draw_Interpretor& di, int argc, const char** argv)
                      Draw::Atof(argv[6]),
                      Draw::Atof(argv[7]));
       if (bnd_box.IsOut(lin))
+      {
         di << "Line that lies on edge does not intersect the box\n";
+      }
       else
+      {
         di << "Line that lies on edge intersects the box\n";
+      }
     }
   }
   return 0;
@@ -132,7 +144,9 @@ static int BUC60854(Draw_Interpretor& /*di*/, int argc, const char** argv)
 {
   int newnarg;
   if (argc < 3)
+  {
     return 1;
+  }
   TopoDS_Shape        S = DBRep::Get(argv[2]);
   BRepFeat_SplitShape Spls(S);
   bool                pick = false;
@@ -155,7 +169,9 @@ static int BUC60854(Draw_Interpretor& /*di*/, int argc, const char** argv)
     pick = (argv[i][0] == '.');
     EF   = DBRep::Get(argv[i], TopAbs_FACE);
     if (EF.IsNull())
+    {
       return 1;
+    }
   }
   while (i < newnarg)
   {
@@ -173,7 +189,9 @@ static int BUC60854(Draw_Interpretor& /*di*/, int argc, const char** argv)
         if (argv[i][0] == '-')
         {
           if (argv[i][1] == '\0')
+          {
             return 1;
+          }
           pick             = (argv[i][1] == '.');
           const char* Temp = argv[i] + 1;
           W                = DBRep::Get(Temp, TopAbs_SHAPE, false);
@@ -219,7 +237,9 @@ static int BUC60854(Draw_Interpretor& /*di*/, int argc, const char** argv)
       }
     }
     else
+    {
       return 1;
+    }
   }
   i++;
   while (argv[i][0] != '#')
@@ -260,7 +280,9 @@ static int BUC60854(Draw_Interpretor& /*di*/, int argc, const char** argv)
     return 1;
   }
   for (; anIter.More(); anIter.Next())
+  {
     BB.Add(aShell, anIter.Value());
+  }
   aShell.Closed(BRep_Tool::IsClosed(aShell));
   DBRep::Set(argv[1], aShell);
   return 0;
@@ -278,9 +300,13 @@ static int BUC60944(Draw_Interpretor& di, int argc, const char** argv)
   TCollection_AsciiString out;
   aPath->SystemName(out);
   if (in == out)
+  {
     di << "The conversion is right.\n";
+  }
   else
+  {
     di << "Faulty : The conversion is incorrect : " << out.ToCString() << "\n";
+  }
   di << out.ToCString() << "\n";
   //  std::cout << aPath->Trek() << " !" << std::endl;
   return 0;
@@ -309,7 +335,9 @@ bool BuildWiresWithReshape(const occ::handle<ShapeBuild_ReShape>& theReshape,
   aShFixWire->SetPrecision(theTolerance);
 
   for (anEdgeIter.Initialize(theListOfEdges); anEdgeIter.More(); anEdgeIter.Next())
+  {
     aWireData->Add(TopoDS::Edge(anEdgeIter.Value()));
+  }
 
   aWireOrder.KeepLoopsMode() = isKeepLoopsMode;
   aWireAnalyzer              = aShFixWire->Analyzer();
@@ -318,7 +346,9 @@ bool BuildWiresWithReshape(const occ::handle<ShapeBuild_ReShape>& theReshape,
   aShFixWire->FixReorder(aWireOrder);
   isDone = !aShFixWire->StatusReorder(ShapeExtend_FAIL);
   if (!isDone)
+  {
     return false;
+  }
 
   if (isFixConnectedMode)
   {
@@ -364,7 +394,9 @@ bool BuildWiresWithReshape(const occ::handle<ShapeBuild_ReShape>& theReshape,
       aVlast = aVl;
       TopExp::Vertices(aCurWire, aVf, aVl);
       if (aVf.IsSame(aVl))
+      {
         aCurWire.Closed(true);
+      }
       theListOfWires.Append(aCurWire);
       aBuilder.MakeWire(aCurWire);
       aBuilder.Add(aCurWire, anE);
@@ -373,7 +405,9 @@ bool BuildWiresWithReshape(const occ::handle<ShapeBuild_ReShape>& theReshape,
 
   TopExp::Vertices(aCurWire, aVf, aVl);
   if (aVf.IsSame(aVl))
+  {
     aCurWire.Closed(true);
+  }
   theListOfWires.Append(aCurWire);
 
   return true;
@@ -420,7 +454,9 @@ bool BuildBoundWires(const TopoDS_Shape& theShell, NCollection_List<TopoDS_Shape
   }
 
   if (!isBound)
+  {
     return true;
+  }
 
   return BuildWires(aBoundaryEdges, theListOfWires);
 }
@@ -446,16 +482,22 @@ static int BUC60868(Draw_Interpretor& di, int argc, const char** argv)
 
   TopoDS_Shape aRes;
   if (aListOfWires.IsEmpty())
+  {
     di << "no bound\n";
+  }
   else if (aListOfWires.Extent() == 1)
+  {
     aRes = aListOfWires.First();
+  }
   else
   {
     BRep_Builder aBld;
     aBld.MakeCompound(TopoDS::Compound(aRes));
     NCollection_List<TopoDS_Shape>::Iterator aWireIter(aListOfWires);
     for (; aWireIter.More(); aWireIter.Next())
+    {
       aBld.Add(aRes, aWireIter.Value());
+    }
   }
 
   DBRep::Set(argv[1], aRes);
@@ -484,9 +526,13 @@ static int BUC60924(Draw_Interpretor& di, int argc, const char** argv)
   isPlanar      = ShapeAnalysis_Curve::IsPlanar(aCurve, aVec, 1e-7);
 
   if (isPlanar)
+  {
     di << "The curve is planar !\n";
+  }
   else
+  {
     di << "Faulty : the curve is not planar!\n";
+  }
 
   return 0;
 }
@@ -793,14 +839,18 @@ static int OCC1919_real(Draw_Interpretor& di, int argc, const char** argv)
   {
     occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(argv[1], DF))
+    {
       return 1;
+    }
     TDF_Label L;
     DDF::AddLabel(DF, argv[2], L);
 
     // TDataStd_Real::Set(L,Draw::Atof(arg[3]));
     TCollection_AsciiString AsciiStringReal(argv[3]);
     if (!AsciiStringReal.IsRealValue())
+    {
       return 1;
+    }
     double aReal = AsciiStringReal.RealValue();
     di << "aReal = " << aReal << "\n";
 
@@ -821,7 +871,9 @@ static int OCC2932_SetIDUAttribute(Draw_Interpretor& di, int argc, const char** 
   }
   occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(argv[1], DF))
+  {
     return 1;
+  }
   TDF_Label label;
   if (!DDF::FindLabel(DF, argv[2], label))
   {
@@ -856,7 +908,9 @@ static int OCC2932_SetTag(Draw_Interpretor& di, int argc, const char** argv)
   }
   occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(argv[1], DF))
+  {
     return 1;
+  }
   TDF_Label L;
   DDF::AddLabel(DF, argv[2], L);
   int                        Tag = Draw::Atoi(argv[3]);
@@ -876,7 +930,9 @@ static int OCC2932_SetCurrent(Draw_Interpretor& di, int argc, const char** argv)
   }
   occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(argv[1], DF))
+  {
     return 1;
+  }
   TDF_Label L;
   DDF::AddLabel(DF, argv[2], L);
   TDataStd_Current::Set(L);
@@ -892,7 +948,9 @@ static int OCC2932_SetExpression(Draw_Interpretor& di, int argc, const char** ar
   }
   occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(argv[1], DF))
+  {
     return 1;
+  }
   TDF_Label L;
   DDF::AddLabel(DF, argv[2], L);
   TCollection_ExtendedString       Expression(argv[3]);
@@ -912,7 +970,9 @@ static int OCC2932_SetRelation(Draw_Interpretor& di, int argc, const char** argv
   }
   occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(argv[1], DF))
+  {
     return 1;
+  }
   TDF_Label L;
   DDF::AddLabel(DF, argv[2], L);
   TCollection_ExtendedString     Relation(argv[3]);
@@ -989,6 +1049,4 @@ void QABugs::Commands_14(Draw_Interpretor& theCommands)
                   __FILE__,
                   OCC2932_SetRelation,
                   group);
-
-  return;
 }

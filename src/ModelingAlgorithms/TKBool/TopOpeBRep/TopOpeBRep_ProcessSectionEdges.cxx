@@ -107,11 +107,15 @@ bool TopOpeBRep_FacesFiller::KeepRLine(const TopOpeBRep_LineInter& L, const bool
   TopOpeBRep_TypeLineCurve t      = L.TypeLineCurve();
   bool                     isrest = (t == TopOpeBRep_RESTRICTION);
   if (!isrest)
+  {
     return false;
+  }
   const TopoDS_Edge& EL   = TopoDS::Edge(L.Arc());
   bool               isdg = BRep_Tool::Degenerated(EL);
   if (isdg)
+  {
     return false;
+  }
 
   // look for a vpoint with transition IN/OUT or OUT/IN
   TopOpeBRep_VPointInterIterator VPI;
@@ -122,7 +126,9 @@ bool TopOpeBRep_FacesFiller::KeepRLine(const TopOpeBRep_LineInter& L, const bool
   bool keeprline;
   bool isedge1 = L.ArcIsEdge(1);
   if (!VPI.More())
+  {
     return false;
+  }
 
   bool                          samevp = true;
   const TopOpeBRep_VPointInter& vpf    = VPI.CurrentVP();
@@ -130,7 +136,9 @@ bool TopOpeBRep_FacesFiller::KeepRLine(const TopOpeBRep_LineInter& L, const bool
   TopOpeBRep_VPointInter vpl;
   VPI.Init(L, checkkeep);
   if (VPI.More())
+  {
     VPI.Next();
+  }
 
   bool          middle = false; // xpu011098 : cto012U1
   TopoDS_Vertex vv;
@@ -159,9 +167,13 @@ bool TopOpeBRep_FacesFiller::KeepRLine(const TopOpeBRep_LineInter& L, const bool
         vpl         = VPI.CurrentVP();
         bool samept = FUN_EqualPonR(L, vpf, vpl);
         if (samept)
+        {
           continue;
+        }
         else
+        {
           break;
+        }
       }
     }
   }
@@ -169,13 +181,17 @@ bool TopOpeBRep_FacesFiller::KeepRLine(const TopOpeBRep_LineInter& L, const bool
   {
     VPI.Init(L, checkkeep);
     if (VPI.More())
+    {
       VPI.Next();
+    }
     for (; VPI.More(); VPI.Next())
     {
       vpl    = VPI.CurrentVP();
       samevp = FUN_EqualponR(L, vpf, vpl);
       if (!samevp)
+      {
         break;
+      }
     }
   }
 
@@ -199,10 +215,14 @@ bool TopOpeBRep_FacesFiller::KeepRLine(const TopOpeBRep_LineInter& L, const bool
         double d       = ptf.Distance(ptclo);
         bool   sameclo = (d < std::max(tolvclo, tolf));
         if (!sameclo)
+        {
           return false;
+        }
       }
       else
+      {
         return false;
+      }
     }
   }
 
@@ -226,9 +246,13 @@ bool TopOpeBRep_FacesFiller::KeepRLine(const TopOpeBRep_LineInter& L, const bool
       bool bl = (sl == TopAbs_IN || sl == TopAbs_ON);
       //      bfl = bf && bl;
       if ((sf == TopAbs_UNKNOWN) || (sl == TopAbs_UNKNOWN))
+      {
         bfl = bf || bl;
+      }
       else
+      {
         bfl = bf && bl;
+      }
 
       out = !bfl;
     }
@@ -322,7 +346,9 @@ void TopOpeBRep_FacesFiller::ProcessSectionEdges()
 
     bool isdg = BRep_Tool::Degenerated(E); // xpu290698
     if (isdg)
+    {
       continue; // xpu290698
+    }
 
     myDS->AddSectionEdge(E);
     myDS->Shape(E);
@@ -344,7 +370,9 @@ void TopOpeBRep_FacesFiller::ProcessSectionEdges()
     {
       TopOpeBRep_LineInter& L = myFacesIntersector->CurrentLine();
       if (L.TypeLineCurve() != TopOpeBRep_RESTRICTION)
+      {
         continue;
+      }
       ELI = TopoDS::Edge(L.Arc());
       if (ELI.IsEqual(ELES))
       {
@@ -357,9 +385,13 @@ void TopOpeBRep_FacesFiller::ProcessSectionEdges()
     if (toappend)
     {
       if (is1)
+      {
         LOI.Append(1);
+      }
       else if (is2)
+      {
         LOI.Append(2);
+      }
     }
   }
 
@@ -382,7 +414,9 @@ void TopOpeBRep_FacesFiller::ProcessSectionEdges()
     int                iE1 = myDS->Shape(E1);
     int                rE1 = myDS->AncestorRank(iE1);
     if (rE1 != 1)
+    {
       continue;
+    }
     NCollection_List<TopoDS_Shape> thelist;
     mapELE.Bind(E1, thelist);
 
@@ -393,7 +427,9 @@ void TopOpeBRep_FacesFiller::ProcessSectionEdges()
       int                iE2 = myDS->Shape(E2);
       int                rE2 = myDS->AncestorRank(iE2);
       if (rE2 == 0 || iE1 == iE2 || rE2 == rE1)
+      {
         continue;
+      }
 
       bool toappend = FUN_brep_sdmRE(E1, E2);
       if (toappend)

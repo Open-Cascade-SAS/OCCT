@@ -32,7 +32,9 @@ void IGESDimen_CenterLine::Init(const int                                      a
                                 const occ::handle<NCollection_HArray1<gp_XY>>& dataPnts)
 {
   if (dataPnts->Lower() != 1)
+  {
     throw Standard_DimensionMismatch("IGESDimen_CenterLine : Init");
+  }
   theDatatype      = aDataType;
   theZDisplacement = aZdisp;
   theDataPoints    = dataPnts;
@@ -72,7 +74,9 @@ gp_Pnt IGESDimen_CenterLine::TransformedPoint(const int Index) const
   gp_XY  point2d = (theDataPoints->Value(Index));
   gp_XYZ point(point2d.X(), point2d.Y(), theZDisplacement);
   if (HasTransf())
+  {
     Location().Transforms(point);
+  }
   return gp_Pnt(point);
 }
 

@@ -124,7 +124,9 @@ int Interface_ShareTool::NbTypedSharings(const occ::handle<Standard_Transient>& 
   occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list =
     thegraph.GetSharings(ent);
   if (list.IsNull())
+  {
     return 0;
+  }
 
   int result = 0;
   int n      = list->Length();
@@ -132,9 +134,13 @@ int Interface_ShareTool::NbTypedSharings(const occ::handle<Standard_Transient>& 
   {
     occ::handle<Standard_Transient> entsh = list->Value(i);
     if (entsh.IsNull())
+    {
       continue;
+    }
     if (entsh->IsKind(atype))
+    {
       result++;
+    }
   }
   return result;
 }
@@ -147,7 +153,9 @@ occ::handle<Standard_Transient> Interface_ShareTool::TypedSharing(
   occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list =
     thegraph.GetSharings(ent);
   if (list.IsNull())
+  {
     return nullptr;
+  }
   occ::handle<Standard_Transient> entresult;
   int                             result = 0;
   int                             n      = list->Length();
@@ -155,17 +163,23 @@ occ::handle<Standard_Transient> Interface_ShareTool::TypedSharing(
   {
     occ::handle<Standard_Transient> entsh = list->Value(i);
     if (entsh.IsNull())
+    {
       continue;
+    }
     if (entsh->IsKind(atype))
     {
       entresult = entsh;
       result++;
       if (result > 1)
+      {
         throw Interface_InterfaceError("Interface ShareTool : TypedSharing, more than one found");
+      }
     }
   }
   if (result == 0)
+  {
     throw Interface_InterfaceError("Interface ShareTool : TypedSharing, not found");
+  }
   return entresult;
 }
 
@@ -188,18 +202,22 @@ Interface_EntityIterator Interface_ShareTool::All(const occ::handle<Standard_Tra
       {
         int nm = model->Number(subl.Value());
         if (fl->Value(nm) > 0)
+        {
           continue;
+        }
         n0++;
         fl->SetValue(nm, n0);
       }
     }
     //    Warning, are there any omissions?
     for (i = 1; i <= nb; i++)
+    {
       if (fl->Value(i) == 0)
       {
         n0++;
         fl->SetValue(i, n0);
       }
+    }
   }
   else
   {
@@ -212,7 +230,9 @@ Interface_EntityIterator Interface_ShareTool::All(const occ::handle<Standard_Tra
       occ::handle<Standard_Transient> en  = sq->Value(i);
       int                             num = model->Number(en);
       if (fl->Value(num) != 0)
+      {
         continue; // already seen
+      }
       n0++;
       fl->SetValue(num, n0);
       Interface_EntityIterator sh = Shareds(en);
@@ -228,17 +248,25 @@ Interface_EntityIterator Interface_ShareTool::All(const occ::handle<Standard_Tra
     ord->SetValue(n0, i);
   }
   if (rootlast && ent != model)
+  {
     for (i = 1; i <= nb; i++)
     {
       if (ord->Value(i) != 0)
+      {
         list.AddItem(model->Value(ord->Value(i)));
+      }
     }
+  }
   else
+  {
     for (i = nb; i > 0; i--)
     {
       if (ord->Value(i) != 0)
+      {
         list.AddItem(model->Value(ord->Value(i)));
+      }
     }
+  }
 
   return list;
 }
@@ -252,5 +280,5 @@ void Interface_ShareTool::Print(const Interface_EntityIterator& iter, Standard_O
     S << " n0/id:";
     Model()->Print(ent, S);
   }
-  S << std::endl;
+  S << '\n';
 }

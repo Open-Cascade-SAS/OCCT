@@ -30,15 +30,25 @@ int StepShape_ShapeDimensionRepresentationItem::CaseNum(
   const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepRepr_CompoundRepresentationItem)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepRepr_DescriptiveRepresentationItem)))
+  {
     return 2;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepRepr_MeasureRepresentationItem)))
+  {
     return 3;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepGeom_Placement)))
+  {
     return 4;
+  }
   return 0;
 }
 

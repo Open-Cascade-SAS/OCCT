@@ -490,7 +490,9 @@ void PrsDim_Dimension::drawText(const occ::handle<Prs3d_Presentation>& thePresen
     {
       // Setting text shading and color parameters
       if (!myDrawer->HasOwnShadingAspect())
+      {
         myDrawer->SetShadingAspect(new Prs3d_ShadingAspect());
+      }
 
       myDrawer->ShadingAspect()->Aspect()->SetShadingModel(Graphic3d_TypeOfShadingModel_Unlit);
       myDrawer->ShadingAspect()->Aspect()->SetInteriorColor(aColor);

@@ -70,9 +70,13 @@ bool ChFiKPart_Sphere(TopOpeBRepDS_DataStructure&           DStr,
   gp_Dir df1   = ds1;
   gp_Dir dnat1 = ds1;
   if (Or1 == TopAbs_REVERSED)
+  {
     ds1.Reverse();
+  }
   if (OrFace1 == TopAbs_REVERSED)
+  {
     df1.Reverse();
+  }
   S2->D0(P1S2.X(), P1S2.Y(), p2);
   S2->D0(P2S2.X(), P2S2.Y(), p3);
   gp_Circ ci    = gce_MakeCirc(p1, p2, p3);
@@ -140,7 +144,9 @@ bool ChFiKPart_Sphere(TopOpeBRepDS_DataStructure&           DStr,
   toreverse                        = (ddz.Dot(dnat1) <= 0.);
   TopAbs_Orientation trans         = TopAbs_REVERSED;
   if (toreverse)
+  {
     trans = TopAbs_FORWARD;
+  }
   Data->ChangeInterferenceOnS1().SetInterference(ChFiKPart_IndexCurveInDS(C, DStr),
                                                  trans,
                                                  C2d,
@@ -171,14 +177,18 @@ bool ChFiKPart_Sphere(TopOpeBRepDS_DataStructure&           DStr,
     C2d = new Geom2d_Line(l2d);
   }
   else
+  {
     C2d = ChFiKPart_PCurve(P1S2, P2S2, 0., ang);
+  }
   gp_Pnt pp1;
   S2->D1(P1S2.X(), P1S2.Y(), pp1, v1, v2);
   gp_Dir ds2(v1.Crossed(v2));
   toreverse = (ds2.Dot(dddx) <= 0.);
   trans     = TopAbs_REVERSED;
   if (!toreverse)
+  {
     trans = TopAbs_FORWARD;
+  }
   Data->ChangeInterferenceOnS2().SetInterference(ChFiKPart_IndexCurveInDS(C, DStr),
                                                  trans,
                                                  C2d,

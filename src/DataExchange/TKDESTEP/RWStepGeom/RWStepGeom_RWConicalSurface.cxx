@@ -29,7 +29,9 @@ void RWStepGeom_RWConicalSurface::ReadStep(const occ::handle<StepData_StepReader
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 4, ach, "conical_surface"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

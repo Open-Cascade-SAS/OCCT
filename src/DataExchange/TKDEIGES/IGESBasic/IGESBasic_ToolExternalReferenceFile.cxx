@@ -46,12 +46,18 @@ void IGESBasic_ToolExternalReferenceFile::ReadOwnParams(
   occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> tempNames;
   bool st = PR.ReadInteger(PR.Current(), "Number of list entries", num);
   if (st && num > 0)
+  {
     tempNames = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, num);
+  }
   else
+  {
     PR.AddFail("Number of list entries: Not Positive");
+  }
   if (!tempNames.IsNull())
+  {
     // clang-format off
     PR.ReadTexts(PR.CurrentList(num), "External Reference Entity", tempNames); //szv#4:S4163:12Mar99 `st=` not needed
+}
   // clang-format on
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
@@ -65,7 +71,9 @@ void IGESBasic_ToolExternalReferenceFile::WriteOwnParams(
   int i, num;
   IW.Send(ent->NbListEntries());
   for (num = ent->NbListEntries(), i = 1; i <= num; i++)
+  {
     IW.Send(ent->Name(i));
+  }
 }
 
 void IGESBasic_ToolExternalReferenceFile::OwnShared(
@@ -83,7 +91,9 @@ void IGESBasic_ToolExternalReferenceFile::OwnCopy(
   occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> tempNames =
     new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, num);
   for (int i = 1; i <= num; i++)
+  {
     tempNames->SetValue(i, new TCollection_HAsciiString(another->Name(i)));
+  }
   ent->Init(tempNames);
 }
 
@@ -118,5 +128,5 @@ void IGESBasic_ToolExternalReferenceFile::OwnDump(
   S << "IGESBasic_ExternalReferenceFile\n"
     << "External Reference Names : ";
   IGESData_DumpStrings(S, level, 1, ent->NbListEntries(), ent->Name);
-  S << std::endl;
+  S << '\n';
 }

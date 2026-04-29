@@ -50,15 +50,21 @@ static TopAbs_State FUN_staPinF3d(const gp_Pnt& P, const TopoDS_Face& F)
   double       d  = 1.e2;
   bool         ok = FUN_tool_projPonboundedF(P, F, UV, d);
   if (!ok)
+  {
     return st;
+  }
   double tolF = BRep_Tool::Tolerance(F);
   if (d < tolF)
+  {
     return TopAbs_IN; // TopAbs_ON;
+  }
   gp_Pnt pF;
   FUN_tool_value(UV, F, pF);
   gp_Dir ntF = FUN_tool_nggeomF(UV, F);
   if (F.Orientation() == TopAbs_REVERSED)
+  {
     ntF.Reverse();
+  }
   gp_Dir PpF(gp_Vec(P, pF));
   double dot = ntF.Dot(PpF);
   st         = (dot > 0) ? TopAbs_IN : TopAbs_OUT;
@@ -80,7 +86,9 @@ Standard_EXPORT void FUN_UNKFstasta(const TopoDS_Face&              FF,
   occ::handle<Geom_Curve> CEE = BRep_Tool::Curve(EE, fE, lE);
 
   if (CEE.IsNull())
+  {
     return; // NYI : get points from 2d curve
+  }
   occ::handle<Geom_Surface> SFF = BRep_Tool::Surface(FF);
 
   double ttE  = 0.41237118973;
@@ -91,9 +99,13 @@ Standard_EXPORT void FUN_UNKFstasta(const TopoDS_Face&              FF,
 
   GeomAPI_ProjectPointOnSurf PonS(PE, SFF);
   if (!PonS.Extrema().IsDone())
+  {
     return;
+  }
   if (PonS.NbPoints() == 0)
+  {
     return;
+  }
 
   double u, v;
   PonS.Parameters(1, u, v);
@@ -149,7 +161,9 @@ Standard_EXPORT void FUN_UNKFstasta(const TopoDS_Face&              FF,
       // modified by NIZHNY-MKK  Mon Apr  2 15:41:31 2001.END
     }
     if (CEEFFx.IsNull())
+    {
       return;
+    }
 
     TopoDS_Edge EEx;
     BB.MakeEdge(EEx, CEE, BRep_Tool::Tolerance(EE));
@@ -180,9 +194,13 @@ Standard_EXPORT void FUN_UNKFstasta(const TopoDS_Face&              FF,
   double up = u;
   double vp = v;
   if (EisoV)
+  {
     up += paru;
+  }
   else if (EisoU)
+  {
     vp += parv;
+  }
   else
   {
     up += paru;
@@ -194,9 +212,13 @@ Standard_EXPORT void FUN_UNKFstasta(const TopoDS_Face&              FF,
   double um = u;
   double vm = v;
   if (EisoV)
+  {
     um -= paru;
+  }
   else if (EisoU)
+  {
     vm -= parv;
+  }
   else
   {
     um -= paru;
@@ -212,19 +234,25 @@ Standard_EXPORT void FUN_UNKFstasta(const TopoDS_Face&              FF,
   {
     dot = VEcroN.Dot(d1u);
     if (dot < 0.)
+    {
       permute = true;
+    }
   }
   else if (EisoU)
   {
     dot = VEcroN.Dot(d1v);
     if (dot < 0.)
+    {
       permute = true;
+    }
   }
   else
   {
     dot = VEcroN.Dot(d1v);
     if (dot < 0.)
+    {
       permute = true;
+    }
   }
   if (permute)
   {

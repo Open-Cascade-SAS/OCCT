@@ -64,7 +64,9 @@ Standard_OStream& Vrml_Coordinate3::Print(Standard_OStream& anOStream) const
       anOStream << myPoint->Value(i).X() << ' ' << myPoint->Value(i).Y() << ' '
                 << myPoint->Value(i).Z();
       if (i < myPoint->Length())
+      {
         anOStream << ",\n\t";
+      }
     }
     anOStream << " ]\n";
   }

@@ -36,7 +36,9 @@ void IGESDimen_LeaderArrow::Init(const double                                   
                                  const occ::handle<NCollection_HArray1<gp_XY>>& segments)
 {
   if (segments->Lower() != 1)
+  {
     throw Standard_DimensionMismatch("IGESDimen_LeaderArrow : Init");
+  }
   theArrowHeadHeight = height;
   theArrowHeadWidth  = width;
   theZDepth          = depth;
@@ -49,7 +51,9 @@ void IGESDimen_LeaderArrow::Init(const double                                   
 void IGESDimen_LeaderArrow::SetFormNumber(const int form)
 {
   if (form < 1 || form > 12)
+  {
     throw Standard_OutOfRange("IGESDimen_LeaderArrow : SetFormNumber");
+  }
   InitTypeAndForm(214, form);
 }
 
@@ -83,7 +87,9 @@ gp_Pnt IGESDimen_LeaderArrow::TransformedArrowHead() const
 {
   gp_XYZ point(theArrowHead.X(), theArrowHead.Y(), ZDepth());
   if (HasTransf())
+  {
     Location().Transforms(point);
+  }
   return gp_Pnt(point);
 }
 
@@ -98,6 +104,8 @@ gp_Pnt IGESDimen_LeaderArrow::TransformedSegmentTail(const int Index) const
   gp_XY  point2d = theSegmentTails->Value(Index);
   gp_XYZ point(point2d.X(), point2d.Y(), ZDepth());
   if (HasTransf())
+  {
     Location().Transforms(point);
+  }
   return gp_Pnt(point);
 }

@@ -99,14 +99,20 @@ static occ::handle<Geom_BSplineCurve> EdgeToBSpline(const TopoDS_Edge& theEdge)
     const occ::handle<Geom_Curve>& aCurveTemp = aTrimCurve; // to avoid ambiguity
     GeomConvert_ApproxCurve        anAppr(aCurveTemp, Precision::Confusion(), GeomAbs_C1, 16, 14);
     if (anAppr.HasResult())
+    {
       aBSCurve = anAppr.Curve();
+    }
 
     if (aBSCurve.IsNull())
+    {
       aBSCurve = GeomConvert::CurveToBSplineCurve(aTrimCurve);
+    }
 
     // apply transformation if needed
     if (!aLoc.IsIdentity())
+    {
       aBSCurve->Transform(aLoc.Transformation());
+    }
 
     // reparameterize to [0,1]
     NCollection_Array1<double> aKnots(aBSCurve->Knots());
@@ -116,7 +122,9 @@ static occ::handle<Geom_BSplineCurve> EdgeToBSpline(const TopoDS_Edge& theEdge)
 
   // reverse curve if edge is reversed
   if (theEdge.Orientation() == TopAbs_REVERSED)
+  {
     aBSCurve->Reverse();
+  }
 
   return aBSCurve;
 }
@@ -193,12 +201,18 @@ static occ::handle<Geom_BSplineSurface> totalsurf(const NCollection_Array2<TopoD
         double        epsV;
         bool          Bof = TopExp::CommonVertex(aPrevEdge, aNextEdge, ComV);
         if (Bof)
+        {
           epsV = BRep_Tool::Tolerance(ComV);
+        }
         else
+        {
           epsV = Precision::Confusion();
+        }
         Bof = CompBS.Add(curvBS, epsV, true, false, 1);
         if (!Bof)
+        {
           Bof = CompBS.Add(curvBS, 200 * epsV, true, false, 1);
+        }
 
         // remember previous edge
         aPrevEdge = aNextEdge;
@@ -286,7 +300,9 @@ static occ::handle<Geom_BSplineSurface> totalsurf(const NCollection_Array2<TopoD
   double TolEps    = 1.e-13;
   bool   Vrational = false, Urational = false;
   for (j = 1; j <= weights.UpperCol(); j++)
+  {
     if (!Vrational)
+    {
       for (i = 1; i <= weights.UpperRow() - 1; i++)
       {
         // double signeddelta = weights(i,j) - weights(i+1,j);
@@ -298,8 +314,12 @@ static occ::handle<Geom_BSplineSurface> totalsurf(const NCollection_Array2<TopoD
           break;
         }
       }
+    }
+  }
   for (i = 1; i <= weights.UpperRow(); i++)
+  {
     if (!Urational)
+    {
       for (j = 1; j <= weights.UpperCol() - 1; j++)
       {
         // double signeddelta = weights(i,j) - weights(i,j+1);
@@ -311,12 +331,18 @@ static occ::handle<Geom_BSplineSurface> totalsurf(const NCollection_Array2<TopoD
           break;
         }
       }
+    }
+  }
   if (!Vrational && !Urational)
   {
     double theWeight = weights(1, 1);
     for (i = 1; i <= weights.UpperRow(); i++)
+    {
       for (j = 1; j <= weights.UpperCol(); j++)
+      {
         weights(i, j) = theWeight;
+      }
+    }
   }
 
   surface = new Geom_BSplineSurface(poles,
@@ -386,7 +412,9 @@ BRepFill_NSections::BRepFill_NSections(const NCollection_Sequence<TopoDS_Shape>&
     myDone = true;
   }
   else
+  {
     myDone = false;
+  }
 }
 
 //=======================================================================
@@ -408,16 +436,24 @@ void BRepFill_NSections::Init(const NCollection_Sequence<double>& P, const bool 
   // Check if the start and end wires are punctual
   W = TopoDS::Wire(myShapes(1));
   for (wexp.Init(W); wexp.More(); wexp.Next())
+  {
     //    w1Point = w1Point && B.Degenerated(wexp.Current());
     w1Point = w1Point && BRep_Tool::Degenerated(wexp.Current());
+  }
   if (w1Point)
+  {
     ideb++;
+  }
   W = TopoDS::Wire(myShapes(NbSects));
   for (wexp.Init(W); wexp.More(); wexp.Next())
+  {
     //    w2Point = w2Point && B.Degenerated(wexp.Current());
     w2Point = w2Point && BRep_Tool::Degenerated(wexp.Current());
+  }
   if (w2Point)
+  {
     ifin--;
+  }
 
   // Check if the start and end wires are identical
   vclosed = myShapes(1).IsSame(myShapes(NbSects));
@@ -425,9 +461,13 @@ void BRepFill_NSections::Init(const NCollection_Sequence<double>& P, const bool 
   // Count the number of non-degenerated edges
   W = TopoDS::Wire(myShapes(ideb));
   for (NbEdge = 0, wexp.Init(W); wexp.More(); wexp.Next())
+  {
     //    if (! B.Degenerated(wexp.Current())) NbEdge++;
     if (!BRep_Tool::Degenerated(wexp.Current()))
+    {
       NbEdge++;
+    }
+  }
 
   myEdges = new (NCollection_HArray2<TopoDS_Shape>)(1, NbEdge, 1, NbSects);
 
@@ -447,9 +487,13 @@ void BRepFill_NSections::Init(const NCollection_Sequence<double>& P, const bool 
       {
         myEdges->SetValue(ii, jj, E);
         if (E.Orientation() == TopAbs_FORWARD)
+        {
           myIndices.Bind(E, ii);
+        }
         else
+        {
           myIndices.Bind(E, -ii);
+        }
       }
     }
 
@@ -496,7 +540,9 @@ void BRepFill_NSections::Init(const NCollection_Sequence<double>& P, const bool 
       }
     }
     if (!wClosed)
+    {
       uclosed = false;
+    }
   }
 
   // point sections at end
@@ -658,7 +704,9 @@ double BRepFill_NSections::VertexTol(const int Index, const double Param) const
   if ((Index == 0) || (Index == myEdges->ColLength()))
   {
     if (!uclosed)
+    {
       return Tol; // The least possible error
+    }
     I1 = myEdges->ColLength();
     I2 = 1;
   }
@@ -718,7 +766,9 @@ occ::handle<GeomFill_SectionLaw> BRepFill_NSections::ConcatenedLaw() const
 {
   occ::handle<GeomFill_SectionLaw> Law;
   if (myLaws->Length() == 1)
+  {
     return myLaws->Value(1);
+  }
   else
   {
     double Ufirst, Ulast, Vfirst, Vlast;
@@ -751,7 +801,9 @@ GeomAbs_Shape BRepFill_NSections::Continuity(const int Index, const double TolAn
     if ((Index == 0) || (Index == myEdges->ColLength()))
     {
       if (!uclosed)
+      {
         return GeomAbs_C0; // The least possible error
+      }
 
       Edge1 = TopoDS::Edge(myEdges->Value(myEdges->ColLength(), jj));
       Edge2 = TopoDS::Edge(myEdges->Value(1, jj));
@@ -781,7 +833,9 @@ GeomAbs_Shape BRepFill_NSections::Continuity(const int Index, const double TolAn
     }
 
     if (BRep_Tool::Degenerated(Edge1) || BRep_Tool::Degenerated(Edge2))
+    {
       cont_jj = GeomAbs_CN;
+    }
     else
     {
       double            U1 = BRep_Tool::Parameter(V1, Edge1);
@@ -793,9 +847,13 @@ GeomAbs_Shape BRepFill_NSections::Continuity(const int Index, const double TolAn
     }
 
     if (jj == 1)
+    {
       cont = cont_jj;
+    }
     if (cont > cont_jj)
+    {
       cont = cont_jj;
+    }
   }
 
   return cont;

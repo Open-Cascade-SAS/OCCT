@@ -104,7 +104,9 @@ void Storage_BucketOfPersistent::Clear()
     int i;
 
     for (i = 1; i < myNumberOfBucket; i++)
+    {
       delete myBuckets[i];
+    }
     myNumberOfBucket = 1;
     myCurrentBucket  = myBuckets[0];
     myCurrentBucket->Clear();
@@ -197,7 +199,9 @@ void Storage_BucketIterator::Reset()
     myMoreObject         = true;
   }
   else
+  {
     myMoreObject = false;
+  }
 }
 
 //=================================================================================================
@@ -214,7 +218,9 @@ void Storage_BucketIterator::Init(Storage_BucketOfPersistent* aBucketManager)
     myMoreObject         = true;
   }
   else
+  {
     myMoreObject = false;
+  }
 }
 
 //=================================================================================================
@@ -222,7 +228,9 @@ void Storage_BucketIterator::Init(Storage_BucketOfPersistent* aBucketManager)
 void Storage_BucketIterator::Next()
 {
   if (!myMoreObject)
+  {
     return;
+  }
 
   if (myCurrentIndex < myCurrentBucket->myCurrentSpace)
   {
@@ -300,7 +308,9 @@ void Storage_Schema::Write(const occ::handle<Storage_BaseDriver>& theDriver,
                            const occ::handle<Storage_Data>&       aData) const
 {
   if (aData.IsNull())
+  {
     return;
+  }
 
   // add all the persistent to write...
   //
@@ -425,7 +435,9 @@ void Storage_Schema::Write(const occ::handle<Storage_BaseDriver>& theDriver,
       {
         p = bit.Value();
         if (!p.IsNull())
+        {
           theDriver->WriteReferenceType(p->_refnum, p->_typenum);
+        }
         bit.Next();
       }
 

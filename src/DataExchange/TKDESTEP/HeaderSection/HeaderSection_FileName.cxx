@@ -78,7 +78,9 @@ occ::handle<TCollection_HAsciiString> HeaderSection_FileName::AuthorValue(const 
 int HeaderSection_FileName::NbAuthor() const
 {
   if (author.IsNull())
+  {
     return 0;
+  }
   return author->Length();
 }
 
@@ -102,7 +104,9 @@ occ::handle<TCollection_HAsciiString> HeaderSection_FileName::OrganizationValue(
 int HeaderSection_FileName::NbOrganization() const
 {
   if (organization.IsNull())
+  {
     return 0;
+  }
   return organization->Length();
 }
 

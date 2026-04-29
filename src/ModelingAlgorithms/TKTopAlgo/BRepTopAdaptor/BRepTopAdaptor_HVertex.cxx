@@ -77,22 +77,34 @@ double BRepTopAdaptor_HVertex::Resolution(const occ::handle<Adaptor2d_Curve2d>& 
   // 10 million*tolerance of the point
 
   if (tv > 1.e7 * mag)
+  {
     ResUV = 1.e7;
+  }
   else
+  {
     ResUV = tv / mag;
+  }
 
   // Control
   if (Or == TopAbs_REVERSED)
+  {
     pp = p + ResUV;
+  }
   else
+  {
     pp = p - ResUV;
+  }
 
   double UMin = C->FirstParameter();
   double UMax = C->LastParameter();
   if (pp > UMax)
+  {
     pp = UMax;
+  }
   if (pp < UMin)
+  {
     pp = UMin;
+  }
 
   C->D0(pp, p2d);
   S.D0(p2d.X(), p2d.Y(), P1);
@@ -103,14 +115,22 @@ double BRepTopAdaptor_HVertex::Resolution(const occ::handle<Adaptor2d_Curve2d>& 
     // Refine if possible
     double Dist1;
     if (Or == TopAbs_REVERSED)
+    {
       pp = p + tv / Dist;
+    }
     else
+    {
       pp = p - tv / Dist;
+    }
 
     if (pp > UMax)
+    {
       pp = UMax;
+    }
     if (pp < UMin)
+    {
       pp = UMin;
+    }
 
     C->D1(pp, p2d, v2d);
     S.D1(p2d.X(), p2d.Y(), P1, DU, DV);
@@ -125,16 +145,26 @@ double BRepTopAdaptor_HVertex::Resolution(const occ::handle<Adaptor2d_Curve2d>& 
 
     mag = DC.Magnitude();
     if (tv > 1.e7 * mag)
+    {
       mag = tv * 1.e-7;
+    }
     if (Or == TopAbs_REVERSED)
+    {
       pp = p + tv / mag;
+    }
     else
+    {
       pp = p - tv / mag;
+    }
 
     if (pp > UMax)
+    {
       pp = UMax;
+    }
     if (pp < UMin)
+    {
       pp = UMin;
+    }
 
     C->D0(pp, p2d);
     S.D0(p2d.X(), p2d.Y(), P1);

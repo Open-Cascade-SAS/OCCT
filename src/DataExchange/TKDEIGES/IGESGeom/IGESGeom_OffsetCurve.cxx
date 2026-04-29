@@ -107,7 +107,9 @@ gp_Vec IGESGeom_OffsetCurve::NormalVector() const
 gp_Vec IGESGeom_OffsetCurve::TransformedNormalVector() const
 {
   if (!HasTransf())
+  {
     return gp_Vec(theNormalVector);
+  }
   gp_XYZ   tempXYZ(theNormalVector);
   gp_GTrsf loc = Location();
   loc.SetTranslationPart(gp_XYZ(0., 0., 0.));

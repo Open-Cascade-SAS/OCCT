@@ -325,10 +325,14 @@ TEST(GeomFill_GordonBuilder, FiveByFourGrid_ProducesValidSurface)
 
   NCollection_Array1<double> aProfileParams(1, 5);
   for (int i = 0; i < 5; ++i)
+  {
     aProfileParams(i + 1) = aProfY[i];
+  }
   NCollection_Array1<double> aGuideParams(1, 4);
   for (int j = 0; j < 4; ++j)
+  {
     aGuideParams(j + 1) = aGuidX[j];
+  }
 
   GeomFill_GordonBuilder aBuilder;
   aBuilder.Init(aProfiles, aGuides, aProfileParams, aGuideParams, Precision::Confusion());

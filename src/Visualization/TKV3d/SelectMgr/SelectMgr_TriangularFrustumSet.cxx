@@ -112,7 +112,9 @@ void SelectMgr_TriangularFrustumSet::Build()
   BRepMesh_Delaun                aTriangulation(aMeshStructure, anIndexes);
   const IMeshData::MapOfInteger& aTriangles = aMeshStructure->ElementsOfDomain();
   if (aTriangles.Extent() < 1)
+  {
     return;
+  }
 
   IMeshData::IteratorOfMapOfInteger aTriangleIt(aTriangles);
   for (; aTriangleIt.More(); aTriangleIt.Next())
@@ -121,7 +123,9 @@ void SelectMgr_TriangularFrustumSet::Build()
     const BRepMesh_Triangle& aCurrentTriangle = aMeshStructure->GetElement(aTriangleId);
 
     if (aCurrentTriangle.Movability() == BRepMesh_Deleted)
+    {
       continue;
+    }
 
     int aTriangleVerts[3];
     aMeshStructure->ElementNodes(aCurrentTriangle, aTriangleVerts);

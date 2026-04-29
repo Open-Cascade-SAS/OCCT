@@ -41,7 +41,9 @@ BRepBlend_AppSurface::BRepBlend_AppSurface(const occ::handle<Approx_SweepFunctio
   if (continuity != GeomAbs_C0)
   {
     if (Nb2d == 0)
+    {
       Nb2d = 1;
+    }
     Func->SectionShape(NbPolSect, NbKnotSect, udeg);
     NCollection_Array1<double>   W(1, NbPolSect);
     NCollection_Array1<gp_Pnt>   P(1, NbPolSect);

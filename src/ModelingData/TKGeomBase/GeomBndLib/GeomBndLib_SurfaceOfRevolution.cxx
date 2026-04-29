@@ -88,7 +88,9 @@ static Bnd_Box buildRevolutionBox(const Bnd_Box& theCurveBox,
       const double aYVals[2]                                = {aYmin, aYmax};
       const double aZVals[2]                                = {aZmin, aZmax};
       for (int ix = 0; ix < 2; ++ix)
+      {
         for (int iy = 0; iy < 2; ++iy)
+        {
           for (int iz = 0; iz < 2; ++iz)
           {
             addRevolutionCircle(theOrigin,
@@ -98,20 +100,34 @@ static Bnd_Box buildRevolutionBox(const Bnd_Box& theCurveBox,
                                 theUMax,
                                 aBox);
           }
+        }
+      }
     }
     // Propagate curve openness: open directions remain open after revolution.
     if (theCurveBox.IsOpenXmin())
+    {
       aBox.OpenXmin();
+    }
     if (theCurveBox.IsOpenXmax())
+    {
       aBox.OpenXmax();
+    }
     if (theCurveBox.IsOpenYmin())
+    {
       aBox.OpenYmin();
+    }
     if (theCurveBox.IsOpenYmax())
+    {
       aBox.OpenYmax();
+    }
     if (theCurveBox.IsOpenZmin())
+    {
       aBox.OpenZmin();
+    }
     if (theCurveBox.IsOpenZmax())
+    {
       aBox.OpenZmax();
+    }
     aBox.Enlarge(theTol);
     return aBox;
   }
@@ -125,7 +141,9 @@ static Bnd_Box buildRevolutionBox(const Bnd_Box& theCurveBox,
   const double aZVals[2] = {aZmin, aZmax};
 
   for (int ix = 0; ix < 2; ++ix)
+  {
     for (int iy = 0; iy < 2; ++iy)
+    {
       for (int iz = 0; iz < 2; ++iz)
       {
         addRevolutionCircle(theOrigin,
@@ -135,6 +153,8 @@ static Bnd_Box buildRevolutionBox(const Bnd_Box& theCurveBox,
                             theUMax,
                             aBox);
       }
+    }
+  }
 
   aBox.Enlarge(theTol);
   return aBox;
@@ -174,13 +194,21 @@ Bnd_Box GeomBndLib_SurfaceOfRevolution::Box(double theUMin,
     if (!aBasisCurve->IsPeriodic())
     {
       if (aVMin < aVFirst)
+      {
         aVMin = aVFirst;
+      }
       else if (aVMin > aVLast)
+      {
         aVMin = aVLast;
+      }
       if (aVMax < aVFirst)
+      {
         aVMax = aVFirst;
+      }
       else if (aVMax > aVLast)
+      {
         aVMax = aVLast;
+      }
       if (aVMin > aVMax)
       {
         const double aTmp = aVMin;
@@ -232,13 +260,21 @@ Bnd_Box GeomBndLib_SurfaceOfRevolution::BoxOptimal(double theUMin,
     if (!aBasisCurve->IsPeriodic())
     {
       if (aVMin < aVFirst)
+      {
         aVMin = aVFirst;
+      }
       else if (aVMin > aVLast)
+      {
         aVMin = aVLast;
+      }
       if (aVMax < aVFirst)
+      {
         aVMax = aVFirst;
+      }
       else if (aVMax > aVLast)
+      {
         aVMax = aVLast;
+      }
       if (aVMin > aVMax)
       {
         const double aTmp = aVMin;

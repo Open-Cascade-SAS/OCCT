@@ -50,7 +50,9 @@ GeomConvert_BSplineSurfaceToBezierSurface::GeomConvert_BSplineSurfaceToBezierSur
   const double                            ParametricTolerance)
 {
   if ((U2 - U1 < ParametricTolerance) || (V2 - V1 < ParametricTolerance))
+  {
     throw Standard_DomainError("GeomConvert_BSplineSurfaceToBezierSurface");
+  }
 
   double Uf = U1, Ul = U2, Vf = V1, Vl = V2, PTol = ParametricTolerance / 2;
   int    I1, I2;
@@ -61,28 +63,36 @@ GeomConvert_BSplineSurfaceToBezierSurface::GeomConvert_BSplineSurfaceToBezierSur
   if (I1 == I2)
   { // We are on the knot
     if (mySurface->UKnot(I1) > U1)
+    {
       Uf = mySurface->UKnot(I1);
+    }
   }
 
   mySurface->LocateU(U2, PTol, I1, I2);
   if (I1 == I2)
   { // We are on the knot
     if (mySurface->UKnot(I1) < U2)
+    {
       Ul = mySurface->UKnot(I1);
+    }
   }
 
   mySurface->LocateV(V1, PTol, I1, I2);
   if (I1 == I2)
   { // We are on the knot
     if (mySurface->VKnot(I1) > V1)
+    {
       Vf = mySurface->VKnot(I1);
+    }
   }
 
   mySurface->LocateV(V2, PTol, I1, I2);
   if (I1 == I2)
   { // We are on the knot
     if (mySurface->VKnot(I1) < V2)
+    {
       Vl = mySurface->VKnot(I1);
+    }
   }
 
   mySurface->Segment(Uf, Ul, Vf, Vl);
@@ -161,7 +171,9 @@ void GeomConvert_BSplineSurfaceToBezierSurface::UKnots(NCollection_Array1<double
 {
   int ii, kk;
   for (ii = 1, kk = TKnots.Lower(); ii <= mySurface->NbUKnots(); ii++, kk++)
+  {
     TKnots(kk) = mySurface->UKnot(ii);
+  }
 }
 
 //=================================================================================================
@@ -170,7 +182,9 @@ void GeomConvert_BSplineSurfaceToBezierSurface::VKnots(NCollection_Array1<double
 {
   int ii, kk;
   for (ii = 1, kk = TKnots.Lower(); ii <= mySurface->NbVKnots(); ii++, kk++)
+  {
     TKnots(kk) = mySurface->VKnot(ii);
+  }
 }
 
 //=================================================================================================

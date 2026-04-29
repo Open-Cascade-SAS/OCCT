@@ -275,7 +275,9 @@ void OpenGl_Group::Render(const occ::handle<OpenGl_Workspace>& theWorkspace) con
 
   // Restore aspects
   if (isAspectSet)
+  {
     theWorkspace->SetAspects(aBackAspects);
+  }
 }
 
 //=================================================================================================

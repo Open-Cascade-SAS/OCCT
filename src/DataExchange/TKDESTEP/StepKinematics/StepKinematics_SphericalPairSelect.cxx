@@ -27,11 +27,17 @@ StepKinematics_SphericalPairSelect::StepKinematics_SphericalPairSelect() = defau
 int StepKinematics_SphericalPairSelect::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepKinematics_SphericalPair)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepKinematics_SphericalPairWithPin)))
+  {
     return 2;
+  }
   return 0;
 }
 

@@ -52,9 +52,13 @@ bool XmlMDataStd_RealDriver::Paste(const XmlObjMgt_Persistent&       theSource,
   const XmlObjMgt_Element& anElement = theSource;
   XmlObjMgt_DOMString      aGUIDStr  = anElement.getAttribute(::AttributeIDString());
   if (aGUIDStr.Type() == XmlObjMgt_DOMString::LDOM_NULL)
+  {
     aGUID = TDataStd_Real::GetID(); // default case
+  }
   else
+  {
     aGUID = Standard_GUID(static_cast<const char*>(aGUIDStr.GetString())); // user defined case
+  }
 
   occ::down_cast<TDataStd_Real>(theTarget)->SetID(aGUID);
 

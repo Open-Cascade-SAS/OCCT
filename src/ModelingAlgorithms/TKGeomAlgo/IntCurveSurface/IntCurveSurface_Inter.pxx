@@ -206,9 +206,13 @@ void PerformPolygon(const CurveType&   theCurve,
   int    nbsu = SurfaceTool::NbSamplesU(theSurface, u1, u2);
   int    nbsv = SurfaceTool::NbSamplesV(theSurface, v1, v2);
   if (nbsu > 40)
+  {
     nbsu = 40;
+  }
   if (nbsv > 40)
+  {
     nbsv = 40;
+  }
   PolyhedronType polyhedron(theSurface, nbsu, nbsv, u1, v1, u2, v2);
   thePerformPoly(theCurve, thePolygon, theSurface, polyhedron);
 }
@@ -463,9 +467,13 @@ void InternalPerformPolygonBounds(const CurveType&        theCurve,
       int nbsu = SurfaceTool::NbSamplesU(theSurface, theU1, theU2);
       int nbsv = SurfaceTool::NbSamplesV(theSurface, theV1, theV2);
       if (nbsu > 40)
+      {
         nbsu = 40;
+      }
       if (nbsv > 40)
+      {
         nbsv = 40;
+      }
       PolyhedronType polyhedron(theSurface, nbsu, nbsv, theU1, theV1, theU2, theV2);
       theInternalPerformPoly(theCurve,
                              thePolygon,
@@ -568,7 +576,9 @@ void PerformConicSurfLine(const gp_Lin&           theLine,
         }
       }
       else
+      {
         isAnaProcessed = false;
+      }
       break;
     }
     case GeomAbs_Cone: {
@@ -580,7 +590,9 @@ void PerformConicSurfLine(const gp_Lin&           theLine,
         theAppendIntAna(theCurve, theSurface, LinCone);
       }
       else
+      {
         isAnaProcessed = false;
+      }
       break;
     }
     default:
@@ -592,9 +604,13 @@ void PerformConicSurfLine(const gp_Lin&           theLine,
     int nbsu = SurfaceTool::NbSamplesU(theSurface, theU1, theU2);
     int nbsv = SurfaceTool::NbSamplesV(theSurface, theV1, theV2);
     if (nbsu < 1)
+    {
       nbsu = 1;
+    }
     if (nbsv < 1)
+    {
       nbsv = 1;
+    }
 
     bool U1inf = Precision::IsInfinite(theU1);
     bool U2inf = Precision::IsInfinite(theU2);
@@ -658,12 +674,18 @@ void PerformConicSurfLine(const gp_Lin&           theLine,
     }
 
     if (NoIntersection)
+    {
       return;
+    }
 
     if (nbsu < 20)
+    {
       nbsu = 20;
+    }
     if (nbsv < 20)
+    {
       nbsv = 20;
+    }
 
     PolyhedronType polyhedron(theSurface, nbsu, nbsv, U1new, V1new, U2new, V2new);
     Intf_Tool      bndTool;
@@ -835,9 +857,13 @@ void PerformConicSurfParabola(const gp_Parab&         theParab,
       int nbsu = SurfaceTool::NbSamplesU(theSurface, theU1, theU2);
       int nbsv = SurfaceTool::NbSamplesV(theSurface, theV1, theV2);
       if (nbsu > 40)
+      {
         nbsu = 40;
+      }
       if (nbsv > 40)
+      {
         nbsv = 40;
+      }
       PolyhedronType polyhedron(theSurface, nbsu, nbsv, theU1, theV1, theU2, theV2);
       Intf_Tool      bndTool;
       Bnd_Box        boxParab;
@@ -909,9 +935,13 @@ void PerformConicSurfHyperbola(const gp_Hypr&          theHypr,
       int nbsu = SurfaceTool::NbSamplesU(theSurface, theU1, theU2);
       int nbsv = SurfaceTool::NbSamplesV(theSurface, theV1, theV2);
       if (nbsu > 40)
+      {
         nbsu = 40;
+      }
       if (nbsv > 40)
+      {
         nbsv = 40;
+      }
       PolyhedronType polyhedron(theSurface, nbsu, nbsv, theU1, theV1, theU2, theV2);
       Intf_Tool      bndTool;
       Bnd_Box        boxHypr;

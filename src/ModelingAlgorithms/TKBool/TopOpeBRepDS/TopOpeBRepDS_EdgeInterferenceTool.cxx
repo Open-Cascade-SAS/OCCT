@@ -35,9 +35,13 @@ static double Parameter(const occ::handle<TopOpeBRepDS_Interference>& I)
 {
   double p = 0;
   if (I->IsKind(STANDARD_TYPE(TopOpeBRepDS_EdgeVertexInterference)))
+  {
     p = occ::down_cast<TopOpeBRepDS_EdgeVertexInterference>(I)->Parameter();
+  }
   else if (I->IsKind(STANDARD_TYPE(TopOpeBRepDS_CurvePointInterference)))
+  {
     p = occ::down_cast<TopOpeBRepDS_CurvePointInterference>(I)->Parameter();
+  }
   else
   {
     throw Standard_ProgramError("TopOpeBRepDS_EdgeInterferenceTool1");

@@ -39,7 +39,9 @@ void StdLPersistent_TreeNode::PChildren(
 {
   theChildren.Append(myNext);
   if (!myDynamicData.IsNull())
+  {
     theChildren.Append(myDynamicData->First);
+  }
 }
 
 //=======================================================================
@@ -65,7 +67,9 @@ void StdLPersistent_TreeNode::ImportAttribute()
     while (aChild)
     {
       if (aChild->myTransient)
+      {
         myTransient->Append(aChild->myTransient);
+      }
       StdLPersistent_TreeNode* aCurr = aChild.get();
       aChild                         = aChild->myNext;
       aCurr->myNext.Nullify(); // this reference is no longer needed

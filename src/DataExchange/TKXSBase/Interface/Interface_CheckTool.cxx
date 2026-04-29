@@ -126,11 +126,15 @@ void Interface_CheckTool::FillCheck(const occ::handle<Standard_Transient>& ent,
   {
     DeclareAndCast(Interface_ReportEntity, rep, ent);
     if (rep.IsNull())
+    {
       return;
+    }
     ach = rep->Check();
   }
   if (theshare.Graph().HasShareErrors(ent))
+  {
     ach->AddFail("** Shared Items unknown from the containing Model");
+  }
 }
 
 //=================================================================================================
@@ -140,14 +144,18 @@ void Interface_CheckTool::Print(const occ::handle<Interface_Check>& ach, Standar
   int i, nb;
   nb = ach->NbFails();
   if (nb > 0)
+  {
     S << " Fail Messages : " << nb << " :\n";
+  }
   for (i = 1; i <= nb; i++)
   {
     S << ach->Fail(i)->String() << "\n";
   }
   nb = ach->NbWarnings();
   if (nb > 0)
+  {
     S << " Warning Messages : " << nb << " :\n";
+  }
   for (i = 1; i <= nb; i++)
   {
     S << ach->Warning(i)->String() << "\n";
@@ -185,44 +193,64 @@ occ::handle<Interface_Check> Interface_CheckTool::Check(const int num)
 void Interface_CheckTool::CheckSuccess(const bool reset)
 {
   if (reset)
+  {
     thestat = 0;
+  }
   if (thestat > 3)
+  {
     throw Interface_CheckFailure // already tested with error
       ("Interface Model : Global Check");
+  }
   occ::handle<Interface_InterfaceModel> model = theshare.Model();
   if (model->GlobalCheck()->NbFails() > 0)
+  {
     throw Interface_CheckFailure("Interface Model : Global Check");
+  }
   occ::handle<Interface_Check> modchk = new Interface_Check;
   model->VerifyCheck(modchk);
   if (!model->Protocol().IsNull())
+  {
     model->Protocol()->GlobalCheck(theshare.Graph(), modchk);
+  }
   if (modchk->HasFailed())
+  {
     throw Interface_CheckFailure("Interface Model : Verify Check");
+  }
   if (thestat == 3)
+  {
     return; // everything tested and it passes
+  }
 
   errh   = 0; // No try/catch, because we precisely raise
   int nb = model->NbEntities();
   for (int i = 1; i <= nb; i++)
   {
     if (model->IsErrorEntity(i))
+    {
       throw Interface_CheckFailure("Interface Model : an Entity is recorded as Erroneous");
+    }
     occ::handle<Standard_Transient> ent = model->Value(i);
     if (thestat & 1)
     {
       if (!model->IsErrorEntity(i))
+      {
         continue; // already verify, remains analyse
+      }
     }
     if (thestat & 2)
     {
       if (model->IsErrorEntity(i))
+      {
         continue; // already analyse, remains verify
+      }
     }
 
     occ::handle<Interface_Check> ach = new Interface_Check(ent);
     FillCheck(ent, theshare, ach);
     if (ach->HasFailed())
+    {
       throw Interface_CheckFailure("Interface Model : Check on an Entity has Failed");
+    }
   }
 }
 
@@ -239,12 +267,18 @@ Interface_CheckIterator Interface_CheckTool::CompleteCheckList()
   res.SetModel(model);
   occ::handle<Interface_Check> globch = model->GlobalCheck(); // GlobalCheck Statique
   if (!model->Protocol().IsNull())
+  {
     model->Protocol()->GlobalCheck(theshare.Graph(), globch);
+  }
   model->VerifyCheck(globch); // GlobalCheck Dynamique
   if (globch->HasFailed() || globch->HasWarnings())
+  {
     res.Add(globch, 0);
+  }
   if (globch->HasFailed())
+  {
     thestat |= 12;
+  }
 
   int i = 0, n0 = 1, nb = model->NbEntities();
   errh = 0;
@@ -272,15 +306,21 @@ Interface_CheckIterator Interface_CheckTool::CompleteCheckList()
           }
         }
         if (!model->HasSemanticChecks())
+        {
           FillCheck(ent, theshare, ach);
+        }
         else
+        {
           ach->GetMessages(model->Check(i, false));
+        }
         if (ach->HasFailed() || ach->HasWarnings())
         {
           res.Add(ach, i);
           ach = new Interface_Check;
           if (ach->HasFailed())
+          {
             thestat |= 12;
+          }
         }
       }
       n0 = nb + 1;
@@ -309,7 +349,9 @@ Interface_CheckIterator Interface_CheckTool::CheckList()
   int                          i = 0, n0 = 1, nb = model->NbEntities();
   occ::handle<Interface_Check> globch = model->GlobalCheck();
   if (!model->Protocol().IsNull())
+  {
     model->Protocol()->GlobalCheck(theshare.Graph(), globch);
+  }
   model->VerifyCheck(globch);
   if (globch->HasFailed())
   {
@@ -342,9 +384,13 @@ Interface_CheckIterator Interface_CheckTool::CheckList()
           ach->Clear();
           ach->SetEntity(ent);
           if (!model->HasSemanticChecks())
+          {
             FillCheck(ent, theshare, ach);
+          }
           else
+          {
             ach = model->Check(i, false);
+          }
           if (ach->HasFailed())
           {
             thestat |= 12;
@@ -387,7 +433,9 @@ Interface_CheckIterator Interface_CheckTool::AnalyseCheckList()
       for (i = n0; i <= nb; i++)
       {
         if (!model->IsReportEntity(i))
+        {
           continue;
+        }
         occ::handle<Interface_ReportEntity> rep = model->ReportEntity(i);
         ach                                     = rep->Check();
         if (ach->HasFailed() || ach->HasWarnings())
@@ -432,14 +480,20 @@ Interface_CheckIterator Interface_CheckTool::VerifyCheckList()
       for (i = n0; i <= nb; i++)
       {
         if (model->IsErrorEntity(i))
+        {
           continue;
+        }
         ent = model->Value(i);
         ach->Clear();
         ach->SetEntity(ent);
         if (!model->HasSemanticChecks())
+        {
           FillCheck(ent, theshare, ach);
+        }
         else
+        {
           ach = model->Check(i, false);
+        }
         if (ach->HasFailed() || ach->HasWarnings())
         {
           thestat |= 4;
@@ -495,13 +549,21 @@ Interface_CheckIterator Interface_CheckTool::WarningCheckList()
         }
         ent = model->Value(i);
         if (!model->HasSemanticChecks())
+        {
           FillCheck(ent, theshare, ach);
+        }
         else
+        {
           ach = model->Check(i, false);
+        }
         if (ach->HasFailed())
+        {
           thestat |= 12;
+        }
         else if (ach->HasWarnings())
+        {
           res.Add(ach, i);
+        }
       }
       n0 = nb + 1;
     }
@@ -527,7 +589,9 @@ Interface_EntityIterator Interface_CheckTool::UnknownEntities()
   for (int i = 1; i <= nb; i++)
   {
     if (model->IsUnknownEntity(i))
+    {
       res.GetOneItem(model->Value(i));
+    }
   }
   return res;
 }

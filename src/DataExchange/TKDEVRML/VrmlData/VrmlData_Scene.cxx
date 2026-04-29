@@ -82,6 +82,7 @@ const occ::handle<VrmlData_Node>& VrmlData_Scene::AddNode(const occ::handle<Vrml
                                                           const bool isTopLevel)
 {
   if (!theN.IsNull())
+  {
     if (!theN->IsKind(STANDARD_TYPE(VrmlData_WorldInfo)))
     {
       std::lock_guard<std::mutex>       aLock(myMutex);
@@ -90,12 +91,19 @@ const occ::handle<VrmlData_Node>& VrmlData_Scene::AddNode(const occ::handle<Vrml
       // Name is checked for uniqueness. If not, letter 'D' is appended until
       // the name proves to be unique.
       if (aNode->Name()[0] != '\0')
+      {
         while (!myNamedNodes.Add(aNode))
+        {
           aNode->setName(aNode->Name(), "D");
+        }
+      }
       if (isTopLevel)
+      {
         myLstNodes.Append(aNode);
+      }
       return aNode;
     }
+  }
   static occ::handle<VrmlData_Node> aNullNode;
   aNullNode.Nullify();
   return aNullNode;
@@ -127,7 +135,9 @@ Standard_OStream& operator<<(Standard_OStream& theOutput, const VrmlData_Scene& 
     {
       const VrmlData_ErrorStatus aStatus = aScene.WriteNode(nullptr, aNode);
       if (aStatus != VrmlData_StatusOK && aStatus != VrmlData_NotImplemented)
+      {
         break;
+      }
     }
   }
 
@@ -145,7 +155,9 @@ Standard_OStream& operator<<(Standard_OStream& theOutput, const VrmlData_Scene& 
     {
       const VrmlData_ErrorStatus aStatus = aScene.WriteNode(nullptr, aNode);
       if (aStatus != VrmlData_StatusOK && aStatus != VrmlData_NotImplemented)
+      {
         break;
+      }
     }
   }
   aScene.myOutput = nullptr;
@@ -165,10 +177,13 @@ void VrmlData_Scene::SetVrmlDir(const TCollection_ExtendedString& theDir)
   }
   const char16_t aTerminator = aDir.Value(aDir.Length());
   if (aTerminator != char16_t('\\') && aTerminator != char16_t('/'))
+  {
 #ifdef _WIN32
     aDir += TCollection_ExtendedString("\\");
+  }
 #else
     aDir += TCollection_ExtendedString("/");
+  }
 #endif
 }
 
@@ -254,8 +269,10 @@ VrmlData_ErrorStatus VrmlData_Scene::ReadLine(VrmlData_InBuffer& theBuffer)
       if (*theBuffer.LinePtr != ' ' && *theBuffer.LinePtr != '\t' && *theBuffer.LinePtr != ',')
       {
         if (*theBuffer.LinePtr == '\n' || *theBuffer.LinePtr == '\r' || *theBuffer.LinePtr == '#')
+        {
           // go requesting the next line
           break;
+        }
         goto nonempty_line;
       }
     }
@@ -276,7 +293,9 @@ nonempty_line:
     for (; *ptr != '\0'; ptr++)
     {
       if (anOffset)
+      {
         *ptr = ptr[anOffset];
+      }
       if (*ptr == '\n' || *ptr == '\r' || *ptr == '#')
       {
         if (!isQuoted)
@@ -286,9 +305,13 @@ nonempty_line:
         }
       }
       else if (*ptr == '\\' && isQuoted)
+      {
         ptr[0] = ptr[++anOffset];
+      }
       else if (*ptr == '\"')
+      {
         isQuoted = !isQuoted;
+      }
     }
     theBuffer.IsProcessed = true;
   }
@@ -338,7 +361,9 @@ VrmlData_Scene& VrmlData_Scene::operator<<(Standard_IStream& theInput)
     if (!VrmlData_Node::OK(myStatus, ReadLine(aBuffer)))
     {
       if (myStatus == VrmlData_EndOfFile)
+      {
         myStatus = VrmlData_StatusOK;
+      }
       break;
     }
     // this line provides the method ReadNode in the present context
@@ -346,24 +371,32 @@ VrmlData_Scene& VrmlData_Scene::operator<<(Standard_IStream& theInput)
     myStatus = aNullNode->ReadNode(aBuffer, aNode);
     // Unknown nodes are not stored however they do not generate error
     if (myStatus != VrmlData_StatusOK)
+    {
       break;
+    }
     if (!aNode.IsNull() /*&&
         !aNode->IsKind (STANDARD_TYPE(VrmlData_UnknownNode))*/)
     {
       if (!aNode->IsKind(STANDARD_TYPE(VrmlData_WorldInfo)))
+      {
         myLstNodes.Append(aNode);
+      }
       else if (!aNode->IsDefault())
       {
         const occ::handle<VrmlData_WorldInfo> aInfo = occ::down_cast<VrmlData_WorldInfo>(aNode);
         myWorldInfo->SetTitle(aInfo->Title());
         NCollection_List<const char*>::Iterator anIterInfo = aInfo->InfoIterator();
         for (; anIterInfo.More(); anIterInfo.Next())
+        {
           myWorldInfo->AddInfo(anIterInfo.Value());
+        }
       }
     }
   }
   if (myStatus != VrmlData_StatusOK)
+  {
     myLineError = aBuffer.LineCount;
+  }
 
   return *this;
 }
@@ -391,8 +424,10 @@ occ::handle<VrmlData_Node> VrmlData_Scene::FindNode(
   const occ::handle<VrmlData_UnknownNode> aDummyNode = new VrmlData_UnknownNode;
   aDummyNode->myName                                 = theName;
   if (myNamedNodes.Contains(aDummyNode))
+  {
     aResult =
       const_cast<NCollection_Map<occ::handle<VrmlData_Node>>&>(myNamedNodes).Added(aDummyNode);
+  }
 #endif
   return aResult;
 }
@@ -408,7 +443,9 @@ occ::handle<VrmlData_Node> VrmlData_Scene::FindNode(const char* theName, gp_Trsf
   {
     const occ::handle<VrmlData_Node>& aNode = anIter.Value();
     if (aNode.IsNull())
+    {
       continue;
+    }
     // Match a top-level node name
     if (strcmp(aNode->Name(), theName) == 0)
     {
@@ -424,7 +461,9 @@ occ::handle<VrmlData_Node> VrmlData_Scene::FindNode(const char* theName, gp_Trsf
       {
         aResult = aGroup->FindNode(theName, theLocation);
         if (!aResult.IsNull())
+        {
           break;
+        }
       }
     }
   }
@@ -442,10 +481,14 @@ VrmlData_ErrorStatus VrmlData_Scene::ReadWord(VrmlData_InBuffer&       theBuffer
     char* ptr = theBuffer.LinePtr;
     while (*ptr != '\0' && *ptr != '\n' && *ptr != '\r' && *ptr != ' ' && *ptr != '\t'
            && *ptr != '{' && *ptr != '}' && *ptr != ',' && *ptr != '[' && *ptr != ']')
+    {
       ptr++;
+    }
     const int aLen = int(ptr - theBuffer.LinePtr);
     if (aLen <= 0)
+    {
       aStatus = VrmlData_StringInputError;
+    }
     else
     {
       theWord           = TCollection_AsciiString((const char*)theBuffer.LinePtr, aLen);
@@ -471,7 +514,9 @@ VrmlData_ErrorStatus VrmlData_Scene::createNode(VrmlData_InBuffer&              
     if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "DEF"))
     {
       if (VrmlData_Node::OK(aStatus, ReadWord(theBuffer, aName)))
+      {
         aStatus = ReadLine(theBuffer);
+      }
     }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "NULL"))
     {
@@ -485,54 +530,96 @@ VrmlData_ErrorStatus VrmlData_Scene::createNode(VrmlData_InBuffer&              
   {
     // create the new node
     if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "Appearance"))
+    {
       aNode = new VrmlData_Appearance(*this, strName);
+    }
     else if (!VRMLDATA_LCOMPARE_SKIP(theBuffer.LinePtr, "ShapeHints")
              && VRMLDATA_LCOMPARE(theBuffer.LinePtr, "Shape"))
+    {
       aNode = new VrmlData_ShapeNode(*this, strName);
+    }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "Box"))
+    {
       aNode = new VrmlData_Box(*this, strName);
+    }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "Color"))
+    {
       aNode = new VrmlData_Color(*this, strName);
+    }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "Cone"))
+    {
       aNode = new VrmlData_Cone(*this, strName);
+    }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "Coordinate"))
     {
       aNode = new VrmlData_Coordinate(*this, strName);
 
       // Check for "Coordinate3"
       if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "3"))
+      {
         theBuffer.LinePtr++;
+      }
     }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "Cylinder"))
+    {
       aNode = new VrmlData_Cylinder(*this, strName);
+    }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "Group"))
+    {
       aNode = new VrmlData_Group(*this, strName, false);
+    }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "Transform"))
+    {
       aNode = new VrmlData_Group(*this, strName, true);
+    }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "Inline"))
+    {
       aNode = new VrmlData_Group(*this, strName, false);
+    }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "Separator"))
+    {
       aNode = new VrmlData_Group(*this, strName, false);
+    }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "Collision"))
+    {
       aNode = new VrmlData_Group(*this, strName, false);
+    }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "Switch"))
+    {
       aNode = new VrmlData_Group(*this, strName, false);
+    }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "ImageTexture"))
+    {
       aNode = new VrmlData_ImageTexture(*this, strName);
+    }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "IndexedFaceSet"))
+    {
       aNode = new VrmlData_IndexedFaceSet(*this, strName);
+    }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "IndexedLineSet"))
+    {
       aNode = new VrmlData_IndexedLineSet(*this, strName);
+    }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "Material"))
+    {
       aNode = new VrmlData_Material(*this, strName);
+    }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "Normal"))
+    {
       aNode = new VrmlData_Normal(*this, strName);
+    }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "Sphere"))
+    {
       aNode = new VrmlData_Sphere(*this, strName);
+    }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "TextureCoordinate"))
+    {
       aNode = new VrmlData_TextureCoordinate(*this, strName);
+    }
     else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "WorldInfo"))
+    {
       aNode = new VrmlData_WorldInfo(*this, strName);
+    }
     else
     {
       void*                   isProto = VRMLDATA_LCOMPARE(theBuffer.LinePtr, "PROTO");
@@ -544,7 +631,9 @@ VrmlData_ErrorStatus VrmlData_Scene::createNode(VrmlData_InBuffer&              
         if (aStatus == VrmlData_StatusOK)
         {
           if (theBuffer.LinePtr[0] != '[')
+          {
             aStatus = VrmlData_VrmlFormatError;
+          }
           else
           {
             theBuffer.LinePtr++;
@@ -574,17 +663,25 @@ VrmlData_ErrorStatus VrmlData_Scene::createNode(VrmlData_InBuffer&              
         }
       }
       if (aStatus == VrmlData_StatusOK)
+      {
         aNode = new VrmlData_UnknownNode(*this, strName, aTitle.ToCString());
+      }
     }
   }
   aStatus = ReadLine(theBuffer);
   if (!aNode.IsNull())
   {
     if (aNode->Name()[0] != '\0')
+    {
       myNamedNodes.Add(aNode);
+    }
     if (!theType.IsNull())
+    {
       if (!aNode->IsKind(theType))
+      {
         aStatus = VrmlData_VrmlFormatError;
+      }
+    }
   }
   if (aStatus == VrmlData_StatusOK)
   {
@@ -647,7 +744,9 @@ void VrmlData_Scene::createShape(
       if (!aNodeGeom.IsNull())
       {
         if (!aSingleShape.IsNull())
+        {
           isSingleShape = false;
+        }
         const occ::handle<TopoDS_TShape> aTShape = aNodeGeom->TShape();
         aSingleShape.TShape(aTShape);
         if (!aSingleShape.IsNull())
@@ -660,7 +759,9 @@ void VrmlData_Scene::createShape(
             {
               // Check if the current topology is a single face
               if (aTShape->IsKind(STANDARD_TYPE(TopoDS_TFace)))
+              {
                 pMapShapeApp->Bind(aTShape, anAppearance);
+              }
               else
               {
                 // This is not a face, explode it in faces and bind each face
@@ -693,7 +794,9 @@ void VrmlData_Scene::createShape(
     }
   }
   if (isSingleShape)
+  {
     outShape = aSingleShape;
+  }
 }
 
 //=================================================================================================
@@ -710,9 +813,13 @@ VrmlData_ErrorStatus VrmlData_Scene::ReadReal(VrmlData_InBuffer& theBuffer,
     char* endptr;
     aResult = Strtod(theBuffer.LinePtr, &endptr);
     if (endptr == theBuffer.LinePtr)
+    {
       aStatus = VrmlData_NumericInputError;
+    }
     else if (isOnlyPositive && aResult < 0.001 * Precision::Confusion())
+    {
       aStatus = VrmlData_IrrelevantNumber;
+    }
     else
     {
       theResult         = isScale ? (aResult * myLinearScale) : aResult;
@@ -734,7 +841,9 @@ VrmlData_ErrorStatus VrmlData_Scene::ReadXYZ(VrmlData_InBuffer& theBuffer,
   for (int i = 0; i < 3; i++)
   {
     if (!VrmlData_Node::OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
+    {
       break;
+    }
     char* endptr;
     aVal[i] = Strtod(theBuffer.LinePtr, &endptr);
     if (endptr == theBuffer.LinePtr)
@@ -778,7 +887,9 @@ VrmlData_ErrorStatus VrmlData_Scene::ReadXY(VrmlData_InBuffer& theBuffer,
   for (int i = 0; i < 2; i++)
   {
     if (!VrmlData_Node::OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
+    {
       break;
+    }
     char* endptr;
     aVal[i] = Strtod(theBuffer.LinePtr, &endptr);
     if (endptr == theBuffer.LinePtr)
@@ -799,9 +910,13 @@ VrmlData_ErrorStatus VrmlData_Scene::ReadXY(VrmlData_InBuffer& theBuffer,
   if (aStatus == VrmlData_StatusOK)
   {
     if (isScale)
+    {
       theXY.SetCoord(aVal[0] * myLinearScale, aVal[1] * myLinearScale);
+    }
     else
+    {
       theXY.SetCoord(aVal[0], aVal[1]);
+    }
   }
   return aStatus;
 }
@@ -820,8 +935,10 @@ VrmlData_ErrorStatus VrmlData_Scene::ReadArrIndex(VrmlData_InBuffer& theBuffer,
   theNBlocks = 0;
   if (VrmlData_Node::OK(aStatus, ReadLine(theBuffer)))
   {
-    if (theBuffer.LinePtr[0] != '[') // opening bracket
+    if (theBuffer.LinePtr[0] != '[')
+    { // opening bracket
       aStatus = VrmlData_VrmlFormatError;
+    }
     else
     {
       theBuffer.LinePtr++;
@@ -840,10 +957,14 @@ VrmlData_ErrorStatus VrmlData_Scene::ReadArrIndex(VrmlData_InBuffer& theBuffer,
           break;
         }
         if (!VrmlData_Node::OK(aStatus, VrmlData_Node::ReadInteger(theBuffer, anIntValue)))
+        {
           break;
+        }
         // Check for valid delimiter (']' or ',')
         if (!VrmlData_Node::OK(aStatus, ReadLine(theBuffer)))
+        {
           break;
+        }
         if (theBuffer.LinePtr[0] == ']')
         {
           theBuffer.LinePtr++;
@@ -875,7 +996,9 @@ VrmlData_ErrorStatus VrmlData_Scene::ReadArrIndex(VrmlData_InBuffer& theBuffer,
           }
           bufFace[0] = aLen;
           for (int i = 0; i < aLen; i++)
+          {
             bufFace[i + 1] = vecInt(i);
+          }
           vecInt.Clear();
           vecIndice.Append(bufFace);
         }
@@ -888,11 +1011,15 @@ VrmlData_ErrorStatus VrmlData_Scene::ReadArrIndex(VrmlData_InBuffer& theBuffer,
           const int** anArray =
             static_cast<const int**>(myAllocator->Allocate(aNbBlocks * sizeof(int*)));
           if (anArray == nullptr)
+          {
             aStatus = VrmlData_UnrecoverableError;
+          }
           else
           {
             for (size_t i = 0; i < aNbBlocks; i++)
+            {
               anArray[i] = vecIndice((int)i);
+            }
             theNBlocks = aNbBlocks;
             theArray   = anArray;
           }
@@ -942,7 +1069,9 @@ VrmlData_ErrorStatus VrmlData_Scene::WriteArrIndex(const char*  thePrefix,
               {
                 Sprintf(ptr, "%d,", arrVal[i]);
                 if (i == nVal - 1)
+                {
                   break;
+                }
                 ptr = strchr(ptr, ',') + 1;
                 if ((ptr - &buf[0]) > (ptrdiff_t)aLineLimit)
                 {
@@ -955,7 +1084,9 @@ VrmlData_ErrorStatus VrmlData_Scene::WriteArrIndex(const char*  thePrefix,
         WriteLine(buf, iBlock < theNbBlocks - 1 ? "-1," : "-1");
       }
       if (aStatus == VrmlData_StatusOK)
+      {
         aStatus = WriteLine("]", nullptr, -1);
+      }
     }
   }
   return aStatus;
@@ -971,19 +1102,23 @@ VrmlData_ErrorStatus VrmlData_Scene::WriteXYZ(const gp_XYZ& theXYZ,
   if (!IsDummyWrite())
   {
     if (isApplyScale && myLinearScale > Precision::Confusion())
+    {
       Sprintf(buf,
               "%.12g %.12g %.12g%s",
               theXYZ.X() / myLinearScale,
               theXYZ.Y() / myLinearScale,
               theXYZ.Z() / myLinearScale,
               thePostfix ? thePostfix : "");
+    }
     else
+    {
       Sprintf(buf,
               "%.12g %.12g %.12g%s",
               theXYZ.X(),
               theXYZ.Y(),
               theXYZ.Z(),
               thePostfix ? thePostfix : "");
+    }
   }
   return WriteLine(buf);
 }
@@ -1001,16 +1136,24 @@ VrmlData_ErrorStatus VrmlData_Scene::WriteLine(const char* theLin0,
                                    "                                        ";
   VrmlData_ErrorStatus& aStatus  = const_cast<VrmlData_ErrorStatus&>(myStatus);
   if (IsDummyWrite())
+  {
     aStatus = VrmlData_StatusOK;
+  }
   else
   {
     int& aCurrentIndent = const_cast<int&>(myCurrentIndent);
     if (theIndent < 0)
+    {
       aCurrentIndent -= myIndent;
+    }
     if (aCurrentIndent < 0)
+    {
       aCurrentIndent = 0;
+    }
     if (theLin0 == nullptr && theLin1 == nullptr)
+    {
       (*myOutput) << "\n";
+    }
     else
     {
       const int nSpaces = std::min(aCurrentIndent, static_cast<int>(sizeof(spaces) - 1));
@@ -1019,22 +1162,32 @@ VrmlData_ErrorStatus VrmlData_Scene::WriteLine(const char* theLin0,
       {
         (*myOutput) << theLin0;
         if (theLin1)
+        {
           (*myOutput) << " " << theLin1;
+        }
       }
       else
+      {
         (*myOutput) << theLin1;
+      }
       (*myOutput) << "\n";
     }
     const int stat = myOutput->rdstate();
     if (stat & std::ios::badbit)
+    {
       aStatus = VrmlData_UnrecoverableError;
+    }
     else if (stat & std::ios::failbit)
+    {
       //       if (stat & std::ios::eofbit)
       //         aStatus = VrmlData_EndOfFile;
       //       else
       aStatus = VrmlData_GeneralError;
+    }
     if (theIndent > 0)
+    {
       aCurrentIndent += myIndent;
+    }
   }
   return myStatus;
 }
@@ -1047,11 +1200,16 @@ VrmlData_ErrorStatus VrmlData_Scene::WriteNode(const char*                      
   VrmlData_ErrorStatus aStatus(VrmlData_StatusOK);
   bool                 isNoName(false);
   if (theNode->Name() == nullptr)
+  {
     isNoName = true;
+  }
   else if (theNode->Name()[0] == '\0')
+  {
     isNoName = true;
+  }
 
   if (!theNode.IsNull())
+  {
     if (!theNode->IsDefault())
     {
       if (isNoName && IsDummyWrite())
@@ -1075,16 +1233,24 @@ VrmlData_ErrorStatus VrmlData_Scene::WriteNode(const char*                      
         }
       }
       if (isNoName)
+      {
         aStatus = theNode->Write(thePrefix);
+      }
       else
       {
         // If the node name consists of blank characters, we do not write it
         const char* nptr = theNode->Name();
         for (; *nptr != '\0'; nptr++)
+        {
           if (*nptr != ' ' && *nptr != '\t')
+          {
             break;
+          }
+        }
         if (*nptr == '\0')
+        {
           aStatus = theNode->Write(thePrefix);
+        }
         else
         {
           // Name is written under DEF clause
@@ -1110,6 +1276,7 @@ VrmlData_ErrorStatus VrmlData_Scene::WriteNode(const char*                      
         }
       }
     }
+  }
   return aStatus;
 }
 
@@ -1126,7 +1293,9 @@ void VrmlData_Scene::Dump(Standard_OStream& theStream) const
   */
   Iterator anIter(myLstNodes);
   for (; anIter.More(); anIter.Next())
+  {
     dumpNode(theStream, anIter.Value(), "  ");
+  }
 }
 
 //=======================================================================
@@ -1139,7 +1308,9 @@ void dumpNode(Standard_OStream&                 theStream,
               const TCollection_AsciiString&    theIndent)
 {
   if (theNode.IsNull())
+  {
     return;
+  }
   TCollection_AsciiString aNewIndent = theIndent.IsEmpty() ? theIndent : theIndent + "  ";
   if (theNode->IsKind(STANDARD_TYPE(VrmlData_Appearance)))
   {
@@ -1164,15 +1335,25 @@ void dumpNode(Standard_OStream&                 theStream,
     }
   }
   else if (theNode->IsKind(STANDARD_TYPE(VrmlData_Box)))
+  {
     dumpNodeHeader(theStream, theIndent, "Box", theNode->Name());
+  }
   else if (theNode->IsKind(STANDARD_TYPE(VrmlData_Cylinder)))
+  {
     dumpNodeHeader(theStream, theIndent, "Cylinder", theNode->Name());
+  }
   else if (theNode->IsKind(STANDARD_TYPE(VrmlData_Sphere)))
+  {
     dumpNodeHeader(theStream, theIndent, "Sphere", theNode->Name());
+  }
   else if (theNode->IsKind(STANDARD_TYPE(VrmlData_Cone)))
+  {
     dumpNodeHeader(theStream, theIndent, "Cone", theNode->Name());
+  }
   else if (theNode->IsKind(STANDARD_TYPE(VrmlData_Coordinate)))
+  {
     dumpNodeHeader(theStream, theIndent, "Coordinate", theNode->Name());
+  }
   else if (theNode->IsKind(STANDARD_TYPE(VrmlData_Group)))
   {
     const occ::handle<VrmlData_Group> aGroup = occ::down_cast<VrmlData_Group>(theNode);
@@ -1183,11 +1364,15 @@ void dumpNode(Standard_OStream&                 theStream,
     {
       NCollection_List<occ::handle<VrmlData_Node>>::Iterator anIter = aGroup->NodeIterator();
       for (; anIter.More(); anIter.Next())
+      {
         dumpNode(theStream, anIter.Value(), aNewIndent);
+      }
     }
   }
   else if (theNode->IsKind(STANDARD_TYPE(VrmlData_ImageTexture)))
+  {
     dumpNodeHeader(theStream, theIndent, "ImageTexture", theNode->Name());
+  }
   else if (theNode->IsKind(STANDARD_TYPE(VrmlData_IndexedFaceSet)))
   {
     const occ::handle<VrmlData_IndexedFaceSet> aNode =
@@ -1220,11 +1405,17 @@ void dumpNode(Standard_OStream&                 theStream,
     dumpNodeHeader(theStream, theIndent, "Material", theNode->Name());
   }
   else if (theNode->IsKind(STANDARD_TYPE(VrmlData_Normal)))
+  {
     dumpNodeHeader(theStream, theIndent, "Normal", theNode->Name());
+  }
   else if (theNode->IsKind(STANDARD_TYPE(VrmlData_TextureCoordinate)))
+  {
     dumpNodeHeader(theStream, theIndent, "TextureCoordinate", theNode->Name());
+  }
   else if (theNode->IsKind(STANDARD_TYPE(VrmlData_WorldInfo)))
+  {
     dumpNodeHeader(theStream, theIndent, "WorldInfo", theNode->Name());
+  }
   else if (theNode->IsKind(STANDARD_TYPE(VrmlData_UnknownNode)))
   {
     const occ::handle<VrmlData_UnknownNode> anUnknown =
@@ -1244,7 +1435,11 @@ void dumpNodeHeader(Standard_OStream&              theStream,
 {
   theStream << theIndent << theType << " node";
   if (theName[0] == '\0')
+  {
     theStream << "\n";
+  }
   else
+  {
     theStream << ": \"" << theName << "\"\n";
+  }
 }

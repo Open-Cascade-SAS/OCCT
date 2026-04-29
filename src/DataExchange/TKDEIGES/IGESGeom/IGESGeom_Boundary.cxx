@@ -37,7 +37,9 @@ void IGESGeom_Boundary::Init(
   int num1 = allSenses->Length();
   if (allSenses->Lower() != 1 || (allModelCurves->Lower() != 1 || allModelCurves->Length() != num1)
       || (allParameterCurves->Lower() != 1 || allParameterCurves->Length() != num1))
+  {
     throw Standard_DimensionMismatch("IGESGeom_Boundary: Init");
+  }
 
   theType            = aType;
   thePreference      = aPreference;
@@ -81,7 +83,9 @@ occ::handle<IGESData_IGESEntity> IGESGeom_Boundary::ModelSpaceCurve(const int In
 int IGESGeom_Boundary::NbParameterCurves(const int Index) const
 {
   if (theParameterCurves->Value(Index).IsNull())
+  {
     return 0;
+  }
   return theParameterCurves->Value(Index)->Length();
 }
 

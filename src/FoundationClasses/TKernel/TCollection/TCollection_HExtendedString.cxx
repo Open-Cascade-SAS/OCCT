@@ -244,7 +244,7 @@ const TCollection_ExtendedString& TCollection_HExtendedString::String() const
 //---------------------------------------------------------------------
 void TCollection_HExtendedString::Print(Standard_OStream& S) const
 {
-  S << "begin class HExtendedString " << std::endl;
+  S << "begin class HExtendedString " << '\n';
   myString.Print(S);
 }
 

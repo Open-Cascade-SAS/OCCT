@@ -50,7 +50,9 @@ occ::handle<StepData_Simple> StepData_Simple::As(const char* const steptype) con
 {
   occ::handle<StepData_Simple> nulent;
   if (Matches(steptype))
+  {
     return this;
+  }
   return nulent;
 }
 
@@ -64,7 +66,9 @@ const StepData_Field& StepData_Simple::Field(const char* const name) const
 {
   int num = ESDescr()->Rank(name);
   if (num == 0)
+  {
     throw Interface_InterfaceMismatch("StepData_Simple : Field");
+  }
   return FieldNum(num);
 }
 
@@ -72,7 +76,9 @@ StepData_Field& StepData_Simple::CField(const char* const name)
 {
   int num = ESDescr()->Rank(name);
   if (num == 0)
+  {
     throw Interface_InterfaceMismatch("StepData_Simple : Field");
+  }
   return CFieldNum(num);
 }
 
@@ -113,16 +119,22 @@ void StepData_Simple::Shared(Interface_EntityIterator& list) const
     int                   j1, j2, l1, l2;
     l1 = l2 = 1;
     if (fi.Arity() >= 1)
+    {
       l1 = fi.Length(1);
+    }
     if (fi.Arity() > 1)
+    {
       l2 = fi.Length(2);
+    }
     for (j1 = 1; j1 <= l1; j1++)
     {
       for (j2 = 1; j2 <= l2; j2++)
       {
         occ::handle<Standard_Transient> ent = fi.Entity(j1, j2);
         if (!ent.IsNull())
+        {
           list.AddItem(ent);
+        }
       }
     }
   }

@@ -101,9 +101,13 @@ void IGESData_IGESWriter::SendStartLine(const char* const startline)
   //
   size_t lst = strlen(startline);
   if (lst == 0)
+  {
     return;
+  }
   if (thestar.IsNull())
+  {
     thestar = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
+  }
   if (lst <= (size_t)MaxcarsG)
   {
     thestar->Append(new TCollection_HAsciiString(startline));
@@ -130,7 +134,9 @@ void IGESData_IGESWriter::SendModel(const occ::handle<IGESData_Protocol>& protoc
   int ns = themodel->NbStartLines();
   int i; // svv Jan11 2000 : porting on DEC
   for (i = 1; i <= ns; i++)
+  {
     SendStartLine(themodel->StartLine(i));
+  }
   SectionG(themodel->GlobalSection());
   SectionsDP();
   for (i = 1; i <= nb; i++)
@@ -144,12 +150,16 @@ void IGESData_IGESWriter::SendModel(const occ::handle<IGESData_Protocol>& protoc
     //  Watch out for error cases : redefined content
     if (themodel->IsRedefinedContent(i))
     {
-      sout << " --  IGESWriter : Erroneous Entity N0." << i << "  --" << std::endl;
+      sout << " --  IGESWriter : Erroneous Entity N0." << i << "  --" << '\n';
       occ::handle<Interface_ReportEntity> rep = themodel->ReportEntity(i);
       if (!rep.IsNull())
+      {
         cnt = GetCasted(IGESData_IGESEntity, rep->Content());
+      }
       if (cnt.IsNull())
+      {
         cnt = ent; // secours
+      }
     }
 
     DirPart(cnt);
@@ -160,15 +170,19 @@ void IGESData_IGESWriter::SendModel(const occ::handle<IGESData_Protocol>& protoc
     int                                   CN;
     //  Different cases
     if (lib.Select(cnt, module, CN))
+    {
       module->WriteOwnParams(CN, cnt, *this);
+    }
     else if (cnt->IsKind(STANDARD_TYPE(IGESData_UndefinedEntity)))
     {
       DeclareAndCast(IGESData_UndefinedEntity, undent, cnt);
       undent->WriteOwnParams(*this);
     }
     else
+    {
       sout << " -- IGESWriter : Not Processed for n0." << i << " in file,  Type "
-           << cnt->TypeNumber() << "  Form " << cnt->FormNumber() << std::endl;
+           << cnt->TypeNumber() << "  Form " << cnt->FormNumber() << '\n';
+    }
 
     Associativities(cnt);
     Properties(cnt);
@@ -183,14 +197,18 @@ void IGESData_IGESWriter::SendModel(const occ::handle<IGESData_Protocol>& protoc
 void IGESData_IGESWriter::SectionS()
 {
   if (thesect != 0)
+  {
     throw Interface_InterfaceError("IGESWriter : SectionS");
+  }
   thesect = 1;
 }
 
 void IGESData_IGESWriter::SectionG(const IGESData_GlobalSection& header)
 {
   if (thesect != 1)
+  {
     throw Interface_InterfaceError("IGESWriter : SectionG");
+  }
   thesect = 2;
   thesep  = header.Separator();
   theendm = header.EndMark();
@@ -204,18 +222,26 @@ void IGESData_IGESWriter::SectionG(const IGESData_GlobalSection& header)
     const Interface_FileParameter& FP = gl->Param(i);
     AddString(FP.CValue());
     if (i < nb)
+    {
       AddChar(thesep);
+    }
     else
+    {
       AddChar(theendm);
+    }
   }
   if (thecurr.Length() > 0)
+  {
     thehead->Append(thecurr.Moved());
+  }
 }
 
 void IGESData_IGESWriter::SectionsDP()
 {
   if (thesect != 2)
+  {
     throw Interface_InterfaceError("IGESWriter : SectionsDP");
+  }
   thesect = 3;
   thecurr.SetMax(MaxcarsP);
   thestep = IGESData_ReadEnd;
@@ -224,7 +250,9 @@ void IGESData_IGESWriter::SectionsDP()
 void IGESData_IGESWriter::SectionT()
 {
   if (thesect != 3)
+  {
     throw Interface_InterfaceError("IGESWriter : SectionT");
+  }
   thesect = 4;
   thepnum.SetValue(thepnum.Length(), thepars->Length() + 1);
 }
@@ -232,52 +260,84 @@ void IGESData_IGESWriter::SectionT()
 void IGESData_IGESWriter::DirPart(const occ::handle<IGESData_IGESEntity>& anent)
 {
   if (thesect != 3 && thestep != IGESData_ReadEnd)
+  {
     throw Interface_InterfaceError("IGESWriter : DirPart");
+  }
   int  v[17];
   char res1[9], res2[9], label[9], snum[9];
   int  nument = themodel->Number(anent);
   if (nument == 0)
+  {
     return;
+  }
   IGESData_DirPart& DP = thedirs.ChangeValue(nument);
   //                                            Filling the DirPart
   v[0] = anent->TypeNumber();
   v[1] = 0; // number in section P: calculated later
   if (anent->HasStructure())
+  {
     v[2] = -themodel->DNum(anent->DirFieldEntity(3));
+  }
   else
+  {
     v[2] = 0;
+  }
 
   IGESData_DefType linet = anent->DefLineFont();
   if (linet == IGESData_DefReference)
+  {
     v[3] = -themodel->DNum(anent->DirFieldEntity(4));
+  }
   else if (linet == IGESData_DefValue)
+  {
     v[3] = anent->RankLineFont();
+  }
   else
+  {
     v[3] = 0;
+  }
 
   IGESData_DefList levt = anent->DefLevel();
   if (levt == IGESData_DefSeveral)
+  {
     v[4] = -themodel->DNum(anent->DirFieldEntity(5));
+  }
   else if (levt == IGESData_DefOne)
+  {
     v[4] = anent->Level();
+  }
   else
+  {
     v[4] = 0;
+  }
 
   IGESData_DefList viewt = anent->DefView();
   if (viewt == IGESData_DefSeveral || viewt == IGESData_DefOne)
+  {
     v[5] = themodel->DNum(anent->DirFieldEntity(6));
+  }
   else
+  {
     v[5] = 0;
+  }
 
   if (anent->HasTransf())
+  {
     v[6] = themodel->DNum(anent->DirFieldEntity(7));
+  }
   else
+  {
     v[6] = 0;
+  }
 
   if (anent->HasLabelDisplay())
+  {
     v[7] = themodel->DNum(anent->DirFieldEntity(8));
+  }
   else
+  {
     v[7] = 0;
+  }
 
   v[8]  = anent->BlankStatus();
   v[9]  = anent->SubordinateStatus();
@@ -288,11 +348,17 @@ void IGESData_IGESWriter::DirPart(const occ::handle<IGESData_IGESEntity>& anent)
 
   IGESData_DefType colt = anent->DefColor();
   if (colt == IGESData_DefReference)
+  {
     v[14] = -themodel->DNum(anent->DirFieldEntity(13));
+  }
   else if (colt == IGESData_DefValue)
+  {
     v[14] = anent->RankColor();
+  }
   else
+  {
     v[14] = 0;
+  }
 
   v[15] = 0; // number of lines in section P: calculated later
   v[16] = anent->FormNumber();
@@ -300,12 +366,16 @@ void IGESData_IGESWriter::DirPart(const occ::handle<IGESData_IGESEntity>& anent)
   anent->CResValues(res1, res2);
   int i; // svv Jan11 2000 : porting on DEC
   for (i = 0; i < 8; i++)
+  {
     label[i] = snum[i] = ' ';
+  }
   if (anent->HasShortLabel())
   {
     occ::handle<TCollection_HAsciiString> slab = anent->ShortLabel();
     for (i = 0; i < slab->Length() && i < 8; i++)
+    {
       label[i] = slab->Value(i + 1);
+    }
   }
   if (anent->HasSubScriptNumber())
   {
@@ -349,7 +419,9 @@ void IGESData_IGESWriter::OwnParams(const occ::handle<IGESData_IGESEntity>& anen
 {
   char text[20];
   if (thesect != 3 && thestep != IGESData_ReadDir)
+  {
     throw Interface_InterfaceError("IGESWriter : OwnParams");
+  }
   thepnum.SetValue(themodel->Number(anent), thepars->Length() + 1);
   thecurr.Clear();
   Sprintf(text, "%d", anent->TypeNumber());
@@ -360,10 +432,14 @@ void IGESData_IGESWriter::OwnParams(const occ::handle<IGESData_IGESEntity>& anen
 void IGESData_IGESWriter::Properties(const occ::handle<IGESData_IGESEntity>& anent)
 {
   if (thesect != 3 && thestep != IGESData_ReadOwn)
+  {
     throw Interface_InterfaceError("IGESWriter : Properties");
+  }
   thestep = IGESData_ReadProps;
   if (!anent->ArePresentProperties())
+  {
     return;
+  }
   Send(anent->NbProperties());
   for (Interface_EntityIterator iter = anent->Properties(); iter.More(); iter.Next())
   {
@@ -375,10 +451,14 @@ void IGESData_IGESWriter::Properties(const occ::handle<IGESData_IGESEntity>& ane
 void IGESData_IGESWriter::Associativities(const occ::handle<IGESData_IGESEntity>& anent)
 {
   if (thesect != 3 && thestep != IGESData_ReadOwn)
+  {
     throw Interface_InterfaceError("IGESWriter : Associativities");
+  }
   thestep = IGESData_ReadAssocs;
   if (!anent->ArePresentAssociativities() && !anent->ArePresentProperties())
+  {
     return; // Properties follow : do not omit them !
+  }
   Send(anent->NbAssociativities());
   for (Interface_EntityIterator iter = anent->Associativities(); iter.More(); iter.Next())
   {
@@ -391,10 +471,14 @@ void IGESData_IGESWriter::Associativities(const occ::handle<IGESData_IGESEntity>
 void IGESData_IGESWriter::EndEntity()
 {
   if (thesect != 3 && thestep != IGESData_ReadOwn)
+  {
     throw Interface_InterfaceError("IGESWriter : EndEntity");
+  }
   AddChar(theendm);
   if (thecurr.Length() > 0)
+  {
     thepars->Append(thecurr.Moved());
+  }
   thestep = IGESData_ReadEnd;
 }
 
@@ -404,7 +488,9 @@ void IGESData_IGESWriter::AddString(const occ::handle<TCollection_HAsciiString>&
                                     const int                                    more)
 {
   if (val.IsNull())
+  {
     return;
+  }
   AddString(val->ToCString(), val->Length(), more);
 }
 
@@ -412,14 +498,20 @@ void IGESData_IGESWriter::AddString(const char* const val, const int lnval, cons
 {
   int lnstr = lnval;
   if (lnstr <= 0)
+  {
     lnstr = (int)strlen(val);
+  }
   if (!thecurr.CanGet(lnstr + more + 1))
   {
     // + 1 (18-SEP-1996) to be sure that the separator n is not at the head of line
     if (thesect < 3)
+    {
       thehead->Append(thecurr.Moved());
+    }
     else
+    {
       thepars->Append(thecurr.Moved());
+    }
   }
   int maxcars = (thesect == 3 ? MaxcarsP : MaxcarsG);
   int n2      = 0;
@@ -428,9 +520,13 @@ void IGESData_IGESWriter::AddString(const char* const val, const int lnval, cons
   {
     thecurr.Add(&val[n2], lnstr);
     if (thesect < 3)
+    {
       thehead->Append(thecurr.Moved());
+    }
     else
+    {
       thepars->Append(thecurr.Moved());
+    }
     n2 += maxcars;
     lnstr -= maxcars;
   }
@@ -446,9 +542,13 @@ void IGESData_IGESWriter::AddChar(const char val, const int more)
   if (!thecurr.CanGet(1 + more))
   {
     if (thesect < 3)
+    {
       thehead->Append(thecurr.Moved());
+    }
     else
+    {
       thepars->Append(thecurr.Moved());
+    }
   }
   thecurr.Add(text, 1);
 }
@@ -470,9 +570,13 @@ void IGESData_IGESWriter::SendBoolean(const bool val)
 {
   AddChar(thesep);
   if (val)
+  {
     AddString("1");
+  }
   else
+  {
     AddString("0");
+  }
 }
 
 void IGESData_IGESWriter::Send(const double val)
@@ -488,10 +592,14 @@ void IGESData_IGESWriter::Send(const occ::handle<TCollection_HAsciiString>& val)
 {
   AddChar(thesep);
   if (val.IsNull())
+  {
     return;
+  }
   int lns = val->Length();
   if (lns == 0)
+  {
     return; // string vide : void vaut mieux que 0H
+  }
   occ::handle<TCollection_HAsciiString> hol = new TCollection_HAsciiString(lns);
   hol->AssignCat("H");
   hol->AssignCat(val->ToCString());
@@ -502,9 +610,13 @@ void IGESData_IGESWriter::Send(const occ::handle<IGESData_IGESEntity>& val, cons
 {
   int num = 0;
   if (!val.IsNull())
+  {
     num = themodel->DNum(val);
+  }
   if (negative)
+  {
     num = -num;
+  }
   Send(num); // which handles everything, once Entity converted to Integer
 }
 
@@ -534,11 +646,17 @@ occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> IGESDa
 {
   occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> res;
   if (num == 1)
+  {
     res = thestar;
+  }
   if (num == 2)
+  {
     res = thehead;
+  }
   if (num >= 3)
+  {
     res = thepars;
+  }
   return res;
 }
 
@@ -548,7 +666,9 @@ static void writefnes(Standard_OStream& S, const char* const ligne)
   for (int i = 0; i < 80; i++)
   {
     if (ligne[i] == '\0')
+    {
       return;
+    }
     val = (char)(ligne[i] ^ (150 + (i & 3)));
     S << val;
   }
@@ -566,7 +686,9 @@ bool IGESData_IGESWriter::Print(Standard_OStream& S) const
   bool isGood = (S.good());
   bool fnes   = (themodew >= 10);
   if (!isGood)
+  {
     return isGood;
+  }
   char ligne[256];
 #ifdef PATIENCELOG
   int lignespatience = 1000;
@@ -574,16 +696,22 @@ bool IGESData_IGESWriter::Print(Standard_OStream& S) const
   char blancs[73];
   int  i; // svv Jan11 2000 : porting on DEC
   for (i = 0; i < MaxcarsG; i++)
+  {
     blancs[i] = ' ';
+  }
   blancs[MaxcarsG] = '\0';
   if (fnes)
   {
     for (i = 0; i < MaxcarsG; i++)
+    {
       blancs[i] = (char)(blancs[i] ^ (150 + (i & 3)));
+    }
   }
 
   if (thesect != 4)
+  {
     throw Interface_InterfaceError("IGESWriter not ready for Print");
+  }
   //  Start Section (quite simple, all in all). Watch out for comments
   occ::handle<TCollection_HAsciiString> line;
   int                                   nbs = 1;
@@ -591,14 +719,16 @@ bool IGESData_IGESWriter::Print(Standard_OStream& S) const
   {
     if (fnes)
     {
-      S << "                              ***  EUCLID/STRIM  DESKTOP CLIPBOARD  ***" << std::endl;
+      S << "                              ***  EUCLID/STRIM  DESKTOP CLIPBOARD  ***" << '\n';
       writefnes(S,
                 "                                                                        S0000001");
     }
     else
+    {
       S << "                                                                        S0000001";
+    }
     //      123456789 123456789 123456789 123456789 123456789 123456789 123456789 12
-    S << std::endl;
+    S << '\n';
   }
   else
   {
@@ -610,16 +740,24 @@ bool IGESData_IGESWriter::Print(Standard_OStream& S) const
       line = thestar->Value(i);
 
       if (fnes)
+      {
         writefnes(S, line->ToCString());
+      }
       else
+      {
         S << line->ToCString();
+      }
       //    for (int k = line->Length()+1; k <= MaxcarsG; k ++)  aSender <<' ';
       S << &blancs[line->Length()];
       if (fnes)
+      {
         writefnes(S, finlin);
+      }
       else
+      {
         S << finlin;
-      S << std::endl;
+      }
+      S << '\n';
     }
   }
 #ifdef PATIENCELOG
@@ -635,20 +773,30 @@ bool IGESData_IGESWriter::Print(Standard_OStream& S) const
     line = thehead->Value(i);
 
     if (fnes)
+    {
       writefnes(S, line->ToCString());
+    }
     else
+    {
       S << line->ToCString();
+    }
     //    for (int k = line->Length()+1; k <= MaxcarsG; k ++)  aSender <<' ';
     S << &blancs[line->Length()];
     if (fnes)
+    {
       writefnes(S, finlin);
+    }
     else
+    {
       S << finlin;
-    S << std::endl;
+    }
+    S << '\n';
     isGood = S.good();
   }
   if (!isGood)
+  {
     return isGood;
+  }
 #ifdef PATIENCELOG
   std::cout << nbg << " lines" << std::endl;
 #endif
@@ -701,9 +849,13 @@ bool IGESData_IGESWriter::Print(Standard_OStream& S) const
             v[11],
             2 * i - 1);
     if (fnes)
+    {
       writefnes(S, ligne);
+    }
     else
+    {
       S << ligne;
+    }
     S << "\n";
     Sprintf(ligne,
             "%8d%8d%8d%8d%8d%8s%8s%8s%8sD%7.7d",
@@ -718,9 +870,13 @@ bool IGESData_IGESWriter::Print(Standard_OStream& S) const
             num,
             2 * i);
     if (fnes)
+    {
       writefnes(S, ligne);
+    }
     else
+    {
       S << ligne;
+    }
     S << "\n";
     //    std::cout << "Ent.no "<<i<<" No en P "<<thepnum.Value(i)<<
     //      " Lignes P:"<<thepnum.Value(i+1)-thepnum.Value(i)<<std::endl;
@@ -729,7 +885,9 @@ bool IGESData_IGESWriter::Print(Standard_OStream& S) const
     isGood = S.good();
   }
   if (!isGood)
+  {
     return isGood;
+  }
 //  Parameter Section
 #ifdef PATIENCELOG
   std::cout << " Parameter Section : " << thepnum.Value(nbd) - 1 << " lines (* = 1000 lines) "
@@ -747,16 +905,24 @@ bool IGESData_IGESWriter::Print(Standard_OStream& S) const
       //      line->LeftJustify(MaxcarsP,' ');  replaced by more economical ! :
 
       if (fnes)
+      {
         writefnes(S, line->ToCString());
+      }
       else
+      {
         S << line->ToCString();
+      }
       //      for (int k = line->Length()+1; k <= MaxcarsP; k ++)aSender <<' ';
       S << &blancs[line->Length()];
       if (fnes)
+      {
         writefnes(S, finlin);
+      }
       else
+      {
         S << finlin;
-      S << std::endl;
+      }
+      S << '\n';
       isGood = S.good();
 #ifdef PATIENCELOG
       lignespatience--;
@@ -769,7 +935,9 @@ bool IGESData_IGESWriter::Print(Standard_OStream& S) const
     }
   }
   if (!isGood)
+  {
     return isGood;
+  }
   //  Terminal Section (pas trop compliquee, ma foi)
   Sprintf(ligne,
           "S%7dG%7dD%7dP%7d                                        T0000001",
@@ -779,9 +947,13 @@ bool IGESData_IGESWriter::Print(Standard_OStream& S) const
           thepnum.Value(thepnum.Length()) - 1);
   //   12345678- 16- 24- 32  56789 123456789 123456789 123456789 12
   if (fnes)
+  {
     writefnes(S, ligne);
+  }
   else
+  {
     S << ligne;
+  }
   S << "\n";
   S.flush();
   isGood = S.good();

@@ -385,7 +385,9 @@ void* Standard::Allocate(const size_t theSize)
 #else
   void* aPtr = calloc(theSize, sizeof(char));
   if (!aPtr)
+  {
     throw Standard_OutOfMemory("Standard_MMgrRaw::Allocate(): malloc failed");
+  }
   return aPtr;
 #endif // OCCT_MMGT_OPT_FLEXIBLE
 }
@@ -442,7 +444,9 @@ void* Standard::Reallocate(void* theStorage, const size_t theSize)
 #else
   void* aNewStorage = (void*)realloc(theStorage, theSize);
   if (!aNewStorage)
+  {
     throw Standard_OutOfMemory("Standard_MMgrRaw::Reallocate(): realloc failed");
+  }
   return aNewStorage;
 #endif
 }

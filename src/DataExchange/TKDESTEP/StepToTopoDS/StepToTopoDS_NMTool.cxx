@@ -154,7 +154,9 @@ const TopoDS_Shape& StepToTopoDS_NMTool::Find(const TCollection_AsciiString& RIN
 void StepToTopoDS_NMTool::RegisterNMEdge(const TopoDS_Shape& Edge)
 {
   if (!this->isEdgeRegisteredAsNM(Edge))
+  {
     myNMEdges.Append(Edge);
+  }
 }
 
 // ============================================================================
@@ -239,7 +241,9 @@ bool StepToTopoDS_NMTool::isEdgeRegisteredAsNM(const TopoDS_Shape& Edge)
 bool StepToTopoDS_NMTool::isAdjacentShell(const TopoDS_Shape& ShellA, const TopoDS_Shape& ShellB)
 {
   if (ShellA.IsSame(ShellB))
+  {
     return false;
+  }
 
   TopExp_Explorer edgeExpA(ShellA, TopAbs_EDGE);
   for (; edgeExpA.More(); edgeExpA.Next())
@@ -250,7 +254,9 @@ bool StepToTopoDS_NMTool::isAdjacentShell(const TopoDS_Shape& ShellA, const Topo
     {
       const TopoDS_Shape& currentEdgeB = edgeExpB.Current();
       if (currentEdgeA.IsSame(currentEdgeB))
+      {
         return true;
+      }
     }
   }
 

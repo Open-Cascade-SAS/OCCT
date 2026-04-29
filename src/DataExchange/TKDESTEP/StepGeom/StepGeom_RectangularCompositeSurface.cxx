@@ -51,13 +51,17 @@ occ::handle<StepGeom_SurfacePatch> StepGeom_RectangularCompositeSurface::Segment
 int StepGeom_RectangularCompositeSurface::NbSegmentsI() const
 {
   if (segments.IsNull())
+  {
     return 0;
+  }
   return segments->UpperRow() - segments->LowerRow() + 1;
 }
 
 int StepGeom_RectangularCompositeSurface::NbSegmentsJ() const
 {
   if (segments.IsNull())
+  {
     return 0;
+  }
   return segments->UpperCol() - segments->LowerCol() + 1;
 }

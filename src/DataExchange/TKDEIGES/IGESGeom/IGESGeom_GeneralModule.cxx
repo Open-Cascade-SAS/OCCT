@@ -83,7 +83,9 @@ void IGESGeom_GeneralModule::OwnSharedCase(const int                            
     case 1: {
       DeclareAndCast(IGESGeom_BSplineCurve, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolBSplineCurve tool;
       tool.OwnShared(anent, iter);
     }
@@ -91,7 +93,9 @@ void IGESGeom_GeneralModule::OwnSharedCase(const int                            
     case 2: {
       DeclareAndCast(IGESGeom_BSplineSurface, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolBSplineSurface tool;
       tool.OwnShared(anent, iter);
     }
@@ -99,7 +103,9 @@ void IGESGeom_GeneralModule::OwnSharedCase(const int                            
     case 3: {
       DeclareAndCast(IGESGeom_Boundary, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolBoundary tool;
       tool.OwnShared(anent, iter);
     }
@@ -107,7 +113,9 @@ void IGESGeom_GeneralModule::OwnSharedCase(const int                            
     case 4: {
       DeclareAndCast(IGESGeom_BoundedSurface, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolBoundedSurface tool;
       tool.OwnShared(anent, iter);
     }
@@ -115,7 +123,9 @@ void IGESGeom_GeneralModule::OwnSharedCase(const int                            
     case 5: {
       DeclareAndCast(IGESGeom_CircularArc, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolCircularArc tool;
       tool.OwnShared(anent, iter);
     }
@@ -123,7 +133,9 @@ void IGESGeom_GeneralModule::OwnSharedCase(const int                            
     case 6: {
       DeclareAndCast(IGESGeom_CompositeCurve, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolCompositeCurve tool;
       tool.OwnShared(anent, iter);
     }
@@ -131,7 +143,9 @@ void IGESGeom_GeneralModule::OwnSharedCase(const int                            
     case 7: {
       DeclareAndCast(IGESGeom_ConicArc, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolConicArc tool;
       tool.OwnShared(anent, iter);
     }
@@ -139,7 +153,9 @@ void IGESGeom_GeneralModule::OwnSharedCase(const int                            
     case 8: {
       DeclareAndCast(IGESGeom_CopiousData, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolCopiousData tool;
       tool.OwnShared(anent, iter);
     }
@@ -147,7 +163,9 @@ void IGESGeom_GeneralModule::OwnSharedCase(const int                            
     case 9: {
       DeclareAndCast(IGESGeom_CurveOnSurface, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolCurveOnSurface tool;
       tool.OwnShared(anent, iter);
     }
@@ -155,7 +173,9 @@ void IGESGeom_GeneralModule::OwnSharedCase(const int                            
     case 10: {
       DeclareAndCast(IGESGeom_Direction, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolDirection tool;
       tool.OwnShared(anent, iter);
     }
@@ -163,7 +183,9 @@ void IGESGeom_GeneralModule::OwnSharedCase(const int                            
     case 11: {
       DeclareAndCast(IGESGeom_Flash, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolFlash tool;
       tool.OwnShared(anent, iter);
     }
@@ -171,7 +193,9 @@ void IGESGeom_GeneralModule::OwnSharedCase(const int                            
     case 12: {
       DeclareAndCast(IGESGeom_Line, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolLine tool;
       tool.OwnShared(anent, iter);
     }
@@ -179,7 +203,9 @@ void IGESGeom_GeneralModule::OwnSharedCase(const int                            
     case 13: {
       DeclareAndCast(IGESGeom_OffsetCurve, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolOffsetCurve tool;
       tool.OwnShared(anent, iter);
     }
@@ -187,7 +213,9 @@ void IGESGeom_GeneralModule::OwnSharedCase(const int                            
     case 14: {
       DeclareAndCast(IGESGeom_OffsetSurface, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolOffsetSurface tool;
       tool.OwnShared(anent, iter);
     }
@@ -195,7 +223,9 @@ void IGESGeom_GeneralModule::OwnSharedCase(const int                            
     case 15: {
       DeclareAndCast(IGESGeom_Plane, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolPlane tool;
       tool.OwnShared(anent, iter);
     }
@@ -203,7 +233,9 @@ void IGESGeom_GeneralModule::OwnSharedCase(const int                            
     case 16: {
       DeclareAndCast(IGESGeom_Point, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolPoint tool;
       tool.OwnShared(anent, iter);
     }
@@ -211,7 +243,9 @@ void IGESGeom_GeneralModule::OwnSharedCase(const int                            
     case 17: {
       DeclareAndCast(IGESGeom_RuledSurface, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolRuledSurface tool;
       tool.OwnShared(anent, iter);
     }
@@ -219,7 +253,9 @@ void IGESGeom_GeneralModule::OwnSharedCase(const int                            
     case 18: {
       DeclareAndCast(IGESGeom_SplineCurve, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolSplineCurve tool;
       tool.OwnShared(anent, iter);
     }
@@ -227,7 +263,9 @@ void IGESGeom_GeneralModule::OwnSharedCase(const int                            
     case 19: {
       DeclareAndCast(IGESGeom_SplineSurface, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolSplineSurface tool;
       tool.OwnShared(anent, iter);
     }
@@ -235,7 +273,9 @@ void IGESGeom_GeneralModule::OwnSharedCase(const int                            
     case 20: {
       DeclareAndCast(IGESGeom_SurfaceOfRevolution, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolSurfaceOfRevolution tool;
       tool.OwnShared(anent, iter);
     }
@@ -243,7 +283,9 @@ void IGESGeom_GeneralModule::OwnSharedCase(const int                            
     case 21: {
       DeclareAndCast(IGESGeom_TabulatedCylinder, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolTabulatedCylinder tool;
       tool.OwnShared(anent, iter);
     }
@@ -251,7 +293,9 @@ void IGESGeom_GeneralModule::OwnSharedCase(const int                            
     case 22: {
       DeclareAndCast(IGESGeom_TransformationMatrix, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolTransformationMatrix tool;
       tool.OwnShared(anent, iter);
     }
@@ -259,7 +303,9 @@ void IGESGeom_GeneralModule::OwnSharedCase(const int                            
     case 23: {
       DeclareAndCast(IGESGeom_TrimmedSurface, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolTrimmedSurface tool;
       tool.OwnShared(anent, iter);
     }
@@ -278,161 +324,207 @@ IGESData_DirChecker IGESGeom_GeneralModule::DirChecker(
     case 1: {
       DeclareAndCast(IGESGeom_BSplineCurve, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESGeom_ToolBSplineCurve tool;
       return tool.DirChecker(anent);
     }
     case 2: {
       DeclareAndCast(IGESGeom_BSplineSurface, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESGeom_ToolBSplineSurface tool;
       return tool.DirChecker(anent);
     }
     case 3: {
       DeclareAndCast(IGESGeom_Boundary, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESGeom_ToolBoundary tool;
       return tool.DirChecker(anent);
     }
     case 4: {
       DeclareAndCast(IGESGeom_BoundedSurface, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESGeom_ToolBoundedSurface tool;
       return tool.DirChecker(anent);
     }
     case 5: {
       DeclareAndCast(IGESGeom_CircularArc, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESGeom_ToolCircularArc tool;
       return tool.DirChecker(anent);
     }
     case 6: {
       DeclareAndCast(IGESGeom_CompositeCurve, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESGeom_ToolCompositeCurve tool;
       return tool.DirChecker(anent);
     }
     case 7: {
       DeclareAndCast(IGESGeom_ConicArc, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESGeom_ToolConicArc tool;
       return tool.DirChecker(anent);
     }
     case 8: {
       DeclareAndCast(IGESGeom_CopiousData, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESGeom_ToolCopiousData tool;
       return tool.DirChecker(anent);
     }
     case 9: {
       DeclareAndCast(IGESGeom_CurveOnSurface, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESGeom_ToolCurveOnSurface tool;
       return tool.DirChecker(anent);
     }
     case 10: {
       DeclareAndCast(IGESGeom_Direction, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESGeom_ToolDirection tool;
       return tool.DirChecker(anent);
     }
     case 11: {
       DeclareAndCast(IGESGeom_Flash, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESGeom_ToolFlash tool;
       return tool.DirChecker(anent);
     }
     case 12: {
       DeclareAndCast(IGESGeom_Line, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESGeom_ToolLine tool;
       return tool.DirChecker(anent);
     }
     case 13: {
       DeclareAndCast(IGESGeom_OffsetCurve, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESGeom_ToolOffsetCurve tool;
       return tool.DirChecker(anent);
     }
     case 14: {
       DeclareAndCast(IGESGeom_OffsetSurface, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESGeom_ToolOffsetSurface tool;
       return tool.DirChecker(anent);
     }
     case 15: {
       DeclareAndCast(IGESGeom_Plane, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESGeom_ToolPlane tool;
       return tool.DirChecker(anent);
     }
     case 16: {
       DeclareAndCast(IGESGeom_Point, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESGeom_ToolPoint tool;
       return tool.DirChecker(anent);
     }
     case 17: {
       DeclareAndCast(IGESGeom_RuledSurface, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESGeom_ToolRuledSurface tool;
       return tool.DirChecker(anent);
     }
     case 18: {
       DeclareAndCast(IGESGeom_SplineCurve, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESGeom_ToolSplineCurve tool;
       return tool.DirChecker(anent);
     }
     case 19: {
       DeclareAndCast(IGESGeom_SplineSurface, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESGeom_ToolSplineSurface tool;
       return tool.DirChecker(anent);
     }
     case 20: {
       DeclareAndCast(IGESGeom_SurfaceOfRevolution, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESGeom_ToolSurfaceOfRevolution tool;
       return tool.DirChecker(anent);
     }
     case 21: {
       DeclareAndCast(IGESGeom_TabulatedCylinder, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESGeom_ToolTabulatedCylinder tool;
       return tool.DirChecker(anent);
     }
     case 22: {
       DeclareAndCast(IGESGeom_TransformationMatrix, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESGeom_ToolTransformationMatrix tool;
       return tool.DirChecker(anent);
     }
     case 23: {
       DeclareAndCast(IGESGeom_TrimmedSurface, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESGeom_ToolTrimmedSurface tool;
       return tool.DirChecker(anent);
     }
@@ -452,7 +544,9 @@ void IGESGeom_GeneralModule::OwnCheckCase(const int                             
     case 1: {
       DeclareAndCast(IGESGeom_BSplineCurve, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolBSplineCurve tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -460,7 +554,9 @@ void IGESGeom_GeneralModule::OwnCheckCase(const int                             
     case 2: {
       DeclareAndCast(IGESGeom_BSplineSurface, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolBSplineSurface tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -468,7 +564,9 @@ void IGESGeom_GeneralModule::OwnCheckCase(const int                             
     case 3: {
       DeclareAndCast(IGESGeom_Boundary, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolBoundary tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -476,7 +574,9 @@ void IGESGeom_GeneralModule::OwnCheckCase(const int                             
     case 4: {
       DeclareAndCast(IGESGeom_BoundedSurface, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolBoundedSurface tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -484,7 +584,9 @@ void IGESGeom_GeneralModule::OwnCheckCase(const int                             
     case 5: {
       DeclareAndCast(IGESGeom_CircularArc, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolCircularArc tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -492,7 +594,9 @@ void IGESGeom_GeneralModule::OwnCheckCase(const int                             
     case 6: {
       DeclareAndCast(IGESGeom_CompositeCurve, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolCompositeCurve tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -500,7 +604,9 @@ void IGESGeom_GeneralModule::OwnCheckCase(const int                             
     case 7: {
       DeclareAndCast(IGESGeom_ConicArc, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolConicArc tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -508,7 +614,9 @@ void IGESGeom_GeneralModule::OwnCheckCase(const int                             
     case 8: {
       DeclareAndCast(IGESGeom_CopiousData, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolCopiousData tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -516,7 +624,9 @@ void IGESGeom_GeneralModule::OwnCheckCase(const int                             
     case 9: {
       DeclareAndCast(IGESGeom_CurveOnSurface, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolCurveOnSurface tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -524,7 +634,9 @@ void IGESGeom_GeneralModule::OwnCheckCase(const int                             
     case 10: {
       DeclareAndCast(IGESGeom_Direction, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolDirection tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -532,7 +644,9 @@ void IGESGeom_GeneralModule::OwnCheckCase(const int                             
     case 11: {
       DeclareAndCast(IGESGeom_Flash, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolFlash tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -540,7 +654,9 @@ void IGESGeom_GeneralModule::OwnCheckCase(const int                             
     case 12: {
       DeclareAndCast(IGESGeom_Line, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolLine tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -548,7 +664,9 @@ void IGESGeom_GeneralModule::OwnCheckCase(const int                             
     case 13: {
       DeclareAndCast(IGESGeom_OffsetCurve, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolOffsetCurve tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -556,7 +674,9 @@ void IGESGeom_GeneralModule::OwnCheckCase(const int                             
     case 14: {
       DeclareAndCast(IGESGeom_OffsetSurface, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolOffsetSurface tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -564,7 +684,9 @@ void IGESGeom_GeneralModule::OwnCheckCase(const int                             
     case 15: {
       DeclareAndCast(IGESGeom_Plane, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolPlane tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -572,7 +694,9 @@ void IGESGeom_GeneralModule::OwnCheckCase(const int                             
     case 16: {
       DeclareAndCast(IGESGeom_Point, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolPoint tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -580,7 +704,9 @@ void IGESGeom_GeneralModule::OwnCheckCase(const int                             
     case 17: {
       DeclareAndCast(IGESGeom_RuledSurface, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolRuledSurface tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -588,7 +714,9 @@ void IGESGeom_GeneralModule::OwnCheckCase(const int                             
     case 18: {
       DeclareAndCast(IGESGeom_SplineCurve, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolSplineCurve tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -596,7 +724,9 @@ void IGESGeom_GeneralModule::OwnCheckCase(const int                             
     case 19: {
       DeclareAndCast(IGESGeom_SplineSurface, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolSplineSurface tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -604,7 +734,9 @@ void IGESGeom_GeneralModule::OwnCheckCase(const int                             
     case 20: {
       DeclareAndCast(IGESGeom_SurfaceOfRevolution, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolSurfaceOfRevolution tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -612,7 +744,9 @@ void IGESGeom_GeneralModule::OwnCheckCase(const int                             
     case 21: {
       DeclareAndCast(IGESGeom_TabulatedCylinder, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolTabulatedCylinder tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -620,7 +754,9 @@ void IGESGeom_GeneralModule::OwnCheckCase(const int                             
     case 22: {
       DeclareAndCast(IGESGeom_TransformationMatrix, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolTransformationMatrix tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -628,7 +764,9 @@ void IGESGeom_GeneralModule::OwnCheckCase(const int                             
     case 23: {
       DeclareAndCast(IGESGeom_TrimmedSurface, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESGeom_ToolTrimmedSurface tool;
       tool.OwnCheck(anent, shares, ach);
     }
@@ -895,20 +1033,28 @@ int IGESGeom_GeneralModule::CategoryNumber(const int                            
                                            const Interface_ShareTool&) const
 {
   if (CN == 11)
+  {
     return Interface_Category::Number("Drawing");
+  }
   if (CN == 15)
   {
     DeclareAndCast(IGESGeom_Plane, anent, ent);
     if (anent->HasSymbolAttach())
+    {
       return Interface_Category::Number("Drawing");
+    }
   }
   if (CN == 16)
   {
     DeclareAndCast(IGESGeom_Point, anent, ent);
     if (anent->HasDisplaySymbol())
+    {
       return Interface_Category::Number("Drawing");
+    }
   }
   if (CN == 22)
+  {
     return Interface_Category::Number("Auxiliary");
+  }
   return Interface_Category::Number("Shape");
 }

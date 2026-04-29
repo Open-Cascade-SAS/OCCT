@@ -29,7 +29,9 @@ void RWStepRepr_RWParametricRepresentationContext::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "parametric_representation_context"))
+  {
     return;
+  }
 
   // --- inherited field : contextIdentifier ---
 

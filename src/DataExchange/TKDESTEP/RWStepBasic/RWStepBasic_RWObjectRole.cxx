@@ -34,7 +34,9 @@ void RWStepBasic_RWObjectRole::ReadStep(const occ::handle<StepData_StepReaderDat
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "object_role"))
+  {
     return;
+  }
 
   // Own fields of ObjectRole
 
@@ -71,7 +73,9 @@ void RWStepBasic_RWObjectRole::WriteStep(StepData_StepWriter&                   
     SW.Send(ent->Description());
   }
   else
+  {
     SW.SendUndef();
+  }
 }
 
 //=================================================================================================

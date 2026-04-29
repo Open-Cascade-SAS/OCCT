@@ -27,15 +27,25 @@ HeaderSection_Protocol::HeaderSection_Protocol() = default;
 int HeaderSection_Protocol::TypeNumber(const occ::handle<Standard_Type>& atype) const
 {
   if (atype == STANDARD_TYPE(HeaderSection_FileName))
+  {
     return 1;
+  }
   else if (atype == STANDARD_TYPE(HeaderSection_FileDescription))
+  {
     return 2;
+  }
   else if (atype == STANDARD_TYPE(HeaderSection_FileSchema))
+  {
     return 3;
+  }
   else if (atype == STANDARD_TYPE(StepData_UndefinedEntity))
+  {
     return 4;
+  }
   else
+  {
     return 0;
+  }
 }
 
 const char* HeaderSection_Protocol::SchemaName(const occ::handle<Interface_InterfaceModel>&) const

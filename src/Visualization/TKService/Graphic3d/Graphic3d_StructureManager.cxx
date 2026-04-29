@@ -149,9 +149,13 @@ occ::handle<Graphic3d_Structure> Graphic3d_StructureManager::Identification(cons
   }
 
   if (notfound)
+  {
     return (StructNull);
+  }
   else
+  {
     return (SGfound);
+  }
 }
 
 const occ::handle<Graphic3d_GraphicDriver>& Graphic3d_StructureManager::GraphicDriver() const

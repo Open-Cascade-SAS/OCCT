@@ -35,7 +35,9 @@ void RWStepBasic_RWIdentificationRole::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "identification_role"))
+  {
     return;
+  }
 
   // Own fields of IdentificationRole
 
@@ -73,7 +75,9 @@ void RWStepBasic_RWIdentificationRole::WriteStep(
     SW.Send(ent->Description());
   }
   else
+  {
     SW.SendUndef();
+  }
 }
 
 //=================================================================================================

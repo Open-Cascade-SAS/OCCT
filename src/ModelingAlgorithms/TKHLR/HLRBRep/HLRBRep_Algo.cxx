@@ -61,9 +61,13 @@ int HLRBRep_Algo::Index(const TopoDS_Shape& S)
   for (int i = 1; i <= n; i++)
   {
     if (ShapeBounds(i).Shape()->OriginalShape() == S)
+    {
       return i;
+    }
     if (ShapeBounds(i).Shape()->OutLinedShape() == S)
+    {
       return i;
+    }
   }
 
   return 0;

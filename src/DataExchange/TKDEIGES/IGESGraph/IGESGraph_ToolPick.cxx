@@ -40,13 +40,19 @@ void IGESGraph_ToolPick::ReadOwnParams(const occ::handle<IGESGraph_Pick>& ent,
   // Reading nbPropertyValues(Integer)
   PR.ReadInteger(PR.Current(), "No. of property values", nbPropertyValues);
   if (nbPropertyValues != 1)
+  {
     PR.AddFail("No. of Property values : Value is not 1");
+  }
 
   if (PR.DefinedElseSkip())
+  {
     // Reading pickStatus(Integer)
     PR.ReadInteger(PR.Current(), "Pick Flag", pickStatus);
+  }
   else
+  {
     pickStatus = 0; // Default Value
+  }
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(nbPropertyValues, pickStatus);
@@ -75,7 +81,9 @@ bool IGESGraph_ToolPick::OwnCorrect(const occ::handle<IGESGraph_Pick>& ent) cons
 {
   bool res = (ent->NbPropertyValues() != 1);
   if (res)
+  {
     ent->Init(1, ent->PickFlag()); // nbpropertyvalues=1
+  }
   return res;
 }
 
@@ -97,9 +105,13 @@ void IGESGraph_ToolPick::OwnCheck(const occ::handle<IGESGraph_Pick>& ent,
                                   occ::handle<Interface_Check>& ach) const
 {
   if (ent->NbPropertyValues() != 1)
+  {
     ach->AddFail("No. of Property values : Value != 1");
+  }
   if ((ent->PickFlag() != 0) && (ent->PickFlag() != 1))
+  {
     ach->AddFail("Pick Flag : Value != 0/1");
+  }
 }
 
 void IGESGraph_ToolPick::OwnDump(const occ::handle<IGESGraph_Pick>& ent,
@@ -109,5 +121,5 @@ void IGESGraph_ToolPick::OwnDump(const occ::handle<IGESGraph_Pick>& ent,
 {
   S << "IGESGraph_Pick\n"
     << "No. of property values : " << ent->NbPropertyValues() << "\n"
-    << "Pick flag : " << ent->PickFlag() << (ent->PickFlag() == 0 ? " NO" : " YES") << std::endl;
+    << "Pick flag : " << ent->PickFlag() << (ent->PickFlag() == 0 ? " NO" : " YES") << '\n';
 }

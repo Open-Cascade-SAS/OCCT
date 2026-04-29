@@ -60,7 +60,9 @@ void DsgPrs_SymmetricPresentation::Add(const occ::handle<Prs3d_Presentation>& aP
   double scal;
   scal = VL1.Dot(VLa);
   if (scal < 0)
+  {
     VL1.Reverse();
+  }
   VL1.Multiply(h);
 
   gp_Pnt P1, P2;
@@ -93,9 +95,13 @@ void DsgPrs_SymmetricPresentation::Add(const occ::handle<Prs3d_Presentation>& aP
   parcur      = ElCLib::Parameter(L3, P2);
   double dist = std::abs(parmin - parcur);
   if (parcur < parmin)
+  {
     parmin = parcur;
+  }
   if (parcur > parmax)
+  {
     parmax = parcur;
+  }
   parcur      = ElCLib::Parameter(L3, OffsetPoint);
   gp_Pnt offp = ElCLib::Value(parcur, L3);
 
@@ -178,9 +184,13 @@ void DsgPrs_SymmetricPresentation::Add(const occ::handle<Prs3d_Presentation>& aP
     parcur = ElCLib::Parameter(L3, P2);
     dist   = std::abs(parmin - parcur);
     if (parcur < parmin)
+    {
       parmin = parcur;
+    }
     if (parcur > parmax)
+    {
       parmax = parcur;
+    }
     parcur  = ElCLib::Parameter(L3, OffsetPoint);
     offp    = ElCLib::Value(parcur, L3);
     outside = false;
@@ -262,9 +272,13 @@ void DsgPrs_SymmetricPresentation::Add(const occ::handle<Prs3d_Presentation>& aP
     parcur = ElCLib::Parameter(L3, P2);
     dist   = std::abs(parmin - parcur);
     if (parcur < parmin)
+    {
       parmin = parcur;
+    }
     if (parcur > parmax)
+    {
       parmax = parcur;
+    }
     parcur  = ElCLib::Parameter(L3, OffsetPoint);
     offp    = ElCLib::Value(parcur, L3);
     outside = false;
@@ -338,10 +352,14 @@ void DsgPrs_SymmetricPresentation::Add(const occ::handle<Prs3d_Presentation>& aP
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   if (dist < (LA->ArrowAspect()->Length() + LA->ArrowAspect()->Length()))
+  {
     outside = true;
+  }
   gp_Dir arrdir = L3.Direction().Reversed();
   if (outside)
+  {
     arrdir.Reverse();
+  }
   // arrow 1 ----
   Prs3d_Arrow::Draw(aPresentation->CurrentGroup(),
                     P1,
@@ -471,7 +489,9 @@ void DsgPrs_SymmetricPresentation::Add(const occ::handle<Prs3d_Presentation>& aP
   gp_Pnt ProjCenter1     = ElCLib::Value(ElCLib::Parameter(aAxis, Center1), aAxis);
   gp_Vec Vp(ProjCenter1, Center1);
   if (Vp.Magnitude() <= Precision::Confusion())
+  {
     Vp = gp_Vec(aAxis.Direction()) ^ aCircle1.Position().Direction();
+  }
 
   double Dt, R, h;
   Dt = ProjCenter1.Distance(ProjOffsetPoint);
@@ -495,9 +515,13 @@ void DsgPrs_SymmetricPresentation::Add(const occ::handle<Prs3d_Presentation>& aP
   parcur      = ElCLib::Parameter(L3, P2);
   double dist = std::abs(parmin - parcur);
   if (parcur < parmin)
+  {
     parmin = parcur;
+  }
   if (parcur > parmax)
+  {
     parmax = parcur;
+  }
   parcur = ElCLib::Parameter(L3, OffsetPnt);
 
   bool outside = false;
@@ -561,7 +585,9 @@ void DsgPrs_SymmetricPresentation::Add(const occ::handle<Prs3d_Presentation>& aP
   alphaIter = Dalpha;
   int i;
   for (i = 2; i <= nbp; i++, alphaIter += Dalpha)
+  {
     aPrims->AddVertex(ElCLib::Value(ParamPAttach1 + alphaIter, aCircle1));
+  }
   aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
   //==== PROCESSING OF CALL 2 =====
@@ -574,7 +600,9 @@ void DsgPrs_SymmetricPresentation::Add(const occ::handle<Prs3d_Presentation>& aP
 
   alpha = fabs(ParamP2 - ParamPAttach2);
   if (alpha <= Precision::Confusion())
+  {
     alpha = 1.e-5;
+  }
   if (ParamP2 < ParamPAttach2)
   {
     if (alpha > M_PI)
@@ -608,7 +636,9 @@ void DsgPrs_SymmetricPresentation::Add(const occ::handle<Prs3d_Presentation>& aP
   aPrims->AddVertex(AttachmentPoint2);
   alphaIter = Dalpha;
   for (i = 2; i <= nbp; i++, alphaIter += Dalpha)
+  {
     aPrims->AddVertex(ElCLib::Value(ParamPAttach2 + alphaIter, aCircle2));
+  }
   aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
   //==== ARROWS ================
@@ -616,10 +646,14 @@ void DsgPrs_SymmetricPresentation::Add(const occ::handle<Prs3d_Presentation>& aP
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   if (dist < (LA->ArrowAspect()->Length() + LA->ArrowAspect()->Length()))
+  {
     outside = true;
+  }
   gp_Dir arrdir = L3.Direction().Reversed();
   if (outside)
+  {
     arrdir.Reverse();
+  }
   // arrow 1 ----
   Prs3d_Arrow::Draw(aPresentation->CurrentGroup(),
                     P1,
@@ -807,9 +841,13 @@ void DsgPrs_SymmetricPresentation::Add(const occ::handle<Prs3d_Presentation>& aP
     parcur      = ElCLib::Parameter(L3, P2);
     double dist = std::abs(parmin - parcur);
     if (parcur < parmin)
+    {
       parmin = parcur;
+    }
     if (parcur > parmax)
+    {
       parmax = parcur;
+    }
     parcur = ElCLib::Parameter(L3, OffsetPoint);
 
     bool outside = false;
@@ -847,10 +885,14 @@ void DsgPrs_SymmetricPresentation::Add(const occ::handle<Prs3d_Presentation>& aP
 
     //==== ARROWS ================
     if (dist < (LA->ArrowAspect()->Length() + LA->ArrowAspect()->Length()))
+    {
       outside = true;
+    }
     gp_Dir arrdir = L3.Direction().Reversed();
     if (outside)
+    {
       arrdir.Reverse();
+    }
     // arrow 1 ----
     Prs3d_Arrow::Draw(aPresentation->CurrentGroup(),
                       P1,

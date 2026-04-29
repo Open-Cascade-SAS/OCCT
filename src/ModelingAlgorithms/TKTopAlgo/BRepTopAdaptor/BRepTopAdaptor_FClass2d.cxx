@@ -122,7 +122,9 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace, const
 
     TopExp_Explorer Explorer;
     for (Explorer.Init(aFaceExplorer.Current(), TopAbs_EDGE); Explorer.More(); Explorer.Next())
+    {
       NbEdges++;
+    }
     aNbE = NbEdges;
 
     gp_Pnt Ancienpnt3d(0, 0, 0);
@@ -138,10 +140,14 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace, const
       {
         double pfbid, plbid;
         if (BRep_Tool::CurveOnSurface(edge, Face, pfbid, plbid).IsNull())
+        {
           return;
+        }
 
         if (std::abs(plbid - pfbid) < 1.e-9)
+        {
           continue;
+        }
 
         bool degenerated = false;
         if (BRep_Tool::Degenerated(edge))
@@ -174,11 +180,15 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace, const
         int nbs = Geom2dInt_Geom2dCurveTool::NbSamples(aCurveAdaptor2D);
         //-- Attention to rational bsplines of degree 3. (ends of circles among others)
         if (nbs > 2)
+        {
           nbs *= 4;
+        }
         double du = (plbid - pfbid) / (double)(nbs - 1);
         double u  = 0.0;
         if (Or == TopAbs_FORWARD)
+        {
           u = pfbid;
+        }
         else
         {
           u  = plbid;
@@ -191,19 +201,29 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace, const
         //-- Try to remote the first point of the current edge
         //-- from the last saved point
         if (firstpoint == 2)
+        {
           u += du;
+        }
         int Avant = nbpnts;
         for (int e = firstpoint; e <= nbs; e++)
         {
           gp_Pnt2d P2d = aCurveAdaptor2D.Value(u);
           if (P2d.X() < Umin)
+          {
             Umin = P2d.X();
+          }
           if (P2d.X() > Umax)
+          {
             Umax = P2d.X();
+          }
           if (P2d.Y() < Vmin)
+          {
             Vmin = P2d.Y();
+          }
           if (P2d.Y() > Vmax)
+          {
             Vmax = P2d.Y();
+          }
 
           double dist3dptcourant_ancienpnt = 1e+20; // RealLast();
           gp_Pnt P3d;
@@ -211,14 +231,18 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace, const
           {
             P3d = aCurveAdaptor3D.Value(u);
             if (nbpnts > 1 && Ancienpnt3dinitialise)
+            {
               dist3dptcourant_ancienpnt = P3d.Distance(Ancienpnt3d);
+            }
           }
           bool IsRealCurve3d = true; // patch
           if (dist3dptcourant_ancienpnt < Precision::Confusion())
           {
             gp_Pnt MidP3d = aCurveAdaptor3D.Value(u - du / 2.);
             if (P3d.Distance(MidP3d) < Precision::Confusion())
+            {
               IsRealCurve3d = false;
+            }
           }
           if (IsRealCurve3d)
           {
@@ -247,13 +271,19 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace, const
             double   dV = std::abs(Pp.Y() - SeqPnt2d(ii - 1).Y());
             //-- printf(" (du=%7.5g   dv=%7.5g)",dU,dV);
             if (dU > FlecheU)
+            {
               FlecheU = dU;
+            }
             if (dV > FlecheV)
+            {
               FlecheV = dV;
+            }
           }
         } // for(e=firstpoint
         if (firstpoint == 1)
+        {
           firstpoint = 2;
+        }
         WireIsNotEmpty = true;
       } // if(Or==FORWARD,REVERSED
     } //-- Edges -> for(Ware.Explorer
@@ -297,7 +327,9 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace, const
         {
           //		  if(im2>=nbpnts) im2=1;
           if (im1 >= nbpnts)
+          {
             im1 = 1;
+          }
           PClass(ii) = SeqPnt2d.Value(ii);
           //		  gp_Vec2d A(PClass(im2),PClass(im1));
           //		  gp_Vec2d B(PClass(im1),PClass(im0));
@@ -331,11 +363,15 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace, const
               double pfbid, plbid;
               BRep_Tool::Range(edge, Face, pfbid, plbid);
               if (std::abs(plbid - pfbid) < 1.e-9)
+              {
                 continue;
+              }
               BRepAdaptor_Curve2d           C(edge, Face);
               GCPnts_QuasiUniformDeflection aDiscr(C, aDiscrDefl);
               if (!aDiscr.IsDone())
+              {
                 break;
+              }
               int nbp   = aDiscr.NbPoints();
               int iStep = 1, i = 1, iEnd = nbp + 1;
               if (Or == TopAbs_REVERSED)
@@ -345,7 +381,9 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace, const
                 iEnd  = 0;
               }
               if (firstpoint == 2)
+              {
                 i += iStep;
+              }
               for (; i != iEnd; i += iStep)
               {
                 gp_Pnt2d aP2d = C.Value(aDiscr.Parameter(i));
@@ -360,9 +398,13 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace, const
                 double   dU = std::abs(Pp.X() - SeqPnt2d(ii - 1).X());
                 double   dV = std::abs(Pp.Y() - SeqPnt2d(ii - 1).Y());
                 if (dU > FlecheU)
+                {
                   FlecheU = dU;
+                }
                 if (dV > FlecheV)
+                {
                   FlecheV = dV;
+                }
               }
               firstpoint = 2;
             }
@@ -378,7 +420,9 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace, const
           for (int ii = 1; ii < nbpnts; ii++, im0++, im1++)
           {
             if (im1 >= nbpnts)
+            {
               im1 = 1;
+            }
             PClass(ii) = SeqPnt2d.Value(ii);
             square +=
               (PClass(im0).X() - PClass(im1).X()) * (PClass(im0).Y() + PClass(im1).Y()) * .5;
@@ -402,9 +446,13 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace, const
         }
 
         if (FlecheU < Toluv)
+        {
           FlecheU = Toluv;
+        }
         if (FlecheV < Toluv)
+        {
           FlecheV = Toluv;
+        }
         TabClass.Append(CSLib_Class2d(PClass, FlecheU, FlecheV, Umin, Vmin, Umax, Vmax));
       } // if(nbpoints>3
       else
@@ -425,7 +473,9 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace, const
   {
     //-- If an error was detected on a wire: set all TabOrien to -1
     if (anIsBadWire)
+    {
       TabOrien(1) = -1;
+    }
 
     if (surf->GetType() == GeomAbs_Cone || surf->GetType() == GeomAbs_Cylinder
         || surf->GetType() == GeomAbs_Torus || surf->GetType() == GeomAbs_Sphere
@@ -434,7 +484,9 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace, const
     {
       double uuu = M_PI + M_PI - (Umax - Umin);
       if (uuu < 0)
+      {
         uuu = 0;
+      }
       U1 = 0.0;      // modified by NIZHNY-OFV  Thu May 31 14:24:10 2001 ---> //Umin-uuu*0.5;
       U2 = 2 * M_PI; // modified by NIZHNY-OFV  Thu May 31 14:24:35 2001 ---> //U1+M_PI+M_PI;
     }
@@ -447,7 +499,9 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace, const
     {
       double uuu = M_PI + M_PI - (Vmax - Vmin);
       if (uuu < 0)
+      {
         uuu = 0;
+      }
       V1 = 0.0;      // modified by NIZHNY-OFV  Thu May 31 14:24:55 2001 ---> //Vmin-uuu*0.5;
       V2 = 2 * M_PI; // modified by NIZHNY-OFV  Thu May 31 14:24:59 2001 ---> //V1+M_PI+M_PI;
     }
@@ -498,24 +552,36 @@ TopAbs_State BRepTopAdaptor_FClass2d::Perform(const gp_Pnt2d& _Puv,
     if (IsUPer)
     {
       if (uu < Umin)
+      {
         while (uu < Umin)
+        {
           uu += uperiod;
+        }
+      }
       else
       {
         while (uu >= Umin)
+        {
           uu -= uperiod;
+        }
         uu += uperiod;
       }
     }
     if (IsVPer)
     {
       if (vv < Vmin)
+      {
         while (vv < Vmin)
+        {
           vv += vperiod;
+        }
+      }
       else
       {
         while (vv >= Vmin)
+        {
           vv -= vperiod;
+        }
         vv += vperiod;
       }
     }
@@ -578,9 +644,13 @@ TopAbs_State BRepTopAdaptor_FClass2d::Perform(const gp_Pnt2d& _Puv,
     }
 
     if (!RecadreOnPeriodic || (!IsUPer && !IsVPer))
+    {
       return aStatus;
+    }
     if (aStatus == TopAbs_IN || aStatus == TopAbs_ON)
+    {
       return aStatus;
+    }
 
     if (!urecadre)
     {
@@ -588,7 +658,9 @@ TopAbs_State BRepTopAdaptor_FClass2d::Perform(const gp_Pnt2d& _Puv,
       urecadre = true;
     }
     else if (IsUPer)
+    {
       u += uperiod;
+    }
     if (u > Umax || !IsUPer)
     {
       if (!vrecadre)
@@ -597,12 +669,16 @@ TopAbs_State BRepTopAdaptor_FClass2d::Perform(const gp_Pnt2d& _Puv,
         vrecadre = true;
       }
       else if (IsVPer)
+      {
         v += vperiod;
+      }
 
       u = uu;
 
       if (v > Vmax || !IsVPer)
+      {
         return aStatus;
+      }
     }
   } // for (;;)
 }
@@ -638,24 +714,36 @@ TopAbs_State BRepTopAdaptor_FClass2d::TestOnRestriction(const gp_Pnt2d& _Puv,
     if (IsUPer)
     {
       if (uu < Umin)
+      {
         while (uu < Umin)
+        {
           uu += uperiod;
+        }
+      }
       else
       {
         while (uu >= Umin)
+        {
           uu -= uperiod;
+        }
         uu += uperiod;
       }
     }
     if (IsVPer)
     {
       if (vv < Vmin)
+      {
         while (vv < Vmin)
+        {
           vv += vperiod;
+        }
+      }
       else
       {
         while (vv >= Vmin)
+        {
           vv -= vperiod;
+        }
         vv += vperiod;
       }
     }
@@ -714,9 +802,13 @@ TopAbs_State BRepTopAdaptor_FClass2d::TestOnRestriction(const gp_Pnt2d& _Puv,
     }
 
     if (!RecadreOnPeriodic || (!IsUPer && !IsVPer))
+    {
       return aStatus;
+    }
     if (aStatus == TopAbs_IN || aStatus == TopAbs_ON)
+    {
       return aStatus;
+    }
 
     if (!urecadre)
     {
@@ -724,7 +816,9 @@ TopAbs_State BRepTopAdaptor_FClass2d::TestOnRestriction(const gp_Pnt2d& _Puv,
       urecadre = true;
     }
     else if (IsUPer)
+    {
       u += uperiod;
+    }
     if (u > Umax || !IsUPer)
     {
       if (!vrecadre)
@@ -733,12 +827,16 @@ TopAbs_State BRepTopAdaptor_FClass2d::TestOnRestriction(const gp_Pnt2d& _Puv,
         vrecadre = true;
       }
       else if (IsVPer)
+      {
         v += vperiod;
+      }
 
       u = uu;
 
       if (v > Vmax || !IsVPer)
+      {
         return aStatus;
+      }
     }
   } // for (;;)
 }

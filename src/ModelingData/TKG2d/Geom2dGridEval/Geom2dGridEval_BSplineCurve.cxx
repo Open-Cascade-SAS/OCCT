@@ -40,7 +40,9 @@ struct CurveData
 bool extractCurveData(const occ::handle<Geom2d_BSplineCurve>& theGeom, CurveData& theData)
 {
   if (theGeom.IsNull())
+  {
     return false;
+  }
 
   theData.FlatKnots  = &theGeom->KnotSequence();
   theData.Poles      = &theGeom->Poles();
@@ -95,9 +97,13 @@ inline int countSpanSize(const NCollection_Array1<double>& theParams,
                               aSpan,
                               aAdjusted);
     if (aSpan == theTargetSpan)
+    {
       ++aCount;
+    }
     else
+    {
       break;
+    }
   }
   return aCount;
 }

@@ -40,14 +40,20 @@ TopoDS_Shape ShapeBuild_ReShape::Apply(const TopoDS_Shape&    shape,
                                        const int              buildmode)
 {
   if (shape.IsNull())
+  {
     return shape;
+  }
   TopoDS_Shape newsh;
   if (Status(shape, newsh, false) != 0)
+  {
     return newsh;
+  }
 
   TopAbs_ShapeEnum st = shape.ShapeType();
   if (st == until)
+  {
     return newsh; // critere d arret
+  }
 
   int modif = 0;
   if (st == TopAbs_COMPOUND || st == TopAbs_COMPSOLID)
@@ -60,12 +66,18 @@ TopoDS_Shape ShapeBuild_ReShape::Apply(const TopoDS_Shape&    shape,
       const TopoDS_Shape& sh   = it.Value();
       int                 stat = Status(sh, newsh, false);
       if (stat != 0)
+      {
         modif = 1;
+      }
       if (stat >= 0)
+      {
         B.Add(C, newsh);
+      }
     }
     if (modif == 0)
+    {
       return shape;
+    }
     return C;
   }
 
@@ -94,22 +106,30 @@ TopoDS_Shape ShapeBuild_ReShape::Apply(const TopoDS_Shape&    shape,
           nbsub++;
         }
         if (nbsub == 0)
+        {
           modif = -1;
+        }
         B.Add(C, newsh); // c est tout
       }
       else
       {
         if (modif == 0 && !sh.IsEqual(newsh))
+        {
           modif = 1;
+        }
         B.Add(C, newsh);
         B.Add(S, newsh);
       }
     }
 
     if ((modif < 0 && buildmode < 2) || (modif == 0 && buildmode < 1))
+    {
       return C;
+    }
     else
+    {
       return S;
+    }
   }
 
   if (st == TopAbs_SHELL)
@@ -137,26 +157,32 @@ TopoDS_Shape ShapeBuild_ReShape::Apply(const TopoDS_Shape&    shape,
           nbsub++;
         }
         if (nbsub == 0)
+        {
           modif = -1;
+        }
         B.Add(C, newsh); // c est tout
       }
       else
       {
         if (modif == 0 && !sh.IsEqual(newsh))
+        {
           modif = 1;
+        }
         B.Add(C, newsh);
         B.Add(S, newsh);
       }
     }
     if ((modif < 0 && buildmode < 2) || (modif == 0 && buildmode < 1))
+    {
       return C;
+    }
     else
     {
       S.Closed(BRep_Tool::IsClosed(S));
       return S;
     }
   }
-  std::cout << "BRepTools_ReShape::Apply NOT YET IMPLEMENTED" << std::endl;
+  std::cout << "BRepTools_ReShape::Apply NOT YET IMPLEMENTED" << '\n';
   return shape;
 }
 
@@ -177,7 +203,9 @@ TopoDS_Shape ShapeBuild_ReShape::applyImpl(const TopoDS_Shape&                  
 {
   myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
   if (theShape.IsNull())
+  {
     return theShape;
+  }
 
   // Apply direct replacement
   TopoDS_Shape aNewShape = Value(theShape);
@@ -193,7 +221,9 @@ TopoDS_Shape ShapeBuild_ReShape::applyImpl(const TopoDS_Shape&                  
   // stack, its replacement must be a compound that transitively contains it.
   // Return the direct replacement without descending to break the cycle.
   if (theInFlight.Contains(theShape.TShape()))
+  {
     return aNewShape;
+  }
 
   // If shape was replaced, apply modifications to the result recursively.
   bool aConsLoc = ModeConsiderLocation();
@@ -208,9 +238,13 @@ TopoDS_Shape ShapeBuild_ReShape::applyImpl(const TopoDS_Shape&                  
 
   TopAbs_ShapeEnum aST = theShape.ShapeType();
   if (aST >= theUntil)
+  {
     return aNewShape; // stop criterion
+  }
   if (aST == TopAbs_VERTEX || aST == TopAbs_SHAPE)
+  {
     return theShape;
+  }
 
   BRep_Builder aBuilder;
 
@@ -229,7 +263,9 @@ TopoDS_Shape ShapeBuild_ReShape::applyImpl(const TopoDS_Shape&                  
     if (aNewShape != aSh)
     {
       if (ShapeExtend::DecodeStatus(myStatus, ShapeExtend_DONE4))
+      {
         aLocStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE4);
+      }
       aModif = true;
     }
     if (aNewShape.IsNull())
@@ -249,16 +285,24 @@ TopoDS_Shape ShapeBuild_ReShape::applyImpl(const TopoDS_Shape&                  
     {
       const TopoDS_Shape& aSubSh = aSubIt.Value();
       if (aSubSh.ShapeType() == aSh.ShapeType())
+      {
         aBuilder.Add(aResult, aSubSh);
+      }
       else
+      {
         aLocStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL1);
+      }
     }
     if (!aNbItems)
+    {
       aLocStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL1);
+    }
   }
   theInFlight.Remove(theShape.TShape());
   if (!aModif)
+  {
     return theShape;
+  }
 
   // Restore range on edge broken by EmptyCopied()
   if (aST == TopAbs_EDGE)
@@ -267,7 +311,9 @@ TopoDS_Shape ShapeBuild_ReShape::applyImpl(const TopoDS_Shape&                  
     anSBE.CopyRanges(TopoDS::Edge(aResult), TopoDS::Edge(theShape));
   }
   else if (aST == TopAbs_WIRE || aST == TopAbs_SHELL)
+  {
     aResult.Closed(BRep_Tool::IsClosed(aResult));
+  }
   aResult.Orientation(anOrient);
   myStatus = aLocStatus;
 

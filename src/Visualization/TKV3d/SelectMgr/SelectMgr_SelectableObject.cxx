@@ -379,10 +379,14 @@ void SelectMgr_SelectableObject::SetZLayer(const Graphic3d_ZLayerId theLayerId)
 
   // update selection presentations
   if (!mySelectionPrs.IsNull())
+  {
     mySelectionPrs->SetZLayer(theLayerId);
+  }
 
   if (!myHilightPrs.IsNull())
+  {
     myHilightPrs->SetZLayer(theLayerId);
+  }
 
   // update all entity owner presentations
   for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(myselections);
@@ -507,7 +511,9 @@ Bnd_Box SelectMgr_SelectableObject::BndBoxOfSelected(
     theOwners)
 {
   if (theOwners->IsEmpty())
+  {
     return Bnd_Box();
+  }
 
   Bnd_Box aBnd;
   for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(myselections);
@@ -516,7 +522,9 @@ Bnd_Box SelectMgr_SelectableObject::BndBoxOfSelected(
   {
     const occ::handle<SelectMgr_Selection>& aSel = aSelIter.Value();
     if (aSel->GetSelectionState() != SelectMgr_SOS_Activated)
+    {
       continue;
+    }
 
     for (NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator aSelEntIter(
            aSel->Entities());

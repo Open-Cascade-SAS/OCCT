@@ -387,7 +387,9 @@ TopoDS_Vertex BRepMesh_ModelHealer::getCommonVertex(const IMeshData::IEdgeHandle
   // This shape is invalid and can lead to exception in this code.
 
   if (aVertex1_1.IsNull() || aVertex1_2.IsNull())
+  {
     return TopoDS_Vertex();
+  }
 
   if (theEdge1->GetEdge().IsSame(theEdge2->GetEdge()))
   {
@@ -398,7 +400,9 @@ TopoDS_Vertex BRepMesh_ModelHealer::getCommonVertex(const IMeshData::IEdgeHandle
   TopExp::Vertices(theEdge2->GetEdge(), aVertex2_1, aVertex2_2);
 
   if (aVertex2_1.IsNull() || aVertex2_2.IsNull())
+  {
     return TopoDS_Vertex();
+  }
 
   if (isSameWithSomeOf(aVertex1_1, aVertex2_1, aVertex2_2))
   {

@@ -49,32 +49,60 @@ occ::handle<Interface_Protocol> IGESDraw_Protocol::Resource(const int /*num*/) c
 int IGESDraw_Protocol::TypeNumber(const occ::handle<Standard_Type>& atype) const
 {
   if (atype == STANDARD_TYPE(IGESDraw_CircArraySubfigure))
+  {
     return 1;
+  }
   else if (atype == STANDARD_TYPE(IGESDraw_ConnectPoint))
+  {
     return 2;
+  }
   else if (atype == STANDARD_TYPE(IGESDraw_Drawing))
+  {
     return 3;
+  }
   else if (atype == STANDARD_TYPE(IGESDraw_DrawingWithRotation))
+  {
     return 4;
+  }
   else if (atype == STANDARD_TYPE(IGESDraw_LabelDisplay))
+  {
     return 5;
+  }
   else if (atype == STANDARD_TYPE(IGESDraw_NetworkSubfigure))
+  {
     return 6;
+  }
   else if (atype == STANDARD_TYPE(IGESDraw_NetworkSubfigureDef))
+  {
     return 7;
+  }
   else if (atype == STANDARD_TYPE(IGESDraw_PerspectiveView))
+  {
     return 8;
+  }
   else if (atype == STANDARD_TYPE(IGESDraw_Planar))
+  {
     return 9;
+  }
   else if (atype == STANDARD_TYPE(IGESDraw_RectArraySubfigure))
+  {
     return 10;
+  }
   else if (atype == STANDARD_TYPE(IGESDraw_SegmentedViewsVisible))
+  {
     return 11;
+  }
   else if (atype == STANDARD_TYPE(IGESDraw_View))
+  {
     return 12;
+  }
   else if (atype == STANDARD_TYPE(IGESDraw_ViewsVisible))
+  {
     return 13;
+  }
   else if (atype == STANDARD_TYPE(IGESDraw_ViewsVisibleWithAttr))
+  {
     return 14;
+  }
   return 0;
 }

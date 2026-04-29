@@ -74,13 +74,17 @@ bool BRepSweep_Trsf::Process(const TopoDS_Shape& aGenS, const Sweep_NumShape& aD
     for (Jt.Init(aGenS); Jt.More(); Jt.Next())
     {
       if (Process(Jt.Value(), aDirV))
+      {
         touch = true;
+      }
     }
     if (!touch || !dotrsf)
     {
       TopoDS_Shape newShape = aGenS;
       if (dotrsf)
+      {
         newShape.Move(myLocation);
+      }
       myShapes(iG, iD)      = newShape;
       myBuiltShapes(iG, iD) = true;
     }

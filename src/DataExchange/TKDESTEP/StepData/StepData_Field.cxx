@@ -82,7 +82,9 @@ void StepData_Field::CopyFrom(const StepData_Field& other)
   {
     DeclareAndCast(TCollection_HAsciiString, str, theany);
     if (!str.IsNull())
+    {
       theany = new TCollection_HAsciiString(str->ToCString());
+    }
     return;
   }
   if (thekind == KindSelect)
@@ -112,7 +114,9 @@ void StepData_Field::CopyFrom(const StepData_Field& other)
     {
       occ::handle<StepData_SelectNamed> sn2 = new StepData_SelectNamed;
       if (sn->HasName())
+      {
         sn2->SetName(sn2->Name());
+      }
       sn2->CField().CopyFrom(*this);
       theany = sn2;
       return;
@@ -129,7 +133,9 @@ void StepData_Field::CopyFrom(const StepData_Field& other)
       up                                        = hi->Upper();
       occ::handle<NCollection_HArray1<int>> hi2 = new NCollection_HArray1<int>(low, up);
       for (i = low; i <= up; i++)
+      {
         hi2->SetValue(i, hi->Value(i));
+      }
       return;
     }
     DeclareAndCast(NCollection_HArray1<double>, hr, theany);
@@ -139,7 +145,9 @@ void StepData_Field::CopyFrom(const StepData_Field& other)
       up                                           = hr->Upper();
       occ::handle<NCollection_HArray1<double>> hr2 = new NCollection_HArray1<double>(low, up);
       for (i = low; i <= up; i++)
+      {
         hr2->SetValue(i, hr->Value(i));
+      }
       return;
     }
     DeclareAndCast(NCollection_HArray1<occ::handle<TCollection_HAsciiString>>, hs, theany);
@@ -150,7 +158,9 @@ void StepData_Field::CopyFrom(const StepData_Field& other)
       occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> hs2 =
         new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(low, up);
       for (i = low; i <= up; i++)
+      {
         hs2->SetValue(i, new TCollection_HAsciiString(hs->Value(i)));
+      }
       return;
     }
     DeclareAndCast(NCollection_HArray1<occ::handle<Standard_Transient>>, ht, theany);
@@ -162,7 +172,9 @@ void StepData_Field::CopyFrom(const StepData_Field& other)
         new NCollection_HArray1<occ::handle<Standard_Transient>>(low, up);
       //  Should handle SelectMember cases...
       for (i = low; i <= up; i++)
+      {
         ht2->SetValue(i, ht->Value(i));
+      }
       return;
     }
   }
@@ -198,7 +210,9 @@ void StepData_Field::SetInt(const int val)
   }
   if (thekind == KindInteger || thekind == KindBoolean || thekind == KindLogical
       || thekind == KindEnum)
+  {
     theint = val;
+  }
   //  else ?
 }
 
@@ -245,11 +259,17 @@ void StepData_Field::SetLogical(const StepData_Logical val)
   }
   Clear(KindLogical);
   if (val == StepData_LFalse)
+  {
     theint = 0;
+  }
   if (val == StepData_LTrue)
+  {
     theint = 1;
+  }
   if (val == StepData_LUnknown)
+  {
     theint = 2;
+  }
 }
 
 void StepData_Field::SetReal(const double val)
@@ -279,7 +299,9 @@ void StepData_Field::SetString(const char* const val)
     }
   }
   if (thekind != KindEnum)
+  {
     Clear(KindString);
+  }
   theany = new TCollection_HAsciiString(val);
 }
 
@@ -288,13 +310,17 @@ void StepData_Field::SetEnum(const int val, const char* const text)
   Clear(KindEnum);
   SetInt(val);
   if (text && text[0] != '\0')
+  {
     SetString(text);
+  }
 }
 
 void StepData_Field::SetSelectMember(const occ::handle<StepData_SelectMember>& val)
 {
   if (val.IsNull())
+  {
     return;
+  }
   Clear(KindSelect);
   theany = val;
 }
@@ -338,7 +364,9 @@ void StepData_Field::SetList(const int size, const int first)
       theany = new NCollection_HArray1<occ::handle<Standard_Transient>>(first, first + size - 1);
   }
   if (thekind == 0)
+  {
     thekind = KindAny;
+  }
   thekind |= KindList;
 }
 
@@ -354,7 +382,9 @@ void StepData_Field::SetList2(const int siz1, const int siz2, const int f1, cons
   {
     DeclareAndCast(StepData_SelectMember, sm, theany);
     if (!sm.IsNull())
+    {
       kind = sm->Kind();
+    }
   }
   switch (kind)
   {
@@ -381,7 +411,9 @@ void StepData_Field::SetList2(const int siz1, const int siz2, const int f1, cons
                                                                         f2 + siz2 - 1);
   }
   if (thekind == 0)
+  {
     thekind = KindAny;
+  }
   thekind |= KindList2;
 }
 
@@ -391,7 +423,9 @@ void StepData_Field::Set(const occ::handle<Standard_Transient>& val)
   Clear();
   theany = val;
   if (val.IsNull())
+  {
     return;
+  }
   if (val->IsKind(STANDARD_TYPE(TCollection_HAsciiString)))
   {
     thekind = KindString;
@@ -407,7 +441,9 @@ void StepData_Field::Set(const occ::handle<Standard_Transient>& val)
   if (!hi.IsNull())
   {
     if (kind == 0)
+    {
       kind = KindInteger;
+    }
     thekind = kind | KindList;
     theint  = hi->Length();
     return;
@@ -430,7 +466,9 @@ void StepData_Field::Set(const occ::handle<Standard_Transient>& val)
   if (!ht.IsNull())
   {
     if (kind == 0)
+    {
       kind = KindAny;
+    }
     thekind = kind | KindList;
     theint  = ht->Length();
     return;
@@ -439,7 +477,9 @@ void StepData_Field::Set(const occ::handle<Standard_Transient>& val)
   if (!hi2.IsNull())
   {
     if (kind == 0)
+    {
       kind = KindInteger;
+    }
     thekind = kind | KindList2;
     theint  = hi2->ColLength();
     thereal = double(hi2->RowLength());
@@ -457,7 +497,9 @@ void StepData_Field::Set(const occ::handle<Standard_Transient>& val)
   if (!ht2.IsNull())
   {
     if (kind == 0)
+    {
       kind = KindAny;
+    }
     thekind = kind | KindList2;
     theint  = ht2->ColLength();
     thereal = double(hi2->RowLength());
@@ -469,10 +511,14 @@ void StepData_Field::ClearItem(const int num)
 {
   DeclareAndCast(NCollection_HArray1<occ::handle<Standard_Transient>>, ht, theany);
   if (!ht.IsNull())
+  {
     ht->ChangeValue(num).Nullify();
+  }
   DeclareAndCast(NCollection_HArray1<occ::handle<TCollection_HAsciiString>>, hs, theany);
   if (!hs.IsNull())
+  {
     hs->ChangeValue(num).Nullify();
+  }
 }
 
 void StepData_Field::SetInt(const int num, const int val, const int kind)
@@ -486,7 +532,9 @@ void StepData_Field::SetInt(const int num, const int val, const int kind)
   //   If already started with something else, change and put selects
   DeclareAndCast(NCollection_HArray1<occ::handle<Standard_Transient>>, ht, theany);
   if (ht.IsNull())
+  {
     return; // yena erreur, ou alors OfReal
+  }
   thekind = KindAny | KindList;
   DeclareAndCast(StepData_SelectMember, sm, ht->Value(num));
   if (sm.IsNull())
@@ -511,11 +559,17 @@ void StepData_Field::SetBoolean(const int num, const bool val)
 void StepData_Field::SetLogical(const int num, const StepData_Logical val)
 {
   if (val == StepData_LFalse)
+  {
     SetInt(num, 0, KindLogical);
+  }
   if (val == StepData_LTrue)
+  {
     SetInt(num, 1, KindLogical);
+  }
   if (val == StepData_LUnknown)
+  {
     SetInt(num, 2, KindLogical);
+  }
 }
 
 void StepData_Field::SetEnum(const int num, const int val, const char* const text)
@@ -547,7 +601,9 @@ void StepData_Field::SetReal(const int num, const double val)
   //   If already started with something else, change and put selects
   DeclareAndCast(NCollection_HArray1<occ::handle<Standard_Transient>>, ht, theany);
   if (ht.IsNull())
+  {
     return; // yena erreur, ou alors OfInteger
+  }
   thekind = KindAny | KindList;
   DeclareAndCast(StepData_SelectMember, sm, ht->Value(num));
   if (sm.IsNull())
@@ -569,7 +625,9 @@ void StepData_Field::SetString(const int num, const char* const val)
   //    et si OfInteger ou OfReal ?
   DeclareAndCast(NCollection_HArray1<occ::handle<Standard_Transient>>, ht, theany);
   if (ht.IsNull())
+  {
     return;
+  }
   thekind = KindAny | KindList;
   ht->SetValue(num, new TCollection_HAsciiString(val));
 }
@@ -593,7 +651,9 @@ void StepData_Field::SetEntity(const int num, const occ::handle<Standard_Transie
     for (int i = low; i <= up; i++)
     {
       if (i == num)
+      {
         ht->SetValue(i, val);
+      }
       else
       {
         sm = new StepData_SelectInt;
@@ -615,7 +675,9 @@ void StepData_Field::SetEntity(const int num, const occ::handle<Standard_Transie
     for (int i = low; i <= up; i++)
     {
       if (i == num)
+      {
         ht->SetValue(i, val);
+      }
       else
       {
         sm = new StepData_SelectReal;
@@ -635,9 +697,13 @@ void StepData_Field::SetEntity(const int num, const occ::handle<Standard_Transie
     for (int i = low; i <= up; i++)
     {
       if (i == num)
+      {
         ht->SetValue(i, val);
+      }
       else
+      {
         ht->SetValue(i, hs->Value(i));
+      }
     }
     thekind = KindAny | KindList;
     return;
@@ -649,28 +715,38 @@ void StepData_Field::SetEntity(const int num, const occ::handle<Standard_Transie
 bool StepData_Field::IsSet(const int n1, const int n2) const
 {
   if (thekind == 0)
+  {
     return false;
+  }
   if (thekind == KindSelect)
   {
     DeclareAndCast(StepData_SelectMember, sm, theany);
     if (sm.IsNull())
+    {
       return false;
+    }
     return (sm->Kind() != 0);
   }
   if ((thekind & KindArity) == KindList)
   {
     DeclareAndCast(NCollection_HArray1<occ::handle<Standard_Transient>>, ht, theany);
     if (!ht.IsNull())
+    {
       return (!ht->Value(n1).IsNull());
+    }
     DeclareAndCast(NCollection_HArray1<occ::handle<TCollection_HAsciiString>>, hs, theany);
     if (!hs.IsNull())
+    {
       return (!hs->Value(n1).IsNull());
+    }
   }
   if ((thekind & KindArity) == KindList2)
   {
     DeclareAndCast(NCollection_HArray2<occ::handle<Standard_Transient>>, ht, theany);
     if (!ht.IsNull())
+    {
       return (!ht->Value(n1, n2).IsNull());
+    }
   }
   return true;
 }
@@ -678,45 +754,63 @@ bool StepData_Field::IsSet(const int n1, const int n2) const
 int StepData_Field::ItemKind(const int n1, const int n2) const
 {
   if ((thekind & KindArity) == 0)
+  {
     return Kind(true);
+  }
   int kind = TrueKind(thekind); // si Any, evaluer ...
   if (kind != KindAny)
+  {
     return kind;
+  }
   //  Otherwise, look for a Transient
   occ::handle<Standard_Transient> item;
   if ((thekind & KindArity) == KindList)
   {
     DeclareAndCast(NCollection_HArray1<occ::handle<Standard_Transient>>, ht, theany);
     if (!ht.IsNull())
+    {
       return kind;
+    }
     item = ht->Value(n1);
   }
   else if ((thekind & KindArity) == KindList2)
   {
     DeclareAndCast(NCollection_HArray2<occ::handle<Standard_Transient>>, ht, theany);
     if (!ht.IsNull())
+    {
       return kind;
+    }
     item = ht->Value(n1, n2);
   }
   if (item.IsNull())
+  {
     return 0;
+  }
   if (item->IsKind(STANDARD_TYPE(TCollection_HAsciiString)))
+  {
     return KindString;
+  }
   DeclareAndCast(StepData_SelectMember, sm, item);
   if (sm.IsNull())
+  {
     return KindEntity;
+  }
   return sm->Kind();
 }
 
 int StepData_Field::Kind(const bool type) const
 {
   if (!type)
+  {
     return thekind;
+  }
   if (thekind == KindSelect)
   {
     DeclareAndCast(StepData_SelectMember, sm, theany);
     if (!sm.IsNull())
+    {
       return TrueKind(sm->Kind());
+    }
   }
   return TrueKind(thekind);
 }
@@ -729,13 +823,19 @@ int StepData_Field::Arity() const
 int StepData_Field::Length(const int index) const
 {
   if ((thekind & KindArity) == KindList)
+  {
     return theint;
+  }
   if ((thekind & KindArity) == KindList2)
   {
     if (index == 2)
+    {
       return int(thereal);
+    }
     else
+    {
       return theint;
+    }
   }
   return 0;
 }
@@ -746,26 +846,40 @@ int StepData_Field::Lower(const int index) const
   {
     DeclareAndCast(NCollection_HArray1<int>, hi, theany);
     if (!hi.IsNull())
+    {
       return hi->Lower();
+    }
     DeclareAndCast(NCollection_HArray1<double>, hr, theany);
     if (!hr.IsNull())
+    {
       return hr->Lower();
+    }
     DeclareAndCast(NCollection_HArray1<occ::handle<TCollection_HAsciiString>>, hs, theany);
     if (!hs.IsNull())
+    {
       return hs->Lower();
+    }
     DeclareAndCast(NCollection_HArray1<occ::handle<Standard_Transient>>, ht, theany);
     if (!ht.IsNull())
+    {
       return ht->Lower();
+    }
   }
   if ((thekind & KindArity) == KindList2)
   {
     DeclareAndCast(NCollection_HArray2<occ::handle<Standard_Transient>>, ht, theany);
     if (ht.IsNull())
+    {
       return 0;
+    }
     if (index == 1)
+    {
       return ht->LowerCol();
+    }
     if (index == 2)
+    {
       return ht->LowerRow();
+    }
   }
   return 0;
 }
@@ -783,7 +897,9 @@ int StepData_Field::Integer(const int n1, const int n2) const
     {
       DeclareAndCast(StepData_SelectMember, sm, theany);
       if (!sm.IsNull())
+      {
         return sm->Int();
+      }
     }
     return theint;
   }
@@ -791,22 +907,32 @@ int StepData_Field::Integer(const int n1, const int n2) const
   {
     DeclareAndCast(NCollection_HArray1<int>, hi, theany);
     if (!hi.IsNull())
+    {
       return hi->Value(n1);
+    }
     DeclareAndCast(NCollection_HArray1<occ::handle<Standard_Transient>>, ht, theany);
     if (ht.IsNull())
+    {
       return 0;
+    }
     DeclareAndCast(StepData_SelectMember, sm, ht->Value(n1));
     if (!sm.IsNull())
+    {
       return sm->Int();
+    }
   }
   if ((thekind & KindArity) == KindList2)
   {
     DeclareAndCast(NCollection_HArray2<occ::handle<Standard_Transient>>, ht, theany);
     if (ht.IsNull())
+    {
       return 0;
+    }
     DeclareAndCast(StepData_SelectMember, sm, ht->Value(n1, n2));
     if (!sm.IsNull())
+    {
       return sm->Int();
+    }
   }
   return 0;
 }
@@ -820,9 +946,13 @@ StepData_Logical StepData_Field::Logical(const int n1, const int n2) const
 {
   int ival = Integer(n1, n2);
   if (ival == 0)
+  {
     return StepData_LFalse;
+  }
   if (ival == 1)
+  {
     return StepData_LTrue;
+  }
   return StepData_LUnknown;
 }
 
@@ -834,7 +964,9 @@ double StepData_Field::Real(const int n1, const int n2) const
     {
       DeclareAndCast(StepData_SelectMember, sm, theany);
       if (!sm.IsNull())
+      {
         return sm->Real();
+      }
     }
     return thereal;
   }
@@ -842,25 +974,37 @@ double StepData_Field::Real(const int n1, const int n2) const
   {
     DeclareAndCast(NCollection_HArray1<double>, hr, theany);
     if (!hr.IsNull())
+    {
       return hr->Value(n1);
+    }
     DeclareAndCast(NCollection_HArray1<occ::handle<Standard_Transient>>, ht, theany);
     if (ht.IsNull())
+    {
       return 0;
+    }
     DeclareAndCast(StepData_SelectMember, sm, ht->Value(n1));
     if (!sm.IsNull())
+    {
       return sm->Real();
+    }
   }
   if ((thekind & KindArity) == KindList2)
   {
     DeclareAndCast(NCollection_HArray2<double>, hr, theany);
     if (!hr.IsNull())
+    {
       return hr->Value(n1, n2);
+    }
     DeclareAndCast(NCollection_HArray2<occ::handle<Standard_Transient>>, ht, theany);
     if (ht.IsNull())
+    {
       return 0;
+    }
     DeclareAndCast(StepData_SelectMember, sm, ht->Value(n1, n2));
     if (!sm.IsNull())
+    {
       return sm->Int();
+    }
   }
   return 0.0;
 }
@@ -871,15 +1015,21 @@ const char* StepData_Field::String(const int n1, const int n2) const
   {
     DeclareAndCast(TCollection_HAsciiString, str, theany);
     if (!str.IsNull())
+    {
       return str->ToCString();
+    }
     else
+    {
       return "";
+    }
   }
   if (thekind == KindSelect)
   {
     DeclareAndCast(StepData_SelectMember, sm, theany);
     if (!sm.IsNull())
+    {
       return sm->String();
+    }
   }
   if ((thekind & KindArity) == KindList)
   {
@@ -887,31 +1037,47 @@ const char* StepData_Field::String(const int n1, const int n2) const
     if (!hs.IsNull())
     {
       if (hs->Value(n1).IsNull())
+      {
         return "";
+      }
       else
+      {
         return hs->Value(n1)->ToCString();
+      }
     }
     DeclareAndCast(NCollection_HArray1<occ::handle<Standard_Transient>>, ht, theany);
     if (ht.IsNull())
+    {
       return "";
+    }
     DeclareAndCast(TCollection_HAsciiString, str, ht->Value(n1));
     if (!str.IsNull())
+    {
       return str->ToCString();
+    }
     DeclareAndCast(StepData_SelectMember, sm, ht->Value(n1));
     if (!sm.IsNull())
+    {
       return sm->String();
+    }
   }
   if ((thekind & KindArity) == KindList2)
   {
     DeclareAndCast(NCollection_HArray2<occ::handle<Standard_Transient>>, ht, theany);
     if (ht.IsNull())
+    {
       return "";
+    }
     DeclareAndCast(TCollection_HAsciiString, str, ht->Value(n1, n2));
     if (!str.IsNull())
+    {
       return str->ToCString();
+    }
     DeclareAndCast(StepData_SelectMember, sm, ht->Value(n1, n2));
     if (!sm.IsNull())
+    {
       return sm->String();
+    }
   }
   return "";
 }
@@ -932,33 +1098,47 @@ occ::handle<Standard_Transient> StepData_Field::Entity(const int n1, const int n
   if ((thekind & KindArity) == 0)
   {
     if (thekind == KindEntity)
+    {
       return theany;
+    }
     return nulval;
   }
   if ((thekind & KindArity) == KindList)
   {
     DeclareAndCast(NCollection_HArray1<occ::handle<Standard_Transient>>, ht, theany);
     if (ht.IsNull())
+    {
       return nulval;
+    }
     nulval = ht->Value(n1);
     if (nulval.IsNull())
+    {
       return nulval;
+    }
     if (nulval->IsKind(STANDARD_TYPE(StepData_SelectMember))
         || nulval->IsKind(STANDARD_TYPE(TCollection_HAsciiString)))
+    {
       nulval.Nullify();
+    }
     return nulval;
   }
   if ((thekind & KindArity) == KindList2)
   {
     DeclareAndCast(NCollection_HArray2<occ::handle<Standard_Transient>>, ht, theany);
     if (ht.IsNull())
+    {
       return nulval;
+    }
     nulval = ht->Value(n1, n2);
     if (nulval.IsNull())
+    {
       return nulval;
+    }
     if (nulval->IsKind(STANDARD_TYPE(StepData_SelectMember))
         || nulval->IsKind(STANDARD_TYPE(TCollection_HAsciiString)))
+    {
       nulval.Nullify();
+    }
     return nulval;
   }
   return nulval;

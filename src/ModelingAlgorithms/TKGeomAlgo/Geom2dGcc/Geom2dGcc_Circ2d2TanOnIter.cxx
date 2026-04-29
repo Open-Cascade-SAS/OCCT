@@ -1417,16 +1417,22 @@ void Geom2dGcc_Circ2d2TanOnIter::CenterOn3(double& ParArg, gp_Pnt2d& PntSol) con
 bool Geom2dGcc_Circ2d2TanOnIter::IsTheSame1() const
 {
   if (!WellDone)
+  {
     throw StdFail_NotDone();
+  }
 
   if (TheSame1 == 0)
+  {
     return false;
+  }
   return true;
 }
 
 bool Geom2dGcc_Circ2d2TanOnIter::IsTheSame2() const
 {
   if (!WellDone)
+  {
     throw StdFail_NotDone();
+  }
   return false;
 }

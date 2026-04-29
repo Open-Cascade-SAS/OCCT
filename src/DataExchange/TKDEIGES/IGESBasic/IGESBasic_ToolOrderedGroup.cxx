@@ -70,7 +70,9 @@ void IGESBasic_ToolOrderedGroup::WriteOwnParams(const occ::handle<IGESBasic_Orde
   int upper = ent->NbEntities();
   IW.Send(upper);
   for (int i = 1; i <= upper; i++)
+  {
     IW.Send(ent->Entity(i));
+  }
 }
 
 void IGESBasic_ToolOrderedGroup::OwnShared(const occ::handle<IGESBasic_OrderedGroup>& ent,
@@ -78,7 +80,9 @@ void IGESBasic_ToolOrderedGroup::OwnShared(const occ::handle<IGESBasic_OrderedGr
 {
   int upper = ent->NbEntities();
   for (int i = 1; i <= upper; i++)
+  {
     iter.GetOneItem(ent->Entity(i));
+  }
 }
 
 void IGESBasic_ToolOrderedGroup::OwnCopy(const occ::handle<IGESBasic_OrderedGroup>& another,
@@ -106,22 +110,34 @@ bool IGESBasic_ToolOrderedGroup::OwnCorrect(const occ::handle<IGESBasic_OrderedG
   {
     occ::handle<IGESData_IGESEntity> val = ent->Entity(i);
     if (val.IsNull())
+    {
       ianul++;
+    }
     else if (val->TypeNumber() == 0)
+    {
       ianul++;
+    }
   }
   if (ianul == 0)
+  {
     return false;
+  }
   occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> EntArray;
   if (ianul < nb)
+  {
     EntArray = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nb - ianul);
+  }
   for (i = 1; i <= nb; i++)
   {
     occ::handle<IGESData_IGESEntity> val = ent->Entity(i);
     if (val.IsNull())
+    {
       continue;
+    }
     else if (val->TypeNumber() == 0)
+    {
       continue;
+    }
     nbtrue++;
     EntArray->SetValue(nbtrue, ent->Entity(i));
   }
@@ -150,9 +166,13 @@ void IGESBasic_ToolOrderedGroup::OwnCheck(const occ::handle<IGESBasic_OrderedGro
   {
     occ::handle<IGESData_IGESEntity> val = ent->Entity(i);
     if (val.IsNull())
+    {
       ianul = true;
+    }
     else if (val->TypeNumber() == 0)
+    {
       ianul = true;
+    }
     if (ianul)
     {
       ach->AddWarning("At least one element is Null");
@@ -169,5 +189,5 @@ void IGESBasic_ToolOrderedGroup::OwnDump(const occ::handle<IGESBasic_OrderedGrou
   S << "IGESBasic_OrderedGroup\n"
     << "Entries in the Group : ";
   IGESData_DumpEntities(S, dumper, level, 1, ent->NbEntities(), ent->Entity);
-  S << std::endl;
+  S << '\n';
 }

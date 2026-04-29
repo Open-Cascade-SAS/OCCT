@@ -27,7 +27,9 @@ void RWStepShape_RWSolidModel::ReadStep(const occ::handle<StepData_StepReaderDat
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 1, ach, "solid_model"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

@@ -802,7 +802,9 @@ static void Handler(const int theSignal)
   {
     // std::cout << " signal is " << theSignal << " handler is " <<  oldact.sa_handler << std::endl;
     if (sigaction(theSignal, &oldact, &act))
+    {
       perror("sigaction");
+    }
   }
   else
   {
@@ -813,7 +815,9 @@ static void Handler(const int theSignal)
   // std::endl ;
   ACT_SIGIO_HANDLER* aSigHandler = ADR_ACT_SIGIO_HANDLER.load(std::memory_order_acquire);
   if (aSigHandler != nullptr)
+  {
     (*aSigHandler)();
+  }
 
   sigset_t set;
   sigemptyset(&set);
@@ -1099,7 +1103,7 @@ void OSD::SetSignal(OSD_SignalMode theSignalMode, bool theFloatingSignal)
     Standard_ASSERT(retcode == 0,
                     "sigaction() failed",
                     std::cout << "OSD::SetSignal(): sigaction() failed for " << aSignalTypes[i]
-                              << std::endl);
+                              << '\n');
   }
 }
 

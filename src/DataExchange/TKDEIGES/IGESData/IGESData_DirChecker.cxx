@@ -346,11 +346,13 @@ void IGESData_DirChecker::CheckTypeAndForm(occ::handle<Interface_Check>&        
     }
 
     if (theform1 <= theform2)
+    {
       if (ent->FormNumber() < theform1 || ent->FormNumber() > theform2)
       {
         Message_Msg Msg71("XSTEP_71");
         ach->SendWarning(Msg71);
       }
+    }
   }
 }
 
@@ -377,17 +379,23 @@ bool IGESData_DirChecker::Correct(const occ::handle<IGESData_IGESEntity>& ent) c
 
   occ::handle<IGESData_IGESEntity> structure; // by default Null
   if (thestructure != IGESData_DefVoid)
+  {
     structure = ent->Structure();
+  }
   occ::handle<IGESData_ViewKindEntity>     nulview;
   occ::handle<IGESData_LineFontEntity>     nulfont;
   occ::handle<IGESData_LevelListEntity>    nulevel;
   occ::handle<IGESData_ColorEntity>        nulcolor;
   occ::handle<IGESData_LabelDisplayEntity> label; // by default Null
   if (thegraphier != -1)
+  {
     label = ent->LabelDisplay();
+  }
   int linew = 0;
   if (thegraphier != -1 && thelineweig != IGESData_DefVoid)
+  {
     linew = ent->LineWeightNumber();
+  }
 
   if (thegraphier == -1 || (ent->RankLineFont() != 0 && thelinefont == IGESData_DefVoid))
   {

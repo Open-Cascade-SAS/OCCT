@@ -128,15 +128,21 @@ void GeomFill_Profiler::AddCurve(const occ::handle<Geom_Curve>& Curve)
   //// modified by jgv, 19.01.05 for OCC7354 ////
   occ::handle<Geom_Curve> theCurve = Curve;
   if (theCurve->IsInstance(STANDARD_TYPE(Geom_TrimmedCurve)))
+  {
     theCurve = occ::down_cast<Geom_TrimmedCurve>(theCurve)->BasisCurve();
+  }
   if (theCurve->IsKind(STANDARD_TYPE(Geom_Conic)))
   {
     GeomConvert_ApproxCurve appr(Curve, Precision::Confusion(), GeomAbs_C1, 16, 14);
     if (appr.HasResult())
+    {
       C = appr.Curve();
+    }
   }
   if (C.IsNull())
+  {
     C = GeomConvert::CurveToBSplineCurve(Curve);
+  }
   /*
   if ( Curve->IsKind(STANDARD_TYPE(Geom_BSplineCurve))) {
     C = occ::down_cast<Geom_Curve>(Curve->Copy());
@@ -150,7 +156,9 @@ void GeomFill_Profiler::AddCurve(const occ::handle<Geom_Curve>& Curve)
   mySequence.Append(C);
 
   if (myIsPeriodic && !C->IsPeriodic())
+  {
     myIsPeriodic = false;
+  }
 }
 
 //=================================================================================================
@@ -208,23 +216,31 @@ void GeomFill_Profiler::Perform(const double PTol)
 
   NCollection_Sequence<occ::handle<Geom_Curve>> theCurves;
   for (i = 1; i <= mySequence.Length(); i++)
+  {
     theCurves.Append(occ::down_cast<Geom_Curve>(mySequence(i)->Copy()));
+  }
 
   UnifyByInsertingAllKnots(theCurves, PTol);
 
   bool Unified    = true;
   int  theNbKnots = (occ::down_cast<Geom_BSplineCurve>(theCurves(1)))->NbKnots();
   for (i = 2; i <= theCurves.Length(); i++)
+  {
     if ((occ::down_cast<Geom_BSplineCurve>(theCurves(i)))->NbKnots() != theNbKnots)
     {
       Unified = false;
       break;
     }
+  }
 
   if (Unified)
+  {
     mySequence = theCurves;
+  }
   else
+  {
     UnifyBySettingMiddleKnots(mySequence);
+  }
 
   myIsDone = true;
 }
@@ -234,7 +250,9 @@ void GeomFill_Profiler::Perform(const double PTol)
 int GeomFill_Profiler::Degree() const
 {
   if (!myIsDone)
+  {
     throw StdFail_NotDone("GeomFill_Profiler::Degree");
+  }
 
   occ::handle<Geom_BSplineCurve> C = occ::down_cast<Geom_BSplineCurve>(mySequence(1));
   return C->Degree();
@@ -245,7 +263,9 @@ int GeomFill_Profiler::Degree() const
 int GeomFill_Profiler::NbPoles() const
 {
   if (!myIsDone)
+  {
     throw StdFail_NotDone("GeomFill_Profiler::Degree");
+  }
 
   occ::handle<Geom_BSplineCurve> C = occ::down_cast<Geom_BSplineCurve>(mySequence(1));
   return C->NbPoles();
@@ -256,7 +276,9 @@ int GeomFill_Profiler::NbPoles() const
 void GeomFill_Profiler::Poles(const int Index, NCollection_Array1<gp_Pnt>& Poles) const
 {
   if (!myIsDone)
+  {
     throw StdFail_NotDone("GeomFill_Profiler::Degree");
+  }
 
   Standard_DomainError_Raise_if(Poles.Length() != NbPoles(), "GeomFill_Profiler::Poles");
   Standard_DomainError_Raise_if(Index < 1 || Index > mySequence.Length(),
@@ -272,7 +294,9 @@ void GeomFill_Profiler::Poles(const int Index, NCollection_Array1<gp_Pnt>& Poles
 void GeomFill_Profiler::Weights(const int Index, NCollection_Array1<double>& Weights) const
 {
   if (!myIsDone)
+  {
     throw StdFail_NotDone("GeomFill_Profiler::Degree");
+  }
 
   Standard_DomainError_Raise_if(Weights.Length() != NbPoles(), "GeomFill_Profiler::Weights");
   Standard_DomainError_Raise_if(Index < 1 || Index > mySequence.Length(),
@@ -288,7 +312,9 @@ void GeomFill_Profiler::Weights(const int Index, NCollection_Array1<double>& Wei
 int GeomFill_Profiler::NbKnots() const
 {
   if (!myIsDone)
+  {
     throw StdFail_NotDone("GeomFill_Profiler::Degree");
+  }
 
   occ::handle<Geom_BSplineCurve> C = occ::down_cast<Geom_BSplineCurve>(mySequence(1));
 
@@ -301,7 +327,9 @@ void GeomFill_Profiler::KnotsAndMults(NCollection_Array1<double>& Knots,
                                       NCollection_Array1<int>&    Mults) const
 {
   if (!myIsDone)
+  {
     throw StdFail_NotDone("GeomFill_Profiler::Degree");
+  }
 
 #ifndef No_Exception
   int n = NbKnots();

@@ -41,7 +41,9 @@ static int DDataStd_SetShape(Draw_Interpretor& di, int nb, const char** arg)
   {
     occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
+    {
       return 1;
+    }
     TopoDS_Shape s = DBRep::Get(arg[3]);
     if (s.IsNull())
     {
@@ -65,7 +67,9 @@ void DDataStd::NamedShapeCommands(Draw_Interpretor& theCommands)
 
   static bool done = false;
   if (done)
+  {
     return;
+  }
   done          = true;
   const char* g = "DData : Standard Attribute Commands";
 

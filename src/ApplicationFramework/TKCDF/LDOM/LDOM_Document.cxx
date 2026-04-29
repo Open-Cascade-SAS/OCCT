@@ -47,7 +47,9 @@ bool LDOM_Document::isNull() const
 {
   const LDOM_BasicElement* const aRootElement = myMemManager->RootElement();
   if (aRootElement == nullptr)
+  {
     return true;
+  }
   return aRootElement->isNull();
 }
 
@@ -69,7 +71,9 @@ LDOM_NodeList LDOM_Document::getElementsByTagName(const LDOMString& theTagName) 
   {
     //  if (anElem -> GetTagName().equals(theTagName))
     if (strcmp(anElem->GetTagName(), aTagString) == 0)
+    {
       aList.Append(*anElem);
+    }
     anElem->AddElementsByTagName(aList, theTagName);
   }
   return aList;
@@ -82,7 +86,9 @@ LDOM_Document LDOM_Document::createDocument(const LDOMString& theQualifiedName)
   LDOM_Document aDoc;
   const char*   aString = theQualifiedName.GetString();
   if (strlen(aString) == 0)
+  {
     aString = "document";
+  }
   aDoc.myMemManager->myRootElement =
     &LDOM_BasicElement::Create(aString, (int)strlen(aString), aDoc.myMemManager);
   return aDoc;

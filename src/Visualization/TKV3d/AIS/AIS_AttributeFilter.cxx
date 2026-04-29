@@ -46,7 +46,9 @@ bool AIS_AttributeFilter::IsOk(const occ::handle<SelectMgr_EntityOwner>& anObj) 
   occ::handle<AIS_InteractiveObject> aSelectable(
     occ::down_cast<AIS_InteractiveObject>(anObj->Selectable()));
   if (aSelectable.IsNull())
+  {
     return false;
+  }
 
   bool okstat = true;
   if (hasC && aSelectable->HasColor())
@@ -57,7 +59,9 @@ bool AIS_AttributeFilter::IsOk(const occ::handle<SelectMgr_EntityOwner>& anObj) 
   }
 
   if (hasW && aSelectable->HasWidth())
+  {
     okstat = (myWid == aSelectable->Width()) && okstat;
+  }
 
   return okstat;
 }

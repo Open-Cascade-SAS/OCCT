@@ -113,9 +113,13 @@ void AdjustCellsCounts(const occ::handle<Adaptor3d_Surface>& theFace,
     {
       // planar, cylindrical, conical cases
       if (aType == GeomAbs_SurfaceOfExtrusion)
+      {
         theCellsCountU = (int)std::ceil(std::pow(2, std::log10(aSqNbVert)));
+      }
       else
+      {
         theCellsCountV = (int)std::ceil(std::pow(2, std::log10(aSqNbVert)));
+      }
     }
     if (aType == GeomAbs_SurfaceOfExtrusion)
     {
@@ -197,10 +201,14 @@ bool BRepMesh_GeomTool::Value(const int                               theIndex,
                               gp_Pnt2d&                               theUV) const
 {
   if (theIndex < 1 || theIndex > NbPoints())
+  {
     return false;
+  }
 
   if (myEdge == nullptr)
+  {
     return false;
+  }
 
   thePoint = myDiscretTool.Value(theIndex);
   theParam = myDiscretTool.Parameter(theIndex);
@@ -224,15 +232,21 @@ bool BRepMesh_GeomTool::Value(const int    theIndex,
                               gp_Pnt2d&    theUV) const
 {
   if (theIndex < 1 || theIndex > NbPoints())
+  {
     return false;
+  }
 
   thePoint = myDiscretTool.Value(theIndex);
   theParam = myDiscretTool.Parameter(theIndex);
 
   if (myIsoType == GeomAbs_IsoU)
+  {
     theUV.SetCoord(theIsoParam, theParam);
+  }
   else
+  {
     theUV.SetCoord(theParam, theIsoParam);
+  }
 
   return true;
 }
@@ -269,12 +283,16 @@ bool BRepMesh_GeomTool::Normal(const occ::handle<BRepAdaptor_Surface>& theSurfac
   }
 
   if (!isOK)
+  {
     return false;
+  }
 
   const TopoDS_Face& aFace = theSurface->Face();
   TopAbs_Orientation aOri  = aFace.Orientation();
   if (aOri == TopAbs_REVERSED)
+  {
     theNormal.Reverse();
+  }
 
   return true;
 }
@@ -301,9 +319,13 @@ BRepMesh_GeomTool::IntFlag BRepMesh_GeomTool::IntLinLin(const gp_XY& theStartPnt
   {
     // Just a parallel case?
     if (std::abs(aCrossD1D3) < aPrec)
+    {
       return BRepMesh_GeomTool::Same;
+    }
     else
+    {
       return BRepMesh_GeomTool::NoIntersection;
+    }
   }
 
   theParamOnSegment[0] = aCrossD1D3 / aCrossD1D2;
@@ -343,7 +365,9 @@ BRepMesh_GeomTool::IntFlag BRepMesh_GeomTool::IntSegSeg(const gp_XY& theStartPnt
     else
     {
       if (isConsiderEndPointTouch)
+      {
         return BRepMesh_GeomTool::EndPointTouch;
+      }
 
       return BRepMesh_GeomTool::NoIntersection;
     }
@@ -372,13 +396,21 @@ BRepMesh_GeomTool::IntFlag BRepMesh_GeomTool::IntSegSeg(const gp_XY& theStartPnt
     if (isConsiderPointOnSegment)
     {
       if (aPointHash[0] == 1)
+      {
         theIntPnt = theStartPnt1;
+      }
       else if (aPointHash[1] == 1)
+      {
         theIntPnt = theEndPnt1;
+      }
       else if (aPointHash[2] == 1)
+      {
         theIntPnt = theStartPnt2;
+      }
       else
+      {
         theIntPnt = theEndPnt2;
+      }
 
       return BRepMesh_GeomTool::PointOnSegment;
     }
@@ -386,21 +418,29 @@ BRepMesh_GeomTool::IntFlag BRepMesh_GeomTool::IntSegSeg(const gp_XY& theStartPnt
     return BRepMesh_GeomTool::NoIntersection;
   }
   else if (aPosHash == 2)
+  {
     return BRepMesh_GeomTool::Glued;
+  }
 
   double  aParam[2];
   IntFlag aIntFlag =
     IntLinLin(theStartPnt1, theEndPnt1, theStartPnt2, theEndPnt2, theIntPnt.ChangeCoord(), aParam);
 
   if (aIntFlag == BRepMesh_GeomTool::NoIntersection)
+  {
     return BRepMesh_GeomTool::NoIntersection;
+  }
 
   if (aIntFlag == BRepMesh_GeomTool::Same)
   {
     if (aPosHash < -2)
+    {
       return BRepMesh_GeomTool::Same;
+    }
     else if (aPosHash == -1)
+    {
       return BRepMesh_GeomTool::Glued;
+    }
 
     return BRepMesh_GeomTool::NoIntersection;
   }
@@ -412,7 +452,9 @@ BRepMesh_GeomTool::IntFlag BRepMesh_GeomTool::IntSegSeg(const gp_XY& theStartPnt
   for (int i = 0; i < 2; ++i)
   {
     if (aParam[i] < aPrec || aParam[i] > aEndPrec)
+    {
       return BRepMesh_GeomTool::NoIntersection;
+    }
   }
 
   return BRepMesh_GeomTool::Cross;
@@ -427,7 +469,9 @@ std::pair<int, int> BRepMesh_GeomTool::CellsCount(
   const BRepMesh_DefaultRangeSplitter*  theRangeSplitter)
 {
   if (theRangeSplitter == nullptr)
+  {
     return std::pair<int, int>(-1, -1);
+  }
 
   const GeomAbs_SurfaceType aType = theSurface->GetType();
 
@@ -483,15 +527,21 @@ int BRepMesh_GeomTool::classifyPoint(const gp_XY& thePoint1,
   {
     aDist = (aDist * aDist) / aP1.SquareModulus();
     if (aDist > aSqPrec)
+    {
       return 0; // out
+    }
   }
 
   gp_XY aMult = aP1.Multiplied(aP2);
   if (aMult.X() < 0.0 || aMult.Y() < 0.0)
+  {
     return 0; // out
+  }
 
   if (aP1.SquareModulus() < aP2.SquareModulus())
+  {
     return 0; // out
+  }
 
   if (thePointToCheck.IsEqual(thePoint1, aPrec) || thePointToCheck.IsEqual(thePoint2, aPrec))
   {

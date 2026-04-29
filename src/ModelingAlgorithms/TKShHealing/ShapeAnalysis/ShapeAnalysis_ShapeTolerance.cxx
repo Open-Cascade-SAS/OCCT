@@ -33,13 +33,19 @@ static void AddTol(const double tol, int& nbt, double& cmin, double& cmoy, doubl
 {
   nbt++;
   if (nbt == 1)
+  {
     cmin = cmoy = cmax = tol;
+  }
   else
   {
     if (cmin > tol)
+    {
       cmin = tol;
+    }
     if (cmax < tol)
+    {
       cmax = tol;
+    }
     //    cmoy += tol;
     //  Calcul en moyenne geometrique  entre 1 et 1e-7
     int mult = 1;
@@ -77,9 +83,13 @@ occ::handle<NCollection_HSequence<TopoDS_Shape>> ShapeAnalysis_ShapeTolerance::O
   const TopAbs_ShapeEnum type) const
 {
   if (value >= 0)
+  {
     return InTolerance(shape, value, 0., type);
+  }
   else
+  {
     return InTolerance(shape, 0., value, type);
+  }
 }
 
 //=================================================================================================
@@ -105,7 +115,9 @@ occ::handle<NCollection_HSequence<TopoDS_Shape>> ShapeAnalysis_ShapeTolerance::I
     {
       tol = BRep_Tool::Tolerance(TopoDS::Face(myExp.Current()));
       if (tol >= valmin && (over || (tol <= valmax)))
+      {
         sl->Append(myExp.Current());
+      }
       myExp.Next();
     }
   }
@@ -119,7 +131,9 @@ occ::handle<NCollection_HSequence<TopoDS_Shape>> ShapeAnalysis_ShapeTolerance::I
     {
       tol = BRep_Tool::Tolerance(TopoDS::Edge(myExp.Current()));
       if (tol >= valmin && (over || (tol <= valmax)))
+      {
         sl->Append(myExp.Current());
+      }
       myExp.Next();
     }
   }
@@ -133,7 +147,9 @@ occ::handle<NCollection_HSequence<TopoDS_Shape>> ShapeAnalysis_ShapeTolerance::I
     {
       tol = BRep_Tool::Tolerance(TopoDS::Vertex(myExp.Current()));
       if (tol >= valmin && (over || (tol >= valmax)))
+      {
         sl->Append(myExp.Current());
+      }
       myExp.Next();
     }
   }
@@ -161,7 +177,9 @@ occ::handle<NCollection_HSequence<TopoDS_Shape>> ShapeAnalysis_ShapeTolerance::I
         }
       }
       if (iashell)
+      {
         sl->Append(ash);
+      }
       myExp.Next();
     }
 
@@ -171,26 +189,36 @@ occ::handle<NCollection_HSequence<TopoDS_Shape>> ShapeAnalysis_ShapeTolerance::I
     {
       bool iaface = false;
       if (mapface.Contains(myExp.Current()))
+      {
         continue;
+      }
       tol = BRep_Tool::Tolerance(TopoDS::Face(myExp.Current()));
       if (tol >= valmin && (over || (tol <= valmax)))
+      {
         iaface = true;
+      }
       else
       {
         // les edges contenues ?
         occ::handle<NCollection_HSequence<TopoDS_Shape>> fl =
           InTolerance(myExp.Current(), valmin, valmax, TopAbs_EDGE);
         if (fl->Length() > 0)
+        {
           iaface = true;
+        }
         else
         {
           fl = InTolerance(myExp.Current(), valmin, valmax, TopAbs_VERTEX);
           if (fl->Length() > 0)
+          {
             iaface = true;
+          }
         }
       }
       if (iaface)
+      {
         sl->Append(myExp.Current());
+      }
     }
   }
 
@@ -256,11 +284,17 @@ void ShapeAnalysis_ShapeTolerance::AddTolerance(const TopoDS_Shape&    shape,
 
   //  Resultat : attention en mode cumul
   if (nbt == 0)
+  {
     return;
+  }
   if (myNbTol == 0 || myTols[0] > cmin)
+  {
     myTols[0] = cmin;
+  }
   if (myNbTol == 0 || myTols[2] < cmax)
+  {
     myTols[2] = cmax;
+  }
   myTols[1] += cmoy;
   myNbTol += nbt;
 }
@@ -274,16 +308,24 @@ double ShapeAnalysis_ShapeTolerance::GlobalTolerance(const int mode) const
   if (myNbTol != 0.)
   {
     if (mode < 0)
+    {
       result = myTols[0];
+    }
     else if (mode == 0)
     {
       if (myTols[0] == myTols[2])
+      {
         result = myTols[0];
+      }
       else
+      {
         result = myTols[1] / myNbTol;
+      }
     }
     else
+    {
       result = myTols[2];
+    }
   }
 
   return result;

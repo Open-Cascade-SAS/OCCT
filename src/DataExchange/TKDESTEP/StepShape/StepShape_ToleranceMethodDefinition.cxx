@@ -21,11 +21,17 @@ StepShape_ToleranceMethodDefinition::StepShape_ToleranceMethodDefinition() = def
 int StepShape_ToleranceMethodDefinition::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepShape_ToleranceValue)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepShape_LimitsAndFits)))
+  {
     return 2;
+  }
   return 0;
 }
 

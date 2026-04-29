@@ -217,7 +217,9 @@ inline double ComputeBorderDeflection(GeomGridEval_Surface& theEval,
     const double aDist = (aPMid - aPParMid).Modulus();
 
     if (aDist > aDeflection)
+    {
       aDeflection = aDist;
+    }
   }
 
   return aDeflection;
@@ -289,11 +291,17 @@ inline int TriConnex(const int theTriang,
     ligE = (thePedge - 1) / nbdeltaVp1;
     colE = (thePedge - 1) - (ligE * nbdeltaVp1);
     if (ligP == ligE)
+    {
       typE = 1;
+    }
     else if (colP == colE)
+    {
       typE = 2;
+    }
     else
+    {
       typE = 3;
+    }
   }
 
   int linT = 0, colT = 0;
@@ -383,9 +391,13 @@ inline int TriConnex(const int theTriang,
       linT = (1 > ligP) ? 1 : ligP;
       colT = (1 > (colP + colP)) ? 1 : (colP + colP);
       if (ligP == 0)
+      {
         linO = ligP + 1;
+      }
       else
+      {
         linO = ligP - 1;
+      }
       colO = colP;
     }
     else
@@ -608,11 +620,17 @@ inline double ComputeDeflectionWithCenter(const gp_Pnt& theP1,
 {
   // Check for degenerate triangles
   if (theP1.SquareDistance(theP2) <= THE_MIN_EDGE_LENGTH_SQUARED)
+  {
     return 0.0;
+  }
   if (theP1.SquareDistance(theP3) <= THE_MIN_EDGE_LENGTH_SQUARED)
+  {
     return 0.0;
+  }
   if (theP2.SquareDistance(theP3) <= THE_MIN_EDGE_LENGTH_SQUARED)
+  {
     return 0.0;
+  }
 
   // Compute normal vector
   const gp_XYZ XYZ1 = theP2.XYZ() - theP1.XYZ();
@@ -622,7 +640,9 @@ inline double ComputeDeflectionWithCenter(const gp_Pnt& theP1,
 
   const double aNormLen = NormalVector.Magnitude();
   if (aNormLen < gp::Resolution())
+  {
     return 0.0;
+  }
 
   NormalVector.Divide(aNormLen);
 
@@ -644,7 +664,9 @@ double ComputeMaxDeflection(const Adaptor3d_Surface& theSurface,
                             const int                theNbTriangles)
 {
   if (theNbTriangles <= 0)
+  {
     return 0.0;
+  }
 
   double tol = 0.0;
   for (int i = 1; i <= theNbTriangles; ++i)
@@ -665,7 +687,9 @@ double ComputeMaxDeflection(const Adaptor3d_Surface& theSurface,
 
     const double tol1 = ComputeDeflectionWithCenter(P1, P2, P3, aCenter);
     if (tol1 > tol)
+    {
       tol = tol1;
+    }
   }
   return tol;
 }
@@ -692,22 +716,30 @@ inline double ComputeMaxBorderDeflection(GeomGridEval_Surface& theEval,
   // Lower bound (U-isoline at U=U0, V varies from V0 to V1)
   double aDeflection = ComputeBorderDeflection(theEval, theU0, theV0, theV1, true, theNbDeltaV);
   if (aDeflection > maxDeflection)
+  {
     maxDeflection = aDeflection;
+  }
 
   // Upper bound (U-isoline at U=U1, V varies from V0 to V1)
   aDeflection = ComputeBorderDeflection(theEval, theU1, theV0, theV1, true, theNbDeltaV);
   if (aDeflection > maxDeflection)
+  {
     maxDeflection = aDeflection;
+  }
 
   // Lower bound (V-isoline at V=V0, U varies from U0 to U1)
   aDeflection = ComputeBorderDeflection(theEval, theV0, theU0, theU1, false, theNbDeltaU);
   if (aDeflection > maxDeflection)
+  {
     maxDeflection = aDeflection;
+  }
 
   // Upper bound (V-isoline at V=V1, U varies from U0 to U1)
   aDeflection = ComputeBorderDeflection(theEval, theV1, theU0, theU1, false, theNbDeltaU);
   if (aDeflection > maxDeflection)
+  {
     maxDeflection = aDeflection;
+  }
 
   return maxDeflection;
 }
@@ -728,15 +760,21 @@ inline bool IsOnBound(const int   theIndex1,
   const int aDiff = std::abs(theIndex1 - theIndex2);
 
   if (aDiff != 1 && aDiff != theNbDeltaV + 1)
+  {
     return false;
+  }
 
   for (int i = 0; i <= theNbDeltaU; ++i)
   {
     if ((theIndex1 == 1 + i * (theNbDeltaV + 1)) && (theIndex2 == theIndex1 - 1))
+    {
       return false;
+    }
 
     if ((theIndex1 == (1 + i) * (theNbDeltaV + 1)) && (theIndex2 == theIndex1 + 1))
+    {
       return false;
+    }
   }
 
   return (theIsOnBounds[theIndex1] && theIsOnBounds[theIndex2]);
@@ -750,14 +788,22 @@ inline bool IsOnBound(const int   theIndex1,
 inline void Destroy(void*& thePnts, void*& theU, void*& theV, void*& theIsOnBounds)
 {
   if (thePnts)
+  {
     delete[] static_cast<gp_Pnt*>(thePnts);
+  }
   if (theU)
+  {
     delete[] static_cast<double*>(theU);
+  }
   if (theV)
+  {
     delete[] static_cast<double*>(theV);
+  }
   if (theIsOnBounds)
+  {
     delete[] static_cast<bool*>(theIsOnBounds);
-  thePnts = theU = theV = theIsOnBounds = NULL;
+  }
+  thePnts = theU = theV = theIsOnBounds = nullptr;
 }
 
 //! Allocate polyhedron arrays.

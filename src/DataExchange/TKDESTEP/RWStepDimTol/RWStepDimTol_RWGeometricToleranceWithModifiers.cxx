@@ -40,7 +40,9 @@ void RWStepDimTol_RWGeometricToleranceWithModifiers::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 5, ach, "geometric_tolerance_with_modifiers"))
+  {
     return;
+  }
 
   // inherited fields from GeometricTolerance
 
@@ -80,40 +82,74 @@ void RWStepDimTol_RWGeometricToleranceWithModifiers::ReadStep(
       {
         const char* text = data->ParamCValue(num2, i0);
         if (strcmp(text, ".ANY_CROSS_SECTION.") == 0)
+        {
           anIt0 = StepDimTol_GTMAnyCrossSection;
+        }
         else if (strcmp(text, ".COMMON_ZONE.") == 0)
+        {
           anIt0 = StepDimTol_GTMCommonZone;
+        }
         else if (strcmp(text, ".EACH_RADIAL_ELEMENT.") == 0)
+        {
           anIt0 = StepDimTol_GTMEachRadialElement;
+        }
         else if (strcmp(text, ".FREE_STATE.") == 0)
+        {
           anIt0 = StepDimTol_GTMFreeState;
+        }
         else if (strcmp(text, ".LEAST_MATERIAL_REQUIREMENT.") == 0)
+        {
           anIt0 = StepDimTol_GTMLeastMaterialRequirement;
+        }
         else if (strcmp(text, ".LINE_ELEMENT.") == 0)
+        {
           anIt0 = StepDimTol_GTMLineElement;
+        }
         else if (strcmp(text, ".MAJOR_DIAMETER.") == 0)
+        {
           anIt0 = StepDimTol_GTMMajorDiameter;
+        }
         else if (strcmp(text, ".MAXIMUM_MATERIAL_REQUIREMENT.") == 0)
+        {
           anIt0 = StepDimTol_GTMMaximumMaterialRequirement;
+        }
         else if (strcmp(text, ".MINOR_DIAMETER.") == 0)
+        {
           anIt0 = StepDimTol_GTMMinorDiameter;
+        }
         else if (strcmp(text, ".NOT_CONVEX.") == 0)
+        {
           anIt0 = StepDimTol_GTMNotConvex;
+        }
         else if (strcmp(text, ".PITCH_DIAMETER.") == 0)
+        {
           anIt0 = StepDimTol_GTMPitchDiameter;
+        }
         else if (strcmp(text, ".RECIPROCITY_REQUIREMENT.") == 0)
+        {
           anIt0 = StepDimTol_GTMReciprocityRequirement;
+        }
         else if (strcmp(text, ".SEPARATE_REQUIREMENT.") == 0)
+        {
           anIt0 = StepDimTol_GTMSeparateRequirement;
+        }
         else if (strcmp(text, ".STATISTICAL_TOLERANCE.") == 0)
+        {
           anIt0 = StepDimTol_GTMStatisticalTolerance;
+        }
         else if (strcmp(text, ".TANGENT_PLANE.") == 0)
+        {
           anIt0 = StepDimTol_GTMTangentPlane;
+        }
         else
+        {
           ach->AddFail("Parameter #5 (modifiers) has not allowed value");
+        }
       }
       else
+      {
         ach->AddFail("Parameter #5 (modifier) is not set of enumerations");
+      }
       aModifiers->SetValue(i0, anIt0);
     }
   }

@@ -94,11 +94,17 @@ void XmlMXCAFDoc_DatumDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
 
   XmlObjMgt_DOMString aNameString, aDescrString, anIdString;
   if (!anAtt->GetName().IsNull())
+  {
     aNameString = anAtt->GetName()->String().ToCString();
+  }
   if (!anAtt->GetDescription().IsNull())
+  {
     aDescrString = anAtt->GetDescription()->String().ToCString();
+  }
   if (!anAtt->GetIdentification().IsNull())
+  {
     anIdString = anAtt->GetIdentification()->String().ToCString();
+  }
 
   XmlObjMgt::SetStringValue(theTarget, aNameString);
   theTarget.Element().setAttribute(::DescrIndexString(), aDescrString);

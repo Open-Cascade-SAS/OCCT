@@ -83,7 +83,9 @@ static int sortcompound(Draw_Interpretor& di, int argc, const char** argv)
         case TopAbs_COMPOUND:
           di << "COMPOUND";
           if (i > 0)
+          {
             di << " (heterogeneous)";
+          }
           break;
       }
     }

@@ -74,7 +74,9 @@ Standard_IMPORT Draw_Viewer dout;
 static int vertex(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 3)
+  {
     return 1;
+  }
   if (n >= 5)
   {
     DBRep::Set(
@@ -85,9 +87,13 @@ static int vertex(Draw_Interpretor&, int n, const char** a)
   {
     TopoDS_Shape S = DBRep::Get(a[3]);
     if (S.IsNull())
+    {
       return 0;
+    }
     if (S.ShapeType() != TopAbs_EDGE)
+    {
       return 0;
+    }
     BRepAdaptor_Curve C(TopoDS::Edge(S));
     gp_Pnt            P;
     C.D0(Draw::Atof(a[2]), P);
@@ -108,24 +114,32 @@ static int vertex(Draw_Interpretor&, int n, const char** a)
 static int range(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 4)
+  {
     return 1;
+  }
   TopoDS_Shape aLocalShape(DBRep::Get(a[1], TopAbs_EDGE));
   TopoDS_Edge  E = TopoDS::Edge(aLocalShape);
   //  TopoDS_Edge E = TopoDS::Edge(DBRep::Get(a[1],TopAbs_EDGE));
   if (E.IsNull())
+  {
     return 1;
+  }
   double       f = Draw::Atof(a[n - 2]);
   double       l = Draw::Atof(a[n - 1]);
   BRep_Builder B;
   if (n == 4)
+  {
     B.Range(E, f, l);
+  }
   else
   {
     aLocalShape   = DBRep::Get(a[2], TopAbs_FACE);
     TopoDS_Face F = TopoDS::Face(aLocalShape);
     //    TopoDS_Face F = TopoDS::Face(DBRep::Get(a[2],TopAbs_FACE));
     if (F.IsNull())
+    {
       return 1;
+    }
     B.Range(E, F, f, l);
   }
   return 0;
@@ -138,25 +152,39 @@ static int range(Draw_Interpretor&, int n, const char** a)
 static int trim(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 3)
+  {
     return 1;
+  }
   TopoDS_Shape e = DBRep::Get(a[1]);
   if (e.IsNull())
+  {
     return 1;
+  }
   if (e.ShapeType() != TopAbs_EDGE)
+  {
     return 1;
+  }
   TopoDS_Shape v1 = DBRep::Get(a[2]);
   if (v1.IsNull())
+  {
     return 1;
+  }
   if (v1.ShapeType() != TopAbs_VERTEX)
+  {
     return 1;
+  }
   TopoDS_Shape v2;
   if (n > 3)
   {
     v2 = DBRep::Get(a[3]);
     if (v2.IsNull())
+    {
       return 1;
+    }
     if (v2.ShapeType() != TopAbs_VERTEX)
+    {
       return 1;
+    }
   }
   TopLoc_Location               L;
   double                        f, l;
@@ -197,9 +225,13 @@ static int trim(Draw_Interpretor& di, int n, const char** a)
 static int polyline(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 8)
+  {
     return 1;
+  }
   if (((n - 2) % 3) != 0)
+  {
     return 1;
+  }
   int                        i, j, np = (n - 2) / 3;
   BRepBuilderAPI_MakePolygon W;
   j = 2;
@@ -219,16 +251,22 @@ static int polyline(Draw_Interpretor&, int n, const char** a)
 static int polyvertex(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 4)
+  {
     return 1;
+  }
   int                        i;
   BRepBuilderAPI_MakePolygon W;
   for (i = 2; i < n; i++)
   {
     TopoDS_Shape S = DBRep::Get(a[i]);
     if (S.IsNull())
+    {
       return 1;
+    }
     if (S.ShapeType() != TopAbs_VERTEX)
+    {
       return 1;
+    }
     W.Add(TopoDS::Vertex(S));
   }
   DBRep::Set(a[1], W.Wire());
@@ -242,24 +280,36 @@ static int polyvertex(Draw_Interpretor&, int n, const char** a)
 static int wire(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 3)
+  {
     return 1;
+  }
   int                     i;
   BRepBuilderAPI_MakeWire MW;
   bool                    IsUnsorted = !strcmp(a[2], "-unsorted");
 
   if (!IsUnsorted)
+  {
     for (i = 2; i < n; i++)
     {
       TopoDS_Shape S = DBRep::Get(a[i]);
       if (S.IsNull())
+      {
         continue;
+      }
       if (S.ShapeType() == TopAbs_EDGE)
+      {
         MW.Add(TopoDS::Edge(S));
+      }
       else if (S.ShapeType() == TopAbs_WIRE)
+      {
         MW.Add(TopoDS::Wire(S));
+      }
       else
+      {
         continue;
+      }
     }
+  }
   else
   {
     NCollection_List<TopoDS_Shape> aLE;
@@ -271,7 +321,9 @@ static int wire(Draw_Interpretor& di, int n, const char** a)
       {
         const TopoDS_Edge& anE = TopoDS::Edge(Exp.Current());
         if (!anE.IsNull())
+        {
           aLE.Append(anE);
+        }
       }
     }
     MW.Add(aLE);
@@ -297,7 +349,9 @@ static int wire(Draw_Interpretor& di, int n, const char** a)
     }
   }
   else
+  {
     DBRep::Set(a[1], MW);
+  }
   return 0;
 }
 
@@ -308,7 +362,9 @@ static int wire(Draw_Interpretor& di, int n, const char** a)
 static int mkedge(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 3)
+  {
     return 1;
+  }
 
   occ::handle<Geom_Curve>     C   = DrawTrSurf::GetCurve(a[2]);
   occ::handle<Geom2d_Curve>   C2d = DrawTrSurf::GetCurve2d(a[2]);
@@ -326,9 +382,13 @@ static int mkedge(Draw_Interpretor& di, int n, const char** a)
   if (n == 3)
   {
     if (!C.IsNull())
+    {
       edge = BRepBuilderAPI_MakeEdge(C);
+    }
     else if (!C2d.IsNull())
+    {
       edge = BRepBuilderAPI_MakeEdge2d(C2d);
+    }
     else
     {
       BRep_Builder aBB;
@@ -343,7 +403,9 @@ static int mkedge(Draw_Interpretor& di, int n, const char** a)
     {
       S = DrawTrSurf::GetSurface(a[3]);
       if (!S.IsNull())
+      {
         i = 1;
+      }
     }
     TopoDS_Shape  aLocalShape(DBRep::Get(a[3 + i], TopAbs_VERTEX));
     TopoDS_Vertex V1 = TopoDS::Vertex(aLocalShape);
@@ -353,11 +415,17 @@ static int mkedge(Draw_Interpretor& di, int n, const char** a)
       if (V1.IsNull())
       {
         if (!C.IsNull())
+        {
           edge = BRepBuilderAPI_MakeEdge(C, Draw::Atof(a[3]), Draw::Atof(a[4]));
+        }
         else if (S.IsNull())
+        {
           edge = BRepBuilderAPI_MakeEdge2d(C2d, Draw::Atof(a[3]), Draw::Atof(a[4]));
+        }
         else
+        {
           edge = BRepBuilderAPI_MakeEdge(C2d, S, Draw::Atof(a[4]), Draw::Atof(a[5]));
+        }
       }
       else
       {
@@ -365,11 +433,17 @@ static int mkedge(Draw_Interpretor& di, int n, const char** a)
         TopoDS_Vertex V2 = TopoDS::Vertex(aLocalShape);
         //  TopoDS_Vertex V2 = TopoDS::Vertex(DBRep::Get(a[4+i],TopAbs_VERTEX));
         if (!C.IsNull())
+        {
           edge = BRepBuilderAPI_MakeEdge(C, V1, V2);
+        }
         else if (S.IsNull())
+        {
           edge = BRepBuilderAPI_MakeEdge2d(C2d, V1, V2);
+        }
         else
+        {
           edge = BRepBuilderAPI_MakeEdge(C2d, S, V1, V2);
+        }
       }
     }
     else if (n == 7 + i)
@@ -378,14 +452,22 @@ static int mkedge(Draw_Interpretor& di, int n, const char** a)
       TopoDS_Vertex V2 = TopoDS::Vertex(aLocalShape);
       //      TopoDS_Vertex V2 = TopoDS::Vertex(DBRep::Get(a[5+i],TopAbs_VERTEX));
       if (!C.IsNull())
+      {
         edge = BRepBuilderAPI_MakeEdge(C, V1, V2, Draw::Atof(a[4]), Draw::Atof(a[6]));
+      }
       else if (S.IsNull())
+      {
         edge = BRepBuilderAPI_MakeEdge2d(C2d, V1, V2, Draw::Atof(a[4]), Draw::Atof(a[6]));
+      }
       else
+      {
         edge = BRepBuilderAPI_MakeEdge(C2d, S, V1, V2, Draw::Atof(a[5]), Draw::Atof(a[7]));
+      }
     }
     else
+    {
       return 1;
+    }
   }
 
   DBRep::Set(a[1], edge);
@@ -402,13 +484,17 @@ Standard_IMPORT Draw_Color DBRep_ColorOrientation(const TopAbs_Orientation Or);
 static int mkcurve(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 3)
+  {
     return 1;
+  }
 
   bool DispOrientation = !strcmp(a[0], "mkoricurve");
 
   TopoDS_Shape S = DBRep::Get(a[2], TopAbs_EDGE);
   if (S.IsNull())
+  {
     return 1;
+  }
   TopLoc_Location L;
   double          f, l;
 
@@ -443,11 +529,15 @@ static int mkcurve(Draw_Interpretor& di, int n, const char** a)
 static int mkpoint(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 3)
+  {
     return 1;
+  }
 
   TopoDS_Shape S = DBRep::Get(a[2], TopAbs_VERTEX);
   if (S.IsNull())
+  {
     return 1;
+  }
 
   TopoDS_Vertex V = TopoDS::Vertex(S);
 
@@ -464,12 +554,16 @@ static int mkpoint(Draw_Interpretor&, int n, const char** a)
 static int mk2dcurve(Draw_Interpretor& di, int na, const char** a)
 {
   if (na < 3)
+  {
     return 1;
+  }
 
   TopoDS_Shape S;
   S = DBRep::Get(a[2], TopAbs_EDGE);
   if (S.IsNull())
+  {
     return 1;
+  }
 
   TopoDS_Edge E = TopoDS::Edge(S);
 
@@ -528,11 +622,15 @@ static int mk2dcurve(Draw_Interpretor& di, int na, const char** a)
 static int edge(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 4)
+  {
     return 1;
+  }
   TopoDS_Shape V1 = DBRep::Get(a[2], TopAbs_VERTEX);
   TopoDS_Shape V2 = DBRep::Get(a[3], TopAbs_VERTEX);
   if (V1.IsNull() || V2.IsNull())
+  {
     return 1;
+  }
   TopoDS_Edge E = BRepBuilderAPI_MakeEdge(TopoDS::Vertex(V1), TopoDS::Vertex(V2));
   DBRep::Set(a[1], E);
   return 0;
@@ -545,7 +643,9 @@ static int edge(Draw_Interpretor&, int n, const char** a)
 static int isoedge(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 6)
+  {
     return 1;
+  }
 
   bool         uiso = *a[0] == 'u';
   double       p    = Draw::Atof(a[3]);
@@ -553,7 +653,9 @@ static int isoedge(Draw_Interpretor&, int n, const char** a)
   double       p2   = Draw::Atof(a[5]);
   TopoDS_Shape Sh   = DBRep::Get(a[2], TopAbs_FACE);
   if (Sh.IsNull())
+  {
     return 1;
+  }
   TopLoc_Location                  Loc;
   const occ::handle<Geom_Surface>& S = BRep_Tool::Surface(TopoDS::Face(Sh), Loc);
   double                           UMin, UMax, VMin, VMax;
@@ -600,12 +702,16 @@ static int isoedge(Draw_Interpretor&, int n, const char** a)
 static int transfert(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 3)
+  {
     return 1;
+  }
 
   TopoDS_Shape E1 = DBRep::Get(a[1], TopAbs_EDGE);
   TopoDS_Shape E2 = DBRep::Get(a[2], TopAbs_EDGE);
   if (E1.IsNull() || E2.IsNull())
+  {
     return 1;
+  }
 
   BRep_Builder B;
   B.Transfert(TopoDS::Edge(E1), TopoDS::Edge(E2));
@@ -721,7 +827,9 @@ static int profile(Draw_Interpretor& di, int n, const char** a)
       case 'f':
         i += 2;
         if (i >= n)
+        {
           goto badargs;
+        }
         if (!first)
         {
           di << "profile: The F instruction must precede all moves";
@@ -736,7 +844,9 @@ static int profile(Draw_Interpretor& di, int n, const char** a)
       case 'o':
         i += 3;
         if (i >= n)
+        {
           goto badargs;
+        }
         P.SetLocation(gp_Pnt(Draw::Atof(a[i - 2]), Draw::Atof(a[i - 1]), Draw::Atof(a[i])));
         stayfirst = true;
         break;
@@ -745,7 +855,9 @@ static int profile(Draw_Interpretor& di, int n, const char** a)
       case 'p':
         i += 6;
         if (i >= n)
+        {
           goto badargs;
+        }
         {
           gp_Vec vn(Draw::Atof(a[i - 5]), Draw::Atof(a[i - 4]), Draw::Atof(a[i - 3]));
           gp_Vec vx(Draw::Atof(a[i - 2]), Draw::Atof(a[i - 1]), Draw::Atof(a[i]));
@@ -769,7 +881,9 @@ static int profile(Draw_Interpretor& di, int n, const char** a)
       case 's':
         i += 1;
         if (i >= n)
+        {
           goto badargs;
+        }
         {
           TopoDS_Shape aLocalShape(DBRep::Get(a[i], TopAbs_FACE));
           TopoDS_Face  Face = TopoDS::Face(aLocalShape);
@@ -786,7 +900,9 @@ static int profile(Draw_Interpretor& di, int n, const char** a)
             isplanar = false;
           }
           else
+          {
             P = Plane->Pln();
+          }
         }
         stayfirst = true;
         break;
@@ -795,7 +911,9 @@ static int profile(Draw_Interpretor& di, int n, const char** a)
       case 'x':
         i++;
         if (i >= n)
+        {
           goto badargs;
+        }
         length = Draw::Atof(a[i]);
         if ((a[i - 1][1] == 'X') || (a[i - 1][1] == 'x'))
         {
@@ -810,7 +928,9 @@ static int profile(Draw_Interpretor& di, int n, const char** a)
       case 'y':
         i++;
         if (i >= n)
+        {
           goto badargs;
+        }
         length = Draw::Atof(a[i]);
         if ((a[i - 1][1] == 'Y') || (a[i - 1][1] == 'y'))
         {
@@ -825,7 +945,9 @@ static int profile(Draw_Interpretor& di, int n, const char** a)
       case 'l':
         i++;
         if (i >= n)
+        {
           goto badargs;
+        }
         length = Draw::Atof(a[i]);
         move   = line;
         break;
@@ -834,7 +956,9 @@ static int profile(Draw_Interpretor& di, int n, const char** a)
       case 't':
         i += 2;
         if (i >= n)
+        {
           goto badargs;
+        }
         {
           double vx = Draw::Atof(a[i - 1]);
           double vy = Draw::Atof(a[i]);
@@ -857,7 +981,9 @@ static int profile(Draw_Interpretor& di, int n, const char** a)
       case 'r':
         i++;
         if (i >= n)
+        {
           goto badargs;
+        }
         angle = Draw::Atof(a[i]) * (M_PI / 180.0);
         if ((a[i - 1][1] == 'R') || (a[i - 1][1] == 'r'))
         {
@@ -878,7 +1004,9 @@ static int profile(Draw_Interpretor& di, int n, const char** a)
       case 'd':
         i += 2;
         if (i >= n)
+        {
           goto badargs;
+        }
         {
           double vx = Draw::Atof(a[i - 1]);
           double vy = Draw::Atof(a[i]);
@@ -896,7 +1024,9 @@ static int profile(Draw_Interpretor& di, int n, const char** a)
       case 'c':
         i += 2;
         if (i >= n)
+        {
           goto badargs;
+        }
         radius = Draw::Atof(a[i - 1]);
         if (std::abs(radius) > Precision::Confusion())
         {
@@ -909,7 +1039,9 @@ static int profile(Draw_Interpretor& di, int n, const char** a)
       case 'i':
         i++;
         if (i >= n)
+        {
           goto badargs;
+        }
         length = Draw::Atof(a[i]);
         if ((a[i - 1][1] == 'X') || (a[i - 1][1] == 'x'))
         {
@@ -963,9 +1095,13 @@ static int profile(Draw_Interpretor& di, int n, const char** a)
         }
         occ::handle<Geom2d_Line> l = new Geom2d_Line(gp_Pnt2d(x, y), gp_Dir2d(dx, dy));
         if (isplanar)
+        {
           MW.Add(BRepBuilderAPI_MakeEdge(GeomAPI::To3d(l, P), 0, length));
+        }
         else
+        {
           MW.Add(BRepBuilderAPI_MakeEdge(l, Surface, 0, length));
+        }
         x += length * dx;
         y += length * dy;
       }
@@ -988,9 +1124,13 @@ static int profile(Draw_Interpretor& di, int n, const char** a)
         }
         occ::handle<Geom2d_Circle> c = new Geom2d_Circle(ax, radius, sense);
         if (isplanar)
+        {
           MW.Add(BRepBuilderAPI_MakeEdge(GeomAPI::To3d(c, P), 0, angle));
+        }
         else
+        {
           MW.Add(BRepBuilderAPI_MakeEdge(c, Surface, 0, angle));
+        }
         gp_Pnt2d p;
         gp_Vec2d v;
         c->D1(angle, p, v);
@@ -1032,7 +1172,9 @@ static int profile(Draw_Interpretor& di, int n, const char** a)
   if (face)
   {
     if (isplanar)
+    {
       S = BRepBuilderAPI_MakeFace(P, MW.Wire());
+    }
     else
     {
       BRepBuilderAPI_MakeFace MFace;
@@ -1047,7 +1189,9 @@ static int profile(Draw_Interpretor& di, int n, const char** a)
   }
 
   if (!TheLocation.IsIdentity())
+  {
     S.Move(TheLocation);
+  }
 
   if (!isplanar)
   {
@@ -1143,7 +1287,9 @@ static int bsplineprof(Draw_Interpretor& di, int n, const char** a)
               isplanar = false;
             }
             else
+            {
               P = Plane->Pln();
+            }
           }
           i += 1;
           break;
@@ -1271,14 +1417,20 @@ static int bsplineprof(Draw_Interpretor& di, int n, const char** a)
     length                     = a_vector.Magnitude();
     occ::handle<Geom2d_Line> l = new Geom2d_Line(gp_Pnt2d(x, y), gp_Dir2d(dx, dy));
     if (isplanar)
+    {
       MW.Add(BRepBuilderAPI_MakeEdge(GeomAPI::To3d(l, P), 0, length));
+    }
     else
+    {
       MW.Add(BRepBuilderAPI_MakeEdge(l, Surface, 0, length));
+    }
   }
   if (face)
   {
     if (isplanar)
+    {
       S = BRepBuilderAPI_MakeFace(P, MW.Wire());
+    }
     else
     {
       BRepBuilderAPI_MakeFace MFace;
@@ -1293,7 +1445,9 @@ static int bsplineprof(Draw_Interpretor& di, int n, const char** a)
   }
 
   if (!TheLocation.IsIdentity())
+  {
     S.Move(TheLocation);
+  }
 
   if (!isplanar)
   {
@@ -1401,7 +1555,9 @@ static int profile2d(Draw_Interpretor& di, int n, const char** a)
       case 'f':
         i += 2;
         if (i >= n)
+        {
           goto badargs;
+        }
         if (!first)
         {
           di << "profile: The F instruction must precede all moves";
@@ -1416,7 +1572,9 @@ static int profile2d(Draw_Interpretor& di, int n, const char** a)
       case 'x':
         i++;
         if (i >= n)
+        {
           goto badargs;
+        }
         length = Draw::Atof(a[i]);
         if ((a[i - 1][1] == 'X') || (a[i - 1][1] == 'x'))
         {
@@ -1431,7 +1589,9 @@ static int profile2d(Draw_Interpretor& di, int n, const char** a)
       case 'y':
         i++;
         if (i >= n)
+        {
           goto badargs;
+        }
         length = Draw::Atof(a[i]);
         if ((a[i - 1][1] == 'Y') || (a[i - 1][1] == 'y'))
         {
@@ -1446,7 +1606,9 @@ static int profile2d(Draw_Interpretor& di, int n, const char** a)
       case 'l':
         i++;
         if (i >= n)
+        {
           goto badargs;
+        }
         length = Draw::Atof(a[i]);
         move   = line;
         break;
@@ -1455,7 +1617,9 @@ static int profile2d(Draw_Interpretor& di, int n, const char** a)
       case 't':
         i += 2;
         if (i >= n)
+        {
           goto badargs;
+        }
         {
           double vx = Draw::Atof(a[i - 1]);
           double vy = Draw::Atof(a[i]);
@@ -1478,7 +1642,9 @@ static int profile2d(Draw_Interpretor& di, int n, const char** a)
       case 'r':
         i++;
         if (i >= n)
+        {
           goto badargs;
+        }
         angle = Draw::Atof(a[i]) * (M_PI / 180.0);
         if ((a[i - 1][1] == 'R') || (a[i - 1][1] == 'r'))
         {
@@ -1499,7 +1665,9 @@ static int profile2d(Draw_Interpretor& di, int n, const char** a)
       case 'd':
         i += 2;
         if (i >= n)
+        {
           goto badargs;
+        }
         {
           double vx = Draw::Atof(a[i - 1]);
           double vy = Draw::Atof(a[i]);
@@ -1517,7 +1685,9 @@ static int profile2d(Draw_Interpretor& di, int n, const char** a)
       case 'c':
         i += 2;
         if (i >= n)
+        {
           goto badargs;
+        }
         radius = Draw::Atof(a[i - 1]);
         if (std::abs(radius) > Precision::Confusion())
         {
@@ -1530,7 +1700,9 @@ static int profile2d(Draw_Interpretor& di, int n, const char** a)
       case 'i':
         i++;
         if (i >= n)
+        {
           goto badargs;
+        }
         length = Draw::Atof(a[i]);
         if ((a[i - 1][1] == 'X') || (a[i - 1][1] == 'x'))
         {
@@ -1667,7 +1839,9 @@ badargs:
 int mkoffset(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 5)
+  {
     return 1;
+  }
   char name[100];
 
   BRepOffsetAPI_MakeOffset Paral;
@@ -1685,7 +1859,9 @@ int mkoffset(Draw_Interpretor& di, int n, const char** a)
     }
 
     if (n >= anIndArg && strcmp(a[anIndArg - 1], "i") == 0)
+    {
       theJoinType = GeomAbs_Intersection;
+    }
   }
 
   TopoDS_Shape Base = DBRep::Get(a[2], TopAbs_FACE);
@@ -1694,7 +1870,9 @@ int mkoffset(Draw_Interpretor& di, int n, const char** a)
   {
     Base = DBRep::Get(a[2]);
     if (Base.IsNull())
+    {
       return 1;
+    }
     Paral.Init(theJoinType);
     TopExp_Explorer exp;
     for (exp.Init(Base, TopAbs_WIRE); exp.More(); exp.Next())
@@ -1717,7 +1895,9 @@ int mkoffset(Draw_Interpretor& di, int n, const char** a)
 
   double Alt = 0.;
   if (n > anIndArg)
+  {
     Alt = Draw::Atof(a[anIndArg]);
+  }
 
   int Compt = 1;
 
@@ -1747,7 +1927,9 @@ int mkoffset(Draw_Interpretor& di, int n, const char** a)
 int openoffset(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 5)
+  {
     return 1;
+  }
   char name[100];
 
   BRepOffsetAPI_MakeOffset Paral;
@@ -1765,7 +1947,9 @@ int openoffset(Draw_Interpretor& di, int n, const char** a)
     }
 
     if (n >= anIndArg && strcmp(a[anIndArg - 1], "i") == 0)
+    {
       theJoinType = GeomAbs_Intersection;
+    }
   }
 
   TopoDS_Shape Base = DBRep::Get(a[2], TopAbs_FACE);
@@ -1774,7 +1958,9 @@ int openoffset(Draw_Interpretor& di, int n, const char** a)
   {
     Base = DBRep::Get(a[2], TopAbs_WIRE);
     if (Base.IsNull())
+    {
       return 1;
+    }
     Paral.Init(theJoinType, true);
     Paral.AddWire(TopoDS::Wire(Base));
   }
@@ -1823,7 +2009,9 @@ int pickface(Draw_Interpretor& di, int, const char**)
 
   TopoDS_Shape S = DBRep::Get(pick_name, TopAbs_FACE);
   if (S.IsNull())
+  {
     return 1;
+  }
 
   char* name = new char[100];
   Sprintf(name, "PickedFace %s", pick_name);
@@ -1835,24 +2023,32 @@ int pickface(Draw_Interpretor& di, int, const char**)
 int edgeintersector(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 5)
+  {
     return 1;
+  }
 
   TopoDS_Edge  E[2];
   TopoDS_Shape aLocalShape(DBRep::Get(a[2], TopAbs_EDGE));
   E[0] = TopoDS::Edge(aLocalShape);
   //  E[0] = TopoDS::Edge(DBRep::Get(a[2],TopAbs_EDGE));
   if (E[0].IsNull())
+  {
     return 1;
+  }
   aLocalShape = DBRep::Get(a[3], TopAbs_EDGE);
   E[1]        = TopoDS::Edge(aLocalShape);
   //  E[1] = TopoDS::Edge(DBRep::Get(a[3],TopAbs_EDGE));
   if (E[1].IsNull())
+  {
     return 1;
+  }
   aLocalShape   = DBRep::Get(a[4], TopAbs_FACE);
   TopoDS_Face F = TopoDS::Face(aLocalShape);
   //  TopoDS_Face F  = TopoDS::Face(DBRep::Get(a[4],TopAbs_FACE));
   if (F.IsNull())
+  {
     return 1;
+  }
 
   TopOpeBRep_EdgesIntersector EInter;
   char                        name[100];
@@ -1862,7 +2058,9 @@ int edgeintersector(Draw_Interpretor& di, int n, const char** a)
   EInter.SetFaces(F, F);
   double TolInter = 1.e-7;
   if (n == 6)
+  {
     TolInter = Draw::Atof(a[5]);
+  }
   EInter.ForceTolerances(TolInter, TolInter);
   bool reducesegments = true;
   EInter.Perform(E[0], E[1], reducesegments);
@@ -1941,8 +2139,8 @@ static int arclinconvert(Draw_Interpretor& /*dout*/, int n, const char** a)
   // Check the command arguments
   if (n < 3)
   {
-    std::cout << "Error: " << a[0] << " - invalid number of arguments" << std::endl;
-    std::cout << "Usage: type help " << a[0] << std::endl;
+    std::cout << "Error: " << a[0] << " - invalid number of arguments" << '\n';
+    std::cout << "Usage: type help " << a[0] << '\n';
     return 1; // TCL_ERROR
   }
 
@@ -1950,22 +2148,24 @@ static int arclinconvert(Draw_Interpretor& /*dout*/, int n, const char** a)
   const TopoDS_Shape aShape = DBRep::Get(a[2]);
   if (aShape.IsNull())
   {
-    std::cout << "Error: " << a[2] << " is null" << std::endl;
+    std::cout << "Error: " << a[2] << " is null" << '\n';
     return 1; // TCL_ERROR
   }
 
   TopAbs_ShapeEnum aType = aShape.ShapeType();
   if (aType != TopAbs_WIRE && aType != TopAbs_FACE)
   {
-    std::cout << "Error: " << a[2] << " is neither wire no face" << std::endl;
+    std::cout << "Error: " << a[2] << " is neither wire no face" << '\n';
     return 1; // TCL_ERROR
   }
 
   // read tolerance
   double aTol = 0.01;
   if (n > 3)
+  {
     aTol = Draw::Atof(a[3]);
-  std::cout << "Info: tolerance is set to " << aTol << std::endl;
+  }
+  std::cout << "Info: tolerance is set to " << aTol << '\n';
 
   TopoDS_Shape aResult;
 
@@ -1975,7 +2175,7 @@ static int arclinconvert(Draw_Interpretor& /*dout*/, int n, const char** a)
     BRepBuilderAPI_MakeFace aFaceMaker(TopoDS::Wire(aShape), OnlyPlane);
     if (aFaceMaker.Error() != BRepBuilderAPI_FaceDone)
     {
-      std::cout << "Error: failed to find a face for the wire " << a[2] << std::endl;
+      std::cout << "Error: failed to find a face for the wire " << a[2] << '\n';
       return 1; // TCL_ERROR
     }
     const TopoDS_Face& aFace = aFaceMaker.Face();
@@ -1991,7 +2191,7 @@ static int arclinconvert(Draw_Interpretor& /*dout*/, int n, const char** a)
 
   if (aResult.IsNull())
   {
-    std::cout << "Error: could not convert " << a[2] << std::endl;
+    std::cout << "Error: could not convert " << a[2] << '\n';
     return 1; // TCL_ERROR
   }
 
@@ -2004,12 +2204,16 @@ static int arclinconvert(Draw_Interpretor& /*dout*/, int n, const char** a)
 int concatC0wire(Draw_Interpretor&, int n, const char** c)
 {
   if (n < 3)
+  {
     return 1;
+  }
 
   TopoDS_Shape S = DBRep::Get(c[2], TopAbs_WIRE);
 
   if (S.IsNull())
+  {
     return 1; // test if the shape is empty
+  }
 
   TopoDS_Wire  W = TopoDS::Wire(S);
   TopoDS_Shape res;
@@ -2029,16 +2233,24 @@ static int concatwire(Draw_Interpretor&, int n, const char** c)
 {
   GeomAbs_Shape Option = GeomAbs_C1;
   if (n < 3)
+  {
     return 1;
+  }
 
-  if (n == 4) // check if it's C1 or G1
+  if (n == 4)
+  { // check if it's C1 or G1
     if (!strcmp(c[3], "G1"))
+    {
       Option = GeomAbs_G1;
+    }
+  }
 
   TopoDS_Shape S = DBRep::Get(c[2], TopAbs_WIRE);
 
   if (S.IsNull())
+  {
     return 1; // test if the shape is empty
+  }
 
   TopoDS_Wire W = TopoDS::Wire(S);
   TopoDS_Wire res;
@@ -2062,7 +2274,9 @@ int build3d(Draw_Interpretor& di, int n, const char** a)
   bool         Ok;
   TopoDS_Shape S = DBRep::Get(a[1]);
   if (S.IsNull())
+  {
     return 1;
+  }
 
   if (n == 2)
   {
@@ -2089,17 +2303,23 @@ int build3d(Draw_Interpretor& di, int n, const char** a)
 int reducepcurves(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
+  {
     return 1;
+  }
 
   int i;
   for (i = 1; i < n; i++)
   {
     TopoDS_Shape aShape = DBRep::Get(a[i]);
     if (aShape.IsNull())
+    {
       // std::cout << a[i] << " is not a valid shape" << std::endl;
       di << a[i] << " is not a valid shape\n";
+    }
     else
+    {
       BRepTools::RemoveUnusedPCurves(aShape);
+    }
   }
 
   return 0;
@@ -2111,7 +2331,9 @@ void BRepTest::CurveCommands(Draw_Interpretor& theCommands)
 {
   static bool done = false;
   if (done)
+  {
     return;
+  }
   done = true;
 
   DBRep::BasicCommands(theCommands);

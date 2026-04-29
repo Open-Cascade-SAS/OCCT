@@ -39,7 +39,9 @@ void RWStepKinematics_RWLowOrderKinematicPair::ReadStep(
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 12, theArch, "low_order_kinematic_pair"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 
@@ -153,7 +155,9 @@ void RWStepKinematics_RWLowOrderKinematicPair::WriteStep(
     theSW.Send(theEnt->ItemDefinedTransformation()->Description());
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   theSW.Send(theEnt->ItemDefinedTransformation()->TransformItem1());
 

@@ -123,10 +123,14 @@ void gp_Trsf2d::SetScaleFactor(const double S)
   {
     double X = loc.X();
     if (X < 0)
+    {
       X = -X;
+    }
     double Y = loc.Y();
     if (Y < 0)
+    {
       Y = -Y;
+    }
     if (X <= gp::Resolution() && Y <= gp::Resolution())
     {
       if (shape == gp_Identity || shape == gp_Rotation)
@@ -194,12 +198,18 @@ void gp_Trsf2d::SetScaleFactor(const double S)
 gp_Mat2d gp_Trsf2d::VectorialPart() const
 {
   if (scale == 1.0)
+  {
     return matrix;
+  }
   gp_Mat2d M = matrix;
   if (shape == gp_Scale || shape == gp_PntMirror)
+  {
     M.SetDiagonal(matrix.Value(1, 1) * scale, matrix.Value(2, 2) * scale);
+  }
   else
+  {
     M.Multiply(scale);
+  }
   return M;
 }
 
@@ -291,7 +301,9 @@ void gp_Trsf2d::Multiply(const gp_Trsf2d& T)
     gp_XY Tloc(T.loc);
     Tloc.Multiply(matrix);
     if (scale != 1.0)
+    {
       Tloc.Multiply(scale);
+    }
     loc.Add(Tloc);
   }
   else if ((shape == gp_Scale || shape == gp_PntMirror) && T.shape == gp_Translation)
@@ -330,7 +342,9 @@ void gp_Trsf2d::Multiply(const gp_Trsf2d& T)
     gp_XY Tloc(T.loc);
     Tloc.Multiply(matrix);
     if (scale == 1.0)
+    {
       scale = T.scale;
+    }
     else
     {
       Tloc.Multiply(scale);
@@ -385,24 +399,34 @@ void gp_Trsf2d::Power(const int N)
     {
     }
     else if (N == -1)
+    {
       Invert();
+    }
     else
     {
       if (N < 0)
+      {
         Invert();
+      }
       if (shape == gp_Translation)
       {
         int Npower = N;
         if (Npower < 0)
+        {
           Npower = -Npower;
+        }
         Npower--;
         gp_XY Temploc = loc;
         for (;;)
         {
           if (IsOdd(Npower))
+          {
             loc.Add(Temploc);
+          }
           if (Npower == 1)
+          {
             break;
+          }
           Temploc.Add(Temploc);
           Npower = Npower / 2;
         }
@@ -411,7 +435,9 @@ void gp_Trsf2d::Power(const int N)
       {
         int Npower = N;
         if (Npower < 0)
+        {
           Npower = -Npower;
+        }
         Npower--;
         gp_XY  Temploc   = loc;
         double Tempscale = scale;
@@ -423,7 +449,9 @@ void gp_Trsf2d::Power(const int N)
             scale = scale * Tempscale;
           }
           if (Npower == 1)
+          {
             break;
+          }
           Temploc.Add(Temploc.Multiplied(Tempscale));
           Tempscale = Tempscale * Tempscale;
           Npower    = Npower / 2;
@@ -433,7 +461,9 @@ void gp_Trsf2d::Power(const int N)
       {
         int Npower = N;
         if (Npower < 0)
+        {
           Npower = -Npower;
+        }
         Npower--;
         gp_Mat2d Tempmatrix(matrix);
         if (loc.X() == 0.0 && loc.Y() == 0.0)
@@ -441,9 +471,13 @@ void gp_Trsf2d::Power(const int N)
           for (;;)
           {
             if (IsOdd(Npower))
+            {
               matrix.Multiply(Tempmatrix);
+            }
             if (Npower == 1)
+            {
               break;
+            }
             Tempmatrix.Multiply(Tempmatrix);
             Npower = Npower / 2;
           }
@@ -459,7 +493,9 @@ void gp_Trsf2d::Power(const int N)
               matrix.Multiply(Tempmatrix);
             }
             if (Npower == 1)
+            {
               break;
+            }
             Temploc.Add(Temploc.Multiplied(Tempmatrix));
             Tempmatrix.Multiply(Tempmatrix);
             Npower = Npower / 2;
@@ -481,7 +517,9 @@ void gp_Trsf2d::Power(const int N)
         shape      = gp_CompoundTrsf;
         int Npower = N;
         if (Npower < 0)
+        {
           Npower = -Npower;
+        }
         Npower--;
         matrix.SetDiagonal(scale * matrix.Value(1, 1), scale * matrix.Value(2, 2));
         gp_XY    Temploc   = loc;
@@ -496,7 +534,9 @@ void gp_Trsf2d::Power(const int N)
             matrix.Multiply(Tempmatrix);
           }
           if (Npower == 1)
+          {
             break;
+          }
           Tempscale = Tempscale * Tempscale;
           Temploc.Add((Temploc.Multiplied(Tempmatrix)).Multiplied(Tempscale));
           Tempmatrix.Multiply(Tempmatrix);
@@ -566,7 +606,9 @@ void gp_Trsf2d::PreMultiply(const gp_Trsf2d& T)
     shape  = gp_CompoundTrsf;
     matrix = T.matrix;
     if (T.scale == 1.0)
+    {
       loc.Multiply(T.matrix);
+    }
     else
     {
       scale = T.scale;
@@ -604,7 +646,9 @@ void gp_Trsf2d::PreMultiply(const gp_Trsf2d& T)
     shape  = gp_CompoundTrsf;
     matrix = T.matrix;
     if (T.scale == 1.0)
+    {
       loc.Multiply(T.matrix);
+    }
     else
     {
       loc.Multiply(matrix);
@@ -646,9 +690,13 @@ void gp_Trsf2d::SetValues(const double a11,
                                       "gp_Trsf2d::SetValues, null determinant");
 
   if (s > 0)
+  {
     s = sqrt(s);
+  }
   else
+  {
     s = sqrt(-s);
+  }
 
   M.Divide(s);
 

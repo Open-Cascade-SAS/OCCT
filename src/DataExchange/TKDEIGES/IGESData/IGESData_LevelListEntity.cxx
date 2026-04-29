@@ -24,7 +24,9 @@ bool IGESData_LevelListEntity::HasLevelNumber(const int level) const
   for (int i = 1; i <= nb; i++)
   {
     if (LevelNumber(i) == level)
+    {
       return true;
+    }
   }
   return false;
 }

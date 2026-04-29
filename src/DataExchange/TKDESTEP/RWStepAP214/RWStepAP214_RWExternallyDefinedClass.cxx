@@ -37,7 +37,9 @@ void RWStepAP214_RWExternallyDefinedClass::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "externally_defined_class"))
+  {
     return;
+  }
 
   // Inherited fields of Group
 
@@ -92,7 +94,9 @@ void RWStepAP214_RWExternallyDefinedClass::WriteStep(
     SW.Send(ent->StepBasic_Group::Description());
   }
   else
+  {
     SW.SendUndef();
+  }
 
   // Inherited fields of ExternallyDefinedItem
 

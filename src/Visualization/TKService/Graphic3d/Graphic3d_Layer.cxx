@@ -573,7 +573,9 @@ void Graphic3d_Layer::UpdateCulling(
     if (isTrsfPers)
     {
       if (myBVHPrimitivesTrsfPers.Size() == 0)
+      {
         continue;
+      }
 
       const NCollection_Mat4<double>&     aProjection     = theSelector.ProjectionMatrix();
       const NCollection_Mat4<double>&     aWorldView      = theSelector.WorldViewMatrix();
@@ -591,7 +593,9 @@ void Graphic3d_Layer::UpdateCulling(
     else
     {
       if (myBVHPrimitives.Size() == 0)
+      {
         continue;
+      }
 
       aBVHTree = myBVHPrimitives.BVH();
     }

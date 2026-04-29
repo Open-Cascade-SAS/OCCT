@@ -41,7 +41,9 @@ bool BRepTools_CopyModification::NewSurface(const TopoDS_Face&         theFace,
   theRevWires = theRevFace = false;
 
   if (!theSurf.IsNull() && myCopyGeom)
+  {
     theSurf = occ::down_cast<Geom_Surface>(theSurf->Copy());
+  }
 
   return true;
 }
@@ -60,11 +62,15 @@ bool BRepTools_CopyModification::NewTriangulation(const TopoDS_Face&            
   theTri = BRep_Tool::Triangulation(theFace, aLoc);
 
   if (theTri.IsNull())
+  {
     return false;
+  }
 
   // mesh is copied if and only if the geometry need to be copied too
   if (myCopyGeom)
+  {
     theTri = theTri->Copy();
+  }
   return true;
 }
 
@@ -80,7 +86,9 @@ bool BRepTools_CopyModification::NewCurve(const TopoDS_Edge&       theEdge,
   theTol   = BRep_Tool::Tolerance(theEdge);
 
   if (!theCurve.IsNull() && myCopyGeom)
+  {
     theCurve = occ::down_cast<Geom_Curve>(theCurve->Copy());
+  }
 
   return true;
 }
@@ -99,11 +107,15 @@ bool BRepTools_CopyModification::NewPolygon(const TopoDS_Edge&           theEdge
   thePoly = BRep_Tool::Polygon3D(theEdge, aLoc);
 
   if (thePoly.IsNull())
+  {
     return false;
+  }
 
   // polygon is copied if and only if the geometry need to be copied too
   if (myCopyGeom)
+  {
     thePoly = thePoly->Copy();
+  }
   return true;
 }
 
@@ -124,11 +136,15 @@ bool BRepTools_CopyModification::NewPolygonOnTriangulation(
   thePoly                               = BRep_Tool::PolygonOnTriangulation(theEdge, aTria, aLoc);
 
   if (thePoly.IsNull())
+  {
     return false;
+  }
 
   // polygon is copied if and only if the geometry need to be copied too
   if (myCopyGeom)
+  {
     thePoly = thePoly->Copy();
+  }
   return true;
 }
 
@@ -157,7 +173,9 @@ bool BRepTools_CopyModification::NewCurve2d(const TopoDS_Edge& theEdge,
   theCurve = BRep_Tool::CurveOnSurface(theEdge, theFace, aFirst, aLast);
 
   if (!theCurve.IsNull() && myCopyGeom)
+  {
     theCurve = occ::down_cast<Geom2d_Curve>(theCurve->Copy());
+  }
 
   return true;
 }
@@ -170,7 +188,9 @@ bool BRepTools_CopyModification::NewParameter(const TopoDS_Vertex& theVertex,
                                               double&              theTol)
 {
   if (theVertex.IsNull())
+  {
     return false; // infinite edge may have Null vertex
+  }
 
   theTol = BRep_Tool::Tolerance(theVertex);
   thePnt = BRep_Tool::Parameter(theVertex, theEdge);
