@@ -78,10 +78,10 @@ int GLOBAL_iexF = 0;
 #endif
 
 Standard_EXPORT void TopOpeBRepDS_SetThePCurve(const BRep_Builder&              B,
-                                                               TopoDS_Edge&                     E,
-                                                               const TopoDS_Face&               F,
-                                                               const TopAbs_Orientation         O,
-                                                               const occ::handle<Geom2d_Curve>& C);
+                                               TopoDS_Edge&                     E,
+                                               const TopoDS_Face&               F,
+                                               const TopAbs_Orientation         O,
+                                               const occ::handle<Geom2d_Curve>& C);
 // Standard_IMPORT int FUN_tool_outofUVbounds
 //(const TopoDS_Face& fF,const TopoDS_Edge& E,double& splitpar);
 
