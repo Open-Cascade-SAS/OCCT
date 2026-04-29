@@ -93,9 +93,13 @@ void IGESSolid_ToolLoop::ReadOwnParams(const occ::handle<IGESSolid_Loop>&       
       // st = PR.ReadInteger(PR.Current(), Msg190, anint); //szv#4:S4163:12Mar99 moved in if
       // st = PR.ReadInteger(PR.Current(), "Edge types", anint);
       if (PR.ReadInteger(PR.Current(), anint))
+      {
         tempTypes->SetValue(i, anint);
+      }
       else
+      {
         PR.SendFail(Msg190);
+      }
 
       if (!PR.ReadEntity(IR, PR.Current(), aStatus, anent))
       { // szv#4:S4163:12Mar99 `st=` not needed
@@ -122,14 +126,20 @@ void IGESSolid_ToolLoop::ReadOwnParams(const occ::handle<IGESSolid_Loop>&       
       // if (!st) {  }    // WARNING : Two possible Types : //szv#4:S4163:12Mar99 not needed
       if (!anent->IsKind(STANDARD_TYPE(IGESSolid_VertexList))
           && !anent->IsKind(STANDARD_TYPE(IGESSolid_EdgeList)))
+      {
         PR.SendFail(Msg190);
+      }
       else
+      {
         tempEdges->SetValue(i, anent);
+      }
 
       // st = PR.ReadInteger(PR.Current(), Msg191, anint); //szv#4:S4163:12Mar99 moved in if
       // st = PR.ReadInteger(PR.Current(), "List index", anint);
       if (PR.ReadInteger(PR.Current(), anint))
+      {
         tempIndex->SetValue(i, anint);
+      }
       else
       {
         Message_Msg Msg191("XSTEP_191");
@@ -139,7 +149,9 @@ void IGESSolid_ToolLoop::ReadOwnParams(const occ::handle<IGESSolid_Loop>&       
       // st = PR.ReadBoolean(PR.Current(), Msg180, abool); //szv#4:S4163:12Mar99 moved in if
       // st = PR.ReadBoolean(PR.Current(), "Orientation flags", abool);
       if (PR.ReadBoolean(PR.Current(), Msg180, abool))
+      {
         tempOrientation->SetValue(i, (abool ? 1 : 0)); // bool;
+      }
 
       bool st = PR.ReadInteger(PR.Current(), anint);
       if (!st)
@@ -160,12 +172,16 @@ void IGESSolid_ToolLoop::ReadOwnParams(const occ::handle<IGESSolid_Loop>&       
           // st = PR.ReadBoolean(PR.Current(), Msg195, abool); //szv#4:S4163:12Mar99 moved in if
           // st = PR.ReadBoolean(PR.Current(), "Isoparametric flags", abool);
           if (PR.ReadBoolean(PR.Current(), Msg195, abool))
+          {
             tmpints->SetValue(j, (abool ? 1 : 0)); // bool;
+          }
 
           // st = PR.ReadEntity(IR, PR.Current(), Msg194, anent); //szv#4:S4163:12Mar99 moved in if
           // st = PR.ReadEntity(IR, PR.Current(), "Curves", anent);
           if (PR.ReadEntity(IR, PR.Current(), aStatus, anent))
+          {
             tmpents->SetValue(j, anent);
+          }
           else
           {
             Message_Msg Msg194("XSTEP_194");
@@ -192,7 +208,9 @@ void IGESSolid_ToolLoop::ReadOwnParams(const occ::handle<IGESSolid_Loop>&       
         tempCurves->SetValue(i, tmpents);
       }
       else
+      {
         nbParameterCurves->SetValue(i, anint);
+      }
     }
   }
   else
@@ -249,7 +267,9 @@ void IGESSolid_ToolLoop::OwnShared(const occ::handle<IGESSolid_Loop>& ent,
   {
     iter.GetOneItem(ent->Edge(i));
     for (j = 1; j <= ent->NbParameterCurves(i); j++)
+    {
       iter.GetOneItem(ent->ParametricCurve(i, j));
+    }
   }
 }
 
@@ -291,10 +311,14 @@ void IGESSolid_ToolLoop::OwnCopy(const occ::handle<IGESSolid_Loop>& another,
 
     occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tmpents;
     if (anint > 0)
+    {
       tmpents = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, anint);
+    }
     occ::handle<NCollection_HArray1<int>> tmpints;
     if (anint > 0)
+    {
       tmpints = new NCollection_HArray1<int>(1, anint);
+    }
     for (j = 1; j <= anint; j++)
     {
       tmpints->SetValue(j, (another->IsIsoparametric(i, j) ? 1 : 0));
@@ -344,11 +368,13 @@ void IGESSolid_ToolLoop::OwnCheck(const occ::handle<IGESSolid_Loop>& ent,
 
   int upper = ent->NbEdges();
   for (int i = 1; i <= upper; i++)
+  {
     if (ent->EdgeType(i) != 0 && ent->EdgeType(i) != 1)
     {
       Message_Msg Msg190("XSTEP_190");
       ach->SendFail(Msg190);
     }
+  }
 }
 
 //=================================================================================================
@@ -386,7 +412,9 @@ void IGESSolid_ToolLoop::OwnDump(const occ::handle<IGESSolid_Loop>& ent,
       if (nbc != 0)
       {
         if (level <= 5)
+        {
           S << "[ ask level > 5 for content ]";
+        }
         else
         {
           S << ":\n [ ";
@@ -405,5 +433,5 @@ void IGESSolid_ToolLoop::OwnDump(const occ::handle<IGESSolid_Loop>& ent,
     }
     S << " ]";
   }
-  S << std::endl;
+  S << '\n';
 }

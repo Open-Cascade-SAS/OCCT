@@ -44,7 +44,9 @@ bool BRepTools_PurgeLocations::Perform(const TopoDS_Shape& theShape)
     const TopLoc_Location& aLoc = myLocations.Location(ind);
 
     if (aLoc.IsIdentity())
+    {
       break;
+    }
 
     const gp_Trsf& aTrsf = aLoc.Transformation();
     bool           isBadTrsf =
@@ -195,6 +197,8 @@ TopoDS_Shape BRepTools_PurgeLocations::ModifiedShape(const TopoDS_Shape& theInit
 {
   TopoDS_Shape aShape = theInitShape;
   if (myMapNewShapes.IsBound(theInitShape))
+  {
     aShape = myMapNewShapes.Find(theInitShape);
+  }
   return aShape;
 }

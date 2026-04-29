@@ -40,7 +40,9 @@ bool STEPCAFControl_Controller::Init()
   {
     static bool inic = false;
     if (inic)
+    {
       return true;
+    }
     inic = true;
   }
   // self-registering

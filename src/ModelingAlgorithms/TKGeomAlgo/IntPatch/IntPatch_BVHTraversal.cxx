@@ -18,8 +18,7 @@
 //==================================================================================================
 
 IntPatch_BVHTraversal::IntPatch_BVHTraversal()
-    : BVH_PairTraverse<double, 3>(),
-      mySet1(nullptr),
+    : mySet1(nullptr),
       mySet2(nullptr),
       mySelfInterference(false)
 {
@@ -27,7 +26,7 @@ IntPatch_BVHTraversal::IntPatch_BVHTraversal()
 
 //==================================================================================================
 
-IntPatch_BVHTraversal::~IntPatch_BVHTraversal() {}
+IntPatch_BVHTraversal::~IntPatch_BVHTraversal() = default;
 
 //==================================================================================================
 

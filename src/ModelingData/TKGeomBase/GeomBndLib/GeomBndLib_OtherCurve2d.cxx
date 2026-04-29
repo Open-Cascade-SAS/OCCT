@@ -249,9 +249,13 @@ Bnd_Box2d GeomBndLib_OtherCurve2d::BoxOptimal(double theU1, double theU2, double
     for (int k = 0; k < 2; ++k)
     {
       if (CoordMin[k] > P.Coord(k + 1))
+      {
         CoordMin[k] = P.Coord(k + 1);
+      }
       if (CoordMax[k] < P.Coord(k + 1))
+      {
         CoordMax[k] = P.Coord(k + 1);
+      }
     }
     if (i > 1)
     {
@@ -261,12 +265,18 @@ Bnd_Box2d GeomBndLib_OtherCurve2d::BoxOptimal(double theU1, double theU2, double
       for (int k = 0; k < 2; ++k)
       {
         if (CoordMin[k] > P.Coord(k + 1))
+        {
           CoordMin[k] = P.Coord(k + 1);
+        }
         if (CoordMax[k] < P.Coord(k + 1))
+        {
           CoordMax[k] = P.Coord(k + 1);
+        }
         double d = std::abs(aD.Coord(k + 1));
         if (DeflMax[k] < d)
+        {
           DeflMax[k] = d;
+        }
       }
     }
   }
@@ -276,7 +286,9 @@ Bnd_Box2d GeomBndLib_OtherCurve2d::BoxOptimal(double theU1, double theU2, double
   {
     double d = DeflMax[k];
     if (d <= eps)
+    {
       continue;
+    }
     double CMin = CoordMin[k];
     double CMax = CoordMax[k];
     for (int i = 1; i <= Nu; ++i)
@@ -287,7 +299,9 @@ Bnd_Box2d GeomBndLib_OtherCurve2d::BoxOptimal(double theU1, double theU2, double
         double umax = theU1 + std::min(Nu - 1, i) * du;
         double cmin = AdjustExtr2dCurve(C, umin, umax, CMin, k + 1, eps, true);
         if (cmin < CMin)
+        {
           CMin = cmin;
+        }
       }
       else if (CMax - aPnts(i).Coord(k + 1) < d)
       {
@@ -295,7 +309,9 @@ Bnd_Box2d GeomBndLib_OtherCurve2d::BoxOptimal(double theU1, double theU2, double
         double umax = theU1 + std::min(Nu - 1, i) * du;
         double cmax = AdjustExtr2dCurve(C, umin, umax, CMax, k + 1, eps, false);
         if (cmax > CMax)
+        {
           CMax = cmax;
+        }
       }
     }
     CoordMin[k] = CMin;

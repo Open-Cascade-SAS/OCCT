@@ -41,7 +41,9 @@ int IGESGeom_Line::Infinite() const
 void IGESGeom_Line::SetInfinite(const int status)
 {
   if (status >= 0 && status <= 2)
+  {
     InitTypeAndForm(110, status);
+  }
 }
 
 gp_Pnt IGESGeom_Line::StartPoint() const
@@ -54,7 +56,9 @@ gp_Pnt IGESGeom_Line::TransformedStartPoint() const
 {
   gp_XYZ Start = theStart;
   if (HasTransf())
+  {
     Location().Transforms(Start);
+  }
   gp_Pnt transStart(Start);
   return transStart;
 }
@@ -69,7 +73,9 @@ gp_Pnt IGESGeom_Line::TransformedEndPoint() const
 {
   gp_XYZ End = theEnd;
   if (HasTransf())
+  {
     Location().Transforms(End);
+  }
   gp_Pnt transEnd(End);
   return transEnd;
 }

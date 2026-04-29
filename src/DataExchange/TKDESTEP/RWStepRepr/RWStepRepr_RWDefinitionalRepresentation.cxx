@@ -34,7 +34,9 @@ void RWStepRepr_RWDefinitionalRepresentation::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "definitional_representation"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -60,7 +62,9 @@ void RWStepRepr_RWDefinitionalRepresentation::ReadStep(
                            ach,
                            STANDARD_TYPE(StepRepr_RepresentationItem),
                            anent2))
+      {
         aItems->SetValue(i2, anent2);
+      }
     }
   }
 

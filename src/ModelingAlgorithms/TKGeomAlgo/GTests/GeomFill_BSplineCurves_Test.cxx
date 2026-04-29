@@ -104,11 +104,17 @@ double maxTolerance(const TopoDS_Shape& theShape)
 {
   double aMaxTol = 0.0;
   for (TopExp_Explorer anExp(theShape, TopAbs_VERTEX); anExp.More(); anExp.Next())
+  {
     aMaxTol = std::max(aMaxTol, BRep_Tool::Tolerance(TopoDS::Vertex(anExp.Current())));
+  }
   for (TopExp_Explorer anExp(theShape, TopAbs_EDGE); anExp.More(); anExp.Next())
+  {
     aMaxTol = std::max(aMaxTol, BRep_Tool::Tolerance(TopoDS::Edge(anExp.Current())));
+  }
   for (TopExp_Explorer anExp(theShape, TopAbs_FACE); anExp.More(); anExp.Next())
+  {
     aMaxTol = std::max(aMaxTol, BRep_Tool::Tolerance(TopoDS::Face(anExp.Current())));
+  }
   return aMaxTol;
 }
 

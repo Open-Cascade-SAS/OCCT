@@ -86,7 +86,9 @@ bool HLRBRep_EdgeFaceTool::UVPoint(const double             Par,
       }
     }
     if (index == 0)
+    {
       return false;
+    }
 
     proj.Parameter(index, U, V);
   }

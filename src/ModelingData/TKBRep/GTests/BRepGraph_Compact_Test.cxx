@@ -86,7 +86,9 @@ int countHistoryRecordsByOp(const BRepGraph& theGraph, const TCollection_AsciiSt
   for (size_t aRecIdx = 0; aRecIdx < theGraph.History().NbRecords(); ++aRecIdx)
   {
     if (theGraph.History().Record(aRecIdx).OperationName == theOp)
+    {
       ++aCount;
+    }
   }
   return aCount;
 }
@@ -182,19 +184,27 @@ TEST(BRepGraph_CompactTest, IndexDensity_NoGaps)
   for (BRepGraph_VertexId aVertexId = BRepGraph_VertexId::Start();
        aVertexId.IsValid(aGraph.Topo().Vertices().Nb());
        ++aVertexId)
+  {
     EXPECT_FALSE(aGraph.Topo().Vertices().Definition(aVertexId).IsRemoved);
+  }
   for (BRepGraph_EdgeId anEdgeId = BRepGraph_EdgeId::Start();
        anEdgeId.IsValid(aGraph.Topo().Edges().Nb());
        ++anEdgeId)
+  {
     EXPECT_FALSE(aGraph.Topo().Edges().Definition(anEdgeId).IsRemoved);
+  }
   for (BRepGraph_FaceId aFaceId = BRepGraph_FaceId::Start();
        aFaceId.IsValid(aGraph.Topo().Faces().Nb());
        ++aFaceId)
+  {
     EXPECT_FALSE(aGraph.Topo().Faces().Definition(aFaceId).IsRemoved);
+  }
   for (BRepGraph_WireId aWireId = BRepGraph_WireId::Start();
        aWireId.IsValid(aGraph.Topo().Wires().Nb());
        ++aWireId)
+  {
     EXPECT_FALSE(aGraph.Topo().Wires().Definition(aWireId).IsRemoved);
+  }
 }
 
 TEST(BRepGraph_CompactTest, CrossReferences_Valid)
@@ -609,7 +619,9 @@ TEST(BRepGraph_CompactTest, UIDRoundTrip_RefUIDs_AfterCompaction)
     const BRepGraphInc::EdgeDef& anEdge =
       aGraph.Topo().Edges().Definition(BRepGraph_EdgeId::Start());
     if (anEdge.StartVertexRefId.IsValid())
+    {
       aVertexRefId = anEdge.StartVertexRefId;
+    }
   }
 
   // CoEdgeRef - from Face 1 wire (Face 0 will be removed before compact).
@@ -621,7 +633,9 @@ TEST(BRepGraph_CompactTest, UIDRoundTrip_RefUIDs_AfterCompaction)
       const BRepGraphInc::WireRef& aWireRef = aGraph.Refs().Wires().Entry(aFace.WireRefIds.First());
       const BRepGraphInc::WireDef& aWire    = aGraph.Topo().Wires().Definition(aWireRef.WireDefId);
       if (!aWire.CoEdgeRefIds.IsEmpty())
+      {
         aCoEdgeRefId = aWire.CoEdgeRefIds.First();
+      }
     }
   }
 
@@ -631,7 +645,9 @@ TEST(BRepGraph_CompactTest, UIDRoundTrip_RefUIDs_AfterCompaction)
   {
     const BRepGraphInc::FaceDef& aFace = aGraph.Topo().Faces().Definition(BRepGraph_FaceId(1));
     if (!aFace.WireRefIds.IsEmpty())
+    {
       aWireRefId = aFace.WireRefIds.First();
+    }
   }
 
   // FaceRef - from Shell, pointing to Face 1 (skip Face 0 whose ref will be removed).
@@ -650,7 +666,9 @@ TEST(BRepGraph_CompactTest, UIDRoundTrip_RefUIDs_AfterCompaction)
         }
       }
       if (aFaceRefId.IsValid())
+      {
         break;
+      }
     }
   }
 
@@ -666,22 +684,34 @@ TEST(BRepGraph_CompactTest, UIDRoundTrip_RefUIDs_AfterCompaction)
         break;
       }
       if (aShellRefId.IsValid())
+      {
         break;
+      }
     }
   }
 
   // Capture RefUIDs before compact.
   BRepGraph_RefUID aVertexRefUID, aCoEdgeRefUID, aWireRefUID, aFaceRefUID, aShellRefUID;
   if (aVertexRefId.IsValid())
+  {
     aVertexRefUID = aGraph.UIDs().Of(aVertexRefId);
+  }
   if (aCoEdgeRefId.IsValid())
+  {
     aCoEdgeRefUID = aGraph.UIDs().Of(aCoEdgeRefId);
+  }
   if (aWireRefId.IsValid())
+  {
     aWireRefUID = aGraph.UIDs().Of(aWireRefId);
+  }
   if (aFaceRefId.IsValid())
+  {
     aFaceRefUID = aGraph.UIDs().Of(aFaceRefId);
+  }
   if (aShellRefId.IsValid())
+  {
     aShellRefUID = aGraph.UIDs().Of(aShellRefId);
+  }
 
   // Remove one face to trigger compaction.
   aGraph.Editor().Gen().RemoveNode(BRepGraph_FaceId::Start());

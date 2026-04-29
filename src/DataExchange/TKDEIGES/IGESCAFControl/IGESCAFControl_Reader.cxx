@@ -49,9 +49,13 @@
 static void checkColorRange(double& theCol)
 {
   if (theCol < 0.)
+  {
     theCol = 0.;
+  }
   if (theCol > 100.)
+  {
     theCol = 100.;
+  }
 }
 
 static inline bool IsComposite(const TopoDS_Shape& theShape)
@@ -59,13 +63,17 @@ static inline bool IsComposite(const TopoDS_Shape& theShape)
   if (theShape.ShapeType() == TopAbs_COMPOUND)
   {
     if (!theShape.Location().IsIdentity())
+    {
       return true;
+    }
     TopoDS_Iterator anIt(theShape, false, false);
 
     for (; anIt.More(); anIt.Next())
     {
       if (IsComposite(anIt.Value()))
+      {
         return true;
+      }
     }
   }
   return false;
@@ -96,9 +104,13 @@ static void AddCompositeShape(const occ::handle<XCAFDoc_ShapeTool>& theSTool,
   TopoDS_Shape           aShape = theShape;
   const TopLoc_Location& aLoc   = theShape.Location();
   if (!theConsiderLoc && !aLoc.IsIdentity())
+  {
     aShape.Location(TopLoc_Location());
+  }
   if (!theMap.Add(aShape))
+  {
     return;
+  }
 
   TopoDS_Iterator anIt(theShape, false, false);
   bool            aHasCompositeSubShape = false;
@@ -135,13 +147,16 @@ static void AddCompositeShape(const occ::handle<XCAFDoc_ShapeTool>& theSTool,
     aB.Add(aNewShape, aCompShape);
 
     if (!aLoc.IsIdentity())
+    {
       aNewShape.Location(aLoc);
+    }
     aNewShape.Orientation(theShape.Orientation());
     theSTool->AddShape(aNewShape, aHasCompositeSubShape, false);
   }
   else
+  {
     theSTool->AddShape(aShape, aHasCompositeSubShape, false);
-  return;
+  }
 }
 
 //=================================================================================================
@@ -171,19 +186,25 @@ bool IGESCAFControl_Reader::Transfer(const occ::handle<TDocStd_Document>& doc,
   TransferRoots(theProgress); // replaces the above
   num = NbShapes();
   if (num <= 0)
+  {
     return false;
+  }
 
   // and insert them to the document
   occ::handle<XCAFDoc_ShapeTool> STool = XCAFDoc_DocumentTool::ShapeTool(doc->Main());
   if (STool.IsNull())
+  {
     return false;
+  }
   int i;
   for (i = 1; i <= num; i++)
   {
     TopoDS_Shape sh = Shape(i);
     // ---- HERE -- to add check [ assembly / hybrid model ]
     if (!IsComposite(sh))
+    {
       STool->AddShape(sh, false);
+    }
     else
     {
       NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMap;
@@ -197,24 +218,34 @@ bool IGESCAFControl_Reader::Transfer(const occ::handle<TDocStd_Document>& doc,
   bool                                          IsCTool = true;
   occ::handle<XCAFDoc_ColorTool> CTool = XCAFDoc_DocumentTool::ColorTool(doc->Main());
   if (CTool.IsNull())
+  {
     IsCTool = false;
+  }
   bool                           IsLTool = true;
   occ::handle<XCAFDoc_LayerTool> LTool   = XCAFDoc_DocumentTool::LayerTool(doc->Main());
   if (LTool.IsNull())
+  {
     IsLTool = false;
+  }
 
   int nb = aModel->NbEntities();
   for (i = 1; i <= nb; i++)
   {
     occ::handle<IGESData_IGESEntity> ent = occ::down_cast<IGESData_IGESEntity>(aModel->Value(i));
     if (ent.IsNull())
+    {
       continue;
+    }
     occ::handle<Transfer_Binder> binder = TP->Find(ent);
     if (binder.IsNull())
+    {
       continue;
+    }
     TopoDS_Shape S = TransferBRep::ShapeResult(binder);
     if (S.IsNull())
+    {
       continue;
+    }
 
     bool           IsColor = false;
     Quantity_Color col;
@@ -379,6 +410,8 @@ bool IGESCAFControl_Reader::Perform(const char* const                    filenam
                                     const Message_ProgressRange&         theProgress)
 {
   if (ReadFile(filename) != IFSelect_RetDone)
+  {
     return false;
+  }
   return Transfer(doc, theProgress);
 }

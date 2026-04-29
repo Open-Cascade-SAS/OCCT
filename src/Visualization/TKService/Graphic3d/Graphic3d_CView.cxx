@@ -378,9 +378,13 @@ void Graphic3d_CView::SetComputedMode(const bool theMode)
       const bool toComputeShading = myVisualization == Graphic3d_TOV_SHADING
                                     && aStruct->ComputeVisual() != Graphic3d_TOS_WIREFRAME;
       if (toComputeWireframe)
+      {
         aCompStruct->SetVisual(Graphic3d_TOS_WIREFRAME);
+      }
       if (toComputeShading)
+      {
         aCompStruct->SetVisual(Graphic3d_TOS_SHADING);
+      }
 
       if (aStruct->IsHighlighted())
       {
@@ -1041,7 +1045,9 @@ bool Graphic3d_CView::IsComputed(const int                         theStructId,
 {
   theComputedStruct.Nullify();
   if (!ComputedMode())
+  {
     return false;
+  }
 
   const int aNbStructs = myStructsToCompute.Length();
   for (int aStructIter = 1; aStructIter <= aNbStructs; ++aStructIter)

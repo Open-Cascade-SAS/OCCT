@@ -34,7 +34,9 @@ void IGESDefs_AssociativityDef::Init(const occ::handle<NCollection_HArray1<int>>
   if (requirements->Lower() != 1 || (orders->Lower() != 1 || orders->Length() != len)
       || (numItems->Lower() != 1 || numItems->Length() != len)
       || (items->Lower() != 1 || items->Length() != len))
+  {
     throw Standard_DimensionMismatch("IGESDefs_AssociativityDef : Init");
+  }
 
   theBackPointerReqs = requirements;
   theClassOrders     = orders;

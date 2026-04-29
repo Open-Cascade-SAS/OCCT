@@ -49,20 +49,26 @@ TEST(BRepMesh_CircleTool_Test, OCC24923_CircumCirclePassesThroughAllVertices)
   {
     gp_XY p[3];
     for (int j = 0; j < 3; ++j)
+    {
       p[j].SetCoord(static_cast<double>(rand()) / RAND_MAX, static_cast<double>(rand()) / RAND_MAX);
+    }
 
     // Skip degenerate (nearly collinear) triangles - retry like the original.
     const gp_XY aV1 = p[1] - p[0];
     const gp_XY aV2 = p[2] - p[0];
     if (aV1.SquareModulus() <= aSqPrec || aV2.SquareModulus() <= aSqPrec || (aV1 ^ aV2) <= aMinArea)
+    {
       continue;
+    }
 
     ++i;
 
     gp_XY  aCenter;
     double aRadius = 0.0;
     if (!BRepMesh_CircleTool::MakeCircle(p[0], p[1], p[2], aCenter, aRadius))
+    {
       continue;
+    }
 
     if (!isOnCircle(p[0], aCenter, aRadius) || !isOnCircle(p[1], aCenter, aRadius)
         || !isOnCircle(p[2], aCenter, aRadius))

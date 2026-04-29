@@ -36,7 +36,9 @@ void RWStepBasic_RWVersionedActionRequest::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "versioned_action_request"))
+  {
     return;
+  }
 
   // Own fields of VersionedActionRequest
 
@@ -84,7 +86,9 @@ void RWStepBasic_RWVersionedActionRequest::WriteStep(
     SW.Send(ent->Description());
   }
   else
+  {
     SW.SendUndef();
+  }
 }
 
 //=================================================================================================

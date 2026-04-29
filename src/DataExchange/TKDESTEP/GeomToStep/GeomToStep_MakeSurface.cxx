@@ -64,7 +64,9 @@ GeomToStep_MakeSurface::GeomToStep_MakeSurface(const occ::handle<Geom_Surface>& 
     GeomToStep_MakeSurface          MkBasis(S1->BasisSurface(), theLocalFactors);
     done = MkBasis.IsDone();
     if (!done)
+    {
       return;
+    }
     occ::handle<StepGeom_OffsetSurface> Surf = new StepGeom_OffsetSurface;
     Surf->Init(new TCollection_HAsciiString(""),
                MkBasis.Value(),

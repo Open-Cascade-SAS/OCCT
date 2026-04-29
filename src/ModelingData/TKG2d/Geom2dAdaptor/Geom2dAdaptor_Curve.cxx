@@ -173,14 +173,20 @@ GeomAbs_Shape Geom2dAdaptor_Curve::LocalContinuity(const double U1, const double
   if (std::abs(newFirst - TK(Index1 + 1)) < Precision::PConfusion())
   {
     if (Index1 < Nb)
+    {
       Index1++;
+    }
   }
   if (std::abs(newLast - TK(Index2)) < Precision::PConfusion())
+  {
     Index2--;
+  }
   int MultMax;
   // beware of periodic curves.
   if (aBSpline->IsPeriodic() && Index1 == Nb)
+  {
     Index1 = 1;
+  }
 
   if ((Index2 - Index1 <= 0) && (!aBSpline->IsPeriodic()))
   {
@@ -192,7 +198,9 @@ GeomAbs_Shape Geom2dAdaptor_Curve::LocalContinuity(const double U1, const double
     for (int i = Index1 + 1; i <= Index2; i++)
     {
       if (TM(i) > MultMax)
+      {
         MultMax = TM(i);
+      }
     }
     MultMax = aBSpline->Degree() - MultMax;
   }
@@ -586,7 +594,9 @@ bool Geom2dAdaptor_Curve::IsClosed() const
     return (Pd.Distance(Pf) <= Precision::Confusion());
   }
   else
+  {
     return false;
+  }
 }
 
 //=================================================================================================
@@ -615,11 +625,13 @@ void Geom2dAdaptor_Curve::RebuildCache(const double theParameter) const
     int                             aDeg        = aBezier->Degree();
     NCollection_Array1<double>      aFlatKnots(BSplCLib::FlatBezierKnots(aDeg), 1, 2 * (aDeg + 1));
     if (aBezierData.Cache.IsNull())
+    {
       aBezierData.Cache = new BSplCLib_Cache(aDeg,
                                              aBezier->IsPeriodic(),
                                              aFlatKnots,
                                              aBezier->Poles(),
                                              aBezier->Weights());
+    }
     aBezierData.Cache->BuildCache(theParameter, aFlatKnots, aBezier->Poles(), aBezier->Weights());
   }
   else if (myTypeCurve == GeomAbs_BSplineCurve)
@@ -628,11 +640,13 @@ void Geom2dAdaptor_Curve::RebuildCache(const double theParameter) const
     auto&       aBSplineData = std::get<BSplineData>(myCurveData);
     const auto& aBSpline     = aBSplineData.Curve;
     if (aBSplineData.Cache.IsNull())
+    {
       aBSplineData.Cache = new BSplCLib_Cache(aBSpline->Degree(),
                                               aBSpline->IsPeriodic(),
                                               aBSpline->KnotSequence(),
                                               aBSpline->Poles(),
                                               aBSpline->Weights());
+    }
     aBSplineData.Cache->BuildCache(theParameter,
                                    aBSpline->KnotSequence(),
                                    aBSpline->Poles(),
@@ -653,17 +667,25 @@ bool Geom2dAdaptor_Curve::IsBoundary(const double theU, int& theSpanStart, int& 
     {
       aBSpline->LocateU(myFirst, PosTol, theSpanStart, theSpanFinish);
       if (theSpanStart < 1)
+      {
         theSpanStart = 1;
+      }
       if (theSpanStart >= theSpanFinish)
+      {
         theSpanFinish = theSpanStart + 1;
+      }
     }
     else if (theU == myLast)
     {
       aBSpline->LocateU(myLast, PosTol, theSpanStart, theSpanFinish);
       if (theSpanFinish > aBSpline->NbKnots())
+      {
         theSpanFinish = aBSpline->NbKnots();
+      }
       if (theSpanStart >= theSpanFinish)
+      {
         theSpanStart = theSpanFinish - 1;
+      }
     }
     return true;
   }
@@ -721,7 +743,9 @@ gp_Pnt2d Geom2dAdaptor_Curve::EvalD0(const double theU) const
       }
       auto& aBezierData = std::get<BezierData>(myCurveData);
       if (aBezierData.Cache.IsNull())
+      {
         RebuildCache(U);
+      }
       aBezierData.Cache->D0(U, P);
       return P;
     }
@@ -740,7 +764,9 @@ gp_Pnt2d Geom2dAdaptor_Curve::EvalD0(const double theU) const
       else
       {
         if (aBSplineData.Cache.IsNull() || !aBSplineData.Cache->IsCacheValid(U))
+        {
           RebuildCache(U);
+        }
         aBSplineData.Cache->D0(U, P);
       }
       return P;
@@ -811,7 +837,9 @@ Geom2d_Curve::ResD1 Geom2dAdaptor_Curve::EvalD1(const double theU) const
       }
       auto& aBezierData = std::get<BezierData>(myCurveData);
       if (aBezierData.Cache.IsNull())
+      {
         RebuildCache(U);
+      }
       aBezierData.Cache->D1(U, aResult.Point, aResult.D1);
       return aResult;
     }
@@ -830,7 +858,9 @@ Geom2d_Curve::ResD1 Geom2dAdaptor_Curve::EvalD1(const double theU) const
       else
       {
         if (aBSplineData.Cache.IsNull() || !aBSplineData.Cache->IsCacheValid(U))
+        {
           RebuildCache(U);
+        }
         aBSplineData.Cache->D1(U, aResult.Point, aResult.D1);
       }
       return aResult;
@@ -904,7 +934,9 @@ Geom2d_Curve::ResD2 Geom2dAdaptor_Curve::EvalD2(const double theU) const
       }
       auto& aBezierData = std::get<BezierData>(myCurveData);
       if (aBezierData.Cache.IsNull())
+      {
         RebuildCache(U);
+      }
       aBezierData.Cache->D2(U, aResult.Point, aResult.D1, aResult.D2);
       return aResult;
     }
@@ -923,7 +955,9 @@ Geom2d_Curve::ResD2 Geom2dAdaptor_Curve::EvalD2(const double theU) const
       else
       {
         if (aBSplineData.Cache.IsNull() || !aBSplineData.Cache->IsCacheValid(U))
+        {
           RebuildCache(U);
+        }
         aBSplineData.Cache->D2(U, aResult.Point, aResult.D1, aResult.D2);
       }
       return aResult;
@@ -1020,7 +1054,9 @@ Geom2d_Curve::ResD3 Geom2dAdaptor_Curve::EvalD3(const double theU) const
       }
       auto& aBezierData = std::get<BezierData>(myCurveData);
       if (aBezierData.Cache.IsNull())
+      {
         RebuildCache(U);
+      }
       aBezierData.Cache->D3(U, aResult.Point, aResult.D1, aResult.D2, aResult.D3);
       return aResult;
     }
@@ -1040,7 +1076,9 @@ Geom2d_Curve::ResD3 Geom2dAdaptor_Curve::EvalD3(const double theU) const
       else
       {
         if (aBSplineData.Cache.IsNull() || !aBSplineData.Cache->IsCacheValid(U))
+        {
           RebuildCache(U);
+        }
         aBSplineData.Cache->D3(U, aResult.Point, aResult.D1, aResult.D2, aResult.D3);
       }
       return aResult;
@@ -1114,7 +1152,9 @@ gp_Vec2d Geom2dAdaptor_Curve::EvalDN(const double theU, const int theN) const
         return std::get<BSplineData>(myCurveData).Curve->LocalDN(U, aStart, aFinish, N);
       }
       else
+      {
         return myCurve->EvalDN(U, N);
+      }
     }
 
     case GeomAbs_OffsetCurve: {
@@ -1152,9 +1192,13 @@ double Geom2dAdaptor_Curve::Resolution(const double Ruv) const
     case GeomAbs_Circle: {
       double R = std::get<gp_Circ2d>(myCurveData).Radius();
       if (R > Ruv / 2.)
+      {
         return 2 * std::asin(Ruv / (2 * R));
+      }
       else
+      {
         return 2 * M_PI;
+      }
     }
     case GeomAbs_Ellipse: {
       return Ruv / std::get<gp_Elips2d>(myCurveData).MajorRadius();
@@ -1229,11 +1273,17 @@ gp_Parab2d Geom2dAdaptor_Curve::Parabola() const
 int Geom2dAdaptor_Curve::Degree() const
 {
   if (myTypeCurve == GeomAbs_BezierCurve)
+  {
     return occ::down_cast<Geom2d_BezierCurve>(myCurve)->Degree();
+  }
   else if (myTypeCurve == GeomAbs_BSplineCurve)
+  {
     return std::get<BSplineData>(myCurveData).Curve->Degree();
+  }
   else
+  {
     throw Standard_NoSuchObject();
+  }
 }
 
 //=================================================================================================
@@ -1256,11 +1306,17 @@ bool Geom2dAdaptor_Curve::IsRational() const
 int Geom2dAdaptor_Curve::NbPoles() const
 {
   if (myTypeCurve == GeomAbs_BezierCurve)
+  {
     return occ::down_cast<Geom2d_BezierCurve>(myCurve)->NbPoles();
+  }
   else if (myTypeCurve == GeomAbs_BSplineCurve)
+  {
     return std::get<BSplineData>(myCurveData).Curve->NbPoles();
+  }
   else
+  {
     throw Standard_NoSuchObject();
+  }
 }
 
 //=================================================================================================
@@ -1268,7 +1324,9 @@ int Geom2dAdaptor_Curve::NbPoles() const
 int Geom2dAdaptor_Curve::NbKnots() const
 {
   if (myTypeCurve != GeomAbs_BSplineCurve)
+  {
     throw Standard_NoSuchObject("Geom2dAdaptor_Curve::NbKnots");
+  }
   return std::get<BSplineData>(myCurveData).Curve->NbKnots();
 }
 
@@ -1296,7 +1354,9 @@ static int nbPoints(const occ::handle<Geom2d_Curve>& theCurve)
   int nbs = 20;
 
   if (theCurve->IsKind(STANDARD_TYPE(Geom2d_Line)))
+  {
     nbs = 2;
+  }
   else if (theCurve->IsKind(STANDARD_TYPE(Geom2d_BezierCurve)))
   {
     nbs = 3 + occ::down_cast<Geom2d_BezierCurve>(theCurve)->NbPoles();
@@ -1306,7 +1366,9 @@ static int nbPoints(const occ::handle<Geom2d_Curve>& theCurve)
     nbs = occ::down_cast<Geom2d_BSplineCurve>(theCurve)->NbKnots();
     nbs *= occ::down_cast<Geom2d_BSplineCurve>(theCurve)->Degree();
     if (nbs < 2.0)
+    {
       nbs = 2;
+    }
   }
   else if (theCurve->IsKind(STANDARD_TYPE(Geom2d_OffsetCurve)))
   {
@@ -1320,7 +1382,9 @@ static int nbPoints(const occ::handle<Geom2d_Curve>& theCurve)
     return std::max(nbs, nbPoints(aCurve));
   }
   if (nbs > 300)
+  {
     nbs = 300;
+  }
   return nbs;
 }
 

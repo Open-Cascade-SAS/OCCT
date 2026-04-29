@@ -48,7 +48,9 @@
 static int MakeDF(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
+  {
     return 1;
+  }
 
   occ::handle<Draw_Drawable3D> D = Draw::Get(a[1]);
   occ::handle<DDF_Data>        NewDDF;
@@ -76,7 +78,9 @@ static int ClearDF(Draw_Interpretor& di, int n, const char** a)
 
 {
   if (n < 2)
+  {
     return 1;
+  }
 
   occ::handle<Draw_Drawable3D> D = Draw::Get(a[1]);
   occ::handle<DDF_Data>        DDF;
@@ -107,7 +111,9 @@ static int ClearDF(Draw_Interpretor& di, int n, const char** a)
 static int CopyDF(Draw_Interpretor& /*di*/, int n, const char** a)
 {
   if (n < 4 || n > 5)
+  {
     return 1;
+  }
 
   occ::handle<TDF_Data> DF1;
   occ::handle<TDF_Data> DF2;
@@ -115,7 +121,9 @@ static int CopyDF(Draw_Interpretor& /*di*/, int n, const char** a)
   const char*           Entry2;
 
   if (!DDF::GetDF(a[1], DF1))
+  {
     return 1;
+  }
 
   Entry1 = a[2];
   Entry2 = a[3];
@@ -128,13 +136,17 @@ static int CopyDF(Draw_Interpretor& /*di*/, int n, const char** a)
   else if (n == 5)
   {
     if (!DDF::GetDF(a[3], DF2))
+    {
       return 1;
+    }
     Entry2 = a[4];
   }
 
   TDF_Label Label1;
   if (!DDF::FindLabel(DF1, Entry1, Label1))
+  {
     return 1;
+  }
 
   TDF_Label Label2;
   if (!DDF::FindLabel(DF2, Entry2, Label2, false))
@@ -157,7 +169,9 @@ static int CopyDF(Draw_Interpretor& /*di*/, int n, const char** a)
 static int MiniDumpDF(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
+  {
     return 1;
+  }
 
   occ::handle<Draw_Drawable3D> D;
   occ::handle<DDF_Data>        DDF;
@@ -197,7 +211,9 @@ static int MiniDumpDF(Draw_Interpretor& di, int n, const char** a)
 static int XDumpDF(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
+  {
     return 1;
+  }
 
   occ::handle<Draw_Drawable3D> D;
   occ::handle<DDF_Data>        DDF;
@@ -242,9 +258,13 @@ static int CopyLabel_SCopy(Draw_Interpretor& di, int n, const char** a)
   {
     occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(a[1], DF))
+    {
       return 1;
+    }
     if (!DDF::FindLabel(DF, a[2], SOURCE))
+    {
       return 1;
+    }
     if (DDF::FindLabel(DF, a[3], TARGET))
     {
       di << " target label is already set \n";
@@ -255,7 +275,9 @@ static int CopyLabel_SCopy(Draw_Interpretor& di, int n, const char** a)
     cop.Load(SOURCE, TARGET);
     cop.Perform();
     if (!cop.IsDone())
+    {
       di << "copy not done\n";
+    }
     return 0;
   }
   di << "DDF_CopyLabel : Error\n";
@@ -276,11 +298,17 @@ static int DDF_CheckAttrs(Draw_Interpretor& di, int n, const char** a)
   {
     occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(a[1], DF))
+    {
       return 1;
+    }
     if (!DDF::FindLabel(DF, a[2], SOURCE))
+    {
       return 1;
+    }
     if (!DDF::FindLabel(DF, a[3], TARGET))
+    {
       return 1;
+    }
 
     occ::handle<TDF_DataSet> ds1  = new TDF_DataSet();
     occ::handle<TDF_DataSet> ds2  = new TDF_DataSet();
@@ -311,6 +339,7 @@ static int DDF_CheckAttrs(Draw_Interpretor& di, int n, const char** a)
             //	    std::cout<<"\t\t\t\tTarget reference attribute dynamic type =
             //"<<tAtt->DynamicType()<<std::endl;
             if (tAtt->IsInstance(sAtt->DynamicType()))
+            {
               if (tAtt == sAtt)
               {
                 TCollection_AsciiString entr1, entr2;
@@ -330,6 +359,7 @@ static int DDF_CheckAttrs(Draw_Interpretor& di, int n, const char** a)
                 di << "\tAttribute dynamic type = " << sAtt->DynamicType()->Name();
                 di << ",\tlocated on Label = " << entr1.ToCString() << "\n";
               }
+            }
           }
           ds2->Clear();
         }
@@ -337,7 +367,9 @@ static int DDF_CheckAttrs(Draw_Interpretor& di, int n, const char** a)
       ds1->Clear();
     }
     if (!Shar)
+    {
       di << "Shareable attributes not found\n";
+    }
     return 0;
   }
   di << "DDF_CheckAttrs : Error\n";
@@ -357,9 +389,13 @@ static int DDF_CheckLabel(Draw_Interpretor& di, int n, const char** a)
   {
     occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(a[1], DF))
+    {
       return 1;
+    }
     if (!DDF::FindLabel(DF, a[2], SOURCE))
+    {
       return 1;
+    }
 
     occ::handle<TDF_DataSet> ds1 = new TDF_DataSet();
     for (TDF_AttributeIterator itr(SOURCE); itr.More(); itr.Next())
@@ -424,7 +460,9 @@ void DDF::DataCommands(Draw_Interpretor& theCommands)
 {
   static bool done = false;
   if (done)
+  {
     return;
+  }
   done = true;
 
   const char* g = "DF Data Framework commands";

@@ -75,7 +75,9 @@ void OSD_FileIterator::Initialize(const OSD_Path& where, const TCollection_Ascii
   myFlag = false;
   where.SystemName(myPlace);
   if (myPlace.Length() == 0)
+  {
     myPlace = ".";
+  }
   myMask = Mask;
   if (myDescr)
   {
@@ -110,18 +112,32 @@ static int strcmp_joker(const char* Mask, const char* Name)
   const char *p, *s;
 
   for (p = Mask, s = Name; *p && *p != '*'; p++, s++)
+  {
     if (*p != *s)
+    {
       return 0;
+    }
+  }
 
   if (!*p)
+  {
     return !(*s);
+  }
   while (*p == '*')
+  {
     p++;
+  }
   if (!*p)
+  {
     return 1;
+  }
   for (; *s; s++)
+  {
     if (strcmp_joker(p, s))
+    {
       return 1;
+    }
+  }
   return 0;
 }
 
@@ -148,20 +164,26 @@ void OSD_FileIterator::Next()
     else
     {
       if (!strcmp(((struct dirent*)myEntry)->d_name, "."))
+      {
         continue;
+      }
       if (!strcmp(((struct dirent*)myEntry)->d_name, ".."))
+      {
         continue;
+      }
 
       // Is it a file ?
       const TCollection_AsciiString aFullName = myPlace + "/" + ((struct dirent*)myEntry)->d_name;
       stat(aFullName.ToCString(), &stat_buf);
-      if (S_ISREG(stat_buf.st_mode)) // LD : Ensure me it's a regular file
+      if (S_ISREG(stat_buf.st_mode))
+      { // LD : Ensure me it's a regular file
         if (strcmp_joker(myMask.ToCString(), ((struct dirent*)myEntry)->d_name))
         {
           // Does it follow mask ?
           myFlag = true;
           again  = 0;
         }
+      }
     }
 
   } while (again);
@@ -177,7 +199,9 @@ OSD_File OSD_FileIterator::Values()
   int                     position;
 
   if (myEntry)
+  {
     Name = ((struct dirent*)myEntry)->d_name;
+  }
 
   position = Name.Search(".");
 

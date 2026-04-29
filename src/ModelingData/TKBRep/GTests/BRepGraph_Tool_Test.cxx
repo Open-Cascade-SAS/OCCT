@@ -74,7 +74,9 @@ TEST_F(BRepGraph_QuerySurfaceTest, Face_Bounds_CylinderFaceReturnsSurfaceBounds)
   for (BRepGraph_FaceId aFaceId(0); aFaceId.IsValid(aNbFaces); ++aFaceId)
   {
     if (!BRepGraph_Tool::Face::HasSurface(myCylGraph, aFaceId))
+    {
       continue;
+    }
 
     double uMin = 0.0, uMax = 0.0, vMin = 0.0, vMax = 0.0;
     BRepGraph_Tool::Face::Bounds(myCylGraph, aFaceId, uMin, uMax, vMin, vMax);

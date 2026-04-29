@@ -55,7 +55,9 @@ void IFSelect_ListEditor::ClearEdit()
   theedit = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
   thestat = new NCollection_HSequence<int>();
   if (theorig.IsNull())
+  {
     return;
+  }
   int i, nb = theorig->Length();
   for (i = 1; i <= nb; i++)
   {
@@ -72,15 +74,21 @@ static bool CheckValue(const occ::handle<TCollection_HAsciiString>& val,
                        const occ::handle<Interface_TypedValue>&     thedef)
 {
   if (val.IsNull() || modl.IsNull() || thedef.IsNull())
+  {
     return true;
+  }
 
   Interface_ParamType pty = thedef->Type();
   if (!thedef->Satisfies(val))
+  {
     return false;
+  }
   if (pty == Interface_ParamIdent && !val.IsNull())
   {
     if (modl->NextNumberForLabel(val->ToCString(), 0) <= 0)
+    {
       return false;
+    }
   }
   return true;
 }
@@ -91,10 +99,14 @@ bool IFSelect_ListEditor::LoadEdited(
   const occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>& list)
 {
   if (list.IsNull())
+  {
     return false;
+  }
   int i, nb = list->Length();
   if (nb > themax)
+  {
     return false;
+  }
 
   //   check values
   if (!thedef.IsNull())
@@ -103,7 +115,9 @@ bool IFSelect_ListEditor::LoadEdited(
     {
       occ::handle<TCollection_HAsciiString> newval = list->Value(i);
       if (!CheckValue(newval, themodl, thedef))
+      {
         return false;
+      }
     }
   }
 
@@ -111,7 +125,9 @@ bool IFSelect_ListEditor::LoadEdited(
   theedit = list;
   thestat = new NCollection_HSequence<int>();
   for (i = 1; i <= nb; i++)
+  {
     thestat->Append(1);
+  }
   thetouc = 1;
 
   return true;
@@ -120,13 +136,19 @@ bool IFSelect_ListEditor::LoadEdited(
 bool IFSelect_ListEditor::SetValue(const int num, const occ::handle<TCollection_HAsciiString>& val)
 {
   if (theedit.IsNull())
+  {
     return false;
+  }
   if (num < 1 || num > theedit->Length())
+  {
     return false;
+  }
 
   //   check value
   if (!CheckValue(val, themodl, thedef))
+  {
     return false;
+  }
 
   // OK
   theedit->SetValue(num, val);
@@ -139,11 +161,17 @@ bool IFSelect_ListEditor::AddValue(const occ::handle<TCollection_HAsciiString>& 
                                    const int                                    atnum)
 {
   if (theedit.IsNull())
+  {
     return false;
+  }
   if (themax > 0 && theedit->Length() >= themax)
+  {
     return false;
+  }
   if (!CheckValue(val, themodl, thedef))
+  {
     return false;
+  }
   if (atnum > 0)
   {
     theedit->InsertBefore(atnum, val);
@@ -161,15 +189,23 @@ bool IFSelect_ListEditor::AddValue(const occ::handle<TCollection_HAsciiString>& 
 bool IFSelect_ListEditor::Remove(const int num, const int howmany)
 {
   if (theedit.IsNull())
+  {
     return false;
+  }
   int nb = theedit->Length();
   if (num < 0)
+  {
     return false;
+  }
   if (num == 0)
+  {
     return Remove(nb - howmany, howmany);
+  }
 
   if ((num + howmany) > nb)
+  {
     return false;
+  }
   theedit->Remove(num, howmany);
   thestat->Remove(num, howmany);
   thetouc = 3;
@@ -193,7 +229,9 @@ occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> IFSele
 int IFSelect_ListEditor::NbValues(const bool edited) const
 {
   if (edited)
+  {
     return (theedit.IsNull() ? 0 : theedit->Length());
+  }
   return (theorig.IsNull() ? 0 : theorig->Length());
 }
 
@@ -204,17 +242,25 @@ occ::handle<TCollection_HAsciiString> IFSelect_ListEditor::Value(const int  num,
   if (edited)
   {
     if (theedit.IsNull())
+    {
       return val;
+    }
     if (num < 1 || num > theedit->Length())
+    {
       return val;
+    }
     val = theedit->Value(num);
   }
   else
   {
     if (theorig.IsNull())
+    {
       return val;
+    }
     if (num < 1 || num > theorig->Length())
+    {
       return val;
+    }
     val = theorig->Value(num);
   }
   return val;
@@ -223,9 +269,13 @@ occ::handle<TCollection_HAsciiString> IFSelect_ListEditor::Value(const int  num,
 bool IFSelect_ListEditor::IsChanged(const int num) const
 {
   if (thestat.IsNull())
+  {
     return false;
+  }
   if (num < 1 || num > thestat->Length())
+  {
     return false;
+  }
   int stat = thestat->Value(num);
   return (stat != 0);
 }
@@ -233,9 +283,13 @@ bool IFSelect_ListEditor::IsChanged(const int num) const
 bool IFSelect_ListEditor::IsModified(const int num) const
 {
   if (thestat.IsNull())
+  {
     return false;
+  }
   if (num < 1 || num > thestat->Length())
+  {
     return false;
+  }
   int stat = thestat->Value(num);
   return (stat == 1);
 }
@@ -243,9 +297,13 @@ bool IFSelect_ListEditor::IsModified(const int num) const
 bool IFSelect_ListEditor::IsAdded(const int num) const
 {
   if (thestat.IsNull())
+  {
     return false;
+  }
   if (num < 1 || num > thestat->Length())
+  {
     return false;
+  }
   int stat = thestat->Value(num);
   return (stat == 2);
 }

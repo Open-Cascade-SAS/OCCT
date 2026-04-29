@@ -88,11 +88,17 @@ IGESData_DefType IGESData_UndefinedEntity::DefLineFont() const
 {
   int st = ((thedstat / 4) & 3);
   if (st == 0)
+  {
     return IGESData_IGESEntity::DefLineFont();
+  }
   else if (st == 1)
+  {
     return IGESData_ErrorVal;
+  }
   else
+  {
     return IGESData_ErrorRef;
+  }
 }
 
 //=================================================================================================
@@ -101,11 +107,17 @@ IGESData_DefList IGESData_UndefinedEntity::DefLevel() const
 {
   int st = ((thedstat / 16) & 3);
   if (st == 0)
+  {
     return IGESData_IGESEntity::DefLevel();
+  }
   else if (st == 1)
+  {
     return IGESData_ErrorOne;
+  }
   else
+  {
     return IGESData_ErrorSeveral;
+  }
 }
 
 //=================================================================================================
@@ -114,11 +126,17 @@ IGESData_DefList IGESData_UndefinedEntity::DefView() const
 {
   int st = ((thedstat / 64) & 3);
   if (st == 0)
+  {
     return IGESData_IGESEntity::DefView();
+  }
   else if (st == 1)
+  {
     return IGESData_ErrorOne;
+  }
   else
+  {
     return IGESData_ErrorSeveral;
+  }
 }
 
 //=================================================================================================
@@ -127,11 +145,17 @@ IGESData_DefType IGESData_UndefinedEntity::DefColor() const
 {
   int st = ((thedstat / 256) & 3);
   if (st == 0)
+  {
     return IGESData_IGESEntity::DefColor();
+  }
   else if (st == 1)
+  {
     return IGESData_ErrorVal;
+  }
   else
+  {
     return IGESData_ErrorRef;
+  }
 }
 
 //=================================================================================================
@@ -140,9 +164,13 @@ bool IGESData_UndefinedEntity::HasSubScriptNumber() const
 {
   int st = ((thedstat / 1024) & 1);
   if (st == 0)
+  {
     return IGESData_IGESEntity::HasSubScriptNumber();
+  }
   else
+  {
     return false;
+  }
 }
 
 //   ReadDir verifies the data, if there are errors notes them (status),
@@ -196,12 +224,16 @@ bool IGESData_UndefinedEntity::ReadDir(const occ::handle<IGESData_IGESReaderData
 
   iapb = false;
   if (v[3] < -max)
+  {
     iapb = true;
+  }
   else if (v[3] < 0)
   {
     anent = GetCasted(IGESData_IGESEntity, IR->BoundEntity((1 - v[3]) / 2));
     if (!anent->IsKind(STANDARD_TYPE(IGESData_LineFontEntity)))
+    {
       iapb = true;
+    }
   }
   // Sending of message : Line Font Pattern field is incorrect.
   if (iapb)
@@ -214,12 +246,16 @@ bool IGESData_UndefinedEntity::ReadDir(const occ::handle<IGESData_IGESReaderData
 
   iapb = false;
   if (v[4] < -max)
+  {
     iapb = true;
+  }
   else if (v[4] < 0)
   {
     anent = GetCasted(IGESData_IGESEntity, IR->BoundEntity((1 - v[4]) / 2));
     if (!anent->IsKind(STANDARD_TYPE(IGESData_LevelListEntity)))
+    {
       iapb = true;
+    }
   }
 
   // Sending of message : Level field is incorrect.
@@ -233,12 +269,16 @@ bool IGESData_UndefinedEntity::ReadDir(const occ::handle<IGESData_IGESReaderData
 
   iapb = false;
   if (v[5] < 0 || v[5] > max)
+  {
     iapb = true;
+  }
   else if (v[5] > 0)
   {
     anent = GetCasted(IGESData_IGESEntity, IR->BoundEntity((1 + v[5]) / 2));
     if (!anent->IsKind(STANDARD_TYPE(IGESData_ViewKindEntity)))
+    {
       iapb = true;
+    }
   }
 
   // Sending of message : View field is incorrect.
@@ -252,12 +292,16 @@ bool IGESData_UndefinedEntity::ReadDir(const occ::handle<IGESData_IGESReaderData
 
   iapb = false;
   if (v[6] < 0 || v[6] > max)
+  {
     iapb = true;
+  }
   else if (v[6] > 0)
   {
     anent = GetCasted(IGESData_IGESEntity, IR->BoundEntity((1 + v[6]) / 2));
     if (!anent->IsKind(STANDARD_TYPE(IGESData_TransfEntity)))
+    {
       iapb = true;
+    }
   }
 
   // Sending of message : Transformation Matrix field is incorrect
@@ -271,12 +315,16 @@ bool IGESData_UndefinedEntity::ReadDir(const occ::handle<IGESData_IGESReaderData
 
   iapb = false;
   if (v[7] < 0 || v[7] > max)
+  {
     iapb = true;
+  }
   else if (v[7] > 0)
   {
     anent = GetCasted(IGESData_IGESEntity, IR->BoundEntity((1 + v[7]) / 2));
     if (!anent->IsKind(STANDARD_TYPE(IGESData_LabelDisplayEntity)))
+    {
       iapb = true;
+    }
   }
 
   // Sending of message : Label Display Entity  field is incorrect.
@@ -290,7 +338,9 @@ bool IGESData_UndefinedEntity::ReadDir(const occ::handle<IGESData_IGESReaderData
 
   iapb = false;
   if (v[14] < -max || v[14] > max)
+  {
     iapb = true;
+  }
   else if (v[14] < 0)
   {
     anent = GetCasted(IGESData_IGESEntity, IR->BoundEntity((1 - v[14]) / 2));
@@ -315,9 +365,13 @@ bool IGESData_UndefinedEntity::ReadDir(const occ::handle<IGESData_IGESReaderData
   for (i = 0; i < 8; i++)
   {
     if (subs[i] == '\0')
+    {
       break; // end of line
+    }
     if (subs[i] != ' ' && (subs[i] < 48 || subs[i] > 57))
+    {
       iapb = true;
+    }
   }
 
   // Sending of message : Entity Subscript Number field is incorrect.
@@ -327,12 +381,16 @@ bool IGESData_UndefinedEntity::ReadDir(const occ::handle<IGESData_IGESReaderData
     ach->SendFail(Msg72);
     thedstat += 1024;
     for (i = 0; i < 8; i++)
+    {
       subs[i] = ' ';
+    }
   }
 
   //  ...  End of this analysis : if necessary we rebuild DP  ...
   if (thedstat == 0)
+  {
     return true;
+  }
   else
   {
     DP.Init(v[0],
@@ -393,13 +451,17 @@ void IGESData_UndefinedEntity::WriteOwnParams(IGESData_IGESWriter& IW) const
   {
     Interface_ParamType ptyp = thecont->ParamType(i);
     if (ptyp == Interface_ParamVoid)
+    {
       IW.SendVoid();
+    }
     else if (thecont->IsParamEntity(i))
     {
       DeclareAndCast(IGESData_IGESEntity, anent, thecont->ParamEntity(i));
       IW.Send(anent);
     }
     else
+    {
       IW.SendString(thecont->ParamValue(i));
+    }
   }
 }

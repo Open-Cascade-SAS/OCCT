@@ -138,7 +138,9 @@ TEST(BRepFilletAPI_MakeChamferTest, ChamferAfterBooleanFusion)
   {
     const TopoDS_Edge& anEdge = TopoDS::Edge(anEdgeExp.Current());
     if (!anEdgeFaceMap.Contains(anEdge) || anEdgeFaceMap.FindFromKey(anEdge).IsEmpty())
+    {
       continue;
+    }
 
     // Check if any vertex of this edge has 3+ faces.
     bool hasComplexVertex = false;
@@ -152,7 +154,9 @@ TEST(BRepFilletAPI_MakeChamferTest, ChamferAfterBooleanFusion)
       }
     }
     if (!hasComplexVertex)
+    {
       continue;
+    }
 
     const TopoDS_Face& aFace = TopoDS::Face(anEdgeFaceMap.FindFromKey(anEdge).First());
     aChamfer.Add(0.5, 0.5, anEdge, aFace);
@@ -197,7 +201,9 @@ TEST(BRepFilletAPI_MakeChamferTest, SequentialChamferNoCrash)
     NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> anEdgeMap;
     TopExp::MapShapes(aShape, TopAbs_EDGE, anEdgeMap);
     if (anEdgeMap.IsEmpty())
+    {
       break;
+    }
 
     // Verify topology actually changed after each successful chamfer.
     if (i > 0 && aPrevEdges > 0)

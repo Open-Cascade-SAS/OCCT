@@ -83,9 +83,13 @@ inline bool IsSingular(const gp_Vec& theD1U,
   double aD1UNorm2 = aD1U.SquareMagnitude();
   double aD1VNorm2 = aD1V.SquareMagnitude();
   if (aD1UNorm2 > 1.0)
+  {
     aD1U /= std::sqrt(aD1UNorm2);
+  }
   if (aD1VNorm2 > 1.0)
+  {
     aD1V /= std::sqrt(aD1VNorm2);
+  }
 
   gp_Vec aNorm = aD1U.Crossed(aD1V);
   return aNorm.SquareMagnitude() <= theTol * theTol;
@@ -108,9 +112,13 @@ inline bool ComputeNormal(const gp_Vec& theD1U,
   double aD1UNorm2 = aD1U.SquareMagnitude();
   double aD1VNorm2 = aD1V.SquareMagnitude();
   if (aD1UNorm2 > 1.0)
+  {
     aD1U /= std::sqrt(aD1UNorm2);
+  }
   if (aD1VNorm2 > 1.0)
+  {
     aD1V /= std::sqrt(aD1VNorm2);
+  }
 
   theNormal = aD1U.Crossed(aD1V);
   if (theNormal.SquareMagnitude() <= theTol * theTol)
@@ -318,7 +326,9 @@ bool ComputeDerivatives(int                         theMaxOrder,
     if (theNU <= theNV)
     {
       for (int i = 0; i <= theMaxOrder + 1 + theNU; i++)
+      {
         for (int j = i; j <= theMaxOrder + theNV + 1; j++)
+        {
           if (i + j > theMinOrder)
           {
             gp_Vec aOscDN   = theOscSurf->EvalDN(theU, theV, i, j);
@@ -333,11 +343,15 @@ bool ComputeDerivatives(int                         theMaxOrder,
               DerSurfL.SetValue(j, i, aOscDNji);
             }
           }
+        }
+      }
     }
     else
     {
       for (int j = 0; j <= theMaxOrder + 1 + theNV; j++)
+      {
         for (int i = j; i <= theMaxOrder + theNU + 1; i++)
+        {
           if (i + j > theMinOrder)
           {
             gp_Vec aOscDN   = theOscSurf->EvalDN(theU, theV, i, j);
@@ -352,15 +366,23 @@ bool ComputeDerivatives(int                         theMaxOrder,
               DerSurfL.SetValue(j, i, aOscDNji);
             }
           }
+        }
+      }
     }
     for (int i = 0; i <= theMaxOrder + theNU; i++)
+    {
       for (int j = 0; j <= theMaxOrder + theNV; j++)
       {
         if (theAlongU)
+        {
           theDerNUV.SetValue(i, j, CSLib::DNNUV(i, j, DerSurfL, theDerSurf));
+        }
         if (theAlongV)
+        {
           theDerNUV.SetValue(i, j, CSLib::DNNUV(i, j, theDerSurf, DerSurfL));
+        }
       }
+    }
   }
   else
   {
@@ -381,8 +403,12 @@ bool ComputeDerivatives(int                         theMaxOrder,
       }
     }
     for (int i = 0; i <= theMaxOrder + theNU; i++)
+    {
       for (int j = 0; j <= theMaxOrder + theNV; j++)
+      {
         theDerNUV.SetValue(i, j, CSLib::DNNUV(i, j, theDerSurf));
+      }
+    }
   }
   return true;
 }
@@ -427,13 +453,17 @@ bool ReplaceDerivative(double               theU,
     {
       aStep = Precision::Confusion() * theDU.Magnitude();
       if (aStep > theUMax - theUMin)
+      {
         aStep = (theUMax - theUMin) / 100.;
+      }
     }
     else
     {
       aStep = Precision::Confusion() * theDV.Magnitude();
       if (aStep > theVMax - theVMin)
+      {
         aStep = (theVMax - theVMin) / 100.;
+      }
     }
 
     // Step away from current parametric coordinates and calculate derivatives once again.
@@ -447,13 +477,17 @@ bool ReplaceDerivative(double               theU,
       {
         aU = theU + aStepSign * aStep;
         if (aU < theUMin || aU > theUMax)
+        {
           continue;
+        }
       }
       else
       {
         aV = theV + aStepSign * aStep;
         if (aV < theVMin || aV > theVMax)
+        {
           continue;
+        }
       }
 
       Geom_Surface::ResD1 aD1Result = theBasisSurf->EvalD1(aU, aV);
@@ -629,7 +663,9 @@ bool EvaluateD0(double                  theU,
                               aOscSurf,
                               aDerNUV,
                               aDerSurf))
+      {
         return false;
+      }
     }
     else
     {
@@ -646,7 +682,9 @@ bool EvaluateD0(double                  theU,
                               aDummy,
                               aDerNUV,
                               aDerSurf))
+      {
         return false;
+      }
     }
 
     gp_Dir             aNormal;
@@ -814,9 +852,13 @@ bool EvaluateD1(double                  theU,
     double aD1UNorm2 = aD1U.SquareMagnitude();
     double aD1VNorm2 = aD1V.SquareMagnitude();
     if (aD1UNorm2 > 1.0)
+    {
       aD1U /= std::sqrt(aD1UNorm2);
+    }
     if (aD1VNorm2 > 1.0)
+    {
       aD1V /= std::sqrt(aD1VNorm2);
+    }
 
     bool      isSingular = false;
     const int aMaxOrder  = 3;
@@ -905,7 +947,9 @@ bool EvaluateD1(double                  theU,
                               aOscSurf,
                               aDerNUV,
                               aDerSurf))
+      {
         return false;
+      }
     }
     else
     {
@@ -922,7 +966,9 @@ bool EvaluateD1(double                  theU,
                               aDummy,
                               aDerNUV,
                               aDerSurf))
+      {
         return false;
+      }
     }
 
     gp_Dir             aNormal;
@@ -975,7 +1021,9 @@ bool EvaluateD1(double                  theU,
                                   aOscSurf,
                                   aDerNUV,
                                   aDerSurf))
+          {
             return false;
+          }
         }
         else
         {
@@ -992,7 +1040,9 @@ bool EvaluateD1(double                  theU,
                                   aDummy,
                                   aDerNUV,
                                   aDerSurf))
+          {
             return false;
+          }
         }
         CSLib::Normal(aMaxOrder,
                       aDerNUV,
@@ -1212,7 +1262,9 @@ bool EvaluateD2(double                  theU,
                               aOscSurf,
                               aDerNUV,
                               aDerSurf))
+      {
         return false;
+      }
     }
     else
     {
@@ -1229,7 +1281,9 @@ bool EvaluateD2(double                  theU,
                               aDummy,
                               aDerNUV,
                               aDerSurf))
+      {
         return false;
+      }
     }
 
     // Compute normal using CSLib (second call with MaxOrder)
@@ -1463,7 +1517,9 @@ bool EvaluateD3(double                  theU,
                               aOscSurf,
                               aDerNUV,
                               aDerSurf))
+      {
         return false;
+      }
     }
     else
     {
@@ -1480,7 +1536,9 @@ bool EvaluateD3(double                  theU,
                               aDummy,
                               aDerNUV,
                               aDerSurf))
+      {
         return false;
+      }
     }
 
     // Compute normal using CSLib (second call with MaxOrder)
@@ -1666,7 +1724,9 @@ bool EvaluateDN(double                  theU,
                               aOscSurf,
                               aDerNUV,
                               aDerSurf))
+      {
         return false;
+      }
     }
     else
     {
@@ -1683,7 +1743,9 @@ bool EvaluateDN(double                  theU,
                               aDummy,
                               aDerNUV,
                               aDerSurf))
+      {
         return false;
+      }
     }
 
     // Compute normal with CSLib

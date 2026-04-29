@@ -51,7 +51,9 @@ void HLRTopoBRep_Data::Clean() {}
 bool HLRTopoBRep_Data::EdgeHasSplE(const TopoDS_Edge& E) const
 {
   if (!mySplE.IsBound(E))
+  {
     return false;
+  }
   return !mySplE(E).IsEmpty();
 }
 
@@ -60,7 +62,9 @@ bool HLRTopoBRep_Data::EdgeHasSplE(const TopoDS_Edge& E) const
 bool HLRTopoBRep_Data::FaceHasIntL(const TopoDS_Face& F) const
 {
   if (!myData.IsBound(F))
+  {
     return false;
+  }
   return !myData(F).FaceIntL().IsEmpty();
 }
 
@@ -69,7 +73,9 @@ bool HLRTopoBRep_Data::FaceHasIntL(const TopoDS_Face& F) const
 bool HLRTopoBRep_Data::FaceHasOutL(const TopoDS_Face& F) const
 {
   if (!myData.IsBound(F))
+  {
     return false;
+  }
   return !myData(F).FaceOutL().IsEmpty();
 }
 
@@ -78,7 +84,9 @@ bool HLRTopoBRep_Data::FaceHasOutL(const TopoDS_Face& F) const
 bool HLRTopoBRep_Data::FaceHasIsoL(const TopoDS_Face& F) const
 {
   if (!myData.IsBound(F))
+  {
     return false;
+  }
   return !myData(F).FaceIsoL().IsEmpty();
 }
 
@@ -92,10 +100,14 @@ bool HLRTopoBRep_Data::IsSplEEdgeEdge(const TopoDS_Edge& E1, const TopoDS_Edge& 
 
     NCollection_List<TopoDS_Shape>::Iterator itS;
     for (itS.Initialize(EdgeSplE(E1)); itS.More() && !found; itS.Next())
+    {
       found = itS.Value().IsSame(E2);
+    }
   }
   else
+  {
     found = E1.IsSame(E2);
+  }
   return found;
 }
 
@@ -155,9 +167,13 @@ bool HLRTopoBRep_Data::IsIsoLFaceEdge(const TopoDS_Face& F, const TopoDS_Edge& E
 TopoDS_Shape HLRTopoBRep_Data::NewSOldS(const TopoDS_Shape& NewS) const
 {
   if (myOldS.IsBound(NewS))
+  {
     return myOldS(NewS);
+  }
   else
+  {
     return NewS;
+  }
 }
 
 //=================================================================================================
@@ -165,7 +181,9 @@ TopoDS_Shape HLRTopoBRep_Data::NewSOldS(const TopoDS_Shape& NewS) const
 void HLRTopoBRep_Data::AddOldS(const TopoDS_Shape& NewS, const TopoDS_Shape& OldS)
 {
   if (!myOldS.IsBound(NewS))
+  {
     myOldS.Bind(NewS, OldS);
+  }
 }
 
 //=================================================================================================
@@ -223,7 +241,9 @@ void HLRTopoBRep_Data::InitEdge()
   myEIterator.Initialize(myEdgesVertices);
 
   while (myEIterator.More() && myEIterator.Value().IsEmpty())
+  {
     myEIterator.Next();
+  }
 }
 
 //=================================================================================================
@@ -233,7 +253,9 @@ void HLRTopoBRep_Data::NextEdge()
   myEIterator.Next();
 
   while (myEIterator.More() && myEIterator.Value().IsEmpty())
+  {
     myEIterator.Next();
+  }
 }
 
 //=================================================================================================

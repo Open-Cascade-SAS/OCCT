@@ -303,7 +303,9 @@ void TDataXtd_Presentation::Unset(const TDF_Label& theLabel)
 {
   occ::handle<TDataXtd_Presentation> aPresentation;
   if (theLabel.FindAttribute(TDataXtd_Presentation::GetID(), aPresentation))
+  {
     theLabel.ForgetAttribute(aPresentation);
+  }
 }
 
 //=================================================================================================
@@ -474,7 +476,9 @@ void TDataXtd_Presentation::SetSelectionMode(const int theSelectionMode, const b
       || (GetNbSelectionModes() > 0 && mySelectionModes.First() != theSelectionMode))
   {
     if (theTransaction)
+    {
       Backup();
+    }
     mySelectionModes.Clear();
     mySelectionModes.Append(theSelectionMode);
     myHasOwnSelectionMode = true;
@@ -488,7 +492,9 @@ void TDataXtd_Presentation::AddSelectionMode(const int theSelectionMode, const b
   if (!myHasOwnSelectionMode || !HasSelectionMode(theSelectionMode))
   {
     if (theTransaction)
+    {
       Backup();
+    }
     mySelectionModes.Append(theSelectionMode);
     myHasOwnSelectionMode = true;
   }
@@ -538,7 +544,9 @@ int TDataXtd_Presentation::SelectionMode(const int index) const
   for (int i = 1; itr.More() && i <= index; itr.Next(), i++)
   {
     if (i == index)
+    {
       aSelectionMode = itr.Value();
+    }
   }
   return aSelectionMode;
 }
@@ -753,7 +761,9 @@ bool TDataXtd_Presentation::HasSelectionMode(const int theSelectionMode) const
   for (; itr.More(); itr.Next())
   {
     if (theSelectionMode == itr.Value())
+    {
       ret = true;
+    }
   }
   return ret;
 }

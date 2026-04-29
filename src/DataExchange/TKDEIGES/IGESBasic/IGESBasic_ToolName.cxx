@@ -76,7 +76,9 @@ bool IGESBasic_ToolName::OwnCorrect(const occ::handle<IGESBasic_Name>& ent) cons
 {
   bool res = (ent->NbPropertyValues() != 1);
   if (res)
+  {
     ent->Init(1, ent->Value());
+  }
   return res; // nbpropertyvalues = 1
 }
 
@@ -96,7 +98,9 @@ void IGESBasic_ToolName::OwnCheck(const occ::handle<IGESBasic_Name>& ent,
                                   occ::handle<Interface_Check>& ach) const
 {
   if (ent->NbPropertyValues() != 1)
+  {
     ach->AddFail("Number of Property Values != 1");
+  }
 }
 
 void IGESBasic_ToolName::OwnDump(const occ::handle<IGESBasic_Name>& ent,
@@ -108,5 +112,5 @@ void IGESBasic_ToolName::OwnDump(const occ::handle<IGESBasic_Name>& ent,
     << "Number of property values : " << ent->NbPropertyValues() << "\n"
     << "Name : ";
   IGESData_DumpString(S, ent->Value());
-  S << std::endl;
+  S << '\n';
 }

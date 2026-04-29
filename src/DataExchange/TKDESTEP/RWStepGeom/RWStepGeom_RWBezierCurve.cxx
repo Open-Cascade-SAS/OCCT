@@ -35,7 +35,9 @@ void RWStepGeom_RWBezierCurve::ReadStep(const occ::handle<StepData_StepReaderDat
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 6, ach, "bezier_curve"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -67,7 +69,9 @@ void RWStepGeom_RWBezierCurve::ReadStep(const occ::handle<StepData_StepReaderDat
                            ach,
                            STANDARD_TYPE(StepGeom_CartesianPoint),
                            anent3))
+      {
         aControlPointsList->SetValue(i3, anent3);
+      }
     }
   }
 
@@ -83,7 +87,9 @@ void RWStepGeom_RWBezierCurve::ReadStep(const occ::handle<StepData_StepReaderDat
     }
   }
   else
+  {
     ach->AddFail("Parameter #4 (curve_form) is not an enumeration");
+  }
 
   // --- inherited field : closedCurve ---
 

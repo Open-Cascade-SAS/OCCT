@@ -492,7 +492,9 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified
         for (int jcote2 = 1; jcote2 <= ncote2; jcote2++)
         {
           if (cote1(jcote1) < Tol)
+          {
             continue;
+          }
           gp_Circ2d cirint(gp_Ax2d(center1, dirx), cote1(jcote1));
           gp_Lin2d  linint(
             gp_Pnt2d(lxloc - cote2(jcote2) * ydir * Radius, lyloc + cote2(jcote2) * xdir * Radius),

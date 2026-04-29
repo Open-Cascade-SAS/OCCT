@@ -185,5 +185,5 @@ void IGESGeom_ToolSurfaceOfRevolution::OwnDump(const occ::handle<IGESGeom_Surfac
   dumper.Dump(ent->Generatrix(), S, sublevel);
   S << "\n"
     << "Start Angle        : " << ent->StartAngle() << "  "
-    << "End Angle   : " << ent->EndAngle() << std::endl;
+    << "End Angle   : " << ent->EndAngle() << '\n';
 }

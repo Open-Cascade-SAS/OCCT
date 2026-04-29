@@ -41,7 +41,9 @@ void RWStepKinematics_RWRackAndPinionPairWithRange::ReadStep(
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 9, theArch, "rack_and_pinion_pair_with_range"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 
@@ -177,7 +179,9 @@ void RWStepKinematics_RWRackAndPinionPairWithRange::WriteStep(
     theSW.Send(theEnt->ItemDefinedTransformation()->Description());
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   theSW.Send(theEnt->ItemDefinedTransformation()->TransformItem1());
 
@@ -198,14 +202,18 @@ void RWStepKinematics_RWRackAndPinionPairWithRange::WriteStep(
     theSW.Send(theEnt->LowerLimitRackDisplacement());
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   if (theEnt->HasUpperLimitRackDisplacement())
   {
     theSW.Send(theEnt->UpperLimitRackDisplacement());
   }
   else
+  {
     theSW.SendUndef();
+  }
 }
 
 //=================================================================================================

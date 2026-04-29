@@ -25,7 +25,9 @@ AppDef_MultiLine::AppDef_MultiLine() = default;
 AppDef_MultiLine::AppDef_MultiLine(const int NbMult)
 {
   if (NbMult < 0)
+  {
     throw Standard_ConstructionError();
+  }
 
   tabMult = new NCollection_HArray1<AppDef_MultiPointConstraint>(1, NbMult);
 }
@@ -94,8 +96,8 @@ AppDef_MultiPointConstraint AppDef_MultiLine::Value(const int Index) const
 
 void AppDef_MultiLine::Dump(Standard_OStream& o) const
 {
-  o << "AppDef_MultiLine dump:" << std::endl;
+  o << "AppDef_MultiLine dump:" << '\n';
   //  AppDef_MultiPointConstraint MP = tabMult->Value(1);
-  o << "It contains " << tabMult->Length() << " MultiPointConstraint" << std::endl;
+  o << "It contains " << tabMult->Length() << " MultiPointConstraint" << '\n';
   //  o << MP->NbPoints() << " 3d and " << MP->NbPoints2d() << std::endl;
 }

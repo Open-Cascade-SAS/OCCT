@@ -81,7 +81,9 @@ void IGESDimen_SpecificModule::OwnDump(const int                               C
     case 1: {
       DeclareAndCast(IGESDimen_AngularDimension, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDimen_ToolAngularDimension tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -89,7 +91,9 @@ void IGESDimen_SpecificModule::OwnDump(const int                               C
     case 2: {
       DeclareAndCast(IGESDimen_BasicDimension, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDimen_ToolBasicDimension tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -97,7 +101,9 @@ void IGESDimen_SpecificModule::OwnDump(const int                               C
     case 3: {
       DeclareAndCast(IGESDimen_CenterLine, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDimen_ToolCenterLine tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -105,7 +111,9 @@ void IGESDimen_SpecificModule::OwnDump(const int                               C
     case 4: {
       DeclareAndCast(IGESDimen_CurveDimension, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDimen_ToolCurveDimension tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -113,7 +121,9 @@ void IGESDimen_SpecificModule::OwnDump(const int                               C
     case 5: {
       DeclareAndCast(IGESDimen_DiameterDimension, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDimen_ToolDiameterDimension tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -121,7 +131,9 @@ void IGESDimen_SpecificModule::OwnDump(const int                               C
     case 6: {
       DeclareAndCast(IGESDimen_DimensionDisplayData, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDimen_ToolDimensionDisplayData tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -129,7 +141,9 @@ void IGESDimen_SpecificModule::OwnDump(const int                               C
     case 7: {
       DeclareAndCast(IGESDimen_DimensionTolerance, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDimen_ToolDimensionTolerance tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -137,7 +151,9 @@ void IGESDimen_SpecificModule::OwnDump(const int                               C
     case 8: {
       DeclareAndCast(IGESDimen_DimensionUnits, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDimen_ToolDimensionUnits tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -145,7 +161,9 @@ void IGESDimen_SpecificModule::OwnDump(const int                               C
     case 9: {
       DeclareAndCast(IGESDimen_DimensionedGeometry, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDimen_ToolDimensionedGeometry tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -153,7 +171,9 @@ void IGESDimen_SpecificModule::OwnDump(const int                               C
     case 10: {
       DeclareAndCast(IGESDimen_FlagNote, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDimen_ToolFlagNote tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -161,7 +181,9 @@ void IGESDimen_SpecificModule::OwnDump(const int                               C
     case 11: {
       DeclareAndCast(IGESDimen_GeneralLabel, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDimen_ToolGeneralLabel tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -169,7 +191,9 @@ void IGESDimen_SpecificModule::OwnDump(const int                               C
     case 12: {
       DeclareAndCast(IGESDimen_GeneralNote, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDimen_ToolGeneralNote tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -177,7 +201,9 @@ void IGESDimen_SpecificModule::OwnDump(const int                               C
     case 13: {
       DeclareAndCast(IGESDimen_GeneralSymbol, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDimen_ToolGeneralSymbol tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -185,7 +211,9 @@ void IGESDimen_SpecificModule::OwnDump(const int                               C
     case 14: {
       DeclareAndCast(IGESDimen_LeaderArrow, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDimen_ToolLeaderArrow tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -193,7 +221,9 @@ void IGESDimen_SpecificModule::OwnDump(const int                               C
     case 15: {
       DeclareAndCast(IGESDimen_LinearDimension, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDimen_ToolLinearDimension tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -201,7 +231,9 @@ void IGESDimen_SpecificModule::OwnDump(const int                               C
     case 16: {
       DeclareAndCast(IGESDimen_NewDimensionedGeometry, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDimen_ToolNewDimensionedGeometry tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -209,7 +241,9 @@ void IGESDimen_SpecificModule::OwnDump(const int                               C
     case 17: {
       DeclareAndCast(IGESDimen_NewGeneralNote, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDimen_ToolNewGeneralNote tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -217,7 +251,9 @@ void IGESDimen_SpecificModule::OwnDump(const int                               C
     case 18: {
       DeclareAndCast(IGESDimen_OrdinateDimension, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDimen_ToolOrdinateDimension tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -225,7 +261,9 @@ void IGESDimen_SpecificModule::OwnDump(const int                               C
     case 19: {
       DeclareAndCast(IGESDimen_PointDimension, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDimen_ToolPointDimension tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -233,7 +271,9 @@ void IGESDimen_SpecificModule::OwnDump(const int                               C
     case 20: {
       DeclareAndCast(IGESDimen_RadiusDimension, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDimen_ToolRadiusDimension tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -241,7 +281,9 @@ void IGESDimen_SpecificModule::OwnDump(const int                               C
     case 21: {
       DeclareAndCast(IGESDimen_Section, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDimen_ToolSection tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -249,7 +291,9 @@ void IGESDimen_SpecificModule::OwnDump(const int                               C
     case 22: {
       DeclareAndCast(IGESDimen_SectionedArea, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDimen_ToolSectionedArea tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -257,7 +301,9 @@ void IGESDimen_SpecificModule::OwnDump(const int                               C
     case 23: {
       DeclareAndCast(IGESDimen_WitnessLine, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDimen_ToolWitnessLine tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -276,63 +322,81 @@ bool IGESDimen_SpecificModule::OwnCorrect(const int                             
     case 2: {
       DeclareAndCast(IGESDimen_BasicDimension, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESDimen_ToolBasicDimension tool;
       return tool.OwnCorrect(anent);
     }
     case 3: {
       DeclareAndCast(IGESDimen_CenterLine, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESDimen_ToolCenterLine tool;
       return tool.OwnCorrect(anent);
     }
     case 6: {
       DeclareAndCast(IGESDimen_DimensionDisplayData, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESDimen_ToolDimensionDisplayData tool;
       return tool.OwnCorrect(anent);
     }
     case 7: {
       DeclareAndCast(IGESDimen_DimensionTolerance, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESDimen_ToolDimensionTolerance tool;
       return tool.OwnCorrect(anent);
     }
     case 8: {
       DeclareAndCast(IGESDimen_DimensionUnits, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESDimen_ToolDimensionUnits tool;
       return tool.OwnCorrect(anent);
     }
     case 9: {
       DeclareAndCast(IGESDimen_DimensionedGeometry, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESDimen_ToolDimensionedGeometry tool;
       return tool.OwnCorrect(anent);
     }
     case 16: {
       DeclareAndCast(IGESDimen_NewDimensionedGeometry, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESDimen_ToolNewDimensionedGeometry tool;
       return tool.OwnCorrect(anent);
     }
     case 21: {
       DeclareAndCast(IGESDimen_Section, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESDimen_ToolSection tool;
       return tool.OwnCorrect(anent);
     }
     case 23: {
       DeclareAndCast(IGESDimen_WitnessLine, anent, ent);
       if (anent.IsNull())
+      {
         break;
+      }
       IGESDimen_ToolWitnessLine tool;
       return tool.OwnCorrect(anent);
     }

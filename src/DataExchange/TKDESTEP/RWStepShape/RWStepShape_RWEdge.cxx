@@ -29,7 +29,9 @@ void RWStepShape_RWEdge::ReadStep(const occ::handle<StepData_StepReaderData>& da
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "edge"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

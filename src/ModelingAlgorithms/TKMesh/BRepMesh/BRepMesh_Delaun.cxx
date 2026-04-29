@@ -129,7 +129,9 @@ public:
     Frame&    aFrame = myFrames.ChangeLast();
     const int anElem = aFrame.Advance();
     if (aFrame.IsEmpty())
+    {
       myFrames.EraseLast();
+    }
 
     return anElem;
   }
@@ -445,11 +447,15 @@ void BRepMesh_Delaun::RemoveAuxElements()
   // Destruction of triangles containing a top of the super triangle
   BRepMesh_SelectorOfDataStructureOfDelaun aSelector(myMeshData);
   for (int aSupVertId = 0; aSupVertId < mySupVert.Length(); ++aSupVertId)
+  {
     aSelector.NeighboursOfNode(mySupVert[aSupVertId]);
+  }
 
   IMeshData::IteratorOfMapOfInteger aFreeTriangles(aSelector.Elements());
   for (; aFreeTriangles.More(); aFreeTriangles.Next())
+  {
     deleteTriangle(aFreeTriangles.Key(), aLoopEdges);
+  }
 
   // All edges that remain free are removed from aLoopEdges;
   // only the boundary edges of the triangulation remain there
@@ -457,12 +463,16 @@ void BRepMesh_Delaun::RemoveAuxElements()
   for (; aFreeEdges.More(); aFreeEdges.Next())
   {
     if (myMeshData->ElementsConnectedTo(aFreeEdges.Key()).IsEmpty())
+    {
       myMeshData->RemoveLink(aFreeEdges.Key());
+    }
   }
 
   // The tops of the super triangle are destroyed
   for (int aSupVertId = 0; aSupVertId < mySupVert.Length(); ++aSupVertId)
+  {
     myMeshData->RemoveNode(mySupVert[aSupVertId]);
+  }
 }
 
 //=======================================================================
@@ -502,7 +512,9 @@ void BRepMesh_Delaun::createTriangles(const int                       theVertexI
     gp_XY  anEdgeDir(aLastVertex.Coord() - aFirstVertex.Coord());
     double anEdgeLen = anEdgeDir.Modulus();
     if (anEdgeLen < Precision)
+    {
       continue;
+    }
 
     anEdgeDir.SetCoord(anEdgeDir.X() / anEdgeLen, anEdgeDir.Y() / anEdgeLen);
 
@@ -540,14 +552,22 @@ void BRepMesh_Delaun::createTriangles(const int                       theVertexI
     else
     {
       if (isPositive)
+      {
         aLoopEdges.Append(anEdges.Key());
+      }
       else
+      {
         aLoopEdges.Append(-anEdges.Key());
+      }
 
       if (aFirstLinkDir.SquareModulus() > aLastLinkDir.SquareModulus())
+      {
         anExternalEdges.Append(std::abs(anEdgesInfo[0]));
+      }
       else
+      {
         anExternalEdges.Append(std::abs(anEdgesInfo[2]));
+      }
     }
   }
 
@@ -558,7 +578,9 @@ void BRepMesh_Delaun::createTriangles(const int                       theVertexI
       myMeshData->ElementsConnectedTo(std::abs(anExternalEdges.First()));
 
     if (!aPair.IsEmpty())
+    {
       deleteTriangle(aPair.FirstIndex(), thePoly);
+    }
 
     anExternalEdges.RemoveFirst();
   }
@@ -566,7 +588,9 @@ void BRepMesh_Delaun::createTriangles(const int                       theVertexI
   for (anEdges.Initialize(thePoly); anEdges.More(); anEdges.Next())
   {
     if (myMeshData->ElementsConnectedTo(anEdges.Key()).IsEmpty())
+    {
       myMeshData->RemoveLink(anEdges.Key());
+    }
   }
 
   while (!aLoopEdges.IsEmpty())
@@ -630,7 +654,9 @@ void BRepMesh_Delaun::createTrianglesOnNewVertices(IMeshData::VectorOfInteger&  
         {
           // We can skip free vertex too close to the frontier edge.
           if (aVertex.Movability() == BRepMesh_Free)
+          {
             continue;
+          }
 
           // However, we should add vertex that have neighboring frontier edges.
         }
@@ -736,14 +762,18 @@ bool BRepMesh_Delaun::isBoundToFrontier(const int theRefNodeId, const int theRef
 
     const BRepMesh_PairOfIndex& aPair = myMeshData->ElementsConnectedTo(aCurrentLinkId);
     if (aPair.IsEmpty())
+    {
       return false;
+    }
 
     const int aNbElements = aPair.Extent();
     for (int anElemIt = 1; anElemIt <= aNbElements; ++anElemIt)
     {
       const int aTriId = aPair.Index(anElemIt);
       if (aTriId < 0)
+      {
         continue;
+      }
 
       const BRepMesh_Triangle& aElement = GetTriangle(aTriId);
       const int (&anEdges)[3]           = aElement.myEdges;
@@ -752,7 +782,9 @@ bool BRepMesh_Delaun::isBoundToFrontier(const int theRefNodeId, const int theRef
       {
         const int anEdgeId = anEdges[anEdgeIt];
         if (anEdgeId == aCurrentLinkId)
+        {
           continue;
+        }
 
         const BRepMesh_Edge& anEdge = GetEdge(anEdgeId);
         if (anEdge.FirstNode() != theRefNodeId && anEdge.LastNode() != theRefNodeId)
@@ -761,7 +793,9 @@ bool BRepMesh_Delaun::isBoundToFrontier(const int theRefNodeId, const int theRef
         }
 
         if (anEdge.Movability() != BRepMesh_Free)
+        {
           return true;
+        }
 
         if (aVisitedLinks.Add(anEdgeId))
         {
@@ -796,7 +830,9 @@ void BRepMesh_Delaun::cleanupMesh()
       const int&           aFreeEdgeId = aFreeEdgesIt.Key();
       const BRepMesh_Edge& anEdge      = GetEdge(aFreeEdgeId);
       if (anEdge.Movability() == BRepMesh_Frontier)
+      {
         continue;
+      }
 
       const BRepMesh_PairOfIndex& aPair = myMeshData->ElementsConnectedTo(aFreeEdgeId);
       if (aPair.IsEmpty())
@@ -815,7 +851,9 @@ void BRepMesh_Delaun::cleanupMesh()
       for (int aCurEdgeIdx = 0; aCurEdgeIdx < 3; ++aCurEdgeIdx)
       {
         if (anEdges[aCurEdgeIdx] != aFreeEdgeId)
+        {
           continue;
+        }
 
         for (int anOtherEdgeIt = 1; anOtherEdgeIt <= 2 && isCanNotBeRemoved; ++anOtherEdgeIt)
         {
@@ -833,7 +871,9 @@ void BRepMesh_Delaun::cleanupMesh()
                  ++aTriIdx)
             {
               if (anOtherEdgePair.Index(aTriIdx) == aTriId)
+              {
                 continue;
+              }
 
               int                      v[3];
               const BRepMesh_Triangle& aCurTriangle = GetTriangle(anOtherEdgePair.Index(aTriIdx));
@@ -853,7 +893,9 @@ void BRepMesh_Delaun::cleanupMesh()
       }
 
       if (isCanNotBeRemoved)
+      {
         continue;
+      }
 
       bool isConnected[2] = {false, false};
       for (int aLinkNodeIt = 0; aLinkNodeIt < 2; ++aLinkNodeIt)
@@ -864,7 +906,9 @@ void BRepMesh_Delaun::cleanupMesh()
       }
 
       if (!isConnected[0] || !isConnected[1])
+      {
         aDelTriangles.Add(aTriId);
+      }
     }
 
     // Destruction of triangles :
@@ -881,11 +925,15 @@ void BRepMesh_Delaun::cleanupMesh()
     for (; aLoopEdgesIt.More(); aLoopEdgesIt.Next())
     {
       if (myMeshData->ElementsConnectedTo(aLoopEdgesIt.Key()).IsEmpty())
+      {
         myMeshData->RemoveLink(aLoopEdgesIt.Key());
+      }
     }
 
     if (aDeletedTrianglesNb == 0)
+    {
       break;
+    }
   }
 }
 
@@ -920,7 +968,9 @@ void BRepMesh_Delaun::frontierAdjust()
       {
         const int aPriorElemId = aPair.Index(aElemIt);
         if (aPriorElemId < 0)
+        {
           continue;
+        }
 
         const BRepMesh_Triangle& aElement = GetTriangle(aPriorElemId);
         const int (&e)[3]                 = aElement.myEdges;
@@ -939,7 +989,9 @@ void BRepMesh_Delaun::frontierAdjust()
         }
 
         if (isTriangleFound)
+        {
           break;
+        }
       }
     }
 
@@ -949,7 +1001,9 @@ void BRepMesh_Delaun::frontierAdjust()
     {
       int aLoopEdgeId = aLoopEdgesIt.Key();
       if (myMeshData->ElementsConnectedTo(aLoopEdgeId).IsEmpty())
+      {
         myMeshData->RemoveLink(aLoopEdgeId);
+      }
     }
 
     // destruction of triangles crossing the boundary edges and
@@ -958,12 +1012,16 @@ void BRepMesh_Delaun::frontierAdjust()
     {
       int aFrontierId = aFrontierIt.Key();
       if (!myMeshData->ElementsConnectedTo(aFrontierId).IsEmpty())
+      {
         continue;
+      }
 
       bool isSuccess = meshLeftPolygonOf(aFrontierId, true, aIntFrontierEdges);
 
       if (aPass == 2 && !isSuccess)
+      {
         aFailedFrontiers.Append(aFrontierId);
+      }
     }
   }
 
@@ -979,7 +1037,9 @@ void BRepMesh_Delaun::frontierAdjust()
   {
     int aFrontierId = aFailedFrontiersIt.Value();
     if (!myMeshData->ElementsConnectedTo(aFrontierId).IsEmpty())
+    {
       continue;
+    }
 
     meshLeftPolygonOf(aFrontierId, true, aIntFrontierEdges);
   }
@@ -1008,7 +1068,9 @@ bool BRepMesh_Delaun::meshLeftPolygonOf(const int                       theStart
                                         Handle(IMeshData::MapOfInteger) theSkipped)
 {
   if (!theSkipped.IsNull() && theSkipped->Contains(theStartEdgeId))
+  {
     return true;
+  }
 
   const BRepMesh_Edge& aRefEdge = GetEdge(theStartEdgeId);
 
@@ -1033,7 +1095,9 @@ bool BRepMesh_Delaun::meshLeftPolygonOf(const int                       theStart
   gp_Vec2d aRefLinkDir(aPivotVertex.Coord() - aStartEdgeVertexS.Coord());
 
   if (aRefLinkDir.SquareMagnitude() < Precision2)
+  {
     return true;
+  }
 
   // Auxiliary structures.
   // Bounding boxes of polygon links to be used for preliminary
@@ -1087,7 +1151,9 @@ bool BRepMesh_Delaun::meshLeftPolygonOf(const int                       theStart
     {
       // Nothing to do
       if (aPolygon.Length() == 1)
+      {
         return false;
+      }
 
       // Return to the previous point
       int aDeadLinkId = std::abs(aPolygon.Last());
@@ -1119,7 +1185,9 @@ bool BRepMesh_Delaun::meshLeftPolygonOf(const int                       theStart
   }
 
   if (aPolygon.Length() < 3)
+  {
     return false;
+  }
 
   cleanupPolygon(aPolygon, aBoxes);
   meshPolygon(aPolygon, aBoxes, theSkipped);
@@ -1168,7 +1236,9 @@ int BRepMesh_Delaun::findNextPolygonLink(const int&                             
 
     bool isLeprous = theLeprousLinks.Contains(aNeighbourLinkId);
     if (isSkipLeprous && isLeprous)
+    {
       continue;
+    }
 
     const BRepMesh_Edge& aNeighbourLink = GetEdge(aNeighbourLinkId);
 
@@ -1182,7 +1252,9 @@ int BRepMesh_Delaun::findNextPolygonLink(const int&                             
 
     int anOtherNode = aNeighbourLink.FirstNode();
     if (anOtherNode == thePivotNode)
+    {
       anOtherNode = aNeighbourLink.LastNode();
+    }
 
     gp_Vec2d aCurLinkDir(GetVertex(anOtherNode).Coord() - thePivotVertex.Coord());
 
@@ -1193,7 +1265,9 @@ int BRepMesh_Delaun::findNextPolygonLink(const int&                             
     }
 
     if (!isLeprous)
+    {
       theLeprousLinks.Add(aNeighbourLinkId);
+    }
 
     double anAngle    = theRefLinkDir.Angle(aCurLinkDir);
     bool   isFrontier = (aNeighbourLink.Movability() == BRepMesh_Frontier);
@@ -1210,7 +1284,9 @@ int BRepMesh_Delaun::findNextPolygonLink(const int&                             
     }
 
     if (anAngle <= aMaxAngle)
+    {
       continue;
+    }
 
     bool isCheckEndPoints = (anOtherNode != theFirstNode);
 
@@ -1260,7 +1336,9 @@ bool BRepMesh_Delaun::checkIntersection(const BRepMesh_Edge&                theL
   int aPolyLen = thePolygon.Length();
   // Don't check intersection with the last link
   if (isSkipLastEdge)
+  {
     --aPolyLen;
+  }
 
   bool isFrontier = (theLink.Movability() == BRepMesh_Frontier);
 
@@ -1274,14 +1352,18 @@ bool BRepMesh_Delaun::checkIntersection(const BRepMesh_Edge&                theL
 
       // skip intersections between frontier edges
       if (aPolyLink.Movability() == BRepMesh_Frontier && isFrontier)
+      {
         continue;
+      }
 
       gp_Pnt2d                   anIntPnt;
       BRepMesh_GeomTool::IntFlag aIntFlag =
         intSegSeg(theLink, aPolyLink, isConsiderEndPointTouch, isConsiderPointOnEdge, anIntPnt);
 
       if (aIntFlag != BRepMesh_GeomTool::NoIntersection)
+      {
         return false;
+      }
     }
   }
 
@@ -1310,7 +1392,9 @@ void BRepMesh_Delaun::addTriangle(const int (&theEdgesId)[3],
   }
 
   if (!isAdded)
+  {
     myMeshData->RemoveElement(aNewTriangleId);
+  }
 }
 
 //=======================================================================
@@ -1322,7 +1406,9 @@ void BRepMesh_Delaun::cleanupPolygon(const IMeshData::SequenceOfInteger& thePoly
 {
   int aPolyLen = thePolygon.Length();
   if (aPolyLen < 3)
+  {
     return;
+  }
 
   occ::handle<NCollection_IncAllocator> aAllocator =
     new NCollection_IncAllocator(IMeshData::MEMORY_BLOCK_SIZE_HUGE);
@@ -1346,7 +1432,9 @@ void BRepMesh_Delaun::cleanupPolygon(const IMeshData::SequenceOfInteger& thePoly
     {
       int anElemId = aPair.Index(anElemIt);
       if (anElemId < 0)
+      {
         continue;
+      }
 
       const BRepMesh_Triangle& aElement = GetTriangle(anElemId);
       const int (&anEdges)[3]           = aElement.myEdges;
@@ -1364,7 +1452,9 @@ void BRepMesh_Delaun::cleanupPolygon(const IMeshData::SequenceOfInteger& thePoly
       }
 
       if (isTriangleFound)
+      {
         break;
+      }
     }
 
     // Skip a neighbor link to extract unique vertices each time
@@ -1392,7 +1482,9 @@ void BRepMesh_Delaun::cleanupPolygon(const IMeshData::SequenceOfInteger& thePoly
 
   // Make closed sequence
   if (aPolyVertices.First() != aPolyVertices.Last())
+  {
     aPolyVertices.Append(aPolyVertices.First());
+  }
 
   IMeshData::MapOfInteger aSurvivedLinks(anIgnoredEdges);
 
@@ -1425,10 +1517,14 @@ void BRepMesh_Delaun::cleanupPolygon(const IMeshData::SequenceOfInteger& thePoly
   {
     const int& aLoopEdgeId = aLoopEdgesIt.Key();
     if (anIgnoredEdges.Contains(aLoopEdgeId))
+    {
       continue;
+    }
 
     if (myMeshData->ElementsConnectedTo(aLoopEdgeId).IsEmpty())
+    {
       myMeshData->RemoveLink(aLoopEdgesIt.Key());
+    }
   }
 }
 
@@ -1454,7 +1550,9 @@ void BRepMesh_Delaun::killTrianglesAroundVertex(
   {
     const int& aNeighborLinkId = aNeighborsIt.Value();
     if (theSurvivedLinks.Contains(aNeighborLinkId))
+    {
       continue;
+    }
 
     const BRepMesh_Edge& aNeighborLink = GetEdge(aNeighborLinkId);
     if (aNeighborLink.Movability() == BRepMesh_Frontier)
@@ -1476,7 +1574,9 @@ void BRepMesh_Delaun::killTrianglesAroundVertex(
     {
       int anOtherNode = aNeighborLink.FirstNode();
       if (anOtherNode == theZombieNodeId)
+      {
         anOtherNode = aNeighborLink.LastNode();
+      }
 
       // Possible sacrifice
       if (!thePolyVerticesFindMap.Contains(anOtherNode))
@@ -1519,14 +1619,18 @@ bool BRepMesh_Delaun::isVertexInsidePolygon(
 {
   int aPolyLen = thePolygonVertices.Length();
   if (aPolyLen < 3)
+  {
     return false;
+  }
 
   const gp_XY aCenterPointXY = GetVertex(theVertexId).Coord();
 
   const BRepMesh_Vertex& aFirstVertex = GetVertex(thePolygonVertices(0));
   gp_Vec2d               aPrevVertexDir(aFirstVertex.Coord() - aCenterPointXY);
   if (aPrevVertexDir.SquareMagnitude() < Precision2)
+  {
     return true;
+  }
 
   double aTotalAng = 0.0;
   for (int aPolyIt = 1; aPolyIt < aPolyLen; ++aPolyIt)
@@ -1535,7 +1639,9 @@ bool BRepMesh_Delaun::isVertexInsidePolygon(
 
     gp_Vec2d aCurVertexDir(aPolyVertex.Coord() - aCenterPointXY);
     if (aCurVertexDir.SquareMagnitude() < Precision2)
+    {
       return true;
+    }
 
     aTotalAng += aCurVertexDir.Angle(aPrevVertexDir);
     aPrevVertexDir = aCurVertexDir;
@@ -1560,7 +1666,9 @@ void BRepMesh_Delaun::killTrianglesOnIntersectingLinks(
   IMeshData::MapOfIntegerInteger&     theLoopEdges)
 {
   if (theSurvivedLinks.Contains(theLinkToCheckId))
+  {
     return;
+  }
 
   Bnd_B2d aBox;
   bool    isNotIntersect =
@@ -1569,7 +1677,9 @@ void BRepMesh_Delaun::killTrianglesOnIntersectingLinks(
   theSurvivedLinks.Add(theLinkToCheckId);
 
   if (isNotIntersect)
+  {
     return;
+  }
 
   killLinkTriangles(theLinkToCheckId, theLoopEdges);
 
@@ -1581,7 +1691,9 @@ void BRepMesh_Delaun::killTrianglesOnIntersectingLinks(
     const BRepMesh_Edge& aNeighborLink   = GetEdge(aNeighborLinkId);
     int                  anOtherNode     = aNeighborLink.FirstNode();
     if (anOtherNode == theEndPoint)
+    {
       anOtherNode = aNeighborLink.LastNode();
+    }
 
     killTrianglesOnIntersectingLinks(aNeighborLinkId,
                                      aNeighborLink,
@@ -1607,7 +1719,9 @@ void BRepMesh_Delaun::killLinkTriangles(const int&                      theLinkI
   {
     int anElemId = aPair.FirstIndex();
     if (anElemId < 0)
+    {
       continue;
+    }
 
     deleteTriangle(anElemId, theLoopEdges);
   }
@@ -1646,7 +1760,9 @@ void BRepMesh_Delaun::processLoop(const int                           theLinkFro
 {
   int aNbOfLinksInLoop = theLinkTo - theLinkFrom - 1;
   if (aNbOfLinksInLoop < 3)
+  {
     return;
+  }
 
   IMeshData::SequenceOfInteger aPolygon;
   IMeshData::SequenceOfBndB2d  aPolyBoxes;
@@ -1705,7 +1821,9 @@ void BRepMesh_Delaun::meshPolygon(IMeshData::SequenceOfInteger&   thePolygon,
 {
   // Check is the source polygon elementary
   if (meshElementaryPolygon(thePolygon))
+  {
     return;
+  }
 
   // Check and correct boundary edges
   int          aPolyLen       = thePolygon.Length();
@@ -1717,7 +1835,9 @@ void BRepMesh_Delaun::meshPolygon(IMeshData::SequenceOfInteger&   thePolygon,
     int                  aCurEdgeId   = std::abs(aCurEdgeInfo);
     const BRepMesh_Edge* aCurEdge     = &GetEdge(aCurEdgeId);
     if (aCurEdge->Movability() != BRepMesh_Frontier)
+    {
       continue;
+    }
 
     int aCurNodes[2];
     getOrientedNodes(*aCurEdge, aCurEdgeInfo > 0, aCurNodes);
@@ -1734,7 +1854,9 @@ void BRepMesh_Delaun::meshPolygon(IMeshData::SequenceOfInteger&   thePolygon,
       int                  aNextEdgeId   = std::abs(aNextEdgeInfo);
       const BRepMesh_Edge* aNextEdge     = &GetEdge(aNextEdgeId);
       if (aNextEdge->Movability() != BRepMesh_Frontier)
+      {
         continue;
+      }
 
       int aNextNodes[2];
       getOrientedNodes(*aNextEdge, aNextEdgeInfo > 0, aNextNodes);
@@ -1745,7 +1867,9 @@ void BRepMesh_Delaun::meshPolygon(IMeshData::SequenceOfInteger&   thePolygon,
       BRepMesh_GeomTool::IntFlag aIntFlag = intSegSeg(*aCurEdge, *aNextEdge, false, true, anIntPnt);
 
       if (aIntFlag == BRepMesh_GeomTool::NoIntersection)
+      {
         continue;
+      }
 
       bool isRemoveFromFirst  = false;
       bool isAddReplacingEdge = true;
@@ -1783,7 +1907,9 @@ void BRepMesh_Delaun::meshPolygon(IMeshData::SequenceOfInteger&   thePolygon,
         aCurPnts[1]               = aNextPnts[aEndPointIndex];
 
         if (isCloseToStart)
+        {
           --aIndexToRemoveTo;
+        }
 
         // In this context only intersections between frontier edges
         // are possible. If intersection between edges of different
@@ -1793,7 +1919,9 @@ void BRepMesh_Delaun::meshPolygon(IMeshData::SequenceOfInteger&   thePolygon,
         {
           int aSkippedLinkIt = aPolyIt;
           for (; aSkippedLinkIt <= aIndexToRemoveTo; ++aSkippedLinkIt)
+          {
             theSkipped->Add(std::abs(thePolygon(aSkippedLinkIt)));
+          }
         }
       }
       else if (aIntFlag == BRepMesh_GeomTool::PointOnSegment)
@@ -1875,7 +2003,9 @@ void BRepMesh_Delaun::meshPolygon(IMeshData::SequenceOfInteger&   thePolygon,
         isAddReplacingEdge = false;
       }
       else
+      {
         continue; // Not supported type
+      }
 
       if (isAddReplacingEdge)
       {
@@ -1935,7 +2065,9 @@ void BRepMesh_Delaun::meshPolygon(IMeshData::SequenceOfInteger&   thePolygon,
       }
 
       if (aPolyStack.IsEmpty())
+      {
         break;
+      }
 
       aPolygon1   = &(*aPolyStack.ChangeFirst());
       aPolyBoxes1 = &(*aPolyBoxStack.ChangeFirst());
@@ -1951,9 +2083,13 @@ bool BRepMesh_Delaun::meshElementaryPolygon(const IMeshData::SequenceOfInteger& 
 {
   int aPolyLen = thePolygon.Length();
   if (aPolyLen < 3)
+  {
     return true;
+  }
   else if (aPolyLen > 3)
+  {
     return false;
+  }
 
   // Just create a triangle
   int  anEdges[3];
@@ -2033,7 +2169,9 @@ void BRepMesh_Delaun::decomposeSimplePolygon(IMeshData::SequenceOfInteger& thePo
 
     // We have end points touch case in the polygon - ignore it
     if (aPivotNode == aNodes[1])
+    {
       continue;
+    }
 
     gp_Pnt2d aPivotVertex = GetVertex(aPivotNode).Coord();
     gp_Vec2d aDistanceDir(aRefVertices[1], aPivotVertex);
@@ -2042,7 +2180,9 @@ void BRepMesh_Delaun::decomposeSimplePolygon(IMeshData::SequenceOfInteger& thePo
     double aAngle    = std::abs(aRefEdgeDir.Angle(aDistanceDir));
     double anAbsDist = std::abs(aDist);
     if (anAbsDist < Precision || aDist < 0.)
+    {
       continue;
+    }
 
     if ((anAbsDist >= aMinDist) && (aAngle <= aOptAngle || aAngle > AngDeviation90Deg))
     {
@@ -2065,14 +2205,18 @@ void BRepMesh_Delaun::decomposeSimplePolygon(IMeshData::SequenceOfInteger& thePo
       for (; aCheckLinkIt <= aPolyLen; ++aCheckLinkIt)
       {
         if (aCheckLinkIt == aLinkIt)
+        {
           continue;
+        }
 
         if (!aBox.IsOut(thePolyBoxes.Value(aCheckLinkIt)))
         {
           const BRepMesh_Edge& aPolyLink = GetEdge(std::abs(thePolygon(aCheckLinkIt)));
 
           if (aCheckLink.IsEqual(aPolyLink))
+          {
             continue;
+          }
 
           // intersection is possible...
           gp_Pnt2d                   anIntPnt;
@@ -2088,11 +2232,15 @@ void BRepMesh_Delaun::decomposeSimplePolygon(IMeshData::SequenceOfInteger& thePo
       }
 
       if (isIntersect)
+      {
         break;
+      }
     }
 
     if (isIntersect)
+    {
       continue;
+    }
 
     aOptAngle       = aAngle;
     aMinDist        = anAbsDist;
@@ -2179,7 +2327,9 @@ void BRepMesh_Delaun::RemoveVertex(const BRepMesh_Vertex& theVertex)
   // Loop on triangles to be destroyed :
   IMeshData::IteratorOfMapOfInteger aTriangleIt(aSelector.Elements());
   for (; aTriangleIt.More(); aTriangleIt.Next())
+  {
     deleteTriangle(aTriangleIt.Key(), aLoopEdges);
+  }
 
   IMeshData::SequenceOfBndB2d              aBoxes;
   IMeshData::SequenceOfInteger             aPolygon;
@@ -2205,7 +2355,9 @@ void BRepMesh_Delaun::RemoveVertex(const BRepMesh_Vertex& theVertex)
       aPolygon.Append(-anEdgeId);
     }
     else
+    {
       aPolygon.Append(anEdgeId);
+    }
 
     fillBndBox(aBoxes, GetVertex(aFirstNode), GetVertex(aPivotNode));
 
@@ -2230,7 +2382,9 @@ void BRepMesh_Delaun::RemoveVertex(const BRepMesh_Vertex& theVertex)
             aPolygon.Append(-anEdgeId);
           }
           else
+          {
             aPolygon.Append(anEdgeId);
+          }
 
           fillBndBox(aBoxes, GetVertex(aCurrentNode), GetVertex(aPivotNode));
 
@@ -2241,7 +2395,9 @@ void BRepMesh_Delaun::RemoveVertex(const BRepMesh_Vertex& theVertex)
       }
 
       if (aLoopEdgesCount <= 0)
+      {
         break;
+      }
       --aLoopEdgesCount;
     }
 
@@ -2369,7 +2525,9 @@ Handle(IMeshData::MapOfInteger) BRepMesh_Delaun::getEdgesByType(
                      : (GetEdge(anEdge).Movability() == theEdgeType);
 
     if (isToAdd)
+    {
       aResult->Add(anEdge);
+    }
   }
 
   return aResult;
@@ -2392,7 +2550,9 @@ double BRepMesh_Delaun::calculateDist(const gp_XY            theVEdges[3],
   {
     theSqModulus[i] = theVEdges[i].SquareModulus();
     if (theSqModulus[i] <= Precision2)
+    {
       return -1;
+    }
 
     theDistance[i] = theVEdges[i] ^ (theVertex.Coord() - thePoints[i]);
 
@@ -2453,18 +2613,26 @@ bool BRepMesh_Delaun::Contains(const int              theTriangleId,
   int    aEdgeOnId;
   aSqMinDist = calculateDist(aVEdges, aPoints, theVertex, aDistance, aSqModulus, aEdgeOnId);
   if (aSqMinDist < 0)
+  {
     return false;
+  }
 
   const bool isNotFree = (anEdges[aEdgeOnId]->Movability() != BRepMesh_Free);
   if (aSqMinDist > theSqTolerance)
   {
     if (isNotFree && aDistance[aEdgeOnId] < (aSqModulus[aEdgeOnId] / 5.))
+    {
       theEdgeOn = e[aEdgeOnId];
+    }
   }
   else if (isNotFree)
+  {
     return false;
+  }
   else
+  {
     theEdgeOn = e[aEdgeOnId];
+  }
 
   return (aDistance[0] >= 0. && aDistance[1] >= 0. && aDistance[2] >= 0.);
 }

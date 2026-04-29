@@ -61,7 +61,9 @@ occ::handle<IFSelect_IntParam> IFSelect_SelectAnyList::Lower() const
 int IFSelect_SelectAnyList::LowerValue() const
 {
   if (thelower.IsNull())
+  {
     return 0;
+  }
   return thelower->Value();
 }
 
@@ -78,7 +80,9 @@ occ::handle<IFSelect_IntParam> IFSelect_SelectAnyList::Upper() const
 int IFSelect_SelectAnyList::UpperValue() const
 {
   if (theupper.IsNull())
+  {
     return 0;
+  }
   return theupper->Value();
 }
 
@@ -88,31 +92,49 @@ Interface_EntityIterator IFSelect_SelectAnyList::RootResult(const Interface_Grap
   Interface_EntityIterator input = InputResult(G);
   KeepInputEntity(input); // selon type voulu
   if (input.NbEntities() > 1)
+  {
     throw Interface_InterfaceError("SelectAnyList : more than ONE Entity in input");
+  }
   if (input.NbEntities() == 0)
+  {
     return input;
+  }
 
   occ::handle<Standard_Transient> ent;
   for (input.Start(); input.More(); input.Next())
+  {
     ent = input.Value();
+  }
 
   int rankmax  = NbItems(ent);
   int rankfrom = 1;
   if (!thelower.IsNull())
+  {
     rankfrom = thelower->Value();
+  }
   int rankto;
   if (!theupper.IsNull())
+  {
     rankto = theupper->Value();
+  }
   else
+  {
     rankto = rankmax;
+  }
   if (rankfrom < 1)
+  {
     rankfrom = 1;
+  }
   if (rankto > rankmax)
+  {
     rankto = rankmax;
+  }
 
   Interface_EntityIterator iter;
   if (rankfrom <= rankto)
+  {
     FillResult(rankfrom, rankto, ent, iter);
+  }
   return iter;
 }
 
@@ -121,18 +143,30 @@ TCollection_AsciiString IFSelect_SelectAnyList::Label() const
   char lab[30];
   int  rankfrom = 0;
   if (HasLower())
+  {
     rankfrom = LowerValue();
+  }
   int rankto = 0;
   if (HasUpper())
+  {
     rankto = UpperValue();
+  }
   if (rankfrom == rankto)
+  {
     Sprintf(lab, " (no %d)", rankfrom);
+  }
   else if (rankfrom == 0)
+  {
     Sprintf(lab, " (-> %d)", rankfrom);
+  }
   else if (rankto == 0)
+  {
     Sprintf(lab, " (%d ->)", rankto);
+  }
   else
+  {
     Sprintf(lab, " (%d -> %d)", rankfrom, rankto);
+  }
 
   TCollection_AsciiString labl("In List ");
   labl.AssignCat(ListLabel());

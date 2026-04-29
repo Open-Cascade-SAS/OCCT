@@ -116,7 +116,9 @@ Standard_DISABLE_DEPRECATION_WARNINGS
     return false;
   }
   else
+  {
     di << "Dist0 = " << distShapeShape.Value() << "\n";
+  }
 
   //////////////////////////////////////////////////////////////////////////
   /// First Flip Y
@@ -141,14 +143,18 @@ Standard_DISABLE_DEPRECATION_WARNINGS
                                              step1ModifiedShape,
                                              Extrema_ExtFlag_MIN);
   if (!distShapeShape1.IsDone())
+  {
     return false;
+  }
   if (distShapeShape1.Value() > 0.01)
   {
     di << "Dist = " << distShapeShape1.Value() << "\n";
     return false;
   }
   else
+  {
     di << "Dist1 = " << distShapeShape1.Value() << "\n";
+  }
 
   //////////////////////////////////////////////////////////////////////////
   /// Second flip Y
@@ -168,7 +174,9 @@ Standard_DISABLE_DEPRECATION_WARNINGS
   BRepExtrema_DistShapeShape distShapeShape2(grossPlateFace,step2ModifiedShape);//,Extrema_ExtFlag_MIN);
   // clang-format on
   if (!distShapeShape2.IsDone())
+  {
     return false;
+  }
 
   // This last test case give error (the value is 1008.8822038689706)
   if (distShapeShape2.Value() > 0.01)
@@ -177,9 +185,11 @@ Standard_DISABLE_DEPRECATION_WARNINGS
     int N = distShapeShape2.NbSolution();
     di << "Nb = " << N << "\n";
     for (int i = 1; i <= N; i++)
+    {
       di << "Sol(" << i
          << ") = " << distShapeShape2.PointOnShape1(i).Distance(distShapeShape2.PointOnShape2(i))
          << "\n";
+    }
     return false;
   }
   di << "Distance2 = " << distShapeShape2.Value() << "\n";
@@ -205,7 +215,9 @@ static int OCC23774(Draw_Interpretor& di, int n, const char** a)
   }
   const TopoDS_Face& aFace = TopoDS::Face(S1);
   if (!OCC23774Test(aFace, S2, di))
+  {
     di << "Something is wrong\n";
+  }
 
   return 0;
 }
@@ -232,24 +244,24 @@ static void* GeomConvertTest(void* data)
   GeomConvert_ApproxSurface aGAS(info->surf, 1e-4, GeomAbs_C1, GeomAbs_C1, 9, 9, 100, 1);
   if (!aGAS.IsDone())
   {
-    std::cout << "Error: ApproxSurface is not done!" << std::endl;
+    std::cout << "Error: ApproxSurface is not done!" << '\n';
     return nullptr;
   }
   const occ::handle<Geom_BSplineSurface>& aBSurf = aGAS.Surface();
   if (aBSurf.IsNull())
   {
-    std::cout << "Error: BSplineSurface is not created!" << std::endl;
+    std::cout << "Error: BSplineSurface is not created!" << '\n';
     return nullptr;
   }
   std::cout << "Number of UPoles:" << aBSurf->NbUPoles();
   if (aBSurf->NbUPoles() == info->nbupoles)
   {
-    std::cout << ": OK" << std::endl;
+    std::cout << ": OK" << '\n';
     return data; // any non-null pointer
   }
   else
   {
-    std::cout << ": Error, must be " << info->nbupoles << std::endl;
+    std::cout << ": Error, must be " << info->nbupoles << '\n';
     return nullptr;
   }
 }
@@ -258,7 +270,7 @@ static int OCC23952sweep(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 3)
   {
-    std::cout << "Error: invalid number of arguments" << std::endl;
+    std::cout << "Error: invalid number of arguments" << '\n';
     return 1;
   }
 
@@ -267,7 +279,7 @@ static int OCC23952sweep(Draw_Interpretor& di, int argc, const char** argv)
   aStorage.surf     = DrawTrSurf::GetSurface(argv[2]);
   if (aStorage.surf.IsNull())
   {
-    std::cout << "Error: " << argv[2] << " is not a DRAW surface!" << std::endl;
+    std::cout << "Error: " << argv[2] << " is not a DRAW surface!" << '\n';
     return 0;
   }
 
@@ -278,7 +290,9 @@ static int OCC23952sweep(Draw_Interpretor& di, int argc, const char** argv)
   {
     aThread[i].SetFunction(GeomConvertTest);
     if (!aThread[i].Run(&aStorage))
+    {
       di << "Error: Cannot start thread << " << i << "\n";
+    }
   }
 
   // check results
@@ -286,9 +300,13 @@ static int OCC23952sweep(Draw_Interpretor& di, int argc, const char** argv)
   {
     void* aResult = nullptr;
     if (!aThread[i].Wait(aResult))
+    {
       di << "Error: Failed waiting for thread << " << i << "\n";
+    }
     if (!aResult)
+    {
       di << "Error: wrong number of poles in thread " << i << "!\n";
+    }
   }
 
   return 0;
@@ -312,19 +330,19 @@ static void* GeomIntSSTest(void* data)
   anInter.Perform(info->surf1, info->surf2, Precision::Confusion(), true);
   if (!anInter.IsDone())
   {
-    std::cout << "An intersection is not done!" << std::endl;
+    std::cout << "An intersection is not done!" << '\n';
     return nullptr;
   }
 
   std::cout << "Number of Lines:" << anInter.NbLines();
   if (anInter.NbLines() == info->nbsol)
   {
-    std::cout << ": OK" << std::endl;
+    std::cout << ": OK" << '\n';
     return data; // any non-null pointer
   }
   else
   {
-    std::cout << ": Error, must be " << info->nbsol << std::endl;
+    std::cout << ": Error, must be " << info->nbsol << '\n';
     return nullptr;
   }
 }
@@ -333,7 +351,7 @@ static int OCC23952intersect(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 4)
   {
-    std::cout << "Error: invalid number of arguments" << std::endl;
+    std::cout << "Error: invalid number of arguments" << '\n';
     return 1;
   }
 
@@ -344,7 +362,7 @@ static int OCC23952intersect(Draw_Interpretor& di, int argc, const char** argv)
   if (aStorage.surf1.IsNull() || aStorage.surf2.IsNull())
   {
     std::cout << "Error: Either " << argv[2] << " or " << argv[3] << " is not a DRAW surface!"
-              << std::endl;
+              << '\n';
     return 0;
   }
 
@@ -355,7 +373,9 @@ static int OCC23952intersect(Draw_Interpretor& di, int argc, const char** argv)
   {
     aThread[i].SetFunction(GeomIntSSTest);
     if (!aThread[i].Run(&aStorage))
+    {
       di << "Error: Cannot start thread << " << i << "\n";
+    }
   }
 
   // check results
@@ -363,9 +383,13 @@ static int OCC23952intersect(Draw_Interpretor& di, int argc, const char** argv)
   {
     void* aResult = nullptr;
     if (!aThread[i].Wait(aResult))
+    {
       di << "Error: Failed waiting for thread << " << i << "\n";
+    }
     if (!aResult)
+    {
       di << "Error: wrong number of intersections in thread " << i << "!\n";
+    }
   }
 
   return 0;
@@ -496,11 +520,15 @@ static int OCC24008(Draw_Interpretor& di, int argc, const char** argv)
 static int OCC23945(Draw_Interpretor& /*di*/, int n, const char** a)
 {
   if (n < 5)
+  {
     return 1;
+  }
 
   occ::handle<Geom_Surface> aS = DrawTrSurf::GetSurface(a[1]);
   if (aS.IsNull())
+  {
     return 1;
+  }
 
   GeomAdaptor_Surface GS(aS);
 
@@ -509,7 +537,9 @@ static int OCC23945(Draw_Interpretor& /*di*/, int n, const char** a)
 
   bool DrawPoint = (n % 3 == 2);
   if (DrawPoint)
+  {
     n--;
+  }
 
   gp_Pnt P;
   if (n >= 13)
@@ -530,7 +560,9 @@ static int OCC23945(Draw_Interpretor& /*di*/, int n, const char** a)
       Draw::Set(a[21], D2UV.Z());
     }
     else
+    {
       GS.D1(U, V, P, DU, DV);
+    }
 
     Draw::Set(a[7], DU.X());
     Draw::Set(a[8], DU.Y());
@@ -540,7 +572,9 @@ static int OCC23945(Draw_Interpretor& /*di*/, int n, const char** a)
     Draw::Set(a[12], DV.Z());
   }
   else
+  {
     GS.D0(U, V, P);
+  }
 
   if (n > 6)
   {
@@ -625,12 +659,12 @@ static int OCC24137(Draw_Interpretor& theDI, int theNArg, const char** theArgv)
   const int          aNbIts    = (anArgIter < theNArg) ? Draw::Atoi(theArgv[anArgIter++]) : 100;
   if (aShapeF.IsNull() || aShapeF.ShapeType() != TopAbs_FACE)
   {
-    std::cout << "Error: " << aFaceName << " shape is null / not a face" << std::endl;
+    std::cout << "Error: " << aFaceName << " shape is null / not a face" << '\n';
     return 1;
   }
   if (aShapeV.IsNull() || aShapeV.ShapeType() != TopAbs_VERTEX)
   {
-    std::cout << "Error: " << aVertName << " shape is null / not a vertex" << std::endl;
+    std::cout << "Error: " << aVertName << " shape is null / not a vertex" << '\n';
     return 1;
   }
   const TopoDS_Face   aFace = TopoDS::Face(aShapeF);
@@ -774,29 +808,41 @@ static int OCC24667(Draw_Interpretor& di, int n, const char** a)
   }
 
   if (n > 1 && n < 4)
+  {
     return 1;
+  }
 
   TopoDS_Shape Spine = DBRep::Get(a[2], TopAbs_WIRE);
   if (Spine.IsNull())
+  {
     return 1;
+  }
 
   TopoDS_Shape Profile = DBRep::Get(a[3]);
   if (Profile.IsNull())
+  {
     return 1;
+  }
 
   GeomFill_Trihedron Mode = GeomFill_IsCorrectedFrenet;
   if (n >= 5)
   {
     int iMode = atoi(a[4]);
     if (iMode == 1)
+    {
       Mode = GeomFill_IsFrenet;
+    }
     else if (iMode == 2)
+    {
       Mode = GeomFill_IsDiscreteTrihedron;
+    }
   }
 
   bool ForceApproxC1 = false;
   if (n >= 6)
+  {
     ForceApproxC1 = true;
+  }
 
   BRepOffsetAPI_MakePipe aPipe(TopoDS::Wire(Spine), Profile, Mode, ForceApproxC1);
 
@@ -1092,7 +1138,9 @@ static int OCC25043(Draw_Interpretor& theDI, int theArgNb, const char** theArgVe
         for (; anExp.More() && !anIsFaultyShapeFound; anExp.Next())
         {
           if (anExp.Current().IsEqual(aFaultyShape))
+          {
             anIsFaultyShapeFound = true;
+          }
         }
 
         if (!anIsFaultyShapeFound)
@@ -1320,12 +1368,14 @@ static int OCC25413(Draw_Interpretor& di, int narg, const char** a)
   double    zStep = (zMax - zMin) / N;
 
   for (double x = xMin; x <= xMax; x += xStep)
+  {
     for (double z = zMin; z <= zMax; z += zStep)
     {
       gp_Pnt aPoint(x, 0.0, z);
       gp_Lin aLine(aPoint, aDir);
       Inter.PerformNearest(aLine, -100., 100.);
     }
+  }
   return 0;
 }
 
@@ -1561,11 +1611,17 @@ static ShapeExtend_Status getStatusGap(const occ::handle<ShapeFix_Wire>& theFix,
   {
     bool isFound;
     if (theIs3d)
+    {
       isFound = theFix->StatusGaps3d((ShapeExtend_Status)i);
+    }
     else
+    {
       isFound = theFix->StatusGaps2d((ShapeExtend_Status)i);
+    }
     if (isFound)
+    {
       return ShapeExtend_Status(i);
+    }
   }
   return ShapeExtend_OK;
 }
@@ -1614,21 +1670,29 @@ static int OCC24881(Draw_Interpretor& di, int narg, const char** a)
           // not fixed, why?
           aStatus = getStatusGap(aWireFix, true);
           if (aStatus == ShapeExtend_OK)
+          {
             wasOk = true;
+          }
           else
           {
             // keep 3d fail status
             if (aStatusNbDMap.IsBound(aStatus))
+            {
               aStatusNbDMap(aStatus)++;
+            }
             else
+            {
               aStatusNbDMap.Bind(aStatus, 1);
+            }
             continue;
           }
         }
 
         // fix 2d
         if (aWireFix->FixGaps2d())
+        {
           nbFixed++;
+        }
         else
         {
           aStatus = getStatusGap(aWireFix, false);
@@ -1640,16 +1704,22 @@ static int OCC24881(Draw_Interpretor& di, int narg, const char** a)
               continue;
             }
             else
+            {
               nbFixed++;
+            }
           }
           else
           {
             // keep 2d fail status
             int aStatus2d = aStatus + ShapeExtend_FAIL;
             if (aStatusNbDMap.IsBound(aStatus2d))
+            {
               aStatusNbDMap(aStatus2d)++;
+            }
             else
+            {
               aStatusNbDMap.Bind(aStatus2d, 1);
+            }
             continue;
           }
         }
@@ -1870,7 +1940,9 @@ static int OCC26485(Draw_Interpretor& theDI, int theArgNb, const char** theArgVe
     const occ::handle<Poly_Triangulation>& aT    = BRep_Tool::Triangulation(aFace, L);
 
     if (aT.IsNull())
+    {
       continue;
+    }
 
     Poly::ComputeNormals(aT);
 
@@ -2120,7 +2192,9 @@ static int OCC26462(Draw_Interpretor& theDI, int /*theArgNb*/, const char** /*th
 static int OCC26313(Draw_Interpretor& di, int n, const char** a)
 {
   if (n <= 1)
+  {
     return 1;
+  }
 
   gp_Trsf  T;
   gp_GTrsf GT(T);
@@ -2314,17 +2388,23 @@ static int OCC26396(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
       break;
     }
     for (size_t j = 0; j < coords.Size(); j++)
+    {
       if (std::abs(ref_coords[j] - coords[j]) > RealEpsilon())
       {
         Stat = false;
         break;
       }
+    }
     coords.Clear();
   }
   if (!Stat)
+  {
     theDI << "Error: unstable results";
+  }
   else
+  {
     theDI << "test OK";
+  }
 
   return 0;
 }
@@ -2337,7 +2417,7 @@ static int OCC27048(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
 {
   if (theArgc != 5)
   {
-    std::cout << "Incorrect number of arguments. See usage:" << std::endl;
+    std::cout << "Incorrect number of arguments. See usage:" << '\n';
     theDI.PrintHelp(theArgv[0]);
     return 1;
   }
@@ -2350,7 +2430,9 @@ static int OCC27048(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
   int    aN = Draw::Atoi(theArgv[4]);
 
   for (; aN > 0; --aN)
+  {
     anAdaptor.Value(aU, aV);
+  }
 
   return 0;
 }
@@ -2500,7 +2582,7 @@ static int OCC27700(Draw_Interpretor& /*theDI*/, int /*theArgNb*/, const char** 
   occ::handle<AIS_InteractiveContext> aContext = ViewerTest::GetAISContext();
   if (aContext.IsNull())
   {
-    std::cout << "Error: no view available, call 'vinit' before!" << std::endl;
+    std::cout << "Error: no view available, call 'vinit' before!" << '\n';
     return 1;
   }
   occ::handle<OCC27700_Text> aPresentation = new OCC27700_Text();
@@ -2839,5 +2921,4 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands)
                   __FILE__,
                   OCC29412,
                   group);
-  return;
 }

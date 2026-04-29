@@ -66,11 +66,19 @@ occ::handle<IGESData_IGESEntity> IGESDimen_PointDimension::Geom() const
 int IGESDimen_PointDimension::GeomCase() const
 {
   if (theGeom.IsNull())
+  {
     return 0;
+  }
   else if (theGeom->TypeNumber() == 100)
+  {
     return 1;
+  }
   else if (theGeom->TypeNumber() == 102)
+  {
     return 2;
+  }
   else
+  {
     return 3;
+  }
 }

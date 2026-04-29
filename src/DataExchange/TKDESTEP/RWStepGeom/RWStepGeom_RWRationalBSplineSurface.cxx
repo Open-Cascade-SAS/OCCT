@@ -35,7 +35,9 @@ void RWStepGeom_RWRationalBSplineSurface::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 9, ach, "rational_b_spline_surface"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -80,7 +82,9 @@ void RWStepGeom_RWRationalBSplineSurface::ReadStep(
                                ach,
                                STANDARD_TYPE(StepGeom_CartesianPoint),
                                anent4))
+          {
             aControlPointsList->SetValue(i4, j4, anent4);
+          }
         }
       }
     }
@@ -98,7 +102,9 @@ void RWStepGeom_RWRationalBSplineSurface::ReadStep(
     }
   }
   else
+  {
     ach->AddFail("Parameter #5 (surface_form) is not an enumeration");
+  }
 
   // --- inherited field : uClosed ---
 
@@ -137,7 +143,9 @@ void RWStepGeom_RWRationalBSplineSurface::ReadStep(
         {
           // szv#4:S4163:12Mar99 `bool stat9 =` not needed
           if (data->ReadReal(nsi9, j9, "weights_data", ach, aWeightsDataItem))
+          {
             aWeightsData->SetValue(i9, j9, aWeightsDataItem);
+          }
         }
       }
     }

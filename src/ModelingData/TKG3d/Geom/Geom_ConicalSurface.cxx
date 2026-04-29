@@ -69,7 +69,9 @@ Geom_ConicalSurface::Geom_ConicalSurface(const Ax3& A3, const double Ang, const 
 
   if (R < 0.0 || std::abs(Ang) <= gp::Resolution()
       || std::abs(Ang) >= M_PI / 2.0 - gp::Resolution())
+  {
     throw Standard_ConstructionError();
+  }
 
   pos = A3;
 }
@@ -171,7 +173,9 @@ void Geom_ConicalSurface::SetRadius(const double R)
 {
 
   if (R < 0.0)
+  {
     throw Standard_ConstructionError();
+  }
   radius = R;
 }
 
@@ -315,7 +319,9 @@ Geom_Surface::ResD3 Geom_ConicalSurface::EvalD3(const double U, const double V) 
 gp_Vec Geom_ConicalSurface::EvalDN(const double U, const double V, const int Nu, const int Nv) const
 {
   if (Nu + Nv < 1 || Nu < 0 || Nv < 0)
+  {
     throw Geom_UndefinedDerivative();
+  }
   if (Nv > 1)
   {
     return Vec(0.0, 0.0, 0.0);
@@ -355,7 +361,9 @@ void Geom_ConicalSurface::Transform(const Trsf& T)
 void Geom_ConicalSurface::TransformParameters(double&, double& V, const gp_Trsf& T) const
 {
   if (!Precision::IsInfinite(V))
+  {
     V *= std::abs(T.ScaleFactor());
+  }
 }
 
 //=================================================================================================

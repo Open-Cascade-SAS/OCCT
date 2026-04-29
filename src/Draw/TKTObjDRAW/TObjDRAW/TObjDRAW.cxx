@@ -159,7 +159,9 @@ static int newModel(Draw_Interpretor& di, int argc, const char** argv)
     di << "document " << argv[1] << " created\n";
   }
   else
+  {
     di << argv[1] << " is already a document\n";
+  }
 
   return 0;
 }
@@ -169,12 +171,16 @@ static occ::handle<TObj_Model> getModelByName(const char* theName)
   occ::handle<TObj_Model>       aModel;
   occ::handle<TDocStd_Document> D;
   if (!DDocStd::GetDocument(theName, D))
+  {
     return aModel;
+  }
 
   TDF_Label                aLabel = D->Main();
   occ::handle<TObj_TModel> aModelAttr;
   if (!aLabel.IsNull() && aLabel.FindAttribute(TObj_TModel::GetID(), aModelAttr))
+  {
     aModel = aModelAttr->Model();
+  }
   return aModel;
 }
 
@@ -190,7 +196,9 @@ static int saveModel(Draw_Interpretor& di, int argc, const char** argv)
 
   occ::handle<TObj_Model> aModel = getModelByName(argv[1]);
   if (aModel.IsNull())
+  {
     return 1;
+  }
   bool isSaved = false;
   if (argc > 2)
   {
@@ -211,10 +219,14 @@ static int saveModel(Draw_Interpretor& di, int argc, const char** argv)
       isSaved = aModel->SaveAs(*aFileStream);
     }
     else
+    {
       isSaved = aModel->SaveAs(TCollection_ExtendedString(argv[2], true));
+    }
   }
   else
+  {
     isSaved = aModel->Save();
+  }
 
   if (!isSaved)
   {
@@ -259,7 +271,9 @@ static int loadModel(Draw_Interpretor& di, int argc, const char** argv)
       isLoaded = aModel->Load(*aFileStream);
     }
     else
+    {
       isLoaded = aModel->Load(aPath);
+    }
 
     if (isLoaded)
     {
@@ -295,7 +309,9 @@ static int closeModel(Draw_Interpretor& di, int argc, const char** argv)
 
   occ::handle<TObj_Model> aModel = getModelByName(argv[1]);
   if (aModel.IsNull())
+  {
     return 1;
+  }
   aModel->Close();
 
   return 0;
@@ -312,7 +328,9 @@ static int addObj(Draw_Interpretor& di, int argc, const char** argv)
   }
   occ::handle<TObj_Model> aModel = getModelByName(argv[1]);
   if (aModel.IsNull())
+  {
     return 1;
+  }
   occ::handle<TObjDRAW_Object> tObj = new TObjDRAW_Object(aModel->GetMainPartition()->NewLabel());
   if (tObj.IsNull())
   {
@@ -329,7 +347,9 @@ static occ::handle<TObjDRAW_Object> getObjByName(const char* modelName, const ch
   occ::handle<TObjDRAW_Object> tObj;
   occ::handle<TObj_Model>      aModel = getModelByName(modelName);
   if (aModel.IsNull())
+  {
     return tObj;
+  }
   occ::handle<TCollection_HExtendedString> aName = new TCollection_HExtendedString(objName);
   occ::handle<TObj_TNameContainer>         aDict;
   tObj = occ::down_cast<TObjDRAW_Object>(aModel->FindObject(aName, aDict));
@@ -356,11 +376,15 @@ static int setVal(Draw_Interpretor& di, int argc, const char** argv)
     int                                      Nb   = Draw::Atoi(argv[4]);
     occ::handle<NCollection_HArray1<double>> rArr = new NCollection_HArray1<double>(1, Nb);
     for (int i = 1; i <= Nb; i++)
+    {
       rArr->SetValue(i, Draw::Atof(argv[4 + i]));
+    }
     tObj->SetRealArr(rArr);
   }
   else
+  {
     tObj->SetInt(Draw::Atoi(argv[3]));
+  }
 
   return 0;
 }
@@ -382,17 +406,23 @@ static int getVal(Draw_Interpretor& di, int argc, const char** argv)
     return 1;
   }
   if (!strcmp(argv[3], "-i"))
+  {
     di << tObj->GetInt();
+  }
   else
   {
     occ::handle<NCollection_HArray1<double>> rArr = tObj->GetRealArr();
     if (!rArr.IsNull())
+    {
       for (int i = 1, n = rArr->Upper(); i <= n; i++)
       {
         if (i > 1)
+        {
           di << " ";
+        }
         di << rArr->Value(i);
       }
+    }
   }
 
   return 0;
@@ -438,7 +468,9 @@ static int getRef(Draw_Interpretor& di, int argc, const char** argv)
   }
   occ::handle<TObj_Object> aRefObj = tObj->GetRef();
   if (aRefObj.IsNull())
+  {
     return 1;
+  }
   else
   {
     TCollection_AsciiString aName;
@@ -506,7 +538,9 @@ static int getChildren(Draw_Interpretor& di, int argc, const char** argv)
     TCollection_AsciiString  aName;
     anObj->GetName(aName);
     if (i > 0)
+    {
       di << " ";
+    }
     di << aName.ToCString();
   }
 

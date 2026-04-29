@@ -30,7 +30,9 @@ void RWStepShape_RWToleranceValue::ReadStep(const occ::handle<StepData_StepReade
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "tolerance_value"))
+  {
     return;
+  }
 
   // --- own field : lower_bound ---
 
@@ -44,7 +46,9 @@ void RWStepShape_RWToleranceValue::ReadStep(const occ::handle<StepData_StepReade
 
   //--- Initialisation of the read entity ---
   if (!aLowerBound.IsNull() && !anUpperBound.IsNull())
+  {
     ach->ClearFails();
+  }
   ent->Init(aLowerBound, anUpperBound);
 }
 

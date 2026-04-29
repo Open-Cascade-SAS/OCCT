@@ -79,7 +79,9 @@ bool ShapeAnalysis_Edge::BoundUV(const TopoDS_Edge&               edge,
   occ::handle<Geom2d_Curve> c2d;
   double                    uf, ul;
   if (!PCurve(edge, surface, location, c2d, uf, ul))
+  {
     return false;
+  }
   first = c2d->Value(uf);
   last  = c2d->Value(ul);
   return true;
@@ -129,9 +131,13 @@ bool ShapeAnalysis_Edge::IsClosed3d(const TopoDS_Edge& edge) const
   double                  cf, cl;
   occ::handle<Geom_Curve> c3d = BRep_Tool::Curve(edge, cf, cl);
   if (c3d.IsNull())
+  {
     return false;
+  }
   if (!c3d->IsClosed())
+  {
     return false;
+  }
   return FirstVertex(edge).IsSame(LastVertex(edge));
 }
 
@@ -343,12 +349,16 @@ bool ShapeAnalysis_Edge::GetEndTangent2d(const TopoDS_Edge&               edge,
           c2d->D0((atend2 ? cf : cl), p2);
           v = p2.XY() - pnt.XY();
           if (v.SquareMagnitude() < Precision::PConfusion() * Precision::PConfusion())
+          {
             return false;
+          }
         }
       }
     }
     if (edge.Orientation() == TopAbs_REVERSED)
+    {
       v.Reverse();
+    }
   }
 
   // if ( edge.Orientation() == TopAbs_REVERSED ) v.Reverse();
@@ -373,7 +383,9 @@ bool ShapeAnalysis_Edge::CheckCurve3dWithPCurve(const TopoDS_Edge&              
   myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
 
   if (surface->IsKind(STANDARD_TYPE(Geom_Plane)))
+  {
     return false;
+  }
 
   occ::handle<Geom2d_Curve> c2d;
   double                    f2d, l2d; // szv#4:S4163:12Mar99 moved down f3d, l3d
@@ -395,7 +407,9 @@ bool ShapeAnalysis_Edge::CheckCurve3dWithPCurve(const TopoDS_Edge&              
   TopoDS_Vertex aLastVert  = LastVertex(edge);
 
   if (aFirstVert.IsNull() || aLastVert.IsNull())
+  {
     return false;
+  }
 
   double preci1 = BRep_Tool::Tolerance(aFirstVert), preci2 = BRep_Tool::Tolerance(aLastVert);
 
@@ -421,9 +435,13 @@ bool ShapeAnalysis_Edge::CheckPoints(const gp_Pnt& P1A,
 {
   myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
   if (P1A.SquareDistance(P2A) <= preci1 * preci1 && P1B.SquareDistance(P2B) <= preci2 * preci2)
+  {
     return false;
+  }
   else if (P1A.Distance(P2B) + (P1B.Distance(P2A)) < P1A.Distance(P2A) + (P1B.Distance(P2B)))
+  {
     myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
+  }
   return true;
 }
 
@@ -455,7 +473,9 @@ bool ShapeAnalysis_Edge::CheckVerticesWithCurve3d(const TopoDS_Edge& edge,
     gp_Pnt p13d = c3d->Value(cf);
     // szv#4:S4163:12Mar99 optimized
     if (p1v.Distance(p13d) > (preci < 0 ? BRep_Tool::Tolerance(V1) : preci))
+    {
       myStatus |= ShapeExtend_DONE1;
+    }
   }
 
   if (vtx != 1)
@@ -464,7 +484,9 @@ bool ShapeAnalysis_Edge::CheckVerticesWithCurve3d(const TopoDS_Edge& edge,
     gp_Pnt p23d = c3d->Value(cl);
     // szv#4:S4163:12Mar99 optimized
     if (p2v.Distance(p23d) > (preci < 0 ? BRep_Tool::Tolerance(V2) : preci))
+    {
       myStatus |= ShapeExtend_DONE2;
+    }
   }
 
   return Status(ShapeExtend_DONE);
@@ -513,10 +535,14 @@ bool ShapeAnalysis_Edge::CheckVerticesWithPCurve(const TopoDS_Edge&             
     gp_Pnt2d p1uv = c2d->Value(cf);
     gp_Pnt   p12d = surf->Value(p1uv.X(), p1uv.Y());
     if (!loc.IsIdentity())
+    {
       p12d.Transform(loc.Transformation());
+    }
     // szv#4:S4163:12Mar99 optimized
     if (p1v.Distance(p12d) > (preci < 0 ? BRep_Tool::Tolerance(V1) : preci))
+    {
       myStatus |= ShapeExtend_DONE1;
+    }
   }
 
   if (vtx != 1)
@@ -524,10 +550,14 @@ bool ShapeAnalysis_Edge::CheckVerticesWithPCurve(const TopoDS_Edge&             
     gp_Pnt2d p2uv = c2d->Value(cl);
     gp_Pnt   p22d = surf->Value(p2uv.X(), p2uv.Y());
     if (!loc.IsIdentity())
+    {
       p22d.Transform(loc.Transformation());
+    }
     // szv#4:S4163:12Mar99 optimized
     if (p2v.Distance(p22d) > (preci < 0 ? BRep_Tool::Tolerance(V2) : preci))
+    {
       myStatus |= ShapeExtend_DONE2;
+    }
   }
 
   return Status(ShapeExtend_DONE);
@@ -562,7 +592,9 @@ static int CheckVertexTolerance(const TopoDS_Edge& edge,
   if (!sae.Curve3d(edge, c3d, a, b, true))
   {
     if (!BRep_Tool::Degenerated(edge))
+    {
       Status |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL2);
+    }
     toler1 = toler2 = 0.;
     //    return false;
   }
@@ -581,7 +613,9 @@ static int CheckVertexTolerance(const TopoDS_Edge& edge,
     {
       occ::handle<BRep_GCurve> GC = occ::down_cast<BRep_GCurve>(itcr.Value());
       if (GC.IsNull() || !GC->IsCurveOnSurface())
+      {
         continue;
+      }
       occ::handle<Geom2d_Curve> pcurve;
       occ::handle<Geom_Surface> S = GC->Surface();
       TopLoc_Location           L = edge.Location() * GC->Location();
@@ -611,7 +645,9 @@ static int CheckVertexTolerance(const TopoDS_Edge& edge,
       toler2      = std::max(toler2, pnt2.SquareDistance(P2));
     }
     else
+    {
       Status |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL3);
+    }
   }
 
   //: o8 abv 19 Feb 99: CTS18541.stp #18559: coeff 1.0001 added
@@ -620,9 +656,13 @@ static int CheckVertexTolerance(const TopoDS_Edge& edge,
   toler1      = std::max(1.0000001 * std::sqrt(toler1), tole);
   toler2      = std::max(1.0000001 * std::sqrt(toler2), tole);
   if (toler1 > old1)
+  {
     Status |= ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
+  }
   if (toler2 > old2)
+  {
     Status |= ShapeExtend::EncodeStatus(ShapeExtend_DONE2);
+  }
 
   return Status;
 }
@@ -668,7 +708,9 @@ bool ShapeAnalysis_Edge::CheckSameParameter(const TopoDS_Edge& edge,
 {
   myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
   if (BRep_Tool::Degenerated(edge))
+  {
     return false;
+  }
 
   maxdev = 0;
 
@@ -700,7 +742,9 @@ bool ShapeAnalysis_Edge::CheckSameParameter(const TopoDS_Edge& edge,
   occ::handle<Geom_Surface> aFaceSurf;
   TopLoc_Location           aFaceLoc;
   if (!face.IsNull())
+  {
     aFaceSurf = BRep_Tool::Surface(face, aFaceLoc);
+  }
 
   bool IsPCurveFound = false;
   int  i             = 1;
@@ -716,8 +760,10 @@ bool ShapeAnalysis_Edge::CheckSameParameter(const TopoDS_Edge& edge,
     BRep_Tool::CurveOnSurface(edge, aPC, aS, aLoc, f, l, i);
 
     if (aPC.IsNull())
+    {
       // No more curves
       break;
+    }
 
     ++i;
 
@@ -780,9 +826,13 @@ bool ShapeAnalysis_Edge::CheckSameParameter(const TopoDS_Edge& edge,
   }
 
   if (maxdev > TE->Tolerance())
+  {
     myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
+  }
   if (!SameParameter)
+  {
     myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE2);
+  }
 
   return Status(ShapeExtend_DONE);
 }
@@ -818,9 +868,13 @@ static bool IsOverlapPartEdges(const TopoDS_Edge& theFirstEdge,
                                      aS,
                                      aAdCurve1.FirstParameter());
       if (aAbsPoint.IsDone())
+      {
         aAdCurve1.D0(aAbsPoint.Parameter(), aPoint);
+      }
       else
+      {
         continue;
+      }
     }
     BRep_Builder  aB;
     TopoDS_Vertex aV;
@@ -828,7 +882,9 @@ static bool IsOverlapPartEdges(const TopoDS_Edge& theFirstEdge,
     aMinDist.LoadS2(aV);
     aMinDist.Perform();
     if (aMinDist.IsDone() && aMinDist.Value() >= theTolerance)
+    {
       return false;
+    }
   }
   return true;
 }
@@ -864,7 +920,9 @@ bool ShapeAnalysis_Edge::CheckOverlapping(const TopoDS_Edge& theEdge1,
     return isOverlap;
   }
   if (theDomainDist == 0.0)
+  {
     return isOverlap;
+  }
 
   // check overalpping between edges on segment with length less than theDomainDist
 
@@ -876,7 +934,9 @@ bool ShapeAnalysis_Edge::CheckOverlapping(const TopoDS_Edge& theEdge1,
   {
     aresTol = aMinDist.Value();
     if (aresTol >= theTolOverlap)
+    {
       return false;
+    }
     int NbSol = aMinDist.NbSolution();
     for (int i = 1; i <= NbSol && !isOverlap; i++)
     {
@@ -888,9 +948,13 @@ bool ShapeAnalysis_Edge::CheckOverlapping(const TopoDS_Edge& theEdge1,
         TopoDS_Vertex aV1, aV2;
         TopExp::Vertices(aFirstEdge, aV1, aV2, true);
         if (aV1.IsSame(aSupportShape1))
+        {
           aLengthP = 0.0;
+        }
         else
+        {
           aLengthP = aLength;
+        }
       }
       else if (aType1 == BRepExtrema_IsOnEdge)
       {
@@ -901,7 +965,9 @@ bool ShapeAnalysis_Edge::CheckOverlapping(const TopoDS_Edge& theEdge1,
         aLengthP = GCPnts_AbscissaPoint::Length(anAdaptor, aFirst, aParam1);
       }
       else
+      {
         continue;
+      }
       aStartLength = aLengthP - aDomainTol / 2;
       if (aStartLength < 0.0)
       {
@@ -920,7 +986,9 @@ bool ShapeAnalysis_Edge::CheckOverlapping(const TopoDS_Edge& theEdge1,
     }
   }
   if (isOverlap)
+  {
     myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE4);
+  }
 
   theTolOverlap = aresTol;
   return isOverlap;

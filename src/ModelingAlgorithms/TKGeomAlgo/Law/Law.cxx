@@ -90,7 +90,9 @@ static double eval1(const double p,
                     const bool   nulr)
 {
   if ((nulr && p >= piv) || (!nulr && p <= piv))
+  {
     return 0.;
+  }
   else if (nulr)
   {
     double a = piv - first;
@@ -169,9 +171,13 @@ occ::handle<Law_BSpline> Law::Reparametrize(const Adaptor3d_Curve& Curve,
   int    i;
   double DDFirst = DFirst, DDLast = DLast;
   if (HasDF && Rev)
+  {
     DDFirst = -DFirst;
+  }
   if (HasDL && Rev)
+  {
     DDLast = -DLast;
+  }
   NCollection_Array1<double> cumdist(1, 2 * NbPoints);
   NCollection_Array1<double> ucourbe(1, 2 * NbPoints);
   gp_Pnt                     P1, P2;
@@ -200,9 +206,13 @@ occ::handle<Law_BSpline> Law::Reparametrize(const Adaptor3d_Curve& Curve,
     P1 = P2;
   }
   if (Rev)
+  {
     ucourbe(2 * NbPoints) = U1;
+  }
   else
+  {
     ucourbe(2 * NbPoints) = U2;
+  }
 
   occ::handle<NCollection_HArray1<double>> point = new NCollection_HArray1<double>(1, NbPoints);
   occ::handle<NCollection_HArray1<double>> param = new NCollection_HArray1<double>(1, NbPoints);
@@ -221,7 +231,9 @@ occ::handle<Law_BSpline> Law::Reparametrize(const Adaptor3d_Curve& Curve,
   for (i = 2; i < NbPoints; i++)
   {
     while (cumdist(Index) < Corde)
+    {
       Index++;
+    }
 
     Alpha = (Corde - cumdist(Index - 1)) / (cumdist(Index) - cumdist(Index - 1));
     U     = ucourbe(Index - 1) + Alpha * (ucourbe(Index) - ucourbe(Index - 1));
@@ -249,7 +261,9 @@ occ::handle<Law_BSpline> Law::Reparametrize(const Adaptor3d_Curve& Curve,
   }
   inter.Perform();
   if (!inter.IsDone())
+  {
     throw Standard_Failure("Law::Reparametrize echec interpolation");
+  }
   occ::handle<Law_BSpline> bs = inter.Curve();
   return bs;
 }
@@ -266,11 +280,17 @@ static double eval2(const double p,
                     const occ::handle<Law_BSpline>& bs2)
 {
   if (hasfirst && p < mil)
+  {
     return bs1->Value(p);
+  }
   else if (haslast && p > mil)
+  {
     return bs2->Value(p);
+  }
   else
+  {
     return 1.;
+  }
 }
 
 occ::handle<Law_BSpline> Law::Scale(const double First,

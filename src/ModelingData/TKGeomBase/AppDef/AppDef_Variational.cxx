@@ -94,16 +94,24 @@ AppDef_Variational::AppDef_Variational(
 {
   // Verifications:
   if (myMaxDegree < 1)
+  {
     throw Standard_DomainError();
+  }
   myMaxDegree = std::min(30, myMaxDegree);
   //
   if (myMaxSegment < 1)
+  {
     throw Standard_DomainError();
+  }
   //
   if (myWithMinMax != 0 && myWithMinMax != 1)
+  {
     throw Standard_DomainError();
+  }
   if (myWithCutting != 0 && myWithCutting != 1)
+  {
     throw Standard_DomainError();
+  }
   //
   myIsOverConstr = false;
   myIsCreated    = false;
@@ -140,7 +148,9 @@ AppDef_Variational::AppDef_Variational(
   myParameters      = new NCollection_HArray1<double>(myFirstPoint, myLastPoint);
   myNbPoints        = myLastPoint - myFirstPoint + 1;
   if (myNbPoints <= 0)
+  {
     throw Standard_ConstructionError();
+  }
   //
   myTabPoints = new NCollection_HArray1<double>(1, myDimension * myNbPoints);
   //
@@ -226,7 +236,9 @@ void AppDef_Variational::Init()
 
   myNbConstraints = myConstraints->Length();
   if (myNbConstraints < 0)
+  {
     throw Standard_ConstructionError();
+  }
 
   myTypConstraints = new NCollection_HArray1<int>(1, std::max(1, 2 * myNbConstraints));
   myTabConstraints =
@@ -262,9 +274,13 @@ void AppDef_Variational::Init()
         myTypConstraints->SetValue(index++, 0);
         myNbPassPoints++;
         if (myNbP2d != 0)
+        {
           jndex = jndex + 4 * myNbP2d;
+        }
         if (myNbP3d != 0)
+        {
           jndex = jndex + 6 * myNbP3d;
+        }
         break;
       case AppParCurves_TangencyPoint:
         myTypConstraints->SetValue(index++, ipoint);
@@ -273,7 +289,9 @@ void AppDef_Variational::Init()
         if (myNbP2d != 0 && myNbP3d == 0)
         {
           if (!AppDef_MyLineTool::Tangency(mySSP, ipoint, TabV2d))
+          {
             throw Standard_ConstructionError();
+          }
           for (jp2d = 1; jp2d <= myNbP2d; jp2d++)
           {
             Vt2d = TabV2d.Value(jp2d);
@@ -287,7 +305,9 @@ void AppDef_Variational::Init()
         if (myNbP3d != 0 && myNbP2d == 0)
         {
           if (!AppDef_MyLineTool::Tangency(mySSP, ipoint, TabV3d))
+          {
             throw Standard_ConstructionError();
+          }
           for (jp3d = 1; jp3d <= myNbP3d; jp3d++)
           {
             Vt3d = TabV3d.Value(jp3d);
@@ -304,7 +324,9 @@ void AppDef_Variational::Init()
         if (myNbP3d != 0 && myNbP2d != 0)
         {
           if (!AppDef_MyLineTool::Tangency(mySSP, ipoint, TabV3d, TabV2d))
+          {
             throw Standard_ConstructionError();
+          }
           for (jp3d = 1; jp3d <= myNbP3d; jp3d++)
           {
             Vt3d = TabV3d.Value(jp3d);
@@ -336,16 +358,22 @@ void AppDef_Variational::Init()
         if (myNbP2d != 0 && myNbP3d == 0)
         {
           if (!AppDef_MyLineTool::Tangency(mySSP, ipoint, TabV2d))
+          {
             throw Standard_ConstructionError();
+          }
           if (!AppDef_MyLineTool::Curvature(mySSP, ipoint, TabV2dcurv))
+          {
             throw Standard_ConstructionError();
+          }
           for (jp2d = 1; jp2d <= myNbP2d; jp2d++)
           {
             Vt2d = TabV2d.Value(jp2d);
             Vt2d.Normalize();
             Vc2d = TabV2dcurv.Value(jp2d);
             if (std::abs(std::abs(Vc2d.Angle(Vt2d)) - M_PI / 2.) > Precision::Angular())
+            {
               throw Standard_ConstructionError();
+            }
             myTabConstraints->SetValue(jndex++, Vt2d.X());
             myTabConstraints->SetValue(jndex++, Vt2d.Y());
             myTabConstraints->SetValue(jndex++, Vc2d.X());
@@ -357,16 +385,22 @@ void AppDef_Variational::Init()
         if (myNbP3d != 0 && myNbP2d == 0)
         {
           if (!AppDef_MyLineTool::Tangency(mySSP, ipoint, TabV3d))
+          {
             throw Standard_ConstructionError();
+          }
           if (!AppDef_MyLineTool::Curvature(mySSP, ipoint, TabV3dcurv))
+          {
             throw Standard_ConstructionError();
+          }
           for (jp3d = 1; jp3d <= myNbP3d; jp3d++)
           {
             Vt3d = TabV3d.Value(jp3d);
             Vt3d.Normalize();
             Vc3d = TabV3dcurv.Value(jp3d);
             if (!(Vc3d.Normalized()).IsNormal(Vt3d, Precision::Angular()))
+            {
               throw Standard_ConstructionError();
+            }
             myTabConstraints->SetValue(jndex++, Vt3d.X());
             myTabConstraints->SetValue(jndex++, Vt3d.Y());
             myTabConstraints->SetValue(jndex++, Vt3d.Z());
@@ -379,16 +413,22 @@ void AppDef_Variational::Init()
         if (myNbP3d != 0 && myNbP2d != 0)
         {
           if (!AppDef_MyLineTool::Tangency(mySSP, ipoint, TabV3d, TabV2d))
+          {
             throw Standard_ConstructionError();
+          }
           if (!AppDef_MyLineTool::Curvature(mySSP, ipoint, TabV3dcurv, TabV2dcurv))
+          {
             throw Standard_ConstructionError();
+          }
           for (jp3d = 1; jp3d <= myNbP3d; jp3d++)
           {
             Vt3d = TabV3d.Value(jp3d);
             Vt3d.Normalize();
             Vc3d = TabV3dcurv.Value(jp3d);
             if (!(Vc3d.Normalized()).IsNormal(Vt3d, Precision::Angular()))
+            {
               throw Standard_ConstructionError();
+            }
             myTabConstraints->SetValue(jndex++, Vt3d.X());
             myTabConstraints->SetValue(jndex++, Vt3d.Y());
             myTabConstraints->SetValue(jndex++, Vt3d.Z());
@@ -403,7 +443,9 @@ void AppDef_Variational::Init()
             Vt2d.Normalize();
             Vc2d = TabV2dcurv.Value(jp2d);
             if (std::abs(std::abs(Vc2d.Angle(Vt2d)) - M_PI / 2.) > Precision::Angular())
+            {
               throw Standard_ConstructionError();
+            }
             myTabConstraints->SetValue(jndex++, Vt2d.X());
             myTabConstraints->SetValue(jndex++, Vt2d.Y());
             myTabConstraints->SetValue(jndex++, Vc2d.X());
@@ -420,9 +462,13 @@ void AppDef_Variational::Init()
   // OverConstraint Detection
   int MaxSeg;
   if (myWithCutting)
+  {
     MaxSeg = myMaxSegment;
+  }
   else
+  {
     MaxSeg = 1;
+  }
   if (((myMaxDegree - myNivCont) * MaxSeg - myNbPassPoints - 2 * myNbTangPoints
        - 3 * myNbCurvPoints)
       < 0)
@@ -444,7 +490,9 @@ void AppDef_Variational::Approximate()
 
 {
   if (!myIsCreated)
+  {
     throw StdFail_NotDone();
+  }
 
   double WQuadratic, WQuality;
 
@@ -461,7 +509,9 @@ void AppDef_Variational::Approximate()
   TheMotor(mySmoothCriterion, WQuadratic, WQuality, TheCurve, Ecarts);
 
   if (myWithMinMax && myTolerance < myMaxError)
+  {
     Adjusting(mySmoothCriterion, WQuadratic, WQuality, TheCurve, Ecarts);
+  }
 
   //---------------------------------------------------------------------
 
@@ -495,7 +545,9 @@ void AppDef_Variational::Approximate()
     int ii;
 
     for (ii = 1; ii <= NbElem; ii++)
+    {
       NbCoeffPtr->SetValue(ii, TheCurve->Degree(ii) + 1);
+    }
 
     for (ii = PolynomialIntervalsPtr->LowerRow(); ii <= PolynomialIntervalsPtr->UpperRow(); ii++)
     {
@@ -635,7 +687,9 @@ bool AppDef_Variational::IsOverConstrained() const
 AppParCurves_MultiBSpCurve AppDef_Variational::Value() const
 {
   if (!myIsDone)
+  {
     throw StdFail_NotDone();
+  }
   return myMBSpCurve;
 }
 
@@ -645,7 +699,9 @@ AppParCurves_MultiBSpCurve AppDef_Variational::Value() const
 double AppDef_Variational::MaxError() const
 {
   if (!myIsDone)
+  {
     throw StdFail_NotDone();
+  }
   return myMaxError;
 }
 
@@ -655,7 +711,9 @@ double AppDef_Variational::MaxError() const
 int AppDef_Variational::MaxErrorIndex() const
 {
   if (!myIsDone)
+  {
     throw StdFail_NotDone();
+  }
   return myMaxErrorIndex;
 }
 
@@ -665,7 +723,9 @@ int AppDef_Variational::MaxErrorIndex() const
 double AppDef_Variational::QuadraticError() const
 {
   if (!myIsDone)
+  {
     throw StdFail_NotDone();
+  }
   return myCriterium[0];
 }
 
@@ -676,7 +736,9 @@ void AppDef_Variational::Distance(math_Matrix& mat)
 
 {
   if (!myIsDone)
+  {
     throw StdFail_NotDone();
+  }
   int                          ipoint, jp2d, jp3d, index;
   NCollection_Array1<gp_Pnt>   TabP3d(1, std::max(1, myNbP3d));
   NCollection_Array1<gp_Pnt2d> TabP2d(1, std::max(1, myNbP2d));
@@ -706,9 +768,13 @@ void AppDef_Variational::Distance(math_Matrix& mat)
     if (myNbP2d != 0)
     {
       if (myNbP3d == 0)
+      {
         AppDef_MyLineTool::Value(mySSP, ipoint, TabP2d);
+      }
       else
+      {
         AppDef_MyLineTool::Value(mySSP, ipoint, TabP3d, TabP2d);
+      }
       for (jp2d = 1; jp2d <= myNbP2d; jp2d++)
 
       {
@@ -726,7 +792,9 @@ void AppDef_Variational::Distance(math_Matrix& mat)
 double AppDef_Variational::AverageError() const
 {
   if (!myIsDone)
+  {
     throw StdFail_NotDone();
+  }
   return myAverageError;
 }
 
@@ -736,7 +804,9 @@ double AppDef_Variational::AverageError() const
 const occ::handle<NCollection_HArray1<double>>& AppDef_Variational::Parameters() const
 {
   if (!myIsDone)
+  {
     throw StdFail_NotDone();
+  }
   return myParameters;
 }
 
@@ -746,7 +816,9 @@ const occ::handle<NCollection_HArray1<double>>& AppDef_Variational::Parameters()
 const occ::handle<NCollection_HArray1<double>>& AppDef_Variational::Knots() const
 {
   if (!myIsDone)
+  {
     throw StdFail_NotDone();
+  }
   return myKnots;
 }
 
@@ -758,7 +830,9 @@ void AppDef_Variational::Criterium(double& VFirstOrder,
                                    double& VThirdOrder) const
 {
   if (!myIsDone)
+  {
     throw StdFail_NotDone();
+  }
   VFirstOrder  = myCriterium[1];
   VSecondOrder = myCriterium[2];
   VThirdOrder  = myCriterium[3];
@@ -835,47 +909,40 @@ int AppDef_Variational::NbIterations() const
 //
 void AppDef_Variational::Dump(Standard_OStream& o) const
 {
-  o << " \nVariational Smoothing " << std::endl;
-  o << " Number of multipoints                   " << myNbPoints << std::endl;
-  o << " Number of 2d par multipoint " << myNbP2d << std::endl;
-  o << " Number of 3d per multipoint " << myNbP3d << std::endl;
-  o << " Number of PassagePoint      " << myNbPassPoints << std::endl;
-  o << " Number of TangencyPoints    " << myNbTangPoints << std::endl;
-  o << " Number of CurvaturePoints   " << myNbCurvPoints << std::endl;
+  o << " \nVariational Smoothing " << '\n';
+  o << " Number of multipoints                   " << myNbPoints << '\n';
+  o << " Number of 2d par multipoint " << myNbP2d << '\n';
+  o << " Number of 3d per multipoint " << myNbP3d << '\n';
+  o << " Number of PassagePoint      " << myNbPassPoints << '\n';
+  o << " Number of TangencyPoints    " << myNbTangPoints << '\n';
+  o << " Number of CurvaturePoints   " << myNbCurvPoints << '\n';
   o << " \nTolerance " << o.setf(std::ios::scientific) << std::setprecision(3) << std::setw(9)
     << myTolerance;
   if (WithMinMax())
   {
-    o << "  as Max Error." << std::endl;
+    o << "  as Max Error." << '\n';
   }
   else
   {
-    o << "  as size Error." << std::endl;
+    o << "  as size Error." << '\n';
   }
   o << "CriteriumWeights : " << myPercent[0] << " , " << myPercent[1] << " , " << myPercent[2]
-    << std::endl;
+    << '\n';
 
   if (myIsDone)
   {
-    o << " MaxError             " << std::setprecision(3) << std::setw(9) << myMaxError
-      << std::endl;
-    o << " Index of  MaxError   " << myMaxErrorIndex << std::endl;
-    o << " Average Error        " << std::setprecision(3) << std::setw(9) << myAverageError
-      << std::endl;
-    o << " Quadratic Error      " << std::setprecision(3) << std::setw(9) << myCriterium[0]
-      << std::endl;
-    o << " Tension Criterium    " << std::setprecision(3) << std::setw(9) << myCriterium[1]
-      << std::endl;
-    o << " Flexion  Criterium   " << std::setprecision(3) << std::setw(9) << myCriterium[2]
-      << std::endl;
-    o << " Jerk  Criterium      " << std::setprecision(3) << std::setw(9) << myCriterium[3]
-      << std::endl;
-    o << " NbSegments           " << myKnots->Length() - 1 << std::endl;
+    o << " MaxError             " << std::setprecision(3) << std::setw(9) << myMaxError << '\n';
+    o << " Index of  MaxError   " << myMaxErrorIndex << '\n';
+    o << " Average Error        " << std::setprecision(3) << std::setw(9) << myAverageError << '\n';
+    o << " Quadratic Error      " << std::setprecision(3) << std::setw(9) << myCriterium[0] << '\n';
+    o << " Tension Criterium    " << std::setprecision(3) << std::setw(9) << myCriterium[1] << '\n';
+    o << " Flexion  Criterium   " << std::setprecision(3) << std::setw(9) << myCriterium[2] << '\n';
+    o << " Jerk  Criterium      " << std::setprecision(3) << std::setw(9) << myCriterium[3] << '\n';
+    o << " NbSegments           " << myKnots->Length() - 1 << '\n';
   }
   else
   {
-    o << (myIsOverConstr ? " The problem is overconstraint" : " Error in approximation")
-      << std::endl;
+    o << (myIsOverConstr ? " The problem is overconstraint" : " Error in approximation") << '\n';
   }
 }
 
@@ -915,7 +982,9 @@ bool AppDef_Variational::SetMaxDegree(const int Degree)
   if (((Degree - myNivCont) * myMaxSegment - myNbPassPoints - 2 * myNbTangPoints
        - 3 * myNbCurvPoints)
       < 0)
+  {
     return false;
+  }
   else
   {
     myMaxDegree = Degree;
@@ -935,7 +1004,9 @@ bool AppDef_Variational::SetMaxSegment(const int NbSegment)
       && ((myMaxDegree - myNivCont) * NbSegment - myNbPassPoints - 2 * myNbTangPoints
           - 3 * myNbCurvPoints)
            < 0)
+  {
     return false;
+  }
   else
   {
     myMaxSegment = NbSegment;
@@ -966,7 +1037,9 @@ bool AppDef_Variational::SetContinuity(const GeomAbs_Shape C)
   if (((myMaxDegree - NivCont) * myMaxSegment - myNbPassPoints - 2 * myNbTangPoints
        - 3 * myNbCurvPoints)
       < 0)
+  {
     return false;
+  }
   else
   {
     myContinuity = C;
@@ -997,8 +1070,9 @@ bool AppDef_Variational::SetWithCutting(const bool Cutting)
     if (((myMaxDegree - myNivCont) * myKnots->Length() - myNbPassPoints - 2 * myNbTangPoints
          - 3 * myNbCurvPoints)
         < 0)
+    {
       return false;
-
+    }
     else
     {
       myWithCutting = Cutting;
@@ -1011,8 +1085,9 @@ bool AppDef_Variational::SetWithCutting(const bool Cutting)
     if (((myMaxDegree - myNivCont) * myMaxSegment - myNbPassPoints - 2 * myNbTangPoints
          - 3 * myNbCurvPoints)
         < 0)
+    {
       return false;
-
+    }
     else
     {
       myWithCutting = Cutting;
@@ -1030,7 +1105,9 @@ void AppDef_Variational::SetCriteriumWeight(const double Percent1,
                                             const double Percent3)
 {
   if (Percent1 < 0 || Percent2 < 0 || Percent3 < 0)
+  {
     throw Standard_DomainError();
+  }
   double Total = Percent1 + Percent2 + Percent3;
   myPercent[0] = Percent1 / Total;
   myPercent[1] = Percent2 / Total;
@@ -1045,9 +1122,13 @@ void AppDef_Variational::SetCriteriumWeight(const double Percent1,
 void AppDef_Variational::SetCriteriumWeight(const int Order, const double Percent)
 {
   if (Percent < 0)
+  {
     throw Standard_DomainError();
+  }
   if (Order < 1 || Order > 3)
+  {
     throw Standard_ConstructionError();
+  }
   myPercent[Order - 1] = Percent;
   double Total         = myPercent[0] + myPercent[1] + myPercent[2];
   myPercent[0]         = myPercent[0] / Total;
@@ -1113,11 +1194,17 @@ void AppDef_Variational::TheMotor(occ::handle<AppDef_SmoothCriterion>& J,
   J2min = J3min = (e1 + 1.e-8) * 1.e-6;
 
   if (e1 < J1min)
+  {
     e1 = J1min; // Like in
+  }
   if (e2 < J2min)
+  {
     e2 = J2min; // MOTLIS
+  }
   if (e3 < J3min)
+  {
     e3 = J3min;
+  }
 
   J->SetEstimation(e1, e2, e3);
 
@@ -1166,7 +1253,9 @@ void AppDef_Variational::TheMotor(occ::handle<AppDef_SmoothCriterion>& J,
       ICDANA = J->QualityValues(J1min, J2min, J3min, VALCRI[0], VALCRI[1], VALCRI[2]);
 
       if (ICDANA > 0)
+      {
         lconst = true;
+      }
 
       J->ErrorValues(ERRMAX, ERRQUA, ERRMOY);
 
@@ -1189,34 +1278,58 @@ void AppDef_Variational::TheMotor(occ::handle<AppDef_SmoothCriterion>& J,
                 2);
       }
       else
+      {
         NewTi = CurrentTi;
+      }
 
       //        (1.4) Progression's test
       iprog = 0;
       if ((EROLD > WQuality) && (ERRMAX < 0.95 * EROLD))
+      {
         iprog++;
+      }
       if ((EROLD > WQuality) && (ERRMAX < 0.8 * EROLD))
+      {
         iprog++;
+      }
       if ((EROLD > WQuality) && (ERRMAX < WQuality))
+      {
         iprog++;
+      }
       if ((EROLD > WQuality) && (ERRMAX < 0.99 * EROLD) && (ERRMAX < 1.1 * WQuality))
+      {
         iprog++;
+      }
       if (VALCRI[0] < 0.975 * VOCRI[0])
+      {
         iprog++;
+      }
       if (VALCRI[0] < 0.9 * VOCRI[0])
+      {
         iprog++;
+      }
       if (VALCRI[1] < 0.95 * VOCRI[1])
+      {
         iprog++;
+      }
       if (VALCRI[1] < 0.8 * VOCRI[1])
+      {
         iprog++;
+      }
       if (VALCRI[2] < 0.95 * VOCRI[2])
+      {
         iprog++;
+      }
       if (VALCRI[2] < 0.8 * VOCRI[2])
+      {
         iprog++;
+      }
       if ((VOCRI[1] > SmallestValue) && (VOCRI[2] > SmallestValue))
       {
         if ((VALCRI[1] / VOCRI[1] + 2 * VALCRI[2] / VOCRI[2]) < 2.8)
+        {
           iprog++;
+        }
       }
 
       if (iprog < 2 && NbEst == 0)
@@ -1310,7 +1423,9 @@ void AppDef_Variational::TheMotor(occ::handle<AppDef_SmoothCriterion>& J,
 
       ICDANA = J->QualityValues(J1min, J2min, J3min, VALCRI[0], VALCRI[1], VALCRI[2]);
       if (ICDANA > 0)
+      {
         lconst = true;
+      }
 
       J->GetEstimation(e1, e2, e3);
       //       (2.5) Optimization of ti by orthogonal projection
@@ -1332,20 +1447,32 @@ void AppDef_Variational::TheMotor(occ::handle<AppDef_SmoothCriterion>& J,
       if (NbrConstraint < NbrPnt)
       {
         if ((ERRMAX > WQuality) && (ERRMAX > 1.05 * EROLD))
+        {
           iregre++;
+        }
         if ((ERRMAX > WQuality) && (ERRMAX > 2 * EROLD))
+        {
           iregre++;
+        }
         if ((EROLD > WQuality) && (ERRMAX <= 0.5 * EROLD))
+        {
           iregre--;
+        }
       }
       double E1, E2, E3;
       J->GetEstimation(E1, E2, E3);
       if ((VALCRI[0] > E1) && (VALCRI[0] > 1.1 * VOCRI[0]))
+      {
         iregre++;
+      }
       if ((VALCRI[1] > E2) && (VALCRI[1] > 1.1 * VOCRI[1]))
+      {
         iregre++;
+      }
       if ((VALCRI[2] > E3) && (VALCRI[2] > 1.1 * VOCRI[2]))
+      {
         iregre++;
+      }
 
       if (iregre >= 2)
       {
@@ -1366,7 +1493,9 @@ void AppDef_Variational::TheMotor(occ::handle<AppDef_SmoothCriterion>& J,
         CurrentTi = NewTi;
       }
       if (Iter >= myNbIterations)
+      {
         ToOptim = false;
+      }
     }
 
     // (3) Optional splitting
@@ -1403,7 +1532,9 @@ void AppDef_Variational::TheMotor(occ::handle<AppDef_SmoothCriterion>& J,
 
       SplitCurve(CCurrent, CurrentTi->Array1(), EpsLength, CNew, iscut);
       if (!iscut)
+      {
         again = false;
+      }
       else
       {
         CCurrent = CNew;
@@ -1447,9 +1578,13 @@ L8000:
   myMaxError                   = ERRMAX;
   myMaxErrorIndex              = NumPnt;
   if (NbrPnt > NbrConstraint)
+  {
     myAverageError = ERRMOY / (NbrPnt - NbrConstraint);
+  }
   else
+  {
     myAverageError = ERRMOY / NbrConstraint;
+  }
 
   delete TheAssembly;
 }
@@ -1478,7 +1613,9 @@ void AppDef_Variational::Optimization(occ::handle<AppDef_SmoothCriterion>& J,
 
   // Updating Assembly
   if (ToAssemble)
+  {
     A.NullifyMatrix();
+  }
   A.NullifyVector();
 
   for (el = 1; el <= NbElm; el++)
@@ -1487,7 +1624,9 @@ void AppDef_Variational::Optimization(occ::handle<AppDef_SmoothCriterion>& J,
     {
       J->Hessian(el, 1, 1, H);
       for (dim = 1; dim <= NbDim; dim++)
+      {
         A.AddMatrix(el, dim, dim, H);
+      }
     }
 
     for (dim = 1; dim <= NbDim; dim++)
@@ -1533,12 +1672,18 @@ void AppDef_Variational::Optimization(occ::handle<AppDef_SmoothCriterion>& J,
     {
       while ((Icnt < NbConstr)
              && (Parameters(p0 + myTypConstraints->Value(2 * Icnt - 1)) <= TabInt(el)))
+      {
         Icnt++;
+      }
       point = p0 + myTypConstraints->Value(2 * Icnt - 1);
       if (Parameters(point) <= TabInt(el) || Parameters(point) >= TabInt(el + 1))
+      {
         Curve->ReduceDegree(el, EpsDeg, Newdeg, MaxError);
+      }
       else if (Curve->Degree(el) < MxDeg)
+      {
         Curve->SetDegree(el, MxDeg);
+      }
     }
   }
 }
@@ -1611,15 +1756,21 @@ void AppDef_Variational::Project(const occ::handle<FEmTool_Curve>& C,
       }
 
       if (std::abs(F2) < Eps)
+      {
         EnCour = false;
+      }
       else
       {
         // Formula of Newton x(k+1) = x(k) - F(x(k))/F'(x(k))
         TNew -= F1 / F2;
         if (TNew < 0.)
+        {
           TNew = 0.;
+        }
         if (TNew > 1.)
+        {
           TNew = 1.;
+        }
 
         // Analysis of result
 
@@ -1643,13 +1794,19 @@ void AppDef_Variational::Project(const occ::handle<FEmTool_Curve>& C,
           Dist   = Dist0;
         }
         else if (Ecart <= Seuil)
+        {
           // Convergence
           NItCv++;
+        }
         else
+        {
           NItCv = 0;
+        }
 
         if ((NItCv >= 2) || (Iter >= NbIterations))
+        {
           EnCour = false;
+        }
       }
     }
 
@@ -1703,7 +1860,9 @@ void AppDef_Variational::ACR(occ::handle<FEmTool_Curve>& Curve,
       ICnt = 1;
     }
     else
+    {
       PCnt = TiLast + 1;
+    }
 
     UOld = 0.;
 
@@ -1740,7 +1899,9 @@ void AppDef_Variational::ACR(occ::handle<FEmTool_Curve>& Curve,
         UNew /= CbLong;
 
         while (Knots(IElm + 1) < TPara && IElm < KLast - 1)
+        {
           IElm++;
+        }
 
         //         (2.4) Update the splitting parameters
         DTInv = 1. / (TPara - TOld);
@@ -1776,7 +1937,9 @@ void AppDef_Variational::ACR(occ::handle<FEmTool_Curve>& Curve,
         //	VTest += (ii + 1) * DeltaT;
         VTest += std::ceil((TPara - VTest + Eps) / DeltaT) * DeltaT;
         if (VTest > 1. - Eps)
+        {
           VTest = 1.;
+        }
       }
     }
   }
@@ -1823,13 +1986,19 @@ static int NearIndex(const double                      T,
   {
     Imidl = (Ibeg + Ifin) / 2;
     if ((T >= TabPar(Ibeg)) && (T <= TabPar(Imidl)))
+    {
       Ifin = Imidl;
+    }
     else
+    {
       Ibeg = Imidl;
+    }
   }
 
   if (std::abs(T - TabPar(Ifin)) < Eps)
+  {
     return Ifin;
+  }
 
   return Ibeg;
 }
@@ -1870,24 +2039,34 @@ static void GettingKnots(const NCollection_Array1<double>& TabPar,
 
       Ipt1 = NearIndex(OldKnots(i0), TabPar, Eps, Flag);
       if (Flag != 0)
+      {
         Ipt1 = TabPar.Lower();
+      }
       Ipt2 = NearIndex(OldKnots(i1), TabPar, Eps, Flag);
       if (Flag != 0)
+      {
         Ipt2 = TabPar.Upper();
+      }
 
       if (Ipt2 - Ipt1 >= 1)
       {
 
         Ipt = (Ipt1 + Ipt2) / 2;
         if (2 * Ipt == Ipt1 + Ipt2)
+        {
           TPar = 2. * TabPar(Ipt);
+        }
         else
+        {
           TPar = TabPar(Ipt) + TabPar(Ipt + 1);
+        }
 
         NewKnots(NbElm) = (OldKnots(i0) + OldKnots(i1) + TPar) / 4.;
       }
       else
+      {
         NewKnots(NbElm) = (OldKnots(i0) + OldKnots(i1)) / 2.;
+      }
     }
   }
 }
@@ -1930,14 +2109,20 @@ void AppDef_Variational::SplitCurve(const occ::handle<FEmTool_Curve>& InCurve,
 
     int i, i0 = OutKnots.Lower();
     for (i = InKnots.Lower(); i <= InKnots.Upper(); i++)
+    {
       OutKnots(i) = InKnots(i);
+    }
     for (i = NbElmOld + 1; i <= NbElm; i++)
+    {
       OutKnots(i + i0) = NewKnots(i);
+    }
 
     std::sort(OutKnots.begin(), OutKnots.end());
   }
   else
+  {
     iscut = false;
+  }
 }
 
 //=================================================================================================
@@ -1969,19 +2154,29 @@ void AppDef_Variational::InitSmoothCriterion()
   double WQuadratic, WQuality;
 
   if (!myWithMinMax && myTolerance != 0.)
+  {
     WQuality = myTolerance;
+  }
   else if (myTolerance == 0.)
+  {
     WQuality = 1.;
+  }
   else
+  {
     WQuality = std::max(myTolerance, Eps2 * Length);
+  }
 
   int NbConstr = myNbPassPoints + myNbTangPoints + myNbCurvPoints;
   WQuadratic   = std::sqrt((double)(myNbPoints - NbConstr)) * WQuality;
   if (WQuadratic > Eps3)
+  {
     WQuadratic = 1. / WQuadratic;
+  }
 
   if (WQuadratic == 0.)
+  {
     WQuadratic = std::max(std::sqrt(E1), 1.);
+  }
 
   mySmoothCriterion->SetWeight(WQuadratic, WQuality, myPercent[0], myPercent[1], myPercent[2]);
 
@@ -2006,8 +2201,6 @@ void AppDef_Variational::InitSmoothCriterion()
   }
 
   mySmoothCriterion->SetCurve(TheCurve);
-
-  return;
 }
 
 //
@@ -2039,16 +2232,22 @@ void AppDef_Variational::InitParameters(double& Length)
   }
 
   if (Length <= Eps1)
+  {
     throw Standard_ConstructionError("AppDef_Variational::InitParameters");
+  }
 
   for (ipoint = myFirstPoint + 1; ipoint <= myLastPoint - 1; ipoint++)
+  {
     myParameters->SetValue(ipoint, myParameters->Value(ipoint) / Length);
+  }
 
   myParameters->SetValue(myLastPoint, 1.);
 
   // With few points there is likely underestimation ...
   if (myNbPoints < 10)
+  {
     Length *= (1. + 0.1 / (myNbPoints - 1));
+  }
 }
 
 //
@@ -2088,7 +2287,9 @@ void AppDef_Variational::InitCriterionEstimations(const double Length,
   //  Modified by skv - Fri Apr  8 14:58:12 2005 OCC8559 End
 
   if (Delta <= Eps1)
+  {
     Delta = 1.;
+  }
 
   E2 = VScnd1.Norm2() * Delta;
 
@@ -2110,7 +2311,9 @@ void AppDef_Variational::InitCriterionEstimations(const double Length,
         EstSecnd(ipnt + 1, VTang1, VTang3, Length, VScnd2);
       }
       else
+      {
         EstSecnd(ipnt + 1, VTang1, VTang2, Length, VScnd2);
+      }
 
       E2 += VScnd1.Norm2() * Delta;
       E3 += (Delta > Eps1) ? VScnd2.Subtracted(VScnd3).Norm2() / (4. * Delta) : 0.;
@@ -2123,7 +2326,9 @@ void AppDef_Variational::InitCriterionEstimations(const double Length,
         EstSecnd(ipnt + 1, VTang2, VTang1, Length, VScnd3);
       }
       else
+      {
         EstSecnd(ipnt + 1, VTang2, VTang3, Length, VScnd3);
+      }
 
       E2 += VScnd2.Norm2() * Delta;
       E3 += (Delta > Eps1) ? VScnd3.Subtracted(VScnd1).Norm2() / (4. * Delta) : 0.;
@@ -2136,7 +2341,9 @@ void AppDef_Variational::InitCriterionEstimations(const double Length,
         EstSecnd(ipnt + 1, VTang3, VTang2, Length, VScnd1);
       }
       else
+      {
         EstSecnd(ipnt + 1, VTang3, VTang1, Length, VScnd1);
+      }
 
       E2 += VScnd3.Norm2() * Delta;
       E3 += (Delta > Eps1) ? VScnd1.Subtracted(VScnd2).Norm2() / (4. * Delta) : 0.;
@@ -2144,14 +2351,18 @@ void AppDef_Variational::InitCriterionEstimations(const double Length,
 
     CurrPoint++;
     if (CurrPoint == 4)
+    {
       CurrPoint = 1;
+    }
   }
 
   // ========== Treatment of last point =================
 
   Delta = .5 * (myParameters->Value(myLastPoint) - myParameters->Value(myLastPoint - 1));
   if (Delta <= Eps1)
+  {
     Delta = 1.;
+  }
 
   double aux;
 
@@ -2200,7 +2411,9 @@ void AppDef_Variational::EstTangent(const int ipnt, math_Vector& VTang) const
   {
     // Estimation at first point
     if (myNbPoints < 3)
+    {
       Wpnt = 0.;
+    }
     else
     {
 
@@ -2217,7 +2430,9 @@ void AppDef_Variational::EstTangent(const int ipnt, math_Vector& VTang) const
       double V1 = Pnt2.Subtracted(Pnt1).Norm();
       double V2 = 0.;
       if (V1 > Eps1)
+      {
         V2 = Pnt3.Subtracted(Pnt2).Norm();
+      }
       if (V2 > Eps1)
       {
         double d = V1 / (V1 + V2), d1;
@@ -2237,7 +2452,9 @@ void AppDef_Variational::EstTangent(const int ipnt, math_Vector& VTang) const
   {
     // Estimation at last point
     if (myNbPoints < 3)
+    {
       Wpnt = 0.;
+    }
     else
     {
 
@@ -2255,7 +2472,9 @@ void AppDef_Variational::EstTangent(const int ipnt, math_Vector& VTang) const
       double V1 = Pnt2.Subtracted(Pnt1).Norm();
       double V2 = 0.;
       if (V1 > Eps1)
+      {
         V2 = Pnt3.Subtracted(Pnt2).Norm();
+      }
       if (V2 > Eps1)
       {
         double d = V1 / (V1 + V2), d1;
@@ -2285,9 +2504,13 @@ void AppDef_Variational::EstTangent(const int ipnt, math_Vector& VTang) const
   double Vnorm = VTang.Norm();
 
   if (Vnorm <= EpsNorm)
+  {
     VTang.Init(0.);
+  }
   else
+  {
     VTang /= Vnorm;
+  }
 
   // Estimation with constraints
 
@@ -2303,7 +2526,9 @@ void AppDef_Variational::EstTangent(const int ipnt, math_Vector& VTang) const
   {
 
     while (myTypConstraints->Value(2 * IdCnt - 1) < ipnt && IdCnt <= NbConstr)
+    {
       IdCnt++;
+    }
     if ((myTypConstraints->Value(2 * IdCnt - 1) == ipnt)
         && (myTypConstraints->Value(2 * IdCnt) >= 1))
     {
@@ -2312,13 +2537,17 @@ void AppDef_Variational::EstTangent(const int ipnt, math_Vector& VTang) const
       for (i = 1; i <= myNbP3d; i++)
       {
         for (int j = 1; j <= 3; j++)
+        {
           VCnt(++k) = myTabConstraints->Value(++i0);
+        }
         i0 += 3;
       }
       for (i = 1; i <= myNbP2d; i++)
       {
         for (int j = 1; j <= 2; j++)
+        {
           VCnt(++k) = myTabConstraints->Value(++i0);
+        }
         i0 += 2;
       }
     }
@@ -2328,18 +2557,26 @@ void AppDef_Variational::EstTangent(const int ipnt, math_Vector& VTang) const
 
   double Denom = Wpnt + Wcnt;
   if (Denom == 0.)
+  {
     Denom = 1.;
+  }
   else
+  {
     Denom = 1. / Denom;
+  }
 
   VTang = (Wpnt * VTang + Wcnt * VCnt) * Denom;
 
   Vnorm = VTang.Norm();
 
   if (Vnorm <= EpsNorm)
+  {
     VTang.Init(0.);
+  }
   else
+  {
     VTang /= Vnorm;
+  }
 }
 
 //
@@ -2360,16 +2597,26 @@ void AppDef_Variational::EstSecnd(const int          ipnt,
   double aux;
 
   if (ipnt == myFirstPoint)
+  {
     aux = myParameters->Value(ipnt + 1) - myParameters->Value(ipnt);
+  }
   else if (ipnt == myLastPoint)
+  {
     aux = myParameters->Value(ipnt) - myParameters->Value(ipnt - 1);
+  }
   else
+  {
     aux = myParameters->Value(ipnt + 1) - myParameters->Value(ipnt - 1);
+  }
 
   if (aux <= Eps)
+  {
     aux = 1.;
+  }
   else
+  {
     aux = 1. / aux;
+  }
 
   VScnd = (VTang2 - VTang1) * aux;
 
@@ -2387,7 +2634,9 @@ void AppDef_Variational::EstSecnd(const int          ipnt,
   {
 
     while (myTypConstraints->Value(2 * IdCnt - 1) < ipnt && IdCnt <= NbConstr)
+    {
       IdCnt++;
+    }
 
     if ((myTypConstraints->Value(2 * IdCnt - 1) == ipnt)
         && (myTypConstraints->Value(2 * IdCnt) >= 2))
@@ -2397,14 +2646,18 @@ void AppDef_Variational::EstSecnd(const int          ipnt,
       for (i = 1; i <= myNbP3d; i++)
       {
         for (int j = 1; j <= 3; j++)
+        {
           VCnt(++k) = myTabConstraints->Value(++i0);
+        }
         i0 += 3;
       }
       i0--;
       for (i = 1; i <= myNbP2d; i++)
       {
         for (int j = 1; j <= 2; j++)
+        {
           VCnt(++k) = myTabConstraints->Value(++i0);
+        }
         i0 += 2;
       }
     }
@@ -2414,9 +2667,13 @@ void AppDef_Variational::EstSecnd(const int          ipnt,
 
   double Denom = Wpnt + Wcnt;
   if (Denom == 0.)
+  {
     Denom = 1.;
+  }
   else
+  {
     Denom = 1. / Denom;
+  }
 
   VScnd = (Wpnt * VScnd + (Wcnt * Length) * VCnt) * Denom;
 }
@@ -2441,7 +2698,9 @@ void AppDef_Variational::InitCutting(const PLib_HermitJacobi&    aBase,
   }
 
   if (ORCMx > myMaxDegree - myNivCont)
+  {
     throw Standard_ConstructionError("AppDef_Variational::InitCutting");
+  }
 
   int NLibre = std::max(myMaxDegree - myNivCont - (myMaxDegree + 1) / 4, myNivCont + 1);
 
@@ -2455,7 +2714,9 @@ void AppDef_Variational::InitCutting(const PLib_HermitJacobi&    aBase,
   }
 
   if (NbElem > myMaxSegment)
+  {
     throw Standard_ConstructionError("AppDef_Variational::InitCutting");
+  }
 
   aCurve = new FEmTool_Curve(myDimension, NbElem, aBase, CurvTol);
 
@@ -2476,7 +2737,9 @@ void AppDef_Variational::InitCutting(const PLib_HermitJacobi&    aBase,
     IndEl++;
     NbEl++;
     if (NPlus == 0)
+    {
       NCnt--;
+    }
 
     while (NDeb < NCnt && IDeb < IFin)
     {
@@ -2489,12 +2752,16 @@ void AppDef_Variational::InitCutting(const PLib_HermitJacobi&    aBase,
       NDeb = 0;
       if (NPlus == 1
           && myParameters->Value(myTypConstraints->Value(2 * IDeb - 1)) > Knot(IndEl - 1))
+      {
 
         Knot(IndEl) = myParameters->Value(myTypConstraints->Value(2 * IDeb - 1));
+      }
       else
+      {
         Knot(IndEl) = (myParameters->Value(myTypConstraints->Value(2 * IDeb - 1))
                        + myParameters->Value(myTypConstraints->Value(2 * IDeb + 1)))
                       / 2;
+      }
     }
     else
     {
@@ -2504,10 +2771,14 @@ void AppDef_Variational::InitCutting(const PLib_HermitJacobi&    aBase,
 
     NPlus--;
     if (NPlus == 0)
+    {
       NCnt--;
+    }
 
     if (NbElem - NbEl == 1)
+    {
       break;
+    }
 
     NbEl++;
 
@@ -2528,11 +2799,15 @@ void AppDef_Variational::InitCutting(const PLib_HermitJacobi&    aBase,
     {
       NFin -= NCnt;
       if (myParameters->Value(myTypConstraints->Value(2 * IFin - 1)) < Knot(IUpper - IndEl + 1))
+      {
         Knot(IUpper + 1 - IndEl) = myParameters->Value(myTypConstraints->Value(2 * IFin - 1));
+      }
       else
+      {
         Knot(IUpper + 1 - IndEl) = (myParameters->Value(myTypConstraints->Value(2 * IFin - 1))
                                     + myParameters->Value(myTypConstraints->Value(2 * IFin - 3)))
                                    / 2;
+      }
     }
   }
 }
@@ -2625,9 +2900,13 @@ void AppDef_Variational::Adjusting(occ::handle<AppDef_SmoothCriterion>& J,
       CNew = new FEmTool_Curve(myDimension, TheCurve->NbElements() + 1, TheCurve->Base(), CurvTol);
 
       for (i = 1; i <= numint; i++)
+      {
         CNew->Knots()(i) = TheCurve->Knots()(i);
+      }
       for (i = numint + 1; i <= TheCurve->Knots().Length(); i++)
+      {
         CNew->Knots()(i + 1) = TheCurve->Knots()(i);
+      }
 
       CNew->Knots()(numint + 1) = tpara;
     }
@@ -2699,10 +2978,14 @@ static bool NotParallel(gp_Vec& T, gp_Vec& V)
   V = T;
   V.SetX(V.X() + 1.);
   if (V.CrossMagnitude(T) > 1.e-12)
+  {
     return true;
+  }
   V.SetY(V.Y() + 1.);
   if (V.CrossMagnitude(T) > 1.e-12)
+  {
     return true;
+  }
   V.SetZ(V.Z() + 1.);
   return V.CrossMagnitude(T) > 1.e-12;
 }
@@ -2984,7 +3267,9 @@ void AppDef_Variational::AssemblingConstraints(const occ::handle<FEmTool_Curve>&
         {
           curdim++;
           if (k > 1)
+          {
             R1 = R2 = 0.;
+          }
           A.AddConstraint(IndexOfConstraint, curel, curdim, myTfthet->Value(jt + k) * V2, R1);
           A.AddConstraint(IndexOfConstraint + 1,
                           curel,
@@ -3011,7 +3296,9 @@ void AppDef_Variational::AssemblingConstraints(const occ::handle<FEmTool_Curve>&
         {
           curdim++;
           if (k > 1)
+          {
             R1 = 0.;
+          }
           A.AddConstraint(IndexOfConstraint, curel, curdim, myTfthet->Value(jt + k) * V2, R1);
         }
         IndexOfConstraint += Ng2d;
@@ -3031,7 +3318,9 @@ bool AppDef_Variational::InitTthetaF(const int                     ndimen,
                                      const int                     jndex)
 {
   if ((ndimen < 2) || (ndimen > 3))
+  {
     return false;
+  }
   gp_Vec T, V;
   gp_Vec theta1, theta2;
   gp_Vec F;
@@ -3042,9 +3331,13 @@ bool AppDef_Variational::InitTthetaF(const int                     ndimen,
     T.SetX(myTabConstraints->Value(jndex));
     T.SetY(myTabConstraints->Value(jndex + 1));
     if (ndimen == 3)
+    {
       T.SetZ(myTabConstraints->Value(jndex + 2));
+    }
     else
+    {
       T.SetZ(0.);
+    }
     if (ndimen == 2)
     {
       V.SetX(0.);
@@ -3052,8 +3345,12 @@ bool AppDef_Variational::InitTthetaF(const int                     ndimen,
       V.SetZ(1.);
     }
     if (ndimen == 3)
+    {
       if (!NotParallel(T, V))
+      {
         return false;
+      }
+    }
     theta1 = V ^ T;
     theta1.Normalize();
     myTtheta->SetValue(begin, theta1.X());

@@ -44,7 +44,9 @@ void BRepOffsetAPI_MakeOffsetShape::PerformByJoin(const TopoDS_Shape&          S
   myOffsetShape.MakeOffsetShape(theRange);
 
   if (!myOffsetShape.IsDone())
+  {
     return;
+  }
 
   myShape = myOffsetShape.Shape();
   Done();
@@ -62,7 +64,9 @@ void BRepOffsetAPI_MakeOffsetShape::PerformBySimple(const TopoDS_Shape& theS,
   mySimpleOffsetShape.Perform();
 
   if (!mySimpleOffsetShape.IsDone())
+  {
     return;
+  }
 
   myShape = mySimpleOffsetShape.GetResultShape();
   Done();
@@ -93,7 +97,9 @@ const NCollection_List<TopoDS_Shape>& BRepOffsetAPI_MakeOffsetShape::Generated(
   {
     TopoDS_Shape aGenShape = mySimpleOffsetShape.Generated(S);
     if (!aGenShape.IsNull() && !aGenShape.IsSame(S))
+    {
       myGenerated.Append(aGenShape);
+    }
   }
 
   return myGenerated;
@@ -112,7 +118,9 @@ const NCollection_List<TopoDS_Shape>& BRepOffsetAPI_MakeOffsetShape::Modified(co
   {
     TopoDS_Shape aGenShape = mySimpleOffsetShape.Modified(S);
     if (!aGenShape.IsNull() && !aGenShape.IsSame(S))
+    {
       myGenerated.Append(aGenShape);
+    }
   }
 
   return myGenerated;

@@ -113,7 +113,9 @@ void BRepMAT2d_Explorer::Add(const TopoDS_Wire& Spine,
   //  Modified by skv - Wed Jun 23 12:23:02 2004 Integration End
   NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> anOldNewE;
   if (!anExp.More())
+  {
     return;
+  }
 
   //  Modified by Sergey KHROMOV - Tue Nov 26 14:25:46 2002 Begin
   // This method is totally rewroted to include check
@@ -143,7 +145,9 @@ void BRepMAT2d_Explorer::Add(const TopoDS_Wire& Spine,
   CT2d = new Geom2d_TrimmedCurve(C2d, UFirst, ULast);
 
   if (aFirstEdge.Orientation() == TopAbs_REVERSED)
+  {
     CT2d->Reverse();
+  }
 
   aPFirst = CT2d->Value(CT2d->FirstParameter());
   aPLast  = CT2d->Value(CT2d->LastParameter());
@@ -162,7 +166,9 @@ void BRepMAT2d_Explorer::Add(const TopoDS_Wire& Spine,
     CT2d = new Geom2d_TrimmedCurve(C2d, UFirst, ULast);
 
     if (anEdge.Orientation() == TopAbs_REVERSED)
+    {
       CT2d->Reverse();
+    }
 
     aPCurFirst = CT2d->Value(CT2d->FirstParameter());
     //
@@ -193,9 +199,13 @@ void BRepMAT2d_Explorer::Add(const TopoDS_Wire& Spine,
         TopoDS_Vertex aVl = TopExp::LastVertex(anEdge);
 
         if (anEdge.Orientation() == TopAbs_FORWARD)
+        {
           aNewEdge = MakeEdge(CT2d, aNewFace, aVf, aVl);
+        }
         else
+        {
           aNewEdge = MakeEdge(CT2d->Reversed(), aNewFace, aVf, aVl);
+        }
 
         aNewEdge.Orientation(anEdge.Orientation());
 
@@ -212,9 +222,13 @@ void BRepMAT2d_Explorer::Add(const TopoDS_Wire& Spine,
         TopoDS_Vertex aVl = TopExp::LastVertex(aPrevEdge);
 
         if (aPrevEdge.Orientation() == TopAbs_FORWARD)
+        {
           aNewEdge = MakeEdge(CPrev, aNewFace, aVf, aVl);
+        }
         else
+        {
           aNewEdge = MakeEdge(CPrev->Reversed(), aNewFace, aVf, aVl);
+        }
 
         aNewEdge.Orientation(aPrevEdge.Orientation());
 
@@ -251,9 +265,13 @@ void BRepMAT2d_Explorer::Add(const TopoDS_Wire& Spine,
       TopoDS_Vertex aVl = TopExp::LastVertex(aFirstEdge);
 
       if (aFirstEdge.Orientation() == TopAbs_FORWARD)
+      {
         aNewEdge = MakeEdge(aFirstCurve, aNewFace, aVf, aVl);
+      }
       else
+      {
         aNewEdge = MakeEdge(aFirstCurve->Reversed(), aNewFace, aVf, aVl);
+      }
 
       aNewEdge.Orientation(aFirstEdge.Orientation());
 
@@ -270,9 +288,13 @@ void BRepMAT2d_Explorer::Add(const TopoDS_Wire& Spine,
       TopoDS_Vertex aVl = TopExp::LastVertex(aPrevEdge);
 
       if (aPrevEdge.Orientation() == TopAbs_FORWARD)
+      {
         aNewEdge = MakeEdge(CPrev, aNewFace, aVf, aVl);
+      }
       else
+      {
         aNewEdge = MakeEdge(CPrev->Reversed(), aNewFace, aVf, aVl);
+      }
 
       aNewEdge.Orientation(aPrevEdge.Orientation());
 
@@ -300,7 +322,9 @@ void BRepMAT2d_Explorer::Add(const TopoDS_Wire& Spine,
     }
 
     if (myIsClosed(currentContour))
+    {
       aNewWire.Closed(true);
+    }
 
     //  Modified by skv - Fri Nov 12 17:22:12 2004 Integration Begin
     //  The orientation of wire is already taken into account.
@@ -309,7 +333,9 @@ void BRepMAT2d_Explorer::Add(const TopoDS_Wire& Spine,
     myModifShapes.Add(Spine, aNewWire);
   }
   else
+  {
     aNewWire = Spine;
+  }
 
   aBuilder.Add(aNewFace, aNewWire);
   //  Modified by Sergey KHROMOV - Tue Nov 26 14:25:53 2002 End

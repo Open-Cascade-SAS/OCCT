@@ -360,9 +360,13 @@ TopoDS_Shape occ1077BoolBl(BRepAlgoAPI_BooleanOperation& theBoolOp, double theRa
 
     aFill.Build();
     if (aFill.IsDone())
+    {
       aBuilder.Add(aResult, aFill.Shape());
+    }
     else
+    {
       aBuilder.Add(aResult, aSolid);
+    }
   }
   return aResult;
 }
@@ -502,7 +506,9 @@ TEST(BRepFilletAPI_MakeFilletTest, OCC426_RevolveFuseUnifyFillet)
   {
     const TopoDS_Edge& anEdge = TopoDS::Edge(anEdgeMap.FindKey(i));
     if (!anEdge.IsNull())
+    {
       aBlend.Add(1.0, anEdge);
+    }
   }
 
   try

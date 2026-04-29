@@ -680,40 +680,72 @@ int OSD_Protection::Internal() const
   int internal_prot = 0;
 
   if (u & OSD_R)
+  {
     internal_prot |= S_IRUSR;
+  }
   if (u & OSD_W)
+  {
     internal_prot |= S_IWUSR;
+  }
   if (u & OSD_D)
+  {
     internal_prot |= S_IWUSR;
+  }
   if (u & OSD_X)
+  {
     internal_prot |= S_IXUSR;
+  }
 
   if (g & OSD_R)
+  {
     internal_prot |= S_IRGRP;
+  }
   if (g & OSD_W)
+  {
     internal_prot |= S_IWGRP;
+  }
   if (g & OSD_D)
+  {
     internal_prot |= S_IWGRP;
+  }
   if (g & OSD_X)
+  {
     internal_prot |= S_IXGRP;
+  }
 
   if (w & OSD_R)
+  {
     internal_prot |= S_IROTH;
+  }
   if (w & OSD_W)
+  {
     internal_prot |= S_IWOTH;
+  }
   if (w & OSD_D)
+  {
     internal_prot |= S_IWOTH;
+  }
   if (w & OSD_X)
+  {
     internal_prot |= S_IXOTH;
+  }
 
   if (s & OSD_R)
+  {
     internal_prot |= S_IROTH;
+  }
   if (s & OSD_W)
+  {
     internal_prot |= S_IWOTH;
+  }
   if (s & OSD_D)
+  {
     internal_prot |= S_IWOTH;
+  }
   if (s & OSD_X)
+  {
     internal_prot |= S_IXOTH;
+  }
 
   return (internal_prot);
 }

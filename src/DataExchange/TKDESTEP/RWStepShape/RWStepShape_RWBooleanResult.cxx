@@ -32,7 +32,9 @@ void RWStepShape_RWBooleanResult::ReadStep(const occ::handle<StepData_StepReader
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 4, ach, "boolean_result"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -52,7 +54,9 @@ void RWStepShape_RWBooleanResult::ReadStep(const occ::handle<StepData_StepReader
     }
   }
   else
+  {
     ach->AddFail("Parameter #2 (operator) is not an enumeration");
+  }
 
   // --- own field : firstOperand (is a select type) ---
 

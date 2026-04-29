@@ -43,17 +43,25 @@ FEmTool_ProfileMatrix::FEmTool_ProfileMatrix(const NCollection_Array1<int>& Firs
   NextCoeff = new NCollection_HArray1<int>(1, profile(2, FirstIndexes.Length()));
 
   for (i = 1, k = 1; i <= FirstIndexes.Length(); i++)
+  {
     for (j = FirstIndexes(i); j <= i; j++)
     {
       for (l = i + 1; l <= FirstIndexes.Length() && j < FirstIndexes(l); l++)
+      {
         ;
+      }
 
       if (l > FirstIndexes.Length())
+      {
         NextCoeff->SetValue(k, 0);
+      }
       else
+      {
         NextCoeff->SetValue(k, l);
+      }
       k++;
     }
+  }
 
   ProfileMatrix = new NCollection_HArray1<double>(1, profile(2, FirstIndexes.Length()));
   SMatrix       = new NCollection_HArray1<double>(1, profile(2, FirstIndexes.Length()));
@@ -107,7 +115,9 @@ bool FEmTool_ProfileMatrix::Decompose()
     Kj       = j - profile(1, j);
     Sum      = 0;
     for (k = DiagAddr - profile(1, j); k < DiagAddr; k++)
+    {
       Sum += SMA[k] * SMA[k];
+    }
 
     a = PM[DiagAddr] - Sum;
     if (a < Eps)
@@ -146,7 +156,9 @@ bool FEmTool_ProfileMatrix::Decompose()
 void FEmTool_ProfileMatrix::Solve(const math_Vector& B, math_Vector& X) const
 {
   if (!IsDecomp)
+  {
     throw StdFail_NotDone("Decomposition must be done");
+  }
 
   int    i, j, jj, DiagAddr, CurrAddr;
   double Sum;
@@ -166,7 +178,9 @@ void FEmTool_ProfileMatrix::Solve(const math_Vector& B, math_Vector& X) const
     DiagAddr = profile(2, i);
     Sum      = 0;
     for (j = i - profile(1, i), jj = DiagAddr - (i - j); j < i; j++, jj++)
+    {
       Sum += SMA[jj] * x[j];
+    }
     x[i] = (b[i] - Sum) / SMA[DiagAddr];
   }
 
@@ -224,7 +238,9 @@ void FEmTool_ProfileMatrix::Multiplied(const math_Vector& X, math_Vector& MX) co
     DiagAddr = profile(2, i);
     m[i]     = 0;
     for (j = i - profile(1, i), jj = DiagAddr - (i - j); j <= i; j++, jj++)
+    {
       m[i] += PM[jj] * x[j];
+    }
 
     CurrAddr = DiagAddr;
     for (j = NC[CurrAddr]; j > 0; j = NC[CurrAddr])
@@ -252,7 +268,9 @@ bool FEmTool_ProfileMatrix::IsInProfile(const int i, const int j) const
     return (i - j) <= profile(1, i);
   }
   else if ((j - i) <= profile(1, j))
+  {
     return true;
+  }
 
   return false;
 }
@@ -260,34 +278,44 @@ bool FEmTool_ProfileMatrix::IsInProfile(const int i, const int j) const
 void FEmTool_ProfileMatrix::OutM() const
 {
   int i, j;
-  std::cout << "Matrix A" << std::endl;
+  std::cout << "Matrix A" << '\n';
   for (i = 1; i <= RowNumber(); i++)
   {
     for (j = 1; j < i - profile(1, i); j++)
+    {
       std::cout << "0 ";
+    }
 
     for (j = profile(2, i) - profile(1, i); j <= profile(2, i); j++)
+    {
       std::cout << ProfileMatrix->Value(j) << " ";
-    std::cout << std::endl;
+    }
+    std::cout << '\n';
   }
 
-  std::cout << "NextCoeff" << std::endl;
+  std::cout << "NextCoeff" << '\n';
   for (i = 1; i <= profile(2, RowNumber()); i++)
+  {
     std::cout << NextCoeff->Value(i) << " ";
-  std::cout << std::endl;
+  }
+  std::cout << '\n';
 }
 
 void FEmTool_ProfileMatrix::OutS() const
 {
   int i, j;
-  std::cout << "Matrix S" << std::endl;
+  std::cout << "Matrix S" << '\n';
   for (i = 1; i <= RowNumber(); i++)
   {
     for (j = 1; j < i - profile(1, i); j++)
+    {
       std::cout << "0 ";
+    }
 
     for (j = profile(2, i) - profile(1, i); j <= profile(2, i); j++)
+    {
       std::cout << SMatrix->Value(j) << " ";
-    std::cout << std::endl;
+    }
+    std::cout << '\n';
   }
 }

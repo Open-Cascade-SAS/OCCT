@@ -53,7 +53,9 @@ void IGESAppli_Flow::Init(
 bool IGESAppli_Flow::OwnCorrect()
 {
   if (theNbContextFlags == 2)
+  {
     return false;
+  }
   theNbContextFlags = 2;
   return true;
 }

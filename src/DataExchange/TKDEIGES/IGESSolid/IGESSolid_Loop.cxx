@@ -46,7 +46,9 @@ void IGESSolid_Loop::Init(
       || nbParameterCurves->Lower() != 1 || nb != nbParameterCurves->Length()
       || IsoparametricFlags->Lower() != 1 || nb != IsoparametricFlags->Length()
       || Curves->Lower() != 1 || nb != Curves->Length())
+  {
     throw Standard_DimensionError("IGESSolid_Loop : Init");
+  }
 
   theTypes              = Types;
   theEdges              = Edges;
@@ -73,7 +75,9 @@ int IGESSolid_Loop::NbEdges() const
 {
   // pdn 20.04.99 CTS22655 to avoid exceptions on empty loops
   if (theEdges.IsNull())
+  {
     return 0;
+  }
   return theEdges->Length();
 }
 
@@ -100,9 +104,13 @@ int IGESSolid_Loop::NbParameterCurves(const int Index) const
 bool IGESSolid_Loop::IsIsoparametric(const int EdgeIndex, const int CurveIndex) const
 {
   if (!theIsoparametricFlags->Value(EdgeIndex).IsNull())
+  {
     return (theIsoparametricFlags->Value(EdgeIndex)->Value(CurveIndex) != 0);
+  }
   else
+  {
     return false; // must say something
+  }
 }
 
 occ::handle<IGESData_IGESEntity> IGESSolid_Loop::ParametricCurve(const int EdgeIndex,
@@ -110,7 +118,9 @@ occ::handle<IGESData_IGESEntity> IGESSolid_Loop::ParametricCurve(const int EdgeI
 {
   occ::handle<IGESData_IGESEntity> acurve; // by default will be null
   if (!theCurves->Value(EdgeIndex).IsNull())
+  {
     acurve = theCurves->Value(EdgeIndex)->Value(CurveIndex);
+  }
   return acurve;
 }
 

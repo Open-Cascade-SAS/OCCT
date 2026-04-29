@@ -1224,7 +1224,9 @@ static int noteDump(Draw_Interpretor& di, int argc, const char** argv)
         di << ss.str().c_str();
       }
       if (aData->Length() > theMaxLen)
+      {
         di << "  ...";
+      }
       di << "\n";
     }
   }
@@ -1239,7 +1241,9 @@ static int noteDump(Draw_Interpretor& di, int argc, const char** argv)
       di << "[ " << aP.X() << " " << aP.Y() << " " << aP.Z() << " ]\n";
     }
     else
+    {
       di << " not specified\n";
+    }
     di << "plane : ";
     if (aNoteObj->HasPlane())
     {
@@ -1256,7 +1260,9 @@ static int noteDump(Draw_Interpretor& di, int argc, const char** argv)
       di << "[ " << aP.X() << " " << aP.Y() << " " << aP.Z() << " ]\n";
     }
     else
+    {
       di << " not specified\n";
+    }
     di << "presentation : " << (aNoteObj->GetPresentation().IsNull() ? "no" : "specified");
   }
 
@@ -1313,7 +1319,9 @@ static int noteRefDump(Draw_Interpretor& di, int argc, const char** argv)
       di << "Attribute : " << ss.str().c_str() << "\n";
     }
     else if (aRef->IsSubshapeIndex())
+    {
       di << "Subshape  : " << aRef->GetSubshapeIndex() << "\n";
+    }
   }
   di << "Orphan    : " << (aRef->IsOrphan() ? "yes" : "no") << "\n";
 

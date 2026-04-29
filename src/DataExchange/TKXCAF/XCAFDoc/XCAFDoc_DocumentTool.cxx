@@ -72,7 +72,9 @@ occ::handle<XCAFDoc_DocumentTool> XCAFDoc_DocumentTool::Set(const TDF_Label& L, 
   if (!aL.FindAttribute(XCAFDoc_DocumentTool::GetID(), A))
   {
     if (!IsAcces)
+    {
       aL = L;
+    }
 
     A = new XCAFDoc_DocumentTool;
     aL.AddAttribute(A);

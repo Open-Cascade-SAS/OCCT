@@ -80,7 +80,9 @@ Standard_DISABLE_DEPRECATION_WARNINGS gp_Pnt2d
   Convert_ConicToBSplineCurve::Pole(const int theIndex) const
 {
   if (theIndex < 1 || theIndex > myPoles.Length())
+  {
     throw Standard_OutOfRange("Convert_ConicToBSplineCurve::Pole: Index out of range");
+  }
   return myPoles(theIndex);
 }
 
@@ -89,7 +91,9 @@ Standard_DISABLE_DEPRECATION_WARNINGS gp_Pnt2d
 double Convert_ConicToBSplineCurve::Weight(const int theIndex) const
 {
   if (theIndex < 1 || theIndex > myPoles.Length())
+  {
     throw Standard_OutOfRange("Convert_ConicToBSplineCurve::Weight: Index out of range");
+  }
   return myWeights(theIndex);
 }
 
@@ -98,7 +102,9 @@ double Convert_ConicToBSplineCurve::Weight(const int theIndex) const
 double Convert_ConicToBSplineCurve::Knot(const int theIndex) const
 {
   if (theIndex < 1 || theIndex > myKnots.Length())
+  {
     throw Standard_OutOfRange("Convert_ConicToBSplineCurve::Knot: Index out of range");
+  }
   return myKnots(theIndex);
 }
 
@@ -107,7 +113,9 @@ double Convert_ConicToBSplineCurve::Knot(const int theIndex) const
 int Convert_ConicToBSplineCurve::Multiplicity(const int theIndex) const
 {
   if (theIndex < 1 || theIndex > myKnots.Length())
+  {
     throw Standard_OutOfRange("Convert_ConicToBSplineCurve::Multiplicity: Index out of range");
+  }
   return myMults(theIndex);
 }
 

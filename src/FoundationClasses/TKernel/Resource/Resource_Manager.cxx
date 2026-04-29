@@ -78,7 +78,7 @@ Resource_Manager::Resource_Manager(const TCollection_AsciiString& theName,
   }
   else if (myVerbose)
   {
-    std::cout << "Resource Manager Warning: aDefaultsDirectory is empty." << std::endl;
+    std::cout << "Resource Manager Warning: aDefaultsDirectory is empty." << '\n';
   }
 
   if (!theUserDefaultsDirectory.IsEmpty())
@@ -96,7 +96,7 @@ Resource_Manager::Resource_Manager(const TCollection_AsciiString& theName,
   }
   else if (myVerbose)
   {
-    std::cout << "Resource Manager Warning: anUserDefaultsDirectory is empty." << std::endl;
+    std::cout << "Resource Manager Warning: anUserDefaultsDirectory is empty." << '\n';
   }
 }
 
@@ -112,23 +112,33 @@ Resource_Manager::Resource_Manager(const char* const aName, const bool Verbose)
 
   OSD_Environment envVerbose("CSF_ResourceVerbose");
   if (!envVerbose.Value().IsEmpty())
+  {
     myVerbose = true;
+  }
 
   TCollection_AsciiString aPath, aUserPath;
   GetResourcePath(aPath, aName, false);
   GetResourcePath(aUserPath, aName, true);
 
   if (!aPath.IsEmpty())
+  {
     Load(aPath, myRefMap);
+  }
   else if (myVerbose)
+  {
     std::cout << "Resource Manager Warning: Environment variable \"CSF_" << aName
-              << "Defaults\" not set." << std::endl;
+              << "Defaults\" not set." << '\n';
+  }
 
   if (!aUserPath.IsEmpty())
+  {
     Load(aUserPath, myRefMap);
+  }
   else if (myVerbose)
+  {
     std::cout << "Resource Manager Warning: Environment variable \"CSF_" << aName
-              << "UserDefaults\" not set." << std::endl;
+              << "UserDefaults\" not set." << '\n';
+  }
 }
 
 //=================================================================================================
@@ -155,8 +165,10 @@ void Resource_Manager::Load(
   if (File.Failed())
   {
     if (myVerbose)
+    {
       std::cout << "Resource Manager Warning: Cannot read file \"" << FileName
-                << "\". File not found or permission denied." << std::endl;
+                << "\". File not found or permission denied." << '\n';
+    }
     return;
   }
   myInitialized  = true;
@@ -171,20 +183,26 @@ void Resource_Manager::Load(
         break;
       case Resource_KOL_Resource:
         if (!aMap.Bind(Token1, Token2))
+        {
           aMap(Token1) = Token2;
+        }
         break;
       case Resource_KOL_Error:
         if (myVerbose)
+        {
           std::cout << "Resource Manager: Syntax error at line " << LineNumber
-                    << " in file : " << FileName << std::endl;
+                    << " in file : " << FileName << '\n';
+        }
         break;
     }
     LineNumber++;
   }
   File.Close();
   if (myVerbose)
+  {
     std::cout << "Resource Manager: " << ((&aMap == &myUserMap) ? "User" : "Reference")
-              << " file \"" << FileName << "\" loaded" << std::endl;
+              << " file \"" << FileName << "\" loaded" << '\n';
+  }
 }
 
 static Resource_KindOfLine WhatKindOfLine(OSD_File&                aFile,
@@ -196,30 +214,43 @@ static Resource_KindOfLine WhatKindOfLine(OSD_File&                aFile,
   TCollection_AsciiString Line;
 
   if (!GetLine(aFile, Line))
+  {
     return Resource_KOL_End;
+  }
 
   if (Line.Value(1) == '!')
+  {
     return Resource_KOL_Comment;
+  }
 
   Pos1 = Line.FirstLocationNotInSet(WhiteSpace, 1, Line.Length());
   if (Line.Value(Pos1) == '\n')
+  {
     return Resource_KOL_Empty;
+  }
 
   Pos2 = Line.Location(1, ':', Pos1, Line.Length());
   if (!Pos2 || Pos1 == Pos2)
+  {
     return Resource_KOL_Error;
+  }
 
   for (Pos = Pos2 - 1; Line.Value(Pos) == '\t' || Line.Value(Pos) == ' '; Pos--)
+  {
     ;
+  }
   aToken1 = Line.SubString(Pos1, Pos);
 
   if (Debug)
+  {
     std::cout << "Key = '" << aToken1 << std::flush;
+  }
 
   Pos = Line.FirstLocationNotInSet(WhiteSpace, Pos2 + 1, Line.Length());
   if (Pos)
   {
     if (Line.Value(Pos) == '\\')
+    {
       switch (Line.Value(Pos + 1))
       {
         case '\\':
@@ -228,9 +259,12 @@ static Resource_KindOfLine WhatKindOfLine(OSD_File&                aFile,
           Pos++;
           break;
       }
+    }
   }
   if (Pos == Line.Length())
+  {
     aToken2.Clear();
+  }
   else
   {
     Line.Remove(1, Pos - 1);
@@ -246,7 +280,9 @@ static Resource_KindOfLine WhatKindOfLine(OSD_File&                aFile,
     aToken2 = Line;
   }
   if (Debug)
-    std::cout << "'\t Value = '" << aToken2 << "'" << std::endl << std::flush;
+  {
+    std::cout << "'\t Value = '" << aToken2 << "'" << '\n' << std::flush;
+  }
   return Resource_KOL_Resource;
 }
 
@@ -266,9 +302,13 @@ static int GetLine(OSD_File& aFile, TCollection_AsciiString& aLine)
     if (aFile.IsAtEnd())
     {
       if (!aLine.Length())
+      {
         return 0;
+      }
       else
+      {
         aLine += "\n";
+      }
     }
   } while (aLine.Value(aLine.Length()) != '\n');
 
@@ -292,8 +332,10 @@ bool Resource_Manager::Save() const
   if (dir.IsEmpty())
   {
     if (myVerbose)
+    {
       std::cout << "Resource Manager Warning: environment variable \"" << anEnvVar
-                << "\" not set.  Cannot save resources." << std::endl;
+                << "\" not set.  Cannot save resources." << '\n';
+    }
     return false;
   }
 
@@ -318,8 +360,10 @@ bool Resource_Manager::Save() const
     if (!aStatus)
     {
       if (myVerbose)
+      {
         std::cout << "Resource Manager: Error opening or creating directory \"" << aFilePath
-                  << "\". Permission denied. Cannot save resources." << std::endl;
+                  << "\". Permission denied. Cannot save resources." << '\n';
+      }
       return false;
     }
   }
@@ -350,8 +394,10 @@ bool Resource_Manager::Save() const
   if (!aStatus)
   {
     if (myVerbose)
+    {
       std::cout << "Resource Manager: Error opening or creating file \"" << aFilePath
-                << "\". Permission denied. Cannot save resources." << std::endl;
+                << "\". Permission denied. Cannot save resources." << '\n';
+    }
     return false;
   }
 
@@ -363,7 +409,9 @@ bool Resource_Manager::Save() const
 
     int Index;
     for (Index = 1; Iter.More(); Iter.Next())
+    {
       KeyArray(Index++) = Iter.Key();
+    }
 
     std::sort(KeyArray.begin(), KeyArray.end());
 
@@ -372,6 +420,7 @@ bool Resource_Manager::Save() const
     {
       Value = myUserMap(KeyArray(Index));
       if (!Value.IsEmpty())
+      {
         switch (Value.Value(1))
         {
           case '\\':
@@ -380,15 +429,20 @@ bool Resource_Manager::Save() const
             Value.Insert(1, '\\');
             break;
         }
+      }
       Line = KeyArray(Index) + ":\t" + Value + "\n";
 
       if (Debug)
-        std::cout << "Line = '" << Line << "'" << std::endl;
+      {
+        std::cout << "Line = '" << Line << "'" << '\n';
+      }
 
       File.Write(Line, Line.Length());
     }
     if (myVerbose)
-      std::cout << "Resource Manager: Resources saved in file " << aFilePath << std::endl;
+    {
+      std::cout << "Resource Manager: Resources saved in file " << aFilePath << '\n';
+    }
   }
   File.Close();
   return true;
@@ -439,9 +493,13 @@ const char* Resource_Manager::Value(const char* const aResource) const
 {
   TCollection_AsciiString Resource(aResource);
   if (myUserMap.IsBound(Resource))
+  {
     return myUserMap(Resource).ToCString();
+  }
   if (myRefMap.IsBound(Resource))
+  {
     return myRefMap(Resource).ToCString();
+  }
   throw Resource_NoSuchResource(aResource);
 }
 
@@ -454,7 +512,9 @@ const char16_t* Resource_Manager::ExtValue(const char* const aResource)
 {
   TCollection_AsciiString Resource(aResource);
   if (myExtStrMap.IsBound(Resource))
+  {
     return myExtStrMap(Resource).ToExtString();
+  }
 
   TCollection_AsciiString    Result = Value(aResource);
   TCollection_ExtendedString ExtResult;
@@ -520,7 +580,9 @@ void Resource_Manager::SetResource(const char* const aResource, const char* cons
   TCollection_AsciiString Resource = aResource;
   TCollection_AsciiString Value    = aValue;
   if (!myUserMap.Bind(Resource, Value))
+  {
     myUserMap(Resource) = Value;
+  }
 }
 
 //=================================================================================================
@@ -555,7 +617,9 @@ void Resource_Manager::GetResourcePath(TCollection_AsciiString& aPath,
   OSD_Environment         anEnv(anEnvVar);
   dir = anEnv.Value();
   if (dir.IsEmpty())
+  {
     return;
+  }
 
   TCollection_AsciiString aResPath(dir);
 

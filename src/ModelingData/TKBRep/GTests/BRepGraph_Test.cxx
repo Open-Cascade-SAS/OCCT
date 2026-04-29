@@ -1045,7 +1045,9 @@ TEST_F(BRepGraphTest, FindPCurve_ValidPair)
     const BRepGraph_WireId anOuterWire =
       BRepGraph_TestTools::OuterWireOfFace(myGraph, aFaceIt.CurrentId());
     if (!anOuterWire.IsValid())
+    {
       continue;
+    }
     const NCollection_DynamicArray<BRepGraph_CoEdgeRefId> aCoEdgeRefs =
       BRepGraph_TestTools::CoEdgeRefsOfWire(myGraph, anOuterWire);
     for (const BRepGraph_CoEdgeRefId& aCoEdgeRefId : aCoEdgeRefs)
@@ -1053,7 +1055,9 @@ TEST_F(BRepGraphTest, FindPCurve_ValidPair)
       const BRepGraphInc::CoEdgeRef& aCR     = myGraph.Refs().CoEdges().Entry(aCoEdgeRefId);
       const BRepGraphInc::CoEdgeDef& aCoEdge = myGraph.Topo().CoEdges().Definition(aCR.CoEdgeDefId);
       if (BRepGraph_Tool::Edge::Degenerated(myGraph, BRepGraph_EdgeId(aCoEdge.EdgeDefId)))
+      {
         continue;
+      }
       const BRepGraphInc::CoEdgeDef* aPCurveEntry =
         BRepGraph_Tool::Edge::FindPCurve(myGraph,
                                          BRepGraph_EdgeId(aCoEdge.EdgeDefId),
@@ -1068,17 +1072,29 @@ TEST_F(BRepGraphTest, UID_Unique)
 {
   NCollection_Map<BRepGraph_UID> aUIDSet;
   for (BRepGraph_SolidIterator aSolidIt(myGraph); aSolidIt.More(); aSolidIt.Next())
+  {
     EXPECT_TRUE(aUIDSet.Add(myGraph.UIDs().Of(BRepGraph_NodeId(aSolidIt.CurrentId()))));
+  }
   for (BRepGraph_ShellIterator aShellIt(myGraph); aShellIt.More(); aShellIt.Next())
+  {
     EXPECT_TRUE(aUIDSet.Add(myGraph.UIDs().Of(BRepGraph_NodeId(aShellIt.CurrentId()))));
+  }
   for (BRepGraph_FaceIterator aFaceIt(myGraph); aFaceIt.More(); aFaceIt.Next())
+  {
     EXPECT_TRUE(aUIDSet.Add(myGraph.UIDs().Of(BRepGraph_NodeId(aFaceIt.CurrentId()))));
+  }
   for (BRepGraph_WireIterator aWireIt(myGraph); aWireIt.More(); aWireIt.Next())
+  {
     EXPECT_TRUE(aUIDSet.Add(myGraph.UIDs().Of(BRepGraph_NodeId(aWireIt.CurrentId()))));
+  }
   for (BRepGraph_EdgeIterator anEdgeIt(myGraph); anEdgeIt.More(); anEdgeIt.Next())
+  {
     EXPECT_TRUE(aUIDSet.Add(myGraph.UIDs().Of(BRepGraph_NodeId(anEdgeIt.CurrentId()))));
+  }
   for (BRepGraph_VertexIterator aVertexIt(myGraph); aVertexIt.More(); aVertexIt.Next())
+  {
     EXPECT_TRUE(aUIDSet.Add(myGraph.UIDs().Of(BRepGraph_NodeId(aVertexIt.CurrentId()))));
+  }
   // Surface/Curve geometry UIDs are no longer separate nodes; geometry is stored inline on defs.
 }
 
@@ -1360,9 +1376,13 @@ TEST_F(BRepGraphTest, ParallelBuild_CompoundOfFaces)
   aBuilder.MakeCompound(aCompound);
 
   for (TopExp_Explorer anExp(aBox1.Shape(), TopAbs_FACE); anExp.More(); anExp.Next())
+  {
     aBuilder.Add(aCompound, anExp.Current());
+  }
   for (TopExp_Explorer anExp(aBox2.Shape(), TopAbs_FACE); anExp.More(); anExp.Next())
+  {
     aBuilder.Add(aCompound, anExp.Current());
+  }
 
   BRepGraph aGraph;
   aGraph.Clear();
@@ -1452,9 +1472,13 @@ TEST_F(BRepGraphTest, ReconstructFace_AfterEdgeReplace_ContainsNewEdge)
     occ::handle<Geom_Curve> aCurve =
       BRep_Tool::Curve(TopoDS::Edge(anExp.Current()), aLoc, aFirst, aLast);
     if (!aCurve.IsNull() && !aNewCurve.IsNull() && aCurve.get() == aNewCurve.get())
+    {
       isNewFound = true;
+    }
     if (!aCurve.IsNull() && !anOldCurve.IsNull() && aCurve.get() == anOldCurve.get())
+    {
       isOldFound = true;
+    }
   }
   EXPECT_TRUE(isNewFound) << "New edge curve not found in reconstructed face";
   EXPECT_FALSE(isOldFound) << "Old edge curve still present in reconstructed face";
@@ -1467,7 +1491,9 @@ TEST_F(BRepGraphTest, ReconstructShape_SolidRoot_SameFaceCount)
 
   int aFaceCount = 0;
   for (TopExp_Explorer anExp(aReconstructed, TopAbs_FACE); anExp.More(); anExp.Next())
+  {
     ++aFaceCount;
+  }
   EXPECT_EQ(aFaceCount, 6);
 }
 
@@ -1819,7 +1845,9 @@ TEST_F(BRepGraphTest, ApplyModification_MultiStepChain_FindOriginalTracesBack)
   for (const BRepGraph_NodeId& aDerivedId : aDerived)
   {
     if (aDerivedId == anEdge2)
+    {
       isEdge2Found = true;
+    }
   }
   EXPECT_TRUE(isEdge2Found) << "Edge2 not found in FindDerived(Edge0)";
 
@@ -1829,7 +1857,9 @@ TEST_F(BRepGraphTest, ApplyModification_MultiStepChain_FindOriginalTracesBack)
   for (const BRepGraph_NodeId& aDerivedId : aDerived1)
   {
     if (aDerivedId == anEdge2)
+    {
       isEdge2FromEdge1 = true;
+    }
   }
   EXPECT_TRUE(isEdge2FromEdge1) << "Edge2 not found in FindDerived(Edge1)";
 }
@@ -2260,7 +2290,9 @@ TEST_F(BRepGraphTest, EdgeDef_HasValidCurve3d)
   for (BRepGraph_EdgeIterator anEdgeIt(myGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
     if (BRepGraph_Tool::Edge::Degenerated(myGraph, anEdgeIt.CurrentId()))
+    {
       continue;
+    }
 
     EXPECT_TRUE(BRepGraph_Tool::Edge::HasCurve(myGraph, anEdgeIt.CurrentId()))
       << "Edge " << anEdgeIt.CurrentId().Index << " has no Curve3D rep";
@@ -2323,16 +2355,22 @@ TEST_F(BRepGraphTest, DetectToleranceConflicts_ManualConflict_Detected)
   {
     if (BRepGraph_Tool::Edge::Degenerated(myGraph, anEdgeId)
         || !BRepGraph_Tool::Edge::HasCurve(myGraph, anEdgeId))
+    {
       continue;
+    }
 
     for (BRepGraph_EdgeId anOtherId(anEdgeId.Index + 1); anOtherId.IsValid(aNbEdges); ++anOtherId)
     {
       if (BRepGraph_Tool::Edge::Degenerated(myGraph, anOtherId)
           || !BRepGraph_Tool::Edge::HasCurve(myGraph, anOtherId))
+      {
         continue;
+      }
       if (BRepGraph_Tool::Edge::Curve(myGraph, anEdgeId).get()
           != BRepGraph_Tool::Edge::Curve(myGraph, anOtherId).get())
+      {
         continue;
+      }
 
       // Set very different tolerances on two edges sharing the same curve.
       myGraph.Editor().Edges().SetTolerance(anEdgeId, 0.001);
@@ -2522,7 +2560,9 @@ TEST_F(BRepGraphTest, Face_InnerWireRefs_BoxHasNone)
     for (const BRepGraph_WireRefId& aWireRefId : aWireRefs)
     {
       if (!myGraph.Refs().Wires().Entry(aWireRefId).IsOuter)
+      {
         ++aNonOuterCount;
+      }
     }
     EXPECT_EQ(aNonOuterCount, 0) << "Box face " << aFaceIt.CurrentId().Index
                                  << " should have no inner wires";
@@ -2561,7 +2601,9 @@ TEST_F(BRepGraphTest, Edge_ParamRange_ValidBounds)
   for (BRepGraph_EdgeIterator anEdgeIt(myGraph); anEdgeIt.More(); anEdgeIt.Next())
   {
     if (BRepGraph_Tool::Edge::Degenerated(myGraph, anEdgeIt.CurrentId()))
+    {
       continue;
+    }
     const auto [aFirst, aLast] = BRepGraph_Tool::Edge::Range(myGraph, anEdgeIt.CurrentId());
     EXPECT_LT(aFirst, aLast) << "Edge " << anEdgeIt.CurrentId().Index
                              << " has invalid parameter range [" << aFirst << ", " << aLast << "]";
@@ -2748,7 +2790,9 @@ TEST_F(BRepGraphTest, ReconstructShape_ShellRoot_SameFaceCount)
 
   int aFaceCount = 0;
   for (TopExp_Explorer aFaceExp(aReconstructed, TopAbs_FACE); aFaceExp.More(); aFaceExp.Next())
+  {
     ++aFaceCount;
+  }
   EXPECT_EQ(aFaceCount, 6);
 }
 
@@ -2784,7 +2828,9 @@ TEST_F(BRepGraphTest, Wire_OuterWireIdx_MatchesFaceDef)
     EXPECT_TRUE(anOuterWire.IsValid())
       << "Face " << aFaceIt.CurrentId().Index << " has no outer wire";
     if (!anOuterWire.IsValid())
+    {
       continue;
+    }
     EXPECT_LT(anOuterWire.Index, myGraph.Topo().Wires().Nb())
       << "Face " << aFaceIt.CurrentId().Index << " outer wire index out of range";
   }

@@ -118,9 +118,13 @@ static int OCC486(Draw_Interpretor& di, int argc, const char** argv)
     constexpr double Tol = Precision::PConfusion();
     Extrema_ExtPS    myExtPS;
     if (argc > 5)
+    {
       du = Draw::Atof(argv[5]);
+    }
     if (argc > 6)
+    {
       dv = Draw::Atof(argv[6]);
+    }
 
     double uf, ul, vf, vl;
     GS->Bounds(uf, ul, vf, vl);
@@ -157,12 +161,18 @@ static int OCC486(Draw_Interpretor& di, int argc, const char** argv)
       di << "CheckDistance = " << aCheckDist << "\n";
 
       if (fabs(distMin - aCheckDist) < Precision::Confusion())
+      {
         return 0;
+      }
       else
+      {
         return 1;
+      }
     }
     else
+    {
       return 1;
+    }
   }
   catch (Standard_Failure const&)
   {
@@ -271,7 +281,9 @@ static int OCC712(Draw_Interpretor& di, int argc, const char** argv)
       {
         TopoDS_Face aFace = TopoDS::Face(ex.Current());
         if (aFace.IsSame(fShape) || aFace.IsSame(lShape))
+        {
           continue;
+        }
         draftSlab.Add(aFace, slabDir, angle, slabPln);
         if (!draftSlab.AddDone())
         {
@@ -311,6 +323,4 @@ void QABugs::Commands_10(Draw_Interpretor& theCommands)
                   group);
   theCommands.Add("OCC486", "Use : OCC486 surf x y z du dv ", __FILE__, OCC486, group);
   theCommands.Add("OCC712", "OCC712 draftAngle slabThick", __FILE__, OCC712, group);
-
-  return;
 }

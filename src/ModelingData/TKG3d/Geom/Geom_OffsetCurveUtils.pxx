@@ -469,7 +469,9 @@ bool EvaluateD2(double                theU,
   {
     gp_Vec aDummyD4;
     if (!AdjustDerivative(*theBasisCurve, 3, theU, theD1, theD2, aD3, aDummyD4, isDirectionChange))
+    {
       return false;
+    }
   }
 
   return CalculateD2(theValue, theD1, theD2, aD3, theDir.XYZ(), theOffset, isDirectionChange);
@@ -511,7 +513,9 @@ bool EvaluateD3(double                theU,
   if (theD1.SquareMagnitude() <= gp::Resolution())
   {
     if (!AdjustDerivative(*theBasisCurve, 4, theU, theD1, theD2, theD3, aD4, isDirectionChange))
+    {
       return false;
+    }
   }
 
   return CalculateD3(theValue,

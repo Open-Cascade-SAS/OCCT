@@ -1662,13 +1662,21 @@ static int VLengthParam(Draw_Interpretor&, int theArgNum, const char** theArgVec
     TCollection_AsciiString aValue = theArgVec[anArgumentIt];
     aValue.LowerCase();
     if (aValue == "ox")
+    {
       aDirection = gp::DX();
+    }
     else if (aValue == "oy")
+    {
       aDirection = gp::DY();
+    }
     else if (aValue == "oz")
+    {
       aDirection = gp::DZ();
+    }
     else if (aValue == "autodirection")
+    {
       isCustomDirection = false;
+    }
     else
     {
       if (anArgumentIt + 2 >= theArgNum)

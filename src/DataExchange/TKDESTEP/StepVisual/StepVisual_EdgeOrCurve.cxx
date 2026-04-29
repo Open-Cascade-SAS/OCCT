@@ -27,11 +27,17 @@ StepVisual_EdgeOrCurve::StepVisual_EdgeOrCurve() = default;
 int StepVisual_EdgeOrCurve::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepGeom_Curve)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepShape_Edge)))
+  {
     return 2;
+  }
   return 0;
 }
 

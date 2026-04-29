@@ -29,11 +29,15 @@ StepData_NodeOfWriterLib::StepData_NodeOfWriterLib() = default;
 void StepData_NodeOfWriterLib::AddNode(const occ::handle<StepData_GlobalNodeOfWriterLib>& anode)
 {
   if (thenode == anode)
+  {
     return;
+  }
   if (thenext.IsNull())
   {
     if (thenode.IsNull())
+    {
       thenode = anode;
+    }
     else
     {
       thenext = new StepData_NodeOfWriterLib;
@@ -41,7 +45,9 @@ void StepData_NodeOfWriterLib::AddNode(const occ::handle<StepData_GlobalNodeOfWr
     }
   }
   else
+  {
     thenext->AddNode(anode);
+  }
 }
 
 const occ::handle<StepData_ReadWriteModule>& StepData_NodeOfWriterLib::Module() const

@@ -37,9 +37,13 @@ void ChFiDS_Regul::SetCurve(const int IC)
 void ChFiDS_Regul::SetS1(const int IS1, const bool IsFace)
 {
   if (IsFace)
+  {
     is1 = std::abs(IS1);
+  }
   else
+  {
     is1 = -std::abs(IS1);
+  }
 }
 
 //=================================================================================================
@@ -47,9 +51,13 @@ void ChFiDS_Regul::SetS1(const int IS1, const bool IsFace)
 void ChFiDS_Regul::SetS2(const int IS2, const bool IsFace)
 {
   if (IsFace)
+  {
     is2 = std::abs(IS2);
+  }
   else
+  {
     is2 = -std::abs(IS2);
+  }
 }
 
 //=================================================================================================

@@ -28,7 +28,9 @@ void XSAlgo::Init()
 {
   static bool init = false;
   if (init)
+  {
     return;
+  }
   init = true;
   ShapeAlgo::Init();
   theContainer = new XSAlgo_AlgoContainer;

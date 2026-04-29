@@ -175,23 +175,33 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape&            Sbase,
     double par2 = proj2.Distance(1);
     double Par  = std::min(par1, par2);
     if (Par < L)
+    {
       L = Par;
+    }
     if (L < Rad && L > 0.)
+    {
       Rad = L;
+    }
   }
 
   double height = std::min(H1, H2);
 
   if (Rad <= height)
+  {
     Rad = height + 0.01 * height;
+  }
 
   myAngle1 = asin(H1 / Rad) + M_PI / 10.;
   myAngle2 = asin(H2 / Rad) + M_PI / 10.;
 
   if ((myAngle1 - M_PI / 2) > Precision::Confusion())
+  {
     myAngle1 = M_PI / 2;
+  }
   if ((myAngle2 - M_PI / 2) > Precision::Confusion())
+  {
     myAngle2 = M_PI / 2;
+  }
 
   mySkface.Nullify();
   myPbase.Nullify();
@@ -215,7 +225,9 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape&            Sbase,
   {
     const double& tol = BRep_Tool::Tolerance(TopoDS::Vertex(exx.Current()));
     if (tol > myTol)
+    {
       myTol = tol;
+    }
   }
 
   exx.Init(Sbase, TopAbs_VERTEX);
@@ -223,7 +235,9 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape&            Sbase,
   {
     const double& tol = BRep_Tool::Tolerance(TopoDS::Vertex(exx.Current()));
     if (tol > myTol)
+    {
       myTol = tol;
+    }
   }
 
   TopoDS_Shape aLocalShapeW = W.Oriented(TopAbs_FORWARD);
@@ -337,7 +351,9 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape&            Sbase,
         && s->DynamicType() != STANDARD_TYPE(Geom_CylindricalSurface)
         && s->DynamicType() != STANDARD_TYPE(Geom_ConicalSurface)
         && s->DynamicType() != STANDARD_TYPE(Geom_ToroidalSurface))
+    {
       Sliding = false;
+    }
   }
 
   if (Sliding)
@@ -351,7 +367,9 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape&            Sbase,
         && ss->DynamicType() != STANDARD_TYPE(Geom_CylindricalSurface)
         && ss->DynamicType() != STANDARD_TYPE(Geom_ConicalSurface)
         && ss->DynamicType() != STANDARD_TYPE(Geom_ToroidalSurface))
+    {
       Sliding = false;
+    }
   }
 
   // Control only start and end points no control at the middle to improve
@@ -416,20 +434,26 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape&            Sbase,
     {
       BRepExtrema_ExtCF ext1(TopoDS::Edge(ee1.Shape()), FirstFace);
       if (ext1.NbExt() < 1 || ext1.SquareDistance(1) > Precision::SquareConfusion())
+      {
         Sliding = false;
+      }
     }
     if (Sliding && !PtOnLastEdge)
     {
       BRepExtrema_ExtCF ext2(ee2, LastFace); // ExtCF : curves and surfaces
       if (ext2.NbExt() < 1 || ext2.SquareDistance(1) > Precision::SquareConfusion())
+      {
         Sliding = false;
+      }
     }
     if (Sliding && PtOnFirstEdge)
     {
       double f, l;
       FirstCrv = BRep_Tool::Curve(OnFirstEdge, f, l);
       if (FirstCrv->DynamicType() != STANDARD_TYPE(Geom_Circle))
+      {
         Sliding = false;
+      }
       else
       {
         occ::handle<Geom_Circle> C1   = occ::down_cast<Geom_Circle>(FirstCrv);
@@ -437,7 +461,9 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape&            Sbase,
         FirstCircle                   = Circ;
         gp_Ax1 circax                 = FirstCircle.Axis();
         if (!circax.IsCoaxial(myAxe, Precision::Confusion(), Precision::Confusion()))
+        {
           Sliding = false;
+        }
         else
         {
           // #ifndef OCCT_DEBUG
@@ -446,7 +472,9 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape&            Sbase,
               //	  if(abs(FirstCircle.Radius()-FirstRayon) >=
               // #endif
               Precision::Confusion())
+          {
             Sliding = false;
+          }
         }
       }
     }
@@ -456,7 +484,9 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape&            Sbase,
       double f, l;
       LastCrv = BRep_Tool::Curve(OnLastEdge, f, l);
       if (LastCrv->DynamicType() != STANDARD_TYPE(Geom_Circle))
+      {
         Sliding = false;
+      }
       else
       {
         occ::handle<Geom_Circle> C1   = occ::down_cast<Geom_Circle>(LastCrv);
@@ -464,7 +494,9 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape&            Sbase,
         LastCircle                    = Circ;
         gp_Ax1 circax                 = LastCircle.Axis();
         if (!circax.IsCoaxial(myAxe, Precision::Confusion(), Precision::Confusion()))
+        {
           Sliding = false;
+        }
         else
         {
           double rad = LastCircle.Radius();
@@ -601,7 +633,9 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape&            Sbase,
         ee1                      = TopoDS::Edge(aLocalShape);
         //	ee1 = TopoDS::Edge(ee1.Oriented(E.Orientation()));
         if (counter == 1)
+        {
           theFV = TopExp::FirstVertex(ee1, true);
+        }
         myLFMap(E).Append(ee1);
         BB.Add(w, ee1);
         thePreviousEdge = ee1;
@@ -648,7 +682,9 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape&            Sbase,
           myLFMap(E).Append(E11);
           BB.Add(w, E11);
           if (counter == 1)
+          {
             theFV = TopExp::FirstVertex(E11, true);
+          }
           counter++;
         }
         else
@@ -675,7 +711,9 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape&            Sbase,
           BB.Add(w, ee);
           myLFMap(E).Append(ee);
           if (counter == 1)
+          {
             theFV = TopExp::FirstVertex(ee, true);
+          }
           thePreviousEdge = ee;
           counter++;
           break;
@@ -701,7 +739,9 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape&            Sbase,
       occ::handle<Geom_Curve>        ccc = BRep_Tool::Curve(edg, f, l);
       occ::handle<Geom_TrimmedCurve> cc  = new Geom_TrimmedCurve(ccc, f, l);
       if (edg.Orientation() == TopAbs_REVERSED)
+      {
         cc->Reverse();
+      }
 
       fp          = cc->Value(cc->FirstParameter());
       lp          = cc->Value(cc->LastParameter());
@@ -772,13 +812,17 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape&            Sbase,
         thePreviousEdge = eeee;
         BB.Add(w, eeee);
         if (counter == 1)
+        {
           theFV = TopExp::FirstVertex(eeee, true);
+        }
         counter1++;
         NewListOfEdges.Append(edg);
         theEdge = eeee;
 
         if (dist <= myTol)
+        {
           theFEdge = edg;
+        }
         theLastPnt = BRep_Tool::Pnt(TopExp::LastVertex(theEdge, true));
       }
 
@@ -797,7 +841,9 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape&            Sbase,
         LastOK = false;
       }
       else if (it.More())
+      {
         it.Next();
+      }
       else
       {
         Sliding = false;
@@ -932,7 +978,9 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape&            Sbase,
       }
 
       if (VV.IsNull() && NewV1.IsNull())
+      {
         continue;
+      }
 
       if (!VV.IsNull() && NewV1.IsNull())
       {
@@ -1257,9 +1305,13 @@ void BRepFeat_MakeRevolutionForm::Perform()
   TopoDS_Solid S1 = BRepFeat::Tool(f1, FF1, Ori1);
   TopoDS_Solid S2 = BRepFeat::Tool(f2, FF2, Ori2);
   if (!S1.IsNull())
+  {
     B.Add(Comp, S1);
+  }
   if (!S2.IsNull())
+  {
     B.Add(Comp, S2);
+  }
 
   BRepAlgoAPI_Cut trP(VraiForm, Comp);
   // coupe de la nervure par deux plans parallels
@@ -1275,7 +1327,9 @@ void BRepFeat_MakeRevolutionForm::Perform()
   {
     const TopoDS_Shape& orig = it1.Key();
     if (it1.Value().IsEmpty())
+    {
       continue;
+    }
     const TopoDS_Shape& sh = it1.Value().First();
     exx.Init(VraiForm, TopAbs_FACE);
     for (; exx.More(); exx.Next())
@@ -1324,9 +1378,13 @@ void BRepFeat_MakeRevolutionForm::Perform()
     {
       const NCollection_List<TopoDS_Shape>& desfaces = trP.Modified(fac);
       if (!desfaces.IsEmpty())
+      {
         SlidingMap(fac) = desfaces;
+      }
       else
+      {
         SlidingMap(fac).Append(fac);
+      }
     }
   }
 
@@ -1336,9 +1394,13 @@ void BRepFeat_MakeRevolutionForm::Perform()
   VraiForm = trP.Shape(); // primitive cut
 
   if (!myGluedF.IsEmpty())
+  {
     myPerfSelection = BRepFeat_NoSelection;
+  }
   else
+  {
     myPerfSelection = BRepFeat_SelectionSh;
+  }
 
   exx.Init(myPbase, TopAbs_EDGE);
   for (; exx.More(); exx.Next())
@@ -1613,13 +1675,19 @@ bool BRepFeat_MakeRevolutionForm::Propagate(NCollection_List<TopoDS_Shape>& SliL
     // find edge connected to v1:
     gp_Pnt pt;
     if (!v1.IsNull())
+    {
       pt = BRep_Tool::Pnt(v1);
+    }
     gp_Pnt ptprev;
     if (!Vprevious.IsNull())
+    {
       ptprev = BRep_Tool::Pnt(Vprevious);
+    }
     gp_Pnt ptpreprev;
     if (!Vpreprevious.IsNull())
+    {
       ptpreprev = BRep_Tool::Pnt(Vpreprevious);
+    }
 
     if ((!Vprevious.IsNull() && ptprev.Distance(pt) <= myTol)
         || (!Vpreprevious.IsNull() && ptpreprev.Distance(pt) <= myTol))
@@ -1682,7 +1750,9 @@ bool BRepFeat_MakeRevolutionForm::Propagate(NCollection_List<TopoDS_Shape>& SliL
       gp_Pnt ppp2 = BRep_Tool::Pnt(TopExp::LastVertex(edg1, true));
       if (ppp1.Distance(BRep_Tool::Pnt(v1)) <= BRep_Tool::Tolerance(v1)
           || ppp2.Distance(BRep_Tool::Pnt(v1)) <= BRep_Tool::Tolerance(v1))
+      {
         break;
+      }
     }
 
     NCollection_List<TopoDS_Shape> thelist3;
@@ -1691,9 +1761,13 @@ bool BRepFeat_MakeRevolutionForm::Propagate(NCollection_List<TopoDS_Shape>& SliL
     myListOfEdges.Append(edg1);
 
     if (!edg1.IsNull())
+    {
       SliList.Prepend(CurrentFace);
+    }
     else
+    {
       return false;
+    }
 
     Vert        = TopExp::FirstVertex(edg1, true);
     gp_Pnt PP   = BRep_Tool::Pnt(Vert);
@@ -1701,7 +1775,9 @@ bool BRepFeat_MakeRevolutionForm::Propagate(NCollection_List<TopoDS_Shape>& SliL
     double tol  = BRep_Tool::Tolerance(edg1);
     double tol1 = BRep_Tool::Tolerance(v1);
     if (tol1 > tol)
+    {
       tol = tol1;
+    }
     double dist = PP.Distance(FP);
     if (dist <= tol)
     {
@@ -1734,13 +1810,19 @@ bool BRepFeat_MakeRevolutionForm::Propagate(NCollection_List<TopoDS_Shape>& SliL
     // find edge connected to v2:
     gp_Pnt pt;
     if (!v2.IsNull())
+    {
       pt = BRep_Tool::Pnt(v2);
+    }
     gp_Pnt ptprev;
     if (!Vprevious.IsNull())
+    {
       ptprev = BRep_Tool::Pnt(Vprevious);
+    }
     gp_Pnt ptpreprev;
     if (!Vpreprevious.IsNull())
+    {
       ptpreprev = BRep_Tool::Pnt(Vpreprevious);
+    }
 
     if ((!Vprevious.IsNull() && ptprev.Distance(pt) <= myTol)
         || (!Vpreprevious.IsNull() && ptpreprev.Distance(pt) <= myTol))
@@ -1804,7 +1886,9 @@ bool BRepFeat_MakeRevolutionForm::Propagate(NCollection_List<TopoDS_Shape>& SliL
       gp_Pnt ppp2 = BRep_Tool::Pnt(TopExp::LastVertex(edg2, true));
       if (ppp1.Distance(BRep_Tool::Pnt(v2)) <= BRep_Tool::Tolerance(v2)
           || ppp2.Distance(BRep_Tool::Pnt(v2)) <= BRep_Tool::Tolerance(v2))
+      {
         break;
+      }
     }
     NCollection_List<TopoDS_Shape> thelist4;
     mySlface.Bind(CurrentFace, thelist4);
@@ -1812,9 +1896,13 @@ bool BRepFeat_MakeRevolutionForm::Propagate(NCollection_List<TopoDS_Shape>& SliL
     myListOfEdges.Append(edg2);
 
     if (!edg2.IsNull())
+    {
       SliList.Append(CurrentFace);
+    }
     else
+    {
       return false;
+    }
 
     Vert      = TopExp::FirstVertex(edg2, true);
     gp_Pnt PP = BRep_Tool::Pnt(Vert);
@@ -1838,7 +1926,9 @@ bool BRepFeat_MakeRevolutionForm::Propagate(NCollection_List<TopoDS_Shape>& SliL
     }
   }
   if (!e1.IsNull())
+  {
     myListOfEdges.Append(e1);
+  }
   return result;
 }
 
@@ -1925,10 +2015,14 @@ static void SetGluedFaces(
           const TopoDS_Face&                    ff     = TopoDS::Face(iterm.Key());
           const NCollection_List<TopoDS_Shape>& lfaces = iterm.Value();
           if (lfaces.IsEmpty())
+          {
             continue;
+          }
           const TopoDS_Face& fff = TopoDS::Face(lfaces.First());
           if (gfac.First().IsSame(ff))
+          {
             theMap.Bind(fff, fac);
+          }
         }
       }
     }

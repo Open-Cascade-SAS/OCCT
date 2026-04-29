@@ -82,13 +82,21 @@ int IGESSelect_WorkLibrary::ReadFile(const char* const                      name
   int   status = IGESFile_Read(pname, igesmod, prot);
 
   if (status < 0)
-    sout << "File not found : " << name << std::endl;
+  {
+    sout << "File not found : " << name << '\n';
+  }
   if (status > 0)
-    sout << "Error when reading file : " << name << std::endl;
+  {
+    sout << "Error when reading file : " << name << '\n';
+  }
   if (status == 0)
+  {
     model = igesmod;
+  }
   else
+  {
     model.Nullify();
+  }
   return status;
 }
 
@@ -100,14 +108,16 @@ bool IGESSelect_WorkLibrary::WriteFile(IFSelect_ContextWrite& ctx) const
   DeclareAndCast(IGESData_Protocol, prot, ctx.Protocol());
 
   if (igesmod.IsNull() || prot.IsNull())
+  {
     return false;
+  }
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
   std::shared_ptr<std::ostream>      aStream =
     aFileSystem->OpenOStream(ctx.FileName(), std::ios::out | std::ios::binary);
   if (aStream.get() == nullptr)
   {
     ctx.CCheck(0)->AddFail("IGES File could not be created");
-    sout << " - IGES File could not be created : " << ctx.FileName() << std::endl;
+    sout << " - IGES File could not be created : " << ctx.FileName() << '\n';
     return false;
   }
   sout << " IGES File Name : " << ctx.FileName();
@@ -121,13 +131,19 @@ bool IGESSelect_WorkLibrary::WriteFile(IFSelect_ContextWrite& ctx) const
     ctx.SetModifier(numod);
     DeclareAndCast(IGESSelect_FileModifier, filemod, ctx.FileModifier());
     if (!filemod.IsNull())
+    {
       filemod->Perform(ctx, VW);
+    }
     //   (impressions de mise au point)
     sout << " .. FileMod." << numod << " " << filemod->Label();
     if (ctx.IsForAll())
+    {
       sout << " (all model)";
+    }
     else
+    {
       sout << " (" << ctx.NbEntities() << " entities)";
+    }
     //    sout << std::flush;
   }
 
@@ -135,16 +151,20 @@ bool IGESSelect_WorkLibrary::WriteFile(IFSelect_ContextWrite& ctx) const
   VW.SendModel(prot);
   sout << " Write ";
   if (themodefnes)
+  {
     VW.WriteMode() = 10;
+  }
   bool status = VW.Print(*aStream);
-  sout << " Done" << std::endl;
+  sout << " Done" << '\n';
 
   errno = 0;
   aStream->flush();
   status = aStream->good() && status && !errno;
   aStream.reset();
   if (errno)
-    sout << strerror(errno) << std::endl;
+  {
+    sout << strerror(errno) << '\n';
+  }
 
   return status;
 }
@@ -152,7 +172,9 @@ bool IGESSelect_WorkLibrary::WriteFile(IFSelect_ContextWrite& ctx) const
 occ::handle<IGESData_Protocol> IGESSelect_WorkLibrary::DefineProtocol()
 {
   if (!IGESProto.IsNull())
+  {
     return IGESProto;
+  }
   occ::handle<IGESData_Protocol> IGESProto1 = IGESSolid::Protocol();
   occ::handle<IGESData_Protocol> IGESProto2 = IGESAppli::Protocol();
   //  occ::handle<IGESData_FileProtocol> IGESProto  = new IGESData_FileProtocol;
@@ -172,19 +194,25 @@ void IGESSelect_WorkLibrary::DumpEntity(const occ::handle<Interface_InterfaceMod
   DeclareAndCast(IGESData_Protocol, igespro, protocol);
   DeclareAndCast(IGESData_IGESEntity, igesent, entity);
   if (igesmod.IsNull() || igespro.IsNull() || igesent.IsNull())
+  {
     return;
+  }
   int num = igesmod->Number(igesent);
   if (num == 0)
+  {
     return;
+  }
 
   S << " --- Entity " << num;
   bool                            iserr = model->IsRedefinedContent(num);
   occ::handle<Standard_Transient> con;
   if (iserr)
+  {
     con = model->ReportEntity(num)->Content();
+  }
   if (entity.IsNull())
   {
-    S << " Null" << std::endl;
+    S << " Null" << '\n';
     return;
   }
 
@@ -193,9 +221,13 @@ void IGESSelect_WorkLibrary::DumpEntity(const occ::handle<Interface_InterfaceMod
   {
     S << " ERRONEOUS, Content, Type cdl : ";
     if (!con.IsNull())
+    {
       S << con->DynamicType()->Name();
+    }
     else
-      S << "(undefined)" << std::endl;
+    {
+      S << "(undefined)" << '\n';
+    }
     igesent = GetCasted(IGESData_IGESEntity, con);
     con.Nullify();
     occ::handle<Interface_Check> check = model->ReportEntity(num)->Check();
@@ -203,10 +235,14 @@ void IGESSelect_WorkLibrary::DumpEntity(const occ::handle<Interface_InterfaceMod
     chlist.Add(check, num);
     chlist.Print(S, igesmod, false);
     if (igesent.IsNull())
+    {
       return;
+    }
   }
   else
+  {
     S << " Type cdl : " << igesent->DynamicType()->Name();
+  }
 
   IGESData_IGESDumper dump(igesmod, igespro);
   try
@@ -216,6 +252,6 @@ void IGESSelect_WorkLibrary::DumpEntity(const occ::handle<Interface_InterfaceMod
   }
   catch (Standard_Failure const&)
   {
-    S << " **  Dump Interrupt **" << std::endl;
+    S << " **  Dump Interrupt **" << '\n';
   }
 }

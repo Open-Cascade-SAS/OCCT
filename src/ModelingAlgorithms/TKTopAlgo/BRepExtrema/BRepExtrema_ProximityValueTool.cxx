@@ -82,7 +82,9 @@ void BRepExtrema_ProximityValueTool::LoadTriangleSets(
 static double calcEdgeRefinementStep(const TopoDS_Edge& theEdge, const int theNbNodes)
 {
   if (theNbNodes < 2)
+  {
     return 0;
+  }
 
   BRepAdaptor_Curve aBAC(theEdge);
   double            aLen = GCPnts_AbscissaPoint::Length(aBAC);
@@ -97,7 +99,9 @@ static double calcEdgeRefinementStep(const TopoDS_Edge& theEdge, const int theNb
 static double calcFaceRefinementStep(const TopoDS_Face& theFace, const int theNbTrg)
 {
   if (theNbTrg < 1)
+  {
     return 0;
+  }
 
   GProp_GProps props;
   BRepGProp::SurfaceProperties(theFace, props);
@@ -219,7 +223,9 @@ double BRepExtrema_ProximityValueTool::computeProximityDist(
   aProxDistTool.Perform();
 
   if (!aProxDistTool.IsDone())
+  {
     return -1.;
+  }
 
   aProxDistTool.ProximityPoints(thePoint1, thePoint2);
   aProxDistTool.ProximityPointsStatus(thePointStatus1, thePointStatus2);
@@ -250,7 +256,9 @@ bool BRepExtrema_ProximityValueTool::getEdgeAdditionalVertices(
   GCPnts_QuasiUniformAbscissa aGCPnts(aBAC, std::max(3, aNbSamplePoints));
 
   if (!aGCPnts.IsDone())
+  {
     return false;
+  }
 
   int aNbNodes = aGCPnts.NbPoints();
   for (int aVertIdx = 2; aVertIdx < aNbNodes; ++aVertIdx) // don't add extreme points
@@ -290,7 +298,9 @@ void BRepExtrema_ProximityValueTool::doRecurTrgSplit(
   double aTrgArea  = 0.5 * aTrgSide1.CrossMagnitude(aTrgSide2);
 
   if (aTrgArea - theStep < Precision::SquareConfusion())
+  {
     return;
+  }
 
   double aD[3]{theTrg[0].Distance(theTrg[1]),
                theTrg[1].Distance(theTrg[2]),
@@ -525,11 +535,15 @@ bool BRepExtrema_ProximityValueTool::getShapesAdditionalVertices()
 void BRepExtrema_ProximityValueTool::Perform(double& theTolerance)
 {
   if (!myIsInitS1 || !myIsInitS2 || (myShapeType1 != myShapeType2))
+  {
     return;
+  }
 
   // get vertices on shapes with refining a coarser mesh if it's needed
   if (!getShapesAdditionalVertices())
+  {
     return;
+  }
 
   // max(min) dist from the 1st shape to the 2nd one
   BVH_Vec3d      aP1_1, aP1_2;
@@ -549,7 +563,9 @@ void BRepExtrema_ProximityValueTool::Perform(double& theTolerance)
                                                 aPointStatus1_2);
 
   if (aProximityDist1 < 0.)
+  {
     return;
+  }
 
   // max(min) dist from the 2nd shape to t he 1st one
   BVH_Vec3d      aP2_1, aP2_2;
@@ -569,7 +585,9 @@ void BRepExtrema_ProximityValueTool::Perform(double& theTolerance)
                                                 aPointStatus2_1);
 
   if (aProximityDist2 < 0.)
+  {
     return;
+  }
 
   // min dist of the two max(min) dists
   if (aProximityDist1 < aProximityDist2)
@@ -608,7 +626,9 @@ NCollection_CellFilter_Action BRepExtrema_VertexInspector::Inspect(const int the
   aDz = myCurrent.Z() - aPnt.Z();
 
   if ((aDx * aDx <= myTol) && (aDy * aDy <= myTol) && (aDz * aDz <= myTol))
+  {
     myIsNeedAdd = false;
+  }
 
   return CellFilter_Keep;
 }

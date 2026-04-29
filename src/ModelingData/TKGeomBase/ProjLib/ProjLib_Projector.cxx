@@ -89,7 +89,9 @@ void ProjLib_Projector::SetPeriodic()
 const gp_Lin2d& ProjLib_Projector::Line() const
 {
   if (myType != GeomAbs_Line)
+  {
     throw Standard_NoSuchObject("ProjLib_Projector::Line");
+  }
   return myLin;
 }
 
@@ -98,7 +100,9 @@ const gp_Lin2d& ProjLib_Projector::Line() const
 const gp_Circ2d& ProjLib_Projector::Circle() const
 {
   if (myType != GeomAbs_Circle)
+  {
     throw Standard_NoSuchObject("ProjLib_Projector::Circle");
+  }
   return myCirc;
 }
 
@@ -107,7 +111,9 @@ const gp_Circ2d& ProjLib_Projector::Circle() const
 const gp_Elips2d& ProjLib_Projector::Ellipse() const
 {
   if (myType != GeomAbs_Ellipse)
+  {
     throw Standard_NoSuchObject("ProjLib_Projector::Ellipse");
+  }
   return myElips;
 }
 
@@ -116,7 +122,9 @@ const gp_Elips2d& ProjLib_Projector::Ellipse() const
 const gp_Hypr2d& ProjLib_Projector::Hyperbola() const
 {
   if (myType != GeomAbs_Hyperbola)
+  {
     throw Standard_NoSuchObject("ProjLib_Projector::Hyperbola");
+  }
   return myHypr;
 }
 
@@ -125,7 +133,9 @@ const gp_Hypr2d& ProjLib_Projector::Hyperbola() const
 const gp_Parab2d& ProjLib_Projector::Parabola() const
 {
   if (myType != GeomAbs_Parabola)
+  {
     throw Standard_NoSuchObject("ProjLib_Projector::Parabola");
+  }
   return myParab;
 }
 

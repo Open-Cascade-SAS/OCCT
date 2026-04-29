@@ -52,13 +52,19 @@ static int DPrsStd_AISDisplay(Draw_Interpretor&, int nb, const char** arg)
 {
   occ::handle<TDocStd_Document> D;
   if (!DDocStd::GetDocument(arg[1], D))
+  {
     return 1;
+  }
   TDF_Label L;
   if (!DDF::FindLabel(D->GetData(), arg[2], L))
+  {
     return 1;
+  }
   occ::handle<TPrsStd_AISPresentation> prs;
   if (!L.FindAttribute(TPrsStd_AISPresentation::GetID(), prs))
+  {
     return 1;
+  }
   prs->Display(nb == 3);
   TPrsStd_AISViewer::Update(L);
   return 0;
@@ -75,13 +81,19 @@ static int DPrsStd_AISRemove(Draw_Interpretor& di, int nb, const char** arg)
   {
     occ::handle<TDocStd_Document> D;
     if (!DDocStd::GetDocument(arg[1], D))
+    {
       return 1;
+    }
     TDF_Label L;
     if (!DDF::FindLabel(D->GetData(), arg[2], L))
+    {
       return 1;
+    }
     occ::handle<TPrsStd_AISPresentation> P;
     if (!L.FindAttribute(TPrsStd_AISPresentation::GetID(), P))
+    {
       return 1;
+    }
     P->Erase(true);
     TPrsStd_AISViewer::Update(L);
     return 0;
@@ -101,13 +113,19 @@ static int DPrsStd_AISErase(Draw_Interpretor& di, int nb, const char** arg)
   {
     occ::handle<TDocStd_Document> D;
     if (!DDocStd::GetDocument(arg[1], D))
+    {
       return 1;
+    }
     TDF_Label L;
     if (!DDF::FindLabel(D->GetData(), arg[2], L))
+    {
       return 1;
+    }
     occ::handle<TPrsStd_AISPresentation> prs;
     if (!L.FindAttribute(TPrsStd_AISPresentation::GetID(), prs))
+    {
       return 1;
+    }
     prs->Erase();
     TPrsStd_AISViewer::Update(L);
     return 0;
@@ -127,13 +145,19 @@ static int DPrsStd_AISUpdate(Draw_Interpretor& di, int nb, const char** arg)
   {
     occ::handle<TDocStd_Document> D;
     if (!DDocStd::GetDocument(arg[1], D))
+    {
       return 1;
+    }
     TDF_Label L;
     if (!DDF::FindLabel(D->GetData(), arg[2], L))
+    {
       return 1;
+    }
     occ::handle<TPrsStd_AISPresentation> prs;
     if (!L.FindAttribute(TPrsStd_AISPresentation::GetID(), prs))
+    {
       return 1;
+    }
     prs->Update();
     TPrsStd_AISViewer::Update(L);
     return 0;
@@ -153,28 +177,44 @@ static int DPrsStd_AISSet(Draw_Interpretor& di, int nb, const char** arg)
   {
     occ::handle<TDocStd_Document> D;
     if (!DDocStd::GetDocument(arg[1], D))
+    {
       return 1;
+    }
     TDF_Label L;
     if (!DDF::FindLabel(D->GetData(), arg[2], L))
+    {
       return 1;
+    }
     Standard_GUID              guid;
     TCollection_ExtendedString str = arg[3];
 #ifdef OCCT_DEBUG
     std::cout << "Inputted parameter > " << str << std::endl;
 #endif
-    if (str == "A")                        // axis
-      guid = TDataXtd_Axis::GetID();       //"2a96b601-ec8b-11d0-bee7-080009dc3333"
-    else if (str == "C")                   // constraint
+    if (str == "A")
+    {                                // axis
+      guid = TDataXtd_Axis::GetID(); //"2a96b601-ec8b-11d0-bee7-080009dc3333"
+    }
+    else if (str == "C")
+    {                                      // constraint
       guid = TDataXtd_Constraint::GetID(); //"2a96b602-ec8b-11d0-bee7-080009dc3333"
-    else if (str == "NS")                  // namedshape
-      guid = TNaming_NamedShape::GetID();  //"c4ef4200-568f-11d1-8940-080009dc3333"
-    else if (str == "G")                   // geometry
-      guid = TDataXtd_Geometry::GetID();   //"2a96b604-ec8b-11d0-bee7-080009dc3333"
-    else if (str == "PL")                  // plane
-      guid = TDataXtd_Plane::GetID();      //"2a96b60c-ec8b-11d0-bee7-080009dc3333"
-    else if (str == "PT")                  // point
-      guid = TDataXtd_Point::GetID();      //"2a96b60d-ec8b-11d0-bee7-080009dc3333"
-                                           //    else if( str == "SG" )        //TSketch_Geometry
+    }
+    else if (str == "NS")
+    {                                     // namedshape
+      guid = TNaming_NamedShape::GetID(); //"c4ef4200-568f-11d1-8940-080009dc3333"
+    }
+    else if (str == "G")
+    {                                    // geometry
+      guid = TDataXtd_Geometry::GetID(); //"2a96b604-ec8b-11d0-bee7-080009dc3333"
+    }
+    else if (str == "PL")
+    {                                 // plane
+      guid = TDataXtd_Plane::GetID(); //"2a96b60c-ec8b-11d0-bee7-080009dc3333"
+    }
+    else if (str == "PT")
+    {                                 // point
+      guid = TDataXtd_Point::GetID(); //"2a96b60d-ec8b-11d0-bee7-080009dc3333"
+    }
+    //    else if( str == "SG" )        //TSketch_Geometry
     //      guid = TSketchStd_Geometry::GetID();    //"b3aac909-5b78-11d1-8940-080009dc3333"
     //    else if( str == "E" )        //TSketch_Edge
     //      guid = TSketchStd_Edge::GetID();           //"b3aac90a-5b78-11d1-8940-080009dc3333"
@@ -207,10 +247,14 @@ static int DPrsStd_AISDriver(Draw_Interpretor& di, int nb, const char** arg)
   {
     occ::handle<TDocStd_Document> D;
     if (!DDocStd::GetDocument(arg[1], D))
+    {
       return 1;
+    }
     TDF_Label L;
     if (!DDF::FindLabel(D->GetData(), arg[2], L))
+    {
       return 1;
+    }
 
     Standard_GUID                        guid;
     occ::handle<TPrsStd_AISPresentation> prs;
@@ -232,19 +276,31 @@ static int DPrsStd_AISDriver(Draw_Interpretor& di, int nb, const char** arg)
 #ifdef OCCT_DEBUG
         std::cout << "Inputted parameter > " << str << std::endl;
 #endif
-        if (str == "A")                        // axis
-          guid = TDataXtd_Axis::GetID();       //"2a96b601-ec8b-11d0-bee7-080009dc3333"
-        else if (str == "C")                   // constraint
+        if (str == "A")
+        {                                // axis
+          guid = TDataXtd_Axis::GetID(); //"2a96b601-ec8b-11d0-bee7-080009dc3333"
+        }
+        else if (str == "C")
+        {                                      // constraint
           guid = TDataXtd_Constraint::GetID(); //"2a96b602-ec8b-11d0-bee7-080009dc3333"
-        else if (str == "NS")                  // namedshape
-          guid = TNaming_NamedShape::GetID();  //"c4ef4200-568f-11d1-8940-080009dc3333"
-        else if (str == "G")                   // geometry
-          guid = TDataXtd_Geometry::GetID();   //"2a96b604-ec8b-11d0-bee7-080009dc3333"
-        else if (str == "PL")                  // plane
-          guid = TDataXtd_Plane::GetID();      //"2a96b60c-ec8b-11d0-bee7-080009dc3333"
-        else if (str == "PT")                  // point
-          guid = TDataXtd_Point::GetID();      //"2a96b60d-ec8b-11d0-bee7-080009dc3333"
-                                               //	else if( str == "SG" )        //TSketch_Geometry
+        }
+        else if (str == "NS")
+        {                                     // namedshape
+          guid = TNaming_NamedShape::GetID(); //"c4ef4200-568f-11d1-8940-080009dc3333"
+        }
+        else if (str == "G")
+        {                                    // geometry
+          guid = TDataXtd_Geometry::GetID(); //"2a96b604-ec8b-11d0-bee7-080009dc3333"
+        }
+        else if (str == "PL")
+        {                                 // plane
+          guid = TDataXtd_Plane::GetID(); //"2a96b60c-ec8b-11d0-bee7-080009dc3333"
+        }
+        else if (str == "PT")
+        {                                 // point
+          guid = TDataXtd_Point::GetID(); //"2a96b60d-ec8b-11d0-bee7-080009dc3333"
+        }
+        //	else if( str == "SG" )        //TSketch_Geometry
         //	  guid = TSketchStd_Geometry::GetID();    //"b3aac909-5b78-11d1-8940-080009dc3333"
         //	else if( str == "E" )        //TSketch_Edge
         //	  guid = TSketchStd_Edge::GetID();           //"b3aac90a-5b78-11d1-8940-080009dc3333"
@@ -276,10 +332,14 @@ static int DPrsStd_AISUnset(Draw_Interpretor& di, int nb, const char** arg)
   {
     occ::handle<TDocStd_Document> D;
     if (!DDocStd::GetDocument(arg[1], D))
+    {
       return 1;
+    }
     TDF_Label L;
     if (!DDF::FindLabel(D->GetData(), arg[2], L))
+    {
       return 1;
+    }
     TPrsStd_AISPresentation::Unset(L);
     TPrsStd_AISViewer::Update(L);
     return 0;
@@ -299,14 +359,20 @@ static int DPrsStd_AISTransparency(Draw_Interpretor& di, int nb, const char** ar
   {
     occ::handle<TDocStd_Document> D;
     if (!DDocStd::GetDocument(arg[1], D))
+    {
       return 1;
+    }
     TDF_Label L;
     if (!DDF::FindLabel(D->GetData(), arg[2], L))
+    {
       return 1;
+    }
 
     occ::handle<TPrsStd_AISViewer> viewer;
     if (!TPrsStd_AISViewer::Find(L, viewer))
+    {
       return 1;
+    }
 
     occ::handle<TPrsStd_AISPresentation> prs;
     if (L.FindAttribute(TPrsStd_AISPresentation::GetID(), prs))
@@ -347,10 +413,14 @@ static int DPrsStd_AISDefaultTransparency(Draw_Interpretor& di, int nb, const ch
   {
     occ::handle<TDocStd_Document> D;
     if (!DDocStd::GetDocument(arg[1], D))
+    {
       return 1;
+    }
     TDF_Label L;
     if (!DDF::FindLabel(D->GetData(), arg[2], L))
+    {
       return 1;
+    }
 
     occ::handle<TPrsStd_AISPresentation> prs;
     if (L.FindAttribute(TPrsStd_AISPresentation::GetID(), prs))
@@ -435,14 +505,20 @@ static int DPrsStd_AISDefaultColor(Draw_Interpretor& di, int nb, const char** ar
   {
     occ::handle<TDocStd_Document> D;
     if (!DDocStd::GetDocument(arg[1], D))
+    {
       return 1;
+    }
     TDF_Label L;
     if (!DDF::FindLabel(D->GetData(), arg[2], L))
+    {
       return 1;
+    }
 
     occ::handle<TPrsStd_AISViewer> viewer;
     if (!TPrsStd_AISViewer::Find(L, viewer))
+    {
       return 1;
+    }
 
     occ::handle<TPrsStd_AISPresentation> prs;
     if (L.FindAttribute(TPrsStd_AISPresentation::GetID(), prs))
@@ -467,14 +543,20 @@ static int DPrsStd_AISMaterial(Draw_Interpretor& di, int nb, const char** arg)
   {
     occ::handle<TDocStd_Document> D;
     if (!DDocStd::GetDocument(arg[1], D))
+    {
       return 1;
+    }
     TDF_Label L;
     if (!DDF::FindLabel(D->GetData(), arg[2], L))
+    {
       return 1;
+    }
 
     occ::handle<TPrsStd_AISViewer> viewer;
     if (!TPrsStd_AISViewer::Find(L, viewer))
+    {
       return 1;
+    }
 
     occ::handle<TPrsStd_AISPresentation> prs;
     if (L.FindAttribute(TPrsStd_AISPresentation::GetID(), prs))
@@ -515,14 +597,20 @@ static int DPrsStd_AISDefaultMaterial(Draw_Interpretor& di, int nb, const char**
   {
     occ::handle<TDocStd_Document> D;
     if (!DDocStd::GetDocument(arg[1], D))
+    {
       return 1;
+    }
     TDF_Label L;
     if (!DDF::FindLabel(D->GetData(), arg[2], L))
+    {
       return 1;
+    }
 
     occ::handle<TPrsStd_AISViewer> viewer;
     if (!TPrsStd_AISViewer::Find(L, viewer))
+    {
       return 1;
+    }
 
     occ::handle<TPrsStd_AISPresentation> prs;
     if (L.FindAttribute(TPrsStd_AISPresentation::GetID(), prs))
@@ -547,18 +635,26 @@ static int DPrsStd_AISHasOwnColor(Draw_Interpretor& di, int nb, const char** arg
   if (nb >= 3)
   {
     if (nb > 3)
+    {
       di << "DPrsStd_AISHasOwnColor : Warning : too many arguments\n";
+    }
 
     occ::handle<TDocStd_Document> D;
     if (!DDocStd::GetDocument(arg[1], D))
+    {
       return 1;
+    }
     TDF_Label L;
     if (!DDF::FindLabel(D->GetData(), arg[2], L))
+    {
       return 1;
+    }
 
     occ::handle<TPrsStd_AISViewer> viewer;
     if (!TPrsStd_AISViewer::Find(L, viewer))
+    {
       return 1;
+    }
 
     occ::handle<TPrsStd_AISPresentation> prs;
     if (L.FindAttribute(TPrsStd_AISPresentation::GetID(), prs))
@@ -582,18 +678,26 @@ static int DPrsStd_AISHasOwnMaterial(Draw_Interpretor& di, int nb, const char** 
   if (nb >= 3)
   {
     if (nb > 3)
+    {
       di << "DPrsStd_AISHasOwnMaterial : Warning : too many arguments\n";
+    }
 
     occ::handle<TDocStd_Document> D;
     if (!DDocStd::GetDocument(arg[1], D))
+    {
       return 1;
+    }
     TDF_Label L;
     if (!DDF::FindLabel(D->GetData(), arg[2], L))
+    {
       return 1;
+    }
 
     occ::handle<TPrsStd_AISViewer> viewer;
     if (!TPrsStd_AISViewer::Find(L, viewer))
+    {
       return 1;
+    }
 
     occ::handle<TPrsStd_AISPresentation> prs;
     if (L.FindAttribute(TPrsStd_AISPresentation::GetID(), prs))
@@ -617,18 +721,26 @@ static int DPrsStd_AISHasOwnTransparency(Draw_Interpretor& di, int nb, const cha
   if (nb >= 3)
   {
     if (nb > 3)
+    {
       di << "DPrsStd_AISHasOwnTransparency : Warning : too many arguments\n";
+    }
 
     occ::handle<TDocStd_Document> D;
     if (!DDocStd::GetDocument(arg[1], D))
+    {
       return 1;
+    }
     TDF_Label L;
     if (!DDF::FindLabel(D->GetData(), arg[2], L))
+    {
       return 1;
+    }
 
     occ::handle<TPrsStd_AISViewer> viewer;
     if (!TPrsStd_AISViewer::Find(L, viewer))
+    {
       return 1;
+    }
 
     occ::handle<TPrsStd_AISPresentation> prs;
     if (L.FindAttribute(TPrsStd_AISPresentation::GetID(), prs))
@@ -653,11 +765,17 @@ static int DPrsStd_AISMode(Draw_Interpretor& di, int nb, const char** arg)
   if (nb >= 3 && nb <= 4)
   {
     if (!DDocStd::GetDocument(arg[1], D))
+    {
       return 1;
+    }
     if (!DDF::FindLabel(D->GetData(), arg[2], L))
+    {
       return 1;
+    }
     if (!L.FindAttribute(TPrsStd_AISPresentation::GetID(), prs))
+    {
       return 1;
+    }
     if (nb == 4)
     {
       int mode = Draw::Atoi(arg[3]);
@@ -687,11 +805,17 @@ static int DPrsStd_AISSelMode(Draw_Interpretor& di, int nb, const char** arg)
   if (nb >= 3)
   {
     if (!DDocStd::GetDocument(arg[1], D))
+    {
       return 1;
+    }
     if (!DDF::FindLabel(D->GetData(), arg[2], L))
+    {
       return 1;
+    }
     if (!L.FindAttribute(TPrsStd_AISPresentation::GetID(), prs))
+    {
       return 1;
+    }
     if (nb >= 4)
     {
       // Set selection mode.
@@ -721,7 +845,9 @@ static int DPrsStd_AISSelMode(Draw_Interpretor& di, int nb, const char** arg)
           int selMode = prs->SelectionMode(i);
           di << selMode;
           if (i < nbSelModes)
+          {
             di << " ";
+          }
         }
       }
     }
@@ -737,7 +863,9 @@ void DPrsStd::AISPresentationCommands(Draw_Interpretor& theCommands)
 {
   static bool done = false;
   if (done)
+  {
     return;
+  }
   done          = true;
   const char* g = "DPrsStd : standard presentation commands";
 

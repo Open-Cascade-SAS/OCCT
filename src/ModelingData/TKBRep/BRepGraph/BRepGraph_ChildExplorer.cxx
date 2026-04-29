@@ -277,7 +277,9 @@ void BRepGraph_ChildExplorer::startTraversal(const TopLoc_Location&   theStartLo
   myOrientation  = theStartOri;
 
   if (!myRoot.IsValid())
+  {
     return;
+  }
 
   if (matchesAvoid(myRoot))
   {
@@ -300,7 +302,9 @@ void BRepGraph_ChildExplorer::startTraversal(const TopLoc_Location&   theStartLo
   // Check if root is valid and not removed.
   const BRepGraphInc::BaseDef* aBaseDef = myGraph->Topo().Gen().TopoEntity(myRoot);
   if (aBaseDef == nullptr || aBaseDef->IsRemoved)
+  {
     return;
+  }
 
   // Check if root itself matches the target kind (e.g., root=Edge, target=Edge).
   if (myConfig.TargetKind.has_value() && matchesTarget(myRoot))
@@ -382,9 +386,13 @@ void BRepGraph_ChildExplorer::advance()
             aChildNode = aRefs.ChildNode(aRefId);
             aStepIdx   = static_cast<int>(i);
             if (myConfig.AccumulateLocation)
+            {
               aChildLoc = aFrame.AccLocation * aRefs.LocalLocation(aRefId);
+            }
             if (myConfig.AccumulateOrientation)
+            {
               aChildOri = TopAbs::Compose(aFrame.AccOrientation, aRefs.Orientation(aRefId));
+            }
             break;
           }
         }
@@ -405,9 +413,13 @@ void BRepGraph_ChildExplorer::advance()
             aChildNode = aRefs.ChildNode(aRefId);
             aStepIdx   = static_cast<int>(i);
             if (myConfig.AccumulateLocation)
+            {
               aChildLoc = aFrame.AccLocation * aRefs.LocalLocation(aRefId);
+            }
             if (myConfig.AccumulateOrientation)
+            {
               aChildOri = TopAbs::Compose(aFrame.AccOrientation, aRefs.Orientation(aRefId));
+            }
             break;
           }
         }
@@ -439,9 +451,13 @@ void BRepGraph_ChildExplorer::advance()
             aChildNode = aRefs.ChildNode(aRefId);
             aStepIdx   = static_cast<int>(i);
             if (myConfig.AccumulateLocation)
+            {
               aChildLoc = aFrame.AccLocation * aRefs.LocalLocation(aRefId);
+            }
             if (myConfig.AccumulateOrientation)
+            {
               aChildOri = TopAbs::Compose(aFrame.AccOrientation, aRefs.Orientation(aRefId));
+            }
             break;
           }
         }
@@ -473,9 +489,13 @@ void BRepGraph_ChildExplorer::advance()
             aChildNode = aRefs.ChildNode(aRefId);
             aStepIdx   = static_cast<int>(i);
             if (myConfig.AccumulateLocation)
+            {
               aChildLoc = aFrame.AccLocation * aRefs.LocalLocation(aRefId);
+            }
             if (myConfig.AccumulateOrientation)
+            {
               aChildOri = TopAbs::Compose(aFrame.AccOrientation, aRefs.Orientation(aRefId));
+            }
             break;
           }
         }
@@ -507,9 +527,13 @@ void BRepGraph_ChildExplorer::advance()
             aChildNode = aRefs.ChildNode(aRefId);
             aStepIdx   = static_cast<int>(i);
             if (myConfig.AccumulateLocation)
+            {
               aChildLoc = aFrame.AccLocation * aRefs.LocalLocation(aRefId);
+            }
             if (myConfig.AccumulateOrientation)
+            {
               aChildOri = TopAbs::Compose(aFrame.AccOrientation, aRefs.Orientation(aRefId));
+            }
             break;
           }
         }
@@ -530,9 +554,13 @@ void BRepGraph_ChildExplorer::advance()
             aChildNode = aRefs.ChildNode(aRefId);
             aStepIdx   = static_cast<int>(i);
             if (myConfig.AccumulateLocation)
+            {
               aChildLoc = aFrame.AccLocation * aRefs.LocalLocation(aRefId);
+            }
             if (myConfig.AccumulateOrientation)
+            {
               aChildOri = TopAbs::Compose(aFrame.AccOrientation, aRefs.Orientation(aRefId));
+            }
             break;
           }
         }
@@ -551,11 +579,17 @@ void BRepGraph_ChildExplorer::advance()
         {
           BRepGraph_VertexRefId aVRefId;
           if (i == 0)
+          {
             aVRefId = anEdge.StartVertexRefId;
+          }
           else if (i == 1)
+          {
             aVRefId = anEdge.EndVertexRefId;
+          }
           else
+          {
             aVRefId = anEdge.InternalVertexRefIds.Value(static_cast<size_t>(i - 2));
+          }
 
           if (!aVRefId.IsValid())
           {
@@ -566,9 +600,13 @@ void BRepGraph_ChildExplorer::advance()
             aChildNode = aRefs.ChildNode(aVRefId);
             aStepIdx   = static_cast<int>(i);
             if (myConfig.AccumulateLocation)
+            {
               aChildLoc = aFrame.AccLocation * aRefs.LocalLocation(aVRefId);
+            }
             if (myConfig.AccumulateOrientation)
+            {
               aChildOri = TopAbs::Compose(aFrame.AccOrientation, aRefs.Orientation(aVRefId));
+            }
             break;
           }
         }
@@ -587,7 +625,9 @@ void BRepGraph_ChildExplorer::advance()
             aChildNode = aCoEdge.EdgeDefId;
             aStepIdx   = -1;
             if (myConfig.AccumulateOrientation)
+            {
               aChildOri = TopAbs::Compose(aFrame.AccOrientation, aCoEdge.Orientation);
+            }
           }
         }
         aFrame.NextChildIdx = 1;
@@ -677,7 +717,9 @@ void BRepGraph_ChildExplorer::advance()
     {
       const BRepGraphInc::BaseDef* aPostDef = aDefs.Gen().TopoEntity(aChildNode);
       if (aPostDef == nullptr || aPostDef->IsRemoved)
+      {
         continue;
+      }
 
       StackFrame aChildFrame;
       aChildFrame.Node           = aChildNode;
@@ -693,7 +735,9 @@ void BRepGraph_ChildExplorer::advance()
     // Check if resolved child is valid and not removed before descending.
     const BRepGraphInc::BaseDef* aBaseDef = aDefs.Gen().TopoEntity(aChildNode);
     if (aBaseDef == nullptr || aBaseDef->IsRemoved)
+    {
       continue;
+    }
 
     // Descend if this kind can contain the target.
     if (myConfig.Mode == TraversalMode::Recursive
@@ -815,7 +859,9 @@ void BRepGraph_ChildExplorer::pushFrame(const StackFrame& theFrame)
   // Guard against pathological cycles (e.g., self-referencing compounds).
   // A valid DFS path cannot exceed the total node count in the graph.
   if (myStackTop >= myGraph->Topo().Gen().NbNodes())
+  {
     return;
+  }
 
   ++myStackTop;
   if (static_cast<size_t>(myStackTop) >= myStack.Size())
@@ -832,7 +878,9 @@ void BRepGraph_ChildExplorer::pushFrame(const StackFrame& theFrame)
 void BRepGraph_ChildExplorer::popFrame()
 {
   if (myStackTop >= 0)
+  {
     --myStackTop;
+  }
 }
 
 //=================================================================================================
@@ -844,11 +892,15 @@ TopLoc_Location BRepGraph_ChildExplorer::LocationOf(const BRepGraph_NodeId::Kind
   for (int i = 1; i <= aMaxFrame; ++i)
   {
     if (myStack[i].Node.NodeKind == theKind)
+    {
       return myStack[i].AccLocation;
+    }
   }
   // Check the current match.
   if (myHasMore && myCurrent.NodeKind == theKind)
+  {
     return myLocation;
+  }
   return TopLoc_Location();
 }
 
@@ -861,10 +913,14 @@ BRepGraph_NodeId BRepGraph_ChildExplorer::NodeOf(const BRepGraph_NodeId::Kind th
   for (int i = 1; i <= aMaxFrame; ++i)
   {
     if (myStack[i].Node.NodeKind == theKind)
+    {
       return myStack[i].Node;
+    }
   }
   if (myHasMore && myCurrent.NodeKind == theKind)
+  {
     return myCurrent;
+  }
   return BRepGraph_NodeId();
 }
 
@@ -875,7 +931,9 @@ TopLoc_Location BRepGraph_ChildExplorer::LocationAt(const int theLevel) const
   // Level 0 = after first step = frame[1].
   const int aFrameIdx = theLevel + 1;
   if (myCurrentFrame >= 0 && aFrameIdx <= myCurrentFrame)
+  {
     return myStack[aFrameIdx].AccLocation;
+  }
   return TopLoc_Location();
 }
 
@@ -885,6 +943,8 @@ BRepGraph_NodeId BRepGraph_ChildExplorer::NodeAt(const int theLevel) const
 {
   const int aFrameIdx = theLevel + 1;
   if (myCurrentFrame >= 0 && aFrameIdx <= myCurrentFrame)
+  {
     return myStack[aFrameIdx].Node;
+  }
   return BRepGraph_NodeId();
 }

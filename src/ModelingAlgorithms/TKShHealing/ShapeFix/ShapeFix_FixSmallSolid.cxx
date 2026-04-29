@@ -72,7 +72,9 @@ void ShapeFix_FixSmallSolid::SetWidthFactorThreshold(const double theThreshold)
 static bool IsValidInput(const TopoDS_Shape& theShape)
 {
   if (theShape.IsNull())
+  {
     return false;
+  }
 
   switch (theShape.ShapeType())
   {
@@ -94,7 +96,9 @@ TopoDS_Shape ShapeFix_FixSmallSolid::Remove(const TopoDS_Shape&                 
 {
   // Check if at least one smallness criterion is set and the shape is valid
   if (!IsThresholdsSet() || !IsValidInput(theShape))
+  {
     return theShape;
+  }
 
   // Find and remove all small solids
   TopExp_Explorer aSolidIter(theShape, TopAbs_SOLID);
@@ -149,7 +153,9 @@ static void AddToMap(
     theMap.Bind(theKey, aList);
   }
   else
+  {
     aListPtr->Append(theItem);
+  }
 }
 
 //=================================================================================================
@@ -162,13 +168,19 @@ static void AddToMap(
   NCollection_List<TopoDS_Shape>& theItems)
 {
   if (theItems.IsEmpty())
+  {
     return;
+  }
 
   NCollection_List<TopoDS_Shape>* aListPtr = theMap.ChangeSeek(theKey);
   if (aListPtr == nullptr)
+  {
     theMap.Bind(theKey, theItems);
+  }
   else
+  {
     aListPtr->Append(theItems);
+  }
 }
 
 //=================================================================================================
@@ -184,17 +196,23 @@ static void MapFacesToShells(
   {
     const TopoDS_Shape& aShell = aShellIter.Value();
     if (aShell.ShapeType() != TopAbs_SHELL)
+    {
       continue;
+    }
 
     TopoDS_Iterator aFaceIter(aShell);
     for (; aFaceIter.More(); aFaceIter.Next())
     {
       const TopoDS_Shape& aFace = aFaceIter.Value();
       if (aFace.ShapeType() != TopAbs_FACE)
+      {
         continue;
+      }
 
       if (!theMap.Bind(aFace, aShell))
+      {
         theMap.UnBind(aFace);
+      }
     }
   }
 }
@@ -222,7 +240,9 @@ static bool FindMostSharedShell(
   {
     const TopoDS_Shape& aSolidShell = aShellIter.Value();
     if (aSolidShell.ShapeType() != TopAbs_SHELL)
+    {
       continue;
+    }
 
     theOtherSolidShells.Append(aSolidShell);
 
@@ -231,21 +251,29 @@ static bool FindMostSharedShell(
     {
       const TopoDS_Shape& aFace = aFaceIter.Value();
       if (aFace.ShapeType() != TopAbs_FACE)
+      {
         continue;
+      }
 
       // find an outer shell that shares the current face
       const TopoDS_Shape* anOuterShellPtr = theMapFacesToOuterShells.Seek(aFace);
       if (anOuterShellPtr == nullptr)
+      {
         continue;
+      }
       const TopoDS_Shape& anOuterShell = *anOuterShellPtr;
 
       // add the face area to the sum shared area for the outer shell
       double  anArea         = ShapeArea(aFace);
       double* aSharedAreaPtr = aSharedAreas.ChangeSeek(anOuterShell);
       if (aSharedAreaPtr == nullptr)
+      {
         aSharedAreas.Bind(anOuterShell, anArea);
+      }
       else
+      {
         anArea = (*aSharedAreaPtr) += anArea;
+      }
 
       // if this outer shell currently has maximum shared area,
       // remember it and the current solid's shell
@@ -260,7 +288,9 @@ static bool FindMostSharedShell(
 
   // return nothing if no adjanced outer shells were found
   if (aMostSharedSolidShellPtr == nullptr)
+  {
     return false;
+  }
 
   // compose return values
   theMostSharedOuterShell = *aMostSharedOuterShellPtr;
@@ -269,7 +299,9 @@ static bool FindMostSharedShell(
   // remove the most shared solid's shell from the returned list of its other shells
   NCollection_List<TopoDS_Shape>::Iterator anOtherShellIter(theOtherSolidShells);
   while (!anOtherShellIter.Value().IsSame(theMostSharedSolidShell))
+  {
     anOtherShellIter.Next();
+  }
   theOtherSolidShells.Remove(anOtherShellIter);
 
   return true;
@@ -320,16 +352,24 @@ static TopoDS_Shape MergeShells(
       if (anOuterShellPtr != nullptr)
       {
         if (anOuterShellPtr->IsSame(theBaseShell))
+        {
           aRemoveFaces.Add(aFace); // face shared with the base shell
+        }
         else
+        {
           aBuilder.Add(aNewShell, aFace); // face shared with another outer shell
+        }
       }
       else
       {
         if (aNewFreeFaces.Contains(aFace))
+        {
           aNewFreeFaces.Remove(aFace); // face shared with another merged shell
+        }
         else
+        {
           aNewFreeFaces.Add(aFace); // face not shared
+        }
       }
     }
   }
@@ -351,12 +391,16 @@ static TopoDS_Shape MergeShells(
   {
     const TopoDS_Shape& aFace = aBaseFaceIter.Value();
     if (!aRemoveFaces.Contains(aFace))
+    {
       aBuilder.Add(aNewShell, aFace);
+    }
   }
 
   // If there are no elements in the new shell, return null shape
   if (aNewShell.NbChildren() == 0)
+  {
     return TopoDS_Shape();
+  }
 
   return aNewShell;
 }
@@ -374,12 +418,16 @@ static TopoDS_Compound AddShells(const TopoDS_Shape&             theBaseShell,
 
   // Add the base shell to the compound
   if (!theBaseShell.IsNull())
+  {
     aBuilder.Add(aCompound, theBaseShell);
+  }
 
   // Add other shells to the compound
   NCollection_List<TopoDS_Shape>::Iterator aShellIter(theShellsToAdd);
   for (; aShellIter.More(); aShellIter.Next())
+  {
     aBuilder.Add(aCompound, aShellIter.Value());
+  }
 
   theShellsToAdd.Clear();
 
@@ -391,7 +439,9 @@ TopoDS_Shape ShapeFix_FixSmallSolid::Merge(const TopoDS_Shape&                  
 {
   // Check if at least one smallness criterion is set and the shape is valid
   if (!IsThresholdsSet() || !IsValidInput(theShape))
+  {
     return theShape;
+  }
 
   // Find all small solids and put them in a list;
   // Build a map of faces belonging to non-small solids
@@ -404,9 +454,13 @@ TopoDS_Shape ShapeFix_FixSmallSolid::Merge(const TopoDS_Shape&                  
   {
     const TopoDS_Shape& aSolid = aSolidIter.Current();
     if (IsSmall(aSolid))
+    {
       aSmallSolids.Append(aSolid);
+    }
     else
+    {
       MapFacesToShells(aSolid, aMapFacesToShells);
+    }
   }
 
   // Merge all small solids adjacent to at least one non-small one;
@@ -451,12 +505,16 @@ TopoDS_Shape ShapeFix_FixSmallSolid::Merge(const TopoDS_Shape&                  
         aSmallSolids.Remove(aSmallIter);
       }
       else
+      {
         aSmallIter.Next();
+      }
     }
 
     // stop if no solids can be merged
     if (aShellsToMerge.IsEmpty())
+    {
       break;
+    }
 
     // update needed non-small solids' shells by
     // merging and adding the listed small solids' shells to them
@@ -477,7 +535,9 @@ TopoDS_Shape ShapeFix_FixSmallSolid::Merge(const TopoDS_Shape&                  
 
       // add new shells if needed
       if (aShellsToBeAddedPtr != nullptr)
+      {
         aNewShell = AddShells(aNewShell, *aShellsToBeAddedPtr);
+      }
 
       // replace the current non-small solid's shell with the new one(s)
       theContext->Replace(aBaseShell, aNewShell);
@@ -512,7 +572,9 @@ bool ShapeFix_FixSmallSolid::IsSmall(const TopoDS_Shape& theSolid) const
   // threshold value, consider the solid as not small
   double aVolume = ShapeVolume(theSolid);
   if (IsUsedVolumeThreshold() && aVolume > myVolumeThreshold)
+  {
     return false;
+  }
 
   // If the width factor threshold is used and set,
   // and the solid's width factor exceeds threshold value,
@@ -521,7 +583,9 @@ bool ShapeFix_FixSmallSolid::IsSmall(const TopoDS_Shape& theSolid) const
   {
     double anArea = ShapeArea(theSolid);
     if (aVolume > myWidthFactorThreshold * anArea * 0.5)
+    {
       return false;
+    }
   }
 
   // Both thresholds are met - consider the solid as small

@@ -97,9 +97,13 @@ bool GeomConvert_CompCurveToBSplineCurve::Add(const occ::handle<Geom_BoundedCurv
   if (avant && apres)
   { // Resolve the ambiguity
     if (After)
+    {
       avant = false;
+    }
     else
+    {
       apres = false;
+    }
   }
 
   // Append after?
@@ -198,7 +202,9 @@ void GeomConvert_CompCurveToBSplineCurve::Add(occ::handle<Geom_BSplineCurve>& Fi
     {
       eps = Epsilon(std::abs(Noeuds(ii - 1)));
       if (eps < 5.e-10)
+      {
         eps = 5.e-10;
+      }
       if (Noeuds(ii) - Noeuds(ii - 1) <= eps)
       {
         Noeuds(ii) += eps;
@@ -212,7 +218,9 @@ void GeomConvert_CompCurveToBSplineCurve::Add(occ::handle<Geom_BSplineCurve>& Fi
     Noeuds(jj) = Ratio2 * SecondCurve->Knot(ii) - Delta2;
     eps        = Epsilon(std::abs(Noeuds(jj - 1)));
     if (eps < 5.e-10)
+    {
       eps = 5.e-10;
+    }
     if (Noeuds(jj) - Noeuds(jj - 1) <= eps)
     {
       Noeuds(jj) += eps;

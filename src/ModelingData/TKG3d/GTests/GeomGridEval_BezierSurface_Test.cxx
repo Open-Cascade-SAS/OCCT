@@ -134,8 +134,12 @@ TEST(GeomGridEval_BezierSurfaceTest, DerivativeD2)
 {
   NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
   for (int i = 1; i <= 3; ++i)
+  {
     for (int j = 1; j <= 3; ++j)
+    {
       aPoles.SetValue(i, j, gp_Pnt(i, j, std::sin(i + j)));
+    }
+  }
 
   occ::handle<Geom_BezierSurface> aBezier = new Geom_BezierSurface(aPoles);
   GeomGridEval_BezierSurface      anEval(aBezier);
@@ -165,8 +169,12 @@ TEST(GeomGridEval_BezierSurfaceTest, DerivativeD3)
 {
   NCollection_Array2<gp_Pnt> aPoles(1, 4, 1, 4);
   for (int i = 1; i <= 4; ++i)
+  {
     for (int j = 1; j <= 4; ++j)
+    {
       aPoles.SetValue(i, j, gp_Pnt(i - 1, j - 1, std::sin((i - 1) * 0.5 + (j - 1) * 0.5)));
+    }
+  }
 
   occ::handle<Geom_BezierSurface> aBezier = new Geom_BezierSurface(aPoles);
   GeomGridEval_BezierSurface      anEval(aBezier);
@@ -206,8 +214,12 @@ TEST(GeomGridEval_BezierSurfaceTest, DerivativeDN_U1V0)
 {
   NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
   for (int i = 1; i <= 3; ++i)
+  {
     for (int j = 1; j <= 3; ++j)
+    {
       aPoles.SetValue(i, j, gp_Pnt(i, j, std::sin(i + j)));
+    }
+  }
 
   occ::handle<Geom_BezierSurface> aBezier = new Geom_BezierSurface(aPoles);
   GeomGridEval_BezierSurface      anEval(aBezier);
@@ -230,8 +242,12 @@ TEST(GeomGridEval_BezierSurfaceTest, DerivativeDN_U0V1)
 {
   NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
   for (int i = 1; i <= 3; ++i)
+  {
     for (int j = 1; j <= 3; ++j)
+    {
       aPoles.SetValue(i, j, gp_Pnt(i, j, std::sin(i + j)));
+    }
+  }
 
   occ::handle<Geom_BezierSurface> aBezier = new Geom_BezierSurface(aPoles);
   GeomGridEval_BezierSurface      anEval(aBezier);
@@ -254,8 +270,12 @@ TEST(GeomGridEval_BezierSurfaceTest, DerivativeDN_U2V0)
 {
   NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
   for (int i = 1; i <= 3; ++i)
+  {
     for (int j = 1; j <= 3; ++j)
+    {
       aPoles.SetValue(i, j, gp_Pnt(i, j, std::sin(i + j)));
+    }
+  }
 
   occ::handle<Geom_BezierSurface> aBezier = new Geom_BezierSurface(aPoles);
   GeomGridEval_BezierSurface      anEval(aBezier);
@@ -278,8 +298,12 @@ TEST(GeomGridEval_BezierSurfaceTest, DerivativeDN_U1V1)
 {
   NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
   for (int i = 1; i <= 3; ++i)
+  {
     for (int j = 1; j <= 3; ++j)
+    {
       aPoles.SetValue(i, j, gp_Pnt(i, j, std::sin(i + j)));
+    }
+  }
 
   occ::handle<Geom_BezierSurface> aBezier = new Geom_BezierSurface(aPoles);
   GeomGridEval_BezierSurface      anEval(aBezier);
@@ -303,8 +327,12 @@ TEST(GeomGridEval_BezierSurfaceTest, DerivativeDN_BeyondDegree)
   // Biquadratic Bezier (degree 2 in both directions)
   NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
   for (int i = 1; i <= 3; ++i)
+  {
     for (int j = 1; j <= 3; ++j)
+    {
       aPoles.SetValue(i, j, gp_Pnt(i, j, std::sin(i + j)));
+    }
+  }
 
   occ::handle<Geom_BezierSurface> aBezier = new Geom_BezierSurface(aPoles);
   GeomGridEval_BezierSurface      anEval(aBezier);
@@ -350,7 +378,9 @@ TEST(GeomGridEval_BezierSurfaceTest, DerivativeDN_RationalSurface)
     for (int aNV = 0; aNV <= 1; ++aNV)
     {
       if (aNU + aNV == 0)
+      {
         continue;
+      }
 
       NCollection_Array2<gp_Vec> aGrid = anEval.EvaluateGridDN(aParams, aParams, aNU, aNV);
 

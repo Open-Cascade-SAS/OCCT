@@ -231,9 +231,13 @@ void BRepFeat_MakeRevol::Perform(const double Angle)
     mySkface.Nullify();
   }
   if (angledec == 0.)
+  {
     theRevol.Perform(myPbase, myAxis, Angle);
+  }
   else
+  {
     theRevol.Perform(myPbase, myAxis, Angle, angledec);
+  }
 
   TopoDS_Shape VraiRevol = theRevol.Shape();
 
@@ -274,7 +278,9 @@ void BRepFeat_MakeRevol::Perform(const double Angle)
           }
         }
         if (found)
+        {
           break;
+        }
       }
     }
 
@@ -287,7 +293,9 @@ void BRepFeat_MakeRevol::Perform(const double Angle)
         NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
           sl;
         if (!FFace.IsSame(myPbase) && BRepFeat::IsInside(ff, FFace))
+        {
           break;
+        }
       }
     }
   }
@@ -418,7 +426,9 @@ void BRepFeat_MakeRevol::Perform(const TopoDS_Shape& Until)
       B.MakeCompound(TopoDS::Compound(Comp));
       TopoDS_Solid S = BRepFeat::Tool(mySUntil, FUntil, Or);
       if (!S.IsNull())
+      {
         B.Add(Comp, S);
+      }
       BRepAlgoAPI_Cut trP(VraiRevol, Comp);
       TopoDS_Shape    Cutsh = trP.Shape();
       TopExp_Explorer ex(Cutsh, TopAbs_SOLID);
@@ -478,7 +488,9 @@ void BRepFeat_MakeRevol::Perform(const TopoDS_Shape& From, const TopoDS_Shape& U
       myJustGluer = true;
       Perform(Until);
       if (myJustGluer)
+      {
         return;
+      }
     }
     else if (Until.IsSame(mySkface))
     {
@@ -486,7 +498,9 @@ void BRepFeat_MakeRevol::Perform(const TopoDS_Shape& From, const TopoDS_Shape& U
       myAxis.Reverse();
       Perform(From);
       if (myJustGluer)
+      {
         return;
+      }
     }
   }
 
@@ -590,10 +604,14 @@ void BRepFeat_MakeRevol::Perform(const TopoDS_Shape& From, const TopoDS_Shape& U
     B.MakeCompound(TopoDS::Compound(Comp));
     TopoDS_Solid SF = BRepFeat::Tool(mySFrom, FFrom, OrF);
     if (!SF.IsNull())
+    {
       B.Add(Comp, SF);
+    }
     TopoDS_Solid SU = BRepFeat::Tool(mySUntil, FUntil, OrU);
     if (!SU.IsNull())
+    {
       B.Add(Comp, SU);
+    }
     BRepAlgoAPI_Cut trP(VraiRevol, Comp);
     TopoDS_Shape    Cutsh = trP.Shape();
     TopExp_Explorer ex(Cutsh, TopAbs_SOLID);
@@ -731,7 +749,9 @@ void BRepFeat_MakeRevol::PerformUntilAngle(const TopoDS_Shape& Until, const doub
       B.MakeCompound(TopoDS::Compound(Comp));
       TopoDS_Solid S = BRepFeat::Tool(mySUntil, FUntil, Or);
       if (!S.IsNull())
+      {
         B.Add(Comp, S);
+      }
       BRepAlgoAPI_Cut trP(VraiRevol, Comp);
       TopoDS_Shape    Cutsh = trP.Shape();
       TopExp_Explorer ex(Cutsh, TopAbs_SOLID);
@@ -824,7 +844,9 @@ static void VerifGluedFaces(
     B.MakeCompound(TopoDS::Compound(Comp));
     TopoDS_Solid S = BRepFeat::Tool(theSkface, FSk, Or);
     if (!S.IsNull())
+    {
       B.Add(Comp, S);
+    }
     BRepAlgoAPI_Cut trP(VraiRevol, Comp);
     TopoDS_Shape    Cutsh = trP.Shape();
     TopExp_Explorer ex(Cutsh, TopAbs_SOLID);
@@ -839,13 +861,19 @@ static void VerifGluedFaces(
         {
           const TopoDS_Face& fac2 = TopoDS::Face(ex2.Current());
           if (fac1.IsSame(fac2))
+          {
             break;
+          }
         }
         if (ex2.More())
+        {
           break;
+        }
       }
       if (ex1.More())
+      {
         continue;
+      }
       GluedFaces = false;
       break;
     }

@@ -37,7 +37,9 @@ void RWStepFEA_RWArbitraryVolume3dElementCoordinateSystem::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "arbitrary_volume3d_element_coordinate_system"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 

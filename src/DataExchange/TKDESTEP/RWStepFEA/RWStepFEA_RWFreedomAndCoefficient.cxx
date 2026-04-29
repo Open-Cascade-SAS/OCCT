@@ -35,7 +35,9 @@ void RWStepFEA_RWFreedomAndCoefficient::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "freedom_and_coefficient"))
+  {
     return;
+  }
 
   // Own fields of FreedomAndCoefficient
 

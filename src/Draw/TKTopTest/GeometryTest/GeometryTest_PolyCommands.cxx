@@ -35,7 +35,9 @@ Standard_IMPORT Draw_Viewer dout;
 static int polytr(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 4)
+  {
     return 1;
+  }
 
   int nbNodes = Draw::Atoi(a[2]);
   int nbTri   = Draw::Atoi(a[3]);
@@ -81,7 +83,9 @@ static int polytr(Draw_Interpretor& di, int n, const char** a)
 static int polygon3d(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 4)
+  {
     return 1;
+  }
 
   int nbNodes = Draw::Atoi(a[2]);
 
@@ -112,7 +116,9 @@ static int polygon3d(Draw_Interpretor& di, int n, const char** a)
 static int polygon2d(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 4)
+  {
     return 1;
+  }
 
   int nbNodes = Draw::Atoi(a[2]);
 
@@ -143,7 +149,9 @@ static int polygon2d(Draw_Interpretor& di, int n, const char** a)
 static int shnodes(Draw_Interpretor&, int n, const char** a)
 {
   if (n != 2)
+  {
     return 1;
+  }
   occ::handle<DrawTrSurf_Triangulation> T =
     occ::down_cast<DrawTrSurf_Triangulation>(Draw::Get(a[1]));
 
@@ -163,7 +171,9 @@ static int shnodes(Draw_Interpretor&, int n, const char** a)
 static int shtriangles(Draw_Interpretor&, int n, const char** a)
 {
   if (n != 2)
+  {
     return 1;
+  }
 
   occ::handle<DrawTrSurf_Triangulation> T =
     occ::down_cast<DrawTrSurf_Triangulation>(Draw::Get(a[1]));

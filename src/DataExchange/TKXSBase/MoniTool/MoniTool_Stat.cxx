@@ -53,7 +53,9 @@ int MoniTool_Stat::Open(const int nb)
 void MoniTool_Stat::OpenMore(const int id, const int nb)
 {
   if (id <= 0 || id > thelev)
+  {
     return;
+  }
   thetot->SetValue(id, thetot->Value(id) + nb);
 }
 
@@ -77,7 +79,9 @@ void MoniTool_Stat::AddEnd()
 void MoniTool_Stat::Close(const int id)
 {
   if (id < thelev)
+  {
     Close(id + 1);
+  }
   AddEnd();
   thelev--;
 }
@@ -90,12 +94,16 @@ int MoniTool_Stat::Level() const
 double MoniTool_Stat::Percent(const int fromlev) const
 {
   if (fromlev > thelev)
+  {
     return 0;
+  }
   double r1, r2, r3;
   int    tot  = thetot->Value(fromlev);
   int    done = thedone->Value(fromlev);
   if (done >= tot)
+  {
     return 100.;
+  }
   if (fromlev == thelev)
   {
     r1 = tot;
@@ -113,6 +121,8 @@ double MoniTool_Stat::Percent(const int fromlev) const
     r3 = r3 * Percent(fromlev + 1);
   }
   if (r1 == 0)
+  {
     return 1;
+  }
   return (r2 * 100) / r1 + r3;
 }

@@ -1697,7 +1697,9 @@ bool RWGltf_GltfJsonParser::gltfParseSceneNode(TopoDS_Shape&                  th
       aBuilder.Add(aNodeShape, aMeshShape);
       ++aNbSubShapes;
       if (aHasScale)
+      {
         myShapeScaleMap->Bind(aMeshShape, aScale);
+      }
     }
   }
 

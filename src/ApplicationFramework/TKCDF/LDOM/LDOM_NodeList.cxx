@@ -100,7 +100,9 @@ bool LDOM_NodeList::operator!=(const LDOM_NullPtr*) const
 LDOM_Node LDOM_NodeList::item(const int anIndex) const
 {
   if (myDoc.IsNull() || anIndex < 0 || anIndex >= mySeq->Length())
+  {
     return LDOM_Node();
+  }
   return LDOM_Node(*mySeq->Value(anIndex + 1), myDoc);
 }
 

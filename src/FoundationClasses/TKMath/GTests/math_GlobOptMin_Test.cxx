@@ -614,12 +614,17 @@ TEST(MathGlobOptMinTest, OCC25004_BraninFunctionGlobalOptimum)
   }
 
   for (int i = 1; i <= aGridOrder; i++)
+  {
     for (int j = 1; j <= aGridOrder; j++)
+    {
       for (int k = 1; k <= aGridOrder; k++)
+      {
         for (int l = 1; l <= aGridOrder; l++)
         {
           if (i == k && j == l)
+          {
             continue;
+          }
           aCurrPnt1(1)   = aLower(1) + (aUpper(1) - aLower(1)) * (i - 1) / (aGridOrder - 1.0);
           aCurrPnt1(2)   = aLower(2) + (aUpper(2) - aLower(2)) * (j - 1) / (aGridOrder - 1.0);
           aCurrPnt2(1)   = aLower(1) + (aUpper(1) - aLower(1)) * (k - 1) / (aGridOrder - 1.0);
@@ -633,9 +638,14 @@ TEST(MathGlobOptMinTest, OCC25004_BraninFunctionGlobalOptimum)
           {
             const double aC = std::abs(aFuncValues(idx1) - aFuncValues(idx2)) / aDist;
             if (aC > aLipConst)
+            {
               aLipConst = aC;
+            }
           }
         }
+      }
+    }
+  }
 
   math_GlobOptMin aFinder(&aFunc, aLower, aUpper, aLipConst);
   aFinder.Perform();

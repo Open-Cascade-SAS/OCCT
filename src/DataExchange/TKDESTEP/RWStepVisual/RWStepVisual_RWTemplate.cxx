@@ -30,7 +30,9 @@ void RWStepVisual_RWTemplate::ReadStep(const occ::handle<StepData_StepReaderData
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "template"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -56,7 +58,9 @@ void RWStepVisual_RWTemplate::ReadStep(const occ::handle<StepData_StepReaderData
                            ach,
                            STANDARD_TYPE(StepRepr_RepresentationItem),
                            anent2))
+      {
         aItems->SetValue(i2, anent2);
+      }
     }
   }
 

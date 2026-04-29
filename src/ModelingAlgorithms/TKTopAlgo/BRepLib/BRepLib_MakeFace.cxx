@@ -252,7 +252,9 @@ BRepLib_MakeFace::BRepLib_MakeFace(const TopoDS_Wire& W, const bool OnlyPlane)
   BRepLib::SameParameter(myShape, tol, true);
   //
   if (BRep_Tool::IsClosed(aW))
+  {
     CheckInside();
+  }
 }
 
 //=================================================================================================
@@ -263,7 +265,9 @@ BRepLib_MakeFace::BRepLib_MakeFace(const gp_Pln& P, const TopoDS_Wire& W, const 
   Init(Pl, false, Precision::Confusion());
   Add(W);
   if (Inside && BRep_Tool::IsClosed(W))
+  {
     CheckInside();
+  }
 }
 
 //=================================================================================================
@@ -274,7 +278,9 @@ BRepLib_MakeFace::BRepLib_MakeFace(const gp_Cylinder& C, const TopoDS_Wire& W, c
   Init(GC, false, Precision::Confusion());
   Add(W);
   if (Inside && BRep_Tool::IsClosed(W))
+  {
     CheckInside();
+  }
 }
 
 //=================================================================================================
@@ -285,7 +291,9 @@ BRepLib_MakeFace::BRepLib_MakeFace(const gp_Cone& C, const TopoDS_Wire& W, const
   Init(GC, false, Precision::Confusion());
   Add(W);
   if (Inside && BRep_Tool::IsClosed(W))
+  {
     CheckInside();
+  }
 }
 
 //=================================================================================================
@@ -296,7 +304,9 @@ BRepLib_MakeFace::BRepLib_MakeFace(const gp_Sphere& S, const TopoDS_Wire& W, con
   Init(GS, false, Precision::Confusion());
   Add(W);
   if (Inside && BRep_Tool::IsClosed(W))
+  {
     CheckInside();
+  }
 }
 
 //=================================================================================================
@@ -307,7 +317,9 @@ BRepLib_MakeFace::BRepLib_MakeFace(const gp_Torus& T, const TopoDS_Wire& W, cons
   Init(GT, false, Precision::Confusion());
   Add(W);
   if (Inside && BRep_Tool::IsClosed(W))
+  {
     CheckInside();
+  }
 }
 
 //=================================================================================================
@@ -319,7 +331,9 @@ BRepLib_MakeFace::BRepLib_MakeFace(const occ::handle<Geom_Surface>& S,
   Init(S, false, Precision::Confusion());
   Add(W);
   if (Inside && BRep_Tool::IsClosed(W))
+  {
     CheckInside();
+  }
 }
 
 //=================================================================================================
@@ -388,7 +402,9 @@ bool BRepLib_MakeFace::IsDegenerated(const occ::handle<Geom_Curve>& theCurve,
   {
     gp_Circ Circ = AC.Circle();
     if (Circ.Radius() > theMaxTol)
+    {
       return false;
+    }
     theActTol = std::max(Circ.Radius(), aConfusion);
     return true;
   }
@@ -404,9 +420,13 @@ bool BRepLib_MakeFace::IsDegenerated(const occ::handle<Geom_Curve>& theCurve,
       P2                = BS->Pole(i);
       double aPoleDist2 = P1.SquareDistance(P2);
       if (aPoleDist2 > aMaxTol2)
+      {
         return false;
+      }
       if (aPoleDist2 > aMaxPoleDist2)
+      {
         aMaxPoleDist2 = aPoleDist2;
+      }
     }
     theActTol = std::max(1.000001 * std::sqrt(aMaxPoleDist2), aConfusion);
     return true;
@@ -423,9 +443,13 @@ bool BRepLib_MakeFace::IsDegenerated(const occ::handle<Geom_Curve>& theCurve,
       P2                = BZ->Pole(i);
       double aPoleDist2 = P1.SquareDistance(P2);
       if (aPoleDist2 > aMaxTol2)
+      {
         return false;
+      }
       if (aPoleDist2 > aMaxPoleDist2)
+      {
         aMaxPoleDist2 = aPoleDist2;
+      }
     }
     theActTol = std::max(1.000001 * std::sqrt(aMaxPoleDist2), aConfusion);
     return true;
@@ -456,7 +480,9 @@ void BRepLib_MakeFace::Init(const occ::handle<Geom_Surface>& SS,
   occ::handle<Geom_RectangularTrimmedSurface> RS =
     occ::down_cast<Geom_RectangularTrimmedSurface>(S);
   if (!RS.IsNull())
+  {
     BS = RS->BasisSurface();
+  }
 
   bool OffsetSurface = (BS->DynamicType() == STANDARD_TYPE(Geom_OffsetSurface));
 
@@ -474,14 +500,20 @@ void BRepLib_MakeFace::Init(const occ::handle<Geom_Surface>& SS,
     if (Base->DynamicType() == STANDARD_TYPE(Geom_SurfaceOfLinearExtrusion))
     {
       if (Precision::IsInfinite(umin) || Precision::IsInfinite(umax))
+      {
         S = new Geom_RectangularTrimmedSurface(OS, UMin, UMax, VMin, VMax);
+      }
       else
+      {
         S = new Geom_RectangularTrimmedSurface(OS, VMin, VMax, false);
+      }
     }
     else if (Base->DynamicType() == STANDARD_TYPE(Geom_SurfaceOfRevolution))
     {
       if (Precision::IsInfinite(vmin) || Precision::IsInfinite(vmax))
+      {
         S = new Geom_RectangularTrimmedSurface(OS, VMin, VMax, false);
+      }
     }
   }
 
@@ -567,16 +599,24 @@ void BRepLib_MakeFace::Init(const occ::handle<Geom_Surface>& SS,
   if (!umininf)
   {
     if (!vmininf)
+    {
       B.MakeVertex(V00, S->Value(UMin, VMin), std::max(uminTol, vminTol));
+    }
     if (!vmaxinf)
+    {
       B.MakeVertex(V01, S->Value(UMin, VMax), std::max(uminTol, vmaxTol));
+    }
   }
   if (!umaxinf)
   {
     if (!vmininf)
+    {
       B.MakeVertex(V10, S->Value(UMax, VMin), std::max(umaxTol, vminTol));
+    }
     if (!vmaxinf)
+    {
       B.MakeVertex(V11, S->Value(UMax, VMax), std::max(umaxTol, vmaxTol));
+    }
   }
 
   if (uclosed)
@@ -592,24 +632,40 @@ void BRepLib_MakeFace::Init(const occ::handle<Geom_Surface>& SS,
   }
 
   if (Dumin)
+  {
     V00 = V01;
+  }
   if (Dumax)
+  {
     V10 = V11;
+  }
   if (Dvmin)
+  {
     V00 = V10;
+  }
   if (Dvmax)
+  {
     V01 = V11;
+  }
 
   // make the lines
   occ::handle<Geom2d_Line> Lumin, Lumax, Lvmin, Lvmax;
   if (!umininf)
+  {
     Lumin = new Geom2d_Line(gp_Pnt2d(UMin, 0), gp_Dir2d(gp_Dir2d::D::Y));
+  }
   if (!umaxinf)
+  {
     Lumax = new Geom2d_Line(gp_Pnt2d(UMax, 0), gp_Dir2d(gp_Dir2d::D::Y));
+  }
   if (!vmininf)
+  {
     Lvmin = new Geom2d_Line(gp_Pnt2d(0, VMin), gp_Dir2d(gp_Dir2d::D::X));
+  }
   if (!vmaxinf)
+  {
     Lvmax = new Geom2d_Line(gp_Pnt2d(0, VMax), gp_Dir2d(gp_Dir2d::D::X));
+  }
 
   // make the face
   TopoDS_Face& F = TopoDS::Face(myShape);
@@ -621,13 +677,21 @@ void BRepLib_MakeFace::Init(const occ::handle<Geom_Surface>& SS,
   if (!umininf)
   {
     if (!Dumin)
+    {
       B.MakeEdge(eumin, Cumin, uminTol);
+    }
     else
+    {
       B.MakeEdge(eumin);
+    }
     if (uclosed)
+    {
       B.UpdateEdge(eumin, Lumax, Lumin, F, std::max(uminTol, umaxTol));
+    }
     else
+    {
       B.UpdateEdge(eumin, Lumin, F, uminTol);
+    }
     B.Degenerated(eumin, Dumin);
     if (!vmininf)
     {
@@ -645,13 +709,19 @@ void BRepLib_MakeFace::Init(const occ::handle<Geom_Surface>& SS,
   if (!umaxinf)
   {
     if (uclosed)
+    {
       eumax = eumin;
+    }
     else
     {
       if (!Dumax)
+      {
         B.MakeEdge(eumax, Cumax, umaxTol);
+      }
       else
+      {
         B.MakeEdge(eumax);
+      }
       B.UpdateEdge(eumax, Lumax, F, umaxTol);
       B.Degenerated(eumax, Dumax);
       if (!vmininf)
@@ -671,13 +741,21 @@ void BRepLib_MakeFace::Init(const occ::handle<Geom_Surface>& SS,
   if (!vmininf)
   {
     if (!Dvmin)
+    {
       B.MakeEdge(evmin, Cvmin, vminTol);
+    }
     else
+    {
       B.MakeEdge(evmin);
+    }
     if (vclosed)
+    {
       B.UpdateEdge(evmin, Lvmin, Lvmax, F, std::max(vminTol, vmaxTol));
+    }
     else
+    {
       B.UpdateEdge(evmin, Lvmin, F, vminTol);
+    }
     B.Degenerated(evmin, Dvmin);
     if (!umininf)
     {
@@ -695,13 +773,19 @@ void BRepLib_MakeFace::Init(const occ::handle<Geom_Surface>& SS,
   if (!vmaxinf)
   {
     if (vclosed)
+    {
       evmax = evmin;
+    }
     else
     {
       if (!Dvmax)
+      {
         B.MakeEdge(evmax, Cvmax, vmaxTol);
+      }
       else
+      {
         B.MakeEdge(evmax);
+      }
       B.UpdateEdge(evmax, Lvmax, F, vmaxTol);
       B.Degenerated(evmax, Dvmax);
       if (!umininf)
@@ -753,13 +837,21 @@ void BRepLib_MakeFace::Init(const occ::handle<Geom_Surface>& SS,
     // one wire
     B.MakeWire(W);
     if (!umininf)
+    {
       B.Add(W, eumin);
+    }
     if (!vmininf)
+    {
       B.Add(W, evmin);
+    }
     if (!umaxinf)
+    {
       B.Add(W, eumax);
+    }
     if (!vmaxinf)
+    {
       B.Add(W, evmax);
+    }
     B.Add(F, W);
     W.Closed(!umininf && !umaxinf && !vmininf && !vmaxinf);
     F.Closed(uclosed && vclosed);

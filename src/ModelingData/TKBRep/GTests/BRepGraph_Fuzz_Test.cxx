@@ -75,7 +75,9 @@ bool applyOne(BRepGraph& theGraph, std::mt19937& theRng)
 
   auto pickActiveEdge = [&](BRepGraph_EdgeId& theOut) -> bool {
     if (aNbEdges <= 0)
+    {
       return false;
+    }
     std::uniform_int_distribution<int> aDist(0, aNbEdges - 1);
     for (int aTry = 0; aTry < 8; ++aTry)
     {
@@ -91,7 +93,9 @@ bool applyOne(BRepGraph& theGraph, std::mt19937& theRng)
 
   auto pickActiveVertex = [&](BRepGraph_VertexId& theOut) -> bool {
     if (aNbVertices <= 0)
+    {
       return false;
+    }
     std::uniform_int_distribution<int> aDist(0, aNbVertices - 1);
     for (int aTry = 0; aTry < 8; ++aTry)
     {
@@ -110,7 +114,9 @@ bool applyOne(BRepGraph& theGraph, std::mt19937& theRng)
     case MutationKind::BumpEdgeTolerance: {
       BRepGraph_EdgeId anEdgeId;
       if (!pickActiveEdge(anEdgeId))
+      {
         return false;
+      }
       BRepGraph_MutGuard<BRepGraphInc::EdgeDef> aMut = theGraph.Editor().Edges().Mut(anEdgeId);
       theGraph.Editor().Edges().SetTolerance(aMut, aMut->Tolerance + 1.0e-4);
       return true;
@@ -118,7 +124,9 @@ bool applyOne(BRepGraph& theGraph, std::mt19937& theRng)
     case MutationKind::MutateVertexPoint: {
       BRepGraph_VertexId aVtxId;
       if (!pickActiveVertex(aVtxId))
+      {
         return false;
+      }
       BRepGraph_MutGuard<BRepGraphInc::VertexDef> aMut = theGraph.Editor().Vertices().Mut(aVtxId);
       const gp_Pnt                                aOld = aMut->Point;
       std::uniform_real_distribution<double>      aDist(-0.1, 0.1);
@@ -129,11 +137,15 @@ bool applyOne(BRepGraph& theGraph, std::mt19937& theRng)
     }
     case MutationKind::BumpFaceTolerance: {
       if (aNbFaces <= 0)
+      {
         return false;
+      }
       std::uniform_int_distribution<int> aDist(0, aNbFaces - 1);
       BRepGraph_FaceId                   aFaceId(aDist(theRng));
       if (theGraph.Topo().Faces().Definition(aFaceId).IsRemoved)
+      {
         return false;
+      }
       BRepGraph_MutGuard<BRepGraphInc::FaceDef> aMut = theGraph.Editor().Faces().Mut(aFaceId);
       theGraph.Editor().Faces().SetTolerance(aMut, aMut->Tolerance + 1.0e-4);
       return true;

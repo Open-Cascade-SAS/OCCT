@@ -25,19 +25,33 @@ StepShape_ReversibleTopologyItem::StepShape_ReversibleTopologyItem() = default;
 int StepShape_ReversibleTopologyItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepShape_Edge)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepShape_Path)))
+  {
     return 2;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepShape_Face)))
+  {
     return 3;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepShape_FaceBound)))
+  {
     return 4;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepShape_ClosedShell)))
+  {
     return 5;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepShape_OpenShell)))
+  {
     return 6;
+  }
   return 0;
 }
 

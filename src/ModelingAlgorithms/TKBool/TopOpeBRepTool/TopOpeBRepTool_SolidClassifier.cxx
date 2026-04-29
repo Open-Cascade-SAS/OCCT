@@ -104,7 +104,9 @@ TopAbs_State TopOpeBRepTool_SolidClassifier::Classify(const TopoDS_Solid& SOL,
   myState       = TopAbs_UNKNOWN;
   LoadSolid(SOL);
   if (myPClassifier == nullptr)
+  {
     return myState;
+  }
   myPClassifier->Perform(P, Tol);
   myState                  = myPClassifier->State();
   const TopoDS_Shape& fres = myPClassifier->Face();
@@ -119,24 +121,40 @@ TopAbs_State TopOpeBRepTool_SolidClassifier::Classify(const TopoDS_Solid& SOL,
   if (ofres == TopAbs_EXTERNAL)
   {
     if (myState == TopAbs_IN)
+    {
       myState = TopAbs_OUT;
+    }
     else if (myState == TopAbs_OUT)
+    {
       myState = TopAbs_OUT;
+    }
     else if (myState == TopAbs_ON)
+    {
       myState = TopAbs_ON;
+    }
     else if (myState == TopAbs_UNKNOWN)
+    {
       myState = TopAbs_OUT;
+    }
   }
   else if (ofres == TopAbs_INTERNAL)
   {
     if (myState == TopAbs_IN)
+    {
       myState = TopAbs_IN;
+    }
     else if (myState == TopAbs_OUT)
+    {
       myState = TopAbs_IN;
+    }
     else if (myState == TopAbs_ON)
+    {
       myState = TopAbs_ON;
+    }
     else if (myState == TopAbs_UNKNOWN)
+    {
       myState = TopAbs_IN;
+    }
   }
   return myState;
 }
@@ -151,7 +169,9 @@ TopAbs_State TopOpeBRepTool_SolidClassifier::Classify(const TopoDS_Shell& SHE,
   myState       = TopAbs_UNKNOWN;
   LoadShell(SHE);
   if (myPClassifier == nullptr)
+  {
     return myState;
+  }
   myPClassifier->Perform(P, Tol);
   myState = myPClassifier->State();
   return myState;

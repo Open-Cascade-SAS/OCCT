@@ -55,7 +55,9 @@ void Interface_Protocol::ClearActive()
 int Interface_Protocol::CaseNumber(const occ::handle<Standard_Transient>& obj) const
 {
   if (obj.IsNull())
+  {
     return 0;
+  }
   return TypeNumber(Type(obj));
 }
 
@@ -79,7 +81,9 @@ occ::handle<Standard_Type> Interface_Protocol::Type(const occ::handle<Standard_T
                                                     const int /*nt*/) const
 {
   if (obj.IsNull())
+  {
     return STANDARD_TYPE(Standard_Transient);
+  }
   return obj->DynamicType();
 }
 

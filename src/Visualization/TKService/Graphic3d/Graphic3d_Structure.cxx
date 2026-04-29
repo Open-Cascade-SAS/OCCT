@@ -71,7 +71,9 @@ Graphic3d_Structure::~Graphic3d_Structure()
 void Graphic3d_Structure::clear(const bool theWithDestruction)
 {
   if (IsDeleted())
+  {
     return;
+  }
 
   // clean groups in graphics driver at first
   GraphicClear(theWithDestruction);
@@ -99,7 +101,9 @@ void Graphic3d_Structure::CalculateBoundBox()
 void Graphic3d_Structure::Remove()
 {
   if (IsDeleted())
+  {
     return;
+  }
 
   // clean groups in graphics driver at first; this is also should be done
   // to avoid unwanted group cleaning in group's destructor
@@ -139,7 +143,9 @@ void Graphic3d_Structure::Remove()
 void Graphic3d_Structure::Display()
 {
   if (IsDeleted())
+  {
     return;
+  }
 
   if (!myCStructure->stick)
   {
@@ -243,7 +249,9 @@ void Graphic3d_Structure::Highlight(const occ::handle<Graphic3d_PresentationAttr
 void Graphic3d_Structure::SetVisible(const bool theValue)
 {
   if (IsDeleted())
+  {
     return;
+  }
 
   const unsigned isVisible = theValue ? 1 : 0;
   if (myCStructure->visible == isVisible)
@@ -261,7 +269,9 @@ void Graphic3d_Structure::SetVisible(const bool theValue)
 void Graphic3d_Structure::UnHighlight()
 {
   if (IsDeleted())
+  {
     return;
+  }
 
   if (myCStructure->highlight)
   {
@@ -552,7 +562,9 @@ void Graphic3d_Structure::Disconnect(Graphic3d_Structure* theStructure)
 void Graphic3d_Structure::DisconnectAll(const Graphic3d_TypeOfConnection theType)
 {
   if (IsDeleted())
+  {
     return;
+  }
 
   switch (theType)
   {
@@ -586,7 +598,9 @@ void Graphic3d_Structure::DisconnectAll(const Graphic3d_TypeOfConnection theType
 void Graphic3d_Structure::SetTransformation(const occ::handle<TopLoc_Datum3D>& theTrsf)
 {
   if (IsDeleted())
+  {
     return;
+  }
 
   const bool wasTransformed = IsTransformed();
 
@@ -850,7 +864,9 @@ void Graphic3d_Structure::SetZLayer(const Graphic3d_ZLayerId theLayerId)
 {
   // if the structure is not displayed, unable to change its display layer
   if (IsDeleted())
+  {
     return;
+  }
 
   myStructureManager->ChangeZLayer(this, theLayerId);
   myCStructure->SetZLayer(theLayerId);

@@ -116,7 +116,9 @@ bool ShapeFix_Shape::Perform(const Message_ProgressRange& theProgress)
   myShape.Location(L, false);
   TopoDS_Shape S = Context()->Apply(myShape);
   if (NeedFix(myFixVertexPositionMode))
+  {
     ShapeFix::FixVertexPosition(S, Precision(), Context());
+  }
 
   st = S.ShapeType();
 
@@ -141,10 +143,14 @@ bool ShapeFix_Shape::Perform(const Message_ProgressRange& theProgress)
       {
         myShape = anIter.Value();
         if (Perform(aPSSubShape.Next()))
+        {
           status = true;
+        }
       }
       if (!aPSSubShape.More())
+      {
         return false; // aborted execution
+      }
 
       myFixSameParameterMode = savFixSameParameterMode;
       myFixVertexTolMode     = savFixVertexTolMode;
@@ -153,32 +159,42 @@ bool ShapeFix_Shape::Perform(const Message_ProgressRange& theProgress)
     }
     case TopAbs_SOLID: {
       if (!NeedFix(myFixSolidMode))
+      {
         break;
+      }
       myFixSolid->Init(TopoDS::Solid(S));
       myFixSolid->SetContext(Context());
 
       if (myFixSolid->Perform(aPS.Next()))
+      {
         status = true;
+      }
 
       myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE4);
       break;
     }
     case TopAbs_SHELL: {
       if (!NeedFix(myFixShellMode))
+      {
         break;
+      }
       occ::handle<ShapeFix_Shell> sfsh = FixShellTool();
       sfsh->Init(TopoDS::Shell(S));
       sfsh->SetContext(Context());
 
       if (sfsh->Perform(aPS.Next()))
+      {
         status = true;
+      }
 
       myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE4);
       break;
     }
     case TopAbs_FACE: {
       if (!NeedFix(myFixFaceMode))
+      {
         break;
+      }
       occ::handle<ShapeFix_Face> sff           = FixFaceTool();
       bool                       savTopoMode   = sff->FixWireTool()->ModifyTopologyMode();
       sff->FixWireTool()->ModifyTopologyMode() = true;
@@ -195,13 +211,17 @@ bool ShapeFix_Shape::Perform(const Message_ProgressRange& theProgress)
     }
     case TopAbs_WIRE: {
       if (!NeedFix(myFixWireMode))
+      {
         break;
+      }
       occ::handle<ShapeFix_Wire> sfw           = FixWireTool();
       bool                       savTopoMode   = sfw->ModifyTopologyMode();
       bool                       savClosedMode = sfw->ClosedWireMode();
       sfw->ModifyTopologyMode()                = true;
       if (!S.Closed())
+      {
         sfw->ClosedWireMode() = false;
+      }
       sfw->SetFace(TopoDS_Face());
       sfw->Load(TopoDS::Wire(S));
       sfw->SetContext(Context());
@@ -219,7 +239,9 @@ bool ShapeFix_Shape::Perform(const Message_ProgressRange& theProgress)
       occ::handle<ShapeFix_Edge> sfe = FixEdgeTool();
       sfe->SetContext(Context());
       if (sfe->FixVertexTolerance(TopoDS::Edge(S)))
+      {
         myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
+      }
       break;
     }
     case TopAbs_VERTEX:
@@ -228,7 +250,9 @@ bool ShapeFix_Shape::Perform(const Message_ProgressRange& theProgress)
       break;
   }
   if (!aPS.More())
+  {
     return false; // aborted execution
+  }
 
   myResult = Context()->Apply(S);
 
@@ -236,14 +260,18 @@ bool ShapeFix_Shape::Perform(const Message_ProgressRange& theProgress)
   {
     SameParameter(myResult, false, aPS.Next());
     if (!aPS.More())
+    {
       return false; // aborted execution
+    }
   }
   if (NeedFix(myFixVertexTolMode))
   {
     int             nbF = 0;
     TopExp_Explorer anExpF(myResult, TopAbs_FACE);
     for (; anExpF.More() && nbF <= 1; anExpF.Next())
+    {
       nbF++;
+    }
     if (nbF > 1)
     {
       // fix for bug  0025455
@@ -257,7 +285,9 @@ bool ShapeFix_Shape::Perform(const Message_ProgressRange& theProgress)
         TopoDS_Face     aF = TopoDS::Face(anExpF.Current());
         TopExp_Explorer anExpE(aF, TopAbs_EDGE);
         for (; anExpE.More(); anExpE.Next())
+        {
           sfe->FixVertexTolerance(TopoDS::Edge(anExpE.Current()), aF);
+        }
       }
     }
   }
@@ -265,7 +295,9 @@ bool ShapeFix_Shape::Perform(const Message_ProgressRange& theProgress)
   myResult = Context()->Apply(myResult);
 
   if (!fft.IsNull())
+  {
     fft->FixSmallAreaWireMode() = savFixSmallAreaWireMode;
+  }
 
   return status;
 }

@@ -38,7 +38,9 @@
 static int distance(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 3)
+  {
     return 1;
+  }
 
   const char* name1 = a[1];
   const char* name2 = a[2];
@@ -46,11 +48,15 @@ static int distance(Draw_Interpretor& di, int n, const char** a)
   TopoDS_Shape S1 = DBRep::Get(name1);
   TopoDS_Shape S2 = DBRep::Get(name2);
   if (S1.IsNull() || S2.IsNull())
+  {
     return 1;
+  }
   gp_Pnt P1, P2;
   double D;
   if (!BRepExtrema_Poly::Distance(S1, S2, P1, P2, D))
+  {
     return 1;
+  }
   // std::cout << " distance : " << D << std::endl;
   di << " distance : " << D << "\n";
   TopoDS_Edge E = BRepLib_MakeEdge(P1, P2);
@@ -129,9 +135,13 @@ static int distmini(Draw_Interpretor& di, int n, const char** a)
         TopoDS_Vertex V = BRepLib_MakeVertex(P1);
         char          namev[100];
         if (i1 == 1)
+        {
           Sprintf(namev, "%s", ns0);
+        }
         else
+        {
           Sprintf(namev, "%s%d", ns0, i1);
+        }
         char* tempv = namev;
         DBRep::Set(tempv, V);
         di << namev << " ";
@@ -159,7 +169,9 @@ static int distmini(Draw_Interpretor& di, int n, const char** a)
   }
 
   else
+  {
     di << "problem: no distance is found\n";
+  }
   return 0;
 }
 

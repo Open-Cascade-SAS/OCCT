@@ -89,7 +89,9 @@ void Aspect_CircularGrid::Compute(const double X,
   double a       = std::acos(cosinus);
   double ra      = RotationAngle();
   if (Y < yo)
+  {
     a = 2 * M_PI - a;
+  }
   n = (int)((a - ra) / myAlpha + std::copysign(0.5, a - ra));
 
   double cs = 0, sn = 0;

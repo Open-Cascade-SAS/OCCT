@@ -28,7 +28,9 @@ void RWStepBasic_RWWeekOfYearAndDayDate::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "week_of_year_and_day_date"))
+  {
     return;
+  }
 
   // --- inherited field : yearComponent ---
 

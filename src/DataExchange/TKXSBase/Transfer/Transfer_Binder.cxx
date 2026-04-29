@@ -35,9 +35,13 @@ Transfer_Binder::Transfer_Binder()
 void Transfer_Binder::Merge(const occ::handle<Transfer_Binder>& other)
 {
   if (other.IsNull())
+  {
     return;
+  }
   if ((int)theexecst < (int)other->StatusExec())
+  {
     theexecst = other->StatusExec();
+  }
   thecheck->GetMessages(other->Check());
 }
 
@@ -46,15 +50,21 @@ void Transfer_Binder::Merge(const occ::handle<Transfer_Binder>& other)
 bool Transfer_Binder::IsMultiple() const
 {
   if (thenextr.IsNull())
+  {
     return false;
+  }
   if (!HasResult())
+  {
     return thenextr->IsMultiple();
+  }
 
   occ::handle<Transfer_Binder> next = thenextr;
   while (!next.IsNull())
   {
     if (next->HasResult())
+    {
       return true;
+    }
     next = next->NextResult();
   }
   return false;
@@ -65,10 +75,14 @@ bool Transfer_Binder::IsMultiple() const
 void Transfer_Binder::AddResult(const occ::handle<Transfer_Binder>& next)
 {
   if (next == this || next.IsNull())
+  {
     return;
+  }
   next->CutResult(this);
   if (thenextr.IsNull())
+  {
     thenextr = next;
+  }
   else
   {
     // Modification of recursive to cycle
@@ -82,7 +96,9 @@ void Transfer_Binder::AddResult(const occ::handle<Transfer_Binder>& next)
         return;
       }
       else
+      {
         theBinder = theBinder->NextResult();
+      }
     }
   }
 }
@@ -92,7 +108,9 @@ void Transfer_Binder::AddResult(const occ::handle<Transfer_Binder>& next)
 void Transfer_Binder::CutResult(const occ::handle<Transfer_Binder>& next)
 {
   if (thenextr.IsNull())
+  {
     return;
+  }
   if (thenextr == next)
   {
     thenextr.Nullify();
@@ -105,7 +123,9 @@ void Transfer_Binder::CutResult(const occ::handle<Transfer_Binder>& next)
     while (!((currNext = currBinder->NextResult()) == next))
     {
       if (currNext.IsNull())
+      {
         return;
+      }
       currBinder = currNext;
     }
     currBinder->CutResult(next);
@@ -124,7 +144,9 @@ occ::handle<Transfer_Binder> Transfer_Binder::NextResult() const
 void Transfer_Binder::SetResultPresent()
 {
   if (thestatus == Transfer_StatusUsed)
+  {
     throw Transfer_TransferFailure("Binder : SetResult, Result is Already Set and Used");
+  }
   theexecst = Transfer_StatusDone;
   thestatus = Transfer_StatusDefined;
 }
@@ -141,7 +163,9 @@ bool Transfer_Binder::HasResult() const
 void Transfer_Binder::SetAlreadyUsed()
 {
   if (thestatus != Transfer_StatusVoid)
+  {
     thestatus = Transfer_StatusUsed;
+  }
 }
 
 //=================================================================================================

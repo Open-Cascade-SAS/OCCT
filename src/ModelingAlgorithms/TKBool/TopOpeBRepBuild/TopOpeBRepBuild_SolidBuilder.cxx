@@ -113,7 +113,9 @@ int TopOpeBRepBuild_SolidBuilder::InitFace()
 {
   const occ::handle<TopOpeBRepBuild_Loop>& L = mySolidAreaBuilder.Loop();
   if (L->IsShape())
+  {
     throw Standard_DomainError("TopOpeBRepBuild_SolidBuilder:InitFace");
+  }
   else
   {
     myBlockIterator = L->BlockIterator();

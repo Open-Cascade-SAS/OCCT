@@ -36,7 +36,9 @@ void RWStepBasic_RWRoleAssociation::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "role_association"))
+  {
     return;
+  }
 
   // Own fields of RoleAssociation
 

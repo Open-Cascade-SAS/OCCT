@@ -48,7 +48,9 @@ bool IGESSelect_SplineToBSpline::Perform(const Interface_Graph& G,
   {
     DeclareAndCast(IGESData_IGESEntity, ent, G.Entity(i));
     if (ent.IsNull())
+    {
       continue;
+    }
     int it = ent->TypeNumber();
     if (it == 112 || it == 126)
     {
@@ -61,7 +63,9 @@ bool IGESSelect_SplineToBSpline::Perform(const Interface_Graph& G,
   }
   newmod.Nullify();
   if (!thefound)
+  {
     return true;
+  }
 
   //  Il faudrait convertir ...
   checks.CCheck(0)->AddFail("IGESSelect_SplineToBSpline : not yet implemented");
@@ -77,15 +81,21 @@ bool IGESSelect_SplineToBSpline::Updated(const occ::handle<Standard_Transient>& 
     return true;
   }
   if (themap.IsNull())
+  {
     return false;
+  }
   return themap->Search(entfrom, entto);
 }
 
 TCollection_AsciiString IGESSelect_SplineToBSpline::Label() const
 {
   if (thetryc2)
+  {
     return TCollection_AsciiString(
       "Convert Spline Forms to BSpline, trying to recover C1-C2 continuity");
+  }
   else
+  {
     return TCollection_AsciiString("Convert Spline Forms to BSpline");
+  }
 }

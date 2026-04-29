@@ -29,7 +29,9 @@ void RWStepShape_RWOrientedOpenShell::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 4, ach, "oriented_open_shell"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

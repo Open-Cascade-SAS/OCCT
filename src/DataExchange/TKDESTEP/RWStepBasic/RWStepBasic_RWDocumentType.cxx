@@ -29,7 +29,9 @@ void RWStepBasic_RWDocumentType::ReadStep(const occ::handle<StepData_StepReaderD
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 1, ach, "document_type"))
+  {
     return;
+  }
 
   // --- own field : product_data_type ---
 

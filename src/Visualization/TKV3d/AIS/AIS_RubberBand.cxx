@@ -283,7 +283,9 @@ bool AIS_RubberBand::fillTriangles()
   BRepMesh_Delaun                aTriangulation(aMeshStructure, anIndexes);
   const IMeshData::MapOfInteger& aTriangles = aMeshStructure->ElementsOfDomain();
   if (aTriangles.Extent() < 1)
+  {
     return false;
+  }
 
   bool toFill = false;
   if (myTriangles.IsNull() || myTriangles->VertexNumber() != aTriangles.Extent() * 3)
@@ -300,7 +302,9 @@ bool AIS_RubberBand::fillTriangles()
     const BRepMesh_Triangle& aCurrentTriangle = aMeshStructure->GetElement(aTriangleId);
 
     if (aCurrentTriangle.Movability() == BRepMesh_Deleted)
+    {
       continue;
+    }
 
     int aTriangleVerts[3];
     aMeshStructure->ElementNodes(aCurrentTriangle, aTriangleVerts);

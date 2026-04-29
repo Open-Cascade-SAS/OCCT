@@ -75,7 +75,9 @@ void TopOpeBRep_FaceEdgeIntersector::Perform(const TopoDS_Shape& SF, const TopoD
 {
   ResetIntersection();
   if (!myForceTolerance)
+  {
     ShapeTolerances(SF, SE);
+  }
   myTol = BRep_Tool::Tolerance(TopoDS::Edge(SE));
 #ifdef OCCT_DEBUG
   if (TopOpeBRep_GettraceFITOL())
@@ -137,11 +139,17 @@ bool TopOpeBRep_FaceEdgeIntersector::IsEmpty()
 const TopoDS_Shape& TopOpeBRep_FaceEdgeIntersector::Shape(const int Index) const
 {
   if (Index == 1)
+  {
     return myFace;
+  }
   else if (Index == 2)
+  {
     return myEdge;
+  }
   else
+  {
     throw Standard_ProgramError("TopOpeBRep_FaceEdgeIntersector::Shape");
+  }
 }
 
 //=================================================================================================
@@ -270,13 +278,21 @@ TopOpeBRepDS_Transition TopOpeBRep_FaceEdgeIntersector::Transition(
     TopOpeBRepDS_Transition TR;
     TopAbs_ShapeEnum        onB = TopAbs_FACE, onA = TopAbs_FACE;
     if (FaceOrientation == TopAbs_FORWARD)
+    {
       TR.Set(stB, stA, onB, onA);
+    }
     else if (FaceOrientation == TopAbs_REVERSED)
+    {
       TR.Set(stA, stB, onA, onB);
+    }
     else if (FaceOrientation == TopAbs_EXTERNAL)
+    {
       TR.Set(TopAbs_OUT, TopAbs_OUT, onA, onB);
+    }
     else if (FaceOrientation == TopAbs_INTERNAL)
+    {
       TR.Set(TopAbs_IN, TopAbs_IN, onA, onB);
+    }
     return TR;
   }
 
@@ -301,7 +317,9 @@ TopOpeBRepDS_Transition TopOpeBRep_FaceEdgeIntersector::Transition(
   }
 
   else
+  {
     throw Standard_ProgramError("FEINT Transition Index");
+  }
 }
 
 //=================================================================================================
@@ -337,9 +355,13 @@ bool TopOpeBRep_FaceEdgeIntersector::IsVertex(const int I, TopoDS_Vertex& VR)
   bool   isv = false;
   gp_Pnt P   = Value();
   if (I == 1)
+  {
     isv = IsVertex(myFace, P, myTol, VR);
+  }
   else if (I == 2)
+  {
     isv = IsVertex(myEdge, P, myTol, VR);
+  }
   return isv;
 }
 
@@ -380,12 +402,16 @@ double TopOpeBRep_FaceEdgeIntersector::ToleranceMax(const TopoDS_Shape&    S,
 {
   TopExp_Explorer e(S, T);
   if (!e.More())
+  {
     return Precision::Intersection();
+  }
   else
   {
     double tol = RealFirst();
     for (; e.More(); e.Next())
+    {
       tol = std::max(tol, TopOpeBRepTool_ShapeTool::Tolerance(e.Current()));
+    }
     return tol;
   }
 }

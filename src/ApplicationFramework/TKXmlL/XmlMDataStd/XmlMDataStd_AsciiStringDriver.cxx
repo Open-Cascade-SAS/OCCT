@@ -56,9 +56,13 @@ bool XmlMDataStd_AsciiStringDriver::Paste(const XmlObjMgt_Persistent&       theS
     const XmlObjMgt_Element& anElement = theSource;
     XmlObjMgt_DOMString      aGUIDStr  = anElement.getAttribute(::AttributeIDString());
     if (aGUIDStr.Type() == XmlObjMgt_DOMString::LDOM_NULL)
+    {
       aGUID = TDataStd_AsciiString::GetID(); // default case
+    }
     else
+    {
       aGUID = Standard_GUID(static_cast<const char*>(aGUIDStr.GetString())); // user defined case
+    }
 
     occ::down_cast<TDataStd_AsciiString>(theTarget)->SetID(aGUID);
     return true;
@@ -75,7 +79,9 @@ void XmlMDataStd_AsciiStringDriver::Paste(const occ::handle<TDF_Attribute>& theS
 {
   occ::handle<TDataStd_AsciiString> aS = occ::down_cast<TDataStd_AsciiString>(theSource);
   if (aS.IsNull())
+  {
     return;
+  }
   XmlObjMgt_DOMString aString = aS->Get().ToCString();
   XmlObjMgt::SetStringValue(theTarget, aString);
   if (aS->ID() != TDataStd_AsciiString::GetID())

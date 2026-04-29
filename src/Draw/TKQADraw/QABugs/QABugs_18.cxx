@@ -43,7 +43,9 @@ static int OCC267(Draw_Interpretor& di, int argc, const char** argv)
 
   occ::handle<TDocStd_Document> D;
   if (!DDocStd::GetDocument(argv[1], D))
+  {
     return 1;
+  }
   TCollection_ExtendedString       path(argv[2]);
   occ::handle<TDocStd_Application> A = DDocStd::GetApplication();
 
@@ -104,7 +106,9 @@ static int OCC367(Draw_Interpretor& di, int argc, const char** argv)
     TopoDS_Edge   edge = TopoDS::Edge(wire_exp.Current());
     TopExp::Vertices(edge, ve1, ve2);
     if (vw1.IsSame(ve1) || vw1.IsSame(ve2))
+    {
       vlast = vw1;
+    }
     else
     {
       Standard_ASSERT_RAISE(vw2.IsSame(ve1) || vw2.IsSame(ve2), "Disconnected vertices");
@@ -147,7 +151,9 @@ static int OCC367(Draw_Interpretor& di, int argc, const char** argv)
     curve.Load(acurve);
     algo.Initialize(curve, l, newufirst, newulast);
     if (!algo.IsDone())
+    {
       di << "Not Done!!!" << "\n";
+    }
     int maxIndex = algo.NbPoints();
     for (int Index = 1; Index <= maxIndex; Index++)
     {
@@ -194,6 +200,4 @@ void QABugs::Commands_18(Draw_Interpretor& theCommands)
                   __FILE__,
                   OCC367,
                   group);
-
-  return;
 }

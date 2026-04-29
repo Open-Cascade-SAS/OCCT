@@ -42,7 +42,9 @@ void RWStepShape_RWMeasureRepresentationItemAndQualifiedRepresentationItem::Read
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "measure_representation_item"))
+  {
     return;
+  }
 
   // --- inherited from measure_with_unit : value_component ---
   occ::handle<StepBasic_MeasureValueMember> mvc = new StepBasic_MeasureValueMember;
@@ -59,7 +61,9 @@ void RWStepShape_RWMeasureRepresentationItemAndQualifiedRepresentationItem::Read
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 1, ach, "qualified_representation_item"))
+  {
     return;
+  }
 
   // --- own field : qualifiers ---
 
@@ -73,7 +77,9 @@ void RWStepShape_RWMeasureRepresentationItemAndQualifiedRepresentationItem::Read
     {
       StepShape_ValueQualifier VQ;
       if (data->ReadEntity(nsub1, i1, "qualifier", ach, VQ))
+      {
         quals->SetValue(i1, VQ);
+      }
     }
   }
 
@@ -82,7 +88,9 @@ void RWStepShape_RWMeasureRepresentationItemAndQualifiedRepresentationItem::Read
   data->NamedForComplex("REPRESENTATION_ITEM", "RPRITM", num0, num, ach);
 
   if (!data->CheckNbParams(num, 1, ach, "representation_item"))
+  {
     return;
+  }
 
   // --- inherited field from this component : name ---
 
@@ -118,7 +126,9 @@ void RWStepShape_RWMeasureRepresentationItemAndQualifiedRepresentationItem::Writ
   int i, nbq = ent->NbQualifiers();
   SW.OpenSub();
   for (i = 1; i <= nbq; i++)
+  {
     SW.Send(ent->QualifiersValue(i).Value());
+  }
   SW.CloseSub();
 
   //  --- Instance of plex component : RepresentationItem
@@ -138,5 +148,7 @@ void RWStepShape_RWMeasureRepresentationItemAndQualifiedRepresentationItem::Shar
 
   int i, nbq = ent->NbQualifiers();
   for (i = 1; i <= nbq; i++)
+  {
     iter.AddItem(ent->QualifiersValue(i).Value());
+  }
 }

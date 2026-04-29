@@ -72,7 +72,9 @@ bool IntTools_EdgeFace::IsCoincident()
 
   int aNbSeg = 23;
   if (myC.GetType() == GeomAbs_Line && myS.GetType() == GeomAbs_Plane)
+  {
     aNbSeg = 2; // Check only three points for Line/Plane intersection
+  }
 
   const double aTresh                   = 0.5;
   const int    aTreshIdxF               = RealToInt((aNbSeg + 1) * 0.25),
@@ -106,9 +108,13 @@ bool IntTools_EdgeFace::IsCoincident()
     if (aD > myCriteria)
     {
       if (aD > 100. * myCriteria)
+      {
         return false;
+      }
       else
+      {
         continue;
+      }
     }
     //
 
@@ -125,10 +131,14 @@ bool IntTools_EdgeFace::IsCoincident()
     // classified correctly.
 
     if (((0 < i) && (i < aTreshIdxF)) || ((aTreshIdxL < i) && (i < aNbSeg)))
+    {
       continue;
+    }
 
     if (isClassified && (i != aNbSeg))
+    {
       continue;
+    }
 
     aProjector.LowerDistanceParameters(aU, aV);
     aP2d.SetX(aU);
@@ -138,10 +148,14 @@ bool IntTools_EdgeFace::IsCoincident()
     aState                      = aClass2d.Perform(aP2d);
 
     if (aState == TopAbs_OUT)
+    {
       return false;
+    }
 
     if (i != 0)
+    {
       isClassified = true;
+    }
   }
   //
   const double aCoeff = (double)iCnt / ((double)aNbSeg + 1);
@@ -311,7 +325,9 @@ int IntTools_EdgeFace::MakeType(IntTools_CommonPrt& aCommonPrt)
 
     if ((std::abs(af1 - myRange.First()) < myC.Resolution(myCriteria))
         && (std::abs(al1 - myRange.Last()) < myC.Resolution(myCriteria)))
+    {
       isWholeRange = true;
+    }
 
     if ((df1 > myCriteria * 2.) && isWholeRange)
     {
@@ -522,8 +538,10 @@ void IntTools_EdgeFace::Perform()
     {
       myCriteria = std::max(aTolE, aTolF);
     }
-    else //--- 5112
+    else
+    { //--- 5112
       myCriteria = 1.5 * aTolE + aTolF;
+    }
   }
   else
   {
@@ -552,7 +570,9 @@ void IntTools_EdgeFace::Perform()
   anIntersector.Perform();
 
   if (anIntersector.MinimalSquareDistance() < RealLast())
+  {
     myMinDistance = std::sqrt(anIntersector.MinimalSquareDistance());
+  }
 
   if (!anIntersector.IsDone())
   {

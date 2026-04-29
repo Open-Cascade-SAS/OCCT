@@ -164,13 +164,21 @@ IntCurvesFace_Intersector::IntCurvesFace_Intersector(const TopoDS_Face& Face,
     double       dU           = (U1 - U0) / aURes;
     double       dV           = (V1 - V0) / aVRes;
     if (nbsu < aMinSamples)
+    {
       nbsu = aMinSamples;
+    }
     if (nbsv < aMinSamples)
+    {
       nbsv = aMinSamples;
+    }
     if (nbsu > aMaxSamples)
+    {
       nbsu = aMaxSamples;
+    }
     if (nbsv > aMaxSamples)
+    {
       nbsv = aMaxSamples;
+    }
 
     if (dU > Precision::Confusion() && dV > Precision::Confusion())
     {
@@ -179,7 +187,9 @@ IntCurvesFace_Intersector::IntCurvesFace_Intersector(const TopoDS_Face& Face,
         aMinSamples = 10;
         nbsu        = (int)(std::sqrt(dU / dV) * aMaxSamples);
         if (nbsu < aMinSamples)
+        {
           nbsu = aMinSamples;
+        }
         nbsv = aMaxSamples2 / nbsu;
         if (nbsv < aMinSamples)
         {
@@ -292,9 +302,13 @@ void IntCurvesFace_Intersector::InternalCall(const IntCurveSurface_HInter& HICS,
           if (transition != IntCurveSurface_Tangent && face.Orientation() == TopAbs_REVERSED)
           {
             if (transition == IntCurveSurface_In)
+            {
               transition = IntCurveSurface_Out;
+            }
             else
+            {
               transition = IntCurveSurface_In;
+            }
           }
           //----- Insertion du point
           if (nbpnt == 0)
@@ -379,7 +393,9 @@ void IntCurvesFace_Intersector::Perform(const gp_Lin& L, const double ParMin, co
     Bnd_Box   boxLine;
     bndTool.LinBox(L, myPolyhedron->Bounding(), boxLine);
     if (bndTool.NbSegments() == 0)
+    {
       return;
+    }
     for (int nbseg = 1; nbseg <= bndTool.NbSegments(); nbseg++)
     {
       double pinf = bndTool.BeginParam(nbseg);
@@ -400,9 +416,13 @@ void IntCurvesFace_Intersector::Perform(const gp_Lin& L, const double ParMin, co
       else
       {
         if (parinf > pinf)
+        {
           parinf = pinf;
+        }
         if (parsup < psup)
+        {
           parsup = psup;
+        }
       }
     }
     if (parinf > ParMax)
@@ -414,11 +434,17 @@ void IntCurvesFace_Intersector::Perform(const gp_Lin& L, const double ParMin, co
       return;
     }
     if (parinf < ParMin)
+    {
       parinf = ParMin;
+    }
     if (parsup > ParMax)
+    {
       parsup = ParMax;
+    }
     if (parinf > (parsup - 1e-9))
+    {
       return;
+    }
     IntCurveSurface_ThePolygonOfHInter polygon(HLL, parinf, parsup, 2);
 #if OPTIMISATION
     if (!myBndBounding)
@@ -469,11 +495,17 @@ void IntCurvesFace_Intersector::Perform(const occ::handle<Adaptor3d_Curve>& HCu,
     parinf = IntCurveSurface_TheHCurveTool::FirstParameter(HCu);
     parsup = IntCurveSurface_TheHCurveTool::LastParameter(HCu);
     if (parinf < ParMin)
+    {
       parinf = ParMin;
+    }
     if (parsup > ParMax)
+    {
       parsup = ParMax;
+    }
     if (parinf > (parsup - 1e-9))
+    {
       return;
+    }
     int nbs;
     nbs = IntCurveSurface_TheHCurveTool::NbSamples(HCu, parinf, parsup);
 

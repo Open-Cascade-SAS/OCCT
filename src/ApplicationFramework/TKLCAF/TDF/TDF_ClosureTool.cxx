@@ -52,7 +52,9 @@ void TDF_ClosureTool::Closure(const occ::handle<TDF_DataSet>& aDataSet,
   rootLst.Clear();
   NCollection_Map<TDF_Label>::Iterator labMItr(labMap);
   for (; labMItr.More(); labMItr.Next())
+  {
     rootLst.Append(labMItr.Key());
+  }
 
   // Iterates on roots.
   NCollection_List<TDF_Label>::Iterator labLItr(rootLst);
@@ -60,9 +62,13 @@ void TDF_ClosureTool::Closure(const occ::handle<TDF_DataSet>& aDataSet,
   {
     const TDF_Label& lab = labLItr.Value();
     if (lab.HasAttribute())
+    {
       TDF_ClosureTool::LabelAttributes(lab, labMap, attMap, aFilter, aMode);
+    }
     if (aMode.Descendants())
+    {
       TDF_ClosureTool::Closure(lab, labMap, attMap, aFilter, aMode);
+    }
   }
 }
 
@@ -85,7 +91,9 @@ void TDF_ClosureTool::Closure(const TDF_Label&                             aLabe
       aLabMap.Add(locLab);
       upLab = locLab.Father();
       while (aLabMap.Add(upLab))
+      {
         upLab = upLab.Father();
+      }
       TDF_ClosureTool::LabelAttributes(locLab, aLabMap, anAttMap, aFilter, aMode);
     }
   }
@@ -139,7 +147,9 @@ void TDF_ClosureTool::LabelAttributes(const TDF_Label&                          
               {
                 // 1.1 - A referenced attribute has a label.
                 if (aLabMap.Add(locLab2))
+                {
                   TDF_ClosureTool::Closure(locLab2, aLabMap, anAttMap, aFilter, aMode);
+                }
               }
               else
               {
@@ -156,7 +166,9 @@ void TDF_ClosureTool::LabelAttributes(const TDF_Label&                          
           {
             const TDF_Label& locLab1 = labMItr.Key();
             if (aLabMap.Add(locLab1))
+            {
               TDF_ClosureTool::Closure(locLab1, aLabMap, anAttMap, aFilter, aMode);
+            }
           }
         }
       }

@@ -166,7 +166,9 @@ TEST_F(BRepGraph_SharingTest, SharedEdge_IncidenceRefs_DifferentOrientation)
     const NCollection_DynamicArray<BRepGraph_CoEdgeId>& aCoEdgeIdxs =
       myGraph.Topo().Edges().CoEdges(anEdgeId);
     if (aCoEdgeIdxs.Length() < 2)
+    {
       continue;
+    }
     // Check if coedges reference different faces.
     const BRepGraph_NodeId aFace0 =
       myGraph.Topo().CoEdges().Definition(aCoEdgeIdxs.Value(0)).FaceDefId;
@@ -191,7 +193,9 @@ TEST_F(BRepGraph_SharingTest, NonClosedEdge_StartEnd_Different)
     const BRepGraph_EdgeId       anEdgeId = anEdgeIt.CurrentId();
     const BRepGraphInc::EdgeDef& aDef     = anEdgeIt.Current();
     if (aDef.IsDegenerate)
+    {
       continue;
+    }
     // Box edges are not closed, so start and end vertex defs must differ
     const BRepGraph_VertexId aStartVtx =
       BRepGraph_Tool::Edge::StartVertexRef(myGraph, anEdgeId).VertexDefId;

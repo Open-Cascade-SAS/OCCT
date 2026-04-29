@@ -67,10 +67,14 @@ void DDataStd::DumpConstraint(const occ::handle<TDataXtd_Constraint>& CTR, Stand
     TDataStd::Print(t, anOS);
     double val = CTR->GetValue()->Get();
     if (t == TDataStd_ANGULAR)
+    {
       val = (180. * val) / M_PI;
+    }
     Standard_ENABLE_DEPRECATION_WARNINGS anOS << " ";
     anOS << val;
   }
   if (!CTR->Verified())
+  {
     anOS << " NotVerifed";
+  }
 }

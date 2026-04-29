@@ -55,10 +55,14 @@ static bool isCW(const BRepAdaptor_Curve& AC)
   gp_Vec startv(center, start), endv(center, end), middlev(center, m);
   double middlea = startv.AngleWithRef(middlev, plane.Direction());
   while (middlea < 0.0)
+  {
     middlea += 2.0 * M_PI;
+  }
   double enda = startv.AngleWithRef(endv, plane.Direction());
   while (enda < 0.0)
+  {
     enda += 2.0 * M_PI;
+  }
 
   bool is_cw = middlea > enda;
   return is_cw;
@@ -166,23 +170,33 @@ void ChFi2d_AnaFilletAlgo::Init(const TopoDS_Wire& theWire, const gp_Pln& thePla
   for (; itr.More(); itr.Next())
   {
     if (e1.IsNull())
+    {
       e1 = TopoDS::Edge(itr.Value());
+    }
     else if (e2.IsNull())
+    {
       e2 = TopoDS::Edge(itr.Value());
+    }
   }
   if (e1.IsNull() || e2.IsNull())
+  {
     throw Standard_TypeMismatch(
       "The algorithm expects a wire consisting of two linear or circular edges.");
+  }
 
   // Left neighbour.
   BRepAdaptor_Curve AC1(e1);
   if (AC1.GetType() != GeomAbs_Line && AC1.GetType() != GeomAbs_Circle)
+  {
     throw Standard_TypeMismatch("A segment or an arc of circle is expected.");
+  }
 
   TopoDS_Vertex v1, v2;
   TopExp::Vertices(e1, v1, v2, true);
   if (v1.IsNull() || v2.IsNull())
+  {
     throw Standard_Failure("An infinite edge.");
+  }
 
   gp_Pnt   P1 = BRep_Tool::Pnt(v1);
   gp_Pnt   P2 = BRep_Tool::Pnt(v2);
@@ -207,11 +221,15 @@ void ChFi2d_AnaFilletAlgo::Init(const TopoDS_Wire& theWire, const gp_Pln& thePla
   // Right neighbour.
   BRepAdaptor_Curve AC2(e2);
   if (AC2.GetType() != GeomAbs_Line && AC2.GetType() != GeomAbs_Circle)
+  {
     throw Standard_TypeMismatch("A segment or an arc of circle is expected.");
+  }
 
   TopExp::Vertices(e2, v1, v2, true);
   if (v1.IsNull() || v2.IsNull())
+  {
     throw Standard_Failure("An infinite edge.");
+  }
 
   P1 = BRep_Tool::Pnt(v1);
   P2 = BRep_Tool::Pnt(v2);
@@ -246,7 +264,9 @@ void ChFi2d_AnaFilletAlgo::Init(const TopoDS_Edge& theEdge1,
   TopExp::Vertices(theEdge1, v11, v12, true);
   TopExp::Vertices(theEdge2, v21, v22, true);
   if (v11.IsNull() || v12.IsNull() || v21.IsNull() || v22.IsNull())
+  {
     throw Standard_Failure("An infinite edge.");
+  }
 
   gp_Pnt p11 = BRep_Tool::Pnt(v11);
   gp_Pnt p12 = BRep_Tool::Pnt(v12);
@@ -263,27 +283,43 @@ void ChFi2d_AnaFilletAlgo::Init(const TopoDS_Edge& theEdge1,
     pcommon = p12;
   }
   else
+  {
     throw Standard_Failure("The edges have no common point.");
+  }
 
   // Reverse the edges in case of need (to construct a wire).
   bool is1stReversed(false), is2ndReversed(false);
   if (IsEqual(pcommon, p11))
+  {
     is1stReversed = true;
+  }
   else if (IsEqual(pcommon, p22))
+  {
     is2ndReversed = true;
+  }
 
   // Make a wire.
   BRepBuilderAPI_MakeWire mkWire;
   if (is1stReversed)
+  {
     mkWire.Add(TopoDS::Edge(theEdge1.Reversed()));
+  }
   else
+  {
     mkWire.Add(theEdge1);
+  }
   if (is2ndReversed)
+  {
     mkWire.Add(TopoDS::Edge(theEdge2.Reversed()));
+  }
   else
+  {
     mkWire.Add(theEdge2);
+  }
   if (!mkWire.IsDone())
+  {
     throw Standard_Failure("Can't make a wire.");
+  }
 
   const TopoDS_Wire& W = mkWire.Wire();
   Init(W, thePlane);
@@ -352,11 +388,15 @@ bool ChFi2d_AnaFilletAlgo::Perform(const double radius)
   }
 
   if (!bRet)
+  {
     return false;
+  }
 
   // Invert the fillet for left-handed plane.
   if (!plane.Position().Direct())
+  {
     cw = !cw;
+  }
 
   // Construct a fillet.
   // Make circle.
@@ -396,7 +436,9 @@ bool ChFi2d_AnaFilletAlgo::Perform(const double radius)
       {
         // Invert the fillet for left-handed planes.
         if (!plane.Position().Direct())
+        {
           cw = !cw;
+        }
 
         // Make the circle again.
         center = ElSLib::Value(xc, yc, plane);
@@ -424,9 +466,13 @@ bool ChFi2d_AnaFilletAlgo::Perform(const double radius)
     else
     {
       if (e1.Orientation() == TopAbs_FORWARD)
+      {
         pstart = AC1.Value(AC1.LastParameter() - start);
+      }
       else
+      {
         pstart = AC1.Value(AC1.FirstParameter() + start);
+      }
     }
     // end: (xend, yend) -> pend.
     gp_Pnt pend;
@@ -437,9 +483,13 @@ bool ChFi2d_AnaFilletAlgo::Perform(const double radius)
     else
     {
       if (e2.Orientation() == TopAbs_FORWARD)
+      {
         pend = AC2.Value(AC2.FirstParameter() + end);
+      }
       else
+      {
         pend = AC2.Value(AC2.LastParameter() - end);
+      }
     }
 
     // Make arc.
@@ -468,14 +518,18 @@ bool ChFi2d_AnaFilletAlgo::Perform(const double radius)
         BRepBuilderAPI_MakeEdge mkSegment1;
         mkSegment1.Init(AC1.Curve().Curve(), p1, p2);
         if (mkSegment1.IsDone())
+        {
           shrinke1 = mkSegment1.Edge();
+        }
       }
       else
       {
         BRepBuilderAPI_MakeEdge mkCirc1;
         mkCirc1.Init(AC1.Curve().Curve(), p1, p2);
         if (mkCirc1.IsDone())
+        {
           shrinke1 = mkCirc1.Edge();
+        }
       }
 
       // Right neighbour.
@@ -495,14 +549,18 @@ bool ChFi2d_AnaFilletAlgo::Perform(const double radius)
         BRepBuilderAPI_MakeEdge mkSegment2;
         mkSegment2.Init(AC2.Curve().Curve(), p1, p2);
         if (mkSegment2.IsDone())
+        {
           shrinke2 = mkSegment2.Edge();
+        }
       }
       else
       {
         BRepBuilderAPI_MakeEdge mkCirc2;
         mkCirc2.Init(AC2.Curve().Curve(), p1, p2);
         if (mkCirc2.IsDone())
+        {
           shrinke2 = mkCirc2.Edge();
+        }
       }
 
       bRet = !shrinke1.IsNull() && !shrinke2.IsNull();
@@ -555,7 +613,9 @@ bool ChFi2d_AnaFilletAlgo::SegmentFilletSegment(const double radius,
 
   // Check bisectrissa.
   if (bisec.SquareMagnitude() < Precision::SquareConfusion())
+  {
     return false;
+  }
 
   // Normalize the bisectrissa.
   bisec.Normalize();
@@ -599,7 +659,9 @@ bool ChFi2d_AnaFilletAlgo::SegmentFilletArc(const double radius,
 
   // Check length of segment.
   if (p11.SquareDistance(p12) < gp::Resolution())
+  {
     return false;
+  }
 
   // Make 2D vectors.
   gp_Vec2d v1(p12, p11);
@@ -607,15 +669,21 @@ bool ChFi2d_AnaFilletAlgo::SegmentFilletArc(const double radius,
 
   // Rotate the arc vector to become tangential at p21.
   if (cw2)
+  {
     v2.Rotate(+M_PI_2);
+  }
   else
+  {
     v2.Rotate(-M_PI_2);
+  }
 
   // If vectors coincide (segment and arc are tangent),
   // the algorithm doesn't work...
   double angle = v1.Angle(v2);
   if (fabs(angle) < Precision::Angular())
+  {
     return false;
+  }
 
   // Make a bissectrisa of vectors at p12.
   v2.Normalize();
@@ -625,7 +693,9 @@ bool ChFi2d_AnaFilletAlgo::SegmentFilletArc(const double radius,
   // If segment and arc look in opposite direction,
   // no fillet is possible.
   if (bisec.SquareMagnitude() < gp::Resolution())
+  {
     return false;
+  }
 
   // Define an appropriate point to choose center of fillet.
   bisec.Normalize();
@@ -639,18 +709,24 @@ bool ChFi2d_AnaFilletAlgo::SegmentFilletArc(const double radius,
   d1.Rotate(M_PI_2);
   line.Translate(radius * d1);
   if (line.Distance(nearp) > radius)
+  {
     line.Translate(-2.0 * radius * d1);
+  }
 
   // Make a circle of radius of the arc +/- fillet radius.
   gp_Ax2d   axes(pc2, gp::DX2d());
   gp_Circ2d circ(axes, radius2 + radius);
   if (radius2 > radius && circ.Distance(nearp) > radius)
+  {
     circ.SetRadius(radius2 - radius);
+  }
 
   // Calculate intersection of the line and the circle.
   IntAna2d_AnaIntersection intersector(line, circ);
   if (!intersector.IsDone() || !intersector.NbPoints())
+  {
     return false;
+  }
 
   // Find center point of fillet.
   int    i;
@@ -686,7 +762,9 @@ bool ChFi2d_AnaFilletAlgo::SegmentFilletArc(const double radius,
   circ.SetRadius(radius2);
   intersector.Perform(line, circ);
   if (!intersector.IsDone() || !intersector.NbPoints())
+  {
     return false;
+  }
 
   xend = DBL_MAX;
   yend = DBL_MAX;
@@ -729,7 +807,9 @@ bool ChFi2d_AnaFilletAlgo::ArcFilletSegment(const double radius,
 
   // Check length of segment.
   if (p12.SquareDistance(p22) < gp::Resolution())
+  {
     return false;
+  }
 
   // Make 2D vectors.
   gp_Vec2d v1(p12, pc1);
@@ -737,15 +817,21 @@ bool ChFi2d_AnaFilletAlgo::ArcFilletSegment(const double radius,
 
   // Rotate the arc vector to become tangential at p21.
   if (cw1)
+  {
     v1.Rotate(-M_PI_2);
+  }
   else
+  {
     v1.Rotate(+M_PI_2);
+  }
 
   // If vectors coincide (segment and arc are tangent),
   // the algorithm doesn't work...
   double angle = v1.Angle(v2);
   if (fabs(angle) < Precision::Angular())
+  {
     return false;
+  }
 
   // Make a bisectrissa of vectors at p12.
   v1.Normalize();
@@ -755,7 +841,9 @@ bool ChFi2d_AnaFilletAlgo::ArcFilletSegment(const double radius,
   // If segment and arc look in opposite direction,
   // no fillet is possible.
   if (bisec.SquareMagnitude() < gp::Resolution())
+  {
     return false;
+  }
 
   // Define an appropriate point to choose center of fillet.
   bisec.Normalize();
@@ -769,18 +857,24 @@ bool ChFi2d_AnaFilletAlgo::ArcFilletSegment(const double radius,
   aD2Vec.Rotate(M_PI_2);
   line.Translate(radius * aD2Vec);
   if (line.Distance(nearPoint) > radius)
+  {
     line.Translate(-2.0 * radius * aD2Vec);
+  }
 
   // Make a circle of radius of the arc +/- fillet radius.
   gp_Ax2d   axes(pc1, gp::DX2d());
   gp_Circ2d circ(axes, radius1 + radius);
   if (radius1 > radius && circ.Distance(nearPoint) > radius)
+  {
     circ.SetRadius(radius1 - radius);
+  }
 
   // Calculate intersection of the line and the big circle.
   IntAna2d_AnaIntersection intersector(line, circ);
   if (!intersector.IsDone() || !intersector.NbPoints())
+  {
     return false;
+  }
 
   // Find center point of fillet.
   int    i;
@@ -816,7 +910,9 @@ bool ChFi2d_AnaFilletAlgo::ArcFilletSegment(const double radius,
   circ.SetRadius(radius1);
   intersector.Perform(line, circ);
   if (!intersector.IsDone() || !intersector.NbPoints())
+  {
     return false;
+  }
 
   xstart = DBL_MAX;
   ystart = DBL_MAX;
@@ -863,20 +959,30 @@ bool ChFi2d_AnaFilletAlgo::ArcFilletArc(const double radius,
 
   // Rotate the vectors so that they are tangent to circles at p12.
   if (cw1)
+  {
     v1.Rotate(+M_PI_2);
+  }
   else
+  {
     v1.Rotate(-M_PI_2);
+  }
   if (cw2)
+  {
     v2.Rotate(-M_PI_2);
+  }
   else
+  {
     v2.Rotate(+M_PI_2);
+  }
 
   // Make a "check" point for choosing an offset circle.
   v1.Normalize();
   v2.Normalize();
   gp_Vec2d bisec = 0.5 * (v1 + v2);
   if (bisec.SquareMagnitude() < gp::Resolution())
+  {
     return false;
+  }
 
   const gp_Pnt2d checkp = p12.Translated(radius * bisec);
   const gp_Lin2d checkl(p12, bisec);
@@ -887,18 +993,24 @@ bool ChFi2d_AnaFilletAlgo::ArcFilletArc(const double radius,
   gp_Ax2d   axes(pc1, gp::DX2d());
   gp_Circ2d c1(axes, radius1 + radius);
   if (radius1 > radius && c1.Distance(checkp) > radius)
+  {
     c1.SetRadius(radius1 - radius);
+  }
   // Arc 2.
   axes.SetLocation(pc2);
   gp_Circ2d c2(axes, radius2 + radius);
   if (radius2 > radius && c2.Distance(checkp) > radius)
+  {
     c2.SetRadius(radius2 - radius);
+  }
 
   // Calculate an intersection point of these two circles
   // and choose the one closer to the "check" point.
   IntAna2d_AnaIntersection intersector(c1, c2);
   if (!intersector.IsDone() || !intersector.NbPoints())
+  {
     return false;
+  }
 
   // Find center point of fillet.
   gp_Pnt2d pc;

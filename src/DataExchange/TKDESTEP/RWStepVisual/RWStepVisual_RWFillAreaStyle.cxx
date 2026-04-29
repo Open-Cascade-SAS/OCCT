@@ -32,7 +32,9 @@ void RWStepVisual_RWFillAreaStyle::ReadStep(const occ::handle<StepData_StepReade
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "fill_area_style"))
+  {
     return;
+  }
 
   // --- own field : name ---
 
@@ -53,7 +55,9 @@ void RWStepVisual_RWFillAreaStyle::ReadStep(const occ::handle<StepData_StepReade
     {
       // szv#4:S4163:12Mar99 `bool stat2 =` not needed
       if (data->ReadEntity(nsub2, i2, "fill_styles", ach, aFillStylesItem))
+      {
         aFillStyles->SetValue(i2, aFillStylesItem);
+      }
     }
   }
 

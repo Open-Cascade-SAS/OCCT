@@ -59,10 +59,14 @@ bool Transfer_TransferDispatch::Copy(const occ::handle<Standard_Transient>& entf
 {
   occ::handle<Transfer_Binder> result = TransientProcess()->Transferring(entfrom);
   if (result.IsNull())
+  {
     return Interface_CopyTool::Copy(entfrom, entto, mapped, errstat);
+  }
 
   if (!result->IsKind(STANDARD_TYPE(Transfer_SimpleBinderOfTransient)))
+  {
     return false; // Produces something, but what ?
+  }
   entto = GetCasted(Transfer_SimpleBinderOfTransient, result)->Result();
   return true;
 }

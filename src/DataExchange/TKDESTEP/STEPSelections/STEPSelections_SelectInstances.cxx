@@ -55,7 +55,9 @@ static void AddAllSharings(const occ::handle<Standard_Transient>& start,
                            Interface_EntityIterator&              explored)
 {
   if (start.IsNull())
+  {
     return;
+  }
   Interface_EntityIterator subs = graph.Shareds(start);
   for (subs.Start(); subs.More(); subs.Next())
   {
@@ -69,7 +71,9 @@ static void AddInstances(const occ::handle<Standard_Transient>& start,
                          Interface_EntityIterator&              explored)
 {
   if (start.IsNull())
+  {
     return;
+  }
 
   explored.AddItem(start);
   if (start->IsKind(STANDARD_TYPE(StepShape_ShapeDefinitionRepresentation)))
@@ -81,7 +85,9 @@ static void AddInstances(const occ::handle<Standard_Transient>& start,
     {
       DeclareAndCast(StepShape_ContextDependentShapeRepresentation, anitem, subs.Value());
       if (anitem.IsNull())
+      {
         continue;
+      }
       AddInstances(anitem, graph, explored);
     }
     return;
@@ -117,22 +123,30 @@ static void AddInstances(const occ::handle<Standard_Transient>& start,
     DeclareAndCast(StepShape_ContextDependentShapeRepresentation, CDSR, start);
     occ::handle<StepRepr_RepresentationRelationship> SRR = CDSR->RepresentationRelation();
     if (SRR.IsNull())
+    {
       return;
+    }
 
     occ::handle<StepRepr_Representation> rep;
     bool SRRReversed = STEPConstruct_Assembly::CheckSRRReversesNAUO(graph, CDSR);
     if (SRRReversed)
+    {
       rep = SRR->Rep2();
+    }
     else
+    {
       rep = SRR->Rep1();
+    }
 
     Interface_EntityIterator subs = graph.Sharings(rep);
     for (subs.Start(); subs.More(); subs.Next())
+    {
       if (subs.Value()->IsKind(STANDARD_TYPE(StepShape_ShapeDefinitionRepresentation)))
       {
         DeclareAndCast(StepShape_ShapeDefinitionRepresentation, SDR, subs.Value());
         AddInstances(SDR, graph, explored);
       }
+    }
     //???
     return;
   }
@@ -144,9 +158,13 @@ static void AddInstances(const occ::handle<Standard_Transient>& start,
     {
       occ::handle<Standard_Transient> anitem;
       if (i == 1)
+      {
         anitem = und->Rep1();
+      }
       if (i == 2)
+      {
         anitem = und->Rep2();
+      }
       AddInstances(anitem, graph, explored);
     }
     return;
@@ -161,7 +179,9 @@ Interface_EntityIterator STEPSelections_SelectInstances::RootResult(const Interf
     myGraph                        = new Interface_HGraph(G);
     myEntities.Destroy();
     for (roots.Start(); roots.More(); roots.Next())
+    {
       AddInstances(roots.Value(), G, myEntities);
+    }
   }
 
   if (HasInput() || HasAlternate())
@@ -170,15 +190,23 @@ Interface_EntityIterator STEPSelections_SelectInstances::RootResult(const Interf
     int                                                     nbSelected = select.NbEntities();
     NCollection_IndexedMap<occ::handle<Standard_Transient>> filter(nbSelected);
     for (select.Start(); select.More(); select.Next())
+    {
       filter.Add(select.Value());
+    }
     Interface_EntityIterator result;
     for (myEntities.Start(); myEntities.More(); myEntities.Next())
+    {
       if (filter.Contains(myEntities.Value()))
+      {
         result.AddItem(myEntities.Value());
+      }
+    }
     return result;
   }
   else
+  {
     return myEntities;
+  }
 }
 
 bool STEPSelections_SelectInstances::Explore(const int,

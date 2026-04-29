@@ -30,9 +30,13 @@ void StepData_GlobalNodeOfWriterLib::Add(const occ::handle<StepData_ReadWriteMod
                                          const occ::handle<StepData_Protocol>&        aprotocol)
 {
   if (themod == amodule)
+  {
     return;
+  }
   if (theprot == aprotocol)
+  {
     themod = amodule;
+  }
   else if (thenext.IsNull())
   {
     if (themod.IsNull())
@@ -47,7 +51,9 @@ void StepData_GlobalNodeOfWriterLib::Add(const occ::handle<StepData_ReadWriteMod
     }
   }
   else
+  {
     thenext->Add(amodule, aprotocol);
+  }
 }
 
 const occ::handle<StepData_ReadWriteModule>& StepData_GlobalNodeOfWriterLib::Module() const

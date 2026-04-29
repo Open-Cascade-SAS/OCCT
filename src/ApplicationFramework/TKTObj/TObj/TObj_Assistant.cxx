@@ -67,10 +67,14 @@ occ::handle<TObj_Model> TObj_Assistant::FindModel(const char* const theName)
   {
     aModel = occ::down_cast<TObj_Model>(getModels().Value(i));
     if (aName == aModel->GetModelName()->String())
+    {
       break;
+    }
   }
   if (i == 0)
+  {
     aModel.Nullify();
+  }
 
   return aModel;
 }
@@ -94,7 +98,9 @@ void TObj_Assistant::ClearModelMap()
 occ::handle<Standard_Type> TObj_Assistant::FindType(const int theTypeIndex)
 {
   if (theTypeIndex > 0 && theTypeIndex <= getTypes().Extent())
+  {
     return occ::down_cast<Standard_Type>(getTypes().FindKey(theTypeIndex));
+  }
 
   return nullptr;
 }
@@ -104,7 +110,9 @@ occ::handle<Standard_Type> TObj_Assistant::FindType(const int theTypeIndex)
 int TObj_Assistant::FindTypeIndex(const occ::handle<Standard_Type>& theType)
 {
   if (!getTypes().Contains(theType))
+  {
     return 0;
+  }
 
   return getTypes().FindIndex(theType);
 }
@@ -174,7 +182,9 @@ int TObj_Assistant::GetAppVersion()
   {
     occ::handle<TObj_Model>& aModel = getCurrentModel();
     if (!aModel.IsNull())
+    {
       aVersion = aModel->GetFormatVersion();
+    }
   }
   return aVersion;
 }

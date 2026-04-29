@@ -718,13 +718,21 @@ void OpenGl_Window::Init(const occ::handle<OpenGl_GraphicDriver>& theDriver,
   glXGetConfig(aDisp, aVis.get(), GLX_DEPTH_SIZE, &aDepthSize);
   glXGetConfig(aDisp, aVis.get(), GLX_STENCIL_SIZE, &aStencilSize);
   if (aDepthSize < 1)
+  {
     addMsgToList(aList, "no depth buffer");
+  }
   if (aStencilSize < 1)
+  {
     addMsgToList(aList, "no stencil buffer");
+  }
   if (isRGBA == 0)
+  {
     addMsgToList(aList, "no RGBA color buffer");
+  }
   if (isDoubleBuffer == 0)
+  {
     addMsgToList(aList, "no Double Buffer");
+  }
   if (theCaps->contextStereo && isStereo == 0)
   {
     addMsgToList(aList, "no Quad Buffer");

@@ -1248,9 +1248,13 @@ TEST(BRepGraph_BuildTest, RegularityLayer_EdgeMutation_InvalidatesBindings)
     {
       const BRepGraph_FaceId aFace = aGraph.Topo().CoEdges().Definition(aCoEdgeId).FaceDefId;
       if (!aFace.IsValid())
+      {
         continue;
+      }
       if (!aFace1.IsValid())
+      {
         aFace1 = aFace;
+      }
       else if (aFace != aFace1)
       {
         aFace2 = aFace;
@@ -1258,7 +1262,9 @@ TEST(BRepGraph_BuildTest, RegularityLayer_EdgeMutation_InvalidatesBindings)
       }
     }
     if (!aFace1.IsValid() || !aFace2.IsValid())
+    {
       continue;
+    }
     aRegularityLayer->SetRegularity(anEdgeId, aFace1, aFace2, GeomAbs_C1);
     aRegularity.FaceEntity1 = aFace1;
     aRegularity.FaceEntity2 = aFace2;
@@ -1303,9 +1309,13 @@ TEST(BRepGraph_BuildTest, RegularityLayer_FaceMutation_InvalidatesBindings)
     {
       const BRepGraph_FaceId aFace = aGraph.Topo().CoEdges().Definition(aCoEdgeId).FaceDefId;
       if (!aFace.IsValid())
+      {
         continue;
+      }
       if (!aFace1.IsValid())
+      {
         aFace1 = aFace;
+      }
       else if (aFace != aFace1)
       {
         aFace2 = aFace;
@@ -1313,7 +1323,9 @@ TEST(BRepGraph_BuildTest, RegularityLayer_FaceMutation_InvalidatesBindings)
       }
     }
     if (!aFace1.IsValid() || !aFace2.IsValid())
+    {
       continue;
+    }
     aRegularityLayer->SetRegularity(anEdgeId, aFace1, aFace2, GeomAbs_C1);
     aRegularity.FaceEntity1 = aFace1;
     aRegularity.FaceEntity2 = aFace2;

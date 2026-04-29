@@ -25,13 +25,17 @@ Plate_LinearXYZConstraint::Plate_LinearXYZConstraint(
   const NCollection_Array1<double>&                   theCoeff)
 {
   if (theCoeff.Length() != thePPC.Length())
+  {
     throw Standard_DimensionMismatch();
+  }
   myPPC  = new NCollection_HArray1<Plate_PinpointConstraint>(1, thePPC.Length());
   myCoef = new NCollection_HArray2<double>(1, 1, 1, theCoeff.Length());
 
   myPPC->ChangeArray1() = thePPC;
   for (int i = 1; i <= theCoeff.Length(); i++)
+  {
     myCoef->ChangeValue(1, i) = theCoeff(i + theCoeff.Lower() - 1);
+  }
 }
 
 Plate_LinearXYZConstraint::Plate_LinearXYZConstraint(
@@ -39,7 +43,9 @@ Plate_LinearXYZConstraint::Plate_LinearXYZConstraint(
   const NCollection_Array2<double>&                   theCoeff)
 {
   if (theCoeff.RowLength() != thePPC.Length())
+  {
     throw Standard_DimensionMismatch();
+  }
   myPPC  = new NCollection_HArray1<Plate_PinpointConstraint>(1, thePPC.Length());
   myCoef = new NCollection_HArray2<double>(1, theCoeff.ColLength(), 1, theCoeff.RowLength());
 

@@ -36,7 +36,9 @@ void RWStepFEA_RWFeaTangentialCoefficientOfLinearThermalExpansion::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "fea_tangential_coefficient_of_linear_thermal_expansion"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 

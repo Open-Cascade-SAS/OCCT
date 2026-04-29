@@ -54,7 +54,9 @@ bool XmlMDataStd_BooleanArrayDriver::Paste(const XmlObjMgt_Persistent&       the
   // Read the FirstIndex; if the attribute is absent initialize to 1
   XmlObjMgt_DOMString aFirstIndex = anElement.getAttribute(::FirstIndexString());
   if (aFirstIndex == nullptr)
+  {
     aFirstInd = 1;
+  }
   else if (!aFirstIndex.GetInteger(aFirstInd))
   {
     TCollection_ExtendedString aMessageString =
@@ -91,9 +93,13 @@ bool XmlMDataStd_BooleanArrayDriver::Paste(const XmlObjMgt_Persistent&       the
   Standard_GUID       aGUID;
   XmlObjMgt_DOMString aGUIDStr = anElement.getAttribute(::AttributeIDString());
   if (aGUIDStr.Type() == XmlObjMgt_DOMString::LDOM_NULL)
+  {
     aGUID = TDataStd_BooleanArray::GetID(); // default case
+  }
   else
+  {
     aGUID = Standard_GUID(static_cast<const char*>(aGUIDStr.GetString())); // user defined case
+  }
   aBooleanArray->SetID(aGUID);
 
   aBooleanArray->Init(aFirstInd, aLastInd);

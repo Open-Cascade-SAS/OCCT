@@ -527,9 +527,13 @@ void BRepLib_MakeEdge::Init(const occ::handle<Geom_Curve>& C, const gp_Pnt& P1, 
   TopoDS_Vertex V1, V2;
   B.MakeVertex(V1, P1, Tol);
   if (P1.Distance(P2) < Tol)
+  {
     V2 = V1;
+  }
   else
+  {
     B.MakeVertex(V2, P2, Tol);
+  }
 
   Init(C, V1, V2);
 }
@@ -545,14 +549,18 @@ void BRepLib_MakeEdge::Init(const occ::handle<Geom_Curve>& C,
   double p1, p2;
 
   if (V1.IsNull())
+  {
     p1 = C->FirstParameter();
+  }
   else if (!Project(C, V1, p1))
   {
     myError = BRepLib_PointProjectionFailed;
     return;
   }
   if (V2.IsNull())
+  {
     p2 = C->LastParameter();
+  }
   else if (!Project(C, V2, p2))
   {
     myError = BRepLib_PointProjectionFailed;
@@ -576,9 +584,13 @@ void BRepLib_MakeEdge::Init(const occ::handle<Geom_Curve>& C,
   TopoDS_Vertex V1, V2;
   B.MakeVertex(V1, P1, Tol);
   if (P1.Distance(P2) < Tol)
+  {
     V2 = V1;
+  }
   else
+  {
     B.MakeVertex(V2, P2, Tol);
+  }
 
   Init(C, V1, V2, p1, p2);
 }
@@ -657,9 +669,13 @@ void BRepLib_MakeEdge::Init(const occ::handle<Geom_Curve>& CC,
   bool   p2inf = Precision::IsPositiveInfinite(p2);
   gp_Pnt P1, P2;
   if (!p1inf)
+  {
     P1 = aCA.Value(p1);
+  }
   if (!p2inf)
+  {
     P2 = aCA.Value(p2);
+  }
 
   double       preci = BRepLib::Precision();
   BRep_Builder B;
@@ -668,7 +684,9 @@ void BRepLib_MakeEdge::Init(const occ::handle<Geom_Curve>& CC,
   bool closed      = false;
   bool degenerated = false;
   if (!p1inf && !p2inf)
+  {
     closed = (P1.Distance(P2) <= preci);
+  }
 
   // check if the vertices are on the curve
   if (closed)
@@ -679,9 +697,13 @@ void BRepLib_MakeEdge::Init(const occ::handle<Geom_Curve>& CC,
       V2 = V1;
     }
     else if (V1.IsNull())
+    {
       V1 = V2;
+    }
     else if (V2.IsNull())
+    {
       V2 = V1;
+    }
     else
     {
       if (!V1.IsSame(V2))
@@ -698,7 +720,9 @@ void BRepLib_MakeEdge::Init(const occ::handle<Geom_Curve>& CC,
       {
         gp_Pnt PM = aCA.Value((p1 + p2) / 2);
         if (P1.Distance(PM) < preci)
+        {
           degenerated = true;
+        }
       }
     }
   }
@@ -805,9 +829,13 @@ void BRepLib_MakeEdge::Init(const occ::handle<Geom2d_Curve>& C,
   TopoDS_Vertex V1, V2;
   B.MakeVertex(V1, P1, Tol);
   if (P1.Distance(P2) < Tol)
+  {
     V2 = V1;
+  }
   else
+  {
     B.MakeVertex(V2, P2, Tol);
+  }
 
   Init(C, S, V1, V2);
 }
@@ -824,14 +852,18 @@ void BRepLib_MakeEdge::Init(const occ::handle<Geom2d_Curve>& C,
   double p1, p2;
 
   if (V1.IsNull())
+  {
     p1 = C->FirstParameter();
+  }
   else if (!Project(C, S, V1, p1))
   {
     myError = BRepLib_PointProjectionFailed;
     return;
   }
   if (V2.IsNull())
+  {
     p2 = C->LastParameter();
+  }
   else if (!Project(C, S, V2, p2))
   {
     myError = BRepLib_PointProjectionFailed;
@@ -856,9 +888,13 @@ void BRepLib_MakeEdge::Init(const occ::handle<Geom2d_Curve>& C,
   TopoDS_Vertex V1, V2;
   B.MakeVertex(V1, P1, Tol);
   if (P1.Distance(P2) < Tol)
+  {
     V2 = V1;
+  }
   else
+  {
     B.MakeVertex(V2, P2, Tol);
+  }
 
   Init(C, S, V1, V2, p1, p2);
 }
@@ -950,7 +986,9 @@ void BRepLib_MakeEdge::Init(const occ::handle<Geom2d_Curve>& CC,
   // check for closed curve
   bool closed = false;
   if (!p1inf && !p2inf)
+  {
     closed = (P1.Distance(P2) <= preci);
+  }
 
   // check if the vertices are on the curve
   if (closed)
@@ -961,9 +999,13 @@ void BRepLib_MakeEdge::Init(const occ::handle<Geom2d_Curve>& CC,
       V2 = V1;
     }
     else if (V1.IsNull())
+    {
       V1 = V2;
+    }
     else if (V2.IsNull())
+    {
       V2 = V1;
+    }
     else
     {
       if (!V1.IsSame(V2))
@@ -1045,7 +1087,9 @@ void BRepLib_MakeEdge::Init(const occ::handle<Geom2d_Curve>& CC,
   B.Range(E, p1, p2);
 
   if (reverse)
+  {
     E.Orientation(TopAbs_REVERSED);
+  }
 
   myError = BRepLib_EdgeDone;
   Done();

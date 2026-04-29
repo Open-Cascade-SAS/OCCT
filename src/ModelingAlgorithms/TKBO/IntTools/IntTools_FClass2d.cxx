@@ -286,13 +286,21 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const double TolUV)
         u   = aPrms(iX);
         P2d = C.Value(u);
         if (P2d.X() < Umin)
+        {
           Umin = P2d.X();
+        }
         if (P2d.X() > Umax)
+        {
           Umax = P2d.X();
+        }
         if (P2d.Y() < Vmin)
+        {
           Vmin = P2d.Y();
+        }
         if (P2d.Y() > Vmax)
+        {
           Vmax = P2d.Y();
+        }
         //
         aDstX = RealLast();
         if (!degenerated)
@@ -364,7 +372,9 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const double TolUV)
       }
       //
       if (firstpoint == 1)
+      {
         firstpoint = 2;
+      }
       WireIsNotEmpty = true;
       // Append the derivative of the first parameter.
       double   aU = aPrms(1);
@@ -374,7 +384,9 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const double TolUV)
       C.D1(aU, aP, aV);
 
       if (Or == TopAbs_REVERSED)
+      {
         aV.Reverse();
+      }
 
       aD1Next.Append(aV);
 
@@ -383,18 +395,28 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const double TolUV)
       C.D1(aU, aP, aV);
 
       if (Or == TopAbs_REVERSED)
+      {
         aV.Reverse();
+      }
 
       if (NbEdges > 0)
+      {
         aD1Prev.Append(aV);
+      }
       else
+      {
         aD1Prev.Prepend(aV);
+      }
 
       // Fill the map anIndexMap.
       if (Avant > 0)
+      {
         anIndexMap.Bind(Avant, aD1Next.Length());
+      }
       else
+      {
         anIndexMap.Bind(1, aD1Next.Length());
+      }
     } // for(;aWExp.More(); aWExp.Next()) {
     // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     //
@@ -455,11 +477,15 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const double TolUV)
             {
               BRep_Tool::Range(edge, Face, pfbid, plbid);
               if (std::abs(plbid - pfbid) < 1.e-9)
+              {
                 continue;
+              }
               BRepAdaptor_Curve2d           C(edge, Face);
               GCPnts_QuasiUniformDeflection aDiscr(C, aDiscrDefl);
               if (!aDiscr.IsDone())
+              {
                 break;
+              }
               int nbp   = aDiscr.NbPoints();
               int iStep = 1, i = 1, iEnd = nbp + 1;
               if (Or == TopAbs_REVERSED)
@@ -469,7 +495,9 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const double TolUV)
                 iEnd  = 0;
               }
               if (firstpoint == 2)
+              {
                 i += iStep;
+              }
               for (; i != iEnd; i += iStep)
               {
                 gp_Pnt2d aP2d = C.Value(aDiscr.Parameter(i));
@@ -484,9 +512,13 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const double TolUV)
                 double   dU = std::abs(Pp.X() - SeqPnt2d(ii - 1).X());
                 double   dV = std::abs(Pp.Y() - SeqPnt2d(ii - 1).Y());
                 if (dU > FlecheU)
+                {
                   FlecheU = dU;
+                }
                 if (dV > FlecheV)
+                {
                   FlecheV = dV;
+                }
               }
               firstpoint = 2;
             }
@@ -502,10 +534,14 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const double TolUV)
         }
         //
         if (FlecheU < Toluv)
+        {
           FlecheU = Toluv;
+        }
 
         if (FlecheV < Toluv)
+        {
           FlecheV = Toluv;
+        }
 
         TabClass.Append(CSLib_Class2d(SeqPnt2d, FlecheU, FlecheV, Umin, Vmin, Umax, Vmax));
         //
@@ -555,7 +591,9 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const double TolUV)
     {
       double uuu = M_PI + M_PI - (Umax - Umin);
       if (uuu < 0)
+      {
         uuu = 0;
+      }
       U1 = Umin - uuu * 0.5;
       U2 = U1 + M_PI + M_PI;
     }
@@ -568,7 +606,9 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const double TolUV)
     {
       double uuu = M_PI + M_PI - (Vmax - Vmin);
       if (uuu < 0)
+      {
         uuu = 0;
+      }
 
       V1 = Vmin - uuu * 0.5;
       V2 = V1 + M_PI + M_PI;
@@ -706,7 +746,9 @@ TopAbs_State IntTools_FClass2d::Perform(const gp_Pnt2d& _Puv, const bool Recadre
       //
 
       if (myFExplorer.get() == nullptr)
+      {
         myFExplorer.reset(new BRepClass_FaceExplorer(Face));
+      }
 
       BRepClass_FClassifier aClassifier;
       aClassifier.Perform(*myFExplorer, Puv, aFCTol);
@@ -714,10 +756,14 @@ TopAbs_State IntTools_FClass2d::Perform(const gp_Pnt2d& _Puv, const bool Recadre
     }
 
     if (!RecadreOnPeriodic || (!IsUPer && !IsVPer))
+    {
       return aStatus;
+    }
 
     if (aStatus == TopAbs_IN || aStatus == TopAbs_ON)
+    {
       return aStatus;
+    }
 
     if (!urecadre)
     {
@@ -847,7 +893,9 @@ TopAbs_State IntTools_FClass2d::TestOnRestriction(const gp_Pnt2d& _Puv,
     { //-- TabOrien(1)=-1  Wrong  Wire
 
       if (myFExplorer.get() == nullptr)
+      {
         myFExplorer.reset(new BRepClass_FaceExplorer(Face));
+      }
 
       BRepClass_FClassifier aClassifier;
       aClassifier.Perform(*myFExplorer, Puv, Tol);
@@ -855,9 +903,13 @@ TopAbs_State IntTools_FClass2d::TestOnRestriction(const gp_Pnt2d& _Puv,
     }
 
     if (!RecadreOnPeriodic || (!IsUPer && !IsVPer))
+    {
       return aStatus;
+    }
     if (aStatus == TopAbs_IN || aStatus == TopAbs_ON)
+    {
       return aStatus;
+    }
 
     if (!urecadre)
     {
@@ -865,7 +917,9 @@ TopAbs_State IntTools_FClass2d::TestOnRestriction(const gp_Pnt2d& _Puv,
       urecadre = true;
     }
     else if (IsUPer)
+    {
       u += uperiod;
+    }
     if (u > Umax || !IsUPer)
     {
       if (!vrecadre)
@@ -874,12 +928,16 @@ TopAbs_State IntTools_FClass2d::TestOnRestriction(const gp_Pnt2d& _Puv,
         vrecadre = true;
       }
       else if (IsVPer)
+      {
         v += vperiod;
+      }
 
       u = uu;
 
       if (v > Vmax || !IsVPer)
+      {
         return aStatus;
+      }
     }
   } // for (;;)
 }

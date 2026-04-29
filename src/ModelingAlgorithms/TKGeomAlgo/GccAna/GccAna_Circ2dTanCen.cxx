@@ -339,12 +339,18 @@ void GccAna_Circ2dTanCen::Tangency1(const int Index,
 bool GccAna_Circ2dTanCen::IsTheSame1(const int Index) const
 {
   if (!WellDone)
+  {
     throw StdFail_NotDone();
+  }
   if (Index <= 0 || Index > NbrSol)
+  {
     throw Standard_OutOfRange();
+  }
 
   if (TheSame1(Index) == 0)
+  {
     return false;
+  }
 
   return true;
 }

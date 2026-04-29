@@ -49,6 +49,8 @@
 
   #define RLIM_INFINITY 0x7fffffff
 
+extern bool Draw_Batch;
+
 static clock_t CPU_CURRENT; // cpu time already used at last
                             // cpulimit call. (sec.)
 #else                       /* _WIN32 */
@@ -63,8 +65,6 @@ static clock_t CPU_CURRENT; // cpu time already used at last
   #endif
 
 #endif /* _WIN32 */
-
-extern bool Draw_Batch;
 
 static clock_t   CPU_LIMIT; // Cpu_limit in Sec.
 static OSD_Timer aTimer;
@@ -212,9 +212,13 @@ static int dchronom(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
 static int ifbatch(Draw_Interpretor& DI, int, const char**)
 {
   if (Draw_Batch)
+  {
     DI << "1";
+  }
   else
+  {
     DI << "0";
+  }
 
   return 0;
 }
@@ -227,7 +231,9 @@ extern std::filebuf Draw_Spyfile;
 static int spy(Draw_Interpretor& di, int n, const char** a)
 {
   if (Draw_Spying)
+  {
     Draw_Spyfile.close();
+  }
   Draw_Spying = false;
   if (n > 1)
   {
@@ -509,7 +515,9 @@ static int Draw_wait(Draw_Interpretor&, int n, const char** a)
 {
   int w = 10;
   if (n > 1)
+  {
     w = Draw::Atoi(a[1]);
+  }
   time_t ct = time(nullptr) + w;
   while (time(nullptr) < ct)
   {
@@ -569,7 +577,7 @@ static unsigned int __stdcall CpuFunc(void* /*param*/)
 #else
 static void cpulimitSignalHandler(int)
 {
-  std::cout << "Process killed by CPU limit  (" << CPU_LIMIT << " sec)" << std::endl;
+  std::cout << "Process killed by CPU limit  (" << CPU_LIMIT << " sec)" << '\n';
   exit(2);
 }
 
@@ -582,7 +590,7 @@ static void* CpuFunc(void* /*threadarg*/)
     anElapCurrent = clock_t(aTimer.ElapsedTime());
     if (CPU_LIMIT > 0 && (anElapCurrent) >= CPU_LIMIT)
     {
-      std::cout << "Process killed by elapsed limit  (" << CPU_LIMIT << " sec)" << std::endl;
+      std::cout << "Process killed by elapsed limit  (" << CPU_LIMIT << " sec)" << '\n';
       exit(2);
     }
   }
@@ -683,17 +691,29 @@ static int dlocale(Draw_Interpretor& di, int n, const char** argv)
   {
     const char* cat = argv[1];
     if (!strcmp(cat, "LC_ALL"))
+    {
       category = LC_ALL;
+    }
     else if (!strcmp(cat, "LC_COLLATE"))
+    {
       category = LC_COLLATE;
+    }
     else if (!strcmp(cat, "LC_CTYPE"))
+    {
       category = LC_CTYPE;
+    }
     else if (!strcmp(cat, "LC_MONETARY"))
+    {
       category = LC_MONETARY;
+    }
     else if (!strcmp(cat, "LC_NUMERIC"))
+    {
       category = LC_NUMERIC;
+    }
     else if (!strcmp(cat, "LC_TIME"))
+    {
       category = LC_TIME;
+    }
     else
     {
       Message::SendFail() << "Error: cannot recognize argument " << cat << " as one of LC_ macros";
@@ -703,9 +723,13 @@ static int dlocale(Draw_Interpretor& di, int n, const char** argv)
   const char* locale = (n > 2 ? argv[2] : nullptr);
   const char* result = setlocale(category, locale);
   if (result)
+  {
     di << result;
+  }
   else
-    std::cout << "Error: unsupported locale specification: " << locale << std::endl;
+  {
+    std::cout << "Error: unsupported locale specification: " << locale << '\n';
+  }
   return 0;
 }
 
@@ -1140,7 +1164,7 @@ static int dputs(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
       }
       if (!isNoNewline)
       {
-        *aStream << std::endl;
+        *aStream << '\n';
       }
       return 0;
     }
@@ -1159,7 +1183,9 @@ void Draw::BasicCommands(Draw_Interpretor& theCommands)
 {
   static bool Done = false;
   if (Done)
+  {
     return;
+  }
   Done = true;
 
   std::ios::sync_with_stdio();

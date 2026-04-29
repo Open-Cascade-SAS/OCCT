@@ -32,7 +32,9 @@ void RWStepVisual_RWMechanicalDesignGeometricPresentationRepresentation::ReadSte
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "mechanical_design_geometric_presentation_representation"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -49,7 +51,9 @@ void RWStepVisual_RWMechanicalDesignGeometricPresentationRepresentation::ReadSte
   {
     int nb2 = data->NbParams(nsub2);
     if (nb2 > 0)
+    {
       aItems = new NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>(1, nb2);
+    }
     for (int i2 = 1; i2 <= nb2; i2++)
     {
       // szv#4:S4163:12Mar99 `bool stat2 =` not needed
@@ -59,7 +63,9 @@ void RWStepVisual_RWMechanicalDesignGeometricPresentationRepresentation::ReadSte
                            ach,
                            STANDARD_TYPE(StepRepr_RepresentationItem),
                            anent2))
+      {
         aItems->SetValue(i2, anent2);
+      }
     }
   }
 

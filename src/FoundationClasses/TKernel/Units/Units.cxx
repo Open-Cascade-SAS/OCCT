@@ -98,7 +98,9 @@ occ::handle<Units_Quantity> Units::Quantity(const char* const aquantity)
   {
     quantity = quantitiessequence->Value(index);
     if (quantity->Name() == aquantity)
+    {
       return quantity;
+    }
   }
   return nullquantity;
 }
@@ -119,7 +121,9 @@ const char* Units::FirstQuantity(const char* const aunit)
   TCollection_AsciiString                                                   symbol(aunit);
 
   if (symbol == symbol_string)
+  {
     return quantity_string.ToCString();
+  }
 
   quantitiessequence = Units::DictionaryOfUnits()->Sequence();
   for (i = 1; i <= quantitiessequence->Length(); i++)
@@ -176,7 +180,9 @@ occ::handle<Units_Dimensions> Units::NullDimensions()
 {
   std::lock_guard<std::recursive_mutex> aLock(THE_UNITS_MUTEX);
   if (nulldimensions.IsNull())
+  {
     nulldimensions = new Units_Dimensions(0., 0., 0., 0., 0., 0., 0., 0., 0.);
+  }
   return nulldimensions;
 }
 

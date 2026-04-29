@@ -44,7 +44,9 @@ void RWStepFEA_RWVolume3dElementRepresentation::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 7, ach, "volume3d_element_representation"))
+  {
     return;
+  }
 
   // Inherited fields of Representation
 

@@ -29,7 +29,9 @@ void RWStepShape_RWCsgSolid::ReadStep(const occ::handle<StepData_StepReaderData>
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "csg_solid"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

@@ -40,7 +40,9 @@ void RWStepKinematics_RWRollingSurfacePair::ReadStep(
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 9, theArch, "rolling_surface_pair"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 
@@ -152,7 +154,9 @@ void RWStepKinematics_RWRollingSurfacePair::WriteStep(
     theSW.Send(theEnt->ItemDefinedTransformation()->Description());
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   theSW.Send(theEnt->ItemDefinedTransformation()->TransformItem1());
 

@@ -418,9 +418,13 @@ TEST_F(Geom_BSplineSurface_Test, PeriodicSurface_SetUNotPeriodic)
   // U-periodic surface: degree 2, 4 U-knots of mult 1 -> NbUPoles = 1+2 = 3
   NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
   for (int i = 1; i <= 3; ++i)
+  {
     for (int j = 1; j <= 3; ++j)
+    {
       aPoles(i, j) =
         gp_Pnt(std::cos(2.0 * M_PI * (i - 1) / 3.0), std::sin(2.0 * M_PI * (i - 1) / 3.0), j * 0.5);
+    }
+  }
 
   NCollection_Array1<double> anUKnots(1, 4);
   anUKnots(1) = 0.0;
@@ -455,9 +459,13 @@ TEST_F(Geom_BSplineSurface_Test, PeriodicSurface_SetVNotPeriodic)
   // V-periodic surface: degree 2, 4 V-knots of mult 1 -> NbVPoles = 1+2 = 3
   NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
   for (int i = 1; i <= 3; ++i)
+  {
     for (int j = 1; j <= 3; ++j)
+    {
       aPoles(i, j) =
         gp_Pnt(i * 0.5, std::cos(2.0 * M_PI * (j - 1) / 3.0), std::sin(2.0 * M_PI * (j - 1) / 3.0));
+    }
+  }
 
   NCollection_Array1<double> anUKnots(1, 2);
   anUKnots(1) = 0.0;
@@ -574,11 +582,13 @@ TEST_F(Geom_BSplineSurface_Test, SetWeightRow)
   NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
   NCollection_Array2<double> aWeights(1, 3, 1, 3);
   for (int i = 1; i <= 3; ++i)
+  {
     for (int j = 1; j <= 3; ++j)
     {
       aPoles(i, j)   = gp_Pnt(i, j, (i == 2 && j == 2) ? 1.0 : 0.0);
       aWeights(i, j) = 1.0;
     }
+  }
   aWeights(2, 2) = 2.0;
 
   NCollection_Array1<double> anUKnots(1, 2), aVKnots(1, 2);
@@ -612,11 +622,13 @@ TEST_F(Geom_BSplineSurface_Test, SetWeightCol)
   NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
   NCollection_Array2<double> aWeights(1, 3, 1, 3);
   for (int i = 1; i <= 3; ++i)
+  {
     for (int j = 1; j <= 3; ++j)
     {
       aPoles(i, j)   = gp_Pnt(i, j, (i == 2 && j == 2) ? 1.0 : 0.0);
       aWeights(i, j) = 1.0;
     }
+  }
   aWeights(2, 2) = 2.0;
 
   NCollection_Array1<double> anUKnots(1, 2), aVKnots(1, 2);
@@ -701,12 +713,14 @@ TEST_F(Geom_BSplineSurface_Test, RationalSurface_SetUNotPeriodic)
   NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
   NCollection_Array2<double> aWeights(1, 3, 1, 3);
   for (int i = 1; i <= 3; ++i)
+  {
     for (int j = 1; j <= 3; ++j)
     {
       aPoles(i, j) =
         gp_Pnt(std::cos(2.0 * M_PI * (i - 1) / 3.0), std::sin(2.0 * M_PI * (i - 1) / 3.0), j * 0.5);
       aWeights(i, j) = 1.0 + 0.5 * (i - 1);
     }
+  }
 
   NCollection_Array1<double> anUKnots(1, 4);
   anUKnots(1) = 0.0;
@@ -751,12 +765,14 @@ TEST_F(Geom_BSplineSurface_Test, RationalSurface_SetVNotPeriodic)
   NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
   NCollection_Array2<double> aWeights(1, 3, 1, 3);
   for (int i = 1; i <= 3; ++i)
+  {
     for (int j = 1; j <= 3; ++j)
     {
       aPoles(i, j) =
         gp_Pnt(i * 0.5, std::cos(2.0 * M_PI * (j - 1) / 3.0), std::sin(2.0 * M_PI * (j - 1) / 3.0));
       aWeights(i, j) = 1.0 + 0.5 * (j - 1);
     }
+  }
 
   NCollection_Array1<double> anUKnots(1, 2);
   anUKnots(1) = 0.0;
@@ -837,11 +853,13 @@ TEST_F(Geom_BSplineSurface_Test, RationalSurface_UIso)
   NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
   NCollection_Array2<double> aWeights(1, 3, 1, 3);
   for (int i = 1; i <= 3; ++i)
+  {
     for (int j = 1; j <= 3; ++j)
     {
       aPoles(i, j)   = gp_Pnt(i, j, (i + j) * 0.1);
       aWeights(i, j) = 1.0 + 0.5 * ((i - 1) + (j - 1));
     }
+  }
 
   NCollection_Array1<double> anUKnots(1, 2), aVKnots(1, 2);
   anUKnots(1) = 0.0;
@@ -945,11 +963,15 @@ TEST_F(Geom_BSplineSurface_Test, OCC30990_CacheConsistencyAtKnots)
   const int                  aNbV = 5;
   NCollection_Array2<gp_Pnt> aPoles(1, aNbU, 1, aNbV);
   for (int i = 1; i <= aNbU; ++i)
+  {
     for (int j = 1; j <= aNbV; ++j)
+    {
       aPoles(i, j) =
         gp_Pnt(static_cast<double>(i - 1),
                static_cast<double>(j - 1),
                std::sin(static_cast<double>(i) * 0.5) * std::cos(static_cast<double>(j) * 0.7));
+    }
+  }
 
   // Knot vector in U: [0, 0.25, 0.5, 0.75, 1] with multiplicities [4, 1, 1, 1, 4]
   NCollection_Array1<double> aUKnots(1, 5);
@@ -999,7 +1021,9 @@ TEST_F(Geom_BSplineSurface_Test, OCC30990_CacheConsistencyAtKnots)
       const gp_Pnt aP2 = aAdaptor.Value(aUknot, aV);
 
       if (aP1.X() != aP2.X() || aP1.Y() != aP2.Y() || aP1.Z() != aP2.Z())
+      {
         ++aNbErr;
+      }
     }
   }
 
@@ -1019,7 +1043,9 @@ TEST_F(Geom_BSplineSurface_Test, OCC30990_CacheConsistencyAtKnots)
       const gp_Pnt aP2 = aAdaptor.Value(aU, aVknot);
 
       if (aP1.X() != aP2.X() || aP1.Y() != aP2.Y() || aP1.Z() != aP2.Z())
+      {
         ++aNbErr;
+      }
     }
   }
 

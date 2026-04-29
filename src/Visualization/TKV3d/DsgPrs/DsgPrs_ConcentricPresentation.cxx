@@ -50,7 +50,9 @@ void DsgPrs_ConcentricPresentation::Add(const occ::handle<Prs3d_Presentation>& a
   double ucur = dteta;
   int    i;
   for (i = 2; i <= nbp; i++, ucur += dteta)
+  {
     aPrims->AddVertex(ElCLib::Value(ucur, Circ));
+  }
   aPrims->AddVertex(pt1);
 
   // Creation et discretisation du plus petit cercle
@@ -60,7 +62,9 @@ void DsgPrs_ConcentricPresentation::Add(const occ::handle<Prs3d_Presentation>& a
   aPrims->AddVertex(pt1);
   ucur = dteta;
   for (i = 2; i <= nbp; i++, ucur += dteta)
+  {
     aPrims->AddVertex(ElCLib::Value(ucur, Circ));
+  }
   aPrims->AddVertex(pt1);
 
   // Creation de la croix

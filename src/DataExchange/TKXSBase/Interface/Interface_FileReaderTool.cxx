@@ -101,9 +101,13 @@ occ::handle<Interface_InterfaceModel> Interface_FileReaderTool::Model() const
 void Interface_FileReaderTool::SetMessenger(const occ::handle<Message_Messenger>& messenger)
 {
   if (messenger.IsNull())
+  {
     themessenger = Message::DefaultMessenger();
+  }
   else
+  {
     themessenger = messenger;
+  }
 }
 
 //=================================================================================================
@@ -165,8 +169,10 @@ void Interface_FileReaderTool::SetEntities()
     {
       newent = UnknownEntity();
       if (thereports.IsNull())
+      {
         thereports =
           new NCollection_HArray1<occ::handle<Standard_Transient>>(1, thereader->NbRecords());
+      }
       thenbreps++;
       thenbrep0++;
       thereports->SetValue(num, new Interface_ReportEntity(ach, newent));
@@ -174,8 +180,10 @@ void Interface_FileReaderTool::SetEntities()
     else if ((ach->NbFails() + ach->NbWarnings() > 0) && !newent.IsNull())
     {
       if (thereports.IsNull())
+      {
         thereports =
           new NCollection_HArray1<occ::handle<Standard_Transient>>(1, thereader->NbRecords());
+      }
       thenbreps++;
       thenbrep0++;
       thereports->SetValue(num, new Interface_ReportEntity(ach, newent));
@@ -201,7 +209,9 @@ bool Interface_FileReaderTool::RecognizeByLib(const int                        n
   {
     rmod = rlib.Module();
     if (rmod.IsNull())
+    {
       continue;
+    }
     CN = rmod->CaseNum(thereader, num);
     if (CN > 0)
     {
@@ -210,21 +220,31 @@ bool Interface_FileReaderTool::RecognizeByLib(const int                        n
     }
   }
   if (CN <= 0 || proto.IsNull())
+  {
     return false;
+  }
   //   Recalibrate in GeneralLib : Creation of empty entity
   occ::handle<Standard_Type> typrot = proto->DynamicType();
   for (glib.Start(); glib.More(); glib.Next())
   {
     proto = glib.Protocol();
     if (proto.IsNull())
+    {
       continue;
+    }
     if (proto->DynamicType() != typrot)
+    {
       continue;
+    }
     bool res = glib.Module()->NewVoid(CN, ent);
     if (res)
+    {
       return res;
+    }
     if (!rmod.IsNull())
+    {
       return rmod->NewRead(CN, thereader, num, ach, ent);
+    }
     //    return res;
   }
   return false;
@@ -287,7 +307,9 @@ void Interface_FileReaderTool::LoadModel(const occ::handle<Interface_InterfaceMo
     }
   }
   else
+  {
     BeginRead(amodel); // selon la norme
+  }
 
   //  ..            Reading Entities            ..
 
@@ -347,7 +369,9 @@ void Interface_FileReaderTool::LoadModel(const occ::handle<Interface_InterfaceMo
         ierr = 2;
 #else
       if (dynamic_cast<const OSD_Signal*>(&anException) != nullptr)
+      {
         ierr = 2;
+      }
 #endif
       //: abv 03Apr00: anent is actually a previous one:      if (anent.IsNull())
       anent = thereader->BoundEntity(num);
@@ -409,8 +433,10 @@ void Interface_FileReaderTool::LoadModel(const occ::handle<Interface_InterfaceMo
         rep->SetContent(undef);
 
         if (thereports.IsNull())
+        {
           thereports =
             new NCollection_HArray1<occ::handle<Standard_Transient>>(1, thereader->NbRecords());
+        }
         thenbreps++;
         thereports->SetValue(num, rep);
         // if(isValid)
@@ -453,7 +479,9 @@ void Interface_FileReaderTool::LoadModel(const occ::handle<Interface_InterfaceMo
     for (int nr = 1; nr <= thenbreps; nr++)
     {
       if (thereports->Value(nr).IsNull())
+      {
         continue;
+      }
       occ::handle<Standard_Transient>     anent = thereader->BoundEntity(nr);
       occ::handle<Interface_ReportEntity> rep =
         occ::down_cast<Interface_ReportEntity>(thereports->Value(nr));
@@ -480,7 +508,9 @@ void Interface_FileReaderTool::LoadModel(const occ::handle<Interface_InterfaceMo
     }
   }
   else
+  {
     EndRead(amodel); // selon la norme
+  }
 }
 
 //=================================================================================================
@@ -537,8 +567,10 @@ occ::handle<Standard_Transient> Interface_FileReaderTool::LoadedEntity(const int
     if (irep == 0)
     {
       if (thereports.IsNull())
+      {
         thereports =
           new NCollection_HArray1<occ::handle<Standard_Transient>>(1, thereader->NbRecords());
+      }
       irep = num;
       thenbreps++;
     }
@@ -553,7 +585,9 @@ occ::handle<Standard_Transient> Interface_FileReaderTool::LoadedEntity(const int
 
   //    Reloading ? if yes, in an UnknownEntity provided by the protocol
   if (thereader->IsErrorLoad())
+  {
     nbf = (thereader->ResetErrorLoad() ? 1 : 0);
+  }
   if (nbf > 0)
   {
     occ::handle<Standard_Transient> undef = UnknownEntity();

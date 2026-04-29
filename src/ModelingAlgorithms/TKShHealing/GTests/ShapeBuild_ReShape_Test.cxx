@@ -65,7 +65,9 @@ TEST(ShapeBuild_ReShapeTest, Apply_PerformsVertexReplacementOnCompound)
   for (TopoDS_Iterator anIt(aResult); anIt.More(); anIt.Next())
   {
     if (anIt.Value().TShape() == aV2Repl.TShape())
+    {
       aFoundReplacement = true;
+    }
     EXPECT_FALSE(anIt.Value().TShape() == aV2.TShape());
   }
   EXPECT_TRUE(aFoundReplacement);
@@ -161,9 +163,13 @@ TEST(ShapeBuild_ReShapeTest, Apply_DiamondSharedVertexInTwoCompounds)
   for (TopExp_Explorer anExp(aResult, TopAbs_VERTEX); anExp.More(); anExp.Next())
   {
     if (anExp.Current().TShape() == aSharedNew.TShape())
+    {
       ++aNbReplVerts;
+    }
     if (anExp.Current().TShape() == aShared.TShape())
+    {
       ++aNbOriginals;
+    }
   }
   EXPECT_EQ(aNbOriginals, 0) << "Original vertex must be substituted everywhere";
   EXPECT_EQ(aNbReplVerts, 2) << "Replacement must appear in both parentA and parentB";

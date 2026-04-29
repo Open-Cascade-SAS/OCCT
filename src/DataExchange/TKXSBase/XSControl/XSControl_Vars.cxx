@@ -38,7 +38,9 @@ occ::handle<Standard_Transient> XSControl_Vars::Get(const char*& name) const
 {
   occ::handle<Standard_Transient> val;
   if (!thevars.Find(name, val))
+  {
     val.Nullify();
+  }
   return val;
 }
 
@@ -71,7 +73,9 @@ bool XSControl_Vars::GetPoint(const char*& name, gp_Pnt& pnt) const
 {
   DeclareAndCast(Geom_CartesianPoint, val, Get(name));
   if (val.IsNull())
+  {
     return false;
+  }
   pnt = val->Pnt();
   return true;
 }
@@ -85,7 +89,9 @@ bool XSControl_Vars::GetPoint2d(const char*& name, gp_Pnt2d& pnt) const
 {
   DeclareAndCast(Geom2d_CartesianPoint, val, Get(name));
   if (val.IsNull())
+  {
     return false;
+  }
   pnt = val->Pnt2d();
   return true;
 }
@@ -100,6 +106,8 @@ TopoDS_Shape XSControl_Vars::GetShape(const char*& name) const
   TopoDS_Shape sh;
   DeclareAndCast(TopoDS_HShape, val, Get(name));
   if (!val.IsNull())
+  {
     sh = val->Shape();
+  }
   return sh;
 }

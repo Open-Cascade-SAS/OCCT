@@ -114,9 +114,13 @@ static int PointsByPick(occ::handle<NCollection_HArray1<AppDef_MultiPointConstra
   dout.Select(id, XX, YY, b);
   double zoom = dout.Zoom(id);
   if (b != 1)
+  {
     return 0;
+  }
   if (id < 0)
+  {
     return 0;
+  }
   gp_Pnt   P;
   gp_Pnt2d P2d;
 
@@ -233,10 +237,14 @@ static void PointsByFile(occ::handle<NCollection_HArray1<AppDef_MultiPointConstr
       if (IsControl((char)c))
       {
         if (iFile.get(c))
+        {
           HasConstrainte = true;
+        }
       }
       else
+      {
         HasConstrainte = true;
+      }
     }
 
     if (HasConstrainte)
@@ -244,7 +252,9 @@ static void PointsByFile(occ::handle<NCollection_HArray1<AppDef_MultiPointConstr
       int num, ordre;
       iFile >> nbc;
       if ((nbc < 1) || (nbc > nbp))
+      {
         return; // Y a comme un probleme
+      }
       AppParCurves_Constraint Constraint = AppParCurves_NoConstraint;
       TABofCC = new NCollection_HArray1<AppParCurves_ConstraintCouple>(1, nbp);
       for (i = 1; i <= nbp; i++)
@@ -296,10 +306,14 @@ static void PointsByFile(occ::handle<NCollection_HArray1<AppDef_MultiPointConstr
       if (IsControl((char)c))
       {
         if (iFile.get(c))
+        {
           HasConstrainte = true;
+        }
       }
       else
+      {
         HasConstrainte = true;
+      }
     }
 
     if (HasConstrainte)
@@ -307,7 +321,9 @@ static void PointsByFile(occ::handle<NCollection_HArray1<AppDef_MultiPointConstr
       int num, ordre;
       iFile >> nbc;
       if ((nbc < 1) || (nbc > nbp))
+      {
         return; // Y a comme un probleme
+      }
       AppParCurves_Constraint Constraint = AppParCurves_NoConstraint;
       TABofCC = new NCollection_HArray1<AppParCurves_ConstraintCouple>(1, nbp);
       for (i = 1; i <= nbp; i++)
@@ -445,9 +461,13 @@ static int smoothing(Draw_Interpretor& di, int n, const char** a)
     if (DegMax > 0)
     {
       if (DegMax < 3)
+      {
         Variation.SetContinuity(GeomAbs_C0);
+      }
       else if (DegMax < 5)
+      {
         Variation.SetContinuity(GeomAbs_C1);
+      }
       Variation.SetMaxDegree(DegMax);
     }
     Variation.SetTolerance(std::abs(Tolerance));
@@ -475,7 +495,9 @@ static int smoothing(Draw_Interpretor& di, int n, const char** a)
     DC->ClearPoles();
     Draw::Set(a[1], DC);
     if (id != 0)
+    {
       dout.RepaintView(id);
+    }
   }
   else
   {
@@ -495,9 +517,13 @@ static int smoothing(Draw_Interpretor& di, int n, const char** a)
     if (DegMax > 0)
     {
       if (DegMax < 3)
+      {
         Variation.SetContinuity(GeomAbs_C0);
+      }
       else if (DegMax < 5)
+      {
         Variation.SetContinuity(GeomAbs_C1);
+      }
       Variation.SetMaxDegree(DegMax);
     }
     Variation.SetTolerance(std::abs(Tolerance));
@@ -524,7 +550,9 @@ static int smoothing(Draw_Interpretor& di, int n, const char** a)
     DC->ClearPoles();
     Draw::Set(a[1], DC);
     if (id != 0)
+    {
       dout.RepaintView(id);
+    }
   }
   return 0;
 }
@@ -589,8 +617,10 @@ static int smoothingbybezier(Draw_Interpretor& di, int n, const char** a)
       Constraint = AppParCurves_NoConstraint;
     }
     if (n == 5)
+    {
       // Designation Graphique ------------------------
       id = PointsByPick(Points, di);
+    }
     else
     {
       // lecture du fichier.
@@ -627,11 +657,15 @@ static int smoothingbybezier(Draw_Interpretor& di, int n, const char** a)
 
       AppParCurves_ConstraintCouple AC1(1, AppParCurves_PassPoint);
       if (TABofCC->Value(1).Constraint() < AppParCurves_PassPoint)
+      {
         TABofCC->SetValue(1, AC1);
+      }
 
       AppParCurves_ConstraintCouple AC2(NbPoints, AppParCurves_PassPoint);
       if (TABofCC->Value(NbPoints).Constraint() < AppParCurves_PassPoint)
+      {
         TABofCC->SetValue(NbPoints, AC2);
+      }
     }
 
     if (methode < 3)
@@ -641,7 +675,9 @@ static int smoothingbybezier(Draw_Interpretor& di, int n, const char** a)
       int  NbIteration = 5;
 
       if (Degree < 4)
+      {
         degmin = std::max(1, Degree - 1);
+      }
       degmin = std::max(
         degmin,
         NbConstraint(TABofCC->Value(1).Constraint(), TABofCC->Value(NbPoints).Constraint()));
@@ -692,7 +728,9 @@ static int smoothingbybezier(Draw_Interpretor& di, int n, const char** a)
     occ::handle<DrawTrSurf_BezierCurve2d> DC = new (DrawTrSurf_BezierCurve2d)(Cvliss);
     Draw::Set(a[1], DC);
     if (id != 0)
+    {
       dout.RepaintView(id);
+    }
   }
   else
   {
@@ -710,11 +748,15 @@ static int smoothingbybezier(Draw_Interpretor& di, int n, const char** a)
 
       AppParCurves_ConstraintCouple AC1(1, AppParCurves_PassPoint);
       if (TABofCC->Value(1).Constraint() < AppParCurves_PassPoint)
+      {
         TABofCC->SetValue(1, AC1);
+      }
 
       AppParCurves_ConstraintCouple AC2(NbPoints, AppParCurves_PassPoint);
       if (TABofCC->Value(NbPoints).Constraint() < AppParCurves_PassPoint)
+      {
         TABofCC->SetValue(NbPoints, AC2);
+      }
     }
 
     if (methode < 3)
@@ -723,7 +765,9 @@ static int smoothingbybezier(Draw_Interpretor& di, int n, const char** a)
       int  degmin      = 4;
       int  NbIteration = 5;
       if (Degree < 4)
+      {
         degmin = std::max(1, Degree - 1);
+      }
       degmin = std::max(
         degmin,
         NbConstraint(TABofCC->Value(1).Constraint(), TABofCC->Value(NbPoints).Constraint()));
@@ -774,7 +818,9 @@ static int smoothingbybezier(Draw_Interpretor& di, int n, const char** a)
     occ::handle<DrawTrSurf_BezierCurve> DC = new DrawTrSurf_BezierCurve(Cvliss);
     Draw::Set(a[1], DC);
     if (id != 0)
+    {
       dout.RepaintView(id);
+    }
   }
   return 0;
 }
@@ -786,7 +832,9 @@ void GeomliteTest::ApproxCommands(Draw_Interpretor& theCommands)
 
   static bool loaded = false;
   if (loaded)
+  {
     return;
+  }
   loaded = true;
 
   DrawTrSurf::BasicCommands(theCommands);

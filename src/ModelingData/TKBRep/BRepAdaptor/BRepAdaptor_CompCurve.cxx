@@ -110,11 +110,17 @@ void BRepAdaptor_CompCurve::Initialize(const TopoDS_Wire& W, const bool AC)
   IsbyAC = AC;
 
   for (NbEdge = 0, wexp.Init(myWire); wexp.More(); wexp.Next())
+  {
     if (!BRep_Tool::Degenerated(wexp.Current()))
+    {
       NbEdge++;
+    }
+  }
 
   if (NbEdge == 0)
+  {
     return;
+  }
 
   CurIndex = (NbEdge + 1) / 2;
   myCurves = new (NCollection_HArray1<BRepAdaptor_Curve>)(1, NbEdge);
@@ -134,7 +140,9 @@ void BRepAdaptor_CompCurve::Initialize(const TopoDS_Wire& W, const bool AC)
         myKnots->ChangeValue(ii + 1) += GCPnts_AbscissaPoint::Length(myCurves->ChangeValue(ii));
       }
       else
+      {
         myKnots->SetValue(ii + 1, (double)ii);
+      }
     }
   }
 
@@ -148,12 +156,16 @@ void BRepAdaptor_CompCurve::Initialize(const TopoDS_Wire& W, const bool AC)
     if (VI.IsSame(VL))
     { // The direction of parsing is always preserved
       if (Or == TopAbs_REVERSED)
+      {
         Forward = false;
+      }
     }
     else
     { // The direction of parsing is always reversed
       if (Or != TopAbs_REVERSED)
+      {
         Forward = false;
+      }
     }
   }
 
@@ -183,9 +195,13 @@ void BRepAdaptor_CompCurve::Initialize(const TopoDS_Wire& W,
   if (i1 == i2)
   {
     if (l > f)
+    {
       HC = occ::down_cast<BRepAdaptor_Curve>(myCurves->Value(i1).Trim(f, l, PTol));
+    }
     else
+    {
       HC = occ::down_cast<BRepAdaptor_Curve>(myCurves->Value(i1).Trim(l, f, PTol));
+    }
     myCurves->SetValue(i1, *HC);
   }
   else
@@ -196,16 +212,24 @@ void BRepAdaptor_CompCurve::Initialize(const TopoDS_Wire& W,
 
     k = c1.LastParameter();
     if (k > f)
+    {
       HC = occ::down_cast<BRepAdaptor_Curve>(c1.Trim(f, k, PTol));
+    }
     else
+    {
       HC = occ::down_cast<BRepAdaptor_Curve>(c1.Trim(k, f, PTol));
+    }
     myCurves->SetValue(i1, *HC);
 
     k = c2.FirstParameter();
     if (k <= l)
+    {
       HC = occ::down_cast<BRepAdaptor_Curve>(c2.Trim(k, l, PTol));
+    }
     else
+    {
       HC = occ::down_cast<BRepAdaptor_Curve>(c2.Trim(l, k, PTol));
+    }
     myCurves->SetValue(i2, *HC);
   }
 }
@@ -237,7 +261,9 @@ double BRepAdaptor_CompCurve::LastParameter() const
 GeomAbs_Shape BRepAdaptor_CompCurve::Continuity() const
 {
   if (myCurves->Length() > 1)
+  {
     return GeomAbs_C0;
+  }
   return myCurves->Value(1).Continuity();
 }
 
@@ -245,7 +271,9 @@ int BRepAdaptor_CompCurve::NbIntervals(const GeomAbs_Shape S) const
 {
   int NbInt, ii;
   for (ii = 1, NbInt = 0; ii <= myCurves->Length(); ii++)
+  {
     NbInt += myCurves->ChangeValue(ii).NbIntervals(S);
+  }
 
   return NbInt;
 }
@@ -265,12 +293,16 @@ void BRepAdaptor_CompCurve::Intervals(NCollection_Array1<double>& T, const GeomA
   {
     // invert the direction of parsing
     for (kk = 1, jj = Ti->Length(); jj > 0; kk++, jj--)
+    {
       T(kk) = F + (Ti->Value(jj) - f) * delta;
+    }
   }
   else
   {
     for (kk = 1; kk <= Ti->Length(); kk++)
+    {
       T(kk) = F + (Ti->Value(kk) - f) * delta;
+    }
   }
 
   // and the next
@@ -278,7 +310,9 @@ void BRepAdaptor_CompCurve::Intervals(NCollection_Array1<double>& T, const GeomA
   {
     n = myCurves->ChangeValue(ii).NbIntervals(S);
     if (n != Ti->Length() - 1)
+    {
       Ti = new (NCollection_HArray1<double>)(1, n + 1);
+    }
     myCurves->ChangeValue(ii).Intervals(Ti->ChangeArray1(), S);
     InvPrepare(ii, f, delta);
     F = myKnots->Value(ii);
@@ -286,12 +320,16 @@ void BRepAdaptor_CompCurve::Intervals(NCollection_Array1<double>& T, const GeomA
     {
       // invert the direction of parcing
       for (jj = Ti->Length() - 1; jj > 0; kk++, jj--)
+      {
         T(kk) = F + (Ti->Value(jj) - f) * delta;
+      }
     }
     else
     {
       for (jj = 2; jj <= Ti->Length(); kk++, jj++)
+      {
         T(kk) = F + (Ti->Value(jj) - f) * delta;
+      }
     }
   }
 }
@@ -377,7 +415,9 @@ double BRepAdaptor_CompCurve::Resolution(const double R3d) const
   {
     r = myCurves->Value(ii).Resolution(R3d);
     if (r < Res)
+    {
       Res = r;
+    }
   }
   return Res;
 }
@@ -473,25 +513,33 @@ void BRepAdaptor_CompCurve::Prepare(double& W, double& Delta, int& theCurIndex) 
   if (myKnots->Value(theCurIndex) > Wtest)
   {
     for (ii = theCurIndex - 1; ii > 0 && !Trouve; ii--)
+    {
       if (myKnots->Value(ii) <= Wtest)
       {
         theCurIndex = ii;
         Trouve      = true;
       }
+    }
     if (!Trouve)
+    {
       theCurIndex = 1; // Out of limits...
+    }
   }
 
   else if (myKnots->Value(theCurIndex + 1) <= Wtest)
   {
     for (ii = theCurIndex + 1; ii <= myCurves->Length() && !Trouve; ii++)
+    {
       if (myKnots->Value(ii + 1) > Wtest)
       {
         theCurIndex = ii;
         Trouve      = true;
       }
+    }
     if (!Trouve)
+    {
       theCurIndex = myCurves->Length(); // Out of limits...
+    }
   }
 
   // Invert ?
@@ -504,7 +552,9 @@ void BRepAdaptor_CompCurve::Prepare(double& W, double& Delta, int& theCurIndex) 
   BRep_Tool::Range(E, f, l);
   Delta = myKnots->Value(theCurIndex + 1) - myKnots->Value(theCurIndex);
   if (Delta > PTol * 1.e-9)
+  {
     Delta = (l - f) / Delta;
+  }
 
   if (Reverse)
   {
@@ -531,7 +581,9 @@ void BRepAdaptor_CompCurve::InvPrepare(const int index, double& First, double& D
   BRep_Tool::Range(E, f, l);
   Delta = myKnots->Value(index + 1) - myKnots->Value(index);
   if (l - f > PTol * 1.e-9)
+  {
     Delta /= (l - f);
+  }
 
   if (Reverse)
   {

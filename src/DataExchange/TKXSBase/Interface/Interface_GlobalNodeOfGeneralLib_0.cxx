@@ -30,9 +30,13 @@ void Interface_GlobalNodeOfGeneralLib::Add(const occ::handle<Interface_GeneralMo
                                            const occ::handle<Interface_Protocol>&      aprotocol)
 {
   if (themod == amodule)
+  {
     return;
+  }
   if (theprot == aprotocol)
+  {
     themod = amodule;
+  }
   else if (thenext.IsNull())
   {
     if (themod.IsNull())
@@ -47,7 +51,9 @@ void Interface_GlobalNodeOfGeneralLib::Add(const occ::handle<Interface_GeneralMo
     }
   }
   else
+  {
     thenext->Add(amodule, aprotocol);
+  }
 }
 
 const occ::handle<Interface_GeneralModule>& Interface_GlobalNodeOfGeneralLib::Module() const

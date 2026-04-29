@@ -30,14 +30,18 @@ void StepData_FileProtocol::Add(const occ::handle<StepData_Protocol>& protocol)
 {
   // Add a protocol to the collection, avoiding duplicates of the same type
   if (protocol.IsNull())
+  {
     return;
+  }
   occ::handle<Standard_Type> ptype = protocol->DynamicType();
   int                        nb    = thecomps.Length();
   // Check if a protocol of the same type is already present
   for (int i = 1; i <= nb; i++)
   {
     if (thecomps.Value(i)->IsInstance(ptype))
+    {
       return; // Protocol of this type already exists
+    }
   }
   thecomps.Append(protocol);
 }
@@ -66,7 +70,9 @@ bool StepData_FileProtocol::GlobalCheck(const Interface_Graph&        G,
   bool res = false;
   int  i, nb = NbResources();
   for (i = 1; i <= nb; i++)
+  {
     res |= Resource(i)->GlobalCheck(G, ach); // Aggregate results from all protocols
+  }
   return res;
 }
 

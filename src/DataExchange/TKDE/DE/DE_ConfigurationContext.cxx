@@ -95,7 +95,9 @@ static DE_ConfigurationContext_KindOfLine WhatKindOfLine(const TCollection_Ascii
   }
 
   for (aPos = aPos2 - 1; aLine.Value(aPos) == '\t' || aLine.Value(aPos) == ' '; aPos--)
+  {
     ;
+  }
 
   theToken1 = aLine.SubString(aPos1, aPos);
   if (aPos2 != aLine.Length())
@@ -209,7 +211,9 @@ bool DE_ConfigurationContext::LoadStr(const TCollection_AsciiString& theResource
   {
     const char aChar = theResource.Value(anInd);
     if (aChar != '\n')
+    {
       aLine += aChar;
+    }
     if ((aChar == '\n' || anInd == aLength) && !aLine.IsEmpty())
     {
       if (!load(aLine))

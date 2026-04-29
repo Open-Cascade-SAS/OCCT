@@ -94,7 +94,9 @@ void Geom2dHatch_Hatching::TrimFailed(const bool Flag)
 {
   myTrimFailed = Flag;
   if (myTrimFailed)
+  {
     myStatus = HatchGen_TrimFailure;
+  }
 }
 
 //=======================================================================
@@ -156,7 +158,9 @@ void Geom2dHatch_Hatching::AddPoint(const HatchGen_PointOnHatching& Point, const
   {
     const HatchGen_PointOnHatching& PntH = myPoints.Value(IPntH);
     if (!PntH.IsLower(Point, Confusion))
+    {
       break;
+    }
   }
   if (IPntH > NbPoints)
   {
@@ -179,7 +183,9 @@ void Geom2dHatch_Hatching::AddPoint(const HatchGen_PointOnHatching& Point, const
     }
   }
   if (myIsDone)
+  {
     ClrDomains();
+  }
 }
 
 //=======================================================================
@@ -220,7 +226,9 @@ HatchGen_PointOnHatching& Geom2dHatch_Hatching::ChangePoint(const int Index)
 void Geom2dHatch_Hatching::RemPoint(const int Index)
 {
   if (myIsDone)
+  {
     ClrDomains();
+  }
   myPoints.Remove(Index);
 }
 
@@ -232,7 +240,9 @@ void Geom2dHatch_Hatching::RemPoint(const int Index)
 void Geom2dHatch_Hatching::ClrPoints()
 {
   if (myIsDone)
+  {
     ClrDomains();
+  }
   for (int IPntH = 1; IPntH <= myPoints.Length(); IPntH++)
   {
     HatchGen_PointOnHatching& Point = myPoints.ChangeValue(IPntH);

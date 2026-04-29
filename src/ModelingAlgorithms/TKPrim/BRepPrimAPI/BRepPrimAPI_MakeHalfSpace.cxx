@@ -39,7 +39,9 @@ static gp_Dir getNormalOnFace(const TopoDS_Face& theFace, const double theU, con
   BRepLProp_SLProps aProps(BRepAdaptor_Surface(theFace), theU, theV, 2, aPrec);
   gp_Dir            aNormal = aProps.Normal();
   if (theFace.Orientation() == TopAbs_REVERSED)
+  {
     aNormal.Reverse();
+  }
   return aNormal;
 }
 
@@ -131,7 +133,9 @@ static bool FindExtrema(const gp_Pnt&       thePnt,
   BRepExtrema_DistShapeShape ext(aRefVertex, theShape);
 
   if (!ext.IsDone() || ext.NbSolution() == 0)
+  {
     return false;
+  }
 
   // the point projection exist
   int nbext = ext.NbSolution();
@@ -159,14 +163,18 @@ static bool FindExtrema(const gp_Pnt&       thePnt,
       ext.ParOnEdgeS2(iext, aPar);
       TopoDS_Edge aE = TopoDS::Edge(ext.SupportOnShape2(iext));
       if (getNormalFromEdge(theShape, aE, aPar, theNormal))
+      {
         return true;
+      }
     }
     else if (ext.SupportTypeShape2(iext) == BRepExtrema_IsVertex)
     {
       theMinPnt        = ext.PointOnShape2(iext);
       TopoDS_Vertex aV = TopoDS::Vertex(ext.SupportOnShape2(iext));
       if (getNormalFromVertex(theShape, aV, theNormal))
+      {
         return true;
+      }
     }
   }
   return false;

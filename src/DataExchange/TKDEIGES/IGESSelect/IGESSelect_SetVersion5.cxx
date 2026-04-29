@@ -32,14 +32,18 @@ void IGESSelect_SetVersion5::Performing(IFSelect_ContextModif&                 c
 {
   IGESData_GlobalSection GS = target->GlobalSection();
   if (GS.IGESVersion() >= 9)
+  {
     return;
+  }
   GS.SetIGESVersion(9);
   GS.SetLastChangeDate();
   target->SetGlobalSection(GS);
   occ::handle<Interface_Check> check = new Interface_Check;
   target->VerifyCheck(check);
   if (check->HasFailed())
+  {
     ctx.CCheck()->GetMessages(check);
+  }
 }
 
 TCollection_AsciiString IGESSelect_SetVersion5::Label() const

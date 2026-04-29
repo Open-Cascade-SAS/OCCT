@@ -82,7 +82,9 @@ void XmlMDataStd_GenericExtStringDriver::Paste(const occ::handle<TDF_Attribute>&
   occ::handle<TDataStd_GenericExtString> aStr =
     occ::down_cast<TDataStd_GenericExtString>(theSource);
   if (aStr.IsNull())
+  {
     return;
+  }
   XmlObjMgt::SetExtendedString(theTarget, aStr->Get());
   // convert GUID
   char                aGuidStr[Standard_GUID_SIZE_ALLOC];

@@ -106,7 +106,9 @@ bool XmlMDataXtd_ConstraintDriver::Paste(const XmlObjMgt_Persistent&       theSo
     if (aNb > 0)
     {
       if (theRelocTable.IsBound(aNb))
+      {
         aTValue = occ::down_cast<TDataStd_Real>(theRelocTable.Find(aNb));
+      }
       else
       {
         aTValue = new TDataStd_Real;
@@ -137,7 +139,9 @@ bool XmlMDataXtd_ConstraintDriver::Paste(const XmlObjMgt_Persistent&       theSo
     {
       occ::handle<TNaming_NamedShape> aG;
       if (theRelocTable.IsBound(aNb))
+      {
         aG = occ::down_cast<TNaming_NamedShape>(theRelocTable.Find(aNb));
+      }
       else
       {
         aG = new TNaming_NamedShape;
@@ -147,7 +151,9 @@ bool XmlMDataXtd_ConstraintDriver::Paste(const XmlObjMgt_Persistent&       theSo
 
       // next geometry
       if (!XmlObjMgt::GetInteger(aGs, aNb))
+      {
         aNb = 0;
+      }
       i++;
     }
   }
@@ -168,7 +174,9 @@ bool XmlMDataXtd_ConstraintDriver::Paste(const XmlObjMgt_Persistent&       theSo
     if (aNb > 0)
     {
       if (theRelocTable.IsBound(aNb))
+      {
         aTPlane = occ::down_cast<TNaming_NamedShape>(theRelocTable.Find(aNb));
+      }
       else
       {
         aTPlane = new TNaming_NamedShape;
@@ -236,7 +244,9 @@ void XmlMDataXtd_ConstraintDriver::Paste(const occ::handle<TDF_Attribute>& theSo
         aGsStr += TCollection_AsciiString(aNb) + " ";
       }
       else
+      {
         aGsStr += "0 ";
+      }
     }
     anElem.setAttribute(::GeometriesString(), aGsStr.ToCString());
   }
@@ -260,19 +270,31 @@ void XmlMDataXtd_ConstraintDriver::Paste(const occ::handle<TDF_Attribute>& theSo
   TCollection_AsciiString aStatusStr;
 
   if (aC->Verified())
+  {
     aStatusStr += "+";
+  }
   else
+  {
     aStatusStr += "-";
+  }
 
   if (aC->Inverted())
+  {
     aStatusStr += "+";
+  }
   else
+  {
     aStatusStr += "-";
+  }
 
   if (aC->Reversed())
+  {
     aStatusStr += "+";
+  }
   else
+  {
     aStatusStr += "-";
+  }
 
   anElem.setAttribute(::StatusString(), aStatusStr.ToCString());
 }
@@ -286,59 +308,111 @@ static TDataXtd_ConstraintEnum ConstraintTypeEnum(const XmlObjMgt_DOMString& the
   if (!theString.equals(::ConRadiusString()))
   {
     if (theString.equals(::ConDiameterString()))
+    {
       aResult = TDataXtd_DIAMETER;
+    }
     else if (theString.equals(::ConMinRadiusString()))
+    {
       aResult = TDataXtd_MINOR_RADIUS;
+    }
     else if (theString.equals(::ConMajRadiusString()))
+    {
       aResult = TDataXtd_MAJOR_RADIUS;
+    }
     else if (theString.equals(::ConTangentString()))
+    {
       aResult = TDataXtd_TANGENT;
+    }
     else if (theString.equals(::ConParallelString()))
+    {
       aResult = TDataXtd_PARALLEL;
+    }
     else if (theString.equals(::ConPerpendicularString()))
+    {
       aResult = TDataXtd_PERPENDICULAR;
+    }
     else if (theString.equals(::ConConcentricString()))
+    {
       aResult = TDataXtd_CONCENTRIC;
+    }
     else if (theString.equals(::ConCoincidentString()))
+    {
       aResult = TDataXtd_COINCIDENT;
+    }
     else if (theString.equals(::ConDistanceString()))
+    {
       aResult = TDataXtd_DISTANCE;
+    }
     else if (theString.equals(::ConAngleString()))
+    {
       aResult = TDataXtd_ANGLE;
+    }
     else if (theString.equals(::ConEqualRadiusString()))
+    {
       aResult = TDataXtd_EQUAL_RADIUS;
+    }
     else if (theString.equals(::ConSymmetryString()))
+    {
       aResult = TDataXtd_SYMMETRY;
+    }
     else if (theString.equals(::ConMidPointString()))
+    {
       aResult = TDataXtd_MIDPOINT;
+    }
     else if (theString.equals(::ConEqualDistanceString()))
+    {
       aResult = TDataXtd_EQUAL_DISTANCE;
+    }
     else if (theString.equals(::ConFixString()))
+    {
       aResult = TDataXtd_FIX;
+    }
     else if (theString.equals(::ConRigidString()))
+    {
       aResult = TDataXtd_RIGID;
-    // placement constraints
+      // placement constraints
+    }
     else if (theString.equals(::ConFromString()))
+    {
       aResult = TDataXtd_FROM;
+    }
     else if (theString.equals(::ConAxisString()))
+    {
       aResult = TDataXtd_AXIS;
+    }
     else if (theString.equals(::ConMateString()))
+    {
       aResult = TDataXtd_MATE;
+    }
     else if (theString.equals(::ConAlignFacesString()))
+    {
       aResult = TDataXtd_ALIGN_FACES;
+    }
     else if (theString.equals(::ConAlignAxesString()))
+    {
       aResult = TDataXtd_ALIGN_AXES;
+    }
     else if (theString.equals(::ConAxesAngleString()))
+    {
       aResult = TDataXtd_AXES_ANGLE;
+    }
     else if (theString.equals(::ConFacesAngleString()))
+    {
       aResult = TDataXtd_FACES_ANGLE;
+    }
     else if (theString.equals(::ConRoundString()))
+    {
       aResult = TDataXtd_ROUND;
+    }
     else if (theString.equals(::ConOffsetString()))
+    {
       aResult = TDataXtd_OFFSET;
+    }
     else
+    {
       throw Standard_DomainError(
         "TDataXtd_ConstraintEnum; string value without enum term equivalence");
+    }
   }
   return aResult;
 }

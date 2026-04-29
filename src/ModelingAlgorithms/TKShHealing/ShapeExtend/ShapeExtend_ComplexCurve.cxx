@@ -36,7 +36,9 @@ ShapeExtend_ComplexCurve::ShapeExtend_ComplexCurve()
 void ShapeExtend_ComplexCurve::Transform(const gp_Trsf& T)
 {
   for (int i = 1; i <= NbCurves(); i++)
+  {
     Curve(i)->Transform(T);
+  }
 }
 
 //=================================================================================================
@@ -92,7 +94,9 @@ gp_Vec ShapeExtend_ComplexCurve::EvalDN(const double U, const int N) const
   const int anInd   = LocateParameter(U, UOut);
   gp_Vec    aResult = Curve(anInd)->EvalDN(UOut, N);
   if (N)
+  {
     TransformDN(aResult, anInd, N);
+  }
   return aResult;
 }
 
@@ -105,7 +109,9 @@ bool ShapeExtend_ComplexCurve::CheckConnectivity(const double Preci)
   for (int i = 1; i < NbC; i++)
   {
     if (i == 1)
+    {
       myClosed = Value(FirstParameter()).IsEqual(Value(LastParameter()), Preci);
+    }
     ok &= Curve(i)
             ->Value(Curve(i)->LastParameter())
             .IsEqual(Curve(i + 1)->Value(Curve(i + 1)->FirstParameter()), Preci);
@@ -123,5 +129,7 @@ void ShapeExtend_ComplexCurve::TransformDN(gp_Vec& V, const int ind, const int N
 {
   double fact = GetScaleFactor(ind);
   for (int i = 1; i <= N; i++)
+  {
     V *= fact;
+  }
 }

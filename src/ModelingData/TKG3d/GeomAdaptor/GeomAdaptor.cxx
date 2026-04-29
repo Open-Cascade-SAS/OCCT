@@ -148,7 +148,9 @@ occ::handle<Geom_Surface> GeomAdaptor::MakeSurface(const Adaptor3d_Surface& HS,
   }
 
   if (S.IsNull() || !theTrimFlag)
+  {
     return S;
+  }
 
   // trim the surface if necassary.
   double U1, U2, V1, V2;

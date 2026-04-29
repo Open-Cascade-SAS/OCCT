@@ -164,7 +164,9 @@ struct OpenGL_BVHParallelBuilder
       Set->Objects().ChangeValue(static_cast<int>(theObjectIdx)).operator->());
 
     if (aTriangleSet != nullptr)
+    {
       aTriangleSet->QuadBVH();
+    }
   }
 };
 
@@ -312,7 +314,9 @@ int OpenGl_RaytraceGeometry::AccelerationOffset(int theNodeIdx)
   const QuadBvhHandle& aBVH = QuadBVH();
 
   if (theNodeIdx >= aBVH->Length() || !aBVH->IsOuter(theNodeIdx))
+  {
     return INVALID_OFFSET;
+  }
 
   return aBVH->NodeInfoBuffer().Value(theNodeIdx).y();
 }
@@ -326,7 +330,9 @@ int OpenGl_RaytraceGeometry::VerticesOffset(int theNodeIdx)
   const QuadBvhHandle& aBVH = QuadBVH();
 
   if (theNodeIdx >= aBVH->Length() || !aBVH->IsOuter(theNodeIdx))
+  {
     return INVALID_OFFSET;
+  }
 
   return aBVH->NodeInfoBuffer().Value(theNodeIdx).z();
 }
@@ -340,7 +346,9 @@ int OpenGl_RaytraceGeometry::ElementsOffset(int theNodeIdx)
   const QuadBvhHandle& aBVH = QuadBVH();
 
   if (theNodeIdx >= aBVH->Length() || !aBVH->IsOuter(theNodeIdx))
+  {
     return INVALID_OFFSET;
+  }
 
   return aBVH->NodeInfoBuffer().Value(theNodeIdx).w();
 }
@@ -354,10 +362,14 @@ OpenGl_TriangleSet* OpenGl_RaytraceGeometry::TriangleSet(int theNodeIdx)
   const QuadBvhHandle& aBVH = QuadBVH();
 
   if (theNodeIdx >= aBVH->Length() || !aBVH->IsOuter(theNodeIdx))
+  {
     return nullptr;
+  }
 
   if (aBVH->NodeInfoBuffer().Value(theNodeIdx).x() > myObjects.Length())
+  {
     return nullptr;
+  }
 
   return dynamic_cast<OpenGl_TriangleSet*>(
     myObjects(aBVH->NodeInfoBuffer().Value(theNodeIdx).x() - 1).get());

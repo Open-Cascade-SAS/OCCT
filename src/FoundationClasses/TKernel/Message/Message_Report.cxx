@@ -87,7 +87,9 @@ bool Message_Report::HasAlert(const occ::handle<Standard_Type>& theType)
   for (int iGravity = Message_Trace; iGravity <= Message_Fail; ++iGravity)
   {
     if (HasAlert(theType, (Message_Gravity)iGravity))
+    {
       return true;
+    }
   }
   return false;
 }
@@ -117,7 +119,9 @@ void Message_Report::ActivateInMessenger(const bool                            t
                                          const occ::handle<Message_Messenger>& theMessenger)
 {
   if (toActivate == IsActiveInMessenger())
+  {
     return;
+  }
 
   myIsActiveInMessenger = toActivate;
   occ::handle<Message_Messenger> aMessenger =
@@ -139,7 +143,9 @@ void Message_Report::ActivateInMessenger(const bool                            t
       const occ::handle<Message_Printer>& aPrinter = anIterator.Value();
       if (aPrinter->IsKind(STANDARD_TYPE(Message_PrinterToReport))
           && occ::down_cast<Message_PrinterToReport>(aPrinter)->Report() == this)
+      {
         aPrintersToRemove.Append(aPrinter);
+      }
     }
     for (NCollection_Sequence<occ::handle<Message_Printer>>::Iterator anIterator(aPrintersToRemove);
          anIterator.More();
@@ -424,7 +430,7 @@ void Message_Report::dumpMessages(Standard_OStream&                           th
   for (NCollection_List<occ::handle<Message_Alert>>::Iterator anIt(anAlerts); anIt.More();
        anIt.Next())
   {
-    theOS << anIt.Value()->GetMessageKey() << std::endl;
+    theOS << anIt.Value()->GetMessageKey() << '\n';
 
     occ::handle<Message_AlertExtended> anExtendedAlert =
       occ::down_cast<Message_AlertExtended>(anIt.Value());

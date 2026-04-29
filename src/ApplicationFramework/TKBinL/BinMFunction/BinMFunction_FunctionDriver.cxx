@@ -60,7 +60,9 @@ bool BinMFunction_FunctionDriver::Paste(const BinObjMgt_Persistent&       theSou
     int aValue;
     ok = theSource >> aValue;
     if (ok)
+    {
       anAtt->SetFailure(aValue);
+    }
   }
   return ok;
 }

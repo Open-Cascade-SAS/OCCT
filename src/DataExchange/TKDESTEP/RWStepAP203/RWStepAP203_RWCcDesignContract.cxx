@@ -41,7 +41,9 @@ void RWStepAP203_RWCcDesignContract::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "cc_design_contract"))
+  {
     return;
+  }
 
   // Inherited fields of ContractAssignment
 

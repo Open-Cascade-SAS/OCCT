@@ -215,7 +215,9 @@ AppDef_MultiPointConstraint::AppDef_MultiPointConstraint(
 void AppDef_MultiPointConstraint::SetTang(const int Index, const gp_Vec& Tang)
 {
   if (tabTang.IsNull())
+  {
     tabTang = new NCollection_HArray1<gp_Vec>(1, nbP);
+  }
   if ((Index <= 0) || (Index > nbP))
   {
     throw Standard_OutOfRange();
@@ -235,7 +237,9 @@ gp_Vec AppDef_MultiPointConstraint::Tang(const int Index) const
 void AppDef_MultiPointConstraint::SetTang2d(const int Index, const gp_Vec2d& Tang2d)
 {
   if (tabTang2d.IsNull())
+  {
     tabTang2d = new NCollection_HArray1<gp_Vec2d>(1, nbP2d);
+  }
 
   if ((Index <= nbP) || (Index > nbP + nbP2d))
   {
@@ -256,7 +260,9 @@ gp_Vec2d AppDef_MultiPointConstraint::Tang2d(const int Index) const
 void AppDef_MultiPointConstraint::SetCurv(const int Index, const gp_Vec& Curv)
 {
   if (tabCurv.IsNull())
+  {
     tabCurv = new NCollection_HArray1<gp_Vec>(1, nbP);
+  }
   if ((Index <= 0) || (Index > nbP))
   {
     throw Standard_OutOfRange();
@@ -276,7 +282,9 @@ gp_Vec AppDef_MultiPointConstraint::Curv(const int Index) const
 void AppDef_MultiPointConstraint::SetCurv2d(const int Index, const gp_Vec2d& Curv2d)
 {
   if (tabCurv2d.IsNull())
+  {
     tabCurv2d = new NCollection_HArray1<gp_Vec2d>(1, nbP2d);
+  }
   if ((Index <= nbP) || (Index > nbP + nbP2d))
   {
     throw Standard_OutOfRange();
@@ -305,5 +313,5 @@ bool AppDef_MultiPointConstraint::IsCurvaturePoint() const
 
 void AppDef_MultiPointConstraint::Dump(Standard_OStream& o) const
 {
-  o << "AppDef_MultiPointConstraint dump:" << std::endl;
+  o << "AppDef_MultiPointConstraint dump:" << '\n';
 }

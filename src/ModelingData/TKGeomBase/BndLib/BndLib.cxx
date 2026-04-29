@@ -151,23 +151,35 @@ static void OpenMin(const gp_Dir& V, Bnd_Box& B)
   if (V.IsParallel(gp::DX(), Precision::Angular()))
   {
     if (V.X() > 0.)
+    {
       B.OpenXmin();
+    }
     else
+    {
       B.OpenXmax();
+    }
   }
   else if (V.IsParallel(gp::DY(), Precision::Angular()))
   {
     if (V.Y() > 0.)
+    {
       B.OpenYmin();
+    }
     else
+    {
       B.OpenYmax();
+    }
   }
   else if (V.IsParallel(gp::DZ(), Precision::Angular()))
   {
     if (V.Z() > 0.)
+    {
       B.OpenZmin();
+    }
     else
+    {
       B.OpenZmax();
+    }
   }
   else
   {
@@ -186,23 +198,35 @@ static void OpenMax(const gp_Dir& V, Bnd_Box& B)
   if (V.IsParallel(gp::DX(), Precision::Angular()))
   {
     if (V.X() > 0.)
+    {
       B.OpenXmax();
+    }
     else
+    {
       B.OpenXmin();
+    }
   }
   else if (V.IsParallel(gp::DY(), Precision::Angular()))
   {
     if (V.Y() > 0.)
+    {
       B.OpenYmax();
+    }
     else
+    {
       B.OpenYmin();
+    }
   }
   else if (V.IsParallel(gp::DZ(), Precision::Angular()))
   {
     if (V.Z() > 0.)
+    {
       B.OpenZmax();
+    }
     else
+    {
       B.OpenZmin();
+    }
   }
   else
   {
@@ -249,16 +273,24 @@ static void OpenMin(const gp_Dir2d& V, Bnd_Box2d& B)
   if (V.IsParallel(gp::DX2d(), Precision::Angular()))
   {
     if (V.X() > 0.)
+    {
       B.OpenXmin();
+    }
     else
+    {
       B.OpenXmax();
+    }
   }
   else if (V.IsParallel(gp::DY2d(), Precision::Angular()))
   {
     if (V.Y() > 0.)
+    {
       B.OpenYmin();
+    }
     else
+    {
       B.OpenYmax();
+    }
   }
   else
   {
@@ -276,16 +308,24 @@ static void OpenMax(const gp_Dir2d& V, Bnd_Box2d& B)
   if (V.IsParallel(gp::DX2d(), Precision::Angular()))
   {
     if (V.X() > 0.)
+    {
       B.OpenXmax();
+    }
     else
+    {
       B.OpenXmin();
+    }
   }
   else if (V.IsParallel(gp::DY2d(), Precision::Angular()))
   {
     if (V.Y() > 0.)
+    {
       B.OpenYmax();
+    }
     else
+    {
       B.OpenYmin();
+    }
   }
   else
   {
@@ -871,7 +911,9 @@ void BndLib::Add(const gp_Parab& P, const double P1, const double P2, const doub
     {
       B.Add(ElCLib::Value(P2, P));
       if (P1 * P2 < 0)
+      {
         B.Add(ElCLib::Value(0., P));
+      }
     }
   }
   B.Enlarge(Tol);
@@ -937,7 +979,9 @@ void BndLib::Add(const gp_Parab2d& P,
     {
       B.Add(ElCLib::Value(P2, P));
       if (P1 * P2 < 0)
+      {
         B.Add(ElCLib::Value(0., P));
+      }
     }
   }
   B.Enlarge(Tol);
@@ -1070,7 +1114,9 @@ void BndLib::Add(const gp_Hypr2d& H,
     {
       B.Add(ElCLib::Value(P2, H));
       if (P1 * P2 < 0)
+      {
         B.Add(ElCLib::Value(0., H));
+      }
     }
   }
   B.Enlarge(Tol);
@@ -1519,7 +1565,9 @@ void BndLib::Add(const gp_Torus& S,
   const double Ri = S.MinorRadius();
 
   if (Fi2 < Fi1)
+  {
     return;
+  }
 
   if (Ra < Ri)
   {

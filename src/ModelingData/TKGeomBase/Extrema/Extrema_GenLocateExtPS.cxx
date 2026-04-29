@@ -84,7 +84,9 @@ bool Extrema_GenLocateExtPS::IsMinDist(const gp_Pnt&            theP,
     for (iv = -1; iv <= 1; ++iv)
     {
       if (iu == 0 && iv == 0)
+      {
         continue;
+      }
 
       v = theV0 + iv * dv;
       if (!theS.IsVPeriodic())
@@ -94,7 +96,9 @@ bool Extrema_GenLocateExtPS::IsMinDist(const gp_Pnt&            theP,
       }
       double d = theP.SquareDistance(theS.Value(u, v));
       if (d < d0)
+      {
         return false;
+      }
     }
   }
   return true;
@@ -156,7 +160,9 @@ void Extrema_GenLocateExtPS::Perform(const gp_Pnt& theP,
       math_FRPR aSolver1(F, aRelTol);
       aSolver1.Perform(F, aStart);
       if (!aSolver1.IsDone())
+      {
         return;
+      }
       aSolver1.Location(aResPnt);
       mySqDist = aSolver1.Minimum();
     }

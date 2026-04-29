@@ -246,8 +246,12 @@ void AppParCurves::SplineFunction(const int           nbpoles,
     }
 
     for (j = 1; j < oldkindex - deg; j++)
+    {
       A(i, j) = DA(i, j) = 0.0;
+    }
     for (j = oldkindex + 1; j <= nbpoles; j++)
+    {
       A(i, j) = DA(i, j) = 0.0;
+    }
   }
 }

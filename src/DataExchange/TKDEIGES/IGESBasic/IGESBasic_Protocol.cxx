@@ -50,36 +50,68 @@ occ::handle<Interface_Protocol> IGESBasic_Protocol::Resource(const int /*num*/) 
 int IGESBasic_Protocol::TypeNumber(const occ::handle<Standard_Type>& atype) const
 {
   if (atype == STANDARD_TYPE(IGESBasic_AssocGroupType))
+  {
     return 1;
+  }
   else if (atype == STANDARD_TYPE(IGESBasic_ExternalRefFile))
+  {
     return 2;
+  }
   else if (atype == STANDARD_TYPE(IGESBasic_ExternalRefFileIndex))
+  {
     return 3;
+  }
   else if (atype == STANDARD_TYPE(IGESBasic_ExternalRefFileName))
+  {
     return 4;
+  }
   else if (atype == STANDARD_TYPE(IGESBasic_ExternalRefLibName))
+  {
     return 5;
+  }
   else if (atype == STANDARD_TYPE(IGESBasic_ExternalRefName))
+  {
     return 6;
+  }
   else if (atype == STANDARD_TYPE(IGESBasic_ExternalReferenceFile))
+  {
     return 7;
+  }
   else if (atype == STANDARD_TYPE(IGESBasic_Group))
+  {
     return 8;
+  }
   else if (atype == STANDARD_TYPE(IGESBasic_GroupWithoutBackP))
+  {
     return 9;
+  }
   else if (atype == STANDARD_TYPE(IGESBasic_Hierarchy))
+  {
     return 10;
+  }
   else if (atype == STANDARD_TYPE(IGESBasic_Name))
+  {
     return 11;
+  }
   else if (atype == STANDARD_TYPE(IGESBasic_OrderedGroup))
+  {
     return 12;
+  }
   else if (atype == STANDARD_TYPE(IGESBasic_OrderedGroupWithoutBackP))
+  {
     return 13;
+  }
   else if (atype == STANDARD_TYPE(IGESBasic_SingleParent))
+  {
     return 14;
+  }
   else if (atype == STANDARD_TYPE(IGESBasic_SingularSubfigure))
+  {
     return 15;
+  }
   else if (atype == STANDARD_TYPE(IGESBasic_SubfigureDef))
+  {
     return 16;
+  }
   return 0;
 }

@@ -34,9 +34,13 @@ IMPLEMENT_STANDARD_RTTIEXT(XSControl_TransferWriter, Standard_Transient)
 void XSControl_TransferWriter::Clear(const int mode)
 {
   if (mode < 0 || myTransferWriter.IsNull())
+  {
     myTransferWriter = new Transfer_FinderProcess;
+  }
   else
+  {
     myTransferWriter->Clear();
+  }
 }
 
 //=================================================================================================
@@ -46,13 +50,15 @@ void XSControl_TransferWriter::PrintStats(const int, const int) const
   Message_Messenger::StreamBuffer sout = myTransferWriter->Messenger()->SendInfo();
   //  A ameliorer ... !
   sout << "\n*******************************************************************\n";
-  sout << "******        Statistics on Transfer (Write)                 ******" << std::endl;
+  sout << "******        Statistics on Transfer (Write)                 ******" << '\n';
   sout << "\n*******************************************************************\n";
   sout << "******        Transfer Mode = " << myTransferMode;
   const char* modehelp = myController->ModeWriteHelp(myTransferMode);
   if (modehelp && modehelp[0] != 0)
+  {
     sout << "  I.E.  " << modehelp;
-  sout << "       ******" << std::endl;
+  }
+  sout << "       ******" << '\n';
 }
 
 //  ##########    LES ACTIONS    ##########
@@ -62,11 +68,15 @@ void XSControl_TransferWriter::PrintStats(const int, const int) const
 bool XSControl_TransferWriter::RecognizeTransient(const occ::handle<Standard_Transient>& obj)
 {
   if (myController.IsNull())
+  {
     return false;
+  }
   XSControl_Utils xu;
   TopoDS_Shape    sh = xu.BinderShape(obj);
   if (!sh.IsNull())
+  {
     return RecognizeShape(sh);
+  }
   return myController->RecognizeWriteTransient(obj, myTransferMode);
 }
 
@@ -79,12 +89,18 @@ IFSelect_ReturnStatus XSControl_TransferWriter::TransferWriteTransient(
 {
   IFSelect_ReturnStatus status = IFSelect_RetVoid;
   if (myController.IsNull())
+  {
     return IFSelect_RetError;
+  }
   if (model.IsNull())
+  {
     return IFSelect_RetVoid;
+  }
 
   if (myTransferWriter.IsNull())
+  {
     myTransferWriter = new Transfer_FinderProcess;
+  }
   occ::handle<Transfer_ActorOfFinderProcess> nulact;
   myTransferWriter->SetActor(nulact);
   occ::handle<Standard_Transient> resultat;
@@ -94,7 +110,7 @@ IFSelect_ReturnStatus XSControl_TransferWriter::TransferWriteTransient(
     OCC_CATCH_SIGNALS
     PrintStats(myTransferMode);
     sout << "******        Transferring Transient, CDL Type = ";
-    sout << obj->DynamicType()->Name() << "   ******" << std::endl;
+    sout << obj->DynamicType()->Name() << "   ******" << '\n';
     status = myController->TransferWriteTransient(obj,
                                                   myTransferWriter,
                                                   model,
@@ -105,7 +121,7 @@ IFSelect_ReturnStatus XSControl_TransferWriter::TransferWriteTransient(
   {
     sout << "****  ****  TransferWriteShape, EXCEPTION : ";
     sout << anException.what();
-    sout << std::endl;
+    sout << '\n';
     status = IFSelect_RetFail;
   }
   return status;
@@ -116,9 +132,13 @@ IFSelect_ReturnStatus XSControl_TransferWriter::TransferWriteTransient(
 bool XSControl_TransferWriter::RecognizeShape(const TopoDS_Shape& shape)
 {
   if (myController.IsNull())
+  {
     return false;
+  }
   if (shape.IsNull())
+  {
     return false;
+  }
   return myController->RecognizeWriteShape(shape, myTransferMode);
 }
 
@@ -131,14 +151,20 @@ IFSelect_ReturnStatus XSControl_TransferWriter::TransferWriteShape(
 {
   IFSelect_ReturnStatus status = IFSelect_RetVoid;
   if (myController.IsNull())
+  {
     return IFSelect_RetError;
+  }
   if (theModel.IsNull())
+  {
     return IFSelect_RetVoid;
+  }
 
   TopoDS_Shape aShape = theShape;
 
   if (myTransferWriter.IsNull())
+  {
     myTransferWriter = new Transfer_FinderProcess;
+  }
   //  effacer l actor : Controller s en charge
   occ::handle<Transfer_ActorOfFinderProcess> nulact;
   myTransferWriter->SetActor(nulact);
@@ -149,7 +175,7 @@ IFSelect_ReturnStatus XSControl_TransferWriter::TransferWriteShape(
     OCC_CATCH_SIGNALS
     PrintStats(myTransferMode);
     sout << "******        Transferring Shape, ShapeType = " << aShape.ShapeType();
-    sout << "                      ******" << std::endl;
+    sout << "                      ******" << '\n';
     status = myController->TransferWriteShape(aShape,
                                               myTransferWriter,
                                               theModel,
@@ -160,7 +186,7 @@ IFSelect_ReturnStatus XSControl_TransferWriter::TransferWriteShape(
   {
     sout << "****  ****  TransferWriteShape, EXCEPTION : ";
     sout << anException.what();
-    sout << std::endl;
+    sout << '\n';
     status = IFSelect_RetFail;
   }
   return status;
@@ -172,21 +198,31 @@ Interface_CheckIterator XSControl_TransferWriter::CheckList() const
 {
   Interface_CheckIterator chl;
   if (myTransferWriter.IsNull())
+  {
     return chl;
+  }
   int i, nb = myTransferWriter->NbMapped();
   for (i = 1; i <= nb; i++)
   {
     DeclareAndCast(Transfer_SimpleBinderOfTransient, tb, myTransferWriter->MapItem(i));
     if (tb.IsNull())
+    {
       continue;
+    }
     occ::handle<Interface_Check> ach = tb->Check();
     if (ach->NbFails() == 0 || ach->NbWarnings() == 0)
+    {
       continue;
+    }
     DeclareAndCast(Transfer_TransientMapper, tm, myTransferWriter->Mapped(i));
     if (tm.IsNull())
+    {
       ach->GetEntity(myTransferWriter->Mapped(i));
+    }
     else
+    {
       ach->GetEntity(tm->Value());
+    }
     chl.Add(ach);
   }
   return chl;
@@ -199,21 +235,31 @@ Interface_CheckIterator XSControl_TransferWriter::ResultCheckList(
 {
   Interface_CheckIterator chl;
   if (myTransferWriter.IsNull())
+  {
     return chl;
+  }
   int i, nb = myTransferWriter->NbMapped();
   for (i = 1; i <= nb; i++)
   {
     DeclareAndCast(Transfer_SimpleBinderOfTransient, tb, myTransferWriter->MapItem(i));
     if (tb.IsNull())
+    {
       continue;
+    }
     const occ::handle<Interface_Check> ach = tb->Check();
     if (ach->NbFails() == 0 || ach->NbWarnings() == 0)
+    {
       continue;
+    }
     occ::handle<Standard_Transient> ent = tb->Result();
     if (!ent.IsNull() && !model.IsNull())
+    {
       chl.Add(ach, model->Number(ent));
+    }
     else
+    {
       chl.Add(ach, 0);
+    }
   }
   return chl;
 }

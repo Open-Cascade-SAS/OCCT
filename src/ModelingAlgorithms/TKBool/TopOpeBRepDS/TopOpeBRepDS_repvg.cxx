@@ -46,7 +46,9 @@ Standard_EXPORT void FDS_repvg2(const TopOpeBRepDS_DataStructure&               
   const TopoDS_Edge& E    = TopoDS::Edge(BDS.Shape(EIX));
   bool               isEd = BRep_Tool::Degenerated(E);
   if (isEd)
+  {
     return;
+  }
 
   bool ispoint  = (GT == TopOpeBRepDS_POINT);
   bool isvertex = (GT == TopOpeBRepDS_VERTEX);
@@ -99,11 +101,17 @@ Standard_EXPORT void FDS_repvg2(const TopOpeBRepDS_DataStructure&               
     TopOpeBRepDS_Point PDS;
     TopoDS_Shape       VDS;
     if (ispoint)
+    {
       PDS = BDS.Point(G1);
+    }
     else if (isvertex)
+    {
       VDS = BDS.Shape(G1);
+    }
     else
+    {
       throw Standard_Failure("TopOpeBRepDS FDS_repvg2 1");
+    }
 
     bool isEd1 = BRep_Tool::Degenerated(E1);
     if (isEd1)
@@ -113,7 +121,9 @@ Standard_EXPORT void FDS_repvg2(const TopOpeBRepDS_DataStructure&               
     }
     NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it2(it1);
     if (it2.More())
+    {
       it2.Next();
+    }
     else
     {
       it1.Next();
@@ -180,17 +190,25 @@ Standard_EXPORT void FDS_repvg2(const TopOpeBRepDS_DataStructure&               
         isComplex = true;
         EITool.Init(E, I1);
         if (ispoint)
+        {
           EITool.Add(E, PDS, I1);
+        }
         else if (isvertex)
+        {
           EITool.Add(E1, VDS, I1);
+        }
       } // !isComplex && !memeS
 
       if (isComplex && !memeS)
       {
         if (ispoint)
+        {
           EITool.Add(E, PDS, I2);
+        }
         else if (isvertex)
+        {
           EITool.Add(E2, VDS, I2);
+        }
         LI.Remove(it2);
       } // (isComplex && !memeS)
 
@@ -250,7 +268,9 @@ Standard_EXPORT void FDS_repvg(const TopOpeBRepDS_DataStructure&                
       mapITRASHA.Bind(isa, loi);
     }
     else
+    {
       mapITRASHA.ChangeFind(isa).Append(I);
+    }
     it.Next();
   }
 
@@ -262,7 +282,9 @@ Standard_EXPORT void FDS_repvg(const TopOpeBRepDS_DataStructure&                
     NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& loi  = mapITRASHA.ChangeFind(isa);
     int                                                       nloi = loi.Extent();
     if (nloi < 2)
+    {
       continue;
+    }
     NCollection_List<occ::handle<TopOpeBRepDS_Interference>> rloi;
     FDS_repvg2(BDS, EIX, GT, loi, rloi);
     LOI.Append(loi);

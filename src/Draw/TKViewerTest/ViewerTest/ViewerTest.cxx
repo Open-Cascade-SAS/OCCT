@@ -1440,7 +1440,9 @@ static int VDispMode(Draw_Interpretor&, int argc, const char** argv)
 static int VSubInt(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc == 1)
+  {
     return 1;
+  }
   int                                        On  = Draw::Atoi(argv[1]);
   const occ::handle<AIS_InteractiveContext>& Ctx = ViewerTest::GetAISContext();
   if (Ctx.IsNull())
@@ -1474,12 +1476,18 @@ static int VSubInt(Draw_Interpretor& di, int argc, const char** argv)
     if (GetMapOfAIS().Find2(name, IO) && !IO.IsNull())
     {
       if (On == 1)
+      {
         Ctx->SubIntensityOn(IO, true);
+      }
       else
+      {
         Ctx->SubIntensityOff(IO, true);
+      }
     }
     else
+    {
       return 1;
+    }
   }
   return 0;
 }
@@ -1494,7 +1502,9 @@ public:
   {
     NCollection_Sequence<TCollection_AsciiString> aNames;
     if (!theName.IsEmpty())
+    {
       aNames.Append(theName);
+    }
     Init(aNames);
   }
 
@@ -3181,7 +3191,9 @@ static int VAspects(Draw_Interpretor& theDI, int theArgNb, const char** theArgVe
     {
       toCompactDump = false;
       if (++anArgIter >= theArgNb && Draw::ParseOnOff(theArgVec[anArgIter + 1], toCompactDump))
+      {
         ++anArgIter;
+      }
     }
     else if (anArg == "-dumpdepth")
     {
@@ -3259,9 +3271,13 @@ static int VAspects(Draw_Interpretor& theDI, int theArgNb, const char** theArgVe
       aDrawer->DumpJson(aStream, aDumpDepth);
 
       if (toCompactDump)
+      {
         theDI << Standard_Dump::Text(aStream);
+      }
       else
+      {
         theDI << Standard_Dump::FormatJson(aStream);
+      }
     }
     return 0;
   }
@@ -3640,7 +3656,6 @@ int VRemove(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
       }
 
       anIONameList.Append(anIter.Key2());
-      continue;
     }
   }
 
@@ -3938,7 +3953,9 @@ inline void bndPresentation(Draw_Interpretor&                              theDI
            aPrsIter.Next())
       {
         if (aPrsIter.Value()->Mode() != theDispMode)
+        {
           continue;
+        }
 
         aBox = aPrsIter.Value()->MinMaxValues();
       }
@@ -5323,9 +5340,13 @@ static int VShading(Draw_Interpretor&, int argc, const char** argv)
   }
 
   if (HaveToSet)
+  {
     TheAISContext()->SetDeviationCoefficient(TheAisIO, myDevCoef, true);
+  }
   else
+  {
     TheAISContext()->SetDeviationCoefficient(TheAisIO, 0.0008, true);
+  }
 
   TheAISContext()->Redisplay(TheAisIO, true);
   return 0;
@@ -5431,11 +5452,15 @@ static void printLocalSelectionInfo(const T& theContext, Draw_Interpretor& theDI
       occ::down_cast<AIS_Shape>(theContext->SelectedInteractive());
     const occ::handle<SelectMgr_EntityOwner> anOwner = theContext->SelectedOwner();
     if (aShapeIO.IsNull() || anOwner.IsNull())
+    {
       continue;
+    }
     if (isGlobalCtx)
     {
       if (anOwner == aShapeIO->GlobalSelOwner())
+      {
         continue;
+      }
     }
     const TopoDS_Shape aSubShape = theContext->SelectedShape();
     if (aSubShape.IsNull() || aShapeIO.IsNull() || !GetMapOfAIS().IsBound1(aShapeIO))
@@ -5819,19 +5844,33 @@ static int VPickShape(Draw_Interpretor& di, int argc, const char** argv)
     aShapeArg.LowerCase();
     aShapeType = TopAbs_COMPOUND;
     if (aShapeArg == "v" || aShapeArg == "vertex")
+    {
       aShapeType = TopAbs_VERTEX;
+    }
     else if (aShapeArg == "e" || aShapeArg == "edge")
+    {
       aShapeType = TopAbs_EDGE;
+    }
     else if (aShapeArg == "w" || aShapeArg == "wire")
+    {
       aShapeType = TopAbs_WIRE;
+    }
     else if (aShapeArg == "f" || aShapeArg == "face")
+    {
       aShapeType = TopAbs_FACE;
+    }
     else if (aShapeArg == "shape")
+    {
       aShapeType = TopAbs_SHAPE;
+    }
     else if (aShapeArg == "shell")
+    {
       aShapeType = TopAbs_SHELL;
+    }
     else if (aShapeArg == "solid")
+    {
       aShapeType = TopAbs_SOLID;
+    }
     else
     {
       Message::SendFail() << "Syntax error at '" << argv[1] << "'";
@@ -6054,9 +6093,13 @@ static int VIOTypes(Draw_Interpretor& di, int, const char**)
   di << "/n" << BlankLine.ToCString() << "\n";
 
   for (i = 0; i <= 2; i++)
+  {
     Colum[i].Center(20, ' ');
+  }
   for (i = 0; i <= 2; i++)
+  {
     di << "|" << Colum[i].ToCString();
+  }
   di << "|\n";
 
   di << BlankLine.ToCString() << "\n";
@@ -6153,7 +6196,9 @@ static int VIOTypes(Draw_Interpretor& di, int, const char**)
 static int VEraseType(Draw_Interpretor&, int argc, const char** argv)
 {
   if (argc != 2)
+  {
     return 1;
+  }
 
   AIS_KindOfInteractive TheType;
   int                   TheSign(-1);
@@ -6177,13 +6222,17 @@ static int VEraseType(Draw_Interpretor&, int argc, const char** argv)
     curio = it.Value();
 
     if (dimension_status == -1)
+    {
       TheAISContext()->Erase(curio, false);
+    }
     else
     {
       PrsDim_KindOfDimension KOD = occ::down_cast<PrsDim_Relation>(curio)->KindOfDimension();
       if ((dimension_status == 0 && KOD == PrsDim_KOD_NONE)
           || (dimension_status == 1 && KOD != PrsDim_KOD_NONE))
+      {
         TheAISContext()->Erase(curio, false);
+      }
     }
   }
   TheAISContext()->UpdateCurrentViewer();
@@ -6193,7 +6242,9 @@ static int VEraseType(Draw_Interpretor&, int argc, const char** argv)
 static int VDisplayType(Draw_Interpretor&, int argc, const char** argv)
 {
   if (argc != 2)
+  {
     return 1;
+  }
 
   AIS_KindOfInteractive TheType;
   int                   TheSign(-1);
@@ -6215,13 +6266,17 @@ static int VDisplayType(Draw_Interpretor&, int argc, const char** argv)
   {
     curio = it.Value();
     if (dimension_status == -1)
+    {
       TheAISContext()->Display(curio, false);
+    }
     else
     {
       PrsDim_KindOfDimension KOD = occ::down_cast<PrsDim_Relation>(curio)->KindOfDimension();
       if ((dimension_status == 0 && KOD == PrsDim_KOD_NONE)
           || (dimension_status == 1 && KOD != PrsDim_KOD_NONE))
+      {
         TheAISContext()->Display(curio, false);
+      }
     }
   }
 

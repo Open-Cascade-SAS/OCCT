@@ -1530,10 +1530,14 @@ void Geom2dGcc_Circ2d3TanIter::Tangency3(double& ParSol, double& ParArg, gp_Pnt2
 bool Geom2dGcc_Circ2d3TanIter::IsTheSame1() const
 {
   if (!WellDone)
+  {
     throw StdFail_NotDone();
+  }
 
   if (TheSame1 == 0)
+  {
     return false;
+  }
 
   return true;
 }
@@ -1541,10 +1545,14 @@ bool Geom2dGcc_Circ2d3TanIter::IsTheSame1() const
 bool Geom2dGcc_Circ2d3TanIter::IsTheSame2() const
 {
   if (!WellDone)
+  {
     throw StdFail_NotDone();
+  }
 
   if (TheSame3 == 0)
+  {
     return false;
+  }
 
   return true;
 }
@@ -1552,7 +1560,9 @@ bool Geom2dGcc_Circ2d3TanIter::IsTheSame2() const
 bool Geom2dGcc_Circ2d3TanIter::IsTheSame3() const
 {
   if (!WellDone)
+  {
     throw StdFail_NotDone();
+  }
 
   return true;
 }

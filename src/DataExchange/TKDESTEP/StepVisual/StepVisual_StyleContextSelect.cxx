@@ -23,13 +23,21 @@ StepVisual_StyleContextSelect::StepVisual_StyleContextSelect() = default;
 int StepVisual_StyleContextSelect::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepRepr_Representation)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepRepr_RepresentationItem)))
+  {
     return 2;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepVisual_PresentationSet)))
+  {
     return 3;
+  }
   return 0;
 }
 

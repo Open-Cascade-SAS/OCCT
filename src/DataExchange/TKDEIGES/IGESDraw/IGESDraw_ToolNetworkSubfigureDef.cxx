@@ -58,10 +58,14 @@ void IGESDraw_ToolNetworkSubfigureDef::ReadOwnParams(
   {
     // Initialize HArray1 only if there is no error reading its Length
     if (tempNbEntities1 < 0)
+    {
       PR.AddFail("Number Of Child Entities : Not Positive");
+    }
     else if (tempNbEntities1 > 0)
+    {
       // clang-format off
       PR.ReadEnts(IR,PR.CurrentList(tempNbEntities1),"Child Entities",tempEntities); //szv#4:S4163:12Mar99 `st=` not needed
+}
 //      tempEntities = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>> (1,tempNbEntities1);
     // clang-format on
   }
@@ -81,11 +85,15 @@ void IGESDraw_ToolNetworkSubfigureDef::ReadOwnParams(
   PR.ReadInteger(PR.Current(), "Type Flag", tempTypeFlag); // szv#4:S4163:12Mar99 `st=` not needed
 
   if (PR.DefinedElseSkip())
+  {
     // clang-format off
     PR.ReadText(PR.Current(), "Primary Reference Designator", tempDesignator); //szv#4:S4163:12Mar99 `st=` not needed
-  // clang-format on
+    // clang-format on
+  }
   else
+  {
     PR.AddWarning("Primary Reference Designator : Null");
+  }
 
   bool st = PR.ReadEntity(IR,
                           PR.Current(),
@@ -95,17 +103,25 @@ void IGESDraw_ToolNetworkSubfigureDef::ReadOwnParams(
                           true);
 
   if (PR.DefinedElseSkip())
+  {
     st = PR.ReadInteger(PR.Current(), "Number Of Connect Points", tempNbEntities2);
+  }
   else
+  {
     tempNbEntities2 = 0;
+  }
   if (st)
   {
     // Initialise HArray1 only if there is no error reading its Length
     if (tempNbEntities2 < 0)
+    {
       PR.AddFail("Number Of Connect Points : Less Than Zero");
+    }
     else if (tempNbEntities2 > 0)
+    {
       tempPointEntities =
         new NCollection_HArray1<occ::handle<IGESDraw_ConnectPoint>>(1, tempNbEntities2);
+    }
   }
 
   // Read the HArray1 only if its Length was read without any Error
@@ -124,7 +140,9 @@ void IGESDraw_ToolNetworkSubfigureDef::ReadOwnParams(
                         STANDARD_TYPE(IGESDraw_ConnectPoint),
                         tempConnectPoint,
                         true))
+      {
         tempPointEntities->SetValue(I, tempConnectPoint);
+      }
     }
   }
 
@@ -148,14 +166,18 @@ void IGESDraw_ToolNetworkSubfigureDef::WriteOwnParams(
   IW.Send(up);
   int I;
   for (I = 1; I <= up; I++)
+  {
     IW.Send(ent->Entity(I));
+  }
   IW.Send(ent->TypeFlag());
   IW.Send(ent->Designator());
   IW.Send(ent->DesignatorTemplate());
   up = ent->NbPointEntities();
   IW.Send(up);
   for (I = 1; I <= up; I++)
+  {
     IW.Send(ent->PointEntity(I));
+  }
 }
 
 void IGESDraw_ToolNetworkSubfigureDef::OwnShared(
@@ -165,10 +187,14 @@ void IGESDraw_ToolNetworkSubfigureDef::OwnShared(
   int I;
   int up = ent->NbEntities();
   for (I = 1; I <= up; I++)
+  {
     iter.GetOneItem(ent->Entity(I));
+  }
   up = ent->NbPointEntities();
   for (I = 1; I <= up; I++)
+  {
     iter.GetOneItem(ent->PointEntity(I));
+  }
 }
 
 void IGESDraw_ToolNetworkSubfigureDef::OwnCopy(
@@ -181,7 +207,9 @@ void IGESDraw_ToolNetworkSubfigureDef::OwnCopy(
   occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tempEntities;
   int                                                                up = another->NbEntities();
   if (up > 0)
+  {
     tempEntities = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, up);
+  }
   int I;
   for (I = 1; I <= up; I++)
   {
@@ -191,11 +219,15 @@ void IGESDraw_ToolNetworkSubfigureDef::OwnCopy(
   int                                   tempTypeFlag = another->TypeFlag();
   occ::handle<TCollection_HAsciiString> tempDesignator;
   if (!another->Designator().IsNull())
+  {
     tempDesignator = new TCollection_HAsciiString(another->Designator());
+  }
   up = another->NbPointEntities();
   occ::handle<NCollection_HArray1<occ::handle<IGESDraw_ConnectPoint>>> tempPointEntities;
   if (up > 0)
+  {
     tempPointEntities = new NCollection_HArray1<occ::handle<IGESDraw_ConnectPoint>>(1, up);
+  }
   for (I = 1; I <= up; I++)
   {
     if (another->HasPointEntity(I))
@@ -254,9 +286,13 @@ void IGESDraw_ToolNetworkSubfigureDef::OwnCheck(
   occ::handle<Interface_Check>& ach) const
 {
   if ((ent->TypeFlag() < 0) || (ent->TypeFlag() > 2))
+  {
     ach->AddFail("TypeFlag has Invalid value");
+  }
   if (ent->Designator().IsNull())
+  {
     ach->AddFail("Primary Reference Designator : not defined");
+  }
 }
 
 void IGESDraw_ToolNetworkSubfigureDef::OwnDump(const occ::handle<IGESDraw_NetworkSubfigureDef>& ent,
@@ -279,5 +315,5 @@ void IGESDraw_ToolNetworkSubfigureDef::OwnDump(const occ::handle<IGESDraw_Networ
   dumper.Dump(ent->DesignatorTemplate(), S, tempSubLevel);
   S << "\nConnect Point Entities       : ";
   IGESData_DumpEntities(S, dumper, level, 1, ent->NbPointEntities(), ent->PointEntity);
-  S << std::endl;
+  S << '\n';
 }

@@ -149,7 +149,9 @@ XCAFDimTolObjects_DimensionType XCAFDimTolObjects_DimensionObject::GetType() con
 double XCAFDimTolObjects_DimensionObject::GetValue() const
 {
   if (myVal.IsNull())
+  {
     return 0;
+  }
 
   // Simple value or value with Plus_Minus_Tolerance
   if (myVal->Length() == 1 || myVal->Length() == 3)
@@ -199,7 +201,9 @@ bool XCAFDimTolObjects_DimensionObject::IsDimWithRange() const
 void XCAFDimTolObjects_DimensionObject::SetUpperBound(const double theUpperBound)
 {
   if (!myVal.IsNull() && myVal->Length() > 1)
+  {
     myVal->SetValue(2, theUpperBound);
+  }
   else
   {
     myVal = new NCollection_HArray1<double>(1, 2);
@@ -213,7 +217,9 @@ void XCAFDimTolObjects_DimensionObject::SetUpperBound(const double theUpperBound
 void XCAFDimTolObjects_DimensionObject::SetLowerBound(const double theLowerBound)
 {
   if (!myVal.IsNull() && myVal->Length() > 1)
+  {
     myVal->SetValue(1, theLowerBound);
+  }
   else
   {
     myVal = new NCollection_HArray1<double>(1, 2);
@@ -429,7 +435,9 @@ bool XCAFDimTolObjects_DimensionObject::SetDirection(const gp_Dir& theDir)
 void XCAFDimTolObjects_DimensionObject::RemoveDescription(const int theNumber)
 {
   if (theNumber < myDescriptions.Lower() || theNumber > myDescriptions.Upper())
+  {
     return;
+  }
   NCollection_DynamicArray<occ::handle<TCollection_HAsciiString>> aDescriptions;
   NCollection_DynamicArray<occ::handle<TCollection_HAsciiString>> aDescriptionNames;
   for (int i = aDescriptions.Lower(); i < theNumber; i++)
@@ -559,7 +567,9 @@ void XCAFDimTolObjects_DimensionObject::DumpJson(Standard_OStream& theOStream, i
        aDescIt.Next())
   {
     if (aDescIt.Value().IsNull())
+    {
       continue;
+    }
     const char* aDescription = aDescIt.Value()->ToCString();
     OCCT_DUMP_FIELD_VALUE_STRING(theOStream, aDescription)
   }
@@ -570,7 +580,9 @@ void XCAFDimTolObjects_DimensionObject::DumpJson(Standard_OStream& theOStream, i
        aDescNameIt.Next())
   {
     if (aDescNameIt.Value().IsNull())
+    {
       continue;
+    }
     const char* aDescriptionName = aDescNameIt.Value()->ToCString();
     OCCT_DUMP_FIELD_VALUE_STRING(theOStream, aDescriptionName)
   }

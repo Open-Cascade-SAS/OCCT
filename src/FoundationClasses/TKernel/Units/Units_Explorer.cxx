@@ -69,7 +69,9 @@ void Units_Explorer::Init(const occ::handle<Units_UnitsSystem>& aunitssystem)
   thequantitiessequence  = aunitssystem->QuantitiesSequence();
   theactiveunitssequence = aunitssystem->ActiveUnitsSequence();
   if (MoreQuantity())
+  {
     theunitssequence = thequantitiessequence->Value(thecurrentquantity)->Sequence();
+  }
   thecurrentunit = 1;
 }
 
@@ -87,7 +89,9 @@ void Units_Explorer::Init(const occ::handle<Units_UnitsDictionary>& aunitsdictio
   }
 
   if (MoreQuantity())
+  {
     theunitssequence = thequantitiessequence->Value(thecurrentquantity)->Sequence();
+  }
   thecurrentunit = 1;
 }
 
@@ -162,7 +166,9 @@ void Units_Explorer::NextQuantity()
   thecurrentquantity++;
   thecurrentunit = 1;
   if (MoreQuantity())
+  {
     theunitssequence = thequantitiessequence->Value(thecurrentquantity)->Sequence();
+  }
 }
 
 //=================================================================================================

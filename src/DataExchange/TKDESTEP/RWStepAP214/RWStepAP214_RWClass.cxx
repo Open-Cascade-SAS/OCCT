@@ -34,7 +34,9 @@ void RWStepAP214_RWClass::ReadStep(const occ::handle<StepData_StepReaderData>& d
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "class"))
+  {
     return;
+  }
 
   // Inherited fields of Group
 
@@ -71,7 +73,9 @@ void RWStepAP214_RWClass::WriteStep(StepData_StepWriter&                SW,
     SW.Send(ent->StepBasic_Group::Description());
   }
   else
+  {
     SW.SendUndef();
+  }
 }
 
 //=================================================================================================

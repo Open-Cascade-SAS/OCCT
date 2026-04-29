@@ -47,16 +47,23 @@ void IGESAppli_ToolNodalConstraint::ReadOwnParams(const occ::handle<IGESAppli_No
   occ::handle<IGESAppli_Node>                                         tempNode;
   occ::handle<NCollection_HArray1<occ::handle<IGESDefs_TabularData>>> tempTabularDataProps;
   if (!PR.ReadInteger(PR.Current(), "Number of cases", num))
+  {
     num = 0;
+  }
   if (num > 0)
+  {
     tempTabularDataProps = new NCollection_HArray1<occ::handle<IGESDefs_TabularData>>(1, num);
+  }
   else
+  {
     PR.AddFail("Number of cases: Not Positive");
+  }
   // szv#4:S4163:12Mar99 `st=` not needed
   PR.ReadInteger(PR.Current(), "Type of Constraint", tempType);
   PR.ReadEntity(IR, PR.Current(), "Node", STANDARD_TYPE(IGESAppli_Node), tempNode);
 
   if (!tempTabularDataProps.IsNull())
+  {
     for (i = 1; i <= num; i++)
     {
       occ::handle<IGESDefs_TabularData> tempEntity;
@@ -66,8 +73,11 @@ void IGESAppli_ToolNodalConstraint::ReadOwnParams(const occ::handle<IGESAppli_No
                         "Tabular Data Property",
                         STANDARD_TYPE(IGESDefs_TabularData),
                         tempEntity))
+      {
         tempTabularDataProps->SetValue(i, tempEntity);
+      }
     }
+  }
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(tempType, tempNode, tempTabularDataProps);
 }
@@ -81,7 +91,9 @@ void IGESAppli_ToolNodalConstraint::WriteOwnParams(
   IW.Send(ent->Type());
   IW.Send(ent->NodeEntity());
   for (num = ent->NbCases(), i = 1; i <= num; i++)
+  {
     IW.Send(ent->TabularData(i));
+  }
 }
 
 void IGESAppli_ToolNodalConstraint::OwnShared(const occ::handle<IGESAppli_NodalConstraint>& ent,
@@ -90,7 +102,9 @@ void IGESAppli_ToolNodalConstraint::OwnShared(const occ::handle<IGESAppli_NodalC
   int i, num;
   iter.GetOneItem(ent->NodeEntity());
   for (num = ent->NbCases(), i = 1; i <= num; i++)
+  {
     iter.GetOneItem(ent->TabularData(i));
+  }
 }
 
 void IGESAppli_ToolNodalConstraint::OwnCopy(const occ::handle<IGESAppli_NodalConstraint>& another,
@@ -128,7 +142,9 @@ void IGESAppli_ToolNodalConstraint::OwnCheck(const occ::handle<IGESAppli_NodalCo
                                              occ::handle<Interface_Check>& ach) const
 {
   if ((ent->Type() != 1) && (ent->Type() != 2))
+  {
     ach->AddFail("Type of Constraint != 1,2");
+  }
 }
 
 void IGESAppli_ToolNodalConstraint::OwnDump(const occ::handle<IGESAppli_NodalConstraint>& ent,
@@ -144,5 +160,5 @@ void IGESAppli_ToolNodalConstraint::OwnDump(const occ::handle<IGESAppli_NodalCon
   S << "\n";
   S << "Tabular Data Properties : ";
   IGESData_DumpEntities(S, dumper, level, 1, ent->NbCases(), ent->TabularData);
-  S << std::endl;
+  S << '\n';
 }

@@ -204,7 +204,9 @@ occ::handle<StdPrs_BRepFont> StdPrs_BRepFont::FindAndCreate(
   occ::handle<StdPrs_BRepFont> aFont = new StdPrs_BRepFont();
 
   if (aFont->FindAndInit(theFontName, theFontAspect, theSize, theStrictLevel))
+  {
     return aFont;
+  }
 
   return occ::handle<StdPrs_BRepFont>();
 }
@@ -440,7 +442,9 @@ bool StdPrs_BRepFont::renderGlyph(const char32_t theChar, TopoDS_Shape& theShape
   }
 
   if (!anOutline->n_contours)
+  {
     return false;
+  }
 
   TopLoc_Location                   aLoc;
   NCollection_Sequence<TopoDS_Wire> aWires;

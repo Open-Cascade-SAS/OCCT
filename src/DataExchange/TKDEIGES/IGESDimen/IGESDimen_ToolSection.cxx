@@ -53,14 +53,16 @@ void IGESDimen_ToolSection::ReadOwnParams(const occ::handle<IGESDimen_Section>& 
   PR.ReadInteger(PR.Current(), "Interpretation Flag", datatype); //szv#4:S4163:12Mar99 `st=` not needed
 
   bool st = PR.ReadInteger(PR.Current(), "Number of data points", nbval);
-  if (st && nbval > 0)
+  if (st && nbval > 0) {
     dataPoints = new NCollection_HArray1<gp_XY>(1, nbval);
-  else  PR.AddFail("Number of data points: Not Positive");
+  } else {  PR.AddFail("Number of data points: Not Positive");
+}
 
   PR.ReadReal(PR.Current(), "Common Z Displacement", zDisplacement); //szv#4:S4163:12Mar99 `st=` not needed
   // clang-format on
 
   if (!dataPoints.IsNull())
+  {
     for (int i = 1; i <= nbval; i++)
     {
       gp_XY tempXY;
@@ -68,6 +70,7 @@ void IGESDimen_ToolSection::ReadOwnParams(const occ::handle<IGESDimen_Section>& 
                                                               // needed
       dataPoints->SetValue(i, tempXY);
     }
+  }
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(datatype, zDisplacement, dataPoints);
@@ -121,14 +124,20 @@ bool IGESDimen_ToolSection::OwnCorrect(const occ::handle<IGESDimen_Section>& ent
     ent->InitLineFont(nulfont, 1);
   }
   if (ent->Datatype() == 1)
+  {
     return res;
+  }
   //  Force DataType = 1 -> reconstruct
   int nb = ent->NbPoints();
   if (nb == 0)
+  {
     return false; // nothing could be done (is this possible?)
+  }
   occ::handle<NCollection_HArray1<gp_XY>> pts = new NCollection_HArray1<gp_XY>(1, nb);
   for (int i = 1; i <= nb; i++)
+  {
     pts->SetValue(i, gp_XY(ent->Point(i).X(), ent->Point(i).Y()));
+  }
   ent->Init(1, ent->ZDisplacement(), pts);
   return true;
 }
@@ -151,11 +160,17 @@ void IGESDimen_ToolSection::OwnCheck(const occ::handle<IGESDimen_Section>& ent,
                                      occ::handle<Interface_Check>& ach) const
 {
   if (ent->RankLineFont() != 1)
+  {
     ach->AddFail("Line Font Pattern != 1");
+  }
   if (ent->Datatype() != 1)
+  {
     ach->AddFail("Interpretation Flag != 1");
+  }
   if (ent->NbPoints() % 2 != 0)
+  {
     ach->AddFail("Number of data points is not even");
+  }
 }
 
 void IGESDimen_ToolSection::OwnDump(const occ::handle<IGESDimen_Section>& ent,
@@ -175,5 +190,5 @@ void IGESDimen_ToolSection::OwnDump(const occ::handle<IGESDimen_Section>& ent,
                         ent->Point,
                         ent->Location(),
                         ent->ZDisplacement());
-  S << std::endl;
+  S << '\n';
 }

@@ -71,7 +71,9 @@ void TopOpeBRepBuild_Builder::End()
         const TopoDS_Shape& SH       = exs.Current();
         bool                SHhassha = BDS.HasShape(SH);
         if (!SHhassha)
+        {
           continue;
+        }
 
         bool            Fhassam = false;
         TopExp_Explorer exf;
@@ -80,10 +82,14 @@ void TopOpeBRepBuild_Builder::End()
           //	for (TopExp_Explorer exf(SH,TopAbs_FACE);exf.More(); exf.Next()) {
           Fhassam = myDataStructure->HasSameDomain(exf.Current());
           if (Fhassam)
+          {
             break;
+          }
         }
         if (!Fhassam)
+        {
           continue;
+        }
 
         NCollection_IndexedDataMap<TopoDS_Shape,
                                    NCollection_List<TopoDS_Shape>,
@@ -95,10 +101,14 @@ void TopOpeBRepBuild_Builder::End()
         {
           const TopoDS_Edge& E = TopoDS::Edge(M.FindKey(iE));
           if (IsSplit(E, sta))
+          {
             continue;
+          }
           const NCollection_List<TopoDS_Shape>& LF = M.FindFromIndex(iE);
           if (LF.Extent() < 2)
+          {
             continue;
+          }
 
           // NYI : > 2 faces connexes par E : iterer sur tous les couples
           NCollection_List<TopoDS_Shape>::Iterator itLF(LF);
@@ -107,52 +117,72 @@ void TopOpeBRepBuild_Builder::End()
           const TopoDS_Face& F2 = TopoDS::Face(itLF.Value());
           GeomAbs_Shape      C  = BRep_Tool::Continuity(E, F1, F2);
           if (C == GeomAbs_C0)
+          {
             continue;
+          }
 
           bool F1hassam = myDataStructure->HasSameDomain(F1);
           bool F2hassam = myDataStructure->HasSameDomain(F2);
           if (!F1hassam && !F2hassam)
+          {
             continue;
+          }
 
           bool F1issplit = IsSplit(F1, sta);
           bool F2issplit = IsSplit(F2, sta);
           F1issplit &= (Splits(F1, sta).Extent() != 0);
           F2issplit &= (Splits(F2, sta).Extent() != 0);
           if (!F1issplit && !F2issplit)
+          {
             continue;
+          }
 
           TopoDS_Face FF1 = F1, FF2 = F2;
           for (int ii = 1; ii <= 2; ii++)
           {
             if ((ii == 1 && !F1issplit) || (ii == 2 && !F2issplit))
+            {
               continue;
+            }
             TopoDS_Face F;
             if (ii == 1)
+            {
               F = F1;
+            }
             else
+            {
               F = F2;
+            }
             bool                                     f = false;
             NCollection_List<TopoDS_Shape>::Iterator it;
             for (it.Initialize(Splits(F, sta)); it.More(); it.Next())
             {
               const TopoDS_Shape& SF = it.Value();
               if (SF.ShapeType() != TopAbs_FACE)
+              {
                 continue;
+              }
               TopExp_Explorer ex;
               for (ex.Init(SF, TopAbs_EDGE); ex.More(); ex.Next())
               {
                 if (ex.Current().IsSame(E))
                 {
                   if (ii == 1)
+                  {
                     FF1 = TopoDS::Face(it.Value());
+                  }
                   else
+                  {
                     FF2 = TopoDS::Face(it.Value());
+                  }
                   f = true;
                   break;
                 }
               }
               if (f)
+              {
                 break;
+              }
             }
           }
           BRep_Builder B;
@@ -189,7 +219,9 @@ void TopOpeBRepBuild_Builder::End()
     const NCollection_List<TopoDS_Shape>&    lmergesha1 = Merged(myShape1, myState1);
     NCollection_List<TopoDS_Shape>::Iterator it(lmergesha1);
     for (; it.More(); it.Next())
+    {
       B.Add(R, it.Value());
+    }
     const NCollection_List<TopoDS_Shape>& LOES = Section();
 #ifdef OCCT_DEBUG
 //    int nLOES = LOES.Extent();
@@ -210,7 +242,9 @@ void TopOpeBRepBuild_Builder::End()
                                TopTools_ShapeMapHasher>
       idmovloes;
     for (NCollection_List<TopoDS_Shape>::Iterator I(LOES); I.More(); I.Next())
+    {
       TopExp::MapShapesAndAncestors(I.Value(), TopAbs_VERTEX, TopAbs_EDGE, idmovloes);
+    }
     int iv, nv = idmovloe.Extent();
     for (iv = 1; iv <= nv; iv++)
     {
@@ -218,7 +252,9 @@ void TopOpeBRepBuild_Builder::End()
       const TopoDS_Vertex& V    = TopoDS::Vertex(idmovloe.FindKey(iv));
       bool                 isbe = idmovloes.Contains(V);
       if (!isbe)
+      {
         continue;
+      }
 
       const NCollection_List<TopoDS_Shape>& loe = idmovloe.FindFromIndex(iv);
 
@@ -262,7 +298,9 @@ void TopOpeBRepBuild_Builder::End()
           {
             C2D = FC2D_CurveOnSurface(E, F, f, l, tolpc);
             if (C2D.IsNull())
+            {
               throw Standard_ProgramError("TopOpeBRepBuild_Builder::End 1");
+            }
             double tolE = BRep_Tool::Tolerance(E);
             double tol  = std::max(tolE, tolpc);
             B.UpdateEdge(E, C2D, F, tol);
@@ -278,7 +316,9 @@ void TopOpeBRepBuild_Builder::End()
             double anEdgeTol = BRep_Tool::Tolerance(E);
             double aFaceTol  = BRep_Tool::Tolerance(F);
             if (anEdgeTol < aFaceTol)
+            {
               B.UpdateEdge(E, aFaceTol);
+            }
           }
           // modified by NIZHNY-MKK  Fri Sep 29 16:08:32 2000.END
         }
@@ -288,7 +328,9 @@ void TopOpeBRepBuild_Builder::End()
           double aVertexTol = BRep_Tool::Tolerance(V);
           double anEdgeTol  = BRep_Tool::Tolerance(E);
           if (aVertexTol < anEdgeTol)
+          {
             B.UpdateVertex(V, anEdgeTol);
+          }
         }
         // modified by NIZHNY-MKK  Fri Sep 29 16:54:12 2000.END
       }
@@ -426,9 +468,13 @@ void TopOpeBRepBuild_Builder::UpdateSplitAndMerged(
               // edit the list of merged
               TopAbs_State stateMerged;
               if (ShapeRank(e) == 1)
+              {
                 stateMerged = myState1;
+              }
               else
+              {
                 stateMerged = myState2;
+              }
 
               NCollection_List<TopoDS_Shape> LstMerged;
               LstMerged.Append(mre(iLst));

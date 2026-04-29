@@ -36,7 +36,9 @@ void RWStepDimTol_RWLineProfileTolerance::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "line_profile_tolerance"))
+  {
     return;
+  }
 
   // Inherited fields of GeometricTolerance
 

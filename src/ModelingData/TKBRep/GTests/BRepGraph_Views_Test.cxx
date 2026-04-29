@@ -553,7 +553,9 @@ TEST_F(BRepGraph_ViewsTest, AttrsView_CacheKindIter_RangeFor)
   for (const occ::handle<BRepGraph_CacheKind>& aKind : myGraph.Cache().CacheKindIter(aFaceId))
   {
     if (!aKind.IsNull() && aKind->ID() == testUserAttrKind()->ID())
+    {
       hasUserKind = true;
+    }
     ++aCount;
   }
   EXPECT_EQ(aCount, 1);
@@ -599,7 +601,9 @@ TEST_F(BRepGraph_ViewsTest, AttrsView_CacheKindIter_RefId_RangeFor)
   for (const occ::handle<BRepGraph_CacheKind>& aKind : myGraph.Cache().CacheKindIter(aRef))
   {
     if (!aKind.IsNull() && aKind->ID() == testUserAttrKind()->ID())
+    {
       hasUserKind = true;
+    }
     ++aCount;
   }
   EXPECT_EQ(aCount, 1);

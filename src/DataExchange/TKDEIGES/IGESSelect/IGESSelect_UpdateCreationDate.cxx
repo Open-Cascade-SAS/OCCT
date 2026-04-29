@@ -42,12 +42,16 @@ void IGESSelect_UpdateCreationDate::Performing(IFSelect_ContextModif&           
 
   IGESData_GlobalSection GS = target->GlobalSection();
   if (annee < 2000)
+  {
     // #65 rln 12.02.99 S4151 (explicitly force YYMMDD.HHMMSS before Y2000)
     GS.SetDate(IGESData_GlobalSection::NewDateString(annee, mois, jour, heure, minute, seconde, 0));
+  }
   else
+  {
     // #65 rln 12.02.99 S4151 (explicitly force YYYYMMDD.HHMMSS after Y2000)
     GS.SetDate(
       IGESData_GlobalSection::NewDateString(annee, mois, jour, heure, minute, seconde, -1));
+  }
   target->SetGlobalSection(GS);
   occ::handle<Interface_Check> check = new Interface_Check;
   target->VerifyCheck(check);

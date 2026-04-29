@@ -78,8 +78,10 @@ public: //! @name Definition of rejection/acceptance rules
                   Bnd_Range&       theMetric) const override
   {
     if (myPrmMin > myPrmMax)
+    {
       // No parameters computed yet
       return false;
+    }
 
     double aPrmMin = myPrmMin, aPrmMax = myPrmMax;
     bool   isToReject = true;
@@ -119,13 +121,17 @@ public: //! @name Definition of rejection/acceptance rules
   bool RejectMetric(const Bnd_Range& theMetric) const override
   {
     if (myPrmMin > myPrmMax)
+    {
       // no parameters computed
       return false;
+    }
 
     double aMin, aMax;
     if (!theMetric.GetBounds(aMin, aMax))
+    {
       // void metric
       return false;
+    }
 
     // Check if the box of the branch is inside of the already computed parameters
     return aMin > myPrmMin && aMax < myPrmMax;
@@ -154,22 +160,30 @@ public: //! @name Choosing the best branch
   bool IsMetricBetter(const Bnd_Range& theLeft, const Bnd_Range& theRight) const override
   {
     if (myPrmMin > myPrmMax)
+    {
       // no parameters computed
       return true;
+    }
 
     double aMin[2], aMax[2];
     if (!theLeft.GetBounds(aMin[0], aMax[0]) || !theRight.GetBounds(aMin[1], aMax[1]))
+    {
       // void metrics
       return true;
+    }
 
     // Choose branch with larger extension over computed parameters
     double anExt[2] = {0.0, 0.0};
     for (int i = 0; i < 2; ++i)
     {
       if (aMin[i] < myPrmMin)
+      {
         anExt[i] += myPrmMin - aMin[i];
+      }
       if (aMax[i] > myPrmMax)
+      {
         anExt[i] += aMax[i] - myPrmMax;
+      }
     }
     return anExt[0] > anExt[1];
   }
@@ -282,16 +296,22 @@ private:
     theMin = RealLast(), theMax = RealFirst();
 
     if (myOptimal)
+    {
       Project(theAxis, theMin, theMax);
+    }
     else
     {
       for (int i = 0; i < myNbExtremalPoints; ++i)
       {
         double aPrm = theAxis.Dot(myLExtremalPoints[i]);
         if (aPrm < theMin)
+        {
           theMin = aPrm;
+        }
         if (aPrm > theMax)
+        {
           theMax = aPrm;
+        }
       }
     }
   }
@@ -315,9 +335,13 @@ private:
       theMin = anExtremePointsSelector.MinPrm();
       theMax = anExtremePointsSelector.MaxPrm();
       if (thePntMin)
+      {
         *thePntMin = anExtremePointsSelector.MinPnt();
+      }
       if (thePntMax)
+      {
         *thePntMax = anExtremePointsSelector.MaxPnt();
+      }
     }
     else
     {
@@ -330,13 +354,17 @@ private:
         {
           theMin = aPrm;
           if (thePntMin)
+          {
             *thePntMin = aPoint;
+          }
         }
         if (aPrm > theMax)
         {
           theMax = aPrm;
           if (thePntMax)
+          {
             *thePntMax = aPoint;
+          }
         }
       }
     }
@@ -476,7 +504,9 @@ void OBBTool::ComputeExtremePoints()
   if (!myOptimal)
   {
     for (int i = 0; i < 5; i++)
+    {
       myTriIdx[i] = INT_MAX;
+    }
 
     // Compute myTriIdx[0] and myTriIdx[1].
     double aMaxSqDist = -1.0;
@@ -511,7 +541,9 @@ void OBBTool::FillToTriangle3()
   for (int i = 0; i < myNbExtremalPoints; i++)
   {
     if ((i == myTriIdx[0]) || (i == myTriIdx[1]))
+    {
       continue;
+    }
 
     const gp_XYZ& aP         = myLExtremalPoints[i];
     const double  aDistToAxe = anAxis.CrossSquareMagnitude(aP - aP0);
@@ -540,7 +572,9 @@ void OBBTool::FillToTriangle5(const gp_XYZ& theNormal, const gp_XYZ& theBarryCen
   for (int aPtIdx = 0; aPtIdx < myNbExtremalPoints; aPtIdx++)
   {
     if ((aPtIdx == myTriIdx[0]) || (aPtIdx == myTriIdx[1]) || (aPtIdx == myTriIdx[2]))
+    {
       continue;
+    }
 
     const gp_XYZ& aCurrPoint = myLExtremalPoints[aPtIdx];
     const double  aParam     = theNormal.Dot(aCurrPoint - theBarryCenter);
@@ -559,10 +593,14 @@ void OBBTool::FillToTriangle5(const gp_XYZ& theNormal, const gp_XYZ& theBarryCen
 
   // The points must be in the different sides of the triangle plane.
   if (id3 >= 0 && aParams[0] < -Precision::Confusion())
+  {
     myTriIdx[3] = id3;
+  }
 
   if (id4 >= 0 && aParams[1] > Precision::Confusion())
+  {
     myTriIdx[4] = id4;
+  }
 }
 
 //=======================================================================
@@ -591,7 +629,9 @@ void OBBTool::ProcessTriangle(const int  theIdx1,
   double aSqMod = aZAxis.SquareModulus();
 
   if (aSqMod < Precision::SquareConfusion())
+  {
     return;
+  }
 
   aZAxis /= std::sqrt(aSqMod);
 
@@ -611,7 +651,9 @@ void OBBTool::ProcessTriangle(const int  theIdx1,
   }
 
   if (theIsBuiltTrg)
+  {
     FillToTriangle5(aZAxis, myLExtremalPoints[theIdx1]);
+  }
 
   // Min and Max parameter
   const int aNbPoints = 2 * aNbAxes;
@@ -624,7 +666,9 @@ void OBBTool::ProcessTriangle(const int  theIdx1,
   for (int anAxeInd = 0; anAxeInd < aNbAxes; anAxeInd++)
   {
     if (!aXAxisValid[anAxeInd])
+    {
       continue;
+    }
 
     const gp_XYZ& aAX = aXAxis[anAxeInd];
     // Compute params on XAxis
@@ -641,7 +685,9 @@ void OBBTool::ProcessTriangle(const int  theIdx1,
   }
 
   if (aMinIdx < 0)
+  {
     return;
+  }
 
   myAxes[0] = aXAxis[aMinIdx];
   myAxes[1] = aYAxis[aMinIdx].Normalized();
@@ -780,7 +826,9 @@ void Bnd_OBB::ReBuild(const NCollection_Array1<gp_Pnt>& theListOfPoints,
     case 1:
       ProcessOnePoint(theListOfPoints.First());
       if (theListOfTolerances)
+      {
         Enlarge(theListOfTolerances->First());
+      }
       return;
     case 2: {
       const double aTol1 = (theListOfTolerances == nullptr) ? 0.0 : theListOfTolerances->First();
@@ -831,7 +879,9 @@ void Bnd_OBB::ReBuild(const NCollection_Array1<gp_Pnt>& theListOfPoints,
 bool Bnd_OBB::IsOut(const Bnd_OBB& theOther) const
 {
   if (IsVoid() || theOther.IsVoid())
+  {
     return true;
+  }
 
   if (myIsAABox && theOther.myIsAABox)
   {
@@ -867,13 +917,17 @@ bool Bnd_OBB::IsOut(const Bnd_OBB& theOther) const
     // Length of the second segment
     double aLSegm2 = 0;
     for (int j = 0; j < 3; ++j)
+    {
       aLSegm2 += theOther.myHDims[j] * std::abs(theOther.myAxes[j].Dot(myAxes[i]));
+    }
 
     // Distance between projected centers
     double aDistCC = std::abs(D.Dot(myAxes[i]));
 
     if (aDistCC > myHDims[i] + aLSegm2)
+    {
       return true;
+    }
   }
 
   // Check the axes of the Other box, i.e. L is one of theOther.myAxes
@@ -883,13 +937,17 @@ bool Bnd_OBB::IsOut(const Bnd_OBB& theOther) const
     // Length of the first segment
     double aLSegm1 = 0.;
     for (int j = 0; j < 3; ++j)
+    {
       aLSegm1 += myHDims[j] * std::abs(myAxes[j].Dot(theOther.myAxes[i]));
+    }
 
     // Distance between projected centers
     double aDistCC = std::abs(D.Dot(theOther.myAxes[i]));
 
     if (aDistCC > aLSegm1 + theOther.myHDims[i])
+    {
       return true;
+    }
   }
 
   const double aTolNull = Epsilon(1.0);
@@ -904,25 +962,33 @@ bool Bnd_OBB::IsOut(const Bnd_OBB& theOther) const
 
       const double aNorm = aLAxe.Modulus();
       if (aNorm < aTolNull)
+      {
         continue;
+      }
 
       aLAxe /= aNorm;
 
       // Length of the first segment
       double aLSegm1 = 0.;
       for (int k = 0; k < 3; ++k)
+      {
         aLSegm1 += myHDims[k] * std::abs(myAxes[k].Dot(aLAxe));
+      }
 
       // Length of the second segment
       double aLSegm2 = 0.;
       for (int k = 0; k < 3; ++k)
+      {
         aLSegm2 += theOther.myHDims[k] * std::abs(theOther.myAxes[k].Dot(aLAxe));
+      }
 
       // Distance between projected centers
       double aDistCC = std::abs(D.Dot(aLAxe));
 
       if (aDistCC > aLSegm1 + aLSegm2)
+      {
         return true;
+      }
     }
   }
 
@@ -951,14 +1017,18 @@ bool Bnd_OBB::IsOut(const gp_Pnt& theP) const
 bool Bnd_OBB::IsCompletelyInside(const Bnd_OBB& theOther) const
 {
   if (IsVoid() || theOther.IsVoid())
+  {
     return false;
+  }
 
   gp_Pnt aVert[8];
   theOther.GetVertex(aVert);
   for (int i = 0; i < 8; i++)
   {
     if (IsOut(aVert[i]))
+    {
       return false;
+    }
   }
 
   return true;

@@ -445,7 +445,9 @@ occ::handle<Select3D_SensitiveEntity> Select3D_SensitiveTriangulation::GetConnec
 Select3D_BndBox3d Select3D_SensitiveTriangulation::applyTransformation()
 {
   if (!HasInitLocation())
+  {
     return myBndBox;
+  }
 
   Select3D_BndBox3d aBndBox;
   for (int aX = 0; aX <= 1; ++aX)

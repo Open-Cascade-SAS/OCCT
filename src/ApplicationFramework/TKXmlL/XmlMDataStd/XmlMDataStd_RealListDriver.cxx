@@ -55,16 +55,22 @@ bool XmlMDataStd_RealListDriver::Paste(const XmlObjMgt_Persistent&       theSour
   Standard_GUID       aGUID;
   XmlObjMgt_DOMString aGUIDStr = anElement.getAttribute(::AttributeIDString());
   if (aGUIDStr.Type() == XmlObjMgt_DOMString::LDOM_NULL)
+  {
     aGUID = TDataStd_RealList::GetID(); // default case
+  }
   else
+  {
     aGUID = Standard_GUID(static_cast<const char*>(aGUIDStr.GetString())); // user defined case
+  }
   aRealList->SetID(aGUID);
 
   // Read the FirstIndex; if the attribute is absent initialize to 1
   int                 aFirstInd, aLastInd, ind;
   XmlObjMgt_DOMString aFirstIndex = anElement.getAttribute(::FirstIndexString());
   if (aFirstIndex == nullptr)
+  {
     aFirstInd = 1;
+  }
   else if (!aFirstIndex.GetInteger(aFirstInd))
   {
     TCollection_ExtendedString aMessageString =
@@ -89,14 +95,18 @@ bool XmlMDataStd_RealListDriver::Paste(const XmlObjMgt_Persistent&       theSour
   // Check the type of LDOMString
   const XmlObjMgt_DOMString& aString = XmlObjMgt::GetStringValue(anElement);
   if (aLastInd == 0)
+  {
     aFirstInd = 0;
+  }
   if (aString.Type() == LDOMBasicString::LDOM_Integer)
   {
     if (aFirstInd == aLastInd && aLastInd > 0)
     {
       int anIntValue;
       if (aString.GetInteger(anIntValue))
+      {
         aRealList->Append(double(anIntValue));
+      }
     }
     else
     {
@@ -123,10 +133,14 @@ bool XmlMDataStd_RealListDriver::Paste(const XmlObjMgt_Persistent&       theSour
         myMessageDriver->Send(aMessageString, Message_Warning);
         // skip the first space, if exists
         while (*aValueStr != 0 && IsSpace(*aValueStr))
+        {
           ++aValueStr;
+        }
         // skip to the next space separator
         while (*aValueStr != 0 && !IsSpace(*aValueStr))
+        {
           ++aValueStr;
+        }
       }
       aRealList->Append(aValue);
     }
@@ -149,7 +163,9 @@ void XmlMDataStd_RealListDriver::Paste(const occ::handle<TDF_Attribute>& theSour
   // An example: -3.1512678732195273e+020
   NCollection_LocalArray<char> str(25 * anU + 1);
   if (anU == 0)
+  {
     str[0] = 0;
+  }
   else if (anU >= 1)
   {
     int                                iChar = 0;

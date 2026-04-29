@@ -75,7 +75,9 @@ occ::handle<Geom_Curve> BinTools_CurveSet::Curve(const int I) const
     return dummy;
   }
   else
+  {
     return occ::down_cast<Geom_Curve>(myMap(I));
+  }
 }
 
 //=================================================================================================
@@ -186,7 +188,9 @@ static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom
   {
     OS << B->Pole(i); // Pnt
     if (aRational)
+    {
       OS << B->Weight(i); // Real
+    }
   }
   return OS;
 }
@@ -215,7 +219,9 @@ static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom
   {
     OS << B->Pole(i); // Pnt
     if (aRational)
+    {
       OS << B->Weight(i);
+    }
   }
 
   for (i = 1; i <= aNbKnots; i++)
@@ -306,8 +312,8 @@ void BinTools_CurveSet::WriteCurve(const occ::handle<Geom_Curve>& C, BinTools_OS
   catch (Standard_Failure const& anException)
   {
     Standard_SStream aMsg;
-    aMsg << "EXCEPTION in BinTools_CurveSet::WriteCurve(..)" << std::endl;
-    aMsg << anException << std::endl;
+    aMsg << "EXCEPTION in BinTools_CurveSet::WriteCurve(..)" << '\n';
+    aMsg << anException << '\n';
     throw Standard_Failure(aMsg.str().c_str());
   }
 }
@@ -436,14 +442,20 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Bezie
   {
     IS >> poles(i); // Pnt
     if (rational)
+    {
       // weights(i);
       BinTools::GetReal(IS, weights(i));
+    }
   }
 
   if (rational)
+  {
     B = new Geom_BezierCurve(poles, weights);
+  }
   else
+  {
     B = new Geom_BezierCurve(poles);
+  }
 
   return IS;
 }
@@ -474,7 +486,9 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_BSpli
   {
     IS >> poles(i); // Pnt
     if (rational)
+    {
       BinTools::GetReal(IS, weights(i));
+    }
   }
 
   NCollection_Array1<double> knots(1, nbknots);
@@ -487,9 +501,13 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_BSpli
   }
 
   if (rational)
+  {
     B = new Geom_BSplineCurve(poles, weights, knots, mults, degree, periodic);
+  }
   else
+  {
     B = new Geom_BSplineCurve(poles, knots, mults, degree, periodic);
+  }
 
   return IS;
 }
@@ -606,8 +624,8 @@ Standard_IStream& BinTools_CurveSet::ReadCurve(Standard_IStream& IS, occ::handle
   {
     C = nullptr;
     Standard_SStream aMsg;
-    aMsg << "EXCEPTION in BinTools_CurveSet::ReadCurve(..)" << std::endl;
-    aMsg << anException << std::endl;
+    aMsg << "EXCEPTION in BinTools_CurveSet::ReadCurve(..)" << '\n';
+    aMsg << anException << '\n';
     throw Standard_Failure(aMsg.str().c_str());
   }
   return IS;
@@ -622,7 +640,7 @@ void BinTools_CurveSet::Read(Standard_IStream& IS, const Message_ProgressRange& 
   if (IS.fail() || strcmp(buffer, "Curves"))
   {
     Standard_SStream aMsg;
-    aMsg << "BinTools_CurveSet::Read:  Not a Curve table" << std::endl;
+    aMsg << "BinTools_CurveSet::Read:  Not a Curve table" << '\n';
 #ifdef OCCT_DEBUG
     std::cout << "CurveSet buffer: " << buffer << std::endl;
 #endif

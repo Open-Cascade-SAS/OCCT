@@ -32,7 +32,9 @@ void IGESAppli_NodalConstraint::Init(
   const occ::handle<NCollection_HArray1<occ::handle<IGESDefs_TabularData>>>& allTabData)
 {
   if (allTabData->Lower() != 1)
+  {
     throw Standard_DimensionMismatch("IGESAppli_NodalConstraint : Init");
+  }
   theType             = aType;
   theNode             = aNode;
   theTabularDataProps = allTabData;

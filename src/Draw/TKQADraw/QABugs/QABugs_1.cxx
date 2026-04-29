@@ -72,14 +72,18 @@ static int OCC159bug(Draw_Interpretor& di, int argc, const char** argv)
 
   occ::handle<TDocStd_Document> D;
   if (!DDocStd::GetDocument(argv[1], D))
+  {
     return 1;
+  }
 
   int DocRefCount1 = D->GetRefCount();
   di << "DocRefCount1 = " << DocRefCount1 << "\n";
 
   occ::handle<TDocStd_Owner> Owner;
   if (!D->Main().Root().FindAttribute(TDocStd_Owner::GetID(), Owner))
+  {
     return 1;
+  }
 
   occ::handle<TDocStd_Document> OwnerD1 = Owner->GetDocument();
   if (OwnerD1.IsNull())
@@ -163,16 +167,22 @@ static int OCC73_SelectionMode(Draw_Interpretor& di, int argc, const char** argv
   occ::handle<TDocStd_Document> D;
   // std::cout << "OCC73_SelectionMode  1" << std::endl;
   if (!DDocStd::GetDocument(argv[1], D))
+  {
     return 1;
+  }
   TDF_Label L;
   // std::cout << "OCC73_SelectionMode  2" << std::endl;
   if (!DDF::FindLabel(D->GetData(), argv[2], L))
+  {
     return 1;
+  }
 
   occ::handle<TPrsStd_AISViewer> viewer;
   // std::cout << "OCC73_SelectionMode  3" << std::endl;
   if (!TPrsStd_AISViewer::Find(L, viewer))
+  {
     return 1;
+  }
 
   occ::handle<TPrsStd_AISPresentation> prs;
   // std::cout << "OCC73_SelectionMode  4" << std::endl;
@@ -654,5 +664,4 @@ void QABugs::Commands_1(Draw_Interpretor& theCommands)
                   __FILE__,
                   OCC31956,
                   group);
-  return;
 }

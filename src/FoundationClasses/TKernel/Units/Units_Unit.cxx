@@ -86,7 +86,9 @@ bool Units_Unit::IsEqual(const char* const astring) const
   {
     symbol = thesymbolssequence->Value(index)->String();
     if (symbol == astring)
+    {
       return true;
+    }
   }
 
   return false;
@@ -105,11 +107,12 @@ void Units_Unit::Dump(const int /*ashift*/, const int) const
   {
     string = thesymbolssequence->Value(index)->String();
     if (index != 1)
+    {
       std::cout << " or ";
+    }
     std::cout << "\"" << string.ToCString() << "\"";
   }
-  std::cout << "		Name:  " << Name().ToCString() << "		(= " << thevalue << " SI)"
-            << std::endl;
+  std::cout << "		Name:  " << Name().ToCString() << "		(= " << thevalue << " SI)" << '\n';
 }
 
 //=================================================================================================

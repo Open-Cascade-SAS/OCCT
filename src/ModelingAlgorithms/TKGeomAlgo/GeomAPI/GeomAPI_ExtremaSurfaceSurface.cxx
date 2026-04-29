@@ -148,9 +148,13 @@ void GeomAPI_ExtremaSurfaceSurface::Init(const occ::handle<Geom_Surface>& S1,
 int GeomAPI_ExtremaSurfaceSurface::NbExtrema() const
 {
   if (myIsDone)
+  {
     return myExtSS.NbExt();
+  }
   else
+  {
     return 0;
+  }
 }
 
 //=================================================================================================

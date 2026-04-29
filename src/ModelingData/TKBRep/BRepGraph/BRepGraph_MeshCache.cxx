@@ -30,7 +30,9 @@ void BRepGraph_MeshCacheStorage::ensureSize(NCollection_DynamicArray<T>& theVec,
 bool BRepGraph_MeshCacheStorage::HasFaceMesh(const BRepGraph_FaceId theFace) const
 {
   if (!theFace.IsValidIn(myFaceMeshes))
+  {
     return false;
+  }
   return myFaceMeshes.Value(static_cast<size_t>(theFace.Index)).IsPresent();
 }
 
@@ -40,11 +42,15 @@ const BRepGraph_MeshCache::FaceMeshEntry* BRepGraph_MeshCacheStorage::FindFaceMe
   const BRepGraph_FaceId theFace) const
 {
   if (!theFace.IsValidIn(myFaceMeshes))
+  {
     return nullptr;
+  }
   const BRepGraph_MeshCache::FaceMeshEntry& anEntry =
     myFaceMeshes.Value(static_cast<size_t>(theFace.Index));
   if (!anEntry.IsPresent())
+  {
     return nullptr;
+  }
   return &anEntry;
 }
 
@@ -72,7 +78,9 @@ void BRepGraph_MeshCacheStorage::ClearFaceMesh(const BRepGraph_FaceId theFace)
 bool BRepGraph_MeshCacheStorage::HasCoEdgeMesh(const BRepGraph_CoEdgeId theCoEdge) const
 {
   if (!theCoEdge.IsValidIn(myCoEdgeMeshes))
+  {
     return false;
+  }
   return myCoEdgeMeshes.Value(static_cast<size_t>(theCoEdge.Index)).IsPresent();
 }
 
@@ -82,11 +90,15 @@ const BRepGraph_MeshCache::CoEdgeMeshEntry* BRepGraph_MeshCacheStorage::FindCoEd
   const BRepGraph_CoEdgeId theCoEdge) const
 {
   if (!theCoEdge.IsValidIn(myCoEdgeMeshes))
+  {
     return nullptr;
+  }
   const BRepGraph_MeshCache::CoEdgeMeshEntry& anEntry =
     myCoEdgeMeshes.Value(static_cast<size_t>(theCoEdge.Index));
   if (!anEntry.IsPresent())
+  {
     return nullptr;
+  }
   return &anEntry;
 }
 
@@ -114,7 +126,9 @@ void BRepGraph_MeshCacheStorage::ClearCoEdgeMesh(const BRepGraph_CoEdgeId theCoE
 bool BRepGraph_MeshCacheStorage::HasEdgeMesh(const BRepGraph_EdgeId theEdge) const
 {
   if (!theEdge.IsValidIn(myEdgeMeshes))
+  {
     return false;
+  }
   return myEdgeMeshes.Value(static_cast<size_t>(theEdge.Index)).IsPresent();
 }
 
@@ -124,11 +138,15 @@ const BRepGraph_MeshCache::EdgeMeshEntry* BRepGraph_MeshCacheStorage::FindEdgeMe
   const BRepGraph_EdgeId theEdge) const
 {
   if (!theEdge.IsValidIn(myEdgeMeshes))
+  {
     return nullptr;
+  }
   const BRepGraph_MeshCache::EdgeMeshEntry& anEntry =
     myEdgeMeshes.Value(static_cast<size_t>(theEdge.Index));
   if (!anEntry.IsPresent())
+  {
     return nullptr;
+  }
   return &anEntry;
 }
 
@@ -175,14 +193,20 @@ void BRepGraph_MeshCacheStorage::OnCompact(
       const BRepGraph_NodeId& anOldId = anIter.Key();
       const BRepGraph_NodeId& aNewId  = anIter.Value();
       if (anOldId.NodeKind != BRepGraph_NodeId::Kind::Face)
+      {
         continue;
+      }
       const BRepGraph_FaceId anOldFaceId(anOldId);
       if (!anOldFaceId.IsValidIn(myFaceMeshes))
+      {
         continue;
+      }
       const BRepGraph_MeshCache::FaceMeshEntry& anOldEntry =
         myFaceMeshes.Value(static_cast<size_t>(anOldFaceId.Index));
       if (!anOldEntry.IsPresent())
+      {
         continue;
+      }
       ensureSize(aNewFaces, static_cast<size_t>(aNewId.Index));
       aNewFaces.ChangeValue(static_cast<size_t>(aNewId.Index)) = anOldEntry;
     }
@@ -199,14 +223,20 @@ void BRepGraph_MeshCacheStorage::OnCompact(
       const BRepGraph_NodeId& anOldId = anIter.Key();
       const BRepGraph_NodeId& aNewId  = anIter.Value();
       if (anOldId.NodeKind != BRepGraph_NodeId::Kind::CoEdge)
+      {
         continue;
+      }
       const BRepGraph_CoEdgeId anOldCoEdgeId(anOldId);
       if (!anOldCoEdgeId.IsValidIn(myCoEdgeMeshes))
+      {
         continue;
+      }
       const BRepGraph_MeshCache::CoEdgeMeshEntry& anOldEntry =
         myCoEdgeMeshes.Value(static_cast<size_t>(anOldCoEdgeId.Index));
       if (!anOldEntry.IsPresent())
+      {
         continue;
+      }
       ensureSize(aNewCoEdges, static_cast<size_t>(aNewId.Index));
       aNewCoEdges.ChangeValue(static_cast<size_t>(aNewId.Index)) = anOldEntry;
     }
@@ -223,14 +253,20 @@ void BRepGraph_MeshCacheStorage::OnCompact(
       const BRepGraph_NodeId& anOldId = anIter.Key();
       const BRepGraph_NodeId& aNewId  = anIter.Value();
       if (anOldId.NodeKind != BRepGraph_NodeId::Kind::Edge)
+      {
         continue;
+      }
       const BRepGraph_EdgeId anOldEdgeId(anOldId);
       if (!anOldEdgeId.IsValidIn(myEdgeMeshes))
+      {
         continue;
+      }
       const BRepGraph_MeshCache::EdgeMeshEntry& anOldEntry =
         myEdgeMeshes.Value(static_cast<size_t>(anOldEdgeId.Index));
       if (!anOldEntry.IsPresent())
+      {
         continue;
+      }
       ensureSize(aNewEdges, static_cast<size_t>(aNewId.Index));
       aNewEdges.ChangeValue(static_cast<size_t>(aNewId.Index)) = anOldEntry;
     }

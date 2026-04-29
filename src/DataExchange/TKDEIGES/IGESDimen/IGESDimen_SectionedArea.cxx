@@ -36,8 +36,12 @@ void IGESDimen_SectionedArea::Init(
   const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& someIslands)
 {
   if (!someIslands.IsNull())
+  {
     if (someIslands->Lower() != 1)
+    {
       throw Standard_DimensionMismatch("IGESDimen_SectionedArea : Init");
+    }
+  }
   theExteriorCurve = aCurve;
   thePattern       = aPattern;
   thePassingPoint  = aPoint;
@@ -76,7 +80,9 @@ gp_Pnt IGESDimen_SectionedArea::TransformedPassingPoint() const
 {
   gp_XYZ tmpXYZ(thePassingPoint);
   if (HasTransf())
+  {
     Location().Transforms(tmpXYZ);
+  }
   return gp_Pnt(tmpXYZ);
 }
 

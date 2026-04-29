@@ -152,7 +152,9 @@ bool OSD_Thread::Run(void* const data,
 )
 {
   if (!myFunc)
+  {
     return false;
+  }
 
   // detach current thread, if open
   Detach();
@@ -209,7 +211,9 @@ void OSD_Thread::Detach()
 
   // On Unix/Linux, detach a thread
   if (myThread)
+  {
     pthread_detach(myThread);
+  }
 
 #endif
 

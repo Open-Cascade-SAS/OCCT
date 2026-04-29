@@ -191,7 +191,9 @@ occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<int>>>> AppDef_L
   AssemblyTable() const
 {
   if (myCurve.IsNull())
+  {
     throw Standard_DomainError("AppDef_LinearCriteria::AssemblyTable");
+  }
 
   int NbDim = myCurve->Dimension(), NbElm = myCurve->NbElements(), nc1 = order(myCurve->Base()) + 1;
   int MxDeg = myCurve->Base().WorkDegree();
@@ -231,7 +233,9 @@ occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<int>>>> AppDef_L
   {
     GlobIndex = new NCollection_HArray1<int>(0, MxDeg);
     for (i = 0; i < nc1; i++)
+    {
       GlobIndex->SetValue(i, gi0 + i);
+    }
 
     gi0 = MxDeg - 2 * nc1 + 1;
     for (i = nc1; i < 2 * nc1; i++)
@@ -257,7 +261,9 @@ occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<int>>>> AppDef_L
       Aux       = AssTable->Value(1, el);
       GlobIndex = new NCollection_HArray1<int>(0, MxDeg);
       for (i = 0; i <= MxDeg; i++)
+      {
         GlobIndex->SetValue(i, Aux->Value(i) + NbGlobVar);
+      }
       AssTable->SetValue(dim, el, GlobIndex);
     }
     NbGlobVar += gi0;
@@ -271,14 +277,18 @@ occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<int>>>> AppDef_L
 occ::handle<NCollection_HArray2<int>> AppDef_LinearCriteria::DependenceTable() const
 {
   if (myCurve.IsNull())
+  {
     throw Standard_DomainError("AppDef_LinearCriteria::DependenceTable");
+  }
 
   int Dim = myCurve->Dimension();
 
   occ::handle<NCollection_HArray2<int>> DepTab = new NCollection_HArray2<int>(1, Dim, 1, Dim, 0);
   int                                   i;
   for (i = 1; i <= Dim; i++)
+  {
     DepTab->SetValue(i, i, 1);
+  }
 
   return DepTab;
 }
@@ -293,7 +303,9 @@ int AppDef_LinearCriteria::QualityValues(const double J1min,
                                          double&      J3)
 {
   if (myCurve.IsNull())
+  {
     throw Standard_DomainError("AppDef_LinearCriteria::QualityValues");
+  }
 
   int NbDim = myCurve->Dimension(), NbElm = myCurve->NbElements();
 
@@ -353,9 +365,13 @@ int AppDef_LinearCriteria::QualityValues(const double J1min,
     if ((ValCri[i] < 0.8 * myEstimation[i]) && (myEstimation[i] > JEsMin[i]))
     {
       if (ICDANA < 1)
+      {
         ICDANA = 1;
+      }
       if (ValCri[i] < 0.1 * myEstimation[i])
+      {
         ICDANA = 2;
+      }
       myEstimation[i] = std::max(1.05 * ValCri[i], JEsMin[i]);
     }
   }
@@ -430,14 +446,18 @@ void AppDef_LinearCriteria::ErrorValues(double& MaxError,
                                         double& AverageError)
 {
   if (myCurve.IsNull())
+  {
     throw Standard_DomainError("AppDef_LinearCriteria::ErrorValues");
+  }
 
   int NbDim = myCurve->Dimension();
 
   int myNbP2d = AppDef_MyLineTool::NbP2d(mySSP), myNbP3d = AppDef_MyLineTool::NbP3d(mySSP);
 
   if (NbDim != (2 * myNbP2d + 3 * myNbP3d))
+  {
     throw Standard_DomainError("AppDef_LinearCriteria::ErrorValues");
+  }
 
   NCollection_Array1<gp_Pnt>   TabP3d(1, std::max(1, myNbP3d));
   NCollection_Array1<gp_Pnt2d> TabP2d(1, std::max(1, myNbP2d));
@@ -469,9 +489,13 @@ void AppDef_LinearCriteria::ErrorValues(double& MaxError,
     }
 
     if (myNbP3d == 0)
+    {
       AppDef_MyLineTool::Value(mySSP, i, TabP2d);
+    }
     else
+    {
       AppDef_MyLineTool::Value(mySSP, i, TabP3d, TabP2d);
+    }
     for (ipnt = 1; ipnt <= myNbP2d; ipnt++)
     {
       P2d.SetCoord(BasePoint(c0 + 1), BasePoint(c0 + 2));
@@ -493,10 +517,14 @@ void AppDef_LinearCriteria::Hessian(const int    Element,
                                     math_Matrix& H)
 {
   if (myCurve.IsNull())
+  {
     throw Standard_DomainError("AppDef_LinearCriteria::Hessian");
+  }
 
   if (DependenceTable()->Value(Dimension1, Dimension2) == 0)
+  {
     throw Standard_DomainError("AppDef_LinearCriteria::Hessian");
+  }
 
   int // NbDim = myCurve->Dimension(),
     MxDeg = myCurve->Base().WorkDegree(),
@@ -536,7 +564,9 @@ void AppDef_LinearCriteria::Hessian(const int    Element,
 
   // BuilCache
   if (myE != Element)
+  {
     BuildCache(Element);
+  }
 
   // Compute the least square Hessian
   for (ii = 1, ipnt = IF; ipnt <= IL; ipnt++, ii += (MxDeg + 1))
@@ -593,12 +623,16 @@ void AppDef_LinearCriteria::Hessian(const int    Element,
 void AppDef_LinearCriteria::Gradient(const int Element, const int Dimension, math_Vector& G)
 {
   if (myCurve.IsNull())
+  {
     throw Standard_DomainError("AppDef_LinearCriteria::ErrorValues");
+  }
 
   int myNbP2d = AppDef_MyLineTool::NbP2d(mySSP), myNbP3d = AppDef_MyLineTool::NbP3d(mySSP);
 
   if (Dimension > (2 * myNbP2d + 3 * myNbP3d))
+  {
     throw Standard_DomainError("AppDef_LinearCriteria::ErrorValues");
+  }
 
   NCollection_Array1<gp_Pnt>   TabP3d(1, std::max(1, myNbP3d));
   NCollection_Array1<gp_Pnt2d> TabP2d(1, std::max(1, myNbP2d));
@@ -612,9 +646,13 @@ void AppDef_LinearCriteria::Gradient(const int Element, const int Dimension, mat
     IndCrd = Dimension % 3;
     IndPnt = Dimension / 3;
     if (IndCrd == 0)
+    {
       IndCrd = 3;
+    }
     else
+    {
       IndPnt++;
+    }
   }
   else
   {
@@ -622,9 +660,13 @@ void AppDef_LinearCriteria::Gradient(const int Element, const int Dimension, mat
     IndCrd = (Dimension - 3 * myNbP3d) % 2;
     IndPnt = (Dimension - 3 * myNbP3d) / 2;
     if (IndCrd == 0)
+    {
       IndCrd = 2;
+    }
     else
+    {
       IndPnt++;
+    }
   }
 
   NCollection_Array1<double>& Knots = myCurve->Knots();
@@ -644,7 +686,9 @@ void AppDef_LinearCriteria::Gradient(const int Element, const int Dimension, mat
   int    ipnt, k, i, ii, i0 = G.Lower(), di = myPntWeight.Lower() - myParameters->Lower();
 
   if (myE != Element)
+  {
     BuildCache(Element);
+  }
 
   G.Init(0.);
 
@@ -661,15 +705,21 @@ void AppDef_LinearCriteria::Gradient(const int Element, const int Dimension, mat
     else
     {
       if (myNbP3d == 0)
+      {
         AppDef_MyLineTool::Value(mySSP, ipnt, TabP2d);
+      }
       else
+      {
         AppDef_MyLineTool::Value(mySSP, ipnt, TabP3d, TabP2d);
+      }
       Pnt = TabP2d(IndPnt).Coord(IndCrd);
     }
 
     curcoeff = Pnt * myPntWeight(di + ipnt);
     for (i = 0; i <= MxDeg; i++, ii++)
+    {
       G(i0 + i) += BV[ii] * curcoeff;
+    }
   }
 
   G *= 2. * myQuadraticWeight;
@@ -703,7 +753,9 @@ void AppDef_LinearCriteria::InputVector(
     {
       GlobIndex = AssTable->Value(dim, el);
       for (i = 0; i <= MxDeg; i++)
+      {
         CoeffEl(i, dim) = X(i0 + GlobIndex->Value(i));
+      }
     }
     myCurve->SetDegree(el, MxDeg);
     myCurve->SetElement(el, CoeffEl);
@@ -719,9 +771,13 @@ void AppDef_LinearCriteria::SetWeight(const double QuadraticWeight,
                                       const double percentJ3)
 {
   if (QuadraticWeight < 0. || QualityWeight < 0.)
+  {
     throw Standard_DomainError("AppDef_LinearCriteria::SetWeight");
+  }
   if (percentJ1 < 0. || percentJ2 < 0. || percentJ3 < 0.)
+  {
     throw Standard_DomainError("AppDef_LinearCriteria::SetWeight");
+  }
 
   myQuadraticWeight = QuadraticWeight;
   myQualityWeight   = QualityWeight;
@@ -765,11 +821,15 @@ void AppDef_LinearCriteria::BuildCache(const int Element)
     if ((t > UFirst && t <= ULast) || (Element == 1 && t == UFirst))
     {
       if (IF == 0)
+      {
         IF = ipnt;
+      }
       IL = ipnt;
     }
     else if (t > ULast)
+    {
       break;
+    }
   }
 
   if (IF != 0)

@@ -30,11 +30,17 @@ StepGeom_SurfaceBoundary::StepGeom_SurfaceBoundary() = default;
 int StepGeom_SurfaceBoundary::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepGeom_BoundaryCurve)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepGeom_DegeneratePcurve)))
+  {
     return 2;
+  }
   return 0;
 }
 

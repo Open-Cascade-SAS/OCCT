@@ -52,7 +52,9 @@ static bool NeedsConvertion(const TopoDS_Wire& theWire)
     BRepAdaptor_Curve  aBAcurve(anEdge);
     GeomAbs_CurveType  aType = aBAcurve.GetType();
     if (aType != GeomAbs_Line && aType != GeomAbs_Circle)
+    {
       return true;
+    }
   }
 
   return false;
@@ -184,7 +186,9 @@ static void BuildDomains(TopoDS_Face&                           myFace,
   {
     myFace = BRepBuilderAPI_MakeFace(TopoDS::Wire(WorkWires.First()), true);
     if (myFace.IsNull())
+    {
       throw StdFail_NotDone("BRepOffsetAPI_MakeOffset : the wire is not planar");
+    }
   }
   //  Modified by Sergey KHROMOV - Thu Apr 26 16:04:43 2001 Begin
   TopExp_Explorer anExp(myFace, TopAbs_WIRE);
@@ -376,7 +380,9 @@ void BRepOffsetAPI_MakeOffset::Perform(const double Offset, const double Alt)
         myWires.Clear();
         TopoDS_Iterator anIter(myFace);
         for (; anIter.More(); anIter.Next())
+        {
           myWires.Append(anIter.Value());
+        }
       }
     }
 
@@ -404,7 +410,9 @@ void BRepOffsetAPI_MakeOffset::Perform(const double Offset, const double Alt)
         {
           B.Add(Res, isWasReversed ? Algo.Shape().Reversed() : Algo.Shape());
           if (i == 1)
+          {
             myShape = isWasReversed ? Algo.Shape().Reversed() : Algo.Shape();
+          }
 
           i++;
         }
@@ -429,7 +437,9 @@ void BRepOffsetAPI_MakeOffset::Perform(const double Offset, const double Alt)
           B.Add(Res, isWasReversed ? Algo.Shape().Reversed() : Algo.Shape());
 
           if (i == 1)
+          {
             myShape = isWasReversed ? Algo.Shape().Reversed() : Algo.Shape();
+          }
 
           i++;
         }
@@ -437,12 +447,18 @@ void BRepOffsetAPI_MakeOffset::Perform(const double Offset, const double Alt)
     }
 
     if (i > 2)
+    {
       myShape = Res;
+    }
 
     if (myShape.IsNull())
+    {
       NotDone();
+    }
     else
+    {
       Done();
+    }
   }
   catch (Standard_Failure const& anException)
   {

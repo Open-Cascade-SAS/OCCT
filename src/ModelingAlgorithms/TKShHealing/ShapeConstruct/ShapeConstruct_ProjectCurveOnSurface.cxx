@@ -85,7 +85,9 @@ public:
       : mySurf(theSurf)
   {
     if (theSurf.IsNull())
+    {
       return;
+    }
 
     occ::handle<Geom_BSplineSurface> aBSplineSurf =
       occ::down_cast<Geom_BSplineSurface>(theSurf->Surface());
@@ -332,14 +334,20 @@ bool fixPeriodicityTroubles(gp_Pnt2d*    thePnt,
     {
       if (aMaxParam - aParam < Precision::PConfusion()
           || aParam - aMinParam < Precision::PConfusion())
+      {
         aParam = aFixIsoParam;
+      }
     }
     else
     {
       if (aMaxParam - aParam < Precision::PConfusion())
+      {
         aParam = aMaxParam;
+      }
       if (aParam - aMinParam < Precision::PConfusion())
+      {
         aParam = aMinParam;
+      }
     }
 
     thePnt[i].SetCoord(theIdx, aParam);
@@ -364,33 +372,43 @@ bool fixPeriodicityTroubles(gp_Pnt2d*    thePnt,
   }
 
   if (!isJump)
+  {
     return false;
+  }
 
   if (aSumDiff > 0)
   {
     for (int i = aSavedPoint; i > 0; i--)
+    {
       if (thePnt[i].Coord(theIdx) > thePnt[i - 1].Coord(theIdx))
       {
         thePnt[i - 1].SetCoord(theIdx, thePnt[i - 1].Coord(theIdx) + thePeriod);
       }
+    }
     for (int i = aSavedPoint; i < 3; i++)
+    {
       if (thePnt[i].Coord(theIdx) < thePnt[i + 1].Coord(theIdx))
       {
         thePnt[i + 1].SetCoord(theIdx, thePnt[i + 1].Coord(theIdx) - thePeriod);
       }
+    }
   }
   else
   {
     for (int i = aSavedPoint; i > 0; i--)
+    {
       if (thePnt[i].Coord(theIdx) < thePnt[i - 1].Coord(theIdx))
       {
         thePnt[i - 1].SetCoord(theIdx, thePnt[i - 1].Coord(theIdx) - thePeriod);
       }
+    }
     for (int i = aSavedPoint; i < 3; i++)
+    {
       if (thePnt[i].Coord(theIdx) > thePnt[i + 1].Coord(theIdx))
       {
         thePnt[i + 1].SetCoord(theIdx, thePnt[i + 1].Coord(theIdx) + thePeriod);
       }
+    }
   }
 
   return true;
@@ -414,7 +432,9 @@ bool isBSplineCurveInvalid(const occ::handle<Geom_Curve>&  theCurve,
 {
   theBSpline = extractBSplineCurve(theCurve);
   if (theBSpline.IsNull())
+  {
     return false;
+  }
 
   // Compute parametrization speed on each knot interval inside [theFirst, theLast].
   // If quotient = (MaxSpeed / MinSpeed) >= aMaxQuotientCoeff then use PerformByProjLib.
@@ -452,7 +472,9 @@ bool isBSplineCurveInvalid(const occ::handle<Geom_Curve>&  theCurve,
       {
         aNbIntPnts = int(aLenRatio / aLenThres * aNbIntPnts);
         if (aNbIntPnts < 2)
+        {
           aNbIntPnts = 2;
+        }
       }
     }
 
@@ -477,7 +499,9 @@ bool isBSplineCurveInvalid(const occ::handle<Geom_Curve>&  theCurve,
 
     const double aCoeff = aLength3d / (aLastParam - aFirstParam);
     if (std::abs(aCoeff) > gp::Resolution())
+    {
       aKnotCoeffs.Append(aCoeff);
+    }
     aFirstParam = aLastParam;
   }
 
@@ -540,11 +564,17 @@ int generateCurvePoints(const occ::handle<Geom_Curve>&                     theCu
   {
     double aParam;
     if (i == 1)
+    {
       aParam = theFirst;
+    }
     else if (i == aNbPini)
+    {
       aParam = theLast;
+    }
     else
+    {
       aParam = theFirst + (i - 1) * aDeltaParam;
+    }
 
     gp_Pnt aPoint;
     theCurve->D0(aParam, aPoint);
@@ -645,7 +675,9 @@ void ShapeConstruct_ProjectCurveOnSurface::SetSurface(
   const occ::handle<ShapeAnalysis_Surface>& theSurf)
 {
   if (mySurf == theSurf)
+  {
     return;
+  }
   mySurf  = theSurf;
   myCache = CacheArray();
 }
@@ -827,12 +859,16 @@ occ::handle<Geom2d_Curve> ShapeConstruct_ProjectCurveOnSurface::projectAnalytic(
     occ::handle<Geom_RectangularTrimmedSurface> aRTS =
       occ::down_cast<Geom_RectangularTrimmedSurface>(aSurf);
     if (!aRTS.IsNull())
+    {
       aPlane = occ::down_cast<Geom_Plane>(aRTS->BasisSurface());
+    }
     else
     {
       occ::handle<Geom_OffsetSurface> anOS = occ::down_cast<Geom_OffsetSurface>(aSurf);
       if (!anOS.IsNull())
+      {
         aPlane = occ::down_cast<Geom_Plane>(anOS->BasisSurface());
+      }
     }
   }
 
@@ -845,7 +881,9 @@ occ::handle<Geom2d_Curve> ShapeConstruct_ProjectCurveOnSurface::projectAnalytic(
 
     aResult = Geom2dAdaptor::MakeCurve(aProj);
     if (aResult.IsNull())
+    {
       return aResult;
+    }
 
     if (aResult->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve)))
     {
@@ -891,7 +929,9 @@ occ::handle<Geom2d_Curve> ShapeConstruct_ProjectCurveOnSurface::getLine(
     aTol2       = aTolWorking * aTolWorking;
   }
   if (aTol2 < Precision::SquareConfusion())
+  {
     aTol2 = Precision::SquareConfusion();
+  }
   const double anOldTol2 = aTol2;
 
   int      aSavedPointNum = -1;
@@ -914,7 +954,9 @@ occ::handle<Geom2d_Curve> ShapeConstruct_ProjectCurveOnSurface::getLine(
         aSavedPointNum = theIndex;
         aSavedPoint    = aCachePnt.second;
         if (theIndex == 0)
+        {
           theIsFromCache = true;
+        }
         return;
       }
     }
@@ -931,7 +973,9 @@ occ::handle<Geom2d_Curve> ShapeConstruct_ProjectCurveOnSurface::getLine(
     const double aDist    = aProjector.Gap();
     const double aCurDist = aDist * aDist;
     if (aTol2 < aCurDist)
+    {
       aTol2 = aCurDist;
+    }
   }
 
   if (isPeriodicU || isPeriodicV)
@@ -944,7 +988,9 @@ occ::handle<Geom2d_Curve> ShapeConstruct_ProjectCurveOnSurface::getLine(
       const double aDist    = aProjector.Gap();
       const double aCurDist = aDist * aDist;
       if (aTol2 < aCurDist)
+      {
         aTol2 = aCurDist;
+      }
     }
 
     if (isPeriodicU)
@@ -979,7 +1025,9 @@ occ::handle<Geom2d_Curve> ShapeConstruct_ProjectCurveOnSurface::getLine(
 
   const double dPar = theParams(aNb) - theParams(1);
   if (std::abs(dPar) < Precision::PConfusion())
+  {
     return nullptr;
+  }
 
   const gp_Vec2d            aVec0(aP2d[0], aP2d[3]);
   const gp_Vec2d            aVec          = aVec0 / dPar;
@@ -1003,7 +1051,9 @@ occ::handle<Geom2d_Curve> ShapeConstruct_ProjectCurveOnSurface::getLine(
       const gp_Lin aNormalLine(aCurP, gp_Dir(aNormalVec));
       const double aDist = aNormalLine.Distance(thePoints(i));
       if (aDist > aTolWorking)
+      {
         return nullptr;
+      }
     }
   }
 
@@ -1020,7 +1070,9 @@ occ::handle<Geom2d_Curve> ShapeConstruct_ProjectCurveOnSurface::getLine(
       const double aDist1 = aCurP.SquareDistance(thePoints(i));
 
       if (std::abs(aFirstPointDist - aDist1) > aTol2)
+      {
         return nullptr;
+      }
     }
   }
 
@@ -1101,7 +1153,9 @@ bool ShapeConstruct_ProjectCurveOnSurface::approxPCurve(const int               
   occ::handle<Standard_Type> sType      = mySurf->Surface()->DynamicType();
   bool                       isAnalytic = true;
   if (sType == STANDARD_TYPE(Geom_BezierSurface) || sType == STANDARD_TYPE(Geom_BSplineSurface))
+  {
     isAnalytic = false;
+  }
 
   double uf, ul, vf, vl;
   mySurf->Surface()->Bounds(uf, ul, vf, vl);
@@ -1109,7 +1163,9 @@ bool ShapeConstruct_ProjectCurveOnSurface::approxPCurve(const int               
 
   ArrayOfReal pout(1, theNbPnt);
   for (int i = 1; i <= theNbPnt; i++)
+  {
     pout.SetValue(i, 0.0);
+  }
 
   isoParam = isAnIsoparametric(theNbPnt,
                                thePoints,
@@ -1156,34 +1212,54 @@ bool ShapeConstruct_ProjectCurveOnSurface::approxPCurve(const int               
       Cf = cIso->FirstParameter();
       Cl = cIso->LastParameter();
       if (Precision::IsInfinite(Cf))
+      {
         Cf = -1000;
+      }
       if (Precision::IsInfinite(Cl))
+      {
         Cl = +1000;
+      }
 
       tdeb = pout(2);
 
       if (isoClosed && (isoPar1 == parf || isoPar1 == parl))
       {
         if (std::abs(tdeb - parf) < std::abs(tdeb - parl))
+        {
           isoPar1 = parf;
+        }
         else
+        {
           isoPar1 = parl;
+        }
         if (isoTypeU)
+        {
           valueP1.SetY(isoPar1);
+        }
         else
+        {
           valueP1.SetX(isoPar1);
+        }
       }
       if (isoClosed && (isoPar2 == parf || isoPar2 == parl))
       {
         tfin = pout(theNbPnt - 1);
         if (std::abs(tfin - parf) < std::abs(tfin - parl))
+        {
           isoPar2 = parf;
+        }
         else
+        {
           isoPar2 = parl;
+        }
         if (isoTypeU)
+        {
           valueP2.SetY(isoPar2);
+        }
         else
+        {
           valueP2.SetX(isoPar2);
+        }
       }
 
       if (!isoClosed)
@@ -1223,7 +1299,9 @@ bool ShapeConstruct_ProjectCurveOnSurface::approxPCurve(const int               
       && myCache(0).first.Distance(thePoints(1)) > myCache(0).first.Distance(thePoints(theNbPnt)))
   {
     if (myCache(0).first.Distance(thePoints(theNbPnt)) < Precision::Confusion())
+    {
       aChangeCycle = true;
+    }
   }
 
   bool     needResolveUJump = false;
@@ -1241,16 +1319,24 @@ bool ShapeConstruct_ProjectCurveOnSurface::approxPCurve(const int               
       if (isoPar2d3d)
       {
         if (isoPar2 > isoPar1)
+        {
           tPar = theParams(aPntIndex);
+        }
         else
+        {
           tPar = t1 + t2 - theParams(aPntIndex);
+        }
       }
       else if (!isAnalytic)
       {
         if (aPntIndex == 1)
+        {
           tPar = isoPar1;
+        }
         else if (aPntIndex == theNbPnt)
+        {
           tPar = isoPar2;
+        }
         else
         {
           tPar = pout(aPntIndex);
@@ -1260,9 +1346,13 @@ bool ShapeConstruct_ProjectCurveOnSurface::approxPCurve(const int               
       if (!isoPar2d3d && isAnalytic)
       {
         if (aPntIndex == 1)
+        {
           p2d = valueP1;
+        }
         else if (aPntIndex == theNbPnt)
+        {
           p2d = valueP2;
+        }
         else
         {
           p2d = mySurf->NextValueOfUV(p2d, p3d, myPreci, Precision::Confusion() + 1000 * gap);
@@ -1286,9 +1376,13 @@ bool ShapeConstruct_ProjectCurveOnSurface::approxPCurve(const int               
     else
     {
       if ((aPntIndex == 1) && p1OnIso)
+      {
         p2d = valueP1;
+      }
       else if ((aPntIndex == theNbPnt) && p2OnIso)
+      {
         p2d = valueP2;
+      }
       else
       {
         if (aPntIndex == 1 || aPntIndex == theNbPnt)
@@ -1360,9 +1454,13 @@ bool ShapeConstruct_ProjectCurveOnSurface::approxPCurve(const int               
     if (ii > 1)
     {
       if (aChangeCycle)
+      {
         p2d.SetXY(2. * p2d.XY() - thePoints2d(aPntIndex + 1).XY());
+      }
       else
+      {
         p2d.SetXY(2. * p2d.XY() - thePoints2d(aPntIndex - 1).XY());
+      }
     }
   }
 
@@ -1385,7 +1483,9 @@ bool ShapeConstruct_ProjectCurveOnSurface::approxPCurve(const int               
     gp_Pnt2d aFirstP2d, aLastP2d;
     bool     IsUiso;
     if (!mySurf->Singularity(i, aPreci, aP3d, aFirstP2d, aLastP2d, aFirstPar, aLastPar, IsUiso))
+    {
       break;
+    }
     if (aPreci <= Precision::Confusion() && aPointFirst.Distance(aP3d) <= aTolFirst)
     {
       correctExtremity(theC3D, theParams, thePoints2d, true, aFirstP2d, IsUiso);
@@ -1460,9 +1560,13 @@ bool ShapeConstruct_ProjectCurveOnSurface::approxPCurve(const int               
       }
       prevX = CurX;
       if (minX > CurX)
+      {
         minX = CurX;
+      }
       else if (maxX < CurX)
+      {
         maxX = CurX;
+      }
     }
 
     if (!isFromCache)
@@ -1470,12 +1574,20 @@ bool ShapeConstruct_ProjectCurveOnSurface::approxPCurve(const int               
       double midX   = 0.5 * (minX + maxX);
       double shiftX = 0.;
       if (midX > ul)
+      {
         shiftX = -Up;
+      }
       else if (midX < uf)
+      {
         shiftX = Up;
+      }
       if (shiftX != 0.)
+      {
         for (int aPntIter = 1; aPntIter <= thePoints2d.Length(); ++aPntIter)
+        {
           thePoints2d.ChangeValue(aPntIter).SetX(thePoints2d(aPntIter).X() + shiftX);
+        }
+      }
     }
   }
 
@@ -1540,9 +1652,13 @@ bool ShapeConstruct_ProjectCurveOnSurface::approxPCurve(const int               
       }
       prevY = CurY;
       if (minY > CurY)
+      {
         minY = CurY;
+      }
       else if (maxY < CurY)
+      {
         maxY = CurY;
+      }
     }
 
     if (!isFromCache)
@@ -1550,12 +1666,20 @@ bool ShapeConstruct_ProjectCurveOnSurface::approxPCurve(const int               
       double midY   = 0.5 * (minY + maxY);
       double shiftY = 0.;
       if (midY > vl)
+      {
         shiftY = -Vp;
+      }
       else if (midY < vf)
+      {
         shiftY = Vp;
+      }
       if (shiftY != 0.)
+      {
         for (int aPntIter = 1; aPntIter <= thePoints2d.Length(); ++aPntIter)
+        {
           thePoints2d.ChangeValue(aPntIter).SetY(thePoints2d(aPntIter).Y() + shiftY);
+        }
+      }
     }
   }
 
@@ -1636,11 +1760,15 @@ bool ShapeConstruct_ProjectCurveOnSurface::approxPCurve(const int               
         {
           double CurX = thePoints2d(ind).X();
           if (mySurf->IsDegenerated(thePoints(ind), Precision::Confusion()))
+          {
             continue;
+          }
           OnBound =
             (std::abs(std::abs(CurX - 0.5 * (ul + uf)) - Up / 2) <= Precision::PConfusion());
           if (!start && std::abs(std::abs(CurX - PrevX) - Up / 2) <= 0.01 * Up)
+          {
             break;
+          }
           start       = false;
           PrevX       = CurX;
           PrevOnBound = OnBound;
@@ -1702,11 +1830,15 @@ bool ShapeConstruct_ProjectCurveOnSurface::approxPCurve(const int               
         {
           double CurY = thePoints2d(ind).Y();
           if (mySurf->IsDegenerated(thePoints(ind), Precision::Confusion()))
+          {
             continue;
+          }
           OnBound =
             (std::abs(std::abs(CurY - 0.5 * (vl + vf)) - Vp / 2) <= Precision::PConfusion());
           if (!start && std::abs(std::abs(CurY - PrevY) - Vp / 2) <= 0.01 * Vp)
+          {
             break;
+          }
           start       = false;
           PrevY       = CurY;
           PrevOnBound = OnBound;
@@ -1816,16 +1948,22 @@ void ShapeConstruct_ProjectCurveOnSurface::correctExtremity(const occ::handle<Ge
   }
 
   if (SingularityCoord > FinishCoord && SecondPointOfLine.Coord(3 - IndCoord) > FinishCoord)
+  {
     return;
+  }
   if (SingularityCoord < FinishCoord && SecondPointOfLine.Coord(3 - IndCoord) < FinishCoord)
+  {
     return;
+  }
 
   {
     const double aPrevDist =
       std::abs(SecondPointOfLine.Coord(IndCoord) - FirstPointOfLine.Coord(IndCoord));
     const double aCurDist = std::abs(EndPoint.Coord(IndCoord) - SecondPointOfLine.Coord(IndCoord));
     if (aCurDist <= 2 * aPrevDist)
+    {
       return;
+    }
   }
 
   gp_Pnt2d FinishPoint = (theIsUIso) ? gp_Pnt2d(FinishCoord, SecondPointOfLine.Y())
@@ -1835,12 +1973,16 @@ void ShapeConstruct_ProjectCurveOnSurface::correctExtremity(const occ::handle<Ge
   {
     if (std::abs(SecondPointOfLine.Coord(3 - IndCoord) - FinishCoord)
         <= 2 * Precision::PConfusion())
+    {
       break;
+    }
 
     gp_Vec2d     aVec(FirstPointOfLine, SecondPointOfLine);
     const double aSqMagnitude = aVec.SquareMagnitude();
     if (aSqMagnitude <= 1.e-32)
+    {
       break;
+    }
     aDir.SetCoord(aVec.X(), aVec.Y());
 
     gp_Lin2d               aLine(FirstPointOfLine, aDir);
@@ -1851,33 +1993,45 @@ void ShapeConstruct_ProjectCurveOnSurface::correctExtremity(const occ::handle<Ge
       FinishPoint                         = IntPoint.Value();
     }
     else
+    {
       FinishPoint = (theIsUIso) ? gp_Pnt2d(FinishCoord, SecondPointOfLine.Y())
                                 : gp_Pnt2d(SecondPointOfLine.X(), FinishCoord);
+    }
 
     gp_Pnt2d PrevPoint = FirstPointOfLine;
     FirstPointOfLine   = SecondPointOfLine;
     FirstParam         = SecondParam;
     SecondParam        = (FirstParam + FinishParam) / 2;
     if (std::abs(SecondParam - FirstParam) <= 2 * Precision::PConfusion())
+    {
       break;
+    }
     gp_Pnt aP3d;
     theC3D->D0(SecondParam, aP3d);
     SecondPointOfLine =
       mySurf->NextValueOfUV(FirstPointOfLine, aP3d, myPreci, Precision::Confusion());
     if (IsPeriodic)
+    {
       adjustSecondToFirstPoint(FirstPointOfLine, SecondPointOfLine, mySurf->Surface());
+    }
 
     const double aPrevDist = std::abs(FirstPointOfLine.Coord(IndCoord) - PrevPoint.Coord(IndCoord));
     const double aCurDist =
       std::abs(SecondPointOfLine.Coord(IndCoord) - FirstPointOfLine.Coord(IndCoord));
     if (aCurDist > 2 * aPrevDist)
+    {
       break;
+    }
   }
 
   if (theIsFirstPoint)
+  {
     thePoints2d.ChangeValue(1) = FinishPoint;
+  }
   else
+  {
     thePoints2d.ChangeValue(NbPnt) = FinishPoint;
+  }
 }
 
 //=================================================================================================
@@ -1917,9 +2071,13 @@ void ShapeConstruct_ProjectCurveOnSurface::insertAdditionalPointOrAdjust(
       LastCoord  = tmp;
     }
     if (LastCoord - FirstCoord <= theTolOnPeriod)
+    {
       theToAdjust = true;
+    }
     else if (FirstCoord <= MidCoord && MidCoord <= LastCoord)
+    {
       theToAdjust = true;
+    }
     else
     {
       bool   Success = true;
@@ -1935,9 +2093,13 @@ void ShapeConstruct_ProjectCurveOnSurface::insertAdditionalPointOrAdjust(
           break;
         }
         if (std::abs(MidCoord - thePrevCoord) >= thePeriod / 2 - theTolOnPeriod)
+        {
           LastT = (FirstT + LastT) / 2;
+        }
         else
+        {
           FirstT = (FirstT + LastT) / 2;
+        }
         MidPar = (FirstT + LastT) / 2;
         theC3D->D0(MidPar, MidP3d);
         MidP2d   = mySurf->ValueOfUV(MidP3d, myPreci);
@@ -1973,7 +2135,9 @@ void ShapeConstruct_ProjectCurveOnSurface::insertAdditionalPointOrAdjust(
         theIndex++;
       }
       else
+      {
         theToAdjust = true;
+      }
     }
   }
   if (theToAdjust)
@@ -2015,7 +2179,9 @@ occ::handle<Geom2d_Curve> ShapeConstruct_ProjectCurveOnSurface::interpolatePCurv
     checkPoints2d(aTmpPnts2d, aTmpParams, aPreci);
 
     if (aTmpPnts2d.Length() < 2)
+    {
       return aC2D;
+    }
 
     // Rebuild HArrays if points were removed
     if (aTmpPnts2d.Length() != theNbPnt)
@@ -2032,7 +2198,9 @@ occ::handle<Geom2d_Curve> ShapeConstruct_ProjectCurveOnSurface::interpolatePCurv
     Geom2dAPI_Interpolate myInterPol2d(aPnts2d, aParams, false, aPreci);
     myInterPol2d.Perform();
     if (myInterPol2d.IsDone())
+    {
       aC2D = myInterPol2d.Curve();
+    }
   }
   catch (Standard_Failure const& anException)
   {
@@ -2067,7 +2235,9 @@ occ::handle<Geom2d_Curve> ShapeConstruct_ProjectCurveOnSurface::approximatePCurv
 
     const int numberPnt = aTmpPnts2d.Length();
     if (numberPnt < 2)
+    {
       return aC2D;
+    }
 
     NCollection_Array1<gp_Pnt> points3d(1, numberPnt);
     NCollection_Array1<double> params(1, numberPnt);
@@ -2130,7 +2300,9 @@ void ShapeConstruct_ProjectCurveOnSurface::checkPoints(ArrayOfPnt&  thePoints,
 
   NCollection_Array1<int> tmpParam(firstElem, lastElem);
   for (int i = firstElem; i <= lastElem; i++)
+  {
     tmpParam.SetValue(i, 1);
+  }
 
   double DistMin2 = RealLast();
   gp_Pnt Prev     = thePoints.Value(lastValid);
@@ -2143,28 +2315,40 @@ void ShapeConstruct_ProjectCurveOnSurface::checkPoints(ArrayOfPnt&  thePoints,
     {
       nbPntDropped++;
       if (i == lastElem)
+      {
         tmpParam.SetValue(lastValid, 0);
+      }
       else
+      {
         tmpParam.SetValue(i, 0);
+      }
     }
     else
     {
       if (CurDist2 < DistMin2)
+      {
         DistMin2 = CurDist2;
+      }
       lastValid = i;
       Prev      = Curr;
     }
   }
 
   if (DistMin2 < RealLast())
+  {
     thePreci = 0.9 * std::sqrt(DistMin2);
+  }
 
   if (nbPntDropped == 0)
+  {
     return;
+  }
 
   const int newLast = lastElem - nbPntDropped;
   if ((newLast - firstElem + 1) < 2)
+  {
     return;
+  }
 
   ArrayOfPnt  newPnts(firstElem, newLast);
   ArrayOfReal newParams(firstElem, newLast);
@@ -2198,7 +2382,9 @@ void ShapeConstruct_ProjectCurveOnSurface::checkPoints2d(ArrayOfPnt2d& thePoints
 
   NCollection_Array1<int> tmpParam(firstElem, lastElem);
   for (int i = firstElem; i <= lastElem; i++)
+  {
     tmpParam.SetValue(i, 1);
+  }
 
   double   DistMin2 = RealLast();
   gp_Pnt2d Prev     = thePoints2d.Value(lastValid);
@@ -2211,24 +2397,34 @@ void ShapeConstruct_ProjectCurveOnSurface::checkPoints2d(ArrayOfPnt2d& thePoints
     {
       nbPntDropped++;
       if (i == lastElem)
+      {
         tmpParam.SetValue(lastValid, 0);
+      }
       else
+      {
         tmpParam.SetValue(i, 0);
+      }
     }
     else
     {
       if (CurDist2 < DistMin2)
+      {
         DistMin2 = CurDist2;
+      }
       lastValid = i;
       Prev      = Curr;
     }
   }
 
   if (DistMin2 < RealLast())
+  {
     thePreci = 0.9 * std::sqrt(DistMin2);
+  }
 
   if (nbPntDropped == 0)
+  {
     return;
+  }
 
   int newLast = lastElem - nbPntDropped;
   if ((newLast - firstElem + 1) < 2)
@@ -2317,7 +2513,9 @@ bool ShapeConstruct_ProjectCurveOnSurface::isAnIsoparametric(const int          
       if (j == 1)
       {
         if (Precision::IsInfinite(U1))
+        {
           continue;
+        }
         cI     = mySurf->UIso(U1);
         isoU   = true;
         isoVal = U1;
@@ -2326,7 +2524,9 @@ bool ShapeConstruct_ProjectCurveOnSurface::isAnIsoparametric(const int          
       else if (j == 2)
       {
         if (Precision::IsInfinite(U2))
+        {
           continue;
+        }
         cI     = mySurf->UIso(U2);
         isoU   = true;
         isoVal = U2;
@@ -2335,7 +2535,9 @@ bool ShapeConstruct_ProjectCurveOnSurface::isAnIsoparametric(const int          
       else if (j == 3)
       {
         if (Precision::IsInfinite(V1))
+        {
           continue;
+        }
         cI     = mySurf->VIso(V1);
         isoU   = false;
         isoVal = V1;
@@ -2344,14 +2546,18 @@ bool ShapeConstruct_ProjectCurveOnSurface::isAnIsoparametric(const int          
       else if (j == 4)
       {
         if (Precision::IsInfinite(V2))
+        {
           continue;
+        }
         cI     = mySurf->VIso(V2);
         isoU   = false;
         isoVal = V2;
         aBox   = &mySurf->GetBoxVL();
       }
       if (cI.IsNull())
+      {
         continue;
+      }
 
       if (isoU)
       {
@@ -2371,7 +2577,9 @@ bool ShapeConstruct_ProjectCurveOnSurface::isAnIsoparametric(const int          
       gp_Pnt extmi;
       cI->D0((tt1 + tt2) / 2, extmi);
       if (ext1.IsEqual(ext2, prec) && ext1.IsEqual(extmi, prec))
+      {
         continue;
+      }
 
       bool PtEQext1 = false;
       bool PtEQext2 = false;
@@ -2408,14 +2616,20 @@ bool ShapeConstruct_ProjectCurveOnSurface::isAnIsoparametric(const int          
         }
 
         if (aBox->IsOut(thePoints(k)))
+        {
           continue;
+        }
 
         double Cf = cI->FirstParameter();
         double Cl = cI->LastParameter();
         if (Precision::IsInfinite(Cf))
+        {
           Cf = -1000;
+        }
         if (Precision::IsInfinite(Cl))
+        {
           Cl = +1000;
+        }
 
         ShapeAnalysis_Curve sac;
         const double        dist = sac.Project(cI, thePoints(k), prec, pt, t, Cf, Cl);
@@ -2428,16 +2642,22 @@ bool ShapeConstruct_ProjectCurveOnSurface::isAnIsoparametric(const int          
       }
 
       if (mp[0] > 0 && mp[1] > 0 && std::abs(tp[0] - tp[1]) < Precision::PConfusion())
+      {
         continue;
+      }
 
       if (mp[0] > 0 && (!theP1OnIso || currd2[0] < mind2[0]))
       {
         theP1OnIso = true;
         mind2[0]   = currd2[0];
         if (isoU)
+        {
           theValueP1.SetCoord(isoVal, tp[0]);
+        }
         else
+        {
           theValueP1.SetCoord(tp[0], isoVal);
+        }
       }
 
       if (mp[1] > 0 && (!theP2OnIso || currd2[1] < mind2[1]))
@@ -2445,17 +2665,25 @@ bool ShapeConstruct_ProjectCurveOnSurface::isAnIsoparametric(const int          
         theP2OnIso = true;
         mind2[1]   = currd2[1];
         if (isoU)
+        {
           theValueP2.SetCoord(isoVal, tp[1]);
+        }
         else
+        {
           theValueP2.SetCoord(tp[1], isoVal);
+        }
       }
 
       if (mp[0] <= 0 || mp[1] <= 0)
+      {
         continue;
+      }
 
       const double md2 = currd2[0] + currd2[1];
       if (mindist2 <= md2)
+      {
         continue;
+      }
 
       mindist2   = md2;
       mpt[0]     = mp[0];
@@ -2489,17 +2717,25 @@ bool ShapeConstruct_ProjectCurveOnSurface::isAnIsoparametric(const int          
         for (int i = 2; i < theNbPnt && theIsoPar2d3d; i++)
         {
           if (tpar[1] > tpar[0])
+          {
             t = theParams(i);
+          }
           else
+          {
             t = theT1 + theT2 - theParams(i);
+          }
           theCIso->D0(t, pt);
           if (!thePoints(i).IsEqual(pt, prec))
+          {
             theIsoPar2d3d = false;
+          }
         }
       }
 
       if (theIsoPar2d3d)
+      {
         isoParam = true;
+      }
       else
       {
         double prevParam = tpar[0];
@@ -2508,9 +2744,13 @@ bool ShapeConstruct_ProjectCurveOnSurface::isAnIsoparametric(const int          
         Cf                   = theCIso->FirstParameter();
         Cl                   = theCIso->LastParameter();
         if (Precision::IsInfinite(Cf))
+        {
           Cf = -1000;
+        }
         if (Precision::IsInfinite(Cl))
+        {
           Cl = +1000;
+        }
 
         ShapeAnalysis_Curve sac;
         for (int i = 2; i < theNbPnt && isoByDistance; i++)
@@ -2520,10 +2760,14 @@ bool ShapeConstruct_ProjectCurveOnSurface::isAnIsoparametric(const int          
           prevParam       = t;
           theParamsOut(i) = t;
           if ((dist > prec) || (t < Cf) || (t > Cl))
+          {
             isoByDistance = false;
+          }
         }
         if (isoByDistance)
+        {
           isoParam = true;
+        }
       }
     }
     return isoParam;

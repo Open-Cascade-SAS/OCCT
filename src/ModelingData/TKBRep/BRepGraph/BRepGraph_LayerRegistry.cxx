@@ -20,7 +20,9 @@
 int BRepGraph_LayerRegistry::RegisterLayer(const occ::handle<BRepGraph_Layer>& theLayer)
 {
   if (theLayer.IsNull())
+  {
     return -1;
+  }
 
   const Standard_GUID& aGUID = theLayer->ID();
   const uint32_t*      aSlot = myGuidToSlot.Seek(aGUID);
@@ -52,7 +54,9 @@ void BRepGraph_LayerRegistry::UnregisterLayer(const Standard_GUID& theGUID)
 {
   const uint32_t* aSlotPtr = myGuidToSlot.Seek(theGUID);
   if (aSlotPtr == nullptr)
+  {
     return;
+  }
 
   const uint32_t                     aSlot     = *aSlotPtr;
   const uint32_t                     aLastSlot = static_cast<uint32_t>(myLayers.Size()) - 1;
@@ -81,7 +85,9 @@ void BRepGraph_LayerRegistry::SetOwningGraph(BRepGraph* theGraph) noexcept
   for (const occ::handle<BRepGraph_Layer>& aLayer : myLayers)
   {
     if (!aLayer.IsNull())
+    {
       aLayer->setOwningGraph(theGraph);
+    }
   }
 }
 
@@ -127,13 +133,17 @@ void BRepGraph_LayerRegistry::DispatchOnNodeRemoved(const BRepGraph_NodeId theNo
 void BRepGraph_LayerRegistry::DispatchNodeModified(const BRepGraph_NodeId theNode) noexcept
 {
   if (!HasModificationSubscribers())
+  {
     return;
+  }
 
   const int aKindBit = BRepGraph_Layer::KindBit(theNode.NodeKind);
   for (const occ::handle<BRepGraph_Layer>& aLayer : myLayers)
   {
     if ((aLayer->SubscribedKinds() & aKindBit) != 0)
+    {
       aLayer->OnNodeModified(theNode);
+    }
   }
 }
 
@@ -144,12 +154,16 @@ void BRepGraph_LayerRegistry::DispatchNodesModified(
   const int                                         theModifiedKindsMask) noexcept
 {
   if (!HasModificationSubscribers() || theModifiedKindsMask == 0)
+  {
     return;
+  }
 
   for (const occ::handle<BRepGraph_Layer>& aLayer : myLayers)
   {
     if ((aLayer->SubscribedKinds() & theModifiedKindsMask) != 0)
+    {
       aLayer->OnNodesModified(theModifiedNodes);
+    }
   }
 }
 
@@ -199,13 +213,17 @@ void BRepGraph_LayerRegistry::DispatchOnRefRemoved(const BRepGraph_RefId theRef)
 void BRepGraph_LayerRegistry::DispatchRefModified(const BRepGraph_RefId theRef) noexcept
 {
   if (!HasRefModificationSubscribers())
+  {
     return;
+  }
 
   const int aRefKindBit = BRepGraph_Layer::RefKindBit(theRef.RefKind);
   for (const occ::handle<BRepGraph_Layer>& aLayer : myLayers)
   {
     if ((aLayer->SubscribedRefKinds() & aRefKindBit) != 0)
+    {
       aLayer->OnRefModified(theRef);
+    }
   }
 }
 
@@ -216,12 +234,16 @@ void BRepGraph_LayerRegistry::DispatchRefsModified(
   const int                                        theModifiedRefKindsMask) noexcept
 {
   if (!HasRefModificationSubscribers() || theModifiedRefKindsMask == 0)
+  {
     return;
+  }
 
   for (const occ::handle<BRepGraph_Layer>& aLayer : myLayers)
   {
     if ((aLayer->SubscribedRefKinds() & theModifiedRefKindsMask) != 0)
+    {
       aLayer->OnRefsModified(theModifiedRefs, theModifiedRefKindsMask);
+    }
   }
 }
 

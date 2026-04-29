@@ -62,9 +62,13 @@ void BRepAlgo_Image::Bind(const TopoDS_Shape& OldS, const NCollection_List<TopoD
   for (; it.More(); it.Next())
   {
     if (!HasImage(OldS))
+    {
       Bind(OldS, it.Value());
+    }
     else
+    {
       Add(OldS, it.Value());
+    }
   }
 }
 
@@ -121,7 +125,9 @@ void BRepAlgo_Image::Remove(const TopoDS_Shape& S)
     it.Next();
   }
   if (L.IsEmpty())
+  {
     down.UnBind(OldS);
+  }
   up.UnBind(S);
 }
 
@@ -166,14 +172,18 @@ const TopoDS_Shape& BRepAlgo_Image::Root(const TopoDS_Shape& S) const
   TopoDS_Shape S2 = S;
 
   if (S1.IsSame(S2))
+  {
     return up(S);
+  }
 
   while (up.IsBound(S1))
   {
     S2 = S1;
     S1 = up(S1);
     if (S1.IsSame(S2))
+    {
       break;
+    }
   }
   return up(S2);
 }
@@ -239,7 +249,9 @@ void BRepAlgo_Image::Compact()
     const TopoDS_Shape&            S = it.Value();
     NCollection_List<TopoDS_Shape> LI;
     if (HasImage(S))
+    {
       LastImage(S, LI);
+    }
     M.Bind(S, LI);
   }
   up.Clear();
@@ -298,7 +310,9 @@ void BRepAlgo_Image::RemoveRoot(const TopoDS_Shape& Root)
   }
 
   if (!isRemoved)
+  {
     return;
+  }
 
   const NCollection_List<TopoDS_Shape>* pNewS = down.Seek(Root);
   if (pNewS)
@@ -307,7 +321,9 @@ void BRepAlgo_Image::RemoveRoot(const TopoDS_Shape& Root)
     {
       const TopoDS_Shape* pOldS = up.Seek(it.Value());
       if (pOldS && pOldS->IsSame(Root))
+      {
         up.UnBind(it.Value());
+      }
     }
     down.UnBind(Root);
   }
@@ -318,13 +334,19 @@ void BRepAlgo_Image::RemoveRoot(const TopoDS_Shape& Root)
 void BRepAlgo_Image::ReplaceRoot(const TopoDS_Shape& OldRoot, const TopoDS_Shape& NewRoot)
 {
   if (!HasImage(OldRoot))
+  {
     return;
+  }
 
   const NCollection_List<TopoDS_Shape>& aLImage = Image(OldRoot);
   if (HasImage(NewRoot))
+  {
     Add(NewRoot, aLImage);
+  }
   else
+  {
     Bind(NewRoot, aLImage);
+  }
 
   SetRoot(NewRoot);
   RemoveRoot(OldRoot);

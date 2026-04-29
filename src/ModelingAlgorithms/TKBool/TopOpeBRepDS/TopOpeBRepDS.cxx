@@ -103,7 +103,9 @@ TCollection_AsciiString TopOpeBRepDS::SPrint(const TopOpeBRepDS_Kind        k,
 {
   TCollection_AsciiString si = "";
   if (i >= 0 && i <= 9)
+  {
     si = " ";
+  }
   TCollection_AsciiString s =
     S1 + "(" + TopOpeBRepDS::SPrint(k) + "," + si + TCollection_AsciiString(i) + ")" + S2;
   return s;
@@ -279,7 +281,9 @@ TopAbs_ShapeEnum TopOpeBRepDS::KindToShape(const TopOpeBRepDS_Kind K)
 {
   TopAbs_ShapeEnum res = TopAbs_SHAPE; // bidon
   if (!TopOpeBRepDS::IsTopology(K))
+  {
     return res;
+  }
 
   switch (K)
   {

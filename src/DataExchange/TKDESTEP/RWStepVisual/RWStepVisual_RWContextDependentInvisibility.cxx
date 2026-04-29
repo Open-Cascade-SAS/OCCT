@@ -35,7 +35,9 @@ void RWStepVisual_RWContextDependentInvisibility::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "context_dependent_invisibility"))
+  {
     return;
+  }
 
   // --- inherited field : invisibleItems ---
 
@@ -50,7 +52,9 @@ void RWStepVisual_RWContextDependentInvisibility::ReadStep(
     {
       // szv#4:S4163:12Mar99 `bool stat1 =` not needed
       if (data->ReadEntity(nsub1, i1, "invisible_items", ach, aInvisibleItemsItem))
+      {
         aInvisibleItems->SetValue(i1, aInvisibleItemsItem);
+      }
     }
   }
 

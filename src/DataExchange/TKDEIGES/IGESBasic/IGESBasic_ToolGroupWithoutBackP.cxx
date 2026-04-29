@@ -82,7 +82,9 @@ void IGESBasic_ToolGroupWithoutBackP::WriteOwnParams(
   int upper = ent->NbEntities();
   IW.Send(upper);
   for (int i = 1; i <= upper; i++)
+  {
     IW.Send(ent->Entity(i));
+  }
 }
 
 void IGESBasic_ToolGroupWithoutBackP::OwnShared(const occ::handle<IGESBasic_GroupWithoutBackP>& ent,
@@ -90,7 +92,9 @@ void IGESBasic_ToolGroupWithoutBackP::OwnShared(const occ::handle<IGESBasic_Grou
 {
   int upper = ent->NbEntities();
   for (int i = 1; i <= upper; i++)
+  {
     iter.GetOneItem(ent->Entity(i));
+  }
 }
 
 void IGESBasic_ToolGroupWithoutBackP::OwnCopy(
@@ -120,22 +124,34 @@ bool IGESBasic_ToolGroupWithoutBackP::OwnCorrect(
   {
     occ::handle<IGESData_IGESEntity> val = ent->Entity(i);
     if (val.IsNull())
+    {
       ianul++;
+    }
     else if (val->TypeNumber() == 0)
+    {
       ianul++;
+    }
   }
   if (ianul == 0)
+  {
     return false;
+  }
   occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> EntArray;
   if (ianul < nb)
+  {
     EntArray = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nb - ianul);
+  }
   for (i = 1; i <= nb; i++)
   {
     occ::handle<IGESData_IGESEntity> val = ent->Entity(i);
     if (val.IsNull())
+    {
       continue;
+    }
     else if (val->TypeNumber() == 0)
+    {
       continue;
+    }
     nbtrue++;
     EntArray->SetValue(nbtrue, ent->Entity(i));
   }
@@ -164,9 +180,13 @@ void IGESBasic_ToolGroupWithoutBackP::OwnCheck(const occ::handle<IGESBasic_Group
   {
     occ::handle<IGESData_IGESEntity> val = ent->Entity(i);
     if (val.IsNull())
+    {
       ianul = true;
+    }
     else if (val->TypeNumber() == 0)
+    {
       ianul = true;
+    }
     if (ianul)
     {
       break;
@@ -182,5 +202,5 @@ void IGESBasic_ToolGroupWithoutBackP::OwnDump(const occ::handle<IGESBasic_GroupW
   S << "IGESBasic_GroupWithoutBackP\n"
     << "Entries in the Group : ";
   IGESData_DumpEntities(S, dumper, level, 1, ent->NbEntities(), ent->Entity);
-  S << std::endl;
+  S << '\n';
 }

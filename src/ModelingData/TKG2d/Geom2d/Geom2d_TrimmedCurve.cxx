@@ -59,13 +59,19 @@ Geom2d_TrimmedCurve::Geom2d_TrimmedCurve(const occ::handle<Geom2d_Curve>& C,
       uTrim2(U2)
 {
   if (C.IsNull())
+  {
     throw Standard_ConstructionError("Geom2d_TrimmedCurve:: C is null");
+  }
   // kill trimmed basis curves
   occ::handle<Geom2d_TrimmedCurve> T = occ::down_cast<Geom2d_TrimmedCurve>(C);
   if (!T.IsNull())
+  {
     basisCurve = occ::down_cast<Geom2d_Curve>(T->BasisCurve()->Copy());
+  }
   else
+  {
     basisCurve = occ::down_cast<Geom2d_Curve>(C->Copy());
+  }
 
   SetTrim(U1, U2, Sense, theAdjustPeriodic);
 }
@@ -96,7 +102,9 @@ void Geom2d_TrimmedCurve::SetTrim(const double U1,
 {
   bool sameSense = true;
   if (U1 == U2)
+  {
     throw Standard_ConstructionError("Geom2d_TrimmedCurve::U1 == U2");
+  }
 
   double Udeb = basisCurve->FirstParameter();
   double Ufin = basisCurve->LastParameter();
@@ -110,11 +118,13 @@ void Geom2d_TrimmedCurve::SetTrim(const double U1,
     uTrim1 = U1;
     uTrim2 = U2;
     if (theAdjustPeriodic)
+    {
       ElCLib::AdjustPeriodic(Udeb,
                              Ufin,
                              std::min(std::abs(uTrim2 - uTrim1) / 2, Precision::PConfusion()),
                              uTrim1,
                              uTrim2);
+    }
   }
   else
   {
@@ -138,7 +148,9 @@ void Geom2d_TrimmedCurve::SetTrim(const double U1,
   }
 
   if (!sameSense)
+  {
     Reverse();
+  }
 }
 
 //=================================================================================================
@@ -187,7 +199,9 @@ bool Geom2d_TrimmedCurve::IsClosed() const
     const double aLength = LastParameter() - FirstParameter();
     if (aLength > Precision::PConfusion()
         && std::abs(std::remainder(aLength, aPeriod)) <= Precision::PConfusion())
+    {
       return true;
+    }
   }
   return Value(FirstParameter()).SquareDistance(Value(LastParameter()))
          <= Precision::Computational();
@@ -203,7 +217,9 @@ bool Geom2d_TrimmedCurve::IsPeriodic() const
     const double aLength = LastParameter() - FirstParameter();
     if (aLength > Precision::PConfusion()
         && std::abs(std::remainder(aLength, aPeriod)) <= Precision::PConfusion())
+    {
       return true;
+    }
   }
   return false;
 }

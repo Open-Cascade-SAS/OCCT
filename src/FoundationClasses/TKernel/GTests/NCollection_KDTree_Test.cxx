@@ -362,9 +362,15 @@ TEST(NCollection_KDTreeTest, NearestPoint3D_GridPoints)
   TestPoint3D aPoints[27];
   int         k = 0;
   for (int i = 0; i < 3; ++i)
+  {
     for (int j = 0; j < 3; ++j)
+    {
       for (int l = 0; l < 3; ++l)
+      {
         aPoints[k++] = {static_cast<double>(i), static_cast<double>(j), static_cast<double>(l)};
+      }
+    }
+  }
   NCollection_KDTree<TestPoint3D, 3> aTree;
   aTree.Build(aPoints, 27);
   TestPoint3D  aQuery(1.1, 2.2, 0.9);
@@ -1264,7 +1270,9 @@ TEST(NCollection_KDTreeTest, NearestPoint2D_ThinStrip)
   {
     const double aDist = sqDist2D({15, 0}, aPoints[i]);
     if (aDist < aBfBest)
+    {
       aBfBest = aDist;
+    }
   }
   EXPECT_NEAR(aSqDist, aBfBest, 1e-10);
 }
@@ -1351,11 +1359,17 @@ TEST(NCollection_KDTreeTest, NearestPoint3D_LargeGrid)
   TestPoint3D   aPoints[THE_N];
   int           k = 0;
   for (int i = 0; i < 5; ++i)
+  {
     for (int j = 0; j < 5; ++j)
+    {
       for (int l = 0; l < 5; ++l)
+      {
         aPoints[k++] = {static_cast<double>(i * 2),
                         static_cast<double>(j * 2),
                         static_cast<double>(l * 2)};
+      }
+    }
+  }
   NCollection_KDTree<TestPoint3D, 3> aTree;
   aTree.Build(aPoints, THE_N);
   const size_t aIdx = aTree.NearestPoint({3.1, 5.1, 7.1});
@@ -1577,8 +1591,12 @@ TEST(NCollection_KDTreeTest, RangeSearch2D_OffCenter)
   TestPoint2D   aPoints[THE_N];
   int           k = 0;
   for (int i = 0; i < 5; ++i)
+  {
     for (int j = 0; j < 5; ++j)
+    {
       aPoints[k++] = {static_cast<double>(i), static_cast<double>(j)};
+    }
+  }
   NCollection_KDTree<TestPoint2D, 2> aTree;
   aTree.Build(aPoints, THE_N);
   // Search radius 0.6 around (2, 2) should find only (2,2)
@@ -2037,8 +2055,12 @@ TEST(NCollection_KDTreeTest, Degenerate_GridAlignedToAxes)
   TestPoint2D   aPoints[THE_N];
   int           k = 0;
   for (int i = 0; i < 10; ++i)
+  {
     for (int j = 0; j < 10; ++j)
+    {
       aPoints[k++] = {static_cast<double>(i), static_cast<double>(j)};
+    }
+  }
   NCollection_KDTree<TestPoint2D, 2> aTree;
   aTree.Build(aPoints, THE_N);
   // Verify nearest for several queries
@@ -2559,7 +2581,9 @@ TEST(NCollection_KDTreeTest, BruteForce_AllQueries_500Points)
       {
         const double aDist = sqDist2D(aQuery, aPoints[i]);
         if (aDist < aBfBest)
+        {
           aBfBest = aDist;
+        }
       }
       EXPECT_NEAR(aKdSqDist, aBfBest, 1e-10) << "Nearest q=" << q;
     }
@@ -2571,7 +2595,9 @@ TEST(NCollection_KDTreeTest, BruteForce_AllQueries_500Points)
       aTree.KNearestPoints(aQuery, K, anIndices, aDists);
       std::vector<double> aBfDists(THE_N);
       for (int i = 0; i < THE_N; ++i)
+      {
         aBfDists[i] = sqDist2D(aQuery, aPoints[i]);
+      }
       std::sort(aBfDists.begin(), aBfDists.end());
       EXPECT_NEAR(aDists.Value(static_cast<int>(K)), aBfDists[K - 1], 1e-10) << "KNN q=" << q;
     }
@@ -2584,7 +2610,9 @@ TEST(NCollection_KDTreeTest, BruteForce_AllQueries_500Points)
       for (int i = 0; i < THE_N; ++i)
       {
         if (sqDist2D(aQuery, aPoints[i]) <= aRadiusSq)
+        {
           ++aBfCount;
+        }
       }
       EXPECT_EQ(aKdResult.Size(), aBfCount) << "Range q=" << q;
     }
@@ -2599,7 +2627,9 @@ TEST(NCollection_KDTreeTest, BruteForce_AllQueries_500Points)
       {
         if (aPoints[i].X >= aMin.X && aPoints[i].X <= aMax.X && aPoints[i].Y >= aMin.Y
             && aPoints[i].Y <= aMax.Y)
+        {
           ++aBfCount;
+        }
       }
       EXPECT_EQ(aKdResult.Size(), aBfCount) << "Box q=" << q;
     }

@@ -30,13 +30,17 @@ static bool operator==(const NCollection_DynamicArray<int>& theFmt1,
                        const NCollection_DynamicArray<int>& theFmt2)
 {
   if (theFmt1.Length() != theFmt2.Length())
+  {
     return false;
+  }
   NCollection_DynamicArray<int>::Iterator anIt1(theFmt1);
   NCollection_DynamicArray<int>::Iterator anIt2(theFmt1);
   for (; anIt1.More(); anIt1.Next(), anIt2.Next())
   {
     if (anIt1.Value() != anIt2.Value())
+    {
       return false;
+    }
   }
   return true;
 }

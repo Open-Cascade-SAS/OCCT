@@ -40,7 +40,9 @@ void RWStepGeom_RWBSplineCurveWithKnots::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 9, ach, "b_spline_curve_with_knots"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -63,7 +65,9 @@ void RWStepGeom_RWBSplineCurveWithKnots::ReadStep(
   {
     int nb3 = data->NbParams(nsub3);
     if (nb3 < 1)
+    {
       ach->AddFail("Number of control points of the b_spline_curve_form is equal to 0");
+    }
     else
     {
       aControlPointsList = new NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>(1, nb3);
@@ -76,7 +80,9 @@ void RWStepGeom_RWBSplineCurveWithKnots::ReadStep(
                              ach,
                              STANDARD_TYPE(StepGeom_CartesianPoint),
                              anent3))
+        {
           aControlPointsList->SetValue(i3, anent3);
+        }
       }
     }
   }
@@ -93,7 +99,9 @@ void RWStepGeom_RWBSplineCurveWithKnots::ReadStep(
     }
   }
   else
+  {
     ach->AddFail("Parameter #4 (curve_form) is not an enumeration");
+  }
 
   // --- inherited field : closedCurve ---
 
@@ -120,7 +128,9 @@ void RWStepGeom_RWBSplineCurveWithKnots::ReadStep(
     {
       // szv#4:S4163:12Mar99 `bool stat7 =` not needed
       if (data->ReadInteger(nsub7, i7, "knot_multiplicities", ach, aKnotMultiplicitiesItem))
+      {
         aKnotMultiplicities->SetValue(i7, aKnotMultiplicitiesItem);
+      }
     }
   }
 
@@ -137,7 +147,9 @@ void RWStepGeom_RWBSplineCurveWithKnots::ReadStep(
     {
       // szv#4:S4163:12Mar99 `bool stat8 =` not needed
       if (data->ReadReal(nsub8, i8, "knots", ach, aKnotsItem))
+      {
         aKnots->SetValue(i8, aKnotsItem);
+      }
     }
   }
 
@@ -153,7 +165,9 @@ void RWStepGeom_RWBSplineCurveWithKnots::ReadStep(
     }
   }
   else
+  {
     ach->AddFail("Parameter #9 (knot_spec) is not an enumeration");
+  }
 
   //--- Initialisation of the read entity ---
 
@@ -283,8 +297,12 @@ void RWStepGeom_RWBSplineCurveWithKnots::Check(
   {
     double distKn = ent->KnotsValue(i - 1) - ent->KnotsValue(i);
     if (std::abs(distKn) <= RealEpsilon())
+    {
       ach->AddWarning("WARNING: Curve contains identical KnotsValues");
+    }
     else if (distKn > RealEpsilon())
+    {
       ach->AddFail("ERROR: Curve contains descending KnotsValues");
+    }
   }
 }

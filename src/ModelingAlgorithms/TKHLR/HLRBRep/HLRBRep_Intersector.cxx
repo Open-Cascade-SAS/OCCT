@@ -108,9 +108,13 @@ void HLRBRep_Intersector::Perform(HLRBRep_EdgeData* theEdge1,
   theEdge1->Status().Bounds(a, ta, b, tb);
   d = b - a;
   if (theDa1 != 0)
+  {
     a = a + d * theDa1;
+  }
   if (theDb1 != 0)
+  {
     b = b - d * theDb1;
+  }
   myC1->D0(a, pa);
   myC1->D0(b, pb);
   a = myC1->Parameter2d(a);
@@ -160,9 +164,13 @@ void HLRBRep_Intersector::Perform(const int /*theNA*/,
   tol2 = Precision::Confusion();
   //////////////////////////////////////////
   if (tol1 > tol2)
+  {
     tol = tol1;
+  }
   else
+  {
     tol = tol2;
+  }
 
   bool   aPasBon;
   double aDecalagea1 = 100.0;
@@ -175,14 +183,20 @@ void HLRBRep_Intersector::Perform(const int /*theNA*/,
     theEdge1->Status().Bounds(a1, ta, b1, tb); //--   -> Parametres 3d
     double mtol = tol;
     if (mtol < ta)
+    {
       mtol = ta;
+    }
     if (mtol < tb)
+    {
       mtol = tb;
+    }
     d = b1 - a1;
 
     double pdist = tol;
     if (pdist < 0.0000001)
+    {
       pdist = 0.0000001;
+    }
 
     if (theDa1 != 0)
     {
@@ -252,18 +266,26 @@ void HLRBRep_Intersector::Perform(const int /*theNA*/,
     }
 
     if (ta > tol)
+    {
       ta = (float)tol;
+    }
     if (tb > tol)
+    {
       tb = (float)tol;
+    }
 
     IntRes2d_Domain D1(pa1, a1, (double)ta, pb1, b1, (double)tb);
 
     theEdge2->Status().Bounds(a2, ta, b2, tb);
     mtol = tol;
     if (mtol < ta)
+    {
       mtol = ta;
+    }
     if (mtol < tb)
+    {
       mtol = tb;
+    }
 
     d = b2 - a2;
 
@@ -335,9 +357,13 @@ void HLRBRep_Intersector::Perform(const int /*theNA*/,
     }
 
     if (ta > tol)
+    {
       ta = (float)tol;
+    }
     if (tb > tol)
+    {
       tb = (float)tol;
+    }
 
     IntRes2d_Domain D2(pa2, a2, (double)ta, pb2, b2, (double)tb);
 
@@ -524,42 +550,70 @@ void HLRBRep_Intersector::Perform(const gp_Lin& L, const double P)
       pmin = pmax = p;
       p           = ElCLib::Parameter(L, gp_Pnt(x0, y0, z1));
       if (pmin > p)
+      {
         pmin = p;
+      }
       if (pmax < p)
+      {
         pmax = p;
+      }
 
       p = ElCLib::Parameter(L, gp_Pnt(x1, y0, z0));
       if (pmin > p)
+      {
         pmin = p;
+      }
       if (pmax < p)
+      {
         pmax = p;
+      }
       p = ElCLib::Parameter(L, gp_Pnt(x1, y0, z1));
       if (pmin > p)
+      {
         pmin = p;
+      }
       if (pmax < p)
+      {
         pmax = p;
+      }
 
       p = ElCLib::Parameter(L, gp_Pnt(x0, y1, z0));
       if (pmin > p)
+      {
         pmin = p;
+      }
       if (pmax < p)
+      {
         pmax = p;
+      }
       p = ElCLib::Parameter(L, gp_Pnt(x0, y1, z1));
       if (pmin > p)
+      {
         pmin = p;
+      }
       if (pmax < p)
+      {
         pmax = p;
+      }
 
       p = ElCLib::Parameter(L, gp_Pnt(x1, y1, z0));
       if (pmin > p)
+      {
         pmin = p;
+      }
       if (pmax < p)
+      {
         pmax = p;
+      }
       p = ElCLib::Parameter(L, gp_Pnt(x1, y1, z1));
       if (pmin > p)
+      {
         pmin = p;
+      }
       if (pmax < p)
+      {
         pmax = p;
+      }
       pmin -= 0.000001;
       pmax += 0.000001;
 
@@ -571,7 +625,9 @@ void HLRBRep_Intersector::Perform(const gp_Lin& L, const double P)
       else
       {
         if (pmax > P)
+        {
           pmax = P + 0.0000001;
+        }
       }
       HLRBRep_ThePolygonOfInterCSurf Polygon(L, pmin, pmax, 3);
       myCSIntersector.Perform(L,
@@ -596,11 +652,17 @@ void HLRBRep_Intersector::Perform(const gp_Lin& L, const double P)
 bool HLRBRep_Intersector::IsDone() const
 {
   if (myTypePerform == 1)
+  {
     return myIntersector.IsDone();
+  }
   else if (myTypePerform == 2)
+  {
     return myCSIntersector.IsDone();
+  }
   else
+  {
     return (true);
+  }
 }
 
 //=================================================================================================
@@ -608,14 +670,22 @@ bool HLRBRep_Intersector::IsDone() const
 int HLRBRep_Intersector::NbPoints() const
 {
   if (myTypePerform == 43)
+  {
     return (0);
+  }
 
   if (myTypePerform == 1)
+  {
     return myIntersector.NbPoints();
+  }
   else if (myTypePerform == 2)
+  {
     return myCSIntersector.NbPoints();
+  }
   else
+  {
     return (1);
+  }
 }
 
 //=================================================================================================
@@ -623,9 +693,13 @@ int HLRBRep_Intersector::NbPoints() const
 const IntRes2d_IntersectionPoint& HLRBRep_Intersector::Point(const int N) const
 {
   if (myTypePerform == 0)
+  {
     return (mySinglePoint);
+  }
   else
+  {
     return myIntersector.Point(N);
+  }
 }
 
 //=================================================================================================
@@ -640,11 +714,17 @@ const IntCurveSurface_IntersectionPoint& HLRBRep_Intersector::CSPoint(const int 
 int HLRBRep_Intersector::NbSegments() const
 {
   if (myTypePerform == 1)
+  {
     return myIntersector.NbSegments();
+  }
   else if (myTypePerform == 2)
+  {
     return myCSIntersector.NbSegments();
+  }
   else
+  {
     return (0);
+  }
 }
 
 //=================================================================================================

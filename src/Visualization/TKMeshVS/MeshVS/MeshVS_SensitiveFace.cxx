@@ -29,7 +29,9 @@ MeshVS_SensitiveFace::MeshVS_SensitiveFace(const occ::handle<SelectMgr_EntityOwn
   gp_XYZ aCenter(0.0, 0.0, 0.0);
   int    aNbPnts = thePnts.Upper() - thePnts.Lower() + 1;
   for (int aPntIdx = thePnts.Lower(); aPntIdx <= thePnts.Upper(); aPntIdx++)
+  {
     aCenter += thePnts(aPntIdx).XYZ();
+  }
 
   myCenter.SetXYZ(aCenter / aNbPnts);
 }

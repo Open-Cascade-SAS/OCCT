@@ -51,6 +51,8 @@ occ::handle<StepShape_OrientedClosedShell> StepShape_BrepWithVoids::VoidsValue(c
 int StepShape_BrepWithVoids::NbVoids() const
 {
   if (voids.IsNull())
+  {
     return 0;
+  }
   return voids->Length();
 }

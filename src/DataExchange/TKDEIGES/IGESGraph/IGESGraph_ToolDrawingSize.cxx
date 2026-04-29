@@ -43,8 +43,9 @@ void IGESGraph_ToolDrawingSize::ReadOwnParams(const occ::handle<IGESGraph_Drawin
   // Reading nbPropertyValues(Integer)
   // clang-format off
   PR.ReadInteger(PR.Current(), "No. of property values", nbPropertyValues); //szv#4:S4163:12Mar99 `st=` not needed
-  if (nbPropertyValues != 2)
+  if (nbPropertyValues != 2) {
     PR.AddFail("No. of Property values : Value is not 2");
+}
 
   // Reading xSize(Real)
   PR.ReadReal (PR.Current(), "Drawing extent along +ve XD axis", xSize); //szv#4:S4163:12Mar99 `st=` not needed
@@ -81,7 +82,9 @@ bool IGESGraph_ToolDrawingSize::OwnCorrect(const occ::handle<IGESGraph_DrawingSi
 {
   bool res = (ent->NbPropertyValues() != 2);
   if (res)
+  {
     ent->Init(2, ent->XSize(), ent->YSize()); // nbpropertyvalues=2
+  }
   return res;
 }
 
@@ -104,7 +107,9 @@ void IGESGraph_ToolDrawingSize::OwnCheck(const occ::handle<IGESGraph_DrawingSize
                                          occ::handle<Interface_Check>& ach) const
 {
   if (ent->NbPropertyValues() != 2)
+  {
     ach->AddFail("No. of Property values : Value != 2");
+  }
 }
 
 void IGESGraph_ToolDrawingSize::OwnDump(const occ::handle<IGESGraph_DrawingSize>& ent,
@@ -116,5 +121,5 @@ void IGESGraph_ToolDrawingSize::OwnDump(const occ::handle<IGESGraph_DrawingSize>
     << "No. of property values : " << ent->NbPropertyValues() << "\n"
     << "Drawing extent along positive X-axis : " << ent->XSize() << "\n"
     << "Drawing extent along positive Y-axis : " << ent->YSize() << "\n"
-    << std::endl;
+    << '\n';
 }

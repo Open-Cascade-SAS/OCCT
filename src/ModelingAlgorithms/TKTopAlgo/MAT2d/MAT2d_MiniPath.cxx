@@ -55,7 +55,9 @@ void MAT2d_MiniPath::Perform(
   indStart     = IndStart;
   theDirection = 1.;
   if (Sense)
+  {
     theDirection = -1.;
+  }
 
   //----------------------------------------------------------------------
   // Calcul des connexions qui realisent le minimum de distance entre les
@@ -176,7 +178,6 @@ void MAT2d_MiniPath::Append(const occ::handle<MAT2d_Connexion>& C)
     Seq.InsertBefore(IndexAfter, C);
   }
   theFather.Bind(C->IndexSecondLine(), C);
-  return;
 }
 
 //============================================================================
@@ -250,7 +251,9 @@ void MAT2d_MiniPath::ExploSons(NCollection_Sequence<occ::handle<MAT2d_Connexion>
   int Index = CRef->IndexSecondLine();
 
   if (!theConnexions.IsBound(Index))
+  {
     return;
+  }
 
   const NCollection_Sequence<occ::handle<MAT2d_Connexion>>& SC  = theConnexions(Index);
   occ::handle<MAT2d_Connexion>                              CRR = CRef->Reverse();

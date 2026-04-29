@@ -52,9 +52,13 @@ occ::handle<XCAFDoc_NoteBinData> XCAFDoc_NoteBinData::Set(
     aNoteBinData = new XCAFDoc_NoteBinData();
     aNoteBinData->XCAFDoc_Note::Set(theUserName, theTimeStamp);
     if (aNoteBinData->Set(theTitle, theMIMEtype, theFile))
+    {
       theLabel.AddAttribute(aNoteBinData);
+    }
     else
+    {
       aNoteBinData.Nullify();
+    }
   }
   return aNoteBinData;
 }
@@ -91,18 +95,24 @@ bool XCAFDoc_NoteBinData::Set(const TCollection_ExtendedString& theTitle,
                               OSD_File&                         theFile)
 {
   if (!theFile.IsOpen() || !theFile.IsReadable())
+  {
     return false;
+  }
 
   Backup();
 
   if (theFile.Size() > (size_t)IntegerLast())
+  {
     return false;
+  }
 
   myData.reset(new NCollection_HArray1<uint8_t>(1, (int)theFile.Size()));
   int nbReadBytes = 0;
   theFile.Read((void*)&myData->First(), myData->Length(), nbReadBytes);
   if (nbReadBytes < myData->Length())
+  {
     return false;
+  }
 
   myTitle    = theTitle;
   myMIMEtype = theMIMEtype;
@@ -161,7 +171,9 @@ void XCAFDoc_NoteBinData::Paste(const occ::handle<TDF_Attribute>&       theAttrI
 
   occ::handle<XCAFDoc_NoteBinData> aMine = occ::down_cast<XCAFDoc_NoteBinData>(theAttrInto);
   if (!aMine.IsNull())
+  {
     aMine->Set(myTitle, myMIMEtype, myData);
+  }
 }
 
 //=================================================================================================
@@ -176,7 +188,9 @@ Standard_OStream& XCAFDoc_NoteBinData::Dump(Standard_OStream& theOS) const
   if (!myData.IsNull())
   {
     for (int i = myData->Lower(); i <= myData->Upper(); ++i)
+    {
       theOS << myData->Value(i);
+    }
   }
   return theOS;
 }

@@ -29,9 +29,13 @@ StepBasic_SourceItem::StepBasic_SourceItem() = default;
 int StepBasic_SourceItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepData_SelectNamed)))
+  {
     return 1;
+  }
   return 0;
 }
 

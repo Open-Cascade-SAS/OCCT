@@ -45,7 +45,9 @@ Standard_GUID generateRandomGUID()
   aUUID.Data2 = static_cast<uint16_t>(aRand1 >> 32);
   aUUID.Data3 = static_cast<uint16_t>(aRand1 >> 48);
   for (int i = 0; i < 8; ++i)
+  {
     aUUID.Data4[i] = static_cast<uint8_t>(aRand2 >> (i * 8));
+  }
   return Standard_GUID(aUUID);
 }
 
@@ -286,7 +288,9 @@ const NCollection_DynamicArray<BRepGraph_ProductId>& BRepGraph::RootProductIds()
 const BRepGraphInc::BaseDef* BRepGraph::topoEntity(const BRepGraph_NodeId theId) const
 {
   if (!theId.IsValid())
+  {
     return nullptr;
+  }
   const BRepGraphInc_Storage& aStorage = myData->myIncStorage;
   switch (theId.NodeKind)
   {
@@ -344,7 +348,9 @@ const BRepGraphInc::BaseDef* BRepGraph::topoEntity(const BRepGraph_NodeId theId)
 BRepGraphInc::BaseDef* BRepGraph::changeTopoEntity(const BRepGraph_NodeId theId)
 {
   if (!theId.IsValid())
+  {
     return nullptr;
+  }
   BRepGraphInc_Storage& aStorage = myData->myIncStorage;
   switch (theId.NodeKind)
   {
@@ -402,14 +408,18 @@ BRepGraphInc::BaseDef* BRepGraph::changeTopoEntity(const BRepGraph_NodeId theId)
 void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
 {
   if (!theNode.IsValid())
+  {
     return;
+  }
 
   using Kind                           = BRepGraph_NodeId::Kind;
   const BRepGraphInc_Storage& aStorage = myData->myIncStorage;
 
   // Bounds check: ensure the node index is within the entity vector.
   if (topoEntity(theNode) == nullptr)
+  {
     return;
+  }
 
   struct StackEntry
   {
@@ -429,7 +439,9 @@ void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
 
   const auto aPushChild = [&](const BRepGraph_NodeId theChild, const uint32_t theDepth) {
     if (!theChild.IsValid())
+    {
       return;
+    }
     aStack.Append({theChild, theDepth});
   };
 
@@ -439,11 +451,15 @@ void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
     aStack.EraseLast();
 
     if (aCurrent.Depth > aMaxDepth || !aCurrent.Node.IsValid() || !aVisited.Add(aCurrent.Node))
+    {
       continue;
+    }
 
     // Bounds check: skip nodes whose index is outside the entity vector.
     if (topoEntity(aCurrent.Node) == nullptr)
+    {
       continue;
+    }
 
     // Increment OwnGen + SubtreeGen so generation-based cache freshness detects the change.
     BRepGraphInc::BaseDef* anEntity = changeTopoEntity(aCurrent.Node);
@@ -484,7 +500,9 @@ void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
           aPushChild(aChildIt.CurrentId(), aNextDepth);
         }
         for (const BRepGraph_ChildRefId& aChildRefId : aSolidEnt.AuxChildRefIds)
+        {
           aPushChild(aStorage.ChildRef(aChildRefId).ChildDefId, aNextDepth);
+        }
         break;
       }
       case Kind::Shell: {
@@ -496,7 +514,9 @@ void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
           aPushChild(aChildIt.CurrentId(), aNextDepth);
         }
         for (const BRepGraph_ChildRefId& aChildRefId : aShellEnt.AuxChildRefIds)
+        {
           aPushChild(aStorage.ChildRef(aChildRefId).ChildDefId, aNextDepth);
+        }
         break;
       }
       case Kind::Face: {
@@ -553,11 +573,15 @@ void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
 void BRepGraph::markModified(const BRepGraph_NodeId theNodeId) noexcept
 {
   if (!theNodeId.IsValid())
+  {
     return;
+  }
 
   BRepGraphInc::BaseDef* anEntity = changeTopoEntity(theNodeId);
   if (anEntity == nullptr)
+  {
     return;
+  }
 
   markModified(theNodeId, *anEntity);
 }
@@ -581,7 +605,9 @@ void BRepGraph::markModified(const BRepGraph_NodeId theNodeId,
 
   // Dispatch modification event for the directly mutated node.
   if (myLayerRegistry.HasModificationSubscribers())
+  {
     myLayerRegistry.DispatchNodeModified(theNodeId);
+  }
 
   // Propagate SubtreeGen upward to parents (mutex-free).
   propagateSubtreeGen(theNodeId);
@@ -592,7 +618,9 @@ void BRepGraph::markModified(const BRepGraph_NodeId theNodeId,
 void BRepGraph::markRefModified(const BRepGraph_RefId theRefId) noexcept
 {
   if (!theRefId.IsValid())
+  {
     return;
+  }
 
   BRepGraphInc::BaseRef& aRef = myData->myIncStorage.ChangeBaseRef(theRefId);
   markRefModified(theRefId, aRef);
@@ -620,7 +648,9 @@ void BRepGraph::markRefModified(const BRepGraph_RefId  theRefId,
   }
 
   if (!theRef.ParentId.IsValid())
+  {
     return;
+  }
 
   markParentSubtreeGen(theRef.ParentId);
 }
@@ -631,14 +661,18 @@ void BRepGraph::markParentSubtreeGen(const BRepGraph_NodeId theParentId) noexcep
 {
   BRepGraphInc::BaseDef* aParent = changeTopoEntity(theParentId);
   if (aParent == nullptr)
+  {
     return;
+  }
 
   const uint32_t aWave = myData->myPropagationWave.load(std::memory_order_relaxed);
 
   // Re-visit guard: skip if this parent was already processed in the current
   // propagation wave. Prevents exponential blowup on diamond topologies.
   if (aParent->LastPropWave == aWave)
+  {
     return;
+  }
   aParent->LastPropWave = aWave;
 
   ++aParent->SubtreeGen; // ONLY SubtreeGen - not OwnGen.
@@ -660,32 +694,48 @@ void BRepGraph::propagateSubtreeGen(const BRepGraph_NodeId theNodeId) noexcept
       const NCollection_DynamicArray<BRepGraph_WireId>* aWires =
         aRevIdx.WiresOfEdge(BRepGraph_EdgeId(theNodeId));
       if (aWires != nullptr)
+      {
         for (const BRepGraph_WireId& aWireId : *aWires)
+        {
           markParentSubtreeGen(aWireId);
+        }
+      }
       break;
     }
     case BRepGraph_NodeId::Kind::Wire: {
       const NCollection_DynamicArray<BRepGraph_FaceId>* aFaces =
         aRevIdx.FacesOfWire(BRepGraph_WireId(theNodeId));
       if (aFaces != nullptr)
+      {
         for (const BRepGraph_FaceId& aFaceId : *aFaces)
+        {
           markParentSubtreeGen(aFaceId);
+        }
+      }
       break;
     }
     case BRepGraph_NodeId::Kind::Face: {
       const NCollection_DynamicArray<BRepGraph_ShellId>* aShells =
         aRevIdx.ShellsOfFace(BRepGraph_FaceId(theNodeId));
       if (aShells != nullptr)
+      {
         for (const BRepGraph_ShellId& aShellId : *aShells)
+        {
           markParentSubtreeGen(aShellId);
+        }
+      }
       break;
     }
     case BRepGraph_NodeId::Kind::Shell: {
       const NCollection_DynamicArray<BRepGraph_SolidId>* aSolids =
         aRevIdx.SolidsOfShell(BRepGraph_ShellId(theNodeId));
       if (aSolids != nullptr)
+      {
         for (const BRepGraph_SolidId& aSolidId : *aSolids)
+        {
           markParentSubtreeGen(aSolidId);
+        }
+      }
       break;
     }
     case BRepGraph_NodeId::Kind::Occurrence: {
@@ -727,7 +777,9 @@ void BRepGraph::propagateSubtreeGen(const BRepGraph_NodeId theNodeId) noexcept
 void BRepGraph::markRepModified(const BRepGraph_RepId theRepId) noexcept
 {
   if (!theRepId.IsValid())
+  {
     return;
+  }
 
   BRepGraphInc_Storage& aStorage = myData->myIncStorage;
 
@@ -737,43 +789,57 @@ void BRepGraph::markRepModified(const BRepGraph_RepId theRepId) noexcept
     case BRepGraph_RepId::Kind::Surface: {
       const BRepGraph_SurfaceRepId aRepId(theRepId);
       if (aRepId.IsValid(aStorage.NbSurfaces()))
+      {
         ++aStorage.ChangeSurfaceRep(aRepId).OwnGen;
+      }
       break;
     }
     case BRepGraph_RepId::Kind::Curve3D: {
       const BRepGraph_Curve3DRepId aRepId(theRepId);
       if (aRepId.IsValid(aStorage.NbCurves3D()))
+      {
         ++aStorage.ChangeCurve3DRep(aRepId).OwnGen;
+      }
       break;
     }
     case BRepGraph_RepId::Kind::Curve2D: {
       const BRepGraph_Curve2DRepId aRepId(theRepId);
       if (aRepId.IsValid(aStorage.NbCurves2D()))
+      {
         ++aStorage.ChangeCurve2DRep(aRepId).OwnGen;
+      }
       break;
     }
     case BRepGraph_RepId::Kind::Triangulation: {
       const BRepGraph_TriangulationRepId aRepId(theRepId);
       if (aRepId.IsValid(aStorage.NbTriangulations()))
+      {
         ++aStorage.ChangeTriangulationRep(aRepId).OwnGen;
+      }
       break;
     }
     case BRepGraph_RepId::Kind::Polygon3D: {
       const BRepGraph_Polygon3DRepId aRepId(theRepId);
       if (aRepId.IsValid(aStorage.NbPolygons3D()))
+      {
         ++aStorage.ChangePolygon3DRep(aRepId).OwnGen;
+      }
       break;
     }
     case BRepGraph_RepId::Kind::Polygon2D: {
       const BRepGraph_Polygon2DRepId aRepId(theRepId);
       if (aRepId.IsValid(aStorage.NbPolygons2D()))
+      {
         ++aStorage.ChangePolygon2DRep(aRepId).OwnGen;
+      }
       break;
     }
     case BRepGraph_RepId::Kind::PolygonOnTri: {
       const BRepGraph_PolygonOnTriRepId aRepId(theRepId);
       if (aRepId.IsValid(aStorage.NbPolygonsOnTri()))
+      {
         ++aStorage.ChangePolygonOnTriRep(aRepId).OwnGen;
+      }
       break;
     }
     default:
@@ -786,22 +852,34 @@ void BRepGraph::markRepModified(const BRepGraph_RepId theRepId) noexcept
     case BRepGraph_RepId::Kind::Surface: {
       const BRepGraph_SurfaceRepId aSurfaceRepId(theRepId);
       for (BRepGraph_FaceIterator aFaceIt(*this); aFaceIt.More(); aFaceIt.Next())
+      {
         if (aFaceIt.Current().SurfaceRepId == aSurfaceRepId)
+        {
           markModified(aFaceIt.CurrentId());
+        }
+      }
       break;
     }
     case BRepGraph_RepId::Kind::Curve3D: {
       const BRepGraph_Curve3DRepId aCurve3DRepId(theRepId);
       for (BRepGraph_EdgeIterator anEdgeIt(*this); anEdgeIt.More(); anEdgeIt.Next())
+      {
         if (anEdgeIt.Current().Curve3DRepId == aCurve3DRepId)
+        {
           markModified(anEdgeIt.CurrentId());
+        }
+      }
       break;
     }
     case BRepGraph_RepId::Kind::Curve2D: {
       const BRepGraph_Curve2DRepId aCurve2DRepId(theRepId);
       for (BRepGraph_CoEdgeIterator aCoEdgeIt(*this); aCoEdgeIt.More(); aCoEdgeIt.Next())
+      {
         if (aCoEdgeIt.Current().Curve2DRepId == aCurve2DRepId)
+        {
           markModified(aCoEdgeIt.CurrentId());
+        }
+      }
       break;
     }
     case BRepGraph_RepId::Kind::Triangulation: {
@@ -821,15 +899,19 @@ void BRepGraph::markRepModified(const BRepGraph_RepId theRepId) noexcept
                    aCached->TriangulationRepIds);
                  aTriIt.More();
                  aTriIt.Next())
+            {
               if (aTriIt.Value() == aTriangulationRepId)
               {
                 aFound = true;
                 break;
               }
+            }
           }
         }
         if (aFound)
+        {
           markModified(aFaceId);
+        }
       }
       break;
     }
@@ -844,10 +926,14 @@ void BRepGraph::markRepModified(const BRepGraph_RepId theRepId) noexcept
           const BRepGraph_MeshCache::EdgeMeshEntry* aCached =
             myData->myMeshCache.FindEdgeMesh(anEdgeId);
           if (aCached != nullptr && aCached->Polygon3DRepId == aPolygon3DRepId)
+          {
             aFound = true;
+          }
         }
         if (aFound)
+        {
           markModified(anEdgeId);
+        }
       }
       break;
     }
@@ -862,10 +948,14 @@ void BRepGraph::markRepModified(const BRepGraph_RepId theRepId) noexcept
           const BRepGraph_MeshCache::CoEdgeMeshEntry* aCached =
             myData->myMeshCache.FindCoEdgeMesh(aCoEdgeId);
           if (aCached != nullptr && aCached->Polygon2DRepId == aPolygon2DRepId)
+          {
             aFound = true;
+          }
         }
         if (aFound)
+        {
           markModified(aCoEdgeId);
+        }
       }
       break;
     }
@@ -886,15 +976,19 @@ void BRepGraph::markRepModified(const BRepGraph_RepId theRepId) noexcept
                    aCached->PolygonOnTriRepIds);
                  aPolyIt.More();
                  aPolyIt.Next())
+            {
               if (aPolyIt.Value() == aPolygonOnTriRepId)
               {
                 aFound = true;
                 break;
               }
+            }
           }
         }
         if (aFound)
+        {
           markModified(aCoEdgeId);
+        }
       }
       break;
     }
@@ -1039,7 +1133,9 @@ const BRepGraph_MeshCacheStorage& BRepGraph::meshCache() const
 const BRepGraphInc::BaseRef* BRepGraph::refEntity(const BRepGraph_RefId theId) const
 {
   if (!theId.IsValid())
+  {
     return nullptr;
+  }
   const BRepGraphInc_Storage& aStorage = myData->myIncStorage;
   switch (theId.RefKind)
   {

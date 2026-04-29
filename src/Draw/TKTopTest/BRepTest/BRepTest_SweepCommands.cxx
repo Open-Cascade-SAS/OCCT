@@ -66,11 +66,15 @@ static BRepOffsetAPI_ThruSections*  Generator = nullptr;
 static int prism(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 6)
+  {
     return 1;
+  }
 
   TopoDS_Shape base = DBRep::Get(a[2]);
   if (base.IsNull())
+  {
     return 1;
+  }
 
   gp_Vec V(Draw::Atof(a[3]), Draw::Atof(a[4]), Draw::Atof(a[5]));
 
@@ -117,11 +121,15 @@ static int prism(Draw_Interpretor&, int n, const char** a)
 static int revol(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 10)
+  {
     return 1;
+  }
 
   TopoDS_Shape base = DBRep::Get(a[2]);
   if (base.IsNull())
+  {
     return 1;
+  }
 
   gp_Pnt P(Draw::Atof(a[3]), Draw::Atof(a[4]), Draw::Atof(a[5]));
   gp_Dir D(Draw::Atof(a[6]), Draw::Atof(a[7]), Draw::Atof(a[8]));
@@ -169,29 +177,41 @@ static int pipe(Draw_Interpretor& di, int n, const char** a)
   }
 
   if (n > 1 && n < 4)
+  {
     return 1;
+  }
 
   TopoDS_Shape Spine = DBRep::Get(a[2], TopAbs_WIRE);
   if (Spine.IsNull())
+  {
     return 1;
+  }
 
   TopoDS_Shape Profile = DBRep::Get(a[3]);
   if (Profile.IsNull())
+  {
     return 1;
+  }
 
   GeomFill_Trihedron Mode = GeomFill_IsCorrectedFrenet;
   if (n >= 5)
   {
     int iMode = atoi(a[4]);
     if (iMode == 1)
+    {
       Mode = GeomFill_IsFrenet;
+    }
     else if (iMode == 2)
+    {
       Mode = GeomFill_IsDiscreteTrihedron;
+    }
   }
 
   bool ForceApproxC1 = false;
   if (n >= 6)
+  {
     ForceApproxC1 = true;
+  }
 
   BRepOffsetAPI_MakePipe PipeBuilder(TopoDS::Wire(Spine), Profile, Mode, ForceApproxC1);
   TopoDS_Shape           S = PipeBuilder.Shape();
@@ -216,12 +236,18 @@ static int geompipe(Draw_Interpretor&, int n, const char** a)
 {
   TopoDS_Shape Spine = DBRep::Get(a[2], TopAbs_EDGE);
   if (Spine.IsNull())
+  {
     return 1;
+  }
   if (n < 5)
+  {
     return 1;
+  }
   TopoDS_Shape Profile = DBRep::Get(a[3], TopAbs_EDGE);
   if (Profile.IsNull())
+  {
     return 1;
+  }
   double                  aSpFirst, aSpLast, aPrFirst, aPrLast;
   occ::handle<Geom_Curve> SpineCurve   = BRep_Tool::Curve(TopoDS::Edge(Spine), aSpFirst, aSpLast);
   occ::handle<Geom_Curve> ProfileCurve = BRep_Tool::Curve(TopoDS::Edge(Profile), aPrFirst, aPrLast);
@@ -237,9 +263,13 @@ static int geompipe(Draw_Interpretor&, int n, const char** a)
   occ::handle<Geom_Circle> cStart = new Geom_Circle(aAx2Start, Radius);
   int                      k      = 5;
   if (n > k)
+  {
     ByACR = (Draw::Atoi(a[k++]) == 1);
+  }
   if (n > k)
+  {
     rotate = (Draw::Atoi(a[k++]) == 1);
+  }
   GeomFill_Pipe aPipe(ProfileCurve, aAdaptCurve, cStart, ByACR, rotate);
   aPipe.Perform(true);
   if (!aPipe.IsDone())
@@ -249,12 +279,14 @@ static int geompipe(Draw_Interpretor&, int n, const char** a)
   }
 
   double Accuracy = aPipe.ErrorOnSurf();
-  std::cout << "Accuracy of approximation = " << Accuracy << std::endl;
+  std::cout << "Accuracy of approximation = " << Accuracy << '\n';
 
   occ::handle<Geom_Surface> Sur = aPipe.Surface();
   TopoDS_Face               F;
   if (!Sur.IsNull())
+  {
     F = BRepBuilderAPI_MakeFace(Sur, Precision::Confusion());
+  }
   DBRep::Set(a[1], F);
   return 0;
 }
@@ -276,7 +308,9 @@ int evolved(Draw_Interpretor& di, int n, const char** a)
   }
 
   if (n < 4)
+  {
     return 1;
+  }
   bool         Solid            = false;
   bool         isVolume         = false;
   bool         hasToComputeAxes = false;
@@ -368,7 +402,9 @@ int evolved(Draw_Interpretor& di, int n, const char** a)
 static int pruled(Draw_Interpretor&, int n, const char** a)
 {
   if (n != 4)
+  {
     return 1;
+  }
 
   bool         YaWIRE = false;
   TopoDS_Shape S1     = DBRep::Get(a[2], TopAbs_EDGE);
@@ -376,7 +412,9 @@ static int pruled(Draw_Interpretor&, int n, const char** a)
   {
     S1 = DBRep::Get(a[2], TopAbs_WIRE);
     if (S1.IsNull())
+    {
       return 1;
+    }
     YaWIRE = true;
   }
 
@@ -385,7 +423,9 @@ static int pruled(Draw_Interpretor&, int n, const char** a)
   {
     S2 = DBRep::Get(a[3], TopAbs_WIRE);
     if (S2.IsNull())
+    {
       return 1;
+    }
     if (!YaWIRE)
     {
       S1     = BRepLib_MakeWire(TopoDS::Edge(S1));
@@ -419,7 +459,9 @@ static int pruled(Draw_Interpretor&, int n, const char** a)
 int gener(Draw_Interpretor&, int n, const char** a)
 {
   if (n < 4)
+  {
     return 1;
+  }
 
   TopoDS_Shape Shape;
 
@@ -429,7 +471,9 @@ int gener(Draw_Interpretor&, int n, const char** a)
   {
     Shape = DBRep::Get(a[i], TopAbs_WIRE);
     if (Shape.IsNull())
+    {
       return 1;
+    }
 
     aGenerator.AddWire(TopoDS::Wire(Shape));
   }
@@ -448,7 +492,9 @@ int gener(Draw_Interpretor&, int n, const char** a)
 int thrusections(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 6)
+  {
     return 1;
+  }
 
   bool check      = true;
   bool samenumber = true;
@@ -457,7 +503,9 @@ int thrusections(Draw_Interpretor& di, int n, const char** a)
   if (!strcmp(a[1], "-N"))
   {
     if (n < 7)
+    {
       return 1;
+    }
     check = false;
     index++;
   }
@@ -491,9 +539,13 @@ int thrusections(Draw_Interpretor& di, int n, const char** a)
       Shape  = DBRep::Get(a[i], TopAbs_VERTEX);
       IsWire = false;
       if (!Shape.IsNull())
+      {
         Generator->AddVertex(TopoDS::Vertex(Shape));
+      }
       else
+      {
         return 1;
+      }
     }
 
     int             cpt = 0;
@@ -503,9 +555,13 @@ int thrusections(Draw_Interpretor& di, int n, const char** a)
       cpt++;
     }
     if (IsFirstWire)
+    {
       NbEdges = cpt;
+    }
     else if (IsWire && cpt != NbEdges)
+    {
       samenumber = false;
+    }
   }
 
   Generator->SetMutableInput(IsMutableInput);
@@ -521,7 +577,9 @@ int thrusections(Draw_Interpretor& di, int n, const char** a)
     DBRep::Set(a[index - 1], Shell);
     // Save history of the lofting
     if (BRepTest_Objects::IsHistoryNeeded())
+    {
       BRepTest_Objects::SetHistory(Generator->Wires(), *Generator);
+    }
   }
   else
   {
@@ -560,10 +618,14 @@ int thrusections(Draw_Interpretor& di, int n, const char** a)
 static int mksweep(Draw_Interpretor& di, int n, const char** a)
 {
   if (n != 2 && n != 5)
+  {
     return 1;
+  }
   TopoDS_Shape Spine = DBRep::Get(a[1], TopAbs_WIRE);
   if (Spine.IsNull())
+  {
     return 1;
+  }
   delete Sweep;
   Sweep = nullptr;
 
@@ -841,16 +903,24 @@ static int addsweep(Draw_Interpretor& di, int n, const char** a)
   if (thelaw.IsNull())
   {
     if (HasVertex)
+    {
       Sweep->Add(Section, Vertex, isT, isR);
+    }
     else
+    {
       Sweep->Add(Section, isT, isR);
+    }
   }
   else
   {
     if (HasVertex)
+    {
       Sweep->SetLaw(Section, thelaw, Vertex, isT, isR);
+    }
     else
+    {
       Sweep->SetLaw(Section, thelaw, isT, isR);
+    }
   }
 
   return 0;
@@ -930,7 +1000,9 @@ static int buildsweep(Draw_Interpretor& di, int n, const char** a)
   }
   // Reading solid ?
   if ((n > cur) && (!strcmp(a[cur], "-S")))
+  {
     mksolid = true;
+  }
 
   // Calcul le resultat
   Sweep->Build();
@@ -954,7 +1026,9 @@ static int buildsweep(Draw_Interpretor& di, int n, const char** a)
       bool B;
       B = Sweep->MakeSolid();
       if (!B)
+      {
         di << " BuildSweep : It is impossible to make a solid !\n";
+      }
     }
     result = Sweep->Shape();
     DBRep::Set(a[1], result);
@@ -995,7 +1069,9 @@ static int errorsweep(Draw_Interpretor& di, int, const char**)
 static int simulsweep(Draw_Interpretor& di, int n, const char** a)
 {
   if ((n != 3) && (n != 4))
+  {
     return 1;
+  }
 
   if (Sweep == nullptr)
   {
@@ -1047,19 +1123,27 @@ static int simulsweep(Draw_Interpretor& di, int n, const char** a)
 static int middlepath(Draw_Interpretor& /*di*/, int n, const char** a)
 {
   if (n < 5)
+  {
     return 1;
+  }
 
   TopoDS_Shape aShape = DBRep::Get(a[2]);
   if (aShape.IsNull())
+  {
     return 1;
+  }
 
   TopoDS_Shape StartShape = DBRep::Get(a[3]);
   if (StartShape.IsNull())
+  {
     return 1;
+  }
 
   TopoDS_Shape EndShape = DBRep::Get(a[4]);
   if (EndShape.IsNull())
+  {
     return 1;
+  }
 
   BRepOffsetAPI_MiddlePath Builder(aShape, StartShape, EndShape);
   Builder.Build();
@@ -1076,7 +1160,9 @@ void BRepTest::SweepCommands(Draw_Interpretor& theCommands)
 {
   static bool done = false;
   if (done)
+  {
     return;
+  }
   done = true;
 
   DBRep::BasicCommands(theCommands);

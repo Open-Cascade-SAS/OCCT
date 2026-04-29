@@ -31,7 +31,9 @@ void RWStepShape_RWShellBasedSurfaceModel::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "shell_based_surface_model"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -52,7 +54,9 @@ void RWStepShape_RWShellBasedSurfaceModel::ReadStep(
     {
       // szv#4:S4163:12Mar99 `bool stat2 =` not needed
       if (data->ReadEntity(nsub2, i2, "sbsm_boundary", ach, aSbsmBoundaryItem))
+      {
         aSbsmBoundary->SetValue(i2, aSbsmBoundaryItem);
+      }
     }
   }
 

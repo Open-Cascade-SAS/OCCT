@@ -25,13 +25,21 @@ int StepVisual_PresentationSizeAssignmentSelect::CaseNum(
   const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepVisual_PresentationView)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepVisual_PresentationArea)))
+  {
     return 2;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepVisual_AreaInSet)))
+  {
     return 3;
+  }
   return 0;
 }
 

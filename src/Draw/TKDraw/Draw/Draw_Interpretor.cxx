@@ -57,8 +57,10 @@ namespace
 void dumpArgs(Standard_OStream& os, int argc, const char* argv[])
 {
   for (int i = 0; i < argc; i++)
+  {
     os << argv[i] << " ";
-  os << std::endl;
+  }
+  os << '\n';
 }
 
 void flush_standard_streams()
@@ -96,7 +98,9 @@ int capture_start(int theFDStd, int theFDLog)
 void capture_end(int theFDStd, int& theFDSave)
 {
   if (theFDSave < 0)
+  {
     return;
+  }
 
   // restore normal descriptors of console stream
   if (dup2(theFDSave, theFDStd) < 0)
@@ -138,7 +142,9 @@ static int CommandCmd(ClientData theClientData, Tcl_Interp* interp, int argc, co
   }
 
   if (doEcho || doLog)
+  {
     dumpArgs(std::cout, argc, argv);
+  }
 
   // run command
   try
@@ -218,7 +224,7 @@ static int CommandCmd(ClientData theClientData, Tcl_Interp* interp, int argc, co
     const char* aResultStr = Tcl_GetStringResult(interp);
     if (aResultStr != nullptr && aResultStr[0] != '\0')
     {
-      std::cout << aResultStr << std::endl;
+      std::cout << aResultStr << '\n';
     }
   }
 
@@ -275,7 +281,9 @@ Draw_Interpretor::Draw_Interpretor(const Draw_PInterp& theInterp)
 void Draw_Interpretor::Init()
 {
   if (isAllocated)
+  {
     Tcl_DeleteInterp(myInterp);
+  }
   isAllocated = true;
   myInterp    = Tcl_CreateInterp();
 }
@@ -520,7 +528,9 @@ Draw_PInterp Draw_Interpretor::Interp() const
 void Draw_Interpretor::Set(const Draw_PInterp& PIntrp)
 {
   if (isAllocated)
+  {
     Tcl_DeleteInterp(myInterp);
+  }
   isAllocated = false;
   myInterp    = PIntrp;
 }
@@ -530,7 +540,9 @@ void Draw_Interpretor::Set(const Draw_PInterp& PIntrp)
 void Draw_Interpretor::SetDoLog(bool doLog)
 {
   if (myDoLog == doLog)
+  {
     return;
+  }
 
   // create log file if not opened yet
   if (doLog && myFDLog < 0)
@@ -579,7 +591,9 @@ bool Draw_Interpretor::GetDoEcho() const
 void Draw_Interpretor::ResetLog()
 {
   if (myFDLog < 0)
+  {
     return;
+  }
 
   // flush cerr and cout, for the case if they are bound to the log
   flush_standard_streams();
@@ -599,7 +613,9 @@ void Draw_Interpretor::ResetLog()
 void Draw_Interpretor::AddLog(const char* const theStr)
 {
   if (myFDLog < 0 || !theStr || !theStr[0])
+  {
     return;
+  }
 
   // flush cerr and cout, for the case if they are bound to the log
   flush_standard_streams();
@@ -615,7 +631,9 @@ TCollection_AsciiString Draw_Interpretor::GetLog()
 {
   TCollection_AsciiString aLog;
   if (myFDLog < 0)
+  {
     return aLog;
+  }
 
   // flush cerr and cout
   flush_standard_streams();

@@ -23,13 +23,21 @@ StepRepr_Transformation::StepRepr_Transformation() = default;
 int StepRepr_Transformation::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepRepr_ItemDefinedTransformation)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepRepr_FunctionallyDefinedTransformation)))
+  {
     return 2;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepGeom_GeometricRepresentationItem)))
+  {
     return 1;
+  }
   return 0;
 }
 

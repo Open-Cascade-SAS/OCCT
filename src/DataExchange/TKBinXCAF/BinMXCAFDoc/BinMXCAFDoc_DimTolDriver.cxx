@@ -48,7 +48,9 @@ bool BinMXCAFDoc_DimTolDriver::Paste(const BinObjMgt_Persistent&       theSource
   int                         aKind, aFirstInd, aLastInd;
   TCollection_AsciiString     aName, aDescr;
   if (!(theSource >> aKind >> aName >> aDescr >> aFirstInd >> aLastInd))
+  {
     return false;
+  }
 
   occ::handle<NCollection_HArray1<double>> aHArr;
   const int                                aLength = aLastInd - aFirstInd + 1;
@@ -58,7 +60,9 @@ bool BinMXCAFDoc_DimTolDriver::Paste(const BinObjMgt_Persistent&       theSource
 
     NCollection_Array1<double>& aTargetArray = aHArr->ChangeArray1();
     if (!theSource.GetRealArray(&aTargetArray(aFirstInd), aLength))
+    {
       return false;
+    }
   }
   anAtt->Set(aKind,
              aHArr,
@@ -77,13 +81,21 @@ void BinMXCAFDoc_DimTolDriver::Paste(
   occ::handle<XCAFDoc_DimTol> anAtt = occ::down_cast<XCAFDoc_DimTol>(theSource);
   theTarget << anAtt->GetKind();
   if (!anAtt->GetName().IsNull())
+  {
     theTarget << anAtt->GetName()->String();
+  }
   else
+  {
     theTarget << TCollection_AsciiString("");
+  }
   if (!anAtt->GetDescription().IsNull())
+  {
     theTarget << anAtt->GetDescription()->String();
+  }
   else
+  {
     theTarget << TCollection_AsciiString("");
+  }
 
   occ::handle<NCollection_HArray1<double>> aHArr     = anAtt->GetVal();
   int                                      aFirstInd = 1, aLastInd = 0;

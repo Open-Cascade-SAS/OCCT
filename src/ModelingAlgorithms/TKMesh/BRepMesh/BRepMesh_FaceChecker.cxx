@@ -168,10 +168,14 @@ public:
           gp_XY                                aCurVec      = aCurrSegment.Point2->XY() - aRefPnt;
 
           if (aCurVec.SquareModulus() < gp::Resolution())
+          {
             continue;
+          }
 
           if (aPrevVec.SquareModulus() > gp::Resolution())
+          {
             aSumS += aPrevVec ^ aCurVec;
+          }
 
           aPrevVec = aCurVec;
         }

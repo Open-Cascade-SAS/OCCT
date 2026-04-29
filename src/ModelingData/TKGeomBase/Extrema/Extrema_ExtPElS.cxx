@@ -174,7 +174,9 @@ void Extrema_ExtPElS::Perform(const gp_Pnt& P, const gp_Cone& S, const double To
     DirZ = (A < 0 ? -OZ : OZ);
   }
   else
+  {
     DirZ = gp_Vec(M, O);
+  }
 
   // Projection of P in the reference plane of the cone ...
   double Zp = gp_Vec(O, P).Dot(OZ);
@@ -182,7 +184,9 @@ void Extrema_ExtPElS::Perform(const gp_Pnt& P, const gp_Cone& S, const double To
   gp_Pnt Pp = P.Translated(OZ.Multiplied(-Zp));
   gp_Vec OPp(O, Pp);
   if (OPp.SquareMagnitude() < Tol * Tol)
+  {
     return;
+  }
   double U1, V1, U2, V2;
   bool   Same = DirZ.Dot(MP) >= 0.0;
   U1          = gp_Vec(Pos.XDirection()).AngleWithRef(OPp, myZ); //-M_PI<U1<M_PI

@@ -70,7 +70,9 @@ GccAna_Lin2dBisec::GccAna_Lin2dBisec(const gp_Lin2d& Lin1, const gp_Lin2d& Lin2)
         double cross = gp_Vec2d(-Lin2.Direction().Y(), Lin2.Direction().X())
                          .Dot(gp_Vec2d(Lin2.Location(), Lin1.Location()));
         if (cross < 0)
+        {
           dist = -dist;
+        }
         NbrSol++;
         WellDone = true;
         linsol(NbrSol) =
@@ -130,16 +132,22 @@ bool GccAna_Lin2dBisec::IsDone() const
 int GccAna_Lin2dBisec::NbSolutions() const
 {
   if (!WellDone)
+  {
     throw StdFail_NotDone();
+  }
   return NbrSol;
 }
 
 gp_Lin2d GccAna_Lin2dBisec::ThisSolution(const int Index) const
 {
   if (!WellDone)
+  {
     throw StdFail_NotDone();
+  }
   if (Index <= 0 || Index > NbrSol)
+  {
     throw Standard_OutOfRange();
+  }
   return linsol(Index);
 }
 

@@ -76,13 +76,21 @@ void PrsDim_EllipseRadiusDimension::ComputeGeometry()
       break;
   }
   while (myFirstPar > 2 * M_PI)
+  {
     myFirstPar -= 2 * M_PI;
+  }
   while (myLastPar > 2 * M_PI)
+  {
     myLastPar -= 2 * M_PI;
+  }
   while (myFirstPar < 0.0)
+  {
     myFirstPar += 2 * M_PI;
+  }
   while (myLastPar < 0.0)
+  {
     myLastPar += 2 * M_PI;
+  }
 }
 
 //=================================================================================================
@@ -97,9 +105,13 @@ void PrsDim_EllipseRadiusDimension::ComputeFaceGeometry()
   PrsDim::GetPlaneFromFace(TopoDS::Face(myFShape), aPln, aBasisSurf, aSurfType, Offset);
 
   if (aSurfType == PrsDim_KOS_Plane)
+  {
     ComputePlanarFaceGeometry();
+  }
   else
+  {
     ComputeCylFaceGeometry(aSurfType, aBasisSurf, Offset);
+  }
 }
 
 //=======================================================================
@@ -179,7 +191,9 @@ void PrsDim_EllipseRadiusDimension::ComputeCylFaceGeometry(
       myEllipse.SetMinorRadius(Val);
     }
     else
+    {
       myIsOffset = false;
+    }
   }
 }
 
@@ -223,7 +237,9 @@ void PrsDim_EllipseRadiusDimension::ComputePlanarFaceGeometry()
     myLastPar  = ElCLib::Parameter(myEllipse, ptend);
   }
   else
+  {
     myIsAnArc = false;
+  }
 
   BRepAdaptor_Surface surfAlgo(TopoDS::Face(myFShape));
   myPlane = new Geom_Plane(surfAlgo.Plane());
@@ -236,11 +252,15 @@ void PrsDim_EllipseRadiusDimension::ComputeEdgeGeometry()
   gp_Pnt                  ptfirst, ptend;
   occ::handle<Geom_Curve> curv;
   if (!PrsDim::ComputeGeometry(TopoDS::Edge(myFShape), curv, ptfirst, ptend))
+  {
     return;
+  }
 
   occ::handle<Geom_Ellipse> elips = occ::down_cast<Geom_Ellipse>(curv);
   if (elips.IsNull())
+  {
     return;
+  }
 
   myEllipse = elips->Elips();
   gp_Pln aPlane;

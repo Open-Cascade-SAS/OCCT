@@ -131,11 +131,15 @@ void ProjLib_Torus::Project(const gp_Circ& C)
     // Normally std::abs( P1.X() - P2.X()) = PI/2
     // If != PI/2, we crossed the period => Reverse the Direction
     if (std::abs(P1.X() - P2.X()) > M_PI)
+    {
       V2d.Reverse();
+    }
 
     gp_Dir2d D2(V2d);
     if (P1.X() < 0)
+    {
       P1.SetX(2 * M_PI + P1.X());
+    }
     myLin = gp_Lin2d(P1, D2);
   }
   else
@@ -143,12 +147,16 @@ void ProjLib_Torus::Project(const gp_Circ& C)
     // Iso U  -> U = angle( Xt, OC)
     double U = Xt.AngleWithRef(OC, Xt ^ Yt);
     if (U < 0.)
+    {
       U += 2 * M_PI;
+    }
 
     // Origin of the line
     double V1 = OC.AngleWithRef(Xc, OC ^ Zt);
     if (V1 < 0.)
+    {
       V1 += 2 * M_PI;
+    }
 
     gp_Pnt2d P1(U, V1);
 

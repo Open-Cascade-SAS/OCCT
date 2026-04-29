@@ -48,7 +48,9 @@ void IGESDefs_SpecificModule::OwnDump(const int                               CN
     case 1: {
       DeclareAndCast(IGESDefs_AssociativityDef, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDefs_ToolAssociativityDef tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -56,7 +58,9 @@ void IGESDefs_SpecificModule::OwnDump(const int                               CN
     case 2: {
       DeclareAndCast(IGESDefs_AttributeDef, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDefs_ToolAttributeDef tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -64,7 +68,9 @@ void IGESDefs_SpecificModule::OwnDump(const int                               CN
     case 3: {
       DeclareAndCast(IGESDefs_AttributeTable, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDefs_ToolAttributeTable tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -72,7 +78,9 @@ void IGESDefs_SpecificModule::OwnDump(const int                               CN
     case 4: {
       DeclareAndCast(IGESDefs_GenericData, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDefs_ToolGenericData tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -80,7 +88,9 @@ void IGESDefs_SpecificModule::OwnDump(const int                               CN
     case 5: {
       DeclareAndCast(IGESDefs_MacroDef, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDefs_ToolMacroDef tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -88,7 +98,9 @@ void IGESDefs_SpecificModule::OwnDump(const int                               CN
     case 6: {
       DeclareAndCast(IGESDefs_TabularData, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDefs_ToolTabularData tool;
       tool.OwnDump(anent, dumper, S, own);
     }
@@ -96,7 +108,9 @@ void IGESDefs_SpecificModule::OwnDump(const int                               CN
     case 7: {
       DeclareAndCast(IGESDefs_UnitsData, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDefs_ToolUnitsData tool;
       tool.OwnDump(anent, dumper, S, own);
     }

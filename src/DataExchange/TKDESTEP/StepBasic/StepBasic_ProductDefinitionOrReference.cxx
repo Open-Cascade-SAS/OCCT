@@ -29,13 +29,21 @@ int StepBasic_ProductDefinitionOrReference::CaseNum(
   const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinition)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinitionReference)))
+  {
     return 2;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinitionReferenceWithLocalRepresentation)))
+  {
     return 3;
+  }
   return 0;
 }
 

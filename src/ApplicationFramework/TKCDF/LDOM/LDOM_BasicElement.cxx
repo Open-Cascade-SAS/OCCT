@@ -123,14 +123,20 @@ const LDOM_BasicNode* LDOM_BasicElement::GetLastChild() const
   if (aNode)
   {
     if (aNode->getNodeType() == LDOM_Node::ATTRIBUTE_NODE)
+    {
       aNode = nullptr;
+    }
     else
+    {
       while (aNode->mySibling)
       {
         if (aNode->mySibling->getNodeType() == LDOM_Node::ATTRIBUTE_NODE)
+        {
           break;
+        }
         aNode = aNode->mySibling;
       }
+    }
   }
   return aNode;
 }
@@ -142,9 +148,13 @@ const LDOM_BasicAttribute& LDOM_BasicElement::GetAttribute(const LDOMBasicString
 {
   const LDOM_BasicNode* aNode;
   if (aLastCh)
+  {
     aNode = aLastCh->GetSibling();
+  }
   else
+  {
     aNode = myFirstChild;
+  }
   const char* aNameStr = aName.GetString();
   while (aNode)
   {
@@ -152,7 +162,9 @@ const LDOM_BasicAttribute& LDOM_BasicElement::GetAttribute(const LDOMBasicString
     {
       const LDOM_BasicAttribute* anAttr = (const LDOM_BasicAttribute*)aNode;
       if (!strcmp(aNameStr, anAttr->GetName()))
+      {
         return *anAttr;
+      }
     }
     aNode = aNode->mySibling;
   }
@@ -176,7 +188,9 @@ const LDOM_BasicAttribute* LDOM_BasicElement::GetFirstAttribute(
     while (aFirstAttr)
     {
       if (aFirstAttr->getNodeType() == LDOM_Node::ATTRIBUTE_NODE)
+      {
         break;
+      }
       aPrevNode  = (const LDOM_BasicNode**)&(aFirstAttr->mySibling);
       aFirstAttr = aFirstAttr->mySibling;
     }
@@ -188,9 +202,13 @@ const LDOM_BasicAttribute* LDOM_BasicElement::GetFirstAttribute(
     while (aFirstAttr)
     {
       if (aFirstAttr->getNodeType() == LDOM_Node::ATTRIBUTE_NODE)
+      {
         break;
+      }
       if (!aFirstAttr->isNull())
+      {
         theLastCh = aFirstAttr;
+      }
       aPrevNode  = (const LDOM_BasicNode**)&(aFirstAttr->mySibling);
       aFirstAttr = aFirstAttr->mySibling;
     }
@@ -236,11 +254,13 @@ const LDOM_BasicNode* LDOM_BasicElement::AddAttribute(const LDOMBasicString& anA
     while (aCurrentAttr)
     {
       if (aCurrentAttr->getNodeType() == LDOM_Node::ATTRIBUTE_NODE)
+      {
         if (LDOM_MemManager::CompareStrings(aNameStr, aHash, aCurrentAttr->GetName()))
         {
           aCurrentAttr->SetValue(anAttrValue, aDocument);
           break;
         }
+      }
       aCurrentAttr = (LDOM_BasicAttribute*)aCurrentAttr->mySibling;
     }
     if (aCurrentAttr == nullptr)
@@ -280,11 +300,13 @@ const LDOM_BasicNode* LDOM_BasicElement::RemoveAttribute(const LDOMBasicString& 
     while (anAttr)
     {
       if (anAttr->getNodeType() == LDOM_Node::ATTRIBUTE_NODE)
+      {
         if (LDOM_MemManager::CompareStrings(aNameStr, aHash, anAttr->GetName()))
         {
           anAttr = nullptr;
           break;
         }
+      }
       anAttr = (const LDOM_BasicAttribute*)anAttr->mySibling;
     }
   }
@@ -300,7 +322,9 @@ void LDOM_BasicElement::RemoveChild(const LDOM_BasicNode* aChild) const
   while (aNode)
   {
     if (aNode->getNodeType() == LDOM_Node::ATTRIBUTE_NODE)
+    {
       break;
+    }
     if (aNode == aChild)
     {
       *aPrevNode               = aNode->GetSibling();
@@ -355,13 +379,17 @@ void LDOM_BasicElement::AddElementsByTagName(LDOM_NodeList&         aList,
   while (aNode)
   {
     if (aNode->getNodeType() == LDOM_Node::ATTRIBUTE_NODE)
+    {
       break;
+    }
     if (aNode->getNodeType() == LDOM_Node::ELEMENT_NODE)
     {
       LDOM_BasicElement& anElement = *(LDOM_BasicElement*)aNode;
       //      if (anElement.GetTagName().equals(aTagName))
       if (strcmp(anElement.GetTagName(), aTagString) == 0)
+      {
         aList.Append(anElement);
+      }
       anElement.AddElementsByTagName(aList, aTagName);
     }
     aNode = aNode->GetSibling();
@@ -374,13 +402,19 @@ void LDOM_BasicElement::AddAttributes(LDOM_NodeList& aList, const LDOM_BasicNode
 {
   const LDOM_BasicNode* aBNode;
   if (aLastChild)
+  {
     aBNode = aLastChild->GetSibling();
+  }
   else
+  {
     aBNode = GetFirstChild();
+  }
   while (aBNode)
   {
     if (aBNode->getNodeType() == LDOM_Node::ATTRIBUTE_NODE)
+    {
       aList.Append(*aBNode);
+    }
     aBNode = aBNode->GetSibling();
   }
 }
@@ -404,7 +438,9 @@ void LDOM_BasicElement::ReplaceElement(const LDOM_BasicElement&            anOth
   for (; aBNode != nullptr; aBNode = aBNode->GetSibling())
   {
     if (aBNode->isNull())
+    {
       continue;
+    }
     LDOM_BasicNode*           aNewBNode;
     const LDOM_Node::NodeType aNewNodeType = aBNode->getNodeType();
     switch (aNewNodeType)
@@ -433,9 +469,13 @@ void LDOM_BasicElement::ReplaceElement(const LDOM_BasicElement&            anOth
         continue;
     }
     if (GetFirstChild())
+    {
       (const LDOM_BasicNode*&)aLastChild->mySibling = aNewBNode;
+    }
     else
+    {
       (const LDOM_BasicNode*&)myFirstChild = aNewBNode;
+    }
     (const LDOM_BasicNode*&)aLastChild = aNewBNode;
   }
 
@@ -446,15 +486,21 @@ loop_attr:
   {
     int aHash;
     if (aBNode->isNull())
+    {
       continue;
+    }
     const LDOM_BasicAttribute* aBNodeAtt = (const LDOM_BasicAttribute*)aBNode;
     LDOM_BasicAttribute*       aNewAtt =
       &LDOM_BasicAttribute::Create(aBNodeAtt->GetName(), aDocument, aHash);
     aNewAtt->SetValue(aBNodeAtt->myValue, aDocument);
     if (aLastAttr)
+    {
       aLastAttr->SetSibling(aNewAtt);
+    }
     else
+    {
       myFirstChild = aNewAtt;
+    }
     aLastAttr = aNewAtt;
   }
 }

@@ -57,11 +57,17 @@ void StepGeom_Direction::SetDirectionRatios(
 {
   myNbCoord = theDirectionRatios->Length();
   if (myNbCoord > 0)
+  {
     myCoords[0] = theDirectionRatios->Value(1);
+  }
   if (myNbCoord > 1)
+  {
     myCoords[1] = theDirectionRatios->Value(2);
+  }
   if (myNbCoord > 2)
+  {
     myCoords[2] = theDirectionRatios->Value(3);
+  }
 }
 
 void StepGeom_Direction::SetDirectionRatios(const std::array<double, 3>& theDirectionRatios)

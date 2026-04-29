@@ -74,7 +74,9 @@ void StepKinematics_SphericalPairWithPinAndRange::Init(
     myLowerLimitYaw = theLowerLimitYaw;
   }
   else
+  {
     myLowerLimitYaw = 0;
+  }
 
   defUpperLimitYaw = hasUpperLimitYaw;
   if (defUpperLimitYaw)
@@ -82,7 +84,9 @@ void StepKinematics_SphericalPairWithPinAndRange::Init(
     myUpperLimitYaw = theUpperLimitYaw;
   }
   else
+  {
     myUpperLimitYaw = 0;
+  }
 
   defLowerLimitRoll = hasLowerLimitRoll;
   if (defLowerLimitRoll)
@@ -90,7 +94,9 @@ void StepKinematics_SphericalPairWithPinAndRange::Init(
     myLowerLimitRoll = theLowerLimitRoll;
   }
   else
+  {
     myLowerLimitRoll = 0;
+  }
 
   defUpperLimitRoll = hasUpperLimitRoll;
   if (defUpperLimitRoll)
@@ -98,7 +104,9 @@ void StepKinematics_SphericalPairWithPinAndRange::Init(
     myUpperLimitRoll = theUpperLimitRoll;
   }
   else
+  {
     myUpperLimitRoll = 0;
+  }
 }
 
 //=================================================================================================

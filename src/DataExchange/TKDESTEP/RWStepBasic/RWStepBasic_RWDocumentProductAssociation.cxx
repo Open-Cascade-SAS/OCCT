@@ -36,7 +36,9 @@ void RWStepBasic_RWDocumentProductAssociation::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "document_product_association"))
+  {
     return;
+  }
 
   // Own fields of DocumentProductAssociation
 
@@ -85,7 +87,9 @@ void RWStepBasic_RWDocumentProductAssociation::WriteStep(
     SW.Send(ent->Description());
   }
   else
+  {
     SW.SendUndef();
+  }
 
   SW.Send(ent->RelatingDocument());
 

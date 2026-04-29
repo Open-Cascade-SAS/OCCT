@@ -162,7 +162,9 @@ void IGESControl_Controller::Customise(occ::handle<XSControl_WorkSession>& WS)
   occ::handle<IFSelect_SelectModelEntities> xma;
   occ::handle<Standard_Transient>           xma1 = WS->NamedItem("xst-model-all");
   if (xma1.IsNull())
+  {
     xma = new IFSelect_SelectModelEntities;
+  }
   else
   {
     xma = occ::down_cast<IFSelect_SelectModelEntities>(xma1);
@@ -172,7 +174,9 @@ void IGESControl_Controller::Customise(occ::handle<XSControl_WorkSession>& WS)
   occ::handle<IFSelect_SelectModelRoots> xmr;
   occ::handle<Standard_Transient>        xmr1 = WS->NamedItem("xst-model-roots");
   if (!xmr1.IsNull())
+  {
     xmr = occ::down_cast<IFSelect_SelectModelRoots>(xmr1);
+  }
   else
   {
     xmr = new IFSelect_SelectModelRoots;
@@ -182,7 +186,9 @@ void IGESControl_Controller::Customise(occ::handle<XSControl_WorkSession>& WS)
   occ::handle<XSControl_SelectForTransfer> xtr;
   occ::handle<Standard_Transient>          xtr1 = WS->NamedItem("xst-transferrable-roots");
   if (!xtr1.IsNull())
+  {
     xtr = occ::down_cast<XSControl_SelectForTransfer>(xtr1);
+  }
   else
   {
     xtr = new XSControl_SelectForTransfer;

@@ -64,7 +64,9 @@ bool ShapeCustom_ConvertToBSpline::IsToConvert(const occ::handle<Geom_Surface>& 
   if (SS->IsKind(STANDARD_TYPE(Geom_OffsetSurface)))
   {
     if (myOffsetMode)
+    {
       return true;
+    }
     else
     {
       occ::handle<Geom_OffsetSurface> OS    = occ::down_cast<Geom_OffsetSurface>(SS);
@@ -74,11 +76,17 @@ bool ShapeCustom_ConvertToBSpline::IsToConvert(const occ::handle<Geom_Surface>& 
     }
   }
   if (SS->IsKind(STANDARD_TYPE(Geom_SurfaceOfLinearExtrusion)))
+  {
     return myExtrMode;
+  }
   if (SS->IsKind(STANDARD_TYPE(Geom_SurfaceOfRevolution)))
+  {
     return myRevolMode;
+  }
   if (SS->IsKind(STANDARD_TYPE(Geom_Plane)))
+  {
     return myPlaneMode;
+  }
   return false;
 }
 
@@ -109,7 +117,9 @@ bool ShapeCustom_ConvertToBSpline::NewSurface(const TopoDS_Face&         F,
 
   occ::handle<Geom_Surface> surf;
   if (!IsToConvert(S, surf))
+  {
     return false;
+  }
 
   occ::handle<Geom_Surface> res;
   if (surf->IsKind(STANDARD_TYPE(Geom_OffsetSurface)) && !myOffsetMode)
@@ -134,7 +144,9 @@ bool ShapeCustom_ConvertToBSpline::NewSurface(const TopoDS_Face&         F,
   {
     GeomAbs_Shape cnt = surf->Continuity();
     if (surf->IsKind(STANDARD_TYPE(Geom_OffsetSurface)))
+    {
       cnt = GeomAbs_C0; // pdn 30.06.99 because of hang-up in GeomConvert_ApproxSurface
+    }
     res = ShapeConstruct::ConvertSurfaceToBSpline(surf,
                                                   U1,
                                                   U2,
@@ -154,7 +166,9 @@ bool ShapeCustom_ConvertToBSpline::NewSurface(const TopoDS_Face&         F,
     S = new Geom_RectangularTrimmedSurface(res, UF, UL, VF, VL);
   }
   else
+  {
     S = res;
+  }
 
   SendMsg(F, Message_Msg("ConvertToBSpline.NewSurface.MSG0"));
 
@@ -180,15 +194,21 @@ bool ShapeCustom_ConvertToBSpline::NewCurve(const TopoDS_Edge&       E,
   {
     occ::handle<BRep_GCurve> GC = occ::down_cast<BRep_GCurve>(itcr.Value());
     if (GC.IsNull() || !GC->IsCurveOnSurface())
+    {
       continue;
+    }
     occ::handle<Geom_Surface> S = GC->Surface();
     occ::handle<Geom_Surface> ES;
     if (!IsToConvert(S, ES))
+    {
       continue;
+    }
     double f, l;
     C = BRep_Tool::Curve(E, L, f, l);
     if (!C.IsNull())
+    {
       C = occ::down_cast<Geom_Curve>(C->Copy());
+    }
     Tol = BRep_Tool::Tolerance(E);
     SendMsg(E, Message_Msg("ConvertToBSpline.NewCurve.MSG0"));
     return true;
@@ -220,12 +240,16 @@ bool ShapeCustom_ConvertToBSpline::NewCurve2d(const TopoDS_Edge& E,
 
   // just copy pcurve if either its surface is changing or edge was copied
   if (!IsToConvert(S, ES) && E.IsSame(NewE))
+  {
     return false;
+  }
 
   double f, l;
   C = BRep_Tool::CurveOnSurface(E, F, f, l);
   if (!C.IsNull())
+  {
     C = occ::down_cast<Geom2d_Curve>(C->Copy());
+  }
 
   Tol = BRep_Tool::Tolerance(E);
   return true;

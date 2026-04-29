@@ -64,6 +64,8 @@ void XmlMDataStd_VariableDriver::Paste(const occ::handle<TDF_Attribute>& theSour
 {
   occ::handle<TDataStd_Variable> aV = occ::down_cast<TDataStd_Variable>(theSource);
   if (aV->IsConstant())
+  {
     theTarget.Element().setAttribute(::IsConstString(), ::ConstString());
+  }
   theTarget.Element().setAttribute(::UnitString(), aV->Unit().ToCString());
 }

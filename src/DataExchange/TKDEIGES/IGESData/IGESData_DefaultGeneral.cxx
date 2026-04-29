@@ -40,16 +40,22 @@ void IGESData_DefaultGeneral::OwnSharedCase(const int                           
                                             Interface_EntityIterator&               iter) const
 {
   if (CN == 0)
+  {
     return;
+  }
   DeclareAndCast(IGESData_UndefinedEntity, anent, ent);
   if (anent.IsNull())
+  {
     return;
+  }
   occ::handle<Interface_UndefinedContent> cont = anent->UndefinedContent();
   int                                     nb   = cont->NbParams();
   for (int i = 1; i <= nb; i++)
   {
     if (cont->IsParamEntity(i))
+    {
       iter.GetOneItem(cont->ParamEntity(i));
+    }
   }
 }
 
@@ -72,11 +78,17 @@ bool IGESData_DefaultGeneral::NewVoid(const int CN, occ::handle<Standard_Transie
 {
   entto.Nullify();
   if (CN == 0)
+  {
     return false;
+  }
   if (CN == 1)
+  {
     entto = new IGESData_UndefinedEntity;
+  }
   if (CN == 2)
+  {
     entto = new IGESData_FreeFormatEntity;
+  }
   return (!entto.IsNull());
 }
 
@@ -86,7 +98,9 @@ void IGESData_DefaultGeneral::OwnCopyCase(const int                             
                                           Interface_CopyTool&                     TC) const
 {
   if (CN == 0)
+  {
     return;
+  }
   DeclareAndCast(IGESData_UndefinedEntity, enfr, entfrom);
   DeclareAndCast(IGESData_UndefinedEntity, ento, entto);
   //  ShallowCopy will have passed DirStatus

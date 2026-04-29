@@ -60,7 +60,9 @@ static double Controle(const NCollection_Sequence<gp_Pnt>& thePoints,
     const gp_XYZ& xyz = thePoints(ii).XYZ();
     dist              = std::abs(a * xyz.X() + b * xyz.Y() + c * xyz.Z() + d);
     if (dist > dfMaxDist)
+    {
       dfMaxDist = dist;
+    }
   }
 
   return dfMaxDist;
@@ -188,14 +190,18 @@ static void fillParams(const NCollection_Array1<double>& theKnots,
        ++i)
   {
     if (theKnots(i + 1) < theParMin + Precision::PConfusion())
+    {
       continue;
+    }
 
     double aStep = (theKnots(i + 1) - theKnots(i)) / aNbP;
     for (int k = 1; k <= aNbP; ++k)
     {
       double aPar = theKnots(i) + k * aStep;
       if (aPar > theParMax - Precision::PConfusion())
+      {
         break;
+      }
 
       if (aPar > aPrevPar + Precision::PConfusion())
       {
@@ -224,7 +230,9 @@ static void fillPoints(const BRepAdaptor_Curve&                theCurve,
       aDistNext     = aPPrev.Distance(aPNext);
     }
     else
+    {
       aDistNext = 0.0;
+    }
 
     thePoints.Append(aPPrev);
     theWeights.Append(aDistPrev + aDistNext);
@@ -255,13 +263,17 @@ void BRepLib_FindSurface::Init(const TopoDS_Shape& S,
   {
     double t = BRep_Tool::Tolerance(TopoDS::Edge(ex.Current()));
     if (t > myTolerance)
+    {
       myTolerance = t;
+    }
   }
 
   // search an existing surface
   ex.Init(S, TopAbs_EDGE);
   if (!ex.More())
+  {
     return; // no edges ....
+  }
 
   TopoDS_Edge               E = TopoDS::Edge(ex.Current());
   double                    f, l, ff, ll;
@@ -312,15 +324,21 @@ void BRepLib_FindSurface::Init(const TopoDS_Shape& S,
     if (OnlyPlane && !mySurface.IsNull())
     {
       if (mySurface->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
+      {
         mySurface = occ::down_cast<Geom_RectangularTrimmedSurface>(mySurface)->BasisSurface();
+      }
       mySurface = occ::down_cast<Geom_Plane>(mySurface);
     }
 
     if (!mySurface.IsNull())
+    {
       // if S is e.g. the bottom face of a cylinder, mySurface can be the
       // lateral (cylindrical) face of the cylinder; reject an improper mySurface
       if (!OnlyClosed || Is2DClosed(S, mySurface, myLocation))
+      {
         break;
+      }
+    }
   }
 
   if (!mySurface.IsNull())
@@ -388,7 +406,9 @@ void BRepLib_FindSurface::Init(const TopoDS_Shape& S,
       default: {
         // Put some points on other curves
         if (iNbPoints == 0)
+        {
           iNbPoints = 15 + c.NbIntervals(GeomAbs_C3);
+        }
 
         NCollection_Array1<double> aBounds(1, 2);
         aBounds.SetValue(1, dfUf);
@@ -520,14 +540,18 @@ void BRepLib_FindSurface::Init(const TopoDS_Shape& S,
   }
 
   if (!isSolved)
+  {
     return;
+  }
   // Removing very small values
   double aMaxV = std::max(std::abs(aVec(1)), std::max(std::abs(aVec(2)), std::abs(aVec(3))));
   double eps   = Epsilon(aMaxV);
   for (i = 1; i <= 3; ++i)
   {
     if (std::abs(aVec(i)) <= eps)
+    {
       aVec(i) = 0.;
+    }
   }
   gp_Vec                  aN(aVec(1), aVec(2), aVec(3));
   occ::handle<Geom_Plane> aPlane = new Geom_Plane(aBaryCenter, aN);

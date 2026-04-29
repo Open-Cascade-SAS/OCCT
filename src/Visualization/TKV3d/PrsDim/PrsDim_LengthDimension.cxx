@@ -238,10 +238,14 @@ void PrsDim_LengthDimension::SetDisplayUnits(const TCollection_AsciiString& theU
 double PrsDim_LengthDimension::ComputeValue() const
 {
   if (!IsValid())
+  {
     return 0.0;
+  }
 
   if (!myHasCustomDirection)
+  {
     return myFirstPoint.Distance(mySecondPoint);
+  }
 
   return fabs(gp_Vec(myFirstPoint, mySecondPoint).Dot(myDirection));
 }
@@ -823,5 +827,7 @@ void PrsDim_LengthDimension::SetDirection(const gp_Dir& theDirection, const bool
 {
   myHasCustomDirection = theUseDirection;
   if (myHasCustomDirection)
+  {
     myDirection = theDirection;
+  }
 }

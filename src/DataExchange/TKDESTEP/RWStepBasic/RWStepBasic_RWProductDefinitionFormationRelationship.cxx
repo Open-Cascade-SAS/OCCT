@@ -37,7 +37,9 @@ void RWStepBasic_RWProductDefinitionFormationRelationship::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 5, ach, "product_definition_formation_relationship"))
+  {
     return;
+  }
 
   // Own fields of ProductDefinitionFormationRelationship
 

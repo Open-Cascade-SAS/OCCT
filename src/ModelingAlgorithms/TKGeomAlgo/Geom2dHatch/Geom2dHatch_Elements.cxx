@@ -109,7 +109,9 @@ bool Geom2dHatch_Elements::OtherSegment(const gp_Pnt2d& P, gp_Lin2d& L, double& 
   for (Itertemp.Initialize(myMap), i = 1; Itertemp.More(); Itertemp.Next(), i++)
   {
     if (i < myCurEdge)
+    {
       continue;
+    }
 
     Geom2dHatch_Element& Item = myMap.ChangeFind(Itertemp.Key());
     Geom2dAdaptor_Curve& E    = Item.ChangeCurve();
@@ -125,10 +127,14 @@ bool Geom2dHatch_Elements::OtherSegment(const gp_Pnt2d& P, gp_Lin2d& L, double& 
           aLPar = 1.;
         }
         else
+        {
           aFPar = aLPar - 1.;
+        }
       }
       else if (Precision::IsPositiveInfinite(aLPar))
+      {
         aLPar = aFPar + 1.;
+      }
 
       for (; myCurEdgePar < Probing_End; myCurEdgePar += Probing_Step)
       {
@@ -143,7 +149,9 @@ bool Geom2dHatch_Elements::OtherSegment(const gp_Pnt2d& P, gp_Lin2d& L, double& 
           gp_Dir2d aLinDir(aLinVec);
           double   aTanMod = aTanVec.SquareMagnitude();
           if (aTanMod < Precision::SquarePConfusion())
+          {
             continue;
+          }
 
           aTanVec /= std::sqrt(aTanMod);
           double aSinA = aTanVec.Crossed(aLinDir);
@@ -152,7 +160,9 @@ bool Geom2dHatch_Elements::OtherSegment(const gp_Pnt2d& P, gp_Lin2d& L, double& 
             // too small angle - line and edge may be considered
             // as tangent which is bad for classifier
             if (myCurEdgePar + Probing_Step < Probing_End)
+            {
               continue;
+            }
           }
 
           L = gp_Lin2d(P, aLinDir);

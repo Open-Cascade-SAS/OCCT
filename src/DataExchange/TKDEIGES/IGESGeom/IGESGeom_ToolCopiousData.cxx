@@ -65,7 +65,9 @@ void IGESGeom_ToolCopiousData::ReadOwnParams(const occ::handle<IGESGeom_CopiousD
   bool st = PR.ReadInteger(PR.Current(), nbData);
   // st = PR.ReadInteger(PR.Current(), "Number of n-tuples", nbData);
   if (st && (nbData > 0))
+  {
     data = true;
+  }
   else
   {
     Message_Msg Msg86("XSTEP_86");
@@ -85,11 +87,17 @@ void IGESGeom_ToolCopiousData::ReadOwnParams(const occ::handle<IGESGeom_CopiousD
   if (data)
   {
     if (aDataType == 1)
+    {
       upper = 2 * nbData;
+    }
     else if (aDataType == 2)
+    {
       upper = 3 * nbData;
+    }
     else
+    {
       upper = 6 * nbData;
+    }
 
     Message_Msg Msg88("XSTEP_88");
     // allData = new NCollection_HArray1<double>(1, upper) then fill it :
@@ -111,16 +119,22 @@ void IGESGeom_ToolCopiousData::WriteOwnParams(const occ::handle<IGESGeom_Copious
   IW.Send(dtype);
   IW.Send(upper);
   if (ent->DataType() == 1)
+  {
     IW.Send(ent->ZPlane());
+  }
   for (int I = 1; I <= upper; I++)
   {
     // DataType = 1 : XY , 2 : XYZ , 3 : XYZ*2
     IW.Send(ent->Data(I, 1));
     IW.Send(ent->Data(I, 2));
     if (dtype > 1)
+    {
       IW.Send(ent->Data(I, 3));
+    }
     if (dtype <= 2)
+    {
       continue;
+    }
     IW.Send(ent->Data(I, 4));
     IW.Send(ent->Data(I, 5));
     IW.Send(ent->Data(I, 6));
@@ -147,16 +161,24 @@ void IGESGeom_ToolCopiousData::OwnCopy(const occ::handle<IGESGeom_CopiousData>& 
   occ::handle<NCollection_HArray1<double>> allData;
 
   if (aDataType == 1)
+  {
     upper = 2 * nbTuples;
+  }
   else if (aDataType == 2)
+  {
     upper = 3 * nbTuples;
+  }
   else
+  {
     upper = 6 * nbTuples;
+  }
 
   allData = new NCollection_HArray1<double>(1, upper);
 
   if (aDataType == 1)
+  {
     aZPlane = another->ZPlane();
+  }
 
   for (int I = 1; I <= nbTuples; I++)
   {
@@ -185,9 +207,13 @@ void IGESGeom_ToolCopiousData::OwnCopy(const occ::handle<IGESGeom_CopiousData>& 
 
   ent->Init(aDataType, aZPlane, allData);
   if (another->IsClosedPath2D())
+  {
     ent->SetClosedPath2D();
+  }
   else
+  {
     ent->SetPolyline(another->IsPolyline());
+  }
 }
 
 //=================================================================================================
@@ -262,11 +288,17 @@ void IGESGeom_ToolCopiousData::OwnDump(const occ::handle<IGESGeom_CopiousData>& 
   S << "IGESGeom_CopiousData\n";
 
   if (ent->IsPointSet())
+  {
     S << "Point Set  ";
+  }
   else if (ent->IsPolyline())
+  {
     S << "Polyline  ";
+  }
   else if (ent->IsClosedPath2D())
+  {
     S << "Closed Path 2D  ";
+  }
   S << "DataType " << ent->DataType() << "  "
     << "Number of T-uples = " << nbPnts << "  ";
   if (dtype == 1)
@@ -275,9 +307,13 @@ void IGESGeom_ToolCopiousData::OwnDump(const occ::handle<IGESGeom_CopiousData>& 
       << "ZPlane = " << ent->ZPlane() << "\n";
   }
   else if (dtype == 2)
+  {
     S << "(Points 3D)\n";
+  }
   else if (dtype == 3)
+  {
     S << "(Points 3D + Vectors 3D)\n";
+  }
 
   if (level > 4)
   {
@@ -285,9 +321,13 @@ void IGESGeom_ToolCopiousData::OwnDump(const occ::handle<IGESGeom_CopiousData>& 
     {
       gp_XYZ T = ent->Point(i).XYZ();
       if (dtype == 1)
+      {
         S << "[" << i << "] (" << T.X() << "," << T.Y() << ")";
+      }
       else
+      {
         S << "[" << i << "] (" << T.X() << "," << T.Y() << "," << T.Z() << ")";
+      }
 
       if (yatr)
       {
@@ -305,10 +345,12 @@ void IGESGeom_ToolCopiousData::OwnDump(const occ::handle<IGESGeom_CopiousData>& 
           S << " Transformed (" << T.X() << "," << T.Y() << "," << T.Z() << ")";
         }
       }
-      S << std::endl;
+      S << '\n';
     }
   }
   else
+  {
     S << " [ for content, ask level > 4 ]";
-  S << std::endl;
+  }
+  S << '\n';
 }

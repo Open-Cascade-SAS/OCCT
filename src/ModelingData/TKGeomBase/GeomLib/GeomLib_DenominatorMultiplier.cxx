@@ -34,7 +34,9 @@ GeomLib_DenominatorMultiplier::GeomLib_DenominatorMultiplier(
 {
   int i;
   for (i = 1; i <= KnotVector.Length(); i++)
+  {
     myKnotFlatVector.SetValue(i, KnotVector(i));
+  }
 }
 
 //=================================================================================================
@@ -119,7 +121,9 @@ double GeomLib_DenominatorMultiplier::Value(const double UParameter, const doubl
   NCollection_Array1<double> Polesenv(0, 5); // poles of a(u,v)
 
   for (i = 0; i <= 5; i++)
+  {
     Polesenv(i) = 0.0;
+  }
   Polesenv(0) = Duminv;
   Polesenv(1) = Duminv - dDduuminv / B1prim0;
   Polesenv(4) = lambda * lambda * (Dumaxv - dDduumaxv / Bprelastprim1);
@@ -189,6 +193,8 @@ double GeomLib_DenominatorMultiplier::Value(const double UParameter, const doubl
     Polesenv(3) = Polesenv(2);
   }
   for (i = 0; i <= 5; i++)
+  {
     Buv += Polesenv(i) * value(i);
+  }
   return Buv;
 }

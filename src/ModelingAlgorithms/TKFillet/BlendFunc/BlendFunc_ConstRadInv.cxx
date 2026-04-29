@@ -185,7 +185,9 @@ bool BlendFunc_ConstRadInv::Value(const math_Vector& X, math_Vector& F)
   if (ns1.Magnitude() < Eps)
   {
     if (first)
+    {
       BlendFunc::ComputeNormal(surf1, pt2d, ns1);
+    }
     else
     {
       gp_Pnt2d P(X(3), X(4));
@@ -197,7 +199,9 @@ bool BlendFunc_ConstRadInv::Value(const math_Vector& X, math_Vector& F)
   if (ns2.Magnitude() < Eps)
   {
     if (!first)
+    {
       BlendFunc::ComputeNormal(surf2, pt2d, ns2);
+    }
     else
     {
       gp_Pnt2d P(X(3), X(4));
@@ -275,7 +279,9 @@ bool BlendFunc_ConstRadInv::Derivatives(const math_Vector& X, math_Matrix& D)
   if (ns1.Magnitude() < Eps)
   {
     if (first)
+    {
       BlendFunc::ComputeNormal(surf1, p2d, ns1);
+    }
     else
     {
       gp_Pnt2d P(X(3), X(4));
@@ -287,7 +293,9 @@ bool BlendFunc_ConstRadInv::Derivatives(const math_Vector& X, math_Matrix& D)
   if (ns2.Magnitude() < Eps)
   {
     if (!first)
+    {
       BlendFunc::ComputeNormal(surf2, p2d, ns2);
+    }
     else
     {
       gp_Pnt2d P(X(3), X(4));
@@ -477,7 +485,9 @@ bool BlendFunc_ConstRadInv::Values(const math_Vector& X, math_Vector& F, math_Ma
   if (ns1.Magnitude() < Eps)
   {
     if (first)
+    {
       BlendFunc::ComputeNormal(surf1, p2d, ns1);
+    }
     else
     {
       gp_Pnt2d P(X(3), X(4));
@@ -489,7 +499,9 @@ bool BlendFunc_ConstRadInv::Values(const math_Vector& X, math_Vector& F, math_Ma
   if (ns2.Magnitude() < Eps)
   {
     if (!first)
+    {
       BlendFunc::ComputeNormal(surf2, p2d, ns2);
+    }
     else
     {
       gp_Pnt2d P(X(3), X(4));

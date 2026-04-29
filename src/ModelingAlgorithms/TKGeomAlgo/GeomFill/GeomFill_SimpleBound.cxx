@@ -41,7 +41,9 @@ gp_Pnt GeomFill_SimpleBound::Value(const double U) const
 {
   double x = U;
   if (!myPar.IsNull())
+  {
     x = myPar->Value(U);
+  }
   return myC3d->Value(x);
 }
 
@@ -51,7 +53,9 @@ void GeomFill_SimpleBound::D1(const double U, gp_Pnt& P, gp_Vec& V) const
 {
   double x = U, dx = 1.;
   if (!myPar.IsNull())
+  {
     myPar->D1(U, x, dx);
+  }
   myC3d->D1(x, P, V);
   V.Multiply(dx);
 }
@@ -77,7 +81,9 @@ void GeomFill_SimpleBound::Reparametrize(const double First,
 void GeomFill_SimpleBound::Bounds(double& First, double& Last) const
 {
   if (!myPar.IsNull())
+  {
     myPar->Bounds(First, Last);
+  }
   else
   {
     First = myC3d->FirstParameter();

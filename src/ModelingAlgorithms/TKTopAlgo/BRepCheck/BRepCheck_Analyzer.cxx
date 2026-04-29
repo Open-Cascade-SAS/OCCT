@@ -523,7 +523,9 @@ bool BRepCheck_Analyzer::ValidSub(const TopoDS_Shape& S, const TopAbs_ShapeEnum 
     }
 
     if (!RV->MoreShapeInContext())
+    {
       break;
+    }
 
     for (itl.Initialize(RV->StatusOnShape()); itl.More(); itl.Next())
     {

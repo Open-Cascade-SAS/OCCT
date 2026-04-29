@@ -61,7 +61,9 @@ void ChFiKPart_CornerSpine(const occ::handle<Adaptor3d_Surface>& S1,
   gp_Ax2 circax2(cent, dx ^ dy, dx);
   gp_Ax3 cylax3(circax2);
   if ((du ^ dv).Dot(dx) < 0.)
+  {
     cylax3.ZReverse();
+  }
   First = 0.;
   Last  = ElCLib::CircleParameter(circax2, P2);
   circ.SetPosition(circax2);

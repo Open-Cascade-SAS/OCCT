@@ -60,17 +60,29 @@ VrmlConverter_Projector::VrmlConverter_Projector(const NCollection_Array1<TopoDS
   box.Get(Xmin, Ymin, Zmin, Xmax, Ymax, Zmax);
 
   if (box.IsOpenXmin())
+  {
     Xmin = -DistMax;
+  }
   if (box.IsOpenXmax())
+  {
     Xmax = DistMax;
+  }
   if (box.IsOpenYmin())
+  {
     Ymin = -DistMax;
+  }
   if (box.IsOpenYmax())
+  {
     Ymax = DistMax;
+  }
   if (box.IsOpenZmin())
+  {
     Zmin = -DistMax;
+  }
   if (box.IsOpenZmax())
+  {
     Zmax = DistMax;
+  }
 
   double xx = (Xmax - Xmin);
   double yy = (Ymax - Ymin);
@@ -135,7 +147,9 @@ VrmlConverter_Projector::VrmlConverter_Projector(const NCollection_Array1<TopoDS
 
   bool Pers = false;
   if (Camera == VrmlConverter_PerspectiveCamera)
+  {
     Pers = true;
+  }
 
   // build a Projector with automatic minmax directions
   myProjector = HLRAlgo_Projector(T, Pers, Focus);
@@ -236,7 +250,9 @@ VrmlConverter_Projector::VrmlConverter_Projector(const NCollection_Array1<TopoDS
       //  std::cout << " Angle: " << V1.Angle(V2) << std::endl;
       //  std::cout << " ****************** " << std::endl;
       if (std::abs(V1.Angle(V2)) > std::abs(MaxAngle))
+      {
         MaxAngle = std::abs(V1.Angle(V2));
+      }
 
       V2.SetX(0);
       V2.SetY(P2.Y());
@@ -245,7 +261,9 @@ VrmlConverter_Projector::VrmlConverter_Projector(const NCollection_Array1<TopoDS
       //  std::cout << " Angle: " << V1.Angle(V2) << std::endl;
       //  std::cout << " ****************** " << std::endl;
       if (std::abs(V1.Angle(V2)) > std::abs(MaxAngle))
+      {
         MaxAngle = std::abs(V1.Angle(V2));
+      }
 
       if (std::abs(P2.Y()) > std::abs(MaxHeight))
       {

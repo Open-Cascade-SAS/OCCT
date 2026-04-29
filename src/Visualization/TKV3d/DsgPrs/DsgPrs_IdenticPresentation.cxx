@@ -89,7 +89,9 @@ void DsgPrs_IdenticPresentation::Add(const occ::handle<Prs3d_Presentation>& aPre
     aPrims->AddVertex(ElCLib::Value(ElCLib::Parameter(ll, aPntOffset), ll));
   }
   else
+  {
     aPrims->AddVertex(aSAttach);
+  }
 
   aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
@@ -117,7 +119,9 @@ void DsgPrs_IdenticPresentation::Add(const occ::handle<Prs3d_Presentation>& aPre
   double  pSAttach = ElCLib::Parameter(CC, aSAttach);
   double  alpha    = pSAttach - pFAttach;
   if (alpha < 0)
+  {
     alpha += 2. * M_PI;
+  }
   const int    nb    = (int)(50. * alpha / M_PI);
   const int    nbp   = std::max(4, nb);
   const double dteta = alpha / (nbp - 1);
@@ -134,10 +138,14 @@ void DsgPrs_IdenticPresentation::Add(const occ::handle<Prs3d_Presentation>& aPre
     aPrims->AddBound(nbp);
   }
   else
+  {
     aPrims = new Graphic3d_ArrayOfPolylines(nbp);
+  }
 
   for (int i = 1; i <= nbp; i++)
+  {
     aPrims->AddVertex(ElCLib::Value(pFAttach + dteta * (i - 1), CC));
+  }
 
   aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
@@ -167,7 +175,9 @@ void DsgPrs_IdenticPresentation::Add(const occ::handle<Prs3d_Presentation>& aPre
   double  pSAttach = ElCLib::Parameter(CC, aSAttach);
   double  alpha    = pSAttach - pFAttach;
   if (alpha < 0)
+  {
     alpha += 2. * M_PI;
+  }
   const int    nb    = (int)(50. * alpha / M_PI);
   const int    nbp   = std::max(4, nb);
   const double dteta = alpha / (nbp - 1);
@@ -184,10 +194,14 @@ void DsgPrs_IdenticPresentation::Add(const occ::handle<Prs3d_Presentation>& aPre
     aPrims->AddBound(nbp);
   }
   else
+  {
     aPrims = new Graphic3d_ArrayOfPolylines(nbp);
+  }
 
   for (int i = 1; i <= nbp; i++)
+  {
     aPrims->AddVertex(ElCLib::Value(pFAttach + dteta * (i - 1), CC));
+  }
 
   aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
@@ -214,7 +228,9 @@ void DsgPrs_IdenticPresentation::Add(const occ::handle<Prs3d_Presentation>& aPre
   double pSAttach = ElCLib::Parameter(anEllipse, aSAttach);
   double alpha    = pSAttach - pFAttach;
   if (alpha < 0)
+  {
     alpha += 2. * M_PI;
+  }
   const int    nb    = (int)(50.0 * alpha / M_PI);
   const int    nbp   = std::max(4, nb);
   const double dteta = alpha / (nbp - 1);
@@ -231,10 +247,14 @@ void DsgPrs_IdenticPresentation::Add(const occ::handle<Prs3d_Presentation>& aPre
     aPrims->AddBound(nbp);
   }
   else
+  {
     aPrims = new Graphic3d_ArrayOfPolylines(nbp);
+  }
 
   for (int i = 1; i <= nbp; i++)
+  {
     aPrims->AddVertex(ElCLib::Value(pFAttach + dteta * (i - 1), anEllipse));
+  }
 
   aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 

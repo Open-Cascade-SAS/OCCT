@@ -138,11 +138,17 @@ static int BUC60843(Draw_Interpretor& di, int argc, const char** argv)
   double par1 = 0.0, par2 = 0.0;
   double tol = Precision::Angular();
   if (argc >= 5)
+  {
     par1 = Draw::Atof(argv[4]);
+  }
   if (argc == 6)
+  {
     par2 = Draw::Atof(argv[5]);
+  }
   if (argc == 7)
+  {
     tol = Draw::Atof(argv[6]);
+  }
   occ::handle<Geom2d_Curve> aCur2d1 = DrawTrSurf::GetCurve2d(argv[2]);
   occ::handle<Geom2d_Curve> aCur2d2 = DrawTrSurf::GetCurve2d(argv[3]);
   if (aCur2d1.IsNull() || aCur2d2.IsNull())
@@ -156,7 +162,9 @@ static int BUC60843(Draw_Interpretor& di, int argc, const char** argv)
   {
     c1IsCircle = true;
     if (argc == 6)
+    {
       tol = Draw::Atof(argv[5]);
+    }
   }
   if (c1IsCircle)
   {
@@ -451,7 +459,9 @@ static int OCC566(Draw_Interpretor& di, int n, const char** a)
   }
   TopoDS_Shape S = DBRep::Get(a[1]);
   if (S.IsNull())
+  {
     return 1;
+  }
   Bnd_Box B;
   BRepBndLib::AddClose(S, B);
   double axmin, aymin, azmin, axmax, aymax, azmax;
@@ -498,7 +508,9 @@ static int MKEVOL(Draw_Interpretor& di, int narg, const char** a)
   Rake = nullptr;
   printtolblend(di);
   if (narg < 3)
+  {
     return 1;
+  }
   TopoDS_Shape V = DBRep::Get(a[2]);
   Rake           = new BRepFilletAPI_MakeFillet(V);
   Rake->SetParams(ta, tesp, t2d, t3d, t2d, fl);
@@ -528,7 +540,9 @@ static int UPDATEVOL(Draw_Interpretor& di, int narg, const char** a)
     return 1;
   }
   if (narg % 2 != 0 || narg < 4)
+  {
     return 1;
+  }
   NCollection_Array1<gp_Pnt2d> uandr(1, (narg / 2) - 1);
   double                       Rad, Par;
   TopoDS_Shape                 aLocalEdge(DBRep::Get(a[1], TopAbs_EDGE));
@@ -549,7 +563,9 @@ static int UPDATEVOL(Draw_Interpretor& di, int narg, const char** a)
     Rake->Add(law, E);
   }
   else
+  {
     Rake->Add(uandr, E);
+  }
 
   return 0;
 }
@@ -591,9 +607,13 @@ static int OCC606(Draw_Interpretor& di, int n, const char** a)
 
   bool TrimMode = (n == 4);
   if (TrimMode)
+  {
     di << "INFO: Using trimmed curves...\n";
+  }
   else
+  {
     di << "INFO: Using non trimmed curves...\n";
+  }
 
   TopoDS_Shape S = DBRep::Get(a[2]);
 
@@ -609,7 +629,9 @@ static int OCC606(Draw_Interpretor& di, int n, const char** a)
     if (!h_cur.IsNull())
     {
       if (TrimMode)
+      {
         h_cur = new Geom_TrimmedCurve(h_cur, f, l);
+      }
 
       n_curves1.Append(h_cur);
       np.Append(param);
@@ -682,15 +704,21 @@ static int OCC884(Draw_Interpretor& di, int argc, const char** argv)
 
   ShapeExtend_Status status = ShapeExtend_FAIL1;
   if (advWA->StatusSelfIntersection(status))
+  {
     di << "Info: No P Curve found in the edge\n";
+  }
 
   status = ShapeExtend_FAIL2;
   if (advWA->StatusSelfIntersection(status))
+  {
     di << "Info: No Vertices found in the edge\n";
+  }
 
   status = ShapeExtend_DONE1;
   if (advWA->StatusSelfIntersection(status))
+  {
     di << "Info: Self-intersection found in the edge\n";
+  }
 
   int i, num = points2d.Length();
   di << "Info: No. of self-intersection points : " << num << "\n";
@@ -710,9 +738,13 @@ static int OCC884(Draw_Interpretor& di, int argc, const char** argv)
   sfw->SetFace(face);
 
   if (argc > 3)
+  {
     sfw->SetPrecision(Draw::Atof(argv[3]) /*0.1*/);
+  }
   if (argc > 4)
+  {
     sfw->SetMaxTolerance(Draw::Atof(argv[4]));
+  }
   di << "Info: Precision is set to " << sfw->Precision() << "\n";
   di << "Info: MaxTolerance is set to " << sfw->MaxTolerance() << "\n";
 
@@ -726,51 +758,73 @@ static int OCC884(Draw_Interpretor& di, int argc, const char** argv)
 
   status = ShapeExtend_OK;
   if (sfw->StatusSelfIntersection(status))
+  {
     di << "Info: ShapeExtend_OK : No intersection found\n";
+  }
   // printf("Info: ShapeExtend_OK : No intersection found\n");
 
   status = ShapeExtend_FAIL1;
   if (sfw->StatusSelfIntersection(status))
+  {
     di << "Info: ShapeExtend_FAIL1 : analysis failed (edge has no pcurve, or no vertices etc.)\n";
+  }
 
   status = ShapeExtend_FAIL2;
   if (sfw->StatusSelfIntersection(status))
+  {
     di << "Info: ShapeExtend_FAIL2 : self-intersection was found, but not fixed because of limit "
           "of increasing tolerance (MaxTolerance)\n";
+  }
 
   status = ShapeExtend_FAIL3;
   if (sfw->StatusSelfIntersection(status))
+  {
     di << "Info: ShapeExtend_FAIL3 : intercestion of non adjacent edges found, but not fixed "
           "because of limit of increasing tolerance (MaxTolerance)\n";
+  }
 
   status = ShapeExtend_DONE1;
   if (sfw->StatusSelfIntersection(status))
+  {
     di << "Info: ShapeExtend_DONE1 : tolerance of vertex was increased to fix self-intersection\n";
+  }
 
   status = ShapeExtend_DONE2;
   if (sfw->StatusSelfIntersection(status))
+  {
     di << "Info: ShapeExtend_DONE2 : vertex was moved to fix self-intersection\n";
+  }
 
   status = ShapeExtend_DONE3;
   if (sfw->StatusSelfIntersection(status))
+  {
     di << "Info: ShapeExtend_DONE3 : some edges were removed because of intersection\n";
+  }
 
   status = ShapeExtend_DONE4;
   if (sfw->StatusSelfIntersection(status))
+  {
     di << "Info: ShapeExtend_DONE4 : pcurve(s) was(were) modified\n";
+  }
 
   status = ShapeExtend_DONE5;
   if (sfw->StatusSelfIntersection(status))
+  {
     di << "Info: ShapeExtend_DONE5 : non adjacent intersection fixed by increasing tolerance of "
           "vertex(vertices)\n";
+  }
 
   status = ShapeExtend_DONE6;
   if (sfw->StatusSelfIntersection(status))
+  {
     di << "Info: ShapeExtend_DONE6 : tolerance of edge was increased to hide intersection\n";
+  }
 
   status = ShapeExtend_DONE7;
   if (sfw->StatusSelfIntersection(status))
+  {
     di << "Info: ShapeExtend_DONE7 : range of some edges was decreased to avoid intersection\n";
+  }
 
   return 0;
 }
@@ -882,14 +936,20 @@ static int OCC1642(Draw_Interpretor& di, int argc, const char** argv)
 
     ShapeExtend_Status status = ShapeExtend_FAIL1;
     if (advWA->StatusSelfIntersection(status))
+    {
 
       status = ShapeExtend_FAIL2;
+    }
     if (advWA->StatusSelfIntersection(status))
+    {
       di << "\n No Vertices found in the edge";
+    }
 
     status = ShapeExtend_DONE1;
     if (advWA->StatusSelfIntersection(status))
+    {
       di << "\n Self-intersection found in the edge";
+    }
 
     num = points2d.Length();
     di << "\n No. of self-intersecting edges : " << num;
@@ -935,50 +995,72 @@ static int OCC1642(Draw_Interpretor& di, int argc, const char** argv)
 
   ShapeExtend_Status status = ShapeExtend_OK;
   if (sfw->StatusSelfIntersection(status))
+  {
     di << "\n ShapeExtend_OK : No intersection found";
+  }
 
   status = ShapeExtend_FAIL1;
   if (sfw->StatusSelfIntersection(status))
+  {
     di << "\n ShapeExtend_FAIL1 : analysis failed (edge has no pcurve,or no vertices etc.)";
+  }
 
   status = ShapeExtend_FAIL2;
   if (sfw->StatusSelfIntersection(status))
+  {
     di << "\n ShapeExtend_FAIL2 : self-intersection was found, but not fixed because of limit of "
           "increasing tolerance (MaxTolerance)";
+  }
 
   status = ShapeExtend_FAIL3;
   if (sfw->StatusSelfIntersection(status))
+  {
     di << "\n ShapeExtend_FAIL3 : intercestion of non adjacent edges found, but not fixed because "
           "of limit of increasing tolerance (MaxTolerance)";
+  }
 
   status = ShapeExtend_DONE1;
   if (sfw->StatusSelfIntersection(status))
+  {
     di << "\n ShapeExtend_DONE1 : tolerance of vertex was increased to fix self-intersection";
+  }
 
   status = ShapeExtend_DONE2;
   if (sfw->StatusSelfIntersection(status))
+  {
     di << "\n ShapeExtend_DONE2 : vertex was moved to fix self-intersection";
+  }
 
   status = ShapeExtend_DONE3;
   if (sfw->StatusSelfIntersection(status))
+  {
     di << "\n ShapeExtend_DONE3 : some edges were removed because of intersection";
+  }
 
   status = ShapeExtend_DONE4;
   if (sfw->StatusSelfIntersection(status))
+  {
     di << "\n ShapeExtend_DONE4 : pcurve(s) was(were) modified";
+  }
 
   status = ShapeExtend_DONE5;
   if (sfw->StatusSelfIntersection(status))
+  {
     di << "\n ShapeExtend_DONE5 : non adjacent intersection fixed by increasing tolerance of "
           "vertex(vertices)";
+  }
 
   status = ShapeExtend_DONE6;
   if (sfw->StatusSelfIntersection(status))
+  {
     di << "\n ShapeExtend_DONE6 : tolerance of edge was increased to hide intersection";
+  }
 
   status = ShapeExtend_DONE7;
   if (sfw->StatusSelfIntersection(status))
+  {
     di << "\n ShapeExtend_DONE7 : range of some edges was decreased to avoid intersection";
+  }
 
   TopoDS_Wire finalwire = sfw->Wire();
 
@@ -1006,14 +1088,20 @@ static int OCC1642(Draw_Interpretor& di, int argc, const char** argv)
 
     status = ShapeExtend_FAIL1;
     if (advWA->StatusSelfIntersection(status))
+    {
 
       status = ShapeExtend_FAIL2;
+    }
     if (advWA->StatusSelfIntersection(status))
+    {
       di << "\n No Vertices found in the edge";
+    }
 
     status = ShapeExtend_DONE1;
     if (advWA->StatusSelfIntersection(status))
+    {
       di << "\n Self-intersection found in the edge";
+    }
 
     num = points2d.Length();
     di << "\n No. of self-intersecting edges : " << num;
@@ -1086,6 +1174,4 @@ void QABugs::Commands_17(Draw_Interpretor& theCommands)
                   __FILE__,
                   OCC1642,
                   group);
-
-  return;
 }

@@ -52,11 +52,15 @@ bool StdSelect_FaceFilter::IsOk(const occ::handle<SelectMgr_EntityOwner>& EO) co
 {
   occ::handle<StdSelect_BRepOwner> aBO(occ::down_cast<StdSelect_BRepOwner>(EO));
   if (aBO.IsNull())
+  {
     return false;
+  }
 
   const TopoDS_Shape& anobj = aBO->Shape();
   if (anobj.ShapeType() != TopAbs_FACE)
+  {
     return false;
+  }
 
   switch (mytype)
   {

@@ -35,7 +35,9 @@ static inline void AddPointIntoLine(occ::handle<IntSurf_LineOn2S>& theLine,
   if (theLine->NbPoints() > 0)
   {
     if (thePoint.IsSame(theLine->Value(theLine->NbPoints()), Precision::Confusion()))
+    {
       return;
+    }
 
     IntPatch_SpecialPoints::AdjustPointAndVertex(theLine->Value(theLine->NbPoints()),
                                                  theArrPeriods,
@@ -279,17 +281,23 @@ void IntPatch_ALineToWLine::CorrectEndPoint(occ::handle<IntSurf_LineOn2S>& theLi
       const gp_Cone aCone  = aQuad.Cone();
       const gp_Pnt  anApex = aCone.Apex();
       if (anApex.SquareDistance(aPntOn2S.Value()) > aSqTol)
+      {
         continue;
+      }
     }
     else if (aQuad.TypeQuadric() == GeomAbs_Sphere)
     {
       double aU, aV;
       aPntOn2S.ParametersOnSurface(anIsOnFirst, aU, aV);
       if (std::abs(aV - M_PI / 2) > aTol && std::abs(aV + M_PI / 2) > aTol)
+      {
         continue;
+      }
     }
     else
+    {
       continue;
+    }
 
     gp_Pnt2d PrevPrevP2d = theLine->Value(anIndFirst).ValueOnSurface(anIsOnFirst);
     gp_Pnt2d PrevP2d     = theLine->Value(anIndSecond).ValueOnSurface(anIsOnFirst);
@@ -299,7 +307,9 @@ void IntPatch_ALineToWLine::CorrectEndPoint(occ::handle<IntSurf_LineOn2S>& theLi
     aPntOn2S.ParametersOnSurface(anIsOnFirst, aXend, aYend);
 
     if (std::abs(aDir.Y()) < gp::Resolution())
+    {
       continue;
+    }
 
     double aNewXend = aDir.X() / aDir.Y() * (aYend - aY0) + aX0;
 
@@ -440,7 +450,9 @@ void IntPatch_ALineToWLine::MakeWLine(
   {
     double aStep = (theLPar - aParameter) / (double)(myNbPointsInWline - 1);
     if (aStep < Epsilon(theLPar))
+    {
       break;
+    }
 
     bool   isStepReduced = false;
     double aLPar         = theLPar;
@@ -448,11 +460,15 @@ void IntPatch_ALineToWLine::MakeWLine(
     for (int i = aVertexParams.Lower(); i <= aVertexParams.Upper(); i++)
     {
       if (hasVertexBeenChecked(i))
+      {
         continue;
+      }
 
       aLPar = aVertexParams(i);
       if (std::abs(aLPar - aParameter) < aPrmTol)
+      {
         continue;
+      }
 
       break;
     }
@@ -499,8 +515,10 @@ void IntPatch_ALineToWLine::MakeWLine(
           // We cannot compute 2D-parameters of
           // aPOn2S correctly.
 
-          if (anIsLastDegenerated) // the current last point is wrong
+          if (anIsLastDegenerated)
+          { // the current last point is wrong
             aLinOn2S->RemovePoint(aLinOn2S->NbPoints());
+          }
 
           isPointValid = false;
         }
@@ -536,7 +554,9 @@ void IntPatch_ALineToWLine::MakeWLine(
             const double aParam = aVertexParams(i);
 
             if (aParam <= aPrevParam)
+            {
               continue;
+            }
 
             if ((aParam - aPrevParam) < aPrmTol)
             {
@@ -619,7 +639,9 @@ void IntPatch_ALineToWLine::MakeWLine(
       for (int i = aVertexParams.Lower(); i <= aVertexParams.Upper(); i++)
       {
         if (hasVertexBeenChecked(i))
+        {
           continue;
+        }
 
         const IntPatch_Point& aVP    = theALine->Vertex(i);
         const double          aParam = aVertexParams(i);
@@ -725,9 +747,13 @@ void IntPatch_ALineToWLine::MakeWLine(
       {
         // set corresponding status: to be corrected later
         if (aLinOn2S->NbPoints() == 1)
+        {
           anIsFirstDegenerated = true;
+        }
         else
+        {
           anIsLastDegenerated = true;
+        }
       }
 
       const double aCurVertParam = aVtx.ParameterOnLine();
@@ -771,7 +797,9 @@ void IntPatch_ALineToWLine::MakeWLine(
         for (int i = aVertexParams.Lower(); i <= aVertexParams.Upper(); i++)
         {
           if (hasVertexBeenChecked(i))
+          {
             continue;
+          }
 
           const gp_Pnt aP2(theALine->Value(aVertexParams(i)));
 
@@ -781,11 +809,14 @@ void IntPatch_ALineToWLine::MakeWLine(
             aLVtx.SetValue(aVertP2S);
             aLVtx.SetTolerance(aVertToler);
             double aParam = aLVtx.ParameterOnLine();
-            if (std::abs(aParam - theLPar)
-                <= Precision::PConfusion()) // in the case of closed curve,
-              aLVtx.SetParameter(-1);       // we don't know yet the number of points in the curve
+            if (std::abs(aParam - theLPar) <= Precision::PConfusion())
+            {                         // in the case of closed curve,
+              aLVtx.SetParameter(-1); // we don't know yet the number of points in the curve
+            }
             else
+            {
               aLVtx.SetParameter(aNewVertexParam);
+            }
             aSeqVertex(++aNewVertID) = aLVtx;
             hasVertexBeenChecked(i)  = true;
             isFound                  = true;
@@ -798,7 +829,9 @@ void IntPatch_ALineToWLine::MakeWLine(
       }
 
       if ((aPrePointExist != IntPatch_SPntNone) && (aLinOn2S->NbPoints() > 1))
+      {
         break;
+      }
 
       if (isStepReduced)
       {
@@ -806,17 +839,23 @@ void IntPatch_ALineToWLine::MakeWLine(
 
         aStep = (theLPar - aParameter) / (double)(myNbPointsInWline - 1);
         if (aStep < Epsilon(theLPar))
+        {
           break;
+        }
 
         aLPar = aVertexParams(aNbVert);
         for (int i = aVertexParams.Lower(); i <= aVertexParams.Upper(); i++)
         {
           if (hasVertexBeenChecked(i))
+          {
             continue;
+          }
 
           aLPar = aVertexParams(i);
           if (std::abs(aLPar - aParameter) < aPrmTol)
+          {
             continue;
+          }
 
           break;
         }
@@ -842,9 +881,13 @@ void IntPatch_ALineToWLine::MakeWLine(
     if (aLinOn2S->NbPoints() >= 3)
     {
       if (anIsFirstDegenerated)
+      {
         CorrectEndPoint(aLinOn2S, 1);
+      }
       if (anIsLastDegenerated)
+      {
         CorrectEndPoint(aLinOn2S, aLinOn2S->NbPoints());
+      }
     }
 
     //-----------------------------------------------------------------
@@ -896,8 +939,10 @@ void IntPatch_ALineToWLine::MakeWLine(
     for (int i = aSeqVertex.Lower(); i <= aNewVertID; i++)
     {
       IntPatch_Point aVtx = aSeqVertex(i);
-      if (aVtx.ParameterOnLine() == -1)      // in the case of closed curve,
+      if (aVtx.ParameterOnLine() == -1)
+      {                                      // in the case of closed curve,
         aVtx.SetParameter(aWLine->NbPnts()); // we set the last parameter
+      }
       aWLine->AddVertex(aVtx);
     }
 
@@ -929,15 +974,21 @@ int IntPatch_ALineToWLine::CheckDeflection(const gp_XYZ& theMidPt,
 {
   double aDist = std::abs(myQuad1.Distance(theMidPt));
   if (aDist > theMaxDeflection)
+  {
     return 1;
+  }
 
   aDist = std::max(std::abs(myQuad2.Distance(theMidPt)), aDist);
 
   if (aDist > theMaxDeflection)
+  {
     return 1;
+  }
 
   if ((aDist + aDist) < theMaxDeflection)
+  {
     return -1;
+  }
 
   return 0;
 }
@@ -955,7 +1006,9 @@ bool IntPatch_ALineToWLine::StepComputing(const occ::handle<IntPatch_ALine>& the
                                           double&                            theStep) const
 {
   if (theTgMagnitude < Precision::Confusion())
+  {
     return false;
+  }
 
   const double anEps = myTol3D;
 
@@ -1004,7 +1057,9 @@ bool IntPatch_ALineToWLine::StepComputing(const occ::handle<IntPatch_ALine>& the
     const int     aStatus = CheckDeflection(0.5 * (aP1 + aP2), theMaxDeflection);
 
     if (aStatus == 0)
+    {
       break;
+    }
 
     if (aStatus < 0)
     {

@@ -49,7 +49,9 @@ void BOPTest::PeriodicityCommands(Draw_Interpretor& theCommands)
 {
   static bool done = false;
   if (done)
+  {
     return;
+  }
   done = true;
   // Chapter's name
   const char* group = "BOPTest commands";
@@ -121,11 +123,17 @@ int MakePeriodic(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
 
     int aDirID = -1;
     if (!strcasecmp(theArgv[i], "-x"))
+    {
       aDirID = 0;
+    }
     else if (!strcasecmp(theArgv[i], "-y"))
+    {
       aDirID = 1;
+    }
     else if (!strcasecmp(theArgv[i], "-z"))
+    {
       aDirID = 2;
+    }
     else
     {
       theDI << theArgv[i] << " - Invalid key\n";
@@ -209,14 +217,20 @@ int GetTwins(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
 
   TopoDS_Shape aCTwins;
   if (aTwins.IsEmpty())
+  {
     theDI << "No twins for the shape.\n";
+  }
   else if (aTwins.Extent() == 1)
+  {
     aCTwins = aTwins.First();
+  }
   else
   {
     BRep_Builder().MakeCompound(TopoDS::Compound(aCTwins));
     for (NCollection_List<TopoDS_Shape>::Iterator it(aTwins); it.More(); it.Next())
+    {
       BRep_Builder().Add(aCTwins, it.Value());
+    }
   }
 
   DBRep::Set(theArgv[1], aCTwins);
@@ -238,11 +252,17 @@ int RepeatShape(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
   {
     int aDirID = -1;
     if (!strcasecmp(theArgv[i], "-x"))
+    {
       aDirID = 0;
+    }
     else if (!strcasecmp(theArgv[i], "-y"))
+    {
       aDirID = 1;
+    }
     else if (!strcasecmp(theArgv[i], "-z"))
+    {
       aDirID = 2;
+    }
     else
     {
       theDI << theArgv[i] << " - Invalid key\n";
@@ -254,7 +274,9 @@ int RepeatShape(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
 
     int aTimes = 0;
     if (theArgc > i + 1)
+    {
       aTimes = Draw::Atoi(theArgv[++i]);
+    }
 
     if (aTimes == 0)
     {

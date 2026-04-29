@@ -38,7 +38,9 @@ void IGESData_GeneralModule::FillSharedCase(const int                           
 {
   DeclareAndCast(IGESData_IGESEntity, anent, ent);
   if (anent.IsNull())
+  {
     return;
+  }
   //  .... Directory Part
   iter.AddItem(anent->DirFieldEntity(3));
   iter.AddItem(anent->DirFieldEntity(4));
@@ -54,7 +56,9 @@ void IGESData_GeneralModule::FillSharedCase(const int                           
   //  .... Properties
   Interface_EntityIterator assocs = anent->Properties();
   for (; assocs.More(); assocs.Next())
+  {
     iter.AddItem(assocs.Value());
+  }
 }
 
 void IGESData_GeneralModule::ListImpliedCase(const int                              CN,
@@ -63,11 +67,15 @@ void IGESData_GeneralModule::ListImpliedCase(const int                          
 {
   DeclareAndCast(IGESData_IGESEntity, anent, ent);
   if (anent.IsNull())
+  {
     return;
+  }
   OwnImpliedCase(CN, anent, iter);
   Interface_EntityIterator assocs = anent->Associativities();
   for (; assocs.More(); assocs.Next())
+  {
     iter.AddItem(assocs.Value());
+  }
 }
 
 void IGESData_GeneralModule::OwnImpliedCase(const int,
@@ -107,20 +115,32 @@ void IGESData_GeneralModule::CopyCase(const int                              CN,
   //?  ento->InitTypeAndForm (enfr->TypeNumber(), enfr->FormNumber());ShallowCopy
 
   if (enfr->DefLineFont() == IGESData_DefReference)
+  {
     ento->InitLineFont(GetCasted(IGESData_LineFontEntity, TC.Transferred(enfr->LineFont())));
+  }
   else
+  {
     ento->InitLineFont(enfr->LineFont(), enfr->RankLineFont());
+  }
 
   if (enfr->DefLevel() == IGESData_DefSeveral)
+  {
     ento->InitLevel(GetCasted(IGESData_LevelListEntity, TC.Transferred(enfr->LevelList())), -1);
+  }
   else
+  {
     ento->InitLevel(enfr->LevelList(), enfr->Level());
+  }
 
   if (enfr->DefView() != IGESData_DefNone)
+  {
     ento->InitView(GetCasted(IGESData_ViewKindEntity, TC.Transferred(enfr->View())));
+  }
 
   if (enfr->HasTransf())
+  {
     ento->InitTransf(GetCasted(IGESData_TransfEntity, TC.Transferred(enfr->Transf())));
+  }
 
   ento->InitStatus(enfr->BlankStatus(),
                    enfr->SubordinateStatus(),
@@ -128,25 +148,39 @@ void IGESData_GeneralModule::CopyCase(const int                              CN,
                    enfr->HierarchyStatus());
 
   if (enfr->DefColor() == IGESData_DefReference)
+  {
     ento->InitColor(GetCasted(IGESData_ColorEntity, TC.Transferred(enfr->Color())));
+  }
   else
+  {
     ento->InitColor(enfr->Color(), enfr->RankColor());
+  }
 
   if (enfr->HasShortLabel())
+  {
     ento->SetLabel(new TCollection_HAsciiString(enfr->ShortLabel()), enfr->SubScriptNumber());
+  }
   else
+  {
     ento->SetLabel(enfr->ShortLabel(), enfr->SubScriptNumber());
+  }
 
   //  Directory Part : Miscellaneous
   occ::handle<IGESData_IGESEntity> Structure;
   if (enfr->HasStructure())
+  {
     Structure = GetCasted(IGESData_IGESEntity, TC.Transferred(enfr->Structure()));
+  }
   if (enfr->HasLabelDisplay())
+  {
     ento->InitMisc(Structure,
                    GetCasted(IGESData_LabelDisplayEntity, TC.Transferred(enfr->LabelDisplay())),
                    enfr->LineWeightNumber());
+  }
   else
+  {
     ento->InitMisc(Structure, enfr->LabelDisplay(), enfr->LineWeightNumber());
+  }
 
   //  LineWeightValue, Res1, Res2 : through action of ShallowCopy ?
 
@@ -180,7 +214,9 @@ void IGESData_GeneralModule::RenewImpliedCase(const int                         
       const occ::handle<Standard_Transient>& anent = iter.Value();
       occ::handle<Standard_Transient>        newent;
       if (TC.Search(anent, newent))
+      {
         ento->AddAssociativity(GetCasted(IGESData_IGESEntity, newent));
+      }
     }
   }
 }
@@ -198,7 +234,9 @@ void IGESData_GeneralModule::WhenDeleteCase(const int                           
 {
   DeclareAndCast(IGESData_IGESEntity, anent, ent);
   if (anent.IsNull())
+  {
     return;
+  }
   anent->Clear();
   OwnDeleteCase(CN, anent);
 }
@@ -215,7 +253,9 @@ occ::handle<TCollection_HAsciiString> IGESData_GeneralModule::Name(
   occ::handle<TCollection_HAsciiString> name;
   DeclareAndCast(IGESData_IGESEntity, anent, ent);
   if (anent.IsNull())
+  {
     return name;
+  }
   name = anent->NameValue();
   return name;
 }

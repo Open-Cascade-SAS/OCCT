@@ -31,7 +31,9 @@ void IGESSolid_Face::Init(
   const occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Loop>>>& Loops)
 {
   if (Loops->Lower() != 1)
+  {
     throw Standard_DimensionMismatch("IGESSolid_Face : Init");
+  }
   theSurface   = aSurface;
   hasOuterLoop = OuterLoopFlag;
   theLoops     = Loops;

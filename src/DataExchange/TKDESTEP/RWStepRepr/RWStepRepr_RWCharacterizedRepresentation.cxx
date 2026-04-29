@@ -36,7 +36,9 @@ void RWStepRepr_RWCharacterizedRepresentation::ReadStep(
 {
   // Number of Parameter Control
   if (!data->CheckNbParams(num, 4, ach, "characterized_representation"))
+  {
     return;
+  }
 
   // name
   occ::handle<TCollection_HAsciiString> aName;
@@ -62,7 +64,9 @@ void RWStepRepr_RWCharacterizedRepresentation::ReadStep(
                            ach,
                            STANDARD_TYPE(StepRepr_RepresentationItem),
                            anItem))
+      {
         anItems->SetValue(i, anItem);
+      }
     }
   }
 
@@ -90,9 +94,13 @@ void RWStepRepr_RWCharacterizedRepresentation::WriteStep(
 
   // description
   if (!ent->Description().IsNull())
+  {
     SW.Send(ent->Description());
+  }
   else
+  {
     SW.SendUndef();
+  }
 
   // items
   SW.OpenSub();

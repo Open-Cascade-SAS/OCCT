@@ -51,98 +51,138 @@ void IGESSolid_ToolEllipsoid::ReadOwnParams(const occ::handle<IGESSolid_Ellipsoi
     // st = PR.ReadReal(PR.Current(), "Center Point (X)", tempreal); //szv#4:S4163:12Mar99 moved in
     // if
     if (PR.ReadReal(PR.Current(), "Center Point (X)", tempreal))
+    {
       tempCenter.SetX(tempreal);
+    }
   }
   else
+  {
     tempCenter.SetX(0.0);
+  }
 
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Center Point (Y)", tempreal); //szv#4:S4163:12Mar99 moved in
     // if
     if (PR.ReadReal(PR.Current(), "Center Point (Y)", tempreal))
+    {
       tempCenter.SetY(tempreal);
+    }
   }
   else
+  {
     tempCenter.SetY(0.0);
+  }
 
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Center Point (Z)", tempreal); //szv#4:S4163:12Mar99 moved in
     // if
     if (PR.ReadReal(PR.Current(), "Center Point (Z)", tempreal))
+    {
       tempCenter.SetZ(tempreal);
+    }
   }
   else
+  {
     tempCenter.SetZ(0.0);
+  }
 
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Local X axis (I)", tempreal); //szv#4:S4163:12Mar99 moved in
     // if
     if (PR.ReadReal(PR.Current(), "Local X axis (I)", tempreal))
+    {
       tempXAxis.SetX(tempreal);
+    }
   }
   else
+  {
     tempXAxis.SetX(1.0);
+  }
 
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Local X axis (J)", tempreal); //szv#4:S4163:12Mar99 moved in
     // if
     if (PR.ReadReal(PR.Current(), "Local X axis (J)", tempreal))
+    {
       tempXAxis.SetY(tempreal);
+    }
   }
   else
+  {
     tempXAxis.SetY(0.0);
+  }
 
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Local X axis (K)", tempreal); //szv#4:S4163:12Mar99 moved in
     // if
     if (PR.ReadReal(PR.Current(), "Local X axis (K)", tempreal))
+    {
       tempXAxis.SetZ(tempreal);
+    }
   }
   else
+  {
     tempXAxis.SetZ(0.0);
+  }
 
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Local Z axis (I)", tempreal); //szv#4:S4163:12Mar99 moved in
     // if
     if (PR.ReadReal(PR.Current(), "Local Z axis (I)", tempreal))
+    {
       tempZAxis.SetX(tempreal);
+    }
   }
   else
+  {
     tempZAxis.SetX(0.0);
+  }
 
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Local Z axis (J)", tempreal); //szv#4:S4163:12Mar99 moved in
     // if
     if (PR.ReadReal(PR.Current(), "Local Z axis (J)", tempreal))
+    {
       tempZAxis.SetY(tempreal);
+    }
   }
   else
+  {
     tempZAxis.SetY(0.0);
+  }
 
   if (PR.DefinedElseSkip())
   {
     // st = PR.ReadReal(PR.Current(), "Local Z axis (K)", tempreal); //szv#4:S4163:12Mar99 moved in
     // if
     if (PR.ReadReal(PR.Current(), "Local Z axis (K)", tempreal))
+    {
       tempZAxis.SetZ(tempreal);
+    }
   }
   else
+  {
     tempZAxis.SetZ(1.0);
+  }
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(tempSize, tempCenter, tempXAxis, tempZAxis);
   double eps = 1.E-05;
   if (!tempXAxis.IsEqual(ent->XAxis().XYZ(), eps))
+  {
     PR.AddWarning("XAxis poorly unitary, normalized");
+  }
   if (!tempZAxis.IsEqual(ent->ZAxis().XYZ(), eps))
+  {
     PR.AddWarning("ZAxis poorly unitary, normalized");
+  }
 }
 
 void IGESSolid_ToolEllipsoid::WriteOwnParams(const occ::handle<IGESSolid_Ellipsoid>& ent,
@@ -197,10 +237,14 @@ void IGESSolid_ToolEllipsoid::OwnCheck(const occ::handle<IGESSolid_Ellipsoid>& e
   double eps    = 1.E-04;
   double prosca = ent->XAxis().Dot(ent->ZAxis());
   if (prosca < -eps || prosca > eps)
+  {
     ach->AddFail("Local Z axis : Not orthogonal to X axis");
+  }
   if (ent->Size().X() < ent->Size().Y() || ent->Size().Y() < ent->Size().Z()
       || ent->Size().Z() <= 0)
+  {
     ach->AddFail("Size : The values does not satisfy LX >= LY >= LZ > 0");
+  }
 }
 
 void IGESSolid_ToolEllipsoid::OwnDump(const occ::handle<IGESSolid_Ellipsoid>& ent,
@@ -217,5 +261,5 @@ void IGESSolid_ToolEllipsoid::OwnDump(const occ::handle<IGESSolid_Ellipsoid>& en
   IGESData_DumpXYZL(S, level, ent->XAxis(), ent->VectorLocation());
   S << "\nZAxis  : ";
   IGESData_DumpXYZL(S, level, ent->ZAxis(), ent->VectorLocation());
-  S << std::endl;
+  S << '\n';
 }

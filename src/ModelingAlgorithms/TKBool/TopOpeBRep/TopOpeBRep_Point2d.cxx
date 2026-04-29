@@ -45,13 +45,21 @@ TopOpeBRep_Point2d::TopOpeBRep_Point2d()
 const TopoDS_Vertex& TopOpeBRep_Point2d::Vertex(const int Index) const
 {
   if (!IsVertex(Index))
+  {
     throw Standard_Failure("TopOpeBRep_Point2d::Vertex");
+  }
   if (Index == 1)
+  {
     return myvertex1;
+  }
   else if (Index == 2)
+  {
     return myvertex2;
+  }
   else
+  {
     throw Standard_Failure("TopOpeBRep_Point2d::Vertex");
+  }
 }
 
 //=================================================================================================
@@ -59,11 +67,17 @@ const TopoDS_Vertex& TopOpeBRep_Point2d::Vertex(const int Index) const
 const TopOpeBRepDS_Transition& TopOpeBRep_Point2d::Transition(const int Index) const
 {
   if (Index == 1)
+  {
     return mytransition1;
+  }
   else if (Index == 2)
+  {
     return mytransition2;
+  }
   else
+  {
     throw Standard_Failure("TopOpeBRep_Point2d::Transition");
+  }
 }
 
 //=================================================================================================
@@ -71,11 +85,17 @@ const TopOpeBRepDS_Transition& TopOpeBRep_Point2d::Transition(const int Index) c
 TopOpeBRepDS_Transition& TopOpeBRep_Point2d::ChangeTransition(const int Index)
 {
   if (Index == 1)
+  {
     return mytransition1;
+  }
   else if (Index == 2)
+  {
     return mytransition2;
+  }
   else
+  {
     throw Standard_Failure("TopOpeBRep_Point2d::ChangeTransition");
+  }
 }
 
 //=================================================================================================

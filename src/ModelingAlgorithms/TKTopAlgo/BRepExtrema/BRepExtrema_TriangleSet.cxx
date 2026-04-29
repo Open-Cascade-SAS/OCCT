@@ -220,9 +220,13 @@ bool BRepExtrema_TriangleSet::Init(const NCollection_DynamicArray<TopoDS_Shape>&
   for (int aShapeIdx = 0; aShapeIdx < theShapes.Length() && isOK; ++aShapeIdx)
   {
     if (theShapes(aShapeIdx).ShapeType() == TopAbs_FACE)
+    {
       isOK = initFace(TopoDS::Face(theShapes(aShapeIdx)), aShapeIdx);
+    }
     else if (theShapes(aShapeIdx).ShapeType() == TopAbs_EDGE)
+    {
       isOK = initEdge(TopoDS::Edge(theShapes(aShapeIdx)), aShapeIdx);
+    }
   }
 
   int aNumTrg = static_cast<int>(myTriangles.Size());

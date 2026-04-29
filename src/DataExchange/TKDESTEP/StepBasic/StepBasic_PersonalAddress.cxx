@@ -96,7 +96,9 @@ occ::handle<StepBasic_Person> StepBasic_PersonalAddress::PeopleValue(const int n
 int StepBasic_PersonalAddress::NbPeople() const
 {
   if (people.IsNull())
+  {
     return 0;
+  }
   return people->Length();
 }
 

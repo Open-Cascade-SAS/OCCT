@@ -69,7 +69,9 @@ const TopoDS_Shape TNaming_Translator::Copied(const TopoDS_Shape& aShape) const
 {
   TopoDS_Shape aResult;
   if (myDataMapOfResults.IsBound(aShape))
+  {
     aResult = myDataMapOfResults.Find(aShape);
+  }
   return aResult;
 }
 
@@ -84,11 +86,15 @@ void TNaming_Translator::Perform()
   {
     TNaming_CopyShape::CopyTool(itm.Key(), myMap, Result);
     if (!Result.IsNull())
+    {
       myDataMapOfResults(itm.Key()) = Result;
+    }
     Result.Nullify();
   }
   if (myDataMapOfResults.Extent())
+  {
     myIsDone = true;
+  }
 }
 
 //=================================================================================================
@@ -102,14 +108,18 @@ void TNaming_Translator::DumpMap(const bool isWrite) const
   itemname = name.Cat("_Item");
 
   if (!myMap.Extent())
+  {
     return;
+  }
   else
-    std::cout << "TNaming_Translator:: IndexedDataMap Extent = " << myMap.Extent() << std::endl;
+  {
+    std::cout << "TNaming_Translator:: IndexedDataMap Extent = " << myMap.Extent() << '\n';
+  }
 
   for (int i = 1; i <= myMap.Extent(); i++)
   {
     std::cout << "TNaming_Translator::DumpMap:  Index = " << i
-              << " Type = " << (myMap.FindKey(i))->DynamicType() << std::endl;
+              << " Type = " << (myMap.FindKey(i))->DynamicType() << '\n';
     occ::handle<Standard_Type> T = (myMap.FindKey(i))->DynamicType();
     if ((T == STANDARD_TYPE(BRep_TVertex)) || (T == STANDARD_TYPE(BRep_TEdge))
         || T == STANDARD_TYPE(BRep_TFace) || T == STANDARD_TYPE(TopoDS_TWire)
@@ -136,17 +146,17 @@ void TNaming_Translator::DumpMap(const bool isWrite) const
         const occ::handle<TopLoc_Datum3D> Item =
           occ::down_cast<TopLoc_Datum3D>(myMap.FindFromIndex(i));
         std::cout << "TNaming_Translator::DumpMap: Location_Key_name  = "
-                  << keyname.Cat(i).ToCString() << std::endl;
+                  << keyname.Cat(i).ToCString() << '\n';
         key->ShallowDump(std::cout);
         std::cout << "TNaming_Translator::DumpMap: Location_Item_name = "
-                  << itemname.Cat(i).ToCString() << std::endl;
+                  << itemname.Cat(i).ToCString() << '\n';
         Item->ShallowDump(std::cout);
       }
     }
     else
     {
       std::cout << "TNaming_Translator::DumpMap: Unexpected Type >> Idex = " << i
-                << " Type = " << (myMap.FindKey(i))->DynamicType() << std::endl;
+                << " Type = " << (myMap.FindKey(i))->DynamicType() << '\n';
       continue;
     }
   }

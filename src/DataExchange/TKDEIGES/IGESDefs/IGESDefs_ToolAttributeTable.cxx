@@ -59,9 +59,13 @@ void IGESDefs_ToolAttributeTable::ReadOwnParams(const occ::handle<IGESDefs_Attri
   int na = ab->NbAttributes();
 
   if (ent->FormNumber() == 1)
+  {
     st = PR.ReadInteger(PR.Current(), "No. of rows", nr);
+  }
   if (st)
+  {
     list2 = new NCollection_HArray2<occ::handle<Standard_Transient>>(1, na, 1, nr);
+  }
 
   //  AttributeDef repeated once (Form 0) or <nr> times (Form 1)
   for (int k = 1; k <= nr; k++)
@@ -74,7 +78,9 @@ void IGESDefs_ToolAttributeTable::ReadOwnParams(const occ::handle<IGESDefs_Attri
       {
         case 0:
           for (j = 1; j <= avc; j++)
+          {
             PR.SetCurrentNumber(PR.CurrentNumber() + 1); // skip
+          }
           break;
         case 1: {
           occ::handle<NCollection_HArray1<int>> attrInt = new NCollection_HArray1<int>(1, avc);
@@ -84,7 +90,9 @@ void IGESDefs_ToolAttributeTable::ReadOwnParams(const occ::handle<IGESDefs_Attri
           {
             // st = PR.ReadInteger(PR.Current(),"Value",item); //szv#4:S4163:12Mar99 moved in if
             if (PR.ReadInteger(PR.Current(), "Value", item))
+            {
               attrInt->SetValue(j, item);
+            }
           }
         }
         break;
@@ -97,7 +105,9 @@ void IGESDefs_ToolAttributeTable::ReadOwnParams(const occ::handle<IGESDefs_Attri
           {
             // st = PR.ReadReal(PR.Current(),"Value",item); //szv#4:S4163:12Mar99 moved in if
             if (PR.ReadReal(PR.Current(), "Value", item))
+            {
               attrReal->SetValue(j, item);
+            }
           }
         }
         break;
@@ -110,7 +120,9 @@ void IGESDefs_ToolAttributeTable::ReadOwnParams(const occ::handle<IGESDefs_Attri
           {
             // st = PR.ReadText(PR.Current(),"Value",item); //szv#4:S4163:12Mar99 moved in if
             if (PR.ReadText(PR.Current(), "Value", item))
+            {
               attrStr->SetValue(j, item);
+            }
           }
         }
         break;
@@ -123,13 +135,17 @@ void IGESDefs_ToolAttributeTable::ReadOwnParams(const occ::handle<IGESDefs_Attri
           {
             // st = PR.ReadEntity(IR,PR.Current(),"Value",item); //szv#4:S4163:12Mar99 moved in if
             if (PR.ReadEntity(IR, PR.Current(), "Value", item))
+            {
               attrEnt->SetValue(j, item);
+            }
           }
         }
         break;
         case 5:
           for (j = 1; j <= avc; j++)
+          {
             PR.SetCurrentNumber(PR.CurrentNumber() + 1); // skip
+          }
           break;
         case 6: { // Here item takes value 0 or 1
           occ::handle<NCollection_HArray1<int>> attrInt = new NCollection_HArray1<int>(1, avc);
@@ -139,7 +155,9 @@ void IGESDefs_ToolAttributeTable::ReadOwnParams(const occ::handle<IGESDefs_Attri
           {
             // st = PR.ReadInteger(PR.Current(),"Value",item); //szv#4:S4163:12Mar99 moved in if
             if (PR.ReadInteger(PR.Current(), "Value", item))
+            {
               attrInt->SetValue(j, item);
+            }
           }
         }
         break;
@@ -160,7 +178,9 @@ void IGESDefs_ToolAttributeTable::WriteOwnParams(const occ::handle<IGESDefs_Attr
   int nr = ent->NbRows();
   int na = ent->NbAttributes();
   if (ent->FormNumber() == 1)
+  {
     IW.Send(nr);
+  }
   for (int k = 1; k <= nr; k++)
   {
     for (int i = 1; i <= na; i++)
@@ -210,10 +230,14 @@ void IGESDefs_ToolAttributeTable::OwnShared(const occ::handle<IGESDefs_Attribute
     for (int i = 1; i <= na; i++)
     {
       if (ab->AttributeValueDataType(i) != 4)
+      {
         continue;
+      }
       int avc = ab->AttributeValueCount(i);
       for (int j = 1; j <= avc; j++)
+      {
         iter.GetOneItem(ent->AttributeAsEntity(i, k, j));
+      }
     }
   }
 }
@@ -243,7 +267,9 @@ void IGESDefs_ToolAttributeTable::OwnCopy(const occ::handle<IGESDefs_AttributeTa
           occ::handle<NCollection_HArray1<int>> attrInt = new NCollection_HArray1<int>(1, avc);
           list2->SetValue(i, k, attrInt);
           for (j = 1; j <= avc; j++)
+          {
             attrInt->SetValue(j, otherInt->Value(j));
+          }
         }
         break;
         case 2: {
@@ -252,7 +278,9 @@ void IGESDefs_ToolAttributeTable::OwnCopy(const occ::handle<IGESDefs_AttributeTa
             new NCollection_HArray1<double>(1, avc);
           list2->SetValue(i, k, attrReal);
           for (j = 1; j <= avc; j++)
+          {
             attrReal->SetValue(j, otherReal->Value(j));
+          }
         }
         break;
         case 3: {
@@ -263,7 +291,9 @@ void IGESDefs_ToolAttributeTable::OwnCopy(const occ::handle<IGESDefs_AttributeTa
             new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, avc);
           list2->SetValue(i, k, attrStr);
           for (j = 1; j <= avc; j++)
+          {
             attrStr->SetValue(j, new TCollection_HAsciiString(otherStr->Value(j)));
+          }
         }
         break;
         case 4: {
@@ -274,8 +304,10 @@ void IGESDefs_ToolAttributeTable::OwnCopy(const occ::handle<IGESDefs_AttributeTa
             new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, avc);
           list2->SetValue(i, k, attrEnt);
           for (j = 1; j <= avc; j++)
+          {
             attrEnt->SetValue(j,
                               GetCasted(IGESData_IGESEntity, TC.Transferred(otherEnt->Value(j))));
+          }
         }
         break;
         case 5: /////	      list2->SetValue(i,k,NULL);    by default
@@ -285,7 +317,9 @@ void IGESDefs_ToolAttributeTable::OwnCopy(const occ::handle<IGESDefs_AttributeTa
           occ::handle<NCollection_HArray1<int>> attrInt = new NCollection_HArray1<int>(1, avc);
           list2->SetValue(i, k, attrInt);
           for (j = 1; j <= avc; j++)
+          {
             attrInt->SetValue(j, otherInt->Value(j));
+          }
         }
         break;
         default:
@@ -314,14 +348,22 @@ void IGESDefs_ToolAttributeTable::OwnCheck(const occ::handle<IGESDefs_AttributeT
   if (ent->Definition().IsNull())
   {
     if (ent->HasStructure())
+    {
       ach->AddFail("Structure in Directory Entry is not an Attribute Definition Table");
+    }
     else
+    {
       ach->AddFail("No Attribute Definition defined");
+    }
   }
   if (ent->FormNumber() == 0 && ent->NbRows() != 1)
+  {
     ach->AddFail("Form 0 with several Rows");
+  }
   if (ent->NbAttributes() != ent->Definition()->NbAttributes())
+  {
     ach->AddFail("Mismatch between Definition (Structure) and Content");
+  }
 }
 
 void IGESDefs_ToolAttributeTable::OwnDump(const occ::handle<IGESDefs_AttributeTable>& ent,
@@ -336,13 +378,20 @@ void IGESDefs_ToolAttributeTable::OwnDump(const occ::handle<IGESDefs_AttributeTa
   int na = ent->NbAttributes();
   int nr = ent->NbRows();
   if (ent->FormNumber() == 1)
+  {
     S << "Number of Rows (i.e. complete sets of Attributes) : " << nr << "\n";
+  }
   else
+  {
     S << "One set of Attributes\n";
+  }
   S << "Number of defined Attributes : " << na << "\n";
   if (level <= 4)
+  {
     S << " [ structure : see Structure in Directory Entry; content : level > 4 ]\n";
+  }
   else
+  {
     for (int k = 1; k <= nr; k++)
     {
       for (int i = 1; i <= na; i++)
@@ -403,5 +452,6 @@ void IGESDefs_ToolAttributeTable::OwnDump(const occ::handle<IGESDefs_AttributeTa
         S << "\n";
       }
     }
-  S << std::endl;
+  }
+  S << '\n';
 }

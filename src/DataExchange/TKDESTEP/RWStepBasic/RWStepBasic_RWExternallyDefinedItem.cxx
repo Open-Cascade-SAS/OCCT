@@ -36,7 +36,9 @@ void RWStepBasic_RWExternallyDefinedItem::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "externally_defined_item"))
+  {
     return;
+  }
 
   // Own fields of ExternallyDefinedItem
 

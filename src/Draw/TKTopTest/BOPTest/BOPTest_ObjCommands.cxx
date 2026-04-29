@@ -39,7 +39,9 @@ void BOPTest::ObjCommands(Draw_Interpretor& theCommands)
 {
   static bool done = false;
   if (done)
+  {
     return;
+  }
   done = true;
   // Chapter's name
   const char* g = "BOPTest commands";

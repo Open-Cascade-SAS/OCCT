@@ -72,7 +72,9 @@ void DsgPrs_EqualDistancePresentation::Add(const occ::handle<Prs3d_Presentation>
   {
     SmallDist = Dist * 0.05; // 1/20.0 part
     if (SmallDist <= Precision::Confusion())
+    {
       SmallDist = Dist;
+    }
     LineDir = gce_MakeDir(Middle12, Middle34);
     OrtDir  = Plane->Pln().Axis().Direction() ^ LineDir;
     LineVec = gp_Vec(LineDir) * SmallDist;
@@ -94,7 +96,9 @@ void DsgPrs_EqualDistancePresentation::Add(const occ::handle<Prs3d_Presentation>
       double Distance = Point1.Distance(Point2);
       SmallDist       = Distance * 0.05; // 1/20.0
       if (SmallDist <= Precision::Confusion())
+      {
         SmallDist = Distance;
+      }
 
       OrtVec  = gp_Vec(OrtDir) * SmallDist;
       LineVec = gp_Vec(LineDir) * SmallDist;
@@ -200,7 +204,9 @@ void DsgPrs_EqualDistancePresentation::AddIntervalBetweenTwoArcs(
   int    i, aNodeNb;
   double aDelta, aCurPar;
   if (aPar12 < aPar11)
+  {
     aPar12 += 2. * M_PI;
+  }
   if (std::abs(aPar12 - aPar11) > Precision::Confusion())
   {
     aNodeNb = int(std::max(std::abs(aPar12 - aPar11) * 50. / M_PI + 0.5, 4.));
@@ -209,12 +215,16 @@ void DsgPrs_EqualDistancePresentation::AddIntervalBetweenTwoArcs(
 
     aPrims = new Graphic3d_ArrayOfPolylines(aNodeNb + 1);
     for (i = 1; i <= aNodeNb; aCurPar += aDelta, i++)
+    {
       aPrims->AddVertex(ElCLib::Value(aCurPar, aCirc1));
+    }
     aPrims->AddVertex(aPoint2);
     aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
   }
   if (aPar22 < aPar21)
+  {
     aPar22 += 2. * M_PI;
+  }
   if (std::abs(aPar22 - aPar21) > Precision::Confusion())
   {
     aNodeNb = int(std::max(std::abs(aPar22 - aPar21) * 50. / M_PI + 0.5, 4.));
@@ -223,7 +233,9 @@ void DsgPrs_EqualDistancePresentation::AddIntervalBetweenTwoArcs(
 
     aPrims = new Graphic3d_ArrayOfPolylines(aNodeNb + 1);
     for (i = 1; i <= aNodeNb; aCurPar += aDelta, i++)
+    {
       aPrims->AddVertex(ElCLib::Value(aCurPar, aCirc2));
+    }
     aPrims->AddVertex(aPoint4);
     aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
   }
@@ -239,7 +251,9 @@ void DsgPrs_EqualDistancePresentation::AddIntervalBetweenTwoArcs(
     // Let's take the radius direction
     gp_Pnt aCenter = aCirc1.Location();
     if (aPoint4.Distance(aCenter) < Precision::Confusion())
+    {
       return;
+    }
     DirOfArrow.SetXYZ(aPoint4.XYZ() - aCenter.XYZ());
   }
 

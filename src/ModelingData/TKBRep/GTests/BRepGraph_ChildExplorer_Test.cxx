@@ -75,7 +75,9 @@ TEST(BRepGraph_ChildExplorerTest, Box_EdgeOccurrences_Count24)
                                      BRepGraph_NodeId::Kind::Edge);
        anExp.More();
        anExp.Next())
+  {
     ++aCount;
+  }
   // 12 edges x 2 faces each = 24 edge occurrences.
   EXPECT_EQ(aCount, 24);
 }
@@ -94,7 +96,9 @@ TEST(BRepGraph_ChildExplorerTest, Box_FaceOccurrences_Count6)
                                      BRepGraph_NodeId::Kind::Face);
        anExp.More();
        anExp.Next())
+  {
     ++aFaceCount;
+  }
   EXPECT_EQ(aFaceCount, 6);
 }
 
@@ -136,7 +140,9 @@ TEST(BRepGraph_ChildExplorerTest, Face_EdgeOccurrences_4)
                                      BRepGraph_NodeId::Kind::Edge);
        anExp.More();
        anExp.Next())
+  {
     ++aCount;
+  }
   EXPECT_EQ(aCount, 4);
 }
 
@@ -404,7 +410,9 @@ TEST(BRepGraph_ChildExplorerTest, Compound_FaceCount)
                                      BRepGraph_NodeId::Kind::Face);
        anExp.More();
        anExp.Next())
+  {
     ++aCount;
+  }
   EXPECT_EQ(aCount, 12); // 6 + 6 faces
 }
 
@@ -454,7 +462,9 @@ TEST(BRepGraph_ChildExplorerTest, DeepCompound_NoStackOverflow)
                                      BRepGraph_NodeId::Kind::Face);
        anExp.More();
        anExp.Next())
+  {
     ++aCount;
+  }
   EXPECT_EQ(aCount, 6);
 }
 
@@ -469,7 +479,9 @@ TEST(BRepGraph_ChildExplorerTest, Recreate_ResetAndReexplore)
   int                     aFaceCount = 0;
   BRepGraph_ChildExplorer anExp(aGraph, BRepGraph_SolidId::Start(), BRepGraph_NodeId::Kind::Face);
   for (; anExp.More(); anExp.Next())
+  {
     ++aFaceCount;
+  }
   EXPECT_EQ(aFaceCount, 6);
 
   // Recreate targeting edges.
@@ -479,7 +491,9 @@ TEST(BRepGraph_ChildExplorerTest, Recreate_ResetAndReexplore)
                                          BRepGraph_NodeId::Kind::Edge);
        anEdgeExp.More();
        anEdgeExp.Next())
+  {
     ++aEdgeCount;
+  }
   EXPECT_EQ(aEdgeCount, 24);
 }
 
@@ -545,7 +559,9 @@ TEST(BRepGraph_ChildExplorerTest, DirectChildren_ShellFaces_CountAndOrder)
   {
     const BRepGraphInc::FaceRef& aRef = aGraph.Refs().Faces().Entry(aFaceRefId);
     if (!aRef.IsRemoved)
+    {
       anExpectedFaceIds.Append(aRef.FaceDefId.Index);
+    }
   }
 
   NCollection_DynamicArray<int> anActualFaceIds;
@@ -560,7 +576,9 @@ TEST(BRepGraph_ChildExplorerTest, DirectChildren_ShellFaces_CountAndOrder)
 
   ASSERT_EQ(anActualFaceIds.Length(), anExpectedFaceIds.Length());
   for (int i = 0; i < anExpectedFaceIds.Length(); ++i)
+  {
     EXPECT_EQ(anActualFaceIds.Value(i), anExpectedFaceIds.Value(i));
+  }
 }
 
 TEST(BRepGraph_ChildExplorerTest, DirectChildren_ShellFaces_ExposeParentAndRef)
@@ -869,9 +887,13 @@ TEST(BRepGraph_ChildExplorerTest, Recursive_SharedProduct_ChildrenHaveDistinctCo
   {
     ASSERT_EQ(anIt.Current().DefId, BRepGraph_NodeId(BRepGraph_SolidId::Start()));
     if (aCount == 0)
+    {
       aLoc1 = anIt.Current().Location;
+    }
     else if (aCount == 1)
+    {
       aLoc2 = anIt.Current().Location;
+    }
     ++aCount;
   }
 
@@ -950,7 +972,9 @@ TEST(BRepGraph_ChildExplorerTest, DirectChildren_HighFanout_DirectChildrenComple
 
   constexpr int THE_NB_CHILDREN = 80;
   for (int i = 0; i < THE_NB_CHILDREN; ++i)
+  {
     aBuilder.Add(aComp, BRepPrimAPI_MakeBox(1.0 + i, 2.0, 3.0).Shape());
+  }
 
   BRepGraph aGraph;
   aGraph.Clear();
@@ -964,7 +988,9 @@ TEST(BRepGraph_ChildExplorerTest, DirectChildren_HighFanout_DirectChildrenComple
                                                               BRepGraph_NodeId::Kind::Solid);
        anIt.More();
        anIt.Next())
+  {
     ++aCount;
+  }
 
   EXPECT_EQ(aCount, THE_NB_CHILDREN);
 }
@@ -977,7 +1003,9 @@ TEST(BRepGraph_ChildExplorerTest, HighFanout_CompletesAllChildren)
   aBB.MakeCompound(aComp);
   constexpr int THE_NB_CHILDREN = 500;
   for (int i = 0; i < THE_NB_CHILDREN; ++i)
+  {
     aBB.Add(aComp, BRepPrimAPI_MakeBox(1, 1, 1).Shape());
+  }
 
   BRepGraph aGraph;
   aGraph.Clear();
@@ -991,7 +1019,9 @@ TEST(BRepGraph_ChildExplorerTest, HighFanout_CompletesAllChildren)
                                      BRepGraph_NodeId::Kind::Face);
        anExp.More();
        anExp.Next())
+  {
     ++aFaceCount;
+  }
   // Each box has 6 faces.
   EXPECT_EQ(aFaceCount, THE_NB_CHILDREN * 6);
 }

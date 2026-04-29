@@ -57,7 +57,9 @@ bool ShapeExtend_CompositeSurface::Init(
   const ShapeExtend_Parametrisation                                  param)
 {
   if (GridSurf.IsNull())
+  {
     return false;
+  }
   myPatches = GridSurf;
   ComputeJointValues(param);
   return CheckConnectivity(Precision::Confusion());
@@ -71,7 +73,9 @@ bool ShapeExtend_CompositeSurface::Init(
   const NCollection_Array1<double>&                                  VJoints)
 {
   if (GridSurf.IsNull())
+  {
     return false;
+  }
   myPatches = GridSurf;
 
   bool ok = true;
@@ -150,7 +154,9 @@ bool ShapeExtend_CompositeSurface::SetUJointValues(const NCollection_Array1<doub
 {
   int NbU = NbUPatches();
   if (UJoints.Length() != NbU + 1)
+  {
     return false;
+  }
 
   occ::handle<NCollection_HArray1<double>> UJointValues =
     new NCollection_HArray1<double>(1, NbU + 1);
@@ -158,7 +164,9 @@ bool ShapeExtend_CompositeSurface::SetUJointValues(const NCollection_Array1<doub
   {
     UJointValues->SetValue(i, UJoints(j));
     if (i > 1 && UJoints(j) - UJoints(j - 1) < Precision::PConfusion())
+    {
       return false;
+    }
   }
   myUJointValues = UJointValues;
   return true;
@@ -170,7 +178,9 @@ bool ShapeExtend_CompositeSurface::SetVJointValues(const NCollection_Array1<doub
 {
   int NbV = NbVPatches();
   if (VJoints.Length() != NbV + 1)
+  {
     return false;
+  }
 
   occ::handle<NCollection_HArray1<double>> VJointValues =
     new NCollection_HArray1<double>(1, NbV + 1);
@@ -178,7 +188,9 @@ bool ShapeExtend_CompositeSurface::SetVJointValues(const NCollection_Array1<doub
   {
     VJointValues->SetValue(i, VJoints(j));
     if (i > 1 && VJoints(j) - VJoints(j - 1) < Precision::PConfusion())
+    {
       return false;
+    }
   }
   myVJointValues = VJointValues;
   return true;
@@ -189,7 +201,9 @@ bool ShapeExtend_CompositeSurface::SetVJointValues(const NCollection_Array1<doub
 void ShapeExtend_CompositeSurface::SetUFirstValue(const double UFirst)
 {
   if (myUJointValues.IsNull())
+  {
     return;
+  }
 
   double shift = UFirst - myUJointValues->Value(1);
   int    NbU   = myUJointValues->Length();
@@ -204,7 +218,9 @@ void ShapeExtend_CompositeSurface::SetUFirstValue(const double UFirst)
 void ShapeExtend_CompositeSurface::SetVFirstValue(const double VFirst)
 {
   if (myVJointValues.IsNull())
+  {
     return;
+  }
 
   double shift = VFirst - myVJointValues->Value(1);
   int    NbV   = myVJointValues->Length();
@@ -220,8 +236,12 @@ int ShapeExtend_CompositeSurface::LocateUParameter(const double U) const
 {
   int nbPatch = NbUPatches();
   for (int i = 2; i <= nbPatch; i++)
+  {
     if (U < myUJointValues->Value(i))
+    {
       return i - 1;
+    }
+  }
   return nbPatch;
 }
 
@@ -231,8 +251,12 @@ int ShapeExtend_CompositeSurface::LocateVParameter(const double V) const
 {
   int nbPatch = NbVPatches();
   for (int i = 2; i <= nbPatch; i++)
+  {
     if (V < myVJointValues->Value(i))
+    {
       return i - 1;
+    }
+  }
   return nbPatch;
 }
 
@@ -357,9 +381,13 @@ bool ShapeExtend_CompositeSurface::GlobalToLocalTransformation(const int  i,
   uFact = scaleu / scalev;
   gp_Trsf2d Shift, Scale;
   if (shift.X() != 0. || shift.Y() != 0.)
+  {
     Shift.SetTranslation(shift);
+  }
   if (scalev != 1.)
+  {
     Scale.SetScale(gp_Pnt2d(0, 0), scalev);
+  }
   Trsf = Scale * Shift;
   return uFact != 1. || Trsf.Form() != gp_Identity;
 }
@@ -373,10 +401,16 @@ bool ShapeExtend_CompositeSurface::GlobalToLocalTransformation(const int  i,
 void ShapeExtend_CompositeSurface::Transform(const gp_Trsf& T)
 {
   if (myPatches.IsNull())
+  {
     return;
+  }
   for (int i = 1; i <= NbUPatches(); i++)
+  {
     for (int j = 1; j <= NbVPatches(); j++)
+    {
       Patch(i, j)->Transform(T);
+    }
+  }
 }
 
 //=================================================================================================
@@ -385,13 +419,19 @@ occ::handle<Geom_Geometry> ShapeExtend_CompositeSurface::Copy() const
 {
   occ::handle<ShapeExtend_CompositeSurface> surf = new ShapeExtend_CompositeSurface;
   if (myPatches.IsNull())
+  {
     return surf;
+  }
 
   occ::handle<NCollection_HArray2<occ::handle<Geom_Surface>>> patches =
     new NCollection_HArray2<occ::handle<Geom_Surface>>(1, NbUPatches(), 1, NbVPatches());
   for (int i = 1; i <= NbUPatches(); i++)
+  {
     for (int j = 1; j <= NbVPatches(); j++)
+    {
       patches->SetValue(i, j, occ::down_cast<Geom_Surface>(Patch(i, j)->Copy()));
+    }
+  }
   surf->Init(patches);
   return surf;
 }
@@ -575,7 +615,9 @@ void ShapeExtend_CompositeSurface::ComputeJointValues(const ShapeExtend_Parametr
     {
       myPatches->Value(i, 1)->Bounds(U1, U2, V1, V2);
       if (i == 1)
+      {
         myUJointValues->SetValue(1, U = U1);
+      }
       U += (U2 - U1);
       myUJointValues->SetValue(i + 1, U);
     }
@@ -583,7 +625,9 @@ void ShapeExtend_CompositeSurface::ComputeJointValues(const ShapeExtend_Parametr
     {
       myPatches->Value(1, i)->Bounds(U1, U2, V1, V2);
       if (i == 1)
+      {
         myVJointValues->SetValue(1, V = V1);
+      }
       V += (V2 - V1);
       myVJointValues->SetValue(i + 1, V);
     }
@@ -598,9 +642,13 @@ void ShapeExtend_CompositeSurface::ComputeJointValues(const ShapeExtend_Parametr
     }
     int i; // svv Jan 10 2000 : porting on DEC
     for (i = 0; i <= NbU; i++)
+    {
       myUJointValues->SetValue(i + 1, i * stepu);
+    }
     for (i = 0; i <= NbV; i++)
+    {
       myVJointValues->SetValue(i + 1, i * stepv);
+    }
   }
 }
 
@@ -652,13 +700,19 @@ bool ShapeExtend_CompositeSurface::CheckConnectivity(const double Prec)
         double pari  = Vi1 + stepi * isample;
         double dist2 = sj->Value(Uj2, parj).SquareDistance(si->Value(Ui1, pari));
         if (maxdist2 < dist2)
+        {
           maxdist2 = dist2;
+        }
       }
     }
     if (i == 1)
+    {
       myUClosed = (maxdist2 <= Prec * Prec);
+    }
     else if (maxdist2 > Prec * Prec)
+    {
       ok = false;
+    }
   }
 
   // check in v direction
@@ -681,13 +735,19 @@ bool ShapeExtend_CompositeSurface::CheckConnectivity(const double Prec)
         double pari  = Ui1 + stepi * isample;
         double dist2 = sj->Value(parj, Vj2).SquareDistance(si->Value(pari, Vi1));
         if (maxdist2 < dist2)
+        {
           maxdist2 = dist2;
+        }
       }
     }
     if (i == 1)
+    {
       myVClosed = (maxdist2 <= Prec * Prec);
+    }
     else if (maxdist2 > Prec * Prec)
+    {
       ok = false;
+    }
   }
 
 #ifdef OCCT_DEBUG

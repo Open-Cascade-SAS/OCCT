@@ -30,7 +30,9 @@ void RWHeaderSection_RWFileSchema::ReadStep(const occ::handle<StepData_StepReade
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 1, ach, "file_schema has not 1 parameter(s)"))
+  {
     return;
+  }
 
   // --- own field : schemaIdentifiers ---
 
@@ -46,7 +48,9 @@ void RWHeaderSection_RWFileSchema::ReadStep(const occ::handle<StepData_StepReade
     {
       bool stat1 = data->ReadString(nsub1, i1, "schema_identifiers", ach, aSchemaIdentifiersItem);
       if (stat1)
+      {
         aSchemaIdentifiers->SetValue(i1, aSchemaIdentifiersItem);
+      }
     }
   }
   else
@@ -57,7 +61,9 @@ void RWHeaderSection_RWFileSchema::ReadStep(const occ::handle<StepData_StepReade
   //--- Initialisation of the read entity ---
 
   if (!ach->HasFailed())
+  {
     ent->Init(aSchemaIdentifiers);
+  }
 }
 
 void RWHeaderSection_RWFileSchema::WriteStep(StepData_StepWriter&                         SW,

@@ -36,7 +36,9 @@ void RWStepFEA_RWCurveElementLocation::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 1, ach, "curve_element_location"))
+  {
     return;
+  }
 
   // Own fields of CurveElementLocation
 

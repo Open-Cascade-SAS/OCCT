@@ -122,7 +122,9 @@ void Approx_CurvilinearParameter_EvalCurv::Evaluate(int*    Dimension,
   }
 
   for (i = 0; i <= 2; i++)
+  {
     Result[i] = Res(i);
+  }
 }
 
 Approx_CurvilinearParameter::Approx_CurvilinearParameter(const occ::handle<Adaptor3d_Curve>& C3D,
@@ -275,7 +277,9 @@ void Approx_CurvilinearParameter_EvalCurvOnSurf::Evaluate(int*    Dimension,
   }
 
   for (i = 0; i <= 4; i++)
+  {
     Result[i] = Res(i);
+  }
 }
 
 Approx_CurvilinearParameter::Approx_CurvilinearParameter(const occ::handle<Adaptor2d_Curve2d>& C2D,
@@ -364,10 +368,14 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const occ::handle<Adapt
     aApprox.Poles(1, Poles);
     aApprox.Poles1d(1, Poles1d);
     for (i = 1; i <= NbPoles; i++)
+    {
       Poles2d(i).SetX(Poles1d(i));
+    }
     aApprox.Poles1d(2, Poles1d);
     for (i = 1; i <= NbPoles; i++)
+    {
       Poles2d(i).SetY(Poles1d(i));
+    }
     occ::handle<NCollection_HArray1<double>> Knots  = aApprox.Knots();
     occ::handle<NCollection_HArray1<int>>    Mults  = aApprox.Multiplicities();
     int                                      Degree = aApprox.Degree();
@@ -450,7 +458,9 @@ void Approx_CurvilinearParameter_EvalCurvOn2Surf::Evaluate(int*    Dimension,
   }
 
   for (i = 0; i <= 6; i++)
+  {
     Result[i] = Res(i);
+  }
 }
 
 Approx_CurvilinearParameter::Approx_CurvilinearParameter(
@@ -545,10 +555,14 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(
     aApprox.Poles(1, Poles);
     aApprox.Poles1d(1, Poles1d);
     for (i = 1; i <= NbPoles; i++)
+    {
       Poles2d(i).SetX(Poles1d(i));
+    }
     aApprox.Poles1d(2, Poles1d);
     for (i = 1; i <= NbPoles; i++)
+    {
       Poles2d(i).SetY(Poles1d(i));
+    }
     occ::handle<NCollection_HArray1<double>> Knots  = aApprox.Knots();
     occ::handle<NCollection_HArray1<int>>    Mults  = aApprox.Multiplicities();
     int                                      Degree = aApprox.Degree();
@@ -556,10 +570,14 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(
     myCurve2d1 = new Geom2d_BSplineCurve(Poles2d, Knots->Array1(), Mults->Array1(), Degree);
     aApprox.Poles1d(3, Poles1d);
     for (i = 1; i <= NbPoles; i++)
+    {
       Poles2d(i).SetX(Poles1d(i));
+    }
     aApprox.Poles1d(4, Poles1d);
     for (i = 1; i <= NbPoles; i++)
+    {
       Poles2d(i).SetY(Poles1d(i));
+    }
     myCurve2d2 = new Geom2d_BSplineCurve(Poles2d, Knots->Array1(), Mults->Array1(), Degree);
   }
   myMaxError2d1 = std::max(aApprox.MaxError(1, 1), aApprox.MaxError(1, 2));
@@ -648,12 +666,16 @@ double Approx_CurvilinearParameter::MaxError2d2() const
 
 void Approx_CurvilinearParameter::Dump(Standard_OStream& o) const
 {
-  o << "Dump of Approx_CurvilinearParameter" << std::endl;
+  o << "Dump of Approx_CurvilinearParameter" << '\n';
   if (myCase == 2 || myCase == 3)
-    o << "myMaxError2d1 = " << myMaxError2d1 << std::endl;
+  {
+    o << "myMaxError2d1 = " << myMaxError2d1 << '\n';
+  }
   if (myCase == 3)
-    o << "myMaxError2d2 = " << myMaxError2d2 << std::endl;
-  o << "myMaxError3d = " << myMaxError3d << std::endl;
+  {
+    o << "myMaxError2d2 = " << myMaxError2d2 << '\n';
+  }
+  o << "myMaxError3d = " << myMaxError3d << '\n';
 }
 
 //=================================================================================================

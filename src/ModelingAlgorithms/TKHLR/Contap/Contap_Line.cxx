@@ -65,7 +65,9 @@ void Contap_Line::Add(const Contap_Point& P)
 void Contap_Line::Clear()
 {
   if (!curv.IsNull())
+  {
     curv->Clear();
+  }
   svtx = new NCollection_HSequence<Contap_Point>();
   typL = Contap_Walking;
 }

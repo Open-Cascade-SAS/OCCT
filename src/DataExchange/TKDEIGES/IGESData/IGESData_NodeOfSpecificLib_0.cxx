@@ -29,11 +29,15 @@ IGESData_NodeOfSpecificLib::IGESData_NodeOfSpecificLib() = default;
 void IGESData_NodeOfSpecificLib::AddNode(const occ::handle<IGESData_GlobalNodeOfSpecificLib>& anode)
 {
   if (thenode == anode)
+  {
     return;
+  }
   if (thenext.IsNull())
   {
     if (thenode.IsNull())
+    {
       thenode = anode;
+    }
     else
     {
       thenext = new IGESData_NodeOfSpecificLib;
@@ -41,7 +45,9 @@ void IGESData_NodeOfSpecificLib::AddNode(const occ::handle<IGESData_GlobalNodeOf
     }
   }
   else
+  {
     thenext->AddNode(anode);
+  }
 }
 
 const occ::handle<IGESData_SpecificModule>& IGESData_NodeOfSpecificLib::Module() const

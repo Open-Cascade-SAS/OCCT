@@ -70,22 +70,34 @@ static bool Edit(const occ::handle<Standard_Transient>& ent, const bool UV)
     if (UV && !c3d.IsNull())
     {
       if (cuv.IsNull() || c3d.IsNull())
+      {
         return false; // rien a faire
+      }
       cuv.Nullify();
       if (pref == 1)
+      {
         pref = 0;
+      }
       if (pref == 3)
+      {
         pref = 2;
+      }
     }
     else if (!cuv.IsNull())
     {
       if (cuv.IsNull() || c3d.IsNull())
+      {
         return false; // rien a faire
+      }
       c3d.Nullify();
       if (pref == 2)
+      {
         pref = 0;
+      }
       if (pref == 3)
+      {
         pref = 1;
+      }
     }
     cons->Init(cons->CreationMode(), cons->Surface(), cuv, c3d, pref);
     return true;
@@ -96,7 +108,9 @@ static bool Edit(const occ::handle<Standard_Transient>& ent, const bool UV)
   {
     int i, nb = bndy->NbModelSpaceCurves();
     if (nb == 0)
+    {
       return false;
+    }
     occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> arc3d =
       new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nb);
     occ::handle<IGESBasic_HArray1OfHArray1OfIGESEntity> arcuv =
@@ -111,14 +125,18 @@ static bool Edit(const occ::handle<Standard_Transient>& ent, const bool UV)
       if (UV)
       {
         if (cuv.IsNull() || c3d.IsNull())
+        {
           continue; // rien a faire
+        }
         cuv.Nullify();
         arcuv->SetValue(i, cuv);
       }
       else
       {
         if (cuv.IsNull() || c3d.IsNull())
+        {
           continue; // rien a faire
+        }
         c3d.Nullify();
         arc3d->SetValue(i, c3d);
         res = true;
@@ -129,19 +147,29 @@ static bool Edit(const occ::handle<Standard_Transient>& ent, const bool UV)
     if (UV)
     {
       if (pref == 2)
+      {
         pref = 0;
+      }
       if (pref == 3)
+      {
         pref = 1;
+      }
     }
     else
     {
       if (pref == 1)
+      {
         pref = 0;
+      }
       if (pref == 3)
+      {
         pref = 2;
+      }
     }
     if (res)
+    {
       bndy->Init(bndy->BoundaryType(), pref, bndy->Surface(), arc3d, sens, arcuv);
+    }
     return res;
   }
 
@@ -155,14 +183,20 @@ void IGESSelect_RemoveCurves::Performing(IFSelect_ContextModif& ctx,
   for (ctx.Start(); ctx.More(); ctx.Next())
   {
     if (Edit(ctx.ValueResult(), theUV))
+    {
       ctx.Trace();
+    }
   }
 }
 
 TCollection_AsciiString IGESSelect_RemoveCurves::Label() const
 {
   if (theUV)
+  {
     return TCollection_AsciiString("Remove Curves UV on Face");
+  }
   else
+  {
     return TCollection_AsciiString("Remove Curves 3D on Face");
+  }
 }

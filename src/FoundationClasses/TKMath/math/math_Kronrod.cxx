@@ -3010,8 +3010,10 @@ bool math::KronrodPointsAndWeights(const int Index, math_Vector& Points, math_Ve
   if (Index < 3 ||                // Index is less then 3
       Index % 2 == 0 ||           // Index is even
       Points.Length() != Index || // Inconsistent length of Points
-      Weights.Length() != Index)  // Inconsistent length of Weights
+      Weights.Length() != Index)
+  { // Inconsistent length of Weights
     return false;
+  }
 
   if (Index <= 123)
   {
@@ -3021,7 +3023,9 @@ bool math::KronrodPointsAndWeights(const int Index, math_Vector& Points, math_Ve
 
     // Compute the index of starting point in the array.
     for (i = 3; i < Index; i += 2)
+    {
       aStartInd += (i + 1) / 2;
+    }
 
     // Get points from the array.
     int aNbPts   = i / 2;
@@ -3044,7 +3048,9 @@ bool math::KronrodPointsAndWeights(const int Index, math_Vector& Points, math_Ve
   {
     math_ComputeKronrodPointsAndWeights PWcomputer((Index - 1) / 2);
     if (!PWcomputer.IsDone())
+    {
       return false;
+    }
     Points  = PWcomputer.Points();
     Weights = PWcomputer.Weights();
     return true;

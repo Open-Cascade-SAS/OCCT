@@ -50,7 +50,9 @@ bool BinMDataStd_IntegerDriver::Paste(const BinObjMgt_Persistent&       theSourc
   int                           aValue;
   bool                          ok = theSource >> aValue;
   if (ok)
+  {
     anAtt->Set(aValue);
+  }
   if (theRT.GetHeaderData()->StorageVersion().IntegerValue() >= TDocStd_FormatVersion_VERSION_9)
   { // process user defined guid
     const int&    aPos = theSource.Position();
@@ -67,7 +69,9 @@ bool BinMDataStd_IntegerDriver::Paste(const BinObjMgt_Persistent&       theSourc
     }
   }
   else
+  {
     anAtt->SetID(TDataStd_Integer::GetID());
+  }
   return ok;
 }
 
@@ -85,5 +89,7 @@ void BinMDataStd_IntegerDriver::Paste(
   theTarget << anAtt->Get();
   // process user defined guid
   if (anAtt->ID() != TDataStd_Integer::GetID())
+  {
     theTarget << anAtt->ID();
+  }
 }

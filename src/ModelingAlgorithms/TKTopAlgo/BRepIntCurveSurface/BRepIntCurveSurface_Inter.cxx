@@ -83,7 +83,9 @@ void BRepIntCurveSurface_Inter::Load(const TopoDS_Shape& theShape, const double 
   myTolerance = theTol;
   TopExp_Explorer explorer(theShape, TopAbs_FACE);
   for (; explorer.More(); explorer.Next())
+  {
     myFaces.Append(explorer.Current());
+  }
 }
 
 //=================================================================================================
@@ -114,7 +116,9 @@ bool BRepIntCurveSurface_Inter::More() const
 void BRepIntCurveSurface_Inter::Next()
 {
   if (myCurrentnbpoints)
+  {
     myCurrentindex++;
+  }
   Find();
 }
 
@@ -123,7 +127,9 @@ void BRepIntCurveSurface_Inter::Next()
 void BRepIntCurveSurface_Inter::Find()
 {
   if (myCurrentnbpoints && myCurrentindex <= myCurrentnbpoints && FindPoint())
+  {
     return;
+  }
 
   myCurrentnbpoints = 0;
   myCurrentindex    = 0;
@@ -133,7 +139,9 @@ void BRepIntCurveSurface_Inter::Find()
   {
     TopoDS_Shape aCurface = myFaces(i);
     if (myFaceBoxes.IsNull())
+    {
       myFaceBoxes = new NCollection_HArray1<Bnd_Box>(1, myFaces.Length());
+    }
     Bnd_Box& aFaceBox = myFaceBoxes->ChangeValue(i);
     if (aFaceBox.IsVoid())
     {
@@ -144,19 +152,25 @@ void BRepIntCurveSurface_Inter::Find()
                     ? aFaceBox.IsOut(myCurve->Line())
                     : (!myCurveBox.IsVoid() ? aFaceBox.IsOut(myCurveBox) : false));
     if (isOut)
+    {
       continue;
+    }
     occ::handle<BRepAdaptor_Surface> aSurfForFastClass =
       new BRepAdaptor_Surface(TopoDS::Face(aCurface));
     myIntcs.Perform(myCurve, aSurfForFastClass);
     myCurrentnbpoints = myIntcs.NbPoints();
     if (!myCurrentnbpoints)
+    {
       continue;
+    }
 
     const occ::handle<Adaptor3d_Surface>& aSurf = aSurfForFastClass; // to avoid ambiguity
     myFastClass->Initialize(aSurf);
     myIndFace = i;
     if (FindPoint())
+    {
       return;
+    }
     myCurrentnbpoints = 0;
   }
 
@@ -197,7 +211,9 @@ bool BRepIntCurveSurface_Inter::FindPoint()
 IntCurveSurface_IntersectionPoint BRepIntCurveSurface_Inter::Point() const
 {
   if (myCurrentindex == 0)
+  {
     throw StdFail_NotDone();
+  }
   const IntCurveSurface_IntersectionPoint& ICPS = myIntcs.Point(myCurrentindex);
   return (IntCurveSurface_IntersectionPoint(ICPS.Pnt(),
                                             myCurrentU, // ICPS.U(),
@@ -212,7 +228,9 @@ IntCurveSurface_IntersectionPoint BRepIntCurveSurface_Inter::Point() const
 double BRepIntCurveSurface_Inter::U() const
 {
   if (myCurrentindex == 0)
+  {
     throw StdFail_NotDone();
+  }
   //-- return(myIntcs.Point(myCurrentindex).U());
   return (myCurrentU);
 }
@@ -222,7 +240,9 @@ double BRepIntCurveSurface_Inter::U() const
 double BRepIntCurveSurface_Inter::V() const
 {
   if (myCurrentindex == 0)
+  {
     throw StdFail_NotDone();
+  }
   //-- return(myIntcs.Point(myCurrentindex).V());
   return (myCurrentV);
 }
@@ -232,7 +252,9 @@ double BRepIntCurveSurface_Inter::V() const
 double BRepIntCurveSurface_Inter::W() const
 {
   if (myCurrentindex == 0)
+  {
     throw StdFail_NotDone();
+  }
   return (myIntcs.Point(myCurrentindex).W());
 }
 
@@ -241,7 +263,9 @@ double BRepIntCurveSurface_Inter::W() const
 TopAbs_State BRepIntCurveSurface_Inter::State() const
 {
   if (myCurrentindex == 0)
+  {
     throw StdFail_NotDone();
+  }
   //-- return(classifier.State());
   return (myCurrentstate);
 }
@@ -251,7 +275,9 @@ TopAbs_State BRepIntCurveSurface_Inter::State() const
 IntCurveSurface_TransitionOnCurve BRepIntCurveSurface_Inter::Transition() const
 {
   if (myCurrentindex == 0)
+  {
     throw StdFail_NotDone();
+  }
   return (myIntcs.Point(myCurrentindex).Transition());
 }
 
@@ -267,6 +293,8 @@ const TopoDS_Face& BRepIntCurveSurface_Inter::Face() const
 const gp_Pnt& BRepIntCurveSurface_Inter::Pnt() const
 {
   if (myCurrentindex == 0)
+  {
     throw StdFail_NotDone();
+  }
   return (myIntcs.Point(myCurrentindex).Pnt());
 }

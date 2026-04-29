@@ -38,7 +38,9 @@ void RWStepKinematics_RWUniversalPairValue::ReadStep(
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 4, theArch, "universal_pair_value"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 

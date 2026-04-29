@@ -27,7 +27,9 @@ void RWStepBasic_RWOrdinalDate::ReadStep(const occ::handle<StepData_StepReaderDa
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "ordinal_date"))
+  {
     return;
+  }
 
   // --- inherited field : yearComponent ---
 

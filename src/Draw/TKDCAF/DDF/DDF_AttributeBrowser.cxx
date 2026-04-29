@@ -66,7 +66,9 @@ DDF_AttributeBrowser* DDF_AttributeBrowser::FindBrowser(const occ::handle<TDF_At
   while (browser)
   {
     if (browser->Test(anAtt))
+    {
       break;
+    }
     browser = browser->Next();
   }
   return browser;

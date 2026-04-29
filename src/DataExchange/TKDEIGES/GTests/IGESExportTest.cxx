@@ -38,15 +38,21 @@ TEST(IGESExportTest, SharedCurvesBRepMode)
     occ::handle<Transfer_SimpleBinderOfTransient> aBinder =
       occ::down_cast<Transfer_SimpleBinderOfTransient>(aFP->MapItem(i));
     if (aBinder.IsNull())
+    {
       continue;
+    }
 
     occ::handle<IGESData_IGESEntity> anEnt = occ::down_cast<IGESData_IGESEntity>(aBinder->Result());
     if (anEnt.IsNull())
+    {
       continue;
+    }
 
     occ::handle<IGESGeom_Line> aLine = occ::down_cast<IGESGeom_Line>(anEnt);
     if (aLine.IsNull())
+    {
       continue;
+    }
 
     // Check that all the entities are in the model.
     EXPECT_TRUE(aModel->DNum(anEnt) != 0);

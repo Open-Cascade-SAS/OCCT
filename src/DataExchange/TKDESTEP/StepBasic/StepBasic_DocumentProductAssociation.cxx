@@ -47,7 +47,9 @@ void StepBasic_DocumentProductAssociation::Init(
     theDescription = aDescription;
   }
   else
+  {
     theDescription.Nullify();
+  }
 
   theRelatingDocument = aRelatingDocument;
 

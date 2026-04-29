@@ -51,14 +51,22 @@ void ChFi2d_FilletAPI::Init(const TopoDS_Wire& theWire, const gp_Pln& thePlane)
   for (; itr.More(); itr.Next())
   {
     if (E1.IsNull())
+    {
       E1 = TopoDS::Edge(itr.Value());
+    }
     else if (E2.IsNull())
+    {
       E2 = TopoDS::Edge(itr.Value());
+    }
     else
+    {
       break;
+    }
   }
   if (!E1.IsNull() && !E2.IsNull())
+  {
     myIsAnalytical = IsAnalytical(E1, E2);
+  }
 
   // Initialize the algorithm.
   myIsAnalytical ? myAnaFilletAlgo.Init(theWire, thePlane) : myFilletAlgo.Init(theWire, thePlane);

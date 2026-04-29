@@ -118,7 +118,9 @@ bool ShapeUpgrade_ShapeDivide::Perform(const bool newContext)
   }
 
   if (newContext || myContext.IsNull())
+  {
     myContext = new ShapeBuild_ReShape;
+  }
 
   // Process COMPOUNDs separately in order to handle sharing in assemblies
   // NOTE: not optimized: subshape can be processed twice (second time - no modif)
@@ -141,7 +143,9 @@ bool ShapeUpgrade_ShapeDivide::Perform(const bool newContext)
       myShape = myContext->Apply(shape);
       Perform(false);
       if (myContext->ModeConsiderLocation())
+      {
         myResult.Location(L);
+      }
       myResult.Orientation(TopAbs::Compose(myResult.Orientation(), savShape.Orientation()));
       B.Add(C, myResult);
       locStatus |= myStatus;
@@ -277,7 +281,9 @@ bool ShapeUpgrade_ShapeDivide::Perform(const bool newContext)
       TopoDS_Vertex V1, V2;
       TopExp::Vertices(E, V2, V1);
       if (V1.IsNull() && V2.IsNull())
+      {
         continue; // skl 27.10.2004 for OCC5624
+      }
       TopoDS_Shape sh = myContext->Apply(E, TopAbs_SHAPE);
       for (TopExp_Explorer exp2(sh, TopAbs_EDGE); exp2.More(); exp2.Next())
       {
@@ -375,7 +381,9 @@ void ShapeUpgrade_ShapeDivide::SendMsg(const TopoDS_Shape&   shape,
                                        const Message_Gravity gravity) const
 {
   if (!myMsgReg.IsNull())
+  {
     myMsgReg->Send(shape, message, gravity);
+  }
 }
 
 Message_Msg ShapeUpgrade_ShapeDivide::GetFaceMsg() const

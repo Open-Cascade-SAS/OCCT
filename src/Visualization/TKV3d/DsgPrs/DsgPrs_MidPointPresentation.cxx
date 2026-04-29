@@ -62,7 +62,9 @@ void DsgPrs_MidPointPresentation::Add(const occ::handle<Prs3d_Presentation>& aPr
     occ::handle<Graphic3d_ArrayOfPolylines> aPrims = new Graphic3d_ArrayOfPolylines(nbp + 2, 2);
     aPrims->AddBound(nbp);
     for (int i = 1; i <= nbp; i++)
+    {
       aPrims->AddVertex(ElCLib::Value(dteta * (i - 1), aCircleM));
+    }
 
     // segment from mid point to the text position
     aPrims->AddBound(2);
@@ -112,7 +114,9 @@ void DsgPrs_MidPointPresentation::Add(const occ::handle<Prs3d_Presentation>& aPr
 {
   double rad = AttachPoint.Distance(MidPoint) / 20.0;
   if (rad <= Precision::Confusion())
+  {
     rad = Point1.Distance(Point2) / 20.0;
+  }
 
   occ::handle<Prs3d_DimensionAspect> LA = aDrawer->DimensionAspect();
 
@@ -139,7 +143,9 @@ void DsgPrs_MidPointPresentation::Add(const occ::handle<Prs3d_Presentation>& aPr
     aPrims = new Graphic3d_ArrayOfPolylines(nbp + 2, 2);
     aPrims->AddBound(nbp);
     for (int i = 1; i <= nbp; i++)
+    {
       aPrims->AddVertex(ElCLib::Value(dteta * (i - 1), aCircleM));
+    }
 
     // segment from mid point to the text position
     aPrims->AddBound(2);
@@ -181,7 +187,9 @@ void DsgPrs_MidPointPresentation::Add(const occ::handle<Prs3d_Presentation>& aPr
 {
   double rad = AttachPoint.Distance(MidPoint) / 20.0;
   if (rad <= Precision::Confusion())
+  {
     rad = Point1.Distance(Point2) / 20.0;
+  }
 
   occ::handle<Prs3d_DimensionAspect> LA = aDrawer->DimensionAspect();
 
@@ -197,14 +205,18 @@ void DsgPrs_MidPointPresentation::Add(const occ::handle<Prs3d_Presentation>& aPr
   const double pl    = ElCLib::Parameter(aCircle, Point2);
   double       alpha = pl - pf;
   if (alpha < 0)
+  {
     alpha += 2. * M_PI;
+  }
   const int nb    = (int)(50.0 * alpha / M_PI);
   int       nbp   = std::max(4, nb);
   double    dteta = alpha / (nbp - 1);
 
   occ::handle<Graphic3d_ArrayOfPrimitives> aPrims = new Graphic3d_ArrayOfPolylines(nbp);
   for (int i = 1; i <= nbp; i++)
+  {
     aPrims->AddVertex(ElCLib::Value(pf + dteta * (i - 1), aCircle));
+  }
   aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
   if (first)
@@ -217,7 +229,9 @@ void DsgPrs_MidPointPresentation::Add(const occ::handle<Prs3d_Presentation>& aPr
     aPrims = new Graphic3d_ArrayOfPolylines(nbp + 2, 2);
     aPrims->AddBound(nbp);
     for (int i = 1; i <= nbp; i++)
+    {
       aPrims->AddVertex(ElCLib::Value(dteta * (i - 1), aCircleM));
+    }
 
     // segment from mid point to the text position
     aPrims->AddBound(2);
@@ -261,7 +275,9 @@ void DsgPrs_MidPointPresentation::Add(const occ::handle<Prs3d_Presentation>& aPr
 {
   double rad = AttachPoint.Distance(MidPoint) / 20.0;
   if (rad <= Precision::Confusion())
+  {
     rad = Point1.Distance(Point2) / 20.0;
+  }
 
   occ::handle<Prs3d_DimensionAspect> LA = aDrawer->DimensionAspect();
 
@@ -277,14 +293,18 @@ void DsgPrs_MidPointPresentation::Add(const occ::handle<Prs3d_Presentation>& aPr
   const double pl    = ElCLib::Parameter(aCircle, Point2);
   double       alpha = pl - pf;
   if (alpha < 0)
+  {
     alpha += 2 * M_PI;
+  }
   const int nb    = (int)(50.0 * alpha / M_PI);
   int       nbp   = std::max(4, nb);
   double    dteta = alpha / (nbp - 1);
 
   occ::handle<Graphic3d_ArrayOfPrimitives> aPrims = new Graphic3d_ArrayOfPolylines(nbp);
   for (int i = 1; i <= nbp; i++)
+  {
     aPrims->AddVertex(ElCLib::Value(pf + dteta * (i - 1), aCircle));
+  }
   aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
   if (first)
@@ -297,7 +317,9 @@ void DsgPrs_MidPointPresentation::Add(const occ::handle<Prs3d_Presentation>& aPr
     aPrims = new Graphic3d_ArrayOfPolylines(nbp + 2, 2);
     aPrims->AddBound(nbp);
     for (int i = 1; i <= nbp; i++)
+    {
       aPrims->AddVertex(ElCLib::Value(dteta * (i - 1), aCircleM));
+    }
 
     // segment from mid point to the text position
     aPrims->AddBound(2);

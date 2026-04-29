@@ -85,9 +85,13 @@ bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&         DStr,
   gp_Dir Dpl   = PosPl.XDirection().Crossed(PosPl.YDirection());
   gp_Dir norf  = Dpl;
   if (Ofpl == TopAbs_REVERSED)
+  {
     norf.Reverse();
+  }
   if (Or1 == TopAbs_REVERSED)
+  {
     Dpl.Reverse();
+  }
 
   // compute the origin Or of the cone
   gp_Pnt Or = Cyl.Location();
@@ -109,7 +113,9 @@ bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&         DStr,
   ElSLib::D1(u, v, Cyl, PtCyl, Vu, Vv);
   gp_Dir Dcyl(Vu.Crossed(Vv)); // normal to the cylinder in PtSp
   if (Or2 == TopAbs_REVERSED)
+  {
     Dcyl.Reverse();
+  }
   bool dedans = (Dcyl.Dot(Dx) <= 0.);
 
   bool   pointu = false;
@@ -147,7 +153,9 @@ bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&         DStr,
   {
     Rad = Cyl.Radius() - dis1;
     if (std::abs(Rad) <= Precision::Confusion())
+    {
       pointu = true;
+    }
     if (Rad < 0)
     {
 #ifdef OCCT_DEBUG
@@ -235,9 +243,13 @@ bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&         DStr,
   // pcurve on the chamfer
   gp_Pnt2d p2dch;
   if (plandab)
+  {
     v = -sqrt(dis1 * dis1 + dis2 * dis2);
+  }
   else
+  {
     v = sqrt(dis1 * dis1 + dis2 * dis2);
+  }
   p2dch.SetCoord(0., v);
   ElSLib::ConeD1(0., v, ConAx3, ConRad, SemiAngl, Pt, deru, derv);
   gp_Lin2d                 lin2dch(p2dch, gp::DX2d());
@@ -292,13 +304,21 @@ bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&         DStr,
   double tol           = Precision::PConfusion();
   bool   careaboutsens = false;
   if (std::abs(lu - fu - 2 * M_PI) < tol)
+  {
     careaboutsens = true;
+  }
   if (u >= fu - tol && u < fu)
+  {
     u = fu;
+  }
   if (u <= lu + tol && u > lu)
+  {
     u = lu;
+  }
   if (u < fu || u > lu)
+  {
     u = ChFiKPart_InPeriod(u, fu, fu + 2 * M_PI, tol);
+  }
 
   ElSLib::D1(u, v, Cyl, Pt, deru, derv);
   gp_Dir   norcyl = deru.Crossed(derv);
@@ -307,10 +327,14 @@ bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&         DStr,
   {
     d2dCyl.Reverse();
     if (careaboutsens && std::abs(fu - u) < tol)
+    {
       u = lu;
+    }
   }
   else if (careaboutsens && std::abs(lu - u) < tol)
+  {
     u = fu;
+  }
   gp_Pnt2d                 p2dCyl(u, v);
   gp_Lin2d                 lin2dCyl(p2dCyl, d2dCyl);
   occ::handle<Geom2d_Line> GLin2dCyl = new Geom2d_Line(lin2dCyl);
@@ -426,7 +450,9 @@ bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&         DStr,
     double cosAhOC = cosA1 * sinAl + sinA1 * cosAl;
     double sinAhOC = sinA1 * sinAl - cosA1 * cosAl;
     if (cosA1 > 0)
+    {
       sinAhOC = -sinAhOC;
+    }
     double temp1 = h / ray, temp2 = sinAhOC * sinAhOC + temp1 * cosAhOC;
 
     dis2 = temp2 + temp1 * (cosAhOC - temp1);
@@ -490,7 +516,9 @@ bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&         DStr,
     double cosA11 = dis2 / (2. * ray);
     double sinA11 = std::sqrt(1. - cosA11 * cosA11);
     if (cosA1 > 0)
+    {
       sinA11 = -sinA11;
+    }
     dis1 = (sinA1 + cosA1 * tgAng) * cosA11;
     dis1 -= (cosA1 - sinA1 * tgAng) * sinA11;
     dis1 = (dis2 * tgAng) / dis1;
@@ -539,7 +567,9 @@ bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&         DStr,
   bool   PosChamfPln = DirPlnCyl.Dot(DirSPln) > 0;
 
   if (!IsDisOnP && PosChamfPln)
+  {
     toreverse = !toreverse;
+  }
   // It is checked if the orientation of the Chamfer is the same as of the plane
   if (toreverse)
   {
@@ -599,7 +629,9 @@ bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&         DStr,
   toreverse          = (NorFil.Dot(NorCyl) <= 0.);
 
   if (IsDisOnP && PosChamfCyl)
+  {
     toreverse = !toreverse;
+  }
   trans = TopAbs_REVERSED;
   if ((!plandab && toreverse) || (plandab && !toreverse))
   {
@@ -607,14 +639,18 @@ bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&         DStr,
   }
 
   if (plandab)
+  {
     Data->ChangeInterferenceOnS2().SetInterference(ChFiKPart_IndexCurveInDS(L3d, DStr),
                                                    trans,
                                                    LFac,
                                                    LFil);
+  }
   else
+  {
     Data->ChangeInterferenceOnS1().SetInterference(ChFiKPart_IndexCurveInDS(L3d, DStr),
                                                    trans,
                                                    LFac,
                                                    LFil);
+  }
   return true;
 }

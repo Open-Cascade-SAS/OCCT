@@ -124,10 +124,14 @@ static bool PerformPlan(const TopoDS_Wire& W, const double presPln, TopoDS_Face&
   {
     const TopoDS_Edge& anEdge = TopoDS::Edge(iter.Value());
     if (!BRep_Tool::Degenerated(anEdge))
+    {
       isDegen = false;
+    }
   }
   if (isDegen)
+  {
     return true;
+  }
 
   bool Ok = false;
   if (!W.IsNull())
@@ -173,7 +177,9 @@ static bool IsSameOriented(const TopoDS_Shape& aFace, const TopoDS_Shape& aShell
   {
     theEdge = Explo.Current();
     if (theEdge.IsSame(anEdge))
+    {
       break;
+    }
   }
 
   TopAbs_Orientation Or2 = theEdge.Orientation();
@@ -190,7 +196,9 @@ static TopoDS_Solid MakeSolid(TopoDS_Shell&      shell,
                               TopoDS_Face&       face2)
 {
   if (shell.IsNull())
+  {
     throw StdFail_NotDone("Thrusections is not build");
+  }
   bool         B = shell.Closed();
   BRep_Builder BB;
 
@@ -204,14 +212,22 @@ static TopoDS_Solid MakeSolid(TopoDS_Shell&      shell,
       if (B)
       {
         if (!face1.IsNull() && !IsSameOriented(face1, shell))
+        {
           face1.Reverse();
+        }
         if (!face2.IsNull() && !IsSameOriented(face2, shell))
+        {
           face2.Reverse();
+        }
 
         if (!face1.IsNull())
+        {
           BB.Add(shell, face1);
+        }
         if (!face2.IsNull())
+        {
           BB.Add(shell, face2);
+        }
 
         shell.Closed(true);
       }
@@ -386,7 +402,9 @@ void BRepOffsetAPI_ThruSections::Build(const Message_ProgressRange& /*theRange*/
       // we save its splits
       int IndFirstSec = 1;
       if (Georges.IsDegeneratedFirstSection())
+      {
         IndFirstSec = 2;
+      }
       TopoDS_Wire aWorkingSection = TopoDS::Wire(WorkingSections(IndFirstSec));
       myNbEdgesInSection += aWorkingSection.NbChildren();
       for (int ii = 1; ii <= myWires.Length(); ii++)
@@ -425,9 +443,13 @@ void BRepOffsetAPI_ThruSections::Build(const Message_ProgressRange& /*theRange*/
               TopoDS_Vertex NewVfirst, NewVlast;
               TopExp::Vertices(aNewEdge, NewVfirst, NewVlast);
               if (NewVfirst.IsSame(Vfirst) && !myVertexIndex.IsBound(Vfirst))
+              {
                 myVertexIndex.Bind(Vfirst, aSign * inde);
+              }
               if (NewVlast.IsSame(Vlast) && !myVertexIndex.IsBound(Vlast))
+              {
                 myVertexIndex.Bind(Vlast, aSign * (-inde));
+              }
             }
           }
           myEdgeNewIndices.Bind(anEdge, IList);
@@ -459,19 +481,29 @@ void BRepOffsetAPI_ThruSections::Build(const Message_ProgressRange& /*theRange*/
         TopoDS_Vertex V1, V2;
         TopExp::Vertices(anEdge, V1, V2);
         if (!myVertexIndex.IsBound(V1))
+        {
           myVertexIndex.Bind(V1, inde);
+        }
         if (!myVertexIndex.IsBound(V2))
+        {
           myVertexIndex.Bind(V2, -inde);
+        }
       }
       inde--;
       if (inde > myNbEdgesInSection)
+      {
         myNbEdgesInSection = inde;
+      }
       if (inde == 1 && BRep_Tool::Degenerated(anEdge))
       {
         if (ii == 1)
+        {
           myDegen1 = true;
+        }
         else
+        {
           myDegen2 = true;
+        }
       }
     }
   }
@@ -648,15 +680,23 @@ void BRepOffsetAPI_ThruSections::CreateRuled()
       }
 
       if (!degen1)
+      {
         anExp1.Next();
+      }
       if (!degen2)
+      {
         anExp2.Next();
+      }
 
       tantque = anExp1.More() && anExp2.More();
       if (degen1)
+      {
         tantque = anExp2.More();
+      }
       if (degen2)
+      {
         tantque = anExp1.More();
+      }
     }
   }
 }
@@ -686,7 +726,9 @@ void BRepOffsetAPI_ThruSections::CreateSmoothed()
   bool vClosed = false;
   // check if the first wire is the same as last
   if (myWires(1).IsSame(myWires(myWires.Length())))
+  {
     vClosed = true;
+  }
 
   // find the dimension
   int nbEdges = 0;
@@ -719,7 +761,9 @@ void BRepOffsetAPI_ThruSections::CreateSmoothed()
       TopoDS_Vertex V1, V2;
       TopExp::Vertices(wire, V1, V2);
       if (!V1.IsSame(V2))
+      {
         uClosed = false;
+      }
     }
     if ((i == 1 && w1Point) || (i == nbSects && w2Point))
     {
@@ -793,13 +837,17 @@ void BRepOffsetAPI_ThruSections::CreateSmoothed()
     edge = TopoDS::Edge(shapes(i));
     TopExp::Vertices(edge, v1f, v1l);
     if (edge.Orientation() == TopAbs_REVERSED)
+    {
       TopExp::Vertices(edge, v1l, v1f);
+    }
     firstEdge = edge;
 
     edge = TopoDS::Edge(shapes((nbSects - 1) * nbEdges + i));
     TopExp::Vertices(edge, v2f, v2l);
     if (edge.Orientation() == TopAbs_REVERSED)
+    {
       TopExp::Vertices(edge, v2l, v2f);
+    }
 
     // make the face
     B.MakeFace(face, surface, Precision::Confusion());
@@ -832,11 +880,15 @@ void BRepOffsetAPI_ThruSections::CreateSmoothed()
     // processing of looping sections
     // store edges of the 1st section
     if (vClosed)
+    {
       vcouture(i) = edge1;
+    }
 
     // --- edge 2
     if (vClosed)
+    {
       edge2 = TopoDS::Edge(vcouture(i));
+    }
     else
     {
       if (w2Point)
@@ -961,7 +1013,9 @@ void BRepOffsetAPI_ThruSections::CreateSmoothed()
   }
 
   if (uClosed && w1Point && w2Point)
+  {
     shell.Closed(true);
+  }
 
   if (myIsSolid)
   {
@@ -1112,16 +1166,22 @@ static occ::handle<Geom_BSplineCurve> EdgeToBSpline(const TopoDS_Edge& theEdge)
       const occ::handle<Geom_Curve>& aCurveTrimmed = aTrimCurve; // to avoid ambiguity
       GeomConvert_ApproxCurve anAppr(aCurveTrimmed, Precision::Confusion(), GeomAbs_C1, 16, 14);
       if (anAppr.HasResult())
+      {
         aBSCurve = anAppr.Curve();
+      }
     }
 
     // general case
     if (aBSCurve.IsNull())
+    {
       aBSCurve = GeomConvert::CurveToBSplineCurve(aTrimCurve);
+    }
 
     // apply transformation if needed
     if (!aLoc.IsIdentity())
+    {
       aBSCurve->Transform(aLoc.Transformation());
+    }
 
     // reparameterize to [0,1]
     NCollection_Array1<double> aKnots(aBSCurve->Knots());
@@ -1131,7 +1191,9 @@ static occ::handle<Geom_BSplineCurve> EdgeToBSpline(const TopoDS_Edge& theEdge)
 
   // reverse curve if edge is reversed
   if (theEdge.Orientation() == TopAbs_REVERSED)
+  {
     aBSCurve->Reverse();
+  }
 
   return aBSCurve;
 }
@@ -1252,7 +1314,9 @@ occ::handle<Geom_BSplineSurface> BRepOffsetAPI_ThruSections::TotalSurf(
 
   int nbIt = 3;
   if (myPres3d <= 1.e-3)
+  {
     nbIt = 0;
+  }
 
   int  degmin = 2, degmax = std::max(myDegMax, degmin);
   bool SpApprox = true;
@@ -1309,12 +1373,16 @@ const NCollection_List<TopoDS_Shape>& BRepOffsetAPI_ThruSections::Generated(cons
   NCollection_Sequence<TopoDS_Shape> AllFaces;
   TopExp_Explorer                    Explo(myShape, TopAbs_FACE);
   for (; Explo.More(); Explo.Next())
+  {
     AllFaces.Append(Explo.Current());
+  }
 
   if (S.ShapeType() == TopAbs_EDGE)
   {
     if (!myEdgeNewIndices.IsBound(S))
+    {
       return myGenerated;
+    }
 
     const NCollection_List<int>& Indices = myEdgeNewIndices(S);
     // Append the faces corresponding to <Indices>
@@ -1331,8 +1399,10 @@ const NCollection_List<TopoDS_Shape>& BRepOffsetAPI_ThruSections::Generated(cons
     }
 
     if (myIsRuled)
+    {
       // Append the next faces corresponding to <Indices>
       for (int i = 2; i < myWires.Length(); i++)
+      {
         for (itl.Initialize(Indices); itl.More(); itl.Next())
         {
           int IndOfFace = itl.Value();
@@ -1343,11 +1413,15 @@ const NCollection_List<TopoDS_Shape>& BRepOffsetAPI_ThruSections::Generated(cons
           }
           myGenerated.Append(AllFaces(IndOfFace));
         }
+      }
+    }
   }
   else if (S.ShapeType() == TopAbs_VERTEX)
   {
     if (!myVertexIndex.IsBound(S))
+    {
       return myGenerated;
+    }
 
     NCollection_IndexedDataMap<TopoDS_Shape,
                                NCollection_List<TopoDS_Shape>,
@@ -1363,9 +1437,13 @@ const NCollection_List<TopoDS_Shape>& BRepOffsetAPI_ThruSections::Generated(cons
       for (int i = 0; i < 2; i++)
       {
         if (i == 0 && !myDegen1)
+        {
           continue;
+        }
         if (i == 1 && !myDegen2)
+        {
           continue;
+        }
 
         Explo.Init(EndSections[i], TopAbs_VERTEX);
         const TopoDS_Shape& aVertex = Explo.Current();
@@ -1434,7 +1512,9 @@ const NCollection_List<TopoDS_Shape>& BRepOffsetAPI_ThruSections::Generated(cons
             {
               NextEdge = TopoDS::Edge(aListIterator.Value());
               if (!NextEdge.IsSame(anEdge) && !EmapOfSection.Contains(NextEdge))
+              {
                 break;
+              }
             }
             myGenerated.Append(NextEdge);
             anEdge = NextEdge;
@@ -1494,16 +1574,24 @@ const NCollection_List<TopoDS_Shape>& BRepOffsetAPI_ThruSections::Generated(cons
       if (Vindex == 0)
       {
         if (VV[0].IsSame(FirstVertexOfFirstEdge))
+        {
           FirstVertex = VV[0];
+        }
         else
+        {
           FirstVertex = VV[1];
+        }
       }
       else // Vindex == 1
       {
         if (VV[0].IsSame(FirstVertexOfFirstEdge))
+        {
           FirstVertex = VV[1];
+        }
         else
+        {
           FirstVertex = VV[0];
+        }
       }
       const NCollection_List<TopoDS_Shape>&    Elist = VEmap.FindFromKey(FirstVertex);
       NCollection_List<TopoDS_Shape>::Iterator itl(Elist);
@@ -1513,11 +1601,14 @@ const NCollection_List<TopoDS_Shape>& BRepOffsetAPI_ThruSections::Generated(cons
         anEdge = TopoDS::Edge(itl.Value());
         if (!anEdge.IsSame(FirstEdgeInFace) && !BRep_Tool::Degenerated(anEdge)
             && anEdge.Orientation() == anEdgeOr)
+        {
           break;
+        }
       }
     }
     myGenerated.Append(anEdge);
     if (myIsRuled)
+    {
       // Find the chain of longitudinal edges from first to last
       for (int i = 2; i < myWires.Length(); i++)
       {
@@ -1535,6 +1626,7 @@ const NCollection_List<TopoDS_Shape>& BRepOffsetAPI_ThruSections::Generated(cons
                                                     : TopoDS::Edge(Elist2.First());
         myGenerated.Append(anEdge);
       }
+    }
   }
 
   return myGenerated;

@@ -51,14 +51,18 @@ bool Transfer_ResultFromTransient::HasResult() const
 const occ::handle<Interface_Check> Transfer_ResultFromTransient::Check() const
 {
   if (thebinder.IsNull())
+  {
     return voidcheck;
+  }
   return thebinder->Check();
 }
 
 Interface_CheckStatus Transfer_ResultFromTransient::CheckStatus() const
 {
   if (thebinder.IsNull())
+  {
     return Interface_CheckOK;
+  }
   const occ::handle<Interface_Check> ach = thebinder->Check();
   return ach->Status();
 }
@@ -68,13 +72,17 @@ occ::handle<Transfer_ResultFromTransient> Transfer_ResultFromTransient::ResultFr
 {
   occ::handle<Transfer_ResultFromTransient> res;
   if (key == thestart)
+  {
     return this;
+  }
   int i, nb = NbSubResults();
   for (i = 1; i <= nb; i++)
   {
     res = SubResult(i)->ResultFromKey(key);
     if (!res.IsNull())
+    {
       return res;
+    }
   }
   return res;
 }
@@ -83,12 +91,18 @@ void Transfer_ResultFromTransient::FillMap(
   NCollection_IndexedMap<occ::handle<Standard_Transient>>& map) const
 {
   if (thesubs.IsNull())
+  {
     return;
+  }
   int i, nb = thesubs->Length();
   for (i = 1; i <= nb; i++)
+  {
     map.Add(thesubs->Value(i));
+  }
   for (i = 1; i <= nb; i++)
+  {
     SubResult(i)->FillMap(map);
+  }
 }
 
 //  #####   SUBS   #####
@@ -102,9 +116,13 @@ void Transfer_ResultFromTransient::AddSubResult(
   const occ::handle<Transfer_ResultFromTransient>& sub)
 {
   if (sub.IsNull())
+  {
     return;
+  }
   if (thesubs.IsNull())
+  {
     thesubs = new NCollection_HSequence<occ::handle<Standard_Transient>>();
+  }
   thesubs->Append(sub);
 }
 
@@ -118,16 +136,19 @@ occ::handle<Transfer_ResultFromTransient> Transfer_ResultFromTransient::SubResul
 {
   occ::handle<Transfer_ResultFromTransient> sub;
   if (thesubs.IsNull())
+  {
     return sub;
+  }
   if (num < 1 || num > thesubs->Length())
+  {
     return sub;
+  }
   return occ::down_cast<Transfer_ResultFromTransient>(thesubs->Value(num));
 }
 
 void Transfer_ResultFromTransient::Fill(const occ::handle<Transfer_TransientProcess>& /*TP*/)
 {
   // abv: WARNING: to be removed (scopes)
-  return;
 }
 
 void Transfer_ResultFromTransient::Strip()

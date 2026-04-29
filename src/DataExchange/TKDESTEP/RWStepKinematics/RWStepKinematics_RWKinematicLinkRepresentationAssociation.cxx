@@ -39,7 +39,9 @@ void RWStepKinematics_RWKinematicLinkRepresentationAssociation::ReadStep(
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 4, theArch, "kinematic_link_representation_association"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationRelationship
 
@@ -81,7 +83,9 @@ void RWStepKinematics_RWKinematicLinkRepresentationAssociation::ReadStep(
   // Process only one type (Representation)
   if (aRepresentationRelationship_Rep1.CaseNumber() != 1
       || aRepresentationRelationship_Rep1.CaseNumber() != 1)
+  {
     return;
+  }
 
   // Initialize entity
   theEnt->Init(aRepresentationRelationship_Name,
@@ -106,7 +110,9 @@ void RWStepKinematics_RWKinematicLinkRepresentationAssociation::WriteStep(
     theSW.Send(theEnt->Description());
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   theSW.Send(theEnt->Rep1());
 

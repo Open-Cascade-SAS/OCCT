@@ -146,9 +146,13 @@ void BRepGProp_Cinert::Perform(const BRepAdaptor_Curve& C)
   inertia = gp_Mat(gp_XYZ(Ixx, -Ixy, -Ixz), gp_XYZ(-Ixy, Iyy, -Iyz), gp_XYZ(-Ixz, -Iyz, Izz));
 
   if (std::abs(dim) < gp::Resolution())
+  {
     g = P;
+  }
   else
+  {
     g.SetCoord(Ix / dim, Iy / dim, Iz / dim);
+  }
 }
 
 BRepGProp_Cinert::BRepGProp_Cinert(const BRepAdaptor_Curve& C, const gp_Pnt& CLocation)

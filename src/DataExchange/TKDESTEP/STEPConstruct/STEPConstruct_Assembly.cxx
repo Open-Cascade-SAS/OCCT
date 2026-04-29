@@ -147,7 +147,9 @@ void STEPConstruct_Assembly::MakeRelationship()
 occ::handle<Standard_Transient> STEPConstruct_Assembly::ItemValue() const
 {
   if (theval.IsNull())
+  {
     return occ::handle<Standard_Transient>(thesr);
+  }
   return theval;
 }
 
@@ -194,7 +196,9 @@ bool STEPConstruct_Assembly::CheckSRRReversesNAUO(
   occ::handle<StepRepr_Representation>     rep1 = CDSR->RepresentationRelation()->Rep1();
   occ::handle<StepRepr_Representation>     rep2 = CDSR->RepresentationRelation()->Rep2();
   if (rep1.IsNull() || rep2.IsNull())
+  {
     return false;
+  }
 
   // find SDRs corresponding to Rep1 and Rep2 and remember their PDs
   occ::handle<Standard_Type> tSDR   = STANDARD_TYPE(StepShape_ShapeDefinitionRepresentation);
@@ -240,7 +244,9 @@ bool STEPConstruct_Assembly::CheckSRRReversesNAUO(
 
   if (pd1 == nauo->RelatedProductDefinition() && // OK
       pd2 == nauo->RelatingProductDefinition())
+  {
     return false;
+  }
 
   if (pd2 == nauo->RelatedProductDefinition() && // Reversed
       pd1 == nauo->RelatingProductDefinition())

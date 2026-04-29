@@ -38,7 +38,9 @@ void StepBasic_GeneralPropertyRelationship::Init(
     theDescription = aDescription;
   }
   else
+  {
     theDescription.Nullify();
+  }
 
   theRelatingGeneralProperty = aRelatingGeneralProperty;
 

@@ -104,9 +104,13 @@ void TDataStd_RealArray::SetValue(const int index, const double value)
 {
   // OCC2932 correction
   if (myValue.IsNull())
+  {
     return;
+  }
   if (myValue->Value(index) == value)
+  {
     return;
+  }
   Backup();
   myValue->SetValue(index, value);
 }
@@ -116,7 +120,9 @@ void TDataStd_RealArray::SetValue(const int index, const double value)
 double TDataStd_RealArray::Value(const int index) const
 {
   if (myValue.IsNull())
+  {
     return RealFirst();
+  }
   return myValue->Value(index);
 }
 
@@ -125,7 +131,9 @@ double TDataStd_RealArray::Value(const int index) const
 int TDataStd_RealArray::Lower() const
 {
   if (myValue.IsNull())
+  {
     return 0;
+  }
   return myValue->Lower();
 }
 
@@ -134,7 +142,9 @@ int TDataStd_RealArray::Lower() const
 int TDataStd_RealArray::Upper() const
 {
   if (myValue.IsNull())
+  {
     return 0;
+  }
   return myValue->Upper();
 }
 
@@ -143,7 +153,9 @@ int TDataStd_RealArray::Upper() const
 int TDataStd_RealArray::Length() const
 {
   if (myValue.IsNull())
+  {
     return 0;
+  }
   return myValue->Length();
 }
 
@@ -174,7 +186,9 @@ void TDataStd_RealArray::ChangeArray(const occ::handle<NCollection_HArray1<doubl
           }
         }
         if (isEqual)
+        {
           return;
+        }
       }
     }
   }
@@ -182,10 +196,14 @@ void TDataStd_RealArray::ChangeArray(const occ::handle<NCollection_HArray1<doubl
   Backup();
 
   if (myValue.IsNull() || !aDimEqual)
+  {
     myValue = new NCollection_HArray1<double>(aLower, anUpper);
+  }
 
   for (i = aLower; i <= anUpper; i++)
+  {
     myValue->SetValue(i, newArray->Value(i));
+  }
 }
 
 //=================================================================================================
@@ -200,7 +218,9 @@ const Standard_GUID& TDataStd_RealArray::ID() const
 void TDataStd_RealArray::SetID(const Standard_GUID& theGuid)
 {
   if (myID == theGuid)
+  {
     return;
+  }
   Backup();
   myID = theGuid;
 }
@@ -233,11 +253,15 @@ void TDataStd_RealArray::Restore(const occ::handle<TDF_Attribute>& With)
     myIsDelta = anArray->myIsDelta;
     myValue   = new NCollection_HArray1<double>(lower, upper);
     for (i = lower; i <= upper; i++)
+    {
       myValue->SetValue(i, anArray->Value(i));
+    }
     myID = anArray->ID();
   }
   else
+  {
     myValue.Nullify();
+  }
 }
 
 //=================================================================================================
@@ -268,13 +292,15 @@ Standard_OStream& TDataStd_RealArray::Dump(Standard_OStream& anOS) const
     lower = myValue->Lower();
     upper = myValue->Upper();
     for (i = lower; i <= upper; i++)
+    {
       anOS << " " << myValue->Value(i);
+    }
   }
   anOS << " Delta is " << (myIsDelta ? "ON" : "OFF");
   char sguid[Standard_GUID_SIZE_ALLOC];
   myID.ToCString(sguid);
   anOS << sguid;
-  anOS << std::endl;
+  anOS << '\n';
   return anOS;
 }
 
@@ -284,9 +310,13 @@ occ::handle<TDF_DeltaOnModification> TDataStd_RealArray::DeltaOnModification(
   const occ::handle<TDF_Attribute>& OldAtt) const
 {
   if (myIsDelta)
+  {
     return new TDataStd_DeltaOnModificationOfRealArray(occ::down_cast<TDataStd_RealArray>(OldAtt));
+  }
   else
+  {
     return new TDF_DefaultDeltaOnModification(OldAtt);
+  }
 }
 
 //=================================================================================================

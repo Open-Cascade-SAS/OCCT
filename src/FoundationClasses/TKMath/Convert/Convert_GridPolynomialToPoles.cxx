@@ -53,9 +53,13 @@ Convert_GridPolynomialToPoles::Convert_GridPolynomialToPoles(
   myVDegree = NumCoeffPerSurface->Value(2) - 1;
 
   if (myUDegree > MaxUDegree)
+  {
     throw Standard_DomainError("Convert : Incoherence between NumCoeffPerSurface and MaxUDegree");
+  }
   if (myVDegree > MaxVDegree)
+  {
     throw Standard_DomainError("Convert : Incoherence between NumCoeffPerSurface and MaxVDegree");
+  }
 
   occ::handle<NCollection_HArray2<int>> NumCoeff = new (NCollection_HArray2<int>)(1, 1, 1, 2);
   NumCoeff->SetValue(1, 1, NumCoeffPerSurface->Value(1));
@@ -112,15 +116,23 @@ Convert_GridPolynomialToPoles::Convert_GridPolynomialToPoles(
   for (int ii = 1; ii <= NbUSurfaces * NbVSurfaces; ii++)
   {
     if (NumCoeffPerSurface->Value(ii, 1) > myUDegree + 1)
+    {
       myUDegree = NumCoeffPerSurface->Value(ii, 1) - 1;
+    }
     if (NumCoeffPerSurface->Value(ii, 2) > myVDegree + 1)
+    {
       myVDegree = NumCoeffPerSurface->Value(ii, 2) - 1;
+    }
   }
 
   if (myUDegree > RealUDegree)
+  {
     throw Standard_DomainError("Convert : Incoherence between NumCoeffPerSurface and MaxUDegree");
+  }
   if (myVDegree > RealVDegree)
+  {
     throw Standard_DomainError("Convert : Incoherence between NumCoeffPerSurface and MaxVDegree");
+  }
 
   Perform(UContinuity,
           VContinuity,

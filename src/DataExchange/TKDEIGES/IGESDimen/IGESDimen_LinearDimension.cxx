@@ -45,7 +45,9 @@ void IGESDimen_LinearDimension::Init(const occ::handle<IGESDimen_GeneralNote>& a
 void IGESDimen_LinearDimension::SetFormNumber(const int fm)
 {
   if (fm < 0 || fm > 2)
+  {
     throw Standard_OutOfRange("IGESDimen_LinearDimension : SetFormNumber");
+  }
   InitTypeAndForm(216, fm);
 }
 

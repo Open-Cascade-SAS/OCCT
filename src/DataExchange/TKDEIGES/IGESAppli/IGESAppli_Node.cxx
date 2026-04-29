@@ -49,7 +49,9 @@ occ::handle<IGESData_TransfEntity> IGESAppli_Node::System() const
 int IGESAppli_Node::SystemType() const
 {
   if (theSystem.IsNull())
-    return 0;                           // 0 Global Cartesien
+  {
+    return 0; // 0 Global Cartesien
+  }
   return (theSystem->FormNumber() - 9); // 1 Cartesien, 2 Cylind. 3 Spher.
 }
 
@@ -58,6 +60,8 @@ gp_Pnt IGESAppli_Node::TransformedNodalCoord() const
   gp_XYZ                             tempCoord = Coord().XYZ();
   occ::handle<IGESData_TransfEntity> temp      = System();
   if (!temp.IsNull())
+  {
     temp->Value().Transforms(tempCoord);
+  }
   return gp_Pnt(tempCoord);
 }

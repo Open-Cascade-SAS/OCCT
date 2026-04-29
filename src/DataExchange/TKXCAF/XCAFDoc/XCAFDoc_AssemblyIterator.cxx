@@ -75,7 +75,9 @@ XCAFDoc_AssemblyIterator::XCAFDoc_AssemblyIterator(const occ::handle<TDocStd_Doc
   TDF_Tool::Label(theDoc->GetData(), theRoot.GetPath().Last(), aSeed.myLabel);
 
   if (aSeed.myLabel.IsNull())
+  {
     return;
+  }
 
   TDF_Label anOriginal;
   if (myShapeTool->GetReferredShape(aSeed.myLabel, anOriginal))
@@ -114,7 +116,9 @@ bool XCAFDoc_AssemblyIterator::More() const
 void XCAFDoc_AssemblyIterator::Next()
 {
   if (!More())
+  {
     return; // No next item.
+  }
 
   // Pop item
   AuxAssemblyItem aCurrent = myFringe.Last();

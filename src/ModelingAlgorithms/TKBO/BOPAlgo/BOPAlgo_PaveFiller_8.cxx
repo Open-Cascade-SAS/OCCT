@@ -90,7 +90,9 @@ void BOPAlgo_PaveFiller::ProcessDE(const Message_ProgressRange& theRange)
             myDS->ChangePaveBlocks(anEdgeIndex);
           Standard_ASSERT_VOID(!aLPBD.IsEmpty(), "ListOfPaveBlock is unexpectedly empty");
           if (aLPBD.IsEmpty())
+          {
             continue;
+          }
           occ::handle<BOPDS_PaveBlock> aPBD = aLPBD.First();
           //
           FillPaves(nV, anEdgeIndex, nF, aLPBOut, aPBD);
@@ -373,12 +375,16 @@ bool AddSplitPoint(const occ::handle<BOPDS_PaveBlock>& thePBD,
   double aT = thePave.Parameter();
   // Check that the parameter is inside the Pave Block
   if (aT - aTD1 < theTol || aTD2 - aT < theTol)
+  {
     return false;
+  }
 
   // Check that the pave block does not contain the same parameter
   int anInd;
   if (thePBD->ContainsParameter(aT, theTol, anInd))
+  {
     return false;
+  }
 
   // Add the point as an Extra pave to the Pave Block for further
   // splitting of the latter

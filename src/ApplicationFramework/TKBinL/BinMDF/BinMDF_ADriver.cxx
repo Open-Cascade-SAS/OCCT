@@ -24,7 +24,9 @@ BinMDF_ADriver::BinMDF_ADriver(const occ::handle<Message_Messenger>& theMsgDrive
     : myMessageDriver(theMsgDriver)
 {
   if (theName)
+  {
     myTypeName = theName;
+  }
 }
 
 //=================================================================================================

@@ -42,7 +42,9 @@ void StepBasic_IdentificationRole::Init(const occ::handle<TCollection_HAsciiStri
     theDescription = aDescription;
   }
   else
+  {
     theDescription.Nullify();
+  }
 }
 
 //=================================================================================================

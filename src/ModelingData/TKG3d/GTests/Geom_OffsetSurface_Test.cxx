@@ -776,7 +776,9 @@ TEST(Geom_OffsetSurface_Derivatives, Cylinder_DN_Consistency)
     for (int Nv = 0; Nv <= 3; ++Nv)
     {
       if (Nu + Nv == 0 || Nu + Nv > 3)
+      {
         continue;
+      }
       gp_Vec aDN1 = anOffsetAdaptor.DN(u, v, Nu, Nv);
       gp_Vec aDN2 = anEquivAdaptor.DN(u, v, Nu, Nv);
       EXPECT_TRUE(VectorsEqual(aDN1, aDN2, aTol))

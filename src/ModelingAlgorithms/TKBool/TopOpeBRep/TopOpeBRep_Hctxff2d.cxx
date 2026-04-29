@@ -44,19 +44,25 @@ void TopOpeBRep_Hctxff2d::SetFaces(const TopoDS_Face& F1, const TopoDS_Face& F2)
   bool newf2    = !F2.IsEqual(myFace2);
   bool yaduneuf = (newf1 || newf2);
   if (!yaduneuf)
+  {
     return;
+  }
 
   bool computerestriction = false;
   if (newf1)
   {
     if (mySurface1.IsNull())
+    {
       mySurface1 = new BRepAdaptor_Surface();
+    }
     mySurface1->Initialize(F1, computerestriction);
   }
   if (newf2)
   {
     if (mySurface2.IsNull())
+    {
       mySurface2 = new BRepAdaptor_Surface();
+    }
     mySurface2->Initialize(F2, computerestriction);
   }
   SetHSurfacesPrivate();
@@ -70,12 +76,18 @@ void TopOpeBRep_Hctxff2d::SetHSurfaces(const occ::handle<BRepAdaptor_Surface>& H
   bool newf1 = false;
   bool newf2 = false;
   if (!HS1.IsNull())
+  {
     newf1 = !HS1->Face().IsEqual(myFace1);
+  }
   if (!HS2.IsNull())
+  {
     newf2 = !HS2->Face().IsEqual(myFace2);
+  }
   bool yaduneuf = (newf1 || newf2);
   if (!yaduneuf)
+  {
     return;
+  }
 
   mySurface1 = HS1;
   mySurface2 = HS2;
@@ -166,11 +178,17 @@ double TopOpeBRep_Hctxff2d::GetMaxTolerance() const
 const TopoDS_Face& TopOpeBRep_Hctxff2d::Face(const int Index) const
 {
   if (Index == 1)
+  {
     return myFace1;
+  }
   else if (Index == 2)
+  {
     return myFace2;
+  }
   else
+  {
     throw Standard_Failure("TopOpeBRep_Hctxff2d::Face");
+  }
 }
 
 //=================================================================================================
@@ -178,11 +196,17 @@ const TopoDS_Face& TopOpeBRep_Hctxff2d::Face(const int Index) const
 occ::handle<BRepAdaptor_Surface> TopOpeBRep_Hctxff2d::HSurface(const int Index) const
 {
   if (Index == 1)
+  {
     return mySurface1;
+  }
   else if (Index == 2)
+  {
     return mySurface2;
+  }
   else
+  {
     throw Standard_Failure("TopOpeBRep_Hctxff2d::HSurface");
+  }
 }
 
 //=================================================================================================
@@ -204,9 +228,15 @@ bool TopOpeBRep_Hctxff2d::FacesSameOriented() const
 bool TopOpeBRep_Hctxff2d::FaceSameOrientedWithRef(const int Index) const
 {
   if (Index == 1)
+  {
     return myf1surf1F_sameoriented;
+  }
   else if (Index == 2)
+  {
     return myf2surf1F_sameoriented;
+  }
   else
+  {
     throw Standard_Failure("TopOpeBRep_Hctxff2d::FSO");
+  }
 }

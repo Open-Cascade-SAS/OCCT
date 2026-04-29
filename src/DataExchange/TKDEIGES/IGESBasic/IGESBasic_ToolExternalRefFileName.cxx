@@ -97,7 +97,9 @@ void IGESBasic_ToolExternalRefFileName::OwnCheck(
   occ::handle<Interface_Check>& ach) const
 {
   if (ent->FormNumber() == 1)
+  {
     ach->AddFail("Invalid Form Number");
+  }
 }
 
 void IGESBasic_ToolExternalRefFileName::OwnDump(
@@ -112,5 +114,5 @@ void IGESBasic_ToolExternalRefFileName::OwnDump(
   S << "\n"
     << "External Reference Symbolic Name : ";
   IGESData_DumpString(S, ent->ReferenceName());
-  S << std::endl;
+  S << '\n';
 }

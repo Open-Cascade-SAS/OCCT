@@ -43,7 +43,9 @@ void Transfer_TransferIterator::SelectBinder(const occ::handle<Standard_Type>& a
     {
       theselect->SetValue(i, 0);
       if (themaxi == i)
+      {
         themaxi = i - 1;
+      }
     }
   }
 }
@@ -53,7 +55,9 @@ void Transfer_TransferIterator::SelectResult(const occ::handle<Standard_Type>& a
 {
   int casetype = 0;
   if (atype->SubType(STANDARD_TYPE(Standard_Transient)))
+  {
     casetype = 2;
+  }
 
   for (int i = theitems->Length(); i > 0; i--)
   {
@@ -61,18 +65,28 @@ void Transfer_TransferIterator::SelectResult(const occ::handle<Standard_Type>& a
     occ::handle<Standard_Type>   btype = ResultType();
     bool                         matchtype;
     if (!atr->HasResult())
+    {
       matchtype = false;
+    }
     else if (atr->IsMultiple())
+    {
       matchtype = false;
+    }
     else if (casetype == 0)
+    {
       matchtype = (atype == btype); // Type fixe
+    }
     else
+    {
       matchtype = (btype->SubType(atype)); // Dynamique
+    }
     if (matchtype != keep)
     {
       theselect->SetValue(i, 0);
       if (themaxi == i)
+      {
         themaxi = i - 1;
+      }
     }
   }
 }
@@ -86,7 +100,9 @@ void Transfer_TransferIterator::SelectUnique(const bool keep)
     {
       theselect->SetValue(i, 0);
       if (themaxi == i)
+      {
         themaxi = i - 1;
+      }
     }
   }
 }
@@ -94,11 +110,17 @@ void Transfer_TransferIterator::SelectUnique(const bool keep)
 void Transfer_TransferIterator::SelectItem(const int num, const bool keep)
 {
   if (num < 1 || num > theselect->Length())
+  {
     return;
+  }
   if (keep)
+  {
     theselect->SetValue(num, 1);
+  }
   else
+  {
     theselect->SetValue(num, 0);
+  }
 }
 
 //  ....                Iteration-Interrogations                ....
@@ -110,7 +132,9 @@ int Transfer_TransferIterator::Number() const
   for (i = 1; i <= themaxi; i++)
   {
     if (theselect->Value(i) != 0)
+    {
       numb++;
+    }
   }
   return numb;
 }
@@ -124,11 +148,17 @@ void Transfer_TransferIterator::Start()
 bool Transfer_TransferIterator::More()
 {
   if (thecurr > themaxi)
+  {
     return false;
+  }
   if (theselect->Value(thecurr) == 0)
+  {
     Next();
+  }
   if (thecurr > themaxi)
+  {
     return false;
+  }
   return (theselect->Value(thecurr) > 0);
 }
 
@@ -136,17 +166,25 @@ void Transfer_TransferIterator::Next()
 {
   thecurr++;
   if (thecurr > themaxi)
+  {
     return;
+  }
   if (theselect->Value(thecurr) == 0)
+  {
     Next();
+  }
 }
 
 const occ::handle<Transfer_Binder>& Transfer_TransferIterator::Value() const
 {
   if (thecurr == 0 || thecurr > themaxi)
+  {
     throw Standard_NoSuchObject("TransferIterator : Value");
+  }
   if (theselect->Value(thecurr) == 0)
+  {
     throw Standard_NoSuchObject("TransferIterator : Value");
+  }
   return theitems->Value(thecurr);
 }
 
@@ -162,7 +200,9 @@ bool Transfer_TransferIterator::HasUniqueResult() const
 {
   occ::handle<Transfer_Binder> atr = Value();
   if (atr->IsMultiple())
+  {
     return false;
+  }
   return atr->HasResult();
 }
 
@@ -171,7 +211,9 @@ occ::handle<Standard_Type> Transfer_TransferIterator::ResultType() const
   occ::handle<Standard_Type>   btype;
   occ::handle<Transfer_Binder> atr = Value();
   if (!atr->IsMultiple())
+  {
     btype = atr->ResultType();
+  }
   //  Binder's ResultType takes into account the Dynamic Type for Handles
   return btype;
 }
@@ -180,7 +222,9 @@ bool Transfer_TransferIterator::HasTransientResult() const
 {
   occ::handle<Standard_Type> btype = ResultType();
   if (btype.IsNull())
+  {
     return false;
+  }
   return btype->SubType(STANDARD_TYPE(Standard_Transient));
 }
 
@@ -189,7 +233,9 @@ const occ::handle<Standard_Transient>& Transfer_TransferIterator::TransientResul
   occ::handle<Transfer_SimpleBinderOfTransient> atr =
     occ::down_cast<Transfer_SimpleBinderOfTransient>(Value());
   if (!atr.IsNull())
+  {
     return atr->Result();
+  }
   return nultrans;
 }
 

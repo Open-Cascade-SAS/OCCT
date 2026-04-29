@@ -78,7 +78,9 @@ void SearchCommonFaces(const ChFiDS_Map&  EFMap,
   {
     Fc = TopoDS::Face(It.Value());
     if (F1.IsNull())
+    {
       F1 = Fc;
+    }
     else if (!Fc.IsSame(F1))
     {
       F2 = Fc;
@@ -87,7 +89,9 @@ void SearchCommonFaces(const ChFiDS_Map&  EFMap,
   }
 
   if (!F1.IsNull() && F2.IsNull() && BRepTools::IsReallyClosed(E, F1))
+  {
     F2 = F1;
+  }
 }
 
 //=======================================================================
@@ -120,9 +124,13 @@ void ExtentSpineOnCommonFace(occ::handle<ChFiDS_Spine>& Spine1,
   tg1.Normalize();
   tg2.Normalize();
   if (isfirst1)
+  {
     tg1.Reverse();
+  }
   if (isfirst2)
+  {
     tg2.Reverse();
+  }
 
   double cosalpha, sinalpha;
   cosalpha = tg1.Dot(tg2);
@@ -293,7 +301,9 @@ void ChFi3d_ChBuilder::SetDist(const double Dis, const int IC, const TopoDS_Face
       csp->SetDist(Dis);
     }
     else
+    {
       throw Standard_DomainError("the face is not common to any of edges of the contour");
+    }
   }
 }
 
@@ -398,12 +408,18 @@ void ChFi3d_ChBuilder::SetDists(const double       Dis1,
       Sb2.Initialize(FirstF2);
       ChoixConge = ChFi3d::ConcaveSide(Sb1, Sb2, csp->Edges(1), Or1, Or2);
       if (ChoixConge % 2 != Choix % 2)
+      {
         csp->SetDists(Dis2, Dis1);
+      }
       else
+      {
         csp->SetDists(Dis1, Dis2);
+      }
     }
     else
+    {
       throw Standard_DomainError("the face is not common to any of edges of the contour");
+    }
   }
 }
 
@@ -503,7 +519,9 @@ void ChFi3d_ChBuilder::SetDistAngle(const double       Dis,
       csp->SetDistAngle(Dis, Angle);
     }
     else
+    {
       throw Standard_DomainError("the face is not common to any edges of the contour");
+    }
   }
 }
 
@@ -675,7 +693,9 @@ void ChFi3d_ChBuilder::SimulKPart(const occ::handle<ChFiDS_SurfData>& SD) const
       double  rad = Co.RefRadius(), sang = Co.SemiAngle();
       int     n = (int)(36. * ang / M_PI + 1);
       if (n < 2)
+      {
         n = 2;
+      }
       sec = new NCollection_HArray1<ChFiDS_CircSection>(1, n);
       for (int i = 1; i <= n; i++)
       {
@@ -718,7 +738,9 @@ bool ChFi3d_ChBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
   occ::handle<ChFiDS_ChamfSpine> chsp = occ::down_cast<ChFiDS_ChamfSpine>(Spine);
 
   if (chsp.IsNull())
+  {
     throw Standard_ConstructionError("SimulSurf : this is not the spine of a chamfer");
+  }
 
   double radius;
   // Flexible parameters!
@@ -738,15 +760,21 @@ bool ChFi3d_ChBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
     HGuide->D2(w, Pbid, d1, d2);
     double temp = d2.SquareMagnitude();
     if (temp > radiusspine)
+    {
       radiusspine = temp;
+    }
   }
 
   occ::handle<BRepBlend_Line> lin;
   double                      PFirst = First;
   if (intf)
+  {
     First = chsp->FirstParameter(1);
+  }
   if (intl)
+  {
     Last = chsp->LastParameter(chsp->NbEdges());
+  }
 
   occ::handle<ChFiDS_ElSpine> OffsetHGuide;
 
@@ -797,7 +825,9 @@ bool ChFi3d_ChBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
                      RecOnS2);
 
     if (!done)
+    {
       return false;
+    }
     occ::handle<NCollection_HArray1<ChFiDS_CircSection>> sec;
     gp_Pnt2d                                             pf1, pl1, pf2, pl2;
 
@@ -915,12 +945,14 @@ bool ChFi3d_ChBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
       {
         const occ::handle<ChFiDS_ElSpine>& aHElSpine = ILES.Value();
         if (aHElSpine == HGuide)
+        {
           OffsetHGuide = ILES_offset.Value();
+        }
       }
 
       if (OffsetHGuide.IsNull())
       {
-        std::cout << std::endl << "Construction of offset guide failed!" << std::endl;
+        std::cout << '\n' << "Construction of offset guide failed!" << '\n';
         // exception
       }
       pFunc.reset(new BRepBlend_ConstThroatWithPenetration(S1, S2, OffsetHGuide));
@@ -955,7 +987,9 @@ bool ChFi3d_ChBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
                      RecOnS2);
 
     if (!done)
+    {
       return false;
+    }
     occ::handle<NCollection_HArray1<ChFiDS_CircSection>> sec;
     gp_Pnt2d                                             pf1, pl1, pf2, pl2;
 
@@ -1088,7 +1122,9 @@ bool ChFi3d_ChBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
                      RecOnS2);
 
     if (!done)
+    {
       return false;
+    }
     occ::handle<NCollection_HArray1<ChFiDS_CircSection>> sec;
     gp_Pnt2d                                             pf1, pl1, pf2, pl2;
 
@@ -1295,7 +1331,9 @@ bool ChFi3d_ChBuilder::PerformFirstSection(const occ::handle<ChFiDS_Spine>&     
   occ::handle<ChFiDS_ChamfSpine> chsp = occ::down_cast<ChFiDS_ChamfSpine>(Spine);
 
   if (chsp.IsNull())
+  {
     throw Standard_ConstructionError("PerformSurf : this is not the spine of a chamfer");
+  }
 
   double TolGuide = HGuide->Resolution(tolapp3d);
 
@@ -1332,9 +1370,13 @@ bool ChFi3d_ChBuilder::PerformFirstSection(const occ::handle<ChFiDS_Spine>&     
     double sign = (TgF.Crossed(d1gui)).Dot(TgL);
 
     if (Choix % 2 == 1)
+    {
       rev1 = true;
+    }
     else
+    {
       rev2 = true;
+    }
 
     if (sign < 0.)
     {
@@ -1343,9 +1385,13 @@ bool ChFi3d_ChBuilder::PerformFirstSection(const occ::handle<ChFiDS_Spine>&     
     }
 
     if (rev1)
+    {
       TgF.Reverse();
+    }
     if (rev2)
+    {
       TgL.Reverse();
+    }
 
     temp = (TgF.XYZ()).Multiplied(dis);
     pt1.SetXYZ((ptgui.XYZ()).Added(temp));
@@ -1391,12 +1437,14 @@ bool ChFi3d_ChBuilder::PerformFirstSection(const occ::handle<ChFiDS_Spine>&     
       {
         const occ::handle<ChFiDS_ElSpine>& aHElSpine = ILES.Value();
         if (aHElSpine == HGuide)
+        {
           OffsetHGuide = ILES_offset.Value();
+        }
       }
 
       if (OffsetHGuide.IsNull())
       {
-        std::cout << std::endl << "Construction of offset guide failed!" << std::endl;
+        std::cout << '\n' << "Construction of offset guide failed!" << '\n';
         // exception
       }
       pFunc.reset(new BRepBlend_ConstThroatWithPenetration(S1, S2, OffsetHGuide));
@@ -1421,9 +1469,13 @@ bool ChFi3d_ChBuilder::PerformFirstSection(const occ::handle<ChFiDS_Spine>&     
     double sign = (TgF.Crossed(d1gui)).Dot(TgL);
 
     if (Choix % 2 == 1)
+    {
       rev1 = true;
+    }
     else
+    {
       rev2 = true;
+    }
 
     if (sign < 0.)
     {
@@ -1432,9 +1484,13 @@ bool ChFi3d_ChBuilder::PerformFirstSection(const occ::handle<ChFiDS_Spine>&     
     }
 
     if (rev1)
+    {
       TgF.Reverse();
+    }
     if (rev2)
+    {
       TgL.Reverse();
+    }
 
     double aDist1 = dis1, aDist2 = dis2;
     if (chsp->Mode() == ChFiDS_ConstThroatWithPenetrationChamfer)
@@ -1503,9 +1559,13 @@ bool ChFi3d_ChBuilder::PerformFirstSection(const occ::handle<ChFiDS_Spine>&     
     double sign = (TgF.Crossed(d1gui)).Dot(TgL);
 
     if (Ch % 2 == 1)
+    {
       rev1 = true;
+    }
     else
+    {
       rev2 = true;
+    }
 
     if (sign < 0.)
     {
@@ -1514,9 +1574,13 @@ bool ChFi3d_ChBuilder::PerformFirstSection(const occ::handle<ChFiDS_Spine>&     
     }
 
     if (rev1)
+    {
       TgF.Reverse();
+    }
     if (rev2)
+    {
       TgL.Reverse();
+    }
 
     temp = (TgF.XYZ()).Multiplied(dis1);
     pt1.SetXYZ((ptgui.XYZ()).Added(temp));
@@ -1578,16 +1642,22 @@ bool ChFi3d_ChBuilder::PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_SurfD
   occ::handle<ChFiDS_ChamfSpine> chsp = occ::down_cast<ChFiDS_ChamfSpine>(Spine);
 
   if (chsp.IsNull())
+  {
     throw Standard_ConstructionError("PerformSurf : this is not the spine of a chamfer");
+  }
 
   bool                        gd1, gd2, gf1, gf2;
   occ::handle<BRepBlend_Line> lin;
   TopAbs_Orientation          Or     = S1->Face().Orientation();
   double                      PFirst = First;
   if (intf)
+  {
     First = chsp->FirstParameter(1);
+  }
   if (intl)
+  {
     Last = chsp->LastParameter(chsp->NbEdges());
+  }
 
   if (chsp->IsChamfer() == ChFiDS_Sym)
   {
@@ -1638,10 +1708,14 @@ bool ChFi3d_ChBuilder::PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_SurfD
                        RecOnS1,
                        RecOnS2);
     if (!done)
+    {
       return false; // ratrappage possible PMN 14/05/1998
+    }
     done = CompleteData(Data, *pFunc, lin, S1, S2, Or, gd1, gd2, gf1, gf2);
     if (!done)
+    {
       throw Standard_Failure("PerformSurf : Fail of approximation!");
+    }
   }
   else if (chsp->IsChamfer() == ChFiDS_TwoDist)
   {
@@ -1667,12 +1741,14 @@ bool ChFi3d_ChBuilder::PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_SurfD
       {
         const occ::handle<ChFiDS_ElSpine>& aHElSpine = ILES.Value();
         if (aHElSpine == HGuide)
+        {
           OffsetHGuide = ILES_offset.Value();
+        }
       }
 
       if (OffsetHGuide.IsNull())
       {
-        std::cout << std::endl << "Construction of offset guide failed!" << std::endl;
+        std::cout << '\n' << "Construction of offset guide failed!" << '\n';
         // exception
       }
       pFunc.reset(new BRepBlend_ConstThroatWithPenetration(S1, S2, OffsetHGuide));
@@ -1711,10 +1787,14 @@ bool ChFi3d_ChBuilder::PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_SurfD
                        RecOnS1,
                        RecOnS2);
     if (!done)
+    {
       return false; // ratrappage possible PMN 14/05/1998
+    }
     done = CompleteData(Data, *pFunc, lin, S1, S2, Or, gd1, gd2, gf1, gf2);
     if (!done)
+    {
       throw Standard_Failure("PerformSurf : Fail of approximation!");
+    }
   }
   else
   { // distance and angle
@@ -1758,10 +1838,14 @@ bool ChFi3d_ChBuilder::PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_SurfD
                        RecOnS2);
 
     if (!done)
+    {
       return false; // ratrappage possible PMN 14/05/1998
+    }
     done = CompleteData(Data, Func, lin, S1, S2, Or, gd1, gd2, gf1, gf2);
     if (!done)
+    {
       throw Standard_Failure("PerformSurf : Fail of approximation!");
+    }
   }
 
   return true;
@@ -1873,7 +1957,9 @@ void ChFi3d_ChBuilder::ExtentOneCorner(const TopoDS_Vertex& V, const occ::handle
   occ::handle<ChFiDS_Spine> Spine = S->Spine();
   ChFi3d_IndexOfSurfData(V, S, Sens);
   if (Spine->IsTangencyExtremity((Sens == 1)))
+  {
     return; // No extension on queue
+  }
   double dU = Spine->LastParameter(Spine->NbEdges());
   if (Sens == 1)
   {
@@ -1911,14 +1997,20 @@ void ChFi3d_ChBuilder::ExtentTwoCorner(const TopoDS_Vertex&                     
   {
     ChFi3d_IndexOfSurfData(V, itel.Value(), Sens);
     if (!FF)
+    {
       if (Stripe[1] == itel.Value())
+      {
         Sens = -Sens;
+      }
+    }
 
     Stripe[i]  = itel.Value();
     isfirst[i] = (Sens == 1);
     Spine[i]   = Stripe[i]->Spine();
     if (!isfirst[i])
+    {
       Iedge[i] = Spine[i]->NbEdges();
+    }
     FF = false;
   }
 
@@ -1978,9 +2070,13 @@ void ChFi3d_ChBuilder::ExtentTwoCorner(const TopoDS_Vertex&                     
   for (i = 0; i < 2; i++)
   {
     if (isfirst[i])
+    {
       State[i] = Spine[i]->FirstStatus();
+    }
     else
+    {
       State[i] = Spine[i]->LastStatus();
+    }
   }
 
   if (State[0] == ChFiDS_AllSame)
@@ -1999,7 +2095,9 @@ void ChFi3d_ChBuilder::ExtentTwoCorner(const TopoDS_Vertex&                     
 
     // it is necessary that two chamfers touch the face at end
     for (j = 0; j < 2; j++)
+    {
       ExtentOneCorner(V, Stripe[j]);
+    }
   }
   else if ((State[0] == ChFiDS_OnSame) && (State[1] == ChFiDS_OnSame))
   {
@@ -2040,7 +2138,9 @@ void ChFi3d_ChBuilder::ExtentThreeCorner(const TopoDS_Vertex&                   
     isfirst[i] = (Sens == 1);
     Spine[i]   = Stripe->Spine();
     if (!isfirst[i])
+    {
       Iedge[i] = Spine[i]->NbEdges();
+    }
 
     check.Append(Stripe);
   }

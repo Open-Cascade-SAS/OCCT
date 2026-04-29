@@ -71,7 +71,9 @@ bool FairCurve_DistributionOfTension::Value(const math_Vector& TParam, math_Vect
                                    FirstNonZero,
                                    Base);
   if (ier != 0)
+  {
     return false;
+  }
   LastZero     = FirstNonZero - 1;
   FirstNonZero = 2 * LastZero + 1;
 
@@ -93,7 +95,9 @@ bool FairCurve_DistributionOfTension::Value(const math_Vector& TParam, math_Vect
   {
     Ok = MyLaw.Value(TParam(TParam.Lower()), Hauteur);
     if (!Ok)
+    {
       return Ok;
+    }
   }
   Difference = NormeCPrim - MyLengthSliding;
 

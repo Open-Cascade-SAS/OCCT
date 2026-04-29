@@ -183,7 +183,9 @@ void XmlMDataXtd_PresentationDriver::Paste(const occ::handle<TDF_Attribute>& the
 {
   occ::handle<TDataXtd_Presentation> aTPrs = occ::down_cast<TDataXtd_Presentation>(theSource);
   if (aTPrs.IsNull())
+  {
     return;
+  }
 
   // convert GUID into attribute value
   char                aGuidStr[40];
@@ -194,7 +196,9 @@ void XmlMDataXtd_PresentationDriver::Paste(const occ::handle<TDF_Attribute>& the
 
   // is displayed
   if (aTPrs->IsDisplayed())
+  {
     theTarget.Element().setAttribute(::IsDisplayedString(), ::DisplayedString());
+  }
 
   int aNb;
 

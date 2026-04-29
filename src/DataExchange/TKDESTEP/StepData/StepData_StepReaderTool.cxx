@@ -136,7 +136,9 @@ void StepData_StepReaderTool::PrepareHeader(const occ::handle<StepData_FileRecog
       RecognizeByLib(i, theglib, therlib, ach, ent);
     }
     if (ent.IsNull())
+    {
       ent = Protocol()->UnknownEntity();
+    }
     stepdat->BindEntity(i, ent);
   }
 
@@ -183,7 +185,9 @@ void StepData_StepReaderTool::BeginRead(const occ::handle<Interface_InterfaceMod
       int                          nbmess = ach->NbWarnings();
       sout << nbmess << " Warnings on Reading Header Entity N0." << i << ":";
       if (!ent.IsNull())
-        sout << ent->DynamicType()->Name() << std::endl;
+      {
+        sout << ent->DynamicType()->Name() << '\n';
+      }
       for (int nf = 1; nf <= nbmess; nf++)
       {
         sout << ach->CWarning(nf) << "\n";
@@ -195,7 +199,9 @@ void StepData_StepReaderTool::BeginRead(const occ::handle<Interface_InterfaceMod
       int                          nbmess = ach->NbFails();
       sout << " Fails on Reading Header Entity N0." << i << ":";
       if (!ent.IsNull())
-        sout << ent->DynamicType()->Name() << std::endl;
+      {
+        sout << ent->DynamicType()->Name() << '\n';
+      }
       for (int nf = 1; nf <= nbmess; nf++)
       {
         sout << ach->CFail(nf) << "\n";
@@ -228,9 +234,13 @@ bool StepData_StepReaderTool::AnalyseRecord(const int                           
     // Not found: try UndefinedEntity from StepData
     DeclareAndCast(StepData_UndefinedEntity, und, anent);
     if (und.IsNull())
+    {
       acheck->AddFail("# Entity neither Recognized nor set as UndefinedEntity from StepData #");
+    }
     else
+    {
       und->ReadRecord(stepdat, num, acheck);
+    }
   }
   return (!acheck->HasFailed());
 }
@@ -243,7 +253,9 @@ void StepData_StepReaderTool::EndRead(const occ::handle<Interface_InterfaceModel
   DeclareAndCast(StepData_StepReaderData, stepdat, Data());
   DeclareAndCast(StepData_StepModel, stepmodel, amodel);
   if (stepmodel.IsNull())
+  {
     return;
+  }
   int i = 0;
   while ((i = stepdat->FindNextRecord(i)) != 0)
   {

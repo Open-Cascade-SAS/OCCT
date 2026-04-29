@@ -113,12 +113,16 @@ void AdvApp2Var_Patch::Discretise(const AdvApp2Var_Context&           Conditions
   UROOT  = (double*)&HUROOT->ChangeArray1()(HUROOT->Lower());
   NBPNTU = (Conditions.URoots())->Length();
   if (myOrdInU > -1)
+  {
     NBPNTU -= 2;
+  }
   double* VROOT;
   VROOT  = (double*)&HVROOT->ChangeArray1()(HVROOT->Lower());
   NBPNTV = (Conditions.VRoots())->Length();
   if (myOrdInV > -1)
+  {
     NBPNTV -= 2;
+  }
 
   // data stored in the Framework Constraints cad Nodes and Isos
   // C1, C2, C3 and C4 are dimensionnes in FORTRAN with (NDIMEN,IORDRU+2,IORDRV+2)
@@ -771,10 +775,14 @@ void AdvApp2Var_Patch::MakeApprox(const AdvApp2Var_Context&   Conditions,
   NDIMSE = 3;
   NBPNTU = (Conditions.URoots())->Length();
   if (myOrdInU > -1)
+  {
     NBPNTU -= 2;
+  }
   NBPNTV = (Conditions.VRoots())->Length();
   if (myOrdInV > -1)
+  {
     NBPNTV -= 2;
+  }
   NCFLMU = Conditions.ULimit();
   NCFLMV = Conditions.VLimit();
   NDegU  = NCFLMU - 1;
@@ -978,7 +986,9 @@ void AdvApp2Var_Patch::ResetApprox()
 void AdvApp2Var_Patch::OverwriteApprox()
 {
   if (myHasResult)
+  {
     myApprIsDone = true;
+  }
 }
 
 //=================================================================================================
@@ -1071,9 +1081,13 @@ int AdvApp2Var_Patch::NbCoeffInV() const
 void AdvApp2Var_Patch::ChangeNbCoeff(const int NbCoeffU, const int NbCoeffV)
 {
   if (myNbCoeffInU < NbCoeffU)
+  {
     myNbCoeffInU = NbCoeffU;
+  }
   if (myNbCoeffInV < NbCoeffV)
+  {
     myNbCoeffInV = NbCoeffV;
+  }
 }
 
 //=================================================================================================

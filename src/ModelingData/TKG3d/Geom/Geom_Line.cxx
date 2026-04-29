@@ -207,11 +207,17 @@ Geom_Curve::ResD3 Geom_Line::EvalD3(const double U) const
 gp_Vec Geom_Line::EvalDN(const double, const int N) const
 {
   if (N < 1)
+  {
     throw Geom_UndefinedDerivative();
+  }
   if (N == 1)
+  {
     return gp_Vec(pos.Direction());
+  }
   else
+  {
     return gp_Vec(0.0, 0.0, 0.0);
+  }
 }
 
 //=================================================================================================
@@ -219,7 +225,9 @@ gp_Vec Geom_Line::EvalDN(const double, const int N) const
 double Geom_Line::TransformedParameter(const double U, const gp_Trsf& T) const
 {
   if (Precision::IsInfinite(U))
+  {
     return U;
+  }
   return U * std::abs(T.ScaleFactor());
 }
 

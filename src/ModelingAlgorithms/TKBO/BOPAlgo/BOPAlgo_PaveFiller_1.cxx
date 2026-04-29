@@ -186,7 +186,9 @@ int BOPAlgo_PaveFiller::MakeSDVertices(const NCollection_List<int>& theVertIndic
   // Fill ShapesSD
   NCollection_DynamicArray<BOPDS_InterfVV>& aVVs = myDS->InterfVV();
   if (theAddInterfs)
+  {
     aVVs.SetIncrement(theVertIndices.Extent());
+  }
   //
   aItLI.Initialize(theVertIndices);
   for (; aItLI.More(); aItLI.Next())

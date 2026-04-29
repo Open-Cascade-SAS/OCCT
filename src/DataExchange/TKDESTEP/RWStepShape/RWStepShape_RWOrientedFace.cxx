@@ -28,7 +28,9 @@ void RWStepShape_RWOrientedFace::ReadStep(const occ::handle<StepData_StepReaderD
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 4, ach, "oriented_face"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

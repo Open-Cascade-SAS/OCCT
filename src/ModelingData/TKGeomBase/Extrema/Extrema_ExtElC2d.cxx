@@ -139,10 +139,14 @@ Method:
     teta[0] = M_PI / 2.0;
   }
   else
+  {
     teta[0] = std::atan(-Dx / Dy);
+  }
   teta[1] = teta[0] + M_PI;
   if (teta[0] < 0.0)
+  {
     teta[0] = teta[0] + 2.0 * M_PI;
+  }
 
   P2                  = ElCLib::Value(teta[0], C2);
   U1                  = (gp_Vec2d(O1, P2)).Dot(D);
@@ -190,11 +194,15 @@ Extrema_ExtElC2d::Extrema_ExtElC2d(const gp_Lin2d& C1, const gp_Elips2d& C2)
     teta[0] = M_PI / 2.0;
   }
   else
+  {
     teta[0] = std::atan(-Dx * r2 / (Dy * r1));
+  }
 
   teta[1] = teta[0] + M_PI;
   if (teta[0] < 0.0)
+  {
     teta[0] += 2.0 * M_PI;
+  }
   P2                  = ElCLib::Value(teta[0], C2);
   U1                  = (gp_Vec2d(O1, P2)).Dot(D);
   P1                  = ElCLib::Value(U1, C1);
@@ -240,11 +248,15 @@ Extrema_ExtElC2d::Extrema_ExtElC2d(const gp_Lin2d& C1, const gp_Hypr2d& C2)
     return;
   }
   if (std::abs(R - r * Dx / Dy) < RealEpsilon())
+  {
     return;
+  }
 
   v2 = (R + r * Dx / Dy) / (R - r * Dx / Dy);
   if (v2 > 0.0)
+  {
     U2 = std::log(std::sqrt(v2));
+  }
   P2 = ElCLib::Value(U2, C2);
 
   U1                  = (gp_Vec2d(C1.Location(), P2)).Dot(D);

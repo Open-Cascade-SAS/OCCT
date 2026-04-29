@@ -78,18 +78,26 @@ TEST(BRepGraph_PermissionUpdateTest, RemoveRef_OccurrenceRef_PreservesProductToO
 
   bool aFoundBefore = false;
   for (const BRepGraph_OccurrenceId& anId : aGraph.Topo().Products().Instances(aChild))
+  {
     if (anId == aOccId)
+    {
       aFoundBefore = true;
+    }
+  }
   EXPECT_TRUE(aFoundBefore) << "Occurrence must be indexed under referenced product before remove";
 
   EXPECT_TRUE(aGraph.Editor().Gen().RemoveRef(BRepGraph_RefId(aOccRefId)));
 
   for (const BRepGraph_OccurrenceId& anId : aGraph.Topo().Products().Instances(aChild))
+  {
     EXPECT_NE(anId, aOccId) << "RemoveRef must drop the referenced-product entry";
+  }
 
   // The wrong-key bug would also leave a stale entry under the parent product id.
   for (const BRepGraph_OccurrenceId& anId : aGraph.Topo().Products().Instances(aParent))
+  {
     EXPECT_NE(anId, aOccId) << "Bug: Unbind happened against parent product key";
+  }
 }
 
 // B2: removing one CoEdgeRef must leave the wire's other usages of the same edge
@@ -123,8 +131,12 @@ TEST(BRepGraph_PermissionUpdateTest, RemoveRef_CoEdge_PreservesEdgeToWireWhenSib
 
   auto containsWire = [&](const BRepGraph_EdgeId theE) -> bool {
     for (const BRepGraph_WireId& aW : aGraph.Topo().Edges().Wires(theE))
+    {
       if (aW == aWireId)
+      {
         return true;
+      }
+    }
     return false;
   };
   ASSERT_TRUE(containsWire(aEdge)) << "Edge->Wire reverse must be present before removal";
@@ -166,8 +178,12 @@ TEST(BRepGraph_PermissionUpdateTest, SetRefVertexDefId_SelfLoopSibling_KeepsRevI
   ASSERT_TRUE(aOldV.IsValid());
   bool aOldStillIndexed = false;
   for (const BRepGraph_EdgeId& aE : aGraph.Topo().Vertices().Edges(aOldV))
+  {
     if (aE == aEdge)
+    {
       aOldStillIndexed = true;
+    }
+  }
   EXPECT_TRUE(aOldStillIndexed)
     << "Vold must remain in EdgesOfVertex(Vold) after start-side rebind";
 }

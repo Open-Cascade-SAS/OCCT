@@ -64,9 +64,13 @@ Intrv_Interval::Intrv_Interval(const double Start,
   float epsStart = (float)Epsilon(myStart);
   float epsEnd   = (float)Epsilon(myEnd);
   if (myTolStart < epsStart)
+  {
     myTolStart = epsStart;
+  }
   if (myTolEnd < epsEnd)
+  {
     myTolEnd = epsEnd;
+  }
 }
 
 //=================================================================================================
@@ -85,37 +89,63 @@ Intrv_Position Intrv_Interval::Position(const Intrv_Interval& Other) const
   if (mySMax < otSMin)
   {
     if (myEMax < otSMin)
+    {
       P = Intrv_Before;
+    }
     else if (otSMax >= myEMin)
+    {
       P = Intrv_JustBefore;
+    }
     else if (myEMax < otEMin)
+    {
       P = Intrv_OverlappingAtStart;
+    }
     else if (otEMax >= myEMin)
+    {
       P = Intrv_JustEnclosingAtEnd;
+    }
     else
+    {
       P = Intrv_Enclosing;
+    }
   }
   else if (otSMax >= mySMin)
   {
     if (myEMax < otEMin)
+    {
       P = Intrv_JustOverlappingAtStart;
+    }
     else if (otEMax >= myEMin)
+    {
       P = Intrv_Similar;
+    }
     else
+    {
       P = Intrv_JustEnclosingAtStart;
+    }
   }
   else if (mySMax < otEMin)
   {
     if (myEMax < otEMin)
+    {
       P = Intrv_Inside;
+    }
     else if (otEMax >= myEMin)
+    {
       P = Intrv_JustOverlappingAtEnd;
+    }
     else
+    {
       P = Intrv_OverlappingAtEnd;
+    }
   }
   else if (otEMax >= mySMin)
+  {
     P = Intrv_JustAfter;
+  }
   else
+  {
     P = Intrv_After;
+  }
   return P;
 }

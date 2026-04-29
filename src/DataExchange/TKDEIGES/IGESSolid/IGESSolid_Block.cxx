@@ -66,7 +66,9 @@ gp_Pnt IGESSolid_Block::Corner() const
 gp_Pnt IGESSolid_Block::TransformedCorner() const
 {
   if (!HasTransf())
+  {
     return gp_Pnt(theCorner);
+  }
   else
   {
     gp_XYZ tmp = theCorner;
@@ -83,7 +85,9 @@ gp_Dir IGESSolid_Block::XAxis() const
 gp_Dir IGESSolid_Block::TransformedXAxis() const
 {
   if (!HasTransf())
+  {
     return gp_Dir(theXAxis);
+  }
   else
   {
     gp_XYZ   xyz = theXAxis;
@@ -102,7 +106,9 @@ gp_Dir IGESSolid_Block::YAxis() const
 gp_Dir IGESSolid_Block::TransformedYAxis() const
 {
   if (!HasTransf())
+  {
     return gp_Dir(theXAxis ^ theZAxis);
+  }
   else
   {
     gp_XYZ   xyz = theXAxis ^ theZAxis;
@@ -121,7 +127,9 @@ gp_Dir IGESSolid_Block::ZAxis() const
 gp_Dir IGESSolid_Block::TransformedZAxis() const
 {
   if (!HasTransf())
+  {
     return gp_Dir(theZAxis);
+  }
   else
   {
     gp_XYZ   xyz(theZAxis);

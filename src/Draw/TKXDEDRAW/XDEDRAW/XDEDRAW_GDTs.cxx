@@ -158,9 +158,13 @@ static int DumpDGTs(Draw_Interpretor& di, int argc, const char** argv)
             }
           }
           if (aDimTolObj->HasQualifier())
+          {
             di << ", Q " << aDimTolObj->GetQualifier();
+          }
           if (aDimTolObj->HasAngularQualifier())
+          {
             di << ", AQ " << aDimTolObj->GetAngularQualifier();
+          }
           if (aDimTolObj->GetType() == XCAFDimTolObjects_DimensionType_Location_Oriented)
           {
             gp_Dir aD;
@@ -184,23 +188,35 @@ static int DumpDGTs(Draw_Interpretor& di, int argc, const char** argv)
           {
             TCollection_AsciiString aName;
             if (!aDimTolObj->GetConnectionName().IsNull())
+            {
               aName = aDimTolObj->GetConnectionName()->String();
+            }
             di << " Conn1 \"" << aName << "\" ";
             if (aDimTolObj->IsPointConnection())
+            {
               di << "P,";
+            }
             else
+            {
               di << "CS,";
+            }
           }
           if (aDimTolObj->HasPoint2())
           {
             TCollection_AsciiString aName;
             if (!aDimTolObj->GetConnectionName2().IsNull())
+            {
               aName = aDimTolObj->GetConnectionName2()->String();
+            }
             di << " Conn2 \"" << aName << "\" ";
             if (aDimTolObj->IsPointConnection2())
+            {
               di << "P,";
+            }
             else
+            {
               di << "CS,";
+            }
           }
           di << " )";
         }
@@ -394,7 +410,9 @@ static int DumpNbDGTs(Draw_Interpretor& di, int argc, const char** argv)
   {
     char aChar = argv[2][0];
     if (aChar == 'f')
+    {
       isFull = true;
+    }
   }
   occ::handle<TDocStd_Document> Doc;
   DDocStd::GetDocument(argv[1], Doc);
@@ -423,10 +441,14 @@ static int DumpNbDGTs(Draw_Interpretor& di, int argc, const char** argv)
     {
       occ::handle<XCAFDoc_Dimension> aDimAttr;
       if (!aGDTs.Value(i).FindAttribute(XCAFDoc_Dimension::GetID(), aDimAttr))
+      {
         continue;
+      }
       occ::handle<XCAFDimTolObjects_DimensionObject> anObject = aDimAttr->GetObject();
       if (anObject.IsNull())
+      {
         continue;
+      }
       XCAFDimTolObjects_DimensionType aDimType = anObject->GetType();
       if (aDimType == XCAFDimTolObjects_DimensionType_CommonLabel)
       {
@@ -478,10 +500,14 @@ static int DumpNbDGTs(Draw_Interpretor& di, int argc, const char** argv)
     {
       occ::handle<XCAFDoc_GeomTolerance> aGTAttr;
       if (!aGDTs.Value(i).FindAttribute(XCAFDoc_GeomTolerance::GetID(), aGTAttr))
+      {
         continue;
+      }
       occ::handle<XCAFDimTolObjects_GeomToleranceObject> anObject = aGTAttr->GetObject();
       if (anObject.IsNull())
+      {
         continue;
+      }
       if (anObject->GetMaterialRequirementModifier()
           != XCAFDimTolObjects_GeomToleranceMatReqModif_None)
       {
@@ -491,14 +517,18 @@ static int DumpNbDGTs(Draw_Interpretor& di, int argc, const char** argv)
       {
         bool isHasModif = false;
         for (int j = 1; j <= anObject->GetModifiers().Length(); j++)
+        {
           if (anObject->GetModifiers().Value(j) != XCAFDimTolObjects_GeomToleranceModif_All_Around
               && anObject->GetModifiers().Value(j) != XCAFDimTolObjects_GeomToleranceModif_All_Over)
           {
             isHasModif = true;
             break;
           }
+        }
         if (isHasModif)
+        {
           nbWithModif++;
+        }
       }
       if (anObject->GetMaxValueModifier() != 0)
       {
@@ -543,7 +573,9 @@ static int DumpNbDGTs(Draw_Interpretor& di, int argc, const char** argv)
         }
       }
       if (isDatum)
+      {
         aCounter++;
+      }
     }
   }
   di << "\n NbOfDatumFeature        : " << aCounter;
@@ -606,9 +638,13 @@ static int addDim(Draw_Interpretor& di, int argc, const char** argv)
 
   TDF_Label aDimL = aDimTolTool->AddDimension();
   if (aLabel1.IsNull())
+  {
     aDimTolTool->SetDimension(aLabel, aDimL);
+  }
   else
+  {
     aDimTolTool->SetDimension(aLabel, aLabel1, aDimL);
+  }
   TCollection_AsciiString Entry;
   TDF_Tool::Entry(aDimL, Entry);
   di << Entry;
@@ -682,9 +718,13 @@ static int addDatum(Draw_Interpretor& di, int argc, const char** argv)
     {
       TopoDS_Shape aShape = DBRep::Get(argv[i]);
       if (!aShape.IsNull())
+      {
         aShapeTool->Search(aShape, aLabel);
+      }
       if (aLabel.IsNull())
+      {
         continue;
+      }
     }
     aLabelSeq.Append(aLabel);
   }
@@ -860,7 +900,9 @@ static int getDatum(Draw_Interpretor& di, int argc, const char** argv)
   for (int i = NCollection_Sequence<TDF_Label>::Lower(); i <= aD.Upper(); i++)
   {
     if (i > 1)
+    {
       di << ", ";
+    }
     TCollection_AsciiString Entry;
     TDF_Tool::Entry(aD.Value(i), Entry);
     di << Entry;
@@ -940,7 +982,9 @@ static int getDatumModif(Draw_Interpretor& di, int argc, const char** argv)
     for (int i = 1; i <= aS.Length(); i++)
     {
       if (i > 1)
+      {
         di << ", ";
+      }
       switch (aS.Value(i))
       {
         case 0:
@@ -1655,7 +1699,9 @@ static int getTolModif(Draw_Interpretor& di, int argc, const char** argv)
     for (int i = 1; i <= aS.Length(); i++)
     {
       if (i > 1)
+      {
         di << ", ";
+      }
       switch (aS.Value(i))
       {
         case 0:
@@ -2700,7 +2746,9 @@ static int getDimModifier(Draw_Interpretor& di, int argc, const char** argv)
     for (int i = 1; i <= aS.Length(); i++)
     {
       if (i > 1)
+      {
         di << ", ";
+      }
       switch (aS.Value(i))
       {
         case 0:
@@ -3352,9 +3400,13 @@ static int getGDTAffectedPlane(Draw_Interpretor& di, int argc, const char** argv
     gp_Pln aPln = anObj->GetAffectedPlane();
     aPlane      = new Geom_Plane(aPln);
     if (anObj->GetAffectedPlaneType() == XCAFDimTolObjects_ToleranceZoneAffectedPlane_Intersection)
+    {
       di << "intersection plane\n";
+    }
     if (anObj->GetAffectedPlaneType() == XCAFDimTolObjects_ToleranceZoneAffectedPlane_Orientation)
+    {
       di << "orientation plane\n";
+    }
     DrawTrSurf::Set(argv[3], aPlane);
   }
 

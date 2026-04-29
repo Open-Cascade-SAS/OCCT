@@ -90,7 +90,9 @@ void PrsDim_Chamf2dDimension::Compute(const occ::handle<PrsMgr_PresentationManag
   gp_Pnt                  pfirst, plast;
   const TopoDS_Edge&      thechamfedge = TopoDS::Edge(myFShape);
   if (!PrsDim::ComputeGeometry(thechamfedge, gcurv, pfirst, plast))
+  {
     return;
+  }
 
   occ::handle<Geom_Line> glin = occ::down_cast<Geom_Line>(gcurv);
   gp_Dir                 dir1(glin->Position().Direction());
@@ -134,7 +136,9 @@ void PrsDim_Chamf2dDimension::Compute(const occ::handle<PrsMgr_PresentationManag
     curpos = myPntAttach.Translated(transVec);
 
     if (myIsSetBndBox)
+    {
       curpos = PrsDim::TranslatePointToBound(curpos, myDir, myBndBox);
+    }
 
     myPosition = curpos;
   }
@@ -169,11 +173,17 @@ void PrsDim_Chamf2dDimension::Compute(const occ::handle<PrsMgr_PresentationManag
   {
     double arrsize = myArrowSize;
     if ((myVal / 4) < arrsize)
+    {
       arrsize = myVal / 4;
+    }
     if (arrsize > 30.)
+    {
       arrsize = 30.;
+    }
     else if (arrsize < 8.)
+    {
       arrsize = 8.;
+    }
     myArrowSize = arrsize;
   }
   arr->SetLength(myArrowSize);

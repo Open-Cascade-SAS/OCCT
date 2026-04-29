@@ -53,9 +53,12 @@ void IGESDefs_ToolUnitsData::ReadOwnParams(const occ::handle<IGESDefs_UnitsData>
     unitScales = new NCollection_HArray1<double>(1, nbval);
   }
   else
+  {
     PR.AddFail("Number of Units: Less than or Equal or zero");
+  }
 
   if (!unitTypes.IsNull())
+  {
     for (int i = 1; i <= nbval; i++)
     {
       occ::handle<TCollection_HAsciiString> unitType;
@@ -64,18 +67,25 @@ void IGESDefs_ToolUnitsData::ReadOwnParams(const occ::handle<IGESDefs_UnitsData>
 
       // st = PR.ReadText(PR.Current(), "Type of Unit", unitType); //szv#4:S4163:12Mar99 moved in if
       if (PR.ReadText(PR.Current(), "Type of Unit", unitType))
+      {
         unitTypes->SetValue(i, unitType);
+      }
 
       // st = PR.ReadText(PR.Current(), "Value of Unit", unitValue); //szv#4:S4163:12Mar99 moved in
       // if
       if (PR.ReadText(PR.Current(), "Value of Unit", unitValue))
+      {
         unitValues->SetValue(i, unitValue);
+      }
 
       // st = PR.ReadReal(PR.Current(), "Scale of Unit", unitScale); //szv#4:S4163:12Mar99 moved in
       // if
       if (PR.ReadReal(PR.Current(), "Scale of Unit", unitScale))
+      {
         unitScales->SetValue(i, unitScale);
+      }
     }
+  }
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(), ent);
   ent->Init(unitTypes, unitValues, unitScales);
@@ -176,5 +186,5 @@ void IGESDefs_ToolUnitsData::OwnDump(const occ::handle<IGESDefs_UnitsData>& ent,
         << "     ScaleFactor: " << ent->ScaleFactor(i) << "\n";
     }
   }
-  S << std::endl;
+  S << '\n';
 }

@@ -39,11 +39,17 @@ TopOpeBRepBuild_ShapeSet::TopOpeBRepBuild_ShapeSet(const TopAbs_ShapeEnum SubSha
       myCheckShape(checkshape)
 {
   if (SubShapeType == TopAbs_EDGE)
+  {
     myShapeType = TopAbs_FACE;
+  }
   else if (SubShapeType == TopAbs_VERTEX)
+  {
     myShapeType = TopAbs_EDGE;
+  }
   else
+  {
     throw Standard_ProgramError("ShapeSet : bad ShapeType");
+  }
   myDEBNumber = 0;
 
   myCheckShape = false; // temporary NYI
@@ -61,7 +67,9 @@ void TopOpeBRepBuild_ShapeSet::AddShape(const TopoDS_Shape& S)
 #endif
 
   if (!chk)
+  {
     return;
+  }
   ProcessAddShape(S);
 }
 
@@ -75,7 +83,9 @@ void TopOpeBRepBuild_ShapeSet::AddStartElement(const TopoDS_Shape& S)
 #endif
 
   if (!chk)
+  {
     return;
+  }
   ProcessAddStartElement(S);
 }
 
@@ -89,7 +99,9 @@ void TopOpeBRepBuild_ShapeSet::AddElement(const TopoDS_Shape& S)
 #endif
 
   if (!chk)
+  {
     return;
+  }
   ProcessAddElement(S);
 }
 
@@ -130,7 +142,9 @@ void TopOpeBRepBuild_ShapeSet::ProcessAddElement(const TopoDS_Shape& S)
       const TopoDS_Shape& subshape = Ex.Current();
       bool                b        = (!mySubShapeMap.Contains(subshape));
       if (b)
+      {
         mySubShapeMap.Add(subshape, Lemp);
+      }
       mySubShapeMap.ChangeFromKey(subshape).Append(S);
     }
   }
@@ -271,9 +285,13 @@ void TopOpeBRepBuild_ShapeSet::FindNeighbours()
 
     myIncidentShapesIter.Initialize(l);
     if (myIncidentShapesIter.More())
+    {
       break;
+    }
     else
+    {
       mySubShapeExplorer.Next();
+    }
   }
 }
 
@@ -342,7 +360,9 @@ bool TopOpeBRepBuild_ShapeSet::CheckShape() const
 bool TopOpeBRepBuild_ShapeSet::CheckShape(const TopoDS_Shape& S, const bool checkgeom)
 {
   if (!myCheckShape)
+  {
     return true;
+  }
 
   BRepCheck_Analyzer ana(S, checkgeom);
   bool               val = ana.IsValid();
@@ -373,7 +393,9 @@ void TopOpeBRepBuild_ShapeSet::DumpCheck(Standard_OStream&,
 ) const
 {
   if (!myCheckShape)
+  {
     return;
+  }
 
 #ifdef OCCT_DEBUG
   TopAbs_ShapeEnum t = S.ShapeType();

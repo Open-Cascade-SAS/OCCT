@@ -533,7 +533,9 @@ TEST(Geom_BezierCurveTest, OCC2569_DegreeEqualsNbPolesMinusOne)
   const int                  aNbPoles = 26;
   NCollection_Array1<gp_Pnt> aPoles(1, aNbPoles);
   for (int i = 1; i <= aNbPoles; ++i)
+  {
     aPoles.SetValue(i, gp_Pnt(i + 10, i * 2 + 20, i * 3 + 45));
+  }
 
   Handle(Geom_BezierCurve) aCurve = new Geom_BezierCurve(aPoles);
   ASSERT_FALSE(aCurve.IsNull());
@@ -547,7 +549,9 @@ TEST(Geom_BezierCurveTest, OCC2569_ThrowsForTooManyPoles)
   const int                  aNbPoles = 29;
   NCollection_Array1<gp_Pnt> aPoles(1, aNbPoles);
   for (int i = 1; i <= aNbPoles; ++i)
+  {
     aPoles.SetValue(i, gp_Pnt(i + 10, i * 2 + 20, i * 3 + 45));
+  }
 
   EXPECT_THROW(new Geom_BezierCurve(aPoles), Standard_Failure);
 }

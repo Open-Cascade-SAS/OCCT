@@ -189,11 +189,17 @@ void AIS_Point::UpdatePointValues()
   }
 
   if (hasOwnColor)
+  {
     aCol = myDrawer->Color();
+  }
   if (myOwnWidth != 0.0f)
+  {
     aScale = myOwnWidth;
+  }
   if (myHasTOM)
+  {
     aTOM = myTOM;
+  }
 
   if (myDrawer->HasOwnPointAspect())
   {

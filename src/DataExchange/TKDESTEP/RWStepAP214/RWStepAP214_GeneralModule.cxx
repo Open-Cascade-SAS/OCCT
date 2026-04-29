@@ -5420,7 +5420,9 @@ void RWStepAP214_GeneralModule::CopyCase(const int /*CN*/,
 bool RWStepAP214_GeneralModule::NewVoid(const int CN, occ::handle<Standard_Transient>& ent) const
 {
   if (CN == 0)
+  {
     return false;
+  }
   switch (CN)
   {
     case 1:

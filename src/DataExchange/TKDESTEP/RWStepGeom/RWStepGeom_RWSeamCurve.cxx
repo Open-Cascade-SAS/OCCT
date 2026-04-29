@@ -31,7 +31,9 @@ void RWStepGeom_RWSeamCurve::ReadStep(const occ::handle<StepData_StepReaderData>
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 4, ach, "seam_curve"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -59,11 +61,17 @@ void RWStepGeom_RWSeamCurve::ReadStep(const occ::handle<StepData_StepReaderData>
     {
       // szv#4:S4163:12Mar99 `bool stat3 =` not needed
       if (data->ReadEntity(nsub3, i3, "associated_geometry", ach, aAssociatedGeometryItem))
+      {
         aAssociatedGeometry->SetValue(i3, aAssociatedGeometryItem);
+      }
       if (i3 == 1)
+      {
         assgeomval = aAssociatedGeometryItem.Value();
-      else if (assgeomval == aAssociatedGeometryItem.Value()) //: a9 abv
+      }
+      else if (assgeomval == aAssociatedGeometryItem.Value())
+      { //: a9 abv
         ach->AddFail("Seam Curve with twice the same geom");
+      }
     }
   }
 
@@ -80,7 +88,9 @@ void RWStepGeom_RWSeamCurve::ReadStep(const occ::handle<StepData_StepReaderData>
     }
   }
   else
+  {
     ach->AddFail("Parameter #4 (master_representation) is not an enumeration");
+  }
 
   //--- Initialisation of the read entity ---
 

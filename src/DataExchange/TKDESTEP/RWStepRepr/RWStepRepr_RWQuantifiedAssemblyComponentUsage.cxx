@@ -37,7 +37,9 @@ void RWStepRepr_RWQuantifiedAssemblyComponentUsage::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 7, ach, "quantified_assembly_component_usage"))
+  {
     return;
+  }
 
   // Inherited fields of ProductDefinitionRelationship
 
@@ -136,7 +138,9 @@ void RWStepRepr_RWQuantifiedAssemblyComponentUsage::WriteStep(
     SW.Send(ent->StepBasic_ProductDefinitionRelationship::Description());
   }
   else
+  {
     SW.SendUndef();
+  }
 
   SW.Send(ent->StepBasic_ProductDefinitionRelationship::RelatingProductDefinitionAP242().Value());
 
@@ -149,7 +153,9 @@ void RWStepRepr_RWQuantifiedAssemblyComponentUsage::WriteStep(
     SW.Send(ent->StepRepr_AssemblyComponentUsage::ReferenceDesignator());
   }
   else
+  {
     SW.SendUndef();
+  }
 
   // Own fields of QuantifiedAssemblyComponentUsage
 

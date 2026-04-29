@@ -135,7 +135,9 @@ bool TopOpeBRepTool_connexity::RemoveItem(const int OriKey, const TopoDS_Shape& 
       return true;
     }
     else
+    {
       it.Next();
+    }
   }
   return false;
 }
@@ -149,7 +151,9 @@ bool TopOpeBRepTool_connexity::RemoveItem(const TopoDS_Shape& Item)
   {
     bool found = RemoveItem(i, Item);
     if (found)
+    {
       removed = true;
+    }
   }
   return removed;
 }
@@ -206,9 +210,13 @@ int TopOpeBRepTool_connexity::IsInternal(NCollection_List<TopoDS_Shape>& Item) c
     }
     int oKey1 = TopOpeBRepTool_TOOL::OriinSor(theKey, item1.Oriented(TopAbs_FORWARD));
     if (oKey1 != INTERNAL)
+    {
       lINT.Remove(it1);
+    }
     else
+    {
       it1.Next();
+    }
   }
 
   NCollection_List<TopoDS_Shape> lEXT;
@@ -225,7 +233,9 @@ int TopOpeBRepTool_connexity::IsInternal(NCollection_List<TopoDS_Shape>& Item) c
     }
     int oKey2 = TopOpeBRepTool_TOOL::OriinSor(theKey, item2.Oriented(TopAbs_FORWARD));
     if (oKey2 == INTERNAL)
+    {
       lINT.Append(item2);
+    }
     it2.Next();
   }
 

@@ -97,7 +97,9 @@ IGESData_ReadStage IGESData_ParamReader::Stage() const
 void IGESData_ParamReader::NextStage()
 {
   if (thestage != IGESData_ReadEnd)
+  {
     thestage = (IGESData_ReadStage)(((long)thestage) + 1);
+  }
 }
 
 //=================================================================================================
@@ -135,7 +137,9 @@ const char* IGESData_ParamReader::ParamValue(const int num) const
 bool IGESData_ParamReader::IsParamDefined(const int num) const
 {
   if (num >= thenbpar)
+  {
     return false;
+  }
   return (theparams->Value(num + thebase).ParamType() != Interface_ParamVoid);
 }
 
@@ -161,7 +165,9 @@ occ::handle<IGESData_IGESEntity> IGESData_ParamReader::ParamEntity(
 {
   int n = ParamNumber(num);
   if (n == 0)
+  {
     thecheck->AddFail("IGES ParamReader : ParamEntity, bad param");
+  }
   return GetCasted(IGESData_IGESEntity, IR->BoundEntity(n));
 }
 
@@ -224,7 +230,9 @@ bool IGESData_ParamReader::PrepareRead(const IGESData_ParamCursor& PC,
     return false;
   }
   if (PC.Advance())
+  {
     SetCurrentNumber(themaxind); // themaxind : prochain index
+  }
   thelast = true;
   return true;
 }
@@ -258,14 +266,20 @@ bool IGESData_ParamReader::PrepareRead(const IGESData_ParamCursor& PC,
   if (theindex <= 0 || (themaxind - 1) > NbParams())
   {
     if (thenbitem == 1)
+    {
       AddFail(mess, " : Parameter number out of range", "");
-    // else AddFail (mess," : too many values to read" ,"");
+      // else AddFail (mess," : too many values to read" ,"");
+    }
     else
+    {
       AddWarning(mess, " : too many values to read", "");
+    }
     return false;
   }
   if (PC.Advance())
+  {
     SetCurrentNumber(themaxind); // themaxind : prochain index
+  }
   thelast = true;
   return true;
 }
@@ -297,7 +311,9 @@ int IGESData_ParamReader::NextRead(const int nb)
 {
   int res = theindex;
   if (theindex >= themaxind)
+  {
     res = 0;
+  }
   thenbterm += nb; // Per Item: read thetermsz, then next item
   if (thenbterm >= thetermsz)
   {
@@ -312,9 +328,13 @@ int IGESData_ParamReader::NextRead(const int nb)
 bool IGESData_ParamReader::DefinedElseSkip()
 {
   if (thecurr > NbParams())
+  {
     return false; // Skip en butee
+  }
   if (IsParamDefined(thecurr))
-    return true;                 // Defined
+  {
+    return true; // Defined
+  }
   SetCurrentNumber(thecurr + 1); // Skip
   return false;
 }
@@ -326,7 +346,9 @@ bool IGESData_ParamReader::DefinedElseSkip()
 bool IGESData_ParamReader::ReadInteger(const IGESData_ParamCursor& PC, int& val)
 {
   if (!PrepareRead(PC, false))
+  {
     return false;
+  }
   const Interface_FileParameter& FP = theparams->Value(theindex + thebase);
   if (FP.ParamType() != Interface_ParamInteger)
   {
@@ -348,7 +370,9 @@ bool IGESData_ParamReader::ReadInteger(const IGESData_ParamCursor& PC,
                                        int&                        val)
 {
   if (!PrepareRead(PC, mess, false))
+  {
     return false;
+  }
   const Interface_FileParameter& FP = theparams->Value(theindex + thebase);
   if (FP.ParamType() != Interface_ParamInteger)
   {
@@ -374,7 +398,9 @@ bool IGESData_ParamReader::ReadBoolean(const IGESData_ParamCursor& PC,
                                        const bool                  exact)
 {
   if (!PrepareRead(PC, false))
+  {
     return false;
+  }
   const Interface_FileParameter& FP = theparams->Value(theindex + thebase);
   if (FP.ParamType() != Interface_ParamInteger)
   {
@@ -415,7 +441,9 @@ bool IGESData_ParamReader::ReadBoolean(const IGESData_ParamCursor& PC,
                                        const bool                  exact)
 {
   if (!PrepareRead(PC, mess, false))
+  {
     return false;
+  }
   const Interface_FileParameter& FP = theparams->Value(theindex + thebase);
   if (FP.ParamType() != Interface_ParamInteger)
   {
@@ -442,7 +470,9 @@ bool IGESData_ParamReader::ReadBoolean(const IGESData_ParamCursor& PC,
       return false;
     }
     else
+    {
       AddWarning(mess, ssem, " : Value is not 0/1, but %s");
+    }
   }
   val = (flag > 0);
   return true;
@@ -455,7 +485,9 @@ bool IGESData_ParamReader::ReadBoolean(const IGESData_ParamCursor& PC,
 bool IGESData_ParamReader::ReadReal(const IGESData_ParamCursor& PC, double& val)
 {
   if (!PrepareRead(PC, false))
+  {
     return false;
+  }
   //  return ReadingReal (theindex,amsg,val);
   return ReadingReal(theindex, val);
 }
@@ -467,7 +499,9 @@ bool IGESData_ParamReader::ReadReal(const IGESData_ParamCursor& PC,
                                     double&                     val)
 {
   if (!PrepareRead(PC, mess, false))
+  {
     return false;
+  }
   return ReadingReal(theindex, mess, val);
 }
 
@@ -478,11 +512,15 @@ bool IGESData_ParamReader::ReadReal(const IGESData_ParamCursor& PC,
 bool IGESData_ParamReader::ReadXY(const IGESData_ParamCursor& PC, Message_Msg& /*amsg*/, gp_XY& val)
 {
   if (!PrepareRead(PC, false, 2))
+  {
     return false;
+  }
   double X, Y = 0.;
   bool   stat = (ReadingReal(theindex, X) && ReadingReal(theindex + 1, Y));
   if (stat)
+  {
     val.SetCoord(X, Y);
+  }
   return stat;
 }
 
@@ -493,11 +531,15 @@ bool IGESData_ParamReader::ReadXY(const IGESData_ParamCursor& PC,
                                   gp_XY&                      val)
 {
   if (!PrepareRead(PC, mess, false, 2))
+  {
     return false;
+  }
   double X, Y = 0.;
   bool   stat = (ReadingReal(theindex, mess, X) && ReadingReal(theindex + 1, mess, Y));
   if (stat)
+  {
     val.SetCoord(X, Y);
+  }
   return stat;
 }
 
@@ -510,12 +552,16 @@ bool IGESData_ParamReader::ReadXYZ(const IGESData_ParamCursor& PC,
                                    gp_XYZ& val)
 {
   if (!PrepareRead(PC, false, 3))
+  {
     return false;
+  }
   double X, Y = 0., Z = 0.;
   bool   stat =
     (ReadingReal(theindex, X) && ReadingReal(theindex + 1, Y) && ReadingReal(theindex + 2, Z));
   if (stat)
+  {
     val.SetCoord(X, Y, Z);
+  }
   return true;
 }
 
@@ -526,12 +572,16 @@ bool IGESData_ParamReader::ReadXYZ(const IGESData_ParamCursor& PC,
                                    gp_XYZ&                     val)
 {
   if (!PrepareRead(PC, mess, false, 3))
+  {
     return false;
+  }
   double X, Y = 0., Z = 0.;
   bool   stat = (ReadingReal(theindex, mess, X) && ReadingReal(theindex + 1, mess, Y)
                && ReadingReal(theindex + 2, mess, Z));
   if (stat)
+  {
     val.SetCoord(X, Y, Z);
+  }
   return true;
 }
 
@@ -598,7 +648,9 @@ bool IGESData_ParamReader::ReadText(const IGESData_ParamCursor&            PC,
                                     occ::handle<TCollection_HAsciiString>& val)
 {
   if (!PrepareRead(PC, mess, false))
+  {
     return false;
+  }
   const Interface_FileParameter& FP = theparams->Value(theindex + thebase);
   if (FP.ParamType() != Interface_ParamText)
   {
@@ -622,7 +674,9 @@ bool IGESData_ParamReader::ReadText(const IGESData_ParamCursor&            PC,
   {
     int hol = atoi(tval->SubString(1, lnh - 1)->ToCString());
     if (hol != (lnt - lnh))
+    {
       AddWarning(mess, " : bad Hollerith count ", "");
+    }
   }
   val = new TCollection_HAsciiString(tval->SubString(lnh + 1, lnt)->ToCString());
   return true;
@@ -640,11 +694,15 @@ bool IGESData_ParamReader::ReadEntity(const occ::handle<IGESData_IGESReaderData>
 {
   aStatus = IGESData_EntityError;
   if (!PrepareRead(PC, false))
+  {
     return false;
+  }
   int nval;
   //  if (!ReadingEntityNumber(theindex,amsg,nval)) return false;
   if (!ReadingEntityNumber(theindex, nval))
+  {
     return false;
+  }
   if (nval == 0)
   {
     val.Nullify();
@@ -658,13 +716,19 @@ bool IGESData_ParamReader::ReadEntity(const occ::handle<IGESData_IGESReaderData>
       thelast = true;
     }
     else
+    {
       aStatus = IGESData_EntityOK;
+    }
     return canbenul;
   }
   else
+  {
     val = GetCasted(IGESData_IGESEntity, IR->BoundEntity(nval));
+  }
   if (val.IsNull())
+  {
     return canbenul;
+  }
   //    Case of "Null IGES"
   if (val->TypeNumber() == 0)
   { // Null or not yet filled ...
@@ -680,7 +744,9 @@ bool IGESData_ParamReader::ReadEntity(const occ::handle<IGESData_IGESReaderData>
         thelast = true;
       }
       else
+      {
         aStatus = IGESData_EntityOK;
+      }
       return canbenul;
     }
   }
@@ -697,10 +763,14 @@ bool IGESData_ParamReader::ReadEntity(const occ::handle<IGESData_IGESReaderData>
                                       const bool                                  canbenul)
 {
   if (!PrepareRead(PC, mess, false))
+  {
     return false;
+  }
   int nval;
   if (!ReadingEntityNumber(theindex, mess, nval))
+  {
     return false;
+  }
   if (nval == 0)
   {
     val.Nullify();
@@ -712,9 +782,13 @@ bool IGESData_ParamReader::ReadEntity(const occ::handle<IGESData_IGESReaderData>
     return canbenul;
   }
   else
+  {
     val = GetCasted(IGESData_IGESEntity, IR->BoundEntity(nval));
+  }
   if (val.IsNull())
+  {
     return canbenul;
+  }
   //    Case of "Null IGES"
   if (val->TypeNumber() == 0)
   { // Null or not yet filled ...
@@ -749,7 +823,9 @@ bool IGESData_ParamReader::ReadEntity(const occ::handle<IGESData_IGESReaderData>
     return res;
   }
   if (val.IsNull())
+  {
     return res;
+  }
   if (!val->IsKind(type))
   {
     aStatus = IGESData_TypeError;
@@ -774,9 +850,13 @@ bool IGESData_ParamReader::ReadEntity(const occ::handle<IGESData_IGESReaderData>
 {
   bool res = ReadEntity(IR, PC, mess, val, canbenul);
   if (!res)
+  {
     return res;
+  }
   if (val.IsNull())
+  {
     return res;
+  }
   if (!val->IsKind(type))
   {
     AddFail(mess, " : Incorrect Type", "");
@@ -797,9 +877,13 @@ bool IGESData_ParamReader::ReadInts(const IGESData_ParamCursor&            PC,
                                     const int                              index)
 {
   if (!PrepareRead(PC, true))
+  {
     return false;
+  }
   if (thenbitem == 0)
+  {
     return true; // vide : retour Null ...
+  }
   val     = new NCollection_HArray1<int>(index, index + thenbitem * thetermsz - 1);
   int ind = index;
 
@@ -833,9 +917,13 @@ bool IGESData_ParamReader::ReadInts(const IGESData_ParamCursor&            PC,
                                     const int                              index)
 {
   if (!PrepareRead(PC, mess, true))
+  {
     return false;
+  }
   if (thenbitem == 0)
+  {
     return true; // vide : retour Null ...
+  }
   val     = new NCollection_HArray1<int>(index, index + thenbitem * thetermsz - 1);
   int ind = index;
 
@@ -873,9 +961,13 @@ bool IGESData_ParamReader::ReadReals(const IGESData_ParamCursor& PC,
                                      const int                                 index)
 {
   if (!PrepareRead(PC, true))
+  {
     return false;
+  }
   if (thenbitem == 0)
+  {
     return true; // vide : retour Null ...
+  }
   val     = new NCollection_HArray1<double>(index, index + thenbitem * thetermsz - 1);
   int ind = index;
 
@@ -883,7 +975,9 @@ bool IGESData_ParamReader::ReadReals(const IGESData_ParamCursor& PC,
   {
     double rval;
     if (!ReadingReal(i, rval))
+    {
       return false;
+    }
     val->SetValue(ind, rval);
     ind++;
   }
@@ -898,9 +992,13 @@ bool IGESData_ParamReader::ReadReals(const IGESData_ParamCursor&               P
                                      const int                                 index)
 {
   if (!PrepareRead(PC, mess, true))
+  {
     return false;
+  }
   if (thenbitem == 0)
+  {
     return true; // vide : retour Null ...
+  }
   val     = new NCollection_HArray1<double>(index, index + thenbitem * thetermsz - 1);
   int ind = index;
 
@@ -908,7 +1006,9 @@ bool IGESData_ParamReader::ReadReals(const IGESData_ParamCursor&               P
   {
     double rval;
     if (!ReadingReal(i, mess, rval))
+    {
       return false;
+    }
     val->SetValue(ind, rval);
     ind++;
   }
@@ -926,9 +1026,13 @@ bool IGESData_ParamReader::ReadTexts(
   const int                                                                index)
 {
   if (!PrepareRead(PC, true))
+  {
     return false;
+  }
   if (thenbitem == 0)
+  {
     return true; // vide : retour Null ...
+  }
   val     = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(index,
                                                                        index + thenbitem * thetermsz
                                                                          - 1);
@@ -962,7 +1066,9 @@ bool IGESData_ParamReader::ReadTexts(
     {
       int hol = atoi(tval->SubString(1, lnh - 1)->ToCString());
       if (hol != (lnt - lnh))
+      {
         SendWarning(amsg);
+      }
     }
     val->SetValue(ind, new TCollection_HAsciiString(tval->SubString(lnh + 1, lnt)->ToCString()));
     ind++;
@@ -979,9 +1085,13 @@ bool IGESData_ParamReader::ReadTexts(
   const int                                                                index)
 {
   if (!PrepareRead(PC, mess, true))
+  {
     return false;
+  }
   if (thenbitem == 0)
+  {
     return true; // vide : retour Null ...
+  }
   val     = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(index,
                                                                        index + thenbitem * thetermsz
                                                                          - 1);
@@ -1015,7 +1125,9 @@ bool IGESData_ParamReader::ReadTexts(
     {
       int hol = atoi(tval->SubString(1, lnh - 1)->ToCString());
       if (hol != (lnt - lnh))
+      {
         AddWarning(mess, " : bad Hollerith count ", "");
+      }
     }
     val->SetValue(ind, new TCollection_HAsciiString(tval->SubString(lnh + 1, lnt)->ToCString()));
     ind++;
@@ -1035,9 +1147,13 @@ bool IGESData_ParamReader::ReadEnts(
   const int                                                           index)
 {
   if (!PrepareRead(PC, true))
+  {
     return false;
+  }
   if (thenbitem == 0)
+  {
     return true; // vide : retour Null ...
+  }
   int indmax = index + thenbitem * thetermsz - 1;
   val        = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(index, indmax);
   int ind    = index;
@@ -1048,14 +1164,20 @@ bool IGESData_ParamReader::ReadEnts(
   {
     int nval;
     if (!ReadingEntityNumber(i, nval))
+    {
       nval = 0; // return false;
+    }
     if (nval > 0)
     {
       DeclareAndCast(IGESData_IGESEntity, anent, IR->BoundEntity(nval));
       if (anent.IsNull())
+      {
         nbnul++;
+      }
       else if (IR->DirType(nval).Type() == 0)
+      {
         nbnul++;
+      }
       else
       {
         val->SetValue(ind, anent);
@@ -1067,14 +1189,18 @@ bool IGESData_ParamReader::ReadEnts(
   {
   } // complete array
   else if (ind == index)
+  {
     val.Nullify(); // empty array
+  }
   else
   {
     // Gaps: they have been eliminated, but the array needs to be resized
     occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tab =
       new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(index, ind - 1);
     for (i = index; i < ind; i++)
+    {
       tab->SetValue(i, val->Value(i));
+    }
     val = tab;
   }
   if (nbnul > 0)
@@ -1094,9 +1220,13 @@ bool IGESData_ParamReader::ReadEnts(
   const int                                                           index)
 {
   if (!PrepareRead(PC, mess, true))
+  {
     return false;
+  }
   if (thenbitem == 0)
+  {
     return true; // vide : retour Null ...
+  }
   int indmax = index + thenbitem * thetermsz - 1;
   val        = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(index, indmax);
   int ind    = index;
@@ -1107,16 +1237,24 @@ bool IGESData_ParamReader::ReadEnts(
   {
     int nval;
     if (!ReadingEntityNumber(i, mess, nval))
+    {
       nval = 0; // return false;
+    }
     if (nval < 0)
+    {
       nbneg++;
+    }
     if (nval > 0)
     {
       DeclareAndCast(IGESData_IGESEntity, anent, IR->BoundEntity(nval));
       if (anent.IsNull())
+      {
         nbnul++;
+      }
       else if (IR->DirType(nval).Type() == 0)
+      {
         nbnul++;
+      }
       else
       {
         val->SetValue(ind, anent);
@@ -1128,14 +1266,18 @@ bool IGESData_ParamReader::ReadEnts(
   {
   } // complete array
   else if (ind == index)
+  {
     val.Nullify(); // empty array
+  }
   else
   {
     // Gaps: they have been eliminated, but the array needs to be resized
     occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tab =
       new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(index, ind - 1);
     for (i = index; i < ind; i++)
+    {
       tab->SetValue(i, val->Value(i));
+    }
     val = tab;
   }
   //  Messages ?
@@ -1165,15 +1307,21 @@ bool IGESData_ParamReader::ReadEntList(const occ::handle<IGESData_IGESReaderData
 {
 
   if (!PrepareRead(PC, true))
+  {
     return false;
+  }
   val.Clear();
   if (thenbitem == 0)
+  {
     return true; // vide : retour Null ...
+  }
   for (int i = FirstRead(); i > 0; i = NextRead())
   {
     int nval;
     if (!ReadingEntityNumber(i, nval))
+    {
       return false;
+    }
     if (nval < 0)
     {
       Message_Msg Msg219("XSTEP_219");
@@ -1181,7 +1329,9 @@ bool IGESData_ParamReader::ReadEntList(const occ::handle<IGESData_IGESReaderData
       SendWarning(amsg);
     }
     if (nval <= 0)
+    {
       continue;
+    }
     DeclareAndCast(IGESData_IGESEntity, anent, IR->BoundEntity(nval));
     if (anent.IsNull())
     {
@@ -1195,9 +1345,13 @@ bool IGESData_ParamReader::ReadEntList(const occ::handle<IGESData_IGESReaderData
       SendWarning(TCollection_AsciiString(Msg217.Value()).ToCString());
     }
     else if (ord)
+    {
       val.Append(anent);
+    }
     else
+    {
       val.Add(anent);
+    }
   }
   return true;
 }
@@ -1211,28 +1365,46 @@ bool IGESData_ParamReader::ReadEntList(const occ::handle<IGESData_IGESReaderData
                                        const bool                                  ord)
 {
   if (!PrepareRead(PC, mess, true))
+  {
     return false;
+  }
   val.Clear();
   if (thenbitem == 0)
+  {
     return true; // vide : retour Null ...
+  }
   for (int i = FirstRead(); i > 0; i = NextRead())
   {
     int nval;
     if (!ReadingEntityNumber(i, mess, nval))
+    {
       return false;
+    }
     if (nval < 0)
+    {
       AddWarning(" Negative Pointer, skipped", "");
+    }
     if (nval <= 0)
+    {
       continue;
+    }
     DeclareAndCast(IGESData_IGESEntity, anent, IR->BoundEntity(nval));
     if (anent.IsNull())
+    {
       AddWarning(" Null Pointer, skipped", "");
+    }
     else if (IR->DirType(nval).Type() == 0)
+    {
       AddWarning(" Pointer to IGES Null Entity, skipped", "");
+    }
     else if (ord)
+    {
       val.Append(anent);
+    }
     else
+    {
       val.Add(anent);
+    }
   }
   return true;
 }
@@ -1249,7 +1421,9 @@ bool IGESData_ParamReader::ReadingReal(const int num, double& val)
     if (!pbrealint)
     {
       if (testconv < 0)
+      {
         testconv = 0; // Interface_Static::IVal("iges.convert.read");
+      }
       if (testconv > 0)
       {
         //   char ssem[100];
@@ -1268,20 +1442,30 @@ bool IGESData_ParamReader::ReadingReal(const int num, double& val)
   for (i = 0; i < 50; i++)
   {
     if (orig[i] == 'D' || orig[i] == 'd')
+    {
       text[j++] = 'e';
+    }
     else
+    {
       text[j++] = orig[i];
+    }
     if (orig[i] == '\0')
+    {
       break;
+    }
   }
   if (FP.ParamType() == Interface_ParamReal)
+  {
     val = Atof(text);
+  }
   else if (FP.ParamType() == Interface_ParamEnum)
   { // convention
     if (!pbrealform)
     {
       if (testconv < 0)
+      {
         testconv = 0; // Interface_Static::IVal("iges.convert.read");
+      }
       if (testconv > 0)
       {
         // char ssem[100];
@@ -1325,7 +1509,9 @@ bool IGESData_ParamReader::ReadingReal(const int num, const char* const mess, do
     if (!pbrealint)
     {
       if (testconv < 0)
+      {
         testconv = 0; // Interface_Static::IVal("iges.convert.read");
+      }
       if (testconv > 0)
       {
         char ssem[100];
@@ -1344,20 +1530,30 @@ bool IGESData_ParamReader::ReadingReal(const int num, const char* const mess, do
   for (i = 0; i < 50; i++)
   {
     if (orig[i] == 'D' || orig[i] == 'd')
+    {
       text[j++] = 'e';
+    }
     else
+    {
       text[j++] = orig[i];
+    }
     if (orig[i] == '\0')
+    {
       break;
+    }
   }
   if (FP.ParamType() == Interface_ParamReal)
+  {
     val = Atof(text);
+  }
   else if (FP.ParamType() == Interface_ParamEnum)
   { // convention
     if (!pbrealform)
     {
       if (testconv < 0)
+      {
         testconv = 0; // Interface_Static::IVal("iges.convert.read");
+      }
       if (testconv > 0)
       {
         char ssem[100];
@@ -1400,9 +1596,13 @@ bool IGESData_ParamReader::ReadingEntityNumber(const int num, int& val)
   {
     bool nulref = false;
     if (FP.ParamType() == Interface_ParamInteger)
+    {
       nulref = (atoi(FP.CValue()) == 0);
+    }
     else if (FP.ParamType() == Interface_ParamVoid)
+    {
       nulref = true;
+    }
     if (!nulref)
     {
       //   AddFail (mess," : cannot refer to an Entity","");
@@ -1423,9 +1623,13 @@ bool IGESData_ParamReader::ReadingEntityNumber(const int num, const char* const 
   {
     bool nulref = false;
     if (FP.ParamType() == Interface_ParamInteger)
+    {
       nulref = (atoi(FP.CValue()) == 0);
+    }
     else if (FP.ParamType() == Interface_ParamVoid)
+    {
       nulref = true;
+    }
     if (!nulref)
     {
       AddFail(mess, " : cannot refer to an Entity", "");
@@ -1462,7 +1666,9 @@ void IGESData_ParamReader::AddFail(const char* const                            
 {
   afail->Insert(1, idm);
   if (bfail != afail)
+  {
     bfail->Insert(1, idm);
+  }
   thecheck->AddFail(afail, bfail);
   thelast = false;
 }
@@ -1476,7 +1682,9 @@ void IGESData_ParamReader::AddFail(const char* const idm,
   occ::handle<TCollection_HAsciiString> af = new TCollection_HAsciiString(afail);
   occ::handle<TCollection_HAsciiString> bf = af;
   if (bfail[0] != '\0')
+  {
     bf = new TCollection_HAsciiString(bfail);
+  }
   AddFail(idm, af, bf);
 }
 
@@ -1488,7 +1696,9 @@ void IGESData_ParamReader::AddWarning(const char* const                         
 {
   aw->Insert(1, idm);
   if (bw != aw)
+  {
     bw->Insert(1, idm);
+  }
   thecheck->AddWarning(aw, bw);
 }
 
@@ -1501,7 +1711,9 @@ void IGESData_ParamReader::AddWarning(const char* const idm,
   occ::handle<TCollection_HAsciiString> aw = new TCollection_HAsciiString(awarn);
   occ::handle<TCollection_HAsciiString> bw = aw;
   if (bwarn[0] != '\0')
+  {
     bw = new TCollection_HAsciiString(bwarn);
+  }
   AddWarning(idm, aw, bw);
 }
 

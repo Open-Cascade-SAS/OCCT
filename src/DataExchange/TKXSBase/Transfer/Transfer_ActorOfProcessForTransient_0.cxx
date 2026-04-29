@@ -54,7 +54,9 @@ occ::handle<Transfer_SimpleBinderOfTransient> Transfer_ActorOfProcessForTransien
 {
   occ::handle<Transfer_SimpleBinderOfTransient> binder;
   if (res.IsNull())
+  {
     return binder;
+  }
   binder = new Transfer_SimpleBinderOfTransient;
   binder->SetResult(res);
   return binder;
@@ -74,16 +76,22 @@ void Transfer_ActorOfProcessForTransient::SetNext(
   const occ::handle<Transfer_ActorOfProcessForTransient>& next)
 {
   if (thenext == next)
+  {
     return;
+  }
   if (thenext.IsNull())
+  {
     thenext = next;
+  }
   else if (thenext->IsLast())
   {
     next->SetNext(thenext);
     thenext = next;
   }
   else
+  {
     thenext->SetNext(next);
+  }
 }
 
 //=================================================================================================

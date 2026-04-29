@@ -226,7 +226,9 @@ TEST_F(BRepGraph_ConvenienceTest, FindPCurve_WithOrientation_SeamEdge)
     {
       const BRepGraphInc::CoEdgeDef& aCE = aDefs.CoEdges().Definition(aCoEdgeId);
       if (!aCE.SeamPairId.IsValid())
+      {
         continue;
+      }
 
       // Found seam edge - verify FindPCurve returns distinct entries for each orientation.
       const BRepGraph_FaceId         aFaceDefId = aCE.FaceDefId;

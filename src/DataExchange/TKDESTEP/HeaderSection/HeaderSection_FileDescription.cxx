@@ -49,7 +49,9 @@ occ::handle<TCollection_HAsciiString> HeaderSection_FileDescription::Description
 int HeaderSection_FileDescription::NbDescription() const
 {
   if (description.IsNull())
+  {
     return 0;
+  }
   return description->Length();
 }
 

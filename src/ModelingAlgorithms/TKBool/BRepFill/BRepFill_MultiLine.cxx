@@ -144,7 +144,9 @@ BRepFill_MultiLine::BRepFill_MultiLine(const TopoDS_Face&               Face1,
   occ::handle<Geom_Surface> S;
   S = BRep_Tool::Surface(myFace1, L);
   if (!L.IsIdentity())
+  {
     S = occ::down_cast<Geom_Surface>(S->Transformed(L.Transformation()));
+  }
 
   if (myIsoU1)
   {
@@ -261,7 +263,9 @@ BRepFill_MultiLine::BRepFill_MultiLine(const TopoDS_Face&               Face1,
   S = BRep_Tool::Surface(myFace2, L);
 
   if (!L.IsIdentity())
+  {
     S = occ::down_cast<Geom_Surface>(S->Transformed(L.Transformation()));
+  }
 
   if (myIsoU2)
   {
@@ -362,16 +366,22 @@ BRepFill_MultiLine::BRepFill_MultiLine(const TopoDS_Face&               Face1,
     if (myIsoU1)
     {
       if (std::abs(aPnt1.Y() - aPnt2.Y()) < eps)
+      {
         myKPart = 1;
+      }
     }
     else
     {
       if (std::abs(aPnt1.X() - aPnt2.X()) < eps)
+      {
         myKPart = 1;
+      }
     }
 
     if (myKPart == 1)
+    {
       myCont = GeomAbs_G1;
+    }
 
     if ((Type1 == GeomAbs_Plane) && (Type2 == GeomAbs_Plane))
     {
@@ -409,7 +419,9 @@ void BRepFill_MultiLine::Curves(occ::handle<Geom_Curve>&   Curve,
     TopLoc_Location           L;
     occ::handle<Geom_Surface> S = BRep_Tool::Surface(myFace1, L);
     if (!L.IsIdentity())
+    {
       S = occ::down_cast<Geom_Surface>(S->Transformed(L.Transformation()));
+    }
 
     bool Sens;
     if (!myIsoU1)
@@ -417,16 +429,24 @@ void BRepFill_MultiLine::Curves(occ::handle<Geom_Curve>&   Curve,
       Curve = S->UIso(PMil.X());
       Sens  = P1.Y() < P2.Y();
       if (Sens)
+      {
         Curve = new Geom_TrimmedCurve(Curve, P1.Y(), P2.Y(), Sens);
+      }
       else
+      {
         Curve = new Geom_TrimmedCurve(Curve, P2.Y(), P1.Y(), Sens);
+      }
 
       f = Curve->FirstParameter();
       l = Curve->LastParameter();
       if (Sens)
+      {
         PCurve1 = new Geom2d_Line(gp_Pnt2d(PMil.X(), P1.Y() - f), gp::DY2d());
+      }
       else
+      {
         PCurve1 = new Geom2d_Line(gp_Pnt2d(PMil.X(), P1.Y() + f), -gp::DY2d());
+      }
       PCurve1 = new Geom2d_TrimmedCurve(PCurve1, f, l);
     }
     else
@@ -434,16 +454,24 @@ void BRepFill_MultiLine::Curves(occ::handle<Geom_Curve>&   Curve,
       Curve = S->VIso(PMil.Y());
       Sens  = P1.X() < P2.X();
       if (Sens)
+      {
         Curve = new Geom_TrimmedCurve(Curve, P1.X(), P2.X(), Sens);
+      }
       else
+      {
         Curve = new Geom_TrimmedCurve(Curve, P2.X(), P1.X(), Sens);
+      }
 
       f = Curve->FirstParameter();
       l = Curve->LastParameter();
       if (Sens)
+      {
         PCurve1 = new Geom2d_Line(gp_Pnt2d(P1.X() - f, PMil.Y()), gp::DX2d());
+      }
       else
+      {
         PCurve1 = new Geom2d_Line(gp_Pnt2d(P1.X() + f, PMil.Y()), -gp::DX2d());
+      }
       PCurve1 = new Geom2d_TrimmedCurve(PCurve1, f, l);
     }
 
@@ -455,17 +483,25 @@ void BRepFill_MultiLine::Curves(occ::handle<Geom_Curve>&   Curve,
     {
       Sens = P1.Y() < P2.Y();
       if (Sens)
+      {
         PCurve2 = new Geom2d_Line(gp_Pnt2d(PMil.X(), (P1.Y() - f)), gp::DY2d());
+      }
       else
+      {
         PCurve2 = new Geom2d_Line(gp_Pnt2d(PMil.X(), (P1.Y() + f)), -gp::DY2d());
+      }
     }
     else
     {
       Sens = P1.X() < P2.X();
       if (Sens)
+      {
         PCurve2 = new Geom2d_Line(gp_Pnt2d(P1.X() - f, PMil.Y()), gp::DX2d());
+      }
       else
+      {
         PCurve2 = new Geom2d_Line(gp_Pnt2d(P1.X() + f, PMil.Y()), -gp::DX2d());
+      }
     }
     PCurve2 = new Geom2d_TrimmedCurve(PCurve2, f, l);
   }
@@ -475,10 +511,14 @@ void BRepFill_MultiLine::Curves(occ::handle<Geom_Curve>&   Curve,
 
     occ::handle<Geom_Surface> S = BRep_Tool::Surface(myFace1, L);
     if (!L.IsIdentity())
+    {
       S = occ::down_cast<Geom_Surface>(S->Transformed(L.Transformation()));
+    }
 
     if (S->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
+    {
       S = occ::down_cast<Geom_RectangularTrimmedSurface>(S)->BasisSurface();
+    }
 
     occ::handle<Geom_Plane> Plane = occ::down_cast<Geom_Plane>(S);
     // eval the 3d curve corresponding to the bissectrice.
@@ -495,9 +535,13 @@ void BRepFill_MultiLine::Curves(occ::handle<Geom_Curve>&   Curve,
     // eval PCurve2
     S = BRep_Tool::Surface(myFace2, L);
     if (!L.IsIdentity())
+    {
       S = occ::down_cast<Geom_Surface>(S->Transformed(L.Transformation()));
+    }
     if (S->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
+    {
       S = occ::down_cast<Geom_RectangularTrimmedSurface>(S)->BasisSurface();
+    }
     Plane   = occ::down_cast<Geom_Plane>(S);
     PCurve2 = GeomProjLib::Curve2d(Curve, Plane);
   }
@@ -570,7 +614,9 @@ static gp_Pnt2d ValueOnFace(const double               U,
         gp_Vec2d D12d = TheBis.DN(TheBis.FirstParameter(), 1);
         double   Ang  = Axis.Angle(D12d);
         if (!TheU.Circle().IsDirect())
+        {
           Ang = -Ang;
+        }
         UU   = ElCLib::InPeriod(Ang, TheU.FirstParameter(), TheU.FirstParameter() + 2 * M_PI);
         Dist = TheU.Circle().Radius();
       }
@@ -613,7 +659,9 @@ static gp_Pnt2d ValueOnFace(const double               U,
   {
     // test if the curve is at the side `negative Y`.
     if (std::min(PF.Y(), PL.Y()) < -Tol)
+    {
       Dist = -Dist;
+    }
 
     occ::handle<Geom2d_Line> Line = new Geom2d_Line(gp_Pnt2d(0., Dist), gp::DX2d());
 
@@ -655,17 +703,25 @@ static gp_Pnt2d ValueOnFace(const double               U,
         std::cout << "  ---> ValueonFace failed at parameter U = " << U << std::endl;
 #endif
         if (std::abs(Dist - PL.Y()) < std::abs(Dist - PF.Y()))
+        {
           VV = TheV.LastParameter();
+        }
         else
+        {
           VV = TheV.FirstParameter();
+        }
       }
     }
   }
 
   if (IsIsoU)
+  {
     return gp_Pnt2d(VV, UU);
+  }
   else
+  {
     return gp_Pnt2d(UU, VV);
+  }
 }
 
 //=================================================================================================

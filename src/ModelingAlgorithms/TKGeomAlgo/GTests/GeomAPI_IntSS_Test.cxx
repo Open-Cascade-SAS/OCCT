@@ -3620,9 +3620,13 @@ TEST(GeomAPI_IntSSTest, OCC23972_TwoConesIntersection)
     // Intersection of two cones yields hyperbolic curves which may be unbounded;
     // clamp to a finite window to verify the span is non-degenerate.
     if (aU1 < -20.0)
+    {
       aU1 = -20.0;
+    }
     if (aU2 > 20.0)
+    {
       aU2 = 20.0;
+    }
 
     ASSERT_GT(aU2 - aU1, 1.0e-20) << "Degenerate parameter range for curve " << anIdx;
   }

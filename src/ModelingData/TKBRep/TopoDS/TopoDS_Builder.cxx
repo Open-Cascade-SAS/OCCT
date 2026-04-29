@@ -75,12 +75,16 @@ void TopoDS_Builder::Add(TopoDS_Shape& aShape, const TopoDS_Shape& aComponent) c
 
       // compute the relative Orientation
       if (aShape.Orientation() == TopAbs_REVERSED)
+      {
         aChild.Reverse();
+      }
 
       // and the Relative Location
       const TopLoc_Location& aLoc = aShape.Location();
       if (!aLoc.IsIdentity())
+      {
         aChild.Move(aLoc.Inverted(), false);
+      }
 
       // Add to the subshapes list
       TopoDS_TShape* aTShape = aShape.TShape().get();
@@ -108,7 +112,9 @@ void TopoDS_Builder::Remove(TopoDS_Shape& aShape, const TopoDS_Shape& aComponent
   // compute the relative Orientation and Location of aComponent
   TopoDS_Shape S = aComponent;
   if (aShape.Orientation() == TopAbs_REVERSED)
+  {
     S.Reverse();
+  }
   S.Location(S.Location().Predivided(aShape.Location()), false);
 
   TopoDS_TShape*                           aTShape = aShape.TShape().get();

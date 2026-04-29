@@ -175,9 +175,13 @@ TCollection_ExtendedString CDF_FWOSDriver::DefaultFolder()
 #else
     TCollection_ExtendedString home = UTL::xgetenv("HOME");
     if (home.Length() != 0)
+    {
       theDefaultFolder = home;
+    }
     else
+    {
       theDefaultFolder = TCollection_ExtendedString("/tmp");
+    }
 #endif
   }
   return theDefaultFolder;
@@ -227,7 +231,9 @@ TCollection_ExtendedString CDF_FWOSDriver::SetName(const occ::handle<CDM_Documen
       ExtensionIsAlreadyThere = ind + le - 1 == ln;
     }
     if (!ExtensionIsAlreadyThere)
+    {
       n += e;
+    }
   }
   return n;
 }

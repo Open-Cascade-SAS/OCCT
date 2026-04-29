@@ -51,7 +51,9 @@ void TopOpeBRepBuild_Builder::GFillFacesWESK(const NCollection_List<TopoDS_Shape
                                              const int                             Kfill)
 {
   if (LS1.IsEmpty())
+  {
     return;
+  }
   TopAbs_State TB1, TB2;
   G1.StatesON(TB1, TB2);
 
@@ -110,7 +112,9 @@ void TopOpeBRepBuild_Builder::GFillFacesWESK(const NCollection_List<TopoDS_Shape
     int                 iS      = myDataStructure->Shape(S);
     bool                tomerge = !IsMerged(S, TB);
     if (!tomerge)
+    {
       continue;
+    }
 
     // lors de l'insertion des composantes (edges splitees) de S dans le WES :
     // - faces de meme orientation geometrique :
@@ -140,7 +144,9 @@ void TopOpeBRepBuild_Builder::GFillFacesWESK(const NCollection_List<TopoDS_Shape
     //       G.SetReverse(rev);
     //     }
     if (b)
+    {
       G.SetReverse(!gistoreverse1);
+    }
     //  Modified by Sergey KHROMOV - Sat Apr 27 14:40:03 2002 End
 
     if (Kfill == 1)
@@ -198,7 +204,9 @@ void TopOpeBRepBuild_Builder::GFillFacesWESK(const NCollection_List<TopoDS_Shape
     int                 iS      = myDataStructure->Shape(S);
     bool                tomerge = !IsMerged(S, TB);
     if (!tomerge)
+    {
       continue;
+    }
 
     //  Modified by Sergey KHROMOV - Sat Apr 27 14:38:33 2002 Begin
     //     const TopoDS_Shape& Fref = WES.Face();
@@ -220,7 +228,9 @@ void TopOpeBRepBuild_Builder::GFillFacesWESK(const NCollection_List<TopoDS_Shape
     //       G.SetReverse(rev);
     //     }
     if (b)
+    {
       G.SetReverse(!gistoreverse1);
+    }
     //  Modified by Sergey KHROMOV - Sat Apr 27 14:39:08 2002 End
 
     if (Kfill == 1)

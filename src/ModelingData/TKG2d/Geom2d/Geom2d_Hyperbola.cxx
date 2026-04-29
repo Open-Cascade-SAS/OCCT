@@ -68,7 +68,9 @@ Geom2d_Hyperbola::Geom2d_Hyperbola(const Ax2d&  A,
       minorRadius(MinorRadius)
 {
   if (MajorRadius < 0.0 || MinorRadius < 0.0)
+  {
     throw Standard_ConstructionError();
+  }
   pos = gp_Ax22d(A, Sense);
 }
 
@@ -81,7 +83,9 @@ Geom2d_Hyperbola::Geom2d_Hyperbola(const gp_Ax22d& Axis,
       minorRadius(MinorRadius)
 {
   if (MajorRadius < 0.0 || MinorRadius < 0.0)
+  {
     throw Standard_ConstructionError();
+  }
   pos = Axis;
 }
 
@@ -99,9 +103,13 @@ void Geom2d_Hyperbola::SetHypr2d(const gp_Hypr2d& H)
 void Geom2d_Hyperbola::SetMajorRadius(const double MajorRadius)
 {
   if (MajorRadius < 0.0)
+  {
     throw Standard_ConstructionError();
+  }
   else
+  {
     majorRadius = MajorRadius;
+  }
 }
 
 //=================================================================================================
@@ -109,9 +117,13 @@ void Geom2d_Hyperbola::SetMajorRadius(const double MajorRadius)
 void Geom2d_Hyperbola::SetMinorRadius(const double MinorRadius)
 {
   if (MinorRadius < 0.0)
+  {
     throw Standard_ConstructionError();
+  }
   else
+  {
     minorRadius = MinorRadius;
+  }
 }
 
 //=================================================================================================
@@ -317,7 +329,9 @@ Geom2d_Curve::ResD3 Geom2d_Hyperbola::EvalD3(const double U) const
 gp_Vec2d Geom2d_Hyperbola::EvalDN(const double U, const int N) const
 {
   if (N < 1)
+  {
     throw Geom2d_UndefinedDerivative();
+  }
   return ElCLib::HyperbolaDN(U, pos, majorRadius, minorRadius, N);
 }
 

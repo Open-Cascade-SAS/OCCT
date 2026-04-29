@@ -198,7 +198,9 @@ void BOPAlgo_PaveFiller::PerformVE(const Message_ProgressRange& theRange)
     //
     NCollection_List<int>* pLV = aMVEPairs.ChangeSeek(aPB);
     if (!pLV)
+    {
       pLV = &aMVEPairs(aMVEPairs.Add(aPB, NCollection_List<int>()));
+    }
     pLV->Append(nV);
   }
   //
@@ -261,7 +263,9 @@ void BOPAlgo_PaveFiller::IntersectVE(
       myDS->HasShapeSD(nV, nVSD);
       //
       if (aMVPB.Contains(nVSD))
+      {
         continue;
+      }
 
       BOPDS_Pair             aPair(nVSD, nE);
       NCollection_List<int>* pLI = aDMVSD.ChangeSeek(aPair);
@@ -344,10 +348,14 @@ void BOPAlgo_PaveFiller::IntersectVE(
       double aT1, aT2;
       aPB->Range(aT1, aT2);
       if (aT > aT1 && aT < aT2)
+      {
         break;
+      }
     }
     if (!itPB.More())
+    {
       continue;
+    }
 
     BOPDS_Pave aPave;
     aPave.SetIndex(nVx);
@@ -463,8 +471,10 @@ void BOPAlgo_PaveFiller::SplitPaveBlocks(const NCollection_Map<int>& theMEdges,
           int nV1, nV2;
           aPBN->Indices(nV1, nV2);
           if (nV1 == nV2)
+          {
             // Same vertices -> no valid range, no need to unify vertices
             continue;
+          }
 
           // Decide whether to unify vertices or not
           if (bCheckDist)
@@ -472,8 +482,10 @@ void BOPAlgo_PaveFiller::SplitPaveBlocks(const NCollection_Map<int>& theMEdges,
             const TopoDS_Vertex& aV1 = TopoDS::Vertex(myDS->Shape(nV1));
             const TopoDS_Vertex& aV2 = TopoDS::Vertex(myDS->Shape(nV2));
             if (BOPTools_AlgoTools::ComputeVV(aV1, aV2, myFuzzyValue) == 0)
+            {
               // vertices are interfering -> no valid range, unify vertices
               bHasValidRange = false;
+            }
           }
 
           if (!bHasValidRange)
@@ -608,7 +620,9 @@ void BOPAlgo_PaveFiller::SplitPaveBlocks(const NCollection_Map<int>& theMEdges,
   // Init pave blocks for vertices which have acquired SD vertex
   aItM.Initialize(aMVerticesToInitPB);
   for (; aItM.More(); aItM.Next())
+  {
     myDS->InitPaveBlocksForVertex(aItM.Value());
+  }
 }
 
 //=================================================================================================

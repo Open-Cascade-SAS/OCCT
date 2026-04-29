@@ -23,13 +23,21 @@ StepVisual_TextOrCharacter::StepVisual_TextOrCharacter() = default;
 int StepVisual_TextOrCharacter::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepVisual_AnnotationText)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepVisual_CompositeText)))
+  {
     return 2;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepVisual_TextLiteral)))
+  {
     return 3;
+  }
   return 0;
 }
 

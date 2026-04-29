@@ -37,7 +37,9 @@ void RWStepElement_RWVolume3dElementDescriptor::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "volume3d_element_descriptor"))
+  {
     return;
+  }
 
   // Inherited fields of ElementDescriptor
 
@@ -46,16 +48,26 @@ void RWStepElement_RWVolume3dElementDescriptor::ReadStep(
   {
     const char* text = data->ParamCValue(num, 1);
     if (!strcmp(text, ".LINEAR."))
+    {
       aElementDescriptor_TopologyOrder = StepElement_Linear;
+    }
     else if (!strcmp(text, ".QUADRATIC."))
+    {
       aElementDescriptor_TopologyOrder = StepElement_Quadratic;
+    }
     else if (!strcmp(text, ".CUBIC."))
+    {
       aElementDescriptor_TopologyOrder = StepElement_Cubic;
+    }
     else
+    {
       ach->AddFail("Parameter #1 (element_descriptor.topology_order) has not allowed value");
+    }
   }
   else
+  {
     ach->AddFail("Parameter #1 (element_descriptor.topology_order) is not enumeration");
+  }
 
   occ::handle<TCollection_HAsciiString> aElementDescriptor_Description;
   data->ReadString(num, 2, "element_descriptor.description", ach, aElementDescriptor_Description);
@@ -85,18 +97,30 @@ void RWStepElement_RWVolume3dElementDescriptor::ReadStep(
   {
     const char* text = data->ParamCValue(num, 4);
     if (!strcmp(text, ".HEXAHEDRON."))
+    {
       aShape = StepElement_Hexahedron;
+    }
     else if (!strcmp(text, ".WEDGE."))
+    {
       aShape = StepElement_Wedge;
+    }
     else if (!strcmp(text, ".TETRAHEDRON."))
+    {
       aShape = StepElement_Tetrahedron;
+    }
     else if (!strcmp(text, ".PYRAMID."))
+    {
       aShape = StepElement_Pyramid;
+    }
     else
+    {
       ach->AddFail("Parameter #4 (shape) has not allowed value");
+    }
   }
   else
+  {
     ach->AddFail("Parameter #4 (shape) is not enumeration");
+  }
 
   // Initialize entity
   ent->Init(aElementDescriptor_TopologyOrder, aElementDescriptor_Description, aPurpose, aShape);

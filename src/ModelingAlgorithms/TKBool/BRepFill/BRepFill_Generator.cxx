@@ -309,7 +309,9 @@ int DetectKPart(const TopoDS_Edge& Edge1, const TopoDS_Edge& Edge2)
       else if (IType == -2)
       {
         if (AdC.GetType() == GeomAbs_Line)
+        {
           IType = 4; // plane
+        }
         else if (AdC.GetType() == GeomAbs_Circle)
         {
           // the only particular case with degenerated edge at the beginning the cone
@@ -338,13 +340,17 @@ int DetectKPart(const TopoDS_Edge& Edge1, const TopoDS_Edge& Edge2)
           }
         }
         else
+        {
           IType = 0;
+        }
       }
     }
   }
   // torus and extrusion are not particular cases.
   if (IType == 3 || IType == 5)
+  {
     IType = 0;
+  }
   return IType;
 }
 
@@ -447,10 +453,14 @@ bool CreateKPart(const TopoDS_Edge&         Edge1,
 
   GeomAdaptor_Curve aC1Adaptor;
   if (!C1.IsNull())
+  {
     aC1Adaptor.Load(C1);
+  }
   GeomAdaptor_Curve aC2Adaptor;
   if (!C2.IsNull())
+  {
     aC2Adaptor.Load(C2);
+  }
 
   // calculate the surface
   occ::handle<Geom_Surface> surface;
@@ -712,21 +722,33 @@ void BRepFill_Generator::Perform()
       // ATTENTION : a non-punctual wire should not
       //             contain a punctual edge
       if (!wPoint1)
+      {
         ex1.Next();
+      }
       if (!wPoint2)
+      {
         ex2.Next();
+      }
 
       // initialization of vertices
       occ::handle<Geom_Surface> Surf;
       double                    f1 = 0, l1 = 1, f2 = 0, l2 = 1;
       if (Edge1.Orientation() == TopAbs_REVERSED)
+      {
         TopExp::Vertices(Edge1, V1l, V1f);
+      }
       else
+      {
         TopExp::Vertices(Edge1, V1f, V1l);
+      }
       if (Edge2.Orientation() == TopAbs_REVERSED)
+      {
         TopExp::Vertices(Edge2, V2l, V2f);
+      }
       else
+      {
         TopExp::Vertices(Edge2, V2f, V2l);
+      }
       if (degen1)
       {
         Vf_toMap = V2f;
@@ -800,7 +822,9 @@ void BRepFill_Generator::Perform()
           C1 = occ::down_cast<Geom_Curve>(C1->Copy());
         }
         if (!SameLoc)
+        {
           C1->Transform(L1.Transformation());
+        }
         if (Edge1.Orientation() == TopAbs_REVERSED)
         {
           C1->Reverse();
@@ -816,7 +840,9 @@ void BRepFill_Generator::Perform()
           C2 = occ::down_cast<Geom_Curve>(C2->Copy());
         }
         if (!SameLoc)
+        {
           C2->Transform(L2.Transformation());
+        }
         if (Edge2.Orientation() == TopAbs_REVERSED)
         {
           C2->Reverse();
@@ -1096,9 +1122,13 @@ void BRepFill_Generator::Perform()
 
       tantque = ex1.More() && ex2.More();
       if (wPoint1)
+      {
         tantque = ex2.More();
+      }
       if (wPoint2)
+      {
         tantque = ex1.More();
+      }
     }
     aFirstWire = false;
   }

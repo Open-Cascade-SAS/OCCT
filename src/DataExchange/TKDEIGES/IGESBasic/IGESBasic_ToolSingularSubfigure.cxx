@@ -121,9 +121,13 @@ void IGESBasic_ToolSingularSubfigure::WriteOwnParams(
   IW.Send(ent->Translation().Y());
   IW.Send(ent->Translation().Z());
   if (ent->HasScaleFactor())
+  {
     IW.Send(ent->ScaleFactor());
+  }
   else
+  {
     IW.SendVoid();
+  }
 }
 
 void IGESBasic_ToolSingularSubfigure::OwnShared(const occ::handle<IGESBasic_SingularSubfigure>& ent,
@@ -155,7 +159,9 @@ IGESData_DirChecker IGESBasic_ToolSingularSubfigure::DirChecker(
   IGESData_DirChecker DC(408, 0); // TypeNo. 408, Form no. 0
   DC.Structure(IGESData_DefVoid);
   if (ent->HierarchyStatus() == 1)
+  {
     DC.GraphicsIgnored(01); // GraphicsIgnored if Hierarchy = 01
+  }
   return DC;
 }
 
@@ -177,5 +183,5 @@ void IGESBasic_ToolSingularSubfigure::OwnDump(const occ::handle<IGESBasic_Singul
   S << "\n"
     << " Translation Data : ";
   IGESData_DumpXYZL(S, level, ent->Translation(), ent->Location());
-  S << "  Scale Factors : " << ent->ScaleFactor() << "\n" << std::endl;
+  S << "  Scale Factors : " << ent->ScaleFactor() << "\n" << '\n';
 }

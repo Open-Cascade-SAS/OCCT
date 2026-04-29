@@ -359,7 +359,9 @@ double BRepCheck_Vertex::Tolerance()
     if (pr->IsPointOnCurve())
     {
       if (!pr->Curve().IsNull())
+      {
         Controlp = pr->Curve()->Value(pr->Parameter());
+      }
     }
     else if (pr->IsPointOnCurveOnSurface())
     {

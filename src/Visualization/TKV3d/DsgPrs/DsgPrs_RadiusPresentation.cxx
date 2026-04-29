@@ -34,11 +34,17 @@
 static bool DsgPrs_InDomain(const double fpar, const double lpar, const double para)
 {
   if (fpar >= 0.)
+  {
     return ((para >= fpar) && (para <= lpar));
+  }
   if (para >= (fpar + 2. * M_PI))
+  {
     return true;
+  }
   if (para <= lpar)
+  {
     return true;
+  }
   return false;
 }
 
@@ -71,7 +77,9 @@ void DsgPrs_RadiusPresentation::Add(const occ::handle<Prs3d_Presentation>& aPres
   {
     double otherpar = parat + M_PI;
     if (otherpar > 2. * M_PI)
+    {
       otherpar -= 2. * M_PI;
+    }
     if (DsgPrs_InDomain(fpara, lpara, otherpar))
     {
       parat     = otherpar;
@@ -105,9 +113,13 @@ void DsgPrs_RadiusPresentation::Add(const occ::handle<Prs3d_Presentation>& aPres
     const double uatt = ElCLib::Parameter(L, attpoint);
     const double uptc = ElCLib::Parameter(L, ptoncirc);
     if (std::abs(uatt) > std::abs(uptc))
+    {
       drawtopoint = aCircle.Location();
+    }
     else
+    {
       firstpoint = aCircle.Location();
+    }
   }
 
   occ::handle<Graphic3d_ArrayOfSegments> aPrims = new Graphic3d_ArrayOfSegments(2);
@@ -117,7 +129,9 @@ void DsgPrs_RadiusPresentation::Add(const occ::handle<Prs3d_Presentation>& aPres
 
   gp_Dir arrdir = L.Direction();
   if (reverseArrow)
+  {
     arrdir.Reverse();
+  }
 
   // fleche
   Prs3d_Arrow::Draw(aPresentation->CurrentGroup(),
@@ -167,7 +181,9 @@ void DsgPrs_RadiusPresentation::Add(const occ::handle<Prs3d_Presentation>& aPres
 
   gp_Dir ArrowDir = gce_MakeDir(LineOrigin, LineEnd);
   if (reverseArrow)
+  {
     ArrowDir.Reverse();
+  }
   DsgPrs::ComputeSymbol(aPresentation,
                         LA,
                         Center,

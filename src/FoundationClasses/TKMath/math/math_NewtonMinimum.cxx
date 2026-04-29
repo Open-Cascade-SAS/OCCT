@@ -129,7 +129,9 @@ void math_NewtonMinimum::Perform(math_MultipleVarFunctionWithHessian& F,
       {
         double Delta = CTol + 0.1 * std::abs(MinEigenValue) - MinEigenValue;
         for (ii = 1; ii <= TheGradient.Length(); ii++)
+        {
           TheHessian(ii, ii) += Delta;
+        }
       }
       else
       {
@@ -160,7 +162,9 @@ void math_NewtonMinimum::Perform(math_MultipleVarFunctionWithHessian& F,
       {
         const double anAbsStep = std::abs(TheStep(anIdx));
         if (anAbsStep < gp::Resolution())
+        {
           continue;
+        }
 
         if (suivant->Value(anIdx) < myLeft(anIdx))
         {
@@ -245,7 +249,9 @@ void math_NewtonMinimum::Perform(math_MultipleVarFunctionWithHessian& F,
       TheMinimum              = VItere;
       Ok                      = (nbiter < Itermax);
       if (!Ok && NbConv < 2)
+      {
         TheStatus = math_TooManyIterations;
+      }
     }
     else
     {
@@ -261,12 +267,12 @@ void math_NewtonMinimum::Perform(math_MultipleVarFunctionWithHessian& F,
 void math_NewtonMinimum::Dump(Standard_OStream& o) const
 {
   o << "math_Newton Optimisation: ";
-  o << " Done   =" << Done << std::endl;
-  o << " Status = " << (int)TheStatus << std::endl;
-  o << " Location Vector = " << Location() << std::endl;
-  o << " Minimum value = " << Minimum() << std::endl;
-  o << " Previous value = " << PreviousMinimum << std::endl;
-  o << " Number of iterations = " << NbIterations() << std::endl;
-  o << " Convexity = " << Convex << std::endl;
-  o << " Eigen Value = " << MinEigenValue << std::endl;
+  o << " Done   =" << Done << '\n';
+  o << " Status = " << (int)TheStatus << '\n';
+  o << " Location Vector = " << Location() << '\n';
+  o << " Minimum value = " << Minimum() << '\n';
+  o << " Previous value = " << PreviousMinimum << '\n';
+  o << " Number of iterations = " << NbIterations() << '\n';
+  o << " Convexity = " << Convex << '\n';
+  o << " Eigen Value = " << MinEigenValue << '\n';
 }

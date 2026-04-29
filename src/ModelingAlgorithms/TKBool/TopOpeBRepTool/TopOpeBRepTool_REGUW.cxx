@@ -93,7 +93,9 @@ void FUN_tool_Add(
   const TopoDS_Shape& subitem)
 {
   if (map.IsBound(key))
+  {
     map.ChangeFind(key).Append(subitem);
+  }
   else
   {
     NCollection_List<TopoDS_Shape> los;
@@ -153,7 +155,9 @@ void TopOpeBRepTool_REGUW::GetEsplits(
     Esplits) const
 {
   if (!HasInit())
+  {
     throw Standard_Failure("TopOpeBRepTool_REGUW : NO INIT");
+  }
   Esplits = myEsplits;
 }
 
@@ -172,7 +176,9 @@ void TopOpeBRepTool_REGUW::GetOwNw(
   const
 {
   if (!HasInit())
+  {
     throw Standard_Failure("TopOpeBRepTool_REGUW : NO INIT");
+  }
   OwNw = myOwNw;
 }
 
@@ -181,7 +187,9 @@ void TopOpeBRepTool_REGUW::GetOwNw(
 bool TopOpeBRepTool_REGUW::SplitEds()
 {
   if (!HasInit())
+  {
     throw Standard_Failure("TopOpeBRepTool_REGUW : NO INIT");
+  }
 #ifdef OCCT_DEBUG
   bool trc = TopOpeBRepTool_GettraceREGUFA();
   if (trc)
@@ -196,10 +204,14 @@ bool TopOpeBRepTool_REGUW::SplitEds()
     NCollection_List<TopoDS_Shape>  loe;
     int                             ni = co.IsInternal(loe);
     if (ni == 0)
+    {
       continue;
+    }
     NCollection_List<TopoDS_Shape>::Iterator ite(loe);
     for (; ite.More(); ite.Next())
+    {
       mehasIv.Add(ite.Value());
+    }
   }
 
   for (i = 1; i <= mehasIv.Extent(); i++)
@@ -209,17 +221,25 @@ bool TopOpeBRepTool_REGUW::SplitEds()
     bool                           issp   = false;
     bool                           isdone = myEsplits.IsBound(e);
     if (isdone)
+    {
       splits.Assign(myEsplits.Find(e));
+    }
     else
+    {
       issp = TopOpeBRepTool_TOOL::SplitE(e, splits);
+    }
     if (issp)
+    {
       hasnewsplits = true;
+    }
 #ifdef OCCT_DEBUG
     if (trc)
       std::cout << "e" << FUN_adds(e) << " gives splits =" << std::endl;
 #endif
     if (!(issp || isdone))
+    {
       continue; // nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnyi
+    }
 
     // e gives splits = {esp has vertices {vv}}
     NCollection_List<TopoDS_Shape>::Iterator ite(splits);
@@ -239,7 +259,9 @@ bool TopOpeBRepTool_REGUW::SplitEds()
         TopOpeBRepTool_connexity& co  = mymapvEds.ChangeFromKey(vv);
         bool                      isb = co.RemoveItem(INTERNAL, e);
         if (!isb)
+        {
           continue;
+        }
         int ivv = TopOpeBRepTool_TOOL::OriinSorclosed(vv, esp);
         co.AddItem(ivv, esp);
       } // exvv(exvv,VERTEX)
@@ -257,7 +279,9 @@ bool TopOpeBRepTool_REGUW::SplitEds()
 const TopoDS_Shape& TopOpeBRepTool_REGUW::S() const
 {
   if (!HasInit())
+  {
     throw Standard_Failure("TopOpeBRepTool_REGUW : NO INIT");
+  }
   return myS;
 }
 
@@ -281,7 +305,9 @@ bool TopOpeBRepTool_REGUW::HasInit() const
 void TopOpeBRepTool_REGUW::InitStep(const TopoDS_Shape& S)
 {
   if (!HasInit())
+  {
     throw Standard_Failure("TopOpeBRepTool_REGUW : NO INIT");
+  }
   TopoDS_Shape null;
   myCORRISO.Init(null);
   myCORRISO.Init(S);
@@ -296,7 +322,9 @@ void TopOpeBRepTool_REGUW::InitStep(const TopoDS_Shape& S)
 bool TopOpeBRepTool_REGUW::MapS()
 {
   if (!HasInit())
+  {
     throw Standard_Failure("TopOpeBRepTool_REGUW : NO INIT");
+  }
 #ifdef OCCT_DEBUG
   bool trc = TopOpeBRepTool_GettraceREGUFA();
   if (trc)
@@ -350,7 +378,9 @@ bool TopOpeBRepTool_REGUW::MapS()
       bool                     isb = mymapvEds.Contains(v);
       TopOpeBRepTool_connexity theconnexity(v);
       if (!isb)
+      {
         mymapvEds.Add(v, theconnexity);
+      }
       TopOpeBRepTool_connexity& co = mymapvEds.ChangeFromKey(v);
 
       if (isdgE)
@@ -423,7 +453,9 @@ bool TopOpeBRepTool_REGUW::MapS()
 
   int nV = mymapvEds.Extent();
   if (nV < 1)
+  {
     return false;
+  }
 
   int i;
   for (i = 1; i <= mymapvEds.Extent(); i++)
@@ -432,11 +464,17 @@ bool TopOpeBRepTool_REGUW::MapS()
     const TopOpeBRepTool_connexity& co     = mymapvEds(i);
     bool                            faulty = co.IsFaulty();
     if (faulty)
+    {
       return false;
+    }
     bool multiple = co.IsMultiple();
     if (multiple)
+    {
       if (mymapvmultiple.Add(v))
+      {
         myListVmultiple.Append(v);
+      }
+    }
   }
   return true;
 } // MapS
@@ -478,7 +516,9 @@ static void FUN_nextdata(const int                        iStep,
   }
   tg = gp_Dir2d(tg2d);
   if (M_REVERSED(e.Orientation()))
+  {
     tg.Reverse();
+  }
 }
 
 //=================================================================================================
@@ -486,7 +526,9 @@ static void FUN_nextdata(const int                        iStep,
 bool TopOpeBRepTool_REGUW::InitBlock()
 {
   if (!HasInit())
+  {
     throw Standard_Failure("TopOpeBRepTool_REGUW : NO INIT");
+  }
 #ifdef OCCT_DEBUG
   bool trc = TopOpeBRepTool_GettraceREGUFA();
 #endif
@@ -509,7 +551,9 @@ bool TopOpeBRepTool_REGUW::InitBlock()
       myListVmultiple.Remove(itmu);
     }
     else
+    {
       itmu.Next();
+    }
   }
 
   // myv0 :
@@ -540,7 +584,9 @@ bool TopOpeBRepTool_REGUW::InitBlock()
     myv0 = TopoDS::Vertex(myListVmultiple.First());
   }
   if (myv0.IsNull())
+  {
     return false;
+  }
   // myed :
   const TopOpeBRepTool_connexity& co = mymapvEds.FindFromKey(myv0);
 
@@ -553,10 +599,14 @@ bool TopOpeBRepTool_REGUW::InitBlock()
   le.Append(leb);
   int ne = nea + neb;
   if (ne == 0)
+  {
     return false;
+  }
 
   if (nea > 0)
+  {
     myed = TopoDS::Edge(le.First());
+  }
   else
   { // <myv0> CLOSING in <myed>
     NCollection_List<TopoDS_Shape>::Iterator itb(le);
@@ -571,11 +621,15 @@ bool TopOpeBRepTool_REGUW::InitBlock()
       }
       int iov0 = TopOpeBRepTool_TOOL::OriinSorclosed(myv0, myed);
       if (iov0 != iv0e1)
+      {
         continue;
+      }
     } // itb(leb)
   }
   if (myed.IsNull())
+  {
     return false;
+  }
 
   TopExp_Explorer exv(myed, TopAbs_VERTEX);
   for (; exv.More(); exv.Next())
@@ -593,7 +647,9 @@ bool TopOpeBRepTool_REGUW::InitBlock()
   TopOpeBRepTool_C2DF c2df;
   bool                bound = myCORRISO.UVRep(myed, c2df);
   if (!bound)
+  {
     return false;
+  }
   double                           f, l, tol;
   const occ::handle<Geom2d_Curve>& pc   = c2df.PC(f, l, tol);
   double                           par0 = TopOpeBRepTool_TOOL::ParE(iv0e1, myed);
@@ -626,7 +682,9 @@ bool TopOpeBRepTool_REGUW::NearestE(const NCollection_List<TopoDS_Shape>& loe,
 #endif
 
   if (!HasInit())
+  {
     throw Standard_Failure("TopOpeBRepTool_REGUW : NO INIT");
+  }
   efound.Nullify();
   double fac   = 0.45678;
   double tola  = Precision::Angular();
@@ -636,23 +694,35 @@ bool TopOpeBRepTool_REGUW::NearestE(const NCollection_List<TopoDS_Shape>& loe,
   NCollection_List<TopoDS_Shape>::Iterator ite(loe);
   efound = TopoDS::Edge(ite.Value());
   if (ite.More())
+  {
     ite.Next();
+  }
   else
+  {
     return true;
+  }
 
   TopOpeBRepTool_C2DF c2defound;
   bool                isbfound = myCORRISO.UVRep(efound, c2defound);
   if (!isbfound)
+  {
     return false;
+  }
 
   gp_Vec2d tg2dfound = TopOpeBRepTool_TOOL::tryTg2dApp(iv0e1, efound, c2defound, fac);
   if (M_REVERSED(efound.Orientation()))
+  {
     tg2dfound.Reverse();
+  }
   double angfound = 1.e7;
   if (iStep == 1)
+  {
     angfound = TopOpeBRepTool_TOOL::Matter(mytg2d, tg2dfound);
+  }
   else
+  {
     angfound = 2. * M_PI - TopOpeBRepTool_TOOL::Matter(tg2dfound, mytg2d);
+  }
 #ifdef OCCT_DEBUG
   if (trc)
     std::cout << "ang(e" << FUN_adds(myed) << ",e" << FUN_adds(efound) << ")=" << angfound
@@ -669,21 +739,31 @@ bool TopOpeBRepTool_REGUW::NearestE(const NCollection_List<TopoDS_Shape>& loe,
     const TopoDS_Edge& ei = TopoDS::Edge(ite.Value());
     // for INTERNAL edge eI -> eF+eR
     if (ei.IsSame(myed))
+    {
       continue;
+    }
 
     TopOpeBRepTool_C2DF c2dei;
     bool                isbi = myCORRISO.UVRep(ei, c2dei);
     if (!isbi)
+    {
       return false;
+    }
     gp_Vec2d tg2di = TopOpeBRepTool_TOOL::tryTg2dApp(iv0e1, ei, c2dei, fac);
     if (M_REVERSED(ei.Orientation()))
+    {
       tg2di.Reverse();
+    }
 
     double angi = 1.e7;
     if (iStep == 1)
+    {
       angi = TopOpeBRepTool_TOOL::Matter(mytg2d, tg2di);
+    }
     else
+    {
       angi = 2. * M_PI - TopOpeBRepTool_TOOL::Matter(tg2di, mytg2d);
+    }
     bool eq = std::abs(angi - angfound) < tola;
 #ifdef OCCT_DEBUG
     if (trc)
@@ -709,7 +789,9 @@ bool TopOpeBRepTool_REGUW::NearestE(const NCollection_List<TopoDS_Shape>& loe,
 bool TopOpeBRepTool_REGUW::NextinBlock()
 {
   if (!HasInit())
+  {
     throw Standard_Failure("TopOpeBRepTool_REGUW : NO INIT");
+  }
 #ifdef OCCT_DEBUG
   bool trc = TopOpeBRepTool_GettraceREGUFA();
   if (trc)
@@ -767,9 +849,13 @@ bool TopOpeBRepTool_REGUW::NextinBlock()
     // p2d(myv,ed)=p2d(myv,e)
     bool samep2d = p2de.IsEqual(myp2d, mytol2d);
     if (!samep2d)
+    {
       le.Remove(ite);
+    }
     else
+    {
       ite.Next();
+    }
 #ifdef OCCT_DEBUG
     if (trc)
     {
@@ -790,7 +876,9 @@ bool TopOpeBRepTool_REGUW::NextinBlock()
   // myed :
   ne = le.Extent();
   if (ne == 1)
+  {
     myed = TopoDS::Edge(le.First());
+  }
   else
   {
     TopoDS_Edge efound;
@@ -845,7 +933,9 @@ bool TopOpeBRepTool_REGUW::REGU(const int istep,
                                 NCollection_List<TopoDS_Shape>& Splits)
 {
   if (!HasInit())
+  {
     throw Standard_Failure("TopOpeBRepTool_REGUW : NO INIT");
+  }
   iStep = istep;
 #ifdef OCCT_DEBUG
   bool trc = TopOpeBRepTool_GettraceREGUFA();
@@ -901,7 +991,9 @@ bool TopOpeBRepTool_REGUW::REGU(const int istep,
   {
     TopAbs_Orientation oe = ite.Value().Orientation();
     if (M_INTERNAL(oe) || M_EXTERNAL(oe))
+    {
       nE--;
+    }
   }
 
   while (nite <= nE)
@@ -960,7 +1052,9 @@ bool TopOpeBRepTool_REGUW::REGU(const int istep,
               le.Remove(itte);
             }
             else
+            {
               itte.Next();
+            }
           } // itte(le)
         } // exv(e)
       } // ite(loEcur)
@@ -981,7 +1075,9 @@ bool TopOpeBRepTool_REGUW::REGU(const int istep,
       TopoDS_Wire newW;
       bool        wiok = FUN_tool_MakeWire(loEcur, newW);
       if (wiok)
+      {
         loW.Append(newW);
+      }
       else
       {
 #ifdef OCCT_DEBUG
@@ -1040,7 +1136,9 @@ bool TopOpeBRepTool_REGUW::REGU(const int istep,
 bool TopOpeBRepTool_REGUW::REGU()
 {
   if (!HasInit())
+  {
     throw Standard_Failure("TopOpeBRepTool_REGUW : NO INIT");
+  }
   NCollection_List<TopoDS_Shape> null;
 
   bool toregu = !myListVmultiple.IsEmpty();
@@ -1063,7 +1161,9 @@ bool TopOpeBRepTool_REGUW::REGU()
 
   // iStep = 2;
   if (loS.IsEmpty())
+  {
     loS.Append(S()); // no new shape
+  }
 
   NCollection_List<TopoDS_Shape>::Iterator it(loS);
   for (; it.More(); it.Next())
@@ -1086,7 +1186,9 @@ bool TopOpeBRepTool_REGUW::REGU()
       return false;
     }
     if (sp.IsEmpty())
+    {
       sp.Append(Scur); // no new shape
+    }
     Splits.Append(sp);
   }
   myOwNw.Bind(S(), Splits);
@@ -1098,10 +1200,14 @@ bool TopOpeBRepTool_REGUW::REGU()
 bool TopOpeBRepTool_REGUW::GetSplits(NCollection_List<TopoDS_Shape>& Splits) const
 {
   if (!HasInit())
+  {
     throw Standard_Failure("TopOpeBRepTool_REGUW : NO INIT");
+  }
   bool isb = myOwNw.IsBound(S());
   if (!isb)
+  {
     return false;
+  }
   Splits = myOwNw.Find(S());
   return true;
 }
@@ -1111,10 +1217,14 @@ bool TopOpeBRepTool_REGUW::GetSplits(NCollection_List<TopoDS_Shape>& Splits) con
 bool TopOpeBRepTool_REGUW::Connexity(const TopoDS_Vertex& v, TopOpeBRepTool_connexity& co) const
 {
   if (!HasInit())
+  {
     throw Standard_Failure("TopOpeBRepTool_REGUW : NO INIT");
+  }
   bool isb = mymapvEds.Contains(v);
   if (!isb)
+  {
     return false;
+  }
   co = mymapvEds.FindFromKey(v);
   return true;
 }
@@ -1126,14 +1236,20 @@ bool TopOpeBRepTool_REGUW::AddNewConnexity(const TopoDS_Vertex& v,
                                            const TopoDS_Edge&   e)
 {
   if (!HasInit())
+  {
     throw Standard_Failure("TopOpeBRepTool_REGUW : NO INIT");
+  }
   bool isb = mymapvEds.Contains(v);
   if (!isb)
+  {
     return false;
+  }
 
   bool ok = myCORRISO.AddNewConnexity(v, e);
   if (!ok)
+  {
     return false;
+  }
 
   TopOpeBRepTool_connexity& co = mymapvEds.ChangeFromKey(v);
   co.AddItem(OriKey, e);
@@ -1166,10 +1282,14 @@ bool TopOpeBRepTool_REGUW::RemoveOldConnexity(const TopoDS_Vertex& v,
                                               const TopoDS_Edge&   e)
 {
   if (!HasInit())
+  {
     throw Standard_Failure("TopOpeBRepTool_REGUW : NO INIT");
+  }
   bool isb = mymapvEds.Contains(v);
   if (!isb)
+  {
     return false;
+  }
 
   bool ok = myCORRISO.RemoveOldConnexity(v, e);
   //  if (!ok) return false;
@@ -1184,14 +1304,22 @@ bool TopOpeBRepTool_REGUW::RemoveOldConnexity(const TopoDS_Vertex& v,
 bool TopOpeBRepTool_REGUW::UpdateMultiple(const TopoDS_Vertex& v)
 {
   if (!HasInit())
+  {
     throw Standard_Failure("TopOpeBRepTool_REGUW : NO INIT");
+  }
   bool isb = mymapvEds.Contains(v);
   if (!isb)
+  {
     return false;
+  }
   const TopOpeBRepTool_connexity& co     = mymapvEds.FindFromKey(v);
   bool                            ismult = co.IsMultiple();
   if (ismult)
+  {
     if (mymapvmultiple.Add(v))
+    {
       myListVmultiple.Append(v);
+    }
+  }
   return true;
 }

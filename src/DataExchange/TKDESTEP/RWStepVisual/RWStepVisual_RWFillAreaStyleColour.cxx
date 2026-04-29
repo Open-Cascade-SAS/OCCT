@@ -30,7 +30,9 @@ void RWStepVisual_RWFillAreaStyleColour::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "fill_area_style_colour"))
+  {
     return;
+  }
 
   // --- own field : name ---
 

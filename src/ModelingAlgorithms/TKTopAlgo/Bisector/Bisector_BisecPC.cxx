@@ -97,7 +97,9 @@ void Bisector_BisecPC::Perform(const occ::handle<Geom2d_Curve>& Cu,
   //--------------------------------------------
   ComputeIntervals();
   if (isEmpty)
+  {
     return;
+  }
 
   //-------------------------
   // Construction extensions.
@@ -288,7 +290,9 @@ bool Bisector_BisecPC::IsClosed() const
     // -----------------------------------------------------------------------
     if (startIntervals.First() == curve->FirstParameter()
         && endIntervals.First() == curve->LastParameter())
+    {
       return true;
+    }
   }
   return false;
 }
@@ -316,7 +320,9 @@ void Bisector_BisecPC::Extension(const double U,
   if (U < startIntervals.Value(bisInterval))
   {
     if (pointStartBis.IsEqual(point, Precision::PConfusion()))
+    {
       P = pointStartBis;
+    }
     else
     {
       dU = U - startIntervals.Value(bisInterval);
@@ -328,7 +334,9 @@ void Bisector_BisecPC::Extension(const double U,
   else if (U > endIntervals.Value(bisInterval))
   {
     if (pointEndBis.IsEqual(point, Precision::PConfusion()))
+    {
       P = pointEndBis;
+    }
     else
     {
       dU = U - endIntervals.Value(bisInterval);
@@ -406,7 +414,9 @@ void Bisector_BisecPC::Values(const double U,
   }
 
   if (N == 0)
+  {
     return; // End Calculation Point;
+  }
 
   gp_Vec2d Nu(-Tuu.Y(), Tuu.X()); // derivative of the normal by U.
   double   NuPPC    = Nu.Dot(aPPC);
@@ -418,7 +428,9 @@ void Bisector_BisecPC::Values(const double U,
   V1 = Tu - A1 * Nu - A2 * Nor;
   //--------------------------
   if (N == 1)
+  {
     return; // End calculation D1.
+  }
 
   gp_Vec2d Nuu(-T3u.Y(), T3u.X());
 
@@ -581,7 +593,9 @@ Geom2d_Curve::ResD3 Bisector_BisecPC::EvalD3(const double U) const
 gp_Vec2d Bisector_BisecPC::EvalDN(const double U, const int N) const
 {
   if (N < 1)
+  {
     throw Geom2d_UndefinedDerivative("Bisector_BisecPC::EvalDN");
+  }
   gp_Pnt2d P = point;
   gp_Vec2d V1(0., 0.);
   gp_Vec2d V2(0., 0.);
@@ -854,17 +868,17 @@ void Bisector_BisecPC::Init(const occ::handle<Geom2d_Curve>&    Curve,
 void Bisector_BisecPC::Dump(const int, const int Offset) const
 {
   Indent(Offset);
-  std::cout << "Bisector_BisecPC :" << std::endl;
+  std::cout << "Bisector_BisecPC :" << '\n';
   Indent(Offset);
-  std::cout << "Point :" << std::endl;
-  std::cout << " X = " << point.X() << std::endl;
-  std::cout << " Y = " << point.Y() << std::endl;
-  std::cout << "Sign  :" << sign << std::endl;
-  std::cout << "Number Of Intervals :" << startIntervals.Length() << std::endl;
+  std::cout << "Point :" << '\n';
+  std::cout << " X = " << point.X() << '\n';
+  std::cout << " Y = " << point.Y() << '\n';
+  std::cout << "Sign  :" << sign << '\n';
+  std::cout << "Number Of Intervals :" << startIntervals.Length() << '\n';
   for (int i = 1; i <= startIntervals.Length(); i++)
   {
     std::cout << "Interval number :" << i << "Start :" << startIntervals.Value(i)
-              << "  end :" << endIntervals.Value(i) << std::endl;
+              << "  end :" << endIntervals.Value(i) << '\n';
   }
-  std::cout << "Index Current Interval :" << currentInterval << std::endl;
+  std::cout << "Index Current Interval :" << currentInterval << '\n';
 }

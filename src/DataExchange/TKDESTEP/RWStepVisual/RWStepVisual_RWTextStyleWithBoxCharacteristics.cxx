@@ -36,7 +36,9 @@ void RWStepVisual_RWTextStyleWithBoxCharacteristics::ReadStep(
                            3,
                            ach,
                            "text_style_with_box_characteristics has not 3 parameter(s)"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 
@@ -85,13 +87,21 @@ void RWStepVisual_RWTextStyleWithBoxCharacteristics::ReadStep(
         {
           aBoxCharacteristicSelect.SetRealValue(aCharacteristicsItem);
           if (TrueType == TypeHeigth)
+          {
             aBoxCharacteristicSelect.SetTypeOfContent(1);
+          }
           else if (TrueType == TypeWidth)
+          {
             aBoxCharacteristicSelect.SetTypeOfContent(2);
+          }
           else if (TrueType == TypeSlant)
+          {
             aBoxCharacteristicSelect.SetTypeOfContent(3);
+          }
           else if (TrueType == TypeRotate)
+          {
             aBoxCharacteristicSelect.SetTypeOfContent(4);
+          }
           else
           {
             ach->AddFail("Parameter #3 (characteristics) item has illegal TYPE");

@@ -34,7 +34,9 @@ void RWStepBasic_RWGroup::ReadStep(const occ::handle<StepData_StepReaderData>& d
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "group"))
+  {
     return;
+  }
 
   // Own fields of Group
 
@@ -71,7 +73,9 @@ void RWStepBasic_RWGroup::WriteStep(StepData_StepWriter&                SW,
     SW.Send(ent->Description());
   }
   else
+  {
     SW.SendUndef();
+  }
 }
 
 //=================================================================================================

@@ -103,16 +103,22 @@ void StepData_EnumTool::AddDefinition(const char* const term)
 {
   char text[80] = {0};
   if (!term)
+  {
     return;
+  }
   if (term[0] == '\0')
+  {
     return;
+  }
   int n0 = 0, n1 = 0;
   for (; term[n0] != '\0'; n0++)
   {
     if (term[n0] <= 32)
     {
       if (n1 == 0)
+      {
         continue;
+      }
       if (n1 > 1 || text[0] != '$')
       {
         if (text[n1 - 1] != '.')
@@ -174,7 +180,9 @@ int StepData_EnumTool::NullValue() const
 const TCollection_AsciiString& StepData_EnumTool::Text(const int num) const
 {
   if (num < 0 || num >= thetexts.Length())
+  {
     return TCollection_AsciiString::EmptyString();
+  }
   return thetexts.Value(num + 1);
 }
 
@@ -184,7 +192,9 @@ int StepData_EnumTool::Value(const char* const txt) const
   for (int i = 1; i <= nb; i++)
   {
     if (thetexts.Value(i).IsEqual(txt))
+    {
       return i - 1;
+    }
   }
   return (-1);
 }
@@ -195,7 +205,9 @@ int StepData_EnumTool::Value(const TCollection_AsciiString& txt) const
   for (int i = 1; i <= nb; i++)
   {
     if (thetexts.Value(i).IsEqual(txt))
+    {
       return i - 1;
+    }
   }
   return (-1);
 }

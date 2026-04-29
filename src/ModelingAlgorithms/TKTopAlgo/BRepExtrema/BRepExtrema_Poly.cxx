@@ -45,10 +45,14 @@ bool BRepExtrema_Poly::Distance(const TopoDS_Shape& S1,
     const TopoDS_Face& F = TopoDS::Face(exFace.Current());
     Tr                   = BRep_Tool::Triangulation(F, L);
     if (!Tr.IsNull())
+    {
       nbn1 += Tr->NbNodes();
+    }
   }
   if (nbn1 == 0)
+  {
     return false;
+  }
 
   int nbn2 = 0;
   for (exFace.Init(S2, TopAbs_FACE); exFace.More(); exFace.Next())
@@ -56,10 +60,14 @@ bool BRepExtrema_Poly::Distance(const TopoDS_Shape& S1,
     const TopoDS_Face& F = TopoDS::Face(exFace.Current());
     Tr                   = BRep_Tool::Triangulation(F, L);
     if (!Tr.IsNull())
+    {
       nbn2 += Tr->NbNodes();
+    }
   }
   if (nbn2 == 0)
+  {
     return false;
+  }
 
   int i, n;
 

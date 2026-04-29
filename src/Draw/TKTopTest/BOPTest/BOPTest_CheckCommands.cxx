@@ -60,7 +60,9 @@ void BOPTest::CheckCommands(Draw_Interpretor& theCommands)
 {
   static bool done = false;
   if (done)
+  {
     return;
+  }
 
   done = true;
   // Chapter's name
@@ -522,7 +524,9 @@ int bopargcheck(Draw_Interpretor& di, int n, const char** a)
       }
     }
     else
+    {
       aChecker.OperationType() = BOPAlgo_SECTION;
+    }
 
     aChecker.TangentMode()     = true;
     aChecker.MergeVertexMode() = true;
@@ -663,9 +667,13 @@ int bopargcheck(Draw_Interpretor& di, int n, const char** a)
         {
           case BOPAlgo_BadType: {
             if (!aSS1.IsNull())
+            {
               S1_BadType++;
+            }
             if (!aSS2.IsNull())
+            {
               S2_BadType++;
+            }
           }
           break;
           case BOPAlgo_SelfIntersect: {
@@ -673,13 +681,17 @@ int bopargcheck(Draw_Interpretor& di, int n, const char** a)
             {
               S1_SelfInt++;
               if (isL1)
+              {
                 MakeShapeForFullOutput(aS1SIBaseName, S1_SelfInt, aLS1, S1_SelfIntAll, di);
+              }
             }
             if (!aSS2.IsNull())
             {
               S2_SelfInt++;
               if (isL2)
+              {
                 MakeShapeForFullOutput(aS2SIBaseName, S2_SelfInt, aLS2, S2_SelfIntAll, di);
+              }
             }
           }
           break;
@@ -688,13 +700,17 @@ int bopargcheck(Draw_Interpretor& di, int n, const char** a)
             {
               S1_SmalE++;
               if (isL1)
+              {
                 MakeShapeForFullOutput(aS1SEBaseName, S1_SmalE, aLS1, S1_SmalEAll, di);
+              }
             }
             if (!aSS2.IsNull())
             {
               S2_SmalE++;
               if (isL2)
+              {
                 MakeShapeForFullOutput(aS2SEBaseName, S2_SmalE, aLS2, S2_SmalEAll, di);
+              }
             }
           }
           break;
@@ -703,13 +719,17 @@ int bopargcheck(Draw_Interpretor& di, int n, const char** a)
             {
               S1_BadF++;
               if (isL1)
+              {
                 MakeShapeForFullOutput(aS1BFBaseName, S1_BadF, aLS1, S1_BadFAll, di);
+              }
             }
             if (!aSS2.IsNull())
             {
               S2_BadF++;
               if (isL2)
+              {
                 MakeShapeForFullOutput(aS2BFBaseName, S2_BadF, aLS2, S2_BadFAll, di);
+              }
             }
           }
           break;
@@ -813,9 +833,13 @@ int bopargcheck(Draw_Interpretor& di, int n, const char** a)
           break;
           case BOPAlgo_OperationAborted: {
             if (!aSS1.IsNull())
+            {
               S1_OpAb++;
+            }
             if (!aSS2.IsNull())
+            {
               S2_OpAb++;
+            }
           }
           break;
           case BOPAlgo_CheckUnknown:
@@ -838,87 +862,151 @@ int bopargcheck(Draw_Interpretor& di, int n, const char** a)
         di << "---------------------------------\n";
         const char* CString1;
         if (S1_BadType != 0)
+        {
           CString1 = "YES";
+        }
         else
+        {
           CString1 = aChecker.ArgumentTypeMode() ? "NO" : "DISABLED";
+        }
         di << "Shapes are not suppotrted by BOP: " << CString1 << "\n";
         const char* CString2;
         if (S1_SelfInt != 0)
+        {
           CString2 = "YES";
+        }
         else
+        {
           CString2 = aChecker.SelfInterMode() ? "NO" : "DISABLED";
+        }
         di << "Self-Intersections              : " << CString2;
         if (S1_SelfInt != 0)
+        {
           di << "  Cases(" << S1_SelfInt << ")  Total shapes(" << S1_SelfIntAll << ")\n";
+        }
         else
+        {
           di << "\n";
+        }
         const char* CString13;
         if (S1_OpAb != 0)
+        {
           CString13 = "YES";
+        }
         else
+        {
           CString13 = aChecker.SelfInterMode() ? "NO" : "DISABLED";
+        }
         di << "Check for SI has been aborted   : " << CString13 << "\n";
         const char* CString3;
         if (S1_SmalE != 0)
+        {
           CString3 = "YES";
+        }
         else
+        {
           CString3 = aChecker.SmallEdgeMode() ? "NO" : "DISABLED";
+        }
         di << "Too small edges                 : " << CString3;
         if (S1_SmalE != 0)
+        {
           di << "  Cases(" << S1_SmalE << ")  Total shapes(" << S1_SmalEAll << ")\n";
+        }
         else
+        {
           di << "\n";
+        }
         const char* CString4;
         if (S1_BadF != 0)
+        {
           CString4 = "YES";
+        }
         else
+        {
           CString4 = aChecker.RebuildFaceMode() ? "NO" : "DISABLED";
+        }
         di << "Bad faces                       : " << CString4;
         if (S1_BadF != 0)
+        {
           di << "  Cases(" << S1_BadF << ")  Total shapes(" << S1_BadFAll << ")\n";
+        }
         else
+        {
           di << "\n";
+        }
         const char* CString5;
         if (S1_BadV != 0)
+        {
           CString5 = "YES";
+        }
         else
+        {
           CString5 = aChecker.MergeVertexMode() ? "NO" : "DISABLED";
+        }
         di << "Too close vertices              : " << CString5;
         if (S1_BadV != 0)
+        {
           di << "  Cases(" << S1_BadV << ")  Total shapes(" << S1_BadVAll << ")\n";
+        }
         else
+        {
           di << "\n";
+        }
         const char* CString6;
         if (S1_BadE != 0)
+        {
           CString6 = "YES";
+        }
         else
+        {
           CString6 = aChecker.MergeEdgeMode() ? "NO" : "DISABLED";
+        }
         di << "Too close edges                 : " << CString6;
         if (S1_BadE != 0)
+        {
           di << "  Cases(" << S1_BadE << ")  Total shapes(" << S1_BadEAll << ")\n";
+        }
         else
+        {
           di << "\n";
+        }
         const char* CString15;
         if (S1_C0 != 0)
+        {
           CString15 = "YES";
+        }
         else
+        {
           CString15 = aChecker.ContinuityMode() ? "NO" : "DISABLED";
+        }
         di << "Shapes with Continuity C0       : " << CString15;
         if (S1_C0 != 0)
+        {
           di << "  Cases(" << S1_C0 << ")  Total shapes(" << S1_C0All << ")\n";
+        }
         else
+        {
           di << "\n";
+        }
 
         const char* CString17;
         if (S1_COnS != 0)
+        {
           CString17 = "YES";
+        }
         else
+        {
           CString17 = aChecker.CurveOnSurfaceMode() ? "NO" : "DISABLED";
+        }
         di << "Invalid Curve on Surface        : " << CString17;
         if (S1_COnS != 0)
+        {
           di << "  Cases(" << S1_COnS << ")  Total shapes(" << S1_COnSAll << ")\n";
+        }
         else
+        {
           di << "\n";
+        }
       }
 
       // output for second shape
@@ -929,88 +1017,152 @@ int bopargcheck(Draw_Interpretor& di, int n, const char** a)
         di << "---------------------------------\n";
         const char* CString7;
         if (S2_BadType != 0)
+        {
           CString7 = "YES";
+        }
         else
+        {
           CString7 = aChecker.ArgumentTypeMode() ? "NO" : "DISABLED";
+        }
         di << "Shapes are not suppotrted by BOP: " << CString7 << "\n";
         const char* CString8;
         if (S2_SelfInt != 0)
+        {
           CString8 = "YES";
+        }
         else
+        {
           CString8 = aChecker.SelfInterMode() ? "NO" : "DISABLED";
+        }
         di << "Self-Intersections              : " << CString8;
         if (S2_SelfInt != 0)
+        {
           di << "  Cases(" << S2_SelfInt << ")  Total shapes(" << S2_SelfIntAll << ")\n";
+        }
         else
+        {
           di << "\n";
+        }
 
         const char* CString14;
         if (S2_OpAb != 0)
+        {
           CString14 = "YES";
+        }
         else
+        {
           CString14 = aChecker.SelfInterMode() ? "NO" : "DISABLED";
+        }
         di << "Check for SI has been aborted   : " << CString14 << "\n";
         const char* CString9;
         if (S2_SmalE != 0)
+        {
           CString9 = "YES";
+        }
         else
+        {
           CString9 = aChecker.SmallEdgeMode() ? "NO" : "DISABLED";
+        }
         di << "Too small edges                 : " << CString9;
         if (S2_SmalE != 0)
+        {
           di << "  Cases(" << S2_SmalE << ")  Total shapes(" << S2_SmalEAll << ")\n";
+        }
         else
+        {
           di << "\n";
+        }
         const char* CString10;
         if (S2_BadF != 0)
+        {
           CString10 = "YES";
+        }
         else
+        {
           CString10 = aChecker.RebuildFaceMode() ? "NO" : "DISABLED";
+        }
         di << "Bad faces                       : " << CString10;
         if (S2_BadF != 0)
+        {
           di << "  Cases(" << S2_BadF << ")  Total shapes(" << S2_BadFAll << ")\n";
+        }
         else
+        {
           di << "\n";
+        }
         const char* CString11;
         if (S2_BadV != 0)
+        {
           CString11 = "YES";
+        }
         else
+        {
           CString11 = aChecker.MergeVertexMode() ? "NO" : "DISABLED";
+        }
         di << "Too close vertices              : " << CString11;
         if (S2_BadV != 0)
+        {
           di << "  Cases(" << S2_BadV << ")  Total shapes(" << S2_BadVAll << ")\n";
+        }
         else
+        {
           di << "\n";
+        }
         const char* CString12;
         if (S2_BadE != 0)
+        {
           CString12 = "YES";
+        }
         else
+        {
           CString12 = aChecker.MergeEdgeMode() ? "NO" : "DISABLED";
+        }
         di << "Too close edges                 : " << CString12;
         if (S2_BadE != 0)
+        {
           di << "  Cases(" << S2_BadE << ")  Total shapes(" << S2_BadEAll << ")\n";
+        }
         else
+        {
           di << "\n";
+        }
         const char* CString16;
         if (S2_C0 != 0)
+        {
           CString16 = "YES";
+        }
         else
+        {
           CString16 = aChecker.ContinuityMode() ? "NO" : "DISABLED";
+        }
         di << "Shapes with Continuity C0       : " << CString16;
         if (S2_C0 != 0)
+        {
           di << "  Cases(" << S2_C0 << ")  Total shapes(" << S2_C0All << ")\n";
+        }
         else
+        {
           di << "\n";
+        }
 
         const char* CString18;
         if (S2_COnS != 0)
+        {
           CString18 = "YES";
+        }
         else
+        {
           CString18 = aChecker.CurveOnSurfaceMode() ? "NO" : "DISABLED";
+        }
         di << "Invalid Curve on Surface        : " << CString18;
         if (S2_COnS != 0)
+        {
           di << "  Cases(" << S2_COnS << ")  Total shapes(" << S2_COnSAll << ")\n";
+        }
         else
+        {
           di << "\n";
+        }
       }
       // warning
       if (hasUnknown)
@@ -1053,15 +1205,25 @@ int bopapicheck(Draw_Interpretor& di, int n, const char** a)
       // Get the operation type
       ++i;
       if (!strcmp(a[i], "common"))
+      {
         anOp = BOPAlgo_COMMON;
+      }
       else if (!strcmp(a[i], "fuse"))
+      {
         anOp = BOPAlgo_FUSE;
+      }
       else if (!strcmp(a[i], "cut"))
+      {
         anOp = BOPAlgo_CUT;
+      }
       else if (!strcmp(a[i], "tuc"))
+      {
         anOp = BOPAlgo_CUT21;
+      }
       else if (!strcmp(a[i], "section"))
+      {
         anOp = BOPAlgo_SECTION;
+      }
     }
     else if (!strcmp(a[i], "-se"))
     {
@@ -1081,9 +1243,13 @@ int bopapicheck(Draw_Interpretor& di, int n, const char** a)
   if (aChecker.IsValid())
   {
     if (aS2.IsNull())
+    {
       di << "The shape seems to be valid\n";
+    }
     else
+    {
       di << "The shapes seem to be valid\n";
+    }
     return 0;
   }
 
@@ -1113,15 +1279,21 @@ int bopapicheck(Draw_Interpretor& di, int n, const char** a)
     }
 
     if (isInv1 && isInv2 && isBadOp)
+    {
       break;
+    }
   }
 
   if (isInv1)
   {
     if (aS2.IsNull())
+    {
       di << "The shape is invalid\n";
+    }
     else
+    {
       di << "The first shape is invalid\n";
+    }
   }
   if (isInv2)
   {
@@ -1130,9 +1302,13 @@ int bopapicheck(Draw_Interpretor& di, int n, const char** a)
   if (isBadOp)
   {
     if (aS2.IsNull())
+    {
       di << "The shape is empty\n";
+    }
     else
+    {
       di << "The shapes are not valid for Boolean operation\n";
+    }
   }
   return 0;
 }

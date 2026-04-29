@@ -120,7 +120,9 @@ void BRepBuilderAPI_MakePolygon::Add(const gp_Pnt& P)
   {
     Done();
     if (!LastVertex().IsNull())
+    {
       myShape = myMakePolygon.Shape();
+    }
   }
 }
 

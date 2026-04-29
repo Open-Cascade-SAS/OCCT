@@ -125,7 +125,9 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d&        L,
   double bsup   = -Precision::Infinite();
   double maxtol = (Tol > TolConf) ? Tol : TolConf;
   if (maxtol < 1.e-7)
+  {
     maxtol = 1.e-7;
+  }
   bool wasSet = false;
 
   gp_Pnt2d                 Pntinf, Pntsup;
@@ -213,7 +215,9 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d&        L,
       }
     }
     if (!wasSet)
+    {
       this->SetValues(Inter);
+    }
   }
   else
   {
@@ -240,12 +244,18 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d&        L,
   double   binf = Precision::Infinite(), bsup = -Precision::Infinite(), maxtol;
   gp_Pnt2d Pntinf, Pntsup;
   if (Tol > TolConf)
+  {
     maxtol = Tol;
+  }
   else
+  {
     maxtol = TolConf;
+  }
   maxtol *= 100.0;
   if (maxtol < 0.000001)
+  {
     maxtol = 0.000001;
+  }
   gp_Vec2d  Offset(maxtol * H.XAxis().Direction().X(), maxtol * H.XAxis().Direction().Y());
   gp_Hypr2d Hp(H.Translated(Offset));
   IntAna2d_AnaIntersection theIntAna2d;
@@ -588,12 +598,18 @@ void IntCurve_IntConicConic::Perform(const gp_Parab2d&      P1,
   double   binf = Precision::Infinite(), bsup = -Precision::Infinite(), maxtol;
   gp_Pnt2d Pntinf, Pntsup;
   if (Tol > TolConf)
+  {
     maxtol = Tol;
+  }
   else
+  {
     maxtol = TolConf;
+  }
   maxtol *= 100.0;
   if (maxtol < 0.000001)
+  {
     maxtol = 0.000001;
+  }
   gp_Vec2d                 Offset(maxtol * P2.MirrorAxis().Direction().X(),
                   maxtol * P2.MirrorAxis().Direction().Y());
   gp_Parab2d               Pp(P2.Translated(Offset));
@@ -697,9 +713,13 @@ void IntCurve_IntConicConic::Perform(const gp_Elips2d&      E,
   double   binf = Precision::Infinite(), bsup = -Precision::Infinite(), maxtol;
   gp_Pnt2d Pntinf, Pntsup;
   if (Tol > TolConf)
+  {
     maxtol = Tol;
+  }
   else
+  {
     maxtol = TolConf;
+  }
 
   maxtol = E.MinorRadius() / 10.0;
   gp_Elips2d Ep(E);
@@ -802,12 +822,18 @@ void IntCurve_IntConicConic::Perform(const gp_Parab2d&      P,
   double   binf = Precision::Infinite(), bsup = -Precision::Infinite(), maxtol;
   gp_Pnt2d Pntinf, Pntsup;
   if (Tol > TolConf)
+  {
     maxtol = Tol;
+  }
   else
+  {
     maxtol = TolConf;
+  }
   maxtol *= 100.0;
   if (maxtol < 0.000001)
+  {
     maxtol = 0.000001;
+  }
   gp_Vec2d  Offset(maxtol * H.XAxis().Direction().X(), maxtol * H.XAxis().Direction().Y());
   gp_Hypr2d Hp(H.Translated(Offset));
   IntAna2d_AnaIntersection theIntAna2d;
@@ -1055,12 +1081,18 @@ void IntCurve_IntConicConic::Perform(const gp_Hypr2d&       H1,
   double   binf = Precision::Infinite(), bsup = -Precision::Infinite(), maxtol;
   gp_Pnt2d Pntinf, Pntsup;
   if (Tol > TolConf)
+  {
     maxtol = Tol;
+  }
   else
+  {
     maxtol = TolConf;
+  }
   maxtol *= 100.0;
   if (maxtol < 0.000001)
+  {
     maxtol = 0.000001;
+  }
   gp_Vec2d  Offset(maxtol * H2.XAxis().Direction().X(), maxtol * H2.XAxis().Direction().Y());
   gp_Hypr2d Hp(H2.Translated(Offset));
   IntAna2d_AnaIntersection theIntAna2d;
@@ -1163,7 +1195,9 @@ void SetBinfBsupFromIntAna2d(const IntAna2d_AnaIntersection& theIntAna2d,
           double NormeD1 = V.Magnitude();
           double dparam  = 100.0 * maxtol / NormeD1;
           if (dparam < 1e-3)
+          {
             dparam = 1e-3;
+          }
           param -= dparam;
 
           if (param < binf)
@@ -1209,7 +1243,9 @@ void SetBinfBsupFromIntAna2d(const IntAna2d_AnaIntersection& theIntAna2d,
           double NormeD1 = V.Magnitude();
           double dparam  = 100.0 * maxtol / NormeD1;
           if (dparam < 1e-3)
+          {
             dparam = 1e-3;
+          }
           param -= dparam;
 
           if (param < binf)

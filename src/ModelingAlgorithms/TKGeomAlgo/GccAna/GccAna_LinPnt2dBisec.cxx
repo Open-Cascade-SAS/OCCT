@@ -81,7 +81,9 @@ bool GccAna_LinPnt2dBisec::IsDone() const
 occ::handle<GccInt_Bisec> GccAna_LinPnt2dBisec::ThisSolution() const
 {
   if (!WellDone)
+  {
     throw StdFail_NotDone();
+  }
 
   return bissol;
 }

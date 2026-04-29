@@ -40,12 +40,16 @@ static void restoreEdgeRegularities(const BRepGraph_LayerRegularity* theRegulari
                                     TopoDS_Edge&                     theEdgeShape)
 {
   if (theRegularities == nullptr)
+  {
     return;
+  }
 
   const BRepGraph_LayerRegularity::EdgeRegularities* aRegularities =
     theRegularities->FindEdgeRegularities(theEdgeId);
   if (aRegularities == nullptr)
+  {
     return;
+  }
 
   for (const BRepGraph_LayerRegularity::RegularityEntry& aRegEntry : aRegularities->Entries)
   {
@@ -70,15 +74,21 @@ static void restoreVertexPointReps(const BRepGraphInc_Storage&      theStorage,
                                    BRep_Builder&                    theBuilder)
 {
   if (theParams == nullptr || !theVertexId.IsValid(theStorage.NbVertices()))
+  {
     return;
+  }
 
   const BRepGraph_LayerParam::VertexParams* aParams = theParams->FindVertexParams(theVertexId);
   if (aParams == nullptr || aParams->IsEmpty())
+  {
     return;
+  }
 
   const TopoDS_Shape* aVtxCached = theCache.Seek(theVertexId);
   if (aVtxCached == nullptr || aVtxCached->IsNull())
+  {
     return;
+  }
 
   const BRepGraphInc::VertexDef& aVtxDef   = theStorage.Vertex(theVertexId);
   TopoDS_Vertex                  aVtxShape = TopoDS::Vertex(*aVtxCached);
@@ -87,10 +97,12 @@ static void restoreVertexPointReps(const BRepGraphInc_Storage&      theStorage,
   {
     const TopoDS_Shape* anEdgeCached = theCache.Seek(aPOC.EdgeDefId);
     if (anEdgeCached != nullptr && !anEdgeCached->IsNull())
+    {
       theBuilder.UpdateVertex(aVtxShape,
                               aPOC.Parameter,
                               TopoDS::Edge(*anEdgeCached),
                               aVtxDef.Tolerance);
+    }
   }
 
   for (const BRepGraph_LayerParam::PointOnSurfaceEntry& aPOS : aParams->PointsOnSurface)
@@ -109,10 +121,14 @@ static void restoreVertexPointReps(const BRepGraphInc_Storage&      theStorage,
   for (const BRepGraph_LayerParam::PointOnPCurveEntry& aPOPC : aParams->PointsOnPCurve)
   {
     if (!aPOPC.CoEdgeDefId.IsValid(theStorage.NbCoEdges()))
+    {
       continue;
+    }
     const BRepGraphInc::CoEdgeDef& aCoEdge = theStorage.CoEdge(aPOPC.CoEdgeDefId);
     if (!aCoEdge.Curve2DRepId.IsValid())
+    {
       continue;
+    }
 
     const TopoDS_Shape* anEdgeCached = theCache.Seek(aCoEdge.EdgeDefId);
     const TopoDS_Shape* aFaceCached  = theCache.Seek(aCoEdge.FaceDefId);
@@ -146,14 +162,18 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage&      the
                                             const BRepGraph_LayerRegularity* theRegularities)
 {
   if (!theNode.IsValid())
+  {
     return TopoDS_Shape();
+  }
 
   Cache::TempScope aTempScope(theCache);
 
   // Check cache first.
   const TopoDS_Shape* aCached = theCache.Seek(theNode);
   if (aCached != nullptr)
+  {
     return *aCached;
+  }
 
   BRep_Builder aBB;
   TopoDS_Shape aResult;
@@ -180,9 +200,13 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage&      the
       {
         const occ::handle<Geom_Curve>& aCurve3d = theStorage.Curve3DRep(anEdge.Curve3DRepId).Curve;
         if (!aCurve3d.IsNull())
+        {
           aBB.MakeEdge(aNewEdge, aCurve3d, TopLoc_Location(), anEdge.Tolerance);
+        }
         else
+        {
           aBB.MakeEdge(aNewEdge);
+        }
       }
       else
       {
@@ -201,7 +225,9 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage&      the
         {
           aStartVtx.Orientation(TopAbs_FORWARD);
           if (!aStartVR.LocalLocation.IsIdentity())
+          {
             aStartVtx.Location(aStartVR.LocalLocation);
+          }
           aBB.Add(aNewEdge, aStartVtx);
         }
       }
@@ -214,7 +240,9 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage&      the
         {
           anEndVtx.Orientation(TopAbs_REVERSED);
           if (!anEndVR.LocalLocation.IsIdentity())
+          {
             anEndVtx.Location(anEndVR.LocalLocation);
+          }
           aBB.Add(aNewEdge, anEndVtx);
         }
       }
@@ -226,7 +254,9 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage&      the
         {
           aVtx.Orientation(aVR.Orientation);
           if (!aVR.LocalLocation.IsIdentity())
+          {
             aVtx.Location(aVR.LocalLocation);
+          }
           aBB.Add(aNewEdge, aVtx);
         }
       }
@@ -236,10 +266,14 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage&      the
         const occ::handle<Poly_Polygon3D>& aPolygon3D =
           theStorage.Polygon3DRep(anEdge.Polygon3DRepId).Polygon;
         if (!aPolygon3D.IsNull())
+        {
           aBB.UpdateEdge(aNewEdge, aPolygon3D, TopLoc_Location());
+        }
       }
       if (anEdge.IsClosed)
+      {
         aNewEdge.Closed(true);
+      }
       aResult = aNewEdge;
       break;
     }
@@ -252,22 +286,30 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage&      the
       {
         const BRepGraphInc::CoEdgeRef& aCoEdgeRef = theStorage.CoEdgeRef(aCoEdgeRefId);
         if (aCoEdgeRef.IsRemoved || !aCoEdgeRef.CoEdgeDefId.IsValid(theStorage.NbCoEdges()))
+        {
           continue;
+        }
         const BRepGraphInc::CoEdgeDef& aCoEdge =
           theStorage.CoEdge(BRepGraph_CoEdgeId(aCoEdgeRef.CoEdgeDefId));
         if (aCoEdge.IsRemoved || !aCoEdge.EdgeDefId.IsValid(theStorage.NbEdges()))
+        {
           continue;
+        }
         TopoDS_Shape anEdge = Node(theStorage, aCoEdge.EdgeDefId, theCache);
         if (!anEdge.IsNull())
         {
           anEdge.Orientation(aCoEdge.Orientation);
           if (!aCoEdgeRef.LocalLocation.IsIdentity())
+          {
             anEdge.Location(aCoEdgeRef.LocalLocation);
+          }
           aBB.Add(aNewWire, anEdge);
         }
       }
       if (aWire.IsClosed)
+      {
         aNewWire.Closed(true);
+      }
       aResult = aNewWire;
       break;
     }
@@ -286,14 +328,18 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage&      the
       {
         const BRepGraphInc::FaceRef& aRef = theStorage.FaceRef(aFaceRefId);
         if (aRef.IsRemoved || !aRef.FaceDefId.IsValid(theStorage.NbFaces()))
+        {
           continue;
+        }
         TopoDS_Shape aFace =
           FaceWithCache(theStorage, aRef.FaceDefId, theCache, theParams, theRegularities);
         if (!aFace.IsNull())
         {
           aFace.Orientation(aRef.Orientation);
           if (!aRef.LocalLocation.IsIdentity())
+          {
             aFace.Location(aRef.LocalLocation);
+          }
           aBB.Add(aNewShell, aFace);
         }
       }
@@ -307,12 +353,16 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage&      the
         {
           aChild.Orientation(aRef.Orientation);
           if (!aRef.LocalLocation.IsIdentity())
+          {
             aChild.Location(aRef.LocalLocation);
+          }
           aBB.Add(aNewShell, aChild);
         }
       }
       if (aShell.IsClosed)
+      {
         aNewShell.Closed(true);
+      }
       aResult = aNewShell;
       break;
     }
@@ -325,14 +375,18 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage&      the
       {
         const BRepGraphInc::ShellRef& aShellRef = theStorage.ShellRef(aShellRefId);
         if (aShellRef.IsRemoved || !aShellRef.ShellDefId.IsValid(theStorage.NbShells()))
+        {
           continue;
+        }
         TopoDS_Shape aShell =
           Node(theStorage, aShellRef.ShellDefId, theCache, theParams, theRegularities);
         if (!aShell.IsNull())
         {
           aShell.Orientation(aShellRef.Orientation);
           if (!aShellRef.LocalLocation.IsIdentity())
+          {
             aShell.Location(aShellRef.LocalLocation);
+          }
           aBB.Add(aNewSolid, aShell);
         }
       }
@@ -345,7 +399,9 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage&      the
         {
           aChild.Orientation(aCR.Orientation);
           if (!aCR.LocalLocation.IsIdentity())
+          {
             aChild.Location(aCR.LocalLocation);
+          }
           aBB.Add(aNewSolid, aChild);
         }
       }
@@ -361,14 +417,18 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage&      the
       {
         const BRepGraphInc::ChildRef& aRef = theStorage.ChildRef(aChildRefId);
         if (aRef.IsRemoved || !aRef.ChildDefId.IsValid())
+        {
           continue;
+        }
         TopoDS_Shape aChild =
           Node(theStorage, aRef.ChildDefId, theCache, theParams, theRegularities);
         if (!aChild.IsNull())
         {
           aChild.Orientation(aRef.Orientation);
           if (!aRef.LocalLocation.IsIdentity())
+          {
             aChild.Location(aRef.LocalLocation);
+          }
           aBB.Add(aNewComp, aChild);
         }
       }
@@ -384,14 +444,18 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(const BRepGraphInc_Storage&      the
       {
         const BRepGraphInc::SolidRef& aRef = theStorage.SolidRef(aSolidRefId);
         if (aRef.IsRemoved || !aRef.SolidDefId.IsValid(theStorage.NbSolids()))
+        {
           continue;
+        }
         TopoDS_Shape aSolid =
           Node(theStorage, aRef.SolidDefId, theCache, theParams, theRegularities);
         if (!aSolid.IsNull())
         {
           aSolid.Orientation(aRef.Orientation);
           if (!aRef.LocalLocation.IsIdentity())
+          {
             aSolid.Location(aRef.LocalLocation);
+          }
           aBB.Add(aNewCS, aSolid);
         }
       }
@@ -421,7 +485,9 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(
   const BRepGraph_LayerRegularity* theRegularities)
 {
   if (!theFaceId.IsValid(theStorage.NbFaces()))
+  {
     return TopoDS_Shape();
+  }
 
   Cache::TempScope aTempScope(theCache);
 
@@ -429,7 +495,9 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(
   BRepGraph_NodeId    aFaceNodeId = theFaceId;
   const TopoDS_Shape* aCachedFace = theCache.Seek(aFaceNodeId);
   if (aCachedFace != nullptr)
+  {
     return *aCachedFace;
+  }
 
   BRep_Builder                 aBB;
   const BRepGraphInc::FaceDef& aFace = theStorage.Face(theFaceId);
@@ -437,13 +505,19 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(
   // Resolve surface from rep storage (may be null for bare topology faces).
   occ::handle<Geom_Surface> aFaceSurface;
   if (aFace.SurfaceRepId.IsValid())
+  {
     aFaceSurface = theStorage.SurfaceRep(aFace.SurfaceRepId).Surface;
+  }
 
   TopoDS_Face aNewFace;
   if (!aFaceSurface.IsNull())
+  {
     aBB.MakeFace(aNewFace, aFaceSurface, TopLoc_Location(), aFace.Tolerance);
+  }
   else
+  {
     aBB.MakeFace(aNewFace);
+  }
 
   // Attach triangulation.
   if (aFace.TriangulationRepId.IsValid())
@@ -456,7 +530,9 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(
       aTriList.Append(aTri);
       const occ::handle<BRep_TFace>& aTFace = occ::down_cast<BRep_TFace>(aNewFace.TShape());
       if (!aTFace.IsNull())
+      {
         aTFace->Triangulations(aTriList, aTri);
+      }
     }
   }
 
@@ -465,7 +541,9 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(
     BRepGraph_NodeId    anEdgeNodeId = theEdgeId;
     const TopoDS_Shape* aCached      = theCache.Seek(anEdgeNodeId);
     if (aCached != nullptr)
+    {
       return TopoDS::Edge(*aCached);
+    }
 
     const BRepGraphInc::EdgeDef& anEdge = theStorage.Edge(theEdgeId);
     TopoDS_Edge                  aNewEdge;
@@ -478,9 +556,13 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(
     {
       const occ::handle<Geom_Curve>& aCurve3d = theStorage.Curve3DRep(anEdge.Curve3DRepId).Curve;
       if (!aCurve3d.IsNull())
+      {
         aBB.MakeEdge(aNewEdge, aCurve3d, TopLoc_Location(), anEdge.Tolerance);
+      }
       else
+      {
         aBB.MakeEdge(aNewEdge);
+      }
     }
     else
     {
@@ -493,11 +575,15 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(
     // Vertices (also cached).
     const auto aGetOrBuildVertex = [&](const BRepGraph_VertexId theVtxId) -> TopoDS_Shape {
       if (!theVtxId.IsValid())
+      {
         return TopoDS_Shape();
+      }
       BRepGraph_NodeId    aVtxNodeId = theVtxId;
       const TopoDS_Shape* aVtxCached = theCache.Seek(aVtxNodeId);
       if (aVtxCached != nullptr)
+      {
         return *aVtxCached;
+      }
       const BRepGraphInc::VertexDef& aVtx = theStorage.Vertex(theVtxId);
       TopoDS_Vertex                  aNewVtx;
       aBB.MakeVertex(aNewVtx, aVtx.Point, aVtx.Tolerance);
@@ -513,7 +599,9 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(
       {
         aStartVtx.Orientation(TopAbs_FORWARD);
         if (!aStartVR.LocalLocation.IsIdentity())
+        {
           aStartVtx.Location(aStartVR.LocalLocation);
+        }
         aBB.Add(aNewEdge, aStartVtx);
       }
     }
@@ -525,7 +613,9 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(
       {
         anEndVtx.Orientation(TopAbs_REVERSED);
         if (!anEndVR.LocalLocation.IsIdentity())
+        {
           anEndVtx.Location(anEndVR.LocalLocation);
+        }
         aBB.Add(aNewEdge, anEndVtx);
       }
     }
@@ -537,7 +627,9 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(
       {
         aVtx.Orientation(aVR.Orientation);
         if (!aVR.LocalLocation.IsIdentity())
+        {
           aVtx.Location(aVR.LocalLocation);
+        }
         aBB.Add(aNewEdge, aVtx);
       }
     }
@@ -548,13 +640,17 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(
       const occ::handle<Poly_Polygon3D>& aPolygon3D =
         theStorage.Polygon3DRep(anEdge.Polygon3DRepId).Polygon;
       if (!aPolygon3D.IsNull())
+      {
         aBB.UpdateEdge(aNewEdge, aPolygon3D, TopLoc_Location());
+      }
     }
 
     restoreEdgeRegularities(theRegularities, theEdgeId, theCache, aBB, aNewEdge);
 
     if (anEdge.IsClosed)
+    {
       aNewEdge.Closed(true);
+    }
 
     theCache.Bind(anEdgeNodeId, aNewEdge);
     return aNewEdge;
@@ -577,10 +673,14 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(
                                            const bool                  theAddToWire) {
       const BRepGraphInc::CoEdgeRef& aCoEdgeRef = theStorage.CoEdgeRef(theCoEdgeRefId);
       if (aCoEdgeRef.IsRemoved || !aCoEdgeRef.CoEdgeDefId.IsValid(theStorage.NbCoEdges()))
+      {
         return;
+      }
       const BRepGraphInc::CoEdgeDef& aCoEdge = theStorage.CoEdge(aCoEdgeRef.CoEdgeDefId);
       if (aCoEdge.IsRemoved || !aCoEdge.EdgeDefId.IsValid(theStorage.NbEdges()))
+      {
         return;
+      }
 
       TopoDS_Edge anEdge = aGetOrBuildEdge(aCoEdge.EdgeDefId);
       if (theAddToWire)
@@ -588,7 +688,9 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(
         TopoDS_Edge anEdgeInWire = anEdge;
         anEdgeInWire.Orientation(aCoEdge.Orientation);
         if (!aCoEdgeRef.LocalLocation.IsIdentity())
+        {
           anEdgeInWire.Location(aCoEdgeRef.LocalLocation);
+        }
         aBB.Add(aNewWire, anEdgeInWire);
       }
 
@@ -604,7 +706,9 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(
       //   stored_loc = aEdgeInFaceLoc^-1
       // Later, BRep_Tool search computes the same loc from face/wire/edge context. OK
       if (!aEdgeInFaceLoc.IsIdentity())
+      {
         anEdge.Location(aEdgeInFaceLoc);
+      }
 
       // Collect PCurve(s): primary from this coedge, seam from paired coedge.
       occ::handle<Geom2d_Curve> aPC1, aPC2;
@@ -642,6 +746,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(
       if (!aPC1.IsNull() && !aPC2.IsNull())
       {
         if (aHasUV)
+        {
           aBB.UpdateEdge(anEdge,
                          aPC1,
                          aPC2,
@@ -650,8 +755,11 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(
                          anEdgeEnt.Tolerance,
                          aUV1,
                          aUV2);
+        }
         else
+        {
           aBB.UpdateEdge(anEdge, aPC1, aPC2, aFaceSurface, TopLoc_Location(), anEdgeEnt.Tolerance);
+        }
         aBB.Range(anEdge, aFaceSurface, TopLoc_Location(), aPCFirst, aPCLast);
 
         // Restore seam continuity (UpdateEdge creates CurveOnClosedSurface with C0).
@@ -678,6 +786,7 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(
       else if (!aPC1.IsNull())
       {
         if (aHasUV)
+        {
           aBB.UpdateEdge(anEdge,
                          aPC1,
                          aFaceSurface,
@@ -685,8 +794,11 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(
                          anEdgeEnt.Tolerance,
                          aUV1,
                          aUV2);
+        }
         else
+        {
           aBB.UpdateEdge(anEdge, aPC1, aFaceSurface, TopLoc_Location(), anEdgeEnt.Tolerance);
+        }
         aBB.Range(anEdge, aFaceSurface, TopLoc_Location(), aPCFirst, aPCLast);
       }
       else if (!aPC2.IsNull())
@@ -701,7 +813,9 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(
         const occ::handle<Poly_Polygon2D>& aPolyOnSurf =
           theStorage.Polygon2DRep(aCoEdge.Polygon2DRepId).Polygon;
         if (!aPolyOnSurf.IsNull())
+        {
           aBB.UpdateEdge(anEdge, aPolyOnSurf, aFaceSurface, TopLoc_Location());
+        }
       }
 
       // Attach PolygonOnTriangulation from CoEdge.
@@ -714,13 +828,17 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(
           const occ::handle<Poly_Triangulation>& aTri =
             theStorage.TriangulationRep(aPolyOnTriRep.TriangulationRepId).Triangulation;
           if (!aTri.IsNull())
+          {
             aBB.UpdateEdge(anEdge, aPolyOnTriRep.Polygon, aTri, TopLoc_Location());
+          }
         }
       }
 
       // Reset temporary edge location after all UpdateEdge calls.
       if (!aEdgeInFaceLoc.IsIdentity())
+      {
         anEdge.Location(TopLoc_Location());
+      }
     };
 
     if (aCachedWire != nullptr)
@@ -759,32 +877,46 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(
   {
     const BRepGraphInc::WireRef& aWireRef = theStorage.WireRef(aWireRefId);
     if (aWireRef.IsRemoved || !aWireRef.WireDefId.IsValid(theStorage.NbWires()))
+    {
       continue;
+    }
     TopoDS_Wire aWire = aBuildWireForFace(aWireRef.WireDefId, aWireRef.LocalLocation);
     aWire.Orientation(aWireRef.Orientation);
     if (!aWireRef.LocalLocation.IsIdentity())
+    {
       aWire.Location(aWireRef.LocalLocation);
+    }
     if (aWireRef.IsOuter)
     {
       if (anOuterWire.IsNull())
+      {
         anOuterWire = aWire;
+      }
       continue;
     }
     anInnerWires.Append(aWire);
   }
   if (!anOuterWire.IsNull())
+  {
     aBB.Add(aNewFace, anOuterWire);
+  }
   for (const TopoDS_Wire& anInnerWire : anInnerWires)
+  {
     aBB.Add(aNewFace, anInnerWire);
+  }
 
   // Add direct INTERNAL/EXTERNAL vertex children.
   for (const BRepGraph_VertexRefId& aVRefId : aFace.VertexRefIds)
   {
     if (!aVRefId.IsValid(theStorage.NbVertexRefs()))
+    {
       continue;
+    }
     const BRepGraphInc::VertexRef& aVR = theStorage.VertexRef(aVRefId);
     if (aVR.IsRemoved || !aVR.VertexDefId.IsValid())
+    {
       continue;
+    }
     const BRepGraphInc::VertexDef& aVtxEnt    = theStorage.Vertex(aVR.VertexDefId);
     BRepGraph_NodeId               aVtxId     = aVR.VertexDefId;
     const TopoDS_Shape*            aVtxCached = theCache.Seek(aVtxId);
@@ -802,7 +934,9 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(
     }
     aVtxShape.Orientation(aVR.Orientation);
     if (!aVR.LocalLocation.IsIdentity())
+    {
       aVtxShape.Location(aVR.LocalLocation);
+    }
     aBB.Add(aNewFace, aVtxShape);
   }
 
@@ -813,31 +947,41 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(
   {
     const BRepGraphInc::WireRef& aWireRef = theStorage.WireRef(aWireRefId);
     if (aWireRef.IsRemoved || !aWireRef.WireDefId.IsValid(theStorage.NbWires()))
+    {
       continue;
+    }
     const BRepGraphInc::WireDef& aWireEnt = theStorage.Wire(aWireRef.WireDefId);
     for (const BRepGraph_CoEdgeRefId& aCoEdgeRefId : aWireEnt.CoEdgeRefIds)
     {
       const BRepGraphInc::CoEdgeRef& aCoEdgeRef = theStorage.CoEdgeRef(aCoEdgeRefId);
       if (aCoEdgeRef.IsRemoved || !aCoEdgeRef.CoEdgeDefId.IsValid(theStorage.NbCoEdges()))
+      {
         continue;
+      }
       const BRepGraphInc::CoEdgeDef& aCoEdge =
         theStorage.CoEdge(BRepGraph_CoEdgeId(aCoEdgeRef.CoEdgeDefId));
       if (aCoEdge.IsRemoved || !aCoEdge.EdgeDefId.IsValid(theStorage.NbEdges()))
+      {
         continue;
+      }
       const BRepGraphInc::EdgeDef& anEdgeEnt = theStorage.Edge(aCoEdge.EdgeDefId);
       if (anEdgeEnt.StartVertexRefId.IsValid())
       {
         const BRepGraph_VertexId aVertexId =
           theStorage.VertexRef(anEdgeEnt.StartVertexRefId).VertexDefId;
         if (aProcessedVertices.Add(aVertexId))
+        {
           restoreVertexPointReps(theStorage, theParams, aVertexId, theCache, aBB);
+        }
       }
       if (anEdgeEnt.EndVertexRefId.IsValid())
       {
         const BRepGraph_VertexId aVertexId =
           theStorage.VertexRef(anEdgeEnt.EndVertexRefId).VertexDefId;
         if (aProcessedVertices.Add(aVertexId))
+        {
           restoreVertexPointReps(theStorage, theParams, aVertexId, theCache, aBB);
+        }
       }
     }
   }
@@ -845,7 +989,9 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(
   // NaturalRestriction must be set AFTER wires are added
   // (BRep_Builder::Add may reset the flag).
   if (aFace.NaturalRestriction)
+  {
     aBB.NaturalRestriction(aNewFace, true);
+  }
 
   aNewFace.Orientation(TopAbs_FORWARD);
   theCache.Bind(aFaceNodeId, aNewFace);

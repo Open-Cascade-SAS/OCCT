@@ -35,7 +35,9 @@ void RWStepRepr_RWBetweenShapeAspect::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "between_shape_aspect"))
+  {
     return;
+  }
 
   // Inherited fields of ShapeAspect
 

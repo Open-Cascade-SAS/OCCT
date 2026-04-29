@@ -587,7 +587,9 @@ void Law_Interpolate::PerformNonPeriodic()
 const occ::handle<Law_BSpline>& Law_Interpolate::Curve() const
 {
   if (!myIsDone)
+  {
     throw StdFail_NotDone(" ");
+  }
   return myCurve;
 }
 

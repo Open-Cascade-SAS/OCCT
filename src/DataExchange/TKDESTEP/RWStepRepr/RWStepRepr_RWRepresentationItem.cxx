@@ -28,7 +28,9 @@ void RWStepRepr_RWRepresentationItem::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 1, ach, "representation_item"))
+  {
     return;
+  }
 
   // --- own field : name ---
 

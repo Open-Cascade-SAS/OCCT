@@ -39,7 +39,9 @@ void RWStepShape_RWFaceBasedSurfaceModel::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "face_based_surface_model"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 

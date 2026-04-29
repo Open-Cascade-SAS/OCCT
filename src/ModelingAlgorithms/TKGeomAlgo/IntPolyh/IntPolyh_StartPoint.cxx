@@ -198,7 +198,9 @@ int IntPolyh_StartPoint::GetEdgePoints(const IntPolyh_Triangle& Triangle,
     SurfID = 2;
   }
   else
+  {
     SurfID = 0;
+  }
   return (SurfID);
 }
 
@@ -270,7 +272,9 @@ int IntPolyh_StartPoint::CheckSameSP(const IntPolyh_StartPoint& SP) const
              < MyConfusionPrecision)) // lambda1!=-1 && lambda1==SP.lambda2
         || ((lambda2 > -MyConfusionPrecision)
             && (std::abs(lambda2 - SP.lambda2) < MyConfusionPrecision)))
+    {
       Test = 1;
+    }
     // if( (std::abs(u1-SP.u1)<MyConfusionPrecision)&&(std::abs(v1-SP.v1)<MyConfusionPrecision) )
     // Test=1;
   }
@@ -279,7 +283,9 @@ int IntPolyh_StartPoint::CheckSameSP(const IntPolyh_StartPoint& SP) const
     /// monSP est un sommet
     if ((std::abs(SP.u1 - u1) < MyConfusionPrecision)
         && (std::abs(SP.v1 - v1) < MyConfusionPrecision))
+    {
       Test = 1;
+    }
   }
   else if ((e1 == -2) && (e2 == -2))
   {

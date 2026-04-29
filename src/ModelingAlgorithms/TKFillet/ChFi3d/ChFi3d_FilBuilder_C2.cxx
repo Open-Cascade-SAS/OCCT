@@ -96,17 +96,25 @@ static bool ToricRotule(const BRepAdaptor_Surface&        fac,
   occ::handle<ChFiDS_FilSpine> sp1 = occ::down_cast<ChFiDS_FilSpine>(c1->Spine());
   occ::handle<ChFiDS_FilSpine> sp2 = occ::down_cast<ChFiDS_FilSpine>(c2->Spine());
   if (sp1.IsNull() || sp2.IsNull())
+  {
     return false;
+  }
   if (!sp1->IsConstant() || !sp2->IsConstant())
+  {
     return false;
+  }
   if ((fac.GetType() != GeomAbs_Plane) || (s1.GetType() != GeomAbs_Plane)
       || (s2.GetType() != GeomAbs_Plane))
+  {
     return false;
+  }
   gp_Dir df  = fac.Plane().Position().Direction();
   gp_Dir ds1 = s1.Plane().Position().Direction();
   gp_Dir ds2 = s2.Plane().Position().Direction();
   if (std::abs(df.Dot(ds1)) >= tolesp || std::abs(df.Dot(ds2)) >= tolesp)
+  {
     return false;
+  }
   double r1 = sp1->Radius();
   double r2 = sp2->Radius();
   return std::abs(r1 - r2) < tolesp;
@@ -117,11 +125,17 @@ static void RemoveSD(occ::handle<ChFiDS_Stripe>& Stripe, const int num1, const i
   NCollection_Sequence<occ::handle<ChFiDS_SurfData>>& Seq =
     Stripe->ChangeSetOfSurfData()->ChangeSequence();
   if (Seq.IsEmpty())
+  {
     return;
+  }
   if (num1 == num2)
+  {
     Seq.Remove(num1);
+  }
   else
+  {
     Seq.Remove(num1, num2);
+  }
 }
 
 //=================================================================================================
@@ -179,14 +193,22 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const int Index)
   // If two edges to rounded are tangent GeomPlate is called
 
   if (Sens1 == 1)
+  {
     E1 = st1->Spine()->Edges(1);
+  }
   else
+  {
     E1 = st1->Spine()->Edges(st1->Spine()->NbEdges());
+  }
 
   if (Sens2 == 1)
+  {
     E2 = st2->Spine()->Edges(1);
+  }
   else
+  {
     E2 = st2->Spine()->Edges(st2->Spine()->NbEdges());
+  }
 
   BRepAdaptor_Curve BCurv1(E1);
   BRepAdaptor_Curve BCurv2(E2);
@@ -198,9 +220,13 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const int Index)
   CL1.Tangent(dir1);
   CL2.Tangent(dir2);
   if (Sens1 == -1)
+  {
     dir1.Reverse();
+  }
   if (Sens2 == -1)
+  {
     dir2.Reverse();
+  }
   double ang1;
   ang1 = std::abs(dir1.Angle(dir2));
   if (ang1 < M_PI / 180.)
@@ -301,13 +327,21 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const int Index)
     else
     {
       if (Sens1 == 1 && Isd1 != 1)
+      {
         RemoveSD(st1, 1, 1);
+      }
       if (Sens1 != 1 && Isd1 != nbsurf1)
+      {
         RemoveSD(st1, fin1, fin1);
+      }
       if (Sens2 == 1 && Isd2 != 1)
+      {
         RemoveSD(st2, 1, 1);
+      }
       if (Sens2 != 1 && Isd2 != nbsurf2)
+      {
         RemoveSD(st2, fin2, fin2);
+      }
     }
     Isd1 = ChFi3d_IndexOfSurfData(Vtx, st1, Sens1);
     Isd2 = ChFi3d_IndexOfSurfData(Vtx, st2, Sens2);
@@ -344,7 +378,9 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const int Index)
   TopoDS_Edge pivot;
   bool        yapiv = false;
   if (CP1.IsOnArc())
+  {
     pivot = CP1.Arc();
+  }
   else
   {
     PerformMoreThreeCorner(Index, 2);
@@ -504,7 +540,9 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const int Index)
         bid                        = ChFi3d::NextSide(ori, OFF1, oriS, oriSFF1, bid);
         TopAbs_Orientation op1 = TopAbs_FORWARD, op2 = TopAbs_FORWARD;
         if (yapiv)
+        {
           bid = ChFi3d::ConcaveSide(BRS1, BRS2, pivot, op1, op2);
+        }
         op1 = TopAbs::Reverse(op1);
         op2 = TopAbs::Reverse(op2);
 #ifdef OCCT_DEBUG
@@ -681,9 +719,13 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const int Index)
         If2 = ChFi3d_IndexPointInDS(Pf2, DStr);
         Il1 = ChFi3d_IndexPointInDS(Pl1, DStr);
         if (sameparam)
+        {
           Il2 = If2;
+        }
         else
+        {
           Il2 = ChFi3d_IndexPointInDS(Pl2, DStr);
+        }
 
         gp_Pnt2d pp1, pp2;
         pp1 =
@@ -774,7 +816,9 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const int Index)
 
         coin->ChangeIndexOfS1(DStr.AddShape(FaCo));
         if (sameparam)
+        {
           coin->ChangeIndexOfS2(0);
+        }
         else
         {
           coin->ChangeIndexOfS2(DStr.AddShape(FaPiv));
@@ -792,7 +836,9 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const int Index)
         sd1->ChangeVertex(isfirst1, IFaArc1) = Pf2;
         sd1->ChangeInterference(IFaCo1).SetParameter(par1, isfirst1);
         if (IFaCo1 == 2)
+        {
           st1->SetOrientation(TopAbs_REVERSED, isfirst1);
+        }
 
         // then the end Stripe,
         // -------------------------
@@ -804,7 +850,9 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const int Index)
         sd2->ChangeVertex(isfirst2, IFaArc2) = Pl2;
         sd2->ChangeInterference(IFaCo2).SetParameter(par2, isfirst2);
         if (IFaCo2 == 2)
+        {
           st2->SetOrientation(TopAbs_REVERSED, isfirst2);
+        }
       }
 #ifdef OCCT_DEBUG
       ChFi3d_ResultChron(ch, t_t2cornerDS); // result perf update DS
@@ -912,9 +960,13 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const int Index)
         if (std::abs(ppfacsam.X() - ppfacdif.X()) > Uperiod / 2)
         {
           if (ppfacdif.X() < ppfacsam.X())
+          {
             ppfacdif.SetX(ppfacdif.X() + Uperiod);
+          }
           else
+          {
             ppfacdif.SetX(ppfacdif.X() - Uperiod);
+          }
         }
       }
       //////////////////
@@ -947,7 +999,9 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const int Index)
       ChFi3d_ResultChron(ch, t_remplissage); // result perf filling
 #endif
       if (!done)
+      {
         throw Standard_Failure("concavites inverted : fail");
+      }
 #ifdef OCCT_DEBUG
       ChFi3d_InitChron(ch); // init perf update DS
 #endif
@@ -999,7 +1053,9 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const int Index)
       TopAbs_Orientation OpcFopsam = sdsam->Interference(ifaopsam).Transition();
       int                IFopsam   = sdsam->Index(ifaopsam);
       if (isfirstsam)
+      {
         OpcFopsam = TopAbs::Reverse(OpcFopsam);
+      }
       occ::handle<TopOpeBRepDS_SurfaceCurveInterference> interf =
         ChFi3d_FilCurveInDS(Icf, IFopsam, pcFopsam, OpcFopsam);
       DStr.ChangeShapeInterferences(IFopsam).Append(interf);
@@ -1064,7 +1120,9 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const int Index)
       sdsam->ChangeInterferenceOnS1().SetParameter(uintpcsam, isfirstsam);
       sdsam->ChangeInterferenceOnS2().SetParameter(uintpcsam, isfirstsam);
       if (ifaopsam == 2)
+      {
         stsam->SetOrientation(TopAbs_REVERSED, isfirstsam);
+      }
 
       // then Stripe OnDiff
       // ---------------------
@@ -1077,7 +1135,9 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const int Index)
       sddif->ChangeVertex(isfirstdif, ifacodif) = Pl1;
       sddif->ChangeInterference(ifacodif).SetParameter(uintpcdif, isfirstdif);
       if (ifaopdif == 1)
+      {
         stdif->SetOrientation(TopAbs_REVERSED, isfirstdif);
+      }
 #ifdef OCCT_DEBUG
       ChFi3d_ResultChron(ch, t_t2cornerDS); // result perf update DS
 #endif

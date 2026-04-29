@@ -30,9 +30,13 @@ void IGESData_GlobalNodeOfWriterLib::Add(const occ::handle<IGESData_ReadWriteMod
                                          const occ::handle<IGESData_Protocol>&        aprotocol)
 {
   if (themod == amodule)
+  {
     return;
+  }
   if (theprot == aprotocol)
+  {
     themod = amodule;
+  }
   else if (thenext.IsNull())
   {
     if (themod.IsNull())
@@ -47,7 +51,9 @@ void IGESData_GlobalNodeOfWriterLib::Add(const occ::handle<IGESData_ReadWriteMod
     }
   }
   else
+  {
     thenext->Add(amodule, aprotocol);
+  }
 }
 
 const occ::handle<IGESData_ReadWriteModule>& IGESData_GlobalNodeOfWriterLib::Module() const

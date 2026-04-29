@@ -76,6 +76,4 @@ void QABugs::Commands_9(Draw_Interpretor& theCommands)
   const char* group = "QABugs";
 
   theCommands.Add("BUC60857", "BUC60857", __FILE__, BUC60857, group);
-
-  return;
 }

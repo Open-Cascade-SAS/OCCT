@@ -26,28 +26,40 @@ IFSelect_SelectSuite::IFSelect_SelectSuite() = default;
 bool IFSelect_SelectSuite::AddInput(const occ::handle<IFSelect_Selection>& item)
 {
   if (item.IsNull())
+  {
     return false;
+  }
   occ::handle<IFSelect_Selection> input = Input();
   if (!input.IsNull())
+  {
     return false;
+  }
   occ::handle<IFSelect_SelectDeduct> first = occ::down_cast<IFSelect_SelectDeduct>(item);
   if (first.IsNull())
+  {
     SetInput(item);
+  }
   else
+  {
     thesel.Prepend(item);
+  }
   return true;
 }
 
 void IFSelect_SelectSuite::AddPrevious(const occ::handle<IFSelect_SelectDeduct>& item)
 {
   if (!item.IsNull())
+  {
     thesel.Prepend(item);
+  }
 }
 
 void IFSelect_SelectSuite::AddNext(const occ::handle<IFSelect_SelectDeduct>& item)
 {
   if (!item.IsNull())
+  {
     thesel.Append(item);
+  }
 }
 
 int IFSelect_SelectSuite::NbItems() const
@@ -71,7 +83,9 @@ Interface_EntityIterator IFSelect_SelectSuite::RootResult(const Interface_Graph&
   Interface_EntityIterator iter;
   bool                     firstin = (HasInput() || HasAlternate());
   if (firstin)
+  {
     iter = InputResult(G);
+  }
   //   Starting : we take the Input/Alternate IF one of the 2 is set
   //   Otherwise, we start on the basic definition of the first selection
 
@@ -80,7 +94,9 @@ Interface_EntityIterator IFSelect_SelectSuite::RootResult(const Interface_Graph&
   {
     occ::handle<IFSelect_SelectDeduct> anitem = Item(i);
     if (firstin)
+    {
       anitem->Alternate()->SetList(iter.Content());
+    }
     firstin = true; // then it's systematic
     iter    = anitem->UniqueResult(G);
   }
@@ -90,7 +106,9 @@ Interface_EntityIterator IFSelect_SelectSuite::RootResult(const Interface_Graph&
 TCollection_AsciiString IFSelect_SelectSuite::Label() const
 {
   if (thelab.Length() > 0)
+  {
     return thelab;
+  }
   char txt[100];
   Sprintf(txt, "Suite of %d Selections", NbItems());
   TCollection_AsciiString lab(txt);

@@ -358,8 +358,10 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
                     TheSame1(NbrSol) = 0;
                     gp_Dir2d dc(center1.XY() - Center.XY());
                     if (qualifier1(NbrSol) == GccEnt_enclosed)
+                    {
                       // clang-format off
 		       dc.Reverse(); // if tangent circle is inside the source circle, moving to edge of source circle
+}
                     // clang-format on
                     pnttg1sol(NbrSol) = gp_Pnt2d(Center.XY() + Radius(k1) * dc.XY());
                     par1sol(NbrSol)   = ElCLib::Parameter(cirsol(NbrSol), pnttg1sol(NbrSol));
@@ -378,7 +380,9 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
                     // 2nd tangency point is at the other side of the circle solution
                     double alpha = 1.;
                     if (center1.Distance(center2) <= Tolerance)
+                    {
                       alpha = -1;
+                    }
                     pnttg2sol(NbrSol) = gp_Pnt2d(Center.XY() + alpha * Radius(k1) * dc.XY());
                     par2sol(NbrSol)   = ElCLib::Parameter(cirsol(NbrSol), pnttg2sol(NbrSol));
                     pararg2(NbrSol)   = ElCLib::Parameter(C2, pnttg2sol(NbrSol));
@@ -389,20 +393,28 @@ GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
                   pararg3(NbrSol)   = 0.;
                   WellDone          = true;
                   if (NbrSol == MaxSol)
+                  {
                     break;
+                  }
                 }
               }
             }
           }
           WellDone = true;
           if (NbrSol == MaxSol)
+          {
             break;
+          }
         }
         if (NbrSol == MaxSol)
+        {
           break;
+        }
       }
       if (NbrSol == MaxSol)
+      {
         break;
+      }
     }
   }
 

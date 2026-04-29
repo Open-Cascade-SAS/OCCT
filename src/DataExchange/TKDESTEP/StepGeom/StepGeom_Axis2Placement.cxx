@@ -22,11 +22,17 @@ StepGeom_Axis2Placement::StepGeom_Axis2Placement() = default;
 int StepGeom_Axis2Placement::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepGeom_Axis2Placement2d)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepGeom_Axis2Placement3d)))
+  {
     return 2;
+  }
   return 0;
 }
 

@@ -42,11 +42,15 @@ bool XmlMXCAFDoc_NoteDriver::Paste(const XmlObjMgt_Persistent&       theSource,
   XmlObjMgt_DOMString aUserName  = anElement.getAttribute(::UserName());
   XmlObjMgt_DOMString aTimeStamp = anElement.getAttribute(::TimeStamp());
   if (aUserName == nullptr || aTimeStamp == nullptr)
+  {
     return false;
+  }
 
   occ::handle<XCAFDoc_Note> aNote = occ::down_cast<XCAFDoc_Note>(theTarget);
   if (aNote.IsNull())
+  {
     return false;
+  }
 
   aNote->Set(aUserName.GetString(), aTimeStamp.GetString());
 
@@ -61,7 +65,9 @@ void XmlMXCAFDoc_NoteDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
 {
   occ::handle<XCAFDoc_Note> aNote = occ::down_cast<XCAFDoc_Note>(theSource);
   if (aNote.IsNull())
+  {
     return;
+  }
 
   XmlObjMgt_DOMString aUserName(TCollection_AsciiString(aNote->UserName()).ToCString());
   XmlObjMgt_DOMString aTimeStamp(TCollection_AsciiString(aNote->TimeStamp()).ToCString());

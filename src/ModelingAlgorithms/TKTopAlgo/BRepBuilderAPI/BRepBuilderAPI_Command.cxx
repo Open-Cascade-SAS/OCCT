@@ -40,7 +40,9 @@ bool BRepBuilderAPI_Command::IsDone() const
 void BRepBuilderAPI_Command::Check() const
 {
   if (!myDone)
+  {
     throw StdFail_NotDone("BRep_API: command not done");
+  }
 }
 
 //=================================================================================================

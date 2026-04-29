@@ -69,14 +69,18 @@ void BOPAlgo_PaveFiller::UpdateEdgeTolerance(const int nE, const double theTol)
   if (myNonDestructive)
   {
     if (!myDS->IsNewShape(nE))
+    {
       return;
+    }
 
     NCollection_List<int>::Iterator itLI(aLI);
     for (; itLI.More(); itLI.Next())
     {
       int nV = itLI.Value(), nVSD;
       if (!myDS->IsNewShape(nV) && !myDS->HasShapeSD(nV, nVSD))
+      {
         return;
+      }
     }
   }
 
@@ -150,7 +154,9 @@ int BOPAlgo_PaveFiller::UpdateVertex(const int nV, const double aTolNew)
   myVertsToAvoidExtension.Add(nVNew);
 
   if (aTolV < aTolNew)
+  {
     myIncreasedSS.Add(nV);
+  }
 
   return nVNew;
 }

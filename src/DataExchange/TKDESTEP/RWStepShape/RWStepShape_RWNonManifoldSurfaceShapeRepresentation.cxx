@@ -39,7 +39,9 @@ void RWStepShape_RWNonManifoldSurfaceShapeRepresentation::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "non_manifold_surface_shape_representation"))
+  {
     return;
+  }
 
   // Inherited fields of Representation
 

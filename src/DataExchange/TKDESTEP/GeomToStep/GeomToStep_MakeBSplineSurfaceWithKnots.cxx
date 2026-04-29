@@ -72,14 +72,22 @@ GeomToStep_MakeBSplineSurfaceWithKnots::GeomToStep_MakeBSplineSurfaceWithKnots(
   aSurfaceForm = StepGeom_bssfUnspecified;
 
   if (BS->IsUClosed())
+  {
     aUClosed = StepData_LTrue;
+  }
   else
+  {
     aUClosed = StepData_LFalse;
+  }
 
   if (BS->IsVClosed())
+  {
     aVClosed = StepData_LTrue;
+  }
   else
+  {
     aVClosed = StepData_LFalse;
+  }
 
   aSelfIntersect = StepData_LFalse;
 
@@ -118,15 +126,25 @@ GeomToStep_MakeBSplineSurfaceWithKnots::GeomToStep_MakeBSplineSurfaceWithKnots(
   UDistribution = BS->UKnotDistribution();
   VDistribution = BS->VKnotDistribution();
   if (UDistribution == GeomAbs_NonUniform && VDistribution == GeomAbs_NonUniform)
+  {
     KnotSpec = StepGeom_ktUnspecified;
+  }
   else if (UDistribution == GeomAbs_Uniform && VDistribution == GeomAbs_Uniform)
+  {
     KnotSpec = StepGeom_ktUniformKnots;
+  }
   else if (UDistribution == GeomAbs_QuasiUniform && VDistribution == GeomAbs_QuasiUniform)
+  {
     KnotSpec = StepGeom_ktQuasiUniformKnots;
+  }
   else if (UDistribution == GeomAbs_PiecewiseBezier && VDistribution == GeomAbs_PiecewiseBezier)
+  {
     KnotSpec = StepGeom_ktPiecewiseBezierKnots;
+  }
   else
+  {
     KnotSpec = StepGeom_ktUnspecified;
+  }
 
   BSWK                                       = new StepGeom_BSplineSurfaceWithKnots;
   occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString("");

@@ -114,9 +114,13 @@ TEST_F(BRepGraph_HistoryTest, FindDerived_ChainABC_ContainsBAndC)
   for (const BRepGraph_NodeId& aDerivedId : aDerived)
   {
     if (aDerivedId == anEdge1)
+    {
       hasEdge1 = true;
+    }
     if (aDerivedId == anEdge2)
+    {
       hasEdge2 = true;
+    }
   }
   EXPECT_TRUE(hasEdge1);
   EXPECT_TRUE(hasEdge2);
@@ -228,9 +232,13 @@ TEST_F(BRepGraph_HistoryTest, ApplyModification_MultipleReplacements)
   for (const BRepGraph_NodeId& aDerivedId : aDerived)
   {
     if (aDerivedId == aNew1)
+    {
       hasNew1 = true;
+    }
     if (aDerivedId == aNew2)
+    {
       hasNew2 = true;
+    }
   }
   EXPECT_TRUE(hasNew1);
   EXPECT_TRUE(hasNew2);
@@ -494,12 +502,18 @@ TEST_F(BRepGraph_HistoryTest, SplitEdge_IgnoresRemovedCoEdgeRefEntries)
   {
     const BRepGraphInc::CoEdgeRef& aRef = myGraph.Refs().CoEdges().Entry(aRefId);
     if (aRef.IsRemoved || !aRef.CoEdgeDefId.IsValid(myGraph.Topo().CoEdges().Nb()))
+    {
       continue;
+    }
     const BRepGraph_NodeId anId(myGraph.Topo().CoEdges().Definition(aRef.CoEdgeDefId).EdgeDefId);
     if (anId == aSubA)
+    {
       hasSubA = true;
+    }
     if (anId == aSubB)
+    {
       hasSubB = true;
+    }
   }
   EXPECT_TRUE(hasSubA);
   EXPECT_TRUE(hasSubB);

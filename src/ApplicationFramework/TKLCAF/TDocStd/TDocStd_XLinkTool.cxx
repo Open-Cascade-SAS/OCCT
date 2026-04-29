@@ -87,13 +87,17 @@ void TDocStd_XLinkTool::Copy(const TDF_Label& target, const TDF_Label& source)
   if (!aNode.IsNull())
   {
     if (!aPrev.IsNull())
+    {
       aPrev->InsertAfter(aNode);
+    }
     else if (!aNext.IsNull())
     {
       aNext->InsertBefore(aNode);
     }
     else if (!aFather.IsNull())
+    {
       aNode->SetFather(aFather);
+    }
   }
 
   if (!anOldNode.IsNull())
@@ -101,13 +105,17 @@ void TDocStd_XLinkTool::Copy(const TDF_Label& target, const TDF_Label& source)
     if (TDataStd_TreeNode::Find(target, anOldNode))
     {
       if (!anOldPrev.IsNull())
+      {
         anOldPrev->InsertAfter(anOldNode);
+      }
       else if (!anOldNext.IsNull())
       {
         anOldNext->InsertBefore(anOldNode);
       }
       else if (!anOldFather.IsNull())
+      {
         anOldNode->SetFather(anOldFather);
+      }
     }
   }
 
@@ -132,7 +140,9 @@ void TDocStd_XLinkTool::CopyWithLink(const TDF_Label& target, const TDF_Label& s
     occ::handle<TDocStd_Document> aTargetD  = TDocStd_Document::Get(target);
     int                           aDocEntry = 0;
     if (aSourceD != aTargetD)
+    {
       aDocEntry = aTargetD->CreateReference(aSourceD);
+    }
     xdocentry = aDocEntry;
 
     occ::handle<TDocStd_XLink> X = TDocStd_XLink::Set(target);

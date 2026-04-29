@@ -24,7 +24,9 @@ static bool lesparam(const int iordre, const int ncflim, const int icodeo, int& 
   // jacobi degree
   ndgjac = ncflim; // it always keeps a reserve coefficient
   if (icodeo < 0)
+  {
     return false;
+  }
   if (icodeo > 0)
   {
     ndgjac += (9 - (iordre + 1)); // iordre rescales the frequences upwards
@@ -170,7 +172,9 @@ AdvApp2Var_Context::AdvApp2Var_Context(const int                                
   // myNbURoot,myJDegU
   aCoeffLimit = nlimu;
   if (aCoeffLimit < 2 * iu + 2)
+  {
     aCoeffLimit = 2 * iu + 2;
+  }
   if (!lesparam(iu, aCoeffLimit, iprecis, NbPntU, JDegU))
   {
     throw Standard_ConstructionError("AdvApp2Var_Context");
@@ -178,7 +182,9 @@ AdvApp2Var_Context::AdvApp2Var_Context(const int                                
   myNbURoot = NbPntU;
   myJDegU   = JDegU;
   if (iu > -1)
+  {
     NbPntU = myNbURoot - 2;
+  }
 
   // myJMaxU
   int                                      aSize = JDegU - 2 * iu - 1;
@@ -190,7 +196,9 @@ AdvApp2Var_Context::AdvApp2Var_Context(const int                                
   // myNbVRoot,myJDegV
   aCoeffLimit = nlimv;
   if (aCoeffLimit < 2 * iv + 2)
+  {
     aCoeffLimit = 2 * iv + 2;
+  }
   if (!lesparam(iv, aCoeffLimit, iprecis, NbPntV, JDegV))
   {
     throw Standard_ConstructionError("AdvApp2Var_Context");
@@ -198,7 +206,9 @@ AdvApp2Var_Context::AdvApp2Var_Context(const int                                
   myNbVRoot = NbPntV;
   myJDegV   = JDegV;
   if (iv > -1)
+  {
     NbPntV = myNbVRoot - 2;
+  }
 
   // myJMaxV
   aSize                                          = JDegV - 2 * iv - 1;
@@ -268,7 +278,9 @@ AdvApp2Var_Context::AdvApp2Var_Context(const int                                
       {
         aTolMin = ITol->Value(anSSPIndex) / aWeight;
         if (aTolMin < FTol->Value(anSSPIndex, aTolIndex))
+        {
           FTol->SetValue(anSSPIndex, aTolIndex, aTolMin);
+        }
         CTol->SetValue(anSSPIndex, aTolIndex, aTolMin);
       }
     }

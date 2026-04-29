@@ -48,8 +48,12 @@ DrawTrSurf_Triangulation::DrawTrSurf_Triangulation(const occ::handle<Poly_Triang
   {
     pc.Triangles(i, t[0], t[1], t[2]);
     for (j = 0; j < 3; j++)
+    {
       if (t[j] == 0)
+      {
         nFree++;
+      }
+    }
   }
 
   // allocate the arrays
@@ -137,7 +141,9 @@ void DrawTrSurf_Triangulation::DrawOn(Draw_Display& dis) const
       gp_Pnt  P(0, 0, 0);
       gp_XYZ& bary = P.ChangeCoord();
       for (j = 0; j < 3; j++)
+      {
         bary.Add(myTriangulation->Node(t[j]).Coord());
+      }
       bary.Multiply(1. / 3.);
 
       Sprintf(text, "%d", i);

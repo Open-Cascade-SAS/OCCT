@@ -36,7 +36,9 @@ void RWStepBasic_RWProductDefinitionRelationship::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 5, ach, "product_definition_relationship"))
+  {
     return;
+  }
 
   // Own fields of ProductDefinitionRelationship
 
@@ -90,7 +92,9 @@ void RWStepBasic_RWProductDefinitionRelationship::WriteStep(
     SW.Send(ent->Description());
   }
   else
+  {
     SW.SendUndef();
+  }
 
   SW.Send(ent->RelatingProductDefinitionAP242().Value());
 

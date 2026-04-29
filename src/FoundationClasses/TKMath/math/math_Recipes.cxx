@@ -68,8 +68,12 @@ static void EigenSort(math_Vector& d, math_Matrix& v)
   {
     p = d(k = i);
     for (j = i + 1; j <= n; j++)
+    {
       if (d(j) >= p)
+      {
         p = d(k = j);
+      }
+    }
     if (k != i)
     {
       d(k) = d(i);
@@ -96,7 +100,9 @@ int Jacobi(math_Matrix& a, math_Vector& d, math_Matrix& v, int& nrot)
   for (ip = 1; ip <= n; ip++)
   {
     for (iq = 1; iq <= n; iq++)
+    {
       v(ip, iq) = 0.0;
+    }
     v(ip, ip) = 1.0;
   }
   for (ip = 1; ip <= n; ip++)
@@ -111,7 +117,9 @@ int Jacobi(math_Matrix& a, math_Vector& d, math_Matrix& v, int& nrot)
     for (ip = 1; ip < n; ip++)
     {
       for (iq = ip + 1; iq <= n; iq++)
+      {
         sm += fabs(a(ip, iq));
+      }
     }
     if (sm == 0.0)
     {
@@ -132,18 +140,24 @@ int Jacobi(math_Matrix& a, math_Vector& d, math_Matrix& v, int& nrot)
       {
         g = 100.0 * fabs(a(ip, iq));
         if (i > 4 && fabs(d(ip)) + g == fabs(d(ip)) && fabs(d(iq)) + g == fabs(d(iq)))
+        {
           a(ip, iq) = 0.0;
+        }
         else if (fabs(a(ip, iq)) > tresh)
         {
           h = d(iq) - d(ip);
           if (fabs(h) + g == fabs(h))
+          {
             t = a(ip, iq) / h;
+          }
           else
           {
             theta = 0.5 * h / a(ip, iq);
             t     = 1.0 / (fabs(theta) + sqrt(1.0 + theta * theta));
             if (theta < 0.0)
+            {
               t = -t;
+            }
           }
           c   = 1.0 / sqrt(1 + t * t);
           s   = t * c;
@@ -205,8 +219,12 @@ int LU_Decompose(math_Matrix&                 a,
   {
     big = 0.0;
     for (j = 1; j <= n; j++)
+    {
       if ((temp = fabs(a(i, j))) > big)
+      {
         big = temp;
+      }
+    }
     if (big <= TINY)
     {
       return math_Status_SingularMatrix;
@@ -220,7 +238,9 @@ int LU_Decompose(math_Matrix&                 a,
     {
       sum = a(i, j);
       for (k = 1; k < i; k++)
+      {
         sum -= a(i, k) * a(k, j);
+      }
       a(i, j) = sum;
     }
     big = 0.0;
@@ -228,7 +248,9 @@ int LU_Decompose(math_Matrix&                 a,
     {
       sum = a(i, j);
       for (k = 1; k < j; k++)
+      {
         sum -= a(i, k) * a(k, j);
+      }
       a(i, j) = sum;
       // Note that comparison is made so as to have imax updated even if argument is NAN, Inf or
       // IND, see #25559
@@ -259,7 +281,9 @@ int LU_Decompose(math_Matrix&                 a,
     {
       dum = 1.0 / (a(j, j));
       for (i = j + 1; i <= n; i++)
+      {
         a(i, j) *= dum;
+      }
     }
   }
 
@@ -296,17 +320,25 @@ void LU_Solve(const math_Matrix& a, const math_IntegerVector& indx, math_Vector&
     sum           = b(ip + nblow);
     b(ip + nblow) = b(i + nblow);
     if (ii)
+    {
       for (j = ii; j < i; j++)
+      {
         sum -= a(i, j) * b(j + nblow);
+      }
+    }
     else if (sum)
+    {
       ii = i;
+    }
     b(i + nblow) = sum;
   }
   for (i = n; i >= 1; i--)
   {
     sum = b(i + nblow);
     for (j = i + 1; j <= n; j++)
+    {
       sum -= a(i, j) * b(j + nblow);
+    }
     b(i + nblow) = sum / a(i, i);
   }
 }
@@ -327,11 +359,15 @@ int LU_Invert(math_Matrix& a)
     for (j = 1; j <= n; j++)
     {
       for (i = 1; i <= n; i++)
+      {
         col(i) = 0.0;
+      }
       col(j) = 1.0;
       LU_Solve(a, indx, col);
       for (i = 1; i <= n; i++)
+      {
         inv(i, j) = col(i);
+      }
     }
     for (j = 1; j <= n; j++)
     {
@@ -372,9 +408,13 @@ int SVD_Decompose(math_Matrix& a, math_Vector& w, math_Matrix& v, math_Vector& r
       {
         aki = a(k, i);
         if (aki > 0)
+        {
           scale += aki;
+        }
         else
+        {
           scale -= aki;
+        }
       }
       if (scale)
       {
@@ -392,14 +432,20 @@ int SVD_Decompose(math_Matrix& a, math_Vector& w, math_Matrix& v, math_Vector& r
           for (j = l; j <= n; j++)
           {
             for (s = 0.0, k = i; k <= m; k++)
+            {
               s += a(k, i) * a(k, j);
+            }
             f = s / h;
             for (k = i; k <= m; k++)
+            {
               a(k, j) += f * a(k, i);
+            }
           }
         }
         for (k = i; k <= m; k++)
+        {
           a(k, i) *= scale;
+        }
       }
     }
     w(i) = scale * g;
@@ -410,9 +456,13 @@ int SVD_Decompose(math_Matrix& a, math_Vector& w, math_Matrix& v, math_Vector& r
       {
         aik = a(i, k);
         if (aik > 0)
+        {
           scale += aik;
+        }
         else
+        {
           scale -= aik;
+        }
       }
       if (scale)
       {
@@ -426,31 +476,47 @@ int SVD_Decompose(math_Matrix& a, math_Vector& w, math_Matrix& v, math_Vector& r
         h       = f * g - s;
         a(i, l) = f - g;
         for (k = l; k <= n; k++)
+        {
           rv1(k) = a(i, k) / h;
+        }
         if (i != m)
         {
           for (j = l; j <= m; j++)
           {
             for (s = 0.0, k = l; k <= n; k++)
+            {
               s += a(j, k) * a(i, k);
+            }
             for (k = l; k <= n; k++)
+            {
               a(j, k) += s * rv1(k);
+            }
           }
         }
         for (k = l; k <= n; k++)
+        {
           a(i, k) *= scale;
+        }
       }
     }
     aw = w(i);
     if (aw < 0)
+    {
       aw = -aw;
+    }
     ar = rv1(i);
     if (ar > 0)
+    {
       ar = aw + ar;
+    }
     else
+    {
       ar = aw - ar;
+    }
     if (anorm < ar)
+    {
       anorm = ar;
+    }
   }
   for (i = n; i >= 1; i--)
   {
@@ -459,17 +525,25 @@ int SVD_Decompose(math_Matrix& a, math_Vector& w, math_Matrix& v, math_Vector& r
       if (g)
       {
         for (j = l; j <= n; j++)
+        {
           v(j, i) = (a(i, j) / a(i, l)) / g;
+        }
         for (j = l; j <= n; j++)
         {
           for (s = 0.0, k = l; k <= n; k++)
+          {
             s += a(i, k) * v(k, j);
+          }
           for (k = l; k <= n; k++)
+          {
             v(k, j) += s * v(k, i);
+          }
         }
       }
       for (j = l; j <= n; j++)
+      {
         v(i, j) = v(j, i) = 0.0;
+      }
     }
     v(i, i) = 1.0;
     g       = rv1(i);
@@ -480,8 +554,12 @@ int SVD_Decompose(math_Matrix& a, math_Vector& w, math_Matrix& v, math_Vector& r
     l = i + 1;
     g = w(i);
     if (i < n)
+    {
       for (j = l; j <= n; j++)
+      {
         a(i, j) = 0.0;
+      }
+    }
     if (g)
     {
       g = 1.0 / g;
@@ -490,19 +568,27 @@ int SVD_Decompose(math_Matrix& a, math_Vector& w, math_Matrix& v, math_Vector& r
         for (j = l; j <= n; j++)
         {
           for (s = 0.0, k = l; k <= m; k++)
+          {
             s += a(k, i) * a(k, j);
+          }
           f = (s / a(i, i)) * g;
           for (k = i; k <= m; k++)
+          {
             a(k, j) += f * a(k, i);
+          }
         }
       }
       for (j = i; j <= m; j++)
+      {
         a(j, i) *= g;
+      }
     }
     else
     {
       for (j = i; j <= m; j++)
+      {
         a(j, i) = 0.0;
+      }
     }
     ++a(i, i);
   }
@@ -520,7 +606,9 @@ int SVD_Decompose(math_Matrix& a, math_Vector& w, math_Matrix& v, math_Vector& r
           break;
         }
         if (fabs(w(nm)) + anorm == anorm)
+        {
           break;
+        }
       }
       if (flag)
       {
@@ -553,7 +641,9 @@ int SVD_Decompose(math_Matrix& a, math_Vector& w, math_Matrix& v, math_Vector& r
         {
           w(k) = -z;
           for (j = 1; j <= n; j++)
+          {
             v(j, k) = (-v(j, k));
+          }
         }
         break;
       }
@@ -639,7 +729,9 @@ void SVD_Solve(const math_Matrix& u,
     if (w(j))
     {
       for (i = 1; i <= m; i++)
+      {
         s += u(i, j) * b(i);
+      }
       s /= w(j);
     }
     tmp(j) = s;
@@ -648,7 +740,9 @@ void SVD_Solve(const math_Matrix& u,
   {
     s = 0.0;
     for (jj = 1; jj <= n; jj++)
+    {
       s += v(j, jj) * tmp(jj);
+    }
     x(j) = s;
   }
 }
@@ -670,7 +764,9 @@ int DACTCL_Decompose(math_Vector& a, const math_IntegerVector& indx, const doubl
     jh   = jd - jr;
     is   = j - jh + 2;
     if (jh - 2 == 0)
+    {
       diag = true;
+    }
     if (jh - 2 > 0)
     {
       ie = j - 1;
@@ -685,7 +781,9 @@ int DACTCL_Decompose(math_Vector& a, const math_IntegerVector& indx, const doubl
         ih = id - ir - 1;
         mh = i - is + 1;
         if (ih > mh)
+        {
           ih = mh;
+        }
         if (ih > 0.0)
         {
           dot   = 0.0;
@@ -714,9 +812,13 @@ int DACTCL_Decompose(math_Vector& a, const math_IntegerVector& indx, const doubl
         id = indx(k + i);
         aa = a(id);
         if (aa < 0)
+        {
           aa = -aa;
+        }
         if (aa <= MinPivot)
+        {
           return math_Status_SingularMatrix;
+        }
         d     = a(i);
         a(i)  = d / a(id);
         a(jd) = a(jd) - d * a(i);
@@ -767,9 +869,13 @@ int DACTCL_Solve(const math_Vector&        a,
     id = indx(i);
     aa = a(id);
     if (aa < 0)
+    {
       aa = -aa;
+    }
     if (aa <= MinPivot)
+    {
       return math_Status_SingularMatrix;
+    }
     b(i) = b(i) / a(id);
   }
 

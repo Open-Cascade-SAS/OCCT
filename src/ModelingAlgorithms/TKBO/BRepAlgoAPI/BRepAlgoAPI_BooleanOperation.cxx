@@ -176,7 +176,9 @@ void BRepAlgoAPI_BooleanOperation::Build(const Message_ProgressRange& theRange)
     // Combine Objects and Tools into a single list for intersection
     NCollection_List<TopoDS_Shape> aLArgs = myArguments;
     for (NCollection_List<TopoDS_Shape>::Iterator it(myTools); it.More(); it.Next())
+    {
       aLArgs.Append(it.Value());
+    }
 
     // Perform intersection
     IntersectShapes(aLArgs, aPS.Next(70));
@@ -246,14 +248,20 @@ void BRepAlgoAPI_DumpOper::Dump(const TopoDS_Shape& theShape1,
     OSD_File aScript(aFileName);
     isExist = aScript.Exists();
     if (isExist)
+    {
       aNumOper++;
+    }
   }
 
   FILE* afile = fopen(aFileName.ToCString(), "w+");
   if (!afile)
+  {
     return;
+  }
   if (myIsDumpArgs)
+  {
     fprintf(afile, "%s\n", "# Arguments are invalid");
+  }
 
   TCollection_AsciiString aName1;
   TCollection_AsciiString aName2;
@@ -264,7 +272,9 @@ void BRepAlgoAPI_DumpOper::Dump(const TopoDS_Shape& theShape1,
     BRepTools::Write(theShape1, aName1.ToCString());
   }
   else
+  {
     fprintf(afile, "%s\n", "# First argument is Null ");
+  }
 
   if (!theShape2.IsNull())
   {
@@ -273,7 +283,9 @@ void BRepAlgoAPI_DumpOper::Dump(const TopoDS_Shape& theShape1,
     BRepTools::Write(theShape2, aName2.ToCString());
   }
   else
+  {
     fprintf(afile, "%s\n", "# Second argument is Null ");
+  }
 
   if (!theResult.IsNull())
   {
@@ -282,7 +294,9 @@ void BRepAlgoAPI_DumpOper::Dump(const TopoDS_Shape& theShape1,
     BRepTools::Write(theResult, aNameRes.ToCString());
   }
   else
+  {
     fprintf(afile, "%s\n", "# Result is Null ");
+  }
 
   fprintf(afile, "%s %s %s\n", "restore", aName1.ToCString(), "arg1");
   fprintf(afile, "%s %s %s\n", "restore", aName2.ToCString(), "arg2");
@@ -307,7 +321,9 @@ void BRepAlgoAPI_DumpOper::Dump(const TopoDS_Shape& theShape1,
   };
   aBopString += ("arg1 arg2");
   if (theOperation == BOPAlgo_CUT21)
+  {
     aBopString += " 1";
+  }
 
   fprintf(afile, "%s\n", aBopString.ToCString());
   fclose(afile);

@@ -47,7 +47,9 @@ void StdPrs_PoleCurve::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
       Nb                                             = Bz->NbPoles();
       occ::handle<Graphic3d_ArrayOfPolylines> aPrims = new Graphic3d_ArrayOfPolylines(Nb);
       for (i = 1; i <= Nb; i++)
+      {
         aPrims->AddVertex(Bz->Pole(i));
+      }
       aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
     }
     else if (CType == GeomAbs_BSplineCurve)
@@ -56,7 +58,9 @@ void StdPrs_PoleCurve::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
       Nb                                             = Bs->NbPoles();
       occ::handle<Graphic3d_ArrayOfPolylines> aPrims = new Graphic3d_ArrayOfPolylines(Nb);
       for (i = 1; i <= Nb; i++)
+      {
         aPrims->AddVertex(Bs->Pole(i));
+      }
       aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
     }
   }
@@ -94,7 +98,9 @@ bool StdPrs_PoleCurve::Match(const double           X,
     {
       Bz->Pole(i).Coord(x, y, z);
       if (std::abs(X - x) + std::abs(Y - y) + std::abs(Z - z) <= aDistance)
+      {
         return true;
+      }
     }
     return false;
   }
@@ -106,7 +112,9 @@ bool StdPrs_PoleCurve::Match(const double           X,
     {
       Bs->Pole(i).Coord(x, y, z);
       if (std::abs(X - x) + std::abs(Y - y) + std::abs(Z - z) <= aDistance)
+      {
         return true;
+      }
     }
     return false;
   }

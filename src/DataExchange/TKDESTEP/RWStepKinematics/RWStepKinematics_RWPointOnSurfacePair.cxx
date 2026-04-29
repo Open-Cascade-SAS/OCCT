@@ -40,7 +40,9 @@ void RWStepKinematics_RWPointOnSurfacePair::ReadStep(
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 7, theArch, "point_on_surface_pair"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 
@@ -135,7 +137,9 @@ void RWStepKinematics_RWPointOnSurfacePair::WriteStep(
     theSW.Send(theEnt->ItemDefinedTransformation()->Description());
   }
   else
+  {
     theSW.SendUndef();
+  }
 
   theSW.Send(theEnt->ItemDefinedTransformation()->TransformItem1());
 

@@ -77,7 +77,9 @@ void TopOpeBRepDS_GapTool::Init(const occ::handle<TopOpeBRepDS_HDataStructure>& 
          it.Next())
     {
       if (it.Value()->GeometryType() == TopOpeBRepDS_POINT)
+      {
         StoreGToI(myGToI, it.Value());
+      }
     }
   }
 }

@@ -169,7 +169,9 @@ static bool ComputeTangencyPoint(const occ::handle<Geom_Curve>& GC1,
       }
       //	  if ( aVector1.IsParallel(aVector2, 100*Precision::Angular()) ) break;
       if (aVector1.IsParallel(aVector2, M_PI / 360.0))
+      {
         break; // 0.5 graduce
+      }
     }
   }
   aPoint = PC1;
@@ -224,7 +226,9 @@ void PrsDim_TangentRelation::ComputeTwoEdgesTangent(
     typArg = 30;
   }
   else
+  {
     return;
+  }
 
   if (copy2->IsInstance(STANDARD_TYPE(Geom_Line)))
   {
@@ -239,7 +243,9 @@ void PrsDim_TangentRelation::ComputeTwoEdgesTangent(
     typArg += 3;
   }
   else
+  {
     return;
+  }
 
   // First find the tangengy vector if exists
   TopoDS_Vertex   VCom;
@@ -258,7 +264,9 @@ void PrsDim_TangentRelation::ComputeTwoEdgesTangent(
     {
       found = (expS.Current().IsSame(tab[l]));
       if (found)
+      {
         VCom = TopoDS::Vertex(expS.Current());
+      }
     }
   }
 
@@ -294,7 +302,9 @@ void PrsDim_TangentRelation::ComputeTwoEdgesTangent(
       {
         double copy1Length = ptat12.Distance(ptat11);
         if (copy1Length < myLength)
+        {
           myLength = copy1Length / 3.;
+        }
       }
     }
     break;
@@ -316,7 +326,9 @@ void PrsDim_TangentRelation::ComputeTwoEdgesTangent(
       {
         double copy2Length = ptat21.Distance(ptat22);
         if (copy2Length < myLength)
+        {
           myLength = copy2Length / 3.;
+        }
       }
     }
     break;
@@ -338,7 +350,9 @@ void PrsDim_TangentRelation::ComputeTwoEdgesTangent(
       {
         double copy1Length = ptat12.Distance(ptat11);
         if (copy1Length < myLength)
+        {
           myLength = copy1Length / 3.;
+        }
       }
     }
     break;
@@ -359,7 +373,9 @@ void PrsDim_TangentRelation::ComputeTwoEdgesTangent(
       {
         double copy2Length = ptat21.Distance(ptat22);
         if (copy2Length < myLength)
+        {
           myLength = copy2Length / 3.;
+        }
       }
     }
     break;

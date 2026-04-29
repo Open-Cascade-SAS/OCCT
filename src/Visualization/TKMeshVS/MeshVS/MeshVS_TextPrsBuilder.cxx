@@ -59,9 +59,13 @@ const NCollection_DataMap<int, TCollection_AsciiString>& MeshVS_TextPrsBuilder::
   const bool IsElements) const
 {
   if (IsElements)
+  {
     return myElemTextMap;
+  }
   else
+  {
     return myNodeTextMap;
+  }
 }
 
 //=================================================================================================
@@ -70,9 +74,13 @@ void MeshVS_TextPrsBuilder::SetTexts(const bool IsElements,
                                      const NCollection_DataMap<int, TCollection_AsciiString>& Map)
 {
   if (IsElements)
+  {
     myElemTextMap = Map;
+  }
   else
+  {
     myNodeTextMap = Map;
+  }
 }
 
 //=================================================================================================
@@ -81,7 +89,9 @@ bool MeshVS_TextPrsBuilder::HasTexts(const bool IsElement) const
 {
   bool aRes = (myNodeTextMap.Extent() > 0);
   if (IsElement)
+  {
     aRes = (myElemTextMap.Extent() > 0);
+  }
   return aRes;
 }
 
@@ -93,11 +103,15 @@ bool MeshVS_TextPrsBuilder::GetText(const bool               IsElement,
 {
   const NCollection_DataMap<int, TCollection_AsciiString>* aMap = &myNodeTextMap;
   if (IsElement)
+  {
     aMap = &myElemTextMap;
+  }
 
   bool aRes = aMap->IsBound(theID);
   if (aRes)
+  {
     theStr = aMap->Find(theID);
+  }
 
   return aRes;
 }
@@ -110,13 +124,19 @@ void MeshVS_TextPrsBuilder::SetText(const bool                     IsElement,
 {
   NCollection_DataMap<int, TCollection_AsciiString>* aMap = &myNodeTextMap;
   if (IsElement)
+  {
     aMap = &myElemTextMap;
+  }
 
   bool aRes = aMap->IsBound(ID);
   if (aRes)
+  {
     aMap->ChangeFind(ID) = Text;
+  }
   else
+  {
     aMap->Bind(ID, Text);
+  }
 }
 
 //=================================================================================================
@@ -131,13 +151,17 @@ void MeshVS_TextPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& Prs,
   occ::handle<MeshVS_Drawer>     aDrawer = GetDrawer();
   if (aSource.IsNull() || aDrawer.IsNull() || !HasTexts(IsElement)
       || (theDisplayMode & GetFlags()) == 0)
+  {
     return;
+  }
 
   int    aMaxFaceNodes;
   double aHeight;
   if (!aDrawer->GetInteger(MeshVS_DA_MaxFaceNodes, aMaxFaceNodes) || aMaxFaceNodes <= 0
       || !aDrawer->GetDouble(MeshVS_DA_TextHeight, aHeight))
+  {
     return;
+  }
 
   occ::handle<Graphic3d_Group> aTextGroup = Prs->NewGroup();
 
@@ -156,19 +180,27 @@ void MeshVS_TextPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& Prs,
 
   TCollection_AsciiString AFontString = Font_NOF_ASCII_MONO;
   if (aDrawer->GetAsciiString(MeshVS_DA_TextFont, AFontString))
+  {
     AFont = AFontString.ToCString();
+  }
 
   int AStyleInt = Aspect_TOST_ANNOTATION;
   if (aDrawer->GetInteger(MeshVS_DA_TextStyle, AStyleInt))
+  {
     ATextStyle = (Aspect_TypeOfStyleText)AStyleInt;
+  }
 
   int ADispInt = Aspect_TODT_NORMAL;
   if (aDrawer->GetInteger(MeshVS_DA_TextDisplayType, ADispInt))
+  {
     ADisplayType = (Aspect_TypeOfDisplayText)ADispInt;
+  }
 
   int AAspect = Font_FA_Bold;
   if (aDrawer->GetInteger(MeshVS_DA_TextFontAspect, AAspect))
+  {
     AFontAspectType = (Font_FontAspect)AAspect;
+  }
 
   occ::handle<Graphic3d_AspectText3d> aTextAspect =
     new Graphic3d_AspectText3d(AColor, AFont, AExpansionFactor, ASpace, ATextStyle, ADisplayType);
@@ -191,7 +223,9 @@ void MeshVS_TextPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& Prs,
   {
     occ::handle<TColStd_HPackedMapOfInteger> aHiddenElems = myParentMesh->GetHiddenElems();
     if (!aHiddenElems.IsNull())
+    {
       NCollection_PackedMapAlgo::Subtract(anIDs, aHiddenElems->Map());
+    }
   }
   NCollection_PackedMapAlgo::Subtract(anIDs, IDsToExclude);
 
@@ -212,7 +246,9 @@ void MeshVS_TextPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& Prs,
         else if (aType == MeshVS_ET_Link || aType == MeshVS_ET_Face || aType == MeshVS_ET_Volume)
         {
           if (IsElement && IsExcludingOn())
+          {
             IDsToExclude.Add(aKey);
+          }
           X = Y = Z = 0;
           for (int i = 1; i <= NbNodes; i++)
           {
@@ -258,5 +294,7 @@ void MeshVS_TextPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& Prs,
   }
 
   if (!aCustomElements.IsEmpty())
+  {
     CustomBuild(Prs, aCustomElements, IDsToExclude, theDisplayMode);
+  }
 }

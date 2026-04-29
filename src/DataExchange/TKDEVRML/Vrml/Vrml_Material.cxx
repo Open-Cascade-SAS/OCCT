@@ -161,7 +161,9 @@ Standard_OStream& Vrml_Material::Print(Standard_OStream& anOStream) const
                                       Quantity_TOC_sRGB);
       anOStream << aColor_sRGB.r() << ' ' << aColor_sRGB.g() << ' ' << aColor_sRGB.b();
       if (i < myAmbientColor->Length())
+      {
         anOStream << ",\n\t"; // ,,,,,,,,,,
+      }
     }
     anOStream << " ]\n";
   }
@@ -180,7 +182,9 @@ Standard_OStream& Vrml_Material::Print(Standard_OStream& anOStream) const
                                       Quantity_TOC_sRGB);
       anOStream << aColor_sRGB.r() << ' ' << aColor_sRGB.g() << ' ' << aColor_sRGB.b();
       if (i < myDiffuseColor->Length())
+      {
         anOStream << ",\n\t";
+      }
     }
     anOStream << " ]\n";
   }
@@ -199,7 +203,9 @@ Standard_OStream& Vrml_Material::Print(Standard_OStream& anOStream) const
                                        Quantity_TOC_sRGB);
       anOStream << aColor_sRGB.r() << ' ' << aColor_sRGB.g() << ' ' << aColor_sRGB.b();
       if (i < mySpecularColor->Length())
+      {
         anOStream << ",\n\t";
+      }
     }
     anOStream << " ]\n";
   }
@@ -218,7 +224,9 @@ Standard_OStream& Vrml_Material::Print(Standard_OStream& anOStream) const
                                        Quantity_TOC_sRGB);
       anOStream << aColor_sRGB.r() << ' ' << aColor_sRGB.g() << ' ' << aColor_sRGB.b();
       if (i < myEmissiveColor->Length())
+      {
         anOStream << ",\n\t";
+      }
     }
     anOStream << " ]\n";
   }
@@ -231,7 +239,9 @@ Standard_OStream& Vrml_Material::Print(Standard_OStream& anOStream) const
     {
       anOStream << myShininess->Value(i);
       if (i < myShininess->Length())
+      {
         anOStream << ", ";
+      }
     }
     anOStream << " ]\n";
   }
@@ -244,7 +254,9 @@ Standard_OStream& Vrml_Material::Print(Standard_OStream& anOStream) const
     {
       anOStream << myTransparency->Value(i);
       if (i < myTransparency->Length())
+      {
         anOStream << ", ";
+      }
     }
     anOStream << " ]\n";
   }

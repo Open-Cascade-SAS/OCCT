@@ -36,7 +36,9 @@ void RWStepDimTol_RWProjectedZoneDefinition::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "projected_zone_definition"))
+  {
     return;
+  }
 
   // Inherited fields from ToleranceZoneDefinition
 
@@ -59,7 +61,9 @@ void RWStepDimTol_RWProjectedZoneDefinition::ReadStep(
     {
       if (data
             ->ReadEntity(nbSub, i, "shape_aspect", ach, STANDARD_TYPE(StepRepr_ShapeAspect), anEnt))
+      {
         anItems->SetValue(i, anEnt);
+      }
     }
   }
 
@@ -120,7 +124,9 @@ void RWStepDimTol_RWProjectedZoneDefinition::Share(
 
   int i, nb = ent->NbBoundaries();
   for (i = 1; i <= nb; i++)
+  {
     iter.AddItem(ent->BoundariesValue(i));
+  }
 
   // Own field of ProjectionZoneDefinition
   iter.AddItem(ent->ProjectionEnd());

@@ -90,7 +90,9 @@ bool GeomFill_CornerState::IsToKill(double& Scal) const
 {
   Scal = scal;
   if (!isconstrained)
+  {
     return false;
+  }
   return !coonscnd;
 }
 

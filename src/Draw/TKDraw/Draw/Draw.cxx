@@ -253,7 +253,9 @@ void exitProc(ClientData /*dc*/)
   if (!Draw_Batch)
   {
     for (int id = 0; id < MAXVIEW; id++)
+    {
       dout.DeleteView(id);
+    }
   }
 }
 #endif
@@ -383,7 +385,9 @@ void Draw_Appli(int argc, char** argv, const FDraw_InitAppli Draw_InitAppli)
 #ifdef _WIN32
   // in interactive mode, force Windows to report dll loading problems interactively
   if (!Draw_VirtualWindows && !Draw_Batch)
+  {
     ::SetErrorMode(0);
+  }
 #endif
 
   // *****************************************************************
@@ -394,14 +398,16 @@ void Draw_Appli(int argc, char** argv, const FDraw_InitAppli Draw_InitAppli)
 #endif
 
   if (!Draw_Batch)
+  {
 #ifdef _WIN32
     Draw_Batch = !Init_Appli(hInst, hPrevInst, nShow, hWnd);
 #else
     Draw_Batch = !Init_Appli();
 #endif
+  }
   else
   {
-    std::cout << "DRAW is running in batch mode" << std::endl;
+    std::cout << "DRAW is running in batch mode" << '\n';
     theCommands.Init();
     Tcl_Init(theCommands.Interp());
   }
@@ -413,7 +419,7 @@ void Draw_Appli(int argc, char** argv, const FDraw_InitAppli Draw_InitAppli)
     {
       if (!dout.DefineColor(i, ColorNames[i]))
       {
-        std::cout << "Could not allocate default color " << ColorNames[i] << std::endl;
+        std::cout << "Could not allocate default color " << ColorNames[i] << '\n';
       }
     }
   }
@@ -431,7 +437,9 @@ void Draw_Appli(int argc, char** argv, const FDraw_InitAppli Draw_InitAppli)
   Draw::VariableCommands(theCommands);
   Draw::UnitCommands(theCommands);
   if (!Draw_Batch)
+  {
     Draw::GraphicCommands(theCommands);
+  }
 
   // *****************************************************************
   // user commands
@@ -489,8 +497,8 @@ void Draw_Appli(int argc, char** argv, const FDraw_InitAppli Draw_InitAppli)
 #ifdef _WIN32
       ReadInitFile("ddefault");
 #else
-      std::cout << " the CASROOT variable is mandatory to Run OpenCascade " << std::endl;
-      std::cout << "No default file" << std::endl;
+      std::cout << " the CASROOT variable is mandatory to Run OpenCascade " << '\n';
+      std::cout << "No default file" << '\n';
 #endif
     }
   }
@@ -506,11 +514,13 @@ void Draw_Appli(int argc, char** argv, const FDraw_InitAppli Draw_InitAppli)
     ReadInitFile(aRunFile);
     // provide a clean exit, this is useful for some analysis tools
     if (!isInteractiveForced)
+    {
 #ifndef _WIN32
       return;
 #else
       ExitProcess(0);
 #endif
+    }
   }
 
   // execute command from command line
@@ -533,11 +543,13 @@ void Draw_Appli(int argc, char** argv, const FDraw_InitAppli Draw_InitAppli)
       Draw_Interprete(aCommand.ToCString()); // Linux and Windows batch mode
     // provide a clean exit, this is useful for some analysis tools
     if (!isInteractiveForced)
+    {
 #ifndef _WIN32
       return;
 #else
       ExitProcess(0);
 #endif
+    }
   }
 
   // *****************************************************************
@@ -599,7 +611,9 @@ bool Draw_Interprete(const char* com)
 #endif
 
   if (!Draw_Interpretor::Complete(Tcl_DStringValue(&command)))
+  {
     return false;
+  }
 
   // *******************************************************************
   // Command interpreter
@@ -613,22 +627,30 @@ bool Draw_Interprete(const char* com)
   OSD_Timer tictac;
   bool      hadchrono = Draw_Chrono;
   if (hadchrono)
+  {
     tictac.Start();
+  }
 
   if (Draw_BeforeCommand)
+  {
     (*Draw_BeforeCommand)();
+  }
 
   int c;
 
   c = theCommands.RecordAndEval(Tcl_DStringValue(&command));
 
   if (Draw_AfterCommand)
+  {
     (*Draw_AfterCommand)(c);
+  }
 
   if (wasspying && Draw_Spying)
   {
     if (c > 0)
+    {
       spystream << "# ";
+    }
     spystream << Tcl_DStringValue(&command) << "\n";
   }
 
@@ -645,7 +667,7 @@ bool Draw_Interprete(const char* com)
     {
       Message_PrinterOStream::SetConsoleTextColor(&std::cout, Message_ConsoleColor_Default, false);
     }
-    std::cout << std::endl;
+    std::cout << '\n';
   }
 
   if (Draw_Chrono && hadchrono)
@@ -675,7 +697,7 @@ int Tcl_AppInit(Tcl_Interp*)
 int Draw_Call(char* c)
 {
   int r = theCommands.Eval(c);
-  std::cout << theCommands.Result() << std::endl;
+  std::cout << theCommands.Result() << '\n';
   return r;
 }
 
@@ -702,7 +724,7 @@ void Draw::Load(Draw_Interpretor&              theDI,
     {
       Message::SendFail() << "could not find the resource:" << theKey;
       Standard_SStream aMsg;
-      aMsg << "Could not find the resource:" << theKey << std::endl;
+      aMsg << "Could not find the resource:" << theKey << '\n';
       throw Draw_Failure(aMsg.str().c_str());
     }
 

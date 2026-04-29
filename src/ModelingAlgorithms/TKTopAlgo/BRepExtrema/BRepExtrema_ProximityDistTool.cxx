@@ -116,7 +116,9 @@ void BRepExtrema_ProximityDistTool::goThroughtSet1(const BVH_Array3d& theVertice
     ComputeDistance();
 
     if (!IsDone() && myProxDist < 0.)
+    {
       return;
+    }
 
     if (IsDone() && myDistance > myProxDist)
     {

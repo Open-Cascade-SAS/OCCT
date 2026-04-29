@@ -248,7 +248,9 @@ gp_Vec Geom_SurfaceOfLinearExtrusion::EvalDN(const double U,
                                              const int    Nv) const
 {
   if (Nu + Nv < 1 || Nu < 0 || Nv < 0)
+  {
     throw Geom_UndefinedDerivative();
+  }
 
   gp_Vec aEvalRepResult;
   if (GeomEval_RepUtils::TryEvalSurfaceDN(myEvalRep, U, V, Nu, Nv, aEvalRepResult))
@@ -356,7 +358,9 @@ void Geom_SurfaceOfLinearExtrusion::TransformParameters(double&        U,
 {
   U = basisCurve->TransformedParameter(U, T);
   if (!Precision::IsInfinite(V))
+  {
     V *= std::abs(T.ScaleFactor());
+  }
 }
 
 //=================================================================================================

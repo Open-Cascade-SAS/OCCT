@@ -48,20 +48,28 @@ static int qcurve(Draw_Interpretor&, int theArgsNb, const char** theArgVec)
   if (!strcmp(theArgVec[0], "qcircle"))
   {
     if (theArgsNb == 5 || theArgsNb == 6)
+    {
       aResult2d =
         new Geom2d_Circle(gp_Ax22d(gp_Pnt2d(Draw::Atof(theArgVec[2]), Draw::Atof(theArgVec[3])),
                                    gp_Dir2d(gp_Dir2d::D::X)),
                           Draw::Atof(theArgVec[4]));
+    }
     else if (theArgsNb == 7 || theArgsNb == 8)
+    {
       aResult2d =
         new Geom2d_Circle(gp_Ax22d(gp_Pnt2d(Draw::Atof(theArgVec[2]), Draw::Atof(theArgVec[3])),
                                    gp_Dir2d(Draw::Atof(theArgVec[4]), Draw::Atof(theArgVec[5]))),
                           Draw::Atof(theArgVec[6]));
+    }
 
     if (theArgsNb == 6)
+    {
       aPositionType = theArgVec[5];
+    }
     else if (theArgsNb == 8)
+    {
       aPositionType = theArgVec[7];
+    }
   }
   else if (!strcmp(theArgVec[0], "qline"))
   {
@@ -73,7 +81,9 @@ static int qcurve(Draw_Interpretor&, int theArgsNb, const char** theArgVec)
     aResult2d = new Geom2d_Line(gp_Pnt2d(Draw::Atof(theArgVec[2]), Draw::Atof(theArgVec[3])),
                                 gp_Dir2d(Draw::Atof(theArgVec[4]), Draw::Atof(theArgVec[5])));
     if (theArgsNb == 7)
+    {
       aPositionType = theArgVec[6];
+    }
   }
   else
   {
@@ -86,7 +96,9 @@ static int qcurve(Draw_Interpretor&, int theArgsNb, const char** theArgVec)
   {
     GccEnt_Position aParameterPosition;
     if (GccEnt::PositionFromString(aPositionType.ToCString(), aParameterPosition))
+    {
       aKindOfPosition = aParameterPosition;
+    }
   }
 
   Draw::Set(theArgVec[1], new GeometryTest_DrawableQualifiedCurve2d(aResult2d, aKindOfPosition));
@@ -122,7 +134,9 @@ static int solutions(Draw_Interpretor& theDI, GccAna_Circ2d3Tan& theCirTan3, con
     theDI << "  tangent points: point (parameter on solution, parameter on argument)\n";
     // the first tangent point
     if (theCirTan3.IsTheSame1(aSolId))
+    {
       theDI << "    " << "= the solution number " << aSolId << " is equal to the first argument\n";
+    }
     else
     {
       theCirTan3.Tangency1(aSolId, aParSol, aParArg, aPntSol);
@@ -132,7 +146,9 @@ static int solutions(Draw_Interpretor& theDI, GccAna_Circ2d3Tan& theCirTan3, con
     }
     // the second tangent point
     if (theCirTan3.IsTheSame2(aSolId))
+    {
       theDI << "    " << "= the solution number " << aSolId << " is equal to the second argument\n";
+    }
     else
     {
       theCirTan3.Tangency2(aSolId, aParSol, aParArg, aPntSol);
@@ -142,7 +158,9 @@ static int solutions(Draw_Interpretor& theDI, GccAna_Circ2d3Tan& theCirTan3, con
     }
     // the third tangent point
     if (theCirTan3.IsTheSame3(aSolId))
+    {
       theDI << "    " << "= the solution number " << aSolId << " is equal to the third argument\n";
+    }
     else
     {
       theCirTan3.Tangency3(aSolId, aParSol, aParArg, aPntSol);
@@ -151,7 +169,9 @@ static int solutions(Draw_Interpretor& theDI, GccAna_Circ2d3Tan& theCirTan3, con
       theDI << "    " << aTanPntIdName.ToCString() << " (" << aParSol << ", " << aParArg << ")";
     }
     if (aSolId != theCirTan3.NbSolutions())
+    {
       theDI << "\n";
+    }
   }
   return 0;
 }
@@ -184,7 +204,9 @@ static int circ2d3Tan(Draw_Interpretor& theDI, int theArgsNb, const char** theAr
 
   double aTolerance = Precision::Confusion();
   if (theArgsNb > 5)
+  {
     aTolerance = Draw::Atof(theArgVec[5]);
+  }
 
   if (aQCurve1.IsNull()) // <point, point, point>
   {
@@ -318,7 +340,9 @@ void GeometryTest::CurveTanCommands(Draw_Interpretor& theCommands)
 {
   static bool aLoaded = false;
   if (aLoaded)
+  {
     return;
+  }
   aLoaded = true;
 
   DrawTrSurf::BasicCommands(theCommands);

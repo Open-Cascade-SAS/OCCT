@@ -41,7 +41,9 @@ void RWStepKinematics_RWRigidLinkRepresentation::ReadStep(
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 4, theArch, "rigid_link_representation"))
+  {
     return;
+  }
 
   // Inherited fields of Representation
 

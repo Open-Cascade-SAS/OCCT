@@ -45,7 +45,9 @@ void StepBasic_GeneralProperty::Init(const occ::handle<TCollection_HAsciiString>
     theDescription = aDescription;
   }
   else
+  {
     theDescription.Nullify();
+  }
 }
 
 //=================================================================================================

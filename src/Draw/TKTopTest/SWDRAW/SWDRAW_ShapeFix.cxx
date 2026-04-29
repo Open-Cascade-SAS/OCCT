@@ -77,7 +77,9 @@ static int edgesameparam(Draw_Interpretor& di, int argc, const char** argv)
   TopoDS_Shape Shape = DBRep::Get(argv[1]);
 
   if (!ShapeFix::SameParameter(Shape, (argc > 2 && arg2[0] == 'f'), BRepBuilderAPI::Precision()))
+  {
     di << "Some edges were not processed\n";
+  }
   di << "\n";
   return 0; // Done
 }
@@ -135,7 +137,9 @@ static int settolerance(Draw_Interpretor& di, int argc, const char** argv)
   double tmin, tmax;
   mod2 = argv[premarg][0];
   if (mod2 == '=')
+  {
     tmin = tmax = Draw::Atof(argv[argc - 1]);
+  }
   else if (mod2 == '<')
   {
     tmin = 0;
@@ -153,13 +157,21 @@ static int settolerance(Draw_Interpretor& di, int argc, const char** argv)
   }
 
   if (argc == premarg + 1 || tmin == tmax)
+  {
     di << "Setting Tolerance to " << tmin << "\n";
+  }
   else if (tmax < tmin)
+  {
     di << "Minimum Tolerance to " << tmin << "\n";
+  }
   else if (tmin <= 0)
+  {
     di << "Maximum Tolerance to " << tmax << "\n";
+  }
   else
+  {
     di << "Tolerance Limited between " << tmin << " and " << tmax << "\n";
+  }
   ShapeFix_ShapeTolerance sat;
   sat.LimitTolerance(Shape, tmin, tmax, styp);
   return 0; // Done
@@ -196,7 +208,9 @@ static int stwire(Draw_Interpretor& di, int argc, const char** argv)
     int  valopt = 1;
     char opt    = argv[i][0];
     if (opt == '+')
+    {
       opt = argv[i][1];
+    }
     if (opt == '-')
     {
       opt    = argv[i][1];
@@ -248,7 +262,9 @@ static int stwire(Draw_Interpretor& di, int argc, const char** argv)
     saw->SetFace(TopoDS::Face(Shape));
     TopExp_Explorer expw(Shape, TopAbs_WIRE);
     if (expw.More())
+    {
       awire = expw.Current();
+    }
     saw->SetPrecision(BRepBuilderAPI::Precision());
   }
   if (awire.IsNull())
@@ -267,9 +283,13 @@ static int stwire(Draw_Interpretor& di, int argc, const char** argv)
     int         orient = saw->CheckShapeConnect(E);
     di << "Orientation : " << orient << " LowerDist : " << saw->MinDistance3d() << "\n";
     if (ox)
+    {
       sbwd->AddOriented(E, orient);
+    }
     else
+    {
       sbwd->Add(E);
+    }
   }
   //  }
   //  else sbwd->Init (awire);
@@ -296,7 +316,9 @@ static int stwire(Draw_Interpretor& di, int argc, const char** argv)
         di << " done";
       }
       if (sfw->LastFixStatus(ShapeExtend_FAIL))
+      {
         di << " (failed)";
+      }
       di << "\n";
     }
   }
@@ -314,9 +336,13 @@ static int stwire(Draw_Interpretor& di, int argc, const char** argv)
       int iord = WO.Ordered(i);
       di << "Edge n0 " << i;
       if (sbwd->Edge(iord).Orientation() == TopAbs_REVERSED)
+      {
         di << " REV";
+      }
       else
+      {
         di << " FWD";
+      }
       di << " ordered to " << iord << " Gap=" << WO.Gap(i) << "\n";
     }
     di << "Reorder not yet done\n";
@@ -335,28 +361,48 @@ static int stwire(Draw_Interpretor& di, int argc, const char** argv)
       TopoDS_Edge E = sbwd->Edge(i);
       di << "Edge " << i;
       if (E.Orientation() == TopAbs_REVERSED)
+      {
         di << " REV";
+      }
       else
+      {
         di << " FWD";
+      }
       if (BRep_Tool::Degenerated(E))
+      {
         di << " DGNR";
+      }
       if (sbwd->IsSeam(i))
+      {
         di << " SEAM_WIRE";
+      }
       if (Shape.ShapeType() == TopAbs_FACE && sae.IsSeam(E, TopoDS::Face(Shape)))
+      {
         di << " SEAM_FACE";
+      }
       if (Shape.ShapeType() == TopAbs_FACE)
       {
         if (sae.HasPCurve(E, TopoDS::Face(Shape)))
+        {
           di << " PCU";
+        }
         else
+        {
           di << " NO_PCU";
+        }
       }
       if (sae.HasCurve3d(E))
+      {
         di << " C3D";
+      }
       else
+      {
         di << " NO_C3D";
+      }
       if (sae.IsClosed3d(E))
+      {
         di << " CLOSED";
+      }
       di << "\n";
     }
   }
@@ -402,7 +448,9 @@ static int stwire(Draw_Interpretor& di, int argc, const char** argv)
           di << "Disjoined\n";
       }
       if (stat >= 3 && stat <= 5)
+      {
         di << "\n   - Position : " << pos.X() << "  " << pos.Y() << "  " << pos.Z() << "\n";
+      }
     }
     ShapeFix_WireVertex sfwv;
     sfwv.Init(sawv);
@@ -434,9 +482,13 @@ static int stwire(Draw_Interpretor& di, int argc, const char** argv)
   }
   */
   else if (om)
+  {
     result = sbwd->WireAPIMake();
+  }
   else
+  {
     result = sbwd->Wire();
+  }
   if (result.IsNull())
   {
     di << "Pas de resultat, desole\n";
@@ -474,7 +526,9 @@ static int reface(Draw_Interpretor& di, int argc, const char** argv)
     bool valopt = true;
     char opt    = argv[i][0];
     if (opt == '+')
+    {
       opt = argv[i][1];
+    }
     if (opt == '-')
     {
       opt    = argv[i][1];
@@ -540,7 +594,9 @@ static int reface(Draw_Interpretor& di, int argc, const char** argv)
     return 0; // Done
   }
   else
+  {
     di << "ShapeFix_Face n a rien trouve a redire\n";
+  }
   return 0;
 }
 
@@ -620,7 +676,9 @@ static int fixshape(Draw_Interpretor& di, int argc, const char** argv)
         case 1: {
           TopoDS_Shape initShape = DBRep::Get(argv[i]);
           if (initShape.IsNull())
+          {
             continue;
+          }
           sfs->Init(initShape);
         }
         break;
@@ -722,7 +780,9 @@ static int fixshape(Draw_Interpretor& di, int argc, const char** argv)
 int fixgaps(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 3)
+  {
     return 1;
+  }
 
   TopoDS_Shape S = DBRep::Get(a[2]);
   if (S.IsNull())
@@ -748,7 +808,9 @@ int fixgaps(Draw_Interpretor& di, int n, const char** a)
 int fixsmall(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 3)
+  {
     return 1;
+  }
 
   TopoDS_Shape S = DBRep::Get(a[2]);
   if (S.IsNull())
@@ -786,13 +848,19 @@ static int fixsmalledges(Draw_Interpretor& di, int n, const char** a)
   int    mode   = 2;
   double tolang = M_PI / 2;
   if (n > k)
+  {
     tol = Draw::Atof(a[k++]);
+  }
 
   if (n > k)
+  {
     mode = Draw::Atoi(a[k++]);
+  }
 
   if (n > k)
+  {
     tolang = Draw::Atof(a[k++]);
+  }
 
   occ::handle<ShapeFix_Wireframe> aSfwr    = new ShapeFix_Wireframe();
   occ::handle<ShapeBuild_ReShape> aReShape = new ShapeBuild_ReShape;
@@ -801,7 +869,9 @@ static int fixsmalledges(Draw_Interpretor& di, int n, const char** a)
   aSfwr->SetPrecision(tol);
   bool aModeDrop = true;
   if (mode == 2)
+  {
     aModeDrop = false;
+  }
 
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> theSmallEdges, theMultyEdges;
   NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
@@ -893,15 +963,21 @@ static int checkoverlapedges(Draw_Interpretor& di, int n, const char** a)
   double aDistDomain = 0.0;
   int    k           = 3;
   if (k < n)
+  {
     aTol = Draw::Atof(a[k++]);
+  }
   if (k < n)
+  {
     aDistDomain = Draw::Atof(a[k++]);
+  }
 
   ShapeAnalysis_Edge sae;
   if (sae.CheckOverlapping(e1, e2, aTol, aDistDomain))
   {
     if (aDistDomain == 0.0)
+    {
       di << "Edges are overlapping completely\n";
+    }
     else
     {
       di << "Edges are overlapped\n";
@@ -910,7 +986,9 @@ static int checkoverlapedges(Draw_Interpretor& di, int n, const char** a)
     }
   }
   else
+  {
     di << "Edges are not overlapped\n";
+  }
   return 0;
 }
 
@@ -942,13 +1020,21 @@ static int checkfclass2d(Draw_Interpretor& di, int n, const char** a)
   BRepTopAdaptor_FClass2d f2d(aFace, tol);
   TopAbs_State            stat = f2d.Perform(p2d);
   if (stat == TopAbs_OUT)
+  {
     di << "Point is OUT\n";
+  }
   else if (stat == TopAbs_IN)
+  {
     di << "Point is IN\n";
+  }
   else if (stat == TopAbs_ON)
+  {
     di << "Point is ON\n";
+  }
   else
+  {
     di << "Point is UNKNOWN\n";
+  }
   return 0;
 }
 
@@ -967,11 +1053,15 @@ static int connectedges(Draw_Interpretor& di, int n, const char** a)
   }
   double aTol = Precision::Confusion();
   if (n > 3)
+  {
     aTol = Draw::Atof(a[3]);
+  }
 
   bool shared = true;
   if (n > 4)
+  {
     shared = (Draw::Atoi(a[4]) == 1);
+  }
   TopExp_Explorer                                  aExpE(aSh1, TopAbs_EDGE);
   occ::handle<NCollection_HSequence<TopoDS_Shape>> aSeqEdges =
     new NCollection_HSequence<TopoDS_Shape>;

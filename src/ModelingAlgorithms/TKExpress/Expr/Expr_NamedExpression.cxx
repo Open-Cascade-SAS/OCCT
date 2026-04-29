@@ -55,7 +55,9 @@ bool Expr_NamedExpression::IsIdentical(const occ::handle<Expr_GeneralExpression>
     // AGV 22.03.12: Comparison should be based on names rather than Handles
     const Expr_NamedExpression* pOther = static_cast<const Expr_NamedExpression*>(theOther.get());
     if (pOther == this || pOther->GetName().IsEqual(myName))
+    {
       aResult = true;
+    }
   }
   return aResult;
 }

@@ -34,12 +34,16 @@ bool gp_Ax2d::IsCoaxial(const gp_Ax2d& Other,
   XY1.Subtract(Other.loc.XY());
   double D1 = XY1.Crossed(Other.vdir.XY());
   if (D1 < 0)
+  {
     D1 = -D1;
+  }
   gp_XY XY2 = Other.loc.XY();
   XY2.Subtract(loc.XY());
   double D2 = XY2.Crossed(vdir.XY());
   if (D2 < 0)
+  {
     D2 = -D2;
+  }
   return (vdir.IsParallel(Other.vdir, AngularTolerance) && D1 <= LinearTolerance
           && D2 <= LinearTolerance);
 }
@@ -48,7 +52,9 @@ void gp_Ax2d::Scale(const gp_Pnt2d& P, const double S)
 {
   loc.Scale(P, S);
   if (S < 0.0)
+  {
     vdir.Reverse();
+  }
 }
 
 void gp_Ax2d::Mirror(const gp_Pnt2d& P) noexcept

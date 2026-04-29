@@ -413,7 +413,9 @@ bool BlendFunc_CSConstRad::IsTangencyPoint() const
 const gp_Vec& BlendFunc_CSConstRad::TangentOnS() const
 {
   if (istangent)
+  {
     throw Standard_DomainError("BlendFunc_CSConstRad::TangentOnS");
+  }
   return tgs;
 }
 
@@ -422,7 +424,9 @@ const gp_Vec& BlendFunc_CSConstRad::TangentOnS() const
 const gp_Vec& BlendFunc_CSConstRad::TangentOnC() const
 {
   if (istangent)
+  {
     throw Standard_DomainError("BlendFunc_CSConstRad::TangentOnC");
+  }
   return tgc;
 }
 
@@ -431,7 +435,9 @@ const gp_Vec& BlendFunc_CSConstRad::TangentOnC() const
 const gp_Vec2d& BlendFunc_CSConstRad::Tangent2d() const
 {
   if (istangent)
+  {
     throw Standard_DomainError("BlendFunc_CSConstRad::Tangent2d");
+  }
   return tg2d;
 }
 
@@ -452,7 +458,9 @@ void BlendFunc_CSConstRad::Tangent(const double U, const double V, gp_Vec& TgS, 
   gp_Pnt Center(bid.XYZ() + ray * ns.XYZ());
   TgS = nplan.Crossed(gp_Vec(Center, bid));
   if (choix % 2 == 1)
+  {
     TgS.Reverse();
+  }
 }
 
 //=================================================================================================

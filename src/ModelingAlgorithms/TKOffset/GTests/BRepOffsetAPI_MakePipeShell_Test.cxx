@@ -79,7 +79,9 @@ bool buildBentTube(double        theWallThickness,
 {
   const double aBendAngle = theLength / theMajorRadius;
   if (aBendAngle >= M_PI)
+  {
     return false;
+  }
 
   const double aRadiusL = theDia1 / 2.0;
   const double aRadiusR = theDia2 / 2.0;
@@ -113,7 +115,9 @@ bool buildBentTube(double        theWallThickness,
 
   BRepBuilderAPI_MakeEdge aMkEdge(aSpineCurve);
   if (!aMkEdge.IsDone())
+  {
     return false;
+  }
   TopoDS_Wire aSpineWire = BRepBuilderAPI_MakeWire(aMkEdge.Edge()).Wire();
 
   BRepOffsetAPI_MakePipeShell aMkPipe1(aSpineWire);
@@ -121,14 +125,18 @@ bool buildBentTube(double        theWallThickness,
   aMkPipe1.SetLaw(aWire1, aLaw1, false, false);
   aMkPipe1.Build();
   if (!aMkPipe1.IsDone())
+  {
     return false;
+  }
 
   BRepOffsetAPI_MakePipeShell aMkPipe2(aSpineWire);
   aMkPipe2.SetTolerance(1.0e-8, 1.0e-8, 1.0e-6);
   aMkPipe2.SetLaw(anOutWire, aLaw2, false, false);
   aMkPipe2.Build();
   if (!aMkPipe2.IsDone())
+  {
     return false;
+  }
 
   // Build opening face at start of bend (annular ring)
   BRepBuilderAPI_MakeFace aMkFace;
@@ -137,7 +145,9 @@ bool buildBentTube(double        theWallThickness,
   aMkFace.Add(TopoDS::Wire(aMkPipe2.FirstShape()));
   aMkFace.Add(TopoDS::Wire(aMkPipe1.FirstShape().Reversed()));
   if (!aMkFace.IsDone())
+  {
     return false;
+  }
   TopoDS_Face aFace1 = aMkFace.Face();
 
   // Build opening face at end of bend (annular ring)
@@ -146,7 +156,9 @@ bool buildBentTube(double        theWallThickness,
   aMkFace.Add(TopoDS::Wire(aMkPipe2.LastShape()));
   aMkFace.Add(TopoDS::Wire(aMkPipe1.LastShape().Reversed()));
   if (!aMkFace.IsDone())
+  {
     return false;
+  }
   TopoDS_Face aFace2 = aMkFace.Face();
 
   // Assemble tube shell from inner pipe face, outer pipe face, and two annular ring faces
@@ -156,7 +168,9 @@ bool buildBentTube(double        theWallThickness,
 
   TopExp_Explorer aFaceExp(aMkPipe1.Shape(), TopAbs_FACE);
   if (aFaceExp.More())
+  {
     aBuilder.Add(aTubeShell, aFaceExp.Current().Reversed());
+  }
 
   // Extract the gas solid before modifying mkPipe1 to a solid
   aMkPipe1.MakeSolid();
@@ -164,7 +178,9 @@ bool buildBentTube(double        theWallThickness,
 
   aFaceExp.Init(aMkPipe2.Shape(), TopAbs_FACE);
   if (aFaceExp.More())
+  {
     aBuilder.Add(aTubeShell, aFaceExp.Current());
+  }
 
   aBuilder.Add(aTubeShell, aFace1.Reversed());
   aBuilder.Add(aTubeShell, aFace2);
@@ -210,7 +226,9 @@ TEST(BRepOffsetAPI_MakePipeShellTest, Bug332_BentTubeWithScalingLaw)
   {
     const double aLen = wireLength(TopoDS::Wire(anExp.Current()));
     if (aLen > Precision::Confusion())
+    {
       aWireLengths.Append(aLen);
+    }
   }
 
   // Expected circular circumferences from the TCL test (pi * diameter):
@@ -231,7 +249,9 @@ TEST(BRepOffsetAPI_MakePipeShellTest, Bug332_BentTubeWithScalingLaw)
     for (const double aLen : aWireLengths)
     {
       if (std::abs(aLen - theExpected) / theExpected <= aTol)
+      {
         ++aCount;
+      }
     }
     return aCount;
   };

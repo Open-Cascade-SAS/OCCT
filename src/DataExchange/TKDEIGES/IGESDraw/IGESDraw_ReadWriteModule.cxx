@@ -81,9 +81,13 @@ int IGESDraw_ReadWriteModule::CaseIGES(const int typenum, const int formnum) con
       return formnum + 3; // 0->3  1->4
     case 410:
       if (formnum == 0)
+      {
         return 12;
+      }
       else if (formnum == 1)
+      {
         return 8;
+      }
       break;
     case 412:
       return 10;
@@ -107,7 +111,9 @@ void IGESDraw_ReadWriteModule::ReadOwnParams(const int                          
     case 1: {
       DeclareAndCast(IGESDraw_CircArraySubfigure, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDraw_ToolCircArraySubfigure tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -115,7 +121,9 @@ void IGESDraw_ReadWriteModule::ReadOwnParams(const int                          
     case 2: {
       DeclareAndCast(IGESDraw_ConnectPoint, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDraw_ToolConnectPoint tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -123,7 +131,9 @@ void IGESDraw_ReadWriteModule::ReadOwnParams(const int                          
     case 3: {
       DeclareAndCast(IGESDraw_Drawing, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDraw_ToolDrawing tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -131,7 +141,9 @@ void IGESDraw_ReadWriteModule::ReadOwnParams(const int                          
     case 4: {
       DeclareAndCast(IGESDraw_DrawingWithRotation, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDraw_ToolDrawingWithRotation tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -139,7 +151,9 @@ void IGESDraw_ReadWriteModule::ReadOwnParams(const int                          
     case 5: {
       DeclareAndCast(IGESDraw_LabelDisplay, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDraw_ToolLabelDisplay tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -147,7 +161,9 @@ void IGESDraw_ReadWriteModule::ReadOwnParams(const int                          
     case 6: {
       DeclareAndCast(IGESDraw_NetworkSubfigure, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDraw_ToolNetworkSubfigure tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -155,7 +171,9 @@ void IGESDraw_ReadWriteModule::ReadOwnParams(const int                          
     case 7: {
       DeclareAndCast(IGESDraw_NetworkSubfigureDef, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDraw_ToolNetworkSubfigureDef tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -163,7 +181,9 @@ void IGESDraw_ReadWriteModule::ReadOwnParams(const int                          
     case 8: {
       DeclareAndCast(IGESDraw_PerspectiveView, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDraw_ToolPerspectiveView tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -171,7 +191,9 @@ void IGESDraw_ReadWriteModule::ReadOwnParams(const int                          
     case 9: {
       DeclareAndCast(IGESDraw_Planar, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDraw_ToolPlanar tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -179,7 +201,9 @@ void IGESDraw_ReadWriteModule::ReadOwnParams(const int                          
     case 10: {
       DeclareAndCast(IGESDraw_RectArraySubfigure, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDraw_ToolRectArraySubfigure tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -187,7 +211,9 @@ void IGESDraw_ReadWriteModule::ReadOwnParams(const int                          
     case 11: {
       DeclareAndCast(IGESDraw_SegmentedViewsVisible, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDraw_ToolSegmentedViewsVisible tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -195,7 +221,9 @@ void IGESDraw_ReadWriteModule::ReadOwnParams(const int                          
     case 12: {
       DeclareAndCast(IGESDraw_View, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDraw_ToolView tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -203,7 +231,9 @@ void IGESDraw_ReadWriteModule::ReadOwnParams(const int                          
     case 13: {
       DeclareAndCast(IGESDraw_ViewsVisible, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDraw_ToolViewsVisible tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -211,7 +241,9 @@ void IGESDraw_ReadWriteModule::ReadOwnParams(const int                          
     case 14: {
       DeclareAndCast(IGESDraw_ViewsVisibleWithAttr, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDraw_ToolViewsVisibleWithAttr tool;
       tool.ReadOwnParams(anent, IR, PR);
     }
@@ -230,7 +262,9 @@ void IGESDraw_ReadWriteModule::WriteOwnParams(const int                         
     case 1: {
       DeclareAndCast(IGESDraw_CircArraySubfigure, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDraw_ToolCircArraySubfigure tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -238,7 +272,9 @@ void IGESDraw_ReadWriteModule::WriteOwnParams(const int                         
     case 2: {
       DeclareAndCast(IGESDraw_ConnectPoint, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDraw_ToolConnectPoint tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -246,7 +282,9 @@ void IGESDraw_ReadWriteModule::WriteOwnParams(const int                         
     case 3: {
       DeclareAndCast(IGESDraw_Drawing, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDraw_ToolDrawing tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -254,7 +292,9 @@ void IGESDraw_ReadWriteModule::WriteOwnParams(const int                         
     case 4: {
       DeclareAndCast(IGESDraw_DrawingWithRotation, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDraw_ToolDrawingWithRotation tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -262,7 +302,9 @@ void IGESDraw_ReadWriteModule::WriteOwnParams(const int                         
     case 5: {
       DeclareAndCast(IGESDraw_LabelDisplay, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDraw_ToolLabelDisplay tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -270,7 +312,9 @@ void IGESDraw_ReadWriteModule::WriteOwnParams(const int                         
     case 6: {
       DeclareAndCast(IGESDraw_NetworkSubfigure, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDraw_ToolNetworkSubfigure tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -278,7 +322,9 @@ void IGESDraw_ReadWriteModule::WriteOwnParams(const int                         
     case 7: {
       DeclareAndCast(IGESDraw_NetworkSubfigureDef, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDraw_ToolNetworkSubfigureDef tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -286,7 +332,9 @@ void IGESDraw_ReadWriteModule::WriteOwnParams(const int                         
     case 8: {
       DeclareAndCast(IGESDraw_PerspectiveView, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDraw_ToolPerspectiveView tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -294,7 +342,9 @@ void IGESDraw_ReadWriteModule::WriteOwnParams(const int                         
     case 9: {
       DeclareAndCast(IGESDraw_Planar, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDraw_ToolPlanar tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -302,7 +352,9 @@ void IGESDraw_ReadWriteModule::WriteOwnParams(const int                         
     case 10: {
       DeclareAndCast(IGESDraw_RectArraySubfigure, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDraw_ToolRectArraySubfigure tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -310,7 +362,9 @@ void IGESDraw_ReadWriteModule::WriteOwnParams(const int                         
     case 11: {
       DeclareAndCast(IGESDraw_SegmentedViewsVisible, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDraw_ToolSegmentedViewsVisible tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -318,7 +372,9 @@ void IGESDraw_ReadWriteModule::WriteOwnParams(const int                         
     case 12: {
       DeclareAndCast(IGESDraw_View, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDraw_ToolView tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -326,7 +382,9 @@ void IGESDraw_ReadWriteModule::WriteOwnParams(const int                         
     case 13: {
       DeclareAndCast(IGESDraw_ViewsVisible, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDraw_ToolViewsVisible tool;
       tool.WriteOwnParams(anent, IW);
     }
@@ -334,7 +392,9 @@ void IGESDraw_ReadWriteModule::WriteOwnParams(const int                         
     case 14: {
       DeclareAndCast(IGESDraw_ViewsVisibleWithAttr, anent, ent);
       if (anent.IsNull())
+      {
         return;
+      }
       IGESDraw_ToolViewsVisibleWithAttr tool;
       tool.WriteOwnParams(anent, IW);
     }

@@ -37,7 +37,9 @@ void TopOpeBRepDS_Marker::Set(const int ie, const bool b)
 {
   Allocate(ie);
   if (ie < 1 || ie > myne)
+  {
     return;
+  }
   myhe->SetValue(ie, b);
 }
 
@@ -47,18 +49,28 @@ void TopOpeBRepDS_Marker::Set(const bool b, const int na, void* const aa)
   //  int ia,ie;
   int ia;
   if (!na)
+  {
     myhe->Init(b);
+  }
   else
+  {
     for (ia = 0; ia < na; ia++)
+    {
       Set(atoi(a[ia]), b);
+    }
+  }
 }
 
 bool TopOpeBRepDS_Marker::GetI(const int ie) const
 {
   if (myhe.IsNull())
+  {
     return false;
+  }
   if (ie < 1 || ie > myne)
+  {
     return false;
+  }
   return myhe->Value(ie);
 }
 
@@ -69,10 +81,14 @@ void TopOpeBRepDS_Marker::Allocate(const int n)
   if (all)
   {
     if (myne == 0)
+    {
       nall = 1000;
+    }
     myhe = new NCollection_HArray1<bool>(0, nall);
     myhe->Init(false);
   }
   if (nall)
+  {
     myne = nall;
+  }
 }

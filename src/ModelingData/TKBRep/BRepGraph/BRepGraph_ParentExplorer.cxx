@@ -1122,7 +1122,9 @@ int BRepGraph_ParentExplorer::findSolidChildStep(const BRepGraph_SolidId thePare
     for (const BRepGraph_ChildRefId& aRefId : aSolid.AuxChildRefIds)
     {
       if (!aRefs.IsRemoved(aRefId) && aRefs.ChildNode(aRefId) == theChild)
+      {
         return aSolid.ShellRefIds.Length() + static_cast<int>(aRefIdx);
+      }
       ++aRefIdx;
     }
   }
@@ -1156,7 +1158,9 @@ int BRepGraph_ParentExplorer::findShellChildStep(const BRepGraph_ShellId thePare
     for (const BRepGraph_ChildRefId& aRefId : aShell.AuxChildRefIds)
     {
       if (!aRefs.IsRemoved(aRefId) && aRefs.ChildNode(aRefId) == theChild)
+      {
         return aShell.FaceRefIds.Length() + static_cast<int>(aRefIdx);
+      }
       ++aRefIdx;
     }
   }

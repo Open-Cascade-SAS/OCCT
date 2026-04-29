@@ -142,18 +142,24 @@ occ::handle<TDF_Delta> TDF_Data::CommitTransaction(const bool withDelta)
   if (myTransaction > 0)
   {
     if (withDelta)
+    {
       delta = new TDF_Delta();
+    }
 #ifdef OCCT_DEBUG_DELTA
     std::cout << "TDF_Data::Begin Commit #" << myTransaction << std::endl;
 #endif
 #ifdef TDF_DATA_COMMIT_OPTIMIZED
     myNbTouchedAtt = 0;
     if (Root().myLabelNode->MayBeModified())
+    {
 #endif
       myNbTouchedAtt = TDF_Data::CommitTransaction(Root(), delta, withDelta);
+    }
 
     if (myNbTouchedAtt && !(withDelta && delta->IsEmpty()))
+    {
       ++myTime;
+    }
     --myTransaction;
     if (withDelta)
     {
@@ -178,6 +184,7 @@ occ::handle<TDF_Delta> TDF_Data::CommitTransaction(const bool withDelta)
     }
     myTimes.RemoveFirst();
   }
+
   TDF_Data_DebugModified("COMMIT");
   return delta;
 }
@@ -255,7 +262,9 @@ int TDF_Data::CommitTransaction(const TDF_Label&              aLabel,
             {
               TDF_Data_DeltaCreation("Removal(1)", currentAtt->DeltaOnRemoval());
               if (myNotUndoMode)
+              {
                 currentAtt->BeforeRemoval();
+              }
               aLabel.myLabelNode->RemoveAttribute(lastAtt, currentAtt);
               currentIsRemoved = true;
               attMod           = true;
@@ -273,7 +282,9 @@ int TDF_Data::CommitTransaction(const TDF_Label&              aLabel,
               {
                 TDF_Data_DeltaCreation("Removal(2)", currentAtt->DeltaOnRemoval());
                 if (myNotUndoMode)
+                {
                   currentAtt->BeforeRemoval();
+                }
                 aLabel.myLabelNode->RemoveAttribute(lastAtt, currentAtt);
                 currentIsRemoved = true;
               }
@@ -313,17 +324,25 @@ int TDF_Data::CommitTransaction(const TDF_Label&              aLabel,
           const TDF_Attribute* anAttrPtr = aPtrCurrentAtt.operator->(); // to avoid ambiguity
           TDF_Data_DeltaCreation("Modification", anAttrPtr->DeltaOnModification(backupAtt));
           if (aPtrCurrentAtt->myTransaction == backupAtt->myTransaction)
+          {
             aPtrCurrentAtt->RemoveBackup();
+          }
           attMod = attMod || (aPtrCurrentAtt->myTransaction > 0);
         }
       }
       else
+      {
         attMod = attMod || (aPtrCurrentAtt->myTransaction > 0);
+      }
 
       if (currentIsRemoved)
+      {
         currentIsRemoved = false;
+      }
       else
+      {
         lastAtt = aPtrCurrentAtt;
+      }
     }
     aLabel.myLabelNode->AttributesModified(attMod);
   }
@@ -334,8 +353,10 @@ int TDF_Data::CommitTransaction(const TDF_Label&              aLabel,
   {
 #ifdef TDF_DATA_COMMIT_OPTIMIZED
     if (itr2.Value().myLabelNode->MayBeModified())
+    {
 #endif
       nbTouchedAtt += TDF_Data::CommitTransaction(itr2.Value(), aDelta, withDelta);
+    }
   }
 
   return nbTouchedAtt;
@@ -349,7 +370,9 @@ int TDF_Data::CommitTransaction(const TDF_Label&              aLabel,
 void TDF_Data::AbortTransaction()
 {
   if (myTransaction > 0)
+  {
     Undo(TDF_Data::CommitTransaction(true), false);
+  }
   TDF_Data_DebugModified("New ABORT");
 }
 
@@ -361,7 +384,9 @@ void TDF_Data::AbortTransaction()
 void TDF_Data::AbortUntilTransaction(const int untilTransaction)
 {
   if (untilTransaction > 0)
+  {
     Undo(TDF_Data::CommitUntilTransaction(untilTransaction, true), false);
+  }
 }
 
 //=================================================================================================
@@ -413,7 +438,9 @@ occ::handle<TDF_Delta> TDF_Data::Undo(const occ::handle<TDF_Delta>& aDelta, cons
     if (aDelta->IsApplicable(myTime))
     {
       if (withDelta)
+      {
         OpenTransaction();
+      }
 #ifdef OCCT_DEBUG_DELTA
       std::cout << "TDF_Data::Undo applies this delta:" << std::endl;
       aDelta->Dump(std::cout);
@@ -478,9 +505,9 @@ void TDF_Data::RegisterLabel(const TDF_Label& aLabel)
 
 Standard_OStream& TDF_Data::Dump(Standard_OStream& anOS) const
 {
-  anOS << "Dump of a TDF_Data." << std::endl;
+  anOS << "Dump of a TDF_Data." << '\n';
   anOS << "Current transaction: " << myTransaction;
-  anOS << "; Current tick: " << myTime << ";" << std::endl;
+  anOS << "; Current tick: " << myTime << ";" << '\n';
   return anOS;
 }
 

@@ -31,7 +31,9 @@ void RWStepRepr_RWValueRepresentationItem::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "value_representation_item"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
   occ::handle<TCollection_HAsciiString> aName;

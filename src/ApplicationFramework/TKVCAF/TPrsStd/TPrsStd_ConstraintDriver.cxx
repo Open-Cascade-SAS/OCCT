@@ -147,7 +147,9 @@ bool TPrsStd_ConstraintDriver::Update(const TDF_Label&                    aLabel
     }
   }
   if (anAIS.IsNull())
+  {
     return false;
+  }
 
   anAIS->ResetTransformation();
   anAIS->SetToUpdate();
@@ -168,15 +170,21 @@ bool TPrsStd_ConstraintDriver::Update(const TDF_Label&                    aLabel
     if (!apConstraint->Verified())
     {
       if (originColor.Name() != Quantity_NOC_RED)
+      {
         anAISObject->SetColor(Quantity_NOC_RED);
+      }
     }
     else if (apConstraint->IsDimension() && apConstraint->GetValue()->IsCaptured())
     {
       if (originColor.Name() != Quantity_NOC_PURPLE)
+      {
         anAISObject->SetColor(Quantity_NOC_PURPLE);
+      }
     }
     else if (!apConstraint->IsPlanar() && (originColor.Name() != Quantity_NOC_YELLOW))
+    {
       anAISObject->SetColor(Quantity_NOC_YELLOW);
+    }
   }
   else
   {
@@ -189,7 +197,9 @@ bool TPrsStd_ConstraintDriver::Update(const TDF_Label&                    aLabel
       anAISObject->SetColor(Quantity_NOC_PURPLE);
     }
     else if (!apConstraint->IsPlanar())
+    {
       anAISObject->SetColor(Quantity_NOC_YELLOW);
+    }
   }
   return true;
 }

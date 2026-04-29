@@ -119,9 +119,13 @@ PeriodicInterval PeriodicInterval::FirstIntersection(PeriodicInterval& PInter)
   else
   {
     if (Length() >= PIpPI)
+    {
       return (PeriodicInterval(PInter.Binf, PInter.Bsup));
+    }
     if (PInter.Length() >= PIpPI)
+    {
       return (PeriodicInterval(Binf, Bsup));
+    }
     if (PInter.Bsup <= Binf)
     {
       while (PInter.Binf <= Binf && PInter.Bsup <= Binf)
@@ -219,14 +223,18 @@ Interval::Interval(const IntRes2d_Domain& Domain)
     Binf          = Domain.FirstParameter() - Domain.FirstTolerance();
   }
   else
+  {
     HasFirstBound = false;
+  }
   if (Domain.HasLastPoint())
   {
     HasLastBound = true;
     Bsup         = Domain.LastParameter() + Domain.LastTolerance();
   }
   else
+  {
     HasLastBound = false;
+  }
 }
 
 Interval::Interval(const double a, const bool hf, const double b, const bool hl)
@@ -251,7 +259,9 @@ Interval Interval::IntersectionWithBounded(const Interval& Inter)
     return (PourSGI);
   }
   if (!(HasFirstBound || HasLastBound))
+  {
     return (Interval(Inter.Binf, Inter.Bsup));
+  }
   double a, b;
   if (HasFirstBound)
   {

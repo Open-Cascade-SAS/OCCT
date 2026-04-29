@@ -29,7 +29,9 @@ void RWStepBasic_RWEffectivity::ReadStep(const occ::handle<StepData_StepReaderDa
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 1, ach, "effectivity"))
+  {
     return;
+  }
 
   // --- own field : id ---
 

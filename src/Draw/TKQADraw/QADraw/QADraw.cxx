@@ -40,7 +40,7 @@ static int QATestExtremaSS(Draw_Interpretor& theInterpretor, int theArgNb, const
 {
   if (theArgNb < 3 || theArgNb > 4)
   {
-    std::cerr << "Usage: type help " << theArgs[0] << std::endl;
+    std::cerr << "Usage: type help " << theArgs[0] << '\n';
     return 1;
   }
 

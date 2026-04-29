@@ -71,7 +71,7 @@ void HatchGen_Domain::Dump(const int Index) const
   {
     std::cout << "======";
   }
-  std::cout << "=============================" << std::endl;
+  std::cout << "=============================" << '\n';
 
   if (myHasFirstPoint)
   {
@@ -79,7 +79,7 @@ void HatchGen_Domain::Dump(const int Index) const
   }
   else
   {
-    std::cout << "    Has not a first point" << std::endl;
+    std::cout << "    Has not a first point" << '\n';
   }
 
   if (myHasSecondPoint)
@@ -88,8 +88,8 @@ void HatchGen_Domain::Dump(const int Index) const
   }
   else
   {
-    std::cout << "    Has not a second point" << std::endl;
+    std::cout << "    Has not a second point" << '\n';
   }
 
-  std::cout << "==============================================" << std::endl;
+  std::cout << "==============================================" << '\n';
 }

@@ -40,10 +40,14 @@ bool math_BracketMinimum::LimitAndMayBeSwap(math_Function& F,
 {
   theC = Limited(theC);
   if (std::abs(theB - theC) < Precision::PConfusion())
+  {
     return false;
+  }
   bool OK = F.Value(theC, theFC);
   if (!OK)
+  {
     return false;
+  }
   // check that B is between A and C
   if ((theA - theB) * (theB - theC) < 0)
   {
@@ -67,13 +71,17 @@ void math_BracketMinimum::Perform(math_Function& F)
   {
     OK = F.Value(Ax, FAx);
     if (!OK)
+    {
       return;
+    }
   }
   if (!myFB)
   {
     OK = F.Value(Bx, FBx);
     if (!OK)
+    {
       return;
+    }
   }
   if (FBx > FAx)
   {
@@ -87,13 +95,17 @@ void math_BracketMinimum::Perform(math_Function& F)
   {
     OK = LimitAndMayBeSwap(F, Ax, Bx, FBx, Cx, FCx);
     if (!OK)
+    {
       return;
+    }
   }
   else
   {
     OK = F.Value(Cx, FCx);
     if (!OK)
+    {
       return;
+    }
   }
 
   while (FBx > FCx)
@@ -103,13 +115,17 @@ void math_BracketMinimum::Perform(math_Function& F)
     u    = Bx - ((Bx - Cx) * q - (Bx - Ax) * r) / (2.0 * SIGN(MAX(fabs(q - r), TINY), q - r));
     ulim = Bx + GLIMIT * (Cx - Bx);
     if (myIsLimited)
+    {
       ulim = Limited(ulim);
+    }
     if ((Bx - u) * (u - Cx) > 0.0)
     {
       // u is between B and C
       OK = F.Value(u, fu);
       if (!OK)
+      {
         return;
+      }
       if (fu < FCx)
       {
         // solution is found (B, u, c)
@@ -134,13 +150,17 @@ void math_BracketMinimum::Perform(math_Function& F)
       {
         OK = LimitAndMayBeSwap(F, Bx, Cx, FCx, u, fu);
         if (!OK)
+        {
           return;
+        }
       }
       else
       {
         OK = F.Value(u, fu);
         if (!OK)
+        {
           return;
+        }
       }
     }
     else if ((Cx - u) * (u - ulim) > 0.0)
@@ -148,7 +168,9 @@ void math_BracketMinimum::Perform(math_Function& F)
       // u is beyond C but between C and limit
       OK = F.Value(u, fu);
       if (!OK)
+      {
         return;
+      }
     }
     else if ((u - ulim) * (ulim - Cx) >= 0.0)
     {
@@ -156,7 +178,9 @@ void math_BracketMinimum::Perform(math_Function& F)
       u  = ulim;
       OK = F.Value(u, fu);
       if (!OK)
+      {
         return;
+      }
     }
     else
     {
@@ -167,13 +191,17 @@ void math_BracketMinimum::Perform(math_Function& F)
       {
         OK = LimitAndMayBeSwap(F, Bx, Cx, FCx, u, fu);
         if (!OK)
+        {
           return;
+        }
       }
       else
       {
         OK = F.Value(u, fu);
         if (!OK)
+        {
           return;
+        }
       }
     }
     SHFT(Ax, Bx, Cx, u);
@@ -265,10 +293,10 @@ void math_BracketMinimum::Dump(Standard_OStream& o) const
   if (Done)
   {
     o << " Status = Done \n";
-    o << " The bracketed triplet is: " << std::endl;
-    o << Ax << ", " << Bx << ", " << Cx << std::endl;
-    o << " The corresponding function values are: " << std::endl;
-    o << FAx << ", " << FBx << ", " << FCx << std::endl;
+    o << " The bracketed triplet is: " << '\n';
+    o << Ax << ", " << Bx << ", " << Cx << '\n';
+    o << " The corresponding function values are: " << '\n';
+    o << FAx << ", " << FBx << ", " << FCx << '\n';
   }
   else
   {

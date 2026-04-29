@@ -101,7 +101,9 @@ bool AppDef_MyLineTool::Tangency(const AppDef_MultiLine&     ML,
     return true;
   }
   else
+  {
     return false;
+  }
 }
 
 bool AppDef_MyLineTool::Tangency(const AppDef_MultiLine&       ML,
@@ -120,7 +122,9 @@ bool AppDef_MyLineTool::Tangency(const AppDef_MultiLine&       ML,
     return true;
   }
   else
+  {
     return false;
+  }
 }
 
 bool AppDef_MyLineTool::Tangency(const AppDef_MultiLine&       ML,
@@ -144,7 +148,9 @@ bool AppDef_MyLineTool::Tangency(const AppDef_MultiLine&       ML,
     return true;
   }
   else
+  {
     return false;
+  }
 }
 
 AppDef_MultiLine AppDef_MyLineTool::MakeMLBetween(const AppDef_MultiLine& theML,
@@ -184,7 +190,9 @@ bool AppDef_MyLineTool::Curvature(const AppDef_MultiLine&     ML,
     return true;
   }
   else
+  {
     return false;
+  }
 }
 
 bool AppDef_MyLineTool::Curvature(const AppDef_MultiLine&       ML,
@@ -203,7 +211,9 @@ bool AppDef_MyLineTool::Curvature(const AppDef_MultiLine&       ML,
     return true;
   }
   else
+  {
     return false;
+  }
 }
 
 bool AppDef_MyLineTool::Curvature(const AppDef_MultiLine&       ML,
@@ -228,5 +238,7 @@ bool AppDef_MyLineTool::Curvature(const AppDef_MultiLine&       ML,
     return true;
   }
   else
+  {
     return false;
+  }
 }

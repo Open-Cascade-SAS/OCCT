@@ -275,7 +275,9 @@ void Draw::PloadCommands(Draw_Interpretor& theCommands)
 {
   static bool Done = false;
   if (Done)
+  {
     return;
+  }
   Done = true;
 
   const char* g = "Draw Plugin";

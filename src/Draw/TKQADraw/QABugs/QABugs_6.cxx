@@ -127,6 +127,4 @@ void QABugs::Commands_6(Draw_Interpretor& theCommands)
   const char* group = "QABugs";
 
   theCommands.Add("OCC281", "OCC281 x y TypeOfMarker(0-12)", __FILE__, OCC281bug, group);
-
-  return;
 }

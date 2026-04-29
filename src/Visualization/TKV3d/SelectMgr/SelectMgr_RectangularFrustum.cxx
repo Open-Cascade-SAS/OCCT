@@ -510,7 +510,9 @@ bool SelectMgr_RectangularFrustum::OverlapsBox(const NCollection_Vec3<double>& t
                         "selection frustum initialization");
 
   if (!hasBoxOverlap(theBoxMin, theBoxMax))
+  {
     return false;
+  }
 
   double             aDepth = 0.0;
   BVH_Ray<double, 3> aRay(
@@ -556,7 +558,9 @@ bool SelectMgr_RectangularFrustum::OverlapsPoint(const gp_Pnt&                  
                         "selection frustum initialization");
 
   if (!hasPointOverlap(thePnt))
+  {
     return false;
+  }
 
   gp_XYZ       aV     = thePnt.XYZ() - myNearPickedPnt.XYZ();
   const double aDepth = aV.Dot(myViewRayDir.XYZ());
@@ -596,7 +600,9 @@ bool SelectMgr_RectangularFrustum::OverlapsSegment(const gp_Pnt&                
                         "selection frustum initialization");
 
   if (!hasSegmentOverlap(thePnt1, thePnt2))
+  {
     return false;
+  }
 
   segmentSegmentDistance(thePnt1, thePnt2, thePickResult);
 
@@ -640,7 +646,9 @@ bool SelectMgr_RectangularFrustum::OverlapsPolygon(const NCollection_Array1<gp_P
     }
 
     if (aMatchingSegmentsNb == -1)
+    {
       return false;
+    }
   }
   else if (theSensType == Select3D_TOS_INTERIOR)
   {

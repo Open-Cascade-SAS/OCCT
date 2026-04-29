@@ -47,10 +47,11 @@ void IGESDraw_ToolView::ReadOwnParams(const occ::handle<IGESDraw_View>&         
   // clang-format off
   PR.ReadInteger(PR.Current(), "View Number", tempViewNumber); //szv#4:S4163:12Mar99 `st=` not needed
 
-  if (PR.DefinedElseSkip())
+  if (PR.DefinedElseSkip()) {
     PR.ReadReal(PR.Current(), "Scale Factor", tempScaleFactor); //szv#4:S4163:12Mar99 `st=` not needed
-  else
+  } else {
     tempScaleFactor = 1.0;      // Setting to default value of 1.0
+}
 
   PR.ReadEntity(IR, PR.Current(), "Left Side Of View Volume",
 		STANDARD_TYPE(IGESGeom_Plane), tempLeftPlane,   true); //szv#4:S4163:12Mar99 `st=` not needed
@@ -150,7 +151,9 @@ void IGESDraw_ToolView::OwnCheck(const occ::handle<IGESDraw_View>& ent,
   if (ent->HasTransf())
   {
     if (ent->Transf()->FormNumber() != 0)
+    {
       ach->AddFail("Associated Matrix has not Form Number 0");
+    }
   }
 }
 
@@ -181,5 +184,5 @@ void IGESDraw_ToolView::OwnDump(const occ::handle<IGESDraw_View>& ent,
   S << "\n";
   S << "Front Plane Of View Volume  : ";
   dumper.Dump(ent->FrontPlane(), S, tempSubLevel);
-  S << std::endl;
+  S << '\n';
 }

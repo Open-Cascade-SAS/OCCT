@@ -81,12 +81,16 @@ static void Bubble(const TopoDS_Edge& E, NCollection_Sequence<TopoDS_Shape>& Seq
 {
   // Remove duplicates
   for (int i = 1; i < Seq.Length(); i++)
+  {
     for (int j = i + 1; j <= Seq.Length(); j++)
+    {
       if (Seq(i) == Seq(j))
       {
         Seq.Remove(j);
         j--;
       }
+    }
+  }
 
   bool          Invert   = true;
   int           NbPoints = Seq.Length();
@@ -167,7 +171,9 @@ static TopoDS_Vertex UpdateClosedEdge(const TopoDS_Edge& E, NCollection_Sequence
   ///////////////////////////////////////////////
 
   if (SV.IsEmpty())
+  {
     return VRes;
+  }
 
   VB[0] = TopoDS::Vertex(SV.First());
   VB[1] = TopoDS::Vertex(SV.Last());
@@ -180,9 +186,13 @@ static TopoDS_Vertex UpdateClosedEdge(const TopoDS_Edge& E, NCollection_Sequence
     {
       VRes = VB[i];
       if (i == 0)
+      {
         OnStart = true;
+      }
       else
+      {
         OnEnd = true;
+      }
     }
   }
   if (OnStart && OnEnd)
@@ -198,13 +208,19 @@ static TopoDS_Vertex UpdateClosedEdge(const TopoDS_Edge& E, NCollection_Sequence
     {
       SV.Remove(1);
       if (!SV.IsEmpty())
+      {
         SV.Remove(SV.Length());
+      }
     }
   }
   else if (OnStart)
+  {
     SV.Remove(1);
+  }
   else if (OnEnd)
+  {
     SV.Remove(SV.Length());
+  }
 
   return VRes;
 }
@@ -269,7 +285,9 @@ static void RemovePendingEdges(
               LE.Remove(itl);
             }
             else
+            {
               itl.Next();
+            }
           }
         }
       }
@@ -289,14 +307,22 @@ static bool SamePnt2d(const TopoDS_Vertex& V, TopoDS_Edge& E1, TopoDS_Edge& E2, 
   occ::handle<Geom2d_Curve> C1 = BRep_Tool::CurveOnSurface(E1, FF, f1, l1);
   occ::handle<Geom2d_Curve> C2 = BRep_Tool::CurveOnSurface(E2, FF, f2, l2);
   if (E1.Orientation() == TopAbs_FORWARD)
+  {
     P1 = C1->Value(f1);
+  }
   else
+  {
     P1 = C1->Value(l1);
+  }
 
   if (E2.Orientation() == TopAbs_FORWARD)
+  {
     P2 = C2->Value(l2);
+  }
   else
+  {
     P2 = C2->Value(f2);
+  }
   double Tol  = 100 * BRep_Tool::Tolerance(V);
   double Dist = P1.Distance(P2);
   return Dist < Tol;
@@ -355,9 +381,13 @@ static bool SelectEdge(const TopoDS_Face&              F,
     double                    dist, distmin = 100 * BRep_Tool::Tolerance(CV);
     double                    u;
     if (CE.Orientation() == TopAbs_FORWARD)
+    {
       u = l;
+    }
     else
+    {
       u = f;
+    }
 
     gp_Pnt2d P2, PV = C->Value(u);
 
@@ -368,9 +398,13 @@ static bool SelectEdge(const TopoDS_Face&              F,
       {
         C = BRep_Tool::CurveOnSurface(E, FForward, f, l);
         if (E.Orientation() == TopAbs_FORWARD)
+        {
           u = f;
+        }
         else
+        {
           u = l;
+        }
         P2   = C->Value(u);
         dist = PV.Distance(P2);
         if (dist <= distmin)
@@ -382,7 +416,9 @@ static bool SelectEdge(const TopoDS_Face&              F,
       k++;
     }
     if (kmin == 0)
+    {
       return false;
+    }
 
     k = 1;
     itl.Initialize(LE);
@@ -457,7 +493,9 @@ static void StoreInMVE(
     NCollection_List<TopoDS_Shape> VList;
     TopoDS_Iterator                VerExp(E);
     for (; VerExp.More(); VerExp.Next())
+    {
       VList.Append(VerExp.Value());
+    }
     NCollection_List<TopoDS_Shape>::Iterator itl(VList);
     for (; itl.More(); itl.Next())
     {
@@ -481,7 +519,9 @@ static void StoreInMVE(
           {
             TopoDS_Shape NewNewV = VerticesForSubstitute(V);
             if (!NewNewV.IsSame(V1))
+            {
               VerticesForSubstitute.Bind(V1, NewNewV);
+            }
           }
           else
           {
@@ -489,8 +529,12 @@ static void StoreInMVE(
             NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator
               mapit(VerticesForSubstitute);
             for (; mapit.More(); mapit.Next())
+            {
               if (mapit.Value().IsSame(V1))
+              {
                 VerticesForSubstitute(mapit.Key()) = V;
+              }
+            }
           }
         }
         E.Free(true);
@@ -586,7 +630,9 @@ void BRepAlgo_Loop::Perform()
       {
         TopoDS_Edge& E = TopoDS::Edge(itl1.ChangeValue());
         if (!Emap.Add(E))
+        {
           continue;
+        }
         StoreInMVE(myFace, E, MVE, YaCouture, myVerticesForSubstitute, myTolConf);
       }
     }
@@ -600,7 +646,9 @@ void BRepAlgo_Loop::Perform()
   {
     TopoDS_Edge& E = TopoDS::Edge(itl.ChangeValue());
     if (DejaVu.Add(E))
+    {
       StoreInMVE(myFace, E, MVE, YaCouture, myVerticesForSubstitute, myTolConf);
+    }
   }
 
   //-----------------------------------------------
@@ -625,7 +673,9 @@ void BRepAlgo_Loop::Perform()
     RemovePendingEdges(MVE);
 
     if (MVE.Extent() == 0)
+    {
       break;
+    }
     //--------------------------------
     // Start edge.
     //--------------------------------
@@ -643,7 +693,9 @@ void BRepAlgo_Loop::Perform()
       CV = VF = V2;
     }
     if (!MVE.Contains(CV))
+    {
       continue;
+    }
     NCollection_List<TopoDS_Shape>& aListEdges = MVE.ChangeFromKey(CV);
     for (itl.Initialize(aListEdges); itl.More(); itl.Next())
     {
@@ -662,9 +714,13 @@ void BRepAlgo_Loop::Perform()
       //-------------------------------
       TopExp::Vertices(CE, V1, V2);
       if (!CV.IsSame(V1))
+      {
         CV = V1;
+      }
       else
+      {
         CV = V2;
+      }
 
       B.Add(NW, CE);
       UsedEdges.Add(CE);
@@ -680,7 +736,9 @@ void BRepAlgo_Loop::Perform()
         {
           CE = NE;
           if (MVE.FindFromKey(CV).IsEmpty())
+          {
             MVE.RemoveKey(CV);
+          }
         }
       }
     }
@@ -800,9 +858,13 @@ void BRepAlgo_Loop::CutEdge(const TopoDS_Edge&                    E,
     // Eventually all extremities of the edge.
     //-----------------------------------------
     if (!VF.IsNull() && !VF.IsSame(SV.First()))
+    {
       SV.Prepend(VF);
+    }
     if (!VL.IsNull() && !VL.IsSame(SV.Last()))
+    {
       SV.Append(VL);
+    }
   }
 
   while (!SV.IsEmpty())
@@ -812,11 +874,15 @@ void BRepAlgo_Loop::CutEdge(const TopoDS_Edge&                    E,
       SV.Remove(1);
     }
     if (SV.IsEmpty())
+    {
       break;
+    }
     V1 = TopoDS::Vertex(SV.First());
     SV.Remove(1);
     if (SV.IsEmpty())
+    {
       break;
+    }
     if (SV.First().Orientation() == TopAbs_REVERSED)
     {
       V2 = TopoDS::Vertex(SV.First());
@@ -830,14 +896,18 @@ void BRepAlgo_Loop::CutEdge(const TopoDS_Edge&                    E,
       aLocalEdge = V2.Oriented(TopAbs_REVERSED);
       B.Add(TopoDS::Edge(NewEdge), aLocalEdge);
       if (V1.IsSame(VF))
+      {
         U1 = f;
+      }
       else
       {
         TopoDS_Shape aLocalV = V1.Oriented(TopAbs_INTERNAL);
         U1                   = BRep_Tool::Parameter(TopoDS::Vertex(aLocalV), WE);
       }
       if (V2.IsSame(VL))
+      {
         U2 = l;
+      }
       else
       {
         TopoDS_Shape aLocalV = V2.Oriented(TopAbs_INTERNAL);
@@ -858,15 +928,21 @@ void BRepAlgo_Loop::CutEdge(const TopoDS_Edge&                    E,
     double      fpar, lpar;
     BRep_Tool::Range(EE, fpar, lpar);
     if (lpar - fpar <= Precision::Confusion())
+    {
       NE.Remove(it);
+    }
     else
     {
       gp_Pnt2d pf, pl;
       BRep_Tool::UVPoints(EE, myFace, pf, pl);
       if (pf.Distance(pl) <= Tol && !BRep_Tool::IsClosed(EE))
+      {
         NE.Remove(it);
+      }
       else
+      {
         it.Next();
+      }
     }
   }
 }
@@ -969,14 +1045,18 @@ void BRepAlgo_Loop::UpdateVEmap(
   }
 
   if (VerLver.IsEmpty())
+  {
     return;
+  }
 
   BRep_Builder aBB;
   for (int ii = 1; ii <= VerLver.Extent(); ii++)
   {
     const NCollection_List<TopoDS_Shape>& aVlist = VerLver(ii);
     if (aVlist.Extent() == 1)
+    {
       continue;
+    }
 
     double                     aMaxTol = 0.;
     NCollection_Array1<gp_Pnt> Points(1, aVlist.Extent());
@@ -1014,23 +1094,31 @@ void BRepAlgo_Loop::UpdateVEmap(
       const TopoDS_Shape&                      anEdge  = aElist.First();
       NCollection_List<TopoDS_Shape>::Iterator itcedges(myConstEdges);
       for (; itcedges.More(); itcedges.Next())
+      {
         if (anEdge.IsSame(itcedges.Value()))
         {
           aConstVertex = aVertex;
           break;
         }
+      }
       if (!aConstVertex.IsNull())
+      {
         break;
+      }
     }
     if (aConstVertex.IsNull())
+    {
       aConstVertex = TopoDS::Vertex(aVlist.First());
+    }
     aBB.UpdateVertex(aConstVertex, aCentre, aMaxTol);
 
     for (itl.Initialize(aVlist); itl.More(); itl.Next())
     {
       const TopoDS_Vertex& aVertex = TopoDS::Vertex(itl.Value());
       if (aVertex.IsSame(aConstVertex))
+      {
         continue;
+      }
 
       const NCollection_List<TopoDS_Shape>& aElist = theVEmap.FindFromKey(aVertex);
       TopoDS_Edge                           anEdge = TopoDS::Edge(aElist.First());
@@ -1050,10 +1138,14 @@ void BRepAlgo_Loop::UpdateVEmap(
     const NCollection_List<TopoDS_Shape>&    aElist = theVEmap(ii);
     NCollection_List<TopoDS_Shape>::Iterator itl(aElist);
     for (; itl.More(); itl.Next())
+    {
       Emap.Add(itl.Value());
+    }
   }
 
   theVEmap.Clear();
   for (int ii = 1; ii <= Emap.Extent(); ii++)
+  {
     TopExp::MapShapesAndAncestors(Emap(ii), TopAbs_VERTEX, TopAbs_EDGE, theVEmap);
+  }
 }

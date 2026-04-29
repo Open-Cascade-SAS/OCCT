@@ -87,7 +87,9 @@ public:
   occ::handle<Poly_Triangulation> GetTriangulation()
   {
     if (myTriangles.IsEmpty())
+    {
       return occ::handle<Poly_Triangulation>();
+    }
 
     occ::handle<Poly_Triangulation> aPoly =
       new Poly_Triangulation(myNodes.Length(), myTriangles.Length(), false);
@@ -347,7 +349,9 @@ bool RWStl::WriteAscii(const occ::handle<Poly_Triangulation>& theMesh,
     if ((aTriIter % IND_THRESHOLD) == 0)
     {
       if (!aPS.More())
+      {
         return false;
+      }
       aPS.Next(IND_THRESHOLD);
     }
   }
@@ -451,7 +455,9 @@ bool RWStl::WriteBinary(const occ::handle<Poly_Triangulation>& theMesh,
     if ((aTriIter % IND_THRESHOLD) == 0)
     {
       if (!aPS.More())
+      {
         return false;
+      }
       aPS.Next(IND_THRESHOLD);
     }
   }

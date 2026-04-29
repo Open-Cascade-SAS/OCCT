@@ -234,7 +234,9 @@ void HLRTopoBRep_OutLiner::ProcessFace(
           TopoDS_Shape newE = itS.Value();
           newE.Orientation(TopAbs_INTERNAL);
           if (W.IsNull())
+          {
             B.MakeWire(W);
+          }
           myDS.AddOldS(newE, F);
           B.Add(W, newE);
         }
@@ -242,13 +244,17 @@ void HLRTopoBRep_OutLiner::ProcessFace(
       else
       {
         if (W.IsNull())
+        {
           B.MakeWire(W);
+        }
         myDS.AddOldS(E, F);
         B.Add(W, E);
       }
     }
     if (!W.IsNull())
+    {
       B.Add(NF, W); // add the new wire in the new face.
+    }
   }
 
   if (myDS.FaceHasIsoL(F))
@@ -269,7 +275,9 @@ void HLRTopoBRep_OutLiner::ProcessFace(
           TopoDS_Shape newE = itS.Value();
           newE.Orientation(TopAbs_INTERNAL);
           if (W.IsNull())
+          {
             B.MakeWire(W);
+          }
           myDS.AddOldS(newE, F);
           B.Add(W, newE);
         }
@@ -277,13 +285,17 @@ void HLRTopoBRep_OutLiner::ProcessFace(
       else
       {
         if (W.IsNull())
+        {
           B.MakeWire(W);
+        }
         myDS.AddOldS(E, F);
         B.Add(W, E);
       }
     }
     if (!W.IsNull())
+    {
       B.Add(NF, W); // add the new wire in the new face.
+    }
   }
   myDS.AddOldS(NF, F);
   MST.Bind(NF, MST.ChangeFind(F));
@@ -310,7 +322,9 @@ void HLRTopoBRep_OutLiner::BuildShape(
     for (exface.Init(exshell.Current(), TopAbs_FACE); exface.More(); exface.Next())
     {
       if (ShapeMap.Add(exface.Current()))
+      {
         ProcessFace(TopoDS::Face(exface.Current()), theShell, MST);
+      }
     }
     B.Add(myOutLinedShape, theShell);
   }
@@ -318,10 +332,13 @@ void HLRTopoBRep_OutLiner::BuildShape(
   for (exface.Init(myOriginalShape, TopAbs_FACE, TopAbs_SHELL); exface.More(); exface.Next())
   { // faces not in a shell
     if (ShapeMap.Add(exface.Current()))
+    {
       ProcessFace(TopoDS::Face(exface.Current()), myOutLinedShape, MST);
+    }
   }
 
-  for (exedge.Init(myOriginalShape, TopAbs_EDGE, TopAbs_FACE); exedge.More();
-       exedge.Next()) // edges not in a face
+  for (exedge.Init(myOriginalShape, TopAbs_EDGE, TopAbs_FACE); exedge.More(); exedge.Next())
+  { // edges not in a face
     B.Add(myOutLinedShape, exedge.Current());
+  }
 }

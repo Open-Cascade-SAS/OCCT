@@ -59,7 +59,9 @@ static int CompareNames(const char* const name, int& /*numen*/)
 {
   int thecase = 0;
   if (!name || name[0] == '\0')
+  {
     thecase = 0;
+  }
   else if (!strcmp(name, ECEP))
   {
     thecase = 1;
@@ -78,7 +80,9 @@ bool StepElement_CurveElementPurposeMember::SetName(const char* const name)
   int numit = 0;
   mycase    = CompareNames(name, numit);
   if (numit)
+  {
     SetInteger(numit);
+  }
   return (mycase > 0);
 }
 

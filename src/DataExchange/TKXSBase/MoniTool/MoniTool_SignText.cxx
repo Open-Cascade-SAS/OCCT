@@ -26,9 +26,13 @@ TCollection_AsciiString MoniTool_SignText::TextAlone(
   if (atext.Length() == 0)
   {
     if (ent.IsNull())
+    {
       atext.AssignCat("(NULL)");
+    }
     else
+    {
       atext.AssignCat(ent->DynamicType()->Name());
+    }
   }
   return atext;
 }

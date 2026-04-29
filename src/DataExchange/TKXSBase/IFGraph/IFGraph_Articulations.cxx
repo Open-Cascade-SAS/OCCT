@@ -23,7 +23,9 @@ IFGraph_Articulations::IFGraph_Articulations(const Interface_Graph& agraph, cons
     : thegraph(agraph)
 {
   if (whole)
+  {
     thegraph.GetFromModel();
+  }
 }
 
 void IFGraph_Articulations::GetFromEntity(const occ::handle<Standard_Transient>& ent)
@@ -53,7 +55,9 @@ void IFGraph_Articulations::Evaluate()
   {
     thenow = 0;
     if (thegraph.IsPresent(i))
+    {
       Visit(i);
+    }
   }
   //  Result in thelist
   Reset();
@@ -86,12 +90,18 @@ int IFGraph_Articulations::Visit(const int num)
     {
       int mm = Visit(nument);
       if (mm < min)
+      {
         min = mm;
+      }
       if (mm > thegraph.Status(num))
+      {
         thelist->Append(num); // WE HAVE ONE: num
+      }
     }
     else if (statent < min)
+    {
       min = statent;
+    }
   }
   return min;
 }

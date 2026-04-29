@@ -77,21 +77,33 @@ PointSetLib_Equation::PointSetLib_Equation(const NCollection_Array1<gp_Pnt>& the
 
     const double aD1 = aDX * myAxes[0].X() + aDY * myAxes[0].Y() + aDZ * myAxes[0].Z();
     if (aD1 > aMax1)
+    {
       aMax1 = aD1;
+    }
     if (aD1 < aMin1)
+    {
       aMin1 = aD1;
+    }
 
     const double aD2 = aDX * myAxes[1].X() + aDY * myAxes[1].Y() + aDZ * myAxes[1].Z();
     if (aD2 > aMax2)
+    {
       aMax2 = aD2;
+    }
     if (aD2 < aMin2)
+    {
       aMin2 = aD2;
+    }
 
     const double aD3 = aDX * myAxes[2].X() + aDY * myAxes[2].Y() + aDZ * myAxes[2].Z();
     if (aD3 > aMax3)
+    {
       aMax3 = aD3;
+    }
     if (aD3 < aMin3)
+    {
       aMin3 = aD3;
+    }
   }
 
   myExtents[0] = aMax1 - aMin1;
@@ -126,21 +138,33 @@ PointSetLib_Equation::PointSetLib_Equation(const NCollection_Array1<gp_Pnt>& the
     case 1: {
       myType = Type::Line;
       if (aDimCode == 4)
+      {
         myV1 = myAxes[2];
+      }
       else if (aDimCode == 6)
+      {
         myV1 = myAxes[1];
+      }
       else
+      {
         myV1 = myAxes[0];
+      }
       break;
     }
     case 2: {
       myType = Type::Plane;
       if (aDimCode == 1)
+      {
         myV1 = myAxes[0];
+      }
       else if (aDimCode == 2)
+      {
         myV1 = myAxes[1];
+      }
       else
+      {
         myV1 = myAxes[2];
+      }
       break;
     }
     case 3: {

@@ -71,7 +71,9 @@ bool XCAFDoc_Centroid::Get(const TDF_Label& label, gp_Pnt& pnt)
 {
   occ::handle<XCAFDoc_Centroid> aCentroid;
   if (!label.FindAttribute(XCAFDoc_Centroid::GetID(), aCentroid))
+  {
     return false;
+  }
 
   pnt = aCentroid->Get();
   return true;

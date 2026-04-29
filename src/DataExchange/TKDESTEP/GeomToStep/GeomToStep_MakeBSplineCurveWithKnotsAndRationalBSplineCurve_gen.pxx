@@ -41,9 +41,13 @@ for (i = P.Lower(); i <= P.Upper(); i++)
 Form = StepGeom_bscfUnspecified;
 
 if (BS->IsClosed())
+{
   Fermeture = StepData_LTrue;
+}
 else
+{
   Fermeture = StepData_LFalse;
+}
 
 Selfinter = StepData_LFalse;
 
@@ -66,13 +70,21 @@ for (i = K.Lower(); i <= K.Upper(); i++)
 
 Distribution = BS->KnotDistribution();
 if (Distribution == GeomAbs_NonUniform)
+{
   KnotSpec = StepGeom_ktUnspecified;
+}
 else if (Distribution == GeomAbs_Uniform)
+{
   KnotSpec = StepGeom_ktUniformKnots;
+}
 else if (Distribution == GeomAbs_QuasiUniform)
+{
   KnotSpec = StepGeom_ktQuasiUniformKnots;
+}
 else
+{
   KnotSpec = StepGeom_ktPiecewiseBezierKnots;
+}
 
 const NCollection_Array1<double>& W = BS->WeightsArray();
 ListWeights                         = new NCollection_HArray1<double>(1, N);

@@ -28,7 +28,9 @@ Transfer_MultipleBinder::Transfer_MultipleBinder() = default;
 bool Transfer_MultipleBinder::IsMultiple() const
 {
   if (themulres.IsNull())
+  {
     return false;
+  }
   return (themulres->Length() != 1);
 }
 
@@ -47,7 +49,9 @@ const char* Transfer_MultipleBinder::ResultTypeName() const
 void Transfer_MultipleBinder::AddResult(const occ::handle<Standard_Transient>& res)
 {
   if (themulres.IsNull())
+  {
     themulres = new NCollection_HSequence<occ::handle<Standard_Transient>>();
+  }
   themulres->Append(res);
 }
 
@@ -65,7 +69,9 @@ occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Transfer_Mul
   MultipleResult() const
 {
   if (!themulres.IsNull())
+  {
     return themulres;
+  }
   return new NCollection_HSequence<occ::handle<Standard_Transient>>();
 }
 

@@ -121,7 +121,9 @@ int nbPCurveEntries(const BRepGraph& theGraph)
       const BRepGraphInc::CoEdgeDef& aCE =
         theGraph.Topo().CoEdges().Definition(aCoEdgeIdxs.Value(i));
       if (aCE.FaceDefId.IsValid())
+      {
         ++aCount;
+      }
     }
   }
   return aCount;
@@ -1556,7 +1558,9 @@ TEST(BRepGraph_DeduplicateTest, BackRefs_CurveRewrite_UpdatesEdgeDefUsers)
     const BRepGraph_EdgeId         anEdgeId = anEdgeIt.CurrentId();
     const occ::handle<Geom_Curve>& aCurve   = BRepGraph_Tool::Edge::Curve(aGraph, anEdgeId);
     if (!aCurve.IsNull())
+    {
       aDistinctCurves.Add(aCurve.get());
+    }
   }
   // After dedup, 4 canonical curves should remain (from 8 originally).
   EXPECT_EQ(aDistinctCurves.Extent(), 4);
@@ -2182,11 +2186,15 @@ TEST(BRepGraph_DeduplicateTest, WireDedup_PreservesShellAuxChildRefs)
       const BRepGraphInc::ChildRef& aRef =
         aGraph.Refs().Children().Entry(aSh.AuxChildRefIds.Value(aRefIdx));
       if (aRef.IsRemoved)
+      {
         continue;
+      }
       const BRepGraphInc::WireDef& aWireDef =
         aGraph.Topo().Wires().Definition(BRepGraph_WireId(aRef.ChildDefId));
       if (!aWireDef.IsRemoved)
+      {
         ++aNbActiveAuxChildren;
+      }
     }
   }
   EXPECT_EQ(aNbActiveAuxChildren, 1) << "AuxChildRef points to a removed wire after dedup";

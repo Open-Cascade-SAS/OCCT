@@ -162,14 +162,18 @@ bool ShapeAnalysis_CanonicalRecognition::IsElementarySurf(const GeomAbs_SurfaceT
                                                           NCollection_Array1<double>& theParams)
 {
   if (myStatus != 0)
+  {
     return false;
+  }
   //
   if (mySType == TopAbs_FACE)
   {
     occ::handle<Geom_Surface> anElemSurf =
       GetSurface(TopoDS::Face(myShape), theTol, GeomConvert_Target, theTarget, myGap, myStatus);
     if (anElemSurf.IsNull())
+    {
       return false;
+    }
     //
     bool isOK = SetSurfParams(theTarget, anElemSurf, thePos, theParams);
     if (!isOK)
@@ -262,7 +266,9 @@ bool ShapeAnalysis_CanonicalRecognition::IsPlane(const double theTol, gp_Pln& th
       return true;
     }
     else
+    {
       myStatus = 1;
+    }
   }
   return false;
 }
@@ -416,7 +422,9 @@ bool ShapeAnalysis_CanonicalRecognition::IsConic(const GeomAbs_CurveType     the
                                                  NCollection_Array1<double>& theParams)
 {
   if (myStatus != 0)
+  {
     return false;
+  }
 
   if (mySType == TopAbs_EDGE)
   {
@@ -424,7 +432,9 @@ bool ShapeAnalysis_CanonicalRecognition::IsConic(const GeomAbs_CurveType     the
       GetCurve(TopoDS::Edge(myShape), theTol, GeomConvert_Target, theTarget, myGap, myStatus);
 
     if (aConic.IsNull())
+    {
       return false;
+    }
 
     bool isOK = SetConicParameters(theTarget, aConic, thePos, theParams);
 
@@ -567,10 +577,14 @@ occ::handle<Geom_Surface> ShapeAnalysis_CanonicalRecognition::GetSurface(
   aConv.SetTarget(theTarget);
   occ::handle<Geom_Surface> anAnaSurf = aConv.ConvertToAnalytical(theTol);
   if (anAnaSurf.IsNull())
+  {
     return anAnaSurf;
+  }
   //
   if (!aLoc.IsIdentity())
+  {
     anAnaSurf->Transform(aLoc.Transformation());
+  }
   //
   theGap = aConv.Gap();
   return anAnaSurf;
@@ -667,10 +681,14 @@ occ::handle<Geom_Surface> ShapeAnalysis_CanonicalRecognition::GetSurface(
     aConv.SetTarget(theTarget);
     occ::handle<Geom_Surface> anAnaSurf = aConv.ConvertToAnalytical(theTol);
     if (anAnaSurf.IsNull())
+    {
       continue;
+    }
     //
     if (!aLoc.IsIdentity())
+    {
       anAnaSurf->Transform(aLoc.Transformation());
+    }
     //
     aGaps.Append(aConv.Gap());
     aSurfs.Append(anAnaSurf);
@@ -801,7 +819,9 @@ bool ShapeAnalysis_CanonicalRecognition::GetSurfaceByLS(const TopoDS_Wire&      
   occ::handle<NCollection_HArray1<gp_XYZ>> aPoints;
   int                                      aNbMaxInt = 100;
   if (!GetSamplePoints(theWire, theTol, aNbMaxInt, aPoints))
+  {
     return false;
+  }
 
   theGap = GetLSGap(aPoints, theTarget, thePos, theParams);
   if (theGap <= theTol)
@@ -812,13 +832,21 @@ bool ShapeAnalysis_CanonicalRecognition::GetSurfaceByLS(const TopoDS_Wire&      
 
   int aNbVar = 0;
   if (theTarget == GeomAbs_Sphere)
+  {
     aNbVar = 4;
+  }
   else if (theTarget == GeomAbs_Cylinder)
+  {
     aNbVar = 4;
+  }
   else if (theTarget == GeomAbs_Cone)
+  {
     aNbVar = 5;
+  }
   else
+  {
     return false;
+  }
 
   math_Vector aFBnd(1, aNbVar), aLBnd(1, aNbVar), aStartPoint(1, aNbVar);
 
@@ -849,7 +877,9 @@ bool ShapeAnalysis_CanonicalRecognition::GetSurfaceByLS(const TopoDS_Wire&      
     aPFunc = (math_MultipleVarFunction*)&aFuncCon;
   }
   else
+  {
     aPFunc = nullptr;
+  }
   //
   math_Vector aSteps(1, aNbVar);
   int         aNbInt = 10;
@@ -872,7 +902,9 @@ bool ShapeAnalysis_CanonicalRecognition::GetSurfaceByLS(const TopoDS_Wire&      
   //
   math_Matrix aDirMatrix(1, aNbVar, 1, aNbVar, 0.0);
   for (i = 1; i <= aNbVar; i++)
+  {
     aDirMatrix(i, i) = 1.0;
+  }
 
   if (theTarget == GeomAbs_Cylinder || theTarget == GeomAbs_Cone)
   {
@@ -902,10 +934,14 @@ bool ShapeAnalysis_CanonicalRecognition::GetSurfaceByLS(const TopoDS_Wire&      
     theGap    = GetLSGap(aPoints, theTarget, thePos, theParams);
     theStatus = 0;
     if (theGap <= theTol)
+    {
       return true;
+    }
   }
   else
+  {
     theStatus = 1;
+  }
 
   return false;
 }
@@ -935,10 +971,14 @@ occ::handle<Geom_Curve> ShapeAnalysis_CanonicalRecognition::GetCurve(
   occ::handle<Geom_Curve> anAnaCurv;
   aConv.ConvertToAnalytical(theTol, anAnaCurv, f, l, nf, nl);
   if (anAnaCurv.IsNull())
+  {
     return anAnaCurv;
+  }
   //
   if (!aLoc.IsIdentity())
+  {
     anAnaCurv->Transform(aLoc.Transformation());
+  }
   //
   theGap = aConv.Gap();
   return anAnaCurv;
@@ -1002,10 +1042,14 @@ bool SetConicParameters(const GeomAbs_CurveType        theTarget,
                         NCollection_Array1<double>&    theParams)
 {
   if (theConic.IsNull())
+  {
     return false;
+  }
   GeomAdaptor_Curve aGAC(theConic);
   if (aGAC.GetType() != theTarget)
+  {
     return false;
+  }
 
   if (theTarget == GeomAbs_Line)
   {
@@ -1026,7 +1070,9 @@ bool SetConicParameters(const GeomAbs_CurveType        theTarget,
     theParams(2)     = anElips.MinorRadius();
   }
   else
+  {
     return false;
+  }
   return true;
 }
 
@@ -1044,13 +1090,17 @@ bool CompareConicParams(const GeomAbs_CurveType           theTarget,
   for (i = 1; i <= aNbPars; ++i)
   {
     if (std::abs(theRefParams(i) - theParams(i)) > theTol)
+    {
       return false;
+    }
   }
 
   double anAngTol = theTol / (2. * M_PI);
   double aTol     = theTol;
   if (theTarget == GeomAbs_Line)
+  {
     aTol = Precision::Infinite();
+  }
 
   const gp_Ax1& aRef     = theRefPos.Axis();
   const gp_Ax1& anAx1    = thePos.Axis();
@@ -1068,14 +1118,20 @@ bool SetSurfParams(const GeomAbs_SurfaceType        theTarget,
 {
   //
   if (theElemSurf.IsNull())
+  {
     return false;
+  }
   GeomAdaptor_Surface aGAS(theElemSurf);
   if (aGAS.GetType() != theTarget)
+  {
     return false;
+  }
 
   double aNbPars = GetNbPars(theTarget);
   if (theParams.Length() < aNbPars)
+  {
     return false;
+  }
 
   if (theTarget == GeomAbs_Plane)
   {
@@ -1205,7 +1261,9 @@ bool GetSamplePoints(const TopoDS_Wire&                        theWire,
   {
     const TopoDS_Edge& anE = TopoDS::Edge(anEIter.Value());
     if (BRep_Tool::Degenerated(anE))
+    {
       continue;
+    }
     BRepAdaptor_Curve aBAC(anE);
     double            aClength = GCPnts_AbscissaPoint::Length(aBAC, aTol);
     aTotalLength += aClength;
@@ -1214,7 +1272,9 @@ bool GetSamplePoints(const TopoDS_Wire&                        theWire,
   }
 
   if (aTotalLength < theTol)
+  {
     return false;
+  }
 
   int i, aNb = aLengths.Length();
   for (i = 0; i < aNb; ++i)
@@ -1225,7 +1285,9 @@ bool GetSamplePoints(const TopoDS_Wire&                        theWire,
     aNbPoints                          = std::max(2, aNbPoints);
     GCPnts_QuasiUniformAbscissa aPointGen(aC, aNbPoints);
     if (!aPointGen.IsDone())
+    {
       continue;
+    }
     aNbPoints = aPointGen.NbPoints();
     int j;
     for (j = 1; j <= aNbPoints; ++j)
@@ -1237,7 +1299,9 @@ bool GetSamplePoints(const TopoDS_Wire&                        theWire,
   }
 
   if (aPoints.Length() < 1)
+  {
     return false;
+  }
 
   thePoints = new NCollection_HArray1<gp_XYZ>(1, aPoints.Length());
   for (i = 0; i < aPoints.Length(); ++i)

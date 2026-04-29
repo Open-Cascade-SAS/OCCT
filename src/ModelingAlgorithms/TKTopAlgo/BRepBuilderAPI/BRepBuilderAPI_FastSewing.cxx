@@ -57,13 +57,17 @@ static int IntersectionOfSets(const NCollection_List<int>& theSet1,
       {
         // theIntersectionResult.Append(aVal1);
         if (aVal1 < aRetVal)
+        {
           aRetVal = aVal1;
+        }
       }
     }
   }
 
   if (aRetVal == anIntMax)
+  {
     return -1;
+  }
 
   return aRetVal;
 }
@@ -78,7 +82,9 @@ static occ::handle<Geom2d_Curve> Get2DCurve(const int    theIndex,
                                             const bool   theIsReverse = false)
 {
   if ((theIndex < 0) || (theIndex > 3))
+  {
     throw Standard_OutOfRange("BRepBuilderAPI_FastSewing.cxx, Get2DCurve(): OUT of Range");
+  }
 
   occ::handle<Geom2d_Curve> a2dCurv;
 
@@ -456,7 +462,9 @@ BRepBuilderAPI_FastSewing::FS_VARStatuses BRepBuilderAPI_FastSewing::GetStatuses
   Standard_OStream* const theOS)
 {
   if (!theOS)
+  {
     return myStatusList;
+  }
 
   if (!myStatusList)
   {
@@ -470,7 +478,9 @@ BRepBuilderAPI_FastSewing::FS_VARStatuses BRepBuilderAPI_FastSewing::GetStatuses
   for (int i = 1; i <= aNumMax; i++, anIDS = static_cast<FS_Statuses>(anIDS << 1))
   {
     if ((anIDS & myStatusList) == 0)
+    {
       continue;
+    }
 
     switch (anIDS)
     {
@@ -518,7 +528,9 @@ double BRepBuilderAPI_FastSewing::Compute3DRange()
     FS_Face&                        aFace = myFaceVec.ChangeValue(i);
     const occ::handle<Geom_Surface> aSurf = BRep_Tool::Surface(aFace.mySrcFace);
     if (aSurf.IsNull())
+    {
       continue;
+    }
     double aUf = 0.0, aUl = 0.0, aVf = 0.0, aVl = 0.0;
     aSurf->Bounds(aUf, aUl, aVf, aVl);
 

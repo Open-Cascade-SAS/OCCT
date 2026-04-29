@@ -67,9 +67,13 @@ Geom2dAPI_ExtremaCurveCurve::Geom2dAPI_ExtremaCurveCurve(const occ::handle<Geom2
 int Geom2dAPI_ExtremaCurveCurve::NbExtrema() const
 {
   if (myIsDone)
+  {
     return myExtCC.NbExt();
+  }
   else
+  {
     return 0;
+  }
 }
 
 //=================================================================================================

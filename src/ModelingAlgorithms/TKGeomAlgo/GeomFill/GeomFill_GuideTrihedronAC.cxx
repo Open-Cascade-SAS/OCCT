@@ -214,7 +214,9 @@ bool GeomFill_GuideTrihedronAC::D2(const double Param,
 
   double Norma = TN.Magnitude();
   if (Norma > 1.e-9)
+  {
     TN /= Norma;
+  }
 
   BiNormal = TN;
 

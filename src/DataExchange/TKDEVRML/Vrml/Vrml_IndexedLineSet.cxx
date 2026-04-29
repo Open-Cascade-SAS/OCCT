@@ -91,10 +91,14 @@ Standard_OStream& Vrml_IndexedLineSet::Print(Standard_OStream& anOStream) const
     {
       anOStream << myCoordIndex->Value(i);
       if (i < myCoordIndex->Length())
+      {
         anOStream << ',';
+      }
 
       if (myCoordIndex->Value(i) == -1)
+      {
         anOStream << '\n' << '\t';
+      }
     }
     anOStream << ']' << '\n';
   }
@@ -106,10 +110,14 @@ Standard_OStream& Vrml_IndexedLineSet::Print(Standard_OStream& anOStream) const
     {
       anOStream << myMaterialIndex->Value(i);
       if (i < myMaterialIndex->Length())
+      {
         anOStream << ',';
+      }
 
       if (myMaterialIndex->Value(i) == -1)
+      {
         anOStream << '\n' << '\t';
+      }
     } // End of for
     anOStream << ']' << '\n';
   }
@@ -121,10 +129,14 @@ Standard_OStream& Vrml_IndexedLineSet::Print(Standard_OStream& anOStream) const
     {
       anOStream << myNormalIndex->Value(i);
       if (i < myNormalIndex->Length())
+      {
         anOStream << ',';
+      }
 
       if (myNormalIndex->Value(i) == -1)
+      {
         anOStream << '\n' << '\t';
+      }
     } // End of for
     anOStream << ']' << '\n';
   }
@@ -137,10 +149,14 @@ Standard_OStream& Vrml_IndexedLineSet::Print(Standard_OStream& anOStream) const
     {
       anOStream << myTextureCoordIndex->Value(i);
       if (i < myTextureCoordIndex->Length())
+      {
         anOStream << ",";
+      }
 
       if (myTextureCoordIndex->Value(i) == -1)
+      {
         anOStream << "\n\t";
+      }
     } // End of for
     anOStream << "]\n";
   }

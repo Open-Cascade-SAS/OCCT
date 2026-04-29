@@ -37,11 +37,17 @@ BRepPrim_Cone::BRepPrim_Cone(const double  Angle,
       myRadius(Radius)
 {
   if (Height < Precision::Confusion())
+  {
     throw Standard_DomainError("cone with null height");
+  }
   if (myHalfAngle * Height < Precision::Confusion())
+  {
     throw Standard_DomainError("cone with null angle");
+  }
   if ((M_PI / 2 - myHalfAngle) * Height < Precision::Confusion())
+  {
     throw Standard_DomainError("cone with angle > PI/2");
+  }
 
   // cut at top
   VMax(Height / std::cos(myHalfAngle));
@@ -57,7 +63,9 @@ BRepPrim_Cone::BRepPrim_Cone(const double Angle)
       myRadius(0.)
 {
   if ((Angle < 0) || (Angle > M_PI / 2))
+  {
     throw Standard_DomainError("cone with angle <0 or > PI/2");
+  }
   VMin(0.);
   SetMeridian();
 }
@@ -70,7 +78,9 @@ BRepPrim_Cone::BRepPrim_Cone(const double Angle, const gp_Pnt& Apex)
       myRadius(0.)
 {
   if ((Angle < 0) || (Angle > M_PI / 2))
+  {
     throw Standard_DomainError("cone with angle <0 or > PI/2");
+  }
   VMin(0.);
   SetMeridian();
 }
@@ -82,7 +92,9 @@ BRepPrim_Cone::BRepPrim_Cone(const double Angle, const gp_Ax2& Axes)
       myHalfAngle(Angle)
 {
   if ((Angle < 0) || (Angle > M_PI / 2))
+  {
     throw Standard_DomainError("cone with angle <0 or > PI/2");
+  }
   VMin(0.);
   SetMeridian();
 }
@@ -144,11 +156,17 @@ void BRepPrim_Cone::SetMeridian()
 void BRepPrim_Cone::SetParameters(const double R1, const double R2, const double H)
 {
   if (((R1 != 0) && (R1 < Precision::Confusion())) || ((R2 != 0) && (R2 < Precision::Confusion())))
+  {
     throw Standard_DomainError("cone with negative or too small radius");
+  }
   if (std::abs(R1 - R2) < Precision::Confusion())
+  {
     throw Standard_DomainError("cone with two identic radii");
+  }
   if (H < Precision::Confusion())
+  {
     throw Standard_DomainError("cone with negative or null height");
+  }
 
   myRadius    = R1;
   myHalfAngle = std::atan((R2 - R1) / H);

@@ -34,7 +34,9 @@ void RWStepAP214_RWAutoDesignGroupAssignment::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "auto_design_group_assignment"))
+  {
     return;
+  }
 
   // --- inherited field : assignedGroup ---
 
@@ -54,7 +56,9 @@ void RWStepAP214_RWAutoDesignGroupAssignment::ReadStep(
     {
       bool stat2 = data->ReadEntity(nsub2, i2, "items", ach, aItemsItem);
       if (stat2)
+      {
         aItems->SetValue(i2, aItemsItem);
+      }
     }
   }
 

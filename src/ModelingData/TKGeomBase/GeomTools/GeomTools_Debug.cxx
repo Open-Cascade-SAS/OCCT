@@ -45,7 +45,7 @@ const char* GeomTools_Dump(void* theHandlePtr)
     {
       std::cout << "\n\n";
       GeomTools_SurfaceSet::PrintSurface(GS, std::cout);
-      std::cout << std::endl;
+      std::cout << '\n';
       return "Found Geom_Surface, see dump in std::cout";
     }
 
@@ -54,7 +54,7 @@ const char* GeomTools_Dump(void* theHandlePtr)
     {
       std::cout << "\n\n";
       GeomTools_CurveSet::PrintCurve(GC, std::cout);
-      std::cout << std::endl;
+      std::cout << '\n';
       return "Found Geom_Curve, see dump in std::cout";
     }
 
@@ -63,7 +63,7 @@ const char* GeomTools_Dump(void* theHandlePtr)
     {
       std::cout << "\n\n";
       GeomTools_Curve2dSet::PrintCurve2d(GC2d, std::cout);
-      std::cout << std::endl;
+      std::cout << '\n';
       return "Found Geom2d_Curve, see dump in std::cout";
     }
 

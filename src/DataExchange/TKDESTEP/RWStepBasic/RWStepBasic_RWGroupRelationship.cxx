@@ -36,7 +36,9 @@ void RWStepBasic_RWGroupRelationship::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "group_relationship"))
+  {
     return;
+  }
 
   // Own fields of GroupRelationship
 
@@ -80,7 +82,9 @@ void RWStepBasic_RWGroupRelationship::WriteStep(
     SW.Send(ent->Description());
   }
   else
+  {
     SW.SendUndef();
+  }
 
   SW.Send(ent->RelatingGroup());
 

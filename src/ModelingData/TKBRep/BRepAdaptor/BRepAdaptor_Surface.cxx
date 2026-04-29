@@ -64,7 +64,9 @@ void BRepAdaptor_Surface::Initialize(const TopoDS_Face& F, const bool Restrictio
   TopLoc_Location                  L;
   const occ::handle<Geom_Surface>& aSurface = BRep_Tool::Surface(F, L);
   if (aSurface.IsNull())
+  {
     return;
+  }
 
   if (Restriction)
   {

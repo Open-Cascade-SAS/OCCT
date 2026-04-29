@@ -170,10 +170,12 @@ Standard_OStream& CDM_MetaData::Print(Standard_OStream& anOStream) const
   anOStream << "*CDM_MetaData*";
   anOStream << myFolder << "," << myName;
   if (HasVersion())
+  {
     anOStream << "," << myVersion;
+  }
   anOStream << "; Physical situation: ";
   anOStream << myFileName;
-  anOStream << std::endl;
+  anOStream << '\n';
   return anOStream;
 }
 
@@ -185,7 +187,9 @@ Standard_OStream& CDM_MetaData::operator<<(Standard_OStream& anOStream)
 int CDM_MetaData::DocumentVersion(const occ::handle<CDM_Application>& anApplication)
 {
   if (myDocumentVersion == 0)
+  {
     myDocumentVersion = anApplication->DocumentVersion(this);
+  }
   return myDocumentVersion;
 }
 

@@ -57,7 +57,9 @@ bool ShapeFix_SplitTool::SplitEdge(const TopoDS_Edge&   edge,
   occ::handle<Geom2d_Curve> c2d;
   sae.PCurve(edge, face, c2d, a, b, true);
   if (std::abs(a - param) < tol2d || std::abs(b - param) < tol2d)
+  {
     return false;
+  }
   // check distance between edge and new vertex
   gp_Pnt          P1;
   TopLoc_Location L;
@@ -66,10 +68,14 @@ bool ShapeFix_SplitTool::SplitEdge(const TopoDS_Edge&   edge,
     double                        f, l;
     const occ::handle<Geom_Curve> c3d = BRep_Tool::Curve(edge, L, f, l);
     if (c3d.IsNull())
+    {
       return false;
+    }
     P1 = c3d->Value(param);
     if (!L.IsIdentity())
+    {
       P1 = P1.Transformed(L.Transformation());
+    }
   }
   else
   {
@@ -77,7 +83,9 @@ bool ShapeFix_SplitTool::SplitEdge(const TopoDS_Edge&   edge,
     occ::handle<ShapeAnalysis_Surface> sas  = new ShapeAnalysis_Surface(surf);
     P1                                      = sas->Value(c2d->Value(param));
     if (!L.IsIdentity())
+    {
       P1 = P1.Transformed(L.Transformation());
+    }
   }
   gp_Pnt P2 = BRep_Tool::Pnt(vert);
   if (P1.Distance(P2) > tol3d)
@@ -202,13 +210,17 @@ bool ShapeFix_SplitTool::CutEdge(const TopoDS_Edge& edge,
                                  bool&              iscutline) const
 {
   if (std::abs(cut - pend) < 10. * Precision::PConfusion())
+  {
     return false;
+  }
   double aRange = std::abs(cut - pend);
   double a, b;
   BRep_Tool::Range(edge, a, b);
   iscutline = false;
   if (aRange < 10. * Precision::PConfusion())
+  {
     return false;
+  }
 
   // case pcurve is trimm of line
   if (!BRep_Tool::SameParameter(edge))
@@ -229,7 +241,9 @@ bool ShapeFix_SplitTool::CutEdge(const TopoDS_Edge& edge,
           { // cut from the beginning
             double cut3d = (cut - fp) * (b - a) / (lp - fp);
             if (cut3d <= Precision::PConfusion())
+            {
               return false;
+            }
             B.Range(edge, a + cut3d, b, true);
             iscutline = true;
           }
@@ -237,7 +251,9 @@ bool ShapeFix_SplitTool::CutEdge(const TopoDS_Edge& edge,
           { // cut from the end
             double cut3d = (lp - cut) * (b - a) / (lp - fp);
             if (cut3d <= Precision::PConfusion())
+            {
               return false;
+            }
             B.Range(edge, a, b - cut3d, true);
             iscutline = true;
           }
@@ -249,9 +265,13 @@ bool ShapeFix_SplitTool::CutEdge(const TopoDS_Edge& edge,
 
   // det-study on 03/12/01 checking the old and new ranges
   if (std::abs(std::abs(a - b) - aRange) < Precision::PConfusion())
+  {
     return false;
+  }
   if (aRange < 10. * Precision::PConfusion())
+  {
     return false;
+  }
 
   occ::handle<Geom_Curve> c = BRep_Tool::Curve(edge, a, b);
   ShapeAnalysis_Curve     sac;
@@ -296,7 +316,9 @@ bool ShapeFix_SplitTool::SplitEdge(const TopoDS_Edge&                     edge,
                                    const double                           tol2d) const
 {
   if (fabs(lp - fp) < tol2d)
+  {
     return false;
+  }
   aNum = 0;
   SeqE.Clear();
   BRep_Builder              B;
@@ -335,7 +357,9 @@ bool ShapeFix_SplitTool::SplitEdge(const TopoDS_Edge&                     edge,
     {
       double newtol = tolVF + PVF.Distance(PV2);
       if (tolV2 < newtol)
+      {
         B.UpdateVertex(V2, newtol);
+      }
       if (VF.Orientation() == V2.Orientation())
       {
         context->Replace(VF, V2);
@@ -348,7 +372,9 @@ bool ShapeFix_SplitTool::SplitEdge(const TopoDS_Edge&                     edge,
       }
       newtol = tolVL + PVL.Distance(PV1);
       if (tolV1 < newtol)
+      {
         B.UpdateVertex(V1, newtol);
+      }
       if (VL.Orientation() == V1.Orientation())
       {
         context->Replace(VL, V1);
@@ -364,7 +390,9 @@ bool ShapeFix_SplitTool::SplitEdge(const TopoDS_Edge&                     edge,
     {
       double newtol = tolVF + PVF.Distance(PV1);
       if (tolV1 < newtol)
+      {
         B.UpdateVertex(V1, newtol);
+      }
       if (VF.Orientation() == V1.Orientation())
       {
         context->Replace(VF, V1);
@@ -377,7 +405,9 @@ bool ShapeFix_SplitTool::SplitEdge(const TopoDS_Edge&                     edge,
       }
       newtol = tolVL + PVL.Distance(PV2);
       if (tolV2 < newtol)
+      {
         B.UpdateVertex(V2, newtol);
+      }
       if (VL.Orientation() == V2.Orientation())
       {
         context->Replace(VL, V2);
@@ -399,10 +429,14 @@ bool ShapeFix_SplitTool::SplitEdge(const TopoDS_Edge&                     edge,
     if (IsReverse)
     {
       if (!SplitEdge(edge, par2, V1, face, newE1, newE2, tol3d, tol2d))
+      {
         return false;
+      }
       double newtol = tolVF + PVF.Distance(PV2);
       if (tolV2 < newtol)
+      {
         B.UpdateVertex(V2, newtol);
+      }
       if (VF.Orientation() == V2.Orientation())
       {
         context->Replace(VF, V2);
@@ -417,10 +451,14 @@ bool ShapeFix_SplitTool::SplitEdge(const TopoDS_Edge&                     edge,
     else
     {
       if (!SplitEdge(edge, par2, V2, face, newE1, newE2, tol3d, tol2d))
+      {
         return false;
+      }
       double newtol = tolVF + PVF.Distance(PV1);
       if (tolV1 < newtol)
+      {
         B.UpdateVertex(V1, newtol);
+      }
       if (VF.Orientation() == V1.Orientation())
       {
         context->Replace(VF, V1);
@@ -443,10 +481,14 @@ bool ShapeFix_SplitTool::SplitEdge(const TopoDS_Edge&                     edge,
     if (IsReverse)
     {
       if (!SplitEdge(edge, par1, V2, face, newE1, newE2, tol3d, tol2d))
+      {
         return false;
+      }
       double newtol = tolVL + PVL.Distance(PV1);
       if (tolV1 < newtol)
+      {
         B.UpdateVertex(V1, newtol);
+      }
       if (VL.Orientation() == V1.Orientation())
       {
         context->Replace(VL, V1);
@@ -461,10 +503,14 @@ bool ShapeFix_SplitTool::SplitEdge(const TopoDS_Edge&                     edge,
     else
     {
       if (!SplitEdge(edge, par1, V1, face, newE1, newE2, tol3d, tol2d))
+      {
         return false;
+      }
       double newtol = tolVL + PVL.Distance(PV2);
       if (tolV2 < newtol)
+      {
         B.UpdateVertex(V2, newtol);
+      }
       if (VL.Orientation() == V2.Orientation())
       {
         context->Replace(VL, V2);
@@ -487,16 +533,24 @@ bool ShapeFix_SplitTool::SplitEdge(const TopoDS_Edge&                     edge,
     if (IsReverse)
     {
       if (!SplitEdge(edge, par1, V2, face, newE1, newE2, tol3d, tol2d))
+      {
         return false;
+      }
       if (!SplitEdge(newE2, par2, V1, face, newE3, newE4, tol3d, tol2d))
+      {
         return false;
+      }
     }
     else
     {
       if (!SplitEdge(edge, par1, V1, face, newE1, newE2, tol3d, tol2d))
+      {
         return false;
+      }
       if (!SplitEdge(newE2, par2, V2, face, newE3, newE4, tol3d, tol2d))
+      {
         return false;
+      }
     }
     SeqE.Append(newE1);
     SeqE.Append(newE3);
@@ -505,7 +559,9 @@ bool ShapeFix_SplitTool::SplitEdge(const TopoDS_Edge&                     edge,
   }
 
   if (aNum == 0)
+  {
     return false;
+  }
 
   occ::handle<ShapeExtend_WireData> sewd = new ShapeExtend_WireData;
   for (int i = 1; i <= SeqE.Length(); i++)

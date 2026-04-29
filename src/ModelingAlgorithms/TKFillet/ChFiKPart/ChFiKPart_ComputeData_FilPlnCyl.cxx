@@ -81,7 +81,9 @@ bool ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&         DStr,
   double ROff = Cyl.Radius();
 
   if ((Or2 == TopAbs_FORWARD && Cyl.Direct()) || (Or2 == TopAbs_REVERSED && !Cyl.Direct()))
+  {
     ROff += Radius;
+  }
   else if (Radius < ROff)
   {
     ROff -= Radius;
@@ -135,7 +137,9 @@ bool ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&         DStr,
   ElSLib::Parameters(Cyl, OrFillet, UOnCyl, VOnCyl);
   constexpr double tesp = Precision::Confusion();
   if (UOnCyl < fu - tesp || UOnCyl > lu + tesp)
+  {
     UOnCyl = ElCLib::InPeriod(UOnCyl, fu, fu + 2 * M_PI);
+  }
   ElSLib::Parameters(Pln, OrFillet, UOnPln, VOnPln);
 
   gp_Vec XDir, OtherDir;
@@ -155,7 +159,9 @@ bool ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&         DStr,
   gp_Ax3 AxFil(OrFillet, DirFillet, XDir);
   gp_Vec aProd = XDir.Crossed(OtherDir);
   if (aProd.Dot(DirFillet) < 0.)
+  {
     AxFil.YReverse();
+  }
 
   occ::handle<Geom_CylindricalSurface> Fillet = new Geom_CylindricalSurface(AxFil, Radius);
   Data->ChangeSurf(ChFiKPart_IndexSurfaceInDS(Fillet, DStr));
@@ -172,7 +178,9 @@ bool ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&         DStr,
   ElSLib::CylinderParameters(AxFil, Radius, POnPln, UOnFillet, V);
 
   if (UOnFillet > M_PI)
+  {
     UOnFillet = 0.;
+  }
   gp_Lin2d                 LOnFillet(gp_Pnt2d(UOnFillet, V), gp::DY2d());
   occ::handle<Geom_Line>   L3d  = new Geom_Line(C3d);
   occ::handle<Geom2d_Line> LFac = new Geom2d_Line(Lin2dPln);
@@ -202,27 +210,35 @@ bool ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&         DStr,
     trans = TopAbs_FORWARD;
   }
   if (plandab)
+  {
     Data->ChangeInterferenceOnS1().SetInterference(ChFiKPart_IndexCurveInDS(L3d, DStr),
                                                    trans,
                                                    LFac,
                                                    LFil);
+  }
   else
+  {
     Data->ChangeInterferenceOnS2().SetInterference(ChFiKPart_IndexCurveInDS(L3d, DStr),
                                                    trans,
                                                    LFac,
                                                    LFil);
+  }
 
   // edge cylinder-Fillet.
   gp_Pnt2d PCyl2d(UOnCyl, VOnCyl);
   gp_Dir2d DPC = gp::DY2d();
   if (DirFillet.Dot(AxCyl.Direction()) < 0.)
+  {
     DPC.Reverse();
+  }
   gp_Lin2d Lin2dCyl(PCyl2d, DPC);
   gp_Pnt   POnCyl = ElSLib::Value(UOnCyl, VOnCyl, Cyl);
   C3d             = gp_Lin(POnCyl, DirFillet);
   ElSLib::CylinderParameters(AxFil, Radius, POnCyl, UOnFillet, V);
   if (UOnFillet > M_PI)
+  {
     UOnFillet = 0.;
+  }
   LOnFillet = gp_Lin2d(gp_Pnt2d(UOnFillet, V), gp::DY2d());
   L3d       = new Geom_Line(C3d);
   LFac      = new Geom2d_Line(Lin2dCyl);
@@ -243,15 +259,19 @@ bool ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&         DStr,
     trans = TopAbs_REVERSED;
   }
   if (plandab)
+  {
     Data->ChangeInterferenceOnS2().SetInterference(ChFiKPart_IndexCurveInDS(L3d, DStr),
                                                    trans,
                                                    LFac,
                                                    LFil);
+  }
   else
+  {
     Data->ChangeInterferenceOnS1().SetInterference(ChFiKPart_IndexCurveInDS(L3d, DStr),
                                                    trans,
                                                    LFac,
                                                    LFil);
+  }
   return true;
 }
 
@@ -404,7 +424,9 @@ bool ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&         DStr,
     ElSLib::SphereD1(u, v, FilAx3, cylrad, PP, deru, derv);
     norFil = FilAx3.XDirection().Crossed(FilAx3.YDirection());
     if (v < 0.)
+    {
       norFil.Reverse();
+    }
   }
   else
   {
@@ -514,13 +536,21 @@ bool ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&         DStr,
   double tol           = Precision::PConfusion();
   bool   careaboutsens = false;
   if (std::abs(lu - fu - 2 * M_PI) < tol)
+  {
     careaboutsens = true;
+  }
   if (u >= fu - tol && u < fu)
+  {
     u = fu;
+  }
   if (u <= lu + tol && u > lu)
+  {
     u = lu;
+  }
   if (u < fu || u > lu)
+  {
     u = ChFiKPart_InPeriod(u, fu, fu + 2 * M_PI, tol);
+  }
   ElSLib::D1(u, v, Cyl, PP, deru, derv);
   gp_Dir   norcyl = deru.Crossed(derv);
   gp_Dir2d d2dCyl = gp::DX2d();
@@ -528,10 +558,14 @@ bool ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&         DStr,
   {
     d2dCyl.Reverse();
     if (careaboutsens && std::abs(fu - u) < tol)
+    {
       u = lu;
+    }
   }
   else if (careaboutsens && std::abs(lu - u) < tol)
+  {
     u = fu;
+  }
   gp_Pnt2d                 p2dCyl(u, v);
   gp_Lin2d                 lin2dCyl(p2dCyl, d2dCyl);
   occ::handle<Geom2d_Line> GLin2dCyl = new Geom2d_Line(lin2dCyl);

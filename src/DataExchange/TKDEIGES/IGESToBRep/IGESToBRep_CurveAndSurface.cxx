@@ -147,7 +147,9 @@ void IGESToBRep_CurveAndSurface::SetModel(const occ::handle<IGESData_IGESModel>&
   if (unitfactor != 1.)
   {
     if (myTP->TraceLevel() > 2)
-      myTP->Messenger()->SendInfo() << "UnitFactor = " << unitfactor << std::endl;
+    {
+      myTP->Messenger()->SendInfo() << "UnitFactor = " << unitfactor << '\n';
+    }
     myUnitFactor = unitfactor;
   }
   UpdateMinMaxTol();
@@ -242,7 +244,9 @@ TopoDS_Shape IGESToBRep_CurveAndSurface::TransferGeometry(
   if (IGESToBRep::IsCurveAndSurface(start))
   {
     if (onlyvisible && start->BlankStatus() == 1)
+    {
       return res;
+    }
     try
     {
       OCC_CATCH_SIGNALS
@@ -260,7 +264,9 @@ TopoDS_Shape IGESToBRep_CurveAndSurface::TransferGeometry(
   if (start->IsKind(STANDARD_TYPE(IGESBasic_SingularSubfigure)))
   {
     if (onlyvisible && start->BlankStatus() == 1)
+    {
       return res;
+    }
 
     DeclareAndCast(IGESBasic_SingularSubfigure, st408, start);
     occ::handle<IGESBasic_SubfigureDef> stsub = st408->Subfigure();
@@ -324,7 +330,9 @@ TopoDS_Shape IGESToBRep_CurveAndSurface::TransferGeometry(
         continue;
       }
       if (onlyvisible && st308->AssociatedEntity(i)->BlankStatus() == 1)
+      {
         continue;
+      }
 
       if (HasShapeResult(st308->AssociatedEntity(i)))
       {
@@ -361,7 +369,9 @@ TopoDS_Shape IGESToBRep_CurveAndSurface::TransferGeometry(
   else if (start->IsKind(STANDARD_TYPE(IGESBasic_Group)))
   {
     if (onlyvisible && start->BlankStatus() == 1)
+    {
       return res;
+    }
 
     DeclareAndCast(IGESBasic_Group, st402f1, start);
     TopoDS_Compound group;
@@ -389,7 +399,9 @@ TopoDS_Shape IGESToBRep_CurveAndSurface::TransferGeometry(
       }
 
       if (onlyvisible && st402f1->Entity(i)->BlankStatus() == 1)
+      {
         continue;
+      }
 
       if (HasShapeResult(st402f1->Entity(i)))
       {
@@ -435,7 +447,9 @@ TopoDS_Shape IGESToBRep_CurveAndSurface::TransferGeometry(
   {
 
     if (onlyvisible && start->BlankStatus() == 1)
+    {
       return res;
+    }
 
     DeclareAndCast(IGESBasic_GroupWithoutBackP, st402f7, start);
     TopoDS_Compound group;
@@ -464,7 +478,9 @@ TopoDS_Shape IGESToBRep_CurveAndSurface::TransferGeometry(
       }
 
       if (onlyvisible && st402f7->Entity(i)->BlankStatus() == 1)
+      {
         continue;
+      }
 
       if (HasShapeResult(st402f7->Entity(i)))
       {
@@ -560,7 +576,9 @@ bool IGESToBRep_CurveAndSurface::HasShapeResult(const occ::handle<IGESData_IGESE
 {
   DeclareAndCast(TransferBRep_ShapeBinder, binder, myTP->Find(start));
   if (binder.IsNull())
+  {
     return false;
+  }
   return binder->HasResult();
 }
 
@@ -573,9 +591,13 @@ TopoDS_Shape IGESToBRep_CurveAndSurface::GetShapeResult(
 
   DeclareAndCast(TransferBRep_ShapeBinder, binder, myTP->Find(start));
   if (binder.IsNull())
+  {
     return res;
+  }
   if (binder->HasResult())
+  {
     res = binder->Result();
+  }
   return res;
 }
 
@@ -596,7 +618,9 @@ int IGESToBRep_CurveAndSurface::NbShapeResult(const occ::handle<IGESData_IGESEnt
   int nbres = 0;
   DeclareAndCast(TransferBRep_ShapeListBinder, binder, myTP->Find(start));
   if (binder.IsNull())
+  {
     return nbres;
+  }
   nbres = binder->NbShapes();
   return nbres;
 }
@@ -611,10 +635,14 @@ TopoDS_Shape IGESToBRep_CurveAndSurface::GetShapeResult(
 
   DeclareAndCast(TransferBRep_ShapeListBinder, binder, myTP->Find(start));
   if (binder.IsNull())
+  {
     return res;
+  }
 
   if (num <= binder->NbShapes())
+  {
     res = binder->Shape(num);
+  }
   return res;
 }
 

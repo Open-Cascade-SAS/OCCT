@@ -36,7 +36,9 @@ bool StdSelect_ShapeTypeFilter::IsOk(const occ::handle<SelectMgr_EntityOwner>& E
 {
   occ::handle<StdSelect_BRepOwner> BRO = occ::down_cast<StdSelect_BRepOwner>(EO);
   if (BRO.IsNull() || !BRO->HasShape())
+  {
     return false;
+  }
   const TopoDS_Shape& anobj = BRO->Shape();
   return anobj.ShapeType() == myType;
 }

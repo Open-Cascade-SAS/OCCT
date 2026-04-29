@@ -802,7 +802,9 @@ bool IntTools_Context::IsVertexOnLine(const TopoDS_Vertex&  aV,
   {
     aTolSum = 2. * aTolSum; // xft
     if (aTolSum < 1.e-6)
+    {
       aTolSum = 1.e-6;
+    }
   }
   //
   aFirst = aC3D->FirstParameter();
@@ -833,7 +835,9 @@ bool IntTools_Context::IsVertexOnLine(const TopoDS_Vertex&  aV,
 
           if ((aT > (aLast + aFirst) * 0.5) || (aPv.Distance(aPOncurve.Value()) > aTolSum)
               || (aPCFirst.Distance(aPOncurve.Value()) < Precision::Confusion()))
+          {
             aT = aFirst;
+          }
         }
         else
         {
@@ -859,7 +863,9 @@ bool IntTools_Context::IsVertexOnLine(const TopoDS_Vertex&  aV,
 
             if ((aT > (aLast + aFirst) * 0.5) || (aPv.Distance(aPOncurve.Value()) > aTolSum)
                 || (aPCFirst.Distance(aPOncurve.Value()) < Precision::Confusion()))
+            {
               aT = aFirst;
+            }
           }
         }
       }
@@ -890,7 +896,9 @@ bool IntTools_Context::IsVertexOnLine(const TopoDS_Vertex&  aV,
 
           if ((aT < (aLast + aFirst) * 0.5) || (aPv.Distance(aPOncurve.Value()) > aTolSum)
               || (aPCLast.Distance(aPOncurve.Value()) < Precision::Confusion()))
+          {
             aT = aLast;
+          }
         }
         else
         {
@@ -916,7 +924,9 @@ bool IntTools_Context::IsVertexOnLine(const TopoDS_Vertex&  aV,
 
             if ((aT < (aLast + aFirst) * 0.5) || (aPv.Distance(aPOncurve.Value()) > aTolSum)
                 || (aPCLast.Distance(aPOncurve.Value()) < Precision::Confusion()))
+            {
               aT = aLast;
+            }
           }
         }
       }

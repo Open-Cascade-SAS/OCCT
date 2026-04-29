@@ -339,7 +339,9 @@ bool TopoDSToStep_WireframeBuilder::GetTrimmedCurveFromFace(
     curShape = exp.Current();
     curEdge  = TopoDS::Edge(curShape);
     if (GetTrimmedCurveFromEdge(curEdge, aFace, aMap, aCurveList, theLocalFactors))
+    {
       result = true;
+    }
   }
   return result;
 }
@@ -375,7 +377,9 @@ bool TopoDSToStep_WireframeBuilder::GetTrimmedCurveFromShape(
         curShape = exp.Current();
         curEdge  = TopoDS::Edge(curShape);
         if (GetTrimmedCurveFromEdge(curEdge, nulFace, aMap, aCurveList, theLocalFactors))
+        {
           result = true;
+        }
       }
       break;
     }
@@ -391,7 +395,9 @@ bool TopoDSToStep_WireframeBuilder::GetTrimmedCurveFromShape(
       {
         TopoDS_Face curFace = TopoDS::Face(It.Value());
         if (GetTrimmedCurveFromFace(curFace, aMap, aCurveList, theLocalFactors))
+        {
           result = true;
+        }
 #ifdef OCCT_DEBUG
         if (!result)
         {
@@ -409,7 +415,9 @@ bool TopoDSToStep_WireframeBuilder::GetTrimmedCurveFromShape(
         if (It.Value().ShapeType() == TopAbs_SHELL)
         {
           if (GetTrimmedCurveFromShape(It.Value(), aMap, aCurveList, theLocalFactors))
+          {
             result = true;
+          }
         }
       }
       break;
@@ -428,7 +436,9 @@ bool TopoDSToStep_WireframeBuilder::GetTrimmedCurveFromShape(
                 break;
               } */
         if (GetTrimmedCurveFromShape(It.Value(), aMap, aCurveList, theLocalFactors))
+        {
           result = true;
+        }
       }
       break;
     }

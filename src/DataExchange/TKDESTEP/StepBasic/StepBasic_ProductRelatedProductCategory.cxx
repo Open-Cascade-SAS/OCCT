@@ -51,6 +51,8 @@ occ::handle<StepBasic_Product> StepBasic_ProductRelatedProductCategory::Products
 int StepBasic_ProductRelatedProductCategory::NbProducts() const
 {
   if (products.IsNull())
+  {
     return 0;
+  }
   return products->Length();
 }

@@ -34,7 +34,9 @@ void RWStepBasic_RWSiUnitAndPlaneAngleUnit::ReadStep(
 
   // --- Instance of common supertype NamedUnit ---
   if (!data->CheckNbParams(num, 1, ach, "named_unit"))
+  {
     return;
+  }
 
   // --- field : dimensions ---
   // --- this field is redefined ---
@@ -44,12 +46,16 @@ void RWStepBasic_RWSiUnitAndPlaneAngleUnit::ReadStep(
 
   // --- Instance of plex component PlaneAngleUnit ---
   if (!data->CheckNbParams(num, 0, ach, "plane_angle_unit"))
+  {
     return;
+  }
   num = data->NextForComplex(num);
 
   // --- Instance of plex component SiUnit ---
   if (!data->CheckNbParams(num, 2, ach, "si_unit"))
+  {
     return;
+  }
 
   // --- field : prefix ---
   StepBasic_SiPrefix aPrefix    = StepBasic_spExa;
@@ -114,9 +120,13 @@ void RWStepBasic_RWSiUnitAndPlaneAngleUnit::WriteStep(
   // --- field : prefix ---
   bool hasAprefix = ent->HasPrefix();
   if (hasAprefix)
+  {
     SW.SendEnum(RWStepBasic_RWSiPrefix::ConvertToString(ent->Prefix()));
+  }
   else
+  {
     SW.SendUndef();
+  }
 
   // --- field : name ---
   SW.SendEnum(RWStepBasic_RWSiUnitName::ConvertToString(ent->Name()));

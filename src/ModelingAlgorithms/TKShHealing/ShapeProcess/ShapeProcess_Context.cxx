@@ -119,10 +119,14 @@ occ::handle<Resource_Manager> ShapeProcess_Context::LoadResourceManager(const ch
         isFileModified = true;
       }
       if (isFileModified)
+      {
         sRC.Nullify();
+      }
     }
     else
+    {
       sRC.Nullify();
+    }
   }
   if (sRC.IsNull())
   {
@@ -156,7 +160,9 @@ const occ::handle<Resource_Manager>& ShapeProcess_Context::ResourceManager() con
 void ShapeProcess_Context::SetScope(const char* const scope)
 {
   if (myScope.IsNull())
+  {
     myScope = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>;
+  }
   occ::handle<TCollection_HAsciiString> str;
   if (myScope->Length() > 0)
   {
@@ -165,7 +171,9 @@ void ShapeProcess_Context::SetScope(const char* const scope)
     str->AssignCat(scope);
   }
   else
+  {
     str = new TCollection_HAsciiString(scope);
+  }
   myScope->Append(str);
 }
 
@@ -174,7 +182,9 @@ void ShapeProcess_Context::SetScope(const char* const scope)
 void ShapeProcess_Context::UnSetScope()
 {
   if (!myScope.IsNull() && myScope->Length() > 0)
+  {
     myScope->Remove(myScope->Length());
+  }
 }
 
 //=================================================================================================
@@ -191,7 +201,9 @@ static occ::handle<TCollection_HAsciiString> MakeName(
     str->AssignCat(param);
   }
   else
+  {
     str = new TCollection_HAsciiString(param);
+  }
   return str;
 }
 
@@ -205,7 +217,9 @@ bool ShapeProcess_Context::IsParamSet(const char* const param) const
 bool ShapeProcess_Context::GetString(const char* const param, TCollection_AsciiString& str) const
 {
   if (myRC.IsNull())
+  {
     return false;
+  }
   occ::handle<TCollection_HAsciiString> pname = MakeName(myScope, param);
   if (!myRC->Find(pname->ToCString()))
   {
@@ -224,11 +238,15 @@ bool ShapeProcess_Context::GetString(const char* const param, TCollection_AsciiS
 bool ShapeProcess_Context::GetReal(const char* const param, double& val) const
 {
   if (myRC.IsNull())
+  {
     return false;
+  }
 
   TCollection_AsciiString str;
   if (!GetString(param, str))
+  {
     return false;
+  }
 
   if (str.IsRealValue())
   {
@@ -270,11 +288,15 @@ bool ShapeProcess_Context::GetReal(const char* const param, double& val) const
 bool ShapeProcess_Context::GetInteger(const char* const param, int& val) const
 {
   if (myRC.IsNull())
+  {
     return false;
+  }
 
   TCollection_AsciiString str;
   if (!GetString(param, str))
+  {
     return false;
+  }
 
   if (str.IsIntegerValue())
   {
@@ -316,7 +338,9 @@ bool ShapeProcess_Context::GetInteger(const char* const param, int& val) const
 bool ShapeProcess_Context::GetBoolean(const char* const param, bool& val) const
 {
   if (myRC.IsNull())
+  {
     return false;
+  }
   try
   {
     OCC_CATCH_SIGNALS
@@ -364,7 +388,9 @@ int ShapeProcess_Context::IntegerVal(const char* const param, const int def) con
 const char* ShapeProcess_Context::StringVal(const char* const param, const char* const def) const
 {
   if (myRC.IsNull())
+  {
     return def;
+  }
   try
   {
     OCC_CATCH_SIGNALS
@@ -387,9 +413,13 @@ const char* ShapeProcess_Context::StringVal(const char* const param, const char*
 void ShapeProcess_Context::SetMessenger(const occ::handle<Message_Messenger>& messenger)
 {
   if (messenger.IsNull())
+  {
     myMessenger = Message::DefaultMessenger();
+  }
   else
+  {
     myMessenger = messenger;
+  }
 }
 
 //=================================================================================================

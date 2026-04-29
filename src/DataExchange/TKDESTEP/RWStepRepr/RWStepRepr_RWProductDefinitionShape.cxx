@@ -35,7 +35,9 @@ void RWStepRepr_RWProductDefinitionShape::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "product_definition_shape"))
+  {
     return;
+  }
 
   // Inherited fields of PropertyDefinition
 
@@ -83,7 +85,9 @@ void RWStepRepr_RWProductDefinitionShape::WriteStep(
     SW.Send(ent->StepRepr_PropertyDefinition::Description());
   }
   else
+  {
     SW.SendUndef();
+  }
 
   SW.Send(ent->StepRepr_PropertyDefinition::Definition().Value());
 }

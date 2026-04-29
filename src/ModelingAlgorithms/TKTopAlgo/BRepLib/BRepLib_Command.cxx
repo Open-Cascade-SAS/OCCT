@@ -38,7 +38,9 @@ bool BRepLib_Command::IsDone() const
 void BRepLib_Command::Check() const
 {
   if (!myDone)
+  {
     throw StdFail_NotDone("BRep_API: command not done");
+  }
 }
 
 //=================================================================================================

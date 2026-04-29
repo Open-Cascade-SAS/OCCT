@@ -110,9 +110,13 @@ TEST_F(GeomLProp_CurAndInf2dTest, Ellipse_PerformCurExt_Types)
   {
     const LProp_CIType aType = aAnalyzer.Type(i);
     if (aType == LProp_MinCur)
+    {
       ++aNbMin;
+    }
     else if (aType == LProp_MaxCur)
+    {
       ++aNbMax;
+    }
   }
   EXPECT_EQ(aNbMin, 2);
   EXPECT_EQ(aNbMax, 2);

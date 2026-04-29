@@ -36,7 +36,9 @@ void RWStepBasic_RWGroupAssignment::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 1, ach, "group_assignment"))
+  {
     return;
+  }
 
   // Own fields of GroupAssignment
 

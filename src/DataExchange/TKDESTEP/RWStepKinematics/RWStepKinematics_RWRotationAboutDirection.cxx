@@ -38,7 +38,9 @@ void RWStepKinematics_RWRotationAboutDirection::ReadStep(
 {
   // Check number of parameters
   if (!theData->CheckNbParams(theNum, 3, theArch, "rotation_about_direction"))
+  {
     return;
+  }
 
   // Inherited fields of RepresentationItem
 

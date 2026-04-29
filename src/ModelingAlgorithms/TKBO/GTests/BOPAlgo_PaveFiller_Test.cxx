@@ -249,7 +249,9 @@ TEST_F(BOPAlgo_PaveFillerTest, FuseConeWithRemovedPCurve_NullPCurveHandling)
       }
     }
     if (!aDegeneratedEdge.IsNull())
+    {
       break;
+    }
   }
 
   // If we found a degenerated edge with pcurve, create a modified cone

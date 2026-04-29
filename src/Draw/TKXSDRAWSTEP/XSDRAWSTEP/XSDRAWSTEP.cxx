@@ -76,9 +76,13 @@ static int stepread(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
   TCollection_AsciiString fnom, rnom;
   bool modfic = XSDRAW::FileAndVar(theArgVec[1], theArgVec[2], "STEP", fnom, rnom);
   if (modfic)
+  {
     theDI << " File STEP to read : " << fnom.ToCString() << "\n";
+  }
   else
+  {
     theDI << " Model taken from the session : " << fnom.ToCString() << "\n";
+  }
   theDI << " -- Names of variables BREP-DRAW prefixed by : " << rnom.ToCString() << "\n";
   IFSelect_ReturnStatus readstat = IFSelect_RetVoid;
 
@@ -101,33 +105,51 @@ static int stepread(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
       k++;
     }
     else
+    {
       fromtcl = true;
+    }
   }
   if (!fromtcl)
+  {
     fromtcl = theNbArgs > k;
+  }
   if (aFullMode)
+  {
     std::cout << "Full model for translation with additional info will be used \n" << std::flush;
+  }
   else
+  {
     std::cout << "Reduced model for translation without additional info will be used \n"
               << std::flush;
+  }
 
   sr.WS()->SetModeStat(aFullMode);
 
   if (modfic)
+  {
     readstat = sr.ReadFile(fnom.ToCString());
+  }
   else if (XSDRAW::Session()->NbStartingEntities() > 0)
+  {
     readstat = IFSelect_RetDone;
+  }
 
   aPSRoot.Next(20); // On average loading takes 20%
   if (aPSRoot.UserBreak())
+  {
     return 1;
+  }
 
   if (readstat != IFSelect_RetDone)
   {
     if (modfic)
+    {
       theDI << "Could not read file " << fnom.ToCString() << " , abandon\n";
+    }
     else
+    {
       theDI << "No model loaded\n";
+    }
     return 1;
   }
 
@@ -140,7 +162,9 @@ static int stepread(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
   //   nom = "." -> fichier deja lu
   int i, num, nbs, modepri = 1;
   if (fromtcl)
+  {
     modepri = 4;
+  }
   while (modepri)
   {
     num = sr.NbRootsForTransfer();
@@ -178,7 +202,9 @@ static int stepread(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
       progress->Show(aPSRoot);
 
       if (!sr.TransferRoot(num, aPSRoot.Next(80)))
+      {
         theDI << "Transfer root n0 " << num << " : no result\n";
+      }
       else
       {
         nbs = sr.NbShapes();
@@ -190,14 +216,18 @@ static int stepread(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
         DBRep::Set(shname, sh);
       }
       if (aPSRoot.UserBreak())
+      {
         return 1;
+      }
     }
     else if (modepri == 3)
     {
       std::cout << "Entity : " << std::flush;
       num = XSDRAW::GetEntityNumber("");
       if (!sr.TransferOne(num))
+      {
         theDI << "Transfer entity n0 " << num << " : no result\n";
+      }
       else
       {
         nbs = sr.NbShapes();
@@ -231,7 +261,9 @@ static int stepread(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
         {
           theDI << "List given by " << theArgVec[k];
           if (theNbArgs > k + 1)
+          {
             theDI << " " << theArgVec[k + 1];
+          }
           theDI << " : ";
           list = XSDRAW::Session()->GiveList(theArgVec[k],
                                              (theNbArgs > (k + 1) ? theArgVec[k + 1] : nullptr));
@@ -256,7 +288,9 @@ static int stepread(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
       int ill, nbl = list->Length();
       theDI << "Nb entities selected : " << nbl << "\n";
       if (nbl == 0)
+      {
         continue;
+      }
 
       aPSRoot.SetName("Translation");
       progress->Show(aPSRoot);
@@ -266,9 +300,13 @@ static int stepread(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
       {
         num = sr.Model()->Number(list->Value(ill));
         if (num == 0)
+        {
           continue;
+        }
         if (!sr.TransferOne(num, aPS.Next()))
+        {
           theDI << "Transfer entity n0 " << num << " : no result\n";
+        }
         else
         {
           nbs = sr.NbShapes();
@@ -281,10 +319,14 @@ static int stepread(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
         }
       }
       if (aPSRoot.UserBreak())
+      {
         return 1;
+      }
     }
     else
+    {
       theDI << "Unknown mode n0 " << modepri << "\n";
+    }
   }
   return 0;
 }
@@ -382,11 +424,17 @@ static int steptrans(Draw_Interpretor& theDI, int theNbArgs, const char** theArg
   int                                    n1 = 0, n2 = 0;
   n1 = XSDRAW::GetEntityNumber(theArgVec[3]);
   if (theNbArgs > 4)
+  {
     n2 = XSDRAW::GetEntityNumber(theArgVec[4]);
+  }
   if (n1 > 0)
+  {
     ax1 = occ::down_cast<StepGeom_Axis2Placement3d>(aWS->StartingEntity(n1));
+  }
   if (n2 > 0)
+  {
     ax2 = occ::down_cast<StepGeom_Axis2Placement3d>(aWS->StartingEntity(n2));
+  }
   StepData_Factors             aFactors;
   StepToTopoDS_MakeTransformed mktrans;
   if (mktrans.Compute(ax1, ax2, aFactors))
@@ -397,7 +445,9 @@ static int steptrans(Draw_Interpretor& theDI, int theNbArgs, const char** theArg
     theDI << "Transformed Shape as " << theArgVec[2] << "\n";
   }
   else
+  {
     theDI << "No transformation computed\n";
+  }
   return 0;
 }
 
@@ -449,7 +499,9 @@ static int stepwrite(Draw_Interpretor& theDI, int theNbArgs, const char** theArg
   occ::handle<STEPControl_ActorWrite> ActWrite =
     occ::down_cast<STEPControl_ActorWrite>(aWS->NormAdaptor()->ActorWrite());
   if (!ActWrite.IsNull())
+  {
     ActWrite->SetGroupMode(Interface_Static::IVal("write.step.assembly"));
+  }
 
   TopoDS_Shape                          shape = DBRep::Get(theArgVec[2]);
   STEPControl_Writer                    sw(aWS, false);
@@ -474,7 +526,9 @@ static int stepwrite(Draw_Interpretor& theDI, int theNbArgs, const char** theArg
     theDI << "Error: translation failed, status = " << stat << "\n";
   }
   if (aPSRoot.UserBreak())
+  {
     return 1;
+  }
   aPSRoot.SetName("Writing");
   progress->Show(aPSRoot);
 
@@ -482,9 +536,13 @@ static int stepwrite(Draw_Interpretor& theDI, int theNbArgs, const char** theArg
   stepmodel   = sw.Model();
   int nbapres = (stepmodel.IsNull() ? 0 : stepmodel->NbEntities());
   if (nbavant > 0)
+  {
     theDI << "Beware : Model not empty before transferring\n";
+  }
   if (nbapres <= nbavant)
+  {
     theDI << "Beware : No data produced by this transfer\n";
+  }
   if (nbapres == 0)
   {
     theDI << "No data to write\n";
@@ -657,17 +715,23 @@ static int stepfileunits(Draw_Interpretor& theDI, int theNbArgs, const char** th
   theDI << "=====================================================\n";
   theDI << "LENGTH Unit\n";
   for (; i <= anUnitLengthNames.Length(); i++)
+  {
     theDI << anUnitLengthNames(i).ToCString() << "\n";
+  }
 
   theDI << "=====================================================\n";
   theDI << "Angle Unit\n";
   for (i = 1; i <= anUnitAngleNames.Length(); i++)
+  {
     theDI << anUnitAngleNames(i).ToCString() << "\n";
+  }
 
   theDI << "=====================================================\n";
   theDI << "Solid Angle Unit\n";
   for (i = 1; i <= anUnitSolidAngleNames.Length(); i++)
+  {
     theDI << anUnitSolidAngleNames(i).ToCString() << "\n";
+  }
 
   return 0;
 }

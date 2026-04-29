@@ -41,9 +41,13 @@ bool CPnts_MyRootFunction::Value(const double X, double& F)
   math_GaussSingleIntegration Length;
 
   if (myTol <= 0)
+  {
     Length = math_GaussSingleIntegration(myFunction, myX0, X, myOrder);
+  }
   else
+  {
     Length = math_GaussSingleIntegration(myFunction, myX0, X, myOrder, myTol);
+  }
 
   if (Length.IsDone())
   {
@@ -66,9 +70,13 @@ bool CPnts_MyRootFunction::Values(const double X, double& F, double& Df)
   math_GaussSingleIntegration Length;
 
   if (myTol <= 0)
+  {
     Length = math_GaussSingleIntegration(myFunction, myX0, X, myOrder);
+  }
   else
+  {
     Length = math_GaussSingleIntegration(myFunction, myX0, X, myOrder, myTol);
+  }
 
   if (Length.IsDone())
   {

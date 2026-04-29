@@ -831,7 +831,9 @@ gp_Circ2d Geom2dGcc_Circ2dTanOnRadGeo::ThisSolution(const int Index) const
 {
 
   if (Index > NbrSol || Index <= 0)
+  {
     throw Standard_OutOfRange();
+  }
 
   return cirsol(Index);
 }
@@ -893,12 +895,18 @@ void Geom2dGcc_Circ2dTanOnRadGeo::CenterOn3(const int Index, double& ParArg, gp_
 bool Geom2dGcc_Circ2dTanOnRadGeo::IsTheSame1(const int Index) const
 {
   if (!WellDone)
+  {
     throw StdFail_NotDone();
+  }
   if (Index <= 0 || Index > NbrSol)
+  {
     throw Standard_OutOfRange();
+  }
 
   if (TheSame1(Index) == 0)
+  {
     return false;
+  }
 
   return true;
 }

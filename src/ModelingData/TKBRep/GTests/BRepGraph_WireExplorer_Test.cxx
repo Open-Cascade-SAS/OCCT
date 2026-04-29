@@ -128,7 +128,9 @@ TEST_F(BRepGraph_WireExplorerTest, Reset_RestartsIteration)
 
   // Consume all edges.
   while (anExp.More())
+  {
     anExp.Next();
+  }
   EXPECT_FALSE(anExp.More());
 
   // Reset and verify re-iteration works.

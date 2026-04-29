@@ -35,7 +35,9 @@ bool TDocStd_Modified::IsEmpty(const TDF_Label& access)
     return true;
   }
   else
+  {
     return MDF->IsEmpty();
+  }
 }
 
 //=================================================================================================
@@ -61,7 +63,9 @@ bool TDocStd_Modified::Remove(const TDF_Label& alabel)
     return true;
   }
   else
+  {
     return MDF->RemoveLabel(alabel);
+  }
 }
 
 //=================================================================================================
@@ -98,7 +102,9 @@ void TDocStd_Modified::Clear(const TDF_Label& access)
     return;
   }
   else
+  {
     MDF->Clear();
+  }
 }
 
 //=================================================================================================

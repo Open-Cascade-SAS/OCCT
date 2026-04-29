@@ -316,9 +316,13 @@ void BRepCheck_Edge::InContext(const TopoDS_Shape& S)
         if (!SameParameter || !SameRange)
         {
           if (!SameParameter)
+          {
             BRepCheck::Add(lst, BRepCheck_InvalidSameParameterFlag);
+          }
           if (!SameRange)
+          {
             BRepCheck::Add(lst, BRepCheck_InvalidSameRangeFlag);
+          }
 
           return;
         }
@@ -689,7 +693,9 @@ double BRepCheck_Edge::Tolerance()
       }
       dist2 = center.SquareDistance(othP);
       if (dist2 > tolCal)
+      {
         tolCal = dist2;
+      }
     }
     if (tol2 > tolCal)
     {

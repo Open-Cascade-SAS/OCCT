@@ -42,13 +42,19 @@ static int DDataStd_SetName(Draw_Interpretor& di, int nb, const char** arg)
   {
     occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
+    {
       return 1;
+    }
     TDF_Label L;
     DDF::AddLabel(DF, arg[2], L);
     if (L.IsNull())
+    {
       di << "Label is not found" << "\n";
+    }
     if (nb == 4)
+    {
       TDataStd_Name::Set(L, TCollection_ExtendedString(arg[3], true));
+    }
     else
     {
       if (!Standard_GUID::CheckGUIDFormat(arg[4]))
@@ -77,11 +83,15 @@ static int DDataStd_GetName(Draw_Interpretor& di, int nb, const char** arg)
   {
     occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
+    {
       return 1;
+    }
     TDF_Label L;
     DDF::FindLabel(DF, arg[2], L);
     if (L.IsNull())
+    {
       di << "Label is not found" << "\n";
+    }
     Standard_GUID aGuid(TDataStd_Name::GetID());
     if (nb == 4)
     {
@@ -116,7 +126,9 @@ void DDataStd::NameCommands(Draw_Interpretor& theCommands)
 
   static bool done = false;
   if (done)
+  {
     return;
+  }
   done = true;
 
   const char* g = "DDataStd : Name attribute commands";

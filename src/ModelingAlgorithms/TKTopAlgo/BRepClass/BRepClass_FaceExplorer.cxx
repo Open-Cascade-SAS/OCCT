@@ -132,7 +132,9 @@ bool BRepClass_FaceExplorer::OtherSegment(const gp_Pnt2d& P, gp_Lin2d& L, double
   for (i = 1; anExpF.More(); anExpF.Next(), i++)
   {
     if (i != myCurEdgeInd)
+    {
       continue;
+    }
 
     const TopoDS_Shape&      aLocalShape   = anExpF.Current();
     const TopAbs_Orientation anOrientation = aLocalShape.Orientation();
@@ -159,7 +161,9 @@ bool BRepClass_FaceExplorer::OtherSegment(const gp_Pnt2d& P, gp_Lin2d& L, double
           }
         }
         else if (Precision::IsPositiveInfinite(aLPar))
+        {
           aLPar = aFPar + 1.;
+        }
 
         for (; myCurEdgePar < Probing_End; myCurEdgePar += Probing_Step)
         {
@@ -176,7 +180,9 @@ bool BRepClass_FaceExplorer::OtherSegment(const gp_Pnt2d& P, gp_Lin2d& L, double
 
             double aTanMod = aTanVec.SquareMagnitude();
             if (aTanMod < aTolParConf2)
+            {
               continue;
+            }
             aTanVec /= std::sqrt(aTanMod);
             double       aSinA        = aTanVec.Crossed(aLinDir.XY());
             const double SmallAngle   = 0.001;
@@ -190,7 +196,9 @@ bool BRepClass_FaceExplorer::OtherSegment(const gp_Pnt2d& P, gp_Lin2d& L, double
               // no tangent. If there tangent is preserved then leave the last point in
               // order to get this edge chance to participate in classification.
               if (myCurEdgePar + Probing_Step < Probing_End)
+              {
                 continue;
+              }
             }
 
             L = gp_Lin2d(P, aLinDir);

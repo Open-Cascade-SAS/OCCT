@@ -103,7 +103,9 @@ void DBRep_DrawableShape::updateDisplayData() const
   myEdges.Clear();
 
   if (myShape.IsNull())
+  {
     return;
+  }
 
   //==============================================================
   // Process the faces
@@ -126,10 +128,14 @@ void DBRep_DrawableShape::updateDisplayData() const
         IsoBuild.LoadIsos(myFaces.Last());
       }
       else
+      {
         myFaces.Append(new DBRep_Face(TopologicalFace, 0, myEdgeCol));
+      }
     }
     else
+    {
       myFaces.Append(new DBRep_Face(TopologicalFace, 0, myEdgeCol));
+    }
   }
 
   //==============================================================
@@ -148,7 +154,9 @@ void DBRep_DrawableShape::updateDisplayData() const
 
     // skip degenerated edges
     if (BRep_Tool::Degenerated(theEdge))
+    {
       continue;
+    }
 
     // compute the number of faces
     int nbf = edgemap(iedge).Extent();
@@ -200,10 +208,14 @@ void DBRep_DrawableShape::ChangeNbIsos(const int NbIsos)
         IsoBuild.LoadIsos(myFaces.Last());
       }
       else
+      {
         myFaces.Append(new DBRep_Face(TopologicalFace, 0, myEdgeCol));
+      }
     }
     else
+    {
       myFaces.Append(new DBRep_Face(TopologicalFace, 0, myEdgeCol));
+    }
   }
 }
 
@@ -353,7 +365,9 @@ void DBRep_DrawableShape::DrawOn(Draw_Display& dis) const
   }
 
   if (myFaces.IsEmpty() || myEdges.IsEmpty())
+  {
     updateDisplayData();
+  }
 
   // hidden lines
   if (myHLR)
@@ -398,25 +412,39 @@ void DBRep_DrawableShape::DrawOn(Draw_Display& dis) const
         if (aSurf->IsUPeriodic())
         {
           if (FU1 < SU1 || FU1 > SU2)
+          {
             restriction = true;
+          }
           if (!restriction && (FU2 < SU1 || FU2 > SU2))
+          {
             restriction = true;
+          }
         }
         if (!restriction && aSurf->IsVPeriodic())
         {
           if (FV1 < SV1 || FV1 > SV2)
+          {
             restriction = true;
+          }
           if (!restriction && (FV2 < SV1 || FV2 > SV2))
+          {
             restriction = true;
+          }
         }
         bool zeroS = (fabs(SU2 - SU1) <= 1.e-9 || fabs(SV2 - SV1) <= 1.e-9);
         bool zeroF = (fabs(FU2 - FU1) <= 1.e-9 || fabs(FV2 - FV1) <= 1.e-9);
         if (restriction && (zeroS || zeroF))
+        {
           restriction = false;
+        }
         if (restriction && (FU1 >= FU2 || FV1 >= FV2))
+        {
           restriction = false;
+        }
         if (restriction && (fabs(FU2 - FU1) > 4.1e+100 || fabs(FV2 - FV1) > 4.1e+100))
+        {
           restriction = false;
+        }
       }
 
       BRepAdaptor_Surface S(F->Face(), restriction);
@@ -471,9 +499,13 @@ void DBRep_DrawableShape::DrawOn(Draw_Display& dis) const
         {
 
           if (TI(Intrv) <= T1 && TI(Intrv + 1) <= T1)
+          {
             continue;
+          }
           if (TI(Intrv) >= T2 && TI(Intrv + 1) >= T2)
+          {
             continue;
+          }
           if (T == GeomAbs_IsoU)
           {
             V1    = std::max(T1, TI(Intrv));
@@ -563,7 +595,9 @@ void DBRep_DrawableShape::DrawOn(Draw_Display& dis) const
                   || (T == GeomAbs_IsoU && SurfType == GeomAbs_SurfaceOfExtrusion))
               {
                 if (SurfType == GeomAbs_SurfaceOfExtrusion)
+                {
                   break;
+                }
                 for (j = 1; j < myDiscret; j++)
                 {
                   U1 += stepU;
@@ -666,9 +700,13 @@ void DBRep_DrawableShape::DrawOn(Draw_Display& dis) const
     const occ::handle<DBRep_Edge>& E = ite.Value();
 
     if (myDispOr)
+    {
       dis.SetColor(DBRep_ColorOrientation(E->Edge().Orientation()));
+    }
     else
+    {
       dis.SetColor(E->Color());
+    }
 
     // display geometrical curve if exists.
     bool   isgeom = BRep_Tool::IsGeometric(E->Edge());
@@ -681,7 +719,7 @@ void DBRep_DrawableShape::DrawOn(Draw_Display& dis) const
       if (aCheckU2 < aCheckU1)
       {
         // bad orientation
-        std::cout << "DBRep_DrawableShape : Bad parameters on edge." << std::endl;
+        std::cout << "DBRep_DrawableShape : Bad parameters on edge." << '\n';
         BRepTools::Dump(E->Edge(), std::cout);
         ite.Next();
         continue;
@@ -867,7 +905,9 @@ void DBRep_DrawableShape::DrawOn(Draw_Display& dis) const
   {
 
     if (myDispOr)
+    {
       dis.SetColor(DBRep_ColorOrientation(exv.Current().Orientation()));
+    }
     dis.DrawMarker(BRep_Tool::Pnt(TopoDS::Vertex(exv.Current())), Draw_Losange);
     if (dis.HasPicked())
     {
@@ -890,7 +930,9 @@ void DBRep_DrawableShape::DisplayHiddenLines(Draw_Display& dis)
   dout.GetTrsf(id, T);
   double focal = -1;
   if (!strcmp(dout.GetType(id), "PERS"))
+  {
     focal = dout.Focal(id);
+  }
   double Ang, Def;
   HLRBRep::PolyHLRAngleAndDeflection(myAng, Ang, Def);
   IMeshTools_Parameters aMeshParams;
@@ -912,7 +954,9 @@ void DBRep_DrawableShape::DisplayHiddenLines(Draw_Display& dis)
       double ang = it.Value().Angle();
       recompute  = !it.Value().IsSame(T, focal) || myAng != ang;
       if (recompute)
+      {
         myHidData.Remove(it);
+      }
       else
       {
         it.ChangeValue().DrawOn(dis, myRg1, myRgN, myHid, myConnCol, myIsosCol);
@@ -1099,17 +1143,29 @@ void DBRep_DrawableShape::Whatis(Draw_Interpretor& s) const
     << TopAbs::ShapeOrientationToString(myShape.Orientation());
 
   if (myShape.Free())
+  {
     s << " Free";
+  }
   if (myShape.Modified())
+  {
     s << " Modified";
+  }
   if (myShape.Orientable())
+  {
     s << " Orientable";
+  }
   if (myShape.Closed())
+  {
     s << " Closed";
+  }
   if (myShape.Infinite())
+  {
     s << " Infinite";
+  }
   if (myShape.Convex())
+  {
     s << " Convex";
+  }
 }
 
 //=================================================================================================
@@ -1139,8 +1195,12 @@ void DBRep_DrawableShape::display(const occ::handle<Poly_Triangulation>& T,
   {
     pc.Triangles(i, t[0], t[1], t[2]);
     for (j = 0; j < 3; j++)
+    {
       if (t[j] == 0)
+      {
         nFree++;
+      }
+    }
   }
 
   // allocate the arrays

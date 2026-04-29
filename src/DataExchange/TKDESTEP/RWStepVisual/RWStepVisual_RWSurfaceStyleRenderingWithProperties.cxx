@@ -40,7 +40,9 @@ void RWStepVisual_RWSurfaceStyleRenderingWithProperties::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "surface_style_rendering_with_properties"))
+  {
     return;
+  }
 
   // Inherited fields of SurfaceStyleRendering
 
@@ -50,18 +52,30 @@ void RWStepVisual_RWSurfaceStyleRenderingWithProperties::ReadStep(
   {
     const char* text = data->ParamCValue(num, 1);
     if (strcmp(text, ".CONSTANT_SHADING."))
+    {
       aSurfaceStyleRendering_RenderingMethod = StepVisual_ssmConstantShading;
+    }
     else if (strcmp(text, ".COLOUR_SHADING."))
+    {
       aSurfaceStyleRendering_RenderingMethod = StepVisual_ssmColourShading;
+    }
     else if (strcmp(text, ".DOT_SHADING."))
+    {
       aSurfaceStyleRendering_RenderingMethod = StepVisual_ssmDotShading;
+    }
     else if (strcmp(text, ".NORMAL_SHADING."))
+    {
       aSurfaceStyleRendering_RenderingMethod = StepVisual_ssmNormalShading;
+    }
     else
+    {
       ach->AddFail("Parameter #1 (surface_style_rendering.rendering_method) has not allowed value");
+    }
   }
   else
+  {
     ach->AddFail("Parameter #1 (surface_style_rendering.rendering_method) is not enumeration");
+  }
 
   occ::handle<StepVisual_Colour> aSurfaceStyleRendering_SurfaceColour;
   data->ReadEntity(num,

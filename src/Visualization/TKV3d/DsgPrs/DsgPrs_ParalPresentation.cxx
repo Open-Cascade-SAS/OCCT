@@ -50,9 +50,13 @@ void DsgPrs_ParalPresentation::Add(const occ::handle<Prs3d_Presentation>& aPrese
   parcur      = ElCLib::Parameter(L3, Proj2);
   double dist = std::abs(parmin - parcur);
   if (parcur < parmin)
+  {
     parmin = parcur;
+  }
   if (parcur > parmax)
+  {
     parmax = parcur;
+  }
   parcur      = ElCLib::Parameter(L3, OffsetPoint);
   gp_Pnt offp = ElCLib::Value(parcur, L3);
 
@@ -80,10 +84,14 @@ void DsgPrs_ParalPresentation::Add(const occ::handle<Prs3d_Presentation>& aPrese
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   if (dist < (LA->ArrowAspect()->Length() + LA->ArrowAspect()->Length()))
+  {
     outside = true;
+  }
   gp_Dir arrdir = L3.Direction().Reversed();
   if (outside)
+  {
     arrdir.Reverse();
+  }
 
   // arrow 1 : 2nd group
   Prs3d_Arrow::Draw(aPresentation->CurrentGroup(),
@@ -147,9 +155,13 @@ void DsgPrs_ParalPresentation::Add(const occ::handle<Prs3d_Presentation>& aPrese
   parcur      = ElCLib::Parameter(L3, Proj2);
   double dist = std::abs(parmin - parcur);
   if (parcur < parmin)
+  {
     parmin = parcur;
+  }
   if (parcur > parmax)
+  {
     parmax = parcur;
+  }
   parcur      = ElCLib::Parameter(L3, OffsetPoint);
   gp_Pnt offp = ElCLib::Value(parcur, L3);
 
@@ -174,10 +186,14 @@ void DsgPrs_ParalPresentation::Add(const occ::handle<Prs3d_Presentation>& aPrese
   aPrims->AddVertex(PointMax);
 
   if (dist < (LA->ArrowAspect()->Length() + LA->ArrowAspect()->Length()))
+  {
     outside = true;
+  }
   gp_Dir arrdir = L3.Direction().Reversed();
   if (outside)
+  {
     arrdir.Reverse();
+  }
 
   // processing of call 1
   aPrims->AddVertex(AttachmentPoint1);

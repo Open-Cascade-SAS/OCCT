@@ -31,7 +31,9 @@ void RWStepVisual_RWSurfaceStyleSegmentationCurve::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 1, ach, "surface_style_segmentation_curve"))
+  {
     return;
+  }
 
   // --- own field : styleOfSegmentationCurve ---
 

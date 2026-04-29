@@ -39,29 +39,53 @@ StepAP203_ApprovedItem::StepAP203_ApprovedItem() = default;
 int StepAP203_ApprovedItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinitionFormation)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_ProductDefinition)))
+  {
     return 2;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepRepr_ConfigurationEffectivity)))
+  {
     return 3;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepRepr_ConfigurationItem)))
+  {
     return 4;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_SecurityClassification)))
+  {
     return 5;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepAP203_ChangeRequest)))
+  {
     return 6;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepAP203_Change)))
+  {
     return 7;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepAP203_StartRequest)))
+  {
     return 8;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepAP203_StartWork)))
+  {
     return 9;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_Certification)))
+  {
     return 10;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepBasic_Contract)))
+  {
     return 11;
+  }
   return 0;
 }
 

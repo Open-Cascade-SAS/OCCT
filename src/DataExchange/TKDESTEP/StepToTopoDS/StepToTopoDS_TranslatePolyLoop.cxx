@@ -88,14 +88,18 @@ void StepToTopoDS_TranslatePolyLoop::Init(const occ::handle<StepShape_PolyLoop>&
     double                               Magn;
     occ::handle<Geom_Plane>              SP = occ::down_cast<Geom_Plane>(GeomSurf);
     if (SP.IsNull())
+    {
       TP->AddFail(PL, "Surface not planar in a FacetedBRep !");
+    }
     occ::handle<ShapeAnalysis_Surface> STSU = new ShapeAnalysis_Surface(GeomSurf);
     int                                Nb   = PL->NbPolygon();
     occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>> Poly =
       new NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>(1, Nb + 1);
 
     for (i = 1; i <= Nb; i++)
+    {
       Poly->SetValue(i, PL->PolygonValue(i));
+    }
 
     Nb++;
     Poly->SetValue(Nb, PL->PolygonValue(1));
@@ -115,7 +119,9 @@ void StepToTopoDS_TranslatePolyLoop::Init(const occ::handle<StepShape_PolyLoop>&
     {
       P2 = Poly->Value(i);
       if (P1 == P2)
+      {
         continue; // peut arriver (KK)  CKY 9-DEC-1997
+      }
       StepToTopoDS_PointPair PP(P1, P2);
       GP2 = StepToGeom::MakeCartesianPoint(P2, theLocalFactors);
       TopoDS_Shape aBoundEdge;
@@ -150,7 +156,9 @@ void StepToTopoDS_TranslatePolyLoop::Init(const occ::handle<StepShape_PolyLoop>&
         //  - via sa premiere face, orientation combinee = celle de cette premiere face
         //  - via sa deuxieme face, orientation combinee INVERSE de la precedente
         if (TopoFace.Orientation() == TopAbs_FORWARD)
+        {
           E.Reverse();
+        }
         V2 = aTool.FindVertex(P2);
       }
       gp_Pnt2d V2p1 = STSU->ValueOfUV(GP1->Pnt(), Precision());
@@ -169,7 +177,9 @@ void StepToTopoDS_TranslatePolyLoop::Init(const occ::handle<StepShape_PolyLoop>&
       TopoDS_Edge EB = E; // pour le binding : cumul des orientations !
       EB.Orientation(TopoFace.Orientation());
       if (!isbound)
+      {
         aTool.BindEdge(PP, EB);
+      }
       if (!E.IsNull())
       {
         B.Add(W, E);

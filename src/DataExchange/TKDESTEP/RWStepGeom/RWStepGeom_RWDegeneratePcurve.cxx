@@ -31,7 +31,9 @@ void RWStepGeom_RWDegeneratePcurve::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 3, ach, "degenerate_pcurve"))
+  {
     return;
+  }
 
   // --- inherited field : name ---
 

@@ -77,7 +77,9 @@ math_NewtonFunctionSetRoot::~math_NewtonFunctionSetRoot() = default;
 void math_NewtonFunctionSetRoot::SetTolerance(const math_Vector& theXTolerance)
 {
   for (int i = 1; i <= TolX.Length(); ++i)
+  {
     TolX(i) = theXTolerance(i);
+  }
 }
 
 //=================================================================================================
@@ -107,7 +109,9 @@ void math_NewtonFunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
   Sol  = StartingPoint;
   OK   = F.Values(Sol, FValues, Jacobian);
   if (!OK)
+  {
     return;
+  }
   for (Iter = 1; Iter <= Itermax; Iter++)
   {
     for (int k = 1; k <= DeltaX.Length(); k++)
@@ -116,7 +120,9 @@ void math_NewtonFunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
     }
     Error = LU_Decompose(Jacobian, Indx, d, Scratch, 1.0e-30);
     if (Error)
+    {
       return;
+    }
     LU_Solve(Jacobian, Indx, DeltaX);
     for (int i = 1; i <= Sol.Length(); i++)
     {
@@ -124,13 +130,19 @@ void math_NewtonFunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
 
       // Limitation de Sol dans les bornes [InfBound, SupBound] :
       if (Sol(i) <= InfBound(i))
+      {
         Sol(i) = InfBound(i);
+      }
       if (Sol(i) >= SupBound(i))
+      {
         Sol(i) = SupBound(i);
+      }
     }
     OK = F.Values(Sol, FValues, Jacobian);
     if (!OK)
+    {
       return;
+    }
     if (IsSolutionReached(F))
     {
       State = F.GetStateNumber();

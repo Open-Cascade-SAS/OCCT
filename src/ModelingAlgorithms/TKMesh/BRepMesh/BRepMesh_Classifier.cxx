@@ -111,7 +111,9 @@ void BRepMesh_Classifier::RegisterWire(const NCollection_Sequence<const gp_Pnt2d
   }
   // Check for zero angle - treat self intersecting wire as outer
   if (std::abs(anAngle) < aAngTol)
+  {
     anAngle = 0.0;
+  }
 
   myTabClass.Append(new CSLib_Class2d(aPClass,
                                       theTolUV.first,

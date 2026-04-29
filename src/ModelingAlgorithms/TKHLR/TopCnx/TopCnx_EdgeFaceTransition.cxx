@@ -77,9 +77,13 @@ TopAbs_Orientation TopCnx_EdgeFaceTransition::Transition() const
   if (Bef == TopAbs_IN)
   {
     if (Aft == TopAbs_IN)
+    {
       return TopAbs_INTERNAL;
+    }
     else if (Aft == TopAbs_OUT)
+    {
       return TopAbs_REVERSED;
+    }
 #ifdef OCCT_DEBUG
     else
       std::cout << "\n*** Complex Transition : unprocessed state" << std::endl;
@@ -88,9 +92,13 @@ TopAbs_Orientation TopCnx_EdgeFaceTransition::Transition() const
   else if (Bef == TopAbs_OUT)
   {
     if (Aft == TopAbs_IN)
+    {
       return TopAbs_FORWARD;
+    }
     else if (Aft == TopAbs_OUT)
+    {
       return TopAbs_EXTERNAL;
+    }
 #ifdef OCCT_DEBUG
     else
       std::cout << "\n*** Complex Transition : unprocessed state" << std::endl;
@@ -108,11 +116,19 @@ TopAbs_Orientation TopCnx_EdgeFaceTransition::Transition() const
 TopAbs_Orientation TopCnx_EdgeFaceTransition::BoundaryTransition() const
 {
   if (nbBoundForward > nbBoundReversed)
+  {
     return TopAbs_FORWARD;
+  }
   else if (nbBoundForward < nbBoundReversed)
+  {
     return TopAbs_REVERSED;
+  }
   else if ((nbBoundReversed % 2) == 0)
+  {
     return TopAbs_EXTERNAL;
+  }
   else
+  {
     return TopAbs_EXTERNAL;
+  }
 }

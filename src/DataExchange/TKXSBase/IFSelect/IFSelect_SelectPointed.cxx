@@ -44,7 +44,9 @@ void IFSelect_SelectPointed::SetEntity(const occ::handle<Standard_Transient>& en
   theitems.Clear();
   theset = true;
   if (ent.IsNull())
+  {
     return;
+  }
   theitems.Append(ent);
 }
 
@@ -54,10 +56,14 @@ void IFSelect_SelectPointed::SetList(
   theitems.Clear();
   theset = true;
   if (list.IsNull())
+  {
     return;
+  }
   int i, nb = list->Length();
   for (i = 1; i <= nb; i++)
+  {
     theitems.Append(list->Value(i));
+  }
 }
 
 //  ....    Editions
@@ -65,10 +71,16 @@ void IFSelect_SelectPointed::SetList(
 bool IFSelect_SelectPointed::Add(const occ::handle<Standard_Transient>& item)
 {
   if (item.IsNull())
+  {
     return false;
+  }
   for (int i = theitems.Length(); i >= 1; i--)
+  {
     if (item == theitems.Value(i))
+    {
       return false;
+    }
+  }
   theitems.Append(item);
   theset = true;
   return true;
@@ -77,28 +89,42 @@ bool IFSelect_SelectPointed::Add(const occ::handle<Standard_Transient>& item)
 bool IFSelect_SelectPointed::Remove(const occ::handle<Standard_Transient>& item)
 {
   if (item.IsNull())
+  {
     return false;
+  }
   for (int i = theitems.Length(); i >= 1; i--)
+  {
     if (item == theitems.Value(i))
     {
       theitems.Remove(i);
       return true;
     }
+  }
   return true;
 }
 
 bool IFSelect_SelectPointed::Toggle(const occ::handle<Standard_Transient>& item)
 {
   if (item.IsNull())
+  {
     return false;
+  }
   int num = 0;
   for (int i = theitems.Length(); i >= 1; i--)
+  {
     if (item == theitems.Value(i))
+    {
       num = i;
+    }
+  }
   if (num == 0)
+  {
     theitems.Append(item);
+  }
   else
+  {
     theitems.Remove(num);
+  }
   return (num == 0);
 }
 
@@ -108,16 +134,22 @@ bool IFSelect_SelectPointed::AddList(
   //   Optimized with a Map
   bool res = false;
   if (list.IsNull())
+  {
     return res;
+  }
   int                                              i, nb = theitems.Length(), nl = list->Length();
   NCollection_Map<occ::handle<Standard_Transient>> deja(nb + nl + 1);
   for (i = 1; i <= nb; i++)
+  {
     deja.Add(theitems.Value(i));
+  }
 
   for (i = 1; i <= nl; i++)
   {
     if (!deja.Contains(list->Value(i)))
+    {
       theitems.Append(list->Value(i));
+    }
   }
   theset = true;
   return res;
@@ -128,10 +160,14 @@ bool IFSelect_SelectPointed::RemoveList(
 {
   bool res = false;
   if (list.IsNull())
+  {
     return res;
+  }
   int i, nb = list->Length();
   for (i = 1; i <= nb; i++)
+  {
     res |= Remove(list->Value(i));
+  }
   return res;
 }
 
@@ -140,10 +176,14 @@ bool IFSelect_SelectPointed::ToggleList(
 {
   bool res = true;
   if (list.IsNull())
+  {
     return res;
+  }
   int i, nb = list->Length();
   for (i = 1; i <= nb; i++)
+  {
     res |= Toggle(list->Value(i));
+  }
   return res;
 }
 
@@ -152,10 +192,16 @@ bool IFSelect_SelectPointed::ToggleList(
 int IFSelect_SelectPointed::Rank(const occ::handle<Standard_Transient>& item) const
 {
   if (item.IsNull())
+  {
     return 0;
+  }
   for (int i = theitems.Length(); i >= 1; i--)
+  {
     if (item == theitems.Value(i))
+    {
       return i;
+    }
+  }
   return 0;
 }
 
@@ -168,7 +214,9 @@ occ::handle<Standard_Transient> IFSelect_SelectPointed::Item(const int num) cons
 {
   occ::handle<Standard_Transient> item;
   if (num <= 0 || num > theitems.Length())
+  {
     return item;
+  }
   return theitems.Value(num);
 }
 
@@ -180,9 +228,13 @@ void IFSelect_SelectPointed::Update(const occ::handle<Interface_CopyControl>& co
     occ::handle<Standard_Transient> enfr, ento;
     enfr = theitems.Value(i);
     if (!control->Search(enfr, ento))
+    {
       theitems.Remove(i);
+    }
     else
+    {
       theitems.SetValue(i, ento);
+    }
   }
 }
 
@@ -194,9 +246,13 @@ void IFSelect_SelectPointed::Update(const occ::handle<IFSelect_Transformer>& trf
     occ::handle<Standard_Transient> enfr, ento;
     enfr = theitems.Value(i);
     if (!trf->Updated(enfr, ento))
+    {
       theitems.Remove(i);
+    }
     else
+    {
       theitems.SetValue(i, ento);
+    }
   }
 }
 
@@ -210,7 +266,9 @@ Interface_EntityIterator IFSelect_SelectPointed::RootResult(const Interface_Grap
   {
     occ::handle<Standard_Transient> item = theitems.Value(i);
     if (G.EntityNumber(item) > 0)
+    {
       result.GetOneItem(item);
+    }
   }
   return result;
 }

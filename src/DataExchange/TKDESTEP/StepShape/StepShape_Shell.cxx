@@ -22,11 +22,17 @@ StepShape_Shell::StepShape_Shell() = default;
 int StepShape_Shell::CaseNum(const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
+  {
     return 0;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepShape_OpenShell)))
+  {
     return 1;
+  }
   if (ent->IsKind(STANDARD_TYPE(StepShape_ClosedShell)))
+  {
     return 2;
+  }
   return 0;
 }
 

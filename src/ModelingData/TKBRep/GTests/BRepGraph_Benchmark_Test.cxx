@@ -82,7 +82,7 @@ double runBenchmark(const char* theLabel, Func theFunc)
 
   const double anAvg = aTotal / static_cast<double>(THE_MEASURE_ITERS);
   std::cout << "[  PERF   ] " << theLabel << ": avg " << anAvg << " s over " << THE_MEASURE_ITERS
-            << " iters" << std::endl;
+            << " iters" << '\n';
   return anAvg;
 }
 
@@ -196,7 +196,7 @@ TEST(BRepGraph_BenchmarkTest, DISABLED_Reconstruct_RoundTrip)
   });
 
   const double aPerFace = aAvg / static_cast<double>(aNbFaces);
-  std::cout << "[  PERF   ] Reconstruct per-face avg: " << aPerFace << " s" << std::endl;
+  std::cout << "[  PERF   ] Reconstruct per-face avg: " << aPerFace << " s" << '\n';
   EXPECT_GT(aAvg, 0.0);
 }
 
@@ -222,6 +222,6 @@ TEST(BRepGraph_BenchmarkTest, DISABLED_SpatialQuery_Throughput)
   });
 
   const double aPerQuery = aAvg / static_cast<double>(aNbFaces);
-  std::cout << "[  PERF   ] SpatialQuery per-face avg: " << aPerQuery << " s" << std::endl;
+  std::cout << "[  PERF   ] SpatialQuery per-face avg: " << aPerQuery << " s" << '\n';
   EXPECT_GT(aAvg, 0.0);
 }

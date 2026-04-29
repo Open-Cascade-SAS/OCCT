@@ -33,7 +33,9 @@ void IGESBasic_SubfigureDef::Init(
   const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allAssocEntities)
 {
   if (!allAssocEntities.IsNull() && allAssocEntities->Lower() != 1)
+  {
     throw Standard_DimensionMismatch("IGESBasic_SubfigureDef : Init");
+  }
   theDepth         = aDepth;
   theName          = aName;
   theAssocEntities = allAssocEntities;

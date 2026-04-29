@@ -92,7 +92,9 @@ bool STEPEdit_EditContext::Load(const occ::handle<IFSelect_EditForm>& form,
 {
   occ::handle<StepData_StepModel> modl = occ::down_cast<StepData_StepModel>(model);
   if (modl.IsNull())
+  {
     return false;
+  }
 
   STEPConstruct_ContextTool ctx(modl);
   StepData_Factors          aLocalFactors;
@@ -119,7 +121,9 @@ bool STEPEdit_EditContext::Apply(const occ::handle<IFSelect_EditForm>& form,
 {
   occ::handle<StepData_StepModel> modl = occ::down_cast<StepData_StepModel>(model);
   if (modl.IsNull())
+  {
     return false;
+  }
 
   STEPConstruct_ContextTool ctx(modl);
   StepData_Factors          aLocalFactors;
@@ -129,13 +133,21 @@ bool STEPEdit_EditContext::Apply(const occ::handle<IFSelect_EditForm>& form,
                 //  ctx.AddPRPC();
 
   if (form->IsModified(2))
+  {
     ctx.SetACstatus(form->EditedValue(2));
+  }
   if (form->IsModified(3))
+  {
     ctx.SetACschemaName(form->EditedValue(3));
+  }
   if (form->IsModified(4))
+  {
     ctx.SetACyear(form->EditedValue(4)->IntegerValue());
+  }
   if (form->IsModified(5))
+  {
     ctx.SetACname(form->EditedValue(5));
+  }
 
   //  if (form->IsModified(7)) ctx.SetPRPCName        (form->EditedValue(7));
   //  if (form->IsModified(8)) ctx.SetPRPCDescription (form->EditedValue(8));

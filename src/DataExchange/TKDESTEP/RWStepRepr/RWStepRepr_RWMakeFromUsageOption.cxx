@@ -36,7 +36,9 @@ void RWStepRepr_RWMakeFromUsageOption::ReadStep(
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 8, ach, "make_from_usage_option"))
+  {
     return;
+  }
 
   // Inherited fields of ProductDefinitionRelationship
 
@@ -124,7 +126,9 @@ void RWStepRepr_RWMakeFromUsageOption::WriteStep(
     SW.Send(ent->StepBasic_ProductDefinitionRelationship::Description());
   }
   else
+  {
     SW.SendUndef();
+  }
 
   SW.Send(ent->StepBasic_ProductDefinitionRelationship::RelatingProductDefinitionAP242().Value());
 

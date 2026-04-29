@@ -125,7 +125,9 @@ static occ::handle<DrawTrSurf_Drawable> GetDrawable(const char*& Name)
   occ::handle<Draw_Drawable3D>     D = Draw::Get(Name);
   occ::handle<DrawTrSurf_Drawable> Dr;
   if (!D.IsNull())
+  {
     Dr = occ::down_cast<DrawTrSurf_Drawable>(D);
+  }
   return Dr;
 }
 
@@ -136,7 +138,9 @@ static occ::handle<DrawTrSurf_Surface> GetSurface(const char*& Name)
   occ::handle<Draw_Drawable3D>    D = Draw::Get(Name);
   occ::handle<DrawTrSurf_Surface> Dr;
   if (!D.IsNull())
+  {
     Dr = occ::down_cast<DrawTrSurf_Surface>(D);
+  }
   return Dr;
 }
 
@@ -147,7 +151,9 @@ static occ::handle<DrawTrSurf_BezierSurface> GetBezierSurface(const char*& Name)
   occ::handle<Draw_Drawable3D>          D = Draw::Get(Name);
   occ::handle<DrawTrSurf_BezierSurface> Dr;
   if (!D.IsNull())
+  {
     Dr = occ::down_cast<DrawTrSurf_BezierSurface>(D);
+  }
   return Dr;
 }
 
@@ -158,7 +164,9 @@ static occ::handle<DrawTrSurf_BSplineSurface> GetBSplineSurface(const char*& Nam
   occ::handle<Draw_Drawable3D>           D = Draw::Get(Name);
   occ::handle<DrawTrSurf_BSplineSurface> Dr;
   if (!D.IsNull())
+  {
     Dr = occ::down_cast<DrawTrSurf_BSplineSurface>(D);
+  }
   return Dr;
 }
 
@@ -169,7 +177,9 @@ static occ::handle<DrawTrSurf_BezierCurve> GetBezierCurve(const char*& Name)
   occ::handle<Draw_Drawable3D>        D = Draw::Get(Name);
   occ::handle<DrawTrSurf_BezierCurve> Dr;
   if (!D.IsNull())
+  {
     Dr = occ::down_cast<DrawTrSurf_BezierCurve>(D);
+  }
   return Dr;
 }
 
@@ -180,7 +190,9 @@ static occ::handle<DrawTrSurf_BSplineCurve> GetBSplineCurve(const char*& Name)
   occ::handle<Draw_Drawable3D>         D = Draw::Get(Name);
   occ::handle<DrawTrSurf_BSplineCurve> Dr;
   if (!D.IsNull())
+  {
     Dr = occ::down_cast<DrawTrSurf_BSplineCurve>(D);
+  }
   return Dr;
 }
 
@@ -191,7 +203,9 @@ static occ::handle<DrawTrSurf_BezierCurve2d> GetBezierCurve2d(const char*& Name)
   occ::handle<Draw_Drawable3D>          D = Draw::Get(Name);
   occ::handle<DrawTrSurf_BezierCurve2d> Dr;
   if (!D.IsNull())
+  {
     Dr = occ::down_cast<DrawTrSurf_BezierCurve2d>(D);
+  }
   return Dr;
 }
 
@@ -202,7 +216,9 @@ static occ::handle<DrawTrSurf_BSplineCurve2d> GetBSplineCurve2d(const char*& Nam
   occ::handle<Draw_Drawable3D>           D = Draw::Get(Name);
   occ::handle<DrawTrSurf_BSplineCurve2d> Dr;
   if (!D.IsNull())
+  {
     Dr = occ::down_cast<DrawTrSurf_BSplineCurve2d>(D);
+  }
   return Dr;
 }
 
@@ -440,7 +456,9 @@ static int draw(Draw_Interpretor& di, int n, const char** a)
         {
           int mod = 0;
           if ((*a[n - 1] == 'U') || (*a[n - 1] == 'u'))
+          {
             mod = 1;
+          }
           aDrawable->SetDrawMode(mod);
         }
         else if (!strcmp(a[0], "discr"))
@@ -463,7 +481,9 @@ static int draw(Draw_Interpretor& di, int n, const char** a)
 static int transform(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 5)
+  {
     return 1;
+  }
   gp_Trsf T;
   int     i, last = n - 1;
   if (!strcmp(a[0], "pscale"))
@@ -471,14 +491,18 @@ static int transform(Draw_Interpretor& di, int n, const char** a)
     double s = Draw::Atof(a[last]);
     last--;
     if (last < 4)
+    {
       return 1;
+    }
     gp_Pnt P(Draw::Atof(a[last - 2]), Draw::Atof(a[last - 1]), Draw::Atof(a[last]));
     T.SetScale(P, s);
   }
   else if (!strcmp(a[0] + 1, "mirror"))
   {
     if (last < 4)
+    {
       return 1;
+    }
     gp_Pnt P(Draw::Atof(a[last - 2]), Draw::Atof(a[last - 1]), Draw::Atof(a[last]));
     if (*a[0] == 'p')
     {
@@ -488,7 +512,9 @@ static int transform(Draw_Interpretor& di, int n, const char** a)
     {
       last -= 3;
       if (last < 4)
+      {
         return 1;
+      }
       gp_Pnt O(Draw::Atof(a[last - 2]), Draw::Atof(a[last - 1]), Draw::Atof(a[last]));
       last -= 3;
       gp_Dir D(P.X(), P.Y(), P.Z());
@@ -507,7 +533,9 @@ static int transform(Draw_Interpretor& di, int n, const char** a)
   else if (!strcmp(a[0], "translate"))
   {
     if (last < 4)
+    {
       return 1;
+    }
     gp_Vec V(Draw::Atof(a[last - 2]), Draw::Atof(a[last - 1]), Draw::Atof(a[last]));
     last -= 3;
     T.SetTranslation(V);
@@ -516,7 +544,9 @@ static int transform(Draw_Interpretor& di, int n, const char** a)
   else if (!strcmp(a[0], "rotate"))
   {
     if (last < 8)
+    {
       return 1;
+    }
     double ang = Draw::Atof(a[last]) * (M_PI / 180.0);
     last--;
     gp_Dir D(Draw::Atof(a[last - 2]), Draw::Atof(a[last - 1]), Draw::Atof(a[last]));
@@ -553,7 +583,9 @@ static int transform(Draw_Interpretor& di, int n, const char** a)
 static int d2transform(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 4)
+  {
     return 1;
+  }
   gp_Trsf2d T;
   int       i, last = n - 1;
   if (!strcmp(a[0], "2dpscale"))
@@ -561,14 +593,18 @@ static int d2transform(Draw_Interpretor& di, int n, const char** a)
     double s = Draw::Atof(a[last]);
     last--;
     if (last < 3)
+    {
       return 1;
+    }
     gp_Pnt2d P(Draw::Atof(a[last - 1]), Draw::Atof(a[last]));
     T.SetScale(P, s);
   }
   else if ((!strcmp(a[0], "2dpmirror")) || (!strcmp(a[0], "2dlmirror")))
   {
     if (last < 3)
+    {
       return 1;
+    }
     gp_Pnt2d P(Draw::Atof(a[last - 1]), Draw::Atof(a[last]));
     if (!strcmp(a[0], "2dpmirror"))
     {
@@ -578,7 +614,9 @@ static int d2transform(Draw_Interpretor& di, int n, const char** a)
     {
       last -= 2;
       if (last < 3)
+      {
         return 1;
+      }
       gp_Pnt2d O(Draw::Atof(a[last - 1]), Draw::Atof(a[last]));
       last -= 2;
       gp_Dir2d D(P.X(), P.Y());
@@ -589,7 +627,9 @@ static int d2transform(Draw_Interpretor& di, int n, const char** a)
   else if (!strcmp(a[0], "2dtranslate"))
   {
     if (last < 3)
+    {
       return 1;
+    }
     gp_Vec2d V(Draw::Atof(a[last - 1]), Draw::Atof(a[last]));
     last -= 2;
     T.SetTranslation(V);
@@ -598,7 +638,9 @@ static int d2transform(Draw_Interpretor& di, int n, const char** a)
   else if (!strcmp(a[0], "2drotate"))
   {
     if (last < 4)
+    {
       return 1;
+    }
     double ang = Draw::Atof(a[last]) * (M_PI / 180.0);
     last--;
     gp_Pnt2d P(Draw::Atof(a[last - 1]), Draw::Atof(a[last]));
@@ -825,11 +867,15 @@ occ::handle<Geom_Geometry> DrawTrSurf::Get(const char*& Name)
 
   occ::handle<DrawTrSurf_Curve> DC = occ::down_cast<DrawTrSurf_Curve>(D);
   if (!DC.IsNull())
+  {
     return DC->GetCurve();
+  }
 
   occ::handle<DrawTrSurf_Surface> DS = occ::down_cast<DrawTrSurf_Surface>(D);
   if (!DS.IsNull())
+  {
     return DS->GetSurface();
+  }
 
   return occ::handle<Geom_Geometry>();
 }
@@ -840,9 +886,13 @@ bool DrawTrSurf::GetPoint(const char*& Name, gp_Pnt& P)
 {
   occ::handle<DrawTrSurf_Point> D = occ::down_cast<DrawTrSurf_Point>(Draw::Get(Name));
   if (D.IsNull())
+  {
     return false;
+  }
   else if (!D->Is3D())
+  {
     return false;
+  }
   else
   {
     P = D->Point();
@@ -856,9 +906,13 @@ bool DrawTrSurf::GetPoint2d(const char*& Name, gp_Pnt2d& P)
 {
   occ::handle<DrawTrSurf_Point> D = occ::down_cast<DrawTrSurf_Point>(Draw::Get(Name));
   if (D.IsNull())
+  {
     return false;
+  }
   else if (D->Is3D())
+  {
     return false;
+  }
   else
   {
     P = D->Point2d();
@@ -872,9 +926,13 @@ occ::handle<Geom_Curve> DrawTrSurf::GetCurve(const char*& Name)
 {
   occ::handle<DrawTrSurf_Curve> D = occ::down_cast<DrawTrSurf_Curve>(Draw::Get(Name));
   if (D.IsNull())
+  {
     return occ::handle<Geom_Curve>();
+  }
   else
+  {
     return D->GetCurve();
+  }
 }
 
 //=================================================================================================
@@ -883,9 +941,13 @@ occ::handle<Geom_BezierCurve> DrawTrSurf::GetBezierCurve(const char*& Name)
 {
   occ::handle<DrawTrSurf_BezierCurve> D = occ::down_cast<DrawTrSurf_BezierCurve>(Draw::Get(Name));
   if (D.IsNull())
+  {
     return occ::handle<Geom_BezierCurve>();
+  }
   else
+  {
     return occ::down_cast<Geom_BezierCurve>(D->GetCurve());
+  }
 }
 
 //=================================================================================================
@@ -894,9 +956,13 @@ occ::handle<Geom_BSplineCurve> DrawTrSurf::GetBSplineCurve(const char*& Name)
 {
   occ::handle<DrawTrSurf_BSplineCurve> D = occ::down_cast<DrawTrSurf_BSplineCurve>(Draw::Get(Name));
   if (D.IsNull())
+  {
     return occ::handle<Geom_BSplineCurve>();
+  }
   else
+  {
     return occ::down_cast<Geom_BSplineCurve>(D->GetCurve());
+  }
 }
 
 //=================================================================================================
@@ -905,9 +971,13 @@ occ::handle<Geom2d_Curve> DrawTrSurf::GetCurve2d(const char*& Name)
 {
   occ::handle<DrawTrSurf_Curve2d> D = occ::down_cast<DrawTrSurf_Curve2d>(Draw::Get(Name));
   if (D.IsNull())
+  {
     return occ::handle<Geom2d_Curve>();
+  }
   else
+  {
     return D->GetCurve();
+  }
 }
 
 //=================================================================================================
@@ -916,9 +986,13 @@ occ::handle<Geom2d_BezierCurve> DrawTrSurf::GetBezierCurve2d(const char*& Name)
 {
   occ::handle<DrawTrSurf_Curve2d> D = occ::down_cast<DrawTrSurf_Curve2d>(Draw::Get(Name));
   if (D.IsNull())
+  {
     return occ::handle<Geom2d_BezierCurve>();
+  }
   else
+  {
     return occ::down_cast<Geom2d_BezierCurve>(D->GetCurve());
+  }
 }
 
 //=================================================================================================
@@ -927,9 +1001,13 @@ occ::handle<Geom2d_BSplineCurve> DrawTrSurf::GetBSplineCurve2d(const char*& Name
 {
   occ::handle<DrawTrSurf_Curve2d> D = occ::down_cast<DrawTrSurf_Curve2d>(Draw::Get(Name));
   if (D.IsNull())
+  {
     return occ::handle<Geom2d_BSplineCurve>();
+  }
   else
+  {
     return occ::down_cast<Geom2d_BSplineCurve>(D->GetCurve());
+  }
 }
 
 //=================================================================================================
@@ -938,9 +1016,13 @@ occ::handle<Geom_Surface> DrawTrSurf::GetSurface(const char*& Name)
 {
   occ::handle<DrawTrSurf_Surface> D = occ::down_cast<DrawTrSurf_Surface>(Draw::Get(Name));
   if (D.IsNull())
+  {
     return occ::handle<Geom_Surface>();
+  }
   else
+  {
     return D->GetSurface();
+  }
 }
 
 //=================================================================================================
@@ -950,9 +1032,13 @@ occ::handle<Geom_BezierSurface> DrawTrSurf::GetBezierSurface(const char*& Name)
   occ::handle<DrawTrSurf_BezierSurface> D =
     occ::down_cast<DrawTrSurf_BezierSurface>(Draw::Get(Name));
   if (D.IsNull())
+  {
     return occ::handle<Geom_BezierSurface>();
+  }
   else
+  {
     return occ::down_cast<Geom_BezierSurface>(D->GetSurface());
+  }
 }
 
 //=================================================================================================
@@ -962,9 +1048,13 @@ occ::handle<Geom_BSplineSurface> DrawTrSurf::GetBSplineSurface(const char*& Name
   occ::handle<DrawTrSurf_BSplineSurface> D =
     occ::down_cast<DrawTrSurf_BSplineSurface>(Draw::Get(Name));
   if (D.IsNull())
+  {
     return occ::handle<Geom_BSplineSurface>();
+  }
   else
+  {
     return occ::down_cast<Geom_BSplineSurface>(D->GetSurface());
+  }
 }
 
 //=================================================================================================
@@ -974,9 +1064,13 @@ occ::handle<Poly_Triangulation> DrawTrSurf::GetTriangulation(const char*& Name)
   occ::handle<DrawTrSurf_Triangulation> D =
     occ::down_cast<DrawTrSurf_Triangulation>(Draw::Get(Name));
   if (D.IsNull())
+  {
     return occ::handle<Poly_Triangulation>();
+  }
   else
+  {
     return D->Triangulation();
+  }
 }
 
 //=================================================================================================
@@ -985,9 +1079,13 @@ occ::handle<Poly_Polygon3D> DrawTrSurf::GetPolygon3D(const char*& Name)
 {
   occ::handle<DrawTrSurf_Polygon3D> D = occ::down_cast<DrawTrSurf_Polygon3D>(Draw::Get(Name));
   if (D.IsNull())
+  {
     return occ::handle<Poly_Polygon3D>();
+  }
   else
+  {
     return D->Polygon3D();
+  }
 }
 
 //=================================================================================================
@@ -996,9 +1094,13 @@ occ::handle<Poly_Polygon2D> DrawTrSurf::GetPolygon2D(const char*& Name)
 {
   occ::handle<DrawTrSurf_Polygon2D> D = occ::down_cast<DrawTrSurf_Polygon2D>(Draw::Get(Name));
   if (D.IsNull())
+  {
     return occ::handle<Poly_Polygon2D>();
+  }
   else
+  {
     return D->Polygon2D();
+  }
 }
 
 //=================================================================================================
@@ -1062,35 +1164,65 @@ static Draw_Color recognizeColor(const char* theColorStr, const Draw_Color& theD
   Draw_Color aResult = theDefaultColor;
 
   if (!strcasecmp(theColorStr, "white"))
+  {
     aResult = Draw_blanc;
+  }
   if (!strcasecmp(theColorStr, "red"))
+  {
     aResult = Draw_rouge;
+  }
   if (!strcasecmp(theColorStr, "green"))
+  {
     aResult = Draw_vert;
+  }
   if (!strcasecmp(theColorStr, "blue"))
+  {
     aResult = Draw_bleu;
+  }
   if (!strcasecmp(theColorStr, "cyan"))
+  {
     aResult = Draw_cyan;
+  }
   if (!strcasecmp(theColorStr, "golden"))
+  {
     aResult = Draw_or;
+  }
   if (!strcasecmp(theColorStr, "magenta"))
+  {
     aResult = Draw_magenta;
+  }
   if (!strcasecmp(theColorStr, "brown"))
+  {
     aResult = Draw_marron;
+  }
   if (!strcasecmp(theColorStr, "orange"))
+  {
     aResult = Draw_orange;
+  }
   if (!strcasecmp(theColorStr, "pink"))
+  {
     aResult = Draw_rose;
+  }
   if (!strcasecmp(theColorStr, "salmon"))
+  {
     aResult = Draw_saumon;
+  }
   if (!strcasecmp(theColorStr, "violet"))
+  {
     aResult = Draw_violet;
+  }
   if (!strcasecmp(theColorStr, "yellow"))
+  {
     aResult = Draw_jaune;
+  }
   if (!strcasecmp(theColorStr, "darkgreen"))
+  {
     aResult = Draw_kaki;
+  }
   if (!strcasecmp(theColorStr, "coral"))
+  {
     aResult = Draw_corail;
+  }
 
   return aResult;
 }
@@ -1126,7 +1258,9 @@ static int changecurvcolor(Draw_Interpretor&, int n, const char** a)
   DrawTrSurf_CurveColor(savecol);
 
   if (n < 3)
+  {
     return 1;
+  }
 
   col = recognizeColor(a[1], savecol);
 
@@ -1171,7 +1305,9 @@ static int changepointcolor(Draw_Interpretor&, int n, const char** a)
   DrawTrSurf_PointColor(savecol);
 
   if (n < 3)
+  {
     return 1;
+  }
 
   col = recognizeColor(a[1], savecol);
 
@@ -1220,17 +1356,29 @@ static Draw_MarkerShape recognizeMarker(const char*             theMarkerStr,
   Draw_MarkerShape aResult = theDefaultMarker;
 
   if (!strcasecmp(theMarkerStr, "square"))
+  {
     aResult = Draw_Square;
+  }
   if (!strcasecmp(theMarkerStr, "diamond"))
+  {
     aResult = Draw_Losange;
+  }
   if (!strcasecmp(theMarkerStr, "x"))
+  {
     aResult = Draw_X;
+  }
   if (!strcasecmp(theMarkerStr, "plus"))
+  {
     aResult = Draw_Plus;
+  }
   if (!strcasecmp(theMarkerStr, "circle"))
+  {
     aResult = Draw_Circle;
+  }
   if (!strcasecmp(theMarkerStr, "circle_zoom"))
+  {
     aResult = Draw_CircleZoom;
+  }
 
   return aResult;
 }
@@ -1266,7 +1414,9 @@ static int changepointmarker(Draw_Interpretor&, int n, const char** a)
   DrawTrSurf_PointMarker(savemark);
 
   if (n < 3)
+  {
     return 1;
+  }
 
   mark = recognizeMarker(a[1], savemark);
 
@@ -1287,7 +1437,9 @@ static bool done = false;
 void DrawTrSurf::BasicCommands(Draw_Interpretor& theCommands)
 {
   if (done)
+  {
     return;
+  }
   done = true;
 
   DrawTrSurf_BezierCurve::RegisterFactory();

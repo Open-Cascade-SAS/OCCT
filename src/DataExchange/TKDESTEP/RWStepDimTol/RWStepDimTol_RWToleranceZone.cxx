@@ -36,7 +36,9 @@ void RWStepDimTol_RWToleranceZone::ReadStep(const occ::handle<StepData_StepReade
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 6, ach, "tolerance_zone"))
+  {
     return;
+  }
 
   // Inherited fields of ShapeAspect
 
@@ -76,7 +78,9 @@ void RWStepDimTol_RWToleranceZone::ReadStep(const occ::handle<StepData_StepReade
     for (int i = 1; i <= nbElements; i++)
     {
       if (data->ReadEntity(nbSub, i, "tolerance_zone_target", ach, anEnt))
+      {
         anItems->SetValue(i, anEnt);
+      }
     }
   }
 
@@ -133,5 +137,7 @@ void RWStepDimTol_RWToleranceZone::Share(const occ::handle<StepDimTol_ToleranceZ
   // Own fields of ToleranceZone
   int i, nb = ent->NbDefiningTolerances();
   for (i = 1; i <= nb; i++)
+  {
     iter.AddItem(ent->DefiningToleranceValue(i).Value());
+  }
 }

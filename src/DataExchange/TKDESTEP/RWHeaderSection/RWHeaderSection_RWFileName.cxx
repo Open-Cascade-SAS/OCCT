@@ -30,7 +30,9 @@ void RWHeaderSection_RWFileName::ReadStep(const occ::handle<StepData_StepReaderD
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 7, ach, "file_name has not 7 parameter(s)"))
+  {
     return;
+  }
 
   // --- own field : name ---
 
@@ -56,7 +58,9 @@ void RWHeaderSection_RWFileName::ReadStep(const occ::handle<StepData_StepReaderD
     {
       bool stat3 = data->ReadString(nsub3, i3, "author", ach, aAuthorItem);
       if (stat3)
+      {
         aAuthor->SetValue(i3, aAuthorItem);
+      }
     }
   }
   else
@@ -78,7 +82,9 @@ void RWHeaderSection_RWFileName::ReadStep(const occ::handle<StepData_StepReaderD
     {
       bool stat4 = data->ReadString(nsub4, i4, "organization", ach, aOrganizationItem);
       if (stat4)
+      {
         aOrganization->SetValue(i4, aOrganizationItem);
+      }
     }
   }
   else
@@ -104,6 +110,7 @@ void RWHeaderSection_RWFileName::ReadStep(const occ::handle<StepData_StepReaderD
   //--- Initialisation of the read entity ---
 
   if (!ach->HasFailed())
+  {
     ent->Init(aName,
               aTimeStamp,
               aAuthor,
@@ -111,6 +118,7 @@ void RWHeaderSection_RWFileName::ReadStep(const occ::handle<StepData_StepReaderD
               aPreprocessorVersion,
               aOriginatingSystem,
               aAuthorisation);
+  }
 }
 
 void RWHeaderSection_RWFileName::WriteStep(StepData_StepWriter&                       SW,

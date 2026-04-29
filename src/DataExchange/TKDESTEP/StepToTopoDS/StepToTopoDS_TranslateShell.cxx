@@ -56,7 +56,9 @@ void StepToTopoDS_TranslateShell::Init(const occ::handle<StepShape_ConnectedFace
 {
   // bug15697
   if (CFS.IsNull())
+  {
     return;
+  }
 
   if (!aTool.IsBound(CFS))
   {
@@ -130,7 +132,9 @@ void StepToTopoDS_TranslateShell::Init(const occ::handle<StepVisual_TessellatedS
                                        const Message_ProgressRange& theProgress)
 {
   if (theTSh.IsNull())
+  {
     return;
+  }
 
   BRep_Builder aB;
   TopoDS_Shell aSh;

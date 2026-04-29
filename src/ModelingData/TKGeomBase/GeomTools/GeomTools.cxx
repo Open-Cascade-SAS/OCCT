@@ -76,7 +76,9 @@ void GeomTools::Read(occ::handle<Geom2d_Curve>& C, Standard_IStream& IS)
 void GeomTools::SetUndefinedTypeHandler(const occ::handle<GeomTools_UndefinedTypeHandler>& aHandler)
 {
   if (!aHandler.IsNull())
+  {
     theActiveHandler = aHandler;
+  }
 }
 
 //=================================================================================================

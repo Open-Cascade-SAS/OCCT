@@ -28,7 +28,9 @@ void RWStepVisual_RWPresentationSet::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 0, ach, "presentation_set"))
+  {
     return;
+  }
 
   //--- Initialisation of the read entity ---
 }

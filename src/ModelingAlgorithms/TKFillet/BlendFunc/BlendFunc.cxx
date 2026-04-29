@@ -165,15 +165,25 @@ bool BlendFunc::ComputeNormal(const occ::handle<Adaptor3d_Surface>& Surf,
 
   NCollection_Array2<gp_Vec> DerSurf(0, MaxOrder + 1, 0, MaxOrder + 1);
   for (i = 1; i <= MaxOrder + 1; i++)
+  {
     DerSurf.SetValue(i, 0, Surf->DN(U, V, i, 0));
+  }
   for (i = 0; i <= MaxOrder + 1; i++)
+  {
     for (j = 1; j <= MaxOrder + 1; j++)
+    {
       DerSurf.SetValue(i, j, Surf->DN(U, V, i, j));
+    }
+  }
 
   NCollection_Array2<gp_Vec> DerNUV(0, MaxOrder, 0, MaxOrder);
   for (i = 0; i <= MaxOrder; i++)
+  {
     for (j = 0; j <= MaxOrder; j++)
+    {
       DerNUV.SetValue(i, j, CSLib::DNNUV(i, j, DerSurf));
+    }
+  }
 
   gp_Dir             thenormal;
   CSLib_NormalStatus stat;
@@ -219,15 +229,25 @@ bool BlendFunc::ComputeDNormal(const occ::handle<Adaptor3d_Surface>& Surf,
 
   NCollection_Array2<gp_Vec> DerSurf(0, MaxOrder + 1, 0, MaxOrder + 1);
   for (i = 1; i <= MaxOrder + 1; i++)
+  {
     DerSurf.SetValue(i, 0, Surf->DN(U, V, i, 0));
+  }
   for (i = 0; i <= MaxOrder + 1; i++)
+  {
     for (j = 1; j <= MaxOrder + 1; j++)
+    {
       DerSurf.SetValue(i, j, Surf->DN(U, V, i, j));
+    }
+  }
 
   NCollection_Array2<gp_Vec> DerNUV(0, MaxOrder, 0, MaxOrder);
   for (i = 0; i <= MaxOrder; i++)
+  {
     for (j = 0; j <= MaxOrder; j++)
+    {
       DerNUV.SetValue(i, j, CSLib::DNNUV(i, j, DerSurf));
+    }
+  }
 
   gp_Dir             thenormal;
   CSLib_NormalStatus stat;

@@ -1261,12 +1261,18 @@ void Geom2dGcc_Circ2d2TanOnGeo::CenterOn3(const int Index, double& ParArg, gp_Pn
 bool Geom2dGcc_Circ2d2TanOnGeo::IsTheSame1(const int Index) const
 {
   if (!WellDone)
+  {
     throw StdFail_NotDone();
+  }
   if (Index <= 0 || Index > NbrSol)
+  {
     throw Standard_OutOfRange();
+  }
 
   if (TheSame1(Index) == 0)
+  {
     return false;
+  }
 
   return true;
 }
@@ -1274,12 +1280,18 @@ bool Geom2dGcc_Circ2d2TanOnGeo::IsTheSame1(const int Index) const
 bool Geom2dGcc_Circ2d2TanOnGeo::IsTheSame2(const int Index) const
 {
   if (!WellDone)
+  {
     throw StdFail_NotDone();
+  }
   if (Index <= 0 || Index > NbrSol)
+  {
     throw Standard_OutOfRange();
+  }
 
   if (TheSame2(Index) == 0)
+  {
     return false;
+  }
 
   return true;
 }

@@ -208,7 +208,9 @@ void V3d_Viewer::UnHighlight() const
 void V3d_Viewer::SetDefaultViewSize(const double theSize)
 {
   if (theSize <= 0.0)
+  {
     throw V3d_BadValue("V3d_Viewer::SetDefaultViewSize, bad size");
+  }
   myViewSize = theSize;
 }
 

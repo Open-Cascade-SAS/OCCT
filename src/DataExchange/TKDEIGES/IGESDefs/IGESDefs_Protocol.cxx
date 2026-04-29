@@ -43,18 +43,32 @@ occ::handle<Interface_Protocol> IGESDefs_Protocol::Resource(const int /*num*/) c
 int IGESDefs_Protocol::TypeNumber(const occ::handle<Standard_Type>& atype) const
 {
   if (atype == STANDARD_TYPE(IGESDefs_AssociativityDef))
+  {
     return 1;
+  }
   else if (atype == STANDARD_TYPE(IGESDefs_AttributeDef))
+  {
     return 2;
+  }
   else if (atype == STANDARD_TYPE(IGESDefs_AttributeTable))
+  {
     return 3;
+  }
   else if (atype == STANDARD_TYPE(IGESDefs_GenericData))
+  {
     return 4;
+  }
   else if (atype == STANDARD_TYPE(IGESDefs_MacroDef))
+  {
     return 5;
+  }
   else if (atype == STANDARD_TYPE(IGESDefs_TabularData))
+  {
     return 6;
+  }
   else if (atype == STANDARD_TYPE(IGESDefs_UnitsData))
+  {
     return 7;
+  }
   return 0;
 }

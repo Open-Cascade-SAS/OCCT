@@ -59,9 +59,13 @@ Standard_EXPORT bool FUN_projPonL(const gp_Pnt&                 P,
   {
     BRepAdaptor_Curve2d BAC2D;
     if (Esi == 1)
+    {
       BAC2D.Initialize(E, FF.Face(1));
+    }
     else if (Esi == 2)
+    {
       BAC2D.Initialize(E, FF.Face(2));
+    }
     paramLdef = FUN_tool_projPonC2D(P, BAC2D, paramL, dist);
   }
   return paramLdef;
@@ -122,7 +126,9 @@ void TopOpeBRep_FacesFiller::Insert(const TopoDS_Shape&                         
   myHDS              = HDS;
   myDS               = &(HDS->ChangeDS());
   if (myPShapeClassifier == nullptr)
+  {
     myPShapeClassifier = new TopOpeBRepTool_ShapeClassifier();
+  }
 
 #ifdef OCCT_DEBUG
   int exF1, exF2;
@@ -197,7 +203,9 @@ void TopOpeBRep_FacesFiller::LoadLine(TopOpeBRep_LineInter& L)
   L.SetOK(bchk);
   myLineOK = bchk;
   if (!myLineOK)
+  {
     return;
+  }
 
   L.ComputeFaceFaceTransition();
 } // LoadLine
@@ -236,7 +244,9 @@ bool TopOpeBRep_FacesFiller::CheckLine(TopOpeBRep_LineInter& L) const
     {
       const TopOpeBRep_VPointInter& VP = VPI.CurrentVP();
       if (VP.Keep())
+      {
         np++;
+      }
     }
     if (np != 2)
     {
@@ -249,28 +259,42 @@ bool TopOpeBRep_FacesFiller::CheckLine(TopOpeBRep_LineInter& L) const
     {
       const TopOpeBRep_VPointInter& VP = VPI.CurrentVP();
       if (!VP.Keep())
+      {
         continue;
+      }
       np++;
       if (np == 1)
+      {
         A = VP;
+      }
       if (np == 2)
+      {
         B = VP;
+      }
     }
 
     bool         isAV1 = A.IsVertexOnS1();
     bool         isAV2 = A.IsVertexOnS2();
     TopoDS_Shape V1;
     if (isAV1)
+    {
       V1 = A.VertexOnS1();
+    }
     if (isAV2)
+    {
       V1 = A.VertexOnS2();
+    }
     bool         isBV1 = B.IsVertexOnS1();
     bool         isBV2 = B.IsVertexOnS2();
     TopoDS_Shape V2;
     if (isBV1)
+    {
       V2 = B.VertexOnS1();
+    }
     if (isBV2)
+    {
       V2 = B.VertexOnS2();
+    }
 
     if (!V1.IsNull() && (V1.IsSame(V2)))
     {
@@ -359,7 +383,9 @@ void TopOpeBRep_FacesFiller::VP_Position(TopOpeBRep_FacesIntersector&)
     const TopOpeBRep_TypeLineCurve tl = L.TypeLineCurve();
     bool                           ok = (tl == TopOpeBRep_RESTRICTION);
     if (ok)
+    {
       VP_Position(L);
+    }
   }
 
   for (myFacesIntersector->InitLine(); myFacesIntersector->MoreLine();
@@ -369,7 +395,9 @@ void TopOpeBRep_FacesFiller::VP_Position(TopOpeBRep_FacesIntersector&)
     const TopOpeBRep_TypeLineCurve tl = L.TypeLineCurve();
     bool                           ok = (tl != TopOpeBRep_RESTRICTION);
     if (ok)
+    {
       VP_Position(L);
+    }
   }
 }
 
@@ -381,9 +409,13 @@ void TopOpeBRep_FacesFiller::VP_Position(TopOpeBRep_LineInter& L)
   bool isrest = (L.TypeLineCurve() == TopOpeBRep_RESTRICTION);
 
   if (!isrest)
+  {
     VP_PositionOnL(L);
+  }
   else
+  {
     VP_PositionOnR(L);
+  }
 
   L.SetVPBounds();
 }
@@ -408,11 +440,15 @@ void TopOpeBRep_FacesFiller::VP_PositionOnL(TopOpeBRep_LineInter& L)
     for (iOL = 1; iOL <= n; iOL++)
     {
       if (iOL == Lindex)
+      {
         continue;
+      }
       TopOpeBRep_LineInter& OL = FI.ChangeLine(iOL);
       VPequalVPONRESTRICTION   = PequalVPonR(P3D, VPsi, VP, OL);
       if (VPequalVPONRESTRICTION)
+      {
         break;
+      }
     }
 
     if (!VPequalVPONRESTRICTION)
@@ -436,14 +472,20 @@ void TopOpeBRep_FacesFiller::VP_PositionOnR(TopOpeBRep_LineInter& L)
   const TopoDS_Edge& earc   = TopoDS::Edge(L.Arc());
   bool               hasc3d = FC2D_HasC3D(earc);
   if (hasc3d)
+  {
     isline = FUN_tool_line(earc);
+  }
   else
   {
     BRepAdaptor_Curve2d BAC2D;
     if (Esi == 1)
+    {
       BAC2D.Initialize(earc, myF1);
+    }
     else if (Esi == 2)
+    {
       BAC2D.Initialize(earc, myF2);
+    }
     GeomAbs_CurveType t = BAC2D.GetType();
     isline              = (t == GeomAbs_Line);
   }
@@ -456,14 +498,18 @@ void TopOpeBRep_FacesFiller::VP_PositionOnR(TopOpeBRep_LineInter& L)
     if (isvertex)
     {
       if (!isline)
+      {
         VP_Position(VP, VPC);
+      }
       continue;
     }
     bool OOisvertex = VP.IsVertex(OOEsi);
     if (OOisvertex)
     {
       if (!isline)
+      {
         VP_Position(VP, VPC);
+      }
       continue;
     }
 
@@ -538,7 +584,9 @@ void TopOpeBRep_FacesFiller::VP_Position(TopOpeBRep_VPointInter&           VP,
 
   bool AssumeINON = false;
   if (myLine)
+  {
     AssumeINON = (myLine->TypeLineCurve() != TopOpeBRep_RESTRICTION);
+  }
 
   // modified by NIZHNY-MKK  Fri Oct 27 14:50:28 2000.BEGIN
   //   double tol = Precision::Confusion();
@@ -549,9 +597,13 @@ void TopOpeBRep_FacesFiller::VP_Position(TopOpeBRep_VPointInter&           VP,
   // modified by NIZHNY-MKK  Fri Oct 27 14:50:36 2000.END
 
   if (c1)
+  {
     VPC.VPointPosition(myF1, VP, 1, myPointClassifier, AssumeINON, tol);
+  }
   if (c2)
+  {
     VPC.VPointPosition(myF2, VP, 2, myPointClassifier, AssumeINON, tol);
+  }
 }
 
 //=================================================================================================
@@ -564,7 +616,9 @@ bool TopOpeBRep_FacesFiller::PequalVPonR(const gp_Pnt&           P3D,
   const TopOpeBRep_TypeLineCurve tOL  = Lrest.TypeLineCurve();
   bool                           OLok = (tOL == TopOpeBRep_RESTRICTION);
   if (!OLok)
+  {
     return false;
+  }
 
   bool               VPequalVPONRESTRICTION = false;
   const TopoDS_Edge& EOL                    = TopoDS::Edge(Lrest.Arc());
@@ -579,15 +633,21 @@ bool TopOpeBRep_FacesFiller::PequalVPonR(const gp_Pnt&           P3D,
     bool VPOLisvertex = false;
     VPOLisvertex      = VPOL.IsVertex(1);
     if (VPOLisvertex)
+    {
       continue;
+    }
 
     bool diffsi = (VPOLsi != VPsi);
     if (diffsi)
+    {
       continue;
+    }
 
     TopAbs_State stateEsi = VPOL.State(EOLsi);
     if (stateEsi != TopAbs_ON)
+    {
       continue;
+    }
 
     const gp_Pnt& P3DOL    = VPOL.Value();
     double        tolE     = BRep_Tool::Tolerance(EOL);
@@ -630,9 +690,13 @@ TopOpeBRepDS_DataStructure& TopOpeBRep_FacesFiller::ChangeDataStructure()
 const TopoDS_Face& TopOpeBRep_FacesFiller::Face(const int I) const
 {
   if (I == 1)
+  {
     return myF1;
+  }
   else if (I == 2)
+  {
     return myF2;
+  }
   throw Standard_ProgramError("FacesFiller::Face");
 }
 

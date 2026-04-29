@@ -36,20 +36,30 @@ occ::handle<IFSelect_Selection> IFSelect_SelectCombine::Input(const int num) con
 int IFSelect_SelectCombine::InputRank(const occ::handle<IFSelect_Selection>& sel) const
 {
   if (sel.IsNull())
+  {
     return 0;
+  }
   int i, nb = thelist.Length();
   for (i = 1; i <= nb; i++)
+  {
     if (sel == thelist.Value(i))
+    {
       return i;
+    }
+  }
   return 0;
 }
 
 void IFSelect_SelectCombine::Add(const occ::handle<IFSelect_Selection>& sel, const int atnum)
 {
   if (atnum <= 0 || atnum > thelist.Length())
+  {
     thelist.Append(sel);
+  }
   else
+  {
     thelist.InsertBefore(atnum, sel);
+  }
 }
 
 bool IFSelect_SelectCombine::Remove(const occ::handle<IFSelect_Selection>& sel)
@@ -60,7 +70,9 @@ bool IFSelect_SelectCombine::Remove(const occ::handle<IFSelect_Selection>& sel)
 bool IFSelect_SelectCombine::Remove(const int num)
 {
   if (num <= 0 || num > thelist.Length())
+  {
     return false;
+  }
   thelist.Remove(num);
   return true;
 }

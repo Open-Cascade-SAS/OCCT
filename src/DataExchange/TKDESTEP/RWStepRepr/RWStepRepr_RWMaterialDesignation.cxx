@@ -29,7 +29,9 @@ void RWStepRepr_RWMaterialDesignation::ReadStep(
   // --- Number of Parameter Control ---
 
   if (!data->CheckNbParams(num, 2, ach, "material_designation"))
+  {
     return;
+  }
 
   // --- own field : name ---
 

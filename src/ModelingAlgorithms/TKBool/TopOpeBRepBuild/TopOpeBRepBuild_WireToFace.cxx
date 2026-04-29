@@ -46,7 +46,9 @@ void TopOpeBRepBuild_WireToFace::MakeFaces(const TopoDS_Face& F, NCollection_Lis
 
   TopOpeBRepBuild_WireEdgeSet wes(F);
   for (NCollection_List<TopoDS_Shape>::Iterator it(myLW); it.More(); it.Next())
+  {
     wes.AddShape(it.Value());
+  }
 
   bool                        ForceClass = true;
   TopOpeBRepBuild_FaceBuilder FB;
