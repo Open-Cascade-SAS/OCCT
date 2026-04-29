@@ -63,6 +63,10 @@
 #include <BRepTools.hxx>
 #include <Standard_Dump.hxx>
 
+#ifdef _WIN32
+Standard_IMPORT Draw_Viewer dout;
+#endif
+
 //=======================================================================
 // function : ConvertBndToShape
 // purpose  : Creates TopoDS_Solid from theBox
